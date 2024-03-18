@@ -4,115 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 480E5CD11BF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9585AC54E58
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:03:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 769FE218C;
-	Wed, 20 Mar 2024 15:03:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 769FE218C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C2721EB;
+	Wed, 20 Mar 2024 15:03:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C2721EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710943405;
-	bh=0Bx39X9nrmaOe2siDGBtD8UvPB5+0atvcfW4BaACz+4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1710943418;
+	bh=YvF7eLe7205wxa6RAenyAxtCB0M8C9fT9UInMrApoEY=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HkLNwjYqcIDdTiopkYtKsZwFAMytGx3qTqdZ9gbTlVWrWfcLnY8OR7i+CiUtqfKD/
-	 TLWdT1qaUB6g5ytClpF4dVYtLeg7BhPZB7t09kxrj5bmi6Jhms4WORs69t1DyX/871
-	 ZB465Nsc3s6Mt1W/a0PrVDKpUsHR4UAJS8DueIvQ=
+	b=JK61ZMxQqaEC3Jtgz7NN0O7X+69NIwNQAatp88Rk2tVHyWDMHSF411VrWELTqlBNR
+	 6ZzVrRo7cASKNEoPaWht4ZS6aC0h1adjoKI1RYytFCPXn3pXflHMIU6A5iuj/hjQ2z
+	 2R+xmeTpI3nix0Jhp74HFZKov395eRALnqSdxRNA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09CB4F80716; Wed, 20 Mar 2024 15:00:29 +0100 (CET)
+	id 3D391F80759; Wed, 20 Mar 2024 15:00:32 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D872F8074D;
-	Wed, 20 Mar 2024 15:00:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93DB9F80753;
+	Wed, 20 Mar 2024 15:00:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58FE5F804E7; Mon, 18 Mar 2024 12:12:44 +0100 (CET)
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com
- [IPv6:2607:f8b0:4864:20::112c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 50305F804E7; Mon, 18 Mar 2024 23:36:04 +0100 (CET)
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32D8FF80093
-	for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2024 12:12:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32D8FF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4D5E7F8010B
+	for <alsa-devel@alsa-project.org>; Mon, 18 Mar 2024 23:35:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D5E7F8010B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com
- header.a=rsa-sha256 header.s=20230601 header.b=DJi3a5hf
-Received: by mail-yw1-x112c.google.com with SMTP id
- 00721157ae682-609f1f97864so45693587b3.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 18 Mar 2024 04:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cpp-in.20230601.gappssmtp.com; s=20230601; t=1710760358;
- x=1711365158; darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CJoZDN6ezIJlLMa5gaDKCST13mLnHhS66r8V7Evf8Jc=;
-        b=DJi3a5hf3dhNRnaOYUf4LVQdKbcPXH5SM0MRphqKXo1vECM8YsI+xZaVGTL5t9w96e
-         HS3lgwuICJLX6tLSpUbB9/sY03k48ltkLDl5VXL3WC4aFqZjJCN2zW8Q+UeqmH0+PVOF
-         E01Vh8mDw3uhlXaFyULK93uBbFjQKMoxr910CMixaBp0ypElLzEtESALyGWCz7i4iVCK
-         Uy9+7689/cSdv+ECXfCdULxykF4dhmOE9VzDBxRKMuifJavyp7Q9qTfBsUsfq/6wWQT6
-         /JZtrEizuTA9F8+f6aAGLqo8WLF/mGT5BlzJnL9R9Atac6fCemUUTDqjC/cWUU+io0yY
-         OivQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710760358; x=1711365158;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CJoZDN6ezIJlLMa5gaDKCST13mLnHhS66r8V7Evf8Jc=;
-        b=B/QdoRUD5gcmpbN7U51fMxtsUcE/+vuF9pIvnxhMP5MQhMNEjAoOhFBZ9edEHxk2Cl
-         PyZRPRA0hjrpxxX01VANziWvMVbxZDrLJx+S9uJwQTDs4snA9TL/69tgYWUieQil+Qw1
-         Z7MDGCspaAKz0U1kRhdNuFH25jLH7xE8doZum4U45NXo6S41p/k92QQf4sVYic8o+uOF
-         F7Tl900HuiB9V6jeRsumwO6zPZ+z588xN38EFBJ0kg9iH//cxYzg7aqFMFskHMm49EVz
-         1vH88Dv/JIv+jIqG/8Y97B9avYEaXMS/eScR93Nw0pHEH6CHK5LJJ2451w335vUQEFgM
-         8esA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWsqRnGW1wRXMBNcpWBxa8Ks/8Iih6LcgLEXh49ehi9Chr3AINIxODy0f46ELBO5uKxXlf0jJKma5nr6livLyuNHUHCYvAPfjDFOTo=
-X-Gm-Message-State: AOJu0Yz8+7PoYi/zK75pdeVK8t85DovtCG81IvQy02+mHLWkyqeN6pVG
-	WHSZlHCiVQ2S5nFFhl4z8d0U3To+NIGcQmfM4yWV5+rccqkFbKBQCKlvJFAuLsHmlvSVUnqdBWl
-	px+t/ck5H+pEwyq2/smcyF8laTRMb5DpK3KgI
-X-Google-Smtp-Source: 
- AGHT+IG/HgIgdSgvQqy3AXOe0r/4PVhQlkf8W/nO+Clig28YU2mx//r0WREn/yYLRmNX0scfU3SYjJOJrqswVfJx9YE=
-X-Received: by 2002:a25:3187:0:b0:dcc:1449:71ea with SMTP id
- x129-20020a253187000000b00dcc144971eamr8864308ybx.50.1710760357653; Mon, 18
- Mar 2024 04:12:37 -0700 (PDT)
+ unprotected) header.d=salutedevices.com header.i=@salutedevices.com
+ header.a=rsa-sha256 header.s=mail header.b=J+aHlngq
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id E086310000A;
+	Tue, 19 Mar 2024 01:35:58 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E086310000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1710801358;
+	bh=vPcHUQZVimBhgCl8L1f1HwLGGZYqomI6G5dUIYpgXh8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=J+aHlngq9//OVD9HE6Ik14KAs5VWEg57NxJNYzD9iYiuWq45OZAyUMhJz0HXqfp1N
+	 aiWgMRNxojFULwjNsxw1oxwj7hMwOPIWhNFAlyRdUaWAJ2sjAO32yOD7eR08Ez2QTM
+	 Q1390IWLe4lfY9vuAS4IRRhEEkBZejw/XcxM+8ueUzJ6obYKcRjxt6ZKs3QyXMWYOA
+	 iziszeAinZ+nPhqlLhc+F20oqkJzqzxrltZ7KkYJuB+7HXer2DxAeDu1YIJ+JyduG5
+	 VM+jNFHlsLUB5UIEaMseXMz22VUxYZlykmEziDmnsVkAy1NUdPaNr/ocv17UQOkkTe
+	 jPBin7Ojeet1g==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
+ [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 19 Mar 2024 01:35:58 +0300 (MSK)
+Received: from [172.28.64.112] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 19 Mar 2024 01:35:58 +0300
+Message-ID: <d4cfef9e-3cae-4f1a-90b3-33d5707596f9@salutedevices.com>
+Date: Tue, 19 Mar 2024 01:35:12 +0300
 MIME-Version: 1.0
-References: <570989e3-299f-4617-adde-b6b8d1e06277@cpp.in>
- <000901da7922$c81acee0$58506ca0$@opensource.cirrus.com>
-In-Reply-To: <000901da7922$c81acee0$58506ca0$@opensource.cirrus.com>
-From: aigilea <i@cpp.in>
-Date: Mon, 18 Mar 2024 14:12:01 +0300
-Message-ID: 
- <CABYkuAi9+XmXnJP0J+jvXkOaOGyK0pvRiFic1v2LmxkGo4ic0g@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: hda: cs35l41: Support HP Spectre x360 14 eu0000
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/25] clk: meson: a1: restrict an amount of 'hifi_pll'
+ params
+Content-Language: en-US
+To: Jerome Brunet <jbrunet@baylibre.com>
+CC: Neil Armstrong <neil.armstrong@linaro.org>, Michael Turquette
+	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob Herring
+	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+	Kevin Hilman <khilman@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+	<kernel@salutedevices.com>
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-2-jan.dakinevich@salutedevices.com>
+ <1j8r2jj24k.fsf@starbuckisacylon.baylibre.com>
+ <cbfd9c66-cca5-49f5-9468-43710c48518e@salutedevices.com>
+ <1jedc7hlg4.fsf@starbuckisacylon.baylibre.com>
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+In-Reply-To: <1jedc7hlg4.fsf@starbuckisacylon.baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: anton@cpp.in
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184250 [Mar 18 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 10 0.3.10
+ 53c821b925e16276b831986eabc71d60ab82ee60, {Tracking_smtp_not_equal_from},
+ {Tracking_from_domain_doesnt_match_to},
+ salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;smtp.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2,
+ FromAlignment: n, {Tracking_smtp_domain_mismatch},
+ {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo},
+ ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960,
+ bases: 2024/03/18 20:02:00 #24276844
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-MailFrom: YVDakinevich@sberdevices.ru
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 64IIKOK2XZEKYKKFUESPKE623Q5HIYBH
-X-Message-ID-Hash: 64IIKOK2XZEKYKKFUESPKE623Q5HIYBH
-X-Mailman-Approved-At: Wed, 20 Mar 2024 13:57:59 +0000
+Message-ID-Hash: UHNNISOAQAGFOPM3UTT24DAT7AJ7VJQF
+X-Message-ID-Hash: UHNNISOAQAGFOPM3UTT24DAT7AJ7VJQF
+X-Mailman-Approved-At: Wed, 20 Mar 2024 13:58:58 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/64IIKOK2XZEKYKKFUESPKE623Q5HIYBH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UHNNISOAQAGFOPM3UTT24DAT7AJ7VJQF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,75 +141,115 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi.
 
-Indeed, my bad, this patch is obsolete then. I will update and resend
-the second one (for the patch_realtek.c) as more quirks are needed.
 
-On Mon, Mar 18, 2024 at 1:55=E2=80=AFPM Stefan Binding
-<sbinding@opensource.cirrus.com> wrote:
->
-> Hi,
->
-> Support for this laptop was previously added in patch:
-> 33e5e648e631 ("ALSA: hda: cs35l41: Support additional HP Envy Models")
->
-> Is your branch out of date?
->
-> Thanks,
-> Stefan Binding
->
-> > -----Original Message-----
-> > From: Anthony I Gilea <i@cpp.in>
-> > Sent: Sunday, March 17, 2024 2:05 AM
-> > To: James Schulman <james.schulman@cirrus.com>; David Rhodes
-> > <david.rhodes@cirrus.com>; Richard Fitzgerald
-> > <rf@opensource.cirrus.com>; Jaroslav Kysela <perex@perex.cz>; Takashi
-> > Iwai <tiwai@suse.com>
-> > Cc: alsa-devel@alsa-project.org; patches@opensource.cirrus.com; linux-
-> > sound@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: [PATCH] ALSA: hda: cs35l41: Support HP Spectre x360 14 eu0000
-> >
-> > The new HP Spectre x360 has _DSD for CS35L41 amps in ACPI but
-> > reset-gpios and spk-id-gpios are merged into single Package of size 4 s=
-o
-> > _DSD parser fails to parse it.
-> >
-> > Overwrite broken _DSD with the correct configuration.
-> >
-> > Signed-off-by: Anthony I Gilea <i@cpp.in>
-> > ---
-> >   sound/pci/hda/cs35l41_hda_property.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --ruNp a/sound/pci/hda/cs35l41_hda_property.c
-> > b/sound/pci/hda/cs35l41_hda_property.c
-> >
-> > --- a/sound/pci/hda/cs35l41_hda_property.c    2024-03-10
-> > 23:38:09.000000000 +0300
-> > +++ b/sound/pci/hda/cs35l41_hda_property.c    2024-03-14
-> > 18:22:01.887566917 +0300
-> > @@ -64,6 +64,7 @@ static const struct cs35l41_config cs35l
-> >       { "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> >       { "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> >       { "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> > +     { "103C8C15", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> >       { "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 1, 2, 0, 1000, 4500, 24 },
-> >       { "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4500, 24 },
-> >       { "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4500, 24 },
-> > @@ -405,6 +406,7 @@ static const struct cs35l41_prop_model c
-> >       { "CSC3551", "103C8BE5", generic_dsd_config },
-> >       { "CSC3551", "103C8BE6", generic_dsd_config },
-> >       { "CSC3551", "103C8B3A", generic_dsd_config },
-> > +     { "CSC3551", "103C8C15", generic_dsd_config },
-> >       { "CSC3551", "104312AF", generic_dsd_config },
-> >       { "CSC3551", "10431433", generic_dsd_config },
-> >       { "CSC3551", "10431463", generic_dsd_config },
->
+On 3/18/24 13:17, Jerome Brunet wrote:
+> 
+> On Sun 17 Mar 2024 at 17:17, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+> 
+>> On 3/15/24 11:58, Jerome Brunet wrote:
+>>>
+>>> On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+>>>
+>>>> Existing values were insufficient to produce accurate clock for audio
+>>>> devices. New values are safe and most suitable to produce 48000Hz sample
+>>>> rate.
+>>>
+>>> The hifi pll is not about 48k only. I see no reason to restrict the PLL
+>>> to a single setting.
+>>>> You've provided no justification why the PLL driver can't reach the same
+>>> setting for 48k. The setting below is just the crude part. the fine
+>>> tuning is done done with the frac parameter so I doubt this provides a
+>>> more accurate rate.
+>>>
+>>
+>> You are right, it is not about 48k only. However, there are two issues.
+>>
+>> First, indeed, I could just extend the range of multipliers to 1..255.
+> 
+> Why 1..255 ? This is not what I'm pointing out
+> 
+> According to the datasheet - the range is 32 - 64, as currently
+> set in the driver.
+> 
+
+Could you point where in the doc the range 32..64 is documented?
+Documentation that I have may be not so complete, but I don't see there
+any mention about it.
+
+Anyway, range 32..64 of multipliers is not enough to produce accurate
+clock, and a need 128 for 48kHz.
+
+> The change you have provided request a multipler of 128/5 = 25,6
+> If you put assigned-rate = 614400000 in DT, I see no reason can find the
+> same solution on its own.
+> 
+
+The reasoning is following. I don't know why 32..64 range was declared
+for this clock, and whether it would be safe to extend it and include
+128, which is required for 48kHz. But I know, that multiplier=128 is
+safe and works fine (together divider=5).
+
+>> But I am unsure if hifi_pll is able to handle whole range of
+>> mulptipliers. The value 128 is taken from Amlogic's branch, and I am
+>> pretty sure that it works.
+> 
+>>
+>> Second, unfortunately frac parameter currently doesn't work. When frac
+>> is used enabling of hifi_pll fails in meson_clk_pll_wait_lock(). I see
+>> it when try to use 44100Hz and multipliers' range is set to 1..255. So,
+>> support of other rates than 48k requires extra effort.
+> 
+> Then your change is even more problematic because it certainly does not
+> disable frac ... which you say is broken.
+> 
+> That parameter should be removed with a proper comment explaining why
+> you are disabling it. That type a limitation / known issue should be
+> mentionned in your change.
+> 
+
+Handling of frac should not be removed, it should be fixed to achieve
+another rates. But that is not the goal of this commit.
+
+
+>>
+>>>>
+>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+>>>> ---
+>>>>  drivers/clk/meson/a1-pll.c | 8 ++++----
+>>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
+>>>> index 4325e8a6a3ef..00e06d03445b 100644
+>>>> --- a/drivers/clk/meson/a1-pll.c
+>>>> +++ b/drivers/clk/meson/a1-pll.c
+>>>> @@ -74,9 +74,9 @@ static struct clk_regmap fixed_pll = {
+>>>>  	},
+>>>>  };
+>>>>  
+>>>> -static const struct pll_mult_range hifi_pll_mult_range = {
+>>>> -	.min = 32,
+>>>> -	.max = 64,
+>>>> +static const struct pll_params_table hifi_pll_params_table[] = {
+>>>> +	PLL_PARAMS(128, 5),
+>>>> +	{ },
+>>>>  };
+>>>>  
+>>>>  static const struct reg_sequence hifi_init_regs[] = {
+>>>> @@ -124,7 +124,7 @@ static struct clk_regmap hifi_pll = {
+>>>>  			.shift   = 6,
+>>>>  			.width   = 1,
+>>>>  		},
+>>>> -		.range = &hifi_pll_mult_range,
+>>>> +		.table = hifi_pll_params_table,
+>>>>  		.init_regs = hifi_init_regs,
+>>>>  		.init_count = ARRAY_SIZE(hifi_init_regs),
+>>>>  	},
+>>>
+>>>
+> 
+> 
+
+-- 
+Best regards
+Jan Dakinevich
