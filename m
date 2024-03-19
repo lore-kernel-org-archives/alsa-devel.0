@@ -4,76 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D229C54E60
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Mar 2024 08:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 044D1C54E60
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Mar 2024 08:29:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CA302409;
-	Tue, 19 Mar 2024 09:18:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CA302409
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8664D2BC4;
+	Tue, 19 Mar 2024 09:29:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8664D2BC4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710836330;
-	bh=o0K75WfTF9xbYZBWmxytSLkjKCoVBrvub2OJ04FW8hg=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=pnaiSH2ZTteOEWkeaR+nsu5TjUS/nfBwva/gRNbAZTYX3ZRrFqwTnClI4X8y9S+GR
-	 QGnPohWrjX9RZ1aeJuPhWwaMFnv96h5rLfB4MkjKN1RBaZ0JaBoin2zwfOqt/y6qFO
-	 wK1w0ttR9IT+HEZUgCSHRmx65upK8/j25ZwUNc4c=
+	s=default; t=1710836975;
+	bh=wEOu2J6N3RicgE6VdikhaGkAHK9MlBxWFNBPisxCRwo=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=LZoRMggg5NGWl6ezTtWoSeYU3MstaDRiILwFQPZ3UU5dxGCzZSr8bzQLOC1VTMAgV
+	 iQrN6EzTq12okwemsk+0OgFEYLRgjBrq/j/iDslWUmG79eSaq21TsIxacvQqf4GWu+
+	 WrkrZBYSXelrRWqaulzOeZqlw5aHUplVV2R2tqb4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7FC6EF806E8; Tue, 19 Mar 2024 09:16:25 +0100 (CET)
+	id 8B317F80564; Tue, 19 Mar 2024 09:29:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38F85F805BE;
-	Tue, 19 Mar 2024 09:16:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8BE7F805A9;
+	Tue, 19 Mar 2024 09:29:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABC3DF80093; Tue, 19 Mar 2024 09:12:16 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 7F0BDF804E7; Tue, 19 Mar 2024 09:28:55 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1FF3EF8055B
-	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2024 09:07:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FF3EF8055B
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 44FE01A14CA;
-	Tue, 19 Mar 2024 09:07:52 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D66131A0969;
-	Tue, 19 Mar 2024 09:07:51 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C94151820F76;
-	Tue, 19 Mar 2024 16:07:49 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: hverkuil@xs4all.nl,
-	sakari.ailus@iki.fi,
-	tfiga@chromium.org,
-	m.szyprowski@samsung.com,
-	mchehab@kernel.org,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v15 02/16] ASoC: fsl_asrc: define functions for memory to
- memory usage
-Date: Tue, 19 Mar 2024 15:51:00 +0800
-Message-Id: <1710834674-3285-3-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: W6G6A7XG3A6OIYHZNCGHK4HDHW6RZ64F
-X-Message-ID-Hash: W6G6A7XG3A6OIYHZNCGHK4HDHW6RZ64F
-X-MailFrom: shengjiu.wang@nxp.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3EF22F80093
+	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2024 09:28:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EF22F80093
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=baylibre-com.20230601.gappssmtp.com
+ header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
+ header.s=20230601 header.b=J4yuOR0g
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-41461c256c4so5873335e9.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 19 Mar 2024 01:28:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710836913;
+ x=1711441713; darn=alsa-project.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=hgFFAPN7B2IdqbSbHOUWcvyqPwWPHdQWlex71RuQvmY=;
+        b=J4yuOR0gBz2gH4VN/Cz2dhINgC52OUdiYUThjStMgxG5KE13TVeFJa3RQWL33iwJST
+         kG2ZBkP4ubi8TbCagqxrgJnVFf9k9/OUcc0VHxVVcICoWQHnyeKZFylEqEFyGc2pGq18
+         uE1ehwuPfFSXzJpexeU0IdwjigEupfCcwVxqPgl+fE2oSyBwu2C7E/E9TtCPLI9/QLB2
+         Se2pP2dd5eEUmR+rbp+fzMscpudVtLW5D3bVVN6KLwuYeqY2yXto6fcWFyHBVHL3kGAv
+         v2L1b6kxjY9sBnq+W73EA4ziB9dqq/lnvqp5t7GlZshI8szP/iMqQFCp7kO2XRmiVVw/
+         jPGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710836913; x=1711441713;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hgFFAPN7B2IdqbSbHOUWcvyqPwWPHdQWlex71RuQvmY=;
+        b=dKsid86trZH7ead27NKsIOZppTu7Y9KUbvr9AXlwBi0HcnxaepdrO6v83GxPL7cWcq
+         1uY0PLlZqfAzuXWReTQqPjoe6DnK5nzzwl8cA0303XZ289h4QI49bSUFgllxDNp+DPLE
+         /pYrQZbWpeMBbfnWnVFz4O7wo5i8BxHBhGOannzP6BP8dyq0AtpRqXcxwfj38vM4aqQN
+         Akujgw0zg5M6F4B3o6O9KNdK+kFhogVrSLJa/0utK4XQPOc7x6uR88dbHQVHuTUus5Yb
+         A3VVtgcUR0LZGLdwQS7GHOZN9ecDzqSvXc38YlJo8YjOsIgMR5qY9QOsyjw0sbnUHAgy
+         MOPQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWht4rnxidHqOQAK94CAM0L46s/LnHkeDldkA+bdmu0BuyGRAXiqUizGoEG7L62WVodHhI+5X5ll3F5Ovd5ljCFT8sVI7ZEfhLdzIE=
+X-Gm-Message-State: AOJu0Yxbu2XdV4sYJbVd/skI8ZzHb/Z4C3oH8t3Kcr99MjNujStQuA0J
+	LSAB1VNjmHe3UMRMGQpzEWKRJ8l5aPUpbakWrUWgbOmxVGUtgrRJzIdcBkSu4t8=
+X-Google-Smtp-Source: 
+ AGHT+IF8VeQ4xCRzE1F2nR3lm7Kyoo5lbqorbXz3zLlgIR0czhWjHZf4ZYDwVRGEa2XhkhvSTql6LA==
+X-Received: by 2002:adf:a358:0:b0:341:8666:ce2e with SMTP id
+ d24-20020adfa358000000b003418666ce2emr913294wrb.0.1710836912716;
+        Tue, 19 Mar 2024 01:28:32 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:a757:fdcf:e3d7:eaed])
+        by smtp.gmail.com with ESMTPSA id
+ ay25-20020a5d6f19000000b0033e3cb02cefsm11883313wrb.86.2024.03.19.01.28.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 01:28:32 -0700 (PDT)
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-2-jan.dakinevich@salutedevices.com>
+ <1j8r2jj24k.fsf@starbuckisacylon.baylibre.com>
+ <cbfd9c66-cca5-49f5-9468-43710c48518e@salutedevices.com>
+ <1jedc7hlg4.fsf@starbuckisacylon.baylibre.com>
+ <d4cfef9e-3cae-4f1a-90b3-33d5707596f9@salutedevices.com>
+User-agent: mu4e 1.10.8; emacs 29.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Kevin
+ Hilman <khilman@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
+ kernel@salutedevices.com
+Subject: Re: [PATCH 01/25] clk: meson: a1: restrict an amount of 'hifi_pll'
+ params
+Date: Tue, 19 Mar 2024 09:21:27 +0100
+In-reply-to: <d4cfef9e-3cae-4f1a-90b3-33d5707596f9@salutedevices.com>
+Message-ID: <1jsf0mfwwg.fsf@starbuckisacylon.baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Message-ID-Hash: 6FITQRESFVKONLX35NCKLNN5CCEI2LL6
+X-Message-ID-Hash: 6FITQRESFVKONLX35NCKLNN5CCEI2LL6
+X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W6G6A7XG3A6OIYHZNCGHK4HDHW6RZ64F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6FITQRESFVKONLX35NCKLNN5CCEI2LL6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,254 +137,141 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ASRC can be used on memory to memory case, define several
-functions for m2m usage.
 
-m2m_prepare: prepare for the start step
-m2m_start: the start step
-m2m_unprepare: unprepare for stop step, optional
-m2m_stop: stop step
-m2m_check_format: check format is supported or not
-m2m_calc_out_len: calculate output length according to input length
-m2m_get_maxburst: burst size for dma
-m2m_pair_suspend: suspend function of pair, optional.
-m2m_pair_resume: resume function of pair
-get_output_fifo_size: get remaining data size in FIFO
+On Tue 19 Mar 2024 at 01:35, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/fsl/fsl_asrc.c        | 126 ++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_asrc.h        |   2 +
- sound/soc/fsl/fsl_asrc_common.h |  37 ++++++++++
- 3 files changed, 165 insertions(+)
+> On 3/18/24 13:17, Jerome Brunet wrote:
+>> 
+>> On Sun 17 Mar 2024 at 17:17, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+>> 
+>>> On 3/15/24 11:58, Jerome Brunet wrote:
+>>>>
+>>>> On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+>>>>
+>>>>> Existing values were insufficient to produce accurate clock for audio
+>>>>> devices. New values are safe and most suitable to produce 48000Hz sample
+>>>>> rate.
+>>>>
+>>>> The hifi pll is not about 48k only. I see no reason to restrict the PLL
+>>>> to a single setting.
+>>>>> You've provided no justification why the PLL driver can't reach the same
+>>>> setting for 48k. The setting below is just the crude part. the fine
+>>>> tuning is done done with the frac parameter so I doubt this provides a
+>>>> more accurate rate.
+>>>>
+>>>
+>>> You are right, it is not about 48k only. However, there are two issues.
+>>>
+>>> First, indeed, I could just extend the range of multipliers to 1..255.
+>> 
+>> Why 1..255 ? This is not what I'm pointing out
+>> 
+>> According to the datasheet - the range is 32 - 64, as currently
+>> set in the driver.
+>> 
+>
+> Could you point where in the doc the range 32..64 is documented?
+> Documentation that I have may be not so complete, but I don't see there
+> any mention about it.
+>
+> Anyway, range 32..64 of multipliers is not enough to produce accurate
+> clock, and a need 128 for 48kHz.
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index b793263291dc..7d8643ee0ba0 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -1063,6 +1063,124 @@ static int fsl_asrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
- 	return REG_ASRDx(dir, index);
- }
- 
-+/* Get sample numbers in FIFO */
-+static unsigned int fsl_asrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	enum asrc_pair_index index = pair->index;
-+	u32 val;
-+
-+	regmap_read(asrc->regmap, REG_ASRFST(index), &val);
-+
-+	val &= ASRFSTi_OUTPUT_FIFO_MASK;
-+
-+	return val >> ASRFSTi_OUTPUT_FIFO_SHIFT;
-+}
-+
-+static int fsl_asrc_m2m_prepare(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct device *dev = &asrc->pdev->dev;
-+	struct asrc_config config;
-+	int ret;
-+
-+	/* fill config */
-+	config.pair = pair->index;
-+	config.channel_num = pair->channels;
-+	config.input_sample_rate = pair->rate[IN];
-+	config.output_sample_rate = pair->rate[OUT];
-+	config.input_format = pair->sample_format[IN];
-+	config.output_format = pair->sample_format[OUT];
-+	config.inclk = INCLK_NONE;
-+	config.outclk = OUTCLK_ASRCK1_CLK;
-+
-+	pair_priv->config = &config;
-+	ret = fsl_asrc_config_pair(pair, true);
-+	if (ret) {
-+		dev_err(dev, "failed to config pair: %d\n", ret);
-+		return ret;
-+	}
-+
-+	pair->first_convert = 1;
-+
-+	return 0;
-+}
-+
-+static int fsl_asrc_m2m_start(struct fsl_asrc_pair *pair)
-+{
-+	if (pair->first_convert) {
-+		fsl_asrc_start_pair(pair);
-+		pair->first_convert = 0;
-+	}
-+	/*
-+	 * Clear DMA request during the stall state of ASRC:
-+	 * During STALL state, the remaining in input fifo would never be
-+	 * smaller than the input threshold while the output fifo would not
-+	 * be bigger than output one. Thus the DMA request would be cleared.
-+	 */
-+	fsl_asrc_set_watermarks(pair, ASRC_FIFO_THRESHOLD_MIN,
-+				ASRC_FIFO_THRESHOLD_MAX);
-+
-+	/* Update the real input threshold to raise DMA request */
-+	fsl_asrc_set_watermarks(pair, ASRC_M2M_INPUTFIFO_WML,
-+				ASRC_M2M_OUTPUTFIFO_WML);
-+
-+	return 0;
-+}
-+
-+static int fsl_asrc_m2m_stop(struct fsl_asrc_pair *pair)
-+{
-+	if (!pair->first_convert) {
-+		fsl_asrc_stop_pair(pair);
-+		pair->first_convert = 1;
-+	}
-+
-+	return 0;
-+}
-+
-+/* calculate capture data length according to output data length and sample rate */
-+static int fsl_asrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
-+{
-+	unsigned int in_width, out_width;
-+	unsigned int channels = pair->channels;
-+	unsigned int in_samples, out_samples;
-+	unsigned int out_length;
-+
-+	in_width = snd_pcm_format_physical_width(pair->sample_format[IN]) / 8;
-+	out_width = snd_pcm_format_physical_width(pair->sample_format[OUT]) / 8;
-+
-+	in_samples = input_buffer_length / in_width / channels;
-+	out_samples = pair->rate[OUT] * in_samples / pair->rate[IN];
-+	out_length = (out_samples - ASRC_OUTPUT_LAST_SAMPLE) * out_width * channels;
-+
-+	return out_length;
-+}
-+
-+static int fsl_asrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct fsl_asrc_priv *asrc_priv = asrc->private;
-+	int wml = (dir == IN) ? ASRC_M2M_INPUTFIFO_WML : ASRC_M2M_OUTPUTFIFO_WML;
-+
-+	if (!asrc_priv->soc->use_edma)
-+		return wml * pair->channels;
-+	else
-+		return 1;
-+}
-+
-+static int fsl_asrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	int i;
-+
-+	for (i = 0; i < pair->channels * 4; i++)
-+		regmap_write(asrc->regmap, REG_ASRDI(pair->index), 0);
-+
-+	pair->first_convert = 1;
-+	return 0;
-+}
-+
- static int fsl_asrc_runtime_resume(struct device *dev);
- static int fsl_asrc_runtime_suspend(struct device *dev);
- 
-@@ -1147,6 +1265,14 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 	asrc->get_fifo_addr = fsl_asrc_get_fifo_addr;
- 	asrc->pair_priv_size = sizeof(struct fsl_asrc_pair_priv);
- 
-+	asrc->m2m_prepare = fsl_asrc_m2m_prepare;
-+	asrc->m2m_start = fsl_asrc_m2m_start;
-+	asrc->m2m_stop = fsl_asrc_m2m_stop;
-+	asrc->get_output_fifo_size = fsl_asrc_get_output_fifo_size;
-+	asrc->m2m_calc_out_len = fsl_asrc_m2m_calc_out_len;
-+	asrc->m2m_get_maxburst = fsl_asrc_m2m_get_maxburst;
-+	asrc->m2m_pair_resume = fsl_asrc_m2m_pair_resume;
-+
- 	if (of_device_is_compatible(np, "fsl,imx35-asrc")) {
- 		asrc_priv->clk_map[IN] = input_clk_map_imx35;
- 		asrc_priv->clk_map[OUT] = output_clk_map_imx35;
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 86d2422ad606..1c492eb237f5 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -12,6 +12,8 @@
- 
- #include  "fsl_asrc_common.h"
- 
-+#define ASRC_M2M_INPUTFIFO_WML		0x4
-+#define ASRC_M2M_OUTPUTFIFO_WML		0x2
- #define ASRC_DMA_BUFFER_NUM		2
- #define ASRC_INPUTFIFO_THRESHOLD	32
- #define ASRC_OUTPUTFIFO_THRESHOLD	32
-diff --git a/sound/soc/fsl/fsl_asrc_common.h b/sound/soc/fsl/fsl_asrc_common.h
-index 7e1c13ca37f1..3b53d366182f 100644
---- a/sound/soc/fsl/fsl_asrc_common.h
-+++ b/sound/soc/fsl/fsl_asrc_common.h
-@@ -34,6 +34,12 @@ enum asrc_pair_index {
-  * @pos: hardware pointer position
-  * @req_dma_chan: flag to release dev_to_dev chan
-  * @private: pair private area
-+ * @complete: dma task complete
-+ * @sample_format: format of m2m
-+ * @rate: rate of m2m
-+ * @buf_len: buffer length of m2m
-+ * @first_convert: start of conversion
-+ * @req_pair: flag for request pair
-  */
- struct fsl_asrc_pair {
- 	struct fsl_asrc *asrc;
-@@ -49,6 +55,14 @@ struct fsl_asrc_pair {
- 	bool req_dma_chan;
- 
- 	void *private;
-+
-+	/* used for m2m */
-+	struct completion complete[2];
-+	snd_pcm_format_t sample_format[2];
-+	unsigned int rate[2];
-+	unsigned int buf_len[2];
-+	unsigned int first_convert;
-+	bool req_pair;
- };
- 
- /**
-@@ -72,6 +86,16 @@ struct fsl_asrc_pair {
-  * @request_pair: function pointer
-  * @release_pair: function pointer
-  * @get_fifo_addr: function pointer
-+ * @m2m_prepare: function pointer
-+ * @m2m_start: function pointer
-+ * @m2m_unprepare: function pointer
-+ * @m2m_stop: function pointer
-+ * @m2m_calc_out_len: function pointer
-+ * @m2m_get_maxburst: function pointer
-+ * @m2m_pair_suspend: function pointer
-+ * @m2m_pair_resume: function pointer
-+ * @m2m_set_ratio_mod: function pointer
-+ * @get_output_fifo_size: function pointer
-  * @pair_priv_size: size of pair private struct.
-  * @private: private data structure
-  */
-@@ -97,6 +121,19 @@ struct fsl_asrc {
- 	int (*request_pair)(int channels, struct fsl_asrc_pair *pair);
- 	void (*release_pair)(struct fsl_asrc_pair *pair);
- 	int (*get_fifo_addr)(u8 dir, enum asrc_pair_index index);
-+
-+	int (*m2m_prepare)(struct fsl_asrc_pair *pair);
-+	int (*m2m_start)(struct fsl_asrc_pair *pair);
-+	int (*m2m_unprepare)(struct fsl_asrc_pair *pair);
-+	int (*m2m_stop)(struct fsl_asrc_pair *pair);
-+
-+	int (*m2m_calc_out_len)(struct fsl_asrc_pair *pair, int input_buffer_length);
-+	int (*m2m_get_maxburst)(u8 dir, struct fsl_asrc_pair *pair);
-+	int (*m2m_pair_suspend)(struct fsl_asrc_pair *pair);
-+	int (*m2m_pair_resume)(struct fsl_asrc_pair *pair);
-+	int (*m2m_set_ratio_mod)(struct fsl_asrc_pair *pair, int val);
-+
-+	unsigned int (*get_output_fifo_size)(struct fsl_asrc_pair *pair);
- 	size_t pair_priv_size;
- 
- 	void *private;
+A1 datasheet v0.4 - Section 7.6.3.2
+
+>
+>> The change you have provided request a multipler of 128/5 = 25,6
+>> If you put assigned-rate = 614400000 in DT, I see no reason can find the
+>> same solution on its own.
+>> 
+>
+> The reasoning is following. I don't know why 32..64 range was declared
+> for this clock, and whether it would be safe to extend it and include
+> 128, which is required for 48kHz. But I know, that multiplier=128 is
+> safe and works fine (together divider=5).
+
+You have not answer my remark.
+Mainline does not do everything like the AML SDK does. Saying you are
+copying it because you know it works (in your opinion) is not good
+enough.
+
+I'm telling you that your hack is not necessary and so far, you have not
+demonstrated that it is.
+
+Also the multiplier range in m/n, not m alone.
+
+>
+>>> But I am unsure if hifi_pll is able to handle whole range of
+>>> mulptipliers. The value 128 is taken from Amlogic's branch, and I am
+>>> pretty sure that it works.
+>> 
+>>>
+>>> Second, unfortunately frac parameter currently doesn't work. When frac
+>>> is used enabling of hifi_pll fails in meson_clk_pll_wait_lock(). I see
+>>> it when try to use 44100Hz and multipliers' range is set to 1..255. So,
+>>> support of other rates than 48k requires extra effort.
+>> 
+>> Then your change is even more problematic because it certainly does not
+>> disable frac ... which you say is broken.
+>> 
+>> That parameter should be removed with a proper comment explaining why
+>> you are disabling it. That type a limitation / known issue should be
+>> mentionned in your change.
+>> 
+>
+> Handling of frac should not be removed, it should be fixed to achieve
+> another rates. But that is not the goal of this commit.
+
+You argued that frac was broken and that was partly why you introduced
+this work around. I'm telling you this approach is incorrect.
+
+So either :
+* Remove frac for now, until it is fixed, because it is broken and add
+  comment clearly explaining that quirk.
+* Or fix it now.
+
+Your choice.
+
+>
+>
+>>>
+>>>>>
+>>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+>>>>> ---
+>>>>>  drivers/clk/meson/a1-pll.c | 8 ++++----
+>>>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
+>>>>> index 4325e8a6a3ef..00e06d03445b 100644
+>>>>> --- a/drivers/clk/meson/a1-pll.c
+>>>>> +++ b/drivers/clk/meson/a1-pll.c
+>>>>> @@ -74,9 +74,9 @@ static struct clk_regmap fixed_pll = {
+>>>>>  	},
+>>>>>  };
+>>>>>  
+>>>>> -static const struct pll_mult_range hifi_pll_mult_range = {
+>>>>> -	.min = 32,
+>>>>> -	.max = 64,
+>>>>> +static const struct pll_params_table hifi_pll_params_table[] = {
+>>>>> +	PLL_PARAMS(128, 5),
+>>>>> +	{ },
+>>>>>  };
+>>>>>  
+>>>>>  static const struct reg_sequence hifi_init_regs[] = {
+>>>>> @@ -124,7 +124,7 @@ static struct clk_regmap hifi_pll = {
+>>>>>  			.shift   = 6,
+>>>>>  			.width   = 1,
+>>>>>  		},
+>>>>> -		.range = &hifi_pll_mult_range,
+>>>>> +		.table = hifi_pll_params_table,
+>>>>>  		.init_regs = hifi_init_regs,
+>>>>>  		.init_count = ARRAY_SIZE(hifi_init_regs),
+>>>>>  	},
+>>>>
+>>>>
+>> 
+>> 
+
+
 -- 
-2.34.1
-
+Jerome
