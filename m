@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEDB6C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78E8FC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:06:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE2022BCA;
-	Wed, 20 Mar 2024 15:06:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE2022BCA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 241092BC2;
+	Wed, 20 Mar 2024 15:06:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 241092BC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710943572;
-	bh=cqQmAAKboMbZmKo+i9mbY+ND/MIrvpSu2I53XEJcpYM=;
+	s=default; t=1710943596;
+	bh=45h0HhJiO6jp7P82PjgjBna68F8F1pstnYM0bANAq60=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jn9JLbdxe8Mj7trmYPGRIc6Sf05AN202Oq2/a4ZjRIAN785rUguRYXLhbWizrQQB6
-	 PCbNt5ycniMKiMhMcBAX22tVXsjbYAC8AQCiQuH5LequbtMHzCdE6yXJ1VYjZmfFVs
-	 nI83S7ZdqKdPGxNyrmZUutnAitJ1Xp5ndgnG8FVY=
+	b=eAwXEKO6XswGfG1S1O+ypG+J0t99fkddaglnqAeY8ZgaIXPWwhox+3EUtqnd0y94K
+	 wkJLtBTmeR0LZ0rbpvIDH/RVlIYhq4rWdrYbpsb9l3FaCbgnE1PssCYbxpWukBMwpr
+	 wjsTQEUNJgQsLJkhF2sDxtw9NvZotnN/SMmmYihY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78195F89727; Wed, 20 Mar 2024 15:00:53 +0100 (CET)
+	id 24BA4F89736; Wed, 20 Mar 2024 15:00:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A153F89721;
-	Wed, 20 Mar 2024 15:00:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBB75F89730;
+	Wed, 20 Mar 2024 15:00:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3A84F8055B; Wed, 20 Mar 2024 08:54:37 +0100 (CET)
+	id 43D9EF80548; Wed, 20 Mar 2024 08:54:40 +0100 (CET)
 Received: from mail78-63.sinamail.sina.com.cn (mail78-63.sinamail.sina.com.cn
  [219.142.78.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 36A61F8010B
-	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 08:54:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36A61F8010B
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9A16F802DB
+	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 08:54:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9A16F802DB
 Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
 	by sina.net (10.75.30.239) with ESMTP
-	id 65FA962300035F2F; Wed, 20 Mar 2024 15:54:13 +0800 (CST)
+	id 65FA962300035F2F; Wed, 20 Mar 2024 15:54:15 +0800 (CST)
 X-Sender: zhangyi@everest-semi.com
 X-Auth-ID: zhangyi@everest-semi.com
 Authentication-Results: sina.net;
 	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 0845CDC1120146C2846E3F2090782A4F
-X-SMAIL-UIID: 0845CDC1120146C2846E3F2090782A4F-20240320-155413
+X-SMAIL-MID: 6FD757475D4E4CF5987442288E09ABDF
+X-SMAIL-UIID: 6FD757475D4E4CF5987442288E09ABDF-20240320-155415
 From: Zhang Yi <zhangyi@everest-semi.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
@@ -54,9 +54,9 @@ Cc: tiwai@suse.com,
 	yangxiaohua@everest-semi.com,
 	zhuning@everest-semi.com,
 	zhangyi@everest-semi.com
-Subject: [PATCH 1/2] ASoC: codecs: ES8326: Reducing power consumption
-Date: Wed, 20 Mar 2024 15:54:08 +0800
-Message-Id: <20240320075409.3539-2-zhangyi@everest-semi.com>
+Subject: [PATCH 2/2] ASoC: codecs: ES8326: Delete unused REG_SUPPLY
+Date: Wed, 20 Mar 2024 15:54:09 +0800
+Message-Id: <20240320075409.3539-3-zhangyi@everest-semi.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240320075409.3539-1-zhangyi@everest-semi.com>
 References: <20240320075409.3539-1-zhangyi@everest-semi.com>
@@ -66,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 246MY3ZQYBQMRWUGIJQ64DYUVWOEWZT2
-X-Message-ID-Hash: 246MY3ZQYBQMRWUGIJQ64DYUVWOEWZT2
-X-Mailman-Approved-At: Wed, 20 Mar 2024 13:59:17 +0000
+Message-ID-Hash: RFJQJJGEZTBUBQ2VUGJHNVOXWJK7RP46
+X-Message-ID-Hash: RFJQJJGEZTBUBQ2VUGJHNVOXWJK7RP46
+X-Mailman-Approved-At: Wed, 20 Mar 2024 13:59:18 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/246MY3ZQYBQMRWUGIJQ64DYUVWOEWZT2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RFJQJJGEZTBUBQ2VUGJHNVOXWJK7RP46/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,89 +83,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-For lower power consumption during hibernation, the configuration of
-es8326_suspend and es8326_remove will be adjusted.
-Adding es8326_i2c_shutdown and es8326_i2c_remove to cover different
-situations
+REG_SUPPLY mutes the DAC when switching between
+HDMI and speaker, so remove it to fix the mute issues
 
 Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
 ---
- sound/soc/codecs/es8326.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+ sound/soc/codecs/es8326.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 15289dadafea..5c89323035a2 100755
+index 5c89323035a2..5f6cef25ac5e 100755
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
-@@ -1072,12 +1072,13 @@ static int es8326_suspend(struct snd_soc_component *component)
- 	es8326->calibrated = false;
- 	regmap_write(es8326->regmap, ES8326_CLK_CTL, ES8326_CLK_OFF);
- 	regcache_cache_only(es8326->regmap, true);
--	regcache_mark_dirty(es8326->regmap);
+@@ -292,11 +292,6 @@ static const struct snd_soc_dapm_widget es8326_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("LHPMIX", ES8326_DAC2HPMIX, 7, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("RHPMIX", ES8326_DAC2HPMIX, 3, 0, NULL, 0),
  
- 	/* reset register value to default */
- 	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
- 	usleep_range(1000, 3000);
- 	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
-+	
-+	regcache_mark_dirty(es8326->regmap);
- 	return 0;
- }
- 
-@@ -1163,8 +1164,13 @@ static int es8326_set_jack(struct snd_soc_component *component,
- 
- static void es8326_remove(struct snd_soc_component *component)
- {
-+	struct es8326_priv *es8326 = snd_soc_component_get_drvdata(component);
-+
- 	es8326_disable_jack_detect(component);
- 	es8326_set_bias_level(component, SND_SOC_BIAS_OFF);
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
-+	usleep_range(1000, 3000);
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
- }
- 
- static const struct snd_soc_component_driver soc_component_dev_es8326 = {
-@@ -1236,6 +1242,30 @@ static int es8326_i2c_probe(struct i2c_client *i2c)
- 					&es8326_dai, 1);
- }
- 
-+
-+static void es8326_i2c_shutdown(struct i2c_client *i2c)
-+{
-+	struct snd_soc_component *component;
-+	struct es8326_priv *es8326;
-+
-+	dev_dbg(component->dev, "Enter into %s\n", __func__);
-+	es8326 = i2c_get_clientdata(i2c);
-+	component = es8326->component;
-+	cancel_delayed_work_sync(&es8326->jack_detect_work);
-+	cancel_delayed_work_sync(&es8326->button_press_work);
-+    
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
-+	usleep_range(1000, 3000);
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
-+
-+	return;
-+}
-+
-+static void es8326_i2c_remove(struct i2c_client *i2c)
-+{
-+	es8326_i2c_shutdown(i2c);
-+}
-+
- static const struct i2c_device_id es8326_i2c_id[] = {
- 	{"es8326", 0 },
- 	{}
-@@ -1265,6 +1295,8 @@ static struct i2c_driver es8326_i2c_driver = {
- 		.of_match_table = of_match_ptr(es8326_of_match),
- 	},
- 	.probe = es8326_i2c_probe,
-+	.shutdown = es8326_i2c_shutdown,
-+	.remove = es8326_i2c_remove,
- 	.id_table = es8326_i2c_id,
+-	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPOR Supply", ES8326_HP_CAL,
+-			 4, 7, 0, 0),
+-	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPOL Supply", ES8326_HP_CAL,
+-			 0, 7, 0, 0),
+-
+ 	SND_SOC_DAPM_OUTPUT("HPOL"),
+ 	SND_SOC_DAPM_OUTPUT("HPOR"),
  };
- module_i2c_driver(es8326_i2c_driver);
+@@ -316,9 +311,6 @@ static const struct snd_soc_dapm_route es8326_dapm_routes[] = {
+ 	{"LHPMIX", NULL, "Left DAC"},
+ 	{"RHPMIX", NULL, "Right DAC"},
+ 
+-	{"HPOR", NULL, "HPOR Supply"},
+-	{"HPOL", NULL, "HPOL Supply"},
+-
+ 	{"HPOL", NULL, "LHPMIX"},
+ 	{"HPOR", NULL, "RHPMIX"},
+ };
 -- 
 2.17.1
 
