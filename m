@@ -4,61 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 556B5C54E58
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Mar 2024 22:32:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF9A1CD11BF
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Mar 2024 09:47:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 092CE14EB;
-	Sat, 23 Mar 2024 23:32:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 092CE14EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51DCFF94;
+	Sun, 24 Mar 2024 10:46:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51DCFF94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711233159;
-	bh=e7XrIYqUqSQf/337dUz4Po5PRhWTkUHpavYg4yaEPVk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=acvAuFCjHTNIcclopylTtlBOztzFcwKSVHhyLMCMhJoqLt+A7fPlxG4v8SdTeu16E
-	 U/NCoyPwRL6bPimiGzYczwaLGAQAy2uMzLuhGx26qU7eGGyjbURPT6iGUufwoo2H13
-	 JLzPs3ZRE0oMFMkfUdrvqJANAdSjPboYtvY4Ym/c=
+	s=default; t=1711273629;
+	bh=LHwss1UfxUBEAp3CFFExtt9wMa+r76biYoHKBFUaqZY=;
+	h=Date:To:Cc:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=nBusSXr5eWB1ZbXcTsGjOR0uLqCOhWOqfkLOepX3ElYu/GVhea/iUMzwUD3hja8lp
+	 NLajQa6pfpKrzAZoGFxfP8bRRMgqQ6tWs6jxGpudnYnPO6mikXZ6bS8IhavvBZRIHI
+	 ORrhl9OvxveQkKnnZhM40/dUoWbHxoZZuq7Onbkk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D13DEF8057D; Sat, 23 Mar 2024 23:32:07 +0100 (CET)
+	id 9D31FF805B6; Sun, 24 Mar 2024 10:46:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AE26F8055B;
-	Sat, 23 Mar 2024 23:32:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 863BFF80564;
+	Sun, 24 Mar 2024 10:46:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8EB4CF804E7; Sat, 23 Mar 2024 23:29:49 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03FF1F8010B
-	for <alsa-devel@alsa-project.org>; Sat, 23 Mar 2024 23:29:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03FF1F8010B
-Content-Type: text/plain; charset="utf-8"
+	id 00770F804E7; Wed, 20 Mar 2024 21:56:18 +0100 (CET)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com
+ [IPv6:2607:f8b0:4864:20::82d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51888F80088
+	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 21:56:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51888F80088
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=HkTm3MbW
+Received: by mail-qt1-x82d.google.com with SMTP id
+ d75a77b69052e-430c41f3f89so3405771cf.0
+        for <alsa-devel@alsa-project.org>;
+ Wed, 20 Mar 2024 13:56:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710968171; x=1711572971;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y4ueY9XbTZPj7om76ZgH1Y67AlyzZ/RM7Zo4J78p4PI=;
+        b=HkTm3MbWbk7fVJ5GrbHiy914SmrGgNIEhhMX9rA8svk/Yv9DUAV9Bzm819SleE9kmO
+         zdxQlos8WWLS9Pp/G30h2Bb0BC6Xw9onw/RXbNa1lhILbh4yzzAA9kq7zjtj3WXAHwCM
+         QJn4wvB3RQR1YjwKql7CciqGCI0e/jMoZDjbYq0Y0/AV2hC0wPpTj+/PuD2nU5bOtPWY
+         +GHGtbHUYM/P1V8A7Nd8LZ1YDsl90cgkfSLnVpTFrOrUj1XvBKYwuwSP6Xrq/UGMBFtJ
+         dejCVvFqaqo/C8Md5m7ii7zffu+DLVxrQqVMwm/F87EqoDhUdk5+tWTgWbP/a1YuEoAb
+         fYSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710968171; x=1711572971;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=y4ueY9XbTZPj7om76ZgH1Y67AlyzZ/RM7Zo4J78p4PI=;
+        b=P+aH3kYgM8+VnXDYFCVDbCt4n77zsqebmdfKFYnWqUYPuFUQQ3XzSEgn548pOG9FqG
+         T8Dvc+4aTJ1AenLMICnPgWF8ylb6/L3OOWiuW60snhbDrTSqU2Ql5glSwvP5zmOljxsb
+         ZzunVolPAfyVjC4odkyXfHwHoKFiEYvuI/+AWG0LnjIQNX/uXKqOHljUDlXPAqCoMtOd
+         EAKB5Ld9G8u6AdyWvhVKTnUet9PecSacmFPbpPi/JruWaGbq2hqY9qNloChwGMNBMvql
+         s+9vgQJYsiJZ0qKX6cTVS3hUtX8UOoAfLtmTL9v1TPr2MD3/sCjwFkeUxKiwmw9LNFXV
+         AA/g==
+X-Gm-Message-State: AOJu0Yy2JfSw9TfegWBy1q6vlAtz2UQUrdyTxEqAubO6tI9UH/SdOK/B
+	wNHAVLV2VUBPEHiK6ZhqyQHXuZvl/yHzwEYwcd+xgyFRZZqLQJdd
+X-Google-Smtp-Source: 
+ AGHT+IHMKDlKC05UOeItJDYzW2JFHbLsuanC0ZZXbg+GJ3g9Og6g7QReKajcLy7ig1nT9q22s/iqpQ==
+X-Received: by 2002:ac8:5941:0:b0:431:5a8:7f72 with SMTP id
+ 1-20020ac85941000000b0043105a87f72mr1547360qtz.27.1710968171170;
+        Wed, 20 Mar 2024 13:56:11 -0700 (PDT)
+Received: from [10.193.190.170] (mobile-130-126-255-72.near.illinois.edu.
+ [130.126.255.72])
+        by smtp.gmail.com with ESMTPSA id
+ bc8-20020a05622a1cc800b0042efe24b76esm5481573qtb.58.2024.03.20.13.56.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 13:56:10 -0700 (PDT)
+Message-ID: <baf5dfd4-0ec0-47af-8c27-ca71f242244d@gmail.com>
+Date: Wed, 20 Mar 2024 15:56:10 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1711232987546299696-webhooks-bot@alsa-project.org>
-References: <1711232987546299696-webhooks-bot@alsa-project.org>
-Subject: No sound "dummy output"  - snd_hda_intel on Pop OS 22.04 LTS on Acer
- chromebook plus 514 (Google Markath rev 3)
-Message-Id: <20240323222949.8EB4CF804E7@alsa1.perex.cz>
-Date: Sat, 23 Mar 2024 23:29:49 +0100 (CET)
-Message-ID-Hash: UGD7FGSKCRWUDINHA7PYI2SBKXQ3RUFG
-X-Message-ID-Hash: UGD7FGSKCRWUDINHA7PYI2SBKXQ3RUFG
-X-MailFrom: github@alsa-project.org
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
+ lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, chenyuan0y@gmail.com
+From: Zijie Zhao <zzjas98@gmail.com>
+Subject: [sound/soc/qcom] Question about memory allocation in
+ asoc_qcom_lpass_cpu_platform_probe
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: zzjas98@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: M4X4KWIWTBFJUR5UKSCDWW7MNB4CADY6
+X-Message-ID-Hash: M4X4KWIWTBFJUR5UKSCDWW7MNB4CADY6
+X-Mailman-Approved-At: Sun, 24 Mar 2024 09:45:29 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UGD7FGSKCRWUDINHA7PYI2SBKXQ3RUFG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M4X4KWIWTBFJUR5UKSCDWW7MNB4CADY6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,112 +118,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L2Fsc2EtbGliIGlzc3VlICMzOTEgd2FzIGVkaXRlZCBmcm9tIGp1ZGljYW5k
-dXM6CgpJbnN0YWxsZWQgYSBmcmVzaCBQb3AgT1MgaW5zdGFsbGF0aW9uIG9uIGFuIEFjZXIgQ2hy
-b21lYm9vayBQbHVzIDUxNCwgYnV0IGF1ZGlvIGlzIG5vdCB3b3JraW5nIHdpdGgganVzdCBvbmUg
-aW50ZXJmYWNlIGF2YWlsYWJsZSAiRHVtbXkgT3V0cHV0Ii4NCkFsc2EtaW5mbyBhdHRhY2hlZDog
-W2Fsc2EtaW5mby50eHRdKGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS1saWIv
-ZmlsZXMvMTQ3MzM3MTgvYWxzYS1pbmZvLnR4dCkNCg0KKioxKSBXaGF0IEkgYWxyZWFkeSB0cmll
-ZCB0byBkbyoqDQpBbGwgdGhlIGluc3RydWN0aW9ucyBpbjogIGh0dHBzOi8vc3VwcG9ydC5zeXN0
-ZW03Ni5jb20vYXJ0aWNsZXMvYXVkaW8vICwgc3BlY2lmaWNhbGx5Og0KaS4gcmVpbnN0YWxsaW5n
-IHBpcGV3aXJlIGFuZCBkZWxldGluZyBjb25maWd1cmF0aW9uczoNCnN5c3RlbWN0bCAtLXVzZXIg
-cmVzdGFydCB3aXJlcGx1bWJlciBwaXBld2lyZSBwaXBld2lyZS1wdWxzZQ0Kcm0gLXIgfi8uY29u
-ZmlnL3B1bHNlLyoNCnJtIC1yIH4vLmxvY2FsL3N0YXRlL3dpcmVwbHVtYmVyLyoNCg0KaWkuIHJl
-aW5zdGFsbGluZyBhcHBzDQpzdWRvIGFwdCBpbnN0YWxsIC0tcmVpbnN0YWxsIGFsc2EtYmFzZSBh
-bHNhLXV0aWxzIGxpbnV4LXNvdW5kLWJhc2UgbGliYXNvdW5kMg0Kc3VkbyBhcHQgcmVpbnN0YWxs
-IGxpYnBpcGV3aXJlLTAuMy0wIGxpYnBpcGV3aXJlLTAuMy1jb21tb24gbGlicGlwZXdpcmUtMC4z
-LW1vZHVsZXMgcGlwZXdpcmUgcGlwZXdpcmUtYXVkaW8tY2xpZW50LWxpYnJhcmllcyBwaXBld2ly
-ZS1iaW4gcGlwZXdpcmUtcHVsc2UNCnN1ZG8gYWxzYSBmb3JjZS1yZWxvYWQNCg0KaWlpLiBzbmhf
-aGRhX2ludGVsIHNwZWNpZmljIGJ1ZyBmaXgNCmVjaG8gIm9wdGlvbnMgc25kLWhkYS1pbnRlbCBk
-bWljX2RldGVjdD0wIiB8IHN1ZG8gdGVlIC1hIC9ldGMvbW9kcHJvYmUuZC9hbHNhLWJhc2UuY29u
-Zg0KZWNobyAiYmxhY2tsaXN0IHNuZF9zb2Nfc2tsIiB8IHN1ZG8gdGVlIC1hIC9ldGMvbW9kcHJv
-YmUuZC9ibGFja2xpc3QuY29uZg0KKHJlYm9vdCkNCg0KaXYuIGluc3RhbGxpbmcgU09GIGRyaXZl
-ciBhY2NvcmRpbmcgdG8gaHR0cHM6Ly9naXRodWIuY29tL3RoZXNvZnByb2plY3Qvc29mLWJpbiBm
-cm9tIHRoZSB0YXJiYWxsDQoNCk5vdGhpbmcgd29ya2VkLiANCg0KKioyKSBPdXRwdXQqKg0KYGBg
-DQphcGxheSAtbA0KKioqKiBMaXN0ZSBkZXMgcMOpcmlwaMOpcmlxdWVzIG1hdMOpcmllbHMgUExB
-WUJBQ0sgKioqKg0KY2FydGUgMCA6IEdlbmVyaWMgW0hELUF1ZGlvIEdlbmVyaWNdLCBww6lyaXBo
-w6lyaXF1ZSAzIDogSERNSSAwIFtIRE1JIDBdDQogIFNvdXMtcMOpcmlwaMOpcmlxdWVzIDogMS8x
-DQogIFNvdXMtcMOpcmlwaMOpcmlxdWUgIzAgOiBzdWJkZXZpY2UgIzANCmNhcnRlIDAgOiBHZW5l
-cmljIFtIRC1BdWRpbyBHZW5lcmljXSwgcMOpcmlwaMOpcmlxdWUgNyA6IEhETUkgMSBbSERNSSAx
-XQ0KICBTb3VzLXDDqXJpcGjDqXJpcXVlcyA6IDEvMQ0KICBTb3VzLXDDqXJpcGjDqXJpcXVlICMw
-IDogc3ViZGV2aWNlICMwDQpjYXJ0ZSAwIDogR2VuZXJpYyBbSEQtQXVkaW8gR2VuZXJpY10sIHDD
-qXJpcGjDqXJpcXVlIDggOiBIRE1JIDIgW0hETUkgMl0NCiAgU291cy1ww6lyaXBow6lyaXF1ZXMg
-OiAxLzENCiAgU291cy1ww6lyaXBow6lyaXF1ZSAjMCA6IHN1YmRldmljZSAjMA0KY2FydGUgMCA6
-IEdlbmVyaWMgW0hELUF1ZGlvIEdlbmVyaWNdLCBww6lyaXBow6lyaXF1ZSA5IDogSERNSSAzIFtI
-RE1JIDNdDQogIFNvdXMtcMOpcmlwaMOpcmlxdWVzIDogMS8xDQogIFNvdXMtcMOpcmlwaMOpcmlx
-dWUgIzAgOiBzdWJkZXZpY2UgIzANCmBgYA0KDQpgYGANCmFyZWNvcmQgLWwNCioqKiogTGlzdGUg
-ZGVzIHDDqXJpcGjDqXJpcXVlcyBtYXTDqXJpZWxzIENBUFRVUkUgKioqKg0KYGBgDQoNCmBgYA0K
-bHNtb2QgfCBncmVwIHNuZF9oZGFfaW50ZWwNCnNuZF9oZGFfaW50ZWwgICAgICAgICAgNjE0NDAg
-IDENCnNuZF9pbnRlbF9kc3BjZmcgICAgICAgMzY4NjQgIDIgc25kX2hkYV9pbnRlbCxzbmRfc29m
-DQpzbmRfaGRhX2NvZGVjICAgICAgICAgMjIxMTg0ICAyIHNuZF9oZGFfY29kZWNfaGRtaSxzbmRf
-aGRhX2ludGVsDQpzbmRfaGRhX2NvcmUgICAgICAgICAgMTUxNTUyICAzIHNuZF9oZGFfY29kZWNf
-aGRtaSxzbmRfaGRhX2ludGVsLHNuZF9oZGFfY29kZWMNCnNuZF9wY20gICAgICAgICAgICAgICAx
-OTY2MDggIDE0IHNuZF9zb2ZfYW1kX2FjcCxzbmRfaGRhX2NvZGVjX2hkbWksc25kX3BjaV9hY3A2
-eCxzbmRfaGRhX2ludGVsLHNuZF9oZGFfY29kZWMsc25kX3NvZixzbmRfY29tcHJlc3Msc25kX3Nv
-Y19jb3JlLHNuZF9zb2ZfdXRpbHMsc25kX2hkYV9jb3JlLHNuZF9zb2NfcnQxMDE5LHNuZF9wY2lf
-cHMsc25kX3NvY19ydDU2ODJzLHNuZF9wY21fZG1hZW5naW5lDQpzbmQgICAgICAgICAgICAgICAg
-ICAgMTQ3NDU2ICAxNiBzbmRfc2VxLHNuZF9zZXFfZGV2aWNlLHNuZF9oZGFfY29kZWNfaGRtaSxz
-bmRfaHdkZXAsc25kX2hkYV9pbnRlbCxzbmRfaGRhX2NvZGVjLHNuZF9zb2Ysc25kX3RpbWVyLHNu
-ZF9jb21wcmVzcyxzbmRfc29jX2NvcmUsc25kX3BjbSxzbmRfcmF3bWlkaQ0KYGBgDQoNCmBgYA0K
-bHNwY2kgLW5uayB8IGdyZXAgLUEyIEF1ZGlvDQowNDowMC4xIEF1ZGlvIGRldmljZSBbMDQwM106
-IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIEluYy4gW0FNRC9BVEldIERldmljZSBbMTAwMjoxNjQw
-XQ0KCVN1YnN5c3RlbTogQWR2YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLiBbQU1EL0FUSV0gRGV2
-aWNlIFsxMDAyOjE2NDBdDQoJS2VybmVsIGRyaXZlciBpbiB1c2U6IHNuZF9oZGFfaW50ZWwNCi0t
-DQowNDowMC41IE11bHRpbWVkaWEgY29udHJvbGxlciBbMDQ4MF06IEFkdmFuY2VkIE1pY3JvIERl
-dmljZXMsIEluYy4gW0FNRF0gUmF2ZW4vUmF2ZW4yL0ZpcmVGbGlnaHQvUmVub2lyIEF1ZGlvIFBy
-b2Nlc3NvciBbMTAyMjoxNWUyXSAocmV2IDZmKQ0KCURldmljZU5hbWU6IE11bHRpbWVkaWEgY29u
-dHJvbGxlcg0KCVN1YnN5c3RlbTogQWR2YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLiBbQU1EXSBS
-YXZlbi9SYXZlbjIvRmlyZUZsaWdodC9SZW5vaXIgQXVkaW8gUHJvY2Vzc29yIFsxMDIyOjE1ZTJd
-DQoJS2VybmVsIGRyaXZlciBpbiB1c2U6IHNuZF9zb2ZfYW1kX3JlbWJyYW5kdA0KCUtlcm5lbCBt
-b2R1bGVzOiBzbmRfcGNpX2FjcDN4LCBzbmRfcm5fcGNpX2FjcDN4LCBzbmRfcGNpX2FjcDV4LCBz
-bmRfcGNpX2FjcDZ4LCBzbmRfYWNwX3BjaSwgc25kX3JwbF9wY2lfYWNwNngsIHNuZF9wY2lfcHMs
-IHNuZF9zb2ZfYW1kX3Jlbm9pciwgc25kX3NvZl9hbWRfcmVtYnJhbmR0LCBzbmRfc29mX2FtZF92
-YW5nb2doDQoNCmBgYA0KYGBgDQpjYXQgL3Byb2MvYXNvdW5kL2NhcmRzDQogMCBbR2VuZXJpYyAg
-ICAgICAgXTogSERBLUludGVsIC0gSEQtQXVkaW8gR2VuZXJpYw0KICAgICAgICAgICAgICAgICAg
-ICAgIEhELUF1ZGlvIEdlbmVyaWMgYXQgMHhkMDZjMDAwMCBpcnEgNzcNCg0KYGBgDQpgYGANCnN1
-ZG8gZG1lc2cgfCBncmVwIC1pIC1lIGF1ZGlvIC1lIGVycm9yIC1lIGZhaWwgDQpbICAgIDAuMjgy
-NjE1XSBBQ1BJOiBfT1NDIGV2YWx1YXRpb24gZm9yIENQVXMgZmFpbGVkLCB0cnlpbmcgX1BEQw0K
-WyAgICAwLjYyOTkwMl0gQUNQSSBFcnJvcjogQ291bGQgbm90IGVuYWJsZSBTbGVlcEJ1dHRvbiBl
-dmVudCAoMjAyMzA2MjgvZXZ4ZmV2bnQtMTgyKQ0KWyAgICA2LjEwMDA4M10gUkFTOiBDb3JyZWN0
-YWJsZSBFcnJvcnMgY29sbGVjdG9yIGluaXRpYWxpemVkLg0KWyAgICA2LjMyNzQ4OF0gaHViIDYt
-MDoxLjA6IGNvbmZpZyBmYWlsZWQsIGh1YiBkb2Vzbid0IGhhdmUgYW55IHBvcnRzISAoZXJyIC0x
-OSkNClsgICAgOC43ODc3ODNdIHN5c3RlbTc2X2FjcGk6IG1vZHVsZSB2ZXJpZmljYXRpb24gZmFp
-bGVkOiBzaWduYXR1cmUgYW5kL29yIHJlcXVpcmVkIGtleSBtaXNzaW5nIC0gdGFpbnRpbmcga2Vy
-bmVsDQpbICAgMTAuMzUzODYwXSBzbmRfaGRhX2ludGVsIDAwMDA6MDQ6MDAuMTogYm91bmQgMDAw
-MDowNDowMC4wIChvcHMgYW1kZ3B1X2RtX2F1ZGlvX2NvbXBvbmVudF9iaW5kX29wcyBbYW1kZ3B1
-XSkNClsgICAxMC40NTQ5MjZdIGlucHV0OiBIRC1BdWRpbyBHZW5lcmljIEhETUkvRFAscGNtPTMg
-YXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA4LjEvMDAwMDowNDowMC4xL3NvdW5kL2Nh
-cmQwL2lucHV0MTANClsgICAxMC40NjE3NzddIGlucHV0OiBIRC1BdWRpbyBHZW5lcmljIEhETUkv
-RFAscGNtPTcgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA4LjEvMDAwMDowNDowMC4x
-L3NvdW5kL2NhcmQwL2lucHV0MTENClsgICAxMC40OTE0MzJdIGlucHV0OiBIRC1BdWRpbyBHZW5l
-cmljIEhETUkvRFAscGNtPTggYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA4LjEvMDAw
-MDowNDowMC4xL3NvdW5kL2NhcmQwL2lucHV0MTINClsgICAxMC41MTgxMzddIGlucHV0OiBIRC1B
-dWRpbyBHZW5lcmljIEhETUkvRFAscGNtPTkgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAw
-OjA4LjEvMDAwMDowNDowMC4xL3NvdW5kL2NhcmQwL2lucHV0MTMNClsgICAxMC42NTkxNjFdIHNu
-ZF9zb2ZfYW1kX3JlbWJyYW5kdCAwMDAwOjA0OjAwLjU6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZv
-ciBhbWQvc29mL2NvbW11bml0eS9zb2Ytcm1iLnJpIGZhaWxlZCB3aXRoIGVycm9yIC0yDQpbICAg
-MTAuNjU5MTk2XSBzbmRfc29mX2FtZF9yZW1icmFuZHQgMDAwMDowNDowMC41OiBlcnJvcjogc29m
-IGZpcm13YXJlIGZpbGUgaXMgbWlzc2luZywgeW91IG1pZ2h0IG5lZWQgdG8NClsgICAxMC42NTky
-MDhdIHNuZF9zb2ZfYW1kX3JlbWJyYW5kdCAwMDAwOjA0OjAwLjU6IGVycm9yOiBmYWlsZWQgdG8g
-bG9hZCBEU1AgZmlybXdhcmUgLTINClsgICAxMC42NTk0NDFdIHNuZF9zb2ZfYW1kX3JlbWJyYW5k
-dCAwMDAwOjA0OjAwLjU6IGVycm9yOiBzb2ZfcHJvYmVfd29yayBmYWlsZWQgZXJyOiAtMg0KDQpg
-YGANCmBgYA0Kc3lzdGVtY3RsIC0tdXNlciBzdGF0dXMgcGlwZXdpcmUNCnBpcGV3aXJlLnNlcnZp
-Y2UgLSBQaXBlV2lyZSBNdWx0aW1lZGlhIFNlcnZpY2UNCiAgICAgTG9hZGVkOiBsb2FkZWQgKC91
-c3IvbGliL3N5c3RlbWQvdXNlci9waXBld2lyZS5zZXJ2aWNlOyBlbmFibGVkOyB2ZW5kb3IgcHJl
-c2V0OiBlbmFibGVkKQ0KICAgICBBY3RpdmU6IGFjdGl2ZSAocnVubmluZykgc2luY2UgU2F0IDIw
-MjQtMDMtMjMgMjI6MTU6MzYgQ0VUOyA1OG1pbiBhZ28NClRyaWdnZXJlZEJ5OiDil48gcGlwZXdp
-cmUuc29ja2V0DQogICBNYWluIFBJRDogMTMyMCAocGlwZXdpcmUpDQogICAgICBUYXNrczogMyAo
-bGltaXQ6IDkyMzkpDQogICAgIE1lbW9yeTogNi42TQ0KICAgICAgICBDUFU6IDMzNW1zDQogICAg
-IENHcm91cDogL3VzZXIuc2xpY2UvdXNlci0xMDAwLnNsaWNlL3VzZXJAMTAwMC5zZXJ2aWNlL3Nl
-c3Npb24uc2xpY2UvcGlwZXdpcmUuc2VydmljZQ0KICAgICAgICAgICAgIOKUlOKUgDEzMjAgL3Vz
-ci9iaW4vcGlwZXdpcmUNCg0KbWFycyAyMyAyMjoxNTozNiBwb3Atb3Mgc3lzdGVtZFsxMzEwXTog
-U3RhcnRlZCBQaXBlV2lyZSBNdWx0aW1lZGlhIFNlcnZpY2UuDQptYXJzIDIzIDIyOjE1OjM2IHBv
-cC1vcyBwaXBld2lyZVsxMzIwXTogbW9kLmphY2tkYnVzLWRldGVjdDogRmFpbGVkIHRvIHJlY2Vp
-dmUgamFja2RidXMgcmVwbHk6IG9yZy5mcmVlZGVza3RvcC5EQnVzLkVycm9yLlNlcnZpY2VVbmtu
-b3duOiBUaGUgbmFtZSBpcyBub3QgYWN0aXZhdGFibGUNCg0KYGBgDQoNCkkgYW0gbm90IHN1cmUg
-aWYgdGhpcyBpcyBhIGJ1ZyBidXQgc2luY2UgSSB0cmllZCBhbGwgc29sdXRpb25zIEkgY291bGQg
-ZmluZCBvbiB0aGUgaW50ZXJuZXQsIEkgdGhvdWdodCBJIG1pZ2h0IHRyeSBteSBsdWNrIGhlcmUu
-IFRoYW5rIHlvdSBiZWZvcmVoYW5kIGZvciBhbnkgYXNzaXN0YW5jZSBvciBpbnNpZ2h0LgoKSXNz
-dWUgVVJMICAgICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS1saWIvaXNz
-dWVzLzM5MQpSZXBvc2l0b3J5IFVSTDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9h
-bHNhLWxpYgo=
+Dear QCOM AUDIO maintainers,
+
+We encountered an usual usage of devm_kzalloc while performing a 
+static analysis for kernel code.
+
+https://elixir.bootlin.com/linux/v6.8/source/sound/soc/qcom/lpass-cpu.c#L1239
+```
+int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+{
+	...
+
+	drvdata = devm_kzalloc(dev, sizeof(struct lpass_data), GFP_KERNEL);
+	if (!drvdata)
+		return -ENOMEM;
+	...
+
+	/* Allocation for i2sctl regmap fields */
+	drvdata->i2sctl = devm_kzalloc(&pdev->dev, sizeof(struct lpaif_i2sctl),
+					GFP_KERNEL);
+
+	/* Initialize bitfields for dai I2SCTL register */
+	ret = lpass_cpu_init_i2sctl_bitfields(dev, drvdata->i2sctl,
+						drvdata->lpaif_map);
+	if (ret) {
+		dev_err(dev, "error init i2sctl field: %d\n", ret);
+		return ret;
+	}
+	...
+}
+```
+
+```
+static int lpass_cpu_init_i2sctl_bitfields(struct device *dev,
+			struct lpaif_i2sctl *i2sctl, struct regmap *map)
+{
+	struct lpass_data *drvdata = dev_get_drvdata(dev);
+	const struct lpass_variant *v = drvdata->variant;
+
+	i2sctl->loopback = devm_regmap_field_alloc(dev, map, v->loopback);
+	...
+}
+```
+
+Here devm_kzalloc might return NULL for drvdata->i2sctl if 
+out-of-memory. Then i2sctl->loopback will cause segfault since i2sctl 
+is never checked against NULL. Would a NULL check needed here? Like 
+the drvdata above.
+
+Please let us know if we missed any key information or assumption! We 
+appreciate your time!
+
+Best,
+Zijie
+
+
