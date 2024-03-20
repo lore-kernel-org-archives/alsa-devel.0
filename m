@@ -4,77 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00E70C54E58
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E84A5C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:08:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 458452BBF;
-	Wed, 20 Mar 2024 15:07:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 458452BBF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D0EA279C;
+	Wed, 20 Mar 2024 15:07:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D0EA279C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710943678;
-	bh=WfPXnP6t7cHKpeY26sKjr21+Kh2F1G9NyLztVt3Pd0Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1710943682;
+	bh=Y6mEQ/hFHTShTOWNUHTojQ/qnx61oBbZk6LyN0SEfHM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hG2hi6UmPnswWDfi1Q2Py131ATZ/mdmd7+E9Mg0Y1m3FPhAN/KO5bB8qRNS9GbSPy
-	 pLcX03uWUrzMTHJoKrw3BUu9oPkCencD/rLjbG9ANJL1aSIXH0lCcnSZSYAwUjpoUI
-	 EyiTmedXk6XX1PRN8dUzCsGSKUJsFeOl8NMMEPuo=
+	b=PaM+x+3o38zrDneuDCwO2iJqqjy46mM3UovCOkwIvC15yY2vBwl9jaXjkagAf3Kn+
+	 3Mxtuwsy2UJO4TdC/lPI01kobh7MmGEoGQ8XAcTnhWJEcg9mCfLvNQ7DZlxErONR/3
+	 pk75JncwrGtduwqzABqOJi+XpDT05Y8PxGsaMOS4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8ACF4F897CA; Wed, 20 Mar 2024 15:01:06 +0100 (CET)
+	id 0C211F897D0; Wed, 20 Mar 2024 15:01:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 586CBF897BB;
-	Wed, 20 Mar 2024 15:01:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B98FF897E6;
+	Wed, 20 Mar 2024 15:01:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9669FF80548; Wed, 20 Mar 2024 09:30:28 +0100 (CET)
-Received: from mail78-60.sinamail.sina.com.cn (mail78-60.sinamail.sina.com.cn
- [219.142.78.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 75A49F804E7; Wed, 20 Mar 2024 09:52:50 +0100 (CET)
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::225])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3CB0CF804E7
-	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 09:30:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CB0CF804E7
-Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
-	by sina.net (10.75.30.234) with ESMTP
-	id 65FA9E9500036383; Wed, 20 Mar 2024 16:30:16 +0800 (CST)
-X-Sender: zhangyi@everest-semi.com
-X-Auth-ID: zhangyi@everest-semi.com
-Authentication-Results: sina.net;
-	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 3E7527F402F54072A96EB664C79177C5
-X-SMAIL-UIID: 3E7527F402F54072A96EB664C79177C5-20240320-163016
-From: Zhang Yi <zhangyi@everest-semi.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Cc: tiwai@suse.com,
-	amadeuszx.slawinski@linux.intel.com,
-	yangxiaohua@everest-semi.com,
-	zhuning@everest-semi.com,
-	zhangyi@everest-semi.com
-Subject: [PATCH v1 1/2] ASoC: codecs: ES8326: Reducing power consumption
-Date: Wed, 20 Mar 2024 16:30:11 +0800
-Message-Id: <20240320083012.4282-2-zhangyi@everest-semi.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240320083012.4282-1-zhangyi@everest-semi.com>
-References: <20240320083012.4282-1-zhangyi@everest-semi.com>
-X-MailFrom: zhangyi@everest-semi.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id ABF3CF80088
+	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 09:52:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABF3CF80088
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=d5+yCEKF
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E68581C000D;
+	Wed, 20 Mar 2024 08:52:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710924758;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxoLGnpPdcI2kqvbcSNFfRIJr6iOEENAEB9wuOb1S70=;
+	b=d5+yCEKFkAGewcctxM5DOA0phfHQIWulV63wZ7RifzHZ74xKJxu2hr/yHHcVexxkmJz564
+	ueoVBoSPeJ84KVaE5hidOSM6p51WiderjDbSZHUwDBvbrAvDwpX+Tsrmst6Wl95/EwE4ZW
+	rOxG33jRYTGdF3pDl65J9e2UOB17D7l+djRToJRh3x+A0+kCKO1lvMbzUE+W+N6c2msjSu
+	L7UV4T6ir0s6IhaFcRbIPa3bp9PLejvORCQ7xjYQJEWiXjMaJmDRCqx7rz13ol0EceEjJe
+	kUNDmRWVVWXtJEUopKTaDVNb3moXPR7RXtIuDiNXQwaNs6OeyRFMyPAc4Lf+JA==
+Message-ID: <0bb26153-8bcb-475f-8892-5eb925fec538@bootlin.com>
+Date: Wed, 20 Mar 2024 09:52:37 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/13] ASoC: ti: davinci-i2s: Opitonally drive DX pin
+ during capture streams
+Content-Language: en-US
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-14-bastien.curutchet@bootlin.com>
+ <00182d1d-ef29-457f-9e3e-6e9b57592118@gmail.com>
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <00182d1d-ef29-457f-9e3e-6e9b57592118@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
+X-MailFrom: bastien.curutchet@bootlin.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: I5UBL5Z4SDGTMJOHZWB2EPDN3OTSYIGG
-X-Message-ID-Hash: I5UBL5Z4SDGTMJOHZWB2EPDN3OTSYIGG
-X-Mailman-Approved-At: Wed, 20 Mar 2024 13:59:30 +0000
+Message-ID-Hash: JOQAWHNJT3QGC53MYJOVMV3MIPGSWBRV
+X-Message-ID-Hash: JOQAWHNJT3QGC53MYJOVMV3MIPGSWBRV
+X-Mailman-Approved-At: Wed, 20 Mar 2024 13:59:42 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I5UBL5Z4SDGTMJOHZWB2EPDN3OTSYIGG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JOQAWHNJT3QGC53MYJOVMV3MIPGSWBRV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,88 +101,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-For lower power consumption during hibernation, the configuration of
-es8326_suspend and es8326_remove will be adjusted.
-Adding es8326_i2c_shutdown and es8326_i2c_remove to cover different
-situations
+Hi Péter,
 
-Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
----
- sound/soc/codecs/es8326.c | 33 ++++++++++++++++++++++++++++++++-
- 1 file changed, 32 insertions(+), 1 deletion(-)
+On 3/19/24 19:29, Péter Ujfalusi wrote:
+> 
+> 
+> On 15/03/2024 13:27, Bastien Curutchet wrote:
+>> The McBSP's DX pin that outputs serial data during playback streams can
+>> be used during capture streams to repeatedly output a chosen pattern.
+>> For instance, this can be useful to drive an active-low signal during
+>> captures (by choosing <0> as output pattern).
+> 
+> Are there really any other use of this than to pull down or up the DX
+> pin (0 or 0xffff)
+I don't know, indeed today I can only think about these two patterns.
+I tried to do something in a 'generic' way so it can evolve if needed.
 
-diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 15289dadafea..635320c86c00 100755
---- a/sound/soc/codecs/es8326.c
-+++ b/sound/soc/codecs/es8326.c
-@@ -1072,12 +1072,13 @@ static int es8326_suspend(struct snd_soc_component *component)
- 	es8326->calibrated = false;
- 	regmap_write(es8326->regmap, ES8326_CLK_CTL, ES8326_CLK_OFF);
- 	regcache_cache_only(es8326->regmap, true);
--	regcache_mark_dirty(es8326->regmap);
- 
- 	/* reset register value to default */
- 	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
- 	usleep_range(1000, 3000);
- 	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
-+
-+	regcache_mark_dirty(es8326->regmap);
- 	return 0;
- }
- 
-@@ -1163,8 +1164,13 @@ static int es8326_set_jack(struct snd_soc_component *component,
- 
- static void es8326_remove(struct snd_soc_component *component)
- {
-+	struct es8326_priv *es8326 = snd_soc_component_get_drvdata(component);
-+
- 	es8326_disable_jack_detect(component);
- 	es8326_set_bias_level(component, SND_SOC_BIAS_OFF);
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
-+	usleep_range(1000, 3000);
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
- }
- 
- static const struct snd_soc_component_driver soc_component_dev_es8326 = {
-@@ -1236,6 +1242,29 @@ static int es8326_i2c_probe(struct i2c_client *i2c)
- 					&es8326_dai, 1);
- }
- 
-+
-+static void es8326_i2c_shutdown(struct i2c_client *i2c)
-+{
-+	struct snd_soc_component *component;
-+	struct es8326_priv *es8326;
-+
-+	es8326 = i2c_get_clientdata(i2c);
-+	component = es8326->component;
-+	dev_dbg(component->dev, "Enter into %s\n", __func__);
-+	cancel_delayed_work_sync(&es8326->jack_detect_work);
-+	cancel_delayed_work_sync(&es8326->button_press_work);
-+
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
-+	usleep_range(1000, 3000);
-+	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
-+
-+}
-+
-+static void es8326_i2c_remove(struct i2c_client *i2c)
-+{
-+	es8326_i2c_shutdown(i2c);
-+}
-+
- static const struct i2c_device_id es8326_i2c_id[] = {
- 	{"es8326", 0 },
- 	{}
-@@ -1265,6 +1294,8 @@ static struct i2c_driver es8326_i2c_driver = {
- 		.of_match_table = of_match_ptr(es8326_of_match),
- 	},
- 	.probe = es8326_i2c_probe,
-+	.shutdown = es8326_i2c_shutdown,
-+	.remove = es8326_i2c_remove,
- 	.id_table = es8326_i2c_id,
- };
- module_i2c_driver(es8326_i2c_driver);
--- 
-2.17.1
+> If you just use the pin as GPIO then you don't need to change anything
+> in the driver, The playback would not erach the pin, so no need to block it.
+> 
+>> Enable this behaviour when the device-tree property 'ti,drive-dx' is
+>> present. DX pin is driven with the provided pattern every time a
+>> capture stream is launched.
+> 
+> It is an interesting use of the hardware... You are controlling an
+> external device (light an LED when capture is on)?
 
+Yes I control the chip select pin of the ADC that is sending data to DR 
+pin, that's why I need the DX pin to be synchronized with capture
+streams.
+
+>> This property is not compatible with classic playback stream so
+>> davinci_i2s_trigger() returns an error if a playback stream is started
+>> while 'ti,drive-dx' flag is present.
+> 
+> Propbaly add the .startup() callback and block the playback right there?
+> 
+
+Ok, TBH my mastery of the sound subsystem is not high enough to have an
+opinion of where this should go so I'll trust you on this.
+
+>>
+>> This has been tested on a board designed of a DAVINCI/OMAP-L138 where
+>> the DX pin is linked to the chip select pin of the converters of the
+>> capture side.
+> 
+> Isn't the DX will be pulled down as soon as the McBSP is enabled?
+> Can you just re-configure the PUPD_SEL for the pin group to make the pin
+> to be pulled the other way?
+> 
+
+Well, the acquisition chain in my use case is a bit convoluted. The DX
+pin's main purpose is to drive ADC chip select but it is also connected
+to other components and all this needs synchronization upon captures.
+
+
+I'll integrate your feedback about the code in next iteration, thank
+you.
+
+
+Best regards,
+Bastien
