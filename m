@@ -4,135 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63102C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB21DC54E58
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:05:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F18B2341;
-	Wed, 20 Mar 2024 15:05:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F18B2341
+	by alsa0.perex.cz (Postfix) with ESMTPS id C96B8227D;
+	Wed, 20 Mar 2024 15:05:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C96B8227D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710943529;
-	bh=OXZgPwWPdTNaxtMnH4myg+ToziRSNnXvhkwXx1ZufmU=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1710943543;
+	bh=Ik5ahjZmxjfQ1FR/v6ZDPMYWeeijut/xAT0hg7CxjZE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X5mMqv/Sp8ngIKzzmNIDSFYNfSr/hdMaAWG7kujGjOoqMoJgM7o+9SuMuEeGnT5qm
-	 6YuWfCFcO+L8gzxlsreFL6ChhQLBlXvwBl8CQ9sdA5fxW4LF2JPiMcQGt1tk0k+Tme
-	 QeN+cP3Qk/XvrZMvU3LMv5iEV4e/ogWrqt5rTlTA=
+	b=OQ5w0mz8Jet10aN842P/UPezaqsFVAemZNgDlledB4ulHe1tqJt5YVo1etQvQn6Ny
+	 VUQuL/Q1PBxbNWzsus9DSS5Ch6NPZrLb+h9SH3fx6qyGOk6iTCSczKB1y3CmE/PfdO
+	 J8wLRZhcZJVb9S7tDSgfRNGorYNFgUuo8FHTmTtw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2FA3F896B4; Wed, 20 Mar 2024 15:00:46 +0100 (CET)
+	id B23E8F805BE; Wed, 20 Mar 2024 15:00:48 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8394F8968A;
-	Wed, 20 Mar 2024 15:00:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04462F896AA;
+	Wed, 20 Mar 2024 15:00:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6AD55F804E7; Tue, 19 Mar 2024 14:53:26 +0100 (CET)
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 335B0F804E7; Wed, 20 Mar 2024 08:31:20 +0100 (CET)
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
+ [217.70.183.201])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D1DE4F8025F
-	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2024 14:53:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1DE4F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 491D8F8025F
+	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 08:31:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 491D8F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=ZdXJ+IUo
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 0957D10000A;
-	Tue, 19 Mar 2024 16:53:12 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0957D10000A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710856392;
-	bh=cMQFR177UDppiHHa9pB9nbmCdpBrIycSstEw9RoGTQI=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=ZdXJ+IUoxafVJmHArgilqIq/xR+cA8woWE5N9r6qzBMaWFunn7syOsKx8qLG8PS9j
-	 vQ83YE4Sbd4e2GyM/LXFVj5CQEzYiLvCcu31GAteRYOud+OnUBzC23Uf/Xqzn91k3G
-	 ST/k5QpvS04ZBnytrGLzHPs3ec/4lGwCGF1I6Z0yPqQCyvYoG1ITUtXLW7gjQFLDOv
-	 oH3k8K5Ak8eAwJJDsOFfN4BFtfd2MH2RBk9JpLmvU0nmCx8BeYg+zHF8roQ5tmlLJ6
-	 CW/G29alyisg1jGq+assolGMSWPgFNCYosGKMcHu2B9G5KWPNSyYdnYJtcU7RobrrC
-	 IKjlAIup7GSgw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
- [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 19 Mar 2024 16:53:11 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
- 2024 16:53:11 +0300
-Date: Tue, 19 Mar 2024 16:53:11 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Jerome Brunet <jbrunet@baylibre.com>
-CC: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman
-	<khilman@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-	<kernel@salutedevices.com>
-Subject: Re: [PATCH 01/25] clk: meson: a1: restrict an amount of 'hifi_pll'
- params
-Message-ID: <20240319135311.xjpgkvgyczq4eymi@CAB-WSD-L081021>
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-2-jan.dakinevich@salutedevices.com>
- <1j8r2jj24k.fsf@starbuckisacylon.baylibre.com>
- <cbfd9c66-cca5-49f5-9468-43710c48518e@salutedevices.com>
- <1jedc7hlg4.fsf@starbuckisacylon.baylibre.com>
- <d4cfef9e-3cae-4f1a-90b3-33d5707596f9@salutedevices.com>
- <1jsf0mfwwg.fsf@starbuckisacylon.baylibre.com>
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=Q1cBSxYK
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 68F241BF20A;
+	Wed, 20 Mar 2024 07:31:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710919871;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=voBe4cnKC0PYia7ms5iUQbaUgT546itFPRtdPkNE1ao=;
+	b=Q1cBSxYKQaIltFJkiNRkwe6YV7E7uUhmWbptRl2p/i0RABaEw6LCltBs36y+/AFubbLIoI
+	Gm2n0LiHp+5jjpd7Ux+FiS6cQfihpFUlZuH5uqTXDDmejoDNW7Hpg8ku5vt7sfsVzszS2C
+	HMOZ2ydoyDCJT6i8PqzsNXNMe27Y6ArMipnHj7rDltqswrI48QRV4v716Ay18bxoAkzimR
+	uwKKDIkLQtJ/DDeNbbAsHpAJEFXACx1sRL6UePnwjfqnQWoT3NMwHx6ocx8grfkdymdzfE
+	VFWAH2+u8OLiNA8UfJIbY6iTIrolrARnTn8ZBx+owPUttl1KIXsf1lN13sIPeA==
+Message-ID: <f2d8715d-a1ad-45a4-952f-a702b29740be@bootlin.com>
+Date: Wed, 20 Mar 2024 08:31:10 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1jsf0mfwwg.fsf@starbuckisacylon.baylibre.com>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184265 [Mar 19 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 10 0.3.10
- 53c821b925e16276b831986eabc71d60ab82ee60, {Tracking_uf_ne_domains},
- {Track_E25351}, {Tracking_from_domain_doesnt_match_to},
- lore.kernel.org:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1,
- FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/19 13:26:00
-X-KSMG-LinksScanning: Clean, bases: 2024/03/19 13:26:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960,
- bases: 2024/03/19 01:36:00 #24282057
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-MailFrom: ddrokosov@salutedevices.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/13] ASoC: ti: davinci-i2s: Add TDM support
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-8-bastien.curutchet@bootlin.com>
+ <9d123584-1feb-404b-890f-2da694cf56d5@gmail.com>
+Content-Language: en-US
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <9d123584-1feb-404b-890f-2da694cf56d5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
+X-MailFrom: bastien.curutchet@bootlin.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: QUNH6EZYATGRH3DPMXT7N72GREI73AUP
-X-Message-ID-Hash: QUNH6EZYATGRH3DPMXT7N72GREI73AUP
+Message-ID-Hash: 2RYBBUZXIZR2JZYQNTW67EEZJXK7MBMN
+X-Message-ID-Hash: 2RYBBUZXIZR2JZYQNTW67EEZJXK7MBMN
 X-Mailman-Approved-At: Wed, 20 Mar 2024 13:59:17 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QUNH6EZYATGRH3DPMXT7N72GREI73AUP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2RYBBUZXIZR2JZYQNTW67EEZJXK7MBMN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,165 +100,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Mar 19, 2024 at 09:21:27AM +0100, Jerome Brunet wrote:
-> 
-> On Tue 19 Mar 2024 at 01:35, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-> 
-> > On 3/18/24 13:17, Jerome Brunet wrote:
-> >> 
-> >> On Sun 17 Mar 2024 at 17:17, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-> >> 
-> >>> On 3/15/24 11:58, Jerome Brunet wrote:
-> >>>>
-> >>>> On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-> >>>>
-> >>>>> Existing values were insufficient to produce accurate clock for audio
-> >>>>> devices. New values are safe and most suitable to produce 48000Hz sample
-> >>>>> rate.
-> >>>>
-> >>>> The hifi pll is not about 48k only. I see no reason to restrict the PLL
-> >>>> to a single setting.
-> >>>>> You've provided no justification why the PLL driver can't reach the same
-> >>>> setting for 48k. The setting below is just the crude part. the fine
-> >>>> tuning is done done with the frac parameter so I doubt this provides a
-> >>>> more accurate rate.
-> >>>>
-> >>>
-> >>> You are right, it is not about 48k only. However, there are two issues.
-> >>>
-> >>> First, indeed, I could just extend the range of multipliers to 1..255.
-> >> 
-> >> Why 1..255 ? This is not what I'm pointing out
-> >> 
-> >> According to the datasheet - the range is 32 - 64, as currently
-> >> set in the driver.
-> >> 
-> >
-> > Could you point where in the doc the range 32..64 is documented?
-> > Documentation that I have may be not so complete, but I don't see there
-> > any mention about it.
-> >
-> > Anyway, range 32..64 of multipliers is not enough to produce accurate
-> > clock, and a need 128 for 48kHz.
-> 
-> A1 datasheet v0.4 - Section 7.6.3.2
-> 
-> >
-> >> The change you have provided request a multipler of 128/5 = 25,6
-> >> If you put assigned-rate = 614400000 in DT, I see no reason can find the
-> >> same solution on its own.
-> >> 
-> >
-> > The reasoning is following. I don't know why 32..64 range was declared
-> > for this clock, and whether it would be safe to extend it and include
-> > 128, which is required for 48kHz. But I know, that multiplier=128 is
-> > safe and works fine (together divider=5).
-> 
-> You have not answer my remark.
-> Mainline does not do everything like the AML SDK does. Saying you are
-> copying it because you know it works (in your opinion) is not good
-> enough.
-> 
-> I'm telling you that your hack is not necessary and so far, you have not
-> demonstrated that it is.
-> 
-> Also the multiplier range in m/n, not m alone.
-> 
-> >
-> >>> But I am unsure if hifi_pll is able to handle whole range of
-> >>> mulptipliers. The value 128 is taken from Amlogic's branch, and I am
-> >>> pretty sure that it works.
-> >> 
-> >>>
-> >>> Second, unfortunately frac parameter currently doesn't work. When frac
-> >>> is used enabling of hifi_pll fails in meson_clk_pll_wait_lock(). I see
-> >>> it when try to use 44100Hz and multipliers' range is set to 1..255. So,
-> >>> support of other rates than 48k requires extra effort.
-> >> 
-> >> Then your change is even more problematic because it certainly does not
-> >> disable frac ... which you say is broken.
-> >> 
-> >> That parameter should be removed with a proper comment explaining why
-> >> you are disabling it. That type a limitation / known issue should be
-> >> mentionned in your change.
-> >> 
-> >
-> > Handling of frac should not be removed, it should be fixed to achieve
-> > another rates. But that is not the goal of this commit.
-> 
-> You argued that frac was broken and that was partly why you introduced
-> this work around. I'm telling you this approach is incorrect.
-> 
-> So either :
-> * Remove frac for now, until it is fixed, because it is broken and add
->   comment clearly explaining that quirk.
-> * Or fix it now.
-> 
-> Your choice.
-> 
-> >
-> >
-> >>>
-> >>>>>
-> >>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> >>>>> ---
-> >>>>>  drivers/clk/meson/a1-pll.c | 8 ++++----
-> >>>>>  1 file changed, 4 insertions(+), 4 deletions(-)
-> >>>>>
-> >>>>> diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
-> >>>>> index 4325e8a6a3ef..00e06d03445b 100644
-> >>>>> --- a/drivers/clk/meson/a1-pll.c
-> >>>>> +++ b/drivers/clk/meson/a1-pll.c
-> >>>>> @@ -74,9 +74,9 @@ static struct clk_regmap fixed_pll = {
-> >>>>>  	},
-> >>>>>  };
-> >>>>>  
-> >>>>> -static const struct pll_mult_range hifi_pll_mult_range = {
-> >>>>> -	.min = 32,
-> >>>>> -	.max = 64,
-> >>>>> +static const struct pll_params_table hifi_pll_params_table[] = {
-> >>>>> +	PLL_PARAMS(128, 5),
-> >>>>> +	{ },
-> >>>>>  };
-> >>>>>  
-> >>>>>  static const struct reg_sequence hifi_init_regs[] = {
-> >>>>> @@ -124,7 +124,7 @@ static struct clk_regmap hifi_pll = {
-> >>>>>  			.shift   = 6,
-> >>>>>  			.width   = 1,
-> >>>>>  		},
-> >>>>> -		.range = &hifi_pll_mult_range,
-> >>>>> +		.table = hifi_pll_params_table,
-> >>>>>  		.init_regs = hifi_init_regs,
-> >>>>>  		.init_count = ARRAY_SIZE(hifi_init_regs),
-> >>>>>  	},
-> >>>>
-> >>>>
-> >> 
-> >> 
-> 
-> 
-> -- 
-> Jerome
+Hi Péter,
 
-BTW, here Amlogic already mentioned all possible output audio rates for
-which hifipll can be used:
+>> +static int davinci_i2s_set_tdm_slot(struct snd_soc_dai *cpu_dai,
+>> +				    unsigned int tx_mask,
+>> +				    unsigned int rx_mask,
+>> +				    int slots, int slot_width)
+>> +{
+>> +	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+>> +
+>> +	dev_dbg(dev->dev, "%s - slots %d, slot_width %d\n", __func__, slots, slot_width);
+> 
+> The __func__ can be ommited, it is better to leave it for dynamic
+> debugging by adding "dyndbg=+pmf" module parameter if needed.
+> 
 
-https://lore.kernel.org/all/1569411888-98116-1-git-send-email-jian.hu@amlogic.com/T/#md7083b4f851ab97dfce43f8f6a3b266eb49ed329
+True, I'll remove the __func__.
 
-```
-The audio working frequency are 44.1khz, 48khz and 192khz.
+>> +
+>> +	if (slots > 128 || !slots) {
+>> +		dev_err(dev->dev, "Invalid number of slots\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (rx_mask != (1 << slots) - 1) {
+>> +		dev_err(dev->dev, "Invalid RX mask (0x%08x) : all slots must be used by McBSP\n",
+>> +			rx_mask);
+>> +		return -EINVAL;
+> 
+> This is only a restriction for RX?
+> 
 
-614.4M can meet the three frequency.
+Nope you're right, I'll add the same for tx_mask.
 
-after the hifi pll, there are two dividers in Audio clock.
+>> +	}
+>> +
+>> +	if (davinci_i2s_tdm_word_length(slot_width) < 0) {
+>> +		dev_err(dev->dev, "%s: Unsupported slot_width %d\n", __func__, slot_width);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	dev->tdm_slots = slots;
+>> +	dev->slot_width = slot_width;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   #define DEFAULT_BITPERSAMPLE	16
+>>   
+>>   static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>> @@ -228,6 +282,13 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>>   		DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
+>>   
+>>   	dev->fmt = fmt;
+>> +
+>> +	if ((dev->tdm_slots || dev->slot_width) &&
+>> +	    ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) != SND_SOC_DAIFMT_BP_FC)) {
+>> +		dev_err(dev->dev, "TDM is only supported for BP_FC format\n");
+>> +		return -EINVAL;
+> 
+> I think this is not a valid statement, Fsync can be generated internally
+> or coming from external source in TDM mode also.
+> 
 
-614.4M/3200 = 192khz
+My hardware allow me to only test BP_FC so I wished to put some
+'barriers' in front of untested things.
 
-614.4M/12800 = 48khz
 
-614,4M/13932 = 44.0999khz
-```
-
--- 
-Thank you,
-Dmitry
+Best regards,
+Bastien
