@@ -4,48 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78E8FC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:06:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76C4CC54E58
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 14:07:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 241092BC2;
-	Wed, 20 Mar 2024 15:06:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 241092BC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8334EDB;
+	Wed, 20 Mar 2024 15:06:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8334EDB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710943596;
-	bh=45h0HhJiO6jp7P82PjgjBna68F8F1pstnYM0bANAq60=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=eAwXEKO6XswGfG1S1O+ypG+J0t99fkddaglnqAeY8ZgaIXPWwhox+3EUtqnd0y94K
-	 wkJLtBTmeR0LZ0rbpvIDH/RVlIYhq4rWdrYbpsb9l3FaCbgnE1PssCYbxpWukBMwpr
-	 wjsTQEUNJgQsLJkhF2sDxtw9NvZotnN/SMmmYihY=
+	s=default; t=1710943623;
+	bh=gEFqROtczUiEFI4W90FWxxBx5DXrMkaSpL7Qjab0vG4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=V3jnYrs1wjhpaHpSBjZfo2jm/xGsk21llSNyIn9S69HIG8xheWB1fym6+v10jY0OJ
+	 luG8wQQn9LkE4OWSavcuT7th26+Obrrix62TUYbMjgtQRFiiyM8MnqBI3H01T8mqOl
+	 Oj7eujs3t1BWraXyrcvZkeekXLloIS4uhqkVpiw0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24BA4F89736; Wed, 20 Mar 2024 15:00:55 +0100 (CET)
+	id A5EBEF89753; Wed, 20 Mar 2024 15:00:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBB75F89730;
-	Wed, 20 Mar 2024 15:00:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F330F89753;
+	Wed, 20 Mar 2024 15:00:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43D9EF80548; Wed, 20 Mar 2024 08:54:40 +0100 (CET)
-Received: from mail78-63.sinamail.sina.com.cn (mail78-63.sinamail.sina.com.cn
- [219.142.78.63])
+	id 35393F8025F; Wed, 20 Mar 2024 08:56:48 +0100 (CET)
+Received: from mail78-66.sinamail.sina.com.cn (mail78-66.sinamail.sina.com.cn
+ [219.142.78.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B9A16F802DB
-	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 08:54:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9A16F802DB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 882CDF8025F
+	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 08:54:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 882CDF8025F
 Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
 	by sina.net (10.75.30.239) with ESMTP
-	id 65FA962300035F2F; Wed, 20 Mar 2024 15:54:15 +0800 (CST)
+	id 65FA962300035F2F; Wed, 20 Mar 2024 15:54:12 +0800 (CST)
 X-Sender: zhangyi@everest-semi.com
 X-Auth-ID: zhangyi@everest-semi.com
 Authentication-Results: sina.net;
 	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 6FD757475D4E4CF5987442288E09ABDF
-X-SMAIL-UIID: 6FD757475D4E4CF5987442288E09ABDF-20240320-155415
+X-SMAIL-MID: CDFCBF93D30544BCA988F85B8015CF3E
+X-SMAIL-UIID: CDFCBF93D30544BCA988F85B8015CF3E-20240320-155412
 From: Zhang Yi <zhangyi@everest-semi.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
@@ -54,27 +53,25 @@ Cc: tiwai@suse.com,
 	yangxiaohua@everest-semi.com,
 	zhuning@everest-semi.com,
 	zhangyi@everest-semi.com
-Subject: [PATCH 2/2] ASoC: codecs: ES8326: Delete unused REG_SUPPLY
-Date: Wed, 20 Mar 2024 15:54:09 +0800
-Message-Id: <20240320075409.3539-3-zhangyi@everest-semi.com>
+Subject: [PATCH 0/2] ASoC: codecs: ES8326: Reducin powerconsumption and
+Date: Wed, 20 Mar 2024 15:54:07 +0800
+Message-Id: <20240320075409.3539-1-zhangyi@everest-semi.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240320075409.3539-1-zhangyi@everest-semi.com>
-References: <20240320075409.3539-1-zhangyi@everest-semi.com>
 X-MailFrom: zhangyi@everest-semi.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RFJQJJGEZTBUBQ2VUGJHNVOXWJK7RP46
-X-Message-ID-Hash: RFJQJJGEZTBUBQ2VUGJHNVOXWJK7RP46
-X-Mailman-Approved-At: Wed, 20 Mar 2024 13:59:18 +0000
+Message-ID-Hash: J6NQJMGXAFSBZ5HIFTEBGZIZNO7TB7LH
+X-Message-ID-Hash: J6NQJMGXAFSBZ5HIFTEBGZIZNO7TB7LH
+X-Mailman-Approved-At: Wed, 20 Mar 2024 13:59:30 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RFJQJJGEZTBUBQ2VUGJHNVOXWJK7RP46/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J6NQJMGXAFSBZ5HIFTEBGZIZNO7TB7LH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,40 +80,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-REG_SUPPLY mutes the DAC when switching between
-HDMI and speaker, so remove it to fix the mute issues
+We changed the configuration related to hibernation.
+and delete the REG_SUPPLY to cover mute issue.
 
-Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
----
- sound/soc/codecs/es8326.c | 8 --------
- 1 file changed, 8 deletions(-)
+Zhang Yi (2):
+  ASoC: codecs: ES8326: Reducing power consumption
+  ASoC: codecs: ES8326: Delete unused REG_SUPPLY
 
-diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 5c89323035a2..5f6cef25ac5e 100755
---- a/sound/soc/codecs/es8326.c
-+++ b/sound/soc/codecs/es8326.c
-@@ -292,11 +292,6 @@ static const struct snd_soc_dapm_widget es8326_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("LHPMIX", ES8326_DAC2HPMIX, 7, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("RHPMIX", ES8326_DAC2HPMIX, 3, 0, NULL, 0),
- 
--	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPOR Supply", ES8326_HP_CAL,
--			 4, 7, 0, 0),
--	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPOL Supply", ES8326_HP_CAL,
--			 0, 7, 0, 0),
--
- 	SND_SOC_DAPM_OUTPUT("HPOL"),
- 	SND_SOC_DAPM_OUTPUT("HPOR"),
- };
-@@ -316,9 +311,6 @@ static const struct snd_soc_dapm_route es8326_dapm_routes[] = {
- 	{"LHPMIX", NULL, "Left DAC"},
- 	{"RHPMIX", NULL, "Right DAC"},
- 
--	{"HPOR", NULL, "HPOR Supply"},
--	{"HPOL", NULL, "HPOL Supply"},
--
- 	{"HPOL", NULL, "LHPMIX"},
- 	{"HPOR", NULL, "RHPMIX"},
- };
+ sound/soc/codecs/es8326.c | 42 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
+
 -- 
 2.17.1
 
