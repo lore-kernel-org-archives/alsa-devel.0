@@ -4,152 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CA0FC54E58
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Mar 2024 13:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E5AFC54E58
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Mar 2024 18:30:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAD6C2341;
-	Thu, 21 Mar 2024 14:17:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAD6C2341
+	by alsa0.perex.cz (Postfix) with ESMTPS id 733132353;
+	Thu, 21 Mar 2024 19:29:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 733132353
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711027054;
-	bh=qjJx1hdxx7AWRiVd51XdVJfmUvky1MRgFmfAV0o1cPg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1711045798;
+	bh=zAYATeMtAMSyXywpEjHIrjoVSN0gBr394TEV8OH5uaM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lRCvu252v8pBRXcxW0iNnjtw3AWJQZnuuoTP6bJmQqYJNzY+Q5FogguVMH79Zusd/
-	 ZfzAJRWQEnVQrAccPYbTq2Xg42ARot2ax/fLKjN430/ieHtsE2vZHVaTneJMRjeUrm
-	 O+IkFTX0ZvpD+DVrts8LOaZvZagNoboCU/Ufpsno=
+	b=tvXIwIpRw6Kyy470D6dEYBhoSdssWP1JbUdHqyDKm1XmEXK9K++A0rUow3ZML1jXZ
+	 EA3my58+6ZUkIATRoVE4f678sZ8o4CL5Fii2uasBevkMa5eg0jngtEmenaeaPIHFrp
+	 0QFJGdoSXNOn7f5QPlnPtMQKKPlNs0BEqirvXfYs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 129DEF80589; Thu, 21 Mar 2024 14:17:03 +0100 (CET)
+	id 5EAABF8058C; Thu, 21 Mar 2024 19:29:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D68EF80571;
-	Thu, 21 Mar 2024 14:17:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 921DFF805A9;
+	Thu, 21 Mar 2024 19:29:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E8782F804E7; Thu, 21 Mar 2024 14:15:08 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 906ABF804E7; Thu, 21 Mar 2024 19:29:15 +0100 (CET)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
+ [IPv6:2a00:1450:4864:20::229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 38451F8025F
-	for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2024 14:15:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38451F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2CCBDF8025F
+	for <alsa-devel@alsa-project.org>; Thu, 21 Mar 2024 19:29:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CCBDF8025F
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=wJb6xy1k;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=6N1njIe4;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=wJb6xy1k;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=6N1njIe4
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BD1903741C;
-	Thu, 21 Mar 2024 13:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1711026901;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tn3ldjtur9a1l9JTF0Dkjan2b/he36/pTmTOBBfZGiQ=;
-	b=wJb6xy1kd2nuphZKunY+wDQjD8LN3TkAU/ZY9NmmfG23P3NE2cr1OjdqivKTxSOKN9SqeE
-	74O3do5Xbh14zmdgzTh0zaijBnvKW5LvN3aDNaj5fNBu9qSoSgk0jEcQHqzYBcXTG3xLDw
-	Lwxs0Dj9KZMLPWmdeFxqqX9oFPJuZuA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711026901;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tn3ldjtur9a1l9JTF0Dkjan2b/he36/pTmTOBBfZGiQ=;
-	b=6N1njIe4zEHZCjcwHo31wijcYmW3B7NNeVdjMPx1IZgzrYdI20QrQaJWLEUDR3M+MashCo
-	WtOgHoZH8vRDSXBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1711026901;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tn3ldjtur9a1l9JTF0Dkjan2b/he36/pTmTOBBfZGiQ=;
-	b=wJb6xy1kd2nuphZKunY+wDQjD8LN3TkAU/ZY9NmmfG23P3NE2cr1OjdqivKTxSOKN9SqeE
-	74O3do5Xbh14zmdgzTh0zaijBnvKW5LvN3aDNaj5fNBu9qSoSgk0jEcQHqzYBcXTG3xLDw
-	Lwxs0Dj9KZMLPWmdeFxqqX9oFPJuZuA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711026901;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tn3ldjtur9a1l9JTF0Dkjan2b/he36/pTmTOBBfZGiQ=;
-	b=6N1njIe4zEHZCjcwHo31wijcYmW3B7NNeVdjMPx1IZgzrYdI20QrQaJWLEUDR3M+MashCo
-	WtOgHoZH8vRDSXBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 97BE0136AD;
-	Thu, 21 Mar 2024 13:15:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MM+EI9Uy/GWkVgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 21 Mar 2024 13:15:01 +0000
-Date: Thu, 21 Mar 2024 14:15:01 +0100
-Message-ID: <871q83sp4a.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v6.9-merge-window
-In-Reply-To: <20240321112803.598D5C433C7@smtp.kernel.org>
-References: <20240321112803.598D5C433C7@smtp.kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=wJb6xy1k;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=6N1njIe4
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.26 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-1.25)[89.62%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[gmail.com,alsa-project.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Queue-Id: BD1903741C
-Message-ID-Hash: X6XFNFUVKHTZD6HIAYUT6BNNU3UXLN4F
-X-Message-ID-Hash: X6XFNFUVKHTZD6HIAYUT6BNNU3UXLN4F
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=hBOjIzIv
+Received: by mail-lj1-x229.google.com with SMTP id
+ 38308e7fff4ca-2d4a901e284so28531771fa.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 21 Mar 2024 11:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711045743; x=1711650543;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vs5BZUwaXWyx9DjsP3hmBPa0Q/mMIBukAIBdGCnvVlg=;
+        b=hBOjIzIvhnrtJzDXdc5biUa8ILtgltpQ6PEX0m0j+r9qbNLOsr0GzOpSfkdgGnjFYK
+         N5vxTP9hGVU3lPVrV0Gbf4UeY7Anko99C/9rA8znVyQh3TXkEA6K4FbLaCwP3JdEAT9i
+         f7reYOD2RTe6pb/CtUhwR1lTCbW6k8pM8eWOH314x7F1xqQSE0pEpV8iJDE1z0UytLgN
+         HYn49fjpFTEoq02+rcu/k0R60aYxP+UsJj9yMoqztVkcCRYKIUUQlLmmJgio64FC+sN9
+         LD457yRKIYzjylQK34cu5VU1aQekw1G+czhBInBU7XTYLK0MMp7jETSiEYLAYWDELSNX
+         d20Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711045743; x=1711650543;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vs5BZUwaXWyx9DjsP3hmBPa0Q/mMIBukAIBdGCnvVlg=;
+        b=N03OuOo7sdGHGOcFz4VsTNVoXixaztncDWatoh7Jp1FYs4LchMLtVv71AE/0/RRXWQ
+         hIChEcLkEfZDWUCvOGw1obZaiy7aTZHJ0tEbXQN21AvcnttjcLWKPLm1TDQpi7h3qLda
+         6xkrcNhjw0uxEaWdJ+bk/f5pg81MJ28opju0Bt473hQAWudJCppq05SnGwbi0nbn4eeM
+         0Hy+foOkN3B/Y84Ket8goVVeKScwDb7nuE0x0BdG2PPZDHXT5bNqdew3T14e+v19MAML
+         7uraxrXjadjzaOTJiyJwS9d/3f75ZY7PlmfADbf4LEKuQ9lYLcb4oRNKQEJ8QtYfIaOA
+         br6g==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUW1bv3QjPui/wtqMNhpprFLEVh9dv/xEXhCBHlqID+/Ci32mUy0fKQC1iDjmHpgN7YoS+wuHZdz5POK4xRAIBvTrGK8Y39Yr2x+VY=
+X-Gm-Message-State: AOJu0YxYrGfdGdHMklBEI4iTx7iPaUqqeluVJTSswJr+1lb65bpvCeMS
+	g+3gopz+s2pTarliks8cCQKyYkxTuFgQaEYc2yInsNHEP4bf2AEF
+X-Google-Smtp-Source: 
+ AGHT+IHlLxV084PNF9KvdinqIY/5RnBQjRLaYTLjnsTeGxJShM01hzRIKLza1dnWvqk3W23qcD2dAA==
+X-Received: by 2002:a2e:9556:0:b0:2d4:7004:ba8a with SMTP id
+ t22-20020a2e9556000000b002d47004ba8amr259463ljh.53.1711045742805;
+        Thu, 21 Mar 2024 11:29:02 -0700 (PDT)
+Received: from [10.0.0.42] (host-85-29-76-118.kaisa-laajakaista.fi.
+ [85.29.76.118])
+        by smtp.gmail.com with ESMTPSA id
+ p22-20020a2e9a96000000b002d45dd6004esm40852lji.121.2024.03.21.11.29.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 11:29:02 -0700 (PDT)
+Message-ID: <e6994ff1-6c32-4dac-846a-5f4f18b2f996@gmail.com>
+Date: Thu, 21 Mar 2024 20:31:33 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/13] ASoC: ti: davinci-i2s: Opitonally drive DX pin
+ during capture streams
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-14-bastien.curutchet@bootlin.com>
+ <00182d1d-ef29-457f-9e3e-6e9b57592118@gmail.com>
+ <0bb26153-8bcb-475f-8892-5eb925fec538@bootlin.com>
+ <7925bbe5-17e8-42cb-a5f0-4f3e06810a90@gmail.com>
+ <d20dc37c-13fa-43d1-af52-dce8d8dcdd75@gmail.com>
+ <5467add6-0099-4e54-a4f7-12aa149d03c7@bootlin.com>
+Content-Language: en-US
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <5467add6-0099-4e54-a4f7-12aa149d03c7@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ZNQGXKJMFBXX26XE5MUX5CHSY6T7XXJV
+X-Message-ID-Hash: ZNQGXKJMFBXX26XE5MUX5CHSY6T7XXJV
+X-MailFrom: peter.ujfalusi@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -161,7 +127,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X6XFNFUVKHTZD6HIAYUT6BNNU3UXLN4F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZNQGXKJMFBXX26XE5MUX5CHSY6T7XXJV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -170,29 +136,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 21 Mar 2024 12:27:50 +0100,
-Mark Brown wrote:
-> 
-> The following changes since commit e8f897f4afef0031fe618a8e94127a0934896aba:
-> 
->   Linux 6.8 (2024-03-10 13:38:09 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.9-merge-window
-> 
-> for you to fetch changes up to 9a8b202f8cb7ebebc71f1f2a353a21c76d3063a8:
-> 
->   ASoC: soc-compress: Fix and add DPCM locking (2024-03-18 14:41:51 +0000)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.9
-> 
-> A bunch of fixes that came in during the merge window, probably the most
-> substantial thing is the DPCM locking fix for compressed audio which has
-> been lurking for a while.
+Hi Bastien,
 
-Thanks, pulled now.
+On 3/21/24 17:14, Bastien Curutchet wrote:
+>>> I think the definition of the 'ti,drive-dx' is somehow odd. It allows
+>>> you to set it to 0x1234 and the DX pin will show 0x1234 when you capture
+>>> 32bit. If you capture 16bit then it will transmit 0x12 (or 0x34?), no?
+>>> If you have 4 channel capture then I won't speculate what will be on the
+>>> DX pin ;)
+>>>
+>>> Would not be better to say that the DX pin will be driven low or high
+>>> during capture _and_ disable the playback support?
+>>
+>> After some thinking, it might be still better to use the DX pin as GPIO
+>> and either have a custom machine driver which would handle it (set low
+>> when a capture trigger happens) or connect it in DAPM as a supply, bias
+>> or something and ASoC would handle it automagically.
+>>
+>> I think that would be cleaner in many ways. What do you think?
+>>
+> I agree, that would be cleaner. I ran a few tests to see if that would
+> work on my hardware. It doesn't ... So I looked back to the schematics
+> and found two reasons :
+>  * the DX pin needs to be in sync with the clock.
 
+I'm not sure what this means, sync with which clock?
 
-Takashi
+>  * the DX pin needs to be in a high-impedance state between two frames
+>    so a pull-up can drive it back up. Actually, the DX pin is also
+>    linked to the FSR pin so it provides the frame clock to the capture
+>    stream.
+
+Hrm, you are using the DX pin as FSR for the capture? Why not McBSP.FSR pin?
+
+Looking back to the patch, one thing stood out: you are setting the
+XDATDLY to 2.
+You have some sort of T1 framing on the bus? The pullup will make the DX
+line high in for the framing bit, right?
+Or you simulate another FSR line with T1 framing DX?
+
+The 'ti,drive-dx' sounds like a bad property for sure, you have T1
+framing and driving the DX to certain level.
+It is like DSP_A (1 bit delay) playing constant 0x2 ?
+
+Can you use aplay /dev/zero and a DT property to select T1 framing for
+the playback? Or that would be too coarse for timing the start of
+playback and capture?
+
+-- 
+Péter
