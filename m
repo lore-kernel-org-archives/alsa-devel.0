@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B39E8C54E58
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 22:15:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CC92C54E64
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 22:15:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3045B22A5;
-	Mon, 25 Mar 2024 23:15:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3045B22A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D10082343;
+	Mon, 25 Mar 2024 23:15:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D10082343
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711404917;
-	bh=DFPuc2K8UUJmDtViTOMBZVHUupgaVBLQVlGwzidkiy4=;
+	s=default; t=1711404945;
+	bh=TGe/aTbC/Ax1DpTq9vEIfquwDuAbVXTLGFXWDTJr6Qs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eUTQl5VnVTBbBVAi41wFuXONGjtqFqDWhGtwUSXbrAhdpE15+OSSnwkeTlusurThf
-	 9nDGBYQLqriuKZAdaa0a9Le/62sW34uG2uKFwffVjr1bnFsh2FFbFLx/ZO6SqXupSB
-	 mzILYQKCn912plr4ewpYw4tRX8u6mgvlR5BYL5pI=
+	b=vA5qyjxmS/kmdrSeim0RYnDJjxAp1UYxPKGPUpn4s+FBkEwdV6AqKQ6YfqXnd4Y62
+	 QEFvTlMfRAsx24/E5Em/DxwbaVUVZK7w84WGJjelxXohfo6RN2FUf00oibZLcAk8PJ
+	 JBkT/JwvPfsMmtdu3eF6X0vJoNybIcw8i6YRWA2o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2431CF80793; Mon, 25 Mar 2024 23:12:17 +0100 (CET)
+	id 4AE7BF80879; Mon, 25 Mar 2024 23:12:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82A04F8076F;
-	Mon, 25 Mar 2024 23:12:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92F99F805FD;
+	Mon, 25 Mar 2024 23:12:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D2A9F8069F; Mon, 25 Mar 2024 23:11:50 +0100 (CET)
+	id 921A3F806AF; Mon, 25 Mar 2024 23:11:52 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73F1CF80093
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 23:11:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73F1CF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 930F1F80563
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 23:11:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 930F1F80563
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=P9v5Wy9Y
+ header.s=Intel header.b=VnNgUMPA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711404690; x=1742940690;
+  t=1711404691; x=1742940691;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DFPuc2K8UUJmDtViTOMBZVHUupgaVBLQVlGwzidkiy4=;
-  b=P9v5Wy9YwC5t9vNYaWrhCktJUUtYSRcTUadYYYkY1aovkAS02PTLJBl/
-   M9Q3EZuOV5gx0O0GYeFzun88qcFfKc4VImaMIzKyhTao+sn5uYJ3P1INd
-   19I7MPbbiXvo1dcIHabazLr2TDIYbOkeEmp1WwQxxbWO1M4t8o7rb1Sb6
-   SllgMIrbqOEmOc7B6Hn03YxjB1XpTFm3xcNeFnFfjqztYguZx4KglryKe
-   fcvTE4iBdpbm10Z1VrA8sV2qWFfYEWJJZ5GUJS+sE0S4PbcGE3BALGM2G
-   RZzY0DHr59GqFlKIUu/KLuNr7RsOPTP9pBurbhdjKNbtbyRXEV/D7Wtoi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6643661"
+  bh=TGe/aTbC/Ax1DpTq9vEIfquwDuAbVXTLGFXWDTJr6Qs=;
+  b=VnNgUMPANpGmEGEy2gzvpPmS74oSgY/JzHFGPYk5cunSAQkFOf9iaWvS
+   nWbbSNYq1Gvwy0cbgEiDwr1c0MV5sJdMq4ngJKQpLZw6bVvK+JgS8yW4B
+   24hGaOZyHeRur/H/jEqYy5hVhmSu/og45mWx5lXFHn89AU45rPgfHZqKe
+   o0QUw7JjOsxS1BfGpqiDh9+Dxk3x9kD9mN1ULxWacdguDhrGxqapWInQI
+   W94zH7Xs1N5Dw8rwL6iUxRpk39VGqY6wpeg971NdPF6kbTAIc8IcA8HN3
+   5OAb3YLwK3wLN7oHoDmjnJ7i6/sLFiA4SEXe5q2ouF2RIb40kaboXJEY7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6643665"
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="6643661"
+   d="scan'208";a="6643665"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
   by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 15:11:24 -0700
+ 25 Mar 2024 15:11:25 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="15722151"
+   d="scan'208";a="15722156"
 Received: from jaimbres-mobl2.amr.corp.intel.com (HELO pbossart-mobl6.lan)
  ([10.212.98.109])
   by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 15:11:23 -0700
+ 25 Mar 2024 15:11:24 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -72,16 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/21] ASoC: Intel: sof_da7219: add SOF_DA7219_MCLK_EN quirk
-Date: Mon, 25 Mar 2024 17:10:52 -0500
-Message-Id: <20240325221059.206042-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 15/21] ASoC: Intel: sof_da7219: board id cleanup for jsl
+ boards
+Date: Mon, 25 Mar 2024 17:10:53 -0500
+Message-Id: <20240325221059.206042-16-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240325221059.206042-1-pierre-louis.bossart@linux.intel.com>
 References: <20240325221059.206042-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NUZ2ZNGKGRZHU6Q45QWNQWEC47DZYRWC
-X-Message-ID-Hash: NUZ2ZNGKGRZHU6Q45QWNQWEC47DZYRWC
+Message-ID-Hash: KKJBTZV6AL2H5VKYL5CLR3XQQDWBOIER
+X-Message-ID-Hash: KKJBTZV6AL2H5VKYL5CLR3XQQDWBOIER
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NUZ2ZNGKGRZHU6Q45QWNQWEC47DZYRWC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KKJBTZV6AL2H5VKYL5CLR3XQQDWBOIER/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,87 +106,58 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-PLL bypass mode requires mclk to be present. However, mclk pin is not
-connected in JSL boards. Here we add the SOF_DA7219_MCLK_EN quirk to
-improve driver readability.
+Introduce "jsl_da7219_def" board to reduce the number of jsl board
+configs. This config could support all boards which implement
+headphone codec on SSP0 and speaker amplifiers on SSP1.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_board_helpers.h |  2 ++
- sound/soc/intel/boards/sof_da7219.c        | 13 ++++++++++---
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/sof_da7219.c               | 8 +-------
+ sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 4 ++--
+ 2 files changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_board_helpers.h b/sound/soc/intel/boards/sof_board_helpers.h
-index 1701481ab6ae..2f27ad8726f8 100644
---- a/sound/soc/intel/boards/sof_board_helpers.h
-+++ b/sound/soc/intel/boards/sof_board_helpers.h
-@@ -87,10 +87,12 @@ enum {
-  * sof_da7219_private: private data for da7219 machine driver
-  *
-  * @is_jsl_board: true for JSL boards
-+ * @mclk_en: true for mclk pin is connected
-  * @pll_bypass: true for PLL bypass mode
-  */
- struct sof_da7219_private {
- 	bool is_jsl_board;
-+	bool mclk_en;
- 	bool pll_bypass;
- };
- 
 diff --git a/sound/soc/intel/boards/sof_da7219.c b/sound/soc/intel/boards/sof_da7219.c
-index 3d9c48107f58..4417e2b7adfd 100644
+index 4417e2b7adfd..3057798a0dca 100644
 --- a/sound/soc/intel/boards/sof_da7219.c
 +++ b/sound/soc/intel/boards/sof_da7219.c
-@@ -20,6 +20,7 @@
+@@ -375,13 +375,7 @@ static int audio_probe(struct platform_device *pdev)
  
- /* Driver-specific board quirks: from bit 0 to 7 */
- #define SOF_DA7219_JSL_BOARD			BIT(0)
-+#define SOF_DA7219_MCLK_EN			BIT(1)
- 
- #define DIALOG_CODEC_DAI	"da7219-hifi"
- 
-@@ -126,7 +127,8 @@ static int da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	 * Use PLL bypass mode if MCLK is available, be sure to set the
- 	 * frequency of MCLK to 12.288 or 24.576MHz on topology side.
- 	 */
--	if (mclk_rate == 12288000 || mclk_rate == 24576000) {
-+	if (ctx->da7219.mclk_en &&
-+	    (mclk_rate == 12288000 || mclk_rate == 24576000)) {
- 		/* PLL bypass mode */
- 		dev_dbg(rtd->dev, "pll bypass mode, mclk rate %d\n", mclk_rate);
- 
-@@ -337,6 +339,9 @@ static int audio_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	if (board_quirk & SOF_DA7219_MCLK_EN)
-+		ctx->da7219.mclk_en = true;
-+
- 	/* update dai_link */
- 	ret = sof_card_dai_links_create(&pdev->dev, &card_da7219, ctx);
- 	if (ret)
-@@ -383,7 +388,8 @@ static const struct platform_device_id board_ids[] = {
+ static const struct platform_device_id board_ids[] = {
+ 	{
+-		.name = "jsl_mx98373_da7219",
+-		.driver_data = (kernel_ulong_t)(SOF_DA7219_JSL_BOARD |
+-					SOF_SSP_PORT_CODEC(0) |
+-					SOF_SSP_PORT_AMP(1)),
+-	},
+-	{
+-		.name = "jsl_mx98360_da7219",
++		.name = "jsl_da7219_def",
+ 		.driver_data = (kernel_ulong_t)(SOF_DA7219_JSL_BOARD |
+ 					SOF_SSP_PORT_CODEC(0) |
+ 					SOF_SSP_PORT_AMP(1)),
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index a6ac2525df17..d4b397c53bcc 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -52,14 +52,14 @@ static const struct snd_soc_acpi_codecs rt5682_rt5682s_hp = {
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 	{
+ 		.id = "DLGS7219",
+-		.drv_name = "jsl_mx98373_da7219",
++		.drv_name = "jsl_da7219_def",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &mx98373_spk,
+ 		.sof_tplg_filename = "sof-jsl-da7219.tplg",
  	},
  	{
- 		.name = "adl_mx98360_da7219",
--		.driver_data = (kernel_ulong_t)(SOF_SSP_PORT_CODEC(0) |
-+		.driver_data = (kernel_ulong_t)(SOF_DA7219_MCLK_EN |
-+					SOF_SSP_PORT_CODEC(0) |
- 					SOF_SSP_PORT_AMP(1) |
- 					SOF_NUM_IDISP_HDMI(4) |
- 					SOF_SSP_PORT_BT_OFFLOAD(2) |
-@@ -391,7 +397,8 @@ static const struct platform_device_id board_ids[] = {
- 	},
- 	{
- 		.name = "rpl_mx98360_da7219",
--		.driver_data = (kernel_ulong_t)(SOF_SSP_PORT_CODEC(0) |
-+		.driver_data = (kernel_ulong_t)(SOF_DA7219_MCLK_EN |
-+					SOF_SSP_PORT_CODEC(0) |
- 					SOF_SSP_PORT_AMP(1) |
- 					SOF_NUM_IDISP_HDMI(4) |
- 					SOF_SSP_PORT_BT_OFFLOAD(2) |
+ 		.id = "DLGS7219",
+-		.drv_name = "jsl_mx98360_da7219",
++		.drv_name = "jsl_da7219_def",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &mx98360a_spk,
+ 		.sof_tplg_filename = "sof-jsl-da7219-mx98360a.tplg",
 -- 
 2.40.1
 
