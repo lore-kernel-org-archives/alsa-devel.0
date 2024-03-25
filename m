@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC065C54E58
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 22:20:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65B31C54E58
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 22:21:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB29A240B;
-	Mon, 25 Mar 2024 23:20:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB29A240B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4D0523D7;
+	Mon, 25 Mar 2024 23:20:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4D0523D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711405246;
-	bh=aZ8MMlAsNmooCug9EY0e4T+B0db6AgX3G0/wpztkAFc=;
+	s=default; t=1711405260;
+	bh=Ec93JCgEBK5yGK/6SJWBaY7iFvurCzYCZGHPVHZVIEk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RMdsy7wNKLgJYbeQBR7aAtWlrQqWaUnhlEUtO3qQbHj1myq2II9aPbjXI/RMFK2mS
-	 z4Tph/KnTtN93NNL0y8IHyOqmSbZ31Q2w8P5RF47I/hhzJPvq6LHpThgsURsfKzoO6
-	 WLGOiNrvfrg5Mzd5pBYfThipwq5mbhJf5HWe5dZU=
+	b=McIORcjEwG5GIcOpquiGu/cTRzgsIo/d9h5G52hn/tDY6WOhyq6Kd61EhwmX0typc
+	 hWa4d338+JG+o1wb1GkCfw8D1KbhOMR4guzYAkAJjqTqY/PApKERwwlJ6T0Co7rQnB
+	 dL9mdK2xFY+XqTy8gJ14BDMEyREYWNRQTniCp8OA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9AC0F80684; Mon, 25 Mar 2024 23:19:05 +0100 (CET)
+	id 47C54F8069F; Mon, 25 Mar 2024 23:19:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDB22F80688;
-	Mon, 25 Mar 2024 23:19:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2BEEF806AA;
+	Mon, 25 Mar 2024 23:19:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A8AAF8025F; Mon, 25 Mar 2024 23:18:52 +0100 (CET)
+	id 74C47F80640; Mon, 25 Mar 2024 23:19:02 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 598E6F80580
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 23:18:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 598E6F80580
+	by alsa1.perex.cz (Postfix) with ESMTPS id 419D9F8058C
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 23:18:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 419D9F8058C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=BGXFu6hN
+ header.s=Intel header.b=G4iPwZkF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711405118; x=1742941118;
+  t=1711405119; x=1742941119;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=aZ8MMlAsNmooCug9EY0e4T+B0db6AgX3G0/wpztkAFc=;
-  b=BGXFu6hNfah9tHioFTdU6W0W/9+5c9Sh02RsGKg3kZptRLmNBPOqx393
-   /PP28MOj8Hp4lwUw6GuylmFmDeS19UudjJqHDa2mDw+7UH3zRQ3f2AUdo
-   pmaNA2/j5umUPruTh4b29+LkBCLOWyFBnUlgwopb2M/ggpdH24Bnh4ggs
-   0AQyFvXJSsPfXDU0R5xetFNPyT2rZv84YAp3OXV7txQjxH8aivCC1lI44
-   YJxfRsjir4cs8JrQekFKYSK9WRTVhH+QxXsAMXSvEYpnjpwKwfDIE5aBm
-   IH4dx8ymZTBLGT2rLCtmskx9Hz2ZAkQnrs355/2W1uxUC+zb8XOXeLRk3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6300376"
+  bh=Ec93JCgEBK5yGK/6SJWBaY7iFvurCzYCZGHPVHZVIEk=;
+  b=G4iPwZkFLD3e8SU1/45S1AyuSb5VQ8UadzA7GS3CYR2FDlnvnb4U1DoX
+   XzT3UW7sbCaETwybrH1ls06iot4I+F2lfo6UM+4TsgDH9GbeVX8UbdneE
+   D2tm4tPeR/BoDDw6z1F4QoVXFCMSSKNTQBCnUepgl/t5ACjAEC3dQ8Lmv
+   Gxhk1WAWanrjE1wYZl6yuBCBgU1WQXVL5AUuy+7ziVDOq9vWpzhS/xShr
+   AbkXDno7/DTrewPPNpBdL4tg7Jg3orGqaUxN/6kLwftKffe7A9qnpInFc
+   lR6OiZTyckebJQUKNGKlg8WMpunDtTkifygjSEJQWrqVgT0FHvzfK+eQ0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6300388"
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="6300376"
+   d="scan'208";a="6300388"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
   by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 15:18:33 -0700
+ 25 Mar 2024 15:18:34 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="20309646"
+   d="scan'208";a="20309649"
 Received: from jaimbres-mobl2.amr.corp.intel.com (HELO pbossart-mobl6.lan)
  ([10.212.98.109])
   by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 15:18:32 -0700
+ 25 Mar 2024 15:18:33 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Chao Song <chao.song@linux.intel.com>
-Subject: [PATCH 3/6] ASoC: rt711-sdw: fix locking sequence
-Date: Mon, 25 Mar 2024 17:18:14 -0500
-Message-Id: <20240325221817.206465-4-pierre-louis.bossart@linux.intel.com>
+	Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 6/6] ASoC: rt-sdw*: add __func__ to all error logs
+Date: Mon, 25 Mar 2024 17:18:17 -0500
+Message-Id: <20240325221817.206465-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240325221817.206465-1-pierre-louis.bossart@linux.intel.com>
 References: <20240325221817.206465-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HNIT2X6WGYYJDJHYLMQB2K4FGFDQEKVU
-X-Message-ID-Hash: HNIT2X6WGYYJDJHYLMQB2K4FGFDQEKVU
+Message-ID-Hash: TYCTOEZGGQ6W2O46VGQ2VIMXK5TGHHP3
+X-Message-ID-Hash: TYCTOEZGGQ6W2O46VGQ2VIMXK5TGHHP3
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HNIT2X6WGYYJDJHYLMQB2K4FGFDQEKVU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TYCTOEZGGQ6W2O46VGQ2VIMXK5TGHHP3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,34 +102,813 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The disable_irq_lock protects the 'disable_irq' value, we need to lock
-before testing it.
+The drivers for Realtek SoundWire codecs use similar logs, which is
+problematic to analyze problems reported by CI tools, e.g. "Failed to
+get private value: 752001 => 0000 ret=-5". It's not uncommon to have
+several Realtek devices on the same platform, having the same log
+thrown makes support difficult.
 
-Fixes: b69de265bd0e ("ASoC: rt711: fix for JD event handling in ClockStop Mode0")
+This patch adds __func__ to all error logs which didn't already
+include it.
+
+No functionality change, only error logs are modified.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Chao Song <chao.song@linux.intel.com>
 ---
- sound/soc/codecs/rt711-sdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt1316-sdw.c      |  8 +++---
+ sound/soc/codecs/rt1318-sdw.c      |  8 +++---
+ sound/soc/codecs/rt5682-sdw.c      | 12 ++++----
+ sound/soc/codecs/rt700.c           | 16 +++++------
+ sound/soc/codecs/rt711-sdca-sdw.c  |  2 +-
+ sound/soc/codecs/rt711-sdca.c      | 18 ++++++------
+ sound/soc/codecs/rt711-sdw.c       |  4 +--
+ sound/soc/codecs/rt711.c           | 16 +++++------
+ sound/soc/codecs/rt712-sdca-dmic.c | 24 +++++++++-------
+ sound/soc/codecs/rt712-sdca-sdw.c  |  2 +-
+ sound/soc/codecs/rt712-sdca.c      | 20 ++++++-------
+ sound/soc/codecs/rt715-sdca-sdw.c  |  2 +-
+ sound/soc/codecs/rt715-sdca.c      | 46 +++++++++++++++---------------
+ sound/soc/codecs/rt715-sdw.c       |  4 +--
+ sound/soc/codecs/rt715.c           | 24 ++++++++--------
+ sound/soc/codecs/rt722-sdca.c      | 21 +++++++-------
+ 16 files changed, 115 insertions(+), 112 deletions(-)
 
+diff --git a/sound/soc/codecs/rt1316-sdw.c b/sound/soc/codecs/rt1316-sdw.c
+index 47511f70119a..0b3bf920bcab 100644
+--- a/sound/soc/codecs/rt1316-sdw.c
++++ b/sound/soc/codecs/rt1316-sdw.c
+@@ -537,7 +537,7 @@ static int rt1316_sdw_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt1316->sdw_slave, &stream_config,
+ 				&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+@@ -577,12 +577,12 @@ static int rt1316_sdw_parse_dt(struct rt1316_sdw_priv *rt1316, struct device *de
+ 	if (rt1316->bq_params_cnt) {
+ 		rt1316->bq_params = devm_kzalloc(dev, rt1316->bq_params_cnt, GFP_KERNEL);
+ 		if (!rt1316->bq_params) {
+-			dev_err(dev, "Could not allocate bq_params memory\n");
++			dev_err(dev, "%s: Could not allocate bq_params memory\n", __func__);
+ 			ret = -ENOMEM;
+ 		} else {
+ 			ret = device_property_read_u8_array(dev, "realtek,bq-params", rt1316->bq_params, rt1316->bq_params_cnt);
+ 			if (ret < 0)
+-				dev_err(dev, "Could not read list of realtek,bq-params\n");
++				dev_err(dev, "%s: Could not read list of realtek,bq-params\n", __func__);
+ 		}
+ 	}
+ 
+@@ -759,7 +759,7 @@ static int __maybe_unused rt1316_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT1316_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n", __func__);
+ 		sdw_show_ping_status(slave->bus, true);
+ 
+ 		return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/rt1318-sdw.c b/sound/soc/codecs/rt1318-sdw.c
+index ff364bde4a08..462c9a4b1be5 100644
+--- a/sound/soc/codecs/rt1318-sdw.c
++++ b/sound/soc/codecs/rt1318-sdw.c
+@@ -606,7 +606,7 @@ static int rt1318_sdw_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt1318->sdw_slave, &stream_config,
+ 				&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+@@ -631,8 +631,8 @@ static int rt1318_sdw_hw_params(struct snd_pcm_substream *substream,
+ 		sampling_rate = RT1318_SDCA_RATE_192000HZ;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Rate %d is not supported\n",
+-			params_rate(params));
++		dev_err(component->dev, "%s: Rate %d is not supported\n",
++			__func__, params_rate(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -835,7 +835,7 @@ static int __maybe_unused rt1318_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT1318_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n", __func__);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 1fdbef5fd6cb..f9ee42c13dba 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -132,7 +132,7 @@ static int rt5682_sdw_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt5682->slave, &stream_config,
+ 				      &port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+@@ -315,8 +315,8 @@ static int rt5682_sdw_init(struct device *dev, struct regmap *regmap,
+ 					  &rt5682_sdw_indirect_regmap);
+ 	if (IS_ERR(rt5682->regmap)) {
+ 		ret = PTR_ERR(rt5682->regmap);
+-		dev_err(dev, "Failed to allocate register map: %d\n",
+-			ret);
++		dev_err(dev, "%s: Failed to allocate register map: %d\n",
++			__func__, ret);
+ 		return ret;
+ 	}
+ 
+@@ -400,7 +400,7 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ 	}
+ 
+ 	if (val != DEVICE_ID) {
+-		dev_err(dev, "Device with ID register %x is not rt5682\n", val);
++		dev_err(dev, "%s: Device with ID register %x is not rt5682\n", __func__, val);
+ 		ret = -ENODEV;
+ 		goto err_nodev;
+ 	}
+@@ -648,7 +648,7 @@ static int rt5682_bus_config(struct sdw_slave *slave,
+ 
+ 	ret = rt5682_clock_config(&slave->dev);
+ 	if (ret < 0)
+-		dev_err(&slave->dev, "Invalid clk config");
++		dev_err(&slave->dev, "%s: Invalid clk config", __func__);
+ 
+ 	return ret;
+ }
+@@ -775,7 +775,7 @@ static int __maybe_unused rt5682_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT5682_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n", __func__);
+ 		sdw_show_ping_status(slave->bus, true);
+ 
+ 		return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
+index 0ebf344a1b60..434b926f96c8 100644
+--- a/sound/soc/codecs/rt700.c
++++ b/sound/soc/codecs/rt700.c
+@@ -37,8 +37,8 @@ static int rt700_index_write(struct regmap *regmap,
+ 
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+-		pr_err("Failed to set private value: %06x <= %04x ret=%d\n",
+-			addr, value, ret);
++		pr_err("%s: Failed to set private value: %06x <= %04x ret=%d\n",
++		       __func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -52,8 +52,8 @@ static int rt700_index_read(struct regmap *regmap,
+ 	*value = 0;
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+-		pr_err("Failed to get private value: %06x => %04x ret=%d\n",
+-			addr, *value, ret);
++		pr_err("%s: Failed to get private value: %06x => %04x ret=%d\n",
++		       __func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -930,14 +930,14 @@ static int rt700_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		port_config.num += 2;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Invalid DAI id %d\n", dai->id);
++		dev_err(component->dev, "%s: Invalid DAI id %d\n", __func__, dai->id);
+ 		return -EINVAL;
+ 	}
+ 
+ 	retval = sdw_stream_add_slave(rt700->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+@@ -945,8 +945,8 @@ static int rt700_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		/* bit 3:0 Number of Channel */
+ 		val |= (params_channels(params) - 1);
+ 	} else {
+-		dev_err(component->dev, "Unsupported channels %d\n",
+-			params_channels(params));
++		dev_err(component->dev, "%s: Unsupported channels %d\n",
++			__func__, params_channels(params));
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt711-sdca-sdw.c b/sound/soc/codecs/rt711-sdca-sdw.c
+index b8471b2d8f4f..2636c2eea4bc 100644
+--- a/sound/soc/codecs/rt711-sdca-sdw.c
++++ b/sound/soc/codecs/rt711-sdca-sdw.c
+@@ -451,7 +451,7 @@ static int __maybe_unused rt711_sdca_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT711_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n", __func__);
+ 		sdw_show_ping_status(slave->bus, true);
+ 
+ 		return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
+index 447154cb6010..1e8dbfc3ecd9 100644
+--- a/sound/soc/codecs/rt711-sdca.c
++++ b/sound/soc/codecs/rt711-sdca.c
+@@ -36,8 +36,8 @@ static int rt711_sdca_index_write(struct rt711_sdca_priv *rt711,
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt711->slave->dev,
+-			"Failed to set private value: %06x <= %04x ret=%d\n",
+-			addr, value, ret);
++			"%s: Failed to set private value: %06x <= %04x ret=%d\n",
++			__func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -52,8 +52,8 @@ static int rt711_sdca_index_read(struct rt711_sdca_priv *rt711,
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt711->slave->dev,
+-			"Failed to get private value: %06x => %04x ret=%d\n",
+-			addr, *value, ret);
++			"%s: Failed to get private value: %06x => %04x ret=%d\n",
++			__func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -1293,13 +1293,13 @@ static int rt711_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt711->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+ 	if (params_channels(params) > 16) {
+-		dev_err(component->dev, "Unsupported channels %d\n",
+-			params_channels(params));
++		dev_err(component->dev, "%s: Unsupported channels %d\n",
++			__func__, params_channels(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1318,8 +1318,8 @@ static int rt711_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		sampling_rate = RT711_SDCA_RATE_192000HZ;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Rate %d is not supported\n",
+-			params_rate(params));
++		dev_err(component->dev, "%s: Rate %d is not supported\n",
++			__func__, params_rate(params));
+ 		return -EINVAL;
+ 	}
+ 
 diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-index 3f5773310ae8..988451f24a75 100644
+index 988451f24a75..0d3b43dd22e6 100644
 --- a/sound/soc/codecs/rt711-sdw.c
 +++ b/sound/soc/codecs/rt711-sdw.c
-@@ -536,12 +536,12 @@ static int __maybe_unused rt711_dev_resume(struct device *dev)
- 		return 0;
+@@ -408,7 +408,7 @@ static int rt711_bus_config(struct sdw_slave *slave,
  
- 	if (!slave->unattach_request) {
-+		mutex_lock(&rt711->disable_irq_lock);
- 		if (rt711->disable_irq == true) {
--			mutex_lock(&rt711->disable_irq_lock);
- 			sdw_write_no_pm(slave, SDW_SCP_INTMASK1, SDW_SCP_INT1_IMPL_DEF);
- 			rt711->disable_irq = false;
--			mutex_unlock(&rt711->disable_irq_lock);
+ 	ret = rt711_clock_config(&slave->dev);
+ 	if (ret < 0)
+-		dev_err(&slave->dev, "Invalid clk config");
++		dev_err(&slave->dev, "%s: Invalid clk config", __func__);
+ 
+ 	return ret;
+ }
+@@ -548,7 +548,7 @@ static int __maybe_unused rt711_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT711_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n", __func__);
+ 		return -ETIMEDOUT;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
+index 66eaed13b0d6..5446f9506a16 100644
+--- a/sound/soc/codecs/rt711.c
++++ b/sound/soc/codecs/rt711.c
+@@ -37,8 +37,8 @@ static int rt711_index_write(struct regmap *regmap,
+ 
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+-		pr_err("Failed to set private value: %06x <= %04x ret=%d\n",
+-			addr, value, ret);
++		pr_err("%s: Failed to set private value: %06x <= %04x ret=%d\n",
++		       __func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -52,8 +52,8 @@ static int rt711_index_read(struct regmap *regmap,
+ 	*value = 0;
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+-		pr_err("Failed to get private value: %06x => %04x ret=%d\n",
+-			addr, *value, ret);
++		pr_err("%s: Failed to get private value: %06x => %04x ret=%d\n",
++		       __func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -428,7 +428,7 @@ static void rt711_jack_init(struct rt711_priv *rt711)
+ 				RT711_HP_JD_FINAL_RESULT_CTL_JD12);
+ 			break;
+ 		default:
+-			dev_warn(rt711->component->dev, "Wrong JD source\n");
++			dev_warn(rt711->component->dev, "%s: Wrong JD source\n", __func__);
+ 			break;
  		}
-+		mutex_unlock(&rt711->disable_irq_lock);
- 		goto regmap_sync;
+ 
+@@ -1020,7 +1020,7 @@ static int rt711_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt711->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+@@ -1028,8 +1028,8 @@ static int rt711_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		/* bit 3:0 Number of Channel */
+ 		val |= (params_channels(params) - 1);
+ 	} else {
+-		dev_err(component->dev, "Unsupported channels %d\n",
+-			params_channels(params));
++		dev_err(component->dev, "%s: Unsupported channels %d\n",
++			__func__, params_channels(params));
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt712-sdca-dmic.c b/sound/soc/codecs/rt712-sdca-dmic.c
+index 0926b26619bd..012b79e72cf6 100644
+--- a/sound/soc/codecs/rt712-sdca-dmic.c
++++ b/sound/soc/codecs/rt712-sdca-dmic.c
+@@ -139,8 +139,8 @@ static int rt712_sdca_dmic_index_write(struct rt712_sdca_dmic_priv *rt712,
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt712->slave->dev,
+-			"Failed to set private value: %06x <= %04x ret=%d\n",
+-			addr, value, ret);
++			"%s: Failed to set private value: %06x <= %04x ret=%d\n",
++			__func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -155,8 +155,8 @@ static int rt712_sdca_dmic_index_read(struct rt712_sdca_dmic_priv *rt712,
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt712->slave->dev,
+-			"Failed to get private value: %06x => %04x ret=%d\n",
+-			addr, *value, ret);
++			"%s: Failed to get private value: %06x => %04x ret=%d\n",
++			__func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -317,7 +317,8 @@ static int rt712_sdca_dmic_set_gain_put(struct snd_kcontrol *kcontrol,
+ 	for (i = 0; i < p->count; i++) {
+ 		err = regmap_write(rt712->mbq_regmap, p->reg_base + i, gain_val[i]);
+ 		if (err < 0)
+-			dev_err(&rt712->slave->dev, "0x%08x can't be set\n", p->reg_base + i);
++			dev_err(&rt712->slave->dev, "%s: 0x%08x can't be set\n",
++				__func__, p->reg_base + i);
+ 	}
+ 
+ 	return changed;
+@@ -667,13 +668,13 @@ static int rt712_sdca_dmic_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt712->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+ 	if (params_channels(params) > 4) {
+-		dev_err(component->dev, "Unsupported channels %d\n",
+-			params_channels(params));
++		dev_err(component->dev, "%s: Unsupported channels %d\n",
++			__func__, params_channels(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -698,8 +699,8 @@ static int rt712_sdca_dmic_hw_params(struct snd_pcm_substream *substream,
+ 		sampling_rate = RT712_SDCA_RATE_192000HZ;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Rate %d is not supported\n",
+-			params_rate(params));
++		dev_err(component->dev, "%s: Rate %d is not supported\n",
++			__func__, params_rate(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -923,7 +924,8 @@ static int __maybe_unused rt712_sdca_dmic_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT712_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n",
++			__func__);
+ 		sdw_show_ping_status(slave->bus, true);
+ 
+ 		return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/rt712-sdca-sdw.c b/sound/soc/codecs/rt712-sdca-sdw.c
+index 36d0dd532b8d..4e9ab3ef135b 100644
+--- a/sound/soc/codecs/rt712-sdca-sdw.c
++++ b/sound/soc/codecs/rt712-sdca-sdw.c
+@@ -452,7 +452,7 @@ static int __maybe_unused rt712_sdca_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT712_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n", __func__);
+ 		sdw_show_ping_status(slave->bus, true);
+ 
+ 		return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/rt712-sdca.c b/sound/soc/codecs/rt712-sdca.c
+index 6954fbe7ec5f..b503de9fda80 100644
+--- a/sound/soc/codecs/rt712-sdca.c
++++ b/sound/soc/codecs/rt712-sdca.c
+@@ -34,8 +34,8 @@ static int rt712_sdca_index_write(struct rt712_sdca_priv *rt712,
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt712->slave->dev,
+-			"Failed to set private value: %06x <= %04x ret=%d\n",
+-			addr, value, ret);
++			"%s: Failed to set private value: %06x <= %04x ret=%d\n",
++			__func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -50,8 +50,8 @@ static int rt712_sdca_index_read(struct rt712_sdca_priv *rt712,
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt712->slave->dev,
+-			"Failed to get private value: %06x => %04x ret=%d\n",
+-			addr, *value, ret);
++			"%s: Failed to get private value: %06x => %04x ret=%d\n",
++			__func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -1060,13 +1060,13 @@ static int rt712_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt712->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+ 	if (params_channels(params) > 16) {
+-		dev_err(component->dev, "Unsupported channels %d\n",
+-			params_channels(params));
++		dev_err(component->dev, "%s: Unsupported channels %d\n",
++			__func__, params_channels(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1085,8 +1085,8 @@ static int rt712_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		sampling_rate = RT712_SDCA_RATE_192000HZ;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Rate %d is not supported\n",
+-			params_rate(params));
++		dev_err(component->dev, "%s: Rate %d is not supported\n",
++			__func__, params_rate(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1106,7 +1106,7 @@ static int rt712_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			sampling_rate);
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Wrong DAI id\n");
++		dev_err(component->dev, "%s: Wrong DAI id\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt715-sdca-sdw.c b/sound/soc/codecs/rt715-sdca-sdw.c
+index ab54a67a27eb..ee450126106f 100644
+--- a/sound/soc/codecs/rt715-sdca-sdw.c
++++ b/sound/soc/codecs/rt715-sdca-sdw.c
+@@ -237,7 +237,7 @@ static int __maybe_unused rt715_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->enumeration_complete,
+ 					   msecs_to_jiffies(RT715_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Enumeration not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Enumeration not complete, timed out\n", __func__);
+ 		sdw_show_ping_status(slave->bus, true);
+ 
+ 		return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
+index 4533eedd7e18..3fb7b9adb61d 100644
+--- a/sound/soc/codecs/rt715-sdca.c
++++ b/sound/soc/codecs/rt715-sdca.c
+@@ -41,8 +41,8 @@ static int rt715_sdca_index_write(struct rt715_sdca_priv *rt715,
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt715->slave->dev,
+-			"Failed to set private value: %08x <= %04x %d\n",
+-			addr, value, ret);
++			"%s: Failed to set private value: %08x <= %04x %d\n",
++			__func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -59,8 +59,8 @@ static int rt715_sdca_index_read(struct rt715_sdca_priv *rt715,
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt715->slave->dev,
+-				"Failed to get private value: %06x => %04x ret=%d\n",
+-				addr, *value, ret);
++			"%s: Failed to get private value: %06x => %04x ret=%d\n",
++			__func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -152,8 +152,8 @@ static int rt715_sdca_set_amp_gain_put(struct snd_kcontrol *kcontrol,
+ 				mc->shift);
+ 		ret = regmap_write(rt715->mbq_regmap, mc->reg + i, gain_val);
+ 		if (ret != 0) {
+-			dev_err(component->dev, "Failed to write 0x%x=0x%x\n",
+-				mc->reg + i, gain_val);
++			dev_err(component->dev, "%s: Failed to write 0x%x=0x%x\n",
++				__func__, mc->reg + i, gain_val);
+ 			return ret;
+ 		}
+ 	}
+@@ -188,8 +188,8 @@ static int rt715_sdca_set_amp_gain_4ch_put(struct snd_kcontrol *kcontrol,
+ 		ret = regmap_write(rt715->mbq_regmap, reg_base + i,
+ 				gain_val);
+ 		if (ret != 0) {
+-			dev_err(component->dev, "Failed to write 0x%x=0x%x\n",
+-				reg_base + i, gain_val);
++			dev_err(component->dev, "%s: Failed to write 0x%x=0x%x\n",
++				__func__, reg_base + i, gain_val);
+ 			return ret;
+ 		}
+ 	}
+@@ -224,8 +224,8 @@ static int rt715_sdca_set_amp_gain_8ch_put(struct snd_kcontrol *kcontrol,
+ 		reg = i < 7 ? reg_base + i : (reg_base - 1) | BIT(15);
+ 		ret = regmap_write(rt715->mbq_regmap, reg, gain_val);
+ 		if (ret != 0) {
+-			dev_err(component->dev, "Failed to write 0x%x=0x%x\n",
+-				reg, gain_val);
++			dev_err(component->dev, "%s: Failed to write 0x%x=0x%x\n",
++				__func__, reg, gain_val);
+ 			return ret;
+ 		}
+ 	}
+@@ -246,8 +246,8 @@ static int rt715_sdca_set_amp_gain_get(struct snd_kcontrol *kcontrol,
+ 	for (i = 0; i < 2; i++) {
+ 		ret = regmap_read(rt715->mbq_regmap, mc->reg + i, &val);
+ 		if (ret < 0) {
+-			dev_err(component->dev, "Failed to read 0x%x, ret=%d\n",
+-				mc->reg + i, ret);
++			dev_err(component->dev, "%s: Failed to read 0x%x, ret=%d\n",
++				__func__, mc->reg + i, ret);
+ 			return ret;
+ 		}
+ 		ucontrol->value.integer.value[i] = rt715_sdca_get_gain(val, mc->shift);
+@@ -271,8 +271,8 @@ static int rt715_sdca_set_amp_gain_4ch_get(struct snd_kcontrol *kcontrol,
+ 	for (i = 0; i < 4; i++) {
+ 		ret = regmap_read(rt715->mbq_regmap, reg_base + i, &val);
+ 		if (ret < 0) {
+-			dev_err(component->dev, "Failed to read 0x%x, ret=%d\n",
+-				reg_base + i, ret);
++			dev_err(component->dev, "%s: Failed to read 0x%x, ret=%d\n",
++				__func__, reg_base + i, ret);
+ 			return ret;
+ 		}
+ 		ucontrol->value.integer.value[i] = rt715_sdca_get_gain(val, gain_sft);
+@@ -297,8 +297,8 @@ static int rt715_sdca_set_amp_gain_8ch_get(struct snd_kcontrol *kcontrol,
+ 	for (i = 0; i < 8; i += 2) {
+ 		ret = regmap_read(rt715->mbq_regmap, reg_base + i, &val_l);
+ 		if (ret < 0) {
+-			dev_err(component->dev, "Failed to read 0x%x, ret=%d\n",
+-					reg_base + i, ret);
++			dev_err(component->dev, "%s: Failed to read 0x%x, ret=%d\n",
++				__func__, reg_base + i, ret);
+ 			return ret;
+ 		}
+ 		ucontrol->value.integer.value[i] = (val_l >> gain_sft) / 10;
+@@ -306,8 +306,8 @@ static int rt715_sdca_set_amp_gain_8ch_get(struct snd_kcontrol *kcontrol,
+ 		reg = (i == 6) ? (reg_base - 1) | BIT(15) : reg_base + 1 + i;
+ 		ret = regmap_read(rt715->mbq_regmap, reg, &val_r);
+ 		if (ret < 0) {
+-			dev_err(component->dev, "Failed to read 0x%x, ret=%d\n",
+-					reg, ret);
++			dev_err(component->dev, "%s: Failed to read 0x%x, ret=%d\n",
++				__func__, reg, ret);
+ 			return ret;
+ 		}
+ 		ucontrol->value.integer.value[i + 1] = (val_r >> gain_sft) / 10;
+@@ -834,15 +834,15 @@ static int rt715_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			0xaf00);
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Invalid DAI id %d\n", dai->id);
++		dev_err(component->dev, "%s: Invalid DAI id %d\n", __func__, dai->id);
+ 		return -EINVAL;
+ 	}
+ 
+ 	retval = sdw_stream_add_slave(rt715->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(component->dev, "Unable to configure port, retval:%d\n",
+-			retval);
++		dev_err(component->dev, "%s: Unable to configure port, retval:%d\n",
++			__func__, retval);
+ 		return retval;
+ 	}
+ 
+@@ -893,8 +893,8 @@ static int rt715_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		val = 0xf;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Unsupported sample rate %d\n",
+-			params_rate(params));
++		dev_err(component->dev, "%s: Unsupported sample rate %d\n",
++			__func__, params_rate(params));
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 21f37babd148..7e13868ff99f 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -482,7 +482,7 @@ static int rt715_bus_config(struct sdw_slave *slave,
+ 
+ 	ret = rt715_clock_config(&slave->dev);
+ 	if (ret < 0)
+-		dev_err(&slave->dev, "Invalid clk config");
++		dev_err(&slave->dev, "%s: Invalid clk config", __func__);
+ 
+ 	return 0;
+ }
+@@ -554,7 +554,7 @@ static int __maybe_unused rt715_dev_resume(struct device *dev)
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 					   msecs_to_jiffies(RT715_PROBE_TIMEOUT));
+ 	if (!time) {
+-		dev_err(&slave->dev, "Initialization not complete, timed out\n");
++		dev_err(&slave->dev, "%s: Initialization not complete, timed out\n", __func__);
+ 		sdw_show_ping_status(slave->bus, true);
+ 
+ 		return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+index 9f732a5abd53..299c9b12377c 100644
+--- a/sound/soc/codecs/rt715.c
++++ b/sound/soc/codecs/rt715.c
+@@ -40,8 +40,8 @@ static int rt715_index_write(struct regmap *regmap, unsigned int reg,
+ 
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0) {
+-		pr_err("Failed to set private value: %08x <= %04x %d\n",
+-		       addr, value, ret);
++		pr_err("%s: Failed to set private value: %08x <= %04x %d\n",
++		       __func__, addr, value, ret);
+ 	}
+ 
+ 	return ret;
+@@ -55,8 +55,8 @@ static int rt715_index_write_nid(struct regmap *regmap,
+ 
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+-		pr_err("Failed to set private value: %06x <= %04x ret=%d\n",
+-			addr, value, ret);
++		pr_err("%s: Failed to set private value: %06x <= %04x ret=%d\n",
++		       __func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -70,8 +70,8 @@ static int rt715_index_read_nid(struct regmap *regmap,
+ 	*value = 0;
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+-		pr_err("Failed to get private value: %06x => %04x ret=%d\n",
+-			addr, *value, ret);
++		pr_err("%s: Failed to get private value: %06x => %04x ret=%d\n",
++		       __func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -862,14 +862,14 @@ static int rt715_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		rt715_index_write(rt715->regmap, RT715_SDW_INPUT_SEL, 0xa000);
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Invalid DAI id %d\n", dai->id);
++		dev_err(component->dev, "%s: Invalid DAI id %d\n", __func__, dai->id);
+ 		return -EINVAL;
+ 	}
+ 
+ 	retval = sdw_stream_add_slave(rt715->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+@@ -883,8 +883,8 @@ static int rt715_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		val |= 0x0 << 8;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Unsupported sample rate %d\n",
+-			params_rate(params));
++		dev_err(component->dev, "%s: Unsupported sample rate %d\n",
++			__func__, params_rate(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -892,8 +892,8 @@ static int rt715_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		/* bit 3:0 Number of Channel */
+ 		val |= (params_channels(params) - 1);
+ 	} else {
+-		dev_err(component->dev, "Unsupported channels %d\n",
+-			params_channels(params));
++		dev_err(component->dev, "%s: Unsupported channels %d\n",
++			__func__, params_channels(params));
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/sound/soc/codecs/rt722-sdca.c b/sound/soc/codecs/rt722-sdca.c
+index 0e1c65a20392..e0ea3a23f7cc 100644
+--- a/sound/soc/codecs/rt722-sdca.c
++++ b/sound/soc/codecs/rt722-sdca.c
+@@ -35,8 +35,8 @@ int rt722_sdca_index_write(struct rt722_sdca_priv *rt722,
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt722->slave->dev,
+-			"Failed to set private value: %06x <= %04x ret=%d\n",
+-			addr, value, ret);
++			"%s: Failed to set private value: %06x <= %04x ret=%d\n",
++			__func__, addr, value, ret);
+ 
+ 	return ret;
+ }
+@@ -51,8 +51,8 @@ int rt722_sdca_index_read(struct rt722_sdca_priv *rt722,
+ 	ret = regmap_read(regmap, addr, value);
+ 	if (ret < 0)
+ 		dev_err(&rt722->slave->dev,
+-			"Failed to get private value: %06x => %04x ret=%d\n",
+-			addr, *value, ret);
++			"%s: Failed to get private value: %06x => %04x ret=%d\n",
++			__func__, addr, *value, ret);
+ 
+ 	return ret;
+ }
+@@ -663,7 +663,8 @@ static int rt722_sdca_dmic_set_gain_put(struct snd_kcontrol *kcontrol,
+ 	for (i = 0; i < p->count; i++) {
+ 		err = regmap_write(rt722->mbq_regmap, p->reg_base + i, gain_val[i]);
+ 		if (err < 0)
+-			dev_err(&rt722->slave->dev, "%#08x can't be set\n", p->reg_base + i);
++			dev_err(&rt722->slave->dev, "%s: %#08x can't be set\n",
++				__func__, p->reg_base + i);
+ 	}
+ 
+ 	return changed;
+@@ -1211,13 +1212,13 @@ static int rt722_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	retval = sdw_stream_add_slave(rt722->slave, &stream_config,
+ 					&port_config, 1, sdw_stream);
+ 	if (retval) {
+-		dev_err(dai->dev, "Unable to configure port\n");
++		dev_err(dai->dev, "%s: Unable to configure port\n", __func__);
+ 		return retval;
+ 	}
+ 
+ 	if (params_channels(params) > 16) {
+-		dev_err(component->dev, "Unsupported channels %d\n",
+-			params_channels(params));
++		dev_err(component->dev, "%s: Unsupported channels %d\n",
++			__func__, params_channels(params));
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1236,8 +1237,8 @@ static int rt722_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		sampling_rate = RT722_SDCA_RATE_192000HZ;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Rate %d is not supported\n",
+-			params_rate(params));
++		dev_err(component->dev, "%s: Rate %d is not supported\n",
++			__func__, params_rate(params));
+ 		return -EINVAL;
  	}
  
 -- 
