@@ -4,94 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFCF9C54E64
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 18:25:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12377C54E64
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 18:50:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D393110BE;
-	Mon, 25 Mar 2024 19:25:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D393110BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0CB414DD;
+	Mon, 25 Mar 2024 19:50:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0CB414DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711391136;
-	bh=MAe5uuROFbCiGuIhQXAD8TvICt0pICzM9nlR0AdeEI4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=bvG4Zly2PsudMdE22FNMpiySteI+RbFtw43mrBUTZse3h/OqZ7qHkTTDQJfJOdTDL
-	 cUElwLBSvlttFudCEYdRhfE8U9VCzK1+MdifWHVSqR+i4yxhsshatx36u4ko0eJM9L
-	 6sNFX86fgItHFuYDqtlfWf6EU/h1/aWbl8ZeAbFM=
+	s=default; t=1711392625;
+	bh=gBX8YfXgY1iMfwDEeoUVHzA6nko45l9jsRdBGQAMaQM=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=J5fiD3GSqiWDBdDgrluZWHaft/MX2MgRR9syB92ycF0Ji4vC/RqlQuolo5eyzO7x5
+	 qQKfa0ou1hmXeqaAu0hvyoi3ot9qTu4MrHPsMFYsN2l7WtLP6aR3PByBomscJ6+orb
+	 aHEnWjUK+xpTk1kuLzMvNtEY4pYmR+/IaZ9goEWY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B38A7F8064F; Mon, 25 Mar 2024 18:07:09 +0100 (CET)
+	id 54F8BF805A0; Mon, 25 Mar 2024 15:45:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E514F8064C;
-	Mon, 25 Mar 2024 18:07:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45CFCF805AA;
+	Mon, 25 Mar 2024 15:45:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC5ABF80642; Mon, 25 Mar 2024 18:07:01 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	id 2447AF802DB; Mon, 25 Mar 2024 15:45:01 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 79E71F805D8
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 18:06:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79E71F805D8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 28288F80236
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 15:44:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28288F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=cUD4Mxnk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711386418; x=1742922418;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MAe5uuROFbCiGuIhQXAD8TvICt0pICzM9nlR0AdeEI4=;
-  b=cUD4MxnksLTA1nlmr/F+AFaLhT3GccSM2btAnC6OUermRoixVcFFSqfY
-   PjfcMhms8Ev9+GsTnKoY6Ms4ld6+ipBlWtV9HygS+wQCNa44MX0snZjgH
-   9xTHNcKWCm/qmie2/5EPt2oVudD6H9suC+5QeYAZt0JFPxZ2pVadWiO5T
-   +kaNEwPWHbPU7zG3TeSP3aNorwIIyPFdqSHizoLkGre1u+RWBQtbRvHXV
-   VUSInpj8rANlGV9Huxt9fX0Ybf0+sHwBkwUkbcFiyEhdJYqSwrx7ydB/A
-   cBPXXuBYU59YFvRWtp7iMrTgEfdb5cfNsz3jnRJGhpw26eL11aDaIawpN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6266963"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000";
-   d="scan'208";a="6266963"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 10:06:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="914849374"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000";
-   d="scan'208";a="914849374"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 10:06:47 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1ronmW-0000000G3ar-2wkT;
-	Mon, 25 Mar 2024 19:06:44 +0200
-Date: Mon, 25 Mar 2024 19:06:44 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v2 1/1] ASoC: fsl: imx-es8328: Switch to using gpiod API
-Message-ID: <ZgGvJDEpMjaeZzpC@smile.fi.intel.com>
-References: <20240318200804.181516-1-andriy.shevchenko@linux.intel.com>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=VxFmgjjn
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 42P4qktd007553;
+	Mon, 25 Mar 2024 09:44:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=s
+	M4jHgZg6/v208T765YpJQoPIlY6ESlG7oOC2AjF6z4=; b=VxFmgjjnmJ9L5nxd2
+	it1jI8YbPahhGFRu4ozXJZgI4CRlBkS9s2Wzg+hLHyd8VOu6SVY+VKUNtIT9tzFh
+	nqpvsb5pC7U0NfcQu3PLyIMKTqdnWNKw+iF/FXwiY1xTmNntfwEBMYSTZuTPALSa
+	RzudieqW9kulq6qp43REUXZbaVLp1FcGQeMOFywQgWnypm5GQgonNQVdPWu27zdu
+	wdG59L4sLvIvd6rIecltEhWFsergszbV24nTpd82JxJOYi7kodRcycwEZ4snz45r
+	Exu9xAURY+XWVQcPXPoyYI7laj/AUJTIHfokdUhct72+fUrkLXnKhCuAxf2uuvXq
+	N7JIA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x1vfybhxw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 09:44:53 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 25 Mar
+ 2024 14:44:51 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
+ via Frontend Transport; Mon, 25 Mar 2024 14:44:51 +0000
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
+ [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id DACA6820244;
+	Mon, 25 Mar 2024 14:44:50 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Simon
+ Trimmer" <simont@opensource.cirrus.com>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs-amp-lib: Check for no firmware controls when writing
+ calibration
+Date: Mon, 25 Mar 2024 14:44:50 +0000
+Message-ID: <20240325144450.293630-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318200804.181516-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: 6NE2F5AKPW26T52SUOILUSVT4EA5AC6Z
-X-Message-ID-Hash: 6NE2F5AKPW26T52SUOILUSVT4EA5AC6Z
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: GgbbWgh-nZxqA48C84fnxwXmq9jvAe4f
+X-Proofpoint-GUID: GgbbWgh-nZxqA48C84fnxwXmq9jvAe4f
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: Z4HPIT37D4CINXPY7O5HAO6PKV7U4FJ7
+X-Message-ID-Hash: Z4HPIT37D4CINXPY7O5HAO6PKV7U4FJ7
+X-MailFrom: prvs=081491209a=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6NE2F5AKPW26T52SUOILUSVT4EA5AC6Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4HPIT37D4CINXPY7O5HAO6PKV7U4FJ7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,14 +110,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Mar 18, 2024 at 10:07:56PM +0200, Andy Shevchenko wrote:
-> This updates the driver to gpiod API, and removes yet another use of
-> of_get_named_gpio().
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-This also needs a leftover removal. :-(
+When a wmfw file has not been loaded the firmware control descriptions
+necessary to write a stored calibration are not present. In this case
+print a more descriptive error message.
 
+The message is logged at info level because it is not fatal, and does
+not necessarily imply that anything is broken.
+
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs-amp-lib.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/sound/soc/codecs/cs-amp-lib.c b/sound/soc/codecs/cs-amp-lib.c
+index 01ef4db5407d..287ac01a3873 100644
+--- a/sound/soc/codecs/cs-amp-lib.c
++++ b/sound/soc/codecs/cs-amp-lib.c
+@@ -56,6 +56,11 @@ static int _cs_amp_write_cal_coeffs(struct cs_dsp *dsp,
+ 	dev_dbg(dsp->dev, "Calibration: Ambient=%#x, Status=%#x, CalR=%d\n",
+ 		data->calAmbient, data->calStatus, data->calR);
+ 
++	if (list_empty(&dsp->ctl_list)) {
++		dev_info(dsp->dev, "Calibration disabled due to missing firmware controls\n");
++		return -ENOENT;
++	}
++
+ 	ret = cs_amp_write_cal_coeff(dsp, controls, controls->ambient, data->calAmbient);
+ 	if (ret)
+ 		return ret;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
