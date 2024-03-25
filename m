@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9AD4C54E64
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 11:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2076C54E58
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 11:35:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19C7A1530;
-	Mon, 25 Mar 2024 12:34:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19C7A1530
+	by alsa0.perex.cz (Postfix) with ESMTPS id 839C1192E;
+	Mon, 25 Mar 2024 12:34:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 839C1192E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711366487;
-	bh=Yvm1ITiJ6DW0IKz2Ba2u1RwD7wwThJTJi5J/ZFOcMc0=;
+	s=default; t=1711366498;
+	bh=8wIa6nW1ERiw4t1Ybn1tnOi5l/VyBjBAJ/xBmZH1cd4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=K4v4QXIEHkT8SWxeliWqPAQA7GtYAuGhH3hpTRs3tDOE1/D4LyZbizDPRbWXTL+43
-	 IGBRyCNc1AwDlhulkMKHGp7Ou01mIdhVCWeifM4zjZFgtSSVVMRAHx9bASkioCXuf8
-	 8gXn1kAWEJLqx5jYp1guGqV4rXwUDkqnA9D6ij7w=
+	b=GxWWc/V9e46eJsv0LE0qlHpp9+bK4/mad8kCBbma/LXS8XH9eyviy9vUxH/USplve
+	 Xd7DwgZAGSnBXidYT53i8YNwnlI87K7Msm2nSe2Skxs6s6TYbPvtzVHWXrzmYBp/Ly
+	 3hwbzuUz9uEmp++Qnl+0Le1xCmt991awJ3hAfRK4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4A2FF802DB; Mon, 25 Mar 2024 12:34:06 +0100 (CET)
+	id 1956EF805E5; Mon, 25 Mar 2024 12:34:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA98FF80093;
-	Mon, 25 Mar 2024 12:34:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A9A9F805C9;
+	Mon, 25 Mar 2024 12:34:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70750F80563; Mon, 25 Mar 2024 12:31:41 +0100 (CET)
+	id 6DD7DF8055C; Mon, 25 Mar 2024 12:31:44 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B0BDBF801EB
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 12:31:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0BDBF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id C9B80F80236
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 12:31:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9B80F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=iHPBeikq
+ header.s=PODMain02222019 header.b=c/cQZre1
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 42P3P0Pl021761;
+ 42P4qkf4007553;
 	Mon, 25 Mar 2024 06:31:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=+EDcZtTQ41n90nBFxc6G+fzMbqcoxZNT7pgkNgTsu8s=; b=
-	iHPBeikqvAaN5MJzu+E8pxD1n0A8qzY4ZZmqPH2yqP4X+biUkge65aQd1Li19M2i
-	MiJ3U3mupUltTsUaCyYXOyKg3o1Yfiu/MvTRmsxsfQaC5YovsrsUXMZeaz4Eof2W
-	j+ZFYY5cvvTRBkkDT5Ubd/1PJo2Am/ti0VIKHnl84RIvzK6E1kaF6ewicNWaaL5t
-	X2uNrc6vxAUFWwYFMooTQzG2gUc+nNY+zUd51e72E7WO02+OC387eT/tLAtXOzjY
-	M3RPk6VX44GXgwZiOi3lOyT6ojIonkIVLdfD/yfgzq2+u7MPjfs24lm+oLGAaiU4
-	rdGeWp/ynW/51sDlpIDXOg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x1vfyb6v1-1
+	PODMain02222019; bh=Ve6q53KNEyaHYsEeYneEssGZ6Wrn16sSu1b7bPPggrU=; b=
+	c/cQZre1an3oq7WNRPOSd+tbcrU3woSndVth5uiXREO/unhZ67BkwsC7nUkoWDVn
+	FkjLlg6HYnSw6CHI9AGZtBO4e8PUfV9Q6kWBG+CUnWpLrePIw9dGN5IP0NHXbLIh
+	oL0RGNzh+KbWLzo4/smOX5PsJr/4J7Rb3ms5vrPVFfpdLgMbHdo06uP8qpv0A5ui
+	OlBRjSdJxEozbRq0RRWpzSyvTAhhwgeancq0I0klLrWlCWHgdtWZOvNv1OqpoSUd
+	u0Bki4VCnetoHTqhaSoe8PeXc3k9M8xISLS7m6GjTo4vrKerGvHZgtOcsFyRaf+K
+	DyPXoNwywMD35K2eigiX/Q==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x1vfyb6v0-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 06:31:29 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 25 Mar 2024 06:31:30 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 25 Mar
  2024 11:31:27 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Mon, 25 Mar 2024 11:31:27 +0000
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
+ via Frontend Transport; Mon, 25 Mar 2024 11:31:27 +0000
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
  [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 48602820258;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3C764820246;
 	Mon, 25 Mar 2024 11:31:27 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -76,20 +77,21 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
  Trimmer" <simont@opensource.cirrus.com>,
         Richard Fitzgerald
 	<rf@opensource.cirrus.com>
-Subject: [PATCH 4/5] ASoC: wm_adsp: Remove notification of driver write
-Date: Mon, 25 Mar 2024 11:31:26 +0000
-Message-ID: <20240325113127.112783-5-rf@opensource.cirrus.com>
+Subject: [PATCH 1/5] firmware: cs_dsp: Add locked wrappers for coeff read and
+ write
+Date: Mon, 25 Mar 2024 11:31:23 +0000
+Message-ID: <20240325113127.112783-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240325113127.112783-1-rf@opensource.cirrus.com>
 References: <20240325113127.112783-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: X9KMIdiyRNJ9lhYXNYzchXJPLARbbllz
-X-Proofpoint-GUID: X9KMIdiyRNJ9lhYXNYzchXJPLARbbllz
+X-Proofpoint-ORIG-GUID: W_mGFw0jCLpfl27Iq92J29FYCUk_XLhO
+X-Proofpoint-GUID: W_mGFw0jCLpfl27Iq92J29FYCUk_XLhO
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: F6GHGVVHV77VNZPM672X7AWUHL76PWXZ
-X-Message-ID-Hash: F6GHGVVHV77VNZPM672X7AWUHL76PWXZ
+Message-ID-Hash: KEWN5GTKUZAROQKA2NMH6YQS3FGCJUIW
+X-Message-ID-Hash: KEWN5GTKUZAROQKA2NMH6YQS3FGCJUIW
 X-MailFrom: prvs=081491209a=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F6GHGVVHV77VNZPM672X7AWUHL76PWXZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KEWN5GTKUZAROQKA2NMH6YQS3FGCJUIW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,40 +115,106 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Simon Trimmer <simont@opensource.cirrus.com>
 
-Any control that the driver is updating should be marked as SYSTEM and
-therefore will not have an ALSA control to notify.
+It is a common pattern for functions to take and release the DSP
+pwr_lock over the cs_dsp calls to read and write firmware controls.
+Add wrapper functions to do this sequence so that the calling code can
+be simplified to a single function call..
 
 Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/firmware/cirrus/cs_dsp.c       | 54 ++++++++++++++++++++++++++
+ include/linux/firmware/cirrus/cs_dsp.h |  4 ++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 8e366902ee4e..6e348d49a89c 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -672,7 +672,6 @@ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
- 		      unsigned int alg, void *buf, size_t len)
- {
- 	struct cs_dsp_coeff_ctl *cs_ctl;
--	struct wm_coeff_ctl *ctl;
- 	int ret;
- 
- 	mutex_lock(&dsp->cs_dsp.pwr_lock);
-@@ -683,12 +682,7 @@ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
- 	if (ret < 0)
- 		return ret;
- 
--	if (ret == 0 || (cs_ctl->flags & WMFW_CTL_FLAG_SYS))
--		return 0;
--
--	ctl = cs_ctl->priv;
--
--	return snd_soc_component_notify_control(dsp->component, ctl->name);
-+	return 0;
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index 9f3d665cfdcf..0d139e4de37c 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -819,6 +819,33 @@ int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl,
  }
- EXPORT_SYMBOL_GPL(wm_adsp_write_ctl);
+ EXPORT_SYMBOL_NS_GPL(cs_dsp_coeff_write_ctrl, FW_CS_DSP);
+ 
++/**
++ * cs_dsp_coeff_lock_and_write_ctrl() - Writes the given buffer to the given coefficient control
++ * @ctl: pointer to coefficient control
++ * @off: word offset at which data should be written
++ * @buf: the buffer to write to the given control
++ * @len: the length of the buffer in bytes
++ *
++ * Same as cs_dsp_coeff_write_ctrl() but takes pwr_lock.
++ *
++ * Return: A negative number on error, 1 when the control value changed and 0 when it has not.
++ */
++int cs_dsp_coeff_lock_and_write_ctrl(struct cs_dsp_coeff_ctl *ctl,
++				     unsigned int off, const void *buf, size_t len)
++{
++	struct cs_dsp *dsp = ctl->dsp;
++	int ret;
++
++	lockdep_assert_not_held(&dsp->pwr_lock);
++
++	mutex_lock(&dsp->pwr_lock);
++	ret = cs_dsp_coeff_write_ctrl(ctl, off, buf, len);
++	mutex_unlock(&dsp->pwr_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(cs_dsp_coeff_lock_and_write_ctrl);
++
+ static int cs_dsp_coeff_read_ctrl_raw(struct cs_dsp_coeff_ctl *ctl,
+ 				      unsigned int off, void *buf, size_t len)
+ {
+@@ -891,6 +918,33 @@ int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl,
+ }
+ EXPORT_SYMBOL_NS_GPL(cs_dsp_coeff_read_ctrl, FW_CS_DSP);
+ 
++/**
++ * cs_dsp_coeff_lock_and_read_ctrl() - Reads the given coefficient control into the given buffer
++ * @ctl: pointer to coefficient control
++ * @off: word offset at which data should be read
++ * @buf: the buffer to store to the given control
++ * @len: the length of the buffer in bytes
++ *
++ * Same as cs_dsp_coeff_read_ctrl() but takes pwr_lock.
++ *
++ * Return: Zero for success, a negative number on error.
++ */
++int cs_dsp_coeff_lock_and_read_ctrl(struct cs_dsp_coeff_ctl *ctl,
++				    unsigned int off, void *buf, size_t len)
++{
++	struct cs_dsp *dsp = ctl->dsp;
++	int ret;
++
++	lockdep_assert_not_held(&dsp->pwr_lock);
++
++	mutex_lock(&dsp->pwr_lock);
++	ret = cs_dsp_coeff_read_ctrl(ctl, off, buf, len);
++	mutex_unlock(&dsp->pwr_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(cs_dsp_coeff_lock_and_read_ctrl);
++
+ static int cs_dsp_coeff_init_control_caches(struct cs_dsp *dsp)
+ {
+ 	struct cs_dsp_coeff_ctl *ctl;
+diff --git a/include/linux/firmware/cirrus/cs_dsp.h b/include/linux/firmware/cirrus/cs_dsp.h
+index 23384a54d575..82687e07a7c2 100644
+--- a/include/linux/firmware/cirrus/cs_dsp.h
++++ b/include/linux/firmware/cirrus/cs_dsp.h
+@@ -238,8 +238,12 @@ void cs_dsp_cleanup_debugfs(struct cs_dsp *dsp);
+ int cs_dsp_coeff_write_acked_control(struct cs_dsp_coeff_ctl *ctl, unsigned int event_id);
+ int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl, unsigned int off,
+ 			    const void *buf, size_t len);
++int cs_dsp_coeff_lock_and_write_ctrl(struct cs_dsp_coeff_ctl *ctl, unsigned int off,
++				     const void *buf, size_t len);
+ int cs_dsp_coeff_read_ctrl(struct cs_dsp_coeff_ctl *ctl, unsigned int off,
+ 			   void *buf, size_t len);
++int cs_dsp_coeff_lock_and_read_ctrl(struct cs_dsp_coeff_ctl *ctl, unsigned int off,
++				    void *buf, size_t len);
+ struct cs_dsp_coeff_ctl *cs_dsp_get_ctl(struct cs_dsp *dsp, const char *name, int type,
+ 					unsigned int alg);
  
 -- 
 2.39.2
