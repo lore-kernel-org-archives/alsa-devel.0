@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE393C54E58
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 22:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BB6CC54E58
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 22:13:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6D03211D;
-	Mon, 25 Mar 2024 23:12:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6D03211D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93B4621E0;
+	Mon, 25 Mar 2024 23:13:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93B4621E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711404771;
-	bh=5xGjb3mnu+FiI3TfVRyt07oE/7KWxZ54qwPqhihYzu4=;
+	s=default; t=1711404794;
+	bh=Wywr4VA7AxafZFUyAAtsuXWMM3q95q02IaLHyvm6k1I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RF1jUF5LNw07oRPE9h94Vxa97DoGQgOpIBKeRaGEoFXtto8APg6YWIkLDY63SrKhO
-	 imiwpUzeKaJWySSGZo1ePKNoyS7NWFTGpT6gPo/gMPgUdED+1HSXuavMVaTBEtvUqK
-	 J2QYitHFlqq3D8zVU9+/RZ37fxmUzV5IlGmfvGpo=
+	b=UQ/rMt4aE03arni6VwdgC08hJzDwEtF8pklFayaOh209v0is11OLUGzzyNj3DTp9R
+	 BxxaN/88MEarM56uk5kNXOy1v/PLv9dxB9XlvxKQtqy6ffA5yCWkYefgEAC0MvE9qP
+	 W9uDogHPkd+T1mgSgWmuuWSpHrWU8vOMAhZrPzBo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F440F8061F; Mon, 25 Mar 2024 23:11:41 +0100 (CET)
+	id 8AB3EF80677; Mon, 25 Mar 2024 23:11:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB039F8060C;
-	Mon, 25 Mar 2024 23:11:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 542A3F8063A;
+	Mon, 25 Mar 2024 23:11:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 519BAF805C0; Mon, 25 Mar 2024 23:11:30 +0100 (CET)
+	id DEAEFF805D9; Mon, 25 Mar 2024 23:11:32 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 98657F80563
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 23:11:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98657F80563
+	by alsa1.perex.cz (Postfix) with ESMTPS id 65470F80236
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 23:11:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65470F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=aTnhApyS
+ header.s=Intel header.b=Zjr2Gwuy
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711404685; x=1742940685;
+  t=1711404684; x=1742940684;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5xGjb3mnu+FiI3TfVRyt07oE/7KWxZ54qwPqhihYzu4=;
-  b=aTnhApySvivHXEZvRQ/Uncvxa+SF8i9sZeM7zYykifgDEio7v8vQpe2A
-   N3kqiAIRkddTs0Ix1p1UBSZE/4Zx5Jh2CZRQ7HjYPaAuWhYsji38uSAY7
-   jTT6v2e8hzL+8mBo/01eMAZSoNrn6+eoj718EtscJJVweIAvgvJVcLfH2
-   pZkRllE4Nh+L+MeedWJ7YzxeiCfoWxHqSGvx12uCMtiHjiJf4W8b68sj5
-   3vDb/3jm6BOYqRUZbhITDJYF63J3XRcTtTz7ytxpmXsoEEu0utEfyY0Lr
-   s1JgM5EYmv+hOSsuhmACAom0VW8crTnUwu0YRUPYLeIVLaWrB9K4tTfqe
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6643625"
+  bh=Wywr4VA7AxafZFUyAAtsuXWMM3q95q02IaLHyvm6k1I=;
+  b=Zjr2GwuyT8uALibPNpJqvP/X6VI17Awhf5/UY5AWVnh/vMyyrLT885su
+   bqPP5aaK+2SugLO6+7fgXMcbV9vBeA2G9SZlpUDB1/6shIZZiqcVHRhwJ
+   fQGJ7BloFwggCahIPbIvLVhOtDWalTEDfsFuyfE919a+tiSbOWMqx8O/K
+   UTDRYA0TRkOUQbGGBSGST/9GkreKWOOGrFbhc1BxWwc1u6kykXcgsB0C/
+   +0wRPQmLk2w5yh9SS+m7w9j/a2IMufKCcaL6uEPtvcjHGx9u9/tnrSA3Z
+   kh8mt2HJX3ZLG6ExgDgMVuUNyb7V9PILHbQ47vmSoLKaN45YrycwPrOdZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6643616"
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="6643625"
+   d="scan'208";a="6643616"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
   by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 15:11:19 -0700
+ 25 Mar 2024 15:11:18 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="15722111"
+   d="scan'208";a="15722103"
 Received: from jaimbres-mobl2.amr.corp.intel.com (HELO pbossart-mobl6.lan)
  ([10.212.98.109])
   by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 15:11:18 -0700
+ 25 Mar 2024 15:11:17 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -72,16 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 06/21] ASoC: Intel: sof_cs42l42: rename BT offload quirk
-Date: Mon, 25 Mar 2024 17:10:44 -0500
-Message-Id: <20240325221059.206042-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 04/21] ASoC: Intel: sof_da7219: add rpl_mx98360_da7219 board
+ config
+Date: Mon, 25 Mar 2024 17:10:42 -0500
+Message-Id: <20240325221059.206042-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240325221059.206042-1-pierre-louis.bossart@linux.intel.com>
 References: <20240325221059.206042-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7X5NRYV6XPNNFY55B2AXTHOHURVHQLJC
-X-Message-ID-Hash: 7X5NRYV6XPNNFY55B2AXTHOHURVHQLJC
+Message-ID-Hash: JEHV4RAPOZBAVFTSHLXIASBR6NKHDU2R
+X-Message-ID-Hash: JEHV4RAPOZBAVFTSHLXIASBR6NKHDU2R
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7X5NRYV6XPNNFY55B2AXTHOHURVHQLJC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JEHV4RAPOZBAVFTSHLXIASBR6NKHDU2R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,47 +106,52 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Rename the quirk in preparation for future changes: common quriks will
-be defined and handled in board helper module.
+This configuration supports RPL boards which implement DA7219 on SSP0
+and MAX98360A on SSP1. DA7219 uses PLL bypass mode to avoid WCLK
+locking problem. To use this mode, the MCLK frequency must be 12.288
+or 24.576MHz in the topology binary.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_cs42l42.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/sof_da7219.c               | 4 ++++
+ sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 7 +++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
-index 323b86c42ef9..330d596b2eb6 100644
---- a/sound/soc/intel/boards/sof_cs42l42.c
-+++ b/sound/soc/intel/boards/sof_cs42l42.c
-@@ -34,7 +34,7 @@
- #define SOF_CS42L42_NUM_HDMIDEV_MASK		(GENMASK(9, 7))
- #define SOF_CS42L42_NUM_HDMIDEV(quirk)	\
- 	(((quirk) << SOF_CS42L42_NUM_HDMIDEV_SHIFT) & SOF_CS42L42_NUM_HDMIDEV_MASK)
--#define SOF_BT_OFFLOAD_PRESENT			BIT(25)
-+#define SOF_CS42L42_BT_OFFLOAD_PRESENT		BIT(25)
- #define SOF_CS42L42_SSP_BT_SHIFT		26
- #define SOF_CS42L42_SSP_BT_MASK			(GENMASK(28, 26))
- #define SOF_CS42L42_SSP_BT(quirk)	\
-@@ -268,7 +268,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- 
- 	ctx->ssp_codec = sof_cs42l42_quirk & SOF_CS42L42_SSP_CODEC_MASK;
- 
--	if (sof_cs42l42_quirk & SOF_BT_OFFLOAD_PRESENT)
-+	if (sof_cs42l42_quirk & SOF_CS42L42_BT_OFFLOAD_PRESENT)
- 		ctx->bt_offload_present = true;
- 
- 	/* update dai_link */
-@@ -306,7 +306,7 @@ static const struct platform_device_id board_ids[] = {
- 		.driver_data = (kernel_ulong_t)(SOF_CS42L42_SSP_CODEC(0) |
- 				SOF_CS42L42_SSP_AMP(1) |
- 				SOF_CS42L42_NUM_HDMIDEV(4) |
--				SOF_BT_OFFLOAD_PRESENT |
-+				SOF_CS42L42_BT_OFFLOAD_PRESENT |
- 				SOF_CS42L42_SSP_BT(2)),
+diff --git a/sound/soc/intel/boards/sof_da7219.c b/sound/soc/intel/boards/sof_da7219.c
+index 6eb5a6144e97..290bf75bdaef 100644
+--- a/sound/soc/intel/boards/sof_da7219.c
++++ b/sound/soc/intel/boards/sof_da7219.c
+@@ -545,6 +545,10 @@ static const struct platform_device_id board_ids[] = {
+ 		.name = "adl_mx98360_da7219",
+ 		/* no quirk needed for this board */
  	},
++	{
++		.name = "rpl_mx98360_da7219",
++		/* no quirk needed for this board */
++	},
  	{ }
+ };
+ MODULE_DEVICE_TABLE(platform, board_ids);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+index 00a21af210fa..f797937cf9d8 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+@@ -455,6 +455,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+ 		.drv_name = "rpl_lt6911_hdmi_ssp",
+ 		.sof_tplg_filename = "sof-rpl-nocodec-hdmi-ssp02.tplg"
+ 	},
++	{
++		.id = "DLGS7219",
++		.drv_name = "rpl_mx98360_da7219",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rpl_max98360a_amp,
++		.sof_tplg_filename = "sof-rpl-max98360a-da7219.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_rpl_machines);
 -- 
 2.40.1
 
