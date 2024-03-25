@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4268ACD11DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 19:00:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55DFACD11DD
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 19:00:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 170E5E9A;
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45A11E8E;
 	Mon, 25 Mar 2024 20:00:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 170E5E9A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45A11E8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
 	s=default; t=1711393215;
-	bh=3phOsfj299vReX13jBEsAZUiG0U9Ij11nDe4fUf1txA=;
+	bh=rwbT+Rd3okr1qwfVbwVcY3pmiq1BxSNd33xG79KtlE8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TDdjVhDVEIa9bmnTTW0cnv6s17pvVMKzZWs58W7z5Fz8mzV11KR7eaOkwE5qNAyyy
-	 h+854znwgGb//Zjbhp3if8jWY2dFVeXyYYdUswBdXRSHoFa6BNnG09cMlyb2T2Pmjs
-	 sAH3L2UPlXz49Z8lAtjXU7QtttQekgXJwOFFv/dQ=
+	b=TOfENt3s2MrYRpC1N0cHx7p24v2VXCsOkdqVU+YWxXQ8uRjMjdbUQ1XJ3IqkPjgle
+	 3spXLxq/bTVNYDkScq4MNOKgbwlMiN6xZRxFlUdaq4LRZd8u2Pap11aGqAB+U7brwj
+	 ANoLtkMdsaTAesnhW2u4nL9WwXGhu1jzqLpQ/BEI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14F61F806E5; Mon, 25 Mar 2024 18:44:35 +0100 (CET)
+	id 1CE57F8069A; Mon, 25 Mar 2024 18:44:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42C9FF806E5;
-	Mon, 25 Mar 2024 18:44:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 978ABF80690;
+	Mon, 25 Mar 2024 18:44:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0474F80682; Mon, 25 Mar 2024 18:44:28 +0100 (CET)
+	id D1D42F80685; Mon, 25 Mar 2024 18:44:24 +0100 (CET)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A96DEF80682
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 18:44:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A96DEF80682
+	by alsa1.perex.cz (Postfix) with ESMTPS id DDBF4F80681
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 18:44:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDBF4F80681
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uleASsOJ
+ header.s=k20201202 header.b=kLwbbKKR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 3E203CE1C13;
-	Mon, 25 Mar 2024 17:44:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80035C433C7;
-	Mon, 25 Mar 2024 17:44:18 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id BDD14CE1C0D;
+	Mon, 25 Mar 2024 17:44:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD3FFC433F1;
+	Mon, 25 Mar 2024 17:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711388660;
-	bh=3phOsfj299vReX13jBEsAZUiG0U9Ij11nDe4fUf1txA=;
+	s=k20201202; t=1711388652;
+	bh=rwbT+Rd3okr1qwfVbwVcY3pmiq1BxSNd33xG79KtlE8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uleASsOJVKH6GH5mbWkE7YCmO5mRO3FV8rlVA/9sTcBM5MnphiVvP8xSo0Wgt+yjk
-	 I4U/dnEpppcmTx5bkfN/HCSsafZL/4i6/PmGAzTyf2IEe81kEJhD5lH10cQ0mTAyKh
-	 4/Pd4vY1zFMrdyfTnIRCfQ63cqEIRmLJ10uRyKV3G1S8z7rNqAteLIwEa6ckQjjRAF
-	 cFfpJspRAWTHzAESj5+y77LbMD4bOS561sIneCO6H3pVzvaRm7EqgMInepw7cYCHES
-	 9jhE6Rm2TC3HBL5pZdTtv4ZLrs3XhM0pWPKdDngUp3UIaiJCXoUd1ep36evAdQ9iQN
-	 731RjYgye/JlA==
+	b=kLwbbKKRSG24OfQv4aAskaKKW3cI7i4aJ5xQQ7aWR+6/oM++s8Mc83D8aJwGKZS73
+	 CAMw/nWjpAlhXDnLj7wM78qsf9i11kbmI9hYKwOqG3PEEIJjnYbuTk6ESHtUqEPbSa
+	 vO08va9UmZ9HQSBZ9Sv0fBbm5IC6UY8Yi8zhr+OFfauqxDdziOF30800m32EFZVS4o
+	 q3jNVDMsoeoWfWkbPiDanzRTnLnJsNFUm3EUu95lSHKmEZTizlztZV7w4biGTnQEp1
+	 myIG/5mLWuYaQ1zFZqQzHyI6aI0htamKAe+ZWtnbPYeBNkk5yQsxU20y88sn+mPWk/
+	 fhHfANJFvAmNA==
 From: Mark Brown <broonie@kernel.org>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, venkataprasad.potturu@amd.com,
- Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com, arnd@arndb.de,
+To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <linux-sound@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20240322112018.3063344-1-Vijendar.Mukunda@amd.com>
-References: <20240322112018.3063344-1-Vijendar.Mukunda@amd.com>
-Subject: Re: [RESEND] ASoC: amd: simplify soundwire dependencies for legacy
- stack
-Message-Id: <171138865825.327140.9353092446072557708.b4-ty@kernel.org>
-Date: Mon, 25 Mar 2024 17:44:18 +0000
+ Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240314141642.2943605-1-alexander.stein@ew.tq-group.com>
+References: <20240314141642.2943605-1-alexander.stein@ew.tq-group.com>
+Subject: Re: [PATCH 1/1] ASoC: fsl: fsl_ssi: Add dev_err_probe if PCM DMA
+ init fails
+Message-Id: <171138864957.327140.15499315160101216810.b4-ty@kernel.org>
+Date: Mon, 25 Mar 2024 17:44:09 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: OIESMANBYJ4BEJM3K2JHFOHUHBF2MSQL
-X-Message-ID-Hash: OIESMANBYJ4BEJM3K2JHFOHUHBF2MSQL
+Message-ID-Hash: 6JNEHFFYCYYOYRFQXYY4WK76VKOZXQQL
+X-Message-ID-Hash: 6JNEHFFYCYYOYRFQXYY4WK76VKOZXQQL
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OIESMANBYJ4BEJM3K2JHFOHUHBF2MSQL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6JNEHFFYCYYOYRFQXYY4WK76VKOZXQQL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,11 +96,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 22 Mar 2024 16:50:15 +0530, Vijendar Mukunda wrote:
-> The CONFIG_SOUNDWIRE_AMD is a user-visible option, it should be never
-> selected by another driver.
-> So replace the extra complexity with a normal Kconfig dependency in
-> SND_SOC_AMD_SOUNDWIRE.
+On Thu, 14 Mar 2024 15:16:42 +0100, Alexander Stein wrote:
+> This happens especially if this driver is built-in, but SDMA driver
+> is configured as module.
 > 
 > 
 
@@ -112,8 +108,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: simplify soundwire dependencies for legacy stack
-      commit: a806793f231e390510343837668d8f0eade75a72
+[1/1] ASoC: fsl: fsl_ssi: Add dev_err_probe if PCM DMA init fails
+      commit: 3ca49e7f9475ac06614edf1bfece123eafbdf8f3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
