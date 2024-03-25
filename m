@@ -4,82 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20B5CC54E64
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 19:00:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E08BC54E64
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 19:10:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5112414E0;
-	Mon, 25 Mar 2024 20:00:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5112414E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FEFC1060;
+	Mon, 25 Mar 2024 20:10:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FEFC1060
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711393246;
-	bh=qb0iwJLbOS+LnSN4h1wK8br8fS0Emdh+02cjuu/+jmQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=rM+6un5SxorUKuPcJ+6UsjiF+UBNfP3qfqPCLUTBAkDzmHDbN0KePAGX5sOvNdkru
-	 QD5jvP9bAavoaeas/lU3KuXr3d3sRdgLOnPP7/wKzFs/fGM54IjsUiGXfwEBaa9B3Y
-	 HvGJfHBzwqoVUvWohb1+YLlt9vF07irjuu8Z5YCA=
+	s=default; t=1711393825;
+	bh=OUTG06nJDlO6TyRUnO74rozzjf6s+aA5Hb3q1CX7FjU=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=CiFJxKkGbA7EYiZsvX5PDVi4Q58peMHh9jBkcM7O/W5uIEzHpB7s7BwdX7ZKbJwHW
+	 nOrN7NGXOkdsmb8vul6CgS8/iLnNlgmCytgigYvtCkGaWWQiT6EXy3TJv+PZ1V0lmC
+	 z9a/BwnF2tYgMPidTgu+YoRrqiwLXaufWDyMSxk4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82857F806C4; Mon, 25 Mar 2024 18:44:31 +0100 (CET)
+	id 2E4D0F805C4; Mon, 25 Mar 2024 15:55:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2928CF806C0;
-	Mon, 25 Mar 2024 18:44:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2635F805B3;
+	Mon, 25 Mar 2024 15:55:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C18B3F80684; Mon, 25 Mar 2024 18:44:26 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 6EA3FF805AE; Mon, 25 Mar 2024 15:55:18 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5F5A4F805E0
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 18:44:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F5A4F805E0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 79005F80564
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 15:55:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79005F80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=CM0olkc8
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 724FC61012;
-	Mon, 25 Mar 2024 17:44:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF51C433F1;
-	Mon, 25 Mar 2024 17:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711388658;
-	bh=qb0iwJLbOS+LnSN4h1wK8br8fS0Emdh+02cjuu/+jmQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=CM0olkc8ABVp8KmSIRMh1EoZWuTErWkfpQ+hJU4vDTWnSETmZfbGeyRGVE4x9Nyxa
-	 27DwkyOdKYLCruQnOqbQHzR05Rp3BAE2hAyghZiJ8C137RVPkChKjQqD/PQV+L4ejY
-	 2reiR8/UxcV8rWkRIj9u0WCdGg5J1pte9EghB0pRGEYPKf2DtOoAsSQ5r4dGkgxqPZ
-	 eQTqsvSSW3FZK4OC3sMVhHKGAkLI2w3TT5ACE1yGocgfq9tUuug0T44ZD3bdxHFEZv
-	 f/WiEP9nvnZXMqXQbbBQSQZvSGXUeZyebHHHVztGIihBia+vYv1+x4Lhc0CHDh/WRj
-	 eV5x9HYl8IfSA==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-sound@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>
-In-Reply-To: <20240318200804.181516-1-andriy.shevchenko@linux.intel.com>
-References: <20240318200804.181516-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 1/1] ASoC: fsl: imx-es8328: Switch to using gpiod
- API
-Message-Id: <171138865464.327140.5568916833564730450.b4-ty@kernel.org>
-Date: Mon, 25 Mar 2024 17:44:14 +0000
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=UA6FZVGf
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 42P3P0eY021761;
+	Mon, 25 Mar 2024 09:55:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=W
+	iglk1r0cdxZ5D6UfXZHUlMlHakoY8HthLuTK4xjf0k=; b=UA6FZVGfwAyKfRlaD
+	L4L8q2mSseLEdZFSrCj4C811itT4Nnraulv3reSfs2WweNpX6I6rigQT9K1qibYQ
+	wGUj3kxdKkVx7d/V4F6hljpO6luHX+zZAOScrs9YUA21ibGr7Wx3C7VITJfkzqwE
+	Zv30KrEsV8WX8+XXbCkJTBb7jTrS3YPMy+yJEp0pmZigIGGeAZOzbO+4ahnVDihX
+	zrE/09DPZ7rA/1OmIeasmBo1LSt4wVeBchPbT6YdVzTbJ/0vXIE7s1fzbxQ3jHdK
+	DpStjGZG0RJyiB0skkq9RgZY6QuwZjM3RRWBGYkZZvru3JV8v8pIG4L4nsb6J+sO
+	GXA+g==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x1vfybjc3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 09:55:13 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 25 Mar
+ 2024 14:55:11 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.4 via Frontend Transport; Mon, 25 Mar 2024 14:55:11 +0000
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
+ [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id EEEE2820244;
+	Mon, 25 Mar 2024 14:55:10 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <tiwai@suse.com>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Simon
+ Trimmer" <simont@opensource.cirrus.com>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH] ALSA: hda: cs35l56: Set the init_done flag before
+ component_add()
+Date: Mon, 25 Mar 2024 14:55:10 +0000
+Message-ID: <20240325145510.328378-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
-Message-ID-Hash: LWIW7ZZZ65ONYFXCAT6R7IFMS6OCTHAJ
-X-Message-ID-Hash: LWIW7ZZZ65ONYFXCAT6R7IFMS6OCTHAJ
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: xYezW5GbRV6U63GUk9w_nk9e9zLQz_H-
+X-Proofpoint-GUID: xYezW5GbRV6U63GUk9w_nk9e9zLQz_H-
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: ZKRZPCOTEB6O7J53CFUODXWU2TA3ILGZ
+X-Message-ID-Hash: ZKRZPCOTEB6O7J53CFUODXWU2TA3ILGZ
+X-MailFrom: prvs=081491209a=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LWIW7ZZZ65ONYFXCAT6R7IFMS6OCTHAJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZKRZPCOTEB6O7J53CFUODXWU2TA3ILGZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,37 +109,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 18 Mar 2024 22:07:56 +0200, Andy Shevchenko wrote:
-> This updates the driver to gpiod API, and removes yet another use of
-> of_get_named_gpio().
-> 
-> 
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-Applied to
+Initialization is completed before adding the component as that can
+start the process of the device binding and trigger actions that check
+init_done.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 73cfbfa9caea ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
+---
+ sound/pci/hda/cs35l56_hda.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks!
-
-[1/1] ASoC: fsl: imx-es8328: Switch to using gpiod API
-      commit: 9855f05e553637f05494cf47a3154cbf9a5cfc67
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+index f3c5715f5e02..1a3f84599cb5 100644
+--- a/sound/pci/hda/cs35l56_hda.c
++++ b/sound/pci/hda/cs35l56_hda.c
+@@ -1045,14 +1045,14 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id)
+ 	pm_runtime_mark_last_busy(cs35l56->base.dev);
+ 	pm_runtime_enable(cs35l56->base.dev);
+ 
++	cs35l56->base.init_done = true;
++
+ 	ret = component_add(cs35l56->base.dev, &cs35l56_hda_comp_ops);
+ 	if (ret) {
+ 		dev_err(cs35l56->base.dev, "Register component failed: %d\n", ret);
+ 		goto pm_err;
+ 	}
+ 
+-	cs35l56->base.init_done = true;
+-
+ 	return 0;
+ 
+ pm_err:
+-- 
+2.39.2
 
