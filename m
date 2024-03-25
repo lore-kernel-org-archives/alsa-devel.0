@@ -4,97 +4,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBAA4C54E64
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 19:15:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70659C54E64
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 19:25:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 133F1191C;
-	Mon, 25 Mar 2024 20:15:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 133F1191C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B5001947;
+	Mon, 25 Mar 2024 20:25:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B5001947
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711394112;
-	bh=S4dR9hMjuyXo+2NLjdCApilcKOOtn4MC+CpSK0tyAkM=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=fG4nJpv3mK3fYPBEh3S2/vzIMo1P7m7EOL0FNg4V6/8anGqXtvidlg/FJClIMuoKZ
-	 2qIfVSUUCJkooQhVAZ55QKGI73ODDKfSNAAHkRAyqWHTexQlfMil0lQaB5gmbIz5/6
-	 QeycRzTHBMeuMdbyElTxcJaqph0Gve/OVzEtxrS8=
+	s=default; t=1711394726;
+	bh=7BMVtVx/bH0fO02qrr8S0bUjiPTP37rHyaopN4ZoMIU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=BvWunHkpbC/W2Xr35QbCr/wAQsaGwr/Ly5uyqgL49TXXgTSjIZKZAWuhb2SdsQ5KD
+	 5NN+M7oj0PxNrjiHPxO8RXMt57YI62KOo7AFD5K2DqicX7pIN08O7dgiq+fqEiJ68E
+	 chcrVuPq5lUAE7Ld00vFtrm2P3PZCuk+QNMI1IFk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5E55AF80570; Mon, 25 Mar 2024 20:14:41 +0100 (CET)
+	id 72E0EF8061C; Mon, 25 Mar 2024 17:20:48 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3449F805AA;
-	Mon, 25 Mar 2024 20:14:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5465F80622;
+	Mon, 25 Mar 2024 17:20:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4569AF8025F; Mon, 25 Mar 2024 20:14:36 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E5BE7F805E8; Mon, 25 Mar 2024 17:20:42 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF0A1F801EB
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 20:14:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF0A1F801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 883C7F805E4
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 17:20:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 883C7F805E4
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=cxuS5fe9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711394072; x=1742930072;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=S4dR9hMjuyXo+2NLjdCApilcKOOtn4MC+CpSK0tyAkM=;
-  b=cxuS5fe9uqztZIfbCT3rdE+Silr8J+y6x1X7/X/aXNIO0d/H/BiDyAdR
-   FFWUpwg0CVLf/lMh6SyFWKhacrv09+jK0eRTQblruMvXCRHFgI04RTi0I
-   jZ/BjvNjatMLxWdY3IkO/nev54VQhsuFaU/+mzuRGVq8Xxsp0nGY3arQr
-   S+JQfmvXo86sSEJVzTXYhIXyFLt8gzmLCeau10bcCDRLwpz2Wz+IZSmxf
-   nV2LBOgMItJ+jT85RYezNdja9OEFBDHxIQYvEwEScbgsReXvtxZlbMMju
-   cWoQ7lU6JPN3f5q/AkPW5xHd+yEnsh2m+f1ahX/q/SpSDH6ctAjM8YWEc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="10213324"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="10213324"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Mar 2024 12:14:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="937070805"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000";
-   d="scan'208";a="937070805"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Mar 2024 12:14:23 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 470F2101; Mon, 25 Mar 2024 21:14:22 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>,
-	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] ASoC: fsl: imx-es8328: Remove leftover gpio
- initialisation
-Date: Mon, 25 Mar 2024 21:13:41 +0200
-Message-ID: <20240325191341.3977321-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6U6OQO3OGOBYDDARPCVZNIJTO5FQL36A
-X-Message-ID-Hash: 6U6OQO3OGOBYDDARPCVZNIJTO5FQL36A
-X-MailFrom: andriy.shevchenko@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Vzirc6cE;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=uHCF2M3k;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Vzirc6cE;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=uHCF2M3k
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E060934766;
+	Mon, 25 Mar 2024 16:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1711383639;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sxzjX7HfXAUn1C7M5TP/T3y2Vg/0dHDr0qhtHQYG8KY=;
+	b=Vzirc6cE0bcwjSF03MgWfwmCWx5bXfCGenTlcOmM+Bo65muaz3JqEvmVbPSkHmHMDklAsm
+	ElpxMYx+Foon7rZji4L7Y1iHFMzJ8xFGLFCGWQqk+fkxQcPe9L+D9MiEmpO/5YRUVHAZeE
+	TiVGJRRUzcLMOi2bEKbpBXc1bd4K3DY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711383639;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sxzjX7HfXAUn1C7M5TP/T3y2Vg/0dHDr0qhtHQYG8KY=;
+	b=uHCF2M3kV267N4iy5xqhHRXw4BMOI0KKQiJd3C8hHKazp8fthYjpxslges+fwh4iiIlYAP
+	reb61G5LXDZiTcAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1711383639;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sxzjX7HfXAUn1C7M5TP/T3y2Vg/0dHDr0qhtHQYG8KY=;
+	b=Vzirc6cE0bcwjSF03MgWfwmCWx5bXfCGenTlcOmM+Bo65muaz3JqEvmVbPSkHmHMDklAsm
+	ElpxMYx+Foon7rZji4L7Y1iHFMzJ8xFGLFCGWQqk+fkxQcPe9L+D9MiEmpO/5YRUVHAZeE
+	TiVGJRRUzcLMOi2bEKbpBXc1bd4K3DY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711383639;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sxzjX7HfXAUn1C7M5TP/T3y2Vg/0dHDr0qhtHQYG8KY=;
+	b=uHCF2M3kV267N4iy5xqhHRXw4BMOI0KKQiJd3C8hHKazp8fthYjpxslges+fwh4iiIlYAP
+	reb61G5LXDZiTcAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A551813503;
+	Mon, 25 Mar 2024 16:20:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4/D1JlekAWYyFgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 25 Mar 2024 16:20:39 +0000
+Date: Mon, 25 Mar 2024 17:20:40 +0100
+Message-ID: <87msqmwaef.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: <tiwai@suse.com>,
+	<linux-sound@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>,
+	<patches@opensource.cirrus.com>,
+	"Simon Trimmer" <simont@opensource.cirrus.com>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Set the init_done flag before
+ component_add()
+In-Reply-To: <20240325145510.328378-1-rf@opensource.cirrus.com>
+References: <20240325145510.328378-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.06 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-1.05)[87.70%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_TLS_ALL(0.00)[]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Vzirc6cE;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=uHCF2M3k
+X-Rspamd-Queue-Id: E060934766
+Message-ID-Hash: Y5I26N2BIJNR4G4IGSEHLMZIRBSA5XIN
+X-Message-ID-Hash: Y5I26N2BIJNR4G4IGSEHLMZIRBSA5XIN
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +163,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6U6OQO3OGOBYDDARPCVZNIJTO5FQL36A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y5I26N2BIJNR4G4IGSEHLMZIRBSA5XIN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,27 +172,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The gpio field is not used anymore, remove the leftover.
-This also fixes the compilation error after the ...
+On Mon, 25 Mar 2024 15:55:10 +0100,
+Richard Fitzgerald wrote:
+> 
+> From: Simon Trimmer <simont@opensource.cirrus.com>
+> 
+> Initialization is completed before adding the component as that can
+> start the process of the device binding and trigger actions that check
+> init_done.
+> 
+> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Fixes: 73cfbfa9caea ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
 
-Fixes: 9855f05e5536 ("ASoC: fsl: imx-es8328: Switch to using gpiod API")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- sound/soc/fsl/imx-es8328.c | 1 -
- 1 file changed, 1 deletion(-)
+Thanks, applied now.
 
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-index d67b8a149bff..5b9648f3b087 100644
---- a/sound/soc/fsl/imx-es8328.c
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -28,7 +28,6 @@ struct imx_es8328_data {
- 
- static struct snd_soc_jack_gpio headset_jack_gpios[] = {
- 	{
--		.gpio = -1,
- 		.name = "headset-gpio",
- 		.report = SND_JACK_HEADSET,
- 		.invert = 0,
--- 
-2.43.0.rc1.1.gbec44491f096
 
+Takashi
