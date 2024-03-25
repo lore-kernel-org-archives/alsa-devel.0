@@ -4,92 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12377C54E64
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 18:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4268ACD11DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Mar 2024 19:00:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0CB414DD;
-	Mon, 25 Mar 2024 19:50:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0CB414DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 170E5E9A;
+	Mon, 25 Mar 2024 20:00:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 170E5E9A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711392625;
-	bh=gBX8YfXgY1iMfwDEeoUVHzA6nko45l9jsRdBGQAMaQM=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=J5fiD3GSqiWDBdDgrluZWHaft/MX2MgRR9syB92ycF0Ji4vC/RqlQuolo5eyzO7x5
-	 qQKfa0ou1hmXeqaAu0hvyoi3ot9qTu4MrHPsMFYsN2l7WtLP6aR3PByBomscJ6+orb
-	 aHEnWjUK+xpTk1kuLzMvNtEY4pYmR+/IaZ9goEWY=
+	s=default; t=1711393215;
+	bh=3phOsfj299vReX13jBEsAZUiG0U9Ij11nDe4fUf1txA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=TDdjVhDVEIa9bmnTTW0cnv6s17pvVMKzZWs58W7z5Fz8mzV11KR7eaOkwE5qNAyyy
+	 h+854znwgGb//Zjbhp3if8jWY2dFVeXyYYdUswBdXRSHoFa6BNnG09cMlyb2T2Pmjs
+	 sAH3L2UPlXz49Z8lAtjXU7QtttQekgXJwOFFv/dQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54F8BF805A0; Mon, 25 Mar 2024 15:45:07 +0100 (CET)
+	id 14F61F806E5; Mon, 25 Mar 2024 18:44:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45CFCF805AA;
-	Mon, 25 Mar 2024 15:45:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42C9FF806E5;
+	Mon, 25 Mar 2024 18:44:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2447AF802DB; Mon, 25 Mar 2024 15:45:01 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id B0474F80682; Mon, 25 Mar 2024 18:44:28 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28288F80236
-	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 15:44:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28288F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id A96DEF80682
+	for <alsa-devel@alsa-project.org>; Mon, 25 Mar 2024 18:44:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A96DEF80682
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=VxFmgjjn
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 42P4qktd007553;
-	Mon, 25 Mar 2024 09:44:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=s
-	M4jHgZg6/v208T765YpJQoPIlY6ESlG7oOC2AjF6z4=; b=VxFmgjjnmJ9L5nxd2
-	it1jI8YbPahhGFRu4ozXJZgI4CRlBkS9s2Wzg+hLHyd8VOu6SVY+VKUNtIT9tzFh
-	nqpvsb5pC7U0NfcQu3PLyIMKTqdnWNKw+iF/FXwiY1xTmNntfwEBMYSTZuTPALSa
-	RzudieqW9kulq6qp43REUXZbaVLp1FcGQeMOFywQgWnypm5GQgonNQVdPWu27zdu
-	wdG59L4sLvIvd6rIecltEhWFsergszbV24nTpd82JxJOYi7kodRcycwEZ4snz45r
-	Exu9xAURY+XWVQcPXPoyYI7laj/AUJTIHfokdUhct72+fUrkLXnKhCuAxf2uuvXq
-	N7JIA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x1vfybhxw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 09:44:53 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 25 Mar
- 2024 14:44:51 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
- via Frontend Transport; Mon, 25 Mar 2024 14:44:51 +0000
-Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
- [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id DACA6820244;
-	Mon, 25 Mar 2024 14:44:50 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Simon
- Trimmer" <simont@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs-amp-lib: Check for no firmware controls when writing
- calibration
-Date: Mon, 25 Mar 2024 14:44:50 +0000
-Message-ID: <20240325144450.293630-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=uleASsOJ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 3E203CE1C13;
+	Mon, 25 Mar 2024 17:44:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80035C433C7;
+	Mon, 25 Mar 2024 17:44:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711388660;
+	bh=3phOsfj299vReX13jBEsAZUiG0U9Ij11nDe4fUf1txA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=uleASsOJVKH6GH5mbWkE7YCmO5mRO3FV8rlVA/9sTcBM5MnphiVvP8xSo0Wgt+yjk
+	 I4U/dnEpppcmTx5bkfN/HCSsafZL/4i6/PmGAzTyf2IEe81kEJhD5lH10cQ0mTAyKh
+	 4/Pd4vY1zFMrdyfTnIRCfQ63cqEIRmLJ10uRyKV3G1S8z7rNqAteLIwEa6ckQjjRAF
+	 cFfpJspRAWTHzAESj5+y77LbMD4bOS561sIneCO6H3pVzvaRm7EqgMInepw7cYCHES
+	 9jhE6Rm2TC3HBL5pZdTtv4ZLrs3XhM0pWPKdDngUp3UIaiJCXoUd1ep36evAdQ9iQN
+	 731RjYgye/JlA==
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, venkataprasad.potturu@amd.com,
+ Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com, arnd@arndb.de,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <linux-sound@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20240322112018.3063344-1-Vijendar.Mukunda@amd.com>
+References: <20240322112018.3063344-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [RESEND] ASoC: amd: simplify soundwire dependencies for legacy
+ stack
+Message-Id: <171138865825.327140.9353092446072557708.b4-ty@kernel.org>
+Date: Mon, 25 Mar 2024 17:44:18 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: GgbbWgh-nZxqA48C84fnxwXmq9jvAe4f
-X-Proofpoint-GUID: GgbbWgh-nZxqA48C84fnxwXmq9jvAe4f
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: Z4HPIT37D4CINXPY7O5HAO6PKV7U4FJ7
-X-Message-ID-Hash: Z4HPIT37D4CINXPY7O5HAO6PKV7U4FJ7
-X-MailFrom: prvs=081491209a=rf@opensource.cirrus.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
+Message-ID-Hash: OIESMANBYJ4BEJM3K2JHFOHUHBF2MSQL
+X-Message-ID-Hash: OIESMANBYJ4BEJM3K2JHFOHUHBF2MSQL
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4HPIT37D4CINXPY7O5HAO6PKV7U4FJ7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OIESMANBYJ4BEJM3K2JHFOHUHBF2MSQL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,37 +98,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+On Fri, 22 Mar 2024 16:50:15 +0530, Vijendar Mukunda wrote:
+> The CONFIG_SOUNDWIRE_AMD is a user-visible option, it should be never
+> selected by another driver.
+> So replace the extra complexity with a normal Kconfig dependency in
+> SND_SOC_AMD_SOUNDWIRE.
+> 
+> 
 
-When a wmfw file has not been loaded the firmware control descriptions
-necessary to write a stored calibration are not present. In this case
-print a more descriptive error message.
+Applied to
 
-The message is logged at info level because it is not fatal, and does
-not necessarily imply that anything is broken.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs-amp-lib.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Thanks!
 
-diff --git a/sound/soc/codecs/cs-amp-lib.c b/sound/soc/codecs/cs-amp-lib.c
-index 01ef4db5407d..287ac01a3873 100644
---- a/sound/soc/codecs/cs-amp-lib.c
-+++ b/sound/soc/codecs/cs-amp-lib.c
-@@ -56,6 +56,11 @@ static int _cs_amp_write_cal_coeffs(struct cs_dsp *dsp,
- 	dev_dbg(dsp->dev, "Calibration: Ambient=%#x, Status=%#x, CalR=%d\n",
- 		data->calAmbient, data->calStatus, data->calR);
- 
-+	if (list_empty(&dsp->ctl_list)) {
-+		dev_info(dsp->dev, "Calibration disabled due to missing firmware controls\n");
-+		return -ENOENT;
-+	}
-+
- 	ret = cs_amp_write_cal_coeff(dsp, controls, controls->ambient, data->calAmbient);
- 	if (ret)
- 		return ret;
--- 
-2.39.2
+[1/1] ASoC: amd: simplify soundwire dependencies for legacy stack
+      commit: a806793f231e390510343837668d8f0eade75a72
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
