@@ -4,92 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62A28C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12388C54E67
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:19:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 776BC2C4E;
-	Tue, 26 Mar 2024 17:15:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 776BC2C4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B73802C26;
+	Tue, 26 Mar 2024 17:19:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B73802C26
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711469744;
-	bh=ZgXWLJa803Tcz4lHMH5IzQhQvBYtscxSaM1zxM0uUrc=;
+	s=default; t=1711469985;
+	bh=9sS/jISAgyu61lXomWChV7j5u4qUbSmNT3mVkkIqqbg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fqEAsAiR1IXO8pAgqjJckLRrEps1sRykd+iXwcaF55UG6Iee8oh/KOfdXYgfyXzmf
-	 IM2sMubf9/B/D7UVS/wFGQmm+qC4YvxgyXkMOiYJo3+SpNQ+9eKUs3wOdw42tPL3Vf
-	 e/B/HX6Doo3up5ZFcKurX7XFhrhUXShPdGvfWo2A=
+	b=HXwXfKczQ8l2BLeMbz1p20W3eXzJGjb9e9sP2e9+XgqRVF0beCUubKBoNEZIfC12X
+	 /LXQ4+CcrOj2htqyKAmvS1TbNBaouRRnauKB9zaeQxUvKad9Ps2j6sz6oMmT/T7CZU
+	 0AWhg9+ug6oZCK9199bUFuUEyeIgh1pW5M6Vl570=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65D43F8986B; Tue, 26 Mar 2024 17:07:53 +0100 (CET)
+	id 23DFCF805AF; Tue, 26 Mar 2024 17:19:14 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01650F89867;
-	Tue, 26 Mar 2024 17:07:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DD57F80588;
+	Tue, 26 Mar 2024 17:19:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73201F80CBC; Tue, 26 Mar 2024 17:06:56 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 00319F801D5; Tue, 26 Mar 2024 17:19:06 +0100 (CET)
+Received: from irl.hu (irl.hu [95.85.9.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2847EF8060C
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:06:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2847EF8060C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=X8gNNqsm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711469162; x=1743005162;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZgXWLJa803Tcz4lHMH5IzQhQvBYtscxSaM1zxM0uUrc=;
-  b=X8gNNqsmBKMuoiNgLvGAmb+MraoZKOmTEZcNNBrmvFx/EUmdhsRlDYaQ
-   HcIXOembH884BqAUcFvo/APgEs0ryr+T5AbPUnth6t6xfdI28KJ5C0PTs
-   lMrlfK2Vx8SeEPlXLhnu0c/6/C6Xrl9Yx2+Br0FHS5UWodhDdvwM7Ec2B
-   Rin9+VF63bAXsWvJXYwf1bB1fJ0fqXCvNMLnITfI7QvJBrMjr6wtoO5uH
-   zM04pkG02IOyOMUfDb0/BQQWL4mrNmpAl/xB9rQdVqLNr8VQJdZkcDCRV
-   ZrKVSDfRdUzlLPLtYVJdXbINt6XlwBM7DJLvMHssBFpcUC4Pf1tG/UUmX
-   w==;
-X-CSE-ConnectionGUID: +6liy8alTxKre/Iw6PWJnw==
-X-CSE-MsgGUID: QG1jHc4nRImSF69o065Ktw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260578"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="17260578"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:05:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="20482510"
-Received: from bhubbert-mobl.amr.corp.intel.com (HELO
- pbossart-mobl6.intel.com) ([10.212.65.108])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:05:06 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: linux-sound@vger.kernel.org
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	broonie@kernel.org,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Shuming Fan <shumingf@realtek.com>,
-	Jack Yu <jack.yu@realtek.com>,
-	Oder Chiou <oder_chiou@realtek.com>,
-	Bard liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 33/34] ASoC: Intel: sof_sdw: Add quirk for optional codec
- speakers
-Date: Tue, 26 Mar 2024 11:04:28 -0500
-Message-Id: <20240326160429.13560-34-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
-References: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: APQL7M5A275OZ3UHW2AWALLBA232ZLIQ
-X-Message-ID-Hash: APQL7M5A275OZ3UHW2AWALLBA232ZLIQ
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 6725DF801D5
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:18:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6725DF801D5
+Received: from fedori.lan (51b68717.dsl.pool.telekom.hu
+ [::ffff:81.182.135.23])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000077336.000000006602F571.0023D3A2;
+ Tue, 26 Mar 2024 17:18:54 +0100
+From: Gergo Koteles <soyer@irl.hu>
+To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+  Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+  linux-kernel@vger.kernel.org, Gergo Koteles <soyer@irl.hu>,
+  stable@vger.kernel.org
+Subject: [PATCH v2 1/4] ALSA: hda/tas2781: remove digital gain kcontrol
+Date: Tue, 26 Mar 2024 17:18:45 +0100
+Message-ID: 
+ <741fc21db994efd58f83e7aef38931204961e5b2.1711469583.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <cover.1711469583.git.soyer@irl.hu>
+References: <cover.1711469583.git.soyer@irl.hu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+Message-ID-Hash: AXYSS564TAKCK5MLUFLPOHSVI4NECLFP
+X-Message-ID-Hash: AXYSS564TAKCK5MLUFLPOHSVI4NECLFP
+X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/APQL7M5A275OZ3UHW2AWALLBA232ZLIQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AXYSS564TAKCK5MLUFLPOHSVI4NECLFP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,73 +83,92 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+The "Speaker Digital Gain" kcontrol controls the TAS2781_DVC_LVL (0x1A)
+register. Unfortunately the tas2563 does not have DVC_LVL, but has
+INT_MASK0 in 0x1A, which has been misused so far.
 
-Some codecs have speaker drivers that may or may not be used in a
-given system. Add a quirk (SOF_CODEC_SPKR) that defines if a system
-uses the codec speaker, this is kept generic such that any codec
-with such a speaker DAI can reuse the quirk.
+Since commit c1947ce61ff4 ("ALSA: hda/realtek: tas2781: enable subwoofer
+volume control") the volume of the tas2781 amplifiers can be controlled
+by the master volume, so this digital gain kcontrol is not needed.
 
-For implementation of this, add a quirk field into the
-sof_sdw_dai_info structure. This field is not used to specify
-if a system uses a particular quirk, that is still done through
-the sof_sdw_quirk variable, this field is used to flag a DAI as
-conditional on a certain quirk. This means the DAI will only be
-included in the card if sof_sdw_quirk and the DAI quirk field have
-a matching set bit.
+Remove it.
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+CC: stable@vger.kernel.org
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
 ---
- sound/soc/intel/boards/sof_sdw.c        | 5 +++++
- sound/soc/intel/boards/sof_sdw_common.h | 3 +++
- 2 files changed, 8 insertions(+)
+ sound/pci/hda/tas2781_hda_i2c.c | 37 +--------------------------------
+ 1 file changed, 1 insertion(+), 36 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 5a7014d82d6c..4fc15f597e28 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -37,6 +37,8 @@ static void log_quirks(struct device *dev)
- 			SOF_SSP_GET_PORT(sof_sdw_quirk));
- 	if (sof_sdw_quirk & SOF_SDW_NO_AGGREGATION)
- 		dev_err(dev, "quirk SOF_SDW_NO_AGGREGATION enabled but no longer supported\n");
-+	if (sof_sdw_quirk & SOF_CODEC_SPKR)
-+		dev_dbg(dev, "quirk SOF_CODEC_SPKR enabled\n");
- }
- 
- static int sof_sdw_quirk_cb(const struct dmi_system_id *id)
-@@ -1382,6 +1384,9 @@ static int parse_sdw_endpoints(struct snd_soc_card *card,
- 				dai_info = &codec_info->dais[adr_end->num];
- 				sof_dai = find_dailink(sof_dais, adr_end);
- 
-+				if (dai_info->quirk && !(dai_info->quirk & sof_sdw_quirk))
-+					continue;
-+
- 				dev_dbg(dev,
- 					"Add dev: %d, 0x%llx end: %d, %s, %c/%c to %s: %d\n",
- 					ffs(adr_link->mask) - 1, adr_dev->adr,
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index 8d8c2ca68a7f..81181627b406 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -52,6 +52,8 @@ enum {
- #define SOF_SSP_GET_PORT(quirk)	(((quirk) >> 7) & GENMASK(5, 0))
- /* Deprecated and no longer supported by the code */
- #define SOF_SDW_NO_AGGREGATION		BIT(14)
-+/* If a CODEC has an optional speaker output, this quirk will enable it */
-+#define SOF_CODEC_SPKR			BIT(15)
- 
- /* BT audio offload: reserve 3 bits for future */
- #define SOF_BT_OFFLOAD_SSP_SHIFT	15
-@@ -80,6 +82,7 @@ struct sof_sdw_dai_info {
- 	int (*exit)(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
- 	int (*rtd_init)(struct snd_soc_pcm_runtime *rtd);
- 	bool rtd_init_done; /* Indicate that the rtd_init callback is done */
-+	unsigned long quirk;
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index 4475cea8e9f7..5acb475c10a7 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -89,7 +89,7 @@ struct tas2781_hda {
+ 	struct snd_kcontrol *dsp_prog_ctl;
+ 	struct snd_kcontrol *dsp_conf_ctl;
+ 	struct snd_kcontrol *prof_ctl;
+-	struct snd_kcontrol *snd_ctls[3];
++	struct snd_kcontrol *snd_ctls[2];
  };
  
- struct sof_sdw_codec_info {
+ static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
+@@ -294,27 +294,6 @@ static int tasdevice_config_put(struct snd_kcontrol *kcontrol,
+ 	return ret;
+ }
+ 
+-/*
+- * tas2781_digital_getvol - get the volum control
+- * @kcontrol: control pointer
+- * @ucontrol: User data
+- * Customer Kcontrol for tas2781 is primarily for regmap booking, paging
+- * depends on internal regmap mechanism.
+- * tas2781 contains book and page two-level register map, especially
+- * book switching will set the register BXXP00R7F, after switching to the
+- * correct book, then leverage the mechanism for paging to access the
+- * register.
+- */
+-static int tas2781_digital_getvol(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct tasdevice_priv *tas_priv = snd_kcontrol_chip(kcontrol);
+-	struct soc_mixer_control *mc =
+-		(struct soc_mixer_control *)kcontrol->private_value;
+-
+-	return tasdevice_digital_getvol(tas_priv, ucontrol, mc);
+-}
+-
+ static int tas2781_amp_getvol(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -325,17 +304,6 @@ static int tas2781_amp_getvol(struct snd_kcontrol *kcontrol,
+ 	return tasdevice_amp_getvol(tas_priv, ucontrol, mc);
+ }
+ 
+-static int tas2781_digital_putvol(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct tasdevice_priv *tas_priv = snd_kcontrol_chip(kcontrol);
+-	struct soc_mixer_control *mc =
+-		(struct soc_mixer_control *)kcontrol->private_value;
+-
+-	/* The check of the given value is in tasdevice_digital_putvol. */
+-	return tasdevice_digital_putvol(tas_priv, ucontrol, mc);
+-}
+-
+ static int tas2781_amp_putvol(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -381,9 +349,6 @@ static const struct snd_kcontrol_new tas2781_snd_controls[] = {
+ 	ACARD_SINGLE_RANGE_EXT_TLV("Speaker Analog Gain", TAS2781_AMP_LEVEL,
+ 		1, 0, 20, 0, tas2781_amp_getvol,
+ 		tas2781_amp_putvol, amp_vol_tlv),
+-	ACARD_SINGLE_RANGE_EXT_TLV("Speaker Digital Gain", TAS2781_DVC_LVL,
+-		0, 0, 200, 1, tas2781_digital_getvol,
+-		tas2781_digital_putvol, dvc_tlv),
+ 	ACARD_SINGLE_BOOL_EXT("Speaker Force Firmware Load", 0,
+ 		tas2781_force_fwload_get, tas2781_force_fwload_put),
+ };
 -- 
-2.40.1
+2.44.0
 
