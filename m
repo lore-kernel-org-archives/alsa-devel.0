@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B5E2C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F5B8C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:11:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9DC22C16;
-	Tue, 26 Mar 2024 17:11:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9DC22C16
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0854C2BBD;
+	Tue, 26 Mar 2024 17:11:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0854C2BBD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711469485;
-	bh=cl79tFpLx86aSOuqh9+F1+bk9CD5uzAwzEa9y9oGOjg=;
+	s=default; t=1711469504;
+	bh=9iA0Nx5xyOd4qdcwtHqLz0ah1YLccJBqhCPLpQnQrT4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S/hq9y1HJTNekVCrReH96w11d7cBsucmYxYiWR8YA8j6BKCVweln5rop94MP+rkxd
-	 MpnRudOpVgiBptCrSjWy4BtMu+oTYuAGc+Sgk6r5ml0x8WEhwXoBVekHYF+ZIz5cNZ
-	 nEwQPREj4A3YVY8PWDPyhwOAz82PRA9SqAsID4Ls=
+	b=r6SQniKklz+tVBNuIUJURyehH1jrtSwogUIj6/Rvu+XNqK46+6FPQh5q3SPLAs2WL
+	 2P5aLvqkm0BsArtnZU1p4bx0bP98EcdDvOBDLL3HJV7iQRLJzKAKM2/rQAiUveSTmE
+	 UqWbIx0BaDgK+ys+6V54xwvvtPueG0bl+kAZSFOE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5395F89619; Tue, 26 Mar 2024 17:06:59 +0100 (CET)
+	id 61272F89693; Tue, 26 Mar 2024 17:07:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E2CFF80CBD;
-	Tue, 26 Mar 2024 17:06:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88F74F8963C;
+	Tue, 26 Mar 2024 17:07:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0D84F802DB; Tue, 26 Mar 2024 17:06:20 +0100 (CET)
+	id 3D9C7F806D6; Tue, 26 Mar 2024 17:06:28 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8141AF80571
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8141AF80571
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4C39BF805E6
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C39BF805E6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Uhc/kZ0t
+ header.s=Intel header.b=bWcvrPnW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711469143; x=1743005143;
+  t=1711469152; x=1743005152;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cl79tFpLx86aSOuqh9+F1+bk9CD5uzAwzEa9y9oGOjg=;
-  b=Uhc/kZ0tqpWBsdg+26y38tMkfrPzsSd2ZxV8uT9cy1rIjN/mShELEk/+
-   kpmZWFPngboSnaxMuvE9Iu3Y3/fow4bXgLwxnroiE8zmUUcB0M1JA/VjX
-   5+MdhKXFzyTLhBYWJS1SC4fNSu42Y6Uy2CGmh0sgaPnj+BURcP2zpG3dq
-   wFdys9yhJMvAAB/n32+/mbPTQc+Bb17SkX8Xz+K4ke/J55dOlwBWRDkS+
-   0/H+5EDWXN87ZuNweSuirbi4BGaAuivL/Dw2MH5F1VmhHLh8rjGYsC0yy
-   i0PtgejkDgTryvU36HBbY3G4Oiuz8VMzKykAncLSSLGMNL9MP1e+fWkhT
-   g==;
-X-CSE-ConnectionGUID: Ccq8WBrNTkOFJFBLcBskxA==
-X-CSE-MsgGUID: GQzQ143JQtelhIRdSZ6rAw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260416"
+  bh=9iA0Nx5xyOd4qdcwtHqLz0ah1YLccJBqhCPLpQnQrT4=;
+  b=bWcvrPnWTKMp6Q97SCdgBysT3LdHi5s+N4E+Z3uCXKzlBaQKg06sNy6f
+   aiuSY7EAH3xcGICVgL4jgTcX8UBxPL0Ltw3O45UwtqZ72FiZYoAy+W3QY
+   zTYoBxoCSt9HvVnsqIkRXPrxXv3+MhwCiFJ9t+tUyS/Sx3ZkKm445KFai
+   KGExzuPTUkqauDWZxl0C9mxVfuSlLCfYJCEBZ4XrlYphh7VSjNziHi2pG
+   QBf/OrVBmZ4Ky/GXuzjpgTjYPsgYKFEwSu44KkPP6DY1TmDLEvUPQUnMA
+   yHA50EmMhq5/+yLdSszSGaFkUdHIUsRJWg8QQMznJ1eFJviIrflrJbIoW
+   w==;
+X-CSE-ConnectionGUID: komY/zb9Sfmkax6CZOUJjQ==
+X-CSE-MsgGUID: ABh3/ZRhTwax3krOeW6fPQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260490"
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="17260416"
+   d="scan'208";a="17260490"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:51 -0700
+ 26 Mar 2024 09:04:59 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="20482234"
+   d="scan'208";a="20482369"
 Received: from bhubbert-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.65.108])
   by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:51 -0700
+ 26 Mar 2024 09:04:58 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,16 +78,16 @@ Cc: alsa-devel@alsa-project.org,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Bard liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 13/34] ASoC: Intel: sof_sdw: Factor out BlueTooth DAI creation
-Date: Tue, 26 Mar 2024 11:04:08 -0500
-Message-Id: <20240326160429.13560-14-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 23/34] ASoC: intel: sof_sdw: Factor out SoundWire DAI creation
+Date: Tue, 26 Mar 2024 11:04:18 -0500
+Message-Id: <20240326160429.13560-24-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 References: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3UKY2XCEMIK6QPYKEUMLKWDA47S6URTG
-X-Message-ID-Hash: 3UKY2XCEMIK6QPYKEUMLKWDA47S6URTG
+Message-ID-Hash: 6DJ7VGDAMACWL2YWRDLAQJT3IRSEL7EI
+X-Message-ID-Hash: 6DJ7VGDAMACWL2YWRDLAQJT3IRSEL7EI
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3UKY2XCEMIK6QPYKEUMLKWDA47S6URTG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6DJ7VGDAMACWL2YWRDLAQJT3IRSEL7EI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,79 +111,95 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Factor out the creation of the BlueTooth DAI links into a helper
-function.  No functional change.
+Factor out the creation of the SoundWire DAI links into a helper
+function. No functional change.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 35 +++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 50 ++++++++++++++++++++------------
+ 1 file changed, 31 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 7dc3559bf988..6e2e934e1246 100644
+index 9f1c49df9cd2..3e6a758c98ab 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1722,6 +1722,27 @@ static int create_hdmi_dailinks(struct snd_soc_card *card,
+@@ -1559,6 +1559,34 @@ static int create_sdw_dailink(struct snd_soc_card *card,
  	return 0;
  }
  
-+static int create_bt_dailinks(struct snd_soc_card *card,
-+			      struct snd_soc_dai_link **dai_links, int *be_id)
++static int create_sdw_dailinks(struct snd_soc_card *card,
++			       struct snd_soc_dai_link **dai_links, int *be_id,
++			       struct sof_sdw_dailink *sof_dais)
 +{
-+	struct device *dev = card->dev;
-+	int port = (sof_sdw_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
-+			SOF_BT_OFFLOAD_SSP_SHIFT;
-+	char *name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-BT", port);
-+	char *cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", port);
-+	int ret;
++	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
++	int ret, i;
 +
-+	ret = init_simple_dai_link(dev, *dai_links, be_id, name,
-+				   1, 1, cpu_dai_name, snd_soc_dummy_dlc.name,
-+				   snd_soc_dummy_dlc.dai_name, NULL, NULL);
-+	if (ret)
-+		return ret;
++	for (i = 0; i < SDW_MAX_LINKS; i++)
++		ctx->sdw_pin_index[i] = SDW_INTEL_BIDIR_PDI_BASE;
 +
-+	(*dai_links)++;
++	/* generate DAI links by each sdw link */
++	while (sof_dais->initialised) {
++		int current_be_id;
++
++		ret = create_sdw_dailink(card, sof_dais, dai_links, &current_be_id);
++		if (ret)
++			return ret;
++
++		/* Update the be_id to match the highest ID used for SDW link */
++		if (*be_id < current_be_id)
++			*be_id = current_be_id;
++
++		sof_dais++;
++	}
 +
 +	return 0;
 +}
 +
- static int sof_card_dai_links_create(struct snd_soc_card *card)
- {
- 	struct device *dev = card->dev;
-@@ -1738,7 +1759,6 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
- 	bool group_generated[SDW_MAX_GROUPS] = { };
+ static int create_ssp_dailinks(struct snd_soc_card *card,
+ 			       struct snd_soc_dai_link **dai_links, int *be_id,
+ 			       struct sof_sdw_codec_info *ssp_info,
+@@ -1692,7 +1720,7 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	int num_ends = 0;
  	struct snd_soc_dai_link *dai_links;
  	int num_links;
--	char *name, *cpu_dai_name;
- 	int i, j, be_id = 0;
+-	int i, be_id = 0;
++	int be_id = 0;
  	int hdmi_num;
  	unsigned long ssp_mask;
-@@ -1899,20 +1919,11 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
- 	if (ret)
- 		return ret;
+ 	int ret;
+@@ -1774,28 +1802,12 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	card->num_links = num_links;
  
-+	/* BT */
- 	if (sof_sdw_quirk & SOF_SSP_BT_OFFLOAD_PRESENT) {
--		int port = (sof_sdw_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
--				SOF_BT_OFFLOAD_SSP_SHIFT;
+ 	/* SDW */
+-	if (!sdw_be_num)
+-		goto SSP;
 -
--		name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-BT", port);
--		cpu_dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", port);
+-	for (i = 0; i < SDW_MAX_LINKS; i++)
+-		ctx->sdw_pin_index[i] = SDW_INTEL_BIDIR_PDI_BASE;
 -
--		ret = init_simple_dai_link(dev, dai_links, &be_id, name,
--					   1, 1, cpu_dai_name, snd_soc_dummy_dlc.name,
--					   snd_soc_dummy_dlc.dai_name, NULL, NULL);
-+		ret = create_bt_dailinks(card, &dai_links, &be_id);
+-	/* generate DAI links by each sdw link */
+-	while (sof_dais->initialised) {
+-		int current_be_id;
+-
+-		ret = create_sdw_dailink(card, sof_dais, &dai_links, &current_be_id);
++	if (sdw_be_num) {
++		ret = create_sdw_dailinks(card, &dai_links, &be_id, sof_dais);
  		if (ret)
- 			return ret;
+ 			goto err_end;
 -
--		dai_links++;
+-		/* Update the be_id to match the highest ID used for SDW link */
+-		if (be_id < current_be_id)
+-			be_id = current_be_id;
+-
+-		sof_dais++;
  	}
  
- 	WARN_ON(dai_links != card->dai_link + card->num_links);
+-SSP:
+ 	/* SSP */
+ 	if (ssp_num) {
+ 		ret = create_ssp_dailinks(card, &dai_links, &be_id,
 -- 
 2.40.1
 
