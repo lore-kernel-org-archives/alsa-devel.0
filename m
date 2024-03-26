@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C434ECD11DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ADCDC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:15:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AC8B2C4B;
-	Tue, 26 Mar 2024 17:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AC8B2C4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 127902C4C;
+	Tue, 26 Mar 2024 17:15:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 127902C4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711469713;
-	bh=n0IrftS1xYbcXY1GHXbLYZmk8QtdkWZ1bDvJPlTyUtw=;
+	s=default; t=1711469732;
+	bh=un6JUsVkZ+4aDf8r/KdzFVrt0MBjo+jMm6gVJfWVgjU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Sl7KSWPpUoza55doKTLGiU9yI6bA8xMJ6lWZw/L2IUC+xakWX1jGV7bZHTct8EpCo
-	 Vr1a6X4QHl++5n8n1eE2EVlfsJIsX+PGN4AjqOXhN4rFRfLC9xhR9d5ODmJEt8n1rc
-	 umx2IU7XYYjDqbhnLOJlbJzczwIIBM59TWmIpHvM=
+	b=E8D7FOhirFxfIbQu4U8ukWJSZHlREOy3wqd8nI1i1emdC5v5h5kpc+JeltVnaCjMn
+	 pzq9w8/XzWMw1RxRUKyUFdQnNioKTGQTQvEbB+2pR+B+48NIA96z8a4ix02Vz6J160
+	 OEERjV5C51H2moaroe5xhDDQelNBFpNGyownbyxE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94849F8982A; Tue, 26 Mar 2024 17:07:45 +0100 (CET)
+	id 55295F80682; Tue, 26 Mar 2024 17:07:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55B43F8981F;
-	Tue, 26 Mar 2024 17:07:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 909ABF89851;
+	Tue, 26 Mar 2024 17:07:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8E33F80C6D; Tue, 26 Mar 2024 17:06:53 +0100 (CET)
+	id C84E0F80C81; Tue, 26 Mar 2024 17:06:52 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0740F80616
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0740F80616
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2857FF80610
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:06:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2857FF80610
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=mAg9I/qy
+ header.s=Intel header.b=LO6Pc0z/
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711469161; x=1743005161;
+  t=1711469162; x=1743005162;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=n0IrftS1xYbcXY1GHXbLYZmk8QtdkWZ1bDvJPlTyUtw=;
-  b=mAg9I/qymGYw92Do4wvxiE2AsX9leppgS0neZhABixXMr7UYYvk+QZH9
-   XsnY3gM3/DmQUleafzl8xvYSMaufghZn9ImX95+g1RaPKhn+xU93yKOam
-   aJ/tLB6ZXmjl48X9Tjg5eGZdo9r4qaLt+OBfIXy+A63zBq14dWRPLHFLz
-   2X/Po+g2j+culmmkyx6tabReLdvuOqzwH2AapKh3ZLf1NMrHTiTCxuGau
-   Ir7mG2NwwTcRHn2ZVYaXYKHFpzbwJWc4t4wDaf66k+92zxol79uxun4T3
-   VHdcOzh1X6tCPYmCzUCJGgAhXsVkOA2bDBMUi/OxnGwR/LWc7EcuVuzDj
-   A==;
-X-CSE-ConnectionGUID: 9Z4wFLZHTEucIDzSQzbLEA==
-X-CSE-MsgGUID: YTaP1+gNSu2rd3qZ+aZqFg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260569"
+  bh=un6JUsVkZ+4aDf8r/KdzFVrt0MBjo+jMm6gVJfWVgjU=;
+  b=LO6Pc0z/2uf00MZ26netkZW7bnLqTs9KSE4Yqv0U4WDCNNqOVXeZiYtT
+   HMhWqRggDx57g8UJTeERJwiPn8by2fXP5I7WIZ5yXbTBG/pwXIeu08dA8
+   SYUpfO7Dfvp3PUgeu+iGFX4j6DuTqFnkhzvof8ppQjwcDuT4FKL+V/I5C
+   ZCppS0O2uUcULSlYnHZaHB2wXg0L5Iq8Cd8Yly48tukM+K8Dl2VeVB9nd
+   8ailOEhREbMO8t6pH26esk9fIFwaSp2grd6ZXOEXZvwgJTZTTrKeGD8jk
+   EnGnurzEn6VKsJRqZfYTZ2fk6CA3WVTDSMWqb8Oy89CenBOaq1ln57zDK
+   Q==;
+X-CSE-ConnectionGUID: W4MkAYE3RE2yNauAIMUGPg==
+X-CSE-MsgGUID: dI2d2ERcSReRjs2ZwgHyfg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260588"
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="17260569"
+   d="scan'208";a="17260588"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:05:06 -0700
+ 26 Mar 2024 09:05:08 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="20482498"
+   d="scan'208";a="20482520"
 Received: from bhubbert-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.65.108])
   by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:05:05 -0700
+ 26 Mar 2024 09:05:07 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,16 +78,17 @@ Cc: alsa-devel@alsa-project.org,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Bard liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 32/34] ASoC: Intel: sof_sdw: Remove redundant initialisations
-Date: Tue, 26 Mar 2024 11:04:27 -0500
-Message-Id: <20240326160429.13560-33-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 34/34] ASoC: Intel: sof_sdw: Add support for cs42l43 optional
+ speaker output
+Date: Tue, 26 Mar 2024 11:04:29 -0500
+Message-Id: <20240326160429.13560-35-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 References: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DWIUZW4AC3RVSRHKGODYQOGHGQGCDYBT
-X-Message-ID-Hash: DWIUZW4AC3RVSRHKGODYQOGHGQGCDYBT
+Message-ID-Hash: PRHKSOKHSMR5CU746A5MKJ6BBY3HPYPS
+X-Message-ID-Hash: PRHKSOKHSMR5CU746A5MKJ6BBY3HPYPS
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,8 +100,10 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PRHKSOKHSMR5CU746A5MKJ6BBY3HPYPS/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -109,52 +112,184 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Unspecified fields are by default initialised to zero, remove redundant
-init pointer initialisations.
+Add support for the optional speaker output on the cs42l43, this uses
+the new SOF_CODEC_SPKR quirk to conditional include the speaker DAI
+link. It is worth noting that currently no systems are included that
+utilise this feature, but the feature is added as several systems are on
+the horizon. As part of this SOF_SDW_MAX_DAI_NUM must be increased, it
+is currently 3 but cs42l43 will now have 4 DAI links. This value is
+increased to 8 to give some head room for future devices.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c              | 11 +++-
+ sound/soc/intel/boards/sof_sdw_common.h       |  9 +++-
+ sound/soc/intel/boards/sof_sdw_cs42l43.c      | 50 +++++++++++++++++++
+ .../intel/common/soc-acpi-intel-mtl-match.c   |  6 +++
+ .../intel/common/soc-acpi-intel-tgl-match.c   |  6 +++
+ 5 files changed, 80 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index f3167e3498e0..5a7014d82d6c 100644
+index 4fc15f597e28..b94835448b1b 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1026,7 +1026,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "sdw-mockup-aif1",
+@@ -1016,8 +1016,17 @@ static struct sof_sdw_codec_info codec_info_list[] = {
  				.dai_type = SOF_SDW_DAI_TYPE_JACK,
- 				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_JACK_IN_DAI_ID},
--				.init = NULL,
+ 				.dailink = {SDW_UNUSED_DAI_ID, SDW_JACK_IN_DAI_ID},
  			},
++			{
++				.direction = {true, false},
++				.dai_name = "cs42l43-dp6",
++				.dai_type = SOF_SDW_DAI_TYPE_AMP,
++				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
++				.init = sof_sdw_cs42l43_spk_init,
++				.rtd_init = cs42l43_spk_rtd_init,
++				.quirk = SOF_CODEC_SPKR,
++			},
  		},
- 		.dai_num = 1,
-@@ -1040,7 +1039,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "sdw-mockup-aif1",
- 				.dai_type = SOF_SDW_DAI_TYPE_JACK,
- 				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_JACK_IN_DAI_ID},
--				.init = NULL,
- 			},
- 		},
- 		.dai_num = 1,
-@@ -1054,7 +1052,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "sdw-mockup-aif1",
- 				.dai_type = SOF_SDW_DAI_TYPE_AMP,
- 				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_AMP_IN_DAI_ID},
--				.init = NULL,
- 			},
- 		},
- 		.dai_num = 1,
-@@ -1068,7 +1065,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.direction = {false, true},
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = NULL,
- 			},
- 		},
- 		.dai_num = 1,
+-		.dai_num = 3,
++		.dai_num = 4,
+ 	},
+ 	{
+ 		.part_id = 0xaaaa, /* generic codec mockup */
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index 81181627b406..8468487a6bd6 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -66,7 +66,7 @@ enum {
+ #define SOF_SDW_DAI_TYPE_AMP		1
+ #define SOF_SDW_DAI_TYPE_MIC		2
+ 
+-#define SOF_SDW_MAX_DAI_NUM		3
++#define SOF_SDW_MAX_DAI_NUM		8
+ 
+ struct sof_sdw_codec_info;
+ 
+@@ -162,6 +162,12 @@ int sof_sdw_maxim_init(struct snd_soc_card *card,
+ 		       struct sof_sdw_codec_info *info,
+ 		       bool playback);
+ 
++/* CS42L43 support */
++int sof_sdw_cs42l43_spk_init(struct snd_soc_card *card,
++			     struct snd_soc_dai_link *dai_links,
++			     struct sof_sdw_codec_info *info,
++			     bool playback);
++
+ /* CS AMP support */
+ int sof_sdw_cs_amp_init(struct snd_soc_card *card,
+ 			struct snd_soc_dai_link *dai_links,
+@@ -172,6 +178,7 @@ int sof_sdw_cs_amp_init(struct snd_soc_card *card,
+ 
+ int cs42l42_rtd_init(struct snd_soc_pcm_runtime *rtd);
+ int cs42l43_hs_rtd_init(struct snd_soc_pcm_runtime *rtd);
++int cs42l43_spk_rtd_init(struct snd_soc_pcm_runtime *rtd);
+ int cs42l43_dmic_rtd_init(struct snd_soc_pcm_runtime *rtd);
+ int cs_spk_rtd_init(struct snd_soc_pcm_runtime *rtd);
+ int maxim_spk_rtd_init(struct snd_soc_pcm_runtime *rtd);
+diff --git a/sound/soc/intel/boards/sof_sdw_cs42l43.c b/sound/soc/intel/boards/sof_sdw_cs42l43.c
+index a9b6edac2ecd..5361249f0f53 100644
+--- a/sound/soc/intel/boards/sof_sdw_cs42l43.c
++++ b/sound/soc/intel/boards/sof_sdw_cs42l43.c
+@@ -30,6 +30,17 @@ static const struct snd_soc_dapm_route cs42l43_hs_map[] = {
+ 	{ "cs42l43 ADC1_IN1_N", NULL, "Headset Mic" },
+ };
+ 
++static const struct snd_soc_dapm_widget cs42l43_spk_widgets[] = {
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++};
++
++static const struct snd_soc_dapm_route cs42l43_spk_map[] = {
++	{ "Speaker", NULL, "cs42l43 AMP1_OUT_P", },
++	{ "Speaker", NULL, "cs42l43 AMP1_OUT_N", },
++	{ "Speaker", NULL, "cs42l43 AMP2_OUT_P", },
++	{ "Speaker", NULL, "cs42l43 AMP2_OUT_N", },
++};
++
+ static const struct snd_soc_dapm_widget cs42l43_dmic_widgets[] = {
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
+ };
+@@ -108,6 +119,45 @@ int cs42l43_hs_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ 	return ret;
+ }
+ 
++int cs42l43_spk_rtd_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_card *card = rtd->card;
++	int ret;
++
++	card->components = devm_kasprintf(card->dev, GFP_KERNEL, "%s spk:cs42l43-spk",
++					  card->components);
++	if (!card->components)
++		return -ENOMEM;
++
++	ret = snd_soc_dapm_new_controls(&card->dapm, cs42l43_spk_widgets,
++					ARRAY_SIZE(cs42l43_spk_widgets));
++	if (ret) {
++		dev_err(card->dev, "cs42l43 speaker widgets addition failed: %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dapm_add_routes(&card->dapm, cs42l43_spk_map,
++				      ARRAY_SIZE(cs42l43_spk_map));
++	if (ret)
++		dev_err(card->dev, "cs42l43 speaker map addition failed: %d\n", ret);
++
++	return ret;
++}
++
++int sof_sdw_cs42l43_spk_init(struct snd_soc_card *card,
++			     struct snd_soc_dai_link *dai_links,
++			     struct sof_sdw_codec_info *info,
++			     bool playback)
++{
++	/* Do init on playback link only. */
++	if (!playback)
++		return 0;
++
++	info->amp_num++;
++
++	return 0;
++}
++
+ int cs42l43_dmic_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_card *card = rtd->card;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+index 7e53266d831d..27d1313e6686 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+@@ -357,6 +357,12 @@ static const struct snd_soc_acpi_endpoint cs42l43_endpoints[] = {
+ 		.group_position = 0,
+ 		.group_id = 0,
+ 	},
++	{ /* Speaker Playback Endpoint */
++		.num = 3,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
+ };
+ 
+ static const struct snd_soc_acpi_adr_device cs42l43_0_adr[] = {
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 0cef3d788a5b..77226d1eb1cf 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -433,6 +433,12 @@ static const struct snd_soc_acpi_endpoint cs42l43_endpoints[] = {
+ 		.group_position = 0,
+ 		.group_id = 0,
+ 	},
++	{ /* Speaker Playback Endpoint */
++		.num = 3,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
+ };
+ 
+ static const struct snd_soc_acpi_adr_device cs42l43_3_adr[] = {
 -- 
 2.40.1
 
