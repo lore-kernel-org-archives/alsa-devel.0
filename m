@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B03F0C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1FEEC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:10:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EB0F2BCB;
-	Tue, 26 Mar 2024 17:10:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EB0F2BCB
+	by alsa0.perex.cz (Postfix) with ESMTPS id E03CE2BC9;
+	Tue, 26 Mar 2024 17:10:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E03CE2BC9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711469435;
-	bh=mDzSkoz5dkqO6+iiJ4uoAI2nRZkxqWOmEeXtWfmUyek=;
+	s=default; t=1711469455;
+	bh=dKIIrBR+5IlIW8PfUvHWuroIi9TvHZfaA9fL/TlXcjE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hZg7IL+Coz8TiV2AHK0u55VvWh34t/CRkvjGjkSrY8SPnKyecCd7mK4n9h93HF0z8
-	 NZQDku0iGCMM+ysPclRvbcYL5KxIeoXobR5QOY3gTeLWYaIsusemkTj/fEk35CoeUg
-	 a6F3NauteURrPnxW7HpwEZZiPeecIHIn1FeZuJpQ=
+	b=RhonhzeBpmq37/oPJIXPMhhloLxSswzii+/3uEjILBJCP1uf25TuGJIQu8ts2qIuq
+	 ONiTMouIm4S4sQ3pJ80jm/90RQiWxnfBFYPPxJ/Ay2eqVrPby1zLhzjJKXkK7O2y6X
+	 C+dg8x7r193f+eIECIIoD9qFMweNH82H9l+wsUcA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04AA7F80570; Tue, 26 Mar 2024 17:06:49 +0100 (CET)
+	id CCCD4F80C57; Tue, 26 Mar 2024 17:06:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CEC0F80C0F;
-	Tue, 26 Mar 2024 17:06:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBB72F805EC;
+	Tue, 26 Mar 2024 17:06:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E7AEF80675; Tue, 26 Mar 2024 17:06:12 +0100 (CET)
+	id 2C801F8067F; Tue, 26 Mar 2024 17:06:15 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 36D21F805CA
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36D21F805CA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 88019F8057D
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88019F8057D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nQRE+2rz
+ header.s=Intel header.b=m18+BWI5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711469145; x=1743005145;
+  t=1711469143; x=1743005143;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=mDzSkoz5dkqO6+iiJ4uoAI2nRZkxqWOmEeXtWfmUyek=;
-  b=nQRE+2rzv8Xf7Ud/5IloZFOM01KbINTRCWKqFd2HKGEEMUnxbY+NDryJ
-   oWQqAPjzW/0EzTAurv+V/CSkwSK1OudF/IJ3UneVOr5mmHbjkZElz77ID
-   1L05Ek3u1nc+uoh0k+3Jsdf9+uLxOmldnRFmENidFDSrweCEuI6S5ZTVZ
-   bsvFAeXjZPiuS5OC65R6FVklApDioyOJ1mbI2kLyT5rvzOfQCvL+TRQeK
-   sFnWTd5K2hcQJR3WPMsq8Qv5uapECiULPmEBiNheZlbut+50kwYLsMZXQ
-   w2s8RZhksG+Gt52PQr1CN3W/e948sMnS06IffwVp31NPWjHgu/L73Ivqd
-   Q==;
-X-CSE-ConnectionGUID: tIMSiSn+SgGYIJ2i9CkvUQ==
-X-CSE-MsgGUID: 1px6EKKNRWONytP66nwuIA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260472"
+  bh=dKIIrBR+5IlIW8PfUvHWuroIi9TvHZfaA9fL/TlXcjE=;
+  b=m18+BWI5OzCXgQFVABORJu2EgwmFWJ7gbLr+dkCLeaNIzxrh/V5/nEsM
+   pQnmMmLeh19dwmGVOQ5HVUdR83J1bHnKGtfKXDUlCugsAXb1LB5gkZTlx
+   yOjmcJ92c0xmyDaNHgTK+++semIoaoO0rr3tOfh7mU1j+VudraQhlU+R7
+   MNuCHu0vfm3krkL10I2wKlCaWBErD4eaT1SSnekqIK/KUhsrwOd0gRmO2
+   hg7xWznzd2gCMZvPimEOLCJnfyy9AUuXbPjRMmBFT6sCppDmFoIp3DLDm
+   XKOqM0fpLRIbyooeHSg3VF9m0yumm6jkYhc7mEPBRyblqssu5IvgPBteO
+   A==;
+X-CSE-ConnectionGUID: pSvdDOLER7qvVOSWxwmeyw==
+X-CSE-MsgGUID: s0FJOV/dQeqzDgUdU9U5UA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260424"
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="17260472"
+   d="scan'208";a="17260424"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:57 -0700
+ 26 Mar 2024 09:04:52 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="20482333"
+   d="scan'208";a="20482244"
 Received: from bhubbert-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.65.108])
   by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:56 -0700
+ 26 Mar 2024 09:04:51 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,17 +78,16 @@ Cc: alsa-devel@alsa-project.org,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Bard liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 20/34] ASoC: Intel: sof_sdw: Move ignore_pch_dmic to new
- parsing
-Date: Tue, 26 Mar 2024 11:04:15 -0500
-Message-Id: <20240326160429.13560-21-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/34] ASoC: Intel: sof_sdw: Factor out codec name generation
+Date: Tue, 26 Mar 2024 11:04:09 -0500
+Message-Id: <20240326160429.13560-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 References: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RFS2WNTPYRHZS7TWD5I5SCBDZXV2SB7Y
-X-Message-ID-Hash: RFS2WNTPYRHZS7TWD5I5SCBDZXV2SB7Y
+Message-ID-Hash: GPCIIQLV63C3IORCKIWVWUIV4HYIBW43
+X-Message-ID-Hash: GPCIIQLV63C3IORCKIWVWUIV4HYIBW43
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RFS2WNTPYRHZS7TWD5I5SCBDZXV2SB7Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GPCIIQLV63C3IORCKIWVWUIV4HYIBW43/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,46 +111,86 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Trivial move of the handling of ignore_pch_dmic over to the new parsing
-code.
+In preparation for future refactoring pull out a helper specifically for
+generating the codec name.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 47 ++++++++++++++++++--------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 0566ab843c2e..cda759ee6345 100644
+index 6e2e934e1246..1253a2dc33d2 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1453,6 +1453,7 @@ static int parse_sdw_endpoints(struct snd_soc_card *card,
- 			       struct sof_sdw_endpoint *sof_ends)
- {
- 	struct device *dev = card->dev;
-+	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
- 	struct snd_soc_acpi_mach_params *mach_params = &mach->mach_params;
- 	struct snd_soc_codec_conf *codec_conf = card->codec_conf;
-@@ -1483,6 +1484,8 @@ static int parse_sdw_endpoints(struct snd_soc_card *card,
- 			if (!codec_info)
- 				return -EINVAL;
+@@ -1283,12 +1283,37 @@ static bool is_unique_device(const struct snd_soc_acpi_link_adr *adr_link,
+ 	return true;
+ }
  
-+			ctx->ignore_pch_dmic |= codec_info->ignore_pch_dmic;
++static const char *get_codec_name(struct device *dev,
++				  const struct sof_sdw_codec_info *codec_info,
++				  const struct snd_soc_acpi_link_adr *adr_link,
++				  int adr_index)
++{
++	u64 adr = adr_link->adr_d[adr_index].adr;
++	unsigned int sdw_version = SDW_VERSION(adr);
++	unsigned int link_id = SDW_DISCO_LINK_ID(adr);
++	unsigned int unique_id = SDW_UNIQUE_ID(adr);
++	unsigned int mfg_id = SDW_MFG_ID(adr);
++	unsigned int part_id = SDW_PART_ID(adr);
++	unsigned int class_id = SDW_CLASS_ID(adr);
 +
- 			codec_name = get_codec_name(dev, codec_info, adr_link, i);
- 			if (!codec_name)
- 				return -ENOMEM;
-@@ -1630,8 +1633,6 @@ static int create_sdw_dailink(struct snd_soc_card *card,
++	if (codec_info->codec_name)
++		return devm_kstrdup(dev, codec_info->codec_name, GFP_KERNEL);
++	else if (is_unique_device(adr_link, sdw_version, mfg_id, part_id,
++				  class_id, adr_index))
++		return devm_kasprintf(dev, GFP_KERNEL, "sdw:0:%01x:%04x:%04x:%02x",
++				      link_id, mfg_id, part_id, class_id);
++	else
++		return devm_kasprintf(dev, GFP_KERNEL, "sdw:0:%01x:%04x:%04x:%02x:%01x",
++				      link_id, mfg_id, part_id, class_id, unique_id);
++
++	return NULL;
++}
++
+ static int fill_sdw_codec_dlc(struct device *dev,
+ 			      const struct snd_soc_acpi_link_adr *adr_link,
+ 			      struct snd_soc_dai_link_component *codec,
+ 			      int adr_index, int dai_index)
+ {
+-	unsigned int sdw_version, unique_id, mfg_id, link_id, part_id, class_id;
+ 	u64 adr = adr_link->adr_d[adr_index].adr;
+ 	struct sof_sdw_codec_info *codec_info;
+ 
+@@ -1296,25 +1321,7 @@ static int fill_sdw_codec_dlc(struct device *dev,
  	if (!codec_info)
  		return -EINVAL;
  
--	ctx->ignore_pch_dmic |= codec_info->ignore_pch_dmic;
+-	sdw_version = SDW_VERSION(adr);
+-	link_id = SDW_DISCO_LINK_ID(adr);
+-	unique_id = SDW_UNIQUE_ID(adr);
+-	mfg_id = SDW_MFG_ID(adr);
+-	part_id = SDW_PART_ID(adr);
+-	class_id = SDW_CLASS_ID(adr);
 -
- 	for_each_pcm_streams(stream) {
- 		char *name, *cpu_name;
- 		int playback, capture;
+-	if (codec_info->codec_name)
+-		codec->name = devm_kstrdup(dev, codec_info->codec_name, GFP_KERNEL);
+-	else if (is_unique_device(adr_link, sdw_version, mfg_id, part_id,
+-				  class_id, adr_index))
+-		codec->name = devm_kasprintf(dev, GFP_KERNEL,
+-					     "sdw:0:%01x:%04x:%04x:%02x", link_id,
+-					     mfg_id, part_id, class_id);
+-	else
+-		codec->name = devm_kasprintf(dev, GFP_KERNEL,
+-					     "sdw:0:%01x:%04x:%04x:%02x:%01x", link_id,
+-					     mfg_id, part_id, class_id, unique_id);
+-
++	codec->name = get_codec_name(dev, codec_info, adr_link, adr_index);
+ 	if (!codec->name)
+ 		return -ENOMEM;
+ 
 -- 
 2.40.1
 
