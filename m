@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19AB4C54E67
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B03F0C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:10:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 666162C01;
-	Tue, 26 Mar 2024 17:10:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 666162C01
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EB0F2BCB;
+	Tue, 26 Mar 2024 17:10:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EB0F2BCB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711469417;
-	bh=fQwkz9pcHM4JWHddRqJbn3Gbw0hCIVSlITvF7FgBPpY=;
+	s=default; t=1711469435;
+	bh=mDzSkoz5dkqO6+iiJ4uoAI2nRZkxqWOmEeXtWfmUyek=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mBRouoZvxg3cBkYZtLQjHdvRMAo/6LiijMxJrrxbmo7ZIybgLtQfjxghs1mWWnwsc
-	 WDvWqRY+d6xVSWdL1wQmeVID1i4zHVHI+KnW8QqXXh6uJ/iadTejjUpwNu96oDO18r
-	 7TGX9/RybGb2E8pg8B1UAEvV1xRCXYtbpZqb/vIs=
+	b=hZg7IL+Coz8TiV2AHK0u55VvWh34t/CRkvjGjkSrY8SPnKyecCd7mK4n9h93HF0z8
+	 NZQDku0iGCMM+ysPclRvbcYL5KxIeoXobR5QOY3gTeLWYaIsusemkTj/fEk35CoeUg
+	 a6F3NauteURrPnxW7HpwEZZiPeecIHIn1FeZuJpQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2053AF808C0; Tue, 26 Mar 2024 17:06:44 +0100 (CET)
+	id 04AA7F80570; Tue, 26 Mar 2024 17:06:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6469AF8087B;
-	Tue, 26 Mar 2024 17:06:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CEC0F80C0F;
+	Tue, 26 Mar 2024 17:06:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38F15F80638; Tue, 26 Mar 2024 17:06:11 +0100 (CET)
+	id 1E7AEF80675; Tue, 26 Mar 2024 17:06:12 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81BB5F8057C
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81BB5F8057C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 36D21F805CA
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36D21F805CA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AuAWTTyE
+ header.s=Intel header.b=nQRE+2rz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711469143; x=1743005143;
+  t=1711469145; x=1743005145;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fQwkz9pcHM4JWHddRqJbn3Gbw0hCIVSlITvF7FgBPpY=;
-  b=AuAWTTyEvl2ks8XkV8AAwJ1FkSFAuSl7tNhHTwbx0U+m6DZUYqxQkAxr
-   8ZzKohh6Dz89JGe2Fu+jeuS0kbaQAHE48Qp00mWheEUefyCmhG3cr1SOY
-   dJgTWtk/yA09VGw43w10IuWBM6E0mBg3SGn7YyeYU1CeDkZgycrTg/4HR
-   89p3iU8zppi5dbuHDVsQ7YfSIlGE+NfJNB4UiXxGLOIXf2GS4+hgGlKVo
-   UMyp29NXH3gpfNy2884RcUGoZzwV218Ey3lKVDpiTA1zbj7YZOvOSJO8C
-   qOIe4w7txufkGDE0rwaDmqNLya1qCPRisOMA+u+ZmHDcQtZa2QAViK5qZ
-   A==;
-X-CSE-ConnectionGUID: ITvYOTvpS3GIB/zJBIZ+bQ==
-X-CSE-MsgGUID: Uo1L+I39SiqRrhgQO8n2Bg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260440"
+  bh=mDzSkoz5dkqO6+iiJ4uoAI2nRZkxqWOmEeXtWfmUyek=;
+  b=nQRE+2rzv8Xf7Ud/5IloZFOM01KbINTRCWKqFd2HKGEEMUnxbY+NDryJ
+   oWQqAPjzW/0EzTAurv+V/CSkwSK1OudF/IJ3UneVOr5mmHbjkZElz77ID
+   1L05Ek3u1nc+uoh0k+3Jsdf9+uLxOmldnRFmENidFDSrweCEuI6S5ZTVZ
+   bsvFAeXjZPiuS5OC65R6FVklApDioyOJ1mbI2kLyT5rvzOfQCvL+TRQeK
+   sFnWTd5K2hcQJR3WPMsq8Qv5uapECiULPmEBiNheZlbut+50kwYLsMZXQ
+   w2s8RZhksG+Gt52PQr1CN3W/e948sMnS06IffwVp31NPWjHgu/L73Ivqd
+   Q==;
+X-CSE-ConnectionGUID: tIMSiSn+SgGYIJ2i9CkvUQ==
+X-CSE-MsgGUID: 1px6EKKNRWONytP66nwuIA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260472"
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="17260440"
+   d="scan'208";a="17260472"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:54 -0700
+ 26 Mar 2024 09:04:57 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="20482275"
+   d="scan'208";a="20482333"
 Received: from bhubbert-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.65.108])
   by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:53 -0700
+ 26 Mar 2024 09:04:56 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,16 +78,17 @@ Cc: alsa-devel@alsa-project.org,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Bard liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 16/34] ASoC: Intel: sof_sdw: Remove no longer supported quirk
-Date: Tue, 26 Mar 2024 11:04:11 -0500
-Message-Id: <20240326160429.13560-17-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 20/34] ASoC: Intel: sof_sdw: Move ignore_pch_dmic to new
+ parsing
+Date: Tue, 26 Mar 2024 11:04:15 -0500
+Message-Id: <20240326160429.13560-21-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 References: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PEXU3M3X3OC2ACIHKQJMAVZFOQOCQGEM
-X-Message-ID-Hash: PEXU3M3X3OC2ACIHKQJMAVZFOQOCQGEM
+Message-ID-Hash: RFS2WNTPYRHZS7TWD5I5SCBDZXV2SB7Y
+X-Message-ID-Hash: RFS2WNTPYRHZS7TWD5I5SCBDZXV2SB7Y
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PEXU3M3X3OC2ACIHKQJMAVZFOQOCQGEM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RFS2WNTPYRHZS7TWD5I5SCBDZXV2SB7Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,93 +112,46 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-The SOF_SDW_NO_AGGREGATION quirk is mostly for debug and no longer works
-correctly with the current state of the machine driver. Remove it from
-the code and add an error message if someone uses it.
+Trivial move of the handling of ignore_pch_dmic over to the new parsing
+code.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c        | 12 ++++--------
- sound/soc/intel/boards/sof_sdw_common.h |  1 +
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 1253a2dc33d2..fdedc32291f0 100644
+index 0566ab843c2e..cda759ee6345 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -36,7 +36,7 @@ static void log_quirks(struct device *dev)
- 		dev_dbg(dev, "SSP port %ld\n",
- 			SOF_SSP_GET_PORT(sof_sdw_quirk));
- 	if (sof_sdw_quirk & SOF_SDW_NO_AGGREGATION)
--		dev_dbg(dev, "quirk SOF_SDW_NO_AGGREGATION enabled\n");
-+		dev_err(dev, "quirk SOF_SDW_NO_AGGREGATION enabled but no longer supported\n");
- }
- 
- static int sof_sdw_quirk_cb(const struct dmi_system_id *id)
-@@ -1136,11 +1136,9 @@ static int get_dailink_info(struct device *dev,
- 			    int *sdw_be_num, int *codecs_num)
+@@ -1453,6 +1453,7 @@ static int parse_sdw_endpoints(struct snd_soc_card *card,
+ 			       struct sof_sdw_endpoint *sof_ends)
  {
- 	bool group_visited[SDW_MAX_GROUPS];
--	bool no_aggregation;
- 	int i;
- 	int j;
- 
--	no_aggregation = sof_sdw_quirk & SOF_SDW_NO_AGGREGATION;
- 	*sdw_be_num  = 0;
- 
- 	if (!adr_link)
-@@ -1187,7 +1185,7 @@ static int get_dailink_info(struct device *dev,
- 						continue;
- 
- 					/* count BE for each non-aggregated slave or group */
--					if (!endpoint->aggregated || no_aggregation ||
-+					if (!endpoint->aggregated ||
- 					    !group_visited[endpoint->group_id])
- 						(*sdw_be_num)++;
- 				}
-@@ -1393,10 +1391,9 @@ static int get_slave_info(const struct snd_soc_acpi_link_adr *adr_link,
- 			  int *codec_num, unsigned int *group_id,
- 			  int adr_index)
- {
--	bool no_aggregation = sof_sdw_quirk & SOF_SDW_NO_AGGREGATION;
- 	int i;
- 
--	if (!adr_link->adr_d[adr_index].endpoints->aggregated || no_aggregation) {
-+	if (!adr_link->adr_d[adr_index].endpoints->aggregated) {
- 		cpu_dai_id[0] = ffs(adr_link->mask) - 1;
- 		*cpu_dai_num = 1;
- 		*codec_num = 1;
-@@ -1758,7 +1755,6 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
- 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct device *dev = card->dev;
++	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct snd_soc_acpi_mach *mach = dev_get_platdata(dev);
  	struct snd_soc_acpi_mach_params *mach_params = &mach->mach_params;
- 	const struct snd_soc_acpi_link_adr *adr_link = mach_params->links;
--	bool aggregation = !(sof_sdw_quirk & SOF_SDW_NO_AGGREGATION);
- 	struct snd_soc_codec_conf *codec_conf;
- 	struct sof_sdw_codec_info *codec_info;
- 	struct sof_sdw_codec_info *ssp_info;
-@@ -1896,7 +1892,7 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
- 					be_id = current_be_id;
- 			}
+ 	struct snd_soc_codec_conf *codec_conf = card->codec_conf;
+@@ -1483,6 +1484,8 @@ static int parse_sdw_endpoints(struct snd_soc_card *card,
+ 			if (!codec_info)
+ 				return -EINVAL;
  
--			if (aggregation && endpoint->aggregated)
-+			if (endpoint->aggregated)
- 				group_generated[endpoint->group_id] = true;
- 		}
- 	}
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index 1daf98a5849f..e21ef79126b2 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -50,6 +50,7 @@ enum {
- #define SOF_SDW_PCH_DMIC		BIT(6)
- #define SOF_SSP_PORT(x)		(((x) & GENMASK(5, 0)) << 7)
- #define SOF_SSP_GET_PORT(quirk)	(((quirk) >> 7) & GENMASK(5, 0))
-+/* Deprecated and no longer supported by the code */
- #define SOF_SDW_NO_AGGREGATION		BIT(14)
++			ctx->ignore_pch_dmic |= codec_info->ignore_pch_dmic;
++
+ 			codec_name = get_codec_name(dev, codec_info, adr_link, i);
+ 			if (!codec_name)
+ 				return -ENOMEM;
+@@ -1630,8 +1633,6 @@ static int create_sdw_dailink(struct snd_soc_card *card,
+ 	if (!codec_info)
+ 		return -EINVAL;
  
- /* BT audio offload: reserve 3 bits for future */
+-	ctx->ignore_pch_dmic |= codec_info->ignore_pch_dmic;
+-
+ 	for_each_pcm_streams(stream) {
+ 		char *name, *cpu_name;
+ 		int playback, capture;
 -- 
 2.40.1
 
