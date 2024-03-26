@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9D8DC54E67
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 15:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44FBACD11DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 15:29:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A8782BD3;
-	Tue, 26 Mar 2024 16:29:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A8782BD3
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB1132BC4;
+	Tue, 26 Mar 2024 16:29:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB1132BC4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711466971;
-	bh=agEcVGdM8wAa/MuNJ1xB5axg6+1kvzUJBvDyitG93bM=;
+	s=default; t=1711466990;
+	bh=lzBgn7ZwyiybdLLu+X2wmP2xnCrvaAQVXn2o2HU7zN8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OlNVkV6fT+vfiYFudvxmFviyjjwhiluDfLZzafXy6N8QcDzUNLhkO6v/Y5bHMo2BR
-	 tm7YDl6dFWvdSKokvCH/0RthaU9WdkqXlf1nKP3wT2gy99ZZSeXmzMAj1WQwWB473o
-	 ygapmy2MH406MkDC67Mr1dpWkRpMmQEo7FR4NKos=
+	b=LRM2sdvCUoNS+hyiJcPFHzw+a16HgkVEWDOxTYBMkt9qGDEndRiGN/GfM0FO48Bw4
+	 ucqoR8NxQ/GDrNHJyT6k8ylfhbxRhO3dexjquFIeN7xRlbSqFmeWah9cQqd3xce3/w
+	 9bUbdLKvmYLAYUSyj96WLgxV4ert0ClMv+83Gi6M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8E00F8063A; Tue, 26 Mar 2024 16:28:16 +0100 (CET)
+	id 30E8FF8061E; Tue, 26 Mar 2024 16:28:19 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE699F80623;
-	Tue, 26 Mar 2024 16:28:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3CF4F8067F;
+	Tue, 26 Mar 2024 16:28:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A399F805AD; Tue, 26 Mar 2024 16:28:12 +0100 (CET)
+	id EAAC0F8062E; Tue, 26 Mar 2024 16:28:16 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73677F805E9
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 16:28:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73677F805E9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7968DF805BA
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 16:28:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7968DF805BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YNNmG1AW
+ header.s=k20201202 header.b=gP8azZjU
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3004F612BE;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 549F3612D0;
+	Tue, 26 Mar 2024 15:28:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C9C8C433F1;
 	Tue, 26 Mar 2024 15:28:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2737C43399;
-	Tue, 26 Mar 2024 15:28:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711466884;
-	bh=agEcVGdM8wAa/MuNJ1xB5axg6+1kvzUJBvDyitG93bM=;
+	s=k20201202; t=1711466886;
+	bh=lzBgn7ZwyiybdLLu+X2wmP2xnCrvaAQVXn2o2HU7zN8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=YNNmG1AWalo64y8yqNe+zTnJ19j4Rr8+/eTf/WYnn6Cb9w9dqHs+wDKcIYB3QkLfO
-	 rsxjqIivzwevjbxb9sZPQSqB6VqppcCvWIqW198sh0EHGqrn4PqQ7hgZ/Pjc8yFm/8
-	 8qahKLafzwASLmsm18JoGh4MCZAqSNUN7rINCKWQklLIlEFkHsv/Swqf7CeRHHCjq0
-	 s0AdD1bAwllsLiCvWOSk0TNuCcSyOAlJLxFCT4gGUVUcQrdbFfm3c2UU2kfNEwJlec
-	 LOG4aQxUQKiKb2aDjpEOBVe04Y0Ceopq0m60YpsjFuYFfHgvX6q+OW0zbopkWKWwUL
-	 gSRpp3vvcZTdg==
+	b=gP8azZjUtAFvbpeGggLnOeqGuK6MAj9MU39KEpw8jyTWc31d4qp4btLR5+dE2yAM5
+	 Zv2b0gAK6A3zXe6TdpUpXLNTR7MpUQ51gaNLDjFDRlnPz61JRdQkDK3KwRFJ2KyOZQ
+	 mUqiheazvQnpedElRrXxIhkvfAhBvlG+DxUncgY3Iq0jeH8czSSkUIVwvPzMeb2JTv
+	 o+bddfLPn8JPnLkkoUnwyb+TmKOlYCh/lttFAe6tljqXZqScjLW9F7vDK2FJI4ZYOc
+	 +PoiWJsIu1XeF1nOp8PSRMo4LKMTaV/ngcNCLWQig1zEdI+Fcw1rQvNkAUZA/VaE6z
+	 vvtCvc9bXpE/g==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Zhang Yi <zhangyi@everest-semi.com>
-Cc: tiwai@suse.com, amadeuszx.slawinski@linux.intel.com,
- yangxiaohua@everest-semi.com, zhuning@everest-semi.com
-In-Reply-To: <20240320083012.4282-1-zhangyi@everest-semi.com>
-References: <20240320083012.4282-1-zhangyi@everest-semi.com>
-Subject: Re: [PATCH v1 0/2] ASoC: codecs: ES8326: Reducin powerconsumption
- and
-Message-Id: <171146688339.132239.2751297207448370941.b4-ty@kernel.org>
-Date: Tue, 26 Mar 2024 15:28:03 +0000
+To: linux-sound@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de
+In-Reply-To: <20240325221059.206042-1-pierre-louis.bossart@linux.intel.com>
+References: <20240325221059.206042-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/21] ASoC: Intel: boards: updates for 6.10 - part1
+Message-Id: <171146688503.132239.16717123597590309309.b4-ty@kernel.org>
+Date: Tue, 26 Mar 2024 15:28:05 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: XRISB7JUPIUZWSGJKQFQIC4EWPILNDM6
-X-Message-ID-Hash: XRISB7JUPIUZWSGJKQFQIC4EWPILNDM6
+Message-ID-Hash: 6ZN6QV3N7CMFULEQAIKIYDGTIEVKCI62
+X-Message-ID-Hash: 6ZN6QV3N7CMFULEQAIKIYDGTIEVKCI62
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRISB7JUPIUZWSGJKQFQIC4EWPILNDM6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ZN6QV3N7CMFULEQAIKIYDGTIEVKCI62/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,13 +90,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 20 Mar 2024 16:30:10 +0800, Zhang Yi wrote:
-> We changed the configuration related to hibernation.
-> and delete the REG_SUPPLY to cover mute issue.
+On Mon, 25 Mar 2024 17:10:38 -0500, Pierre-Louis Bossart wrote:
+> We have quite a few machine driver patches, spread in 3 series of
+> about 20 patches each. This first part from Brent Lu adds common
+> helpers and board configurations to reduce the number of quirks.
 > 
-> Zhang Yi (2):
->   ASoC: codecs: ES8326: Reducing power consumption
->   ASoC: codecs: ES8326: Delete unused REG_SUPPLY
+> Brent Lu (21):
+>   ASoC: Intel: board_helpers: support DAI link ID customization
+>   ASoC: Intel: sof_ssp_amp: use common module for DAI link generation
+>   ASoC: Intel: board_helpers: change dai link helpers to static function
+>   ASoC: Intel: sof_da7219: add rpl_mx98360_da7219 board config
+>   ASoC: Intel: sof_rt5682: support ALC5650 on RPL boards
+>   ASoC: Intel: sof_cs42l42: rename BT offload quirk
+>   ASoC: Intel: board_helpers: support sof_card_private initialization
+>   ASoC: Intel: sof_cs42l42: use common module for sof_card_private
+>     initialization
+>   ASoC: Intel: sof_nau8825: use common module for sof_card_private
+>     initialization
+>   ASoC: Intel: sof_rt5682: use common module for sof_card_private
+>     initialization
+>   ASoC: Intel: sof_ssp_amp: use common module for sof_card_private
+>     initialization
+>   ASoC: Intel: sof_da7219: use common module for DAI link generation
+>   ASoC: Intel: sof_da7219: add codec exit function
+>   ASoC: Intel: sof_da7219: add SOF_DA7219_MCLK_EN quirk
+>   ASoC: Intel: sof_da7219: board id cleanup for jsl boards
+>   ASoC: Intel: sof_da7219: board id cleanup for adl boards
+>   ASoC: Intel: sof_da7219: board id cleanup for rpl boards
+>   ASoC: Intel: sof_rt5682: remove unnecessary idisp HDMI quirk
+>   ASoC: Intel: sof_ssp_amp: remove unnecessary idisp HDMI quirk
+>   ASoC: Intel: sof_nau8825: remove sof_nau8825 board id
+>   ASoC: Intel: sof_rt5682: board id cleanup for cml boards
 > 
 > [...]
 
@@ -107,10 +130,48 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: codecs: ES8326: Reducing power consumption
-      commit: 39938bb1bb23fd70f1c75ce9f52d92185403b89a
-[2/2] ASoC: codecs: ES8326: Delete unused REG_SUPPLY
-      commit: e6913c6ef83c80aa7569c9e08204542222fbf542
+[01/21] ASoC: Intel: board_helpers: support DAI link ID customization
+        commit: b020aff0ec6ec089bd3e07bd6b58623826752ff7
+[02/21] ASoC: Intel: sof_ssp_amp: use common module for DAI link generation
+        commit: 8906d8663d72642b05108963a47a069b7a04b23f
+[03/21] ASoC: Intel: board_helpers: change dai link helpers to static function
+        commit: 3b6378bb8baf519e641151dcdb9171c2bdecb7b7
+[04/21] ASoC: Intel: sof_da7219: add rpl_mx98360_da7219 board config
+        commit: 54bac56954a7c36eb8d1c7047b63133635999eb8
+[05/21] ASoC: Intel: sof_rt5682: support ALC5650 on RPL boards
+        commit: 94e9dd5b38bc3d04f86c4a876f3b4b397add248b
+[06/21] ASoC: Intel: sof_cs42l42: rename BT offload quirk
+        commit: 109896246a5311aa05692ecf38c0d71e1837fe23
+[07/21] ASoC: Intel: board_helpers: support sof_card_private initialization
+        commit: cf22d15ecf61c783e6903f3409e78d439f9c9b4a
+[08/21] ASoC: Intel: sof_cs42l42: use common module for sof_card_private initialization
+        commit: 96258c3348e1a2cb6842175a0ac895ef3963f2e2
+[09/21] ASoC: Intel: sof_nau8825: use common module for sof_card_private initialization
+        commit: bfa8c0088f02440653bfdc7e72144302f2f5f22b
+[10/21] ASoC: Intel: sof_rt5682: use common module for sof_card_private initialization
+        commit: 8efcd48646526dc41dc54a5044b434cd8a139d82
+[11/21] ASoC: Intel: sof_ssp_amp: use common module for sof_card_private initialization
+        commit: 495d5b48d4b54efb4fa9f972f8bb599c780d209e
+[12/21] ASoC: Intel: sof_da7219: use common module for DAI link generation
+        commit: a8f408dc8733d83c1cbd0ff238fc90d8b43db1c4
+[13/21] ASoC: Intel: sof_da7219: add codec exit function
+        commit: a7963f6ecc4be8a331d7740cb276651f2045e92c
+[14/21] ASoC: Intel: sof_da7219: add SOF_DA7219_MCLK_EN quirk
+        commit: ed61b2ef5aa0036ef1dc593c191e762386a92cc5
+[15/21] ASoC: Intel: sof_da7219: board id cleanup for jsl boards
+        commit: 45728dc6df48118b4e49f5abac4de87935bfc255
+[16/21] ASoC: Intel: sof_da7219: board id cleanup for adl boards
+        commit: ef771be889f0e5e036ff54e4f0178b6eba177d56
+[17/21] ASoC: Intel: sof_da7219: board id cleanup for rpl boards
+        commit: 9ca54c3356f488e7800b6bcdbccb1f6de90e1621
+[18/21] ASoC: Intel: sof_rt5682: remove unnecessary idisp HDMI quirk
+        commit: b497654f1d3d95c37c8f2c6950047e022be04a2e
+[19/21] ASoC: Intel: sof_ssp_amp: remove unnecessary idisp HDMI quirk
+        commit: 16e5700644bda0d236288f17fd68b15a1e2e6f2c
+[20/21] ASoC: Intel: sof_nau8825: remove sof_nau8825 board id
+        commit: 2b384bcd2cb727edb5647692134f4eec2f0a32ae
+[21/21] ASoC: Intel: sof_rt5682: board id cleanup for cml boards
+        commit: 61cafaeab5bca2d3e6a68ee8fa92b5c10b8610ca
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
