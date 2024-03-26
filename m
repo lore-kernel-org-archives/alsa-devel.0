@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1FEEC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:10:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 541D4C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:11:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E03CE2BC9;
-	Tue, 26 Mar 2024 17:10:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E03CE2BC9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B43F32BEF;
+	Tue, 26 Mar 2024 17:10:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B43F32BEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711469455;
-	bh=dKIIrBR+5IlIW8PfUvHWuroIi9TvHZfaA9fL/TlXcjE=;
+	s=default; t=1711469466;
+	bh=sTf7iewjShTLIpZ76HtMb1ZNJ2Egbdu079zsrWu6ef0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RhonhzeBpmq37/oPJIXPMhhloLxSswzii+/3uEjILBJCP1uf25TuGJIQu8ts2qIuq
-	 ONiTMouIm4S4sQ3pJ80jm/90RQiWxnfBFYPPxJ/Ay2eqVrPby1zLhzjJKXkK7O2y6X
-	 C+dg8x7r193f+eIECIIoD9qFMweNH82H9l+wsUcA=
+	b=akGIoWyf2Bq7RFHRxTUaHLTym3em1cZ+Ap408qaeqteATr7DnuDeXInj8c6/RSjrp
+	 APQVYXotYnW97tsEyD4hs1QoecmBcrDNaKKGG1+jIlxeNZXsFM0glqk9+LQZvSjyKQ
+	 9g/uBWXt2Z+jllQdqs781DUZCamKXZKr8cYSXAr8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CCCD4F80C57; Tue, 26 Mar 2024 17:06:52 +0100 (CET)
+	id 9213CF80C78; Tue, 26 Mar 2024 17:06:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBB72F805EC;
-	Tue, 26 Mar 2024 17:06:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B7C4F80C32;
+	Tue, 26 Mar 2024 17:06:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C801F8067F; Tue, 26 Mar 2024 17:06:15 +0100 (CET)
+	id DB5C5F8060E; Tue, 26 Mar 2024 17:06:19 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 88019F8057D
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88019F8057D
+	by alsa1.perex.cz (Postfix) with ESMTPS id C468BF8058C
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C468BF8058C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=m18+BWI5
+ header.s=Intel header.b=alWtLEV5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711469143; x=1743005143;
+  t=1711469144; x=1743005144;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=dKIIrBR+5IlIW8PfUvHWuroIi9TvHZfaA9fL/TlXcjE=;
-  b=m18+BWI5OzCXgQFVABORJu2EgwmFWJ7gbLr+dkCLeaNIzxrh/V5/nEsM
-   pQnmMmLeh19dwmGVOQ5HVUdR83J1bHnKGtfKXDUlCugsAXb1LB5gkZTlx
-   yOjmcJ92c0xmyDaNHgTK+++semIoaoO0rr3tOfh7mU1j+VudraQhlU+R7
-   MNuCHu0vfm3krkL10I2wKlCaWBErD4eaT1SSnekqIK/KUhsrwOd0gRmO2
-   hg7xWznzd2gCMZvPimEOLCJnfyy9AUuXbPjRMmBFT6sCppDmFoIp3DLDm
-   XKOqM0fpLRIbyooeHSg3VF9m0yumm6jkYhc7mEPBRyblqssu5IvgPBteO
-   A==;
-X-CSE-ConnectionGUID: pSvdDOLER7qvVOSWxwmeyw==
-X-CSE-MsgGUID: s0FJOV/dQeqzDgUdU9U5UA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260424"
+  bh=sTf7iewjShTLIpZ76HtMb1ZNJ2Egbdu079zsrWu6ef0=;
+  b=alWtLEV5obqfbJwkiOrrNoJ/bED0LOVebQ5a0GCDMzVjQ3tHDP/i6tMQ
+   rvYsNeQiD5bThNAfH1W/mtsZ5sBJVLznjnB2utstc2g+4DrSNSBWmNE3Y
+   FA80i6SM8c+4p3ui/5FsJWitYxa9L4vA2cLSfsmvK1iWBeFzJrJjf7bTp
+   GAA8+pAOgBOJXoMijnf/7LDdTiJwpHblBeUAttC8p1zruXIZRJTk0JAPh
+   GV0IuackV4kvIRvyfzACGg7GL2OEBWQAwLdkos0aZlrYv7Z2oF/E9IAtt
+   G6+4gDOFTrcuT/SION+a8sq0yfHjM24POedfGPb57kdeiC+h7LqqZMTdL
+   Q==;
+X-CSE-ConnectionGUID: 9/TaSgQ3ST6JbnwuYPqdhQ==
+X-CSE-MsgGUID: ebFIhWwYTSiKsAafZfII+Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260448"
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="17260424"
+   d="scan'208";a="17260448"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:52 -0700
+ 26 Mar 2024 09:04:54 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="20482244"
+   d="scan'208";a="20482289"
 Received: from bhubbert-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.65.108])
   by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:04:51 -0700
+ 26 Mar 2024 09:04:54 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,16 +78,16 @@ Cc: alsa-devel@alsa-project.org,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Bard liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/34] ASoC: Intel: sof_sdw: Factor out codec name generation
-Date: Tue, 26 Mar 2024 11:04:09 -0500
-Message-Id: <20240326160429.13560-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 17/34] ASoC: intel: soc-acpi: Add missing cs42l43 endpoints
+Date: Tue, 26 Mar 2024 11:04:12 -0500
+Message-Id: <20240326160429.13560-18-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 References: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GPCIIQLV63C3IORCKIWVWUIV4HYIBW43
-X-Message-ID-Hash: GPCIIQLV63C3IORCKIWVWUIV4HYIBW43
+Message-ID-Hash: WB2UYDOYHWQEBJNXNVRCFWG56T5UCNGZ
+X-Message-ID-Hash: WB2UYDOYHWQEBJNXNVRCFWG56T5UCNGZ
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GPCIIQLV63C3IORCKIWVWUIV4HYIBW43/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WB2UYDOYHWQEBJNXNVRCFWG56T5UCNGZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,86 +111,97 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-In preparation for future refactoring pull out a helper specifically for
-generating the codec name.
+Currently the cs42l43 just specifies a single endpoint, as the current
+machine driver only looks at the first endpoint specified. Future
+refactoring will process all endpoints, as such proper specification
+should be added for all the cs42l43 endpoints.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 47 ++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 20 deletions(-)
+ .../intel/common/soc-acpi-intel-mtl-match.c   | 25 +++++++++++++++++--
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 25 +++++++++++++++++--
+ 2 files changed, 46 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 6e2e934e1246..1253a2dc33d2 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1283,12 +1283,37 @@ static bool is_unique_device(const struct snd_soc_acpi_link_adr *adr_link,
- 	return true;
- }
+diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+index e9a5da079089..e06efc5b1457 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+@@ -338,11 +338,32 @@ static const struct snd_soc_acpi_link_adr mtl_712_only[] = {
+ 	{}
+ };
  
-+static const char *get_codec_name(struct device *dev,
-+				  const struct sof_sdw_codec_info *codec_info,
-+				  const struct snd_soc_acpi_link_adr *adr_link,
-+				  int adr_index)
-+{
-+	u64 adr = adr_link->adr_d[adr_index].adr;
-+	unsigned int sdw_version = SDW_VERSION(adr);
-+	unsigned int link_id = SDW_DISCO_LINK_ID(adr);
-+	unsigned int unique_id = SDW_UNIQUE_ID(adr);
-+	unsigned int mfg_id = SDW_MFG_ID(adr);
-+	unsigned int part_id = SDW_PART_ID(adr);
-+	unsigned int class_id = SDW_CLASS_ID(adr);
++static const struct snd_soc_acpi_endpoint cs42l43_endpoints[] = {
++	{ /* Jack Playback Endpoint */
++		.num = 0,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{ /* DMIC Capture Endpoint */
++		.num = 1,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{ /* Jack Capture Endpoint */
++		.num = 2,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++};
 +
-+	if (codec_info->codec_name)
-+		return devm_kstrdup(dev, codec_info->codec_name, GFP_KERNEL);
-+	else if (is_unique_device(adr_link, sdw_version, mfg_id, part_id,
-+				  class_id, adr_index))
-+		return devm_kasprintf(dev, GFP_KERNEL, "sdw:0:%01x:%04x:%04x:%02x",
-+				      link_id, mfg_id, part_id, class_id);
-+	else
-+		return devm_kasprintf(dev, GFP_KERNEL, "sdw:0:%01x:%04x:%04x:%02x:%01x",
-+				      link_id, mfg_id, part_id, class_id, unique_id);
+ static const struct snd_soc_acpi_adr_device cs42l43_0_adr[] = {
+ 	{
+ 		.adr = 0x00003001FA424301ull,
+-		.num_endpoints = 1,
+-		.endpoints = &single_endpoint,
++		.num_endpoints = ARRAY_SIZE(cs42l43_endpoints),
++		.endpoints = cs42l43_endpoints,
+ 		.name_prefix = "cs42l43"
+ 	}
+ };
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 0fba0a60d9c7..007f1ac2327a 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -414,11 +414,32 @@ static const struct snd_soc_acpi_link_adr tgl_712_only[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_endpoint cs42l43_endpoints[] = {
++	{ /* Jack Playback Endpoint */
++		.num = 0,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{ /* DMIC Capture Endpoint */
++		.num = 1,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{ /* Jack Capture Endpoint */
++		.num = 2,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++};
 +
-+	return NULL;
-+}
-+
- static int fill_sdw_codec_dlc(struct device *dev,
- 			      const struct snd_soc_acpi_link_adr *adr_link,
- 			      struct snd_soc_dai_link_component *codec,
- 			      int adr_index, int dai_index)
- {
--	unsigned int sdw_version, unique_id, mfg_id, link_id, part_id, class_id;
- 	u64 adr = adr_link->adr_d[adr_index].adr;
- 	struct sof_sdw_codec_info *codec_info;
- 
-@@ -1296,25 +1321,7 @@ static int fill_sdw_codec_dlc(struct device *dev,
- 	if (!codec_info)
- 		return -EINVAL;
- 
--	sdw_version = SDW_VERSION(adr);
--	link_id = SDW_DISCO_LINK_ID(adr);
--	unique_id = SDW_UNIQUE_ID(adr);
--	mfg_id = SDW_MFG_ID(adr);
--	part_id = SDW_PART_ID(adr);
--	class_id = SDW_CLASS_ID(adr);
--
--	if (codec_info->codec_name)
--		codec->name = devm_kstrdup(dev, codec_info->codec_name, GFP_KERNEL);
--	else if (is_unique_device(adr_link, sdw_version, mfg_id, part_id,
--				  class_id, adr_index))
--		codec->name = devm_kasprintf(dev, GFP_KERNEL,
--					     "sdw:0:%01x:%04x:%04x:%02x", link_id,
--					     mfg_id, part_id, class_id);
--	else
--		codec->name = devm_kasprintf(dev, GFP_KERNEL,
--					     "sdw:0:%01x:%04x:%04x:%02x:%01x", link_id,
--					     mfg_id, part_id, class_id, unique_id);
--
-+	codec->name = get_codec_name(dev, codec_info, adr_link, adr_index);
- 	if (!codec->name)
- 		return -ENOMEM;
- 
+ static const struct snd_soc_acpi_adr_device cs42l43_3_adr[] = {
+ 	{
+ 		.adr = 0x00033001FA424301ull,
+-		.num_endpoints = 1,
+-		.endpoints = &single_endpoint,
++		.num_endpoints = ARRAY_SIZE(cs42l43_endpoints),
++		.endpoints = cs42l43_endpoints,
+ 		.name_prefix = "cs42l43"
+ 	}
+ };
 -- 
 2.40.1
 
