@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB8CCC54E67
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F675C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Mar 2024 16:14:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55213EC7;
-	Tue, 26 Mar 2024 17:13:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55213EC7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 805CD2C2F;
+	Tue, 26 Mar 2024 17:14:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 805CD2C2F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711469648;
-	bh=O+Ky+A2ECkzCjjUcmHynmaUbtkzO/Mm/j1upGJTjpl4=;
+	s=default; t=1711469658;
+	bh=CGW9WwILyoWL0VUVn+vNHuA24fw6YkjS/KusTPXlIlk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sgkH4FKu8v2htUY/AZcD0XMWgA+J/Hp/MsjEmYzWuTVvLuaoe9tKDXex2XIogFgD4
-	 NHtgINqpeRdHmxo8aGtzfdXpM3no0aqOlIFh9OhUqKUBsd60Zcz8srC9GbM5zmgqGu
-	 JwLo6GbQpVDvazHKN/PCTa4eMq7CTgzEqrvk4HMs=
+	b=W9f8ru/KsVhAaQapsxiuYL7ih8kv5PzMTAh+aypAjE3nqjJri0Fr6sqBU4o1M+W1K
+	 8zdUgc6MaqCpZGeEWSC6KHtGm4TAVztTF/DLqIDW/s+bVbDCAFX1kPJsr+JSJbCSEI
+	 lyoUPW4PltpIOm1nYbJcahn+4of4V3BrVHbNhrpQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8CF8DF897C3; Tue, 26 Mar 2024 17:07:30 +0100 (CET)
+	id 3D0E6F897DA; Tue, 26 Mar 2024 17:07:33 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B386F897AD;
-	Tue, 26 Mar 2024 17:07:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAEE3F897D9;
+	Tue, 26 Mar 2024 17:07:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48884F80858; Tue, 26 Mar 2024 17:06:45 +0100 (CET)
+	id AD1D5F80605; Tue, 26 Mar 2024 17:06:46 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C2D0EF805C5
-	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2D0EF805C5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 255D5F8057F
+	for <alsa-devel@alsa-project.org>; Tue, 26 Mar 2024 17:05:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 255D5F8057F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Aexyoe8w
+ header.s=Intel header.b=gpr7lJMz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711469161; x=1743005161;
+  t=1711469160; x=1743005160;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=O+Ky+A2ECkzCjjUcmHynmaUbtkzO/Mm/j1upGJTjpl4=;
-  b=Aexyoe8wxKpJlsmsQXbPQ7BGSq7C3WJgrM2Qa8Rp/VU2/EC3e4y/jolv
-   9JVamzPdFGn8+IZsv1+3FJyYofuQkDLFcW8bPwEPVZqkSe4B63gK3z5FS
-   gCOUxABzwdws4vmvv/sLNDzLfxefEf/EOXiNFBSISHWixmxpI6plu1qid
-   OeRjuRiMZggVsvR3BsJS7EoTiUAfVf3c2OBjSOpowKm02osRg/SkwVHkZ
-   QKQnmq1WFcDn7tyZMquBHOexJQseoYn2lgKgaxhc9jXp0UJ1m2L2Eu0vT
-   ycXl7rOUoU30c7xhM2RAwjQKUttnB+cDkRUbHx+SandMeKajCEJ6ikncz
-   w==;
-X-CSE-ConnectionGUID: Cod/0pEYS/ioknsSQpTW+w==
-X-CSE-MsgGUID: jLQtq8acQVW3RVA/IbpEeQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260551"
+  bh=CGW9WwILyoWL0VUVn+vNHuA24fw6YkjS/KusTPXlIlk=;
+  b=gpr7lJMzuTh19zRKXctsoRTVOQeqboXPTMIGAD+9WUB1eYFuSkaAiujo
+   g2tKSYcIxPjJEcGlanLBNJvpJSd4OE0j6iONzET8CoXQvdR62GQPBcAyu
+   stIU6Ki+TnsoxmYaqQciGGsNo2ePsVTxLJRSAmBpiMMluRpDBvyVXikXj
+   PFeWAIwA9+5ObfDEMefOWBorOAjxTMHKlBWoyOKtAJh3gC77t986G67SI
+   uJ2Fx/Z+GRSE9KMlb4+75aT54gVmQcA2Aaji68HwYo0wrNJ9Ofyb7V3Mf
+   v+jNEz546raRZTjueKsxtdcR3lICutGa9i3ztgIIO37E32Ys7HNGXDuBE
+   A==;
+X-CSE-ConnectionGUID: /H6pyek1SRSAyG1BeADd9w==
+X-CSE-MsgGUID: Zib7LsNwTq2wG6JqgH/D9Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="17260532"
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="17260551"
+   d="scan'208";a="17260532"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:05:05 -0700
+ 26 Mar 2024 09:05:03 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,156,1708416000";
-   d="scan'208";a="20482479"
+   d="scan'208";a="20482438"
 Received: from bhubbert-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.65.108])
   by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2024 09:05:04 -0700
+ 26 Mar 2024 09:05:02 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,17 +78,20 @@ Cc: alsa-devel@alsa-project.org,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Bard liao <yung-chuan.liao@linux.intel.com>,
 	Chao Song <chao.song@linux.intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 30/34] ASoC: Intel: change cs35l56 name_prefix
-Date: Tue, 26 Mar 2024 11:04:25 -0500
-Message-Id: <20240326160429.13560-31-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 28/34] ASoC: rt715-sdca: rename dai name with rt715-sdca
+ prefix
+Date: Tue, 26 Mar 2024 11:04:23 -0500
+Message-Id: <20240326160429.13560-29-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 References: <20240326160429.13560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3VPR2TCHW4NFSPQD7LGMKD2MIDTTQOU2
-X-Message-ID-Hash: 3VPR2TCHW4NFSPQD7LGMKD2MIDTTQOU2
+Message-ID-Hash: DD4WMJOKGDCRQPF5M6BNT3WZMUPNM4ZY
+X-Message-ID-Hash: DD4WMJOKGDCRQPF5M6BNT3WZMUPNM4ZY
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3VPR2TCHW4NFSPQD7LGMKD2MIDTTQOU2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DD4WMJOKGDCRQPF5M6BNT3WZMUPNM4ZY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,56 +115,40 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-To use sequential amp numbers. I,e, AMP1, AMP2, AMP3, AMP4
+The dai name are the same as rt715 codec. Rename them with rt715-sdca
+prefix allow machine driver to distinguish rt715 and rt715-sdca from
+dai name.
 
 Reviewed-by: Chao Song <chao.song@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-mtl-match.c | 4 ++--
- sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt715-sdca.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-index e06efc5b1457..7e53266d831d 100644
---- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-@@ -373,13 +373,13 @@ static const struct snd_soc_acpi_adr_device cs35l56_1_adr[] = {
- 		.adr = 0x00013701FA355601ull,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_r_endpoint,
--		.name_prefix = "AMP8"
-+		.name_prefix = "AMP3"
+diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
+index 3fb7b9adb61d..3a6dfe1f6c48 100644
+--- a/sound/soc/codecs/rt715-sdca.c
++++ b/sound/soc/codecs/rt715-sdca.c
+@@ -933,7 +933,7 @@ static const struct snd_soc_dai_ops rt715_sdca_ops = {
+ 
+ static struct snd_soc_dai_driver rt715_sdca_dai[] = {
+ 	{
+-		.name = "rt715-aif1",
++		.name = "rt715-sdca-aif1",
+ 		.id = RT715_AIF1,
+ 		.capture = {
+ 			.stream_name = "DP6 Capture",
+@@ -945,7 +945,7 @@ static struct snd_soc_dai_driver rt715_sdca_dai[] = {
+ 		.ops = &rt715_sdca_ops,
  	},
  	{
- 		.adr = 0x00013601FA355601ull,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_3_endpoint,
--		.name_prefix = "AMP7"
-+		.name_prefix = "AMP4"
- 	}
- };
- 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-index 007f1ac2327a..0cef3d788a5b 100644
---- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-@@ -464,13 +464,13 @@ static const struct snd_soc_acpi_adr_device cs35l56_1_adr[] = {
- 		.adr = 0x00013701FA355601ull,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_l_endpoint,
--		.name_prefix = "AMP8"
-+		.name_prefix = "AMP3"
- 	},
- 	{
- 		.adr = 0x00013601FA355601ull,
- 		.num_endpoints = 1,
- 		.endpoints = &spk_2_endpoint,
--		.name_prefix = "AMP7"
-+		.name_prefix = "AMP4"
- 	}
- };
- 
+-		.name = "rt715-aif2",
++		.name = "rt715-sdca-aif2",
+ 		.id = RT715_AIF2,
+ 		.capture = {
+ 			.stream_name = "DP4 Capture",
 -- 
 2.40.1
 
