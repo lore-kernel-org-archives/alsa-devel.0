@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71E54C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 06:59:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C468AC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 06:59:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87FDA2C47;
-	Tue,  2 Apr 2024 08:58:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87FDA2C47
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22FFA2C33;
+	Tue,  2 Apr 2024 08:59:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22FFA2C33
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712041140;
-	bh=lq5c4OQ/5yFeGjaajVMOXJaR21Pssmn50/wixaoQauc=;
+	s=default; t=1712041153;
+	bh=yEq2VMTPVDvaL2VvdEqCjK2n/T5h+SgXfSf2iwiMf9Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lxctVZnvr+Gg+2cXEk6qFniV0X5Zy0iY8A0ws7dAUjCFLD4IYCnpQqjB5qfVBVopN
-	 3CHHw5632KTXw/ovd+T/073kjOF0Ii13arzAsFaix8teujXvqZW9glWCsKuwLUggRD
-	 9oSGc2Q/OFR8p28keF2RJosj24A/8SWh3Vo2rVDs=
+	b=MbtkMhOEM/hf1y5tnTM+gYpMdI+M2tU8FigLCh5p5b5eZUSyaArTysm4iDca+5h4U
+	 kwaJeJz7EgyvdBMoJtWIko3+RaB3mDd+1KMuSTr8mJ1XgbHdCaFI1h+RXjXca84cIK
+	 ZxV/XML1gLdsGFYU+QC4LUxp6KiDhx/4znwUuHuk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F884F806B3; Tue,  2 Apr 2024 08:52:08 +0200 (CEST)
+	id 17D7DF806BD; Tue,  2 Apr 2024 08:52:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACEF0F897EA;
-	Tue,  2 Apr 2024 08:52:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DA0DF897F5;
+	Tue,  2 Apr 2024 08:52:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE93BF8025F; Wed, 27 Mar 2024 14:06:49 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 7DD70F802DB; Wed, 27 Mar 2024 14:08:04 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C5A0F80093
-	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 14:06:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C5A0F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 788C1F801D5
+	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 14:07:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 788C1F801D5
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A32AB61426;
-	Wed, 27 Mar 2024 13:06:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F80C43394;
-	Wed, 27 Mar 2024 13:05:57 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 548EDCE2634;
+	Wed, 27 Mar 2024 13:07:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A94C3C433F1;
+	Wed, 27 Mar 2024 13:07:15 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: "Michael S. Tsirkin" <mst@redhat.com>,
 	Jason Wang <jasowang@redhat.com>,
@@ -113,9 +114,9 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	linux-fsdevel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH 21/22] fuse: virtio: drop owner assignment
-Date: Wed, 27 Mar 2024 14:05:52 +0100
-Message-Id: <20240327130552.378821-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 22/22] sound: virtio: drop owner assignment
+Date: Wed, 27 Mar 2024 14:07:09 +0100
+Message-Id: <20240327130710.378970-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
 References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
@@ -129,17 +130,16 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: LZ4RELZCWIBO5AMDB5D26PM2RZ5GA56L
-X-Message-ID-Hash: LZ4RELZCWIBO5AMDB5D26PM2RZ5GA56L
-X-Mailman-Approved-At: Tue, 02 Apr 2024 06:49:46 +0000
+Message-ID-Hash: MEHEFHPKUVI2UDQ25ZZWWEP37MBTQF3Z
+X-Message-ID-Hash: MEHEFHPKUVI2UDQ25ZZWWEP37MBTQF3Z
+X-Mailman-Approved-At: Tue, 02 Apr 2024 06:50:13 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LZ4RELZCWIBO5AMDB5D26PM2RZ5GA56L/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MEHEFHPKUVI2UDQ25ZZWWEP37MBTQF3Z/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -154,21 +154,21 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Depends on the first patch.
 ---
- fs/fuse/virtio_fs.c | 1 -
+ sound/virtio/virtio_card.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-index 322af827a232..ca7b64f9c3c7 100644
---- a/fs/fuse/virtio_fs.c
-+++ b/fs/fuse/virtio_fs.c
-@@ -1023,7 +1023,6 @@ static const unsigned int feature_table[] = {};
+diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+index 2da20c625247..7805daea0102 100644
+--- a/sound/virtio/virtio_card.c
++++ b/sound/virtio/virtio_card.c
+@@ -438,7 +438,6 @@ static unsigned int features[] = {
  
- static struct virtio_driver virtio_fs_driver = {
- 	.driver.name		= KBUILD_MODNAME,
--	.driver.owner		= THIS_MODULE,
- 	.id_table		= id_table,
- 	.feature_table		= feature_table,
- 	.feature_table_size	= ARRAY_SIZE(feature_table),
+ static struct virtio_driver virtsnd_driver = {
+ 	.driver.name = KBUILD_MODNAME,
+-	.driver.owner = THIS_MODULE,
+ 	.id_table = id_table,
+ 	.feature_table = features,
+ 	.feature_table_size = ARRAY_SIZE(features),
 -- 
 2.34.1
 
