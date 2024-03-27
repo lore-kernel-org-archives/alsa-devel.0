@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19D47C47DD9
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Mar 2024 16:28:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ABD9C54E67
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Mar 2024 16:28:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDE7F2C43;
-	Wed, 27 Mar 2024 17:28:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDE7F2C43
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7CB82C4B;
+	Wed, 27 Mar 2024 17:28:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7CB82C4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711556927;
-	bh=Ir7vtaKEGyf7DswIMMovVREmiqNtlXRIc3iQIBZQ54k=;
+	s=default; t=1711556935;
+	bh=9NGDWNO1OYr4eGh4Ij3kYUinuMCScDfWokDYzAgk5RI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G1z/KDw4BOqV6Zm2zkeLqVzRgaIsMxn1Uz1rgSHeQ0H1VKb55a+PI2lQa2U/E1HfE
-	 LEDbYXetmnzarbHEBmGaM7/8Z8kqUHU+rJVxlBoHtTya0pQn8jdg6NWwe5mheKft+1
-	 26lXKcrA9YvH8b5HcWiS/KSx32G9wxu+mQHdC5C8=
+	b=jFqY1KbNSAYsLR2YJJ+PBlnB47za8IcZEGvhLKPrx1521/bEmMQaAN4eE+U3oKSUr
+	 LtDJVn1SwHksb1UCsI3v/0yNuMuSyMsTxb6DjmKcIQTSXxBHSAg4cFcyxKrfEAxrrC
+	 SK5dBphvQXUjBkVSUjQRGwOdMGFnp8dJm4jiOZwc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20FAEF8083F; Wed, 27 Mar 2024 17:25:25 +0100 (CET)
+	id F3E22F8080C; Wed, 27 Mar 2024 17:25:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42E53F80845;
-	Wed, 27 Mar 2024 17:25:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A6B3F80808;
+	Wed, 27 Mar 2024 17:25:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1CD0F806B5; Wed, 27 Mar 2024 17:25:06 +0100 (CET)
+	id 877B9F806C0; Wed, 27 Mar 2024 17:25:03 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 42BE8F8057B
-	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 17:24:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42BE8F8057B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 38738F80579
+	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 17:24:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38738F80579
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bhyM2A2w
+ header.s=Intel header.b=flRid0Mp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711556682; x=1743092682;
+  t=1711556680; x=1743092680;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Ir7vtaKEGyf7DswIMMovVREmiqNtlXRIc3iQIBZQ54k=;
-  b=bhyM2A2wtm70azqcPv8YC2lTez1VqSfhWC7meOT7PDVWKDJZ8npL2O/J
-   cwCcdBrrDAANb3izry9DfCwtTOCpUhItkR+wr5tFCPcIIKVOVpgAnj1T/
-   3Msx4Uu53GOYVHZcGNdHUtuksBZXdNZCKrUwbhm/QIpJbB6S+tdFzODqm
-   evtdfUIPW82wcFTxnSQWldRuU7wInwlDvxBE9h4MxpJCH2xBKzmJk4GR7
-   DaiXsuN7QTukDYRZIw2UdzCRxkd2EZUZYJ6zLnpJSrg9v+fnYgpi8VKoW
-   6o/CxdKzV5wAwwAFUYu9OXS1L79UBW18SrNRkJBDvi6gZAe78IY5kR602
+  bh=9NGDWNO1OYr4eGh4Ij3kYUinuMCScDfWokDYzAgk5RI=;
+  b=flRid0MpA8g/LML2A3T9hgD7G2FXL5pr7BGSZaes4qd6e9hZGqPrfWqd
+   aQGtuvKRaTn80Kls65v9PViZEEv9r7/R460MrF8msXkjk+67+mZbmZ/yG
+   SC2oL6xeNBVSuLRdj9R5Gru3FYqpgV3z+I2WYZOw/eYYlzxYu1zHwhKZ5
+   KNgXg5AUs2kZQo+19YEG60sKySe/JyZZ3RdO3Fs6lvo4Bf+qgUAZ/Cclq
+   +eob+2YYA2HC+an9gFV8xiioUmM8MraaviQm1IJEE63OKQRTaxCknOfuA
+   x0K5vB39pWz22arxHPvEzVJ28KfAugHdggHC5h6qqchY/Bj4P907y+rxf
    Q==;
-X-CSE-ConnectionGUID: Cey6kWspSPWCicHHuwdyPg==
-X-CSE-MsgGUID: 6ZZ3zYd9QQOocKane1VWKw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17221559"
+X-CSE-ConnectionGUID: Ln8r4S5JQ5mPgfHLVfAa0w==
+X-CSE-MsgGUID: jrBEx3ArS8uRBBVaoDaBwg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17221539"
 X-IronPort-AV: E=Sophos;i="6.07,159,1708416000";
-   d="scan'208";a="17221559"
+   d="scan'208";a="17221539"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
   by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2024 09:24:36 -0700
+ 27 Mar 2024 09:24:34 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,159,1708416000";
-   d="scan'208";a="53821328"
+   d="scan'208";a="53821309"
 Received: from ssherman-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.117.1])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2024 09:24:35 -0700
+ 27 Mar 2024 09:24:33 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -74,16 +74,16 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/18] ASoC: Intel: sof_rt5682: mach cleanup for mtl boards
-Date: Wed, 27 Mar 2024 11:24:04 -0500
-Message-Id: <20240327162408.63953-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 11/18] ASoC: Intel: sof_rt5682: mach cleanup for tgl boards
+Date: Wed, 27 Mar 2024 11:24:01 -0500
+Message-Id: <20240327162408.63953-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
 References: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VNHA5B2TE6G7JUAY2UVUEPKGYS4X7IDR
-X-Message-ID-Hash: VNHA5B2TE6G7JUAY2UVUEPKGYS4X7IDR
+Message-ID-Hash: ZEN4L3JB2Y5U55ZOA3LWEFYBHLMUP4L2
+X-Message-ID-Hash: ZEN4L3JB2Y5U55ZOA3LWEFYBHLMUP4L2
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VNHA5B2TE6G7JUAY2UVUEPKGYS4X7IDR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZEN4L3JB2Y5U55ZOA3LWEFYBHLMUP4L2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,98 +107,108 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add two common entries in enumeration table for all rt5682/rt5650
-boards with/without speaker amplifier. All other mtl_rt5682_def
-entries become redundant so get removed.
+Add a common entry in enumeration table for all rt5682 boards
+with/without speaker amplifier. All other tgl_rt5682_def entries
+become redundant so get removed.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-mtl-match.c   | 40 +++++++------------
- 1 file changed, 15 insertions(+), 25 deletions(-)
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 50 +++++--------------
+ 1 file changed, 13 insertions(+), 37 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-index 0125e81af9e1..7f422848a3ba 100644
---- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-@@ -21,14 +21,9 @@ static const struct snd_soc_acpi_codecs mtl_max98360a_amp = {
- 	.codecs = {"MX98360A"}
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 77226d1eb1cf..161ba532d270 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -8,6 +8,7 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
++#include <sound/soc-acpi-intel-ssp-common.h>
+ #include "soc-acpi-intel-sdw-mockup-match.h"
+ 
+ static const struct snd_soc_acpi_codecs essx_83x6 = {
+@@ -15,11 +16,6 @@ static const struct snd_soc_acpi_codecs essx_83x6 = {
+ 	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
  };
  
--static const struct snd_soc_acpi_codecs mtl_rt1019p_amp = {
+-static const struct snd_soc_acpi_codecs tgl_codecs = {
 -	.num_codecs = 1,
--	.codecs = {"RTL1019"}
+-	.codecs = {"MX98357A"}
 -};
 -
- static const struct snd_soc_acpi_codecs mtl_rt5682_rt5682s_hp = {
+ static const struct snd_soc_acpi_endpoint single_endpoint = {
+ 	.num = 0,
+ 	.aggregated = 0,
+@@ -499,19 +495,9 @@ static const struct snd_soc_acpi_link_adr tgl_cs42l43_cs35l56[] = {
+ 	{}
+ };
+ 
+-static const struct snd_soc_acpi_codecs tgl_max98373_amp = {
+-	.num_codecs = 1,
+-	.codecs = {"MX98373"}
+-};
+-
+-static const struct snd_soc_acpi_codecs tgl_rt1011_amp = {
+-	.num_codecs = 1,
+-	.codecs = {"10EC1011"}
+-};
+-
+ static const struct snd_soc_acpi_codecs tgl_rt5682_rt5682s_hp = {
  	.num_codecs = 2,
 -	.codecs = {"10EC5682", "RTL5682"},
 +	.codecs = {RT5682_ACPI_HID, RT5682S_ACPI_HID},
  };
  
- static const struct snd_soc_acpi_codecs mtl_essx_83x6 = {
-@@ -41,11 +36,6 @@ static const struct snd_soc_acpi_codecs mtl_lt6911_hdmi = {
- 	.codecs = {"INTC10B0"}
+ static const struct snd_soc_acpi_codecs tgl_lt6911_hdmi = {
+@@ -520,27 +506,6 @@ static const struct snd_soc_acpi_codecs tgl_lt6911_hdmi = {
  };
  
--static const struct snd_soc_acpi_codecs mtl_rt5650_amp = {
--	.num_codecs = 1,
--	.codecs = {"10EC5650"}
--};
--
- struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
- 	{
- 		.comp_ids = &mtl_rt5682_rt5682s_hp,
-@@ -61,13 +51,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
- 		.quirk_data = &mtl_max98360a_amp,
- 		.sof_tplg_filename = "sof-mtl-max98360a-rt5682.tplg",
- 	},
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
 -	{
--		.comp_ids = &mtl_rt5682_rt5682s_hp,
--		.drv_name = "mtl_rt5682_def",
+-		.comp_ids = &tgl_rt5682_rt5682s_hp,
+-		.drv_name = "tgl_rt5682_def",
 -		.machine_quirk = snd_soc_acpi_codec_list,
--		.quirk_data = &mtl_rt1019p_amp,
--		.sof_tplg_filename = "sof-mtl-rt1019-rt5682.tplg",
+-		.quirk_data = &tgl_codecs,
+-		.sof_tplg_filename = "sof-tgl-max98357a-rt5682.tplg",
+-	},
+-	{
+-		.comp_ids = &tgl_rt5682_rt5682s_hp,
+-		.drv_name = "tgl_rt5682_def",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &tgl_max98373_amp,
+-		.sof_tplg_filename = "sof-tgl-max98373-rt5682.tplg",
+-	},
+-	{
+-		.comp_ids = &tgl_rt5682_rt5682s_hp,
+-		.drv_name = "tgl_rt5682_def",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &tgl_rt1011_amp,
+-		.sof_tplg_filename = "sof-tgl-rt1011-rt5682.tplg",
 -	},
  	{
- 		.comp_ids = &mtl_essx_83x6,
- 		.drv_name = "mtl_es83x6_c1_h02",
-@@ -83,13 +66,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
+ 		.comp_ids = &essx_83x6,
+ 		.drv_name = "sof-essx8336",
+@@ -549,6 +514,17 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
  					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
  					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
  	},
--	{
--		.id = "10EC5650",
--		.drv_name = "mtl_rt5682_def",
--		.machine_quirk = snd_soc_acpi_codec_list,
--		.quirk_data = &mtl_rt5650_amp,
--		.sof_tplg_filename = "sof-mtl-rt5650.tplg",
--	},
- 	/* place boards for each headphone codec: sof driver will complete the
- 	 * tplg name and machine driver will detect the amp type
- 	 */
-@@ -100,6 +76,20 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
- 		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_AMP_NAME |
- 					SND_SOC_ACPI_TPLG_INTEL_CODEC_NAME,
- 	},
++	/* place boards for each headphone codec: sof driver will complete the
++	 * tplg name and machine driver will detect the amp type
++	 */
 +	{
-+		.id = RT5650_ACPI_HID,
-+		.drv_name = "mtl_rt5682_def",
-+		.sof_tplg_filename = "sof-mtl", /* the tplg suffix is added at run time */
++		.comp_ids = &tgl_rt5682_rt5682s_hp,
++		.drv_name = "tgl_rt5682_def",
++		.sof_tplg_filename = "sof-tgl", /* the tplg suffix is added at run time */
 +		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_AMP_NAME |
 +					SND_SOC_ACPI_TPLG_INTEL_CODEC_NAME,
 +	},
-+	{
-+		.comp_ids = &mtl_rt5682_rt5682s_hp,
-+		.drv_name = "mtl_rt5682_def",
-+		.sof_tplg_filename = "sof-mtl", /* the tplg suffix is added at run time */
-+		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_AMP_NAME |
-+					SND_SOC_ACPI_TPLG_INTEL_CODEC_NAME,
-+	},
- 	/* place amp-only boards in the end of table */
++	/* place amp-only boards in the end of table */
  	{
- 		.id = "INTC10B0",
+ 		.id = "10EC1308",
+ 		.drv_name = "tgl_rt1308_hdmi_ssp",
 -- 
 2.40.1
 
