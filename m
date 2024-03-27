@@ -4,160 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E471C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 06:58:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9433CC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 06:58:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81DE32BE6;
-	Tue,  2 Apr 2024 08:57:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81DE32BE6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B94292C30;
+	Tue,  2 Apr 2024 08:58:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B94292C30
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712041089;
-	bh=+b7HD7blN2XR0vp569P7KUgZ+rP9RZRo3/7Ljc6RdPk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1712041097;
+	bh=t5Dr+QPEU1FaZbxI2VzHHPUV33oVM25Zuyjp8wRwBxQ=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=seahox0QDtNCCTE6KYvc9QLRLBSJfkdHv1Bl95digHSxF8QK0+dbbWd88bSZNJiON
-	 eEUBEXcsgLa9meYX0VbuRp9AAeePZWTOAFFcDpjMa0c6R7UDl8/n80U3T0lDXdK04H
-	 C4zcy4kDbT4D04+/Beaj6VMjq2kjE3xziYNeblRk=
+	b=c6hBqfBqDAdtsG/yTz+tCV/LabgBGfgFPvg/wsydqSeFZPmtTfaCdyA+Js3IfB4wK
+	 1AVubnPdRbD+1QgKBlTHuW8zRDtTWxkf3sIFouekfvgkdQUcAe4MtY9TVw7gteRpdZ
+	 COgPlFX9soDiFdLLKUF9KHVafN78t9AxNx9fbWM4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FD03F80699; Tue,  2 Apr 2024 08:51:48 +0200 (CEST)
+	id 50DAEF80803; Tue,  2 Apr 2024 08:51:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0DFBF897B1;
-	Tue,  2 Apr 2024 08:51:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4A32F80803;
+	Tue,  2 Apr 2024 08:51:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C1F7F802DB; Wed, 27 Mar 2024 13:46:45 +0100 (CET)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C4D44F802DB; Wed, 27 Mar 2024 13:56:26 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7FC2BF801D5
-	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 13:46:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FC2BF801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 83650F801D5
+	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 13:56:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83650F801D5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=PtkaDhoR
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-a4e0e3ef357so13432966b.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 27 Mar 2024 05:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711543600; x=1712148400;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TImcoBJxfXGIQgqj3n4MKEXII2pXosMotms9pHsJzXs=;
-        b=PtkaDhoREDwA8gAyVDXwzGOvtmm50Q08tyZMWZAJoHPflecEOMdT3FcPCVeBF7SFHZ
-         Ql+YuRzAlrt+opybARd6eh3k6PWEh4fhxi8+c259rNrulRG6FvCLrdIqITN8Tmyy3RYe
-         FDiPoumetA5E52o+JIKnJEDYqG0k/zJJgGPUkGn0u6qfSCokDMvUSLSH8nnfy/S9sSP5
-         yxPuDDZSABOYzRxp/V8B1GuXtqSlUxewdKp4wVe8ChjemLUB0LrM87OjQCDKHB+0vUnf
-         /Uv0V98HjgbzBMwNASEm4znoabaCBLP1Z5hm/AqsMOY4zEqyaWhRR9bnZGMFHx/TYonL
-         AfUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711543600; x=1712148400;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TImcoBJxfXGIQgqj3n4MKEXII2pXosMotms9pHsJzXs=;
-        b=dHdXi/T+CnYT4iTk4sEiYbTIMMvjaP6RsFvdpEyvFZIUhekR1hPWDe79c3cskemMfr
-         ey3b1jbOJ4NF4S4/JbS/0TlUkCM2nmSbYIh5UdHu0fxSpWZwm2IuTm1blj52GzIjQPF1
-         PtePNfTFweXeaY51DPc+/BQidg595J+wUfBhGqHdjwZ19qwyIyMdcjO6c1HOYVZkd+Sy
-         1WNBoplxHP1sqGG7ReZlrPURj56COEMdHJXATIBpQ20OriJ2zKzI3x4lxjjn10eDIRpT
-         45IZCLw2liEvP61b9Gb+oIEolB0u2aHAU2Wl5TjXf0OSESKdhjYpQ/zM61mCgdzZYsVb
-         /8ug==
-X-Forwarded-Encrypted: i=1;
- AJvYcCURcpl3CkBOk8Heozvgl6VwLxIEPEbUX3tENJACLSk16SCifFdphBciJ95Sa1wvxXRyO9R4vBWBGrqq6KDfc2FrU1m8k+Ezhr4uoZ4=
-X-Gm-Message-State: AOJu0YyiOrMsm9fFPwdrImm7ALZdZrKArfMWlvkPtNXgk2WiX9XPgmrC
-	vhWiqw47enTyGXh6sgbrZsgj0bC/Und/5OSTmAKaTWeyNFUx+1UNctwfdZTNTEI=
-X-Google-Smtp-Source: 
- AGHT+IHz3XNCa9vYxVdXv7C592UPDYjRtJdl/QW4qXpaVGK+f9EGoToWDlCo1tr4K4SuiD6SS2oOpw==
-X-Received: by 2002:a17:906:5847:b0:a47:1b77:7c4 with SMTP id
- h7-20020a170906584700b00a471b7707c4mr907960ejs.48.1711543599897;
-        Wed, 27 Mar 2024 05:46:39 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.206.205])
-        by smtp.gmail.com with ESMTPSA id
- gx16-20020a170906f1d000b00a4707ec7c34sm5379175ejb.166.2024.03.27.05.46.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 05:46:39 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 27 Mar 2024 13:41:12 +0100
-Subject: [PATCH 19/22] rpmsg: virtio: drop owner assignment
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240327-module-owner-virtio-v1-19-0feffab77d99@linaro.org>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=PeI1DRl9
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 2187BCE2616;
+	Wed, 27 Mar 2024 12:56:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C93C43390;
+	Wed, 27 Mar 2024 12:56:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711544174;
+	bh=t5Dr+QPEU1FaZbxI2VzHHPUV33oVM25Zuyjp8wRwBxQ=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=PeI1DRl97jSBL5h+TjLof7OmsdrUn8XoRsGQVaXc1QrS2MsqMVnRRdmF+M5dmweaA
+	 Cf4i01dUWOny6pJ6QuLijRvpE44xS0PcZc1e9PeN+WBhzhBO4xJy/Ts3k409QwdVEV
+	 p+A11VpmypxO3Ps9Q8jXDfwY+GDNk4U7h2495MzupWAahXb3s6nMhf4xTbKbYBv9sH
+	 Qg2EVim4HGea+Pk1qx3RaNxw1jAVCalYFQ1zjH9SvFpUEhLNt2Q6UwcJWGcqLuJGpO
+	 jNEGpE3iLazGfTCtetqVqdY3FWUY6/vKk+gRsmlO3tArdLh8t7rKXHMt3Lo2FnfSbu
+	 armFDkXpy3JVQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,  Jason Wang
+ <jasowang@redhat.com>,  Xuan Zhuo <xuanzhuo@linux.alibaba.com>,  Richard
+ Weinberger <richard@nod.at>,  Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>,  Johannes Berg
+ <johannes@sipsolutions.net>,  Paolo Bonzini <pbonzini@redhat.com>,  Stefan
+ Hajnoczi <stefanha@redhat.com>,  Jens Axboe <axboe@kernel.dk>,  Marcel
+ Holtmann <marcel@holtmann.org>,  Luiz Augusto von Dentz
+ <luiz.dentz@gmail.com>,  Olivia Mackall <olivia@selenic.com>,  Herbert Xu
+ <herbert@gondor.apana.org.au>,  Amit Shah <amit@kernel.org>,  Arnd
+ Bergmann <arnd@arndb.de>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  Gonglei <arei.gonglei@huawei.com>,  "David
+ S. Miller" <davem@davemloft.net>,  Viresh Kumar <vireshk@kernel.org>,
+  Linus Walleij <linus.walleij@linaro.org>,  Bartosz Golaszewski
+ <brgl@bgdev.pl>,  David Airlie <airlied@redhat.com>,  Gerd Hoffmann
+ <kraxel@redhat.com>,  Gurchetan Singh <gurchetansingh@chromium.org>,
+  Chia-I Wu <olvaffe@gmail.com>,  Jean-Philippe Brucker
+ <jean-philippe@linaro.org>,  Joerg Roedel <joro@8bytes.org>,  Alexander
+ Graf <graf@amazon.com>,  Eric Dumazet <edumazet@google.com>,  Jakub
+ Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,  Eric Van
+ Hensbergen <ericvh@kernel.org>,  Latchesar Ionkov <lucho@ionkov.net>,
+  Dominique Martinet <asmadeus@codewreck.org>,  Christian Schoenebeck
+ <linux_oss@crudebyte.com>,  Stefano Garzarella <sgarzare@redhat.com>,  Dan
+ Williams <dan.j.williams@intel.com>,  Vishal Verma
+ <vishal.l.verma@intel.com>,  Dave Jiang <dave.jiang@intel.com>,  Ira Weiny
+ <ira.weiny@intel.com>,  Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+  Bjorn Andersson <andersson@kernel.org>,  Mathieu Poirier
+ <mathieu.poirier@linaro.org>,  "Martin K. Petersen"
+ <martin.petersen@oracle.com>,  Vivek Goyal <vgoyal@redhat.com>,  Miklos
+ Szeredi <miklos@szeredi.hu>,  Anton Yakovlev
+ <anton.yakovlev@opensynergy.com>,  Jaroslav Kysela <perex@perex.cz>,
+  Takashi Iwai <tiwai@suse.com>,  virtualization@lists.linux.dev,
+  linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-um@lists.infradead.org,  linux-block@vger.kernel.org,
+  linux-bluetooth@vger.kernel.org,  linux-crypto@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-gpio@vger.kernel.org,
+  dri-devel@lists.freedesktop.org,  iommu@lists.linux.dev,
+  netdev@vger.kernel.org,  v9fs@lists.linux.dev,  kvm@vger.kernel.org,
+  linux-wireless@vger.kernel.org,  nvdimm@lists.linux.dev,
+  linux-remoteproc@vger.kernel.org,  linux-scsi@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  alsa-devel@alsa-project.org,
+  linux-sound@vger.kernel.org
+Subject: Re: [PATCH 17/22] wireless: mac80211_hwsim: drop owner assignment
 References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
-In-Reply-To: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
-To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>,
- Jens Axboe <axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Olivia Mackall <olivia@selenic.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Gonglei <arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>,
- Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@redhat.com>,
- Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>,
- Chia-I Wu <olvaffe@gmail.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Eric Van Hensbergen <ericvh@kernel.org>,
- Latchesar Ionkov <lucho@ionkov.net>,
- Dominique Martinet <asmadeus@codewreck.org>,
- Christian Schoenebeck <linux_oss@crudebyte.com>,
- Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>,
- Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Ira Weiny <ira.weiny@intel.com>,
- Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
- Anton Yakovlev <anton.yakovlev@opensynergy.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
- iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
- kvm@vger.kernel.org, linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev,
- linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=768;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=+b7HD7blN2XR0vp569P7KUgZ+rP9RZRo3/7Ljc6RdPk=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBBPqAdq/eg/PtMCEKo1gva2x7VgdnMT6C6Tep
- 2wGqe9FMdyJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgQT6gAKCRDBN2bmhouD
- 1/TJD/4qOl/HewPvOEL3qGcOWPCkSVABYFtSCCfDob4NTUwAYOsNZXbH02ywzlUMcBk5kU1U06e
- AkckuKvzdO/5ojXTRYDkDVHSyZ/6w/2Zete946WspuC9senP7Ez3D3YkNyAxCE+Sk2DVkmiCf2E
- CyINMhaAkygs+ceOFDbHwFTbo7vJVRYCTGaGRm542+GjfTkvYuWVg4xeDHg1ogRagShb3QsonMJ
- iM7hJlEEdxsNQj/ThY3v2hfTnTAx2YlEu+KeqadqilMq04KLM5rus3fTej4xY0P3Ne5G0IffMH1
- EveHiww1oViKjbvjP1s8KwwzV/hlVXkuLkEpSakHpjgTxlrBqrMB2RUdWwPDNaH/T6cC0lQxSHn
- PbZ7RdLNVmu6v4LPR9S1ncpMO//afg+3LNsPd20FwxOaCv3IEiUwKRbUqxkbjuSQH4iwKR6llkU
- IGcF4f5x4/q+EXK6r0Foa98dU3i91q5S1y0X+Fsyceaza2rKKZSTaxY46atCOCfkKWuYH+5+Uju
- 5UESG7t+HFinMBkI1h6Qjkyrz93J+YOK5IKd6DQYtK0YownJLLGBpupYua5HeUemtn1gA/b+4ci
- nrfmHTqXJfXn1sKxAPG+3hj2jFzFA2Ibj7vzIzNYNdcpR33XtvVIbUpTu2kE3HPXhlMaJh18Nxt
- 9eoqc6/7NrkIp+w==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-X-MailFrom: krzysztof.kozlowski@linaro.org
+	<20240327-module-owner-virtio-v1-17-0feffab77d99@linaro.org>
+Date: Wed, 27 Mar 2024 14:55:58 +0200
+In-Reply-To: <20240327-module-owner-virtio-v1-17-0feffab77d99@linaro.org>
+	(Krzysztof Kozlowski's message of "Wed, 27 Mar 2024 13:41:10 +0100")
+Message-ID: <87plvf7s0x.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MailFrom: kvalo@kernel.org
 X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -165,9 +116,9 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: QPZLUL67DEZLIAROIURJYAXVHUON7JOR
-X-Message-ID-Hash: QPZLUL67DEZLIAROIURJYAXVHUON7JOR
-X-Mailman-Approved-At: Tue, 02 Apr 2024 06:49:40 +0000
+Message-ID-Hash: EPV727RFCX6W7OZCHK2GTIZHFTYKIEGP
+X-Message-ID-Hash: EPV727RFCX6W7OZCHK2GTIZHFTYKIEGP
+X-Mailman-Approved-At: Tue, 02 Apr 2024 06:49:42 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -181,30 +132,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-virtio core already sets the .owner, so driver does not need to.
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> virtio core already sets the .owner, so driver does not need to.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
----
-
-Depends on the first patch.
----
- drivers/rpmsg/virtio_rpmsg_bus.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-index 1062939c3264..e9e8c1f7829f 100644
---- a/drivers/rpmsg/virtio_rpmsg_bus.c
-+++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-@@ -1053,7 +1053,6 @@ static struct virtio_driver virtio_ipc_driver = {
- 	.feature_table	= features,
- 	.feature_table_size = ARRAY_SIZE(features),
- 	.driver.name	= KBUILD_MODNAME,
--	.driver.owner	= THIS_MODULE,
- 	.id_table	= id_table,
- 	.probe		= rpmsg_probe,
- 	.remove		= rpmsg_remove,
+We use "wifi:" in the title, not "wireless:". It would be nice if you
+can fix this during commit.
 
 -- 
-2.34.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
