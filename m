@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77A4CC54E67
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Mar 2024 16:27:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A09F7C47DD9
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Mar 2024 16:27:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 772692C39;
-	Wed, 27 Mar 2024 17:27:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 772692C39
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE1462C32;
+	Wed, 27 Mar 2024 17:27:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE1462C32
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711556861;
-	bh=L/rMKeb7bryjkvewzg2n9FkK/ylWO2IYooTwSLchRGY=;
+	s=default; t=1711556877;
+	bh=pTeryrvseJcCWI/DDqcKtsUMeDVdgeOAEB5bQ3J6A6U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=IYxVn9TAceRUgQCH0C99Mi+aEpkzOcALtiO6Yp3BI6a6PKaXZ2UIxbNbu/aotNCgV
-	 GVi/AqbqoOMSiDJ6fC02rElGe196QIeTRtbTY+7sqpxYngSzLhWIz7/SNEYsc17Xa9
-	 SP7VixWngj3hD1KsZ03MHOBywSkWJwVw0Vmcp7mc=
+	b=DDs2BvYs7GklQs3WxaIoxP+ykOWQZuCZZwZrLE5SLH8sutTpfpSCVERQQpm4yZSYj
+	 hDaM9vju2Jb+ZN51ZYZjQ6HiEx+VrKpKYOZWOW86qTps855WTS/ySo/Zoo33SjRHFK
+	 D8mJbmAcPtGW8kAYvoMk2CYc/dMa84CAGW/xCJ9Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEBFDF806F2; Wed, 27 Mar 2024 17:25:13 +0100 (CET)
+	id 565B1F80714; Wed, 27 Mar 2024 17:25:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4864F806F2;
-	Wed, 27 Mar 2024 17:25:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 700D0F80733;
+	Wed, 27 Mar 2024 17:25:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A17BEF805AC; Wed, 27 Mar 2024 17:25:02 +0100 (CET)
+	id 4FCD0F80689; Wed, 27 Mar 2024 17:25:01 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C2FBBF801EB
-	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 17:24:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2FBBF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 22A5FF80571
+	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 17:24:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22A5FF80571
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=caJXT7Md
+ header.s=Intel header.b=ZFdfIfGR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711556682; x=1743092682;
+  t=1711556680; x=1743092680;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=L/rMKeb7bryjkvewzg2n9FkK/ylWO2IYooTwSLchRGY=;
-  b=caJXT7MdGJXloSpXejvoBGR/tVQZsZCafyqPgortu3rV5gkT/UgfvQQP
-   rwiL9lXBfuezQH9BesKLpROc3q01mlwGdgKc9F1V5sBFDzgSetOWFMp2C
-   5C3Xuk6XT6xs9wSkKnrqc7haIOpxLDBVnG+n0zJVXYrzb/ozIdejgBBdU
-   SJ6CTmwOu06Z+w1PICpLqwWC5eaMaLHsLRh8jMIOgoE8G7XmfdmO6hi2I
-   bZbZzYmSP0loOb8LkRYYZHqILeULwrV6i+78SXCgOqZ6ohhw1RMLjgf+P
-   NuTFArGkxKzsxJ9yzi+GnHCWgheFjPXGHaaB2ReY3HiEhk/t2Pby4UBKZ
-   Q==;
-X-CSE-ConnectionGUID: 9/T3wVw8TpGFQXBgH0NCCQ==
-X-CSE-MsgGUID: vgZB/1kqQ56IgSe57i1xsQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17221546"
+  bh=pTeryrvseJcCWI/DDqcKtsUMeDVdgeOAEB5bQ3J6A6U=;
+  b=ZFdfIfGRUSLvzqyX0POys5YTzva6MVmU76mB/u1jLg6edfOOOGUzdS4n
+   RlBTFDV2+3EJ5lHZP29f1pPfx2x6wB+DpWsXUj8rdVgtyWu14BCdoyftU
+   C+47gQ8Nh3yMLRXAz/nAK5AmbzoBVdid5Q3Z7BPDW4pzefmfsy+xivdgo
+   EJAqfFLEXYqXAJ0fsIeKLfs7nlpQ+KJ5IowFshzMR3lokT0hB5HAtfGOV
+   41j18wA5T08mRgQpY1lsrVh5XHLVWBFYAFafYqCZxx3EQpu3JXZbu4v/U
+   7+JZ821NTH/Z+nvQkNk4wQjJLDcR0YiWAnq1Bo5APMotBNHLhAXkvEnX7
+   g==;
+X-CSE-ConnectionGUID: meE8m8yfTkG44ZBjiuIbNg==
+X-CSE-MsgGUID: Vn/zHhsCROK/+bivBYEwJw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17221535"
 X-IronPort-AV: E=Sophos;i="6.07,159,1708416000";
-   d="scan'208";a="17221546"
+   d="scan'208";a="17221535"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
   by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2024 09:24:35 -0700
+ 27 Mar 2024 09:24:33 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,159,1708416000";
-   d="scan'208";a="53821313"
+   d="scan'208";a="53821304"
 Received: from ssherman-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.117.1])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2024 09:24:34 -0700
+ 27 Mar 2024 09:24:32 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -74,16 +74,17 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 12/18] ASoC: Intel: sof_rt5682: mach cleanup for adl boards
-Date: Wed, 27 Mar 2024 11:24:02 -0500
-Message-Id: <20240327162408.63953-13-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 10/18] ASoC: Intel: sof_nau8825: add mtl_nau8825_def for mtl
+ boards
+Date: Wed, 27 Mar 2024 11:24:00 -0500
+Message-Id: <20240327162408.63953-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
 References: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DCNQJ3PAVJNJKCOOFADGLP3RXQQ7MOER
-X-Message-ID-Hash: DCNQJ3PAVJNJKCOOFADGLP3RXQQ7MOER
+Message-ID-Hash: HOVHTYJBY3QUNLQB5E2DSS3EDO3G2TMT
+X-Message-ID-Hash: HOVHTYJBY3QUNLQB5E2DSS3EDO3G2TMT
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DCNQJ3PAVJNJKCOOFADGLP3RXQQ7MOER/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HOVHTYJBY3QUNLQB5E2DSS3EDO3G2TMT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,154 +108,65 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add two common entries in enumeration table for all rt5682/rt5650
-boards with/without speaker amplifier. All other adl_rt5682_def
-entries become redundant so get removed.
+Add the board config mtl_nau8825_def to nau8825 machine driver for all
+mtl boards using default SSP port allocation (headphone codec on SSP2,
+speaker amplifiers on SSP0, and BT offload on SSP1).
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-adl-match.c   | 71 ++++---------------
- 1 file changed, 15 insertions(+), 56 deletions(-)
+ sound/soc/intel/boards/sof_nau8825.c              |  7 +++++++
+ sound/soc/intel/common/soc-acpi-intel-mtl-match.c | 11 +++++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-index f8b8864b5ec6..9ac9310dd2be 100644
---- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-@@ -448,11 +448,6 @@ static const struct snd_soc_acpi_link_adr adl_chromebook_base[] = {
- 	{}
- };
- 
--static const struct snd_soc_acpi_codecs adl_max98373_amp = {
--	.num_codecs = 1,
--	.codecs = {"MX98373"}
--};
--
- static const struct snd_soc_acpi_codecs adl_max98357a_amp = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98357A"}
-@@ -465,7 +460,7 @@ static const struct snd_soc_acpi_codecs adl_max98360a_amp = {
- 
- static const struct snd_soc_acpi_codecs adl_rt5682_rt5682s_hp = {
- 	.num_codecs = 2,
--	.codecs = {"10EC5682", "RTL5682"},
-+	.codecs = {RT5682_ACPI_HID, RT5682S_ACPI_HID},
- };
- 
- static const struct snd_soc_acpi_codecs adl_rt1019p_amp = {
-@@ -473,29 +468,12 @@ static const struct snd_soc_acpi_codecs adl_rt1019p_amp = {
- 	.codecs = {"RTL1019"}
- };
- 
--static const struct snd_soc_acpi_codecs adl_max98390_amp = {
--	.num_codecs = 1,
--	.codecs = {"MX98390"}
--};
--
- static const struct snd_soc_acpi_codecs adl_lt6911_hdmi = {
- 	.num_codecs = 1,
- 	.codecs = {"INTC10B0"}
- };
- 
--static struct snd_soc_acpi_codecs adl_rt5650_amp = {
--	.num_codecs = 1,
--	.codecs = {"10EC5650"}
--};
--
- struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
--	{
--		.comp_ids = &adl_rt5682_rt5682s_hp,
--		.drv_name = "adl_rt5682_def",
--		.machine_quirk = snd_soc_acpi_codec_list,
--		.quirk_data = &adl_max98373_amp,
--		.sof_tplg_filename = "sof-adl-max98373-rt5682.tplg",
--	},
- 	{
- 		.comp_ids = &adl_rt5682_rt5682s_hp,
- 		.drv_name = "adl_mx98357_rt5682",
-@@ -503,13 +481,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 		.quirk_data = &adl_max98357a_amp,
- 		.sof_tplg_filename = "sof-adl-max98357a-rt5682.tplg",
- 	},
--	{
--		.comp_ids = &adl_rt5682_rt5682s_hp,
--		.drv_name = "adl_rt5682_def",
--		.machine_quirk = snd_soc_acpi_codec_list,
--		.quirk_data = &adl_max98360a_amp,
--		.sof_tplg_filename = "sof-adl-max98360a-rt5682.tplg",
--	},
- 	{
- 		.id = "10508825",
- 		.drv_name = "adl_rt1019p_8825",
-@@ -517,20 +488,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 		.quirk_data = &adl_rt1019p_amp,
- 		.sof_tplg_filename = "sof-adl-rt1019-nau8825.tplg",
- 	},
--	{
--		.comp_ids = &adl_rt5682_rt5682s_hp,
--		.drv_name = "adl_rt5682_def",
--		.machine_quirk = snd_soc_acpi_codec_list,
--		.quirk_data = &adl_rt1019p_amp,
--		.sof_tplg_filename = "sof-adl-rt1019-rt5682.tplg",
--	},
--	{
--		.comp_ids = &adl_rt5682_rt5682s_hp,
--		.drv_name = "adl_rt5682_def",
--		.machine_quirk = snd_soc_acpi_codec_list,
--		.quirk_data = &adl_max98390_amp,
--		.sof_tplg_filename = "sof-adl-max98390-rt5682.tplg",
--	},
- 	{
- 		.comp_ids = &adl_rt5682_rt5682s_hp,
- 		.drv_name = "adl_rt5682_c1_h02",
-@@ -538,11 +495,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 		.quirk_data = &adl_lt6911_hdmi,
- 		.sof_tplg_filename = "sof-adl-rt5682-ssp1-hdmi-ssp02.tplg",
- 	},
--	{
--		.comp_ids = &adl_rt5682_rt5682s_hp,
--		.drv_name = "adl_rt5682_def",
--		.sof_tplg_filename = "sof-adl-rt5682.tplg",
--	},
- 	{
- 		.id = "10134242",
- 		.drv_name = "adl_mx98360a_cs4242",
-@@ -565,13 +517,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
- 					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
- 	},
--	{
--		.id = "10EC5650",
--		.drv_name = "adl_rt5682_def",
--		.machine_quirk = snd_soc_acpi_codec_list,
--		.quirk_data = &adl_rt5650_amp,
--		.sof_tplg_filename = "sof-adl-rt5650.tplg",
--	},
- 	{
- 		.id = "DLGS7219",
- 		.drv_name = "adl_da7219_def",
-@@ -589,6 +534,20 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_AMP_NAME |
- 					SND_SOC_ACPI_TPLG_INTEL_CODEC_NAME,
+diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
+index 23fe8b4015cc..fe5f9e8dd652 100644
+--- a/sound/soc/intel/boards/sof_nau8825.c
++++ b/sound/soc/intel/boards/sof_nau8825.c
+@@ -319,6 +319,13 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_SSP_PORT_BT_OFFLOAD(2) |
+ 					SOF_BT_OFFLOAD_PRESENT),
  	},
 +	{
-+		.id = RT5650_ACPI_HID,
-+		.drv_name = "adl_rt5682_def",
-+		.sof_tplg_filename = "sof-adl", /* the tplg suffix is added at run time */
-+		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_AMP_NAME |
-+					SND_SOC_ACPI_TPLG_INTEL_CODEC_NAME,
++		.name = "mtl_nau8825_def",
++		.driver_data = (kernel_ulong_t)(SOF_SSP_PORT_CODEC(2) |
++					SOF_SSP_PORT_AMP(0) |
++					SOF_SSP_PORT_BT_OFFLOAD(1) |
++					SOF_BT_OFFLOAD_PRESENT),
 +	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(platform, board_ids);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+index 27d1313e6686..0125e81af9e1 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+@@ -8,6 +8,7 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
++#include <sound/soc-acpi-intel-ssp-common.h>
+ #include "soc-acpi-intel-sdw-mockup-match.h"
+ 
+ static const struct snd_soc_acpi_codecs mtl_max98357a_amp = {
+@@ -89,6 +90,16 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
+ 		.quirk_data = &mtl_rt5650_amp,
+ 		.sof_tplg_filename = "sof-mtl-rt5650.tplg",
+ 	},
++	/* place boards for each headphone codec: sof driver will complete the
++	 * tplg name and machine driver will detect the amp type
++	 */
 +	{
-+		.comp_ids = &adl_rt5682_rt5682s_hp,
-+		.drv_name = "adl_rt5682_def",
-+		.sof_tplg_filename = "sof-adl", /* the tplg suffix is added at run time */
++		.id = NAU8825_ACPI_HID,
++		.drv_name = "mtl_nau8825_def",
++		.sof_tplg_filename = "sof-mtl", /* the tplg suffix is added at run time */
 +		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_AMP_NAME |
 +					SND_SOC_ACPI_TPLG_INTEL_CODEC_NAME,
 +	},
  	/* place amp-only boards in the end of table */
  	{
- 		.id = "CSC3541",
+ 		.id = "INTC10B0",
 -- 
 2.40.1
 
