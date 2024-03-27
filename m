@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AAD0C54E67
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Mar 2024 17:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 802B4C54E67
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Mar 2024 17:49:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 657292C5D;
-	Wed, 27 Mar 2024 18:48:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 657292C5D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C53122C79;
+	Wed, 27 Mar 2024 18:49:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C53122C79
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711561745;
-	bh=HJ+pITzNOF/Nh/aDDL4TK+BjymVwOnnMENKw9E4/elg=;
+	s=default; t=1711561766;
+	bh=38DuKqkU9nqb2IfvIxDlQ62FIPAB7Mg2+F+R/IAhNOg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lFcVgug+6O7On8+/yz8swhhoN/WF7fdOuVmbEbgvMo/Of3msZFwQ/t9sMfm7RwgrK
-	 vVHnqpMeKWacu40w/o1JKVfLwFhyn4Wq4TbOOfatIunuHKswaj5BpTU025xbLR2WP5
-	 XmVkldicIkASjIR7EirOVvIf7UjQx0YsfqvEBhuc=
+	b=W9jsDKlRVLITZ0U8bgJGGfpW66MA1HBZm5bV/RNSqAPhQHSk/H56zeM+K+hSJBH54
+	 W9Jn1TmZikbbTflaVBSYumWuGtPgtBEKPZ22nko44jkbtQGAbR1bCVLfP/bFuaWEKc
+	 ch9TVxwvmwGi2j/WeiyULEV2bc+WXo6aHKHV++3Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0DEBF80793; Wed, 27 Mar 2024 18:46:03 +0100 (CET)
+	id 69AA4F8081A; Wed, 27 Mar 2024 18:46:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFA19F807B5;
-	Wed, 27 Mar 2024 18:46:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4986F80814;
+	Wed, 27 Mar 2024 18:46:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2611F805D5; Wed, 27 Mar 2024 18:45:56 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 84125F80571; Wed, 27 Mar 2024 18:46:03 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A4C8FF805A0
-	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 18:45:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4C8FF805A0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04531F80074
+	for <alsa-devel@alsa-project.org>; Wed, 27 Mar 2024 18:45:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04531F80074
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 88C5661180;
+	by sin.source.kernel.org (Postfix) with ESMTP id 9EA18CE2534;
+	Wed, 27 Mar 2024 17:45:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD10CC433F1;
 	Wed, 27 Mar 2024 17:45:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93397C433F1;
-	Wed, 27 Mar 2024 17:45:48 +0000 (UTC)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 27 Mar 2024 18:44:47 +0100
-Subject: [PATCH 12/18] ASoC: rt711-sdw: drop driver owner assignment
+Date: Wed, 27 Mar 2024 18:44:48 +0100
+Subject: [PATCH 13/18] ASoC: rt712-sdca-dmic: drop driver owner assignment
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240327-module-owner-var-v1-12-86d5002ba6dc@linaro.org>
+Message-Id: <20240327-module-owner-var-v1-13-86d5002ba6dc@linaro.org>
 References: <20240327-module-owner-var-v1-0-86d5002ba6dc@linaro.org>
 In-Reply-To: <20240327-module-owner-var-v1-0-86d5002ba6dc@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -57,25 +58,25 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=665;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=754;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=HJ+pITzNOF/Nh/aDDL4TK+BjymVwOnnMENKw9E4/elg=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBFsWhGvL8CxXm/7lx+WjlN5d+1T09rhdZMxrV
- +xamzvzOISJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgRbFgAKCRDBN2bmhouD
- 1zN0D/9zcomOiqDpDCPOH1K1FvLS6W2WF8kLU6e9azsWAKxS3VOKDvUGot5uX9MDzMjGyBAnJOv
- +vpdhxfUw/xUSDWJN33nql3IgRPeK+ID3uUBI4NNzSxTmGwbdHfyBGUAo5Wk0KBWsiaEpTObQUf
- L6OAVstSK0viddJO54llBUHFzWaCyziiNuUoqHJwvB8LEF73Kip3uf2oL7tbXga+ptgIicVh1OT
- dDYBG4RkJN1V5yru9UzN9TC2Tqz7JxQjUTZgKI6Xhp2DGbB99Df0WNMIkStPdWBT6jdnMv5+hP1
- frcdF2KiQVA//JwSW/MT8/pekuwWUejefh7HF010s+bxij1oUcQdL4Xh7VrZ6SZdjbU45jSFHpj
- I/wpgAyoGLGFwMwmgNANJQ/2RhSXb4Hu7BAeUJbylrAt0OF5PAz2M5Z8A+05W6MHO4AuBIacQ+2
- VzdUgV0gsz/b3QG482lKkqbTvca74PRyZmJ3afJMM0zN13qHJMpO8BV6zF7AKssmHjSR9Z9V3DY
- qCNDRxzTW6Pjps/5a+8QgnfMMHYLEoFlEG8Qf0Uho9RfLuSz31HV2LwJUTZbAypA59pU1MTaOKn
- gcQJ/S0hYDAyN1xm2L7snykiq7LpPF8hxnWE9qGSEQC6ASaSNkRxQb6VYeyylbXVRxvB35pLiAw
- CTSrfBb4ehwgXrA==
+ bh=38DuKqkU9nqb2IfvIxDlQ62FIPAB7Mg2+F+R/IAhNOg=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBFsXCxBFta4gJBMxr74GIAMr9a0NC2TzvDsA7
+ BOg3IotuY+JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgRbFwAKCRDBN2bmhouD
+ 1+bXD/9NlKjrxfXLzHczcbbEhUfmf+yjawqYo86xd07g4rDr5x1C3FktGeUAwpBLslIkZN+DJos
+ 2Si7OhfNcNugqnuO50POTZGbY4lOLexZW6tTL8F0xrdyu1WVh4+18mSfzfgmbPaTey92ie46ki2
+ dI1ixahN3BZ5YD17yl2zPDmSy5yLJyXA74hpIlY6D6JUGP9jrGj7W0atg5nXoMkfCrZYQuqTPPB
+ nvAMWMFNIXIFTbZ3dUvNmaY0ZzKNJghJFN0cPy6qmmmcEeUpuEnXDCQkt37QvV2R6EXpISElgrk
+ 67fCdZB/5llKr8L8cZb1cVOdXWTyga3OGUBnrereBt6sAMSTPonBwmJ6NAK7I7ApJtEO39Rsslh
+ eUOQyTQuBoWY0kVA3fg3XPmBIq6I7qwztgRMunEHLC5mZ7ou1AvD0K7L3fdyMACd4siV36CiO5s
+ QuSmTwzpuuQaFNbva2+h8uCTJ8ObzOzhU2QrV2ynUCOqTyEoT5QVes+91plxZ9W7GNwqRjiXZwX
+ oM8Rzb4XLvUS0T1zLqeRWihBu3vqPdpEh041BHonUF1y1BmPtN6cY1DvPOklAVSL6CuCKJUgJuv
+ c/JSJMNzWFvR2Cw4Lk/fq4/XXTezqbM1JzL6F2EGHetzaBwV6MCx+sGmWNLEpw7M4deCoI4vHA7
+ YFdNrNbfJazYkZQ==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: KHHUOWGACAA23OYON6WSMTVAIUZUA64O
-X-Message-ID-Hash: KHHUOWGACAA23OYON6WSMTVAIUZUA64O
+Message-ID-Hash: WVSQIXSWT23GKNVBU5KKZRZFXRBGGC63
+X-Message-ID-Hash: WVSQIXSWT23GKNVBU5KKZRZFXRBGGC63
 X-MailFrom: SRS0=G+Mr=LB=linaro.org=krzysztof.kozlowski@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHHUOWGACAA23OYON6WSMTVAIUZUA64O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WVSQIXSWT23GKNVBU5KKZRZFXRBGGC63/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,21 +103,21 @@ not need to.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/rt711-sdw.c | 1 -
+ sound/soc/codecs/rt712-sdca-dmic.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-index 3f5773310ae8..0d587f48439a 100644
---- a/sound/soc/codecs/rt711-sdw.c
-+++ b/sound/soc/codecs/rt711-sdw.c
-@@ -569,7 +569,6 @@ static const struct dev_pm_ops rt711_pm = {
- static struct sdw_driver rt711_sdw_driver = {
+diff --git a/sound/soc/codecs/rt712-sdca-dmic.c b/sound/soc/codecs/rt712-sdca-dmic.c
+index 0926b26619bd..0e4d7cbdc951 100644
+--- a/sound/soc/codecs/rt712-sdca-dmic.c
++++ b/sound/soc/codecs/rt712-sdca-dmic.c
+@@ -976,7 +976,6 @@ static int rt712_sdca_dmic_sdw_remove(struct sdw_slave *slave)
+ static struct sdw_driver rt712_sdca_dmic_sdw_driver = {
  	.driver = {
- 		.name = "rt711",
+ 		.name = "rt712-sdca-dmic",
 -		.owner = THIS_MODULE,
- 		.pm = &rt711_pm,
+ 		.pm = &rt712_sdca_dmic_pm,
  	},
- 	.probe = rt711_sdw_probe,
+ 	.probe = rt712_sdca_dmic_sdw_probe,
 
 -- 
 2.34.1
