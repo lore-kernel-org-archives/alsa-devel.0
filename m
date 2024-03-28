@@ -4,119 +4,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C78CBC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 07:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF15ECD1294
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 07:00:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F18232C58;
-	Tue,  2 Apr 2024 09:00:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F18232C58
+	by alsa0.perex.cz (Postfix) with ESMTPS id 462052C4F;
+	Tue,  2 Apr 2024 09:00:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 462052C4F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712041231;
-	bh=WxIUwzIRX245RWvPJ1HE1kAUL98+daIiJa1ylRa9i2w=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=KB3M6hATwpPFizcOwZFtuX46U+UaTtqGs17WBni6ZszyabcEoWYSvvJFWO9IneTe1
-	 uasUlq0ofWLW9Uq4gQhxRh21zwdPfhK2J8SYX+RCUFXvt+nCHAcem7QcFBh/bZSOMD
-	 fleDTnKlJHYOW3e+xPM4Ol6Fk1/lyHc3bWwz8GZk=
+	s=default; t=1712041258;
+	bh=sBPTJcGEYTbv3hcgUwqNauzYtskOKb+GWpnb7br0MOg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=N53YH+HjApKd7QqJh66f48mQwtCT1GAxzHYEfEfZHSGDc4EkLEVv5snsJePtQ9UvG
+	 Ofcu2yrUdUD0hfOEfIJuGQ85kZMJ1DO+KQwQWssTpHwLmZYODlm0N6gMCyfUjkySbx
+	 l3VRABu7T4S45esmE2ZJ0BnladutIcbI2EFq1gFs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB172F89861; Tue,  2 Apr 2024 08:52:53 +0200 (CEST)
+	id C8772F89870; Tue,  2 Apr 2024 08:53:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A03BCF806C8;
-	Tue,  2 Apr 2024 08:52:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47EECF89878;
+	Tue,  2 Apr 2024 08:52:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15EBBF8025F; Thu, 28 Mar 2024 02:41:05 +0100 (CET)
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com
- [IPv6:2607:f8b0:4864:20::231])
+	id BD84CF8025F; Thu, 28 Mar 2024 06:16:51 +0100 (CET)
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com
+ [IPv6:2607:f8b0:4864:20::c2b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0FA96F80093
-	for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2024 02:41:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FA96F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4ABBF80074
+	for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2024 06:16:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4ABBF80074
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=W4c3Kd6g
-Received: by mail-oi1-x231.google.com with SMTP id
- 5614622812f47-3c3d7e7402dso365124b6e.1
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=T36FM+QY
+Received: by mail-oo1-xc2b.google.com with SMTP id
+ 006d021491bc7-5a53d5aaaa4so284755eaf.2
         for <alsa-devel@alsa-project.org>;
- Wed, 27 Mar 2024 18:41:00 -0700 (PDT)
+ Wed, 27 Mar 2024 22:16:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711590059; x=1712194859;
+        d=linaro.org; s=google; t=1711602994; x=1712207794;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQew5YYLgTvT6DTiJ19Nkd1adlHoEpKqIs98rlN2rko=;
-        b=W4c3Kd6gUB7UgCouqjUEck9s+CShLwM3IYyNTAmgXedwZ94nD+r44EUAEpOp7sTpZQ
-         /IM5WMSWx5fbQ0yi64BxlNUP0psg+f5w59u6I5Eb1+hNI6b5kZT56/r7nA+KyGC4Vu7t
-         NFSsSQEaGNUuNIblq/8dXQo+jFvoGvySHpSOU7eQ+nAihN394DLEOLJ8WTlwcTxqZqlZ
-         k29ldsuVtpYCZ1xobWsr3lmI0UyxGNxrWqr0xYzc9Q2llmFyWMHh8Gcx1FHmH7t/9EuU
-         80iIHqRkD/5Re5JWlbw8Kc4dsE3JSAM06x47Xgg51QYtU8HEQzmmKHGwtGhRcvBDyEw+
-         XDZg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NCBBqATkrmhAqNvcc7V5yUc6Bj0MDD2J9Hd2vuTQUac=;
+        b=T36FM+QYhEeg5R9e5oYe3nEhJxd/HPZO5XqQivHQjCRbG3Et3Wm7ysUys+ajTEAeJR
+         GpDZ+SUK+1BKKaJ2KfJLg4Vs3EVdpoahuRE8D+BBBjMlhfhiKp8E0x5Smm84bBQdmS0R
+         0P0/RjD+riBkt+IBjYRDCslrjWuVuB4m8rOSJshqVclf4/FaWDLDzG5hh8Wc8hs/+Hbk
+         VCsWRlb3gNhhOn54okUCx/4AekSvyPMAbrdKEVVJiMw7Kq/3MlqJBb/g5H9gI3/WquvV
+         noIL/cTJ5Az1Fa4gSrLyemfFwJuOMJKUyObem0/dSo1Tt/6a9YyVamPTxBpOylhfHxrW
+         awWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711590059; x=1712194859;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UQew5YYLgTvT6DTiJ19Nkd1adlHoEpKqIs98rlN2rko=;
-        b=KpWO0sk5vomtDngH0bjNi0CSL1UCfNpqCMFOsAorpsbPW48mMrYBaaVHJGugUieZHJ
-         JphXdId/+We1F77eLMhIYDxKjO+2po+wsJoIIg02SXTPqhvRMuJjqbaGJgD+4NQexzc5
-         MXVIfhsoHgU3gorSMyeobA6X44Cj9VT6jBP+PVi+YdZU42Kmo7cH4NBVUgOvXTP28VqZ
-         EfKOIxBCBgvjFddtKX7HKv54Y8nMB0pc2CvTkh50ctlQ3Q/ljcrgV10UW4nU/p0rAjYX
-         WHvwh0YERFe04fwVRpMUhOV+znOTlsTvKFCgB38vi3R/j/sR+3fcwjOnQWXAmGZhnla/
-         Z5bw==
+        d=1e100.net; s=20230601; t=1711602994; x=1712207794;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NCBBqATkrmhAqNvcc7V5yUc6Bj0MDD2J9Hd2vuTQUac=;
+        b=YlmgBqaDSE8ENopoPTehJEgnGliYTPhC/p9UOnnKr/so4ke+rc3r95bEOttVsqO01e
+         SGoQpZGP7JCcsLkfcdqDpclxNX2AthuMnPj3EWYNAglB5HcG2sr1riPokPPc4G7F75IR
+         HgnDO1tPnFPqCJsgRyLAKrVRljHWl21WMO0QPly2geTKRuMR3aoqqVefoYvGHoOGrube
+         CDnUcNSbruVTtoNDZ2BV5DLNMx7MK1OQgDmZy3lwM24aQLK3B3WSfZ1L29dDVSTt5Blq
+         LmfUuUHYJMTWX6F5IcboHo/3tB+liIMFxfcjYJkMYvGTJVTCSjvk7TQ38t33KKr9YvNo
+         WW1g==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVVEaaQrhKw3iDW4PuSSoANNNKkWdDCFUFI4sS3eq1BTy9IogF/vNLpZAHJEBpKEKhySR77k4dQP24SfJuM4oksHyx55qecscDNxjo=
-X-Gm-Message-State: AOJu0Yx3+1pBAh/+8oDErQq568Kvw0SNPK63POzq5+2ktHzu0/lrIH0S
-	3qAb1f6mChUds9nnkFg+ytENf4u433rmBC7EDhgnqwpbriuUwc/y
+ AJvYcCUMphWitvGe4KUG3kinlAKe7J0M0fXS64NIBI8ITi2vd4yBb4W3gxmX+dHlmqO1tlKivCQasptv7qb8s6PWIWYezfQIZUWkZNlk+WE=
+X-Gm-Message-State: AOJu0YzDTWN04GPvMlAdPjYg5oXe4VzrvK4qNT+YCjZ84PBbG0ykc26S
+	a+ysq5cH0fIH4tH/2sN0KxwxnYslRZY8PsSoOM242QYFfSGftCE+jdJ3g+ci0Us=
 X-Google-Smtp-Source: 
- AGHT+IGcSrsak0kpRYq7vxFaL/0IQ4DAeYAFSWyaYVF7T1dV3iRr67NiFP1pVnKmxrcjunLsF/cv+A==
-X-Received: by 2002:a05:6808:23d2:b0:3c3:d66f:239e with SMTP id
- bq18-20020a05680823d200b003c3d66f239emr1737695oib.54.1711590059033;
-        Wed, 27 Mar 2024 18:40:59 -0700 (PDT)
-Received: from localhost.localdomain ([122.187.117.179])
+ AGHT+IENjWm30W77Sho1F7STKjVDKRSghd/5qoLRwkalJNx2D7PN+W1+MnXgZZvq+TiwN/1tI/fojA==
+X-Received: by 2002:a05:6358:5307:b0:17e:8f90:dd31 with SMTP id
+ n7-20020a056358530700b0017e8f90dd31mr1555244rwf.32.1711602994298;
+        Wed, 27 Mar 2024 22:16:34 -0700 (PDT)
+Received: from localhost ([122.172.85.206])
         by smtp.gmail.com with ESMTPSA id
- t4-20020a62ea04000000b006e6bda407b6sm188831pfh.202.2024.03.27.18.40.55
+ u23-20020a63df17000000b005e857bba96csm433309pgg.10.2024.03.27.22.16.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 18:40:58 -0700 (PDT)
-From: Animesh Agarwal <animeshagarwal28@gmail.com>
-To: 
-Cc: animeshagarwal28@gmail.com,
-	Shenghao Ding <shenghao-ding@ti.com>,
-	Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: ti,pcm1681: Convert to dtschema
-Date: Thu, 28 Mar 2024 07:10:24 +0530
-Message-ID: <20240328014029.9710-1-animeshagarwal28@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        Wed, 27 Mar 2024 22:16:33 -0700 (PDT)
+Date: Thu, 28 Mar 2024 10:46:31 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gonglei <arei.gonglei@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	David Airlie <airlied@redhat.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
+	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
+	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 09/22] gpio: virtio: drop owner assignment
+Message-ID: <20240328051631.c5eitp4mzaj4bh6i@vireshk-i7>
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
+ <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: animeshagarwal28@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
+X-MailFrom: viresh.kumar@linaro.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: VES43ONLCHEUS4TGPZ7QA6QKNWSBM6HM
-X-Message-ID-Hash: VES43ONLCHEUS4TGPZ7QA6QKNWSBM6HM
-X-Mailman-Approved-At: Tue, 02 Apr 2024 06:50:22 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: OCMXWR3RVSZZ4OHNV6UYOPV6BC32754E
+X-Message-ID-Hash: OCMXWR3RVSZZ4OHNV6UYOPV6BC32754E
+X-Mailman-Approved-At: Tue, 02 Apr 2024 06:50:23 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VES43ONLCHEUS4TGPZ7QA6QKNWSBM6HM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OCMXWR3RVSZZ4OHNV6UYOPV6BC32754E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,78 +171,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the Texas Instruments PCM1681 bindings to DT schema.
+On 27-03-24, 13:41, Krzysztof Kozlowski wrote:
+> virtio core already sets the .owner, so driver does not need to.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Depends on the first patch.
+> ---
+>  drivers/gpio/gpio-virtio.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+> index fcc5e8c08973..9fae8e396c58 100644
+> --- a/drivers/gpio/gpio-virtio.c
+> +++ b/drivers/gpio/gpio-virtio.c
+> @@ -653,7 +653,6 @@ static struct virtio_driver virtio_gpio_driver = {
+>  	.remove			= virtio_gpio_remove,
+>  	.driver			= {
+>  		.name		= KBUILD_MODNAME,
+> -		.owner		= THIS_MODULE,
+>  	},
+>  };
+>  module_virtio_driver(virtio_gpio_driver);
 
-Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
----
- .../devicetree/bindings/sound/ti,pcm1681.txt  | 15 --------
- .../devicetree/bindings/sound/ti,pcm1681.yaml | 35 +++++++++++++++++++
- 2 files changed, 35 insertions(+), 15 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/ti,pcm1681.txt
- create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,pcm1681.txt b/Documentation/devicetree/bindings/sound/ti,pcm1681.txt
-deleted file mode 100644
-index 4df17185ab80..000000000000
---- a/Documentation/devicetree/bindings/sound/ti,pcm1681.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--Texas Instruments PCM1681 8-channel PWM Processor
--
--Required properties:
--
-- - compatible:		Should contain "ti,pcm1681".
-- - reg:			The i2c address. Should contain <0x4c>.
--
--Examples:
--
--	i2c_bus {
--		pcm1681@4c {
--			compatible = "ti,pcm1681";
--			reg = <0x4c>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml b/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
-new file mode 100644
-index 000000000000..4093d0ff654d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,pcm1681.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments PCM1681 8-channel PWM Processor
-+
-+maintainers:
-+  - Animesh Agarwal <animeshagarwal28@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: ti,pcm1681
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pcm1681@4c {
-+            compatible = "ti,pcm1681";
-+            reg = <0x4c>;
-+        };
-+    };
 -- 
-2.44.0
-
+viresh
