@@ -4,77 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6AFDCD128A
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 12:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB079CD11DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 12:35:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A6602C7F;
-	Fri, 29 Mar 2024 13:34:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A6602C7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA2122BDC;
+	Fri, 29 Mar 2024 13:35:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA2122BDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711715709;
-	bh=IILtF9tSsWuvGOpEPCx8H2bDnQGM42QHz2TEYyNEtMs=;
+	s=default; t=1711715727;
+	bh=Nb4f6TVGhh/22asBtCA76xr4emI2+oHkh3bnCtobCUM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aVTyoDXOPxii+77qhv82UTqqeoqle8cvFAzpovs0rY9ri8A3Gov4k7yyZax9Vx+Hx
-	 aBQ6q8AkWqPBMC+VY4GLnlgYuaO85BWRTXQ1cFXjgzMy8lF7At6+qfoci7UmTAaXjI
-	 bgX5nEQKIruavms7JTTpyCGdBhAOgujQuYwJRetI=
+	b=oBV7ceXMwom21YiJpCOJcwUqpvyXeQgWhKgZ7GjuL57QydYDtsSnpvkn9nr3Z5SGu
+	 0rqM9TxNVUDoxz1k6fbiD+BMMOe6EEu1efaVhwOdbQ0UUHICMGauzasV9dOnjl8NjW
+	 MTeTx8mIpFYe6HD5ws2+GVbvRGVWNGMPunaTiZFk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40124F805C6; Fri, 29 Mar 2024 13:34:24 +0100 (CET)
+	id 22F8DF805F8; Fri, 29 Mar 2024 13:34:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BF66F805C7;
-	Fri, 29 Mar 2024 13:34:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85252F805F7;
+	Fri, 29 Mar 2024 13:34:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58F8DF8055C; Fri, 29 Mar 2024 13:34:19 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 60E1CF805AA; Fri, 29 Mar 2024 13:34:23 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 427FCF8025F
-	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 13:34:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 427FCF8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id EEB9AF801EB
+	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 13:34:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEB9AF801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=sztq18cL
+ header.s=k20201202 header.b=fN+OfN3R
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A9E946192D;
-	Fri, 29 Mar 2024 12:34:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39541C433F1;
-	Fri, 29 Mar 2024 12:34:02 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id D906BCE1D5B;
+	Fri, 29 Mar 2024 12:33:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F278C433F1;
+	Fri, 29 Mar 2024 12:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715645;
-	bh=IILtF9tSsWuvGOpEPCx8H2bDnQGM42QHz2TEYyNEtMs=;
+	s=k20201202; t=1711715639;
+	bh=Nb4f6TVGhh/22asBtCA76xr4emI2+oHkh3bnCtobCUM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=sztq18cLNMkWSlCr7Tgtuvt2ijOxcVa0KBn9XnbWMmhZbpZpGBO0n2clnMq/+wI/D
-	 VZPpkx4ewaXfNtzWS7y4pzccBJIRQzRTf4zuvhjoWiGKdeserypZ+mGNZxZQAoKhKn
-	 IiIxlHkabRQeZ7AVww86vGUhjj6DEqy4aeo5cVpaD220EOnS5zSDbMUZVjeZwORcQR
-	 b3D6YcVmXmIoxA9jo9bjDWI72LWsbsx0u0ef+DH/xYT3dafi4yi96YhtS6YeJf2dN6
-	 ZAUlAp/n8VRxA7Tmn/yQ4et4SK826fapc6XyBiAeS3DlR791XLRudqZf6u52uBuO06
-	 SCGbjyXJNuOhg==
+	b=fN+OfN3RlR8YuEWAIvD1/1UA2w2lw6G4F8uw5EJK5x1dOZHWu89EzUgicvIT9+toj
+	 jP3doP3eioNfvJk14M0uKeVnKVTuwlnDhVPUjHtq/w7SReoXJKTWze5vE4qvCCpN9D
+	 gU9L2B2zPvg/UTo+JWVZN1gCW3PuvqN6XNG6XyjUt6pBwO6brXp2Txe5hM6CblTm3D
+	 yWKKlMMBQV4vT/+zAOBgQPVb2Zf/Y/DCV1bDEuGC3fjuJlqRGEFicOkLBvldP1hQ3o
+	 XpHfXmqO/TGs+km/K95lMFYsgPn6lYJ6aJFp0HWfx2q1U2mLK9XHlwf+MLRCv/lxCZ
+	 Dl/Ksh0FLh+dQ==
 From: Mark Brown <broonie@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-sound@vger.kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
- YHCHuang@nuvoton.com, KCHSU0@nuvoton.com, CTLIN0@nuvoton.com,
- SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com,
- dardar923@gmail.com
-In-Reply-To: <20240327075755.3410381-1-wtli@nuvoton.com>
-References: <20240327075755.3410381-1-wtli@nuvoton.com>
-Subject: Re: [PATCH v5 0/2] ASoC: nau8325: Modify driver code and dtschema.
-Message-Id: <171171564196.7557.2053181572527484871.b4-ty@kernel.org>
-Date: Fri, 29 Mar 2024 12:34:01 +0000
+To: linux-sound@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de
+In-Reply-To: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
+References: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/18] ASoC: Intel: boards: updates for 6.10 - part3
+Message-Id: <171171563805.7557.17331301843824250247.b4-ty@kernel.org>
+Date: Fri, 29 Mar 2024 12:33:58 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: TIQTOVS6SBAWLEQSHJ5UJFO5V4LR5RUL
-X-Message-ID-Hash: TIQTOVS6SBAWLEQSHJ5UJFO5V4LR5RUL
+Message-ID-Hash: YDHI36IYE6EERLQU5ZPS55TCNICBHR6R
+X-Message-ID-Hash: YDHI36IYE6EERLQU5ZPS55TCNICBHR6R
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TIQTOVS6SBAWLEQSHJ5UJFO5V4LR5RUL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YDHI36IYE6EERLQU5ZPS55TCNICBHR6R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,18 +91,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 27 Mar 2024 15:57:53 +0800, Seven Lee wrote:
-> Revise properties description and use standard units in dtschema.
-> The unit conversion driver based on the attribute must also be
-> changed accordingly.
+On Wed, 27 Mar 2024 11:23:50 -0500, Pierre-Louis Bossart wrote:
+> This last part is the continuation of Brent Lu's cleanups. Multiple
+> quirks have been removed to use "default" configurations and
+> ACPI-based detection of codecs and selection of topology files.
 > 
-> Change:
-> V1 -> V2:
-> - Revise the driver description part for the C++ comment.
-> - In the nau8325_clkdet_put function, modify the max variable to hard code.
-> - Removed "Clock Detection" switch control.
-> - modify the "ALC Enable" switch name.
-> - Revise the dtschema for "nuvoton,dac-vref".
+> This cleanup has been done in multiple steps/phases since Fall 2023,
+> thanks Brent for this contribution!
 > 
 > [...]
 
@@ -117,10 +107,42 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
-      commit: 2e4c003b3672085267a358ebf82129b4e08dd64f
-[2/2] ASoC: nau8325: new driver
-      commit: c0a3873b9938bfaa77bd337cad33266a50a6583f
+[01/18] ASoC: Intel: ssp-common: relocate source file
+        commit: 94a944a8c4f9e0de87cc9c5bdf8861ae2f64d874
+[02/18] ASoC: Intel: ssp-common: relocate header file
+        commit: bd1222ad1746ab4325b982c720c7099c78c7b731
+[03/18] ASoC: Intel: ssp-common: naming convention change
+        commit: a17fea3880aea23fd8821ff0660268a680e0326b
+[04/18] ASoC: Intel: ssp-common: module name change
+        commit: e1ff45518fbe73c09c3d0dbe8bd5284bb3d25dc3
+[05/18] ASoC: Intel: ssp-common: delete module
+        commit: fe2365c298b51dd08def916a3339a84ec2a1fd42
+[06/18] ASoC: Intel: ssp-common: get codec tplg suffix function
+        commit: 2e723a79ec609871116d216309c1b89d2f61b713
+[07/18] ASoC: SOF: Intel: support tplg suffix detection
+        commit: 1504a768f6045157437693fbfb50ae63ca86ec61
+[08/18] ASoC: Intel: sof_nau8825: mach cleanup for adl boards
+        commit: 1934906b26bf8d1bd798fa11bf7058bf380101a0
+[09/18] ASoC: Intel: sof_nau8825: mach cleanup for rpl boards
+        commit: 3822d41469fc20fdff0d83b20324b382ee7bd0e7
+[10/18] ASoC: Intel: sof_nau8825: add mtl_nau8825_def for mtl boards
+        commit: d5dd7f4fc0b5633fc9fb665803f5e95d564c7331
+[11/18] ASoC: Intel: sof_rt5682: mach cleanup for tgl boards
+        commit: 4b95706b4a25c239aa7a7d7feb455c364c181db2
+[12/18] ASoC: Intel: sof_rt5682: mach cleanup for adl boards
+        commit: 34f256537685437122c4d326266739dd3b3678c6
+[13/18] ASoC: Intel: sof_rt5682: mach cleanup for rpl boards
+        commit: 7b24d86c845ce3b1c7bdd9175cd7c51aefe9ba46
+[14/18] ASoC: Intel: sof_rt5682: mach cleanup for mtl boards
+        commit: a2e678fe951c3820db705a2cb20ec0a32d752033
+[15/18] ASoC: Intel: sof_cs42l42: board id cleanup for adl boards
+        commit: 2872f3b5df54ac14adc5ea62241312d66bd001ba
+[16/18] ASoC: Intel: sof_cs42l42: mach cleanup for adl boards
+        commit: ae33c9134d6e1a88c2e49422aee1474c03a53233
+[17/18] ASoC: Intel: sof_cs42l42: add rpl_cs42l42_def for rpl boards
+        commit: 6d90e02ae8aa6bedf77110075e7eef3f24f6a8a3
+[18/18] ASoC: Intel: sof_cs42l42: add mtl_cs42l42_def for mtl boards
+        commit: 57ad033ce09d4d0c866ac558fc3c4cf53cfb2599
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
