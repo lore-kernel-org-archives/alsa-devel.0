@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB079CD11DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 12:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C4E0CD11DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 12:35:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA2122BDC;
-	Fri, 29 Mar 2024 13:35:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA2122BDC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4ED8B2CA8;
+	Fri, 29 Mar 2024 13:35:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ED8B2CA8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711715727;
-	bh=Nb4f6TVGhh/22asBtCA76xr4emI2+oHkh3bnCtobCUM=;
+	s=default; t=1711715741;
+	bh=RohNcsAhkui5AAi6xno0D/2X6go3eTFnCBjnGqNXUIY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oBV7ceXMwom21YiJpCOJcwUqpvyXeQgWhKgZ7GjuL57QydYDtsSnpvkn9nr3Z5SGu
-	 0rqM9TxNVUDoxz1k6fbiD+BMMOe6EEu1efaVhwOdbQ0UUHICMGauzasV9dOnjl8NjW
-	 MTeTx8mIpFYe6HD5ws2+GVbvRGVWNGMPunaTiZFk=
+	b=ipK5ctINQS9in+GH30gO8kKJdjeoL+VIu7xFB8+W3ZD1vnBKWCLxN7jJ6UtwUoAEu
+	 QfTQ8aRkpV0BawT493KmgHfOQVQJNN2gaWaCjapeXIWlNpqTt0xpDss7rlj0zeMU7X
+	 payBfQjaGiIVXs+wsKBGApDJm6FomhlQHoF5xxT0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22F8DF805F8; Fri, 29 Mar 2024 13:34:28 +0100 (CET)
+	id 95EC1F80614; Fri, 29 Mar 2024 13:34:31 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85252F805F7;
-	Fri, 29 Mar 2024 13:34:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 520A5F80617;
+	Fri, 29 Mar 2024 13:34:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60E1CF805AA; Fri, 29 Mar 2024 13:34:23 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 56DEFF805D8; Fri, 29 Mar 2024 13:34:25 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EEB9AF801EB
-	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 13:34:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEB9AF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8CA5F80236
+	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 13:34:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8CA5F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fN+OfN3R
+ header.s=k20201202 header.b=KPWNlPf4
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D906BCE1D5B;
-	Fri, 29 Mar 2024 12:33:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F278C433F1;
-	Fri, 29 Mar 2024 12:33:58 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 843DD6192E;
+	Fri, 29 Mar 2024 12:34:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BEEFC433C7;
+	Fri, 29 Mar 2024 12:34:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715639;
-	bh=Nb4f6TVGhh/22asBtCA76xr4emI2+oHkh3bnCtobCUM=;
+	s=k20201202; t=1711715650;
+	bh=RohNcsAhkui5AAi6xno0D/2X6go3eTFnCBjnGqNXUIY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fN+OfN3RlR8YuEWAIvD1/1UA2w2lw6G4F8uw5EJK5x1dOZHWu89EzUgicvIT9+toj
-	 jP3doP3eioNfvJk14M0uKeVnKVTuwlnDhVPUjHtq/w7SReoXJKTWze5vE4qvCCpN9D
-	 gU9L2B2zPvg/UTo+JWVZN1gCW3PuvqN6XNG6XyjUt6pBwO6brXp2Txe5hM6CblTm3D
-	 yWKKlMMBQV4vT/+zAOBgQPVb2Zf/Y/DCV1bDEuGC3fjuJlqRGEFicOkLBvldP1hQ3o
-	 XpHfXmqO/TGs+km/K95lMFYsgPn6lYJ6aJFp0HWfx2q1U2mLK9XHlwf+MLRCv/lxCZ
-	 Dl/Ksh0FLh+dQ==
+	b=KPWNlPf4DD+7KgZIoXPUG64PoVVaagbuPiFPkn9ZMepVV5t1NXaOqDOYfcpNyIvMl
+	 5IdJ6TYrcYLYZLi2Vh3ESyojBpb6pGkrQtrW4gkki1oht+H48OBZD7o/bLGZJw6GKr
+	 P2/hMWe7pirGqtDrBxgWEu6jW/2zGzAFd32y3KxcBvSwJnPwCBnjAiL4ZmIpc/DRY+
+	 R/5FizujxuidhpXkVebK8JporWrria0GxF7omins3hLuNefkSf2Gl9janBDrCuA1o0
+	 ETpmBpd4sF+pXz7mf0LC0Pn23PnpRT9LJdbCat8vJx5vcwVn+dPR6XLMRZVCYZM2fv
+	 +m7evwHqhj3zQ==
 From: Mark Brown <broonie@kernel.org>
 To: linux-sound@vger.kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de
-In-Reply-To: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
-References: <20240327162408.63953-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/18] ASoC: Intel: boards: updates for 6.10 - part3
-Message-Id: <171171563805.7557.17331301843824250247.b4-ty@kernel.org>
-Date: Fri, 29 Mar 2024 12:33:58 +0000
+In-Reply-To: <20240325221817.206465-1-pierre-louis.bossart@linux.intel.com>
+References: <20240325221817.206465-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/6] ASoC: rt-sdw: fix locking and improve error logs
+Message-Id: <171171564910.7557.17157942559028240962.b4-ty@kernel.org>
+Date: Fri, 29 Mar 2024 12:34:09 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: YDHI36IYE6EERLQU5ZPS55TCNICBHR6R
-X-Message-ID-Hash: YDHI36IYE6EERLQU5ZPS55TCNICBHR6R
+Message-ID-Hash: D4OE44XXFF42IUBEWQMDTZS4JGPMS4FK
+X-Message-ID-Hash: D4OE44XXFF42IUBEWQMDTZS4JGPMS4FK
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,8 +82,7 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YDHI36IYE6EERLQU5ZPS55TCNICBHR6R/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,13 +91,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 27 Mar 2024 11:23:50 -0500, Pierre-Louis Bossart wrote:
-> This last part is the continuation of Brent Lu's cleanups. Multiple
-> quirks have been removed to use "default" configurations and
-> ACPI-based detection of codecs and selection of topology files.
+On Mon, 25 Mar 2024 17:18:11 -0500, Pierre-Louis Bossart wrote:
+> Fix a set of problematic locking sequences and update error messages,
+> tested on SOF/SoundWire platforms.
 > 
-> This cleanup has been done in multiple steps/phases since Fall 2023,
-> thanks Brent for this contribution!
+> Pierre-Louis Bossart (6):
+>   ASoC: rt5682-sdw: fix locking sequence
+>   ASoC: rt711-sdca: fix locking sequence
+>   ASoC: rt711-sdw: fix locking sequence
+>   ASoC: rt712-sdca-sdw: fix locking sequence
+>   ASoC: rt722-sdca-sdw: fix locking sequence
+>   ASoC: rt-sdw*: add __func__ to all error logs
 > 
 > [...]
 
@@ -107,42 +111,18 @@ Applied to
 
 Thanks!
 
-[01/18] ASoC: Intel: ssp-common: relocate source file
-        commit: 94a944a8c4f9e0de87cc9c5bdf8861ae2f64d874
-[02/18] ASoC: Intel: ssp-common: relocate header file
-        commit: bd1222ad1746ab4325b982c720c7099c78c7b731
-[03/18] ASoC: Intel: ssp-common: naming convention change
-        commit: a17fea3880aea23fd8821ff0660268a680e0326b
-[04/18] ASoC: Intel: ssp-common: module name change
-        commit: e1ff45518fbe73c09c3d0dbe8bd5284bb3d25dc3
-[05/18] ASoC: Intel: ssp-common: delete module
-        commit: fe2365c298b51dd08def916a3339a84ec2a1fd42
-[06/18] ASoC: Intel: ssp-common: get codec tplg suffix function
-        commit: 2e723a79ec609871116d216309c1b89d2f61b713
-[07/18] ASoC: SOF: Intel: support tplg suffix detection
-        commit: 1504a768f6045157437693fbfb50ae63ca86ec61
-[08/18] ASoC: Intel: sof_nau8825: mach cleanup for adl boards
-        commit: 1934906b26bf8d1bd798fa11bf7058bf380101a0
-[09/18] ASoC: Intel: sof_nau8825: mach cleanup for rpl boards
-        commit: 3822d41469fc20fdff0d83b20324b382ee7bd0e7
-[10/18] ASoC: Intel: sof_nau8825: add mtl_nau8825_def for mtl boards
-        commit: d5dd7f4fc0b5633fc9fb665803f5e95d564c7331
-[11/18] ASoC: Intel: sof_rt5682: mach cleanup for tgl boards
-        commit: 4b95706b4a25c239aa7a7d7feb455c364c181db2
-[12/18] ASoC: Intel: sof_rt5682: mach cleanup for adl boards
-        commit: 34f256537685437122c4d326266739dd3b3678c6
-[13/18] ASoC: Intel: sof_rt5682: mach cleanup for rpl boards
-        commit: 7b24d86c845ce3b1c7bdd9175cd7c51aefe9ba46
-[14/18] ASoC: Intel: sof_rt5682: mach cleanup for mtl boards
-        commit: a2e678fe951c3820db705a2cb20ec0a32d752033
-[15/18] ASoC: Intel: sof_cs42l42: board id cleanup for adl boards
-        commit: 2872f3b5df54ac14adc5ea62241312d66bd001ba
-[16/18] ASoC: Intel: sof_cs42l42: mach cleanup for adl boards
-        commit: ae33c9134d6e1a88c2e49422aee1474c03a53233
-[17/18] ASoC: Intel: sof_cs42l42: add rpl_cs42l42_def for rpl boards
-        commit: 6d90e02ae8aa6bedf77110075e7eef3f24f6a8a3
-[18/18] ASoC: Intel: sof_cs42l42: add mtl_cs42l42_def for mtl boards
-        commit: 57ad033ce09d4d0c866ac558fc3c4cf53cfb2599
+[1/6] ASoC: rt5682-sdw: fix locking sequence
+      commit: 310a5caa4e861616a27a83c3e8bda17d65026fa8
+[2/6] ASoC: rt711-sdca: fix locking sequence
+      commit: ee287771644394d071e6a331951ee8079b64f9a7
+[3/6] ASoC: rt711-sdw: fix locking sequence
+      commit: aae86cfd8790bcc7693a5a0894df58de5cb5128c
+[4/6] ASoC: rt712-sdca-sdw: fix locking sequence
+      commit: c8b2e5c1b959d100990e4f0cbad38e7d047bb97c
+[5/6] ASoC: rt722-sdca-sdw: fix locking sequence
+      commit: adb354bbc231b23d3a05163ce35c1d598512ff64
+[6/6] ASoC: rt-sdw*: add __func__ to all error logs
+      commit: f892e66fcabc6161cd38c0fc86e769208174b840
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
