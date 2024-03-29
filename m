@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3D13C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 20:13:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14CBAC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 20:18:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDDEE2CD1;
-	Fri, 29 Mar 2024 21:13:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDDEE2CD1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E45F2CD2;
+	Fri, 29 Mar 2024 21:18:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E45F2CD2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711743214;
-	bh=TyE6iCtmshzrfAef6XyVVaVl7vKfkeMC3X/vFvL4W4E=;
+	s=default; t=1711743534;
+	bh=4VknONT9ugA8sJYiPwXTd91aky/shYGjzRxlL51YbIk=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=ImPqUH4dONXdZumszFQpquuM0mnTKeqnB3yZ7nrxaMIFEDjvHs+4ZkNX/Mp6TGMBQ
-	 xJjWn0FDn64fNdODCHeheOLwtMtA+tbh/vA1zmWy9TaEqFHbrrjM6f99KLaH/RFPKu
-	 tsFC++0ozHwpkIlHjN4J2qtPnvt2fOa6dTqwHroU=
+	b=vKrZCAqXRo1YRmn1mJYT26R5Fsw+9YxOYGAWS/By+dQLX4lIxNnl9UiJHS0ve9bUF
+	 KkcuTZcRPloEZFdCP/ry9l7+Q8/BVgizuHFhexL3BAL058bmisymDSUzWWfYi7HCPn
+	 izzlMyCug5uCJnczIIAaV7wLHqdR8J82Ldcr0tNM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B4DEF8057A; Fri, 29 Mar 2024 21:13:03 +0100 (CET)
+	id 62D5EF8057F; Fri, 29 Mar 2024 21:18:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0058DF8059F;
-	Fri, 29 Mar 2024 21:13:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1240F8057C;
+	Fri, 29 Mar 2024 21:18:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66D05F8025F; Fri, 29 Mar 2024 21:12:58 +0100 (CET)
+	id AF9CCF8025F; Fri, 29 Mar 2024 21:18:18 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id B096FF801D5
-	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 21:12:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B096FF801D5
+	by alsa1.perex.cz (Postfix) with ESMTP id 28B44F80093
+	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 21:18:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28B44F80093
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1711743175606406689-webhooks-bot@alsa-project.org>
-References: <1711743175606406689-webhooks-bot@alsa-project.org>
+In-Reply-To: <1711743496459402084-webhooks-bot@alsa-project.org>
+References: <1711743496459402084-webhooks-bot@alsa-project.org>
 Subject: Sending 0xFx events causes libasound to segfault
-Message-Id: <20240329201258.66D05F8025F@alsa1.perex.cz>
-Date: Fri, 29 Mar 2024 21:12:58 +0100 (CET)
-Message-ID-Hash: G4QOLD7MSXN6OPAAJBCNII7OJ2NNDKRV
-X-Message-ID-Hash: G4QOLD7MSXN6OPAAJBCNII7OJ2NNDKRV
+Message-Id: <20240329201818.AF9CCF8025F@alsa1.perex.cz>
+Date: Fri, 29 Mar 2024 21:18:18 +0100 (CET)
+Message-ID-Hash: R72MBTWR3CDNFXHEZFKRE7LIKSFJSI4Q
+X-Message-ID-Hash: R72MBTWR3CDNFXHEZFKRE7LIKSFJSI4Q
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G4QOLD7MSXN6OPAAJBCNII7OJ2NNDKRV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R72MBTWR3CDNFXHEZFKRE7LIKSFJSI4Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,11 +66,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #392 was opened from human222:
+alsa-project/alsa-lib issue #392 was edited from human222:
 
 ALSA 1.1.9. This issue breaks DOSBox-X MIDI playback.
 
 Discovered through this thread: https://github.com/joncampbell123/dosbox-x/issues/4873
+
+In particular, this comment: https://github.com/joncampbell123/dosbox-x/issues/4873#issuecomment-2026694848
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/392
 Repository URL: https://github.com/alsa-project/alsa-lib
