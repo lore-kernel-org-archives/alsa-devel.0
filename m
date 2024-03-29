@@ -4,131 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82C90CD1288
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 08:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE575CD11DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Mar 2024 11:29:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A05A2CBB;
-	Fri, 29 Mar 2024 09:58:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A05A2CBB
+	by alsa0.perex.cz (Postfix) with ESMTPS id F09592C94;
+	Fri, 29 Mar 2024 12:28:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F09592C94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711702709;
-	bh=YznkdrzJNBztvQ19tSWo4G0cjF01out7JwU3C2Bg+bQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=GzBHvKBUu6iQEvUhDo1WQRzhpTCq95CKc38FVH6KVSVdMesXI26CzI9rb4HmSgySt
-	 29qmmPsBPcfR3WOWYA6TpTU+eZTBDGVJcWWABIeOtBdK2wsacYyqm7TkGdpZN2kFID
-	 KuMc5BN2tdzU8EqIPA0/WPdvxwgNK+zxVfJLbcYU=
+	s=default; t=1711711747;
+	bh=ke/VUwIe1OO+bDbORJF1f8ePxj8H2rnfKHFV6nTnzfU=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=gmwxsWeUHWk46LiOkVF9/J4SfFDoQieyGcPjjso7a+0FSdEpu/KuQOXPvhR90YI06
+	 joB5T7rMMrJhZw3Jps6sbSnY/3ph9kKh5uKWTvmgs3javRHDvcw5ry9m83z15KSzRl
+	 X9PxueBL0AaENeOJRBZZ76KdBkYsxG9zr8eCI6sQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2778BF805F7; Fri, 29 Mar 2024 09:57:30 +0100 (CET)
+	id 9EE11F80580; Fri, 29 Mar 2024 12:28:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCA66F805D7;
-	Fri, 29 Mar 2024 09:57:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43124F80589;
+	Fri, 29 Mar 2024 12:28:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5312FF80236; Fri, 29 Mar 2024 09:56:37 +0100 (CET)
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com
- (mail-tyzapc01on20600.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2011::600])
+	id 0DA9FF8025F; Fri, 29 Mar 2024 12:28:29 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11026F801D5
-	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 09:54:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11026F801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id CE4A0F80093
+	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2024 12:28:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE4A0F80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
- header.s=selector1 header.b=QxLv67bo
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EY6Q9iDHMrLN+lF1zjiZR23eWq1YMijuNqBl9cSNOp4pYUrJdNNr0FAyO2Xf4c9OoLcLNEWkfaqjDmWIH115mQB47iPsaIt9J67cUKv0V/7SgQ9SZ+rxhTqocNDDuCxoFGhtlNymQA8nPU9Gqh2NBUFXaT01ZqMHdtlofggxgS0unv7And9uK0ATAitA5nnm7n5VUHWVpkxxbMpJ/Xoa5NkJeNQYE24/TAVLqqAk2rE+h1gqBPJQJljY+fL2Q8BAWnOJz8d9d76uvat+x9ACvXMIZNzxkGTzbovBwPo7BG3237qvgq2yq04Nrv6vHhwXMiByziU2AxIDrB9iP7BKyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fZd9sb/j3Cb8rNFsmXWT5+1usPmgsP11NlpIVnOcYLM=;
- b=PthOBTSVxsmC/GbA6KnWTWhdz8it7Yr7xVsWKoWYft6proKSII1KUIK3XtG+hRjKjEbeTxnNUUVIw2WT8NBanZ/LWIRqFLTePJSGxTi+zPExPldmY4cDqmBNDU1iX6T/Q9Llp8hTueyKCzBN/gjWWCgF8HiNk9+bHc9LUjva5J1hRravAml9O2N6IxOGyqwSEVFLgZSPHLNx39Z/dn3aR5HvyIkU7FQzFzj0oqGV+Wf3kuGE6Le9EHXbx8tJ5QVhkwu1sm2qVu0WM04TqsreN/mLSKedwBQnrjttoDlgCFlRB1H4CGZkDx12lbjeBKtA/EdVy79T4zHJjOSgos/vuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fZd9sb/j3Cb8rNFsmXWT5+1usPmgsP11NlpIVnOcYLM=;
- b=QxLv67bo7PEYJ2IlpFElV6SKj5cEknhPIhumbmM2g1z2qSVJZI0dQJRiP0YbZs9ANWTNoEvWpC2ecu/JnqZAXkdRvs3dVOj3ps/WmBjbUGQEWc10A1PdpfY+NisPe8qo2ukWonPS9laxN/Iq8ruzltwfQFbIWceMyalIOjegXmk=
-Received: from PS1PR01CA0018.apcprd01.prod.exchangelabs.com
- (2603:1096:300:75::30) by TY0PR03MB6999.apcprd03.prod.outlook.com
- (2603:1096:400:266::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Fri, 29 Mar
- 2024 08:54:12 +0000
-Received: from HK2PEPF00006FB0.apcprd02.prod.outlook.com
- (2603:1096:300:75:cafe::fb) by PS1PR01CA0018.outlook.office365.com
- (2603:1096:300:75::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.40 via Frontend
- Transport; Fri, 29 Mar 2024 08:54:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
- smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nuvoton.com;
-Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
- 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
-Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
- HK2PEPF00006FB0.mail.protection.outlook.com (10.167.8.6) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Fri, 29 Mar 2024 08:54:11 +0000
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 29 Mar
- 2024 16:54:09 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Fri, 29 Mar 2024 16:54:09 +0800
-From: Seven Lee <wtli@nuvoton.com>
-To: <broonie@kernel.org>
-CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
-	<devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <linux-kernel@vger.kernel.org>,
-	<robh+dt@kernel.org>, <conor+dt@kernel.org>, <perex@perex.cz>,
-	<tiwai@suse.com>, <YHCHuang@nuvoton.com>, <KCHSU0@nuvoton.com>,
-	<CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>, <wtli@nuvoton.com>,
-	<scott6986@gmail.com>, <supercraig0719@gmail.com>, <dardar923@gmail.com>
-Subject: [PATCH v6 1/2] ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
-Date: Fri, 29 Mar 2024 16:54:01 +0800
-Message-ID: <20240329085402.3424749-2-wtli@nuvoton.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240329085402.3424749-1-wtli@nuvoton.com>
-References: <20240329085402.3424749-1-wtli@nuvoton.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=pKCCSMsO
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 42TAeera029260;
+	Fri, 29 Mar 2024 06:28:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=x
+	SAFwG9CV4jLKTWXRdMat2YE8sxtFXXlUQvX5gSJWrE=; b=pKCCSMsO5/3Q/mXoh
+	BEPWhekyK5nrt/7Gm345mCDgUaeVw/uu9B5fDPInsELDjkZdZ75r6mzVWvbbMgbU
+	sUt/GhLa+Yj3z+XA6R1c9/NfTae0L2AlO6JIasOkPVtdeB4M2j9ZKcWGQJFXygbn
+	Dbjwo4bSHZOZ3e/UJlPc87yCT2l07ZWAoM55oKiJRBjUno5xJrNbMMCmKA7nQdg9
+	xDrIXfLniEW92Kpo1fTu9HtYjpykMcNU/ekBy0v9kT9y+YtcfaTffHe10KAaQXfs
+	ysgnh4EXZ3VxnfyXtn7E+ZWjevye1/J/2JO/sMFUTCPi9mpdnn/orIZ+wBLMy5uU
+	lEEPw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3x4et84ev4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 06:28:12 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 29 Mar
+ 2024 11:28:10 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
+ via Frontend Transport; Fri, 29 Mar 2024 11:28:10 +0000
+Received: from EDIN6ZZ2FY3.ad.cirrus.com (EDIN6ZZ2FY3.ad.cirrus.com
+ [198.61.64.19])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3174F820244;
+	Fri, 29 Mar 2024 11:28:10 +0000 (UTC)
+From: Simon Trimmer <simont@opensource.cirrus.com>
+To: <tiwai@suse.com>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Simon
+ Trimmer" <simont@opensource.cirrus.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirks for ASUS Laptops using CS35L56
+Date: Fri, 29 Mar 2024 11:28:03 +0000
+Message-ID: <20240329112803.23897-1-simont@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-NotSetDelaration: True
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB0:EE_|TY0PR03MB6999:EE_
-X-MS-Office365-Filtering-Correlation-Id: 963b2874-95b7-404b-d978-08dc4fcdcd69
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	1KlVbBWceuWhfZh5tpxgJEs+Hdgnyffv9tIdAv+NvJ5mVzt/ItmiJPFZz5cq6ZmYNxel4Vt0ndOZJZDgmtslasBBp3W65Wjw9NTTD3mS6pNDLIN+3C6tGxPzNU8HzPslNlG/t5tz3LNiDECieeIWb1lJXLgzk8li966TtkrywHVS8tAPOJP/eWnFMrakPHFaWB2tiGdXhRId9DNexFwFdOPGJ/wqb5NYssX9DjSZovv685hkTzYwHs9h9/2hWAspmXHRFuRTW7aWK0jEloTk7VpFnL4zpSg835TMOFXFld2eSf8ezXjtpAaxAzjwCmkdn8QvxldWktQzNcFDW1VYTeNUSaURQZkY6pYWDaczg+eG+dXY7nRcdFdbE1RQ1aMoYQ5db/lj0BboE5iBcao+vgnkUDIsVk4qh6dHOhuDa+Gxf7sVpIadfEYyyTRqyCtYbwfMGxnxn4B6YQJ51c4DcC3qDEd/W0q/YGVkWnNi1+ySYqRwltbht4EBGO0hAb+OZS8UNlLtrny0t5zvMs7BAGFz5WSCiRcldu76ANDFARpOYSQHplGaPvlB5KgMctCB/O/3nIRmqUX6zsZRJIXostwAPUMAjUmkP9shRtHSyaihIv2KIIhMQoL3GrH0cBZabwwx30LR+kIXrNCTaMeJiIaLcaeU0cBAJepbP/SL5KaWEdpIj9R24yzptCez/nI+e0B2/NG3dJue6ExIK64XgQ==
-X-Forefront-Antispam-Report: 
-	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(376005)(36860700004)(7416005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2024 08:54:11.2455
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 963b2874-95b7-404b-d978-08dc4fcdcd69
-X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	HK2PEPF00006FB0.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR03MB6999
-Message-ID-Hash: 4EESO55ZGEOXVTIGNRVXW4P3FGWHYOI6
-X-Message-ID-Hash: 4EESO55ZGEOXVTIGNRVXW4P3FGWHYOI6
-X-MailFrom: WTLI@nuvoton.com
+X-Proofpoint-GUID: 7OkJ-kNs1QpHM4pRLS9A68IjO_-xygUH
+X-Proofpoint-ORIG-GUID: 7OkJ-kNs1QpHM4pRLS9A68IjO_-xygUH
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: CDLCYUVXEFCIY5E7UL62CZO2DBBBG7UV
+X-Message-ID-Hash: CDLCYUVXEFCIY5E7UL62CZO2DBBBG7UV
+X-MailFrom: prvs=181876d548=simont@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -140,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4EESO55ZGEOXVTIGNRVXW4P3FGWHYOI6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CDLCYUVXEFCIY5E7UL62CZO2DBBBG7UV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,110 +107,126 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a DT schema for describing nau8325 audio amplifiers. The key features
-are as follows:
-  - Low SPK_VDD Quiescent Current
-  - Gain Setting with 2-wire interface
-  - Powerful Stereo Class-D Amplifier
-  - Low Output Noise
-  - Low Current Shutdown Mode
-  - Click-and Pop Suppression
+These ASUS laptops use the Realtek HDA codec combined with a number of
+CS35L56 amplifiers.
 
-More resources :
-https://www.nuvoton.com/products/smart-home-audio/audio-amplifiers/class-d-series/nau8325yg/
+The SSID of the GA403U matches a previous ASUS laptop - we can tell them
+apart because they use different codecs.
 
-Signed-off-by: Seven Lee <wtli@nuvoton.com>
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 ---
- .../bindings/sound/nuvoton,nau8325.yaml       | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+ sound/pci/hda/patch_realtek.c | 53 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-new file mode 100644
-index 000000000000..979be0d336da
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nuvoton,nau8325.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a17c36a36aa5..7d229f4a8aa6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6875,11 +6875,38 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
+ 	comp_generic_fixup(cdc, action, "i2c", "CLSA0101", "-%s:00-cs35l41-hda.%d", 2);
+ }
+ 
++static void cs35l56_fixup_i2c_two(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
++{
++	comp_generic_fixup(cdc, action, "i2c", "CSC3556", "-%s:00-cs35l56-hda.%d", 2);
++}
 +
-+title: NAU8325 audio Amplifier
++static void cs35l56_fixup_i2c_four(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
++{
++	comp_generic_fixup(cdc, action, "i2c", "CSC3556", "-%s:00-cs35l56-hda.%d", 4);
++}
 +
-+maintainers:
-+  - Seven Lee <WTLI@nuvoton.com>
++static void cs35l56_fixup_spi_two(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
++{
++	comp_generic_fixup(cdc, action, "spi", "CSC3556", "-%s:00-cs35l56-hda.%d", 2);
++}
 +
-+allOf:
-+  - $ref: dai-common.yaml#
+ static void cs35l56_fixup_spi_four(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
+ {
+ 	comp_generic_fixup(cdc, action, "spi", "CSC3556", "-%s:00-cs35l56-hda.%d", 4);
+ }
+ 
++static void alc285_fixup_asus_ga403u(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
++{
++	/*
++	 * The same SSID has been re-used in different hardware, they have
++	 * different codecs and the newer GA403U has a ALC285.
++	 */
++	if (cdc->core.vendor_id == 0x10ec0285)
++		cs35l56_fixup_i2c_two(cdc, fix, action);
++	else
++		alc_fixup_inv_dmic(cdc, fix, action);
++}
 +
-+properties:
-+  compatible:
-+    const: nuvoton,nau8325
-+
-+  reg:
-+    maxItems: 1
-+
-+  nuvoton,vref-impedance-ohms:
-+    description:
-+      The vref impedance to be used in ohms. Middle of voltage enables
-+      Tie-Off selection options. Due to the high impedance of the VREF
-+      pin, it is important to use a low-leakage capacitor.
-+
-+    enum: [0, 25000, 125000, 2500]
-+
-+  nuvoton,dac-vref-microvolt:
-+    description:
-+      The DAC vref to be used in voltage. DAC reference voltage setting. Can
-+      be used for minor tuning of the output level. Since the VDDA is range
-+      between 1.62 to 1.98 voltage, the typical value for design is 1.8V. After
-+      the minor tuning, the final microvolt are as the below.
-+
-+    enum: [1800000, 2700000, 2880000, 3060000]
-+
-+  nuvoton,alc-enable:
-+    description:
-+      Enable digital automatic level control (ALC) function.
-+    type: boolean
-+
-+  nuvoton,clock-detection-disable:
-+    description:
-+      When clock detection is enabled, it will detect whether MCLK
-+      and FS are within the range. MCLK range is from 2.048MHz to 24.576MHz.
-+      FS range is from 8kHz to 96kHz. And also needs to detect the ratio
-+      MCLK_SRC/LRCK of 256, 400 or 500, and needs to detect the BCLK
-+      to make sure data is present. There needs to be at least 8 BCLK
-+      cycles per Frame Sync.
-+    type: boolean
-+
-+  nuvoton,clock-det-data:
-+    description:
-+      Request clock detection to require 2048 non-zero samples before enabling
-+      the audio paths. If set then non-zero samples is required, otherwise it
-+      doesn't matter.
-+    type: boolean
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        codec@21 {
-+            compatible = "nuvoton,nau8325";
-+            reg = <0x21>;
-+            nuvoton,vref-impedance-ohms = <125000>;
-+            nuvoton,dac-vref-microvolt = <2880000>;
-+            nuvoton,alc-enable;
-+            nuvoton,clock-det-data;
-+        };
-+    };
+ static void tas2781_fixup_i2c(struct hda_codec *cdc,
+ 	const struct hda_fixup *fix, int action)
+ {
+@@ -7436,6 +7463,10 @@ enum {
+ 	ALC256_FIXUP_ACER_SFG16_MICMUTE_LED,
+ 	ALC256_FIXUP_HEADPHONE_AMP_VOL,
+ 	ALC245_FIXUP_HP_SPECTRE_X360_EU0XXX,
++	ALC285_FIXUP_CS35L56_SPI_2,
++	ALC285_FIXUP_CS35L56_I2C_2,
++	ALC285_FIXUP_CS35L56_I2C_4,
++	ALC285_FIXUP_ASUS_GA403U,
+ };
+ 
+ /* A special fixup for Lenovo C940 and Yoga Duet 7;
+@@ -9643,6 +9674,22 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc245_fixup_hp_spectre_x360_eu0xxx,
+ 	},
++	[ALC285_FIXUP_CS35L56_SPI_2] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs35l56_fixup_spi_two,
++	},
++	[ALC285_FIXUP_CS35L56_I2C_2] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs35l56_fixup_i2c_two,
++	},
++	[ALC285_FIXUP_CS35L56_I2C_4] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs35l56_fixup_i2c_four,
++	},
++	[ALC285_FIXUP_ASUS_GA403U] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_asus_ga403u,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -10096,7 +10143,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1a83, "ASUS UM5302LA", ALC294_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1a8f, "ASUS UX582ZS", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1b11, "ASUS UX431DA", ALC294_FIXUP_ASUS_COEF_1B),
+-	SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
++	SND_PCI_QUIRK(0x1043, 0x1b13, "ASUS U41SV/GA403U", ALC285_FIXUP_ASUS_GA403U),
+ 	SND_PCI_QUIRK(0x1043, 0x1b93, "ASUS G614JVR/JIR", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1bbd, "ASUS Z550MA", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x1c03, "ASUS UM3406HA", ALC287_FIXUP_CS35L41_I2C_2),
+@@ -10104,6 +10151,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1c33, "ASUS UX5304MA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1c43, "ASUS UX8406MA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1c62, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
++	SND_PCI_QUIRK(0x1043, 0x1c63, "ASUS GU605M", ALC285_FIXUP_CS35L56_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1c92, "ASUS ROG Strix G15", ALC285_FIXUP_ASUS_G533Z_PINS),
+ 	SND_PCI_QUIRK(0x1043, 0x1c9f, "ASUS G614JU/JV/JI", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1caf, "ASUS G634JY/JZ/JI/JG", ALC285_FIXUP_ASUS_SPI_REAR_SPEAKERS),
+@@ -10115,11 +10163,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x1da2, "ASUS UP6502ZA/ZD", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1043, 0x1df3, "ASUS UM5606", ALC285_FIXUP_CS35L56_I2C_4),
+ 	SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402ZA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
+ 	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
+ 	SND_PCI_QUIRK(0x1043, 0x1e5e, "ASUS ROG Strix G513", ALC294_FIXUP_ASUS_G513_PINS),
++	SND_PCI_QUIRK(0x1043, 0x1e63, "ASUS H7606W", ALC285_FIXUP_CS35L56_I2C_2),
++	SND_PCI_QUIRK(0x1043, 0x1e83, "ASUS GA605W", ALC285_FIXUP_CS35L56_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM6702RA/RC", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIXUP_ASUS_GA401),
 -- 
-2.25.1
+2.34.1
 
