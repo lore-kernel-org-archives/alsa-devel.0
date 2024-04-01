@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 890F2CD1292
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 12:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E8A2CD1292
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 12:24:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFDA721B6;
-	Mon,  1 Apr 2024 14:24:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFDA721B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C635023D3;
+	Mon,  1 Apr 2024 14:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C635023D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711974253;
-	bh=phG6hMmRktyZLOVg+7TkRrTGOtgfboaALXpa6eHwtgA=;
+	s=default; t=1711974264;
+	bh=rPXQPugvGLGgdzjUfMrFaept3p4iWG4Qqh732gVllDY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=h4lNkBVwULlLCdNCVtSGYWA6BCdTr1jznSxGVsa1x/KigFNGZGOgTzTF4K+6mLH4p
-	 wkioS2TW5gvoaBmvtk5Cnk7VVj8WtKo/QqZKM3uGNdCTtnHK2oC3Ieq3NiXFXLehJF
-	 5VatSX5GRdW6vPcMbdrGm39qk2X6aTRn3fYH2K/Q=
+	b=W0kb8z7yliaYpw0eV+p++ZclkcncnFHAJPF1amMVWZPfU7RMIgX077O8TwlSHH/jd
+	 b1bD4ojapmKCem/85XFdrhPX2A3XMIgDmNJiBQu2UynWEy+VafUnYtsrbpXvfRe3nB
+	 4Gn6VUyiWRLZM4lHuhOnAYnyqu4E0RZCN24jkBoc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E14EEF806BC; Mon,  1 Apr 2024 14:22:04 +0200 (CEST)
+	id E3FBDF806D5; Mon,  1 Apr 2024 14:22:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBDDAF806B5;
-	Mon,  1 Apr 2024 14:22:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7EC5F806E5;
+	Mon,  1 Apr 2024 14:22:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C382F80600; Mon,  1 Apr 2024 14:21:50 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	id C15B8F8067C; Mon,  1 Apr 2024 14:21:56 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7BBE4F8020D
-	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 14:21:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BBE4F8020D
+	by alsa1.perex.cz (Postfix) with ESMTPS id CA067F80568
+	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 14:21:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA067F80568
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=KLaQQqpM
+ header.a=rsa-sha256 header.s=s31663417 header.b=M0sdZ9lm
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1711974089; x=1712578889;
+	s=s31663417; t=1711974090; x=1712578890;
 	i=oswald.buddenhagen@gmx.de;
-	bh=N+qXgc++moh3UpHq5GwB2BTSLu0+WsnSqCyKOAQ55qo=;
+	bh=MUOivZ7Cu3IgAolz222zrK5VXW8zypYQVAP8txCHrVw=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=KLaQQqpMsUovezNFfGeSmBZD5Ryv08zAsj8A43GQf7a51NNon/7JDaLuOFlHjUGF
-	 ojDu0+693t3xkyPzEWGF30GVq32GR4AANlfSzKlpBSa2qLih9frP8UBRVaIO9XueP
-	 aNhwIhJOA0eA27SB1bz5W0LUQpsoggn/1HPM07sn5OE9zCfqHqX085JPHDJ3rhsma
-	 DpqP1W6bAkFJ2sk3CwfoXATC1S/QQgtmVgVh8L8XC8Kw42j02fBrupJBHQjUN5it5
-	 NxZ/rZ2GZYYtT1xpRO4CmEV8TrqgDCeB73ATD+z4Ph9dCj8KpSIoqiFnA+Ywfg6Ds
-	 DWeqG2PNE162O0yMIA==
+	b=M0sdZ9lmjafUWsI2P6vNPlTL+eJuhyp5jUhDug/SanDSqcDsDJe7ffU94WLWDj9l
+	 GuKAymJNjFoyi0Gf1K20fphpqZ4mHe3j1piRphiKZGVa6nVcTMIP03rQuzXHhIQwe
+	 HOtTqEKu6GBb2nZRnp+LsZ0ogXqdvG0aB3tZpDtHxeuy9mwiuR6oM6sx3F13UXgem
+	 RuvN3RyjSO3gJaCIDYthzrpQoCbajSMuic8Py/GwGPYvvjIXQvI2rI2ZTVF0xonHO
+	 KtAHEikBri0ucj/V/wxgLUE5aXtKUPz2sqGxLax4kQI26VvzRIFk3YXJisgTDHmtu
+	 APWHKnQ8m9z8w+t3Sg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.100]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MuDc7-1shAvc2ax3-00uW3c; Mon, 01
- Apr 2024 14:21:29 +0200
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Msq2E-1sfnsn4Bqa-00t8Tt; Mon, 01
+ Apr 2024 14:21:30 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rrEZq-7es-00; Mon, 01 Apr 2024 12:07:42 +0200
+	id 1rrEZq-7fC-00; Mon, 01 Apr 2024 12:07:42 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH 14/18] ALSA: emu10k1: fix wavetable offset recalculation
-Date: Mon,  1 Apr 2024 12:07:38 +0200
-Message-ID: <20240401100742.506001-15-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 18/18] ALSA: emux: simplify snd_sf_list.callback handling
+Date: Mon,  1 Apr 2024 12:07:42 +0200
+Message-ID: <20240401100742.506001-19-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
 In-Reply-To: <20240401100742.506001-1-oswald.buddenhagen@gmx.de>
 References: <20240401100742.506001-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vLAQrOFl91Ipf440/++p9ydbBTkY78S6rLq1k8tFo5Ek9gm//fz
- XueAgalC2Pyo6mxUjTvlSTZNn6Cv0oyPB1JV/NXQg1BrvToQxBDI1wQmWWTy+PgV4ANDoMZ
- q4H1+SgBPbJxzIvdS86JY5eVGQYi9eGS4PvulZ0VINj9RLR/CE0IgIs40v9lcoB3o1PKzwX
- 6/PcmxBhCcGTkSx7VBpow==
-UI-OutboundReport: notjunk:1;M01:P0:1ti4O3dzWdM=;UkX4ogIwi6PZ7meNhGNVeosZ5YN
- FHB1/NV1n5i4+B5DmKl8FVacqL9OdbXMlf7tLv46fcWGh5NxTQN4o0SIvtg+LafL+T0Hn/Dl1
- 3Pz5o/+6JwW2NH2ZyMBNeZvmDj+OhZsrzyAWHLeTivX7oC2DDzUX4PTcLfQCBUDnseD6sdYcp
- eiZ6AnIflRWzlCa9jFWKR9xOyi5wdK9FSV/b4BG3T2KSlaW0iSnhdQ7Uzka0uyMB4p2OQ3STt
- f3bLnLndOcKKa2l41JR6ixWPMBJdjI2sbIDSzGtyNQmKT88DNsyt8vHQMG/Phm49GymWgflmb
- n0WwwDKL4wp5VNL+QzcD1ooB1FpXch3aOs2AhtSw+8D5y/DZn3Evs0KACnhz/NlfzuoZzbXw/
- FJXm7DtsEWk2H/8mHiFfQvaich9iLsbZPJFN0nRKYNCu7cgxxkwgVYKNDhGQ4V5fzs//s9POd
- CQu6PYmR2xpmxGyPf02oBPy9R1yhgKYyxpthwQIsONlJbo1fs+KJ05e/rsxY3RojDl2Mz6MeZ
- ZB1eLwzXrGta8kj5gxfwIigDJgk9+0MvJ/FNA0gGm4LPsjgjTfa0l2o7l4x+4ke80N08nqTYf
- B3YjHbjdg/WXECTng0WI3wDg8RtE/bpeb7hTBJNuPaoepCw1wU/qtq4lD5ad/ooX028rm8lQh
- wokaxhGnyQdPO5uoFoAtA3Bzdy7CDJWfJHtde19UIkPd1k8TH4S8+8sx9UPEXU3ZSHEdC8ON+
- 9EEZDlrhn/N4nxNwdkZbVUwQdwqV9FI/RORUnEmDuUiCaShdwCSW46X4jkvhKfVK7xekfZdeM
- 5p/f2KVkQZzevtOhGB2GqlPbcTYiBiAyOrD0T9V5KuF7o=
-Message-ID-Hash: PKDD2T5OB75NBJOCNDHJE7FCZLZ6Z4NL
-X-Message-ID-Hash: PKDD2T5OB75NBJOCNDHJE7FCZLZ6Z4NL
+X-Provags-ID: V03:K1:slklNzdey/ZFPGtbkyCUgvuevz4tcJOgxwjYU5XPHlwfnYXD8+4
+ y8ECjX8TIVvngrainvO+iTouSNSJ/MUfvuggn4UD4ZcfCqZ5v+LfMV5oejPVume2kewUTOS
+ wYn6lEhShMPSPQ2IupRonOn6nEPVaw8OwNwVAgHjuayz5hdQANuvWGeelyA0QN783ASXCzn
+ s5bkmbbiex7fch0ZHs2lQ==
+UI-OutboundReport: notjunk:1;M01:P0:AImAWOaQO+g=;EUjdXI1603PXy22v+XsWGLyD7cf
+ lQGkjD3vkedxxi3gotjtwgz02Mumaa8Dh551ORBQiqZhCSMS3Rv6PfSzj2NlaocL1T+S0dvjF
+ Qx34dpEnMzaZjpgn1+Ej00YPSC/SbZhWUr31A+OFvhRpZWQgQn2++NzMI+iZ8OgRhTnFyArWb
+ QAD4BGDDVFbgvwKZKFQRp7xzdlFKFf1A3cwT+Esx3WVua/BWTOVuAQDZWY6meBCjy15zyijpE
+ 3ljA1UTEV+gU5ZCKPCQQOCHCYXRYdTYPl2XvXE59q9xwKi41aNvUD72ADk3lNaHdzQ9UNSWpa
+ 2CeGzwuvxaVHU6IG18I3f3z+Ikp/LZGeVTvQn7v3rBCVNTA0MaCV6px7fSKyeTElbUqA+46eJ
+ oa+/Ii0GnnjyUrsT1eaxIeGLr6edr5C3sAE5POujfoeU4S9dd37iOrXOXINW9T5byZ+dqfVj4
+ 4QMtjkEInkjbVOOaNrj1jZMadgV2CHx5K4mTodKNhqGY8Zwcd14L6uqtnbkms6d4gSPrkudg4
+ u5XWC4xgcUTqxQxXmjcPpLbkhGYABPVHsFFdJsapgsU6GbWIrstudqJOp7cuXfMms9anuj92r
+ 88np01yD7JVGUnGnM+oRqW9jm2FihBt50HeTGUW5HglkWWQMFZLsdN0LgENf3EV787aXstztC
+ TtvMVygwv/Yqcqnx1dknQGN4CypmNsaeYEkmSGo2bGQaJZ860RA/e0ZeLqeFcAz1d5pe6Rrvp
+ VI3Qq8Z13SH8U3UfPr4Ua6bTmhefyK+0VtSpthYuUq4pGmd1OqN5LZwSWfuH9HOrSyN/+QbT3
+ k0JyX7B0kZCmxC3Arw/bPI1T4noaph9KIC6yaYB6GPvdg=
+Message-ID-Hash: NAAFVRFOK73CIJHPFCATSOJB4L3NVGSY
+X-Message-ID-Hash: NAAFVRFOK73CIJHPFCATSOJB4L3NVGSY
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PKDD2T5OB75NBJOCNDHJE7FCZLZ6Z4NL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NAAFVRFOK73CIJHPFCATSOJB4L3NVGSY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,62 +111,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The offsets are counted in samples, not in bytes.
+Both drivers provide both sample_new and sample_free, and it makes no
+sense to pretend that they could not. In fact, load_data() would already
+crash if sample_new was null. So remove the remaining null checks.
 
-While the code block is being rewritten, also move it up a bit, to avoid
-churn in a subsequent patch.
+Contrary to that, the emu10k1 driver actually has a null sample_reset,
+though I'm not convinced that this inconsistency is justified.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 =2D--
- sound/pci/emu10k1/emu10k1_patch.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ sound/synth/emux/emux.c      |  6 ++----
+ sound/synth/emux/soundfont.c | 12 +++++-------
+ 2 files changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1=
-_patch.c
-index c7d54f38d28c..eb8365650bd4 100644
-=2D-- a/sound/pci/emu10k1/emu10k1_patch.c
-+++ b/sound/pci/emu10k1/emu10k1_patch.c
-@@ -30,7 +30,6 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_=
-sf_sample *sp,
- 	u32 xor;
- 	int offset;
- 	int truesize, size, blocksize;
--	unsigned int start_addr;
- 	struct snd_emu10k1 *emu;
-
- 	emu =3D rec->hw;
-@@ -62,6 +61,12 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
-_sf_sample *sp,
+diff --git a/sound/synth/emux/emux.c b/sound/synth/emux/emux.c
+index a82af9374852..01444fc960d0 100644
+=2D-- a/sound/synth/emux/emux.c
++++ b/sound/synth/emux/emux.c
+@@ -94,10 +94,8 @@ int snd_emux_register(struct snd_emux *emu, struct snd_=
+card *card, int index, ch
+ 	/* create soundfont list */
+ 	memset(&sf_cb, 0, sizeof(sf_cb));
+ 	sf_cb.private_data =3D emu;
+-	if (emu->ops.sample_new)
+-		sf_cb.sample_new =3D sf_sample_new;
+-	if (emu->ops.sample_free)
+-		sf_cb.sample_free =3D sf_sample_free;
++	sf_cb.sample_new =3D sf_sample_new;
++	sf_cb.sample_free =3D sf_sample_free;
+ 	if (emu->ops.sample_reset)
+ 		sf_cb.sample_reset =3D sf_sample_reset;
+ 	emu->sflist =3D snd_sf_new(&sf_cb, emu->memhdr);
+diff --git a/sound/synth/emux/soundfont.c b/sound/synth/emux/soundfont.c
+index 4edc693da8e7..2373ed580bf8 100644
+=2D-- a/sound/synth/emux/soundfont.c
++++ b/sound/synth/emux/soundfont.c
+@@ -1051,7 +1051,7 @@ load_guspatch(struct snd_sf_list *sflist, const char=
+ __user *data, long count)
+ 	/*
+ 	 * load wave data
+ 	 */
+-	if (smp->v.size > 0 && sflist->callback.sample_new) {
++	if (smp->v.size > 0) {
+ 		rc =3D sflist->callback.sample_new
+ 			(sflist->callback.private_data, smp, sflist->memhdr,
+ 			 data, count);
+@@ -1416,9 +1416,8 @@ snd_sf_clear(struct snd_sf_list *sflist)
+ 		}
+ 		for (sp =3D sf->samples; sp; sp =3D nextsp) {
+ 			nextsp =3D sp->next;
+-			if (sflist->callback.sample_free)
+-				sflist->callback.sample_free(sflist->callback.private_data,
+-							     sp, sflist->memhdr);
++			sflist->callback.sample_free(sflist->callback.private_data,
++						     sp, sflist->memhdr);
+ 			kfree(sp);
+ 		}
+ 		kfree(sf);
+@@ -1520,9 +1519,8 @@ snd_soundfont_remove_unlocked(struct snd_sf_list *sf=
+list)
+ 			nextsp =3D sp->next;
+ 			sf->samples =3D nextsp;
+ 			sflist->mem_used -=3D sp->v.truesize;
+-			if (sflist->callback.sample_free)
+-				sflist->callback.sample_free(sflist->callback.private_data,
+-							     sp, sflist->memhdr);
++			sflist->callback.sample_free(sflist->callback.private_data,
++						     sp, sflist->memhdr);
+ 			kfree(sp);
  		}
  	}
-
-+	/* recalculate offset */
-+	sp->v.start +=3D BLANK_HEAD_SIZE;
-+	sp->v.end +=3D BLANK_HEAD_SIZE;
-+	sp->v.loopstart +=3D BLANK_HEAD_SIZE;
-+	sp->v.loopend +=3D BLANK_HEAD_SIZE;
-+
- 	/* try to allocate a memory block */
- 	blocksize =3D truesize;
- 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
-@@ -99,15 +104,6 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct sn=
-d_sf_sample *sp,
- 	if (offset < blocksize)
- 		snd_emu10k1_synth_memset(emu, sp->block, offset, blocksize - offset, fi=
-ll);
-
--	/* recalculate offset */
--	start_addr =3D BLANK_HEAD_SIZE * 2;
--	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
--		start_addr >>=3D 1;
--	sp->v.start +=3D start_addr;
--	sp->v.end +=3D start_addr;
--	sp->v.loopstart +=3D start_addr;
--	sp->v.loopend +=3D start_addr;
--
- 	return 0;
- }
-
 =2D-
 2.42.0.419.g70bf8a5751
 
