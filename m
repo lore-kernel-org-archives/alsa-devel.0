@@ -4,93 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E8A2CD1292
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 12:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10CA3CD1288
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 13:35:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C635023D3;
-	Mon,  1 Apr 2024 14:24:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C635023D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 607F22343;
+	Mon,  1 Apr 2024 15:34:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 607F22343
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711974264;
-	bh=rPXQPugvGLGgdzjUfMrFaept3p4iWG4Qqh732gVllDY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1711978508;
+	bh=iMrnXvgaqzI5D0/GaINBhNhu8lFIB1u6HBGtSiIJSvs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=W0kb8z7yliaYpw0eV+p++ZclkcncnFHAJPF1amMVWZPfU7RMIgX077O8TwlSHH/jd
-	 b1bD4ojapmKCem/85XFdrhPX2A3XMIgDmNJiBQu2UynWEy+VafUnYtsrbpXvfRe3nB
-	 4Gn6VUyiWRLZM4lHuhOnAYnyqu4E0RZCN24jkBoc=
+	b=E8rMIy1xFfcc4HM7QNjoN3Xl0ie+z7bgaYQSVie8nhrGlmdkzKus++iw1idLqz4zl
+	 JVa7uDAe95V2BH2NtQSIJxfyh5xQFaCp8mH27MMEGo9w3asWNdEFMVmS3CPJE8BPZg
+	 +EDPQaZyjmoXQnM1xYibWVTFnhA6yYv+p6BRR4GQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3FBDF806D5; Mon,  1 Apr 2024 14:22:07 +0200 (CEST)
+	id 757D2F80589; Mon,  1 Apr 2024 15:34:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7EC5F806E5;
-	Mon,  1 Apr 2024 14:22:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1248BF8057F;
+	Mon,  1 Apr 2024 15:34:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C15B8F8067C; Mon,  1 Apr 2024 14:21:56 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	id 45440F80236; Mon,  1 Apr 2024 15:34:31 +0200 (CEST)
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
+ [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CA067F80568
-	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 14:21:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA067F80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id 44782F80114
+	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 15:34:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44782F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=M0sdZ9lm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1711974090; x=1712578890;
-	i=oswald.buddenhagen@gmx.de;
-	bh=MUOivZ7Cu3IgAolz222zrK5VXW8zypYQVAP8txCHrVw=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=M0sdZ9lmjafUWsI2P6vNPlTL+eJuhyp5jUhDug/SanDSqcDsDJe7ffU94WLWDj9l
-	 GuKAymJNjFoyi0Gf1K20fphpqZ4mHe3j1piRphiKZGVa6nVcTMIP03rQuzXHhIQwe
-	 HOtTqEKu6GBb2nZRnp+LsZ0ogXqdvG0aB3tZpDtHxeuy9mwiuR6oM6sx3F13UXgem
-	 RuvN3RyjSO3gJaCIDYthzrpQoCbajSMuic8Py/GwGPYvvjIXQvI2rI2ZTVF0xonHO
-	 KtAHEikBri0ucj/V/wxgLUE5aXtKUPz2sqGxLax4kQI26VvzRIFk3YXJisgTDHmtu
-	 APWHKnQ8m9z8w+t3Sg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from ugly.fritz.box ([89.247.162.100]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Msq2E-1sfnsn4Bqa-00t8Tt; Mon, 01
- Apr 2024 14:21:30 +0200
-Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rrEZq-7fC-00; Mon, 01 Apr 2024 12:07:42 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH 18/18] ALSA: emux: simplify snd_sf_list.callback handling
-Date: Mon,  1 Apr 2024 12:07:42 +0200
-Message-ID: <20240401100742.506001-19-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
-In-Reply-To: <20240401100742.506001-1-oswald.buddenhagen@gmx.de>
-References: <20240401100742.506001-1-oswald.buddenhagen@gmx.de>
+ unprotected) header.d=armlinux.org.uk header.i=@armlinux.org.uk
+ header.a=rsa-sha256 header.s=pandora-2019 header.b=Rjp2ahkF
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=HOi7gshUqta8lbN5LibSFEFebTxSABDwNnm92emy0hQ=; b=Rjp2ahkF0ZHPRNdGXq45rAalFR
+	ZlZ+gAmAtlt4iG6wnmt6nZMobNWNeKv0yxyuAn9O2nCPJs7mbQ1uwvdg3kXvv8MlkRK2JKdx+6K0z
+	3l2yn5Isspz+BY4Q3t8UVWrRgM0+XxJCm733JUQpAJQo3FipXGYKLYFkUkhAOEpMMqvY+JJk5EUAp
+	AkxdnDqfWYQmmApqLKsUN7wLrrNwwatA91TRovjgfeZwxBupR40qCzJnQclYFguf55Zus4CdZQbdd
+	9N+QcJJaphy0OxxeQHIg6ZZfYePpQjS9omYzBA/nxTfVfkzMRs+mi5nAh74rMvgL/0BLZJ56ttoyQ
+	AkH1vdQQ==;
+Received: from shell.armlinux.org.uk
+ ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39766)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rrHno-0004yQ-2W;
+	Mon, 01 Apr 2024 14:34:20 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rrHno-0005cD-53; Mon, 01 Apr 2024 14:34:20 +0100
+Date: Mon, 1 Apr 2024 14:34:20 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: aaci: report FIFO size in frames
+Message-ID: <Zgq33GqYqtln0qyX@shell.armlinux.org.uk>
+References: <20240401101339.506625-1-oswald.buddenhagen@gmx.de>
+ <ZgqNFjOU4mpcyHH8@shell.armlinux.org.uk>
+ <ZgqOZ0B8h3l48aoh@shell.armlinux.org.uk>
+ <ZgqSHq6obzwRDfXs@ugly>
+ <ZgqU0ygGn3zhbgQw@shell.armlinux.org.uk>
+ <ZgqeV4M8DGpl6KHJ@ugly>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:slklNzdey/ZFPGtbkyCUgvuevz4tcJOgxwjYU5XPHlwfnYXD8+4
- y8ECjX8TIVvngrainvO+iTouSNSJ/MUfvuggn4UD4ZcfCqZ5v+LfMV5oejPVume2kewUTOS
- wYn6lEhShMPSPQ2IupRonOn6nEPVaw8OwNwVAgHjuayz5hdQANuvWGeelyA0QN783ASXCzn
- s5bkmbbiex7fch0ZHs2lQ==
-UI-OutboundReport: notjunk:1;M01:P0:AImAWOaQO+g=;EUjdXI1603PXy22v+XsWGLyD7cf
- lQGkjD3vkedxxi3gotjtwgz02Mumaa8Dh551ORBQiqZhCSMS3Rv6PfSzj2NlaocL1T+S0dvjF
- Qx34dpEnMzaZjpgn1+Ej00YPSC/SbZhWUr31A+OFvhRpZWQgQn2++NzMI+iZ8OgRhTnFyArWb
- QAD4BGDDVFbgvwKZKFQRp7xzdlFKFf1A3cwT+Esx3WVua/BWTOVuAQDZWY6meBCjy15zyijpE
- 3ljA1UTEV+gU5ZCKPCQQOCHCYXRYdTYPl2XvXE59q9xwKi41aNvUD72ADk3lNaHdzQ9UNSWpa
- 2CeGzwuvxaVHU6IG18I3f3z+Ikp/LZGeVTvQn7v3rBCVNTA0MaCV6px7fSKyeTElbUqA+46eJ
- oa+/Ii0GnnjyUrsT1eaxIeGLr6edr5C3sAE5POujfoeU4S9dd37iOrXOXINW9T5byZ+dqfVj4
- 4QMtjkEInkjbVOOaNrj1jZMadgV2CHx5K4mTodKNhqGY8Zwcd14L6uqtnbkms6d4gSPrkudg4
- u5XWC4xgcUTqxQxXmjcPpLbkhGYABPVHsFFdJsapgsU6GbWIrstudqJOp7cuXfMms9anuj92r
- 88np01yD7JVGUnGnM+oRqW9jm2FihBt50HeTGUW5HglkWWQMFZLsdN0LgENf3EV787aXstztC
- TtvMVygwv/Yqcqnx1dknQGN4CypmNsaeYEkmSGo2bGQaJZ860RA/e0ZeLqeFcAz1d5pe6Rrvp
- VI3Qq8Z13SH8U3UfPr4Ua6bTmhefyK+0VtSpthYuUq4pGmd1OqN5LZwSWfuH9HOrSyN/+QbT3
- k0JyX7B0kZCmxC3Arw/bPI1T4noaph9KIC6yaYB6GPvdg=
-Message-ID-Hash: NAAFVRFOK73CIJHPFCATSOJB4L3NVGSY
-X-Message-ID-Hash: NAAFVRFOK73CIJHPFCATSOJB4L3NVGSY
-X-MailFrom: oswald.buddenhagen@gmx.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgqeV4M8DGpl6KHJ@ugly>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Message-ID-Hash: 27V5VJKPZH3XNMSAZ5OJU6CXASSVVX3J
+X-Message-ID-Hash: 27V5VJKPZH3XNMSAZ5OJU6CXASSVVX3J
+X-MailFrom: linux+alsa-devel=alsa-project.org@armlinux.org.uk
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NAAFVRFOK73CIJHPFCATSOJB4L3NVGSY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/27V5VJKPZH3XNMSAZ5OJU6CXASSVVX3J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,76 +105,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Both drivers provide both sample_new and sample_free, and it makes no
-sense to pretend that they could not. In fact, load_data() would already
-crash if sample_new was null. So remove the remaining null checks.
+On Mon, Apr 01, 2024 at 01:45:27PM +0200, Oswald Buddenhagen wrote:
+> On Mon, Apr 01, 2024 at 12:04:51PM +0100, Russell King (Oracle) wrote:
+> > I think where the confusion comes from is that fifo_depth is the
+> > depth of the hardware FIFO in units of 16-bit quantities, [...]
+> > 
+> ... irrespective of mono/stereo?
+> well, with that explanation it makes sense.
+> i recommend that you adjust the comment to make it more helpful/less
+> misleading. maybe something like "We configure ALSA to expect the FIFO
+> size in bytes. This works best for us, because [...]".
 
-Contrary to that, the emu10k1 driver actually has a null sample_reset,
-though I'm not convinced that this inconsistency is justified.
+Oh FFS. So you generated a patch based on the contents of a mere
+comment? That is NOT how kernel development should be done. Do not do
+this.
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-=2D--
- sound/synth/emux/emux.c      |  6 ++----
- sound/synth/emux/soundfont.c | 12 +++++-------
- 2 files changed, 7 insertions(+), 11 deletions(-)
+Comments are not always correct. I guess you don't even have the
+hardware, which makes your approach to "kernel development" even more
+absurd.
 
-diff --git a/sound/synth/emux/emux.c b/sound/synth/emux/emux.c
-index a82af9374852..01444fc960d0 100644
-=2D-- a/sound/synth/emux/emux.c
-+++ b/sound/synth/emux/emux.c
-@@ -94,10 +94,8 @@ int snd_emux_register(struct snd_emux *emu, struct snd_=
-card *card, int index, ch
- 	/* create soundfont list */
- 	memset(&sf_cb, 0, sizeof(sf_cb));
- 	sf_cb.private_data =3D emu;
--	if (emu->ops.sample_new)
--		sf_cb.sample_new =3D sf_sample_new;
--	if (emu->ops.sample_free)
--		sf_cb.sample_free =3D sf_sample_free;
-+	sf_cb.sample_new =3D sf_sample_new;
-+	sf_cb.sample_free =3D sf_sample_free;
- 	if (emu->ops.sample_reset)
- 		sf_cb.sample_reset =3D sf_sample_reset;
- 	emu->sflist =3D snd_sf_new(&sf_cb, emu->memhdr);
-diff --git a/sound/synth/emux/soundfont.c b/sound/synth/emux/soundfont.c
-index 4edc693da8e7..2373ed580bf8 100644
-=2D-- a/sound/synth/emux/soundfont.c
-+++ b/sound/synth/emux/soundfont.c
-@@ -1051,7 +1051,7 @@ load_guspatch(struct snd_sf_list *sflist, const char=
- __user *data, long count)
- 	/*
- 	 * load wave data
- 	 */
--	if (smp->v.size > 0 && sflist->callback.sample_new) {
-+	if (smp->v.size > 0) {
- 		rc =3D sflist->callback.sample_new
- 			(sflist->callback.private_data, smp, sflist->memhdr,
- 			 data, count);
-@@ -1416,9 +1416,8 @@ snd_sf_clear(struct snd_sf_list *sflist)
- 		}
- 		for (sp =3D sf->samples; sp; sp =3D nextsp) {
- 			nextsp =3D sp->next;
--			if (sflist->callback.sample_free)
--				sflist->callback.sample_free(sflist->callback.private_data,
--							     sp, sflist->memhdr);
-+			sflist->callback.sample_free(sflist->callback.private_data,
-+						     sp, sflist->memhdr);
- 			kfree(sp);
- 		}
- 		kfree(sf);
-@@ -1520,9 +1519,8 @@ snd_soundfont_remove_unlocked(struct snd_sf_list *sf=
-list)
- 			nextsp =3D sp->next;
- 			sf->samples =3D nextsp;
- 			sflist->mem_used -=3D sp->v.truesize;
--			if (sflist->callback.sample_free)
--				sflist->callback.sample_free(sflist->callback.private_data,
--							     sp, sflist->memhdr);
-+			sflist->callback.sample_free(sflist->callback.private_data,
-+						     sp, sflist->memhdr);
- 			kfree(sp);
- 		}
- 	}
-=2D-
-2.42.0.419.g70bf8a5751
+NAK to this patch. NAK to *all* your patches whether I've seen them or
+not if this is how you behave.
 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
