@@ -4,110 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61D5ECD128A
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 16:32:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A4C8CD128A
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 17:03:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D4EF2356;
-	Mon,  1 Apr 2024 18:32:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D4EF2356
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17262210C;
+	Mon,  1 Apr 2024 19:03:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17262210C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711989161;
-	bh=eTX/7NaNoXDzfyhrzqmm6Ups4VgCiQZr26N1KsucA/U=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=b7APxQ99lfgy7WgUOc0/Rvi7h+tbcpbqSNIELIcgoc3J8XC1IIvvxAxw8a09RoJHP
-	 sv90+ArOLG2cP7hpd84cL8qR/lahuppHnzPXLNOee/82XrAofBKVX8e6NjALDHN+ez
-	 5pV0xqkq2KeaAQMcJ76MGAp4nHyTgRTtPwMrzXLE=
+	s=default; t=1711991023;
+	bh=ninn/z7ZCYQ+97xWVtP4eupP0aR0pjpWioxA8MelATg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=US6WYubJYtNW6ly7Kf02AOm5pFiesK7xfSc1KsKAecghZu2GzehIYMhwMBnkQSu1+
+	 TG/47vXn3MKxT3UrQo7dAh4c2BPEP2KBZ9qwbOTBKxfD6vPB8rDV9G8Be31BwlA8qx
+	 MQlDoLV2v93uDhUT21LT7E2j2pNVydw8oM7W6xGU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8B54F80649; Mon,  1 Apr 2024 18:31:14 +0200 (CEST)
+	id 5E653F8055C; Mon,  1 Apr 2024 19:03:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE026F8062F;
-	Mon,  1 Apr 2024 18:31:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0628F8055C;
+	Mon,  1 Apr 2024 19:03:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DFFB9F805C4; Mon,  1 Apr 2024 18:31:03 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1B92AF80236; Mon,  1 Apr 2024 19:03:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E48DF80238
-	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 18:30:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E48DF80238
+	by alsa1.perex.cz (Postfix) with ESMTPS id DCA69F80114
+	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 19:02:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCA69F80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=j3csYqDk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711989051; x=1743525051;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=eTX/7NaNoXDzfyhrzqmm6Ups4VgCiQZr26N1KsucA/U=;
-  b=j3csYqDkx+ZBl6a8emvTC5CX+Tw3zq96Bn/ZZlkmwi3+wcLmz1pIDyAq
-   mXVPklR9HaXsOWhFHKvBe0TKfEirDT6iK/scCeWCmsv4G+ThzA5zl5D3b
-   w3z7bIJ9nan9fKM39mw9FmJpLUNreGzPnmnKb7KMVu8h9gYgeuQRf3cpI
-   LfUEUs42N0jKDDdDmRUxaoa1qNbQZ+KEkHJLiD+PZ36OxddIn62sk2dbx
-   lXvS1qs5awPMoMLLoXoiFeC+BmtkBOqTl2Bpixnp5FJzfDz6/84SyAKKx
-   K3u/oFS2h32YM2F1AnRDSS6AatmUndKeHRrQCfQiUTzvDCKKRksoRMIVP
-   Q==;
-X-CSE-ConnectionGUID: frho7VdkSmiEybNd6zHylQ==
-X-CSE-MsgGUID: 5N+7Brm7QOKhQpgS3u06gw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="10083783"
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000";
-   d="scan'208";a="10083783"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Apr 2024 09:30:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000";
-   d="scan'208";a="18224594"
-Received: from anahar-mobl.amr.corp.intel.com (HELO [10.212.2.239])
- ([10.212.2.239])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Apr 2024 09:30:47 -0700
-Message-ID: <54ace545-8cdc-49aa-8214-5f07bee0e2f6@linux.intel.com>
-Date: Mon, 1 Apr 2024 11:26:43 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/16] ASoC: remove snd_soc_dai_link_set_capabilities()
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Alper Nebi Yasak <alpernebiyasak@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
- Jaroslav Kysela <perex@perex.cz>, Jerome Brunet <jbrunet@baylibre.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>,
- Maso Huang <maso.huang@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>,
- Trevor Wu <trevor.wu@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
- imx@lists.linux.dev, linux-sound@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <87zfuesz8y.wl-kuninori.morimoto.gx@renesas.com>
- <87h6gludmj.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <87h6gludmj.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: MPZAERGNAWTFBCNIKXULHVJ5T4V2SDXY
-X-Message-ID-Hash: MPZAERGNAWTFBCNIKXULHVJ5T4V2SDXY
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=CVCVfKw7;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=5nLQK+c6
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
+ [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CC63333C3D;
+	Mon,  1 Apr 2024 17:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1711990957;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M1U28ycJbkT+xebI+PpF9yoFNV9CayGMbI079VPMnRk=;
+	b=CVCVfKw7b072xD0+y8zk/RvIqpU7M8/pKgE7iAzGJLZeHPz0TdNk7f+CHH5Gh+GIueik5Y
+	QTakfD18T9118scWWF4ua4L4sOm8myqR9yS7T21xLSfi337zSULipaAYN0du3XlOXDET3j
+	h3vB8V8XSsJtV/lMh8GflaNnhsMVAl4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711990957;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M1U28ycJbkT+xebI+PpF9yoFNV9CayGMbI079VPMnRk=;
+	b=5nLQK+c647S3sYNt0Oxp3zpF6fwb/xmuqGDOudlWjx0XBbMEyQuQ9eubfjSAFoq6YghhB4
+	oRuAEyQg/DXr6qAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AC3191348C;
+	Mon,  1 Apr 2024 17:02:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id aOXrKK3oCmbTZAAAn2gu4w
+	(envelope-from <tiwai@suse.de>); Mon, 01 Apr 2024 17:02:37 +0000
+Date: Mon, 01 Apr 2024 19:02:42 +0200
+Message-ID: <87edbpt3rh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Cc: alsa-devel@alsa-project.org,
+	Jaroslav Kysela <perex@perex.cz>,
+	Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: Re: [PATCH] Revert "ALSA: emu10k1: fix synthesizer sample playback
+ position and caching"
+In-Reply-To: <20240401145805.528794-1-oswald.buddenhagen@gmx.de>
+References: <20240401145805.528794-1-oswald.buddenhagen@gmx.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-0.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.de,internode.on.net];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FREEMAIL_TO(0.00)[gmx.de];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[alsa-project.org,perex.cz,internode.on.net];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.20)[71.15%]
+Message-ID-Hash: HVNIRKULCECGKYTCSWNUJJ2EH3OIXEQL
+X-Message-ID-Hash: HVNIRKULCECGKYTCSWNUJJ2EH3OIXEQL
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +131,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPZAERGNAWTFBCNIKXULHVJ5T4V2SDXY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVNIRKULCECGKYTCSWNUJJ2EH3OIXEQL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,44 +140,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 3/31/24 19:32, Kuninori Morimoto wrote:
-> snd_soc_dai_link_set_capabilities() checks all CPU/Codec DAI (Y)(Z)
-> for Playback/Capture (X) and checks its validation (A), and setup
-> dpcm_playback/capture flags (a).
+On Mon, 01 Apr 2024 16:58:05 +0200,
+Oswald Buddenhagen wrote:
 > 
-> 	void snd_soc_dai_link_set_capabilities(...)
-> 	{
-> 		...
-> (X)		for_each_pcm_streams(direction) {
-> 			...
-> (Y)			for_each_link_cpus(dai_link, i, cpu) {
-> 				...
-> (A)				if (... snd_soc_dai_stream_valid(...)) {
-> 					...
-> 				}
-> 			}
-> (Z)			for_each_link_codecs(dai_link, i, codec) {
-> 				...
-> (A)				if (... snd_soc_dai_stream_valid(...)) {
-> 					...
-> 				}
-> 			}
-> 			...
-> 		}
+> As already anticipated in the original commit, playback was broken for
+> very short samples. I just didn't expect it to be an actual problem,
+> because we're talking about less than 1.5 milliseconds here. But clearly
+> such wavetable samples do actually exist.
 > 
-> (a)		dai_link->dpcm_playback = supported[...];
-> (a)		dai_link->dpcm_capture  = supported[...];
-> 	}
+> The problem was that for such short samples we'd set the current
+> position beyond the end of the loop, so we'd run off the end of the
+> sample and play garbage.
+> This is a bigger (more audible) problem than the original one, which was
+> that we'd start playback with garbage (whatever was still in the cache),
+> which would be mostly masked by the note's attack phase.
 > 
-> This validation check will be automatically done on new
-> soc_get_playback_capture(). snd_soc_dai_link_set_capabilities() is no
-> longer needed. Let's remove it.
+> So revert to the old behavior for now. We'll subsequently fix it
+> properly with a bigger patch series.
+> Note that this isn't a full revert - the dead code is not re-introduced,
+> because that would be silly.
+> 
+> Fixes: df335e9a8b (ALSA: emu10k1: fix synthesizer sample playback position and caching, 2023-05-18)
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218625
+> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-Humm, this is really hard to review.
+Thanks, applied now.
 
-soc_get_playback_capture() used to do a verification of the match
-between dailink and dais, and now it doesn't have it any longer and this
-patch removes the checks?
 
+Takashi
