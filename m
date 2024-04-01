@@ -4,92 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F308DCD1292
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 10:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E880CD1288
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Apr 2024 10:14:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3FA521A4;
-	Mon,  1 Apr 2024 12:10:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3FA521A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEA0422A7;
+	Mon,  1 Apr 2024 12:14:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEA0422A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1711966267;
-	bh=jPDkcBk/SJQNsvgeAqqI70H4V8gh3/HjBiCRa6Z+XSY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kJ5+8VMmJnePhaiZcGBJkvaTx6+dg/HA2gHtRj4cMaHHxUzCBs8cXyl66J56oXuhV
-	 ORU/F9AMWFLYtvfV8GBKZnDYIkXbl7SesstnwkBp+pr1R5i4aE8hxfqrhakjHJD0xs
-	 fQfmsZ0kRDhD4HZ15J1jHcFGFOQ4DW6S+0eBs9+M=
+	s=default; t=1711966460;
+	bh=kV2UMXcSZ1GZPncixx8W95Jh7r+Kyy4j5solPuM4SVY=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=AfQyRfE3qV/QHvfcTfIfUkK3G5k+fL93SAjpu8QwhFGmZwWqJOOiL+757V7fS13ZD
+	 eYrTYXvUXrWXEFX4rL1uBjoCAaoUg112qC3C4kBbAmHc2TztdVBA5AQY9gXNHsch4P
+	 /Ngldt7YBaCKJhNjY5Ln1U63Lbfmi5gcS4W4gN74=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6FE9F805EF; Mon,  1 Apr 2024 12:09:12 +0200 (CEST)
+	id 125F6F80587; Mon,  1 Apr 2024 12:13:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F31DAF80618;
-	Mon,  1 Apr 2024 12:09:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82FABF8058C;
+	Mon,  1 Apr 2024 12:13:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A27DFF805C4; Mon,  1 Apr 2024 12:09:07 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	id 11E31F80236; Mon,  1 Apr 2024 12:13:45 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9679F80236
-	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 12:07:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9679F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6EDB7F8016E
+	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 12:13:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EDB7F8016E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=GvWnxL0t
+ header.a=rsa-sha256 header.s=s31663417 header.b=npWtpJyq
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1711966066; x=1712570866;
+	s=s31663417; t=1711966420; x=1712571220;
 	i=oswald.buddenhagen@gmx.de;
-	bh=aHgNEoh2oL/YTOIIO+HEgQH655EOrifvL+ft5bV2Fk4=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=GvWnxL0t78eMq01f+ImIEGINJoMhDMOYDR7GmqUqKrfM3uvHvGvl8HHEGgp6Bz8y
-	 FLhy2gjGcfPFQyTOXNGe157CLXWZ4IcNxA5PfH/z7b29QMDdKVYsDY0Ca01fJWXp5
-	 q0S6++nYnH2hTxC26WGMgtr4eTk/x17VnUG0TsFUeYyCDJaOr8rusp9Vvok3jsvYM
-	 fclbhQ/tt6HAztJdqXdQWYORuEJD8+qSEaYm+O1e5YfWOkBafPRO4ZVq3R5T+Tuco
-	 tAP8vbUiqyM7EoHKAKjpPciyRctunItF72qJwkAbgsR8p6E+Y90aBrVWHENtvqsqB
-	 L+P+U6hxbp2u1XFOXg==
+	bh=MtGF6AXggt1+MtIlJ0/ypEhpUrd5SetPyuoTI/iTLU0=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=npWtpJyqecXVB1N2DytI+1qQPOk8uFDZEdEY7IjLsMuPm7pOO8OB1tee9oIwo1Cu
+	 Pq3anRSmFMN1Z7zFF9oj83UERCV/jQYPxkz6uST52vE8L7S8F9tOa+4JmbKnH1W66
+	 Rou7tll3pqdVvjc2rXU81AiqP4wMUysSyTlhkUfZYAPD/1JK7Orb62JO/xIdSATj2
+	 /9Y8GEvK09e5kfdsI6hAnEnuF6nLtkOrqiUdnX6c6jCA+irUpwxCCEpI739tumDHy
+	 dqqJFY0VJ/eUzunG0+cSAhea/ZCxw+biqKCnwtuFhoVIW6JgnoOmWg18MdoeWmkKn
+	 CrvZ2XvXYvRO6++MDQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.100]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MS3il-1sFGWz3Sjj-00TW2Z; Mon, 01
- Apr 2024 12:07:45 +0200
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysW2-1slpd00m0I-00vznc; Mon, 01
+ Apr 2024 12:13:40 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rrEZq-7dp-00; Mon, 01 Apr 2024 12:07:42 +0200
+	id 1rrEfb-7nk-00; Mon, 01 Apr 2024 12:13:39 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
-	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH 01/18] ALSA: emux: fix /proc teardown at module unload
-Date: Mon,  1 Apr 2024 12:07:25 +0200
-Message-ID: <20240401100742.506001-2-oswald.buddenhagen@gmx.de>
+	Manuel Lauss <mano@roarinelk.homelinux.net>
+Subject: [PATCH] ALSA: soc/au1x: declare that FIFO is reported in frames
+Date: Mon,  1 Apr 2024 12:13:39 +0200
+Message-ID: <20240401101339.506639-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
-In-Reply-To: <20240401100742.506001-1-oswald.buddenhagen@gmx.de>
-References: <20240401100742.506001-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bmifMtec5zWF9mNop6bbm5ohEPcIELPsG+fIH+SkJwxrDqs2cVl
- ynnyp0Bx5/dqJvYF5IzXhPD7mZtVhKORp/oH9Qt21cXDkN9MdSjyVCvP061a5d/xTdgopdP
- RHXVaMRoEbtx4fxwg6lCA+XHaY8QSRoN2VeCGp/QGHxIS1dSdThkq4ROAM9UeOKcknFJDR3
- HvR5DBQi3ePzPsYVTa+yw==
-UI-OutboundReport: notjunk:1;M01:P0:FoCQEuOXREU=;fVS5wscW0aBg1q9XZijdv71ZugM
- XfldPBHosBx5BLiDmwJB5wjGs3UfpoBnvI/cYUNZnzYmvcUXzPHItuJdVch6tSZBzM4HoDyJc
- ZDwih8Vw65l20vCXVuA7GviYcuLahC+4y26E0Ef0XnUIRSoi59Oveefp1mQvhb3Lmiv7gvEae
- K7qqZt45Qzc1AZ+Hz44aJTwwulrAjtDvdCwPeBXrkWvonO6eOLIF8hMNOdWqBT32g71dG9O5h
- oqKoEqNtAZvC2wfuizq0ZHxT8FNbWbjq2O/tjPBd3Fp9X3CXGRTN1+MMSGvMniK+jBhAXjst2
- ODGGg/7YSjuDI49Ey8sN4a9f6Gxus9l7pMyQWmSm2BWHg+kES03HP5TXhfX/83fObA0gG/4kw
- eBYIX3/HcuPxGiyllUQliynKdzGu+/boLg1gLYBAKDktn/ZI+s5ECIpuhH9Sd34fS8lMvErBM
- WNcvYm7aD36+jVSewOEqmCGMXCalxig03IoAZr/Drx9SN5lq9vWkXnBFDsy1jgxgG5XaAopkD
- GmfQY4hr8kL4bVShEJz53p4ZvFQoHmPbuARUPR4mwgsWY+h2ZtKCLn5csTLozymgzJ95LMg20
- SMD4nOXeUtl9UsoITbH11dwTpaP0i/Aq6dZzJt6KYXwJM4J7sHHzK173Y9UBC24mr8Io8yq2H
- 7JQz3MSUrNrlwKgW+KZ+DFkO1RterOzrGewENUsu2p9syVH9jl6FmQws/5LVhDZmw0v3hiFS3
- ApQsEzwF7cPxe4pUFHj9voIG0/TNI8nS3HBHJ9I6EISC+ijzGdmFnIjrzBCD6xE2iWdtrjYsI
- p6eh745FF6q6ELDvpueN8dBxTfssX4xTfJZa1orDU+j4I=
-Message-ID-Hash: 4SX2JFMMU5PHSTQYT6BTQDP3RXKBFLIC
-X-Message-ID-Hash: 4SX2JFMMU5PHSTQYT6BTQDP3RXKBFLIC
+X-Provags-ID: V03:K1:EZW5rDxjQmu3T2J6V7VKdGH9dg8+lc6qNjZoi6uP+96tD+FJwkw
+ N2e0IdEuAKpPa0I4YWqPsMwqoxygpS19ea+yn/WnRgoDcRcr+X2jtXOZu77Pz+M7QC770h+
+ 1TFOi3Ts3KVDNr1BHX5GeoLPbfugB2A9XGXErf2SK8/uyMcVvO6ssTFA4yufkjG6QeSGlMj
+ F/SIx3KptR7fvqRIPVcJg==
+UI-OutboundReport: notjunk:1;M01:P0:S4FZbGvUmw0=;vKDN+Lp+itY/r5uVWQVxCxp/zgt
+ M1HgKBoiwc/6aJpdPQNk7HftNE0i08L7XZQnXslg/Dns+Z5rVcsLmCTeb/4g7whlUvl8Wm+Kv
+ zaqzTTcRzEkidEVN7lCHcv7Kq1EOPLwAjLd5ZnPOL7xDlQK5O2czpRcJmFWqlLH60zasELIGD
+ O+OXxq3K3LnDO9ojrPHtgcQMPAHOxdt5VOfdQYxDuGrbwO1aOEV28g3m5Uu41e9p1OTwmrA5m
+ Ax4pv7u/eQKgHOPdTc1Q6750aFqv+9t57uhhlv063Ia+KUUHA8752NOoAIH5jqNmac7BCQ1kQ
+ l5PWGOoFADBJGytiZBq36HMEVTktOxhDaxyD0k0FZ7+tQ/xNGmwxXjh9FkzVaIvJfArqRuumK
+ gZPIFR5p4fsucN+U4UeHXQvpxpDAoIRwktp813r38Dc1qIdbvu5e+r+JpAYXTZIuP/HKRJmsh
+ RKAnAdNu20tBEKO9QEfbrpGNeFnFSWuw+sWbN7sBRSe7PF+/WNGvV+Qe9xFm9XbFpwdl5dNWe
+ NG62IZjPHmiq9uF68afojC2JSF/mSy3stKE8veSuMIfzmiaZ6aw5kQPmFxxmHbuI8rJ2B7TeC
+ Vg7lrykWs6qAabchLK1LvEg/92Djmp4q639jGTwl5j4wglt7HO9HyOXbvqhI0hXKKWYG7Vikx
+ aHqvYYYxZW//rc+HgA9x2cF2ZO7zDKkg9bKEL/XBQYB4nDRH6fUEug9AHsLgdlWGb9jwPWxbr
+ UsWknWBlXf3bp7lRgJakbgprw/5agWAGkcW2FeBMenElNwepEAFRQR29Zxh+IwcRfSRZOVigG
+ tc/HzOBNCy1GlDbeeYy6MuQ6DwbWHfH/V6tE5ZpmRXMqE=
+Message-ID-Hash: 5ONYSIPFEIITSK4BC4KM6LREXZLGX6V5
+X-Message-ID-Hash: 5ONYSIPFEIITSK4BC4KM6LREXZLGX6V5
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4SX2JFMMU5PHSTQYT6BTQDP3RXKBFLIC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5ONYSIPFEIITSK4BC4KM6LREXZLGX6V5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,30 +107,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We forgot to remember the wavetable /proc entry, so we'd fail to free it
-at module unload.
-
-This matters only when only the synth module is unloaded, as unloading
-the card driver would tear down the sub-entry anyway.
-
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 =2D--
- sound/synth/emux/emux_proc.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/synth/emux/emux_proc.c b/sound/synth/emux/emux_proc.c
-index 7993e6a01e54..820351f52551 100644
-=2D-- a/sound/synth/emux/emux_proc.c
-+++ b/sound/synth/emux/emux_proc.c
-@@ -102,6 +102,7 @@ void snd_emux_proc_init(struct snd_emux *emu, struct s=
-nd_card *card, int device)
- 	entry->content =3D SNDRV_INFO_CONTENT_TEXT;
- 	entry->private_data =3D emu;
- 	entry->c.text.read =3D snd_emux_proc_info_read;
-+	emu->proc =3D entry;
- }
+Is this right? The comment on the field says "fifo entries of AC97/I2S
+PSC", which suggests frames, but that may mean whatever.
 
- void snd_emux_proc_free(struct snd_emux *emu)
+Cc: Manuel Lauss <mano@roarinelk.homelinux.net>
+=2D--
+ sound/soc/au1x/dbdma2.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
+index ea01d6490cec..2c8c01a5fb8f 100644
+=2D-- a/sound/soc/au1x/dbdma2.c
++++ b/sound/soc/au1x/dbdma2.c
+@@ -66,7 +66,8 @@ struct au1xpsc_audio_dmadata {
+ /* PCM hardware DMA capabilities - platform specific */
+ static const struct snd_pcm_hardware au1xpsc_pcm_hardware =3D {
+ 	.info		  =3D SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+-			    SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BATCH,
++			    SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BATCH |
++			    SNDRV_PCM_INFO_FIFO_IN_FRAMES,
+ 	.period_bytes_min =3D AU1XPSC_PERIOD_MIN_BYTES,
+ 	.period_bytes_max =3D 4096 * 1024 - 1,
+ 	.periods_min	  =3D 2,
 =2D-
 2.42.0.419.g70bf8a5751
 
