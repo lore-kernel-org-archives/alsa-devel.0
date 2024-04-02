@@ -4,132 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8095CCD1284
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 07:13:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CCEFC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 07:14:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAE8A2BED;
-	Tue,  2 Apr 2024 09:13:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAE8A2BED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 172FF2CF8;
+	Tue,  2 Apr 2024 09:14:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 172FF2CF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712041996;
-	bh=aisnBOSe6twHW7ZdfD8orcM1pcSwRgzSY+oaCtUg+fQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1712042051;
+	bh=eBrVzfGxW4z2+cdjOW1gt9UJqucEzz4vnZ+pYajgHac=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U6GB+L5MCltc6zAQcz6lW8kpAST/9eLdNYvoCjUgloLIeDpo4x+7xsFdDAPyMmmOw
-	 UxRjzNhZtS+4yNouc9nVC6zO0aypXzVgpB79E9xM1nnFBCbL5/EyoMm5M8OwBPxtxD
-	 7tkOvUzaZV3Ya5xAeBodM8qP8v7ROLmac/Kgk8e0=
+	b=W0ludlzS8XbtwfY04ws9xXtsyRLSnJDoZIDFUfk50Tdf4qoQyH6y8XbfxMvrb53Rj
+	 h5CUD+lBOBU2dNV0KdH6kvzmt2biAz758l5jBTVC+AbqkeKL7yi1wphI4JyIjKP5ut
+	 hoeKm8/GPHcF3C09deIW2YxGz24bDLASD2vr5fVI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D892F807DC; Tue,  2 Apr 2024 08:57:47 +0200 (CEST)
+	id 50391F89BE4; Tue,  2 Apr 2024 08:58:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EED8F89BF9;
-	Tue,  2 Apr 2024 08:57:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88B6BF89CAB;
+	Tue,  2 Apr 2024 08:58:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9D01F80236; Sun, 31 Mar 2024 21:15:04 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E514F8016E
-	for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2024 21:14:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E514F8016E
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8F3F11FB;
-	Sun, 31 Mar 2024 12:15:20 -0700 (PDT)
-Received: from bogus (unknown [10.57.81.195])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E84A3F64C;
-	Sun, 31 Mar 2024 12:14:34 -0700 (PDT)
-Date: Sun, 31 Mar 2024 20:14:32 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	David Hildenbrand <david@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gonglei <arei.gonglei@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	David Airlie <airlied@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alexander Graf <graf@amazon.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
-	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Sudeep Holla <sudeep.holla@arm.com>, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH v2 11/25] firmware: arm_scmi: virtio: drop owner
- assignment
-Message-ID: <20240331191432.sfp5dq6nyvf4yf34@bogus>
-References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
- <20240331-module-owner-virtio-v2-11-98f04bfaf46a@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240331-module-owner-virtio-v2-11-98f04bfaf46a@linaro.org>
-X-MailFrom: sudeep.holla@arm.com
-X-Mailman-Rule-Hits: max-recipients
+	id 963CEF8055C; Tue,  2 Apr 2024 08:21:09 +0200 (CEST)
+Received: from mail78-50.sinamail.sina.com.cn (mail78-50.sinamail.sina.com.cn
+ [219.142.78.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91DCCF8016E
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 08:20:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91DCCF8016E
+Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
+	by sina.net (10.75.30.234) with ESMTP
+	id 660BA3B800029E89; Tue, 2 Apr 2024 14:20:46 +0800 (CST)
+X-Sender: zhangyi@everest-semi.com
+X-Auth-ID: zhangyi@everest-semi.com
+Authentication-Results: sina.net;
+	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=zhangyi@everest-semi.com
+X-SMAIL-MID: B0FAB37DED5C4B23A16B1E56460FA27D
+X-SMAIL-UIID: B0FAB37DED5C4B23A16B1E56460FA27D-20240402-142046
+From: Zhang Yi <zhangyi@everest-semi.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Cc: tiwai@suse.com,
+	amadeuszx.slawinski@linux.intel.com,
+	yangxiaohua@everest-semi.com,
+	zhuning@everest-semi.com,
+	zhangyi@everest-semi.com
+Subject: [PATCH 2/4] ASoC: codecs: ES8326: modify clock table
+Date: Tue,  2 Apr 2024 14:20:41 +0800
+Message-Id: <20240402062043.20608-3-zhangyi@everest-semi.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240402062043.20608-1-zhangyi@everest-semi.com>
+References: <20240402062043.20608-1-zhangyi@everest-semi.com>
+X-MailFrom: zhangyi@everest-semi.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: GUV2F2DDF26EUN6A7KOYSOEY5GXY2JUY
-X-Message-ID-Hash: GUV2F2DDF26EUN6A7KOYSOEY5GXY2JUY
-X-Mailman-Approved-At: Tue, 02 Apr 2024 06:54:25 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: J3HEAXEBF72M7EWXTO7AIJ5G63AOHYGP
+X-Message-ID-Hash: J3HEAXEBF72M7EWXTO7AIJ5G63AOHYGP
+X-Mailman-Approved-At: Tue, 02 Apr 2024 06:54:59 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GUV2F2DDF26EUN6A7KOYSOEY5GXY2JUY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J3HEAXEBF72M7EWXTO7AIJ5G63AOHYGP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,12 +83,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, Mar 31, 2024 at 10:43:58AM +0200, Krzysztof Kozlowski wrote:
-> virtio core already sets the .owner, so driver does not need to.
->
+We got a digital microphone feature issue. And we fixed it by modifying
+the clock table. Also, we changed the marco ES8326_CLK_ON declaration
 
-Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
+---
+ sound/soc/codecs/es8326.c | 22 +++++++++++-----------
+ sound/soc/codecs/es8326.h |  2 +-
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index d87592747b4e..7f4788265e53 100755
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -404,9 +404,9 @@ static const struct _coeff_div coeff_div_v3[] = {
+ 	{125, 48000, 6000000, 0x04, 0x04, 0x1F, 0x2D, 0x8A, 0x0A, 0x27, 0x27},
+ 
+ 	{128, 8000, 1024000, 0x60, 0x00, 0x05, 0x75, 0x8A, 0x1B, 0x1F, 0x7F},
+-	{128, 16000, 2048000, 0x20, 0x00, 0x31, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
+-	{128, 44100, 5644800, 0xE0, 0x00, 0x01, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
+-	{128, 48000, 6144000, 0xE0, 0x00, 0x01, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
++	{128, 16000, 2048000, 0x20, 0x00, 0x31, 0x35, 0x08, 0x19, 0x1F, 0x3F},
++	{128, 44100, 5644800, 0xE0, 0x00, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
++	{128, 48000, 6144000, 0xE0, 0x00, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
+ 	{144, 8000, 1152000, 0x20, 0x00, 0x03, 0x35, 0x8A, 0x1B, 0x23, 0x47},
+ 	{144, 16000, 2304000, 0x20, 0x00, 0x11, 0x35, 0x8A, 0x1B, 0x23, 0x47},
+ 	{192, 8000, 1536000, 0x60, 0x02, 0x0D, 0x75, 0x8A, 0x1B, 0x1F, 0x7F},
+@@ -415,10 +415,10 @@ static const struct _coeff_div coeff_div_v3[] = {
+ 
+ 	{200, 48000, 9600000, 0x04, 0x04, 0x0F, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
+ 	{250, 48000, 12000000, 0x04, 0x04, 0x0F, 0x2D, 0xCA, 0x0A, 0x27, 0x27},
+-	{256, 8000, 2048000, 0x60, 0x00, 0x31, 0x35, 0x8A, 0x1B, 0x1F, 0x7F},
+-	{256, 16000, 4096000, 0x20, 0x00, 0x01, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
+-	{256, 44100, 11289600, 0xE0, 0x00, 0x30, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
+-	{256, 48000, 12288000, 0xE0, 0x00, 0x30, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
++	{256, 8000, 2048000, 0x60, 0x00, 0x31, 0x35, 0x08, 0x19, 0x1F, 0x7F},
++	{256, 16000, 4096000, 0x20, 0x00, 0x01, 0x35, 0x08, 0x19, 0x1F, 0x3F},
++	{256, 44100, 11289600, 0xE0, 0x01, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
++	{256, 48000, 12288000, 0xE0, 0x01, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
+ 	{288, 8000, 2304000, 0x20, 0x00, 0x01, 0x35, 0x8A, 0x1B, 0x23, 0x47},
+ 	{384, 8000, 3072000, 0x60, 0x02, 0x05, 0x75, 0x8A, 0x1B, 0x1F, 0x7F},
+ 	{384, 16000, 6144000, 0x20, 0x02, 0x03, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
+@@ -427,10 +427,10 @@ static const struct _coeff_div coeff_div_v3[] = {
+ 
+ 	{400, 48000, 19200000, 0xE4, 0x04, 0x35, 0x6d, 0xCA, 0x0A, 0x1F, 0x1F},
+ 	{500, 48000, 24000000, 0xF8, 0x04, 0x3F, 0x6D, 0xCA, 0x0A, 0x1F, 0x1F},
+-	{512, 8000, 4096000, 0x60, 0x00, 0x01, 0x35, 0x8A, 0x1B, 0x1F, 0x7F},
+-	{512, 16000, 8192000, 0x20, 0x00, 0x30, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
+-	{512, 44100, 22579200, 0xE0, 0x00, 0x00, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
+-	{512, 48000, 24576000, 0xE0, 0x00, 0x00, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
++	{512, 8000, 4096000, 0x60, 0x00, 0x01, 0x08, 0x19, 0x1B, 0x1F, 0x7F},
++	{512, 16000, 8192000, 0x20, 0x00, 0x30, 0x35, 0x08, 0x19, 0x1F, 0x3F},
++	{512, 44100, 22579200, 0xE0, 0x00, 0x00, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
++	{512, 48000, 24576000, 0xE0, 0x00, 0x00, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
+ 	{768, 8000, 6144000, 0x60, 0x02, 0x11, 0x35, 0x8A, 0x1B, 0x1F, 0x7F},
+ 	{768, 16000, 12288000, 0x20, 0x02, 0x01, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
+ 	{768, 32000, 24576000, 0xE0, 0x02, 0x30, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
+diff --git a/sound/soc/codecs/es8326.h b/sound/soc/codecs/es8326.h
+index ee12caef8105..c3e52e7bdef5 100644
+--- a/sound/soc/codecs/es8326.h
++++ b/sound/soc/codecs/es8326.h
+@@ -104,7 +104,7 @@
+ #define ES8326_MUTE (3 << 0)
+ 
+ /* ES8326_CLK_CTL */
+-#define ES8326_CLK_ON (0x7e << 0)
++#define ES8326_CLK_ON (0x7f << 0)
+ #define ES8326_CLK_OFF (0 << 0)
+ 
+ /* ES8326_CLK_INV */
 -- 
-Regards,
-Sudeep
+2.17.1
+
