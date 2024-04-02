@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DA30C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:21:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7547FC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:21:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E2892C19;
-	Tue,  2 Apr 2024 17:21:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E2892C19
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4AA22C4C;
+	Tue,  2 Apr 2024 17:21:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4AA22C4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712071279;
-	bh=UwtYxBJyt3wQGzqEI4KWrGa53H0S9tKuqrOmRnTF6Sc=;
+	s=default; t=1712071296;
+	bh=DellMu4C0z2SqkW/GwLBIPF8taj4i2Q0cZ8ESqFaIqo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cwQ8/AJZNmRVm70vAb14DSZxegWT1POViAILz+6gg9LO36SIVMl1QJxDh2VAKm7Ds
-	 KTygcwDUW6AUUA7skaqYO4B3c0dgQQ357Wnv549DDtV14RhxOXnDwBtWZ+vTQIdnp0
-	 jrhBCZar3QNkjIDcqTjGRvTnwX9YcnkZBrHwsIXk=
+	b=QM3RcQiD2emilOpeY6I17e/bNP4d8oVDPfRZ2cwrGL0sgPK1Dk3orUHW1OQw0xDdv
+	 fBv9XSd4MriJ5L0TBTbxlQMWyJ875i4DGzPn1j85xs8NPa53x1VSNgXu7EH5ECwgms
+	 Jbx+XmYmzpuciuYCpYVa+CfSp6+8iuDpwLCxmhUM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E37F2F806BB; Tue,  2 Apr 2024 17:19:17 +0200 (CEST)
+	id BD38FF806D7; Tue,  2 Apr 2024 17:19:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC6DDF806BD;
-	Tue,  2 Apr 2024 17:19:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9401F806DC;
+	Tue,  2 Apr 2024 17:19:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6EF1DF805EC; Tue,  2 Apr 2024 17:18:57 +0200 (CEST)
+	id 6F5C8F805FB; Tue,  2 Apr 2024 17:18:59 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DD545F8055C
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD545F8055C
+	by alsa1.perex.cz (Postfix) with ESMTPS id DCD17F80238
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCD17F80238
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=FcmVhkZk
+ header.s=Intel header.b=EEO+Mf7M
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712071129; x=1743607129;
+  t=1712071128; x=1743607128;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=UwtYxBJyt3wQGzqEI4KWrGa53H0S9tKuqrOmRnTF6Sc=;
-  b=FcmVhkZkqT0a0mUOm0XRYMMKLDPRo/U26WSzOuixQlU7UDXHhAjSTbKr
-   iYhKF2YMoLjIiyEaJNz2P8l92ARl6IBzxHWXH3qNu1th/ywNr6WFCbQ4o
-   YV05YGFVYMtYGM5x4Ddpba4FHnjtYP0+K1u32sO+lMobb7jRGPlwmqIqG
-   2ap0tsMpJwA6b+k+Fhy4dQc9MzE4mo5aoznGt4/vwlXEkJOhNEC/KM4Zr
-   Q2I6xvBrtSNoOYu19OsBlkEDpa927Z6SB+s3ROqc7yTg4DfFF39XaJphC
-   jC3wisx8zzN/7o2Gfk6qQvjA/Vyi/JPOFFynLggx4w6fULeebKNtpmu9p
-   A==;
-X-CSE-ConnectionGUID: m6hwvYugRsCgUJwF828PSA==
-X-CSE-MsgGUID: gd/CBDKoTKyzoPcbXY16Qw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29730019"
+  bh=DellMu4C0z2SqkW/GwLBIPF8taj4i2Q0cZ8ESqFaIqo=;
+  b=EEO+Mf7MGW9CbOI/NrhDzxAzHfQgqT1jZbbppDsTe/A9BfqKZziDdwiV
+   uILEMQkgZjz+eGg+dfgXwMxuhxHPoIsJ8YBi2yki6QtU1bTYQjQsDacAN
+   EzdoOdEhkd73X8zu+9WkI4BuMp1gkOWnsLwkQ0JSb0e8339tMarEhGVlQ
+   4cmZqY0W+2hJ+tUmbh68WeCF9jQWp6kCSE8OVi9u+4UAcHF1VGkB48rCy
+   AaaUlNivNmqrApkQZ9hQDfc1c0N8s6JByfM0fv9owirl7Zm8KaXDiruOH
+   1CZOsHHBSguoLa60wIJijPawQ10iO2CMTleVzLsnXkz5Mywe9ZaMNlbCO
+   g==;
+X-CSE-ConnectionGUID: igtUrwZdRC6MKMrASX6Y2Q==
+X-CSE-MsgGUID: zC55UCe3SPKVsGUinR4bZQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29729940"
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="29730019"
+   d="scan'208";a="29729940"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
   by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:42 -0700
-X-CSE-ConnectionGUID: zPRIZFbSSLWQAvUAgJ8+mQ==
-X-CSE-MsgGUID: BHW7BdmLR7aSh/HeLSBHFw==
+ 02 Apr 2024 08:18:39 -0700
+X-CSE-ConnectionGUID: 9+0bWIcCT1SyLGaOAeBmFg==
+X-CSE-MsgGUID: 16er1bKtTPuzsFoN/NDyFA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="22796510"
+   d="scan'208";a="22796494"
 Received: from skhare-mobl5.amr.corp.intel.com (HELO pbossart-mobl6.intel.com)
  ([10.212.8.83])
   by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:41 -0700
+ 02 Apr 2024 08:18:38 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 08/17] ASoC: SOF: Intel: set the DMA TLV device as dai_index
-Date: Tue,  2 Apr 2024 10:18:19 -0500
-Message-Id: <20240402151828.175002-9-pierre-louis.bossart@linux.intel.com>
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 04/17] ASoC: SOF: make dma_config_tlv be an array
+Date: Tue,  2 Apr 2024 10:18:15 -0500
+Message-Id: <20240402151828.175002-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 References: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4Z24JAI6ZYFVJAZK6ULQPURH3PHSL7Q2
-X-Message-ID-Hash: 4Z24JAI6ZYFVJAZK6ULQPURH3PHSL7Q2
+Message-ID-Hash: 4CY6OQRBS3WSDOAJD7CLP7BR6PV4VI6F
+X-Message-ID-Hash: 4CY6OQRBS3WSDOAJD7CLP7BR6PV4VI6F
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4Z24JAI6ZYFVJAZK6ULQPURH3PHSL7Q2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4CY6OQRBS3WSDOAJD7CLP7BR6PV4VI6F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,29 +106,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We've already defined the value for dai_index, let's use it instead of
-open-coding the same thing. No functionality change.
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Each stream needs a dma_config_tlv. We will handle multi dma_config_tlv
+in the follow up commits.
+
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-dai.c |  2 +-
+ sound/soc/sof/ipc4-topology.c | 25 ++++++++++++-------------
+ sound/soc/sof/ipc4-topology.h |  2 +-
+ 3 files changed, 14 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index c48ac931753c..86efcbe8f0d8 100644
+index 6a39ca632f55..01c544b7e046 100644
 --- a/sound/soc/sof/intel/hda-dai.c
 +++ b/sound/soc/sof/intel/hda-dai.c
-@@ -533,7 +533,7 @@ int sdw_hda_dai_hw_params(struct snd_pcm_substream *substream,
+@@ -392,7 +392,7 @@ static int non_hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 	/* configure TLV */
  	ipc4_copier = widget_to_copier(w);
- 	dma_config_tlv = &ipc4_copier->dma_config_tlv[cpu_dai_id];
- 	dma_config = &dma_config_tlv->dma_config;
--	dma_config->dma_stream_channel_map.mapping[0].device = link_id << 8 | cpu_dai->id;
-+	dma_config->dma_stream_channel_map.mapping[0].device = data.dai_index;
- 	dma_config->dma_stream_channel_map.mapping[0].channel_mask = ch_mask;
  
- 	/*
+-	dma_config_tlv = &ipc4_copier->dma_config_tlv;
++	dma_config_tlv = &ipc4_copier->dma_config_tlv[0];
+ 	dma_config_tlv->type = SOF_IPC4_GTW_DMA_CONFIG_ID;
+ 	/* dma_config_priv_size is zero */
+ 	dma_config_tlv->length = sizeof(dma_config_tlv->dma_config);
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 427f186ddc11..1870488b3cf6 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -1486,6 +1486,7 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 	u32 deep_buffer_dma_ms = 0;
+ 	int output_fmt_index;
+ 	bool single_output_format;
++	int i;
+ 
+ 	dev_dbg(sdev->dev, "copier %s, type %d", swidget->widget->name, swidget->id);
+ 
+@@ -1711,7 +1712,6 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 			u32 ch_map;
+ 			u32 step;
+ 			u32 mask;
+-			int i;
+ 
+ 			blob = (struct sof_ipc4_alh_configuration_blob *)ipc4_copier->copier_config;
+ 
+@@ -1821,19 +1821,18 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 	gtw_cfg_config_length = copier_data->gtw_cfg.config_length * 4;
+ 	ipc_size = sizeof(*copier_data) + gtw_cfg_config_length;
+ 
+-	if (ipc4_copier->dma_config_tlv.type == SOF_IPC4_GTW_DMA_CONFIG_ID &&
+-	    ipc4_copier->dma_config_tlv.length) {
+-		dma_config_tlv_size = sizeof(ipc4_copier->dma_config_tlv) +
+-			ipc4_copier->dma_config_tlv.dma_config.dma_priv_config_size;
+-
+-		/* paranoia check on TLV size/length */
+-		if (dma_config_tlv_size != ipc4_copier->dma_config_tlv.length +
+-		    sizeof(uint32_t) * 2) {
+-			dev_err(sdev->dev, "Invalid configuration, TLV size %d length %d\n",
+-				dma_config_tlv_size, ipc4_copier->dma_config_tlv.length);
+-			return -EINVAL;
+-		}
++	dma_config_tlv_size = 0;
++	for (i = 0; i < SOF_IPC4_DMA_DEVICE_MAX_COUNT; i++) {
++		if (ipc4_copier->dma_config_tlv[i].type != SOF_IPC4_GTW_DMA_CONFIG_ID)
++			continue;
++		dma_config_tlv_size += ipc4_copier->dma_config_tlv[i].length;
++		dma_config_tlv_size +=
++			ipc4_copier->dma_config_tlv[i].dma_config.dma_priv_config_size;
++		dma_config_tlv_size += (sizeof(ipc4_copier->dma_config_tlv[i]) -
++			sizeof(ipc4_copier->dma_config_tlv[i].dma_config));
++	}
+ 
++	if (dma_config_tlv_size) {
+ 		ipc_size += dma_config_tlv_size;
+ 
+ 		/* we also need to increase the size at the gtw level */
+diff --git a/sound/soc/sof/ipc4-topology.h b/sound/soc/sof/ipc4-topology.h
+index dce174a190dd..aa5122c3721d 100644
+--- a/sound/soc/sof/ipc4-topology.h
++++ b/sound/soc/sof/ipc4-topology.h
+@@ -313,7 +313,7 @@ struct sof_ipc4_copier {
+ 	struct sof_ipc4_gtw_attributes *gtw_attr;
+ 	u32 dai_type;
+ 	int dai_index;
+-	struct sof_ipc4_dma_config_tlv dma_config_tlv;
++	struct sof_ipc4_dma_config_tlv dma_config_tlv[SOF_IPC4_DMA_DEVICE_MAX_COUNT];
+ };
+ 
+ /**
 -- 
 2.40.1
 
