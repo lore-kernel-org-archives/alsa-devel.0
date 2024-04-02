@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D69C4C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AA67C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:20:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20A032C19;
-	Tue,  2 Apr 2024 17:19:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A032C19
+	by alsa0.perex.cz (Postfix) with ESMTPS id 038D62C3A;
+	Tue,  2 Apr 2024 17:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 038D62C3A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712071187;
-	bh=HoaNNXuPU7N8X9DQGEvbTrS2CyF30mmJSOl1g25k9ZE=;
+	s=default; t=1712071199;
+	bh=8BNO4J7F02OW61F3M9kbM+GcaQ/g6Fcbv0k9xzs+WiY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TIvemvgb/f33uKxaBG5WfnFfoqnxskJvMOJrkNJUM6nGu1kkNl5E8GyuZeltJ+0N6
-	 8Ohahcz9WMvqpQZULdTvi+1bwgL+o7ibQSV/qvW/COpJq6N031ZTQus/7A//lZsklZ
-	 2tVDOBvIXz+qfaPhocfRz+0MZS3lR22p0Dw+W6Mc=
+	b=rV2gigpyplv0DkaTvusZfcv7gKLBAMmQHVSIuqxXDKlnjXohDK+T7GsBfypdQLh2X
+	 jm7pOgTPcS7AF9VXkVpE2DuLIgICM/w7aP7wm4JGg3+AGXBQViXPpu15ZKj6Q5ZJgh
+	 MS3n8n3Dd9fbaRALG/G6Hp/PXkQGbC1UNHzoefuU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 542A2F805E2; Tue,  2 Apr 2024 17:18:54 +0200 (CEST)
+	id 77D81F805FF; Tue,  2 Apr 2024 17:18:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2789F805C2;
-	Tue,  2 Apr 2024 17:18:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69DE0F805F3;
+	Tue,  2 Apr 2024 17:18:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44EDEF80568; Tue,  2 Apr 2024 17:18:48 +0200 (CEST)
+	id 65B8DF80570; Tue,  2 Apr 2024 17:18:49 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DC1C8F8020D
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC1C8F8020D
+	by alsa1.perex.cz (Postfix) with ESMTPS id EC969F8056F
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC969F8056F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nZZw+SBY
+ header.s=Intel header.b=VarHcijf
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712071126; x=1743607126;
+  t=1712071128; x=1743607128;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=HoaNNXuPU7N8X9DQGEvbTrS2CyF30mmJSOl1g25k9ZE=;
-  b=nZZw+SBY+L9Hqf0CICGS9mLWXpKl9TSMFkqBVV6UthKUdsbAOEVtVI1T
-   9Hdhdl+bujrUOcim//t0W2AB2Bxmqkj7AVekNyWUEDYe5to+dGZKtMyXJ
-   /ZYP34bNlNaDvwUY9wxXu3LAGbBFWnJpywx3C1Gdicaz7bM8pEx8oWqjH
-   GC9epESLB/z4/hLRlK/fjR2iuW39a6ghuLMIf3xrfC//5sBemugLP5Hpf
-   P/LHgAmTAL9aK89xVTMl6pSOJ1MH249QzFP+iVo6va0bPCIz9wIP2z6Gd
-   2boTc50GDYwwX7ZZ4e/4rTkdu1qxEubKcSxOqRVM6ErbqNysJXsRsB/vl
-   Q==;
-X-CSE-ConnectionGUID: 5niAjsWxR8KDV7hRQF5F9w==
-X-CSE-MsgGUID: mueACP8ES9qwRbuBUFGmZQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29729917"
+  bh=8BNO4J7F02OW61F3M9kbM+GcaQ/g6Fcbv0k9xzs+WiY=;
+  b=VarHcijfP6n7FgmOMU2niQoN8diZbO86MMQwa3NifH60Hm8CdRTKiKU8
+   7n/9m1X/BVzP8TabKe+nEjHW1/d7zxKqhc38RgmIbd2IlTHRU5ETiQWCC
+   H8PcE3RciL44Dklt6hBDjyZxxPKO80i2hIlLDLvpyw33wku4huPT2NUMj
+   ieckrS8x3M8N9F3FVLT2LB3GPsvJm337LWSzPzVrsfA3E/DkIU1ueBnTG
+   k2wrTSpkOdGHjUonX89kw9GThWEyRLhvwusxRn89l3qyDLBxhdYQ2MkVz
+   xigELuonjy92O6pVzzm6laYf+FBUYFmoBIUIKqe64D7FQ4ZWkFC8yJNt3
+   w==;
+X-CSE-ConnectionGUID: 7L7kPZQEQjGh87RLICfpgQ==
+X-CSE-MsgGUID: vSR9aLssT06jq57c6DKPLA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29729959"
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="29729917"
+   d="scan'208";a="29729959"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
   by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:37 -0700
-X-CSE-ConnectionGUID: LEG2b/CGR1WJ65vD/Rm2CQ==
-X-CSE-MsgGUID: EIodZmpMQ2KWwH3IRWMnyw==
+ 02 Apr 2024 08:18:40 -0700
+X-CSE-ConnectionGUID: u0gNtmf8TD2rz5WPWo6wPg==
+X-CSE-MsgGUID: GcNid/E1SRCwug/Zt5CUdQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="22796488"
+   d="scan'208";a="22796499"
 Received: from skhare-mobl5.amr.corp.intel.com (HELO pbossart-mobl6.intel.com)
  ([10.212.8.83])
   by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:36 -0700
+ 02 Apr 2024 08:18:38 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -75,17 +75,16 @@ Cc: alsa-devel@alsa-project.org,
 	broonie@kernel.org,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 02/17] Revert "ASoC: SOF: Intel: hda-dai-ops: reset device
- count for SoundWire DAIs"
-Date: Tue,  2 Apr 2024 10:18:13 -0500
-Message-Id: <20240402151828.175002-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/17] ASoC: SOF: Intel: hda-dai: set lowest N bits in ch_mask
+Date: Tue,  2 Apr 2024 10:18:16 -0500
+Message-Id: <20240402151828.175002-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 References: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GB3MEUPJOK6XQUH5MKOOP3N5TWNMOAHD
-X-Message-ID-Hash: GB3MEUPJOK6XQUH5MKOOP3N5TWNMOAHD
+Message-ID-Hash: 57QJMBJIOSNSL7A3I46UNX5EAHC75K6J
+X-Message-ID-Hash: 57QJMBJIOSNSL7A3I46UNX5EAHC75K6J
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GB3MEUPJOK6XQUH5MKOOP3N5TWNMOAHD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/57QJMBJIOSNSL7A3I46UNX5EAHC75K6J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,58 +108,48 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-This reverts commit 699e146d9ebf42ee2a5d4e4e28f7a49c4aef0105.
-Don't reset device_count as we will use the multi-gateway firmware
-configuration.
+We always use the lowest N channels of stream. So, set ch_mask to
+GENMASK(params_channels(params) - 1, 0).
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai-ops.c | 24 +-----------------------
- 1 file changed, 1 insertion(+), 23 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai-ops.c b/sound/soc/sof/intel/hda-dai-ops.c
-index b073720b4cf4..e17b83575e84 100644
---- a/sound/soc/sof/intel/hda-dai-ops.c
-+++ b/sound/soc/sof/intel/hda-dai-ops.c
-@@ -446,28 +446,6 @@ static int hda_ipc4_post_trigger(struct snd_sof_dev *sdev, struct snd_soc_dai *c
- 	return ret;
- }
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 01c544b7e046..810d2997794f 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -441,7 +441,6 @@ int sdw_hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(cpu_dai, substream->stream);
+ 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	const struct hda_dai_widget_dma_ops *ops;
+-	struct snd_soc_dai_link_ch_map *ch_maps;
+ 	struct hdac_ext_stream *hext_stream;
+ 	struct snd_soc_dai *dai;
+ 	struct snd_sof_dev *sdev;
+@@ -449,7 +448,6 @@ int sdw_hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 	int cpu_dai_id;
+ 	int ch_mask;
+ 	int ret;
+-	int j;
  
--static struct hdac_ext_stream *sdw_hda_ipc4_get_hext_stream(struct snd_sof_dev *sdev,
--							    struct snd_soc_dai *cpu_dai,
--							    struct snd_pcm_substream *substream)
--{
--	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(cpu_dai, substream->stream);
--	struct snd_sof_widget *swidget = w->dobj.private;
--	struct snd_sof_dai *dai = swidget->private;
--	struct sof_ipc4_copier *ipc4_copier = dai->private;
--	struct sof_ipc4_alh_configuration_blob *blob;
--
--	blob = (struct sof_ipc4_alh_configuration_blob *)ipc4_copier->copier_config;
--
--	/*
--	 * Starting with ACE_2_0, re-setting the device_count is mandatory to avoid using
--	 * the multi-gateway firmware configuration. The DMA hardware can take care of
--	 * multiple links without needing any firmware assistance
--	 */
--	blob->alh_cfg.device_count = 1;
--
--	return hda_ipc4_get_hext_stream(sdev, cpu_dai, substream);
--}
--
- static const struct hda_dai_widget_dma_ops hda_ipc4_dma_ops = {
- 	.get_hext_stream = hda_ipc4_get_hext_stream,
- 	.assign_hext_stream = hda_assign_hext_stream,
-@@ -509,7 +487,7 @@ static const struct hda_dai_widget_dma_ops dmic_ipc4_dma_ops = {
- };
+ 	ret = non_hda_dai_hw_params(substream, params, cpu_dai);
+ 	if (ret < 0) {
+@@ -479,11 +477,7 @@ int sdw_hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 	if (!cpu_dai_found)
+ 		return -ENODEV;
  
- static const struct hda_dai_widget_dma_ops sdw_ipc4_dma_ops = {
--	.get_hext_stream = sdw_hda_ipc4_get_hext_stream,
-+	.get_hext_stream = hda_ipc4_get_hext_stream,
- 	.assign_hext_stream = hda_assign_hext_stream,
- 	.release_hext_stream = hda_release_hext_stream,
- 	.setup_hext_stream = hda_setup_hext_stream,
+-	ch_mask = 0;
+-	for_each_link_ch_maps(rtd->dai_link, j, ch_maps) {
+-		if (ch_maps->cpu == cpu_dai_id)
+-			ch_mask |= ch_maps->ch_mask;
+-	}
++	ch_mask = GENMASK(params_channels(params) - 1, 0);
+ 
+ 	ret = hdac_bus_eml_sdw_map_stream_ch(sof_to_bus(sdev), link_id, cpu_dai->id,
+ 					     ch_mask,
 -- 
 2.40.1
 
