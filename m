@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C554CD128A
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:18:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA8D6CD11C2
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:18:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE49527A6;
-	Sun,  7 Apr 2024 09:17:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE49527A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 509062971;
+	Sun,  7 Apr 2024 09:18:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 509062971
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712474283;
-	bh=flqmIvc29aq03tyjckaFwyCD7FjGJloE0Stz4DI3BWU=;
+	s=default; t=1712474301;
+	bh=MDsLsFHtLslxvPtCs/nUPioPhXfjVy6AZnDa713pFfU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q93P8oawZgIhrbDgGONjorJDWnYm8ygDGaUbX7Iv5f8Uc+4hwsu/Ruvg6olooesIb
-	 iiI5fdGJQXRH7faAsRWnXc1UNjUNOYjVLG3/0T74ggWqfNGjeU2GApCkSdm/E+pa3Z
-	 iOx57n82a23Oqbu9HH8NZngbAWECq47uiCpakg9E=
+	b=kB9/6K9BDH6lN/+l9pxTsYs+AzCtfaTrmlK+Jjz4eV1rQwq5Ikw4blWXOCO2SwLYy
+	 aJ0REI4YccHEQ2/Wht2fExlcmb6KgnLprLC4QKbb3QxYOpvfrnjbHCm00rmUloDUBW
+	 yzRIkofwVG/ksUdmfzeKijDW+1dcuFnmlsmTCKaQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA426F805D5; Sun,  7 Apr 2024 09:17:16 +0200 (CEST)
+	id B7535F8060C; Sun,  7 Apr 2024 09:17:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 649D4F805C3;
-	Sun,  7 Apr 2024 09:17:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4AF6F805F1;
+	Sun,  7 Apr 2024 09:17:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DCC59F8058C; Tue,  2 Apr 2024 09:12:40 +0200 (CEST)
+	id 68613F80589; Tue,  2 Apr 2024 09:12:42 +0200 (CEST)
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [217.70.183.199])
+ [IPv6:2001:4b98:dc4:8::229])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B4518F80570
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4518F80570
+	by alsa1.perex.cz (Postfix) with ESMTPS id A5427F8056F
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5427F8056F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=SlgINAU+
-Received: by mail.gandi.net (Postfix) with ESMTPA id 01FCCFF80B;
-	Tue,  2 Apr 2024 07:12:22 +0000 (UTC)
+ header.s=gm1 header.b=f3bX7Jpc
+Received: by mail.gandi.net (Postfix) with ESMTPA id 10E9BFF80A;
+	Tue,  2 Apr 2024 07:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712041943;
+	t=1712041940;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7mFoXC/7lZncljkGK1+GfQv48vrdua/OVliFLiKRc2A=;
-	b=SlgINAU+zuI8Bem8akyfc0t7xKmu4rUVZEM3IVa0IwYsK+DDPs1sDhofdMdra9u+xNJ1fF
-	uMW8Popwmvhk1niBAJKFtVQi2IoqADVic4CZ9AsCQ8S6O1QBqgxnbd5r2ILYdrbHKaYVl7
-	jBykm4J62EMwPAu8UwwJGOQOMY0S/496JI8257CFrXBxZB+vnCzjrvDVmfqfi85kOkS714
-	RvcsnSri9LLhxE2zi/zUGXFfD+D1gPqCte7C2dGW14Gv0v0gCumDg9pfSzNxD/CZCWHNrn
-	VIW3PKOnGDk6DZ6lhQTqvGZA4c8EuAS0HGXJimcl1BktvTdIyvT3KQbuwdBd2A==
+	bh=kjMah6RzWU9Pw9jrFvPJ1cd8OwCxOXg5IsWRlfB0YHk=;
+	b=f3bX7Jpc6sXcyKJnYTY182aCDhlFJ78Bq9bDoCqL3Q4wpQw6nArUE4pWQr6S5iLlThLMtC
+	40CGAijuVr7Dsjcfisy4N4kQFIvibJXT041zmdssqolQ0p06rxlHB6NRjnX0UvOY5B2SNf
+	33D+47Val3gVaOcSmDuXBQ6tneJrOqRJyyIZT5tNeTbFL6EmiFfpJpB7IPvvWfMqz4P6Fl
+	fan3UFGtnsh5CbWHpJWdfjz/Jc7njZoqV7Uy6IlY8bbfeML2r1eH3csi227NZqC5QXTYLp
+	X9JT26fUsKT75D2Y7TT9D/82uqY4tAXwW5gbbufgxbxZjC7GuhN8m3fG323JdA==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,10 +70,9 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH v2 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
- dev_err_probe
-Date: Tue,  2 Apr 2024 09:12:04 +0200
-Message-ID: <20240402071213.11671-5-bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 02/13] ASoC: dt-bindings: davinci-mcbsp: Add optional clock
+Date: Tue,  2 Apr 2024 09:12:02 +0200
+Message-ID: <20240402071213.11671-3-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
 References: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
@@ -86,45 +85,59 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SVQZ7RHWQX7ACIUGE37FNXDF4DYEQFBZ
-X-Message-ID-Hash: SVQZ7RHWQX7ACIUGE37FNXDF4DYEQFBZ
+Message-ID-Hash: 7MXKNXKMUOQ6HLMTDNGKJTOQPGRPIA2I
+X-Message-ID-Hash: 7MXKNXKMUOQ6HLMTDNGKJTOQPGRPIA2I
 X-Mailman-Approved-At: Sun, 07 Apr 2024 07:14:05 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SVQZ7RHWQX7ACIUGE37FNXDF4DYEQFBZ/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7MXKNXKMUOQ6HLMTDNGKJTOQPGRPIA2I/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In probe(), the dev_err() is used for every returned error.
+The McBSP uses an internal sample rate generator to provide bit clock
+or frame clock. This sample rate generator can be programmed to be
+driven by McBSP's internal clock source or by an external clock source
+(located on CLKS pin). The external clock source is not described in
+the bindings.
 
-Replace dev_err() with dev_err_probe() where -EPROBE_DEFER can be
-returned.
+Add an optional clock item that allows to select an external clock as
+sample rate generator's input.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- sound/soc/ti/davinci-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 5c906641640e..cd64f1384e18 100644
---- a/sound/soc/ti/davinci-i2s.c
-+++ b/sound/soc/ti/davinci-i2s.c
-@@ -708,7 +708,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
+index 139b594dd192..0c2b1936c6a1 100644
+--- a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
++++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
+@@ -50,12 +50,16 @@ properties:
+       - const: tx
  
- 	ret = edma_pcm_platform_register(&pdev->dev);
- 	if (ret) {
--		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+		dev_err_probe(&pdev->dev, ret, "register PCM failed\n");
- 		goto err_unregister_component;
- 	}
+   clocks:
++    minItems: 1
+     items:
+       - description: functional clock
++      - description: external input clock for sample rate generator.
  
+   clock-names:
++    minItems: 1
+     items:
+       - const: fck
++      - const: clks
+ 
+   power-domains:
+     maxItems: 1
 -- 
 2.44.0
 
