@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA9C2C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 23:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D41BC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 23:32:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C91342C59;
-	Wed,  3 Apr 2024 01:30:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C91342C59
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2142C2C50;
+	Wed,  3 Apr 2024 01:31:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2142C2C50
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712100624;
-	bh=oKQ0VJW7bHDzLwWr3TpWv+xHaaTKQu+N/4JyHM68B1I=;
+	s=default; t=1712100728;
+	bh=fHHVyV+bZAUQT3GvBwOvXa5zySpAFlP6d8xchU5/x8c=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B+wVGp2TL1j2XDX2oAO+0LUUIjNmB1u+bXexkLBYlhKMuU+nQxaNL+Zsevg2yXZXp
-	 cAay/fg6zTfX0OjN0FoQOwiINXiT+pasodFFs0KcGPeewgNeq/pzvs8xkCXUs34so3
-	 GKVM+MRmg958kNAMY9rg9786P9C5Y/I5T9C4bj4E=
+	b=U/z9pAgbRkICfiu3aBQrTInLtTrg1MjW+T/m4+d+RLZJS2Wx/ReT0lucaICOlQW+U
+	 vFu+MO8ra5YZf+jez3PCuwkzWL7+ArSarxtTT2XXpiTmHIOYR+on0N/eJE/NThXVyb
+	 5YdVtqeA5/KFUmT2qYNZ07qjOCwhfC28658juQLs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF0ACF805AE; Wed,  3 Apr 2024 01:29:51 +0200 (CEST)
+	id A2E83F805BD; Wed,  3 Apr 2024 01:31:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A9C2F805A9;
-	Wed,  3 Apr 2024 01:29:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2052F805A9;
+	Wed,  3 Apr 2024 01:31:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21D98F80238; Wed,  3 Apr 2024 01:29:43 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 38EFEF80236; Wed,  3 Apr 2024 01:29:47 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 36991F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3E775F8020D
 	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 01:29:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36991F8016E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E775F8020D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qLIyZLxX
+ header.s=k20201202 header.b=dYOEt0Vx
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3234D60765;
-	Tue,  2 Apr 2024 23:29:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4CE8C433F1;
-	Tue,  2 Apr 2024 23:29:29 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9D22960C37;
+	Tue,  2 Apr 2024 23:29:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E565C433C7;
+	Tue,  2 Apr 2024 23:29:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712100570;
-	bh=oKQ0VJW7bHDzLwWr3TpWv+xHaaTKQu+N/4JyHM68B1I=;
+	s=k20201202; t=1712100573;
+	bh=fHHVyV+bZAUQT3GvBwOvXa5zySpAFlP6d8xchU5/x8c=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qLIyZLxXLNgeDMDYzwXORviptrgRd1XrD0Ztt0yrpeG9RMOG0BJcK+JDVMxSRPbKS
-	 BTrFfmCBbwDsKNnVx4dTugJY79oySnTCD/A1PPZ/2tECgObRSd5Z86rFfRSUOGEHXU
-	 JB9w+8yVJhR/sit5Z8w+pKGyMF1asLdGnl7RWZVZUPOQju1CS56VESVB+a4OlFC0tP
-	 A85r0egfur7VqJGPSo4yhFktoE5l0N53v035eLS/z0cexa0SvSJp08IacvkWF0n4N1
-	 rZZa2DpVe7gHJUWMEjOou+mp/9/FtJMHn8NrHYxB2FhX8q7tZJwyQG1mYhA+jR10n4
-	 pHSkjh2gyjG3Q==
+	b=dYOEt0Vx0+PrpNFi/hpusufYxBHBocKt+JjZkAx4qfcO6TKX2OZqMW+kLjQZTcBr/
+	 It9Pqt1tP+E76ogh8ZeinJvChfoOXcTH0l2lwSWOLwvy8fZCPLUOAEu6aocy343JMB
+	 z38IIHnMuS4y45iTsDgTTHh52Sb590mkT0uDB5fjSCGiMS/5ReqjoiwKF5usWPTafD
+	 z0a2LQndTvFJX++Cb6J/UGnryykMUdzZwMecWrFEg194fZOacllTFRtdT+d+a/Vc5b
+	 02rofXV0Wn0/IlYz8njGMamfP0hJe2ucmsuRarZqFej9GrtVW7Vx+snXtRxKY/Crev
+	 dVKmzdbGhEKMQ==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240401100210.61277-1-rf@opensource.cirrus.com>
-References: <20240401100210.61277-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH v2 0/3] ASoC: Use snd_ctl_find_id_mixer() instead of
- open-coding
-Message-Id: <171210056940.279166.10362892119296653551.b4-ty@kernel.org>
-Date: Wed, 03 Apr 2024 00:29:29 +0100
+To: linux-sound@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de
+In-Reply-To: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
+References: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/17] ASoC: SOF: Intel: improve SoundWire support for
+ LunarLake
+Message-Id: <171210057231.279166.12794569542139526516.b4-ty@kernel.org>
+Date: Wed, 03 Apr 2024 00:29:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: BOXPX7XNAJLHX7EKXDW62UEYDGTTIO7B
-X-Message-ID-Hash: BOXPX7XNAJLHX7EKXDW62UEYDGTTIO7B
+Message-ID-Hash: FHLPNZLOWFC2TMJWIEP4U5FVVXC2IWX2
+X-Message-ID-Hash: FHLPNZLOWFC2TMJWIEP4U5FVVXC2IWX2
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BOXPX7XNAJLHX7EKXDW62UEYDGTTIO7B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FHLPNZLOWFC2TMJWIEP4U5FVVXC2IWX2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,13 +91,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 01 Apr 2024 10:02:07 +0000, Richard Fitzgerald wrote:
-> The first two patches change snd_soc_card_get_kcontrol() to use the
-> core snd_ctl_find_id_mixer() functionality instead of open-coding its
-> own list walk.
+On Tue, 02 Apr 2024 10:18:11 -0500, Pierre-Louis Bossart wrote:
+> This patchset contains important updates for SoundWire support.
 > 
-> The last patch adds a KUnit test for this, which was tested on the
-> original and modified code.
+> We initially implemented support for multiple amplifiers on different
+> links using a single HDaudio DMA transfer. To align with the other OS,
+> the 'aggregation' is now supported by the firmware. This change in
+> directions has kernel impacts, since we now have multiple HDaudio DMAs
+> to program and start, but since there are no platforms released so far
+> there's no end-user impact.
 > 
 > [...]
 
@@ -109,12 +109,40 @@ Applied to
 
 Thanks!
 
-[1/3] ALSA: control: Introduce snd_ctl_find_id_mixer_locked()
-      commit: 08ea486a61451189b190c7b89e406b889cf693fa
-[2/3] ASoC: soc-card: Use snd_ctl_find_id_mixer() instead of open-coding
-      commit: 897cc72b08374c1224a9ded03c82dfc8e41f80c2
-[3/3] ASoC: soc-card: Add KUnit test case for snd_soc_card_get_kcontrol
-      commit: ef7784e41db73f3d31ce545227ebba4483479a26
+[01/17] ASoC: SOF: Intel: hda-dai: fix channel map configuration for aggregated dailink
+        commit: 831045513c8a2ef14c3cf39b33d1ccedf588c4a8
+[02/17] Revert "ASoC: SOF: Intel: hda-dai-ops: reset device count for SoundWire DAIs"
+        commit: 24b1f93df400e1ab1731e7bcb320e693a6a73792
+[03/17] Revert "ASoC: SOF: Intel: hda-dai-ops: only allocate/release streams for first CPU DAI"
+        commit: 1d0fb3d0c30749779cdd88be98761b17ebfe5590
+[04/17] ASoC: SOF: make dma_config_tlv be an array
+        commit: e9c6b118de1afc1d32a4eb3bc9f3d114d4fe0f1a
+[05/17] ASoC: SOF: Intel: hda-dai: set lowest N bits in ch_mask
+        commit: 8fa10a243600ca8bd92fdc871100deb308fca5f1
+[06/17] ASoC: SOF: Intel: hda-dai: set dma_stream_channel_map device
+        commit: 17386cb1b48b0d85f69b21ae13d5408d67180e30
+[07/17] ASoC: SOF: Intel: hda-dai: add helpers to set dai config
+        commit: 58f32cb7011a8a15b18f35e4c0ee044aa98e365b
+[08/17] ASoC: SOF: Intel: set the DMA TLV device as dai_index
+        commit: 219271481e8965e80ee425cdc2db85230a333a97
+[09/17] ASoC: SOF: Intel: hda: extend signature of sdw_hda_dai_hw_params()
+        commit: 8bc3b56cac748f6ef6a4b96c906007a546e7fb5a
+[10/17] ASoC: SOF: IPC4: extend dai_data with node_id
+        commit: a936456d4bce27edc1a18dab270c657e9c07590c
+[11/17] ASoC: SOF: Intel: hda: move helper to static inline
+        commit: 2ac9e09ba0e874deeba13c3259dc18f22b622311
+[12/17] ASoC: SOF: Intel: hda: Clear Soundwire node ID during BE DAI hw_free
+        commit: bfe9225455c032c9dd5637047760cf59562e599f
+[13/17] ASoC: SOF: sof-audio: revisit sof_pcm_stream_free() error handling and logs
+        commit: a6f2b279d22894e81b23464620d03da6429d9ab5
+[14/17] ASoC: SOF: pcm: simplify sof_pcm_hw_free() with helper
+        commit: bb83ae04d9158276d17640f50c2a1e049100acb6
+[15/17] ASoC: SOF: pcm: add pending_stop state variable
+        commit: dbc78bce74f5f9057ba02bdc8d1549d24c573900
+[16/17] ASoC: SOF: pcm: reset all PCM sources in case of xruns
+        commit: ebd3b3014eebdd490f2c509d79e719fbcc680963
+[17/17] ASoC: SOF: ipc4-topology: Save the ALH DAI index during hw_params
+        commit: f0caa4fc244ca739ce6d12168aa588c412c81190
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
