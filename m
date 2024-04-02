@@ -4,87 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7547FC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:21:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09B82C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:21:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4AA22C4C;
-	Tue,  2 Apr 2024 17:21:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4AA22C4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7885A2C04;
+	Tue,  2 Apr 2024 17:21:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7885A2C04
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712071296;
-	bh=DellMu4C0z2SqkW/GwLBIPF8taj4i2Q0cZ8ESqFaIqo=;
+	s=default; t=1712071316;
+	bh=V7rz5s63A9o8cJPhHkQWErgH/uueldBVlqNFBEWk8+I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QM3RcQiD2emilOpeY6I17e/bNP4d8oVDPfRZ2cwrGL0sgPK1Dk3orUHW1OQw0xDdv
-	 fBv9XSd4MriJ5L0TBTbxlQMWyJ875i4DGzPn1j85xs8NPa53x1VSNgXu7EH5ECwgms
-	 Jbx+XmYmzpuciuYCpYVa+CfSp6+8iuDpwLCxmhUM=
+	b=B5504yLT3+3tdscCYmrclHTk3vQIySmRHH//4yicyTfv5xThWjuvcJC56nNOpDwup
+	 xLZhmcw2Y5TDmOMXQLzLvcEtR8Yod0upYWi5Mj8OVBS8ej3nSMwRDMmcCpkEZXRHgT
+	 wfQzGCbYrLtES3VR2xgQX7qQdN9pC8Q3Djqmxu3s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD38FF806D7; Tue,  2 Apr 2024 17:19:20 +0200 (CEST)
+	id BB64CF805B1; Tue,  2 Apr 2024 17:19:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9401F806DC;
-	Tue,  2 Apr 2024 17:19:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0550F806FC;
+	Tue,  2 Apr 2024 17:19:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F5C8F805FB; Tue,  2 Apr 2024 17:18:59 +0200 (CEST)
+	id 30C9BF80606; Tue,  2 Apr 2024 17:19:00 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DCD17F80238
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCD17F80238
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6932EF80568
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6932EF80568
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EEO+Mf7M
+ header.s=Intel header.b=Q7Oy08s7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712071128; x=1743607128;
+  t=1712071130; x=1743607130;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DellMu4C0z2SqkW/GwLBIPF8taj4i2Q0cZ8ESqFaIqo=;
-  b=EEO+Mf7MGW9CbOI/NrhDzxAzHfQgqT1jZbbppDsTe/A9BfqKZziDdwiV
-   uILEMQkgZjz+eGg+dfgXwMxuhxHPoIsJ8YBi2yki6QtU1bTYQjQsDacAN
-   EzdoOdEhkd73X8zu+9WkI4BuMp1gkOWnsLwkQ0JSb0e8339tMarEhGVlQ
-   4cmZqY0W+2hJ+tUmbh68WeCF9jQWp6kCSE8OVi9u+4UAcHF1VGkB48rCy
-   AaaUlNivNmqrApkQZ9hQDfc1c0N8s6JByfM0fv9owirl7Zm8KaXDiruOH
-   1CZOsHHBSguoLa60wIJijPawQ10iO2CMTleVzLsnXkz5Mywe9ZaMNlbCO
-   g==;
-X-CSE-ConnectionGUID: igtUrwZdRC6MKMrASX6Y2Q==
-X-CSE-MsgGUID: zC55UCe3SPKVsGUinR4bZQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29729940"
+  bh=V7rz5s63A9o8cJPhHkQWErgH/uueldBVlqNFBEWk8+I=;
+  b=Q7Oy08s706XwdzzrNqlvUkdIjftaxVpCH3sChTNNTLq0fgrsc69qBp+1
+   kV6SLq8+rA3PhdwXjcPKf8QVrE8MufcXUKkOCvggCmuAgSJqyCtN/UKQV
+   7y8zyzds4Js1j6MuZg1aQjIt1qEKNIiqMP9k3iG1envtn6YxrgQQRr+hI
+   Cooq+91/LecpoZMW63Mr6OLR9wxCTZhVdGqzF4Nf4sG07XHNpx98ZoEYA
+   b7uq42QAJuKhbPvA1WLxJ0RWfdB/Tw1LAUqdASAjQfV3sudi6WGIVlbBi
+   YzG9PG40LWIQH3sd77DG3yvVKXGAKen4tTDBJkRttHfaX2/NsAmd1MLss
+   Q==;
+X-CSE-ConnectionGUID: pwliFP+URCyxtYJuTTAIvw==
+X-CSE-MsgGUID: jImjsBbGTASKvlNZu67hFA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29730047"
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="29729940"
+   d="scan'208";a="29730047"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
   by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:39 -0700
-X-CSE-ConnectionGUID: 9+0bWIcCT1SyLGaOAeBmFg==
-X-CSE-MsgGUID: 16er1bKtTPuzsFoN/NDyFA==
+ 02 Apr 2024 08:18:42 -0700
+X-CSE-ConnectionGUID: ir/0q//HQZa8KfInUCQdQA==
+X-CSE-MsgGUID: kCNxZRv6RT2JRNar7bx2hw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="22796494"
+   d="scan'208";a="22796513"
 Received: from skhare-mobl5.amr.corp.intel.com (HELO pbossart-mobl6.intel.com)
  ([10.212.8.83])
   by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:38 -0700
+ 02 Apr 2024 08:18:41 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/17] ASoC: SOF: make dma_config_tlv be an array
-Date: Tue,  2 Apr 2024 10:18:15 -0500
-Message-Id: <20240402151828.175002-5-pierre-louis.bossart@linux.intel.com>
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 09/17] ASoC: SOF: Intel: hda: extend signature of
+ sdw_hda_dai_hw_params()
+Date: Tue,  2 Apr 2024 10:18:20 -0500
+Message-Id: <20240402151828.175002-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 References: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4CY6OQRBS3WSDOAJD7CLP7BR6PV4VI6F
-X-Message-ID-Hash: 4CY6OQRBS3WSDOAJD7CLP7BR6PV4VI6F
+Message-ID-Hash: AE6E2TWQQ6LXKNEMTDPS2URHGZOU3WJL
+X-Message-ID-Hash: AE6E2TWQQ6LXKNEMTDPS2URHGZOU3WJL
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4CY6OQRBS3WSDOAJD7CLP7BR6PV4VI6F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AE6E2TWQQ6LXKNEMTDPS2URHGZOU3WJL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,96 +108,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+Add intel_alh_id to set the expected gateway node_id in a follow-up
+patch.
 
-Each stream needs a dma_config_tlv. We will handle multi dma_config_tlv
-in the follow up commits.
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c |  2 +-
- sound/soc/sof/ipc4-topology.c | 25 ++++++++++++-------------
- sound/soc/sof/ipc4-topology.h |  2 +-
- 3 files changed, 14 insertions(+), 15 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 3 ++-
+ sound/soc/sof/intel/hda.c     | 3 ++-
+ sound/soc/sof/intel/hda.h     | 3 ++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 6a39ca632f55..01c544b7e046 100644
+index 86efcbe8f0d8..5e3229c8fe13 100644
 --- a/sound/soc/sof/intel/hda-dai.c
 +++ b/sound/soc/sof/intel/hda-dai.c
-@@ -392,7 +392,7 @@ static int non_hda_dai_hw_params(struct snd_pcm_substream *substream,
- 	/* configure TLV */
- 	ipc4_copier = widget_to_copier(w);
+@@ -470,7 +470,8 @@ static const struct snd_soc_dai_ops dmic_dai_ops = {
+ int sdw_hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 			  struct snd_pcm_hw_params *params,
+ 			  struct snd_soc_dai *cpu_dai,
+-			  int link_id)
++			  int link_id,
++			  int intel_alh_id)
+ {
+ 	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(cpu_dai, substream->stream);
+ 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index e26b8fd682e5..63f1cf3b915f 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -159,7 +159,8 @@ static int sdw_ace2x_params_stream(struct device *dev,
+ 	return sdw_hda_dai_hw_params(params_data->substream,
+ 				     params_data->hw_params,
+ 				     params_data->dai,
+-				     params_data->link_id);
++				     params_data->link_id,
++				     params_data->alh_stream_id);
+ }
  
--	dma_config_tlv = &ipc4_copier->dma_config_tlv;
-+	dma_config_tlv = &ipc4_copier->dma_config_tlv[0];
- 	dma_config_tlv->type = SOF_IPC4_GTW_DMA_CONFIG_ID;
- 	/* dma_config_priv_size is zero */
- 	dma_config_tlv->length = sizeof(dma_config_tlv->dma_config);
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index 427f186ddc11..1870488b3cf6 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -1486,6 +1486,7 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
- 	u32 deep_buffer_dma_ms = 0;
- 	int output_fmt_index;
- 	bool single_output_format;
-+	int i;
+ static int sdw_ace2x_free_stream(struct device *dev,
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 81a1d4606d3c..eedd03020889 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -850,7 +850,8 @@ static inline bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev)
+ int sdw_hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 			  struct snd_pcm_hw_params *params,
+ 			  struct snd_soc_dai *cpu_dai,
+-			  int link_id);
++			  int link_id,
++			  int intel_alh_id);
  
- 	dev_dbg(sdev->dev, "copier %s, type %d", swidget->widget->name, swidget->id);
- 
-@@ -1711,7 +1712,6 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
- 			u32 ch_map;
- 			u32 step;
- 			u32 mask;
--			int i;
- 
- 			blob = (struct sof_ipc4_alh_configuration_blob *)ipc4_copier->copier_config;
- 
-@@ -1821,19 +1821,18 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
- 	gtw_cfg_config_length = copier_data->gtw_cfg.config_length * 4;
- 	ipc_size = sizeof(*copier_data) + gtw_cfg_config_length;
- 
--	if (ipc4_copier->dma_config_tlv.type == SOF_IPC4_GTW_DMA_CONFIG_ID &&
--	    ipc4_copier->dma_config_tlv.length) {
--		dma_config_tlv_size = sizeof(ipc4_copier->dma_config_tlv) +
--			ipc4_copier->dma_config_tlv.dma_config.dma_priv_config_size;
--
--		/* paranoia check on TLV size/length */
--		if (dma_config_tlv_size != ipc4_copier->dma_config_tlv.length +
--		    sizeof(uint32_t) * 2) {
--			dev_err(sdev->dev, "Invalid configuration, TLV size %d length %d\n",
--				dma_config_tlv_size, ipc4_copier->dma_config_tlv.length);
--			return -EINVAL;
--		}
-+	dma_config_tlv_size = 0;
-+	for (i = 0; i < SOF_IPC4_DMA_DEVICE_MAX_COUNT; i++) {
-+		if (ipc4_copier->dma_config_tlv[i].type != SOF_IPC4_GTW_DMA_CONFIG_ID)
-+			continue;
-+		dma_config_tlv_size += ipc4_copier->dma_config_tlv[i].length;
-+		dma_config_tlv_size +=
-+			ipc4_copier->dma_config_tlv[i].dma_config.dma_priv_config_size;
-+		dma_config_tlv_size += (sizeof(ipc4_copier->dma_config_tlv[i]) -
-+			sizeof(ipc4_copier->dma_config_tlv[i].dma_config));
-+	}
- 
-+	if (dma_config_tlv_size) {
- 		ipc_size += dma_config_tlv_size;
- 
- 		/* we also need to increase the size at the gtw level */
-diff --git a/sound/soc/sof/ipc4-topology.h b/sound/soc/sof/ipc4-topology.h
-index dce174a190dd..aa5122c3721d 100644
---- a/sound/soc/sof/ipc4-topology.h
-+++ b/sound/soc/sof/ipc4-topology.h
-@@ -313,7 +313,7 @@ struct sof_ipc4_copier {
- 	struct sof_ipc4_gtw_attributes *gtw_attr;
- 	u32 dai_type;
- 	int dai_index;
--	struct sof_ipc4_dma_config_tlv dma_config_tlv;
-+	struct sof_ipc4_dma_config_tlv dma_config_tlv[SOF_IPC4_DMA_DEVICE_MAX_COUNT];
- };
- 
- /**
+ int sdw_hda_dai_hw_free(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *cpu_dai,
 -- 
 2.40.1
 
