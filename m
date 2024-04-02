@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA8D6CD11C2
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:18:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04898CD11C2
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:18:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 509062971;
-	Sun,  7 Apr 2024 09:18:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 509062971
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7333D1ED;
+	Sun,  7 Apr 2024 09:18:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7333D1ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712474301;
-	bh=MDsLsFHtLslxvPtCs/nUPioPhXfjVy6AZnDa713pFfU=;
+	s=default; t=1712474316;
+	bh=UsLK0heJUS0ZdOtjODmExf7eqS2NsI4dk3TuxOHSLlk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kB9/6K9BDH6lN/+l9pxTsYs+AzCtfaTrmlK+Jjz4eV1rQwq5Ikw4blWXOCO2SwLYy
-	 aJ0REI4YccHEQ2/Wht2fExlcmb6KgnLprLC4QKbb3QxYOpvfrnjbHCm00rmUloDUBW
-	 yzRIkofwVG/ksUdmfzeKijDW+1dcuFnmlsmTCKaQ=
+	b=KdV+OzulA0gs6ax/xjtpCKnMeBO+0jZ/JM4XcziX8TCuUrO0XczAbhYJXdRyZ75Me
+	 LZE1GN7W3yLwjJ3qja+ly1WK0LAVTKdJJ/lIOpuGmL4mvP1CRLGav75Dj9vrC8vUn3
+	 8Axt3jxPIYS3ON0GwrN6t2Mdv7chYTeoXl4CGH2Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7535F8060C; Sun,  7 Apr 2024 09:17:19 +0200 (CEST)
+	id 95066F805E9; Sun,  7 Apr 2024 09:17:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4AF6F805F1;
-	Sun,  7 Apr 2024 09:17:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A19DF80616;
+	Sun,  7 Apr 2024 09:17:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68613F80589; Tue,  2 Apr 2024 09:12:42 +0200 (CEST)
+	id 4E904F80568; Tue,  2 Apr 2024 09:12:51 +0200 (CEST)
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::229])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A5427F8056F
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5427F8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 64024F8057D
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64024F8057D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=f3bX7Jpc
-Received: by mail.gandi.net (Postfix) with ESMTPA id 10E9BFF80A;
-	Tue,  2 Apr 2024 07:12:20 +0000 (UTC)
+ header.s=gm1 header.b=PN61uJa9
+Received: by mail.gandi.net (Postfix) with ESMTPA id 5E971FF80C;
+	Tue,  2 Apr 2024 07:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712041940;
+	t=1712041945;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kjMah6RzWU9Pw9jrFvPJ1cd8OwCxOXg5IsWRlfB0YHk=;
-	b=f3bX7Jpc6sXcyKJnYTY182aCDhlFJ78Bq9bDoCqL3Q4wpQw6nArUE4pWQr6S5iLlThLMtC
-	40CGAijuVr7Dsjcfisy4N4kQFIvibJXT041zmdssqolQ0p06rxlHB6NRjnX0UvOY5B2SNf
-	33D+47Val3gVaOcSmDuXBQ6tneJrOqRJyyIZT5tNeTbFL6EmiFfpJpB7IPvvWfMqz4P6Fl
-	fan3UFGtnsh5CbWHpJWdfjz/Jc7njZoqV7Uy6IlY8bbfeML2r1eH3csi227NZqC5QXTYLp
-	X9JT26fUsKT75D2Y7TT9D/82uqY4tAXwW5gbbufgxbxZjC7GuhN8m3fG323JdA==
+	bh=9FxQAwvoRhx4YNmaJ3JdZe1YTK1lfejPZbAcyRGLNHk=;
+	b=PN61uJa9OJF7vyS/QUuAHlU/hjt68rFy2GCnPQ+VJh0NBlBQgsqcYIYMzGzCLxzSKIfpgN
+	ZOSJMZxnG6/HpbLRRpX3f9pAIrseevZbGVL2S6nwS5D38h+UsBdS3OzTq8tu0FXHshgSVw
+	mTouQhTIk9dyAU1mbpkkdHkEnnozTxULKVo4/xAgtfJM7tYJHrYOPj3kahE/RKwDs2d9D0
+	M94xPxdsjuWHPH7qlJFTkqvYot0DZtQBlYIu9S2hnEVz3rFMNknWhAG4BpjRhtRWZcgghI
+	GWccWmcV6NJjUbNsL6RiptQyL4EBCBWqR8xODHC0Md9rp/HN+kf53je0Z9Xc1g==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,9 +70,10 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH v2 02/13] ASoC: dt-bindings: davinci-mcbsp: Add optional clock
-Date: Tue,  2 Apr 2024 09:12:02 +0200
-Message-ID: <20240402071213.11671-3-bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 05/13] ASoC: ti: davinci-i2s: Use external clock to drive
+ sample rate generator
+Date: Tue,  2 Apr 2024 09:12:05 +0200
+Message-ID: <20240402071213.11671-6-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
 References: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
@@ -85,15 +86,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7MXKNXKMUOQ6HLMTDNGKJTOQPGRPIA2I
-X-Message-ID-Hash: 7MXKNXKMUOQ6HLMTDNGKJTOQPGRPIA2I
+Message-ID-Hash: UKJAEVQOE4DCMM3EEKSLBBM3SXBO24MD
+X-Message-ID-Hash: UKJAEVQOE4DCMM3EEKSLBBM3SXBO24MD
 X-Mailman-Approved-At: Sun, 07 Apr 2024 07:14:05 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7MXKNXKMUOQ6HLMTDNGKJTOQPGRPIA2I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UKJAEVQOE4DCMM3EEKSLBBM3SXBO24MD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,42 +103,141 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The McBSP uses an internal sample rate generator to provide bit clock
-or frame clock. This sample rate generator can be programmed to be
-driven by McBSP's internal clock source or by an external clock source
-(located on CLKS pin). The external clock source is not described in
-the bindings.
+McBSP's internal sample rate generator can be programed to be driven by
+its internal clock or by an external clock source located on CLKS pin.
+The external clock source case is not handled by the driver.
 
-Add an optional clock item that allows to select an external clock as
-sample rate generator's input.
+Handle an optional clock related to this external clock source. If
+present, the driver uses the clock located on CLKS pin as input for the
+sample rate generator. Thus, the external clock rate is used to compute
+divisors. If this optional clock is not present, the sample rate
+generator is driven by the McBSP's functional clock.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/ti/davinci-i2s.c | 65 ++++++++++++++++++++++++++++----------
+ 1 file changed, 49 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-index 139b594dd192..0c2b1936c6a1 100644
---- a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-@@ -50,12 +50,16 @@ properties:
-       - const: tx
+diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
+index cd64f1384e18..578b4ae28b71 100644
+--- a/sound/soc/ti/davinci-i2s.c
++++ b/sound/soc/ti/davinci-i2s.c
+@@ -134,6 +134,7 @@ struct davinci_mcbsp_dev {
+ 	int				mode;
+ 	u32				pcr;
+ 	struct clk			*clk;
++	struct clk			*ext_clk;
+ 	/*
+ 	 * Combining both channels into 1 element will at least double the
+ 	 * amount of time between servicing the dma channel, increase
+@@ -364,7 +365,8 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_interval *i = NULL;
+ 	int mcbsp_word_length, master;
+-	unsigned int rcr, xcr, srgr, clk_div, freq, framesize;
++	unsigned int rcr, xcr, clk_div, freq, framesize;
++	unsigned int srgr = 0;
+ 	u32 spcr;
+ 	snd_pcm_format_t fmt;
+ 	unsigned element_cnt = 1;
+@@ -385,9 +387,13 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
  
-   clocks:
-+    minItems: 1
-     items:
-       - description: functional clock
-+      - description: external input clock for sample rate generator.
+ 	switch (master) {
+ 	case SND_SOC_DAIFMT_BP_FP:
+-		freq = clk_get_rate(dev->clk);
+-		srgr = DAVINCI_MCBSP_SRGR_FSGM |
+-		       DAVINCI_MCBSP_SRGR_CLKSM;
++		if (dev->ext_clk) {
++			freq = clk_get_rate(dev->ext_clk);
++		} else {
++			freq = clk_get_rate(dev->clk);
++			srgr = DAVINCI_MCBSP_SRGR_CLKSM;
++		}
++		srgr |= DAVINCI_MCBSP_SRGR_FSGM;
+ 		srgr |= DAVINCI_MCBSP_SRGR_FWID(mcbsp_word_length *
+ 						8 - 1);
+ 		if (dev->i2s_accurate_sck) {
+@@ -691,12 +697,36 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
  
-   clock-names:
-+    minItems: 1
-     items:
-       - const: fck
-+      - const: clks
+-	dev->clk = clk_get(&pdev->dev, NULL);
++	/*
++	 * The optional is there for backward compatibility.
++	 * If 'fck' is not present, the clk_get(dev, NULL) that follows may find something
++	 */
++	dev->clk = devm_clk_get_optional(&pdev->dev, "fck");
+ 	if (IS_ERR(dev->clk))
+-		return -ENODEV;
+-	ret = clk_enable(dev->clk);
++		return dev_err_probe(&pdev->dev, PTR_ERR(dev->clk), "Invalid functional clock\n");
++	if (!dev->clk) {
++		dev->clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(dev->clk))
++			return dev_err_probe(&pdev->dev, PTR_ERR(dev->clk),
++					     "Missing functional clock\n");
++	}
++
++	dev->ext_clk = devm_clk_get_optional(&pdev->dev, "clks");
++	if (IS_ERR(dev->ext_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(dev->ext_clk), "Invalid external clock\n");
++
++	ret = clk_prepare_enable(dev->clk);
+ 	if (ret)
+-		goto err_put_clk;
++		return ret;
++
++	if (dev->ext_clk) {
++		dev_dbg(&pdev->dev, "External clock used for sample rate generator\n");
++		ret = clk_prepare_enable(dev->ext_clk);
++		if (ret) {
++			dev_err_probe(&pdev->dev, ret, "Failed to enable external clock\n");
++			goto err_disable_clk;
++		}
++	}
  
-   power-domains:
-     maxItems: 1
+ 	dev->dev = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, dev);
+@@ -704,7 +734,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_component(&pdev->dev, &davinci_i2s_component,
+ 					 &davinci_i2s_dai, 1);
+ 	if (ret != 0)
+-		goto err_release_clk;
++		goto err_disable_ext_clk;
+ 
+ 	ret = edma_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+@@ -716,10 +746,12 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 
+ err_unregister_component:
+ 	snd_soc_unregister_component(&pdev->dev);
+-err_release_clk:
+-	clk_disable(dev->clk);
+-err_put_clk:
+-	clk_put(dev->clk);
++err_disable_ext_clk:
++	if (dev->ext_clk)
++		clk_disable_unprepare(dev->ext_clk);
++err_disable_clk:
++	clk_disable_unprepare(dev->clk);
++
+ 	return ret;
+ }
+ 
+@@ -729,9 +761,10 @@ static void davinci_i2s_remove(struct platform_device *pdev)
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+-	clk_disable(dev->clk);
+-	clk_put(dev->clk);
+-	dev->clk = NULL;
++	clk_disable_unprepare(dev->clk);
++
++	if (dev->ext_clk)
++		clk_disable_unprepare(dev->ext_clk);
+ }
+ 
+ static const struct of_device_id davinci_i2s_match[] __maybe_unused = {
 -- 
 2.44.0
 
