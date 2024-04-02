@@ -4,89 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E4EFC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7384C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:22:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF6052C31;
-	Tue,  2 Apr 2024 17:22:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF6052C31
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04BBE2C34;
+	Tue,  2 Apr 2024 17:22:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04BBE2C34
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712071362;
-	bh=pvf02amI0FeM/33GrNU+1kEDh57vg/K+58jbwJAR05Y=;
+	s=default; t=1712071378;
+	bh=49ld4xJDHyZWnbGo+NFQDCKqv0fbH2lyVV3hubBlVwQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RaAQsaj58LReXc30CK2TB6H3XLOj/XqGgiBs7cJsIJZ9StWot/KWYM7ch9kYKZuHK
-	 GNK7O1k2TwZT7tkaOzpFrlByjRLJsXg4nQKKy0I5/5NqCUOT+7kxIuJ8N1cxj6IlPK
-	 iysaqwI0fUiA+vcq1vABv7dt/UItF8GT85raMCI4=
+	b=P65jRWiDw//ySVOMnrvIgttiObhm/dT4zbwsqFZrNSocsycpVw8UiGigd3Sn3jeCl
+	 nnHHqqAffFCIaKoPwSz6UShSfw5nxbsWbChPfgvlHVlIOw8q6fHv1SHHN3kTOODS0z
+	 Y4qb4G7dM3O7qIjLV1zjPaE/ehVcf/MSwrzdFW48=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3CB77F807FC; Tue,  2 Apr 2024 17:19:31 +0200 (CEST)
+	id 391BDF80818; Tue,  2 Apr 2024 17:19:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7015CF807DC;
-	Tue,  2 Apr 2024 17:19:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AD62F80809;
+	Tue,  2 Apr 2024 17:19:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9676F80620; Tue,  2 Apr 2024 17:19:04 +0200 (CEST)
+	id 4FF91F80623; Tue,  2 Apr 2024 17:19:07 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EAEEBF805C5
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAEEBF805C5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 71BEBF805B4
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71BEBF805B4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=h2G1gWrw
+ header.s=Intel header.b=F5oHPqwV
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712071134; x=1743607134;
+  t=1712071132; x=1743607132;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=pvf02amI0FeM/33GrNU+1kEDh57vg/K+58jbwJAR05Y=;
-  b=h2G1gWrw/ap4drI/ZtEIWDi2L27mey1RqjH7uX6CqqwO5VvDBWJqvjbN
-   qdZtJKZU8dc7mpwmDWNbnsT6/zOC1RK57VmhOKXuSAHnGPRPiSsXGy5pA
-   MkrSdN9sFzhYBSMaNiJTzkO0/fJftD2MFjw0etgpZ/aWt9HCddgDalBIW
-   J/GULnRfGDRxOpgqoHyHftN1mMDfzfWo4Tv71p1vrAnLbqd3XUIPveowR
-   Bl+FiOducLM5z/19EWYpm0IwvuR86ji0G4U+6m0h4kQ6UbEb1oNh5U4EZ
-   lFQCFXuAMHDny0jTumE28gZpa55MYYFPiEGCfSSfpYjuu5e8gghbMtgyN
+  bh=49ld4xJDHyZWnbGo+NFQDCKqv0fbH2lyVV3hubBlVwQ=;
+  b=F5oHPqwVSQD0498BdyyiVbxriBWlGXZybPj1WNQKlR3MzAwLjdTROMhY
+   DIRcu3cCF1klLUOdhRphghU35GzvCCXuKX+HwFsFK1qcTXDqRL10DUQDi
+   RgdkUBpXt6/sCbmjJlUoLNMlVE6gDMnn8eyTbNisUn/2QCFDcs+2iaqJP
+   tjaY+1h/3Demz5BSfNsJxYSYVkyC+WzZLqqt2WLxwCCYQKTgDCMkBjmNG
+   BEo5E4QBge8/ynqbvlOat3rdRtoPeAw/eazUWnwJyKV3fX2IHjOaXax07
+   ZRlESHsL7Gn2t3C1QhFFsT0KyUxujwruPDNp4/8rHS6rJEBzks26PKImv
    A==;
-X-CSE-ConnectionGUID: dl4j6lPTSKW/KnLgJWiuIw==
-X-CSE-MsgGUID: ch+nMRMiTmCPJ/Kr3Za6HA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29730169"
+X-CSE-ConnectionGUID: pcd+KN2ESxCxvfsmDNK8dw==
+X-CSE-MsgGUID: vMlga9HVSV2+p0SDi2cDRg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29730142"
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="29730169"
+   d="scan'208";a="29730142"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
   by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:46 -0700
-X-CSE-ConnectionGUID: Pcloce0iSZ+u39QEAIwUsA==
-X-CSE-MsgGUID: WUHTcC+aTemVfzQeUhjQTQ==
+ 02 Apr 2024 08:18:45 -0700
+X-CSE-ConnectionGUID: vqu8mBJnTEqoCOWdzxkO7Q==
+X-CSE-MsgGUID: tkvqeGYSQGebpCJPTkW9cQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="22796541"
+   d="scan'208";a="22796534"
 Received: from skhare-mobl5.amr.corp.intel.com (HELO pbossart-mobl6.intel.com)
  ([10.212.8.83])
   by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:45 -0700
+ 02 Apr 2024 08:18:44 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Rander Wang <rander.wang@intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-Subject: [PATCH 14/17] ASoC: SOF: pcm: simplify sof_pcm_hw_free() with helper
-Date: Tue,  2 Apr 2024 10:18:25 -0500
-Message-Id: <20240402151828.175002-15-pierre-louis.bossart@linux.intel.com>
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 12/17] ASoC: SOF: Intel: hda: Clear Soundwire node ID during
+ BE DAI hw_free
+Date: Tue,  2 Apr 2024 10:18:23 -0500
+Message-Id: <20240402151828.175002-13-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 References: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: G2W74OELNSV5EZ67PZ2TV7RQ2NODCXN7
-X-Message-ID-Hash: G2W74OELNSV5EZ67PZ2TV7RQ2NODCXN7
+Message-ID-Hash: SZLWGBM2LVOOM4HUV6SP2JOKT26DD2ZW
+X-Message-ID-Hash: SZLWGBM2LVOOM4HUV6SP2JOKT26DD2ZW
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G2W74OELNSV5EZ67PZ2TV7RQ2NODCXN7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SZLWGBM2LVOOM4HUV6SP2JOKT26DD2ZW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,69 +110,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The same sequence is used twice, use common helper.
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+
+When an xrun happens, the BE DAI hw_params doesn't get invoked before
+the stream restarts with a prepare. In this case, clearing the node ID
+when the DAI widget is freed and unprepared will result in an error when
+it is re-initialized. In order to avoid this, move the code to clear the
+node ID to the BE DAI hw_free op to keep it balanced with the BE DAI
+hw_params.
 
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pcm.c | 32 +++-----------------------------
- 1 file changed, 3 insertions(+), 29 deletions(-)
+ sound/soc/sof/intel/hda.c     | 24 ++++++++++++++++++++++++
+ sound/soc/sof/ipc4-topology.c |  4 ----
+ 2 files changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index f03cee94bce6..ed09756f6af6 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -196,9 +196,8 @@ static int sof_pcm_hw_free(struct snd_soc_component *component,
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
--	const struct sof_ipc_pcm_ops *pcm_ops = sof_ipc_get_ops(sdev, pcm);
- 	struct snd_sof_pcm *spcm;
--	int ret, err = 0;
-+	int ret;
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index ae1a38f20bdb..2c64c25d6f3b 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -31,6 +31,7 @@
+ #include "../sof-audio.h"
+ #include "../sof-pci-dev.h"
+ #include "../ops.h"
++#include "../ipc4-topology.h"
+ #include "hda.h"
+ #include "telemetry.h"
  
- 	/* nothing to do for BE */
- 	if (rtd->dai_link->no_pcm)
-@@ -211,36 +210,11 @@ static int sof_pcm_hw_free(struct snd_soc_component *component,
- 	dev_dbg(component->dev, "pcm: free stream %d dir %d\n",
- 		spcm->pcm.pcm_id, substream->stream);
- 
--	if (spcm->prepared[substream->stream]) {
--		/* stop DMA first if needed */
--		if (pcm_ops && pcm_ops->platform_stop_during_hw_free)
--			snd_sof_pcm_platform_trigger(sdev, substream, SNDRV_PCM_TRIGGER_STOP);
--
--		/* free PCM in the DSP */
--		if (pcm_ops && pcm_ops->hw_free) {
--			ret = pcm_ops->hw_free(component, substream);
--			if (ret < 0)
--				err = ret;
--		}
--
--		spcm->prepared[substream->stream] = false;
--	}
--
--	/* reset DMA */
--	ret = snd_sof_pcm_platform_hw_free(sdev, substream);
--	if (ret < 0) {
--		dev_err(component->dev, "error: platform hw free failed\n");
--		err = ret;
--	}
--
--	/* free the DAPM widget list */
--	ret = sof_widget_list_free(sdev, spcm, substream->stream);
--	if (ret < 0)
--		err = ret;
-+	ret = sof_pcm_stream_free(sdev, substream, spcm, substream->stream, true);
- 
- 	cancel_work_sync(&spcm->stream[substream->stream].period_elapsed_work);
- 
--	return err;
-+	return ret;
+@@ -150,8 +151,31 @@ static int sdw_params_stream(struct device *dev,
+ 	return hda_dai_config(w, SOF_DAI_CONFIG_FLAGS_HW_PARAMS, &data);
  }
  
- static int sof_pcm_prepare(struct snd_soc_component *component,
++static int sdw_params_free(struct device *dev, struct sdw_intel_stream_free_data *free_data)
++{
++	struct snd_soc_dai *d = free_data->dai;
++	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(d, free_data->substream->stream);
++	struct snd_sof_dev *sdev = widget_to_sdev(w);
++
++	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
++		struct snd_sof_widget *swidget = w->dobj.private;
++		struct snd_sof_dai *dai = swidget->private;
++		struct sof_ipc4_copier_data *copier_data;
++		struct sof_ipc4_copier *ipc4_copier;
++
++		ipc4_copier = dai->private;
++		copier_data = &ipc4_copier->data;
++
++		/* clear the node ID */
++		copier_data->gtw_cfg.node_id &= ~SOF_IPC4_NODE_INDEX_MASK;
++	}
++
++	return 0;
++}
++
+ struct sdw_intel_ops sdw_callback = {
+ 	.params_stream = sdw_params_stream,
++	.free_stream = sdw_params_free,
+ };
+ 
+ static int sdw_ace2x_params_stream(struct device *dev,
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 6b9b16f3157e..e0e4f356275f 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -1296,7 +1296,6 @@ static void sof_ipc4_unprepare_copier_module(struct snd_sof_widget *swidget)
+ 		}
+ 
+ 		if (ipc4_copier->dai_type == SOF_DAI_INTEL_ALH) {
+-			struct sof_ipc4_copier_data *copier_data = &ipc4_copier->data;
+ 			struct sof_ipc4_alh_configuration_blob *blob;
+ 			unsigned int group_id;
+ 
+@@ -1306,9 +1305,6 @@ static void sof_ipc4_unprepare_copier_module(struct snd_sof_widget *swidget)
+ 					   ALH_MULTI_GTW_BASE;
+ 				ida_free(&alh_group_ida, group_id);
+ 			}
+-
+-			/* clear the node ID */
+-			copier_data->gtw_cfg.node_id &= ~SOF_IPC4_NODE_INDEX_MASK;
+ 		}
+ 	}
+ 
 -- 
 2.40.1
 
