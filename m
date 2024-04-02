@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C771DCD11C2
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C554CD128A
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:18:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD12322A7;
-	Sun,  7 Apr 2024 09:17:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD12322A7
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE49527A6;
+	Sun,  7 Apr 2024 09:17:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE49527A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712474265;
-	bh=Mh2LHM8oJ/CJGsfoIFwaaxA758nlCt7jqRreMW4pp4E=;
+	s=default; t=1712474283;
+	bh=flqmIvc29aq03tyjckaFwyCD7FjGJloE0Stz4DI3BWU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rU2WJbObDghRrHche2XkIFSB/NSLf0MUWr2uBiXdoVrWrMYu5L1LLnGYVmP8BXaOG
-	 WfRh2eSXriG2kKvmF60B8npzvaxOiD9p8WQIqg7CFKFnmxGs0ABSNpQAX9xYLq9lGn
-	 nUO4Y/+0r+vufbFJqJRPH3U4c0NyJ09V6ThzSNrc=
+	b=q93P8oawZgIhrbDgGONjorJDWnYm8ygDGaUbX7Iv5f8Uc+4hwsu/Ruvg6olooesIb
+	 iiI5fdGJQXRH7faAsRWnXc1UNjUNOYjVLG3/0T74ggWqfNGjeU2GApCkSdm/E+pa3Z
+	 iOx57n82a23Oqbu9HH8NZngbAWECq47uiCpakg9E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 691BCF8057F; Sun,  7 Apr 2024 09:17:15 +0200 (CEST)
+	id EA426F805D5; Sun,  7 Apr 2024 09:17:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A191FF805A9;
-	Sun,  7 Apr 2024 09:17:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 649D4F805C3;
+	Sun,  7 Apr 2024 09:17:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98FAAF80588; Tue,  2 Apr 2024 09:12:37 +0200 (CEST)
+	id DCC59F8058C; Tue,  2 Apr 2024 09:12:40 +0200 (CEST)
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::229])
+ [217.70.183.199])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 47FA9F80568
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47FA9F80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id B4518F80570
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4518F80570
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=itUJfzVY
-Received: by mail.gandi.net (Postfix) with ESMTPA id 57E66FF803;
-	Tue,  2 Apr 2024 07:12:18 +0000 (UTC)
+ header.s=gm1 header.b=SlgINAU+
+Received: by mail.gandi.net (Postfix) with ESMTPA id 01FCCFF80B;
+	Tue,  2 Apr 2024 07:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712041939;
+	t=1712041943;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bVsKOWPb4Rd565bWpf2m06Y2VAlQVW0XhgGG23AgwRw=;
-	b=itUJfzVYv3klqtnyEMVDg2E7rjmPA6DSQihARuQk91eujLgf+NwVEhY5Bba8ooIpVjc5Hw
-	pd1mYqT02lr9JJ2OETE6UJnI6y0bXTWmG0gR3BUU/Oz4xy/ZRaoJuoY/flkrf3mXHHMv6E
-	pERRfbxVkjAWAiuKyOdftboq9DruynMe6Pdx2Qh6MwpoUZeRoQ6LkZ3nFpQjbIhkpslhjV
-	GOuDD+faS8tKSfQavrPBL6Owt56Bu/ooMgFcjO9YdRo6cgf5D8rDsm4TQhInzChGRy44oK
-	d7RES5xaxraH0X/9Dcb8bmrg8rFli9S75f+IAMWPw1LLuv25Vfglq7rzATSS1g==
+	bh=7mFoXC/7lZncljkGK1+GfQv48vrdua/OVliFLiKRc2A=;
+	b=SlgINAU+zuI8Bem8akyfc0t7xKmu4rUVZEM3IVa0IwYsK+DDPs1sDhofdMdra9u+xNJ1fF
+	uMW8Popwmvhk1niBAJKFtVQi2IoqADVic4CZ9AsCQ8S6O1QBqgxnbd5r2ILYdrbHKaYVl7
+	jBykm4J62EMwPAu8UwwJGOQOMY0S/496JI8257CFrXBxZB+vnCzjrvDVmfqfi85kOkS714
+	RvcsnSri9LLhxE2zi/zUGXFfD+D1gPqCte7C2dGW14Gv0v0gCumDg9pfSzNxD/CZCWHNrn
+	VIW3PKOnGDk6DZ6lhQTqvGZA4c8EuAS0HGXJimcl1BktvTdIyvT3KQbuwdBd2A==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,10 +70,10 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH v2 01/13] ASoC: dt-bindings: davinci-mcbsp: convert McBSP
- bindings to yaml schema
-Date: Tue,  2 Apr 2024 09:12:01 +0200
-Message-ID: <20240402071213.11671-2-bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
+ dev_err_probe
+Date: Tue,  2 Apr 2024 09:12:04 +0200
+Message-ID: <20240402071213.11671-5-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
 References: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
@@ -86,197 +86,45 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: NAH2UF7MJI4G4PV3BQZ626NZ6U6TEUQA
-X-Message-ID-Hash: NAH2UF7MJI4G4PV3BQZ626NZ6U6TEUQA
-X-Mailman-Approved-At: Sun, 07 Apr 2024 07:14:00 +0000
+Message-ID-Hash: SVQZ7RHWQX7ACIUGE37FNXDF4DYEQFBZ
+X-Message-ID-Hash: SVQZ7RHWQX7ACIUGE37FNXDF4DYEQFBZ
+X-Mailman-Approved-At: Sun, 07 Apr 2024 07:14:05 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NAH2UF7MJI4G4PV3BQZ626NZ6U6TEUQA/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SVQZ7RHWQX7ACIUGE37FNXDF4DYEQFBZ/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the binding for McBSP controllers for TI SoCs from txt
-to YAML schema.
+In probe(), the dev_err() is used for every returned error.
 
-Add properties 'clocks', 'clock-names', 'power-domains' and
-'#sound-dai-cells' which were missing from the txt file.
-Add '#sound-dai-cells' and 'clocks' in the example which were missing
-from the txt file.
+Replace dev_err() with dev_err_probe() where -EPROBE_DEFER can be
+returned.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/sound/davinci-mcbsp.txt          | 50 ----------
- .../bindings/sound/davinci-mcbsp.yaml         | 95 +++++++++++++++++++
- 2 files changed, 95 insertions(+), 50 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
- create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
+ sound/soc/ti/davinci-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt b/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
-deleted file mode 100644
-index 3ffc2562fb31..000000000000
---- a/Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
-+++ /dev/null
-@@ -1,50 +0,0 @@
--Texas Instruments DaVinci McBSP module
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--
--This binding describes the "Multi-channel Buffered Serial Port" (McBSP)
--audio interface found in some TI DaVinci processors like the OMAP-L138 or AM180x.
--
--
--Required properties:
--~~~~~~~~~~~~~~~~~~~~
--- compatible :
--        "ti,da850-mcbsp" : for DA850, AM180x and OPAM-L138 platforms
--
--- reg : physical base address and length of the controller memory mapped
--        region(s).
--- reg-names : Should contain:
--        * "mpu" for the main registers (required).
--        * "dat" for the data FIFO (optional).
--
--- dmas: three element list of DMA controller phandles, DMA request line and
--	TC channel ordered triplets.
--- dma-names: identifier string for each DMA request line in the dmas property.
--	These strings correspond 1:1 with the ordered pairs in dmas. The dma
--	identifiers must be "rx" and "tx".
--
--Optional properties:
--~~~~~~~~~~~~~~~~~~~~
--- interrupts : Interrupt numbers for McBSP
--- interrupt-names : Known interrupt names are "rx" and "tx"
--
--- pinctrl-0: Should specify pin control group used for this controller.
--- pinctrl-names: Should contain only one value - "default", for more details
--        please refer to pinctrl-bindings.txt
--
--Example (AM1808):
--~~~~~~~~~~~~~~~~~
--
--mcbsp0: mcbsp@1d10000 {
--	compatible = "ti,da850-mcbsp";
--	pinctrl-names = "default";
--	pinctrl-0 = <&mcbsp0_pins>;
--
--	reg = 	<0x00110000 0x1000>,
--		<0x00310000 0x1000>;
--	reg-names = "mpu", "dat";
--	interrupts = <97 98>;
--	interrupt-names = "rx", "tx";
--	dmas = <&edma0 3 1
--		&edma0 2 1>;
--	dma-names = "tx", "rx";
--};
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-new file mode 100644
-index 000000000000..139b594dd192
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-@@ -0,0 +1,95 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/davinci-mcbsp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: McBSP Controller for TI SoCs
-+
-+maintainers:
-+  - Bastien Curutchet <bastien.curutchet@bootlin.com>
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,da850-mcbsp
-+
-+  reg:
-+    minItems: 1
-+    items:
-+      - description: CFG registers
-+      - description: data registers
-+
-+  reg-names:
-+    minItems: 1
-+    items:
-+      - const: mpu
-+      - const: dat
-+
-+  dmas:
-+    items:
-+      - description: transmission DMA channel
-+      - description: reception DMA channel
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+  interrupts:
-+    items:
-+      - description: RX interrupt
-+      - description: TX interrupt
-+
-+  interrupt-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  clocks:
-+    items:
-+      - description: functional clock
-+
-+  clock-names:
-+    items:
-+      - const: fck
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - reg-names
-+  - dmas
-+  - dma-names
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mcbsp0@1d10000 {
-+      #sound-dai-cells = <0>;
-+      compatible = "ti,da850-mcbsp";
-+      pinctrl-names = "default";
-+      pinctrl-0 = <&mcbsp0_pins>;
-+
-+      reg = <0x111000 0x1000>,
-+            <0x311000 0x1000>;
-+      reg-names = "mpu", "dat";
-+      interrupts = <97>, <98>;
-+      interrupt-names = "rx", "tx";
-+      dmas = <&edma0 3 1>,
-+             <&edma0 2 1>;
-+      dma-names = "tx", "rx";
-+
-+      clocks = <&psc1 14>;
-+    };
+diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
+index 5c906641640e..cd64f1384e18 100644
+--- a/sound/soc/ti/davinci-i2s.c
++++ b/sound/soc/ti/davinci-i2s.c
+@@ -708,7 +708,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 
+ 	ret = edma_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
++		dev_err_probe(&pdev->dev, ret, "register PCM failed\n");
+ 		goto err_unregister_component;
+ 	}
+ 
 -- 
 2.44.0
 
