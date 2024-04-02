@@ -4,75 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 830B0CD1288
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 12:07:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ABE9CD128A
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 12:51:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C3992CDC;
-	Wed,  3 Apr 2024 14:06:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C3992CDC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84ABA2CDF;
+	Wed,  3 Apr 2024 14:51:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84ABA2CDF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712146023;
-	bh=rdpu1fv+YDNO5DeUj4K9w41evcL2oZyCQ49s+KEpRqE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1712148672;
+	bh=rhp7e6puQyVUMErtQ1wrKsDuOwsFw8HjdJrVLLq+GRo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SDnpKNh/IeGGZG/ndE+5IMzwUhm88CHKzMYkquEwOuvb9wT3rmENQkpxgSy0cQ8HL
-	 NtieY+tPsMPa8qWdya/J0xAdPCwRrFDGIm6Lj1fAD0zpD/d7m+4X9t3zVkepUu+YEi
-	 vg2PRYfHT8dnHdC8HIi9cXd2wUbeD5ja2XHnwChw=
+	b=tNjmKL8nIQcLGD5z3cyiEnoR8A9b67yu6ta+WBZ9/nSnAl4++gaei3nj0DaNTBjIv
+	 SwocOhQVe7QaOSkA1RvAfP/+xi+9u6vKKDtSHDIfO9NjmMVfadFBETYeGsadgmO3tE
+	 hcpaqY6ULCxnqhp7F58R+nT+BRu7e55cDJ9sEZAc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20E95F80580; Wed,  3 Apr 2024 14:06:31 +0200 (CEST)
+	id 3603DF80568; Wed,  3 Apr 2024 14:50:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B77E3F80580;
-	Wed,  3 Apr 2024 14:06:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4181F80580;
+	Wed,  3 Apr 2024 14:50:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 248E2F8020D; Wed,  3 Apr 2024 14:06:24 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 22F3DF80568; Wed,  3 Apr 2024 14:50:35 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 10A59F80130
-	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 14:06:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10A59F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id CEFC6F80130
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 14:50:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEFC6F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=azZm6Uv0
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8CBFF61384;
-	Wed,  3 Apr 2024 12:06:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D94EC433F1;
-	Wed,  3 Apr 2024 12:06:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712145973;
-	bh=rdpu1fv+YDNO5DeUj4K9w41evcL2oZyCQ49s+KEpRqE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=azZm6Uv0mlW4ar7arnzKIHwMwtIbZOnVdp1NvEA03p9/EaJzlYrflnTW/kaEE5BWx
-	 H9U3+G4ONMBRmCxSjXxpBqBOGF7Di8QV3z9C5OhIK3UfdF7Qrii6dUvy+d3EB1+A99
-	 4G6ZumJBZLu/r+UlG1PzB+ZGvwcE3LaumHcLguc3JitDl/7AE49fDCPZmqe1OPVmwm
-	 NYMhNu1k81AsTvJr7EqUe52gP8Pvitmv+FxJ/34HYhrApynyZ5T0KYabegA2Wr0SxI
-	 PFn43OVj7vmOBuD5766DCHNlE9xpKWEQcqBSiu4Q+Qhd3YTcX2GrO3PJXt8zJxbnym
-	 y/L+5D1hFEXSw==
-From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-In-Reply-To: <20240403093145.3375857-1-amadeuszx.slawinski@linux.intel.com>
-References: <20240403093145.3375857-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH 00/10] Use const where applicable
-Message-Id: <171214597120.799854.18095797972355599249.b4-ty@kernel.org>
-Date: Wed, 03 Apr 2024 13:06:11 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=FqcspjCJ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712148628; x=1743684628;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=rhp7e6puQyVUMErtQ1wrKsDuOwsFw8HjdJrVLLq+GRo=;
+  b=FqcspjCJEVCYo7tTSfB4IXjyKrOa+nxRjyQU7UJ91/SZaiataqUFylBc
+   4aRdDi3RSiRRx/SCjxvyBTRzJGAH7Sn2iSHl/OOBizAG9PtPRqUnQnX97
+   P6KBuDcodr8v2W3u5M/yR4AUyGr75SPusEfs5vJKradiViOaEHCLzS+Z8
+   GtyKrGfsQaGT9pfYb8bgDH3MMpzmkPKqCf+ijfM9S96UN3uVNSpxklzu5
+   BW4ypSuHv4u26l0/dI0/gE2u4v/m57gT4uRU7SFI+nZ+ihrNMMvQ8xF9E
+   6ZcpTGejYzL9bTAO6AO0zsgWC6fB0S4RafiF727cvxUG2ew2b0aL+INBy
+   w==;
+X-CSE-ConnectionGUID: yu4HAE+lQHqvmr2TezSGWQ==
+X-CSE-MsgGUID: KqajrX5gQ9y6QRs7bjZPow==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7539273"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
+   d="scan'208";a="7539273"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2024 05:50:22 -0700
+X-CSE-ConnectionGUID: 1/2JH2STQ7WDV9dzV2GDbw==
+X-CSE-MsgGUID: R5MUllpuTCKa7NQ8b3XutA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
+   d="scan'208";a="18343201"
+Received: from makulkar-mobl1.amr.corp.intel.com (HELO [10.212.52.18])
+ ([10.212.52.18])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2024 05:50:21 -0700
+Message-ID: <ef510647-c409-4da6-9cd4-ff4e54cbee74@linux.intel.com>
+Date: Tue, 2 Apr 2024 08:57:14 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.14-dev
-Message-ID-Hash: BC3VCC4H7U6ZGN3B6YUBHGWCIIPK7CRH
-X-Message-ID-Hash: BC3VCC4H7U6ZGN3B6YUBHGWCIIPK7CRH
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHYyIDIvMl0gQVNvQzogY2RuczogQWRk?=
+ =?UTF-8?Q?_drivers_of_Cadence_Multi-Channel_I2S_Controller?=
+To: Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor.dooley@microchip.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
+References: <20240320090239.168743-1-xingyu.wu@starfivetech.com>
+ <20240320090239.168743-3-xingyu.wu@starfivetech.com>
+ <1d0399d2-684f-490e-8711-f636e987a0b8@linux.intel.com>
+ <NTZPR01MB0956BFADB4B3DA507D938F669F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
+ <NTZPR01MB0956BFADB4B3DA507D938F669F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: GRCO6DQJ3PF3JBMD6ZR3KRBXOFDCXKNE
+X-Message-ID-Hash: GRCO6DQJ3PF3JBMD6ZR3KRBXOFDCXKNE
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BC3VCC4H7U6ZGN3B6YUBHGWCIIPK7CRH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GRCO6DQJ3PF3JBMD6ZR3KRBXOFDCXKNE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,68 +118,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 03 Apr 2024 11:31:35 +0200, Amadeusz Sławiński wrote:
-> Use devm_kstrdup_const in few places to possibly save a bit of memory.
-> Mark some of the structs as const, as they are not modified and used as
-> is.
+
+>>
+>>> +#define PERIODS_MIN		2
+>>> +
+>>> +static unsigned int cdns_i2s_pcm_tx(struct cdns_i2s_dev *dev,
+>>> +				    struct snd_pcm_runtime *runtime,
+>>> +				    unsigned int tx_ptr, bool *period_elapsed,
+>>> +				    snd_pcm_format_t format)
+>>> +{
+>>> +	unsigned int period_pos = tx_ptr % runtime->period_size;
+>>
+>> not following what the modulo is for, usually it's modulo the buffer size?
 > 
-> Amadeusz Sławiński (10):
->   ASoC: Intel: avs: hdaudio: Use devm_kstrdup_const
->   ASoC: Intel: avs: Use devm_kstrdup_const
->   ASoC: Intel: avs: hdaudio: Constify probing_link
->   ASoC: Intel: avs: es8336: Constify card_headset_pins
->   ASoC: Intel: avs: nau8825: Constify card_headset_pins
->   ASoC: Intel: avs: rt274: Constify card_headset_pins
->   ASoC: Intel: avs: rt286: Constify card_headset_pins
->   ASoC: Intel: avs: rt298: Constify card_headset_pins
->   ASoC: Intel: avs: rt5663: Constify card_headset_pins
->   ASoC: Intel: avs: rt5682: Constify card_headset_pins
+> This is to see if the new data is divisible by period_size and to determine whether
+> it is enough for a period_size in the later loop.
+
+That didn't answer to my question, the position is usually between
+0..buffer_size.1.
+
+Doing increments on a modulo value then comparisons as done below seems
+rather questionable.
+	
+>>> +
+>>> +		iowrite32(data[0], dev->base + CDNS_FIFO_MEM);
+>>> +		iowrite32(data[1], dev->base + CDNS_FIFO_MEM);
+>>> +		period_pos++;
+>>> +		if (++tx_ptr >= runtime->buffer_size)
+>>> +			tx_ptr = 0;
+>>> +	}
+>>> +
+>>> +	*period_elapsed = period_pos >= runtime->period_size;
+>>> +	return tx_ptr;
+>>> +}
+
+>>> +	pm_runtime_enable(&pdev->dev);
+>>> +	if (pm_runtime_enabled(&pdev->dev))
+>>> +		cdns_i2s_runtime_suspend(&pdev->dev);
+>>
+>> that sequence looks suspicious.... Why would you suspend immediately during the
+>> probe? You're probably missing all the autosuspend stuff?
 > 
-> [...]
+> Since I have enabled clocks before, and the device is in the suspend state after
+> pm_runtime_enable(), I need to disable clocks in cdns_i2s_runtime_suspend()
+> to match the suspend state.
 
-Applied to
+That is very odd on two counts
+a) if you haven't enabled the clocks, why do you need to disbale them?
+b) if you do a pm_runtime_enable(), then the branch if
+(pm_runtime_enabled) is always true.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+> 
+>>
+>>> +
+>>> +	dev_dbg(&pdev->dev, "I2S supports %d stereo channels with %s.\n",
+>>> +		i2s->max_channels, ((i2s->irq < 0) ? "dma" : "interrupt"));
+>>> +
+>>> +	return 0;
+>>> +
+>>> +err:
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static int cdns_i2s_remove(struct platform_device *pdev) {
+>>> +	pm_runtime_disable(&pdev->dev);
+>>> +	if (!pm_runtime_status_suspended(&pdev->dev))
+>>> +		cdns_i2s_runtime_suspend(&pdev->dev);
+>>
+>> ... and this one too. Once you've disabled pm_runtime, checking the status is
+>> irrelevant...
+> 
+> I think the clocks need to be always enabled after probe if disable pm_runtime,
+> and should be disabled when remove. This will do that.
 
-[01/10] ASoC: Intel: avs: hdaudio: Use devm_kstrdup_const
-        commit: 27aa58180473f81990f35238dc8aec40d34c778d
-[02/10] ASoC: Intel: avs: Use devm_kstrdup_const
-        commit: 68a71af3aee2b776a0030e1393864c9501997cbb
-[03/10] ASoC: Intel: avs: hdaudio: Constify probing_link
-        commit: a3c95efc432ddd18882cfab420cbea14937fb950
-[04/10] ASoC: Intel: avs: es8336: Constify card_headset_pins
-        commit: 2dbe7c809841e645a6b9d6d51801d3c594739d93
-[05/10] ASoC: Intel: avs: nau8825: Constify card_headset_pins
-        commit: bf400f16a03788ccdb1de1d9bfe9458082f24ef7
-[06/10] ASoC: Intel: avs: rt274: Constify card_headset_pins
-        commit: 130c953a75cc62dd5c73c295bae14197dce46b85
-[07/10] ASoC: Intel: avs: rt286: Constify card_headset_pins
-        commit: 682bedc8b0bae52fc5fc95cb3dba6e3d590da653
-[08/10] ASoC: Intel: avs: rt298: Constify card_headset_pins
-        commit: 33a886eee711298e799f1f52432e2f5e234cd015
-[09/10] ASoC: Intel: avs: rt5663: Constify card_headset_pins
-        commit: a055674868fa9d36f290dba906a76dd45801a37e
-[10/10] ASoC: Intel: avs: rt5682: Constify card_headset_pins
-        commit: 5faf65b5d1e36ec0a1eb3ba8ba2a8b7a779575ce
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+if you are disabling pm_runtime, then the pm_runtime state becames invalid.
+When pm_runtime_disable() is added in remove operations, it's mainly to
+prevent the device from suspending.
 
