@@ -4,78 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECB6DC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 07:16:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF6BACD1284
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 09:21:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98CA52D52;
-	Tue,  2 Apr 2024 09:15:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98CA52D52
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C05B2C07;
+	Tue,  2 Apr 2024 11:21:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C05B2C07
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712042158;
-	bh=JDdQUktKOfhua2+Bxj626Bhw5OtcneVpPvwHo6tsN1Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1712049716;
+	bh=Eqv+J/G8QDaPSz4YHEzz2rEQqjnD/zYLA18kwsleRu4=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fY/kNuj/Yk8+SD8OPW0OWp6nbFArAyj6WdJeGtkH71/leZI8cHFW89HWeDl/YJspn
-	 Xsb+eSYsgCH5XDouzHIInqtGI3d7k+0tEZzxSeKbyUinxLr+MDeXm1zcilns5cwEhj
-	 RD2gpelZdxBxrkbDfOYEf7FtX6NlgGS1ciaRcBiY=
+	b=RaASis/dsbtWSHEIaHR6DKM+HR0HWNPD/Vs6lywgiVzlc8XrL0vz61oEHU1WuEqEi
+	 Gj8pVTKHtZdczde1CXSed+JrrQu2qmmzYMlriXv56NjT5TRDBl2EI1p+fgqyeX4mkX
+	 PfFJHoSgNJNm1KPYo3/LrUf86/90lBt+8R4xa1KY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A1F6F89B48; Tue,  2 Apr 2024 08:58:24 +0200 (CEST)
+	id 8656DF805A9; Tue,  2 Apr 2024 11:21:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49D36F89CDA;
-	Tue,  2 Apr 2024 08:58:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12694F80579;
+	Tue,  2 Apr 2024 11:21:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A54C4F8016E; Tue,  2 Apr 2024 08:23:29 +0200 (CEST)
-Received: from mail78-50.sinamail.sina.com.cn (mail78-50.sinamail.sina.com.cn
- [219.142.78.50])
+	id A6CF1F8020D; Tue,  2 Apr 2024 11:21:15 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C3A2F80236
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 08:20:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C3A2F80236
-Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
-	by sina.net (10.75.30.234) with ESMTP
-	id 660BA3B800029E89; Tue, 2 Apr 2024 14:20:47 +0800 (CST)
-X-Sender: zhangyi@everest-semi.com
-X-Auth-ID: zhangyi@everest-semi.com
-Authentication-Results: sina.net;
-	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: B79AA415AEFD44DB8D18C2260402F5CB
-X-SMAIL-UIID: B79AA415AEFD44DB8D18C2260402F5CB-20240402-142047
-From: Zhang Yi <zhangyi@everest-semi.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Cc: tiwai@suse.com,
-	amadeuszx.slawinski@linux.intel.com,
-	yangxiaohua@everest-semi.com,
-	zhuning@everest-semi.com,
-	zhangyi@everest-semi.com
-Subject: [PATCH 3/4] ASoC: codecs: ES8326: Solve a headphone detection issue
- after suspend and resume
-Date: Tue,  2 Apr 2024 14:20:42 +0800
-Message-Id: <20240402062043.20608-4-zhangyi@everest-semi.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240402062043.20608-1-zhangyi@everest-semi.com>
-References: <20240402062043.20608-1-zhangyi@everest-semi.com>
-X-MailFrom: zhangyi@everest-semi.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	by alsa1.perex.cz (Postfix) with ESMTPS id 724FBF80114
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 11:21:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 724FBF80114
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=hM5vBdEX
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 4328MSfU014330;
+	Tue, 2 Apr 2024 09:21:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=pwVN48TC02wisPlvjwOGCqrWo60YyF0/BsQFmG2idY0=; b=hM
+	5vBdEX5ISE2GbzpWdDFGBL9sPfuomnuQH8/qqtqiynripjeXvr5yNYLo8A7wr2Ng
+	1p8jVVFbC2tSPDhaMktmoSV17YSR+BxtcOgpdHeTOv/GLo2f/0dtN4HoezQoE4hE
+	+i3p94RSoBuGV166CTLUtXffC7cnGGwdfivLQj3gvYKxL9ALcq4BlxAywa6UnKo6
+	s0s2H+66tuXQgGeHZznV0yteIHoqt6P6g30URmL+/Ve7akgwEJQfBmWLdTRXSmya
+	Nco2IiHEKecirUKvIt0OxeW3gGhxBtq0cSoSP7mnqDjikUQ13sq+FY1ugag6gnpX
+	UulcClPda1pJdOiQsTmw==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com
+ [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x81wdhheq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 09:21:05 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
+ [10.45.79.139])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 4329L3wn001578
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 2 Apr 2024 09:21:03 GMT
+Received: from [10.216.25.199] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
+ 02:20:59 -0700
+Message-ID: <7cd89939-e0d0-c43b-fa2a-224bf60f4166@quicinc.com>
+Date: Tue, 2 Apr 2024 14:50:56 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v1 2/2] ASoC: qcom: qcm6490: Add machine driver for
+ qcm6490
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
+        <broonie@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <lgirdwood@gmail.com>, <tiwai@suse.com>, <quic_rohkumar@quicinc.com>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+References: <20240327113228.1706975-1-quic_mohs@quicinc.com>
+ <20240327113228.1706975-3-quic_mohs@quicinc.com>
+ <CAA8EJpqh0emOFUPSj8rPaKr2hZRWwOh9NNTco8fyJCtwXe9sSA@mail.gmail.com>
+ <92b449da-1569-40f9-d8c9-48949c986853@quicinc.com>
+ <CAA8EJprLB6+i4H5tK9LbJYOEH8v9QF78u-+HMmqPqfpvz5J8zw@mail.gmail.com>
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+In-Reply-To: 
+ <CAA8EJprLB6+i4H5tK9LbJYOEH8v9QF78u-+HMmqPqfpvz5J8zw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: 53sTLWqDduGBXBvpBpergwhhBHBrJl1w
+X-Proofpoint-GUID: 53sTLWqDduGBXBvpBpergwhhBHBrJl1w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_03,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0 mlxlogscore=750
+ phishscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2404020065
+Message-ID-Hash: OBNSPBVTNQA5G5UPCNXZRLTMNDXKVWXJ
+X-Message-ID-Hash: OBNSPBVTNQA5G5UPCNXZRLTMNDXKVWXJ
+X-MailFrom: quic_mohs@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: BIFQTBFRQCTJ6Q76NU5M2PDIP4JHOFPY
-X-Message-ID-Hash: BIFQTBFRQCTJ6Q76NU5M2PDIP4JHOFPY
-X-Mailman-Approved-At: Tue, 02 Apr 2024 06:55:03 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BIFQTBFRQCTJ6Q76NU5M2PDIP4JHOFPY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OBNSPBVTNQA5G5UPCNXZRLTMNDXKVWXJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,38 +133,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We got a headphone detection issue after suspend and resume.
-And we fixed it by modifying the configuration at es8326_suspend
-and invoke es8326_irq at es8326_resume.
+On 3/30/2024 12:09 AM, Dmitry Baryshkov wrote:
+> Hi,
+> 
+> On Fri, 29 Mar 2024 at 17:20, Mohammad Rafi Shaik <quic_mohs@quicinc.com> wrote:
+>>
+>>
+>> On 3/27/2024 6:39 PM, Dmitry Baryshkov wrote:
+>>
+>> On Wed, 27 Mar 2024 at 13:34, Mohammad Rafi Shaik <quic_mohs@quicinc.com> wrote:
+> 
+> Please turn off HTML mail composition and never ever send HTML email
+> to OSS mailing lists.
+> Now quotation levels are broken...
+> 
+>>
+>> Add machine driver for qcm6490 SoC.
+>>
+>> This initial supports which includes WSA883x Speakers with onboard DMIC
+>> connected to internal LPASS codec via VA macros respectively and also
+>> WCD937x based headset.
+>>
+>> Add compatible for sound card on Qualcomm qcs6490 boards.
+>>
+>> Granted that qcm6490 is similar to sc7280, is there any reason why you
+>> can not use one of the existing sound card drivers? Like sc7280.c or
+>> sc8280xp.c?
+>>
+>> The qcs6490/qcm6490 has additional interfaces like MI2S, which requires additional machine driver modification.
+>>
+>> Example : Required new DAPM widget change in machine driver for MI2S interface which is specific to qcs6490/qcm6490.
+>>
+>> So, using new qcm6490 machine driver.
+>>
+>> Will try to use existing sc8280xp.c machine driver.
+> 
+> What about sc7280? In the end, qcm6490 is sc7280 with different firmware / spin.
+> 
+>
 
-Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
----
- sound/soc/codecs/es8326.c | 5 +++++
- 1 file changed, 5 insertions(+)
+The sc7280 is tightly linked with realtek codec. which will only support 
+for chrome.
 
-diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 7f4788265e53..17711dc5df0a 100755
---- a/sound/soc/codecs/es8326.c
-+++ b/sound/soc/codecs/es8326.c
-@@ -1054,6 +1054,8 @@ static int es8326_resume(struct snd_soc_component *component)
- 	es8326->hp = 0;
- 	es8326->hpl_vol = 0x03;
- 	es8326->hpr_vol = 0x03;
-+
-+	es8326_irq(es8326->irq, es8326);
- 	return 0;
- }
- 
-@@ -1064,6 +1066,9 @@ static int es8326_suspend(struct snd_soc_component *component)
- 	cancel_delayed_work_sync(&es8326->jack_detect_work);
- 	es8326_disable_micbias(component);
- 	es8326->calibrated = false;
-+	regmap_write(es8326->regmap, ES8326_CLK_MUX, 0x2d);
-+	regmap_write(es8326->regmap, ES8326_DAC2HPMIX, 0x00);
-+	regmap_write(es8326->regmap, ES8326_ANA_PDN, 0x3b);
- 	regmap_write(es8326->regmap, ES8326_CLK_CTL, ES8326_CLK_OFF);
- 	regcache_cache_only(es8326->regmap, true);
- 
--- 
-2.17.1
+The sc8280xp.c machine driver is more suitable for qcm6490, will use 
+same sc8280xp.
 
