@@ -4,91 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2857C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:24:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58528CD1284
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 17:33:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 496EC2C6E;
-	Tue,  2 Apr 2024 17:23:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 496EC2C6E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 948C12C45;
+	Tue,  2 Apr 2024 19:33:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 948C12C45
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712071440;
-	bh=jCzzKujhK1qshxtOjWE+ARr12YlgAXeiXGDWIOps8sY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1712079200;
+	bh=aduyaipM5T0aY6bLSz+8o4Wc9lDD8Yn5NJTGROS+eYQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=e47ivnQFSKHa0rZLMvr5B5FcoDiT5f4MWdo8MxY8VG5wlh1hh57UHix8VQJZyg+We
-	 1jcgwv3sIfAjvIpzHpqpjMiGSTALBKLM1e7xGcvcl+rnvlWWYF6MqfLpxLbSCWB0ro
-	 BpLyePBo9miSZdhJWkNZ06wkYXanQr9+LbpuVVUQ=
+	b=s40OxrEyp3vxj8hQcKEMy4Ahm6LnCWjLjDYoVs44VqyYEwob9aXfqIXQllYgFwTct
+	 BEnL3bjMBt+zKzVCI8OUeTsuMCJzmhhTO5Gtx31nDiXrBKwbidbanMqhps5fUtMHsQ
+	 fjLLiWlN5IAmEXTASOXqsrEhv85nHj/gM0wNPmS8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05B27F80CBD; Tue,  2 Apr 2024 17:19:45 +0200 (CEST)
+	id DF971F805A0; Tue,  2 Apr 2024 19:32:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 589C0F80C96;
-	Tue,  2 Apr 2024 17:19:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62898F8057D;
+	Tue,  2 Apr 2024 19:32:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97825F8068E; Tue,  2 Apr 2024 17:19:12 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 672C6F8020D; Tue,  2 Apr 2024 19:32:42 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E88D6F805E8
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:18:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E88D6F805E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F50CF80114
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 19:32:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F50CF80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=J37mDZMN
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712071136; x=1743607136;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jCzzKujhK1qshxtOjWE+ARr12YlgAXeiXGDWIOps8sY=;
-  b=J37mDZMN6gG4OmERdeeIxbdS5CcUHIBnj4BlWYwHfYwDBrkfsp81wXKR
-   c9VB0fMefeZuw37cPhfz1XIg2ukIUlssNrgEeYunyLTWSoqYFV+VGeG4d
-   jEQmC8RooBs5+0ouhh0k6bSc/EfsdX3WlEolJ8Lx29nnvOkEPCDUAnvHh
-   3tIawl74kpfNeHDUjJkcfrWaZsYUx+WY/8WwiUnYDuSnfeW0/FqNg/KRt
-   dE0xlIqbh2dDipU6zklj29NX0LkvtDRu4ClDoxBPfnKDlKPCSl1/9RXL9
-   BVNIacBU0ZuMzVLiUrWxH1fxK5hxowgbeDYiU8Nxo615YJKKs5GhEUlV6
-   w==;
-X-CSE-ConnectionGUID: E3DY0zTESM2i81vkYYpqZw==
-X-CSE-MsgGUID: 4nKbGXMoQkSTgN1yfXdLeg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="29730218"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="29730218"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:48 -0700
-X-CSE-ConnectionGUID: b891x3ceTdW75q+j7m+okQ==
-X-CSE-MsgGUID: N6kUwAahT/ujSvFB8Fy4+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="22796549"
-Received: from skhare-mobl5.amr.corp.intel.com (HELO pbossart-mobl6.intel.com)
- ([10.212.8.83])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:18:47 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: linux-sound@vger.kernel.org
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	broonie@kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [PATCH 16/17] ASoC: SOF: pcm: reset all PCM sources in case of xruns
-Date: Tue,  2 Apr 2024 10:18:27 -0500
-Message-Id: <20240402151828.175002-17-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
-References: <20240402151828.175002-1-pierre-louis.bossart@linux.intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ftwVH2lZ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id D4FEFCE1D63;
+	Tue,  2 Apr 2024 17:32:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBACCC433C7;
+	Tue,  2 Apr 2024 17:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712079148;
+	bh=aduyaipM5T0aY6bLSz+8o4Wc9lDD8Yn5NJTGROS+eYQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ftwVH2lZZkE6NWKmyLWEpoXc+AXiKLggaHNTdHXUDYQWrKGMcU9xwWfM2Nze8kLn6
+	 eyjHIhskwQLsC9VZvfX3Beinz/6YA6GhqyEdaeILQdD1CmpjKtbM+nAlkpKUSCzpm8
+	 dHY6b8PTsjk/c+uBooXZQhvfMXmlj7G1VtDyc0a+o8FGZg//9+VXRYt2JZ3VhqVkPT
+	 WhEjkxiez2pONugapBTfLLB5XlqsipzkURfytbnfQgnykuxpu6nb13v4Z67ZaVyiXM
+	 rZ+zx9c9cOcQkEXR7xtsyiowmJ+WyTFcB/wnkjaGv5j00HKJhFoTsExDSZJIrjAYu8
+	 q4Wh/+l93ZkZQ==
+Date: Tue, 2 Apr 2024 12:32:25 -0500
+From: Rob Herring <robh@kernel.org>
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+	linux-kernel@vger.kernel.org, christophercordahi@nanometrics.ca,
+	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	herve.codina@bootlin.com, Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, linux-sound@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 12/13] ASoC: dt-bindings: davinci-mcbsp: Add the
+ 'ti,T1-framing-{rx/tx}' flags
+Message-ID: <171207914341.324604.378399290864675575.robh@kernel.org>
+References: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
+ <20240402071213.11671-13-bastien.curutchet@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7YDWAWSKC5V7UX7W43BTPQOKYXHMIEDR
-X-Message-ID-Hash: 7YDWAWSKC5V7UX7W43BTPQOKYXHMIEDR
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402071213.11671-13-bastien.curutchet@bootlin.com>
+Message-ID-Hash: V2KWAPANB2WMEOGEHO6XV2QT23ZRUJUM
+X-Message-ID-Hash: V2KWAPANB2WMEOGEHO6XV2QT23ZRUJUM
+X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7YDWAWSKC5V7UX7W43BTPQOKYXHMIEDR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V2KWAPANB2WMEOGEHO6XV2QT23ZRUJUM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,55 +100,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-With the delayed stops, the xrun handling is problematic: the
-applications expects everything to be reset but the firmware and DMA
-are still in a PAUSED state.
 
-This patch makes sure the prepare while pending_stop is set is
-special-cased.
+On Tue, 02 Apr 2024 09:12:12 +0200, Bastien Curutchet wrote:
+> McBSP's data delay can be configured from 0 to 2 bit clock periods. 0 is
+> used for DSP_B format, 1 for DSP_A format. A data delay of 2 bit clock
+> periods can be used to interface to 'T1 framing' devices where data
+> stream is preceded by a 'framing bit'. This 2 bit clock data delay is
+> not described in the bindings.
+> 
+> Add two flags 'ti,T1-framing-[rx/tx]' to enable a data delay of 2
+> bit clock periods in reception or transmission.
+> 
+> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+> ---
+>  .../devicetree/bindings/sound/davinci-mcbsp.yaml   | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
 
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/pcm.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index fbd7e045bcfb..4e11df6b4823 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -221,6 +221,7 @@ static int sof_pcm_prepare(struct snd_soc_component *component,
- 			   struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
- 	struct snd_sof_pcm *spcm;
- 	int ret;
- 
-@@ -232,8 +233,18 @@ static int sof_pcm_prepare(struct snd_soc_component *component,
- 	if (!spcm)
- 		return -EINVAL;
- 
--	if (spcm->prepared[substream->stream])
--		return 0;
-+	if (spcm->prepared[substream->stream]) {
-+		if (!spcm->pending_stop[substream->stream])
-+			return 0;
-+
-+		/*
-+		 * this case should be reached in case of xruns where we absolutely
-+		 * want to free-up and reset all PCM/DMA resources
-+		 */
-+		ret = sof_pcm_stream_free(sdev, substream, spcm, substream->stream, true);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	dev_dbg(component->dev, "pcm: prepare stream %d dir %d\n",
- 		spcm->pcm.pcm_id, substream->stream);
--- 
-2.40.1
+Reviewed-by: Rob Herring <robh@kernel.org>
 
