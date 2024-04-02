@@ -4,89 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8015C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:01:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6F7CCD1284
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 15:02:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E77E2C3A;
-	Tue,  2 Apr 2024 17:01:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E77E2C3A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A498C2C34;
+	Tue,  2 Apr 2024 17:01:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A498C2C34
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712070095;
-	bh=Z+Ybbt9Fy1SY0EwppncHnxJ8noudvlaEyZRsTHXtmrc=;
+	s=default; t=1712070124;
+	bh=7SUUzrMM9vVUTGjyOMCz5njlZv6H/FWKf1uf9PfnM48=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q3NhLryAyWAQ/OewbRDna66GafswpTIF+clzln6tEJtkAn3p1bwDdyOXbCHPpQKxI
-	 wDVPJLWuoeiQ2ahsPBomchJDs+h0qh/N1yhxZKg+tcdKa1eJeDtqY0lHX1E4xOdL2P
-	 F0c4L//y2V7I983ldwkp5YGqRhnxxc2pLQ1FlsdI=
+	b=Jn0uFS0SDGFUIVZY7rD8hpmuaUdKOPx7CkhTkPERkKVBP7j4pjGXTmCpmjTYSZ7jc
+	 X11KMEeXJTZyAGWm4ZOH6ZHx7zlvw6xT+YkpKWmwhk82W9yv0PblDTh6WgEN7T9nSj
+	 6ydoHCSB/y4jWMObF/5WjUHv/tC0b00V2svOaxxw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF77BF805D2; Tue,  2 Apr 2024 17:00:33 +0200 (CEST)
+	id EF507F80007; Tue,  2 Apr 2024 17:01:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52B13F805BB;
-	Tue,  2 Apr 2024 17:00:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B30DF8055C;
+	Tue,  2 Apr 2024 17:01:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06316F805B2; Tue,  2 Apr 2024 17:00:29 +0200 (CEST)
+	id CC855F80238; Tue,  2 Apr 2024 17:01:38 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6AE8DF8016E
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:00:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE8DF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6B727F80236
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 17:00:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B727F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=i6DsXFjT
+ header.s=Intel header.b=EiPVIszm
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712070020; x=1743606020;
+  t=1712070022; x=1743606022;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Z+Ybbt9Fy1SY0EwppncHnxJ8noudvlaEyZRsTHXtmrc=;
-  b=i6DsXFjT+oA02RuCzLqCXf+wFrjW0kGjuNni83bhUzYhI049xzxKLHHn
-   YBbpBnSmncSl88vcTlULEEsRG7+lKpCOwROf/+pcYjnLMLyqNMwMUaePL
-   QHLSKC0g2eRfttxu2CnVMxZ6grmOUDjEcyya5FfoPRx9/2X9sf1ffVv+3
-   FdVEsV2IxjMS9sgrmkVifm8944Hh/I6wkHioFiYoT86CrpAVaP6mfTtOv
-   sAdaALoy+Se4tJZlO/91R7LCHkibIVhJ34OWumzzvhBT4IvsRRFj0Jeg5
-   Si7KMF06Cn1DutF2lKqiyDqJJi07RHFAAzqr/jGLHT02q77vxYzGfBCus
-   w==;
-X-CSE-ConnectionGUID: zaCcvi8zTpWSOH+kZ4ND4w==
-X-CSE-MsgGUID: Q4SnmtOBSjq7Q3Dh4YkW9Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7433822"
+  bh=7SUUzrMM9vVUTGjyOMCz5njlZv6H/FWKf1uf9PfnM48=;
+  b=EiPVIszmRhY8vQG77BkfMjocdt6s30AcfnBGaMhsffxPy7GLvrjcVO66
+   3VB06aMagY9mwtooBiQecHcEk4T2ZiaiCrt3aaIxSCZJhxXuDi31HkP5Y
+   PqhtAqRiCphdY4XemhruczxcC+eUvQ4M/NK88nn8oZKmG6FWNRgk8w0uG
+   f+4C0lmQIeNpFMb8Ddm7u/cPRuHalEX9uhc7BMzmnYw67ZVP8ti0sZ+MG
+   uZhnTHgca26qMPpvJpVRAXg9QnZUv+8AE5MiZ1Bo3nTPoHX1Q/ky6pF/c
+   lvvZPEm6Q1kRKgXxi8rvrxLvJiLYUs+4fPC8VxnMPmOE1kuRBZzxCe0lN
+   A==;
+X-CSE-ConnectionGUID: d3TpK5muSYSFL0L+YWcUDQ==
+X-CSE-MsgGUID: e4x/tH4vTRaYVL267khYWA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7433831"
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="7433822"
+   d="scan'208";a="7433831"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
   by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:00:12 -0700
-X-CSE-ConnectionGUID: TvxuCwT4SmegYy/4R03HAg==
-X-CSE-MsgGUID: A4QkwMyIS4q/i3CB+PNzew==
+ 02 Apr 2024 08:00:13 -0700
+X-CSE-ConnectionGUID: 6QlY+RSbSYimAso6nlNcmQ==
+X-CSE-MsgGUID: KsKYp1ZhRAqBurZSVlwiDA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000";
-   d="scan'208";a="22558027"
+   d="scan'208";a="22558029"
 Received: from skhare-mobl5.amr.corp.intel.com (HELO pbossart-mobl6.intel.com)
  ([10.212.8.83])
   by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Apr 2024 08:00:12 -0700
+ 02 Apr 2024 08:00:13 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Yong Zhi <yong.zhi@intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/4] ASoC: SOF: ipc4-loader: save FW version info to debugfs
-Date: Tue,  2 Apr 2024 09:59:56 -0500
-Message-Id: <20240402145959.172619-2-pierre-louis.bossart@linux.intel.com>
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: SOF: ipc4-priv: align prototype and function
+ declaration
+Date: Tue,  2 Apr 2024 09:59:58 -0500
+Message-Id: <20240402145959.172619-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240402145959.172619-1-pierre-louis.bossart@linux.intel.com>
 References: <20240402145959.172619-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: U5TUKLDF65Y4YM44Y4ALPD2RVQRZLO3N
-X-Message-ID-Hash: U5TUKLDF65Y4YM44Y4ALPD2RVQRZLO3N
+Message-ID-Hash: YDG7E2OZ33Q37WF7JLFF2UWZYWXOMNTC
+X-Message-ID-Hash: YDG7E2OZ33Q37WF7JLFF2UWZYWXOMNTC
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,48 +97,38 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YDG7E2OZ33Q37WF7JLFF2UWZYWXOMNTC/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Yong Zhi <yong.zhi@intel.com>
+Somehow instance_id and id were mixed. Align on instance_id for
+consistency.
 
-To check loaded FW version:
-
-$ hexdump -C /sys/kernel/debug/sof/fw_version
-00000000  02 00 07 00 63 00 01 00  00 00 00 00 00 00 00 00  |....c...........|
-
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/ipc4-loader.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/sof/ipc4-priv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc4-loader.c b/sound/soc/sof/ipc4-loader.c
-index c79479afa8d0..641c4f24cca9 100644
---- a/sound/soc/sof/ipc4-loader.c
-+++ b/sound/soc/sof/ipc4-loader.c
-@@ -80,6 +80,14 @@ static ssize_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev,
- 	dev_dbg(sdev->dev, "Header length: %u, module count: %u\n",
- 		fw_header->len, fw_header->num_module_entries);
+diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
+index afed618a15f0..e157ab80a103 100644
+--- a/sound/soc/sof/ipc4-priv.h
++++ b/sound/soc/sof/ipc4-priv.h
+@@ -98,7 +98,7 @@ extern const struct sof_ipc_tplg_control_ops tplg_ipc4_control_ops;
+ extern const struct sof_ipc_pcm_ops ipc4_pcm_ops;
+ extern const struct sof_ipc_fw_tracing_ops ipc4_mtrace_ops;
  
-+	/* copy the fw_version of basefw into debugfs at first boot */
-+	if (fw == sdev->basefw.fw) {
-+		sdev->fw_version.major = fw_header->major_version;
-+		sdev->fw_version.minor = fw_header->minor_version;
-+		sdev->fw_version.micro = fw_header->hotfix_version;
-+		sdev->fw_version.build = fw_header->build_version;
-+	}
-+
- 	fw_lib->modules = devm_kmalloc_array(sdev->dev, fw_header->num_module_entries,
- 					     sizeof(*fw_module), GFP_KERNEL);
- 	if (!fw_lib->modules)
+-int sof_ipc4_set_pipeline_state(struct snd_sof_dev *sdev, u32 id, u32 state);
++int sof_ipc4_set_pipeline_state(struct snd_sof_dev *sdev, u32 instance_id, u32 state);
+ int sof_ipc4_mtrace_update_pos(struct snd_sof_dev *sdev, int core);
+ 
+ int sof_ipc4_query_fw_configuration(struct snd_sof_dev *sdev);
 -- 
 2.40.1
 
