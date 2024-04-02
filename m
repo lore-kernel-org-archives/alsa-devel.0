@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA79CD11C2
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01FCECD128A
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:19:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C324D2B00;
-	Sun,  7 Apr 2024 09:18:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C324D2B00
+	by alsa0.perex.cz (Postfix) with ESMTPS id 186A6279D;
+	Sun,  7 Apr 2024 09:19:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 186A6279D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712474348;
-	bh=IwfrzWFQMK5aKYIP+JpJjBWSv5PRYRdxAqXqTNhqjec=;
+	s=default; t=1712474366;
+	bh=+FFguuWjmpl99xzEjdNjMqKEsp079adJwqAqXV6U1yA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HNX16lVVPQhGkWxmOmqaYQyw/7ZV8qgbdM5KNHumCCH5oCvNYOHcmCz+lEeMgr3CD
-	 WvIfzbvkuzqXEFQ8whMA9wWAIChl6UUuAOSAVNVYTPYaxPlymWHYsf8qvTCM9zb7an
-	 8p7uSsZjiPBjPYQa+hFoFtKuZO1u0UV9YX/3J9gA=
+	b=PDMj+4SN6EGaC7Zx4MXONjehGTp3KUfY1njxiuxLKTIVZW5TlIDIT14K6j4+u1YB/
+	 dXTJzoSeeqiAbNd8gCuYINlSXkhoHFJBnf8Oqo5eqtN1GZfDvJRw5UUfjdpf+4/pnu
+	 A/oayec9H7phQyO7aAnnSv+YMuG4VPSGW3BtpJJI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2934F8067C; Sun,  7 Apr 2024 09:17:26 +0200 (CEST)
+	id CC424F8069A; Sun,  7 Apr 2024 09:17:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F4F3F80675;
-	Sun,  7 Apr 2024 09:17:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED847F8069E;
+	Sun,  7 Apr 2024 09:17:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 076A2F8057D; Tue,  2 Apr 2024 09:12:59 +0200 (CEST)
+	id 9BA8EF8057A; Tue,  2 Apr 2024 09:12:59 +0200 (CEST)
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::229])
+ [217.70.183.199])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B6F3DF80578
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6F3DF80578
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F324F8057E
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F324F8057E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=CPrylJLU
-Received: by mail.gandi.net (Postfix) with ESMTPA id 7AAF9FF804;
-	Tue,  2 Apr 2024 07:12:21 +0000 (UTC)
+ header.s=gm1 header.b=ozIq5YGe
+Received: by mail.gandi.net (Postfix) with ESMTPA id 24E0BFF809;
+	Tue,  2 Apr 2024 07:12:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712041942;
+	t=1712041947;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vZrZE1ws3fDn3UjdBfQcUrpkUXJj9Z/9NRZDie5wy+o=;
-	b=CPrylJLUBe2LjtOjTJqNfF63pOpEETI40X7AVNJgQVyg5/snrSg/QajeSN9AWOYL+YfiXY
-	lS72zKUZR85ox7BIXLEEcyRr46tfLkXlJOHhdUaQrM6BzNN478KlNNsGIF1nVj1igT9xgo
-	UYRWpP1fxuMRznvqMXV2qUijf7LmJ4/9Aw6EadDrecBlsALOEGXbiCFNvDIQd06UYpdhBG
-	AeH++YErAudKjhK6Q/nyLwK0ZLNX/xc6neo3KUA9Xr9X/bhYBVjOH/sbTr7j7JBIGrtndZ
-	KfCWJledjZlxR4rkBrDyp5BmUlQAVJk02P6LKwN8L3pipWyQ5UtxWoWLLHjeTw==
+	bh=ZOE+gMok9O7xOxfyDenN7oiNfzS579Yi+szYYcmC2sQ=;
+	b=ozIq5YGeWp2nIAyMNlSLn5hjNh/fD8pPFu2OxUqr8I827c8oDovhNzoxmqZ2e/g1q5dqwa
+	flsAjv9P+ThwbgFVQEtwdbKj3bwsT40toiweRCc5gn9dHR0F3vL59SDiMXBRzFmeTYWA7S
+	kL0ud3k09Xc+neLQd4Yta0+Im6MyuQRX+vMnfpEtepT+Tkptc8Oi3f3cbj6tC/zCGjulQ1
+	6kswrgHBbFeqFqyJ1k9AoOGGARKHP6x7U8dYtSnrcHZSz2BjcLIeihLVH5wwu5lexDVZgP
+	2m9k8Tj03vdLOdQaO2OU1FvufwQoSgdc7gUaxmWn5jbRWWOhRQI8o5n67EWeXA==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,10 +70,9 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH v2 03/13] ASoC: ti: davinci-i2s: Remove the unused
- clk_input_pin attribute
-Date: Tue,  2 Apr 2024 09:12:03 +0200
-Message-ID: <20240402071213.11671-4-bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 07/13] ASoC: ti: davinci-i2s: Add TDM support
+Date: Tue,  2 Apr 2024 09:12:07 +0200
+Message-ID: <20240402071213.11671-8-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
 References: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
@@ -86,15 +85,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: B6LPXFIOWCWFPJICZJIX5U5GT2YZFJ7W
-X-Message-ID-Hash: B6LPXFIOWCWFPJICZJIX5U5GT2YZFJ7W
+Message-ID-Hash: AJNZECBLKDNA43YGPQYH76HKGABY3CEE
+X-Message-ID-Hash: AJNZECBLKDNA43YGPQYH76HKGABY3CEE
 X-Mailman-Approved-At: Sun, 07 Apr 2024 07:14:06 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B6LPXFIOWCWFPJICZJIX5U5GT2YZFJ7W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AJNZECBLKDNA43YGPQYH76HKGABY3CEE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,109 +102,183 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The clk_input_pin attribute of davinci_mcbsp_dev struct is not set since
-commit 257ade78b601 ("ASoC: davinci-i2s: Convert to use edma-pcm").
+TDM is not supported by the McBSP driver. The McBSP datasheet does not
+name explicitly TDM as a supported format but it is possible to configure
+the McBSP to do TDM if all slots are used by McBSP.
 
-Remove the attribute.
-Keep the behaviour of the MCBSP_CLKR case as MCBSP_CLKR == 0.
-I can't test the BC_FP format so I added back the initial comment that
-was removed by commit ec6375533748 ("ASoC: DaVinci: Added selection of
-clk input pin for McBSP"). This was the last dependency to
-linux/platform_data/davinci_asp.h so it is not included anymore.
+Add TDM support. It uses single-phase frame. Slot width is used to
+compute the McBSP's word length.
 
-Remove the enum mcbsp_clk_input_pin from davinci_asp.h as it is not used
-anywhere else.
+Implement the set_tdm_slot() hook of snd_soc_dai_ops struct. It only
+supports TDM if all slots are used by McBSP.
+
+The snd_soc_dai_driver's channels_max is updated from 2 to 128.
+
+This was tested with BP_FC format on a platform designed off of
+DAVINCI/OMAP_L138. A check is done in davinci_i2s_set_dai_fmt() to
+prevent TDM to be used with BC_FC and BC_FP formats.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- include/linux/platform_data/davinci_asp.h | 15 --------------
- sound/soc/ti/davinci-i2s.c                | 24 ++++-------------------
- 2 files changed, 4 insertions(+), 35 deletions(-)
+ sound/soc/ti/davinci-i2s.c | 92 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 87 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
-index c8645b2ed3c0..b9c8520b4bd3 100644
---- a/include/linux/platform_data/davinci_asp.h
-+++ b/include/linux/platform_data/davinci_asp.h
-@@ -25,16 +25,6 @@ struct davinci_mcasp_pdata {
- 	unsigned sram_size_capture;
- 	struct gen_pool *sram_pool;
- 
--	/*
--	 * If McBSP peripheral gets the clock from an external pin,
--	 * there are three chooses, that are MCBSP_CLKX, MCBSP_CLKR
--	 * and MCBSP_CLKS.
--	 * Depending on different hardware connections it is possible
--	 * to use this setting to change the behaviour of McBSP
--	 * driver.
--	 */
--	int clk_input_pin;
--
- 	/*
- 	 * This flag works when both clock and FS are outputs for the cpu
- 	 * and makes clock more accurate (FS is not symmetrical and the
-@@ -91,11 +81,6 @@ enum {
- 	MCASP_VERSION_OMAP,	/* OMAP4/5 */
- };
- 
--enum mcbsp_clk_input_pin {
--	MCBSP_CLKR = 0,		/* as in DM365 */
--	MCBSP_CLKS,
--};
--
- #define INACTIVE_MODE	0
- #define TX_MODE		1
- #define RX_MODE		2
 diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 07c8b2259208..5c906641640e 100644
+index a2c7c812ea50..f9a67c2bc2f5 100644
 --- a/sound/soc/ti/davinci-i2s.c
 +++ b/sound/soc/ti/davinci-i2s.c
-@@ -19,7 +19,6 @@
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/clk.h>
--#include <linux/platform_data/davinci_asp.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -159,7 +158,6 @@ struct davinci_mcbsp_dev {
- 
+@@ -160,6 +160,9 @@ struct davinci_mcbsp_dev {
  	unsigned int fmt;
  	int clk_div;
--	int clk_input_pin;
  	bool i2s_accurate_sck;
++
++	int tdm_slots;
++	int slot_width;
  };
  
-@@ -239,26 +237,12 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static inline void davinci_mcbsp_write_reg(struct davinci_mcbsp_dev *dev,
+@@ -213,6 +216,63 @@ static void davinci_mcbsp_stop(struct davinci_mcbsp_dev *dev, int playback)
+ 	toggle_clock(dev, playback);
+ }
+ 
++static int davinci_i2s_tdm_word_length(int tdm_slot_width)
++{
++	switch (tdm_slot_width) {
++	case 8:
++		return DAVINCI_MCBSP_WORD_8;
++	case 12:
++		return DAVINCI_MCBSP_WORD_12;
++	case 16:
++		return DAVINCI_MCBSP_WORD_16;
++	case 20:
++		return DAVINCI_MCBSP_WORD_20;
++	case 24:
++		return DAVINCI_MCBSP_WORD_24;
++	case 32:
++		return DAVINCI_MCBSP_WORD_32;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int davinci_i2s_set_tdm_slot(struct snd_soc_dai *cpu_dai,
++				    unsigned int tx_mask,
++				    unsigned int rx_mask,
++				    int slots, int slot_width)
++{
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
++
++	dev_dbg(dev->dev, "slots %d, slot_width %d\n", slots, slot_width);
++
++	if (slots > 128 || !slots) {
++		dev_err(dev->dev, "Invalid number of slots\n");
++		return -EINVAL;
++	}
++
++	if (rx_mask != (1 << slots) - 1) {
++		dev_err(dev->dev, "Invalid RX mask (0x%08x) : all slots must be used by McBSP\n",
++			rx_mask);
++		return -EINVAL;
++	}
++
++	if (tx_mask != (1 << slots) - 1) {
++		dev_err(dev->dev, "Invalid TX mask (0x%08x) : all slots must be used by McBSP\n",
++			tx_mask);
++		return -EINVAL;
++	}
++
++	if (davinci_i2s_tdm_word_length(slot_width) < 0) {
++		dev_err(dev->dev, "%s: Unsupported slot_width %d\n", __func__, slot_width);
++		return -EINVAL;
++	}
++
++	dev->tdm_slots = slots;
++	dev->slot_width = slot_width;
++
++	return 0;
++}
++
+ #define DEFAULT_BITPERSAMPLE	16
+ 
+ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+@@ -238,6 +298,11 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
  			DAVINCI_MCBSP_PCR_CLKRM;
  		break;
  	case SND_SOC_DAIFMT_BC_FP:
--		pcr = DAVINCI_MCBSP_PCR_FSRM | DAVINCI_MCBSP_PCR_FSXM;
++		if (dev->tdm_slots || dev->slot_width) {
++			dev_err(dev->dev, "TDM is not supported for BC_FP format\n");
++			return -EINVAL;
++		}
++
  		/*
--		 * Selection of the clock input pin that is the
--		 * input for the Sample Rate Generator.
--		 * McBSP FSR and FSX are driven by the Sample Rate
--		 * Generator.
-+		 * McBSP CLKR pin is the input for the Sample Rate Generator.
-+		 * McBSP FSR and FSX are driven by the Sample Rate Generator.
- 		 */
--		switch (dev->clk_input_pin) {
--		case MCBSP_CLKS:
--			pcr |= DAVINCI_MCBSP_PCR_CLKXM |
--				DAVINCI_MCBSP_PCR_CLKRM;
--			break;
--		case MCBSP_CLKR:
--			pcr |= DAVINCI_MCBSP_PCR_SCLKME;
--			break;
--		default:
--			dev_err(dev->dev, "bad clk_input_pin\n");
--			return -EINVAL;
--		}
--
-+		pcr = DAVINCI_MCBSP_PCR_FSRM | DAVINCI_MCBSP_PCR_FSXM;
-+		pcr |= DAVINCI_MCBSP_PCR_SCLKME;
+ 		 * McBSP CLKR pin is the input for the Sample Rate Generator.
+ 		 * McBSP FSR and FSX are driven by the Sample Rate Generator.
+@@ -246,6 +311,11 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		pcr |= DAVINCI_MCBSP_PCR_SCLKME;
  		break;
  	case SND_SOC_DAIFMT_BC_FC:
++		if (dev->tdm_slots || dev->slot_width) {
++			dev_err(dev->dev, "TDM is not supported for BC_FC format\n");
++			return -EINVAL;
++		}
++
  		/* codec is master */
+ 		pcr = 0;
+ 		break;
+@@ -383,7 +453,13 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	master = dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK;
+ 	fmt = params_format(params);
+-	mcbsp_word_length = asp_word_length[fmt];
++	if (dev->slot_width)
++		mcbsp_word_length = davinci_i2s_tdm_word_length(dev->slot_width);
++	else
++		mcbsp_word_length = asp_word_length[fmt];
++
++	if (mcbsp_word_length < 0)
++		return mcbsp_word_length;
+ 
+ 	switch (master) {
+ 	case SND_SOC_DAIFMT_BP_FP:
+@@ -483,8 +559,13 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	switch (master) {
+ 	case SND_SOC_DAIFMT_BP_FP:
+ 	case SND_SOC_DAIFMT_BP_FC:
+-		rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(0);
+-		xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(0);
++		if (dev->tdm_slots > 0) {
++			rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(dev->tdm_slots - 1);
++			xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(dev->tdm_slots - 1);
++		} else {
++			rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(0);
++			xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(0);
++		}
+ 		break;
+ 	case SND_SOC_DAIFMT_BC_FC:
+ 	case SND_SOC_DAIFMT_BC_FP:
+@@ -609,19 +690,20 @@ static const struct snd_soc_dai_ops davinci_i2s_dai_ops = {
+ 	.hw_params	= davinci_i2s_hw_params,
+ 	.set_fmt	= davinci_i2s_set_dai_fmt,
+ 	.set_clkdiv	= davinci_i2s_dai_set_clkdiv,
++	.set_tdm_slot   = davinci_i2s_set_tdm_slot,
+ 
+ };
+ 
+ static struct snd_soc_dai_driver davinci_i2s_dai = {
+ 	.playback = {
+ 		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_max = 128,
+ 		.rates = DAVINCI_I2S_RATES,
+ 		.formats = DAVINCI_I2S_FORMATS,
+ 	},
+ 	.capture = {
+ 		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_max = 128,
+ 		.rates = DAVINCI_I2S_RATES,
+ 		.formats = DAVINCI_I2S_FORMATS,
+ 	},
 -- 
 2.44.0
 
