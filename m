@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD33CD11C2
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:20:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F61ECD11C2
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:21:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F3E52BA7;
-	Sun,  7 Apr 2024 09:20:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F3E52BA7
+	by alsa0.perex.cz (Postfix) with ESMTPS id E183014DE;
+	Sun,  7 Apr 2024 09:20:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E183014DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712474447;
-	bh=raqZRXpSAUQKXil8z5AtZK8I91UM9WjPAbTjuIxfsT4=;
+	s=default; t=1712474459;
+	bh=n8C2sMFznZ+aSgwy6VZZBdp6GtGS+ViwXxZAO/kOhSo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S8GV3BfZvpkeirRgvws5qU97MTr4WCIFn0ftAmkOly+HP5oTmvICqJyw0W6BpnJwG
-	 IIqtNboCBv7xZNjO9supRlctrXFSdTARWTl0kruugj5t4Ci5/uI7fr7eAIZzMC1vlh
-	 hcp/4qMhvq1g8uPkz+wmJmCykCEDya+yPvoHhDNg=
+	b=rUd/fxT3a37oycc7OpqstptMd4aIOuGrGKvgOxsyYeXmaMdYJi5CNdERjrrkmGD0m
+	 BVzE8cB68LHekufrbSW3G0hXtUQig5kwDRaCoGIRXFUkIUHE0OLqQh4oMNZ4jPsVE/
+	 pHBvIfsNtK2V4OyEWttTE3aBg7sesT7ZmMe6b5wI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71D36F8076A; Sun,  7 Apr 2024 09:17:40 +0200 (CEST)
+	id 8723DF80808; Sun,  7 Apr 2024 09:17:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BEEEF80760;
-	Sun,  7 Apr 2024 09:17:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC07BF807CA;
+	Sun,  7 Apr 2024 09:17:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E11B8F8057A; Tue,  2 Apr 2024 09:13:04 +0200 (CEST)
+	id 7D10DF805B1; Tue,  2 Apr 2024 09:13:07 +0200 (CEST)
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [217.70.183.199])
+ [IPv6:2001:4b98:dc4:8::229])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5EEA0F80587
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EEA0F80587
+	by alsa1.perex.cz (Postfix) with ESMTPS id D6FA2F80114
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6FA2F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=TyJGS7gJ
-Received: by mail.gandi.net (Postfix) with ESMTPA id 61BB1FF804;
-	Tue,  2 Apr 2024 07:12:31 +0000 (UTC)
+ header.s=gm1 header.b=H78MRbh1
+Received: by mail.gandi.net (Postfix) with ESMTPA id 2DD34FF80B;
+	Tue,  2 Apr 2024 07:12:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712041952;
+	t=1712041955;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ryoqfTLjKn66TnerPCn7gg2/Qxg9JuXh/P0bs+WVTIc=;
-	b=TyJGS7gJDTLORWyHUtik2qmgLQWu+1QobOj/bZ5fKukP7/xQkT/y7Li1gBUe9ykjzhBrof
-	KvQqwPNmN8Y9cp60ztHZ9N1u5JiWbBgN5oQja5XKgv00D9eaytCihDmi4C3W0Fcvsl23Fz
-	lPzMRoPKJuTsnAsGn87OX+Eb3ifq252qOl6QdrykwSYhbH6rfEDCbqj1aSGNMdAMdPcUKx
-	MamDCqbugQImrX1SZIIkvqGijCUmYONdL7vrhpTQiCd+DyEYMKQgdnTyACA0QCKjShRgmE
-	Oz7VXxpiGajXIq9uNf4iYAYO92EsuWb9DYst/t0FdJiM8ttu/4vHYGLkNgSKbg==
+	bh=PE3YvX4Y16ibvrY87Lo5u2VWlVZ0kvZSV/V9W8+29Ew=;
+	b=H78MRbh18HozjmvX6U8/RisNl1hxS6rRFIyRStLQwOFgG0EzwIze+ki3HBx0wMmJXZgzua
+	KFN6OxHpXsXDDjjNAleJizhmSTi4pttKWeWArkxtULPfH2viNPhXZpg5deGc6AHPZeqInm
+	D4B9jOJdIDDE2pXS+mZsFmjd059rX9kVoZXXx5TikWiDDlz/h3gOHa0lU5Caqhdncyz3Q/
+	x29TNap5WlkPZH2B4MSQ0F9N6iCbvr60ogpdZ+ysBS5VNZFZ8UsOUWmeDVZH9larPRGx7A
+	f9jIzh1n4x78gRTTfTCAgm7bMrZCaCl+n7h9lMlNJVWjRyiWCB7AG3CXScxCSg==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,10 +70,9 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH v2 10/13] ASoC: ti: davinci-i2s: Link free-run mode to
- SND_SOC_DAIFMT_[GATED/CONT]
-Date: Tue,  2 Apr 2024 09:12:10 +0200
-Message-ID: <20240402071213.11671-11-bastien.curutchet@bootlin.com>
+Subject: [PATCH v2 13/13] ASoC: ti: davinci-i2s: Add T1 framing support
+Date: Tue,  2 Apr 2024 09:12:13 +0200
+Message-ID: <20240402071213.11671-14-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
 References: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
@@ -86,15 +85,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XLSW3NKSESN6LMO7DAM2CMTQZYHKO66Q
-X-Message-ID-Hash: XLSW3NKSESN6LMO7DAM2CMTQZYHKO66Q
+Message-ID-Hash: MK3EAHR7KI4IBSH4XSVJOY5XKB7QB64E
+X-Message-ID-Hash: MK3EAHR7KI4IBSH4XSVJOY5XKB7QB64E
 X-Mailman-Approved-At: Sun, 07 Apr 2024 07:14:48 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XLSW3NKSESN6LMO7DAM2CMTQZYHKO66Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MK3EAHR7KI4IBSH4XSVJOY5XKB7QB64E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,66 +102,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-McBSP has free-running mode where serial clocks continue to run during
-emulation halts. This mode is always enabled by the driver.
+McBSP's data delay can be configured from 0 to 2 bit clock periods. 0 is
+used for DSP_B format, 1 is used for DSP_A format, 2 is unused.
 
-Set free-running mode when SND_SOC_DAIFMT_CONT is selected by DAI
-format, unset it when SND_SOC_DAIFMT_GATED is selected.
+A data delay of 2 bit clock periods can be used to interface to
+'T1 framing' devices where data stream is preceded by a 'framing bit'. On
+transmission, McBSP inserts a blank period (high-impedance period)
+before the first data bit to leave an opportunity for other devices to
+set this 'framing bit'. On reception, McBSP discards the 'framing bit'
+that precedes the data stream.
+
+Add support for the 'framing bit' according to the
+'ti,T1-framing-[tx/rx]' device-tree properties. If a flag is present,
+the data delay is set to 2 bit clock periods regardless of the selected
+DAI format.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- sound/soc/ti/davinci-i2s.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ sound/soc/ti/davinci-i2s.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 82a0dfa07cec..7fb41987175b 100644
+index fb1e09c78bdf..0f15a743c798 100644
 --- a/sound/soc/ti/davinci-i2s.c
 +++ b/sound/soc/ti/davinci-i2s.c
-@@ -280,6 +280,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- {
- 	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
- 	unsigned int pcr;
-+	unsigned int spcr;
- 	unsigned int srgr;
- 	bool inv_fs = false;
- 	/* Attention srgr is updated by hw_params! */
-@@ -288,6 +289,23 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
+@@ -161,6 +161,9 @@ struct davinci_mcbsp_dev {
  
- 	dev->fmt = fmt;
+ 	int tdm_slots;
+ 	int slot_width;
 +
-+	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
-+	case SND_SOC_DAIFMT_CONT:
-+		spcr |= DAVINCI_MCBSP_SPCR_FREE;
-+		dev_dbg(dev->dev, "Free-running mode ON\n");
-+		break;
-+	case SND_SOC_DAIFMT_GATED:
-+		spcr &= ~DAVINCI_MCBSP_SPCR_FREE;
-+		dev_dbg(dev->dev, "Free-running mode OFF\n");
-+		break;
-+	default:
-+		dev_err(dev->dev, "Invalid clock gating\n");
-+		return -EINVAL;
-+	}
-+	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
-+
- 	/* set master/slave audio interface */
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
- 	case SND_SOC_DAIFMT_BP_FP:
-@@ -452,10 +470,10 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
- 	/* general line settings */
- 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--		spcr |= DAVINCI_MCBSP_SPCR_RINTM(3) | DAVINCI_MCBSP_SPCR_FREE;
-+		spcr |= DAVINCI_MCBSP_SPCR_RINTM(3);
- 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
- 	} else {
--		spcr |= DAVINCI_MCBSP_SPCR_XINTM(3) | DAVINCI_MCBSP_SPCR_FREE;
-+		spcr |= DAVINCI_MCBSP_SPCR_XINTM(3);
- 		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
++	bool tx_framing_bit;
++	bool rx_framing_bit;
+ };
+ 
+ static inline void davinci_mcbsp_write_reg(struct davinci_mcbsp_dev *dev,
+@@ -580,6 +583,15 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(1);
  	}
  
++	if (dev->tx_framing_bit) {
++		xcr &= ~DAVINCI_MCBSP_XCR_XDATDLY(1);
++		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(2);
++	}
++	if (dev->rx_framing_bit) {
++		rcr &= ~DAVINCI_MCBSP_RCR_RDATDLY(1);
++		rcr |= DAVINCI_MCBSP_RCR_RDATDLY(2);
++	}
++
+ 	if (params_channels(params) == 2) {
+ 		element_cnt = 2;
+ 		if (double_fmt[fmt] && dev->enable_channel_combine) {
+@@ -796,6 +808,9 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 
+ 	dev->base = io_base;
+ 
++	dev->tx_framing_bit = of_property_read_bool(pdev->dev.of_node, "ti,T1-framing-tx");
++	dev->rx_framing_bit = of_property_read_bool(pdev->dev.of_node, "ti,T1-framing-rx");
++
+ 	/* setup DMA, first TX, then RX */
+ 	dma_data = &dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
+ 	dma_data->addr = (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
 -- 
 2.44.0
 
