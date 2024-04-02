@@ -4,169 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83D97CD11C2
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 06:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4E20CD11C2
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:14:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8972E2BD7;
-	Sun,  7 Apr 2024 08:38:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8972E2BD7
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3373192E;
+	Sun,  7 Apr 2024 09:14:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3373192E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712471913;
-	bh=dtzkXXw1WPphQqzUuV/MqVgSpOCEuSc3ZAp0BPFkcsk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=W+YRa06xR0ca/Sf62bA+eomjAbeKg3BERHGx8Xnd4p2QAmBHUGvM4CZ98nVTPY2pe
-	 I0ZGDbCFZv3+uPkym+xr8aRnTk/Jk0jffnTzmZCH9U8uphU/Lvb/dfuPVg+xHmgTDQ
-	 XrlDuR3zQ2SBf1TMjrJZ9G3HZuHjngvPTJDFKuXw=
+	s=default; t=1712474074;
+	bh=gnN1OFzfMxXZfteMTSEnGZcF0OZvn9mUEoCB/FFpj2E=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=WxE5ouw7uNWvrJl59oVk3NnEUEwr20dloV4H1BGbmlCcRyn69wOyk+7bHoV1lYq2B
+	 SHzOOi8JR91uuQTknEC4pJVIkDqqgF7QYjj3fAdwryoJMLr5QbmmODL4Xn0uNgnrj/
+	 /CleinpPq5uZkMkystTDzwbpj5MQAJcsCRC0dudo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8829F8057F; Sun,  7 Apr 2024 08:38:01 +0200 (CEST)
+	id B5314F8058C; Sun,  7 Apr 2024 09:14:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE842F805A8;
-	Sun,  7 Apr 2024 08:37:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AB42F80570;
+	Sun,  7 Apr 2024 09:14:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F97EF8026D; Sun,  7 Apr 2024 08:33:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D647EF80588; Tue,  2 Apr 2024 09:12:35 +0200 (CEST)
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
+ [217.70.183.199])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 45A39F80130
-	for <alsa-devel@alsa-project.org>; Sun,  7 Apr 2024 08:32:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45A39F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 647D3F80114
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 09:12:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 647D3F80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=0GXlGPDE;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=zw8AOD7i;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=0GXlGPDE;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=zw8AOD7i
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org
- [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1969A21B53;
-	Sun,  7 Apr 2024 06:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1712471559;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5zPYp1v7N9gIDbxuNsJSGdPlOA4AVe2g1TO/eF8V0IA=;
-	b=0GXlGPDERwXwhNh90uVAP6Kf5929aSUyunoEmrqbyVOzjLGJNh/vcDMz/PXaL5ZEVCJbO7
-	cRHNKttM+R8i2ijC8N43qkCoPFo641+cisDJEkOnOwTW0TR93GYpWjPoHTOA1iQK43QCe6
-	HYbCVkgj4nuiTexGfdwV7rToOroPa84=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712471559;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5zPYp1v7N9gIDbxuNsJSGdPlOA4AVe2g1TO/eF8V0IA=;
-	b=zw8AOD7i4eyB0ElNmz1VK8yh6f2vU32JNq7U81enPVQ61jEpwOPsPfJe8PxfgHbL4s1WRy
-	bYhx4tLyW6hTE6CA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1712471559;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5zPYp1v7N9gIDbxuNsJSGdPlOA4AVe2g1TO/eF8V0IA=;
-	b=0GXlGPDERwXwhNh90uVAP6Kf5929aSUyunoEmrqbyVOzjLGJNh/vcDMz/PXaL5ZEVCJbO7
-	cRHNKttM+R8i2ijC8N43qkCoPFo641+cisDJEkOnOwTW0TR93GYpWjPoHTOA1iQK43QCe6
-	HYbCVkgj4nuiTexGfdwV7rToOroPa84=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712471559;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5zPYp1v7N9gIDbxuNsJSGdPlOA4AVe2g1TO/eF8V0IA=;
-	b=zw8AOD7i4eyB0ElNmz1VK8yh6f2vU32JNq7U81enPVQ61jEpwOPsPfJe8PxfgHbL4s1WRy
-	bYhx4tLyW6hTE6CA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E80713586;
-	Sun,  7 Apr 2024 06:32:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id aYdAHQY+EmaKJwAAn2gu4w
-	(envelope-from <tiwai@suse.de>); Sun, 07 Apr 2024 06:32:38 +0000
-Date: Sun, 07 Apr 2024 08:32:44 +0200
-Message-ID: <87le5plm2b.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: <broonie@kernel.org>,
-	<andriy.shevchenko@linux.intel.com>,
-	<lgirdwood@gmail.com>,
-	<perex@perex.cz>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<13916275206@139.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<liam.r.girdwood@intel.com>,
-	<bard.liao@intel.com>,
-	<yung-chuan.liao@linux.intel.com>,
-	<kevin-lu@ti.com>,
-	<baojun.xu@ti.com>,
-	<soyer@irl.hu>,
-	<Baojun.Xu@fpt.com>,
-	<navada@ti.com>,
-	<v-po@ti.com>
-Subject: Re: [PATCH v3] ALSA: hda/tas2781: correct the register for pow
- calibrated data
-In-Reply-To: <20240406132010.341-1-shenghao-ding@ti.com>
-References: <20240406132010.341-1-shenghao-ding@ti.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-2.55 / 50.00];
-	BAYES_HAM(-2.25)[96.48%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,gmail.com,perex.cz,139.com,alsa-project.org,vger.kernel.org,intel.com,ti.com,irl.hu,fpt.com];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[]
-Message-ID-Hash: U6LLYYNDSXR7WFI3XVLU4WUV7QFDFZNA
-X-Message-ID-Hash: U6LLYYNDSXR7WFI3XVLU4WUV7QFDFZNA
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=au69z9Y6
+Received: by mail.gandi.net (Postfix) with ESMTPA id 7D5B5FF80E;
+	Tue,  2 Apr 2024 07:12:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712041936;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kARtlCjFgsJx0pk6MzW4A6BY9yAEH50g5G4smmC1pek=;
+	b=au69z9Y66SligpnfmD2db2hx0MbLDw5fB/g9PaFjj8OC6rnW5KltB61OVv5J+eEhyGZ0gv
+	XLPDnZjGNRnYyNwNA5EqJRWKjYIRUrOh+bNqSOQHtxSkAI1bTlHXmkYe1wPtmB73QrxRxw
+	J63Naei3IRdxm9vwYFWXSsiNuGhWa1dB3H00KU88xRiySZOmaaGDnd0HkkmFndOazFAnnc
+	aXv6sO+daTgFbHyJD5Ybz1Mo+vQdnxNVEOc3JuysuIzD/t+HMY7dDD5CvXPCpHGbLqjdLy
+	5Tv/5EX0cVcIriuxt3FowrOdMvvfalknKwlkvl3Rcvd/5qcARv3MCz4BdZLHQQ==
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	herve.codina@bootlin.com,
+	christophercordahi@nanometrics.ca
+Subject: [PATCH v2 00/13] ASoC: ti: davinci-i2s: Add features to McBSP driver
+Date: Tue,  2 Apr 2024 09:12:00 +0200
+Message-ID: <20240402071213.11671-1-bastien.curutchet@bootlin.com>
+X-Mailer: git-send-email 2.44.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
+X-MailFrom: bastien.curutchet@bootlin.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: N5QESUCZQV5PJ4LJPXYIZEMDEOC7Q27I
+X-Message-ID-Hash: N5QESUCZQV5PJ4LJPXYIZEMDEOC7Q27I
+X-Mailman-Approved-At: Sun, 07 Apr 2024 07:13:58 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U6LLYYNDSXR7WFI3XVLU4WUV7QFDFZNA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N5QESUCZQV5PJ4LJPXYIZEMDEOC7Q27I/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -175,16 +98,80 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 06 Apr 2024 15:20:09 +0200,
-Shenghao Ding wrote:
-> 
-> Calibrated data was written into an incorrect register, which cause
-> speaker protection sometimes malfuctions
-> 
-> Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+This series aims to add some features to McBSP driver.
 
-Thanks, applied now.
+Convert bindings from .txt to .yaml.
+Add possibility to use an external clock as sample rate generator's
+input.
+Add handling of new formats (TDM, S24_LE, BP_FC).
+Enable the detection of unexpected frame pulses.
+Set the clock free-running mode according to SND_SOC_DAIFMT_[GATED/CONT]
+configuration in DAI format.
+Add ti,T1-framing[tx/rx] properties in DT. They allow to set the data
+delay to two bit-clock periods.
 
+This has been tested on a platform designed off of the DAVINCI/OMAP-L138
+connected to 3 daisy-chained AD7767. An external clock drives the
+sample rate generator through the CLKS pin.
+The hardware I have only allowed me to test acquisition side of McBSP.
+It is connected to a 6 channels TDM and acts as Bit clock provider and
+Frame clock consumer.
 
-Takashi
+Change log v1 -> v2:
+  PATCH 1 (bindings):
+     * Drop power-domains property's description
+     * Drop the unused label 'mcbsp0' in example
+     * Add <> around each entry of the 'dmas' property
+     * Add 'Reviewed-by: Rob Herring <robh@kernel.org>'
+  PATCH 2 (bindings):
+     * Drop the 'ti,enable-sync-err' flag
+     * Drop the 'ti,disable-free-run' flag
+     * Add 'Reviewed-by: Rob Herring <robh@kernel.org>'
+  PATCH 4:
+     * In probe() use dev_err for fixed error
+  PATCH 7 (TDM):
+     * set playback.max_channels to 128
+     * Add a check on tx_mask as the one done for rx_mask
+     * Allow TDM with BP_FP format
+  PATCH 9:
+     * Detection of unexpected frame pulses is enabled by default
+  PATCH 10:
+     * Free-running mode is selected by the DAI format through
+       SND_SOC_DAIFMT_[CONT/GATED]
+  PATCH 12:
+     * drop the 'ti,drive-dx' property
+     * add 'ti,T1-framing-[rx/tx]' properties
+  PATCH 13:
+     * Drop the drive_dx part
+     * Add support for 'T1 framing' with data delay set to 2 bit-clock
+       periods
+Bastien Curutchet (13):
+  ASoC: dt-bindings: davinci-mcbsp: convert McBSP bindings to yaml
+    schema
+  ASoC: dt-bindings: davinci-mcbsp: Add optional clock
+  ASoC: ti: davinci-i2s: Remove the unused clk_input_pin attribute
+  ASoC: ti: davinci-i2s: Replace dev_err with dev_err_probe
+  ASoC: ti: davinci-i2s: Use external clock to drive sample rate
+    generator
+  ASoC: ti: davinci-i2s: Delete unnecessary assignment
+  ASoC: ti: davinci-i2s: Add TDM support
+  ASoC: ti: davinci-i2s: Add handling of BP_FC format
+  ASoC: ti: davinci-i2s: Enable unexpected frame pulses detection
+  ASoC: ti: davinci-i2s: Link free-run mode to
+    SND_SOC_DAIFMT_[GATED/CONT]
+  ASoC: ti: davinci-i2s: Add S24_LE to supported formats
+  ASoC: dt-bindings: davinci-mcbsp: Add the 'ti,T1-framing-{rx/tx}'
+    flags
+  ASoC: ti: davinci-i2s: Add T1 framing support
+
+ .../bindings/sound/davinci-mcbsp.txt          |  50 ----
+ .../bindings/sound/davinci-mcbsp.yaml         | 113 +++++++
+ include/linux/platform_data/davinci_asp.h     |  15 -
+ sound/soc/ti/davinci-i2s.c                    | 278 ++++++++++++++----
+ 4 files changed, 333 insertions(+), 123 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
+
+-- 
+2.44.0
+
