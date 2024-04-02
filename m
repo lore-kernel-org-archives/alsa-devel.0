@@ -4,104 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA3E4CD1284
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 07:15:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECB6DC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Apr 2024 07:16:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6DE22D09;
-	Tue,  2 Apr 2024 09:15:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6DE22D09
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98CA52D52;
+	Tue,  2 Apr 2024 09:15:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98CA52D52
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712042150;
-	bh=GZJ0qHPwhhIYdtdZ/yXQI/beI8+GkNE90kSPhqbSSQQ=;
-	h=From:Date:Subject:To:Cc:Reply-To:List-Id:List-Archive:List-Help:
-	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=M/L5xPPLIaZMRR7r7T77a46MGNEBUXW3UUwfJPc2IVRQUs7SnCJ1lKHFM0AyXzcyX
-	 HUWcXMDXrIQutlnWAdDCqHmCBXwRtcNhACK1LR1uxEk3YwWTRNecFe6M3QBCHtoqow
-	 Y96Ja8eNi40HZnoRlJw0N1kZwssBLtMpDhzSt138=
+	s=default; t=1712042158;
+	bh=JDdQUktKOfhua2+Bxj626Bhw5OtcneVpPvwHo6tsN1Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=fY/kNuj/Yk8+SD8OPW0OWp6nbFArAyj6WdJeGtkH71/leZI8cHFW89HWeDl/YJspn
+	 Xsb+eSYsgCH5XDouzHIInqtGI3d7k+0tEZzxSeKbyUinxLr+MDeXm1zcilns5cwEhj
+	 RD2gpelZdxBxrkbDfOYEf7FtX6NlgGS1ciaRcBiY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B6A7F89CBF; Tue,  2 Apr 2024 08:57:58 +0200 (CEST)
+	id 7A1F6F89B48; Tue,  2 Apr 2024 08:58:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A43CBF89C4D;
-	Tue,  2 Apr 2024 08:57:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49D36F89CDA;
+	Tue,  2 Apr 2024 08:58:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFC3FF80236; Mon,  1 Apr 2024 16:32:14 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A54C4F8016E; Tue,  2 Apr 2024 08:23:29 +0200 (CEST)
+Received: from mail78-50.sinamail.sina.com.cn (mail78-50.sinamail.sina.com.cn
+ [219.142.78.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7EE00F80130
-	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2024 16:31:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EE00F80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=cl3a4PFy
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3592A60C5F;
-	Mon,  1 Apr 2024 14:31:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C9970C433C7;
-	Mon,  1 Apr 2024 14:31:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711981912;
-	bh=GZJ0qHPwhhIYdtdZ/yXQI/beI8+GkNE90kSPhqbSSQQ=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=cl3a4PFy9rmvwyZfAgOdn+b8rU3y/xg5TOSBKtZ7unfD/DmGRn6bDLXCdIsEFhAXK
-	 2vBa0KbHLazy/ACncf6MPcfswdSwlgEyi+9+MecUuRkqc/73xlU2cGJiMcmpo6kQyj
-	 UkySuiN4i5CcMpFLNTsoRs5n0EtzoQdlYhSmBocsRTJbjzI0bv2dRcf8FYNbnyrF1e
-	 2RZgAiaqk+jzdRQZUVUmk3WWeCfa7+aK2jRw8zSffXhfLJClQdOrsIY3FmUGrza6gP
-	 2GMC/q5G2pq31VPz48Oi7TVGHid/TmhWQfHaGJRR/8miN4WVf00l2ZJ5gbsx7LmWqf
-	 AJxr7SEdCCJyA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org
- (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB401CD1292;
-	Mon,  1 Apr 2024 14:31:52 +0000 (UTC)
-From: Daniel Berlin via B4 Relay <devnull+dberlin.dberlin.org@kernel.org>
-Date: Mon, 01 Apr 2024 10:31:30 -0400
-Subject: [PATCH] Add support for 2024 ROG Strix G634JZR
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240401-add-rog-strix-16-g634jzr-v1-1-ac396095409e@dberlin.org>
-X-B4-Tracking: v=1; b=H4sIAEHFCmYC/x3MQQ5AMBBA0avIrE3SVkm4ilhUO2oskKmIEHfXW
- L7F/w8kEqYEXfGA0MmJtzVDlwX42a2RkEM2GGWsskqjCwFli5gO4Qt1g7Gp7HILtlTbVnkXvBk
- h57vQxNe/7of3/QAvzIPVagAAAA==
-To: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- Daniel Berlin <dberlin@dberlin.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711981912; l=1959;
- i=dberlin@dberlin.org; s=20231103; h=from:subject:message-id;
- bh=OkAb0mgem2LTUaEtI3QpWVORvUHuRQ4HTHDw+7mTmOo=;
- b=YVpBuS/DPGPSMIvGvxBHJw3haqM0JyxXizPd9bNmgUQrCczpAtLBPuXOb2U+cilk8c/JMCLHZ
- djiMPPPiofUCumZT2HN3Y3EM2dPYqLVSXN41TPEjDEE0IspYGoyAv1W
-X-Developer-Key: i=dberlin@dberlin.org; a=ed25519;
- pk=cy2fotxgi42vqBilzDOe7Wq2+TsfMspPwg7pfE9Te+M=
-X-Endpoint-Received: by B4 Relay for dberlin@dberlin.org/20231103 with
- auth_id=96
-X-Original-From: Daniel Berlin <dberlin@dberlin.org>
-X-MailFrom: devnull+dberlin.dberlin.org@kernel.org
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9C3A2F80236
+	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 08:20:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C3A2F80236
+Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
+	by sina.net (10.75.30.234) with ESMTP
+	id 660BA3B800029E89; Tue, 2 Apr 2024 14:20:47 +0800 (CST)
+X-Sender: zhangyi@everest-semi.com
+X-Auth-ID: zhangyi@everest-semi.com
+Authentication-Results: sina.net;
+	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=zhangyi@everest-semi.com
+X-SMAIL-MID: B79AA415AEFD44DB8D18C2260402F5CB
+X-SMAIL-UIID: B79AA415AEFD44DB8D18C2260402F5CB-20240402-142047
+From: Zhang Yi <zhangyi@everest-semi.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Cc: tiwai@suse.com,
+	amadeuszx.slawinski@linux.intel.com,
+	yangxiaohua@everest-semi.com,
+	zhuning@everest-semi.com,
+	zhangyi@everest-semi.com
+Subject: [PATCH 3/4] ASoC: codecs: ES8326: Solve a headphone detection issue
+ after suspend and resume
+Date: Tue,  2 Apr 2024 14:20:42 +0800
+Message-Id: <20240402062043.20608-4-zhangyi@everest-semi.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240402062043.20608-1-zhangyi@everest-semi.com>
+References: <20240402062043.20608-1-zhangyi@everest-semi.com>
+X-MailFrom: zhangyi@everest-semi.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: OBEOP7565E3M66QEUGQXQLCWMG46NSCN
-X-Message-ID-Hash: OBEOP7565E3M66QEUGQXQLCWMG46NSCN
-X-Mailman-Approved-At: Tue, 02 Apr 2024 06:54:55 +0000
+Message-ID-Hash: BIFQTBFRQCTJ6Q76NU5M2PDIP4JHOFPY
+X-Message-ID-Hash: BIFQTBFRQCTJ6Q76NU5M2PDIP4JHOFPY
+X-Mailman-Approved-At: Tue, 02 Apr 2024 06:55:03 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
-Reply-To: dberlin@dberlin.org
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OBEOP7565E3M66QEUGQXQLCWMG46NSCN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BIFQTBFRQCTJ6Q76NU5M2PDIP4JHOFPY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,47 +84,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Daniel Berlin <dberlin@dberlin.org>
+We got a headphone detection issue after suspend and resume.
+And we fixed it by modifying the configuration at es8326_suspend
+and invoke es8326_irq at es8326_resume.
 
-The windows driver inf says it uses the exact same tunings and setup as the
-older G634, and then reuses the data for ID 1043:1CAF.
-
-We do the same here.
-Tested on an actual laptop, sound works fine with this patch plus
-default fallback firmware.
-
-Signed-off-by: Daniel Berlin <dberlin@dberlin.org>
+Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
 ---
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/es8326.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 72ec872afb8d..25c117db3317 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -108,6 +108,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
- 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
- 	{ "17AA38A9", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
- 	{ "17AA38AB", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
-@@ -496,6 +497,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431F12", generic_dsd_config },
- 	{ "CSC3551", "10431F1F", generic_dsd_config },
- 	{ "CSC3551", "10431F62", generic_dsd_config },
-+	{ "CSC3551", "10433A60", generic_dsd_config },
- 	{ "CSC3551", "17AA386F", generic_dsd_config },
- 	{ "CSC3551", "17AA38A9", generic_dsd_config },
- 	{ "CSC3551", "17AA38AB", generic_dsd_config },
-
----
-base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
-change-id: 20240401-add-rog-strix-16-g634jzr-9e5490cadc2b
-
-Best regards,
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index 7f4788265e53..17711dc5df0a 100755
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -1054,6 +1054,8 @@ static int es8326_resume(struct snd_soc_component *component)
+ 	es8326->hp = 0;
+ 	es8326->hpl_vol = 0x03;
+ 	es8326->hpr_vol = 0x03;
++
++	es8326_irq(es8326->irq, es8326);
+ 	return 0;
+ }
+ 
+@@ -1064,6 +1066,9 @@ static int es8326_suspend(struct snd_soc_component *component)
+ 	cancel_delayed_work_sync(&es8326->jack_detect_work);
+ 	es8326_disable_micbias(component);
+ 	es8326->calibrated = false;
++	regmap_write(es8326->regmap, ES8326_CLK_MUX, 0x2d);
++	regmap_write(es8326->regmap, ES8326_DAC2HPMIX, 0x00);
++	regmap_write(es8326->regmap, ES8326_ANA_PDN, 0x3b);
+ 	regmap_write(es8326->regmap, ES8326_CLK_CTL, ES8326_CLK_OFF);
+ 	regcache_cache_only(es8326->regmap, true);
+ 
 -- 
-Daniel Berlin <dberlin@dberlin.org>
-
+2.17.1
 
