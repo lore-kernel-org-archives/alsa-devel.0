@@ -4,99 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ABE9CD128A
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 12:51:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C36C3CD1292
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 12:51:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84ABA2CDF;
-	Wed,  3 Apr 2024 14:51:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84ABA2CDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB4532D06;
+	Wed,  3 Apr 2024 14:51:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4532D06
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712148672;
-	bh=rhp7e6puQyVUMErtQ1wrKsDuOwsFw8HjdJrVLLq+GRo=;
+	s=default; t=1712148686;
+	bh=D/FfpbAsiof89LgUZ4/UlHEJN8aXS0QySDUDCd5cFgU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tNjmKL8nIQcLGD5z3cyiEnoR8A9b67yu6ta+WBZ9/nSnAl4++gaei3nj0DaNTBjIv
-	 SwocOhQVe7QaOSkA1RvAfP/+xi+9u6vKKDtSHDIfO9NjmMVfadFBETYeGsadgmO3tE
-	 hcpaqY6ULCxnqhp7F58R+nT+BRu7e55cDJ9sEZAc=
+	b=aneHhHjByayFDKUGQHqnMsgrQmfEy7LbuoBK6r7fR771pLflpKiy5TQrlIYiTa5Sd
+	 dj9h5nXQO2oninWaZiQpWuPlCs+NmTPp6j7dIyB2z/6u5XpnyCKDa2xRf1PbmCoV+O
+	 In7irIKUTRuK8rgNE3C5iGnT4muZ/kUdMvzwWaZQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3603DF80568; Wed,  3 Apr 2024 14:50:41 +0200 (CEST)
+	id C1ECDF805D6; Wed,  3 Apr 2024 14:50:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4181F80580;
-	Wed,  3 Apr 2024 14:50:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 878EDF805C1;
+	Wed,  3 Apr 2024 14:50:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22F3DF80568; Wed,  3 Apr 2024 14:50:35 +0200 (CEST)
+	id C8364F8055C; Wed,  3 Apr 2024 14:50:35 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CEFC6F80130
-	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 14:50:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEFC6F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2906DF8016E
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 14:50:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2906DF8016E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=FqcspjCJ
+ header.s=Intel header.b=ONc6bG9F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712148628; x=1743684628;
+  t=1712148631; x=1743684631;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=rhp7e6puQyVUMErtQ1wrKsDuOwsFw8HjdJrVLLq+GRo=;
-  b=FqcspjCJEVCYo7tTSfB4IXjyKrOa+nxRjyQU7UJ91/SZaiataqUFylBc
-   4aRdDi3RSiRRx/SCjxvyBTRzJGAH7Sn2iSHl/OOBizAG9PtPRqUnQnX97
-   P6KBuDcodr8v2W3u5M/yR4AUyGr75SPusEfs5vJKradiViOaEHCLzS+Z8
-   GtyKrGfsQaGT9pfYb8bgDH3MMpzmkPKqCf+ijfM9S96UN3uVNSpxklzu5
-   BW4ypSuHv4u26l0/dI0/gE2u4v/m57gT4uRU7SFI+nZ+ihrNMMvQ8xF9E
-   6ZcpTGejYzL9bTAO6AO0zsgWC6fB0S4RafiF727cvxUG2ew2b0aL+INBy
+  bh=D/FfpbAsiof89LgUZ4/UlHEJN8aXS0QySDUDCd5cFgU=;
+  b=ONc6bG9Fn5WXNe7gsl3MFxZnsKh2XtFfGIrrY9OASMkEXY/SzPf3rOCE
+   z2YN7RH5aJMTjtOyl7w6Cj2p33d6L7cThfv5v6CFmefb5Gzmrg+Uh2s+m
+   QHasVEisDBrNzN2irDi9iFsmLdeaB6qAjXpeBblZV9COo+rKfhJKkw3rR
+   Cbht6HCYPo1dvYvWJFTpYpG+TfrtuWrl2KPel+hJrmyVDGjjSJxwwePt/
+   OiUXvB2Up7xI+kp0fzS70/0o5XmHnjycoK0dy9cY1p3BudjH6f9s8KtDe
+   pVLivksaeE5cTgc3cyrkGWWqxSdmsiUidJETmUFxBwORqAGAK5FM8Ui5V
    w==;
-X-CSE-ConnectionGUID: yu4HAE+lQHqvmr2TezSGWQ==
-X-CSE-MsgGUID: KqajrX5gQ9y6QRs7bjZPow==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7539273"
+X-CSE-ConnectionGUID: VbQtxK1BTn+Ha3yDcZQO+A==
+X-CSE-MsgGUID: jkTFcKw6SEiWVf8AGNduVw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7539335"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="7539273"
+   d="scan'208";a="7539335"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2024 05:50:22 -0700
-X-CSE-ConnectionGUID: 1/2JH2STQ7WDV9dzV2GDbw==
-X-CSE-MsgGUID: R5MUllpuTCKa7NQ8b3XutA==
+ 03 Apr 2024 05:50:28 -0700
+X-CSE-ConnectionGUID: /D+wW3RkS/a6+yA0ZGswww==
+X-CSE-MsgGUID: J/jGeT/nQbCMDRSoTLK5iQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="18343201"
+   d="scan'208";a="18343238"
 Received: from makulkar-mobl1.amr.corp.intel.com (HELO [10.212.52.18])
  ([10.212.52.18])
   by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2024 05:50:21 -0700
-Message-ID: <ef510647-c409-4da6-9cd4-ff4e54cbee74@linux.intel.com>
-Date: Tue, 2 Apr 2024 08:57:14 -0500
+ 03 Apr 2024 05:50:26 -0700
+Message-ID: <2cb2f96f-836c-4816-86f8-2262c2dd1ce3@linux.intel.com>
+Date: Tue, 2 Apr 2024 09:09:23 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHYyIDIvMl0gQVNvQzogY2RuczogQWRk?=
- =?UTF-8?Q?_drivers_of_Cadence_Multi-Channel_I2S_Controller?=
-To: Xingyu Wu <xingyu.wu@starfivetech.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Claudiu Beznea <Claudiu.Beznea@microchip.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor.dooley@microchip.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-References: <20240320090239.168743-1-xingyu.wu@starfivetech.com>
- <20240320090239.168743-3-xingyu.wu@starfivetech.com>
- <1d0399d2-684f-490e-8711-f636e987a0b8@linux.intel.com>
- <NTZPR01MB0956BFADB4B3DA507D938F669F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+Subject: Re: [PATCH v2 09/16] ASoC: soc-core: Replace dpcm_playback/capture to
+ playback/capture_only
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
+ Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
+ Jaroslav Kysela <perex@perex.cz>, Jerome Brunet <jbrunet@baylibre.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>,
+ Maso Huang <maso.huang@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>,
+ Trevor Wu <trevor.wu@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
+ imx@lists.linux.dev, linux-sound@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <87zfuesz8y.wl-kuninori.morimoto.gx@renesas.com>
+ <87msqdudn7.wl-kuninori.morimoto.gx@renesas.com>
+ <1a42ebbb-1e1f-4ecf-a1ec-7af292f7ff96@linux.intel.com>
+ <871q7o8y0d.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: 
- <NTZPR01MB0956BFADB4B3DA507D938F669F35A@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+In-Reply-To: <871q7o8y0d.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: GRCO6DQJ3PF3JBMD6ZR3KRBXOFDCXKNE
-X-Message-ID-Hash: GRCO6DQJ3PF3JBMD6ZR3KRBXOFDCXKNE
+Message-ID-Hash: 37JLO2LGFQCGJ7G6Z2KZ3D5UJ5MTSWB7
+X-Message-ID-Hash: 37JLO2LGFQCGJ7G6Z2KZ3D5UJ5MTSWB7
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -109,7 +124,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GRCO6DQJ3PF3JBMD6ZR3KRBXOFDCXKNE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/37JLO2LGFQCGJ7G6Z2KZ3D5UJ5MTSWB7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,80 +134,47 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
->>
->>> +#define PERIODS_MIN		2
->>> +
->>> +static unsigned int cdns_i2s_pcm_tx(struct cdns_i2s_dev *dev,
->>> +				    struct snd_pcm_runtime *runtime,
->>> +				    unsigned int tx_ptr, bool *period_elapsed,
->>> +				    snd_pcm_format_t format)
->>> +{
->>> +	unsigned int period_pos = tx_ptr % runtime->period_size;
->>
->> not following what the modulo is for, usually it's modulo the buffer size?
+
+On 4/1/24 18:27, Kuninori Morimoto wrote:
 > 
-> This is to see if the new data is divisible by period_size and to determine whether
-> it is enough for a period_size in the later loop.
-
-That didn't answer to my question, the position is usually between
-0..buffer_size.1.
-
-Doing increments on a modulo value then comparisons as done below seems
-rather questionable.
-	
->>> +
->>> +		iowrite32(data[0], dev->base + CDNS_FIFO_MEM);
->>> +		iowrite32(data[1], dev->base + CDNS_FIFO_MEM);
->>> +		period_pos++;
->>> +		if (++tx_ptr >= runtime->buffer_size)
->>> +			tx_ptr = 0;
->>> +	}
->>> +
->>> +	*period_elapsed = period_pos >= runtime->period_size;
->>> +	return tx_ptr;
->>> +}
-
->>> +	pm_runtime_enable(&pdev->dev);
->>> +	if (pm_runtime_enabled(&pdev->dev))
->>> +		cdns_i2s_runtime_suspend(&pdev->dev);
->>
->> that sequence looks suspicious.... Why would you suspend immediately during the
->> probe? You're probably missing all the autosuspend stuff?
+> Hi Pierre-Louis
 > 
-> Since I have enabled clocks before, and the device is in the suspend state after
-> pm_runtime_enable(), I need to disable clocks in cdns_i2s_runtime_suspend()
-> to match the suspend state.
-
-That is very odd on two counts
-a) if you haven't enabled the clocks, why do you need to disbale them?
-b) if you do a pm_runtime_enable(), then the branch if
-(pm_runtime_enabled) is always true.
-
-
+> Thank you for the feedback
 > 
->>
->>> +
->>> +	dev_dbg(&pdev->dev, "I2S supports %d stereo channels with %s.\n",
->>> +		i2s->max_channels, ((i2s->irq < 0) ? "dma" : "interrupt"));
->>> +
->>> +	return 0;
->>> +
->>> +err:
->>> +	return ret;
->>> +}
->>> +
->>> +static int cdns_i2s_remove(struct platform_device *pdev) {
->>> +	pm_runtime_disable(&pdev->dev);
->>> +	if (!pm_runtime_status_suspended(&pdev->dev))
->>> +		cdns_i2s_runtime_suspend(&pdev->dev);
->>
->> ... and this one too. Once you've disabled pm_runtime, checking the status is
->> irrelevant...
+>>>  			/* convert non BE into BE */
+>>> -			if (!dai_link->no_pcm) {
+>>> -				dai_link->no_pcm = 1;
+>>> -
+>>> -				if (dai_link->dpcm_playback)
+>>> -					dev_warn(card->dev,
+>>> -						 "invalid configuration, dailink %s has flags no_pcm=0 and dpcm_playback=1\n",
+>>> -						 dai_link->name);
+>>> -				if (dai_link->dpcm_capture)
+>>> -					dev_warn(card->dev,
+>>> -						 "invalid configuration, dailink %s has flags no_pcm=0 and dpcm_capture=1\n",
+>>> -						 dai_link->name);
+>>> -
+>>> -				/* convert normal link into DPCM one */
+>>> -				if (!(dai_link->dpcm_playback ||
+>>> -				      dai_link->dpcm_capture)) {
+>>> -					dai_link->dpcm_playback = !dai_link->capture_only;
+>>> -					dai_link->dpcm_capture = !dai_link->playback_only;
+>>> -				}
+>>> -			}
+>>> +			dai_link->no_pcm = 1;
+> (snip)
+>> It's not clear to me how this is related to the
+>> dpcm_playback/dpcm_capture removal.
 > 
-> I think the clocks need to be always enabled after probe if disable pm_runtime,
-> and should be disabled when remove. This will do that.
+> In my understanding, if "dai_link->no_pcm" was 0, it sets no_pcm and
+> convert setting to BE. If no_pcm was 1, it is BE anyway. So no_pcm will
+> be 1 anyway after this code.
+> And then, dpcm_playback/capture is no longer needed.
+> So it just set no_pcm = 1 here. But am I wrong ??
 
-if you are disabling pm_runtime, then the pm_runtime state becames invalid.
-When pm_runtime_disable() is added in remove operations, it's mainly to
-prevent the device from suspending.
+The problem is that the patchset is supposed to be only about removal of
+flags to align on one set, but then we also have "simplifications" or
+removal of checks without explanations.
 
+It would be far less invasive if we only replaced flags and had
+iso-functionality. Then we can discuss the merits of simplifications.
