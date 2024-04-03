@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2ED6CD1288
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32812CD1288
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:34:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1318A2C85;
-	Wed,  3 Apr 2024 11:34:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1318A2C85
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FAF72C88;
+	Wed,  3 Apr 2024 11:34:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FAF72C88
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712136872;
-	bh=/0HwR9BeGlHT/8EimwBOYK6tvT4kTu02wjjOYw0tNGk=;
+	s=default; t=1712136889;
+	bh=H1VHHLIXeX8Omn5DQfAV7IkeGysf9C0vnaXxHYuscy8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mKhQ4r4E+xRcXK8VTM+0O7lfjmmOBb9trP1bzBTy30UP8IUwkzBn/FNQ4EVsU9uFC
-	 H4bu8rccIiz47UD8SQVfvCeUy8K/zDLQ9WGQj1v3nHcrCJqpTwDJU3a8w0lGRYm01F
-	 UKKiOE52j4XvGnUWcwFLCnIsDOjI+OUjqTa1l+f8=
+	b=jHZwEYJOmhadijWK/TRi07XYbQaASCBdk3NMRCq1J7xB703FYmuyTQZBstyx0IUA1
+	 QKHrL3DbjdOK49n993Ze5kDVpfD0ODa1jciffdNnLoGeHIa55wRsp6pjLVtKZm9U9e
+	 ITJcEuFCujGUMZ6DCaDtweSxD3WZeapmQl2MMWuE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DAB4AF8071F; Wed,  3 Apr 2024 11:31:54 +0200 (CEST)
+	id 95A87F80768; Wed,  3 Apr 2024 11:31:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33C9EF8070D;
-	Wed,  3 Apr 2024 11:31:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0443AF8074E;
+	Wed,  3 Apr 2024 11:31:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0D3AF80611; Wed,  3 Apr 2024 11:31:39 +0200 (CEST)
+	id EEC2DF80641; Wed,  3 Apr 2024 11:31:41 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3C8A5F805E7
+	by alsa1.perex.cz (Postfix) with ESMTPS id B097DF805D9
 	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:31:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C8A5F805E7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B097DF805D9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Ah6Q8iWk
+ header.s=Intel header.b=KosinP5b
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1712136694; x=1743672694;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/0HwR9BeGlHT/8EimwBOYK6tvT4kTu02wjjOYw0tNGk=;
-  b=Ah6Q8iWk9yqUcD9N6QQovBW64REe1fb8r4rYay85VaP9NgancIIPEGdd
-   ciMW1TCp9DRN9Zv6bihYAsA3Zx9n/TrKoUQY7J05yy9QXDOoEt+izrrCZ
-   wDOExgNp+cwmPBkuG8xPowzI/SeCAXpulI3cSaUes5/zhyPPCf/184ycD
-   Fhh95pMP9IHlQe1BT4OZm22m7e7BdeCVpXTRwYyI5/HKSDNEsYgn4gFZi
-   9/AAMeFLge2NJ0xsp4kWYNvPhmniJP28bSEltB3NN09yve0e6QktE+X2z
-   Z9RJFXELEPRNXPCiTDmHctKId8ibDobh+1QywUGhyjUnG4xlb2MCanoB1
-   w==;
-X-CSE-ConnectionGUID: lI37R0hjQY+jTGIQDRxMOQ==
-X-CSE-MsgGUID: 3gF9g7ewSZu4rXsWmY4bMg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7218749"
+  bh=H1VHHLIXeX8Omn5DQfAV7IkeGysf9C0vnaXxHYuscy8=;
+  b=KosinP5bLOhkVO5H7HpyPQEXLh4m7ZGipzy3Vn45SkCq0b3nCreNgvRC
+   fcUOG/7zXW1zWpoZ5Q2lod6MKUe8bdyQaUlyZGwKGLCiqjya3+82ujTc3
+   nOrgMrft4MvbESVMmmZkwOlupIFoqAeg+GQUZ/bqXibkXCpjcl42j20A8
+   gx1tWbMNoJ2i5Q8a3vAUU+6XmR6I8BbiDAWjRy+PehJWdLw0Sz+fDxDkx
+   UbrN69TCcmQlNPQfdHNhuvUzYInTch1v2RQJNaMXwBymarj1x0a5eBZW4
+   pkt/Kn15W5CZa+m9eFlraMT74FbnYEti0jBuC44c6vAqWYtcD/Jpa1Vye
+   g==;
+X-CSE-ConnectionGUID: 9Ank7ftmRnmLU31NOkKiqw==
+X-CSE-MsgGUID: Ks+iDe2jSfSW6L3kf6frLw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7218734"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="7218749"
+   d="scan'208";a="7218734"
 Received: from orviesa007.jf.intel.com ([10.64.159.147])
   by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2024 02:31:32 -0700
-X-CSE-ConnectionGUID: 1zKRmFJ1R/e8oauVacYm8g==
-X-CSE-MsgGUID: phKU8EAhThiVGTLk/yTDvA==
+ 03 Apr 2024 02:31:31 -0700
+X-CSE-ConnectionGUID: cid7SUMdRQ+Lf/Kd5Gi0hQ==
+X-CSE-MsgGUID: lPy6wLiwQIOWYrKYk2NbmA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="18797585"
+   d="scan'208";a="18797576"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orviesa007.jf.intel.com with ESMTP; 03 Apr 2024 02:31:31 -0700
+  by orviesa007.jf.intel.com with ESMTP; 03 Apr 2024 02:31:29 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -76,17 +76,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	linux-sound@vger.kernel.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 10/10] ASoC: Intel: avs: rt5682: Constify card_headset_pins
-Date: Wed,  3 Apr 2024 11:31:45 +0200
-Message-Id: <20240403093145.3375857-11-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 09/10] ASoC: Intel: avs: rt5663: Constify card_headset_pins
+Date: Wed,  3 Apr 2024 11:31:44 +0200
+Message-Id: <20240403093145.3375857-10-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240403093145.3375857-1-amadeuszx.slawinski@linux.intel.com>
 References: <20240403093145.3375857-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2Y5X4DBRZ5FNO5I3AYSHU6KQQML35FFN
-X-Message-ID-Hash: 2Y5X4DBRZ5FNO5I3AYSHU6KQQML35FFN
+Message-ID-Hash: U7XBQ7AX43LF7UAF22B3FEKZG3MEVJ3Y
+X-Message-ID-Hash: U7XBQ7AX43LF7UAF22B3FEKZG3MEVJ3Y
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2Y5X4DBRZ5FNO5I3AYSHU6KQQML35FFN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7XBQ7AX43LF7UAF22B3FEKZG3MEVJ3Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,19 +113,19 @@ card_headset_pins is never modified, mark it const.
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/avs/boards/rt5682.c | 2 +-
+ sound/soc/intel/avs/boards/rt5663.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/boards/rt5682.c b/sound/soc/intel/avs/boards/rt5682.c
-index 594a971ded9eb..823f04dba2f76 100644
---- a/sound/soc/intel/avs/boards/rt5682.c
-+++ b/sound/soc/intel/avs/boards/rt5682.c
-@@ -80,7 +80,7 @@ static const struct snd_soc_dapm_route card_base_routes[] = {
- 	{ "IN1P", NULL, "Headset Mic" },
+diff --git a/sound/soc/intel/avs/boards/rt5663.c b/sound/soc/intel/avs/boards/rt5663.c
+index 1880c315cc4d1..ba8c42d026da2 100644
+--- a/sound/soc/intel/avs/boards/rt5663.c
++++ b/sound/soc/intel/avs/boards/rt5663.c
+@@ -43,7 +43,7 @@ static const struct snd_soc_dapm_route card_routes[] = {
+ 	{ "IN1N", NULL, "Headset Mic" },
  };
  
--static struct snd_soc_jack_pin card_jack_pins[] = {
-+static const struct snd_soc_jack_pin card_jack_pins[] = {
+-static struct snd_soc_jack_pin card_headset_pins[] = {
++static const struct snd_soc_jack_pin card_headset_pins[] = {
  	{
  		.pin = "Headphone Jack",
  		.mask = SND_JACK_HEADPHONE,
