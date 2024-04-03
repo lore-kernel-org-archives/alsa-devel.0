@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60F8ACD1288
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 10:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 830B0CD1288
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 12:07:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A10AE2CCD;
-	Wed,  3 Apr 2024 12:51:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A10AE2CCD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C3992CDC;
+	Wed,  3 Apr 2024 14:06:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C3992CDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712141493;
-	bh=zEs09Pf70wWA8RG+pKCKh6egma5W4v+1joh1kjYqyIM=;
+	s=default; t=1712146023;
+	bh=rdpu1fv+YDNO5DeUj4K9w41evcL2oZyCQ49s+KEpRqE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ti2c7tjXtnO/5R3SdFiR3rpximlpTXJQ8ynlhjuU91W3qykF6FqOJF03J+tEzkY1T
-	 sW/ozOS3hTMjriCr6opGmgMMXY1TQPtGCPNnFzW1dJnwiG1PFZqvnOxznPee11eg3s
-	 A/9MN0ARPecr9dqc7x1PCde2p8idLgf3OVgjijMU=
+	b=SDnpKNh/IeGGZG/ndE+5IMzwUhm88CHKzMYkquEwOuvb9wT3rmENQkpxgSy0cQ8HL
+	 NtieY+tPsMPa8qWdya/J0xAdPCwRrFDGIm6Lj1fAD0zpD/d7m+4X9t3zVkepUu+YEi
+	 vg2PRYfHT8dnHdC8HIi9cXd2wUbeD5ja2XHnwChw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7CCBEF805AC; Wed,  3 Apr 2024 12:51:02 +0200 (CEST)
+	id 20E95F80580; Wed,  3 Apr 2024 14:06:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED6FFF8016E;
-	Wed,  3 Apr 2024 12:51:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B77E3F80580;
+	Wed,  3 Apr 2024 14:06:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3237FF8020D; Wed,  3 Apr 2024 12:50:56 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 248E2F8020D; Wed,  3 Apr 2024 14:06:24 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 731A8F80114
-	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 12:50:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 731A8F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 10A59F80130
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 14:06:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10A59F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Ow/ufA70
+ header.s=k20201202 header.b=azZm6Uv0
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id C6F73CE22D9;
-	Wed,  3 Apr 2024 10:50:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29EC2C433F1;
-	Wed,  3 Apr 2024 10:50:43 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8CBFF61384;
+	Wed,  3 Apr 2024 12:06:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D94EC433F1;
+	Wed,  3 Apr 2024 12:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712141444;
-	bh=zEs09Pf70wWA8RG+pKCKh6egma5W4v+1joh1kjYqyIM=;
+	s=k20201202; t=1712145973;
+	bh=rdpu1fv+YDNO5DeUj4K9w41evcL2oZyCQ49s+KEpRqE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Ow/ufA70icQL7tcZCl+EFjqELra4W9CscBHPaWEWvx/7W7++hxdoPnh2rBq4K8/d0
-	 SOX7qS+UXgoMmsLF5mchzS58+pLtRwQnrpLm1opQnYLv86VwC0IfLVEJ4p49b3xPNd
-	 OMowe6ogXQHimLQpAEF8RMtKWz2XpUu8Z0W1CEhQUGj03zgJmCNKAuphg+6O3EaKDQ
-	 KYLK2aZUBnruUekRPCKQzoApIv9ImT8HT5tXI9NoZrCTAqu4DQBeL1v069AcqiZXxC
-	 RD8lu8URcekNC4aq67bRNA0By0cGkzEkoHNHGYtBB91c+z/x6sKrfYIVE+vc+q30MA
-	 Z3hn7zhZW44xg==
+	b=azZm6Uv0mlW4ar7arnzKIHwMwtIbZOnVdp1NvEA03p9/EaJzlYrflnTW/kaEE5BWx
+	 H9U3+G4ONMBRmCxSjXxpBqBOGF7Di8QV3z9C5OhIK3UfdF7Qrii6dUvy+d3EB1+A99
+	 4G6ZumJBZLu/r+UlG1PzB+ZGvwcE3LaumHcLguc3JitDl/7AE49fDCPZmqe1OPVmwm
+	 NYMhNu1k81AsTvJr7EqUe52gP8Pvitmv+FxJ/34HYhrApynyZ5T0KYabegA2Wr0SxI
+	 PFn43OVj7vmOBuD5766DCHNlE9xpKWEQcqBSiu4Q+Qhd3YTcX2GrO3PJXt8zJxbnym
+	 y/L+5D1hFEXSw==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Khanh Le <khanh.le.xr@renesas.com>
-In-Reply-To: <8734s4bizh.wl-kuninori.morimoto.gx@renesas.com>
-References: <8734s4bizh.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/5] ASoC: rsnd: reg cleanup
-Message-Id: <171214144388.677375.6241132080321241812.b4-ty@kernel.org>
-Date: Wed, 03 Apr 2024 11:50:43 +0100
+To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+In-Reply-To: <20240403093145.3375857-1-amadeuszx.slawinski@linux.intel.com>
+References: <20240403093145.3375857-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH 00/10] Use const where applicable
+Message-Id: <171214597120.799854.18095797972355599249.b4-ty@kernel.org>
+Date: Wed, 03 Apr 2024 13:06:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: 746CD4W5SQWASUHZ2KABHJ7W5AIBTCF3
-X-Message-ID-Hash: 746CD4W5SQWASUHZ2KABHJ7W5AIBTCF3
+Message-ID-Hash: BC3VCC4H7U6ZGN3B6YUBHGWCIIPK7CRH
+X-Message-ID-Hash: BC3VCC4H7U6ZGN3B6YUBHGWCIIPK7CRH
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/746CD4W5SQWASUHZ2KABHJ7W5AIBTCF3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BC3VCC4H7U6ZGN3B6YUBHGWCIIPK7CRH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,15 +93,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 02 Apr 2024 02:23:35 +0000, Kuninori Morimoto wrote:
-> These are Renesas Sound driver cleanups for Gen3/Gen4.
+On Wed, 03 Apr 2024 11:31:35 +0200, Amadeusz Sławiński wrote:
+> Use devm_kstrdup_const in few places to possibly save a bit of memory.
+> Mark some of the structs as const, as they are not modified and used as
+> is.
 > 
-> Kuninori Morimoto (5):
->   ASoC: rsnd: cleanup regmap table
->   ASoC: rsnd: don't get resource from ID
->   ASoC: rsnd: rename rsnd_is_e3() to rsnd_is_gen3_e3()
->   ASoC: rsnd: R-Car Gen1/Gen2 exception
->   ASoC: rsnd: no exception for SCU
+> Amadeusz Sławiński (10):
+>   ASoC: Intel: avs: hdaudio: Use devm_kstrdup_const
+>   ASoC: Intel: avs: Use devm_kstrdup_const
+>   ASoC: Intel: avs: hdaudio: Constify probing_link
+>   ASoC: Intel: avs: es8336: Constify card_headset_pins
+>   ASoC: Intel: avs: nau8825: Constify card_headset_pins
+>   ASoC: Intel: avs: rt274: Constify card_headset_pins
+>   ASoC: Intel: avs: rt286: Constify card_headset_pins
+>   ASoC: Intel: avs: rt298: Constify card_headset_pins
+>   ASoC: Intel: avs: rt5663: Constify card_headset_pins
+>   ASoC: Intel: avs: rt5682: Constify card_headset_pins
 > 
 > [...]
 
@@ -110,16 +118,26 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: rsnd: cleanup regmap table
-      commit: 35aaed1bc3c32c52b7fda525cd7bd19998035518
-[2/5] ASoC: rsnd: don't get resource from ID
-      commit: 6e4e5432942a57f4c3e6a5a4a97a4d1a164dca61
-[3/5] ASoC: rsnd: rename rsnd_is_e3() to rsnd_is_gen3_e3()
-      commit: 0b8ef53e120981c218ba037dddda98f414af2207
-[4/5] ASoC: rsnd: R-Car Gen1/Gen2 exception
-      commit: 5be0e7f7f275aa5f05d8708db021cef0fed749d1
-[5/5] ASoC: rsnd: no exception for SCU
-      commit: 07f6232ff1c9909cd87e42020c91b265a58918da
+[01/10] ASoC: Intel: avs: hdaudio: Use devm_kstrdup_const
+        commit: 27aa58180473f81990f35238dc8aec40d34c778d
+[02/10] ASoC: Intel: avs: Use devm_kstrdup_const
+        commit: 68a71af3aee2b776a0030e1393864c9501997cbb
+[03/10] ASoC: Intel: avs: hdaudio: Constify probing_link
+        commit: a3c95efc432ddd18882cfab420cbea14937fb950
+[04/10] ASoC: Intel: avs: es8336: Constify card_headset_pins
+        commit: 2dbe7c809841e645a6b9d6d51801d3c594739d93
+[05/10] ASoC: Intel: avs: nau8825: Constify card_headset_pins
+        commit: bf400f16a03788ccdb1de1d9bfe9458082f24ef7
+[06/10] ASoC: Intel: avs: rt274: Constify card_headset_pins
+        commit: 130c953a75cc62dd5c73c295bae14197dce46b85
+[07/10] ASoC: Intel: avs: rt286: Constify card_headset_pins
+        commit: 682bedc8b0bae52fc5fc95cb3dba6e3d590da653
+[08/10] ASoC: Intel: avs: rt298: Constify card_headset_pins
+        commit: 33a886eee711298e799f1f52432e2f5e234cd015
+[09/10] ASoC: Intel: avs: rt5663: Constify card_headset_pins
+        commit: a055674868fa9d36f290dba906a76dd45801a37e
+[10/10] ASoC: Intel: avs: rt5682: Constify card_headset_pins
+        commit: 5faf65b5d1e36ec0a1eb3ba8ba2a8b7a779575ce
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
