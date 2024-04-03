@@ -4,160 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C99CD11C2
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:22:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FFE5CD11C2
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:22:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B3462BC1;
-	Sun,  7 Apr 2024 09:21:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B3462BC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F696240C;
+	Sun,  7 Apr 2024 09:22:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F696240C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712474526;
-	bh=PbCYgrPVbVOdhV1jC/4KII4virJ8WGK/ifPusT5Ym9k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=dOBmL1uGH8YB7Fmaq2cHU/m7gtIKSwTApgEYgjWoLu5LlE7IMojsLh71boQbTP3+S
-	 fnJLrVJZs+mHzsdQMBPKn44qCfgktNRldI+twZgLdpeHjhWrrFEk/QbEQ88/ltIJ+a
-	 bYJ7PBcO7euWG1Vy+mSgdBAiW8mZy30FPZiT2NJM=
+	s=default; t=1712474557;
+	bh=z3FscXihxwpOV4ROqTZ5m0E+vHpG1jkSs+uhYwvMfYI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=GP+p+RebYVUUMSMJL5ZagwFSloha7bxcgnSlr2ZslZQHcrbzLEUl4n5cifNBW1kmD
+	 5nYbjvMOyPcIIqmbPCpFFygnYogmHwJ5xbyOR7cIyQy1b1XOOtzVCGVhYBT6vJEwLA
+	 8111ZjxI6iyZf87mWmr/ySkbZ/Anvvllny/7p9/o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB289F80CC1; Sun,  7 Apr 2024 09:17:53 +0200 (CEST)
+	id ABE82F8962C; Sun,  7 Apr 2024 09:18:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2216F80C8F;
-	Sun,  7 Apr 2024 09:17:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 868D3F80CAA;
+	Sun,  7 Apr 2024 09:18:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C7FFF8020D; Tue,  2 Apr 2024 22:34:48 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 264F0F8020D; Wed,  3 Apr 2024 19:00:22 +0200 (CEST)
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com
+ [IPv6:2607:f8b0:4864:20::42e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1FD3CF8015B
-	for <alsa-devel@alsa-project.org>; Tue,  2 Apr 2024 22:34:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FD3CF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05669F80114
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 19:00:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05669F80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=f6U0DyP5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712090084;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OmliKS7IXk0y+y9ssPc7arVQxLqF15p8TNQCcmbmlpA=;
-	b=f6U0DyP5RTDuDa4zavUrwkOVaS3it37P0oHjHsWeG1Ly6Lg0TSGAlC1XgialT9oJ1I0FwU
-	UlaoJD/wMnY2JW+k4Lj4MMY/LgttSBQxtUE7XhRN7Bfk6XJ9qH8xnbkA6zHjFhUMGNrPjz
-	XepIrotzXv36o1KlWTgPU9830qQy3o4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-637-M7s17IMyP86NjAj3PJZL_Q-1; Tue,
- 02 Apr 2024 16:34:41 -0400
-X-MC-Unique: M7s17IMyP86NjAj3PJZL_Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
- [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BEB671C29EA4;
-	Tue,  2 Apr 2024 20:34:38 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.21])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6A6D640C6DAE;
-	Tue,  2 Apr 2024 20:34:37 +0000 (UTC)
-Date: Tue, 2 Apr 2024 16:34:18 -0400
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	David Hildenbrand <david@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Paolo Bonzini <pbonzini@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gonglei <arei.gonglei@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	David Airlie <airlied@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alexander Graf <graf@amazon.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
-	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH v2 24/25] fuse: virtio: drop owner assignment
-Message-ID: <20240402203418.GG2507314@fedora>
-References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
- <20240331-module-owner-virtio-v2-24-98f04bfaf46a@linaro.org>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=j458D/SQ
+Received: by mail-pf1-x42e.google.com with SMTP id
+ d2e1a72fcca58-6eafbcc5392so471b3a.1
+        for <alsa-devel@alsa-project.org>;
+ Wed, 03 Apr 2024 10:00:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712163613; x=1712768413;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/iqVZ5gA1EsiAAqdiE1q1pz002POsB1V3jfn1PcyLTU=;
+        b=j458D/SQxk3/ha+MPBsZp7271D+4o0QRmJ/dURjWKBJfdrLErrr563492nOls02bgA
+         yqgRgN3saKxwgXUGkTiaf1gu40TNEaSHepy49bQ55aciXGf9/JF5w5A3QI7JEYWgEhcU
+         cTwXjG5d0smFwidsbJUgtvzEHBbkpViQ521+sssNCyARnWo+eNzDa/U3EFgyH7QGRp0h
+         Me5Yq2s9p3l7rROCGdQjtJMqqY8PAPa5nFxklbdsirpTw4ld4zrRsOaZofhQj1vbuHZt
+         KhQBvODjGbERlRU+3/p+YalyEUHVxzIViiCSQ3YJ2PhtmMuYI5uYeeWLfLuTp6zRMZvY
+         fOeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712163613; x=1712768413;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/iqVZ5gA1EsiAAqdiE1q1pz002POsB1V3jfn1PcyLTU=;
+        b=mFzAuckv7ipSoLaMg755gz2SxtD53e9qdD6CrC3++nulaHlP3xVhWcCsWjZIUQ/sNV
+         vvm6f3+qPhEzXRtEtFaHeKFqlTuLaqWHb1KVfpK9vCSX0aEPJvNutVKOrcZ3zWMlUQ3p
+         7pG1bT4f13fp1YDmk83HfC8VZ+bKcUi0vPL5WTCuKJ4WtoTyNJ/F3k3uKRTI4AqaBbV3
+         N5l/fvgioHjyK5JTYdJeM0hMCROcN3U6CXMliOPgBXbVLXmSK8IR6qlvK6/PrK4pvGk+
+         pEd56xJQiPzTDo1ZTQezqPN9gN4RUb+ptoAztXwzvSPe/Dt6L8XQvgGCOsOazZ6ttlxr
+         rXXQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWLPgtq2XbML83ZJqSHKLU8Zmve6e+gcpLrkMIf3wo4k/dmEmb/4Gmshu0e/AQjDglw655CbRwPpC+P5tRS6Uyz0oa966uAsgtN0MQ=
+X-Gm-Message-State: AOJu0YwtmnqKlvjb3RgCnvK91CjCn0fa5t3QEfJggFKncIDBb6/hnsbs
+	EqgQGw1l90a7Qq4xlhVqVGZPmjG87ScoO6J1TX6SGXAg3TQVjXKK
+X-Google-Smtp-Source: 
+ AGHT+IEGnCuTqwRJlWkcslahpnxgW2v/avadB030lgfgF5175R9lm9IIeIXhMbMokkf1DfF6h9e5WA==
+X-Received: by 2002:a05:6a00:21cc:b0:6ea:e31e:dc75 with SMTP id
+ t12-20020a056a0021cc00b006eae31edc75mr121993pfj.5.1712163612561;
+        Wed, 03 Apr 2024 10:00:12 -0700 (PDT)
+Received: from localhost.localdomain ([203.188.229.101])
+        by smtp.gmail.com with ESMTPSA id
+ c2-20020a056a000ac200b006eaf3057352sm8891925pfl.85.2024.04.03.10.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 10:00:12 -0700 (PDT)
+From: Mighty <bavishimithil@gmail.com>
+To: 
+Cc: bavishimithil@gmail.com,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: omap-mcpdm: Convert to DT schema
+Date: Wed,  3 Apr 2024 22:29:50 +0530
+Message-Id: <20240403165950.75-1-bavishimithil@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y2TTKZujScqhsi/4"
-Content-Disposition: inline
-In-Reply-To: <20240331-module-owner-virtio-v2-24-98f04bfaf46a@linaro.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-MailFrom: stefanha@redhat.com
-X-Mailman-Rule-Hits: max-recipients
+Content-Transfer-Encoding: 8bit
+X-MailFrom: bavishimithil@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: MP426REXPHKZ2AEGV3CI527OPZ5DQ3QO
-X-Message-ID-Hash: MP426REXPHKZ2AEGV3CI527OPZ5DQ3QO
-X-Mailman-Approved-At: Sun, 07 Apr 2024 07:15:19 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: Y2FLJKNPYIOJE5YHP7BYUDI4363ZSBU6
+X-Message-ID-Hash: Y2FLJKNPYIOJE5YHP7BYUDI4363ZSBU6
+X-Mailman-Approved-At: Sun, 07 Apr 2024 07:15:20 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MP426REXPHKZ2AEGV3CI527OPZ5DQ3QO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y2FLJKNPYIOJE5YHP7BYUDI4363ZSBU6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -166,40 +122,116 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Convert the OMAP4+ McPDM bindings to DT schema.
 
---y2TTKZujScqhsi/4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mighty <bavishimithil@gmail.com>
+---
+ .../devicetree/bindings/sound/omap-mcpdm.txt  | 30 ----------
+ .../devicetree/bindings/sound/omap-mcpdm.yaml | 58 +++++++++++++++++++
+ 2 files changed, 58 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.yaml
 
-On Sun, Mar 31, 2024 at 10:44:11AM +0200, Krzysztof Kozlowski wrote:
-> virtio core already sets the .owner, so driver does not need to.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->=20
-> ---
->=20
-> Depends on the first patch.
-> ---
->  fs/fuse/virtio_fs.c | 1 -
->  1 file changed, 1 deletion(-)
-
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-
---y2TTKZujScqhsi/4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYMa8oACgkQnKSrs4Gr
-c8hVnAf/cA3xbyK70jAgkZV9EtimcENA8Vicjc5wwuE2Vt1WSOZUWtD+a8KtqIDS
-ICvCIk7XlMHoB7BYaP8qlXQ0kjkARmT7hwEQyqEDL/MzEgyKhChus/pV8g6Cvywl
-OdPkT57aujxEBU5+l5t8TnP2I8CziPoDf0uizIpf5r2pZstP0q/mRVNFevjTDeSu
-L+LjxHElpmAVApGciiGOH+cpPYuKAejObzy5z92m7jZgh/LfHtcK29bhoWwNTL1l
-e6ryz/B2YrpyrVdDjqUD1iJ2WR2qxEUAI3moU5ySGqG/w5Lg0+ji+9TlCE46xoQ/
-U1ALdKDyNFUB1iRXdA00oKhEe6MUOw==
-=AQF3
------END PGP SIGNATURE-----
-
---y2TTKZujScqhsi/4--
+diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+deleted file mode 100644
+index ff98a0cb5..000000000
+--- a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-* Texas Instruments OMAP4+ McPDM
+-
+-Required properties:
+-- compatible: "ti,omap4-mcpdm"
+-- reg: Register location and size as an array:
+-       <MPU access base address, size>,
+-       <L3 interconnect address, size>;
+-- interrupts: Interrupt number for McPDM
+-- ti,hwmods: Name of the hwmod associated to the McPDM
+-- clocks:  phandle for the pdmclk provider, likely <&twl6040>
+-- clock-names: Must be "pdmclk"
+-
+-Example:
+-
+-mcpdm: mcpdm@40132000 {
+-	compatible = "ti,omap4-mcpdm";
+-	reg = <0x40132000 0x7f>, /* MPU private access */
+-	      <0x49032000 0x7f>; /* L3 Interconnect */
+-	interrupts = <0 112 0x4>;
+-	interrupt-parent = <&gic>;
+-	ti,hwmods = "mcpdm";
+-};
+-
+-In board DTS file the pdmclk needs to be added:
+-
+-&mcpdm {
+-	clocks = <&twl6040>;
+-	clock-names = "pdmclk";
+-	status = "okay";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.yaml b/Documentation/devicetree/bindings/sound/omap-mcpdm.yaml
+new file mode 100644
+index 000000000..8c9ff9d90
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/omap-mcpdm.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/omap-mcpdm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: OMAP McPDM
++
++maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++
++description:
++  OMAP ALSA SoC DAI driver using McPDM port used by TWL6040
++
++properties:
++  compatible:
++    const: ti,omap4-mcpdm
++
++  reg:
++    description: 'Register location and size as an array:
++       <MPU access base address, size>,
++       <L3 interconnect address, size>;'
++
++  interrupts:
++    description: Interrupt number for McPDM
++
++  ti,hwmods:
++    description: Name of the hwmod associated to the McPDM
++
++  clocks:
++    description: phandle for the pdmclk provider, likely <&twl6040>
++
++  clock-names:
++    description: Must be "pdmclk"
++
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - ti,hwmods
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    mcpdm: mcpdm@40132000 {
++      compatible = "ti,omap4-mcpdm";
++      reg = <0x40132000 0x7f>, /* MPU private access */
++            <0x49032000 0x7f>; /* L3 Interconnect */
++      interrupts = <0 112 0x4>;
++      interrupt-parent = <&gic>;
++      ti,hwmods = "mcpdm";
++      clocks = <&twl6040>;
++      clock-names = "pdmclk";
++    };
+-- 
+2.34.1
 
