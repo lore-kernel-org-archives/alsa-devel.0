@@ -4,168 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33E24CD1288
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:09:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31B2FCD1294
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:15:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F4542C64;
-	Wed,  3 Apr 2024 11:09:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F4542C64
+	by alsa0.perex.cz (Postfix) with ESMTPS id 013922C30;
+	Wed,  3 Apr 2024 11:15:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 013922C30
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712135359;
-	bh=pkZwS+e5I+h69eXwpb5Uy35vKeyJ9txD4lCmRKkROoU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=O3aueHiO2Z1OssQaVNsOiLVwfhDgCYRXlQvB3nr1IosdrDhofmgSnvzmtHyHtxjWy
-	 jsMMFJjZj9gaXpfMoL5ECL5C35xxzVvyuPdRpTJCS1zC/6Go89w8JChy9pv7rsL2Mv
-	 p+4qtRgq0BkSU2oLZXA5BSYKZ18ukqmv4Io5Hz2M=
+	s=default; t=1712135743;
+	bh=SHp+9nsh1AjyCsGFbMDMqy0Yw804wTr4lt2IRMmFxBQ=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ToYXlmshPXQNs7eLz30op6X9z9vfYkNio+DSpzHBLOfdNFO/P8/Rndf5CaJEm02nS
+	 XLYBT/rbHc9kW1h6K+C02RbAgvmUsn4EryARtJWNTmR0H86eoVu14B7iVT8mB3BTzg
+	 4BK3AfgudR2xSM35o4Kza6Txj5X/TWJEzutKFhMc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F03DF8057B; Wed,  3 Apr 2024 11:08:46 +0200 (CEST)
+	id DE516F80130; Wed,  3 Apr 2024 11:15:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD4FAF80568;
-	Wed,  3 Apr 2024 11:08:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B88FF8055C;
+	Wed,  3 Apr 2024 11:15:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A62DDF8020D; Wed,  3 Apr 2024 11:06:40 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 62FDAF80238; Wed,  3 Apr 2024 11:15:01 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1607EF80130
-	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:06:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1607EF80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7AD1FF80114
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:14:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AD1FF80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=yfUg9fl5
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-a4e65dec03eso398133266b.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 03 Apr 2024 02:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712135192; x=1712739992;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=uj+vStzBE1g5HSFxOT3J1gWV2WIEySZ+b3hpcha4y3E=;
-        b=yfUg9fl5m7hFtvZhnNUjPpho0+ym8uPMXa1fmo+KBS1/oKDZckDfoJNa4gEQuJd1+A
-         kaAywGOMqn+o5x3hupUkyBtQHfvtez0XVybqqPItrZpr9nuiZmHCk1dcXs4wdPnrJANE
-         8ZMHOCMXpbbIfViEoCqPF2w4YVtO8mdfVBiOO+5Rqde9FjOBajBVao+TvbZWSjXIvrJA
-         m5mQcfj79sk0FD4oifYDy/zKCPW2q9UNk42aj9ukngd0iPliOvtSVxy4Pa2QeEDPVeHS
-         f8WkpSzi7vJCRFecNEJuw2Z13mdzGO7BRCSo7umapp8E2zBEm9fypcpIHyR+a7/spM3J
-         V1lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712135192; x=1712739992;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uj+vStzBE1g5HSFxOT3J1gWV2WIEySZ+b3hpcha4y3E=;
-        b=BdqCDD6l8Ns2pE+c+RJ6ebm66MZtvO3o6FAP664rEN37zKL08bW8/xs2uSksXBFYg/
-         BR3KxRR3rAfDF3dLjzoVXRXkoTSu2DjKNYeXOpf2zZS8bJNwXobdzjSqf4bG3cFcBRbp
-         03ZLr3K2VdNQy/p8f6qrENpnvkYogP5Wx+5CL4B6g9AYKM6/E8vETj4Xmfr/Fco3qrgI
-         5V6rHOLUsFB73HM+WIRFX34ikyQQKZgynl9RXMORcZlmk0QKBnvI7SmRaBW5hrk8U4qq
-         xwiLGivXQFGpp5Z0qG9DP+WbkSFXzhLOYIyVtdQ5bsM0A6aBu7xeDJ1AZVbfy1sKNbRW
-         l8nQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXzZurTvquDR4M2iPfEV3vBqsgVkR0KkBJI9OAKAu1QTWP/9gH0QMaWQtIqNG+6/detbRI3Fz4p27MlWpmrUilo9SNXe7C06KIBBMk=
-X-Gm-Message-State: AOJu0Yxad9NoFMqp0T1jWG6Ryma9NjA16/L5bdZ8dGuHx4Rod8i4sW8d
-	fpKVln/l6QmaGhGw7CMR85ZgPQPUJTvrmd8Z5lZEAzSh6bj/O3B/n7j2fUzAF38=
-X-Google-Smtp-Source: 
- AGHT+IGRqZpi9oCpnNmrge8Z32DKZEdGLAfYi9Oj1PCEBcKrbaPVEKfjcmfbYYYevLIwW3BRhRIHyQ==
-X-Received: by 2002:a17:906:39c2:b0:a4e:7f22:cfc2 with SMTP id
- i2-20020a17090639c200b00a4e7f22cfc2mr1464281eje.28.1712135191799;
-        Wed, 03 Apr 2024 02:06:31 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id
- pw14-20020a17090720ae00b00a4e35cc42c7sm6377026ejb.170.2024.04.03.02.06.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 02:06:31 -0700 (PDT)
-Message-ID: <2c9af070-ab35-41c7-9d81-a1f20509a20e@linaro.org>
-Date: Wed, 3 Apr 2024 11:06:28 +0200
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=OxJb7fQH
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712135698; x=1743671698;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SHp+9nsh1AjyCsGFbMDMqy0Yw804wTr4lt2IRMmFxBQ=;
+  b=OxJb7fQHXku2OCjPLdRWT5muLHIfr+rz5fsHb9pghkereiB5BA3VWaLn
+   hlhJ0j7DM4HwEARPFS1ZFZASgQ1qAnnUHAB/IM62yirTyUdG+ctzlUKXd
+   Zb19+t+tmoZR+9srdbLmuA7esilVSnpCupVbu3ohDdgMRvQo7zFIulmrE
+   OTvjliQHrFXauF3QgsCXDAtFT5IRBm6BxkFjafRTBoQ0arApJMzFO0dSQ
+   HgylM5MdveS1l2Brc5K+Sd8GOFDJJHrwngW62DrfmWLGcOifSEpFmIkGs
+   VokiV6A3D99uWSa8wtS7Z+z8wjP9bL5tHv2HXo6cOkTWLQxwJaqfeIwHz
+   g==;
+X-CSE-ConnectionGUID: D8apTpb5QW6t0Le35jehWg==
+X-CSE-MsgGUID: C5ai98z8SXCu9BX4jcuKFw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="10322541"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
+   d="scan'208";a="10322541"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2024 02:14:52 -0700
+X-CSE-ConnectionGUID: 1KAdb+wURLenVbGljQR7mA==
+X-CSE-MsgGUID: luELzXxrQlOky9soH02NoA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
+   d="scan'208";a="18410497"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+  by fmviesa006.fm.intel.com with ESMTP; 03 Apr 2024 02:14:50 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	tiwai@suse.com,
+	perex@perex.cz,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	hdegoede@redhat.com,
+	cujomalainey@chromium.org,
+	lmajczak@google.com,
+	Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 0/4] ASoC: Drop soc-topology ABI v4 support
+Date: Wed,  3 Apr 2024 11:16:25 +0200
+Message-Id: <20240403091629.647267-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 32/34] ASoC: remove incorrect of_match_ptr/ACPI_PTR
- annotations
-To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Oder Chiou <oder_chiou@realtek.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Alper Nebi Yasak
- <alpernebiyasak@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Akihiko Odaki <akihiko.odaki@daynix.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Yinchuan Guo <guoych37@mail2.sysu.edu.cn>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Rob Herring <robh@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-33-arnd@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240403080702.3509288-33-arnd@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: BMOBGUJKF2PLCVZ5WQIKJLAUYHFMTX2J
-X-Message-ID-Hash: BMOBGUJKF2PLCVZ5WQIKJLAUYHFMTX2J
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: HQWS57KFNP3YRYT6XXCDRI2ENDI6F6RA
+X-Message-ID-Hash: HQWS57KFNP3YRYT6XXCDRI2ENDI6F6RA
+X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -177,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BMOBGUJKF2PLCVZ5WQIKJLAUYHFMTX2J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HQWS57KFNP3YRYT6XXCDRI2ENDI6F6RA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -186,34 +107,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 03/04/2024 10:06, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
-> warnings enabled, a lot of driver cause a warning about an unused
-> ID table:
-> 
-> sound/soc/atmel/sam9x5_wm8731.c:187:34: error: unused variable 'sam9x5_wm8731_of_match' [-Werror,-Wunused-const-variable]
-> sound/soc/codecs/rt5514-spi.c:496:34: error: unused variable 'rt5514_of_match' [-Werror,-Wunused-const-variable]
-> sound/soc/samsung/aries_wm8994.c:524:34: error: unused variable 'samsung_wm8994_of_match' [-Werror,-Wunused-const-variable]
-> 
-> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
-> that remove the reference, rather than adding another #ifdef just for build
-> testing for a configuration that doesn't matter in practice.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  sound/soc/amd/acp3x-rt5682-max9836.c | 2 +-
->  sound/soc/atmel/sam9x5_wm8731.c      | 2 +-
->  sound/soc/codecs/rt5514-spi.c        | 2 +-
->  sound/soc/qcom/lpass-sc7280.c        | 2 +-
->  sound/soc/samsung/aries_wm8994.c     | 2 +-
+This patchset impacts UAPI.
 
-I sent it already as well:
-https://lore.kernel.org/all/20230310214333.274903-5-krzysztof.kozlowski@linaro.org/
+The only known users of the soc-topology ABI v4 are Chromebook
+configurations. Starting from kernel v5.4, all of them are making use of
+soc-topology ABI v5. The patchset first removes obsolete code from the
+Intel's skylake-driver - the driver of choice for the mentioned
+Chromebooks - and then proceeds with removal of relevant soc-topology.c
+and uapi bits.
 
-and Mark did not pick it up, I guess for the same reason as SPI.
+Cezary Rojewski (4):
+  ASoC: Intel: Skylake: Remove soc-topology ABI v4 support
+  ASoC: topology: Remove ABI v4 support
+  ASoC: topology: Cleanup after ABI v4 support removal
+  ASoC: topology: Remove obsolete ABI v4 structs
 
-Best regards,
-Krzysztof
+ include/uapi/sound/asoc.h               |  56 ------
+ include/uapi/sound/skl-tplg-interface.h |  74 --------
+ sound/soc/intel/skylake/skl-topology.c  | 169 -----------------
+ sound/soc/soc-topology.c                | 241 ++----------------------
+ 4 files changed, 18 insertions(+), 522 deletions(-)
+
+-- 
+2.25.1
 
