@@ -4,92 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A4E8CD1288
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD4CACD1294
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:16:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12B562C76;
-	Wed,  3 Apr 2024 11:16:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12B562C76
+	by alsa0.perex.cz (Postfix) with ESMTPS id C65F12C8F;
+	Wed,  3 Apr 2024 11:16:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C65F12C8F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712135798;
-	bh=TIYDuamY99Xghx3cSn4teoxVFT0wk7VjYsDuL74bV9c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1712135809;
+	bh=ZM/3Byxpxed4P8WSswonfevzf2brOiTU9TshRQSMaj0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Lh/g2hLQkFV8KqoFwVKAT494qIjHEct/FVukTjGPqV7GdapOVOBxqrmaMKrQlsGNs
-	 /IOBWQ5mVwBINRDQe9iRdaointTy5KCWJLaANODHUtLKKDaclVMaG20QwKCZclPLZx
-	 MYYryaLo08vQCHOw22DXC39n8uyAfzaDwt/3iyD4=
+	b=fNY9rKkjWohFgL/5mVwaXfXEVpZSC1h+eh1aLYRE7FrEOkWUdelX6mqmJVUZ+MFf1
+	 aCr5XduDtv8jyxW1vmkR9Ej8LLthCdRtsTAumwh4DhTDYKOSEcW1tA5BmVpH+yD3qc
+	 YMneULaVUD3SorHyf4HRUwv9JzOLA5WP74t8uWwo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19F1FF80604; Wed,  3 Apr 2024 11:15:24 +0200 (CEST)
+	id F1058F80624; Wed,  3 Apr 2024 11:15:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95C5FF805E2;
-	Wed,  3 Apr 2024 11:15:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B008F80633;
+	Wed,  3 Apr 2024 11:15:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8660AF805FC; Wed,  3 Apr 2024 11:15:18 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	id 30784F80579; Wed,  3 Apr 2024 11:15:35 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3F7EBF8016E
-	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:14:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F7EBF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id B57D6F80615
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:15:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B57D6F80615
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Vq7aXlX+
+ header.s=Intel header.b=lwaupJZT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712135698; x=1743671698;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TIYDuamY99Xghx3cSn4teoxVFT0wk7VjYsDuL74bV9c=;
-  b=Vq7aXlX+oy9ZJeAGjL8Osgd2/YhVjZBdC7s3mWLA7K02lQWkxzI+01a7
-   vxFNh8hF3Ws08pmP2kne6iACUFH4ZNH0secT0nz4dkNv8laogz8gJRcTK
-   121ZpIqMzdD48jKMx/CcB/Y9ZPRyCNL7ZKdqDfYEVYBC8qiRhpkuR7kBu
-   9awumC7xW3QjKN53xPYGJ2UlqMcyK6mROk+daENFSMrtVoFPPDDBCKLVL
-   hR9g0NDwzvMXxhC7PSn5w208MBQFP82zoBigUbaLe/BxGf2bp0rNLIurY
-   ajKpClTuv5hN9fMgr0QIeGgqmtdGS+Q62TGQqBlmnXzWc1WTsesEVyarA
-   A==;
-X-CSE-ConnectionGUID: OjMcnQxmQPaDMd5Ug6VLDA==
-X-CSE-MsgGUID: s6rVGLHQR9yDsEFal04I7w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="10322549"
+  t=1712135730; x=1743671730;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZM/3Byxpxed4P8WSswonfevzf2brOiTU9TshRQSMaj0=;
+  b=lwaupJZTI3poxopThukG7Tecav2ArFDP62jKRxC5WQ8yEdtixdjODWnp
+   yT1HHsOpbynbRnwZacnyIPI8LzSkK4ZXrsKPWrxAL1f2NIEaVPJOI84DU
+   gO8BbJuvXAYJ4CI/97XHB7DUfn9x8aFCaNZb7v7KVTVzTkKN0RjH3r4Gu
+   22vYT8yfI9dWriiGo8UwpwPR+KYox55pyANGvuE6b2vl/KriYsgacvskM
+   PR4vCMnmkGkRFU9/TSThphfI6ztcqo8Y6tGLzy8sUwI8ahzNLuo10K+iM
+   X/Qt4DUOwS3GZ00uTAmmqR8qtBYRyeDJgIulm/X7Z+7ZtudapdJVBusDC
+   Q==;
+X-CSE-ConnectionGUID: RCn/zjdESQim+nPT2wMS5A==
+X-CSE-MsgGUID: F6QVTLq+RYuHYjQ1eMIZ/Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7217320"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="10322549"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2024 02:14:55 -0700
-X-CSE-ConnectionGUID: M578HhvySnSeiRM4KwNtsA==
-X-CSE-MsgGUID: QuEuiGDRQBeFMZu0UVl3jw==
+   d="scan'208";a="7217320"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2024 02:15:24 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915175371"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="18410501"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa006.fm.intel.com with ESMTP; 03 Apr 2024 02:14:53 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz,
-	amadeuszx.slawinski@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	hdegoede@redhat.com,
-	cujomalainey@chromium.org,
-	lmajczak@google.com,
-	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 1/4] ASoC: Intel: Skylake: Remove soc-topology ABI v4 support
-Date: Wed,  3 Apr 2024 11:16:26 +0200
-Message-Id: <20240403091629.647267-2-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240403091629.647267-1-cezary.rojewski@intel.com>
-References: <20240403091629.647267-1-cezary.rojewski@intel.com>
+   d="scan'208";a="915175371"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2024 02:15:17 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rrwiA-000000014UU-0axT;
+	Wed, 03 Apr 2024 12:15:14 +0300
+Date: Wed, 3 Apr 2024 12:15:13 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Oder Chiou <oder_chiou@realtek.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Akihiko Odaki <akihiko.odaki@daynix.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Yinchuan Guo <guoych37@mail2.sysu.edu.cn>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Rob Herring <robh@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 32/34] ASoC: remove incorrect of_match_ptr/ACPI_PTR
+ annotations
+Message-ID: <Zg0eIZDS3F_PQLyB@smile.fi.intel.com>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-33-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NOXSHEURJHL2SAS2E7TYBUH2WM7K7PVJ
-X-Message-ID-Hash: NOXSHEURJHL2SAS2E7TYBUH2WM7K7PVJ
-X-MailFrom: cezary.rojewski@intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080702.3509288-33-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: GZPG6YEZCXKQXOFKROYMQLUAL3PKTNNN
+X-Message-ID-Hash: GZPG6YEZCXKQXOFKROYMQLUAL3PKTNNN
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NOXSHEURJHL2SAS2E7TYBUH2WM7K7PVJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GZPG6YEZCXKQXOFKROYMQLUAL3PKTNNN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,287 +128,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The only known users are Chromebook configurations. Starting from
-kernel v5.4, all of them are making use of soc-topology ABI v5.
+On Wed, Apr 03, 2024 at 10:06:50AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
+> warnings enabled, a lot of driver cause a warning about an unused
+> ID table:
+> 
+> sound/soc/atmel/sam9x5_wm8731.c:187:34: error: unused variable 'sam9x5_wm8731_of_match' [-Werror,-Wunused-const-variable]
+> sound/soc/codecs/rt5514-spi.c:496:34: error: unused variable 'rt5514_of_match' [-Werror,-Wunused-const-variable]
+> sound/soc/samsung/aries_wm8994.c:524:34: error: unused variable 'samsung_wm8994_of_match' [-Werror,-Wunused-const-variable]
+> 
+> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
+> that remove the reference, rather than adding another #ifdef just for build
+> testing for a configuration that doesn't matter in practice.
 
-Cc: Curtis Malainey <cujomalainey@chromium.org>
-Cc: Łukasz Majczak <lmajczak@google.com>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- include/uapi/sound/skl-tplg-interface.h |  74 -----------
- sound/soc/intel/skylake/skl-topology.c  | 169 ------------------------
- 2 files changed, 243 deletions(-)
+...
 
-diff --git a/include/uapi/sound/skl-tplg-interface.h b/include/uapi/sound/skl-tplg-interface.h
-index 4bf9c4f9add8..940c4269322b 100644
---- a/include/uapi/sound/skl-tplg-interface.h
-+++ b/include/uapi/sound/skl-tplg-interface.h
-@@ -165,78 +165,4 @@ enum skl_tuple_type {
- 	SKL_TYPE_DATA
- };
- 
--/* v4 configuration data */
--
--struct skl_dfw_v4_module_pin {
--	__u16 module_id;
--	__u16 instance_id;
--} __packed;
--
--struct skl_dfw_v4_module_fmt {
--	__u32 channels;
--	__u32 freq;
--	__u32 bit_depth;
--	__u32 valid_bit_depth;
--	__u32 ch_cfg;
--	__u32 interleaving_style;
--	__u32 sample_type;
--	__u32 ch_map;
--} __packed;
--
--struct skl_dfw_v4_module_caps {
--	__u32 set_params:2;
--	__u32 rsvd:30;
--	__u32 param_id;
--	__u32 caps_size;
--	__u32 caps[HDA_SST_CFG_MAX];
--} __packed;
--
--struct skl_dfw_v4_pipe {
--	__u8 pipe_id;
--	__u8 pipe_priority;
--	__u16 conn_type:4;
--	__u16 rsvd:4;
--	__u16 memory_pages:8;
--} __packed;
--
--struct skl_dfw_v4_module {
--	char uuid[SKL_UUID_STR_SZ];
--
--	__u16 module_id;
--	__u16 instance_id;
--	__u32 max_mcps;
--	__u32 mem_pages;
--	__u32 obs;
--	__u32 ibs;
--	__u32 vbus_id;
--
--	__u32 max_in_queue:8;
--	__u32 max_out_queue:8;
--	__u32 time_slot:8;
--	__u32 core_id:4;
--	__u32 rsvd1:4;
--
--	__u32 module_type:8;
--	__u32 conn_type:4;
--	__u32 dev_type:4;
--	__u32 hw_conn_type:4;
--	__u32 rsvd2:12;
--
--	__u32 params_fixup:8;
--	__u32 converter:8;
--	__u32 input_pin_type:1;
--	__u32 output_pin_type:1;
--	__u32 is_dynamic_in_pin:1;
--	__u32 is_dynamic_out_pin:1;
--	__u32 is_loadable:1;
--	__u32 rsvd3:11;
--
--	struct skl_dfw_v4_pipe pipe;
--	struct skl_dfw_v4_module_fmt in_fmt[MAX_IN_QUEUE];
--	struct skl_dfw_v4_module_fmt out_fmt[MAX_OUT_QUEUE];
--	struct skl_dfw_v4_module_pin in_pin[MAX_IN_QUEUE];
--	struct skl_dfw_v4_module_pin out_pin[MAX_OUT_QUEUE];
--	struct skl_dfw_v4_module_caps caps;
--} __packed;
--
- #endif
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 96cfebded072..e27f0fc3d897 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2682,168 +2682,6 @@ static int skl_tplg_get_desc_blocks(struct device *dev,
- 	return -EINVAL;
- }
- 
--/* Functions to parse private data from configuration file format v4 */
--
--/*
-- * Add pipeline from topology binary into driver pipeline list
-- *
-- * If already added we return that instance
-- * Otherwise we create a new instance and add into driver list
-- */
--static int skl_tplg_add_pipe_v4(struct device *dev,
--			struct skl_module_cfg *mconfig, struct skl_dev *skl,
--			struct skl_dfw_v4_pipe *dfw_pipe)
--{
--	struct skl_pipeline *ppl;
--	struct skl_pipe *pipe;
--	struct skl_pipe_params *params;
--
--	list_for_each_entry(ppl, &skl->ppl_list, node) {
--		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id) {
--			mconfig->pipe = ppl->pipe;
--			return 0;
--		}
--	}
--
--	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
--	if (!ppl)
--		return -ENOMEM;
--
--	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
--	if (!pipe)
--		return -ENOMEM;
--
--	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
--	if (!params)
--		return -ENOMEM;
--
--	pipe->ppl_id = dfw_pipe->pipe_id;
--	pipe->memory_pages = dfw_pipe->memory_pages;
--	pipe->pipe_priority = dfw_pipe->pipe_priority;
--	pipe->conn_type = dfw_pipe->conn_type;
--	pipe->state = SKL_PIPE_INVALID;
--	pipe->p_params = params;
--	INIT_LIST_HEAD(&pipe->w_list);
--
--	ppl->pipe = pipe;
--	list_add(&ppl->node, &skl->ppl_list);
--
--	mconfig->pipe = pipe;
--
--	return 0;
--}
--
--static void skl_fill_module_pin_info_v4(struct skl_dfw_v4_module_pin *dfw_pin,
--					struct skl_module_pin *m_pin,
--					bool is_dynamic, int max_pin)
--{
--	int i;
--
--	for (i = 0; i < max_pin; i++) {
--		m_pin[i].id.module_id = dfw_pin[i].module_id;
--		m_pin[i].id.instance_id = dfw_pin[i].instance_id;
--		m_pin[i].in_use = false;
--		m_pin[i].is_dynamic = is_dynamic;
--		m_pin[i].pin_state = SKL_PIN_UNBIND;
--	}
--}
--
--static void skl_tplg_fill_fmt_v4(struct skl_module_pin_fmt *dst_fmt,
--				 struct skl_dfw_v4_module_fmt *src_fmt,
--				 int pins)
--{
--	int i;
--
--	for (i = 0; i < pins; i++) {
--		dst_fmt[i].fmt.channels  = src_fmt[i].channels;
--		dst_fmt[i].fmt.s_freq = src_fmt[i].freq;
--		dst_fmt[i].fmt.bit_depth = src_fmt[i].bit_depth;
--		dst_fmt[i].fmt.valid_bit_depth = src_fmt[i].valid_bit_depth;
--		dst_fmt[i].fmt.ch_cfg = src_fmt[i].ch_cfg;
--		dst_fmt[i].fmt.ch_map = src_fmt[i].ch_map;
--		dst_fmt[i].fmt.interleaving_style =
--						src_fmt[i].interleaving_style;
--		dst_fmt[i].fmt.sample_type = src_fmt[i].sample_type;
--	}
--}
--
--static int skl_tplg_get_pvt_data_v4(struct snd_soc_tplg_dapm_widget *tplg_w,
--				    struct skl_dev *skl, struct device *dev,
--				    struct skl_module_cfg *mconfig)
--{
--	struct skl_dfw_v4_module *dfw =
--				(struct skl_dfw_v4_module *)tplg_w->priv.data;
--	int ret;
--	int idx = mconfig->fmt_cfg_idx;
--
--	dev_dbg(dev, "Parsing Skylake v4 widget topology data\n");
--
--	ret = guid_parse(dfw->uuid, (guid_t *)mconfig->guid);
--	if (ret)
--		return ret;
--	mconfig->id.module_id = -1;
--	mconfig->id.instance_id = dfw->instance_id;
--	mconfig->module->resources[0].cpc = dfw->max_mcps / 1000;
--	mconfig->module->resources[0].ibs = dfw->ibs;
--	mconfig->module->resources[0].obs = dfw->obs;
--	mconfig->core_id = dfw->core_id;
--	mconfig->module->max_input_pins = dfw->max_in_queue;
--	mconfig->module->max_output_pins = dfw->max_out_queue;
--	mconfig->module->loadable = dfw->is_loadable;
--	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].inputs, dfw->in_fmt,
--			     MAX_IN_QUEUE);
--	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].outputs, dfw->out_fmt,
--			     MAX_OUT_QUEUE);
--
--	mconfig->params_fixup = dfw->params_fixup;
--	mconfig->converter = dfw->converter;
--	mconfig->m_type = dfw->module_type;
--	mconfig->vbus_id = dfw->vbus_id;
--	mconfig->module->resources[0].is_pages = dfw->mem_pages;
--
--	ret = skl_tplg_add_pipe_v4(dev, mconfig, skl, &dfw->pipe);
--	if (ret)
--		return ret;
--
--	mconfig->dev_type = dfw->dev_type;
--	mconfig->hw_conn_type = dfw->hw_conn_type;
--	mconfig->time_slot = dfw->time_slot;
--	mconfig->formats_config[idx].caps_size = dfw->caps.caps_size;
--
--	mconfig->m_in_pin = devm_kcalloc(dev,
--				MAX_IN_QUEUE, sizeof(*mconfig->m_in_pin),
--				GFP_KERNEL);
--	if (!mconfig->m_in_pin)
--		return -ENOMEM;
--
--	mconfig->m_out_pin = devm_kcalloc(dev,
--				MAX_OUT_QUEUE, sizeof(*mconfig->m_out_pin),
--				GFP_KERNEL);
--	if (!mconfig->m_out_pin)
--		return -ENOMEM;
--
--	skl_fill_module_pin_info_v4(dfw->in_pin, mconfig->m_in_pin,
--				    dfw->is_dynamic_in_pin,
--				    mconfig->module->max_input_pins);
--	skl_fill_module_pin_info_v4(dfw->out_pin, mconfig->m_out_pin,
--				    dfw->is_dynamic_out_pin,
--				    mconfig->module->max_output_pins);
--
--	if (mconfig->formats_config[idx].caps_size) {
--		mconfig->formats_config[idx].set_params = dfw->caps.set_params;
--		mconfig->formats_config[idx].param_id = dfw->caps.param_id;
--		mconfig->formats_config[idx].caps =
--		devm_kzalloc(dev, mconfig->formats_config[idx].caps_size,
--			     GFP_KERNEL);
--		if (!mconfig->formats_config[idx].caps)
--			return -ENOMEM;
--		memcpy(mconfig->formats_config[idx].caps, dfw->caps.caps,
--		       dfw->caps.caps_size);
--	}
--
--	return 0;
--}
--
- static int skl_tplg_get_caps_data(struct device *dev, char *data,
- 				  struct skl_module_cfg *mconfig)
- {
-@@ -2877,13 +2715,6 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
- 	char *data;
- 	int ret;
- 
--	/*
--	 * v4 configuration files have a valid UUID at the start of
--	 * the widget's private data.
--	 */
--	if (uuid_is_valid((char *)tplg_w->priv.data))
--		return skl_tplg_get_pvt_data_v4(tplg_w, skl, dev, mconfig);
--
- 	/* Read the NUM_DATA_BLOCKS descriptor */
- 	array = (struct snd_soc_tplg_vendor_array *)tplg_w->priv.data;
- 	ret = skl_tplg_get_desc_blocks(dev, array);
+> index d6cdb6d9fdd6..ffc105759994 100644
+> --- a/sound/soc/amd/acp3x-rt5682-max9836.c
+> +++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+> @@ -543,7 +543,7 @@ MODULE_DEVICE_TABLE(acpi, acp3x_audio_acpi_match);
+>  static struct platform_driver acp3x_audio = {
+>  	.driver = {
+>  		.name = "acp3x-alc5682-max98357",
+> -		.acpi_match_table = ACPI_PTR(acp3x_audio_acpi_match),
+> +		.acpi_match_table = acp3x_audio_acpi_match,
+>  		.pm = &snd_soc_pm_ops,
+>  	},
+>  	.probe = acp3x_probe,
+
+Replace acpi_match_device() by device_get_match_data() and acpi.h by
+mod_devicetable.h + property.h.
+
+I really would like to see agnostic drivers (when they don't need of*.h/acpi.h
+to be included as "proxy" headers).
+
+With this, the change probably needs to be separated from this patch.
+
+If you address as suggested,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+...
+
+The rest I haven't checked, it might be possible to do something similar there
+as well.
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
