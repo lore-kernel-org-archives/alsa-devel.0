@@ -4,110 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD4CACD1294
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67AB7CD1294
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:18:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C65F12C8F;
-	Wed,  3 Apr 2024 11:16:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C65F12C8F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C990D2C84;
+	Wed,  3 Apr 2024 11:17:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C990D2C84
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712135809;
-	bh=ZM/3Byxpxed4P8WSswonfevzf2brOiTU9TshRQSMaj0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1712135879;
+	bh=iYFpr2MqS0B9WjuWG5dfN8QG1tQ6E7J2EnZtahGh85I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fNY9rKkjWohFgL/5mVwaXfXEVpZSC1h+eh1aLYRE7FrEOkWUdelX6mqmJVUZ+MFf1
-	 aCr5XduDtv8jyxW1vmkR9Ej8LLthCdRtsTAumwh4DhTDYKOSEcW1tA5BmVpH+yD3qc
-	 YMneULaVUD3SorHyf4HRUwv9JzOLA5WP74t8uWwo=
+	b=ovJbqCjMr2UDCVkd4djfvX+IeIjPP/AaIdlF75pfiVFnhSjHs4GnPVPhQP8JwXJtM
+	 wrqyM6c6YAV9d8hCriX4FMnSTnePgQlVDkKGqYMcVJuGL2KoJmmTMEtJychnelRnC0
+	 dZkm9zu6unStxzvbgL8fk6C/EMNZTsxEKmxQggZA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F1058F80624; Wed,  3 Apr 2024 11:15:39 +0200 (CEST)
+	id E3B10F80130; Wed,  3 Apr 2024 11:17:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B008F80633;
-	Wed,  3 Apr 2024 11:15:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B41BF80579;
+	Wed,  3 Apr 2024 11:17:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30784F80579; Wed,  3 Apr 2024 11:15:35 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	id 3C07AF8020D; Wed,  3 Apr 2024 11:17:24 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B57D6F80615
-	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:15:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B57D6F80615
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0D6E9F80114
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:15:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D6E9F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lwaupJZT
+ header.s=Intel header.b=kMxQ/msn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712135730; x=1743671730;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZM/3Byxpxed4P8WSswonfevzf2brOiTU9TshRQSMaj0=;
-  b=lwaupJZTI3poxopThukG7Tecav2ArFDP62jKRxC5WQ8yEdtixdjODWnp
-   yT1HHsOpbynbRnwZacnyIPI8LzSkK4ZXrsKPWrxAL1f2NIEaVPJOI84DU
-   gO8BbJuvXAYJ4CI/97XHB7DUfn9x8aFCaNZb7v7KVTVzTkKN0RjH3r4Gu
-   22vYT8yfI9dWriiGo8UwpwPR+KYox55pyANGvuE6b2vl/KriYsgacvskM
-   PR4vCMnmkGkRFU9/TSThphfI6ztcqo8Y6tGLzy8sUwI8ahzNLuo10K+iM
-   X/Qt4DUOwS3GZ00uTAmmqR8qtBYRyeDJgIulm/X7Z+7ZtudapdJVBusDC
-   Q==;
-X-CSE-ConnectionGUID: RCn/zjdESQim+nPT2wMS5A==
-X-CSE-MsgGUID: F6QVTLq+RYuHYjQ1eMIZ/Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7217320"
+  t=1712135705; x=1743671705;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=iYFpr2MqS0B9WjuWG5dfN8QG1tQ6E7J2EnZtahGh85I=;
+  b=kMxQ/msnzyhiaeO29JNjsGbtm7tPnewqYTAOqvdmjAVo8Hny2EmJ3Txa
+   qbOMB4uu26R9RIFd39KSjSuZ+9AqCmGFkKvCPvXwjp6PFzXBW5k29Ws2o
+   NVfXsJZ0j8Vu5ZcbSIpdrw87v//u3zpaAcoEc/jvFjyHXoWX/LFkrm4JQ
+   CnIs8lNvw9HYWRlhjt493eDRw0dLt1FW6mu+owvyb4eSi3+m9o5zxEgVG
+   q5XzsA7k97aMFE7aaV5z6AzCej2jRRFZTSOQhN7drd/6V/jBucSk8IgD4
+   IM/rLnzKijIGGLvfwDYd1+6wupzlw+WCoGbjfZkmQM7t2DxCVI/6Q2ks2
+   w==;
+X-CSE-ConnectionGUID: kugzD/rFTz2hkAtXSpz6nA==
+X-CSE-MsgGUID: Vgxdx4nZQhqrRd1Fs6KvMQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="10322568"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="7217320"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2024 02:15:24 -0700
+   d="scan'208";a="10322568"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2024 02:15:00 -0700
+X-CSE-ConnectionGUID: slL1i1sHQiu17QNQsuEyzw==
+X-CSE-MsgGUID: plvU+xOBR0C+wzO6jAn6dg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915175371"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="915175371"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2024 02:15:17 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rrwiA-000000014UU-0axT;
-	Wed, 03 Apr 2024 12:15:14 +0300
-Date: Wed, 3 Apr 2024 12:15:13 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Oder Chiou <oder_chiou@realtek.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Akihiko Odaki <akihiko.odaki@daynix.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Yinchuan Guo <guoych37@mail2.sysu.edu.cn>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Rob Herring <robh@kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 32/34] ASoC: remove incorrect of_match_ptr/ACPI_PTR
- annotations
-Message-ID: <Zg0eIZDS3F_PQLyB@smile.fi.intel.com>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-33-arnd@kernel.org>
+   d="scan'208";a="18410517"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+  by fmviesa006.fm.intel.com with ESMTP; 03 Apr 2024 02:14:58 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	tiwai@suse.com,
+	perex@perex.cz,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	hdegoede@redhat.com,
+	cujomalainey@chromium.org,
+	lmajczak@google.com,
+	Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 3/4] ASoC: topology: Cleanup after ABI v4 support removal
+Date: Wed,  3 Apr 2024 11:16:28 +0200
+Message-Id: <20240403091629.647267-4-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240403091629.647267-1-cezary.rojewski@intel.com>
+References: <20240403091629.647267-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080702.3509288-33-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: GZPG6YEZCXKQXOFKROYMQLUAL3PKTNNN
-X-Message-ID-Hash: GZPG6YEZCXKQXOFKROYMQLUAL3PKTNNN
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: MPRGTREJPHZLDXPXSYYXC5FYHAXL6VI7
+X-Message-ID-Hash: MPRGTREJPHZLDXPXSYYXC5FYHAXL6VI7
+X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GZPG6YEZCXKQXOFKROYMQLUAL3PKTNNN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPRGTREJPHZLDXPXSYYXC5FYHAXL6VI7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,54 +110,128 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Apr 03, 2024 at 10:06:50AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
-> warnings enabled, a lot of driver cause a warning about an unused
-> ID table:
-> 
-> sound/soc/atmel/sam9x5_wm8731.c:187:34: error: unused variable 'sam9x5_wm8731_of_match' [-Werror,-Wunused-const-variable]
-> sound/soc/codecs/rt5514-spi.c:496:34: error: unused variable 'rt5514_of_match' [-Werror,-Wunused-const-variable]
-> sound/soc/samsung/aries_wm8994.c:524:34: error: unused variable 'samsung_wm8994_of_match' [-Werror,-Wunused-const-variable]
-> 
-> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
-> that remove the reference, rather than adding another #ifdef just for build
-> testing for a configuration that doesn't matter in practice.
+Flag 'abi_match' along with several other local variables has no purpose
+with v4 related members removed.
 
-...
+Cc: Curtis Malainey <cujomalainey@chromium.org>
+Cc: Łukasz Majczak <lmajczak@google.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/soc-topology.c | 47 +++++++++-------------------------------
+ 1 file changed, 10 insertions(+), 37 deletions(-)
 
-> index d6cdb6d9fdd6..ffc105759994 100644
-> --- a/sound/soc/amd/acp3x-rt5682-max9836.c
-> +++ b/sound/soc/amd/acp3x-rt5682-max9836.c
-> @@ -543,7 +543,7 @@ MODULE_DEVICE_TABLE(acpi, acp3x_audio_acpi_match);
->  static struct platform_driver acp3x_audio = {
->  	.driver = {
->  		.name = "acp3x-alc5682-max98357",
-> -		.acpi_match_table = ACPI_PTR(acp3x_audio_acpi_match),
-> +		.acpi_match_table = acp3x_audio_acpi_match,
->  		.pm = &snd_soc_pm_ops,
->  	},
->  	.probe = acp3x_probe,
-
-Replace acpi_match_device() by device_get_match_data() and acpi.h by
-mod_devicetable.h + property.h.
-
-I really would like to see agnostic drivers (when they don't need of*.h/acpi.h
-to be included as "proxy" headers).
-
-With this, the change probably needs to be separated from this patch.
-
-If you address as suggested,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-...
-
-The rest I haven't checked, it might be possible to do something similar there
-as well.
-
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index e73dc4e786ff..90ca37e008b3 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1771,11 +1771,10 @@ static int soc_tplg_pcm_create(struct soc_tplg *tplg,
+ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+-	struct snd_soc_tplg_pcm *pcm, *_pcm;
++	struct snd_soc_tplg_pcm *pcm;
+ 	int count;
+ 	int size;
+ 	int i;
+-	bool abi_match;
+ 	int ret;
+ 
+ 	count = le32_to_cpu(hdr->count);
+@@ -1805,24 +1804,15 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 		if (size != sizeof(*pcm))
+ 			return -EINVAL;
+ 
+-		abi_match = true;
+-		_pcm = pcm;
+-
+ 		/* create the FE DAIs and DAI links */
+-		ret = soc_tplg_pcm_create(tplg, _pcm);
+-		if (ret < 0) {
+-			if (!abi_match)
+-				kfree(_pcm);
++		ret = soc_tplg_pcm_create(tplg, pcm);
++		if (ret < 0)
+ 			return ret;
+-		}
+ 
+ 		/* offset by version-specific struct size and
+ 		 * real priv data size
+ 		 */
+-		tplg->pos += size + le32_to_cpu(_pcm->priv.size);
+-
+-		if (!abi_match)
+-			kfree(_pcm); /* free the duplicated one */
++		tplg->pos += size + le32_to_cpu(pcm->priv.size);
+ 	}
+ 
+ 	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
+@@ -2003,11 +1993,10 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
+ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+-	struct snd_soc_tplg_link_config *link, *_link;
++	struct snd_soc_tplg_link_config *link;
+ 	int count;
+ 	int size;
+ 	int i, ret;
+-	bool abi_match;
+ 
+ 	count = le32_to_cpu(hdr->count);
+ 
+@@ -2032,23 +2021,14 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
+ 		if (size != sizeof(*link))
+ 			return -EINVAL;
+ 
+-		abi_match = true;
+-		_link = link;
+-
+-		ret = soc_tplg_link_config(tplg, _link);
+-		if (ret < 0) {
+-			if (!abi_match)
+-				kfree(_link);
++		ret = soc_tplg_link_config(tplg, link);
++		if (ret < 0)
+ 			return ret;
+-		}
+ 
+ 		/* offset by version-specific struct size and
+ 		 * real priv data size
+ 		 */
+-		tplg->pos += size + le32_to_cpu(_link->priv.size);
+-
+-		if (!abi_match)
+-			kfree(_link); /* free the duplicated one */
++		tplg->pos += size + le32_to_cpu(link->priv.size);
+ 	}
+ 
+ 	return 0;
+@@ -2161,8 +2141,7 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
+ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
+ 				  struct snd_soc_tplg_hdr *hdr)
+ {
+-	struct snd_soc_tplg_manifest *manifest, *_manifest;
+-	bool abi_match;
++	struct snd_soc_tplg_manifest *manifest;
+ 	int ret = 0;
+ 
+ 	manifest = (struct snd_soc_tplg_manifest *)tplg->pos;
+@@ -2171,15 +2150,9 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
+ 	if (le32_to_cpu(manifest->size) != sizeof(*manifest))
+ 		return -EINVAL;
+ 
+-	abi_match = true;
+-	_manifest = manifest;
+-
+ 	/* pass control to component driver for optional further init */
+ 	if (tplg->ops && tplg->ops->manifest)
+-		ret = tplg->ops->manifest(tplg->comp, tplg->index, _manifest);
+-
+-	if (!abi_match)	/* free the duplicated one */
+-		kfree(_manifest);
++		ret = tplg->ops->manifest(tplg->comp, tplg->index, manifest);
+ 
+ 	return ret;
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
