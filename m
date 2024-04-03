@@ -4,92 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67AB7CD1294
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54D76CD1294
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Apr 2024 09:32:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C990D2C84;
-	Wed,  3 Apr 2024 11:17:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C990D2C84
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13A8C2C85;
+	Wed,  3 Apr 2024 11:31:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13A8C2C85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712135879;
-	bh=iYFpr2MqS0B9WjuWG5dfN8QG1tQ6E7J2EnZtahGh85I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ovJbqCjMr2UDCVkd4djfvX+IeIjPP/AaIdlF75pfiVFnhSjHs4GnPVPhQP8JwXJtM
-	 wrqyM6c6YAV9d8hCriX4FMnSTnePgQlVDkKGqYMcVJuGL2KoJmmTMEtJychnelRnC0
-	 dZkm9zu6unStxzvbgL8fk6C/EMNZTsxEKmxQggZA=
+	s=default; t=1712136724;
+	bh=40mSvovdxw4jGIUnLpVxakwvKHEA8sRzb5ALrIoAwMw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZUgA6oEHzhezjqgLEhkdN+mUER4hYm5fQFbwyu3OciONQnJ6bFWUCZjo1jnAHcH2K
+	 Qvaj34TzKSttKuP68c397m0VBhgeJ5p4qB795Q2iEXRi2fsjnpnqK69nBwi1elHbAy
+	 FiFLNLpmf8naawB3rMRY3jBv024BIDtQM4Ntr2Nw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3B10F80130; Wed,  3 Apr 2024 11:17:28 +0200 (CEST)
+	id 26CBFF80236; Wed,  3 Apr 2024 11:31:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B41BF80579;
-	Wed,  3 Apr 2024 11:17:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D259F8055C;
+	Wed,  3 Apr 2024 11:31:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C07AF8020D; Wed,  3 Apr 2024 11:17:24 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	id A2DE3F8056F; Wed,  3 Apr 2024 11:31:24 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0D6E9F80114
-	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D6E9F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD905F80130
+	for <alsa-devel@alsa-project.org>; Wed,  3 Apr 2024 11:31:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD905F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=kMxQ/msn
+ header.s=Intel header.b=PirwigBI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712135705; x=1743671705;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iYFpr2MqS0B9WjuWG5dfN8QG1tQ6E7J2EnZtahGh85I=;
-  b=kMxQ/msnzyhiaeO29JNjsGbtm7tPnewqYTAOqvdmjAVo8Hny2EmJ3Txa
-   qbOMB4uu26R9RIFd39KSjSuZ+9AqCmGFkKvCPvXwjp6PFzXBW5k29Ws2o
-   NVfXsJZ0j8Vu5ZcbSIpdrw87v//u3zpaAcoEc/jvFjyHXoWX/LFkrm4JQ
-   CnIs8lNvw9HYWRlhjt493eDRw0dLt1FW6mu+owvyb4eSi3+m9o5zxEgVG
-   q5XzsA7k97aMFE7aaV5z6AzCej2jRRFZTSOQhN7drd/6V/jBucSk8IgD4
-   IM/rLnzKijIGGLvfwDYd1+6wupzlw+WCoGbjfZkmQM7t2DxCVI/6Q2ks2
-   w==;
-X-CSE-ConnectionGUID: kugzD/rFTz2hkAtXSpz6nA==
-X-CSE-MsgGUID: Vgxdx4nZQhqrRd1Fs6KvMQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="10322568"
+  t=1712136677; x=1743672677;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=40mSvovdxw4jGIUnLpVxakwvKHEA8sRzb5ALrIoAwMw=;
+  b=PirwigBI1xyBDRvQCYuC5S6wuRoCM+7ajOCj6mQCzB0ODNKjMdE/TcuD
+   Ixfg2/3cjETu7xz7b86MsXmescPCkuwtZUDN1ZWmjQIshOGMiaBCS/Rcd
+   NNYXb3nGAVkXlJGvv8HLhM/1nKKDQFXeOJcizM8WUUlyaKYc4cTEeCNVK
+   VDDTTfNWzZEaRgdAY30ppwhi8lo+yPlIC3zdqaqwvaKHqAnCMS9mYrlTd
+   vpY2wh/nIHUvaeRoj1JtA6oNE6zx8VRc9MXDGkQJGfMxeyULQK87REavl
+   1NVvF4JL8q3wMHMNjTVxsviJDFxzF0VQSyXFI0JwOXZbWMffB0KTLnD/O
+   Q==;
+X-CSE-ConnectionGUID: /11g3hbXSmqooQEjoxcTiw==
+X-CSE-MsgGUID: byPAZ0ANSOm1Gb2pmtqumw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7218673"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="10322568"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Apr 2024 02:15:00 -0700
-X-CSE-ConnectionGUID: slL1i1sHQiu17QNQsuEyzw==
-X-CSE-MsgGUID: plvU+xOBR0C+wzO6jAn6dg==
+   d="scan'208";a="7218673"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Apr 2024 02:31:13 -0700
+X-CSE-ConnectionGUID: 0uG/nLzbSla+T6GVNb0Q/g==
+X-CSE-MsgGUID: qAX4Qi05TnWODjytcOpwnA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000";
-   d="scan'208";a="18410517"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa006.fm.intel.com with ESMTP; 03 Apr 2024 02:14:58 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
+   d="scan'208";a="18797531"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+  by orviesa007.jf.intel.com with ESMTP; 03 Apr 2024 02:31:11 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz,
-	amadeuszx.slawinski@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	hdegoede@redhat.com,
-	cujomalainey@chromium.org,
-	lmajczak@google.com,
-	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 3/4] ASoC: topology: Cleanup after ABI v4 support removal
-Date: Wed,  3 Apr 2024 11:16:28 +0200
-Message-Id: <20240403091629.647267-4-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240403091629.647267-1-cezary.rojewski@intel.com>
-References: <20240403091629.647267-1-cezary.rojewski@intel.com>
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 00/10] Use const where applicable
+Date: Wed,  3 Apr 2024 11:31:35 +0200
+Message-Id: <20240403093145.3375857-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MPRGTREJPHZLDXPXSYYXC5FYHAXL6VI7
-X-Message-ID-Hash: MPRGTREJPHZLDXPXSYYXC5FYHAXL6VI7
-X-MailFrom: cezary.rojewski@intel.com
+Message-ID-Hash: OSKYXA7CT6TMV4N66XAPIEWYNB4KPIKL
+X-Message-ID-Hash: OSKYXA7CT6TMV4N66XAPIEWYNB4KPIKL
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPRGTREJPHZLDXPXSYYXC5FYHAXL6VI7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OSKYXA7CT6TMV4N66XAPIEWYNB4KPIKL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,128 +105,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Flag 'abi_match' along with several other local variables has no purpose
-with v4 related members removed.
+Use devm_kstrdup_const in few places to possibly save a bit of memory.
+Mark some of the structs as const, as they are not modified and used as
+is.
 
-Cc: Curtis Malainey <cujomalainey@chromium.org>
-Cc: Łukasz Majczak <lmajczak@google.com>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/soc-topology.c | 47 +++++++++-------------------------------
- 1 file changed, 10 insertions(+), 37 deletions(-)
+Amadeusz Sławiński (10):
+  ASoC: Intel: avs: hdaudio: Use devm_kstrdup_const
+  ASoC: Intel: avs: Use devm_kstrdup_const
+  ASoC: Intel: avs: hdaudio: Constify probing_link
+  ASoC: Intel: avs: es8336: Constify card_headset_pins
+  ASoC: Intel: avs: nau8825: Constify card_headset_pins
+  ASoC: Intel: avs: rt274: Constify card_headset_pins
+  ASoC: Intel: avs: rt286: Constify card_headset_pins
+  ASoC: Intel: avs: rt298: Constify card_headset_pins
+  ASoC: Intel: avs: rt5663: Constify card_headset_pins
+  ASoC: Intel: avs: rt5682: Constify card_headset_pins
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index e73dc4e786ff..90ca37e008b3 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1771,11 +1771,10 @@ static int soc_tplg_pcm_create(struct soc_tplg *tplg,
- static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
- {
--	struct snd_soc_tplg_pcm *pcm, *_pcm;
-+	struct snd_soc_tplg_pcm *pcm;
- 	int count;
- 	int size;
- 	int i;
--	bool abi_match;
- 	int ret;
- 
- 	count = le32_to_cpu(hdr->count);
-@@ -1805,24 +1804,15 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 		if (size != sizeof(*pcm))
- 			return -EINVAL;
- 
--		abi_match = true;
--		_pcm = pcm;
--
- 		/* create the FE DAIs and DAI links */
--		ret = soc_tplg_pcm_create(tplg, _pcm);
--		if (ret < 0) {
--			if (!abi_match)
--				kfree(_pcm);
-+		ret = soc_tplg_pcm_create(tplg, pcm);
-+		if (ret < 0)
- 			return ret;
--		}
- 
- 		/* offset by version-specific struct size and
- 		 * real priv data size
- 		 */
--		tplg->pos += size + le32_to_cpu(_pcm->priv.size);
--
--		if (!abi_match)
--			kfree(_pcm); /* free the duplicated one */
-+		tplg->pos += size + le32_to_cpu(pcm->priv.size);
- 	}
- 
- 	dev_dbg(tplg->dev, "ASoC: adding %d PCM DAIs\n", count);
-@@ -2003,11 +1993,10 @@ static int soc_tplg_link_config(struct soc_tplg *tplg,
- static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
- {
--	struct snd_soc_tplg_link_config *link, *_link;
-+	struct snd_soc_tplg_link_config *link;
- 	int count;
- 	int size;
- 	int i, ret;
--	bool abi_match;
- 
- 	count = le32_to_cpu(hdr->count);
- 
-@@ -2032,23 +2021,14 @@ static int soc_tplg_link_elems_load(struct soc_tplg *tplg,
- 		if (size != sizeof(*link))
- 			return -EINVAL;
- 
--		abi_match = true;
--		_link = link;
--
--		ret = soc_tplg_link_config(tplg, _link);
--		if (ret < 0) {
--			if (!abi_match)
--				kfree(_link);
-+		ret = soc_tplg_link_config(tplg, link);
-+		if (ret < 0)
- 			return ret;
--		}
- 
- 		/* offset by version-specific struct size and
- 		 * real priv data size
- 		 */
--		tplg->pos += size + le32_to_cpu(_link->priv.size);
--
--		if (!abi_match)
--			kfree(_link); /* free the duplicated one */
-+		tplg->pos += size + le32_to_cpu(link->priv.size);
- 	}
- 
- 	return 0;
-@@ -2161,8 +2141,7 @@ static int soc_tplg_dai_elems_load(struct soc_tplg *tplg,
- static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 				  struct snd_soc_tplg_hdr *hdr)
- {
--	struct snd_soc_tplg_manifest *manifest, *_manifest;
--	bool abi_match;
-+	struct snd_soc_tplg_manifest *manifest;
- 	int ret = 0;
- 
- 	manifest = (struct snd_soc_tplg_manifest *)tplg->pos;
-@@ -2171,15 +2150,9 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
- 	if (le32_to_cpu(manifest->size) != sizeof(*manifest))
- 		return -EINVAL;
- 
--	abi_match = true;
--	_manifest = manifest;
--
- 	/* pass control to component driver for optional further init */
- 	if (tplg->ops && tplg->ops->manifest)
--		ret = tplg->ops->manifest(tplg->comp, tplg->index, _manifest);
--
--	if (!abi_match)	/* free the duplicated one */
--		kfree(_manifest);
-+		ret = tplg->ops->manifest(tplg->comp, tplg->index, manifest);
- 
- 	return ret;
- }
+ sound/soc/intel/avs/avs.h            | 2 +-
+ sound/soc/intel/avs/boards/es8336.c  | 2 +-
+ sound/soc/intel/avs/boards/hdaudio.c | 6 +++---
+ sound/soc/intel/avs/boards/nau8825.c | 2 +-
+ sound/soc/intel/avs/boards/rt274.c   | 2 +-
+ sound/soc/intel/avs/boards/rt286.c   | 2 +-
+ sound/soc/intel/avs/boards/rt298.c   | 2 +-
+ sound/soc/intel/avs/boards/rt5663.c  | 2 +-
+ sound/soc/intel/avs/boards/rt5682.c  | 2 +-
+ sound/soc/intel/avs/utils.c          | 8 ++++----
+ 10 files changed, 15 insertions(+), 15 deletions(-)
+
+
+base-commit: 36d464cba8bdfd268282a97e9fdc701aca2ed8cb
 -- 
-2.25.1
+2.34.1
 
