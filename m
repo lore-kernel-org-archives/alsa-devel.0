@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47BB3CD1297
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 08:54:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FA7CCD1284
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 08:54:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B48E2C88;
-	Thu,  4 Apr 2024 10:54:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B48E2C88
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72D2D2C6B;
+	Thu,  4 Apr 2024 10:54:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72D2D2C6B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712220877;
-	bh=ojwSW/sW2WoGGE7TZjI1eVy0HyWT9DzkCVi+qOzw8Uw=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=K8McNI3BO7DSYa82zP0ntIx82dqm5vRJlZGJ2IwUflGHnmqgn3FHNjWeiI9PrQPvQ
-	 6aBD1hsBkmQM4w7uV2fotjmt+lKU99QX5f5SPLFGdvGZ5fgciFXSMpmeaQ/8nvp3LM
-	 +6/PP4B0/LeAtjGVhHnf6HSoyvb+Mx6FIYobHmJ0=
+	s=default; t=1712220892;
+	bh=C0B534tETcSiSi2d2a5k3Mlzf8TIAyJoW2nw7gAaT4k=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=HsvrRiPN3h7ldqdMh2VCJp3MfYxfJ8LuddantoqqVgJ+1+AK056DhLSLwU4w+JST3
+	 /rU0YFj/27ebmBIh58VJ7cfrs/DrqvKx6KV4f2PxjtZFASw8XLCUGS+1oI8Uzj+7Pb
+	 lhvLDq77mQQExGnrJXewQ0t2xmtG4VKSm/+oUXY8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D800FF805AE; Thu,  4 Apr 2024 10:54:00 +0200 (CEST)
+	id 7B72FF80606; Thu,  4 Apr 2024 10:54:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A36C5F805B0;
-	Thu,  4 Apr 2024 10:53:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2217F805F9;
+	Thu,  4 Apr 2024 10:54:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F048F8020D; Thu,  4 Apr 2024 10:49:07 +0200 (CEST)
+	id BB5FAF80238; Thu,  4 Apr 2024 10:49:03 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AAACEF80236
-	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 10:47:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAACEF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2BD31F80130
+	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 10:47:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BD31F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=HP7T73ZH
+ header.s=qcppdkim1 header.b=Y4kT5zBv
 Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 4346xIrn013688;
-	Thu, 4 Apr 2024 08:47:35 GMT
+ 4348T9K3031265;
+	Thu, 4 Apr 2024 08:47:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=45cdwSGTsaDqFfoJ7Wa+n9z+LEZVRnZrTzu4BzNzm08=; b=HP
-	7T73ZHowMa33YzXuIvk8ViNm8fiiJr1Eom74aZVEgKMGKK5pqLpAMszi55+14qY2
-	2DpDGlNYELvzyICvewIEJ0OKevIyYCqVjO/33awBfc8CpPmn2l088X0TgGpSInsF
-	W10shQs966JewPiYJCOv+q4bhgEPL8fkXaQnDUpUBhNqnqk3L/Hsgr4jb8mJc6tC
-	5seKeCJJKlijOInFv1HP/fN7TKVFA6xLLcXOuc4uSvnhTcIP/kbyo7Az1juTLEHC
-	99Zzxo6NdRV6+OTvGSKBSNTFLdi9u3GWMvSpZMz8u3gdmXy2wYr/jx5nIy7xS5ld
-	gwqsfWvYfYG+0XPdUn3Q==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=ySSQu01
+	uxqxgU7lEYH4fWRZQEzBl+iPrmYmI64On0hY=; b=Y4kT5zBv661yKGkgyEKI4UD
+	sZ3f3OJIkqRA3x5NMigGS3kcfmFRU+SA2mzEI88R7ut91CxvOwY+v1Vvp6Zo2JJK
+	jd9Jjv/jn/e9IZYUpDVIDjo41zECnY4cVuSDe8MpbbfAAJBagyPLvux02DgDVIgD
+	/V+by6UYgIvgN3UAClS+srT905dAMZIAfDEtPXdtxhcmmgfaA70ehqHC/AL7Kmb2
+	CLbfZg4/ScC3LEeu0vDQBw+xYIVg+GOFi7NOGh0bVn8epRgcY+hvXbo80MEC46y2
+	s353P0HJKg6UYqV1TH5F47+7SCXSu26zdUykObZ2IVVIaBJiTQxAQi8T0F5VdmQ=
+	=
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com
  [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9ep3rymr-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9ep3rymj-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Apr 2024 08:47:34 +0000 (GMT)
+	Thu, 04 Apr 2024 08:47:25 +0000 (GMT)
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
  [10.45.79.139])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 4348lXff004683
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 4348lOU5003300
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 4 Apr 2024 08:47:33 GMT
+	Thu, 4 Apr 2024 08:47:24 GMT
 Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 4 Apr 2024 01:47:29 -0700
+ 15.2.1544.4; Thu, 4 Apr 2024 01:47:19 -0700
 From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Banajit Goswami
@@ -85,13 +84,10 @@ CC: <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <quic_rohkumar@quicinc.com>,
         "Mohammad Rafi
  Shaik" <quic_mohs@quicinc.com>
-Subject: [PATCH v2 2/2] ASoC: qcom: sc8280xp: Add support for QCM6490 and
- QCS6490
-Date: Thu, 4 Apr 2024 14:16:31 +0530
-Message-ID: <20240404084631.417779-3-quic_mohs@quicinc.com>
+Subject: [PATCH v2 0/2] Add support for QCM6490 and QCS6490
+Date: Thu, 4 Apr 2024 14:16:29 +0530
+Message-ID: <20240404084631.417779-1-quic_mohs@quicinc.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240404084631.417779-1-quic_mohs@quicinc.com>
-References: <20240404084631.417779-1-quic_mohs@quicinc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -101,19 +97,19 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: lzmaVPVA_Ah3Om7H91LxUDptQjDfJUOs
-X-Proofpoint-GUID: lzmaVPVA_Ah3Om7H91LxUDptQjDfJUOs
+X-Proofpoint-ORIG-GUID: qEExjceD8F6__3ATV3Ifli7EUgQDJGFS
+X-Proofpoint-GUID: qEExjceD8F6__3ATV3Ifli7EUgQDJGFS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-04_04,2024-04-04_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 bulkscore=0
- mlxlogscore=999 spamscore=0 suspectscore=0 priorityscore=1501
+ clxscore=1011 bulkscore=0
+ mlxlogscore=662 spamscore=0 suspectscore=0 priorityscore=1501
  lowpriorityscore=0 mlxscore=0 phishscore=0 impostorscore=0 adultscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2404010003 definitions=main-2404040058
-Message-ID-Hash: 4AJHJADUMFVAIKZCDO65GULHYQ37JUTH
-X-Message-ID-Hash: 4AJHJADUMFVAIKZCDO65GULHYQ37JUTH
+Message-ID-Hash: 3JVOTTTHDSBKYFHVNJUJJ6624LBMG6ZU
+X-Message-ID-Hash: 3JVOTTTHDSBKYFHVNJUJJ6624LBMG6ZU
 X-MailFrom: quic_mohs@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -125,7 +121,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3JVOTTTHDSBKYFHVNJUJJ6624LBMG6ZU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,27 +131,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add compatibles for sound card on Qualcomm QCM6490 IDP and
+This patchset adds support for sound card on Qualcomm QCM6490 IDP and
 QCS6490 RB3Gen2 boards.
 
-Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
----
- sound/soc/qcom/sc8280xp.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changes since v1:
+	- Use existing sc8280xp machine driver instead of separate driver.
+	- Modify qcs6490 compatible name as qcs6490-rb3gen2.
 
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-index b7fd503a1666..09c949e01479 100644
---- a/sound/soc/qcom/sc8280xp.c
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -169,6 +169,8 @@ static int sc8280xp_platform_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id snd_sc8280xp_dt_match[] = {
-+	{.compatible = "qcom,qcm6490-sndcard", "qcm6490"},
-+	{.compatible = "qcom,qcs6490-rb3gen2-sndcard", "qcs6490"},
- 	{.compatible = "qcom,sc8280xp-sndcard", "sc8280xp"},
- 	{.compatible = "qcom,sm8450-sndcard", "sm8450"},
- 	{.compatible = "qcom,sm8550-sndcard", "sm8550"},
+Mohammad Rafi Shaik (2):
+  ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd QCS6490 sound card
+  ASoC: qcom: sc8280xp: Add support for QCM6490 and QCS6490
+
+ Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 2 ++
+ sound/soc/qcom/sc8280xp.c                                | 2 ++
+ 2 files changed, 4 insertions(+)
+
 -- 
 2.25.1
 
