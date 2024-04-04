@@ -4,106 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AFCFCD1284
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 08:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13E42CD1292
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:02:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6051A2C6E;
-	Thu,  4 Apr 2024 10:55:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6051A2C6E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A49262C72;
+	Thu,  4 Apr 2024 12:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A49262C72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712220922;
-	bh=oN6L5F4339c8x9zBSAaPAAYbUmNj5mF92X0nhCMXYT8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1712224960;
+	bh=QkfNAiDSNvw4HDF9IAG3GweNjgJwMxMVQuifEYn6CBk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dzCjAgxOQGXTJ4gbRtequvKfolSEjZzmqUoKpnvQ6qgJuoRoRgkJ2qU+t5zBeqQro
-	 sdI6py4UFO/62DwxpYqmUG+2vdWlyZtdLo7erSioLPsWz5M1TkLv9T0iPid7+IQM/E
-	 ZP4KeyEB3Wb5uNdNJ5LC2BPYUC8HHZs1WPe4Xjeo=
+	b=jE52PtMbtV8CFNquVHP3gFe2w+CntP8raTL5CHRWciOxwdtno/Gkw6IjGjaE4gpD2
+	 GOe2ZdHTnGQ+QfOqrXctRQ8V6m9by4H8Gk7wzDeaYaBpOzsVpgLxmDJEf7ghu2gytX
+	 prUw5f+5hkV18z9osUJR7dvhrsFtu/PLx9ks6d5I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95C7DF80638; Thu,  4 Apr 2024 10:54:16 +0200 (CEST)
+	id 45D56F805B5; Thu,  4 Apr 2024 12:02:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2954F8062F;
-	Thu,  4 Apr 2024 10:54:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2C3BF805AC;
+	Thu,  4 Apr 2024 12:02:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0918F80619; Thu,  4 Apr 2024 10:54:09 +0200 (CEST)
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com
- [IPv6:2607:f8b0:4864:20::b34])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A995FF80579; Thu,  4 Apr 2024 12:01:03 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3EDE7F805EC
-	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 10:53:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EDE7F805EC
+	by alsa1.perex.cz (Postfix) with ESMTPS id A0078F80007
+	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 12:00:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0078F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=cYLxCkDQ
-Received: by mail-yb1-xb34.google.com with SMTP id
- 3f1490d57ef6-dcbef31a9dbso544843276.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 04 Apr 2024 01:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712220838; x=1712825638;
- darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=b0saMo4QGYVfrGZY3BfXYJ+wYYPXK1vgxsVH3LduLhE=;
-        b=cYLxCkDQbDlgJ4kC9xZXaJ15H+Tl4/PqpvQ4N7wcseOMlAzUeqtH3gJkHFKC8Ur0no
-         tRBW26WpQRBXCbciMLGEECmsf3E90iLMF030DZOhDDgXtEf0ZvwMplV8S2PPJEswl4MY
-         JEUNtqMLqLeE7RknC2g2nQ3APz65ouZMECR/f67rt1JmlDzJfkbniKGdNxdy4PRVccj+
-         wYPwirQkkZlXgX3InwWsgygEKSNR7NXIQV4wbRiVFBhrsER5VUbl7Iill51LjRnfAcGh
-         L5eRwPEGSe4WhU2OY2T4zGwCcx8BpSP54p4TPl+rB1u8FWvTrhdJ7p3AOk7dRM8+Sdmv
-         eRgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712220838; x=1712825638;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b0saMo4QGYVfrGZY3BfXYJ+wYYPXK1vgxsVH3LduLhE=;
-        b=Jw3awhSf51E31/7uGVRH7VE502L0aA8iL1CpSLJq88Opgq8Erj31CIzOD7uvbHTW+Z
-         TpYLxzTC4YkdDaB3nYq1MrocDX3yFkDT9shKY1sbNUoMXCC61RRolsztzBr2bk+jGgSj
-         Ir312rZQqpDlKHqaHocbTln3Rt3vCEIVgOT4Wt3G50JGS8fxKqpj0C36o5X4uqBpauzK
-         1QAAfb7XS0dtyimdinVDQSby7Oko0m0c4CA/IzcUm3sNEYF0pAQyn+k91fUNsqn3gFLu
-         f0Ispi7iQy1vztYbnd7WqxhixjOyy8wCP7LJ5TlLVobGNWwiKGOKx/7EEmpsVxxzZ/J+
-         u5yQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWi8ZPPA6glubykaFzSEAnLY/D7JpvKP8cPeEHzSa1XVEgZlWGrkNMizL0HdupENU3PDK6qJoVZSteBZ7NecD7Lxui9d/64q9Z7BDY=
-X-Gm-Message-State: AOJu0YxjXPzJtStEZLS+eYYED2MU/NWomup/kwkkbsZNgPDGExJduWA7
-	w5J28oB8jo0tTGgQoxiUF7VEGNSxg7xfJphF0NqzwpA/2rpiuFTpRI/7CFSazkXRcbi0VhHDJzl
-	+ZP7jZcoEKIoWCnS3Z1VKTj4qQA0DdUEvkI6S6w==
-X-Google-Smtp-Source: 
- AGHT+IH7f3/xIqdGulCRGC9S2/T1fajzZP/pOTgqSEEM7kR4WSRQcksdbB122eHZa/2SpUYAsKQ5FgKEuYfHL4yMoGw=
-X-Received: by 2002:a25:5f51:0:b0:dc6:9d35:f9aa with SMTP id
- h17-20020a255f51000000b00dc69d35f9aamr2068959ybm.19.1712220837771; Thu, 04
- Apr 2024 01:53:57 -0700 (PDT)
+ unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
+ header.a=rsa-sha256 header.s=s31663417 header.b=Kufm4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1712224851; x=1712829651;
+	i=oswald.buddenhagen@gmx.de;
+	bh=MIfdnOpAF4SC3w5tCHsYtBAisxAuFKXcIIE5ASAQfmg=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=Kufm4905F50l1lQLsLBbHqG3A/o98Ev9uWkIFtirXtxjQDAMnTCZ2wZuO85ommFK
+	 Wy92TOA2T2mHthcpXtubpOuJrP8IqrSWrFngeFJh2kd69omGqJe3qxj/HQr4yt/rV
+	 aGMGTwJ1azE6myU3IrE8J84cvmM0JucY5p7BTfWzy9Qzb5SM9JA9k2R/EQStme1Qb
+	 ogykziLsjWm07aEujrzaQYe854YIgBpJbTYicj3Ucd93xQSG5dZ22dh99tDuBVGnW
+	 WgaNlVgdK2n4cE8GAzE2I+B0+6iydhIRUrv4tIxSY2ZY6nkAEyBwmtoesTh2/DY9x
+	 Dtos+J4gSVilTWB+5Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from ugly.fritz.box ([89.247.162.126]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MBm1e-1rxmUW3G8K-00C76n; Thu, 04
+ Apr 2024 12:00:51 +0200
+Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
+	id 1rsJto-RG1-00; Thu, 04 Apr 2024 12:00:48 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: [PATCH v2 13/17] ALSA: emu10k1: de-duplicate size calculations for
+ 16-bit samples
+Date: Thu,  4 Apr 2024 12:00:44 +0200
+Message-ID: <20240404100048.819674-14-oswald.buddenhagen@gmx.de>
+X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
+In-Reply-To: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
+References: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
-References: <20240404084631.417779-1-quic_mohs@quicinc.com>
- <20240404084631.417779-2-quic_mohs@quicinc.com>
-In-Reply-To: <20240404084631.417779-2-quic_mohs@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 4 Apr 2024 11:53:46 +0300
-Message-ID: 
- <CAA8EJpqWaYhzPKgTREtJnfdNZ4oSFZaRFM7Jhg+qd3AqadGOkA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd
- QCS6490 sound card
-To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_rohkumar@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Message-ID-Hash: LT6UG7VDVMEAWIB2FFTWNSW4AUG6ULFB
-X-Message-ID-Hash: LT6UG7VDVMEAWIB2FFTWNSW4AUG6ULFB
-X-MailFrom: dmitry.baryshkov@linaro.org
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jZjutnPYZxsxlAkZENVGY0Cl0UP3gVaeZHGCPqb1E7rSTYXZ3Y+
+ TkjGunkNgtLIgijQXqDDc3DrNoe6FJ/wbC30ghnV8dhclTrVv4ID39jD9c/UP6/dD3fU9P7
+ IQvvcpX0bBwFiIkboWzvK4Jff+gWYsSreQNX1H9hE13cXjBLWLaF19xpqDTmK0O2eqs9sHb
+ R3xPxk1TBkmpWayTJD/Aw==
+UI-OutboundReport: notjunk:1;M01:P0:O2sjyQn7NGU=;xoZp14iWUSmxdXttwuMtxrOk+Ub
+ 7q8Yfssp9uDR2l/T4igXim3ex+ONlCTvj/aPwpQrs36jpO29jeG2CyzYy6FJmbuIOtpyTpXU2
+ UAfKgx8IswCb+PYfhtSOO7LKQwumeYGZl96HnIxlOpN2O6uNAJUaxv9x4+EcbkZzOkMyjQYaC
+ u7AOnG07m5pApo0amip7FyTsULDtgFWJtT5Y/xgqGfFxu3QNQxqYE1IwZgjFu/Y4TdttVYg53
+ dkE1b7QEvC37Jl6meEQAstLE/tbjWaTW7jH9hUqZoTBsJ37rf8qR40AzGzZVlw/hHfj44Yeld
+ ogsV0Uohglgw+KEIe94eLeOlbgTDYy5P3u2Dx+O0TYSjYWmOwyk3dUO+lflyW0DHinj07Rvl3
+ C94sgGlo3OgbXz9br20I7dMA6v4yMXkTQL1grMsFNmITq1fvqJg1ifV1msnkQE65Vs5xpkJci
+ mncjplIihdrEKbYikQp0vqQmc6vJl+KNL+ti1lrv4I34pLNNu9wlTRteh8tdk8xYKQ8juRpmp
+ 16m6QfzX6G3HF6PZdsX7TtltdFKJToAVq1NfDH1esSD/wQb10Xh5voxIWhwydFddFgU0wIcVI
+ EWJD05LMNLjvMYqYUshV0Drb/tNYOZ88KKvtNkXUvvgfr0o2VR3RkP//1uvrvAvnk6Bk+s2WG
+ 2jfp44IPe4frADWl8TOL1AOigbfNqQH7FnaNOiWi24OQLBkOR/rjjH1JQ2kjR2ET3NSwmtAwA
+ yoiFrERl7Db1MzsU4uFEn5M4s1XEWCJfXh9M8eyZ+90kH4iNiBXaCVZki6GOKDnxaDEfLRp4E
+ 4Vy7OHdyAppxiSFUqNEw5OlyrlpMOe/fU9NrCBUIZjIpg=
+Message-ID-Hash: YM4B3OYNEV46N5NZQPPO5T57JCQYJSKX
+X-Message-ID-Hash: YM4B3OYNEV46N5NZQPPO5T57JCQYJSKX
+X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -115,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LT6UG7VDVMEAWIB2FFTWNSW4AUG6ULFB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YM4B3OYNEV46N5NZQPPO5T57JCQYJSKX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,44 +112,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 4 Apr 2024 at 11:48, Mohammad Rafi Shaik <quic_mohs@quicinc.com> wrote:
->
-> Document the bindings for the Qualcomm QCM6490 IDP and QCS6490 RB3Gen2
-> soc platforms sound card.
->
-> The bindings are the same as for other newer Qualcomm ADSP sound cards,
-> thus keep them in existing qcom,sm8250.yaml file, even though Linux driver
-> is separate.
->
-> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> index 2ab6871e89e5..ff1a27f26bc2 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> @@ -29,6 +29,8 @@ properties:
->        - enum:
->            - qcom,apq8016-sbc-sndcard
->            - qcom,msm8916-qdsp6-sndcard
-> +          - qcom,qcm6490-sndcard
-> +          - qcom,qcs6490-rb3gen2-sndcard
+Instead of repeatedly checking the sample width, assign a size shift
+centrally.
 
-My 2c: you are adding one soundcard for the SoC family (qcm6490) and
-another one for the particular board kind (qcs6490-rb3gen2). That
-doesn't seem logical.
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+=2D--
+ sound/pci/emu10k1/emu10k1_patch.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
->            - qcom,qrb5165-rb5-sndcard
->            - qcom,sc7180-qdsp6-sndcard
->            - qcom,sc8280xp-sndcard
-> --
-> 2.25.1
->
->
+diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1=
+_patch.c
+index ad16de99b800..481fe03fef4d 100644
+=2D-- a/sound/pci/emu10k1/emu10k1_patch.c
++++ b/sound/pci/emu10k1/emu10k1_patch.c
+@@ -28,6 +28,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_=
+sf_sample *sp,
+ {
+ 	u8 fill;
+ 	u32 xor;
++	int shift;
+ 	int offset;
+ 	int truesize, size, blocksize;
+ 	struct snd_emu10k1 *emu;
+@@ -43,9 +44,11 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
+_sf_sample *sp,
+ 	}
 
+ 	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS) {
++		shift =3D 0;
+ 		fill =3D 0x80;
+ 		xor =3D (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_UNSIGNED) ? 0 : 0x8080808=
+0;
+ 	} else {
++		shift =3D 1;
+ 		fill =3D 0;
+ 		xor =3D (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_UNSIGNED) ? 0x80008000 : =
+0;
+ 	}
+@@ -68,9 +71,7 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_=
+sf_sample *sp,
+ 	sp->v.loopend +=3D BLANK_HEAD_SIZE;
 
--- 
-With best wishes
-Dmitry
+ 	/* try to allocate a memory block */
+-	blocksize =3D truesize;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+-		blocksize *=3D 2;
++	blocksize =3D truesize << shift;
+ 	sp->block =3D snd_emu10k1_synth_alloc(emu, blocksize);
+ 	if (sp->block =3D=3D NULL) {
+ 		dev_dbg(emu->card->dev,
+@@ -83,16 +84,12 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct sn=
+d_sf_sample *sp,
+
+ 	/* write blank samples at head */
+ 	offset =3D 0;
+-	size =3D BLANK_HEAD_SIZE;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+-		size *=3D 2;
++	size =3D BLANK_HEAD_SIZE << shift;
+ 	snd_emu10k1_synth_memset(emu, sp->block, offset, size, fill);
+ 	offset +=3D size;
+
+ 	/* copy provided samples */
+-	size =3D sp->v.size;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+-		size *=3D 2;
++	size =3D sp->v.size << shift;
+ 	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size,=
+ xor)) {
+ 		snd_emu10k1_synth_free(emu, sp->block);
+ 		sp->block =3D NULL;
+=2D-
+2.42.0.419.g70bf8a5751
+
