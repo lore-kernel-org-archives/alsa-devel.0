@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 508F8CD1292
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAB9BCD1292
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:05:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E7992C8B;
-	Thu,  4 Apr 2024 12:04:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E7992C8B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BACB52C62;
+	Thu,  4 Apr 2024 12:05:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BACB52C62
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712225099;
-	bh=/6bHgOjJBJyV98vE/wprMwW6DUyEX0wYBugNwx5yRmA=;
+	s=default; t=1712225114;
+	bh=2TCwY/Gyk4NOU2VJqc4FGFU3S5jupvdli4moBN3tV/E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Qx01+yBMJSH+edWr1vL3IALfjNy8hd7Z91PHIVql53AGKukq/09hn0zfBdbZPOlTe
-	 Nc3TKSD2yv9nhoWU2eKHtB2dwT/Xv4fJR+aQRoJDNz3TlON6Ebbw3ZwcvV1xKBL8Fu
-	 uvdYEiHGrOhmAmdp7NUUldZ7SObKfx1AFQtjxlDw=
+	b=SLosJSWayZW6Exy+Vl0+qvObStLVCl/VOX2GkI6Sl3ztlj3spilWdXQySGBs0RBTt
+	 Nf62cf8funwPrxbu6YFe95nuYVpFxImTqB5R6p6zVbRYBuL0HdtC1WT1aN9toRkKcl
+	 4FzAwZjVtPm+/G2w5DOjbmD9rqPm2b6l0R/pkbrc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08BCDF805F2; Thu,  4 Apr 2024 12:03:29 +0200 (CEST)
+	id 143F8F8069E; Thu,  4 Apr 2024 12:03:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E997AF8067C;
-	Thu,  4 Apr 2024 12:03:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97D90F80688;
+	Thu,  4 Apr 2024 12:03:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF336F80578; Thu,  4 Apr 2024 12:03:24 +0200 (CEST)
+	id 40A29F8057E; Thu,  4 Apr 2024 12:03:27 +0200 (CEST)
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1E323F805D6
-	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 12:03:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E323F805D6
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05F0DF80588
+	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 12:03:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05F0DF80588
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=b8TvTxQh
+ header.a=rsa-sha256 header.s=s31663417 header.b=p4D38zgs
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
 	s=s31663417; t=1712224976; x=1712829776;
 	i=oswald.buddenhagen@gmx.de;
-	bh=QbpXbcE+ZR9RSM7KyHuCqE1u/L252UQLp182kXonEls=;
+	bh=CAZ1ScoqbFZwHXnTKkLI/ab/oBnNr0cVzQYRhQr1P38=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=b8TvTxQhpjTEGzmfTUShuAzbJg/IwGiP/UVfTNkrDMSOAV4nMQdbI/MZV9KNbueW
-	 JvX/B+gQRtO+/Bsf+RNoQHBRNXeBWJkBOfAKdnMZHfNuQJfAbPAcTZkj65X+pMOXb
-	 YFzfV2pRGCi8ADWwSymtEDDwyOxdeNLnScP+3AUMwo0W9mf4jh6VvJx0Zk62ed7LB
-	 vIeRrQf7YB1T4uqCN6bikzaOBXMFHyvMTYOTXo4HYHxgoDAGIsDZhPvNQx6tgylwX
-	 fjtj6N8ANMgGiElIcv+0jUY0urgm/gNPkU8w6pTmyQorvYDjpSZEGZBUwuTWkTvfk
-	 8fmKyrJVn4g91u5RvQ==
+	b=p4D38zgs0UcfkPr/ujp82xUhd7VQ1egRFyvx1xtOrrddQIVSVEoq8heU4ECMRzam
+	 UqE8oucV3rVs5Qldru0TxPqjvbBI5N8ez6bBlDXmRmCwiRsQj1rxASQS04A+tNzSZ
+	 jukY4wKpSIu/hKE+Jh/MlwmC/Qo8c7EK9+3MnPtWp381SwHcfYzp6KfGmPrywlmiI
+	 ym8Q14TcGTqdhB7vY/jcFsZVld+rIaZVyaQnoI1aX5pP4ccWsPf2KqLtNsl7Abxad
+	 nzkqhAe3C6skaIfTs6N3G7yedBZEtvyNcUNPHuNs/cXElbkVPM1OREx6vuaWy5n7x
+	 U1JAcP+jYJ0iTR6bWw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.126]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MuUnK-1sidIw1KhG-00rcU6; Thu, 04
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MAfYm-1rysS82E8G-00B1PM; Thu, 04
  Apr 2024 12:02:56 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rsJto-RG6-00; Thu, 04 Apr 2024 12:00:48 +0200
+	id 1rsJto-RFh-00; Thu, 04 Apr 2024 12:00:48 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH v2 14/17] ALSA: emu10k1: improve cache behavior documentation
-Date: Thu,  4 Apr 2024 12:00:45 +0200
-Message-ID: <20240404100048.819674-15-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 09/17] ALSA: emu10k1: fix sample signedness issues in
+ wavetable loader
+Date: Thu,  4 Apr 2024 12:00:40 +0200
+Message-ID: <20240404100048.819674-10-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
 In-Reply-To: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 References: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RShzJIdSN/XlrC4KSiDVgiWyWCtZzJvQ0gURYuFuabSmrSjofsX
- FsugpTaIxRckDnwwYLIPee4D8UFC6jTe/srTByo+KHysrpNarJkbQNPo33IQuxo3uzuvdpf
- dw1Ni0rGGd6tcbIzZTEzjeIPkyE78K7QMHp9rztY+tmApKrVzdfNgd8K8LgWFoRJO2lCC+R
- RC/ituEkvKenSNVJ5L/ZQ==
-UI-OutboundReport: notjunk:1;M01:P0:Fkc+a9lB7nI=;lr4vL+bbJFahDVn2bm0KthnkRcs
- OgJsf27u1dvb4W/2k7EguCdl0dV5LMRDqsNqLCyFyx4XUuWS/+CEKWfwZIzr22L+aIg8hGdZO
- SeBGRs5qCHDSQy6vsGSwo1f3OzH81m2udyp++Uaa3VXe2yXsl4mGav4WMpHH2F+/9jlQ3xbru
- qmkUHEuT7nqdrHdHfThB6uB9ngyJ5DKzhZaxw1xjrExjFUZErYQTO3uvLiuandlk2cnytL38g
- rroTpnNOWbBBLbbBYj0cXouCP0VD+FS/TvuT5p87Kn/pCzD/qfoAs01Qz1MKe+ZgKUPPaxo7n
- 6JxtGOkhOBu2/5i+JmjNoccvJ23vFA8FpqtFIpY23FIdsIyGcMIUJrFAugMAxadVBvBuS9Ehc
- A6jxJ98L6jItdJ6F+qW7Zo0Q0oRLesWJCNQ41/iSR2VEc/t0Pv9USRAeV0tnfekuP29A6mrEB
- s+HpXTTPW3lp1Ohzh77DVOzDafJxM1pLKsoMNp0A1qD+c7NXMrqvKRwq0CAQDYOpXY+aXIwG9
- vFwVxTDk6IWcfUW1C0PsyhzWnBChQn69/82qxyXBWUV2Y6nwtZle9alBidmHk/hXPkmm5DbIa
- TBS55ndbyU8+3+G+b3sUqM7bgTUD6CF7erPjHSJj5PxaXmIgEQl0HEoQlZpiNSbYl7UYmiVa0
- CO7B6GeNlclSaFjfsAaorFKV8w/Q/XrgoE2KwkQ2Pf69Mw8C1ElNjHHBoxhVt8M8RUgV/tPri
- 8gg6tKy1Mi7dM8fx+W4HOyu/QcMRdm/nL9HutJDYy2t8h7hnBRLRjFBsTsgD6rnPvOsd4MtGd
- JABWuE/UkOdwPRh3Yh+p0YOVNlU/v67ZVQcLgeVrIrZKc=
-Message-ID-Hash: GKYF32YZCO6QDMPFPL7GQCXNNWYQUYXI
-X-Message-ID-Hash: GKYF32YZCO6QDMPFPL7GQCXNNWYQUYXI
+X-Provags-ID: V03:K1:+6fR5qoKew9hF6bnDQILkOU1HmuQA2JL/kftacw2bbtzw7lw/c7
+ NQiP6Rdkftm0cvu1moBCBQXOpGwYwSe1qWCN2F0vsbWz6XHOQbqJbNEzUrjMxeeNhkRX+uq
+ lnzPKKXCfKfUMO1PUfUkOs2rHfwErMNWSts5YvYg2pB9tbY8uilr3LMAHYEC+F+CxTgdDQF
+ HwLHnXNEQCo7xAoN9O7dg==
+UI-OutboundReport: notjunk:1;M01:P0:vZom+YAd6QQ=;y4o8DidJjaULG+KlDd9iTdTsS3Q
+ ZjgOvP7vCLkpo4qbit0rVs2g9jhZnTniojk+hlK8a+fcjeK0aanFylaekYS/dI+ZRb33D5DeR
+ TCLzs7mIJfdxBFCpfFedDb7qRMkOX3JHfkc2Ia87hsYeEbCtaJHbIyyvoOKh6euhqJc+Co6Gm
+ 9sMQRxl3r/e7obG1o+Jp5i/QLzmz5lG4pLYLJVmnY75wK2rgbY3PiyT8SvNH1C4RZu6tpZIT3
+ S8d6zNAqnjZ2LnpdGgIqKZREjBO4dG1aeN6HOKtdU8oqmys61G32GPM/9C7q9BTUw/9xgLAM6
+ /NNxpuKbbnHwEDcKKeUcL38LBkHG8cb3x5yP7eFawNydnOL0Rg7e2s1a4BEPf8YSRdX+GhShs
+ /uxwGRNmOx7eK1AfYJUEAYWMUgMBfPnqhumq68wN2M9dOyPzA0RCpOUgTKM3BtNgekKIDGffO
+ mslFS2S7/m5WZT+/+bVikYOFlQuqwPpDzkMs3Q85uYGnezzBDq3h79fieDwEoVin53xH63aEP
+ jVQ1r/iYhi2DCRmIBjrODa6S7OY9qc3HuEvKEBlK7NzlFWI7XW9XLEp4Eck3gMuWz2N8M+lv6
+ /WNZXDIzuZeD1MTg/EUeFpe+JDAezWk8P382Z58kh8gA1dFS8zQU+8B69K49icy4cMSM6sNMC
+ k6573EFvKJ1WNufPdPNLT8sxquOmqVeJVrV3i1g6yXfwN4smCNOU9hg9NhKUWpgmdM1lfBdby
+ EvsdSI4B/WPcfLwgHgOZ4fYRAhszZkhhNcsU8wAESpsppK6HmfHFiC2JEU34ym+9Z7yk6hCLb
+ CVsmT9axO+/+ipVTgP0Q9Y45gSdse2YRaYD+/M2Z77w9w=
+Message-ID-Hash: X6X6KRCZXTVMHR5OXTCTMWS6BMN6PL5H
+X-Message-ID-Hash: X6X6KRCZXTVMHR5OXTCTMWS6BMN6PL5H
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GKYF32YZCO6QDMPFPL7GQCXNNWYQUYXI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X6X6KRCZXTVMHR5OXTCTMWS6BMN6PL5H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,58 +112,220 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Resulting from more reverse engineering in the course of debugging.
+The hardware supports S16LE and U8 samples, while U16LE and S8 (which
+the driver implicitly claims to support) require sign flipping.
+
+Note that this matters only for the GUS patch loader, as the implemented
+SoundFont v2.01 spec is limited to S16LE.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 =2D--
- include/sound/emu10k1.h | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ include/sound/emu10k1.h           |  4 +--
+ sound/pci/emu10k1/emu10k1_patch.c | 30 ++++++++-----------
+ sound/pci/emu10k1/memory.c        | 49 +++++++++++++++++++++++++------
+ 3 files changed, 55 insertions(+), 28 deletions(-)
 
 diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index 9e3bd4f81460..12c7dc760724 100644
+index 1af9e6819392..9e3bd4f81460 100644
 =2D-- a/include/sound/emu10k1.h
 +++ b/include/sound/emu10k1.h
-@@ -598,17 +598,25 @@ SUB_REG(PEFE, FILTERAMOUNT,	0x000000ff)	/* Filter en=
-vlope amount				*/
- // In stereo mode, the two channels' caches are concatenated into one,
- // and hold the interleaved frames.
- // The cache holds 64 frames, so the upper half is not used in 8-bit mode=
-.
--// All registers mentioned below count in frames.
--// The cache is a ring buffer; CCR_READADDRESS operates modulo 64.
--// The cache is filled from (CCCA_CURRADDR - CCR_CACHEINVALIDSIZE)
--// into (CCR_READADDRESS - CCR_CACHEINVALIDSIZE).
-+// All registers mentioned below count in frames. Shortcuts:
-+//   CA =3D CCCA_CURRADDR, CRA =3D CCR_READADDRESS,
-+//   CLA =3D CCR_CACHELOOPADDRHI:CLP_CACHELOOPADDR,
-+//   CIS =3D CCR_CACHEINVALIDSIZE, LIS =3D CCR_LOOPINVALSIZE,
-+//   CLF =3D CCR_CACHELOOPFLAG, LF =3D CCR_LOOPFLAG
-+// The cache is a ring buffer; CRA operates modulo 64.
-+// The cache is filled from (CA - CIS) into (CRA - CIS).
- // The engine has a fetch threshold of 32 bytes, so it tries to keep
--// CCR_CACHEINVALIDSIZE below 8 (16-bit stereo), 16 (16-bit mono,
--// 8-bit stereo), or 32 (8-bit mono). The actual transfers are pretty
--// unpredictable, especially if several voices are running.
--// Frames are consumed at CCR_READADDRESS, which is incremented afterward=
-s,
--// along with CCCA_CURRADDR and CCR_CACHEINVALIDSIZE. This implies that t=
-he
--// actual playback position always lags CCCA_CURRADDR by exactly 64 frame=
-s.
-+// CIS below 8 (16-bit stereo), 16 (16-bit mono, 8-bit stereo), or
-+// 32 (8-bit mono). The actual transfers are pretty unpredictable,
-+// especially if several voices are running.
-+// Frames are consumed at CRA, which is incremented afterwards,
-+// along with CA and CIS. This implies that the actual playback
-+// position always lags CA by exactly 64 frames.
-+// When CA reaches DSL_LOOPENDADDR, LF is set for one frame's time.
-+// LF's rising edge causes the current values of CA and CIS to be
-+// copied into CLA and LIS, resp., and CLF to be set.
-+// If CLF is set, the first LIS of the CIS frames are instead
-+// filled from (CLA - LIS), and CLF is subsequently reset.
- #define CD0			0x20		/* Cache data registers 0 .. 0x1f			*/
+@@ -1882,8 +1882,8 @@ int snd_emu10k1_alloc_pages_maybe_wider(struct snd_e=
+mu10k1 *emu, size_t size,
+ 					struct snd_dma_buffer *dmab);
+ struct snd_util_memblk *snd_emu10k1_synth_alloc(struct snd_emu10k1 *emu, =
+unsigned int size);
+ int snd_emu10k1_synth_free(struct snd_emu10k1 *emu, struct snd_util_membl=
+k *blk);
+-int snd_emu10k1_synth_bzero(struct snd_emu10k1 *emu, struct snd_util_memb=
+lk *blk, int offset, int size);
+-int snd_emu10k1_synth_copy_from_user(struct snd_emu10k1 *emu, struct snd_=
+util_memblk *blk, int offset, const char __user *data, int size);
++int snd_emu10k1_synth_memset(struct snd_emu10k1 *emu, struct snd_util_mem=
+blk *blk, int offset, int size, u8 value);
++int snd_emu10k1_synth_copy_from_user(struct snd_emu10k1 *emu, struct snd_=
+util_memblk *blk, int offset, const char __user *data, int size, u32 xor);
+ int snd_emu10k1_memblk_map(struct snd_emu10k1 *emu, struct snd_emu10k1_me=
+mblk *blk);
 
- #define PTB			0x40		/* Page table base register				*/
+ /* voice allocation */
+diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1=
+_patch.c
+index 55bb60d31fe4..eb3d1ef8a33a 100644
+=2D-- a/sound/pci/emu10k1/emu10k1_patch.c
++++ b/sound/pci/emu10k1/emu10k1_patch.c
+@@ -26,6 +26,8 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_=
+sf_sample *sp,
+ 		       struct snd_util_memhdr *hdr,
+ 		       const void __user *data, long count)
+ {
++	u8 fill;
++	u32 xor;
+ 	int offset;
+ 	int truesize, size, blocksize;
+ 	unsigned int start_addr;
+@@ -41,6 +43,14 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
+_sf_sample *sp,
+ 		       sp->v.sample);
+ 	}
+
++	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS) {
++		fill =3D 0x80;
++		xor =3D (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_UNSIGNED) ? 0 : 0x8080808=
+0;
++	} else {
++		fill =3D 0;
++		xor =3D (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_UNSIGNED) ? 0x80008000 : =
+0;
++	}
++
+ 	/* compute true data size to be loaded */
+ 	truesize =3D sp->v.size + BLANK_HEAD_SIZE;
+ 	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_NO_BLANK)
+@@ -65,46 +75,32 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct sn=
+d_sf_sample *sp,
+ 	size =3D BLANK_HEAD_SIZE;
+ 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *=3D 2;
+-	snd_emu10k1_synth_bzero(emu, sp->block, offset, size);
++	snd_emu10k1_synth_memset(emu, sp->block, offset, size, fill);
+ 	offset +=3D size;
+
+ 	/* copy provided samples */
+ 	size =3D sp->v.size;
+ 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *=3D 2;
+-	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size)=
+) {
++	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size,=
+ xor)) {
+ 		snd_emu10k1_synth_free(emu, sp->block);
+ 		sp->block =3D NULL;
+ 		return -EFAULT;
+ 	}
+ 	offset +=3D size;
+
+ 	/* clear rest of samples (if any) */
+ 	if (offset < blocksize)
+-		snd_emu10k1_synth_bzero(emu, sp->block, offset, blocksize - offset);
++		snd_emu10k1_synth_memset(emu, sp->block, offset, blocksize - offset, fi=
+ll);
+
+ 	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_NO_BLANK) {
+ 		/* if no blank loop is attached in the sample, add it */
+ 		if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_SINGLESHOT) {
+ 			sp->v.loopstart =3D sp->v.end + BLANK_LOOP_START;
+ 			sp->v.loopend =3D sp->v.end + BLANK_LOOP_END;
+ 		}
+ 	}
+
+-#if 0 /* not supported yet */
+-	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_UNSIGNED) {
+-		/* unsigned -> signed */
+-		if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS)) {
+-			unsigned short *wblock =3D (unsigned short*)block;
+-			for (i =3D 0; i < truesize; i++)
+-				wblock[i] ^=3D 0x8000;
+-		} else {
+-			for (i =3D 0; i < truesize; i++)
+-				block[i] ^=3D 0x80;
+-		}
+-	}
+-#endif
+-
+ 	/* recalculate offset */
+ 	start_addr =3D BLANK_HEAD_SIZE * 2;
+ 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index fc9444404151..d29711777161 100644
+=2D-- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -565,10 +565,10 @@ static inline void *offset_ptr(struct snd_emu10k1 *e=
+mu, int page, int offset)
+ }
+
+ /*
+- * bzero(blk + offset, size)
++ * memset(blk + offset, value, size)
+  */
+-int snd_emu10k1_synth_bzero(struct snd_emu10k1 *emu, struct snd_util_memb=
+lk *blk,
+-			    int offset, int size)
++int snd_emu10k1_synth_memset(struct snd_emu10k1 *emu, struct snd_util_mem=
+blk *blk,
++			     int offset, int size, u8 value)
+ {
+ 	int page, nextofs, end_offset, temp, temp1;
+ 	void *ptr;
+@@ -588,20 +588,47 @@ int snd_emu10k1_synth_bzero(struct snd_emu10k1 *emu,=
+ struct snd_util_memblk *blk
+ 			temp =3D temp1;
+ 		ptr =3D offset_ptr(emu, page + p->first_page, offset);
+ 		if (ptr)
+-			memset(ptr, 0, temp);
++			memset(ptr, value, temp);
+ 		offset =3D nextofs;
+ 		page++;
+ 	} while (offset < end_offset);
+ 	return 0;
+ }
+
+-EXPORT_SYMBOL(snd_emu10k1_synth_bzero);
++EXPORT_SYMBOL(snd_emu10k1_synth_memset);
++
++// Note that the value is assumed to be suitably repetitive.
++static void xor_range(void *ptr, int size, u32 value)
++{
++	if ((long)ptr & 1) {
++		*(u8 *)ptr ^=3D (u8)value;
++		ptr++;
++		size--;
++	}
++	if (size > 1 && ((long)ptr & 2)) {
++		*(u16 *)ptr ^=3D (u16)value;
++		ptr +=3D 2;
++		size -=3D 2;
++	}
++	while (size > 3) {
++		*(u32 *)ptr ^=3D value;
++		ptr +=3D 4;
++		size -=3D 4;
++	}
++	if (size > 1) {
++		*(u16 *)ptr ^=3D (u16)value;
++		ptr +=3D 2;
++		size -=3D 2;
++	}
++	if (size > 0)
++		*(u8 *)ptr ^=3D (u8)value;
++}
+
+ /*
+- * copy_from_user(blk + offset, data, size)
++ * copy_from_user(blk + offset, data, size) ^ xor
+  */
+ int snd_emu10k1_synth_copy_from_user(struct snd_emu10k1 *emu, struct snd_=
+util_memblk *blk,
+-				     int offset, const char __user *data, int size)
++				     int offset, const char __user *data, int size, u32 xor)
+ {
+ 	int page, nextofs, end_offset, temp, temp1;
+ 	void *ptr;
+@@ -620,8 +647,12 @@ int snd_emu10k1_synth_copy_from_user(struct snd_emu10=
+k1 *emu, struct snd_util_me
+ 		if (temp1 < temp)
+ 			temp =3D temp1;
+ 		ptr =3D offset_ptr(emu, page + p->first_page, offset);
+-		if (ptr && copy_from_user(ptr, data, temp))
+-			return -EFAULT;
++		if (ptr) {
++			if (copy_from_user(ptr, data, temp))
++				return -EFAULT;
++			if (xor)
++				xor_range(ptr, temp, xor);
++		}
+ 		offset =3D nextofs;
+ 		data +=3D temp;
+ 		page++;
 =2D-
 2.42.0.419.g70bf8a5751
 
