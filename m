@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 082EBCD1292
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:07:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AB89CD1284
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:07:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 400E92CD7;
-	Thu,  4 Apr 2024 12:06:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 400E92CD7
+	by alsa0.perex.cz (Postfix) with ESMTPS id B03BD2CE3;
+	Thu,  4 Apr 2024 12:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B03BD2CE3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712225224;
-	bh=dJcSfwcjGZwXSI1L1lIntiuYVFyMF8fd9RGOCI5IqaA=;
+	s=default; t=1712225245;
+	bh=8lNlf3jlZZqm/2NB4g/MllgFXVAvssLgW1cFiWUJeow=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O6N4AfRBil3bbPXolw9iKjC7QK0WWECERX5S2cbQ2/WMMvK3sEYvRsVPoacjh2n8n
-	 nlmC6jtAPUGzR8nXljzeFrjb4RaNpyGOEgoz4sQLz2BcqoWVlmnDRglJvTTHLePzFO
-	 h2emfajzNU5Njm0eY8vii7bp9kQNGNlfWkRkzr2Y=
+	b=Aa5n1tSGc8rcRQPMmuEXo2Sh/auZfWj6RUkslYLkP91Ks2V9nTL+Xo7hyLoKKWI+R
+	 J4Olc9zffH1+YSoDyllK5+KL75LvwfkkT/j8aW9EltSANK/ef6ISNGzL07WOcnOzaS
+	 8V9DYLiTam2UOfEHD4IEeZtSKOGK0RQDN6YMEKbY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFD8CF807D0; Thu,  4 Apr 2024 12:03:57 +0200 (CEST)
+	id 93475F80814; Thu,  4 Apr 2024 12:04:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40AACF807DC;
-	Thu,  4 Apr 2024 12:03:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 870D8F80805;
+	Thu,  4 Apr 2024 12:04:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A875BF80796; Thu,  4 Apr 2024 12:03:53 +0200 (CEST)
+	id 02B29F80798; Thu,  4 Apr 2024 12:03:57 +0200 (CEST)
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B3D21F8057B
+	by alsa1.perex.cz (Postfix) with ESMTPS id C86CCF8057A
 	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 12:03:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3D21F8057B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C86CCF8057A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=heFkiQz4
+ header.a=rsa-sha256 header.s=s31663417 header.b=dv/UnmzP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
 	s=s31663417; t=1712224977; x=1712829777;
 	i=oswald.buddenhagen@gmx.de;
-	bh=Rifiz2tzvBk5vL5iFP4v7h+O9i+ihFbVM/EJLCqOuNM=;
+	bh=cXVA4THpoOuQmvVhbCnJNxDK0wsu4gIMaNVjdufjhV4=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=heFkiQz4L6RjbpHR0KkfP+kxrBv5h/L9kj3TXjDYSjG4XnicJpvJLAiPucgfHEf+
-	 zftTBAwvu8ot+39248XbDg8chvTFS/o0A/X+lzoj5T+f6qO15wib43f+cA/1FUs0E
-	 zPC994onLp6FzeE1JmsJnAMRaie8dt281+K5b5JR6svDLFthXBTrRwkM1aWEov6oS
-	 i6osCv1CMfHuOGVlrKEWr8d8IoDKjktXDKkxjXudUP+LbDTxUVfPJx7pM7+hKzVRI
-	 vDmjN1nhTkaPnUpaiflci1cyjpyyukSQ4SiA9h4T0bV2wwlqAwtdQhkTOk4489vSZ
-	 Sgn88150/7XPjCRiVw==
+	b=dv/UnmzPleMPU1w20UnzOfTbpJkFGXhmmP1ftlq0d+VM69TKpBAVpn+YvI2pzT9q
+	 xoCgjV0TWqxDhrdtdpq0LAPbojfBtcO2C/NKTQEVir7+lOJ30rJNsBbxjipvdNuNt
+	 EMMMdFgUXUpTCIhVgYYgDim3X0WrSNEgUg4e14HDEiaR2MhMnyIz9f4vNiBub9cso
+	 qP4C/UiABtBWemHS9Q1uCP9lqhKqgRnmdZ7fogYWO5l9uEVlh6T8me+ILPj9VEwbs
+	 NShO1mF+goXOH8/82rtzqwaUf8uLatDXZbi3TigsjnRKFvGrAVXSc8rr4wpkz4i61
+	 iJtD3KVDiucFaPE4WQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.126]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MbzuB-1sO4ic1izX-00dVsV; Thu, 04
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N4Qwg-1sqIoo47Wg-011TqA; Thu, 04
  Apr 2024 12:02:57 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rsJto-RFw-00; Thu, 04 Apr 2024 12:00:48 +0200
+	id 1rsJto-RFm-00; Thu, 04 Apr 2024 12:00:48 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH v2 12/17] ALSA: emu10k1: fix wavetable offset recalculation
-Date: Thu,  4 Apr 2024 12:00:43 +0200
-Message-ID: <20240404100048.819674-13-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 10/17] ALSA: emu10k1: fix playback of 8-bit wavetable
+ samples
+Date: Thu,  4 Apr 2024 12:00:41 +0200
+Message-ID: <20240404100048.819674-11-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
 In-Reply-To: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 References: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pOUdD7xcVm9jB9KUAkRGqrnAezulu590VAqRw1SLVJgX4PRhM22
- KdJwtjViqE8/EdwzUjpEU42Y7sH7VuBPTWwkt0GdkhDhnLC828c8RyzxYg6IIIOj25dnK9D
- 6PxKqJ+GWs9sEUjEH1XxhdjWi1X/fB62J3IYWpj53iop8PvWdalhjAg4+Rwv0nNS0vm4gmI
- i3tRYAehBn+jSJjT5hY2w==
-UI-OutboundReport: notjunk:1;M01:P0:EfW1tp/gnWU=;eV4XQJCPXoUdJB03vcJHM8wtMTE
- 48frAg420LmYiSDGK8tzN9cs4iXuJz/fY0OEc9Bjk3LoeJvW/NyaxhnArnmdELMMaS3Hrmm0Z
- 6gwn0t5dzHSZVnUUO4o42G4Qie3JzMIxGdIUZNPYwVycMZUbHraDP/gehy5IZSJemyePyu771
- ij/sGQBKulBgAhMPh4fycz6hOiE1OAf+v3yiQoBDKKKmLnwf/BJtgDZZSfdGMWtsTnmX6B0Hk
- VZ0gqdxAnXbOWHwmqIQuTmG3ujwDV56sIXuAhslTPnAUKj4rXBAom5MbpzviWmC/IVzyNj5ma
- SNWbSR7Fx7Mtmgt3d2gasjBXvYfkXYQ+WyNDMwGI4Jol5mstk0dMa/d1XtRhMeCsRd/7N5y4Z
- qbG4R4EDuwWWCif5oKrA0fYsQpstuN6NxQ3WgwO2k2LK0kV22lY+l7fMEXcFzAYpiMUE6r0es
- 85e5h7IKC1WNJEJHmSxJqbIIHYuJFA/DhDMA246PP0Iohi5yDLAnHEEo8X8Q+c61fbfOTR8yo
- M3kD+4q2jXaXHKG5ts5OilXySkbXW7wkkL7OCyJ6aZL4ajJPnHORccTJzFlZ1l6jgc1pHl5R4
- COeIYP/9cUywILTtPsaSdGtU+ZECn4jhTi6r6ufrZS8g9Ahinu6RZ8tuiI1JwhZq6o0LqaZd0
- qEmwKV4riuU+/s8/d6gRwxAp2z53NRrxkWqAYnBvacJQJzbofs7ro1Ke0IDwoG/5Rl75O5jY8
- Mcs1lSPptjEwFWwA6SjYaVurtVWdy2juUjurLguTU8ukQySMBBSqlGnIMSdF0ZSfghm/zQ1+4
- G5svPprTmwDEitmM/bv44SLk69r6utm/m5uAMGZdGrz08=
-Message-ID-Hash: S474I7ZDQTNAMQZ4HZUL6KD6Y55VEP7S
-X-Message-ID-Hash: S474I7ZDQTNAMQZ4HZUL6KD6Y55VEP7S
+X-Provags-ID: V03:K1:IU96ncvC4RwCBM5LcW3eqCDw8rCZq1a7/Detz4fA2ZrjX5l3UE8
+ mKRCIXHO+1MMzYBFmxy2V48O8p6pBj9NGjNJ29OZmAErZSa+GTCOVArkPdb9gL5aigHVIFp
+ 3+iObDGhqyxVEUVyt3s1aS6TXdfCDZ/9cf1e+L82yhuGljiMTA3PKGv3y4FXIwnxzz79TCb
+ 0tuold43IUw3cQL0w82ag==
+UI-OutboundReport: notjunk:1;M01:P0:TK8heQhuk4Y=;2Evw5wNBAsT1gnKw6aUJ/WarTns
+ 8hh4Rd6D8oz0jT0jiKLuPVN4YCvxAJJsDrNw7Q90j5tRCfaFQSrOzTk0MzDRie0NgXlOw02Zv
+ lTVT5ovWh1Q5UoazB8GoEn57hKBNsea0hC2/SAqHyJ1QG5YZwFaoj7GnWljfqGgdvn27JhyOO
+ ZwNg1h4GdMu7C6V7naIUGm+H9idaYcfe+rGauou1S3dOgo6Xu2sWzDou8Nm3g1rPnQpuz+Pa9
+ Fo314tghlGLJS+EXp7L6I6oy6Fkh35eresoXiQOkM0BRE3z6v1NP+49zDVvNIioz2z5p+N883
+ qsoKpQpDzdJDHSuXkt/zeGGxkEgop0SjD2wss8h7gy9lf4JGqNYV/Q5FRrW2mYQCa6F+Oe1gO
+ 8/Nz3KXWNZw5KJqxfUkAhcg0aYiqZCr2wJWCxFE/lLD35GoZEV43OeYg/+mvV6cWwcZ6Znd6T
+ 9ntfVTL2kNV5R286DZ7/fI8fWbc+5i30z50M1S+r3pt3PZKsdN0ftLkz5UpD9b9wKPF/q9ldo
+ V+cY8YkHq/wThWZ5XnmpJTbeJL1HMVu4xgDU9Pba9IsukcL/j1S7JTJBvAbs9Rc2qRy+NYp0T
+ i/+5BbVzGrfB8ljzlgRMWuknAdcdi2G3dIG0FFLwAYWVLclUluN4D1hqglqXb2VJlUUE1cXrz
+ dsy4jSN73JG/G5TioRWbW9ktUm4aFLmKO0G1c3IiI05cdOgOChXrpHy8Hq0pcA8g7zlViWc5J
+ wcv51ftn6p9b9JTL8jECD76L7vzxdA4wCWt9vuCdoAEXYeDMJD+p2Wuz4MXMd2O3DJ8XCMTmL
+ 0FEpTgRJL9pjtN7YgXkitJQYigKTfOTXkHFbFsYzBn1Es=
+Message-ID-Hash: HVGC6KTBMHXKTU4QU53KLYKUITZTKT2W
+X-Message-ID-Hash: HVGC6KTBMHXKTU4QU53KLYKUITZTKT2W
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S474I7ZDQTNAMQZ4HZUL6KD6Y55VEP7S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVGC6KTBMHXKTU4QU53KLYKUITZTKT2W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,62 +112,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The offsets are counted in samples, not in bytes.
-
-While the code block is being rewritten, also move it up a bit, to avoid
-churn in a subsequent patch.
+Samples are byte-sized in this mode, and thus the offset calculation
+needs no shifting.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 =2D--
- sound/pci/emu10k1/emu10k1_patch.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ sound/pci/emu10k1/emu10k1_callback.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1=
-_patch.c
-index 281881f7d0a4..ad16de99b800 100644
-=2D-- a/sound/pci/emu10k1/emu10k1_patch.c
-+++ b/sound/pci/emu10k1/emu10k1_patch.c
-@@ -30,7 +30,6 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_=
-sf_sample *sp,
- 	u32 xor;
- 	int offset;
- 	int truesize, size, blocksize;
--	unsigned int start_addr;
- 	struct snd_emu10k1 *emu;
+diff --git a/sound/pci/emu10k1/emu10k1_callback.c b/sound/pci/emu10k1/emu1=
+0k1_callback.c
+index 941bfbf812ed..5f6c47cbb809 100644
+=2D-- a/sound/pci/emu10k1/emu10k1_callback.c
++++ b/sound/pci/emu10k1/emu10k1_callback.c
+@@ -310,27 +310,29 @@ start_voice(struct snd_emux_voice *vp)
+ {
+ 	unsigned int temp;
+ 	int ch;
++	bool w_16;
+ 	u32 psst, dsl, map, ccca, vtarget;
+ 	unsigned int addr, mapped_offset;
+ 	struct snd_midi_channel *chan;
+ 	struct snd_emu10k1 *hw;
+ 	struct snd_emu10k1_memblk *emem;
 
- 	emu =3D rec->hw;
-@@ -62,6 +61,12 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
-_sf_sample *sp,
- 		}
+ 	hw =3D vp->hw;
+ 	ch =3D vp->ch;
+ 	if (snd_BUG_ON(ch < 0))
+ 		return -EINVAL;
+ 	chan =3D vp->chan;
++	w_16 =3D !(vp->reg.sample_mode & SNDRV_SFNT_SAMPLE_8BITS);
+
+ 	emem =3D (struct snd_emu10k1_memblk *)vp->block;
+ 	if (emem =3D=3D NULL)
+ 		return -EINVAL;
+ 	emem->map_locked++;
+ 	if (snd_emu10k1_memblk_map(hw, emem) < 0) {
+ 		/* dev_err(hw->card->devK, "emu: cannot map!\n"); */
+ 		return -ENOMEM;
  	}
+-	mapped_offset =3D snd_emu10k1_memblk_offset(emem) >> 1;
++	mapped_offset =3D snd_emu10k1_memblk_offset(emem) >> w_16;
+ 	vp->reg.start +=3D mapped_offset;
+ 	vp->reg.end +=3D mapped_offset;
+ 	vp->reg.loopstart +=3D mapped_offset;
+@@ -371,7 +373,7 @@ start_voice(struct snd_emux_voice *vp)
+ 		unsigned int shift =3D (vp->apitch - 0xe000) >> 10;
+ 		ccca |=3D shift << 25;
+ 	}
+-	if (vp->reg.sample_mode & SNDRV_SFNT_SAMPLE_8BITS)
++	if (!w_16)
+ 		ccca |=3D CCCA_8BITSELECT;
 
-+	/* recalculate offset */
-+	sp->v.start +=3D BLANK_HEAD_SIZE;
-+	sp->v.end +=3D BLANK_HEAD_SIZE;
-+	sp->v.loopstart +=3D BLANK_HEAD_SIZE;
-+	sp->v.loopend +=3D BLANK_HEAD_SIZE;
-+
- 	/* try to allocate a memory block */
- 	blocksize =3D truesize;
- 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
-@@ -99,15 +104,6 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct sn=
-d_sf_sample *sp,
- 	if (offset < blocksize)
- 		snd_emu10k1_synth_memset(emu, sp->block, offset, blocksize - offset, fi=
-ll);
-
--	/* recalculate offset */
--	start_addr =3D BLANK_HEAD_SIZE * 2;
--	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
--		start_addr >>=3D 1;
--	sp->v.start +=3D start_addr;
--	sp->v.end +=3D start_addr;
--	sp->v.loopstart +=3D start_addr;
--	sp->v.loopend +=3D start_addr;
--
- 	return 0;
- }
-
+ 	vtarget =3D (unsigned int)vp->vtarget << 16;
 =2D-
 2.42.0.419.g70bf8a5751
 
