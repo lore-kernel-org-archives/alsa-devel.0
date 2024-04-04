@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E30DECD1292
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 19:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3645CD1292
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 19:05:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03C652CCD;
-	Thu,  4 Apr 2024 21:05:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03C652CCD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E525C2CF7;
+	Thu,  4 Apr 2024 21:05:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E525C2CF7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712257546;
-	bh=kpEVEkeUvSQHtIiwegnx0xTZnOZz10AbI8oxN1072Tk=;
+	s=default; t=1712257557;
+	bh=B0x6Qj2oJDAKQ1Pdrq4ENFEU6JUEvp6eTkcc5HdjsWg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BiGxPGvoSDUO7JBBdDngbdXDsZWJghw1BzC1hg3X0mhtb52INrWq4/WaGDGRso0Tw
-	 ZF922OU+HS92bsR6dhg6MaZCzY3QVY8i1SWWyVAO+8tx0x0Qp1HiXDMKaFWIrZYwwv
-	 Pq+QNciWdYMVFxFLpVQCNQBHLRfBNTVHDhpsD4kM=
+	b=iTBnnTSruMrdTgSieFUavFEBR7ql2PwWXN/RgPaD2EzyWreTnDt7EkfaR+bfXdIpC
+	 kvSMPe8t8Hlkydck5B28LfcRrkA9xOYqX11gijrmXoTCFZcyFxtIIr65QVnrkV2XLM
+	 p64DKeJCWO5ZSPT08aFBiO9xTqagY3jGfKdo8kzQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D2C6F8056F; Thu,  4 Apr 2024 21:04:28 +0200 (CEST)
+	id BB007F80637; Thu,  4 Apr 2024 21:04:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37A84F80620;
-	Thu,  4 Apr 2024 21:04:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1520EF80656;
+	Thu,  4 Apr 2024 21:04:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C9F7F805C3; Thu,  4 Apr 2024 21:04:21 +0200 (CEST)
+	id 85B69F805C6; Thu,  4 Apr 2024 21:04:21 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0B947F8016E
-	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 21:04:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B947F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id EFE50F80236
+	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 21:04:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFE50F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eBZl+TUj
+ header.s=Intel header.b=FbhWEjBG
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712257450; x=1743793450;
+  t=1712257451; x=1743793451;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kpEVEkeUvSQHtIiwegnx0xTZnOZz10AbI8oxN1072Tk=;
-  b=eBZl+TUjBM1Ulbkk95+qXp+ZRj6xHzxTIJCCer1ftDWAjVxvuaTgrG43
-   PqFGqCuwmPSscMvtFMDDS9kYC0mkTzVSgVL+/xxq11vGUs9tito8BuR3r
-   gynLvGCtKDataCEm++Ne+VbsFcgGW4wFi8eFLFbSTMmqBe0JkxoAMaKbw
-   KSLVpg/1mTHCUV75BoYyDX6cXaeSWSlPCGMhT+d+xExTf3bRJJ2T5IJ4O
-   gt8MIUhrvgjdG26C7sXEo8tjDx8OXG0qTqx+wC6p3dOvKgum5wF79qAdh
-   r9SgF7caiacq0PmpirS3v1H+52okG6j7Lc6tAqc1n6GOmuQn0J2vlp16l
-   g==;
-X-CSE-ConnectionGUID: D/J8IEBJQtuRTZ2gNBlHpw==
-X-CSE-MsgGUID: ASnfGcXES1K8AFMnS3MmGA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7433870"
+  bh=B0x6Qj2oJDAKQ1Pdrq4ENFEU6JUEvp6eTkcc5HdjsWg=;
+  b=FbhWEjBGyrkwAUVNtMPYiI0+PN1Pyb08JvcKsMfwzjRimSbJUbRPlr4V
+   O0QnRAvOvIyYYud2oEk4kdmmRWItbdxjZ6EmMN3UcHy/qt/UQLCHxG9Iq
+   AGlrG7QzEXIhXXfRxFVN6FM+C4C+oQNN0BupurAvHKzFebtmIMDkJVAN6
+   Z9FS7FSHndc8RRKJfbzQ+5te2yzjsHqPmydbPYbPCM50BOmAdQJ60lyQm
+   OJhmAm0rqxggialCaPONrIj98psPbH1MIfHOHp+ES68JU+pTDjk8ZSSgR
+   kgR2LtzoUzdtMO9yciRJ4CrAV7pFVd9podOV7MDN3xbbojrMsGZ8sJeY1
+   Q==;
+X-CSE-ConnectionGUID: w86In1cHQae7ZJWfY35Z+A==
+X-CSE-MsgGUID: aJFETTWIRuuRnHffCRbstg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7433876"
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000";
-   d="scan'208";a="7433870"
+   d="scan'208";a="7433876"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
   by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2024 12:04:06 -0700
-X-CSE-ConnectionGUID: yDlEFBh0QCy3ihaz907/og==
-X-CSE-MsgGUID: cdvmRj1QQnKO6vMm2LFLMA==
+ 04 Apr 2024 12:04:07 -0700
+X-CSE-ConnectionGUID: 0c2LHNSvR/2Me+42bP4DTA==
+X-CSE-MsgGUID: n9hlvTysRp+tGEPcu0YZGw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000";
-   d="scan'208";a="19492314"
+   d="scan'208";a="19492318"
 Received: from sparrish-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.119.106])
   by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
@@ -76,16 +76,17 @@ Cc: alsa-devel@alsa-project.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Keqiao Zhang <keqiao.zhang@intel.com>
-Subject: [PATCH 3/4] ASoC: SOF: Intel: hda-codec: preserve WAKEEN values
-Date: Thu,  4 Apr 2024 14:03:56 -0500
-Message-Id: <20240404190357.138073-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: SOF: Intel: hda-ctrl: only clear WAKESTS for
+ HDaudio codecs
+Date: Thu,  4 Apr 2024 14:03:57 -0500
+Message-Id: <20240404190357.138073-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240404190357.138073-1-pierre-louis.bossart@linux.intel.com>
 References: <20240404190357.138073-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HBZXQYW35F4NWKH4BA4KEOEXJ2MO6NYB
-X-Message-ID-Hash: HBZXQYW35F4NWKH4BA4KEOEXJ2MO6NYB
+Message-ID-Hash: ZNZMTTB74NHNCUU7JFB5T6O43HFDMTD2
+X-Message-ID-Hash: ZNZMTTB74NHNCUU7JFB5T6O43HFDMTD2
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HBZXQYW35F4NWKH4BA4KEOEXJ2MO6NYB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZNZMTTB74NHNCUU7JFB5T6O43HFDMTD2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,13 +108,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Since LunarLake, we use the HDadio WAKEEN/WAKESTS to detect wakes for
-SoundWire codecs. Unfortunately, the existing code in
-hda_codec_jack_wake_enable() unconditionally resets the WAKEEN bits.
+When a PME wake happens due to a SoundWire wake, we currently clear
+all WAKESTS bits during the resume operation initiated by the PCI
+subsystem. As a result, we are unable to identify which SoundWire
+links need to be resumed and don't properly handle jack detection.
 
-This patch changes the initialization to preserve SoundWire WAKEEN
-bits. For HDAudio codecs the same strategy is used, WAKEEN is only set
-when the jacktbl.used property is set.
+This patch only clears the WAKESTS bits for the HDaudio codecs
+detected earlier.
+
+Note that we still clear all WAKESTS bits unconditionally in
+hda_dsp_ctrl_stop_chip(). The existing behavior is potentially racy if
+e.g. a jack event happens during a suspend routine, but there's a risk
+of breaking shutdown or reboot sequences so the code is left as is for
+now.
 
 Closes: https://github.com/thesofproject/linux/issues/4687
 Co-developed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -122,43 +129,21 @@ Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Keqiao Zhang <keqiao.zhang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-codec.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index 9f84b0d287a5..6a13f38a8d21 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -79,18 +79,27 @@ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable)
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct hda_codec *codec;
- 	unsigned int mask = 0;
-+	unsigned int val = 0;
+diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+index b4f0756e21f6..6d941209847f 100644
+--- a/sound/soc/sof/intel/hda-ctrl.c
++++ b/sound/soc/sof/intel/hda-ctrl.c
+@@ -228,7 +228,7 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev)
  
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC_DEBUG_SUPPORT) &&
- 	    sof_debug_check_flag(SOF_DBG_FORCE_NOCODEC))
- 		return;
+ 	/* clear WAKESTS */
+ 	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_WAKESTS,
+-			  SOF_HDA_WAKESTS_INT_MASK);
++			  bus->codec_mask);
  
- 	if (enable) {
--		list_for_each_codec(codec, hbus)
-+		list_for_each_codec(codec, hbus) {
-+			/* only set WAKEEN when needed for HDaudio codecs */
-+			mask |= BIT(codec->core.addr);
- 			if (codec->jacktbl.used)
--				mask |= BIT(codec->core.addr);
-+				val |= BIT(codec->core.addr);
-+		}
-+	} else {
-+		list_for_each_codec(codec, hbus) {
-+			/* reset WAKEEN only HDaudio codecs */
-+			mask |= BIT(codec->core.addr);
-+		}
- 	}
- 
--	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, mask);
-+	snd_hdac_chip_updatew(bus, WAKEEN, mask & STATESTS_INT_MASK, val);
- }
- EXPORT_SYMBOL_NS_GPL(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
+ 	hda_codec_rirb_status_clear(sdev);
  
 -- 
 2.40.1
