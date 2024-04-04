@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 898D5CD1297
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D5C3CD1292
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:04:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC9292C70;
-	Thu,  4 Apr 2024 12:03:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC9292C70
+	by alsa0.perex.cz (Postfix) with ESMTPS id A60102C81;
+	Thu,  4 Apr 2024 12:03:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A60102C81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712225034;
-	bh=w80JfGIsSC3/iFftH3e/00GvagaEyUQiANdz/LDp858=;
+	s=default; t=1712225047;
+	bh=iEN1KqrjQn+PNiPB7210cC49xYYGKZcR+MLxEG2w4dE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rd2/cqJxbiLRhNu9TMMJYsgMl4/8ag9nGqVN7pgNbVN/OOEFzqZDiseumvVwVwEXA
-	 9QhZ1Ha5wcEpE12WgfKHokPugQh5bloO3efjnBfOvp/S3x46pa78a7B6Vh5OlA2IN0
-	 yq7mJ8oA/8I2OCuV0Y4uxnaZmQkiGg4HMWuhE+TA=
+	b=UMFre3Pj00lu40KDSP58A8c1cnkF7rNszJai+EZ+/zgX7M3jveiqc0c9B1GRai9Ou
+	 qrTKj4Dxzb7OyatkVS0VU+QifXU3K9+juBLtb0wLvIR6YU3D5csxyyTbuLwChvuC8F
+	 RNQ81AmjNg3gyThltZdztKm/7BsbJPPXFlUE1yPE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B786F805C8; Thu,  4 Apr 2024 12:02:59 +0200 (CEST)
+	id 578F4F80638; Thu,  4 Apr 2024 12:03:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A1AEF805C1;
-	Thu,  4 Apr 2024 12:02:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4AE5F8060C;
+	Thu,  4 Apr 2024 12:02:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5696BF8016E; Thu,  4 Apr 2024 12:01:23 +0200 (CEST)
+	id D8DC3F8016E; Thu,  4 Apr 2024 12:01:29 +0200 (CEST)
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0151F80238
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4797F80570
 	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 12:00:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0151F80238
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4797F80570
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=KMrfxJfA
+ header.a=rsa-sha256 header.s=s31663417 header.b=Y7DcyFbn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
 	s=s31663417; t=1712224851; x=1712829651;
 	i=oswald.buddenhagen@gmx.de;
-	bh=gT0Fc3s0V7arG50ohbQehwLq67lOsar3syDQYGHBBr4=;
+	bh=TUz8ah5z8pNT083e8DQKx/8kl8YBAd0RX2+UgScRUnc=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=KMrfxJfARCra9fgBv/Utwp0sggsnZkJtbu2yv5bmkH1drOrk+iA0fAJFNlsEhdff
-	 6chOm/fKAR4XkcgpFWEgnm8PQIXu0oiBdXCNt/S8M0MahqIXxK+zhOa+T80Tr81Vj
-	 IU2HXUrPmpQf5l9MKlZTuynxefmKxgxI75rOn0dKW3dnk1+K7MxvFcdHHPiE3Q/AC
-	 rf4KWcIXivOMnr4LGiP1bYdg0+lOqzYWt2XuOYHzrrUw9pmvQqnmYqlTn1BBDtQH8
-	 C4qCFwfadKUo76jtk8xEXGNAQ/xsbsrqtuOuFfbnrdF1WCLv8pCJ4xpz/HnzonX2q
-	 YCDCmFWHQOx75bDJdw==
+	b=Y7DcyFbnfDt1ZThlGI2cPGkDU+D4nryak0719ue5hvoO37qDmm9MhoJ5pKJEpDlW
+	 iIApHK0qDacyiZhs7aPHWJgKPm8zvjYSVJgxCIihswTorHWSmsf0TS5eqN08Ioyn6
+	 GnaCCwqjiQa92Ts1M8kV+CO54oehqVj/w7YkE6IkB2niZQdvfW4O5AhD0mZDFeS9a
+	 qeEw+EtlXVYkRVYbHCU7X34YlmW7SEmtBlutcCa45orVBHkqLkihYN5pCCVCXB9lb
+	 GiaT+1Gn2x7I+NmEqi/wTbojVAZfKjdzQj94Ylu9fT9sbvgsoKlEaDgRV8ibO4k54
+	 uNIT5XWjeLtq0/k76w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.126]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MBlxW-1rxmUZ0du0-00CD33; Thu, 04
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MqaxO-1sensB0mrQ-00mfMg; Thu, 04
  Apr 2024 12:00:51 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rsJto-RF8-00; Thu, 04 Apr 2024 12:00:48 +0200
+	id 1rsJto-RFN-00; Thu, 04 Apr 2024 12:00:48 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH v2 02/17] ALSA: emux: prune unused parameter from
- snd_soundfont_load_guspatch()
-Date: Thu,  4 Apr 2024 12:00:33 +0200
-Message-ID: <20240404100048.819674-3-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 05/17] ALSA: emu10k1: prune vestiges of
+ SNDRV_SFNT_SAMPLE_{BIDIR,REVERSE}_LOOP support
+Date: Thu,  4 Apr 2024 12:00:36 +0200
+Message-ID: <20240404100048.819674-6-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
 In-Reply-To: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 References: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1DhF6qoHkopmsJvlbNJaTK0nG5cvGVDuXx4Y8cTzKa8OwROg39v
- 68Z9aAfTCi3nb5a72Yu17uYZ5qoGvK56MIB7cDn7AMnFD4UVQpAgToKGOL/rED18pumagJX
- yAxK90+6wV+9IE2NQ/JRJ8jsY2idirHeF3UQDFFYE9pjojUgiJEd7xWJ9/bOAZSL/vrGNdY
- +3YDN5EKYn3/A5sL+StLw==
-UI-OutboundReport: notjunk:1;M01:P0:hao7kNkAiek=;56He34GNceFiD6051Kim49nunjx
- qeyZxCKOK/rgNOVSewQToqwX01/yLQ1pY6rignnNKOBK9IACS8F9yIAenh0vuDBERi8TNRsbl
- HG1LekRcorneRTaJqCyC4S9JwqcWmTPXJIviVs2zzLmw3taK4UtnunQWeRUIeyxZDgj4F5rkz
- DK6LTUwG0z1AhgRFDrgLCbaqh9iD6GtW5bRGfzKVFFSeX5e2dX2uUFrNQOFfVRaxbLxla4RLh
- mxnJ3DWKCfdzaSi9xFED25sGcvXGR2RcFyL1h6zKJO+BuKvhNI3Si6ts19KaJGz4/wZUFWazC
- lhUt4PyCtjMpQ8fx8C0XWGqxhVramhtmY+0gTtosCIeMaaBnPFeiLFG50qJQ0Yr8SO7YbVuq3
- dlptMZjb7bzCP04NgV4CpEISQzD6JRqhgCMybwlov8wVzqR5WiJ3O9zTeGq/5ygsjbBTvz5J0
- crPtlPuuQxoYYeCrHU9XbHKAFY0v9eL996ScYAseNENgYdGxqtR11XQhss25Tmlv9VLRYgFkz
- ddp6DNfFW8vufD6sQ1QHDle88T5iiAlJuxxa6Nruvtre64nP5sjPIKgZRw6VYGTQC33gDrshL
- oY7cg6kLmugTqcc5QSK3Vzjnf/E+EFHTanUfUJPB/8GVlEt3veflW8ZUt2Y2K0EWpt9r6F8uJ
- AGwvEHlXbMf9RjN+Dj+V/rYNBLop6WP9jbVzM3V74yoXxa1tA4MT9pxWvyR4L4V9T0jvnrOZN
- Su9P1oxDQ+MFnqeTRlJTdfec5gSyMjoaWKGnA9ipLv3PvmAEnnAd6LnxdsHuGBOUEvKThtt8M
- a2hUXOTAas6Bt7Ph7GjCqds4E7jViyeBgyfp5+09qgvdw=
-Message-ID-Hash: MTFVKWUA26SBVI4RQEYRU4NBPYXHXRVD
-X-Message-ID-Hash: MTFVKWUA26SBVI4RQEYRU4NBPYXHXRVD
+X-Provags-ID: V03:K1:ESkvr/u4kvFeDcA3F2nAvwudrXYtfhJK34kNYdS2pmpIgFwkF1d
+ Jb/rXopYDzGFksZ/yMUXzxjtKv+8HHTrUBh5P8Pb12NnELw3/y0W/2E9HUjFD4pufhvBqiJ
+ aGYpWGCyh6oQZFd4CUIRl8JsFBwpNBBCTB5eqsRhTc7kMCUwu5CzYjzMrGvCQZsSGYR+LVW
+ m99J4FWVH0JUOcXpp7N0A==
+UI-OutboundReport: notjunk:1;M01:P0:UfHc/XmSlUQ=;e0gyY8qJMXf9Xr2ShsupMA7GQYu
+ 47DHqAjs3ogsF0bKcswx2acoo+ddodDvSz9hhGSfWPk5RFguc5Y4KZWyi1ygfaojMts45MdE2
+ 0EUXCFMu7Xvat/BxjZFWT+g7/PG7LCS2HEvUtqguuBQrSe66u3jpR/glcKgfsq0rFf4a++NtM
+ aCqDGHYhKOmOPxc4Q8sI/RfQIY0KlkDJy9WxyPWOTSDTwcJSt8Egv9N9L5VG0cERNQV+wNzEq
+ M/M9d5O++FnToVO8oN0s11WoBr3XFOotjb9WUOpWOmWnanqPb0KcpoLkJjRajQqZA/dwFA1oS
+ LWt7nm+vJqc+YiHgoEUkncO+veO3AmUtAz6DzXDRVqI622hYXVafvG4IicyaMjIOJ5m6Bb8R2
+ YdEqK+JWAnVR2bH6wTeEWCDywBw3B/srCDREhNeuC8qBMcRUHxjrWsLrYoBl7vhx+YnSrtxMv
+ NkGvotFZh2UMm3eJnZSgT9vQwC2h9EnLp/z5vwpOglX1uWf9R/zCOo9dPWwXQxj2+ClH9Iecq
+ IG9rWvQq7Nbh302FXsnqg3r0Uyqd+cSvKHeDoQkV1JoyjT65P3bZZmn2afUb6V3zYRqQEldXF
+ 9EOR+P/Yp4rF9BTpLnSvvPqhDefH2gJNV1V67mqrCxVKzvKVAI++XME8ZQs7Kf2ISSyCrc3qf
+ j+MVYPw+mlyoYPstiRIW7SWgx2BbHiX5uUCqLgbeEV6dKSANudDgDQV/WVkwEXIV1h+Q3ovZV
+ 0fBGoJhuhDsmlEMh3ChH8VSDFIGvZ/SC+NDbAqWnqyKgkgdp1iQAo85O8XbBWib3bILasDGj9
+ gY3KuQI30E3ost61G7xNIkon7OwWasM9Cd5CR6jhfKcHo=
+Message-ID-Hash: IYCARJ3H76JPHJUEKSBPCY6LZUQ2B5EC
+X-Message-ID-Hash: IYCARJ3H76JPHJUEKSBPCY6LZUQ2B5EC
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MTFVKWUA26SBVI4RQEYRU4NBPYXHXRVD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IYCARJ3H76JPHJUEKSBPCY6LZUQ2B5EC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,93 +112,159 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The `client` parameter was not used, so eliminate it from the call
-chain.
+This is required only to implement WAVE_BIDIR_LOOP and WAVE_LOOP_BACK in
+the GUS patch loader. It has not worked on emu10k1 since before ALSA hit
+mainline, yet nobody appears to have complained. And as it isn't super
+easy to implement, just admit defeat and clean up the code.
+
+If somebody wanted to resurrect the feature, the emu8k driver could
+serve as a template, but the code would be quite different. But
+arguably, this should be done in user space in the first place, as this
+doesn't represent a hardware feature (somewhat ironically, the actual
+GUS driver has no synth support, and therefore no GUS patch loader).
+
+Note that instead of properly rejecting affected samples, we continue to
+just pretend that the feature wasn't requested. This is extremely
+questionable behavior, but avoids that possibly unused instruments
+suddenly prevent loading the entire file, which would break backwards
+compatibility. But at least we log a warning now.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 =2D--
- include/sound/soundfont.h     | 2 +-
- sound/synth/emux/emux_hwdep.c | 3 +--
- sound/synth/emux/emux_oss.c   | 3 +--
- sound/synth/emux/soundfont.c  | 7 +++----
- 4 files changed, 6 insertions(+), 9 deletions(-)
+ sound/pci/emu10k1/emu10k1_patch.c | 73 ++++---------------------------
+ 1 file changed, 8 insertions(+), 65 deletions(-)
 
-diff --git a/include/sound/soundfont.h b/include/sound/soundfont.h
-index e445688a4f4f..98ed98d89d6d 100644
-=2D-- a/include/sound/soundfont.h
-+++ b/include/sound/soundfont.h
-@@ -89,7 +89,7 @@ struct snd_sf_list {
- int snd_soundfont_load(struct snd_sf_list *sflist, const void __user *dat=
-a,
- 		       long count, int client);
- int snd_soundfont_load_guspatch(struct snd_sf_list *sflist, const char __=
-user *data,
--				long count, int client);
-+				long count);
- int snd_soundfont_close_check(struct snd_sf_list *sflist, int client);
-
- struct snd_sf_list *snd_sf_new(struct snd_sf_callback *callback,
-diff --git a/sound/synth/emux/emux_hwdep.c b/sound/synth/emux/emux_hwdep.c
-index 81719bfb8ed7..fd8f978cde1c 100644
-=2D-- a/sound/synth/emux/emux_hwdep.c
-+++ b/sound/synth/emux/emux_hwdep.c
-@@ -27,8 +27,7 @@ snd_emux_hwdep_load_patch(struct snd_emux *emu, void __u=
-ser *arg)
-
- 	if (patch.key =3D=3D GUS_PATCH)
- 		return snd_soundfont_load_guspatch(emu->sflist, arg,
--						   patch.len + sizeof(patch),
--						   TMP_CLIENT_ID);
-+						   patch.len + sizeof(patch));
-
- 	if (patch.type >=3D SNDRV_SFNT_LOAD_INFO &&
- 	    patch.type <=3D SNDRV_SFNT_PROBE_DATA) {
-diff --git a/sound/synth/emux/emux_oss.c b/sound/synth/emux/emux_oss.c
-index d8d32671f703..04df46b269d3 100644
-=2D-- a/sound/synth/emux/emux_oss.c
-+++ b/sound/synth/emux/emux_oss.c
-@@ -205,8 +205,7 @@ snd_emux_load_patch_seq_oss(struct snd_seq_oss_arg *ar=
-g, int format,
- 		return -ENXIO;
-
- 	if (format =3D=3D GUS_PATCH)
--		rc =3D snd_soundfont_load_guspatch(emu->sflist, buf, count,
--						 SF_CLIENT_NO(p->chset.port));
-+		rc =3D snd_soundfont_load_guspatch(emu->sflist, buf, count);
- 	else if (format =3D=3D SNDRV_OSS_SOUNDFONT_PATCH) {
- 		struct soundfont_patch_info patch;
- 		if (count < (int)sizeof(patch))
-diff --git a/sound/synth/emux/soundfont.c b/sound/synth/emux/soundfont.c
-index 16f00097cb95..e1e47518ac92 100644
-=2D-- a/sound/synth/emux/soundfont.c
-+++ b/sound/synth/emux/soundfont.c
-@@ -941,8 +941,7 @@ int snd_sf_vol_table[128] =3D {
-
- /* load GUS patch */
- static int
--load_guspatch(struct snd_sf_list *sflist, const char __user *data,
--	      long count, int client)
-+load_guspatch(struct snd_sf_list *sflist, const char __user *data, long c=
-ount)
+diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1=
+_patch.c
+index 89890f24509f..49214c226808 100644
+=2D-- a/sound/pci/emu10k1/emu10k1_patch.c
++++ b/sound/pci/emu10k1/emu10k1_patch.c
+@@ -28,8 +28,6 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_=
+sf_sample *sp,
  {
- 	struct patch_info patch;
- 	struct snd_soundfont *sf;
-@@ -1122,11 +1121,11 @@ load_guspatch(struct snd_sf_list *sflist, const ch=
-ar __user *data,
- /* load GUS patch */
- int
- snd_soundfont_load_guspatch(struct snd_sf_list *sflist, const char __user=
- *data,
--			    long count, int client)
-+			    long count)
- {
- 	int rc;
- 	lock_preset(sflist);
--	rc =3D load_guspatch(sflist, data, count, client);
-+	rc =3D load_guspatch(sflist, data, count);
- 	unlock_preset(sflist);
- 	return rc;
- }
+ 	int offset;
+ 	int truesize, size, blocksize;
+-	__maybe_unused int loopsize;
+-	int loopend, sampleend;
+ 	unsigned int start_addr;
+ 	struct snd_emu10k1 *emu;
+
+@@ -43,32 +41,24 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct sn=
+d_sf_sample *sp,
+ 		return 0;
+ 	}
+
++	if (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP | SNDRV_SFNT_SAMPLE=
+_REVERSE_LOOP)) {
++		/* should instead return -ENOTSUPP; but compatibility */
++		printk(KERN_WARNING "Emu10k1 wavetable patch %d with unsupported loop f=
+eature\n",
++		       sp->v.sample);
++	}
++
+ 	/* recalculate address offset */
+ 	sp->v.end -=3D sp->v.start;
+ 	sp->v.loopstart -=3D sp->v.start;
+ 	sp->v.loopend -=3D sp->v.start;
+ 	sp->v.start =3D 0;
+
+-	/* some samples have invalid data.  the addresses are corrected in voice=
+ info */
+-	sampleend =3D sp->v.end;
+-	if (sampleend > sp->v.size)
+-		sampleend =3D sp->v.size;
+-	loopend =3D sp->v.loopend;
+-	if (loopend > sampleend)
+-		loopend =3D sampleend;
+-
+ 	/* be sure loop points start < end */
+ 	if (sp->v.loopstart >=3D sp->v.loopend)
+ 		swap(sp->v.loopstart, sp->v.loopend);
+
+ 	/* compute true data size to be loaded */
+ 	truesize =3D sp->v.size + BLANK_HEAD_SIZE;
+-	loopsize =3D 0;
+-#if 0 /* not supported */
+-	if (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP|SNDRV_SFNT_SAMPLE_R=
+EVERSE_LOOP))
+-		loopsize =3D sp->v.loopend - sp->v.loopstart;
+-	truesize +=3D loopsize;
+-#endif
+ 	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_NO_BLANK)
+ 		truesize +=3D BLANK_LOOP_SIZE;
+
+@@ -96,65 +86,18 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct sn=
+d_sf_sample *sp,
+ 	snd_emu10k1_synth_bzero(emu, sp->block, offset, size);
+ 	offset +=3D size;
+
+-	/* copy start->loopend */
+-	size =3D loopend;
++	/* copy provided samples */
++	size =3D sp->v.size;
+ 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *=3D 2;
+ 	if (offset + size > blocksize)
+ 		return -EINVAL;
+ 	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size)=
+) {
+ 		snd_emu10k1_synth_free(emu, sp->block);
+ 		sp->block =3D NULL;
+ 		return -EFAULT;
+ 	}
+ 	offset +=3D size;
+-	data +=3D size;
+-
+-#if 0 /* not supported yet */
+-	/* handle reverse (or bidirectional) loop */
+-	if (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP|SNDRV_SFNT_SAMPLE_R=
+EVERSE_LOOP)) {
+-		/* copy loop in reverse */
+-		if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS)) {
+-			int woffset;
+-			unsigned short *wblock =3D (unsigned short*)block;
+-			woffset =3D offset / 2;
+-			if (offset + loopsize * 2 > blocksize)
+-				return -EINVAL;
+-			for (i =3D 0; i < loopsize; i++)
+-				wblock[woffset + i] =3D wblock[woffset - i -1];
+-			offset +=3D loopsize * 2;
+-		} else {
+-			if (offset + loopsize > blocksize)
+-				return -EINVAL;
+-			for (i =3D 0; i < loopsize; i++)
+-				block[offset + i] =3D block[offset - i -1];
+-			offset +=3D loopsize;
+-		}
+-
+-		/* modify loop pointers */
+-		if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_BIDIR_LOOP) {
+-			sp->v.loopend +=3D loopsize;
+-		} else {
+-			sp->v.loopstart +=3D loopsize;
+-			sp->v.loopend +=3D loopsize;
+-		}
+-		/* add sample pointer */
+-		sp->v.end +=3D loopsize;
+-	}
+-#endif
+-
+-	/* loopend -> sample end */
+-	size =3D sp->v.size - loopend;
+-	if (size < 0)
+-		return -EINVAL;
+-	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+-		size *=3D 2;
+-	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size)=
+) {
+-		snd_emu10k1_synth_free(emu, sp->block);
+-		sp->block =3D NULL;
+-		return -EFAULT;
+-	}
+-	offset +=3D size;
+
+ 	/* clear rest of samples (if any) */
+ 	if (offset < blocksize)
 =2D-
 2.42.0.419.g70bf8a5751
 
