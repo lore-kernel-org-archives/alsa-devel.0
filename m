@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20482CD1292
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:03:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D632FCD1284
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Apr 2024 10:03:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78F252C88;
-	Thu,  4 Apr 2024 12:03:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78F252C88
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20B2A2C7E;
+	Thu,  4 Apr 2024 12:03:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B2A2C7E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712224997;
-	bh=jPDkcBk/SJQNsvgeAqqI70H4V8gh3/HjBiCRa6Z+XSY=;
+	s=default; t=1712225017;
+	bh=FnOnXxs8cQNILDz6eCQFTAc8g65/4WFFfJ64clc+g3Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hDX62lP+GsLwGK+152B8f+/I49W1F3Te27HEBDZO6XN/mpl+1qOr6L2+eNAaoziBW
-	 Skv3pZVR9UovuUUtTpXrVm+NqfCsqxky606Ufd2bJ9hw++XdEEWtkeOX9wrwU+9LU+
-	 Q/9t/LIccPxH6PgvTYTDe3OAJGu8aQHZ7AgsnPmM=
+	b=IKsVxTwTFv5EI4DBmWrsOmhORSEP32WvWh2n9Sha/ZKUY96byGOLfHwYxTZ7A12YD
+	 GWqsMJOl7uiuHQWdzLmX4HJ4mh1CT9Gs7H7k+QtcI9uUu+veM4TKY7VIH9tUOdWuHL
+	 g0VXqr4J5obPOEv3Q4y35EJBMOxcElW+Pui51xCM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C29CF805E9; Thu,  4 Apr 2024 12:02:12 +0200 (CEST)
+	id 24F74F805BB; Thu,  4 Apr 2024 12:02:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AC2DF805F9;
-	Thu,  4 Apr 2024 12:02:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1950F805BD;
+	Thu,  4 Apr 2024 12:02:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5CF0EF8056F; Thu,  4 Apr 2024 12:01:11 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	id 56513F8016E; Thu,  4 Apr 2024 12:01:17 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1AB20F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4F00DF80236
 	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 12:00:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AB20F8016E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F00DF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=bhc8dMFd
+ header.a=rsa-sha256 header.s=s31663417 header.b=gHJI5jeY
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712224851; x=1712829651;
+	s=s31663417; t=1712224852; x=1712829652;
 	i=oswald.buddenhagen@gmx.de;
-	bh=aHgNEoh2oL/YTOIIO+HEgQH655EOrifvL+ft5bV2Fk4=;
+	bh=WsiPGGqNN85sMCbUgri9GR8KKSrWW90a8p1Jz8kA+Oo=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=bhc8dMFdfi9uULHWv4AqH1pa0hts7BadyuhLZuWqeG9C0AiDA0fOA7n1xArCG/xk
-	 tLbNgj0VRI65gFimPb+6kbgoIXJHAhfS/ZMgdA46CGtm23N3Q0bfixN8GMbtMxb6F
-	 dxmB7AnSqvG/0KDu1O8i07w3i/xqHzG7A9lWLw+FVnVu64QjltgdsdbTmVVJP8PHJ
-	 iTWNnr+H7UJdlWbXgC7fYs9TCPHm0KkGdp4VUAqS2zulMxK1vVo1GUfwc28+1Y8uK
-	 9PiJl7bl7Ig7m5bRa2wmWSgXNxrznlJk4GvHdWb1oFNW70JwljmiLXaYkec6BPkmA
-	 fEj0xMbuCjFN+gIE6A==
+	b=gHJI5jeYteWtunxAKCnhfeXz1BzvCVr9fhP/LIdBD2UGfOlvxrl6kBJXAoo8Msd9
+	 225V0TqOFojsfGM+Uawcu2OTKh/SmuUNdZLthUmDbCWOfl4VSXBO1t+I39v7PeShc
+	 iTg1wjtRDNdOSDR+G4N9w6c+cuDHIFFY6bG2OzFCuc4/pqycZmOefS2tTUTxGNCbb
+	 OisJ2SjCWbvlTlRP8dfwETFfj1G23LP8hOT0PpCL/aOEbvWUEkkMK6Erjyr6Fe7Zm
+	 dtf/aaRktqs4pKqMGZ1lf5t02MVOykzXe3bQ006iIa8f1zCYtW4PeHTYLefJkHR9f
+	 kpb0OMxd/fOzWguZNA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.126]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MOzT4-1sAvc43DY4-00PQZ8; Thu, 04
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ma24s-1sLtye3QsG-00VzAi; Thu, 04
  Apr 2024 12:00:51 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rsJto-RF3-00; Thu, 04 Apr 2024 12:00:48 +0200
+	id 1rsJto-RFc-00; Thu, 04 Apr 2024 12:00:48 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH v2 01/17] ALSA: emux: fix /proc teardown at module unload
-Date: Thu,  4 Apr 2024 12:00:32 +0200
-Message-ID: <20240404100048.819674-2-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 08/17] ALSA: emu10k1: move patch loader assertions into
+ low-level functions
+Date: Thu,  4 Apr 2024 12:00:39 +0200
+Message-ID: <20240404100048.819674-9-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.42.0.419.g70bf8a5751
 In-Reply-To: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 References: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9BB6sT8NluweYbfKeAlUhV6mZPJsC0qCYIqNyScjVOxoXaUpjTg
- N9QMybeVDNCF8+udhpW/QGECDtqpe4uBU0DJWfIas4dl7CY8UCyRZUMEpNAYe6JwR+zYFiT
- IIqP7CL3YmtWlEW6TGcEO7dqXYrBtbNJ4ap0Emh3mPKOtKkewShUGRO/8afPy+mTNyXayVE
- QeoOW7XouN28UInV/VcJg==
-UI-OutboundReport: notjunk:1;M01:P0:gNy0a7E3U/Y=;vFFwMlskXs0zN7BowtfmFeoxudW
- 6V9wGAQjagrF6JzNkTaw6sXzwfL/N/w1Yv3P4AS6xSUgER2/M6QaO/mX/RPVykHlp5QV9OSXk
- 6VmCPNB5g9rEWAGUsDuztgdpagDsmNTmjL8aDKkXFdQ1E+CbOB1a+G1sfLJf/eUkgZOpsYNSt
- Xv9BJy0i9JU9UGuxW+QvzVRo/Wetzo4p9D00q+NT+yBQSSV/xQFvf09/LrTDBSU/Dgdy2hiUg
- LP/uT0NFXZgvrttnLXRemmZc6LWc3q26jksWEKz7pzUV65zcjLH8/9MaGqVkYvvDCgcIstQST
- NnUdTdW3Y4TIfKEPPO4UpgzTa1D0rUzL0S/c/QBdggyM9Bwgi2TiY47L27dDBV/PlkT7Y3YYQ
- 5ubYH7/TP9Oz8GIUr6rU+UYvU7+CoUXlk3A9EpJMYhtG1vlGEm1uJivrzI1BjEWucB8CdajXw
- iuE7NSScR2vP1DQKi0cOQn1GzVFqeSKUCbJd2jJe9pmWJQYSMaqSpnpAB9wZn4MKch0punAEW
- LSJnSq08nIGUfBeuCax28GKQh6iMic0kbbKWnJqDOfepR1YvmxfRWGXGHA0e6tBNuXl1IH0JC
- HVfR9/KyYoVDfv1SHcwaO1r+OHC6iCeOdPO72pcVrySvpqKaAxiWKHbTzK9nxLt5YY5+ORNpA
- tD8t4YVY8VgvzJPxHoM+F9LI4Jn9EPmv1zXTsamxTfg+rUAD58na2aLH90HNDyhnQx6PHbk1G
- hPa6jxItJHnqzBg43V6Muazbl+KdpTikiDcI5/rCASEDhxiq8i+ox0Lf59rxlH1JZ+TmlAUCd
- ywJ8K/10ycPvJypB2GohiiNX6aTM0mou1l4tmusFPYIBQ=
-Message-ID-Hash: UPTVQ6IAXCPBWY7EZXPV5I2RVBML4X2L
-X-Message-ID-Hash: UPTVQ6IAXCPBWY7EZXPV5I2RVBML4X2L
+X-Provags-ID: V03:K1:e6i01XEIphHuqT69UyOciKR1WlKC9JZEMwg9A9838Sybp/OuDaB
+ Nih8BjeFwMWA0wCbL4TYzPKEI25M9WEn3kyKQ292WuBiM1ABiiwGXcmAk3JuKSaG/LaWiI4
+ 4Zg42EHNodpHeJuusB2mYbiYJg4iXHDqeyxjhh1KmMHeTxg8yHwN+NKHghHjPV6JW2D9z46
+ DvVDkuCF0vGAITyZhLLQQ==
+UI-OutboundReport: notjunk:1;M01:P0:bOPHSf1hwQw=;dC6Y3WbK9GwlH9PaSffvvfrKFv/
+ eSpP3CKxt1wTAWswmf+5P9CJjPRw3QsFofYBgYaRP7LJ7JQGpkef9Jn/xouqECHo8N4NQRZhp
+ 9KV2YNkByCp9J8bfXFKn7/YRGUq79mL2bzpa0dDsLupmcKtJLU1iiCnlLkqGjvrPwHcjWhiwI
+ OAb4Cgyj04ntp68xc58Hm2jKVuxlFD5kehwrTnMQFV9eYsrAABJZL+2c+/13OGU3HbWAQJ/zW
+ 8ilbjKI1cDwkJmA6BNiH8Zj4jz6X8x4k11Jo6N4MzMFDD057JJnDVvluq/6IcjRSeePZkfov8
+ n9g3pM4EDwWGfi0LTSnXfSgwJzv17chvoxvLc0h1FLwpo6B0igcuRv68AKqbK9oOwaOf2Xth8
+ +ECiaIxDHp8Ed0qCsDqnHWPKjFR0clVvO3aBomYu/MZVcUmHMQAJjxsj4yHQZ8nCNAeKjzWg+
+ DDbkzwf1W70fvT5IXcdN5pmQVepxvpRIwhNSr75efBldIYZ/80w/gyTIh6RKySiKoHrMf/GPU
+ 1etb0mC7JmWPkBuVKcWefm0IEInDZ3Ye/lOHF79xQkAlX0yioFu8of9ufeYmpbWnx80T0j3p2
+ OFprH8JuyFyXr5mctGajun4jFmoIPBqrrP/VHnB5zvCvCc9y7eWKpps4+PxqL24q7biRc0X7/
+ Z5JwYR/mRxBxMKTptXaNUFJWG7fy3gVVisN37fN7zyKnVUlNjlHeIGmyNaIiUtPZecyCkxdGm
+ n6v1QCy23DDsl/M0vYZOFkHyZ5RVp7KqIw7NgH7MwKGaxYC5exXJMdSnR8gmJ+RzRZ+xnxIuh
+ 7XNyyMUhe8snEqQaXZ6xlD+wjV7gLSrWWmJdaFs/GaLrQ=
+Message-ID-Hash: NYC2ITBTIFTAULSQKKKCBAWRERBLF7PA
+X-Message-ID-Hash: NYC2ITBTIFTAULSQKKKCBAWRERBLF7PA
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UPTVQ6IAXCPBWY7EZXPV5I2RVBML4X2L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NYC2ITBTIFTAULSQKKKCBAWRERBLF7PA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,30 +112,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We forgot to remember the wavetable /proc entry, so we'd fail to free it
-at module unload.
-
-This matters only when only the synth module is unloaded, as unloading
-the card driver would tear down the sub-entry anyway.
+Convert some checks in snd_emu10k1_sample_new() back into assertions (as
+they were prior to da3cec35dd (ALSA: Kill snd_assert() in sound/pci/*,
+2008-08-08)), and move them into the low-level memory access functions
+they protect.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+
 =2D--
- sound/synth/emux/emux_proc.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/synth/emux/emux_proc.c b/sound/synth/emux/emux_proc.c
-index 7993e6a01e54..820351f52551 100644
-=2D-- a/sound/synth/emux/emux_proc.c
-+++ b/sound/synth/emux/emux_proc.c
-@@ -102,6 +102,7 @@ void snd_emux_proc_init(struct snd_emux *emu, struct s=
-nd_card *card, int device)
- 	entry->content =3D SNDRV_INFO_CONTENT_TEXT;
- 	entry->private_data =3D emu;
- 	entry->c.text.read =3D snd_emux_proc_info_read;
-+	emu->proc =3D entry;
- }
+Side note: this eliminates the memory leaks in the now gone error paths.
+I don't think it was actually possible to trigger these even before the
+foregoing cleanups. But if it were, it would allow a user with access to
+the audio device a scope-limited DoS attack on it. This would be only a
+very minor security hole, given that on modern systems it would merely
+enable the current seat owner to be a nuisance to their successor, by
+making a reboot necessary.
+=2D--
+ sound/pci/emu10k1/emu10k1_patch.c | 4 ----
+ sound/pci/emu10k1/memory.c        | 6 ++++++
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
- void snd_emux_proc_free(struct snd_emux *emu)
+diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1=
+_patch.c
+index 47d69a0e44bc..55bb60d31fe4 100644
+=2D-- a/sound/pci/emu10k1/emu10k1_patch.c
++++ b/sound/pci/emu10k1/emu10k1_patch.c
+@@ -65,17 +65,13 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct sn=
+d_sf_sample *sp,
+ 	size =3D BLANK_HEAD_SIZE;
+ 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *=3D 2;
+-	if (offset + size > blocksize)
+-		return -EINVAL;
+ 	snd_emu10k1_synth_bzero(emu, sp->block, offset, size);
+ 	offset +=3D size;
+
+ 	/* copy provided samples */
+ 	size =3D sp->v.size;
+ 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *=3D 2;
+-	if (offset + size > blocksize)
+-		return -EINVAL;
+ 	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size)=
+) {
+ 		snd_emu10k1_synth_free(emu, sp->block);
+ 		sp->block =3D NULL;
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index 20b07117574b..fc9444404151 100644
+=2D-- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -574,6 +574,9 @@ int snd_emu10k1_synth_bzero(struct snd_emu10k1 *emu, s=
+truct snd_util_memblk *blk
+ 	void *ptr;
+ 	struct snd_emu10k1_memblk *p =3D (struct snd_emu10k1_memblk *)blk;
+
++	if (snd_BUG_ON(offset + size > p->mem.size))
++		return -EFAULT;
++
+ 	offset +=3D blk->offset & (PAGE_SIZE - 1);
+ 	end_offset =3D offset + size;
+ 	page =3D get_aligned_page(offset);
+@@ -604,6 +607,9 @@ int snd_emu10k1_synth_copy_from_user(struct snd_emu10k=
+1 *emu, struct snd_util_me
+ 	void *ptr;
+ 	struct snd_emu10k1_memblk *p =3D (struct snd_emu10k1_memblk *)blk;
+
++	if (snd_BUG_ON(offset + size > p->mem.size))
++		return -EFAULT;
++
+ 	offset +=3D blk->offset & (PAGE_SIZE - 1);
+ 	end_offset =3D offset + size;
+ 	page =3D get_aligned_page(offset);
 =2D-
 2.42.0.419.g70bf8a5751
 
