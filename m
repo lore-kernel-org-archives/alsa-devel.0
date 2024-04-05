@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABE47CD11C2
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FD80C67861
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:12:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6C6F2D0E;
-	Fri,  5 Apr 2024 11:12:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6C6F2D0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B948B2D29;
+	Fri,  5 Apr 2024 11:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B948B2D29
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712308346;
-	bh=7o8XbCGvId3xPxY/IVwzWfcwOdaHK6AoLQbT+r4Ziy0=;
+	s=default; t=1712308366;
+	bh=A+RaWNl0uAuzryi863scci2ttj6MV/67NVWw5IM4vVw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kMZ+OHqA1oBtkzwjkZpgmSYGUpZnulBtxb0lh0469X3q5UEeJjuK2nclJM7bptDWg
-	 e9BKP0d3Iws27ZDjMIFKE3KQuTJUfym5QatTz3DXEpwj4E4kUt5I2PN/e+1qd0HNae
-	 r7Q+AcMux+UKKRY990fb01hsN8hsY3PxXCy/RHSs=
+	b=L+iF6N2zJKJmaW/myAGcg8VSWxFJL3/9qxTPj0PrGIqIUGGSFW1ibCTDgoJA+goOh
+	 /93SxRRarF1kGR82dKhA5L1N+E6EkrrHQ5kpHfxxZ7C2pMSBGlu20uqVzKzxnHx9OS
+	 NWsNCXe+ToD55atoTFunPZD/u174IXMUpQ5nCY4g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8649EF80671; Fri,  5 Apr 2024 11:10:37 +0200 (CEST)
+	id 47F23F806AD; Fri,  5 Apr 2024 11:10:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EC92F80687;
-	Fri,  5 Apr 2024 11:10:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E710F806B5;
+	Fri,  5 Apr 2024 11:10:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE771F80578; Fri,  5 Apr 2024 11:08:40 +0200 (CEST)
+	id 9DDB2F8055C; Fri,  5 Apr 2024 11:08:42 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D8C47F8055C
-	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8C47F8055C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 37FC1F80571
+	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37FC1F80571
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Wm4XODVy
+ header.s=Intel header.b=WK41LcnA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712308100; x=1743844100;
+  t=1712308108; x=1743844108;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7o8XbCGvId3xPxY/IVwzWfcwOdaHK6AoLQbT+r4Ziy0=;
-  b=Wm4XODVyQZ8bOO00bvUSuTdzZD5Qpfy8nY48mg28K2mgcL+UUMy4qS0r
-   UQvv4kIeE8HRpi3h1VnVym5116Fq/mNPurrkntPQr50HbqYCQlaiUzg0+
-   7lmxx+FHpc8vUTVMSGrCKdF5b75l639xpGzv+hPhzI5Cy/zKD1bajbiQI
-   96aoZ6etOiciIhJIF2eb+y3AZI5r3806/z3OZRc8sH3sqL00tpaxQW+ry
-   uLF41UvjTSU7gWedOC3g7i6R/S+MScgIfdhhiIYmOrVe+2x0HqC9LLeKt
-   gQISO37XpD+kzo5Nx2B8vNy6e0PEuxj0tggV8wK/OzvJoTU6NaU+xem3V
-   g==;
-X-CSE-ConnectionGUID: Mv8SK7hQRCGjsbRuhwfVyg==
-X-CSE-MsgGUID: yzAIMngoTCSeh7b+RA3SQg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787443"
+  bh=A+RaWNl0uAuzryi863scci2ttj6MV/67NVWw5IM4vVw=;
+  b=WK41LcnAd6SxQZRiIgM0wW5+OujFm6xRC6tnDQ7uQDB80xpVvsCvVW1P
+   C0kjcHUhbHDm50uqRgJ1z55Zu5gtvJWGNxrcyVN8oQqLO2LE2uCiy/NV4
+   S1IRmeo61H4Z7D+M76zCv+WE3AMI+P3iuuhOY6WLdaAQ8rnZIV7xGAN+D
+   1VRLgKhvjoBrf43woJJ7ZE8fnvjrzD8WM+QGmz/iiSIiZfOD77rrZKsD8
+   I7BMhvy0oRsq/M8QpCTjAKcQX8vzM1nEjfNz3bkxv1tkTghEek7Uo/TXB
+   ULcQdZgEI6U4VOWHaAhsQ2RHfyYDDoEm4EcQbPQRuJWASkUDqoFc61PVu
+   w==;
+X-CSE-ConnectionGUID: mUnfVN8rSMaReWeqvgIb4w==
+X-CSE-MsgGUID: 6gHmHK5XTYufjjddVALWyw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787475"
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="7787443"
+   d="scan'208";a="7787475"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2024 02:08:18 -0700
-X-CSE-ConnectionGUID: ae6VOqs8TWSObeFA2A55zA==
-X-CSE-MsgGUID: GkZWwU/wTmC+y2HQTvtLXA==
+ 05 Apr 2024 02:08:26 -0700
+X-CSE-ConnectionGUID: zvIWjhjbTNSy0k0A6X8rQA==
+X-CSE-MsgGUID: wqVJDZEbTjmmSOhCNILeLQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="19042430"
+   d="scan'208";a="19042447"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:16 -0700
+  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:24 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -75,17 +75,17 @@ Cc: alsa-devel@alsa-project.org,
 	amadeuszx.slawinski@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 06/13] ASoC: Intel: avs: Replace risky functions with safer
- variants
-Date: Fri,  5 Apr 2024 11:09:22 +0200
-Message-Id: <20240405090929.1184068-7-cezary.rojewski@intel.com>
+Subject: [PATCH 10/13] ASoC: Intel: avs: Wake from D0ix when starting
+ streaming
+Date: Fri,  5 Apr 2024 11:09:26 +0200
+Message-Id: <20240405090929.1184068-11-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240405090929.1184068-1-cezary.rojewski@intel.com>
 References: <20240405090929.1184068-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: L2T3DI7RLL4U6JVTIK2CSFXIFNV4AKCY
-X-Message-ID-Hash: L2T3DI7RLL4U6JVTIK2CSFXIFNV4AKCY
+Message-ID-Hash: OXVXXXAJOETASSWQRFFS3OFNW5SLESWW
+X-Message-ID-Hash: OXVXXXAJOETASSWQRFFS3OFNW5SLESWW
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2T3DI7RLL4U6JVTIK2CSFXIFNV4AKCY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OXVXXXAJOETASSWQRFFS3OFNW5SLESWW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,50 +107,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-strscpy() and snprintf() are the recommended equivalents of their
-riskier friends.
+It is recommended to keep the DSP domain in full-power when starting DMA
+engines.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/loader.c | 4 ++--
- sound/soc/intel/avs/pcm.c    | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/avs/icl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/intel/avs/loader.c b/sound/soc/intel/avs/loader.c
-index 8e34d3536082..57370f0905dc 100644
---- a/sound/soc/intel/avs/loader.c
-+++ b/sound/soc/intel/avs/loader.c
-@@ -535,7 +535,7 @@ int avs_dsp_load_libraries(struct avs_dev *adev, struct avs_tplg_library *libs,
- 		if (ret)
- 			return ret;
+diff --git a/sound/soc/intel/avs/icl.c b/sound/soc/intel/avs/icl.c
+index 3e0716160f5a..d279ec1e0ad0 100644
+--- a/sound/soc/intel/avs/icl.c
++++ b/sound/soc/intel/avs/icl.c
+@@ -109,6 +109,10 @@ int avs_icl_log_buffer_offset(struct avs_dev *adev, u32 core)
  
--		strncpy(adev->lib_names[id], man->name, AVS_LIB_NAME_SIZE);
-+		strscpy(adev->lib_names[id], man->name, AVS_LIB_NAME_SIZE);
- 		id++;
- next_lib:
- 		i++;
-@@ -698,7 +698,7 @@ int avs_dsp_first_boot_firmware(struct avs_dev *adev)
- 	}
- 
- 	/* basefw always occupies slot 0 */
--	strcpy(&adev->lib_names[0][0], "BASEFW");
-+	strscpy(adev->lib_names[0], "BASEFW", AVS_LIB_NAME_SIZE);
- 
- 	ida_init(&adev->ppl_ida);
- 
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 72f1bc3b7b1f..405de1d58178 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -1420,7 +1420,7 @@ static void avs_component_hda_unregister_dais(struct snd_soc_component *componen
- 
- 	mach = dev_get_platdata(component->card->dev);
- 	codec = mach->pdata;
--	sprintf(name, "%s-cpu", dev_name(&codec->core.dev));
-+	snprintf(name, sizeof(name), "%s-cpu", dev_name(&codec->core.dev));
- 
- 	for_each_component_dais_safe(component, dai, save) {
- 		int stream;
+ bool avs_icl_d0ix_toggle(struct avs_dev *adev, struct avs_ipc_msg *tx, bool wake)
+ {
++	/* Full-power when starting DMA engines. */
++	if (tx->glb.set_ppl_state.state == AVS_PPL_STATE_RUNNING)
++		return true;
++
+ 	/* Payload-less IPCs do not take part in d0ix toggling. */
+ 	return tx->size;
+ }
 -- 
 2.25.1
 
