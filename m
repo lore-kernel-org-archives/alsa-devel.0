@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0A6EC67861
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:14:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC3AFC67861
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:14:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77F4A2D26;
-	Fri,  5 Apr 2024 11:14:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77F4A2D26
+	by alsa0.perex.cz (Postfix) with ESMTPS id 725102CF4;
+	Fri,  5 Apr 2024 11:14:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 725102CF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712308456;
-	bh=57TGCSCkjrsonGnK9tulnMl2oRX3ewM3Ljw5o763Gfs=;
+	s=default; t=1712308472;
+	bh=/l8JmGiEYsduQSPVUJfW308+QOvtWeS4SnQ3Hl92vdM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JrIFceLi7Ao54aZ8bILCv+gX6+pPwmTVWkFJA3PoGTpm17cmY8N0ZH/bFx6XiN05c
-	 UFieBN2zfuetqJ0JupiR2lwdnbWO99lVgqTlmpXfookscDFRsmEagPBiI4s4p3v8Jm
-	 MdN6vmbGY9MbCXBDWM7uSWzoMcgQyIaREAIRWftI=
+	b=rQMm3tg22dq67e6kjEuAkYyAjKYbbJEs1BofvlQPi3gYSSLLq9b/bZUKg0h1Sz3iY
+	 1L+tiTdoVL7DUJhuJ8LFK/VguZ8zgoBcnNfcHE8x/T8OeVIEn1yrhl3eM+lezRMJps
+	 +AbB3WODueKhmiFG9oVT4tFBpfOibLfkIoJH6UJQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F80DF807DC; Fri,  5 Apr 2024 11:10:56 +0200 (CEST)
+	id 45889F80856; Fri,  5 Apr 2024 11:10:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCDC5F80798;
-	Fri,  5 Apr 2024 11:10:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D33F9F80841;
+	Fri,  5 Apr 2024 11:10:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5A42F8057A; Fri,  5 Apr 2024 11:10:52 +0200 (CEST)
+	id AF187F8057A; Fri,  5 Apr 2024 11:10:53 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B8C8BF80238
-	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8C8BF80238
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56E24F80568
+	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56E24F80568
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Ckf9K0jJ
+ header.s=Intel header.b=hvlLXW/l
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712308103; x=1743844103;
+  t=1712308107; x=1743844107;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=57TGCSCkjrsonGnK9tulnMl2oRX3ewM3Ljw5o763Gfs=;
-  b=Ckf9K0jJnaCDr9cyLTld5VyIPgIt8PFead1QtkAohQKKSyXWe7fOOMe3
-   /3m1W/p7GVzWa9zaEEK98WqgQwIBbjdOhiywCj7JVSBTSDVE+SOkIU2oO
-   yiS+ikABdYB5DwFnVUXeR+mo/oJdRQTSUhlhOeMMWcV6+/ZmJeUkogvUK
-   ul0CzkteoxhT3TL/qUp9TtiMcQf5PN+FBgsGT1+Ig0H0zlGj0NyrDL2zC
-   5fvZCggsjw/P3LKtZK/4kuEDH44qU+s/y87hdP0xrgaF+tWh+3k6y5nmP
-   H5zaoI/6MBWS08JhVUbFa7ArrtTfgaPvcDlz0/cI0ZtOVKsO9BEzehOCL
+  bh=/l8JmGiEYsduQSPVUJfW308+QOvtWeS4SnQ3Hl92vdM=;
+  b=hvlLXW/leqqtBNuL02Blcabm5zrai9528P96WcIkvBJgsZbWNgk5Fmo+
+   KPjHk3nswM+5au0jhQxaSMMY8QC/GileaSoi0LcxtqWku3h/jLmLZlaxE
+   c9Xbkw7yHHkuwH+8NDjXAD8v3f2uNA6rGZlpwt3twFr023VJ+tdmRJuUL
+   IPf/wgcmT6vzpIV1oFfz0GMr6MDsh8jGTqc8Akc0RMjCQ6SLRPSP5F56K
+   VOKwFLjfd5PP11fJs9ZBP8aBMOIrMvTwitPAEN7YNsrrVoOukMa4xR6AZ
+   XA8lmSdGBApczpFeMdhLMpJgUU5xi0KM9ytgrmBmFTkMmp8HNW+gCxwxo
    g==;
-X-CSE-ConnectionGUID: HKIS3zJ1SA2kiGieh/tTxQ==
-X-CSE-MsgGUID: 0RAkL4dqT520fLVp+y/mDQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787451"
+X-CSE-ConnectionGUID: RAkWBRYbQASg9tiOc+PByA==
+X-CSE-MsgGUID: mYHUOw/PS0GU3rVSJGFWzg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787468"
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="7787451"
+   d="scan'208";a="7787468"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2024 02:08:20 -0700
-X-CSE-ConnectionGUID: QmZPM82BR9WvruM1H3RJDg==
-X-CSE-MsgGUID: uQ0JU06KTxySXF9any7D8A==
+ 05 Apr 2024 02:08:24 -0700
+X-CSE-ConnectionGUID: nmem/xb6S6qGGj8tgyE1aQ==
+X-CSE-MsgGUID: pV4bRyYsTg2Q8ULE1MHDGg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="19042433"
+   d="scan'208";a="19042443"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:18 -0700
+  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:22 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -75,16 +75,16 @@ Cc: alsa-devel@alsa-project.org,
 	amadeuszx.slawinski@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 07/13] ASoC: Intel: avs: Fix potential integer overflow
-Date: Fri,  5 Apr 2024 11:09:23 +0200
-Message-Id: <20240405090929.1184068-8-cezary.rojewski@intel.com>
+Subject: [PATCH 09/13] ASoC: Intel: avs: Remove dead code
+Date: Fri,  5 Apr 2024 11:09:25 +0200
+Message-Id: <20240405090929.1184068-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240405090929.1184068-1-cezary.rojewski@intel.com>
 References: <20240405090929.1184068-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2EAXTFJAK22BO3TXGYYPIKM7HTIRXCNK
-X-Message-ID-Hash: 2EAXTFJAK22BO3TXGYYPIKM7HTIRXCNK
+Message-ID-Hash: G4XPELPML7U4NYJUMWNETLJGSRY3M2YU
+X-Message-ID-Hash: G4XPELPML7U4NYJUMWNETLJGSRY3M2YU
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2EAXTFJAK22BO3TXGYYPIKM7HTIRXCNK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G4XPELPML7U4NYJUMWNETLJGSRY3M2YU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,32 +106,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-While stream_tag for CLDMA on SKL-based platforms is always 1, function
-hda_cldma_setup() uses AZX_SD_CTL_STRM() macro which does:
-	stream_tag << 20
+The result of list_next_entry()/list_last_entry() is never null.
 
-what combined with stream_tag type of 'unsigned int' generates a
-potential overflow issue. Update the field type to fix that.
-
-Fixes: 45864e49a05a ("ASoC: Intel: avs: Implement CLDMA transfer")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/cldma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/avs/path.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/intel/avs/cldma.c b/sound/soc/intel/avs/cldma.c
-index d7a9390b5e48..585579840b64 100644
---- a/sound/soc/intel/avs/cldma.c
-+++ b/sound/soc/intel/avs/cldma.c
-@@ -35,7 +35,7 @@ struct hda_cldma {
+diff --git a/sound/soc/intel/avs/path.c b/sound/soc/intel/avs/path.c
+index 8dfd90587427..fa3fec339548 100644
+--- a/sound/soc/intel/avs/path.c
++++ b/sound/soc/intel/avs/path.c
+@@ -709,8 +709,6 @@ static int avs_path_pipeline_arm(struct avs_dev *adev,
+ 		/* bind current module to next module on list */
+ 		source = mod;
+ 		sink = list_next_entry(mod, node);
+-		if (!source || !sink)
+-			return -EINVAL;
  
- 	unsigned int buffer_size;
- 	unsigned int num_periods;
--	unsigned int stream_tag;
-+	unsigned char stream_tag;
- 	void __iomem *sd_addr;
- 
- 	struct snd_dma_buffer dmab_data;
+ 		ret = avs_ipc_bind(adev, source->module_id, source->instance_id,
+ 				   sink->module_id, sink->instance_id, 0, 0);
 -- 
 2.25.1
 
