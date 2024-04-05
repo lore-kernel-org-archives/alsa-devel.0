@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F0CCC67861
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 23:21:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3D6FC67861
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 23:21:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 900912D4C;
-	Sat,  6 Apr 2024 01:21:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 900912D4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 218222D50;
+	Sat,  6 Apr 2024 01:21:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 218222D50
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712359274;
-	bh=WFv3K3AVVst1IxY787Ht1CDI+a4URo9vofeIU0fesY8=;
+	s=default; t=1712359290;
+	bh=GISLT5oK/o/IQq1tDNBirwJ9eyt2MEiYKYIyxzI8NHU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Vy/xrZLMcRz2FWD0P1RQomRVPMPwKE3SZY9wxVkXf2DS0XceZGfLS8LLTuv/bUZG6
-	 sJwPyWXeK45pxv08Ppll2ip54qKHyNSHWLF/gbDIfv6SWUWh36DFnmw8w5oy7xxK/c
-	 t55PBvW5EPpdfmDOU3e8dfDOMf3dMfAf2kkpOKAY=
+	b=HMxheDrfaFM6xAbeCBdif6gz3XIHNcxuosVYqzZ2n2R7G0gLrPIgqqM+LcO2M/pHh
+	 p/FZ9aenmTd8xuLRGZhLve8e5A8zS7VD9+E80GWgf/GaldhP4iiIbAY35LqpFB9cUL
+	 0GKvNLcmDMKu2bqC4Wljk2OwnM93JCkQP2qgUFGI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93859F805CB; Sat,  6 Apr 2024 01:20:28 +0200 (CEST)
+	id ED951F805E3; Sat,  6 Apr 2024 01:20:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BCD5F805D2;
-	Sat,  6 Apr 2024 01:20:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23E5AF805D6;
+	Sat,  6 Apr 2024 01:20:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51E13F80236; Sat,  6 Apr 2024 01:20:19 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 45A48F8057F; Sat,  6 Apr 2024 01:20:26 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 983F0F8015B
-	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 01:20:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 983F0F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id B2CE7F8020D
+	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 01:20:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2CE7F8020D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eqcSDBN2
+ header.s=k20201202 header.b=sCLpdsAz
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id BDA24CE2642;
-	Fri,  5 Apr 2024 23:20:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22278C433C7;
-	Fri,  5 Apr 2024 23:20:00 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 93D81612D4;
+	Fri,  5 Apr 2024 23:20:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D18B3C433C7;
+	Fri,  5 Apr 2024 23:20:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712359202;
-	bh=WFv3K3AVVst1IxY787Ht1CDI+a4URo9vofeIU0fesY8=;
+	s=k20201202; t=1712359205;
+	bh=GISLT5oK/o/IQq1tDNBirwJ9eyt2MEiYKYIyxzI8NHU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=eqcSDBN2EGwvJYBRmeR1UTLWP/yiRWDKTvITpMsEDRQmUph5RAPwenRVWqmh7J0GH
-	 3l38jZdTj1CLQiSb97OYOtGYrFcMQZl5uH0vtU+AFsK0TZfZeySPLnaxuDAEnJgf2Z
-	 NOKdppWFod0+mzd4Ov3i2nXNvwPuHfVfEWMBE0gwmxXzPPcEjMmp/UPr/ZF+R1j70+
-	 uLQwOq/uor3nRpcnqolnlgR4Mg/ck8R5k96H/uWqlvOMwX+czL+/EYJ613qhhnag3N
-	 ojoohMOaptHUryR3JIPuXrFxBWyyH1CX9IpAsRyjMej0pPvbcaBbrUQcVG+DVKxTSI
-	 yf0w8502F65UA==
+	b=sCLpdsAzObzqlBz9zzkUzgNRR/FFqreuZLuTp1xhVp9sIjeF6b5IDkWJhicsbilsW
+	 VCOuejWMPBdO7PgGdDvyN1CBP9JFV45f0O0TiBHk2AAYZbzVzN++MLxfK7t4W3lKnQ
+	 GT37exkzFDArbQRz18Meo4Uyku38Cf6yN2ByBl6xEUhT3XRRdJOy9l0WlrIcF6oNZc
+	 CVsubYyx+Xo+dfnMwAZHN/OmR2QSm4x9K1dzr86DP64mwgtL/Z4P9GaZ43EzWBiMen
+	 rHhRcJ3hER3VM/UkgUj8hMXDmG9t8d0ZckZVG2ofJg1uRqlOMSZEeXSN5/wOAmInn3
+	 HvNw7ZyqR1bhQ==
 From: Mark Brown <broonie@kernel.org>
-To: linux-sound@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de
-In-Reply-To: <20240404185448.136157-1-pierre-louis.bossart@linux.intel.com>
-References: <20240404185448.136157-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/4] ASoC: SOF: Intel: extend hda-loader for BTP/BRA
- transfers
-Message-Id: <171235920085.198289.10612737509087722960.b4-ty@kernel.org>
-Date: Sat, 06 Apr 2024 00:20:00 +0100
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ tiwai@suse.com, perex@perex.cz, amadeuszx.slawinski@linux.intel.com,
+ hdegoede@redhat.com
+In-Reply-To: <20240405090929.1184068-1-cezary.rojewski@intel.com>
+References: <20240405090929.1184068-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH 00/13] ASoC: Intel: avs: Fixes and cleanups for 6.10
+Message-Id: <171235920358.198289.9542168405810750674.b4-ty@kernel.org>
+Date: Sat, 06 Apr 2024 00:20:03 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: 5ZQAZ52QTAM7VL6BNL5AIU4CHE5ZPTXU
-X-Message-ID-Hash: 5ZQAZ52QTAM7VL6BNL5AIU4CHE5ZPTXU
+Message-ID-Hash: KJHCTRE2BG64B5HDS5KGUNW6ZWYX5WBV
+X-Message-ID-Hash: KJHCTRE2BG64B5HDS5KGUNW6ZWYX5WBV
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5ZQAZ52QTAM7VL6BNL5AIU4CHE5ZPTXU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KJHCTRE2BG64B5HDS5KGUNW6ZWYX5WBV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,17 +93,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 04 Apr 2024 13:54:44 -0500, Pierre-Louis Bossart wrote:
-> For SoundWire BPT/BRA transfers, we need to reuse the HDaudio DMA
-> infrastructure. This patchset extends the code used by the code
-> loader. The BPT/BRA functionality will be provided in a follow-up
-> contribution.
+On Fri, 05 Apr 2024 11:09:16 +0200, Cezary Rojewski wrote:
+> Set of changes targeting the avs-driver only. No new features, patchset
+> either fixes or fortifies existing code.
 > 
-> Pierre-Louis Bossart (4):
->   ASoC: SOF: Intel: hda-loader: add flag to tag ICCMAX stream
->   ASoC: SOF: Intel: hda-loader: change signature of code loader helpers
->   ASoC: SOF: Intel: don't ignore IOC interrupts for non-audio transfers
->   ASoC: SOF: Intel: hda-stream: clarify comment
+> Patchset starts off with a fix for debugbility on ICL+ platforms which I
+> have forgotten to fixup when providing support for these initially.
+> The next two address copier module initialization, most importantly,
+> silence the gcc 'field-spanning write' false-positive.
 > 
 > [...]
 
@@ -113,14 +110,32 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: SOF: Intel: hda-loader: add flag to tag ICCMAX stream
-      commit: e9ae5adce99e27ef29ea9ccb01afe260bf1c1408
-[2/4] ASoC: SOF: Intel: hda-loader: change signature of code loader helpers
-      commit: 6cbf086143cf9674c7f029e1cf435c65a537066a
-[3/4] ASoC: SOF: Intel: don't ignore IOC interrupts for non-audio transfers
-      commit: d5263dbbd8af026159b16a08a94bedfe51b5f67b
-[4/4] ASoC: SOF: Intel: hda-stream: clarify comment
-      commit: 716778b3d71fe1c799a4f5cf84faf4979f80b267
+[01/13] ASoC: Intel: avs: Restore stream decoupling on prepare
+        commit: 680507581e025d16a0b6d3782603ca8c598fbe2b
+[02/13] ASoC: Intel: avs: Fix debug-slot offset calculation
+        commit: c91b692781c1839fcc389b2a9120e46593c6424b
+[03/13] ASoC: Intel: avs: Silence false-positive memcpy() warnings
+        commit: 6dd68c2da44d92c25b323bcc2603421463437a64
+[04/13] ASoC: Intel: avs: Fix config_length for config-less copiers
+        commit: beeeee9686affef32ee04d8ae30db8c53cbc7aee
+[05/13] ASoC: Intel: avs: Fix ASRC module initialization
+        commit: 9d2e26f31c7cc3fa495c423af9b4902ec0dc7be3
+[06/13] ASoC: Intel: avs: Replace risky functions with safer variants
+        commit: 47714847592b574ff594ceca7ebe0ada70dbac3c
+[07/13] ASoC: Intel: avs: Fix potential integer overflow
+        commit: c7e832cabe635df47c2bf6df7801e97bf3045b1e
+[08/13] ASoC: Intel: avs: Test result of avs_get_module_entry()
+        commit: 41bf4525fadb3d8df3860420d6ac9025c51a3bac
+[09/13] ASoC: Intel: avs: Remove dead code
+        commit: d58275f474b4a27b4e97839ffe8d9fe55c0cc40a
+[10/13] ASoC: Intel: avs: Wake from D0ix when starting streaming
+        commit: 30df76bbcb59254ce646477e3e05f00021a10117
+[11/13] ASoC: Intel: avs: Init debugfs before booting firmware
+        commit: ff0aefe2d217ce6fec6487b225737b2019eb88c0
+[12/13] ASoC: Intel: avs: Add assert_static to guarantee ABI sizes
+        commit: c2b10acb62c195db2c976d614d9d8092ad6339ae
+[13/13] ASoC: Intel: avs: Rule invalid buffer and period sizes out
+        commit: 9a385993504e47a0fd6fd34b5384827b4abdee60
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
