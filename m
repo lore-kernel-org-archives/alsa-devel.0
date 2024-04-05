@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4DD9CD11C2
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:11:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99703CD11C2
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:11:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9BCA2D0D;
-	Fri,  5 Apr 2024 11:10:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9BCA2D0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 934A62D08;
+	Fri,  5 Apr 2024 11:11:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 934A62D08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712308261;
-	bh=w4voot3MVuWaDcFzJX4FnXRWl/6tY1quMjamUlkpboY=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Qb8OtcqMWfdWIMwpJyhRttGfwA1dfSwPWKVD6cQs0RQkupEqlOxNWamgy6acxFUG7
-	 vdc/e2h7cLSfLE4H5kGt1zmetfqgnp035BnEAI7jh/xGi+cLbHtRisSesS8PerJi74
-	 SxwrCARHQ4yZme1eh2At6QK0drZiX3PFf8jyAX0s=
+	s=default; t=1712308282;
+	bh=ZgplaqLEKcHbdbGlQoIaQOYnXMm8Ux7CECBvT2X2vUw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=fH6Vtf2iUfWe3R15IVi90/HLu2BEaUu/6oknl/WgiP6CwvtuDKsg18oOn/ibqDIqf
+	 q61QLHO3+ATz8AV2firWQ+Bzi87I0cFMK3CgQ2yVyeknp2OEeOjV7Roj+n/b6MzYpI
+	 rS3ts7KBkeKjTm2zN6hxaPezoBGouMbGff3hQ2A8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ECEFAF80578; Fri,  5 Apr 2024 11:10:29 +0200 (CEST)
+	id AD74FF805EF; Fri,  5 Apr 2024 11:10:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89CD0F80579;
-	Fri,  5 Apr 2024 11:10:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6F6EF805D9;
+	Fri,  5 Apr 2024 11:10:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A62B8F80568; Fri,  5 Apr 2024 11:08:16 +0200 (CEST)
+	id 40A35F8020D; Fri,  5 Apr 2024 11:08:29 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60EBAF80130
-	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60EBAF80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74B47F8020D
+	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74B47F8020D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=jsui35JW
+ header.s=Intel header.b=GHUs50Uk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712308090; x=1743844090;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=w4voot3MVuWaDcFzJX4FnXRWl/6tY1quMjamUlkpboY=;
-  b=jsui35JWyz14q6DeYKI8cAkQ8d8WeMWU4UmkP7ced4kXA2+TPsCJrdKK
-   f0WIo1Ldkgb0OqVUY/FTe4CzfViQQhgoSu49LTfUbwXvcWZ4HUNxrNBDJ
-   ADzus8p48KkGgQ8MKFqscpsoF1ir0GDt0dSSKv7rqAp0ylw6NfnJ3W5R1
-   9juo0cKKFpmu0cL2srxO8nscm70PpgL1Tix7iFuF75YzgQNnRSJWZRhpw
-   JFHg1KXQdwIZTsKDE8RpF8r10KI6q1WVpwGuyRW37RU1Cr64VWwiwJgI4
-   4+e1p0nQK4oced1hno5JDowuXQO8KMz6rMKFVRFUYHeMstfTwl73AqJqV
-   g==;
-X-CSE-ConnectionGUID: +Jku+XWxS92mp2dx1eL6rg==
-X-CSE-MsgGUID: CfXHGqlrSE63DFhDt0dhrw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787398"
+  t=1712308092; x=1743844092;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ZgplaqLEKcHbdbGlQoIaQOYnXMm8Ux7CECBvT2X2vUw=;
+  b=GHUs50Uk+GyvgPL5d0RvMhFPyNS/lyCtBZlRM5Ixbo5e/E5w57ctUprk
+   OB8rO08ewRcvIwNtNUHlykZoDeJTUXjGCzsBkDMlBx2TO9uFBPT5jbzK6
+   hf/CWSlsV0lPpb+O9KL9FiezP1jtkhpk0QmMo8HZRilmp42ZvTTwLituZ
+   mvChzdvvo8husUrSHXr1918gMEHb0TS82EN9x1mfzU7aCm5OJZqJtxNXa
+   ftqz8KirKY3cfElx8dhMkPR2TsW1AkkDtsPLPcPgLPELm4Jjak8RHDo0c
+   2CeEhiwGhT+BwER4oWZ71w6WQIOHSbIJwkLqX9HYaikpg5Z1iA22t4BRx
+   Q==;
+X-CSE-ConnectionGUID: 5pLu6OOCR0+px8f6aqT7jw==
+X-CSE-MsgGUID: o2cHco8uR9CWzCH4eKDsiA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787415"
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="7787398"
+   d="scan'208";a="7787415"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2024 02:08:05 -0700
-X-CSE-ConnectionGUID: vUJHlC7RS3aWfM/v9UknLg==
-X-CSE-MsgGUID: t5b03ECmT7+43DyoTHRvwQ==
+ 05 Apr 2024 02:08:10 -0700
+X-CSE-ConnectionGUID: 7wtEnBnqSO+hGljq1HrA+g==
+X-CSE-MsgGUID: nZVPK7doQn+TTQ1mUsHP8g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="19042407"
+   d="scan'208";a="19042415"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:03 -0700
+  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:08 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -74,15 +75,16 @@ Cc: alsa-devel@alsa-project.org,
 	amadeuszx.slawinski@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 00/13] ASoC: Intel: avs: Fixes and cleanups for 6.10
-Date: Fri,  5 Apr 2024 11:09:16 +0200
-Message-Id: <20240405090929.1184068-1-cezary.rojewski@intel.com>
+Subject: [PATCH 02/13] ASoC: Intel: avs: Fix debug-slot offset calculation
+Date: Fri,  5 Apr 2024 11:09:18 +0200
+Message-Id: <20240405090929.1184068-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240405090929.1184068-1-cezary.rojewski@intel.com>
+References: <20240405090929.1184068-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XY2XJDXPERWYMQHSROTRQZXQJHO25MOG
-X-Message-ID-Hash: XY2XJDXPERWYMQHSROTRQZXQJHO25MOG
+Message-ID-Hash: X4N5YS2ZIV7F6ODCM7R7T4W4ASNNCQXY
+X-Message-ID-Hash: X4N5YS2ZIV7F6ODCM7R7T4W4ASNNCQXY
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XY2XJDXPERWYMQHSROTRQZXQJHO25MOG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X4N5YS2ZIV7F6ODCM7R7T4W4ASNNCQXY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,55 +106,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Set of changes targeting the avs-driver only. No new features, patchset
-either fixes or fortifies existing code.
+For resources with ID other than 0 the current calculus is incorrect.
 
-Patchset starts off with a fix for debugbility on ICL+ platforms which I
-have forgotten to fixup when providing support for these initially.
-The next two address copier module initialization, most importantly,
-silence the gcc 'field-spanning write' false-positive.
+Fixes: 275b583d047a ("ASoC: Intel: avs: ICL-based platforms support")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/avs/icl.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-The following four:
-6/13 ASoC: Intel: avs: Replace risky functions with safer variants
-7/13 ASoC: Intel: avs: Fix potential integer overflow
-8/13 ASoC: Intel: avs: Test result of avs_get_module_entry()
-9/13 ASoC: Intel: avs: Remove dead code
-
-address problems found out by Coverity static analysis tool.
-
-The last two worth mentioning are: recommendation from the firmware team
-to wake subsystem from D0ix when starting any pipeline -and- shielding
-against invalid period/buffer sizes. Audio format shall be taken into
-consideration when calculating either of these.
-
-Amadeusz Sławiński (2):
-  ASoC: Intel: avs: Restore stream decoupling on prepare
-  ASoC: Intel: avs: Add assert_static to guarantee ABI sizes
-
-Cezary Rojewski (11):
-  ASoC: Intel: avs: Fix debug-slot offset calculation
-  ASoC: Intel: avs: Silence false-positive memcpy() warnings
-  ASoC: Intel: avs: Fix config_length for config-less copiers
-  ASoC: Intel: avs: Fix ASRC module initialization
-  ASoC: Intel: avs: Replace risky functions with safer variants
-  ASoC: Intel: avs: Fix potential integer overflow
-  ASoC: Intel: avs: Test result of avs_get_module_entry()
-  ASoC: Intel: avs: Remove dead code
-  ASoC: Intel: avs: Wake from D0ix when starting streaming
-  ASoC: Intel: avs: Init debugfs before booting firmware
-  ASoC: Intel: avs: Rule invalid buffer and period sizes out
-
- sound/soc/intel/avs/avs.h      |  1 +
- sound/soc/intel/avs/cldma.c    |  2 +-
- sound/soc/intel/avs/core.c     |  4 +--
- sound/soc/intel/avs/icl.c      | 12 ++++++---
- sound/soc/intel/avs/loader.c   |  6 +++--
- sound/soc/intel/avs/messages.h | 47 ++++++++++++++++++++++++++++++++--
- sound/soc/intel/avs/path.c     | 13 ++++------
- sound/soc/intel/avs/pcm.c      | 34 +++++++++++++++++++++++-
- sound/soc/intel/avs/probes.c   | 14 ++++++----
- 9 files changed, 109 insertions(+), 24 deletions(-)
-
+diff --git a/sound/soc/intel/avs/icl.c b/sound/soc/intel/avs/icl.c
+index 9d9921e1cd4d..3e0716160f5a 100644
+--- a/sound/soc/intel/avs/icl.c
++++ b/sound/soc/intel/avs/icl.c
+@@ -66,7 +66,7 @@ struct avs_icl_memwnd2 {
+ 		struct avs_icl_memwnd2_desc slot_desc[AVS_ICL_MEMWND2_SLOTS_COUNT];
+ 		u8 rsvd[PAGE_SIZE];
+ 	};
+-	u8 slot_array[AVS_ICL_MEMWND2_SLOTS_COUNT][PAGE_SIZE];
++	u8 slot_array[AVS_ICL_MEMWND2_SLOTS_COUNT][SZ_4K];
+ } __packed;
+ 
+ #define AVS_ICL_SLOT_UNUSED \
+@@ -89,8 +89,7 @@ static int avs_icl_slot_offset(struct avs_dev *adev, union avs_icl_memwnd2_slot_
+ 
+ 	for (i = 0; i < AVS_ICL_MEMWND2_SLOTS_COUNT; i++)
+ 		if (desc[i].slot_id.val == slot_type.val)
+-			return offsetof(struct avs_icl_memwnd2, slot_array) +
+-			       avs_skl_log_buffer_offset(adev, i);
++			return offsetof(struct avs_icl_memwnd2, slot_array) + i * SZ_4K;
+ 	return -ENXIO;
+ }
+ 
 -- 
 2.25.1
 
