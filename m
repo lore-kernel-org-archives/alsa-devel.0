@@ -4,169 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F34ECD128A
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:23:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAE8CCD128A
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:23:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8031C2BEE;
-	Sun,  7 Apr 2024 09:23:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8031C2BEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 082112BB6;
+	Sun,  7 Apr 2024 09:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 082112BB6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712474607;
-	bh=xTu/IdCn/048THaVHddyM991QlKheudeHaOzDUEba/4=;
+	s=default; t=1712474625;
+	bh=k++WYzu2SQ+WHgshDPCyrYXOmKfezdQ0guNU1hHj0QE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=owrToZjBQnq1fYl36lrYK4j1E6t0zh6bFBPfDuWdsVhk+sBn3StSu/mB35IL/DVuY
-	 eZ9QJGptPuPhFl14Xu85Wa4tGkCRU8Q9f4hoKUdqqzx/kzLpNKSbJeg4OhOfb5jGYb
-	 UXzNuP2p3KNKCPHy4hKADsBQcxjWM/v006mlmPc8=
+	b=UVH65/B3yVDf+H5lDR6gLXXdHgP5kFU5uu2Zcv29h1M4+gggArOpDGTFWrg2B2c2U
+	 JGQwfdmql4+VPYVd2T2HZt6ilgfrguqY7JjY4yEn0KRrxxGFOPjAphG5kyZ7Sg+eRu
+	 0uM4hxUDi0IsScnPjM2WUP7Cx4xAr+GwyvvAPBQk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B3781F89722; Sun,  7 Apr 2024 09:18:04 +0200 (CEST)
+	id B497FF896FC; Sun,  7 Apr 2024 09:18:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 078D1F805D5;
-	Sun,  7 Apr 2024 09:18:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D98B0F89729;
+	Sun,  7 Apr 2024 09:18:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A840F8020D; Thu,  4 Apr 2024 13:46:10 +0200 (CEST)
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
- [IPv6:2607:f8b0:4864:20::b2a])
+	id 9236BF8020D; Fri,  5 Apr 2024 16:48:41 +0200 (CEST)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81EECF80114
-	for <alsa-devel@alsa-project.org>; Thu,  4 Apr 2024 13:41:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81EECF80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8117FF80007
+	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 16:48:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8117FF80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=B5FY594l
-Received: by mail-yb1-xb2a.google.com with SMTP id
- 3f1490d57ef6-dcc80d6004bso1019463276.0
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=gbfUEpue
+Received: by mail-lj1-x236.google.com with SMTP id
+ 38308e7fff4ca-2d48d75ab70so29244121fa.0
         for <alsa-devel@alsa-project.org>;
- Thu, 04 Apr 2024 04:41:31 -0700 (PDT)
+ Fri, 05 Apr 2024 07:48:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712230889; x=1712835689;
+        d=gmail.com; s=20230601; t=1712328510; x=1712933310;
  darn=alsa-project.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xTu/IdCn/048THaVHddyM991QlKheudeHaOzDUEba/4=;
-        b=B5FY594lFTabAw4RSPWJ4OmeWuQ0741Hv+X0DgnP50v+qRI/1vgpOTzLQkBzW276fm
-         X84rJzwz+XwrWrk1d5Lt+Zs+FxyWDza3sMxFJmi/AS9oX6T8O9jhJlfFmjds4pcTTxlF
-         vd+/n+f5YQ1kJbdjtL3D6vtqVqnsr4GbeaBc62gRPBp6TtuWfxZgPajPqkegz9nNFgk5
-         FxBSvN2GxRK85y/d5eBn0dkWx/X6EUu+9ZdBZwID8f5rgbJ7g1yH7E9jCB7UV+cg0U+O
-         xZKftIM0zgxYbdcTBw0xzKx8TAN7E8kM04fTl0E0+6iXrj/k9P6lxDs6K1O1KKh20JOx
-         opWw==
+        bh=cFpu1whkh1nSy8kvvx+5UzrJKjw0DqYLany6m12D6u0=;
+        b=gbfUEpueLk36XsjMi17ZXciglesbhNy5T9wDlG7TKwv2VTxVTEAml9eHcXWs5JojCc
+         BFy7mg3G1LNWJqOitB88stzKLvkjrJM3j8S2gUB4zJ+SoVZw0sphoV7lWfjU66QIf7fV
+         P34ikzkWFQ/r12JvZFKNLl8NxpuvIgUqXamprkJqCZrDShb+gZgcH3lPgeT9nkd579s0
+         zrGSfnZE0CAK47f7TYvmbbRZjRnobu3Amob31o078ZLFr6JBiOAZ2yIbTweiUG258f4c
+         +glkTXjr2YNaKrwsx8rm60sGF53JoxA3zB8Tcz4vdSQGAIKL6iCWTAYI3no3dJqcZG6P
+         Q7/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712230889; x=1712835689;
+        d=1e100.net; s=20230601; t=1712328510; x=1712933310;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xTu/IdCn/048THaVHddyM991QlKheudeHaOzDUEba/4=;
-        b=WPdVYFulD0nqCF2DOdiWHWs2USxoYs/CNB29tdlY26QZ4CHQIqQIn4q2ctjS/Flu6h
-         raIgEVRjJL50JC6nOnL+0aD6c0qKH4ao4gnB7rfefwUEY9XObp428PvefYJewwpmF1k5
-         20unt/owsnPMfw42IjmWqa332dD2stRsO2GS9SRMmpc1HhF6NV8ZdD3pmpWVRHDgYq0b
-         y6/r9CKAWBezjyocLK45ORRv8URROX0F9d/1w38FcOWFWU4qLCbDrHGeY3bNDk8hGSZR
-         OXEKR5lg0btlM7aQiIxsVF4c8Tnyo9q1wHKYxisc5fqAOmPJqvQnvvyl7+4y9uv4GZtR
-         bf4A==
+        bh=cFpu1whkh1nSy8kvvx+5UzrJKjw0DqYLany6m12D6u0=;
+        b=lkBtLgHiRj3NSZP84qFkRxEKLaqcvPA8vOplipq5xwQleXkv4GS0c0v1rkOIzhLmTw
+         JoRAAEUkLIZQdtk2OIqMg0QiI2Um4nuEPJg3klI9gjV6IyjzlNEiRyaYOIkgStcV8rT6
+         AkfvE/tPgTOFuZc4nqwtuGvZyLSE0grLV2q/vn5GCH+1C9dFPWHR1zrCUAHBqH0d7bjv
+         ghyx2zui+hmWAKjFaaqtOussxgf3fW5jWMMxmEFxwWL2UzwFfe+Cl2D7ym/uggIkR6WN
+         XKUjfkpGesI483EqyTW6z4v6bsdyD5FrrhQUs0aFWvNVpVecfnmEPnqpWePBD8hOFfqJ
+         4yFw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUSMu3OEQxXymgxPkkYKxgzZDvVtLC3i9u284P1Tcvf557lArzofVe/w+XECY9QcqKak9Nb2If5j4pnPAON2Y2rB8EjCNLYW0OBBJk=
-X-Gm-Message-State: AOJu0YwUNYuRriq0b55bPWuTb7OxGopjWRykB/kwwKUSdXcORbQYUCsc
-	QPZ1lCYszGOHWHA+qfhket306QxuN/T0zp7f/V0ZCbZ0snHj/ZDC5IIGc6Ma53du7eXhGl0Z7ue
-	8/VHVVEZfYS75rxZ7Za4uOC3IBAvDV0LsbIc5NA==
+ AJvYcCXhGROS5B7MM4XNH40ejv4y7oxKCGVukURQ4Y6aYmgQx9njrhgDEwI18PA+dBFeNiDyd9cwwYHN2fQKoQjFWOEzoJpO0KvfECgtP8w=
+X-Gm-Message-State: AOJu0YyZ0nbQN/Tv7pcssEVDlay4qbYePY4VU33FC0Ovz4h4JSd8FKi9
+	KQ3rfh6wB3xhXa7KCA0Ym+T084YJfwijGBDdCSvHd467NCBSi7LCUTwzd2VUSq0WXI+P/OyNdp/
+	B8lAHDl8x9sT+qIGdgsfiuX5YWd0=
 X-Google-Smtp-Source: 
- AGHT+IEhL+O4bSIOCRsSy+Vdywn61xtrVBJ3li47sHwN1FOt8H7g9W+tj2/Or7rao9/9euGeRsXbtXq4vPMz7+GnZRc=
-X-Received: by 2002:a25:ba86:0:b0:dd1:6fab:81e4 with SMTP id
- s6-20020a25ba86000000b00dd16fab81e4mr2034373ybg.37.1712230889318; Thu, 04 Apr
- 2024 04:41:29 -0700 (PDT)
+ AGHT+IGrg/lFBS2AMqv3GmFvVcFL6woTGN8IKlxDkSWiTeKdq9HfiE5kNbCsRxC8SlKmB2gQiyBs2NPA5UHos4n1BAQ=
+X-Received: by 2002:a2e:a3d2:0:b0:2d6:c4ec:782 with SMTP id
+ w18-20020a2ea3d2000000b002d6c4ec0782mr1273383lje.49.1712328509495; Fri, 05
+ Apr 2024 07:48:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
- <20240331-module-owner-virtio-v2-12-98f04bfaf46a@linaro.org>
-In-Reply-To: <20240331-module-owner-virtio-v2-12-98f04bfaf46a@linaro.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 4 Apr 2024 13:41:18 +0200
+References: <20240404160649.967-1-bavishimithil@gmail.com>
+ <78091796-fd0a-42dd-a4da-f7bed3025bf9@linaro.org>
+In-Reply-To: <78091796-fd0a-42dd-a4da-f7bed3025bf9@linaro.org>
+From: Mithil <bavishimithil@gmail.com>
+Date: Fri, 5 Apr 2024 20:18:17 +0530
 Message-ID: 
- <CACRpkdYpVUq1SgxnPVfRdTiNg3o8dcBePxoxu9GRYy6LdzUE5A@mail.gmail.com>
-Subject: Re: [PATCH v2 12/25] gpio: virtio: drop owner assignment
+ <CAGzNGRnuG_gLUrH1N57WvpKbpiNtFrcsG6nJcacQNJB_yMYNrA@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: omap-mcpdm: Convert to DT schema
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Jonathan Corbet <corbet@lwn.net>,
-	David Hildenbrand <david@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
- Paolo Bonzini <pbonzini@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
-	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Gonglei <arei.gonglei@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>, Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
- Viresh Kumar <vireshk@kernel.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, Daniel Vetter <daniel@ffwll.ch>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Alexander Graf <graf@amazon.com>,
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
- Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
- Vivek Goyal <vgoyal@redhat.com>,
-	Miklos Szeredi <miklos@szeredi.hu>,
- Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- virtualization@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-block@vger.kernel.org,
-	linux-bluetooth@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, iommu@lists.linux.dev,
-	netdev@vger.kernel.org, v9fs@lists.linux.dev, kvm@vger.kernel.org,
-	linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- Viresh Kumar <viresh.kumar@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-MailFrom: linus.walleij@linaro.org
-X-Mailman-Rule-Hits: max-recipients
+X-MailFrom: bavishimithil@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: B6IB7W3PMTN6SO2F3LTU56ZUPTVGCC4L
-X-Message-ID-Hash: B6IB7W3PMTN6SO2F3LTU56ZUPTVGCC4L
-X-Mailman-Approved-At: Sun, 07 Apr 2024 07:15:20 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: OZTDN2GNI4BXBD4P5LALJ6MR2FGBD7P6
+X-Message-ID-Hash: OZTDN2GNI4BXBD4P5LALJ6MR2FGBD7P6
+X-Mailman-Approved-At: Sun, 07 Apr 2024 07:15:59 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B6IB7W3PMTN6SO2F3LTU56ZUPTVGCC4L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OZTDN2GNI4BXBD4P5LALJ6MR2FGBD7P6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -175,16 +121,184 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, Mar 31, 2024 at 10:45=E2=80=AFAM Krzysztof Kozlowski
+So sorry about the 2nd patch being sent as a new mail, here is a new
+patch with the changes as suggested
+
+> Please use subject prefixes matching the subsystem
+Changed the patch name to match the folder history.
+
+> Is it your full name?
+Fixed it, my apologies.
+
+> Filename like compatible.
+Fixed.
+
+> Please open existing bindings and look how it is done there.
+Changed it, is it fine now?
+
+> Same problem. Drop useless description but provide maxItems.
+Removed descriptions for interrupts and hwmods.
+
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check`
+I did run it and it didnt produce any errors henceforth i submitted
+the patch.
+
+> Node names should be generic
+Changed as said.
+
+>From c24a42724e870822d50ac6857ba9f32d0dce02ae Mon Sep 17 00:00:00 2001
+From: Mithil Bavishi <bavishimithil@gmail.com>
+Date: Mon, 1 Apr 2024 21:10:15 +0530
+Subject: [PATCH v2] dt-bindings: omap-mcpdm: Convert to DT schema
+
+Convert the OMAP4+ McPDM bindings to DT schema.
+
+Signed-off-by: Mithil Bavishi <bavishimithil@gmail.com>
+---
+ .../devicetree/bindings/sound/omap-mcpdm.txt  | 30 ----------
+ .../bindings/sound/ti,omap-mcpdm.yaml         | 59 +++++++++++++++++++
+ 2 files changed, 59 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,omap-mcpdm.y=
+aml
+
+diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+deleted file mode 100644
+index ff98a0cb5..000000000
+--- a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-* Texas Instruments OMAP4+ McPDM
+-
+-Required properties:
+-- compatible: "ti,omap4-mcpdm"
+-- reg: Register location and size as an array:
+-       <MPU access base address, size>,
+-       <L3 interconnect address, size>;
+-- interrupts: Interrupt number for McPDM
+-- ti,hwmods: Name of the hwmod associated to the McPDM
+-- clocks:  phandle for the pdmclk provider, likely <&twl6040>
+-- clock-names: Must be "pdmclk"
+-
+-Example:
+-
+-mcpdm: mcpdm@40132000 {
+-       compatible =3D "ti,omap4-mcpdm";
+-       reg =3D <0x40132000 0x7f>, /* MPU private access */
+-             <0x49032000 0x7f>; /* L3 Interconnect */
+-       interrupts =3D <0 112 0x4>;
+-       interrupt-parent =3D <&gic>;
+-       ti,hwmods =3D "mcpdm";
+-};
+-
+-In board DTS file the pdmclk needs to be added:
+-
+-&mcpdm {
+-       clocks =3D <&twl6040>;
+-       clock-names =3D "pdmclk";
+-       status =3D "okay";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
+b/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
+new file mode 100644
+index 000000000..4d5d37e98
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/ti,omap-mcpdm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: OMAP McPDM
++
++maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++
++description:
++  OMAP ALSA SoC DAI driver using McPDM port used by TWL6040
++
++properties:
++  compatible:
++    const: ti,omap4-mcpdm
++
++  reg:
++    description:
++      Register location and size as an array
++      <MPU access base address, size>,
++      <L3 interconnect address, size>;
++
++  interrupts:
++    maxItems: 1
++
++  ti,hwmods:
++    maxItems: 1
++
++  clocks:
++    description: phandle for the pdmclk provider, likely <&twl6040>
++
++  clock-names:
++    description: Must be "pdmclk"
++
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - ti,hwmods
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    mcpdm@0 {
++      compatible =3D "ti,omap4-mcpdm";
++      reg =3D <0x40132000 0x7f>, /* MPU private access */
++            <0x49032000 0x7f>; /* L3 Interconnect */
++      interrupts =3D <0 112 0x4>;
++      interrupt-parent =3D <&gic>;
++      ti,hwmods =3D "mcpdm";
++      clocks =3D <&twl6040>;
++      clock-names =3D "pdmclk";
++    };
+--
+2.34.1
+
+Best regards,
+Mithil
+
+
+
+On Fri, Apr 5, 2024 at 12:28=E2=80=AFPM Krzysztof Kozlowski
 <krzysztof.kozlowski@linaro.org> wrote:
-
-> virtio core already sets the .owner, so driver does not need to.
 >
-> Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+> On 04/04/2024 18:06, Mighty wrote:
+> > From: Mithil Bavishi <bavishimithil@gmail.com>
+> >
+> > Convert the OMAP4+ McPDM bindings to DT schema.
+> >
+> > Signed-off-by: Mighty <bavishimithil@gmail.com>
+>
+> This does not match SoB. Can you respond to comments you receive?
+>
+> Subject: nothing improved.
+>
+> Rest... also did not improve. so you ignored entire feedback?
+>
+> This is a friendly reminder during the review process.
+>
+> It seems my or other reviewer's previous comments were not fully
+> addressed. Maybe the feedback got lost between the quotes, maybe you
+> just forgot to apply it. Please go back to the previous discussion and
+> either implement all requested changes or keep discussing them.
+>
+> Thank you.
+>
+> Best regards,
+> Krzysztof
+>
