@@ -4,105 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 399D8C25B79
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 13:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF45CD11C2
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Apr 2024 07:23:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05D98950;
-	Mon, 27 May 2024 15:45:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05D98950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DFBA2BC6;
+	Sun,  7 Apr 2024 09:23:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DFBA2BC6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716817540;
-	bh=Y4lg1w9PMKXk/DYDc4ftwcvGasjMUD1Xkcb1fEgP/BU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1712474600;
+	bh=ENpzVE+q5ryrMkh3yO/S86u98pMGkux5Vev9j/jMmc8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GRHijlooedkrRJHeXX/1lM3xQ11cjQzqW+4ENICNDsrIv4fZ5CokO+uaSXT7+ywCf
-	 Tat9rJja1H/3PCwD/U7d660pBkWLslF8GeGf9mAFS91893gkXQqf49nhMqCdPYsSKj
-	 KEiynfvnRnrkwxNdfKUipSJ4nKGp4/XzSnstiU3Q=
+	b=rcMtc+GWDyOZlq0lWu3oTMudlcMaPGtP6FMxcsOAUmhuga8ZR+uKsXFSwWT9IJ8nV
+	 T8SUZ/LgZwzDMsnxXBfWVt2mZfsAQDcUKgKfwwHh2V47axz/a239dJjbuNKKO/udZ1
+	 lXbWRYPfwke3Y+vxsY46/R4NFIL8NdcFvRXMOaaA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6326CF805AC; Mon, 27 May 2024 15:45:08 +0200 (CEST)
+	id 9A9A1F89712; Sun,  7 Apr 2024 09:18:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B5B8F805A9;
-	Mon, 27 May 2024 15:45:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF09DF896F8;
+	Sun,  7 Apr 2024 09:18:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3969BF8026D; Mon, 27 May 2024 15:44:22 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 0B28CF8020D; Fri,  5 Apr 2024 07:44:29 +0200 (CEST)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1C905F80051
-	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 15:44:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C905F80051
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=IXJQlHUi
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716817455; x=1748353455;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Y4lg1w9PMKXk/DYDc4ftwcvGasjMUD1Xkcb1fEgP/BU=;
-  b=IXJQlHUih2YJNd1OrpuNYrKZXG+RA1Dessic7Efhx8OEYJBwWO4VC6yJ
-   4AT9yjSHOyl4CmzI5U9WNQzlRiU+IHoqnJP/wxD2u8nAmdI5gOQHiYZbc
-   6Xa9OkFhyJpoIYGbBVQvIxxv4qw78HgtHoUUXo8B9QOk2tYUAeOa/XYcu
-   ZkMLkt6bQ1W+hHMTGATbq36GYApL7PRBhMvQvErfmkQCJdNsRoJEPXopQ
-   +rD2uVjJ95gAwY5doRZisI6RBLRnjdyk4Pt4salTvsqLUB32JBnr2nkSg
-   kcugtiwY0d5O2bLmYJDi/Lw7XGB3YcmQkSvkP9UeWiN9WY6rfikKZF1c8
-   g==;
-X-CSE-ConnectionGUID: 9cOnb6SdTPe+jpL3khdJJA==
-X-CSE-MsgGUID: ukQfmaFBT8KBqrVo51fE6A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="24265229"
-X-IronPort-AV: E=Sophos;i="6.08,192,1712646000";
-   d="scan'208";a="24265229"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 06:44:10 -0700
-X-CSE-ConnectionGUID: +/Yk/RZZSai7ZanjM3CxDg==
-X-CSE-MsgGUID: Hdj76MThTLiwanVCmdpq2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,192,1712646000";
-   d="scan'208";a="39210524"
-Received: from kinlongk-mobl1.amr.corp.intel.com (HELO [10.125.110.211])
- ([10.125.110.211])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 06:44:07 -0700
-Message-ID: <6a8ab4f6-63be-4284-814a-d853faf000b5@linux.intel.com>
-Date: Mon, 27 May 2024 08:44:06 -0500
+	by alsa1.perex.cz (Postfix) with ESMTPS id EAC2FF80007
+	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 07:44:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC2FF80007
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rscKZ-00FRbc-P8; Fri, 05 Apr 2024 13:41:40 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation);
+ Fri, 05 Apr 2024 13:41:56 +0800
+Date: Fri, 5 Apr 2024 13:41:56 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	David Hildenbrand <david@redhat.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Olivia Mackall <olivia@selenic.com>, Amit Shah <amit@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gonglei <arei.gonglei@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	David Airlie <airlied@redhat.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>,
+	Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Alexander Graf <graf@amazon.com>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+	Pankaj@alsa-project.org, "Gupta <pankaj.gupta.linux"@gma
+Subject: Re: [PATCH v2 10/25] crypto: virtio - drop owner assignment
+Message-ID: <Zg+PJPyueR1icHRp@gondor.apana.org.au>
+References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
+ <20240331-module-owner-virtio-v2-10-98f04bfaf46a@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ASoc: tas2781: Playback can work when only RCA binary
- loading without dsp firmware loading
-To: Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org
-Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
- 13916275206@139.com, alsa-devel@alsa-project.org, i-salazar@ti.com,
- linux-kernel@vger.kernel.org, j-chadha@ti.com, liam.r.girdwood@intel.com,
- jaden-yue@ti.com, yung-chuan.liao@linux.intel.com, dipa@ti.com,
- kevin-lu@ti.com, yuhsuan@google.com, tiwai@suse.de, baojun.xu@ti.com,
- soyer@irl.hu, Baojun.Xu@fpt.com, judyhsiao@google.com, navada@ti.com,
- cujomalainey@google.com, aanya@ti.com, nayeem.mahmud@ti.com
-References: <20240525014727.197-1-shenghao-ding@ti.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240525014727.197-1-shenghao-ding@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: MXAPPYGG32EHIN3FEMYLAMIMT7PYKPQ3
-X-Message-ID-Hash: MXAPPYGG32EHIN3FEMYLAMIMT7PYKPQ3
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240331-module-owner-virtio-v2-10-98f04bfaf46a@linaro.org>
+X-MailFrom: herbert@gondor.apana.org.au
+X-Mailman-Rule-Hits: implicit-dest; max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ administrivia; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: ZZ6QWC7TUO7LPGTQJKAVTDGB3WCOK4S3
+X-Message-ID-Hash: ZZ6QWC7TUO7LPGTQJKAVTDGB3WCOK4S3
+X-Mailman-Approved-At: Sun, 07 Apr 2024 07:15:59 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MXAPPYGG32EHIN3FEMYLAMIMT7PYKPQ3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZZ6QWC7TUO7LPGTQJKAVTDGB3WCOK4S3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,128 +122,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Sun, Mar 31, 2024 at 10:43:57AM +0200, Krzysztof Kozlowski wrote:
+> virtio core already sets the .owner, so driver does not need to.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Depends on the first patch.
+> ---
+>  drivers/crypto/virtio/virtio_crypto_core.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-
-On 5/24/24 20:47, Shenghao Ding wrote:
-> In only RCA binary loading case, only default dsp program inside the
-> chip will be work.
-
-What does 'RCA' stand for?
-
-Also clarify the commit title without double negatives, e.g.
-
-"Enable RCA-based playback without DSP firmware download"
-> -	if (tas_priv->fw_state == TASDEVICE_DSP_FW_FAIL) {
-> -		dev_err(tas_priv->dev, "DSP bin file not loaded\n");
-> +	/*
-> +	 * Only RCA file loaded can still work with default dsp program inside
-> +	 * the chip?
-
-reword the commit and remove question mark.
-
-> +	 */
-> +	if (!(tas_priv->fw_state == TASDEVICE_RCA_FW_OK ||
-> +		tas_priv->fw_state == TASDEVICE_DSP_FW_ALL_OK)) {
-> +		dev_err(tas_priv->dev, "No firmware loaded\n");
->  		return;
->  	}
->  
->  	if (state == 0) {
-> -		if (tas_priv->cur_prog < tas_fmw->nr_programs) {
-> +		if (tas_fmw && tas_priv->cur_prog < tas_fmw->nr_programs) {
->  			/*dsp mode or tuning mode*/
-
-spaces in comments
-
->  			profile_cfg_id = tas_priv->rcabin.profile_cfg_id;
->  			tasdevice_select_tuningprm_cfg(tas_priv,
-> @@ -2340,9 +2345,10 @@ void tasdevice_tuning_switch(void *context, int state)
->  
->  		tasdevice_select_cfg_blk(tas_priv, profile_cfg_id,
->  			TASDEVICE_BIN_BLK_PRE_POWER_UP);
-> -	} else
-> +	} else {
->  		tasdevice_select_cfg_blk(tas_priv, profile_cfg_id,
->  			TASDEVICE_BIN_BLK_PRE_SHUTDOWN);
-> +	}
->  }
->  EXPORT_SYMBOL_NS_GPL(tasdevice_tuning_switch,
->  	SND_SOC_TAS2781_FMWLIB);
-> diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
-> index 9350972dfefe..ccb9313ada9b 100644
-> --- a/sound/soc/codecs/tas2781-i2c.c
-> +++ b/sound/soc/codecs/tas2781-i2c.c
-> @@ -380,23 +380,30 @@ static void tasdevice_fw_ready(const struct firmware *fmw,
->  	mutex_lock(&tas_priv->codec_lock);
->  
->  	ret = tasdevice_rca_parser(tas_priv, fmw);
-> -	if (ret)
-> +	if (ret) {
-> +		tasdevice_config_info_remove(tas_priv);
->  		goto out;
-> +	}
->  	tasdevice_create_control(tas_priv);
->  
->  	tasdevice_dsp_remove(tas_priv);
->  	tasdevice_calbin_remove(tas_priv);
-> -	tas_priv->fw_state = TASDEVICE_DSP_FW_PENDING;
-> +	tas_priv->fw_state = TASDEVICE_RCA_FW_OK;
->  	scnprintf(tas_priv->coef_binaryname, 64, "%s_coef.bin",
->  		tas_priv->dev_name);
-> +
->  	ret = tasdevice_dsp_parser(tas_priv);
->  	if (ret) {
->  		dev_err(tas_priv->dev, "dspfw load %s error\n",
->  			tas_priv->coef_binaryname);
-> -		tas_priv->fw_state = TASDEVICE_DSP_FW_FAIL;
->  		goto out;
->  	}
-> -	tasdevice_dsp_create_ctrls(tas_priv);
-> +
-> +	ret = tasdevice_dsp_create_ctrls(tas_priv);
-> +	if (ret) {
-> +		dev_err(tas_priv->dev, "dsp controls error\n");
-> +		goto out;
-> +	}
-
-this seems unrelated to the boot process? Move to a different patch?
-
->  
->  	tas_priv->fw_state = TASDEVICE_DSP_FW_ALL_OK;
->  
-> @@ -417,9 +424,8 @@ static void tasdevice_fw_ready(const struct firmware *fmw,
->  	tasdevice_prmg_load(tas_priv, 0);
->  	tas_priv->cur_prog = 0;
->  out:
-> -	if (tas_priv->fw_state == TASDEVICE_DSP_FW_FAIL) {
-> -		/*If DSP FW fail, kcontrol won't be created */
-> -		tasdevice_config_info_remove(tas_priv);
-> +	if (tas_priv->fw_state == TASDEVICE_RCA_FW_OK) {
-> +		/*If DSP FW fail, DSP kcontrol won't be created */
-
-It looks like you're no longer using PENDING and FAIL states?
-The state machine is becoming really hard to follow.
-
->  		tasdevice_dsp_remove(tas_priv);
->  	}
->  	mutex_unlock(&tas_priv->codec_lock);
-> @@ -466,14 +472,14 @@ static int tasdevice_startup(struct snd_pcm_substream *substream,
->  {
->  	struct snd_soc_component *codec = dai->component;
->  	struct tasdevice_priv *tas_priv = snd_soc_component_get_drvdata(codec);
-> -	int ret = 0;
->  
-> -	if (tas_priv->fw_state != TASDEVICE_DSP_FW_ALL_OK) {
-> -		dev_err(tas_priv->dev, "DSP bin file not loaded\n");
-> -		ret = -EINVAL;
-> +	if (!(tas_priv->fw_state == TASDEVICE_DSP_FW_ALL_OK ||
-> +		tas_priv->fw_state == TASDEVICE_RCA_FW_OK)) {
-> +		dev_err(tas_priv->dev, "Bin file not loaded\n");
-> +		return -EINVAL;
->  	}
->  
-> -	return ret;
-> +	return 0;
->  }
->  
->  static int tasdevice_hw_params(struct snd_pcm_substream *substream,
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
