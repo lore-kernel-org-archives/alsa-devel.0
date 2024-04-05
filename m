@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75A81CD11C2
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1CF7CD11C2
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 09:13:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D89F2D1C;
-	Fri,  5 Apr 2024 11:13:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D89F2D1C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C18A2CE8;
+	Fri,  5 Apr 2024 11:13:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C18A2CE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712308419;
-	bh=nu1C7rngL8VEfilTEnqoMiTpOUoFjJN8vPw+PIeQe88=;
+	s=default; t=1712308425;
+	bh=dxCLzaInWEDf5H8sovQbT5x3OpdikXTGyLfkyz6cQ0s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BNo8ZkOJ9R4apOlV4Rbvod9cqoNTZeucKljd1SFhP9Mfl/++0LcC51p6/Pg+FZpKf
-	 9iJMx9A0/xyz5PPIFNI+l0TnCiC68AQVSdBIskEhoTp++0NADyrR65jJKkaw21mTfK
-	 pj1e9R580yYDV2xWNxOnaiOko/+LDw7eBgsGGFMU=
+	b=ZR9AML5FZe/bSLGewA9D1h7xe5SfXiiBhiFQI1f50lmSpT0Qw/8na/fbJO7E7J/fk
+	 JWPMKzkANUPeL8Ane3Tx/5v4tFwX0VDd96QIiNQVHTw1xsWFjvSXTODrffNe405dVr
+	 rNggTE6agEvMzdSBMx31OqcH3lHv1n9cFwF8npIQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4EFCDF80733; Fri,  5 Apr 2024 11:10:47 +0200 (CEST)
+	id F3B4EF80743; Fri,  5 Apr 2024 11:10:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DD23F8070E;
-	Fri,  5 Apr 2024 11:10:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 374AEF8072A;
+	Fri,  5 Apr 2024 11:10:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 095E7F80236; Fri,  5 Apr 2024 11:08:56 +0200 (CEST)
+	id C30D7F806D7; Fri,  5 Apr 2024 11:10:41 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0F901F8020D
-	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F901F8020D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 68502F80007
+	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 11:08:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68502F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Sl8kXIYF
+ header.s=Intel header.b=PZf4pUti
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712308115; x=1743844115;
+  t=1712308092; x=1743844092;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nu1C7rngL8VEfilTEnqoMiTpOUoFjJN8vPw+PIeQe88=;
-  b=Sl8kXIYFy12NuD3oVhwEco0QDgiiDRe+3viouyMYZdpUkDTwJXmYdYmN
-   FtD5yZnpg1hM64uDXcdPgSXZrqZ43vyIc+Tjiju2Q27q78wg97Lb+yzrd
-   nh/7Wi2cuSOPl+nIFUp2jw9MWadJmDUXox7DJEXvyZNziLKOlzQ8fVaCe
-   z9aEergwGXW2ur/qlp728c29A/IoQ0S6LeZ7JWD081S+40CBixKcvtxSk
-   ABKukGXuMiMYXNnlkNkDocfguntEo3uNJVAuh1kETuqvqhZ+6LFHMRURA
-   3qLPS4nT81aOH7+3C9YxHuWuesgiz80jrH9iWv2iXPF0rU0GaYpNIzxyb
+  bh=dxCLzaInWEDf5H8sovQbT5x3OpdikXTGyLfkyz6cQ0s=;
+  b=PZf4pUti0q69ZBEffyp6Pk7WfGINdGSgkfFrWXtfZCN/N3QB+36WbWrM
+   L+BS9mV/xWxTj+PqZPvgkJu6qqcNE+NTgAdqc0mi5jWUiUATzNOpHjfpY
+   3kKPANHYvE24y+4cv1sfLVWDsLVdbCZU9AmGLsL3weRZA0QM90B06xN5N
+   zNixjPQyVCcnvhsOTtCoteTj8Vtp8rDHX/AIjT0tTW4+Ew9VCA0K/1sRG
+   mtjWkVcOfJSitszyPXFVc4y3+uaHskw4kxkzR+thgrlXfSohoRRIEf7Rp
+   JK7URDFYtXyY8JAaF6ybIuY2l+siwkswKjyJ/SjUlOZq8Ndo9QI/Ujnj0
    w==;
-X-CSE-ConnectionGUID: aYkLIomdSa2SBKrbje916Q==
-X-CSE-MsgGUID: NNk6gpLMRR+pI8xiZtvAEw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787498"
+X-CSE-ConnectionGUID: D2sLRQgAQdCAPYwsZa+NEw==
+X-CSE-MsgGUID: N17C1ElySmu2I9PuMUxWJg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7787407"
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="7787498"
+   d="scan'208";a="7787407"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2024 02:08:33 -0700
-X-CSE-ConnectionGUID: wJrbcTmtSC62zFon9zUb0g==
-X-CSE-MsgGUID: 0vISobsHTRuHu26OpjfAvg==
+ 05 Apr 2024 02:08:08 -0700
+X-CSE-ConnectionGUID: 2UhNxsTeSLyumSvGXGHIVg==
+X-CSE-MsgGUID: RZThk3YiQX2P0wyvKq62Dw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000";
-   d="scan'208";a="19042463"
+   d="scan'208";a="19042412"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:31 -0700
+  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 02:08:05 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -75,17 +75,17 @@ Cc: alsa-devel@alsa-project.org,
 	amadeuszx.slawinski@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 13/13] ASoC: Intel: avs: Rule invalid buffer and period sizes
- out
-Date: Fri,  5 Apr 2024 11:09:29 +0200
-Message-Id: <20240405090929.1184068-14-cezary.rojewski@intel.com>
+Subject: [PATCH 01/13] ASoC: Intel: avs: Restore stream decoupling on prepare
+Date: Fri,  5 Apr 2024 11:09:17 +0200
+Message-Id: <20240405090929.1184068-2-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240405090929.1184068-1-cezary.rojewski@intel.com>
 References: <20240405090929.1184068-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TGYGIUPEUIAVGCVOINADBZAUIOOKTVSD
-X-Message-ID-Hash: TGYGIUPEUIAVGCVOINADBZAUIOOKTVSD
+Message-ID-Hash: 4FNPSYLW4MH2RJQVDJZFGDIFRNHIMPX4
+X-Message-ID-Hash: 4FNPSYLW4MH2RJQVDJZFGDIFRNHIMPX4
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TGYGIUPEUIAVGCVOINADBZAUIOOKTVSD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4FNPSYLW4MH2RJQVDJZFGDIFRNHIMPX4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,66 +107,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-While HDAudio controller supports buffer packets up to 128 bytes low,
-audio format shall be taken into consideration when calculating buffer
-and period sizes to avoid undesired xruns.
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-As *_size in ALSA terms means frames (channels times bit-depth-bytes),
-hw_rules can calculate minimal buffer and period sizes solely from
-sample rate and the number of milliseconds commonly used on the
-AudioDSP firmware side.
+Revert changes from commit b87b8f43afd5 ("ASoC: Intel: avs: Drop
+superfluous stream decoupling") to restore working streaming during S3.
 
+Fixes: b87b8f43afd5 ("ASoC: Intel: avs: Drop superfluous stream decoupling")
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/pcm.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ sound/soc/intel/avs/pcm.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 405de1d58178..77a7e8f93951 100644
+index 2cafbc392cdb..72f1bc3b7b1f 100644
 --- a/sound/soc/intel/avs/pcm.c
 +++ b/sound/soc/intel/avs/pcm.c
-@@ -457,6 +457,26 @@ static const struct snd_pcm_hw_constraint_list hw_rates = {
+@@ -356,6 +356,7 @@ static int avs_dai_hda_be_prepare(struct snd_pcm_substream *substream, struct sn
+ 					   stream_info->sig_bits);
+ 	format_val = snd_hdac_stream_format(runtime->channels, bits, runtime->rate);
  
- const struct snd_soc_dai_ops avs_dai_fe_ops;
++	snd_hdac_ext_stream_decouple(bus, link_stream, true);
+ 	snd_hdac_ext_stream_reset(link_stream);
+ 	snd_hdac_ext_stream_setup(link_stream, format_val);
  
-+static int hw_rule_param_size(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *interval = hw_param_interval(params, rule->var);
-+	struct snd_interval to;
-+
-+	snd_interval_any(&to);
-+	to.integer = interval->integer;
-+	to.max = interval->max;
-+	/*
-+	 * Commonly 2ms buffer size is used in HDA scenarios whereas 4ms is used
-+	 * when streaming through GPDMA. Align to the latter to account for both.
-+	 */
-+	to.min = params_rate(params) / 1000 * 4;
-+
-+	if (rule->var == SNDRV_PCM_HW_PARAM_PERIOD_SIZE)
-+		to.min /= params_periods(params);
-+
-+	return snd_interval_refine(interval, &to);
-+}
-+
- static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -492,6 +512,14 @@ static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_so
- 	if (ret < 0)
- 		goto err;
+@@ -611,6 +612,7 @@ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_so
+ 	struct avs_dev *adev = to_avs_dev(dai->dev);
+ 	struct hdac_ext_stream *host_stream;
+ 	unsigned int format_val;
++	struct hdac_bus *bus;
+ 	unsigned int bits;
+ 	int ret;
  
-+	/* Adjust buffer and period size based on the audio format. */
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, hw_rule_param_size, NULL,
-+			    SNDRV_PCM_HW_PARAM_FORMAT, SNDRV_PCM_HW_PARAM_CHANNELS,
-+			    SNDRV_PCM_HW_PARAM_RATE, -1);
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, hw_rule_param_size, NULL,
-+			    SNDRV_PCM_HW_PARAM_FORMAT, SNDRV_PCM_HW_PARAM_CHANNELS,
-+			    SNDRV_PCM_HW_PARAM_RATE, -1);
-+
- 	snd_pcm_set_sync(substream);
+@@ -620,6 +622,8 @@ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_so
+ 	if (hdac_stream(host_stream)->prepared)
+ 		return 0;
  
- 	dev_dbg(dai->dev, "%s fe STARTUP tag %d str %p",
++	bus = hdac_stream(host_stream)->bus;
++	snd_hdac_ext_stream_decouple(bus, data->host_stream, true);
+ 	snd_hdac_stream_reset(hdac_stream(host_stream));
+ 
+ 	stream_info = snd_soc_dai_get_pcm_stream(dai, substream->stream);
 -- 
 2.25.1
 
