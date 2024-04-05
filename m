@@ -4,96 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CDDC67861
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 18:39:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA0FDC3A59D
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Apr 2024 23:20:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 974502D42;
-	Fri,  5 Apr 2024 20:39:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 974502D42
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50B7F2D50;
+	Sat,  6 Apr 2024 01:20:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50B7F2D50
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712342353;
-	bh=39Qv2XUUhVGjr9ia6oJF7zwuidYoxXiMel9lVaXCKsM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1712359257;
+	bh=g/rg8hX2kW3QsCPiDjAfOeFUbjgmiQ/na7CgdZOszU0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fwN5WYY1daHG85OyLd/3wGekMQckIMwFQa9b4taOuIgD7asZqNcAlYZaEMPR1I2Sl
-	 pzIBI8o9rKGvKymBmNam3Mc0DuRpow5iTb/tlrjAUMmYppawcFueSfN/vvEEOS9iSW
-	 BEI6BSNaCvW3adLYEhPG4EEXIjLP/7onqMlFhbh8=
+	b=I0Sa+eoL65oMkd1IbxVxxVvqP4+GaHf9jsU2n1WWwbo1fDm1lsbzUGzXXLwTpPgMJ
+	 LX7LhFNECBkdVk+5D1ii4a4OXBXB1Knb/3hKxanJ/XHkCrZSXfs/oTUKEOwWRYLLAG
+	 URjdYbQjzc7qtWpZUVWAchwc8YQ+np7IMQMI1RDk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 296D9F80130; Fri,  5 Apr 2024 20:38:42 +0200 (CEST)
+	id 198E2F805A9; Sat,  6 Apr 2024 01:20:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4BF2F8058C;
-	Fri,  5 Apr 2024 20:38:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C745F8057F;
+	Sat,  6 Apr 2024 01:20:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3DE0F8020D; Fri,  5 Apr 2024 20:38:33 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	id 0757CF80238; Sat,  6 Apr 2024 01:20:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 92D56F80130
-	for <alsa-devel@alsa-project.org>; Fri,  5 Apr 2024 20:38:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92D56F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 80AD8F80007
+	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 01:20:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80AD8F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=PVuPjpCo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712342303; x=1712947103;
-	i=oswald.buddenhagen@gmx.de;
-	bh=39Qv2XUUhVGjr9ia6oJF7zwuidYoxXiMel9lVaXCKsM=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:
-	 In-Reply-To;
-	b=PVuPjpCoNzrspjIi6mt6L1O8peFoLH73LrubMFiPBSWAe6sOmCQqzMzl0aC0SMdU
-	 1m+r8ogh98uisQnbgo7h/uXcUZaFLTbUV3nf/VnyGMHk5du/i/lSKSR6prYQUL8Hp
-	 ns2q9xvdsYqkhSuZy7LYVZgC8V/QFJkG5G0GhRZRneYBy0WlwJn8nSmznmhRRZtLv
-	 VaKkrpqNNlwy3v+rQRcyvmXrSmwbNaQPU1d3UmVFwu/V33WbpLRU/Lxq5IolwYBXt
-	 BLKzm15P0zluwXO3s+Q31mI2JAFUKw44baepfg9pmXD0vbfBrWptGEQeYyPsS94m9
-	 hfRgWpcupVUo01S3Kg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from ugly.fritz.box ([89.247.162.116]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MowKc-1saSKv24Ni-00qO3v; Fri, 05
- Apr 2024 20:38:23 +0200
-Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rsoSE-CF1-00; Fri, 05 Apr 2024 20:38:22 +0200
-Date: Fri, 5 Apr 2024 20:38:22 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2 00/17] ALSA: emu10k1 & emux: fixes related to
- wavetable playback
-Message-ID: <ZhBFHmw/AGXvBULl@ugly>
-References: <20240404100048.819674-1-oswald.buddenhagen@gmx.de>
- <875xwwnp27.wl-tiwai@suse.de>
- <Zg/NfajQ3gdsmbUb@ugly>
- <87zfu8m7ay.wl-tiwai@suse.de>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=LBvlOjTV
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9FAD961283;
+	Fri,  5 Apr 2024 23:20:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73F9BC43390;
+	Fri,  5 Apr 2024 23:20:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712359203;
+	bh=g/rg8hX2kW3QsCPiDjAfOeFUbjgmiQ/na7CgdZOszU0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=LBvlOjTVksE+FjM4+dIKfd8jdbcMpZiLqoUd+uGX3xq9apvFvo8oZsCBeDqC85FW1
+	 /KC3QH6GsAEdDDmgaPG31M8PJiAUJSws7yP9kovAKmjJK/i/MVZDP1vJLCBMS6U6kp
+	 j28fAzC5X1AT0qhDjBq+Jip12NOCEoFtkn14Fpn7jHLw73YAtSVPJ7JvTXuns/KcsC
+	 UnKeIUN786gONCpr8E3OP+nwH0xzru1E4tdsdKs5n0dqSdUiXW8UOUhlkI+SnHNpvs
+	 fv37O6i+v9pMpbeUmqq5CCNn7I1inPo/pcaknP9Kz5nrKnJhcxlma/VC1iCjL9ntyG
+	 YjBQl7IjPaG+w==
+From: Mark Brown <broonie@kernel.org>
+To: linux-sound@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de
+In-Reply-To: <20240404190357.138073-1-pierre-louis.bossart@linux.intel.com>
+References: <20240404190357.138073-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/4] ASoC: SOF: Intel: improve and extend HDaudio-based
+ wakes
+Message-Id: <171235920219.198289.1128617567514278392.b4-ty@kernel.org>
+Date: Sat, 06 Apr 2024 00:20:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <87zfu8m7ay.wl-tiwai@suse.de>
-X-Provags-ID: V03:K1:5WIWqWiri0Kee1Bf+ruwVmE6JQm6rxWZpU4S8IXtsZBTjw9numu
- j5CpQAN2Fpsf+TCmrkkNelUurih+PQSMbLBQg1EaSuRfbXg/22qW91dSvzNxSY8kJG6/uoM
- 5eWcaAxK8a41JPqbeASVEJeTRMCdnOfvbozEMD1hVjOAq0H2nDYP4mc38wEf/irczDNkhd6
- yhX1/sSwg9jz/oMmVioIA==
-UI-OutboundReport: notjunk:1;M01:P0:VnnGpVXxISc=;T1zCzcIWM68iSa/P7x4mkWralIO
- eD7eqjFzhAEPHQALCl4WEFntNOWSYwbHK7sVIY63maYaadi1SwjJrBdxHsTMRqhhcRupuuLqJ
- f2bcwVsYG8IHXB652KEpUN4MdE4atsV1I/aih64GpGwsJ8cirJXp+ZFKgEEPFI7rQVOvszTbt
- TIKsSRpD50ffFh0New99W7+R4zsbUdgQFeO6vgegZ4aFsmqcX8+v5XLSY8fm4CkHtAo0etxmB
- 1gtzkLwHrUPLKsibeA2wsVzQtOkZUgUX0k4Qz/XhtUb51NNO7Qm0RApE/98zFXQ8HrnABXGTi
- mfqMcQydIEBYTE4M5avUn6337HPDJqcs9H+NceUzpcVko/W/OXe+uZFu9nn/sDQCa+sTXggUV
- WIoz2qwoUL4YyEqJ1Nc/O92UHT42QjiEIacr0PfVSNpbLriJqkWXGs+hkFmTU/pirPfm3gaKg
- uyuxLKShtJlP/8oU4hf/KuO83CozysqsRiKnOeU+pZaG7riQbIDxCG8XSoxmAg4PDpaNY0ToY
- k7dtYzcQv2kdbeIKwFyRZgOQAmOgx83nJGHXVJQdxZGuAH+TNd4n3YT4Xip02TI/6aibkV/pw
- cdR9xetFdEpcFECwvAXAFruUXLz2m+U+7oUTelKwlTlq9raiPwNEc6MA6Y3mnwnuTRqLA9Q3Z
- 7cPu+PRAE/vSJKaj3NhF1XEAeUAVFJGqxe4jJ5ajS/EvE85u0ygG2woKCRzkEw31r5kh18GgI
- sNAFcrk87KXds/aqiY7QGr7nxld8vHa23+uezjsNyrArgm3iKOn6UM+X9L/JL0qCbdXmOPi7m
- wM6Vb/MhOlTNM64IcmX0idF+c8o6Leg/NraYoZMo27VV4=
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: SKVIAHLWTTMXFKTJNFPZA6L6TJDA5PMY
-X-Message-ID-Hash: SKVIAHLWTTMXFKTJNFPZA6L6TJDA5PMY
-X-MailFrom: oswald.buddenhagen@gmx.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
+Message-ID-Hash: XP3T64XKRQ2G2YVEJE6T2Q7UAQJ5XLPV
+X-Message-ID-Hash: XP3T64XKRQ2G2YVEJE6T2Q7UAQJ5XLPV
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +82,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XP3T64XKRQ2G2YVEJE6T2Q7UAQJ5XLPV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,22 +92,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Apr 05, 2024 at 12:29:25PM +0200, Takashi Iwai wrote:
->Try by yourself to apply the submitted patch mails with git-am on the
->latest for-linus (or master) branch.
->
-ok, the problem is indeed patch corruption, but it's not your fault.
-trailing tabs got stripped from the patches in flight.
+On Thu, 04 Apr 2024 14:03:53 -0500, Pierre-Louis Bossart wrote:
+> For LunarLake, the SoundWire in-band wake detection is reported with
+> the HDAudio WAKE_EN/WAKE_STS registers. In the existing code, these
+> registers are only handled for HDaudio codecs. Now the same registers
+> have to be handled with care as shared resources.
+> 
+> The in-band wake detection mainly used for jack detection. Without
+> this patchset, the SoundWire headset codecs signal an event that would
+> be ignored and not reported.
+> 
+> [...]
 
-while my reading of
-https://www.rfc-editor.org/rfc/rfc5321#section-2.3.10 is that MTAs may
-not just strip trailing whitespace, the ones i tried apparently do.
-somebody may want to verify that ...
+Applied to
 
-anyway, you can still apply the patches by adding --ignore-whitespace to
-git-am's command line.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-if the process doesn't permit that, i'll re-post after convincing
-git-send-email to apply quoted-printable content-transfer-encoding to
-ensure preservation of trailing whitespace.
+Thanks!
+
+[1/4] ASoC: SOF: Intel: hda-ctrl: add missing WAKE_STS clear
+      commit: bd5863f9ef12e26c2cfdce9c0adbf0222c731a3c
+[2/4] ASoC: SOF: Intel: lnl: add helper to detect SoundWire wakes
+      commit: ab9182441ee5a94dd6f47743ed1b7b6b07b63cb2
+[3/4] ASoC: SOF: Intel: hda-codec: preserve WAKEEN values
+      commit: b69480edf4eb71c6f754e3c4020e8dd72a330558
+[4/4] ASoC: SOF: Intel: hda-ctrl: only clear WAKESTS for HDaudio codecs
+      commit: 35b5806e2edee1741f6bd2de2a5c149a876c4a60
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
