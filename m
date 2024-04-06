@@ -4,94 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08B55CD128A
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Apr 2024 07:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF4DC67861
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Apr 2024 12:29:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C1342D5D;
-	Sat,  6 Apr 2024 09:20:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C1342D5D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E26220C6;
+	Sat,  6 Apr 2024 14:29:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E26220C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712388042;
-	bh=vMocICrvAW1bjsRzhL21KFzjSIGcLj6CqF/xTe36Sao=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=t4Rzvfc85AcHQGfWOxAd3TtK1Z/3NrCqvRaWMr88+/TRMAAwsA9N7WyySA2KfH+hV
-	 pzmUvqW1q1QTXYBG9M16wBfK9R58JDIT87cdMFu6+bCXmTU/gwjtLRuLOR2iHYy65r
-	 WzRKVh+fYWJ5rnsqgJrKsdhduux9Q4oZiX79j83I=
+	s=default; t=1712406561;
+	bh=HMqxkQVw5ClLHO8uz/q7lloBVQ8OoW2lW1vT1IPuxmE=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BSrkCLL5gy6Y7ix3c63L2jJ09LP2kQSNSxtjuDECecI7qujqJOK/cMQs7aaOZJK0R
+	 jhUeTPW6cjiqeuMw27cbeJuPUIMslB9F+QgI4MFCpM7NcvmyvY8aLs26YggnSLv6RO
+	 g5h31JK7j40AgeanY7TgdquDMPS22yZFiwYUs+TU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0952F8057A; Sat,  6 Apr 2024 09:20:16 +0200 (CEST)
+	id 0EEEFF805A1; Sat,  6 Apr 2024 14:28:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B3A6F8056F;
-	Sat,  6 Apr 2024 09:20:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4830F805A8;
+	Sat,  6 Apr 2024 14:28:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85C0CF8016E; Sat,  6 Apr 2024 09:01:24 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id B9617F8020D; Sat,  6 Apr 2024 14:18:53 +0200 (CEST)
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com
+ [IPv6:2607:f8b0:4864:20::52d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2542BF8056F
-	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 09:00:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2542BF8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C600F80007
+	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 14:18:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C600F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=da9h/fwU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712386852; x=1712991652;
-	i=oswald.buddenhagen@gmx.de;
-	bh=h1Zi44w73xqIr7qI+WEi+WXB3H7fY5BzJEXJfftEUYo=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=da9h/fwUkUZh62r6U6yXxELh4FwFQlFvdYKehVwhx4jgiAO+j8KoHA54bYiyQjbz
-	 4SgMRaV7P4JCcxGpldpoUe6nG7HQSCNH6hSilCP3mquyh1X0+h2uP0QPTJXEx2nd0
-	 ToWJPXUi/NFfXO98UmIBDaAQFqPYCEEgOTArxP4WWaA5bN9fVt+F1enC610Ccqh6U
-	 DOD4XiyOLCZGrCYthn+2cnlhXmCdAKegp5aqTH8POvB+EKCKZJqGO0DMa3YV18hl0
-	 ILHIpDIo9Ek/MrDAvAlmyRYR3if/qPC6tiqR7HmYQinJ993CoDn5kXcPYv1VHUV22
-	 vJIW0qJ4FHZoBEihZg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from ugly.fritz.box ([89.247.162.118]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N1wq3-1suq210TIP-012FI4; Sat, 06
- Apr 2024 09:00:52 +0200
-Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rszqo-JrF-00; Sat, 06 Apr 2024 08:48:30 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH v3 10/17] ALSA: emu10k1: fix playback of 8-bit wavetable
- samples
-Date: Sat,  6 Apr 2024 08:48:23 +0200
-Message-ID: <20240406064830.1029573-11-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.44.0.701.g2cf7baacf3.dirty
-In-Reply-To: <20240406064830.1029573-1-oswald.buddenhagen@gmx.de>
-References: <20240406064830.1029573-1-oswald.buddenhagen@gmx.de>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=YxYBLn53
+Received: by mail-pg1-x52d.google.com with SMTP id
+ 41be03b00d2f7-5e42b4bbfa4so2031766a12.1
+        for <alsa-devel@alsa-project.org>;
+ Sat, 06 Apr 2024 05:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712405888; x=1713010688;
+ darn=alsa-project.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HMqxkQVw5ClLHO8uz/q7lloBVQ8OoW2lW1vT1IPuxmE=;
+        b=YxYBLn53XPTv36JPxnpcaekaFhJ3k75upRybH9LP5zy/c4c955eLexTcD0cUpuy2qb
+         k/Rb+z3fX3A3aLVwJ3GnyolVDRizedBASxPDDrmE04C3e66njpOa/+Lgz3tqvcd32eqg
+         m91F2fJNfvVKX4T+39MupUjOar3r0uIRxshhnffiJQ0uSuAFu7YZOsApEcOgC5ANODBE
+         8+jAQfLkMlybj+bjCrJxRYMJVyvZ5A5MFrfs/ZaKNIfQAIEZxQ6q2PvXQmnxCiOtuX4C
+         b3YMBTdfb4hibsEQtxcHttjgsR8mmFnfrGrnbhEF+1nwESI7SBx1XfhcLIIgXwEKCYwX
+         cWyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712405888; x=1713010688;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HMqxkQVw5ClLHO8uz/q7lloBVQ8OoW2lW1vT1IPuxmE=;
+        b=SHTLGzVCLFrUP3RJYR1k+Jc/hcUbDytfy0VV/6+JipZ/ycEBpTINZ6360E3mC8SgBB
+         fbEqdoeJXbHPvUwqzx+3/5W/PqYfXv89QEdXRB1J8CshYJx845mwT0i0Q/UpC8RjnrBQ
+         VddfIK7p3/UcJjgd3gEPAxE2NzX/VhLUDqvqZSBX39vMJo5UlY6ikcevIMkd6ZB/7JB+
+         JsnCNw2brU3K8Hlo3vX2CYeBevJNx9+9PJ3L4bEk9ywezoG3TLdov7BCJpa9xnFFqaXo
+         P3NTsAHKFbkJ2OON+jhbkhpmZGsT3xTuJD3SdkpPTVwuVAT60DxlROe3BDOaeqXTwVj3
+         w9QA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUKmwBB86ikLrbsFoHYGquF2bOqzjHkwxLDBzO9XwF8bvg0AoYd5IGOd0TWW/qntbf4Ro9i/Tjc1lSApRWoaRZ3rdCaSxQrAvwPH3k=
+X-Gm-Message-State: AOJu0YwPvSpRdu0CWz+k9OPP3c+syBgS7+qQyUDb0XdbF9rY+VRWhg8v
+	qYlo5GcD2oF/AjLSsWlbn/dVjZwr4C+qpzmXkq8en8+IXJCo5hAnODnPx8nvq4M=
+X-Google-Smtp-Source: 
+ AGHT+IGQPlaSFuYq9fPQYp0icxQCR+ZbK3UWXnqwUFy+ktbJf/r7OsELtMIgKwLkW6f+kXuEOMnVSw==
+X-Received: by 2002:a05:6a20:9497:b0:1a6:fe4f:755f with SMTP id
+ hs23-20020a056a20949700b001a6fe4f755fmr4181955pzb.32.1712405888182;
+        Sat, 06 Apr 2024 05:18:08 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id
+ x7-20020a056a00188700b006ecfe20d38csm3091883pfh.30.2024.04.06.05.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Apr 2024 05:18:07 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 17A1C186046F6; Sat,  6 Apr 2024 19:18:05 +0700 (WIB)
+Date: Sat, 6 Apr 2024 19:18:04 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Sound System <linux-sound@vger.kernel.org>,
+	Linux ALSA Development <alsa-devel@alsa-project.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	=?utf-8?Q?franti=C5=A1ek?= <Oddy38@seznam.cz>
+Subject: Fwd: No speaker output on lenovo legion s7 16arha7
+Message-ID: <ZhE9fDBVvqC1SL4p@archie.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:k6J4J/IRHhtxoesp93tenb2Pw1oStDaxdcHJH8Ma+nbQbfXsQ0k
- VjgpBDe8SCMurkGXp3McHsGC9KEdAYNIkZXxOw4yuAOofrAmMo7M4mFEZCnfgk4Xvvjwivr
- ius22UCOUDRj0mZAZVCv+afmNZZW9JgcyJt0a8BNqLx5YOJ2yteQZo9v1uR1C3B58nslSeT
- /tYC+0eo1u92GkXpm8eBw==
-UI-OutboundReport: notjunk:1;M01:P0:+QcUMwBEIg4=;HLoeVhRmtgAeKlVN2j/wSnh/3vq
- w8quGvPhs92rqsEKb7aR4OoUcvjwaAkuZg6YFAYQWSBdxtFUgNhaamQvJQLCH+QrMDz1ccW6M
- Tfmn2+Njog1vYoMc7mdFZKbD4kES08tZ6n2FtAyUmlGu1p/SK+CTR0HCUhDgd7z3w8wBKNOGr
- 5fB7KrNL9CF1JEFFZjmMo6cKwGMwECEGbwRniDSb+DoGRUxWdsGPxgyt5S77pzNMtQHjFTzRP
- dOObVzN+8R5s1JJWNgXLMH9Zm+nKGW8LHRCiEvROwOLEmbJP4nHajSxiU9ppVso7Gs4IbwnIN
- A8sSSgvXXoDB/WXmRpNEE+7RuMkDgtX51PzAX3V5DaO74EJwRfO0t5b7GYg6NwMidopu5mFXz
- eztGJLW7t8wzGRv7gdCu4o+uy+CpLHVfL4ypXJmmHlzMRjaO5RFIJGMr5zBM7OGHK3mOKPmud
- qn7poVf8H3dcHv89oIXgFOTy8aSF9eVXTwUVzkltO2tRQxMwuIgCVp/bxrDndBXaGq3AmqaHW
- QOdZRBppbHk/gSOG3TUqAZguQdbizfNpTo1bgE2IenPd07aEVz+iZLc1OlLKVSP6bwHRxiXNB
- sAUucCXmp6UuzyHDadU9BwX5Fn3WwtA9uwdVGDl5rt304YXNkmGcPOdj/lLE6AypxKzYbA3SS
- Mj3NNMjIlUloZQzscUEBsKhBSswGI+4t19Jo0L5Jh/QzNVkadyQ/VsYPaGJJE49bJ9lMYdYSk
- FiNIIToFKBQhxAg1tVhaUMY/AClXQIP/4h2n/Ydg2iuKVa9tQ7ruJ5+RUf/K3/QqIRPjpD4wr
- Du1c1gwhfcTM2szolfGtpOexMEXRsM9LEs8mZ3qe0iBV4=
-Message-ID-Hash: PIGBCWWAXLSRM2D26CJ7GBK74AUJTZZ2
-X-Message-ID-Hash: PIGBCWWAXLSRM2D26CJ7GBK74AUJTZZ2
-X-MailFrom: oswald.buddenhagen@gmx.de
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="t65VTSFms3bdx3p0"
+Content-Disposition: inline
+Message-ID-Hash: YLL7FSRE4BVQWQ66A4ZXWTWVPYQIFED6
+X-Message-ID-Hash: YLL7FSRE4BVQWQ66A4ZXWTWVPYQIFED6
+X-MailFrom: bagasdotme@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PIGBCWWAXLSRM2D26CJ7GBK74AUJTZZ2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YLL7FSRE4BVQWQ66A4ZXWTWVPYQIFED6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,59 +126,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Samples are byte-sized in this mode, and thus the offset calculation
-needs no shifting.
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
----
- sound/pci/emu10k1/emu10k1_callback.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+--t65VTSFms3bdx3p0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/pci/emu10k1/emu10k1_callback.c b/sound/pci/emu10k1/emu10=
-k1_callback.c
-index 941bfbf812ed..5f6c47cbb809 100644
---- a/sound/pci/emu10k1/emu10k1_callback.c
-+++ b/sound/pci/emu10k1/emu10k1_callback.c
-@@ -310,27 +310,29 @@ start_voice(struct snd_emux_voice *vp)
- {
- 	unsigned int temp;
- 	int ch;
-+	bool w_16;
- 	u32 psst, dsl, map, ccca, vtarget;
- 	unsigned int addr, mapped_offset;
- 	struct snd_midi_channel *chan;
- 	struct snd_emu10k1 *hw;
- 	struct snd_emu10k1_memblk *emem;
-=20=09
- 	hw =3D vp->hw;
- 	ch =3D vp->ch;
- 	if (snd_BUG_ON(ch < 0))
- 		return -EINVAL;
- 	chan =3D vp->chan;
-+	w_16 =3D !(vp->reg.sample_mode & SNDRV_SFNT_SAMPLE_8BITS);
-=20
- 	emem =3D (struct snd_emu10k1_memblk *)vp->block;
- 	if (emem =3D=3D NULL)
- 		return -EINVAL;
- 	emem->map_locked++;
- 	if (snd_emu10k1_memblk_map(hw, emem) < 0) {
- 		/* dev_err(hw->card->devK, "emu: cannot map!\n"); */
- 		return -ENOMEM;
- 	}
--	mapped_offset =3D snd_emu10k1_memblk_offset(emem) >> 1;
-+	mapped_offset =3D snd_emu10k1_memblk_offset(emem) >> w_16;
- 	vp->reg.start +=3D mapped_offset;
- 	vp->reg.end +=3D mapped_offset;
- 	vp->reg.loopstart +=3D mapped_offset;
-@@ -371,7 +373,7 @@ start_voice(struct snd_emux_voice *vp)
- 		unsigned int shift =3D (vp->apitch - 0xe000) >> 10;
- 		ccca |=3D shift << 25;
- 	}
--	if (vp->reg.sample_mode & SNDRV_SFNT_SAMPLE_8BITS)
-+	if (!w_16)
- 		ccca |=3D CCCA_8BITSELECT;
-=20
- 	vtarget =3D (unsigned int)vp->vtarget << 16;
+Hi,
+
+On Bugzilla, franti=C5=A1ek <Oddy38@seznam.cz> reported speaker problem on
+his Lenovo laptop [1]:
+
+> Hello after troubleshooting the issue on linux mint support we have come =
+to the fact that it report a bug=20
+> my laptop's repeaters don't work (headphones work)
+> I updated to kernel 6.5.0-26-generic before I had the old version and it =
+also did not work=20
+> I updated this firmware https://git.kernel.org/pub/scm/linux/kernel/git/f=
+irmware/linux-firmware.git/commit/t
+> in the sound settings it detects sound for example from youtube but still=
+ nothing comes out of the speakers=20
+> here is a link to how we troubleshot it
+> https://forums.linuxmint.com/viewtopic.php?p=3D2450183#p2450183
+
+See Bugzilla for details.
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218667
+
 --=20
-2.44.0.701.g2cf7baacf3.dirty
+An old man doll... just what I always wanted! - Clara
 
+--t65VTSFms3bdx3p0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZhE9fAAKCRD2uYlJVVFO
+oylMAP9FWBpRiuurHGBjj8js1NmTUwQRASwlhl8u3ENJ5s0l8AD9FOsyZWu6kNjc
+8jsgR0ZBqX5aTOWx1c8q1Ap3Hv3/egM=
+=6VN6
+-----END PGP SIGNATURE-----
+
+--t65VTSFms3bdx3p0--
