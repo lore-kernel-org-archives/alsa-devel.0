@@ -4,93 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B226CD128A
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Apr 2024 07:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D386ECD128A
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Apr 2024 07:11:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9F422CEE;
-	Sat,  6 Apr 2024 09:11:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9F422CEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 684632D1A;
+	Sat,  6 Apr 2024 09:11:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 684632D1A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712387499;
-	bh=p7BCWML6FR8IUZ131P5oKg1I0CJdZ+QR6Akdg0RubUc=;
+	s=default; t=1712387514;
+	bh=RTIDtrrNxRu6jF02BCUn9VGQIZeM+xPk9ksaRegnfJU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ExvuDtOifqYeFGa7OcdoY1B4sWkD0Q78+ibG7ew0Np8qUrxNs1+5n3r89wRNHCZhZ
-	 Fnwjq5b8uKPCKYVR8pazjQAnvLSZoJmoJ5a/DmKnY1JpAUygdXCEzDMC64YoWsXOGJ
-	 DIr/a/ngu6LpAsvBBGywkwIr7SSITS5FekrzLlfY=
+	b=NnGFzEhCDLEHKixXtusHuVq04gSptk8sfnHF70QpJ3xFFIN21ZewrJHz92F5C9lSz
+	 3paVRGRhkNU3N3s1BsgD/ykYqlmVcKnqwHTsHhnyCbL75Y2SgM+jD0lqVfvQi5uVY9
+	 dWVzyPebOyAQL7tnDzMK7Ub9jmDTqIImDzdgnT2A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E283AF80579; Sat,  6 Apr 2024 09:11:08 +0200 (CEST)
+	id 3C72BF8059F; Sat,  6 Apr 2024 09:11:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BEA8F8056F;
-	Sat,  6 Apr 2024 09:11:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 227A7F805BD;
+	Sat,  6 Apr 2024 09:11:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A6DCF8020D; Sat,  6 Apr 2024 08:49:59 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	id 26CD7F80238; Sat,  6 Apr 2024 08:51:40 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8514BF80571
-	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 08:48:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8514BF80571
+	by alsa1.perex.cz (Postfix) with ESMTPS id 443F4F8055C
+	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 08:48:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 443F4F8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=ery4oyYt
+ header.a=rsa-sha256 header.s=s31663417 header.b=rv8Nub56
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
 	s=s31663417; t=1712386111; x=1712990911;
 	i=oswald.buddenhagen@gmx.de;
-	bh=dID5lRQmSL5xQmZb/PuLDbnEgvU6o/RD1hxxbtU8cYQ=;
+	bh=JMiNQoU3MTZPWgno5imqbi9Pn68+reNg8u1rCr8bsnQ=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=ery4oyYtdjJ9vcfRLHKtsrr5eddPl9jjr4o+B6EqVxFJ/bzLeO3GQY1mcCJBbkG2
-	 QzryYB9TSHxXbFxG0vNuunQjOk2RuCF0CNwEoVotDiRY2ttz0m81XlnYnw+mbf+n0
-	 FbXvicaGhzaxVOxVIGwMqVnC2+vpBr88jLPePdsNN/9N/gBj72g155UfbQT6LGfGl
-	 kVL1cBnebW8uAvTRtW3wGc7/0oMrGCR89eOaL3La2yboQz9t0n1Y6VDIT+VyymPp6
-	 gwk9PtdwDADOdm2IRJzen3plhnlhEp1BBVQ4vwdJVZzPqhfVU3hfy0x4q1uSx04ra
-	 VR50Tqfk3rnWFwuKSw==
+	b=rv8Nub56i8TlMHGflKCarhofaTtKYY0Nekg7c/QZacEuigBSi38y+KMqJsWkfDTB
+	 OVMgweouRqJpHK0KophFQJHsAvZSw7qwYOHazZr9oCq142Ta5hPXFxv62qIzNZuTt
+	 xZYfAGwbXGOcKlAyB4BfHpHAMXTIswjghBXD8EQ6nU2wj+7YZ6xkPi8GEfWcV50OO
+	 7HquSLZ8Iv603rX7MrIFyBKYyt/ZFUBrx9MMkMaUetigJ4rHrVOfKTgT+V05hSX4k
+	 CX8tXP6ct/xefkAcBm8rc4MYHceJsIT+Arcv+BPOeiX724YFaCFW2ZhLA4fLpbb+7
+	 CTWWr6NbdS9rT6ykbg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.118]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNbp3-1s999Q0SC3-00P2ee; Sat, 06
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MiacH-1sPZZg0SXf-00fkKu; Sat, 06
  Apr 2024 08:48:31 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rszqo-Jr5-00; Sat, 06 Apr 2024 08:48:30 +0200
+	id 1rszqo-Jqg-00; Sat, 06 Apr 2024 08:48:30 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH v3 08/17] ALSA: emu10k1: move patch loader assertions into
- low-level functions
-Date: Sat,  6 Apr 2024 08:48:21 +0200
-Message-ID: <20240406064830.1029573-9-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v3 03/17] ALSA: emux: fix validation of snd_emux.num_ports
+Date: Sat,  6 Apr 2024 08:48:16 +0200
+Message-ID: <20240406064830.1029573-4-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.44.0.701.g2cf7baacf3.dirty
 In-Reply-To: <20240406064830.1029573-1-oswald.buddenhagen@gmx.de>
 References: <20240406064830.1029573-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fIpfomWooofCrLI3+c0bKi1/0aKLBboPyjR1UlaFDrsiHRmm+RJ
- SvESc55zf72HXY41zVuV4QuFySISCpRSTD8SNj9EiLsp/Gt9rXT6rNWJX0CjHKdBg/f4EWB
- bCutGpvsvYEFueMKc3MLHS7UJObYPQcBHv2DJFNsT2GvKRcXaEU0dxRYqPUzCtStqATwkjn
- E58rji2rNKeVDLisSWTrA==
-UI-OutboundReport: notjunk:1;M01:P0:FxPeO3sGi/0=;/LPsxlrBrJ+Edq0oQ/ANR+hCSIi
- 84LazBRQPNExPP7UM3zZnt5XHG1nI8y1wRknWe5t94B4Oz6tWYSgJI99Q8v2QmGaRwi1i2PCZ
- xbxj4P41YzGApqZ8QRfwsfYKzdq79nrldcjsuTVPqvagZrvj0vvr7jJ9HiEF5NNNLxbnSeqxV
- ECJbX+h1Lxf7GH3SADOsJu+rN60ZEq7CRbz5eqQOs26IGfZ49SbDWXvfPiNShoJAP2XhV8Hz9
- v2PPVwMTZAY7j4QJCl5Uzv6T3gRypB3FaqfTVGp/cd+5Y7yNtHlpsUUKsKgKJp7/6MDpG/nZt
- ARMLXRruv54T0I8Dr3/9YrzlO1MEgZTIhPhKUcdDl1InlDkgE7B6j7OVHmjdKMQG69piZaWAB
- BgCQW5xX9bGNJKIMDCzyeV1UmnN29L/ElhUcSCveN5OTp3KuDS7p5/u8OsolfpyLleMJj1y+Q
- YSEe/TyKtD6iU5SsCN4ggioHRYx5L9gsiaEzNSb5niyLT9jWw8TR5GGg3x1gZ6w1y+WHGmBbl
- bf042Sm+SfLjKrCp6Gh09Wu5KapkMkXsTl93lutP7lX/hXiMmDtYexBsKg5kPqlAsN1tfU6Ll
- TjYogj8S4tkud5h+kgZ7fHR0mAfKDwTWOF/xQDacnD7eMJBmGuzbYJzGNxEmzx4LlGh9MbEWt
- KeKRcA1UXC0y6xEwBesYehHm0/Uk2sAEaamCFpQS38bHPM+/DKDryREr0lnWzA3+/5+JA4SG7
- Gnad0hzjEHRaK70cqzPvsRKPo0HqSUEYXUFNn86ObLJptTaAZbN4gMAaHKsW2mJZ95WUvCsG1
- 3IpgIWYaeqIIJB4Q6nwiu0JnQI1oLZ6W55WSsjgcis/sE=
-Message-ID-Hash: YZQIVSQEXL6CTB2E42QZ5MWOW4QL5ILW
-X-Message-ID-Hash: YZQIVSQEXL6CTB2E42QZ5MWOW4QL5ILW
+X-Provags-ID: V03:K1:p26TYhehDN2NOWFykYeYSUuCLETmm9o1WWsEHZ0UWpT8QuJSY/8
+ 0Yr2L+RQS2nAucVURcpHQZUbPgUUV6MuYO2q3f8Ri6GJSQEnodKDRRjqCYQuyT/wMBP59lI
+ nEgqWTRUbCmISvdeSzL2kzPeLQgkvU6x7MSKuv/1Fp4pKcZfKGqDRLWh1UMTic/Ktv8B2GS
+ HqhhkgxAScHc8GwI0hp/w==
+UI-OutboundReport: notjunk:1;M01:P0:pGQrY4j9Kz0=;GICSpBejhiuN6IX96osWHhncYR5
+ x/twZP4hn3TemiZ95O1p6pL5M/q29ypOlsUAL73N7ak6szDqIOcXAd9CogXBpBQGjqgiyE+M0
+ FwsDo0zI5uvvDXN2n78/6vTOhsSxWpAE8+XFztrUFfh6kLgEuv5Xv5Tm/3e5RMrb39s/zYyvL
+ 6d90fy8YgIHfffe3Lp+fahblBA/CgaCWuzH90VsjBGLCYHWpt2qqRnMeGUDgG0tBJd5LTjfu/
+ UUZTbGx+8kHJJY7jHnzs3yPJDX51JbjJT4+JPcshKMt9l4HalHTm/qv/xUAIoOy/MZk1JWrMd
+ 5Y3GQI3XJfr/GgHp3bJJY7FMdN5Z/nzy5yAK4uSzVMhZceUV91KTN2H+cdVUpWqdLXmT1L59D
+ zMWQyVfSJVsfNGlhRFyOYeYlcjPI4QADWoVHzPFlI9zC/gPhrauMO670dq2FOnsN25Tjh3YCU
+ Py77lYvbKsgtrsXF/FOQYZbA481wVtdAwTZv2SbcD/71dejhO2hZZhZTt2sGEih0DytYYKBUK
+ JQYRFUePyyhysZwmDU5iIN2ZYbdllK8A7jYmrAjqqCm7y8tB9QkbyMhrsFRoii9pkJ2qkuMV/
+ oosm7c11sAxUZlv1j2ovI/0+iGirH1VW2ZgbhTBsBPgHJL1NycjH7xUtCMcvgWbAlKEn25/s/
+ w5qEMD0odnQ2JDRHIShTSlhNia9jFFX4vjypDILqVzMsKopL3LACgf0t2AZO2i7niUTGKi+qo
+ 4OnlzBpPvarRSgXwbexDXlZj4tvz+Xo32dzS0n5aLfk4qN1P0XAjl5MIWDdSIGfnhIAcxfxeO
+ 6TEKL634RUMyyICutj0HQwwivDUb8rXDXXuOC1y6d0uLk=
+Message-ID-Hash: 7EQ5LMQMB7JWXYOFA7FM4MAOZZHVHE3Z
+X-Message-ID-Hash: 7EQ5LMQMB7JWXYOFA7FM4MAOZZHVHE3Z
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZQIVSQEXL6CTB2E42QZ5MWOW4QL5ILW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7EQ5LMQMB7JWXYOFA7FM4MAOZZHVHE3Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,78 +111,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert some checks in snd_emu10k1_sample_new() back into assertions (as
-they were prior to da3cec35dd (ALSA: Kill snd_assert() in sound/pci/*,
-2008-08-08)), and move them into the low-level memory access functions
-they protect.
+Both bounds had off-by-one errors.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-
 ---
+ sound/synth/emux/emux_seq.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Side note: this eliminates the memory leaks in the now gone error paths.
-I don't think it was actually possible to trigger these even before the
-foregoing cleanups. But if it were, it would allow a user with access to
-the audio device a scope-limited DoS attack on it. This would be only a
-very minor security hole, given that on modern systems it would merely
-enable the current seat owner to be a nuisance to their successor, by
-making a reboot necessary.
----
- sound/pci/emu10k1/emu10k1_patch.c | 4 ----
- sound/pci/emu10k1/memory.c        | 6 ++++++
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1_=
-patch.c
-index 47d69a0e44bc..55bb60d31fe4 100644
---- a/sound/pci/emu10k1/emu10k1_patch.c
-+++ b/sound/pci/emu10k1/emu10k1_patch.c
-@@ -65,17 +65,13 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
-_sf_sample *sp,
- 	size =3D BLANK_HEAD_SIZE;
- 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
- 		size *=3D 2;
--	if (offset + size > blocksize)
--		return -EINVAL;
- 	snd_emu10k1_synth_bzero(emu, sp->block, offset, size);
- 	offset +=3D size;
+diff --git a/sound/synth/emux/emux_seq.c b/sound/synth/emux/emux_seq.c
+index b227c7e0bc2a..1adaa75df2f6 100644
+--- a/sound/synth/emux/emux_seq.c
++++ b/sound/synth/emux/emux_seq.c
+@@ -65,11 +65,11 @@ snd_emux_init_seq(struct snd_emux *emu, struct snd_card=
+ *card, int index)
+ 		return -ENODEV;
+ 	}
 =20
- 	/* copy provided samples */
- 	size =3D sp->v.size;
- 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
- 		size *=3D 2;
--	if (offset + size > blocksize)
--		return -EINVAL;
- 	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size))=
- {
- 		snd_emu10k1_synth_free(emu, sp->block);
- 		sp->block =3D NULL;
-diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
-index 20b07117574b..fc9444404151 100644
---- a/sound/pci/emu10k1/memory.c
-+++ b/sound/pci/emu10k1/memory.c
-@@ -574,6 +574,9 @@ int snd_emu10k1_synth_bzero(struct snd_emu10k1 *emu, st=
-ruct snd_util_memblk *blk
- 	void *ptr;
- 	struct snd_emu10k1_memblk *p =3D (struct snd_emu10k1_memblk *)blk;
-=20
-+	if (snd_BUG_ON(offset + size > p->mem.size))
-+		return -EFAULT;
-+
- 	offset +=3D blk->offset & (PAGE_SIZE - 1);
- 	end_offset =3D offset + size;
- 	page =3D get_aligned_page(offset);
-@@ -604,6 +607,9 @@ int snd_emu10k1_synth_copy_from_user(struct snd_emu10k1=
- *emu, struct snd_util_me
- 	void *ptr;
- 	struct snd_emu10k1_memblk *p =3D (struct snd_emu10k1_memblk *)blk;
-=20
-+	if (snd_BUG_ON(offset + size > p->mem.size))
-+		return -EFAULT;
-+
- 	offset +=3D blk->offset & (PAGE_SIZE - 1);
- 	end_offset =3D offset + size;
- 	page =3D get_aligned_page(offset);
+-	if (emu->num_ports < 0) {
++	if (emu->num_ports <=3D 0) {
+ 		snd_printk(KERN_WARNING "seqports must be greater than zero\n");
+ 		emu->num_ports =3D 1;
+-	} else if (emu->num_ports >=3D SNDRV_EMUX_MAX_PORTS) {
+-		snd_printk(KERN_WARNING "too many ports."
++	} else if (emu->num_ports > SNDRV_EMUX_MAX_PORTS) {
++		snd_printk(KERN_WARNING "too many ports. "
+ 			   "limited max. ports %d\n", SNDRV_EMUX_MAX_PORTS);
+ 		emu->num_ports =3D SNDRV_EMUX_MAX_PORTS;
+ 	}
 --=20
 2.44.0.701.g2cf7baacf3.dirty
 
