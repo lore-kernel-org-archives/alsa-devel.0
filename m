@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B066C67861
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Apr 2024 07:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B226CD128A
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Apr 2024 07:11:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEE3C2CF8;
-	Sat,  6 Apr 2024 09:09:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEE3C2CF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9F422CEE;
+	Sat,  6 Apr 2024 09:11:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9F422CEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712387408;
-	bh=BEuFMy2pqu7TGRas3rY5lil+/UYJzKp66XWxPYjr/aU=;
+	s=default; t=1712387499;
+	bh=p7BCWML6FR8IUZ131P5oKg1I0CJdZ+QR6Akdg0RubUc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PX6VN2yan++U7iOKtPn+5ODwLpOzW28ya9Z/IkZvcbieptLx2Ify4v8Yyd78LpqBs
-	 ixNNoefmV7ZEh89Vqj9A5yhRj5juASATQHTxyM0C1HgfcuAvWN/UkTSEi688qsiuH2
-	 EHufQSMco2LgzUSdEZEOKVCcO9yStMDGUBzCPI2E=
+	b=ExvuDtOifqYeFGa7OcdoY1B4sWkD0Q78+ibG7ew0Np8qUrxNs1+5n3r89wRNHCZhZ
+	 Fnwjq5b8uKPCKYVR8pazjQAnvLSZoJmoJ5a/DmKnY1JpAUygdXCEzDMC64YoWsXOGJ
+	 DIr/a/ngu6LpAsvBBGywkwIr7SSITS5FekrzLlfY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 204DCF805A0; Sat,  6 Apr 2024 09:09:27 +0200 (CEST)
+	id E283AF80579; Sat,  6 Apr 2024 09:11:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE06CF805A8;
-	Sat,  6 Apr 2024 09:09:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BEA8F8056F;
+	Sat,  6 Apr 2024 09:11:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E1F1F8020D; Sat,  6 Apr 2024 08:49:49 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	id 6A6DCF8020D; Sat,  6 Apr 2024 08:49:59 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11E63F80570
-	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 08:48:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11E63F80570
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8514BF80571
+	for <alsa-devel@alsa-project.org>; Sat,  6 Apr 2024 08:48:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8514BF80571
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmx.de header.i=oswald.buddenhagen@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=nRTIzDc6
+ header.a=rsa-sha256 header.s=s31663417 header.b=ery4oyYt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
 	s=s31663417; t=1712386111; x=1712990911;
 	i=oswald.buddenhagen@gmx.de;
-	bh=wMBTvJmAvSsnYPNg7taC7rcPrmaCF3wZy8DyeRm4ZW8=;
+	bh=dID5lRQmSL5xQmZb/PuLDbnEgvU6o/RD1hxxbtU8cYQ=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=nRTIzDc6feP0iKtajQ5nV7Z5hZs2qpU+2HSiXf3pyOTaMIbzK8bRKcAPBGcKAwGl
-	 rq6oiLiLMp5ersliAHmODBH9YjeCyfBXrZChQmahKPHYUgwCU5YpTMtNWT2awjiHI
-	 NSttbw5ZjE9EI00eUxHFVto0rZXmOWdl/OGetfJW4sFZZLNAtoc1z7JodI16NEg2+
-	 8MhDwUssxloVw5kMhI++60szUyyyVzkafufLErYjZrijH5g+VdWf1t9eQd+fonaIg
-	 XteKpGIgCF59GqEdPMUP+SoAucU+DG8VFdt1l/Z5ehJnNsD9nM6amTw2U/rqXqs/R
-	 IU3tPhGVx8xoKHUnKA==
+	b=ery4oyYtdjJ9vcfRLHKtsrr5eddPl9jjr4o+B6EqVxFJ/bzLeO3GQY1mcCJBbkG2
+	 QzryYB9TSHxXbFxG0vNuunQjOk2RuCF0CNwEoVotDiRY2ttz0m81XlnYnw+mbf+n0
+	 FbXvicaGhzaxVOxVIGwMqVnC2+vpBr88jLPePdsNN/9N/gBj72g155UfbQT6LGfGl
+	 kVL1cBnebW8uAvTRtW3wGc7/0oMrGCR89eOaL3La2yboQz9t0n1Y6VDIT+VyymPp6
+	 gwk9PtdwDADOdm2IRJzen3plhnlhEp1BBVQ4vwdJVZzPqhfVU3hfy0x4q1uSx04ra
+	 VR50Tqfk3rnWFwuKSw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from ugly.fritz.box ([89.247.162.118]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MORAa-1s9yUr0SOU-00PsIe; Sat, 06
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNbp3-1s999Q0SC3-00P2ee; Sat, 06
  Apr 2024 08:48:31 +0200
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1rszqo-Jqq-00; Sat, 06 Apr 2024 08:48:30 +0200
+	id 1rszqo-Jr5-00; Sat, 06 Apr 2024 08:48:30 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: [PATCH v3 05/17] ALSA: emu10k1: prune vestiges of
- SNDRV_SFNT_SAMPLE_{BIDIR,REVERSE}_LOOP support
-Date: Sat,  6 Apr 2024 08:48:18 +0200
-Message-ID: <20240406064830.1029573-6-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v3 08/17] ALSA: emu10k1: move patch loader assertions into
+ low-level functions
+Date: Sat,  6 Apr 2024 08:48:21 +0200
+Message-ID: <20240406064830.1029573-9-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.44.0.701.g2cf7baacf3.dirty
 In-Reply-To: <20240406064830.1029573-1-oswald.buddenhagen@gmx.de>
 References: <20240406064830.1029573-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bvj/GQ7WslqAzG8kNT2sOurxtm67KT9kqDVH2EEH+3EpyRsGhr1
- A/H8qH/auP6YVtYJ+vA5FMCisM11FRsqfVCzbe/YwTA4FHxzhl5Dh9kF3UsxkgR5ic6HqSj
- pnhUEFz2QaHFKPEw0CseUAeV6Na36ICVgs/Elm0NHyk9JujyUGbvFOvJNqie5urWzeWpa9f
- vt1BTAfrQFeShJ3PPUPJw==
-UI-OutboundReport: notjunk:1;M01:P0:2LIpGgFpTGM=;ubrftGn6pET6IOuU7CCvbCrpbGx
- 38W3u3aXNoFbyNUOlUX526vOWK3C8K4zV5YvREisq01PdPOQe4TBb2S+CR4+0f8ZwCtmkB86T
- /5NF3mfa9qIXevsdLHwbJ2c52e/LstmW10mtc/JjG8NI2RwUeGXt//NWKq41AWbx8ZvfWjfAk
- an80pYHK0IrwIfjw3qCiSsUN0MtjcE/K9+zpxVBR8lJOHUw3RSGZhaLI4EQp1CkcEj3gBrjc3
- y7UUEhRBv+c2INBWugX/sdwG93N83H8AxxKQtFzWXPD1UfWd5LT63TZ14trTgI2NUsDF5L3E+
- Q45pOyOU1RFpOhAY9C9BGhngd3WAd0UnpK0pscGJL7Tgfu/dC+Jz9LgMXOoiDVkOYFaPewASA
- gWqQCUW4SbCwq6fLOjG9HZRu7/HCLXDcGN6hiYziBQHx3FDVF1vXEfTQjHPoLj5D4yXIfPlKf
- RKnSjpw4jiv/9lvEZXdN81nksf1x/gKVRIrGnCmP7G1NwaR9qE56U29KgYlitqCg2Lcj8oOkx
- qcD1H771Yw7O332EjFsHCtGkdwR6u/wpA+Aa/51Dy00RZ9k9TgWhiOq6MAoa+sk22zaHSpN85
- JosWyG3BBHbUmJ+axcrLlL3VXWabrrZxTZh58RdFZCQh+HCRNHqaTWFKVZrGqwx0X7ompkbuh
- hDPf65/CpFuLefqZns2BwPPfusB/cOYMkOTKTeRz4k90v1KYbwsu7tQRVyGcdW28usO8yL4pB
- UH42Nzjh0nAMxSJe+KQpt675IQrpxnGLg+FrSJzB8xTBdJwJVQ39FK6/rA4rSYc0/gtdQXV/3
- d4275gTnVjbiSaOUgxLXxPKUMSj07IG9Og83dWg5sR7nw=
-Message-ID-Hash: CBBJ5NVDAOQMLL3RYHW3L3E7ZKGG37QM
-X-Message-ID-Hash: CBBJ5NVDAOQMLL3RYHW3L3E7ZKGG37QM
+X-Provags-ID: V03:K1:fIpfomWooofCrLI3+c0bKi1/0aKLBboPyjR1UlaFDrsiHRmm+RJ
+ SvESc55zf72HXY41zVuV4QuFySISCpRSTD8SNj9EiLsp/Gt9rXT6rNWJX0CjHKdBg/f4EWB
+ bCutGpvsvYEFueMKc3MLHS7UJObYPQcBHv2DJFNsT2GvKRcXaEU0dxRYqPUzCtStqATwkjn
+ E58rji2rNKeVDLisSWTrA==
+UI-OutboundReport: notjunk:1;M01:P0:FxPeO3sGi/0=;/LPsxlrBrJ+Edq0oQ/ANR+hCSIi
+ 84LazBRQPNExPP7UM3zZnt5XHG1nI8y1wRknWe5t94B4Oz6tWYSgJI99Q8v2QmGaRwi1i2PCZ
+ xbxj4P41YzGApqZ8QRfwsfYKzdq79nrldcjsuTVPqvagZrvj0vvr7jJ9HiEF5NNNLxbnSeqxV
+ ECJbX+h1Lxf7GH3SADOsJu+rN60ZEq7CRbz5eqQOs26IGfZ49SbDWXvfPiNShoJAP2XhV8Hz9
+ v2PPVwMTZAY7j4QJCl5Uzv6T3gRypB3FaqfTVGp/cd+5Y7yNtHlpsUUKsKgKJp7/6MDpG/nZt
+ ARMLXRruv54T0I8Dr3/9YrzlO1MEgZTIhPhKUcdDl1InlDkgE7B6j7OVHmjdKMQG69piZaWAB
+ BgCQW5xX9bGNJKIMDCzyeV1UmnN29L/ElhUcSCveN5OTp3KuDS7p5/u8OsolfpyLleMJj1y+Q
+ YSEe/TyKtD6iU5SsCN4ggioHRYx5L9gsiaEzNSb5niyLT9jWw8TR5GGg3x1gZ6w1y+WHGmBbl
+ bf042Sm+SfLjKrCp6Gh09Wu5KapkMkXsTl93lutP7lX/hXiMmDtYexBsKg5kPqlAsN1tfU6Ll
+ TjYogj8S4tkud5h+kgZ7fHR0mAfKDwTWOF/xQDacnD7eMJBmGuzbYJzGNxEmzx4LlGh9MbEWt
+ KeKRcA1UXC0y6xEwBesYehHm0/Uk2sAEaamCFpQS38bHPM+/DKDryREr0lnWzA3+/5+JA4SG7
+ Gnad0hzjEHRaK70cqzPvsRKPo0HqSUEYXUFNn86ObLJptTaAZbN4gMAaHKsW2mJZ95WUvCsG1
+ 3IpgIWYaeqIIJB4Q6nwiu0JnQI1oLZ6W55WSsjgcis/sE=
+Message-ID-Hash: YZQIVSQEXL6CTB2E42QZ5MWOW4QL5ILW
+X-Message-ID-Hash: YZQIVSQEXL6CTB2E42QZ5MWOW4QL5ILW
 X-MailFrom: oswald.buddenhagen@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZQIVSQEXL6CTB2E42QZ5MWOW4QL5ILW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,159 +112,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This is required only to implement WAVE_BIDIR_LOOP and WAVE_LOOP_BACK in
-the GUS patch loader. It has not worked on emu10k1 since before ALSA hit
-mainline, yet nobody appears to have complained. And as it isn't super
-easy to implement, just admit defeat and clean up the code.
-
-If somebody wanted to resurrect the feature, the emu8k driver could
-serve as a template, but the code would be quite different. But
-arguably, this should be done in user space in the first place, as this
-doesn't represent a hardware feature (somewhat ironically, the actual
-GUS driver has no synth support, and therefore no GUS patch loader).
-
-Note that instead of properly rejecting affected samples, we continue to
-just pretend that the feature wasn't requested. This is extremely
-questionable behavior, but avoids that possibly unused instruments
-suddenly prevent loading the entire file, which would break backwards
-compatibility. But at least we log a warning now.
+Convert some checks in snd_emu10k1_sample_new() back into assertions (as
+they were prior to da3cec35dd (ALSA: Kill snd_assert() in sound/pci/*,
+2008-08-08)), and move them into the low-level memory access functions
+they protect.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+
 ---
- sound/pci/emu10k1/emu10k1_patch.c | 73 ++++---------------------------
- 1 file changed, 8 insertions(+), 65 deletions(-)
+
+Side note: this eliminates the memory leaks in the now gone error paths.
+I don't think it was actually possible to trigger these even before the
+foregoing cleanups. But if it were, it would allow a user with access to
+the audio device a scope-limited DoS attack on it. This would be only a
+very minor security hole, given that on modern systems it would merely
+enable the current seat owner to be a nuisance to their successor, by
+making a reboot necessary.
+---
+ sound/pci/emu10k1/emu10k1_patch.c | 4 ----
+ sound/pci/emu10k1/memory.c        | 6 ++++++
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1_=
 patch.c
-index 89890f24509f..49214c226808 100644
+index 47d69a0e44bc..55bb60d31fe4 100644
 --- a/sound/pci/emu10k1/emu10k1_patch.c
 +++ b/sound/pci/emu10k1/emu10k1_patch.c
-@@ -28,8 +28,6 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_s=
-f_sample *sp,
- {
- 	int offset;
- 	int truesize, size, blocksize;
--	__maybe_unused int loopsize;
--	int loopend, sampleend;
- 	unsigned int start_addr;
- 	struct snd_emu10k1 *emu;
-=20
-@@ -43,32 +41,24 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
+@@ -65,17 +65,13 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
 _sf_sample *sp,
- 		return 0;
- 	}
-=20
-+	if (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP | SNDRV_SFNT_SAMPLE_=
-REVERSE_LOOP)) {
-+		/* should instead return -ENOTSUPP; but compatibility */
-+		printk(KERN_WARNING "Emu10k1 wavetable patch %d with unsupported loop fe=
-ature\n",
-+		       sp->v.sample);
-+	}
-+
- 	/* recalculate address offset */
- 	sp->v.end -=3D sp->v.start;
- 	sp->v.loopstart -=3D sp->v.start;
- 	sp->v.loopend -=3D sp->v.start;
- 	sp->v.start =3D 0;
-=20
--	/* some samples have invalid data.  the addresses are corrected in voice =
-info */
--	sampleend =3D sp->v.end;
--	if (sampleend > sp->v.size)
--		sampleend =3D sp->v.size;
--	loopend =3D sp->v.loopend;
--	if (loopend > sampleend)
--		loopend =3D sampleend;
--
- 	/* be sure loop points start < end */
- 	if (sp->v.loopstart >=3D sp->v.loopend)
- 		swap(sp->v.loopstart, sp->v.loopend);
-=20
- 	/* compute true data size to be loaded */
- 	truesize =3D sp->v.size + BLANK_HEAD_SIZE;
--	loopsize =3D 0;
--#if 0 /* not supported */
--	if (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP|SNDRV_SFNT_SAMPLE_RE=
-VERSE_LOOP))
--		loopsize =3D sp->v.loopend - sp->v.loopstart;
--	truesize +=3D loopsize;
--#endif
- 	if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_NO_BLANK)
- 		truesize +=3D BLANK_LOOP_SIZE;
-=20
-@@ -96,65 +86,18 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd=
-_sf_sample *sp,
+ 	size =3D BLANK_HEAD_SIZE;
+ 	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
+ 		size *=3D 2;
+-	if (offset + size > blocksize)
+-		return -EINVAL;
  	snd_emu10k1_synth_bzero(emu, sp->block, offset, size);
  	offset +=3D size;
 =20
--	/* copy start->loopend */
--	size =3D loopend;
-+	/* copy provided samples */
-+	size =3D sp->v.size;
+ 	/* copy provided samples */
+ 	size =3D sp->v.size;
  	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
  		size *=3D 2;
- 	if (offset + size > blocksize)
- 		return -EINVAL;
+-	if (offset + size > blocksize)
+-		return -EINVAL;
  	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size))=
  {
  		snd_emu10k1_synth_free(emu, sp->block);
  		sp->block =3D NULL;
- 		return -EFAULT;
- 	}
- 	offset +=3D size;
--	data +=3D size;
--
--#if 0 /* not supported yet */
--	/* handle reverse (or bidirectional) loop */
--	if (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP|SNDRV_SFNT_SAMPLE_RE=
-VERSE_LOOP)) {
--		/* copy loop in reverse */
--		if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS)) {
--			int woffset;
--			unsigned short *wblock =3D (unsigned short*)block;
--			woffset =3D offset / 2;
--			if (offset + loopsize * 2 > blocksize)
--				return -EINVAL;
--			for (i =3D 0; i < loopsize; i++)
--				wblock[woffset + i] =3D wblock[woffset - i -1];
--			offset +=3D loopsize * 2;
--		} else {
--			if (offset + loopsize > blocksize)
--				return -EINVAL;
--			for (i =3D 0; i < loopsize; i++)
--				block[offset + i] =3D block[offset - i -1];
--			offset +=3D loopsize;
--		}
--
--		/* modify loop pointers */
--		if (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_BIDIR_LOOP) {
--			sp->v.loopend +=3D loopsize;
--		} else {
--			sp->v.loopstart +=3D loopsize;
--			sp->v.loopend +=3D loopsize;
--		}
--		/* add sample pointer */
--		sp->v.end +=3D loopsize;
--	}
--#endif
--
--	/* loopend -> sample end */
--	size =3D sp->v.size - loopend;
--	if (size < 0)
--		return -EINVAL;
--	if (! (sp->v.mode_flags & SNDRV_SFNT_SAMPLE_8BITS))
--		size *=3D 2;
--	if (snd_emu10k1_synth_copy_from_user(emu, sp->block, offset, data, size))=
- {
--		snd_emu10k1_synth_free(emu, sp->block);
--		sp->block =3D NULL;
--		return -EFAULT;
--	}
--	offset +=3D size;
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index 20b07117574b..fc9444404151 100644
+--- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -574,6 +574,9 @@ int snd_emu10k1_synth_bzero(struct snd_emu10k1 *emu, st=
+ruct snd_util_memblk *blk
+ 	void *ptr;
+ 	struct snd_emu10k1_memblk *p =3D (struct snd_emu10k1_memblk *)blk;
 =20
- 	/* clear rest of samples (if any) */
- 	if (offset < blocksize)
++	if (snd_BUG_ON(offset + size > p->mem.size))
++		return -EFAULT;
++
+ 	offset +=3D blk->offset & (PAGE_SIZE - 1);
+ 	end_offset =3D offset + size;
+ 	page =3D get_aligned_page(offset);
+@@ -604,6 +607,9 @@ int snd_emu10k1_synth_copy_from_user(struct snd_emu10k1=
+ *emu, struct snd_util_me
+ 	void *ptr;
+ 	struct snd_emu10k1_memblk *p =3D (struct snd_emu10k1_memblk *)blk;
+=20
++	if (snd_BUG_ON(offset + size > p->mem.size))
++		return -EFAULT;
++
+ 	offset +=3D blk->offset & (PAGE_SIZE - 1);
+ 	end_offset =3D offset + size;
+ 	page =3D get_aligned_page(offset);
 --=20
 2.44.0.701.g2cf7baacf3.dirty
 
