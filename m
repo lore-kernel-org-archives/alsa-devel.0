@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84A5EC67861
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Apr 2024 10:18:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABDE0C67861
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Apr 2024 10:19:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2B7E22AA;
-	Mon,  8 Apr 2024 12:18:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2B7E22AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18C51218D;
+	Mon,  8 Apr 2024 12:19:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18C51218D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712571530;
-	bh=Jk5AfXpYJl/Ul0uWQBPecZhjRr/Z7t8CO1bBtCb5+qA=;
+	s=default; t=1712571553;
+	bh=TQWosqsbyYiX0BmKteXRyNXP2meiRxmUQbjuOgUFR78=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Dro1mnpK5WxI3KYJgALu4MkcqLI3n+Mwd0yT4QZ1azYDK5V/tHQLyN5J92X3OHEwB
-	 wWMeJavwzBUAAx2xabN4Oo7IO4IZTV2gKpotisSXXu1pGWo5BCCJFE3now0dCxX2+W
-	 EGuo+GigOnCSizWK3oU1WfXulTJjV9vu4TdCHYVs=
+	b=EtAE6OAByPOPrzE9IUSzshr7lLY8h7XKG1RUmQUIz5+bvbL853i7GZzeJqaY45J0n
+	 V1T5QHqS54/cUNBGIKsOLNolzrsBIxlDoAwOdjMqyuhl9JOkT0OPV0vf3SPgZzJxg/
+	 SDm8j+WLigyfgTd0060LTI2pVP0vuTYRGsCFmAkY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 113B8F805AE; Mon,  8 Apr 2024 12:18:19 +0200 (CEST)
+	id 9111CF805BF; Mon,  8 Apr 2024 12:18:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C112F805AC;
-	Mon,  8 Apr 2024 12:18:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C29AF805C7;
+	Mon,  8 Apr 2024 12:18:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4483F8028B; Mon,  8 Apr 2024 12:18:14 +0200 (CEST)
+	id 3BEB6F80571; Mon,  8 Apr 2024 12:18:19 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 587CDF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A8BAF80238
 	for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2024 12:18:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 587CDF800C9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A8BAF80238
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=qT3I7ohe
+ header.s=PODMain02222019 header.b=HGQ462Cs
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43850rVA005178;
-	Mon, 8 Apr 2024 05:18:05 -0500
+ 43850rVB005178;
+	Mon, 8 Apr 2024 05:18:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=U6m2cDC0lG4V+OJfs4nMI2Z6AhEq3DduAGPDmmbhl9U=; b=
-	qT3I7oheSuZKbXg4rSLcHWQsxyUGPavhCJwPShLxQVPLJt+hEicygncqgnLaIu0x
-	kKiBhbC01AB0pqaMd8e4BTbQ7vXCZqnG3nzGvfKWXUnTLS+nD1BpKKwXirAsYXZj
-	0bw0tpecsh1K1GXfMV3neAjadBtkN4seGHT0svMZPGcOgWcCsXINCbdKFEeCnYsM
-	YN3Oosi22Hm0jZs/9tcNfmLtFh4v56mY/4mU1lEl8iDTkeOr6UF/efG1pQWXnMtU
-	qhjM4HP4TinWzamCerpKzviCgvR9zOU3XaF+GX2Gtt4vQ/EnFg4R74egIXuRA2Pc
-	PBhrsjihm/sHbFym9sQTqw==
+	PODMain02222019; bh=l+DAz+9pELwzHlKhsrPSykE9OC1nwW1PQzFJmLp40gs=; b=
+	HGQ462Cs/xqLP4NU+PyAc+GbZsKdvW/v+WCZfz0eu8pffuQxzw/8r7kb5gf7Ri6y
+	hoC/gSvssJTVewMSFQMYhEQ6mmCrXTpw4blk1wPyYEhfIKzsmFrwMqmfPlN95P2G
+	FvxA10cl9qimTecBopbHjq8Ahgu5dwgtkVamq4jmMlHJW3NH5IrVCDbE9ETb9r0j
+	/GNynAu0cZ9Y2feo6XCeTm06e9Ul5zJuA2U4KWnhPHD7F69N6oX4u0rXUAFoUeVA
+	bGe6D4K2p3TtDeGfEympHAchcTU0C5d+QstDnTd3H3v4g4//db6MWNqSuAZB+mis
+	X7buJFCK48kMqj7Dy1Zn6g==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhbbq-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhbbq-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 08 Apr 2024 05:18:05 -0500 (CDT)
+	Mon, 08 Apr 2024 05:18:06 -0500 (CDT)
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
@@ -67,7 +67,7 @@ Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  via Frontend Transport; Mon, 8 Apr 2024 11:18:03 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
  [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 36BE582024B;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 47750820259;
 	Mon,  8 Apr 2024 10:18:03 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -75,21 +75,20 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 2/4] ALSA: hda: cs35l56: Exit cache-only after
- cs35l56_wait_for_firmware_boot()
-Date: Mon, 8 Apr 2024 11:18:01 +0100
-Message-ID: <20240408101803.43183-3-rf@opensource.cirrus.com>
+Subject: [PATCH 4/4] ASoC: cs35l56: Prevent overwriting firmware ASP config
+Date: Mon, 8 Apr 2024 11:18:03 +0100
+Message-ID: <20240408101803.43183-5-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240408101803.43183-1-rf@opensource.cirrus.com>
 References: <20240408101803.43183-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 50B025tE5E7-lELiV888TYU8ZXrSmWhG
-X-Proofpoint-GUID: 50B025tE5E7-lELiV888TYU8ZXrSmWhG
+X-Proofpoint-ORIG-GUID: s124VKN2L7DIJ_4Pm6W4ADAx66Orsnkt
+X-Proofpoint-GUID: s124VKN2L7DIJ_4Pm6W4ADAx66Orsnkt
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: FP5C7CSFJRS5ZKU7VU3GFVXHRDJD6RWL
-X-Message-ID-Hash: FP5C7CSFJRS5ZKU7VU3GFVXHRDJD6RWL
+Message-ID-Hash: XWXZALSGURXN5K54LPTNLHHKXASVR2KR
+X-Message-ID-Hash: XWXZALSGURXN5K54LPTNLHHKXASVR2KR
 X-MailFrom: prvs=182810dd8d=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FP5C7CSFJRS5ZKU7VU3GFVXHRDJD6RWL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XWXZALSGURXN5K54LPTNLHHKXASVR2KR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,45 +110,217 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Adds calls to disable regmap cache-only after a successful return from
-cs35l56_wait_for_firmware_boot().
+Only populate the ASP1 config registers in the regmap cache if the
+ASP DAI is used. This prevents regcache_sync() from overwriting
+these registers with their defaults when the firmware owns
+control of these registers.
 
-This is to prepare for a change in the shared ASoC module that will
-leave regmap in cache-only mode after cs35l56_system_reset(). This is
-to prevent register accesses going to the hardware while it is
-rebooting.
+On a SoundWire system the ASP could be owned by the firmware to
+share reference audio with the firmware on other cs35l56. Or it
+can be used as a normal codec-codec interface owned by the driver.
+The driver must not overwrite the registers if the firmware has
+control of them.
+
+The original implementation for this in commit 07f7d6e7a124
+("ASoC: cs35l56: Fix for initializing ASP1 mixer registers") was
+to still provide defaults for these registers, assuming that if
+they were never reconfigured from defaults then regcache_sync()
+would not write them out because they are not dirty. Unfortunately
+regcache_sync() is not that smart. If the chip has not reset (so
+the driver has not called regcache_mark_dirty()) a regcache_sync()
+could write out registers that are not dirty.
+
+To avoid accidental overwriting of the ASP registers, they are
+removed from the table of defaults and instead are populated with
+defaults only if one of the ASP DAI configuration functions is
+called. So if the DAI has never been configured, the firmware is
+assumed to have ownership of these registers, and the regmap cache
+will not contain any entries for them.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 07f7d6e7a124 ("ASoC: cs35l56: Fix for initializing ASP1 mixer registers")
 ---
-This will have to go through Mark's tree because it's necessary
-to make this change to the HDA driver before applying patch #3 in
-this series.
----
- sound/pci/hda/cs35l56_hda.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/sound/cs35l56.h           |  2 +
+ sound/soc/codecs/cs35l56-shared.c | 63 ++++++++++++++++++++-----------
+ sound/soc/codecs/cs35l56.c        | 24 +++++++++++-
+ 3 files changed, 67 insertions(+), 22 deletions(-)
 
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 1a3f84599cb5..558c1f38fe97 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -644,6 +644,8 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
- 		ret = cs35l56_wait_for_firmware_boot(&cs35l56->base);
- 		if (ret)
- 			goto err_powered_up;
-+
-+		regcache_cache_only(cs35l56->base.regmap, false);
+diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
+index e0629699b563..1a3c6f66f620 100644
+--- a/include/sound/cs35l56.h
++++ b/include/sound/cs35l56.h
+@@ -267,6 +267,7 @@ struct cs35l56_base {
+ 	bool fw_patched;
+ 	bool secured;
+ 	bool can_hibernate;
++	bool fw_owns_asp1;
+ 	bool cal_data_valid;
+ 	s8 cal_index;
+ 	struct cirrus_amp_cal_data cal_data;
+@@ -283,6 +284,7 @@ extern const char * const cs35l56_tx_input_texts[CS35L56_NUM_INPUT_SRC];
+ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
+ 
+ int cs35l56_set_patch(struct cs35l56_base *cs35l56_base);
++int cs35l56_init_asp1_regs_for_driver_control(struct cs35l56_base *cs35l56_base);
+ int cs35l56_force_sync_asp1_registers_from_cache(struct cs35l56_base *cs35l56_base);
+ int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command);
+ int cs35l56_firmware_shutdown(struct cs35l56_base *cs35l56_base);
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index a83317db75ed..ec1d95e57061 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -40,16 +40,11 @@ EXPORT_SYMBOL_NS_GPL(cs35l56_set_patch, SND_SOC_CS35L56_SHARED);
+ static const struct reg_default cs35l56_reg_defaults[] = {
+ 	/* no defaults for OTP_MEM - first read populates cache */
+ 
+-	{ CS35L56_ASP1_ENABLES1,		0x00000000 },
+-	{ CS35L56_ASP1_CONTROL1,		0x00000028 },
+-	{ CS35L56_ASP1_CONTROL2,		0x18180200 },
+-	{ CS35L56_ASP1_CONTROL3,		0x00000002 },
+-	{ CS35L56_ASP1_FRAME_CONTROL1,		0x03020100 },
+-	{ CS35L56_ASP1_FRAME_CONTROL5,		0x00020100 },
+-	{ CS35L56_ASP1_DATA_CONTROL1,		0x00000018 },
+-	{ CS35L56_ASP1_DATA_CONTROL5,		0x00000018 },
+-
+-	/* no defaults for ASP1TX mixer */
++	/*
++	 * No defaults for ASP1 control or ASP1TX mixer. See
++	 * cs35l56_populate_asp1_register_defaults() and
++	 * cs35l56_sync_asp1_mixer_widgets_with_firmware().
++	 */
+ 
+ 	{ CS35L56_SWIRE_DP3_CH1_INPUT,		0x00000018 },
+ 	{ CS35L56_SWIRE_DP3_CH2_INPUT,		0x00000019 },
+@@ -210,6 +205,36 @@ static bool cs35l56_volatile_reg(struct device *dev, unsigned int reg)
  	}
+ }
  
- 	/* Disable auto-hibernate so that runtime_pm has control */
-@@ -1002,6 +1004,8 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id)
- 	if (ret)
- 		goto err;
- 
-+	regcache_cache_only(cs35l56->base.regmap, false);
++static const struct reg_sequence cs35l56_asp1_defaults[] = {
++	REG_SEQ0(CS35L56_ASP1_ENABLES1,		0x00000000),
++	REG_SEQ0(CS35L56_ASP1_CONTROL1,		0x00000028),
++	REG_SEQ0(CS35L56_ASP1_CONTROL2,		0x18180200),
++	REG_SEQ0(CS35L56_ASP1_CONTROL3,		0x00000002),
++	REG_SEQ0(CS35L56_ASP1_FRAME_CONTROL1,	0x03020100),
++	REG_SEQ0(CS35L56_ASP1_FRAME_CONTROL5,	0x00020100),
++	REG_SEQ0(CS35L56_ASP1_DATA_CONTROL1,	0x00000018),
++	REG_SEQ0(CS35L56_ASP1_DATA_CONTROL5,	0x00000018),
++};
 +
- 	ret = cs35l56_set_patch(&cs35l56->base);
- 	if (ret)
- 		goto err;
++/*
++ * The firmware can have control of the ASP so we don't provide regmap
++ * with defaults for these registers, to prevent a regcache_sync() from
++ * overwriting the firmware settings. But if the machine driver hooks up
++ * the ASP it means the driver is taking control of the ASP, so then the
++ * registers are populated with the defaults.
++ */
++int cs35l56_init_asp1_regs_for_driver_control(struct cs35l56_base *cs35l56_base)
++{
++	if (!cs35l56_base->fw_owns_asp1)
++		return 0;
++
++	cs35l56_base->fw_owns_asp1 = false;
++
++	return regmap_multi_reg_write(cs35l56_base->regmap, cs35l56_asp1_defaults,
++				      ARRAY_SIZE(cs35l56_asp1_defaults));
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_init_asp1_regs_for_driver_control, SND_SOC_CS35L56_SHARED);
++
+ /*
+  * The firmware boot sequence can overwrite the ASP1 config registers so that
+  * they don't match regmap's view of their values. Rewrite the values from the
+@@ -217,19 +242,15 @@ static bool cs35l56_volatile_reg(struct device *dev, unsigned int reg)
+  */
+ int cs35l56_force_sync_asp1_registers_from_cache(struct cs35l56_base *cs35l56_base)
+ {
+-	struct reg_sequence asp1_regs[] = {
+-		{ .reg = CS35L56_ASP1_ENABLES1 },
+-		{ .reg = CS35L56_ASP1_CONTROL1 },
+-		{ .reg = CS35L56_ASP1_CONTROL2 },
+-		{ .reg = CS35L56_ASP1_CONTROL3 },
+-		{ .reg = CS35L56_ASP1_FRAME_CONTROL1 },
+-		{ .reg = CS35L56_ASP1_FRAME_CONTROL5 },
+-		{ .reg = CS35L56_ASP1_DATA_CONTROL1 },
+-		{ .reg = CS35L56_ASP1_DATA_CONTROL5 },
+-	};
++	struct reg_sequence asp1_regs[ARRAY_SIZE(cs35l56_asp1_defaults)];
+ 	int i, ret;
+ 
+-	/* Read values from regmap cache into a write sequence */
++	if (cs35l56_base->fw_owns_asp1)
++		return 0;
++
++	memcpy(asp1_regs, cs35l56_asp1_defaults, sizeof(asp1_regs));
++
++	/* Read current values from regmap cache into the write sequence */
+ 	for (i = 0; i < ARRAY_SIZE(asp1_regs); ++i) {
+ 		ret = regmap_read(cs35l56_base->regmap, asp1_regs[i].reg, &asp1_regs[i].def);
+ 		if (ret)
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 5a4e0e479414..6331b8c6136e 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -454,9 +454,14 @@ static int cs35l56_asp_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int f
+ {
+ 	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(codec_dai->component);
+ 	unsigned int val;
++	int ret;
+ 
+ 	dev_dbg(cs35l56->base.dev, "%s: %#x\n", __func__, fmt);
+ 
++	ret = cs35l56_init_asp1_regs_for_driver_control(&cs35l56->base);
++	if (ret)
++		return ret;
++
+ 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+ 	case SND_SOC_DAIFMT_CBC_CFC:
+ 		break;
+@@ -530,6 +535,11 @@ static int cs35l56_asp_dai_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx
+ 					unsigned int rx_mask, int slots, int slot_width)
+ {
+ 	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(dai->component);
++	int ret;
++
++	ret = cs35l56_init_asp1_regs_for_driver_control(&cs35l56->base);
++	if (ret)
++		return ret;
+ 
+ 	if ((slots == 0) || (slot_width == 0)) {
+ 		dev_dbg(cs35l56->base.dev, "tdm config cleared\n");
+@@ -578,6 +588,11 @@ static int cs35l56_asp_dai_hw_params(struct snd_pcm_substream *substream,
+ 	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(dai->component);
+ 	unsigned int rate = params_rate(params);
+ 	u8 asp_width, asp_wl;
++	int ret;
++
++	ret = cs35l56_init_asp1_regs_for_driver_control(&cs35l56->base);
++	if (ret)
++		return ret;
+ 
+ 	asp_wl = params_width(params);
+ 	if (cs35l56->asp_slot_width)
+@@ -634,7 +649,11 @@ static int cs35l56_asp_dai_set_sysclk(struct snd_soc_dai *dai,
+ 				      int clk_id, unsigned int freq, int dir)
+ {
+ 	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(dai->component);
+-	int freq_id;
++	int freq_id, ret;
++
++	ret = cs35l56_init_asp1_regs_for_driver_control(&cs35l56->base);
++	if (ret)
++		return ret;
+ 
+ 	if (freq == 0) {
+ 		cs35l56->sysclk_set = false;
+@@ -1403,6 +1422,9 @@ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
+ 	cs35l56->base.cal_index = -1;
+ 	cs35l56->speaker_id = -ENOENT;
+ 
++	/* Assume that the firmware owns ASP1 until we know different */
++	cs35l56->base.fw_owns_asp1 = true;
++
+ 	dev_set_drvdata(cs35l56->base.dev, cs35l56);
+ 
+ 	cs35l56_fill_supply_names(cs35l56->supplies);
 -- 
 2.39.2
 
