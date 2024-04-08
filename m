@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AA2DCD128A
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Apr 2024 06:02:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9296CD128A
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Apr 2024 06:02:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A469227A;
-	Mon,  8 Apr 2024 08:02:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A469227A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B63F422CB;
+	Mon,  8 Apr 2024 08:02:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B63F422CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712556147;
-	bh=+ZnrNv4vW5/x1rpaIq+iT7fbeNGAlBuKr0XPju3wIuM=;
+	s=default; t=1712556167;
+	bh=ELERn9z7UVJVqAQqBnZjr6HtxOQ+/5+MEqddAZiFo4s=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jkW56dC2XqLFFM/WN9xEEGHDJu9n2Awld4hHXuLzuvCbxd8Hxm3emnIbDnSJNzxWo
-	 LWuRpzMolmob81e+uB0e4FuZNultpOVHNuEXAloxm8JoQe06FAzSUXTB2JM8GoFILt
-	 8uS0cSUCBKW8El+NDonfsxo9TcwhPIEjcuqnMYAs=
+	b=cUkHwxj76Ou/4F4Ixb8tEhVtfo88LnpieTZ3J7LNiJDDOOfgzmgg5n7u3nnJx/HvJ
+	 OpNqx/kek8OuaTfML/xlIBU/7bkIuYTA3WQnaXa728qSSh/UxpeCX8q3HIH4pN0MYB
+	 r+8IYk/OlwS2IQMGLqCdd6PUjNlpPXplE9nBf3HU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1EA2EF80589; Mon,  8 Apr 2024 08:01:55 +0200 (CEST)
+	id 9DA5BF805CB; Mon,  8 Apr 2024 08:01:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72EE5F805A8;
-	Mon,  8 Apr 2024 08:01:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FBEDF805C8;
+	Mon,  8 Apr 2024 08:01:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1794AF8028B; Mon,  8 Apr 2024 07:56:51 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 0DD9AF8026D; Mon,  8 Apr 2024 07:57:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D440AF8013D
-	for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2024 07:56:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D440AF8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2AADF800C9
+	for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2024 07:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2AADF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=sviIvLK8
+ header.s=k20201202 header.b=KMbvupMp
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 005D1CE0B43;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5B15760DF2;
+	Mon,  8 Apr 2024 05:56:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52B83C43390;
 	Mon,  8 Apr 2024 05:56:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F46C433F1;
-	Mon,  8 Apr 2024 05:56:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712555799;
-	bh=+ZnrNv4vW5/x1rpaIq+iT7fbeNGAlBuKr0XPju3wIuM=;
+	s=k20201202; t=1712555806;
+	bh=ELERn9z7UVJVqAQqBnZjr6HtxOQ+/5+MEqddAZiFo4s=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sviIvLK8dz4OGlOKa/TN9AmSCVEndDvBQFxaxRE5zVXefgoUOyLiTcPyd9jxJJ0LW
-	 omE0FJC9OFIyTxZUWWumXNkhYXmmsnhecovJw8PRzwICCVNt3BtRm7BjWQNT0ZWtdb
-	 Asft9gNS12Guviz6TpHxs7l0D7uiuzQ7wkJ2WaZa0hBP5M/iNZz57GNB964n3z3W83
-	 wz3JnIXGMb9JHBqWeVR1BsKnOYCuP/HR2LZn/KGJy1ZuD85JO6XiS/kAWylsWe5oYH
-	 Mt4gvr4L8fYsH+UyUUkqE4dFuRaY2S71lc1iq2TjIJh3d/L9v9VS5vVNJsQPMrdOCY
-	 iwdv2o/Y9yenw==
-Message-ID: <67ca18b4-0904-41e4-8218-ecb2016d532d@kernel.org>
-Date: Mon, 8 Apr 2024 07:56:27 +0200
+	b=KMbvupMpi0c75dd5qW5fkIraRqi2SUOOC80O5q2D9HXTifSn3Y7n25y29QMyC6enZ
+	 p0cXbUgyr2tdNLx/6k/ZepEYjwtING688cMGvV1IiVS0OWdR9WlBtGaQHywaFui0U4
+	 GM0mMWzOOiZYlBhiKKR7eIy8nNM0vsYKjWdZ/JNIuSGl2PP9FqmJegoEH/yYkdkYHz
+	 hlzNS5jAGrIHtCx2vow4u4sDEqCA4A9ojWDEnKYODZwgsgKDu8eVDxEIxOenS4yhtS
+	 ihIWXQF1kt+sAhzoF69DKPc/apanitXtxrPSjxS2z977j1jniiSI/GhOdLU/Qtl3PV
+	 rDwmyvhGNn3CA==
+Message-ID: <ff5fc4c2-de74-4a6b-a70c-a5f1bd0b5343@kernel.org>
+Date: Mon, 8 Apr 2024 07:56:40 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND v3 0/2] Add support for QCM6490 and QCS6490
+Subject: Re: [RESEND v3 1/2] ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd
+ QCS6490 sound card
 To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
@@ -72,6 +73,7 @@ Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com
 References: <20240408042331.403103-1-quic_mohs@quicinc.com>
+ <20240408042331.403103-2-quic_mohs@quicinc.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -117,11 +119,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240408042331.403103-1-quic_mohs@quicinc.com>
+In-Reply-To: <20240408042331.403103-2-quic_mohs@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KWWHBTEHCDVPLXCNYWVLK2I32ZNIYM4J
-X-Message-ID-Hash: KWWHBTEHCDVPLXCNYWVLK2I32ZNIYM4J
+Message-ID-Hash: 5JS43VUOFFAKJRFOHMI3KEHZ6CGCEVK6
+X-Message-ID-Hash: 5JS43VUOFFAKJRFOHMI3KEHZ6CGCEVK6
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -134,7 +136,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KWWHBTEHCDVPLXCNYWVLK2I32ZNIYM4J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5JS43VUOFFAKJRFOHMI3KEHZ6CGCEVK6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,18 +146,18 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 08/04/2024 06:23, Mohammad Rafi Shaik wrote:
-> This patchset adds support for sound card on Qualcomm QCM6490 IDP and
-> QCS6490 RB3Gen2 boards.
+> Document the bindings for the Qualcomm QCM6490 IDP and QCS6490 RB3Gen2
+> board specific sound card.
 > 
-> Changes since v2:
-> 	- Modify qcm6490 compatible name as qcm6490-idp. Suggested by Dmitry
+> The bindings are the same as for other newer Qualcomm ADSP sound cards,
+> thus keep them in existing qcom,sm8250.yaml file, even though Linux driver
+> is separate.
 > 
-> Changes since v1:
-> 	- Use existing sc8280xp machine driver instead of separate driver.
-> 	- Modify qcs6490 compatible name as qcs6490-rb3gen2.
-> 
+> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+> ---
 
-Why are you resending 15 minutes after previous round?
+
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
