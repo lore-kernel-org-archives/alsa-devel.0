@@ -4,109 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB161C67861
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Apr 2024 09:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84A5EC67861
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Apr 2024 10:18:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52FC22369;
-	Mon,  8 Apr 2024 11:17:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52FC22369
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2B7E22AA;
+	Mon,  8 Apr 2024 12:18:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2B7E22AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712567860;
-	bh=ydZJw7d35Ff9MPe3LKMKV9TaBpQgVGBrz9NBba+U30U=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1712571530;
+	bh=Jk5AfXpYJl/Ul0uWQBPecZhjRr/Z7t8CO1bBtCb5+qA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=E303hry4LMS+9X7VYTdmGoZEqamuy+ROt+N0o4n5+o2Ge5on22s4kNg5n+SejF5nK
-	 fjTmF+hYw9WEgA1pau1XB9Je6WXyP+EyRy9+s4orL+UHZupxihJKo7vUn5mliP0Poi
-	 y3pb/3xj5rrWGhu1K12CTD0ADv8VZG5HyRTCzR1I=
+	b=Dro1mnpK5WxI3KYJgALu4MkcqLI3n+Mwd0yT4QZ1azYDK5V/tHQLyN5J92X3OHEwB
+	 wWMeJavwzBUAAx2xabN4Oo7IO4IZTV2gKpotisSXXu1pGWo5BCCJFE3now0dCxX2+W
+	 EGuo+GigOnCSizWK3oU1WfXulTJjV9vu4TdCHYVs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1EAE4F80580; Mon,  8 Apr 2024 11:17:09 +0200 (CEST)
+	id 113B8F805AE; Mon,  8 Apr 2024 12:18:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C3D2F80587;
-	Mon,  8 Apr 2024 11:17:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C112F805AC;
+	Mon,  8 Apr 2024 12:18:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4AC67F8026D; Mon,  8 Apr 2024 11:17:04 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E4483F8028B; Mon,  8 Apr 2024 12:18:14 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF75CF80130
-	for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2024 11:16:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF75CF80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 587CDF800C9
+	for <alsa-devel@alsa-project.org>; Mon,  8 Apr 2024 12:18:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 587CDF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=C/UItviN
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-345600106d3so1116697f8f.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 08 Apr 2024 02:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712567818; x=1713172618;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Kyn/nAbJTaoSC8qDBWXGUmDfOwA1IOLpAo8aFHObHYE=;
-        b=C/UItviN/GmTqWjcYb4h5/sckCXbqMKLNSFxjUiXfCX9YDJaGPsW/N5j4ceI3eGuIn
-         aboPFcyxMTQ6+8QUun0/loG8VBn1AePzxx0Kn+oMRYeSPMh7ubpE9I4bqMmjeprLzn/8
-         TkxwmIm7MFG9sMBBwMgkG9moxr4YGcdl8aU+/y1VitVPaOh4bCiiiV20gNry/Oxxxr+V
-         MHyvdWz/dRzm/0WPj/2Ah6lxNz6b+vGWHqdmVemfC44kELKOJT/dMKUMbJGOvafYRW0X
-         ZwhB5XxmhRLInt5nKcRjainAVYpBHi0NhPD+R5TAiktaK2SHfDn/REZ2EDiHtBzMdmsv
-         503g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712567818; x=1713172618;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kyn/nAbJTaoSC8qDBWXGUmDfOwA1IOLpAo8aFHObHYE=;
-        b=kUqwOkRcECnH9OrNnetdRh6bn1+jk2A9H4AoyEU6yuvoTEXbUgKUZY4E7PA/Cnlc3f
-         PgTyQsFaTbvJ7M5qFvZ1Xnpnn0crd9cC4e/znEKAUv+USp1/vdpjvrIvkPNew8tjb6er
-         1BIgIy57SJs3zOGbcF8wcB0HghQWH5nvblVUkXw0rH2urSQYt2O8Mx046iEIvUXXjbxi
-         bAP5MuVszPW1jNnq9cwoHTVKIapqVQjm+GW5xxbKkMxGV40sXvKqARJBoaqB7eJSSv/K
-         5PgKWGyeZjmlT9WDEqKYkNiEiPjjSbyELWjn6Nmm89hqRLSm1Vh52cxTnJaeICNyZyfe
-         0hTQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXAkU1Wr1xi0I9l54IhfB4KoNy35Rv8RoHEaNQPaKoCr9ELfUcjlDTFhm4YDYKP5uqgUiVtLSn3fXcFLJrXkX9WF7M8vggOJmVtgBE=
-X-Gm-Message-State: AOJu0YxVvlB8nU5BnYJoaUiz3ANejv8no9qB7ofVDXeFuo3IWBLaDOGG
-	WLnNZRx1R72u8Rd7eYt2393o50uPs72Srd8fJef21wIgm8bREB9K92gh+jUq4KE=
-X-Google-Smtp-Source: 
- AGHT+IFbW+GZvWtDNwC+hUfv0CeQti5p0/4Lt39sOJliVc7683eESlFh87O+IacxG6iRBQDyz+nk9A==
-X-Received: by 2002:adf:f28e:0:b0:33e:3bf3:a097 with SMTP id
- k14-20020adff28e000000b0033e3bf3a097mr5598241wro.26.1712567818504;
-        Mon, 08 Apr 2024 02:16:58 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id
- q8-20020adfea08000000b00341c6440c36sm8586391wrm.74.2024.04.08.02.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 02:16:58 -0700 (PDT)
-Message-ID: <499dc405-a292-44c2-860f-db78ad7becc8@linaro.org>
-Date: Mon, 8 Apr 2024 10:16:51 +0100
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=qT3I7ohe
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 43850rVA005178;
+	Mon, 8 Apr 2024 05:18:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=U6m2cDC0lG4V+OJfs4nMI2Z6AhEq3DduAGPDmmbhl9U=; b=
+	qT3I7oheSuZKbXg4rSLcHWQsxyUGPavhCJwPShLxQVPLJt+hEicygncqgnLaIu0x
+	kKiBhbC01AB0pqaMd8e4BTbQ7vXCZqnG3nzGvfKWXUnTLS+nD1BpKKwXirAsYXZj
+	0bw0tpecsh1K1GXfMV3neAjadBtkN4seGHT0svMZPGcOgWcCsXINCbdKFEeCnYsM
+	YN3Oosi22Hm0jZs/9tcNfmLtFh4v56mY/4mU1lEl8iDTkeOr6UF/efG1pQWXnMtU
+	qhjM4HP4TinWzamCerpKzviCgvR9zOU3XaF+GX2Gtt4vQ/EnFg4R74egIXuRA2Pc
+	PBhrsjihm/sHbFym9sQTqw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxhbbq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Apr 2024 05:18:05 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 8 Apr 2024
+ 11:18:03 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Mon, 8 Apr 2024 11:18:03 +0100
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
+ [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 36BE582024B;
+	Mon,  8 Apr 2024 10:18:03 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <tiwai@suse.com>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH 2/4] ALSA: hda: cs35l56: Exit cache-only after
+ cs35l56_wait_for_firmware_boot()
+Date: Mon, 8 Apr 2024 11:18:01 +0100
+Message-ID: <20240408101803.43183-3-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240408101803.43183-1-rf@opensource.cirrus.com>
+References: <20240408101803.43183-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND v3 0/2] Add support for QCM6490 and QCS6490
-To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com
-References: <20240408042331.403103-1-quic_mohs@quicinc.com>
-Content-Language: en-US
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20240408042331.403103-1-quic_mohs@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: PUM2BVL4TJ4JD3PTRCC4DU4IBJPLH6UY
-X-Message-ID-Hash: PUM2BVL4TJ4JD3PTRCC4DU4IBJPLH6UY
-X-MailFrom: srinivas.kandagatla@linaro.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 50B025tE5E7-lELiV888TYU8ZXrSmWhG
+X-Proofpoint-GUID: 50B025tE5E7-lELiV888TYU8ZXrSmWhG
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: FP5C7CSFJRS5ZKU7VU3GFVXHRDJD6RWL
+X-Message-ID-Hash: FP5C7CSFJRS5ZKU7VU3GFVXHRDJD6RWL
+X-MailFrom: prvs=182810dd8d=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -118,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PUM2BVL4TJ4JD3PTRCC4DU4IBJPLH6UY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FP5C7CSFJRS5ZKU7VU3GFVXHRDJD6RWL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,30 +111,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Adds calls to disable regmap cache-only after a successful return from
+cs35l56_wait_for_firmware_boot().
 
+This is to prepare for a change in the shared ASoC module that will
+leave regmap in cache-only mode after cs35l56_system_reset(). This is
+to prevent register accesses going to the hardware while it is
+rebooting.
 
-On 08/04/2024 05:23, Mohammad Rafi Shaik wrote:
-> This patchset adds support for sound card on Qualcomm QCM6490 IDP and
-> QCS6490 RB3Gen2 boards.
-> 
-> Changes since v2:
-> 	- Modify qcm6490 compatible name as qcm6490-idp. Suggested by Dmitry
-> 
-> Changes since v1:
-> 	- Use existing sc8280xp machine driver instead of separate driver.
-> 	- Modify qcs6490 compatible name as qcs6490-rb3gen2.
-> 
-> Mohammad Rafi Shaik (2):
->    ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd QCS6490 sound card
->    ASoC: qcom: sc8280xp: Add support for QCM6490 and QCS6490
-> 
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+This will have to go through Mark's tree because it's necessary
+to make this change to the HDA driver before applying patch #3 in
+this series.
+---
+ sound/pci/hda/cs35l56_hda.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-LGTM,
+diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+index 1a3f84599cb5..558c1f38fe97 100644
+--- a/sound/pci/hda/cs35l56_hda.c
++++ b/sound/pci/hda/cs35l56_hda.c
+@@ -644,6 +644,8 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
+ 		ret = cs35l56_wait_for_firmware_boot(&cs35l56->base);
+ 		if (ret)
+ 			goto err_powered_up;
++
++		regcache_cache_only(cs35l56->base.regmap, false);
+ 	}
+ 
+ 	/* Disable auto-hibernate so that runtime_pm has control */
+@@ -1002,6 +1004,8 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id)
+ 	if (ret)
+ 		goto err;
+ 
++	regcache_cache_only(cs35l56->base.regmap, false);
++
+ 	ret = cs35l56_set_patch(&cs35l56->base);
+ 	if (ret)
+ 		goto err;
+-- 
+2.39.2
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
---srini
->   Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 2 ++
->   sound/soc/qcom/sc8280xp.c                                | 2 ++
->   2 files changed, 4 insertions(+)
-> 
