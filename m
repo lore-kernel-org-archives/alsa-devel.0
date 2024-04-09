@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3E3DCD1284
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 11:37:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 036B2CD1284
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 11:38:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F85D23E3;
-	Tue,  9 Apr 2024 13:37:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F85D23E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18DA3231C;
+	Tue,  9 Apr 2024 13:38:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18DA3231C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712662675;
-	bh=5l6ixT/QJSwR/7ij5ouRmnGQrpg9lKNtekqp8cQZN/E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Lu7m/mQRh7dZxwmwv2mTQzgeqhdrj79StpAM4tMJ0cyq3ctSzLwb6Cs9ToCd70kXB
-	 At1x000XrtJkyIl2C8+k5KoVnOMUTzBjB464OvB2czzllAZhYawolNhM185W/mDc16
-	 LXUdNztQmQzLLrZ3rt8VQo5ArgHwH/nv3XzZD4GQ=
+	s=default; t=1712662693;
+	bh=2sa0czol+M3wlqjbrCy6HFZ0ZDdi6agl2iY8luWcwKU=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=OM5LYl2LKEaZCojoL03s1tTSeyaIbT0oCt7C5rDs26G+PKxYn0OyhAsW9pStjw1CR
+	 uvuzJnViiktUTxL3oHkDkebf3Js8TS0rsWRN2RJzGc9QsL2XG4TSUU+5ILmc/0uzAv
+	 apZHuIOxh2m3wt5CuzKEnnnFffV2bl6tXcMu83s4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8211CF80618; Tue,  9 Apr 2024 13:36:33 +0200 (CEST)
+	id E02F2F80639; Tue,  9 Apr 2024 13:36:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AA5BF80613;
-	Tue,  9 Apr 2024 13:36:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EB07F8063D;
+	Tue,  9 Apr 2024 13:36:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6ED1DF8057A; Tue,  9 Apr 2024 13:34:03 +0200 (CEST)
+	id 239B7F80579; Tue,  9 Apr 2024 13:34:04 +0200 (CEST)
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
  [IPv6:2a00:1098:ed:100::25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 637FAF80423
-	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 13:33:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 637FAF80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id EF4F6F80236
+	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 13:33:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF4F6F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=fLp2KXbH
+ header.a=rsa-sha256 header.s=mail header.b=D14Qe1+d
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712662422;
-	bh=5l6ixT/QJSwR/7ij5ouRmnGQrpg9lKNtekqp8cQZN/E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fLp2KXbHF6vumyXVCtoYQlUTBj+R6nX6K/oBbABxND601NoXmxRmBTfSl05PXqFvE
-	 DPaFY5HsbXeLNG74mmHxfpG0Ji9h6AH2mCWwRNWA4VcFyqf7DoDAIDblb0+9RaOEu3
-	 a9nlqBsUagjsr64m6IHZBot/6ngTkT0WNNsdhgXKCAeHKAxEqWvKISI5YKlBzmeQdx
-	 kUcDUR1KfWXkkmrTQ+QlNjiBn0cCWZ0zN5V0hfV27gPhXMjGLB0G0WWCB9WiNQ0Qo9
-	 a3w27XDHMfJ+nikgv7iv/XJTJhueLaJzf+bFQuEVFimgfdrIchFrd+HxI+laoidPHp
-	 efqjAZfY8Ws0w==
+	s=mail; t=1712662410;
+	bh=2sa0czol+M3wlqjbrCy6HFZ0ZDdi6agl2iY8luWcwKU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=D14Qe1+dY6nxSzSEqTMvcCkZ+ZodJyh7mvU5newHJvq3qcXrDmRf6GOHmT5KpoJZg
+	 T7CqC5zwpMpgqMSpI89xS0cO8VjusWoTFmW1lBKZ1Cv91N2OrC/J96jI6+Hnxu7Q48
+	 T1j/m0J7QNTLGvAMpGfHkWwjnL8QkrQTjA7UWSNb/+ZHpwsPMNmb4iV7pkfLYJC6n7
+	 bJbj+RvosTiSxyRq7b9EBkwh+byGWB/re5Hm6yDkG27YOSl5hZhjJdK2uuMndPlP+7
+	 /Pduw0MhgSVu34XJGZVXirGEkOUvpGGTnZg5r3U0WAOnRAinqvv8gpVzsOlmfK2xWk
+	 3Tb+8t959dnpw==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -57,8 +57,8 @@ Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 28DBB378212D;
-	Tue,  9 Apr 2024 11:33:40 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4CEF637820F5;
+	Tue,  9 Apr 2024 11:33:28 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -98,17 +98,14 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v4 05/18] ASoC: mediatek: mt8192: Migrate to
- mtk_soundcard_common_probe
-Date: Tue,  9 Apr 2024 13:32:57 +0200
-Message-ID: <20240409113310.303261-6-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v4 00/18] SoC: Cleanup MediaTek soundcard machine drivers
+Date: Tue,  9 Apr 2024 13:32:52 +0200
+Message-ID: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
-References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: O2LOIUDTM6VHI5K73NQJE6MXS3P3QMPY
-X-Message-ID-Hash: O2LOIUDTM6VHI5K73NQJE6MXS3P3QMPY
+Message-ID-Hash: 5ABA54DJYLNOEXH6HP7JLJD4BNWFNHH5
+X-Message-ID-Hash: 5ABA54DJYLNOEXH6HP7JLJD4BNWFNHH5
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O2LOIUDTM6VHI5K73NQJE6MXS3P3QMPY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5ABA54DJYLNOEXH6HP7JLJD4BNWFNHH5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,302 +127,107 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add mtk_soundcard_pdata platform data for the MediaTek common sound card
-probe mechanism, including a driver/soc-specific probe extension (used
-for bits that cannot be commonized  hence specific to this driver), and
-change the probe function to mtk_soundcard_common_probe.
+Changes in v4:
+ - Rebased over next-20240409
+ - Dropped the first 4 patches from v3 as were already picked by Mark
 
-This is also adding the possibility of specifying the links and routing
-with the audio-routing property and (x)-dai-link nodes in device trees
-to stop hardcoding machine specific links in the card driver assupported
-by the common probe function, but support for legacy device trees is
-retained with a legacy_probe function, which is used only in case the
-new properties are not found.
+Changes in v3:
+ - Added audio-routing names in enum in all yaml files
+ - Added mention of disallowing old and new properties together in
+   commit message of bindings patches
+ - Fixed validation errors with sound-card-common.yaml inclusion
+   due to missing model property in examples
+ - Removed `else` enforcing headset-codec/speaker-codecs requirement
+   if xxx-dai-link not present to avoid future commit noise as the
+   deprecated statement will disallow deprecated properties as required
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 164 ++++++++++--------
- 1 file changed, 91 insertions(+), 73 deletions(-)
+Changes in v2:
+ - Bindings: Changed link-name/codec/clk-provider to remove `items`
+   and leave just the enum
+ - Moved .*-dai-link pattern additionalProperties after `type: object`
+ - Added ref to sound-card-common.yaml
+ - Fixed dai-link-xxx -> xxx-dai-link typo in example comment
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-index bfcb2c486c39..645bc1aa67c7 100644
---- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-@@ -20,6 +20,8 @@
- #include "../../codecs/rt1015.h"
- #include "../../codecs/rt5682.h"
- #include "../common/mtk-afe-platform-driver.h"
-+#include "../common/mtk-soc-card.h"
-+#include "../common/mtk-soundcard-driver.h"
- #include "mt8192-afe-common.h"
- #include "mt8192-afe-clk.h"
- #include "mt8192-afe-gpio.h"
-@@ -38,9 +40,10 @@
- #define RT1015P_RT5682_OF_NAME "mediatek,mt8192_mt6359_rt1015p_rt5682"
- #define RT1015P_RT5682S_OF_NAME "mediatek,mt8192_mt6359_rt1015p_rt5682s"
- 
--struct mt8192_mt6359_priv {
--	struct snd_soc_jack headset_jack;
--	struct snd_soc_jack hdmi_jack;
-+enum mt8192_jacks {
-+	MT8192_JACK_HEADSET,
-+	MT8192_JACK_HDMI,
-+	MT8192_JACK_MAX,
- };
- 
- /* Headset jack detection DAPM pins */
-@@ -323,13 +326,13 @@ static int mt8192_mt6359_init(struct snd_soc_pcm_runtime *rtd)
- 
- static int mt8192_rt5682_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8192_JACK_HEADSET];
- 	struct snd_soc_component *cmpnt_afe =
- 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt_afe);
- 	struct snd_soc_component *cmpnt_codec =
- 		snd_soc_rtd_to_codec(rtd, 0)->component;
--	struct mt8192_mt6359_priv *priv = snd_soc_card_get_drvdata(rtd->card);
--	struct snd_soc_jack *jack = &priv->headset_jack;
- 	int ret;
- 
- 	ret = mt8192_dai_i2s_set_share(afe, "I2S8", "I2S9");
-@@ -359,19 +362,19 @@ static int mt8192_rt5682_init(struct snd_soc_pcm_runtime *rtd)
- 
- static int mt8192_mt6359_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8192_JACK_HDMI];
- 	struct snd_soc_component *cmpnt_codec =
- 		snd_soc_rtd_to_codec(rtd, 0)->component;
--	struct mt8192_mt6359_priv *priv = snd_soc_card_get_drvdata(rtd->card);
- 	int ret;
- 
--	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT,
--				    &priv->hdmi_jack);
-+	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT, jack);
- 	if (ret) {
- 		dev_err(rtd->dev, "HDMI Jack creation failed: %d\n", ret);
- 		return ret;
- 	}
- 
--	return snd_soc_component_set_jack(cmpnt_codec, &priv->hdmi_jack, NULL);
-+	return snd_soc_component_set_jack(cmpnt_codec, jack, NULL);
- }
- 
- static int mt8192_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-@@ -1136,71 +1139,53 @@ static int mt8192_mt6359_card_set_be_link(struct snd_soc_card *card,
- 	return 0;
- }
- 
--static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
-+static int mt8192_mt6359_legacy_probe(struct mtk_soc_card_data *soc_card_data)
- {
--	struct snd_soc_card *card;
--	struct device_node *platform_node, *hdmi_codec, *headset_codec, *speaker_codec;
--	int ret, i;
-+	struct mtk_platform_card_data *card_data = soc_card_data->card_data;
-+	struct snd_soc_card *card = card_data->card;
-+	struct device *dev = card->dev;
-+	struct device_node *hdmi_codec, *headset_codec, *speaker_codec;
- 	struct snd_soc_dai_link *dai_link;
--	struct mt8192_mt6359_priv *priv;
--
--	card = (struct snd_soc_card *)of_device_get_match_data(&pdev->dev);
--	if (!card)
--		return -EINVAL;
--	card->dev = &pdev->dev;
--
--	if (of_device_is_compatible(pdev->dev.of_node, RT1015P_RT5682_OF_NAME))
--		card->name = RT1015P_RT5682_CARD_NAME;
--	else if (of_device_is_compatible(pdev->dev.of_node, RT1015P_RT5682S_OF_NAME))
--		card->name = RT1015P_RT5682S_CARD_NAME;
--	else
--		dev_dbg(&pdev->dev, "No need to set card name\n");
-+	int ret, i;
- 
--	hdmi_codec = of_parse_phandle(pdev->dev.of_node, "mediatek,hdmi-codec", 0);
-+	hdmi_codec = of_parse_phandle(dev->of_node, "mediatek,hdmi-codec", 0);
- 	if (!hdmi_codec)
--		dev_dbg(&pdev->dev, "The machine has no hdmi-codec\n");
-+		dev_dbg(dev, "The machine has no hdmi-codec\n");
- 
--	platform_node = of_parse_phandle(pdev->dev.of_node, "mediatek,platform", 0);
--	if (!platform_node) {
--		ret = -EINVAL;
--		dev_err_probe(&pdev->dev, ret, "Property 'platform' missing or invalid\n");
--		goto err_platform_node;
--	}
--
--	speaker_codec = of_get_child_by_name(pdev->dev.of_node, "speaker-codecs");
-+	speaker_codec = of_get_child_by_name(dev->of_node, "speaker-codecs");
- 	if (!speaker_codec) {
- 		ret = -EINVAL;
--		dev_err_probe(&pdev->dev, ret, "Property 'speaker-codecs' missing or invalid\n");
-+		dev_err_probe(dev, ret, "Property 'speaker-codecs' missing or invalid\n");
- 		goto err_speaker_codec;
- 	}
- 
--	headset_codec = of_get_child_by_name(pdev->dev.of_node, "headset-codec");
-+	headset_codec = of_get_child_by_name(dev->of_node, "headset-codec");
- 	if (!headset_codec) {
- 		ret = -EINVAL;
--		dev_err_probe(&pdev->dev, ret, "Property 'headset-codec' missing or invalid\n");
-+		dev_err_probe(dev, ret, "Property 'headset-codec' missing or invalid\n");
- 		goto err_headset_codec;
- 	}
- 
- 	for_each_card_prelinks(card, i, dai_link) {
- 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, speaker_codec, "I2S3");
- 		if (ret) {
--			dev_err_probe(&pdev->dev, ret, "%s set speaker_codec fail\n",
-+			dev_err_probe(dev, ret, "%s set speaker_codec fail\n",
- 				      dai_link->name);
--			goto err_probe;
-+			break;
- 		}
- 
- 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S8");
- 		if (ret) {
--			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
-+			dev_err_probe(dev, ret, "%s set headset_codec fail\n",
- 				      dai_link->name);
--			goto err_probe;
-+			break;
- 		}
- 
- 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S9");
- 		if (ret) {
--			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
-+			dev_err_probe(dev, ret, "%s set headset_codec fail\n",
- 				      dai_link->name);
--			goto err_probe;
-+			break;
- 		}
- 
- 		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0) {
-@@ -1211,52 +1196,85 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- 		if (dai_link->num_codecs && dai_link->codecs[0].dai_name &&
- 		    strcmp(dai_link->codecs[0].dai_name, RT1015_CODEC_DAI) == 0)
- 			dai_link->ops = &mt8192_rt1015_i2s_ops;
--
--		if (!dai_link->platforms->name)
--			dai_link->platforms->of_node = platform_node;
--	}
--
--	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		ret = -ENOMEM;
--		goto err_probe;
--	}
--	snd_soc_card_set_drvdata(card, priv);
--
--	ret = mt8192_afe_gpio_init(&pdev->dev);
--	if (ret) {
--		dev_err_probe(&pdev->dev, ret, "%s init gpio error\n", __func__);
--		goto err_probe;
- 	}
- 
--	ret = devm_snd_soc_register_card(&pdev->dev, card);
--	if (ret)
--		dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail\n", __func__);
--
--err_probe:
- 	of_node_put(headset_codec);
- err_headset_codec:
- 	of_node_put(speaker_codec);
- err_speaker_codec:
--	of_node_put(platform_node);
--err_platform_node:
--	of_node_put(hdmi_codec);
-+	if (hdmi_codec)
-+		of_node_put(hdmi_codec);
-+
- 	return ret;
- }
- 
-+static int mt8192_mt6359_soc_card_probe(struct mtk_soc_card_data *soc_card_data, bool legacy)
-+{
-+	struct mtk_platform_card_data *card_data = soc_card_data->card_data;
-+	struct snd_soc_card *card = card_data->card;
-+	int ret;
-+
-+	if (legacy) {
-+		ret = mt8192_mt6359_legacy_probe(soc_card_data);
-+		if (ret)
-+			return ret;
-+	} else {
-+		struct snd_soc_dai_link *dai_link;
-+		int i;
-+
-+		for_each_card_prelinks(card, i, dai_link)
-+			if (dai_link->num_codecs && dai_link->codecs[0].dai_name &&
-+			    strcmp(dai_link->codecs[0].dai_name, RT1015_CODEC_DAI) == 0)
-+				dai_link->ops = &mt8192_rt1015_i2s_ops;
-+	}
-+
-+	ret = mt8192_afe_gpio_init(card->dev);
-+	if (ret)
-+		return dev_err_probe(card->dev, ret, "%s init gpio error\n", __func__);
-+
-+	return 0;
-+}
-+
-+static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015_rt5682_pdata = {
-+	.card_name = RT1015_RT5682_CARD_NAME,
-+	.card_data = &(struct mtk_platform_card_data) {
-+		.card = &mt8192_mt6359_rt1015_rt5682_card,
-+		.num_jacks = MT8192_JACK_MAX,
-+	},
-+	.soc_probe = mt8192_mt6359_soc_card_probe
-+};
-+
-+static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682_pdata = {
-+	.card_name = RT1015P_RT5682_CARD_NAME,
-+	.card_data = &(struct mtk_platform_card_data) {
-+		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
-+		.num_jacks = MT8192_JACK_MAX,
-+	},
-+	.soc_probe = mt8192_mt6359_soc_card_probe
-+};
-+
-+static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682s_pdata = {
-+	.card_name = RT1015P_RT5682S_CARD_NAME,
-+	.card_data = &(struct mtk_platform_card_data) {
-+		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
-+		.num_jacks = MT8192_JACK_MAX,
-+	},
-+	.soc_probe = mt8192_mt6359_soc_card_probe
-+};
-+
- #ifdef CONFIG_OF
- static const struct of_device_id mt8192_mt6359_dt_match[] = {
- 	{
- 		.compatible = RT1015_RT5682_OF_NAME,
--		.data = &mt8192_mt6359_rt1015_rt5682_card,
-+		.data = &mt8192_mt6359_rt1015_rt5682_pdata,
- 	},
- 	{
- 		.compatible = RT1015P_RT5682_OF_NAME,
--		.data = &mt8192_mt6359_rt1015p_rt5682x_card,
-+		.data = &mt8192_mt6359_rt1015p_rt5682_pdata,
- 	},
- 	{
- 		.compatible = RT1015P_RT5682S_OF_NAME,
--		.data = &mt8192_mt6359_rt1015p_rt5682x_card,
-+		.data = &mt8192_mt6359_rt1015p_rt5682s_pdata,
- 	},
- 	{}
- };
-@@ -1276,7 +1294,7 @@ static struct platform_driver mt8192_mt6359_driver = {
- #endif
- 		.pm = &mt8192_mt6359_pm_ops,
- 	},
--	.probe = mt8192_mt6359_dev_probe,
-+	.probe = mtk_soundcard_common_probe,
- };
- 
- module_platform_driver(mt8192_mt6359_driver);
+This series performs a cleanup of most of the MediaTek AFE drivers and
+soundcard machine drivers, reducing code duplication and setting a base
+to be consistent with their devicetree bindings, as many of those are
+using different properties and nodes for no good reason.
+
+Summarizing:
+ - Commonizes functions and ops where possible
+ - Adds a common probe mechanism, increasing maintainability of
+   soundcard drivers for older MediaTek SoCs
+ - Migrates all drivers to support the new bindings
+   - Obviously retains compatibility with old device trees
+ - Reduces machine-specific parameters hardcoding in drivers
+   - Can now set machine-specific params in device tree
+   - Uses the `audio-routing` and `dai-link` nodes like some
+     other non-MediaTek SoC sound drivers
+ - Imposes consistency between MediaTek ASoC machine soundcard
+   drivers bindings
+ - Reduces code size and greatly reduces the amount of code that
+   will be required for newer drivers (retaining compatibility with
+   the old bindings was costly in terms of code size, otherwise
+   this series would've removed ~1000 more lines, or something
+   along that line).
+
+This series was (manually) tested on MT8173, MT8192, MT8195 and MT8186
+Chromebooks.
+
+AngeloGioacchino Del Regno (18):
+  ASoC: mediatek: Add common machine soundcard driver probe mechanism
+  ASoC: mediatek: common: Constify struct mtk_sof_priv
+  ASoC: mediatek: mt8188: Migrate to mtk_soundcard_common_probe
+  ASoC: mediatek: mt8195: Migrate to mtk_soundcard_common_probe
+  ASoC: mediatek: mt8192: Migrate to mtk_soundcard_common_probe
+  ASoC: mediatek: mt8186: Migrate to mtk_soundcard_common_probe
+  ASoC: mediatek: Add common snd_soc_ops .startup() callback
+  ASoC: mediatek: mt8195: Migrate to the common mtk_soundcard_startup
+  ASoC: mediatek: mt8192: Migrate to the common mtk_soundcard_startup
+  ASoC: mediatek: mt8186-rt1019: Migrate to the common
+    mtk_soundcard_startup
+  ASoC: mediatek: Add common mtk_afe_component_probe callback
+  ASoC: mediatek: Use common mtk_afe_pcm_platform with common probe cb
+  ASoC: mediatek: mt8186: Unify mt8186-mt6366 machine drivers
+  ASoC: dt-bindings: mt8195: Document audio-routing and dai-link subnode
+  ASoC: dt-bindings: mt8192: Document audio-routing and dai-link subnode
+  ASoC: dt-bindings: mt8186: Document audio-routing and dai-link subnode
+  arm64: dts: mediatek: mt8195-cherry: Specify sound DAI links and
+    routing
+  arm64: dts: mediatek: mt8186-corsola: Specify sound DAI links and
+    routing
+
+ .../sound/mt8186-mt6366-da7219-max98357.yaml  |  131 +-
+ .../sound/mt8186-mt6366-rt1019-rt5682s.yaml   |  120 +-
+ .../sound/mt8192-mt6359-rt1015-rt5682.yaml    |  139 +-
+ .../bindings/sound/mt8195-mt6359.yaml         |  134 ++
+ .../boot/dts/mediatek/mt8186-corsola.dtsi     |   42 +-
+ .../boot/dts/mediatek/mt8195-cherry.dtsi      |   45 +
+ sound/soc/mediatek/Kconfig                    |   24 +-
+ .../mediatek/common/mtk-afe-platform-driver.c |   18 +
+ .../soc/mediatek/common/mtk-dsp-sof-common.c  |   15 +-
+ .../soc/mediatek/common/mtk-dsp-sof-common.h  |    1 -
+ sound/soc/mediatek/common/mtk-soc-card.h      |    7 +-
+ .../mediatek/common/mtk-soundcard-driver.c    |  199 +++
+ .../mediatek/common/mtk-soundcard-driver.h    |   42 +
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c    |   14 +-
+ sound/soc/mediatek/mt7986/mt7986-afe-pcm.c    |   14 +-
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c    |   14 +-
+ sound/soc/mediatek/mt8186/Makefile            |    3 +-
+ sound/soc/mediatek/mt8186/mt8186-afe-pcm.c    |   19 +-
+ sound/soc/mediatek/mt8186/mt8186-dai-adda.c   |    2 +-
+ .../mt8186/mt8186-mt6366-da7219-max98357.c    | 1189 -----------------
+ ...t6366-rt1019-rt5682s.c => mt8186-mt6366.c} |  578 ++++----
+ sound/soc/mediatek/mt8188/mt8188-afe-pcm.c    |   21 +-
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c     |  203 +--
+ sound/soc/mediatek/mt8192/mt8192-afe-pcm.c    |   25 +-
+ .../mt8192/mt8192-mt6359-rt1015-rt5682.c      |  301 ++---
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c    |   21 +-
+ sound/soc/mediatek/mt8195/mt8195-mt6359.c     |  487 +++----
+ 27 files changed, 1613 insertions(+), 2195 deletions(-)
+ delete mode 100644 sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
+ rename sound/soc/mediatek/mt8186/{mt8186-mt6366-rt1019-rt5682s.c => mt8186-mt6366.c} (72%)
+
 -- 
 2.44.0
 
