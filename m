@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3010CCD1284
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 11:40:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12607C67861
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 11:40:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67174238F;
-	Tue,  9 Apr 2024 13:39:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67174238F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0988D2BA5;
+	Tue,  9 Apr 2024 13:40:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0988D2BA5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712662799;
-	bh=7dwcW721xQhnjT05thzylbyuJsM5PYC/qaTz/86b5ls=;
+	s=default; t=1712662842;
+	bh=l/YgE2jHDgEGiO5tZpMnwUUm+KuVZjmQoNRva6TC6eM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=V5dOl0yaX039wpLhnQm+fL09xicEuIoxXOq3LRIWc3yRoL9SIGwNRg5iijpkIeeut
-	 cRa9Z8uHkQrOu97M/BN4IFh3Pca/j/PWpvaWnLfJMwoYcZX9iOJ6k8i3irD4E0IxBo
-	 qMCu6D+VnBI6aOXkCQLnsbkt9lOqEbxeb7y7n830=
+	b=qUEI6SUcrr0ml8bcgRpqo4m6N0R9H+Fwg08XoIpruOgJZbF3M7bGdqNOSrCbDLN5H
+	 2jllvCIaCnjtjkLm4n8qVGgygothyReuEYFJcNy7qw0Xu2pn5CmkZIGwoZy8gr+TDG
+	 28tcYDqMkKRMZa8BkvCQ3kM1An9+RI4cXlvB9PpQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07887F807B6; Tue,  9 Apr 2024 13:36:42 +0200 (CEST)
+	id 3ADADF80C51; Tue,  9 Apr 2024 13:36:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9613F806FA;
-	Tue,  9 Apr 2024 13:36:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 405CDF8076A;
+	Tue,  9 Apr 2024 13:36:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DBCFAF8056F; Tue,  9 Apr 2024 13:34:15 +0200 (CEST)
+	id 8D3D5F80568; Tue,  9 Apr 2024 13:34:20 +0200 (CEST)
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
  [IPv6:2a00:1098:ed:100::25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3156F80570
-	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 13:33:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3156F80570
+	by alsa1.perex.cz (Postfix) with ESMTPS id DBFC6F80236
+	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 13:34:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBFC6F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=POa3k99V
+ header.a=rsa-sha256 header.s=mail header.b=HjVtEb/a
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712662431;
-	bh=7dwcW721xQhnjT05thzylbyuJsM5PYC/qaTz/86b5ls=;
+	s=mail; t=1712662443;
+	bh=l/YgE2jHDgEGiO5tZpMnwUUm+KuVZjmQoNRva6TC6eM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=POa3k99Vn7p8AZTqcrRL6QFEMTQVzOZu9r9uE5ahyTAU3R1IXGc+9csBeN5fgRm7K
-	 FGc8jUNFJM8jMLoUHJpSX7ulgiZ1LTcIb6HS/oaqADJnO02OzkMmB3gt1kSWLyeJou
-	 UcYxaXohxgZ42tvTwrK5vsymeuy5RupCCR879doMB5cPBFmKl5z42iZTlL9V/2Iufp
-	 luXC+hWDGwwskckVLCGVJnTdO5SG039wM1M0NxZQM4PXUgASJ65DXWJsir8YQR2iga
-	 o4QpDWZcjZqjmDE8sIW00S1QUuNK36WFART/PBZkojJx4mYG3SwwpGM0sSF7ENJ02/
-	 qxpZxpi39teSA==
+	b=HjVtEb/agejdcAI18+BBEgvGU+Uzpv8NUoldIg8LLDMGeugmFpOijD5yzekO1L3t9
+	 twmgZ27EGBt4uOS+w7vfDEg8NyevUB5Ang1mWt1plRZmD4YaFR2c3oGcS3c7HkOXfH
+	 f0RviRfotw9KpQk1Ore/6KDy5mTPT2C+lUnc1drIXz6xWKLIjjxCwgSgATJT9mDe2k
+	 glYbVds1VcUsx2nUNLDsOQZLsWpJjQ16TY8lecmqhaiFrP5KyNrbBcIem21ucvqr18
+	 1QbEZFIhhsIF44FqZLmQ4kmfqkVvvTMBTKMHHbNIpuqjobnHVA6dU1C/27A4aq5whr
+	 Y5MiYrAt6CSOw==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -57,8 +57,8 @@ Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9C2AE37820FD;
-	Tue,  9 Apr 2024 11:33:49 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5847D3782132;
+	Tue,  9 Apr 2024 11:34:01 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -98,17 +98,17 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v4 09/18] ASoC: mediatek: mt8192: Migrate to the common
- mtk_soundcard_startup
-Date: Tue,  9 Apr 2024 13:33:01 +0200
-Message-ID: <20240409113310.303261-10-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v4 14/18] ASoC: dt-bindings: mt8195: Document audio-routing
+ and dai-link subnode
+Date: Tue,  9 Apr 2024 13:33:06 +0200
+Message-ID: <20240409113310.303261-15-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
 References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CTQGR4LHNIXCFODOZ6PIWADMH5SXARVO
-X-Message-ID-Hash: CTQGR4LHNIXCFODOZ6PIWADMH5SXARVO
+Message-ID-Hash: ZL3Z2XVC32MYVZ3V3NO4CSMTWNEIVRZE
+X-Message-ID-Hash: ZL3Z2XVC32MYVZ3V3NO4CSMTWNEIVRZE
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CTQGR4LHNIXCFODOZ6PIWADMH5SXARVO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZL3Z2XVC32MYVZ3V3NO4CSMTWNEIVRZE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,220 +130,206 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a const mtk_pcm_constraints_data struct array with all of the
-(again, constant) constraints for all of the supported usecases,
-remove the duplicated functions and call mtk_soundcard_startup()
-instead in all of the .startup() callbacks.
+Document the dai-link subnodes and the audio-routing property, allowing
+to describe machine specific audio hardware and links in device tree.
 
+While at it, also deprecate the old properties which were previously
+used with driver hardcoded configuration.
+
+Also, since describing machine specific audio hardware and links replaces
+the now deprecated old logic doing the same in a driver hardcoded fashion,
+it is not allowed to have both the old and new properties together.
+
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 139 ++++++------------
- 1 file changed, 41 insertions(+), 98 deletions(-)
+ .../bindings/sound/mt8195-mt6359.yaml         | 134 ++++++++++++++++++
+ 1 file changed, 134 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-index 645bc1aa67c7..5fb34a4834d2 100644
---- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-@@ -389,100 +389,6 @@ static int mt8192_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml
+index c1ddbf672ca3..2af1d8ffbd8b 100644
+--- a/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml
++++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml
+@@ -12,6 +12,9 @@ maintainers:
+ description:
+   This binding describes the MT8195 sound card.
  
--static int
--mt8192_mt6359_cap1_startup(struct snd_pcm_substream *substream)
--{
--	static const unsigned int channels[] = {
--		1, 2, 4
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_channels = {
--		.count = ARRAY_SIZE(channels),
--		.list = channels,
--		.mask = 0,
--	};
--	static const unsigned int rates[] = {
--		8000, 16000, 32000, 48000, 96000, 192000
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_rates = {
--		.count = ARRAY_SIZE(rates),
--		.list  = rates,
--		.mask = 0,
--	};
--
--	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int ret;
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &constraints_channels);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list channels failed\n");
--		return ret;
--	}
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_RATE,
--					 &constraints_rates);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static const struct snd_soc_ops mt8192_mt6359_capture1_ops = {
--	.startup = mt8192_mt6359_cap1_startup,
--};
--
--static int
--mt8192_mt6359_rt5682_startup(struct snd_pcm_substream *substream)
--{
--	static const unsigned int channels[] = {
--		1, 2
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_channels = {
--		.count = ARRAY_SIZE(channels),
--		.list = channels,
--		.mask = 0,
--	};
--	static const unsigned int rates[] = {
--		48000
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_rates = {
--		.count = ARRAY_SIZE(rates),
--		.list  = rates,
--		.mask = 0,
--	};
--
--	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int ret;
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &constraints_channels);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list channels failed\n");
--		return ret;
--	}
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_RATE,
--					 &constraints_rates);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static const struct snd_soc_ops mt8192_mt6359_rt5682_ops = {
--	.startup = mt8192_mt6359_rt5682_startup,
--};
--
- /* FE */
- SND_SOC_DAILINK_DEFS(playback1,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
-@@ -720,7 +626,7 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
--		.ops = &mt8192_mt6359_rt5682_ops,
-+		.ops = &mtk_soundcard_common_playback_ops,
- 		SND_SOC_DAILINK_REG(playback3),
- 	},
- 	{
-@@ -784,7 +690,7 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
--		.ops = &mt8192_mt6359_capture1_ops,
-+		.ops = &mtk_soundcard_common_capture_ops,
- 		SND_SOC_DAILINK_REG(capture1),
- 	},
- 	{
-@@ -794,7 +700,7 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
--		.ops = &mt8192_mt6359_rt5682_ops,
-+		.ops = &mtk_soundcard_common_playback_ops,
- 		SND_SOC_DAILINK_REG(capture2),
- 	},
- 	{
-@@ -1146,7 +1052,7 @@ static int mt8192_mt6359_legacy_probe(struct mtk_soc_card_data *soc_card_data)
- 	struct device *dev = card->dev;
- 	struct device_node *hdmi_codec, *headset_codec, *speaker_codec;
- 	struct snd_soc_dai_link *dai_link;
--	int ret, i;
-+	int i, ret = 0;
++allOf:
++  - $ref: sound-card-common.yaml#
++
+ properties:
+   compatible:
+     enum:
+@@ -23,6 +26,33 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/string
+     description: User specified audio sound card name
  
- 	hdmi_codec = of_parse_phandle(dev->of_node, "mediatek,hdmi-codec", 0);
- 	if (!hdmi_codec)
-@@ -1235,11 +1141,44 @@ static int mt8192_mt6359_soc_card_probe(struct mtk_soc_card_data *soc_card_data,
- 	return 0;
- }
++  audio-routing:
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source.
++      Valid names could be the input or output widgets of audio components,
++      power supplies, MicBias of codec and the software switch.
++    minItems: 2
++    items:
++      enum:
++        # Sinks
++        - Ext Spk
++        - Headphone
++        - IN1P
++        - Left Spk
++        - Right Spk
++
++        # Sources
++        - Headset Mic
++        - HPOL
++        - HPOR
++        - Left BE_OUT
++        - Left SPO
++        - Right BE_OUT
++        - Right SPO
++        - Speaker
++
+   mediatek,platform:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description: The phandle of MT8195 ASoC platform.
+@@ -30,10 +60,12 @@ properties:
+   mediatek,dptx-codec:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description: The phandle of MT8195 Display Port Tx codec node.
++    deprecated: true
  
-+static const unsigned int mt8192_pcm_playback_channels[] = { 1, 2 };
-+static const unsigned int mt8192_pcm_playback_rates[] = { 48000 };
+   mediatek,hdmi-codec:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description: The phandle of MT8195 HDMI codec node.
++    deprecated: true
+ 
+   mediatek,adsp:
+     $ref: /schemas/types.yaml#/definitions/phandle
+@@ -45,20 +77,122 @@ properties:
+       A list of the desired dai-links in the sound card. Each entry is a
+       name defined in the machine driver.
+ 
++patternProperties:
++  ".*-dai-link$":
++    type: object
++    additionalProperties: false
++    description:
++      Container for dai-link level properties and CODEC sub-nodes.
 +
-+static const unsigned int mt8192_pcm_capture_channels[] = { 1, 2, 4 };
-+static const unsigned int mt8192_pcm_capture_rates[] = {
-+	8000, 16000, 32000, 48000, 96000, 192000
-+};
++    properties:
++      link-name:
++        description: Indicates dai-link name and PCM stream name
++        enum:
++          - DPTX_BE
++          - ETDM1_IN_BE
++          - ETDM2_IN_BE
++          - ETDM1_OUT_BE
++          - ETDM2_OUT_BE
++          - ETDM3_OUT_BE
++          - PCM1_BE
 +
-+static const struct mtk_pcm_constraints_data mt8192_pcm_constraints[MTK_CONSTRAINT_CAPTURE + 1] = {
-+	[MTK_CONSTRAINT_PLAYBACK] = {
-+		.channels = {
-+			.list = mt8192_pcm_playback_channels,
-+			.count = ARRAY_SIZE(mt8192_pcm_playback_channels)
-+		},
-+		.rates = {
-+			.list = mt8192_pcm_playback_rates,
-+			.count = ARRAY_SIZE(mt8192_pcm_playback_rates)
-+		}
-+	},
-+	[MTK_CONSTRAINT_CAPTURE] = {
-+		.channels = {
-+			.list = mt8192_pcm_capture_channels,
-+			.count = ARRAY_SIZE(mt8192_pcm_capture_channels)
-+		},
-+		.rates = {
-+			.list = mt8192_pcm_capture_rates,
-+			.count = ARRAY_SIZE(mt8192_pcm_capture_rates)
-+		}
-+	}
-+};
++      codec:
++        description: Holds subnode which indicates codec dai.
++        type: object
++        additionalProperties: false
++        properties:
++          sound-dai:
++            minItems: 1
++            maxItems: 2
++        required:
++          - sound-dai
 +
- static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015_rt5682_pdata = {
- 	.card_name = RT1015_RT5682_CARD_NAME,
- 	.card_data = &(struct mtk_platform_card_data) {
- 		.card = &mt8192_mt6359_rt1015_rt5682_card,
- 		.num_jacks = MT8192_JACK_MAX,
-+		.pcm_constraints = mt8192_pcm_constraints,
-+		.num_pcm_constraints = ARRAY_SIZE(mt8192_pcm_constraints),
- 	},
- 	.soc_probe = mt8192_mt6359_soc_card_probe
- };
-@@ -1249,6 +1188,8 @@ static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682_pdata = {
- 	.card_data = &(struct mtk_platform_card_data) {
- 		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
- 		.num_jacks = MT8192_JACK_MAX,
-+		.pcm_constraints = mt8192_pcm_constraints,
-+		.num_pcm_constraints = ARRAY_SIZE(mt8192_pcm_constraints),
- 	},
- 	.soc_probe = mt8192_mt6359_soc_card_probe
- };
-@@ -1258,6 +1199,8 @@ static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682s_pdata = {
- 	.card_data = &(struct mtk_platform_card_data) {
- 		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
- 		.num_jacks = MT8192_JACK_MAX,
-+		.pcm_constraints = mt8192_pcm_constraints,
-+		.num_pcm_constraints = ARRAY_SIZE(mt8192_pcm_constraints),
- 	},
- 	.soc_probe = mt8192_mt6359_soc_card_probe
- };
++      dai-format:
++        description: audio format
++        enum: [ i2s, right_j, left_j, dsp_a, dsp_b ]
++
++      mediatek,clk-provider:
++        $ref: /schemas/types.yaml#/definitions/string
++        description: Indicates dai-link clock master.
++        enum: [ cpu, codec ]
++
++    required:
++      - link-name
++
+ additionalProperties: false
+ 
+ required:
+   - compatible
+   - mediatek,platform
+ 
++# Disallow legacy properties if xxx-dai-link nodes are specified
++if:
++  not:
++    patternProperties:
++      ".*-dai-link$": false
++then:
++  properties:
++    mediatek,dptx-codec: false
++    mediatek,hdmi-codec: false
++
+ examples:
+   - |
+ 
+     sound: mt8195-sound {
+         compatible = "mediatek,mt8195_mt6359_rt1019_rt5682";
++        model = "mt8195_r1019_5682";
+         mediatek,platform = <&afe>;
+         pinctrl-names = "default";
+         pinctrl-0 = <&aud_pins_default>;
++
++        audio-routing =
++                "Headphone", "HPOL",
++                "Headphone", "HPOR",
++                "IN1P", "Headset Mic",
++                "Ext Spk", "Speaker";
++
++        mm-dai-link {
++                link-name = "ETDM1_IN_BE";
++                mediatek,clk-provider = "cpu";
++        };
++
++        hs-playback-dai-link {
++                link-name = "ETDM1_OUT_BE";
++                mediatek,clk-provider = "cpu";
++                codec {
++                        sound-dai = <&headset_codec>;
++                };
++        };
++
++        hs-capture-dai-link {
++                link-name = "ETDM2_IN_BE";
++                mediatek,clk-provider = "cpu";
++                codec {
++                        sound-dai = <&headset_codec>;
++                };
++        };
++
++        spk-playback-dai-link {
++                link-name = "ETDM2_OUT_BE";
++                mediatek,clk-provider = "cpu";
++                codec {
++                        sound-dai = <&spk_amplifier>;
++                };
++        };
++
++        hdmi-dai-link {
++                link-name = "ETDM3_OUT_BE";
++                codec {
++                        sound-dai = <&hdmi_tx>;
++                };
++        };
++
++        displayport-dai-link {
++                link-name = "DPTX_BE";
++                codec {
++                        sound-dai = <&dp_tx>;
++                };
++        };
+     };
+ 
+ ...
 -- 
 2.44.0
 
