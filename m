@@ -4,88 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08565CD1284
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 06:49:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07049C67861
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 11:37:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD39D23DE;
-	Tue,  9 Apr 2024 08:48:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD39D23DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5889421B4;
+	Tue,  9 Apr 2024 13:37:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5889421B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712645347;
-	bh=jPOzgHzSYofrjQjACqoQ9r5VH8RQJtJ8/RD4UUKiT9s=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qeEpDvJ9G+Kq5xoMrdbL5Is5bjOZMvPQ5jmdV3mnshrULW/0lbSiZpkSIijJypMIq
-	 6M6s6B+Ndy4qjmgugf4oeOOaSRbrKJT/itt3YGsa9HPLuPD3lbA5ygmFEM+Gbv5uVy
-	 bgXgxhge6GubpZApD7tzS9eSV7V3z2mOdPZ+h5Oc=
+	s=default; t=1712662631;
+	bh=j6MGyfhFtjGyDqUgU4egNnPSUCHahfCyH58URzE5d6k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=sUw13utP1VHcm0PFLVxZB7ebMgr4wOoEamKE32hImlQWOz/zDwmVRUHdlNHXe5fC2
+	 +Ehn6FIv1P/f1eKYWLXl/G8y+bEToj0ZczvomOoRsBgxdhIja13ZB3OZaXoyEoahlV
+	 DOOoKWQn2rNSpiOcofpdIFm7Ddfn04Crggdu35X4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A0C01F80580; Tue,  9 Apr 2024 08:48:39 +0200 (CEST)
+	id BC885F805B4; Tue,  9 Apr 2024 13:36:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14A2FF805BB;
-	Tue,  9 Apr 2024 08:48:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46B63F80236;
+	Tue,  9 Apr 2024 13:36:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 250C4F8056F; Tue,  9 Apr 2024 08:48:34 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	id B269CF80578; Tue,  9 Apr 2024 13:33:53 +0200 (CEST)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
+ [IPv6:2a00:1098:ed:100::25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id DC6ECF80238
+	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 13:33:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC6ECF80238
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=kbSkjq0b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712662415;
+	bh=j6MGyfhFtjGyDqUgU4egNnPSUCHahfCyH58URzE5d6k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kbSkjq0bhHZ5/2D711Bg0hWWYj1YYClylI1MCY1k1iVQVw6wpbUlcq4jfw796f3Zs
+	 1JaIZX+URjEZ/xbquS1ik7EyPxDxHUaJfv+rYNl+hpU2Rz+Xob38ThKDCul7U0Cdnq
+	 mikYM7sQiOKUls8v9T1QPTTHNgtTpMk6qgqGIVvey8YIALgOIOn7q4a3JzY62P8zNX
+	 PoHlAHdqhIACtfTIvaNM5KgmM1/PZXCt3bJMQu8108UIQxn1bVKvx23OciNCpuVM3c
+	 OxbU4kS/X7UVic1716QtVxBpk4rzP+j2vi1/a448iAUswZcJ+dsRcfE0KQXHQnlPGg
+	 X7vPGlGvMYo5w==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
+ [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E4E74F800C9
-	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 08:47:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4E74F800C9
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 4396lhKQ32674939,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 4396lhKQ32674939
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 9 Apr 2024 14:47:43 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 14:47:43 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 14:47:43 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975]) by
- RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975%5]) with mapi id
- 15.01.2507.035; Tue, 9 Apr 2024 14:47:43 +0800
-Content-Type: multipart/mixed;
-	boundary="_000_6a9b1d1fb2ea4f04b2157799f04053b1realtekcom_"
-From: Jack Yu <jack.yu@realtek.com>
-To: "broonie@kernel.org" <broonie@kernel.org>,
-        "lgirdwood@gmail.com"
-	<lgirdwood@gmail.com>
-CC: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Flove(HsinFu)" <flove@realtek.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        =?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?=
-	<shumingf@realtek.com>,
-        =?big5?B?RGVyZWsgW6TovHe4cV0=?=
-	<derek.fang@realtek.com>,
-        Jack Yu <jack.yu@realtek.com>
-Subject: [PATCH 2/2] ASoC: rt722-sdca: modify channel number to support 4
- channels
-Thread-Topic: [PATCH 2/2] ASoC: rt722-sdca: modify channel number to support 4
- channels
-Thread-Index: AdqKSdHnhzfNMQf6TjKtxfLWCQ6GYA==
-Date: Tue, 9 Apr 2024 06:47:43 +0000
-Message-ID: <6a9b1d1fb2ea4f04b2157799f04053b1@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-TNEF-Correlator: <6a9b1d1fb2ea4f04b2157799f04053b1@realtek.com>
-x-originating-ip: [172.22.102.102]
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 148C13782111;
+	Tue,  9 Apr 2024 11:33:33 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: broonie@kernel.org
+Cc: wenst@chromium.org,
+	lgirdwood@gmail.com,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	trevor.wu@mediatek.com,
+	maso.huang@mediatek.com,
+	xiazhengqiao@huaqin.corp-partner.google.com,
+	arnd@arndb.de,
+	kuninori.morimoto.gx@renesas.com,
+	shraash@google.com,
+	amergnat@baylibre.com,
+	nicolas.ferre@microchip.com,
+	u.kleine-koenig@pengutronix.de,
+	dianders@chromium.org,
+	frank.li@vivo.com,
+	allen-kh.cheng@mediatek.com,
+	eugen.hristev@collabora.com,
+	claudiu.beznea@tuxon.dev,
+	jarkko.nikula@bitmer.com,
+	jiaxin.yu@mediatek.com,
+	alpernebiyasak@gmail.com,
+	ckeepax@opensource.cirrus.com,
+	zhourui@huaqin.corp-partner.google.com,
+	nfraprado@collabora.com,
+	alsa-devel@alsa-project.org,
+	shane.chien@mediatek.com,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	kernel@collabora.com,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v4 02/18] ASoC: mediatek: common: Constify struct mtk_sof_priv
+Date: Tue,  9 Apr 2024 13:32:54 +0200
+Message-ID: <20240409113310.303261-3-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
+References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Message-ID-Hash: 54ZUXYFY6SAFT536DBWDO7BV6J5EP3SD
-X-Message-ID-Hash: 54ZUXYFY6SAFT536DBWDO7BV6J5EP3SD
-X-MailFrom: jack.yu@realtek.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: F4CIX3NFTEO2UWEUVXQNVJI3YFPABOS5
+X-Message-ID-Hash: F4CIX3NFTEO2UWEUVXQNVJI3YFPABOS5
+X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/54ZUXYFY6SAFT536DBWDO7BV6J5EP3SD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F4CIX3NFTEO2UWEUVXQNVJI3YFPABOS5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,117 +129,137 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---_000_6a9b1d1fb2ea4f04b2157799f04053b1realtekcom_
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+Apart from a dai_link_list variable, the mtk_sof_priv currently holds
+data that never gets modified during runtime.
 
-Q2hhbm5lbCBudW1iZXJzIG9mIGRtaWMgc3VwcG9ydHMgNCBjaGFubmVscywgbW9kaWZ5IGNoYW5u
-ZWxzX21heA0KcmVnYXJkaW5nIHRvIHRoaXMgaXNzdWUuDQoNClNpZ25lZC1vZmYtYnk6IEphY2sg
-WXUgPGphY2sueXVAcmVhbHRlay5jb20+DQotLS0NCiBzb3VuZC9zb2MvY29kZWNzL3J0NzIyLXNk
-Y2EuYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
-LSkNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvcnQ3MjItc2RjYS5jIGIvc291bmQv
-c29jL2NvZGVjcy9ydDcyMi1zZGNhLmMNCmluZGV4IDg3YmQ1MGU3NjFmYy4uZTViZDllZjgxMmRl
-IDEwMDY0NA0KLS0tIGEvc291bmQvc29jL2NvZGVjcy9ydDcyMi1zZGNhLmMNCisrKyBiL3NvdW5k
-L3NvYy9jb2RlY3MvcnQ3MjItc2RjYS5jDQpAQCAtMTMzMCw3ICsxMzMwLDcgQEAgc3RhdGljIHN0
-cnVjdCBzbmRfc29jX2RhaV9kcml2ZXIgcnQ3MjJfc2RjYV9kYWlbXSA9IHsNCiAJCS5jYXB0dXJl
-ID0gew0KIAkJCS5zdHJlYW1fbmFtZSA9ICJEUDYgRE1pYyBDYXB0dXJlIiwNCiAJCQkuY2hhbm5l
-bHNfbWluID0gMSwNCi0JCQkuY2hhbm5lbHNfbWF4ID0gMiwNCisJCQkuY2hhbm5lbHNfbWF4ID0g
-NCwNCiAJCQkucmF0ZXMgPSBSVDcyMl9TVEVSRU9fUkFURVMsDQogCQkJLmZvcm1hdHMgPSBSVDcy
-Ml9GT1JNQVRTLA0KIAkJfSwNCi0tIA0KMi4zNC4xDQoNCg==
+Constify the mtk_sof_priv structure and move the SOF dai_link_list as
+sof_dai_link_list in struct mtk_soc_card_data, which is a structure
+that already holds the card's machine specific, runtime modified data.
 
---_000_6a9b1d1fb2ea4f04b2157799f04053b1realtekcom_
-Content-Disposition: attachment; filename="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Type: application/ms-tnef; name="winmail.dat"
+This allows to safely pass the mtk_sof_priv structure as platform data
+for the commonized card probe mechanism.
 
-eJ8+IhEnAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAAtgMAAAAAAAC5AAEJgAEAIQAAAEJFRUU3NjhF
-Q0M4RTBDNDBBNjdCOURGMzVFMTA2OEZFAI8HAQ2ABAACAAAAAgACAAEFgAMADgAAAOgHBAAJAAYA
-LwArAAIAXgEBIIADAA4AAADoBwQACQAGAC8AKwACAF4BAQiABwAYAAAASVBNLk1pY3Jvc29mdCBN
-YWlsLk5vdGUAMQgBBIABAEoAAABbUEFUQ0ggMi8yXSBBU29DOiBydDcyMi1zZGNhOiBtb2RpZnkg
-Y2hhbm5lbCBudW1iZXIgdG8gc3VwcG9ydCA0IGNoYW5uZWxzAGgYAQuAAQAhAAAAQkVFRTc2OEVD
-QzhFMEM0MEE2N0I5REYzNUUxMDY4RkUAjwcBA5AGAHwSAABEAAAAAgF/AAEAAAAvAAAAPDZhOWIx
-ZDFmYjJlYTRmMDRiMjE1Nzc5OWYwNDA1M2IxQHJlYWx0ZWsuY29tPgAACwAfDgAAAAACAQkQAQAA
-AN4CAADaAgAAggQAAExaRnU7UGydYQAKZmJpZAQAAGNjwHBnMTI1MgD+A0PwdGV4dAH3AqQD4wIA
-BGNoCsBzZXQwIO8HbQKDAFARTTIKgAa0AoCWfQqACMg7CWIxOQ7AvwnDFnIKMhZxAoAVYioJsHMJ
-8ASQYXQFsg5QA2Bzom8BgCBFeBHBbhgwXQZSdgSQF7YCEHIAwHR9CFBuGjEQIAXABaAbZGSaIANS
-IBAiF7JcdgiQ5HdrC4BkNR1TBPAHQA0XcDAKcRfyYmttawZzAZAAICBCTV9C4EVHSU59CvwB8Qvx
-nCBDGaEYUAMgbnUG0EcEkAQgGTAgZG0OUCCwc3VwcAkRBCA0G9CxIbRzLCAEYQaQeSPHol8AwHhc
-bAuAZQqArQlwZwsRC4BnHMBvHMDaaAQAIAQBClAuJaUlpUhTaWcYUGQtGTBmQC1ieTogSgDQa0Ag
-WXUgPGopcS74eXVACXAHQBAgKiAFoPRtPiWlLSugJaUjEAhgZR3ALxkgYy8FoAWBc4YvACABwDIt
-c2QeUIEq4CB8IDIgKyvH3jEccAMQGeAZlGQkUC8QFwuAEgAAIGkCICgrKc8v8gEAHnAwgy0pJ5wk
-kdMisCugZ2kFQGEsoSx/fS2JYjOPLVslpR2xEDAgCDg3Yh3QMGU3NkIxEbAuLmU1OFA5PQEQOA6Q
-AQAvAB6gNjTeNCs4M282fyXDKz1QNW8TO/8lw0BAMwAxMzP4MCw3LmBANT/xH2EwgKEjAXRydWMF
-QHMdwPJfPhFfZAtwQqAFEBoxHiAtY0JgLdFColtdIN49AzAAACvlKuBhBTAIcI8Z4ER7QcEqgG1f
-bkbQgUWiIkRQNiBEGNHzIZBFVCIsRLgk9wuARGG6MUiWLUkpJYBEYTJIlnorSs40SJgYcQeRRHBS
-AlRDglNURVJFT+hfUkFPAFNImBrkTlgwRk9STU9wT6hcfQdKNzrQJaUyLjM0Lg8AUCerFUJVEAAA
-HwBCAAEAAAAQAAAASgBhAGMAawAgAFkAdQAAAB8AZQABAAAAKAAAAGoAYQBjAGsALgB5AHUAQABy
-AGUAYQBsAHQAZQBrAC4AYwBvAG0AAAAfAGQAAQAAAAoAAABTAE0AVABQAAAAAAACAUEAAQAAAFoA
-AAAAAAAAgSsfpL6jEBmdbgDdAQ9UAgAAAIBKAGEAYwBrACAAWQB1AAAAUwBNAFQAUAAAAGoAYQBj
-AGsALgB5AHUAQAByAGUAYQBsAHQAZQBrAC4AYwBvAG0AAAAAAB8AAl0BAAAAKAAAAGoAYQBjAGsA
-LgB5AHUAQAByAGUAYQBsAHQAZQBrAC4AYwBvAG0AAAAfAOVfAQAAADAAAABzAGkAcAA6AGoAYQBj
-AGsALgB5AHUAQAByAGUAYQBsAHQAZQBrAC4AYwBvAG0AAAAfABoMAQAAABAAAABKAGEAYwBrACAA
-WQB1AAAAHwAfDAEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABlAGsALgBjAG8AbQAA
-AB8AHgwBAAAACgAAAFMATQBUAFAAAAAAAAIBGQwBAAAAWgAAAAAAAACBKx+kvqMQGZ1uAN0BD1QC
-AAAAgEoAYQBjAGsAIABZAHUAAABTAE0AVABQAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABl
-AGsALgBjAG8AbQAAAAAAHwABXQEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABlAGsA
-LgBjAG8AbQAAAAsAQDoBAAAAHwAaAAEAAAASAAAASQBQAE0ALgBOAG8AdABlAAAAAAADAPE/BAQA
-AAsAQDoBAAAAAwD9P7YDAAACAQswAQAAABAAAAC+7naOzI4MQKZ7nfNeEGj+AwAXAAEAAABAADkA
-gJGE0kmK2gFAAAgw672N0kmK2gELACkAAAAAAB8A2T8BAAAAAAIAAEMAaABhAG4AbgBlAGwAIABu
-AHUAbQBiAGUAcgBzACAAbwBmACAAZABtAGkAYwAgAHMAdQBwAHAAbwByAHQAcwAgADQAIABjAGgA
-YQBuAG4AZQBsAHMALAAgAG0AbwBkAGkAZgB5ACAAYwBoAGEAbgBuAGUAbABzAF8AbQBhAHgADQAK
-AHIAZQBnAGEAcgBkAGkAbgBnACAAdABvACAAdABoAGkAcwAgAGkAcwBzAHUAZQAuAA0ACgANAAoA
-UwBpAGcAbgBlAGQALQBvAGYAZgAtAGIAeQA6ACAASgBhAGMAawAgAFkAdQAgADwAagBhAGMAawAu
-AHkAdQBAAHIAZQBhAGwAdABlAGsALgBjAG8AbQA+AA0ACgAtAC0ALQANAAoAIABzAG8AdQBuAGQA
-LwBzAG8AYwAvAGMAbwBkAGUAYwBzAC8AcgB0ADcAMgAyAC0AcwBkAGMAYQAuAGMAIAB8ACAAMgAg
-ACsALQANAAoAIAAxACAAZgBpAGwAZQAgAGMAaABhAG4AZwBlAGQALAAgADEAIABpAG4AcwBlAHIA
-dABpAG8AbgAoACsAKQAsACAAMQAgAGQAZQBsAGUAdABpAG8AbgAoAC0AKQANAAoADQAKAGQAaQBm
-AGYAIAAtAC0AZwBpAHQAIABhAC8AcwBvAHUAbgBkAC8AcwBvAAAACwAAgAggBgAAAAAAwAAAAAAA
-AEYAAAAAFIUAAAEAAAAfAACAhgMCAAAAAADAAAAAAAAARgEAAAAeAAAAYQBjAGMAZQBwAHQAbABh
-AG4AZwB1AGEAZwBlAAAAAAABAAAAGgAAAHoAaAAtAFQAVwAsACAAZQBuAC0AVQBTAAAAAAADAACA
-CCAGAAAAAADAAAAAAAAARgEAAAAyAAAARQB4AGMAaABhAG4AZwBlAEEAcABwAGwAaQBjAGEAdABp
-AG8AbgBGAGwAYQBnAHMAAAAAACAAAABIAACACCAGAAAAAADAAAAAAAAARgEAAAAiAAAATgBlAHQA
-dwBvAHIAawBNAGUAcwBzAGEAZwBlAEkAZAAAAAAAYgKDnhD4mUfqvgjcWGD1FB8AAIATj/JB9IMU
-QaWE7ttaawv/AQAAABYAAABDAGwAaQBlAG4AdABJAG4AZgBvAAAAAAABAAAAKgAAAEMAbABpAGUA
-bgB0AD0ATQBTAEUAeABjAGgAYQBuAGcAZQBSAFAAQwAAAAAAHwD6PwEAAAAQAAAASgBhAGMAawAg
-AFkAdQAAAB8ANwABAAAAlAAAAFsAUABBAFQAQwBIACAAMgAvADIAXQAgAEEAUwBvAEMAOgAgAHIA
-dAA3ADIAMgAtAHMAZABjAGEAOgAgAG0AbwBkAGkAZgB5ACAAYwBoAGEAbgBuAGUAbAAgAG4AdQBt
-AGIAZQByACAAdABvACAAcwB1AHAAcABvAHIAdAAgADQAIABjAGgAYQBuAG4AZQBsAHMAAAAfAD0A
-AQAAAAIAAAAAAAAAAwA2AAAAAAACAXEAAQAAABYAAAAB2opJ0eeHN80xB/pOMq3F8tYJDoZgAAAf
-AHAAAQAAAJQAAABbAFAAQQBUAEMASAAgADIALwAyAF0AIABBAFMAbwBDADoAIAByAHQANwAyADIA
-LQBzAGQAYwBhADoAIABtAG8AZABpAGYAeQAgAGMAaABhAG4AbgBlAGwAIABuAHUAbQBiAGUAcgAg
-AHQAbwAgAHMAdQBwAHAAbwByAHQAIAA0ACAAYwBoAGEAbgBuAGUAbABzAAAAHwA1EAEAAABeAAAA
-PAA2AGEAOQBiADEAZAAxAGYAYgAyAGUAYQA0AGYAMAA0AGIAMgAxADUANwA3ADkAOQBmADAANAAw
-ADUAMwBiADEAQAByAGUAYQBsAHQAZQBrAC4AYwBvAG0APgAAAAAAAwDeP7YDAAADABMSAAAAAAIB
-AIATj/JB9IMUQaWE7ttaawv/AQAAAC4AAABIAGUAYQBkAGUAcgBCAG8AZAB5AEYAcgBhAGcAbQBl
-AG4AdABMAGkAcwB0AAAAAAABAAAAIgAAAAEACgAAAAQAAAAAAAAAFAAAAAAAAAAAAAAA/////wAA
-AAAAAAsAAIATj/JB9IMUQaWE7ttaawv/AQAAABwAAABIAGEAcwBRAHUAbwB0AGUAZABUAGUAeAB0
-AAAAAAAAAAsAAIATj/JB9IMUQaWE7ttaawv/AQAAACgAAABJAHMAUQB1AG8AdABlAGQAVABlAHgA
-dABDAGgAYQBuAGcAZQBkAAAAAAAAAEAABzB1XYPSSYraAQIBCwABAAAAEAAAAL7udo7MjgxApnud
-814QaP4DACYAAAAAAAsABgwAAAAAAgEQMAEAAABGAAAAAAAAANvpxEokoOdBkxsquyuzbUwHAEy3
-fQ1VoXlEvnOFOWLQAKUAAABpYPcAADKvOAVKsE5GgMfHOCK6D1oAAAHXuKcAAAAAAgETMAEAAAAQ
-AAAAhzfNMQf6TjKtxfLWCQ6GYAIBFDABAAAADAAAADwAAAA45WPuQwAAAB8A+D8BAAAAEAAAAEoA
-YQBjAGsAIABZAHUAAAAfACJAAQAAAAYAAABFAFgAAAAAAB8AI0ABAAAAtgAAAC8ATwA9AFIAVABF
-AFgAQwBIAC8ATwBVAD0ARQBYAEMASABBAE4ARwBFACAAQQBEAE0ASQBOAEkAUwBUAFIAQQBUAEkA
-VgBFACAARwBSAE8AVQBQACAAKABGAFkARABJAEIATwBIAEYAMgAzAFMAUABEAEwAVAApAC8AQwBO
-AD0AUgBFAEMASQBQAEkARQBOAFQAUwAvAEMATgA9AFUAUwBFAFIANQA5ADgANgA1ADEAMAA5AAAA
-AAAfACRAAQAAAAYAAABFAFgAAAAAAB8AJUABAAAAtgAAAC8ATwA9AFIAVABFAFgAQwBIAC8ATwBV
-AD0ARQBYAEMASABBAE4ARwBFACAAQQBEAE0ASQBOAEkAUwBUAFIAQQBUAEkAVgBFACAARwBSAE8A
-VQBQACAAKABGAFkARABJAEIATwBIAEYAMgAzAFMAUABEAEwAVAApAC8AQwBOAD0AUgBFAEMASQBQ
-AEkARQBOAFQAUwAvAEMATgA9AFUAUwBFAFIANQA5ADgANgA1ADEAMAA5AAAAAAAfADBAAQAAABAA
-AABKAGEAYwBrACAAWQB1AAAAHwAxQAEAAAAQAAAASgBhAGMAawAgAFkAdQAAAB8AOEABAAAAEAAA
-AEoAYQBjAGsAIABZAHUAAAAfADlAAQAAABAAAABKAGEAYwBrACAAWQB1AAAAAwBZQAAAAAADAFpA
-AAAAAAMACVkBAAAAHwAKXQEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABlAGsALgBj
-AG8AbQAAAB8AC10BAAAAKAAAAGoAYQBjAGsALgB5AHUAQAByAGUAYQBsAHQAZQBrAC4AYwBvAG0A
-AAAfAACAH6TrM6h6LkK+e3nhqY5UswEAAAA4AAAAQwBvAG4AdgBlAHIAcwBhAHQAaQBvAG4ASQBu
-AGQAZQB4AFQAcgBhAGMAawBpAG4AZwBFAHgAAAABAAAAJAEAAEkASQA9AFsAQwBJAEQAPQAzADEA
-YwBkADMANwA4ADcALQBmAGEAMAA3AC0AMwAyADQAZQAtAGEAZABjADUALQBmADIAZAA2ADAAOQAw
-AGUAOAA2ADYAMAA7AEkARABYAEgARQBBAEQAPQBEAEEAOABBADQAOQBEADEARQA3ADsASQBEAFgA
-QwBPAFUATgBUAD0AMQBdADsAUABTAD0AVQBuAGsAbgBvAHcAbgA7AFYAZQByAHMAaQBvAG4APQBW
-AGUAcgBzAGkAbwBuACAAMQA1AC4AMQAgACgAQgB1AGkAbABkACAAMgA1ADAANwAuADAAKQAsACAA
-UwB0AGEAZwBlAD0ASAA0ADsAVQBQAD0AMQAwADsARABQAD0AMQBDADUAAAALAACACCAGAAAAAADA
-AAAAAAAARgAAAACChQAAAAAAAAMADTT9PwAAHwAAgIYDAgAAAAAAwAAAAAAAAEYBAAAAIAAAAHgA
-LQBtAHMALQBoAGEAcwAtAGEAdAB0AGEAYwBoAAAAAQAAAAIAAAAAAAAAHwAAgIYDAgAAAAAAwAAA
-AAAAAEYBAAAAIgAAAHgALQBvAHIAaQBnAGkAbgBhAHQAaQBuAGcALQBpAHAAAAAAAAEAAAAiAAAA
-WwAxADcAMgAuADIAMgAuADEAMAAyAC4AMQAwADIAXQAAAAAAV10=
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ sound/soc/mediatek/common/mtk-dsp-sof-common.c   | 15 +++++++--------
+ sound/soc/mediatek/common/mtk-dsp-sof-common.h   |  1 -
+ sound/soc/mediatek/common/mtk-soc-card.h         |  2 +-
+ sound/soc/mediatek/common/mtk-soundcard-driver.h |  2 +-
+ 4 files changed, 9 insertions(+), 11 deletions(-)
 
---_000_6a9b1d1fb2ea4f04b2157799f04053b1realtekcom_--
+diff --git a/sound/soc/mediatek/common/mtk-dsp-sof-common.c b/sound/soc/mediatek/common/mtk-dsp-sof-common.c
+index 7ec8965a70c0..bca758dca2c9 100644
+--- a/sound/soc/mediatek/common/mtk-dsp-sof-common.c
++++ b/sound/soc/mediatek/common/mtk-dsp-sof-common.c
+@@ -15,7 +15,7 @@ int mtk_sof_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	int i, j, ret = 0;
+ 
+ 	for (i = 0; i < sof_priv->num_streams; i++) {
+@@ -55,7 +55,6 @@ int mtk_sof_card_probe(struct snd_soc_card *card)
+ 	int i;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 
+ 	/* Set stream_name to help sof bind widgets */
+ 	for_each_card_prelinks(card, i, dai_link) {
+@@ -63,7 +62,7 @@ int mtk_sof_card_probe(struct snd_soc_card *card)
+ 			dai_link->stream_name = dai_link->name;
+ 	}
+ 
+-	INIT_LIST_HEAD(&sof_priv->dai_link_list);
++	INIT_LIST_HEAD(&soc_card_data->sof_dai_link_list);
+ 
+ 	return 0;
+ }
+@@ -73,7 +72,7 @@ static struct snd_soc_pcm_runtime *mtk_sof_find_tplg_be(struct snd_soc_pcm_runti
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	struct snd_soc_pcm_runtime *fe;
+ 	struct snd_soc_pcm_runtime *be;
+ 	struct snd_soc_dpcm *dpcm;
+@@ -113,7 +112,7 @@ static int mtk_sof_check_tplg_be_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	struct snd_soc_pcm_runtime *sof_be;
+ 	struct mtk_dai_link *dai_link;
+ 	int ret = 0;
+@@ -125,7 +124,7 @@ static int mtk_sof_check_tplg_be_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		else if (sof_be->dai_link->be_hw_params_fixup)
+ 			ret = sof_be->dai_link->be_hw_params_fixup(sof_be, params);
+ 	} else {
+-		list_for_each_entry(dai_link, &sof_priv->dai_link_list, list) {
++		list_for_each_entry(dai_link, &soc_card_data->sof_dai_link_list, list) {
+ 			if (strcmp(dai_link->name, rtd->dai_link->name) == 0) {
+ 				if (dai_link->be_hw_params_fixup)
+ 					ret = dai_link->be_hw_params_fixup(rtd, params);
+@@ -144,7 +143,7 @@ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_component *sof_comp = NULL;
+ 	struct mtk_soc_card_data *soc_card_data =
+ 		snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct mtk_dai_link *mtk_dai_link;
+ 	int i;
+@@ -173,7 +172,7 @@ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ 			mtk_dai_link->be_hw_params_fixup = dai_link->be_hw_params_fixup;
+ 			mtk_dai_link->name = dai_link->name;
+ 
+-			list_add(&mtk_dai_link->list, &sof_priv->dai_link_list);
++			list_add(&mtk_dai_link->list, &soc_card_data->sof_dai_link_list);
+ 		}
+ 
+ 		if (dai_link->no_pcm)
+diff --git a/sound/soc/mediatek/common/mtk-dsp-sof-common.h b/sound/soc/mediatek/common/mtk-dsp-sof-common.h
+index 4bc5e1c0c8ed..8784ee471132 100644
+--- a/sound/soc/mediatek/common/mtk-dsp-sof-common.h
++++ b/sound/soc/mediatek/common/mtk-dsp-sof-common.h
+@@ -30,7 +30,6 @@ struct mtk_sof_priv {
+ 	int num_streams;
+ 	int (*sof_dai_link_fixup)(struct snd_soc_pcm_runtime *rtd,
+ 				  struct snd_pcm_hw_params *params);
+-	struct list_head dai_link_list;
+ };
+ 
+ int mtk_sof_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/mediatek/common/mtk-soc-card.h b/sound/soc/mediatek/common/mtk-soc-card.h
+index d92dc36d4577..3f6e24dd22df 100644
+--- a/sound/soc/mediatek/common/mtk-soc-card.h
++++ b/sound/soc/mediatek/common/mtk-soc-card.h
+@@ -13,7 +13,7 @@ struct mtk_platform_card_data;
+ struct mtk_sof_priv;
+ 
+ struct mtk_soc_card_data {
+-	struct mtk_sof_priv *sof_priv;
++	const struct mtk_sof_priv *sof_priv;
+ 	struct list_head sof_dai_link_list;
+ 	struct mtk_platform_card_data *card_data;
+ 	void *mach_priv;
+diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.h b/sound/soc/mediatek/common/mtk-soundcard-driver.h
+index 44320efff5f8..4fd2ffb7e486 100644
+--- a/sound/soc/mediatek/common/mtk-soundcard-driver.h
++++ b/sound/soc/mediatek/common/mtk-soundcard-driver.h
+@@ -22,7 +22,7 @@ struct mtk_platform_card_data {
+ struct mtk_soundcard_pdata {
+ 	const char *card_name;
+ 	struct mtk_platform_card_data *card_data;
+-	struct mtk_sof_priv *sof_priv;
++	const struct mtk_sof_priv *sof_priv;
+ 	int (*soc_probe)(struct mtk_soc_card_data *card_data, bool legacy);
+ };
+ 
+-- 
+2.44.0
+
