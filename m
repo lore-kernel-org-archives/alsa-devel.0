@@ -4,94 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E442CD1284
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 13:04:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA56BC67861
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 13:08:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21ABE2BB5;
-	Tue,  9 Apr 2024 15:03:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21ABE2BB5
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAE7C2BB9;
+	Tue,  9 Apr 2024 15:08:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAE7C2BB9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712667845;
-	bh=bxgbV2pkHGwpnIR6VtVXissqixb6J9Rx4J0av4i8oCI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1712668121;
+	bh=efQW4n4+VTeV6F+TzLQ/Ws25y4//427fEzcwv/kchgY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JJ6YFMtyDtcuP9hHdRWA5ZegfUd6f2OfRVsuMKE27St/MAupjInXd41EWJEFRmj8V
-	 IJXITaA+53fcjZjQrbs9WmJ3PDHv/NMOJ9eZzm999iVIQX0juObx2OAuXOHzUDORVm
-	 pytgnLgJbTv71TNvarekrRshRtwRNbaIpxd5TwK8=
+	b=I0cHzrNNP56hAaHuO1I2359yfCXqFkjVfhjK5YI7eJD5P7TjqvM/isY4cqcFh4yuT
+	 wOolhVpMlEv8qOMC9dtwvyBSnXJk2qXQEv7jsoEggbA+LtReIwVmcPnIh/Uh6NUlMh
+	 Ds2OXxT9dkiwE/fIiNKQxu8OwZR1S4kT5emzbFUw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F8D0F805AE; Tue,  9 Apr 2024 15:03:33 +0200 (CEST)
+	id D6A11F8055C; Tue,  9 Apr 2024 15:08:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFD7CF8059F;
-	Tue,  9 Apr 2024 15:03:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F293EF80238;
+	Tue,  9 Apr 2024 15:08:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0CFCCF8026D; Tue,  9 Apr 2024 15:03:26 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1674BF80423; Tue,  9 Apr 2024 15:08:04 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 63C8CF800C9
-	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 15:03:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63C8CF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1AE29F80236
+	for <alsa-devel@alsa-project.org>; Tue,  9 Apr 2024 15:07:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AE29F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=HccHSArI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712667798; x=1744203798;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=bxgbV2pkHGwpnIR6VtVXissqixb6J9Rx4J0av4i8oCI=;
-  b=HccHSArIpMwWCvMljpCEHgZi8COuqKyXJ/O7MjSsHIrG1IDIneMaaQ8A
-   w6yvBYR7Dsv8MyXq/93D9LocQS97uYT1dvaCZRJ98AxFQ1NtYrfAvHG1+
-   +DOpEGjlImGndOHyz+C732LvFJ9ECA0JOxvIpZH9uDbYbgPFMI61OV0oM
-   FqWPS8SQWyvclddPXTVMLPDjYeb0dhnLWSpSU+tkLhYLEMRYeq3fqHADL
-   BGrJFdXNQO2JTBWe7pQoEY8YK04S6jQOT5ZR2w0bX0+zA1lKQJic8b8gT
-   i+6jFmUlHmM+wDOcBFChiaQkN6k6tSTF4/czWFZgPR3UnP26REKXLEN+P
-   g==;
-X-CSE-ConnectionGUID: R0od/xFMSHi8HFqptK/wmQ==
-X-CSE-MsgGUID: VKfpZOnQRb6fvKni449osg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="11773725"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000";
-   d="scan'208";a="11773725"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2024 06:02:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="915399305"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000";
-   d="scan'208";a="915399305"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2024 06:02:56 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1ruB7l-00000002oHW-0QzR;
-	Tue, 09 Apr 2024 16:02:53 +0300
-Date: Tue, 9 Apr 2024 16:02:52 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: tiwai@suse.de, robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com,
-	shenghao-ding@ti.com, navada@ti.com, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
-	yung-chuan.liao@linux.intel.com, broonie@kernel.org, soyer@irl.hu
-Subject: Re: [PATCH v2 1/3] ALSA: hda/tas2781: Modification for add tas2781
- driver for SPI
-Message-ID: <ZhU8fCOLOlu4azGL@smile.fi.intel.com>
-References: <20240409024816.1180-1-baojun.xu@ti.com>
- <20240409024816.1180-2-baojun.xu@ti.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=XYRyRNhd
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 05276CE1E8E;
+	Tue,  9 Apr 2024 13:07:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9FE6C433C7;
+	Tue,  9 Apr 2024 13:07:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712668075;
+	bh=efQW4n4+VTeV6F+TzLQ/Ws25y4//427fEzcwv/kchgY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=XYRyRNhdEF2x1ljcqMNm4wvZ6bUaA88jFdFP5nsaWcvpxa8vQrUW+W3TYFqFJQH4s
+	 gif8mbrpvlGPzjfBzJ+fkSmXmZL9i8vCybiVHNAFACpT5kS6Tkp3jJbVl0rFnW6Pr0
+	 5/rFbWCpmuoa2F1INpDbg8pKri/nYXGEZlt/8xYtDcIieIWaVc5tuyy/Y0V/A4rdPs
+	 SlVWgU0xI/LtwPNuZXAmU+fyQ0WUoce1pXSw9SEGqHl81cJ1parm7D+s/zIIfIgXFS
+	 72cbsGpR5Y4zPo67bkqZY9p0v6RYCzXD+VHgNrNKds6bPvh4pZEhLRIdK+cI/U3ecz
+	 TIIQuEcs6bqBA==
+From: Mark Brown <broonie@kernel.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ tiwai@suse.com, perex@perex.cz, amadeuszx.slawinski@linux.intel.com,
+ hdegoede@redhat.com, kernel test robot <lkp@intel.com>
+In-Reply-To: <20240408081840.1319431-1-cezary.rojewski@intel.com>
+References: <20240408081840.1319431-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: avs: Fix debug window description
+Message-Id: <171266807341.28088.11267755974349863620.b4-ty@kernel.org>
+Date: Tue, 09 Apr 2024 14:07:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240409024816.1180-2-baojun.xu@ti.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: JDN3W2V6AOOCVPHNVMJ232VTMPKOHBWL
-X-Message-ID-Hash: JDN3W2V6AOOCVPHNVMJ232VTMPKOHBWL
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
+Message-ID-Hash: STXPJMD5DBQE64X3MXBBNFXLJLDAGSFO
+X-Message-ID-Hash: STXPJMD5DBQE64X3MXBBNFXLJLDAGSFO
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JDN3W2V6AOOCVPHNVMJ232VTMPKOHBWL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/STXPJMD5DBQE64X3MXBBNFXLJLDAGSFO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,52 +93,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Apr 09, 2024 at 10:48:13AM +0800, Baojun Xu wrote:
-> Integrate tas2781 configs for HP Laptops. Every tas2781 in the laptop
-> will work as a single speaker on SPI bus. The code support realtek as
+On Mon, 08 Apr 2024 10:18:40 +0200, Cezary Rojewski wrote:
+> Recent changes addressed PAGE_SIZE ambiguity in 2/3 locations for struct
+> avs_icl_memwnd2. The unaddressed one causes build errors when
+> PAGE_SIZE != SZ_4K.
+> 
+> 
 
-Realtek
+Applied to
 
-> the primary codec.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-...
+Thanks!
 
->  		{"INT33FE", },
->  		{"INT3515", },
->  		/* Non-conforming _HID for Cirrus Logic already released */
-> +		{"TXNW2781", },
+[1/1] ASoC: Intel: avs: Fix debug window description
+      commit: 7a1625c1711b526a77cb9c3acc15dbba71896a40
 
-This seems wrong. The ID here is correct from ACPI specification perspective.
-Can you elaborate why you think it's "non-conforming _HID"?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
->  		{"CLSA0100", },
->  		{"CLSA0101", },
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-...
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
->  	/* Non-conforming _HID for Cirrus Logic already released */
->  	{ "CLSA0100", (unsigned long)&cs35l41_hda },
->  	{ "CLSA0101", (unsigned long)&cs35l41_hda },
-> +	{ "TXNW2781", (unsigned long)&tas2781_hda },
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Ditto.
-
->  	{ }
-
-...
-
-> @@ -39,6 +39,7 @@ snd-hda-scodec-cs35l56-spi-objs :=	cs35l56_hda_spi.o
->  snd-hda-cs-dsp-ctls-objs :=		hda_cs_dsp_ctl.o
->  snd-hda-scodec-component-objs :=	hda_component.o
->  snd-hda-scodec-tas2781-i2c-objs :=	tas2781_hda_i2c.o
-> +snd-hda-scodec-tas2781-spi-objs :=	tas2781_hda_spi.o tas2781_spi_fwlib.o
-
-Actually these 'objs' has to be 'y', can you fix it in the prerequisite patch?
-
-Also wondering why fwlib is only a requirement for SPI. How does I²C work?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Thanks,
+Mark
 
