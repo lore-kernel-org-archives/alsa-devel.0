@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3183BCD128A
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 23:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8678DC67861
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Apr 2024 23:36:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCCB62408;
-	Wed, 10 Apr 2024 01:35:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCCB62408
+	by alsa0.perex.cz (Postfix) with ESMTPS id 814172BD1;
+	Wed, 10 Apr 2024 01:35:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 814172BD1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712705752;
-	bh=EHUY8OohkhvETd/zbs6k/hjYDaaHAvq8ARw7exxy4kM=;
+	s=default; t=1712705765;
+	bh=bwhva80xBES8MQgIEVfQ5wdS3dodWnBtOjZWDuGv3Xc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Y34gzhM7mpF38d8ll/PBdhTn2ckxb0ZK+CjFBmG0eJqKo+eVAevuR5sN2EIfrnlq2
-	 jhQn1nQhMusCwVFenVsUXXjY+nH/uU+68oDXyWmjfGxHbw9BEvchEk8+CD1zwEKhVo
-	 dk77Gpc+FRBKeE1jf12J1zmPnGc3feoSr8mo/AJk=
+	b=pcKTISBQ+3d6hfcPfutqsiY9MuDCKoggK+FHupQ0Q1S805DDmEuuQWY05wvJPFVap
+	 e1UiVrGVROc+eLoAdrOGMfJv6BnFxAHYpPpvXumr0Ag3y3TqJwBh9Tq0UOrKaKhCmB
+	 2Bqv6IJO3OSZQh4MY6N5/xSmwY6GouX5e4sHaNJQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74097F80587; Wed, 10 Apr 2024 01:35:21 +0200 (CEST)
+	id 4C84AF805E1; Wed, 10 Apr 2024 01:35:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92824F8057C;
-	Wed, 10 Apr 2024 01:35:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55486F805D3;
+	Wed, 10 Apr 2024 01:35:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F393F80423; Wed, 10 Apr 2024 01:34:23 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 982C2F80423; Wed, 10 Apr 2024 01:34:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33805F800C9
-	for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2024 01:34:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33805F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 32272F80130
+	for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2024 01:34:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32272F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=inKl7M5c
+ header.s=k20201202 header.b=XW1DaTKc
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 92BEE619A5;
-	Tue,  9 Apr 2024 23:34:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01F9BC433C7;
-	Tue,  9 Apr 2024 23:34:04 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 827AB61A5A;
+	Tue,  9 Apr 2024 23:34:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B027C433F1;
+	Tue,  9 Apr 2024 23:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712705646;
-	bh=EHUY8OohkhvETd/zbs6k/hjYDaaHAvq8ARw7exxy4kM=;
+	s=k20201202; t=1712705651;
+	bh=bwhva80xBES8MQgIEVfQ5wdS3dodWnBtOjZWDuGv3Xc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=inKl7M5cC/hJXwHuKxuCIq+dO0q0yHjMdFH0yGnAN/XWT8eXHQNt6vbxbzfStqxMV
-	 0R01qb7pcoiVLwAoroGjjdK2yGi8JkQp0BpBI3ekqEZJ+Z6Nf6H44QxjU6HNF923bU
-	 izYYmenSfqW6b4S07q8lAHmd6t3+pVvI6TtNTXSR3qV9c0iuMupg0QgRCvsed4fvI4
-	 lNQfT5kkaok5oCFuVv3k0YgOkmJP9g+a7fLEzQlsZvlIeeZ6bylQD17sVC2p36iqBa
-	 JYmZ/vkRc4+808T0U4C+pFf+8t8njndsaxLK48CfNZQCM4yRgwO3VqIB6Q9aHvVMJH
-	 UsdRF6NZVAdxA==
+	b=XW1DaTKcNUzViRiAAvxYTCzJsgBr6wilHWSS0jqIeyOMDa2cYvwXEJp+zSiH4mckv
+	 1EbqH3U2D4+WmP9HPnlPMyr/GzpJz9hjAGDifJ/IKXGI/WPW1QSl61la9nVl93QDSK
+	 RJJQZE+bf1cdIhhzby064WxpIcJVABUIdd6S/pPt9i896TKQdRJHuoohDJhZJKxKya
+	 xTefKr02DOJbmV0FDt54LFfUMjcDJQOu0S1K2DZsM8l8Q5Ga9EIzuZNlp1F3ucZcyU
+	 zO1KyNKNxgLuexwK+LgwMOm02FkWJdbbuP5yyzgeN33ZrSCGDx/uPPgKRKhd/f5y8R
+	 D3vNgItcWco+Q==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240408101803.43183-1-rf@opensource.cirrus.com>
-References: <20240408101803.43183-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 0/4] ASoC: cs35l56: Fixes to handling of ASP1 config
- registers
-Message-Id: <171270564469.199334.16192675337091991799.b4-ty@kernel.org>
-Date: Wed, 10 Apr 2024 00:34:04 +0100
+To: linux-sound@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de
+In-Reply-To: <20240408194147.28919-1-pierre-louis.bossart@linux.intel.com>
+References: <20240408194147.28919-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: SOF: misc fixes
+Message-Id: <171270565002.199334.309648974862019777.b4-ty@kernel.org>
+Date: Wed, 10 Apr 2024 00:34:10 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: SVY4ZNCUCLMLQRAGVG24YZQ7DOLFZAFJ
-X-Message-ID-Hash: SVY4ZNCUCLMLQRAGVG24YZQ7DOLFZAFJ
+Message-ID-Hash: HBYRBPPKTJQWSFSTIAXWS23SVUIKWFIC
+X-Message-ID-Hash: HBYRBPPKTJQWSFSTIAXWS23SVUIKWFIC
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SVY4ZNCUCLMLQRAGVG24YZQ7DOLFZAFJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HBYRBPPKTJQWSFSTIAXWS23SVUIKWFIC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,15 +92,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 08 Apr 2024 11:17:59 +0100, Richard Fitzgerald wrote:
-> This chain fixes some problems with some previous patches for handling
-> the ASP1 config registers. The root of the problem is that the ownership
-> of these registers can be either with the firmware or the driver, and that
-> the chip has to be soft-reset after downloading the firmware.
+On Mon, 08 Apr 2024 14:41:44 -0500, Pierre-Louis Bossart wrote:
+> We somehow missed the default path for DSP libraries for LNL, and need
+> to restrict support for D0i3 w/ IPC4. Also add debugfs support for
+> firmware profile information so that sof-test scripts can show what is
+> being tested.
 > 
-> This chain adds and uses a regmap_read_bypassed() function so that the
-> driver can leave the regmap in cache-only until the chip has rebooted,
-> but still poll a register to detect when the chip has rebooted.
+> Pierre-Louis Bossart (2):
+>   ASoC: SOF: Intel: add default firmware library path for LNL
+>   ASoC: SOF: debug: show firmware/topology prefix/names
 > 
 > [...]
 
@@ -110,14 +110,12 @@ Applied to
 
 Thanks!
 
-[1/4] regmap: Add regmap_read_bypassed()
-      commit: 70ee853eec5693fefd8348a2b049d9cb83362e58
-[2/4] ALSA: hda: cs35l56: Exit cache-only after cs35l56_wait_for_firmware_boot()
-      commit: 73580ec607dfe125b140ed30c7c0a074db78c558
-[3/4] ASoC: cs35l56: Fix unintended bus access while resetting amp
-      commit: d4884fd48a44f3d7f0d4d7399b663b69c000233d
-[4/4] ASoC: cs35l56: Prevent overwriting firmware ASP config
-      commit: dfd2ffb373999630a14d7ff614440f1c2fcc704c
+[1/3] ASoC: SOF: Intel: add default firmware library path for LNL
+      commit: 305539a25a1c9929b058381aac6104bd939c0fee
+[2/3] ASoC: SOF: pcm: Restrict DSP D0i3 during S0ix to IPC3
+      commit: 90a2353080eedec855d63f6aadfda14104ee9b06
+[3/3] ASoC: SOF: debug: show firmware/topology prefix/names
+      commit: 17f4041244e66a417c646c8a90bc6747d5f1de1e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
