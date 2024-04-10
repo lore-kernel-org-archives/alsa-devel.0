@@ -4,93 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17C5CCD11C2
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Apr 2024 15:56:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5028CCD128A
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Apr 2024 16:09:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79A4F2BC1;
-	Wed, 10 Apr 2024 17:56:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79A4F2BC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id E95C822A8;
+	Wed, 10 Apr 2024 18:09:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E95C822A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712764592;
-	bh=nI5H5Oi7NfxlOQLWFliwvxz12AjodVIonU7PNCClEZg=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=T2eXvogBnoz2HKGnqlm6yE/hfjOgIhrfPGUywS5EIUWs/eeDShcdj+RyWNWJzGhEs
-	 dlJQd5D+J2VHq5Ybil8lZEC/dBL9AfRXxiVJewV+QRxwJi6WJ8rMRkrtCPxQr96mOA
-	 CmQZiOOCxmybKIQaUgJqaqgJX/9g0oQWAdsvjeJk=
+	s=default; t=1712765368;
+	bh=uIp+Ly6NhCx68e61qpQZ5cWRk4j7iTO0QltCVLYEnfY=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=nymfFIm7SgexHtI2cxRw0qZghJeygJiLOQx3ByI0CUE/DV3rcSNgVimE2MtqxIraP
+	 yL53q+H11EYHBSoLXLIo8m+M7GZYAlfCPaRF1BEMEZvcU9XAtT0GeM65jl5BFuwuro
+	 ZlXq8r1Yy1qiWDWb2TTlOT5csvOEKDiKlDC2Mh2M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B649FF80694; Wed, 10 Apr 2024 17:54:35 +0200 (CEST)
+	id 327F1F8058C; Wed, 10 Apr 2024 18:08:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BDCFF8069D;
-	Wed, 10 Apr 2024 17:54:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93A5CF8057F;
+	Wed, 10 Apr 2024 18:08:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03AEAF80571; Wed, 10 Apr 2024 17:52:58 +0200 (CEST)
+	id 6B64FF8026D; Wed, 10 Apr 2024 18:08:50 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A2B18F805AE
-	for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2024 17:52:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2B18F805AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8C39F8013D
+	for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2024 18:08:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8C39F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=He+VdkiE
+ header.s=PODMain02222019 header.b=WH8YFB8k
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43A5ji5A028164;
-	Wed, 10 Apr 2024 10:52:42 -0500
+ 43AAVPBH003230;
+	Wed, 10 Apr 2024 11:08:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=/OqTZZjRkAbMo+sRpjQI0cVTC8ltQ+LaMd+cRPBtkcc=; b=
-	He+VdkiESTZ0xBnvviCaiiDKRiOoWBHb+hzA1ynsUUlIQpEd8UpBhlzmN2Zoh3CI
-	uVFicabse0oKBZb6Btp3p1GV2SPffd1o750SlvjhBqRS6ZP1HU7AzrRdukhzjNma
-	4louQT3LaIxIIR/gc7dBJ25AV0SsIYERG9ns8yhoyduuAvZ8VUOoRPbUFnYCSg7J
-	5IGcg7GcOpLs5qiL33Z5G7GazobGMYXWY0pIhIsStHaIMGv/VGnaDIjNEQjdT4Ta
-	JCdxD0fr2lfdAnSQtpLR1wNYujcZwzm9+clZ87w2NCtqUS0I6GcgoK3vApU8UdqS
-	ckG7B0U4amL3XSSyUU6eNw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxn6f9-3
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=O
+	CzWokGvgPVgqbKJreriPnsCx85RwRyagqB/QJQ8/vI=; b=WH8YFB8kpbw2FOPVK
+	wqKtZfOfJwamIjjmbrH78vmjCngoOQmuH9js5Z3KcCr5tjkWdbrTYM7wbYG8TfwJ
+	FngR/S+2R7ag6YQuKiJlHccKktGxSGNtZbofUgJoW+s2pLjPZW0l4D7F8Cv1j81b
+	1IjP7PQzMNl7dy3mEMk+/NpIE8+/cFvOB4HgXSRuwxLBwOaBeF5QrVsJ/3gVtjf7
+	2r8Ta6n/L+HDjsXJIiIgAJPGwJVpFBkNtFcj5MeFk4qvD9MuOeO/pMcXJoeF8sq2
+	Nh1/Bp+8r+J4DNM0P8Pbhsp19/u9uw/qNqYimfgBDtm/SH9RgTVEttfe5Hkl+3sE
+	JI95w==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxn7k0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 10:52:42 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Wed, 10 Apr 2024 11:08:39 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 10 Apr
- 2024 16:52:26 +0100
+ 2024 17:08:37 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Wed, 10 Apr 2024 16:52:26 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (SHANCC79D24.ad.cirrus.com
- [198.61.64.86])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 18C0D82024A;
-	Wed, 10 Apr 2024 15:52:26 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+ via Frontend Transport; Wed, 10 Apr 2024 17:08:37 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
+ [198.61.64.213])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id C104682024A;
+	Wed, 10 Apr 2024 16:08:36 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 4/7] ALSA: hda: cs35l41: Update DSP1RX5/6 Sources for DSP
- config
-Date: Wed, 10 Apr 2024 16:52:20 +0100
-Message-ID: <20240410155223.7164-5-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240410155223.7164-1-sbinding@opensource.cirrus.com>
-References: <20240410155223.7164-1-sbinding@opensource.cirrus.com>
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs35l56: Include array_size.h
+Date: Wed, 10 Apr 2024 17:08:33 +0100
+Message-ID: <20240410160833.20837-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 1cmClrWHnpaT4L94SeprS0MgHElY3jpD
-X-Proofpoint-GUID: 1cmClrWHnpaT4L94SeprS0MgHElY3jpD
+X-Proofpoint-ORIG-GUID: Itkn7BXLBpQp6x6Z1s9Jn7mBqLTJXMsw
+X-Proofpoint-GUID: Itkn7BXLBpQp6x6Z1s9Jn7mBqLTJXMsw
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 4RE25XPB663KVDUO2PPVY55HQRJX5AUW
-X-Message-ID-Hash: 4RE25XPB663KVDUO2PPVY55HQRJX5AUW
-X-MailFrom: prvs=1830201b57=sbinding@opensource.cirrus.com
+Message-ID-Hash: MWPZTGMV3FWMXCEBLGKNHZYKRYWGVLFZ
+X-Message-ID-Hash: MWPZTGMV3FWMXCEBLGKNHZYKRYWGVLFZ
+X-MailFrom: prvs=1830ba3822=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4RE25XPB663KVDUO2PPVY55HQRJX5AUW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MWPZTGMV3FWMXCEBLGKNHZYKRYWGVLFZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,51 +107,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently, all PC systems are set to use VBSTMON for DSP1RX5_SRC,
-however, this is required only for external boost systems.
-Internal boost systems require VPMON instead of VBSTMON to be the
-input to DSP1RX5_SRC.
-All systems require DSP1RX6_SRC to be set to VBSTMON.
-Also fix incorrect comment for DACPCM1_SRC to use DSP1TX1.
+Explicitly #include array_size.h for the source files that use
+ARRAY_SIZE().
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs35l56-shared.c | 1 +
+ sound/soc/codecs/cs35l56.c        | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index c2a8e4361eef..875285201bbc 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -102,7 +102,7 @@ static const struct reg_sequence cs35l41_hda_config_dsp[] = {
- 	{ CS35L41_SP_HIZ_CTRL,		0x00000003 }, // Hi-Z unused/disabled
- 	{ CS35L41_SP_TX_WL,		0x00000018 }, // 24 cycles/slot
- 	{ CS35L41_SP_RX_WL,		0x00000018 }, // 24 cycles/slot
--	{ CS35L41_DAC_PCM1_SRC,		0x00000032 }, // DACPCM1_SRC = ERR_VOL
-+	{ CS35L41_DAC_PCM1_SRC,		0x00000032 }, // DACPCM1_SRC = DSP1TX1
- 	{ CS35L41_ASP_TX1_SRC,		0x00000018 }, // ASPTX1 SRC = VMON
- 	{ CS35L41_ASP_TX2_SRC,		0x00000019 }, // ASPTX2 SRC = IMON
- 	{ CS35L41_ASP_TX3_SRC,		0x00000028 }, // ASPTX3 SRC = VPMON
-@@ -111,7 +111,7 @@ static const struct reg_sequence cs35l41_hda_config_dsp[] = {
- 	{ CS35L41_DSP1_RX2_SRC,		0x00000008 }, // DSP1RX2 SRC = ASPRX1
- 	{ CS35L41_DSP1_RX3_SRC,         0x00000018 }, // DSP1RX3 SRC = VMON
- 	{ CS35L41_DSP1_RX4_SRC,         0x00000019 }, // DSP1RX4 SRC = IMON
--	{ CS35L41_DSP1_RX5_SRC,         0x00000029 }, // DSP1RX5 SRC = VBSTMON
-+	{ CS35L41_DSP1_RX6_SRC,         0x00000029 }, // DSP1RX6 SRC = VBSTMON
- };
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index ec1d95e57061..3aa39f5923eb 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -5,6 +5,7 @@
+ // Copyright (C) 2023 Cirrus Logic, Inc. and
+ //                    Cirrus Logic International Semiconductor Ltd.
  
- static const struct reg_sequence cs35l41_hda_unmute[] = {
-@@ -693,6 +693,10 @@ static void cs35l41_hda_play_start(struct device *dev)
- 	if (cs35l41->cs_dsp.running) {
- 		regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
- 				       ARRAY_SIZE(cs35l41_hda_config_dsp));
-+		if (cs35l41->hw_cfg.bst_type == CS35L41_INT_BOOST)
-+			regmap_write(reg, CS35L41_DSP1_RX5_SRC, CS35L41_INPUT_SRC_VPMON);
-+		else
-+			regmap_write(reg, CS35L41_DSP1_RX5_SRC, CS35L41_INPUT_SRC_VBSTMON);
- 		regmap_update_bits(reg, CS35L41_PWR_CTRL2,
- 				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
- 				   1 << CS35L41_VMON_EN_SHIFT | 1 << CS35L41_IMON_EN_SHIFT);
++#include <linux/array_size.h>
+ #include <linux/firmware/cirrus/wmfw.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/regmap.h>
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 6331b8c6136e..dfd703d9e12f 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -6,6 +6,7 @@
+ //                    Cirrus Logic International Semiconductor Ltd.
+ 
+ #include <linux/acpi.h>
++#include <linux/array_size.h>
+ #include <linux/completion.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
 -- 
-2.34.1
+2.39.2
 
