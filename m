@@ -4,220 +4,157 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B5CC4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 449D9C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:48:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A33A5E82;
-	Thu, 18 Apr 2024 17:47:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A33A5E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEA0B14FD;
+	Thu, 18 Apr 2024 17:48:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEA0B14FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713455285;
-	bh=d1PN1Hm45NhCEHeS1enwZRk3BBE6Kbx5SrWseLrZK54=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1713455309;
+	bh=7ARq7CtkufCoSJtbuCqkwQo/bhan5+eThkCUX7hkdd4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=N9SnHwLNx1PeFWoAYVWwhlX+LAZOiumb0BrA8yw51OkXyIfNOqhNlGL+ydCw7z0cL
-	 xBNGTPfzFn7+OgtYAGFZnWuOv5k/+xqJnE1f7j1gv1Vc3aiXlbI3LPCznUtvkJ40Rb
-	 Z0vMtj86LM9u+HOu8DavnekaP396QQkfHYHNNxWM=
+	b=P0BT7vbmDfzS4Blpe2ZXwyy/7YjyGuciDXCY3EaVvUmweXW4PMP+os/SDTYFNlOzx
+	 aB8e8OiRQcSubEf5O15ua4uyuvk44un4nApjvIUwupW/dgomDeVbYJZ3iRgsb6s1J4
+	 RUAD3Wy8KtMCyjxqxab8/OPNbAj2ZcX5zvXAJ8YE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4292F80760; Thu, 18 Apr 2024 17:45:09 +0200 (CEST)
+	id 79F97F80854; Thu, 18 Apr 2024 17:45:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FCBAF80774;
-	Thu, 18 Apr 2024 17:45:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3933BF80805;
+	Thu, 18 Apr 2024 17:45:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B408EF8026D; Wed, 10 Apr 2024 10:02:58 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id B1448F8026D; Wed, 10 Apr 2024 14:42:59 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 93D66F80130
-	for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2024 10:02:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93D66F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id CBFBFF80130
+	for <alsa-devel@alsa-project.org>; Wed, 10 Apr 2024 14:42:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBFBFF80130
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=Pk97KuT/
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712736165;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DXu5GyWFLRYVVgKT/xx47xxPPvyqqTS3jJA/xlCkkm0=;
-	b=Pk97KuT/mE9r5AWVFdqO6INc6z4HesNnp8Eydu2oWb9B1SKZTBktWULMTV6CAv5WHqzYfb
-	lEV3l0VSl46VIecpkz+PButrh4dcw0SGAOKtlkkT+cdzv/cTu9TaijbzP+0LS2xbwPCKPq
-	mqsjrSmvjJQcMxrmicBH/NKgjbxKZms=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-rea-BbyyPX2wtQ4HeAYhTA-1; Wed, 10 Apr 2024 04:02:41 -0400
-X-MC-Unique: rea-BbyyPX2wtQ4HeAYhTA-1
-Received: by mail-wm1-f72.google.com with SMTP id
- 5b1f17b1804b1-4162b9b1702so30268315e9.2
+	dkim=pass (2048-bit key,
+ unprotected) header.d=baylibre-com.20230601.gappssmtp.com
+ header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
+ header.s=20230601 header.b=GAgwiX/W
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-346406a5fb9so1068242f8f.1
         for <alsa-devel@alsa-project.org>;
- Wed, 10 Apr 2024 01:02:41 -0700 (PDT)
+ Wed, 10 Apr 2024 05:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712752965;
+ x=1713357765; darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s6I23qc5vtFfA69hwi5DwiHXGwJhre0eHDpmfJgJbQg=;
+        b=GAgwiX/W6cyz0SFiqv9aLtQBfrj7/W1beToP+SbYAidZg/fiaRcgc1hTSCxTV59xjQ
+         Hmt7K7Md+qL5chRhb/1CD5t5eVS5/dWUoEiA9p28MyqfV4jErY58EoG7q7Re557MwExu
+         QiCmDpQKA//UIbr6DL02KJusj+8iIxpR2cZkynwwVBGB/rZQNroo0j1bEyAmc4P30Ezi
+         k81hGxhxhrHqlpDtnvbU0lHy6rWUHEJuRjebL49GIIscFalXKJn5NxvH9eRIRsSfiEb6
+         4yYpYzb3IZNDD6rHIz9ptHfoAXf4NxKjkxUCY4NYLehV6YmTe7BvA+F1S5HMEoaxsmks
+         iJUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712736160; x=1713340960;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DXu5GyWFLRYVVgKT/xx47xxPPvyqqTS3jJA/xlCkkm0=;
-        b=dnXCzBcIrqUD348IhzKUgKfYFiCQgPvpxpns9HAuzzC1CKu+Y6eegF4tzlxehI/brd
-         2vuTVXhr+3mPu3S+I6N1PKn9nfdv9jzJklzaW3cZjWkIfWqgHpr5JH8vkgnNL/Cd+01c
-         Ya2RT+Y0NnBPMWVGZRhP6P2A/wBLJ3t5JP8LzJpYD66KPWu/YdpV6C3gGCAwsp+10uw/
-         2v8I/xUIR4Tv39ZtMqOhpdO4RP3iDA1YavGj01qFNIyVSse185qDc6SwkT41qMr3lTXB
-         jnRGfZgf8xFusmFNV3EMQdhUwc93drKvYhaeSzYPphfRZzbZyLpyisJAXSAUN5dT4w9V
-         aqEQ==
+        d=1e100.net; s=20230601; t=1712752965; x=1713357765;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s6I23qc5vtFfA69hwi5DwiHXGwJhre0eHDpmfJgJbQg=;
+        b=co0T26FS3kT1jRyhzCZd9DjTsqbEGXv4rO9PckilyBP0I2S6FswxuELK4kIaQVUw/L
+         dZN/vJoBOUOA23pvRyp2HJZVLqkItnwVMSQO7K27JBdEAqdMo/mfn9KNyjVe+4jZVAD3
+         NNy3e2RKenu7u5EaX37+X1Luel2GHNCDk+kNqzure/7bddlAcVFhYytsVAASNqbBEVO4
+         22Ujfv3KHhtiV0JF54Ho6fAHCeG7WBX6WRSculA1DSnyBcXGOHlI+wnRNeiEoLaFvUsV
+         HJotp4WhSAf9Co3y/8S0t4XGCkOfsh7a8ZEGeTV3sVHQMuTIvH7eL+Sy4Vl4gLptXGhY
+         02oQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWsitYVtqqG31lSo88qW2s+tGEQ/5zZq+urCSN0IXgsbUGHtkjeFgg9Vb8gq133UTUKsVzzhIIctmhsboVgutcdoLy2munI5jmeI8k=
-X-Gm-Message-State: AOJu0Yygy6M+BNsKeh6fcuCVxBvPh7OijeHor3uCUZ/gfyfIDoslFOrk
-	8AU1/Y53wzhh76OX4Y0R4EbqgcA7cLlkMxiesjpxMwVK+eBhZUddijqnnxtIN0HOgzxKKloy27M
-	kdxlfdCGqaWAxWQiNmZlTT/gylUaQ4/7N9vvRb7/c5opeB7Jev1dEe3Trr5j6
-X-Received: by 2002:a05:600c:1e05:b0:416:6eaa:6179 with SMTP id
- ay5-20020a05600c1e0500b004166eaa6179mr1616334wmb.6.1712736160210;
-        Wed, 10 Apr 2024 01:02:40 -0700 (PDT)
+ AJvYcCWFUxhWqSR/J2YmD6O2YnCWC9Jfy5kE6N4BjEpzsLZ0LzhbVbFPb2bFhvSMAT/6L7in+X1pHbLhgYK6gpgO/X5SRpIuu/cZD1nkZPY=
+X-Gm-Message-State: AOJu0Yy7leB/788nPzVX9ktcmINyU+mqUxirGWvTtIAVFgpXtZZbnv1/
+	ckN26gcBSdblcGcv2FJpP5T0mMZ53dWGY3gBR2o7q6ft8eMpgnNN06vOUjBWuOQ=
 X-Google-Smtp-Source: 
- AGHT+IFmI+bK+Bmn5+2XukodBdn2GXQ92haKG6VohgZt2mHVdjYtyJPyqjLehKUQ4vb5gN6ueySe/w==
-X-Received: by 2002:a05:600c:1e05:b0:416:6eaa:6179 with SMTP id
- ay5-20020a05600c1e0500b004166eaa6179mr1616221wmb.6.1712736159530;
-        Wed, 10 Apr 2024 01:02:39 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:179:8bde:8cd:63ff:6fae:3872])
+ AGHT+IGLIzv68MN2vk07ucSWBnQpWhzyZz3+w9au/M9OjAewrobTeMyExcozFPeCXalIxP/pVJHGdA==
+X-Received: by 2002:a5d:64c3:0:b0:33e:19ae:3716 with SMTP id
+ f3-20020a5d64c3000000b0033e19ae3716mr2319146wri.11.1712752965497;
+        Wed, 10 Apr 2024 05:42:45 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
         by smtp.gmail.com with ESMTPSA id
- t7-20020a05600c198700b00416c160ff88sm1491111wmq.1.2024.04.10.01.02.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 01:02:38 -0700 (PDT)
-Date: Wed, 10 Apr 2024 04:02:23 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	David Hildenbrand <david@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gonglei <arei.gonglei@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	David Airlie <airlied@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alexander Graf <graf@amazon.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
-	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH v2 00/25] virtio: store owner from modules with
- register_virtio_driver()
-Message-ID: <20240410040140-mutt-send-email-mst@kernel.org>
-References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
- <285be63c-8939-495c-8411-ce2a68e25b2b@linaro.org>
+ a17-20020a5d5091000000b00341ba91c1f5sm13702046wrt.102.2024.04.10.05.42.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 05:42:45 -0700 (PDT)
+Message-ID: <6ae5ed54-4205-46ae-b903-188a8138eaa4@baylibre.com>
+Date: Wed, 10 Apr 2024 14:42:43 +0200
 MIME-Version: 1.0
-In-Reply-To: <285be63c-8939-495c-8411-ce2a68e25b2b@linaro.org>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-MailFrom: mst@redhat.com
-X-Mailman-Rule-Hits: max-recipients
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/18] ASoC: mediatek: Add common machine soundcard
+ driver probe mechanism
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ broonie@kernel.org
+Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, maso.huang@mediatek.com,
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+ kuninori.morimoto.gx@renesas.com, shraash@google.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
+ nfraprado@collabora.com, alsa-devel@alsa-project.org,
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
+ <20240409113310.303261-2-angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240409113310.303261-2-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: amergnat@baylibre.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: S6F4UR64YUO4WSXQROBIE776LTZ2B6SU
-X-Message-ID-Hash: S6F4UR64YUO4WSXQROBIE776LTZ2B6SU
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 2VJ4CE6N2VKHAZFNXSS6EMXN4N4V7RAX
+X-Message-ID-Hash: 2VJ4CE6N2VKHAZFNXSS6EMXN4N4V7RAX
 X-Mailman-Approved-At: Thu, 18 Apr 2024 15:44:50 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6F4UR64YUO4WSXQROBIE776LTZ2B6SU/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2VJ4CE6N2VKHAZFNXSS6EMXN4N4V7RAX/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Apr 10, 2024 at 09:41:57AM +0200, Krzysztof Kozlowski wrote:
-> On 31/03/2024 10:43, Krzysztof Kozlowski wrote:
-> > Changes in v2:
-> > - Three new patches: virtio mem+input+balloon
-> > - Minor commit msg adjustments
-> > - Add tags
-> > - Link to v1: https://lore.kernel.org/r/20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org
-> > 
-> > Merging
-> > =======
-> > All further patches depend on the first virtio patch, therefore please ack
-> > and this should go via one tree: maybe virtio?
-> 
-> Michael, Jason, Xuan,
-> 
-> Will you be able to take the entire patchset through virtio?
-> 
-> Best regards,
-> Krzysztof
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-
-Hello!
-Yes I intend to take it for the next merge window.
-I am also merging the 1st patch for this release (it's a bugfix).
+On 09/04/2024 13:32, AngeloGioacchino Del Regno wrote:
+> Add a common machine soundcard driver probe function that supports both
+> DSP and AFE-direct usecases and also provides a hook for legacy machine
+> soundcard driver probe mechanisms.
+> 
+> Note that the hook is there because, even for legacy probe, a lot of the
+> actual code can still be commonized, hence still reducing duplication
+> for the legacy devicetree retrocompatibility cases.
+> 
+> This common probe function deprecates all of the inconsistent previous
+> probe mechanisms and aims to settle all of the MediaTek card drivers on
+> consistent and common devicetree properties describing wanted DAIs,
+> device specific DAI configuration and DAI links to codecs found on
+> each device/board.
 
 -- 
-MST
-
+Regards,
+Alexandre
