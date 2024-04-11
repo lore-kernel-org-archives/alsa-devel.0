@@ -4,79 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6701C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 17:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 885C0C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 17:49:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BB2C2BE2;
-	Thu, 11 Apr 2024 19:49:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BB2C2BE2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5C3D2BC6;
+	Thu, 11 Apr 2024 19:49:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5C3D2BC6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712857772;
-	bh=9aJw8QoZy00PI1Vlq06euzR5zwJG7a7zFfna87TrmXU=;
+	s=default; t=1712857781;
+	bh=+xGai2+yQRuwJxV3vruDN127Ywqk6sjQlpgvB62GDC0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FJ1UiOjgFuj9DbbjjwnCBMRf/DOVk8e89yhgcRehKNTFlBGvRsAL31YeOhazhozFN
-	 14hEOonppRdgNyQWy8YYy4F+1N7Vk/99u6yA1Zt8gmBuQnSEkbTrXzuVze8pQm9Vkg
-	 Q3PeMFJdxpPGukAFyr3HoIFuu+HaO5nEOZasyA9g=
+	b=H06HY4jht7Lzid7TFJvDJwNGEo+jb11v3wULjnv8jFvyPTHixd2ksmn9VfAa+kPVF
+	 bRtyQ30OLD6QyQr7iQufNcKY1VhVYF4Q/eINkpjrhCSD6ZPD8hZqsODkx14BQjSFCq
+	 E8137GTR++Es2Y0U7JAVzJjfgRM6WMqcY6r9J8FE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39176F80568; Thu, 11 Apr 2024 19:48:59 +0200 (CEST)
+	id 71D5BF805D3; Thu, 11 Apr 2024 19:49:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9842EF8057F;
-	Thu, 11 Apr 2024 19:48:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EEC3F805D4;
+	Thu, 11 Apr 2024 19:49:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFB93F8028B; Thu, 11 Apr 2024 19:48:54 +0200 (CEST)
+	id F31D2F8026D; Thu, 11 Apr 2024 19:48:54 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60DFEF8013D
-	for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2024 19:48:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60DFEF8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F2FFF80236
+	for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2024 19:48:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F2FFF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=oEd8xKdY
+ header.s=k20201202 header.b=s/gHjecz
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 91EFF62102;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 433D562104;
+	Thu, 11 Apr 2024 17:48:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A5BC113CE;
 	Thu, 11 Apr 2024 17:48:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B96C072AA;
-	Thu, 11 Apr 2024 17:48:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712857726;
-	bh=9aJw8QoZy00PI1Vlq06euzR5zwJG7a7zFfna87TrmXU=;
+	s=k20201202; t=1712857729;
+	bh=+xGai2+yQRuwJxV3vruDN127Ywqk6sjQlpgvB62GDC0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=oEd8xKdYy3jH3o3gCDEyDn2ste+PUbngtTrUbUy1QuoIMk6Sv8L1uCxR6jZc2qLZG
-	 PFBy0Y4DM+YNfPIj6B6dZhP2BIl/BxtZpX0CNhRH52BAW8JfJoz5cZYrotT8Bgvad1
-	 lWlrk9zVfCKUk+vHEUUH1JZYsAEJnml+0AjMKP4gWOAph2F7a/QkLy5zoM6QVSZYIi
-	 KqpZGc5hFuJ7Gm957Y2Px11Rszgi6amml5yYH1j5xMmF8/mxKWWE0I1SNC0qHFovi+
-	 SrnJhTWbwd5OEbf3qXN9lXpfmbTMv3emCDAwGNWUmrNTGfjBY0WH/9q71F6cEjUYCo
-	 8q6gH3YDRJ6LQ==
+	b=s/gHjecz3MF1Jb2zrk0vs01JvLf/r7UbyG0tYD6S8t6zcAeWzxwgkflgdv+JaBUxm
+	 gPPbJf9zFuQZdg87TCYvk8hhMnzmkrJAYcz5Dd+oOkHpkSzw8jxzxNit3qrbSVfQc3
+	 0Qz5xJL4jjMt1wcAQyIlVF+/wl7rnQsKZWaSBTSuUg8vzRw7ZQqpPnabkpiSkQ9P4f
+	 pWydTIK8Fdm7kHSpUjHUJdMx/kJ3jSu1IGTOLPkZ+TN9mdNRYEFqWAGDnrHCQZT8F0
+	 gVHZisYtQOm3Rk+AVAbhyrryJwRTipgsUsFB8CFN2jFu7jIzX/A2Azj8ZlJHjIzlVj
+	 JV+XUPutiYz0Q==
 From: Vinod Koul <vkoul@kernel.org>
-To: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
+To: Bard Liao <yung-chuan.liao@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Sanyog Kale <sanyog.r.kale@intel.com>, linux-arm-msm@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20240403132716.325880-1-krzysztof.kozlowski@linaro.org>
-References: <20240403132716.325880-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH RESEND] soundwire: qcom: allow multi-link on newer
- devices
-Message-Id: <171285772329.544231.15578305335747563968.b4-ty@kernel.org>
-Date: Thu, 11 Apr 2024 23:18:43 +0530
+In-Reply-To: <20240405144141.47217-1-krzysztof.kozlowski@linaro.org>
+References: <20240405144141.47217-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2] soundwire: qcom: allow multi-link on newer devices
+Message-Id: <171285772650.544231.3543346756872331188.b4-ty@kernel.org>
+Date: Thu, 11 Apr 2024 23:18:46 +0530
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
-Message-ID-Hash: THN63RDNXBR36TE4TM2LXTRYI7VQM6UN
-X-Message-ID-Hash: THN63RDNXBR36TE4TM2LXTRYI7VQM6UN
+Message-ID-Hash: PNKVTATCUA4RIJJBTRYWVKW5PLH2KKZM
+X-Message-ID-Hash: PNKVTATCUA4RIJJBTRYWVKW5PLH2KKZM
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/THN63RDNXBR36TE4TM2LXTRYI7VQM6UN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNKVTATCUA4RIJJBTRYWVKW5PLH2KKZM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,7 +95,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Wed, 03 Apr 2024 15:27:16 +0200, Krzysztof Kozlowski wrote:
+On Fri, 05 Apr 2024 16:41:41 +0200, Krzysztof Kozlowski wrote:
 > Newer Qualcomm SoCs like X1E80100 might come with four speakers spread
 > over two Soundwire controllers, thus they need a multi-link Soundwire
 > stream runtime.
