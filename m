@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20733C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 22:36:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB1A8C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 23:16:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D5212BF5;
-	Fri, 12 Apr 2024 00:36:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D5212BF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DFEE2C00;
+	Fri, 12 Apr 2024 01:16:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DFEE2C00
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712875003;
-	bh=ZgKCfsWFqENGu2Mnw8GcJWs4r368JeG6kTQENU1jAkw=;
+	s=default; t=1712877408;
+	bh=3PvQYrDxu5lunns0NauurjuD19jwN9atvmFEz3SB8N0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G5xvPU0b4QN7EIYIdxJLAi4JbrUF4mnfCsZufKuAEIb3jM9GjxOY+hZEMhRLveq1x
-	 VvRBKFpMgK92TevMFPiNChZyecp6N7Lqtl7Bh1VYi0dtVGEj3plbMrXGn493bJ+uTs
-	 QcZetreDch5GGrJBzAWt4TU1j1a7ScWxQpDVfzW0=
+	b=jomGwqesp2XYQJ47I6jHJ+dMWHzWypoyZtxaV8tyJO9Opf1Ow4pGVayguKaNiP2dm
+	 YtwzK3lR8tDCM9X3OU8/K49bjF4HbyObnF2bydbsz/80xa/W36WrUFtJuQhfcZWfxu
+	 7Jj7+7VN0d91ysgKZdwO4dFguJivobZev4cmlH9E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61A18F80236; Fri, 12 Apr 2024 00:36:12 +0200 (CEST)
+	id 1263DF8057D; Fri, 12 Apr 2024 01:16:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E8FDF8028B;
-	Fri, 12 Apr 2024 00:36:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 066AAF805A1;
+	Fri, 12 Apr 2024 01:16:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F05CDF80238; Fri, 12 Apr 2024 00:36:05 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id B3264F800C9; Fri, 12 Apr 2024 01:02:29 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE758F800C9
-	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 00:36:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE758F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id ADC74F800C9
+	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 00:57:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADC74F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GOKeKENm
+ header.s=k20201202 header.b=iGRR/YtR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id CC5A36217E;
-	Thu, 11 Apr 2024 22:35:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DD48C072AA;
-	Thu, 11 Apr 2024 22:35:55 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9696462178;
+	Thu, 11 Apr 2024 22:57:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8852C072AA;
+	Thu, 11 Apr 2024 22:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712874957;
-	bh=ZgKCfsWFqENGu2Mnw8GcJWs4r368JeG6kTQENU1jAkw=;
+	s=k20201202; t=1712876269;
+	bh=3PvQYrDxu5lunns0NauurjuD19jwN9atvmFEz3SB8N0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=GOKeKENm2iBE7FcHqURXogLvsi1VM/SOP+bnihaC34q1pf5cC0YxmAU3RB69q2IU7
-	 qRlB7GrGAhUthAcVE9Nb+kl2dD07dQreOwOlCWoM+EYYLtsT2X4qctULVfmYqEwa8i
-	 xBr9kt68BlyRlTaq8ueOR48JFobItbNt1zjQ7EKX7GxLn2cf5Hm/t+Z3FTgR5zaUH+
-	 p2dlk0GbzsCfoRVzOb5qPo8ISM5hSua+WNUC2KMfwSkYx7M3VcvHF/PXVjOHp75ohb
-	 ZXdVJ3aCvU4Y4NoFXN6tqIATZo0SncP7FXrA4HZs1SbEOVTKkduTIjYocK21umR2H3
-	 pbaVp7pVlDdqw==
+	b=iGRR/YtR1dsmPrG/414PoViHG8v9hGs7N/dQSej+xwSMIDqJ1Cfu2xJDxMJY6VeEq
+	 NVA2qyRbOWg/0tkLmjM4J+6HP0tOijXs+KsHD9/J2UXiEOnQ8dx2gb4KMIRrPEm8Wu
+	 5ub1HMvsd3KwD28RblmHBfSmMygicNQGpM0UkKJLONQ5cXVqz4TbhR0yHd0DFboTxd
+	 4KH2nwZRockj2MLgKqF1LIcYtc3UM9rSb6tnDIyZCnx1gjJpdM5dSCd3gk2TIFbROI
+	 PJZwsB1PiZ9u1f15pjNcH6Pr791qMKEwmMmWDoYyGxIryztZ+/uQ002PZL7dlotePX
+	 SMLxCJuVC4EFQ==
 From: Mark Brown <broonie@kernel.org>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
  Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- Lukas Bulwahn <lbulwahn@redhat.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Lukas Bulwahn <lukas.bulwahn@redhat.com>
-In-Reply-To: <20240411075803.53657-1-lukas.bulwahn@redhat.com>
-References: <20240411075803.53657-1-lukas.bulwahn@redhat.com>
-Subject: Re: [PATCH] MAINTAINERS: adjust file entry in TEXAS INSTRUMENTS
- AUDIO (ASoC/HDA) DRIVERS
-Message-Id: <171287495520.96963.7535991617111488759.b4-ty@kernel.org>
-Date: Thu, 11 Apr 2024 23:35:55 +0100
+ Colin Ian King <colin.i.king@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240411083332.304887-1-colin.i.king@gmail.com>
+References: <20240411083332.304887-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH][next] ASoC: codecs: tas2780: remove redundant
+ assignments to variable ret
+Message-Id: <171287626663.99929.5680912373005541173.b4-ty@kernel.org>
+Date: Thu, 11 Apr 2024 23:57:46 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: N64R2MAWFHC6V37TKBYDCT5QMGXHZKII
-X-Message-ID-Hash: N64R2MAWFHC6V37TKBYDCT5QMGXHZKII
+Message-ID-Hash: FHI2LK3N4YEAG7TT3VRFRJOYJAKFSTVP
+X-Message-ID-Hash: FHI2LK3N4YEAG7TT3VRFRJOYJAKFSTVP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N64R2MAWFHC6V37TKBYDCT5QMGXHZKII/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FHI2LK3N4YEAG7TT3VRFRJOYJAKFSTVP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,24 +96,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 11 Apr 2024 09:58:03 +0200, Lukas Bulwahn wrote:
-> Commit 8167bd1c8a45 ("ASoC: dt-bindings: ti,pcm1681: Convert to dtschema")
-> converts ti,pcm1681.txt to ti,pcm1681.yaml, but misses to adjust the file
-> entry in TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS.
+On Thu, 11 Apr 2024 09:33:32 +0100, Colin Ian King wrote:
+> Variable ret is being assigned a value that is never read in a couple
+> of places. The variable is being re-assigned later on. The assignments
+> are redundant and can be removed.
 > 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-> broken reference.
+> Cleans up clang scan build warning:
+> sound/soc/codecs/tas2780.c:84:2: warning: Value stored to 'ret' is
+> never read [deadcode.DeadStores]
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] MAINTAINERS: adjust file entry in TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS
-      commit: 82116e539ffb7ce0c317c208d53d2126cdcee687
+[1/1] ASoC: codecs: tas2780: remove redundant assignments to variable ret
+      commit: 1d165c5a1c85747bf48f37a80636a4a73e1576a1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
