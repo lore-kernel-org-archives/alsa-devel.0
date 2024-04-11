@@ -4,89 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79746C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 22:34:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20733C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 22:36:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D68AB2C20;
-	Fri, 12 Apr 2024 00:33:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D68AB2C20
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D5212BF5;
+	Fri, 12 Apr 2024 00:36:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D5212BF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712874839;
-	bh=V80U71ZVk1BSbUWzsi/2PM4s6/P91O4qwdizAbM2i2A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1712875003;
+	bh=ZgKCfsWFqENGu2Mnw8GcJWs4r368JeG6kTQENU1jAkw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dr2Izh4FTfxcbdCvQnaj4Mxkm/XRPpYL8lsh0a4Q5c5W1kO5cdJI5C4gmL6pNyqDT
-	 rVR6hx8Qv6OaV1V9RkHWkTJlmN7Ro3N70tJ9WEpofJadUKmwRyfWmnMyKbWvUNWQRh
-	 YHqq3v64VUMbcs/e9kJd+zqLncmuUb39SA9LtkH8=
+	b=G5xvPU0b4QN7EIYIdxJLAi4JbrUF4mnfCsZufKuAEIb3jM9GjxOY+hZEMhRLveq1x
+	 VvRBKFpMgK92TevMFPiNChZyecp6N7Lqtl7Bh1VYi0dtVGEj3plbMrXGn493bJ+uTs
+	 QcZetreDch5GGrJBzAWt4TU1j1a7ScWxQpDVfzW0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 018F5F8069C; Fri, 12 Apr 2024 00:32:07 +0200 (CEST)
+	id 61A18F80236; Fri, 12 Apr 2024 00:36:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04426F8069A;
-	Fri, 12 Apr 2024 00:32:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E8FDF8028B;
+	Fri, 12 Apr 2024 00:36:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44B32F80236; Fri, 12 Apr 2024 00:16:50 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id F05CDF80238; Fri, 12 Apr 2024 00:36:05 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 343B3F80579
-	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 00:04:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 343B3F80579
+	by alsa1.perex.cz (Postfix) with ESMTPS id BE758F800C9
+	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 00:36:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE758F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KRRc2AsL
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712873069; x=1744409069;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=V80U71ZVk1BSbUWzsi/2PM4s6/P91O4qwdizAbM2i2A=;
-  b=KRRc2AsLBcvQgWjB5zFdfmH/x1bBk2BwvvX/Yd9MSzruMeb8tPyDfGOK
-   pE0qDOQmz+FHQvG2ydBHh4ULChJ7Z0sKF/k1c0mKFLq8+0Ubz41++0FAQ
-   bPwIESvWbhZDKnbzlzrjfmN1UbYZ3+/Lrvmh66u8+KOZsy83RVVt/BUUz
-   ZtWWqQL63e0eycyHoU05hu6isxED8udpunSQhnpkoiaXcYdukD0DtSXkJ
-   I/Bry0/12Hg+EzOfedr4HdM1JvfBUk4EGDzAOYzyE/jh1pBFuBHVPtvbT
-   SzIckD1rfSuRNNkBgvrDgMpBWrBHvLQhPxeWuTLmoJ1XcBXinEa6qF5MA
-   A==;
-X-CSE-ConnectionGUID: PEwojOc2RHaewcNgqd6PAQ==
-X-CSE-MsgGUID: lMVzGFl3T2KQta61oQbTqA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="19708382"
-X-IronPort-AV: E=Sophos;i="6.07,194,1708416000";
-   d="scan'208";a="19708382"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2024 15:04:20 -0700
-X-CSE-ConnectionGUID: bIENvs6YTASXeV35ZC/E2w==
-X-CSE-MsgGUID: QrMlRKCdSeWXMnRWhgs61Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,194,1708416000";
-   d="scan'208";a="21628764"
-Received: from aramana1-mobl.amr.corp.intel.com (HELO pbossart-mobl6.lan)
- ([10.213.177.233])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2024 15:04:19 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: linux-sound@vger.kernel.org
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	broonie@kernel.org,
-	Brent Lu <brent.lu@intel.com>,
-	Chao Song <chao.song@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 10/12] ASoC: Intel: sof_rt5682: support ALC1011 on cml boards
-Date: Thu, 11 Apr 2024 17:03:45 -0500
-Message-Id: <20240411220347.131267-11-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240411220347.131267-1-pierre-louis.bossart@linux.intel.com>
-References: <20240411220347.131267-1-pierre-louis.bossart@linux.intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=GOKeKENm
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id CC5A36217E;
+	Thu, 11 Apr 2024 22:35:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DD48C072AA;
+	Thu, 11 Apr 2024 22:35:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712874957;
+	bh=ZgKCfsWFqENGu2Mnw8GcJWs4r368JeG6kTQENU1jAkw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=GOKeKENm2iBE7FcHqURXogLvsi1VM/SOP+bnihaC34q1pf5cC0YxmAU3RB69q2IU7
+	 qRlB7GrGAhUthAcVE9Nb+kl2dD07dQreOwOlCWoM+EYYLtsT2X4qctULVfmYqEwa8i
+	 xBr9kt68BlyRlTaq8ueOR48JFobItbNt1zjQ7EKX7GxLn2cf5Hm/t+Z3FTgR5zaUH+
+	 p2dlk0GbzsCfoRVzOb5qPo8ISM5hSua+WNUC2KMfwSkYx7M3VcvHF/PXVjOHp75ohb
+	 ZXdVJ3aCvU4Y4NoFXN6tqIATZo0SncP7FXrA4HZs1SbEOVTKkduTIjYocK21umR2H3
+	 pbaVp7pVlDdqw==
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ Lukas Bulwahn <lbulwahn@redhat.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Lukas Bulwahn <lukas.bulwahn@redhat.com>
+In-Reply-To: <20240411075803.53657-1-lukas.bulwahn@redhat.com>
+References: <20240411075803.53657-1-lukas.bulwahn@redhat.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust file entry in TEXAS INSTRUMENTS
+ AUDIO (ASoC/HDA) DRIVERS
+Message-Id: <171287495520.96963.7535991617111488759.b4-ty@kernel.org>
+Date: Thu, 11 Apr 2024 23:35:55 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WA334MY6OLCT7RT32AMZ4DCD22FTZYCM
-X-Message-ID-Hash: WA334MY6OLCT7RT32AMZ4DCD22FTZYCM
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
+Message-ID-Hash: N64R2MAWFHC6V37TKBYDCT5QMGXHZKII
+X-Message-ID-Hash: N64R2MAWFHC6V37TKBYDCT5QMGXHZKII
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -98,69 +86,50 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WA334MY6OLCT7RT32AMZ4DCD22FTZYCM/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N64R2MAWFHC6V37TKBYDCT5QMGXHZKII/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+On Thu, 11 Apr 2024 09:58:03 +0200, Lukas Bulwahn wrote:
+> Commit 8167bd1c8a45 ("ASoC: dt-bindings: ti,pcm1681: Convert to dtschema")
+> converts ti,pcm1681.txt to ti,pcm1681.yaml, but misses to adjust the file
+> entry in TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS.
+> 
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+> broken reference.
+> 
+> [...]
 
-For cml boards, ALC1011 speaker amplifier is supported by machine
-driver cml_rt1011_rt5682. Use same driver name for backward
-compatibility with existing devices on market.
+Applied to
 
-Reviewed-by: Chao Song <chao.song@linux.intel.com>
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 326d23dd79de..735e07ea62bd 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -606,6 +606,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
- 	struct sof_card_private *ctx;
-+	char *card_name;
- 	bool is_legacy_cpu = false;
- 	int ret;
- 
-@@ -631,14 +632,27 @@ static int sof_audio_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	if (ctx->codec_type == CODEC_RT5650) {
--		sof_audio_card_rt5682.name = devm_kstrdup(&pdev->dev, "rt5650",
--							  GFP_KERNEL);
-+		card_name = devm_kstrdup(&pdev->dev, "rt5650", GFP_KERNEL);
-+		if (!card_name)
-+			return -ENOMEM;
-+
-+		sof_audio_card_rt5682.name = card_name;
- 
- 		/* create speaker dai link also */
- 		if (ctx->amp_type == CODEC_NONE)
- 			ctx->amp_type = CODEC_RT5650;
- 	}
- 
-+	if (ctx->amp_type == CODEC_RT1011 && soc_intel_is_cml()) {
-+		/* backward-compatible with existing cml devices */
-+		card_name = devm_kstrdup(&pdev->dev, "cml_rt1011_rt5682",
-+					 GFP_KERNEL);
-+		if (!card_name)
-+			return -ENOMEM;
-+
-+		sof_audio_card_rt5682.name = card_name;
-+	}
-+
- 	if (is_legacy_cpu) {
- 		ctx->rt5682.is_legacy_cpu = true;
- 		ctx->dmic_be_num = 0;
--- 
-2.40.1
+Thanks!
+
+[1/1] MAINTAINERS: adjust file entry in TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS
+      commit: 82116e539ffb7ce0c317c208d53d2126cdcee687
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
