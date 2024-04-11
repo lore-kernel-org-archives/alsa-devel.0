@@ -4,76 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 885C0C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 17:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78AB9C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Apr 2024 22:23:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5C3D2BC6;
-	Thu, 11 Apr 2024 19:49:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5C3D2BC6
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAF902BDC;
+	Fri, 12 Apr 2024 00:23:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAF902BDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712857781;
-	bh=+xGai2+yQRuwJxV3vruDN127Ywqk6sjQlpgvB62GDC0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1712874228;
+	bh=oqtHSPMLAUON0JmK9Out3TiJRj9J67t4yJqtjUWl/kM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=H06HY4jht7Lzid7TFJvDJwNGEo+jb11v3wULjnv8jFvyPTHixd2ksmn9VfAa+kPVF
-	 bRtyQ30OLD6QyQr7iQufNcKY1VhVYF4Q/eINkpjrhCSD6ZPD8hZqsODkx14BQjSFCq
-	 E8137GTR++Es2Y0U7JAVzJjfgRM6WMqcY6r9J8FE=
+	b=d3fENmcEO7zKGO/SHguB7smoyZrRFow3LEG/kNT5O5Z9qGjbNg/eyY+3OKm1SzdPZ
+	 V2iVYATPWmlKTVm8qlnCLjD3SYU0LUMjwzqwg7ETGD1ayB7V8wD4eZBK9KOdDeje+0
+	 5VoXd8bMax94DrY92n/fltB8hcJt+jQt65lnwE0g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71D5BF805D3; Thu, 11 Apr 2024 19:49:00 +0200 (CEST)
+	id C34CAF80579; Fri, 12 Apr 2024 00:23:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EEC3F805D4;
-	Thu, 11 Apr 2024 19:49:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EE04F805A8;
+	Fri, 12 Apr 2024 00:23:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F31D2F8026D; Thu, 11 Apr 2024 19:48:54 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 42582F800C9; Fri, 12 Apr 2024 00:10:33 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F2FFF80236
-	for <alsa-devel@alsa-project.org>; Thu, 11 Apr 2024 19:48:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F2FFF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 36BC0F800C9
+	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 00:04:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36BC0F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=s/gHjecz
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 433D562104;
-	Thu, 11 Apr 2024 17:48:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A5BC113CE;
-	Thu, 11 Apr 2024 17:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712857729;
-	bh=+xGai2+yQRuwJxV3vruDN127Ywqk6sjQlpgvB62GDC0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=s/gHjecz3MF1Jb2zrk0vs01JvLf/r7UbyG0tYD6S8t6zcAeWzxwgkflgdv+JaBUxm
-	 gPPbJf9zFuQZdg87TCYvk8hhMnzmkrJAYcz5Dd+oOkHpkSzw8jxzxNit3qrbSVfQc3
-	 0Qz5xJL4jjMt1wcAQyIlVF+/wl7rnQsKZWaSBTSuUg8vzRw7ZQqpPnabkpiSkQ9P4f
-	 pWydTIK8Fdm7kHSpUjHUJdMx/kJ3jSu1IGTOLPkZ+TN9mdNRYEFqWAGDnrHCQZT8F0
-	 gVHZisYtQOm3Rk+AVAbhyrryJwRTipgsUsFB8CFN2jFu7jIzX/A2Azj8ZlJHjIzlVj
-	 JV+XUPutiYz0Q==
-From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20240405144141.47217-1-krzysztof.kozlowski@linaro.org>
-References: <20240405144141.47217-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2] soundwire: qcom: allow multi-link on newer devices
-Message-Id: <171285772650.544231.3543346756872331188.b4-ty@kernel.org>
-Date: Thu, 11 Apr 2024 23:18:46 +0530
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Vh0auoVE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712873060; x=1744409060;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=oqtHSPMLAUON0JmK9Out3TiJRj9J67t4yJqtjUWl/kM=;
+  b=Vh0auoVETkZ8B+R3iGiHjnLe7Hq/rOSd64K/uuXn4ydjyg/35eLubhz+
+   01QeEfWNZiOd/kvc4jxUeSsvlPVZrrl4nuEqNcu5IrG2aKAu7axqr1Hs3
+   kBic0yM0UckGUaBBe9TwPhZZp8JMkKKvmr3bpeP88v4QgTjzYwrKN4TyB
+   2X8U71NHeg/qzouoriZT8yhj6tNs2x+BG8LzRHRiQVRhWBp188wutV+1u
+   1qy98m7zaCvFOcN9GyASa3A8IS96lOCDoQL5vlQPaMqwDc9NflPGkHKtm
+   swUb4eaoOs588gRmv/wTDn7yYLBa+vIflcgUBv4akoO54ISwl6o5BMTjU
+   g==;
+X-CSE-ConnectionGUID: ysKIbRYCQoG/jBo2D1hlCQ==
+X-CSE-MsgGUID: LhSQXTzTTKmWAxMPgw8C5A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="19708335"
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000";
+   d="scan'208";a="19708335"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Apr 2024 15:04:12 -0700
+X-CSE-ConnectionGUID: 3ANGd8e5S9W4NuJjisqYnw==
+X-CSE-MsgGUID: QqoSnvSjRG20aoIcUe5l5w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000";
+   d="scan'208";a="21628698"
+Received: from aramana1-mobl.amr.corp.intel.com (HELO pbossart-mobl6.lan)
+ ([10.213.177.233])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Apr 2024 15:04:12 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: linux-sound@vger.kernel.org
+Cc: alsa-devel@alsa-project.org,
+	tiwai@suse.de,
+	broonie@kernel.org,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/12] ASoC: Intel: sof_sdw: add missing sof_sdw_rt_amp_init
+ for Realtek multi-function codecs
+Date: Thu, 11 Apr 2024 17:03:36 -0500
+Message-Id: <20240411220347.131267-2-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240411220347.131267-1-pierre-louis.bossart@linux.intel.com>
+References: <20240411220347.131267-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-Message-ID-Hash: PNKVTATCUA4RIJJBTRYWVKW5PLH2KKZM
-X-Message-ID-Hash: PNKVTATCUA4RIJJBTRYWVKW5PLH2KKZM
-X-MailFrom: vkoul@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: WBMTZN4YQHLJRRPDXDEBNPDSKRKQJWAR
+X-Message-ID-Hash: WBMTZN4YQHLJRRPDXDEBNPDSKRKQJWAR
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNKVTATCUA4RIJJBTRYWVKW5PLH2KKZM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WBMTZN4YQHLJRRPDXDEBNPDSKRKQJWAR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,21 +107,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-On Fri, 05 Apr 2024 16:41:41 +0200, Krzysztof Kozlowski wrote:
-> Newer Qualcomm SoCs like X1E80100 might come with four speakers spread
-> over two Soundwire controllers, thus they need a multi-link Soundwire
-> stream runtime.
-> 
-> 
+We do need "info->amp_num++;" for the speaker dai.
 
-Applied, thanks!
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/sof_sdw.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-[1/1] soundwire: qcom: allow multi-link on newer devices
-      commit: ce5e811e069168898ae2ff02a90de68637ed7dc4
-
-Best regards,
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index b94835448b1b..8a2cd19d8be6 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -737,6 +737,8 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 				.dai_name = "rt712-sdca-aif2",
+ 				.dai_type = SOF_SDW_DAI_TYPE_AMP,
+ 				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
++				.init = sof_sdw_rt_amp_init,
++				.exit = sof_sdw_rt_amp_exit,
+ 				.rtd_init = rt712_spk_rtd_init,
+ 			},
+ 		},
+@@ -912,6 +914,8 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 				.dai_type = SOF_SDW_DAI_TYPE_AMP,
+ 				/* No feedback capability is provided by rt722-sdca codec driver*/
+ 				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
++				.init = sof_sdw_rt_amp_init,
++				.exit = sof_sdw_rt_amp_exit,
+ 				.rtd_init = rt722_spk_rtd_init,
+ 			},
+ 			{
 -- 
-~Vinod
-
+2.40.1
 
