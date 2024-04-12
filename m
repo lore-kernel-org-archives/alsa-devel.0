@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6328C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Apr 2024 10:38:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4C4CC4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Apr 2024 10:39:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC7462BBF;
-	Fri, 12 Apr 2024 12:38:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC7462BBF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04E4023D6;
+	Fri, 12 Apr 2024 12:38:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04E4023D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712918330;
-	bh=NYVDLadom2jXFuQTJlSk5F8KtYuvfxzT0A5slpkBu44=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=PF1XdTTre/fhzsBpJxnMTVysI7cGenVJ/qJXoERyLgXjavUjQRd4xFohZbqiGgjvd
-	 xVwlPp5HYBZcAfbrQhbUbo1/uh/OLbMyH8L7xgfb8esThKPZZqz/lR+wS23WfO+D8o
-	 ZV85lv6Ku9ONivjh+krOsdDffhJ5IJ0OyEKO6MAQ=
+	s=default; t=1712918348;
+	bh=6S416KwxLfCtEeZ6OyMeopnp0v2WlooLPqk1tgImJgE=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=FYYKeiYJbzCosU1TRTY21vsbb99IDyATs/OHFGpm5BFvYdH50BLzOPZd3lAv2O9ZK
+	 NNO+OiKX3fIT4xuT0D2Bfk22zN1euyr1bDi3e1Ut9oEIcWksjbRPIc3WTF7S2ZXBDZ
+	 9+zFalPIqt2LJQUmvQEVQUtiCcn8Us+enK+0+Z0c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F788F805CB; Fri, 12 Apr 2024 12:37:58 +0200 (CEST)
+	id 7F33BF805D5; Fri, 12 Apr 2024 12:37:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C882EF805C4;
-	Fri, 12 Apr 2024 12:37:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEE57F805F5;
+	Fri, 12 Apr 2024 12:37:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ACAC8F8028B; Fri, 12 Apr 2024 12:36:24 +0200 (CEST)
-Received: from APC01-PSA-obe.outbound.protection.outlook.com
- (mail-psaapc01on2060a.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:feae::60a])
+	id 52B96F80238; Fri, 12 Apr 2024 12:36:28 +0200 (CEST)
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com
+ (mail-tyzapc01on20600.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2011::600])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 23A67F80130
-	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 12:36:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23A67F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5831EF8026D
+	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 12:36:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5831EF8026D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
- header.s=selector1 header.b=QRCE5ujn
+ header.s=selector1 header.b=f/y3/o+O
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XY8jJWj0DPfhC++bhMyfWxcppAfDNLZePe21fctUHImr6JjKVGARfJ4CpKqb0bnBaHhl2zuoZh9fb+JMe2i+g6TIU9cHKHxx+DTYwKezH29AWvHSKyKTV+orlPx6yj8sc6N7+wUBqxne+exHf4LX4xQItWnK9uWaVoGnyjPo89z5y6KUVriqgkW8IMGG0opOmpyY0vMDKvicJ4yugKM+ygfGeBrrZ9h3b6x9K6ooWfZwEdHpdgLQBQdqOkJbri1g1YCP8GRWV5j86S/gNpDsT9qlyZwu/lvB4nlnGwLbQn4yXJCIxebQoZd4wmc+2WfKHZgPyriVfNc/SOl7juQniw==
+ b=RKImd7XeZh/fBOwxLz5MHI6E1T97lGnWmPvl+OZl6xbBoNKK3qqq2fzr+de7zoKbwR1zWI/cFsSd0OIQjsoN8yXBbWlS6IimD7bQo7bt7cOeWG5rmJVrPBgp1wP14rctqYGEiIVPbQOQ2twoAKzf80SpwyCd8LLCuwkvtTyEgxi0J9Iy9V/KUxSM/t0smu1oOO15olkT5Th2WixnwwY4oSppGkTw0+L9chrwWE7zJ+yKOWHnTNB1Lxzc3MmGiKjvJjdN//zt2OsXHVRNTB+g0OmV4WkO0p9Y6u46MnvGGcDtJtmPvjHSm0gfEfeWeGDF2KvqySpPfzkzJMcGbHL01g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WxZZI88trLcPkuM5m+bNe4H9s474rVMS+WtUW1uoU9s=;
- b=A+4SlsGhwm/73LzKw/R+M3pVDVXn3QC6WD1uzvjXHflo2bWjkgJY6mHSawJJO+n7nS2UEZytDYB/hScMrV0r0sIdZXP9lJ9Md77Xt1GVoiZyx5u199nbQWQtxxkEJewzOmxVnzFT74nGvjxpvuZ2pNJV/TJyiLJKWm7o673BXhqyfPiCrO6TOBs2hx+1UrjgvC7XCQcg/y+1z/wP/Mtxs2+KVe0M/D5wl+wG0ng9y1dOkSZIV5AdUStpUAtehk3+Js9BLoutXHttnd3Ilot0Xu3rBxt1+dZp2rZlhyHDTu8mMt7+Lv8b/y3qujfsV5gAKSiQEPm45IDDYlqR4YYApA==
+ bh=EUvrX9jrmtMjpHmz6D8VLu5LDN7o/EHtoES/dsqqc4o=;
+ b=d+CkUYipw1S/5dmrLsw868rGaWs8yjSMLwR1A6GF/XY9qv5uHM6+ujoHeHtLCExuQDRM/37YJM2woGte3bUNbq5tE0ehnTUuC7N5g20zoHaavNAMaW2UrcdhHJn/8GmJVZVUINkqh4AVprWpHwmEX9Aiw43U83RTEpgjcYePGmIHOTCuw2bUatNDzBBO6UuGOgns2o5IDwxd4mB2XfS5TgxIR4dChrrqeo624pCPoBS2sd0si3J1VONgeLzXQNHkCJrpU9SzDR1pSUUi2zpo2+ziAeTIvs3dkS/sC5hnYfswNh3+AhwOQoiHvGiYFEti2g90S4mNdsBOag8nuqZ9bQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
@@ -54,17 +53,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WxZZI88trLcPkuM5m+bNe4H9s474rVMS+WtUW1uoU9s=;
- b=QRCE5ujnQVQOM7NyYIGbve1f/msAzuNzBLffG6zykSRkjxXfuFyDUe1mIDQnlNGpDxStZ52vYMqT7Hel3SUtZ9YEo2Rwk9mJ+JUP4drJrMW9CyUuLS3Uf+sbea6YJBMf0VDo/3tCBraBWY5G2B3YPpA+MUjSU83vBy5yjVeErOY=
-Received: from SG2PR02CA0029.apcprd02.prod.outlook.com (2603:1096:3:18::17) by
- SEYPR03MB7165.apcprd03.prod.outlook.com (2603:1096:101:d4::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.46; Fri, 12 Apr 2024 10:36:05 +0000
+ bh=EUvrX9jrmtMjpHmz6D8VLu5LDN7o/EHtoES/dsqqc4o=;
+ b=f/y3/o+O6NZqBha72xpiztySIv0B/HIl5kTTMi6Mu7IZUyZc8I9HlQXTf61IPJ1GMCV+ER4OdRWBjeM0h5MMABdfjdXHpajIWF1tLxCR/TiVnSI5yUazVZgwPQt44jY+lZkaqX/eeAoqhOzWDZJxGfCKopF1qnT2EMCfdK3TwmM=
+Received: from SG2PR02CA0035.apcprd02.prod.outlook.com (2603:1096:3:18::23) by
+ TY0PR03MB6536.apcprd03.prod.outlook.com (2603:1096:400:21c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
+ 2024 10:36:00 +0000
 Received: from SG2PEPF000B66CA.apcprd03.prod.outlook.com
- (2603:1096:3:18:cafe::29) by SG2PR02CA0029.outlook.office365.com
- (2603:1096:3:18::17) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:1096:3:18:cafe::57) by SG2PR02CA0035.outlook.office365.com
+ (2603:1096:3:18::23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.26 via Frontend
- Transport; Fri, 12 Apr 2024 10:36:05 +0000
+ Transport; Fri, 12 Apr 2024 10:36:00 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
  smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nuvoton.com;
@@ -74,14 +74,18 @@ Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
 Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
  SG2PEPF000B66CA.mail.protection.outlook.com (10.167.240.22) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Fri, 12 Apr 2024 10:36:04 +0000
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS01.nuvoton.com
+ 15.20.7452.22 via Frontend Transport; Fri, 12 Apr 2024 10:36:00 +0000
+Received: from NTHCML01B.nuvoton.com (10.1.8.178) by NTHCCAS01.nuvoton.com
  (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 12 Apr
- 2024 18:35:56 +0800
+ 2024 18:35:55 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01B.nuvoton.com
+ (10.1.8.178) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Fri, 12 Apr
+ 2024 18:35:55 +0800
 Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
  (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Fri, 12 Apr 2024 18:35:56 +0800
+ Transport; Fri, 12 Apr 2024 18:35:55 +0800
 From: Seven Lee <wtli@nuvoton.com>
 To: <broonie@kernel.org>
 CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
@@ -92,32 +96,30 @@ CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
 	<CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>, <wtli@nuvoton.com>,
 	<scott6986@gmail.com>, <supercraig0719@gmail.com>, <dardar923@gmail.com>,
 	<edson.drosdeck@gmail.com>, <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 3/3] ASoC: nau8821: Remove redundant ADC controls
-Date: Fri, 12 Apr 2024 18:35:54 +0800
-Message-ID: <20240412103554.3487290-3-wtli@nuvoton.com>
+Subject: [PATCH 1/3] ASoC: dt-bindings: nau8821: Add delay control for ADC
+Date: Fri, 12 Apr 2024 18:35:52 +0800
+Message-ID: <20240412103554.3487290-1-wtli@nuvoton.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240412103554.3487290-1-wtli@nuvoton.com>
-References: <20240412103554.3487290-1-wtli@nuvoton.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-NotSetDelaration: True
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CA:EE_|SEYPR03MB7165:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3d05ed57-08af-4290-2476-08dc5adc5b4d
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CA:EE_|TY0PR03MB6536:EE_
+X-MS-Office365-Filtering-Correlation-Id: a69cfc3b-137e-494e-0841-08dc5adc586a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	cw0Izuiv39JV6Di3lOv2ifUa1KWfTx4poERtv4sxwz+z74R5IxljBQlqgxCFEE7A8nqGLo7H4LBCX/4JdkpZ7z4fJSZR3dxPLO4VJLp91rWWRPM4HDn4SuQBH8MJWhTn9jrFjOUAZZJZYPcrQwbin5qIQNAgrKqFV5Hlg9jgBECj7tjClx8MZqv6Ht2uSUPpQ9qhWxAp+vykItAAZ1ZLaS19QczuanIXHJTV60HW7SCkWTlh5lVVcQUBntTRkPkljLo2qxurH8nUDvQCtgTfgKOPAnPaHxbpBu3S6j24Uoa7peagr3btB35xNvoDATq36rYsFOgmfaZGjp6iji82GmczJ5NKkg1wG5Qp0fVJhKFOzCt46dYE8ZxVBU+yEL1CIncaPViaqNjRpApf8BEbHOz0892IBy5Vpy3Ge6X1tA5eJmE2tUmdxUNwvHYTNbXsBh7rj6X3eN4Tl+C1ziuKvDBh4MmsoS25Ovl2qWu+CEJEWPD5BTPMemIzfAAMdQZHhYGCwPRrdkQW8ZATh+Gw71TDQip2rW8hmR86BxVRRo5TDcdzTXwt8ZX6EyIUSgK79r/aNfEin3Iw44tq/DshiH+eEXcCrTpj0acgN3DRH5uphXJgOZcjgWz3AUVids1rP7O8FPIcE0CGCmiSjpbkuxgMSllUmH/SY+2OJiyCtZia96/ADeu2m8palqO8cvPYTylq/p4YNciHMJLrJJudWNxHyLYylPH0heISCjm8XN7/dW31jXKS110A3AZgggsI
+	p6jPcI/C54wRH3dO005Ca9wMFQ91G1IjHTLgq1B1oIKZtUqaPrMLnhJAC/dJuWKYCXCbS25yARR0M6tvbQKzTMrFVzAxXIFLE3mTHgmp2wdAbAQlDtMIYSUf155hRGXpucvTZaVkfJZnwTon5DpuWQjaV5GnrjDdEUtuCKzvm1NQs7RrVoulMKfzCZ7ODcq4Y8Qd7MH0fNEzt574J9ihJ7S+Fd/w2pgRSvayHDaag9TX05NFTm9m2Je1O424YCvZmtr9YwXxU871AKepabRxFw9sbx2dFQ90hN887a2bse0EA3gYYwvOjSTz9HjE5qvnk0Up6tjp8WmbumCfKB8uTXli2j+D/QW5LwSS/0nP7ts44der6lH7HPkpxhr4DW0lpMoTsNjFxGtXsfiYEEBUGPiDhzinZS+vbhRWnNLXvUjpxHDfJWksspXy7kTcFIiv0cAjoOn/T5Mt4qORQDzFTQSjiNEiEcTJLlYc/1DhAHorV5PtCMv8+a90hUprERgwHWFJcJFIHlg47HIMeZMR7VH/GTa6cDzm5chfGsL5jYs3S/1MLFdc3TGn++9wt0Gki5sK4460bpne22AEhK+GMwYrBP83JWFxpJ14NZJ0Bueck67otWBUVJrlqY+A8EwG6nEHOFT/kzghrPneq3QGJzEAqXnp4frTL1G2bBiFQBuG7yVIJf1rC8vmj0q3VdifCYRqb0cIhW/tXSS+Zs4k1ZA/VPGTuYcFUEMFgvaThHjRFtk8A7h5sLr/AvAb5krI
 X-Forefront-Antispam-Report: 
-	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(376005)(82310400014)(1800799015)(7416005)(36860700004);DIR:OUT;SFP:1101;
+	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(7416005)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 10:36:04.9761
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 10:36:00.1322
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 3d05ed57-08af-4290-2476-08dc5adc5b4d
+ a69cfc3b-137e-494e-0841-08dc5adc586a
 X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
@@ -125,9 +127,9 @@ X-MS-Exchange-CrossTenant-AuthSource:
 	SG2PEPF000B66CA.apcprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB7165
-Message-ID-Hash: B3477S4JHU5OP76HJYTEPGZ3UTGAAQCZ
-X-Message-ID-Hash: B3477S4JHU5OP76HJYTEPGZ3UTGAAQCZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR03MB6536
+Message-ID-Hash: WHEDCPTSJ4FNZLLMUGPEV2G6CLM7U4A4
+X-Message-ID-Hash: WHEDCPTSJ4FNZLLMUGPEV2G6CLM7U4A4
 X-MailFrom: WTLI@nuvoton.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -140,7 +142,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B3477S4JHU5OP76HJYTEPGZ3UTGAAQCZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WHEDCPTSJ4FNZLLMUGPEV2G6CLM7U4A4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,43 +151,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Remove redundant left/right adc channel enable controls.
+Change the original fixed delay to the assignment from the property. It
+will make it more flexible to different platforms to avoid pop noise at
+the beginning of recording.
 
 Signed-off-by: Seven Lee <wtli@nuvoton.com>
 ---
- sound/soc/codecs/nau8821.c | 8 --------
- 1 file changed, 8 deletions(-)
+ .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/nau8821.c b/sound/soc/codecs/nau8821.c
-index fec669e00a10..6818bbd1d3c7 100644
---- a/sound/soc/codecs/nau8821.c
-+++ b/sound/soc/codecs/nau8821.c
-@@ -512,12 +512,8 @@ static int nau8821_left_adc_event(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		msleep(nau8821->adc_delay);
--		regmap_update_bits(nau8821->regmap, NAU8821_R01_ENA_CTRL,
--			NAU8821_EN_ADCL, NAU8821_EN_ADCL);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		regmap_update_bits(nau8821->regmap,
--			NAU8821_R01_ENA_CTRL, NAU8821_EN_ADCL, 0);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -536,12 +532,8 @@ static int nau8821_right_adc_event(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		msleep(nau8821->adc_delay);
--		regmap_update_bits(nau8821->regmap, NAU8821_R01_ENA_CTRL,
--			NAU8821_EN_ADCR, NAU8821_EN_ADCR);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		regmap_update_bits(nau8821->regmap,
--			NAU8821_R01_ENA_CTRL, NAU8821_EN_ADCR, 0);
- 		break;
- 	default:
- 		return -EINVAL;
+diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+index 054b53954ac3..a726c5a9b067 100644
+--- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
++++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+@@ -103,6 +103,13 @@ properties:
+         just limited to the left adc for design demand.
+     type: boolean
+ 
++  nuvoton,adc-delay-ms:
++    description: Delay (in ms) to make input path stable and avoid pop noise.
++        The default value is 125 and range between 125 to 500 ms.
++    minimum: 125
++    maximum: 500
++    default: 125
++
+   '#sound-dai-cells':
+     const: 0
+ 
+@@ -136,6 +143,7 @@ examples:
+             nuvoton,jack-eject-debounce = <0>;
+             nuvoton,dmic-clk-threshold = <3072000>;
+             nuvoton,dmic-slew-rate = <0>;
++            nuvoton,nuvoton,adc-delay-ms = <125>;
+             #sound-dai-cells = <0>;
+         };
+     };
 -- 
 2.25.1
 
