@@ -4,75 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C667AC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Apr 2024 00:49:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FA73C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Apr 2024 04:49:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14B5A2C0D;
-	Fri, 12 Apr 2024 02:48:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14B5A2C0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DC082C17;
+	Fri, 12 Apr 2024 06:48:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DC082C17
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712882939;
-	bh=tkAwC8xYx2SEMYsDRYYQ97QABsmy3xXHEjMopBbT+c8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1712897347;
+	bh=majSr49xz6VE5z5e2UGn7sPKnKS4R4BoP42ZVgZdgqw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ca4aWsg4kAilZZQv+h4okcY9s7tAJtxiImw1u2h/QZRo4dHUI05lAVxaWUC/13afV
-	 QhXGVE0Rdm4keRUaxafoR2BBsVhZZGXAAtA/b1g6WuuzfVbfumVpQrJ41wXa0dlDfG
-	 2KX0aj80oXV5D481Wz1P3VPlKENjc9tJwvltAIAw=
+	b=iWEEfQW6Y+okKi9Gj43/dn3fK17QVhadRnIJiwq3fsUcSxHtsMG7AYC3qpYISLRxw
+	 4UmxGeYM3YtNNvQy2k34W3Lnb93NxbYxSg35eHWYUcaAwtmTX55vc0LxRBNgGxqCW3
+	 7P7XrXbQm+yM8kJ5a8F28YVA2EfJWf6YyeeLOooU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C87CF80587; Fri, 12 Apr 2024 02:48:29 +0200 (CEST)
+	id 98AEAF80580; Fri, 12 Apr 2024 06:48:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24A98F8057C;
-	Fri, 12 Apr 2024 02:48:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CF71F805A8;
+	Fri, 12 Apr 2024 06:48:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34FE2F8028B; Fri, 12 Apr 2024 02:42:13 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 953EAF8026D; Fri, 12 Apr 2024 06:46:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 638DCF80236
-	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 02:41:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 638DCF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id DA0EDF80130
+	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 06:46:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA0EDF80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bNdyU1Ch
+ header.s=k20201202 header.b=bkfiMQkR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id DF66062190;
-	Fri, 12 Apr 2024 00:41:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1D8C072AA;
-	Fri, 12 Apr 2024 00:41:12 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2BE8860ECD;
+	Fri, 12 Apr 2024 04:46:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EEACC2BBFC;
+	Fri, 12 Apr 2024 04:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712882473;
-	bh=tkAwC8xYx2SEMYsDRYYQ97QABsmy3xXHEjMopBbT+c8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=bNdyU1ChaQuXySi1UCUMOwqufaYdRlPh3Y+g2ASclM16FitpF0x3TWGfDh1b4j6Fy
-	 gHaUvNHwpzh7tpoh5MlJIvdxgQ7QB9bdGEqtc2e4LlRSLbBsFxcu32AKqxs8QQ4nYJ
-	 G0zWoM7HT3nh/8KFZbrkFzrefPRMKAGJznuW1aCAgpRYIk5gqFzdU6+oC7veRazQh4
-	 sfUlK6sugnZjU8YhIgRPzJ9bzGlzP4h8B6GnwwWyDjk/y4kyYjSwNOa5urJ71yHKae
-	 B4mHUlDFoh0s5DiLY/Ab29znpyGzR3XxqRZFzFGrjlFiK3P/JgyVpGTkibqXxqD6BU
-	 SCLdwdeaZhlsQ==
-From: Mark Brown <broonie@kernel.org>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240411142648.650921-1-sbinding@opensource.cirrus.com>
-References: <20240411142648.650921-1-sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH v1] ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP
- config
-Message-Id: <171288247200.110635.15927713546125669144.b4-ty@kernel.org>
-Date: Fri, 12 Apr 2024 01:41:12 +0100
+	s=k20201202; t=1712897165;
+	bh=majSr49xz6VE5z5e2UGn7sPKnKS4R4BoP42ZVgZdgqw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bkfiMQkRhl2FYJi6v2fssQAQxIob+KfKzHV0mHFii1I2+ER6EXHB1RZm6zCMhcnny
+	 fhvSz6C9OXLUY2z+ZEu655gtN3X7rklxDKa9bK9DTJm0wUD5i5+JMQwq9KycqyZc5+
+	 tuxqS1ICpDuFYpa88ZZoHQU76saD8HVSvPSYXKT4cn9n85hxkjHNM/way9w+sjWBWI
+	 x+Yuul4yhSMFpVMMqw2XiX1i4b38K8zbC75Tw0lk+hxqPhj5V0MP/pmVeSULRRE0EC
+	 aCMFE74AIiMjtViEyiW/HdNDtcx3DYaIpxwJWfgnAQXAkWeFcO9DVXOfefzpNf9zD3
+	 RrczCnf1JAd4g==
+Date: Fri, 12 Apr 2024 10:16:01 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND] soundwire: qcom: allow multi-link on newer devices
+Message-ID: <Zhi8iVDBtNckabjO@matsya>
+References: <20240403132716.325880-1-krzysztof.kozlowski@linaro.org>
+ <171285772329.544231.15578305335747563968.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
-Message-ID-Hash: RL7WAWPDE2IJLKYSTNHQKUKG3ECSIB5I
-X-Message-ID-Hash: RL7WAWPDE2IJLKYSTNHQKUKG3ECSIB5I
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171285772329.544231.15578305335747563968.b4-ty@kernel.org>
+Message-ID-Hash: VA2IYK63LR5UM2B665YRGY3TXJXKEAPM
+X-Message-ID-Hash: VA2IYK63LR5UM2B665YRGY3TXJXKEAPM
+X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RL7WAWPDE2IJLKYSTNHQKUKG3ECSIB5I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VA2IYK63LR5UM2B665YRGY3TXJXKEAPM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,42 +97,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 11 Apr 2024 15:26:48 +0100, Stefan Binding wrote:
-> Currently, all ASoC systems are set to use VPMON for DSP1RX5_SRC,
-> however, this is required only for internal boost systems.
-> External boost systems require VBSTMON instead of VPMON to be the
-> input to DSP1RX5_SRC.
-> Shared Boost Active acts like Internal boost (requires VPMON).
-> Shared Boost Passive acts like External boost (requires VBSTMON)
-> All systems require DSP1RX6_SRC to be set to VBSTMON.
+On 11-04-24, 23:18, Vinod Koul wrote:
 > 
-> [...]
+> On Wed, 03 Apr 2024 15:27:16 +0200, Krzysztof Kozlowski wrote:
+> > Newer Qualcomm SoCs like X1E80100 might come with four speakers spread
+> > over two Soundwire controllers, thus they need a multi-link Soundwire
+> > stream runtime.
+> > 
+> > 
+> 
+> Applied, thanks!
+> 
+> [1/1] soundwire: qcom: allow multi-link on newer devices
+>       commit: ce5e811e069168898ae2ff02a90de68637ed7dc4
 
-Applied to
+b4 messed up and sent this, not sure why.. V2 was applied
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP config
-      commit: eefb831d2e4dd58d58002a2ef75ff989e073230d
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+~Vinod
