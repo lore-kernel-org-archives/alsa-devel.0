@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFF06C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Apr 2024 18:22:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28643C04FF8
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Apr 2024 18:27:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 881E2279C;
-	Fri, 12 Apr 2024 20:22:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 881E2279C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC5FA2BAF;
+	Fri, 12 Apr 2024 20:26:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC5FA2BAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712946130;
-	bh=p8OAbH8ik4uO7b+Ydee6KnfTe8Pqv3txAKJdlPzFN+s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1712946429;
+	bh=SvdlhNNtUWHChB5l1joPBSlS4XqFexo2+rAXJJlhAE8=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=f8MeuJQOkkb5oHP2YL3HVLKA00PhaIlyHmtct6csApG59feNLJoTwlXoqTuT40MXr
-	 BQfuTuLuYmn+ahnOfaRQ4N/FEpM/4Cs3igQQk3vlSxCxoyQN7epuT/uZcKl4ltwNr7
-	 U2w/3E3Ns3jraG8tiJX13FpMsmn1bNKfz3zLBcsk=
+	b=r5zDKuR7NLN+kfN2Nw9loXTUs8QUcM7LYBspLvLVaq0I07oDKDjpW1A1+k+qyAl1i
+	 VcqESLgEXMwHmoJQqnyNFkEh78YIhgfQ+3DpL++i/O+QkYimG/71pSpli8KcUZ55hZ
+	 WJ7+0HArvCMM4i58Su7nLGV831Ir/KalQmGc1UZg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0CEAF80678; Fri, 12 Apr 2024 17:52:44 +0200 (CEST)
+	id 32632F805B1; Fri, 12 Apr 2024 13:17:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1131FF80678;
-	Fri, 12 Apr 2024 17:52:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6F6CF8058C;
+	Fri, 12 Apr 2024 13:17:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45FDEF8064C; Fri, 12 Apr 2024 17:52:39 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 7CB69F8055C; Fri, 12 Apr 2024 13:17:39 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 82E05F80641
-	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 17:52:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82E05F80641
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8F78DF80238
+	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 13:17:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F78DF80238
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KO9P4/t2
+ header.s=k20201202 header.b=FVb1Fjbu
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 5E27FCE3965;
-	Fri, 12 Apr 2024 15:52:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B70AC113CC;
-	Fri, 12 Apr 2024 15:52:22 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 3443BCE386B;
+	Fri, 12 Apr 2024 11:17:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7A7C113CC;
+	Fri, 12 Apr 2024 11:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712937142;
-	bh=p8OAbH8ik4uO7b+Ydee6KnfTe8Pqv3txAKJdlPzFN+s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KO9P4/t2cDRuWl80w6gOUAPjO0AMXVxD7gC6uP2mwU8ISqAgxs6VNhHozXIZqPg4f
-	 IxIfIc4IjyGe/b6QhzPnay8cP37wmaDZ88pFaCzUFOMc20t0ikqGC58OGZCV+GbyDz
-	 WI93KbnDGseDAwz/NNdCUc5f/9jmB7Vx+RyIICUCQGBUzTfY6Lc75/E09y4R2RQe2v
-	 XWWzyszKnIIXYWZ4k9iyjsQE/3nSlsJtdFf1/ZKtjaJr7IAxKHUFfK6JqE2B+fM4UJ
-	 OZ/+WvCY1aZ1Sqg+hD4vkU9ARhl7iAtiPJbP+z/NrQJ8/kN6A/VFrOg8z4i27eJ5hK
-	 Ci19pwIr5RJ6Q==
-Date: Fri, 12 Apr 2024 10:52:20 -0500
+	s=k20201202; t=1712920649;
+	bh=SvdlhNNtUWHChB5l1joPBSlS4XqFexo2+rAXJJlhAE8=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=FVb1FjbuIh0ACxAJQxzVk9u0EuMVSPdiXpsMhzvNDRhpiVlqEviQ9mzm6ZHvL+uiu
+	 LyPSyrh76UCV6BeRqUhXSHsnc73W+rmgc/FT0ya2cAkH+WHBG4tbyl4ds4AoL2lpdq
+	 NsBRgUzh8OSTyIuouYRSfCmZROhdqHr1I8zZssb14WoFS1Nv9rCIZUqLZZZNAoTA/T
+	 l+niw7ysStJGtIM+leJ/eiMY/oD2in17aYJjMUWf0SEDqEom61jE+lvF64NxoykFg7
+	 jaqw8SrgZTCEhL6QXuTiWcfsXOmMqDfUkcVpqt2I4A1y/ZobeVQ242TSVcBvPiucZC
+	 jIkpSYOezqtrg==
+Date: Fri, 12 Apr 2024 06:17:27 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
 To: Seven Lee <wtli@nuvoton.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-sound@vger.kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-	conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
-	YHCHuang@nuvoton.com, KCHSU0@nuvoton.com, CTLIN0@nuvoton.com,
-	SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com,
-	dardar923@gmail.com, edson.drosdeck@gmail.com,
-	u.kleine-koenig@pengutronix.de
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: nau8821: Add delay control for ADC
-Message-ID: <20240412155220.GA2918590-robh@kernel.org>
-References: <20240412103554.3487290-1-wtli@nuvoton.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cc: linux-kernel@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org,
+ linux-sound@vger.kernel.org, dardar923@gmail.com,
+ devicetree@vger.kernel.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com,
+ krzysztof.kozlowski+dt@linaro.org, KCHSU0@nuvoton.com, perex@perex.cz,
+ SJLIN0@nuvoton.com, scott6986@gmail.com, alsa-devel@alsa-project.org,
+ edson.drosdeck@gmail.com, YHCHuang@nuvoton.com, conor+dt@kernel.org,
+ u.kleine-koenig@pengutronix.de, supercraig0719@gmail.com, tiwai@suse.com
 In-Reply-To: <20240412103554.3487290-1-wtli@nuvoton.com>
-Message-ID-Hash: F4NYR2U52B5RASGDLR67BIAZUKBJNHRO
-X-Message-ID-Hash: F4NYR2U52B5RASGDLR67BIAZUKBJNHRO
+References: <20240412103554.3487290-1-wtli@nuvoton.com>
+Message-Id: <171292064682.1830010.10520655676449462428.robh@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: nau8821: Add delay control for
+ ADC
+Message-ID-Hash: IB67CRTOC7PUTHBS7H5U5CYGX6E7R75O
+X-Message-ID-Hash: IB67CRTOC7PUTHBS7H5U5CYGX6E7R75O
 X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F4NYR2U52B5RASGDLR67BIAZUKBJNHRO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IB67CRTOC7PUTHBS7H5U5CYGX6E7R75O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,7 +97,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Apr 12, 2024 at 06:35:52PM +0800, Seven Lee wrote:
+
+On Fri, 12 Apr 2024 18:35:52 +0800, Seven Lee wrote:
 > Change the original fixed delay to the assignment from the property. It
 > will make it more flexible to different platforms to avoid pop noise at
 > the beginning of recording.
@@ -106,35 +108,29 @@ On Fri, Apr 12, 2024 at 06:35:52PM +0800, Seven Lee wrote:
 >  .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
 >  1 file changed, 8 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> index 054b53954ac3..a726c5a9b067 100644
-> --- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> @@ -103,6 +103,13 @@ properties:
->          just limited to the left adc for design demand.
->      type: boolean
->  
-> +  nuvoton,adc-delay-ms:
-> +    description: Delay (in ms) to make input path stable and avoid pop noise.
-> +        The default value is 125 and range between 125 to 500 ms.
 
-No need to state constraints in prose.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-> +    minimum: 125
-> +    maximum: 500
-> +    default: 125
-> +
->    '#sound-dai-cells':
->      const: 0
->  
-> @@ -136,6 +143,7 @@ examples:
->              nuvoton,jack-eject-debounce = <0>;
->              nuvoton,dmic-clk-threshold = <3072000>;
->              nuvoton,dmic-slew-rate = <0>;
-> +            nuvoton,nuvoton,adc-delay-ms = <125>;
->              #sound-dai-cells = <0>;
->          };
->      };
-> -- 
-> 2.25.1
-> 
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/nuvoton,nau8821.example.dtb: codec@1b: Unevaluated properties are not allowed ('nuvoton,nuvoton,adc-delay-ms' was unexpected)
+	from schema $id: http://devicetree.org/schemas/sound/nuvoton,nau8821.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240412103554.3487290-1-wtli@nuvoton.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
