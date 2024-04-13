@@ -4,87 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA732C04FF8
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Apr 2024 18:52:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A27CBC4345F
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Apr 2024 06:52:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CB302BC0;
-	Fri, 12 Apr 2024 20:51:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CB302BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5A54279C;
+	Sat, 13 Apr 2024 08:52:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5A54279C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1712947921;
-	bh=XXFPVsizfUKlbLYg75o726rqFYPfLrkYyKabptRENuY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=i4UQK/IoZ4OXWiRwggXFWklnlzVWfGPQsfYjxpPC2d/ML3d/mME0Rra4+fdu8lARA
-	 qo2TQFWdGj0+dgjAreklA4mz7/bVqJ3KV5WCc8Vz+WxLq39VMCuB0MiisMVvCb51yp
-	 91Po6VcL955IHt2+nW7rX5UcuB2GckTG41jwG+8s=
+	s=default; t=1712991142;
+	bh=OWq4P+UW+vFS3MK6NiR4rHMjGrL5sjT+rNgbhmC2t3M=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=XXS2Tknn2GYamyxkFw538VL+OvTXkxF677Dt42HcOkCswIV92JZaJxoRVd5x956nU
+	 +OHLPXkTW+nSLzdqrbxCXgXKbhtoNPBKI2gghuHQXsz3losDNaHTNdwU6rHgyXiZ3j
+	 8JwFcDvZeSZriX5580/EVlfEhFfwloSZU1zs4mw4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2DEAF805CA; Fri, 12 Apr 2024 13:45:20 +0200 (CEST)
+	id 1A093F805A9; Sat, 13 Apr 2024 08:51:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F2A8F805C9;
-	Fri, 12 Apr 2024 13:45:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A066F805AA;
+	Sat, 13 Apr 2024 08:51:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDC27F805BA; Fri, 12 Apr 2024 13:45:13 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3CB47F80130
-	for <alsa-devel@alsa-project.org>; Fri, 12 Apr 2024 13:45:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CB47F80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=SB34NkC3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712922307; x=1744458307;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XXFPVsizfUKlbLYg75o726rqFYPfLrkYyKabptRENuY=;
-  b=SB34NkC3hbwr9HcgR437vJ72EgOS2iGP95A86iKLt4XMwjYL7pFTpiEy
-   u/+aCUCfJ+TCpLiqK0586SiCo+VA7KgBj0emYx058H56S2ld2Z1E6x+9i
-   xUtO4BmBrtBBTCefsRkx+SpOeBrSoaAPn7aHoPQlTNqo5Uzp5+Qd5AMkC
-   xeB81yr3lP4dGFutVhlkv+h4hOfxSEGOxMiE1x5GA1KwW7kaT5mOj9cAu
-   itUWt3+ucBr1KcPCQ5yAg48poKMsNRo04a/E4SdSaVP/PAKxqR4dkhTqe
-   rkPWIxO4vxO1pKdW5Qt2w4NWpTK5eeajJHSWwX03tu0lRjFAbX1+iBsoS
-   A==;
-X-CSE-ConnectionGUID: NZIqvy2aRm+3XaE9D1nGpQ==
-X-CSE-MsgGUID: 1AsYRy4HTTi5elXyl0dfuw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="18930418"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000";
-   d="scan'208";a="18930418"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Apr 2024 04:44:57 -0700
-X-CSE-ConnectionGUID: dWybNnj/SP+GG+SiaVzICg==
-X-CSE-MsgGUID: J0nhiP/UTu+n/o8okxM7Lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000";
-   d="scan'208";a="21705245"
-Received: from aelgham-mobl2.ger.corp.intel.com (HELO [10.249.38.65])
- ([10.249.38.65])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Apr 2024 04:44:56 -0700
-Message-ID: <96f4709c-6545-454c-b84b-25a78939abf6@linux.intel.com>
-Date: Fri, 12 Apr 2024 14:44:56 +0300
+	id 3A07AF8026D; Sat, 13 Apr 2024 08:50:57 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id E04A8F80130
+	for <alsa-devel@alsa-project.org>; Sat, 13 Apr 2024 08:50:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E04A8F80130
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: UCM vs SOF vs HDMI passthrough
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.com>, wim.taymans@gmail.com
-References: <fa1d1a94-57d9-4caf-9569-f9a9f3d725c2@linux.intel.com>
- <4fe03ef7-881e-4078-a819-cbe6500ede7d@perex.cz>
-Content-Language: en-US
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <4fe03ef7-881e-4078-a819-cbe6500ede7d@perex.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ELLJ2OVYDIVWTK2U5AHWWNGSCUNNX2EO
-X-Message-ID-Hash: ELLJ2OVYDIVWTK2U5AHWWNGSCUNNX2EO
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1712991051456758022-webhooks-bot@alsa-project.org>
+References: <1712991051456758022-webhooks-bot@alsa-project.org>
+Subject: qcom: sdm845: MM1: fixes
+Message-Id: <20240413065057.3A07AF8026D@alsa1.perex.cz>
+Date: Sat, 13 Apr 2024 08:50:57 +0200 (CEST)
+Message-ID-Hash: ATD235O23SFAMZTSJG6VR6MEHWTNIFKH
+X-Message-ID-Hash: ATD235O23SFAMZTSJG6VR6MEHWTNIFKH
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ELLJ2OVYDIVWTK2U5AHWWNGSCUNNX2EO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ATD235O23SFAMZTSJG6VR6MEHWTNIFKH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,48 +66,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+alsa-project/alsa-ucm-conf pull request #408 was opened from jenneron:
 
+I'm testing it on a device which is not in upstream yet, but it uses this configuration
 
-On 11/04/2024 16:38, Jaroslav Kysela wrote:
-> On 11. 04. 24 15:15, Péter Ujfalusi wrote:
-> 
->> [B] Using UCM
->> https://github.com/ujfalusi/alsa-ucm-conf/tree/topic/sof-hdmi
-> 
-> This is only way to go. The configuration for "legacy" PCM device names
-> should be handled through UCM (when UCM config exists for this hw).
+It seems that the only device in upstream using it is Lenovo Yoga C630 laptop and we got it tested as well https://oftc.irclog.whitequark.org/aarch64-laptops/2024-04-06#33084827
 
-OK, I will drop the other option.
+The changes are pretty straightforward, check commit messages of each commit
 
->> Should we add some parameter to 'amixer -c0 info', like ipc_version:4/3,
->> so if the ipc_version is 3 or missing we assume that passthrough is not
->> supported?
-> 
-> UCM must be able to detect sound card capabilities. For passthrough,
-> there should be some controls for AES bits which may be used for the
-> conditional matching. If it's not sufficient, a hint to the components
-> string (mixer info structure) may be added by the driver. Also PCM name
-> or subname may be matched for a substring, if you like (seems more
-> related than the components string).
-
-Thanks for the advice!
-
-I have now something really working in a way it should be.
-The kernel will add "hdmi-pt:1" to the card's components when HDMI
-passthrough is possible (IPC4, ChainDMA enabled for HDMI PCM). [1]
-
-UCM will use the existence of "hdmi-pt:1" to decide to create the needed
-mapping PCMs [2]
-
-[1] https://github.com/thesofproject/linux/pull/4921
-[2] https://github.com/ujfalusi/alsa-ucm-conf/tree/topic/sof-hdmi
-
-I'm not sure about the "hdmi-pt:1", can we just have plain "hdmi-pt" or
-we need a param:value pair always?
-
-There are still funky things done in the UCM patch due to lack of
-experience with it. I guess I should create a formal PR to get it
-reviewed and correct, right?
-
-Thank you,
-Péter
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/408
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/408.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
