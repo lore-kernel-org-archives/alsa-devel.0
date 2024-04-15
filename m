@@ -4,99 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EC31C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:54:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F09FDC4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:55:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F222210B;
-	Thu, 18 Apr 2024 17:54:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F222210B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C271E2341;
+	Thu, 18 Apr 2024 17:54:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C271E2341
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713455671;
-	bh=S5SKxjqBLEazmK9VzoxpMLNUbW254TmsbmfvUiZKfkU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1713455694;
+	bh=r+M9Bk+4YRd+zQ8ivjTlZYC6qhnETV86VeSJFPKxcBI=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=TfaAURuhUXRJNd10QQ1LhQqHj7j/m5G3umq0RNvu+Ly2yV0VTt68zTKt7LD/Captz
-	 sPFwF0chgwTMEf8MmflBq7gbSSE3+t73TbprNGbidQOECT77MkZQjvqNqhdEU7O9b3
-	 Chay1Q3azVxKb+v1DVa2RLgMoeo4mhyLHyFnMnWg=
+	b=it77uA0E20rsFyptOvmo73o9aPJimM33D57VSXM2+m6EVT93NjKEI1ssHxnYCW7hJ
+	 BTyPW5MkIX+kBZsWaUidzJVU0ONCT8JIzDaLQAve2/M3FrbZ0PXApBgbjRGyd3rHzQ
+	 YNfAIf+SJTcdEaKXBJjOBXElozXaFBdBS3sOH7uA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 241B7F8075A; Thu, 18 Apr 2024 17:47:50 +0200 (CEST)
+	id 20DF1F89799; Thu, 18 Apr 2024 17:48:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AB73F897B0;
-	Thu, 18 Apr 2024 17:47:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A559AF897BF;
+	Thu, 18 Apr 2024 17:48:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB82EF8026D; Sat, 13 Apr 2024 13:58:57 +0200 (CEST)
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com
- [162.62.57.252])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 365CEF8025A; Mon, 15 Apr 2024 12:34:52 +0200 (CEST)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id AC9A7F8013D
-	for <alsa-devel@alsa-project.org>; Sat, 13 Apr 2024 13:58:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC9A7F8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id A9A5BF80124
+	for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2024 12:34:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9A5BF80124
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256
- header.s=s201512 header.b=qn2jeiFy
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1713009528; bh=buU/TI1ycm4oXmFV2yW1Moaxa/OBm98bV+Uw5KNRXxo=;
-	h=From:To:Cc:Subject:Date;
-	b=qn2jeiFyDV3AycY/18ImhPd/E6F2aNmnyEvdIr9b5ryEtNGVeQV64YeJIs3kLNwR/
-	 LSfK6yTaZaxP2wHW9bfpg6A1dApDurdSfZl3GRNWacvXB6eAd2XokR/EkAxdMlwlpB
-	 9IZMFZELCcbOQZySe5xRFuuEx+RvNBnWFoHZsQd0=
-Received: from levi-pc.. ([61.186.29.10])
-	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
-	id A4B1F810; Sat, 13 Apr 2024 19:41:11 +0800
-X-QQ-mid: xmsmtpt1713008471t21yb30x3
-Message-ID: <tencent_37EB880C5E5BD99D21C16B288115C4545F06@qq.com>
-X-QQ-XMAILINFO: Nx5llcX2zp4EfIlu/YnLYTHyOv1Fz6LhBZJqmmpegZxljWmX0TmL0/dPqaPKOS
-	 KCFhD788ITjLkg61iwrr8vsW3z9pGQEH0s2IiGeMPKkxDlhcXN9fbH/AWLIx6nP607/KhafMaVZo
-	 MHUBo11WDj+0ZvWJ4wxDm/MlkG+qvLzhxwPW8ofPDm+IcpnUlmN8qb+ak7+ujBeAn6kLPSZiHUfc
-	 wsZNyZiyg6xjS9/7Xq0tu+WgxdJiRUfLtrgVFjm/eyJ487kQo8W7k+sFmFp9QhGX04j4mJ6rB+n1
-	 9gyz365oK+LwYw3WGu/WFn1p39Zg3Hk7CON8d8g/zBrgkEjJIQq1zmcGnqksygIIQd+sS66X/wf2
-	 XVV3doIuc/jeX5LfE6dqL/snOih5Ot1K8i2P01hFdGJMbhIrEedp9v6l7wQtAEA9HgOPHJzf85kt
-	 160+8eW++m86PNawfVoEw+OVXVVroDOUVjtCzUU2qV9A3EQd3R9FYTbkUhjJX0fRsA2eNgYOlgtb
-	 w9dHbvaBFPWn5fu3DPXx0ZLwG/FjshvTxm24MGDSQfU5xmecFTss6wJiTBntOt48pmLr9YP5srHc
-	 AzZIU5pY8Xhct0mV9l5j7eHIaYqR4xiOspoLiD7Ng1z9/k7IbxuzWXcPNmH6/kVYvGqNqrsg8KC3
-	 v3/feApTsq1UfjS6WavSkhI4dqUmOLgoMRPp+fVWgYOOlCTi55DSL6TF3syyP85oz2c9XICYm9c4
-	 V04lVgwR7IfDJwz2MNb/5eXMVGNRS8FQP22PzgM/wUJDrFRhJ9TO5ThCenOQj89e1lEuuZZiz1aH
-	 s4S88lU+cU9VUTaYndXFDvXnAlkgMEQUQRSo0T0HyIJDmvq70+TXPZUoZXLW2Dls9V+BZ8NWkpg1
-	 RA2x5hjlxN1vBwIjYl5X/1tTGCy71Td+ILXxJtv4oL/JkbWrax89fcuSzH/6emOfU+onPOp5etGz
-	 /2nuHsvo2DJzqQZS26Uxf+FOKeZy4ooF/IqJWR6sBGQsvRql+fHzlSLrXpmli0v+uUSHenu/7KGw
-	 A8tIPQZmCXiMeGSUTHr8zKPDCXMVUpIxR0NwyGStAVLY44iA38rJ13EnmtrqAmrRwTZVTNW/Epma
-	 uwVn+Kv6JlkR789QanGE2pnwfH3B+2ieq32BAV
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: zhanghuayu1233@qq.com
-To: perex@perex.cz,
-	tiwai@suse.com,
-	sbinding@opensource.cirrus.com
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	patches@opensource.cirrus.com,
-	zhanghuayu.dev@gmail.com,
-	zhanghuayu1233@qq.com
-Subject: [PATCH] Fix volumn control of ThinkBook 16P Gen4
-Date: Sat, 13 Apr 2024 19:41:22 +0800
-X-OQ-MSGID: <20240413114122.24524-1-zhanghuayu1233@qq.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=q6zuWsBC
+Received: by mail-ed1-x52b.google.com with SMTP id
+ 4fb4d7f45d1cf-56e78970853so6280928a12.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 15 Apr 2024 03:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713177280; x=1713782080;
+ darn=alsa-project.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ixcHPOvFOOXtJqtF3vNA0iGHZzONIeZBn6zmJrMcgH0=;
+        b=q6zuWsBC1s0exen5TGlWjjPzFY0b/ad7vCjl/nSRujLQE7U7X5mMp9ygH99Kt+ZA0u
+         HaY+lIl2b/9Sfd6WMmIfdA/Gh9nOHWkcmFry1A89qYs5i9gijptj+9HoJp/oBMBs1B7E
+         B7oQAN41s9pC5R/IM8bqDfvnGZn3y7gKAVlfHj1rP6+1Jeh1fNlfKsAZJcb8Eety2u9l
+         /vzWCPNnF1sg+hM/P5GKa1q+r09hFP3nCPU5BzAnOJWUcYsvwB2fCkUBowjfI/E/kSzv
+         GVps1TbXc2AvfaUAYk4i2QB70H+eAZL7QYYH/tjiwDgUf1o8Un8xZzzZkwdXpY5vXoAH
+         iVNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713177280; x=1713782080;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ixcHPOvFOOXtJqtF3vNA0iGHZzONIeZBn6zmJrMcgH0=;
+        b=h3Qak/FQd4HSDEMiR31079zFVjg+6OUd4C+ZjsxgwCIb9Pdii9pV0/tSBXDraygeQb
+         j5FSbU/X4y/un4X2KO4wGnGzB6qYa6s7fSTiQ35GEeCsx4GWZlR8TW6TfzIIn3lPujNx
+         NDO4XD7b/zrSoyoCVNfXbbDzDAbw3I9Gq8gImtFgMkiUxPY6A0mJUT7mKOQi1s27l7v0
+         UhLQQHlqIiIfmV9c1i17kuG6moh0XYpKUkw5I37N6mmroOtNnZoVFSWlu3rFp/D90033
+         RP1U/rKT0nr+bdvlyoDaaR6hEw9dp1y+cNZf4RIawt9rlxwiVi+lmVmrwcVbJGE+w5Gj
+         30lQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXY+4H1nfc/OnOQ4bKfS6QtMMPgOQJGqLeDP4u1mXxx79/jt0RyMqG6Kgpy11894blXcCPMGp4p069vIl1zoQhMQj09xx/1IXXrPY8=
+X-Gm-Message-State: AOJu0Yz2bYd4n4GXoQE9SWFSrnlRZLFrg/9IGt3yrnUWEkchx3twxhhl
+	9r/A4wcXM5ugw2OmeADOFnECmsmZBU81XZll6L/FjZwZ91XXOijP8SwjiYxggO0=
+X-Google-Smtp-Source: 
+ AGHT+IE8taSRi7cZZenb22Hrhoo4IcK5IkZ6zpDWyZ3iR0Lu0U9yZ+r/3VZ74qZxKOLyEcvqXb+uAA==
+X-Received: by 2002:a17:907:bb82:b0:a52:2a65:cf2 with SMTP id
+ xo2-20020a170907bb8200b00a522a650cf2mr7787401ejc.13.1713177279707;
+        Mon, 15 Apr 2024 03:34:39 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id
+ v13-20020a17090606cd00b00a526562de1fsm1589133ejb.73.2024.04.15.03.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 03:34:39 -0700 (PDT)
+Date: Mon, 15 Apr 2024 13:34:34 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] ASoC: cs35l41: Fix error code in cs35l41_dsp_init()
+Message-ID: <a50d27fd-716e-4fb0-8519-8798e3c79543@moroto.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: zhanghuayu1233@qq.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-MailFrom: dan.carpenter@linaro.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: JNTWERKDKW5FKQES32XNAFBFX4SCMMKY
-X-Message-ID-Hash: JNTWERKDKW5FKQES32XNAFBFX4SCMMKY
-X-Mailman-Approved-At: Thu, 18 Apr 2024 15:47:17 +0000
+Message-ID-Hash: YRIEIFCVF4C4P43KK7N3MZB7ZZPZ6OZF
+X-Message-ID-Hash: YRIEIFCVF4C4P43KK7N3MZB7ZZPZ6OZF
+X-Mailman-Approved-At: Thu, 18 Apr 2024 15:47:19 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JNTWERKDKW5FKQES32XNAFBFX4SCMMKY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YRIEIFCVF4C4P43KK7N3MZB7ZZPZ6OZF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,32 +121,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Huayu Zhang <zhanghuayu1233@qq.com>
+Set the error code on this error path.  Don't return success.
 
-change HDA & AMP configuration from ALC287_FIXUP_CS35L41_I2C_2 to
-ALC287_FIXUP_MG_RTKC_CSAMP_CS35L41_I2C_THINKPAD for ThinkBook 16P Gen4 models to fix volumn
-control issue (cannot fully mute).
-
-Signed-off-by: Huayu Zhang <zhanghuayu1233@qq.com>
+Fixes: eefb831d2e4d ("ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP config")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- sound/pci/hda/patch_realtek.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs35l41.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d6940bc4ec39..1aef223307bb 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10396,8 +10396,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG dual", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x38a8, "Y780P AMD VECO dual", ALC287_FIXUP_TAS2781_I2C),
--	SND_PCI_QUIRK(0x17aa, 0x38a9, "Thinkbook 16P", ALC287_FIXUP_CS35L41_I2C_2),
--	SND_PCI_QUIRK(0x17aa, 0x38ab, "Thinkbook 16P", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x17aa, 0x38a9, "Thinkbook 16P", ALC287_FIXUP_MG_RTKC_CSAMP_CS35L41_I2C_THINKPAD),
-+	SND_PCI_QUIRK(0x17aa, 0x38ab, "Thinkbook 16P", ALC287_FIXUP_MG_RTKC_CSAMP_CS35L41_I2C_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x38b4, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b5, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b6, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index f8e57a2fc3e3..2799ccd6b5c7 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -1126,6 +1126,7 @@ static int cs35l41_dsp_init(struct cs35l41_private *cs35l41)
+ 	default:
+ 		dev_err(cs35l41->dev, "wm_halo_init failed - Invalid Boost Type: %d\n",
+ 			cs35l41->hw_cfg.bst_type);
++		ret = -EINVAL;
+ 		goto err_dsp;
+ 	}
+ 
 -- 
-2.34.1
+2.43.0
 
