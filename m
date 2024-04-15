@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0964C4345F
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Apr 2024 02:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03DC3C4345F
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Apr 2024 02:34:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D88C14DF;
-	Mon, 15 Apr 2024 04:33:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D88C14DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3046914DC;
+	Mon, 15 Apr 2024 04:34:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3046914DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713148393;
-	bh=PH9b6fEZwH6ZuwqKTmFAkjoqOuY8tlDyKXTvvTqkLsw=;
+	s=default; t=1713148469;
+	bh=hUWeATT5T38ifea+Zzg6D9nVoCaVH8jly3lg55fWlfE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QnJJJU7tNjMQMbofYvMut/WgCEB5qD+v1MdLzn6GdJBwCyTxKOaAcnUFZB6wBTdKD
-	 ANAu6EiULHlVjmttAFX7m2gxD3o3S8BWHCs4wmqdWdXPcmUDWAYUizwb+yDRIfuqWd
-	 HI+AvsmjgjBl63LpHCapanMtB8iOH2VVE0YAU2oc=
+	b=oIP668bYTKb3E0mXOS4xOGUKfOjo80J9OnzQazlTnaTUSb1ACr7IsOa/fHi4Pvh8c
+	 vV6zhnHLA7+dlt2hxCOCIhFX5+gkn/bNCceqITT/Y/DDEji8xMOmatSpnxYx03zDmO
+	 5EQ+EezKyIZcvdV7H4KAz1uTvcnJaQauO/4v5fL0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DCACFF8057E; Mon, 15 Apr 2024 04:32:40 +0200 (CEST)
+	id 31F64F805B4; Mon, 15 Apr 2024 04:33:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDC57F805A9;
-	Mon, 15 Apr 2024 04:32:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AC7DF80423;
+	Mon, 15 Apr 2024 04:33:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18B5EF80494; Mon, 15 Apr 2024 04:29:50 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 3B759F8013D; Mon, 15 Apr 2024 04:29:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5A458F8013D
-	for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2024 04:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A458F8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6FD4BF8025A
+	for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2024 04:26:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FD4BF8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VWNNjQZC
+ header.s=k20201202 header.b=qAdTu9dg
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 1C1DCCE09CF;
-	Mon, 15 Apr 2024 02:26:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2DCFC072AA;
+	by dfw.source.kernel.org (Postfix) with ESMTP id A2FEB60B9C;
 	Mon, 15 Apr 2024 02:26:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCDA5C072AA;
+	Mon, 15 Apr 2024 02:26:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713147981;
-	bh=PH9b6fEZwH6ZuwqKTmFAkjoqOuY8tlDyKXTvvTqkLsw=;
+	s=k20201202; t=1713147980;
+	bh=hUWeATT5T38ifea+Zzg6D9nVoCaVH8jly3lg55fWlfE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=VWNNjQZC1hmK8mt32J1/DLPzwjgZSA51v5LLH4j8jQ1ZAlCDYMsdC2VxYFRBeZ+lC
-	 eJ9MRJtWp4e0RM5MGV4s7/njLuq5J3dbyPNz67BKdY3QlPLIvH7SHQJUkuumr2OhER
-	 iTPJcuvBJ1V1xayRfTs3l+L8eF/aG6wPOQ3lYCBpI5NxjD1cjFxGTFN+vbAudn1pB0
-	 utP86Mbou2wYmwNJLWRMM2TjFMcEz/jUJVUlsgqoxBtUolm4A0/no91N9k+MmbMeun
-	 sjMiVL+W737mOuTCMD84AYItQiYNQpOkeGLmYLj8AKKtq5CHs5leSwgzUSPoEWucgq
-	 lhUn2eaNgJN5Q==
+	b=qAdTu9dgBuem59jTd3F3Gx8fheDpdt8MKMiYlbQPxZFRdOi9ui8/8H9deYgOuJ8us
+	 r00FM8GMmh0piXphsvPr7YHnLKdbS41j3YnhDMppfFz/AldYj5wzSHN5tM+Xrz/UcF
+	 cZm1NGHm4H0ZDEAvKx0u7lEtxzcayr2Re5OiLOI6lTJfLdNt4Z9bYI9Jw3njTIv0cK
+	 ow0hajo/8GFt/bMc5ly6/gf90E3hym1p7Vzb6QFqEpVqTMBzWjGY+BqWDRwkCXbeBu
+	 Dc98+JJooRVBJ/wzMoWRs0Yj9v8P0meI9S6sLXTmTyUsgcSzB561+Y4S04KEgRC6nZ
+	 3QXflrCNEpKDA==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <871q7bcew5.wl-kuninori.morimoto.gx@renesas.com>
-References: <871q7bcew5.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: renesas: add R8A779H0 V4M
-Message-Id: <171314798017.1649319.17336242454425093208.b4-ty@kernel.org>
-Date: Mon, 15 Apr 2024 11:26:20 +0900
+In-Reply-To: <8734rrcewo.wl-kuninori.morimoto.gx@renesas.com>
+References: <8734rrcewo.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: renesas,rsnd: add missing
+ renesas,rcar_sound-gen4
+Message-Id: <171314797915.1649319.14493145148801179743.b4-ty@kernel.org>
+Date: Mon, 15 Apr 2024 11:26:19 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: GFFNXON4Z56G434ZIRMTWWBMJEZUHV32
-X-Message-ID-Hash: GFFNXON4Z56G434ZIRMTWWBMJEZUHV32
+Message-ID-Hash: 6BAQFABRZ2COOQK2GRYCUY4Y2MBU6QKI
+X-Message-ID-Hash: 6BAQFABRZ2COOQK2GRYCUY4Y2MBU6QKI
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GFFNXON4Z56G434ZIRMTWWBMJEZUHV32/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6BAQFABRZ2COOQK2GRYCUY4Y2MBU6QKI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,8 +91,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 12 Apr 2024 05:46:03 +0000, Kuninori Morimoto wrote:
-> Add document for R-Car V4M (R8A779H0).
+On Fri, 12 Apr 2024 05:45:43 +0000, Kuninori Morimoto wrote:
+> It is missing generic compatible for R-Car Gen4
 > 
 > 
 
@@ -101,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: renesas: add R8A779H0 V4M
-      commit: d6e792ed7dd022a16a637ade224da070b60f4f3b
+[1/1] ASoC: dt-bindings: renesas,rsnd: add missing renesas,rcar_sound-gen4
+      commit: f284b23809bf54f8189f82f822f099e43d6a0a35
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
