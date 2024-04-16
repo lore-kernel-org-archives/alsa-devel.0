@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82C75C4345F
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 07:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACAD0C4345F
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 07:16:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD72C1919;
-	Tue, 16 Apr 2024 09:15:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD72C1919
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26789ED1;
+	Tue, 16 Apr 2024 09:15:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26789ED1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713251746;
-	bh=+zKYfmzXbGIYWT2KiYkWwX9RneJE/QPprhjzqj7y6+A=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=bvPQtTHjIs+g073FViNZEh1Y7Pzqh2a3VE5pxb59WRNkKv2KCjg/jjQziAJ0QRR6u
-	 yQOqXc5R/Q3o0eGAD70W8qAnf8P9YMFfp3KwjWLWpZbE1auIsNGuOHgj7qX46wA8uu
-	 LpkdQubvezK9vQKLZMbLMVf9Yx70w+QG7VRcx6T4=
+	s=default; t=1713251759;
+	bh=sujJ+yH45hDcBjqKeWC7ARxj1AokpNPpDXwr5VjyZPU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=vrPoODYSXgN6IXN7Pm+F+g4g/+yYnTBwX/e9zEqYw2DuUcrgVG436OWxl2wrIHp2t
+	 II801l4zQuPtznpiNobkQzOxBjQg2peDbqjMqy0hrYDAvpQHbwaWXF24JpJO7gQAJv
+	 AXFxPCba2SgjChXeJ0Lzm0c5Cwc76sfcJRRAdBkE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82EBFF80494; Tue, 16 Apr 2024 09:15:17 +0200 (CEST)
+	id 827E7F805DF; Tue, 16 Apr 2024 09:15:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7DD3F805C6;
-	Tue, 16 Apr 2024 09:15:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC5B4F805E4;
+	Tue, 16 Apr 2024 09:15:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E98AF80571; Tue, 16 Apr 2024 09:14:38 +0200 (CEST)
+	id 466C5F80578; Tue, 16 Apr 2024 09:14:43 +0200 (CEST)
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
  [IPv6:2a00:1098:ed:100::25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DAD52F8003A
-	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 09:14:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAD52F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 32B43F8025A
+	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 09:14:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32B43F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=zbAcp02L
+ header.a=rsa-sha256 header.s=mail header.b=2IEdI4su
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713251658;
-	bh=+zKYfmzXbGIYWT2KiYkWwX9RneJE/QPprhjzqj7y6+A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=zbAcp02LmfkSzjsrxMNdT2tVPBkCWmohr7Gw7f42juNuNJyTaMv3q7Dhtd9y5GFgu
-	 ZOKLWKfnHu+gH3tPMX86k72RFSbc5hOeTIOuwX5kycDpEn5pY+5BA98OVRB8yvvuJL
-	 Fp0l1ix2jk3e8ktxpsUxLh8MIgGtSutgmAnDKpxl451NjA39rg9XLX3Xl9ecCCs0vq
-	 yt7LG45ygQ1CSbq9Yc7JvphKK5QAdy9gqX5vjaPp+kMrmlzSD40PoOAkIRECVHWLCs
-	 VHxjEIn6vLPMxI1bJVdTdgycmrOzIM3HQc+n8qtQNXPJzcdyiusKm/aBbYI0KC32Nf
-	 qK4P+D7yxQR3A==
+	s=mail; t=1713251663;
+	bh=sujJ+yH45hDcBjqKeWC7ARxj1AokpNPpDXwr5VjyZPU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=2IEdI4suxMn1ims9sXpVJcEKFXWEBriNbbcqbkXyvaZFtPayxhpdn+PRp89Y9bymk
+	 8R4RmOvuG+JqKaJMxrY2wHGWMZzVdQFs0wKUYVgXylQ3pjBo3su11IAJVPO75oCmhT
+	 hCTBQvq36qAjvpraT6HTdLtW/M5YIcEZoOXIpoK/CIt48EOETPx2DS0TQrdd3CJG63
+	 +JM9WrQlsFVMWUGJKXt8+MwDOIthdu7JF4hJIDquoCziHHYFfukuU5DdnP/NpI1KCD
+	 tUokoRYUPPn6jtqyBq8lHmnrgEQl0bgThYFpa5Vm5tPcJxqzlBn27x7ojTSiZF53Au
+	 z7mEzLrlz8LVQ==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -57,8 +57,8 @@ Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4233B37820F9;
-	Tue, 16 Apr 2024 07:14:16 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 16680378211D;
+	Tue, 16 Apr 2024 07:14:21 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -98,14 +98,16 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v5 00/18] ASoC: Cleanup MediaTek soundcard machine drivers
-Date: Tue, 16 Apr 2024 09:13:52 +0200
-Message-ID: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v5 02/18] ASoC: mediatek: common: Constify struct mtk_sof_priv
+Date: Tue, 16 Apr 2024 09:13:54 +0200
+Message-ID: <20240416071410.75620-3-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
+References: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OTN4DXRZEE3AL46LSFAK43AZRJSOHN3X
-X-Message-ID-Hash: OTN4DXRZEE3AL46LSFAK43AZRJSOHN3X
+Message-ID-Hash: YIW5IKPYQFAUT6QWFX5Q6NQOLSHP6XCB
+X-Message-ID-Hash: YIW5IKPYQFAUT6QWFX5Q6NQOLSHP6XCB
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OTN4DXRZEE3AL46LSFAK43AZRJSOHN3X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YIW5IKPYQFAUT6QWFX5Q6NQOLSHP6XCB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,114 +129,138 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Changes in v5:
- - Cleaned up MT8186 soundcard migration commit which erroneously
-   had leftovers from development
- - Changed the mtk_pcm_constraints_data structure to hold pointers
-   to snd_pcm_hw_constraint_list, as to really reuse the const data
- - Tested again on all of the listed MTK platforms.
+Apart from a dai_link_list variable, the mtk_sof_priv currently holds
+data that never gets modified during runtime.
 
-Changes in v4:
- - Rebased over next-20240409
- - Dropped the first 4 patches from v3 as were already picked by Mark
- - Fixed W=1 build issue
+Constify the mtk_sof_priv structure and move the SOF dai_link_list as
+sof_dai_link_list in struct mtk_soc_card_data, which is a structure
+that already holds the card's machine specific, runtime modified data.
 
-Changes in v3:
- - Added audio-routing names in enum in all yaml files
- - Added mention of disallowing old and new properties together in
-   commit message of bindings patches
- - Fixed validation errors with sound-card-common.yaml inclusion
-   due to missing model property in examples
- - Removed `else` enforcing headset-codec/speaker-codecs requirement
-   if xxx-dai-link not present to avoid future commit noise as the
-   deprecated statement will disallow deprecated properties as required
+This allows to safely pass the mtk_sof_priv structure as platform data
+for the commonized card probe mechanism.
 
-Changes in v2:
- - Bindings: Changed link-name/codec/clk-provider to remove `items`
-   and leave just the enum
- - Moved .*-dai-link pattern additionalProperties after `type: object`
- - Added ref to sound-card-common.yaml
- - Fixed dai-link-xxx -> xxx-dai-link typo in example comment
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ sound/soc/mediatek/common/mtk-dsp-sof-common.c   | 15 +++++++--------
+ sound/soc/mediatek/common/mtk-dsp-sof-common.h   |  1 -
+ sound/soc/mediatek/common/mtk-soc-card.h         |  2 +-
+ sound/soc/mediatek/common/mtk-soundcard-driver.h |  2 +-
+ 4 files changed, 9 insertions(+), 11 deletions(-)
 
-This series performs a cleanup of most of the MediaTek AFE drivers and
-soundcard machine drivers, reducing code duplication and setting a base
-to be consistent with their devicetree bindings, as many of those are
-using different properties and nodes for no good reason.
-
-Summarizing:
- - Commonizes functions and ops where possible
- - Adds a common probe mechanism, increasing maintainability of
-   soundcard drivers for older MediaTek SoCs
- - Migrates all drivers to support the new bindings
-   - Obviously retains compatibility with old device trees
- - Reduces machine-specific parameters hardcoding in drivers
-   - Can now set machine-specific params in device tree
-   - Uses the `audio-routing` and `dai-link` nodes like some
-     other non-MediaTek SoC sound drivers
- - Imposes consistency between MediaTek ASoC machine soundcard
-   drivers bindings
- - Reduces code size and greatly reduces the amount of code that
-   will be required for newer drivers (retaining compatibility with
-   the old bindings was costly in terms of code size, otherwise
-   this series would've removed ~1000 more lines, or something
-   along that line).
-
-This series was (manually) tested on MT8173, MT8192, MT8195 and MT8186
-Chromebooks.
-
-
-AngeloGioacchino Del Regno (18):
-  ASoC: mediatek: Add common machine soundcard driver probe mechanism
-  ASoC: mediatek: common: Constify struct mtk_sof_priv
-  ASoC: mediatek: mt8188: Migrate to mtk_soundcard_common_probe
-  ASoC: mediatek: mt8195: Migrate to mtk_soundcard_common_probe
-  ASoC: mediatek: mt8192: Migrate to mtk_soundcard_common_probe
-  ASoC: mediatek: mt8186: Migrate to mtk_soundcard_common_probe
-  ASoC: mediatek: Add common snd_soc_ops .startup() callback
-  ASoC: mediatek: mt8195: Migrate to the common mtk_soundcard_startup
-  ASoC: mediatek: mt8192: Migrate to the common mtk_soundcard_startup
-  ASoC: mediatek: mt8186-rt1019: Migrate to the common
-    mtk_soundcard_startup
-  ASoC: mediatek: Add common mtk_afe_component_probe callback
-  ASoC: mediatek: Use common mtk_afe_pcm_platform with common probe cb
-  ASoC: mediatek: mt8186: Unify mt8186-mt6366 machine drivers
-  ASoC: dt-bindings: mt8195: Document audio-routing and dai-link subnode
-  ASoC: dt-bindings: mt8192: Document audio-routing and dai-link subnode
-  ASoC: dt-bindings: mt8186: Document audio-routing and dai-link subnode
-  arm64: dts: mediatek: mt8195-cherry: Specify sound DAI links and
-    routing
-  arm64: dts: mediatek: mt8186-corsola: Specify sound DAI links and
-    routing
-
- .../sound/mt8186-mt6366-da7219-max98357.yaml  |  131 +-
- .../sound/mt8186-mt6366-rt1019-rt5682s.yaml   |  120 +-
- .../sound/mt8192-mt6359-rt1015-rt5682.yaml    |  139 +-
- .../bindings/sound/mt8195-mt6359.yaml         |  134 ++
- .../boot/dts/mediatek/mt8186-corsola.dtsi     |   42 +-
- .../boot/dts/mediatek/mt8195-cherry.dtsi      |   45 +
- sound/soc/mediatek/Kconfig                    |   24 +-
- .../mediatek/common/mtk-afe-platform-driver.c |   18 +
- .../soc/mediatek/common/mtk-dsp-sof-common.c  |   15 +-
- .../soc/mediatek/common/mtk-dsp-sof-common.h  |    1 -
- sound/soc/mediatek/common/mtk-soc-card.h      |    7 +-
- .../mediatek/common/mtk-soundcard-driver.c    |  199 +++
- .../mediatek/common/mtk-soundcard-driver.h    |   42 +
- sound/soc/mediatek/mt6797/mt6797-afe-pcm.c    |   14 +-
- sound/soc/mediatek/mt7986/mt7986-afe-pcm.c    |   14 +-
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c    |   14 +-
- sound/soc/mediatek/mt8186/Makefile            |    3 +-
- .../mt8186/mt8186-mt6366-da7219-max98357.c    | 1189 -----------------
- ...t6366-rt1019-rt5682s.c => mt8186-mt6366.c} |  578 ++++----
- sound/soc/mediatek/mt8188/mt8188-afe-pcm.c    |   21 +-
- sound/soc/mediatek/mt8188/mt8188-mt6359.c     |  203 +--
- sound/soc/mediatek/mt8192/mt8192-afe-pcm.c    |   25 +-
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      |  301 ++---
- sound/soc/mediatek/mt8195/mt8195-afe-pcm.c    |   21 +-
- sound/soc/mediatek/mt8195/mt8195-mt6359.c     |  487 +++----
- 25 files changed, 1597 insertions(+), 2190 deletions(-)
- delete mode 100644 sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
- rename sound/soc/mediatek/mt8186/{mt8186-mt6366-rt1019-rt5682s.c => mt8186-mt6366.c} (72%)
-
+diff --git a/sound/soc/mediatek/common/mtk-dsp-sof-common.c b/sound/soc/mediatek/common/mtk-dsp-sof-common.c
+index 7ec8965a70c0..bca758dca2c9 100644
+--- a/sound/soc/mediatek/common/mtk-dsp-sof-common.c
++++ b/sound/soc/mediatek/common/mtk-dsp-sof-common.c
+@@ -15,7 +15,7 @@ int mtk_sof_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	int i, j, ret = 0;
+ 
+ 	for (i = 0; i < sof_priv->num_streams; i++) {
+@@ -55,7 +55,6 @@ int mtk_sof_card_probe(struct snd_soc_card *card)
+ 	int i;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 
+ 	/* Set stream_name to help sof bind widgets */
+ 	for_each_card_prelinks(card, i, dai_link) {
+@@ -63,7 +62,7 @@ int mtk_sof_card_probe(struct snd_soc_card *card)
+ 			dai_link->stream_name = dai_link->name;
+ 	}
+ 
+-	INIT_LIST_HEAD(&sof_priv->dai_link_list);
++	INIT_LIST_HEAD(&soc_card_data->sof_dai_link_list);
+ 
+ 	return 0;
+ }
+@@ -73,7 +72,7 @@ static struct snd_soc_pcm_runtime *mtk_sof_find_tplg_be(struct snd_soc_pcm_runti
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	struct snd_soc_pcm_runtime *fe;
+ 	struct snd_soc_pcm_runtime *be;
+ 	struct snd_soc_dpcm *dpcm;
+@@ -113,7 +112,7 @@ static int mtk_sof_check_tplg_be_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	struct snd_soc_pcm_runtime *sof_be;
+ 	struct mtk_dai_link *dai_link;
+ 	int ret = 0;
+@@ -125,7 +124,7 @@ static int mtk_sof_check_tplg_be_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		else if (sof_be->dai_link->be_hw_params_fixup)
+ 			ret = sof_be->dai_link->be_hw_params_fixup(sof_be, params);
+ 	} else {
+-		list_for_each_entry(dai_link, &sof_priv->dai_link_list, list) {
++		list_for_each_entry(dai_link, &soc_card_data->sof_dai_link_list, list) {
+ 			if (strcmp(dai_link->name, rtd->dai_link->name) == 0) {
+ 				if (dai_link->be_hw_params_fixup)
+ 					ret = dai_link->be_hw_params_fixup(rtd, params);
+@@ -144,7 +143,7 @@ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_component *sof_comp = NULL;
+ 	struct mtk_soc_card_data *soc_card_data =
+ 		snd_soc_card_get_drvdata(card);
+-	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	const struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct mtk_dai_link *mtk_dai_link;
+ 	int i;
+@@ -173,7 +172,7 @@ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ 			mtk_dai_link->be_hw_params_fixup = dai_link->be_hw_params_fixup;
+ 			mtk_dai_link->name = dai_link->name;
+ 
+-			list_add(&mtk_dai_link->list, &sof_priv->dai_link_list);
++			list_add(&mtk_dai_link->list, &soc_card_data->sof_dai_link_list);
+ 		}
+ 
+ 		if (dai_link->no_pcm)
+diff --git a/sound/soc/mediatek/common/mtk-dsp-sof-common.h b/sound/soc/mediatek/common/mtk-dsp-sof-common.h
+index 4bc5e1c0c8ed..8784ee471132 100644
+--- a/sound/soc/mediatek/common/mtk-dsp-sof-common.h
++++ b/sound/soc/mediatek/common/mtk-dsp-sof-common.h
+@@ -30,7 +30,6 @@ struct mtk_sof_priv {
+ 	int num_streams;
+ 	int (*sof_dai_link_fixup)(struct snd_soc_pcm_runtime *rtd,
+ 				  struct snd_pcm_hw_params *params);
+-	struct list_head dai_link_list;
+ };
+ 
+ int mtk_sof_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/mediatek/common/mtk-soc-card.h b/sound/soc/mediatek/common/mtk-soc-card.h
+index d92dc36d4577..3f6e24dd22df 100644
+--- a/sound/soc/mediatek/common/mtk-soc-card.h
++++ b/sound/soc/mediatek/common/mtk-soc-card.h
+@@ -13,7 +13,7 @@ struct mtk_platform_card_data;
+ struct mtk_sof_priv;
+ 
+ struct mtk_soc_card_data {
+-	struct mtk_sof_priv *sof_priv;
++	const struct mtk_sof_priv *sof_priv;
+ 	struct list_head sof_dai_link_list;
+ 	struct mtk_platform_card_data *card_data;
+ 	void *mach_priv;
+diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.h b/sound/soc/mediatek/common/mtk-soundcard-driver.h
+index 44320efff5f8..4fd2ffb7e486 100644
+--- a/sound/soc/mediatek/common/mtk-soundcard-driver.h
++++ b/sound/soc/mediatek/common/mtk-soundcard-driver.h
+@@ -22,7 +22,7 @@ struct mtk_platform_card_data {
+ struct mtk_soundcard_pdata {
+ 	const char *card_name;
+ 	struct mtk_platform_card_data *card_data;
+-	struct mtk_sof_priv *sof_priv;
++	const struct mtk_sof_priv *sof_priv;
+ 	int (*soc_probe)(struct mtk_soc_card_data *card_data, bool legacy);
+ };
+ 
 -- 
 2.44.0
 
