@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50055C04FF6
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 06:44:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 483E3C4345F
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 06:44:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6806AB60;
-	Tue, 16 Apr 2024 08:44:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6806AB60
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49A24E7F;
+	Tue, 16 Apr 2024 08:44:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49A24E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713249876;
-	bh=V6vBdqA+1/0QAN744yAvKXN/zayOAXioRLshFUwhcF0=;
+	s=default; t=1713249893;
+	bh=G4tpxH+0lucGo5TSlVJ0JRbQR4AHNTruNZT6ApnNiGM=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AyNFkW10ZEaaWhhnYnk/u8Xe0SBS+08uDWYd3lUSZClLR9bDK3Y0t4qJb9ASD3Fnd
-	 hSz5JhVSeNPCGOByRrbUUYfmUkZLwC3CTn+ADRtdT+WGRBYF01afReeljkqdZIxE7S
-	 5sD+s7NyjRotea6iJG2jsgYDD2/5eNe0D0sDkp4Y=
+	b=fv933ydz2sPVGxUdf9XfxEoH4KkaCdoeXzvzbDkq0Wx2EhgNnDF0ev4ZPIreAH647
+	 1OeWtaH/8x3WIje7jsSqM6XRXE1h9riDykvqJ6f1ToVdeV5MKhjxPhvequx08U08U7
+	 CvpUzR7/MiZkxTptOrDPRDfwVvWplMCIjkn7oqao=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83713F80674; Tue, 16 Apr 2024 08:42:59 +0200 (CEST)
+	id AF0FDF80693; Tue, 16 Apr 2024 08:43:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C35FF80676;
-	Tue, 16 Apr 2024 08:42:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 814A4F80695;
+	Tue, 16 Apr 2024 08:43:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33300F80124; Tue, 16 Apr 2024 08:37:26 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id F326EF80236; Tue, 16 Apr 2024 08:39:35 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3AEFF80124
-	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 08:37:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3AEFF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id D67CDF80423
+	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 08:36:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D67CDF80423
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=KxHToYqR
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=gMiCH8m/
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 43G4e6K8021136;
-	Tue, 16 Apr 2024 06:37:13 GMT
+ 43G1eii8003716;
+	Tue, 16 Apr 2024 06:36:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=c6TdiCbWj5rHM2MNFsGN3bhjHBR3WKc7S23Su7X75S0=; b=Kx
-	HToYqRvP2PkMCuEKrAUhY+NWMQB1KM3VdVKPrkxCGiXpQ69wA8Y7rBkQJzeSHW4W
-	LKZVUM6iDulxVnvtm3rEYnjgCXQUYqtDPNtrcrZsppLYCrgqcgdD1KDCy3ag2DBX
-	FaottgX3mLWiMU/fdeFUH9+yQ5X+26TfK25N4vrYg43zK7UppNKnXWb7A4p/zvv6
-	mSrDxigzhf+LY1wwnh8hBuw9DGfVWJ5YKjsVXUXquzKwilRWjxTgWG2HHhcC9C5v
-	G2lHWVYz+/RJ6oH29aaEmJv94CzRqBf+kynGw0d0upAFTxJBZFIrWUGMF94YsfHk
-	Y5PTJEU4Lktg4m/G394w==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com
+	qcppdkim1; bh=VMXd+y6huteUQPqhvJ+tXiTYJZIU+p1Mba7/QH5XmMY=; b=gM
+	iCH8m/4HzE4lPWXOWzK1WPz4JT+YHWIBIjWdh+YS/fYqo5Ib1cKgFjmplRTXFf1F
+	NBng1OoBJXpY/8RVWn0qgYbXKzj38LBUkMCaf0ElumY+OBfK6XqkU0GUqBOQdR6V
+	Dg7B4PxwSC7TA/7zQWxjYRCWJ9BSmAZQpnqW3a3eSCy3gvHssi3bJxC/SwaPbDYO
+	cfQtm6ws+s9yUzTums1sWydES7a/lMejUxvxebdm3nDCS7XJF9XvWr4326oxnIMi
+	MDlCZvgbbsuqGTMSEqcCNYLVXs+5dKYuDZDp5ycIm2to2pOULlWkoDTr6h0WDr/2
+	S07+X+JaG4JLZoohFgTg==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com
  [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xhftw0n9k-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xh8g49gsd-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 06:37:12 +0000 (GMT)
+	Tue, 16 Apr 2024 06:36:58 +0000 (GMT)
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
  [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 43G6bCKb029457
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 43G6avo2028684
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 06:37:12 GMT
+	Tue, 16 Apr 2024 06:36:57 GMT
 Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 15 Apr 2024 23:37:07 -0700
+ 15.2.1544.9; Mon, 15 Apr 2024 23:36:52 -0700
 From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Banajit Goswami
@@ -85,9 +85,9 @@ CC: <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <quic_rohkumar@quicinc.com>,
         <quic_pkumpatl@quicinc.com>,
         Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Subject: [PATCH v2 8/8] ASoC: codecs: wcd937x: add audio routing and Kconfig
-Date: Tue, 16 Apr 2024 12:06:00 +0530
-Message-ID: <20240416063600.309747-9-quic_mohs@quicinc.com>
+Subject: [PATCH v2 5/8] ASoC: codecs: wcd937x: add basic controls
+Date: Tue, 16 Apr 2024 12:05:57 +0530
+Message-ID: <20240416063600.309747-6-quic_mohs@quicinc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240416063600.309747-1-quic_mohs@quicinc.com>
 References: <20240416063600.309747-1-quic_mohs@quicinc.com>
@@ -100,19 +100,19 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: VI0brMK1RMkKRZ22jcUpXRyBBwBVh7L6
-X-Proofpoint-ORIG-GUID: VI0brMK1RMkKRZ22jcUpXRyBBwBVh7L6
+X-Proofpoint-ORIG-GUID: itEH6fpX2w08FmUGQWJfi4WYBBrVE9BP
+X-Proofpoint-GUID: itEH6fpX2w08FmUGQWJfi4WYBBrVE9BP
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_04,2024-04-15_01,2023-05-22_02
+ definitions=2024-04-16_03,2024-04-15_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1015 suspectscore=0
- bulkscore=0 mlxlogscore=999 adultscore=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404160039
-Message-ID-Hash: HDT3V32N2PWMJDPUDCDD3E47R2YINA5M
-X-Message-ID-Hash: HDT3V32N2PWMJDPUDCDD3E47R2YINA5M
+ bulkscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 mlxlogscore=870 spamscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404160037
+Message-ID-Hash: 64UYKC4FN2EY5GQJF4OMLDFQ3LXILRVC
+X-Message-ID-Hash: 64UYKC4FN2EY5GQJF4OMLDFQ3LXILRVC
 X-MailFrom: quic_mohs@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -125,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HDT3V32N2PWMJDPUDCDD3E47R2YINA5M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/64UYKC4FN2EY5GQJF4OMLDFQ3LXILRVC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,183 +136,256 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
 
-This patch adds audio routing for both playback and capture and
-Makefile and Kconfigs changes for wcd937x.
+This patch adds basic controls found in wcd937x codec.
 
 Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
 ---
- sound/soc/codecs/Kconfig   | 20 ++++++++++
- sound/soc/codecs/Makefile  |  7 ++++
- sound/soc/codecs/wcd937x.c | 80 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 107 insertions(+)
+ sound/soc/codecs/wcd937x.c | 212 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 212 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 995eab954dd5..daf42c0b0444 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -277,6 +277,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_UDA1380
- 	imply SND_SOC_WCD9335
- 	imply SND_SOC_WCD934X
-+	imply SND_SOC_WCD937X_SDW
- 	imply SND_SOC_WCD938X_SDW
- 	imply SND_SOC_WCD939X_SDW
- 	imply SND_SOC_LPASS_MACRO_COMMON
-@@ -2090,6 +2091,25 @@ config SND_SOC_WCD934X
- 	  The WCD9340/9341 is a audio codec IC Integrated in
- 	  Qualcomm SoCs like SDM845.
- 
-+config SND_SOC_WCD937X
-+	depends on SND_SOC_WCD937X_SDW
-+	tristate
-+	depends on SOUNDWIRE || !SOUNDWIRE
-+	select SND_SOC_WCD_CLASSH
-+
-+config SND_SOC_WCD937X_SDW
-+	tristate "WCD9370/WCD9375 Codec - SDW"
-+	select SND_SOC_WCD937X
-+	select SND_SOC_WCD_MBHC
-+	select REGMAP_IRQ
-+	depends on SOUNDWIRE
-+	select REGMAP_SOUNDWIRE
-+	help
-+	  The WCD9370/9375 is an audio codec IC used with SoCs
-+	  like SC7280 or QCM6490 chipsets, and it connected
-+	  via soundwire.
-+	  To compile this codec driver say Y or m.
-+
- config SND_SOC_WCD938X
- 	depends on SND_SOC_WCD938X_SDW
- 	tristate
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 9ba24fb870b1..09aad6c12449 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -315,6 +315,8 @@ snd-soc-wcd-classh-objs := wcd-clsh-v2.o
- snd-soc-wcd-mbhc-objs := wcd-mbhc-v2.o
- snd-soc-wcd9335-objs := wcd9335.o
- snd-soc-wcd934x-objs := wcd934x.o
-+snd-soc-wcd937x-objs := wcd937x.o
-+snd-soc-wcd937x-sdw-objs := wcd937x-sdw.o
- snd-soc-wcd938x-objs := wcd938x.o
- snd-soc-wcd938x-sdw-objs := wcd938x-sdw.o
- snd-soc-wcd939x-objs := wcd939x.o
-@@ -708,6 +710,11 @@ obj-$(CONFIG_SND_SOC_WCD_CLASSH)	+= snd-soc-wcd-classh.o
- obj-$(CONFIG_SND_SOC_WCD_MBHC)	+= snd-soc-wcd-mbhc.o
- obj-$(CONFIG_SND_SOC_WCD9335)	+= snd-soc-wcd9335.o
- obj-$(CONFIG_SND_SOC_WCD934X)	+= snd-soc-wcd934x.o
-+obj-$(CONFIG_SND_SOC_WCD937X)	+= snd-soc-wcd937x.o
-+ifdef CONFIG_SND_SOC_WCD937X_SDW
-+# avoid link failure by forcing sdw code built-in when needed
-+obj-$(CONFIG_SND_SOC_WCD937X) += snd-soc-wcd937x-sdw.o
-+endif
- obj-$(CONFIG_SND_SOC_WCD938X)	+= snd-soc-wcd938x.o
- ifdef CONFIG_SND_SOC_WCD938X_SDW
- # avoid link failure by forcing sdw code built-in when needed
 diff --git a/sound/soc/codecs/wcd937x.c b/sound/soc/codecs/wcd937x.c
-index 87e571dc4a11..d0795e39e99b 100644
+index b2d5d29303b6..be63662a52be 100644
 --- a/sound/soc/codecs/wcd937x.c
 +++ b/sound/soc/codecs/wcd937x.c
-@@ -2421,6 +2421,77 @@ static const struct snd_soc_dapm_widget wcd9375_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("DMIC6_OUTPUT"),
+@@ -121,6 +121,9 @@ struct wcd937x_priv {
+ 	atomic_t ana_clk_count;
  };
  
-+static const struct snd_soc_dapm_route wcd937x_audio_map[] = {
-+	{ "ADC1_OUTPUT", NULL, "ADC1_MIXER" },
-+	{ "ADC1_MIXER", "Switch", "ADC1 REQ" },
-+	{ "ADC1 REQ", NULL, "ADC1" },
-+	{ "ADC1", NULL, "AMIC1" },
++static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
++static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
 +
-+	{ "ADC2_OUTPUT", NULL, "ADC2_MIXER" },
-+	{ "ADC2_MIXER", "Switch", "ADC2 REQ" },
-+	{ "ADC2 REQ", NULL, "ADC2" },
-+	{ "ADC2", NULL, "ADC2 MUX" },
-+	{ "ADC2 MUX", "INP3", "AMIC3" },
-+	{ "ADC2 MUX", "INP2", "AMIC2" },
+ struct wcd937x_mbhc_zdet_param {
+ 	u16 ldo_ctl;
+ 	u16 noff;
+@@ -477,6 +480,169 @@ static int wcd937x_connect_port(struct wcd937x_sdw_priv *wcd, u8 port_idx, u8 ch
+ 	return 0;
+ }
+ 
++static int wcd937x_rx_hph_mode_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
 +
-+	{ "IN1_HPHL", NULL, "VDD_BUCK" },
-+	{ "IN1_HPHL", NULL, "CLS_H_PORT" },
-+	{ "RX1", NULL, "IN1_HPHL" },
-+	{ "RDAC1", NULL, "RX1" },
-+	{ "HPHL_RDAC", "Switch", "RDAC1" },
-+	{ "HPHL PGA", NULL, "HPHL_RDAC" },
-+	{ "HPHL", NULL, "HPHL PGA" },
++	ucontrol->value.integer.value[0] = wcd937x->hph_mode;
++	return 0;
++}
 +
-+	{ "IN2_HPHR", NULL, "VDD_BUCK" },
-+	{ "IN2_HPHR", NULL, "CLS_H_PORT" },
-+	{ "RX2", NULL, "IN2_HPHR" },
-+	{ "RDAC2", NULL, "RX2" },
-+	{ "HPHR_RDAC", "Switch", "RDAC2" },
-+	{ "HPHR PGA", NULL, "HPHR_RDAC" },
-+	{ "HPHR", NULL, "HPHR PGA" },
++static int wcd937x_rx_hph_mode_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component =
++				snd_soc_kcontrol_component(kcontrol);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++	u32 mode_val;
 +
-+	{ "IN3_AUX", NULL, "VDD_BUCK" },
-+	{ "IN3_AUX", NULL, "CLS_H_PORT" },
-+	{ "RX3", NULL, "IN3_AUX" },
-+	{ "RDAC4", NULL, "RX3" },
-+	{ "AUX_RDAC", "Switch", "RDAC4" },
-+	{ "AUX PGA", NULL, "AUX_RDAC" },
-+	{ "AUX", NULL, "AUX PGA" },
++	mode_val = ucontrol->value.enumerated.item[0];
++	if (!mode_val) {
++		dev_warn(component->dev, "Invalid HPH Mode, default to class_AB\n");
++		mode_val = CLS_AB;
++	}
 +
-+	{ "RDAC3_MUX", "RX3", "RX3" },
-+	{ "RDAC3_MUX", "RX1", "RX1" },
-+	{ "RDAC3", NULL, "RDAC3_MUX" },
-+	{ "EAR_RDAC", "Switch", "RDAC3" },
-+	{ "EAR PGA", NULL, "EAR_RDAC" },
-+	{ "EAR", NULL, "EAR PGA" },
++	wcd937x->hph_mode = mode_val;
++
++	return 0;
++}
++
++static int wcd937x_ear_pa_gain_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	u8 ear_pa_gain;
++
++	ear_pa_gain = snd_soc_component_read(component, WCD937X_ANA_EAR_COMPANDER_CTL);
++
++	ucontrol->value.integer.value[0] = FIELD_GET(WCD937X_EAR_GAIN_MASK, ear_pa_gain);
++
++	return 0;
++}
++
++static int wcd937x_ear_pa_gain_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++	u8 ear_pa_gain = 0;
++
++	ear_pa_gain = ucontrol->value.integer.value[0] << 2;
++
++	if (!wcd937x->comp1_enable) {
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_EAR_COMPANDER_CTL,
++					      0x7c, ear_pa_gain);
++	}
++
++	return 0;
++}
++
++static int wcd937x_get_compander(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++	struct soc_mixer_control *mc;
++	bool hphr;
++
++	mc = (struct soc_mixer_control *)(kcontrol->private_value);
++	hphr = mc->shift;
++
++	ucontrol->value.integer.value[0] = hphr ? wcd937x->comp2_enable :
++						  wcd937x->comp1_enable;
++	return 0;
++}
++
++static int wcd937x_set_compander(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++	struct wcd937x_sdw_priv *wcd = wcd937x->sdw_priv[AIF1_PB];
++	int value = ucontrol->value.integer.value[0];
++	struct soc_mixer_control *mc;
++	int portidx;
++	bool hphr;
++
++	mc = (struct soc_mixer_control *)(kcontrol->private_value);
++	hphr = mc->shift;
++
++	if (hphr)
++		wcd937x->comp2_enable = value;
++	else
++		wcd937x->comp1_enable = value;
++
++	portidx = wcd->ch_info[mc->reg].port_num;
++
++	wcd937x_connect_port(wcd, portidx, mc->reg, !!value);
++
++	return 1;
++}
++
++static int wcd937x_get_swr_port(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(comp);
++	struct wcd937x_sdw_priv *wcd;
++	int dai_id = mixer->shift;
++	int ch_idx = mixer->reg;
++	int portidx;
++
++	wcd = wcd937x->sdw_priv[dai_id];
++	portidx = wcd->ch_info[ch_idx].port_num;
++
++	ucontrol->value.integer.value[0] = wcd->port_enable[portidx];
++
++	return 0;
++}
++
++static int wcd937x_set_swr_port(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(comp);
++	struct wcd937x_sdw_priv *wcd;
++	int dai_id = mixer->shift;
++	int ch_idx = mixer->reg;
++	int portidx;
++	bool enable;
++
++	wcd = wcd937x->sdw_priv[dai_id];
++
++	portidx = wcd->ch_info[ch_idx].port_num;
++
++	enable = !!ucontrol->value.integer.value[0];
++
++	wcd->port_enable[portidx] = enable;
++	wcd937x_connect_port(wcd, portidx, ch_idx, enable);
++
++	return 1;
++}
++
++static const char * const rx_hph_mode_mux_text[] = {
++	"CLS_H_INVALID", "CLS_H_HIFI", "CLS_H_LP", "CLS_AB", "CLS_H_LOHIFI",
++	"CLS_H_ULP", "CLS_AB_HIFI",
 +};
 +
-+static const struct snd_soc_dapm_route wcd9375_audio_map[] = {
-+	{ "ADC3_OUTPUT", NULL, "ADC3_MIXER" },
-+	{ "ADC3_OUTPUT", NULL, "ADC3_MIXER" },
-+	{ "ADC3_MIXER", "Switch", "ADC3 REQ" },
-+	{ "ADC3 REQ", NULL, "ADC3" },
-+	{ "ADC3", NULL, "AMIC4" },
++static const char * const wcd937x_ear_pa_gain_text[] = {
++	"G_6_DB", "G_4P5_DB", "G_3_DB", "G_1P5_DB", "G_0_DB",
++	"G_M1P5_DB", "G_M3_DB", "G_M4P5_DB",
++	"G_M6_DB", "G_7P5_DB", "G_M9_DB",
++	"G_M10P5_DB", "G_M12_DB", "G_M13P5_DB",
++	"G_M15_DB", "G_M16P5_DB", "G_M18_DB",
++};
 +
-+	{ "DMIC1_OUTPUT", NULL, "DMIC1_MIXER" },
-+	{ "DMIC1_MIXER", "Switch", "DMIC1" },
++static const struct soc_enum rx_hph_mode_mux_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_hph_mode_mux_text), rx_hph_mode_mux_text);
 +
-+	{ "DMIC2_OUTPUT", NULL, "DMIC2_MIXER" },
-+	{ "DMIC2_MIXER", "Switch", "DMIC2" },
++static SOC_ENUM_SINGLE_EXT_DECL(wcd937x_ear_pa_gain_enum, wcd937x_ear_pa_gain_text);
 +
-+	{ "DMIC3_OUTPUT", NULL, "DMIC3_MIXER" },
-+	{ "DMIC3_MIXER", "Switch", "DMIC3" },
+ /* MBHC related */
+ static void wcd937x_mbhc_clk_setup(struct snd_soc_component *component,
+ 				   bool enable)
+@@ -1151,6 +1317,50 @@ static void wcd937x_mbhc_deinit(struct snd_soc_component *component)
+ 
+ /* END MBHC */
+ 
++static const struct snd_kcontrol_new wcd937x_snd_controls[] = {
++	SOC_ENUM_EXT("EAR PA GAIN", wcd937x_ear_pa_gain_enum,
++		     wcd937x_ear_pa_gain_get, wcd937x_ear_pa_gain_put),
++	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum,
++		     wcd937x_rx_hph_mode_get, wcd937x_rx_hph_mode_put),
 +
-+	{ "DMIC4_OUTPUT", NULL, "DMIC4_MIXER" },
-+	{ "DMIC4_MIXER", "Switch", "DMIC4" },
++	SOC_SINGLE_EXT("HPHL_COMP Switch", SND_SOC_NOPM, 0, 1, 0,
++		       wcd937x_get_compander, wcd937x_set_compander),
++	SOC_SINGLE_EXT("HPHR_COMP Switch", SND_SOC_NOPM, 1, 1, 0,
++		       wcd937x_get_compander, wcd937x_set_compander),
 +
-+	{ "DMIC5_OUTPUT", NULL, "DMIC5_MIXER" },
-+	{ "DMIC5_MIXER", "Switch", "DMIC5" },
++	SOC_SINGLE_TLV("HPHL Volume", WCD937X_HPH_L_EN, 0, 20, 1, line_gain),
++	SOC_SINGLE_TLV("HPHR Volume", WCD937X_HPH_R_EN, 0, 20, 1, line_gain),
++	SOC_SINGLE_TLV("ADC1 Volume", WCD937X_ANA_TX_CH1, 0, 20, 0, analog_gain),
++	SOC_SINGLE_TLV("ADC2 Volume", WCD937X_ANA_TX_CH2, 0, 20, 0, analog_gain),
++	SOC_SINGLE_TLV("ADC3 Volume", WCD937X_ANA_TX_CH3, 0, 20, 0, analog_gain),
 +
-+	{ "DMIC6_OUTPUT", NULL, "DMIC6_MIXER" },
-+	{ "DMIC6_MIXER", "Switch", "DMIC6" },
++	SOC_SINGLE_EXT("HPHL Switch", WCD937X_HPH_L, 0, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("HPHR Switch", WCD937X_HPH_R, 0, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++
++	SOC_SINGLE_EXT("ADC1 Switch", WCD937X_ADC1, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("ADC2 Switch", WCD937X_ADC2, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("ADC3 Switch", WCD937X_ADC3, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC0 Switch", WCD937X_DMIC0, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC1 Switch", WCD937X_DMIC1, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("MBHC Switch", WCD937X_MBHC, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC2 Switch", WCD937X_DMIC2, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC3 Switch", WCD937X_DMIC3, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC4 Switch", WCD937X_DMIC4, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++	SOC_SINGLE_EXT("DMIC5 Switch", WCD937X_DMIC5, 1, 1, 0,
++		       wcd937x_get_swr_port, wcd937x_set_swr_port),
 +};
 +
  static int wcd937x_set_micbias_data(struct wcd937x_priv *wcd937x)
  {
  	int vout_ctl[3];
-@@ -2557,6 +2628,13 @@ static int wcd937x_soc_codec_probe(struct snd_soc_component *component)
- 			dev_err(component->dev, "Failed to add snd_ctls\n");
- 			return ret;
- 		}
-+
-+		ret = snd_soc_dapm_add_routes(dapm, wcd9375_audio_map,
-+					      ARRAY_SIZE(wcd9375_audio_map));
-+		if (ret < 0) {
-+			dev_err(component->dev, "Failed to add routes\n");
-+			return ret;
-+		}
- 	}
- 
- 	ret = wcd937x_mbhc_init(component);
-@@ -2600,6 +2678,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd937x = {
- 	.num_controls = ARRAY_SIZE(wcd937x_snd_controls),
- 	.dapm_widgets = wcd937x_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd937x_dapm_widgets),
-+	.dapm_routes = wcd937x_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd937x_audio_map),
+@@ -1317,6 +1527,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd937x = {
+ 	.name = "wcd937x_codec",
+ 	.probe = wcd937x_soc_codec_probe,
+ 	.remove = wcd937x_soc_codec_remove,
++	.controls = wcd937x_snd_controls,
++	.num_controls = ARRAY_SIZE(wcd937x_snd_controls),
  	.set_jack = wcd937x_codec_set_jack,
  	.endianness = 1,
  };
