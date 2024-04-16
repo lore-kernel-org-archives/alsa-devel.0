@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98FFBC04FF6
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 07:17:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8AA3C4345F
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 07:18:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BBEE1928;
-	Tue, 16 Apr 2024 09:17:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BBEE1928
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46E1C191C;
+	Tue, 16 Apr 2024 09:18:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46E1C191C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713251871;
-	bh=dAqkdYAGV8dfv8IH73jURKP3uV28H1etOphrctT3v5I=;
+	s=default; t=1713251892;
+	bh=TIZvwWDeJ4aqoDbvqKNZ4ihhFX6tlxaL4ndXBGXYyoQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NW0i0ecZAXvOBrSlTQcu+NtwtXWu+P7cRpj2GRy6grzkFlMktZkoidONspKa1BkMr
-	 ij76mPmrZ6T7qEJ7a2zPpcF2QdmHmI8CNGz37WhhCHMHu3dueVlaHL+B3H6ILNjzXt
-	 MKuqc5GVlUN3RH+9qi27eJuisbuPNC+CVZykSWys=
+	b=qAgCsPVtB3YTQoWxR3kUkIhbsEX1qw+IBvHyeS33C2esxmDj+qIjm/fRgcbBOktDO
+	 i9n5SAQRWcGrzWmPvvUTdEJ5einId7VRbqJr9ZstGUSvwVuk94A7K3kUwFdtBcKLpo
+	 7TWnqla3rn1E/cQa5nevdMR73AZxm37QahUMHpwU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D7CCF806A8; Tue, 16 Apr 2024 09:15:51 +0200 (CEST)
+	id 61B03F805C0; Tue, 16 Apr 2024 09:15:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4260F806B6;
-	Tue, 16 Apr 2024 09:15:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CD81F805C6;
+	Tue, 16 Apr 2024 09:15:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CCD55F8003A; Tue, 16 Apr 2024 09:14:56 +0200 (CEST)
+	id 018ADF80494; Tue, 16 Apr 2024 09:14:56 +0200 (CEST)
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
  [IPv6:2a00:1098:ed:100::25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 30761F80570
-	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 09:14:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30761F80570
+	by alsa1.perex.cz (Postfix) with ESMTPS id 36592F80423
+	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 09:14:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36592F80423
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=BNbztLIC
+ header.a=rsa-sha256 header.s=mail header.b=4xNmzsSw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713251680;
-	bh=dAqkdYAGV8dfv8IH73jURKP3uV28H1etOphrctT3v5I=;
+	s=mail; t=1713251668;
+	bh=TIZvwWDeJ4aqoDbvqKNZ4ihhFX6tlxaL4ndXBGXYyoQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BNbztLICl5lpInrgUzfXqAi5xsofAQjoaWg6vSAsN/9fb8Y09Jv0jLpe9mXWA1FgN
-	 4HsN1IALmwbtmWbRqos1X8eWfnQhhhbiSS/NX4flcMaOQBOopVo4umKY19JY+OhHky
-	 s1miwxSMLKMtat6byUG4nzpmNJ0FiGVZjZGQ58CRtjWL/RuD8ePYbSscaEIPrrxcRQ
-	 pAynfB5YDB4qmsk+DygK5sxdH32pQJNpd43t+VY1uUZ4TBxWtVa5/lHpla1Num088E
-	 35iu5NXXUsHHzzFpEcL6/nUWDqf2iGtk3VprHHx+PLQcn5M6+AX8/StW4jFMtItYzw
-	 aH4dRhs4bDoLA==
+	b=4xNmzsSwqWQ0F/wFEwob9m1m907HkL8xmrZrECqjGKgiklAzcJGuq+2QMl403h9fu
+	 1GsQCaLnZc536kxoEi6xWH8VA0ed108OtvI3bOMj9LOeZryycPw9RtklsUn/pjtg9Y
+	 f8cSa8nb2ABCzN7/S75RyXFT668669eCb+AIk+fd1Dw4yMzkrS+cbfdO7qsJUjwvlv
+	 5LJXY+TmqJ1w1ghvQOxEtTcoM8QCGNNQSG3LokluBLxdryExOD1jjBfDq8tZLrGBtA
+	 WYaC/5cqtO63bAso1j1u7+tCVRAqwQlxG0JSn8ZzYc5/Y7hY783fV3EqCnd2bFt013
+	 UZ4XYY3ju81hw==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -57,8 +57,8 @@ Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BF1273782134;
-	Tue, 16 Apr 2024 07:14:37 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CB1673782139;
+	Tue, 16 Apr 2024 07:14:25 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -98,17 +98,17 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v5 09/18] ASoC: mediatek: mt8192: Migrate to the common
- mtk_soundcard_startup
-Date: Tue, 16 Apr 2024 09:14:01 +0200
-Message-ID: <20240416071410.75620-10-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v5 04/18] ASoC: mediatek: mt8195: Migrate to
+ mtk_soundcard_common_probe
+Date: Tue, 16 Apr 2024 09:13:56 +0200
+Message-ID: <20240416071410.75620-5-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
 References: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: M5BOR276TKS6744ZL6HAS453HDXNPPBT
-X-Message-ID-Hash: M5BOR276TKS6744ZL6HAS453HDXNPPBT
+Message-ID-Hash: OHQPD5MHQJWFRDSQBKMAIIA3DPV22YH5
+X-Message-ID-Hash: OHQPD5MHQJWFRDSQBKMAIIA3DPV22YH5
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -129,221 +129,462 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a const mtk_pcm_constraints_data struct array with all of the
-(again, constant) constraints for all of the supported usecases,
-remove the duplicated functions and call mtk_soundcard_startup()
-instead in all of the .startup() callbacks.
+Add mtk_soundcard_pdata platform data for the MediaTek common sound card
+probe mechanism, including a driver/soc-specific probe extension (used
+for bits that cannot be commonized  hence specific to this driver), and
+change the probe function to mtk_soundcard_common_probe.
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+This is also adding the possibility of specifying the links and routing
+with the audio-routing property and (x)-dai-link nodes in device trees
+to stop hardcoding machine specific links in the card driver assupported
+by the common probe function, but support for legacy device trees is
+retained with a legacy_probe function, which is used only in case the
+new properties are not found.
+
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 139 ++++++------------
- 1 file changed, 41 insertions(+), 98 deletions(-)
+ sound/soc/mediatek/mt8195/mt8195-mt6359.c | 292 ++++++++++++----------
+ 1 file changed, 159 insertions(+), 133 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-index 645bc1aa67c7..8b323fb19925 100644
---- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-@@ -389,100 +389,6 @@ static int mt8192_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
+diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359.c b/sound/soc/mediatek/mt8195/mt8195-mt6359.c
+index 53fd8a897b9d..f694618e7635 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-mt6359.c
++++ b/sound/soc/mediatek/mt8195/mt8195-mt6359.c
+@@ -22,6 +22,7 @@
+ #include "../common/mtk-afe-platform-driver.h"
+ #include "../common/mtk-dsp-sof-common.h"
+ #include "../common/mtk-soc-card.h"
++#include "../common/mtk-soundcard-driver.h"
+ #include "mt8195-afe-clk.h"
+ #include "mt8195-afe-common.h"
  
--static int
--mt8192_mt6359_cap1_startup(struct snd_pcm_substream *substream)
--{
--	static const unsigned int channels[] = {
--		1, 2, 4
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_channels = {
--		.count = ARRAY_SIZE(channels),
--		.list = channels,
--		.mask = 0,
--	};
--	static const unsigned int rates[] = {
--		8000, 16000, 32000, 48000, 96000, 192000
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_rates = {
--		.count = ARRAY_SIZE(rates),
--		.list  = rates,
--		.mask = 0,
--	};
--
--	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int ret;
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &constraints_channels);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list channels failed\n");
--		return ret;
--	}
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_RATE,
--					 &constraints_rates);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static const struct snd_soc_ops mt8192_mt6359_capture1_ops = {
--	.startup = mt8192_mt6359_cap1_startup,
--};
--
--static int
--mt8192_mt6359_rt5682_startup(struct snd_pcm_substream *substream)
--{
--	static const unsigned int channels[] = {
--		1, 2
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_channels = {
--		.count = ARRAY_SIZE(channels),
--		.list = channels,
--		.mask = 0,
--	};
--	static const unsigned int rates[] = {
--		48000
--	};
--	static const struct snd_pcm_hw_constraint_list constraints_rates = {
--		.count = ARRAY_SIZE(rates),
--		.list  = rates,
--		.mask = 0,
--	};
--
--	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int ret;
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &constraints_channels);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list channels failed\n");
--		return ret;
--	}
--
--	ret = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_RATE,
--					 &constraints_rates);
--	if (ret < 0) {
--		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static const struct snd_soc_ops mt8192_mt6359_rt5682_ops = {
--	.startup = mt8192_mt6359_rt5682_startup,
--};
--
- /* FE */
- SND_SOC_DAILINK_DEFS(playback1,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
-@@ -720,7 +626,7 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
--		.ops = &mt8192_mt6359_rt5682_ops,
-+		.ops = &mtk_soundcard_common_playback_ops,
- 		SND_SOC_DAILINK_REG(playback3),
- 	},
- 	{
-@@ -784,7 +690,7 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
--		.ops = &mt8192_mt6359_capture1_ops,
-+		.ops = &mtk_soundcard_common_capture_ops,
- 		SND_SOC_DAILINK_REG(capture1),
- 	},
- 	{
-@@ -794,7 +700,7 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
--		.ops = &mt8192_mt6359_rt5682_ops,
-+		.ops = &mtk_soundcard_common_playback_ops,
- 		SND_SOC_DAILINK_REG(capture2),
- 	},
- 	{
-@@ -1146,7 +1052,7 @@ static int mt8192_mt6359_legacy_probe(struct mtk_soc_card_data *soc_card_data)
- 	struct device *dev = card->dev;
- 	struct device_node *hdmi_codec, *headset_codec, *speaker_codec;
- 	struct snd_soc_dai_link *dai_link;
--	int ret, i;
-+	int i, ret = 0;
+@@ -29,6 +30,13 @@
+ #define RT1019_SPEAKER_AMP_PRESENT		BIT(1)
+ #define MAX98390_SPEAKER_AMP_PRESENT		BIT(2)
  
- 	hdmi_codec = of_parse_phandle(dev->of_node, "mediatek,hdmi-codec", 0);
- 	if (!hdmi_codec)
-@@ -1235,11 +1141,44 @@ static int mt8192_mt6359_soc_card_probe(struct mtk_soc_card_data *soc_card_data,
- 	return 0;
- }
- 
-+static const unsigned int mt8192_pcm_playback_channels[] = { 1, 2 };
-+static const unsigned int mt8192_pcm_playback_rates[] = { 48000 };
++#define DUMB_CODEC_INIT				BIT(0)
++#define MT6359_CODEC_INIT			BIT(1)
++#define RT1011_CODEC_INIT			BIT(2)
++#define RT1019_CODEC_INIT			BIT(3)
++#define MAX98390_CODEC_INIT			BIT(4)
++#define RT5682_CODEC_INIT			BIT(5)
 +
-+static const unsigned int mt8192_pcm_capture_channels[] = { 1, 2, 4 };
-+static const unsigned int mt8192_pcm_capture_rates[] = {
-+	8000, 16000, 32000, 48000, 96000, 192000
+ #define RT1011_CODEC_DAI	"rt1011-aif"
+ #define RT1011_DEV0_NAME	"rt1011.2-0038"
+ #define RT1011_DEV1_NAME	"rt1011.2-0039"
+@@ -51,18 +59,17 @@
+ #define SOF_DMA_UL4 "SOF_DMA_UL4"
+ #define SOF_DMA_UL5 "SOF_DMA_UL5"
+ 
+-struct mt8195_card_data {
+-	const char *name;
+-	unsigned long quirk;
+-};
+-
+ struct mt8195_mt6359_priv {
+-	struct snd_soc_jack headset_jack;
+-	struct snd_soc_jack dp_jack;
+-	struct snd_soc_jack hdmi_jack;
+ 	struct clk *i2so1_mclk;
+ };
+ 
++enum mt8195_jacks {
++	MT8195_JACK_HEADSET,
++	MT8195_JACK_DP,
++	MT8195_JACK_HDMI,
++	MT8195_JACK_MAX,
 +};
 +
-+static const struct mtk_pcm_constraints_data mt8192_pcm_constraints[MTK_CONSTRAINT_CAPTURE + 1] = {
-+	[MTK_CONSTRAINT_PLAYBACK] = {
-+		.channels =  &(const struct snd_pcm_hw_constraint_list) {
-+			.list = mt8192_pcm_playback_channels,
-+			.count = ARRAY_SIZE(mt8192_pcm_playback_channels)
-+		},
-+		.rates =  &(const struct snd_pcm_hw_constraint_list) {
-+			.list = mt8192_pcm_playback_rates,
-+			.count = ARRAY_SIZE(mt8192_pcm_playback_rates)
-+		}
-+	},
-+	[MTK_CONSTRAINT_CAPTURE] = {
-+		.channels =  &(const struct snd_pcm_hw_constraint_list) {
-+			.list = mt8192_pcm_capture_channels,
-+			.count = ARRAY_SIZE(mt8192_pcm_capture_channels)
-+		},
-+		.rates =  &(const struct snd_pcm_hw_constraint_list) {
-+			.list = mt8192_pcm_capture_rates,
-+			.count = ARRAY_SIZE(mt8192_pcm_capture_rates)
+ /* Headset jack detection DAPM pins */
+ static struct snd_soc_jack_pin mt8195_jack_pins[] = {
+ 	{
+@@ -382,33 +389,31 @@ static const struct snd_soc_ops mt8195_dptx_ops = {
+ static int mt8195_dptx_codec_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
+-	struct mt8195_mt6359_priv *priv = soc_card_data->mach_priv;
++	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8195_JACK_DP];
+ 	struct snd_soc_component *cmpnt_codec =
+ 		snd_soc_rtd_to_codec(rtd, 0)->component;
+ 	int ret;
+ 
+-	ret = snd_soc_card_jack_new(rtd->card, "DP Jack", SND_JACK_LINEOUT,
+-				    &priv->dp_jack);
++	ret = snd_soc_card_jack_new(rtd->card, "DP Jack", SND_JACK_LINEOUT, jack);
+ 	if (ret)
+ 		return ret;
+ 
+-	return snd_soc_component_set_jack(cmpnt_codec, &priv->dp_jack, NULL);
++	return snd_soc_component_set_jack(cmpnt_codec, jack, NULL);
+ }
+ 
+ static int mt8195_hdmi_codec_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
+-	struct mt8195_mt6359_priv *priv = soc_card_data->mach_priv;
++	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8195_JACK_HDMI];
+ 	struct snd_soc_component *cmpnt_codec =
+ 		snd_soc_rtd_to_codec(rtd, 0)->component;
+ 	int ret;
+ 
+-	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT,
+-				    &priv->hdmi_jack);
++	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT, jack);
+ 	if (ret)
+ 		return ret;
+ 
+-	return snd_soc_component_set_jack(cmpnt_codec, &priv->hdmi_jack, NULL);
++	return snd_soc_component_set_jack(cmpnt_codec, jack, NULL);
+ }
+ 
+ static int mt8195_dptx_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -566,7 +571,7 @@ static int mt8195_rt5682_init(struct snd_soc_pcm_runtime *rtd)
+ 		snd_soc_rtd_to_codec(rtd, 0)->component;
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
+ 	struct mt8195_mt6359_priv *priv = soc_card_data->mach_priv;
+-	struct snd_soc_jack *jack = &priv->headset_jack;
++	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8195_JACK_HEADSET];
+ 	struct snd_soc_component *cmpnt_afe =
+ 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+ 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt_afe);
+@@ -687,7 +692,7 @@ static int mt8195_rt1011_init(struct snd_soc_pcm_runtime *rtd)
+ 	return ret;
+ }
+ 
+-static int mt8195_rt1019_init(struct snd_soc_pcm_runtime *rtd)
++static int mt8195_dumb_amp_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	int ret;
+@@ -707,6 +712,18 @@ static int mt8195_rt1019_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
+ 
++	return 0;
++}
++
++static int mt8195_rt1019_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_card *card = rtd->card;
++	int ret;
++
++	ret = mt8195_dumb_amp_init(rtd);
++	if (ret)
++		return ret;
++
+ 	ret = snd_soc_dapm_add_routes(&card->dapm, mt8195_rt1019_routes,
+ 				      ARRAY_SIZE(mt8195_rt1019_routes));
+ 	if (ret)
+@@ -1371,108 +1388,31 @@ static int mt8195_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return ret;
+ }
+ 
+-static int mt8195_mt6359_dev_probe(struct platform_device *pdev)
++static int mt8195_mt6359_legacy_probe(struct mtk_soc_card_data *soc_card_data)
+ {
+-	struct snd_soc_card *card = &mt8195_mt6359_soc_card;
++	struct mtk_platform_card_data *card_data = soc_card_data->card_data;
++	struct snd_soc_card *card = card_data->card;
++	struct device_node *codec_node, *dp_node, *hdmi_node;
+ 	struct snd_soc_dai_link *dai_link;
+-	struct mtk_soc_card_data *soc_card_data;
+-	struct mt8195_mt6359_priv *mach_priv;
+-	struct device_node *platform_node, *adsp_node, *codec_node, *dp_node, *hdmi_node;
+-	struct mt8195_card_data *card_data;
+-	int is5682s = 0;
+-	int init6359 = 0;
+-	int sof_on = 0;
+-	int ret, i;
+-
+-	card_data = (struct mt8195_card_data *)of_device_get_match_data(&pdev->dev);
+-	card->dev = &pdev->dev;
+-
+-	ret = snd_soc_of_parse_card_name(card, "model");
+-	if (ret) {
+-		dev_err(&pdev->dev, "%s new card name parsing error %d\n",
+-			__func__, ret);
+-		return ret;
+-	}
+-
+-	if (!card->name)
+-		card->name = card_data->name;
++	struct device *dev = card->dev;
++	bool is5682s, init6359 = false;
++	int i;
+ 
+ 	if (strstr(card->name, "_5682s")) {
+ 		codec_node = of_find_compatible_node(NULL, NULL, "realtek,rt5682s");
+-		is5682s = 1;
+-	} else
+-		codec_node = of_find_compatible_node(NULL, NULL, "realtek,rt5682i");
+-
+-	soc_card_data = devm_kzalloc(&pdev->dev, sizeof(*card_data), GFP_KERNEL);
+-	if (!soc_card_data)
+-		return -ENOMEM;
+-
+-	mach_priv = devm_kzalloc(&pdev->dev, sizeof(*mach_priv), GFP_KERNEL);
+-	if (!mach_priv)
+-		return -ENOMEM;
+-
+-	soc_card_data->mach_priv = mach_priv;
+-
+-	adsp_node = of_parse_phandle(pdev->dev.of_node, "mediatek,adsp", 0);
+-	if (adsp_node) {
+-		struct mtk_sof_priv *sof_priv;
+-
+-		sof_priv = devm_kzalloc(&pdev->dev, sizeof(*sof_priv), GFP_KERNEL);
+-		if (!sof_priv) {
+-			ret = -ENOMEM;
+-			goto err_kzalloc;
+-		}
+-		sof_priv->conn_streams = g_sof_conn_streams;
+-		sof_priv->num_streams = ARRAY_SIZE(g_sof_conn_streams);
+-		sof_priv->sof_dai_link_fixup = mt8195_dai_link_fixup;
+-		soc_card_data->sof_priv = sof_priv;
+-		card->probe = mtk_sof_card_probe;
+-		card->late_probe = mtk_sof_card_late_probe;
+-		if (!card->topology_shortname_created) {
+-			snprintf(card->topology_shortname, 32, "sof-%s", card->name);
+-			card->topology_shortname_created = true;
+-		}
+-		card->name = card->topology_shortname;
+-		sof_on = 1;
+-	}
+-
+-	if (of_property_read_bool(pdev->dev.of_node, "mediatek,dai-link")) {
+-		ret = mtk_sof_dailink_parse_of(card, pdev->dev.of_node,
+-					       "mediatek,dai-link",
+-					       mt8195_mt6359_dai_links,
+-					       ARRAY_SIZE(mt8195_mt6359_dai_links));
+-		if (ret) {
+-			dev_dbg(&pdev->dev, "Parse dai-link fail\n");
+-			goto err_parse_of;
+-		}
++		is5682s = true;
+ 	} else {
+-		if (!sof_on)
+-			card->num_links = DAI_LINK_REGULAR_NUM;
+-	}
+-
+-	platform_node = of_parse_phandle(pdev->dev.of_node,
+-					 "mediatek,platform", 0);
+-	if (!platform_node) {
+-		dev_dbg(&pdev->dev, "Property 'platform' missing or invalid\n");
+-		ret = -EINVAL;
+-		goto err_platform_node;
++		codec_node = of_find_compatible_node(NULL, NULL, "realtek,rt5682i");
++		is5682s = false;
+ 	}
+ 
+-	dp_node = of_parse_phandle(pdev->dev.of_node, "mediatek,dptx-codec", 0);
+-	hdmi_node = of_parse_phandle(pdev->dev.of_node,
+-				     "mediatek,hdmi-codec", 0);
++	dp_node = of_parse_phandle(dev->of_node, "mediatek,dptx-codec", 0);
++	hdmi_node = of_parse_phandle(dev->of_node, "mediatek,hdmi-codec", 0);
+ 
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		if (!dai_link->platforms->name) {
+-			if (!strncmp(dai_link->name, "AFE_SOF", strlen("AFE_SOF")) && sof_on)
+-				dai_link->platforms->of_node = adsp_node;
+-			else
+-				dai_link->platforms->of_node = platform_node;
+-		}
+-
+ 		if (strcmp(dai_link->name, "DPTX_BE") == 0) {
+ 			if (!dp_node) {
+-				dev_dbg(&pdev->dev, "No property 'dptx-codec'\n");
++				dev_dbg(dev, "No property 'dptx-codec'\n");
+ 			} else {
+ 				dai_link->codecs->of_node = dp_node;
+ 				dai_link->codecs->name = NULL;
+@@ -1481,7 +1421,7 @@ static int mt8195_mt6359_dev_probe(struct platform_device *pdev)
+ 			}
+ 		} else if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
+ 			if (!hdmi_node) {
+-				dev_dbg(&pdev->dev, "No property 'hdmi-codec'\n");
++				dev_dbg(dev, "No property 'hdmi-codec'\n");
+ 			} else {
+ 				dai_link->codecs->of_node = hdmi_node;
+ 				dai_link->codecs->name = NULL;
+@@ -1490,7 +1430,7 @@ static int mt8195_mt6359_dev_probe(struct platform_device *pdev)
+ 			}
+ 		} else if (strcmp(dai_link->name, "ETDM1_OUT_BE") == 0) {
+ 			if (!codec_node) {
+-				dev_err(&pdev->dev, "Codec not found!\n");
++				dev_err(dev, "Codec not found!\n");
+ 			} else {
+ 				dai_link->codecs->of_node = codec_node;
+ 				dai_link->codecs->name = NULL;
+@@ -1501,7 +1441,7 @@ static int mt8195_mt6359_dev_probe(struct platform_device *pdev)
+ 			}
+ 		} else if (strcmp(dai_link->name, "ETDM2_IN_BE") == 0) {
+ 			if (!codec_node) {
+-				dev_err(&pdev->dev, "Codec not found!\n");
++				dev_err(dev, "Codec not found!\n");
+ 			} else {
+ 				dai_link->codecs->of_node = codec_node;
+ 				dai_link->codecs->name = NULL;
+@@ -1514,10 +1454,10 @@ static int mt8195_mt6359_dev_probe(struct platform_device *pdev)
+ 			   strcmp(dai_link->name, "UL_SRC2_BE") == 0) {
+ 			if (!init6359) {
+ 				dai_link->init = mt8195_mt6359_init;
+-				init6359 = 1;
++				init6359 = true;
+ 			}
+ 		} else if (strcmp(dai_link->name, "ETDM2_OUT_BE") == 0) {
+-			switch (card_data->quirk) {
++			switch (card_data->flags) {
+ 			case RT1011_SPEAKER_AMP_PRESENT:
+ 				dai_link->codecs = rt1011_comps;
+ 				dai_link->num_codecs = ARRAY_SIZE(rt1011_comps);
+@@ -1545,33 +1485,119 @@ static int mt8195_mt6359_dev_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	snd_soc_card_set_drvdata(card, soc_card_data);
++	return 0;
++}
+ 
+-	ret = devm_snd_soc_register_card(&pdev->dev, card);
++static int mt8195_mt6359_soc_card_probe(struct mtk_soc_card_data *soc_card_data, bool legacy)
++{
++	struct mtk_platform_card_data *card_data = soc_card_data->card_data;
++	struct snd_soc_card *card = card_data->card;
++	struct mt8195_mt6359_priv *mach_priv;
++	struct snd_soc_dai_link *dai_link;
++	u8 codec_init = 0;
++	int i;
+ 
+-	of_node_put(platform_node);
+-	of_node_put(dp_node);
+-	of_node_put(hdmi_node);
+-err_kzalloc:
+-err_parse_of:
+-err_platform_node:
+-	of_node_put(adsp_node);
+-	return ret;
++	mach_priv = devm_kzalloc(card->dev, sizeof(*mach_priv), GFP_KERNEL);
++	if (!mach_priv)
++		return -ENOMEM;
++
++	soc_card_data->mach_priv = mach_priv;
++
++	if (legacy)
++		return mt8195_mt6359_legacy_probe(soc_card_data);
++
++	for_each_card_prelinks(card, i, dai_link) {
++		if (strcmp(dai_link->name, "DPTX_BE") == 0) {
++			if (strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai"))
++				dai_link->init = mt8195_dptx_codec_init;
++		} else if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
++			if (strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai"))
++				dai_link->init = mt8195_hdmi_codec_init;
++		} else if (strcmp(dai_link->name, "DL_SRC_BE") == 0 ||
++			   strcmp(dai_link->name, "UL_SRC1_BE") == 0 ||
++			   strcmp(dai_link->name, "UL_SRC2_BE") == 0) {
++			if (!(codec_init & MT6359_CODEC_INIT)) {
++				dai_link->init = mt8195_mt6359_init;
++				codec_init |= MT6359_CODEC_INIT;
++			}
++		} else if (strcmp(dai_link->name, "ETDM1_OUT_BE") == 0 ||
++			   strcmp(dai_link->name, "ETDM2_OUT_BE") == 0 ||
++			   strcmp(dai_link->name, "ETDM1_IN_BE") == 0 ||
++			   strcmp(dai_link->name, "ETDM2_IN_BE") == 0) {
++			if (!strcmp(dai_link->codecs->dai_name, MAX98390_CODEC_DAI)) {
++				if (!(codec_init & MAX98390_CODEC_INIT)) {
++					dai_link->init = mt8195_max98390_init;
++					codec_init |= MAX98390_CODEC_INIT;
++				}
++			} else if (!strcmp(dai_link->codecs->dai_name, RT1011_CODEC_DAI)) {
++				dai_link->ops = &mt8195_rt1011_etdm_ops;
++				if (!(codec_init & RT1011_CODEC_INIT)) {
++					dai_link->init = mt8195_rt1011_init;
++					codec_init |= RT1011_CODEC_INIT;
++				}
++			} else if (!strcmp(dai_link->codecs->dai_name, RT1019_CODEC_DAI)) {
++				if (!(codec_init & RT1019_CODEC_INIT)) {
++					dai_link->init = mt8195_rt1019_init;
++					codec_init |= RT1019_CODEC_INIT;
++				}
++			} else if (!strcmp(dai_link->codecs->dai_name, RT5682_CODEC_DAI) ||
++				   !strcmp(dai_link->codecs->dai_name, RT5682S_CODEC_DAI)) {
++				dai_link->ops = &mt8195_rt5682_etdm_ops;
++				if (!(codec_init & RT5682_CODEC_INIT)) {
++					dai_link->init = mt8195_rt5682_init;
++					codec_init |= RT5682_CODEC_INIT;
++				}
++			} else {
++				if (strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai")) {
++					if (!(codec_init & DUMB_CODEC_INIT)) {
++						dai_link->init = mt8195_dumb_amp_init;
++						codec_init |= DUMB_CODEC_INIT;
++					}
++				}
++			}
 +		}
 +	}
++
++	return 0;
+ }
+ 
+-static struct mt8195_card_data mt8195_mt6359_rt1019_rt5682_card = {
+-	.name = "mt8195_r1019_5682",
+-	.quirk = RT1019_SPEAKER_AMP_PRESENT,
++static const struct mtk_sof_priv mt8195_sof_priv = {
++	.conn_streams = g_sof_conn_streams,
++	.num_streams = ARRAY_SIZE(g_sof_conn_streams),
++	.sof_dai_link_fixup = mt8195_dai_link_fixup
+ };
+ 
+-static struct mt8195_card_data mt8195_mt6359_rt1011_rt5682_card = {
+-	.name = "mt8195_r1011_5682",
+-	.quirk = RT1011_SPEAKER_AMP_PRESENT,
++static const struct mtk_soundcard_pdata mt8195_mt6359_rt1019_rt5682_card = {
++	.card_name = "mt8195_r1019_5682",
++	.card_data = &(struct mtk_platform_card_data) {
++		.card = &mt8195_mt6359_soc_card,
++		.num_jacks = MT8195_JACK_MAX,
++		.flags = RT1019_SPEAKER_AMP_PRESENT
++	},
++	.sof_priv = &mt8195_sof_priv,
++	.soc_probe = mt8195_mt6359_soc_card_probe
+ };
+ 
+-static struct mt8195_card_data mt8195_mt6359_max98390_rt5682_card = {
+-	.name = "mt8195_m98390_r5682",
+-	.quirk = MAX98390_SPEAKER_AMP_PRESENT,
++static const struct mtk_soundcard_pdata mt8195_mt6359_rt1011_rt5682_card = {
++	.card_name = "mt8195_r1011_5682",
++	.card_data = &(struct mtk_platform_card_data) {
++		.card = &mt8195_mt6359_soc_card,
++		.num_jacks = MT8195_JACK_MAX,
++		.flags = RT1011_SPEAKER_AMP_PRESENT
++	},
++	.sof_priv = &mt8195_sof_priv,
++	.soc_probe = mt8195_mt6359_soc_card_probe
 +};
 +
- static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015_rt5682_pdata = {
- 	.card_name = RT1015_RT5682_CARD_NAME,
- 	.card_data = &(struct mtk_platform_card_data) {
- 		.card = &mt8192_mt6359_rt1015_rt5682_card,
- 		.num_jacks = MT8192_JACK_MAX,
-+		.pcm_constraints = mt8192_pcm_constraints,
-+		.num_pcm_constraints = ARRAY_SIZE(mt8192_pcm_constraints),
- 	},
- 	.soc_probe = mt8192_mt6359_soc_card_probe
++static const struct mtk_soundcard_pdata mt8195_mt6359_max98390_rt5682_card = {
++	.card_name = "mt8195_m98390_r5682",
++	.card_data = &(struct mtk_platform_card_data) {
++		.card = &mt8195_mt6359_soc_card,
++		.num_jacks = MT8195_JACK_MAX,
++		.flags = MAX98390_SPEAKER_AMP_PRESENT
++	},
++	.sof_priv = &mt8195_sof_priv,
++	.soc_probe = mt8195_mt6359_soc_card_probe
  };
-@@ -1249,6 +1188,8 @@ static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682_pdata = {
- 	.card_data = &(struct mtk_platform_card_data) {
- 		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
- 		.num_jacks = MT8192_JACK_MAX,
-+		.pcm_constraints = mt8192_pcm_constraints,
-+		.num_pcm_constraints = ARRAY_SIZE(mt8192_pcm_constraints),
+ 
+ static const struct of_device_id mt8195_mt6359_dt_match[] = {
+@@ -1597,7 +1623,7 @@ static struct platform_driver mt8195_mt6359_driver = {
+ 		.of_match_table = mt8195_mt6359_dt_match,
+ 		.pm = &snd_soc_pm_ops,
  	},
- 	.soc_probe = mt8192_mt6359_soc_card_probe
+-	.probe = mt8195_mt6359_dev_probe,
++	.probe = mtk_soundcard_common_probe,
  };
-@@ -1258,6 +1199,8 @@ static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682s_pdata = {
- 	.card_data = &(struct mtk_platform_card_data) {
- 		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
- 		.num_jacks = MT8192_JACK_MAX,
-+		.pcm_constraints = mt8192_pcm_constraints,
-+		.num_pcm_constraints = ARRAY_SIZE(mt8192_pcm_constraints),
- 	},
- 	.soc_probe = mt8192_mt6359_soc_card_probe
- };
+ 
+ module_platform_driver(mt8195_mt6359_driver);
 -- 
 2.44.0
 
