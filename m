@@ -4,116 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 483E3C4345F
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 06:44:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99CBCC04FF6
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Apr 2024 07:15:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49A24E7F;
-	Tue, 16 Apr 2024 08:44:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49A24E7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49EDF14FD;
+	Tue, 16 Apr 2024 09:15:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49EDF14FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713249893;
-	bh=G4tpxH+0lucGo5TSlVJ0JRbQR4AHNTruNZT6ApnNiGM=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1713251736;
+	bh=jVhr77PiLNy9HfB30BEj+Z0f1ylyaSsDpPpIkaBWXzY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fv933ydz2sPVGxUdf9XfxEoH4KkaCdoeXzvzbDkq0Wx2EhgNnDF0ev4ZPIreAH647
-	 1OeWtaH/8x3WIje7jsSqM6XRXE1h9riDykvqJ6f1ToVdeV5MKhjxPhvequx08U08U7
-	 CvpUzR7/MiZkxTptOrDPRDfwVvWplMCIjkn7oqao=
+	b=LQjvfMlyIzjFl778Wf9Q65g56l52W83P8TU3agoK/9JEo/G6PWVWDJCkaT8nTRFk8
+	 Cw7bsAVlPRCFDXD9AWBAfpLMcHQLBLm5oUhw8/eQn/mi1Ljny1I1+PwbtSP+Sno4uF
+	 RYCj1Rxuiw32c+lNoYvrghe04kjl93GOSEEwRijo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF0FDF80693; Tue, 16 Apr 2024 08:43:01 +0200 (CEST)
+	id 49928F805AB; Tue, 16 Apr 2024 09:15:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 814A4F80695;
-	Tue, 16 Apr 2024 08:43:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EFED8F80568;
+	Tue, 16 Apr 2024 09:15:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F326EF80236; Tue, 16 Apr 2024 08:39:35 +0200 (CEST)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id F27B1F80571; Tue, 16 Apr 2024 09:14:36 +0200 (CEST)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
+ [46.235.227.194])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D67CDF80423
-	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 08:36:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D67CDF80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id 142D8F80236
+	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 09:14:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 142D8F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=gMiCH8m/
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 43G1eii8003716;
-	Tue, 16 Apr 2024 06:36:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=VMXd+y6huteUQPqhvJ+tXiTYJZIU+p1Mba7/QH5XmMY=; b=gM
-	iCH8m/4HzE4lPWXOWzK1WPz4JT+YHWIBIjWdh+YS/fYqo5Ib1cKgFjmplRTXFf1F
-	NBng1OoBJXpY/8RVWn0qgYbXKzj38LBUkMCaf0ElumY+OBfK6XqkU0GUqBOQdR6V
-	Dg7B4PxwSC7TA/7zQWxjYRCWJ9BSmAZQpnqW3a3eSCy3gvHssi3bJxC/SwaPbDYO
-	cfQtm6ws+s9yUzTums1sWydES7a/lMejUxvxebdm3nDCS7XJF9XvWr4326oxnIMi
-	MDlCZvgbbsuqGTMSEqcCNYLVXs+5dKYuDZDp5ycIm2to2pOULlWkoDTr6h0WDr/2
-	S07+X+JaG4JLZoohFgTg==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com
- [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xh8g49gsd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 06:36:58 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
- [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 43G6avo2028684
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 06:36:57 GMT
-Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 15 Apr 2024 23:36:52 -0700
-From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami
-	<bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
-	<broonie@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela
-	<perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_rohkumar@quicinc.com>,
-        <quic_pkumpatl@quicinc.com>,
-        Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Subject: [PATCH v2 5/8] ASoC: codecs: wcd937x: add basic controls
-Date: Tue, 16 Apr 2024 12:05:57 +0530
-Message-ID: <20240416063600.309747-6-quic_mohs@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240416063600.309747-1-quic_mohs@quicinc.com>
-References: <20240416063600.309747-1-quic_mohs@quicinc.com>
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=1KQQX93X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713251660;
+	bh=jVhr77PiLNy9HfB30BEj+Z0f1ylyaSsDpPpIkaBWXzY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=1KQQX93XdQZmj7td+48wvCRrwAn+bwKbQHtZNAJ2Lov1oMtlqa0oNh8N+cuSVXbQ0
+	 Nb1a6BnzkMNzCGL1o7+AINoBrsqwRnIvV+LI2A2DxsSruxrzDeYP4yGGzOErZWPamg
+	 XL73F9fPjklWlwSLYXsrQour09OdfNzDEc89ulnpC7SeYFp4F/MO5p2MghrY3pLOYo
+	 0Fi//iFrRoJ++zA0xthqHwDFVmsPxbMro20NxkW2W/wES0AM1vfRxnPN+eUl9BTFDr
+	 u09nouLd6ssNqi07r+cxv7UHCcusZpA0nSqP4pnSLT5uk/XQiJMW5n23HqzmcqrHo2
+	 np02iw8ABhdkw==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
+ [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AAB15378210B;
+	Tue, 16 Apr 2024 07:14:18 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: broonie@kernel.org
+Cc: wenst@chromium.org,
+	lgirdwood@gmail.com,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	trevor.wu@mediatek.com,
+	maso.huang@mediatek.com,
+	xiazhengqiao@huaqin.corp-partner.google.com,
+	arnd@arndb.de,
+	kuninori.morimoto.gx@renesas.com,
+	shraash@google.com,
+	amergnat@baylibre.com,
+	nicolas.ferre@microchip.com,
+	u.kleine-koenig@pengutronix.de,
+	dianders@chromium.org,
+	frank.li@vivo.com,
+	allen-kh.cheng@mediatek.com,
+	eugen.hristev@collabora.com,
+	claudiu.beznea@tuxon.dev,
+	jarkko.nikula@bitmer.com,
+	jiaxin.yu@mediatek.com,
+	alpernebiyasak@gmail.com,
+	ckeepax@opensource.cirrus.com,
+	zhourui@huaqin.corp-partner.google.com,
+	nfraprado@collabora.com,
+	alsa-devel@alsa-project.org,
+	shane.chien@mediatek.com,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	kernel@collabora.com,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v5 01/18] ASoC: mediatek: Add common machine soundcard driver
+ probe mechanism
+Date: Tue, 16 Apr 2024 09:13:53 +0200
+Message-ID: <20240416071410.75620-2-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
+References: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: itEH6fpX2w08FmUGQWJfi4WYBBrVE9BP
-X-Proofpoint-GUID: itEH6fpX2w08FmUGQWJfi4WYBBrVE9BP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_03,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 lowpriorityscore=0
- adultscore=0 phishscore=0 mlxlogscore=870 spamscore=0 suspectscore=0
- clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404160037
-Message-ID-Hash: 64UYKC4FN2EY5GQJF4OMLDFQ3LXILRVC
-X-Message-ID-Hash: 64UYKC4FN2EY5GQJF4OMLDFQ3LXILRVC
-X-MailFrom: quic_mohs@quicinc.com
+Message-ID-Hash: D4VE4SDKKEDL2IHBHOGN5GSR4J5A442E
+X-Message-ID-Hash: D4VE4SDKKEDL2IHBHOGN5GSR4J5A442E
+X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -125,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/64UYKC4FN2EY5GQJF4OMLDFQ3LXILRVC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D4VE4SDKKEDL2IHBHOGN5GSR4J5A442E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,261 +131,240 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+Add a common machine soundcard driver probe function that supports both
+DSP and AFE-direct usecases and also provides a hook for legacy machine
+soundcard driver probe mechanisms.
 
-This patch adds basic controls found in wcd937x codec.
+Note that the hook is there because, even for legacy probe, a lot of the
+actual code can still be commonized, hence still reducing duplication
+for the legacy devicetree retrocompatibility cases.
 
-Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+This common probe function deprecates all of the inconsistent previous
+probe mechanisms and aims to settle all of the MediaTek card drivers on
+consistent and common devicetree properties describing wanted DAIs,
+device specific DAI configuration and DAI links to codecs found on
+each device/board.
+
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/codecs/wcd937x.c | 212 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 212 insertions(+)
+ sound/soc/mediatek/common/mtk-soc-card.h      |   7 +-
+ .../mediatek/common/mtk-soundcard-driver.c    | 148 ++++++++++++++++++
+ .../mediatek/common/mtk-soundcard-driver.h    |  18 +++
+ 3 files changed, 172 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wcd937x.c b/sound/soc/codecs/wcd937x.c
-index b2d5d29303b6..be63662a52be 100644
---- a/sound/soc/codecs/wcd937x.c
-+++ b/sound/soc/codecs/wcd937x.c
-@@ -121,6 +121,9 @@ struct wcd937x_priv {
- 	atomic_t ana_clk_count;
+diff --git a/sound/soc/mediatek/common/mtk-soc-card.h b/sound/soc/mediatek/common/mtk-soc-card.h
+index eeda79370049..d92dc36d4577 100644
+--- a/sound/soc/mediatek/common/mtk-soc-card.h
++++ b/sound/soc/mediatek/common/mtk-soc-card.h
+@@ -9,9 +9,14 @@
+ #ifndef _MTK_SOC_CARD_H_
+ #define _MTK_SOC_CARD_H_
+ 
++struct mtk_platform_card_data;
++struct mtk_sof_priv;
++
+ struct mtk_soc_card_data {
++	struct mtk_sof_priv *sof_priv;
++	struct list_head sof_dai_link_list;
++	struct mtk_platform_card_data *card_data;
+ 	void *mach_priv;
+-	void *sof_priv;
  };
  
-+static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
-+static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
-+
- struct wcd937x_mbhc_zdet_param {
- 	u16 ldo_ctl;
- 	u16 noff;
-@@ -477,6 +480,169 @@ static int wcd937x_connect_port(struct wcd937x_sdw_priv *wcd, u8 port_idx, u8 ch
- 	return 0;
+ #endif
+diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.c b/sound/soc/mediatek/common/mtk-soundcard-driver.c
+index 000a086a8cf4..b1db17e392d5 100644
+--- a/sound/soc/mediatek/common/mtk-soundcard-driver.c
++++ b/sound/soc/mediatek/common/mtk-soundcard-driver.c
+@@ -10,6 +10,8 @@
+ #include <linux/of.h>
+ #include <sound/soc.h>
+ 
++#include "mtk-dsp-sof-common.h"
++#include "mtk-soc-card.h"
+ #include "mtk-soundcard-driver.h"
+ 
+ static int set_card_codec_info(struct snd_soc_card *card,
+@@ -136,3 +138,149 @@ void clean_card_reference(struct snd_soc_card *card)
+ 		snd_soc_of_put_dai_link_codecs(dai_link);
  }
- 
-+static int wcd937x_rx_hph_mode_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
+ EXPORT_SYMBOL_GPL(clean_card_reference);
++
++int mtk_soundcard_common_probe(struct platform_device *pdev)
 +{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++	struct device_node *platform_node, *adsp_node;
++	const struct mtk_soundcard_pdata *pdata;
++	struct mtk_soc_card_data *soc_card_data;
++	struct snd_soc_dai_link *orig_dai_link, *dai_link;
++	struct snd_soc_jack *jacks;
++	struct snd_soc_card *card;
++	int i, orig_num_links, ret;
++	bool needs_legacy_probe;
 +
-+	ucontrol->value.integer.value[0] = wcd937x->hph_mode;
-+	return 0;
-+}
++	pdata = device_get_match_data(&pdev->dev);
++	if (!pdata)
++		return -EINVAL;
 +
-+static int wcd937x_rx_hph_mode_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+				snd_soc_kcontrol_component(kcontrol);
-+	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
-+	u32 mode_val;
++	card = pdata->card_data->card;
++	card->dev = &pdev->dev;
++	orig_dai_link = card->dai_link;
++	orig_num_links = card->num_links;
 +
-+	mode_val = ucontrol->value.enumerated.item[0];
-+	if (!mode_val) {
-+		dev_warn(component->dev, "Invalid HPH Mode, default to class_AB\n");
-+		mode_val = CLS_AB;
++	ret = snd_soc_of_parse_card_name(card, "model");
++	if (ret)
++		return ret;
++
++	if (!card->name) {
++		if (!pdata->card_name)
++			return -EINVAL;
++
++		card->name = pdata->card_name;
 +	}
 +
-+	wcd937x->hph_mode = mode_val;
++	needs_legacy_probe = !of_property_read_bool(pdev->dev.of_node, "audio-routing");
++	if (needs_legacy_probe) {
++		/*
++		 * If we have no .soc_probe() callback there's no way of using
++		 * any legacy probe mechanism, as that cannot not be generic.
++		 */
++		if (!pdata->soc_probe)
++			return -EINVAL;
 +
-+	return 0;
-+}
-+
-+static int wcd937x_ear_pa_gain_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	u8 ear_pa_gain;
-+
-+	ear_pa_gain = snd_soc_component_read(component, WCD937X_ANA_EAR_COMPANDER_CTL);
-+
-+	ucontrol->value.integer.value[0] = FIELD_GET(WCD937X_EAR_GAIN_MASK, ear_pa_gain);
-+
-+	return 0;
-+}
-+
-+static int wcd937x_ear_pa_gain_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
-+	u8 ear_pa_gain = 0;
-+
-+	ear_pa_gain = ucontrol->value.integer.value[0] << 2;
-+
-+	if (!wcd937x->comp1_enable) {
-+		snd_soc_component_update_bits(component,
-+					      WCD937X_ANA_EAR_COMPANDER_CTL,
-+					      0x7c, ear_pa_gain);
++		dev_info_once(&pdev->dev, "audio-routing not found: using legacy probe\n");
++	} else {
++		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
++		if (ret)
++			return ret;
 +	}
 +
-+	return 0;
-+}
++	soc_card_data = devm_kzalloc(&pdev->dev, sizeof(*soc_card_data), GFP_KERNEL);
++	if (!soc_card_data)
++		return -ENOMEM;
 +
-+static int wcd937x_get_compander(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
-+	struct soc_mixer_control *mc;
-+	bool hphr;
++	soc_card_data->card_data = pdata->card_data;
 +
-+	mc = (struct soc_mixer_control *)(kcontrol->private_value);
-+	hphr = mc->shift;
++	jacks = devm_kcalloc(card->dev, soc_card_data->card_data->num_jacks,
++			     sizeof(*jacks), GFP_KERNEL);
++	if (!jacks)
++		return -ENOMEM;
 +
-+	ucontrol->value.integer.value[0] = hphr ? wcd937x->comp2_enable :
-+						  wcd937x->comp1_enable;
-+	return 0;
-+}
++	soc_card_data->card_data->jacks = jacks;
 +
-+static int wcd937x_set_compander(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
-+	struct wcd937x_sdw_priv *wcd = wcd937x->sdw_priv[AIF1_PB];
-+	int value = ucontrol->value.integer.value[0];
-+	struct soc_mixer_control *mc;
-+	int portidx;
-+	bool hphr;
++	platform_node = of_parse_phandle(pdev->dev.of_node, "mediatek,platform", 0);
++	if (!platform_node)
++		return dev_err_probe(&pdev->dev, -EINVAL,
++				     "Property mediatek,platform missing or invalid\n");
 +
-+	mc = (struct soc_mixer_control *)(kcontrol->private_value);
-+	hphr = mc->shift;
-+
-+	if (hphr)
-+		wcd937x->comp2_enable = value;
++	/* Check if this SoC has an Audio DSP */
++	if (pdata->sof_priv)
++		adsp_node = of_parse_phandle(pdev->dev.of_node, "mediatek,adsp", 0);
 +	else
-+		wcd937x->comp1_enable = value;
++		adsp_node = NULL;
 +
-+	portidx = wcd->ch_info[mc->reg].port_num;
++	if (adsp_node) {
++		if (of_property_read_bool(pdev->dev.of_node, "mediatek,dai-link")) {
++			ret = mtk_sof_dailink_parse_of(card, pdev->dev.of_node,
++						       "mediatek,dai-link",
++						       card->dai_link, card->num_links);
++			if (ret) {
++				of_node_put(adsp_node);
++				of_node_put(platform_node);
++				return dev_err_probe(&pdev->dev, ret,
++						     "Cannot parse mediatek,dai-link\n");
++			}
++		}
 +
-+	wcd937x_connect_port(wcd, portidx, mc->reg, !!value);
++		soc_card_data->sof_priv = pdata->sof_priv;
++		card->probe = mtk_sof_card_probe;
++		card->late_probe = mtk_sof_card_late_probe;
++		if (!card->topology_shortname_created) {
++			snprintf(card->topology_shortname, 32, "sof-%s", card->name);
++			card->topology_shortname_created = true;
++		}
++		card->name = card->topology_shortname;
++	}
 +
-+	return 1;
-+}
++	/*
++	 * Regardless of whether the ADSP is wanted and/or present in a machine
++	 * specific device tree or not and regardless of whether any AFE_SOF
++	 * link is present, we have to make sure that the platforms->of_node
++	 * is not NULL, and set to either ADSP (adsp_node) or AFE (platform_node).
++	 */
++	for_each_card_prelinks(card, i, dai_link) {
++		if (adsp_node && !strncmp(dai_link->name, "AFE_SOF", strlen("AFE_SOF")))
++			dai_link->platforms->of_node = adsp_node;
++		else if (!dai_link->platforms->name && !dai_link->platforms->of_node)
++			dai_link->platforms->of_node = platform_node;
++	}
 +
-+static int wcd937x_get_swr_port(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
-+	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(comp);
-+	struct wcd937x_sdw_priv *wcd;
-+	int dai_id = mixer->shift;
-+	int ch_idx = mixer->reg;
-+	int portidx;
++	if (!needs_legacy_probe) {
++		ret = parse_dai_link_info(card);
++		if (ret)
++			goto err_restore_dais;
++	} else {
++		if (adsp_node)
++			of_node_put(adsp_node);
++		of_node_put(platform_node);
++	}
 +
-+	wcd = wcd937x->sdw_priv[dai_id];
-+	portidx = wcd->ch_info[ch_idx].port_num;
++	if (pdata->soc_probe) {
++		ret = pdata->soc_probe(soc_card_data, needs_legacy_probe);
++		if (ret) {
++			if (!needs_legacy_probe)
++				clean_card_reference(card);
++			goto err_restore_dais;
++		}
++	}
++	snd_soc_card_set_drvdata(card, soc_card_data);
 +
-+	ucontrol->value.integer.value[0] = wcd->port_enable[portidx];
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++
++	if (!needs_legacy_probe)
++		clean_card_reference(card);
++
++	if (ret) {
++		dev_err_probe(&pdev->dev, ret, "Cannot register card\n");
++		goto err_restore_dais;
++	}
 +
 +	return 0;
++
++err_restore_dais:
++	card->dai_link = orig_dai_link;
++	card->num_links = orig_num_links;
++	return ret;
 +}
-+
-+static int wcd937x_set_swr_port(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
-+	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(comp);
-+	struct wcd937x_sdw_priv *wcd;
-+	int dai_id = mixer->shift;
-+	int ch_idx = mixer->reg;
-+	int portidx;
-+	bool enable;
-+
-+	wcd = wcd937x->sdw_priv[dai_id];
-+
-+	portidx = wcd->ch_info[ch_idx].port_num;
-+
-+	enable = !!ucontrol->value.integer.value[0];
-+
-+	wcd->port_enable[portidx] = enable;
-+	wcd937x_connect_port(wcd, portidx, ch_idx, enable);
-+
-+	return 1;
-+}
-+
-+static const char * const rx_hph_mode_mux_text[] = {
-+	"CLS_H_INVALID", "CLS_H_HIFI", "CLS_H_LP", "CLS_AB", "CLS_H_LOHIFI",
-+	"CLS_H_ULP", "CLS_AB_HIFI",
-+};
-+
-+static const char * const wcd937x_ear_pa_gain_text[] = {
-+	"G_6_DB", "G_4P5_DB", "G_3_DB", "G_1P5_DB", "G_0_DB",
-+	"G_M1P5_DB", "G_M3_DB", "G_M4P5_DB",
-+	"G_M6_DB", "G_7P5_DB", "G_M9_DB",
-+	"G_M10P5_DB", "G_M12_DB", "G_M13P5_DB",
-+	"G_M15_DB", "G_M16P5_DB", "G_M18_DB",
-+};
-+
-+static const struct soc_enum rx_hph_mode_mux_enum =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_hph_mode_mux_text), rx_hph_mode_mux_text);
-+
-+static SOC_ENUM_SINGLE_EXT_DECL(wcd937x_ear_pa_gain_enum, wcd937x_ear_pa_gain_text);
-+
- /* MBHC related */
- static void wcd937x_mbhc_clk_setup(struct snd_soc_component *component,
- 				   bool enable)
-@@ -1151,6 +1317,50 @@ static void wcd937x_mbhc_deinit(struct snd_soc_component *component)
++EXPORT_SYMBOL_GPL(mtk_soundcard_common_probe);
+diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.h b/sound/soc/mediatek/common/mtk-soundcard-driver.h
+index d92cac1d7b72..44320efff5f8 100644
+--- a/sound/soc/mediatek/common/mtk-soundcard-driver.h
++++ b/sound/soc/mediatek/common/mtk-soundcard-driver.h
+@@ -9,6 +9,24 @@
+ #ifndef _MTK_SOUNDCARD_DRIVER_H_
+ #define _MTK_SOUNDCARD_DRIVER_H_
  
- /* END MBHC */
- 
-+static const struct snd_kcontrol_new wcd937x_snd_controls[] = {
-+	SOC_ENUM_EXT("EAR PA GAIN", wcd937x_ear_pa_gain_enum,
-+		     wcd937x_ear_pa_gain_get, wcd937x_ear_pa_gain_put),
-+	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum,
-+		     wcd937x_rx_hph_mode_get, wcd937x_rx_hph_mode_put),
++struct mtk_sof_priv;
++struct mtk_soc_card_data;
 +
-+	SOC_SINGLE_EXT("HPHL_COMP Switch", SND_SOC_NOPM, 0, 1, 0,
-+		       wcd937x_get_compander, wcd937x_set_compander),
-+	SOC_SINGLE_EXT("HPHR_COMP Switch", SND_SOC_NOPM, 1, 1, 0,
-+		       wcd937x_get_compander, wcd937x_set_compander),
-+
-+	SOC_SINGLE_TLV("HPHL Volume", WCD937X_HPH_L_EN, 0, 20, 1, line_gain),
-+	SOC_SINGLE_TLV("HPHR Volume", WCD937X_HPH_R_EN, 0, 20, 1, line_gain),
-+	SOC_SINGLE_TLV("ADC1 Volume", WCD937X_ANA_TX_CH1, 0, 20, 0, analog_gain),
-+	SOC_SINGLE_TLV("ADC2 Volume", WCD937X_ANA_TX_CH2, 0, 20, 0, analog_gain),
-+	SOC_SINGLE_TLV("ADC3 Volume", WCD937X_ANA_TX_CH3, 0, 20, 0, analog_gain),
-+
-+	SOC_SINGLE_EXT("HPHL Switch", WCD937X_HPH_L, 0, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("HPHR Switch", WCD937X_HPH_R, 0, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+
-+	SOC_SINGLE_EXT("ADC1 Switch", WCD937X_ADC1, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("ADC2 Switch", WCD937X_ADC2, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("ADC3 Switch", WCD937X_ADC3, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("DMIC0 Switch", WCD937X_DMIC0, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("DMIC1 Switch", WCD937X_DMIC1, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("MBHC Switch", WCD937X_MBHC, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("DMIC2 Switch", WCD937X_DMIC2, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("DMIC3 Switch", WCD937X_DMIC3, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("DMIC4 Switch", WCD937X_DMIC4, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
-+	SOC_SINGLE_EXT("DMIC5 Switch", WCD937X_DMIC5, 1, 1, 0,
-+		       wcd937x_get_swr_port, wcd937x_set_swr_port),
++struct mtk_platform_card_data {
++	struct snd_soc_card *card;
++	struct snd_soc_jack *jacks;
++	u8 num_jacks;
++	u8 flags;
 +};
 +
- static int wcd937x_set_micbias_data(struct wcd937x_priv *wcd937x)
- {
- 	int vout_ctl[3];
-@@ -1317,6 +1527,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd937x = {
- 	.name = "wcd937x_codec",
- 	.probe = wcd937x_soc_codec_probe,
- 	.remove = wcd937x_soc_codec_remove,
-+	.controls = wcd937x_snd_controls,
-+	.num_controls = ARRAY_SIZE(wcd937x_snd_controls),
- 	.set_jack = wcd937x_codec_set_jack,
- 	.endianness = 1,
- };
++struct mtk_soundcard_pdata {
++	const char *card_name;
++	struct mtk_platform_card_data *card_data;
++	struct mtk_sof_priv *sof_priv;
++	int (*soc_probe)(struct mtk_soc_card_data *card_data, bool legacy);
++};
++
+ int parse_dai_link_info(struct snd_soc_card *card);
+ void clean_card_reference(struct snd_soc_card *card);
++int mtk_soundcard_common_probe(struct platform_device *pdev);
+ #endif
 -- 
-2.25.1
+2.44.0
 
