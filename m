@@ -4,114 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21D0FC4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF7E5C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:56:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5294238B;
-	Thu, 18 Apr 2024 17:56:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5294238B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE39A23D1;
+	Thu, 18 Apr 2024 17:56:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE39A23D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713455770;
-	bh=IyzfxVrDw1VKb/tX0dKeY4SEiZVyXJAc1EWfC+D6z9w=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1713455789;
+	bh=gqVlI2l96npSd91JE19kJxMfB/R1Y8mtt2hgaaOT1v4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TQuzCJg7d7HjUTwHQeerQhyOxJiDBTqwYQnSBuHG7Ly4QC+XaPBetNBkCsEZvVRLB
-	 hucd+AKUpu2zd5FzDR4orCLkjtq/jeYzprg/WuDBUArqK+0EowRGg1TLXaR8mEJ36u
-	 tDTym09Odj2yD1lxAfWUfaiPid5CfLQDwHJyxEj0=
+	b=U7Z2andbBVk6qYADSA28RrEGFUUTrqrN30ewE4nxfOjzkI4Uw1gFeZL9VR4CFiGzv
+	 A+4RvmWnUhNC1O3M2qJV5yv+9ob/OkIkF5xtQAtE5wowo2Kr8BlH4T+kOXjZuPwwL0
+	 bFqVTtGziYxwatceQ9oLTRRHfN4mWCRsigZONg8I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37664F80845; Thu, 18 Apr 2024 17:49:50 +0200 (CEST)
+	id 8B9ADF805CA; Thu, 18 Apr 2024 17:52:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58D27F80623;
-	Thu, 18 Apr 2024 17:49:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0181F805C1;
+	Thu, 18 Apr 2024 17:52:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25E90F8025A; Tue, 16 Apr 2024 09:45:39 +0200 (CEST)
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 2B1BCF80571; Wed, 17 Apr 2024 10:31:41 +0200 (CEST)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CCE2AF8003A
-	for <alsa-devel@alsa-project.org>; Tue, 16 Apr 2024 09:45:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCE2AF8003A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=PhtmUUqV
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43G7jMA2038911;
-	Tue, 16 Apr 2024 02:45:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713253522;
-	bh=IyzfxVrDw1VKb/tX0dKeY4SEiZVyXJAc1EWfC+D6z9w=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To;
-	b=PhtmUUqVEa9jaLawwCx3GcGXr4r7QsKgcLAVyazhL7710VNVw48PFUGYpjF8/8idi
-	 +Eo9XAdtWu9iDLFeae3m2Bqjd0hY2ESjfHwTmW+/eYlYR6Gi95Q2/qdy3jgQ7Bp8gy
-	 FhfVF/GMwmKYVkGQ1UOJI75xy1ydmtM5X6cE6x8Q=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43G7jMSp063899
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 16 Apr 2024 02:45:22 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
- Apr 2024 02:45:22 -0500
-Received: from DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d]) by
- DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d%17]) with mapi id
- 15.01.2507.023; Tue, 16 Apr 2024 02:45:22 -0500
-From: "Xu, Baojun" <baojun.xu@ti.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC: "tiwai@suse.de" <tiwai@suse.de>,
-        "robh+dt@kernel.org"
-	<robh+dt@kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "pierre-louis.bossart@linux.intel.com"
-	<pierre-louis.bossart@linux.intel.com>,
-        "Lu, Kevin" <kevin-lu@ti.com>,
-        "Ding,
- Shenghao" <shenghao-ding@ti.com>,
-        "Navada Kanyana, Mukund" <navada@ti.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "soyer@irl.hu" <soyer@irl.hu>,
-        "13916275206@139.com" <13916275206@139.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v2 1/3] ALSA: hda/tas2781: Modification for
- add tas2781 driver for SPI
-Thread-Topic: [EXTERNAL] Re: [PATCH v2 1/3] ALSA: hda/tas2781: Modification
- for add tas2781 driver for SPI
-Thread-Index: AQHaiih39yNiM6f7+Uenyc3gmo9onLFgO/YAgApTDWA=
-Date: Tue, 16 Apr 2024 07:45:21 +0000
-Message-ID: <9287a3c1a2384cacad92652fdd1cac2e@ti.com>
-References: <20240409024816.1180-1-baojun.xu@ti.com>
- <20240409024816.1180-2-baojun.xu@ti.com>,<ZhU8fCOLOlu4azGL@smile.fi.intel.com>
-In-Reply-To: <ZhU8fCOLOlu4azGL@smile.fi.intel.com>
-Accept-Language: en-GB, zh-CN, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.64.41.94]
-x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A3EEF80236
+	for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2024 10:31:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A3EEF80236
+Received: by air.basealt.ru (Postfix, from userid 490)
+	id 9F8772F2023F; Wed, 17 Apr 2024 08:31:28 +0000 (UTC)
+Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
+	by air.basealt.ru (Postfix) with ESMTPSA id 3F34B2F20243;
+	Wed, 17 Apr 2024 08:31:18 +0000 (UTC)
+From: kovalev@altlinux.org
+To: stable@vger.kernel.org
+Cc: broonie@kernel.org,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	zhuning0077@gmail.com,
+	u.kleine-koenig@pengutronix.de,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: [PATCH 6.1.y 1/6] ASoC: codecs: ES8326: Add es8326_mute function
+Date: Wed, 17 Apr 2024 11:31:11 +0300
+Message-Id: <20240417083116.608610-2-kovalev@altlinux.org>
+X-Mailer: git-send-email 2.33.8
+In-Reply-To: <20240417083116.608610-1-kovalev@altlinux.org>
+References: <20240417083116.608610-1-kovalev@altlinux.org>
 MIME-Version: 1.0
-X-MailFrom: baojun.xu@ti.com
+Content-Transfer-Encoding: 8bit
+X-MailFrom: kovalev@altlinux.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PYURAKBQZ44FAPQ3BEQSWEAAR243FE6U
-X-Message-ID-Hash: PYURAKBQZ44FAPQ3BEQSWEAAR243FE6U
-X-Mailman-Approved-At: Thu, 18 Apr 2024 15:47:36 +0000
+Message-ID-Hash: 2UFSV32QHN6JFPI4NZSX47M6L7HEXHYU
+X-Message-ID-Hash: 2UFSV32QHN6JFPI4NZSX47M6L7HEXHYU
+X-Mailman-Approved-At: Thu, 18 Apr 2024 15:52:29 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2UFSV32QHN6JFPI4NZSX47M6L7HEXHYU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,60 +80,192 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGkgQW5keSwNCg0KVGhhbnNrIGZvciB5b3VyIHN1Z2dlc3Rpb25zLCBhbnN3ZXIgaW4gbGluZS4N
-Cj4gRnJvbTogQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5j
-b20+DQo+IFNlbnQ6IDA5IEFwcmlsIDIwMjQgMjE6MDINCj4gVG86IFh1LCBCYW9qdW4NCj4gQ2M6
-IHRpd2FpQHN1c2UuZGU7IHJvYmgrZHRAa2VybmVsLm9yZzsgbGdpcmR3b29kQGdtYWlsLmNvbTsg
-cGVyZXhAcGVyZXguY3o7IHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbTsgTHUs
-IEtldmluOyBEaW5nLCBTaGVuZ2hhbzsgTmF2YWRhIEthbnlhbmEsIE11a3VuZDsgYWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaWFtLnIu
-Z2lyZHdvb2RAaW50ZWwuY29tOyB5dW5nLWNodWFuLmxpYW9AbGludXguaW50ZWwuY29tOyBicm9v
-bmllQGtlcm5lbC5vcmc7IHNveWVyQGlybC5odQ0KPiBTdWJqZWN0OiBbRVhURVJOQUxdIFJlOiBb
-UEFUQ0ggdjIgMS8zXSBBTFNBOiBoZGEvdGFzMjc4MTogTW9kaWZpY2F0aW9uIGZvciBhZGQgdGFz
-Mjc4MSBkcml2ZXIgZm9yIFNQSQ0KPiANCj4gT24gVHVlLCBBcHIgMDksIDIwMjQgYXQgMTA64oCK
-NDg64oCKMTNBTSArMDgwMCwgQmFvanVuIFh1IHdyb3RlOiA+IEludGVncmF0ZSB0YXMyNzgxIGNv
-bmZpZ3MgZm9yIEhQIExhcHRvcHMuIEV2ZXJ5IHRhczI3ODEgaW4gdGhlIGxhcHRvcCA+IHdpbGwg
-d29yayBhcyBhIHNpbmdsZSBzcGVha2VyIG9uIFNQSSBidXMuIFRoZSBjb2RlIHN1cHBvcnQgcmVh
-bHRlayBhcyBSZWFsdGVrID4gdGhlIHByaW1hcnkgY29kZWMu4oCKDQo+IFpqUWNtUVJZRnBmcHRC
-YW5uZXJTdGFydA0KPiBUaGlzIG1lc3NhZ2Ugd2FzIHNlbnQgZnJvbSBvdXRzaWRlIG9mIFRleGFz
-IEluc3RydW1lbnRzLg0KPiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1
-bmxlc3MgeW91IHJlY29nbml6ZSB0aGUgc291cmNlIG9mIHRoaXMgZW1haWwgYW5kIGtub3cgdGhl
-IGNvbnRlbnQgaXMgc2FmZS4gSWYgeW91IHdpc2ggdG8gcmVwb3J0IHRoaXMgbWVzc2FnZSB0byBJ
-VCBTZWN1cml0eSwgcGxlYXNlIGZvcndhcmQgdGhlIG1lc3NhZ2UgYXMgYW4gYXR0YWNobWVudCB0
-byBwaGlzaGluZ0BsaXN0LnRpLmNvbQ0KPiANCj4gWmpRY21RUllGcGZwdEJhbm5lckVuZA0KPiAN
-Cj4gT24gVHVlLCBBcHIgMDksIDIwMjQgYXQgMTA6NDg6MTNBTSArMDgwMCwgQmFvanVuIFh1IHdy
-b3RlOg0KPiA+IEludGVncmF0ZSB0YXMyNzgxIGNvbmZpZ3MgZm9yIEhQIExhcHRvcHMuIEV2ZXJ5
-IHRhczI3ODEgaW4gdGhlIGxhcHRvcA0KPiA+IHdpbGwgd29yayBhcyBhIHNpbmdsZSBzcGVha2Vy
-IG9uIFNQSSBidXMuIFRoZSBjb2RlIHN1cHBvcnQgcmVhbHRlayBhcw0KPiANCj4gUmVhbHRlaw0K
-PiANCj4gPiB0aGUgcHJpbWFyeSBjb2RlYy4NCj4gDQo+IC4uLg0KPiANCj4gPiAgICAgICAgICAg
-ICAgIHsiSU5UMzNGRSIsIH0sDQo+ID4gICAgICAgICAgICAgICB7IklOVDM1MTUiLCB9LA0KPiA+
-ICAgICAgICAgICAgICAgLyogTm9uLWNvbmZvcm1pbmcgX0hJRCBmb3IgQ2lycnVzIExvZ2ljIGFs
-cmVhZHkgcmVsZWFzZWQgKi8NCj4gPiArICAgICAgICAgICAgIHsiVFhOVzI3ODEiLCB9LA0KPiAN
-Cj4gVGhpcyBzZWVtcyB3cm9uZy4gVGhlIElEIGhlcmUgaXMgY29ycmVjdCBmcm9tIEFDUEkgc3Bl
-Y2lmaWNhdGlvbiBwZXJzcGVjdGl2ZS4NCj4gQ2FuIHlvdSBlbGFib3JhdGUgd2h5IHlvdSB0aGlu
-ayBpdCdzICJub24tY29uZm9ybWluZyBfSElEIj8NCg0KSnVzdCBwdXQgaW50byBtaWRkbGUgb2Yg
-YXJyYXksIHNob3VsZCBubyBlZmZlY3RpdmUgdG8gZnVuY3Rpb25zLg0KT2ssIEkgd2lsbCBjaGFu
-Z2UgaXQncyBwb3NpdGlvbiBpbiBuZXh0IHBhdGNoLg0KPiANCj4gPiAgICAgICAgICAgICAgIHsi
-Q0xTQTAxMDAiLCB9LA0KPiA+ICAgICAgICAgICAgICAgeyJDTFNBMDEwMSIsIH0sDQo+ID4gDQo+
-ID4gLi4uDQo+IA0KPiA+ICAgICAgIC8qIE5vbi1jb25mb3JtaW5nIF9ISUQgZm9yIENpcnJ1cyBM
-b2dpYyBhbHJlYWR5IHJlbGVhc2VkICovDQo+ID4gICAgICAgeyAiQ0xTQTAxMDAiLCAodW5zaWdu
-ZWQgbG9uZykmY3MzNWw0MV9oZGEgfSwNCj4gPiAgICAgICB7ICJDTFNBMDEwMSIsICh1bnNpZ25l
-ZCBsb25nKSZjczM1bDQxX2hkYSB9LA0KPiA+ICsgICAgIHsgIlRYTlcyNzgxIiwgKHVuc2lnbmVk
-IGxvbmcpJnRhczI3ODFfaGRhIH0sDQo+IA0KPiBEaXR0by4NCj4gDQo+ID4gICAgICAgeyB9DQo+
-IA0KPiAuLi4NCj4gDQo+ID4gQEAgLTM5LDYgKzM5LDcgQEAgc25kLWhkYS1zY29kZWMtY3MzNWw1
-Ni1zcGktb2JqcyA6PSAgY3MzNWw1Nl9oZGFfc3BpLm8NCj4gPiAgc25kLWhkYS1jcy1kc3AtY3Rs
-cy1vYmpzIDo9ICAgICAgICAgIGhkYV9jc19kc3BfY3RsLm8NCj4gPiAgc25kLWhkYS1zY29kZWMt
-Y29tcG9uZW50LW9ianMgOj0gICAgIGhkYV9jb21wb25lbnQubw0KPiA+ICBzbmQtaGRhLXNjb2Rl
-Yy10YXMyNzgxLWkyYy1vYmpzIDo9ICAgdGFzMjc4MV9oZGFfaTJjLm8NCj4gPiArc25kLWhkYS1z
-Y29kZWMtdGFzMjc4MS1zcGktb2JqcyA6PSAgIHRhczI3ODFfaGRhX3NwaS5vIHRhczI3ODFfc3Bp
-X2Z3bGliLm8NCj4gDQo+IEFjdHVhbGx5IHRoZXNlICdvYmpzJyBoYXMgdG8gYmUgJ3knLCBjYW4g
-eW91IGZpeCBpdCBpbiB0aGUgcHJlcmVxdWlzaXRlIHBhdGNoPw0KPiANCg0KRG8geW91IG1lYW4g
-c2V0IENPTkZJR19TTkRfSERBX1NDT0RFQ19UQVMyNzgxX1NQST15IGluIC5jb25maWc/DQpJdCdz
-IG0gbm93Lg0KDQo+IEFsc28gd29uZGVyaW5nIHdoeSBmd2xpYiBpcyBvbmx5IGEgcmVxdWlyZW1l
-bnQgZm9yIFNQSS4gSG93IGRvZXMgScKyQyB3b3JrPw0KDQpCZWNhdXNlIGluIEkyQyBtb2RlLCBv
-bmUgcHJvYmVkIGRldmljZSBkcml2ZXIgd2lsbCBzdXBwb3J0IGFsbCBkZXZpY2VzLA0KZmlybXdh
-cmUgYmluYXJ5IGlzIG9ubHkgb25lIGZpbGUsIGluY2x1ZGUgYWxsIG9mIGRldmljZXMuDQpCdXQg
-aW4gU1BJIG1vZGUsIG11bHRpIGRyaXZlciBwcm9iZWQsIHNvIHdlIHVzZSBzaW5nbGUgZmlybXdh
-cmUgYmluYXJ5IGZvcg0KZXZlcnkgc3BpIGRldmljZS4NCg0KPiANCj4gLS0NCj4gV2l0aCBCZXN0
-IFJlZ2FyZHMsDQo+IEFuZHkgU2hldmNoZW5rbw0KPiANCj4gDQo+IA0KDQpCZXN0IFJlZ2FyZHMN
-CkppbQ0KDQoNCg0KDQo=
+From: Zhu Ning <zhuning0077@gmail.com>
+
+Commit 083912c240de0c5f797da0443f5a99e87b75fcb3 upstream.
+
+The internal analog power and hp Vref of es8326 should always be on to
+reduce pop noise. The HP_VOL and HP_CAL are moved to es8326_mute function
+so they are turned on at last and turned off at first.
+
+Also, the calibration should be done manually once during start-up
+to reduce DC offset on headphone.
+
+Signed-off-by: Zhu Ning <zhuning0077@gmail.com>
+Link: https://lore.kernel.org/r/20230714032453.3334-1-zhuning0077@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+---
+ sound/soc/codecs/es8326.c | 75 ++++++++++++++++-----------------------
+ sound/soc/codecs/es8326.h |  8 +++--
+ 2 files changed, 36 insertions(+), 47 deletions(-)
+
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index 555125efd9ad3f..caee0d66ce47a8 100644
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -38,6 +38,9 @@ struct es8326_priv {
+ 	u8 interrupt_clk;
+ 	bool jd_inverted;
+ 	unsigned int sysclk;
++
++	bool calibrated;
++	int version;
+ };
+ 
+ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(dac_vol_tlv, -9550, 50, 0);
+@@ -121,33 +124,12 @@ static const struct snd_soc_dapm_widget es8326_dapm_widgets[] = {
+ 	/* Analog Power Supply*/
+ 	SND_SOC_DAPM_DAC("Right DAC", NULL, ES8326_ANA_PDN, 0, 1),
+ 	SND_SOC_DAPM_DAC("Left DAC", NULL, ES8326_ANA_PDN, 1, 1),
+-	SND_SOC_DAPM_SUPPLY("Analog Power", ES8326_ANA_PDN, 7, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("IBias Power", ES8326_ANA_PDN, 6, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("ADC Vref", ES8326_ANA_PDN, 5, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("DAC Vref", ES8326_ANA_PDN, 4, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("Vref Power", ES8326_ANA_PDN, 3, 1, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS1", ES8326_ANA_MICBIAS, 2, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS2", ES8326_ANA_MICBIAS, 3, 0, NULL, 0),
+ 
+ 	SND_SOC_DAPM_PGA("LHPMIX", ES8326_DAC2HPMIX, 7, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("RHPMIX", ES8326_DAC2HPMIX, 3, 0, NULL, 0),
+ 
+-	/* Headphone Charge Pump and Output */
+-	SND_SOC_DAPM_SUPPLY("HPOR Cal", ES8326_HP_CAL, 7, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("HPOL Cal", ES8326_HP_CAL, 3, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("Headphone Charge Pump", ES8326_HP_DRIVER,
+-			    3, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("Headphone Driver Bias", ES8326_HP_DRIVER,
+-			    2, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("Headphone LDO", ES8326_HP_DRIVER,
+-			    1, 1, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("Headphone Reference", ES8326_HP_DRIVER,
+-			    0, 1, NULL, 0),
+-	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPOR Supply", ES8326_HP_CAL,
+-			 ES8326_HPOR_SHIFT, 7, 7, 0),
+-	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPOL Supply", ES8326_HP_CAL,
+-			 0, 7, 7, 0),
+-
+ 	SND_SOC_DAPM_OUTPUT("HPOL"),
+ 	SND_SOC_DAPM_OUTPUT("HPOR"),
+ };
+@@ -166,34 +148,12 @@ static const struct snd_soc_dapm_route es8326_dapm_routes[] = {
+ 	{"I2S OUT", NULL, "ADC L"},
+ 	{"I2S OUT", NULL, "ADC R"},
+ 
+-	{"I2S OUT", NULL, "Analog Power"},
+-	{"I2S OUT", NULL, "ADC Vref"},
+-	{"I2S OUT", NULL, "Vref Power"},
+-	{"I2S OUT", NULL, "IBias Power"},
+-	{"I2S IN", NULL, "Analog Power"},
+-	{"I2S IN", NULL, "DAC Vref"},
+-	{"I2S IN", NULL, "Vref Power"},
+-	{"I2S IN", NULL, "IBias Power"},
+-
+ 	{"Right DAC", NULL, "I2S IN"},
+ 	{"Left DAC", NULL, "I2S IN"},
+ 
+ 	{"LHPMIX", NULL, "Left DAC"},
+ 	{"RHPMIX", NULL, "Right DAC"},
+ 
+-	{"HPOR", NULL, "HPOR Cal"},
+-	{"HPOL", NULL, "HPOL Cal"},
+-	{"HPOR", NULL, "HPOR Supply"},
+-	{"HPOL", NULL, "HPOL Supply"},
+-	{"HPOL", NULL, "Headphone Charge Pump"},
+-	{"HPOR", NULL, "Headphone Charge Pump"},
+-	{"HPOL", NULL, "Headphone Driver Bias"},
+-	{"HPOR", NULL, "Headphone Driver Bias"},
+-	{"HPOL", NULL, "Headphone LDO"},
+-	{"HPOR", NULL, "Headphone LDO"},
+-	{"HPOL", NULL, "Headphone Reference"},
+-	{"HPOR", NULL, "Headphone Reference"},
+-
+ 	{"HPOL", NULL, "LHPMIX"},
+ 	{"HPOR", NULL, "RHPMIX"},
+ };
+@@ -419,6 +379,31 @@ static int es8326_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++static int es8326_mute(struct snd_soc_dai *dai, int mute, int direction)
++{
++	struct snd_soc_component *component = dai->component;
++	struct es8326_priv *es8326 = snd_soc_component_get_drvdata(component);
++
++	if (mute) {
++		regmap_write(es8326->regmap, ES8326_HP_CAL, ES8326_HP_OFF);
++		regmap_update_bits(es8326->regmap, ES8326_DAC_MUTE,
++				ES8326_MUTE_MASK, ES8326_MUTE);
++		regmap_write(es8326->regmap, ES8326_HP_DRIVER, 0xf0);
++	} else {
++		if (!es8326->calibrated) {
++			regmap_write(es8326->regmap, ES8326_HP_CAL, ES8326_HP_FORCE_CAL);
++			msleep(30);
++			es8326->calibrated = true;
++		}
++		regmap_write(es8326->regmap, ES8326_HP_DRIVER, 0xa0);
++		regmap_write(es8326->regmap, ES8326_HP_VOL, 0x00);
++		regmap_write(es8326->regmap, ES8326_HP_CAL, ES8326_HP_ON);
++		regmap_update_bits(es8326->regmap, ES8326_DAC_MUTE,
++				ES8326_MUTE_MASK, ~(ES8326_MUTE));
++	}
++	return 0;
++}
++
+ static int es8326_set_bias_level(struct snd_soc_component *codec,
+ 				 enum snd_soc_bias_level level)
+ {
+@@ -469,6 +454,8 @@ static const struct snd_soc_dai_ops es8326_ops = {
+ 	.hw_params = es8326_pcm_hw_params,
+ 	.set_fmt = es8326_set_dai_fmt,
+ 	.set_sysclk = es8326_set_dai_sysclk,
++	.mute_stream = es8326_mute,
++	.no_capture_mute = 1,
+ };
+ 
+ static struct snd_soc_dai_driver es8326_dai = {
+@@ -691,7 +678,7 @@ static int es8326_suspend(struct snd_soc_component *component)
+ 
+ 	cancel_delayed_work_sync(&es8326->jack_detect_work);
+ 	es8326_disable_micbias(component);
+-
++	es8326->calibrated = false;
+ 	regmap_write(es8326->regmap, ES8326_CLK_CTL, ES8326_CLK_OFF);
+ 	regcache_cache_only(es8326->regmap, true);
+ 	regcache_mark_dirty(es8326->regmap);
+diff --git a/sound/soc/codecs/es8326.h b/sound/soc/codecs/es8326.h
+index 8e5ffe5ee10da3..65ed4d1dc7da09 100644
+--- a/sound/soc/codecs/es8326.h
++++ b/sound/soc/codecs/es8326.h
+@@ -9,8 +9,6 @@
+ #ifndef _ES8326_H
+ #define _ES8326_H
+ 
+-#define CONFIG_HHTECH_MINIPMP	1
+-
+ /* ES8326 register space */
+ #define ES8326_RESET		0x00
+ #define ES8326_CLK_CTL		0x01
+@@ -94,6 +92,8 @@
+ #define	ES8326_PWRUP_SEQ_EN	(1 << 5)
+ #define ES8326_CODEC_RESET (0x0f << 0)
+ #define ES8326_CSM_OFF (0 << 7)
++#define ES8326_MUTE_MASK (3 << 0)
++#define ES8326_MUTE (3 << 0)
+ 
+ /* ES8326_CLK_CTL */
+ #define ES8326_CLK_ON (0x7f << 0)
+@@ -122,7 +122,9 @@
+ #define ES8326_MIC2_SEL (1 << 5)
+ 
+ /* ES8326_HP_CAL */
+-#define ES8326_HPOR_SHIFT 4
++#define ES8326_HP_OFF 0
++#define ES8326_HP_FORCE_CAL ((1 << 7) | (1 << 3))
++#define ES8326_HP_ON ((7 << 4) | (7 << 0))
+ 
+ /* ES8326_ADC1_SRC */
+ #define ES8326_ADC1_SHIFT 0
+-- 
+2.33.8
+
