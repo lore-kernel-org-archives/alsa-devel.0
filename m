@@ -4,115 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65755C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:59:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC934C04FF8
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 15:59:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 533D623D6;
-	Thu, 18 Apr 2024 17:59:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 533D623D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id D41CB2BEC;
+	Thu, 18 Apr 2024 17:59:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D41CB2BEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713455975;
-	bh=EMzVQWGtX/eIzEA/zdNuq2XVLHcIfNLVAyy5jrhNRxQ=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1713455990;
+	bh=8WkGnONM8NyXHIZlC0inPFTNaIF8xV/m3ME04BID7B0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=bpG8l3ypOjGd2zzqnbmh8kdiEpfXQz9eOuM4Oh1/rfFyvGFN4p2KsdV7KtvC3IAqI
-	 PnnJIG1/brGFFY2/B7nvMshmQHXKb80mz6+CkzqDZerWf7bRQ4wbkCW2bz2PG1bDGV
-	 wfy3KdE7PJmijNjJd8pXGTqtgr1ZM60tGOrtXjCw=
+	b=lE53JNgMV3OCW+jeBbP7gLlU0lX5i7cak9lQsp9OTwjWssAB8Z/7XiOKUtz+FOug7
+	 psGkoXzk2HaplQRw8UZGT0h7/RGWJjXOuOQR4VZKw5i7JwwO5Z+lQVIYGdQCZBvoC6
+	 deuImvYpEWax6FajtXvbSTpjZ3yHuEDHVCVCNtV8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3A91F89710; Thu, 18 Apr 2024 17:53:10 +0200 (CEST)
+	id 57C41F89730; Thu, 18 Apr 2024 17:53:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D3E9F89703;
-	Thu, 18 Apr 2024 17:53:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 649D1F89735;
+	Thu, 18 Apr 2024 17:53:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A1A4F8025A; Wed, 17 Apr 2024 11:52:47 +0200 (CEST)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
+	id 43784F8025A; Wed, 17 Apr 2024 20:42:20 +0200 (CEST)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com
+ [IPv6:2607:f8b0:4864:20::634])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 65A8EF80124
-	for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2024 11:52:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65A8EF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0E884F80124
+	for <alsa-devel@alsa-project.org>; Wed, 17 Apr 2024 20:42:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E884F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=od2JRNLN
-Received: by mail-ed1-x529.google.com with SMTP id
- 4fb4d7f45d1cf-57042f84cabso2386647a12.2
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=YTGJeotf
+Received: by mail-pl1-x634.google.com with SMTP id
+ d9443c01a7336-1e51398cc4eso626575ad.2
         for <alsa-devel@alsa-project.org>;
- Wed, 17 Apr 2024 02:52:39 -0700 (PDT)
+ Wed, 17 Apr 2024 11:42:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713347559; x=1713952359;
+        d=gmail.com; s=20230601; t=1713379329; x=1713984129;
  darn=alsa-project.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aS8oohQSnWtm5/ggCUPuCf5r4nvKB3/gwwUVKLME+0Q=;
-        b=od2JRNLNRmmOITJfxaszFRG5+OOkuXIg5ZNugxT4cZ1nnd80dZb0Zj28hgJWrA9/6y
-         nT016aY9hGhYbSuMRnS08AQTFDmbpHqubciBhcRGJufDzyIhAcpGpYy0d8S5JO0lZ4iO
-         JlvKKCE2GKuB24pbgDkijou88dAMKnRWbj8nQ4gCqwgLwPuaWoztSHj1CcZoAi4ZlLMx
-         jimDTFTSWaDt8k9zcTbpt12kt5JI4LXOKSepZ1NYzK9iYyc9XWSt8bH6IoSEeU8uK8+K
-         Lp/tsRUiWa5W2F3B+evAg9ZdxMmCUwW3L6uMoKsiZGuvjBS+WL0OVb0uXK1EAeOsAXGP
-         Ojjw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p6icFNRiHIPy7y0oehBoYWRS/JN2fyumo7JjrGWSgTc=;
+        b=YTGJeotfToz0Bv4ykKrKXgIr2zpbewdGE+rnifiBQoZNmJAW6xUHReVQQ2B6HSeU/U
+         JLiheG/hUvF9K7AxMm/2XJptXkzygDIl2yzzYYK+Uyp7bL81J5GozHOJlpy7hYhu5up8
+         wW5J69gcMIAOw789Hiim7+UW7+sHdAwl9XB4hqG5x1/IRV28J88j/IjtpUrNTGaLlBRk
+         DpgKJ6GPgp/g7ARRl6bRu6FFUqTfjwu/8N4CZhSi/qCNXG7klWAwnH/kgXliHhIkiF/G
+         t344ARXR9AnaAF0A+q+rZ/YHxDfykE7S81T4rSwnnI5lK78EJL6qgf4hfm2BmYaj40zy
+         B7LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713347559; x=1713952359;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aS8oohQSnWtm5/ggCUPuCf5r4nvKB3/gwwUVKLME+0Q=;
-        b=YKF9WlKmHi3sg6Tcx+NDpcfpvM7DEBWslNlm5hdUEmtGb10aKl959cBJ3+RLEv6DFv
-         wT5PBbp0aP9r0sqa92G+B6r4dJKyyJ/p5HCJhxpFcAL9PRlbWupwPPhHMnOPbz8kpFm2
-         iRSEGGTHVSnNOxuquX2n1TgxR3A6dDppfYEW3Ky9qyvWptRbhxB7T9j8GgmWY0hoX9y0
-         mPD8uknr+8gJsOvl4q60h5UstfSV1mQPNd/V2Tl0KJy5hqoIJF8wI+GGmruDlgvDvrlJ
-         8yAf0Tv4VW1Df64dFqKpZBXfMZ3Z4zl2/LBjoUhPAn6q6fosJDQAQVbMqcxnyTwLyhxe
-         WBLg==
+        d=1e100.net; s=20230601; t=1713379329; x=1713984129;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p6icFNRiHIPy7y0oehBoYWRS/JN2fyumo7JjrGWSgTc=;
+        b=HZ/CIXtfyuKulAb6pWv47/Zuq5/aluZdVwgrdMY1Yw4yRV2IKywrul/S9zKMrAO3Ja
+         IepsWgh04YKtmB4DqVeqr1elZ6OK1e2Hidi5SrYzuI1xOguTUKtwlO+mRQwQMnI/ia+Q
+         EFatG9E1JAhG/Ib9LEeD1DcwzONDa2Kc/K/V1WdP/Y2KukmPAuh0eZzjWuWcg8YusxjC
+         z1xtQzUSW31rGdfwWgGyixQABdPa769U3IjXTpJ2A+Vp94Py44P6d+PM06JJVkOuFVun
+         aO8DnUNHEHuiERd2on32FgEztxWUMAuZu2teVfu+XcWCD8jX6993YkukVUsDEfWhPKbH
+         p18w==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUJWj+xKLBI48VEG5Apmx26CNfhK/ZziIIODsyoMy4PDSCgPEkjtVfS8CN5n9QhKJ5ZZ0eZpaF0SphkJDMLdadWtZsoIu/t/Te/C/E=
-X-Gm-Message-State: AOJu0YyIbCpW4YX1MIXAIE8IpS9FAlMRteuPHQaHznfK2RRHlniXS9OM
-	DcmYsRw5rO2s2d0awbi4urF6Jnpu6DP8pGVMqVzA6EaMN93C9VVl3mFrwGRFOX4=
+ AJvYcCWd5zNhcjlyNHkU1EqYHKxFoO7vBP8r2ENWILYiGChTdLhRnzOBwDVEOT+Bodl9nkGfEvQ5QZ4AKioMPZZzH7SI9se4cdnN5fy1tfI=
+X-Gm-Message-State: AOJu0YxtiyW/BAUrOI5L6j6CkBnWGJ/E0C2NiSO/cUdT+EtCygl+zAhY
+	PTerE7I7VzmdCkqBfyETHzXoKsx8Bk3HMfnkiE1fo/PbaWeTyPYn
 X-Google-Smtp-Source: 
- AGHT+IHjbEE1PXIxusfNci6KoXg1ftVPH3rWidgWbOaaR9occvuaSUnnQtaaZswO2dIcUCmYmpgEHg==
-X-Received: by 2002:a50:9b1e:0:b0:568:bfcd:e895 with SMTP id
- o30-20020a509b1e000000b00568bfcde895mr10176685edi.41.1713347558535;
-        Wed, 17 Apr 2024 02:52:38 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
+ AGHT+IEMhCcxW5qKw/Nqo4PSr+iM5I23X69j3QH1wQH6SLQ/joYej+do+lIb3YoB+gOh/fd+u/kDnw==
+X-Received: by 2002:a17:902:d4ce:b0:1e6:3494:61fc with SMTP id
+ o14-20020a170902d4ce00b001e6349461fcmr570341plg.0.1713379329167;
+        Wed, 17 Apr 2024 11:42:09 -0700 (PDT)
+Received: from joaog-nb.corp.toradex.com ([201.82.41.210])
         by smtp.gmail.com with ESMTPSA id
- j1-20020aa7de81000000b0056e62321eedsm7001133edv.17.2024.04.17.02.52.37
+ c17-20020a170902d49100b001e0d6cd042bsm11873501plg.303.2024.04.17.11.42.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 02:52:38 -0700 (PDT)
-Date: Wed, 17 Apr 2024 12:52:34 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: David Rhodes <drhodes@opensource.cirrus.com>
-Cc: James Schulman <james.schulman@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Wed, 17 Apr 2024 11:42:08 -0700 (PDT)
+From: Joao Paulo Goncalves <jpaulo.silvagoncalves@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] ASoC: cs35l41: Delete unnecessary condition in
- cs35l41_pcm_hw_params()
-Message-ID: <1ee32bfb-6f6c-4b61-887b-6f655abbfc47@moroto.mountain>
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Joao Paulo Goncalves <joao.goncalves@toradex.com>,
+	Jai Luthra <j-luthra@ti.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH] ASoC: ti: davinci-mcasp: Fix race condition during probe
+Date: Wed, 17 Apr 2024 15:41:38 -0300
+Message-Id: <20240417184138.1104774-1-jpaulo.silvagoncalves@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-MailFrom: dan.carpenter@linaro.org
+Content-Transfer-Encoding: 8bit
+X-MailFrom: jpaulo.silvagoncalves@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: TCDCLOHHHIXZ25CWTIYJOASB7MXKFUPU
-X-Message-ID-Hash: TCDCLOHHHIXZ25CWTIYJOASB7MXKFUPU
-X-Mailman-Approved-At: Thu, 18 Apr 2024 15:52:45 +0000
+Message-ID-Hash: HVCL56XTL5XVTN5DAI3SMMBGGDMJPUWK
+X-Message-ID-Hash: HVCL56XTL5XVTN5DAI3SMMBGGDMJPUWK
+X-Mailman-Approved-At: Thu, 18 Apr 2024 15:52:46 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TCDCLOHHHIXZ25CWTIYJOASB7MXKFUPU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVCL56XTL5XVTN5DAI3SMMBGGDMJPUWK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,32 +123,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This code returns -EINVAL if "i" is out of bounds a few lines earlier.
-Delete this unnecessary check and pull the code in a tab.
+From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+When using davinci-mcasp as CPU DAI with simple-card, there are some
+conditions that cause simple-card to finish registering a sound card before
+davinci-mcasp finishes registering all sound components. This creates a
+non-working sound card from userspace with no problem indication apart
+from not being able to play/record audio on a PCM stream. The issue
+arises during simultaneous probe execution of both drivers. Specifically,
+the simple-card driver, awaiting a CPU DAI, proceeds as soon as
+davinci-mcasp registers its DAI. However, this process can lead to the
+client mutex lock (client_mutex in soc-core.c) being held or davinci-mcasp
+being preempted before PCM DMA registration on davinci-mcasp finishes.
+This situation occurs when the probes of both drivers run concurrently.
+Below is the code path for this condition. To solve the issue, defer
+davinci-mcasp CPU DAI registration to the last step in the audio part of
+it. This way, simple-card CPU DAI parsing will be deferred until all
+audio components are registered.
+
+Fail Code Path:
+
+simple-card.c: probe starts
+simple-card.c: simple_dai_link_of: simple_parse_node(..,cpu,..) returns EPROBE_DEFER, no CPU DAI yet
+davinci-mcasp.c: probe starts
+davinci-mcasp.c: devm_snd_soc_register_component() register CPU DAI
+simple-card.c: probes again, finish CPU DAI parsing and call devm_snd_soc_register_card()
+simple-card.c: finish probe
+davinci-mcasp.c: *dma_pcm_platform_register() register PCM  DMA
+davinci-mcasp.c: probe finish
+
+Cc: stable@vger.kernel.org
+Fixes: 9fbd58cf4ab0 ("ASoC: davinci-mcasp: Choose PCM driver based on configured DMA controller")
+Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
 ---
- sound/soc/codecs/cs35l41.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/ti/davinci-mcasp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 2799ccd6b5c7..d3da6a9f7f2b 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -772,10 +772,9 @@ static int cs35l41_pcm_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index b892d66f78470..1e760c3155213 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -2417,12 +2417,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
  
- 	asp_wl = params_width(params);
+ 	mcasp_reparent_fck(pdev);
  
--	if (i < ARRAY_SIZE(cs35l41_fs_rates))
--		regmap_update_bits(cs35l41->regmap, CS35L41_GLOBAL_CLK_CTRL,
--				   CS35L41_GLOBAL_FS_MASK,
--				   cs35l41_fs_rates[i].fs_cfg << CS35L41_GLOBAL_FS_SHIFT);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_GLOBAL_CLK_CTRL,
-+			   CS35L41_GLOBAL_FS_MASK,
-+			   cs35l41_fs_rates[i].fs_cfg << CS35L41_GLOBAL_FS_SHIFT);
+-	ret = devm_snd_soc_register_component(&pdev->dev, &davinci_mcasp_component,
+-					      &davinci_mcasp_dai[mcasp->op_mode], 1);
+-
+-	if (ret != 0)
+-		goto err;
+-
+ 	ret = davinci_mcasp_get_dma_type(mcasp);
+ 	switch (ret) {
+ 	case PCM_EDMA:
+@@ -2449,6 +2443,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		regmap_update_bits(cs35l41->regmap, CS35L41_SP_FORMAT,
++	ret = devm_snd_soc_register_component(&pdev->dev, &davinci_mcasp_component,
++					      &davinci_mcasp_dai[mcasp->op_mode], 1);
++
++	if (ret != 0)
++		goto err;
++
+ no_audio:
+ 	ret = davinci_mcasp_init_gpiochip(mcasp);
+ 	if (ret) {
 -- 
-2.43.0
+2.34.1
 
