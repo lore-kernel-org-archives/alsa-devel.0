@@ -4,158 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 657C2C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 06:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A92FC4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 06:45:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D6A7E97;
-	Thu, 18 Apr 2024 08:44:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D6A7E97
+	by alsa0.perex.cz (Postfix) with ESMTPS id B55FDEBE;
+	Thu, 18 Apr 2024 08:45:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B55FDEBE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713422704;
-	bh=uBpaZXZ//+wXoMiuJq7TUiP5CU/5ciB016fjPPA4UKI=;
+	s=default; t=1713422726;
+	bh=jFbHu/heAjXaIjCpcnhTfqFBsbEQCpoQU/YCuHvZGNU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AM1wwHk8OpR2piBJ0awksjwtVYWQxQ+6x9z3yqQdB7aheGacFL3BWgjmKBq/bBtWS
-	 U/bSUPosO3tWUfOcPfv208qC6om86XqlkewjTAUQ8mawcfJCCVtmPZKkG8K6DSzMpC
-	 vAI8oANCkCaSLA4qaConroX7L4xrKrwBQoC4PYyY=
+	b=shQ+hAaXhsGq+385vBZJcp4mJlT2Llrx5S7CpAtEbsEC0tCoq7QxffWRiOAEVQxi+
+	 R9UEKxTVzUfQeXT2zo2egMF9YZFpYTCwqjU7k3O5IU3uFmwxRiYFvXtR5nkWM273Na
+	 KkDkQ1MiC7pMrKyxMDUC3NFYT5egS3S3ElAwTmEk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59778F805B5; Thu, 18 Apr 2024 08:44:33 +0200 (CEST)
+	id 1E5FBF805CB; Thu, 18 Apr 2024 08:44:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFA23F8059F;
-	Thu, 18 Apr 2024 08:44:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B6CDF805D4;
+	Thu, 18 Apr 2024 08:44:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7FD3CF8025A; Thu, 18 Apr 2024 08:42:32 +0200 (CEST)
+	id 8EC50F8025A; Thu, 18 Apr 2024 08:43:38 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6D824F80124
-	for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2024 08:42:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D824F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1EACF8003A
+	for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2024 08:43:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1EACF8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=YJXG2QHC;
+ header.s=susede2_rsa header.b=y9bgnkYp;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=5wbPw0WV;
+ header.s=susede2_ed25519 header.b=Unpk3zC1;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=igUgPFJG;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=y9bgnkYp;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ER/RxnMo
+ header.s=susede2_ed25519 header.b=Unpk3zC1
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
  [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4B75234A58;
-	Thu, 18 Apr 2024 06:42:18 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B86E34A5E;
+	Thu, 18 Apr 2024 06:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1713422539;
+	t=1713422613;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GCC2ifPdYJijtvyIoC+2l6z43cA42cTEO8PRZ+VUXG4=;
-	b=YJXG2QHCmYMVJDxLoYLYi/HzPZTT6bhKKnzFAHPzxDZGPVXv7N8qYzEcoTRyL2XYfVDw2A
-	Xof7oAlddueIN0a8qhgsxE8MLCXjyEfzTnLdW1eF80GwmKfgtbAZ2s99vHc98SCjHzGmVF
-	Z0lg6bCzVrYDiiGQD4N4VIstIW22tSE=
+	bh=60G8of3gS7cctmrTlQSZrR+KoHO+FvZsBEhHd82NKFw=;
+	b=y9bgnkYplswsJEa+d/unVhrH4MaF2yk1g8S1kYWBu7f5Y0qKwt7+X9aGQEPU/iikseBiJh
+	uf689J+o+kR7BuT2EZVYGffJcNALx+89H3V6iVwi96O6x4f+rf7r/XbzBppSLV5TuOa8mj
+	r5GgYWpum/60oh1iFd0On9WeRnj6A5U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713422539;
+	s=susede2_ed25519; t=1713422613;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GCC2ifPdYJijtvyIoC+2l6z43cA42cTEO8PRZ+VUXG4=;
-	b=5wbPw0WVq6xh+omxhE34k77Pq1ZczjeD0rcvui9rgW7GIVr93YXxPliCmnKwFJ4WzblGH2
-	chNGp4FkN9IpTgCA==
+	bh=60G8of3gS7cctmrTlQSZrR+KoHO+FvZsBEhHd82NKFw=;
+	b=Unpk3zC18OGtawvsjCHDNoJizTctGvVNN+BI2F7yfzhpxySdb7majp45PL4PIMuHK7+nrM
+	sIX8bHjbUOPCVqCA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1713422538;
+	t=1713422613;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GCC2ifPdYJijtvyIoC+2l6z43cA42cTEO8PRZ+VUXG4=;
-	b=igUgPFJGTg2hV9ds2L3Y5DNPEVuICXtQSA7R5CYoT0GVJjdS481O0W7lMioLZRzoaybY/W
-	lr5uslL4cud8e57pi9zGjMZis+zJ1kChAeRFqpVK1oshisxBh81qd64a8gd7h3QtYg9o8f
-	sLci7+R76FdIt6SOAMHju7G58nJrBZg=
+	bh=60G8of3gS7cctmrTlQSZrR+KoHO+FvZsBEhHd82NKFw=;
+	b=y9bgnkYplswsJEa+d/unVhrH4MaF2yk1g8S1kYWBu7f5Y0qKwt7+X9aGQEPU/iikseBiJh
+	uf689J+o+kR7BuT2EZVYGffJcNALx+89H3V6iVwi96O6x4f+rf7r/XbzBppSLV5TuOa8mj
+	r5GgYWpum/60oh1iFd0On9WeRnj6A5U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713422538;
+	s=susede2_ed25519; t=1713422613;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GCC2ifPdYJijtvyIoC+2l6z43cA42cTEO8PRZ+VUXG4=;
-	b=ER/RxnMoW4ULBR99bDF3u9ufHG0jKo7tBR1EB6Ru1r7Ip+HmPzTAgB0gDclX9BHLDgUXcc
-	n08hWzpoERIFPrAg==
+	bh=60G8of3gS7cctmrTlQSZrR+KoHO+FvZsBEhHd82NKFw=;
+	b=Unpk3zC18OGtawvsjCHDNoJizTctGvVNN+BI2F7yfzhpxySdb7majp45PL4PIMuHK7+nrM
+	sIX8bHjbUOPCVqCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B435413687;
-	Thu, 18 Apr 2024 06:42:17 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36AB513687;
+	Thu, 18 Apr 2024 06:43:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 82hMKsnAIGbadwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 18 Apr 2024 06:42:17 +0000
-Date: Thu, 18 Apr 2024 08:42:26 +0200
-Message-ID: <87jzkvxjcd.wl-tiwai@suse.de>
+	id mvscDBXBIGY9eAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 18 Apr 2024 06:43:33 +0000
+Date: Thu, 18 Apr 2024 08:43:41 +0200
+Message-ID: <87il0fxjaa.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: <broonie@kernel.org>,
-	<andriy.shevchenko@linux.intel.com>,
-	<lgirdwood@gmail.com>,
-	<perex@perex.cz>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<13916275206@139.com>,
-	<mimperial@lenovo.com>,
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
 	<alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>,
-	<liam.r.girdwood@intel.com>,
-	<bard.liao@intel.com>,
-	<yung-chuan.liao@linux.intel.com>,
-	<kevin-lu@ti.com>,
-	<robinchen@ti.com>,
-	<baojun.xu@ti.com>,
-	<soyer@irl.hu>,
-	<Baojun.Xu@fpt.com>,
-	<navada@ti.com>,
-	<v-po@ti.com>
-Subject: Re: [PATCH v1] ALSA: hda/tas2781: Add new vendor_id and subsystem_id
- to support ThinkPad ICE-1
-In-Reply-To: <20240411091823.1644-1-shenghao-ding@ti.com>
-References: <20240411091823.1644-1-shenghao-ding@ti.com>
+	<patches@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/7] Add features, fixes and laptops for CS35L41 HDA
+In-Reply-To: <20240411110813.330483-1-sbinding@opensource.cirrus.com>
+References: <20240411110813.330483-1-sbinding@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-2.62 / 50.00];
-	BAYES_HAM(-2.32)[96.83%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	NEURAL_HAM_SHORT(-0.20)[-0.999];
 	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_TLS_ALL(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,gmail.com,perex.cz,139.com,lenovo.com,alsa-project.org,vger.kernel.org,intel.com,ti.com,irl.hu,fpt.com];
 	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	FROM_EQ_ENVFROM(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ti.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-Message-ID-Hash: DCLVAVA3U24KQC6BGTK37PK6JJPSZNV2
-X-Message-ID-Hash: DCLVAVA3U24KQC6BGTK37PK6JJPSZNV2
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+Message-ID-Hash: N336LVLMVTAE6LDQS74PB5TWQII2GSKE
+X-Message-ID-Hash: N336LVLMVTAE6LDQS74PB5TWQII2GSKE
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -168,24 +152,50 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DCLVAVA3U24KQC6BGTK37PK6JJPSZNV2/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N336LVLMVTAE6LDQS74PB5TWQII2GSKE/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 11 Apr 2024 11:18:22 +0200,
-Shenghao Ding wrote:
+On Thu, 11 Apr 2024 13:08:06 +0200,
+Stefan Binding wrote:
 > 
-> Add new vendor_id and subsystem_id to support new Lenovo laptop
-> ThinkPad ICE-1
+> This chain adds a number of improvements for CS35L41, including a new
+> firmware loading feature, as well as some additional cleanup.
 > 
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+> Patch 1 adds support for a new firmware tuning file which is used to set
+> special tuning parameters used by the firmware. The HP Omen laptop added
+> in patches 2 and 3 use such a feature.
+> 
+> Patch 4 changes the DSP1RX5/6 Source used by the firmware to depend on
+> the boost type. A similar change in the ASoC driver will be needed later.
+> 
+> Patches 5 and 6 are cleanup patches, with the first of those re-using
+> cs-amp-lib for calibration which as added for CS35L56 drivers, ensuring
+> that all laptops are using the correct calibration values.
+> 
+> Patch 7 fixes a small error in the CS35L41 Property table for the
+> Lenovo Legion slim 7 16ARHA7.
+> 
+> Changes since v1:
+> - Fixed print statements based on warnings from kernel test robot
+> 
+> Richard Fitzgerald (1):
+>   ALSA: hda: cs35l41: Remove redundant argument to
+>     cs35l41_request_firmware_file()
+> 
+> Stefan Binding (6):
+>   ALSA: hda: cs35l41: Set the max PCM Gain using tuning setting
+>   ALSA: hda: cs35l41: Support HP Omen models without _DSD
+>   ALSA: hda/realtek: Add quirks for HP Omen models using CS35L41
+>   ALSA: hda: cs35l41: Update DSP1RX5/6 Sources for DSP config
+>   ALSA: hda: cs35l41: Use shared cs-amp-lib to apply calibration
+>   ALSA: hda: cs35l41: Remove Speaker ID for Lenovo Legion slim 7 16ARHA7
 
-Applied now.  Thanks.
+Now applied to for-next branch.  Thanks.
 
 
 Takashi
