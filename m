@@ -4,89 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55972C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 10:34:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 255D0C04FF8
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Apr 2024 11:39:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55B6CE85;
-	Thu, 18 Apr 2024 12:33:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55B6CE85
+	by alsa0.perex.cz (Postfix) with ESMTPS id 643D1200;
+	Thu, 18 Apr 2024 13:39:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 643D1200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713436441;
-	bh=fXyGjhAm0JIkMbjnAel3FGNCVvKR94WIGzZRwngByII=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=iemc8YmsVBs1tBe6YpL71LgLCi9d1CcLScKYNS3VJJ4h1WWv4hYvf+h7MWTQoI4aI
-	 KTIst0J1gIcx0W8VoQKF/JNAlEkBQ4PDriE57FXFzaYnzpkgriD2sKJvDiDL2lPcx5
-	 rT5BCgYEsX9qj29vws1AHugiDJONOb/AJvconKk0=
+	s=default; t=1713440365;
+	bh=lfgiUVfdfFtYYnbry1n8+JxXXsIYCYkmc2J1JwkNnRo=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=aEdvPNw39vjIDzKR3uGe4A2VdWSbyzCR3Ybxuzm28WlohTRmYfSYQR/cC5kZPz+nv
+	 AgGMHkxMkogZEyCY9biCSXL2VkmS4VyGOOc64EpdacShGSTL8ZdqAqRYcrQ8OCr/6S
+	 znte8jHYRb0DnK8ouulvOPAp6uxzqI6CdTVurZj4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D70EF80580; Thu, 18 Apr 2024 12:33:29 +0200 (CEST)
+	id C6297F805C1; Thu, 18 Apr 2024 13:38:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 343DAF80578;
-	Thu, 18 Apr 2024 12:33:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38D38F805A9;
+	Thu, 18 Apr 2024 13:38:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD7EAF80236; Thu, 18 Apr 2024 12:33:24 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 5491EF8025A; Thu, 18 Apr 2024 13:19:37 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6824AF8003A
-	for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2024 12:33:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6824AF8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id C67C2F8013D
+	for <alsa-devel@alsa-project.org>; Thu, 18 Apr 2024 13:19:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C67C2F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=pydh4FwE
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43I5jALP019878;
-	Thu, 18 Apr 2024 05:33:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=j
-	z5Rie3do+TgO9XWh4Mv9YDCnGPamrE2rEo8a/X/MDM=; b=pydh4FwEJLg1Qny7B
-	eNSffSk6r0c+l22PehWiFHSC4f05Fxn/c4SbOvtZ0bs/oMp0WZZ0aRSxPSyTn3P3
-	/RraFWKt823nGKkzRKq7QO/c27Y/RcESVC87hVQWSle6+FdYlA2SPJ8OJjdNO18R
-	nPJu6Qn2ygM2BDnJux3yM4PlR+NmWCM7LVUEYMRdl4tRHSig0JpzWqsQuFwLPhW6
-	800ZQjuBXDBZxiNAeKF1mMF7KpMKyCVog5+oGf7zm/r5oAzw7pKn9sJd2LU59Jli
-	+vxnw4xkDUwnJS9r8Tp2T7495SMuAC2KLn2hBuwRPJh/iKGaR0yJfjzmIgbbuQW8
-	bZG5g==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xfpfhvmqc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 05:33:19 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
- 2024 11:33:17 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Thu, 18 Apr 2024 11:33:17 +0100
-Received: from ediswws03.ad.cirrus.com (ediswws03.ad.cirrus.com
- [198.90.208.11])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 4BA24820245;
-	Thu, 18 Apr 2024 10:33:17 +0000 (UTC)
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-CC: <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Maciej Strozek
-	<mstrozek@opensource.cirrus.com>
-Subject: [PATCH v2] spi: cs42l43: Correct name of ACPI property
-Date: Thu, 18 Apr 2024 11:33:15 +0100
-Message-ID: <20240418103315.1487267-1-mstrozek@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=iG1igice
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713439170; x=1744975170;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=lfgiUVfdfFtYYnbry1n8+JxXXsIYCYkmc2J1JwkNnRo=;
+  b=iG1igicehpMe/4yKUcIu+Sa2KcnljzfqCqvf38qbNd0rW83yoRiZygR1
+   Uo8S9gdtvttloqFphUi+R076NT3ZDrLYj4yWAwE59/oeUL2GbBNV5+7dF
+   aPlNG6SdNjPVDW57IjwQ16y4IWOVHw0TE+lnkvDlsWcSqzTMpWF1Unwee
+   uwIZzKRQzIAkNrExZ6X6EoioOD4QlM59NEvRVjRArmRoKukQ8VJ9udcWI
+   Ilc3AVnzrU96fUg58JVFV8fAkmJOiARc65vEVQf2JR0Hye/tbepKJ44MQ
+   DIgIyKdRUUIyoErhPZsFNXoBfXzzl5H427T/3CH9p1wT5v/B0CKNuhCZb
+   A==;
+X-CSE-ConnectionGUID: UBlVfaP2RGi0QLvyVTkQMg==
+X-CSE-MsgGUID: 7/EIUvxARQKIUUL5KnXvyQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9097496"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000";
+   d="scan'208";a="9097496"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Apr 2024 04:19:24 -0700
+X-CSE-ConnectionGUID: isirGcN4S1iK1h9wO2dd9g==
+X-CSE-MsgGUID: 7OZ/fhyhQZOwpp+2HQcdxQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000";
+   d="scan'208";a="23008225"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.53])
+ ([10.94.0.53])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Apr 2024 04:19:14 -0700
+Message-ID: <481d5755-ac70-4a01-899d-9d39f5075350@linux.intel.com>
+Date: Thu, 18 Apr 2024 13:19:11 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: URX_4b8_yisaN-CnDypzhKTNTYFAWsep
-X-Proofpoint-GUID: URX_4b8_yisaN-CnDypzhKTNTYFAWsep
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: QVIENJBMPNF5JMGT4XGH2BUJOJSXZ5ZE
-X-Message-ID-Hash: QVIENJBMPNF5JMGT4XGH2BUJOJSXZ5ZE
-X-MailFrom: prvs=183834ae71=mstrozek@opensource.cirrus.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 19/23] ASoC: Intel: Replace playback/capture_only to
+ playback/capture_assertion
+Content-Language: en-US
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
+ Jaroslav Kysela <perex@perex.cz>, Jerome Brunet <jbrunet@baylibre.com>,
+ Jiawei Wang <me@jwang.link>, Jonathan Corbet <corbet@lwn.net>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Maso Huang <maso.huang@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>,
+ Vinod Koul <vkoul@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ alsa-devel@alsa-project.org, imx@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-sound@vger.kernel.org
+References: <87h6fz8g3u.wl-kuninori.morimoto.gx@renesas.com>
+ <87plun71db.wl-kuninori.morimoto.gx@renesas.com>
+From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <87plun71db.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: FPEGXFA2PIO2YV7J6LR3HL4PKN6C6RMH
+X-Message-ID-Hash: FPEGXFA2PIO2YV7J6LR3HL4PKN6C6RMH
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -98,37 +125,36 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QVIENJBMPNF5JMGT4XGH2BUJOJSXZ5ZE/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FPEGXFA2PIO2YV7J6LR3HL4PKN6C6RMH/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fixes: 439fbc97502a ("spi: cs42l43: Add bridged cs35l56 amplifiers")
+On 4/18/2024 6:15 AM, Kuninori Morimoto wrote:
+> soc_get_playback_capture() is now handling DPCM and normal
+> comprehensively for playback/capture stream in same code.
+> This patch converts xxx_only flag to xxx_assertion.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>   sound/soc/intel/boards/bdw-rt5677.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+> index 54e3c5d3c251..9170b1d509e2 100644
+> --- a/sound/soc/intel/boards/bdw-rt5677.c
+> +++ b/sound/soc/intel/boards/bdw-rt5677.c
+> @@ -339,7 +339,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
+>   	{
+>   		.name = "Codec DSP",
+>   		.stream_name = "Wake on Voice",
+> -		.capture_only = 1,
+> +		.capture_assertion = 1,
+>   		.ops = &bdw_rt5677_dsp_ops,
+>   		SND_SOC_DAILINK_REG(dsp),
+>   	},
 
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
----
-v2: Corrected the Fixes tag to point to right commit
-
- drivers/spi/spi-cs42l43.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/spi/spi-cs42l43.c b/drivers/spi/spi-cs42l43.c
-index cdc61cd089ad..9d747ea69926 100644
---- a/drivers/spi/spi-cs42l43.c
-+++ b/drivers/spi/spi-cs42l43.c
-@@ -267,7 +267,7 @@ static bool cs42l43_has_sidecar(struct fwnode_handle *fwnode)
- 			continue;
-
- 		ret = fwnode_property_read_u32(ext_fwnode,
--					       "01fa-cirrus-sidecar-instances",
-+					       "01fa-sidecar-instances",
- 					       &val);
-
- 		fwnode_handle_put(ext_fwnode);
---
-2.34.1
-
+Should this have been part of patch 8?
