@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D0C8C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Apr 2024 08:48:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0241C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Apr 2024 08:48:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C62F9B60;
-	Fri, 19 Apr 2024 10:47:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C62F9B60
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5C6BB76;
+	Fri, 19 Apr 2024 10:48:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5C6BB76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713516479;
-	bh=4G3vxx+BVYU/F3fALZo8cptAG+2Ub3U6wxF3IBeuTRA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=KcngVeB3j9WotDr5VIdkqqbA7GML0DQ8/WY9hfl4YuOQplAK48AqiL2+Zld2SSMGH
-	 leFOqk4opY56cJqRxzzkxFCUyPh/QsR5bn2EGk6DEd2yE6S8Cc7TOixgAJ6Iu1tjC3
-	 LxMzFAPzLfCap0IQxyDkLPAqNXY+NIri2vamG6q4=
+	s=default; t=1713516498;
+	bh=ojVZrBBLkQUiA+8w8ZReZUeAU4aBcYejjyFtUBkDAaY=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=qm91QuLxOYvqNp2ZYfhVEr99GYzPTloxP0caxtn0J9DdqGyoKr+GWDsOyJnqVMi6i
+	 fCjQan9xplewKSM/cHye3OHz+NDECLLMhGnSQ97yrbGw4OLCjvVq0e8PA+07beOVU/
+	 ySt4pUBgGQHdKQgnXuwhdH79vWoSNVOfjezNG04Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A88CF805D8; Fri, 19 Apr 2024 10:47:16 +0200 (CEST)
+	id 03615F805E9; Fri, 19 Apr 2024 10:47:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2FA6F805BD;
-	Fri, 19 Apr 2024 10:47:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57EB7F8058C;
+	Fri, 19 Apr 2024 10:47:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BDDAF80423; Fri, 19 Apr 2024 10:45:43 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	id 4375DF8058C; Fri, 19 Apr 2024 10:47:29 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 90F5EF80124
-	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2024 10:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90F5EF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 06D47F80236
+	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2024 10:47:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06D47F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=hJzzaIN+
+ header.s=Intel header.b=HjnUROfz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713516114; x=1745052114;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4G3vxx+BVYU/F3fALZo8cptAG+2Ub3U6wxF3IBeuTRA=;
-  b=hJzzaIN+1W2jfe8kHBVUgn1DdGrT159tXKJ42JxaW7JJW3wJECvVkZzk
-   e6ZNskG1bXqGLDtVQj/GjABKgZDSuU+nqtdUPvo4yQVb4ZAyfBakvVC3z
-   pmj8c8d3ppkzl467Y3ttZuc4dcbNwq/9xplQ6ZS5wf9Y6DAta7+surQB9
-   TjzdHgAcl0us7ebAoCLY4QaxN7Blj0hCuR9ZSqac8RwRGiubp32Me3SQi
-   RIhiHYDpYzA2pCKsiZcELmGVBIgZu5slhNNDE0LLo6AuJ0p5zq7LXANZg
-   G24xnOUmfCg9TUAapyUv2aOVhtLIKBZ9c5VDdfxha2iM0WBZ3QQxSRz8Q
-   A==;
-X-CSE-ConnectionGUID: z7vUi2b2STuUt3UzQHkXRg==
-X-CSE-MsgGUID: w2OTaf6MRrGkP482M5Sh8A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9233742"
+  t=1713516444; x=1745052444;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ojVZrBBLkQUiA+8w8ZReZUeAU4aBcYejjyFtUBkDAaY=;
+  b=HjnUROfztgXo8P6jwY2Us+hfi7/Cb+Xfzofv3ZEaIvcdKNxPQUYyp0ts
+   V0pTNvFYHn4ghIfo7RVFRO22W8geZM3h/ARVYX2PaDX4CRFHXFWmphSeP
+   f0pCXP7/OSeUAAw/32jrBIm5lhIwM7aY78S8vOB0ml2VqzGBpECSUkN7W
+   TPoD+MUCHHnlJAprwtQRHS/GWuMmun9b2GzLlDYrZpX3+by4RRRRj5ttw
+   1LA638J+PpsikJ6I7YjccZ+6M8KJsuXxKBMFg6VrS111yKawiQgEoJEsy
+   A2ShaiKNPGBMvo/xsyrTryXNMaBVlcooXyolV2nylXi+fS9m2oQ2CEB1x
+   w==;
+X-CSE-ConnectionGUID: OssrktPHTOOmcr+Y2s3hzw==
+X-CSE-MsgGUID: ILn1BN+8TpSQotTWcz+hwA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12941962"
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000";
-   d="scan'208";a="9233742"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2024 01:41:49 -0700
-X-CSE-ConnectionGUID: HNjlznS0RtSPs0ZmRGaBQw==
-X-CSE-MsgGUID: kW2KUOKTTaqGGhmDPyJsUA==
+   d="scan'208";a="12941962"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Apr 2024 01:47:19 -0700
+X-CSE-ConnectionGUID: jQ0m5LCPSBqotRGCA+/r9g==
+X-CSE-MsgGUID: +2+E6CDwSheR+Hp3Oc417g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000";
-   d="scan'208";a="23353166"
+   d="scan'208";a="46551798"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa008.fm.intel.com with ESMTP; 19 Apr 2024 01:41:46 -0700
+  by fmviesa002.fm.intel.com with ESMTP; 19 Apr 2024 01:47:16 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -73,21 +72,16 @@ Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.com,
 	perex@perex.cz,
 	amadeuszx.slawinski@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
 	hdegoede@redhat.com,
-	rafael@kernel.org,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 1/2] ALSA: hda: intel-dsp-config: Switch to ACPI NHLT
-Date: Fri, 19 Apr 2024 10:43:06 +0200
-Message-Id: <20240419084307.2718881-2-cezary.rojewski@intel.com>
+Subject: [PATCH 0/2] ASoC: Intel: avs: Refactor IRQ handling
+Date: Fri, 19 Apr 2024 10:48:55 +0200
+Message-Id: <20240419084857.2719593-1-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240419084307.2718881-1-cezary.rojewski@intel.com>
-References: <20240419084307.2718881-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SPMRYPUGJBIDBY5E5XHQGQIRRRTSH2CY
-X-Message-ID-Hash: SPMRYPUGJBIDBY5E5XHQGQIRRRTSH2CY
+Message-ID-Hash: KA6AU2ID4K6GROMTRSYDDU6PT5PRTPQ7
+X-Message-ID-Hash: KA6AU2ID4K6GROMTRSYDDU6PT5PRTPQ7
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +93,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KA6AU2ID4K6GROMTRSYDDU6PT5PRTPQ7/>
 List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
@@ -107,66 +102,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+The existing code can be both improved and simplified. To make this
+change easier to manage, first add new implementation and then remove
+deadcode in a separate patch.
 
-Now that NHLT support in ACPI framework was introduced, migrate
-intel-dsp-config driver to new API.
+Simplification achieved with:
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/hda/Kconfig            |  1 +
- sound/hda/intel-dsp-config.c | 16 +++++++++-------
- 2 files changed, 10 insertions(+), 7 deletions(-)
+- reduce the amount of resources requested by the driver i.e.: IPC and
+  CLDMA request_irq() merged into one
+- reduce the number of DSP ops from 2 to 1:
+  irq_handler/thread() vs dsp_interrupt()
+- drop ambiguity around CLDMA interrupt, let skl.c handle that
+  explicitly as it is the only user
 
-diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
-index 741179ccbd4e..e2ac247fc1d4 100644
---- a/sound/hda/Kconfig
-+++ b/sound/hda/Kconfig
-@@ -42,6 +42,7 @@ config SND_INTEL_NHLT
- 
- config SND_INTEL_DSP_CONFIG
- 	tristate
-+	select ACPI_NHLT if ACPI
- 	select SND_INTEL_NHLT if ACPI
- 	select SND_INTEL_SOUNDWIRE_ACPI if ACPI
- 	# this config should be selected only for Intel DSP platforms.
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 6a384b922e4f..ea050805c20f 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -13,6 +13,8 @@
- #include <sound/intel-nhlt.h>
- #include <sound/soc-acpi.h>
- 
-+#include <acpi/nhlt.h>
-+
- static int dsp_driver;
- 
- module_param(dsp_driver, int, 0444);
-@@ -570,15 +572,15 @@ static const struct config_entry *snd_intel_dsp_find_config
- 
- static int snd_intel_dsp_check_dmic(struct pci_dev *pci)
- {
--	struct nhlt_acpi_table *nhlt;
- 	int ret = 0;
- 
--	nhlt = intel_nhlt_init(&pci->dev);
--	if (nhlt) {
--		if (intel_nhlt_has_endpoint_type(nhlt, NHLT_LINK_DMIC))
--			ret = 1;
--		intel_nhlt_free(nhlt);
--	}
-+	acpi_nhlt_get_gbl_table();
-+
-+	if (acpi_nhlt_find_endpoint(ACPI_NHLT_LINKTYPE_PDM, -1, -1, -1))
-+		ret = 1;
-+
-+	acpi_nhlt_put_gbl_table();
-+
- 	return ret;
- }
- 
+With that done, switch to the new implementation and remove unused
+members. While the change is non-trivial, from functional perspective
+status quo is achieved.
+
+Cezary Rojewski (2):
+  ASoC: Intel: avs: New IRQ handling implementation
+  ASoC: Intel: avs: Remove unused IRQ-related code
+
+ sound/soc/intel/avs/apl.c   | 20 +++++++-
+ sound/soc/intel/avs/avs.h   |  8 ++--
+ sound/soc/intel/avs/cldma.c | 42 ++++-------------
+ sound/soc/intel/avs/cldma.h |  1 +
+ sound/soc/intel/avs/cnl.c   | 91 ++++++++++++++++++++++++-------------
+ sound/soc/intel/avs/core.c  | 85 ++++++++++++++++------------------
+ sound/soc/intel/avs/icl.c   |  3 +-
+ sound/soc/intel/avs/ipc.c   | 48 -------------------
+ sound/soc/intel/avs/skl.c   | 73 +++++++++++++++++++++--------
+ sound/soc/intel/avs/tgl.c   |  3 +-
+ 10 files changed, 186 insertions(+), 188 deletions(-)
+
 -- 
 2.25.1
 
