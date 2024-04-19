@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A355FC05023
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Apr 2024 15:03:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 790A6C04FF6
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Apr 2024 15:03:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BD6A14DD;
-	Fri, 19 Apr 2024 17:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BD6A14DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC0FE14DC;
+	Fri, 19 Apr 2024 17:03:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC0FE14DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713539010;
-	bh=bPISGBwHKS65Ig8Nwyh0u0FEtW0ODA1tiQEsn9m1a78=;
+	s=default; t=1713539030;
+	bh=z/01KbpJUrnhSXb2YDfo1h/eKOvCBmVA/IVm+kzFUng=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=n7bRQd+t/CQq7APZvgRhrEj/YgeSVO1LkqQ/5fK4TchfvwmUPxT7+RbiL/eN7gKnP
-	 pAy6jQ6yS13tfS8EoqR+Yr8nQ97pkbSa3+DIm5SlkD1pch2kcwDnyMJurWc4yOiYf2
-	 8+qobWlrKIFHC9A/FJIMRek86xavhE9pbj/dQX54=
+	b=n3eqzXxXk5srP2D8CBrlf/tcaau2+LrGn68xMQymI3cBmgiWi8uYktLZP9gLeaV0Z
+	 E1Sf2pa15nD0vrEzapqNoFlhijUzx+goVb1AtR7SG+rTIEWxC2mGS+O7K/axa1zjCZ
+	 VQkG2KaHpIz/ObNfpMc7xmZtOgdEejdQQPwUBHjk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5E776F80615; Fri, 19 Apr 2024 17:02:14 +0200 (CEST)
+	id 9F86AF8063A; Fri, 19 Apr 2024 17:02:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16083F80617;
-	Fri, 19 Apr 2024 17:02:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 812B8F80640;
+	Fri, 19 Apr 2024 17:02:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56E6FF805C2; Fri, 19 Apr 2024 17:02:05 +0200 (CEST)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
+	id CADAFF80620; Fri, 19 Apr 2024 17:02:16 +0200 (CEST)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com
+ [IPv6:2a00:1450:4864:20::230])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0635F801C0
-	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2024 17:01:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0635F801C0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 368E3F80601
+	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2024 17:01:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 368E3F80601
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=x48LWHGK
-Received: by mail-lj1-x231.google.com with SMTP id
- 38308e7fff4ca-2db17e8767cso30252631fa.3
+ header.s=google header.b=GNuN6+9d
+Received: by mail-lj1-x230.google.com with SMTP id
+ 38308e7fff4ca-2d87660d5c9so23073721fa.2
         for <alsa-devel@alsa-project.org>;
- Fri, 19 Apr 2024 08:01:53 -0700 (PDT)
+ Fri, 19 Apr 2024 08:01:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713538913; x=1714143713;
+        d=linaro.org; s=google; t=1713538908; x=1714143708;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SKK2lHWVNTM0FrAdLX6Qzm6HKxic16xHNY/tlXN6dfw=;
-        b=x48LWHGKLsac272x5hPR2K9yAWCkMXPlBBq4cI6GvlgjPeQ3gTvCpn1PWPOPmw8JAZ
-         188vPlCRugXibcy7qjJSm0v3cD+W+H3IP7XNw54jZRkSLPidKQ6UXespuaQfvq+D/P4/
-         WkgqdX44Ub2ClKvqcN66+cDiHPZpa8pci8ABo/62AG8pFjIly78qyk7bkygheg3lhqfq
-         gsTyIpQ3mHd724NqlSR1n1VdJKzvZU9BilTaa3VJ6B3EjtkHxzhYQ7uHjT3ccJpnn5+l
-         ZTBzPk7DMTGYYKh8f9xdUxuNRja8f8zYEAWDhwWBubMo6gYRgWvdg0/0MPNdhWesCvUI
-         RLvw==
+        bh=0zadu6QxqqDPKAQWxO1aQV8SmpVW6EVj/pCdtlgNCkU=;
+        b=GNuN6+9dHjp59Byzi/RD15+UnI3a4x9EcUd2qmnt2qXaMVtgmtUzotGcrDbR4eaipT
+         oEo8vMB/EChPkGg92BP/yu6dPkCimi/dDf+RF7JWZv1CjpZPtDBLXX+SFEN5vlG5eV16
+         5K3BpSmxnR7uSwd4SP2l942s4Y1tHQSKHUAW3J0Ld5AXloB8mrPjgAlstNblzNqCddvO
+         XhrZPNB0rgkhd+tkU1z50iMLXVNPPvd68tFMmMSwWntXiyAAJOfN9FoQXu1Vj17ilL2F
+         VRLw1I7VhP7683cv28WBiis1/nd4iNNyCkRw6t7QXwVzf4mhGX/pkUNe6BiCxyB9DmhP
+         s8KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713538913; x=1714143713;
+        d=1e100.net; s=20230601; t=1713538908; x=1714143708;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SKK2lHWVNTM0FrAdLX6Qzm6HKxic16xHNY/tlXN6dfw=;
-        b=pn5Lee/KFIIdmDC5wAIjbwOIr6yoWq7xhSHjN8c9Wj9OYREjcOkKUJC5FarlaUzdRa
-         ITU8CggU8SWirDWZpjKDidUw+qC2O/duQ8Gmzrs+54FsJYk+w1YfisSUbkxfmJsAJT9Z
-         rFEoqcr/g+10NaCNar7XrjWJre85zLkqoS4ED0QT/ZKqw4yeTaEpZfLKzARp8an4p44L
-         LUTD3I26+rY5nBuBXmlAn5StnwsavJABr5p5L8h89zaioqMejp7O+JoTQ8fTZi5at01w
-         0gaJ2R9eh5D4gWSW9nffAc9klyr9a0DAhpRsOW6exq3gMgH/fqKU3ZpifY7JsQzIyp79
-         Cvng==
+        bh=0zadu6QxqqDPKAQWxO1aQV8SmpVW6EVj/pCdtlgNCkU=;
+        b=ff83CIfG1kaGi01MxG1BUSA16kmg1beaBBj+d1US0xScdBQXJ/Ln5GDNRXadF3ahFz
+         8LpZcSV4fzZjQ9+xrNn+aWbpZhr/0lpKu48vEyxxKtgoHh8Dp8eexiTNjwQ8bFCYtaqL
+         Hxsoh0ChQ8TYhFbV+9hvGlqKwx1mr5BIWc+PZbmdmDuYrbrP/aM1eUIq2gXXxN5MER9y
+         2pZ0bGnMiqolMcEF7wjbmUPiYlH7QuQMfmJm+20b1ylMwSQUtUwWfElpmdknY7wBmAw1
+         p5S+DTzjQVu92Iy9Y3fJoEVa0kM0zoNpfX+keTeFZQjrygOls4ANmHbYLY1MCH7fabB0
+         44cA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCX2sfttmfff7hlgVWBsRoB13n5gGYjuvawTDW/OETeyinayRT08wzDDAr0SnNEO8jBo0yHveu4cSy6uQhAEV5IUz4j6hiY1VwzVpM0=
-X-Gm-Message-State: AOJu0Yx3Xbb5TiiLuGQA3Nrj4POWjKaCp2HscyE7Y9u6h0qCE5VBaQ/R
-	yulf+6B4Xpf/7WSjvThJb/8+rJTqPl0mV1aAVRDci/9nkswGLITq1Jfx2WU9e8o=
+ AJvYcCWOx5Au35i/Zj6cICQAzBi24sJKbKkH/lPm8j8DkbpS9N3q8ROel/rPNS5KaZRWksUgQ6n5FgKSbbz7f2ln6/RwoecpfYzOh6/mhv0=
+X-Gm-Message-State: AOJu0YxTUa5LLBYis15G8k76fB9PPG7HCm5ifYrHwiegw/GiH309KGv9
+	4hOoGRWKVc/R4hMkv1Yk6fgGVg4W6jLEati9uVPigfEEDjKN6d45Zc8nElAeQEA=
 X-Google-Smtp-Source: 
- AGHT+IGGJookUTMXcDbddWvz5/sMR1qyz7+vIW0U7CPi5oZhv1EIeWy4UabCosCISYA4f+jbMedvEg==
-X-Received: by 2002:a05:651c:3cc:b0:2d8:59cb:89ef with SMTP id
- f12-20020a05651c03cc00b002d859cb89efmr1379263ljp.24.1713538912186;
-        Fri, 19 Apr 2024 08:01:52 -0700 (PDT)
+ AGHT+IGL1W85WvvhW6kovpHuj891c1aSzJ4lVgOhlczmIfJv+733Fam7cnZaouVfnf6+MpkTnF3jyA==
+X-Received: by 2002:a2e:9f14:0:b0:2d7:1323:6792 with SMTP id
+ u20-20020a2e9f14000000b002d713236792mr1881512ljk.43.1713538907620;
+        Fri, 19 Apr 2024 08:01:47 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- f11-20020a05600c4e8b00b00417ee886977sm10660462wmq.4.2024.04.19.08.01.50
+ f11-20020a05600c4e8b00b00417ee886977sm10660462wmq.4.2024.04.19.08.01.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 08:01:51 -0700 (PDT)
+        Fri, 19 Apr 2024 08:01:46 -0700 (PDT)
 From: srinivas.kandagatla@linaro.org
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -94,16 +94,16 @@ Cc: perex@perex.cz,
 	steev@kali.org,
 	jenneron@postmarketos.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 4/4] ASoC: qcom: sm8250: fix a typo in function name
-Date: Fri, 19 Apr 2024 16:01:40 +0100
-Message-Id: <20240419150140.92527-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/4] ASoC: qcom: q6dsp: parse Display port tokens
+Date: Fri, 19 Apr 2024 16:01:37 +0100
+Message-Id: <20240419150140.92527-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240419150140.92527-1-srinivas.kandagatla@linaro.org>
 References: <20240419150140.92527-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RQUZ6NERVU3DEQ2OLX422BPPRUYMEWB3
-X-Message-ID-Hash: RQUZ6NERVU3DEQ2OLX422BPPRUYMEWB3
+Message-ID-Hash: 33FK6AKZBZ4O2OZ45NIDC376OTDC3LKG
+X-Message-ID-Hash: 33FK6AKZBZ4O2OZ45NIDC376OTDC3LKG
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +115,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/33FK6AKZBZ4O2OZ45NIDC376OTDC3LKG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,36 +127,58 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Fix a small type in the function name as its confusing to see a SoC name
-that does not exist. 
+DP Module needs to know the data format type which is specified in the
+tplg file, parse that info before setting up the module.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/sm8250.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/topology.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index d70df72c0160..9bd159b81d69 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -70,7 +70,7 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
- 	return qcom_snd_sdw_startup(substream);
+diff --git a/sound/soc/qcom/qdsp6/topology.c b/sound/soc/qcom/qdsp6/topology.c
+index 70572c83e101..27a5adb201c3 100644
+--- a/sound/soc/qcom/qdsp6/topology.c
++++ b/sound/soc/qcom/qdsp6/topology.c
+@@ -730,6 +730,29 @@ static int audioreach_widget_i2s_module_load(struct audioreach_module *mod,
+ 	return 0;
  }
  
--static void sm2450_snd_shutdown(struct snd_pcm_substream *substream)
-+static void sm8250_snd_shutdown(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-@@ -115,7 +115,7 @@ static int sm8250_snd_hw_free(struct snd_pcm_substream *substream)
- 
- static const struct snd_soc_ops sm8250_be_ops = {
- 	.startup = sm8250_snd_startup,
--	.shutdown = sm2450_snd_shutdown,
-+	.shutdown = sm8250_snd_shutdown,
- 	.hw_params = sm8250_snd_hw_params,
- 	.hw_free = sm8250_snd_hw_free,
- 	.prepare = sm8250_snd_prepare,
++static int audioreach_widget_dp_module_load(struct audioreach_module *mod,
++					struct snd_soc_tplg_vendor_array *mod_array)
++{
++	struct snd_soc_tplg_vendor_value_elem *mod_elem;
++	int tkn_count = 0;
++
++	mod_elem = mod_array->value;
++
++	while (tkn_count <= (le32_to_cpu(mod_array->num_elems) - 1)) {
++		switch (le32_to_cpu(mod_elem->token)) {
++		case AR_TKN_U32_MODULE_FMT_DATA:
++			mod->data_format = le32_to_cpu(mod_elem->value);
++			break;
++		default:
++			break;
++		}
++		tkn_count++;
++		mod_elem++;
++	}
++
++	return 0;
++}
++
+ static int audioreach_widget_load_buffer(struct snd_soc_component *component,
+ 					 int index, struct snd_soc_dapm_widget *w,
+ 					 struct snd_soc_tplg_dapm_widget *tplg_w)
+@@ -760,6 +783,9 @@ static int audioreach_widget_load_buffer(struct snd_soc_component *component,
+ 	case MODULE_ID_I2S_SOURCE:
+ 		audioreach_widget_i2s_module_load(mod, mod_array);
+ 		break;
++	case MODULE_ID_DISPLAY_PORT_SINK:
++		audioreach_widget_dp_module_load(mod, mod_array);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
 -- 
 2.43.0
 
