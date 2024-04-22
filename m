@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B28FC10F16
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 22:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88730C4345F
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 22:57:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65CDA2097;
-	Tue, 23 Apr 2024 00:57:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65CDA2097
+	by alsa0.perex.cz (Postfix) with ESMTPS id D95681945;
+	Tue, 23 Apr 2024 00:57:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D95681945
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713826636;
-	bh=0cxFUO00cyRmofb5a9Em1Z0hXXk/mZ+Dx90DzYghWxc=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=sQJbvlwsNkYK4OTiwQuxNrsJRjSpQZw6RZ7+WxvDZTiiHHKFLgk6v8ERm2ZnbVIHS
-	 07wKchfV+kLCPLKCO+QnskFCxPCz1k4HX3s5+KKAa4f0XHQV6ThFy8YcPveok9ifPW
-	 iy9m0REijDTgZchMVjyxwN1gyhyVZF6NBTG147eE=
+	s=default; t=1713826654;
+	bh=lenwQ5BNvdadmSwKLZ3NISekuXPA1iLHGzqeQNg15Yo=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=N7bzYVtAEcnqpbONQmqFSGcE76nq9LG3RbTT88qyVmWQ6UrNOXqmiPalsMkARJXKO
+	 9yqDpv5gaCY0JDLbY8FYtZtlFefAYhbQLXqO7BD+TpC9pDuIkebQGSgDJtWePZeDWV
+	 DmxXak+mrrwqDrnoiozt7fmzG5dUb7vaLrnQDQNU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D029DF80642; Tue, 23 Apr 2024 00:51:17 +0200 (CEST)
+	id 127A2F80652; Tue, 23 Apr 2024 00:51:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4404F89762;
-	Tue, 23 Apr 2024 00:51:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C83DF8978A;
+	Tue, 23 Apr 2024 00:51:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59578F80610; Tue, 23 Apr 2024 00:50:54 +0200 (CEST)
+	id 4D492F80617; Tue, 23 Apr 2024 00:50:55 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0EF2DF8058C
+	by alsa1.perex.cz (Postfix) with ESMTPS id D462CF80588
 	for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2024 00:49:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EF2DF8058C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D462CF80588
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=mRfw7TSj
+ header.s=qcppdkim1 header.b=M+yV1/ft
 Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43MM9QUq007977;
+ 43MLWXIB024010;
 	Mon, 22 Apr 2024 22:49:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=uuixXNE7o1npGlfVcdiaEjQtcoIViphSeDAW+BjLh6Y=; b=mR
-	fw7TSj7mBUsTkfhQbofWOhRZfrL7AiYMk4TpH7ruE/nBhvNJzEN/9jXyQCIU6xd2
-	IVWlbdWsQENoPpcWKvfU58vrO1/a5G9FU4ciazPFeDhMaYIyqAGjZEPPVKud/t2Z
-	CsDVFp+DK5ojcrzp0ykPiZPMPtuimdvfgewhkUCtiVZ9ja/yykM70NAxUV2F06va
-	Tq7zt/6MgU3zxvJnu4Tq+GskvFdaH4pMN6RDlM8Lt7dV/RAhWMVkmiOWqYTbSkEs
-	AOQnsD+aPbPOYsCR4kWkh5mQ6l/mSM7JplCRtb6urtcZeHUoo/sOYT/r1d71axnE
-	cY2slci3RhudGU5nwhzg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-type; s=qcppdkim1; bh=Mz0yj72P7Ro+Um/Q3VcR
+	gm91MKyFxJ2HNswqHNQhpvw=; b=M+yV1/ftRmgZNKnLwM7TswsEoz5Tnh+vVFeP
+	NyAyXPOgnzbGw80eiAel7Jd10y9CAXQSnUrbHdwCQJjGPxwU+dW8rPM5SHFue/LL
+	mKp4Gf1xDkkd4h2lLC9iHmAtn9trGpUfIcSaq4N6ovVxmIDhpglRRUUwY/DzNUrd
+	xf1eTyedL15f+pmJ7K2MptTVCedQ22g0FDQrzQ6YUn02G/bl08nYU1i7RWj9AGqB
+	KGuupWR8Zp34UJkj59WyLEVjqLzOANekBvnrZw5w4zxk6cxZcalZHmeIQVGcsgos
+	SdPjq9Tyc/2nuwjqjWORa4f4d/5jxtD+t/f/QCDqpdZJGHZbKA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnn82ssjg-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnn82ssjp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 22 Apr 2024 22:49:42 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 43MMnGBO003417
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 43MMnMR6022887
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 22:49:16 GMT
+	Mon, 22 Apr 2024 22:49:22 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 22 Apr 2024 15:49:16 -0700
+ 15.2.1544.9; Mon, 22 Apr 2024 15:49:21 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -78,10 +79,13 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v19 00/41] Introduce QC USB SND audio offloading support
-Date: Mon, 22 Apr 2024 15:48:25 -0700
-Message-ID: <20240422224906.15868-1-quic_wcheng@quicinc.com>
+Subject: [PATCH v19 20/41] ALSA: usb-audio: qcom: Introduce QC USB SND
+ offloading support
+Date: Mon, 22 Apr 2024 15:48:45 -0700
+Message-ID: <20240422224906.15868-21-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240422224906.15868-1-quic_wcheng@quicinc.com>
+References: <20240422224906.15868-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.49.16.6]
@@ -90,8 +94,8 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: -8A-1I8aMkwEnE_rFO8e_Yf4hDSNhvY-
-X-Proofpoint-ORIG-GUID: -8A-1I8aMkwEnE_rFO8e_Yf4hDSNhvY-
+X-Proofpoint-GUID: nar4z8VZa8dcsPX13tZ4oIfllF1u9SWm
+X-Proofpoint-ORIG-GUID: nar4z8VZa8dcsPX13tZ4oIfllF1u9SWm
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-22_16,2024-04-22_01,2023-05-22_02
@@ -101,8 +105,8 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  spamscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
  phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2404010003 definitions=main-2404220096
-Message-ID-Hash: KCGOEPBZZKHDITHLJNJTFY6XN7FWAOZB
-X-Message-ID-Hash: KCGOEPBZZKHDITHLJNJTFY6XN7FWAOZB
+Message-ID-Hash: YBF2Y7R73XTBWFCECGE5Z3PTWQBUGMYV
+X-Message-ID-Hash: YBF2Y7R73XTBWFCECGE5Z3PTWQBUGMYV
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KCGOEPBZZKHDITHLJNJTFY6XN7FWAOZB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YBF2Y7R73XTBWFCECGE5Z3PTWQBUGMYV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,449 +128,1975 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Several Qualcomm based chipsets can support USB audio offloading to a
-dedicated audio DSP, which can take over issuing transfers to the USB
-host controller.  The intention is to reduce the load on the main
-processors in the SoC, and allow them to be placed into lower power modes.
-There are several parts to this design:
-  1. Adding ASoC binding layer
-  2. Create a USB backend for Q6DSP
-  3. Introduce XHCI interrupter support
-  4. Create vendor ops for the USB SND driver
+Several Qualcomm SoCs have a dedicated audio DSP, which has the ability to
+support USB sound devices.  This vendor driver will implement the required
+handshaking with the DSP, in order to pass along required resources that
+will be utilized by the DSP's USB SW.  The communication channel used for
+this handshaking will be using the QMI protocol.  Required resources
+include:
+- Allocated secondary event ring address
+- EP transfer ring address
+- Interrupter number
 
-      USB                          |            ASoC
---------------------------------------------------------------------
-                                   |  _________________________
-                                   | |sm8250 platform card     |
-                                   | |_________________________|
-                                   |         |           |
-                                   |      ___V____   ____V____
-                                   |     |Q6USB   | |Q6AFE    |  
-                                   |     |"codec" | |"cpu"    |
-                                   |     |________| |_________|
-                                   |         ^  ^        ^
-                                   |         |  |________|
-                                   |      ___V____    |
-                                   |     |SOC-USB |   |
-   ________       ________               |        |   |
-  |USB SND |<--->|QC offld|<------------>|________|   |
-  |(card.c)|     |        |<----------                |
-  |________|     |________|___     | |                |
-      ^               ^       |    | |    ____________V_________
-      |               |       |    | |   |APR/GLINK             |
-   __ V_______________V_____  |    | |   |______________________|
-  |USB SND (endpoint.c)     | |    | |              ^
-  |_________________________| |    | |              |
-              ^               |    | |   ___________V___________
-              |               |    | |->|audio DSP              |
-   ___________V_____________  |    |    |_______________________|
-  |XHCI HCD                 |<-    |
-  |_________________________|      |
+The above information will allow for the audio DSP to execute USB transfers
+over the USB bus.  It will also be able to support devices that have an
+implicit feedback and sync endpoint as well.  Offloading these data
+transfers will allow the main/applications processor to enter lower CPU
+power modes, and sustain a longer duration in those modes.
 
+Audio offloading is initiated with the following sequence:
+1. Userspace configures to route audio playback to USB backend and starts
+playback on the platform soundcard.
+2. The Q6DSP AFE will communicate to the audio DSP to start the USB AFE
+port.
+3. This results in a QMI packet with a STREAM enable command.
+4. The QC audio offload driver will fetch the required resources, and pass
+this information as part of the QMI response to the STREAM enable command.
+5. Once the QMI response is received the audio DSP will start queuing data
+on the USB bus.
 
-Adding ASoC binding layer:
-soc-usb: Intention is to treat a USB port similar to a headphone jack.
-The port is always present on the device, but cable/pin status can be
-enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
-communicate with USB SND.
-
-Create a USB backend for Q6DSP:
-q6usb: Basic backend driver that will be responsible for maintaining the
-resources needed to initiate a playback stream using the Q6DSP.  Will
-be the entity that checks to make sure the connected USB audio device
-supports the requested PCM format.  If it does not, the PCM open call will
-fail, and userpsace ALSA can take action accordingly.
-
-Introduce XHCI interrupter support:
-XHCI HCD supports multiple interrupters, which allows for events to be routed
-to different event rings.  This is determined by "Interrupter Target" field
-specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
-
-Events in the offloading case will be routed to an event ring that is assigned
-to the audio DSP.
-
-Create vendor ops for the USB SND driver:
-qc_audio_offload: This particular driver has several components associated
-with it:
-- QMI stream request handler
-- XHCI interrupter and resource management
-- audio DSP memory management
-
-When the audio DSP wants to enable a playback stream, the request is first
-received by the ASoC platform sound card.  Depending on the selected route,
-ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
-will send an AFE port start command (with enabling the USB playback path), and
-the audio DSP will handle the request accordingly.
-
-Part of the AFE USB port start handling will have an exchange of control
-messages using the QMI protocol.  The qc_audio_offload driver will populate the
-buffer information:
-- Event ring base address
-- EP transfer ring base address
-
-and pass it along to the audio DSP.  All endpoint management will now be handed
-over to the DSP, and the main processor is not involved in transfers.
-
-Overall, implementing this feature will still expose separate sound card and PCM
-devices for both the platorm card and USB audio device:
- 0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
-                      SM8250-MTP-WCD9380-WSA8810-VA-DMIC
- 1 [Audio          ]: USB-Audio - USB Audio
-                      Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
-
-This is to ensure that userspace ALSA entities can decide which route to take
-when executing the audio playback.  In the above, if card#1 is selected, then
-USB audio data will take the legacy path over the USB PCM drivers, etc...
-
-This feature was validated using:
-- tinymix: set/enable the multimedia path to route to USB backend
-- tinyplay: issue playback on platform card
-
-Requesting to see if we can get some Acked-By tags, and merge on usb-next.
-
-Changelog
---------------------------------------------
-Changes in v19:
-- Rebased to usb-next to account for some new changes in dependent drivers.
-
-Changes in v18:
-- Rebased to usb-next, which merged in part of the series.  Removed these patches.
-- Reworked Kconfigs for the ASoC USB related components from QCOM Q6DSP drivers
-  to keep dependencies in place for SoC USB and USB SND.
-- Removed the repurposing of the stop ep sync API into existing XHCI operations.
-  This will be solely used by the XHCI sideband for now.
-
-Changes in v17:
-- Fixed an issue where one patch was squashed into another.
-- Re-added some kconfig checks for helpers exposed in USB SND for the soc usb
-  driver, after running different kconfigs.
-
-Changes in v16:
-- Modified some code layer dependencies so that soc usb can be split as a separate
-  module.
-  - Split the kcontrols from ASoC QCOM common layer into a separate driver
-- Reworked SOC USB kcontrols for controlling card + pcm offload routing and status
-  so that there are individual controls for card and pcm devices.
-- Added a kcontrol remove API in SOC USB to remove the controls on the fly.  This
-  required to add some kcontrol management to SOC USB.
-- Removed the disconnect work and workqueue for the QC USB offload as it is not
-  required, since QMI interface driver ensures events are handled in its own WQ.
-
-Changes in v15:
-- Removed some already merged XHCI changes
-- Separated SOC USB driver from being always compiled into SOC core.  Now
-  configurable from kconfig.
-- Fixed up ASoC kcontrol naming to fit guidelines.
-- Removed some unnecessary dummy ifdefs.
-- Moved usb snd offload capable kcontrol to be initialized by the platform offloading
-  driver.
-
-Changes in v14:
-- Cleaned up some USB SND related feedback:
-  - Renamed SNDUSB OFFLD playback available --> USB offload capable card
-  - Fixed locking while checking if stream is in use
-  - Replaced some mutex pairs with guard(mutex)
-
-Changes in v13:
-- Pulled in secondary/primary interrupter rework from Mathias from:
-  https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/drivers/usb/host?h=fix_eventhandling
-  - Did some cleanup and commit message updates, and tested on current code base.
-- Added mutex locking to xhci sideband to help prevent any race conditions, esp. for when accessing shared
-  references.
-- Addresed concerns from Hillf about gfp_flags and locking used in qc_usb_audio_offload.
-- Rebased onto usb-next
-
-Changes in v12:
-- Updated copyright year to 2024.  Happy new years!
-- Fixed newline format on mixer offload driver.
-
-Changes in v11:
-- Modified QMI format structures to be const
-
-Changes in v10:
-- Added new mixer for exposing kcontrol for sound card created by USB SND.  This
-allows for applications to know which platform sound card has offload support.
-Will return the card number.
-- Broke down and cleaned up some functions/APIs within qc_audio_offload driver.
-- Exported xhci_initialize_ring_info(), and modified XHCI makefile to allow for
-the XHCI sideband to exist as a module.
-- Reworked the jack registration and moved it to the QCOM platform card driver,
-ie sm8250.
-- Added an SOC USB API to fetch a standard component tag that can be appended to
-the platform sound card.  Added this tag to sm8250 if any USB path exists within
-the DT node.
-- Moved kcontrols that existed in the Q6USB driver, and made it a bit more generic,
-so that naming can be standardized across solutions.  SOC USB is now responsible
-for creation of these kcontrols.
-- Added a SOC USB RST document explaining some code flows and implementation details
-so that other vendors can utilize the framework.
-- Addressed a case where USB device connection events are lost if usb offload driver
-(qc_audio_offload) is not probed when everything else has been initialized, ie 
-USB SND, SOC USB and ASoC sound card.  Add a rediscover device call during module
-init, to ensure that connection events will be propagated.
-- Rebased to usb-next.
-
-Changes in v9:
-- Fixed the dt binding check issue with regards to num-hc-interrupters.
-
-Changes in v8:
-- Cleaned up snd_soc_usb_find_priv_data() based on Mark's feedback.  Removed some of
-the duplicate looping code that was present on previous patches.  Also renamed the API.
-- Integrated Mathias' suggestions on his new sideband changes:
-https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
-- Addressed some of Mathias' fixme tags, such as:
- - Resetting transfer ring dequeue/enqueue pointers
- - Issuing stop endpoint command during ep removal
- - Reset ERDP properly to first segment ring during interrupter removal. (this is currently
-   just being cleared to 0, but should be pointing to a valid segment if controller is still
-   running.
-
-Changes in v7:
-- Fixed dt check error for q6usb bindings
-- Updated q6usb property from qcom,usb-audio-intr-num --> qcom,usb-audio-intr-idx
-- Removed separate DWC3 HC interrupters num property, and place limits to XHCI one.
-- Modified xhci_ring_to_sgtable() to use assigned IOVA/DMA address to fetch pages, as
-it is not ensured event ring allocated is always done in the vmalloc range.
-
-Changes in v6:
-- Fixed limits and description on several DT bindings (XHCI and Q6USB)
-- Fixed patch subjects to follow other ALSA/ASoC notations.
-
-USB SND
-- Addressed devices which expose multiple audio (UAC) interfaces.  These devices will
-create a single USB sound card with multiple audio streams, and receive multiple
-interface probe routines.  QC offload was not properly considering cases with multiple
-probe calls.
-- Renamed offload module name and kconfig to fit within the SND domain.
-- Renamed attach/detach endpoint API to keep the hw_params notation.
-
-Changes in v5:
-- Removed some unnescessary files that were included
-- Fixed some typos mentioned
-- Addressed dt-binding issues and added hc-interrupters definition to usb-xhci.yaml
-
-XHCI:
-- Moved secondary skip events API to xhci-ring and updated implementation
-   - Utilized existing XHCI APIs, such as inc_deq and xhci_update_erst_dequeue()
-
-USB SND
-- Renamed and reworked the APIs in "sound: usb: Export USB SND APIs for modules" patch to
-include suggestions to utilize snd_usb_hw_params/free and to avoid generic naming.
-- Added a resume_cb() op for completion sake.
-- Addressed some locking concerns with regards to when registering for platform hooks.
-- Added routine to disconnect all offloaded devices during module unbind.
-
-ASoC
-- Replaced individual PCM parameter arguments in snd_soc_usb_connect() with new
-snd_soc_usb_device structure to pass along PCM info.
-- Modified snd_jack set report to notify HEADPHONE event, as we do not support record path.
-
-Changes in v4:
-- Rebased to xhci/for-usb-next
-- Addressed some dt-bindings comments
-
-XHCI:
-- Pulled in latest changes from Mathias' feature_interrupters branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
-
-- Fixed commit text and signage for the XHCI sideband/interrupter related changes
-- Added some logic to address the FIXME tags mentioned throughout the commits, such
-as handling multi segment rings and building the SGT, locking concerns, and ep
-cleanup operations.
-- Removed some fixme tags for conditions that may not be needed/addressed.
-- Repurposed the new endpoint stop sync API to be utilized in other places.
-- Fixed potential compile issue if XHCI sideband config is not defined.
-
-ASoC:
-- Added sound jack control into the Q6USB driver.  Allows for userpsace to know when
-an offload capable device is connected.
-
-USB SND:
-- Avoided exporting _snd_pcm_hw_param_set based on Takashi's recommendation.
-- Split USB QMI packet header definitions into a separate commit.  This is used to
-properly allow the QMI interface driver to parse and route QMI packets accordingly
-- Added a "depends on" entry when enabling QC audio offload to avoid compile time
-issues.
-
-Changes in v3:
-- Changed prefix from RFC to PATCH
-- Rebased entire series to usb-next
-- Updated copyright years
-
-XHCI:
-- Rebased changes on top of XHCI changes merged into usb-next, and only added
-changes that were still under discussion.
-- Added change to read in the "num-hc-interrupters" device property.
-
-ASoC:
-- qusb6 USB backend
-  - Incorporated suggestions to fetch iommu information with existing APIs
-  - Added two new sound kcontrols to fetch offload status and offload device
-    selection.
-    - offload status - will return the card and pcm device in use
-        tinymix -D 0 get 1 --> 1, 0 (offload in progress on card#1 pcm#0)
-
-    - device selection - set the card and pcm device to enable offload on. Ex.:
-        tinymix -D 0 set 1 2 0  --> sets offload on card#2 pcm#0
-                                    (this should be the USB card)
-
-USB SND:
-- Fixed up some locking related concerns for registering platform ops.
-   - Moved callbacks under the register_mutex, so that 
-- Modified APIs to properly pass more information about the USB SND device, so
-that the Q6USB backend can build a device list/map, in order to monitor offload
-status and device selection.
-
-Changes in v2:
-
-XHCI:
-- Replaced XHCI and HCD changes with Mathias' XHCI interrupter changes
-in his tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
-
-Adjustments made to Mathias' changes:
-  - Created xhci-intr.h to export/expose interrupter APIs versus exposing xhci.h.
-    Moved dependent structures to this file as well. (so clients can parse out
-    information from "struct xhci_interrupter")
-  - Added some basic locking when requesting interrupters.
-  - Fixed up some sanity checks.
-  - Removed clearing of the ERSTBA during freeing of the interrupter. (pending
-    issue where SMMU fault occurs if DMA addr returned is 64b - TODO)
-
-- Clean up pending events in the XHCI secondary interrupter.  While testing USB
-bus suspend, it was seen that on bus resume, the xHCI HC would run into a command
-timeout.
-- Added offloading APIs to xHCI to fetch transfer and event ring information.
-
-ASoC:
-- Modified soc-usb to allow for multiple USB port additions.  For this to work,
-the USB offload driver has to have a reference to the USB backend by adding
-a "usb-soc-be" DT entry to the device saved into XHCI sysdev.
-- Created separate dt-bindings for defining USB_RX port.
-- Increased APR timeout to accommodate the situation where the AFE port start
-command could be delayed due to having to issue a USB bus resume while
-handling the QMI stream start command.
-
-USB SND:
-- Added a platform ops during usb_audio_suspend().  This allows for the USB
-offload driver to halt the audio stream when system enters PM suspend.  This
-ensures the audio DSP is not issuing transfers on the USB bus.
-- Do not override platform ops if they are already populated.
-- Introduce a shared status variable between the USB offload and USB SND layers,
-to ensure that only one path is active at a time.  If the USB bus is occupied,
-then userspace is notified that the path is busy.
-
-
-Mathias Nyman (2):
-  xhci: add helper to stop endpoint and wait for completion
-  xhci: sideband: add initial api to register a sideband entity
-
-Wesley Cheng (39):
-  usb: host: xhci: Export enable and disable interrupter APIs
-  usb: host: xhci: Repurpose event handler for skipping interrupter
-    events
-  xhci: export XHCI IMOD setting helper for interrupters
-  usb: host: xhci-sideband: Expose a sideband interrupter enable API
-  usb: host: xhci-mem: Cleanup pending secondary event ring events
-  usb: host: xhci-mem: Allow for interrupter clients to choose specific
-    index
-  ASoC: Add SOC USB APIs for adding an USB backend
-  ASoC: dt-bindings: qcom,q6dsp-lpass-ports: Add USB_RX port
-  ASoC: qcom: qdsp6: Introduce USB AFE port to q6dsp
-  ASoC: qdsp6: q6afe: Increase APR timeout
-  ASoC: qcom: qdsp6: Add USB backend ASoC driver for Q6
-  ALSA: usb-audio: Introduce USB SND platform op callbacks
-  ALSA: usb-audio: Export USB SND APIs for modules
-  ALSA: usb-audio: Save UAC sample size information
-  usb: dwc3: Specify maximum number of XHCI interrupters
-  usb: host: xhci-plat: Set XHCI max interrupters if property is present
-  ALSA: usb-audio: qcom: Add USB QMI definitions
-  ALSA: usb-audio: qcom: Introduce QC USB SND offloading support
-  ALSA: usb-audio: Check for support for requested audio format
-  ASoC: usb: Add PCM format check API for USB backend
-  ASoC: qcom: qdsp6: Ensure PCM format is supported by USB audio device
-  ALSA: usb-audio: Prevent starting of audio stream if in use
-  ALSA: usb-audio: Do not allow USB offload path if PCM device is in use
-  ASoC: dt-bindings: Update example for enabling USB offload on SM8250
-  ALSA: usb-audio: qcom: Populate PCM and USB chip information
-  ASoC: qcom: qdsp6: Add support to track available USB PCM devices
-  ASoC: Introduce SND kcontrols to select sound card and PCM device
-  ASoC: qcom: qdsp6: Add SOC USB offload select get/put callbacks
-  ASoC: Introduce SND kcontrols to track USB offloading state
-  ASoC: qcom: qdsp6: Add PCM ops to track current state
-  ASoC: usb: Create SOC USB SND jack kcontrol
-  ASoC: qcom: qdsp6: Add headphone jack for offload connection status
-  ASoC: usb: Fetch ASoC sound card information
-  ALSA: usb-audio: Add USB offloading capable kcontrol
-  ALSA: usb-audio: Allow for rediscovery of connected USB SND devices
-  ALSA: usb-audio: qcom: Use card and PCM index from QMI request
-  ASoC: usb: Rediscover USB SND devices on USB port add
-  ASoC: qcom: Populate SoC components string
-  ASoC: doc: Add documentation for SOC USB
-
- .../bindings/sound/qcom,sm8250.yaml           |   15 +
- Documentation/sound/soc/index.rst             |    1 +
- Documentation/sound/soc/usb.rst               |  611 ++++++
- drivers/usb/dwc3/core.c                       |   12 +
- drivers/usb/dwc3/core.h                       |    2 +
- drivers/usb/dwc3/host.c                       |    3 +
- drivers/usb/host/Kconfig                      |    9 +
- drivers/usb/host/Makefile                     |    2 +
- drivers/usb/host/xhci-mem.c                   |   37 +-
- drivers/usb/host/xhci-plat.c                  |    2 +
- drivers/usb/host/xhci-ring.c                  |   50 +-
- drivers/usb/host/xhci-sideband.c              |  439 ++++
- drivers/usb/host/xhci.c                       |   48 +-
- drivers/usb/host/xhci.h                       |   18 +-
- .../sound/qcom,q6dsp-lpass-ports.h            |    1 +
- include/linux/usb/xhci-sideband.h             |   70 +
- include/sound/q6usboffload.h                  |   20 +
- include/sound/soc-usb.h                       |  182 ++
- sound/soc/Kconfig                             |   10 +
- sound/soc/Makefile                            |    2 +
- sound/soc/qcom/Kconfig                        |   15 +
- sound/soc/qcom/Makefile                       |    2 +
- sound/soc/qcom/qdsp6/Makefile                 |    1 +
- sound/soc/qcom/qdsp6/q6afe-dai.c              |   60 +
- sound/soc/qcom/qdsp6/q6afe.c                  |  193 +-
- sound/soc/qcom/qdsp6/q6afe.h                  |   36 +-
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c      |   23 +
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h      |    1 +
- sound/soc/qcom/qdsp6/q6routing.c              |    9 +
- sound/soc/qcom/qdsp6/q6usb.c                  |  408 ++++
- sound/soc/qcom/sm8250.c                       |   15 +-
- sound/soc/qcom/usb_offload_utils.c            |   51 +
- sound/soc/qcom/usb_offload_utils.h            |   26 +
- sound/soc/soc-usb.c                           |  660 ++++++
- sound/usb/Kconfig                             |   25 +
- sound/usb/Makefile                            |    2 +-
- sound/usb/card.c                              |  109 +
- sound/usb/card.h                              |   15 +
- sound/usb/endpoint.c                          |    1 +
- sound/usb/format.c                            |    1 +
- sound/usb/helper.c                            |    1 +
- sound/usb/pcm.c                               |  104 +-
- sound/usb/pcm.h                               |   11 +
- sound/usb/qcom/Makefile                       |    6 +
- sound/usb/qcom/mixer_usb_offload.c            |   65 +
- sound/usb/qcom/mixer_usb_offload.h            |   17 +
- sound/usb/qcom/qc_audio_offload.c             | 1914 +++++++++++++++++
- sound/usb/qcom/usb_audio_qmi_v01.c            |  892 ++++++++
- sound/usb/qcom/usb_audio_qmi_v01.h            |  162 ++
- 49 files changed, 6306 insertions(+), 53 deletions(-)
- create mode 100644 Documentation/sound/soc/usb.rst
- create mode 100644 drivers/usb/host/xhci-sideband.c
- create mode 100644 include/linux/usb/xhci-sideband.h
- create mode 100644 include/sound/q6usboffload.h
- create mode 100644 include/sound/soc-usb.h
- create mode 100644 sound/soc/qcom/qdsp6/q6usb.c
- create mode 100644 sound/soc/qcom/usb_offload_utils.c
- create mode 100644 sound/soc/qcom/usb_offload_utils.h
- create mode 100644 sound/soc/soc-usb.c
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+---
+ sound/usb/Kconfig                 |   15 +
+ sound/usb/Makefile                |    2 +-
+ sound/usb/qcom/Makefile           |    2 +
+ sound/usb/qcom/qc_audio_offload.c | 1883 +++++++++++++++++++++++++++++
+ 4 files changed, 1901 insertions(+), 1 deletion(-)
  create mode 100644 sound/usb/qcom/Makefile
- create mode 100644 sound/usb/qcom/mixer_usb_offload.c
- create mode 100644 sound/usb/qcom/mixer_usb_offload.h
  create mode 100644 sound/usb/qcom/qc_audio_offload.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.h
 
+diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+index 4a9569a3a39a..5cc3eaf53e6b 100644
+--- a/sound/usb/Kconfig
++++ b/sound/usb/Kconfig
+@@ -176,6 +176,21 @@ config SND_BCD2000
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-bcd2000.
+ 
++config SND_USB_AUDIO_QMI
++	tristate "Qualcomm Audio Offload driver"
++	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND && SND_SOC_USB
++	select SND_PCM
++	help
++	  Say Y here to enable the Qualcomm USB audio offloading feature.
++
++	  This module sets up the required QMI stream enable/disable
++	  responses to requests generated by the audio DSP.  It passes the
++	  USB transfer resource references, so that the audio DSP can issue
++	  USB transfers to the host controller.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-usb-audio-qmi.
++
+ source "sound/usb/line6/Kconfig"
+ 
+ endif	# SND_USB
+diff --git a/sound/usb/Makefile b/sound/usb/Makefile
+index 8c657c2753c8..246788268ddd 100644
+--- a/sound/usb/Makefile
++++ b/sound/usb/Makefile
+@@ -34,5 +34,5 @@ obj-$(CONFIG_SND_USB_UA101) += snd-usbmidi-lib.o
+ obj-$(CONFIG_SND_USB_USX2Y) += snd-usbmidi-lib.o
+ obj-$(CONFIG_SND_USB_US122L) += snd-usbmidi-lib.o
+ 
+-obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/ bcd2000/
++obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/ bcd2000/ qcom/
+ obj-$(CONFIG_SND_USB_LINE6)	+= line6/
+diff --git a/sound/usb/qcom/Makefile b/sound/usb/qcom/Makefile
+new file mode 100644
+index 000000000000..a81c9b28d484
+--- /dev/null
++++ b/sound/usb/qcom/Makefile
+@@ -0,0 +1,2 @@
++snd-usb-audio-qmi-objs := usb_audio_qmi_v01.o qc_audio_offload.o
++obj-$(CONFIG_SND_USB_AUDIO_QMI) += snd-usb-audio-qmi.o
+\ No newline at end of file
+diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
+new file mode 100644
+index 000000000000..3b7780cb288a
+--- /dev/null
++++ b/sound/usb/qcom/qc_audio_offload.c
+@@ -0,0 +1,1883 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#include <linux/ctype.h>
++#include <linux/dma-mapping.h>
++#include <linux/dma-map-ops.h>
++#include <linux/init.h>
++#include <linux/iommu.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/soc/qcom/qmi.h>
++#include <linux/usb.h>
++#include <linux/usb/audio.h>
++#include <linux/usb/audio-v2.h>
++#include <linux/usb/audio-v3.h>
++#include <linux/usb/hcd.h>
++#include <linux/usb/quirks.h>
++#include <linux/usb/xhci-sideband.h>
++
++#include <sound/control.h>
++#include <sound/core.h>
++#include <sound/info.h>
++#include <sound/initval.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/q6usboffload.h>
++#include <sound/soc.h>
++#include <sound/soc-usb.h>
++
++#include "../usbaudio.h"
++#include "../card.h"
++#include "../endpoint.h"
++#include "../format.h"
++#include "../helper.h"
++#include "../pcm.h"
++#include "../power.h"
++
++#include "usb_audio_qmi_v01.h"
++
++/* Stream disable request timeout during USB device disconnect */
++#define DEV_RELEASE_WAIT_TIMEOUT 10000 /* in ms */
++
++/* Data interval calculation parameters */
++#define BUS_INTERVAL_FULL_SPEED 1000 /* in us */
++#define BUS_INTERVAL_HIGHSPEED_AND_ABOVE 125 /* in us */
++#define MAX_BINTERVAL_ISOC_EP 16
++
++#define QMI_STREAM_REQ_CARD_NUM_MASK 0xffff0000
++#define QMI_STREAM_REQ_DEV_NUM_MASK 0xff00
++#define QMI_STREAM_REQ_DIRECTION 0xff
++
++/* iommu resource parameters and management */
++#define PREPEND_SID_TO_IOVA(iova, sid) ((u64)(((u64)(iova)) | \
++					(((u64)sid) << 32)))
++#define IOVA_MASK(iova) (((u64)(iova)) & 0xFFFFFFFF)
++#define IOVA_BASE 0x1000
++#define IOVA_XFER_RING_BASE (IOVA_BASE + PAGE_SIZE * (SNDRV_CARDS + 1))
++#define IOVA_XFER_BUF_BASE (IOVA_XFER_RING_BASE + PAGE_SIZE * SNDRV_CARDS * 32)
++#define IOVA_XFER_RING_MAX (IOVA_XFER_BUF_BASE - PAGE_SIZE)
++#define IOVA_XFER_BUF_MAX (0xfffff000 - PAGE_SIZE)
++
++#define MAX_XFER_BUFF_LEN (24 * PAGE_SIZE)
++
++struct iova_info {
++	struct list_head list;
++	unsigned long start_iova;
++	size_t size;
++	bool in_use;
++};
++
++struct intf_info {
++	unsigned long data_xfer_ring_va;
++	size_t data_xfer_ring_size;
++	unsigned long sync_xfer_ring_va;
++	size_t sync_xfer_ring_size;
++	unsigned long xfer_buf_va;
++	size_t xfer_buf_size;
++	phys_addr_t xfer_buf_pa;
++	unsigned int data_ep_pipe;
++	unsigned int sync_ep_pipe;
++	u8 *xfer_buf;
++	u8 intf_num;
++	u8 pcm_card_num;
++	u8 pcm_dev_num;
++	u8 direction;
++	bool in_use;
++};
++
++struct uaudio_qmi_dev {
++	struct device *dev;
++	struct q6usb_offload *data;
++
++	/* list to keep track of available iova */
++	struct list_head xfer_ring_list;
++	size_t xfer_ring_iova_size;
++	unsigned long curr_xfer_ring_iova;
++	struct list_head xfer_buf_list;
++	size_t xfer_buf_iova_size;
++	unsigned long curr_xfer_buf_iova;
++
++	/* bit fields representing pcm card enabled */
++	unsigned long card_slot;
++	/* indicate event ring mapped or not */
++	bool er_mapped;
++	/* reference count to number of possible consumers */
++	atomic_t qdev_in_use;
++	/* idx to last udev card number plugged in */
++	unsigned int last_card_num;
++};
++
++struct uaudio_dev {
++	struct usb_device *udev;
++	/* audio control interface */
++	struct usb_host_interface *ctrl_intf;
++	unsigned int usb_core_id;
++	atomic_t in_use;
++	struct kref kref;
++	wait_queue_head_t disconnect_wq;
++
++	/* interface specific */
++	int num_intf;
++	struct intf_info *info;
++	struct snd_usb_audio *chip;
++
++	/* xhci sideband */
++	struct xhci_sideband *sb;
++
++	/* SoC USB device */
++	struct snd_soc_usb_device *sdev;
++};
++
++static struct uaudio_dev uadev[SNDRV_CARDS];
++static struct uaudio_qmi_dev *uaudio_qdev;
++static struct uaudio_qmi_svc *uaudio_svc;
++static DEFINE_MUTEX(qdev_mutex);
++
++struct uaudio_qmi_svc {
++	struct qmi_handle *uaudio_svc_hdl;
++	struct sockaddr_qrtr client_sq;
++	bool client_connected;
++};
++
++enum mem_type {
++	MEM_EVENT_RING,
++	MEM_XFER_RING,
++	MEM_XFER_BUF,
++};
++
++/* Supported audio formats */
++enum usb_qmi_audio_format {
++	USB_QMI_PCM_FORMAT_S8 = 0,
++	USB_QMI_PCM_FORMAT_U8,
++	USB_QMI_PCM_FORMAT_S16_LE,
++	USB_QMI_PCM_FORMAT_S16_BE,
++	USB_QMI_PCM_FORMAT_U16_LE,
++	USB_QMI_PCM_FORMAT_U16_BE,
++	USB_QMI_PCM_FORMAT_S24_LE,
++	USB_QMI_PCM_FORMAT_S24_BE,
++	USB_QMI_PCM_FORMAT_U24_LE,
++	USB_QMI_PCM_FORMAT_U24_BE,
++	USB_QMI_PCM_FORMAT_S24_3LE,
++	USB_QMI_PCM_FORMAT_S24_3BE,
++	USB_QMI_PCM_FORMAT_U24_3LE,
++	USB_QMI_PCM_FORMAT_U24_3BE,
++	USB_QMI_PCM_FORMAT_S32_LE,
++	USB_QMI_PCM_FORMAT_S32_BE,
++	USB_QMI_PCM_FORMAT_U32_LE,
++	USB_QMI_PCM_FORMAT_U32_BE,
++};
++
++static enum usb_qmi_audio_device_speed_enum_v01
++get_speed_info(enum usb_device_speed udev_speed)
++{
++	switch (udev_speed) {
++	case USB_SPEED_LOW:
++		return USB_QMI_DEVICE_SPEED_LOW_V01;
++	case USB_SPEED_FULL:
++		return USB_QMI_DEVICE_SPEED_FULL_V01;
++	case USB_SPEED_HIGH:
++		return USB_QMI_DEVICE_SPEED_HIGH_V01;
++	case USB_SPEED_SUPER:
++		return USB_QMI_DEVICE_SPEED_SUPER_V01;
++	case USB_SPEED_SUPER_PLUS:
++		return USB_QMI_DEVICE_SPEED_SUPER_PLUS_V01;
++	default:
++		return USB_QMI_DEVICE_SPEED_INVALID_V01;
++	}
++}
++
++static struct snd_usb_substream *find_substream(unsigned int card_num,
++	unsigned int pcm_idx, unsigned int direction)
++{
++	struct snd_usb_substream *subs = NULL;
++	struct snd_usb_audio *chip;
++	struct snd_usb_stream *as;
++
++	chip = uadev[card_num].chip;
++	if (!chip || atomic_read(&chip->shutdown))
++		goto done;
++
++	if (pcm_idx >= chip->pcm_devs)
++		goto done;
++
++	if (direction > SNDRV_PCM_STREAM_CAPTURE)
++		goto done;
++
++	list_for_each_entry(as, &chip->pcm_list, list) {
++		if (as->pcm_index == pcm_idx) {
++			subs = &as->substream[direction];
++			goto done;
++		}
++	}
++
++done:
++	return subs;
++}
++
++static int info_idx_from_ifnum(int card_num, int intf_num, bool enable)
++{
++	int i;
++
++	/*
++	 * default index 0 is used when info is allocated upon
++	 * first enable audio stream req for a pcm device
++	 */
++	if (enable && !uadev[card_num].info)
++		return 0;
++
++	for (i = 0; i < uadev[card_num].num_intf; i++) {
++		if (enable && !uadev[card_num].info[i].in_use)
++			return i;
++		else if (!enable &&
++				uadev[card_num].info[i].intf_num == intf_num)
++			return i;
++	}
++
++	return -EINVAL;
++}
++
++static int get_data_interval_from_si(struct snd_usb_substream *subs,
++	u32 service_interval)
++{
++	unsigned int bus_intval_mult;
++	unsigned int bus_intval;
++	unsigned int binterval;
++
++	if (subs->dev->speed >= USB_SPEED_HIGH)
++		bus_intval = BUS_INTERVAL_HIGHSPEED_AND_ABOVE;
++	else
++		bus_intval = BUS_INTERVAL_FULL_SPEED;
++
++	if (service_interval % bus_intval)
++		return -EINVAL;
++
++	bus_intval_mult = service_interval / bus_intval;
++	binterval = ffs(bus_intval_mult);
++	if (!binterval || binterval > MAX_BINTERVAL_ISOC_EP)
++		return -EINVAL;
++
++	/* check if another bit is set then bail out */
++	bus_intval_mult = bus_intval_mult >> binterval;
++	if (bus_intval_mult)
++		return -EINVAL;
++
++	return (binterval - 1);
++}
++
++/* maps audio format received over QMI to asound.h based pcm format */
++static snd_pcm_format_t map_pcm_format(enum usb_qmi_audio_format fmt_received)
++{
++	switch (fmt_received) {
++	case USB_QMI_PCM_FORMAT_S8:
++		return SNDRV_PCM_FORMAT_S8;
++	case USB_QMI_PCM_FORMAT_U8:
++		return SNDRV_PCM_FORMAT_U8;
++	case USB_QMI_PCM_FORMAT_S16_LE:
++		return SNDRV_PCM_FORMAT_S16_LE;
++	case USB_QMI_PCM_FORMAT_S16_BE:
++		return SNDRV_PCM_FORMAT_S16_BE;
++	case USB_QMI_PCM_FORMAT_U16_LE:
++		return SNDRV_PCM_FORMAT_U16_LE;
++	case USB_QMI_PCM_FORMAT_U16_BE:
++		return SNDRV_PCM_FORMAT_U16_BE;
++	case USB_QMI_PCM_FORMAT_S24_LE:
++		return SNDRV_PCM_FORMAT_S24_LE;
++	case USB_QMI_PCM_FORMAT_S24_BE:
++		return SNDRV_PCM_FORMAT_S24_BE;
++	case USB_QMI_PCM_FORMAT_U24_LE:
++		return SNDRV_PCM_FORMAT_U24_LE;
++	case USB_QMI_PCM_FORMAT_U24_BE:
++		return SNDRV_PCM_FORMAT_U24_BE;
++	case USB_QMI_PCM_FORMAT_S24_3LE:
++		return SNDRV_PCM_FORMAT_S24_3LE;
++	case USB_QMI_PCM_FORMAT_S24_3BE:
++		return SNDRV_PCM_FORMAT_S24_3BE;
++	case USB_QMI_PCM_FORMAT_U24_3LE:
++		return SNDRV_PCM_FORMAT_U24_3LE;
++	case USB_QMI_PCM_FORMAT_U24_3BE:
++		return SNDRV_PCM_FORMAT_U24_3BE;
++	case USB_QMI_PCM_FORMAT_S32_LE:
++		return SNDRV_PCM_FORMAT_S32_LE;
++	case USB_QMI_PCM_FORMAT_S32_BE:
++		return SNDRV_PCM_FORMAT_S32_BE;
++	case USB_QMI_PCM_FORMAT_U32_LE:
++		return SNDRV_PCM_FORMAT_U32_LE;
++	case USB_QMI_PCM_FORMAT_U32_BE:
++		return SNDRV_PCM_FORMAT_U32_BE;
++	default:
++		/*
++		 * We expect the caller to do input validation so we should
++		 * never hit this. But we do have to return a proper
++		 * snd_pcm_format_t value due to the __bitwise attribute; so
++		 * just return the equivalent of 0 in case of bad input.
++		 */
++		return SNDRV_PCM_FORMAT_S8;
++	}
++}
++
++/* Offloading IOMMU management */
++static unsigned long uaudio_get_iova(unsigned long *curr_iova,
++	size_t *curr_iova_size, struct list_head *head, size_t size)
++{
++	struct iova_info *info, *new_info = NULL;
++	struct list_head *curr_head;
++	size_t tmp_size = size;
++	unsigned long va = 0;
++	bool found = false;
++
++	if (size % PAGE_SIZE)
++		goto done;
++
++	if (size > *curr_iova_size)
++		goto done;
++
++	if (*curr_iova_size == 0)
++		goto done;
++
++	list_for_each_entry(info, head, list) {
++		/* exact size iova_info */
++		if (!info->in_use && info->size == size) {
++			info->in_use = true;
++			va = info->start_iova;
++			*curr_iova_size -= size;
++			found = true;
++			goto done;
++		} else if (!info->in_use && tmp_size >= info->size) {
++			if (!new_info)
++				new_info = info;
++			tmp_size -= info->size;
++			if (tmp_size)
++				continue;
++
++			va = new_info->start_iova;
++			for (curr_head = &new_info->list; curr_head !=
++			&info->list; curr_head = curr_head->next) {
++				new_info = list_entry(curr_head, struct
++						iova_info, list);
++				new_info->in_use = true;
++			}
++			info->in_use = true;
++			*curr_iova_size -= size;
++			found = true;
++			goto done;
++		} else {
++			/* iova region in use */
++			new_info = NULL;
++			tmp_size = size;
++		}
++	}
++
++	info = kzalloc(sizeof(struct iova_info), GFP_KERNEL);
++	if (!info) {
++		va = 0;
++		goto done;
++	}
++
++	va = info->start_iova = *curr_iova;
++	info->size = size;
++	info->in_use = true;
++	*curr_iova += size;
++	*curr_iova_size -= size;
++	found = true;
++	list_add_tail(&info->list, head);
++
++done:
++	return va;
++}
++
++static void uaudio_put_iova(unsigned long va, size_t size, struct list_head
++	*head, size_t *curr_iova_size)
++{
++	struct iova_info *info;
++	size_t tmp_size = size;
++	bool found = false;
++
++	list_for_each_entry(info, head, list) {
++		if (info->start_iova == va) {
++			if (!info->in_use)
++				return;
++
++			found = true;
++			info->in_use = false;
++			if (info->size == size)
++				goto done;
++		}
++
++		if (found && tmp_size >= info->size) {
++			info->in_use = false;
++			tmp_size -= info->size;
++			if (!tmp_size)
++				goto done;
++		}
++	}
++
++	if (!found)
++		return;
++
++done:
++	*curr_iova_size += size;
++}
++
++/**
++ * uaudio_iommu_unmap() - unmaps iommu memory for adsp
++ * @mtype: ring type
++ * @va: virtual address to unmap
++ * @iova_size: region size
++ * @mapped_iova_size: mapped region size
++ *
++ * Unmaps the memory region that was previously assigned to the adsp.
++ *
++ */
++static void uaudio_iommu_unmap(enum mem_type mtype, unsigned long va,
++	size_t iova_size, size_t mapped_iova_size)
++{
++	size_t umap_size;
++	bool unmap = true;
++
++	if (!va || !iova_size)
++		return;
++
++	switch (mtype) {
++	case MEM_EVENT_RING:
++		if (uaudio_qdev->er_mapped)
++			uaudio_qdev->er_mapped = false;
++		else
++			unmap = false;
++		break;
++
++	case MEM_XFER_RING:
++		uaudio_put_iova(va, iova_size, &uaudio_qdev->xfer_ring_list,
++		&uaudio_qdev->xfer_ring_iova_size);
++		break;
++	case MEM_XFER_BUF:
++		uaudio_put_iova(va, iova_size, &uaudio_qdev->xfer_buf_list,
++		&uaudio_qdev->xfer_buf_iova_size);
++		break;
++	default:
++		unmap = false;
++	}
++
++	if (!unmap || !mapped_iova_size)
++		return;
++
++	umap_size = iommu_unmap(uaudio_qdev->data->domain, va, mapped_iova_size);
++	if (umap_size != mapped_iova_size)
++		dev_err(uaudio_qdev->data->dev,
++			"unmapped size %zu for iova 0x%08lx of mapped size %zu\n",
++			umap_size, va, mapped_iova_size);
++}
++
++/**
++ * uaudio_iommu_map() - maps iommu memory for adsp
++ * @mtype: ring type
++ * @dma_coherent: dma coherent
++ * @pa: physical address for ring/buffer
++ * @size: size of memory region
++ * @sgt: sg table for memory region
++ *
++ * Maps the XHCI related resources to a memory region that is assigned to be
++ * used by the adsp.  This will be mapped to the domain, which is created by
++ * the ASoC USB backend driver.
++ *
++ */
++static unsigned long uaudio_iommu_map(enum mem_type mtype, bool dma_coherent,
++		phys_addr_t pa, size_t size, struct sg_table *sgt)
++{
++	struct scatterlist *sg;
++	unsigned long va = 0;
++	size_t total_len = 0;
++	unsigned long va_sg;
++	phys_addr_t pa_sg;
++	bool map = true;
++	size_t sg_len;
++	int prot;
++	int ret;
++	int i;
++
++	prot = IOMMU_READ | IOMMU_WRITE;
++
++	if (dma_coherent)
++		prot |= IOMMU_CACHE;
++
++	switch (mtype) {
++	case MEM_EVENT_RING:
++		va = IOVA_BASE;
++		/* er already mapped */
++		if (uaudio_qdev->er_mapped)
++			map = false;
++		break;
++	case MEM_XFER_RING:
++		va = uaudio_get_iova(&uaudio_qdev->curr_xfer_ring_iova,
++		&uaudio_qdev->xfer_ring_iova_size, &uaudio_qdev->xfer_ring_list,
++		size);
++		break;
++	case MEM_XFER_BUF:
++		va = uaudio_get_iova(&uaudio_qdev->curr_xfer_buf_iova,
++		&uaudio_qdev->xfer_buf_iova_size, &uaudio_qdev->xfer_buf_list,
++		size);
++		break;
++	default:
++		dev_err(uaudio_qdev->data->dev, "unknown mem type %d\n", mtype);
++	}
++
++	if (!va || !map)
++		goto done;
++
++	if (!sgt)
++		goto skip_sgt_map;
++
++	va_sg = va;
++	for_each_sg(sgt->sgl, sg, sgt->nents, i) {
++		sg_len = PAGE_ALIGN(sg->offset + sg->length);
++		pa_sg = page_to_phys(sg_page(sg));
++		ret = iommu_map(uaudio_qdev->data->domain, va_sg, pa_sg, sg_len,
++				prot, GFP_KERNEL);
++		if (ret) {
++			uaudio_iommu_unmap(MEM_XFER_BUF, va, size, total_len);
++			va = 0;
++			goto done;
++		}
++
++		va_sg += sg_len;
++		total_len += sg_len;
++	}
++
++	if (size != total_len) {
++		uaudio_iommu_unmap(MEM_XFER_BUF, va, size, total_len);
++		va = 0;
++	}
++	return va;
++
++skip_sgt_map:
++	iommu_map(uaudio_qdev->data->domain, va, pa, size, prot, GFP_KERNEL);
++
++done:
++	return va;
++}
++
++/* looks up alias, if any, for controller DT node and returns the index */
++static int usb_get_controller_id(struct usb_device *udev)
++{
++	if (udev->bus->sysdev && udev->bus->sysdev->of_node)
++		return of_alias_get_id(udev->bus->sysdev->of_node, "usb");
++
++	return -ENODEV;
++}
++
++/**
++ * uaudio_dev_intf_cleanup() - cleanup transfer resources
++ * @udev: usb device
++ * @info: usb offloading interface
++ *
++ * Cleans up the transfer ring related resources which are assigned per
++ * endpoint from XHCI.  This is invoked when the USB endpoints are no
++ * longer in use by the adsp.
++ *
++ */
++static void uaudio_dev_intf_cleanup(struct usb_device *udev,
++	struct intf_info *info)
++{
++	uaudio_iommu_unmap(MEM_XFER_RING, info->data_xfer_ring_va,
++		info->data_xfer_ring_size, info->data_xfer_ring_size);
++	info->data_xfer_ring_va = 0;
++	info->data_xfer_ring_size = 0;
++
++	uaudio_iommu_unmap(MEM_XFER_RING, info->sync_xfer_ring_va,
++		info->sync_xfer_ring_size, info->sync_xfer_ring_size);
++	info->sync_xfer_ring_va = 0;
++	info->sync_xfer_ring_size = 0;
++
++	uaudio_iommu_unmap(MEM_XFER_BUF, info->xfer_buf_va,
++		info->xfer_buf_size, info->xfer_buf_size);
++	info->xfer_buf_va = 0;
++
++	usb_free_coherent(udev, info->xfer_buf_size,
++		info->xfer_buf, info->xfer_buf_pa);
++	info->xfer_buf_size = 0;
++	info->xfer_buf = NULL;
++	info->xfer_buf_pa = 0;
++
++	info->in_use = false;
++}
++
++/**
++ * uaudio_event_ring_cleanup_free() - cleanup secondary event ring
++ * @dev: usb offload device
++ *
++ * Cleans up the secondary event ring that was requested.  This will
++ * occur when the adsp is no longer transferring data on the USB bus
++ * across all endpoints.
++ *
++ */
++static void uaudio_event_ring_cleanup_free(struct uaudio_dev *dev)
++{
++	clear_bit(dev->chip->card->number, &uaudio_qdev->card_slot);
++	/* all audio devices are disconnected */
++	if (!uaudio_qdev->card_slot) {
++		uaudio_iommu_unmap(MEM_EVENT_RING, IOVA_BASE, PAGE_SIZE,
++			PAGE_SIZE);
++		xhci_sideband_remove_interrupter(uadev[dev->chip->card->number].sb);
++	}
++}
++
++static void uaudio_dev_cleanup(struct uaudio_dev *dev)
++{
++	int if_idx;
++
++	if (!dev->udev)
++		return;
++
++	/* free xfer buffer and unmap xfer ring and buf per interface */
++	for (if_idx = 0; if_idx < dev->num_intf; if_idx++) {
++		if (!dev->info[if_idx].in_use)
++			continue;
++		uaudio_dev_intf_cleanup(dev->udev, &dev->info[if_idx]);
++		dev_dbg(uaudio_qdev->data->dev,
++			"release resources: intf# %d card# %d\n",
++			dev->info[if_idx].intf_num, dev->chip->card->number);
++	}
++
++	dev->num_intf = 0;
++
++	/* free interface info */
++	kfree(dev->info);
++	dev->info = NULL;
++	uaudio_event_ring_cleanup_free(dev);
++	dev->udev = NULL;
++}
++
++/**
++ * disable_audio_stream() - disable usb snd endpoints
++ * @subs: usb substream
++ *
++ * Closes the USB SND endpoints associated with the current audio stream
++ * used.  This will decrement the USB SND endpoint opened reference count.
++ *
++ */
++static void disable_audio_stream(struct snd_usb_substream *subs)
++{
++	struct snd_usb_audio *chip = subs->stream->chip;
++
++	snd_usb_hw_free(subs);
++	snd_usb_autosuspend(chip);
++}
++
++/* QMI service disconnect handlers */
++static void qmi_stop_session(void)
++{
++	struct snd_usb_substream *subs;
++	struct usb_host_endpoint *ep;
++	struct snd_usb_audio *chip;
++	struct intf_info *info;
++	int pcm_card_num;
++	int if_idx;
++	int idx;
++
++	mutex_lock(&qdev_mutex);
++	/* find all active intf for set alt 0 and cleanup usb audio dev */
++	for (idx = 0; idx < SNDRV_CARDS; idx++) {
++		if (!atomic_read(&uadev[idx].in_use))
++			continue;
++
++		chip = uadev[idx].chip;
++		for (if_idx = 0; if_idx < uadev[idx].num_intf; if_idx++) {
++			if (!uadev[idx].info || !uadev[idx].info[if_idx].in_use)
++				continue;
++			info = &uadev[idx].info[if_idx];
++			pcm_card_num = info->pcm_card_num;
++			subs = find_substream(pcm_card_num,
++						info->pcm_dev_num,
++						info->direction);
++			if (!subs || !chip || atomic_read(&chip->shutdown)) {
++				dev_err(&subs->dev->dev,
++					"no sub for c#%u dev#%u dir%u\n",
++					info->pcm_card_num,
++					info->pcm_dev_num,
++					info->direction);
++				continue;
++			}
++			/* Release XHCI endpoints */
++			if (info->data_ep_pipe)
++				ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
++						info->data_ep_pipe);
++			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
++
++			if (info->sync_ep_pipe)
++				ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
++						info->sync_ep_pipe);
++			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
++
++			disable_audio_stream(subs);
++		}
++		atomic_set(&uadev[idx].in_use, 0);
++		mutex_lock(&chip->mutex);
++		uaudio_dev_cleanup(&uadev[idx]);
++		mutex_unlock(&chip->mutex);
++	}
++	mutex_unlock(&qdev_mutex);
++}
++
++/**
++ * qmi_bye_cb() - qmi bye message callback
++ * @handle: QMI handle
++ * @node: id of the dying node
++ *
++ * This callback is invoked when the QMI bye control message is received
++ * from the QMI client.  Handle the message accordingly by ensuring that
++ * the USB offload path is disabled and cleaned up.  At this point, ADSP
++ * is not utilizing the USB bus.
++ *
++ */
++static void qmi_bye_cb(struct qmi_handle *handle, unsigned int node)
++{
++	struct uaudio_qmi_svc *svc = uaudio_svc;
++
++	if (svc->uaudio_svc_hdl != handle)
++		return;
++
++	if (svc->client_connected && svc->client_sq.sq_node == node) {
++		qmi_stop_session();
++
++		/* clear QMI client parameters to block further QMI messages */
++		svc->client_sq.sq_node = 0;
++		svc->client_sq.sq_port = 0;
++		svc->client_sq.sq_family = 0;
++		svc->client_connected = false;
++	}
++}
++
++/**
++ * qmi_svc_disconnect_cb() - qmi client disconnected
++ * @handle: QMI handle
++ * @node: id of the dying node
++ * @port: port of the dying client
++ *
++ * Invoked when the remote QMI client is disconnected.  Handle this event
++ * the same way as when the QMI bye message is received.  This will ensure
++ * the USB offloading path is disabled and cleaned up.
++ *
++ */
++static void qmi_svc_disconnect_cb(struct qmi_handle *handle,
++				  unsigned int node, unsigned int port)
++{
++	struct uaudio_qmi_svc *svc;
++
++	if (uaudio_svc == NULL)
++		return;
++
++	svc = uaudio_svc;
++	if (svc->uaudio_svc_hdl != handle)
++		return;
++
++	if (svc->client_connected && svc->client_sq.sq_node == node &&
++			svc->client_sq.sq_port == port) {
++		qmi_stop_session();
++
++		/* clear QMI client parameters to block further QMI messages */
++		svc->client_sq.sq_node = 0;
++		svc->client_sq.sq_port = 0;
++		svc->client_sq.sq_family = 0;
++		svc->client_connected = false;
++	}
++}
++
++/* QMI client callback handlers from QMI interface */
++static struct qmi_ops uaudio_svc_ops_options = {
++	.bye = qmi_bye_cb,
++	.del_client = qmi_svc_disconnect_cb,
++};
++
++/* kref release callback when all streams are disabled */
++static void uaudio_dev_release(struct kref *kref)
++{
++	struct uaudio_dev *dev = container_of(kref, struct uaudio_dev, kref);
++
++	uaudio_event_ring_cleanup_free(dev);
++	atomic_set(&dev->in_use, 0);
++	wake_up(&dev->disconnect_wq);
++}
++
++/**
++ * enable_audio_stream() - enable usb snd endpoints
++ * @subs: usb substream
++ * @pcm_format: pcm format requested
++ * @channels: number of channels
++ * @cur_rate: sample rate
++ * @datainterval: interval
++ *
++ * Opens all USB SND endpoints used for the data interface.  This will increment
++ * the USB SND endpoint's opened count.  Requests to keep the interface resumed
++ * until the audio stream is stopped.  Will issue the USB set interface control
++ * message to enable the data interface.
++ *
++ */
++static int enable_audio_stream(struct snd_usb_substream *subs,
++				snd_pcm_format_t pcm_format,
++				unsigned int channels, unsigned int cur_rate,
++				int datainterval)
++{
++	struct snd_pcm_hw_params params;
++	struct snd_usb_audio *chip;
++	struct snd_interval *i;
++	struct snd_mask *m;
++	int ret;
++
++	chip = subs->stream->chip;
++
++	_snd_pcm_hw_params_any(&params);
++
++	m = hw_param_mask(&params, SNDRV_PCM_HW_PARAM_FORMAT);
++	snd_mask_leave(m, pcm_format);
++
++	i = hw_param_interval(&params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	snd_interval_setinteger(i);
++	i->min = i->max = channels;
++
++	i = hw_param_interval(&params, SNDRV_PCM_HW_PARAM_RATE);
++	snd_interval_setinteger(i);
++	i->min = i->max = cur_rate;
++
++	pm_runtime_barrier(&chip->intf[0]->dev);
++	snd_usb_autoresume(chip);
++
++	ret = snd_usb_hw_params(subs, &params);
++	if (ret < 0)
++		goto put_suspend;
++
++	if (!atomic_read(&chip->shutdown)) {
++		ret = snd_usb_lock_shutdown(chip);
++		if (ret < 0)
++			goto detach_ep;
++
++		if (subs->sync_endpoint) {
++			ret = snd_usb_endpoint_prepare(chip, subs->sync_endpoint);
++			if (ret < 0)
++				goto unlock;
++		}
++
++		ret = snd_usb_endpoint_prepare(chip, subs->data_endpoint);
++		if (ret < 0)
++			goto unlock;
++
++		snd_usb_unlock_shutdown(chip);
++
++		dev_dbg(uaudio_qdev->data->dev,
++			"selected %s iface:%d altsetting:%d datainterval:%dus\n",
++			subs->direction ? "capture" : "playback",
++			subs->cur_audiofmt->iface, subs->cur_audiofmt->altsetting,
++			(1 << subs->cur_audiofmt->datainterval) *
++			(subs->dev->speed >= USB_SPEED_HIGH ?
++			BUS_INTERVAL_HIGHSPEED_AND_ABOVE :
++			BUS_INTERVAL_FULL_SPEED));
++	}
++
++	return 0;
++
++unlock:
++	snd_usb_unlock_shutdown(chip);
++
++detach_ep:
++	snd_usb_hw_free(subs);
++
++put_suspend:
++	snd_usb_autosuspend(chip);
++
++	return ret;
++}
++
++/* returns usb hcd sysdev */
++static struct device *usb_get_usb_backend(struct usb_device *udev)
++{
++	if (udev->bus->sysdev && udev->bus->sysdev->of_node)
++		return udev->bus->sysdev;
++
++	return NULL;
++}
++
++/**
++ * uaudio_transfer_buffer_setup() - fetch and populate xfer buffer params
++ * @subs: usb substream
++ * @xfer_buf: xfer buf to be allocated
++ * @xfer_buf_len: size of allocation
++ * @mem_info: QMI response info
++ *
++ * Allocates and maps the transfer buffers that will be utilized by the
++ * audio DSP.  Will populate the information in the QMI response that is
++ * sent back to the stream enable request.
++ *
++ */
++static int uaudio_transfer_buffer_setup(struct snd_usb_substream *subs,
++					u8 *xfer_buf, u32 xfer_buf_len,
++					struct mem_info_v01 *mem_info)
++{
++	struct sg_table xfer_buf_sgt;
++	phys_addr_t xfer_buf_pa;
++	u32 len = xfer_buf_len;
++	bool dma_coherent;
++	unsigned long va;
++	u32 remainder;
++	u32 mult;
++	int ret;
++
++	dma_coherent = dev_is_dma_coherent(subs->dev->bus->sysdev);
++
++	/* xfer buffer, multiple of 4K only */
++	if (!len)
++		len = PAGE_SIZE;
++
++	mult = len / PAGE_SIZE;
++	remainder = len % PAGE_SIZE;
++	len = mult * PAGE_SIZE;
++	len += remainder ? PAGE_SIZE : 0;
++
++	if (len > MAX_XFER_BUFF_LEN) {
++		dev_err(uaudio_qdev->data->dev,
++			"req buf len %d > max buf len %lu, setting %lu\n",
++			len, MAX_XFER_BUFF_LEN, MAX_XFER_BUFF_LEN);
++		len = MAX_XFER_BUFF_LEN;
++	}
++
++	xfer_buf = usb_alloc_coherent(subs->dev, len, GFP_KERNEL, &xfer_buf_pa);
++	if (!xfer_buf)
++		return -ENOMEM;
++
++	dma_get_sgtable(subs->dev->bus->sysdev, &xfer_buf_sgt, xfer_buf,
++			xfer_buf_pa, len);
++	va = uaudio_iommu_map(MEM_XFER_BUF, dma_coherent, xfer_buf_pa, len,
++			&xfer_buf_sgt);
++	if (!va) {
++		ret = -ENOMEM;
++		goto unmap_sync;
++	}
++
++	mem_info->pa = xfer_buf_pa;
++	mem_info->size = len;
++	mem_info->va = PREPEND_SID_TO_IOVA(va, uaudio_qdev->data->sid);
++	sg_free_table(&xfer_buf_sgt);
++
++	return 0;
++
++unmap_sync:
++	usb_free_coherent(subs->dev, len, xfer_buf, xfer_buf_pa);
++
++	return ret;
++}
++
++/**
++ * uaudio_endpoint_setup() - fetch and populate endpoint params
++ * @subs: usb substream
++ * @endpoint: usb endpoint to add
++ * @card_num: uadev index
++ * @mem_info: QMI response info
++ * @ep_desc: QMI ep desc response field
++ *
++ * Initialize the USB endpoint being used for a particular USB
++ * stream.  Will request XHCI sideband to reserve the EP for
++ * offloading as well as populating the QMI response with the
++ * transfer ring parameters.
++ *
++ */
++static phys_addr_t uaudio_endpoint_setup(struct snd_usb_substream *subs,
++				 struct snd_usb_endpoint *endpoint, int card_num,
++				 struct mem_info_v01 *mem_info,
++				 struct usb_endpoint_descriptor_v01 *ep_desc)
++{
++	struct usb_host_endpoint *ep;
++	phys_addr_t tr_pa = 0;
++	struct sg_table *sgt;
++	bool dma_coherent;
++	unsigned long va;
++	struct page *pg;
++	int ret;
++
++	dma_coherent = dev_is_dma_coherent(subs->dev->bus->sysdev);
++
++	ep = usb_pipe_endpoint(subs->dev, endpoint->pipe);
++	if (!ep) {
++		dev_err(uaudio_qdev->data->dev, "data ep # %d context is null\n",
++			subs->data_endpoint->ep_num);
++		goto exit;
++	}
++
++	memcpy(ep_desc, &ep->desc, sizeof(ep->desc));
++
++	ret = xhci_sideband_add_endpoint(uadev[card_num].sb, ep);
++	if (ret < 0) {
++		dev_err(&subs->dev->dev,
++			"failed to add data ep to sideband\n");
++		ret = -ENODEV;
++		goto exit;
++	}
++
++	sgt = xhci_sideband_get_endpoint_buffer(uadev[card_num].sb, ep);
++	if (!sgt) {
++		dev_err(&subs->dev->dev,
++			"failed to get data ep ring address\n");
++		ret = -ENODEV;
++		goto remove_ep;
++	}
++
++	pg = sg_page(sgt->sgl);
++	tr_pa = page_to_phys(pg);
++	mem_info->pa = sg_dma_address(sgt->sgl);
++	sg_free_table(sgt);
++
++	/* data transfer ring */
++	va = uaudio_iommu_map(MEM_XFER_RING, dma_coherent, tr_pa,
++			PAGE_SIZE, NULL);
++	if (!va) {
++		ret = -ENOMEM;
++		goto clear_pa;
++	}
++
++	mem_info->va = PREPEND_SID_TO_IOVA(va, uaudio_qdev->data->sid);
++	mem_info->size = PAGE_SIZE;
++
++	return 0;
++
++clear_pa:
++	mem_info->pa = 0;
++remove_ep:
++	xhci_sideband_remove_endpoint(uadev[card_num].sb, ep);
++exit:
++	return ret;
++}
++
++/**
++ * uaudio_event_ring_setup() - fetch and populate event ring params
++ * @subs: usb substream
++ * @card_num: uadev index
++ * @mem_info: QMI response info
++ *
++ * Register secondary interrupter to XHCI and fetch the event buffer info
++ * and populate the information into the QMI response.
++ *
++ */
++static int uaudio_event_ring_setup(struct snd_usb_substream *subs,
++				   int card_num, struct mem_info_v01 *mem_info)
++{
++	struct sg_table *sgt;
++	phys_addr_t er_pa;
++	bool dma_coherent;
++	unsigned long va;
++	struct page *pg;
++	int ret;
++
++	dma_coherent = dev_is_dma_coherent(subs->dev->bus->sysdev);
++	er_pa = 0;
++
++	/* event ring */
++	ret = xhci_sideband_create_interrupter(uadev[card_num].sb, 1,
++					uaudio_qdev->data->intr_num, false);
++	if (ret < 0) {
++		dev_err(&subs->dev->dev, "failed to fetch interrupter\n");
++		goto exit;
++	}
++
++	sgt = xhci_sideband_get_event_buffer(uadev[card_num].sb);
++	if (!sgt) {
++		dev_err(&subs->dev->dev,
++			"failed to get event ring address\n");
++		ret = -ENODEV;
++		goto remove_interrupter;
++	}
++
++	pg = sg_page(sgt->sgl);
++	er_pa = page_to_phys(pg);
++	mem_info->pa = sg_dma_address(sgt->sgl);
++	sg_free_table(sgt);
++
++	va = uaudio_iommu_map(MEM_EVENT_RING, dma_coherent, er_pa,
++			PAGE_SIZE, NULL);
++	if (!va) {
++		ret = -ENOMEM;
++		goto clear_pa;
++	}
++
++	mem_info->va = PREPEND_SID_TO_IOVA(va, uaudio_qdev->data->sid);
++	mem_info->size = PAGE_SIZE;
++
++	return 0;
++
++clear_pa:
++	mem_info->pa = 0;
++remove_interrupter:
++	xhci_sideband_remove_interrupter(uadev[card_num].sb);
++exit:
++	return ret;
++}
++
++/**
++ * uaudio_populate_uac_desc() - parse UAC parameters and populate QMI resp
++ * @subs: usb substream
++ * @resp: QMI response buffer
++ *
++ * Parses information specified within UAC descriptors which explain the
++ * sample parameters that the device expects.  This information is populated
++ * to the QMI response sent back to the audio DSP.
++ *
++ */
++static int uaudio_populate_uac_desc(struct snd_usb_substream *subs,
++					struct qmi_uaudio_stream_resp_msg_v01 *resp)
++{
++	struct usb_interface_descriptor *altsd;
++	struct usb_host_interface *alts;
++	struct usb_interface *iface;
++	int protocol;
++
++	iface = usb_ifnum_to_if(subs->dev, subs->cur_audiofmt->iface);
++	if (!iface) {
++		dev_err(&subs->dev->dev, "interface # %d does not exist\n",
++			subs->cur_audiofmt->iface);
++		return -ENODEV;
++	}
++
++	alts = &iface->altsetting[subs->cur_audiofmt->altset_idx];
++	altsd = get_iface_desc(alts);
++	protocol = altsd->bInterfaceProtocol;
++
++	if (protocol == UAC_VERSION_1) {
++		struct uac1_as_header_descriptor *as;
++
++		as = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL,
++			UAC_AS_GENERAL);
++		if (!as) {
++			dev_err(&subs->dev->dev,
++				"%u:%d : no UAC_AS_GENERAL desc\n",
++				subs->cur_audiofmt->iface,
++				subs->cur_audiofmt->altset_idx);
++			return -ENODEV;
++		}
++
++		resp->data_path_delay = as->bDelay;
++		resp->data_path_delay_valid = 1;
++
++		resp->usb_audio_subslot_size = subs->cur_audiofmt->fmt_sz;
++		resp->usb_audio_subslot_size_valid = 1;
++
++		resp->usb_audio_spec_revision = le16_to_cpu(0x0100);
++		resp->usb_audio_spec_revision_valid = 1;
++	} else if (protocol == UAC_VERSION_2) {
++		resp->usb_audio_subslot_size = subs->cur_audiofmt->fmt_sz;
++		resp->usb_audio_subslot_size_valid = 1;
++
++		resp->usb_audio_spec_revision = le16_to_cpu(0x0200);
++		resp->usb_audio_spec_revision_valid = 1;
++	} else if (protocol == UAC_VERSION_3) {
++		if (iface->intf_assoc->bFunctionSubClass ==
++					UAC3_FUNCTION_SUBCLASS_FULL_ADC_3_0) {
++			dev_err(&subs->dev->dev,
++				"full adc is not supported\n");
++			return -EINVAL;
++		}
++
++		switch (le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize)) {
++		case UAC3_BADD_EP_MAXPSIZE_SYNC_MONO_16:
++		case UAC3_BADD_EP_MAXPSIZE_SYNC_STEREO_16:
++		case UAC3_BADD_EP_MAXPSIZE_ASYNC_MONO_16:
++		case UAC3_BADD_EP_MAXPSIZE_ASYNC_STEREO_16: {
++			resp->usb_audio_subslot_size = 0x2;
++			break;
++		}
++
++		case UAC3_BADD_EP_MAXPSIZE_SYNC_MONO_24:
++		case UAC3_BADD_EP_MAXPSIZE_SYNC_STEREO_24:
++		case UAC3_BADD_EP_MAXPSIZE_ASYNC_MONO_24:
++		case UAC3_BADD_EP_MAXPSIZE_ASYNC_STEREO_24: {
++			resp->usb_audio_subslot_size = 0x3;
++			break;
++		}
++
++		default:
++			dev_err(&subs->dev->dev,
++				"%d: %u: Invalid wMaxPacketSize\n",
++				subs->cur_audiofmt->iface,
++				subs->cur_audiofmt->altset_idx);
++			return -EINVAL;
++		}
++		resp->usb_audio_subslot_size_valid = 1;
++	} else {
++		dev_err(&subs->dev->dev, "unknown protocol version %x\n",
++			protocol);
++		return -ENODEV;
++	}
++
++	memcpy(&resp->std_as_opr_intf_desc, &alts->desc, sizeof(alts->desc));
++
++	return 0;
++}
++
++/**
++ * prepare_qmi_response() - prepare stream enable response
++ * @subs: usb substream
++ * @req_msg: QMI request message
++ * @resp: QMI response buffer
++ * @info_idx: usb interface array index
++ *
++ * Prepares the QMI response for a USB QMI stream enable request.  Will parse
++ * out the parameters within the stream enable request, in order to match
++ * requested audio profile to the ones exposed by the USB device connected.
++ *
++ * In addition, will fetch the XHCI transfer resources needed for the handoff to
++ * happen.  This includes, transfer ring and buffer addresses and secondary event
++ * ring address.  These parameters will be communicated as part of the USB QMI
++ * stream enable response.
++ *
++ */
++static int prepare_qmi_response(struct snd_usb_substream *subs,
++		struct qmi_uaudio_stream_req_msg_v01 *req_msg,
++		struct qmi_uaudio_stream_resp_msg_v01 *resp, int info_idx)
++{
++	struct q6usb_offload *data;
++	u32 xfer_buf_len;
++	int pcm_dev_num;
++	int card_num;
++	u8 *xfer_buf;
++	int ret;
++
++	pcm_dev_num = (req_msg->usb_token & QMI_STREAM_REQ_DEV_NUM_MASK) >> 8;
++	xfer_buf_len = req_msg->xfer_buff_size;
++	card_num = uaudio_qdev->last_card_num;
++
++	if (!uadev[card_num].ctrl_intf) {
++		dev_err(&subs->dev->dev, "audio ctrl intf info not cached\n");
++		ret = -ENODEV;
++		goto err;
++	}
++
++	ret = uaudio_populate_uac_desc(subs, resp);
++	if (ret < 0)
++		goto err;
++
++	resp->slot_id = subs->dev->slot_id;
++	resp->slot_id_valid = 1;
++
++	data = snd_soc_usb_find_priv_data(usb_get_usb_backend(subs->dev));
++	if (!data)
++		goto err;
++
++	uaudio_qdev->data = data;
++
++	resp->std_as_opr_intf_desc_valid = 1;
++	ret = uaudio_endpoint_setup(subs, subs->data_endpoint, card_num,
++						&resp->xhci_mem_info.tr_data,
++						&resp->std_as_data_ep_desc);
++	if (ret < 0)
++		goto err;
++
++	resp->std_as_data_ep_desc_valid = 1;
++
++	if (subs->sync_endpoint) {
++		ret = uaudio_endpoint_setup(subs, subs->sync_endpoint, card_num,
++						&resp->xhci_mem_info.tr_sync,
++						&resp->std_as_sync_ep_desc);
++		if (ret < 0)
++			goto drop_data_ep;
++
++		resp->std_as_sync_ep_desc_valid = 1;
++	}
++
++	resp->interrupter_num_valid = 1;
++	resp->controller_num_valid = 0;
++	ret = usb_get_controller_id(subs->dev);
++	if (ret >= 0) {
++		resp->controller_num = ret;
++		resp->controller_num_valid = 1;
++	}
++
++	/* event ring */
++	ret = uaudio_event_ring_setup(subs, card_num,
++					&resp->xhci_mem_info.evt_ring);
++	if (ret < 0)
++		goto drop_sync_ep;
++
++	uaudio_qdev->er_mapped = true;
++	resp->interrupter_num = xhci_sideband_interrupter_id(uadev[card_num].sb);
++
++	resp->speed_info = get_speed_info(subs->dev->speed);
++	if (resp->speed_info == USB_QMI_DEVICE_SPEED_INVALID_V01) {
++		ret = -ENODEV;
++		goto free_sec_ring;
++	}
++
++	resp->speed_info_valid = 1;
++
++	ret = uaudio_transfer_buffer_setup(subs, xfer_buf, req_msg->xfer_buff_size,
++						&resp->xhci_mem_info.xfer_buff);
++	if (ret < 0) {
++		ret = -ENOMEM;
++		goto free_sec_ring;
++	}
++
++	resp->xhci_mem_info_valid = 1;
++
++	if (!atomic_read(&uadev[card_num].in_use)) {
++		kref_init(&uadev[card_num].kref);
++		init_waitqueue_head(&uadev[card_num].disconnect_wq);
++		uadev[card_num].num_intf =
++			subs->dev->config->desc.bNumInterfaces;
++		uadev[card_num].info = kcalloc(uadev[card_num].num_intf,
++			sizeof(struct intf_info), GFP_KERNEL);
++		if (!uadev[card_num].info) {
++			ret = -ENOMEM;
++			goto unmap_er;
++		}
++		uadev[card_num].udev = subs->dev;
++		atomic_set(&uadev[card_num].in_use, 1);
++	} else {
++		kref_get(&uadev[card_num].kref);
++	}
++
++	uadev[card_num].usb_core_id = resp->controller_num;
++
++	/* cache intf specific info to use it for unmap and free xfer buf */
++	uadev[card_num].info[info_idx].data_xfer_ring_va =
++					IOVA_MASK(resp->xhci_mem_info.tr_data.va);
++	uadev[card_num].info[info_idx].data_xfer_ring_size = PAGE_SIZE;
++	uadev[card_num].info[info_idx].sync_xfer_ring_va =
++					IOVA_MASK(resp->xhci_mem_info.tr_sync.va);
++	uadev[card_num].info[info_idx].sync_xfer_ring_size = PAGE_SIZE;
++	uadev[card_num].info[info_idx].xfer_buf_va =
++					IOVA_MASK(resp->xhci_mem_info.xfer_buff.va);
++	uadev[card_num].info[info_idx].xfer_buf_pa =
++					resp->xhci_mem_info.xfer_buff.pa;
++	uadev[card_num].info[info_idx].xfer_buf_size =
++					resp->xhci_mem_info.xfer_buff.size;
++	uadev[card_num].info[info_idx].data_ep_pipe = subs->data_endpoint ?
++						subs->data_endpoint->pipe : 0;
++	uadev[card_num].info[info_idx].sync_ep_pipe = subs->sync_endpoint ?
++						subs->sync_endpoint->pipe : 0;
++	uadev[card_num].info[info_idx].xfer_buf = xfer_buf;
++	uadev[card_num].info[info_idx].pcm_card_num = card_num;
++	uadev[card_num].info[info_idx].pcm_dev_num = pcm_dev_num;
++	uadev[card_num].info[info_idx].direction = subs->direction;
++	uadev[card_num].info[info_idx].intf_num = subs->cur_audiofmt->iface;
++	uadev[card_num].info[info_idx].in_use = true;
++
++	set_bit(card_num, &uaudio_qdev->card_slot);
++
++	return 0;
++
++unmap_er:
++	uaudio_iommu_unmap(MEM_EVENT_RING, IOVA_BASE, PAGE_SIZE, PAGE_SIZE);
++free_sec_ring:
++	xhci_sideband_remove_interrupter(uadev[card_num].sb);
++drop_sync_ep:
++	if (subs->sync_endpoint) {
++		uaudio_iommu_unmap(MEM_XFER_RING,
++					IOVA_MASK(resp->xhci_mem_info.tr_sync.va),
++					PAGE_SIZE, PAGE_SIZE);
++		xhci_sideband_remove_endpoint(uadev[card_num].sb,
++			usb_pipe_endpoint(subs->dev, subs->sync_endpoint->pipe));
++	}
++drop_data_ep:
++	uaudio_iommu_unmap(MEM_XFER_RING, IOVA_MASK(resp->xhci_mem_info.tr_data.va),
++				PAGE_SIZE, PAGE_SIZE);
++	xhci_sideband_remove_endpoint(uadev[card_num].sb,
++			usb_pipe_endpoint(subs->dev, subs->data_endpoint->pipe));
++
++err:
++	return ret;
++}
++
++/**
++ * handle_uaudio_stream_req() - handle stream enable/disable request
++ * @handle: QMI client handle
++ * @sq: qrtr socket
++ * @txn: QMI transaction context
++ * @decoded_msg: decoded QMI message
++ *
++ * Main handler for the QMI stream enable/disable requests.  This executes the
++ * corresponding enable/disable stream apis, respectively.
++ *
++ */
++static void handle_uaudio_stream_req(struct qmi_handle *handle,
++			struct sockaddr_qrtr *sq,
++			struct qmi_txn *txn,
++			const void *decoded_msg)
++{
++	struct qmi_uaudio_stream_req_msg_v01 *req_msg;
++	struct qmi_uaudio_stream_resp_msg_v01 resp = {{0}, 0};
++	struct uaudio_qmi_svc *svc = uaudio_svc;
++	struct snd_usb_audio *chip = NULL;
++	struct snd_usb_substream *subs;
++	struct usb_host_endpoint *ep;
++	int datainterval = -EINVAL;
++	int info_idx = -EINVAL;
++	struct intf_info *info;
++	u8 pcm_card_num;
++	u8 pcm_dev_num;
++	u8 direction;
++	int ret = 0;
++
++	if (!svc->client_connected) {
++		svc->client_sq = *sq;
++		svc->client_connected = true;
++	}
++
++	mutex_lock(&qdev_mutex);
++	req_msg = (struct qmi_uaudio_stream_req_msg_v01 *)decoded_msg;
++	if (!req_msg->audio_format_valid || !req_msg->bit_rate_valid ||
++	    !req_msg->number_of_ch_valid || !req_msg->xfer_buff_size_valid) {
++		ret = -EINVAL;
++		goto response;
++	}
++
++	if (!uaudio_qdev) {
++		ret = -EINVAL;
++		goto response;
++	}
++
++	direction = (req_msg->usb_token & QMI_STREAM_REQ_DIRECTION);
++	pcm_dev_num = (req_msg->usb_token & QMI_STREAM_REQ_DEV_NUM_MASK) >> 8;
++	pcm_card_num = req_msg->enable ? uaudio_qdev->last_card_num :
++				ffs(uaudio_qdev->card_slot) - 1;
++	if (pcm_card_num >= SNDRV_CARDS) {
++		ret = -EINVAL;
++		goto response;
++	}
++
++	if (req_msg->audio_format > USB_QMI_PCM_FORMAT_U32_BE) {
++		ret = -EINVAL;
++		goto response;
++	}
++
++	subs = find_substream(pcm_card_num, pcm_dev_num, direction);
++	chip = uadev[pcm_card_num].chip;
++	if (!subs || !chip || atomic_read(&chip->shutdown)) {
++		ret = -ENODEV;
++		goto response;
++	}
++
++	info_idx = info_idx_from_ifnum(pcm_card_num, subs->cur_audiofmt ?
++			subs->cur_audiofmt->iface : -1, req_msg->enable);
++	if (atomic_read(&chip->shutdown) || !subs->stream || !subs->stream->pcm
++			|| !subs->stream->chip) {
++		ret = -ENODEV;
++		goto response;
++	}
++
++	if (req_msg->enable) {
++		if (info_idx < 0 || chip->system_suspend) {
++			ret = -EBUSY;
++			goto response;
++		}
++	}
++
++	if (req_msg->service_interval_valid) {
++		ret = get_data_interval_from_si(subs,
++						req_msg->service_interval);
++		if (ret == -EINVAL)
++			goto response;
++
++		datainterval = ret;
++	}
++
++	uadev[pcm_card_num].ctrl_intf = chip->ctrl_intf;
++
++	if (req_msg->enable) {
++		ret = enable_audio_stream(subs,
++				map_pcm_format(req_msg->audio_format),
++				req_msg->number_of_ch, req_msg->bit_rate,
++				datainterval);
++
++		if (!ret)
++			ret = prepare_qmi_response(subs, req_msg, &resp,
++					info_idx);
++	} else {
++		info = &uadev[pcm_card_num].info[info_idx];
++		if (info->data_ep_pipe) {
++			ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
++						info->data_ep_pipe);
++			if (ep)
++				xhci_sideband_stop_endpoint(uadev[pcm_card_num].sb,
++						ep);
++			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
++			info->data_ep_pipe = 0;
++		}
++
++		if (info->sync_ep_pipe) {
++			ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
++						info->sync_ep_pipe);
++			if (ep)
++				xhci_sideband_stop_endpoint(uadev[pcm_card_num].sb,
++						ep);
++			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
++			info->sync_ep_pipe = 0;
++		}
++
++		disable_audio_stream(subs);
++	}
++
++response:
++	if (!req_msg->enable && ret != -EINVAL && ret != -ENODEV) {
++		mutex_lock(&chip->mutex);
++		if (info_idx >= 0) {
++			info = &uadev[pcm_card_num].info[info_idx];
++			uaudio_dev_intf_cleanup(
++					uadev[pcm_card_num].udev,
++					info);
++		}
++		if (atomic_read(&uadev[pcm_card_num].in_use))
++			kref_put(&uadev[pcm_card_num].kref,
++					uaudio_dev_release);
++		mutex_unlock(&chip->mutex);
++	}
++	mutex_unlock(&qdev_mutex);
++
++	resp.usb_token = req_msg->usb_token;
++	resp.usb_token_valid = 1;
++	resp.internal_status = ret;
++	resp.internal_status_valid = 1;
++	resp.status = ret ? USB_QMI_STREAM_REQ_FAILURE_V01 : ret;
++	resp.status_valid = 1;
++	ret = qmi_send_response(svc->uaudio_svc_hdl, sq, txn,
++			QMI_UAUDIO_STREAM_RESP_V01,
++			QMI_UAUDIO_STREAM_RESP_MSG_V01_MAX_MSG_LEN,
++			qmi_uaudio_stream_resp_msg_v01_ei, &resp);
++}
++
++static struct qmi_msg_handler uaudio_stream_req_handlers = {
++	.type = QMI_REQUEST,
++	.msg_id = QMI_UAUDIO_STREAM_REQ_V01,
++	.ei = qmi_uaudio_stream_req_msg_v01_ei,
++	.decoded_size = QMI_UAUDIO_STREAM_REQ_MSG_V01_MAX_MSG_LEN,
++	.fn = handle_uaudio_stream_req,
++};
++
++/**
++ * qc_usb_audio_offload_init_qmi_dev() - initializes qmi dev
++ *
++ * Initializes the USB qdev, which is used to carry information pertaining to
++ * the offloading resources.  This device is freed only when there are no longer
++ * any offloading candidates. (i.e, when all audio devices are disconnected)
++ *
++ */
++static int qc_usb_audio_offload_init_qmi_dev(struct usb_device *udev)
++{
++	uaudio_qdev = kzalloc(sizeof(struct uaudio_qmi_dev),
++		GFP_KERNEL);
++	if (!uaudio_qdev)
++		return -ENOMEM;
++
++	/* initialize xfer ring and xfer buf iova list */
++	INIT_LIST_HEAD(&uaudio_qdev->xfer_ring_list);
++	uaudio_qdev->curr_xfer_ring_iova = IOVA_XFER_RING_BASE;
++	uaudio_qdev->xfer_ring_iova_size =
++			IOVA_XFER_RING_MAX - IOVA_XFER_RING_BASE;
++
++	INIT_LIST_HEAD(&uaudio_qdev->xfer_buf_list);
++	uaudio_qdev->curr_xfer_buf_iova = IOVA_XFER_BUF_BASE;
++	uaudio_qdev->xfer_buf_iova_size =
++		IOVA_XFER_BUF_MAX - IOVA_XFER_BUF_BASE;
++
++	return 0;
++}
++
++/**
++ * qc_usb_audio_offload_probe() - platform op connect handler
++ * @chip: USB SND device
++ *
++ * Platform connect handler when a USB SND device is detected. Will
++ * notify SOC USB about the connection to enable the USB ASoC backend
++ * and populate internal USB chip array.
++ *
++ */
++static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
++{
++	struct usb_device *udev = chip->dev;
++	struct snd_soc_usb_device *sdev;
++	struct xhci_sideband *sb;
++
++	/*
++	 * If there is no priv_data, the connected device is on a USB bus
++	 * that doesn't support offloading.  Avoid populating entries for
++	 * this device.
++	 */
++	if (!snd_soc_usb_find_priv_data(usb_get_usb_backend(udev)))
++		return;
++
++	mutex_lock(&qdev_mutex);
++	mutex_lock(&chip->mutex);
++	if (!uadev[chip->card->number].chip) {
++		sdev = kzalloc(sizeof(*sdev), GFP_KERNEL);
++		if (!sdev)
++			goto exit;
++
++		sb = xhci_sideband_register(udev);
++		if (!sb)
++			goto free_sdev;
++	} else {
++		sb = uadev[chip->card->number].sb;
++		sdev = uadev[chip->card->number].sdev;
++	}
++
++	if (!uaudio_qdev)
++		qc_usb_audio_offload_init_qmi_dev(udev);
++
++	atomic_inc(&uaudio_qdev->qdev_in_use);
++
++	uadev[chip->card->number].sb = sb;
++	uadev[chip->card->number].chip = chip;
++
++	sdev->card_idx = chip->card->number;
++	sdev->chip_idx = chip->index;
++	uadev[chip->card->number].sdev = sdev;
++
++	uaudio_qdev->last_card_num = chip->card->number;
++	snd_soc_usb_connect(usb_get_usb_backend(udev), sdev);
++
++	mutex_unlock(&chip->mutex);
++	mutex_unlock(&qdev_mutex);
++
++	return;
++
++free_sdev:
++	kfree(sdev);
++exit:
++	mutex_unlock(&chip->mutex);
++	mutex_unlock(&qdev_mutex);
++}
++
++/**
++ * qc_usb_audio_cleanup_qmi_dev() - release qmi device
++ *
++ * Frees the USB qdev.  Only occurs when there are no longer any potential
++ * devices that can utilize USB audio offloading.
++ *
++ */
++static void qc_usb_audio_cleanup_qmi_dev(void)
++{
++	kfree(uaudio_qdev);
++	uaudio_qdev = NULL;
++}
++
++/**
++ * qc_usb_audio_offload_disconnect() - platform op disconnect handler
++ * @chip: USB SND device
++ *
++ * Platform disconnect handler.  Will ensure that any pending stream is
++ * halted by issuing a QMI disconnect indication packet to the adsp.
++ *
++ */
++static void qc_usb_audio_offload_disconnect(struct snd_usb_audio *chip)
++{
++	struct qmi_uaudio_stream_ind_msg_v01 disconnect_ind = {0};
++	struct uaudio_qmi_svc *svc = uaudio_svc;
++	struct uaudio_dev *dev;
++	int card_num;
++	int ret;
++
++	if (!chip)
++		return;
++
++	card_num = chip->card->number;
++	if (card_num >= SNDRV_CARDS)
++		return;
++
++	mutex_lock(&qdev_mutex);
++	mutex_lock(&chip->mutex);
++	dev = &uadev[card_num];
++
++	/* Device has already been cleaned up, or never populated */
++	if (!dev->chip) {
++		mutex_unlock(&qdev_mutex);
++		mutex_unlock(&chip->mutex);
++		return;
++	}
++
++	/* cleaned up already */
++	if (!dev->udev)
++		goto done;
++
++	if (atomic_read(&dev->in_use)) {
++		mutex_unlock(&chip->mutex);
++		mutex_unlock(&qdev_mutex);
++		dev_dbg(uaudio_qdev->data->dev,
++			"sending qmi indication disconnect\n");
++		disconnect_ind.dev_event = USB_QMI_DEV_DISCONNECT_V01;
++		disconnect_ind.slot_id = dev->udev->slot_id;
++		disconnect_ind.controller_num = dev->usb_core_id;
++		disconnect_ind.controller_num_valid = 1;
++		ret = qmi_send_indication(svc->uaudio_svc_hdl, &svc->client_sq,
++				QMI_UAUDIO_STREAM_IND_V01,
++				QMI_UAUDIO_STREAM_IND_MSG_V01_MAX_MSG_LEN,
++				qmi_uaudio_stream_ind_msg_v01_ei,
++				&disconnect_ind);
++		if (ret < 0)
++			dev_err(uaudio_qdev->data->dev,
++				"qmi send failed with err: %d\n", ret);
++
++		ret = wait_event_interruptible_timeout(dev->disconnect_wq,
++				!atomic_read(&dev->in_use),
++				msecs_to_jiffies(DEV_RELEASE_WAIT_TIMEOUT));
++		if (!ret) {
++			dev_err(uaudio_qdev->data->dev,
++				"timeout while waiting for dev_release\n");
++			atomic_set(&dev->in_use, 0);
++		} else if (ret < 0) {
++			dev_err(uaudio_qdev->data->dev,
++				"failed with ret %d\n", ret);
++			atomic_set(&dev->in_use, 0);
++		}
++		mutex_lock(&qdev_mutex);
++		mutex_lock(&chip->mutex);
++	}
++
++	uaudio_dev_cleanup(dev);
++done:
++	/*
++	 * If num_interfaces == 1, the last USB SND interface is being removed.
++	 * This is to accommodate for devices w/ multiple UAC functions.
++	 */
++	if (chip->num_interfaces == 1) {
++		snd_soc_usb_disconnect(usb_get_usb_backend(chip->dev), dev->sdev);
++		xhci_sideband_unregister(dev->sb);
++		dev->chip = NULL;
++		kfree(dev->sdev);
++		dev->sdev = NULL;
++	}
++	mutex_unlock(&chip->mutex);
++
++	atomic_dec(&uaudio_qdev->qdev_in_use);
++	if (!atomic_read(&uaudio_qdev->qdev_in_use))
++		qc_usb_audio_cleanup_qmi_dev();
++
++	mutex_unlock(&qdev_mutex);
++}
++
++/**
++ * qc_usb_audio_offload_suspend() - USB offload PM suspend handler
++ * @intf: USB interface
++ * @message: suspend type
++ *
++ * PM suspend handler to ensure that the USB offloading driver is able to stop
++ * any pending traffic, so that the bus can be suspended.
++ *
++ */
++static void qc_usb_audio_offload_suspend(struct usb_interface *intf,
++						pm_message_t message)
++{
++	struct qmi_uaudio_stream_ind_msg_v01 disconnect_ind = {0};
++	struct snd_usb_audio *chip = usb_get_intfdata(intf);
++	struct uaudio_qmi_svc *svc = uaudio_svc;
++	struct uaudio_dev *dev;
++	int card_num;
++	int ret;
++
++	if (!chip)
++		return;
++
++	card_num = chip->card->number;
++	if (card_num >= SNDRV_CARDS)
++		return;
++
++
++	mutex_lock(&chip->mutex);
++	dev = &uadev[card_num];
++
++	if (atomic_read(&dev->in_use)) {
++		mutex_unlock(&chip->mutex);
++		dev_dbg(uaudio_qdev->data->dev, "sending qmi indication suspend\n");
++		disconnect_ind.dev_event = USB_QMI_DEV_DISCONNECT_V01;
++		disconnect_ind.slot_id = dev->udev->slot_id;
++		disconnect_ind.controller_num = dev->usb_core_id;
++		disconnect_ind.controller_num_valid = 1;
++		ret = qmi_send_indication(svc->uaudio_svc_hdl, &svc->client_sq,
++				QMI_UAUDIO_STREAM_IND_V01,
++				QMI_UAUDIO_STREAM_IND_MSG_V01_MAX_MSG_LEN,
++				qmi_uaudio_stream_ind_msg_v01_ei,
++				&disconnect_ind);
++		if (ret < 0)
++			dev_err(uaudio_qdev->data->dev,
++				"qmi send failed with err: %d\n", ret);
++
++		ret = wait_event_interruptible_timeout(dev->disconnect_wq,
++				!atomic_read(&dev->in_use),
++				msecs_to_jiffies(DEV_RELEASE_WAIT_TIMEOUT));
++		if (!ret) {
++			dev_err(uaudio_qdev->data->dev,
++				"timeout while waiting for dev_release\n");
++			atomic_set(&dev->in_use, 0);
++		} else if (ret < 0) {
++			dev_err(uaudio_qdev->data->dev,
++				"failed with ret %d\n", ret);
++				atomic_set(&dev->in_use, 0);
++		}
++		mutex_lock(&chip->mutex);
++	}
++	mutex_unlock(&chip->mutex);
++}
++
++static struct snd_usb_platform_ops offload_ops = {
++	.connect_cb = qc_usb_audio_offload_probe,
++	.disconnect_cb = qc_usb_audio_offload_disconnect,
++	.suspend_cb = qc_usb_audio_offload_suspend,
++};
++
++static int __init qc_usb_audio_offload_init(void)
++{
++	struct uaudio_qmi_svc *svc;
++	int ret;
++
++	svc = kzalloc(sizeof(struct uaudio_qmi_svc), GFP_KERNEL);
++	if (!svc)
++		return -ENOMEM;
++
++	svc->uaudio_svc_hdl = kzalloc(sizeof(struct qmi_handle), GFP_KERNEL);
++	if (!svc->uaudio_svc_hdl) {
++		ret = -ENOMEM;
++		goto free_svc;
++	}
++
++	ret = qmi_handle_init(svc->uaudio_svc_hdl,
++				QMI_UAUDIO_STREAM_REQ_MSG_V01_MAX_MSG_LEN,
++				&uaudio_svc_ops_options,
++				&uaudio_stream_req_handlers);
++	ret = qmi_add_server(svc->uaudio_svc_hdl, UAUDIO_STREAM_SERVICE_ID_V01,
++					UAUDIO_STREAM_SERVICE_VERS_V01, 0);
++
++	uaudio_svc = svc;
++
++	ret = snd_usb_register_platform_ops(&offload_ops);
++	if (ret < 0)
++		goto release_qmi;
++
++	return 0;
++
++release_qmi:
++	qmi_handle_release(svc->uaudio_svc_hdl);
++free_svc:
++	kfree(svc);
++
++	return ret;
++}
++
++static void __exit qc_usb_audio_offload_exit(void)
++{
++	struct uaudio_qmi_svc *svc = uaudio_svc;
++	int idx;
++
++	/*
++	 * Remove all connected devices after unregistering ops, to ensure
++	 * that no further connect events will occur.  The disconnect routine
++	 * will issue the QMI disconnect indication, which results in the
++	 * external DSP to stop issuing transfers.
++	 */
++	snd_usb_unregister_platform_ops();
++	for (idx = 0; idx < SNDRV_CARDS; idx++)
++		qc_usb_audio_offload_disconnect(uadev[idx].chip);
++
++	qmi_handle_release(svc->uaudio_svc_hdl);
++	kfree(svc);
++	uaudio_svc = NULL;
++}
++
++module_init(qc_usb_audio_offload_init);
++module_exit(qc_usb_audio_offload_exit);
++
++MODULE_DESCRIPTION("QC USB Audio Offloading");
++MODULE_LICENSE("GPL");
