@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EBF1C4345F
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 22:53:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F2AFC4345F
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 22:54:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59627ED1;
-	Tue, 23 Apr 2024 00:53:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59627ED1
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE213EC7;
+	Tue, 23 Apr 2024 00:53:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE213EC7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713826434;
-	bh=XmiYPURCCkcrr938pQD/oRXOAbdwSPdaV9FMMyvU3w8=;
+	s=default; t=1713826446;
+	bh=l4l++q8m0G+VC5FxwdKvSlgvXoJfZwAOr0hUN6xrMaI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RDcgTnp/Ylf7PS3DFqR9v2Vz4Nm+sdgfwXQb7ZA2xEXAEtgsMuAA0ikXT+vRE7wHB
-	 0SRhdctFDgXqpJ0QeTmsFoSDK4oO7f3Wmt785U9NPYE+hBlaiZ8s6EvGESYeOXYv1Q
-	 st/9WLLKe23vWAebETljELGu5dVWF533wz7ylBFk=
+	b=DCu1+3X94P3j3/wCsrJZehxo13pjdQLN7L97mG/dNl/svCjGu4E1Qd63rKUGfkGCp
+	 PpSIlH5BAOkMZljRtclc03uvXbwrxVL0LYTp6pWsmwSWP5AvVGaGLe56kAdbSm7BHx
+	 59vvMvs2b3s5d/+P45FDev+KJ7lz0Qtf8BHAYE0A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26310F80841; Tue, 23 Apr 2024 00:50:37 +0200 (CEST)
+	id 30E64F805EA; Tue, 23 Apr 2024 00:50:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B5EAF8081A;
-	Tue, 23 Apr 2024 00:50:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF001F808BB;
+	Tue, 23 Apr 2024 00:50:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F922F806C5; Tue, 23 Apr 2024 00:50:17 +0200 (CEST)
+	id A92ABF806DC; Tue, 23 Apr 2024 00:50:20 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 67539F8057D
+	by alsa1.perex.cz (Postfix) with ESMTPS id EBB32F804B0
 	for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2024 00:49:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67539F8057D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBB32F804B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=dDFjV6P1
+ header.s=qcppdkim1 header.b=hAVqrnV7
 Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43MJUHEs015331;
+ 43MKeS1c008517;
 	Mon, 22 Apr 2024 22:49:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=YNWjI42/PIj53s5xl6Pu
-	4uO/vriEZ7tubnQTsQu+vDE=; b=dDFjV6P1I7tFphtHWUxdlqcGCspfSPvBQZr0
-	aRC0Zwo5F6SbK+gQfQMO5VtlQHACq6UK2SAFBt4O8HdIqG5yQBLKMfoROhFzfIYT
-	hTqi79PG1+Bw0sr6G3fv6nk3Hrgbc/9l/NV2RM+S0cy2jMeuBTVvDGgo8WugNOo3
-	7LvFkR9MRgvIwNMqFXMnTQ14WH7MYBP3sG3ImLFHQmI80pyZKL7Rzg1D9nvQYbqL
-	skXP5jBOlGjh2N3wRlOMxHXLbZzQQuSGh7MFzHaTGS0/s9EJ+o7Smm0QBksfVthZ
-	5xnSoyhhT8pfjX/qjZsJ5vFDMX4yVNruTvRaIp9Fdj9Vdu2pbQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=9vhmFBIoFzC6NZsWKjK7
+	BRaLyI9bWYmmhJ7n8sa2slY=; b=hAVqrnV7BVHbsnjs4QQHLTJR6x0mjb1duwO6
+	UB8wyMldqvyCOTxv6WdnjJ2ZJGBpLuBXFWLQCMdUtDG161Prx671yzhrQ5oWeolj
+	iUF2Fz8lMySJ0TX7MY7V6RzQbHaC3sxhNNzT6nf4kDpx9wSILr/hXXlFqUfhsjHA
+	tBsrlO9YOEzsYAWIglRqEyl9lKKcHKfi7jicUg5R3K7ImWrP5xNXujaCD5sBto4D
+	oiBlgAe9JXvWuzUzXClFDXPU54/QDeJ1MJ1fTgOd45LDShVDtcs+GtJfLdLupevI
+	L45+/Q8LxCINwJHSb3DtbG3git8a6KbqrnwAriwzMqyAZrUjZQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnn82ssjq-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnn82ssjh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 22:49:43 +0000 (GMT)
+	Mon, 22 Apr 2024 22:49:42 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 43MMnNsr027772
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 43MMnHu8012045
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 22:49:23 GMT
+	Mon, 22 Apr 2024 22:49:17 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 22 Apr 2024 15:49:23 -0700
+ 15.2.1544.9; Mon, 22 Apr 2024 15:49:17 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -79,10 +79,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v19 26/41] ASoC: dt-bindings: Update example for enabling USB
- offload on SM8250
-Date: Mon, 22 Apr 2024 15:48:51 -0700
-Message-ID: <20240422224906.15868-27-quic_wcheng@quicinc.com>
+Subject: [PATCH v19 03/41] usb: host: xhci: Repurpose event handler for
+ skipping interrupter events
+Date: Mon, 22 Apr 2024 15:48:28 -0700
+Message-ID: <20240422224906.15868-4-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240422224906.15868-1-quic_wcheng@quicinc.com>
 References: <20240422224906.15868-1-quic_wcheng@quicinc.com>
@@ -94,19 +94,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: hLkySKv5W5E_Fj8AXy39KnTC_mBAlOh0
-X-Proofpoint-ORIG-GUID: hLkySKv5W5E_Fj8AXy39KnTC_mBAlOh0
+X-Proofpoint-GUID: 1ECqy3-Uc7GqXqX4Kdhm-kpOcNUNXChc
+X-Proofpoint-ORIG-GUID: 1ECqy3-Uc7GqXqX4Kdhm-kpOcNUNXChc
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-22_16,2024-04-22_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  mlxscore=0 lowpriorityscore=0
  suspectscore=0 adultscore=0 clxscore=1015 bulkscore=0 malwarescore=0
- spamscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
+ spamscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=925
  phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2404010003 definitions=main-2404220096
-Message-ID-Hash: 52U462EHW2GC5Y7JAKDRWT4VAM5NSWYV
-X-Message-ID-Hash: 52U462EHW2GC5Y7JAKDRWT4VAM5NSWYV
+Message-ID-Hash: PS7URYAMS3MV7NO7QUC6TXGDCD25VRF7
+X-Message-ID-Hash: PS7URYAMS3MV7NO7QUC6TXGDCD25VRF7
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/52U462EHW2GC5Y7JAKDRWT4VAM5NSWYV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PS7URYAMS3MV7NO7QUC6TXGDCD25VRF7/>
 List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
@@ -127,39 +127,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add an example on enabling of USB offload for the Q6DSP.  The routing can
-be done by the mixer, which can pass the multimedia stream to the USB
-backend.
+Depending on the interrupter use case, the OS may only be used to handle
+the interrupter event ring clean up.  In these scenarios, event TRBs don't
+need to be handled by the OS, so introduce an xhci interrupter flag to tag
+if the events from an interrupter needs to be handled or not.
 
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- .../devicetree/bindings/sound/qcom,sm8250.yaml    | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/usb/host/xhci-ring.c | 17 +++++++++++++----
+ drivers/usb/host/xhci.h      |  1 +
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-index 2ab6871e89e5..49e4f5bbe9dd 100644
---- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -227,6 +227,21 @@ examples:
-                 sound-dai = <&vamacro 0>;
-             };
-         };
-+
-+        usb-dai-link {
-+            link-name = "USB Playback";
-+            cpu {
-+                sound-dai = <&q6afedai USB_RX>;
-+            };
-+
-+            codec {
-+                sound-dai = <&usbdai USB_RX>;
-+            };
-+
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
-+        };
-     };
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 52278afea94b..6c7a21f522cd 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -2973,14 +2973,22 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+ }
  
-   - |
+ /*
+- * This function handles one OS-owned event on the event ring. It may drop
+- * xhci->lock between event processing (e.g. to pass up port status changes).
++ * This function handles one OS-owned event on the event ring, or ignores one event
++ * on interrupters which are non-OS owned. It may drop xhci->lock between event
++ * processing (e.g. to pass up port status changes).
+  */
+ static int xhci_handle_event_trb(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
+ 				 union xhci_trb *event)
+ {
+ 	u32 trb_type;
+ 
++	/*
++	 * Some interrupters do not need to handle event TRBs, as they may be
++	 * managed by another entity, but rely on the OS to clean up.
++	 */
++	if (ir->skip_events)
++		return 0;
++
+ 	trace_xhci_handle_event(ir->event_ring, &event->generic);
+ 
+ 	/*
+@@ -3069,8 +3077,9 @@ static void xhci_clear_interrupt_pending(struct xhci_hcd *xhci,
+ }
+ 
+ /*
+- * Handle all OS-owned events on an interrupter event ring. It may drop
+- * and reaquire xhci->lock between event processing.
++ * Handle all OS-owned events on an interrupter event ring, or skip pending events
++ * for non OS owned interrupter event ring. It may drop and reaquire xhci->lock
++ * between event processing.
+  */
+ static int xhci_handle_events(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+ {
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index dbed0199aa5c..67d729635d56 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1432,6 +1432,7 @@ struct xhci_interrupter {
+ 	struct xhci_intr_reg __iomem *ir_set;
+ 	unsigned int		intr_num;
+ 	bool			ip_autoclear;
++	bool			skip_events;
+ 	u32			isoc_bei_interval;
+ 	/* For interrupter registers save and restore over suspend/resume */
+ 	u32	s3_irq_pending;
