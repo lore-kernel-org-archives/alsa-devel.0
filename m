@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E967AC10F16
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 22:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEA2EC4345F
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 22:52:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA14AFAA;
-	Tue, 23 Apr 2024 00:51:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA14AFAA
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA71AEB1;
+	Tue, 23 Apr 2024 00:52:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA71AEB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713826310;
-	bh=ByiIc7YY39/+Ozgdnf6uOIrkHURuL4HgdYAPIFWEp8c=;
+	s=default; t=1713826332;
+	bh=LtZV5CUXs48ixayeIGQ76IReB2d+LrWonLDPetBVXE0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QMN4YKr5vRfMvUgILF+N3qZKBMeJ0noQ0793Qa7KrhfEstOxgNBx433+zTvY6A9uT
-	 HzvsLTF7WHAjfoJJ2zI6rJQbCLLQ1S/cY+QqfdcMvgQDgy7bv/RT2lEcTxCHtclVYY
-	 e2/AhaptBmq4T0aurjyfDS0hcroPEZy/4KIp5a7k=
+	b=tIY7TWOVk9BzA6d+IpKYVaqvKcj6MxjyOLsDQE7OEF/YB+YhSbo+VwDW5D/tTOWmw
+	 JLDiIvL+uXvibzTEUxiAqYMlR53/04W4GdRvw6RHKdfVtBQ8TR/YCi9+7pnfwzgY5Y
+	 y6ZoAy+zuoKCVXJaCCXPUO4ke9plxh93bXhvv924=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A41F3F8068F; Tue, 23 Apr 2024 00:50:15 +0200 (CEST)
+	id 3ADAEF806BA; Tue, 23 Apr 2024 00:50:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0D08F8068A;
-	Tue, 23 Apr 2024 00:50:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74DE0F806C7;
+	Tue, 23 Apr 2024 00:50:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84306F805F7; Tue, 23 Apr 2024 00:50:03 +0200 (CEST)
+	id BCA66F80619; Tue, 23 Apr 2024 00:50:04 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F1698F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A339F80548
 	for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2024 00:49:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1698F8003A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A339F80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=ZDXXFgXV
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=NzRR3gwP
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43MKDvMW015084;
+ 43MLUCl0028792;
 	Mon, 22 Apr 2024 22:49:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=NpHBeykq8LdzEryj6A1i
-	QTR5qcXhklfggTOoYTCUb0o=; b=ZDXXFgXVHtZymvXQ7D1QA1l5C+QEWOawF+XI
-	HGIy32INCJ7MC3Qv5oxjO7kDakp4L57WwY57BVv4LmvwJExndKOeNUMcOhSgG5Iq
-	Om5kZMn+qpnz5DHE1WTB2UTTtRRxy3X296uaSWWUxVv5HOGhFif7kOX2gMO1r60b
-	serYtjwHgT8KZ/xCXk+pgI+fW+kZgnkrZC1r+wlaJ2vkWgPnQQno5jiyfaLa/olR
-	62XQ2EAYwYSWJPatDBKea9nISVIcGpNCRlnbbIhwY/UvT85VlwGgE11/zLSuDwih
-	kBRJASmjHWz8H+QMmRM9wcEdAz1kLbUQPjahVttPQyH3XD+Heg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=HUDTdfzQUbpe9qfiFp0b
+	KWsasPQJ9GQd8pkL2h1cGwI=; b=NzRR3gwPesXMjSFHj8d5PmKLcpEyO5jY4FPd
+	cVuxCOgtccE3HAAXOk1iYhPU5Q7HSuAA35EO5fVX3FppezArvk9xzzcUHH+oZqeB
+	8cJ7oBTKwloU6oAMLfZMkiiaEgiMfqQ8J3L8XUpOitNFzCaiwxX8uMnD03IoWcya
+	oeJzmGEsxVIKGsNEelZ4fZQKy4k8eQUcfwufySfz8ODMJ7PmIgX6cesFP67W/mhb
+	fSmjh8KgQdFhqNRDT2SzSwxmx2FxRv/Rl3zEo0J3gUNw+BpvI3Zl6MvKp7rtJoV1
+	6+kstsF5mt7v29bBJ+B0qfroimO6NyGSkbFgV5HN3fNWdIZcSA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnr49s99k-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnn82hskp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 22:49:41 +0000 (GMT)
+	Mon, 22 Apr 2024 22:49:40 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 43MMnHPW012042
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 43MMnQvr022927
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 22:49:17 GMT
+	Mon, 22 Apr 2024 22:49:26 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 22 Apr 2024 15:49:16 -0700
+ 15.2.1544.9; Mon, 22 Apr 2024 15:49:25 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -78,13 +78,10 @@ To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v19 01/41] xhci: add helper to stop endpoint and wait for
- completion
-Date: Mon, 22 Apr 2024 15:48:26 -0700
-Message-ID: <20240422224906.15868-2-quic_wcheng@quicinc.com>
+        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v19 35/41] ASoC: usb: Fetch ASoC sound card information
+Date: Mon, 22 Apr 2024 15:49:00 -0700
+Message-ID: <20240422224906.15868-36-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240422224906.15868-1-quic_wcheng@quicinc.com>
 References: <20240422224906.15868-1-quic_wcheng@quicinc.com>
@@ -96,19 +93,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: uF39gMOcVuofiWDGFWx1wtIHD_Zw5uFW
-X-Proofpoint-GUID: uF39gMOcVuofiWDGFWx1wtIHD_Zw5uFW
+X-Proofpoint-GUID: RS4sfxKxti4LHtt0In4dpEf1RLounceG
+X-Proofpoint-ORIG-GUID: RS4sfxKxti4LHtt0In4dpEf1RLounceG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-22_16,2024-04-22_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 malwarescore=0
- spamscore=0 impostorscore=0 mlxscore=0 phishscore=0 clxscore=1011
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404220096
-Message-ID-Hash: MVWPV4Q3O4SEJ6JZZ3VHSMUK2IPW7RIZ
-X-Message-ID-Hash: MVWPV4Q3O4SEJ6JZZ3VHSMUK2IPW7RIZ
+ impostorscore=0
+ mlxlogscore=999 priorityscore=1501 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404220096
+Message-ID-Hash: IAQIXB3L4NV7OPDCQHFOI7NR6N3RHMK2
+X-Message-ID-Hash: IAQIXB3L4NV7OPDCQHFOI7NR6N3RHMK2
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MVWPV4Q3O4SEJ6JZZ3VHSMUK2IPW7RIZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IAQIXB3L4NV7OPDCQHFOI7NR6N3RHMK2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,81 +127,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+For USB sound to expose mixer controls to fetch information about the ASoC
+sound card, add an API that returns the platform sound card number that is
+registered with SOC USB.  Knowing this allows for applications to further
+query about the offload status.
 
-Expose xhci_stop_endpoint_sync() which is a synchronous variant of
-xhci_queue_stop_endpoint().  This is useful for client drivers that are
-using the secondary interrupters, and need to stop/clean up the current
-session.  The stop endpoint command handler will also take care of cleaning
-up the ring.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci.c | 39 +++++++++++++++++++++++++++++++++++++++
- drivers/usb/host/xhci.h |  2 ++
- 2 files changed, 41 insertions(+)
+ include/sound/soc-usb.h |  6 ++++++
+ sound/soc/soc-usb.c     | 26 ++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 8579603edaff..0680f4703c92 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -2784,6 +2784,45 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
- 	return -ENOMEM;
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+index 3137f538270f..56df503c4ecf 100644
+--- a/include/sound/soc-usb.h
++++ b/include/sound/soc-usb.h
+@@ -85,6 +85,7 @@ int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
+ int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ void *snd_soc_usb_find_priv_data(struct device *dev);
++int snd_soc_usb_device_offload_available(struct device *dev);
+ 
+ int snd_soc_usb_prepare_session(struct snd_soc_usb *usb, int card_idx, int pcm_idx);
+ int snd_soc_usb_shutdown_session(struct snd_soc_usb *usb, int session_id);
+@@ -128,6 +129,11 @@ static inline void *snd_soc_usb_find_priv_data(struct device *dev)
+ 	return NULL;
  }
  
-+/*
-+ * Synchronous XHCI stop endpoint helper.  Issues the stop endpoint command and
-+ * waits for the command completion before returning.
-+ */
-+int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep, int suspend,
-+			    gfp_t gfp_flags)
++static inline int snd_soc_usb_device_offload_available(struct device *dev)
 +{
-+	struct xhci_command *command;
-+	unsigned long flags;
-+	int ret;
-+
-+	command = xhci_alloc_command(xhci, true, gfp_flags);
-+	if (!command)
-+		return -ENOMEM;
-+
-+	spin_lock_irqsave(&xhci->lock, flags);
-+	ret = xhci_queue_stop_endpoint(xhci, command, ep->vdev->slot_id,
-+				       ep->ep_index, suspend);
-+	if (ret < 0) {
-+		spin_unlock_irqrestore(&xhci->lock, flags);
-+		goto out;
-+	}
-+
-+	xhci_ring_cmd_db(xhci);
-+	spin_unlock_irqrestore(&xhci->lock, flags);
-+
-+	wait_for_completion(command->completion);
-+
-+	if (command->status == COMP_COMMAND_ABORTED ||
-+	    command->status == COMP_COMMAND_RING_STOPPED) {
-+		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
-+		ret = -ETIME;
-+	}
-+out:
-+	xhci_free_command(xhci, command);
-+
-+	return ret;
++	return -ENODEV;
 +}
-+EXPORT_SYMBOL_GPL(xhci_stop_endpoint_sync);
++
+ static inline int snd_soc_usb_prepare_session(struct snd_soc_usb *usb, int card_idx,
+ 						int pcm_idx)
+ {
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+index 27c76a33da32..53c4e399909e 100644
+--- a/sound/soc/soc-usb.c
++++ b/sound/soc/soc-usb.c
+@@ -457,6 +457,32 @@ int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_usb_find_format);
  
- /* Issue a configure endpoint command or evaluate context command
-  * and wait for it to finish.
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 6f4bf98a6282..0f3ae08507ed 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1921,6 +1921,8 @@ void xhci_ring_doorbell_for_active_rings(struct xhci_hcd *xhci,
- void xhci_cleanup_command_queue(struct xhci_hcd *xhci);
- void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
- unsigned int count_trbs(u64 addr, u64 len);
-+int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
-+			    int suspend, gfp_t gfp_flags);
- 
- /* xHCI roothub code */
- void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
++/**
++ * snd_soc_usb_device_offload_available() - Fetch BE DAI link sound card
++ * @dev: the device to find in SOC USB
++ *
++ * Finds the component linked to a specific SOC USB instance, and returns
++ * the sound card number for the platform card supporting offloading.
++ *
++ */
++int snd_soc_usb_device_offload_available(struct device *dev)
++{
++	struct snd_soc_usb *ctx;
++	struct device_node *node;
++
++	node = snd_soc_find_phandle(dev);
++	if (IS_ERR(node))
++		return -ENODEV;
++
++	ctx = snd_soc_find_usb_ctx(node);
++	of_node_put(node);
++	if (!ctx)
++		return -ENODEV;
++
++	return ctx->component->card->snd_card->number;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_device_offload_available);
++
+ /**
+  * snd_soc_usb_allocate_port() - allocate a SOC USB device
+  * @component: USB DPCM backend DAI component
