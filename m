@@ -4,84 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E301C4345F
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 13:45:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94A5AC4345F
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Apr 2024 13:45:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD344E9A;
-	Mon, 22 Apr 2024 15:45:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD344E9A
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFB45F94;
+	Mon, 22 Apr 2024 15:45:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFB45F94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713793513;
-	bh=eLwGpBWNSzsKehoMyzaBaeqO5Km6GsohfpkHMeO3sMI=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=TaA9ZHnrfg13b/jarllXwLJWR5QTuDO1lzlql8nAHNJllyadN9oRn88Objsi5TIgC
-	 IktGak8bsaGd2Cf6HGH5v16L1NbSfN3lgLjXz5/XU9ZBTkOGqGVD1PIYZG7klZV+0y
-	 XC436vSskgVa3tn159jm06aK3wq6Bl4NQtrpXFqw=
+	s=default; t=1713793541;
+	bh=RSqYj9fLODqyWDFm63AWBPUaIjp1sUJoSIUJRQbfYkY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=LoegC0oVV6WgwkatJHiBcGXyI5rramS31pGyCqJ+0Fh/hZjDmdAyy6slaVCDyFVcD
+	 x91RbB9BVXUmb0FCL4MHYMAy5N/7+Ona/nYIckEEXSUqAaVIg9Pq49KbSgNa9O7sbc
+	 KUGsOXaTjXAed/yixrnydfoNSe8QOKimtf6mTSMg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2872BF805F2; Mon, 22 Apr 2024 15:44:12 +0200 (CEST)
+	id 6C83CF80612; Mon, 22 Apr 2024 15:44:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A321F805F4;
-	Mon, 22 Apr 2024 15:44:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E560F80613;
+	Mon, 22 Apr 2024 15:44:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F24FFF802E8; Mon, 22 Apr 2024 15:44:05 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+	id 192ADF802E8; Mon, 22 Apr 2024 15:44:07 +0200 (CEST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E4323F800B5
-	for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2024 15:44:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4323F800B5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 593F2F8003C
+	for <alsa-devel@alsa-project.org>; Mon, 22 Apr 2024 15:44:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 593F2F8003C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=pXsXFAAI
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-41a4f291f80so8084685e9.1
+ header.s=google header.b=rHz802VM
+Received: by mail-wm1-x32c.google.com with SMTP id
+ 5b1f17b1804b1-41a4f291f9dso7393815e9.2
         for <alsa-devel@alsa-project.org>;
- Mon, 22 Apr 2024 06:44:00 -0700 (PDT)
+ Mon, 22 Apr 2024 06:44:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713793439; x=1714398239;
+        d=linaro.org; s=google; t=1713793444; x=1714398244;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IyhHpXfSBoKLASPLnhxuYO1fMBmMIpkOZFN42OM7jY4=;
-        b=pXsXFAAIBO6siwoStWv6kF1IhcY394WpZoQyh5pEVIzRXp8QmjFEh1RFGTElLASJQ0
-         uTXrwM0IVLErVRKIoFHwOCoU1PDhZeXubJNz37IFIzYZdGdmPYLtSVANYI/MKJW+WNvo
-         AL87kD39NQGM7zetgSbvt+DcD1OqbnSWGzR4wHTE6Zj1pS24T2J0Ll1DuAas4Je8daxa
-         UufogQ3Z460+CPmZrUNElBWAiGdhtoReSs+NJXgCaFHMqRX8fKCBn5Ghy1ypcXdl7yXT
-         qZeeKGrz9YRKBR458TTE3Wz85vNjZkD/QvLo/Sn57a98Y3PMABFG8WOt+TqerhG8pW3D
-         ulNg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5ooDB6P5Kmg8yEzYGOGc1KNPluwmb/df6YvlokaERTg=;
+        b=rHz802VMhTGCa6IN/ukJtOmm+Mb9//1ZfpCnJAatGLjPDfUjCHiBEMRe8YSKKk6Ozp
+         k81Kylq9v6G6NqLnCMxXTQcGxTe3zJ6lQyRzFR0uhowBR30g8AmH4g3iqST9Yk0+4TPk
+         t0QCaRVdYIIG+Ux5wpdbMeEEydiXem7Xk6OWrbdn+Gf80XBNIwW6RJNrYUbYkHeC3k4I
+         3kVqVh8A2NlwXLRsTJkG8wlHmr+1quk5tuj9FD6IS33buNS2kiYbWYD9hcma4/ECO2YX
+         e2XakkYwrQrH+3Vh6qffMnP0cf0oOgucyHcLBbRZatbWmfEony0EWkgJE1WzOPoVU8H7
+         Y4hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713793439; x=1714398239;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IyhHpXfSBoKLASPLnhxuYO1fMBmMIpkOZFN42OM7jY4=;
-        b=fc98B/8Sqf1GjQcjotykkww9fHxB5kId06mSuvsQABD48EdcdYuI9fWrgFmCkcDcGj
-         VbT88cQAMiNR7ed7/1nN4PvaSEDlURLANzNVRltBxSN9/qhH/XH64k39IDwBsyGioHVh
-         5F4qJIgU9OVh9h3T0Ll3uU8Ufh2+zk5GV9iCS6PT4+8qkd9kq9bl03Ray37KUycC+xHP
-         jkYbLY8fQL+Re0LrVCMYO0C7353uwzQW7IB/5PmnPke0n3QSTETfBuUbco1Y35dSs/II
-         qm0D71oCmsrS4dYGBZPDXlwWRr/cr8JzryKs79mbiREBjfk7nnhYKezZNsl2bKE4oxpk
-         OXjw==
+        d=1e100.net; s=20230601; t=1713793444; x=1714398244;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5ooDB6P5Kmg8yEzYGOGc1KNPluwmb/df6YvlokaERTg=;
+        b=rSJAJKjdlbY+k5Mz1yu6Yu3O/dy6w/qlq6XsztF+3RuelL34I+kkqhsfNG4HWvAVq+
+         KnvVYJ+Y5T4iEE9OX8GHOMOgHdmhrYVRLFRlL/2OuSTBNYvi+mfKz1v+os8tiFP2DIaR
+         GeL1sKTcNeazoH/9jwE1foiTtSKcP/C4YeeqFWMvDdpyKsKAy4u/4cYbyPcM+EY/wmDL
+         YkIo5uHIGk7EqQb0W6AorkzqcWe/onO0yDrr8uW85Ut81lc5bLbAKO0keoDMNMis4Mqx
+         Z2FrBf6vs8Q2qnhjsCvQSlBkJQ1bemEN7jh6DjTrzW4VYrRTIF3PHbBWRl7BKpt3MIow
+         q+PA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXysGrpT7ubvUXbcmkd6S6v8jaIiQrzhOtJVYoKbbVh427q9irZGf14m4J1qGTgN/7zseDI5nw8QmBKaLDMQi7L1tB3RlWBrvt8CJ0=
-X-Gm-Message-State: AOJu0YziuRYMU6K7itzEgCEXOnVVBzU6ZpH4eGZyu2yQdCyHKTGqDwb/
-	iJPMrmdgbJxx9f2UKdsBSwq8A7LBAhhrJarsaPAcMgYXip4yKZPyFfez5E4D634=
+ AJvYcCXlj0cqzspaWg1TYdwJGYS/i1wpCnmsLQLqZPclUd1zrDSAH83r43fnP55F/2Lxq/wkP1StaBc1YnTWUl0w9/TlV4Q+/e3mYdDglDs=
+X-Gm-Message-State: AOJu0Yxhxw+lYkL+TsPGlkuECT3ep6bbqQIgznkK4pu/xWsro55e7MqL
+	JOTe/LDYnjlnaGzot+NLk2RURENWt44x0bxuyfsMgZmbPPiNFhVlqcB3MgEN/aY=
 X-Google-Smtp-Source: 
- AGHT+IGVKGiL+8Ldo4qtKC5/WdzouQLf24IRdTEX/wcJBZuyxLhla2b8gT7u4AqyanBsHU3HdncymA==
-X-Received: by 2002:a5d:69c1:0:b0:343:ef1b:9f69 with SMTP id
- s1-20020a5d69c1000000b00343ef1b9f69mr8121800wrw.43.1713793439531;
-        Mon, 22 Apr 2024 06:43:59 -0700 (PDT)
+ AGHT+IHnK3xm7CMZ4D7teNrVAR475tu+8odtu8N0waL9N53OtCwv49PY4AtgG8UEQNcltk7ayCBSBg==
+X-Received: by 2002:a05:600c:46cb:b0:418:a786:3760 with SMTP id
+ q11-20020a05600c46cb00b00418a7863760mr6722875wmo.15.1713793443690;
+        Mon, 22 Apr 2024 06:44:03 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- g18-20020a05600c4ed200b00417d624cffbsm20731069wmq.6.2024.04.22.06.43.58
+ g18-20020a05600c4ed200b00417d624cffbsm20731069wmq.6.2024.04.22.06.44.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 06:43:59 -0700 (PDT)
+        Mon, 22 Apr 2024 06:44:02 -0700 (PDT)
 From: srinivas.kandagatla@linaro.org
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -90,14 +92,16 @@ Cc: perex@perex.cz,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 0/4] ASoC: qcom: display port changes
-Date: Mon, 22 Apr 2024 14:43:50 +0100
-Message-Id: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 3/4] ASoC: qcom: sc8280xp: add Display port Jack
+Date: Mon, 22 Apr 2024 14:43:53 +0100
+Message-Id: <20240422134354.89291-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
+References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6VBDMB4R7WNG3M6HYRYS33Y7BR2ZE6LD
-X-Message-ID-Hash: 6VBDMB4R7WNG3M6HYRYS33Y7BR2ZE6LD
+Message-ID-Hash: VOWVEBX7TNKWTJN5C5WFWDQAHVRSYSFO
+X-Message-ID-Hash: VOWVEBX7TNKWTJN5C5WFWDQAHVRSYSFO
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -110,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VBDMB4R7WNG3M6HYRYS33Y7BR2ZE6LD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VOWVEBX7TNKWTJN5C5WFWDQAHVRSYSFO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,35 +125,57 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patchset adds support for.
-	1. parse Display Port module tokens from ASoC topology
-	2. add support to DP/HDMI Jack events.
-	3. fixes a typo in function name in sm8250
+Add support to Display Port Jack events, by making use of common helper
+function.
 
-Verified these patches on X13s along with changes to tplg in 
-https://git.codelinaro.org/linaro/qcomlt/audioreach-topology/-/tree/topic/x13s-dp?ref_type=heads
-and ucm changes from https://github.com/Srinivas-Kandagatla/alsa-ucm-conf/tree/topic/x13s-dp
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/sc8280xp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Thanks,
-Srini
-
-Changes since v1:
-	- Fixed unused variable warning.
-	- fixed warning 'break;' to avoid fall-through
-
-Srinivas Kandagatla (4):
-  ASoC: qcom: q6dsp: parse Display port tokens
-  ASoC: qcom: common: add Display port Jack function
-  ASoC: qcom: sc8280xp: add Display port Jack
-  ASoC: qcom: sm8250: fix a typo in function name
-
- sound/soc/qcom/common.c         | 29 +++++++++++++++++++++++++++++
- sound/soc/qcom/common.h         |  3 +++
- sound/soc/qcom/qdsp6/topology.c | 26 ++++++++++++++++++++++++++
- sound/soc/qcom/sc8280xp.c       | 14 ++++++++++++++
- sound/soc/qcom/sm8250.c         |  4 ++--
- 5 files changed, 74 insertions(+), 2 deletions(-)
-
+diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+index 878bd50ad4a7..38f97f19add9 100644
+--- a/sound/soc/qcom/sc8280xp.c
++++ b/sound/soc/qcom/sc8280xp.c
+@@ -19,6 +19,7 @@ struct sc8280xp_snd_data {
+ 	struct snd_soc_card *card;
+ 	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
+ 	struct snd_soc_jack jack;
++	struct snd_soc_jack hdmi_jack[8];
+ 	bool jack_setup;
+ };
+ 
+@@ -27,6 +28,8 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct sc8280xp_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
+ 	struct snd_soc_card *card = rtd->card;
++	struct snd_soc_jack *hdmi_jack  = NULL;
++	int hdmi_pcm_id = 0;
+ 
+ 	switch (cpu_dai->id) {
+ 	case WSA_CODEC_DMA_RX_0:
+@@ -41,10 +44,21 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+ 		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 17);
+ 		snd_soc_limit_volume(card, "SpkrRight PA Volume", 17);
+ 		break;
++	case DISPLAY_PORT_RX_0:
++		hdmi_pcm_id = 0;
++		hdmi_jack = &data->hdmi_jack[hdmi_pcm_id];
++		break;
++	case DISPLAY_PORT_RX_1 ... DISPLAY_PORT_RX_7:
++		hdmi_pcm_id = cpu_dai->id - DISPLAY_PORT_RX_1 + 1;
++		hdmi_jack = &data->hdmi_jack[hdmi_pcm_id];
++		break;
+ 	default:
+ 		break;
+ 	}
+ 
++	if (hdmi_jack)
++		return qcom_snd_dp_jack_setup(rtd, hdmi_jack, hdmi_pcm_id);
++
+ 	return qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
+ }
+ 
 -- 
 2.25.1
 
