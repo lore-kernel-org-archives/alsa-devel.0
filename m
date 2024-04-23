@@ -4,89 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED92AC4345F
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Apr 2024 16:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB1FCC4345F
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Apr 2024 16:25:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD866F55;
-	Tue, 23 Apr 2024 18:24:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD866F55
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1CA810BE;
+	Tue, 23 Apr 2024 18:24:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1CA810BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713889459;
-	bh=vUv6u6ZhLsM+va70UGiS/mekZg2/uGIZ8GSj/jfzLLU=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=rcaJM1gUNy2SSUnWGxVmPKOSJ3M9oHvA8O2ovn9sHdAbKA+Rqf5eC2XNGJIfLUdKV
-	 eXL0RyxHxBsiUd55Aw9rgvDaUQTPduS0NHGLOViy2phoSiKDrYao8Yo7DUtQOLnOmu
-	 zHJEseR9jf+HaZuOTyLAs1YNHS1QYOFA40yq0+1Y=
+	s=default; t=1713889507;
+	bh=/+Ngmq/dET1hRbcDzT+tPPqrN7PjBb3QJe6Y4gicig8=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=h5NnyaDECiE4AyUjpxCGGQWGcQrBCiHCoTnyy9yV9VMnVd5m+2q2Zldmw/8eHLyof
+	 zkLvbI/svR5XGvndXYsvVoyE2+yE8bV4VHWTDvu17inPlK9deTdo5Rw3ZI0o51kVHy
+	 KD8mMMRkoqmWXT4JhlGIzk/lC14IEAVyqyCHjwXY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E263AF805D7; Tue, 23 Apr 2024 18:23:27 +0200 (CEST)
+	id E7B7AF805A9; Tue, 23 Apr 2024 18:24:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4585AF805D6;
-	Tue, 23 Apr 2024 18:23:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 546D7F80580;
+	Tue, 23 Apr 2024 18:24:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B8DCF8045D; Tue, 23 Apr 2024 18:23:21 +0200 (CEST)
+	id CECA1F80423; Tue, 23 Apr 2024 18:24:25 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6851CF8003C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9078BF802E8
 	for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2024 18:23:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6851CF8003C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9078BF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=d9Pvvvim
+ header.s=PODMain02222019 header.b=PECz7F2M
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43N5gEEQ003890;
-	Tue, 23 Apr 2024 11:23:10 -0500
+ 43N5gEEP003890;
+	Tue, 23 Apr 2024 11:23:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=+XP7M2PpDVjlXZgFvQLArH8e3N+3sqpwTxl4VZrshgw=; b=
-	d9Pvvvim0NtZquWS8/dlAfQ8NPhk54/ngVdYd1JvoVa87IkpMumNFRz1pvj28QlA
-	zgRtjZtAEIjQA4xxSudrjvZ6mxMBtgWct7MP7YD2QWa0tQ5nDwfOrT1NYLS4REPE
-	4gXkd+R95YBlcmohAVcMSuVLG4ZU8q3/WQ86l3ovJ/cR82ZDF6yGsVM0opKP4OmA
-	YFb9+L1DSr7tjjcxZD248M2lEM/O9CH3k+14uCNrCHVlZ3Jf9403Rt4rpf4W9awq
-	Xy40gYyMAY4tfN6XgmZLDM5dT5uZD9yMOt+nK8NohliHkNH7Cn8WQWUF5zLEi7yC
-	yqC/qTNm+glmEu3y73EnPA==
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=G
+	JNcEy25j5fMRCp89ONq4zKfqjl5XmVRq/GtbPMf+60=; b=PECz7F2MtzUtpcDpf
+	hP3F/a0n679BKHSX0MWAk/JXJJBdcGYCzuAT0iqL9htBoOsVq+3eo8HycVzx9jFc
+	eJhMpihuAVd/BCtK0XZ6xQEmPtpVAnq+je9xn31LjEiuhD58OTP4rlYlGkYWULcD
+	RteJyO/xNNMS8KUQKb6Wul8N8GfdH0B6hRjHAhUVA03HkSptSLBjMUCpwkDC68B2
+	7VIP5xfmopuNRmJL/gIdGIumMY4oT3wJ0gVIBCRYgBOoTu7MNgyTy8x5kg5rX4cc
+	jju6UOR83HKjha08Pek6QN3mR55nuQeNcI7X5CZC9E9lWvZfhQrdy01plY/jz/9V
+	V0uNw==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xmb3xttdm-2
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xmb3xttdm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 11:23:10 -0500 (CDT)
+	Tue, 23 Apr 2024 11:23:09 -0500 (CDT)
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
  2024 17:23:07 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Tue, 23 Apr 2024 17:23:07 +0100
+ 15.2.1544.9 via Frontend Transport; Tue, 23 Apr 2024 17:23:06 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.64.201])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 1D4AE820258;
-	Tue, 23 Apr 2024 16:23:07 +0000 (UTC)
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 98769820243;
+	Tue, 23 Apr 2024 16:23:06 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Stefan
  Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 2/2] ALSA: hda/realtek: Add quirks for Lenovo 13X
-Date: Tue, 23 Apr 2024 17:23:03 +0100
-Message-ID: <20240423162303.638211-3-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 0/2] Add support for Lenovo Thinkbook 13X
+Date: Tue, 23 Apr 2024 17:23:01 +0100
+Message-ID: <20240423162303.638211-1-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240423162303.638211-1-sbinding@opensource.cirrus.com>
-References: <20240423162303.638211-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: KKHyAKFHGhMuVfTmS1yk4Y3g-WtLaLYk
-X-Proofpoint-ORIG-GUID: KKHyAKFHGhMuVfTmS1yk4Y3g-WtLaLYk
+X-Proofpoint-GUID: xkSXrS6qGavWCwbf3HrUTDjbD150W0Od
+X-Proofpoint-ORIG-GUID: xkSXrS6qGavWCwbf3HrUTDjbD150W0Od
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: O7ISHPQLRZTV23SMGLQRIEFUFEZFVUZN
-X-Message-ID-Hash: O7ISHPQLRZTV23SMGLQRIEFUFEZFVUZN
+Message-ID-Hash: MDFL7JFV2HKXY2S5SC2BRA5TXQ3A4QD4
+X-Message-ID-Hash: MDFL7JFV2HKXY2S5SC2BRA5TXQ3A4QD4
 X-MailFrom: prvs=1843615586=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O7ISHPQLRZTV23SMGLQRIEFUFEZFVUZN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MDFL7JFV2HKXY2S5SC2BRA5TXQ3A4QD4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,28 +105,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add laptop using CS35L41 HDA.
-This laptop does not have _DSD, so require entries in property
-configuration table for cs35l41_hda driver.
+This laptop does not contain _DSD required to support CS35L41 HDA.
+To workaround this, add support for this laptop into the configuration
+table in cs35l41_hda_property.c.
+Also add the required entry into patch_realtek for this SSID.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+Stefan Binding (2):
+  ALSA: hda: cs35l41: Support Lenovo 13X laptop without _DSD
+  ALSA: hda/realtek: Add quirks for Lenovo 13X
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d1c35cd5a776..38a9b4872f1e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10425,6 +10425,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3852, "Lenovo Yoga 7 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
-+	SND_PCI_QUIRK(0x17aa, 0x3865, "Lenovo 13X", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x17aa, 0x3866, "Lenovo 13X", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
- 	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
+ sound/pci/hda/cs35l41_hda_property.c | 4 ++++
+ sound/pci/hda/patch_realtek.c        | 2 ++
+ 2 files changed, 6 insertions(+)
+
 -- 
 2.34.1
 
