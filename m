@@ -4,107 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9B41C4345F
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Apr 2024 16:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FC95C10F1A
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Apr 2024 16:24:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95DBE1549;
-	Tue, 23 Apr 2024 18:00:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95DBE1549
+	by alsa0.perex.cz (Postfix) with ESMTPS id 953B91903;
+	Tue, 23 Apr 2024 18:23:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 953B91903
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1713888068;
-	bh=3Qvx6ZIZdmr8NJplnmb0hbaXLf/X2TLHnkAAFtsM10Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1713889439;
+	bh=Q5pBomNvNNt1A3Rnzxx0LXPI2/v2/y+Z2n+2/IhawV0=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TALmrGy7yB2HPbkVSgOs5wpxzCyU1j2x2wHkUIoj9kZtVO3SNU6G/3ri78HNVvqDM
-	 GpIivbJsewFEEQ2hZ6BCvket4xnvPEnTHJLOxIB0P7bz07eG6vcJfye/O/xzNXOM5a
-	 id6UrS2HtNs5AoCl54XIr495m8Q/rxBJ0AY9lwGA=
+	b=kkCA/SUCHxFIlkBCzRXRCKda3KkV3nohNko4RO9/pUMkDIILGAzicHFM4e4IyYPQg
+	 uCQn/+LxyhvclQ3GFNAs+yiDj3wWsyd70vf85YSG294lQ1iZefpqGMhOD0FFTCvIPh
+	 DNTpFiKKej8ikQUblbgo+jg1G/OKUpOAbFGGBouI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01873F8057A; Tue, 23 Apr 2024 18:00:36 +0200 (CEST)
+	id 14B01F805AB; Tue, 23 Apr 2024 18:23:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F8F0F8057F;
-	Tue, 23 Apr 2024 18:00:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59959F805A0;
+	Tue, 23 Apr 2024 18:23:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D76CEF80423; Tue, 23 Apr 2024 18:00:00 +0200 (CEST)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
- [IPv6:2a00:1450:4864:20::22b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0DA83F804B0; Tue, 23 Apr 2024 18:23:19 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2F90BF8003C
-	for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2024 17:59:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F90BF8003C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 48FDAF8003A
+	for <alsa-devel@alsa-project.org>; Tue, 23 Apr 2024 18:23:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48FDAF8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=AQBDRRrQ
-Received: by mail-lj1-x22b.google.com with SMTP id
- 38308e7fff4ca-2d9fe2b37acso78988271fa.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 23 Apr 2024 08:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713887998; x=1714492798;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GVOk/dzku39M7HZHzSD7vBdGj96SEMQyCyLR6xoJWus=;
-        b=AQBDRRrQ/6KUn8+V0LhOUQv1smtjWCwTtX0n71tS8LjG5AqDL5f8dlvuZVdXSeZpC5
-         anVJekgErl3cprUkwIjLXnpCthLU76EiNozNGVN1fKNVSTut0O8rVH3CDGMaBw/aFbgP
-         1TWKSO9DHkUJRwZgVgnqny+pZqFinbdCHUMMEoWMBlZC+yvvaxRLPSjkPDjOJ1gMdkfb
-         bBon05U018ERatM9mkoM6imBnyljtDL1M5dT1swIVHI5GFXMxZWYLNERlRQLPcpsiQ4d
-         yxM8tzMcw7xOIaViRTEsvj2xU6iiPnrXGm4DNot6DcBsJTelboN6LuIDp/fLmWhWxeQc
-         wvaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713887998; x=1714492798;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GVOk/dzku39M7HZHzSD7vBdGj96SEMQyCyLR6xoJWus=;
-        b=qV7fGCNC5VSU5PuyuwfOhc8RxnJv0+B6vbOwupYhU4udZRjshdhEwdg3SQcBRpxU7r
-         TqfhtbRq370LQ910IDm09DlYMNGhC1HPsANu+DEgQYR61UJtutcjK8JYjIUbsXFQhkPd
-         AVEYEnXkTXeTJWHBHw2YdxJcxgosIqCMVnSXR2ieMjH8PVOhK2EolpRkOjMGtykVnBEo
-         IfHcFC7wD+Ca6yU15vBhOQGbIuyscvhEerPRk+hX8ZMnZW6QMv0fH5S9N3oA9yhqd6ys
-         DZYDWZwDqYJgsimIx7j58J/wZCezLdAYQQSd26LOsIgJ5wRRyBzk0j9rw99LrQrTgbE8
-         76jw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUVjIfTqSOQUSUJfXyIpydZFD4f4imDdpofc3POF6qz9DPsIiOR9ujeAHKMxzkvhU+wInMVej9OCFWEAtr2bro/CVwsqzV3sN+b1Ag=
-X-Gm-Message-State: AOJu0YyDv7Xka7MRvKdgpf1qHp61FRi//Oarr+IUWRp0DhG+4Az9trxf
-	nXFUJ5lfqgvx+wlcSMrvlUuLXgJzXcqFAyBIW/CJV1xTY/F7uNFksL8Qocmo5GU=
-X-Google-Smtp-Source: 
- AGHT+IE7rfyobENugLknJtFA4JtMXmdI87sZdOD2xUpd2VfgYAUPzUpKbTcfy6qEYe07Zp9bNAsYCg==
-X-Received: by 2002:a05:651c:1682:b0:2dc:bd10:2944 with SMTP id
- bd2-20020a05651c168200b002dcbd102944mr7462872ljb.53.1713887997962;
-        Tue, 23 Apr 2024 08:59:57 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id
- bi8-20020a05600c3d8800b0041a9c441f69sm4188267wmb.16.2024.04.23.08.59.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 08:59:57 -0700 (PDT)
-Message-ID: <fc3d849d-3a7e-439a-8d71-2b70ac75ae86@linaro.org>
-Date: Tue, 23 Apr 2024 16:59:56 +0100
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=LnrtMU63
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 43N5kTvC011470;
+	Tue, 23 Apr 2024 11:23:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=otNxeYr92ucuR9gMxp7zxkbmIictW4XHCCuOxcBR5hk=; b=
+	LnrtMU63bmIKnphai52NBYUnpOBuKZyslWuwXBJczcIbuFGRKBX7sP4rzrKh5El7
+	VJP8/NDYBL04uOtUZEPrwFpjPlZ/XXyTDwo+hKnckI1XcLiIV9OEek9GX78vML38
+	aXkss7ZmGQKZgQ6PsZI4jI6k0NMtJBVcjQtES7yRfDNISd8wldkmrhj764xz575i
+	pCdPjhVAJNbrUS5BM3OBfIcEByC2GYnfjr7c5w20VW3Kdkc8kUm3yCOEboKZUSEp
+	PzXXa+kK7ugC3xCBlRYxH1App29QX8/nRcyIrgO2BnIFjnhG8rkh1II3zZQChBDP
+	RRy0U0wGcexgGHTyEIxubQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xmqmh2b8c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Apr 2024 11:23:09 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
+ 2024 17:23:07 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Tue, 23 Apr 2024 17:23:07 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.64.201])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id DB00282024B;
+	Tue, 23 Apr 2024 16:23:06 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Stefan
+ Binding" <sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 1/2] ALSA: hda: cs35l41: Support Lenovo 13X laptop without
+ _DSD
+Date: Tue, 23 Apr 2024 17:23:02 +0100
+Message-ID: <20240423162303.638211-2-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240423162303.638211-1-sbinding@opensource.cirrus.com>
+References: <20240423162303.638211-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] ASoC: qcom: display port changes
-To: Johan Hovold <johan@kernel.org>
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Bjorn Andersson <quic_bjorande@quicinc.com>
-References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
- <ZieihZRKe7OtP-nV@hovoldconsulting.com>
- <92b02fd3-5eba-42a7-a166-21b14724b10c@linaro.org>
- <ZifMlc_rLV6_LhUy@hovoldconsulting.com>
-Content-Language: en-US
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <ZifMlc_rLV6_LhUy@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 3X6ECXV4BWBHBP7JXYED2KG4PRJ3OAEY
-X-Message-ID-Hash: 3X6ECXV4BWBHBP7JXYED2KG4PRJ3OAEY
-X-MailFrom: srinivas.kandagatla@linaro.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: r4eWeIrplgezRGoBV1jN_RxwbYzy5l1S
+X-Proofpoint-GUID: r4eWeIrplgezRGoBV1jN_RxwbYzy5l1S
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: VQRRBP4FTKJXZME2ET4C6DMWV4FTOAGB
+X-Message-ID-Hash: VQRRBP4FTKJXZME2ET4C6DMWV4FTOAGB
+X-MailFrom: prvs=1843615586=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -116,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3X6ECXV4BWBHBP7JXYED2KG4PRJ3OAEY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VQRRBP4FTKJXZME2ET4C6DMWV4FTOAGB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,31 +109,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+This laptop does not have the correct _DSD settings, so needs to
+obtain its configuration from the configuration table.
 
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l41_hda_property.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On 23/04/2024 15:58, Johan Hovold wrote:
->> It is absolutely possible to run all the streams in parallel from the
->> Audio hardware and DSP point of view.
->>
->> One thing to note is, On Qualcomm DP IP, we can not read/write registers
->> if the DP port is not connected, which means that we can not send data
->> in such cases.
->>
->> This makes it challenging to work with sound-servers like pipewire or
->> pulseaudio as they tend to send silence data at very early stages in the
->> full system boot up, ignoring state of the Jack events.
-> This bit sounds like it can and should be worked around by the driver to
-> avoid hard-coding policy which would prevent use cases such as the ones
-> mentioned above.
-This is not simple as you say. We have to fit these into a proper DPCM.
-Either we have a dummy Backend connected for each of these pcm 
-sub-devices when DP port is not connected and then switch back to DP 
-when its connected.
-
-Or somehow find a way to not let the pipewire talk to devices which are 
-not connected.
-
-
-thanks,
-srini
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 6f82b28e26dd..be97e973accb 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -111,6 +111,8 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
+ 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
++	{ "17AA3865", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
++	{ "17AA3866", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+ 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+ 	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+ 	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+@@ -504,6 +506,8 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10431F1F", generic_dsd_config },
+ 	{ "CSC3551", "10431F62", generic_dsd_config },
+ 	{ "CSC3551", "10433A60", generic_dsd_config },
++	{ "CSC3551", "17AA3865", generic_dsd_config },
++	{ "CSC3551", "17AA3866", generic_dsd_config },
+ 	{ "CSC3551", "17AA386F", generic_dsd_config },
+ 	{ "CSC3551", "17AA3877", generic_dsd_config },
+ 	{ "CSC3551", "17AA3878", generic_dsd_config },
+-- 
+2.34.1
 
