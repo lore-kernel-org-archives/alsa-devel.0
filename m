@@ -4,160 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B1D2C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Apr 2024 09:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73256C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Apr 2024 09:23:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B34E0BC0;
-	Thu, 25 Apr 2024 11:22:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B34E0BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6346EE7D;
+	Thu, 25 Apr 2024 11:23:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6346EE7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714036969;
-	bh=HDlJSLefKXe2JUBM3NFVTfxfmPrNGrt+DF2ru5JAiok=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1714037026;
+	bh=0xk+QIjxE2EB0lboGRRdBfc0QrIFZEEoCLzTMDLvFZM=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jK1AWjE044gs7ikvncOjwQZKdeAe3TanQpS1k0nUp08qtt/uQ9NCJVhSieD8WsZK1
-	 X6azFyUI4xuQPyRBCnp8qtoeTdBWFGuvK7MEMCRx38Gyhnh8WICoYB/V/kqiZJFWv+
-	 F9rh2GumEpH2r/dNn9EZRO8J7jUALn/fc/ePI5EU=
+	b=JKuEjeMLQyHzUkeuu7SMwnBGfB/IXXiooTnkpN+SMP1PJRMcj7+UmJMW6Dfllr3QU
+	 nxgsBaF5+S6a5Df6r6TWIAexdYitLd95CflBbazIWXmwudyiqBM++MfmLEGvfNkyzD
+	 xY/A3BOBE+H+x5f/mDyZmppKSNx1owYWJYCwG+5s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84DC2F805B0; Thu, 25 Apr 2024 11:22:30 +0200 (CEST)
+	id 8CAC3F8059F; Thu, 25 Apr 2024 11:23:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D66A1F805AA;
-	Thu, 25 Apr 2024 11:22:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83B99F805A8;
+	Thu, 25 Apr 2024 11:23:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96EFEF80423; Thu, 25 Apr 2024 11:22:24 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1BD5BF802E8; Thu, 25 Apr 2024 11:23:11 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C83D8F802E8
-	for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2024 11:22:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C83D8F802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1AD7EF8057A
+	for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2024 11:20:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AD7EF8057A
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=HmGrcuXV;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=7kTHxT7Q;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=HmGrcuXV;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=7kTHxT7Q
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D76B3205A4;
-	Thu, 25 Apr 2024 09:22:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1714036930;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WsEP3vEV/iyEKIFQ6+MZRsSwkcuVQPAVQsrBK6Ka6x0=;
-	b=HmGrcuXVQYNzTBFAmy47lsV8quKoGV6qW7lpgkclvW2uwrc2fX5g8hL9wT0oLUtovn7RY+
-	Mll9EKQ4kZtyTazbBKIS99n/2TLOehf0NVudRZMOwL2yj8CRJ5BjNnJJInNu/0p0jcv+SG
-	jJbeJPjX1rZn41t9X72mHH+B/nFTAkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714036930;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WsEP3vEV/iyEKIFQ6+MZRsSwkcuVQPAVQsrBK6Ka6x0=;
-	b=7kTHxT7QxM/BDERe81R/g0L3bOlaAJqrxTjpaEiXekqXEtaEuTXVQPjWAfkxlpsuYEEvA5
-	Nu7EHgNKYxtlSnAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1714036930;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WsEP3vEV/iyEKIFQ6+MZRsSwkcuVQPAVQsrBK6Ka6x0=;
-	b=HmGrcuXVQYNzTBFAmy47lsV8quKoGV6qW7lpgkclvW2uwrc2fX5g8hL9wT0oLUtovn7RY+
-	Mll9EKQ4kZtyTazbBKIS99n/2TLOehf0NVudRZMOwL2yj8CRJ5BjNnJJInNu/0p0jcv+SG
-	jJbeJPjX1rZn41t9X72mHH+B/nFTAkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1714036930;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WsEP3vEV/iyEKIFQ6+MZRsSwkcuVQPAVQsrBK6Ka6x0=;
-	b=7kTHxT7QxM/BDERe81R/g0L3bOlaAJqrxTjpaEiXekqXEtaEuTXVQPjWAfkxlpsuYEEvA5
-	Nu7EHgNKYxtlSnAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D8021393C;
-	Thu, 25 Apr 2024 09:22:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id atZbJcIgKmYhLAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 25 Apr 2024 09:22:10 +0000
-Date: Thu, 25 Apr 2024 11:22:12 +0200
-Message-ID: <871q6tbxvf.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-	Felipe Balbi
- <balbi@kernel.org>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Julian Scheel <julian@jusst.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	John Keeping <john@metanate.com>,
-	AKASH KUMAR <quic_akakum@quicinc.com>,
-	Jack Pham <jackp@codeaurora.org>,
-	Chris Wulff <Chris.Wulff@biamp.com>
-Subject: Re: usb:gadget:f_uac2: RFC: allowing multiple altsetttings for
- channel/samplesize combinations
-In-Reply-To: <72e9b581-4a91-2319-cb9f-0bcb370f34a1@ivitera.com>
-References: <35be4668-58d3-894a-72cf-de1afaacae45@ivitera.com>
-	<72e9b581-4a91-2319-cb9f-0bcb370f34a1@ivitera.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=i7fSMT4I
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 43P6q7U5004972;
+	Thu, 25 Apr 2024 09:20:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=6VMcktPesBFIPv0213oBYigslu7u+KqaXN4VVyX+RZs=; b=i7
+	fSMT4IbqMBSvtdU/pnQT84EkNoA4siMASY6bsegrOSfZnrS3gDWHLcfoEA0sQ2tT
+	puGvxxTbDFr4uMHzhcVlX2HnI3poHfqvCtxKLsO6MuU7eHK3A88KOM6g5fgghSzc
+	Kx70NYAvboGjoiF5/A7RNHXcc4HUP0zpQUWSLGezYPWR7BSIoICiEX54qdnP7l8J
+	GGeXxPVtLLgkFcHZSNonVVZZMp6sk0iYRN47BB/F9YwCRfK/4zC1/koqJtEMPl6f
+	j/LBTEg2xFjI1+NN4YKFrlKLdnY4YIzZ0eZgjgJNF+ZGMbOn+wg0SkyqYbxcGZe7
+	ExrNS1TTKetkJcQAOkyQ==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com
+ [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenghkam-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 09:20:37 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
+ [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 43P9KaXJ009435
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Apr 2024 09:20:36 GMT
+Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 25 Apr 2024 02:20:31 -0700
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami
+	<bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+	<broonie@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela
+	<perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+CC: <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_rohkumar@quicinc.com>,
+        <quic_pkumpatl@quicinc.com>,
+        Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Subject: [PATCH v3 6/7] ASoC: codecs: wcd937x: add capture dapm widgets
+Date: Thu, 25 Apr 2024 14:48:56 +0530
+Message-ID: <20240425091857.2161088-7-quic_mohs@quicinc.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240425091857.2161088-1-quic_mohs@quicinc.com>
+References: <20240425091857.2161088-1-quic_mohs@quicinc.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,alsa-project.org,gmail.com,kernel.org,baylibre.com,jusst.de,linuxfoundation.org,metanate.com,quicinc.com,codeaurora.org,biamp.com];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[]
-Message-ID-Hash: EY4WFCALUTY6KLZDSF5FDAECX45LNNPS
-X-Message-ID-Hash: EY4WFCALUTY6KLZDSF5FDAECX45LNNPS
-X-MailFrom: tiwai@suse.de
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: F_dlfbm7QveVQhhe4y9twjYqO9hHdMsy
+X-Proofpoint-ORIG-GUID: F_dlfbm7QveVQhhe4y9twjYqO9hHdMsy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-25_09,2024-04-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 phishscore=0 adultscore=0
+ malwarescore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404250066
+Message-ID-Hash: OTOEJQKUGZWBAWAYKTQKUW6TL4MBRZVO
+X-Message-ID-Hash: OTOEJQKUGZWBAWAYKTQKUW6TL4MBRZVO
+X-MailFrom: quic_mohs@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -169,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EY4WFCALUTY6KLZDSF5FDAECX45LNNPS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OTOEJQKUGZWBAWAYKTQKUW6TL4MBRZVO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,88 +134,488 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 24 Apr 2024 09:40:52 +0200,
-Pavel Hofman wrote:
-> 
-> 
-> On 17. 04. 24 13:07, Pavel Hofman wrote:
-> 
-> > I am considering implementation of multiple altsettings to f_uac2, so
-> > that multiple combinations of channels and samplesizes can be offered to
-> > the host.
-> > 
-> > Configuration:
-> > --------------
-> > * each altsetting for each direction should define
-> >    * channel mask
-> >    * samplesize
-> >    * hs_bint bInterval
-> >    * c_sync type (for capture only)
-> > 
-> > 
-> > Perhaps the easiest config would be allowing lists for the existing
-> > parameters (like the multiple samplerates were implemented). All the
-> > list params would have to have the same number of items - initial check.
-> > First values in the list would apply to altsetting 1, second to
-> > altsetting 2 etc.
-> > 
-> > Or the altsetting could be some structured configfs param - please is
-> > there any recommended standard for structured configfs params?
-> > 
-> > 
-> > Should the config also adjust the list of allowed samplerates for each
-> > altsetting? Technically it makes sense as higher number of channels can
-> > decrease the max samplerate, e.g. for via a TDM interface. If so, it
-> > would need either the structured configuration or some "list of lists"
-> > format.
-> > 
-> > 
-> > Implementation:
-> > ---------------
-> > 
-> > Parameters could be turned to arrays of fixed predefined sizes, like the
-> > p/s_srates. E.g. 5 max. altsettings in each direction would consume only
-> > 4 * (5-1) + 3* (5-1) = 28 extra ints (excluding the samplerates config).
-> > 
-> > Currently all descriptor structs are statically pre-allocated as there
-> > are only two hard-coded altsettings. IMO the descriptors specific for
-> > each altsetting could be allocated dynamically in a loop over all
-> > none-zero alsettings.
-> > 
-> > Please may I ask UAC2 gadget "stakeholders" for comments, suggestions,
-> > recommendations, so that my eventual initial version was in some
-> > generally acceptable direction?
-> > 
-> 
-> This feature has coincidentally arisen in recent commits by Chris
-> https://lore.kernel.org/lkml/c9928edb-8b2d-1948-40b8-c16e34cea3e2@ivitera.com/T/
-> 
-> Maybe Takashi's commits to the midi gadget could be a way
-> https://patchwork.kernel.org/project/alsa-devel/list/?series=769151&state=%2A&archive=both
-> The midi gadget allows multiple configurations now, where configs are
-> placed into a separate block.X configfs directory. That way the configfs
-> recommendation to keep one value per item is adhered to and the
-> configuration is nice and clean.
-> 
-> This method would nicely allow various samplerate lists for each
-> altsetting, without having to use some obscure list of lists.
-> 
-> The f_uac2 tree config could have e.g. alt.1-X subdirs, to fit the
-> altsetting ID. I am not sure the dot index not starting with 0 would be
-> an issue.
-> 
-> Now the question would be what to do with the existing (and the new
-> params added by Chris) flat-structure parameters which apply to (the
-> only one) altsetting 1. Maybe they could be used as defaults for the
-> other altsettings for unspecified parameters?
-> 
-> I very much appreciate any input, thank you all in advance.
+From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
 
-IMO, a softer approach would be to use subdirs for alt1+ while flat
-files are kept used for alt0.  Alternatively, we may allow creating
-alt0, too, and the values there will win over the flat values.
+This patch adds required dapm widgets for capture path.
 
+Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+---
+ sound/soc/codecs/wcd937x.c | 404 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 404 insertions(+)
 
-thanks,
+diff --git a/sound/soc/codecs/wcd937x.c b/sound/soc/codecs/wcd937x.c
+index a7f41749b5c5..87e571dc4a11 100644
+--- a/sound/soc/codecs/wcd937x.c
++++ b/sound/soc/codecs/wcd937x.c
+@@ -915,6 +915,145 @@ static int wcd937x_get_micb_vout_ctl_val(u32 micb_mv)
+ 	return (micb_mv - 1000) / 50;
+ }
+ 
++static int wcd937x_tx_swr_ctrl(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++	bool use_amic3 = snd_soc_component_read(component, WCD937X_TX_NEW_TX_CH2_SEL) & BIT(7);
++
++	/* Enable BCS for Headset mic */
++	if (event == SND_SOC_DAPM_PRE_PMU && strnstr(w->name, "ADC", sizeof("ADC")))
++		if (w->shift == 1 && !use_amic3)
++			set_bit(AMIC2_BCS_ENABLE, &wcd937x->status_mask);
++
++	return 0;
++}
++
++static int wcd937x_codec_enable_adc(struct snd_soc_dapm_widget *w,
++				    struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		atomic_inc(&wcd937x->ana_clk_count);
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_DIG_CLK_CTL, BIT(7), BIT(7));
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_ANA_CLK_CTL, BIT(3), BIT(3));
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_ANA_CLK_CTL, BIT(4), BIT(4));
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		if (w->shift == 1 && test_bit(AMIC2_BCS_ENABLE, &wcd937x->status_mask))
++			clear_bit(AMIC2_BCS_ENABLE, &wcd937x->status_mask);
++
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_ANA_CLK_CTL, BIT(3), 0x00);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd937x_enable_req(struct snd_soc_dapm_widget *w,
++			      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wcd937x_priv *wcd937x = snd_soc_component_get_drvdata(component);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_REQ_CTL, BIT(1), BIT(1));
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_REQ_CTL, BIT(0), 0x00);
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH2, BIT(6), BIT(6));
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH3_HPF, BIT(6), BIT(6));
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_DIG_CLK_CTL, 0x70, 0x70);
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH1, BIT(7), BIT(7));
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH2, BIT(6), 0x00);
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH2, BIT(7), BIT(7));
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH3, BIT(7), BIT(7));
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH1, BIT(7), 0x00);
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH2, BIT(7), 0x00);
++		snd_soc_component_update_bits(component,
++					      WCD937X_ANA_TX_CH3, BIT(7), 0x00);
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_DIG_CLK_CTL, BIT(4), 0x00);
++
++		atomic_dec(&wcd937x->ana_clk_count);
++		if (atomic_read(&wcd937x->ana_clk_count) <= 0) {
++			snd_soc_component_update_bits(component,
++						      WCD937X_DIGITAL_CDC_ANA_CLK_CTL,
++						      BIT(4), 0x00);
++			atomic_set(&wcd937x->ana_clk_count, 0);
++		}
++
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_DIG_CLK_CTL,
++					      BIT(7), 0x00);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd937x_codec_enable_dmic(struct snd_soc_dapm_widget *w,
++				     struct snd_kcontrol *kcontrol,
++				     int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	u16 dmic_clk_reg;
++
++	switch (w->shift) {
++	case 0:
++	case 1:
++		dmic_clk_reg = WCD937X_DIGITAL_CDC_DMIC1_CTL;
++		break;
++	case 2:
++	case 3:
++		dmic_clk_reg = WCD937X_DIGITAL_CDC_DMIC2_CTL;
++		break;
++	case 4:
++	case 5:
++		dmic_clk_reg = WCD937X_DIGITAL_CDC_DMIC3_CTL;
++		break;
++	default:
++		dev_err(component->dev, "Invalid DMIC Selection\n");
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_update_bits(component,
++					      WCD937X_DIGITAL_CDC_DIG_CLK_CTL,
++					      BIT(7), BIT(7));
++		snd_soc_component_update_bits(component,
++					      dmic_clk_reg, 0x07, BIT(1));
++		snd_soc_component_update_bits(component,
++					      dmic_clk_reg, BIT(3), BIT(3));
++		snd_soc_component_update_bits(component,
++					      dmic_clk_reg, 0x70, BIT(5));
++		break;
++	}
++
++	return 0;
++}
++
+ static int wcd937x_micbias_control(struct snd_soc_component *component,
+ 				   int micb_num, int req, bool is_dapm)
+ {
+@@ -1026,6 +1165,82 @@ static int wcd937x_micbias_control(struct snd_soc_component *component,
+ 	return 0;
+ }
+ 
++static int __wcd937x_codec_enable_micbias(struct snd_soc_dapm_widget *w,
++					  int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	int micb_num;
++
++	if (strnstr(w->name, "MIC BIAS1", sizeof("MIC BIAS1")))
++		micb_num = MIC_BIAS_1;
++	else if (strnstr(w->name, "MIC BIAS2", sizeof("MIC BIAS2")))
++		micb_num = MIC_BIAS_2;
++	else if (strnstr(w->name, "MIC BIAS3", sizeof("MIC BIAS3")))
++		micb_num = MIC_BIAS_3;
++	else
++		return -EINVAL;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		wcd937x_micbias_control(component, micb_num,
++					MICB_ENABLE, true);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		usleep_range(1000, 1100);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		wcd937x_micbias_control(component, micb_num,
++					MICB_DISABLE, true);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd937x_codec_enable_micbias(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kcontrol,
++					int event)
++{
++	return __wcd937x_codec_enable_micbias(w, event);
++}
++
++static int __wcd937x_codec_enable_micbias_pullup(struct snd_soc_dapm_widget *w,
++						 int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	int micb_num;
++
++	if (strnstr(w->name, "VA MIC BIAS1", sizeof("VA MIC BIAS1")))
++		micb_num = MIC_BIAS_1;
++	else if (strnstr(w->name, "VA MIC BIAS2", sizeof("VA MIC BIAS2")))
++		micb_num = MIC_BIAS_2;
++	else if (strnstr(w->name, "VA MIC BIAS3", sizeof("VA MIC BIAS3")))
++		micb_num = MIC_BIAS_3;
++	else
++		return -EINVAL;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		wcd937x_micbias_control(component, micb_num, MICB_PULLUP_ENABLE, true);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		usleep_range(1000, 1100);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		wcd937x_micbias_control(component, micb_num, MICB_PULLUP_DISABLE, true);
++		break;
++	}
++
++	return 0;
++}
++
++static int wcd937x_codec_enable_micbias_pullup(struct snd_soc_dapm_widget *w,
++					       struct snd_kcontrol *kcontrol,
++					       int event)
++{
++	return __wcd937x_codec_enable_micbias_pullup(w, event);
++}
++
+ static int wcd937x_connect_port(struct wcd937x_sdw_priv *wcd, u8 port_idx, u8 ch_id, bool enable)
+ {
+ 	struct sdw_port_config *port_config = &wcd->port_config[port_idx - 1];
+@@ -1924,6 +2139,42 @@ static const struct snd_kcontrol_new wcd937x_snd_controls[] = {
+ 		       wcd937x_get_swr_port, wcd937x_set_swr_port),
+ };
+ 
++static const struct snd_kcontrol_new adc1_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new adc2_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new adc3_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic1_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic2_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic3_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic4_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic5_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
++static const struct snd_kcontrol_new dmic6_switch[] = {
++	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
++};
++
+ static const struct snd_kcontrol_new ear_rdac_switch[] = {
+ 	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
+ };
+@@ -1940,22 +2191,76 @@ static const struct snd_kcontrol_new hphr_rdac_switch[] = {
+ 	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0)
+ };
+ 
++static const char * const adc2_mux_text[] = {
++	"INP2", "INP3"
++};
++
+ static const char * const rdac3_mux_text[] = {
+ 	"RX1", "RX3"
+ };
+ 
++static const struct soc_enum adc2_enum =
++	SOC_ENUM_SINGLE(WCD937X_TX_NEW_TX_CH2_SEL, 7,
++			ARRAY_SIZE(adc2_mux_text), adc2_mux_text);
++
+ static const struct soc_enum rdac3_enum =
+ 	SOC_ENUM_SINGLE(WCD937X_DIGITAL_CDC_EAR_PATH_CTL, 0,
+ 			ARRAY_SIZE(rdac3_mux_text), rdac3_mux_text);
+ 
++static const struct snd_kcontrol_new tx_adc2_mux = SOC_DAPM_ENUM("ADC2 MUX Mux", adc2_enum);
++
+ static const struct snd_kcontrol_new rx_rdac3_mux = SOC_DAPM_ENUM("RDAC3_MUX Mux", rdac3_enum);
+ 
+ static const struct snd_soc_dapm_widget wcd937x_dapm_widgets[] = {
+ 	/* Input widgets */
++	SND_SOC_DAPM_INPUT("AMIC1"),
++	SND_SOC_DAPM_INPUT("AMIC2"),
++	SND_SOC_DAPM_INPUT("AMIC3"),
+ 	SND_SOC_DAPM_INPUT("IN1_HPHL"),
+ 	SND_SOC_DAPM_INPUT("IN2_HPHR"),
+ 	SND_SOC_DAPM_INPUT("IN3_AUX"),
+ 
++	/* TX widgets */
++	SND_SOC_DAPM_ADC_E("ADC1", NULL, SND_SOC_NOPM, 0, 0,
++			   wcd937x_codec_enable_adc,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("ADC2", NULL, SND_SOC_NOPM, 1, 0,
++			   wcd937x_codec_enable_adc,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MIXER_E("ADC1 REQ", SND_SOC_NOPM, 0, 0,
++			     NULL, 0, wcd937x_enable_req,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC2 REQ", SND_SOC_NOPM, 0, 0,
++			     NULL, 0, wcd937x_enable_req,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MUX("ADC2 MUX", SND_SOC_NOPM, 0, 0, &tx_adc2_mux),
++
++	/* TX mixers */
++	SND_SOC_DAPM_MIXER_E("ADC1_MIXER", SND_SOC_NOPM, 0, 0,
++			     adc1_switch, ARRAY_SIZE(adc1_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC2_MIXER", SND_SOC_NOPM, 1, 0,
++			     adc2_switch, ARRAY_SIZE(adc2_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++
++	/* MIC_BIAS widgets */
++	SND_SOC_DAPM_SUPPLY("MIC BIAS1", SND_SOC_NOPM, 0, 0,
++			    wcd937x_codec_enable_micbias,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS2", SND_SOC_NOPM, 0, 0,
++			    wcd937x_codec_enable_micbias,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS3", SND_SOC_NOPM, 0, 0,
++			    wcd937x_codec_enable_micbias,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++
+ 	SND_SOC_DAPM_SUPPLY("VDD_BUCK", SND_SOC_NOPM, 0, 0,
+ 			    wcd937x_codec_enable_vdd_buck,
+ 			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+@@ -2019,11 +2324,101 @@ static const struct snd_soc_dapm_widget wcd937x_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("HPHR_RDAC", SND_SOC_NOPM, 0, 0,
+ 			   hphr_rdac_switch, ARRAY_SIZE(hphr_rdac_switch)),
+ 
++	/* TX output widgets */
++	SND_SOC_DAPM_OUTPUT("ADC1_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("ADC2_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("ADC3_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("WCD_TX_OUTPUT"),
++
+ 	/* RX output widgets */
+ 	SND_SOC_DAPM_OUTPUT("EAR"),
+ 	SND_SOC_DAPM_OUTPUT("AUX"),
+ 	SND_SOC_DAPM_OUTPUT("HPHL"),
+ 	SND_SOC_DAPM_OUTPUT("HPHR"),
++
++	/* MIC_BIAS pull up widgets */
++	SND_SOC_DAPM_SUPPLY("VA MIC BIAS1", SND_SOC_NOPM, 0, 0,
++			    wcd937x_codec_enable_micbias_pullup,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("VA MIC BIAS2", SND_SOC_NOPM, 0, 0,
++			    wcd937x_codec_enable_micbias_pullup,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("VA MIC BIAS3", SND_SOC_NOPM, 0, 0,
++			    wcd937x_codec_enable_micbias_pullup,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++};
++
++static const struct snd_soc_dapm_widget wcd9375_dapm_widgets[] = {
++	/* Input widgets */
++	SND_SOC_DAPM_INPUT("AMIC4"),
++
++	/* TX widgets */
++	SND_SOC_DAPM_ADC_E("ADC3", NULL, SND_SOC_NOPM, 2, 0,
++			   wcd937x_codec_enable_adc,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_MIXER_E("ADC3 REQ", SND_SOC_NOPM, 0, 0,
++			     NULL, 0, wcd937x_enable_req,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	SND_SOC_DAPM_ADC_E("DMIC1", NULL, SND_SOC_NOPM, 0, 0,
++			   wcd937x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC2", NULL, SND_SOC_NOPM, 1, 0,
++			   wcd937x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC3", NULL, SND_SOC_NOPM, 2, 0,
++			   wcd937x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC4", NULL, SND_SOC_NOPM, 3, 0,
++			   wcd937x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC5", NULL, SND_SOC_NOPM, 4, 0,
++			   wcd937x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_ADC_E("DMIC6", NULL, SND_SOC_NOPM, 5, 0,
++			   wcd937x_codec_enable_dmic,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	/* TX mixer widgets */
++	SND_SOC_DAPM_MIXER_E("DMIC1_MIXER", SND_SOC_NOPM, 0,
++			     0, dmic1_switch, ARRAY_SIZE(dmic1_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC2_MIXER", SND_SOC_NOPM, 1,
++			     0, dmic2_switch, ARRAY_SIZE(dmic2_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC3_MIXER", SND_SOC_NOPM, 2,
++			     0, dmic3_switch, ARRAY_SIZE(dmic3_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC4_MIXER", SND_SOC_NOPM, 3,
++			     0, dmic4_switch, ARRAY_SIZE(dmic4_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC5_MIXER", SND_SOC_NOPM, 4,
++			     0, dmic5_switch, ARRAY_SIZE(dmic5_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("DMIC6_MIXER", SND_SOC_NOPM, 5,
++			     0, dmic6_switch, ARRAY_SIZE(dmic6_switch),
++			     wcd937x_tx_swr_ctrl, SND_SOC_DAPM_PRE_PMU |
++			     SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MIXER_E("ADC3_MIXER", SND_SOC_NOPM, 2, 0, adc3_switch,
++			     ARRAY_SIZE(adc3_switch), wcd937x_tx_swr_ctrl,
++			     SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	/* Output widgets */
++	SND_SOC_DAPM_OUTPUT("DMIC1_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC2_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC3_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC4_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC5_OUTPUT"),
++	SND_SOC_DAPM_OUTPUT("DMIC6_OUTPUT"),
+ };
+ 
+ static int wcd937x_set_micbias_data(struct wcd937x_priv *wcd937x)
+@@ -2155,6 +2550,15 @@ static int wcd937x_soc_codec_probe(struct snd_soc_component *component)
+ 	disable_irq_nosync(wcd937x->hphl_pdm_wd_int);
+ 	disable_irq_nosync(wcd937x->aux_pdm_wd_int);
+ 
++	if (wcd937x->chipid == CHIPID_WCD9375) {
++		ret = snd_soc_dapm_new_controls(dapm, wcd9375_dapm_widgets,
++						ARRAY_SIZE(wcd9375_dapm_widgets));
++		if (ret < 0) {
++			dev_err(component->dev, "Failed to add snd_ctls\n");
++			return ret;
++		}
++	}
++
+ 	ret = wcd937x_mbhc_init(component);
+ 	if (ret)
+ 		dev_err(component->dev,  "mbhc initialization failed\n");
+-- 
+2.25.1
 
-Takashi
