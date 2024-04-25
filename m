@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8184C10F15
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Apr 2024 21:57:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C456C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Apr 2024 21:57:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 423C1829;
-	Thu, 25 Apr 2024 23:57:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 423C1829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82167EB1;
+	Thu, 25 Apr 2024 23:57:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82167EB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714082231;
-	bh=NFb5KrutHq3DEtEEDYwpfG5twPMjHvzujusJINVO7hw=;
+	s=default; t=1714082247;
+	bh=vTcLhZf2R8paXkJQUxSXklktGwb+rhfT7p4hKA16e8Q=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZlVdL7HHEw38h04GicAsjjbNee09KwIFCHshppps9SHYcTB9kEvNfxrQKuES1piqT
-	 p0V6o6DuQUgN3dgK4roGoM0kE9N7Abqn3U+ryQXXu/Hwdl9nr52m2wNb5LFbf95oCV
-	 68m9l3SZ98jyxDZVXbbb25c3GoRzjUh3qOREubA0=
+	b=nsa2blQeToGGOQIGNmv/XD/4a93JzWMb8EduSQLNU+PnVeHbyeLAdDbYyveNy6Bt0
+	 xUVvwnthy6EM65rxFl9Ut37pOgS4i6viCFKMJJQ8YZxBxnlskOX9BHKFmACbAoK3RY
+	 yFfPEJ87UX91qkyBiB8Uk9KuYKibQr/tt1fSjEFU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60006F8072A; Thu, 25 Apr 2024 23:54:13 +0200 (CEST)
+	id 1E5B1F807DC; Thu, 25 Apr 2024 23:54:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20C2DF8074B;
-	Thu, 25 Apr 2024 23:54:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5CF6F8076A;
+	Thu, 25 Apr 2024 23:54:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98F93F805D6; Thu, 25 Apr 2024 23:53:02 +0200 (CEST)
+	id B0747F805CA; Thu, 25 Apr 2024 23:53:04 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3F8A2F8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 16D17F8057C
 	for <alsa-devel@alsa-project.org>; Thu, 25 Apr 2024 23:51:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F8A2F8057A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16D17F8057C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=Lv+/oKV2
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=OINZf3W7
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 43PLRbbQ030253;
+ 43PJ0rCc000429;
 	Thu, 25 Apr 2024 21:51:42 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=S9VTWxSz7x4qq1AeYZyZ
-	G+OFcZ7lvmr3A4Wyz4IN404=; b=Lv+/oKV2lUBVsMCqWOg4RHAwB6hQ4BvRYmg7
-	mBDu+GHNimcIeCjoKK8Ok9twsUbnfYpKP4lszCFb/tG9QHVHGGLHvJojtu58Q23c
-	Cnp9YtEPpEt6QKPX+fVoj0qsfneoWfwfGB487mpgvfv4vo3ZR5RmR8o9CYAD7JF2
-	4Ikg7Rv9MgxsccxZz3eNug6Vy1gJhGW2Xn+jFKc1AL4baqTwSZUIwyo+A9mPAWmS
-	KlTBK9zqBJDMiq6hEWOjUM237nt78zY4Rzcw13JuKx/2aPVxraxcvklHl5gEPKgA
-	t7p0fuQv0Qk/kqAEgMHCeg48rqBaOlPDmG70wsMSiMnajognHw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=uyF8k4GY10EkPruZFkeC
+	0IFOj0f++wkbH8Kw38rv/5Y=; b=OINZf3W74eR5ykr8Jt3sFDXsYqeUY+1nTvvU
+	EROEC4ih26LoueN8cydIxvQU65r3XCnm3n6sJd1Ox76gwCwA2CWsASK7uqsHkk7/
+	sU0jbKMDukWgDURK/YoK4bz8lLxI10nnlnZKwOm1YwiBZk5OeVc7olc9lP0rmM1b
+	I+qnUD7SxsSO08++DMcXHB1b6e1btTxUYnIbS5/NpdXE0fVXAB4LhBVBQ5pVEcQD
+	5Z7RSTfi0rC9UETwpFDkiNvaQ/gRsKbtqmrRiEN7jqRETNNM6uvUoYBou54pWHAJ
+	RH7fe41muOaLhOexchLGwUAT2iMsveD7RMit8iX6g7HdV53h7g==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenhuthk-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xqenhksmq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Apr 2024 21:51:41 +0000 (GMT)
+	Thu, 25 Apr 2024 21:51:42 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 43PLpefi024584
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 43PLpfBr015459
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 25 Apr 2024 21:51:41 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
@@ -79,10 +79,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v20 14/41] ALSA: usb-audio: Introduce USB SND platform op
- callbacks
-Date: Thu, 25 Apr 2024 14:50:58 -0700
-Message-ID: <20240425215125.29761-15-quic_wcheng@quicinc.com>
+Subject: [PATCH v20 16/41] ALSA: usb-audio: Save UAC sample size information
+Date: Thu, 25 Apr 2024 14:51:00 -0700
+Message-ID: <20240425215125.29761-17-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240425215125.29761-1-quic_wcheng@quicinc.com>
 References: <20240425215125.29761-1-quic_wcheng@quicinc.com>
@@ -94,19 +93,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: ca_cqMiG-G7RW0srxWU6l8fCIXcanaac
-X-Proofpoint-GUID: ca_cqMiG-G7RW0srxWU6l8fCIXcanaac
+X-Proofpoint-ORIG-GUID: IeCJ_r9XyAMx2qWS6CbZN1-5YUEHSr_R
+X-Proofpoint-GUID: IeCJ_r9XyAMx2qWS6CbZN1-5YUEHSr_R
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-04-25_21,2024-04-25_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 mlxscore=0
- lowpriorityscore=0 bulkscore=0 malwarescore=0 adultscore=0 clxscore=1015
- priorityscore=1501 phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404250159
-Message-ID-Hash: K6SBGKC5SMJFNEZUFUS5UIGQIOWJMZMM
-X-Message-ID-Hash: K6SBGKC5SMJFNEZUFUS5UIGQIOWJMZMM
+ mlxscore=0 clxscore=1015
+ phishscore=0 spamscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
+ suspectscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404250157
+Message-ID-Hash: 3EX3ZCTXNG5MWNNA6YKW5CJAYNS6JG33
+X-Message-ID-Hash: 3EX3ZCTXNG5MWNNA6YKW5CJAYNS6JG33
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K6SBGKC5SMJFNEZUFUS5UIGQIOWJMZMM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3EX3ZCTXNG5MWNNA6YKW5CJAYNS6JG33/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,125 +127,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allow for different platforms to be notified on USB SND connect/disconnect
-seqeunces.  This allows for platform USB SND modules to properly initialize
-and populate internal structures with references to the USB SND chip
-device.
+Within the UAC descriptor, there is information describing the size of a
+sample (bSubframeSize/bSubslotSize) and the number of relevant bits
+(bBitResolution).  Currently, fmt_bits carries only the bit resolution,
+however, some offloading entities may also require the overall size of the
+sample.  Save this information in a separate parameter, as depending on the
+UAC format type, the sample size can not easily be decoded from other
+exisiting parameters.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/card.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++
- sound/usb/card.h |  9 ++++++++
- 2 files changed, 62 insertions(+)
+ sound/usb/card.h   | 1 +
+ sound/usb/format.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 1b2edc0fd2e9..ca4f3bc1b42d 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -118,6 +118,42 @@ MODULE_PARM_DESC(skip_validation, "Skip unit descriptor validation (default: no)
- static DEFINE_MUTEX(register_mutex);
- static struct snd_usb_audio *usb_chip[SNDRV_CARDS];
- static struct usb_driver usb_audio_driver;
-+static struct snd_usb_platform_ops *platform_ops;
-+
-+/*
-+ * Register platform specific operations that will be notified on events
-+ * which occur in USB SND.  The platform driver can utilize this path to
-+ * enable features, such as USB audio offloading, which allows for audio data
-+ * to be queued by an audio DSP.
-+ *
-+ * Only one set of platform operations can be registered to USB SND.  The
-+ * platform register operation is protected by the register_mutex.
-+ */
-+int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
-+{
-+	guard(mutex)(&register_mutex);
-+	if (platform_ops)
-+		return -EEXIST;
-+
-+	platform_ops = ops;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_register_platform_ops);
-+
-+/*
-+ * Unregisters the current set of platform operations.  This allows for
-+ * a new set to be registered if required.
-+ *
-+ * The platform unregister operation is protected by the register_mutex.
-+ */
-+int snd_usb_unregister_platform_ops(void)
-+{
-+	guard(mutex)(&register_mutex);
-+	platform_ops = NULL;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
- 
- /*
-  * disconnect streams
-@@ -910,7 +946,11 @@ static int usb_audio_probe(struct usb_interface *intf,
- 	chip->num_interfaces++;
- 	usb_set_intfdata(intf, chip);
- 	atomic_dec(&chip->active);
-+
-+	if (platform_ops && platform_ops->connect_cb)
-+		platform_ops->connect_cb(chip);
- 	mutex_unlock(&register_mutex);
-+
- 	return 0;
- 
-  __error:
-@@ -947,6 +987,9 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 	card = chip->card;
- 
- 	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->disconnect_cb)
-+		platform_ops->disconnect_cb(chip);
-+
- 	if (atomic_inc_return(&chip->shutdown) == 1) {
- 		struct snd_usb_stream *as;
- 		struct snd_usb_endpoint *ep;
-@@ -1090,6 +1133,11 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- 		chip->system_suspend = chip->num_suspended_intf;
- 	}
- 
-+	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->suspend_cb)
-+		platform_ops->suspend_cb(intf, message);
-+	mutex_unlock(&register_mutex);
-+
- 	return 0;
- }
- 
-@@ -1130,6 +1178,11 @@ static int usb_audio_resume(struct usb_interface *intf)
- 
- 	snd_usb_midi_v2_resume_all(chip);
- 
-+	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->resume_cb)
-+		platform_ops->resume_cb(intf);
-+	mutex_unlock(&register_mutex);
-+
-  out:
- 	if (chip->num_suspended_intf == chip->system_suspend) {
- 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D0);
 diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 6ec95b2edf86..2884912adc96 100644
+index 2884912adc96..02e4ea898db5 100644
 --- a/sound/usb/card.h
 +++ b/sound/usb/card.h
-@@ -207,4 +207,13 @@ struct snd_usb_stream {
- 	struct list_head list;
- };
+@@ -15,6 +15,7 @@ struct audioformat {
+ 	unsigned int channels;		/* # channels */
+ 	unsigned int fmt_type;		/* USB audio format type (1-3) */
+ 	unsigned int fmt_bits;		/* number of significant bits */
++	unsigned int fmt_sz;		/* overall audio sub frame/slot size */
+ 	unsigned int frame_size;	/* samples per frame for non-audio */
+ 	unsigned char iface;		/* interface number */
+ 	unsigned char altsetting;	/* corresponding alternate setting */
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 3b45d0ee7693..5fde543536a8 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -80,6 +80,7 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 	}
  
-+struct snd_usb_platform_ops {
-+	void (*connect_cb)(struct snd_usb_audio *chip);
-+	void (*disconnect_cb)(struct snd_usb_audio *chip);
-+	void (*suspend_cb)(struct usb_interface *intf, pm_message_t message);
-+	void (*resume_cb)(struct usb_interface *intf);
-+};
-+
-+int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
-+int snd_usb_unregister_platform_ops(void);
- #endif /* __USBAUDIO_CARD_H */
+ 	fp->fmt_bits = sample_width;
++	fp->fmt_sz = sample_bytes;
+ 
+ 	if ((pcm_formats == 0) &&
+ 	    (format == 0 || format == (1 << UAC_FORMAT_TYPE_I_UNDEFINED))) {
