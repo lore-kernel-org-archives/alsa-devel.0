@@ -4,83 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9CAC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:39:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17066C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:40:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7E9E21B3;
-	Fri, 26 Apr 2024 17:39:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7E9E21B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id A940214E7;
+	Fri, 26 Apr 2024 17:40:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A940214E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145997;
-	bh=eM/sttqnYNYtqvj+qs1fjCmYwwwzfirvpY5itd0R1kI=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DAApD1Kr+d3O84e37Z1bIazCKbh1CXoZ4jXE9YjvthFF5Vnr2ThtOPNWsVZS1ZoL+
-	 a3W21464ISxC7VitD4Cojgg1Lr1TNXbWTuxdrsbfTQ97G+ZfJMpdX2whemy6hpapgp
-	 Y6joKBfZXv4EsAUBhqyag+bEvmT8a1BL33nxWe/I=
+	s=default; t=1714146015;
+	bh=flcFCyFG2/t8hSowAIB01UznDgaflhSitPfuUrp0c60=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=XeQ9zOqes3A/vhvpm2AtObFee8WByMBBq8T86HQd6tRXV2/lxd7QMs655tbKOt1F6
+	 qUeTW5GD1hr7MRDNiFWIZJw+hZxwB+6UgqO8/y+Eb3HprhvzWQZo8f9mnxSxJrYXFQ
+	 KCndcYvyWS2LdvRnwRE2ayrCpjd2HBBqzQ+vtf0E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81BFDF80579; Fri, 26 Apr 2024 17:39:24 +0200 (CEST)
+	id 6D37FF805E6; Fri, 26 Apr 2024 17:39:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62E18F805B1;
-	Fri, 26 Apr 2024 17:39:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6E05F805C7;
+	Fri, 26 Apr 2024 17:39:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41694F8045D; Fri, 26 Apr 2024 17:39:18 +0200 (CEST)
+	id 69FF2F8003C; Fri, 26 Apr 2024 17:39:19 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E59ACF8003A
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:39:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E59ACF8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id EBAF0F8003C
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:39:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBAF0F8003C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TSvbUeN+
+ header.s=Intel header.b=T3yLmCm0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145955; x=1745681955;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=eM/sttqnYNYtqvj+qs1fjCmYwwwzfirvpY5itd0R1kI=;
-  b=TSvbUeN+EkE2kDE8TxVdNHKYtaALMQWc/5BIBZmbXKlnVpzJxZE+Zo1O
-   Agk46jxrnkxgWVjXcCbRScXAuvPW4umh3SFSsKY7HT5dJH0ZSX2whmYBI
-   4voF3ANz69/otntYzRxpk6K+B5rj+eIDLxDzZMu6XWmBdc1TfGAT5NxA0
-   P9U94dNK7KglgZCN6CJ4CVkg4x9lsbVr+/zTxaRBt4gFuRUuXDf1odw36
-   WcN5r9diPzEYp6O49iVQ/U7ZCgKy0MxS91ROmE4XxvTGHjmeamRInpAUf
-   Hp8HsstqPGpV7KyCoMwAo383vP9qQT949Q0j4I91JfP0Vq0HVZMzMvVqF
-   A==;
-X-CSE-ConnectionGUID: VwE+28enSEqLQMblyHb3zQ==
-X-CSE-MsgGUID: cDhLMwHfSgqh5JZq8aRoCQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9718428"
+  t=1714145957; x=1745681957;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=flcFCyFG2/t8hSowAIB01UznDgaflhSitPfuUrp0c60=;
+  b=T3yLmCm0SE1oEB/11RAuIAOhWzBaj2Cl0OR0AfBvnlGHjI73JF8vzCxF
+   1Ac3sTocamDsxlzJVmqyXvGGGfg/YMNnK2LY9I/ea6/VkRZlPvf1yzN30
+   KACVKeJz8kswxE2sEYENyMApRyD2XKf0PWj4wvqDE0ATSINw+xuOkOA6s
+   ig8A8Tx0DoRYW2zYzLV9j/+I51ZmKyYWm9uz0vN+t8nHSV8E75HEhJTOj
+   KJ/Dp0wEK/nB/u89BfWlE9R9OoCSyvvMRZUWQQHhmpy0UwrWJ8iOLF0/3
+   ivYHxpNEMa2P+wDFzOTJgn6634F4oatuBuSXFB+lioYOy9K/2ZKbkqn4M
+   w==;
+X-CSE-ConnectionGUID: Pq0DKgZER9SE/mldTNF3fg==
+X-CSE-MsgGUID: ZstzReK+Rg+rYwEM+gxY7w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9718439"
 X-IronPort-AV: E=Sophos;i="6.07,233,1708416000";
-   d="scan'208";a="9718428"
+   d="scan'208";a="9718439"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:39:10 -0700
-X-CSE-ConnectionGUID: vuhXo5NPT1GQZobhfCYJdg==
-X-CSE-MsgGUID: O0vOHuzxQwW5Ph6otZtkwQ==
+ 26 Apr 2024 08:39:11 -0700
+X-CSE-ConnectionGUID: WL7/LIeJRTSSuULWaJyWbA==
+X-CSE-MsgGUID: cILyGG/0QEKLlCU1ZdfHEw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,233,1708416000";
-   d="scan'208";a="56623531"
+   d="scan'208";a="56623540"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:39:09 -0700
+ 26 Apr 2024 08:39:10 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
+	Yong Zhi <yong.zhi@intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/5] ASoc: SOF: misc updates for 6.10
-Date: Fri, 26 Apr 2024 10:38:57 -0500
-Message-Id: <20240426153902.39560-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: SOF: topology: remove incorrect widget id in error
+ message
+Date: Fri, 26 Apr 2024 10:38:59 -0500
+Message-Id: <20240426153902.39560-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240426153902.39560-1-pierre-louis.bossart@linux.intel.com>
+References: <20240426153902.39560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LOQLIEADTCMNO5UOXXN5FDXZYET7GWKG
-X-Message-ID-Hash: LOQLIEADTCMNO5UOXXN5FDXZYET7GWKG
+Message-ID-Hash: BE2JTTKN2Z5VXQENVSSIF7TTWYKOM7C6
+X-Message-ID-Hash: BE2JTTKN2Z5VXQENVSSIF7TTWYKOM7C6
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LOQLIEADTCMNO5UOXXN5FDXZYET7GWKG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BE2JTTKN2Z5VXQENVSSIF7TTWYKOM7C6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,29 +108,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fixes when fw_lib_prefix is not set, updated error messages, improved
-dmesg logs to SoundWire configurations not supported by ACPI
-tables/topology and support for IEC61937 passthrough.
+From: Yong Zhi <yong.zhi@intel.com>
 
-Peter Ujfalusi (2):
-  ASoC: SOF: debug: Handle cases when fw_lib_prefix is not set, NULL
-  ASoC: SOF: ipc4-topology: Advertise passthrough capable PCMs (using
-    ChainDMA)
+In sof_widget_ready() function, the shift field of
+struct snd_soc_tplg_dapm_widget is incorrectly used to print
+widget id in dev_err(scomp->dev, "error: failed to add widget id %d ..",
+this patch removes the useless tw->shift from the error output.
 
-Pierre-Louis Bossart (2):
-  ASoC: SOF: Intel: hda: simplify and reduce indentation for
-    hda_sdw_machine_select()
-  ASoC: SOF: Intel: hda: list SoundWire peripherals on mismatch
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/topology.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Yong Zhi (1):
-  ASoC: SOF: topology: remove incorrect widget id in error message
-
- sound/soc/sof/debug.c         |  23 ++++-
- sound/soc/sof/intel/hda.c     | 154 +++++++++++++++++++---------------
- sound/soc/sof/ipc4-topology.c |  50 +++++++++++
- sound/soc/sof/topology.c      |   7 +-
- 4 files changed, 160 insertions(+), 74 deletions(-)
-
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index bcdb499c96a0..ec931a26b54f 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1531,10 +1531,9 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 	/* check token parsing reply */
+ 	if (ret < 0) {
+ 		dev_err(scomp->dev,
+-			"error: failed to add widget id %d type %d name : %s stream %s\n",
+-			tw->shift, swidget->id, tw->name,
+-			strnlen(tw->sname, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) > 0
+-				? tw->sname : "none");
++			"failed to add widget type %d name : %s stream %s\n",
++			swidget->id, tw->name, strnlen(tw->sname, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) > 0
++							? tw->sname : "none");
+ 		goto widget_free;
+ 	}
+ 
 -- 
 2.40.1
 
