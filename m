@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C33CC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77A79C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:27:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85CC81919;
-	Fri, 26 Apr 2024 17:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85CC81919
+	by alsa0.perex.cz (Postfix) with ESMTPS id A325FE69;
+	Fri, 26 Apr 2024 17:27:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A325FE69
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145235;
-	bh=2aq0nHn6IbnZHNu46EkbGXm35IXWPUwj6ke+P365UoM=;
+	s=default; t=1714145256;
+	bh=4wYpaW/veAtO2vwG8e0UooFeD5U0wu5kYAtQpfMg8eQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O+eS4S/7HOvrPSmVKSasplxzzCY6XQ9OClQB1EGxfKPK/2EKzeo8j2+opvFnDywsH
-	 erklsNZjycLqhgSEcfdr4Xp3ifreJC3gZ72YvgPjBl9/+CossVIs0vTfH+V1asK95U
-	 OaYNYSUlGbuSSC3yC4Q8QJ2A1Gjwr7xjlzUCjf0c=
+	b=Wb3/yslqve9o9ybfwfeIpeUvD7DxUizT1LHX39hhBj7jcPnTJY9t+/5bB/7/iU8im
+	 /YD/5xR0XIfIbK2uUVoIfxDBbQokxBQhSVsf9k8i1uSpBs2dXTFMs2yODEUudOtUZX
+	 FDeBYhYQdtCbQMQqvZhmSoJO8KEzyPoAAq9sNbWg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4252DF80651; Fri, 26 Apr 2024 17:26:03 +0200 (CEST)
+	id 18E38F80654; Fri, 26 Apr 2024 17:26:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 080F7F805A1;
-	Fri, 26 Apr 2024 17:26:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B53F0F80679;
+	Fri, 26 Apr 2024 17:26:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 77ADFF805DA; Fri, 26 Apr 2024 17:25:52 +0200 (CEST)
+	id 3A707F805EF; Fri, 26 Apr 2024 17:25:53 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60692F80580
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60692F80580
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6ADA8F8045D
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ADA8F8045D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Js9I5obu
+ header.s=Intel header.b=j9+2oGat
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145148; x=1745681148;
+  t=1714145146; x=1745681146;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=2aq0nHn6IbnZHNu46EkbGXm35IXWPUwj6ke+P365UoM=;
-  b=Js9I5obuU1tV8vz5CbWjAa/KL5e2x3mTGcfBSvhuvn79rYoqERWTtGRu
-   MM+BxahFgDnbjuSJ2PIn3cAwu5XZv5DDwQA6eOIRDmXTv+tP7RxgQksIh
-   IlWLluQDblWHgxWgeYjninvQL8d+YC7zPqUQGa7alb6T+AAUMvX//jQLN
-   JOlKoS42qQco8h5YiLaAQVRo4r4XTO4Dq6N7T6Kr87zN5Kc/d7IjeZI3U
-   LE9dHPQtEnuxzjsCh1fKya4WV/8Cj6jsYnXwMFZ1cLhAHRL91gKe+S6dv
-   d53uBthkf64kS2td7EJ7MldLIT+VH1+zaq2HcBL9Apfnhzw83fxr08kPf
+  bh=4wYpaW/veAtO2vwG8e0UooFeD5U0wu5kYAtQpfMg8eQ=;
+  b=j9+2oGatmRX28OmvR7gCnjAzmlySKOYqYTzItLk+mTkJOyUYbew8JZqy
+   EXRyWfqllz3yfnrLBSXy87vGEO7Sm6DFhhKiXomdnxkaiAviz0JDsK//J
+   IBaJN9K8e6l21Lbo7ZKJopcvdsz9lO3IY+zDbfWiD/N2z1UmarkkhJGWb
+   3mpG3oLjJXGHOn4pfgBuhkTd3EtwZUq4tXLjTtHEle/cEqKRTedIKpkUa
+   PU0p96MfJtVwtz3d+m4t/PnzBpsyaXGVpNLMYdDPwbdVwH6YDTFtaio53
+   Ir4dxcOBiAJ2mFxrz0dWCRH8WixK/SYTOkxJPX2gAglrsXseOL0dA8u9/
    Q==;
-X-CSE-ConnectionGUID: 6oSvow/bQoW+Y1/RVel6bQ==
-X-CSE-MsgGUID: THT1+/GoQz6CfGM4fHOIvA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291304"
+X-CSE-ConnectionGUID: /N88jGWoQ3uQ1ZpaV21cVw==
+X-CSE-MsgGUID: Kv37tlmQRp+QC4zAx4ZJug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291290"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="21291304"
+   d="scan'208";a="21291290"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:44 -0700
-X-CSE-ConnectionGUID: 2TW9sPgjTOKpiI7RsuAv9w==
-X-CSE-MsgGUID: aunn/L5FSFSepFaasOBboQ==
+ 26 Apr 2024 08:25:42 -0700
+X-CSE-ConnectionGUID: Os5DUSiNSpKi7HJtCfW3yQ==
+X-CSE-MsgGUID: cpzlOexZQH2Y5sy5QKMhEQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="30259557"
+   d="scan'208";a="30259546"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:44 -0700
+ 26 Apr 2024 08:25:41 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -76,16 +76,16 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 08/23] ASoC: Intel: sof_da7219: support MAX98357A
-Date: Fri, 26 Apr 2024 10:25:14 -0500
-Message-Id: <20240426152529.38345-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/23] ASoC: Intel: sof_da7219: support MAX98390 on cml boards
+Date: Fri, 26 Apr 2024 10:25:11 -0500
+Message-Id: <20240426152529.38345-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 References: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KEXCBPHD5HZ2IXME2R746XOGJN7SHAUO
-X-Message-ID-Hash: KEXCBPHD5HZ2IXME2R746XOGJN7SHAUO
+Message-ID-Hash: 5XVRTPQOSL7GCDTB7QSGAX6ORKWQTDNZ
+X-Message-ID-Hash: 5XVRTPQOSL7GCDTB7QSGAX6ORKWQTDNZ
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,9 +98,8 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KEXCBPHD5HZ2IXME2R746XOGJN7SHAUO/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5XVRTPQOSL7GCDTB7QSGAX6ORKWQTDNZ/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -109,37 +108,78 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add support to Maxim MAX98357A speaker amplifier.
+For cml boards, MAX98390 speaker amplifier is supported by machine
+driver bxt_da7219_max98357a with sound card name cml_max98390_da7219.
+Use same name for backward compatibility with existing devices on
+market.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_da7219.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/intel/boards/sof_da7219.c | 33 ++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_da7219.c b/sound/soc/intel/boards/sof_da7219.c
-index 0abb71a10a72..610b5a8e0860 100644
+index 69555eee7c7a..0abb71a10a72 100644
 --- a/sound/soc/intel/boards/sof_da7219.c
 +++ b/sound/soc/intel/boards/sof_da7219.c
-@@ -267,6 +267,9 @@ sof_card_dai_links_create(struct device *dev, struct snd_soc_card *card,
+@@ -313,6 +313,7 @@ static int audio_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
+ 	struct sof_card_private *ctx;
++	char *card_name;
+ 	unsigned long board_quirk = 0;
+ 	int ret;
  
- 	/* codec-specific fields for speaker amplifier */
- 	switch (ctx->amp_type) {
-+	case CODEC_MAX98357A:
-+		max_98357a_dai_link(ctx->amp_link);
-+		break;
- 	case CODEC_MAX98360A:
- 		max_98360a_dai_link(ctx->amp_link);
- 		break;
-@@ -393,6 +396,7 @@ static int audio_probe(struct platform_device *pdev)
- 	case CODEC_MAX98390:
- 		max_98390_set_codec_conf(&pdev->dev, &card_da7219);
- 		break;
-+	case CODEC_MAX98357A:
- 	case CODEC_MAX98360A:
- 	case CODEC_NONE:
- 		/* no codec conf required */
+@@ -332,6 +333,21 @@ static int audio_probe(struct platform_device *pdev)
+ 	if (board_quirk & SOF_DA7219_CML_BOARD) {
+ 		/* overwrite the DAI link order for CML boards */
+ 		ctx->link_order_overwrite = CML_LINK_ORDER;
++
++		/* backward-compatible with existing devices */
++		switch (ctx->amp_type) {
++		case CODEC_MAX98390:
++			card_name = devm_kstrdup(&pdev->dev,
++						 "cml_max98390_da7219",
++						 GFP_KERNEL);
++			if (!card_name)
++				return -ENOMEM;
++
++			card_da7219.name = card_name;
++			break;
++		default:
++			break;
++		}
+ 	} else if (board_quirk & SOF_DA7219_JSL_BOARD) {
+ 		ctx->da7219.is_jsl_board = true;
+ 
+@@ -341,13 +357,20 @@ static int audio_probe(struct platform_device *pdev)
+ 		/* backward-compatible with existing devices */
+ 		switch (ctx->amp_type) {
+ 		case CODEC_MAX98360A:
+-			card_da7219.name = devm_kstrdup(&pdev->dev,
+-							"da7219max98360a",
+-							GFP_KERNEL);
++			card_name = devm_kstrdup(&pdev->dev, "da7219max98360a",
++						 GFP_KERNEL);
++			if (!card_name)
++				return -ENOMEM;
++
++			card_da7219.name = card_name;
+ 			break;
+ 		case CODEC_MAX98373:
+-			card_da7219.name = devm_kstrdup(&pdev->dev, "da7219max",
+-							GFP_KERNEL);
++			card_name = devm_kstrdup(&pdev->dev, "da7219max",
++						 GFP_KERNEL);
++			if (!card_name)
++				return -ENOMEM;
++
++			card_da7219.name = card_name;
+ 			break;
+ 		default:
+ 			break;
 -- 
 2.40.1
 
