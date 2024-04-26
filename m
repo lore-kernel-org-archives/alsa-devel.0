@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9299C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C56B7C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:32:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61B531908;
-	Fri, 26 Apr 2024 17:31:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61B531908
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4CF31914;
+	Fri, 26 Apr 2024 17:31:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4CF31914
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145514;
-	bh=W9iY+W8Ir/bYUCAzgNoBK3HNcIWzj09vrJHQqaOdzIQ=;
+	s=default; t=1714145521;
+	bh=zYIR1CwCqTkT5fLAkl+YxT+RCYwjH04aAtHQ3/Vmp4w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tvVhHlSVXwMkrIV1qj6cPvciS9gy6Cb6YkT2YxOShebBsymcNYmR9iTbWpjdzmH/C
-	 JDFNRQb697yQVSFOuQvZ1zQ+wvtdc3DIzOT9kEz99utcMqymTbDNckegWfczOEAGxM
-	 JkiYvqglt+j62H21RpCOcrSH0gl/diOdWIgCj2eY=
+	b=RpAIbhBJsKZE+4Ud6zkRFhjvXCo2f8r2WCfUvnO+uF0hIrqQDr90XB4WocsQndO/9
+	 S92OieVWdiK0WforQFOGq7NXxSw2Ce2phijDxqdkmIxxdJGq+7XI7sFMwmb9dJVr/k
+	 KJSE5J+e0k6stti4jqzxBTCddxi5VRPLmKwfF818=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1F32DF896F9; Fri, 26 Apr 2024 17:26:58 +0200 (CEST)
+	id 3AE93F896DD; Fri, 26 Apr 2024 17:26:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9250F896DD;
-	Fri, 26 Apr 2024 17:26:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 703A3F896E3;
+	Fri, 26 Apr 2024 17:26:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A730EF805E7; Fri, 26 Apr 2024 17:26:21 +0200 (CEST)
+	id E4595F806DD; Fri, 26 Apr 2024 17:26:22 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3E903F80602
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E903F80602
+	by alsa1.perex.cz (Postfix) with ESMTPS id 39809F80612
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39809F80612
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=X4lHkvfe
+ header.s=Intel header.b=PwV7gsib
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145156; x=1745681156;
+  t=1714145157; x=1745681157;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=W9iY+W8Ir/bYUCAzgNoBK3HNcIWzj09vrJHQqaOdzIQ=;
-  b=X4lHkvfeZEbTpe0cgHxqT8UOjufClgipWL62QVTT2Dp+QfF1AsvGU5T1
-   +M18L41XHSqK7OIrWpK5hcBjTyKPsojm6xS4jA3/7tON5FZhJU3Ju7ytA
-   63w4KYEiMzjJAXiP+sz41N5JvWROSlE7lBocHW/iC8GYe+FYcYZu3LkcT
-   Y7UxdnjC/phvWuatxP7fys9EiuH03lndeABDmF1Rm+o2Uph7kVxFjlQmg
-   BZVmYWF8Qsg5zhyRj/g9wL6Dh2FTl/s0CHyHDm+dzwwXeZqRO6uPBnYrA
-   S4yzes6zkBqLDKamlHEvnuSPZRGg3L2qOiqQJ09XJXM+blhXLY8ING32L
-   A==;
-X-CSE-ConnectionGUID: Ty9ld1MJR7+ZPtXyr91t7g==
-X-CSE-MsgGUID: BC0EUrCNRAegPJcX7XcmkA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291364"
+  bh=zYIR1CwCqTkT5fLAkl+YxT+RCYwjH04aAtHQ3/Vmp4w=;
+  b=PwV7gsibzhBll85Gr+Csa4VcDsIBHp/d65E2NEnSpVQwPN/VpsyRV7gq
+   5ukfO/Z3Hhq5gsy6U/bnEx7gY5b78MP4v/CAafwFWgd3yfRxNDyiUJ87B
+   4gmGmL9PgWIXofXHCgEks6iIDiVkoXFcxnG7NR9PkGmoOmc8hn+dS+jZk
+   intZ7hty8NtoNHv/vFbIqM95/gVgQN7gFbvs1MNDa8sCRUj/IEaqQHP6o
+   m3UcrF7Mvh1J+AdWd2TbATFy7qdldUtHS+6wpofH7zm5D3xJmDLfUFg6r
+   855XA1HCEUmXRbYiwpQHEfzFFKLRKIkjTu/B4LsL0nuXxy6ti26HsMCb9
+   g==;
+X-CSE-ConnectionGUID: Pv7XI9URSI+XSNsW7fQmuw==
+X-CSE-MsgGUID: phogw+yeS9miE/KvKodiyQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291375"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="21291364"
+   d="scan'208";a="21291375"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:52 -0700
-X-CSE-ConnectionGUID: obhoe3E6TOyfxx7y42g2zw==
-X-CSE-MsgGUID: Ip9g5DBrTquF2CcsSodhRg==
+ 26 Apr 2024 08:25:54 -0700
+X-CSE-ConnectionGUID: 6ofE5vUVS8yURfdDkHnEFg==
+X-CSE-MsgGUID: Yan3E4FuRLSGJe3nTRbd+g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="30259613"
+   d="scan'208";a="30259627"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:52 -0700
+ 26 Apr 2024 08:25:53 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -76,16 +76,17 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 21/23] ASoC: Intel: sof-rt5682: setup pll_id only when needed
-Date: Fri, 26 Apr 2024 10:25:27 -0500
-Message-Id: <20240426152529.38345-22-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 23/23] ASoC: Intel: sof-rt5682: support bclk as PLL source on
+ rt5682s
+Date: Fri, 26 Apr 2024 10:25:29 -0500
+Message-Id: <20240426152529.38345-24-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 References: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KRYNT6OBALJYLRQ2B4ITWBQQJ5U56L4L
-X-Message-ID-Hash: KRYNT6OBALJYLRQ2B4ITWBQQJ5U56L4L
+Message-ID-Hash: 6IVRQNL6OGTEEMR4Y2FFBZ7P46BLY2R5
+X-Message-ID-Hash: 6IVRQNL6OGTEEMR4Y2FFBZ7P46BLY2R5
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRYNT6OBALJYLRQ2B4ITWBQQJ5U56L4L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6IVRQNL6OGTEEMR4Y2FFBZ7P46BLY2R5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,92 +110,53 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-The variable 'pll_id' is needed only when we use snd_soc_dai_set_pll()
-to setup PLL. Move the code segment to improve some readability.
+For rt5682s codec, we could use bclk as PLL source when the frequency
+is 3.072MHz but no 2.4MHz. Update the code to select correct pll_id
+and clk_id for 3.072MHz bclk.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 58 ++++++++++++++---------------
- 1 file changed, 29 insertions(+), 29 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 668b1672f570..6a79dd5271cc 100644
+index c3b026868653..e3a2ec6b4c7c 100644
 --- a/sound/soc/intel/boards/sof_rt5682.c
 +++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -320,35 +320,6 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
- 		pll_in = params_rate(params) * 50;
- 	}
- 
--	switch (ctx->codec_type) {
--	case CODEC_RT5650:
--		pll_id = 0; /* not used in codec driver */
--		clk_id = RT5645_SCLK_S_PLL1;
--		break;
--	case CODEC_RT5682:
--		pll_id = RT5682_PLL1;
--		clk_id = RT5682_SCLK_S_PLL1;
--		break;
--	case CODEC_RT5682S:
--		/*
--		 * For MCLK = 24.576MHz and sample rate = 96KHz case, use PLL1  We don't test
--		 * pll_out or params_rate() here since rt5682s PLL2 doesn't support 24.576MHz
--		 * input, so we have no choice but to use PLL1. Besides, we will not use PLL at
--		 * all if pll_in == pll_out. ex, MCLK = 24.576Mhz and sample rate = 48KHz
--		 */
--		if (pll_in == 24576000) {
--			pll_id = RT5682S_PLL1;
--			clk_id = RT5682S_SCLK_S_PLL1;
--		} else {
--			pll_id = RT5682S_PLL2;
--			clk_id = RT5682S_SCLK_S_PLL2;
--		}
--		break;
--	default:
--		dev_err(rtd->dev, "invalid codec type %d\n", ctx->codec_type);
--		return -EINVAL;
--	}
--
- 	pll_out = params_rate(params) * 512;
- 
- 	/* when MCLK is 512FS, no need to set PLL configuration additionally. */
-@@ -369,6 +340,35 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
- 			return -EINVAL;
- 		}
- 	} else {
-+		switch (ctx->codec_type) {
-+		case CODEC_RT5650:
-+			pll_id = 0; /* not used in codec driver */
-+			clk_id = RT5645_SCLK_S_PLL1;
-+			break;
-+		case CODEC_RT5682:
-+			pll_id = RT5682_PLL1;
-+			clk_id = RT5682_SCLK_S_PLL1;
-+			break;
-+		case CODEC_RT5682S:
-+			/*
-+			 * For MCLK = 24.576MHz and sample rate = 96KHz case, use PLL1  We don't test
-+			 * pll_out or params_rate() here since rt5682s PLL2 doesn't support 24.576MHz
-+			 * input, so we have no choice but to use PLL1. Besides, we will not use PLL at
-+			 * all if pll_in == pll_out. ex, MCLK = 24.576Mhz and sample rate = 48KHz
-+			 */
-+			if (pll_in == 24576000) {
-+				pll_id = RT5682S_PLL1;
-+				clk_id = RT5682S_SCLK_S_PLL1;
-+			} else {
-+				pll_id = RT5682S_PLL2;
-+				clk_id = RT5682S_SCLK_S_PLL2;
-+			}
-+			break;
-+		default:
-+			dev_err(rtd->dev, "invalid codec type %d\n", ctx->codec_type);
-+			return -EINVAL;
-+		}
-+
- 		/* Configure pll for codec */
- 		ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source, pll_in,
- 					  pll_out);
+@@ -355,18 +355,23 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
+ 			clk_id = RT5682_SCLK_S_PLL1;
+ 			break;
+ 		case CODEC_RT5682S:
+-			/*
+-			 * For MCLK = 24.576MHz and sample rate = 96KHz case, use PLL1  We don't test
+-			 * pll_out or params_rate() here since rt5682s PLL2 doesn't support 24.576MHz
+-			 * input, so we have no choice but to use PLL1. Besides, we will not use PLL at
+-			 * all if pll_in == pll_out. ex, MCLK = 24.576Mhz and sample rate = 48KHz
+-			 */
+-			if (pll_in == 24576000) {
++			/* check plla_table and pllb_table in rt5682s.c */
++			switch (pll_in) {
++			case 3072000:
++			case 24576000:
++				/*
++				 * For MCLK = 24.576MHz and sample rate = 96KHz case, use PLL1  We don't test
++				 * pll_out or params_rate() here since rt5682s PLL2 doesn't support 24.576MHz
++				 * input, so we have no choice but to use PLL1. Besides, we will not use PLL at
++				 * all if pll_in == pll_out. ex, MCLK = 24.576Mhz and sample rate = 48KHz
++				 */
+ 				pll_id = RT5682S_PLL1;
+ 				clk_id = RT5682S_SCLK_S_PLL1;
+-			} else {
++				break;
++			default:
+ 				pll_id = RT5682S_PLL2;
+ 				clk_id = RT5682S_SCLK_S_PLL2;
++				break;
+ 			}
+ 			break;
+ 		default:
 -- 
 2.40.1
 
