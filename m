@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF7FFC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C181BC4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:23:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B03614DE;
-	Fri, 26 Apr 2024 17:22:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B03614DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24E3AB70;
+	Fri, 26 Apr 2024 17:22:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24E3AB70
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714144970;
-	bh=HubybkhRbfo/I4Z9f4ZL9Jl07Vz/hlhXaq7GSFqYs28=;
+	s=default; t=1714144983;
+	bh=PuF4w6Ln2EhUy7cEQnbfcGAWOeZqMgiQxCSwhmlUlek=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LrLlKZMA3mXiU6hq/6b1BcOZ+IpFI3xsqY0hy8UQTcASAHq/XNMMSE2WWs0Dpb6Qn
-	 tlXOEdFMfGTGHpSYePF8w2bB1OnhvJCgzNTfH+Z2QHm8yUwvBMGDOFjNLT56lGue84
-	 LdpnLdno8eAdEktBoVR7Km28skxJ3EQ+inCqek64=
+	b=rXuLfhRGnv7hQdN5XQbmxfdUraJ8Z0cY9MfvdQ7npW8sMWA9sZUuNOUlWNHstGOLt
+	 /YJF860ZqvTw1ZqP7MVZ/+n8jXq38Ct+IaWZ+cYZ8NzPjk5ObTtQbKYqDgcMZsrZvr
+	 2BNncGwcil+7srmOQYUxLWwYKfPhoOCtUQgK5CYo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DE2B6F805E3; Fri, 26 Apr 2024 17:22:00 +0200 (CEST)
+	id EBAC3F80548; Fri, 26 Apr 2024 17:22:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F01C0F805D7;
-	Fri, 26 Apr 2024 17:21:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00137F805F5;
+	Fri, 26 Apr 2024 17:22:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7E79F8057B; Fri, 26 Apr 2024 17:21:53 +0200 (CEST)
+	id A769DF805BE; Fri, 26 Apr 2024 17:21:55 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 29BDEF800B5
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:21:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29BDEF800B5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2486AF804B0
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:21:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2486AF804B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AWyCoa6a
+ header.s=Intel header.b=gjfwu4Ly
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714144906; x=1745680906;
+  t=1714144908; x=1745680908;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=HubybkhRbfo/I4Z9f4ZL9Jl07Vz/hlhXaq7GSFqYs28=;
-  b=AWyCoa6aqzIyQ8KhSRko8Nov3Cdv1PqrVdmsh7FhA4Bo9pI5SnJ4a9D7
-   cFWLNC1QCn+pKM8NIHBJBlpIgZ3dJYne4QcJLXYzDkIgf8Ms3NncONEtE
-   /+2bB/cjaGb5gN8vBbWXtSSX7h/OoAVuTYgVKjclhEJu508grDhBbCpLb
-   HKLfPPcVmbAq1uCeMJeppXVhFcLU7HqFFumpHuRWDsEBZU5DmV7PkFGIu
-   AfCpknnf7YdOkRvtB8PpjlCjNsLmmboaQ3Uf4007A7q2Ixq4QsvQdOCIg
-   3bINpe00Kbbb8lQO8v0UeNvgw5sDi5a0v1Z964VPBpUdJvpkTaNO2YdAD
-   w==;
-X-CSE-ConnectionGUID: x7L5Hw4PSbiXX/8BSRE61A==
-X-CSE-MsgGUID: j1WDN+3ATau85uZHZ7tMxg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21290592"
+  bh=PuF4w6Ln2EhUy7cEQnbfcGAWOeZqMgiQxCSwhmlUlek=;
+  b=gjfwu4Lyi7Z63OEGVsnKy7/MBGm3swp3i482Hay/yy/UT2TkX7BFXL4z
+   9mPcV4n34LCpqfBiDloKOWPNhCDid5lit5ypjcSKHjpbO8wtUe89ZaRNp
+   LK2S1fH9tMKmZ8vzb7RZEiDk0Hpmm4T1uITEX1khtdpennTKygw6P/+/+
+   Zwp1EtxZHv4U1/mpm8dxF0silR5ZKZyRWm+pWR3aJpjMDMyK6gLBcnfCq
+   lrz2BPXAwXJFa2AN+35VB8nLD3RfdLH9vMnVkAAXHMNzraTMXsz2vyH7a
+   8ExK81+ZdEgAqGL92GRyxmHs0vUhd7/tvau/jV94RlWpyKytUp9F0/EJF
+   g==;
+X-CSE-ConnectionGUID: Lxm7vLYnRd2M1Qf62cAbtw==
+X-CSE-MsgGUID: kJslez1dSpKt/TzDXIJOOQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21290614"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="21290592"
+   d="scan'208";a="21290614"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:21:39 -0700
-X-CSE-ConnectionGUID: DLM2Grf3Rz68RvkKcQjYCw==
-X-CSE-MsgGUID: lp2Fd53FSIKI76PkW97tPw==
+ 26 Apr 2024 08:21:42 -0700
+X-CSE-ConnectionGUID: o3pmswGHQIiEbQYdntSOJw==
+X-CSE-MsgGUID: 61DS1Hl5R2Ozpi/Y5mDOtg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="30259023"
+   d="scan'208";a="30259030"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:21:39 -0700
+ 26 Apr 2024 08:21:42 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Mac Chiang <mac.chiang@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 01/12] ASoC: Intel: skl_hda_dsp_generic: Allocate snd_soc_card
- dynamically
-Date: Fri, 26 Apr 2024 10:21:12 -0500
-Message-Id: <20240426152123.36284-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/12] ASoC: Intel: soc-acpi-intel-lnl-match: adds RT714 and
+ RT1318 support
+Date: Fri, 26 Apr 2024 10:21:16 -0500
+Message-Id: <20240426152123.36284-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240426152123.36284-1-pierre-louis.bossart@linux.intel.com>
 References: <20240426152123.36284-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BXCWG27BXKY4DJW6Z4WMLMR7JONLJMLA
-X-Message-ID-Hash: BXCWG27BXKY4DJW6Z4WMLMR7JONLJMLA
+Message-ID-Hash: GCEOBX2UL6GQ3SJB3MHLMIXFYX5MD24T
+X-Message-ID-Hash: GCEOBX2UL6GQ3SJB3MHLMIXFYX5MD24T
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXCWG27BXKY4DJW6Z4WMLMR7JONLJMLA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GCEOBX2UL6GQ3SJB3MHLMIXFYX5MD24T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,137 +110,100 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Mac Chiang <mac.chiang@intel.com>
 
-The static hda_soc_card might be modified during runtime which might cause
-issues on next time when the card is created.
-For example if the dmic_num was set with module parameter then removed for
-the next module loading then the card's components will still going to
-point to the previous boot's cfg-dmics:X string.
+This patch adds support for corresponding codecs on LNL hardware
+configuration:
 
-There might be other places where devm allocated memory have been freed but
-the hda_soc_card still pointing to the now unallocated memory (the memory
-is freed when the platform device is removed).
-
-Fix this issue by moving the snd_soc_card into skl_hda_private and use it
-for the card registration to ensure that it is correctly initialized every
-time.
+SDW0: RT714 DMIC
+SDW1: RT1318 Left Speaker
+SDW2: RT1318 Right Speaker
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/skl_hda_dsp_common.h  |  1 +
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 42 ++++++++++----------
- 2 files changed, 22 insertions(+), 21 deletions(-)
+ .../intel/common/soc-acpi-intel-lnl-match.c   | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.h b/sound/soc/intel/boards/skl_hda_dsp_common.h
-index 4b0b3959182e..19b814dee4ad 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_common.h
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.h
-@@ -28,6 +28,7 @@ struct skl_hda_hdmi_pcm {
+diff --git a/sound/soc/intel/common/soc-acpi-intel-lnl-match.c b/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
+index 74d6dcd7471f..0318c1a46f3c 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
+@@ -130,6 +130,33 @@ static const struct snd_soc_acpi_adr_device rt1316_3_group1_adr[] = {
+ 	}
  };
  
- struct skl_hda_private {
-+	struct snd_soc_card card;
- 	struct list_head hdmi_pcm_list;
- 	int pcm_count;
- 	int dai_index;
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index 4aa7fd2a05e4..208395872d8b 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -92,17 +92,6 @@ skl_hda_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
- 	return ret;
- }
- 
--static struct snd_soc_card hda_soc_card = {
--	.name = "hda-dsp",
--	.owner = THIS_MODULE,
--	.dai_link = skl_hda_be_dai_links,
--	.dapm_widgets = skl_hda_widgets,
--	.dapm_routes = skl_hda_map,
--	.add_dai_link = skl_hda_add_dai_link,
--	.fully_routed = true,
--	.late_probe = skl_hda_card_late_probe,
--};
--
- static char hda_soc_components[30];
- 
- #define IDISP_DAI_COUNT		3
-@@ -115,9 +104,9 @@ static char hda_soc_components[30];
- 
- #define HDA_CODEC_AUTOSUSPEND_DELAY_MS 1000
- 
--static int skl_hda_fill_card_info(struct snd_soc_acpi_mach_params *mach_params)
-+static int skl_hda_fill_card_info(struct snd_soc_card *card,
-+				  struct snd_soc_acpi_mach_params *mach_params)
- {
--	struct snd_soc_card *card = &hda_soc_card;
- 	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct snd_soc_dai_link *dai_link;
- 	u32 codec_count, codec_mask;
-@@ -199,6 +188,7 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_acpi_mach *mach;
- 	struct skl_hda_private *ctx;
-+	struct snd_soc_card *card;
- 	int ret;
- 
- 	dev_dbg(&pdev->dev, "entry\n");
-@@ -213,32 +203,42 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
- 	if (!mach)
- 		return -EINVAL;
- 
--	snd_soc_card_set_drvdata(&hda_soc_card, ctx);
-+	card = &ctx->card;
-+	card->name = "hda-dsp",
-+	card->owner = THIS_MODULE,
-+	card->dai_link = skl_hda_be_dai_links,
-+	card->dapm_widgets = skl_hda_widgets,
-+	card->dapm_routes = skl_hda_map,
-+	card->add_dai_link = skl_hda_add_dai_link,
-+	card->fully_routed = true,
-+	card->late_probe = skl_hda_card_late_probe,
- 
--	ret = skl_hda_fill_card_info(&mach->mach_params);
-+	snd_soc_card_set_drvdata(card, ctx);
++static const struct snd_soc_acpi_adr_device rt1318_1_group1_adr[] = {
++	{
++		.adr = 0x000130025D131801ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++		.name_prefix = "rt1318-1"
++	}
++};
 +
-+	ret = skl_hda_fill_card_info(card, &mach->mach_params);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Unsupported HDAudio/iDisp configuration found\n");
- 		return ret;
- 	}
++static const struct snd_soc_acpi_adr_device rt1318_2_group1_adr[] = {
++	{
++		.adr = 0x000232025D131801ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++		.name_prefix = "rt1318-2"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device rt714_0_adr[] = {
++	{
++		.adr = 0x000030025D071401ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "rt714"
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device rt714_1_adr[] = {
+ 	{
+ 		.adr = 0x000130025D071401ull,
+@@ -195,6 +222,25 @@ static const struct snd_soc_acpi_link_adr lnl_3_in_1_sdca[] = {
+ 	{}
+ };
  
--	ctx->pcm_count = hda_soc_card.num_links;
-+	ctx->pcm_count = card->num_links;
- 	ctx->dai_index = 1; /* hdmi codec dai name starts from index 1 */
- 	ctx->platform_name = mach->mach_params.platform;
- 	ctx->common_hdmi_codec_drv = mach->mach_params.common_hdmi_codec_drv;
- 
--	hda_soc_card.dev = &pdev->dev;
-+	card->dev = &pdev->dev;
- 	if (!snd_soc_acpi_sof_parent(&pdev->dev))
--		hda_soc_card.disable_route_checks = true;
-+		card->disable_route_checks = true;
- 
- 	if (mach->mach_params.dmic_num > 0) {
- 		snprintf(hda_soc_components, sizeof(hda_soc_components),
- 				"cfg-dmics:%d", mach->mach_params.dmic_num);
--		hda_soc_card.components = hda_soc_components;
-+		card->components = hda_soc_components;
- 	}
- 
--	ret = devm_snd_soc_register_card(&pdev->dev, &hda_soc_card);
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (!ret)
--		skl_set_hda_codec_autosuspend_delay(&hda_soc_card);
-+		skl_set_hda_codec_autosuspend_delay(card);
- 
- 	return ret;
- }
++static const struct snd_soc_acpi_link_adr lnl_sdw_rt1318_l12_rt714_l0[] = {
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt1318_1_group1_adr),
++		.adr_d = rt1318_1_group1_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(rt1318_2_group1_adr),
++		.adr_d = rt1318_2_group1_adr,
++	},
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt714_0_adr),
++		.adr_d = rt714_0_adr,
++	},
++	{}
++};
++
+ /* this table is used when there is no I2S codec present */
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_lnl_sdw_machines[] = {
+ 	/* mockup tests need to be first */
+@@ -240,6 +286,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_lnl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-lnl-rt722-l0.tplg",
+ 	},
++	{
++		.link_mask = GENMASK(2, 0),
++		.links = lnl_sdw_rt1318_l12_rt714_l0,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-lnl-rt1318-l12-rt714-l0.tplg"
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_lnl_sdw_machines);
 -- 
 2.40.1
 
