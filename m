@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F0ECC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56288C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:31:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85ACA210C;
-	Fri, 26 Apr 2024 17:31:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85ACA210C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1538A1948;
+	Fri, 26 Apr 2024 17:31:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1538A1948
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145476;
-	bh=VAgCgLZEmIjB0JFQL5pu1SrjXkf9g15d+++Tsl+Inyc=;
+	s=default; t=1714145495;
+	bh=LQ5nnQ9ZW00t49syyn/ph3zhQ6ZrAYJTQfp7YGjztmw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VFPDA38d5Aa2xo9TxmRUs6JoDwACVEB66P5IFX/qC6SidFq68ulDhrXHv+w6zliwT
-	 AcmE0wHt9wDDAFE2nKGSPNjNecHifLXbvQkU9KyjjRFm+d66GKWCZrOsWefcBdjdM9
-	 c4Y7u1qMPxY4IZgUZA/XRFNOT8PXfou8ExDzU1kQ=
+	b=NFT9R/BxynYx/H4n5pk1Ldr+0UDzAVbcGWgAFDkHy06PJPOKxy1IbhCoa3uP5whbx
+	 lVAJdwXQ253EJ6Bl1kqCTreF1vBlDKnyfqdSp5HyxkrHZUWcJcZKGtTqVE5r+Qo4Rz
+	 0qIpoQIeb746hpwv9B7ni8RW/iQb+Db559lQtf50=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0AAEF80CBB; Fri, 26 Apr 2024 17:26:51 +0200 (CEST)
+	id 79F32F80616; Fri, 26 Apr 2024 17:26:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 728EEF80CBE;
-	Fri, 26 Apr 2024 17:26:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8ED5F8061E;
+	Fri, 26 Apr 2024 17:26:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B26EFF806AD; Fri, 26 Apr 2024 17:26:15 +0200 (CEST)
+	id 31A80F806B8; Fri, 26 Apr 2024 17:26:16 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4C7A2F805F3
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C7A2F805F3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 453E6F80587
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 453E6F80587
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=FXD3a6iH
+ header.s=Intel header.b=JbOEZ1Sd
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145155; x=1745681155;
+  t=1714145156; x=1745681156;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VAgCgLZEmIjB0JFQL5pu1SrjXkf9g15d+++Tsl+Inyc=;
-  b=FXD3a6iHPih6kQOKoUAECOtHTmOFPXvtNBScD/UfaZggDgxX3vK9jt6G
-   gug9elOVRSit0iGJTiMAASvo8ky5oDTLyuDjTPddkSyJSzIpvEfMEv3Vc
-   bKK5jz6mdVdFWfVvx3AjtmWjWOngOYVoIIBYtlqipt1R7+//9LHGYP+fb
-   UJzhto2wQPPkQRTeiqZXmZA1DylPsti4HUEHPGD3AsduxVKAh4+LP++xV
-   2wePwruDDWUPFe3tlNWCI8PumLx0v3oho2zYKu9tArSCrU7mh3yotYiFb
-   O57Qk8QKVqX3k3tNjtK/MMS8zEKufnQA8aMo720ds/uRbThHr5V+D4+Qd
-   Q==;
-X-CSE-ConnectionGUID: ox12yP/uQuWgGv91GwHIeg==
-X-CSE-MsgGUID: 04HLTGrjSouBOAHL18FDUA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291352"
+  bh=LQ5nnQ9ZW00t49syyn/ph3zhQ6ZrAYJTQfp7YGjztmw=;
+  b=JbOEZ1SdYQUfmqtdfw8rGXVFENzrsTJujRjmUyzpcyMUZ7ZaQU8c+2sL
+   emSyp4vBEJOnU9VUXr+VrE6cYyB+OkolPBLvxddd9ZdYGJSVOraOyE7Ex
+   G5kJ7GHVm/wCcSJmkApT2P1buyIS7iz9hMJxTPZnsstscE2wd8LysVX8f
+   D5k7QIc78u3DsA4P/+djl5/ytSgQlMdQVt50HoCjwRbUcUxn0uupuVEz/
+   Vk9jgTMXslg1sc3LacoeZofkDgC5MQ4OgOHpctn88NrzIHOIHxALJuEnu
+   FZRyyZIrCPS1isnHzvlCl9wiJhEDA1cyvTV1ZtkGgGs6VNEl3kHwFXGaI
+   A==;
+X-CSE-ConnectionGUID: 0ezhMnA8RbC9mk7ArLzvGw==
+X-CSE-MsgGUID: lOqpovj1RiOIJgTKjXvipg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291360"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="21291352"
+   d="scan'208";a="21291360"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:50 -0700
-X-CSE-ConnectionGUID: mhi7Z60CR7WpTssahVEpZw==
-X-CSE-MsgGUID: usdiyUIYT7ew0C2ebxJouw==
+ 26 Apr 2024 08:25:52 -0700
+X-CSE-ConnectionGUID: 8tdpBL57QIiwE5dFtLAP+g==
+X-CSE-MsgGUID: geWlkK8nQwGaBWXsOfh55g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="30259602"
+   d="scan'208";a="30259610"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:50 -0700
+ 26 Apr 2024 08:25:51 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -76,17 +76,17 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 18/23] ASoC: Intel: sof-rt5682: remove
- SOF_RT5682_MCLK_BYTCHT_EN
-Date: Fri, 26 Apr 2024 10:25:24 -0500
-Message-Id: <20240426152529.38345-19-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 20/23] ASoC: Intel: sof-rt5682: add driver_data to sof_rt5682
+ board
+Date: Fri, 26 Apr 2024 10:25:26 -0500
+Message-Id: <20240426152529.38345-21-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 References: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HTQAGIPTHEOQQ3H42S3WZQDNMDC5FB4U
-X-Message-ID-Hash: HTQAGIPTHEOQQ3H42S3WZQDNMDC5FB4U
+Message-ID-Hash: KI6X7X5W6JEHNCZFPS4GML3N255ZT3AY
+X-Message-ID-Hash: KI6X7X5W6JEHNCZFPS4GML3N255ZT3AY
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KI6X7X5W6JEHNCZFPS4GML3N255ZT3AY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,98 +110,63 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-We don't need this quirk flag since 'is_legacy_cpu' will be true if
-this is a BYT/CHT board.
+Move default BYT/CHT quirk to driver_data of sof_rt5682 board. This
+fixes a problem that DMI quirk of Minnowboard board got overwritten in
+probe function since it's a BYT board.
 
+Fixes: c68e07970eca ("ASoC: intel: sof_rt5682: Add quirk for number of HDMI DAI's")
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 39 ++++++++++++++---------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 654c2428f625..4c6dfe632edf 100644
+index 7a35db5cab35..668b1672f570 100644
 --- a/sound/soc/intel/boards/sof_rt5682.c
 +++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -30,7 +30,6 @@
+@@ -638,7 +638,6 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
+ 	struct sof_card_private *ctx;
+ 	char *card_name;
+-	bool is_legacy_cpu = false;
+ 	int ret;
  
- /* Driver-specific board quirks: from bit 0 to 7 */
- #define SOF_RT5682_MCLK_EN			BIT(0)
--#define SOF_RT5682_MCLK_BYTCHT_EN		BIT(1)
+ 	if (pdev->id_entry && pdev->id_entry->driver_data)
+@@ -646,14 +645,6 @@ static int sof_audio_probe(struct platform_device *pdev)
  
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
-@@ -206,7 +205,7 @@ static int sof_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 			}
- 		}
+ 	dmi_check_system(sof_rt5682_quirk_table);
  
--		if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
-+		if (ctx->rt5682.is_legacy_cpu) {
- 			/*
- 			 * The firmware might enable the clock at
- 			 * boot (this information may or may not
-@@ -279,7 +278,7 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
- 	int pll_id, pll_source, pll_in, pll_out, clk_id, ret;
+-	if (soc_intel_is_byt() || soc_intel_is_cht()) {
+-		is_legacy_cpu = true;
+-
+-		/* default quirk for legacy cpu */
+-		sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
+-				   SOF_SSP_PORT_CODEC(2);
+-	}
+-
+ 	dev_dbg(&pdev->dev, "sof_rt5682_quirk = %lx\n", sof_rt5682_quirk);
  
- 	if (ctx->rt5682.mclk_en) {
--		if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
-+		if (ctx->rt5682.is_legacy_cpu) {
- 			ret = clk_prepare_enable(ctx->rt5682.mclk);
- 			if (ret < 0) {
- 				dev_err(rtd->dev,
-@@ -661,7 +660,6 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	/* initialize ctx with board quirk */
+@@ -676,7 +667,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	if (mach->mach_params.codec_mask & IDISP_CODEC_MASK)
+ 		ctx->hdmi.idisp_codec = true;
  
- 		/* default quirk for legacy cpu */
- 		sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
--				   SOF_RT5682_MCLK_BYTCHT_EN |
- 				   SOF_SSP_PORT_CODEC(2);
- 	}
- 
-@@ -728,26 +726,27 @@ static int sof_audio_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (sof_rt5682_quirk & SOF_RT5682_MCLK_EN)
-+	if (sof_rt5682_quirk & SOF_RT5682_MCLK_EN) {
- 		ctx->rt5682.mclk_en = true;
- 
--	/* need to get main clock from pmc */
--	if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
--		ctx->rt5682.mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
--		if (IS_ERR(ctx->rt5682.mclk)) {
--			ret = PTR_ERR(ctx->rt5682.mclk);
-+		/* need to get main clock from pmc */
-+		if (ctx->rt5682.is_legacy_cpu) {
-+			ctx->rt5682.mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+			if (IS_ERR(ctx->rt5682.mclk)) {
-+				ret = PTR_ERR(ctx->rt5682.mclk);
- 
--			dev_err(&pdev->dev,
--				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
--				ret);
--			return ret;
--		}
-+				dev_err(&pdev->dev,
-+					"Failed to get MCLK from pmc_plt_clk_3: %d\n",
-+					ret);
-+				return ret;
-+			}
- 
--		ret = clk_prepare_enable(ctx->rt5682.mclk);
--		if (ret < 0) {
--			dev_err(&pdev->dev,
--				"could not configure MCLK state");
--			return ret;
-+			ret = clk_prepare_enable(ctx->rt5682.mclk);
-+			if (ret < 0) {
-+				dev_err(&pdev->dev,
-+					"could not configure MCLK state");
-+				return ret;
-+			}
- 		}
- 	}
- 
+-	if (is_legacy_cpu) {
++	if (soc_intel_is_byt() || soc_intel_is_cht()) {
+ 		ctx->rt5682.is_legacy_cpu = true;
+ 		ctx->dmic_be_num = 0;
+ 		/* HDMI is not supported by SOF on Baytrail/CherryTrail */
+@@ -792,6 +783,8 @@ static int sof_audio_probe(struct platform_device *pdev)
+ static const struct platform_device_id board_ids[] = {
+ 	{
+ 		.name = "sof_rt5682",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_SSP_PORT_CODEC(2)),
+ 	},
+ 	{
+ 		.name = "glk_rt5682_def",
 -- 
 2.40.1
 
