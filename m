@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B7DFC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C33CC4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:27:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A333E65;
-	Fri, 26 Apr 2024 17:26:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A333E65
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85CC81919;
+	Fri, 26 Apr 2024 17:27:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85CC81919
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145221;
-	bh=8vZbOcgbSIpqXkZfIbzioi6VWXjubE1vsbynf0yIWAo=;
+	s=default; t=1714145235;
+	bh=2aq0nHn6IbnZHNu46EkbGXm35IXWPUwj6ke+P365UoM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RPc19nieUPnBtHnecDHbYFOUmfLVohrpCQIULuaRknKn6sBJSPaAm9/eW27rvpXz9
-	 f7GGaVTgBpknsKZPOlzj+7dOiW1HO7Dl92cztQZSE1H5YhmzXaS7k4P0trdbLDHIdU
-	 A90xjuRK8VkxDg7spQ21mIUqdAFQG9PO324C/KCo=
+	b=O+eS4S/7HOvrPSmVKSasplxzzCY6XQ9OClQB1EGxfKPK/2EKzeo8j2+opvFnDywsH
+	 erklsNZjycLqhgSEcfdr4Xp3ifreJC3gZ72YvgPjBl9/+CossVIs0vTfH+V1asK95U
+	 OaYNYSUlGbuSSC3yC4Q8QJ2A1Gjwr7xjlzUCjf0c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10810F80620; Fri, 26 Apr 2024 17:25:59 +0200 (CEST)
+	id 4252DF80651; Fri, 26 Apr 2024 17:26:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87353F8062D;
-	Fri, 26 Apr 2024 17:25:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 080F7F805A1;
+	Fri, 26 Apr 2024 17:26:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17FB9F805C8; Fri, 26 Apr 2024 17:25:51 +0200 (CEST)
+	id 77ADFF805DA; Fri, 26 Apr 2024 17:25:52 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 01EBCF80423
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01EBCF80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60692F80580
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60692F80580
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KUjJKzsP
+ header.s=Intel header.b=Js9I5obu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145145; x=1745681145;
+  t=1714145148; x=1745681148;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=8vZbOcgbSIpqXkZfIbzioi6VWXjubE1vsbynf0yIWAo=;
-  b=KUjJKzsPl/4dxp9xV8CCKyIkkjgTcyvQWtUW7biy06BT4B+HvMSDg5A/
-   kfE5970oMnefl0rbw9TM8clUKTVdEX6gETm9xGdSeuH0gHMmR6JAUi61a
-   8thVNM+LXUfN2FWw3AXrFJ+e8pUdRny/BtWLxgnpDiDLs/pLMv6N+RXRM
-   qzLgJq7L0pcu/2/7PvyMZz5HC8qZbDrH5pxD4OknCLhKVIgy3Vtib8B+0
-   pBjhqTHEHmBUfjPMHXtTjztL1WF78ikABA31oI79hU00rOVx/72o4+hhh
-   fcD8i4GlnDNixHwbNkrRPV5r1Sajz7ahzP+2qorb0nd3Ce9tsDQ2sFq4D
-   w==;
-X-CSE-ConnectionGUID: BUzqNOs9SnywmeLsPp9pPw==
-X-CSE-MsgGUID: /O0TLgVSTUmuogs2owFGlg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291285"
+  bh=2aq0nHn6IbnZHNu46EkbGXm35IXWPUwj6ke+P365UoM=;
+  b=Js9I5obuU1tV8vz5CbWjAa/KL5e2x3mTGcfBSvhuvn79rYoqERWTtGRu
+   MM+BxahFgDnbjuSJ2PIn3cAwu5XZv5DDwQA6eOIRDmXTv+tP7RxgQksIh
+   IlWLluQDblWHgxWgeYjninvQL8d+YC7zPqUQGa7alb6T+AAUMvX//jQLN
+   JOlKoS42qQco8h5YiLaAQVRo4r4XTO4Dq6N7T6Kr87zN5Kc/d7IjeZI3U
+   LE9dHPQtEnuxzjsCh1fKya4WV/8Cj6jsYnXwMFZ1cLhAHRL91gKe+S6dv
+   d53uBthkf64kS2td7EJ7MldLIT+VH1+zaq2HcBL9Apfnhzw83fxr08kPf
+   Q==;
+X-CSE-ConnectionGUID: 6oSvow/bQoW+Y1/RVel6bQ==
+X-CSE-MsgGUID: THT1+/GoQz6CfGM4fHOIvA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291304"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="21291285"
+   d="scan'208";a="21291304"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:41 -0700
-X-CSE-ConnectionGUID: yDAw3X00QDKy4pWyFVkfIQ==
-X-CSE-MsgGUID: q57wkM1USdSdWhi9I0A1Vg==
+ 26 Apr 2024 08:25:44 -0700
+X-CSE-ConnectionGUID: 2TW9sPgjTOKpiI7RsuAv9w==
+X-CSE-MsgGUID: aunn/L5FSFSepFaasOBboQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="30259542"
+   d="scan'208";a="30259557"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:41 -0700
+ 26 Apr 2024 08:25:44 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -76,17 +76,16 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/23] ASoC: Intel: sof_da7219: add cml_da7219_def for cml
- boards
-Date: Fri, 26 Apr 2024 10:25:10 -0500
-Message-Id: <20240426152529.38345-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 08/23] ASoC: Intel: sof_da7219: support MAX98357A
+Date: Fri, 26 Apr 2024 10:25:14 -0500
+Message-Id: <20240426152529.38345-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 References: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TKJEQW4DN42TP6NTKF6S25TE4ZOC67GB
-X-Message-ID-Hash: TKJEQW4DN42TP6NTKF6S25TE4ZOC67GB
+Message-ID-Hash: KEXCBPHD5HZ2IXME2R746XOGJN7SHAUO
+X-Message-ID-Hash: KEXCBPHD5HZ2IXME2R746XOGJN7SHAUO
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TKJEQW4DN42TP6NTKF6S25TE4ZOC67GB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KEXCBPHD5HZ2IXME2R746XOGJN7SHAUO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,73 +109,37 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add the board config cml_da7219_def to da7219 machine driver for all
-cml boards using default SSP port allocation (headphone codec on SSP0,
-speaker amplifiers on SSP1).
+Add support to Maxim MAX98357A speaker amplifier.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_da7219.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/sof_da7219.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/soc/intel/boards/sof_da7219.c b/sound/soc/intel/boards/sof_da7219.c
-index de5b0a8b5b8c..69555eee7c7a 100644
+index 0abb71a10a72..610b5a8e0860 100644
 --- a/sound/soc/intel/boards/sof_da7219.c
 +++ b/sound/soc/intel/boards/sof_da7219.c
-@@ -19,8 +19,9 @@
- #include "sof_maxim_common.h"
+@@ -267,6 +267,9 @@ sof_card_dai_links_create(struct device *dev, struct snd_soc_card *card,
  
- /* Driver-specific board quirks: from bit 0 to 7 */
--#define SOF_DA7219_JSL_BOARD			BIT(0)
--#define SOF_DA7219_MCLK_EN			BIT(1)
-+#define SOF_DA7219_CML_BOARD			BIT(0)
-+#define SOF_DA7219_JSL_BOARD			BIT(1)
-+#define SOF_DA7219_MCLK_EN			BIT(2)
- 
- #define DIALOG_CODEC_DAI	"da7219-hifi"
- 
-@@ -292,6 +293,14 @@ sof_card_dai_links_create(struct device *dev, struct snd_soc_card *card,
- 	return 0;
- }
- 
-+#define CML_LINK_ORDER	SOF_LINK_ORDER(SOF_LINK_AMP,         \
-+					SOF_LINK_CODEC,      \
-+					SOF_LINK_DMIC01,     \
-+					SOF_LINK_IDISP_HDMI, \
-+					SOF_LINK_DMIC16K,    \
-+					SOF_LINK_NONE,       \
-+					SOF_LINK_NONE)
-+
- #define JSL_LINK_ORDER	SOF_LINK_ORDER(SOF_LINK_AMP,         \
- 					SOF_LINK_CODEC,      \
- 					SOF_LINK_DMIC01,     \
-@@ -320,7 +329,10 @@ static int audio_probe(struct platform_device *pdev)
- 	if (mach->mach_params.codec_mask & IDISP_CODEC_MASK)
- 		ctx->hdmi.idisp_codec = true;
- 
--	if (board_quirk & SOF_DA7219_JSL_BOARD) {
-+	if (board_quirk & SOF_DA7219_CML_BOARD) {
-+		/* overwrite the DAI link order for CML boards */
-+		ctx->link_order_overwrite = CML_LINK_ORDER;
-+	} else if (board_quirk & SOF_DA7219_JSL_BOARD) {
- 		ctx->da7219.is_jsl_board = true;
- 
- 		/* overwrite the DAI link order for JSL boards */
-@@ -380,6 +392,12 @@ static int audio_probe(struct platform_device *pdev)
- }
- 
- static const struct platform_device_id board_ids[] = {
-+	{
-+		.name = "cml_da7219_def",
-+		.driver_data = (kernel_ulong_t)(SOF_DA7219_CML_BOARD |
-+					SOF_SSP_PORT_CODEC(0) |
-+					SOF_SSP_PORT_AMP(1)),
-+	},
- 	{
- 		.name = "jsl_da7219_def",
- 		.driver_data = (kernel_ulong_t)(SOF_DA7219_JSL_BOARD |
+ 	/* codec-specific fields for speaker amplifier */
+ 	switch (ctx->amp_type) {
++	case CODEC_MAX98357A:
++		max_98357a_dai_link(ctx->amp_link);
++		break;
+ 	case CODEC_MAX98360A:
+ 		max_98360a_dai_link(ctx->amp_link);
+ 		break;
+@@ -393,6 +396,7 @@ static int audio_probe(struct platform_device *pdev)
+ 	case CODEC_MAX98390:
+ 		max_98390_set_codec_conf(&pdev->dev, &card_da7219);
+ 		break;
++	case CODEC_MAX98357A:
+ 	case CODEC_MAX98360A:
+ 	case CODEC_NONE:
+ 		/* no codec conf required */
 -- 
 2.40.1
 
