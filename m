@@ -4,88 +4,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C28FC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 10:02:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E624C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 12:44:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF7ECDEC;
-	Fri, 26 Apr 2024 12:02:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF7ECDEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FF4686F;
+	Fri, 26 Apr 2024 14:44:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FF4686F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714125737;
-	bh=HlGJubqfkIRgU0Aeu+B9moA7xbvwpSC/vQ/7n6B7G14=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1714135464;
+	bh=zQgcqjDLU4rXiwYQKS1OFiTU6+v3iMUTYfNZyPzyHP4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=n+8i3USrB6IX5oHXfG1apsZ85XJBgEIbuZ0nlgdnmQKeMZ2yGipCVxdyigrvO92x8
-	 VZltTYzUjjS3ggfTPaF55+exTNtFIEazWMY/3kTywyUVLglXIXzsY/CJKHeFn32hzw
-	 BzOl0gRQyQ31NYcqz1xpCtD41q777kYS5J20w2ZY=
+	b=jRchbEBIVAbVoDdgvVgJxQQ/00MptBsNsbwVXzdMKOuPE4XrwW+xU7XCmjbMwIX6V
+	 b5vvLT3DlLuVKkLSvMs9WGgtIu1hGN9V71Dhk1CRjpgF+dVxLjrFgbKzSeY0/++JSw
+	 lzkryqHLcYaT2K/0v1pI6s6hsi0Gw0alaR0hxGJo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E85BBF806BE; Fri, 26 Apr 2024 11:59:59 +0200 (CEST)
+	id 0000AF8057F; Fri, 26 Apr 2024 14:43:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A2CFF806BD;
-	Fri, 26 Apr 2024 11:59:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2D15F805A9;
+	Fri, 26 Apr 2024 14:43:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E21C2F802E8; Fri, 26 Apr 2024 11:57:17 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 17F1BF80423; Fri, 26 Apr 2024 14:43:48 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 346D0F80568
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 11:57:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 346D0F80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id 85A37F800B5
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 14:43:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85A37F800B5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bTNNZ5jx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714125424; x=1745661424;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HlGJubqfkIRgU0Aeu+B9moA7xbvwpSC/vQ/7n6B7G14=;
-  b=bTNNZ5jxDjcsEEDtB+DzJlSGD2sWR5SeG7v9neSjGoL/eAYu6qkFRJp0
-   h+pI5a8Jgqs2BqXigkuvToCSrl57n7i5bQ/EEzrfjooFUEM6QKrYjUDfy
-   ZGfFziwFv/CgyYO2B+4yaK8vboS/deUvZ18g2gEV/h6EWgyLaax5ECK7o
-   lMVoMrD82fd2pXvQQ2BtNj8doL4jNxZ3JEvKwXdfitN1PCIq/hGIr4eIL
-   5qhCspfv9bwa3lCC3yqrR9S5dxnvaswjgTj/QO+d5OaMBnlyB+Bd2bIho
-   8QoqPetSmc2ueN02LFdt55D5ACc7oi1Fit6TTOK7/mIZwdi0o3E6sQb8h
-   Q==;
-X-CSE-ConnectionGUID: LrVWS3lfTV6Qk5+wTkTKOA==
-X-CSE-MsgGUID: ywcFLu9VRaGfAkVVMfepng==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20409228"
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="20409228"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 02:57:03 -0700
-X-CSE-ConnectionGUID: S4q3g+JSQxKtyJq+NaF/mg==
-X-CSE-MsgGUID: mkAr/ahCRF+rt2XpJa8naw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="25460623"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa010.fm.intel.com with ESMTP; 26 Apr 2024 02:57:00 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz,
-	amadeuszx.slawinski@linux.intel.com,
-	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 7/8] ASoC: Intel: avs: Store pointer to link_stream in
- dma_data
-Date: Fri, 26 Apr 2024 11:57:32 +0200
-Message-Id: <20240426095733.3946951-8-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240426095733.3946951-1-cezary.rojewski@intel.com>
-References: <20240426095733.3946951-1-cezary.rojewski@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: H7RJ4MOSRZLIJQD35BPGMQF3VSGLMM4I
-X-Message-ID-Hash: H7RJ4MOSRZLIJQD35BPGMQF3VSGLMM4I
-X-MailFrom: cezary.rojewski@intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=PLoiJEXY;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=P7ja7n9F;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=PLoiJEXY;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=P7ja7n9F
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B2C9C5D0B6;
+	Fri, 26 Apr 2024 12:43:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1714135416;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O7XH3EvW1LrbRnIuU9A2pUcjAGgJdRh2s3ZQN36W5UU=;
+	b=PLoiJEXYkAAu+kmpjrkAiuoP6q/nP7wCfKKBZ8esRlunuBwGHpkwIc+fm/h06mj1yeKa8k
+	hZ+fsXfeOnA4AevG9pGfU38YsCqMNK6WLFmLD5iNsdbva3AZev0RCf9NugScv7keXwielX
+	gwn7wtC1lyhTbx3r/Jir7QZcy/O7xAo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714135416;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O7XH3EvW1LrbRnIuU9A2pUcjAGgJdRh2s3ZQN36W5UU=;
+	b=P7ja7n9FWoBrHTj8A89XPDP00j5HzgT55nzox/OYFvbaiCoSq7xk81QBGdu5LjvkfqDWpH
+	PkHO/LeCj1PberAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1714135416;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O7XH3EvW1LrbRnIuU9A2pUcjAGgJdRh2s3ZQN36W5UU=;
+	b=PLoiJEXYkAAu+kmpjrkAiuoP6q/nP7wCfKKBZ8esRlunuBwGHpkwIc+fm/h06mj1yeKa8k
+	hZ+fsXfeOnA4AevG9pGfU38YsCqMNK6WLFmLD5iNsdbva3AZev0RCf9NugScv7keXwielX
+	gwn7wtC1lyhTbx3r/Jir7QZcy/O7xAo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1714135416;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O7XH3EvW1LrbRnIuU9A2pUcjAGgJdRh2s3ZQN36W5UU=;
+	b=P7ja7n9FWoBrHTj8A89XPDP00j5HzgT55nzox/OYFvbaiCoSq7xk81QBGdu5LjvkfqDWpH
+	PkHO/LeCj1PberAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ECAB01398B;
+	Fri, 26 Apr 2024 12:43:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BKtNOHehK2ZkVgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 26 Apr 2024 12:43:35 +0000
+Date: Fri, 26 Apr 2024 14:43:46 +0200
+Message-ID: <877cgks399.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Rajashekar kuruva <quic_kuruva@quicinc.com>
+Cc: <srinivas.kandagatla@linaro.org>,
+	<mathias.nyman@intel.com>,
+	<perex@perex.cz>,
+	<conor+dt@kernel.org>,
+	<corbet@lwn.net>,
+	<lgirdwood@gmail.com>,
+	<andersson@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>,
+	<gregkh@linuxfoundation.org>,
+	<Thinh.Nguyen@synopsys.com>,
+	<broonie@kernel.org>,
+	<bgoswami@quicinc.com>,
+	<tiwai@suse.com>,
+	<robh@kernel.org>,
+	<konrad.dybcio@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>,
+	<linux-arm-msm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>
+Subject: Re: [PATCH] [RFC PATCH] ALSA: usb-audio: endpoint: Prevent NULL
+ pointer deference in snd_usb_endpoint_close
+In-Reply-To: <20240426122511.547755-1-quic_kuruva@quicinc.com>
+References: <20240426122511.547755-1-quic_kuruva@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-0.63 / 50.00];
+	BAYES_HAM(-1.83)[93.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TAGGED_RCPT(0.00)[dt];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[]
+Message-ID-Hash: RNDWOHPFDQMTXUGXHISJMRH7NRUZSDBN
+X-Message-ID-Hash: RNDWOHPFDQMTXUGXHISJMRH7NRUZSDBN
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +172,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H7RJ4MOSRZLIJQD35BPGMQF3VSGLMM4I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RNDWOHPFDQMTXUGXHISJMRH7NRUZSDBN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,153 +181,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-While the HDAudio codec driver expectations must be met - store valid
-pointer to HDAudio LINK stream in substream->runtime->private_data - the
-code is more readable and easier to maintain if dma_data stores pointers
-to both HOST and LINK stream.
+On Fri, 26 Apr 2024 14:25:11 +0200,
+Rajashekar kuruva wrote:
+> 
+> When multiple plug-in and plug-out events occur,
+> there is a risk of encountering a NULL pointer dereference
+> leading to a kernel panic during a headset use-case.
+> this issue arises in the snd_usb_endpoint_close function
 
-DAI BE operations can refer to the LINK stream with data->link_stream,
-similarly to how DAI FE operations access the HOST stream with
-data->host_stream.
+Such a scenario can't happen: ep->iface_ref is changed only in
+chip->mutex lock, hence it can't be NULL there.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/intel/avs/pcm.c | 40 +++++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index d4557b7b1c6c..168e16e82116 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -23,13 +23,12 @@ struct avs_dma_data {
- 	struct avs_tplg_path_template *template;
- 	struct avs_path *path;
- 	struct avs_dev *adev;
--	/*
--	 * link stream is stored within substream's runtime
--	 * private_data to fulfill the needs of codec BE path
--	 *
--	 * host stream assigned
--	 */
--	struct hdac_ext_stream *host_stream;
-+
-+	/* LINK-stream utilized in BE operations while HOST in FE ones. */
-+	union {
-+		struct hdac_ext_stream *link_stream;
-+		struct hdac_ext_stream *host_stream;
-+	};
- 
- 	struct snd_pcm_substream *substream;
- };
-@@ -263,6 +262,7 @@ static int avs_dai_hda_be_startup(struct snd_pcm_substream *substream, struct sn
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct hdac_ext_stream *link_stream;
-+	struct avs_dma_data *data;
- 	struct hda_codec *codec;
- 	int ret;
- 
-@@ -278,18 +278,18 @@ static int avs_dai_hda_be_startup(struct snd_pcm_substream *substream, struct sn
- 		return -EBUSY;
- 	}
- 
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	data->link_stream = link_stream;
- 	substream->runtime->private_data = link_stream;
- 	return 0;
- }
- 
- static void avs_dai_hda_be_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
--	struct hdac_ext_stream *link_stream;
-+	struct avs_dma_data *data = snd_soc_dai_get_dma_data(dai, substream);
- 
--	link_stream = substream->runtime->private_data;
--	snd_hdac_ext_stream_release(link_stream, HDAC_EXT_STREAM_TYPE_LINK);
-+	snd_hdac_ext_stream_release(data->link_stream, HDAC_EXT_STREAM_TYPE_LINK);
- 	substream->runtime->private_data = NULL;
--
- 	avs_dai_shutdown(substream, dai);
- }
- 
-@@ -297,16 +297,13 @@ static int avs_dai_hda_be_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
- {
- 	struct avs_dma_data *data;
--	struct hdac_ext_stream *link_stream;
- 
- 	data = snd_soc_dai_get_dma_data(dai, substream);
- 	if (data->path)
- 		return 0;
- 
--	link_stream = substream->runtime->private_data;
--
- 	return avs_dai_be_hw_params(substream, hw_params, dai,
--				    hdac_stream(link_stream)->stream_tag - 1);
-+				    hdac_stream(data->link_stream)->stream_tag - 1);
- }
- 
- static int avs_dai_hda_be_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-@@ -323,7 +320,7 @@ static int avs_dai_hda_be_hw_free(struct snd_pcm_substream *substream, struct sn
- 	if (!data->path)
- 		return 0;
- 
--	link_stream = substream->runtime->private_data;
-+	link_stream = data->link_stream;
- 	link_stream->link_prepared = false;
- 	avs_path_free(data->path);
- 	data->path = NULL;
-@@ -347,13 +344,16 @@ static int avs_dai_hda_be_prepare(struct snd_pcm_substream *substream, struct sn
- 	struct snd_soc_pcm_stream *stream_info;
- 	struct hdac_ext_stream *link_stream;
- 	struct hdac_ext_link *link;
-+	struct avs_dma_data *data;
- 	struct hda_codec *codec;
- 	struct hdac_bus *bus;
- 	unsigned int format_val;
- 	unsigned int bits;
- 	int ret;
- 
--	link_stream = runtime->private_data;
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	link_stream = data->link_stream;
-+
- 	if (link_stream->link_prepared)
- 		return 0;
- 
-@@ -387,14 +387,12 @@ static int avs_dai_hda_be_trigger(struct snd_pcm_substream *substream, int cmd,
- 				  struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct hdac_ext_stream *link_stream;
- 	struct avs_dma_data *data;
- 	int ret = 0;
- 
- 	dev_dbg(dai->dev, "entry %s cmd=%d\n", __func__, cmd);
- 
- 	data = snd_soc_dai_get_dma_data(dai, substream);
--	link_stream = substream->runtime->private_data;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_RESUME:
-@@ -403,7 +401,7 @@ static int avs_dai_hda_be_trigger(struct snd_pcm_substream *substream, int cmd,
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		snd_hdac_ext_stream_start(link_stream);
-+		snd_hdac_ext_stream_start(data->link_stream);
- 
- 		ret = avs_path_pause(data->path);
- 		if (ret < 0) {
-@@ -426,7 +424,7 @@ static int avs_dai_hda_be_trigger(struct snd_pcm_substream *substream, int cmd,
- 		if (ret < 0)
- 			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
- 
--		snd_hdac_ext_stream_clear(link_stream);
-+		snd_hdac_ext_stream_clear(data->link_stream);
- 
- 		ret = avs_path_reset(data->path);
- 		if (ret < 0)
--- 
-2.25.1
+thanks,
 
+Takashi
