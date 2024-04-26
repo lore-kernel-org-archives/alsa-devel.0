@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 448D2C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:34:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97C1BC4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:34:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77DCF20C5;
-	Fri, 26 Apr 2024 17:34:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77DCF20C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id CABF82110;
+	Fri, 26 Apr 2024 17:34:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CABF82110
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145664;
-	bh=hMVnOvoSMf+JRMF8t9uSLpRgdcu8Yz7Hi23L/8tCSL4=;
+	s=default; t=1714145673;
+	bh=twiWpSK9Cb/9sMit7KrauKpyDpxWaybLQZDeq8xxcKY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cjSEv59fYr+fe7/imJfZjHhiVXuieMlVYkcpIpsak4zcUbbx4RucvhyXF9J8SD1wm
-	 vfOYs9tBCNbsCcgHCVS7yxXXg3O5nR2k5LxwWN5o5pmaQ37sgXDlw2n9ytVHtdifOt
-	 G7Uhpq9C1OE7vxly3RQWWpP35tbGwAH6c+meBFEc=
+	b=IroIK+Y/HXuWTDk475vXgHzzfZEBxspldhUyQRGXyZqIAgChNA7bAJK1FYRFpeFpI
+	 kHMAr7CPG4qZn2HSqA6+7sJQnAi05nZPn8obKQuRp2dXICvfsbFn7PikHHvA8oQqz/
+	 7sbopCpjwi70OCQHLRpych2ngtigIXdY+BDeHVD8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CBC67F806AF; Fri, 26 Apr 2024 17:30:19 +0200 (CEST)
+	id 61EC4F806D6; Fri, 26 Apr 2024 17:30:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2A2EF806A6;
-	Fri, 26 Apr 2024 17:30:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3870F806D2;
+	Fri, 26 Apr 2024 17:30:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39847F80601; Fri, 26 Apr 2024 17:30:11 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+	id 53390F8065A; Fri, 26 Apr 2024 17:30:13 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F1C1AF80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id 13BFBF805CB
 	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:29:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1C1AF80423
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13BFBF805CB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20230601.gappssmtp.com
  header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=izxBXNIY
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-41ba1ba55e9so4048155e9.3
+ header.s=20230601 header.b=KFYaVpcH
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-41ba1ba5591so4043495e9.1
         for <alsa-devel@alsa-project.org>;
  Fri, 26 Apr 2024 08:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
@@ -52,39 +52,39 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wdxkC9xy0JdUlM4HJdidG8uU38VPySKk64XDlad2PLg=;
-        b=izxBXNIYPsQkUvHcOYZxP/CxbcRMXcVYFK6jtIkU6DhoZsxmVSSdCad167WgqNm2yk
-         Ys4QOeHvKEUQDt/Hby4Fy4c6TGt3Mcb9stnPfy5OWmUEXuEQsCF5BakuEiREFgKMZBR/
-         46vEl09v/EZ4hXhs2sTVoeB+n2fpVfFnFjBJDeSESBfAwRyeQKmoMtDGawg14kz5jw1d
-         a4dYQW8uZ7FmEuwMRXIeDGSITynTpILxf/Zywf4JqgmSEwow9ZoEWfrhRcSMFQPMWJJP
-         0xLygQHgtY/ng5L80P5Cjcox2WAqEpkU6mc9O0xJG5vsbAUr2e8ciJLKOK/xhBH4gdQi
-         H2rw==
+        bh=Vj88fGfTuV4/ceY0CRDNjfucEqH3NJ0Iz+8z4tgOcCE=;
+        b=KFYaVpcH85jFkilqqc8p78NFHIxEMz/wDvMiXWQf4Sek+nMfrbSQEUcJgv2uT/cqG9
+         tNaqmBkmHMbdsLchmVuI82Fp7wDrfKcQlENuRo4Yab3SlpRv0Sc+taOici/VNr0quHPQ
+         0oUPTEK3hrDcyRP8lgzvORQz/XvQKNfSv7feL75+O93/62y8UMM6rKwLsOlNuMiWr3qN
+         qOAl3NWp2YYgp0bseeibyuf0n5bn/eh047niVZvrs0CXu65gkybzBuEZZnz0AYiqrG2K
+         4H12WuMwj19Ercyuu4/ULT5334+QqDP6vIS79ELNCoq+iN+K+UVhtRwBGoKGwE6CLyqA
+         Ogzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1714145396; x=1714750196;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wdxkC9xy0JdUlM4HJdidG8uU38VPySKk64XDlad2PLg=;
-        b=dv3hfpe0EzZ/WGA3MQiG5y3LEPVWKaWWXZRseWV8aG9qojjWt36ixB/4463Fw0uZ4K
-         YPVgfQYpKHVJvr+NN1ulKM+ZdO08fIBFAMEVwsgqVkBC3cMIdTFN4X/TXNVK2UIcVMjD
-         KkFDE/5clXfsVs9iilMrrW8C0g/rWXlgDL3TdsWHqJPV+R5ipIMvDWes5Op6TjPn+gnP
-         HLQ3m6/1Ue2i3J5e2zN/OB7XM+9Zcu1VZKzFiJeo8EWevE7Eh71lNYPhDZwif7Fq8juZ
-         VK4+EyuknU+g5TRwzwKDhxBhNL5bHCaerhCh7HaPZ2C9Cuda4IJkAuRC0VimB+/pjVEM
-         ge1g==
+        bh=Vj88fGfTuV4/ceY0CRDNjfucEqH3NJ0Iz+8z4tgOcCE=;
+        b=Rtlc3lZlBidAXcITFa7PbDenSimLtnQWUMGZOCw4YJ9FQHkCZD9Xu4uLZOWsxOUTbt
+         F41sHDnmbIGC0RoFHTVMOyz6Gb1x72g/q9cKkuLB72oBZCylnXR78airPhbD43lsrnxb
+         Q/iMDEVBIhENYKVmh1jJM6QreLr9q6jLLghtaW/0eg/PA7jOsDhPqiEHp20GXli8A4u2
+         Eeb94mSD0kVY/s4+rRarDuDU/3hpUqJLlK+1LJDMTEQS/CwHP8vJDFpiVwdypKb0eRhn
+         djrRVZGVvec93Yo1Xt7rKs1GKhZP1nUkAP3gsPue+IG/UoIol/h19H9G5vRt894BO62Y
+         /B/A==
 X-Forwarded-Encrypted: i=1;
- AJvYcCULCXsgPMXBbGXVgEVNi6lbXVulFzHMPnVgOlZM/ss2ilGU6GXUjquJDUoXwkOltw4zQco2LdjEHruh3o3zljtkFT48eWFX/MAuXwE=
-X-Gm-Message-State: AOJu0YxI+3P9PAaTF3iuaZW2Njf/pATV9vDo3SNNSMn5yBJXZYyB/aDc
-	FxWx61Z3PCc9tujXa23u3qm0VY8bWjWu3F1APyEJmKNFAJPRtMk9kPRWIqCSbmE=
+ AJvYcCUrvovZZiTRQ975eUtbkBq24FjwUJM6YiM+kXsE2DKkp/qXCYqikSqneiilCWPV3uClc90Q7N9u7DFoi1bzPqncTN1Fk9CeTF/ZlrQ=
+X-Gm-Message-State: AOJu0YxjTda/CSxVXBDRrTM6C7CP29MF14lcTOLvKnTD7dlp9dKqvOoZ
+	RjHfAttH8piuYdwnSjU1a3NXjsnLp0vDq+/kMV9UvOCphWccxMni3b0EZGHuS3c=
 X-Google-Smtp-Source: 
- AGHT+IHPpBP3QSa57mdn7C6mGnSnPPrJ1b15kSZTPSoFNzWhfVV6qwoJcqsNBhnR4twzoAilz89DKA==
-X-Received: by 2002:a05:600c:4ecf:b0:416:bc18:2a00 with SMTP id
- g15-20020a05600c4ecf00b00416bc182a00mr2136057wmq.38.1714145395834;
-        Fri, 26 Apr 2024 08:29:55 -0700 (PDT)
+ AGHT+IEJkZy/zcyYjS/mRx4ZV80tXFjeoyE7of0nB7BlzZ+4FKV/1yBAljbeQBu73IdnjR2X5uGAvA==
+X-Received: by 2002:a05:600c:b88:b0:418:f991:8ad4 with SMTP id
+ fl8-20020a05600c0b8800b00418f9918ad4mr113607wmb.6.1714145396564;
+        Fri, 26 Apr 2024 08:29:56 -0700 (PDT)
 Received: from toaster.lan ([2a01:e0a:3c5:5fb1:1926:f73e:8b99:1c0a])
         by smtp.googlemail.com with ESMTPSA id
  i13-20020a05600c354d00b00419fba938d8sm22628687wmq.27.2024.04.26.08.29.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 08:29:55 -0700 (PDT)
+        Fri, 26 Apr 2024 08:29:56 -0700 (PDT)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
@@ -92,17 +92,17 @@ Cc: Jerome Brunet <jbrunet@baylibre.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	linux-amlogic@lists.infradead.org
-Subject: [PATCH 1/4] ASoC: meson: axg-fifo: use threaded irq to check periods
-Date: Fri, 26 Apr 2024 17:29:38 +0200
-Message-ID: <20240426152946.3078805-2-jbrunet@baylibre.com>
+Subject: [PATCH 2/4] ASoC: meson: axg-card: make links nonatomic
+Date: Fri, 26 Apr 2024 17:29:39 +0200
+Message-ID: <20240426152946.3078805-3-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240426152946.3078805-1-jbrunet@baylibre.com>
 References: <20240426152946.3078805-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YQKFAPAXRV473M4A5P3LXVIWUZ5RYRA5
-X-Message-ID-Hash: YQKFAPAXRV473M4A5P3LXVIWUZ5RYRA5
+Message-ID-Hash: 3O4FQKU2LIZ3MCXPUAHUAADZ6UJ7AKDX
+X-Message-ID-Hash: 3O4FQKU2LIZ3MCXPUAHUAADZ6UJ7AKDX
 X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YQKFAPAXRV473M4A5P3LXVIWUZ5RYRA5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3O4FQKU2LIZ3MCXPUAHUAADZ6UJ7AKDX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,80 +124,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-With the AXG audio subsystem, there is a possible random channel shift on
-TDM capture, when the slot number per lane is more than 2, and there is
-more than one lane used.
+Non atomic operations need to be performed in the trigger callback
+of the TDM interfaces. Those are BEs but what matters is the nonatomic
+flag of the FE in the DPCM context. Just set nonatomic for everything so,
+at least, what is done is clear.
 
-The problem has been there since the introduction of the axg audio support
-but such scenario is pretty uncommon. This is why there is no loud
-complains about the problem.
-
-Solving the problem require to make the links non-atomic and use the
-trigger() callback to start FEs and BEs in the appropriate order.
-
-This was tried in the past and reverted because it caused the block irq to
-sleep while atomic. However, instead of reverting, the solution is to call
-snd_pcm_period_elapsed() in a non atomic context.
-
-Use the bottom half of a threaded IRQ to do so.
-
-Fixes: 6dc4fa179fb8 ("ASoC: meson: add axg fifo base driver")
+Fixes: 7864a79f37b5 ("ASoC: meson: add axg sound card support")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/axg-fifo.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ sound/soc/meson/axg-card.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index bebee0ca8e38..ecb3eb7a9723 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -204,18 +204,26 @@ static irqreturn_t axg_fifo_pcm_irq_block(int irq, void *dev_id)
- 	unsigned int status;
+diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+index 3180aa4d3a15..8c5605c1e34e 100644
+--- a/sound/soc/meson/axg-card.c
++++ b/sound/soc/meson/axg-card.c
+@@ -318,6 +318,7 @@ static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
  
- 	regmap_read(fifo->map, FIFO_STATUS1, &status);
--
- 	status = FIELD_GET(STATUS1_INT_STS, status);
-+	axg_fifo_ack_irq(fifo, status);
-+
-+	/* Use the thread to call period elapsed on nonatomic links */
- 	if (status & FIFO_INT_COUNT_REPEAT)
--		snd_pcm_period_elapsed(ss);
--	else
--		dev_dbg(axg_fifo_dev(ss), "unexpected irq - STS 0x%02x\n",
--			status);
-+		return IRQ_WAKE_THREAD;
+ 	dai_link->cpus = cpu;
+ 	dai_link->num_cpus = 1;
++	dai_link->nonatomic = true;
  
--	/* Ack irqs */
--	axg_fifo_ack_irq(fifo, status);
-+	dev_dbg(axg_fifo_dev(ss), "unexpected irq - STS 0x%02x\n",
-+		status);
-+
-+	return IRQ_NONE;
-+}
-+
-+static irqreturn_t axg_fifo_pcm_irq_block_thread(int irq, void *dev_id)
-+{
-+	struct snd_pcm_substream *ss = dev_id;
-+
-+	snd_pcm_period_elapsed(ss);
- 
--	return IRQ_RETVAL(status);
-+	return IRQ_HANDLED;
- }
- 
- int axg_fifo_pcm_open(struct snd_soc_component *component,
-@@ -243,8 +251,9 @@ int axg_fifo_pcm_open(struct snd_soc_component *component,
+ 	ret = meson_card_parse_dai(card, np, dai_link->cpus);
  	if (ret)
- 		return ret;
- 
--	ret = request_irq(fifo->irq, axg_fifo_pcm_irq_block, 0,
--			  dev_name(dev), ss);
-+	ret = request_threaded_irq(fifo->irq, axg_fifo_pcm_irq_block,
-+				   axg_fifo_pcm_irq_block_thread,
-+				   IRQF_ONESHOT, dev_name(dev), ss);
- 	if (ret)
- 		return ret;
- 
 -- 
 2.43.0
 
