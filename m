@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F01F5C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:26:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B7DFC4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:27:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14F4DE9F;
-	Fri, 26 Apr 2024 17:26:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14F4DE9F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A333E65;
+	Fri, 26 Apr 2024 17:26:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A333E65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145202;
-	bh=IhNyLvipIPGmOCLb0Rr8QiP1vU62Hi86DWOTep9C5b8=;
+	s=default; t=1714145221;
+	bh=8vZbOcgbSIpqXkZfIbzioi6VWXjubE1vsbynf0yIWAo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Rvs1nnwPVlxA0ZgQ94bTY6J/rUi2GpmeM5BwwipYB/roppvQfr90x5qzwAZNMvaSV
-	 AQ6WVFbbHBas+mR57JcLG9OrveO9voxV7weuD7LD0lni1ELNMXMQUXNpUQUqIehB5V
-	 K9Zb4gvw95l62g8P5gfPMiDmvkpBlJutgfaFJNmg=
+	b=RPc19nieUPnBtHnecDHbYFOUmfLVohrpCQIULuaRknKn6sBJSPaAm9/eW27rvpXz9
+	 f7GGaVTgBpknsKZPOlzj+7dOiW1HO7Dl92cztQZSE1H5YhmzXaS7k4P0trdbLDHIdU
+	 A90xjuRK8VkxDg7spQ21mIUqdAFQG9PO324C/KCo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 434F4F80611; Fri, 26 Apr 2024 17:25:57 +0200 (CEST)
+	id 10810F80620; Fri, 26 Apr 2024 17:25:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E193F805FA;
-	Fri, 26 Apr 2024 17:25:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87353F8062D;
+	Fri, 26 Apr 2024 17:25:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59020F805BB; Fri, 26 Apr 2024 17:25:49 +0200 (CEST)
+	id 17FB9F805C8; Fri, 26 Apr 2024 17:25:51 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6532FF8003A
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6532FF8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 01EBCF80423
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:25:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01EBCF80423
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=jw7H0PhT
+ header.s=Intel header.b=KUjJKzsP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145144; x=1745681144;
+  t=1714145145; x=1745681145;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IhNyLvipIPGmOCLb0Rr8QiP1vU62Hi86DWOTep9C5b8=;
-  b=jw7H0PhTwIWtY65zzT4KyZmM3ggW1QUME9rzm0dcPOWLMbNZr+IR3ENU
-   x9JdxiSZcBmu7KOLbWmIht5ik91Fn9P6HWqf5dGDhifeUrz4A7LujhjqA
-   5o6BXjhAYp8191YTsBttHpXf6NDHXCVZQ1C4nF1VONzfGY90fPB961ck5
-   LYs6J/MrhSK4BqCM6zH6rvMvvv2vy66jDO1y+xIs+6W2XDwSAXfiaPjx4
-   SQEv78FRNUPGRw2tJ4xxl6DT8gbdVlWj2zlSNTrgb+J2xkgVIijgmhXW/
-   l1ohD/AMyUYuGQDuGoyKDd5aSnw0Y7N8B8w9ro77fo1JTcIOzL2OjkP9O
-   Q==;
-X-CSE-ConnectionGUID: 5WmPYJWsQ9S5XddjuPNqNQ==
-X-CSE-MsgGUID: gINCFQQSQlGxOzAva7aqxw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291275"
+  bh=8vZbOcgbSIpqXkZfIbzioi6VWXjubE1vsbynf0yIWAo=;
+  b=KUjJKzsPl/4dxp9xV8CCKyIkkjgTcyvQWtUW7biy06BT4B+HvMSDg5A/
+   kfE5970oMnefl0rbw9TM8clUKTVdEX6gETm9xGdSeuH0gHMmR6JAUi61a
+   8thVNM+LXUfN2FWw3AXrFJ+e8pUdRny/BtWLxgnpDiDLs/pLMv6N+RXRM
+   qzLgJq7L0pcu/2/7PvyMZz5HC8qZbDrH5pxD4OknCLhKVIgy3Vtib8B+0
+   pBjhqTHEHmBUfjPMHXtTjztL1WF78ikABA31oI79hU00rOVx/72o4+hhh
+   fcD8i4GlnDNixHwbNkrRPV5r1Sajz7ahzP+2qorb0nd3Ce9tsDQ2sFq4D
+   w==;
+X-CSE-ConnectionGUID: BUzqNOs9SnywmeLsPp9pPw==
+X-CSE-MsgGUID: /O0TLgVSTUmuogs2owFGlg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="21291285"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="21291275"
+   d="scan'208";a="21291285"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:40 -0700
-X-CSE-ConnectionGUID: icjGA+p+QJyV6mr5yZc9og==
-X-CSE-MsgGUID: U7ifzDJoSa6NfDm65a8XYQ==
+ 26 Apr 2024 08:25:41 -0700
+X-CSE-ConnectionGUID: yDAw3X00QDKy4pWyFVkfIQ==
+X-CSE-MsgGUID: q57wkM1USdSdWhi9I0A1Vg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="30259536"
+   d="scan'208";a="30259542"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:25:40 -0700
+ 26 Apr 2024 08:25:41 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -76,17 +76,17 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 02/23] ASoC: Intel: sof_maxim_common: support MAX98390 on cml
+Subject: [PATCH 04/23] ASoC: Intel: sof_da7219: add cml_da7219_def for cml
  boards
-Date: Fri, 26 Apr 2024 10:25:08 -0500
-Message-Id: <20240426152529.38345-3-pierre-louis.bossart@linux.intel.com>
+Date: Fri, 26 Apr 2024 10:25:10 -0500
+Message-Id: <20240426152529.38345-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 References: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MERUXNSA3PLN76N5JLFVKLJ274LPKGDM
-X-Message-ID-Hash: MERUXNSA3PLN76N5JLFVKLJ274LPKGDM
+Message-ID-Hash: TKJEQW4DN42TP6NTKF6S25TE4ZOC67GB
+X-Message-ID-Hash: TKJEQW4DN42TP6NTKF6S25TE4ZOC67GB
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MERUXNSA3PLN76N5JLFVKLJ274LPKGDM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TKJEQW4DN42TP6NTKF6S25TE4ZOC67GB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,97 +110,73 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add support for 2xMAX98390 speaker amplifier running in I2S mode for
-existing cml boards.
+Add the board config cml_da7219_def to da7219 machine driver for all
+cml boards using default SSP port allocation (headphone codec on SSP0,
+speaker amplifiers on SSP1).
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_maxim_common.c | 42 +++++++++++++++++++----
- 1 file changed, 35 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/sof_da7219.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-index 53c7392bf3dd..bb12aab15ad5 100644
---- a/sound/soc/intel/boards/sof_maxim_common.c
-+++ b/sound/soc/intel/boards/sof_maxim_common.c
-@@ -10,6 +10,7 @@
- #include <sound/soc-dai.h>
- #include <sound/soc-dapm.h>
- #include <uapi/sound/asound.h>
-+#include "../common/soc-intel-quirks.h"
+diff --git a/sound/soc/intel/boards/sof_da7219.c b/sound/soc/intel/boards/sof_da7219.c
+index de5b0a8b5b8c..69555eee7c7a 100644
+--- a/sound/soc/intel/boards/sof_da7219.c
++++ b/sound/soc/intel/boards/sof_da7219.c
+@@ -19,8 +19,9 @@
  #include "sof_maxim_common.h"
  
- /*
-@@ -219,6 +220,17 @@ static const struct snd_soc_dapm_route max_98390_tt_dapm_routes[] = {
- 	{ "TR Spk", NULL, "Tweeter Right BE_OUT" },
- };
+ /* Driver-specific board quirks: from bit 0 to 7 */
+-#define SOF_DA7219_JSL_BOARD			BIT(0)
+-#define SOF_DA7219_MCLK_EN			BIT(1)
++#define SOF_DA7219_CML_BOARD			BIT(0)
++#define SOF_DA7219_JSL_BOARD			BIT(1)
++#define SOF_DA7219_MCLK_EN			BIT(2)
  
-+static struct snd_soc_codec_conf max_98390_cml_codec_conf[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
- static struct snd_soc_codec_conf max_98390_codec_conf[] = {
- 	{
- 		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
-@@ -271,6 +283,7 @@ static int max_98390_hw_params(struct snd_pcm_substream *substream,
- 			       struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
- 	struct snd_soc_dai *codec_dai;
- 	int i, ret;
+ #define DIALOG_CODEC_DAI	"da7219-hifi"
  
-@@ -280,13 +293,24 @@ static int max_98390_hw_params(struct snd_pcm_substream *substream,
- 			return -ENODEV;
- 		}
- 
--		ret = snd_soc_dai_set_tdm_slot(codec_dai, max_98390_tdm_mask[i].tx,
--					       max_98390_tdm_mask[i].rx, 4,
--					       params_width(params));
--		if (ret < 0) {
--			dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
--				ret);
--			return ret;
-+		switch (dai_link->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+		case SND_SOC_DAIFMT_DSP_A:
-+		case SND_SOC_DAIFMT_DSP_B:
-+			/* 4-slot TDM */
-+			ret = snd_soc_dai_set_tdm_slot(codec_dai,
-+						       max_98390_tdm_mask[i].tx,
-+						       max_98390_tdm_mask[i].rx,
-+						       4,
-+						       params_width(params));
-+			if (ret < 0) {
-+				dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
-+					ret);
-+				return ret;
-+			}
-+			break;
-+		default:
-+			dev_dbg(codec_dai->dev, "codec is in I2S mode\n");
-+			break;
- 		}
- 	}
+@@ -292,6 +293,14 @@ sof_card_dai_links_create(struct device *dev, struct snd_soc_card *card,
  	return 0;
-@@ -395,6 +419,10 @@ void max_98390_set_codec_conf(struct device *dev, struct snd_soc_card *card)
+ }
  
- 	switch (num_codecs) {
- 	case 2:
-+		if (soc_intel_is_cml())
-+			card->codec_conf = max_98390_cml_codec_conf;
++#define CML_LINK_ORDER	SOF_LINK_ORDER(SOF_LINK_AMP,         \
++					SOF_LINK_CODEC,      \
++					SOF_LINK_DMIC01,     \
++					SOF_LINK_IDISP_HDMI, \
++					SOF_LINK_DMIC16K,    \
++					SOF_LINK_NONE,       \
++					SOF_LINK_NONE)
 +
-+		fallthrough;
- 	case 4:
- 		card->num_configs = num_codecs;
- 		break;
+ #define JSL_LINK_ORDER	SOF_LINK_ORDER(SOF_LINK_AMP,         \
+ 					SOF_LINK_CODEC,      \
+ 					SOF_LINK_DMIC01,     \
+@@ -320,7 +329,10 @@ static int audio_probe(struct platform_device *pdev)
+ 	if (mach->mach_params.codec_mask & IDISP_CODEC_MASK)
+ 		ctx->hdmi.idisp_codec = true;
+ 
+-	if (board_quirk & SOF_DA7219_JSL_BOARD) {
++	if (board_quirk & SOF_DA7219_CML_BOARD) {
++		/* overwrite the DAI link order for CML boards */
++		ctx->link_order_overwrite = CML_LINK_ORDER;
++	} else if (board_quirk & SOF_DA7219_JSL_BOARD) {
+ 		ctx->da7219.is_jsl_board = true;
+ 
+ 		/* overwrite the DAI link order for JSL boards */
+@@ -380,6 +392,12 @@ static int audio_probe(struct platform_device *pdev)
+ }
+ 
+ static const struct platform_device_id board_ids[] = {
++	{
++		.name = "cml_da7219_def",
++		.driver_data = (kernel_ulong_t)(SOF_DA7219_CML_BOARD |
++					SOF_SSP_PORT_CODEC(0) |
++					SOF_SSP_PORT_AMP(1)),
++	},
+ 	{
+ 		.name = "jsl_da7219_def",
+ 		.driver_data = (kernel_ulong_t)(SOF_DA7219_JSL_BOARD |
 -- 
 2.40.1
 
