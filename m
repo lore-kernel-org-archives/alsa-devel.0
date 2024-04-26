@@ -4,85 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD11AC4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:35:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46378C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:35:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2976921DD;
-	Fri, 26 Apr 2024 17:34:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2976921DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C58A227C;
+	Fri, 26 Apr 2024 17:35:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C58A227C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714145699;
-	bh=E8SBpjlUE0ziTNnq8DnhOzI49IUmjroDksM8NxVFNMM=;
+	s=default; t=1714145712;
+	bh=afNPpg7IcB0U1xO1E01+CCTCyRfcQ0s3E68EgzwcE7s=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=MkzPJQ2liiVnZOE3KBJMUEdGPNFje527pu6zVLLX9F3YxgcXWjVDwG14DjWRt4heU
-	 gg9+69UbGH2O/Ui9iqGUdfebml15MAAWimolw5/1Pk7lZ+Vw2JahCd+kU/raJ5iw70
-	 B2x4FaCw8O/z9hb2X0D4BDWnyqSePYa1o5js9uOc=
+	b=CelGShQiktYRTH9P0sULKWGKI2TcCz3JraEotnQXhxiwwPVU2bpGz26d9RrcqF1VS
+	 36EJAk08UC12CPQZqWxZFxWEsyFfNJ3cO1SuoQZXFYBhc+3DWIhUfRRXLCPneB8PCF
+	 1eh7rqs4g2JwtW/xhYfHbkFk60FLjOZojaUij9Tg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DD82F80709; Fri, 26 Apr 2024 17:30:24 +0200 (CEST)
+	id 6E7ACF8074E; Fri, 26 Apr 2024 17:30:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C2E0F806F8;
-	Fri, 26 Apr 2024 17:30:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08C7EF80746;
+	Fri, 26 Apr 2024 17:30:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2476BF8069A; Fri, 26 Apr 2024 17:30:17 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	id A83E1F80608; Fri, 26 Apr 2024 17:30:48 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84669F805B2
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:30:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84669F805B2
+	by alsa1.perex.cz (Postfix) with ESMTPS id A62C4F802E8
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:30:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A62C4F802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Tans0OQI
+ header.s=Intel header.b=ETfFTxzF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145411; x=1745681411;
+  t=1714145447; x=1745681447;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=E8SBpjlUE0ziTNnq8DnhOzI49IUmjroDksM8NxVFNMM=;
-  b=Tans0OQI435PwsQTrRziEjiELzcYMpHW25H1SakhflfnxhrJxPLqgr57
-   mOUmxPERfGf4UIAuJEESCazhlPeweYu/xTAo9kFI5ioSBERmTOoYLgKPt
-   OsW/Q11BZGghLL7wJKQar5lUrfzTd2tmkvKoPnFPO5MvgxIytfWaDCyon
-   UF98KBSP5HfArU3EPq5r1FX+4FlKvMCUfjlDTet0DGeM8sZ6jLSLo+cPl
-   Sp85n7nv8iQqKs90fFEdG0akGOItTr6NmUHuRXJgl/XVDEutVAJ0gc72S
-   ac1CtM37R+pQiC1ZLtgh0PSXPVKbFcHKjg8IY5PNMr/mL29+TWPRr+QnR
+  bh=afNPpg7IcB0U1xO1E01+CCTCyRfcQ0s3E68EgzwcE7s=;
+  b=ETfFTxzFsAGSw+7DE4AFXku92DuiuorUJ7RYFwA7zx7olg9wcZP27ZNK
+   FavrzVnAMkR9bkhgap69UM7Cyir/SHFHwDmMS+kvphcWFY7F6j8qHyqvO
+   iQTmeiPzRk1Yy1PaT+AyfyTatu6HxHpreQysPZeNudxGFU/NVJSbNtMVd
+   NRy1NM73dlX8JKqZis8PVb9OFGNcU3OTe7KdqA3ee3zCBdAIziXM69cte
+   jK1ITEu5F4lMBxiHrZJYjxKHhV9r6jKv3Ko+DJWCw/mkUzGsk8sXai4S5
+   2NhrSCSBlz+vqIU5M+QAbpAhgh+0xhIkV2ykgXNaUNGBOkrPQ97L6XdnB
    A==;
-X-CSE-ConnectionGUID: R6AF5G92Rca0VL+nuJnaiw==
-X-CSE-MsgGUID: Pp1qjBX7SiaiBzUSx9O0hw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="27339938"
+X-CSE-ConnectionGUID: Qs4YfzmQRMWSEqXW25CVGw==
+X-CSE-MsgGUID: 2kTj+Tn/R5eJo7yBsbHfsg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9735874"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="27339938"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:29:57 -0700
-X-CSE-ConnectionGUID: /8m65k2+SQG1LP+9NRX2wQ==
-X-CSE-MsgGUID: /rhV1HVyTmmPASL0YTTFvQ==
+   d="scan'208";a="9735874"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2024 08:30:43 -0700
+X-CSE-ConnectionGUID: 365IZgBqSfui7v+Dvgp/fw==
+X-CSE-MsgGUID: DiKeK3Q4SxCGFfjESkzewA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="25332806"
+   d="scan'208";a="62929466"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:29:56 -0700
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2024 08:30:42 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: cs35l56: fix usages of device_get_named_child_node()
-Date: Fri, 26 Apr 2024 10:29:39 -0500
-Message-Id: <20240426152939.38471-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: da7219-aad: fix usage of device_get_named_child_node()
+Date: Fri, 26 Apr 2024 10:30:33 -0500
+Message-Id: <20240426153033.38500-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: POJNCGIZ3YW4MUGDMMC5TJ2DU43W3SPB
-X-Message-ID-Hash: POJNCGIZ3YW4MUGDMMC5TJ2DU43W3SPB
+Message-ID-Hash: QMRB7ZDJ2DQH6YERCP7EH3XDFXWIL5BI
+X-Message-ID-Hash: QMRB7ZDJ2DQH6YERCP7EH3XDFXWIL5BI
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/POJNCGIZ3YW4MUGDMMC5TJ2DU43W3SPB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QMRB7ZDJ2DQH6YERCP7EH3XDFXWIL5BI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,73 +110,37 @@ The caller is responsible for calling fwnode_handle_put() on the
 returned fwnode pointer.
 "
 
-Add fwnode_handle_put() to avoid leaked references.
+Add fwnode_handle_put() to avoid a leaked reference.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/cs35l56.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/codecs/da7219-aad.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index dfd703d9e12f..758dfdf9d3ea 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -1361,6 +1361,7 @@ static int cs35l56_try_get_broken_sdca_spkid_gpio(struct cs35l56_private *cs35l5
- 				    "spk-id-gpios", ACPI_TYPE_PACKAGE, &obj);
- 	if (ret) {
- 		dev_dbg(cs35l56->base.dev, "Could not get spk-id-gpios package: %d\n", ret);
-+		fwnode_handle_put(af01_fwnode);
- 		return -ENOENT;
- 	}
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 6bc068cdcbe2..15e5e3eb592b 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -671,8 +671,10 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct device *dev)
+ 		return NULL;
  
-@@ -1368,6 +1369,7 @@ static int cs35l56_try_get_broken_sdca_spkid_gpio(struct cs35l56_private *cs35l5
- 	if (obj->package.count != 4) {
- 		dev_warn(cs35l56->base.dev, "Unexpected spk-id element count %d\n",
- 			 obj->package.count);
-+		fwnode_handle_put(af01_fwnode);
- 		return -ENOENT;
- 	}
- 
-@@ -1382,6 +1384,7 @@ static int cs35l56_try_get_broken_sdca_spkid_gpio(struct cs35l56_private *cs35l5
- 		 */
- 		ret = acpi_dev_add_driver_gpios(adev, cs35l56_af01_spkid_gpios_mapping);
- 		if (ret) {
-+			fwnode_handle_put(af01_fwnode);
- 			return dev_err_probe(cs35l56->base.dev, ret,
- 					     "Failed to add gpio mapping to AF01\n");
- 		}
-@@ -1389,14 +1392,17 @@ static int cs35l56_try_get_broken_sdca_spkid_gpio(struct cs35l56_private *cs35l5
- 		ret = devm_add_action_or_reset(cs35l56->base.dev,
- 					       cs35l56_acpi_dev_release_driver_gpios,
- 					       adev);
--		if (ret)
-+		if (ret) {
-+			fwnode_handle_put(af01_fwnode);
- 			return ret;
-+		}
- 
- 		dev_dbg(cs35l56->base.dev, "Added spk-id-gpios mapping to AF01\n");
- 	}
- 
- 	desc = fwnode_gpiod_get_index(af01_fwnode, "spk-id", 0, GPIOD_IN, NULL);
- 	if (IS_ERR(desc)) {
-+		fwnode_handle_put(af01_fwnode);
- 		ret = PTR_ERR(desc);
- 		return dev_err_probe(cs35l56->base.dev, ret, "Get GPIO from AF01 failed\n");
- 	}
-@@ -1405,9 +1411,12 @@ static int cs35l56_try_get_broken_sdca_spkid_gpio(struct cs35l56_private *cs35l5
- 	gpiod_put(desc);
- 
- 	if (ret < 0) {
-+		fwnode_handle_put(af01_fwnode);
- 		dev_err_probe(cs35l56->base.dev, ret, "Error reading spk-id GPIO\n");
- 		return ret;
--		}
+ 	aad_pdata = devm_kzalloc(dev, sizeof(*aad_pdata), GFP_KERNEL);
+-	if (!aad_pdata)
++	if (!aad_pdata) {
++		fwnode_handle_put(aad_np);
+ 		return NULL;
 +	}
-+
-+	fwnode_handle_put(af01_fwnode);
  
- 	dev_info(cs35l56->base.dev, "Got spk-id from AF01\n");
+ 	aad_pdata->irq = i2c->irq;
+ 
+@@ -753,6 +755,8 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct device *dev)
+ 	else
+ 		aad_pdata->adc_1bit_rpt = DA7219_AAD_ADC_1BIT_RPT_1;
+ 
++	fwnode_handle_put(aad_np);
++
+ 	return aad_pdata;
+ }
  
 -- 
 2.40.1
