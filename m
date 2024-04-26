@@ -4,89 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A806C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:40:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6853C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 15:41:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C87D6227B;
-	Fri, 26 Apr 2024 17:40:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C87D6227B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEF022190;
+	Fri, 26 Apr 2024 17:40:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEF022190
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714146053;
-	bh=8MLGSPpRbokfwbPdOKbZ3oBufJnpAtGiJAq0XBz63do=;
+	s=default; t=1714146063;
+	bh=UQPrNln96b4xHk91nmowdoB7FfPTrZkZDGSoZjVsfKg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YGTxfeW/SmcfDLFja4VMajkWJBctyPGL09bhdH+TRTD7YDPVmPSJLfna6ELTehPRD
-	 t4fDxiSOO4uBBRiDDN76/PfYBOECjkfB/KQyITxwKdozpsPBdZJigFP1AHftB6l10K
-	 iLqJBdhUTcWOvkBxFmGse13m1f7AifJg/kG18UX4=
+	b=dM4Xg/Ob8YhbZ3RZ/SAKyhds5JYT2CUBa4RErJhoih/PVzcaoLjxxPo4MTq0IIR9p
+	 QlMUmoDzz/a+ywJpTsWVEECoMrHCzMnQBTy1JgBD3ZF3He57fB2d+Mg9dJRyskk9IS
+	 6y13rYNFcltppG82ZnB7NBScoVB65vzvnF027lhM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 162CEF80618; Fri, 26 Apr 2024 17:39:32 +0200 (CEST)
+	id 6927DF80631; Fri, 26 Apr 2024 17:39:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53FD0F80614;
-	Fri, 26 Apr 2024 17:39:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F0C9F80656;
+	Fri, 26 Apr 2024 17:39:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E8F5BF8057F; Fri, 26 Apr 2024 17:39:24 +0200 (CEST)
+	id CC6D6F805CB; Fri, 26 Apr 2024 17:39:27 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 029A1F8003A
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 029A1F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23171F80423
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 17:39:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23171F80423
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Q0PVF/mu
+ header.s=Intel header.b=TPC6jo4O
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714145961; x=1745681961;
+  t=1714145959; x=1745681959;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=8MLGSPpRbokfwbPdOKbZ3oBufJnpAtGiJAq0XBz63do=;
-  b=Q0PVF/muzOOpYUQ/JAyOoudyvuxSX8qmMV3xgiB1c5Yy5RtWnntXU0Uq
-   32zQ1zjuXGwC6P/lTPo468gtfno1iFIy+ZFn3GP1gmjTRVQvWxMVulLwf
-   sJO8p2pjNiCZN2kGN5lLBlMeO61ajkPPn4pev+nYZmtTeetRBoSZm5csl
-   fRnNHGe2Lw7LLzKw4Y/GlyoCdpGVedYNt9omM021rC0ko/YFqmUJe6E6A
-   sG5mGORcpAntjJ+5GaI3PisAZfmCXoVyC43jSvPEUak86n5yQP/nsbnoj
-   BnvxAtuxW0bNW36IGTzjYEu/Tc5MkM4e3mSP7YyT/UTLahPsgVSC4cFyl
-   Q==;
-X-CSE-ConnectionGUID: O6kl2/SsTs6y3Xv5mg/gkA==
-X-CSE-MsgGUID: OQYERGbPRteYK2mFup7O8w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9718433"
+  bh=UQPrNln96b4xHk91nmowdoB7FfPTrZkZDGSoZjVsfKg=;
+  b=TPC6jo4OPyWsjqva2xFmorGVDKvT6ymvwBBwkNUX7MUbRzhJlOwUqlcQ
+   KqZrYYzEH8K2qmZOjp26zST6Fkfo40OFfq1/RIslh4QuF5wIkPkWBBqLg
+   f2jVLH5XoZGhVsj5l404sRIPnW5p4jbBqdJ/nVSC+muE3mW7KNQfpEWMW
+   LQkURJsIlMkhheTx/AbiHZRkl9xLfzv0SG7FziH6UjaJLguyFHhg62OUj
+   CNNDg/zWsO34+HRcZY9t0fx4KcrBJb9uXGoQjxlQp/cNV9pHNb3CjFNso
+   05z0gC5cZtm+P9T9z2y725Lf+nb1FCspEzDcUmDjwNhIKa0dwufukP0TO
+   A==;
+X-CSE-ConnectionGUID: tEgQSnmXRwOpATGBsWGiLA==
+X-CSE-MsgGUID: wks/0IMqSIi/zu8Lz2Le5A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="9718447"
 X-IronPort-AV: E=Sophos;i="6.07,233,1708416000";
-   d="scan'208";a="9718433"
+   d="scan'208";a="9718447"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:39:10 -0700
-X-CSE-ConnectionGUID: nEyCFAHgTFuh+0Cisk8NNw==
-X-CSE-MsgGUID: Z1bahMjnTdua3tUON08/bQ==
+ 26 Apr 2024 08:39:11 -0700
+X-CSE-ConnectionGUID: 9njKNL6uTtKogg1KL4lPsQ==
+X-CSE-MsgGUID: 6PJtELB4S26GsJ9+ow8Qsw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,233,1708416000";
-   d="scan'208";a="56623536"
+   d="scan'208";a="56623542"
 Received: from atarkhan-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.33.33])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 08:39:10 -0700
+ 26 Apr 2024 08:39:11 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Marc Herbert <marc.herbert@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/5] ASoC: SOF: debug: Handle cases when fw_lib_prefix is not
- set, NULL
-Date: Fri, 26 Apr 2024 10:38:58 -0500
-Message-Id: <20240426153902.39560-2-pierre-louis.bossart@linux.intel.com>
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 4/5] ASoC: SOF: Intel: hda: list SoundWire peripherals on
+ mismatch
+Date: Fri, 26 Apr 2024 10:39:01 -0500
+Message-Id: <20240426153902.39560-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240426153902.39560-1-pierre-louis.bossart@linux.intel.com>
 References: <20240426153902.39560-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: EIJADOXICUCQT3A2I647QFNKJXIRYWP6
-X-Message-ID-Hash: EIJADOXICUCQT3A2I647QFNKJXIRYWP6
+Message-ID-Hash: GFXH32W56VH6LFZYPK7Q4SRGMT42FBDK
+X-Message-ID-Hash: GFXH32W56VH6LFZYPK7Q4SRGMT42FBDK
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EIJADOXICUCQT3A2I647QFNKJXIRYWP6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GFXH32W56VH6LFZYPK7Q4SRGMT42FBDK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,58 +107,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Most of the SoundWire support issues come from bad ACPI information,
+or configuration reported by ACPI that are not supported by the SOF
+driver/topology. The users see a "No SoundWire machine driver found"
+message without any details, and the fallback to HDaudio w/ HDMI is
+used.
 
-The firmware libraries are not supported by IPC3, the fw_lib_path is not
-a valid parameter and it is always NULL.
-Do not create the debugfs file for IPC3 at all as it is not applicable.
+We can reduce our support load with a clear dev_info() log that will
+give us a clear hint on the mismatch and why a machine driver/topology
+were not found.
 
-With IPC4 some vendors/platforms might not support loadable libraries and
-the fw_lib_prefix is left to NULL to indicate this.
-Handle such case with allocating "Not supported" string.
+Example log on a MTL device:
+[   13.158599] sof-audio-pci-intel-mtl 0000:00:1f.3: No SoundWire machine driver found for the ACPI-reported configuration:
+[   13.158603] sof-audio-pci-intel-mtl 0000:00:1f.3: link 0 mfg_id 0x025d part_id 0x0713 version 0x3
+[   13.158606] sof-audio-pci-intel-mtl 0000:00:1f.3: link 1 mfg_id 0x025d part_id 0x1316 version 0x3
+[   13.158608] sof-audio-pci-intel-mtl 0000:00:1f.3: link 2 mfg_id 0x025d part_id 0x1316 version 0x3
 
-Reviewed-by: Marc Herbert <marc.herbert@intel.com>
-Fixes: 17f4041244e6 ("ASoC: SOF: debug: show firmware/topology prefix/names")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In parallel, we will also provide an update to `alsa-info` to log all
+SoundWire peripherals found in ACPI tables.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/debug.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index cf282c8b18af..bf635cc96ede 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -326,8 +326,27 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 8ddc1b0ca3c9..8ac8c10b83bd 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1645,6 +1645,7 @@ static struct snd_soc_acpi_mach *hda_sdw_machine_select(struct snd_sof_dev *sdev
+ {
+ 	struct snd_sof_pdata *pdata = sdev->pdata;
+ 	const struct snd_soc_acpi_link_adr *link;
++	struct sdw_extended_slave_id *ids;
+ 	struct snd_soc_acpi_mach *mach;
+ 	struct sof_intel_hda_dev *hdev;
+ 	u32 link_mask;
+@@ -1658,6 +1659,16 @@ static struct snd_soc_acpi_mach *hda_sdw_machine_select(struct snd_sof_dev *sdev
+ 		return NULL;
+ 	}
  
- 	debugfs_create_str("fw_path", 0444, fw_profile,
- 			   (char **)&plat_data->fw_filename_prefix);
--	debugfs_create_str("fw_lib_path", 0444, fw_profile,
--			   (char **)&plat_data->fw_lib_prefix);
-+	/* library path is not valid for IPC3 */
-+	if (plat_data->ipc_type != SOF_IPC_TYPE_3) {
-+		/*
-+		 * fw_lib_prefix can be NULL if the vendor/platform does not
-+		 * support loadable libraries
-+		 */
-+		if (plat_data->fw_lib_prefix) {
-+			debugfs_create_str("fw_lib_path", 0444, fw_profile,
-+					   (char **)&plat_data->fw_lib_prefix);
-+		} else {
-+			static char *fw_lib_path;
-+
-+			fw_lib_path = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+						     "Not supported");
-+			if (!fw_lib_path)
-+				return -ENOMEM;
-+
-+			debugfs_create_str("fw_lib_path", 0444, fw_profile,
-+					   (char **)&fw_lib_path);
-+		}
++	if (!hdev->sdw) {
++		dev_dbg(sdev->dev, "SoundWire context not allocated\n");
++		return NULL;
 +	}
- 	debugfs_create_str("tplg_path", 0444, fw_profile,
- 			   (char **)&plat_data->tplg_filename_prefix);
- 	debugfs_create_str("fw_name", 0444, fw_profile,
++
++	if (!hdev->sdw->num_slaves) {
++		dev_warn(sdev->dev, "No SoundWire peripheral detected in ACPI tables\n");
++		return NULL;
++	}
++
+ 	/*
+ 	 * Select SoundWire machine driver if needed using the
+ 	 * alternate tables. This case deals with SoundWire-only
+@@ -1740,7 +1751,11 @@ static struct snd_soc_acpi_mach *hda_sdw_machine_select(struct snd_sof_dev *sdev
+ 		return mach;
+ 	}
+ 
+-	dev_info(sdev->dev, "No SoundWire machine driver found\n");
++	dev_info(sdev->dev, "No SoundWire machine driver found for the ACPI-reported configuration:\n");
++	ids = hdev->sdw->ids;
++	for (i = 0; i < hdev->sdw->num_slaves; i++)
++		dev_info(sdev->dev, "link %d mfg_id 0x%04x part_id 0x%04x version %#x\n",
++			 ids[i].link_id, ids[i].id.mfg_id, ids[i].id.part_id, ids[i].id.sdw_version);
+ 
+ 	return NULL;
+ }
 -- 
 2.40.1
 
