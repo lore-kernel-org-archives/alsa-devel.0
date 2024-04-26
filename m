@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27323C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 10:00:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9507C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Apr 2024 10:00:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DC1CE0F;
-	Fri, 26 Apr 2024 12:00:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DC1CE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB430844;
+	Fri, 26 Apr 2024 12:00:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB430844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714125640;
-	bh=T4nHsF9OKK9PpS+tpyMCag09I+TatdAfIymTICQ28jw=;
+	s=default; t=1714125656;
+	bh=DUVgDs0/gvFlo4f+lMztb4TNTC7UqT0l2BjujtY77hY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p7WaW73WucuwL/3mE/6JRKC8EZvgPJ1rVChmIF+FaOu+qbFy6yOy+1NwB3WyqFDI8
-	 BmEvtUG/N4e7zJcKZuriHvlln13auVXBefULHIXP8rnWnv//kK0Lhk/n48MnQ7y1g6
-	 HqBeLCt/LusKcM14ze4o6Q7IBYxlvNBERP2SF16c=
+	b=Ry35HmHwyahM53eti3q0nqPYZ2vdeNJMb/qeft/sU4FiwJuuQydQrhF/JuxAuFl4N
+	 2Z/Uy+jhzQ2Xqt7UMmizUdraA4yy6Cy9KgnTrSMjizTrXBiyQXqYH3RA2fHEo27/OQ
+	 PiIQpMYSEPcbirjY7er1aOZ2sB/cFXvfgPm84fW4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22580F805B4; Fri, 26 Apr 2024 11:59:47 +0200 (CEST)
+	id 7D3E6F805DF; Fri, 26 Apr 2024 11:59:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 788E3F805C6;
-	Fri, 26 Apr 2024 11:59:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABDF8F805F7;
+	Fri, 26 Apr 2024 11:59:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DB0CF80570; Fri, 26 Apr 2024 11:57:10 +0200 (CEST)
+	id C3ACDF80423; Fri, 26 Apr 2024 11:57:11 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81A1CF802E8
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 11:56:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81A1CF802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4D47DF8003C
+	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2024 11:56:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D47DF8003C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=BlL5rZAH
+ header.s=Intel header.b=HMndcyhK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714125419; x=1745661419;
+  t=1714125417; x=1745661417;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=T4nHsF9OKK9PpS+tpyMCag09I+TatdAfIymTICQ28jw=;
-  b=BlL5rZAH+aVwMqQ23hzgRsHlNcW9+RDWg2ACjahmGVcCS8pJfxlO8Oak
-   G7oS1QoXpr+FMv2oBmW+ivWfc0qpJr1Z6qlLg4YPpQR8ygTGCoFZNFLnl
-   yxoh03lU54kWrcZ3PbedX9C2XE9Jxdl4EPrmSb8LGwRwpPA11GKx5c4pc
-   4RGm+IGzN5clGiPTdPtqz/yGDRwmNG94rBfSAtJ+RCRuONYfeuk8+2zMp
-   yWz858WF0G0wFx1rmOcKZBJN1hMvvYTJ4fkrvVYOOMSkRoyuQBpzhthGy
-   HiSMjCNCCGOngG+oXgrEUbgLOOV/XPK8QX3Yeo8AHpuCt0soVrFPvJ+MV
-   g==;
-X-CSE-ConnectionGUID: GKlkjQQuRQejQyhfPyDFMw==
-X-CSE-MsgGUID: nr/J5IriT6GHlMXS59WR3Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20409204"
+  bh=DUVgDs0/gvFlo4f+lMztb4TNTC7UqT0l2BjujtY77hY=;
+  b=HMndcyhK2IOJhANSSkyr9LkASu+EPmC5oXWubDjHTfpB8c7VRc88McWV
+   CQwsNMlcei36IVXJ7RfxDHmmK53y+eGghnbtQrNMYg8mjoWQTcYCYIlZB
+   LX2QX7eEq3mjdAfD5kojmp8Qv9428stiGIVUaSdfQMgDO3CqCaXywYLMp
+   Fwlrnu6zLoDtCN4UMBeAgHe6bdYSRPQsWhdF1S6O9iPtb5AE6wbanHMpt
+   c9/YMoKcDzLms5LIIRzK3PH6uStAK6sDxZEuAMxioeVZfY8/YQuOoJ49a
+   qG7gWRCBKE38mBAsUUdqxs2dU1m11kFlR9mw9HGF+1Z9G4mWeoXHb4hps
+   Q==;
+X-CSE-ConnectionGUID: 6J3Q5j/xRZeM2G4HqG9fJw==
+X-CSE-MsgGUID: rFtrjQJYQPKHg1xbFeESoQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20409184"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="20409204"
+   d="scan'208";a="20409184"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2024 02:56:57 -0700
-X-CSE-ConnectionGUID: eGWsMj9aTv2AUPXSi/+nxw==
-X-CSE-MsgGUID: 29Vqh8b6StOyno+65ujRbQ==
+ 26 Apr 2024 02:56:51 -0700
+X-CSE-ConnectionGUID: JimNMcCbRmCgssMA9AEfhQ==
+X-CSE-MsgGUID: VXfDG88vQIuOE7DecZbNLQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000";
-   d="scan'208";a="25460588"
+   d="scan'208";a="25460546"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa010.fm.intel.com with ESMTP; 26 Apr 2024 02:56:55 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 26 Apr 2024 02:56:49 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -74,16 +74,16 @@ Cc: alsa-devel@alsa-project.org,
 	perex@perex.cz,
 	amadeuszx.slawinski@linux.intel.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 4/8] ASoC: Intel: avs: Store pointer to adev in DAI dma_data
-Date: Fri, 26 Apr 2024 11:57:29 +0200
-Message-Id: <20240426095733.3946951-5-cezary.rojewski@intel.com>
+Subject: [PATCH 1/8] ASoC: pcm: Reverse iterate DAIs when shutting them down
+Date: Fri, 26 Apr 2024 11:57:26 +0200
+Message-Id: <20240426095733.3946951-2-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240426095733.3946951-1-cezary.rojewski@intel.com>
 References: <20240426095733.3946951-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4GMER2UJOV6H6WDFRXBULUUVR2K4327L
-X-Message-ID-Hash: 4GMER2UJOV6H6WDFRXBULUUVR2K4327L
+Message-ID-Hash: D7XTR5F3LRDSDJRWEY7KJLPYZA535UAU
+X-Message-ID-Hash: D7XTR5F3LRDSDJRWEY7KJLPYZA535UAU
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4GMER2UJOV6H6WDFRXBULUUVR2K4327L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D7XTR5F3LRDSDJRWEY7KJLPYZA535UAU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,110 +105,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Reduce the number of to_avs_dev() casts by storing the driver context in
-DAI's dma_data.
+During startup snd_soc_dai_startup() is launched in ascending order and
+the exact same thing is done during shutdown procedure. Reverse the
+order in the latter so that it is symmetric to the former.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/pcm.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ include/sound/soc.h | 4 ++++
+ sound/soc/soc-pcm.c | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 23f7e0fae817..a3a04115216c 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -22,6 +22,7 @@
- struct avs_dma_data {
- 	struct avs_tplg_path_template *template;
- 	struct avs_path *path;
-+	struct avs_dev *adev;
- 	/*
- 	 * link stream is stored within substream's runtime
- 	 * private_data to fulfill the needs of codec BE path
-@@ -60,7 +61,7 @@ static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_d
- 			   const struct snd_soc_dai_ops *ops)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	struct avs_dev *adev = to_avs_dev(dai->component->dev);
- 	struct avs_tplg_path_template *template;
- 	struct avs_dma_data *data;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 0376f7e4c15d..a4747c3d0856 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1225,6 +1225,10 @@ struct snd_soc_pcm_runtime {
+ 	     ((i) < (rtd)->dai_link->num_cpus + (rtd)->dai_link->num_codecs) &&	\
+ 		     ((dai) = (rtd)->dais[i]);				\
+ 	     (i)++)
++#define for_each_rtd_dais_reverse(rtd, i, dai)					\
++	for ((i) = (rtd)->dai_link->num_cpus + (rtd)->dai_link->num_codecs - 1;	\
++	     (i) >= 0 && ((dai) = (rtd)->dais[i]);				\
++	     (i)--)
+ #define for_each_rtd_ch_maps(rtd, i, ch_maps) for_each_link_ch_maps(rtd->dai_link, i, ch_maps)
  
-@@ -77,6 +78,7 @@ static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_d
+ void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index b0e1bd7f588b..711b2f49ed88 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -724,7 +724,7 @@ static int soc_pcm_clean(struct snd_soc_pcm_runtime *rtd,
+ 		}
+ 	}
  
- 	data->substream = substream;
- 	data->template = template;
-+	data->adev = adev;
- 	snd_soc_dai_set_dma_data(dai, substream, data);
+-	for_each_rtd_dais(rtd, i, dai)
++	for_each_rtd_dais_reverse(rtd, i, dai)
+ 		snd_soc_dai_shutdown(dai, substream, rollback);
  
- 	if (rtd->dai_link->ignore_suspend)
-@@ -88,13 +90,12 @@ static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_d
- static void avs_dai_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct avs_dev *adev = to_avs_dev(dai->dev);
- 	struct avs_dma_data *data;
- 
- 	data = snd_soc_dai_get_dma_data(dai, substream);
- 
- 	if (rtd->dai_link->ignore_suspend)
--		adev->num_lp_paths--;
-+		data->adev->num_lp_paths--;
- 
- 	snd_soc_dai_set_dma_data(dai, substream, NULL);
- 	kfree(data);
-@@ -107,7 +108,6 @@ static int avs_dai_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct avs_dma_data *data;
- 	struct avs_path *path;
--	struct avs_dev *adev = to_avs_dev(dai->dev);
- 	int ret;
- 
- 	data = snd_soc_dai_get_dma_data(dai, substream);
-@@ -124,7 +124,7 @@ static int avs_dai_hw_params(struct snd_pcm_substream *substream,
- 		params_rate(be_hw_params), params_channels(be_hw_params),
- 		params_width(be_hw_params), params_physical_width(be_hw_params));
- 
--	path = avs_path_create(adev, dma_id, data->template, fe_hw_params, be_hw_params);
-+	path = avs_path_create(data->adev, dma_id, data->template, fe_hw_params, be_hw_params);
- 	if (IS_ERR(path)) {
- 		ret = PTR_ERR(path);
- 		dev_err(dai->dev, "create path failed: %d\n", ret);
-@@ -505,8 +505,7 @@ static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_so
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct avs_dma_data *data;
--	struct avs_dev *adev = to_avs_dev(dai->dev);
--	struct hdac_bus *bus = &adev->base.core;
-+	struct hdac_bus *bus;
- 	struct hdac_ext_stream *host_stream;
- 	int ret;
- 
-@@ -515,6 +514,7 @@ static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_so
- 		return ret;
- 
- 	data = snd_soc_dai_get_dma_data(dai, substream);
-+	bus = &data->adev->base.core;
- 
- 	host_stream = snd_hdac_ext_stream_assign(bus, substream, HDAC_EXT_STREAM_TYPE_HOST);
- 	if (!host_stream) {
-@@ -655,7 +655,6 @@ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_so
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_stream *stream_info;
- 	struct avs_dma_data *data;
--	struct avs_dev *adev = to_avs_dev(dai->dev);
- 	struct hdac_ext_stream *host_stream;
- 	unsigned int format_val;
- 	struct hdac_bus *bus;
-@@ -685,7 +684,7 @@ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_so
- 	if (ret < 0)
- 		return ret;
- 
--	ret = avs_dai_prepare(adev, substream, dai);
-+	ret = avs_dai_prepare(data->adev, substream, dai);
- 	if (ret)
- 		return ret;
- 
+ 	snd_soc_link_shutdown(substream, rollback);
 -- 
 2.25.1
 
