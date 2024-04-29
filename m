@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0FF0C4345F
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Apr 2024 11:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93C22C4345F
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Apr 2024 11:58:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E42E2A4B;
-	Mon, 29 Apr 2024 13:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E42E2A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA5A2B76;
+	Mon, 29 Apr 2024 13:58:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA5A2B76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714391908;
-	bh=07XNlzH+Om30NPL+5RgZatpoAnoy8SZw09iGVLs1Juw=;
+	s=default; t=1714391921;
+	bh=gich1JRWEld7frP5eaWjzjWGBaaM+RGhkK+WPH3Hgf4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ideAb/RLE1yybPS+5hZgQy7o/4fH1T9+2+qNqKKPiFFQMYwDOwTyQ7fhYCFFWWPd9
-	 1hWZzUGaFT0C8G/uOIXnYo/hQDFBLVbfrY+7r8QAiOzji0BBlS5fR6nF5FRw6380V3
-	 lNGIqYKbD0FwFCYA238WyVGjVn6Zmlt+qRyT7ivA=
+	b=nHR+kx74jp44ftb5VIVeXAM8gGs67cvoJdPnXE5bRtayRPTlqMXeGcdurfBaIqUwW
+	 XRWGIWeA1Lw7zuUBStLeydfmp0IM2sZ8gkdwGUii5xy/ul+xONN6D7LNCzXv/N2UlQ
+	 Zxuj7wik6N2Co7m4fq0/8929YXGh4f3lOW3cXwaY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16B8DF805AE; Mon, 29 Apr 2024 13:57:58 +0200 (CEST)
+	id 9A60EF805AD; Mon, 29 Apr 2024 13:58:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BE27F80570;
-	Mon, 29 Apr 2024 13:57:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F1EBF805D3;
+	Mon, 29 Apr 2024 13:57:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2DA94F80548; Mon, 29 Apr 2024 13:51:48 +0200 (CEST)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
- [IPv6:2a00:1450:4864:20::52f])
+	id D1AA5F8011B; Mon, 29 Apr 2024 13:51:51 +0200 (CEST)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
+ [IPv6:2a00:1450:4864:20::52d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 82BD9F8011B
-	for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2024 13:49:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82BD9F8011B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 47479F804CC
+	for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2024 13:49:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47479F804CC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=h3nIyRBl
-Received: by mail-ed1-x52f.google.com with SMTP id
- 4fb4d7f45d1cf-572250b7704so4441699a12.2
+ header.s=google header.b=w8rGviEG
+Received: by mail-ed1-x52d.google.com with SMTP id
+ 4fb4d7f45d1cf-56e1f3462caso5487720a12.3
         for <alsa-devel@alsa-project.org>;
- Mon, 29 Apr 2024 04:49:07 -0700 (PDT)
+ Mon, 29 Apr 2024 04:49:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714391346; x=1714996146;
+        d=linaro.org; s=google; t=1714391350; x=1714996150;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IbYwH1iwfsZOTjLTYa1sxRyjdfJ65pOFz+5ojKjybfY=;
-        b=h3nIyRBlFC2WvuHXcWN0OavuYTBwGhMdxfbGDE31MpKurpLln5wdhWP+yyr5CDn8n/
-         60yONuyD5+gb1y8d9Lz2EyZnuXPZfMNMlYQJrUb9KnlEkHzsVt7kqGs9y+tPjflLDUvB
-         rqMBnrF8zUpuVffoPHbazlM/dZ9Uplfdpy0jQM4hOzNZp8NwNfroFiaRfevEHPFZS60l
-         7qRbyFhFXv9WWCdsn6qXPkxpt+SQmJn1K7eTbVxY3FMXV+JltlSg2XuMsLJBgxuMdrTv
-         v159Y6J0dCx+gfqQAvngT8Mo+YaAQFg28PkLdqhKTHsSkT6i0gZLzCtNcgV/XHkqXB5Z
-         e5bw==
+        bh=W2ZUcqC+torIBGZl2jfKZ8j0WRKINo9TI5z6SJwgmg4=;
+        b=w8rGviEGhv2hbK+Tnx+XWNeHHcPuO5cT+UI3zSl2aVtqm/GyLd2CKBTzWuRlyvLTpE
+         XZ2pEYiJSjKJJTvVSlmMw9A5XSgBUzHj0AaxIAneuIaeIGKKMZ5jHgX23tIoYcEcgzrA
+         Dv3HRcDtX+nvsvQx+x865yjJNZxMUQh0PBycnVY19SGDufj017r32B597BLAgg7e66lN
+         rCRWaZwwdrGtvrff/5B0VehP6hgqFzMwooX+v824C5Opm/5llcdK1jZQv3eTpKMP4fG7
+         kxY3VfQy4vc0f9iuoqesmLtGeaVYHdjEZwbyWEDPrJ9hwxsAUFQXBTN8tQ/EKVvRCuHQ
+         sE5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714391346; x=1714996146;
+        d=1e100.net; s=20230601; t=1714391350; x=1714996150;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IbYwH1iwfsZOTjLTYa1sxRyjdfJ65pOFz+5ojKjybfY=;
-        b=d20vs4TDnyuZ9kBSP9amgAfZO+oKtSG97HURk49dtToEcNkPvT7t7chlrHECedZ0q7
-         bIqpzBInI90VkQGWHtBa1DAh5bSQK/PApVR7OcxkSHX19laaB2c4XklGmcKj0rC+B6IS
-         0oCUZtAu9HBPDJPYlgSanAdAvj7xKAhcgcEtJJHnKorQS7alXZlgGTH6DxKlHIBmDXdB
-         GbKDOw8riZlCQAmt1qbCOLlqh9mVBK/1WadncSduu+/QkjT0kIXY4RBrms7EKjoKLHDQ
-         GqjdKX1AWOw1mlRuQLOcq64Yuo13WBVg2Fh2tA3Jy+0SqkkO3lGzQhlrBJt7eBq2P7ol
-         Nmcw==
-X-Gm-Message-State: AOJu0Yw6+LKDD+pNMe+gvmDnWrAGtgo6/n4FJrTG/cwhmZ4FeTYjFK11
-	gzFI2Zz1S4sCQPGFIj3ruJLWeGMdj9n4R6xk3oUt8OIyFMSbwLMj/7d0axQPXdA=
+        bh=W2ZUcqC+torIBGZl2jfKZ8j0WRKINo9TI5z6SJwgmg4=;
+        b=h0VNsKWSDiOVS+W4HST6Ev2eDzceCRs1oG+s78c/0qb4C3b0hSXMTNkyuQSEANYPb+
+         0nGDumym5xKWM0D83r+MDc/FlZxSb44aQ3quWu7pJexfvMkrsW3olq1rJfaksSGyP6Ex
+         fDzzni+Vsxnc30RHQkmi1x8AXslb12Cy3Kz8HNxo1hHNGSG1Eu+D2maeHqi0fO/Tprtd
+         dHCKpYYY9s5YnFQpGMbFojBxa4sdis4Klz03XlFGWp1qg0PbdgWvaa4lqF6JGIuUbLhV
+         VWAVjq7jGQ6Q3lft76wToV5iUcwdEtfMY7PgzF6cx5ISoZKnpp2vXUO+gGvEaG2O3B6H
+         JZ2Q==
+X-Gm-Message-State: AOJu0YyVKL49tO3Df4nUeOpzdNOVVgRPBDAw5+5C4FcB7/wiiLvpRjsK
+	1W27HR2Ld8q2zNjoSkF3j+aF7c9khdK1hzzKpJG23rAO4L8UAWjuQ4GiEWFHpkY=
 X-Google-Smtp-Source: 
- AGHT+IEcZNlFMX0KN5Zv3Mt9V9vUg/Vy8Fa9KRdDd7Hab4D4q7tKY2rb228nXG1TnPQpT2jd9cvgNw==
-X-Received: by 2002:a05:6402:3487:b0:572:689f:638a with SMTP id
- v7-20020a056402348700b00572689f638amr4800369edc.17.1714391346466;
-        Mon, 29 Apr 2024 04:49:06 -0700 (PDT)
+ AGHT+IG+PpPYt5gJrRGC1b559rFwqcY02Y7afPcoTHrR3gteiPesqjrrRq6V/qr9zfo7soqjuK3G8Q==
+X-Received: by 2002:a50:8ac7:0:b0:56e:2452:f867 with SMTP id
+ k7-20020a508ac7000000b0056e2452f867mr4484403edk.37.1714391349889;
+        Mon, 29 Apr 2024 04:49:09 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.223.16])
         by smtp.gmail.com with ESMTPSA id
- y43-20020a50bb2e000000b0057000a2cb5bsm13549651ede.18.2024.04.29.04.49.04
+ y43-20020a50bb2e000000b0057000a2cb5bsm13549651ede.18.2024.04.29.04.49.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 04:49:05 -0700 (PDT)
+        Mon, 29 Apr 2024 04:49:09 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Mon, 29 Apr 2024 13:48:47 +0200
-Subject: [PATCH 2/4] ASoC: fsl: Constify static snd_pcm_hardware
+Date: Mon, 29 Apr 2024 13:48:49 +0200
+Subject: [PATCH 4/4] ASoC: uniphier: Constify static snd_pcm_hardware
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240429-n-asoc-const-snd-pcm-hardware-v1-2-c6ce60989834@linaro.org>
+ <20240429-n-asoc-const-snd-pcm-hardware-v1-4-c6ce60989834@linaro.org>
 References: 
  <20240429-n-asoc-const-snd-pcm-hardware-v1-0-c6ce60989834@linaro.org>
 In-Reply-To: 
@@ -114,25 +114,25 @@ Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
  linux-amlogic@lists.infradead.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=829;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=778;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=07XNlzH+Om30NPL+5RgZatpoAnoy8SZw09iGVLs1Juw=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmL4kklslopCBSQVS24U7RLVNAErQ+RmdZW+cnY
- 2vP6DhzCt2JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZi+JJAAKCRDBN2bmhouD
- 1/OhD/9OuP5DVUEzlKoiXyRfzWiPWETGaurZlgqXePCKIhR7Aw4zgQNkrl7olw7V0PXD3AG+lxB
- kQuxk8MGNdzM5gRQ5QvitxieqGs7Q6wB65JF4E6nljMW38QLNdX8xK+9AWe99iF6Y3Ljii/Sa9d
- QmF2lRiKOifVy5b84Ro2jZFhzL2IRk6zPR+kAAkHQmlxNfAqjGJWJwRF/XQG2azeaVobrL7Z69t
- Wjv6ACChJ4RMAH1iMe6Rm9khR3AByTKQSi6OEgO9pC8lsiGxjucEMfRmQ+naf/VSjjcVdBfgaaG
- Q8eTW2nPWJFZoF4tuDX++42H/5gf4cMxpgTQ4b4rRU4czeBYwRLBULJOjAWCXps0jxBBniD35Rw
- aYXsnzH27A4T1myauv8wnF55tdbunLfRlYFeXh2/vGe09r8v1gY0ZsmXKw0A+GE7Q7UHYzTHU3c
- 0iOiLeTEzwX5sjIlF7NAhYxIhvDLWQdOBOeRioCCqUk2retxoDCP7ytx55nRYTFY7Y7/PQlmLy/
- D0KFHsf7XdM7Q+FzJePSXI+QPgtGwuWIP5LkO7YQ2YwmQwUyNc00Iwo9H+JnB1acl7IU0c/nC/a
- y2Q3MIQjM8Gocdd/6jN78rhB/DEqkZppZX1UMVkC88/l0ZD2sNPIV0++IJ5qJ4rRR3c4oGObRaJ
- TcPObSVlxia1CEQ==
+ bh=gich1JRWEld7frP5eaWjzjWGBaaM+RGhkK+WPH3Hgf4=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmL4km9txiF1WGA7UWw3CfsFA6VB2MZtNJU+MOU
+ FKjqCQu/4qJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZi+JJgAKCRDBN2bmhouD
+ 16ccD/9l4cVT56DbQ4s528ydZBWtzc/oqXGu1ZQbNITz14ONADT4bPlxkanL2O0tMltrVTrFj8N
+ yCn7wufeyWdt6hobAeT2jnVzkG4kPP2xuFUJiw0pKpgPViDQYQQvypq31/wxF5wzMSJkrW/UClZ
+ bBWRtRqsGDuBrUvJ+KQT4y0YzBjxTyieyo0MR2V6ctFh3XKFCW31u2lJSH7xSxiRcyZCeFVyLlC
+ I3C0yBX1ofQrBohBO/sGp1xIkY542Vyyb0oYn2HCEiuCgP+2aJz9Uzd5nzG2D8ifsfCZDe1W2fJ
+ BBo+ylftctAuKNbBXptE6DiZ/sueGCmNlIOLx1y4jtFbODWgFIG3M8WIB4tB3LimjuI00JTUfdJ
+ EXptaN0tyS1nlKORVjO5N2bDN4aaRB+nVEKlcVvOlSMWicMUHepZnzKDP34A+zXPSaKHDyLHiE6
+ IaPAkr6rUUVwEK/bI6iC/VKCp4A9TaeQKOmbab41FPXLFr7kS8Vy1KNyrpgxyPSRSQsSD4KjYPp
+ 4RUTHpCPh8X6nbbbHv2nUUnpwFIGATLbI2x8gsubcs13KPkg57nn3JNnaNhEcr88Vl/3vU652O5
+ 7AbhSRpcdk7w/Zb9QhAm45Osql//C85WJu45trFQ7Ntpn15eubGiD1sld2555lrF+y4UGAHWksS
+ xblzapxOFjAtX0g==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: T6PTXWIBCIYJIFJ6VDM74QJFM3PQN3HM
-X-Message-ID-Hash: T6PTXWIBCIYJIFJ6VDM74QJFM3PQN3HM
+Message-ID-Hash: RN2DRAHIQ55RM7ZGJIJE4OI64V67G5MB
+X-Message-ID-Hash: RN2DRAHIQ55RM7ZGJIJE4OI64V67G5MB
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -145,7 +145,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T6PTXWIBCIYJIFJ6VDM74QJFM3PQN3HM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RN2DRAHIQ55RM7ZGJIJE4OI64V67G5MB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -160,22 +160,22 @@ safety.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/fsl/imx-pcm-rpmsg.c | 2 +-
+ sound/soc/uniphier/aio-dma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-pcm-rpmsg.c b/sound/soc/fsl/imx-pcm-rpmsg.c
-index b84d1dfddba2..128728b65a3a 100644
---- a/sound/soc/fsl/imx-pcm-rpmsg.c
-+++ b/sound/soc/fsl/imx-pcm-rpmsg.c
-@@ -16,7 +16,7 @@
- #include "fsl_rpmsg.h"
- #include "imx-pcm-rpmsg.h"
+diff --git a/sound/soc/uniphier/aio-dma.c b/sound/soc/uniphier/aio-dma.c
+index fe272befd967..265d61723e99 100644
+--- a/sound/soc/uniphier/aio-dma.c
++++ b/sound/soc/uniphier/aio-dma.c
+@@ -14,7 +14,7 @@
  
--static struct snd_pcm_hardware imx_rpmsg_pcm_hardware = {
-+static const struct snd_pcm_hardware imx_rpmsg_pcm_hardware = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_BATCH |
+ #include "aio.h"
+ 
+-static struct snd_pcm_hardware uniphier_aiodma_hw = {
++static const struct snd_pcm_hardware uniphier_aiodma_hw = {
+ 	.info = SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_INTERLEAVED,
 
 -- 
 2.43.0
