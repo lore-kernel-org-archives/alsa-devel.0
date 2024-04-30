@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9226C4345F
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 12:02:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9398CC10F16
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 12:02:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49104E7D;
-	Tue, 30 Apr 2024 14:02:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49104E7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C363F84A;
+	Tue, 30 Apr 2024 14:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C363F84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714478543;
-	bh=gDpT6Hc1jPudL9uBZtdVkdWFHK/SVqgJ6+WeFAVOPnc=;
+	s=default; t=1714478560;
+	bh=8w+4A+hxgQI/hThP+htf/1vSaLsitNF0Q1FbAOSA1nI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aTpExpyA4+eg6D7XWYd5L6nknZqjWVl8wmJbNZ+EeBIET/1NVkKlTFap1xfQBhWjT
-	 PtjwenoGDDqIJuxTSqr4GbJfTmsfbgoKUoC/g1wvKtA8ugZWu2C1va0BfQvt3G2qrZ
-	 MgcVkgk0yPovxoXnN0GiMTXjrR1tP6wbrUwgiJEQ=
+	b=tLDxcPvfcGrwPB0tZUCA5Dqzzn8j7y5epLpJNSYtfHJmjpzlW7vswMlZQvjvw25JZ
+	 e9SwDmWQ3aw7uPBBWS/vNjEuX5/nF/EFpKXvlRv0bEoLxeZDoQFyltv7UxKwgSz32T
+	 dX68yxf5IrbJNVvcpK91mASl3bzveuseLV/Li8L4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 481D8F805EF; Tue, 30 Apr 2024 14:01:23 +0200 (CEST)
+	id 5EDD9F80617; Tue, 30 Apr 2024 14:01:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 990B0F805E9;
-	Tue, 30 Apr 2024 14:01:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94EA4F80617;
+	Tue, 30 Apr 2024 14:01:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B69F2F80269; Tue, 30 Apr 2024 14:01:17 +0200 (CEST)
+	id 959C8F80266; Tue, 30 Apr 2024 14:01:18 +0200 (CEST)
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EE328F8025D
-	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 14:01:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE328F8025D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7518EF80266
+	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 14:01:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7518EF80266
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=sang-engineering.com header.i=@sang-engineering.com
- header.a=rsa-sha256 header.s=k1 header.b=N0haDqpx
+ header.a=rsa-sha256 header.s=k1 header.b=lmfQEzr+
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=owc6KVsVgzzTz/FV7NYmF6XOfOcxz0hvsD0eutcgSVw=; b=N0haDq
-	pxWXb+XdO8iIPJiHIgxZU8eG9QqxT1yjkGPCZTyFr9Y1BMdQ2m0s/VHsIVnwXdth
-	Ak8WrCciQ0AD3lHH7vJKoFvSyczumHHfDfd6FWs7JqLcMuceOffzsaY1/BSOYH2R
-	XT0f8ZYRHtyE1go4qbEGMFLy3ymcqoM85XOgi+SBg4XA1ZpbwdWQid1vs6OrxfH8
-	1anisMLPNnmD4wygYCbDAbSuxVJWfxOxjNmBn27z2YRMfzFakyxjEeImBSZKW5sj
-	wsmT2/W0oenRuM6mCay3F48kqrHQfQze3Zga9gh0phC80vfl5jOPxcPHKHK/Joec
-	4CFUWyIoje9PcgaA==
-Received: (qmail 2623526 invoked from network); 30 Apr 2024 14:01:05 +0200
+	 s=k1; bh=EGJRMa5lGZXxtdcDIwOklX2Yr55CZS7TunS256OH48o=; b=lmfQEz
+	r+IEvhfq2BrOf129wb2+M6gRPgc/607BOF2BdSHqUkFQkokBhDi2F12VJUtstyA9
+	A9Lqxi2aBLFyfK0Xl1t84OmWmovkj/UwStJIYqpNhFzRDc6/fG46Hqwu0p9xBH7o
+	s21Cdwj3mD2DkvdpRGieUiUU9cK/7D4aZlowK8t8tHZfteIvGi6tLs9o2E5F8BO2
+	Vzr/7xfI3oUzvpfuqTuIkEaCvBFVni+toRi5JMXw3t98H1NUzAFgHPiVuXYjdWf7
+	RJ42iIT5ZtyGVpUhNkR7pLN3X44crRi0PkLW85YbNTGxNJlBJRZwxWJ+lE80CS8O
+	qKqoy8fG1i2YcpKg==
+Received: (qmail 2623466 invoked from network); 30 Apr 2024 14:01:03 +0200
 Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
- authenticated); 30 Apr 2024 14:01:05 +0200
-X-UD-Smtp-Session: l3s3148p1@eA3fH08XoJZehhrb
+ authenticated); 30 Apr 2024 14:01:03 +0200
+X-UD-Smtp-Session: l3s3148p1@5wvGH08XmJZehhrb
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: alsa-devel@alsa-project.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	linux-arm-msm@vger.kernel.org
-Subject: [PATCH 3/3] slimbus: qcom-ngd-ctrl: use 'time_left' variable with
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/3] slimbus: messaging: use 'time_left' variable with
  wait_for_completion_timeout()
-Date: Tue, 30 Apr 2024 14:01:01 +0200
-Message-ID: <20240430120102.29459-4-wsa+renesas@sang-engineering.com>
+Date: Tue, 30 Apr 2024 14:00:59 +0200
+Message-ID: <20240430120102.29459-2-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240430120102.29459-1-wsa+renesas@sang-engineering.com>
 References: <20240430120102.29459-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Q6AYNSUMKCZF2FJZB5RAYIY5WUADMOMH
-X-Message-ID-Hash: Q6AYNSUMKCZF2FJZB5RAYIY5WUADMOMH
+Message-ID-Hash: QJHMMZGJLRLK5PLTJBWTXW2WEQP4IXMQ
+X-Message-ID-Hash: QJHMMZGJLRLK5PLTJBWTXW2WEQP4IXMQ
 X-MailFrom: wsa+renesas@sang-engineering.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6AYNSUMKCZF2FJZB5RAYIY5WUADMOMH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QJHMMZGJLRLK5PLTJBWTXW2WEQP4IXMQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,93 +103,36 @@ Fix to the proper variable type 'unsigned long' while here.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+ drivers/slimbus/messaging.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index efeba8275a66..21b4008de4f3 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -789,7 +789,8 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(sctrl->dev);
- 	DECLARE_COMPLETION_ONSTACK(tx_sent);
- 	DECLARE_COMPLETION_ONSTACK(done);
--	int ret, timeout, i;
-+	int ret, i;
-+	unsigned long time_left;
- 	u8 wbuf[SLIM_MSGQ_BUF_LEN];
- 	u8 rbuf[SLIM_MSGQ_BUF_LEN];
- 	u32 *pbuf;
-@@ -891,8 +892,8 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- 		return ret;
- 	}
- 
--	timeout = wait_for_completion_timeout(&tx_sent, HZ);
--	if (!timeout) {
-+	time_left = wait_for_completion_timeout(&tx_sent, HZ);
-+	if (!time_left) {
- 		dev_err(sctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
- 					txn->mt);
- 		mutex_unlock(&ctrl->tx_lock);
-@@ -900,8 +901,8 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- 	}
- 
- 	if (usr_msg) {
--		timeout = wait_for_completion_timeout(&done, HZ);
--		if (!timeout) {
-+		time_left = wait_for_completion_timeout(&done, HZ);
-+		if (!time_left) {
- 			dev_err(sctrl->dev, "TX timed out:MC:0x%x,mt:0x%x",
- 				txn->mc, txn->mt);
- 			mutex_unlock(&ctrl->tx_lock);
-@@ -917,7 +918,8 @@ static int qcom_slim_ngd_xfer_msg_sync(struct slim_controller *ctrl,
- 				       struct slim_msg_txn *txn)
+diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+index 4ce0cb61e481..242570a5e565 100644
+--- a/drivers/slimbus/messaging.c
++++ b/drivers/slimbus/messaging.c
+@@ -111,7 +111,8 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
  {
  	DECLARE_COMPLETION_ONSTACK(done);
+ 	bool need_tid = false, clk_pause_msg = false;
 -	int ret, timeout;
 +	int ret;
 +	unsigned long time_left;
  
- 	ret = pm_runtime_get_sync(ctrl->dev);
- 	if (ret < 0)
-@@ -929,8 +931,8 @@ static int qcom_slim_ngd_xfer_msg_sync(struct slim_controller *ctrl,
- 	if (ret)
- 		goto pm_put;
+ 	/*
+ 	 * do not vote for runtime-PM if the transactions are part of clock
+@@ -151,9 +152,9 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
+ 	if (!ret && need_tid && !txn->msg->comp) {
+ 		unsigned long ms = txn->rl + HZ;
  
--	timeout = wait_for_completion_timeout(&done, HZ);
--	if (!timeout) {
-+	time_left = wait_for_completion_timeout(&done, HZ);
-+	if (!time_left) {
- 		dev_err(ctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
- 				txn->mt);
- 		ret = -ETIMEDOUT;
-@@ -1169,11 +1171,12 @@ static int qcom_slim_ngd_power_up(struct qcom_slim_ngd_ctrl *ctrl)
- 	enum qcom_slim_ngd_state cur_state = ctrl->state;
- 	struct qcom_slim_ngd *ngd = ctrl->ngd;
- 	u32 laddr, rx_msgq;
--	int timeout, ret = 0;
-+	int ret = 0;
-+	unsigned long time_left;
- 
- 	if (ctrl->state == QCOM_SLIM_NGD_CTRL_DOWN) {
--		timeout = wait_for_completion_timeout(&ctrl->qmi.qmi_comp, HZ);
--		if (!timeout)
-+		time_left = wait_for_completion_timeout(&ctrl->qmi.qmi_comp, HZ);
-+		if (!time_left)
- 			return -EREMOTEIO;
- 	}
- 
-@@ -1218,8 +1221,8 @@ static int qcom_slim_ngd_power_up(struct qcom_slim_ngd_ctrl *ctrl)
- 				ngd->base + NGD_RX_MSGQ_CFG);
- 	qcom_slim_ngd_setup(ctrl);
- 
--	timeout = wait_for_completion_timeout(&ctrl->reconf, HZ);
--	if (!timeout) {
-+	time_left = wait_for_completion_timeout(&ctrl->reconf, HZ);
-+	if (!time_left) {
- 		dev_err(ctrl->dev, "capability exchange timed-out\n");
- 		return -ETIMEDOUT;
- 	}
+-		timeout = wait_for_completion_timeout(txn->comp,
+-						      msecs_to_jiffies(ms));
+-		if (!timeout) {
++		time_left = wait_for_completion_timeout(txn->comp,
++							msecs_to_jiffies(ms));
++		if (!time_left) {
+ 			ret = -ETIMEDOUT;
+ 			slim_free_txn_tid(ctrl, txn);
+ 		}
 -- 
 2.43.0
 
