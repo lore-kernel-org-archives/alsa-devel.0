@@ -4,77 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51B78C10F16
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 11:58:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 838D2C4345F
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 12:01:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BB5EDF8;
-	Tue, 30 Apr 2024 13:57:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BB5EDF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20AC4AE8;
+	Tue, 30 Apr 2024 14:01:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20AC4AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714478286;
-	bh=xbu/88pNQJMGyYFWxPSQooiXbYc5BT6Brrv9un7SvOI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=YvwRZ7FEbptgTp6caq3q4XR6L51gCd/Qk10B3sYP7c2kzJXv2MonEBMbFbDahXDVO
-	 wZso18plecIktaYB/NBi+REtBYhmFHGAwepoSZCRpm+ETjAUCahflQAbsqiC1jRvgG
-	 W1K6bOf6IrGPz91zNjbCjlSOPr9QpH2sUo5Jdq2s=
+	s=default; t=1714478511;
+	bh=2qcLEMK1Fn+N0abKR6SrQ01XTQjI1OvqZUs/FLQLSeI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZHF00J/jBkXyLYSbXKQqBNf2txf1w81C2t+oT0ZAqNcx3VzyOJABxB5UaPxJJOLg2
+	 v6FMZJkt4NBLvVqhNxcUJQkSJoaIK3GEIDq1tnJ4TjyKPZguoWVA+pjBstWYPzqREN
+	 evINBogNY45npxIdi/nmL0RBfdOesf22DyvQPGP0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C357F805DF; Tue, 30 Apr 2024 13:57:26 +0200 (CEST)
+	id 788BFF80588; Tue, 30 Apr 2024 14:01:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0FADF805BE;
-	Tue, 30 Apr 2024 13:57:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3309FF805AA;
+	Tue, 30 Apr 2024 14:01:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 42E66F8025D; Tue, 30 Apr 2024 13:56:31 +0200 (CEST)
+	id C4652F8028D; Tue, 30 Apr 2024 14:01:13 +0200 (CEST)
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0506AF80269
-	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 13:54:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0506AF80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id 41BCBF8025D
+	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 14:01:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41BCBF8025D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=sang-engineering.com header.i=@sang-engineering.com
- header.a=rsa-sha256 header.s=k1 header.b=DyJgcIQP
+ header.a=rsa-sha256 header.s=k1 header.b=S30pyaCb
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
-	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=G48sT4e7XwBEsyu30MJVKv/f1vEN7+9RZstqd76uKpg=; b=DyJgcI
-	QPLZNzmqWc4gK8ouVyVvZZnkmFDc9ZHTKQ11ZFWWgWM2SsDhsmGFj80ct+K1e9Ic
-	qQx91APc1gBWezGCLTle2VROw11Qt+1Mt6ZAPgrzKLtMhn3YeZuo4g0zIWqqVB0z
-	eGngZwayDBIVtTWV+tmVHlPE891cnFkcQCoArdAmh19y2R4+nHvBP4MA4a9owZDL
-	3MbDT+7K//EkHL5AHZE7aNF6wD7xtbt3wiog4JC/KeokmYCOfbOmOBzV0zRk0cwH
-	UORzs+xgc+2bWYVbzwQZuxShvZ14BwCnwvbuvJg4tWTZUlKtLrvD7sAw1lVDj0YF
-	RPh5c+RrsQKLY/RQ==
-Received: (qmail 2621617 invoked from network); 30 Apr 2024 13:54:41 +0200
+	:mime-version:content-transfer-encoding; s=k1; bh=D4ut/b+eS62cUy
+	c2wWIOIQ5QpP8PK3TWPgfE/RDJDnI=; b=S30pyaCbmwexde786Jy4Fc3AJ24k2V
+	+NigbBApY1TKSe0WuS2Alkh4K9AtgY8/l00gCXqACqtmWBgd75QSy8ZjFox7v1Jh
+	xjKccZKMGutjG/KN5YcRlzdd3EUIZz9ndG35GlNowpgF19ocEzGo8tzNX0j4g9RQ
+	/25JaC+OfqitGiKG1tv2EaLy4DtrPIpzx7xkCUDBLVz7dxA2ymr3SO5fBnVlgObg
+	2ZteiSMn+CtE30JNk6hoehaQUopfYrtYo2LcYrbWPEjKWs1+PgutmHKz4/rPeiAN
+	jku8Pc4wvNza9mtMTYyQrcCHHOeWAv0Q3xLmGWn+bEiR3OQ1LQNs6Zmg==
+Received: (qmail 2623430 invoked from network); 30 Apr 2024 14:01:02 +0200
 Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
- authenticated); 30 Apr 2024 13:54:41 +0200
-X-UD-Smtp-Session: l3s3148p1@11IFCU8X9o9ehhrb
+ authenticated); 30 Apr 2024 14:01:02 +0200
+X-UD-Smtp-Session: l3s3148p1@kdO5H08XjpZehhrb
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: alsa-devel@alsa-project.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] ASoC: codecs: wm8996: use 'time_left' variable with
- wait_for_completion_timeout()
-Date: Tue, 30 Apr 2024 13:54:37 +0200
-Message-ID: <20240430115438.29134-5-wsa+renesas@sang-engineering.com>
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/3] slimbus: use 'time_left' instead of 'timeout' with
+ wait_for_*() functions
+Date: Tue, 30 Apr 2024 14:00:58 +0200
+Message-ID: <20240430120102.29459-1-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240430115438.29134-1-wsa+renesas@sang-engineering.com>
-References: <20240430115438.29134-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RVFKBNS5EVZ3VN5JVYLO3JA4R2CSIF6W
-X-Message-ID-Hash: RVFKBNS5EVZ3VN5JVYLO3JA4R2CSIF6W
+Message-ID-Hash: 76LTYY7GBXJNRBBGVFJR2YO4QNU6GHWH
+X-Message-ID-Hash: 76LTYY7GBXJNRBBGVFJR2YO4QNU6GHWH
 X-MailFrom: wsa+renesas@sang-engineering.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +80,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RVFKBNS5EVZ3VN5JVYLO3JA4R2CSIF6W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/76LTYY7GBXJNRBBGVFJR2YO4QNU6GHWH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,59 +90,36 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 There is a confusing pattern in the kernel to use a variable named 'timeout' to
-store the result of wait_for_completion_timeout() causing patterns like:
+store the result of wait_for_*() functions causing patterns like:
 
-	timeout = wait_for_completion_timeout(...)
-	if (!timeout) return -ETIMEDOUT;
+        timeout = wait_for_completion_timeout(...)
+        if (!timeout) return -ETIMEDOUT;
 
 with all kinds of permutations. Use 'time_left' as a variable to make the code
-self explaining.
+obvious and self explaining.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- sound/soc/codecs/wm8996.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+This is part of a tree-wide series. The rest of the patches can be found here
+(some parts may still be WIP):
 
-diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
-index e738326e33ed..66096e09c953 100644
---- a/sound/soc/codecs/wm8996.c
-+++ b/sound/soc/codecs/wm8996.c
-@@ -655,28 +655,28 @@ static void wait_for_dc_servo(struct snd_soc_component *component, u16 mask)
- 	struct i2c_client *i2c = to_i2c_client(component->dev);
- 	struct wm8996_priv *wm8996 = snd_soc_component_get_drvdata(component);
- 	int ret;
--	unsigned long timeout = 200;
-+	unsigned long time_left = 200;
- 
- 	snd_soc_component_write(component, WM8996_DC_SERVO_2, mask);
- 
- 	/* Use the interrupt if possible */
- 	do {
- 		if (i2c->irq) {
--			timeout = wait_for_completion_timeout(&wm8996->dcs_done,
--							      msecs_to_jiffies(200));
--			if (timeout == 0)
-+			time_left = wait_for_completion_timeout(&wm8996->dcs_done,
-+								msecs_to_jiffies(200));
-+			if (time_left == 0)
- 				dev_err(component->dev, "DC servo timed out\n");
- 
- 		} else {
- 			msleep(1);
--			timeout--;
-+			time_left--;
- 		}
- 
- 		ret = snd_soc_component_read(component, WM8996_DC_SERVO_2);
- 		dev_dbg(component->dev, "DC servo state: %x\n", ret);
--	} while (timeout && ret & mask);
-+	} while (time_left && ret & mask);
- 
--	if (timeout == 0)
-+	if (time_left == 0)
- 		dev_err(component->dev, "DC servo timed out for %x\n", mask);
- 	else
- 		dev_dbg(component->dev, "DC servo complete for %x\n", mask);
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/time_left
+
+Because these patches are generated, I audit them before sending. This is why I
+will send series step by step. Build bot is happy with these patches, though.
+No functional changes intended.
+
+Wolfram Sang (3):
+  slimbus: messaging: use 'time_left' variable with
+    wait_for_completion_timeout()
+  slimbus: qcom-ctrl: use 'time_left' variable with
+    wait_for_completion_timeout()
+  slimbus: qcom-ngd-ctrl: use 'time_left' variable with
+    wait_for_completion_timeout()
+
+ drivers/slimbus/messaging.c     |  9 +++++----
+ drivers/slimbus/qcom-ctrl.c     |  7 ++++---
+ drivers/slimbus/qcom-ngd-ctrl.c | 29 ++++++++++++++++-------------
+ 3 files changed, 25 insertions(+), 20 deletions(-)
+
 -- 
 2.43.0
 
