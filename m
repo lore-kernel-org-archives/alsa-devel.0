@@ -4,93 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D96B7C4345F
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 13:49:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE975C4345F
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 13:49:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28868EAB;
-	Tue, 30 Apr 2024 15:49:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28868EAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 339D315FE;
+	Tue, 30 Apr 2024 15:49:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 339D315FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714484957;
-	bh=8b4Gnndyad1mrZWfMetavaSAHiPqy+zPx9M7fgKKgek=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1714484969;
+	bh=jlydjqBi35a3hABy/KrwYY1HopWVDMfRB2O/6Edh1Jw=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q92As591G3wPGoJH6kGG/WlRlB9tqGKMHLSEtTfw9NtMbVWx7q6WvxxXHGcTh1roK
-	 tG+qE1sjW6YKCSv9v8hvon0s7HmFcQ/L+G3sf3HsuRgW44CrAfgCVT9HDaobA+3KE7
-	 t94D3axaOycXUWwIAygMxK1E6EzMI+QI22kctJbw=
+	b=UnHWgryrVNqv6z9OZjOiW8JnL6WDES+GmBjClLDtSe8Xjt8Xepy03kiF5S+X0JWNY
+	 7EuVqwi+7BSyWu0hhF/vhNiIaaS6Uxyo5CdzP9HvjEQisUJDXbauedCdQji8CFxwE+
+	 fYUqgv8iJtU97lEpbIWI6I9UbrF1wOFzSk28+7jE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94B00F8069E; Tue, 30 Apr 2024 15:47:18 +0200 (CEST)
+	id F0312F806B8; Tue, 30 Apr 2024 15:47:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5294BF8069E;
-	Tue, 30 Apr 2024 15:47:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54782F806AB;
+	Tue, 30 Apr 2024 15:47:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7D6EF8003C; Tue, 30 Apr 2024 10:21:26 +0200 (CEST)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [46.235.227.194])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id F3213F80266; Tue, 30 Apr 2024 15:30:15 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CC3B8F8003C
-	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 10:21:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC3B8F8003C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 984D5F8003C
+	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 15:30:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 984D5F8003C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=oGO4Jd4S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714465273;
-	bh=8b4Gnndyad1mrZWfMetavaSAHiPqy+zPx9M7fgKKgek=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oGO4Jd4SOKQiaoB8atG3rgvkDKLRGwZB6mMWzBylCM3oG+VkatSVLj+F2kOCRzdQN
-	 URC2FyKbjdfMA3OyF1emR79RqnHlQJymnEXC40eMBqrhQ5rVcEGWg6Iu/I3w0d8Q8X
-	 9gkMiOH81JqNAxUOBfNtWODd7kN4/MKr7Mg581cDmqEFGsMjbdJ4MV5cLzVK9wwkRS
-	 VAs5lAy7DtX6QhM/i8yw8ox2E2LU4im+wjMZz3oNPykOn1oeJv62Mp82og8wRbIZLd
-	 sFyMYJE0nq4pXhzDGEBaSHhirTZEzDif9ktGKos7JBotVF2r0mUIXjx1+O3pBXEdHi
-	 qfoYhRxctGICg==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A2E54378134F;
-	Tue, 30 Apr 2024 08:21:13 +0000 (UTC)
-Date: Tue, 30 Apr 2024 10:21:12 +0200
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
-	m.szyprowski@samsung.com, mchehab@kernel.org,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v15 00/16] Add audio support in v4l2 framework
-Message-ID: <20240430082112.jrovosb6lgblgpfg@basti-XPS-13-9310>
-References: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=nqXVoIBe
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 43U7dmdc008740;
+	Tue, 30 Apr 2024 13:30:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=fidFUpi4cf1KrWX5YDpHz
+	qgwyAXuG9D68KTSu4/w83A=; b=nqXVoIBeWCiDikSTdgAvmg2G0JcW8d46f50Ge
+	0N0mvDAP+nqmqRAQ4ZJnh4V9RtftHJOCzjaNhvK40feRfETu9qZLFkoxrnYLn9a5
+	+/yfa8kK7kGguYypleeCfIKHlUyyPM6YeFyuPPkJAUqv+DFK5xNwEuNXDoB44JfI
+	iPwP4bdrFbHTwKr3rll4GsyKcdJiiJ8r73GLjUo2ZpChcmW/w9789Z3iIlyl6u16
+	SD+yAeL00f6wV1dOEWq//tQtyGsiwx4IMtC7EKYW6NNOJIy3rFyxJykq58UkFI7A
+	5Q4HGOq9uYhI5npXPyrAvE9BCHb7Kb5WmIqjbLa4qJCnFDIFw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xtfys3k8j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 13:30:03 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com
+ [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 43UDU2M2015731
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 Apr 2024 13:30:02 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Tue, 30 Apr 2024 06:30:02 -0700
+Date: Tue, 30 Apr 2024 06:30:00 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+CC: <alsa-devel@alsa-project.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 0/3] slimbus: use 'time_left' instead of 'timeout' with
+ wait_for_*() functions
+Message-ID: <ZjDyWFlx2cjfi1MJ@hu-bjorande-lv.qualcomm.com>
+References: <20240430120102.29459-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
-X-MailFrom: sebastian.fricke@collabora.com
+In-Reply-To: <20240430120102.29459-1-wsa+renesas@sang-engineering.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: afi6XheETSfeGAAApO7hcgPeQFaILgSO
+X-Proofpoint-ORIG-GUID: afi6XheETSfeGAAApO7hcgPeQFaILgSO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-04-30_07,2024-04-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 phishscore=0
+ spamscore=0 mlxscore=0 clxscore=1015 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 impostorscore=0 priorityscore=1501 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404300096
+X-MailFrom: quic_bjorande@quicinc.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DB6ZASU5BFCCDXC2UJZY4Q72UD247IOI
-X-Message-ID-Hash: DB6ZASU5BFCCDXC2UJZY4Q72UD247IOI
+Message-ID-Hash: OA6MACDNUQ7RWJDEHJNDMZ7IDOXSUDTH
+X-Message-ID-Hash: OA6MACDNUQ7RWJDEHJNDMZ7IDOXSUDTH
 X-Mailman-Approved-At: Tue, 30 Apr 2024 13:47:12 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DB6ZASU5BFCCDXC2UJZY4Q72UD247IOI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OA6MACDNUQ7RWJDEHJNDMZ7IDOXSUDTH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,256 +122,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hey Shengjiu,
+On Tue, Apr 30, 2024 at 02:00:58PM +0200, Wolfram Sang wrote:
+> There is a confusing pattern in the kernel to use a variable named 'timeout' to
+> store the result of wait_for_*() functions causing patterns like:
+> 
+>         timeout = wait_for_completion_timeout(...)
+>         if (!timeout) return -ETIMEDOUT;
+> 
+> with all kinds of permutations. Use 'time_left' as a variable to make the code
+> obvious and self explaining.
+> 
+> This is part of a tree-wide series. The rest of the patches can be found here
+> (some parts may still be WIP):
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/time_left
+> 
+> Because these patches are generated, I audit them before sending. This is why I
+> will send series step by step. Build bot is happy with these patches, though.
+> No functional changes intended.
+> 
 
-first of all thanks for all of this work and I am very sorry for only
-emerging this late into the series, I sadly didn't notice it earlier.
-
-I would like to voice a few concerns about the general idea of adding
-Audio support to the Media subsystem.
-
-1. The biggest objection is, that the Linux Kernel has a subsystem
-specifically targeted for audio devices, adding support for these
-devices in another subsystem are counterproductive as they work around
-the shortcomings of the audio subsystem while forcing support for a
-device into a subsystem that was never designed for such devices.
-Instead, the audio subsystem has to be adjusted to be able to support
-all of the required workflows, otherwise, the next audio driver with
-similar requirements will have to move to the media subsystem as well,
-the audio subsystem would then never experience the required change and
-soon we would have two audio subsystems.
-
-2. Closely connected to the previous objection, the media subsystem with
-its current staff of maintainers is overworked and barely capable of
-handling the workload, which includes an abundance of different devices
-from DVB, codecs, cameras, PCI devices, radio tuners, HDMI CEC, IR
-receivers, etc. Adding more device types to this matrix will make the
-situation worse and should only be done with a plan for how first to
-improve the current maintainer situation.
-
-3. By using the same framework and APIs as the video codecs, the audio
-codecs are going to cause extra work for the video codec developers and
-maintainers simply by occupying the same space that was orginally
-designed for the purpose of video only. Even if you try to not cause any
-extra stress the simple presence of the audio code in the codebase is
-going to cause restrictions.
-
-The main issue here is that the audio subsystem doesn't provide a
-mem2mem framework and I would say you are in luck because the media
-subsystem has gathered a lot of shortcomings with its current
-implementation of the mem2mem framework over time, which is why a new
-implementation will be necessary anyway.
-
-So instead of hammering a driver into the wrong destination, I would
-suggest bundling our forces and implementing a general memory-to-memory
-framework that both the media and the audio subsystem can use, that
-addresses the current shortcomings of the implementation and allows you
-to upload the driver where it is supposed to be.
-This is going to cause restrictions as well, like mentioned in the
-concern number 3, but with the difference that we can make a general
-plan for such a framework that accomodates lots of use cases and each
-subsystem can add their routines on top of the general framework.
-
-Another possible alternative is to try and make the DRM scheduler more
-generally available, this scheduler is the most mature and in fact is
-very similar to what you and what the media devices need.
-Which again just shows how common your usecase actually is and how a
-general solution is the best long term solution.
-
-Please notice that Daniel Almeida is currently working on something
-related to this:
-https://lore.kernel.org/linux-media/3F80AC0D-DCAA-4EDE-BF58-BB1369C7EDCA@collabora.com/T/#u
-
-If the toplevel maintainers decide to add the patchset so be it, but I
-wanted to voice my concerns and also highlight that this is likely going
-to cause extra stress for the video codecs maintainers and the
-maintainers in general. We cannot spend a lot of time on audio codecs,
-as video codecs already fill up our available time sufficiently,
-so the use of the framework needs to be conservative and cause as little
-extra work as possible for the original use case of the framework.
+Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
 Regards,
-Sebastian
+Bjorn
 
-On 19.03.2024 15:50, Shengjiu Wang wrote:
->Audio signal processing also has the requirement for memory to
->memory similar as Video.
->
->This asrc memory to memory (memory ->asrc->memory) case is a non
->real time use case.
->
->User fills the input buffer to the asrc module, after conversion, then asrc
->sends back the output buffer to user. So it is not a traditional ALSA playback
->and capture case.
->
->It is a specific use case,  there is no reference in current kernel.
->v4l2 memory to memory is the closed implementation,  v4l2 current
->support video, image, radio, tuner, touch devices, so it is not
->complicated to add support for this specific audio case.
->
->Because we had implemented the "memory -> asrc ->i2s device-> codec"
->use case in ALSA.  Now the "memory->asrc->memory" needs
->to reuse the code in asrc driver, so the first 3 patches is for refining
->the code to make it can be shared by the "memory->asrc->memory"
->driver.
->
->The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
->user applications only use the ioctl of v4l2 framework.
->
->Other change is to add memory to memory support for two kinds of i.MX ASRC
->module.
->
->changes in v15:
->- update MAINTAINERS for imx-asrc.c and vim2m-audio.c
->
->changes in v14:
->- document the reservation of 'AUXX' fourcc format.
->- add v4l2_audfmt_to_fourcc() definition.
->
->changes in v13
->- change 'pixelformat' to 'audioformat' in dev-audio-mem2mem.rst
->- add more description for clock drift in ext-ctrls-audio-m2m.rst
->- Add "media: v4l2-ctrls: add support for fraction_bits" from Hans
->  to avoid build issue for kernel test robot
->
->changes in v12
->- minor changes according to comments
->- drop min_buffers_needed = 1 and V4L2_CTRL_FLAG_UPDATE flag
->- drop bus_info
->
->changes in v11
->- add add-fixed-point-test-controls in vivid.
->- add v4l2_ctrl_fp_compose() helper function for min and max
->
->changes in v10
->- remove FIXED_POINT type
->- change code base on media: v4l2-ctrls: add support for fraction_bits
->- fix issue reported by kernel test robot
->- remove module_alias
->
->changes in v9:
->- add MEDIA_ENT_F_PROC_AUDIO_RESAMPLER.
->- add MEDIA_INTF_T_V4L_AUDIO
->- add media controller support
->- refine the vim2m-audio to support 8k<->16k conversion.
->
->changes in v8:
->- refine V4L2_CAP_AUDIO_M2M to be 0x00000008
->- update doc for FIXED_POINT
->- address comments for imx-asrc
->
->changes in v7:
->- add acked-by from Mark
->- separate commit for fixed point, m2m audio class, audio rate controls
->- use INTEGER_MENU for rate,  FIXED_POINT for rate offset
->- remove used fmts
->- address other comments for Hans
->
->changes in v6:
->- use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
->  m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_part_two.
->- change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
->- fix warning by kernel test rebot
->- remove some unused format V4L2_AUDIO_FMT_XX
->- Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
->- rename audm2m to viaudm2m.
->
->changes in v5:
->- remove V4L2_AUDIO_FMT_LPCM
->- define audio pixel format like V4L2_AUDIO_FMT_S8...
->- remove rate and format in struct v4l2_audio_format.
->- Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
->- updata document accordingly.
->
->changes in v4:
->- update document style
->- separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commit
->
->changes in v3:
->- Modify documents for adding audio m2m support
->- Add audio virtual m2m driver
->- Defined V4L2_AUDIO_FMT_LPCM format type for audio.
->- Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
->- with modification in v4l-utils, pass v4l2-compliance test.
->
->changes in v2:
->- decouple the implementation in v4l2 and ALSA
->- implement the memory to memory driver as a platfrom driver
->  and move it to driver/media
->- move fsl_asrc_common.h to include/sound folder
->
->Hans Verkuil (1):
->  media: v4l2-ctrls: add support for fraction_bits
->
->Shengjiu Wang (15):
->  ASoC: fsl_asrc: define functions for memory to memory usage
->  ASoC: fsl_easrc: define functions for memory to memory usage
->  ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
->  ASoC: fsl_asrc: register m2m platform device
->  ASoC: fsl_easrc: register m2m platform device
->  media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
->  media: v4l2: Add audio capture and output support
->  media: uapi: Define audio sample format fourcc type
->  media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
->  media: uapi: Add audio rate controls support
->  media: uapi: Declare interface types for Audio
->  media: uapi: Add an entity type for audio resampler
->  media: vivid: add fixed point test controls
->  media: imx-asrc: Add memory to memory driver
->  media: vim2m-audio: add virtual driver for audio memory to memory
->
-> .../media/mediactl/media-types.rst            |   11 +
-> .../userspace-api/media/v4l/buffer.rst        |    6 +
-> .../userspace-api/media/v4l/common.rst        |    1 +
-> .../media/v4l/dev-audio-mem2mem.rst           |   71 +
-> .../userspace-api/media/v4l/devices.rst       |    1 +
-> .../media/v4l/ext-ctrls-audio-m2m.rst         |   59 +
-> .../userspace-api/media/v4l/pixfmt-audio.rst  |  100 ++
-> .../userspace-api/media/v4l/pixfmt.rst        |    1 +
-> .../media/v4l/vidioc-enum-fmt.rst             |    2 +
-> .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
-> .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
-> .../media/v4l/vidioc-querycap.rst             |    3 +
-> .../media/v4l/vidioc-queryctrl.rst            |   11 +-
-> .../media/videodev2.h.rst.exceptions          |    3 +
-> MAINTAINERS                                   |   17 +
-> .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
-> drivers/media/platform/nxp/Kconfig            |   13 +
-> drivers/media/platform/nxp/Makefile           |    1 +
-> drivers/media/platform/nxp/imx-asrc.c         | 1256 +++++++++++++++++
-> drivers/media/test-drivers/Kconfig            |   10 +
-> drivers/media/test-drivers/Makefile           |    1 +
-> drivers/media/test-drivers/vim2m-audio.c      |  793 +++++++++++
-> drivers/media/test-drivers/vivid/vivid-core.h |    2 +
-> .../media/test-drivers/vivid/vivid-ctrls.c    |   26 +
-> drivers/media/v4l2-core/v4l2-compat-ioctl32.c |    9 +
-> drivers/media/v4l2-core/v4l2-ctrls-api.c      |    1 +
-> drivers/media/v4l2-core/v4l2-ctrls-core.c     |   93 +-
-> drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   10 +
-> drivers/media/v4l2-core/v4l2-dev.c            |   21 +
-> drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
-> drivers/media/v4l2-core/v4l2-mem2mem.c        |   13 +-
-> include/media/v4l2-ctrls.h                    |   13 +-
-> include/media/v4l2-dev.h                      |    2 +
-> include/media/v4l2-ioctl.h                    |   34 +
-> .../fsl => include/sound}/fsl_asrc_common.h   |   60 +
-> include/uapi/linux/media.h                    |    2 +
-> include/uapi/linux/v4l2-controls.h            |    9 +
-> include/uapi/linux/videodev2.h                |   50 +-
-> sound/soc/fsl/fsl_asrc.c                      |  144 ++
-> sound/soc/fsl/fsl_asrc.h                      |    4 +-
-> sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
-> sound/soc/fsl/fsl_easrc.c                     |  233 +++
-> sound/soc/fsl/fsl_easrc.h                     |    6 +-
-> 43 files changed, 3145 insertions(+), 27 deletions(-)
-> create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
-> create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
-> create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-> create mode 100644 drivers/media/platform/nxp/imx-asrc.c
-> create mode 100644 drivers/media/test-drivers/vim2m-audio.c
-> rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (60%)
->
->-- 
->2.34.1
->
->
+> Wolfram Sang (3):
+>   slimbus: messaging: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   slimbus: qcom-ctrl: use 'time_left' variable with
+>     wait_for_completion_timeout()
+>   slimbus: qcom-ngd-ctrl: use 'time_left' variable with
+>     wait_for_completion_timeout()
+> 
+>  drivers/slimbus/messaging.c     |  9 +++++----
+>  drivers/slimbus/qcom-ctrl.c     |  7 ++++---
+>  drivers/slimbus/qcom-ngd-ctrl.c | 29 ++++++++++++++++-------------
+>  3 files changed, 25 insertions(+), 20 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
