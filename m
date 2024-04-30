@@ -4,100 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25037C10F16
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 13:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D96B7C4345F
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 13:49:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59C6D7F8;
-	Tue, 30 Apr 2024 15:48:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59C6D7F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28868EAB;
+	Tue, 30 Apr 2024 15:49:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28868EAB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714484937;
-	bh=ewB4Hk2jrBUlUrFxy0fKqLht5zXbjdjywRR6sjHqCSk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1714484957;
+	bh=8b4Gnndyad1mrZWfMetavaSAHiPqy+zPx9M7fgKKgek=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ICLdYuhAZsSliEQBodPgArsosVOtVw7tDHhR/mGVLLkmhtpQO+HiWF4G6lRu/izqn
-	 LesE1fXybaaLxYlbL2YeDaMJYBl0OLEiGq3y8r2B9OAO1uyPfzbrYCuorlTViuU4kd
-	 BXQ1/b/jHiXzcCQYsUk+475OAon0D2/6Ikdo/uFo=
+	b=q92As591G3wPGoJH6kGG/WlRlB9tqGKMHLSEtTfw9NtMbVWx7q6WvxxXHGcTh1roK
+	 tG+qE1sjW6YKCSv9v8hvon0s7HmFcQ/L+G3sf3HsuRgW44CrAfgCVT9HDaobA+3KE7
+	 t94D3axaOycXUWwIAygMxK1E6EzMI+QI22kctJbw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A98ACF80641; Tue, 30 Apr 2024 15:47:14 +0200 (CEST)
+	id 94B00F8069E; Tue, 30 Apr 2024 15:47:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64100F8067B;
-	Tue, 30 Apr 2024 15:47:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5294BF8069E;
+	Tue, 30 Apr 2024 15:47:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB664F80266; Tue, 30 Apr 2024 09:28:19 +0200 (CEST)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D7D6EF8003C; Tue, 30 Apr 2024 10:21:26 +0200 (CEST)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
+ [46.235.227.194])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B58D0F8003A
-	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 09:26:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B58D0F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id CC3B8F8003C
+	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 10:21:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC3B8F8003C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=jyHbK90c
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43U7Qhb0076595;
-	Tue, 30 Apr 2024 02:26:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1714462003;
-	bh=D77+Y2iG+ITncPMJlFqJo1PdrEHrzAy1aiv5ngW8EuI=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=jyHbK90cgA+T58DtPSnUFSHMnDT64jq+jxAsIjwa5Dj8eiX34LWnKQNVuldgX61NB
-	 xPK/JiX0RoiRsvk5Mpat5YDyEh7uBoobP+l/KUgG1AMl0wLSgliqyths3393wXRjRf
-	 LockGTJTwKYxz/ys/HrGvOkcOO0FeKb9DWYGaM2A=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43U7Qhpj126942
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 30 Apr 2024 02:26:43 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 30
- Apr 2024 02:26:43 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 30 Apr 2024 02:26:42 -0500
-Received: from lelvsmtp5.itg.ti.com ([10.250.165.138])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43U7QT5A096668;
-	Tue, 30 Apr 2024 02:26:37 -0500
-From: Baojun Xu <baojun.xu@ti.com>
-To: <tiwai@suse.de>
-CC: <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <lgirdwood@gmail.com>, <perex@perex.cz>,
-        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
-        <shenghao-ding@ti.com>, <navada@ti.com>, <13916275206@139.com>,
-        <v-po@ti.com>, <niranjan.hy@ti.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <yung-chuan.liao@linux.intel.com>, <baojun.xu@ti.com>,
-        <broonie@kernel.org>, <soyer@irl.hu>
-Subject: [PATCH v4 1/3] ALSA: hda/tas2781: Add tas2781 hda driver based on SPI
-Date: Tue, 30 Apr 2024 15:25:42 +0800
-Message-ID: <20240430072544.1877-2-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.43.0.windows.1
-In-Reply-To: <20240430072544.1877-1-baojun.xu@ti.com>
-References: <20240430072544.1877-1-baojun.xu@ti.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=oGO4Jd4S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714465273;
+	bh=8b4Gnndyad1mrZWfMetavaSAHiPqy+zPx9M7fgKKgek=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oGO4Jd4SOKQiaoB8atG3rgvkDKLRGwZB6mMWzBylCM3oG+VkatSVLj+F2kOCRzdQN
+	 URC2FyKbjdfMA3OyF1emR79RqnHlQJymnEXC40eMBqrhQ5rVcEGWg6Iu/I3w0d8Q8X
+	 9gkMiOH81JqNAxUOBfNtWODd7kN4/MKr7Mg581cDmqEFGsMjbdJ4MV5cLzVK9wwkRS
+	 VAs5lAy7DtX6QhM/i8yw8ox2E2LU4im+wjMZz3oNPykOn1oeJv62Mp82og8wRbIZLd
+	 sFyMYJE0nq4pXhzDGEBaSHhirTZEzDif9ktGKos7JBotVF2r0mUIXjx1+O3pBXEdHi
+	 qfoYhRxctGICg==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A2E54378134F;
+	Tue, 30 Apr 2024 08:21:13 +0000 (UTC)
+Date: Tue, 30 Apr 2024 10:21:12 +0200
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
+	m.szyprowski@samsung.com, mchehab@kernel.org,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v15 00/16] Add audio support in v4l2 framework
+Message-ID: <20240430082112.jrovosb6lgblgpfg@basti-XPS-13-9310>
+References: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-MailFrom: baojun.xu@ti.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1710834674-3285-1-git-send-email-shengjiu.wang@nxp.com>
+X-MailFrom: sebastian.fricke@collabora.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2MGFRC2N4YZOLTSWKW6MR3372ZR2Y52C
-X-Message-ID-Hash: 2MGFRC2N4YZOLTSWKW6MR3372ZR2Y52C
-X-Mailman-Approved-At: Tue, 30 Apr 2024 13:46:58 +0000
+Message-ID-Hash: DB6ZASU5BFCCDXC2UJZY4Q72UD247IOI
+X-Message-ID-Hash: DB6ZASU5BFCCDXC2UJZY4Q72UD247IOI
+X-Mailman-Approved-At: Tue, 30 Apr 2024 13:47:12 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2MGFRC2N4YZOLTSWKW6MR3372ZR2Y52C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DB6ZASU5BFCCDXC2UJZY4Q72UD247IOI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,164 +99,256 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Integrate tas2781 hda spi driver configs for HP (Varcolac).
-Every tas2781 SPI node was added by serial-multi-instantie.c as a SPI device.
-The code support Realtek as the primary codec.
+Hey Shengjiu,
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+first of all thanks for all of this work and I am very sorry for only
+emerging this late into the series, I sadly didn't notice it earlier.
 
----
-v4:
- - Add old hardware id "TIAS2781" for compatible with old production
- - Add 2 devices in struct smi_node tas2781_hda, to compatible with 4 AMPs
-v3:
- - Move HID up to above /* Non-conforming _HID ... */ in scan.c,
-   for avoid misunderstanding.
- - Move HID up to above /* Non-conforming _HID ... */ in
-   serial-multi-instantiate.c, for avoid misunderstanding.
- - Change objs to y for snd-hda-scodec-tas2781-spi- in Makefile.
----
- drivers/acpi/scan.c                             |  2 ++
- drivers/platform/x86/serial-multi-instantiate.c | 13 +++++++++++++
- sound/pci/hda/Kconfig                           | 14 ++++++++++++++
- sound/pci/hda/Makefile                          |  2 ++
- sound/pci/hda/patch_realtek.c                   | 13 +++++++++++++
- 5 files changed, 44 insertions(+)
+I would like to voice a few concerns about the general idea of adding
+Audio support to the Media subsystem.
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index d1464324de95..51af181ccf62 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1765,6 +1765,8 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
- 		{"CSC3557", },
- 		{"INT33FE", },
- 		{"INT3515", },
-+		{"TXNW2781", },
-+		{"TIAS2781", },
- 		/* Non-conforming _HID for Cirrus Logic already released */
- 		{"CLSA0100", },
- 		{"CLSA0101", },
-diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-index 97b9c6392230..d1c766f17b26 100644
---- a/drivers/platform/x86/serial-multi-instantiate.c
-+++ b/drivers/platform/x86/serial-multi-instantiate.c
-@@ -368,6 +368,17 @@ static const struct smi_node cs35l57_hda = {
- 	.bus_type = SMI_AUTO_DETECT,
- };
- 
-+static const struct smi_node tas2781_hda = {
-+	.instances = {
-+		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-+		{}
-+	},
-+	.bus_type = SMI_AUTO_DETECT,
-+};
-+
- /*
-  * Note new device-ids must also be added to ignore_serial_bus_ids in
-  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-@@ -380,6 +391,8 @@ static const struct acpi_device_id smi_acpi_ids[] = {
- 	{ "CSC3556", (unsigned long)&cs35l56_hda },
- 	{ "CSC3557", (unsigned long)&cs35l57_hda },
- 	{ "INT3515", (unsigned long)&int3515_data },
-+	{ "TXNW2781", (unsigned long)&tas2781_hda },
-+	{ "TIAS2781", (unsigned long)&tas2781_hda },
- 	/* Non-conforming _HID for Cirrus Logic already released */
- 	{ "CLSA0100", (unsigned long)&cs35l41_hda },
- 	{ "CLSA0101", (unsigned long)&cs35l41_hda },
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index f806636242ee..15f0e66b77e5 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -202,6 +202,20 @@ config SND_HDA_SCODEC_TAS2781_I2C
- comment "Set to Y if you want auto-loading the side codec driver"
- 	depends on SND_HDA=y && SND_HDA_SCODEC_TAS2781_I2C=m
- 
-+config SND_HDA_SCODEC_TAS2781_SPI
-+	tristate "Build TAS2781 HD-audio side codec support for SPI Bus"
-+	depends on SPI_MASTER
-+	depends on ACPI
-+	depends on EFI
-+	depends on SND_SOC
-+	select CRC32_SARWATE
-+	help
-+	  Say Y or M here to include TAS2781 SPI HD-audio side codec support
-+	  in snd-hda-intel driver, such as ALC287.
-+
-+comment "Set to Y if you want auto-loading the side codec driver"
-+	depends on SND_HDA=y && SND_HDA_SCODEC_TAS2781_SPI=m
-+
- config SND_HDA_CODEC_REALTEK
- 	tristate "Build Realtek HD-audio codec support"
- 	select SND_HDA_GENERIC
-diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
-index 13e04e1f65de..2d5d4d841d87 100644
---- a/sound/pci/hda/Makefile
-+++ b/sound/pci/hda/Makefile
-@@ -39,6 +39,7 @@ snd-hda-scodec-cs35l56-spi-objs :=	cs35l56_hda_spi.o
- snd-hda-cs-dsp-ctls-objs :=		hda_cs_dsp_ctl.o
- snd-hda-scodec-component-objs :=	hda_component.o
- snd-hda-scodec-tas2781-i2c-objs :=	tas2781_hda_i2c.o
-+snd-hda-scodec-tas2781-spi-y :=	tas2781_hda_spi.o tas2781_spi_fwlib.o
- 
- # common driver
- obj-$(CONFIG_SND_HDA) := snd-hda-codec.o
-@@ -70,6 +71,7 @@ obj-$(CONFIG_SND_HDA_SCODEC_CS35L56_SPI) += snd-hda-scodec-cs35l56-spi.o
- obj-$(CONFIG_SND_HDA_CS_DSP_CONTROLS) += snd-hda-cs-dsp-ctls.o
- obj-$(CONFIG_SND_HDA_SCODEC_COMPONENT) += snd-hda-scodec-component.o
- obj-$(CONFIG_SND_HDA_SCODEC_TAS2781_I2C) += snd-hda-scodec-tas2781-i2c.o
-+obj-$(CONFIG_SND_HDA_SCODEC_TAS2781_SPI) += snd-hda-scodec-tas2781-spi.o
- 
- # this must be the last entry after codec drivers;
- # otherwise the codec patches won't be hooked before the PCI probe
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 70d80b6af3fe..1070a1c0edec 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6913,6 +6913,11 @@ static void tas2781_fixup_i2c(struct hda_codec *cdc,
- 	comp_generic_fixup(cdc, action, "i2c", "TIAS2781", "-%s:00", 1);
- }
- 
-+static void tas2781_fixup_spi_two(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
-+{
-+	comp_generic_fixup(cdc, action, "spi", "TXNW2781", "-%s:00-tas2781-hda.%d", 2);
-+}
-+
- static void yoga7_14arb7_fixup_i2c(struct hda_codec *cdc,
- 	const struct hda_fixup *fix, int action)
- {
-@@ -7451,6 +7456,7 @@ enum {
- 	ALC236_FIXUP_DELL_DUAL_CODECS,
- 	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
- 	ALC287_FIXUP_TAS2781_I2C,
-+	ALC245_FIXUP_TAS2781_SPI_2_HP_GPIO_LED,
- 	ALC287_FIXUP_YOGA7_14ARB7_I2C,
- 	ALC245_FIXUP_HP_MUTE_LED_COEFBIT,
- 	ALC245_FIXUP_HP_X360_MUTE_LEDS,
-@@ -9618,6 +9624,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
- 	},
-+	[ALC245_FIXUP_TAS2781_SPI_2_HP_GPIO_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = tas2781_fixup_spi_two,
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_HP_GPIO_LED,
-+	},
- 	[ALC287_FIXUP_YOGA7_14ARB7_I2C] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = yoga7_14arb7_fixup_i2c,
-@@ -10074,6 +10086,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8b8d, "HP", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b8f, "HP", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b92, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b93, "HP", ALC245_FIXUP_TAS2781_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8b97, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8bdd, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
--- 
-2.40.1
+1. The biggest objection is, that the Linux Kernel has a subsystem
+specifically targeted for audio devices, adding support for these
+devices in another subsystem are counterproductive as they work around
+the shortcomings of the audio subsystem while forcing support for a
+device into a subsystem that was never designed for such devices.
+Instead, the audio subsystem has to be adjusted to be able to support
+all of the required workflows, otherwise, the next audio driver with
+similar requirements will have to move to the media subsystem as well,
+the audio subsystem would then never experience the required change and
+soon we would have two audio subsystems.
 
+2. Closely connected to the previous objection, the media subsystem with
+its current staff of maintainers is overworked and barely capable of
+handling the workload, which includes an abundance of different devices
+from DVB, codecs, cameras, PCI devices, radio tuners, HDMI CEC, IR
+receivers, etc. Adding more device types to this matrix will make the
+situation worse and should only be done with a plan for how first to
+improve the current maintainer situation.
+
+3. By using the same framework and APIs as the video codecs, the audio
+codecs are going to cause extra work for the video codec developers and
+maintainers simply by occupying the same space that was orginally
+designed for the purpose of video only. Even if you try to not cause any
+extra stress the simple presence of the audio code in the codebase is
+going to cause restrictions.
+
+The main issue here is that the audio subsystem doesn't provide a
+mem2mem framework and I would say you are in luck because the media
+subsystem has gathered a lot of shortcomings with its current
+implementation of the mem2mem framework over time, which is why a new
+implementation will be necessary anyway.
+
+So instead of hammering a driver into the wrong destination, I would
+suggest bundling our forces and implementing a general memory-to-memory
+framework that both the media and the audio subsystem can use, that
+addresses the current shortcomings of the implementation and allows you
+to upload the driver where it is supposed to be.
+This is going to cause restrictions as well, like mentioned in the
+concern number 3, but with the difference that we can make a general
+plan for such a framework that accomodates lots of use cases and each
+subsystem can add their routines on top of the general framework.
+
+Another possible alternative is to try and make the DRM scheduler more
+generally available, this scheduler is the most mature and in fact is
+very similar to what you and what the media devices need.
+Which again just shows how common your usecase actually is and how a
+general solution is the best long term solution.
+
+Please notice that Daniel Almeida is currently working on something
+related to this:
+https://lore.kernel.org/linux-media/3F80AC0D-DCAA-4EDE-BF58-BB1369C7EDCA@collabora.com/T/#u
+
+If the toplevel maintainers decide to add the patchset so be it, but I
+wanted to voice my concerns and also highlight that this is likely going
+to cause extra stress for the video codecs maintainers and the
+maintainers in general. We cannot spend a lot of time on audio codecs,
+as video codecs already fill up our available time sufficiently,
+so the use of the framework needs to be conservative and cause as little
+extra work as possible for the original use case of the framework.
+
+Regards,
+Sebastian
+
+On 19.03.2024 15:50, Shengjiu Wang wrote:
+>Audio signal processing also has the requirement for memory to
+>memory similar as Video.
+>
+>This asrc memory to memory (memory ->asrc->memory) case is a non
+>real time use case.
+>
+>User fills the input buffer to the asrc module, after conversion, then asrc
+>sends back the output buffer to user. So it is not a traditional ALSA playback
+>and capture case.
+>
+>It is a specific use case,  there is no reference in current kernel.
+>v4l2 memory to memory is the closed implementation,  v4l2 current
+>support video, image, radio, tuner, touch devices, so it is not
+>complicated to add support for this specific audio case.
+>
+>Because we had implemented the "memory -> asrc ->i2s device-> codec"
+>use case in ALSA.  Now the "memory->asrc->memory" needs
+>to reuse the code in asrc driver, so the first 3 patches is for refining
+>the code to make it can be shared by the "memory->asrc->memory"
+>driver.
+>
+>The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
+>user applications only use the ioctl of v4l2 framework.
+>
+>Other change is to add memory to memory support for two kinds of i.MX ASRC
+>module.
+>
+>changes in v15:
+>- update MAINTAINERS for imx-asrc.c and vim2m-audio.c
+>
+>changes in v14:
+>- document the reservation of 'AUXX' fourcc format.
+>- add v4l2_audfmt_to_fourcc() definition.
+>
+>changes in v13
+>- change 'pixelformat' to 'audioformat' in dev-audio-mem2mem.rst
+>- add more description for clock drift in ext-ctrls-audio-m2m.rst
+>- Add "media: v4l2-ctrls: add support for fraction_bits" from Hans
+>  to avoid build issue for kernel test robot
+>
+>changes in v12
+>- minor changes according to comments
+>- drop min_buffers_needed = 1 and V4L2_CTRL_FLAG_UPDATE flag
+>- drop bus_info
+>
+>changes in v11
+>- add add-fixed-point-test-controls in vivid.
+>- add v4l2_ctrl_fp_compose() helper function for min and max
+>
+>changes in v10
+>- remove FIXED_POINT type
+>- change code base on media: v4l2-ctrls: add support for fraction_bits
+>- fix issue reported by kernel test robot
+>- remove module_alias
+>
+>changes in v9:
+>- add MEDIA_ENT_F_PROC_AUDIO_RESAMPLER.
+>- add MEDIA_INTF_T_V4L_AUDIO
+>- add media controller support
+>- refine the vim2m-audio to support 8k<->16k conversion.
+>
+>changes in v8:
+>- refine V4L2_CAP_AUDIO_M2M to be 0x00000008
+>- update doc for FIXED_POINT
+>- address comments for imx-asrc
+>
+>changes in v7:
+>- add acked-by from Mark
+>- separate commit for fixed point, m2m audio class, audio rate controls
+>- use INTEGER_MENU for rate,  FIXED_POINT for rate offset
+>- remove used fmts
+>- address other comments for Hans
+>
+>changes in v6:
+>- use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
+>  m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_part_two.
+>- change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
+>- fix warning by kernel test rebot
+>- remove some unused format V4L2_AUDIO_FMT_XX
+>- Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
+>- rename audm2m to viaudm2m.
+>
+>changes in v5:
+>- remove V4L2_AUDIO_FMT_LPCM
+>- define audio pixel format like V4L2_AUDIO_FMT_S8...
+>- remove rate and format in struct v4l2_audio_format.
+>- Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
+>- updata document accordingly.
+>
+>changes in v4:
+>- update document style
+>- separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commit
+>
+>changes in v3:
+>- Modify documents for adding audio m2m support
+>- Add audio virtual m2m driver
+>- Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+>- Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
+>- with modification in v4l-utils, pass v4l2-compliance test.
+>
+>changes in v2:
+>- decouple the implementation in v4l2 and ALSA
+>- implement the memory to memory driver as a platfrom driver
+>  and move it to driver/media
+>- move fsl_asrc_common.h to include/sound folder
+>
+>Hans Verkuil (1):
+>  media: v4l2-ctrls: add support for fraction_bits
+>
+>Shengjiu Wang (15):
+>  ASoC: fsl_asrc: define functions for memory to memory usage
+>  ASoC: fsl_easrc: define functions for memory to memory usage
+>  ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+>  ASoC: fsl_asrc: register m2m platform device
+>  ASoC: fsl_easrc: register m2m platform device
+>  media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+>  media: v4l2: Add audio capture and output support
+>  media: uapi: Define audio sample format fourcc type
+>  media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
+>  media: uapi: Add audio rate controls support
+>  media: uapi: Declare interface types for Audio
+>  media: uapi: Add an entity type for audio resampler
+>  media: vivid: add fixed point test controls
+>  media: imx-asrc: Add memory to memory driver
+>  media: vim2m-audio: add virtual driver for audio memory to memory
+>
+> .../media/mediactl/media-types.rst            |   11 +
+> .../userspace-api/media/v4l/buffer.rst        |    6 +
+> .../userspace-api/media/v4l/common.rst        |    1 +
+> .../media/v4l/dev-audio-mem2mem.rst           |   71 +
+> .../userspace-api/media/v4l/devices.rst       |    1 +
+> .../media/v4l/ext-ctrls-audio-m2m.rst         |   59 +
+> .../userspace-api/media/v4l/pixfmt-audio.rst  |  100 ++
+> .../userspace-api/media/v4l/pixfmt.rst        |    1 +
+> .../media/v4l/vidioc-enum-fmt.rst             |    2 +
+> .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
+> .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
+> .../media/v4l/vidioc-querycap.rst             |    3 +
+> .../media/v4l/vidioc-queryctrl.rst            |   11 +-
+> .../media/videodev2.h.rst.exceptions          |    3 +
+> MAINTAINERS                                   |   17 +
+> .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
+> drivers/media/platform/nxp/Kconfig            |   13 +
+> drivers/media/platform/nxp/Makefile           |    1 +
+> drivers/media/platform/nxp/imx-asrc.c         | 1256 +++++++++++++++++
+> drivers/media/test-drivers/Kconfig            |   10 +
+> drivers/media/test-drivers/Makefile           |    1 +
+> drivers/media/test-drivers/vim2m-audio.c      |  793 +++++++++++
+> drivers/media/test-drivers/vivid/vivid-core.h |    2 +
+> .../media/test-drivers/vivid/vivid-ctrls.c    |   26 +
+> drivers/media/v4l2-core/v4l2-compat-ioctl32.c |    9 +
+> drivers/media/v4l2-core/v4l2-ctrls-api.c      |    1 +
+> drivers/media/v4l2-core/v4l2-ctrls-core.c     |   93 +-
+> drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   10 +
+> drivers/media/v4l2-core/v4l2-dev.c            |   21 +
+> drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
+> drivers/media/v4l2-core/v4l2-mem2mem.c        |   13 +-
+> include/media/v4l2-ctrls.h                    |   13 +-
+> include/media/v4l2-dev.h                      |    2 +
+> include/media/v4l2-ioctl.h                    |   34 +
+> .../fsl => include/sound}/fsl_asrc_common.h   |   60 +
+> include/uapi/linux/media.h                    |    2 +
+> include/uapi/linux/v4l2-controls.h            |    9 +
+> include/uapi/linux/videodev2.h                |   50 +-
+> sound/soc/fsl/fsl_asrc.c                      |  144 ++
+> sound/soc/fsl/fsl_asrc.h                      |    4 +-
+> sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
+> sound/soc/fsl/fsl_easrc.c                     |  233 +++
+> sound/soc/fsl/fsl_easrc.h                     |    6 +-
+> 43 files changed, 3145 insertions(+), 27 deletions(-)
+> create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
+> create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
+> create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+> create mode 100644 drivers/media/platform/nxp/imx-asrc.c
+> create mode 100644 drivers/media/test-drivers/vim2m-audio.c
+> rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (60%)
+>
+>-- 
+>2.34.1
+>
+>
