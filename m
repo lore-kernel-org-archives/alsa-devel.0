@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAE2CC10F16
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 14:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C142C25B10
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Apr 2024 14:32:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE295E8E;
-	Tue, 30 Apr 2024 16:32:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE295E8E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1679DE72;
+	Tue, 30 Apr 2024 16:32:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1679DE72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714487545;
-	bh=TpIld0LnjkQmQ5PsI5skb5CrdOEKjutEJsH7FAf0+NE=;
+	s=default; t=1714487556;
+	bh=P/HYWi/LV077z/N4A+ZZFfgcNLE/hTASIK4wgh7zsPU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YVOot/1iAJG9LlWHdcd8oiRcjBuIbYcF3nvBnOMXbZZcLNzMyMgvH9wKQDTqWCVc+
-	 it+C/5Ei5WMSQgvzMTT5qqD/0xQSTve9EqbKK9OYHdOSqP4tejvo1xWF1FJ3iiwCVX
-	 dFWQ2/x3h8ojSzYH80AfpGcKSOnlsB+igd4bSHOk=
+	b=cXSzAAbxGs5ctHO14uvZgqMRKFT7Ton+hkwRrm+f66NBvCp5JLDSabP+EIAQRHh7Z
+	 4rTvAUzjhUiGyBcwSspYuJQHGV1qxAWqlz40yq5TNft7DAGNtc4xgtnEzuIhlwl3Np
+	 QDIwMRJbiPTYsMt77LEdOnOKS/dhthgRow2TjdD0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB8D3F805B3; Tue, 30 Apr 2024 16:31:50 +0200 (CEST)
+	id 1CF7BF805E1; Tue, 30 Apr 2024 16:31:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21561F805AB;
-	Tue, 30 Apr 2024 16:31:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C2EDF805BE;
+	Tue, 30 Apr 2024 16:31:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0EFEF8028D; Tue, 30 Apr 2024 16:31:42 +0200 (CEST)
+	id C7A68F80269; Tue, 30 Apr 2024 16:31:44 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A280DF8023A
-	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 16:31:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A280DF8023A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4349AF8025D
+	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2024 16:31:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4349AF8025D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Fhfzw95x
+ header.s=k20201202 header.b=LK+YxBbP
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 47E3D614DD;
-	Tue, 30 Apr 2024 14:31:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04429C2BBFC;
-	Tue, 30 Apr 2024 14:31:29 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 33B7961614;
+	Tue, 30 Apr 2024 14:31:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15ADEC4AF19;
+	Tue, 30 Apr 2024 14:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714487491;
-	bh=TpIld0LnjkQmQ5PsI5skb5CrdOEKjutEJsH7FAf0+NE=;
+	s=k20201202; t=1714487493;
+	bh=P/HYWi/LV077z/N4A+ZZFfgcNLE/hTASIK4wgh7zsPU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Fhfzw95xZd3KJTF+cCGdHv5EaYCh88EHjU8X8xTwZ8XiZqYVfYcPkaRQIohdggJPy
-	 WmRAfI/LaTfKGjSQP1hyncVMwFyA8Sjw0pWDoNgp8LVjWtUZGhTP2JpzjCw+8n2t0u
-	 5+CzBUAJRvmzeeENLs9h3wUE0UFAXZw1yWN1kf4qwal+onpYkR8VfpWkNVFuJuJcH5
-	 ueJ88sdZ8zG2RBw5pmuOTlQnkkwi7n7dHsuWoZlax1sN3te04Oix8U3fOq8PrYZBXY
-	 uI3BLckXTXKzLTAz3frfU+05s+09aa9IiXJ0W8BH1il+W7oBRKNKP75YtSy44fXAiS
-	 LAcE/5vF+PgEQ==
+	b=LK+YxBbPqxXLUdS2eBmf/gK0xn3SWu1zTu+GSvZ6K4hmjd89eFab2s1Vv1VtVFCFm
+	 +DTyf/Q/X+Rya8uKNgdfx776lXc8tyQZK2vEPwfHtqyJbenDRX8QHNzkCFwrcIOLoh
+	 u4fcQrB4W2uZroJfqMFX+ZpSnSy6qcPXApjeae3Ikeq4M4Suj0y3h2ULirXX7iMHOS
+	 r1FVkPeha5HCkHKetmMyM4aIC+9RoppHFqHnBZFll3m0chIcy53+ViMbZttnNyuDOd
+	 jOibllnSk9BGWrXYST6DYCd5e34+2f1hZTt6wgZiUYL65k3XKngd9rGTsMZVw72SlI
+	 8YFCXkLT3sRWQ==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-amlogic@lists.infradead.org
-In-Reply-To: <20240426134150.3053741-1-jbrunet@baylibre.com>
-References: <20240426134150.3053741-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: meson: cards: select SND_DYNAMIC_MINORS
-Message-Id: <171448748960.1870439.10234664957673529561.b4-ty@kernel.org>
-Date: Tue, 30 Apr 2024 23:31:29 +0900
+To: linux-sound@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de
+In-Reply-To: <20240426153033.38500-1-pierre-louis.bossart@linux.intel.com>
+References: <20240426153033.38500-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: da7219-aad: fix usage of
+ device_get_named_child_node()
+Message-Id: <171448749253.1870439.912738117860341147.b4-ty@kernel.org>
+Date: Tue, 30 Apr 2024 23:31:32 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: R2ZLUGNLFFOKCHC4KNGPY6LBWEAT2BSZ
-X-Message-ID-Hash: R2ZLUGNLFFOKCHC4KNGPY6LBWEAT2BSZ
+Message-ID-Hash: LBTFDPKYVP5NENJZSJQ2ZBCOA4363V2N
+X-Message-ID-Hash: LBTFDPKYVP5NENJZSJQ2ZBCOA4363V2N
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R2ZLUGNLFFOKCHC4KNGPY6LBWEAT2BSZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LBTFDPKYVP5NENJZSJQ2ZBCOA4363V2N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,14 +91,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 26 Apr 2024 15:41:47 +0200, Jerome Brunet wrote:
-> Amlogic sound cards do create a lot of pcm interfaces, possibly more than
-> 8. Some pcm interfaces are internal (like DPCM backends and c2c) and not
-> exposed to userspace.
+On Fri, 26 Apr 2024 10:30:33 -0500, Pierre-Louis Bossart wrote:
+> The documentation for device_get_named_child_node() mentions this
+> important point:
 > 
-> Those interfaces still increase the number passed to snd_find_free_minor(),
-> which eventually exceeds 8 causing -EBUSY error on card registration if
-> CONFIG_SND_DYNAMIC_MINORS=n and the interface is exposed to userspace.
+> "
+> The caller is responsible for calling fwnode_handle_put() on the
+> returned fwnode pointer.
+> "
 > 
 > [...]
 
@@ -108,8 +108,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: meson: cards: select SND_DYNAMIC_MINORS
-      commit: 6db26f9ea4edd8a17d39ab3c20111e3ccd704aef
+[1/1] ASoC: da7219-aad: fix usage of device_get_named_child_node()
+      commit: e8a6a5ad73acbafd98e8fd3f0cbf6e379771bb76
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
