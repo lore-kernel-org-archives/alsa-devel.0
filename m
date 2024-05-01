@@ -4,71 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EA3EC4345F
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 May 2024 13:44:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E970C4345F
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 May 2024 13:44:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4CD7E7F;
-	Wed,  1 May 2024 15:44:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4CD7E7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AD01A4A;
+	Wed,  1 May 2024 15:44:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AD01A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714571054;
-	bh=z2VFJH9/TTaHh5ejO6dlfSh3KL6ufSg57ZzswSlInCU=;
+	s=default; t=1714571074;
+	bh=DdmaAL72NIA/h0L7GanbdzpHoFrQQ/7SR3lk+7msWSI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=os7YEaDWuZEDEE2IYo1KnLYA5ROjQ6dZhGyeur3Z/gZywFFy4w/pLwWrKuHUgFNpX
-	 GPO7uGI4riirkVMgwGFe1rzXGynxJJZdR70GEBu8DXo+E7oTWJ1x4i0e7DDvgPdPuv
-	 W1vdZO/TriBs6sW4DyV7iVPQE/3p3rUAN5SJNtxM=
+	b=IfQzpnEVbK1R5lYeQksHVQDTciBJ8o8vqEAkJsbiSFpzKzGXeo6KzfTA5RdgDl8Pm
+	 R9cSOZ+iAjffvvFlgie9a77r2FndwoYlhndwD+qv8HmsCC+gYjhqRj/qWZwa7ene9p
+	 2c5V8DAYlxla4Vyqb3gVcmNlzEV4OzqixqLvEzOo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38F1CF80570; Wed,  1 May 2024 15:43:55 +0200 (CEST)
+	id DDF17F8023A; Wed,  1 May 2024 15:43:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2184CF8023A;
-	Wed,  1 May 2024 15:43:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38B3CF80579;
+	Wed,  1 May 2024 15:43:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 13F4BF80579; Wed,  1 May 2024 15:43:30 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 66390F8059F; Wed,  1 May 2024 15:43:33 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E721F80266
-	for <alsa-devel@alsa-project.org>; Wed,  1 May 2024 15:43:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E721F80266
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9724DF8023A
+	for <alsa-devel@alsa-project.org>; Wed,  1 May 2024 15:43:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9724DF8023A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=MdCJnQdv
+ header.s=k20201202 header.b=MQLpGkhG
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8F5DF6179D;
-	Wed,  1 May 2024 13:43:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54D20C4AF18;
-	Wed,  1 May 2024 13:43:23 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 924FECE12FB;
+	Wed,  1 May 2024 13:43:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5670CC113CC;
+	Wed,  1 May 2024 13:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714571004;
-	bh=z2VFJH9/TTaHh5ejO6dlfSh3KL6ufSg57ZzswSlInCU=;
+	s=k20201202; t=1714571000;
+	bh=DdmaAL72NIA/h0L7GanbdzpHoFrQQ/7SR3lk+7msWSI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MdCJnQdv/gUcZN1c5Yyf/QFREAwgMxKWcx/RZBt/53Gv87EGHiRpZwKLIYVTDEyQK
-	 PVae/futdrj/8WA1LpqUiViYnBPJj1ibq6tllvIGAPd1d3j+rblbxnBbazeKemOdAn
-	 ZoKDy/GWqVGqW16FAa9XEuKpqfcRATcwxYu0Wmh/XEaXH/QQ0REKIW+3pDoXN0QhbC
-	 OmUIQ08CpkeQDpabv4IWnRMKbq18tEWLQDzcoxg6ZcDgNP0YkAo6Uu59pY1dA9R5di
-	 ZlF6KwU/yJuB3TWgkesra5mCtWRKYSnVnCRLZd4vhV4AQpUOWZvCF8W6cDOboWp0A/
-	 GrZF6bFJA57tQ==
+	b=MQLpGkhG1JuRdCgLR33W/+2gEZwsIYqoQcLs4ea0fFWBCk0c4T5gNZELBlbfgfKfc
+	 8+c9fD7pGC5CPgzxitM14pkoK42DPYQcUkIp4vD4Z2v6tjTbR6HfKaIfETh7XDtB0x
+	 2YCW62xTvJxMcTqYWjqmob3LY8ATjA51ZVSIfCOkpKkw6yk4lpryu+Ud2TTkxTQ4ZT
+	 xXXUIVPpFcbu702XdCSIZHn7zMcQUGwzeNSaG+eUtUiv3K/wE13dAieeSd+XMbP+UM
+	 xhK/pELuTyDIPo7s8vvTRjjRExPiVXfPCIliBc7Wx37XEsAdQ1EX6C8ZmpwN6vu066
+	 UJXJQD0zLOfGw==
 From: Mark Brown <broonie@kernel.org>
 To: linux-sound@vger.kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de
-In-Reply-To: <20240426153902.39560-1-pierre-louis.bossart@linux.intel.com>
-References: <20240426153902.39560-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/5] ASoc: SOF: misc updates for 6.10
-Message-Id: <171457100276.1888704.18305360939038421630.b4-ty@kernel.org>
-Date: Wed, 01 May 2024 22:43:22 +0900
+In-Reply-To: <20240426152123.36284-1-pierre-louis.bossart@linux.intel.com>
+References: <20240426152123.36284-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/12] ASoC: Intel: updates for 6.10 - part5
+Message-Id: <171457099874.1888704.2352818866469804657.b4-ty@kernel.org>
+Date: Wed, 01 May 2024 22:43:18 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: QHJGNLINGRGYX72UH7SK2FEWJLKDHFA3
-X-Message-ID-Hash: QHJGNLINGRGYX72UH7SK2FEWJLKDHFA3
+Message-ID-Hash: QDHP5MUAENWVYLZI26KK4HTFDTLIWP4E
+X-Message-ID-Hash: QDHP5MUAENWVYLZI26KK4HTFDTLIWP4E
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QHJGNLINGRGYX72UH7SK2FEWJLKDHFA3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QDHP5MUAENWVYLZI26KK4HTFDTLIWP4E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,15 +92,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 26 Apr 2024 10:38:57 -0500, Pierre-Louis Bossart wrote:
-> Fixes when fw_lib_prefix is not set, updated error messages, improved
-> dmesg logs to SoundWire configurations not supported by ACPI
-> tables/topology and support for IEC61937 passthrough.
+On Fri, 26 Apr 2024 10:21:11 -0500, Pierre-Louis Bossart wrote:
+> This patchset corrects a couple of mistakes corrected, improves
+> snd_soc_card allocation.  The new functionality is mostly for
+> SoundWire platforms, with new SKUs for Dell and Acer, and support for
+> the Cirrus Logic bridge/sidecar amplifier topology.
 > 
-> Peter Ujfalusi (2):
->   ASoC: SOF: debug: Handle cases when fw_lib_prefix is not set, NULL
->   ASoC: SOF: ipc4-topology: Advertise passthrough capable PCMs (using
->     ChainDMA)
+> Bard Liao (1):
+>   ASoC: Intel: sof_sdw: add a space before cfg-amp in components
 > 
 > [...]
 
@@ -108,16 +109,30 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: SOF: debug: Handle cases when fw_lib_prefix is not set, NULL
-      commit: b32487ca7b51ce430f15ec785269f11c25a6a560
-[2/5] ASoC: SOF: topology: remove incorrect widget id in error message
-      commit: 490e6c9b81e0c22087d250246717aee26ac5002e
-[3/5] ASoC: SOF: Intel: hda: simplify and reduce indentation for hda_sdw_machine_select()
-      commit: 5d4788b2647fabeaeeaf331e53451e0ed6241252
-[4/5] ASoC: SOF: Intel: hda: list SoundWire peripherals on mismatch
-      commit: 7ff01ca730f240811c13d9c3f8f8030211b3c911
-[5/5] ASoC: SOF: ipc4-topology: Advertise passthrough capable PCMs (using ChainDMA)
-      commit: eed4872a4220f30de37aeca695d2881630410b66
+[01/12] ASoC: Intel: skl_hda_dsp_generic: Allocate snd_soc_card dynamically
+        commit: 33e59e50ee7610473c85030edca73ad3df60b5c1
+[02/12] ASoC: Intel: skl_hda_dsp_generic: Use devm_kasprintf for the components string
+        commit: 69d0f88b9aebb5749ab0dbaead7414d718994380
+[03/12] ASoC: Intel: soc-acpi: mtl: add Dell SKU 0C64 and 0CC6
+        commit: 02e6f7cb487f18e1171ae6d12ad1066fbd25176d
+[04/12] ASoC: Intel: soc-acpi: mtl: add support for Acer Swift Go 14
+        commit: 64bfd26d982ec29123c65949229fa12c15f7df8f
+[05/12] ASoC: Intel: soc-acpi-intel-lnl-match: adds RT714 and RT1318 support
+        commit: 6d339113df3ab510ce075a18ccb10a20cb325d4e
+[06/12] ASoC: Intel: sof_sdw: Allocate snd_soc_card dynamically
+        commit: 38068d91cf3948ffa220d45f738505cc9f6e13d0
+[07/12] ASoC: Intel: sof-sdw: don't set card long_name
+        commit: 2086b55fd6ddcaa92e473ba7017f6a986870337e
+[08/12] ASoC: Intel: sof_sdw: add a space before cfg-amp in components
+        commit: 6be269d274353d2604bf49b92f703610cb4734e9
+[09/12] ASoC: Intel: sof-sdw: really remove FOUR_SPEAKER quirk
+        commit: 0bab4cfd7c1560095e29919e2ebe01783b9096dc
+[10/12] ASoC: Intel: sof_sdw: Delay update of the codec_conf array
+        commit: 628cc5d0c4bd6a3f70c793968f8e2546afc8c3a3
+[11/12] ASoC: Intel: sof_sdw: Add callbacks to register sidecar devices
+        commit: da5244180281a18c4c7859674fec308514aaf629
+[12/12] ASoC: intel: sof_sdw: Add support for cs42l43-cs35l56 sidecar amps
+        commit: b831b4dca48dbe0f1f7705b44460dd9ca7f2f940
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
