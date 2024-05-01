@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3870C4345F
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 May 2024 13:44:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12991C4345F
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 May 2024 13:45:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DEAA7E8E;
-	Wed,  1 May 2024 15:44:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEAA7E8E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98DE8DF8;
+	Wed,  1 May 2024 15:44:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98DE8DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714571088;
-	bh=TkInIQ2LBuICjPUJzoUZLuS/i0Pe8RU9a1IrIQyiQTE=;
+	s=default; t=1714571099;
+	bh=O6VvEOG1FYYxiSATtFdjPAV7d0igftAeyhbDcL2/oH0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=k8A9amQJzeW0jRXN3UhfKbNnLX+lq1O2puakCpVeCSUEq5+hou53ZfrQCfoDbmtQF
-	 yFve6Yv2kPYw2tmySq9rCsk1N2oRyhqZliq++R9rp4N4XQKCV2q+BqKwryW8izIRHO
-	 6WvUe5vdtdYHbFmZPbBPV4roLe5UgTETQgg2Ynvc=
+	b=c8IEuWnAF9Gz/QKbiZphXkbrCxz6rf3GqYCOAZBJg5kueQHEQqxJo2Tx9ZCVvR/UT
+	 Gh4ipRBY4EwZ95bSILsVF3VAr2MV5qjFkP3/ORTw8CGB+xffhcreC1a/3BJFEEU8Hb
+	 huFL9BKb6Ypkwbj54sWFtA94jWVQuYP44bpqhpGA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E207CF805F3; Wed,  1 May 2024 15:43:59 +0200 (CEST)
+	id 75718F80617; Wed,  1 May 2024 15:44:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43E1CF805F0;
-	Wed,  1 May 2024 15:43:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97E01F8061B;
+	Wed,  1 May 2024 15:44:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32A2BF8058C; Wed,  1 May 2024 15:43:36 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 5A57EF80580; Wed,  1 May 2024 15:43:38 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1E8F2F80269
-	for <alsa-devel@alsa-project.org>; Wed,  1 May 2024 15:43:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E8F2F80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8D33DF8003A
+	for <alsa-devel@alsa-project.org>; Wed,  1 May 2024 15:43:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D33DF8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=TxeuHYro
+ header.s=k20201202 header.b=qh8W1fcN
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 5037ACE12DD;
-	Wed,  1 May 2024 13:43:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7132C4AF14;
-	Wed,  1 May 2024 13:43:17 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id BE264CE12FD;
+	Wed,  1 May 2024 13:43:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C60D4C113CC;
+	Wed,  1 May 2024 13:43:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714570998;
-	bh=TkInIQ2LBuICjPUJzoUZLuS/i0Pe8RU9a1IrIQyiQTE=;
+	s=k20201202; t=1714571002;
+	bh=O6VvEOG1FYYxiSATtFdjPAV7d0igftAeyhbDcL2/oH0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=TxeuHYrosur0Zzw3zWeNT1Nm/4di2ITwb9K5PtUyKT49Le1lDVn5t3zoV9hWB5uU6
-	 GH6TWN9pzGyjDH2MmvCS3ptSxKF6voJFKPftOJhCYt/yJOY9xqz53eAzn06U6yzVWo
-	 zXu6+XPajtP4zdzxnVGpmM8nDLfDey29PD5g4AyVYASZ7YIAzA38Y3Wgt3+f8BxDAl
-	 KY3THJan+y7+ZpCOHvqSZGxSEZFOaqvl73w3QlXNrSVyi4rUVZUi+ClmVI9nb0veB8
-	 0zKBS9ezpVWsz+S42fFkZsnGNcwrYy0YaPDZaKgPKIV+r6bWcf0Jw1UFz1QL++WI7q
-	 ugAqyg2qk0kEg==
+	b=qh8W1fcNhbalI3y+nG4MQoEDqYZzv56KKCouGMwdNtQQ6ImtLhumgFcinolCuOUJ3
+	 dcwtvnQW4NvKJ0UwzADP0Z+EjWW0JZG1qkdgE8wsDY4ZxesO6g5ilAgOaCXBLjRCx7
+	 x8XY6qza8LaQndjO8KrQVKvVMaYWi+StgB6Lwb/HZoM4UNDclvuOoM8f3SJM3Yryhe
+	 i6FWm4V1uYMTgTsn9jgg8JkZuZg8qcf7Y9NwtUaUAvlDbAiUC60Bxx0xPRad7Wy4gn
+	 MLEk2n+A5XwxvsRgivZVy4OMGldX2CCvQ7usaj0zPkPRDBal6g1ZLWgVSp6yV7sG6/
+	 S1byDemKE4IKw==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- tiwai@suse.com, perex@perex.cz, amadeuszx.slawinski@linux.intel.com
-In-Reply-To: <20240426095733.3946951-1-cezary.rojewski@intel.com>
-References: <20240426095733.3946951-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/8] ASoC: Intel: avs: PCM code cleanup
-Message-Id: <171457099714.1888704.1435214977574502288.b4-ty@kernel.org>
-Date: Wed, 01 May 2024 22:43:17 +0900
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-amlogic@lists.infradead.org
+In-Reply-To: <20240426152946.3078805-1-jbrunet@baylibre.com>
+References: <20240426152946.3078805-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH 0/4] ASoC: meson: tdm fixes
+Message-Id: <171457100123.1888704.3713341677013104535.b4-ty@kernel.org>
+Date: Wed, 01 May 2024 22:43:21 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: 4E4K5OGUNRGIMNA7H2AWA55LUFW3CFVI
-X-Message-ID-Hash: 4E4K5OGUNRGIMNA7H2AWA55LUFW3CFVI
+Message-ID-Hash: 6I5GTIVFIQQWIEY5OBFXOZNRXNPB4BGU
+X-Message-ID-Hash: 6I5GTIVFIQQWIEY5OBFXOZNRXNPB4BGU
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4E4K5OGUNRGIMNA7H2AWA55LUFW3CFVI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6I5GTIVFIQQWIEY5OBFXOZNRXNPB4BGU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,14 +92,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 26 Apr 2024 11:57:25 +0200, Cezary Rojewski wrote:
-> A set of changes that aims to improve readability of cohesiveness of the
-> pcm code for the avs-driver.
+On Fri, 26 Apr 2024 17:29:37 +0200, Jerome Brunet wrote:
+> This patchset fixes 2 problems on TDM which both find a solution
+> by properly implementing the .trigger() callback for the TDM backend.
 > 
-> Start off with a change that synchronizes DAI open/close - DAIs are
-> started up in ascending order yet their shutdown does not follow the
-> scheme - it is done in the ascending order too, rather than desceding
-> one. This patch is a dependency for the next one in line.
+> ATM, enabling the TDM formatters is done by the .prepare() callback
+> because handling the formatter is slow due to necessary calls to CCF.
+> 
+> The first problem affects the TDMIN. Because .prepare() is called on DPCM
+> backend first, the formatter are started before the FIFOs and this may
+> cause a random channel shifts if the TDMIN use multiple lanes with more
+> than 2 slots per lanes. Using trigger() allows to set the FE/BE order,
+> solving the problem.
 > 
 > [...]
 
@@ -108,22 +113,14 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: pcm: Reverse iterate DAIs when shutting them down
-      commit: 31a70a71b3a730aa703bbd05713d21115dd6d33a
-[2/8] ASoC: Intel: avs: Relocate HDA BE DAI specific operations
-      commit: 140df6d4d5f541e950a35cad2e3dffb49186ed74
-[3/8] ASoC: Intel: avs: Remove redundancy around DAI shutdown
-      commit: b9d59f970ea7772957f6da02ca1ba272ef4495b8
-[4/8] ASoC: Intel: avs: Store pointer to adev in DAI dma_data
-      commit: c303a994e5d0f7d297cb6ac56052dce8f412ee67
-[5/8] ASoC: Intel: avs: Remove redundancy around DAI startup
-      commit: 3a48d146aa761bc591272bc453eda64743128a31
-[6/8] ASoC: Intel: avs: Remove redundancy around DAI prepare
-      commit: 0f8843ca4f6cbf0efb8c2d5516a3b92fb2771a04
-[7/8] ASoC: Intel: avs: Store pointer to link_stream in dma_data
-      commit: cdcb770a60e8e6b9fbb737ebe21b2daadaba1744
-[8/8] ASoC: Intel: avs: Clean up hw constraints initialization
-      commit: e85e75b67993c1fb0c80306783c31266261170d4
+[1/4] ASoC: meson: axg-fifo: use threaded irq to check periods
+      commit: b11d26660dff8d7430892008616452dc8e5fb0f3
+[2/4] ASoC: meson: axg-card: make links nonatomic
+      commit: dcba52ace7d4c12e2c8c273eff55ea03a84c8baf
+[3/4] ASoC: meson: axg-tdm-interface: manage formatters in trigger
+      commit: f949ed458ad15a00d41b37c745ebadaef171aaae
+[4/4] ASoC: meson: axg-tdm: add continuous clock support
+      commit: a5a89037d080e0870d7517c61f8b2123d58ab33b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
