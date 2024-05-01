@@ -4,72 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35116C4345F
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 May 2024 13:45:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C081C4345F
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 May 2024 13:56:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 592BEE97;
-	Wed,  1 May 2024 15:45:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 592BEE97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A03DE7D;
+	Wed,  1 May 2024 15:56:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A03DE7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714571121;
-	bh=vXcDcxtnSs/apJuU11xn+Yb+fqjx2BAQ0xsxIB3/Fe0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1714571817;
+	bh=pFNsRounutZ0watyT0vICiz4MZiX/bMl6TXERH4tJEA=;
+	h=Date:To:Cc:References:Subject:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=u1wMVgfz/EWgdRj/FuKpbqAS/0ajN7wXP5ZnID8HDjdgVY05LftGgVVOzRw5ayj7C
-	 IfHSXo2bmSj5UQvof6GXs+iWu1BDgXY64pEvPzir6+BNO8Il7Ab1bNsQ0bvY6FXr36
-	 0EshD3yX0k0EHJuDMWOj6TEE1JC/ffNQVH27B0lk=
+	b=PksN05YlAZrf9BPVvQRrl3KqU5XtEgGqvtu4AGLsNhmZjdnrXZvzwFGAcWz5V8u7v
+	 xLQU6SPgiGJhplU73dfaoJ9Xd9a6COh8f0/f5zCn6gxwSbJass54vPMyXcR8R3ldE7
+	 3/Jx7dbidWQ2cCI9EOAGJ4UsZHlCuEo9Eu2bE9So=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E2531F80580; Wed,  1 May 2024 15:44:45 +0200 (CEST)
+	id 90B49F8057C; Wed,  1 May 2024 15:56:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BA54F80580;
-	Wed,  1 May 2024 15:44:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3EF1F805A9;
+	Wed,  1 May 2024 15:56:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B9FFF8028D; Wed,  1 May 2024 15:44:40 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id E8A4AF80266; Wed,  1 May 2024 15:56:16 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [217.72.192.78])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1B8F3F8025D
-	for <alsa-devel@alsa-project.org>; Wed,  1 May 2024 15:43:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B8F3F8025D
+	by alsa1.perex.cz (Postfix) with ESMTPS id A1516F8003A
+	for <alsa-devel@alsa-project.org>; Wed,  1 May 2024 15:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1516F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=amDgI5Ro
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 3B183CE12FA;
-	Wed,  1 May 2024 13:43:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E112C4AF18;
-	Wed,  1 May 2024 13:43:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714571001;
-	bh=vXcDcxtnSs/apJuU11xn+Yb+fqjx2BAQ0xsxIB3/Fe0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=amDgI5RoQy9yqB66pcrgP0Nw4V1kiXuB06mPrZRrmNMkxeb7lBF12yRCmzI1m+w3Z
-	 3pjCuYXsu7ouGsyAYCjeK1mYUzBPvTDcuZdxCt9qe9pJ4Sf481tkwOp+PGrWR/wdB/
-	 odK6nWimy0OecG4fsTMaktEvoexTN6DIUeFXtRCvkuI1+5PnR212uc4VELbPuGBBz6
-	 wAXnc7DYC7vcOE/DFiT6XHeDmM/NCx50ShJaLYuYyhFx1LL4IP2MWpLgfFBtt/d7Gz
-	 JOR71woW/3kbwLwiOxNZqLc/yS1bUvwFid4U33wbJOnT7rKXDhxdmnO5tMXC8IxM7Z
-	 5sUDhDxzBbVvQ==
-From: Mark Brown <broonie@kernel.org>
-To: linux-sound@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de
-In-Reply-To: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
-References: <20240426152529.38345-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/23] ASoC: Intel: updates for 6.10 - part6
-Message-Id: <171457100000.1888704.11793810516095524416.b4-ty@kernel.org>
-Date: Wed, 01 May 2024 22:43:20 +0900
+ unprotected) header.d=web.de header.i=markus.elfring@web.de
+ header.a=rsa-sha256 header.s=s29768273 header.b=sj0Zz4Z7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1714571742; x=1715176542; i=markus.elfring@web.de;
+	bh=tQlEmKt/yFE6pJw5QP1IkuqC5w2AGb1cHSuCQpauzPE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=sj0Zz4Z7WwehrcScZnEP2j/CtHXElTLzUJbSFf43oTyrmvSs3qxxoNKvJTfjy9kf
+	 eKyVPlU2C6mXjSjLzgg9NwZ+D/jolsDD4ic9/8raeX3Ssde3i5mfhHz6QDH6YIMbU
+	 yvyND/btLfkkfD9txKHYPJi0F9z8izKAPGtmfbb6JbeeeK4KXiESJuPeWVqlr0Car
+	 nQ+MtAjgB1frlBE4a8H3oiGCKSPLbna5cdtv1t4Dzn1Nqd5BBPvJK+xfwKg6wdoGC
+	 hxFK3xu0EI79y5TASZvz7tMAr7M+x8LC7pIKJTNX+GcwAFxPeMBc2r6eEdlGuOzaV
+	 aXcilABJudedHnwFEA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MDvDi-1ruVT82i28-00A9tM; Wed, 01
+ May 2024 15:55:42 +0200
+Message-ID: <745cc56b-0ef4-4cf9-9051-cae318866672@web.de>
+Date: Wed, 1 May 2024 15:55:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
-Message-ID-Hash: 3BND6VCCBSQ52RYGJSFV277DIMDYDMIW
-X-Message-ID-Hash: 3BND6VCCBSQ52RYGJSFV277DIMDYDMIW
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla Thunderbird
+To: Shenghao Ding <shenghao-ding@ti.com>, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Baojun Xu <Baojun.Xu@fpt.com>, Baojun Xu <baojun.xu@ti.com>,
+ Bard Liao <bard.liao@intel.com>, Bard Liao
+ <yung-chuan.liao@linux.intel.com>,
+ Cameron Berkenpas <cameron.berkenpas@gmail.com>, Gergo Koteles
+ <soyer@irl.hu>, Jaroslav Kysela <perex@perex.cz>, Kevin Lu
+ <kevin-lu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Liam Girdwood <liam.r.girdwood@intel.com>, mimperial@lenovo.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Shenghao Ding <13916275206@139.com>, Takashi Iwai <tiwai@suse.de>
+References: <20240501122252.1215-1-shenghao-ding@ti.com>
+Subject: Re: [PATCH v2] ALSA: ASoc/tas2781: Fix wrong loading calibrated data
+ sequence
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240501122252.1215-1-shenghao-ding@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qpHfSCuTjsAcWFdlirrfvRAu9pQCfSGHdw+3AD0m9n0syVrYE01
+ R0K/9DdBU5eFNpmX04d7WSAGNRDTpKJ/6hxJ/zTBfzxWHfsz/Izx9X1gQrl0j+yDj3Ngmpn
+ UFC8JXaQKSBfrnf7D/rkdHjGtUSQOA7G8l5zFMedtOvx6e9QxFMnTOP5Twu4GKKHd7Ralsr
+ hPHDH+DVFFXa5U2bhLYPg==
+UI-OutboundReport: notjunk:1;M01:P0:G76/HUMR6xA=;H06TuOOrw5lW9fWGLZgvBGyaf8X
+ O1nq13maYQPevtHwMcJueYQQnADEojURhq9Ki8CXofg8Kpfyy4zGwoeXqpmJezdrA3PvgwE++
+ 26hRi0FlMEt7ORTlluriHHZkiJRTv9ZC+sBkX5733AV30RwBktyo6GN6qvpisGrvuxFZRTPy6
+ no1JScLRuH8tZd4T+DXG+UZaAPV41IvhVRnicrEkxaNx9/wt8vdBu8F0xQBSS1ghL7F1cPqaD
+ kQeYBbXIVdIlLaeXe8nNNHeh9mP3FhY0mxGzisw+lw8zBqTSfztw/KwSYLNKcTqcZswlAxXRz
+ 4yDbFEtiZVG6GBUHi4a3OctfsYfVmYfnfvNh0Nk/pHcj9D9bOkrOg6mEA6/XB5DZemuYr+5pl
+ E5W1c0nzTkaBwVlZPKWz3fxFlX9oaS3TJEd8PwI7BLuWOkLX6656IsFVoO1WvZPT56kugP0dv
+ zrFf5QOhX7SL8hMLRP6OC/oyMAsyZ2wTGCoDndMgc7pYBd7nPJ4jILDBJMFtAkhRkXlNxm03p
+ yt7ewUmPXSpC/rosJKrx+zyVvUfDBtv1RDKK2dQ///3a84vOICk7VFUNwDMNu9Z8aP8JKn9xI
+ /0TjDpkz6c6bxNAhUexgqmfboi9CqiFZPhu4ewUT7q6X3iV1erUfSenTQ/MQY7pbMDa7HWObX
+ LUoSfIO8Qi7sJvhjjfRnw+KEr/ui3HKlZS3HC+wPn61FSLSi91KJre8lCxAK7XUt47tKsiz7x
+ oeIPRW0plNaRYG/9uvsjsyrbNlRbqwAjRlxGJAU2ATXPAL0+khcdGd4GVS3fDFLzwODcPgeN6
+ Vc91a+7LcKArYW7CIqRAROJgzhm/yil/EUmulyTZFgR18=
+Message-ID-Hash: NE2F3QUZ5EG7ZXFEFDRMYMRD7VVDA5KK
+X-Message-ID-Hash: NE2F3QUZ5EG7ZXFEFDRMYMRD7VVDA5KK
+X-MailFrom: Markus.Elfring@web.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -81,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3BND6VCCBSQ52RYGJSFV277DIMDYDMIW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NE2F3QUZ5EG7ZXFEFDRMYMRD7VVDA5KK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,108 +122,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 26 Apr 2024 10:25:06 -0500, Pierre-Louis Bossart wrote:
-> Last batch of cleanups from Brent Lu, with Chromebooks now supported
-> with fewer modular machine drivers.
-> 
-> Bard Liao (1):
->   ASoC: Intel: sof_rt5682: add missing MAX98357A config
-> 
-> Brent Lu (22):
->   ASoC: Intel: nau8825/rt5682: move speaker widget to common modules
->   ASoC: Intel: sof_maxim_common: support MAX98390 on cml boards
->   ASoC: Intel: sof_da7219: support MAX98390
->   ASoC: Intel: sof_da7219: add cml_da7219_def for cml boards
->   ASoC: Intel: sof_da7219: support MAX98390 on cml boards
->   ASoC: Intel: bxt_da7219_max98357a: remove MAX98390 support
->   ASoC: Intel: sof_da7219: support MAX98357A
->   ASoC: Intel: sof_da7219: support MAX98357A on cml boards
->   ASoC: Intel: bxt_da7219_max98357a: remove cml support
->   ASoC: Intel: sof_da7219: add glk_da7219_def for glk boards
->   ASoC: Intel: sof_da7219: support MAX98357A on glk boards
->   ASoC: Intel: bxt_da7219_max98357a: remove glk support
->   ASoC: Intel: sof_rt5682: add glk_rt5682_def for glk boards
->   ASoC: Intel: sof_rt5682: support MAX98357A on glk boards
->   ASoC: Intel: glk_rt5682_max98357a: delete driver
->   ASoC: Intel: sof-rt5682: add mclk_en to sof_rt5682_private
->   ASoC: Intel: sof-rt5682: remove SOF_RT5682_MCLK_BYTCHT_EN
->   ASoC: Intel: sof_rt5682: add icl_rt5682_def for icl boards
->   ASoC: Intel: sof-rt5682: add driver_data to sof_rt5682 board
->   ASoC: Intel: sof-rt5682: setup pll_id only when needed
->   ASoC: Intel: sof-rt5682: get bclk frequency from topology
->   ASoC: Intel: sof-rt5682: support bclk as PLL source on rt5682s
-> 
-> [...]
+=E2=80=A6
+> +++ b/sound/soc/codecs/tas2781-fmwlib.c
+=E2=80=A6
+> @@ -2151,6 +2151,20 @@ static int tasdevice_load_data(struct tasdevice_p=
+riv *tas_priv,
+>  	return ret;
+>  }
+>
+> +static void tasdev_load_calibrated_data(struct tasdevice_priv *priv,
+> +	int i)
 
-Applied to
+Please put the second function parameter into the previous line.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+=E2=80=A6
+> +	if (cal_fmw) {
+> +		struct tasdevice_calibration *cal =3D cal_fmw->calibrations;
+> +
+> +		if (cal)
+> +			load_calib_data(priv, &cal->dev_data);
+> +		return;
 
-[01/23] ASoC: Intel: nau8825/rt5682: move speaker widget to common modules
-        commit: d2d377fc22d23fd38188ea90b051584069a299a2
-[02/23] ASoC: Intel: sof_maxim_common: support MAX98390 on cml boards
-        commit: 3b3ed4752600b6462c184edc3284dcc277891aa6
-[03/23] ASoC: Intel: sof_da7219: support MAX98390
-        commit: b7654a7e217704694ed3e484f0a3c415f8678896
-[04/23] ASoC: Intel: sof_da7219: add cml_da7219_def for cml boards
-        commit: a0cf86d813d22d80046d83e9b36c1c2308903956
-[05/23] ASoC: Intel: sof_da7219: support MAX98390 on cml boards
-        commit: 5a2bc761fab23e47ef20a847476d504548dfb417
-[06/23] ASoC: Intel: bxt_da7219_max98357a: remove MAX98390 support
-        commit: 12e5fe68d0bb079cc5228d09280c1d82a61f0d18
-[07/23] ASoC: Intel: sof_rt5682: add missing MAX98357A config
-        commit: 5b093b0b47efefbb928c4d3a5e982bbeaefda44c
-[08/23] ASoC: Intel: sof_da7219: support MAX98357A
-        commit: 7873252c0e44ef5c0e04cf3c7c25f5e2c5180272
-[09/23] ASoC: Intel: sof_da7219: support MAX98357A on cml boards
-        commit: e895d16f4e8f0e5d90d7188e8fd9c507a97fb8b7
-[10/23] ASoC: Intel: bxt_da7219_max98357a: remove cml support
-        commit: 35ca48662cdf0749a2b9931d625690967fbce032
-[11/23] ASoC: Intel: sof_da7219: add glk_da7219_def for glk boards
-        commit: c7f9523d21d49b56498ac58e4b1afcb930eb551a
-[12/23] ASoC: Intel: sof_da7219: support MAX98357A on glk boards
-        commit: f46b768b7281e4ef784d06788be2f941c13eddde
-[13/23] ASoC: Intel: bxt_da7219_max98357a: remove glk support
-        commit: 8d6114b81d72c522f1ad55cd84ed37699d58c840
-[14/23] ASoC: Intel: sof_rt5682: add glk_rt5682_def for glk boards
-        commit: 44567d3d62dfe9df514299a98429a59129e0a2d0
-[15/23] ASoC: Intel: sof_rt5682: support MAX98357A on glk boards
-        commit: 5498a4edbf314532b7138aabe705faa34fb5df8d
-[16/23] ASoC: Intel: glk_rt5682_max98357a: delete driver
-        commit: 0cb6a8134c1cb59d8f41d84968c2e20cfbd7f6cc
-[17/23] ASoC: Intel: sof-rt5682: add mclk_en to sof_rt5682_private
-        commit: e91d54f8b1bd3393d91fd754a1c40df6f408e84b
-[18/23] ASoC: Intel: sof-rt5682: remove SOF_RT5682_MCLK_BYTCHT_EN
-        commit: 207255f3ae4d0cf5034666652668be572d9c5c1e
-[19/23] ASoC: Intel: sof_rt5682: add icl_rt5682_def for icl boards
-        commit: 76fb0d3221833e87b9150ba06728cdde215ec687
-[20/23] ASoC: Intel: sof-rt5682: add driver_data to sof_rt5682 board
-        commit: 76f33e2f93d63eaac93458fdfde3a505b8e73fa2
-[21/23] ASoC: Intel: sof-rt5682: setup pll_id only when needed
-        commit: b5aaf6a56dcafc2aeefdc7da1f9f86fa5cfa8df7
-[22/23] ASoC: Intel: sof-rt5682: get bclk frequency from topology
-        commit: 4524b1e3ef7884e0a54484dce8d921be7a06af13
-[23/23] ASoC: Intel: sof-rt5682: support bclk as PLL source on rt5682s
-        commit: 3d84e070253eb853e3190a23994aa3074615efd1
+Would this statement be redundant at the moment?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +	}
+> +}
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Regards,
+Markus
