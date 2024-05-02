@@ -4,155 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7A5AC4345F
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 May 2024 14:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ED37C4345F
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 May 2024 23:26:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6485DF6;
-	Thu,  2 May 2024 16:09:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6485DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC2F8E7D;
+	Fri,  3 May 2024 01:25:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC2F8E7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714658957;
-	bh=ZTxu7uZxc6ISaRj+4/BeB2+EuLKdRJdsEnYNeyCuAYg=;
+	s=default; t=1714692360;
+	bh=qXSaDu9v+OXECWQi18wi0ASMKFCVuk1uyWzeP00KOSQ=;
 	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=BJqmycAe1jC6QwWKdxy2ktchfoOx9JfPtF2sWP7sqGHwxaWEr5gCKlG19sYv/p4AR
-	 +OfUMOvhQ1IJ0635dmmppr8ag9FrKrQtU/qV7uo/9ZBEzGgYzqLKzU1Skkf9dEVjvn
-	 fcA00aSTG7P5787xAAkh6wWAjyOGw0x466OkSPGs=
+	b=YtVKSkVFaJJhj5NWmpCHRU4yBx3MaBo1OMnbPVL7clhdBaDdkMk6FwTJ251zAwOmU
+	 RBcylfqrY2NYOx3fH7cY36GJoHOsuZKuSESI/OeIheniXY9LMPI2i1NVJF9VuQH3Xs
+	 K4oUtulnBa9N6UeFs92f9efMtABHuach+c0DahZs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16866F805C2; Thu,  2 May 2024 16:08:27 +0200 (CEST)
+	id 48DC0F805A9; Fri,  3 May 2024 01:25:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99754F805D9;
-	Thu,  2 May 2024 16:08:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7F45F804F2;
+	Fri,  3 May 2024 01:25:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47E07F8025D; Thu,  2 May 2024 16:04:18 +0200 (CEST)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com
- (mail-co1nam11on20600.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2416::600])
+	id 3F3D3F80266; Fri,  3 May 2024 01:25:23 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 622BCF800AE
-	for <alsa-devel@alsa-project.org>; Thu,  2 May 2024 16:03:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 622BCF800AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8161BF800AE
+	for <alsa-devel@alsa-project.org>; Fri,  3 May 2024 01:25:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8161BF800AE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=bs08X5GR
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C/L/y15mXmnJfsuhH2sPfJ2vJWldZyRFni8d5owbXUofwmiqI2nr68bFQ9VwL9ih9vhFgrHj2bEy/+J0wp/sTu1C0+JoXuSQF86vtU9fjbyZ10oXKKru/F6EmI6OQ+cEc8xSqCiWt0B3JEpXJDALf3cUCkqHNbVsSYlgQfF9aaHDXk7+2OmMd3RnwErulkcjrvqoPkwfaIJFofA+3A7J5oZVz8OkdpjBcDRYOLJZDkw+Z8cmdRTUOlP6Lev6BdsWMf+HcvgpuDTOH87aRCxcYkr56NLDhrA8ZQpOcZQI0LsyG1MLNSkyVW+I2kOHjYUPUtLtKV8qAMq5PCnT+GmX6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B1JnR2jPJSbQHLR0tQigxPxW+xDBTYKUcH0LUpiCJxE=;
- b=ehJK4q2rDm1kQd4jIxWDeRIg9a6WC3FF7rbb+sdBJF6B4DAslYvqhLQqeM0M2Dju2QUuTTWHaf90iLyLaD0V0W0aiSUnAthJ4QwuzOR3N/bb06UwWW+W3d1TBkF5QBLxX1ocL2tj/90BFJ22soKZ5nxp3jqWSQPSVvYRYfs7Wnf7vmuADHXtQkAWyQ/6vpY2hVqTpRWs3Toxk/ADHV4ynVbbgEoN+kJzxGQetvAmXOYmHd6qPN5AfRlQ14tB2gf4sw9nYI5w7tdBTOn+Di/dGB8dydIfleKld935U2UqNogoLD/ANkWNjDJ2/h1/oEu8D976vnumRexbJnNkMn3z1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B1JnR2jPJSbQHLR0tQigxPxW+xDBTYKUcH0LUpiCJxE=;
- b=bs08X5GRATfTCYi1yn03G8jxfCNZRiPB8UwO1OV4ZSX4OjYJH/dZ9/JkXrUs9FKVBcpCnRI5b7jIZbQl7uaRmsxY8vxPeDWa7rBXmqWMh28jMJN1AqKf9vGYdTayrEtvFYwoDrV+0/WLcFKktIPHu0WLyPZcL3PFQo1CtbhL6mc=
-Received: from MN2PR16CA0054.namprd16.prod.outlook.com (2603:10b6:208:234::23)
- by IA1PR12MB7613.namprd12.prod.outlook.com (2603:10b6:208:42a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.30; Thu, 2 May
- 2024 14:03:46 +0000
-Received: from BL02EPF0001A0FD.namprd03.prod.outlook.com
- (2603:10b6:208:234:cafe::aa) by MN2PR16CA0054.outlook.office365.com
- (2603:10b6:208:234::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29 via Frontend
- Transport; Thu, 2 May 2024 14:03:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL02EPF0001A0FD.mail.protection.outlook.com (10.167.242.104) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7544.18 via Frontend Transport; Thu, 2 May 2024 14:03:46 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 2 May
- 2024 09:03:45 -0500
-Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35
- via Frontend Transport; Thu, 2 May 2024 09:03:41 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=RPBSwNXb
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 442NP2P4097410;
+	Thu, 2 May 2024 18:25:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1714692302;
+	bh=1Igba9qc/3JOdjDKcJji6d5T+uHCRoguonaIxhTWhTE=;
+	h=From:To:CC:Subject:Date;
+	b=RPBSwNXbIpYxngufDIi3Sa2A2mQ27zZZ4VqtH7FrkoaWJhmRgSAVHZ8cEX/1AeH9/
+	 6MR0yUTJy8EOa6GrcNdTCdCiQC91jri7l6ue9lXGTJApYMd5yt1xTWS0cBa1XtsFE0
+	 MYRNQR3IjrbjozQzy1qB8jBbCA3ScMvvjtQGNwy8=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 442NP2bT057493
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 2 May 2024 18:25:02 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 2
+ May 2024 18:25:01 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 2 May 2024 18:25:01 -0500
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.109])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 442NOtIA110098;
+	Thu, 2 May 2024 18:24:56 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
 To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <venkataprasad.potturu@amd.com>,
-	<Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>, "Vijendar
- Mukunda" <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Syed Saba
- Kareem" <Syed.SabaKareem@amd.com>, V Sujith Kumar Reddy
-	<vsujithkumar.reddy@amd.com>, Kuninori Morimoto
-	<kuninori.morimoto.gx@renesas.com>, Claudiu Beznea
-	<claudiu.beznea@tuxon.dev>, Jarkko Nikula <jarkko.nikula@bitmer.com>, "open
- list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
-	<linux-sound@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] ASoC: amd: acp: fix for acp platform device creation
- failure
-Date: Thu, 2 May 2024 19:33:25 +0530
-Message-ID: <20240502140340.4049021-1-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.34.1
+CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <bard.liao@intel.com>, <yung-chuan.liao@linux.intel.com>,
+        <kevin-lu@ti.com>, <cameron.berkenpas@gmail.com>, <tiwai@suse.de>,
+        <baojun.xu@ti.com>, <soyer@irl.hu>, <Baojun.Xu@fpt.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v3] ALSA: ASoc/tas2781: Fix wrong loading calibrated data
+ sequence
+Date: Fri, 3 May 2024 07:24:49 +0800
+Message-ID: <20240502232450.484-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Received-SPF: None (SATLEXMB03.amd.com: Vijendar.Mukunda@amd.com does not
- designate permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FD:EE_|IA1PR12MB7613:EE_
-X-MS-Office365-Filtering-Correlation-Id: 02c82d85-a9b4-4241-e42a-08dc6ab0aee6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230031|1800799015|7416005|376005|36860700004;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?WPCA2G/Z1ijDmU9JMuu44zZHvtqb85rWZ9WqE2PMbw4jtqvHXtWRL3IGoeRf?=
- =?us-ascii?Q?E+EgDbYk+/yUY+XULvuUXQlLdBbFnZEQC5W/mYWhBrT6TnQVAWx8i5aYqhpE?=
- =?us-ascii?Q?1nQd8+YkLGDz9TzC36GgA/zcxR4lRP/m3WW74MotT0fx7pxTskp5OBDyc9XT?=
- =?us-ascii?Q?OIEi73tt/L6h7CKAntHI50tySWTNQFx3k1T56tHYREGrIT65ZrFT3XRKCpnt?=
- =?us-ascii?Q?zb5JmX728kXhZ0hDM0rJCMmFLFZfoE//v+Ld+6tVC37BKSTauhfcygPseewU?=
- =?us-ascii?Q?oSo/TAINrH1nxwCVjwihbQYMNjoXAAvBy9ZZG1wP2e2C56hkcIF+uHdFypPJ?=
- =?us-ascii?Q?K393BRDToyUkP/Okv+vAq6XNEXR+1MAUuFd34nzA5ShGIB2pCUw00R3CGwuE?=
- =?us-ascii?Q?fUvcaM3yAz6gcBoOt5qfxNBh7wG4lYzEiM9Cc+R+qyOkIkIKK7cNbvIB9+WH?=
- =?us-ascii?Q?dbcW1BriSo3d03muaWGMpzuqZ3lgz7NkwI5Pw66/c3XNWyZAXt/Znu43/4j9?=
- =?us-ascii?Q?85xxEROy35TABHRMBH1+SVJ2qEIgVTr098x4zMpvdTDz2WyZdmRFQiFXMCsr?=
- =?us-ascii?Q?WA8zkPtmOE7JigSyavz7DxsqR0SqtqqWDaHsYxYydFXmbaVhjH0qQe1EJmtM?=
- =?us-ascii?Q?ZO7utKjqt1rB6mPvogv+kSh1Vmt16tdgWmaRyd90pi5639JxA7pg+euRVtye?=
- =?us-ascii?Q?m3or0rutlL++fM6UQveVltJuIlOtee4V1/q/1+0Ncv+MVBnD4wDMDpL2J0mt?=
- =?us-ascii?Q?SZWkU6QInNbqN9imgAFf6b6drvdmBYrrXCI+xomaOC1aVHpmR/uaQ+kgeHHz?=
- =?us-ascii?Q?E0hGY7RUhBR1M48dNJKVJ2CmA0bUzguqREXUKABFC9BKJoeMIHQO4sINH6Po?=
- =?us-ascii?Q?kHDfYnUyjPYStFOqc4q96ihG8wkDWA7yDXh+l6GTvC9ncZUgAM8T/gVl8Bpd?=
- =?us-ascii?Q?1FyV9RfVFGoKJHsf6Je+111dmUFSVhHr1g6cfSWdMlAtvu1Vzz7MaNgM2OsL?=
- =?us-ascii?Q?1RIl3Hl6B8sTpplmlaSDyP7eB5/LeN+r/+DC/IgEeaZlWzIoAg9u25mLkAwU?=
- =?us-ascii?Q?bQR5/7nkmLcWYd4t1FeSneWWGgh5rakxzWS3yJcTWPmX33b2cR1LSsG3FAhO?=
- =?us-ascii?Q?1Oy9f9cBFISCCdSXaU78WMcwRKHXAoKLWIzoPwnsMed98UO3UlLc6cZejMfF?=
- =?us-ascii?Q?b28o7Bkrmw2gvE8mY0saIfrmExF0z5IL1n8BPynaDYvHOUxZFCOAqG8i3YqT?=
- =?us-ascii?Q?EzknxDWr3QFo4n7EuVpBoEDoKGY+Qop3BhVBGQHLTywpaBxjfR4L0IRSV1vd?=
- =?us-ascii?Q?QFZwkUAeMcYQJb8x9vgVbw0m?=
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2024 14:03:46.0298
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 02c82d85-a9b4-4241-e42a-08dc6ab0aee6
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	BL02EPF0001A0FD.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7613
-Message-ID-Hash: GU7HDVPNPW65ZEV4T2BTYKLIJ6DPIJBV
-X-Message-ID-Hash: GU7HDVPNPW65ZEV4T2BTYKLIJ6DPIJBV
-X-MailFrom: Vijendar.Mukunda@amd.com
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-ID-Hash: C3VFSVHLE5DIT6ITGBE6BZ2FBEY6TGWN
+X-Message-ID-Hash: C3VFSVHLE5DIT6ITGBE6BZ2FBEY6TGWN
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -164,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GU7HDVPNPW65ZEV4T2BTYKLIJ6DPIJBV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C3VFSVHLE5DIT6ITGBE6BZ2FBEY6TGWN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -173,263 +104,243 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ACP pin configuration varies based on acp version.
-ACP PCI driver should read the ACP PIN config value and based on config
-value, it has to create a platform device in below two conditions.
-1) If ACP PDM configuration is selected from BIOS and ACP PDM controller
-exists.
-2) If ACP I2S configuration is selected from BIOS.
+Calibrated data will be set to default after loading DSP config params,
+which will cause speaker protection work abnormally. Reload calibrated
+data after loading DSP config params.
 
-Other than above scenarios, ACP PCI driver should skip the platform
-device creation logic, i.e. ACP PCI driver probe sequence should never
-fail if other acp pin configuration is selected. It should skip platform
-device creation logic.
+'Fixes: 0a0877812628 ("ASoc: tas2781: Fix spelling mistake "calibraiton"
+ -> "calibration"")'
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-check_acp_pdm() function was implemented for ACP6.x platforms to check
-ACP PDM configuration. Previously, this code was safe guarded by
-FLAG_AMD_LEGACY_ONLY_DMIC flag check.
-
-This implementation breaks audio use cases for Huawei Matebooks which are
-based on ACP3.x varaint uses I2S configuration.
-In current scenario, check_acp_pdm() function returns -ENODEV value
-which results in ACP PCI driver probe failure without creating a platform
-device even in case of valid ACP pin configuration.
-
-Implement check_acp_config() as a common function which invokes platform
-specific acp pin configuration check functions for ACP3.x, ACP6.0 & ACP6.3
-& ACP7.0 variants and checks for ACP PDM controller.
-
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218780
-Fixes: 4af565de9f8c ("ASoC: amd: acp: fix for acp pdm configuration check")
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/acp/acp-legacy-common.c | 96 ++++++++++++++++++++++-----
- sound/soc/amd/acp/acp-pci.c           |  9 ++-
- sound/soc/amd/acp/amd.h               | 10 ++-
- sound/soc/amd/acp/chip_offset_byte.h  |  1 +
- 4 files changed, 95 insertions(+), 21 deletions(-)
+v3:
+ - Remove redundant return in tasdev_load_calibrated_data
+ - Put the second function parameter into the previous line for
+   tasdev_load_calibrated_data
+ - | Reported-by: kernel test robot <lkp@intel.com>
+   | Closes: https://lore.kernel.org/oe-kbuild-all/202405021200.YHInjV43-lkp@intel.com/
+v2:
+ - In the Subject, fixed --> Fix
+ - In tas2781-fmwlib.c, tasdevice-fmw.c ---> tas2781-fmwlib.c
+ - dsp --> DSP
+ - Remove unneeded parentheses for & (dereference) operator
+ - Add Fixes tag
+ - Changed the copyright year to 2024 in the related files
+ - In tas2781-dsp.h, __TASDEVICE_DSP_H__ --> __TAS2781_DSP_H__
+v1:
+ - Download calibrated data after loading the new DSP config params
+ - call tasdevice_prmg_load instead of tasdevice_prmg_calibdata_load, it
+   is unnecessary to load calibrated data after loading DSP program. Load
+   it after loading DSP config params each time.
+ - Remove tasdevice_prmg_calibdata_load, because it is unnecessary to load
+   calibrated data after loading DSP program.
+---
+ include/sound/tas2781-dsp.h       |  7 +--
+ sound/soc/codecs/tas2781-fmwlib.c | 99 +++++++------------------------
+ sound/soc/codecs/tas2781-i2c.c    |  4 +-
+ 3 files changed, 27 insertions(+), 83 deletions(-)
 
-diff --git a/sound/soc/amd/acp/acp-legacy-common.c b/sound/soc/amd/acp/acp-legacy-common.c
-index b5aff3f230be..3be7c6d55a6f 100644
---- a/sound/soc/amd/acp/acp-legacy-common.c
-+++ b/sound/soc/amd/acp/acp-legacy-common.c
-@@ -358,11 +358,25 @@ int smn_read(struct pci_dev *dev, u32 smn_addr)
- }
- EXPORT_SYMBOL_NS_GPL(smn_read, SND_SOC_ACP_COMMON);
+diff --git a/include/sound/tas2781-dsp.h b/include/sound/tas2781-dsp.h
+index ea9af2726a53..7fba7ea26a4b 100644
+--- a/include/sound/tas2781-dsp.h
++++ b/include/sound/tas2781-dsp.h
+@@ -2,7 +2,7 @@
+ //
+ // ALSA SoC Texas Instruments TAS2781 Audio Smart Amplifier
+ //
+-// Copyright (C) 2022 - 2023 Texas Instruments Incorporated
++// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
+ // https://www.ti.com
+ //
+ // The TAS2781 driver implements a flexible and configurable
+@@ -13,8 +13,8 @@
+ // Author: Kevin Lu <kevin-lu@ti.com>
+ //
  
--int check_acp_pdm(struct pci_dev *pci, struct acp_chip_info *chip)
-+static void check_acp3x_config(struct acp_chip_info *chip)
+-#ifndef __TASDEVICE_DSP_H__
+-#define __TASDEVICE_DSP_H__
++#ifndef __TAS2781_DSP_H__
++#define __TAS2781_DSP_H__
+ 
+ #define MAIN_ALL_DEVICES			0x0d
+ #define MAIN_DEVICE_A				0x01
+@@ -180,7 +180,6 @@ void tasdevice_calbin_remove(void *context);
+ int tasdevice_select_tuningprm_cfg(void *context, int prm,
+ 	int cfg_no, int rca_conf_no);
+ int tasdevice_prmg_load(void *context, int prm_no);
+-int tasdevice_prmg_calibdata_load(void *context, int prm_no);
+ void tasdevice_tuning_switch(void *context, int state);
+ int tas2781_load_calibration(void *context, char *file_name,
+ 	unsigned short i);
+diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
+index 45760fe19523..2ab4c7a55b90 100644
+--- a/sound/soc/codecs/tas2781-fmwlib.c
++++ b/sound/soc/codecs/tas2781-fmwlib.c
+@@ -2,7 +2,7 @@
+ //
+ // tasdevice-fmw.c -- TASDEVICE firmware support
+ //
+-// Copyright 2023 Texas Instruments, Inc.
++// Copyright 2023 - 2024 Texas Instruments, Inc.
+ //
+ // Author: Shenghao Ding <shenghao-ding@ti.com>
+ 
+@@ -1878,7 +1878,7 @@ int tas2781_load_calibration(void *context, char *file_name,
  {
--	struct acpi_device *pdm_dev;
--	const union acpi_object *obj;
--	u32 pdm_addr, val;
-+	u32 val;
-+
-+	val = readl(chip->base + ACP3X_PIN_CONFIG);
-+	switch (val) {
-+	case ACP_CONFIG_4:
-+		chip->is_i2s_config = true;
-+		chip->is_pdm_config = true;
-+		break;
-+	default:
-+		chip->is_pdm_config = true;
-+		break;
-+	}
-+}
-+
-+static void check_acp6x_config(struct acp_chip_info *chip)
-+{
-+	u32 val;
- 
- 	val = readl(chip->base + ACP_PIN_CONFIG);
- 	switch (val) {
-@@ -371,42 +385,94 @@ int check_acp_pdm(struct pci_dev *pci, struct acp_chip_info *chip)
- 	case ACP_CONFIG_6:
- 	case ACP_CONFIG_7:
- 	case ACP_CONFIG_8:
--	case ACP_CONFIG_10:
- 	case ACP_CONFIG_11:
-+	case ACP_CONFIG_14:
-+		chip->is_pdm_config = true;
-+		break;
-+	case ACP_CONFIG_9:
-+		chip->is_i2s_config = true;
-+		break;
-+	case ACP_CONFIG_10:
- 	case ACP_CONFIG_12:
- 	case ACP_CONFIG_13:
-+		chip->is_i2s_config = true;
-+		chip->is_pdm_config = true;
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static void check_acp70_config(struct acp_chip_info *chip)
-+{
-+	u32 val;
-+
-+	val = readl(chip->base + ACP_PIN_CONFIG);
-+	switch (val) {
-+	case ACP_CONFIG_4:
-+	case ACP_CONFIG_5:
-+	case ACP_CONFIG_6:
-+	case ACP_CONFIG_7:
-+	case ACP_CONFIG_8:
-+	case ACP_CONFIG_11:
- 	case ACP_CONFIG_14:
-+	case ACP_CONFIG_17:
-+	case ACP_CONFIG_18:
-+		chip->is_pdm_config = true;
-+		break;
-+	case ACP_CONFIG_9:
-+		chip->is_i2s_config = true;
-+		break;
-+	case ACP_CONFIG_10:
-+	case ACP_CONFIG_12:
-+	case ACP_CONFIG_13:
-+	case ACP_CONFIG_19:
-+	case ACP_CONFIG_20:
-+		chip->is_i2s_config = true;
-+		chip->is_pdm_config = true;
- 		break;
- 	default:
--		return -EINVAL;
-+		break;
- 	}
-+}
-+
-+void check_acp_config(struct pci_dev *pci, struct acp_chip_info *chip)
-+{
-+	struct acpi_device *pdm_dev;
-+	const union acpi_object *obj;
-+	u32 pdm_addr;
- 
- 	switch (chip->acp_rev) {
- 	case ACP3X_DEV:
- 		pdm_addr = ACP_RENOIR_PDM_ADDR;
-+		check_acp3x_config(chip);
- 		break;
- 	case ACP6X_DEV:
- 		pdm_addr = ACP_REMBRANDT_PDM_ADDR;
-+		check_acp6x_config(chip);
- 		break;
- 	case ACP63_DEV:
- 		pdm_addr = ACP63_PDM_ADDR;
-+		check_acp6x_config(chip);
- 		break;
- 	case ACP70_DEV:
- 		pdm_addr = ACP70_PDM_ADDR;
-+		check_acp70_config(chip);
- 		break;
- 	default:
--		return -EINVAL;
-+		break;
- 	}
- 
--	pdm_dev = acpi_find_child_device(ACPI_COMPANION(&pci->dev), pdm_addr, 0);
--	if (pdm_dev) {
--		if (!acpi_dev_get_property(pdm_dev, "acp-audio-device-type",
--					   ACPI_TYPE_INTEGER, &obj) &&
--					   obj->integer.value == pdm_addr)
--			return 0;
-+	if (chip->is_pdm_config) {
-+		pdm_dev = acpi_find_child_device(ACPI_COMPANION(&pci->dev), pdm_addr, 0);
-+		if (pdm_dev) {
-+			if (!acpi_dev_get_property(pdm_dev, "acp-audio-device-type",
-+						   ACPI_TYPE_INTEGER, &obj) &&
-+						   obj->integer.value == pdm_addr)
-+				chip->is_pdm_dev = true;
-+		}
- 	}
--	return -ENODEV;
+ 	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *)context;
+ 	struct tasdevice *tasdev = &(tas_priv->tasdevice[i]);
+-	const struct firmware *fw_entry;
++	const struct firmware *fw_entry = NULL;
+ 	struct tasdevice_fw *tas_fmw;
+ 	struct firmware fmw;
+ 	int offset = 0;
+@@ -2151,6 +2151,18 @@ static int tasdevice_load_data(struct tasdevice_priv *tas_priv,
+ 	return ret;
  }
--EXPORT_SYMBOL_NS_GPL(check_acp_pdm, SND_SOC_ACP_COMMON);
-+EXPORT_SYMBOL_NS_GPL(check_acp_config, SND_SOC_ACP_COMMON);
  
- MODULE_LICENSE("Dual BSD/GPL");
-diff --git a/sound/soc/amd/acp/acp-pci.c b/sound/soc/amd/acp/acp-pci.c
-index 5f35b90eab8d..ad320b29e87d 100644
---- a/sound/soc/amd/acp/acp-pci.c
-+++ b/sound/soc/amd/acp/acp-pci.c
-@@ -100,7 +100,6 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
- 		ret = -EINVAL;
- 		goto release_regions;
- 	}
--
- 	dmic_dev = platform_device_register_data(dev, "dmic-codec", PLATFORM_DEVID_NONE, NULL, 0);
- 	if (IS_ERR(dmic_dev)) {
- 		dev_err(dev, "failed to create DMIC device\n");
-@@ -119,6 +118,10 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
- 	if (ret)
- 		goto unregister_dmic_dev;
- 
-+	check_acp_config(pci, chip);
-+	if (!chip->is_pdm_dev && !chip->is_i2s_config)
-+		goto skip_pdev_creation;
++static void tasdev_load_calibrated_data(struct tasdevice_priv *priv, int i)
++{
++	struct tasdevice_fw *cal_fmw = priv->tasdevice[i].cali_data_fmw;
 +
- 	res = devm_kcalloc(&pci->dev, num_res, sizeof(struct resource), GFP_KERNEL);
- 	if (!res) {
- 		ret = -ENOMEM;
-@@ -136,10 +139,6 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
++	if (cal_fmw) {
++		struct tasdevice_calibration *cal = cal_fmw->calibrations;
++
++		if (cal)
++			load_calib_data(priv, &cal->dev_data);
++	}
++}
++
+ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
+ 	int cfg_no, int rca_conf_no)
+ {
+@@ -2210,21 +2222,9 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
+ 		for (i = 0; i < tas_priv->ndev; i++) {
+ 			if (tas_priv->tasdevice[i].is_loaderr == true)
+ 				continue;
+-			else if (tas_priv->tasdevice[i].is_loaderr == false
+-				&& tas_priv->tasdevice[i].is_loading == true) {
+-				struct tasdevice_fw *cal_fmw =
+-					tas_priv->tasdevice[i].cali_data_fmw;
+-
+-				if (cal_fmw) {
+-					struct tasdevice_calibration
+-						*cal = cal_fmw->calibrations;
+-
+-					if (cal)
+-						load_calib_data(tas_priv,
+-							&(cal->dev_data));
+-				}
++			if (tas_priv->tasdevice[i].is_loaderr == false
++				&& tas_priv->tasdevice[i].is_loading == true)
+ 				tas_priv->tasdevice[i].cur_prog = prm_no;
+-			}
  		}
  	}
  
--	ret = check_acp_pdm(pci, chip);
--	if (ret < 0)
--		goto skip_pdev_creation;
+@@ -2247,9 +2247,13 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
+ 			if (tas_priv->tasdevice[i].is_loaderr == true) {
+ 				status |= 1 << (i + 4);
+ 				continue;
+-			} else if (tas_priv->tasdevice[i].is_loaderr == false
+-				&& tas_priv->tasdevice[i].is_loading == true)
++			}
++
++			if (tas_priv->tasdevice[i].is_loaderr == false
++				&& tas_priv->tasdevice[i].is_loading == true) {
++				tasdev_load_calibrated_data(tas_priv, i);
+ 				tas_priv->tasdevice[i].cur_conf = cfg_no;
++			}
+ 		}
+ 	} else
+ 		dev_dbg(tas_priv->dev, "%s: Unneeded loading dsp conf %d\n",
+@@ -2308,65 +2312,6 @@ int tasdevice_prmg_load(void *context, int prm_no)
+ }
+ EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_load, SND_SOC_TAS2781_FMWLIB);
+ 
+-int tasdevice_prmg_calibdata_load(void *context, int prm_no)
+-{
+-	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
+-	struct tasdevice_fw *tas_fmw = tas_priv->fmw;
+-	struct tasdevice_prog *program;
+-	int prog_status = 0;
+-	int i;
 -
- 	chip->flag = flag;
- 	memset(&pdevinfo, 0, sizeof(pdevinfo));
- 
-diff --git a/sound/soc/amd/acp/amd.h b/sound/soc/amd/acp/amd.h
-index 5017e868f39b..d75b4eb34de8 100644
---- a/sound/soc/amd/acp/amd.h
-+++ b/sound/soc/amd/acp/amd.h
-@@ -138,6 +138,9 @@ struct acp_chip_info {
- 	void __iomem *base;	/* ACP memory PCI base */
- 	struct platform_device *chip_pdev;
- 	unsigned int flag;	/* Distinguish b/w Legacy or Only PDM */
-+	bool is_pdm_dev;	/* flag set to true when ACP PDM controller exists */
-+	bool is_pdm_config;	/* flag set to true when PDM configuration is selected from BIOS */
-+	bool is_i2s_config;	/* flag set to true when I2S configuration is selected from BIOS */
- };
- 
- struct acp_stream {
-@@ -212,6 +215,11 @@ enum acp_config {
- 	ACP_CONFIG_13,
- 	ACP_CONFIG_14,
- 	ACP_CONFIG_15,
-+	ACP_CONFIG_16,
-+	ACP_CONFIG_17,
-+	ACP_CONFIG_18,
-+	ACP_CONFIG_19,
-+	ACP_CONFIG_20,
- };
- 
- extern const struct snd_soc_dai_ops asoc_acp_cpu_dai_ops;
-@@ -240,7 +248,7 @@ void restore_acp_pdm_params(struct snd_pcm_substream *substream,
- int restore_acp_i2s_params(struct snd_pcm_substream *substream,
- 			   struct acp_dev_data *adata, struct acp_stream *stream);
- 
--int check_acp_pdm(struct pci_dev *pci, struct acp_chip_info *chip);
-+void check_acp_config(struct pci_dev *pci, struct acp_chip_info *chip);
- 
- static inline u64 acp_get_byte_count(struct acp_dev_data *adata, int dai_id, int direction)
+-	if (!tas_fmw) {
+-		dev_err(tas_priv->dev, "%s: Firmware is NULL\n", __func__);
+-		goto out;
+-	}
+-
+-	if (prm_no >= tas_fmw->nr_programs) {
+-		dev_err(tas_priv->dev,
+-			"%s: prm(%d) is not in range of Programs %u\n",
+-			__func__, prm_no, tas_fmw->nr_programs);
+-		goto out;
+-	}
+-
+-	for (i = 0, prog_status = 0; i < tas_priv->ndev; i++) {
+-		if (prm_no >= 0 && tas_priv->tasdevice[i].cur_prog != prm_no) {
+-			tas_priv->tasdevice[i].cur_conf = -1;
+-			tas_priv->tasdevice[i].is_loading = true;
+-			prog_status++;
+-		}
+-		tas_priv->tasdevice[i].is_loaderr = false;
+-	}
+-
+-	if (prog_status) {
+-		program = &(tas_fmw->programs[prm_no]);
+-		tasdevice_load_data(tas_priv, &(program->dev_data));
+-		for (i = 0; i < tas_priv->ndev; i++) {
+-			if (tas_priv->tasdevice[i].is_loaderr == true)
+-				continue;
+-			else if (tas_priv->tasdevice[i].is_loaderr == false
+-				&& tas_priv->tasdevice[i].is_loading == true) {
+-				struct tasdevice_fw *cal_fmw =
+-					tas_priv->tasdevice[i].cali_data_fmw;
+-
+-				if (cal_fmw) {
+-					struct tasdevice_calibration *cal =
+-						cal_fmw->calibrations;
+-
+-					if (cal)
+-						load_calib_data(tas_priv,
+-							&(cal->dev_data));
+-				}
+-				tas_priv->tasdevice[i].cur_prog = prm_no;
+-			}
+-		}
+-	}
+-
+-out:
+-	return prog_status;
+-}
+-EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_calibdata_load,
+-	SND_SOC_TAS2781_FMWLIB);
+-
+ void tasdevice_tuning_switch(void *context, int state)
  {
-diff --git a/sound/soc/amd/acp/chip_offset_byte.h b/sound/soc/amd/acp/chip_offset_byte.h
-index cfd6c4d07594..18da734c0e9e 100644
---- a/sound/soc/amd/acp/chip_offset_byte.h
-+++ b/sound/soc/amd/acp/chip_offset_byte.h
-@@ -20,6 +20,7 @@
- #define ACP_SOFT_RESET                          0x1000
- #define ACP_CONTROL                             0x1004
- #define ACP_PIN_CONFIG				0x1440
-+#define ACP3X_PIN_CONFIG			0x1400
+ 	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
+diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
+index b5abff230e43..9350972dfefe 100644
+--- a/sound/soc/codecs/tas2781-i2c.c
++++ b/sound/soc/codecs/tas2781-i2c.c
+@@ -2,7 +2,7 @@
+ //
+ // ALSA SoC Texas Instruments TAS2563/TAS2781 Audio Smart Amplifier
+ //
+-// Copyright (C) 2022 - 2023 Texas Instruments Incorporated
++// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
+ // https://www.ti.com
+ //
+ // The TAS2563/TAS2781 driver implements a flexible and configurable
+@@ -414,7 +414,7 @@ static void tasdevice_fw_ready(const struct firmware *fmw,
+ 				__func__, tas_priv->cal_binaryname[i]);
+ 	}
  
- #define ACP_EXTERNAL_INTR_REG_ADDR(adata, offset, ctrl) \
- 	(adata->acp_base + adata->rsrc->irq_reg_offset + offset + (ctrl * 0x04))
+-	tasdevice_prmg_calibdata_load(tas_priv, 0);
++	tasdevice_prmg_load(tas_priv, 0);
+ 	tas_priv->cur_prog = 0;
+ out:
+ 	if (tas_priv->fw_state == TASDEVICE_DSP_FW_FAIL) {
 -- 
 2.34.1
 
