@@ -4,92 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD633C4345F
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 May 2024 09:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C159C25B10
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 May 2024 09:26:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BF00E7D;
-	Thu,  2 May 2024 11:23:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BF00E7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B0D5E66;
+	Thu,  2 May 2024 11:25:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B0D5E66
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714641829;
-	bh=w8QjHcrlLNytid75AMyv9vPhb5KjwI82qLWvBRClbC4=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1714641961;
+	bh=L+8MSxbbC4GA7RzAdnfcmEm04PpjGSEE0FJmumIjkUI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ur5tvLmUjrNdp6YjIS79anCCA+JWOzFuFYs3kZ3vkDxOnS8Vu4jI8U5oJvmD2rnAw
-	 TGUGGFyQ3vnwd1VrKT3v7KD4HTFmbCtcva6SAAiinFLSDXDKxmf2IWVADvI5qhYarr
-	 uIfekX2O5/Xy/L5Iiy4aEn2Z2Y2fbrmEPYr8RJNE=
+	b=oMdq/9NaFELKy+iQ40cj5Vc0Si8ZOiEq4aN/sQUKtTHuqRNQYYLpuHecQkoOMGQaD
+	 L424CADcWtQ8iJnBjpk0nfrwYwy7/0v0oOleJfrp0rWuLkuIPwuUdOuXWeMaDYQmw0
+	 ceovFnaUs7esvPxRrD12frOtPWgJrsFeElBqsJbk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A037F8057F; Thu,  2 May 2024 11:23:17 +0200 (CEST)
+	id 50C38F805AE; Thu,  2 May 2024 11:25:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7425EF8058C;
-	Thu,  2 May 2024 11:23:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87F46F8059F;
+	Thu,  2 May 2024 11:25:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8312BF80266; Thu,  2 May 2024 11:21:47 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E0A54F80266; Thu,  2 May 2024 11:25:24 +0200 (CEST)
+Received: from metis.whiteo.stw.pengutronix.de
+ (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7324BF800E2
-	for <alsa-devel@alsa-project.org>; Thu,  2 May 2024 11:21:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7324BF800E2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=BlgmQBCu
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 4426fe2X018298;
-	Thu, 2 May 2024 04:21:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=VJrjKuSFrH1gRBcvsZN1w75FIo5Vye6zZ77H/zyS4h8=; b=
-	BlgmQBCuVZvnR+1s/J4qr3vY3zxRjADbfA9OUr1rCg8tHfnfISvx+jsC5KGT7tlc
-	doL7BpRkb5CdOswy2vzLDRshsqAN4kzshlV6zJEqxtKQBxKIckWBk1o/Ebnjxqfx
-	jacP6QLS9sqxmPEhLIC+GAfuHsAn/eQpkPAcI79XgXmZmuR3agjQLM5rHPszPOqd
-	Naq/pNw+FGtM+AF79MPniht721kSHrOLA2ppfNrEhE6pgjlC+tCKKzveh9wf74VI
-	vcWYRlkQwMYXoAmSvojOfKCcA7Tye3qMR16bMEQasKbrsNNXnN/GL+UXP48YE5Px
-	3ua7m5gx5FN7NZ9iduirFg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xv0e8g9bf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 02 May 2024 04:21:38 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 2 May 2024
- 10:21:36 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Thu, 2 May 2024 10:21:36 +0100
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 57C8D820244;
-	Thu,  2 May 2024 09:21:36 +0000 (UTC)
-Message-ID: <a9345d24-af36-42b4-9139-0701a0dbe1a3@opensource.cirrus.com>
-Date: Thu, 2 May 2024 10:21:36 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5ABD2F800AE
+	for <alsa-devel@alsa-project.org>; Thu,  2 May 2024 11:25:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ABD2F800AE
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s2Sgk-0001lU-P1; Thu, 02 May 2024 11:25:14 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s2Sgj-00FUhj-Vr; Thu, 02 May 2024 11:25:13 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1s2Sgj-00Daal-2t;
+	Thu, 02 May 2024 11:25:13 +0200
+Date: Thu, 2 May 2024 11:25:13 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, alsa-devel@alsa-project.org,
+	Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
+ Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ASoC: codecs: Drop explicit initialization of struct
+ i2c_device_id::driver_data to 0
+Message-ID: <6uj2suuiu7tpomecii65f5lxuwgkhxnqs3lrpa54s2ptsorkh3@lzmnapdw4cri>
+References: <20240502074722.1103986-2-u.kleine-koenig@pengutronix.de>
+ <CAHp75VfTzbQaU-i5VTeh3aZ0KSyNu8Xnbkr1PMvAty=rLQ0oVQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ALSA: hda: cs35l56: Perform firmware download in the
- background
-To: Takashi Iwai <tiwai@suse.de>, Simon Trimmer <simont@opensource.cirrus.com>
-CC: <tiwai@suse.com>, <linux-sound@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-References: <20240501111755.21231-1-simont@opensource.cirrus.com>
- <87ttjgk6ph.wl-tiwai@suse.de>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <87ttjgk6ph.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 5r_XGd3UwelsfKl2wpH1nWx0Tm5vaTNb
-X-Proofpoint-GUID: 5r_XGd3UwelsfKl2wpH1nWx0Tm5vaTNb
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 6S4XXV64OUG7RJMQBTWLQFPMSKY5DZGT
-X-Message-ID-Hash: 6S4XXV64OUG7RJMQBTWLQFPMSKY5DZGT
-X-MailFrom: prvs=285278285c=rf@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6hbkefkyasb7fug6"
+Content-Disposition: inline
+In-Reply-To: 
+ <CAHp75VfTzbQaU-i5VTeh3aZ0KSyNu8Xnbkr1PMvAty=rLQ0oVQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: 4H4BL7JMNJJDLDKXFWOARN4RXKV2LWC5
+X-Message-ID-Hash: 4H4BL7JMNJJDLDKXFWOARN4RXKV2LWC5
+X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6S4XXV64OUG7RJMQBTWLQFPMSKY5DZGT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4H4BL7JMNJJDLDKXFWOARN4RXKV2LWC5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,33 +100,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 02/05/2024 08:34, Takashi Iwai wrote:
-> On Wed, 01 May 2024 13:17:55 +0200,
-> Simon Trimmer wrote:
->> @@ -964,6 +1011,14 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int hid, int id)
->>   	mutex_init(&cs35l56->base.irq_lock);
->>   	dev_set_drvdata(cs35l56->base.dev, cs35l56);
->>   
->> +	cs35l56->dsp_wq = create_singlethread_workqueue("cs35l56-dsp");
->> +	if (!cs35l56->dsp_wq) {
->> +		ret = -ENOMEM;
->> +		goto err;
->> +	}
-> 
-> Do we really need a dedicated workqueue?  In most usages, simple
-> schedule_work*() works fine and is recommended.
-> 
 
-On a slow I2C bus with 4 amps this work could take over 2 seconds.
-That seems too long to be blocking a global system queue. We use a
-dedicated queue in the ASoC driver.
+--6hbkefkyasb7fug6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also if we queue work on an ordered (single-threaded) system queue the
-firmware won't be downloaded to multiple amps in parallel, so we don't
-get the best use of the available bus bandwidth.
+Hello Andy,
 
-> 
-> thanks,
-> 
-> Takashi
+On Thu, May 02, 2024 at 12:02:50PM +0300, Andy Shevchenko wrote:
+> On Thu, May 2, 2024 at 10:47=E2=80=AFAM Uwe Kleine-K=C3=B6nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> >
+> > These drivers don't use the driver_data member of struct i2c_device_id,
+> > so don't explicitly initialize this member.
+> >
+> > This prepares putting driver_data in an anonymous union which requires
+> > either no initialization or named designators. But it's also a nice
+> > cleanup on its own.
+>=20
+> There are some drivers that have other (than I=C2=B2C) ID tables, which
+> follow the same format. Can you also do the same with them for the
+> sake of consistency?
 
+I'm aware of these and plan to address them in a separate quest once I'm
+done with the i2c bits.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--6hbkefkyasb7fug6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYzW/gACgkQj4D7WH0S
+/k6TEAf/cw0zTMhVbRaMJYPm3VRPiLAt22Znb0NVIN/ufUGYr42GXzCYXb0OQFOd
+4hPA8IzOqykKjp2ZE2oDKEUfA/I8xhBJNSFtiKmVaKgq3VqMNY+hgVSLTeJvENbX
+fDJqWLPd9x1sIDjAzIymZQLC+y3OmL/iXfaoaez31Oc4RRHsRhLyombWapJz13jz
+CVdaBQMNq9gztxt8iXiaBcws9mabQJdkrzeC7Fv+RzlnTfnTI5T8teN8N3AqBBVP
+JO9hISzB2cgrhUrqvYgFbeMjqfFq7QEpQZMNTbZYajJLB7P+l1rMZVN4K/pxD3wt
+YyHWQPa/UchR+EysxeN7f2vdtAK25w==
+=emKf
+-----END PGP SIGNATURE-----
+
+--6hbkefkyasb7fug6--
