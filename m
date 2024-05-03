@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D10A2C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 May 2024 14:05:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB041C4345F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 May 2024 14:05:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0114CBC0;
-	Fri,  3 May 2024 16:05:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0114CBC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2510AE85;
+	Fri,  3 May 2024 16:05:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2510AE85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714745134;
-	bh=+HI8RYLmUHciNMVJCenuLW56C8Es8SqMQLQaU3IKZV0=;
+	s=default; t=1714745146;
+	bh=SyV9cOmA95Y8igvfR9thOhSeKWSs9M9BdgxVcIJETLQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uK+md985IwD2PI/jgYYvkJU7rZHzEJEs3mexOFx2TkO5bY9RGR1d+F9NVjxj3L3xX
-	 GYZIW1JEFxZ0qb1WwYMUNyzqBhzPq9mxTV/MA1nTPgtuz5fMrveMlx5FvGeClX3SbL
-	 mJUs6VVubzpA47zIOzGO5ZQBQPxgLBVinsnFFzmA=
+	b=hm6qJiUPiZARb4D0HbB8USwuxreSvVxmnTwS45Moq2C5ylFuucB22Ts1u91pXVSQn
+	 p7BjXQVkn+NxzDmrrm0ntnUhTDVSqQ9NZITKgeFFa40kMSjFJnaYZ8FQ5HxLpPGExv
+	 ZlKPEjaimwdGa7e+BcUP8SCfYQHYJ9MozkmB4/sI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67F90F805D5; Fri,  3 May 2024 16:04:42 +0200 (CEST)
+	id E5D7EF805F8; Fri,  3 May 2024 16:04:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBF69F805D9;
-	Fri,  3 May 2024 16:04:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93C19F80269;
+	Fri,  3 May 2024 16:04:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 204AAF80578; Fri,  3 May 2024 16:04:36 +0200 (CEST)
+	id 07FD4F80571; Fri,  3 May 2024 16:04:38 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C72CFF80266
-	for <alsa-devel@alsa-project.org>; Fri,  3 May 2024 16:04:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C72CFF80266
+	by alsa1.perex.cz (Postfix) with ESMTPS id EC385F804F2
+	for <alsa-devel@alsa-project.org>; Fri,  3 May 2024 16:04:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC385F804F2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AWjXjSvE
+ header.s=Intel header.b=md7QLnPo
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714745070; x=1746281070;
+  t=1714745072; x=1746281072;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+HI8RYLmUHciNMVJCenuLW56C8Es8SqMQLQaU3IKZV0=;
-  b=AWjXjSvECdobzotUBJbHW6FAQxnblu2OuBQ7C/Wh9tjGO6Pg2tbpcF8N
-   BNyUtMzpq59pLWB2egr1YZrL1Q8kt2mQSAlHW3Ve9KIikKKQnKkfq2zN7
-   AeK7S1WBHxTh09BdzXWyxHf1oxIElGaTCDwg0hSOND+7GtRW5pI3YLUch
-   +mVPj+u6ejZim4cFE4q9rusk4UwMDqGTgGhtSbRYPOS+q85MPA5avXaQK
-   6bAc/+zQHBDeHZFEDIIG0459168f73ejBnxhCVhHisHRidphROcXvXDgY
-   KtbWIhqfIYnxFNYeTnW2wZzp9J9pglpp9mhkgpB5RpuajOWMFmTjCmmgJ
+  bh=SyV9cOmA95Y8igvfR9thOhSeKWSs9M9BdgxVcIJETLQ=;
+  b=md7QLnPo8cJpthWf9+6o75IlxMdOmOA7fhq8QQ9DfGwA0pZ5wr+y5Oul
+   n0m/WwtsZItfglCInB4xUixMgpnYl+4+5TtnxGKUBnf2TYX2K7G1Whcwx
+   4woQTaUEqFhMYBh/ST+vwnLaW9OX+RYOPw9xvMvvaiBnXOH9PaHz1zuUY
+   WKur6z+cFTu1fqefnJkTNHhocWPaKG405JJSDJdL79Ttqncs8PvZXhXZc
+   Ubz49RvDxmBsqHaUV5ll/Fjf9znRj1wp+TIq/fGzh2byTpIFUtImbMDsT
+   qp/mR5DOXXFwk5yqLULexFv99Md/Eg5gxykRyxW2V0hYBTQncAeGEomzY
    A==;
-X-CSE-ConnectionGUID: jAZ78IaOTn62DWr1Qb9YUA==
-X-CSE-MsgGUID: 3mBUmZEfSHm43LRjIrt3xQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="14369517"
+X-CSE-ConnectionGUID: fswbwBTrQbW746pjNsS8iA==
+X-CSE-MsgGUID: 04z6clyVTi++2iHUJ0bPew==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="14369526"
 X-IronPort-AV: E=Sophos;i="6.07,251,1708416000";
-   d="scan'208";a="14369517"
+   d="scan'208";a="14369526"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
   by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 May 2024 07:04:20 -0700
-X-CSE-ConnectionGUID: WYfwx+c3Qe2vZBZiiU9tgQ==
-X-CSE-MsgGUID: GIjuGTf6RC6qMqH9h44SXg==
+ 03 May 2024 07:04:21 -0700
+X-CSE-ConnectionGUID: WNd/wI4sRte4EsfoCi4ojQ==
+X-CSE-MsgGUID: O7BK7VsQQmmpwFoJjiAgwQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,251,1708416000";
-   d="scan'208";a="64908084"
+   d="scan'208";a="64908105"
 Received: from sjslinke-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.113.3])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 May 2024 07:04:20 -0700
+ 03 May 2024 07:04:21 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -77,17 +77,17 @@ Cc: alsa-devel@alsa-project.org,
 	Cezary Rojewski <cezary.rojewski@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-Subject: [PATCH 3/9] ASoC: Intel: common: clarify Copyright information
-Date: Fri,  3 May 2024 09:03:53 -0500
-Message-Id: <20240503140359.259762-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 5/9] ASoC: Intel: catpt: clarify Copyright information
+Date: Fri,  3 May 2024 09:03:55 -0500
+Message-Id: <20240503140359.259762-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240503140359.259762-1-pierre-louis.bossart@linux.intel.com>
 References: <20240503140359.259762-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KZFRAK4UXK5JEPRK35OGTQI5VRFCZS3R
-X-Message-ID-Hash: KZFRAK4UXK5JEPRK35OGTQI5VRFCZS3R
+Message-ID-Hash: BVXH3GONSXOWHGOHAQVM4SMA2BGZ4ZLE
+X-Message-ID-Hash: BVXH3GONSXOWHGOHAQVM4SMA2BGZ4ZLE
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KZFRAK4UXK5JEPRK35OGTQI5VRFCZS3R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BVXH3GONSXOWHGOHAQVM4SMA2BGZ4ZLE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,92 +120,151 @@ Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-lnl-match.c | 2 +-
- sound/soc/intel/common/sst-dsp-priv.h             | 2 +-
- sound/soc/intel/common/sst-dsp.c                  | 2 +-
- sound/soc/intel/common/sst-dsp.h                  | 2 +-
- sound/soc/intel/common/sst-ipc.c                  | 2 +-
- sound/soc/intel/common/sst-ipc.h                  | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/catpt/core.h      | 2 +-
+ sound/soc/intel/catpt/device.c    | 2 +-
+ sound/soc/intel/catpt/dsp.c       | 2 +-
+ sound/soc/intel/catpt/ipc.c       | 2 +-
+ sound/soc/intel/catpt/loader.c    | 2 +-
+ sound/soc/intel/catpt/messages.c  | 2 +-
+ sound/soc/intel/catpt/messages.h  | 2 +-
+ sound/soc/intel/catpt/pcm.c       | 2 +-
+ sound/soc/intel/catpt/registers.h | 2 +-
+ sound/soc/intel/catpt/sysfs.c     | 2 +-
+ sound/soc/intel/catpt/trace.h     | 2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-lnl-match.c b/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
-index 0318c1a46f3c..0c08859c4773 100644
---- a/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
-@@ -2,7 +2,7 @@
+diff --git a/sound/soc/intel/catpt/core.h b/sound/soc/intel/catpt/core.h
+index a64a0a77dcb7..c01d27e9fd88 100644
+--- a/sound/soc/intel/catpt/core.h
++++ b/sound/soc/intel/catpt/core.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * soc-acpi-intel-lnl-match.c - tables and support for LNL ACPI enumeration.
+- * Copyright(c) 2020 Intel Corporation. All rights reserved.
++ * Copyright(c) 2020 Intel Corporation
   *
-- * Copyright (c) 2023, Intel Corporation. All rights reserved.
-+ * Copyright (c) 2023, Intel Corporation
-  *
+  * Author: Cezary Rojewski <cezary.rojewski@intel.com>
   */
- 
-diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
-index de2b44568feb..de32bb9afccb 100644
---- a/sound/soc/intel/common/sst-dsp-priv.h
-+++ b/sound/soc/intel/common/sst-dsp-priv.h
-@@ -2,7 +2,7 @@
+diff --git a/sound/soc/intel/catpt/device.c b/sound/soc/intel/catpt/device.c
+index cac3dffbd0d9..2e1fa79a04d4 100644
+--- a/sound/soc/intel/catpt/device.c
++++ b/sound/soc/intel/catpt/device.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ //
+-// Copyright(c) 2020 Intel Corporation. All rights reserved.
++// Copyright(c) 2020 Intel Corporation
+ //
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+diff --git a/sound/soc/intel/catpt/dsp.c b/sound/soc/intel/catpt/dsp.c
+index 5454c6d9ab5b..5993819cc58a 100644
+--- a/sound/soc/intel/catpt/dsp.c
++++ b/sound/soc/intel/catpt/dsp.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ //
+-// Copyright(c) 2020 Intel Corporation. All rights reserved.
++// Copyright(c) 2020 Intel Corporation
+ //
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+diff --git a/sound/soc/intel/catpt/ipc.c b/sound/soc/intel/catpt/ipc.c
+index 5b718a846fda..d26863249097 100644
+--- a/sound/soc/intel/catpt/ipc.c
++++ b/sound/soc/intel/catpt/ipc.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ //
+-// Copyright(c) 2020 Intel Corporation. All rights reserved.
++// Copyright(c) 2020 Intel Corporation
+ //
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+diff --git a/sound/soc/intel/catpt/loader.c b/sound/soc/intel/catpt/loader.c
+index ff7b8f0d34ac..696d84314eeb 100644
+--- a/sound/soc/intel/catpt/loader.c
++++ b/sound/soc/intel/catpt/loader.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ //
+-// Copyright(c) 2020 Intel Corporation. All rights reserved.
++// Copyright(c) 2020 Intel Corporation
+ //
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+diff --git a/sound/soc/intel/catpt/messages.c b/sound/soc/intel/catpt/messages.c
+index a793d114afa4..30eec2de4dc1 100644
+--- a/sound/soc/intel/catpt/messages.c
++++ b/sound/soc/intel/catpt/messages.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ //
+-// Copyright(c) 2020 Intel Corporation. All rights reserved.
++// Copyright(c) 2020 Intel Corporation
+ //
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+diff --git a/sound/soc/intel/catpt/messages.h b/sound/soc/intel/catpt/messages.h
+index c17e948d9f52..a634943eb669 100644
+--- a/sound/soc/intel/catpt/messages.h
++++ b/sound/soc/intel/catpt/messages.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * Intel Smart Sound Technology
+- * Copyright(c) 2020 Intel Corporation. All rights reserved.
++ * Copyright(c) 2020 Intel Corporation
   *
-- * Copyright (C) 2013, Intel Corporation. All rights reserved.
-+ * Copyright (C) 2013, Intel Corporation
+  * Author: Cezary Rojewski <cezary.rojewski@intel.com>
   */
- 
- #ifndef __SOUND_SOC_SST_DSP_PRIV_H
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index 229d09d61afb..cdd2f7cf50ae 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -2,7 +2,7 @@
+diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
+index 3daf5eb37f7b..81a2f0339e05 100644
+--- a/sound/soc/intel/catpt/pcm.c
++++ b/sound/soc/intel/catpt/pcm.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ //
+-// Copyright(c) 2020 Intel Corporation. All rights reserved.
++// Copyright(c) 2020 Intel Corporation
+ //
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+diff --git a/sound/soc/intel/catpt/registers.h b/sound/soc/intel/catpt/registers.h
+index 47280d82842e..6c1ad28c6d69 100644
+--- a/sound/soc/intel/catpt/registers.h
++++ b/sound/soc/intel/catpt/registers.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * Intel Smart Sound Technology (SST) DSP Core Driver
+- * Copyright(c) 2020 Intel Corporation. All rights reserved.
++ * Copyright(c) 2020 Intel Corporation
   *
-- * Copyright (C) 2013, Intel Corporation. All rights reserved.
-+ * Copyright (C) 2013, Intel Corporation
+  * Author: Cezary Rojewski <cezary.rojewski@intel.com>
   */
- 
- #include <linux/slab.h>
-diff --git a/sound/soc/intel/common/sst-dsp.h b/sound/soc/intel/common/sst-dsp.h
-index f111fd3f334b..998b1a052281 100644
---- a/sound/soc/intel/common/sst-dsp.h
-+++ b/sound/soc/intel/common/sst-dsp.h
-@@ -2,7 +2,7 @@
+diff --git a/sound/soc/intel/catpt/sysfs.c b/sound/soc/intel/catpt/sysfs.c
+index 9b6d2d93a2e7..936ac9d503ff 100644
+--- a/sound/soc/intel/catpt/sysfs.c
++++ b/sound/soc/intel/catpt/sysfs.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ //
+-// Copyright(c) 2020 Intel Corporation. All rights reserved.
++// Copyright(c) 2020 Intel Corporation
+ //
+ // Author: Cezary Rojewski <cezary.rojewski@intel.com>
+ //
+diff --git a/sound/soc/intel/catpt/trace.h b/sound/soc/intel/catpt/trace.h
+index bb3d627dbeaf..010f57b6a7a8 100644
+--- a/sound/soc/intel/catpt/trace.h
++++ b/sound/soc/intel/catpt/trace.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * Intel Smart Sound Technology (SST) Core
+- * Copyright(c) 2020 Intel Corporation. All rights reserved.
++ * Copyright(c) 2020 Intel Corporation
   *
-- * Copyright (C) 2013, Intel Corporation. All rights reserved.
-+ * Copyright (C) 2013, Intel Corporation
+  * Author: Cezary Rojewski <cezary.rojewski@intel.com>
   */
- 
- #ifndef __SOUND_SOC_SST_DSP_H
-diff --git a/sound/soc/intel/common/sst-ipc.c b/sound/soc/intel/common/sst-ipc.c
-index 89c10724d2a3..6b2c83f9f010 100644
---- a/sound/soc/intel/common/sst-ipc.c
-+++ b/sound/soc/intel/common/sst-ipc.c
-@@ -2,7 +2,7 @@
- /*
-  * Intel SST generic IPC Support
-  *
-- * Copyright (C) 2015, Intel Corporation. All rights reserved.
-+ * Copyright (C) 2015, Intel Corporation
-  */
- 
- #include <linux/types.h>
-diff --git a/sound/soc/intel/common/sst-ipc.h b/sound/soc/intel/common/sst-ipc.h
-index 77d651e888f9..86d44ceadc92 100644
---- a/sound/soc/intel/common/sst-ipc.h
-+++ b/sound/soc/intel/common/sst-ipc.h
-@@ -2,7 +2,7 @@
- /*
-  * Intel SST generic IPC Support
-  *
-- * Copyright (C) 2015, Intel Corporation. All rights reserved.
-+ * Copyright (C) 2015, Intel Corporation
-  */
- 
- #ifndef __SST_GENERIC_IPC_H
 -- 
 2.40.1
 
