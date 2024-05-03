@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3BB6C4345F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 May 2024 13:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF8BAC4345F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 May 2024 13:54:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0F3CEC7;
-	Fri,  3 May 2024 15:53:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0F3CEC7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F4B0E0F;
+	Fri,  3 May 2024 15:54:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F4B0E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1714744431;
-	bh=+wN3yZnCk76F76EBrwtUp3XcashJbQ3AWpKItiCqS/o=;
+	s=default; t=1714744451;
+	bh=jAmF9TapQ0bMEJFmBmDWJ3wBI0lRy4F6KUp4fwsstTo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JvV7AuH2rxRyhXMh4O9FVa1YryzfDcij4SG0xAYZievE8PWvjpy/rY3p8QL0Omcf4
-	 ksZ6cCpoZk2uN+i01Jiw63tjTLsDE/CJtb3tLcPfnEjCytzd6gpAT2k+xlL5ElDbRG
-	 bBOb4VRZ9cdsElFn6HYtoTHtu73VDtOAYybEj3O8=
+	b=OgjgsK6a3NfGPEWmO1CCbxEtxumObPZOM+Nwc1RYK+uY0dYVPTOJ+B0iJ+VNhNJU+
+	 bDEp+VfxoMG8WbvyzH4+iKcqCLOpO1tWTcgDAoZLFio/P1MPsOFGbeZwx15iHYkQG4
+	 Am/Q4tWqXY+S9XYjco+38FyOBBkltEvsOFcEoN2Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8A8DF805F1; Fri,  3 May 2024 15:52:51 +0200 (CEST)
+	id CB2BFF80615; Fri,  3 May 2024 15:52:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE1B2F805EA;
-	Fri,  3 May 2024 15:52:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BA0BF80618;
+	Fri,  3 May 2024 15:52:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 759D2F80579; Fri,  3 May 2024 15:52:44 +0200 (CEST)
+	id 0C48FF80602; Fri,  3 May 2024 15:52:54 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4DFBAF80266
-	for <alsa-devel@alsa-project.org>; Fri,  3 May 2024 15:52:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DFBAF80266
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4C68AF8023A
+	for <alsa-devel@alsa-project.org>; Fri,  3 May 2024 15:52:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C68AF8023A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=SLzrl0PM
+ header.s=Intel header.b=LHPRk5PI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714744358; x=1746280358;
+  t=1714744362; x=1746280362;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+wN3yZnCk76F76EBrwtUp3XcashJbQ3AWpKItiCqS/o=;
-  b=SLzrl0PMnv1v4eQRt/Dm2VdTbqTN9Y0k5ASSeZv59eeOYS6ZVKbQ+R8w
-   AU6FZGyRTvgAoYvWkHqMTUBcurb5LuTo/PjxbQE6azplCu2f179vfpKy9
-   4yT0KkRx5Sp0/bl6v501Vk4kS5xeOEb2DVcTaKlCABn176216shyqjYCU
-   mAgAY3U42htqDWcljDJVFGYJjY6xUTvhEivyXQa1laoS3aeoTdgKYZvlJ
-   0h36eQLiUFL2d23JkQH/UzOkiqpcK9FVjl8ZP0ZIucu+hvvRTFKNd1C7g
-   vWza+lprDZe5QygvKF0ajEKheG6/LmV2icKlshbyW9yS/JW6NSEgmma6v
-   Q==;
-X-CSE-ConnectionGUID: 7fXC+oL6RBmEif/BTzwpzg==
-X-CSE-MsgGUID: RhLya3KLQfiklpVbL8rh8w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="28029413"
+  bh=jAmF9TapQ0bMEJFmBmDWJ3wBI0lRy4F6KUp4fwsstTo=;
+  b=LHPRk5PIFf8DkEp5wqC2CUyxj4C33HNkaS0SMGjwo2UbU3JHTJcpnpwf
+   0PaB2prS+pucpbT30Neahec1x3w0e1Db43CH9z/xcEPi3vI2Yq4H/6LKV
+   WqH9fDDnKBmkHoeUn7GQDcXrLMNEo8u37xyQOChNLfPWpjsukTPK8Aywl
+   ToRTWkJ8n2qWt+whHs8PNdFjzqsRyA9NqhngHcU84dQU0Q5pg7KRl/+iy
+   ktDdtVLdCUN/zijwCLroLF/Xm2a70/HD5MQmUwCF+MGOB4S3kGSEVU227
+   d0ipc3ag7chHoPsyJsHgNKPmDcOW21CWMBfT4H8sUivUueM6soL16eZ07
+   g==;
+X-CSE-ConnectionGUID: pp1T7BT/R5aM5w+5Hv/PnQ==
+X-CSE-MsgGUID: 1K1yu1iQRdyG1qCO4YuGuw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="28029430"
 X-IronPort-AV: E=Sophos;i="6.07,251,1708416000";
-   d="scan'208";a="28029413"
+   d="scan'208";a="28029430"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 May 2024 06:52:35 -0700
-X-CSE-ConnectionGUID: bPUE7Pn3RLyNsJe375LLFg==
-X-CSE-MsgGUID: j0OQ6yVdQ96RLx7SDsIlqA==
+ 03 May 2024 06:52:37 -0700
+X-CSE-ConnectionGUID: JbXCBeDYQgSCp8rtAdYVAg==
+X-CSE-MsgGUID: /ZvZYLuUSfufjFb+a4kxyQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,251,1708416000";
-   d="scan'208";a="27548725"
+   d="scan'208";a="27548769"
 Received: from sjslinke-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.212.113.3])
   by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 May 2024 06:52:32 -0700
+ 03 May 2024 06:52:36 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -76,17 +76,17 @@ Cc: alsa-devel@alsa-project.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [PATCH 2/7] ASoC: SOF: Intel: regroup all SoundWire/Intel functions
- in hda.c
-Date: Fri,  3 May 2024 08:52:16 -0500
-Message-Id: <20240503135221.229202-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/7] ASoC: SOF: Intel: remove circular dependency on
+ hda_sdw_process_wakeen()
+Date: Fri,  3 May 2024 08:52:20 -0500
+Message-Id: <20240503135221.229202-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240503135221.229202-1-pierre-louis.bossart@linux.intel.com>
 References: <20240503135221.229202-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: C73PUFYG6NJXFIJHKDGZJJV2SEAXV3WG
-X-Message-ID-Hash: C73PUFYG6NJXFIJHKDGZJJV2SEAXV3WG
+Message-ID-Hash: I2NQ7QRWEJJA25AJVUN3CONVZFUHMS2T
+X-Message-ID-Hash: I2NQ7QRWEJJA25AJVUN3CONVZFUHMS2T
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C73PUFYG6NJXFIJHKDGZJJV2SEAXV3WG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I2NQ7QRWEJJA25AJVUN3CONVZFUHMS2T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,126 +108,211 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To avoid circular dependencies between SOF/Intel and SoundWire/Intel,
-we need to split the top-level hda.c from the rest of the code. This
-patch first regroups all SoundWire related code in hda.c.
+hda_sdw_process_wakeen() is used in hda-loader.c, but defined in
+hda.c. This code split will create a circular dependency when hda.c is
+moved to a different module. Rather than an invasive code change, this
+patch follows the model used for sdw_check_wakeen_irq() with an
+abstraction. For now all abstractions point to the same common
+routine, which is arguably not great, but this also provides us with a
+future-proof way of addressing platform-specific wake processing.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-loader.c | 40 --------------------------------
- sound/soc/sof/intel/hda.c        | 39 +++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+), 40 deletions(-)
+ sound/soc/sof/intel/cnl.c     |  2 ++
+ sound/soc/sof/intel/hda-dsp.c | 15 +++++++++++++++
+ sound/soc/sof/intel/hda.c     |  3 ++-
+ sound/soc/sof/intel/hda.h     |  5 +++++
+ sound/soc/sof/intel/icl.c     |  1 +
+ sound/soc/sof/intel/lnl.c     |  1 +
+ sound/soc/sof/intel/mtl.c     |  2 ++
+ sound/soc/sof/intel/shim.h    |  1 +
+ sound/soc/sof/intel/tgl.c     |  4 ++++
+ 9 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index dc88b7ea599e..d0474522ea76 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -15,7 +15,6 @@
-  * Hardware interface for HDA DSP code loader
-  */
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 460bc404ddb6..1936865b2937 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -473,6 +473,7 @@ const struct sof_intel_dsp_desc cnl_chip_info = {
+ 	.enable_sdw_irq	= hda_common_enable_sdw_irq,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ 	.cl_init = cl_dsp_init,
+ 	.power_down_dsp = hda_power_down_dsp,
+@@ -508,6 +509,7 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
+ 	.enable_sdw_irq	= hda_common_enable_sdw_irq,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ 	.cl_init = cl_dsp_init,
+ 	.power_down_dsp = hda_power_down_dsp,
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 974ac1cd8c6e..780f4c33e678 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -1311,6 +1311,21 @@ int hda_sdw_check_lcount(struct snd_sof_dev *sdev)
  
--#include <linux/debugfs.h>
- #include <linux/firmware.h>
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_register.h>
-@@ -651,45 +650,6 @@ int hda_dsp_ipc4_load_library(struct snd_sof_dev *sdev,
- 	return ret;
+ 	return 0;
  }
++
++void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
++{
++	u32 interface_mask = hda_get_interface_mask(sdev);
++	const struct sof_intel_dsp_desc *chip;
++
++	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
++		return;
++
++	chip = get_chip_info(sdev->pdata);
++	if (chip && chip->sdw_process_wakeen)
++		chip->sdw_process_wakeen(sdev);
++}
++EXPORT_SYMBOL_NS(hda_sdw_process_wakeen, SND_SOC_SOF_INTEL_HDA_COMMON);
++
+ #endif
  
--/* pre fw run operations */
--int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev)
--{
--	/* disable clock gating and power gating */
--	return hda_dsp_ctrl_clock_power_gating(sdev, false);
--}
--
--/* post fw run operations */
--int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
--{
--	int ret;
--
--	if (sdev->first_boot) {
--		struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
--
--		ret = hda_sdw_startup(sdev);
--		if (ret < 0) {
--			dev_err(sdev->dev,
--				"error: could not startup SoundWire links\n");
--			return ret;
--		}
--
--		/* Check if IMR boot is usable */
--		if (!sof_debug_check_flag(SOF_DBG_IGNORE_D3_PERSISTENT) &&
--		    (sdev->fw_ready.flags & SOF_IPC_INFO_D3_PERSISTENT ||
--		     sdev->pdata->ipc_type == SOF_IPC_TYPE_4)) {
--			hdev->imrboot_supported = true;
--			debugfs_create_bool("skip_imr_boot",
--					    0644, sdev->debugfs_root,
--					    &hdev->skip_imr_boot);
--		}
--	}
--
--	hda_sdw_int_enable(sdev, true);
--
--	/* re-enable clock gating and power gating */
--	return hda_dsp_ctrl_clock_power_gating(sdev, true);
--}
--
- int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
- 					 const struct sof_ext_man_elem_header *hdr)
- {
+ int hda_dsp_disable_interrupts(struct snd_sof_dev *sdev)
 diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index d4f039ed4ad4..e86236d35fe8 100644
+index b15b1f5edcea..183b2526b6d2 100644
 --- a/sound/soc/sof/intel/hda.c
 +++ b/sound/soc/sof/intel/hda.c
-@@ -545,6 +545,45 @@ static inline bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+@@ -331,7 +331,7 @@ static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+ 	return false;
+ }
  
- #endif /* IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE) */
+-void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
++void hda_sdw_process_wakeen_common(struct snd_sof_dev *sdev)
+ {
+ 	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	struct sof_intel_hda_dev *hdev;
+@@ -345,6 +345,7 @@ void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
  
-+/* pre fw run operations */
-+int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev)
+ 	sdw_intel_process_wakeen_event(hdev->sdw);
+ }
++EXPORT_SYMBOL_NS(hda_sdw_process_wakeen_common, SND_SOC_SOF_INTEL_HDA_COMMON);
+ 
+ #else /* IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE) */
+ static inline int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 0345c90ead4d..e675ff8a83a5 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -817,6 +817,7 @@ int hda_sdw_startup(struct snd_sof_dev *sdev);
+ void hda_common_enable_sdw_irq(struct snd_sof_dev *sdev, bool enable);
+ void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable);
+ bool hda_sdw_check_wakeen_irq_common(struct snd_sof_dev *sdev);
++void hda_sdw_process_wakeen_common(struct snd_sof_dev *sdev);
+ void hda_sdw_process_wakeen(struct snd_sof_dev *sdev);
+ bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev);
+ 
+@@ -855,6 +856,10 @@ static inline bool hda_sdw_check_wakeen_irq_common(struct snd_sof_dev *sdev)
+ 	return false;
+ }
+ 
++static inline void hda_sdw_process_wakeen_common(struct snd_sof_dev *sdev)
 +{
-+	/* disable clock gating and power gating */
-+	return hda_dsp_ctrl_clock_power_gating(sdev, false);
 +}
 +
-+/* post fw run operations */
-+int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
-+{
-+	int ret;
-+
-+	if (sdev->first_boot) {
-+		struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-+
-+		ret = hda_sdw_startup(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev,
-+				"error: could not startup SoundWire links\n");
-+			return ret;
-+		}
-+
-+		/* Check if IMR boot is usable */
-+		if (!sof_debug_check_flag(SOF_DBG_IGNORE_D3_PERSISTENT) &&
-+		    (sdev->fw_ready.flags & SOF_IPC_INFO_D3_PERSISTENT ||
-+		     sdev->pdata->ipc_type == SOF_IPC_TYPE_4)) {
-+			hdev->imrboot_supported = true;
-+			debugfs_create_bool("skip_imr_boot",
-+					    0644, sdev->debugfs_root,
-+					    &hdev->skip_imr_boot);
-+		}
-+	}
-+
-+	hda_sdw_int_enable(sdev, true);
-+
-+	/* re-enable clock gating and power gating */
-+	return hda_dsp_ctrl_clock_power_gating(sdev, true);
-+}
-+
- /*
-  * Debug
-  */
+ static inline void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
+ {
+ }
+diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
+index 115866225e05..9b916eb4fc21 100644
+--- a/sound/soc/sof/intel/icl.c
++++ b/sound/soc/sof/intel/icl.c
+@@ -187,6 +187,7 @@ const struct sof_intel_dsp_desc icl_chip_info = {
+ 	.enable_sdw_irq	= hda_common_enable_sdw_irq,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ 	.cl_init = cl_dsp_init,
+ 	.power_down_dsp = hda_power_down_dsp,
+diff --git a/sound/soc/sof/intel/lnl.c b/sound/soc/sof/intel/lnl.c
+index ca0cb91d2b2c..a7446be36627 100644
+--- a/sound/soc/sof/intel/lnl.c
++++ b/sound/soc/sof/intel/lnl.c
+@@ -238,6 +238,7 @@ const struct sof_intel_dsp_desc lnl_chip_info = {
+ 	.enable_sdw_irq = lnl_enable_sdw_irq,
+ 	.check_sdw_irq = lnl_dsp_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = lnl_sdw_check_wakeen_irq,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq = mtl_dsp_check_ipc_irq,
+ 	.cl_init = mtl_dsp_cl_init,
+ 	.power_down_dsp = mtl_power_down_dsp,
+diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
+index 13f780f33c22..b9fc123be75d 100644
+--- a/sound/soc/sof/intel/mtl.c
++++ b/sound/soc/sof/intel/mtl.c
+@@ -779,6 +779,7 @@ const struct sof_intel_dsp_desc mtl_chip_info = {
+ 	.enable_sdw_irq = mtl_enable_sdw_irq,
+ 	.check_sdw_irq = mtl_dsp_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq = mtl_dsp_check_ipc_irq,
+ 	.cl_init = mtl_dsp_cl_init,
+ 	.power_down_dsp = mtl_power_down_dsp,
+@@ -806,6 +807,7 @@ const struct sof_intel_dsp_desc arl_s_chip_info = {
+ 	.enable_sdw_irq = mtl_enable_sdw_irq,
+ 	.check_sdw_irq = mtl_dsp_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq = mtl_dsp_check_ipc_irq,
+ 	.cl_init = mtl_dsp_cl_init,
+ 	.power_down_dsp = mtl_power_down_dsp,
+diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
+index 18ce3d33fa80..448ec54a6aa9 100644
+--- a/sound/soc/sof/intel/shim.h
++++ b/sound/soc/sof/intel/shim.h
+@@ -190,6 +190,7 @@ struct sof_intel_dsp_desc {
+ 	void (*enable_sdw_irq)(struct snd_sof_dev *sdev, bool enable);
+ 	bool (*check_sdw_irq)(struct snd_sof_dev *sdev);
+ 	bool (*check_sdw_wakeen_irq)(struct snd_sof_dev *sdev);
++	void (*sdw_process_wakeen)(struct snd_sof_dev *sdev);
+ 	bool (*check_ipc_irq)(struct snd_sof_dev *sdev);
+ 	int (*power_down_dsp)(struct snd_sof_dev *sdev);
+ 	int (*disable_interrupts)(struct snd_sof_dev *sdev);
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index 6acc65923834..062327d4f068 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -156,6 +156,7 @@ const struct sof_intel_dsp_desc tgl_chip_info = {
+ 	.enable_sdw_irq	= hda_common_enable_sdw_irq,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ 	.cl_init = cl_dsp_init,
+ 	.power_down_dsp = hda_power_down_dsp,
+@@ -184,6 +185,7 @@ const struct sof_intel_dsp_desc tglh_chip_info = {
+ 	.enable_sdw_irq	= hda_common_enable_sdw_irq,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ 	.cl_init = cl_dsp_init,
+ 	.power_down_dsp = hda_power_down_dsp,
+@@ -212,6 +214,7 @@ const struct sof_intel_dsp_desc ehl_chip_info = {
+ 	.enable_sdw_irq	= hda_common_enable_sdw_irq,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ 	.cl_init = cl_dsp_init,
+ 	.power_down_dsp = hda_power_down_dsp,
+@@ -240,6 +243,7 @@ const struct sof_intel_dsp_desc adls_chip_info = {
+ 	.enable_sdw_irq	= hda_common_enable_sdw_irq,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_sdw_wakeen_irq = hda_sdw_check_wakeen_irq_common,
++	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ 	.cl_init = cl_dsp_init,
+ 	.power_down_dsp = hda_power_down_dsp,
 -- 
 2.40.1
 
