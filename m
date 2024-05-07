@@ -4,76 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EAE6C10F1A
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 May 2024 14:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D243C25B4F
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 May 2024 14:49:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 675E4950;
-	Tue,  7 May 2024 16:48:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 675E4950
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6F43829;
+	Tue,  7 May 2024 16:49:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6F43829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715093336;
-	bh=rh9ZHphu6xhB7OxL8asZBjORtt/B3YfKbGwrlZBc6cc=;
+	s=default; t=1715093351;
+	bh=y6WKrVLOQiWpSilDvghHWU2H2C7Bg6g2vDY3+N3fXQ4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AUUh3bej6bHJgl4Xd8V4ZVkxPDFDE6gPyGGkaAoXKv3DQ/jVzqgYgx0DNk25qLKnA
-	 +m0fW73clr5Ana45FDuxI0k6mCcxV+zS2Y4blYUyPOthUzY36B8RtZehcqxvkrWcJb
-	 UImWejaTIEqKuB+4wJINBw8FYciXLciIbhwtYyX4=
+	b=iFNxEHDybbChtarW5vkeniUhnhl4NHW1KifjK4SYo0idiWlLRE4XU3E5bf9F4oGBk
+	 zG8gVBhzWYN6SyTGCO0Xcoi6igm59cd0GWQq8eFdBkW4IicGrYmURLG9eG69AWpOnN
+	 jjtOPCfoDUjMTpol1lkWqXyjuq1gct6wxJ9WjmDs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73C96F805D3; Tue,  7 May 2024 16:48:08 +0200 (CEST)
+	id 9C96CF805F3; Tue,  7 May 2024 16:48:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD511F804F2;
-	Tue,  7 May 2024 16:48:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20344F805F6;
+	Tue,  7 May 2024 16:48:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5537DF804F2; Tue,  7 May 2024 16:41:44 +0200 (CEST)
+	id A4398F8049C; Tue,  7 May 2024 16:41:45 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org
  [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C3820F8049C
-	for <alsa-devel@alsa-project.org>; Tue,  7 May 2024 16:35:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3820F8049C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6072BF804E7
+	for <alsa-devel@alsa-project.org>; Tue,  7 May 2024 16:35:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6072BF804E7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=UBu4+3nW
+ header.s=k20201202 header.b=jsh4qTC5
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 05D61CE139E;
-	Tue,  7 May 2024 14:35:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7556C4DDE3;
-	Tue,  7 May 2024 14:35:05 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 4F8DCCE126E;
+	Tue,  7 May 2024 14:35:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16855C2BBFC;
+	Tue,  7 May 2024 14:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715092507;
-	bh=rh9ZHphu6xhB7OxL8asZBjORtt/B3YfKbGwrlZBc6cc=;
+	s=k20201202; t=1715092502;
+	bh=y6WKrVLOQiWpSilDvghHWU2H2C7Bg6g2vDY3+N3fXQ4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=UBu4+3nWgiamZFHlRcnS2ATFNkDtDSETJcVAzEKOqIElti2qiwitwR8zvQEstP4Fw
-	 DNPyQYbn+3m8DsBVBGGwCI06hLccmeCOhAUPQp+GdN/c60ctVDpHg54fVloDzVP3b9
-	 O3wvE3KwR18gti9jOzw8ekjIrYoumbsXZbhAruI3BNFJkHMpLGW/rVbvG4QMIJAKLU
-	 6C715L9YLPpBy5g+3dRM3RvldQ8pZYld9AdD9i4UWfqAkWeaKQ7BPKAOj408OV90kp
-	 D82JKoThpkkeS7WwA0DTh9hirQrPfWVSTfLMIZKDvh6l36/4q5H0CqtJb86oUBoruU
-	 CMFaNDr1ZzegQ==
+	b=jsh4qTC5gVZ7sYBPuy5NlWFptghPLLD48L0GvjH4JiS3kx7qOWhxE7m21fp7sfw5c
+	 OZfXdkbVtD4CmIf0rWQc/ADEFT+DencCfMXoMCOMYluT7CnDXVqh+Po/Z45ToGLJ4N
+	 q/GfiRzpjYDI+kuA54dDD4j/cOQ6T81YZvpCLOiTrXY8Rsqbr2u3Pt4dWloOqnbdmK
+	 dEF17UfmRG74qkmmf4YzoCKy1/QtSvaWf3ESfV5psZBtE0MmNvwqoDLyERgaX9ZgtU
+	 ZOs30E1pnraWOyvvVNTqrFU7qisbhaGsGF5Z+19N7FUZM8OUy3ExYFzba4k3X0v+0X
+	 dOQVG31vmlkFA==
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- =?utf-8?q?=C5=81ukasz_Majczak?= <lma@chromium.org>
-In-Reply-To: <20240506121106.3792340-1-amadeuszx.slawinski@linux.intel.com>
-References: <20240506121106.3792340-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: avs: boards: Properly name input
- device
-Message-Id: <171509250547.1985791.9610168876081651324.b4-ty@kernel.org>
-Date: Tue, 07 May 2024 23:35:05 +0900
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Ban Tao <fengzheng923@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, imx@lists.linux.dev,
+ linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-sunxi@lists.linux.dev
+In-Reply-To: <20240430-asoc-snd-substream-clean-v1-0-6f8a8902b479@linaro.org>
+References: <20240430-asoc-snd-substream-clean-v1-0-6f8a8902b479@linaro.org>
+Subject: Re: [PATCH 00/13] ASoC: Use snd_soc_substream_to_rtd() for
+ accessing private_data
+Message-Id: <171509249287.1985791.3932273255744591305.b4-ty@kernel.org>
+Date: Tue, 07 May 2024 23:34:52 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
-Message-ID-Hash: V4XMI2G26EXKHLUFWEBNVCGO7FACKAMZ
-X-Message-ID-Hash: V4XMI2G26EXKHLUFWEBNVCGO7FACKAMZ
+Message-ID-Hash: VFTHG4SDTI24FLLXI32YGB4SGT2K6EA5
+X-Message-ID-Hash: VFTHG4SDTI24FLLXI32YGB4SGT2K6EA5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V4XMI2G26EXKHLUFWEBNVCGO7FACKAMZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VFTHG4SDTI24FLLXI32YGB4SGT2K6EA5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,11 +120,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 06 May 2024 14:11:06 +0200, Amadeusz Sławiński wrote:
-> Machine boards expose input device for use with userspace. Current name
-> in some cases is incorrect, fix it.
+On Tue, 30 Apr 2024 16:02:09 +0200, Krzysztof Kozlowski wrote:
+> Do not open-code snd_soc_substream_to_rtd() when accessing
+> snd_pcm_substream->private_data.  This makes code more consistent with
+> rest of ASoC and allows in the future to move the field to any other
+> place or add additional checks in snd_soc_substream_to_rtd().
 > 
+> Best regards,
+> Krzysztof
 > 
+> [...]
 
 Applied to
 
@@ -107,8 +137,32 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: avs: boards: Properly name input device
-      commit: 6490bec6d5bf1001032c5efea94bdf5b5104bce9
+[01/13] ASoC: qcom: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 77678a25d1ecf70dc1d7ea2c0ab7609af15b83d3
+[02/13] ASoC: tegra: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 3beb985abbf29e660edd1708f8a120ae9bbbddc3
+[03/13] ASoC: ti: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 72a666f47f958a57db16b6bdd9ed385674069693
+[04/13] ASoC: arm: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: a80f2f8443a4ae10c568566f57fe704ea52c5bdb
+[05/13] ASoC: amd: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: a84d84077512fc64cf1fc2292a3638690a026737
+[06/13] ASoC: fsl: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: b695d8be5bba9897ee670ec102ca608ecaf625c4
+[07/13] ASoC: img: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 3b62178720594e08bdf8a87515ccca0328fe41fe
+[08/13] ASoC: kirkwood: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: fe42c3b75b93dee9a4010e2297f1783e48684af7
+[09/13] ASoC: loongson: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: ffad75cebb865fef6f8e40f921c08c79a8faf7e3
+[10/13] ASoC: mediatek: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 410a45140fb76709cf2bbad84bc8a731acf632c8
+[11/13] ASoC: meson: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 22f5680a9cbc7388f97e5386c15c325d6961b958
+[12/13] ASoC: samsung: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 3e726593107d134221f666b4f2be612b278c3ddb
+[13/13] ASoC: sunxi: Use snd_soc_substream_to_rtd() for accessing private_data
+        commit: 47aa51677c975a5f66bc93d1c527e8878cf34d6c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
