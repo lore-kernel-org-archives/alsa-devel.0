@@ -4,92 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A97F0C10F1A
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 May 2024 20:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A0AFC10F1A
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 May 2024 23:08:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8634852;
-	Tue,  7 May 2024 22:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8634852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06C9382C;
+	Wed,  8 May 2024 01:08:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06C9382C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715115474;
-	bh=l9R6ZctW1GwYtMEchDn8Z2hexXc1AAVmZaGYJc7SQHA=;
+	s=default; t=1715123334;
+	bh=i+Cebfv7lo2+fMdPiE3yCY9/11GRUsk941J/hpctKbY=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=OOJO3SU4dFS0WyIry0CpXTDnjeZK0TXJ6qrloWUzI0cll1Ji1Et6EpMT593M4F4Bh
-	 6/b/Bce2oQt42w4EgGzSmd3V2N4gi0bd5FoOKG1I4RSMQt/QYWRrxqp4LbQe7pERSI
-	 SdZ3QB83Gs7IZia+lJpjPjB1pYifsJoBWUg95KKQ=
+	b=T9T/kkEXgMe1ff6UGdX7gMOJ8FtEcDriL1AHe5XXVUcYKWdrAlIr45G0UhmhUMk5n
+	 pULWkHYsTTMlfSla8B/EFzjGghVKbzDwYlOiMlXbu41530BGHqArWjoXU6htXCoQ65
+	 h5QbzA0Zrfbt4z7qQlFWDbel/Y3R/09+7eq85y84=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26EBCF805A0; Tue,  7 May 2024 22:57:22 +0200 (CEST)
+	id B59EDF805B6; Wed,  8 May 2024 01:08:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DE9FF80578;
-	Tue,  7 May 2024 22:57:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D451EF805AD;
+	Wed,  8 May 2024 01:08:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F25C6F8049C; Tue,  7 May 2024 22:57:16 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 75DC2F804E7; Wed,  8 May 2024 01:08:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 184ABF8024C
-	for <alsa-devel@alsa-project.org>; Tue,  7 May 2024 22:57:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 184ABF8024C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9121BF8003A
+	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 01:08:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9121BF8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=LZaoyzs5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715115432; x=1746651432;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=l9R6ZctW1GwYtMEchDn8Z2hexXc1AAVmZaGYJc7SQHA=;
-  b=LZaoyzs5PILUbkZnzPl0WrurB2qrEumyhF+MAZ8FfLYbj35BFPy+lhXo
-   ETI74h78SLyclrY5qUHhggHWbeC0gJ60RBkp0Anr4y9vt81D6W7iJ97wO
-   1ABtwfDzcKM0zedBsC36AMPmF1HRY9d1Q8JG6UB5sYRHmYbmqOEFDuQpB
-   UVUwAtMmzq1fn89DjICyGRoWNukzYXf1lIknwGbNT+4oqFjgHhp+YIpSA
-   dbx5y7F0jSEVkFmKWbYrnvX7oZe2jRIOyyb2K2D3rDp/rCe0Z/fRx4FdC
-   0VyauaJfEBybPo0Ps30seFWozFxD86W4vxGz0Qs9jbQ2kugvb1YTb4PJ/
-   Q==;
-X-CSE-ConnectionGUID: jrn9ekIUT4O95XFHNe0SKA==
-X-CSE-MsgGUID: pO23xkK3Tuaa7bzFMGuGlA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11066"; a="10810410"
-X-IronPort-AV: E=Sophos;i="6.08,143,1712646000";
-   d="scan'208";a="10810410"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 May 2024 13:57:07 -0700
-X-CSE-ConnectionGUID: vpB2YEaKQAGcaiAM27ZIHQ==
-X-CSE-MsgGUID: L3kkAFj9RkCNx6BaeGvQCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,143,1712646000";
-   d="scan'208";a="28636016"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa009.fm.intel.com with ESMTP; 07 May 2024 13:57:04 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 3D4FD12A; Tue, 07 May 2024 23:57:02 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Peter Rosin <peda@axentia.se>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Liam Girdwood <lgirdwood@gmail.com>,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ABQRFiy8
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 073C6619F1;
+	Tue,  7 May 2024 23:08:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8AD7C2BBFC;
+	Tue,  7 May 2024 23:08:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715123283;
+	bh=i+Cebfv7lo2+fMdPiE3yCY9/11GRUsk941J/hpctKbY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ABQRFiy85RdH86YjCUsG20eqUym1K761qFiB1rvbm4umW40hthZSUFcS7W7yAiANF
+	 OaKiVSO9xAB7bD7kGksCFpobLbO2sHL8eCBIddMQRI7Q4RxrRQ/UcmR7wQstiNEg4F
+	 mq7cdIMFrlNiXMuhvPB6dIb6UATMBKXxdaeZPI2Kzc0FiXNDWDgYk2tXfm20bDYi1L
+	 rPqUNwcQJprRwLnrbUR2c06l4oOSYYSrkX+TspjQFJnzoWaRusjS3abF/IYIIMrPQ/
+	 De7hNI1JzDaxJICgppT1UPHTFP6hZA6b3Rpxptk96KDISS0cb0nZO+u1u7sLlydGrv
+	 1krWWazjUfw7w==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Hans de Goede <hdegoede@redhat.com>,
 	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] ASoC: atmel: tse850-pcm5142: Remove unused of_gpio.h
-Date: Tue,  7 May 2024 23:56:59 +0300
-Message-ID: <20240507205659.690270-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	Sasha Levin <sashal@kernel.org>,
+	cezary.rojewski@intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	liam.r.girdwood@linux.intel.com,
+	peter.ujfalusi@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alban.boye@protonmail.com,
+	kuninori.morimoto.gx@renesas.com,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 01/52] ASoC: Intel: bytcr_rt5640: Apply Asus
+ T100TA quirk to Asus T100TAM too
+Date: Tue,  7 May 2024 19:06:27 -0400
+Message-ID: <20240507230800.392128-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.9
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6LFMMIJ4QLLZF24JBP36YDRKNSWUAH25
-X-Message-ID-Hash: 6LFMMIJ4QLLZF24JBP36YDRKNSWUAH25
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Message-ID-Hash: G44ITMAFCJTBOUU7577KIM6UZ3SCEKD4
+X-Message-ID-Hash: G44ITMAFCJTBOUU7577KIM6UZ3SCEKD4
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6LFMMIJ4QLLZF24JBP36YDRKNSWUAH25/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G44ITMAFCJTBOUU7577KIM6UZ3SCEKD4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,30 +107,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-of_gpio.h is deprecated and subject to remove.
-The driver doesn't use it, simply remove the unused header.
+From: Hans de Goede <hdegoede@redhat.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+[ Upstream commit e50729d742ec364895f1c389c32315984a987aa5 ]
+
+The Asus T100TA quirk has been using an exact match on a product-name of
+"T100TA" but there are also T100TAM variants with a slightly higher
+clocked CPU and a metal backside which need the same quirk.
+
+Sort the existing T100TA (stereo speakers) below the more specific
+T100TAF (mono speaker) quirk and switch from exact matching to
+substring matching so that the T100TA quirk will also match on
+the T100TAM models.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://msgid.link/r/20240407191559.21596-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/atmel/tse850-pcm5142.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
-index 611da23325d3..5d208e0b4b90 100644
---- a/sound/soc/atmel/tse850-pcm5142.c
-+++ b/sound/soc/atmel/tse850-pcm5142.c
-@@ -35,10 +35,9 @@
- // of the (filtered) output from the PCM5142 codec.
- 
- #include <linux/clk.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/regulator/consumer.h>
- 
- #include <sound/soc.h>
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 05f38d1f7d824..b41a1147f1c34 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -636,28 +636,30 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_USE_AMCR0F28),
+ 	},
+ 	{
++		/* Asus T100TAF, unlike other T100TA* models this one has a mono speaker */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TA"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
+ 		},
+ 		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+ 					BYT_RT5640_JD_SRC_JD2_IN4N |
+ 					BYT_RT5640_OVCD_TH_2000UA |
+ 					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF2 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
+ 	{
++		/* Asus T100TA and T100TAM, must come after T100TAF (mono spk) match */
+ 		.matches = {
+-			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+-			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "T100TA"),
+ 		},
+ 		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+ 					BYT_RT5640_JD_SRC_JD2_IN4N |
+ 					BYT_RT5640_OVCD_TH_2000UA |
+ 					BYT_RT5640_OVCD_SF_0P75 |
+-					BYT_RT5640_MONO_SPEAKER |
+-					BYT_RT5640_DIFF_MIC |
+-					BYT_RT5640_SSP0_AIF2 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
+ 	{
 -- 
-2.43.0.rc1.1336.g36b5255a03ac
+2.43.0
 
