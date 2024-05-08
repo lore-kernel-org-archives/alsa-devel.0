@@ -4,130 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3990FC19F4F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:55:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91010C04FFE
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:55:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD4A7825;
-	Wed,  8 May 2024 14:55:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD4A7825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 078C7E80;
+	Wed,  8 May 2024 14:55:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 078C7E80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715172932;
-	bh=zl7AH36vmygEV4JVzP5ZRpRVT0yrltHsi0L0sBPvpeI=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1715172951;
+	bh=gKVeUXfF3Ho2Ed/J5T0T6Hm5ka9z6vCma7xttwCG1nk=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lq5ZuEwMHcetOV7KLO7davnU4laZeJ6zoFO+3h8UTFDaZnSFSNfq6XTcwzLjP0rM0
-	 rZucoy385A7QEcEvecLlvSsYakX97gDMEzdXo2Xv3k6EYLXKcgRYLe2iKPLdZNI0Pk
-	 +1JQ3Q/S2tnYOgUFWmG9KzfoWfdjIt3mBMfso/To=
+	b=NqYudVpoWACtBdl70wEJiklGAi2wyz0o4V18a3d5to+R23W1gdp3lslOa9aoDDsWP
+	 EirzKZtJRg1EsvJnGixYBH4hqoTUnICG75yPlqoSvxfbhR7ZhvkhM/u3VpVbDE1F5x
+	 4LKSlORwuuNKctLM4lJqJi5M0exzwRoZ2JIuUdz8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB5B2F80859; Wed,  8 May 2024 14:52:10 +0200 (CEST)
+	id C078EF805CB; Wed,  8 May 2024 14:52:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDC5EF80847;
-	Wed,  8 May 2024 14:52:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C2A1F805D5;
+	Wed,  8 May 2024 14:52:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0272CF80423; Wed,  8 May 2024 13:03:18 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 5E947F805B0; Wed,  8 May 2024 14:52:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AA248F8049C
-	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 13:01:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA248F8049C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23569F805AF
+	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 14:52:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23569F805AF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=KNoJALnz
-Received: by mail-ej1-x62d.google.com with SMTP id
- a640c23a62f3a-a59ab4f60a6so916014566b.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 08 May 2024 04:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715166085; x=1715770885;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eh0hh6ynZxtBGDzmGDI5+hS0xKp2HfOEvcy4GZsRfWo=;
-        b=KNoJALnz+jY4du3Zz67/RJ0tl8K5dIJ/hOJmKrL3ekqSlsQJxh3oL+JuiOl9Qj+bEX
-         B4/csVZRUS9m4VZLnKMB5xPsOM4XAruiDiO5rAt7T8wrOOuONsLrhcrb9ZXQQExplTpQ
-         q1ANL3NQZL+kAqv1cLZUMjFn72FBOzqA2KfhCNDpKA0NJU6oqijXnTL77quoOQklRklq
-         rPKHZr13wCZQpt85oS8utmWHrfwaLNtaFg+FvrNIY9lq/VYUiwQs9sYhK0LGbNP8mi3S
-         syzfAh9rFKXqLuETAFRWhtQqejvE81lqmuF2mZghDp3dxriEKrUBmULnqCL8F1MrMjOq
-         cE5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715166085; x=1715770885;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eh0hh6ynZxtBGDzmGDI5+hS0xKp2HfOEvcy4GZsRfWo=;
-        b=rSGfsUhGFowFfed6UFsoUIOL73bWlSLOIr22QFf/ZfeDdfuthqWqYLLV3XRS8dguXI
-         39GYKPO3WQxAioKU3x3HZJ7x07qdkbluaW45uuiebdxSDlwei9jaaxtURU/qU0vCNpTI
-         UQT2/L3pwy3g7phuU+2fBvuK+uvrRqtwQc4q81eRqLmMsHoMKLhU+7D7z0Yf63Ktw001
-         lTKWUIfh/TamJ/v+qB8cg7cs8bi9Vl0/IUzgZmG9XamRr/hWOhyyPDclnQFQpxW67MBC
-         szX/RUIbhCnq22oUvpS5nwYz7T70+5bHsRvlcntLcl4wEukf6jM3mDnZBLCCrr+vhH4h
-         aUnQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXeDRq7dO9I6kCkIoJaL7Bb5G22txTzYQ56ONSq1X24sm7jiH3y48rnFEC6NVQqNEGLjMbTpZbr9B3Z4m7H3O3rLmKxbf1w+ysylsA=
-X-Gm-Message-State: AOJu0Yycc6mpE5A1fywx2YcGTOiX1ixc0B3B6nNgUYd+Ixdvioxc5wVy
-	GuG7vNdazS0NiPsG+FGD9Qu0j6CSmZbr9YecrE4IiryQJ+WfpxJr
-X-Google-Smtp-Source: 
- AGHT+IEBwQsbB5ly9Co7wAOpW5LM6EH159oeIG9hfELSBdMplK0VTNfidDLRoB93iPYNNHuID+ms/g==
-X-Received: by 2002:a50:d7db:0:b0:56e:7722:553 with SMTP id
- 4fb4d7f45d1cf-5731d9d9ecbmr1973462a12.24.1715166084426;
-        Wed, 08 May 2024 04:01:24 -0700 (PDT)
-Received: from hex.my.domain (83.8.126.253.ipv4.supernova.orange.pl.
- [83.8.126.253])
-        by smtp.gmail.com with ESMTPSA id
- m6-20020a056402510600b005726b58a436sm7455793edd.30.2024.05.08.04.01.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 04:01:24 -0700 (PDT)
-From: Artur Weber <aweber.kernel@gmail.com>
-Date: Wed, 08 May 2024 12:58:53 +0200
-Subject: [PATCH v2 5/7] ASoC: samsung: midas_wm1811: Use dev_err_probe
- where appropriate
-MIME-Version: 1.0
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ZrLk9kfT
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id C9E8161A88;
+	Wed,  8 May 2024 12:52:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F67CC113CC;
+	Wed,  8 May 2024 12:52:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715172736;
+	bh=gKVeUXfF3Ho2Ed/J5T0T6Hm5ka9z6vCma7xttwCG1nk=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=ZrLk9kfTvdSk83ynbdqCIsg3st29lqtv/1sbYd9zMlbJIpR4kz4maM4bvCc7bhE6o
+	 yeicwe6Lpe564y7ZeTXYSLQ51IQiSSW6S58nizMsqt4fhTcbYbrz9oSh5jnQnsLR98
+	 y931YLg6R1Ue4LfhfurZjJByaIrDXAfJ1nNHI25RxtqX10yYg+hyCmxTQ044mJ95cQ
+	 BJscpF/cQ2kK6GpAtC24TBHrXSBgMEXPptoXeyuP87wtgDwxMyEr5SPdO51/hPMPW3
+	 IbFXQNFkPg2LMoFzyVXpN3PW2HKrAafh5ByHt/Rm86AsDKEYJWCokE7W0PqxVp3L/Q
+	 iq/BrU0R0khYg==
+Date: Wed, 08 May 2024 07:52:10 -0500
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240508-midas-wm1811-gpio-jack-v2-5-b4d36cd02c6e@gmail.com>
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Artur Weber <aweber.kernel@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-samsung-soc@vger.kernel.org,
+ Jaroslav Kysela <perex@perex.cz>, Alim Akhtar <alim.akhtar@samsung.com>,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, ~postmarketos/upstreaming@lists.sr.ht,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>,
+ alsa-devel@alsa-project.org, Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20240508-midas-wm1811-gpio-jack-v2-2-b4d36cd02c6e@gmail.com>
 References: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
-In-Reply-To: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- Artur Weber <aweber.kernel@gmail.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1715166076; l=2433;
- i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=zl7AH36vmygEV4JVzP5ZRpRVT0yrltHsi0L0sBPvpeI=;
- b=fe+pSCvp0hASloJ0sPUz+l38OVaL8jW3+JqL69/Fa0Vyl+oCbv43o8wgqeZZwlLvsGsOL8qOh
- to+MdKSo025DMN6qoynkF5EzPkUi5GX8nq5bbd2hLMj8pAZXpr+03D7
-X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
- pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
-X-MailFrom: aweber.kernel@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+ <20240508-midas-wm1811-gpio-jack-v2-2-b4d36cd02c6e@gmail.com>
+Message-Id: <171517273028.1398305.2447515495565580200.robh@kernel.org>
+Subject: Re: [PATCH v2 2/7] ASoC: dt-bindings: samsung,midas-audio: Add
+ GPIO-based headset jack detection
+Message-ID-Hash: XLKQKLI45N5MWCZUIU67NLFQYJJJ73I6
+X-Message-ID-Hash: XLKQKLI45N5MWCZUIU67NLFQYJJJ73I6
+X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PNWFJNRGSCHHOZSLZEXZMYP3I34UJX72
-X-Message-ID-Hash: PNWFJNRGSCHHOZSLZEXZMYP3I34UJX72
-X-Mailman-Approved-At: Wed, 08 May 2024 12:51:39 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNWFJNRGSCHHOZSLZEXZMYP3I34UJX72/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XLKQKLI45N5MWCZUIU67NLFQYJJJ73I6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,69 +99,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Since we're already using it in the newly-added GPIO requests for
-jack detection, extend it to the previous checks as well.
 
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
----
-Changes in v2:
-- Added this commit
----
- sound/soc/samsung/midas_wm1811.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+On Wed, 08 May 2024 12:58:50 +0200, Artur Weber wrote:
+> Some Samsung devices that share the midas-audio driver use a GPIO-based
+> approach to headset jack detection, as opposed to using the built-in
+> jack detection provided by the wm8994 driver. This setup uses two GPIOs
+> (one for jack detection and another for key detection) and an ADC
+> channel for determining the jack type or button pressed.
+> 
+> Add DT configuration values that allow for describing these setups.
+> 
+> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
+> ---
+> Changes in v2:
+> - Added vendor prefix to threshold properties
+> - Dropped pipe (|) character from description: field
+> ---
+>  .../bindings/sound/samsung,midas-audio.yaml        | 30 ++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
 
-diff --git a/sound/soc/samsung/midas_wm1811.c b/sound/soc/samsung/midas_wm1811.c
-index ce94550ee32e..91f4be98723c 100644
---- a/sound/soc/samsung/midas_wm1811.c
-+++ b/sound/soc/samsung/midas_wm1811.c
-@@ -646,16 +646,14 @@ static int midas_probe(struct platform_device *pdev)
- 	card->dev = dev;
- 
- 	priv->reg_mic_bias = devm_regulator_get(dev, "mic-bias");
--	if (IS_ERR(priv->reg_mic_bias)) {
--		dev_err(dev, "Failed to get mic bias regulator\n");
--		return PTR_ERR(priv->reg_mic_bias);
--	}
-+	if (IS_ERR(priv->reg_mic_bias))
-+		return dev_err_probe(dev, PTR_ERR(priv->reg_mic_bias),
-+				     "Failed to get mic bias regulator\n");
- 
- 	priv->reg_submic_bias = devm_regulator_get(dev, "submic-bias");
--	if (IS_ERR(priv->reg_submic_bias)) {
--		dev_err(dev, "Failed to get submic bias regulator\n");
--		return PTR_ERR(priv->reg_submic_bias);
--	}
-+	if (IS_ERR(priv->reg_submic_bias))
-+		return dev_err_probe(dev, PTR_ERR(priv->reg_submic_bias),
-+				     "Failed to get submic bias regulator\n");
- 
- 	priv->reg_headset_mic_bias = devm_regulator_get_optional(dev,
- 							    "headset-mic-bias");
-@@ -669,17 +667,15 @@ static int midas_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->gpio_fm_sel = devm_gpiod_get_optional(dev, "fm-sel", GPIOD_OUT_HIGH);
--	if (IS_ERR(priv->gpio_fm_sel)) {
--		dev_err(dev, "Failed to get FM selection GPIO\n");
--		return PTR_ERR(priv->gpio_fm_sel);
--	}
-+	if (IS_ERR(priv->gpio_fm_sel))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpio_fm_sel),
-+				     "Failed to get FM selection GPIO\n");
- 
- 	priv->gpio_lineout_sel = devm_gpiod_get_optional(dev, "lineout-sel",
- 						    GPIOD_OUT_HIGH);
--	if (IS_ERR(priv->gpio_lineout_sel)) {
--		dev_err(dev, "Failed to get line out selection GPIO\n");
--		return PTR_ERR(priv->gpio_lineout_sel);
--	}
-+	if (IS_ERR(priv->gpio_lineout_sel))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpio_lineout_sel),
-+				     "Failed to get line out selection GPIO\n");
- 
- 	priv->gpio_headset_detect = devm_gpiod_get_optional(dev,
- 				"headset-detect", GPIOD_IN);
+My bot found errors running 'make dt_binding_check' on your patch:
 
--- 
-2.45.0
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml:95:26: [error] syntax error: mapping values are not allowed here (syntax)
+
+dtschema/dtc warnings/errors:
+make[2]: *** Deleting file 'Documentation/devicetree/bindings/sound/samsung,midas-audio.example.dts'
+Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml:95:26: mapping values are not allowed in this context
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/sound/samsung,midas-audio.example.dts] Error 1
+make[2]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml:95:26: mapping values are not allowed in this context
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml: ignoring, error parsing file
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1430: dt_binding_check] Error 2
+make: *** [Makefile:240: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240508-midas-wm1811-gpio-jack-v2-2-b4d36cd02c6e@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
