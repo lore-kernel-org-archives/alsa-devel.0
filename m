@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A032C04FFE
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:54:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F91CC04FFE
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:55:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C445E7F8;
-	Wed,  8 May 2024 14:54:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C445E7F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8998741;
+	Wed,  8 May 2024 14:54:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8998741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715172878;
-	bh=tvVeHRzJ1CkifWQbFGlvF0EVZIoz7vxKkkPUGFuk7jM=;
+	s=default; t=1715172898;
+	bh=UL/4N8rXRM70GUqix5tPsZFEQGhkMZHDmI2ayaFJGlM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uUHSjZIeze4wTkXh1Giuvyp7mg3pnAGXajOVakxRehZ/xQV/JxcUPbtccsCy8qlO+
-	 5elApb7M/tRhsLwi5eyWDuuGCvdCZm+cKV+RHg+RyC5occrkqUEHfSKSJLMfeEdb0P
-	 nYTUP20GwRjDalrrPfXug5bvdJBwBxfN2lTaM3yM=
+	b=czWW/HTubhnjHPXGEHCWWNw3jO52tJWfGhWk1IsWf5z2jGBsna+9pFEQA0KTe6tcJ
+	 v4c/+W2ZA2POWfcnCFEm0Tdz4O0PBbV6iTX1yq314aMESALQ1URKgUqIToL7QBZfPm
+	 DDGtkyNF9GjJTknKE/WcuKIfp3B1t/qEkdb16RDs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B29F8F8072A; Wed,  8 May 2024 14:52:00 +0200 (CEST)
+	id 4E483F80765; Wed,  8 May 2024 14:52:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 998EDF80718;
-	Wed,  8 May 2024 14:51:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8D25F8076B;
+	Wed,  8 May 2024 14:52:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75590F80570; Wed,  8 May 2024 13:01:52 +0200 (CEST)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
+	id B5D38F8003A; Wed,  8 May 2024 13:01:54 +0200 (CEST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A3F93F804F2
-	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 13:01:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3F93F804F2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 936E9F80563
+	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 13:01:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 936E9F80563
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=TsZED3Um
-Received: by mail-ej1-x62e.google.com with SMTP id
- a640c23a62f3a-a59ae3efbb3so438300166b.1
+ header.s=20230601 header.b=Oai2KAE5
+Received: by mail-ej1-x62b.google.com with SMTP id
+ a640c23a62f3a-a59ece5e18bso488475666b.2
         for <alsa-devel@alsa-project.org>;
- Wed, 08 May 2024 04:01:24 -0700 (PDT)
+ Wed, 08 May 2024 04:01:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715166083; x=1715770883;
+        d=gmail.com; s=20230601; t=1715166087; x=1715770887;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=poVyIDrS2b/ZXWDdTK9RH0R8g9cefahYbIBUWzC1UWE=;
-        b=TsZED3UmylVpAeAm29lVSibPKDPOi/ShtY5TxoXiXMOPVamnMCfNVkp2zt7/EzH4y/
-         cTI3n6w2f7n480s64ghWCAOXTB385nNXYPsd/BuMsKn77W14fWMcuahJKWkrXpYntBqJ
-         jLBiaqt/4ogcay50jMiwbaG3lZADlG94k5USBjO8U4Q7PjrX+84YkEsfFf0cOjZAKSE0
-         x9GwDsYRAnQipDgCqh6yMeGxkAZV46Mx1lYcz/oqjwjUIJ6mwU+WFSAQRNEpmnLoWljs
-         WakF2u9s08nKgPGK7P5gWNY0Vq7YaFx7DFTagqPBq1mJ08JocBROYok7i1uASS8SCPMm
-         1Usw==
+        bh=1xXdtLXh9Wq/U+DCcvi3Zl9MvXXMxZj9qmUG/1NN6b8=;
+        b=Oai2KAE54CMzwOc1hT2jAolmUo/UcQjP4kHwTV5pUSMrihvCtbu4VhyrsuzokW9fYc
+         QuCBb9F2KPc+SU2fe3MO34qi14w37FvF8VKCSfjGyrI+jHoy1WnIuBumILonoBVRt+Nq
+         HdpWnNShLxUx7lRgMMI2/RDNSW0OlvZ8Kc1rxKYqIzzjf5BtLYH/VMUNRw9EWmE73Ldw
+         ja//kGVZv1qPE2huqH6PLhU+DvGKERhAegSU4965f3XudCUDBve9N25blwJdC+GvFTMT
+         /DgGgCYAMD5eu0dwOrS49t0I4ybDxH1DPVh4D8OkFigEdtQ+pQmqB3OcjPN79HHUt74s
+         q2Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715166083; x=1715770883;
+        d=1e100.net; s=20230601; t=1715166087; x=1715770887;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=poVyIDrS2b/ZXWDdTK9RH0R8g9cefahYbIBUWzC1UWE=;
-        b=BfsOxeVpNnQZJRLq7VmdKYkDOi+dnf1b/IvyNiLCSqM9z8YEvLWjvgeL0xXl6LrQY8
-         lY67vohcETMM+SMZmliGgsAsJLZyW2Hst0xC1LGX3cxnXFUxpuh7HBlv2ftLOF+NiFzj
-         GSEH9m78onrgF02DIiLVz7gbPPw2+bysYaHAT7vS3ASHFDNGQLjkvzv+HqYvGAT6epSp
-         uRdjnh2NQNtKx44kWIlfXsK+Zi319JgivSAHbPixo/gxTUcbUrzO7e7NNN8EFbGcooUO
-         YbPzbn1/fSRixgRKLjj8e/zXs/JmzQQNYCeILmKo2ceYHKiVyh/ZEqw0RBBDzHhVVXqT
-         H2mA==
+        bh=1xXdtLXh9Wq/U+DCcvi3Zl9MvXXMxZj9qmUG/1NN6b8=;
+        b=MF0fLcaF05zNsiyG/QghUpAkNTI6tVQTZN36GFkpQbT5uKhLUee4XSTfjNLox/Ur3v
+         Yyx1iXEOlf6z4rSPNCcb88aDetUuKITgu1bZ3BAuCqk3V9JCE/04mame6JYfFNLkIUGb
+         UBWan72o6x0WfjYSO1mYDzrt8xNpwZQs6uyj4gnxRhdXjtt6VbdnTfAhdPWAqqhy2v/x
+         qeHwa+pXUGrKeuDYv9tuQBuF1u8eNAt/NTDSXSpBLCvWHNTaEfPmvHL4BTxUqECz5Uhl
+         /ftHNDXREnXBngdmTRYyVZRAz3u/RC83PZMh10z2MJF7utC7y1j7rRT2LLzKqoqLbrFx
+         Z0sw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCW5PbT85wdpVZ/EMqfvG5OqAuDqX6b3cVdmbngzu6j/bg2LHiSZZ7uAXf6sZ714/YgWl6jI+hrQh72QTGf/VO/9RBVLRKLy1099sCE=
-X-Gm-Message-State: AOJu0YwzAp7EGM3eTVqSFh8oaeLRR/EJjqRUG/ErMM7q6sS77KH88Zg1
-	71hgVFrYL2Iym9g/OvoVZAfCHb+GFmstXQwTffaQscoiFPqWvhEq
+ AJvYcCVQrOV9X0k6cc+mEeD22XREmO6d84AStv/P6r2N4ERtN2RqAXvF5Jf4koNiov9EyjxpFK3D5n6sRjfL+rVFFbU4kMpqgBXTfPbBi2I=
+X-Gm-Message-State: AOJu0YwCZPPSs5rL2Zx7484XyduxJq0qvMUWVTDgGjD2baXFNHhJ7ia4
+	FJ11WGfps2RMMBHtMe2ruvyPTRxi0CJOMdxMO4a6ATVMfIPbKT1k
 X-Google-Smtp-Source: 
- AGHT+IErlStSHhT96t/fwnFEZHJuSLP/+wFJhG8ZdY2sMgKbw/O8rSpOa93NRwjSXZruRQb51QZNkA==
-X-Received: by 2002:a50:baa4:0:b0:572:325a:8515 with SMTP id
- 4fb4d7f45d1cf-5731da69864mr2264617a12.36.1715166083131;
-        Wed, 08 May 2024 04:01:23 -0700 (PDT)
+ AGHT+IHSvqngLWudU2mq3sRdhAXsMHPmyVHOgZ0v5JQdfowG5AeyhCGC/cKuo86niykSWYIXOiqDig==
+X-Received: by 2002:a50:a699:0:b0:572:664c:83f2 with SMTP id
+ 4fb4d7f45d1cf-5731da68d64mr1873313a12.27.1715166087014;
+        Wed, 08 May 2024 04:01:27 -0700 (PDT)
 Received: from hex.my.domain (83.8.126.253.ipv4.supernova.orange.pl.
  [83.8.126.253])
         by smtp.gmail.com with ESMTPSA id
- m6-20020a056402510600b005726b58a436sm7455793edd.30.2024.05.08.04.01.22
+ m6-20020a056402510600b005726b58a436sm7455793edd.30.2024.05.08.04.01.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 04:01:22 -0700 (PDT)
+        Wed, 08 May 2024 04:01:26 -0700 (PDT)
 From: Artur Weber <aweber.kernel@gmail.com>
-Date: Wed, 08 May 2024 12:58:52 +0200
-Subject: [PATCH v2 4/7] ASoC: samsung: midas_wm1811: Add GPIO-based headset
- jack detection
+Date: Wed, 08 May 2024 12:58:55 +0200
+Subject: [PATCH v2 7/7] ARM: dts: samsung: exynos4212-tab3: Fix up wm1811
+ codec config
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240508-midas-wm1811-gpio-jack-v2-4-b4d36cd02c6e@gmail.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240508-midas-wm1811-gpio-jack-v2-7-b4d36cd02c6e@gmail.com>
 References: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
 In-Reply-To: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
 To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
@@ -106,11 +106,11 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
  Artur Weber <aweber.kernel@gmail.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1715166076; l=12054;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1715166076; l=1054;
  i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=tvVeHRzJ1CkifWQbFGlvF0EVZIoz7vxKkkPUGFuk7jM=;
- b=V677zzpo8A7us92yAktmq5gJ+zyaHEVr7Zft2eFcqj3mrO1MOtjS/95kPwIwYR4ypCfWpwUHC
- uhHCuobK+CsC+PXlwA4nqSae+/5+hzhAktw2rS+3V+8q2YEHSuPSw5P
+ bh=UL/4N8rXRM70GUqix5tPsZFEQGhkMZHDmI2ayaFJGlM=;
+ b=7BPWy7GfZUBZ3TTXDAlEmhxr7SnPBBZ9ehQ1CJLgWoE87M699gDN5kcEDVe31eaoWB0oP2YD5
+ Aj6UHKKMILGCsBtWyvT/a6q3VshUe0QJDlyqa8bnGA8MeXyc3wPf4XJ
 X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
  pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
 X-MailFrom: aweber.kernel@gmail.com
@@ -119,15 +119,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZVVDP6JIJHQFCT5XC37EX4TMWIKUO4GB
-X-Message-ID-Hash: ZVVDP6JIJHQFCT5XC37EX4TMWIKUO4GB
+Message-ID-Hash: O7FD6D3LKZKSCHNYXRLASZZJ6XAJ2FMB
+X-Message-ID-Hash: O7FD6D3LKZKSCHNYXRLASZZJ6XAJ2FMB
 X-Mailman-Approved-At: Wed, 08 May 2024 12:51:38 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZVVDP6JIJHQFCT5XC37EX4TMWIKUO4GB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O7FD6D3LKZKSCHNYXRLASZZJ6XAJ2FMB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,384 +136,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some Samsung devices that use the midas_wm1811 driver use a GPIO-based
-method for detecting whether the headset jack is plugged in, as well as
-detecting which headset buttons are pressed. There are two GPIOs:
-a "headset detect" GPIO responsible for detecting jack insertion, and
-a "headset key" GPIO which triggers when a button on the headset is
-pressed. The plug type and the button pressed are determined based
-on information from an ADC channel. The headset mic is enabled by a
-headset mic bias regulator.
-
-Add support for the GPIO-based headset jack detection mechanism,
-and make it configurable from the device tree.
-
-This implementation borrows somewhat from the aries_wm8994.c driver,
-though there are a few changes to make the code cleaner, and to add
-support for DT-based configuration.
-
-Notably, a dependency on IIO is introduced, to accommodate the ADC
-reading requirement.
+Drop incorrect interrupt parent and add MCLK2 clock.
 
 Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 ---
 Changes in v2:
-- Added separate headset mic bias regulator
-- Added samsung preset to threshold properties
-- Replaced dev_err+return with return dev_err_probe where needed
+- Split out wm1811 changes from midas-audio config change patch
 ---
- sound/soc/samsung/Kconfig        |   2 +-
- sound/soc/samsung/midas_wm1811.c | 286 +++++++++++++++++++++++++++++++++++++--
- 2 files changed, 277 insertions(+), 11 deletions(-)
+ arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 93c2b1b08d0a..4b1ea7b2c796 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -140,7 +140,7 @@ config SND_SOC_SAMSUNG_ARIES_WM8994
+diff --git a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
+index 8dc81112172c..20e5e7ba6b92 100644
+--- a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
++++ b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
+@@ -529,12 +529,11 @@ &i2c_4 {
+ 	wm1811: audio-codec@1a {
+ 		compatible = "wlf,wm1811";
+ 		reg = <0x1a>;
+-		clocks = <&pmu_system_controller 0>;
+-		clock-names = "MCLK1";
++		clocks = <&pmu_system_controller 0>,
++			 <&s5m8767_osc S2MPS11_CLK_BT>;
++		clock-names = "MCLK1", "MCLK2";
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+-		interrupt-parent = <&gpx3>;
+-		interrupts = <6 IRQ_TYPE_LEVEL_HIGH>;
  
- config SND_SOC_SAMSUNG_MIDAS_WM1811
- 	tristate "SoC I2S Audio support for Midas boards"
--	depends on SND_SOC_SAMSUNG
-+	depends on SND_SOC_SAMSUNG && IIO
- 	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8994
- 	help
-diff --git a/sound/soc/samsung/midas_wm1811.c b/sound/soc/samsung/midas_wm1811.c
-index ab0a4804b45e..ce94550ee32e 100644
---- a/sound/soc/samsung/midas_wm1811.c
-+++ b/sound/soc/samsung/midas_wm1811.c
-@@ -7,7 +7,9 @@
- 
- #include <linux/clk.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/iio/consumer.h>
- #include <linux/mfd/wm8994/registers.h>
-+#include <linux/input-event-codes.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/regulator/consumer.h>
-@@ -32,6 +34,9 @@ struct midas_priv {
- 	struct regulator *reg_headset_mic_bias;
- 	struct gpio_desc *gpio_fm_sel;
- 	struct gpio_desc *gpio_lineout_sel;
-+	struct gpio_desc *gpio_headset_detect;
-+	struct gpio_desc *gpio_headset_key;
-+	struct iio_channel *adc_headset_detect;
- 	unsigned int fll1_rate;
- 
- 	struct snd_soc_jack headset_jack;
-@@ -48,6 +53,131 @@ static struct snd_soc_jack_pin headset_jack_pins[] = {
- 	},
- };
- 
-+/*
-+ * min_mv/max_mv values in this struct are set up based on DT values.
-+ */
-+static struct snd_soc_jack_zone headset_jack_zones[] = {
-+	{ .jack_type = SND_JACK_HEADPHONE, },
-+	{ .jack_type = SND_JACK_HEADSET, },
-+	{ .jack_type = SND_JACK_HEADPHONE, },
-+};
-+
-+/*
-+ * This is used for manual detection in headset_key_check, we reuse the
-+ * structure since it's convenient.
-+ *
-+ * min_mv/max_mv values in this struct are set up based on DT values.
-+ */
-+static struct snd_soc_jack_zone headset_key_zones[] = {
-+	{ .jack_type = SND_JACK_BTN_0, },  /* Media */
-+	{ .jack_type = SND_JACK_BTN_1, },  /* Volume Up */
-+	{ .jack_type = SND_JACK_BTN_2, },  /* Volume Down */
-+};
-+
-+static int headset_jack_check(void *data)
-+{
-+	struct midas_priv *priv = (struct midas_priv *) data;
-+	int adc, jack_type, ret;
-+	int bias_already_on = 0;
-+
-+	if (!gpiod_get_value_cansleep(priv->gpio_headset_detect))
-+		return 0;
-+
-+	if (priv->reg_headset_mic_bias) {
-+		/*
-+		 * Get state of Headset Mic switch by checking the headset mic
-+		 * bias regulator
-+		 */
-+		bias_already_on = \
-+			regulator_is_enabled(priv->reg_headset_mic_bias);
-+
-+		/*
-+		 * If it's not enabled yet, temporarily enable headset mic bias
-+		 * for ADC measurement
-+		 */
-+		if (bias_already_on < 0)
-+			pr_err("%s: Failed to get headset mic bias state: %d",
-+			       __func__, ret);
-+		else if (!bias_already_on) {
-+			ret = regulator_enable(priv->reg_headset_mic_bias);
-+			if (ret)
-+				pr_err("%s: Failed to enable micbias: %d\n",
-+				       __func__, ret);
-+		}
-+	}
-+
-+	/* Sleep for a small amount of time to get the value to stabilize */
-+	msleep(20);
-+
-+	ret = iio_read_channel_processed(priv->adc_headset_detect, &adc);
-+	if (ret) {
-+		pr_err("%s: Failed to read ADC (%d), assuming headphones\n",
-+		       __func__, ret);
-+		return SND_JACK_HEADPHONE;
-+	}
-+	pr_debug("%s: ADC value is %d\n", __func__, adc);
-+
-+	jack_type = snd_soc_jack_get_type(&priv->headset_jack, adc);
-+
-+	/*
-+	 * Revert the headset mic bias supply to its previous state
-+	 * (i.e. if it was disabled before the check, disable it again)
-+	 */
-+	if (priv->reg_headset_mic_bias && bias_already_on == 0) {
-+		ret = regulator_disable(priv->reg_headset_mic_bias);
-+		if (ret)
-+			pr_err("%s: Failed to disable micbias: %d\n",
-+			       __func__, ret);
-+	}
-+
-+	return jack_type;
-+}
-+
-+static int headset_key_check(void *data)
-+{
-+	struct midas_priv *priv = (struct midas_priv *) data;
-+	int adc, i, ret;
-+
-+	if (!gpiod_get_value_cansleep(priv->gpio_headset_key))
-+		return 0;
-+
-+	/* Filter out keypresses when 4 pole jack not detected */
-+	if (!(priv->headset_jack.status & SND_JACK_MICROPHONE))
-+		return 0;
-+
-+	ret = iio_read_channel_processed(priv->adc_headset_detect, &adc);
-+	if (ret) {
-+		pr_err("%s: Failed to read ADC (%d), can't detect key type\n",
-+		       __func__, ret);
-+		return 0;
-+	}
-+	pr_debug("%s: ADC value is %d\n", __func__, adc);
-+
-+	for (i = 0; i < ARRAY_SIZE(headset_key_zones); i++) {
-+		if (adc >= headset_key_zones[i].min_mv &&
-+		    adc <= headset_key_zones[i].max_mv) {
-+			return headset_key_zones[i].jack_type;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_jack_gpio headset_gpio[] = {
-+	{
-+		.name = "Headset Jack",
-+		.report = SND_JACK_HEADSET,
-+		.debounce_time = 150,
-+		.jack_status_check = headset_jack_check,
-+	},
-+	{
-+		.name = "Headset Key",
-+		.report = SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2,
-+		.debounce_time = 30,
-+		.jack_status_check = headset_key_check,
-+	},
-+};
-+
- static int midas_start_fll1(struct snd_soc_pcm_runtime *rtd, unsigned int rate)
- {
- 	struct snd_soc_card *card = rtd->card;
-@@ -335,18 +465,67 @@ static int midas_late_probe(struct snd_soc_card *card)
- 		return ret;
- 	}
- 
--	ret = snd_soc_card_jack_new_pins(card, "Headset",
--					 SND_JACK_HEADSET | SND_JACK_MECHANICAL |
--					 SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2 |
--					 SND_JACK_BTN_3 | SND_JACK_BTN_4 | SND_JACK_BTN_5,
--					 &priv->headset_jack,
--					 headset_jack_pins,
--					 ARRAY_SIZE(headset_jack_pins));
--	if (ret)
-+	if (!priv->gpio_headset_detect) {
-+		ret = snd_soc_card_jack_new_pins(card, "Headset",
-+				 SND_JACK_HEADSET | SND_JACK_MECHANICAL |
-+				 SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+				 SND_JACK_BTN_2 | SND_JACK_BTN_3 |
-+				 SND_JACK_BTN_4 | SND_JACK_BTN_5,
-+				 &priv->headset_jack,
-+				 headset_jack_pins,
-+				 ARRAY_SIZE(headset_jack_pins));
-+		if (ret)
-+			return ret;
-+
-+		wm8958_mic_detect(aif1_dai->component, &priv->headset_jack,
-+				  NULL, NULL, NULL, NULL);
-+	} else {
-+		/* Some devices (n8000, t310) use a GPIO to detect the jack. */
-+		ret = snd_soc_card_jack_new_pins(card, "Headset",
-+				SND_JACK_HEADSET | SND_JACK_BTN_0 |
-+				SND_JACK_BTN_1 | SND_JACK_BTN_2,
-+				&priv->headset_jack,
-+				headset_jack_pins,
-+				ARRAY_SIZE(headset_jack_pins));
-+		if (ret) {
-+			dev_err(card->dev,
-+				"Failed to set up headset pins: %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_jack_add_zones(&priv->headset_jack,
-+				ARRAY_SIZE(headset_jack_zones),
-+				headset_jack_zones);
-+		if (ret) {
-+			dev_err(card->dev,
-+				"Failed to set up headset zones: %d\n", ret);
-+			return ret;
-+		}
-+
-+		headset_gpio[0].data = priv;
-+		headset_gpio[0].desc = priv->gpio_headset_detect;
-+
-+		headset_gpio[1].data = priv;
-+		headset_gpio[1].desc = priv->gpio_headset_key;
-+
-+		snd_jack_set_key(priv->headset_jack.jack,
-+				 SND_JACK_BTN_0, KEY_MEDIA);
-+		snd_jack_set_key(priv->headset_jack.jack,
-+				 SND_JACK_BTN_1, KEY_VOLUMEUP);
-+		snd_jack_set_key(priv->headset_jack.jack,
-+				 SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+
-+		ret = snd_soc_jack_add_gpios(&priv->headset_jack,
-+				ARRAY_SIZE(headset_gpio),
-+				headset_gpio);
-+		if (ret)
-+			dev_err(card->dev,
-+				"Failed to set up headset jack GPIOs: %d\n",
-+				ret);
-+
- 		return ret;
-+	}
- 
--	wm8958_mic_detect(aif1_dai->component, &priv->headset_jack,
--			  NULL, NULL, NULL, NULL);
- 	return 0;
- }
- 
-@@ -453,6 +632,9 @@ static int midas_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card = &midas_card;
- 	struct device *dev = &pdev->dev;
- 	static struct snd_soc_dai_link *dai_link;
-+	enum iio_chan_type channel_type;
-+	u32 fourpole_threshold[2];
-+	u32 button_threshold[3];
- 	struct midas_priv *priv;
- 	int ret, i;
- 
-@@ -499,6 +681,90 @@ static int midas_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->gpio_lineout_sel);
- 	}
- 
-+	priv->gpio_headset_detect = devm_gpiod_get_optional(dev,
-+				"headset-detect", GPIOD_IN);
-+	if (IS_ERR(priv->gpio_headset_detect))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpio_headset_detect),
-+				     "Failed to get headset jack detect GPIO\n");
-+
-+	if (priv->gpio_headset_detect) {
-+		priv->adc_headset_detect = devm_iio_channel_get(dev,
-+							"headset-detect");
-+		if (IS_ERR(priv->adc_headset_detect))
-+			return dev_err_probe(dev,
-+					     PTR_ERR(priv->adc_headset_detect),
-+					     "Failed to get ADC channel\n");
-+
-+		ret = iio_get_channel_type(priv->adc_headset_detect,
-+					   &channel_type);
-+		if (ret) {
-+			dev_err(dev, "Failed to get ADC channel type\n");
-+			return ret;
-+		}
-+
-+		if (channel_type != IIO_VOLTAGE) {
-+			dev_err(dev, "ADC channel is not voltage\n");
-+			return ret;
-+		}
-+
-+		priv->gpio_headset_key = devm_gpiod_get(dev, "headset-key",
-+							GPIOD_IN);
-+		if (IS_ERR(priv->gpio_headset_key))
-+			return dev_err_probe(dev,
-+					     PTR_ERR(priv->gpio_headset_key),
-+					     "Failed to get headset key GPIO\n");
-+
-+		ret = of_property_read_u32_array(dev->of_node,
-+				"samsung,headset-4pole-threshold-microvolt",
-+				fourpole_threshold,
-+				ARRAY_SIZE(fourpole_threshold));
-+		if (ret) {
-+			dev_err(dev, "Failed to get 4-pole jack detection threshold\n");
-+			return ret;
-+		}
-+
-+		if (fourpole_threshold[0] > fourpole_threshold[1]) {
-+			dev_err(dev, "Invalid 4-pole jack detection threshold value\n");
-+			return -EINVAL;
-+		}
-+
-+		headset_jack_zones[0].max_mv = (fourpole_threshold[0]);
-+		headset_jack_zones[1].min_mv = (fourpole_threshold[0] + 1);
-+
-+		headset_jack_zones[1].max_mv = (fourpole_threshold[1]);
-+		headset_jack_zones[2].min_mv = (fourpole_threshold[1] + 1);
-+
-+		ret = of_property_read_u32_array(dev->of_node,
-+				"samsung,headset-button-threshold-microvolt",
-+				button_threshold,
-+				ARRAY_SIZE(button_threshold));
-+		if (ret) {
-+			dev_err(dev, "Failed to get headset button detection threshold\n");
-+			return ret;
-+		}
-+
-+		if (button_threshold[0] > button_threshold[1] ||
-+		    button_threshold[1] > button_threshold[2]) {
-+			dev_err(dev, "Invalid headset button detection threshold value\n");
-+			return -EINVAL;
-+		}
-+
-+		for (i = 0; i < 3; i++) {
-+			if (i != 0 && button_threshold[i] <= 0) {
-+				dev_err(dev, "Invalid headset button detection threshold value\n");
-+				return -EINVAL;
-+			}
-+
-+			headset_key_zones[i].min_mv = button_threshold[i];
-+
-+			if (i == 2)
-+				headset_key_zones[i].max_mv = UINT_MAX;
-+			else
-+				headset_key_zones[i].max_mv = \
-+						(button_threshold[i+1] - 1);
-+		}
-+	}
-+
- 	ret = snd_soc_of_parse_card_name(card, "model");
- 	if (ret < 0) {
- 		dev_err(dev, "Card name is not specified\n");
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
 
 -- 
 2.45.0
