@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EB2EC19F4F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:55:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3990FC19F4F
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:55:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CB1093A;
-	Wed,  8 May 2024 14:55:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CB1093A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD4A7825;
+	Wed,  8 May 2024 14:55:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD4A7825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715172915;
-	bh=7ghoUuP1F66lo5lQILjtg4IgiT6Z0TAcd0jCIemjWlQ=;
+	s=default; t=1715172932;
+	bh=zl7AH36vmygEV4JVzP5ZRpRVT0yrltHsi0L0sBPvpeI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BMSkFKhZBevuy6XXbDVbj6itZZ2EfkxwUGBBOG0P11O06uohbPp41fZDOT3BJyf0X
-	 9/JcRNooorXMZS3PrI/RFde0ZsEcFyJI6jrb/5AcJJUu8JApP+GcPD8WKlt/5RLQDN
-	 gZ/FC82f5QU3PTZRXdT0svno3rvJl13BtSf0VDcQ=
+	b=lq5ZuEwMHcetOV7KLO7davnU4laZeJ6zoFO+3h8UTFDaZnSFSNfq6XTcwzLjP0rM0
+	 rZucoy385A7QEcEvecLlvSsYakX97gDMEzdXo2Xv3k6EYLXKcgRYLe2iKPLdZNI0Pk
+	 +1JQ3Q/S2tnYOgUFWmG9KzfoWfdjIt3mBMfso/To=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B409F8079B; Wed,  8 May 2024 14:52:07 +0200 (CEST)
+	id AB5B2F80859; Wed,  8 May 2024 14:52:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABA27F807D0;
-	Wed,  8 May 2024 14:52:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDC5EF80847;
+	Wed,  8 May 2024 14:52:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C7AAF80423; Wed,  8 May 2024 13:03:17 +0200 (CEST)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
+	id 0272CF80423; Wed,  8 May 2024 13:03:18 +0200 (CEST)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 95243F804FB
-	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 13:01:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95243F804FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id AA248F8049C
+	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 13:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA248F8049C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=eJqprRwl
-Received: by mail-lf1-x131.google.com with SMTP id
- 2adb3069b0e04-51fc01b6fe7so3849323e87.0
+ header.s=20230601 header.b=KNoJALnz
+Received: by mail-ej1-x62d.google.com with SMTP id
+ a640c23a62f3a-a59ab4f60a6so916014566b.0
         for <alsa-devel@alsa-project.org>;
- Wed, 08 May 2024 04:01:26 -0700 (PDT)
+ Wed, 08 May 2024 04:01:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715166086; x=1715770886;
+        d=gmail.com; s=20230601; t=1715166085; x=1715770885;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JckYzcWe8w+0grZPS9NysF8GgHh7PfoFNUhYz6cHvfw=;
-        b=eJqprRwlFx0vvQ8ryXhIDXJuAOgiMfyBGxAkAyIaCMRRN3/m8ejZ/TwugPjlDN1eMH
-         2fYIoBojMY3SC7XY5NLtEBQ3vdrLRvMXJc+AL+jgKn+AVK1HOmNy/VfV/wa2n5tboXUX
-         gmv1sR20pH0X2cCtEpr/b+9tao+alQ8hokT0RYnXwmzzBrvZLFRcvucKuB2l0V/VAlOJ
-         Qhs3nFTMBH+vHFVtK2kcGGDSrGs+QN0qaHndfhjr2fV0ZkbGojs7hcjRQBDkZ/bEYEYf
-         BIx0oyVJGKWk3Dv6nlTLw2bnMo2Ggye/1uVSqyjO89Iot8dsHh35KsmruuMy5tUBU5jP
-         Btow==
+        bh=eh0hh6ynZxtBGDzmGDI5+hS0xKp2HfOEvcy4GZsRfWo=;
+        b=KNoJALnz+jY4du3Zz67/RJ0tl8K5dIJ/hOJmKrL3ekqSlsQJxh3oL+JuiOl9Qj+bEX
+         B4/csVZRUS9m4VZLnKMB5xPsOM4XAruiDiO5rAt7T8wrOOuONsLrhcrb9ZXQQExplTpQ
+         q1ANL3NQZL+kAqv1cLZUMjFn72FBOzqA2KfhCNDpKA0NJU6oqijXnTL77quoOQklRklq
+         rPKHZr13wCZQpt85oS8utmWHrfwaLNtaFg+FvrNIY9lq/VYUiwQs9sYhK0LGbNP8mi3S
+         syzfAh9rFKXqLuETAFRWhtQqejvE81lqmuF2mZghDp3dxriEKrUBmULnqCL8F1MrMjOq
+         cE5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715166086; x=1715770886;
+        d=1e100.net; s=20230601; t=1715166085; x=1715770885;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JckYzcWe8w+0grZPS9NysF8GgHh7PfoFNUhYz6cHvfw=;
-        b=UPNups3jorCMSbVn7diSaO8X6q257VZydSVkmnG0pXt+7X46jRNE2eqt7y49Rx84pK
-         Teiu+F83k+MpvUHrfbprS7yU2bNWFkfHChrCHiPsFnIUZlsoIwd1LDNBRCK0PL+jvA/U
-         /qApzeVwNDFJOXzlBSMWUxdFm7l5SxT4dtTlCj5m/MAaYOkO7kJGhRReslvYf0xJzoT/
-         MhXm2aW9yon3dr28xXJKyMpRi9HJt3ywDCYoci4V5+FOlUu08X7WUWzB1Tm1+z49sZvj
-         ZDZ5IwUa5pKKsInqIxq312KIeMNc9cSaZUss9sulirGhDEP15hKb3pq34H/RNSrh/0xC
-         /w+g==
+        bh=eh0hh6ynZxtBGDzmGDI5+hS0xKp2HfOEvcy4GZsRfWo=;
+        b=rSGfsUhGFowFfed6UFsoUIOL73bWlSLOIr22QFf/ZfeDdfuthqWqYLLV3XRS8dguXI
+         39GYKPO3WQxAioKU3x3HZJ7x07qdkbluaW45uuiebdxSDlwei9jaaxtURU/qU0vCNpTI
+         UQT2/L3pwy3g7phuU+2fBvuK+uvrRqtwQc4q81eRqLmMsHoMKLhU+7D7z0Yf63Ktw001
+         lTKWUIfh/TamJ/v+qB8cg7cs8bi9Vl0/IUzgZmG9XamRr/hWOhyyPDclnQFQpxW67MBC
+         szX/RUIbhCnq22oUvpS5nwYz7T70+5bHsRvlcntLcl4wEukf6jM3mDnZBLCCrr+vhH4h
+         aUnQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVgK3X61ipribOudF4SXaac8Q4VF0Ho02/DjKligDLxAjkkVNyj70sQWy7osYpw8Ye04JWNm5JVtpf6Ybng9D/ay9BfSNFo5POVcKI=
-X-Gm-Message-State: AOJu0YzycsB3Xaa8lXqg3TAHFfY+kfKItnawcwuPG1cfyz/wF05At6iM
-	6KdnZVV3WfJ70av/Y6xIVymyEAl0bjEiWJjD+wsBCv0067eLUlAk
+ AJvYcCXeDRq7dO9I6kCkIoJaL7Bb5G22txTzYQ56ONSq1X24sm7jiH3y48rnFEC6NVQqNEGLjMbTpZbr9B3Z4m7H3O3rLmKxbf1w+ysylsA=
+X-Gm-Message-State: AOJu0Yycc6mpE5A1fywx2YcGTOiX1ixc0B3B6nNgUYd+Ixdvioxc5wVy
+	GuG7vNdazS0NiPsG+FGD9Qu0j6CSmZbr9YecrE4IiryQJ+WfpxJr
 X-Google-Smtp-Source: 
- AGHT+IGeO76uQCED1J00VN9QCAey1wfpGDo3fQs8/bwbKEbtAP/7na2lzT5MZkH/YfwFEC18bO8Zag==
-X-Received: by 2002:a05:6512:40e:b0:518:9362:f63 with SMTP id
- 2adb3069b0e04-5217b5a6837mr1384384e87.0.1715166085711;
-        Wed, 08 May 2024 04:01:25 -0700 (PDT)
+ AGHT+IEBwQsbB5ly9Co7wAOpW5LM6EH159oeIG9hfELSBdMplK0VTNfidDLRoB93iPYNNHuID+ms/g==
+X-Received: by 2002:a50:d7db:0:b0:56e:7722:553 with SMTP id
+ 4fb4d7f45d1cf-5731d9d9ecbmr1973462a12.24.1715166084426;
+        Wed, 08 May 2024 04:01:24 -0700 (PDT)
 Received: from hex.my.domain (83.8.126.253.ipv4.supernova.orange.pl.
  [83.8.126.253])
         by smtp.gmail.com with ESMTPSA id
- m6-20020a056402510600b005726b58a436sm7455793edd.30.2024.05.08.04.01.24
+ m6-20020a056402510600b005726b58a436sm7455793edd.30.2024.05.08.04.01.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 04:01:25 -0700 (PDT)
+        Wed, 08 May 2024 04:01:24 -0700 (PDT)
 From: Artur Weber <aweber.kernel@gmail.com>
-Date: Wed, 08 May 2024 12:58:54 +0200
-Subject: [PATCH v2 6/7] ARM: dts: samsung: exynos4212-tab3: Fix headset
- mic, add jack detection
+Date: Wed, 08 May 2024 12:58:53 +0200
+Subject: [PATCH v2 5/7] ASoC: samsung: midas_wm1811: Use dev_err_probe
+ where appropriate
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240508-midas-wm1811-gpio-jack-v2-6-b4d36cd02c6e@gmail.com>
+Message-Id: <20240508-midas-wm1811-gpio-jack-v2-5-b4d36cd02c6e@gmail.com>
 References: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
 In-Reply-To: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
 To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
@@ -106,11 +106,11 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
  Artur Weber <aweber.kernel@gmail.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1715166076; l=1934;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1715166076; l=2433;
  i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=7ghoUuP1F66lo5lQILjtg4IgiT6Z0TAcd0jCIemjWlQ=;
- b=l0DFXbMoynUW/3tl/JJn+d4FFNg8IhQpMsG9UJeOU2kGTDNLpMYNTOAalpniOTbooBzyKlSiZ
- P9EqRrOaA4YA0I/fq2SM0f9GJDPc5NwRz+qYyqlEMUZfFI//F0HjlH5
+ bh=zl7AH36vmygEV4JVzP5ZRpRVT0yrltHsi0L0sBPvpeI=;
+ b=fe+pSCvp0hASloJ0sPUz+l38OVaL8jW3+JqL69/Fa0Vyl+oCbv43o8wgqeZZwlLvsGsOL8qOh
+ to+MdKSo025DMN6qoynkF5EzPkUi5GX8nq5bbd2hLMj8pAZXpr+03D7
 X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
  pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
 X-MailFrom: aweber.kernel@gmail.com
@@ -119,15 +119,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 753OCVVCKNV4V3CESJVB4IJSLOQPKJMV
-X-Message-ID-Hash: 753OCVVCKNV4V3CESJVB4IJSLOQPKJMV
+Message-ID-Hash: PNWFJNRGSCHHOZSLZEXZMYP3I34UJX72
+X-Message-ID-Hash: PNWFJNRGSCHHOZSLZEXZMYP3I34UJX72
 X-Mailman-Approved-At: Wed, 08 May 2024 12:51:39 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/753OCVVCKNV4V3CESJVB4IJSLOQPKJMV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNWFJNRGSCHHOZSLZEXZMYP3I34UJX72/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,66 +136,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Set up headset mic bias regulator and add the necessary properties to
-the samsung,midas-audio node to allow for headset jack detection.
+Since we're already using it in the newly-added GPIO requests for
+jack detection, extend it to the previous checks as well.
 
 Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 ---
 Changes in v2:
-- Added headset mic bias regulator
-- Added samsung prefix to threshold properties
-- Dropped wm1811 config changes
+- Added this commit
 ---
- arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ sound/soc/samsung/midas_wm1811.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-index e5254e32aa8f..8dc81112172c 100644
---- a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-+++ b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-@@ -294,11 +294,30 @@ submic_bias_reg: voltage-regulator-5 {
- 		regulator-max-microvolt = <2800000>;
- 	};
+diff --git a/sound/soc/samsung/midas_wm1811.c b/sound/soc/samsung/midas_wm1811.c
+index ce94550ee32e..91f4be98723c 100644
+--- a/sound/soc/samsung/midas_wm1811.c
++++ b/sound/soc/samsung/midas_wm1811.c
+@@ -646,16 +646,14 @@ static int midas_probe(struct platform_device *pdev)
+ 	card->dev = dev;
  
-+	earmic_bias_reg: voltage-regulator-6 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "EAR_MICBIAS_LDO_2.8V";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		gpio = <&gpm0 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
- 	sound: sound {
- 		compatible = "samsung,midas-audio";
- 		model = "TAB3";
- 		mic-bias-supply = <&mic_bias_reg>;
- 		submic-bias-supply = <&submic_bias_reg>;
-+		headset-mic-bias-supply = <&earmic_bias_reg>;
-+
-+		lineout-sel-gpios = <&gpj1 2 GPIO_ACTIVE_HIGH>;
-+
-+		headset-detect-gpios = <&gpx0 4 GPIO_ACTIVE_LOW>;
-+		headset-key-gpios = <&gpx3 6 GPIO_ACTIVE_LOW>;
-+		samsung,headset-4pole-threshold-microvolt = <710 2000>;
-+		samsung,headset-button-threshold-microvolt = <0 130 260>;
-+		io-channel-names = "headset-detect";
-+		io-channels = <&adc 0>;
+ 	priv->reg_mic_bias = devm_regulator_get(dev, "mic-bias");
+-	if (IS_ERR(priv->reg_mic_bias)) {
+-		dev_err(dev, "Failed to get mic bias regulator\n");
+-		return PTR_ERR(priv->reg_mic_bias);
+-	}
++	if (IS_ERR(priv->reg_mic_bias))
++		return dev_err_probe(dev, PTR_ERR(priv->reg_mic_bias),
++				     "Failed to get mic bias regulator\n");
  
- 		audio-routing = "HP", "HPOUT1L",
- 				"HP", "HPOUT1R",
-@@ -345,6 +364,11 @@ wlan_pwrseq: sdhci3-pwrseq {
- 	};
- };
+ 	priv->reg_submic_bias = devm_regulator_get(dev, "submic-bias");
+-	if (IS_ERR(priv->reg_submic_bias)) {
+-		dev_err(dev, "Failed to get submic bias regulator\n");
+-		return PTR_ERR(priv->reg_submic_bias);
+-	}
++	if (IS_ERR(priv->reg_submic_bias))
++		return dev_err_probe(dev, PTR_ERR(priv->reg_submic_bias),
++				     "Failed to get submic bias regulator\n");
  
-+&adc {
-+	vdd-supply = <&ldo3_reg>;
-+	status = "okay";
-+};
-+
- &bus_acp {
- 	devfreq = <&bus_dmc>;
- 	status = "okay";
+ 	priv->reg_headset_mic_bias = devm_regulator_get_optional(dev,
+ 							    "headset-mic-bias");
+@@ -669,17 +667,15 @@ static int midas_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv->gpio_fm_sel = devm_gpiod_get_optional(dev, "fm-sel", GPIOD_OUT_HIGH);
+-	if (IS_ERR(priv->gpio_fm_sel)) {
+-		dev_err(dev, "Failed to get FM selection GPIO\n");
+-		return PTR_ERR(priv->gpio_fm_sel);
+-	}
++	if (IS_ERR(priv->gpio_fm_sel))
++		return dev_err_probe(dev, PTR_ERR(priv->gpio_fm_sel),
++				     "Failed to get FM selection GPIO\n");
+ 
+ 	priv->gpio_lineout_sel = devm_gpiod_get_optional(dev, "lineout-sel",
+ 						    GPIOD_OUT_HIGH);
+-	if (IS_ERR(priv->gpio_lineout_sel)) {
+-		dev_err(dev, "Failed to get line out selection GPIO\n");
+-		return PTR_ERR(priv->gpio_lineout_sel);
+-	}
++	if (IS_ERR(priv->gpio_lineout_sel))
++		return dev_err_probe(dev, PTR_ERR(priv->gpio_lineout_sel),
++				     "Failed to get line out selection GPIO\n");
+ 
+ 	priv->gpio_headset_detect = devm_gpiod_get_optional(dev,
+ 				"headset-detect", GPIOD_IN);
 
 -- 
 2.45.0
