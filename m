@@ -4,178 +4,211 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82AE7C04FFE
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C4F7C04FFE
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 May 2024 12:52:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB79FE7D;
-	Wed,  8 May 2024 14:52:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB79FE7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BC28E94;
+	Wed,  8 May 2024 14:52:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BC28E94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715172746;
-	bh=KnIVJedJHZe3sxJyLX2GN7WsyXIrdkUeKLWLWsv/Q5w=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=pMj3ZeVpC/5sfuX3J8KYttZdocU8CU81YZXvAzrgZMvE7xEsCXp/H8rAIge6ylh6R
-	 WTFPUZZdUu1kGAaju9vzGgPhxSBzFtVMI8hEcFfvBxbEqisa4eOzuGs0qxZwCKiqtP
-	 73gJ0Jy7ZUaPrpwSZpeCsYmx8QX/9AC68F6tUNC0=
+	s=default; t=1715172757;
+	bh=HJvIUgUd9BUIe/soRVflVqY4v3qfdJyFFZPAdzMhiF4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=D4hGrwkZzgxLdXXWwXc+YJiOkOTjgTfimmZdMVdbw767rF12jCJGBp0lJshOWx1tm
+	 rAmStK+09Q3Csn9iHCgT+lKKN5GNgKs6VysAGS1/ioD5pradrmUH4ccOVh4lHBAaNG
+	 uZ7+loISkEdxF7/V7vJ7WfaUhdo9nV8JWPhh73CA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3BD2EF805B6; Wed,  8 May 2024 14:51:35 +0200 (CEST)
+	id A9217F805F1; Wed,  8 May 2024 14:51:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77D7BF805D3;
-	Wed,  8 May 2024 14:51:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07AA4F805EB;
+	Wed,  8 May 2024 14:51:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4A72F80423; Tue,  7 May 2024 14:44:10 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1FCFCF804F2; Wed,  8 May 2024 09:04:35 +0200 (CEST)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn
+ (mail-sh0chn02on20715.outbound.protection.partner.outlook.cn
+ [IPv6:2406:e500:4420:2::715])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E149DF8049C
-	for <alsa-devel@alsa-project.org>; Tue,  7 May 2024 14:44:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E149DF8049C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=gQgGAdK+
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-a59cdf7cd78so556515766b.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 07 May 2024 05:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715085842; x=1715690642;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=F/oIRhG5AjkWY6V2xiSuojwWNRWmfLxMa4/7v40uDqE=;
-        b=gQgGAdK+lo1G7i9vJSoCWhvgHIrsrdjUThBEwGGnJkGrObh83teAbyRBb4h4tw2jYb
-         5Bv01M3D9aCmCiPGe6vFKv8P7eJYJU4sqpKkFHGizLsEzPavnjUSpWsV5q80a/ceyErU
-         PFesb1Yqda9pEXl/TBEHMZG/h3KF6bhbWh9kJLK+0Wr9w2cvPCjDlur3rxa42IEoHFYx
-         UwbyWVU/cBeBQp6TDor5+6y1zMce/xkTO0UmlhKpvWcfTQxJq/uN8hV/TDlqAHVilOIj
-         bQiuPC/4T7CiEARP83vZop0zsyZXB7WN72bvvwirSUAlkbOAIPkWiftc7UhL2qUzbRdC
-         ZmtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715085842; x=1715690642;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F/oIRhG5AjkWY6V2xiSuojwWNRWmfLxMa4/7v40uDqE=;
-        b=ChWmLtNCxSxfIWGf8vQG2bRaAaDshmJjVTjMDp5cWeJdCwv6Cw7CRmJ+LRMIfAfG+Y
-         HX3daLmib8jPtmzHYFdtQJIB3FY4DjoIEv4g/5KEi7ChqqGH2ptLfqJI69ibvcbduDkU
-         3OS2oXFD0K07UsxVdXibA5crwy225dSE8tUDCRZjHAZuOiJtluabnof62AdLeT6fXkcl
-         3H4FI3CJPAN5pSfj3ofdGaLLIXsz2R8dIVECsbE86AUZIEIhJKKlnUtBRPsMl3nSJHJl
-         WlxDJVBl4FK+uIpwS5Y8/HfPZ52cfTwIOsFgHbrmQmjT0kgU8bHiBjAOcCBOxeH8G/dl
-         86hA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXiN7OubYnELcq1HUo7a3bK9AAJ7QocfKtWo9ydZPW7bJ3DxhuQZffpFHFUBV8l1+HibbHMNqrXER2MiwSFPmYyN9Tr9YyxF2+FxTs=
-X-Gm-Message-State: AOJu0Yx+fGV0WFDs4cE+ZFDJOHdFVgR7/EkqGpXpeOPin8D2jYHkVqvs
-	gqbUKd6xMbwlMtRFpzrMUJk/Y6S30IS6X3+VJnJmv4Oj9bGPdzaI
-X-Google-Smtp-Source: 
- AGHT+IEH520oqokwkCG16wuOPDMKOF55ptHNw2OadsqHHoYygvWVxSH9Lxsegkq6WAFM/BF8tPoVtw==
-X-Received: by 2002:a17:906:6a1e:b0:a59:b8e2:a0cd with SMTP id
- qw30-20020a1709066a1e00b00a59b8e2a0cdmr5656811ejc.59.1715085842060;
-        Tue, 07 May 2024 05:44:02 -0700 (PDT)
-Received: from [192.168.50.244] (83.8.126.253.ipv4.supernova.orange.pl.
- [83.8.126.253])
-        by smtp.gmail.com with ESMTPSA id
- lb14-20020a170906adce00b00a59bc8c01b1sm3321340ejb.82.2024.05.07.05.44.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 May 2024 05:44:01 -0700 (PDT)
-Message-ID: <c76fa2cc-d41e-45c5-891a-b83d5d0634b1@gmail.com>
-Date: Tue, 7 May 2024 14:44:00 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id F3E3DF800E2
+	for <alsa-devel@alsa-project.org>; Wed,  8 May 2024 09:04:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3E3DF800E2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XEiZJDBbBRmCH1bZ4JQCX0mS1vpGHeET8k2l6rCbbXWr24aCnkszN09GQdkS1b3ylX6FrMNM66To+6UqmYC6TLrdsK5WQTRQGM77iii13fwI5YnTx5G4MpDOWMKmbfvpJJywA+nQLxqVuKYhuM5/HPD2HZVeMLpODxQOyOv8VhbwR/cWh0v7k2Mn42F55DwVbLfS25pNibwMfP/g5ZUEBiI+iOZFKD3czxlHf1IEWqjaeoETOSmHb1O7iu1x1Z81SEuVI/q619MkyYBf+UhtPX8ggmUVRHnhMtiZsIGrHRQuN6oc+Mo7u3XUdymZCGuNgndFkMnUOBYd6H1h7qigZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dt4ZLihArQkU8P3Z4dQamKHuAPsmwOivzAebXuv2eCg=;
+ b=f3YJGsYL9QfZNn4/NKB2fbx5Q+lZoDuYi18+Vu/ICJK3d0HF+HKHraHv37nsNIim1ZbJkaoUy/7DTL1o7DyodHj5shiRH9VJSeFJJJHERaUz1UVDhOR01lw7J3qJVPJ5A37czY7WRVgfnB3sAMFxENriXscliz2HeEnT5+hugTcjCeq2DqGsZZoQAKXh3+sQ1NWnoN2dB1VmeeLASWJo2hU2Okye0w3MXTuMb04v16hIKVbW/qv0mEFSlAoHJvm/pGDrMj4tU+b62vkilNpPsjZie0s0mNOVKtQJUGZKAxCIwtvGKTbWbax6o9xyTdD7YpNVQUu+6HAg8/m/E2mmyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:8::10) by NTZPR01MB1050.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:1::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.43; Wed, 8 May
+ 2024 07:04:14 +0000
+Received: from NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e903:99a6:10b7:304d]) by
+ NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn ([fe80::e903:99a6:10b7:304d%6])
+ with mapi id 15.20.7472.044; Wed, 8 May 2024 07:04:14 +0000
+From: Xingyu Wu <xingyu.wu@starfivetech.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>
+Cc: Xingyu Wu <xingyu.wu@starfivetech.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH v3 0/2] Add Cadence I2S-MC controller driver
+Date: Wed,  8 May 2024 15:04:04 +0800
+Message-Id: <20240508070406.286159-1-xingyu.wu@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BJSPR01CA0003.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:c::15) To NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:8::10)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Artur Weber <aweber.kernel@gmail.com>
-Subject: Re: [PATCH 3/3] ARM: dts: samsung: exynos4212-tab3: Fix headset mic,
- add jack detection
-To: Krzysztof Kozlowski <krzk@kernel.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20240503-midas-wm1811-gpio-jack-v1-0-e8cddbd67cbf@gmail.com>
- <20240503-midas-wm1811-gpio-jack-v1-3-e8cddbd67cbf@gmail.com>
- <d1007753-bdcf-4db9-bb01-b36e742cee4b@kernel.org>
-Content-Language: en-US
-In-Reply-To: <d1007753-bdcf-4db9-bb01-b36e742cee4b@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: aweber.kernel@gmail.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: NTZPR01MB0956:EE_|NTZPR01MB1050:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4cd88dfc-b97b-4555-b2f9-08dc6f2d1184
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	wHX/Ar0b39I7jKCJmreU35WEh8+Tw/6CxBMsWBWHWIrRpJEvkmwb2yIj2F1sEywT7Zw/R+v4a0QD7IzKxxqIRpLcDtGr06o6i/UR+Qw7TfxB0ZRtzh41SOuHDq/VN2XMLu/5G7vN5Fhr76UFwKdlkUdHcfLsGhC+4JbyrebeVuWMlESp1eNvHO1+2zqqmem21l1QhoejjDyuOsqDh4iCufPi9CEXGbcKUJKYE7mNRh9YmDk0eL8uO4Mui6VuykJ3w4o2JiVnKK/DzrgzcKLo+jGMEBIv1TgT/3U+P1WROpGQjivlPvK8IblJJsZxsb1oCV8J8GcEdJGKVRDpgYquHIyCJGOUdmql+b/DYUeySZQzQFmt5UlfYLr1+bYGwE+8V6ujNxcxEqExO4hvK+aqfzjgs380EciNkK7mTa3gvugxOtwCElizsgfpA007kPZiRbrxawKx1HEzNjgR4xEort8rmgg16kJ+K5fiXjY7enowPsSVUlUZNfucwqhMhmkaop4ylfzInxKffCKL6gw8DcbAPGE6io25hDpuBaXwZxneCn62Jd4+uUXQtOg5FMdvz0N9GKjHMcaWxlex/BavPFGINgK+jdg0eBjTOoo9d54fk7kRw8ohwGXrguVmxHg5
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(52116005)(41320700004)(366007)(7416005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?BYRzGTpzG3OXVftv+nE7zA46n/grrmg6cF0l0BX9tZy6prcx3ic+9rH3tByY?=
+ =?us-ascii?Q?fZccBkPlvN8rwtOHRx+JIUf556oZ2PAb2tpOwULDxhACWg5hfUbyNgWzxq1F?=
+ =?us-ascii?Q?Vi21IfksOBAxeMFDU3em3eIrD440pVQ9XcLBpKtjSZsD9mgvtmvmA//xQLWW?=
+ =?us-ascii?Q?Bmm3bfQiRR0qBE1gEkyFKW263oKafwiwyhq1GGNMRL7F3nJ/UCYEtBxSF1Tx?=
+ =?us-ascii?Q?hblqL62nrTNJ5Ku9py1PcIrRgMq024/JkDxY9ajcHiPDRMi8Dtrxnbirfw0z?=
+ =?us-ascii?Q?wAG739UCu+PofJlRdBBm3+7PP47SVfjflEjaMYF5dyiCaef7rs4mAw6iAv0b?=
+ =?us-ascii?Q?2pyJIcYgS1UaWyelIHRWsnQZ0J/NZ7J/zP+1KTzjGXYOQW7G75L9jF7xY8Dp?=
+ =?us-ascii?Q?wkHglLriAeLtpGTMSiT6Cb3tQA0O2nU5v14/69rr6kXeHKQkJG+U8OfXLB/f?=
+ =?us-ascii?Q?/r7/ZmtV232lsHzmEw9qTnU15a0MLifxcLjh0l6hBb5GOr5T7Kfd4OCG2C8/?=
+ =?us-ascii?Q?PhBbwKL6ncqvy7q6f33PsEnvUoQJ7pFETC2h6KBCa4sLkzg6nFhkaWA4Ccmz?=
+ =?us-ascii?Q?ycVFOLiInT/9YO6xyDHbF99BZDVLhIIyB4uqWlH0+YAZebpMQBmkyDkaKRn/?=
+ =?us-ascii?Q?bgQxoPLLxBhaqHHnY5Sqv+3vkNQHuCrQC2VjRwaesiWUPKJOUCGINzdf70FF?=
+ =?us-ascii?Q?nnX3Tg4q9ZQRh2Fqnn9f6yyjEKSuEZ9fji73ZMFYDTt5dCNXQQxzgWClXdGx?=
+ =?us-ascii?Q?ZdHYFsZvwJNQVg1HFw2vGRgIyEj9lPBMf8i/NkghztrJZSFytkg8m0a2xddJ?=
+ =?us-ascii?Q?bs23rFHKh8axOF+mCj7y2N+4CTQUwZYPU9JoRjsl3jHuvv1whqDhXni/7PT5?=
+ =?us-ascii?Q?8V0z5PsTSBIHmH/KkhLB+6eykttq9QlLA1dH0emEm2K57/IyE5CxRJEOC0/V?=
+ =?us-ascii?Q?hrUNKRuIs5IAOtLZT9KmFJi5r/zAiBr9NQd/NKfbQ4vr30MWZz9TIBxFAGn3?=
+ =?us-ascii?Q?EuDtY+WPqHpPIkwee8RdpUsb7LkHeJFyicQgoa98QGDMZsWBNKa7nvNw6CBo?=
+ =?us-ascii?Q?c/6f7ca/i78jcSm4sps0oj5/h9lTEsUzF6nZALQYQLIxawvKsQ8LfXI0916c?=
+ =?us-ascii?Q?3tsKIvyju8lzPf6m+VLRFo8hsva4YTAs4GOZSwFms1yzGFVM3pdEG/lo86sK?=
+ =?us-ascii?Q?4lpTAPFRai1fXdvGu/d1x7ADcME3k9U9eiHf0+25eMlq3WkveZKUwp2AI2Bt?=
+ =?us-ascii?Q?ccpSYs6GH1zlD9OkgNAeBBHwFnPq6OqOPUMmIQTZExPBwEuAnytvhimeqX5G?=
+ =?us-ascii?Q?ULU6ri1omNjzKPk5jcXVeZ3znI3V2FXuwGD6u8harlmxwiXFQ2aAKH4Y1gJK?=
+ =?us-ascii?Q?Xy5Ywj96sSMdGU4oKDGe5izp9nrZZOyPyieOCwj8LmBrlHjg0N9obK2qAkHc?=
+ =?us-ascii?Q?ESvGFEyMkVLVV/LV6Ua6GgYzikmDZbv6ATqW/trnf3tSMaPdscf9jK0L0Rq0?=
+ =?us-ascii?Q?KckslgrnPRAXutB22kxvyf/r9/9sYFkQ/mkSGf4Zqj2F68fAKrU9wEPMWakh?=
+ =?us-ascii?Q?2Is/sAxBLtlQ9ZvzAEyNUvQElT8N1V9OLMQcOZ+Nq22PJXHlc2voEz+XktWc?=
+ =?us-ascii?Q?YA=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 4cd88dfc-b97b-4555-b2f9-08dc6f2d1184
+X-MS-Exchange-CrossTenant-AuthSource: 
+ NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2024 07:04:13.9376
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ jrAlNbgLL+u8q2D4gxRAQBwMuKtQs1LxKk/w05Xrr1iqtJMCtUKyrjJL+lW3vlKbz+8wrO1OY7GZLJ2HVsInriCc33dV4zhSHjxgMNNlIRc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: NTZPR01MB1050
+X-MailFrom: xingyu.wu@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SJ7YBUQ2IYGDWWSPK2KFYNS7NBFEV4YL
-X-Message-ID-Hash: SJ7YBUQ2IYGDWWSPK2KFYNS7NBFEV4YL
-X-Mailman-Approved-At: Wed, 08 May 2024 12:51:29 +0000
+Message-ID-Hash: ZXSAZKJNPOFXK6UHZMWUQSJJFTR7WMG5
+X-Message-ID-Hash: ZXSAZKJNPOFXK6UHZMWUQSJJFTR7WMG5
+X-Mailman-Approved-At: Wed, 08 May 2024 12:51:30 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SJ7YBUQ2IYGDWWSPK2KFYNS7NBFEV4YL/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZXSAZKJNPOFXK6UHZMWUQSJJFTR7WMG5/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 6.05.2024 08:31, Krzysztof Kozlowski wrote:
-> On 03/05/2024 20:55, Artur Weber wrote:
->> Add the necessary properties to the samsung,midas-audio node to allow
->> for headset jack detection, set up the mic bias regulator GPIO and fix
->> some other small issues with the sound setup.
->>
->> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
-> 
-> ...
-> 
->> +
->>   &bus_acp {
->>   	devfreq = <&bus_dmc>;
->>   	status = "okay";
->> @@ -505,12 +521,11 @@ &i2c_4 {
->>   	wm1811: audio-codec@1a {
->>   		compatible = "wlf,wm1811";
->>   		reg = <0x1a>;
->> -		clocks = <&pmu_system_controller 0>;
->> -		clock-names = "MCLK1";
->> +		clocks = <&pmu_system_controller 0>,
->> +			 <&s5m8767_osc S2MPS11_CLK_BT>;
->> +		clock-names = "MCLK1", "MCLK2";
->>   		interrupt-controller;
->>   		#interrupt-cells = <2>;
->> -		interrupt-parent = <&gpx3>;
->> -		interrupts = <6 IRQ_TYPE_LEVEL_HIGH>;
-> 
-> Does not look related at all to the patch.
+The Cadence Multi-channel I2S (I2S-MC) Controller implements a function of
+the multi-channel (up to 8-channel) bus. Each stereo channel combines
+functions of a transmitter and a receiver, and can switch freely between
+them. Each channel has independent gating, clock and interruption control.
+It also support some of these channels are used as playback and others can 
+also be used as record in the same time.
 
-I rolled up two small changes to the wm1811 audio codec config here:
+Four I2S controllers are used on the StarFive JH8100 SoC. Two of the I2S 
+controllers use two stereo channels, one of them use four channels, and 
+one use eight. It had tested on the fpga with WM8960 and PDM.
 
-- Dropped incorrect interrupt parent - GPX3-6 is the headset key GPIO,
-   and does not seem to be the interrupt parent like on Midas (downstream
-   calls it GPIO_HDMI_CEC on Midas, whereas for Tab 3 it's
-   GPIO_EAR_SEND_END, so they definitely serve different functions).
+Changes since v2:
+- Dropped the description of interrupts in bindings.
+- Modified the properties like 'compatible' and 'required'.
+- Defined the special property in top-level and made it false in other
+  case in the bindings.
+- Added the test of other format in the driver.
+- Changed the return values and switch the TX and RX channels for
+  convenience.
+- Modified the macros about 'SND_SOC_DAIFMT_CBM_CFM'.
+- Added pm_runtime_set_active() to fix the state of pm_runtime.
 
-- Added the MCLK2 clock as specified in the schematics, to more
-   accurately describe the hardware.
+v2: https://lore.kernel.org/all/20240320090239.168743-1-xingyu.wu@starfivetech.com/
 
-I included them here since the whole patch modifies properties related
-to audio (this section is what "fix some other small issues with the
-sound setup" in the commit message refers to), but I can split it up
-into a separate commit if it's necessary.
+Changes since v1: 
+- Added new compatible for StarFive JH8100 SoC and a special property to
+  be got as the max channels number in the bindings.
+- Dropped the useless '|' in the bindings.
+- Moved the drivers to a new folder named 'cdns' and modified the name
+  of functions.
 
-Best regards
-Artur
+v1: https://lore.kernel.org/all/20231221033223.73201-1-xingyu.wu@starfivetech.com/
+
+Xingyu Wu (2):
+  ASoC: dt-bindings: Add bindings for Cadence I2S-MC controller
+  ASoC: cdns: Add drivers of Cadence Multi-Channel I2S Controller
+
+ .../bindings/sound/cdns,i2s-mc.yaml           | 109 +++
+ MAINTAINERS                                   |   6 +
+ sound/soc/Kconfig                             |   1 +
+ sound/soc/Makefile                            |   1 +
+ sound/soc/cdns/Kconfig                        |  18 +
+ sound/soc/cdns/Makefile                       |   3 +
+ sound/soc/cdns/cdns-i2s-mc-pcm.c              | 285 +++++++
+ sound/soc/cdns/cdns-i2s-mc.c                  | 704 ++++++++++++++++++
+ sound/soc/cdns/cdns-i2s-mc.h                  | 151 ++++
+ 9 files changed, 1278 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cdns,i2s-mc.yaml
+ create mode 100644 sound/soc/cdns/Kconfig
+ create mode 100644 sound/soc/cdns/Makefile
+ create mode 100644 sound/soc/cdns/cdns-i2s-mc-pcm.c
+ create mode 100644 sound/soc/cdns/cdns-i2s-mc.c
+ create mode 100644 sound/soc/cdns/cdns-i2s-mc.h
+
+-- 
+2.25.1
+
