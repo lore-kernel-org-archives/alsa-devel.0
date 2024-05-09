@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7780C10F1A
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 03:19:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82232C10F1A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 03:20:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCDDDE0F;
-	Thu,  9 May 2024 05:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCDDDE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FB1BE7F;
+	Thu,  9 May 2024 05:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FB1BE7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715224788;
-	bh=qdWhQuPiR2R3ELWu+ak0dDzsK1A/aeOJ72l2vo5xF88=;
+	s=default; t=1715224799;
+	bh=Qb1oDLTV9r40SB3iP+VBRNpEjDE1ar5pxX8vWQQTRrI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=nc6gSMHboJ/l93ABJO2zBO/gbUtTuzK5mis/cvW/DjKws1NleYArzJkf1Kdl+gZib
-	 MOuiEkOLMj8YJkWm6/2a9ycmbSQRlmAEf6CrxU81Yha0V4JY3zgIHZiTIRl7Kp+8DT
-	 b9QgqgPGKaF9XzgH6H2HTzQOUrclTaHaHbP+xYOI=
+	b=gsg4mDIYRsmqzlSxwg/A15UqNF496UXRowlx8cmKxGzFCfAZkfOGeTdasmNIkQTad
+	 P5lzmNtT0qRcQWhREq/Agbc9KRRHH91mXciWRnBYh5vNYL6s3BTV2d4h4vPyGZxadz
+	 OZeA/WqxqR412NR+aJLcoTHjI7+pWxKBZMl0XKOk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1CFCF805E1; Thu,  9 May 2024 05:18:55 +0200 (CEST)
+	id 23BD6F805D7; Thu,  9 May 2024 05:18:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C787BF805C5;
-	Thu,  9 May 2024 05:18:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50B01F805F3;
+	Thu,  9 May 2024 05:18:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2DDBFF804FB; Thu,  9 May 2024 05:18:49 +0200 (CEST)
+	id BD996F804F2; Thu,  9 May 2024 05:18:51 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8CBB7F80423
-	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 05:18:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CBB7F80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id A5E37F80152
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 05:18:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5E37F80152
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2FF3F200845;
-	Thu,  9 May 2024 05:18:41 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B70072008F0;
+	Thu,  9 May 2024 05:18:39 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D8AC42007D5;
-	Thu,  9 May 2024 05:18:40 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6CE432007D5;
+	Thu,  9 May 2024 05:18:39 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B5AC3180222F;
-	Thu,  9 May 2024 11:18:38 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 4AFF5181D0FC;
+	Thu,  9 May 2024 11:18:37 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
@@ -62,15 +62,16 @@ To: lgirdwood@gmail.com,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 2/4] ASoC: dt-bindings: fsl,xcvr: Add two PLL clock sources
-Date: Thu,  9 May 2024 10:57:38 +0800
-Message-Id: <1715223460-32662-3-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 1/4] ASoC: dt-bindings: fsl,xcvr: Add compatible string for
+ i.MX95
+Date: Thu,  9 May 2024 10:57:37 +0800
+Message-Id: <1715223460-32662-2-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1715223460-32662-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1715223460-32662-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: AG6U2XPVNSNPRNXXZCSJQ4TN3PEOZ4FP
-X-Message-ID-Hash: AG6U2XPVNSNPRNXXZCSJQ4TN3PEOZ4FP
+Message-ID-Hash: W2RVR7G2TO35SLXX4G7FSBE3NHNRGQWO
+X-Message-ID-Hash: W2RVR7G2TO35SLXX4G7FSBE3NHNRGQWO
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AG6U2XPVNSNPRNXXZCSJQ4TN3PEOZ4FP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W2RVR7G2TO35SLXX4G7FSBE3NHNRGQWO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,43 +93,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add two PLL clock sources, they are the parent clocks of the root clock
-one is for 8kHz series rates, named as 'pll8k', another one is for
-11kHz series rates, named as 'pll11k'. They are optional clocks,
-if there are such clocks, then the driver can switch between them to
-support more accurate sample rates.
-
-As 'pll8k' and 'pll11k' are optional, then add 'minItems: 4' for
-clocks and clock-names properties.
+Add compatible string "fsl,imx95-xcvr" for i.MX95 platform.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- Documentation/devicetree/bindings/sound/fsl,xcvr.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/devicetree/bindings/sound/fsl,xcvr.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-index 1c74a32def09..c4660faed404 100644
+index 0eb0c1ba8710..1c74a32def09 100644
 --- a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
 +++ b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-@@ -50,6 +50,9 @@ properties:
-       - description: PHY clock
-       - description: SPBA clock
-       - description: PLL clock
-+      - description: PLL clock source for 8kHz series
-+      - description: PLL clock source for 11kHz series
-+    minItems: 4
+@@ -22,6 +22,7 @@ properties:
+     enum:
+       - fsl,imx8mp-xcvr
+       - fsl,imx93-xcvr
++      - fsl,imx95-xcvr
  
-   clock-names:
-     items:
-@@ -57,6 +60,9 @@ properties:
-       - const: phy
-       - const: spba
-       - const: pll_ipg
-+      - const: pll8k
-+      - const: pll11k
-+    minItems: 4
- 
-   dmas:
+   reg:
      items:
 -- 
 2.34.1
