@@ -4,126 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 818DFC41513
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 07:14:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85101C10F1A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 09:04:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F9C9DF8;
-	Thu,  9 May 2024 09:14:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F9C9DF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA6A2B65;
+	Thu,  9 May 2024 11:04:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA6A2B65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715238870;
-	bh=pidKHhusQQ0AYUCl/FAVAM9C38pY7QS0bIULk6B0a/8=;
+	s=default; t=1715245465;
+	bh=6tEP5W7E5rNrTuVQkJNbh1NgFDLzBuXP4UK9b2HnLcQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rr05U+BcSs/cDVafKMlp8FMI6s49HFfRvCEGsQ1on26WyeC4XihdBNtp+F2QbHC5R
-	 UT8sAum8xj3FhVXB3ZszhZRcBtScO9UAA5kUABGTG8gkGvg/P7gxEw6BwtktrzC6BG
-	 qX/whcV9X8sWy8rH/T1qpCovQHnTNWbYdV6bPVaU=
+	b=Zf0MELLSc8eyxrxmOBDMUlxJP/Pcj5XNCDbPb/DdOoYucvksaksWHUPWPO69c3vOX
+	 QdGuQqTTO0pRAbDVe4F4LHiXRoVaNwEdIV3u5WH3L6GJrRFXwKVdDsRg9Y8YzPuT8+
+	 21us8JqDTMZBzEFHdu0dwnUiHUvD8CzHbm9lkQmo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D7B5F805AE; Thu,  9 May 2024 09:13:59 +0200 (CEST)
+	id 4D6B2F80564; Thu,  9 May 2024 11:03:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6523CF805A9;
-	Thu,  9 May 2024 09:13:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7564DF805AD;
+	Thu,  9 May 2024 11:03:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82635F8049C; Thu,  9 May 2024 09:13:39 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 94CDDF8049C; Thu,  9 May 2024 10:59:45 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BC6A6F800E2
-	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 09:13:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC6A6F800E2
+	by alsa1.perex.cz (Postfix) with ESMTPS id F4014F800E2
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 10:59:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F4014F800E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bl9ThYEI
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E651ACE1187;
-	Thu,  9 May 2024 07:13:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B32AFC116B1;
-	Thu,  9 May 2024 07:13:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715238803;
-	bh=pidKHhusQQ0AYUCl/FAVAM9C38pY7QS0bIULk6B0a/8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bl9ThYEIpRLI/LBnDIwpNDXpHD12nBOehOJrUF3IxM8ox3Egy7CIdtVJbyZigeUB7
-	 FFHwDwIydedlwcIUDgyGimY6kp2hMP7SxU64Lo0z8FaJHiwnXcjLU6i14lVSadorbh
-	 azshMqYPjW3522/DHv1M7tc1WuMt5hx4Wk/AncpA/0iZyHCYg9kLSWiFAmOiLbZBjs
-	 iRbqVvnGpDXaViLEprUun2VTXL00amOcMOE1QcqGfCKdQrCJn/Bj4qzWRnpyNvLQqK
-	 pUUFqFEx0LcIm/oorZBnfadHbMQtfIU1He+/gSo8Np8IiVFr9YFYai4y/CUcepHo2I
-	 zzM3ffdA4ZMNA==
-Message-ID: <b8c82b1a-db57-4e89-9beb-63992744afe6@kernel.org>
-Date: Thu, 9 May 2024 09:13:15 +0200
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=VhDIq+fd
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-41c7ac6f635so3948895e9.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 09 May 2024 01:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1715245182; x=1715849982;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3RC6fstJDXsghafNDD46lbDOhml+R8Iq6EzCaj20EYo=;
+        b=VhDIq+fdsRvqb7YF0ZKkYET/LUd6T5mxuw9fQGRYwuu4S5PpvHXJgrOOpy72sAgObu
+         Wqzp9Qi9PDEQkgRir0FrQBWxZRYufNHM1260Vvhvnvsys3XFOB4EtXETRWzrFaAq3Ujx
+         6mU6V4Eh2yZ8AaBKtvWYkVkjgSrzE6OGQqhfJHsNVoUlmiIX0ZpmmyoKLrzZTbU/9Zdj
+         siogWOVQlVk3UpKwX+se7Piih7og7FpyOo7qqoUapCUx4PvE9omyCIhYrSn6Vnm9vykI
+         dZ5ifVfAsW2cDk1rFgO9P7YFxdpi7jsO212EBd8UnZbYpjpAIPZd+t68lKznyD92tLYU
+         bUTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715245182; x=1715849982;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3RC6fstJDXsghafNDD46lbDOhml+R8Iq6EzCaj20EYo=;
+        b=KaJu25O2ClG40QXBZPK3krIvKZhkfrR6UIyYhwEY0aaoMT/Ry46jeQbWmGF5n4lz7/
+         wCep/rMVZaFHSZgL+M8I8K6rJ6azdfEw52V1z7O2XZkulzk41DZCAg1Oc6MplAddTK3N
+         yUKz+VDm+jbgXcNqjc1sr6c9cgUkotiqSRTBeMOWsYfcXbdjkWJZL2JL2dqQLlxYf2lh
+         ygVKaiFqPnlu3GJzE8k5YE90iSUXYvhUT4QscgR52xS6FL5q/AmtPcYLX7m9ieMODyQp
+         cbhybxQSHg3t4Eipa1XpBK5A0s6qpO8+fqe2Lg1IxuPCt/+A+8hmA/mheLqEfRCVCa7P
+         l86A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWIJcsLGdPywh8iaL+f4I6BpGvgo/JeyXsaE4TCGVs7KAymm40kjVb7klLH5863LBlpTZE6yVCPez3lJEEm7xFHCoBJzbrnro5rceI=
+X-Gm-Message-State: AOJu0YwvMDUHyqxdnmmOywf8uHygZQoONFoSWDzDOac1A4699x8P0BLm
+	511iQX/tN1HHVJoRploNxL1BwARCPJt3J59hGFYmBOSNqSgu0uSxfovfP5VLYs4=
+X-Google-Smtp-Source: 
+ AGHT+IFGM+zedQ3XccNEQmdxXTeGO/UYm0MlRcoX4lJrzzJEQVjrWdPX/UOeEIf8JIQxHSLjdaIf3w==
+X-Received: by 2002:a05:600c:4755:b0:41b:9e4f:d2b2 with SMTP id
+ 5b1f17b1804b1-41f71cc1c66mr50020535e9.2.1715245181948;
+        Thu, 09 May 2024 01:59:41 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id
+ 5b1f17b1804b1-41f87c235b4sm52614135e9.11.2024.05.09.01.59.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 May 2024 01:59:41 -0700 (PDT)
+Message-ID: <a980d7a5-0d80-4ff1-93e1-b5f5806980c3@linaro.org>
+Date: Thu, 9 May 2024 09:59:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 7/7] ARM: dts: samsung: exynos4212-tab3: Fix up wm1811
- codec config
-To: Artur Weber <aweber.kernel@gmail.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
- <20240508-midas-wm1811-gpio-jack-v2-7-b4d36cd02c6e@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 2/4] ASoC: qcom: common: add Display port Jack function
+To: Johan Hovold <johan@kernel.org>
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
+ <20240422134354.89291-3-srinivas.kandagatla@linaro.org>
+ <ZiejT5yddioQ8upR@hovoldconsulting.com>
+ <b9d0e2fd-069c-439c-a85f-1e99bf9018c3@linaro.org>
+ <Zi-0kSU6TMcev05r@hovoldconsulting.com>
 Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240508-midas-wm1811-gpio-jack-v2-7-b4d36cd02c6e@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <Zi-0kSU6TMcev05r@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: YMCRGJRX2MLP2RO2STUHJVOIVPZBAGPQ
-X-Message-ID-Hash: YMCRGJRX2MLP2RO2STUHJVOIVPZBAGPQ
-X-MailFrom: krzk@kernel.org
+Message-ID-Hash: V6GSTKFJ74L2YEB33TCFHTLVWBEI5C6P
+X-Message-ID-Hash: V6GSTKFJ74L2YEB33TCFHTLVWBEI5C6P
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -135,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YMCRGJRX2MLP2RO2STUHJVOIVPZBAGPQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V6GSTKFJ74L2YEB33TCFHTLVWBEI5C6P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,18 +125,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08/05/2024 12:58, Artur Weber wrote:
-> Drop incorrect interrupt parent and add MCLK2 clock.
 
-1. Separate patches.
-2. Missing explanation why. "Incorrect" says a bit, but not too much.
-Also, imprecise - you remove all interrupts, not just incorrect parent.
 
-Please provide proper rationale, why this is not correct and information
-that bluetooth 32 kHz clock feeds both bluetooth module and audio codec.
-
+On 29/04/2024 15:54, Johan Hovold wrote:
+> On Tue, Apr 23, 2024 at 04:55:32PM +0100, Srinivas Kandagatla wrote:
+>> On 23/04/2024 13:02, Johan Hovold wrote:
+>>> On Mon, Apr 22, 2024 at 02:43:52PM +0100, Srinivas Kandagatla wrote:
+>>>    
+>>>>    static const struct snd_soc_dapm_widget qcom_jack_snd_widgets[] = {
+>>>>    	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>>>>    	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+>>>> +	SND_SOC_DAPM_SPK("HDMI/DP0 Jack", NULL),
+>>>> +	SND_SOC_DAPM_SPK("HDMI/DP1 Jack", NULL),
+>>>> +	SND_SOC_DAPM_SPK("HDMI/DP2 Jack", NULL),
+>>>
+>>> Shouldn't these be split in dedicated HDMI and DP jacks too? What if you
+>>> have a machine with HDMI and DP jacks which would otherwise both claim
+>>> "HDMI/DP0"?
+>>
+>> These map to the Jack's added as part of qcom_snd_dp_jack_setup and
+>> belong to DISPLAY_PORT_RX_0, DISPLAY_PORT_RX_1, DISPLAY_PORT_RX_2.
+>>
+>> If its going via USB-C DP controller it will be either DP or an HDMI ?
 > 
+> It will always be DP out of the machine even if an adapter can convert
+> to HDMI internally.
+> 
+> The DRM ports are called "DP-1" and "DP-2" so it seems we should match
+> that.
+> 
+>> This is the most common naming for the USB-C DP/HDMI jack events.
+> 
+> It looks like some Intel machines use names like "HDMI/DP, pcm=%d Jack"
+> (with a pcm device number), but we also have "DP Jack". Not sure which
+> are are used with USB-C, though. (Or if the former actually support HDMI
+> altmode.)
 
-Best regards,
-Krzysztof
+I checked this on my machine which has usb-c and I can confirm using 
+HDMI/DP naming for these jack.
 
+Either way I don't mind having any names, but my point here is to be 
+more consistent across.
+
+
+--srini
+> 
+>> Qualcomm LPASS in some older SoCs had a dedicated HDMI interface which
+>> is different to this one.
+>>
+>> Usual Other ways to connect HDMI is via external HDMI Bridge using I2S
+>> interface which totally different to this DP interface.
+> 
+> Sure, but if there's ever a design with such a port then it will be
+> called "HDMI Jack" and then the "HDMI in "HDMI/DP0 Jack" is unnecessary
+> and confusing when it is always DP out.
+> 
+> Johan
