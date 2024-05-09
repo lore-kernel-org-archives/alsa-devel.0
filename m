@@ -4,150 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F916C25B10
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 18:28:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F2A8C10F1A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 19:57:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8302E69;
-	Thu,  9 May 2024 20:27:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8302E69
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5392EC7;
+	Thu,  9 May 2024 21:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5392EC7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715279279;
-	bh=QT8+M1coKRSlLIayB6aQ0AXkEhny/yVnFWMbGYUb3wQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1715284618;
+	bh=yggsdWvGecv9KlZXR7Gn5ZXJpoT8aeY02OM9eHlbgFI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jE5uJyTSQSTWKVKaAElm+294o3OogvljrH9nU6bMAiF0zVk73um7SyQZStMrCVrex
-	 7tWa5EyPKz8iyRNa92sheW57dWVu7NfNC1JpSBLrpuCJ5NYdb9mrQFYTGIZGOwvRcU
-	 RZlGOyYQjVR5KJ7C/OvYK4a80Wt6vyHxhwmrJiQg=
+	b=LrhlNtrRVYjzBv9u+PbzMNjCUTa4U2EU9w4/rF0mljOBIJg0Vv4iMvdCdCUYlGWzM
+	 5d4YJN647BgNY+bCDzqBZynnqOWaMhP78KJytp227zyjAcduO0b1IxOuG/oT039qz6
+	 78faRQKY0UWP+zqtXA52+sSyxsRRR2oCKU9rEFk0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B249F8058C; Thu,  9 May 2024 20:27:28 +0200 (CEST)
+	id EFD65F805A0; Thu,  9 May 2024 21:56:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA858F8059F;
-	Thu,  9 May 2024 20:27:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ACFEF8049C;
+	Thu,  9 May 2024 21:56:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 646C0F8049C; Thu,  9 May 2024 20:27:24 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2821FF8049C; Thu,  9 May 2024 21:56:21 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A8C3CF80152
-	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 20:27:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8C3CF80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54EFFF80152
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 21:56:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54EFFF80152
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Li4v7CKI;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=8VU1rzuw;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=gXWy0ih/;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=UaxbYG+W
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D35D5605C0;
-	Thu,  9 May 2024 18:27:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1715279238;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=68YP2/T4YVfuIp8UC5uVHGv4H2aCqnPVBqXmfin03aU=;
-	b=Li4v7CKIKZDwwtb9mpwGb6bcR5UpRLe3FHQsE5YDUvMnrjhCqKZigDcFmqNrlcZKaaPbk5
-	Lt4Y5U6BjIx5yQvhpVEFXP2jSdw6643qiC7EQ8vKiKAK7gCMzCBRj4a4LhuukCM4BbujgE
-	iMLWuQ0PeeMSqqnUuTQgu7dam+5bo78=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1715279238;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=68YP2/T4YVfuIp8UC5uVHGv4H2aCqnPVBqXmfin03aU=;
-	b=8VU1rzuw2EEiE+cLLxvs1E5idOVCEeYUQB2uG2QtfBcvJQN7KCUs9i/Q6ptbOTWvClWt64
-	MVLDkrwRHHqpYpCQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="gXWy0ih/";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=UaxbYG+W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1715279237;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=68YP2/T4YVfuIp8UC5uVHGv4H2aCqnPVBqXmfin03aU=;
-	b=gXWy0ih/+DB5A5k3Cm2H21qKiOQ+AW6GvMxbspV98mIFlcAKv82OpxQTfSOq2jnAVyaibV
-	ILorz7vdk3eJNEALXCc42b6nBSUgJ1akQsS7sLf71jF972GPU0cx3TqdleSgzvuMHoumLO
-	i3lwnE+KbmvrHF0FRZIBl2X6PCH4Jo0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1715279237;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=68YP2/T4YVfuIp8UC5uVHGv4H2aCqnPVBqXmfin03aU=;
-	b=UaxbYG+Wn+TTuncV13Yewx6z+jMjCEuCX0Ke7hp4/ubpCobf80pffly/GQ4WYb7m2D1aEu
-	sq3cqHdkgtiWKDDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A93C013941;
-	Thu,  9 May 2024 18:27:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LSutJ4UVPWZRRQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 09 May 2024 18:27:17 +0000
-Date: Thu, 09 May 2024 20:27:32 +0200
-Message-ID: <87pltualij.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: Re: [PATCH 0/9] ALSA/ASoC: Intel: clarify Copyright information
-In-Reply-To: <5630c56e-6639-47f6-81a9-6b52f8b540de@linux.intel.com>
-References: <20240503140359.259762-1-pierre-louis.bossart@linux.intel.com>
-	<5630c56e-6639-47f6-81a9-6b52f8b540de@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-5.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: D35D5605C0
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-Message-ID-Hash: JX2PFU2XDXTZOQYHCBCLTLOVNDO5IUQ5
-X-Message-ID-Hash: JX2PFU2XDXTZOQYHCBCLTLOVNDO5IUQ5
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=HdUPgF1P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715284580; x=1746820580;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=yggsdWvGecv9KlZXR7Gn5ZXJpoT8aeY02OM9eHlbgFI=;
+  b=HdUPgF1PecVKfALigX/Gud7/HDOt/esxgUAzOLuNRTjQatccpid2Hhnm
+   myws8iVvt6KsHpLmskWduzwYAsqkiAdJvOVekxcnk4P5iS71K0237MFzi
+   dUvebEi3hi7fv4iq1okcY+cmRJ1Bwy/b0nk5xB5nmYzrWap0dnu55s8nm
+   FqWt9kpJgtR0HMdW7Ie0+ZtRWNqBW6uhxz9m3KaCTBeAGgGQRZPqWypfY
+   4cOKkv+GR7JG2uP7LWS0rHkrHHBtnS+xiMRW7Bbjyd5Kninn3BEkr9ArT
+   TPN+rKRbwgDESrXWAYVHVZqBChxBhrbRFmYhcfqJC0xziHGLTetp35OJk
+   Q==;
+X-CSE-ConnectionGUID: M+Nuhb7GRzOLpucJH8sHsg==
+X-CSE-MsgGUID: 3D2WyGdoTLCPRyZplbGFLg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="11454252"
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000";
+   d="scan'208";a="11454252"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 May 2024 12:56:14 -0700
+X-CSE-ConnectionGUID: 0hSRX4lDS5GfwWSqiwJzxQ==
+X-CSE-MsgGUID: Ld9aKcU1TYSOY0PDBQNl8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000";
+   d="scan'208";a="34213064"
+Received: from ajunnare-mobl.amr.corp.intel.com (HELO [10.213.181.85])
+ ([10.213.181.85])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 May 2024 12:56:11 -0700
+Message-ID: <726e7006-30b4-4525-84c8-4fb2ef380994@linux.intel.com>
+Date: Thu, 9 May 2024 07:54:47 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v21 09/39] ASoC: qcom: qdsp6: Introduce USB AFE port to
+ q6dsp
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+ corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
+ krzk+dt@kernel.org, gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
+ broonie@kernel.org, bgoswami@quicinc.com, tiwai@suse.com,
+ bagasdotme@gmail.com, robh@kernel.org, konrad.dybcio@linaro.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+ alsa-devel@alsa-project.org
+References: <20240507195116.9464-1-quic_wcheng@quicinc.com>
+ <20240507195116.9464-10-quic_wcheng@quicinc.com>
+ <9bd1ec72-71ea-4a1c-b795-af6e7687ca07@linux.intel.com>
+ <0a4d7c2b-ac7d-7bd4-f97e-db60944a1d39@quicinc.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <0a4d7c2b-ac7d-7bd4-f97e-db60944a1d39@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: GPQXNDZV4UNBEMFFAOPINIFPSKYZZFDL
+X-Message-ID-Hash: GPQXNDZV4UNBEMFFAOPINIFPSKYZZFDL
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -159,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JX2PFU2XDXTZOQYHCBCLTLOVNDO5IUQ5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GPQXNDZV4UNBEMFFAOPINIFPSKYZZFDL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,42 +116,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 09 May 2024 18:00:06 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> 
-> 
-> On 5/3/24 09:03, Pierre-Louis Bossart wrote:
-> > This patchset does not change any functionality. It only clarifies the
-> > Copyright information in ASoC/HDAudio contributions, where an "All
-> > rights reserved" notice was mistakenly added in a number of files over
-> > the years, likely due to copy/paste. The Intel template never included
-> > this statement.
-> > 
-> > I chose to group all these patches together, they could be merged with
-> > either of the ALSA or the ASoC tree.
-> > 
-> > Pierre-Louis Bossart (9):
-> >   ASoC: SOF: Intel: clarify Copyright information
-> >   ASoC: Intel: boards: clarify Copyright information
-> >   ASoC: Intel: common: clarify Copyright information
-> >   ASoC: codecs: Intel: clarify Copyright information
-> >   ASoC: Intel: catpt: clarify Copyright information
-> >   ASoC: Intel: avs: clarify Copyright information
-> >   ASoC: soc-topology-test: clarify Copyright information
-> 
-> The first 7 patches were merged by Mark
-> 
-> >   ALSA: hda: clarify Copyright information
-> >   ALSA/ASoC: include: clarify Copyright information
-> 
-> But these last two weren't. Should I resend them? Or can Takashi pick
-> them? It's just a minor clarification, this can also wait for the next
-> cycle.
-
-I took now the remaining two to for-next branch.
 
 
-thanks,
 
-Takashi
+>> Wait, is this saying you will have exactly one PCM device/FE DAI
+>> connected to the USB BE DAI exposed in patch 11?
+>>
+>>> +    SND_SOC_DAPM_MIXER("USB Mixer", SND_SOC_NOPM, 0, 0,
+>>> +               usb_mixer_controls,
+>>> +               ARRAY_SIZE(usb_mixer_controls)),
+>>> +
+>>
+>> And then what is the role of the USB mixer if you only have one input?
+>>
+>> I must be missing something.
+>>
+> 
+> Not sure if this is a QCOM specific implementation, but the way the DT
+> is defined for the USB offload path is as follows:
+> 
+>     usb-dai-link {
+>         link-name = "USB Playback";
+> 
+>         cpu {
+>             sound-dai = <&q6afedai USB_RX>;
+>         };
+> 
+>         codec {
+>             sound-dai = <&usbdai USB_RX>;
+>         };
+> 
+>         platform {
+>             sound-dai = <&q6routing>;
+>         };
+>     };
+> 
+> Based on our DT parser helper API (qcom_snd_parse_of()) this isn't going
+> to create a PCM device.  The PCM devices are created for nodes that
+> don't have a codec and platform defined:
+> 
+>     mm1-dai-link {
+>         link-name = "MultiMedia1";
+>         cpu {
+>             sound-dai = <&q6asmdai      MSM_FRONTEND_DAI_MULTIMEDIA1>;
+>         };
+>     };
+> 
+> The ASM path is the entity that defines the number of PCM devices that
+> is created for the QC ASoC platform card, and is where the actual PCM
+> data is sent over to the DSP.  So there could be several PCM devices
+> that can use the USB BE DAI.
+
+ok, but then how would this work with the ALSA controls reporting which
+PCM device can be used? I didn't see a mechanism allowing for more than
+one offloaded device, IIRC the control reported just ONE PCM device number.
