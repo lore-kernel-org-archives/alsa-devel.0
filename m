@@ -4,109 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27106C25B5F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 May 2024 13:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D134C25B5F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 May 2024 13:57:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C92BA4A;
-	Mon, 13 May 2024 15:42:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C92BA4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37A95857;
+	Mon, 13 May 2024 15:57:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37A95857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715607769;
-	bh=NHGPLgtCUqCEfcn2vaIa5U959E4/fnbBgnnTfKGDUhM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=WULinCaYqMqdZ/8zNZRBozzt/Jw1suInLuYG4kadNt04KTdjOkWzJN7m8f4TtFrCo
-	 aPu+EsoB3dybjvVffgAB0UrugD0ofylFK/O5AWpjsjEvewa7k7WsjM0efpY/RhDXsq
-	 t11xqQ8oPu5yF+XFxr8LvsibMUTl/mOC3e6Mimjc=
+	s=default; t=1715608646;
+	bh=rt5PATXtgqvidD0vIbThIoVaGgjahZKF8YuAO7DGNVs=;
+	h=Date:In-Reply-To:Subject:From:To:List-Id:List-Archive:List-Help:
+	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=GQoBgTgD+3ZeXFlHPEeNNtWyAVnXDg90qq9tKSnzUbaQ8s++wiwI8n5/XhILqERup
+	 mEobMGlLMAOoMuAFsRWBuX40NksCUAZGO+TgI/kO/vFEbRiizPWgEjyj83Lc88dDOc
+	 Byio4nANmcmkFLM9o9OmALohb/dV9Dw6Vhsnum6A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2587AF8024C; Mon, 13 May 2024 15:42:17 +0200 (CEST)
+	id CDCD1F805A8; Mon, 13 May 2024 15:56:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7C25F805A9;
-	Mon, 13 May 2024 15:42:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E373F8058C;
+	Mon, 13 May 2024 15:56:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A54BCF80224; Mon, 13 May 2024 15:42:10 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 96EB0F8049C; Thu,  9 May 2024 16:36:08 +0200 (CEST)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3066DF800E2
-	for <alsa-devel@alsa-project.org>; Mon, 13 May 2024 15:42:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3066DF800E2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ZSPIBpE2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715607723; x=1747143723;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=NHGPLgtCUqCEfcn2vaIa5U959E4/fnbBgnnTfKGDUhM=;
-  b=ZSPIBpE2W0FjtJSS7mEhmi5TD7nsy/+G79PfVfof+RCupvKYpNr1ceV4
-   M4Iaw2CYdQodVPZu+WQFBfCeDhGgRVoAFzeRSJLbejtTM6pdoTujkOubs
-   gwD/9X2NjuVpo0c/stOFGQVGsauOfybuKoTpl4LlJc+OBBiFT3h4YHaDe
-   jo98AeUqsZRcToTh1CGiXe7UHT0ya0Fg1g4IQdc52lt5lkSt+5Ftt5rIx
-   AczYOv81v2XNjcnDsb/vPixAeke39NFj4U67ijacnmVdB0Esr6sFAbtQT
-   fQ2mTCCHqiWmJdzkLnSSySCfdZFgNiISXBZDiG1neueFjQbjIPX2XOp2f
-   w==;
-X-CSE-ConnectionGUID: ejnSgDCpTpepSRfaXF6/WQ==
-X-CSE-MsgGUID: xWnVr/mSRbmtFiE0+IfkIg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11072"; a="34055956"
-X-IronPort-AV: E=Sophos;i="6.08,158,1712646000";
-   d="scan'208";a="34055956"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 May 2024 06:41:57 -0700
-X-CSE-ConnectionGUID: IDlEf8a7Qt6kUtLIFkGQJw==
-X-CSE-MsgGUID: kcqS9LquTyiO6UeF+3ehCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,158,1712646000";
-   d="scan'208";a="30323298"
-Received: from sgoshi-mobl1.amr.corp.intel.com (HELO [10.212.69.71])
- ([10.212.69.71])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 May 2024 06:41:56 -0700
-Message-ID: <88e6bbe3-94a2-4b50-b462-eb27376698c4@linux.intel.com>
-Date: Mon, 13 May 2024 08:41:55 -0500
+	by alsa1.perex.cz (Postfix) with ESMTPS id 357C7F80152
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 16:36:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 357C7F80152
+Received: by mail-io1-f72.google.com with SMTP id
+ ca18e2360f4ac-7deb999eea4so86556339f.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 09 May 2024 07:36:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715265363; x=1715870163;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X32bctqqt9YMYnQBW0Lg5lwXOgThd7oCwO6YJh7J808=;
+        b=eNYt2qMm4luFCmg+AAUrHxXGYfVc7PSprPJlEYPnJpc89HkpOA3Ds3ufzkciKVEIWz
+         hbNYBSAA007yjqDHhnx4JmryYXk7V6/lTyKjPg0abvJ4F6tc+iwqsQn9hTT5ErZDe9uS
+         SC5fvJpsDmbBxUKIaVllaI6mVuzGtnajK0fXGG0FvV5tUUK1dVYcEoY3Xqud7PjclpMs
+         Ie3jbalLZnd/kgOiE3fHpTpJWvi5r09KDaSqEMsE7tvX1WojIpjkSIqU24Y1FLhV8nhg
+         71ZUWpoqWIXLYmFcfogr2KjLk9sqxlpLYilcUuFZ+3Idj9E5jYOxGxBR5q6iHa3cD0bH
+         hkSw==
+X-Gm-Message-State: AOJu0YxrMW8b46WFM1rhgtGOUQ53B+x0UUO9jfTIRjWN49kPI6o2Oo9A
+	yTT4Prh3+Np3eCHKv3wmBUe13z6ITBe3djFT/NnATbkSQemNwVUhly2uizejRi0XF07Uyj9UqEO
+	XSz/oV6vlxW5V3ZgY882NoAo7bkc25EcxOjDDvc9O5m4ZGqZ7tRMUhDk=
+X-Google-Smtp-Source: 
+ AGHT+IFimP6/xLNj6bRq14TVADGedsYjqOqb/Ip4x4SwfekNgdENtprvWAAa39kLDpMwHtQipO9EAyntjoMdl6ej5XC0oqgaAmGw
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: intel: Constify struct snd_soc_ops
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-References: 
- <242aef53b5b9533ae4cca78148622f5fe752b7ee.1715452901.git.christophe.jaillet@wanadoo.fr>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: 
- <242aef53b5b9533ae4cca78148622f5fe752b7ee.1715452901.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: O6QTJDVJV7XYGMPVUR6HKWZROJMXCDDA
-X-Message-ID-Hash: O6QTJDVJV7XYGMPVUR6HKWZROJMXCDDA
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Received: by 2002:a05:6602:3429:b0:7de:e75e:6170 with SMTP id
+ ca18e2360f4ac-7e18fd9b171mr5574039f.2.1715265362643; Thu, 09 May 2024
+ 07:36:02 -0700 (PDT)
+Date: Thu, 09 May 2024 07:36:02 -0700
+In-Reply-To: <0000000000008ac77c0615d60760@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a2dd340618065661@google.com>
+Subject: Re: [syzbot] [kernel?] INFO: rcu detected stall in sys_wait4 (4)
+From: syzbot <syzbot+6969434de600a6ba9f07@syzkaller.appspotmail.com>
+To: alsa-devel@alsa-project.org, broonie@kernel.org, lenb@kernel.org,
+	lgirdwood@gmail.com, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+	oder_chiou@realtek.com, perex@perex.cz, rafael@kernel.org,
+	shumingf@realtek.com, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: 
+ 3Ut88ZgkbAD0rxyjZkkdqZoohc.fnnfkdtrdqbnmsdms.bnl@M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: Z6GC6CYZVGAQXD5VROLS5LWVVK4OTUFS
+X-Message-ID-Hash: Z6GC6CYZVGAQXD5VROLS5LWVVK4OTUFS
+X-Mailman-Approved-At: Mon, 13 May 2024 13:56:48 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O6QTJDVJV7XYGMPVUR6HKWZROJMXCDDA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z6GC6CYZVGAQXD5VROLS5LWVVK4OTUFS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,38 +97,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+syzbot has bisected this issue to:
 
+commit 51ea51b18904cd1a0fb244ce41dfd903c2ada628
+Author: Shuming Fan <shumingf@realtek.com>
+Date:   Fri Dec 23 05:58:46 2022 +0000
 
-On 5/11/24 13:42, Christophe JAILLET wrote:
-> Constifying "struct snd_soc_ops" moves some data to a read-only section, so
-> increase overall security.
-> 
-> This structure is also part of scripts/const_structs.checkpatch.
-> 
-> As an example, on a x86_64, with allmodconfig:
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->    6315	   3696	      0	  10011	   271b	sound/soc/intel/boards/ehl_rt5660.o
-> 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->    6379	   3648	      0	  10027	   272b	sound/soc/intel/boards/ehl_rt5660.o
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Compile tested only.
-> 
-> I hope that it can be applied with this single patch because all files are
-> in sound/soc/intel/boards/
+    ASoC: rt711-sdca: add jack detection mode for JD2 100K
 
-Doesn't apply for me, can you rebase and resend?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123e6f88980000
+start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=113e6f88980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=163e6f88980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=6969434de600a6ba9f07
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1091a5f6180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a22c13180000
 
-CONFLICT (content): Merge conflict in
-sound/soc/intel/boards/sof_maxim_common.h
-Auto-merging sound/soc/intel/boards/sof_maxim_common.c
-CONFLICT (content): Merge conflict in
-sound/soc/intel/boards/sof_maxim_common.c
-error: Failed to merge in the changes.
+Reported-by: syzbot+6969434de600a6ba9f07@syzkaller.appspotmail.com
+Fixes: 51ea51b18904 ("ASoC: rt711-sdca: add jack detection mode for JD2 100K")
 
-Probably a result of all the changes in this directory...
-Thanks!
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
