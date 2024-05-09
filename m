@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00266C25B10
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 16:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE88EC10F1A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 16:36:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EE2BE97;
-	Thu,  9 May 2024 18:35:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EE2BE97
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB829868;
+	Thu,  9 May 2024 18:36:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB829868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715272561;
-	bh=GqULhJRi1unMt5mH+4JgxuoIxqMP1UxS9DsIZ2rk91M=;
+	s=default; t=1715272574;
+	bh=Ih4hPWHUQ0BVIZi3ZlyMjC6ui+8DfUNPiSSGL7Ht/qc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nbhfv83Iij0K6zdjRUKvLa9aZefZ3QAQx23yhFrGb/sJe34ba7J80TlZc0kvn1Vo8
-	 XUWyx9Fx8g9h5OnNcwh124MbM7i+TpEtR7+ta4/zcM4CW/3ygDNrNIrOu2+az85GCV
-	 vOzfWp8eQPl5DE/SPQzyuRjQEBKn7INrR/qYrVAs=
+	b=GYnQSlJqjSI43BECJkaqLK+DmYi2yL971Y950UjS6LII2xWqXItAx0L2sZ8MvtllG
+	 FVI3/icLjQ9bOofOod2yoV3pPls2wlZksdN1ZNGjst4D4oMvPv1Bys0mzFDwo2K/Yl
+	 J6653GqXTM1J/NPn6fSmSwJ7+f89FRVFbzAyLmOo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D618F80579; Thu,  9 May 2024 18:34:59 +0200 (CEST)
+	id D5A2FF80618; Thu,  9 May 2024 18:35:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFCB9F80601;
-	Thu,  9 May 2024 18:34:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 510FBF80609;
+	Thu,  9 May 2024 18:35:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 378F0F80580; Thu,  9 May 2024 18:34:45 +0200 (CEST)
+	id 9EF5DF8049C; Thu,  9 May 2024 18:34:47 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3521AF804F2
-	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 18:34:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3521AF804F2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 53F61F8049C
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 18:34:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53F61F8049C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=WCIq8uy/
+ header.s=Intel header.b=mxyv28XO
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715272476; x=1746808476;
+  t=1715272475; x=1746808475;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GqULhJRi1unMt5mH+4JgxuoIxqMP1UxS9DsIZ2rk91M=;
-  b=WCIq8uy/9kL8Zzf5QDjTAP512gYZm2u2kxEWrIQ03QM+d6zE3zpRpygV
-   PDDbIcgAxlNxG4Xo8QVg0joVMdKSGgcpWVGiQfZqBHxP+V3YszKUzwIaP
-   LTANLBd6RWmz8VO0RBLmyvCUS3W1JuqRSr5ffjF3KwW8i/V3pervvBdD4
-   fmxD9XJPjr8xD7bEq6bQwuEKDhQnFhFpLmJQxIqLmXnTzZ82IJcWVa2zO
-   fAWrFIDyWtx6bc3u9d8Nju8saq7YZ3KhCzP1WKgOluv9PLMVDCZ9KWZe1
-   W2b+KbA5L8q4qbxNAxeZAwGCJ6/2BUC39WFkRrnzWyOLvMvJ34hx2DGbO
+  bh=Ih4hPWHUQ0BVIZi3ZlyMjC6ui+8DfUNPiSSGL7Ht/qc=;
+  b=mxyv28XO5BSqoYpf41KcIMYMa8/YPRC91emp8RUS1OvNCPCsu+weIAf4
+   mrg7weVZs4GiS8E7z9rDYnANPHlUhpZ77iYPT1n12ZixGG6fahTz+akuT
+   TI5BODMEKii8W+2z9e1xTb8UcrVjiGBP/9ZKgaEXzOVCGGI9vmkp27XjD
+   oKK7xBRTRnhWzNcfyiYNkRUy/k5RwMhpDgkjKo2yIq6csVRfBRCYOYkvY
+   pjb+rYF54StyzU5UE15PhzYtqo1DO84d+XnXbWvqpLCea3FxbhmD9N/p+
+   oXZyKEVjJmTgcr/RgxGMfYq9AgrQFEIdXUp9zksRyzQeu7N6KH6ITwmIi
    g==;
-X-CSE-ConnectionGUID: /LhAD4j4Q2SUIFk0Dyp6Hg==
-X-CSE-MsgGUID: gYDbS2oiQAOHNqgukrCXMA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="15017534"
+X-CSE-ConnectionGUID: d3THpEMSSJCfp+Mm3sU9Uw==
+X-CSE-MsgGUID: 3V2WhO0xTZ61wZ08FDvSBA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="15017511"
 X-IronPort-AV: E=Sophos;i="6.08,148,1712646000";
-   d="scan'208";a="15017534"
+   d="scan'208";a="15017511"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
   by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2024 09:34:27 -0700
-X-CSE-ConnectionGUID: 5s2dpUBkQ/egIWSiOrwKyA==
-X-CSE-MsgGUID: ScSCAIlPQRG6yiuiIKRPTQ==
+ 09 May 2024 09:34:26 -0700
+X-CSE-ConnectionGUID: 5PMwLs5nSZuWjhHWQtbj/g==
+X-CSE-MsgGUID: EvuCzSuRTz6DYN2fal+saA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,148,1712646000";
-   d="scan'208";a="33760990"
+   d="scan'208";a="33760970"
 Received: from ajunnare-mobl.amr.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.213.181.85])
   by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2024 09:34:27 -0700
+ 09 May 2024 09:34:25 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/18] ASoC: Intel: realtek-common: remove 2-spk rt1015p
- config
-Date: Thu,  9 May 2024 11:34:04 -0500
-Message-Id: <20240509163418.67746-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/18] ASoC: Intel: sof_sdw_rt_sdca_jack_common: remove -sdca
+ for new codecs
+Date: Thu,  9 May 2024 11:34:01 -0500
+Message-Id: <20240509163418.67746-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240509163418.67746-1-pierre-louis.bossart@linux.intel.com>
 References: <20240509163418.67746-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DVODAVA5B3TPMFYHRHZBR5PJQXRFLWQT
-X-Message-ID-Hash: DVODAVA5B3TPMFYHRHZBR5PJQXRFLWQT
+Message-ID-Hash: 7KL3J5H23LT2MNDPIIFDTOAB5BTZNKMV
+X-Message-ID-Hash: 7KL3J5H23LT2MNDPIIFDTOAB5BTZNKMV
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DVODAVA5B3TPMFYHRHZBR5PJQXRFLWQT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7KL3J5H23LT2MNDPIIFDTOAB5BTZNKMV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,134 +109,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-The original code for rt1015p could support 1 or 2 rt1015p device
-instances in ACPI. However, all designs implement only 1 instance in
-ACPI table so we remove the code segment which is for 2 instances.
+Realtek new SoundWire codecs are all -sdca version. No need to add
+-sdca to distinguish the non-sdca version. To be consistent with "spk:"
+and "mic:" components string, remove "-sdca" suffix from "hs:"
+components string.
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Brent Lu <brent.lu@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_realtek_common.c | 57 ++-------------------
- sound/soc/intel/boards/sof_realtek_common.h |  1 -
- 2 files changed, 5 insertions(+), 53 deletions(-)
+ .../boards/sof_sdw_rt_sdca_jack_common.c      | 23 ++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
-index 6915ff8b8716..dda346e0f737 100644
---- a/sound/soc/intel/boards/sof_realtek_common.c
-+++ b/sound/soc/intel/boards/sof_realtek_common.c
-@@ -314,59 +314,21 @@ EXPORT_SYMBOL_NS(sof_rt1011_codec_conf, SND_SOC_INTEL_SOF_REALTEK_COMMON);
-  *
-  * For stereo output, there are always two amplifiers on the board.
-  * However, the ACPI implements only one device instance (UID=0) if they
-- * are sharing the same enable pin. The code will detect the number of
-- * device instance and use corresponding DAPM structures for
-- * initialization.
-+ * are sharing the same enable pin. This is the case of rt1015p.
-  */
--static const struct snd_soc_dapm_route rt1015p_1dev_dapm_routes[] = {
-+static const struct snd_soc_dapm_route rt1015p_dapm_routes[] = {
- 	/* speaker */
- 	{ "Left Spk", NULL, "Speaker" },
- 	{ "Right Spk", NULL, "Speaker" },
+diff --git a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
+index 85c09513bc35..69161ea5b290 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
++++ b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
+@@ -88,6 +88,15 @@ static const char * const jack_codecs[] = {
+ 	"rt711", "rt712", "rt713", "rt722"
  };
  
--static const struct snd_soc_dapm_route rt1015p_2dev_dapm_routes[] = {
--	/* speaker */
--	{ "Left Spk", NULL, "Left Speaker" },
--	{ "Right Spk", NULL, "Right Speaker" },
--};
--
--static struct snd_soc_codec_conf rt1015p_codec_confs[] = {
--	{
--		.dlc = COMP_CODEC_CONF(RT1015P_DEV0_NAME),
--		.name_prefix = "Left",
--	},
--	{
--		.dlc = COMP_CODEC_CONF(RT1015P_DEV1_NAME),
--		.name_prefix = "Right",
--	},
--};
--
- static struct snd_soc_dai_link_component rt1015p_dai_link_components[] = {
- 	{
- 		.name = RT1015P_DEV0_NAME,
- 		.dai_name = RT1015P_CODEC_DAI,
- 	},
--	{
--		.name = RT1015P_DEV1_NAME,
--		.dai_name = RT1015P_CODEC_DAI,
--	},
- };
- 
--static int rt1015p_get_num_codecs(void)
--{
--	static int dev_num;
--
--	if (dev_num)
--		return dev_num;
--
--	if (!acpi_dev_present("RTL1015", "1", -1))
--		dev_num = 1;
--	else
--		dev_num = 2;
--
--	return dev_num;
--}
--
- static int rt1015p_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
++/*
++ * The sdca suffix is required for rt711 since there are two generations of the same chip.
++ * RT713 is an SDCA device but the sdca suffix is required for backwards-compatibility with
++ * previous UCM definitions.
++ */
++static const char * const need_sdca_suffix[] = {
++	"rt711", "rt713"
++};
++
+ int rt_sdca_jack_rtd_init(struct snd_soc_pcm_runtime *rtd)
  {
-@@ -398,12 +360,8 @@ static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
+ 	struct snd_soc_card *card = rtd->card;
+@@ -96,6 +105,7 @@ int rt_sdca_jack_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_jack *jack;
+ 	int ret;
++	int i;
  
--	if (rt1015p_get_num_codecs() == 1)
--		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_1dev_dapm_routes,
--					      ARRAY_SIZE(rt1015p_1dev_dapm_routes));
--	else
--		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_2dev_dapm_routes,
--					      ARRAY_SIZE(rt1015p_2dev_dapm_routes));
-+	ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_dapm_routes,
-+				      ARRAY_SIZE(rt1015p_dapm_routes));
- 	if (ret)
- 		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
- 	return ret;
-@@ -412,7 +370,7 @@ static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
- void sof_rt1015p_dai_link(struct snd_soc_dai_link *link)
- {
- 	link->codecs = rt1015p_dai_link_components;
--	link->num_codecs = rt1015p_get_num_codecs();
-+	link->num_codecs = ARRAY_SIZE(rt1015p_dai_link_components);
- 	link->init = rt1015p_init;
- 	link->ops = &rt1015p_ops;
- }
-@@ -420,11 +378,6 @@ EXPORT_SYMBOL_NS(sof_rt1015p_dai_link, SND_SOC_INTEL_SOF_REALTEK_COMMON);
+ 	codec_dai = get_codec_dai_by_name(rtd, jack_codecs, ARRAY_SIZE(jack_codecs));
+ 	if (!codec_dai)
+@@ -103,11 +113,22 @@ int rt_sdca_jack_rtd_init(struct snd_soc_pcm_runtime *rtd)
  
- void sof_rt1015p_codec_conf(struct snd_soc_card *card)
- {
--	if (rt1015p_get_num_codecs() == 1)
--		return;
--
--	card->codec_conf = rt1015p_codec_confs;
--	card->num_configs = ARRAY_SIZE(rt1015p_codec_confs);
- }
- EXPORT_SYMBOL_NS(sof_rt1015p_codec_conf, SND_SOC_INTEL_SOF_REALTEK_COMMON);
+ 	component = codec_dai->component;
+ 	card->components = devm_kasprintf(card->dev, GFP_KERNEL,
+-					  "%s hs:%s-sdca",
++					  "%s hs:%s",
+ 					  card->components, component->name_prefix);
+ 	if (!card->components)
+ 		return -ENOMEM;
  
-diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
-index d0e331530b39..876290555c22 100644
---- a/sound/soc/intel/boards/sof_realtek_common.h
-+++ b/sound/soc/intel/boards/sof_realtek_common.h
-@@ -31,7 +31,6 @@ void sof_rt1011_codec_conf(struct device *dev, struct snd_soc_card *card);
-  */
- #define RT1015P_CODEC_DAI	"HiFi"
- #define RT1015P_DEV0_NAME	RT1015P_ACPI_HID ":00"
--#define RT1015P_DEV1_NAME	RT1015P_ACPI_HID ":01"
- 
- void sof_rt1015p_dai_link(struct snd_soc_dai_link *link);
- void sof_rt1015p_codec_conf(struct snd_soc_card *card);
++	for (i = 0; i < ARRAY_SIZE(need_sdca_suffix); i++) {
++		if (strstr(codec_dai->name, need_sdca_suffix[i])) {
++			/* Add -sdca suffix for existing UCMs */
++			card->components = devm_kasprintf(card->dev, GFP_KERNEL,
++							  "%s-sdca", card->components);
++			if (!card->components)
++				return -ENOMEM;
++			break;
++		}
++	}
++
+ 	ret = snd_soc_add_card_controls(card, rt_sdca_jack_controls,
+ 					ARRAY_SIZE(rt_sdca_jack_controls));
+ 	if (ret) {
 -- 
 2.40.1
 
