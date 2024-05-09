@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA01AC10F1A
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 06:53:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77BB1C10F1A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 06:53:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A7D4E0D;
-	Thu,  9 May 2024 08:52:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A7D4E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5584E7F;
+	Thu,  9 May 2024 08:53:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5584E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715237586;
-	bh=YiPURdRPIqAFJS7UD4kJYMYIGLJ4QXIZkdL79YJ68+A=;
+	s=default; t=1715237597;
+	bh=cMddYFvxag2xiuk6mbkfydpMJeegTn2R9D7VIBWz/p4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BWGGauAl1pcvOAG0GBmtCvKNRpblkWJSwVQh0P1SwQafIkLjSrlrT15KDON5XU1IV
-	 wauTFuNJphwFoX0SY05HKKyeux0cVyYj6mU1N6YscVe/OvrBIQlTGb7mKa6NA+PnpX
-	 bSgTJhA7H5BQv3ni+Gq1ctilq18yZ+M2gAVR5+XU=
+	b=brPlI9tqsgwzcoP91Qr5fBglsNKag3fAF2nNyyVKISUVjE+aoYXpJscbFlX7ohENc
+	 c/8XCIk913QFG9ckBBRkut8rBT7lDUNU53yBqKzwGp2aZX8tQQy11SUU+11VqKqqIU
+	 TqzNF74RuUOHlxTjLFpQA+HsIK/3kA9dLTR/bbFA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51B9EF8057F; Thu,  9 May 2024 08:52:34 +0200 (CEST)
+	id 8BD59F805D2; Thu,  9 May 2024 08:52:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61AFBF805AE;
-	Thu,  9 May 2024 08:52:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C8A3F805D5;
+	Thu,  9 May 2024 08:52:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E95E3F80563; Thu,  9 May 2024 08:52:23 +0200 (CEST)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
- [IPv6:2a00:1450:4864:20::631])
+	id 8652FF805B2; Thu,  9 May 2024 08:52:35 +0200 (CEST)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF487F80152
-	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 08:52:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF487F80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA215F800E2
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 08:52:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA215F800E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=sl9mPqgK
-Received: by mail-ej1-x631.google.com with SMTP id
- a640c23a62f3a-a59a17fcc6bso114970166b.1
+ header.s=google header.b=xrlBctWu
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-a59a0168c75so130358666b.1
         for <alsa-devel@alsa-project.org>;
- Wed, 08 May 2024 23:52:05 -0700 (PDT)
+ Wed, 08 May 2024 23:52:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1715237524; x=1715842324;
+        d=linaro.org; s=google; t=1715237528; x=1715842328;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=z9/i8BMDeVDAZrB3rSBEhJW+evUNFSRGKXs16mcLiyI=;
-        b=sl9mPqgK16OoIH5m3iyyGk6p7y+eN3ETxbHp8F7A5rfE24qfuzIqEkXBKYpwYlyz4h
-         4FWxBzQOpg1hLQCfNYJo6T1VZa83KLIHFj6RpG7sBCPGFJjkEv0ruwuSCa6yxWOnJS0l
-         R9daptb3mccIaCwqnmZrvjgTmi5qoNlCggm8KjyT1z2fzUXWp37Wfnq+j+dUjmfrRtg9
-         +mC09/C1WrWbmLQDLu5ABsSmnZNpTQ57rKkuReaLhmAjAVmwEDetMJ24zRCmBo170kvs
-         z6CJaDqAzelvzX9gdFR/FvO/IrqFDSm8c7TnITj6/tFJyvCufZuxZGMiRtJa8q6OP6lV
-         3/+g==
+        bh=0d/mfFuQBbC2bnLXnrpmIq7nUGA3L1YuLtXQ7YCcvk8=;
+        b=xrlBctWuxYG5BRGmwl0A8pYhXpsarF0YU34qzl2I2ECrF8AsbpJZ31dM6KO07iy2C2
+         gV6Ajn1PuG+P0h7LI6ze8Si+hRe7LZzSrwX6b7M3nXkyjQxCal6gfqYijcrbEd2qSgrU
+         Bs6sGficDMIzO2tAzu/F8hWyG401XY9FSdCCX17Ht21mRwCw1gGV3FJbi8MnJiqFcnlO
+         VUzjZZUnakguHSU2PuCwx3gKaFWuWUdKwi511V628ePLLEWEFBIx6i7TnZcjm6+xebai
+         2W03SydilMYDeEfLB0rr+v53GIK1mmKd34UAo+N9cFBCAobZD3eijJRVxiBf3gyexayV
+         zekA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715237524; x=1715842324;
+        d=1e100.net; s=20230601; t=1715237528; x=1715842328;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=z9/i8BMDeVDAZrB3rSBEhJW+evUNFSRGKXs16mcLiyI=;
-        b=O8/vgnNWYW+TTTHn/jwBJ1cH2ocAuw7QztDQrbB3Tz0CyZjXL8BGQVD+kpRRUijSFa
-         AVZIFqWsTPxvztzCx3NVrUQka5nDjhTmbYjJgojAHy1G5CDHBkaZ/Rv3iX0CShzzBTCH
-         JXOggZbe1omODvyMo//DL6KZ5L88Hmd/us+Qne7Y2Skjr2wEN5fP1X5nqtDSdppBTyFI
-         mD5PKO6ydlc/JMxpd/H61mQ7kGEW3pN+fynqjGXtL7ZTLKhs04XWl16/7kE2/WV1l1tI
-         XeSwUg4PGV9eTk1MwpwZnRqOC7tCd10l8Z07BbedTOwSEUkbPQo1q6twgQsep8ifCyUS
-         ZpGg==
-X-Gm-Message-State: AOJu0Yyjc/gIviMNF8G58hV4re09Y5t3J2p4fxdtkg9mk975/6tUPpjC
-	Iu8X9zeSVJiwzwNplYGjmW6NK2lIdeRpwWFacCrImGgUvKL4QXsN1H9eeIHYXWA=
+        bh=0d/mfFuQBbC2bnLXnrpmIq7nUGA3L1YuLtXQ7YCcvk8=;
+        b=LcC7/9hxKPYk+7iOjpcU+mGYvQoe7OIjJwCANG407wpRukVOVnttLLoNx7A6lge44W
+         KTmB7/IRW49x/IA2cjKkSLvpnea/zNpNRN6p9KmlDikhkYMasoipED/p/K5hgF0ApbcI
+         DRb14HRKPxZ9cRdmIEL1Zn8+6HJdllfo5PtxMsvkb4rANDaNdPmZsPviSh9xyD1InMRa
+         WVsovqvynfJCZNvVU6o3B5upskZUasA44IZLhVrWobdmwAdvpkbjlpXT6Dr2QDy16Fkp
+         1EeHr1wv5PbN5gdwJlwEiDmREb9uvz3IOL72IkXfkL66ECRb+SNdx7f6CeReFazGLtkv
+         gw+g==
+X-Gm-Message-State: AOJu0Yz2k4bXoucJO1Fxuy+TmV0Dl7tHUWjUzmB9YCAlQxrIwrF8XE7V
+	8Y4hIcXvKYH8tJlRUmv6OiZntoP/pEp5F0akBa+YsfyiOWYTjI7msk9uoJ/BM/k=
 X-Google-Smtp-Source: 
- AGHT+IETEpwMfLeq2gPmmhB/rIv1CeVgmU43nMRAnZc98Fdcu1wvTdb+YCThOZtvV9r7aFlTbVsw2A==
-X-Received: by 2002:a17:907:9919:b0:a59:af54:1657 with SMTP id
- a640c23a62f3a-a59fb949134mr302210966b.16.1715237524556;
-        Wed, 08 May 2024 23:52:04 -0700 (PDT)
+ AGHT+IHXWDmpTWjm83JM1Odz9WtKk/fSMMbxTvoQu4rXZ9dPeaGdZ/Vou9HkQboCWiCEvYPkSVx/Gg==
+X-Received: by 2002:a17:906:6897:b0:a59:9c58:763a with SMTP id
+ a640c23a62f3a-a59fb96c049mr262943866b.46.1715237528220;
+        Wed, 08 May 2024 23:52:08 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.206.169])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a5a179c81b4sm40730966b.113.2024.05.08.23.52.03
+ a640c23a62f3a-a5a179c81b4sm40730966b.113.2024.05.08.23.52.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 23:52:04 -0700 (PDT)
+        Wed, 08 May 2024 23:52:07 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 09 May 2024 08:51:52 +0200
-Subject: [PATCH v3 1/4] ASoC: Constify channel mapping array arguments in
- set_channel_map()
+Date: Thu, 09 May 2024 08:51:54 +0200
+Subject: [PATCH v3 3/4] ASoC: qcom: qdsp6: Set channel mapping instead of
+ fixed defaults
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240509-asoc-x1e80100-4-channel-mapping-v3-1-6f874552d7b2@linaro.org>
+ <20240509-asoc-x1e80100-4-channel-mapping-v3-3-6f874552d7b2@linaro.org>
 References: 
  <20240509-asoc-x1e80100-4-channel-mapping-v3-0-6f874552d7b2@linaro.org>
 In-Reply-To: 
@@ -106,28 +106,27 @@ To: James Schulman <james.schulman@cirrus.com>,
  Banajit Goswami <bgoswami@quicinc.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10094;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7708;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=YiPURdRPIqAFJS7UD4kJYMYIGLJ4QXIZkdL79YJ68+A=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmPHKNw3apeixozr0FFijgWAjGbg2V+BjPJqhOb
- bNc6tEt/VWJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZjxyjQAKCRDBN2bmhouD
- 1/beD/0WGM4JWNGkjHY4M130mPvsMf2h3h8pBA4enfEGLgJE5QoaDEPYHV3DQNSI9fLADfXBIMA
- HFqsEADTZDc82fh+qmtIvy4r72s+YfyFJNPUR6S6l7iUrO1oyc6CiQjEubNER3pIvRyhARdEYkS
- n5AUUAoEbiTIdizlj3BWODmJAZIsNnEpy8IQR3gd/EVLb902iJi6eGlD8r3/RHPYWhtKJ66Bjvo
- wlXUFUHL8qjp/IdkVknlsFixbWvNEw4sOeYJvI+/d4LsI7Rx9Eae12PKwEFg1Uq1maO/T1DLpKi
- +AsgV7uYmEdAO5yE38iPtF5o1Fz6kolz9MhmsBM8F/NUJDp5aGFna3bGH9ahZJHfQ25A1KB9aZv
- 0MUYyDc/guAY0kSYgdk5Gb/cjBMeJjwhn/idh/CjE7JHoAbmW3Rovxg3WV9oDq1JCVrLVNdTOJl
- WXMVnTAmXUQS5SPLHFk0HrbmqWRVspAQWHimD4QE7Vg7NDaHdFmgOQRUUMCfqTz+pAfU6YkGOLw
- UH8d97CYmXs/7HgJUvkiayt9tnvUkWVn29Cwk+GuEV66/JzYPMreC/9zmqV+Fq0jnCnnuzNbjXa
- D0P0tDH5eGeHdIKVH7ez5kBF21S/dPfux+vuY2w8/acwJjWvbmqDXyNaCcOvki5PxHnnUWOoE2B
- LCkOO6c6PeIzc5A==
+ bh=cMddYFvxag2xiuk6mbkfydpMJeegTn2R9D7VIBWz/p4=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmPHKPF6bT8wKWJJxouJVODPjfAHwFvrzY3BhSe
+ hZIEEjtUbuJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZjxyjwAKCRDBN2bmhouD
+ 1zj9D/0UwhySIjfTYbj18Ah9NLjwLDetvEluojrv1dGJUSXOK9xDXczS1dkHEMOgSwp/OsMLgzW
+ w+/1l3W48+oJt0ZWBlLUAm1o3oQpKSwkSDJFO+WdJ+a89neEl/cnbqs5MraGFIhWELQjT9ysZLT
+ stNljlRm25gnbQsrTex9G65Ca764k/HPba7w1UZLPbPIEE5I3hN+k6sfBSCzWT29MrYBLj0B8eR
+ Qmkm1YGypVC1vgJ0jVzGSIcTFvFO/Ws2J9/8+UMNhRzIM1eEGrHsegJDqDKalyiN0RYBexE0cQ1
+ sPk7sOpGmmGJwJmT0rvRBEmmFocX+LuLzmE3nncyFP68DmMNFAQ+Tb7hxAljbCSh8AX5uKG0WTb
+ TDiRIPzwS7a5q5s9CzHzzL3JVp7l/Na5Mb9sdHbBHg95sXN+K3YbctsWoMrWK+rk7v3kHp4C54b
+ YlNL7/0VW+0MCkhqYSPuInSczUDnz0P33kFZWI8kTac2CkTtGxK553ypYgRW4ehrNoLiuzYSALo
+ 3C5MWcIBfSGLeuEequ3g0g9tJMCerK08yAIpX9HbgEgw2qVqwOe4iScuLdBvGLkgmeGAFQ7d6pD
+ 7vITFENcQRlAKEKzi0E4skwUzLqErcLlmiQyEVIpiJ/+IEMaEEEw6GL2DZ5WwM39KyPRncXO23v
+ Y/JODKn9anmfZ3A==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: 6YS47GFURL5NLVZLI5VQE5WHQM4ZJ26U
-X-Message-ID-Hash: 6YS47GFURL5NLVZLI5VQE5WHQM4ZJ26U
+Message-ID-Hash: DGMXDXQ5ZJQUAJ7JYSK2QKIANQLEQJJJ
+X-Message-ID-Hash: DGMXDXQ5ZJQUAJ7JYSK2QKIANQLEQJJJ
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -140,7 +139,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6YS47GFURL5NLVZLI5VQE5WHQM4ZJ26U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DGMXDXQ5ZJQUAJ7JYSK2QKIANQLEQJJJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,244 +148,184 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There is no need for implementations of DAI set_channel_map() to modify
-contents of passed arrays with actual channel mapping.  Additionally,
-the caller keeps full ownership of the array.
+When constructing packets to DSP, the Audioreach code uses 'struct
+audioreach_module_config' to configure parameters like number of
+channels, bitrate, sample rate etc, but uses defaults for the channel
+mapping.
 
-Constify these pointer arguments so the code will be safer and easier to
-read (documenting the caller's ownership).
+Rework this code to copy the channel mapping from 'struct
+audioreach_module_config', instead of using the default.  This requires
+all callers to fill that structure: add missing initialization of
+channel mapping.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Entire patch makes code more logical and easier to follow:
+1. q6apm-dai and q6apm-lpass-dais code which allocates 'struct
+   audioreach_module_config' initializes it fully, so fills both
+   the number of channels and the channel mapping.
+2. Audioreach code, which uses 'struct audioreach_module_config' when
+   constructing packets, copies entire contents of passed config, not
+   only pieces of it.
+
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 ---
 
 Changes in v2:
-1. None
+1. Extend commit msg, rationale.
+2. Rework to new approach, but most of the code stays.
+3. Export audioreach_set_channel_mapping() (needed by Q6APM DAIS and
+   LPASS DAIS)
+4. Correct channel mapping also in audioreach_mfc_set_media_format(),
+   because MFC DAI is now part of backend.
+5. Do not adjust dynamic DAIs (drop audioreach_dai_load()).
 ---
- include/sound/cs35l41.h                 |  4 ++--
- include/sound/soc-dai.h                 |  8 ++++----
- sound/soc/codecs/adau7118.c             |  6 ++++--
- sound/soc/codecs/cs35l41-lib.c          |  4 ++--
- sound/soc/codecs/cs35l41.c              |  3 ++-
- sound/soc/codecs/max98504.c             |  6 ++++--
- sound/soc/codecs/wcd9335.c              |  6 ++++--
- sound/soc/codecs/wcd934x.c              |  6 ++++--
- sound/soc/qcom/qdsp6/q6afe-dai.c        | 16 ++++++++++------
- sound/soc/qcom/qdsp6/q6apm-lpass-dais.c |  6 ++++--
- sound/soc/soc-dai.c                     |  4 ++--
- 11 files changed, 42 insertions(+), 27 deletions(-)
+ sound/soc/qcom/qdsp6/audioreach.c       | 30 +++++++-----------------------
+ sound/soc/qcom/qdsp6/audioreach.h       |  1 +
+ sound/soc/qcom/qdsp6/q6apm-dai.c        |  2 ++
+ sound/soc/qcom/qdsp6/q6apm-lpass-dais.c |  5 ++++-
+ 4 files changed, 14 insertions(+), 24 deletions(-)
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index bb70782d15d0..43c6a9ef8d9f 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -896,8 +896,8 @@ int cs35l41_test_key_lock(struct device *dev, struct regmap *regmap);
- int cs35l41_otp_unpack(struct device *dev, struct regmap *regmap);
- int cs35l41_register_errata_patch(struct device *dev, struct regmap *reg, unsigned int reg_revid);
- int cs35l41_set_channels(struct device *dev, struct regmap *reg,
--			 unsigned int tx_num, unsigned int *tx_slot,
--			 unsigned int rx_num, unsigned int *rx_slot);
-+			 unsigned int tx_num, const unsigned int *tx_slot,
-+			 unsigned int rx_num, const unsigned int *rx_slot);
- int cs35l41_gpio_config(struct regmap *regmap, struct cs35l41_hw_cfg *hw_cfg);
- void cs35l41_configure_cs_dsp(struct device *dev, struct regmap *reg, struct cs_dsp *dsp);
- int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index adcd8719d343..15ef268c9845 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -188,8 +188,8 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width);
- 
- int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
--	unsigned int tx_num, unsigned int *tx_slot,
--	unsigned int rx_num, unsigned int *rx_slot);
-+	unsigned int tx_num, const unsigned int *tx_slot,
-+	unsigned int rx_num, const unsigned int *rx_slot);
- 
- int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
- 
-@@ -305,8 +305,8 @@ struct snd_soc_dai_ops {
- 		unsigned int tx_mask, unsigned int rx_mask,
- 		int slots, int slot_width);
- 	int (*set_channel_map)(struct snd_soc_dai *dai,
--		unsigned int tx_num, unsigned int *tx_slot,
--		unsigned int rx_num, unsigned int *rx_slot);
-+		unsigned int tx_num, const unsigned int *tx_slot,
-+		unsigned int rx_num, const unsigned int *rx_slot);
- 	int (*get_channel_map)(struct snd_soc_dai *dai,
- 			unsigned int *tx_num, unsigned int *tx_slot,
- 			unsigned int *rx_num, unsigned int *rx_slot);
-diff --git a/sound/soc/codecs/adau7118.c b/sound/soc/codecs/adau7118.c
-index a663d37e5776..abc4764697a5 100644
---- a/sound/soc/codecs/adau7118.c
-+++ b/sound/soc/codecs/adau7118.c
-@@ -121,8 +121,10 @@ static const struct snd_soc_dapm_widget adau7118_widgets[] = {
- };
- 
- static int adau7118_set_channel_map(struct snd_soc_dai *dai,
--				    unsigned int tx_num, unsigned int *tx_slot,
--				    unsigned int rx_num, unsigned int *rx_slot)
-+				    unsigned int tx_num,
-+				    const unsigned int *tx_slot,
-+				    unsigned int rx_num,
-+				    const unsigned int *rx_slot)
- {
- 	struct adau7118_data *st =
- 		snd_soc_component_get_drvdata(dai->component);
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index e9993a39f7d0..1702f26049d3 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -936,8 +936,8 @@ int cs35l41_register_errata_patch(struct device *dev, struct regmap *reg, unsign
- EXPORT_SYMBOL_GPL(cs35l41_register_errata_patch);
- 
- int cs35l41_set_channels(struct device *dev, struct regmap *reg,
--			 unsigned int tx_num, unsigned int *tx_slot,
--			 unsigned int rx_num, unsigned int *rx_slot)
-+			 unsigned int tx_num, const unsigned int *tx_slot,
-+			 unsigned int rx_num, const unsigned int *rx_slot)
- {
- 	unsigned int val, mask;
- 	int i;
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index cb25c33cc9b9..1688c2c688f0 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -673,7 +673,8 @@ static const struct snd_soc_dapm_route cs35l41_audio_map[] = {
- };
- 
- static int cs35l41_set_channel_map(struct snd_soc_dai *dai, unsigned int tx_n,
--				   unsigned int *tx_slot, unsigned int rx_n, unsigned int *rx_slot)
-+				   const unsigned int *tx_slot,
-+				   unsigned int rx_n, const unsigned int *rx_slot)
- {
- 	struct cs35l41_private *cs35l41 = snd_soc_component_get_drvdata(dai->component);
- 
-diff --git a/sound/soc/codecs/max98504.c b/sound/soc/codecs/max98504.c
-index 93412b966b33..6b6a7ece4cec 100644
---- a/sound/soc/codecs/max98504.c
-+++ b/sound/soc/codecs/max98504.c
-@@ -220,8 +220,10 @@ static int max98504_set_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
+diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
+index 5291deac0a0b..750b8ba64211 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.c
++++ b/sound/soc/qcom/qdsp6/audioreach.c
+@@ -267,7 +267,7 @@ void *audioreach_alloc_apm_cmd_pkt(int pkt_size, uint32_t opcode, uint32_t token
  }
- static int max98504_set_channel_map(struct snd_soc_dai *dai,
--		unsigned int tx_num, unsigned int *tx_slot,
--		unsigned int rx_num, unsigned int *rx_slot)
-+				    unsigned int tx_num,
-+				    const unsigned int *tx_slot,
-+				    unsigned int rx_num,
-+				    const unsigned int *rx_slot)
+ EXPORT_SYMBOL_GPL(audioreach_alloc_apm_cmd_pkt);
+ 
+-static void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
++void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
  {
- 	struct max98504_priv *max98504 = snd_soc_dai_get_drvdata(dai);
- 	struct regmap *map = max98504->regmap;
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index deb15b95992d..42a99978fe5a 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -1983,8 +1983,10 @@ static int wcd9335_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	if (num_channels == 1) {
+ 		ch_map[0] =  PCM_CHANNEL_FL;
+@@ -281,6 +281,7 @@ static void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
+ 		ch_map[3] =  PCM_CHANNEL_RS;
+ 	}
  }
++EXPORT_SYMBOL_GPL(audioreach_set_channel_mapping);
  
- static int wcd9335_set_channel_map(struct snd_soc_dai *dai,
--				   unsigned int tx_num, unsigned int *tx_slot,
--				   unsigned int rx_num, unsigned int *rx_slot)
-+				   unsigned int tx_num,
-+				   const unsigned int *tx_slot,
-+				   unsigned int rx_num,
-+				   const unsigned int *rx_slot)
- {
- 	struct wcd9335_codec *wcd;
- 	int i;
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index de870c7819ca..fcad2c9fba55 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -1923,8 +1923,10 @@ static int wcd934x_trigger(struct snd_pcm_substream *substream, int cmd,
- }
+ static void apm_populate_container_config(struct apm_container_obj *cfg,
+ 					  struct audioreach_container *cont)
+@@ -819,7 +820,7 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
+ 	uint32_t num_channels = cfg->num_channels;
+ 	int payload_size;
+ 	struct gpr_pkt *pkt;
+-	int rc;
++	int rc, i;
+ 	void *p;
  
- static int wcd934x_set_channel_map(struct snd_soc_dai *dai,
--				   unsigned int tx_num, unsigned int *tx_slot,
--				   unsigned int rx_num, unsigned int *rx_slot)
-+				   unsigned int tx_num,
-+				   const unsigned int *tx_slot,
-+				   unsigned int rx_num,
-+				   const unsigned int *rx_slot)
- {
- 	struct wcd934x_codec *wcd;
- 	int i;
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index a9c4f896a7df..7d9628cda875 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -172,8 +172,8 @@ static int q6tdm_set_tdm_slot(struct snd_soc_dai *dai,
- }
+ 	payload_size = APM_MFC_CFG_PSIZE(media_format, num_channels) +
+@@ -842,18 +843,8 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
+ 	media_format->sample_rate = cfg->sample_rate;
+ 	media_format->bit_width = cfg->bit_width;
+ 	media_format->num_channels = cfg->num_channels;
+-
+-	if (num_channels == 1) {
+-		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
+-	} else if (num_channels == 2) {
+-		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
+-		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
+-	} else if (num_channels == 4) {
+-		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
+-		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
+-		media_format->channel_mapping[2] = PCM_CHANNEL_LS;
+-		media_format->channel_mapping[3] = PCM_CHANNEL_RS;
+-	}
++	for (i = 0; i < num_channels; i++)
++		media_format->channel_mapping[i] = cfg->channel_map[i];
  
- static int q6tdm_set_channel_map(struct snd_soc_dai *dai,
--				unsigned int tx_num, unsigned int *tx_slot,
--				unsigned int rx_num, unsigned int *rx_slot)
-+				unsigned int tx_num, const unsigned int *tx_slot,
-+				unsigned int rx_num, const unsigned int *rx_slot)
- {
+ 	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
  
- 	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-@@ -250,8 +250,10 @@ static int q6tdm_hw_params(struct snd_pcm_substream *substream,
- }
+@@ -883,9 +874,6 @@ static int audioreach_set_compr_media_format(struct media_format *media_fmt_hdr,
+ 		mp3_cfg->q_factor = mcfg->bit_width - 1;
+ 		mp3_cfg->endianness = PCM_LITTLE_ENDIAN;
+ 		mp3_cfg->num_channels = mcfg->num_channels;
+-
+-		audioreach_set_channel_mapping(mp3_cfg->channel_mapping,
+-					       mcfg->num_channels);
+ 		break;
+ 	case SND_AUDIOCODEC_AAC:
+ 		media_fmt_hdr->data_format = DATA_FORMAT_RAW_COMPRESSED;
+@@ -1104,9 +1092,7 @@ static int audioreach_pcm_set_media_format(struct q6apm_graph *graph,
+ 	media_cfg->num_channels = mcfg->num_channels;
+ 	media_cfg->q_factor = mcfg->bit_width - 1;
+ 	media_cfg->bits_per_sample = mcfg->bit_width;
+-
+-	audioreach_set_channel_mapping(media_cfg->channel_mapping,
+-				       num_channels);
++	memcpy(media_cfg->channel_mapping, mcfg->channel_map, mcfg->num_channels);
  
- static int q6dma_set_channel_map(struct snd_soc_dai *dai,
--				 unsigned int tx_num, unsigned int *tx_ch_mask,
--				 unsigned int rx_num, unsigned int *rx_ch_mask)
-+				 unsigned int tx_num,
-+				 const unsigned int *tx_ch_mask,
-+				 unsigned int rx_num,
-+				 const unsigned int *rx_ch_mask)
- {
+ 	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
  
- 	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-@@ -407,8 +409,10 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
- }
+@@ -1163,9 +1149,7 @@ static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
+ 		cfg->q_factor = mcfg->bit_width - 1;
+ 		cfg->endianness = PCM_LITTLE_ENDIAN;
+ 		cfg->num_channels = mcfg->num_channels;
+-
+-		audioreach_set_channel_mapping(cfg->channel_mapping,
+-					       num_channels);
++		memcpy(cfg->channel_mapping, mcfg->channel_map, mcfg->num_channels);
+ 	} else {
+ 		rc = audioreach_set_compr_media_format(header, p, mcfg);
+ 		if (rc) {
+diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
+index eb9306280988..208b74e50445 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.h
++++ b/sound/soc/qcom/qdsp6/audioreach.h
+@@ -766,6 +766,7 @@ struct audioreach_module_config {
+ /* Packet Allocation routines */
+ void *audioreach_alloc_apm_cmd_pkt(int pkt_size, uint32_t opcode, uint32_t
+ 				    token);
++void audioreach_set_channel_mapping(u8 *ch_map, int num_channels);
+ void *audioreach_alloc_cmd_pkt(int payload_size, uint32_t opcode,
+ 			       uint32_t token, uint32_t src_port,
+ 			       uint32_t dest_port);
+diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
+index 00bbd291be5c..8ab55869e8a2 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
+@@ -243,6 +243,7 @@ static int q6apm_dai_prepare(struct snd_soc_component *component,
+ 	cfg.num_channels = runtime->channels;
+ 	cfg.bit_width = prtd->bits_per_sample;
+ 	cfg.fmt = SND_AUDIOCODEC_PCM;
++	audioreach_set_channel_mapping(cfg.channel_map, runtime->channels);
  
- static int q6slim_set_channel_map(struct snd_soc_dai *dai,
--				unsigned int tx_num, unsigned int *tx_slot,
--				unsigned int rx_num, unsigned int *rx_slot)
-+				  unsigned int tx_num,
-+				  const unsigned int *tx_slot,
-+				  unsigned int rx_num,
-+				  const unsigned int *rx_slot)
- {
- 	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
- 	struct q6afe_port_config *pcfg = &dai_data->port_config[dai->id];
+ 	if (prtd->state) {
+ 		/* clear the previous setup if any  */
+@@ -669,6 +670,7 @@ static int q6apm_dai_compr_set_params(struct snd_soc_component *component,
+ 		cfg.num_channels = 2;
+ 		cfg.bit_width = prtd->bits_per_sample;
+ 		cfg.fmt = codec->id;
++		audioreach_set_channel_mapping(cfg.channel_map, cfg.num_channels);
+ 		memcpy(&cfg.codec, codec, sizeof(*codec));
+ 
+ 		ret = q6apm_graph_media_format_shmem(prtd->graph, &cfg);
 diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-index 68a38f63a2db..6bfbb52345e1 100644
+index a4ad1d0e6abd..8340e4fb78f4 100644
 --- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
 +++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-@@ -25,8 +25,10 @@ struct q6apm_lpass_dai_data {
- };
+@@ -106,6 +106,7 @@ static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
+ 	cfg->bit_width = params_width(params);
+ 	cfg->sample_rate = params_rate(params);
+ 	cfg->num_channels = channels;
++	audioreach_set_channel_mapping(cfg->channel_map, channels);
  
- static int q6dma_set_channel_map(struct snd_soc_dai *dai,
--				 unsigned int tx_num, unsigned int *tx_ch_mask,
--				 unsigned int rx_num, unsigned int *rx_ch_mask)
-+				 unsigned int tx_num,
-+				 const unsigned int *tx_ch_mask,
-+				 unsigned int rx_num,
-+				 const unsigned int *rx_ch_mask)
+ 	switch (dai->id) {
+ 	case DISPLAY_PORT_RX_0:
+@@ -130,10 +131,12 @@ static int q6dma_hw_params(struct snd_pcm_substream *substream,
  {
- 
  	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index fefe394dce72..03afd5efb24c 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -304,8 +304,8 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
-  * configure the relationship between channel number and TDM slot number.
-  */
- int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
--				unsigned int tx_num, unsigned int *tx_slot,
--				unsigned int rx_num, unsigned int *rx_slot)
-+				unsigned int tx_num, const unsigned int *tx_slot,
-+				unsigned int rx_num, const unsigned int *rx_slot)
- {
- 	int ret = -ENOTSUPP;
+ 	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
++	int channels = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS)->max;
  
+ 	cfg->bit_width = params_width(params);
+ 	cfg->sample_rate = params_rate(params);
+-	cfg->num_channels = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS)->max;
++	cfg->num_channels = channels;
++	audioreach_set_channel_mapping(cfg->channel_map, channels);
+ 
+ 	return 0;
+ }
 
 -- 
 2.43.0
