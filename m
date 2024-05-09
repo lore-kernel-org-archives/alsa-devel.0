@@ -4,80 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FE0DC10F1A
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 17:15:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FAECC10F1A
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 18:25:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60350E85;
-	Thu,  9 May 2024 19:15:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60350E85
+	by alsa0.perex.cz (Postfix) with ESMTPS id C077A208;
+	Thu,  9 May 2024 20:25:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C077A208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715274921;
-	bh=YwUKTYOpoxA/NOjHV7A/q7cg5e41+QOvCr4wGh3um4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1715279147;
+	bh=OoYgrioelbsOKtHSb3Ts6idZ9W1cRPY/0JdsOVdNjFw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=d9HUq1SmkHsyaDrzYM9GOMdOijEFI8cg7WCItUI6rPl5aHUl2k11a5Oss2opcOhr3
-	 akB3WvDRv1heuRvzuq6b3IUxqwCM9XQDy3WeOIehBjTtRoDxQ4RTYuixq4tJvRvOg5
-	 4kRNQI8jF9OolONCT305C9bOzNvd+Gvvw5//o/kQ=
+	b=lEWmAcvFXLZj2IqGiCe1yNALaDiHqApUA6ds8cal0jNg+kWN1F8QnIgzWSaKh3NGD
+	 7JWyR0vgOFmCe+/798YJXHjgkSuMliJU4I5Ulsb0jySWkHaL0OvpZ/bNypS/vMIm61
+	 dgtOfHm7urh6iLEB9II4gTd+sIOhzpaAYakGhaJo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 792B3F805A8; Thu,  9 May 2024 19:14:49 +0200 (CEST)
+	id 2A347F8049C; Thu,  9 May 2024 20:25:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F340BF8057F;
-	Thu,  9 May 2024 19:14:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5FBDF80588;
+	Thu,  9 May 2024 20:25:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A40F4F8049C; Thu,  9 May 2024 19:14:44 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 1FB68F8049C; Thu,  9 May 2024 20:25:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 10F6DF8024C
-	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 19:14:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10F6DF8024C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2F677F800E2
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 20:25:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F677F800E2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qNltURwB
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 6C33661D5A;
-	Thu,  9 May 2024 17:14:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D799FC116B1;
-	Thu,  9 May 2024 17:14:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715274878;
-	bh=YwUKTYOpoxA/NOjHV7A/q7cg5e41+QOvCr4wGh3um4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qNltURwBHZ0ugcWbLrUYJc6RkDUcNQgiYSfZKjEwL9+mHhuhW146bkl+HHiyqOY7D
-	 wNNuItMLZg9XcI1JEb6/M6vYSge5p3d/Jqj/OmYtbmVYnvKDIu/qETs5sRmCps6IOQ
-	 4LZSSh8xcEqDzkYGMQlizUe3dBHJGeJ27fyMc2GPvTmQUB2fR1FDljGOCifTUgm44z
-	 tODVfJsI9WuQ5oCQ1S/mdwWcfvfMNNaHEiYnNaps8KLZaGtfuR9Xjg2wUSON1ihOC1
-	 qDjHDw8Jt0BWhP/UqDK3LVzv0+Cy99DGUte0fmFAja8ZXPpS+oNlfndpyWeqf3uBUo
-	 7ppc6G/TeWG3A==
-Date: Thu, 9 May 2024 18:14:32 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 2/4] ASoC: dt-bindings: fsl,xcvr: Add two PLL clock
- sources
-Message-ID: <20240509-repurpose-dumping-156b57c25960@spud>
-References: <1715223460-32662-1-git-send-email-shengjiu.wang@nxp.com>
- <1715223460-32662-3-git-send-email-shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="9OB7iJL8uyGYmSbm"
-Content-Disposition: inline
-In-Reply-To: <1715223460-32662-3-git-send-email-shengjiu.wang@nxp.com>
-Message-ID-Hash: 3HTHME76Y566YDI4WL4Y2QJB6O2HAIK5
-X-Message-ID-Hash: 3HTHME76Y566YDI4WL4Y2QJB6O2HAIK5
-X-MailFrom: conor@kernel.org
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=A8UFbAph;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=7uH/ueaK;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=A8UFbAph;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=7uH/ueaK
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6445A605B2;
+	Thu,  9 May 2024 18:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1715279102;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KnCVpeZusPnIDUJeLHJVPaKdd2uDQNX1q2chP9jLd20=;
+	b=A8UFbAphdpZs5QssilgNZc1S86sSZbWie43aXmrm8oaT5feh2b9cP7zFXh2EbGoHjE2J8r
+	AYS6jRM+9ynH6wN6ESLwYEOfR7k+YuEnqI7K322Q86SSaBu7eam5ufL0YqxTRr+4ID1WZ7
+	0WzXnqrZZep7fCRsGjWZw2v7GF6UwPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1715279102;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KnCVpeZusPnIDUJeLHJVPaKdd2uDQNX1q2chP9jLd20=;
+	b=7uH/ueaKo9p/KhR91KgAOqOd2sP1DjShaEhHL0Om2PFGrHWTIGtgjlp4FrC6nJUAQvI1xL
+	F5HDYu0LJN3Vt1Cw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1715279102;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KnCVpeZusPnIDUJeLHJVPaKdd2uDQNX1q2chP9jLd20=;
+	b=A8UFbAphdpZs5QssilgNZc1S86sSZbWie43aXmrm8oaT5feh2b9cP7zFXh2EbGoHjE2J8r
+	AYS6jRM+9ynH6wN6ESLwYEOfR7k+YuEnqI7K322Q86SSaBu7eam5ufL0YqxTRr+4ID1WZ7
+	0WzXnqrZZep7fCRsGjWZw2v7GF6UwPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1715279102;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KnCVpeZusPnIDUJeLHJVPaKdd2uDQNX1q2chP9jLd20=;
+	b=7uH/ueaKo9p/KhR91KgAOqOd2sP1DjShaEhHL0Om2PFGrHWTIGtgjlp4FrC6nJUAQvI1xL
+	F5HDYu0LJN3Vt1Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 217ED13941;
+	Thu,  9 May 2024 18:25:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id C7/WBv4UPWbGRAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 09 May 2024 18:25:02 +0000
+Date: Thu, 09 May 2024 20:25:16 +0200
+Message-ID: <87r0eaalmb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	perex@perex.cz,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	hdegoede@redhat.com,
+	rafael@kernel.org
+Subject: Re: [PATCH 1/2] ALSA: hda: intel-dsp-config: Switch to ACPI NHLT
+In-Reply-To: <ZjzuxCqME77ei91Z@finisterre.sirena.org.uk>
+References: <20240419084307.2718881-1-cezary.rojewski@intel.com>
+	<20240419084307.2718881-2-cezary.rojewski@intel.com>
+	<892ad456-cfe5-4ff1-ab67-7709677608cd@intel.com>
+	<87zfsz9n8d.wl-tiwai@suse.de>
+	<87v83n9lpv.wl-tiwai@suse.de>
+	<ZjzuxCqME77ei91Z@finisterre.sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+Message-ID-Hash: 4COLLGUHCAL4LECQ2JTJ5KHGGUMH4PGE
+X-Message-ID-Hash: 4COLLGUHCAL4LECQ2JTJ5KHGGUMH4PGE
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,7 +161,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3HTHME76Y566YDI4WL4Y2QJB6O2HAIK5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4COLLGUHCAL4LECQ2JTJ5KHGGUMH4PGE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,74 +170,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, 09 May 2024 17:41:56 +0200,
+Mark Brown wrote:
+> 
+> On Thu, May 09, 2024 at 03:08:28PM +0200, Takashi Iwai wrote:
+> 
+> > I don't know how Mark applied the ASoC patch, but if that actually
+> > worked, it's better to take from his tree.  Or, in such a case, at
+> > best to be merged through the tree where the new API got introduced
+> > (i.e. ACPI tree).
+> 
+> The cover letter mentioned a branch that's a dependency - TBH I'd been
+> expecting you to apply the core ALSA patch to your tree, but I can apply
+> to mine if you prefer?
 
---9OB7iJL8uyGYmSbm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah thanks, I overlooked that.  Now applied to my tree.
 
-On Thu, May 09, 2024 at 10:57:38AM +0800, Shengjiu Wang wrote:
-> Add two PLL clock sources, they are the parent clocks of the root clock
-> one is for 8kHz series rates, named as 'pll8k', another one is for
-> 11kHz series rates, named as 'pll11k'. They are optional clocks,
-> if there are such clocks, then the driver can switch between them to
-> support more accurate sample rates.
->=20
-> As 'pll8k' and 'pll11k' are optional, then add 'minItems: 4' for
-> clocks and clock-names properties.
 
-Despite the detail given here in the commit message, the series this is
-appearing in and one of the driver patches makes me a bit "suspicious"
-of this patch. Are these newly added clocks available on all devices, or
-just on the imx95, or?
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  Documentation/devicetree/bindings/sound/fsl,xcvr.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml b/Docu=
-mentation/devicetree/bindings/sound/fsl,xcvr.yaml
-> index 1c74a32def09..c4660faed404 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-> +++ b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-> @@ -50,6 +50,9 @@ properties:
->        - description: PHY clock
->        - description: SPBA clock
->        - description: PLL clock
-> +      - description: PLL clock source for 8kHz series
-> +      - description: PLL clock source for 11kHz series
-> +    minItems: 4
-> =20
->    clock-names:
->      items:
-> @@ -57,6 +60,9 @@ properties:
->        - const: phy
->        - const: spba
->        - const: pll_ipg
-> +      - const: pll8k
-> +      - const: pll11k
-> +    minItems: 4
-> =20
->    dmas:
->      items:
-> --=20
-> 2.34.1
->=20
-
---9OB7iJL8uyGYmSbm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZj0EeAAKCRB4tDGHoIJi
-0kPzAP43Zn5AesCX1kKOSIjtrW5Vpt8hIHrIlOUZhE9kMqS8CgD+MljoXShCv6Tw
-G/iLAeB3RppsSsV+7vuOr03Tr0FXKAw=
-=oPv2
------END PGP SIGNATURE-----
-
---9OB7iJL8uyGYmSbm--
+Takashi
