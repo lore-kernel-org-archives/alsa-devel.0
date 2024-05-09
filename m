@@ -4,130 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97E95C25B74
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 06:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 818DFC41513
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 May 2024 07:14:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5862BDF8;
-	Thu,  9 May 2024 08:55:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5862BDF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F9C9DF8;
+	Thu,  9 May 2024 09:14:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F9C9DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715237737;
-	bh=d+whTvaCUFBkWJxrgaqvE8kSJoAykKqRo1KOv90DlbU=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1715238870;
+	bh=pidKHhusQQ0AYUCl/FAVAM9C38pY7QS0bIULk6B0a/8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=u82xLGLUvsaQL4R9djpGxTO2J6eYM0uH1+QOgWsQBqEUUmfXbZH/gZiaxm9AT3PMg
-	 LXta8jyosaa80c0zijtUQVXiCBgvD80qG/5l6sOcdTpgTDxOjcH6B9hgxkIiF4Gsur
-	 zdihQQ+lRY8Dgy4aKTuaiWrPcRCbmC0w3wgZ4Fzk=
+	b=rr05U+BcSs/cDVafKMlp8FMI6s49HFfRvCEGsQ1on26WyeC4XihdBNtp+F2QbHC5R
+	 UT8sAum8xj3FhVXB3ZszhZRcBtScO9UAA5kUABGTG8gkGvg/P7gxEw6BwtktrzC6BG
+	 qX/whcV9X8sWy8rH/T1qpCovQHnTNWbYdV6bPVaU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A243F805CA; Thu,  9 May 2024 08:55:01 +0200 (CEST)
+	id 6D7B5F805AE; Thu,  9 May 2024 09:13:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63CF9F805BF;
-	Thu,  9 May 2024 08:55:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6523CF805A9;
+	Thu,  9 May 2024 09:13:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40A37F804E7; Thu,  9 May 2024 08:54:56 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 82635F8049C; Thu,  9 May 2024 09:13:39 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EE717F804F2
-	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 08:52:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE717F804F2
+	by alsa1.perex.cz (Postfix) with ESMTPS id BC6A6F800E2
+	for <alsa-devel@alsa-project.org>; Thu,  9 May 2024 09:13:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC6A6F800E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=KFwEvJif
-Received: by mail-ej1-x634.google.com with SMTP id
- a640c23a62f3a-a59a352bbd9so98722866b.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 08 May 2024 23:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1715237526; x=1715842326;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0J7Cge03mHzKytqfe46M5SWmiJDYT6L/0iD5WUZ2XNk=;
-        b=KFwEvJifuQtF0UcMa6m2IKovUd2iAUShASefqzsGnu1It5Xb6xgAopkE8qqVFYpHjE
-         esCGZwMncROqrtnQ3ypQ7+ujhCmHRuu4i8Bu2OniCB9kbic1eo0x/9lUeAQamKJuAtkC
-         mHxp1AmST/LillC5nQLTxEOr18I0sy8bRnQpAUI8F2qlbmLkIVRuecKG1h9QXnv+Nnk/
-         aXrVYUYEJLgthUa08mJhWM/6o/mggWHBM3E1VZVNUYAnJvCDKDqnR8d9fpaJ2U6Nq5kr
-         AJKms27vEgg+oCq2dl3Ht3x5dRN3cXgjjJDiMsdNWef+Q9hbhI3vpNBR1MYMGMhF0J/j
-         a3zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715237526; x=1715842326;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0J7Cge03mHzKytqfe46M5SWmiJDYT6L/0iD5WUZ2XNk=;
-        b=sNBMT+dQj2C0CwvnMm3O3IsnGCe+lcN2CqNib+Ie9KX5GvgjdtG2ln6VWNXHgABIML
-         /nEpCo6m+4OXq6j957FGQefjGxzSPW1MBUTAcfvCQnENdZAGTtYpkImvo5JJj3C0oGRo
-         CAi5nRQClex7Q5rm5yWH2Tj2UdtQ2o/DXH12jsFIo5Kd/sC8zBfSbj8TpovWEsjT6TC9
-         iiS8C3ISuv3MAvk5hGOyNRJMGlmbJc9zmPbdTUX5+qhPO/Ua+jluycx2NyCw5mdRLKdi
-         ZwskMDszOCtSi6wmGFpEUasX7awAuJcXColtjp5ivpu9SMN+r6sgXqbzpisNJvCXRyvE
-         KE6w==
-X-Gm-Message-State: AOJu0YzINBn0C+wIL2RHazgcUi4umLFwbPd+M1cIQpfQjZuuEtyD6b4o
-	4RootgnkqOtslWOzxz76j/VIc/oP2oT0KoN9msjlCKFso179s5M01wZYWk3kdDs=
-X-Google-Smtp-Source: 
- AGHT+IH4IKNh6xpMCbzmAZuvEhTaQU2/vdq+j0ULoUFdsjxmj+MDwNstEIfCxKnQbGOb9UNNxYbSYw==
-X-Received: by 2002:a17:906:1d59:b0:a59:bf27:5f2e with SMTP id
- a640c23a62f3a-a5a11682723mr138739566b.20.1715237526603;
-        Wed, 08 May 2024 23:52:06 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.206.169])
-        by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a5a179c81b4sm40730966b.113.2024.05.08.23.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 23:52:06 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Thu, 09 May 2024 08:51:53 +0200
-Subject: [PATCH v3 2/4] ASoC: qcom: q6apm-lpass-dais: Implement proper
- channel mapping
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=bl9ThYEI
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id E651ACE1187;
+	Thu,  9 May 2024 07:13:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B32AFC116B1;
+	Thu,  9 May 2024 07:13:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715238803;
+	bh=pidKHhusQQ0AYUCl/FAVAM9C38pY7QS0bIULk6B0a/8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bl9ThYEIpRLI/LBnDIwpNDXpHD12nBOehOJrUF3IxM8ox3Egy7CIdtVJbyZigeUB7
+	 FFHwDwIydedlwcIUDgyGimY6kp2hMP7SxU64Lo0z8FaJHiwnXcjLU6i14lVSadorbh
+	 azshMqYPjW3522/DHv1M7tc1WuMt5hx4Wk/AncpA/0iZyHCYg9kLSWiFAmOiLbZBjs
+	 iRbqVvnGpDXaViLEprUun2VTXL00amOcMOE1QcqGfCKdQrCJn/Bj4qzWRnpyNvLQqK
+	 pUUFqFEx0LcIm/oorZBnfadHbMQtfIU1He+/gSo8Np8IiVFr9YFYai4y/CUcepHo2I
+	 zzM3ffdA4ZMNA==
+Message-ID: <b8c82b1a-db57-4e89-9beb-63992744afe6@kernel.org>
+Date: Thu, 9 May 2024 09:13:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: 
- <20240509-asoc-x1e80100-4-channel-mapping-v3-2-6f874552d7b2@linaro.org>
-References: 
- <20240509-asoc-x1e80100-4-channel-mapping-v3-0-6f874552d7b2@linaro.org>
-In-Reply-To: 
- <20240509-asoc-x1e80100-4-channel-mapping-v3-0-6f874552d7b2@linaro.org>
-To: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 7/7] ARM: dts: samsung: exynos4212-tab3: Fix up wm1811
+ codec config
+To: Artur Weber <aweber.kernel@gmail.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2494;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=d+whTvaCUFBkWJxrgaqvE8kSJoAykKqRo1KOv90DlbU=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmPHKObjbPYBWnxiwlH8jsOSlJbKFmyvJBSfmlT
- eN8kByPWESJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZjxyjgAKCRDBN2bmhouD
- 18JbD/9TSwfYyfYQp7SbyFFtB/5vWzBB/5ob3Y49B4bnnmlY5PltbLl93/4+Yo1P7bJxbIEldpF
- w8rMSBJ3btQPJh/NCLQ3Q0+smAbIGO6JXLsSc5FqeZOz+wWRCkw4DCWOkSvDsNnFBsYM+JKe8e0
- FDwkrk/jt42QYhs9hq+Hga75z9QhSPDU7q/6at15xDiHzWTfNik8p3omeqXPPmJPe2YADmunJnV
- +h1LszPO9ae3mYoMXWTNVS48xHMAXZt0uDZcVXGTjB9R0Qk7/pBM6vSBufclDHu6VHBVGvAxe5O
- oSGbc+LyG1d+cqETUS8wmQMwcATzOF8VV061XMZ3nzA3x9HzvRg/+Mc+0SnlVmHbps+RqfHfGEh
- csSEq3Mu7t7Q+udgVovepeUAdgNRar7Lkz/AGPEsZ8DGtwJJedYTlLqtBqJrf/UYL+SYVHJfNAl
- KFOMFaUdDXtPmKaelga4R7Xb6xYbBdJWL4MNtw9LTbAyejDa6lJfHPt7Pz5FxV/YQYwIdDdoa0Q
- LD7BLTTFSHNZFsBoi/h1Bon/WIDdjRqYJfjds+7DT9fGqvO1ifHLM2Q57Vqu7fyUfgCcXMwjt2F
- 1xPzwJbvAOGt+AiopgDaCB3s8DyqvXTUH1r1zed9B8bpSRrvlCNBzC/beCkYB0Q+mA0py9InfEZ
- jtI6YUTw1yQnUiw==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: SSB5XXIS2IJFDAHJSYSZXUC64KWVJHMI
-X-Message-ID-Hash: SSB5XXIS2IJFDAHJSYSZXUC64KWVJHMI
-X-MailFrom: krzysztof.kozlowski@linaro.org
+ Alim Akhtar <alim.akhtar@samsung.com>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+References: <20240508-midas-wm1811-gpio-jack-v2-0-b4d36cd02c6e@gmail.com>
+ <20240508-midas-wm1811-gpio-jack-v2-7-b4d36cd02c6e@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240508-midas-wm1811-gpio-jack-v2-7-b4d36cd02c6e@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: YMCRGJRX2MLP2RO2STUHJVOIVPZBAGPQ
+X-Message-ID-Hash: YMCRGJRX2MLP2RO2STUHJVOIVPZBAGPQ
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -139,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SSB5XXIS2IJFDAHJSYSZXUC64KWVJHMI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YMCRGJRX2MLP2RO2STUHJVOIVPZBAGPQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -148,83 +144,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The set_channel_map() implementation in q6apm-lpass-dais driver was
-copying older pre-Audioreach code from q6afe-dai driver, but not really
-using it.  The code sets active channel mask based on passed channel
-mapping, but Audioreach code does not use that mask ever.  Audioreach
-module configuration does have on the other hand proper channel mapping
-field, which should supersed that active channel mask.
+On 08/05/2024 12:58, Artur Weber wrote:
+> Drop incorrect interrupt parent and add MCLK2 clock.
 
-Drop the unused active channel mask and implement proper mapping of
-channels in q6apm-lpass-dais driver.
+1. Separate patches.
+2. Missing explanation why. "Incorrect" says a bit, but not too much.
+Also, imprecise - you remove all interrupts, not just incorrect parent.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Please provide proper rationale, why this is not correct and information
+that bluetooth 32 kHz clock feeds both bluetooth module and audio codec.
 
----
+> 
 
-Changes in v2:
-1. Entirely replaced - now channel mapping is implemented in
-   q6apm-lpass-dais.
----
- sound/soc/qcom/qdsp6/audioreach.h       |  1 -
- sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 10 +++++-----
- 2 files changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
-index 2c82917b7162..eb9306280988 100644
---- a/sound/soc/qcom/qdsp6/audioreach.h
-+++ b/sound/soc/qcom/qdsp6/audioreach.h
-@@ -755,7 +755,6 @@ struct audioreach_module_config {
- 
- 	u16	data_format;
- 	u16	num_channels;
--	u16	active_channels_mask;
- 	u16	dp_idx;
- 	u32	channel_allocation;
- 	u32	sd_line_mask;
-diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-index 6bfbb52345e1..a4ad1d0e6abd 100644
---- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-@@ -33,7 +33,7 @@ static int q6dma_set_channel_map(struct snd_soc_dai *dai,
- 
- 	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
- 	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
--	int ch_mask;
-+	int i;
- 
- 	switch (dai->id) {
- 	case WSA_CODEC_DMA_TX_0:
-@@ -58,7 +58,8 @@ static int q6dma_set_channel_map(struct snd_soc_dai *dai,
- 				tx_num);
- 			return -EINVAL;
- 		}
--		ch_mask = *tx_ch_mask;
-+		for (i = 0; i < tx_num; i++)
-+			cfg->channel_map[i] = tx_ch_mask[i];
- 
- 		break;
- 	case WSA_CODEC_DMA_RX_0:
-@@ -81,7 +82,8 @@ static int q6dma_set_channel_map(struct snd_soc_dai *dai,
- 				rx_num);
- 			return -EINVAL;
- 		}
--		ch_mask = *rx_ch_mask;
-+		for (i = 0; i < rx_num; i++)
-+			cfg->channel_map[i] = rx_ch_mask[i];
- 
- 		break;
- 	default:
-@@ -90,8 +92,6 @@ static int q6dma_set_channel_map(struct snd_soc_dai *dai,
- 		return -EINVAL;
- 	}
- 
--	cfg->active_channels_mask = ch_mask;
--
- 	return 0;
- }
- 
-
--- 
-2.43.0
+Best regards,
+Krzysztof
 
