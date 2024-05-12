@@ -4,83 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6240C04FFE
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 May 2024 18:44:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6F84C04FFE
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 May 2024 02:53:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CB58E64;
-	Sat, 11 May 2024 20:44:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CB58E64
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50B5FE67;
+	Sun, 12 May 2024 04:53:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50B5FE67
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715453090;
-	bh=QRhuwChDYHfSPQDVxVEglvM+ecX/SMlFXeAYPZHFFd4=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Nwazp1L9YuyKS4yNCYAvO16xO+kaH2G6qdKf5TDVOjGhpU6zP7vPymJjLZUicI61M
-	 e//+XcHfbspF4vQ6icjNX0hwDp0tzfeC5p9UZGCJFEyBRpvwCcLFp4JiFkUsNiMAZi
-	 LEdUp9uWh4LEdF6TZuJBooYYyuM+g93JZ4Q/5k38=
+	s=default; t=1715482424;
+	bh=I351u7aT7I6ouH4KN0hZjNx1w49MRdZV/3oL7OssEN0=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hNtoA/7PA1RWuCRZ2iP4UdpJUcm2XXQdh3uHPVcYqoYNPd2OshncoQJ/ycFyZtKxf
+	 MnYWUKX0rn13N2kA+PiV7MDn+h7KQc/lqfSIh5o6LuFxDMavkcJonEcZVA12D372Ws
+	 bY2hPw6gXu+yBcqL3BjtpBcWNdGpGio5U10b+gRo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C5EEF80589; Sat, 11 May 2024 20:44:17 +0200 (CEST)
+	id 305EEF8057C; Sun, 12 May 2024 04:53:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D91B3F805A9;
-	Sat, 11 May 2024 20:44:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07557F805A9;
+	Sun, 12 May 2024 04:53:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06B7DF8049C; Sat, 11 May 2024 20:42:45 +0200 (CEST)
-Received: from msa.smtpout.orange.fr (smtp-80.smtpout.orange.fr
- [80.12.242.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	id DDC2BF8025F; Sun, 12 May 2024 04:51:26 +0200 (CEST)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0ABEF8024C
-	for <alsa-devel@alsa-project.org>; Sat, 11 May 2024 20:42:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0ABEF8024C
+	by alsa1.perex.cz (Postfix) with ESMTPS id A208CF800F5
+	for <alsa-devel@alsa-project.org>; Sun, 12 May 2024 04:51:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A208CF800F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=wanadoo.fr header.i=@wanadoo.fr header.a=rsa-sha256
- header.s=t20230301 header.b=Y3VJ7XTV
-Received: from localhost.localdomain ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id 5rfsszsjshrFP5rftsVhsx; Sat, 11 May 2024 20:42:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1715452948;
-	bh=yubBFbXCfuOJIrYbX5F8iTYSJEFdBYtURyEVumq/GbQ=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=Y3VJ7XTVwLs4HI8QEKT7vp28VPD2tciEdbe1dR3qBt7yP0ehdWVg0gTZl5cFCiJ1X
-	 iprGBZmJ+EdMSvlN1dcxTPc+FkjiCgF/Xaasod8a7xNw03v796knNnWdrBMT9cWKTJ
-	 bN5W3BJlgDVg3MEihuy3QBuwL1Y2aOMd8GZhs+z5WkxTizBtxG8VRfpjMWZhcUe1Ka
-	 P2mIvNYWsTHFUzDLbGy2AXXiQ9es8iKmoDuV/jy2D8ijvZWP8UU5ximsVn7CCmy6jL
-	 Oj4e3P3qKooQt9xj/f/Z9VpvEkZl5k1Gn9vcsrRAaug6Dkzh10IL0UGDPkQc56QmKa
-	 ch3bZxwu/ZfvQ==
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 11 May 2024 20:42:28 +0200
-X-ME-IP: 86.243.17.157
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: [PATCH] ASoC: intel: Constify struct snd_soc_ops
-Date: Sat, 11 May 2024 20:42:06 +0200
-Message-ID: 
- <242aef53b5b9533ae4cca78148622f5fe752b7ee.1715452901.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.45.0
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=ffhwuBoj
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44C2p1O6130087;
+	Sat, 11 May 2024 21:51:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1715482261;
+	bh=v/JP+TebD92PX87mV21Jf/D0L7YhRppUzC72Kr69hSk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=ffhwuBoj8AF1Vm44ZoTPhyVNw4MQNI6hTYnRYzHbONQ2K7BTVExC1VltNo4njogVT
+	 6uPTCDmSX4uQOL2xWcVhNfIQT2iQCyU/xLzaCYQEsl/gzjWRA5B870W67sRJEazohf
+	 9KZPx6U8LSninL3GP++S2Q2XbcSs1jPs308B7WWM=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44C2p1cB062281
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sat, 11 May 2024 21:51:01 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 11
+ May 2024 21:51:00 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 11 May 2024 21:51:00 -0500
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.109])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44C2ojfQ039978;
+	Sat, 11 May 2024 21:50:54 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>
+CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <bard.liao@intel.com>, <yung-chuan.liao@linux.intel.com>,
+        <kevin-lu@ti.com>, <cameron.berkenpas@gmail.com>, <tiwai@suse.de>,
+        <baojun.xu@ti.com>, <soyer@irl.hu>, <Baojun.Xu@fpt.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v5 2/3] ASoC: tas2781: Fix wrong loading calibrated data
+ sequence
+Date: Sun, 12 May 2024 10:50:38 +0800
+Message-ID: <20240512025040.1276-2-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
+In-Reply-To: <20240512025040.1276-1-shenghao-ding@ti.com>
+References: <20240512025040.1276-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MDOCPUAUVLCSZDSLTOZ63274XA4IA3LY
-X-Message-ID-Hash: MDOCPUAUVLCSZDSLTOZ63274XA4IA3LY
-X-MailFrom: christophe.jaillet@wanadoo.fr
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-ID-Hash: C6HUHACY6EBDVQLJCOQF5OOUEWTODZDU
+X-Message-ID-Hash: C6HUHACY6EBDVQLJCOQF5OOUEWTODZDU
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,334 +98,191 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MDOCPUAUVLCSZDSLTOZ63274XA4IA3LY/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C6HUHACY6EBDVQLJCOQF5OOUEWTODZDU/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Constifying "struct snd_soc_ops" moves some data to a read-only section, so
-increase overall security.
+Calibrated data will be set to default after loading DSP config params,
+which will cause speaker protection work abnormally. Reload calibrated
+data after loading DSP config params.
 
-This structure is also part of scripts/const_structs.checkpatch.
+Fixes: ef3bcde75d06 ("ASoc: tas2781: Add tas2781 driver")
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-As an example, on a x86_64, with allmodconfig:
-Before:
-   text	   data	    bss	    dec	    hex	filename
-   6315	   3696	      0	  10011	   271b	sound/soc/intel/boards/ehl_rt5660.o
-
-After:
-   text	   data	    bss	    dec	    hex	filename
-   6379	   3648	      0	  10027	   272b	sound/soc/intel/boards/ehl_rt5660.o
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-Compile tested only.
-
-I hope that it can be applied with this single patch because all files are
-in sound/soc/intel/boards/
+v5:
+ - No change.
+v4:
+ - Use the the culprit of the bug itself as the fixes tag.
+ - Better variant for tasdev_load_calibrated_data in order to much easier
+   to read and understand and maintain, as it makes harder to squeeze the
+   code.
+ - Fix the indentation and move operator to the previous line.
+v3:
+ - Remove redundant return in tasdev_load_calibrated_data
+ - Put the second function parameter into the previous line for
+   tasdev_load_calibrated_data
+ - | Reported-by: kernel test robot <lkp@intel.com>
+   | Closes: https://lore.kernel.org/oe-kbuild-all/202405021200.YHInjV43-lkp@intel.com/
+v2:
+ - In the Subject, fixed --> Fix
+ - In tas2781-fmwlib.c, tasdevice-fmw.c ---> tas2781-fmwlib.c
+ - dsp --> DSP
+ - Remove unneeded parentheses for & (dereference) operator
+ - Add Fixes tag
+v1:
+ - Download calibrated data after loading the new DSP config params
+ - call tasdevice_prmg_load instead of tasdevice_prmg_calibdata_load, it
+   is unnecessary to load calibrated data after loading DSP program. Load
+   it after loading DSP config params each time.
+ - Remove tasdevice_prmg_calibdata_load, because it is unnecessary to load
+   calibrated data after loading DSP program.
 ---
- sound/soc/intel/boards/bdw-rt5650.c                 | 2 +-
- sound/soc/intel/boards/ehl_rt5660.c                 | 2 +-
- sound/soc/intel/boards/kbl_da7219_max98357a.c       | 4 ++--
- sound/soc/intel/boards/kbl_da7219_max98927.c        | 6 +++---
- sound/soc/intel/boards/kbl_rt5660.c                 | 2 +-
- sound/soc/intel/boards/kbl_rt5663_max98927.c        | 8 ++++----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 6 +++---
- sound/soc/intel/boards/sof_es8336.c                 | 2 +-
- sound/soc/intel/boards/sof_maxim_common.c           | 2 +-
- sound/soc/intel/boards/sof_maxim_common.h           | 2 +-
- sound/soc/intel/boards/sof_nau8825.c                | 2 +-
- sound/soc/intel/boards/sof_realtek_common.c         | 2 +-
- sound/soc/intel/boards/sof_rt5682.c                 | 2 +-
- sound/soc/intel/boards/sof_sdw_common.h             | 2 +-
- sound/soc/intel/boards/sof_sdw_rt_amp.c             | 2 +-
- sound/soc/intel/boards/sof_wm8804.c                 | 2 +-
- 16 files changed, 24 insertions(+), 24 deletions(-)
+ sound/soc/codecs/tas2781-fmwlib.c | 103 ++++++++----------------------
+ 1 file changed, 27 insertions(+), 76 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
-index 3ae26f21458f..3c7cee03a02e 100644
---- a/sound/soc/intel/boards/bdw-rt5650.c
-+++ b/sound/soc/intel/boards/bdw-rt5650.c
-@@ -131,7 +131,7 @@ static int bdw_rt5650_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
+index a6be81adcb83..265a8ca25cbb 100644
+--- a/sound/soc/codecs/tas2781-fmwlib.c
++++ b/sound/soc/codecs/tas2781-fmwlib.c
+@@ -2151,6 +2151,24 @@ static int tasdevice_load_data(struct tasdevice_priv *tas_priv,
  	return ret;
  }
  
--static struct snd_soc_ops bdw_rt5650_ops = {
-+static const struct snd_soc_ops bdw_rt5650_ops = {
- 	.hw_params = bdw_rt5650_hw_params,
- };
++static void tasdev_load_calibrated_data(struct tasdevice_priv *priv, int i)
++{
++	struct tasdevice_calibration *cal;
++	struct tasdevice_fw *cal_fmw;
++
++	cal_fmw = priv->tasdevice[i].cali_data_fmw;
++
++	/* No calibrated data for current devices, playback will go ahead. */
++	if (!cal_fmw)
++		return;
++
++	cal = cal_fmw->calibrations;
++	if (cal)
++		return;
++
++	load_calib_data(priv, &cal->dev_data);
++}
++
+ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
+ 	int cfg_no, int rca_conf_no)
+ {
+@@ -2210,21 +2228,9 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
+ 		for (i = 0; i < tas_priv->ndev; i++) {
+ 			if (tas_priv->tasdevice[i].is_loaderr == true)
+ 				continue;
+-			else if (tas_priv->tasdevice[i].is_loaderr == false
+-				&& tas_priv->tasdevice[i].is_loading == true) {
+-				struct tasdevice_fw *cal_fmw =
+-					tas_priv->tasdevice[i].cali_data_fmw;
+-
+-				if (cal_fmw) {
+-					struct tasdevice_calibration
+-						*cal = cal_fmw->calibrations;
+-
+-					if (cal)
+-						load_calib_data(tas_priv,
+-							&(cal->dev_data));
+-				}
++			if (tas_priv->tasdevice[i].is_loaderr == false &&
++				tas_priv->tasdevice[i].is_loading == true)
+ 				tas_priv->tasdevice[i].cur_prog = prm_no;
+-			}
+ 		}
+ 	}
  
-diff --git a/sound/soc/intel/boards/ehl_rt5660.c b/sound/soc/intel/boards/ehl_rt5660.c
-index 686e60321224..26289e8fdd87 100644
---- a/sound/soc/intel/boards/ehl_rt5660.c
-+++ b/sound/soc/intel/boards/ehl_rt5660.c
-@@ -132,7 +132,7 @@ static int rt5660_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
+@@ -2245,11 +2251,15 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
+ 		tasdevice_load_data(tas_priv, &(conf->dev_data));
+ 		for (i = 0; i < tas_priv->ndev; i++) {
+ 			if (tas_priv->tasdevice[i].is_loaderr == true) {
+-				status |= 1 << (i + 4);
++				status |= BIT(i + 4);
+ 				continue;
+-			} else if (tas_priv->tasdevice[i].is_loaderr == false
+-				&& tas_priv->tasdevice[i].is_loading == true)
++			}
++
++			if (tas_priv->tasdevice[i].is_loaderr == false &&
++				tas_priv->tasdevice[i].is_loading == true) {
++				tasdev_load_calibrated_data(tas_priv, i);
+ 				tas_priv->tasdevice[i].cur_conf = cfg_no;
++			}
+ 		}
+ 	} else
+ 		dev_dbg(tas_priv->dev, "%s: Unneeded loading dsp conf %d\n",
+@@ -2308,65 +2318,6 @@ int tasdevice_prmg_load(void *context, int prm_no)
  }
+ EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_load, SND_SOC_TAS2781_FMWLIB);
  
--static struct snd_soc_ops rt5660_ops = {
-+static const struct snd_soc_ops rt5660_ops = {
- 	.hw_params = rt5660_hw_params,
- };
- 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 9dbc15f9d1c9..154f6a74ed15 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -354,7 +354,7 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops kabylake_dmic_ops = {
-+static const struct snd_soc_ops kabylake_dmic_ops = {
- 	.startup = kabylake_dmic_startup,
- };
- 
-@@ -388,7 +388,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- 					&constraints_16000);
- }
- 
--static struct snd_soc_ops skylake_refcap_ops = {
-+static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = kabylake_refcap_startup,
- };
- 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index e662da5af83b..02ed77a07e23 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -288,7 +288,7 @@ static int kabylake_ssp0_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return 0;
- }
- 
--static struct snd_soc_ops kabylake_ssp0_ops = {
-+static const struct snd_soc_ops kabylake_ssp0_ops = {
- 	.hw_params = kabylake_ssp0_hw_params,
- 	.trigger = kabylake_ssp0_trigger,
- };
-@@ -535,7 +535,7 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops kabylake_dmic_ops = {
-+static const struct snd_soc_ops kabylake_dmic_ops = {
- 	.startup = kabylake_dmic_startup,
- };
- 
-@@ -569,7 +569,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- }
- 
- 
--static struct snd_soc_ops skylake_refcap_ops = {
-+static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = kabylake_refcap_startup,
- };
- 
-diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
-index 894d127c482a..66885cb36f24 100644
---- a/sound/soc/intel/boards/kbl_rt5660.c
-+++ b/sound/soc/intel/boards/kbl_rt5660.c
-@@ -277,7 +277,7 @@ static int kabylake_rt5660_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops kabylake_rt5660_ops = {
-+static const struct snd_soc_ops kabylake_rt5660_ops = {
- 	.hw_params = kabylake_rt5660_hw_params,
- };
- 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index e16c42e81eca..9da89436a917 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -489,7 +489,7 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops kabylake_rt5663_ops = {
-+static const struct snd_soc_ops kabylake_rt5663_ops = {
- 	.hw_params = kabylake_rt5663_hw_params,
- };
- 
-@@ -539,7 +539,7 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops kabylake_ssp0_ops = {
-+static const struct snd_soc_ops kabylake_ssp0_ops = {
- 	.hw_params = kabylake_ssp0_hw_params,
- };
- 
-@@ -575,7 +575,7 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops kabylake_dmic_ops = {
-+static const struct snd_soc_ops kabylake_dmic_ops = {
- 	.startup = kabylake_dmic_startup,
- };
- 
-@@ -609,7 +609,7 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- 				&constraints_16000);
- }
- 
--static struct snd_soc_ops skylake_refcap_ops = {
-+static const struct snd_soc_ops skylake_refcap_ops = {
- 	.startup = kabylake_refcap_startup,
- };
- 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index a9501cd106ff..a32ce8f972f3 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -424,7 +424,7 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops kabylake_rt5663_ops = {
-+static const struct snd_soc_ops kabylake_rt5663_ops = {
- 	.hw_params = kabylake_rt5663_hw_params,
- };
- 
-@@ -469,7 +469,7 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops kabylake_ssp0_ops = {
-+static const struct snd_soc_ops kabylake_ssp0_ops = {
- 	.hw_params = kabylake_ssp0_hw_params,
- };
- 
-@@ -508,7 +508,7 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
- 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
- }
- 
--static struct snd_soc_ops kabylake_dmic_ops = {
-+static const struct snd_soc_ops kabylake_dmic_ops = {
- 	.startup = kabylake_dmic_startup,
- };
- 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index c1fcc156a575..2a88efaa6d26 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -371,7 +371,7 @@ static int sof_es8336_hw_params(struct snd_pcm_substream *substream,
- }
- 
- /* machine stream operations */
--static struct snd_soc_ops sof_es8336_ops = {
-+static const struct snd_soc_ops sof_es8336_ops = {
- 	.hw_params = sof_es8336_hw_params,
- 	.trigger = sof_8336_trigger,
- };
-diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-index 7e1f485dce7a..f49354193f13 100644
---- a/sound/soc/intel/boards/sof_maxim_common.c
-+++ b/sound/soc/intel/boards/sof_maxim_common.c
-@@ -141,7 +141,7 @@ int max_98373_trigger(struct snd_pcm_substream *substream, int cmd)
- }
- EXPORT_SYMBOL_NS(max_98373_trigger, SND_SOC_INTEL_SOF_MAXIM_COMMON);
- 
--struct snd_soc_ops max_98373_ops = {
-+const struct snd_soc_ops max_98373_ops = {
- 	.hw_params = max_98373_hw_params,
- 	.trigger = max_98373_trigger,
- };
-diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
-index 8886f985de68..638fba0b43bc 100644
---- a/sound/soc/intel/boards/sof_maxim_common.h
-+++ b/sound/soc/intel/boards/sof_maxim_common.h
-@@ -21,7 +21,7 @@
- #define MAX_98373_DEV1_NAME	"i2c-" MAX_98373_ACPI_HID ":01"
- 
- extern struct snd_soc_dai_link_component max_98373_components[2];
--extern struct snd_soc_ops max_98373_ops;
-+extern const struct snd_soc_ops max_98373_ops;
- extern const struct snd_soc_dapm_route max_98373_dapm_routes[];
- 
- int max_98373_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
-diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
-index dd4dc4ec4255..5e781c45d51a 100644
---- a/sound/soc/intel/boards/sof_nau8825.c
-+++ b/sound/soc/intel/boards/sof_nau8825.c
-@@ -115,7 +115,7 @@ static int sof_nau8825_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops sof_nau8825_ops = {
-+static const struct snd_soc_ops sof_nau8825_ops = {
- 	.hw_params = sof_nau8825_hw_params,
- };
- 
-diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
-index 6915ff8b8716..af1654f6d551 100644
---- a/sound/soc/intel/boards/sof_realtek_common.c
-+++ b/sound/soc/intel/boards/sof_realtek_common.c
-@@ -499,7 +499,7 @@ static int rt1015_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops rt1015_ops = {
-+static const struct snd_soc_ops rt1015_ops = {
- 	.hw_params = rt1015_hw_params,
- };
- 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index e3a2ec6b4c7c..ced5661d882a 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -406,7 +406,7 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops sof_rt5682_ops = {
-+static const struct snd_soc_ops sof_rt5682_ops = {
- 	.hw_params = sof_rt5682_hw_params,
- };
- 
-diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index 94657dd210f5..cc749c8becc0 100644
---- a/sound/soc/intel/boards/sof_sdw_common.h
-+++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -165,7 +165,7 @@ int sof_sdw_rt_sdca_jack_init(struct snd_soc_card *card,
- int sof_sdw_rt_sdca_jack_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
- 
- /* RT1308 I2S support */
--extern struct snd_soc_ops sof_sdw_rt1308_i2s_ops;
-+extern const struct snd_soc_ops sof_sdw_rt1308_i2s_ops;
- 
- /* generic amp support */
- int sof_sdw_rt_amp_init(struct snd_soc_card *card,
-diff --git a/sound/soc/intel/boards/sof_sdw_rt_amp.c b/sound/soc/intel/boards/sof_sdw_rt_amp.c
-index 1b415708500e..434e59624f69 100644
---- a/sound/soc/intel/boards/sof_sdw_rt_amp.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt_amp.c
-@@ -259,7 +259,7 @@ static int rt1308_i2s_hw_params(struct snd_pcm_substream *substream,
- }
- 
- /* machine stream operations */
--struct snd_soc_ops sof_sdw_rt1308_i2s_ops = {
-+const struct snd_soc_ops sof_sdw_rt1308_i2s_ops = {
- 	.hw_params = rt1308_i2s_hw_params,
- };
- 
-diff --git a/sound/soc/intel/boards/sof_wm8804.c b/sound/soc/intel/boards/sof_wm8804.c
-index 4cb0d463bf40..b2d02cc92a6a 100644
---- a/sound/soc/intel/boards/sof_wm8804.c
-+++ b/sound/soc/intel/boards/sof_wm8804.c
-@@ -148,7 +148,7 @@ static int sof_wm8804_hw_params(struct snd_pcm_substream *substream,
- }
- 
- /* machine stream operations */
--static struct snd_soc_ops sof_wm8804_ops = {
-+static const struct snd_soc_ops sof_wm8804_ops = {
- 	.hw_params = sof_wm8804_hw_params,
- };
- 
+-int tasdevice_prmg_calibdata_load(void *context, int prm_no)
+-{
+-	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
+-	struct tasdevice_fw *tas_fmw = tas_priv->fmw;
+-	struct tasdevice_prog *program;
+-	int prog_status = 0;
+-	int i;
+-
+-	if (!tas_fmw) {
+-		dev_err(tas_priv->dev, "%s: Firmware is NULL\n", __func__);
+-		goto out;
+-	}
+-
+-	if (prm_no >= tas_fmw->nr_programs) {
+-		dev_err(tas_priv->dev,
+-			"%s: prm(%d) is not in range of Programs %u\n",
+-			__func__, prm_no, tas_fmw->nr_programs);
+-		goto out;
+-	}
+-
+-	for (i = 0, prog_status = 0; i < tas_priv->ndev; i++) {
+-		if (prm_no >= 0 && tas_priv->tasdevice[i].cur_prog != prm_no) {
+-			tas_priv->tasdevice[i].cur_conf = -1;
+-			tas_priv->tasdevice[i].is_loading = true;
+-			prog_status++;
+-		}
+-		tas_priv->tasdevice[i].is_loaderr = false;
+-	}
+-
+-	if (prog_status) {
+-		program = &(tas_fmw->programs[prm_no]);
+-		tasdevice_load_data(tas_priv, &(program->dev_data));
+-		for (i = 0; i < tas_priv->ndev; i++) {
+-			if (tas_priv->tasdevice[i].is_loaderr == true)
+-				continue;
+-			else if (tas_priv->tasdevice[i].is_loaderr == false
+-				&& tas_priv->tasdevice[i].is_loading == true) {
+-				struct tasdevice_fw *cal_fmw =
+-					tas_priv->tasdevice[i].cali_data_fmw;
+-
+-				if (cal_fmw) {
+-					struct tasdevice_calibration *cal =
+-						cal_fmw->calibrations;
+-
+-					if (cal)
+-						load_calib_data(tas_priv,
+-							&(cal->dev_data));
+-				}
+-				tas_priv->tasdevice[i].cur_prog = prm_no;
+-			}
+-		}
+-	}
+-
+-out:
+-	return prog_status;
+-}
+-EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_calibdata_load,
+-	SND_SOC_TAS2781_FMWLIB);
+-
+ void tasdevice_tuning_switch(void *context, int state)
+ {
+ 	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
 -- 
-2.45.0
+2.34.1
 
