@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88A93C25B74
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 May 2024 17:38:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA68C25B74
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 May 2024 17:39:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D74CB6A;
-	Mon, 13 May 2024 19:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D74CB6A
+	by alsa0.perex.cz (Postfix) with ESMTPS id C59467F1;
+	Mon, 13 May 2024 19:38:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C59467F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715621937;
-	bh=a0hGDqbnr8QfjOn4UWdQQVFTsm1YKoftP6R8ds04QtU=;
+	s=default; t=1715621948;
+	bh=5NI70CwdCr6ds3UXpAse5bSY/w2S2qX7EJ/03/SHaBA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=k1FPKR/Rhjrq4iMKt/UL+HeskNK1gCbh5T7XTnqbj4Mfb7OJMUeKtf3BGlEQhlxIT
-	 k/YYdYUdwr9LLLGAXJckgaoXedflq7vX5Oj/Qnzx9yTcY9Lu/pBGgjegpnw9E6aHOM
-	 9Hc2MO8IWhOL/ymr5Ahxz8/J1T5Wxy9hL7BYMldI=
+	b=GMwIn0djE4XtmszIuEgwVIoWpGsDq9DJqVWUQGY67tcNzjoDCJGM484xtHzk+f8/1
+	 xSKwOOQ0Y03bs81kG5rTz55yDF3XI+N5VAkv97TBYnBFe8UtmrrMuhF6ltQSPUFlzt
+	 PsS+24if08g4DjPix8/4eKXgWpVAxvFEhcAv3AUw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3EA2AF805BE; Mon, 13 May 2024 19:38:00 +0200 (CEST)
+	id AEF6CF8063D; Mon, 13 May 2024 19:38:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1ABB6F80600;
-	Mon, 13 May 2024 19:37:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAB4DF8065D;
+	Mon, 13 May 2024 19:38:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C232DF804FB; Mon, 13 May 2024 19:37:49 +0200 (CEST)
-Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr
- [80.12.242.23])
+	id 66F7EF805A1; Mon, 13 May 2024 19:37:52 +0200 (CEST)
+Received: from msa.smtpout.orange.fr (smtp-76.smtpout.orange.fr
+ [80.12.242.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 58D50F80224;
-	Mon, 13 May 2024 19:37:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58D50F80224
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4E1DDF801F5;
+	Mon, 13 May 2024 19:37:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E1DDF801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=wanadoo.fr header.i=@wanadoo.fr header.a=rsa-sha256
- header.s=t20230301 header.b=m90FUVvG
+ header.s=t20230301 header.b=XWQayaUl
 Received: from localhost.localdomain ([86.243.17.157])
 	by smtp.orange.fr with ESMTPA
-	id 6ZcDs0lh7ME2z6ZcKsL81A; Mon, 13 May 2024 19:37:40 +0200
+	id 6ZcDs0lh7ME2z6ZcNsL821; Mon, 13 May 2024 19:37:44 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1715621860;
-	bh=vPx09WkVDSPEOpN7HAXVn6S1kGIy/0oMa/odUP4ITxc=;
+	s=t20230301; t=1715621864;
+	bh=tArMz3CXGARffdI7GxCeEXs4RlHzAXyCNuBRtNfPV0w=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=m90FUVvGUYAng9KWUEjKYM1eIH1fEklPDwdWolN/ZVlGtl+EpR9oNiMZT/sXgwwhJ
-	 oEH/6thb5Alo3o7a9uzF/JMtkmqmrnJm75rObyvke+qoOfymnHbV1IBuD2miuuY4UJ
-	 +YzXUW56a9zUu0SMrd5qUoGnbk4iTh3qv6lLA1l6jz6TE5ipLRdqWkp64+byy34C22
-	 yKngk6yqD/8ThHFwNaxSKJbUPiaYoGhj146tVS80EsfD2P3kWMJdHiT/7gOZrUvSKG
-	 YDFbRkJkbW0qdW3Z0LbubPyPtgvp3qTmP0AjaUrCgXYh40/5PH7mDpr/wz1y+fW5nd
-	 zc0rz5ydwA+ew==
+	b=XWQayaUl7WTsSQ5YM4kr8gQgm3qMIo2et81SM55AGN8EHTknUjJSUpj7xQgEorIfj
+	 DZZKp+bwgM9AZ1sZbI6vdNeIVUpfeq1TdYFqCuAWrzGTfnHxSIndH6ykKyqmx49ZQv
+	 jRWlYChvnRad263+ngdk3IM+02SqNMmSmYz3vyvVxVuCrDCQpDf9O3vLAk/xsZHCBE
+	 RbH2p5/tC5iwGfuJTqWO7WMCcAHiX6jS4LxkAiu6mEWGSJJa2G9U/td4xAI46ONVCA
+	 UrqCRtoobwviGkpEGdSt3fdbiEQjYrRa/2NJOCX/8pR6OioW5xKWtQTRE8S1h0ngfF
+	 0PWWuO4oLY+KQ==
 X-ME-Helo: localhost.localdomain
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 13 May 2024 19:37:40 +0200
+X-ME-Date: Mon, 13 May 2024 19:37:44 +0200
 X-ME-IP: 86.243.17.157
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To: lgirdwood@gmail.com,
@@ -76,10 +76,10 @@ Cc: linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel-janitors@vger.kernel.org,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 3/6] ASoC: qdsp6: audioreach: Constify struct snd_soc_tplg_ops
-Date: Mon, 13 May 2024 19:37:22 +0200
+Subject: [PATCH 5/6] ASoC: SOF: topology: Constify struct snd_soc_tplg_ops
+Date: Mon, 13 May 2024 19:37:24 +0200
 Message-ID: 
- <a5ae843dd8aaacbc1148aea7a3b1d03f11495872.1715526069.git.christophe.jaillet@wanadoo.fr>
+ <2d9f5b75e979eb38b6f3baf85dfa1f0fdb3447ef.1715526069.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: 
  <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
@@ -87,8 +87,8 @@ References:
  <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VL7CDFUYVUCA3NKHEN4NHFEQSXFKKD22
-X-Message-ID-Hash: VL7CDFUYVUCA3NKHEN4NHFEQSXFKKD22
+Message-ID-Hash: Z7Z65WGVGBEALCMIKHGXK323J4K6YUTE
+X-Message-ID-Hash: Z7Z65WGVGBEALCMIKHGXK323J4K6YUTE
 X-MailFrom: christophe.jaillet@wanadoo.fr
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VL7CDFUYVUCA3NKHEN4NHFEQSXFKKD22/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z7Z65WGVGBEALCMIKHGXK323J4K6YUTE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,32 +116,41 @@ section, so increase overall security.
 On a x86_64, with allmodconfig:
 Before:
    text	   data	    bss	    dec	    hex	filename
-  19942	    832	      0	  20774	   5126	sound/soc/qcom/qdsp6/topology.o
+  44519	   2888	     48	  47455	   b95f	sound/soc/sof/topology.o
 
 After:
    text	   data	    bss	    dec	    hex	filename
-  20102	    652	      0	  20754	   5112	sound/soc/qcom/qdsp6/topology.o
+  44839	   2552	     48	  47439	   b94f	sound/soc/sof/topology.o
 
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
 Compile tested-only.
 ---
- sound/soc/qcom/qdsp6/topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/topology.c b/sound/soc/qcom/qdsp6/topology.c
-index 70572c83e101..c15d1a2b6dbf 100644
---- a/sound/soc/qcom/qdsp6/topology.c
-+++ b/sound/soc/qcom/qdsp6/topology.c
-@@ -1240,7 +1240,7 @@ static const struct snd_soc_tplg_kcontrol_ops audioreach_io_ops[] = {
- 		audioreach_put_vol_ctrl_audio_mixer, snd_soc_info_volsw},
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index da182314aa87..b54382131991 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -2278,7 +2278,7 @@ static const struct snd_soc_tplg_bytes_ext_ops sof_bytes_ext_ops[] = {
+ 	{SOF_TPLG_KCTL_BYTES_VOLATILE_RO, snd_sof_bytes_ext_volatile_get},
  };
  
--static struct snd_soc_tplg_ops audioreach_tplg_ops  = {
-+static const struct snd_soc_tplg_ops audioreach_tplg_ops = {
- 	.io_ops = audioreach_io_ops,
- 	.io_ops_count = ARRAY_SIZE(audioreach_io_ops),
+-static struct snd_soc_tplg_ops sof_tplg_ops = {
++static const struct snd_soc_tplg_ops sof_tplg_ops = {
+ 	/* external kcontrol init - used for any driver specific init */
+ 	.control_load	= sof_control_load,
+ 	.control_unload	= sof_control_unload,
+@@ -2433,7 +2433,7 @@ static int sof_dspless_link_load(struct snd_soc_component *scomp, int index,
+ 	return 0;
+ }
  
+-static struct snd_soc_tplg_ops sof_dspless_tplg_ops = {
++static const struct snd_soc_tplg_ops sof_dspless_tplg_ops = {
+ 	/* external widget init - used for any driver specific init */
+ 	.widget_ready	= sof_dspless_widget_ready,
+ 	.widget_unload	= sof_dspless_widget_unload,
 -- 
 2.45.0
 
