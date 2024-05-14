@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88AF0C04FFE
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 May 2024 19:44:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6233C04FFE
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 May 2024 19:49:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 637796C0;
-	Tue, 14 May 2024 21:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 637796C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA782A4A;
+	Tue, 14 May 2024 21:49:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA782A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715715842;
-	bh=f9Bic9XEfzxy+q20FtX8eQhRUTyN2Y699IGiFjTrcB4=;
+	s=default; t=1715716164;
+	bh=moKZybtts9XsLb8LOKyjGq3JgkLx12g+VrF777wQixI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=db+AkYAbSemR8UWmA8sXYpMAzq6f6pqEhIFQw9n9yTNXEH7ZtJYMfxgwR5PnNgkTq
-	 +yEtLQrbUdD5DVZ25rqR4BJlXJ+rUUBvZpmMxBo9YrgUL2X2TvCSDUd46DMudSQw0B
-	 OI3VblnqipeeXqkzUazHuRE4OJgX4/YeCjiS0w7A=
+	b=EDQTunC2FnHVNUdj7Zm/NcWwo02g77br3WY6Fu6+fK8U9zjNfvBotxON+2wvW7iWB
+	 YUl1q4mpvqcgtou5pIlwSLSLDTJBGQU1JcsbYEJ3zpDfTgqX7cUILY96th2KGIXJK5
+	 PvGM9f7wF8v1AN82RD9cU3lecCb6fUZlzyh8IqUM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7BE5F8058C; Tue, 14 May 2024 21:43:30 +0200 (CEST)
+	id 14B2DF805A1; Tue, 14 May 2024 21:48:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39066F805A0;
-	Tue, 14 May 2024 21:43:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E22AF805A8;
+	Tue, 14 May 2024 21:48:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F7FCF80224; Tue, 14 May 2024 21:43:25 +0200 (CEST)
+	id 85F20F80224; Tue, 14 May 2024 21:48:48 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58F2AF800E9
-	for <alsa-devel@alsa-project.org>; Tue, 14 May 2024 21:43:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58F2AF800E9
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B535F800E9
+	for <alsa-devel@alsa-project.org>; Tue, 14 May 2024 21:48:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B535F800E9
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1715715801664961576-webhooks-bot@alsa-project.org>
-References: <1715715801664961576-webhooks-bot@alsa-project.org>
+In-Reply-To: <1715716126585637331-webhooks-bot@alsa-project.org>
+References: <1715716126585637331-webhooks-bot@alsa-project.org>
 Subject: HCtl event callback gives "Fatal Python error: drop_gil: drop_gil:
  GIL is not locked"
-Message-Id: <20240514194325.6F7FCF80224@alsa1.perex.cz>
-Date: Tue, 14 May 2024 21:43:25 +0200 (CEST)
-Message-ID-Hash: KRZG6UTTBDAXD5DFOAA4GHYYS56QYTV3
-X-Message-ID-Hash: KRZG6UTTBDAXD5DFOAA4GHYYS56QYTV3
+Message-Id: <20240514194848.85F20F80224@alsa1.perex.cz>
+Date: Tue, 14 May 2024 21:48:48 +0200 (CEST)
+Message-ID-Hash: EEVTWZHFJT4PXFYDIXG33ADNIPAWKWCE
+X-Message-ID-Hash: EEVTWZHFJT4PXFYDIXG33ADNIPAWKWCE
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRZG6UTTBDAXD5DFOAA4GHYYS56QYTV3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EEVTWZHFJT4PXFYDIXG33ADNIPAWKWCE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-python issue #11 was opened from HEnquist:
+alsa-project/alsa-python issue #11 was edited from HEnquist:
 
 I'm running the [hctltest2.py](https://github.com/alsa-project/alsa-python/blob/master/test/hctltest2.py) test.
 
@@ -91,6 +91,8 @@ Aborted (core dumped)
 ```
 
 Tested on manjaro with python 3.11, and latest alsa-python.
+
+Also tested on Python 3.8.19, using the latest alsa-python code directly from this repo, with the same result.
 
 Issue URL     : https://github.com/alsa-project/alsa-python/issues/11
 Repository URL: https://github.com/alsa-project/alsa-python
