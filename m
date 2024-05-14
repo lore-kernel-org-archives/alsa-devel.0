@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9CE0C25B75
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 May 2024 07:29:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F891C04FFE
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 May 2024 07:29:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50E9DEAB;
-	Tue, 14 May 2024 09:28:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50E9DEAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8857014EA;
+	Tue, 14 May 2024 09:29:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8857014EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715671743;
-	bh=h+u2Wm6oUPSgHkFoJjK1aRuxkFR0VPr3ulemXFqbNqM=;
+	s=default; t=1715671765;
+	bh=Tm+W/k1wIKzjaUhZ1Z193EZWFqmYNWQo8g+1U/Y/oZY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iC0k/trzxhzPVaBtP9cczK5XTdd3PL7MYBRgvr6BJZHAnwDpwqxoz9c/Q3I0MPCD9
-	 W+LNmc9WJW/q+l4Kg9dVf67+SN5GGjn71/TjfV+wEK9R1Xf8BOtU7SlXkq63tC4g0Z
-	 oxFqyUCQ3LX+4SAN+575y0VCPGbKvrRJIwLLS9Yw=
+	b=YWo5bFlaAIDelMUcqwNQBM/nl1xRMXo02wjwkDR97geLGzJMmc9x7jvXRN2/YJLez
+	 eI8N1mFqTvBiGQ7amu39N0liCuQy8YqGIfd5xYOMWQet/Cq3Pa/X4Hq6iq18dDehoi
+	 NE1f6mUVHYuTKhjOBL8/OjjKthLj/R6yJT7Qh3WU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 179EAF8059F; Tue, 14 May 2024 09:28:31 +0200 (CEST)
+	id BE96CF805F2; Tue, 14 May 2024 09:28:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 508CEF8057B;
-	Tue, 14 May 2024 09:28:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 018AFF805BD;
+	Tue, 14 May 2024 09:28:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0868F80224; Tue, 14 May 2024 09:24:42 +0200 (CEST)
+	id 26A0CF80224; Tue, 14 May 2024 09:25:07 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E571BF8003A;
-	Tue, 14 May 2024 09:24:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E571BF8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id A5994F8003A;
+	Tue, 14 May 2024 09:25:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5994F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=WP8n5bsS
+ header.s=Intel header.b=X80uP0cE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715671480; x=1747207480;
+  t=1715671505; x=1747207505;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=h+u2Wm6oUPSgHkFoJjK1aRuxkFR0VPr3ulemXFqbNqM=;
-  b=WP8n5bsSIl6dWq+LDRFi4q17y6J0MMad5NBZCd/k4/JYEPR7m9GwNk+m
-   JSirF10qoRtyfcWLQ8HQZl17ceOkZ1B0BiEmPCsaKIXCizt28P9AgHOya
-   ayb9AfNmgmeu49Gq1p6YXVLfr3sWvwwplECFG91LTFU6ioIK4ov/hQV3Y
-   BoRXYBVrcDqM6Pw36vSY76WM+Sc8u0UEDHgnMgM7cmj+/MWJUwFW5MxFS
-   VYgQvySkCieUV9av0YnFGa8kPo5MDUd1swx+spWgKti1vybJl4p7j8+Or
-   NF0BvUWcYt2hj6wVnyV1ytTfAr172QCdC+nzT32YEBzcRxtIoxSv8wx/1
-   w==;
-X-CSE-ConnectionGUID: InX0kaR9QWi4gbgzlo8NcQ==
-X-CSE-MsgGUID: hKF/sQ8NQAGJtD086XXOBQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11072"; a="11488979"
+  bh=Tm+W/k1wIKzjaUhZ1Z193EZWFqmYNWQo8g+1U/Y/oZY=;
+  b=X80uP0cEy9KLegZQzPmuZRsvrRqiC8Nh0JUoxeSvTJTdQNictIw/B8JQ
+   84gD8NLoU6ayNDkYoVdnsd+83Bywonhs6tp1n3spQelvLJXNm2tEIIxZM
+   wCeo/wslKkA63Vjkb+sBxX1nQLoq9tK7HN/qA6wOONKPH80MtrXqhEMH/
+   WOFMihPVKk2wAuokbj6f5rSdbZS+Cbje4YDiCrurPQkHNhhHiQAVBA1rX
+   Lgpk5c6hSVaD5XSeZ8KEISL+rqAYjIw3FlqaU5eWxJ4V01vjyo3qeXIWO
+   P8AUvj+yc8pBtHKvWwZTns/ZKDZlbF6PmbEQs54K8vJEmp/Ua73p62U/f
+   A==;
+X-CSE-ConnectionGUID: rghU+2dZTZWa9/a60gOa5g==
+X-CSE-MsgGUID: gkc+2Ul9TOC7OQeZv0UkUQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11072"; a="11489026"
 X-IronPort-AV: E=Sophos;i="6.08,159,1712646000";
-   d="scan'208";a="11488979"
+   d="scan'208";a="11489026"
 Received: from fmviesa006.fm.intel.com ([10.60.135.146])
   by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2024 00:24:29 -0700
-X-CSE-ConnectionGUID: 4hN61N4NRaStSxwDU6v6Tg==
-X-CSE-MsgGUID: Bl6Ybfb1SUioI5nPBUkcZQ==
+ 14 May 2024 00:25:00 -0700
+X-CSE-ConnectionGUID: R83TVYkLRTu0dk/2BjcVCg==
+X-CSE-MsgGUID: PVXjhZT7RvCGKCbnvxgn/Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,159,1712646000";
-   d="scan'208";a="30638113"
+   d="scan'208";a="30638161"
 Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.32.104])
  ([10.94.32.104])
   by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2024 00:24:20 -0700
-Message-ID: <e1110221-8b84-4364-bea9-e166ce859444@linux.intel.com>
-Date: Tue, 14 May 2024 09:24:19 +0200
+ 14 May 2024 00:24:50 -0700
+Message-ID: <db981d27-7e70-4514-b82b-fc452b658019@linux.intel.com>
+Date: Tue, 14 May 2024 09:24:48 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] ASoC: Intel: avs: Constify struct snd_soc_tplg_ops
+Subject: Re: [PATCH 4/6] ASoC: Intel: Skylake: Constify struct
+ snd_soc_tplg_ops
 Content-Language: en-US
 To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, lgirdwood@gmail.com,
  broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
@@ -85,15 +86,15 @@ Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
  kernel-janitors@vger.kernel.org
 References: 
  <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
- <01de0157088de0475970c79738284d6c86d702fe.1715526069.git.christophe.jaillet@wanadoo.fr>
+ <48f096b6dc617ecf3ca53211c2a696a4df33b21a.1715526069.git.christophe.jaillet@wanadoo.fr>
 From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 In-Reply-To: 
- <01de0157088de0475970c79738284d6c86d702fe.1715526069.git.christophe.jaillet@wanadoo.fr>
+ <48f096b6dc617ecf3ca53211c2a696a4df33b21a.1715526069.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BQJUIOF3EDB45GUERDWWMXFZYQOCNYGL
-X-Message-ID-Hash: BQJUIOF3EDB45GUERDWWMXFZYQOCNYGL
+Message-ID-Hash: QACWOYFZDUSDVRKWWHNTCRK4R23JU2NS
+X-Message-ID-Hash: QACWOYFZDUSDVRKWWHNTCRK4R23JU2NS
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BQJUIOF3EDB45GUERDWWMXFZYQOCNYGL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QACWOYFZDUSDVRKWWHNTCRK4R23JU2NS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,11 +123,11 @@ On 5/13/2024 7:37 PM, Christophe JAILLET wrote:
 > On a x86_64, with allmodconfig:
 > Before:
 >     text	   data	    bss	    dec	    hex	filename
->    28046	    794	      0	  28840	   70a8	sound/soc/intel/avs/topology.o
+>    58844	   5282	     56	  64182	   fab6	sound/soc/intel/skylake/skl-topology.o
 > 
 > After:
 >     text	   data	    bss	    dec	    hex	filename
->    28206	    614	      0	  28820	   7094	sound/soc/intel/avs/topology.o
+>    59004	   5122	     56	  64182	   fab6	sound/soc/intel/skylake/skl-topology.o
 > 
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
