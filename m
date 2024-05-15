@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98EE5C25B79
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 May 2024 13:55:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7CEAC25B75
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 May 2024 13:55:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A948F208;
-	Wed, 15 May 2024 15:55:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A948F208
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8358FB76;
+	Wed, 15 May 2024 15:55:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8358FB76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1715781335;
-	bh=kwx4Hn9sySBLoj23yNq1BPDbp441x/FoT/+aEUBbqqQ=;
+	s=default; t=1715781346;
+	bh=CvwLp7rRgODumkCVPlKyo9UnPRGVu+hOstA18eL9OIU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sv5zWCMNL7fAmTaR+1lV8lEWu1pl3B0UwilX2/QEjEnndFxaIKyhFwZh6pfB8QsWp
-	 FjrVT91jUFyOePELq8xHyfK0HGWw7Yqo9cW4SkbZWARQN//LCfscZs7jVVj43U6NZ/
-	 uIgK7vDjIPESF37KzCUOd7NF+kVjC9GLkQ9aISJM=
+	b=qAXeP0roF0J7wVjObI21UoONaZv+D7dcPz8buNruYMvk8gjRSFiAc2k13Wx/wQfZx
+	 ywuZyzDteCdJGx0Bu+AfdZBVC7UR15N2BwWM7WEDfmimBzgDYOW4KdzPJb4YeeJoTq
+	 tTzu17a22pXsR0gkvz5R/HMJ2k9wCqS3oI5FlGKw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6382BF805BB; Wed, 15 May 2024 15:54:43 +0200 (CEST)
+	id 104ABF805F7; Wed, 15 May 2024 15:54:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9770F805D9;
-	Wed, 15 May 2024 15:54:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 636F2F805E5;
+	Wed, 15 May 2024 15:54:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB2DBF80563; Wed, 15 May 2024 15:54:35 +0200 (CEST)
+	id 5C711F805CB; Wed, 15 May 2024 15:54:42 +0200 (CEST)
 Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
  [208.88.110.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A8BC1F80224
-	for <alsa-devel@alsa-project.org>; Wed, 15 May 2024 15:54:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8BC1F80224
+	by alsa1.perex.cz (Postfix) with ESMTPS id E8980F8024C
+	for <alsa-devel@alsa-project.org>; Wed, 15 May 2024 15:54:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8980F8024C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
  header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
- header.b=Vj7g2twZ
+ header.b=baJF1SR7
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id BEDEE9C58FC;
-	Wed, 15 May 2024 09:54:24 -0400 (EDT)
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id D606F9C5907;
+	Wed, 15 May 2024 09:54:30 -0400 (EDT)
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id T1jg46z67v_C; Wed, 15 May 2024 09:54:24 -0400 (EDT)
+ with ESMTP id hFB7ldS9sGge; Wed, 15 May 2024 09:54:30 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 146E69C58F7;
-	Wed, 15 May 2024 09:54:24 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 146E69C58F7
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 482349C58FB;
+	Wed, 15 May 2024 09:54:30 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 482349C58FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1715781264; bh=2zm4VcCU/VyCgOY57Otre6Y9yTTRwFkX9I1eJtYzQWg=;
+	t=1715781270; bh=S3WJQMbggwuOXUtStHzsdr+LdyckdrxsaoJfGQHraCs=;
 	h=From:To:Date:Message-Id:MIME-Version;
-	b=Vj7g2twZ2mBKvVhxhN4uFY6Tgy9gHwBjbYyyDumfATDIDNbU1xMOxbTHm1HGnvgBW
-	 4cu0CIjTUIAUlnYPg3eP/7InMMl+fmuhzPm861HhX0LoQDCxcNyH6QuQMpruuIZLq/
-	 wgXI06F4Spk3gwBCzMkUE+FSca8iO4VR2dcyooconwS0tu2ADCfi7KRmApVSqfZjT9
-	 RilLXqvf/TjZl9b+ICmx3a00ZR4+Udl+eO6hfKhH4CZPHEXd0ZIXJb/G4FEVSjpMTg
-	 CrbM21hoH19rBKrYR/aUBCi5rI7tkAE01DCTN535pfo241wq9qTbivI8yaYqLpdT1Z
-	 bAqH56jfTBeVg==
+	b=baJF1SR7U91qNsNFtSZRL3ETC9P1i6jDW+CqNzbZjFfgfxMqUn6AR/13ayi4KOBbB
+	 1NUM4lVN6crPEQuLEk7/Tj68UUiAnsJSsWg/Lk3snSBqAIe/lHgih0IJ8kqRqKk6Lk
+	 lC7rC9bq5YDfGiP/qCqxyv6yDnE0OBh0coTIF2Im6cas4TymiPwNqterQNcLr1FXJ/
+	 e+t0GbhNfsHc7py91ZtjpWPFJtwn5wBpDsiEWgnab3zG9dsjqxt7KILWSbkzTirE6c
+	 q6PxoZzrOH/azAKmQPU0680pMosgZfsRKs1lTaCRCFmttzLRrwGLVlpTEhNMFyJLNv
+	 sjHpqPz4DYlgQ==
 X-Virus-Scanned: amavis at mail.savoirfairelinux.com
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id fvhGJPlRQYrq; Wed, 15 May 2024 09:54:23 -0400 (EDT)
+ with ESMTP id CDS4YqcRc2gE; Wed, 15 May 2024 09:54:30 -0400 (EDT)
 Received: from gerard.rennes.sfl
  (lmontsouris-657-1-69-118.w80-15.abo.wanadoo.fr [80.15.101.118])
-	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 184089C58F8;
-	Wed, 15 May 2024 09:54:22 -0400 (EDT)
+	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 4DB699C58F8;
+	Wed, 15 May 2024 09:54:28 -0400 (EDT)
 From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -88,17 +88,17 @@ Cc: linux-sound@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org,
 	Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
-Subject: [PATCHv4 2/9] ASoC: fsl-asoc-card: add second dai link component for
- codecs
-Date: Wed, 15 May 2024 15:54:04 +0200
-Message-Id: <20240515135411.343333-3-elinor.montmasson@savoirfairelinux.com>
+Subject: [PATCHv4 5/9] ASoC: fsl-asoc-card: set generic codec as clock
+ provider
+Date: Wed, 15 May 2024 15:54:07 +0200
+Message-Id: <20240515135411.343333-6-elinor.montmasson@savoirfairelinux.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240515135411.343333-1-elinor.montmasson@savoirfairelinux.com>
 References: <20240515135411.343333-1-elinor.montmasson@savoirfairelinux.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: FMBQ3G4VXRNHMY6AKKUMEMEVYA2VHFEX
-X-Message-ID-Hash: FMBQ3G4VXRNHMY6AKKUMEMEVYA2VHFEX
+Message-ID-Hash: OJO63RP3YTOL3S72UCB7HEFZTZ7X4IIT
+X-Message-ID-Hash: OJO63RP3YTOL3S72UCB7HEFZTZ7X4IIT
 X-MailFrom: elinor.montmasson@savoirfairelinux.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -111,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FMBQ3G4VXRNHMY6AKKUMEMEVYA2VHFEX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OJO63RP3YTOL3S72UCB7HEFZTZ7X4IIT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,54 +120,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a second dai link component for codecs that will be used for the
-generic codec use case.
-It will use spdif_receiver and spdif_transmitter drivers as dummy codec
-drivers, needing 2 codecs slots for the links.
+The default dai format defined by DAI_FMT_BASE doesn't set if the codec
+is consumer or provider of the bit and frame clocks.
 
-To prevent deferring in use cases using only one codec, also set
-by default the number of codecs to 1 for the relevant dai links.
+S/PDIF DIR usually converts audio signal to an asynchronous I2S/PCM
+stream, and doesn't consume a bit or frame clock.
+
+As S/PDIF DIR and DIT are used as codecs for the generic use case,
+set codecs as provider of both bit and frame clocks by default.
 
 Signed-off-by: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
 Co-authored-by: Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelinux=
 .com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl-asoc-card.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 8a2a6e5461dc..c83492e7cec2 100644
+index a4ecc9093558..82ed7f4e81a1 100644
 --- a/sound/soc/fsl/fsl-asoc-card.c
 +++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -296,7 +296,7 @@ static int be_hw_params_fixup(struct snd_soc_pcm_runtim=
-e *rtd,
-=20
- SND_SOC_DAILINK_DEFS(hifi,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY(), COMP_EMPTY()),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-=20
- SND_SOC_DAILINK_DEFS(hifi_fe,
-@@ -306,7 +306,7 @@ SND_SOC_DAILINK_DEFS(hifi_fe,
-=20
- SND_SOC_DAILINK_DEFS(hifi_be,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+	DAILINK_COMP_ARRAY(COMP_EMPTY(), COMP_EMPTY()));
-=20
- static const struct snd_soc_dai_link fsl_asoc_card_dai[] =3D {
- 	/* Default ASoC DAI Link*/
-@@ -618,6 +618,8 @@ static int fsl_asoc_card_probe(struct platform_device *=
+@@ -750,6 +750,7 @@ static int fsl_asoc_card_probe(struct platform_device *=
 pdev)
-=20
- 	memcpy(priv->dai_link, fsl_asoc_card_dai,
- 	       sizeof(struct snd_soc_dai_link) * ARRAY_SIZE(priv->dai_link));
-+	priv->dai_link[0].num_codecs =3D 1;
-+	priv->dai_link[2].num_codecs =3D 1;
-=20
- 	priv->card.dapm_routes =3D audio_map;
- 	priv->card.num_dapm_routes =3D ARRAY_SIZE(audio_map);
+ 		generic_codec_dai_names[1] =3D "dir-hifi";
+ 		priv->dai_link[0].num_codecs =3D 2;
+ 		priv->dai_link[2].num_codecs =3D 2;
++		priv->dai_fmt |=3D SND_SOC_DAIFMT_CBP_CFP;
+ 	} else {
+ 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
+ 		ret =3D -EINVAL;
 --=20
 2.34.1
 
