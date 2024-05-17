@@ -4,90 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B1CC04FFE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 12:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16D5CC04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:24:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BF7A14F2;
-	Mon, 20 May 2024 14:31:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BF7A14F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71720829;
+	Mon, 20 May 2024 15:24:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71720829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716208303;
-	bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DdxmSjx21MIIs7E3Sj822S0rjoRxXta0cJ3JfXRooP+pdyxAbKIhOJFapumGocljB
-	 Wr9Lt7vxr8O71WC24OxxiqDcKViD97mOdDSwURoM73FROWANhY4KWp0dpHpWaDYRH3
-	 d+S643j3S0TxKUplFY4N4HK+F+/clgDzFthWCgs0=
+	s=default; t=1716211454;
+	bh=C+VaKB5ZHbJZl4o5Sv1ldXPb5YUdSFosua8CAo3BsZw=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=MlIj7uJ70EdqN2dp6dvAp3whPEa9prILV0YXsb2fgOdHa7+v7f9rBhQcZJF7teWJv
+	 n5/uEsNa7Q69l8Zfg7SlkPWSAaiXqSzS1v0fBEq/z3B4waqu11s6ASYU5fQHgoY/Bq
+	 8Fhw5ngn59FwvFtLUZng0hFtIFy+mpWFifNN/gYY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34CBBF805C5; Mon, 20 May 2024 14:30:57 +0200 (CEST)
+	id 288D2F805E5; Mon, 20 May 2024 15:23:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01A21F805B6;
-	Mon, 20 May 2024 14:30:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAD7DF805E4;
+	Mon, 20 May 2024 15:23:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3CAC0F8042F; Mon, 20 May 2024 14:30:53 +0200 (CEST)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 5603BF805C1; Mon, 20 May 2024 15:16:28 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD48CF800DF
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:30:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD48CF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 02209F80578
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 15:16:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02209F80578
 Authentication-Results: alsa1.perex.cz;
-	dkim=fail reason="signature verification failed" (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=JqedQlvj
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44IEGLoI017554;
-	Sat, 18 May 2024 09:16:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1716041781;
-	bh=hE7bJWGco1/V2achyvapsMHYTWD7SY5fsWVMayfRq60=;
-	h=From:To:CC:Subject:Date;
-	b=JqedQlvjazZ7Wtvm4tLQmQ5v3QI0s07YunyeQh386vEAu3M53zUD2L3/qDxbuBHiK
-	 K992PU3i0G0n9huGIs9qaTCH+pB8YFNQc+b+NRvPPiy75B4/+fdQUWdaOGbxZVR/8I
-	 ybF6AN8XF179AK5mkkmwTr6QM8kZQG5dk2Y25vwY=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44IEGLZb055620
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sat, 18 May 2024 09:16:21 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 18
- May 2024 09:16:21 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 18 May 2024 09:16:21 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.158])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44IEGFfa038647;
-	Sat, 18 May 2024 09:16:15 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>
-Subject: [PATCH v6] ASoC: tas2781: Fix wrong loading calibrated data sequence
-Date: Sat, 18 May 2024 22:15:46 +0800
-Message-ID: <20240518141546.1742-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=BzQ7DoyP
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1D7DD61D23;
+	Fri, 17 May 2024 15:10:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B40C5C2BD10;
+	Fri, 17 May 2024 15:10:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715958647;
+	bh=C+VaKB5ZHbJZl4o5Sv1ldXPb5YUdSFosua8CAo3BsZw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BzQ7DoyPmvRaKuzC8/U9zOxkwozvtR4PQqdOvQuPmzncSRKlPkHpoepMbBa/cOuR9
+	 4283tHi1m7Rfh7PQRA4iGAhQUMZvxystgbeTsBkEQd7I3uTmMhG7755C5gu96IVT8R
+	 7s55+t2KehaVrMASMOJOkCHYlFdHKXIVyB4A65LocivAhXMfhUOdXFmbr5QG7GcPdl
+	 DwjjUrSLklu7L51Q+JXbis0MkPy4vBTSrycNp9aIkg/zfWMVucGdVirYgRyKe+KI2L
+	 gFF3Cg3eKDKO55qpnkAqMqTMOZ/55JAoImRrJJ3tSEYaH+7608/9RkIcmrzc2A7DRY
+	 /jqtp6IVFGQ5w==
+Date: Fri, 17 May 2024 16:10:42 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: rt1320: Add RT1320 SDCA vendor-specific driver
+Message-ID: <a1ce97df-480e-4dc9-88f1-a77c7a716f5b@sirena.org.uk>
+References: <20240517072814.330597-1-shumingf@realtek.com>
+ <e7ff0998-696c-4551-923d-7f04c7e89ba0@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Message-ID-Hash: 3DKKAH6KMJXYMP4GHZMO5B46QZHJHWJA
-X-Message-ID-Hash: 3DKKAH6KMJXYMP4GHZMO5B46QZHJHWJA
-X-MailFrom: shenghao-ding@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qze8JbXR5ZfJaqhV"
+Content-Disposition: inline
+In-Reply-To: <e7ff0998-696c-4551-923d-7f04c7e89ba0@linux.intel.com>
+X-Cookie: Function reject.
+Message-ID-Hash: 67QUJ6CCE22L63QISXYCP44G7BVCAHZG
+X-Message-ID-Hash: 67QUJ6CCE22L63QISXYCP44G7BVCAHZG
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- liam.r.girdwood@intel.com, bard.liao@intel.com,
- yung-chuan.liao@linux.intel.com, kevin-lu@ti.com,
- cameron.berkenpas@gmail.com, tiwai@suse.de, baojun.xu@ti.com, soyer@irl.hu,
- Baojun.Xu@fpt.com, Shenghao Ding <shenghao-ding@ti.com>
+CC: shumingf@realtek.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, flove@realtek.com, oder_chiou@realtek.com,
+ jack.yu@realtek.com, derek.fang@realtek.com
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -101,3 +92,37 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+--qze8JbXR5ZfJaqhV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, May 17, 2024 at 09:38:55AM -0500, Pierre-Louis Bossart wrote:
+
+> > +static const struct reg_sequence rt1320_blind_write[] = {
+> > +	{ 0xc003, 0xe0 },
+> ...
+> > +	{ 0xd486, 0xc3 },
+> > +};
+
+> I would add a comment that the 'blind writes' is an SDCA term to deal
+> with platform-specific initialization, but in this case it seems that
+> all the addresses targeted are in the vendor-specific space
+
+TBH it seems perfectly intelligable without knowing anything about SCDA.
+
+--qze8JbXR5ZfJaqhV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZHc3EACgkQJNaLcl1U
+h9Aw4wf9El+rhnMfzi2WjH2wr57vk6mzDoUtLX06rvIZT+fqDJYdz2mJBMEpsXHs
+h5JXPOGgRHHVamGn6XvOkQYTEm9ekmrg9/eBn2MF7uhQME5hx5WIGYzQnoZWGnmV
+R6dDhPQ6roaxJFM4A7IyXb7wyBNObHomLraZxCKMPBs5sl3gj5Co8/uGVO7xQAKh
+qLUXOhOBPbTilhEYJnGkaWi3W17tXk5Qe2weZ3g+4lXvVPQsAJriaYoZU/b/oPBS
+6l6QO2ekG5gia2SdWgK0reb5dvz1PDBC1Z6hbYETmCXZ0+CuF4M7ASrsEE/+SJ6D
+a2aJBPIJpracy1Vz6bJ0FKdijNgVOw==
+=osqb
+-----END PGP SIGNATURE-----
+
+--qze8JbXR5ZfJaqhV--
