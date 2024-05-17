@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8AE2C25B78
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 12:27:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B31AC04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 12:27:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21C64E76;
-	Mon, 20 May 2024 14:27:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21C64E76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93EDDE94;
+	Mon, 20 May 2024 14:27:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93EDDE94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716208057;
-	bh=a/yhtawGa5/bEHUyZJEsyRhH74dkuL/dYpksOY9aZ+c=;
+	s=default; t=1716208068;
+	bh=75cwrOYxMCwkMEJj5WQ4qiiIWRNHOkMsDaWGNf20e1s=;
 	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B8gKEcupClj63Wg5/gwysHV4TBQb2EU7JkT6UAtM1chJyrp2q42mucYHhzn6f/doj
-	 gPA65js91M+rzJd+J2vMbEegOF3+9NWh8ju8Zyp0Qlbwn6c8Z3DdH2QMVVmyZgFmtF
-	 DMIEi0krFVTsXW0viQk4Q6l1B00vUO+OLtCutdao=
+	b=YxEerVEhpBP/x8eDMWRzH4z6YVRGd9WYQJuR2zeTvOqoPZKSLENEKJnQ0dqdzCtkC
+	 d6zLEdC2qVrMCmUGQNs07iGGwwSk94eHTd33ILjBacJEsE8o3vHJgbk34RXwAJ4voS
+	 W3YZwvE+mO32nCI5WcbgEI/skbUJF4C/OpaIVXeM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6501F805C0; Mon, 20 May 2024 14:26:45 +0200 (CEST)
+	id AC46FF805F9; Mon, 20 May 2024 14:26:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D19CF805B6;
-	Mon, 20 May 2024 14:26:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17564F805FA;
+	Mon, 20 May 2024 14:26:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DBE07F80578; Fri, 17 May 2024 07:52:16 +0200 (CEST)
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com
- [IPv6:2607:f8b0:4864:20::42d])
+	id 63B47F8042F; Fri, 17 May 2024 07:03:41 +0200 (CEST)
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com
+ [IPv6:2607:f8b0:4864:20::a34])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE13CF804B3
-	for <alsa-devel@alsa-project.org>; Fri, 17 May 2024 07:52:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE13CF804B3
+	by alsa1.perex.cz (Postfix) with ESMTPS id EC6D8F80171
+	for <alsa-devel@alsa-project.org>; Fri, 17 May 2024 07:03:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC6D8F80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=e0ClS4OL
-Received: by mail-pf1-x42d.google.com with SMTP id
- d2e1a72fcca58-6f69422c090so130879b3a.2
+ header.s=20230601 header.b=If6wjk7G
+Received: by mail-vk1-xa34.google.com with SMTP id
+ 71dfb90a1353d-4df7ba13412so219589e0c.1
         for <alsa-devel@alsa-project.org>;
- Thu, 16 May 2024 22:52:11 -0700 (PDT)
+ Thu, 16 May 2024 22:03:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715925129; x=1716529929;
+        d=gmail.com; s=20230601; t=1715922191; x=1716526991;
  darn=alsa-project.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cVtJ2FU/+H3Vwpl0z9ENRPJkq5Ez/N1xh7TOdjhGiJs=;
-        b=e0ClS4OLnj+VkiARzlvBQ2yeZVm1nHAzfwnsbTDwczv5VQbqIoMBe4TImjGDhwrkcf
-         JupfRSP5aAPyg9EzpaE1VjThkUQVz/t5y/2S0Hmita4lCs+PhKwlhkiz6I4yNU0CLkai
-         vv3Vz4Ewi8WuXmkrDot8rNEvlCNRicLkGTQmH3nwp+cQHqeGXPxxkNAoXZJLkiYvuBM8
-         x2SA9Hoo5MAERHj6lySbVAQxXciP5VDT2lWiqS0k5eVV/xUKW6Lwv6QW3Tc66qDUP8ey
-         C0eqi28kbgocI/KZRjRkriRWeZ0JFe69xPP9OtCkkxa/8QBBuNS1wAZGuP2NqjCZV5mk
-         r6jg==
+        bh=olvJpcmkbApgR1MlcxrBTc0IASmmv7gHG32Arj+e5lw=;
+        b=If6wjk7GcNjMjaT+4JZX+dhOVbQK4b9rYbDr26AWsROExUMDcZNtpI1Ob2vlWb7A0w
+         2uHkv9BBY00cpvJazLX91L10ykw7VEBVKusx90IK2IK2bF3izmDqJjeguw7ALzE84bZh
+         ws5aGFUFcjlPt6a48ZDc6TWl1XkhkdvlcmjcHqCdWgPOvyEKyGKDAAzthfg/R2QE/zyh
+         YkPKpUQp+A3QjwA+yUCnoJ3treE/dKzZrMBaJpEaE0Ka0/TRP3bEesS95wVoAewMkbZ3
+         EvKdFnwL2+NwbZwEPyH12evl3GZNApbATnjC/rE+VYYHVFw7aHvwxt41n/N+oyQnlq1b
+         bx6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715925129; x=1716529929;
+        d=1e100.net; s=20230601; t=1715922191; x=1716526991;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cVtJ2FU/+H3Vwpl0z9ENRPJkq5Ez/N1xh7TOdjhGiJs=;
-        b=GwbWpAbiJOgquhBeZsTUx2/aH2hAF0kzzVcXM6GV3OqEJOU4IVDwSDXPgRZrpVkkMe
-         uNSw2jkjwc9DbGxnMaZh10qJqzL6lH+OC4t1RxPXjvoAKG8RukEeM8WHbtBTo09+Gt8T
-         vSAEjvFPGzjdz34YZdKkFfUq5ly71QrU6C84bx2fmDbpt8+ur4x1VkHPER4NyYFgg+4K
-         ob+t0MBCZROjdsc5yHUbxvojJ4iI9DYzB9YDXDcO2dD+wiR1k9CUvyUavzDOYvJ1gSCq
-         MfXvtigmGPs3ZdXBaQv7+Insem5T6qzGgYq8D2dUAEiutKlq/e+1tU5ubEzVSNcDBl5/
-         UtLQ==
+        bh=olvJpcmkbApgR1MlcxrBTc0IASmmv7gHG32Arj+e5lw=;
+        b=BiYhVx/9puC06SIgVOxxHyxEnV66RAcJrhC5CJVo+K0jbKxSdU1CcUIzzph+dZBc3E
+         Xft7iSn0hmmi5jtpwPMQMD7734HVq3GQuf5L0ngfpDpfR5tdd8J67HKfwwurRp9JF5j9
+         CB5Dyqd5xKXtP6wFzUd0ZFR9f349eOVm7gBStAohGga1pEVMRJJ+Ur/FsE61BezxmN5O
+         xyHuGtgSNVG+frNbJM9AwVvHRV2phe0Jh0WBkfiFGPH187q+O7hsDEQRRfXVaHgzazSZ
+         9JG6rgSvGSwnkJii7+/l+jIUQhd/9YjJWJFmZT40sfhZnTOKDNTTpr52NAdz2ktdv7qd
+         1l1w==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVZySlCs5EVcGkzG2aB0IqktQXvrGdG4JVMoDJr1V8xfq7H+KAUlBmSkeWxVEeJRPEl0H4QVAOjuSxkGVqS58BcP4cxssOnL36/www=
-X-Gm-Message-State: AOJu0YwsyNYuZEO61VksCwmTUx5GhzrB6ITaZFOjHvDImjmndUyUhizY
-	3EH3OcXtU/vwPEwST0qbDvTgZuMoX7/SFkivaVjdmj2JI7zxi1nsGg4aU6rZQNsoUnavTPpUG3/
-	bf8GKDAHhEMYrmBR7nPByPs83b3hgcvGJ
+ AJvYcCVXL85pH7Y0CyQ2UC1IkbsqR3NqfaZPZWX+JIWMne7mG8+1RNBN6xqx8T2DT8Mk10qLUnUmlpua4v2qt/Loq20/iIFI1WvkIFvHUl0=
+X-Gm-Message-State: AOJu0YzD1GogvHXwShEbGC5hbHWJFLwZwerh5KaKYtYQ9fvK08xvuddv
+	v9iassLGz2771cNe2qNdRhQUIOu/cip8A3kPJECExqOETnLZCa8jdgxOyCFib9Nd24PdSRQFPui
+	wZlLRrOG1djaDsVxgVrWxCdHdoaUdIGJa
 X-Google-Smtp-Source: 
- AGHT+IE1y7QmTnvGj3mlsP6sv34dab5qzPP94+Jpgds4dCimlCNdrUKQqKIy4PPdGXOCUPYjtw96oRpD+yG/zXYTzJk=
-X-Received: by 2002:a05:6e02:1c4d:b0:36b:f96e:1b15 with SMTP id
- e9e14a558f8ab-36cc13a8716mr255404015ab.0.1715915256814; Thu, 16 May 2024
- 20:07:36 -0700 (PDT)
+ AGHT+IEVcrPXwosj+wanDZMTZek4hmMva48UDxwz+HItd9WQFOvoxwrlMN0tE2PIZK+8YVSrbJRUnpdPKtEEuMHska0=
+X-Received: by 2002:a05:6e02:158b:b0:36c:10b9:a040 with SMTP id
+ e9e14a558f8ab-36cc117a121mr197170665ab.0.1715915290323; Thu, 16 May 2024
+ 20:08:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <20240507173735.3456334-1-festevam@gmail.com>
-In-Reply-To: <20240507173735.3456334-1-festevam@gmail.com>
+ <20240507173735.3456334-3-festevam@gmail.com>
+In-Reply-To: <20240507173735.3456334-3-festevam@gmail.com>
 From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 17 May 2024 11:07:25 +0800
+Date: Fri, 17 May 2024 11:07:59 +0800
 Message-ID: 
- <CAA+D8ANks=dCfbtB-k8eHO=LD_Znk6m2ftKRTd2kw+h5dbxx+g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: fsl: fsl_aud2htx: Switch to RUNTIME_PM_OPS()
+ <CAA+D8ANa2dPo_fJ4ZOYVKWXi__D7OMkjYgiHVNdRRRoMUEdxOw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: fsl: fsl_xcvr: Switch to RUNTIME_PM_OPS()
 To: Fabio Estevam <festevam@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: 7AZVPW3X74MFYYB3CWBPJ23OX62PWRCD
-X-Message-ID-Hash: 7AZVPW3X74MFYYB3CWBPJ23OX62PWRCD
+Message-ID-Hash: S54IXKDIPHLNWJUUVH4J3IPKBUBETREW
+X-Message-ID-Hash: S54IXKDIPHLNWJUUVH4J3IPKBUBETREW
 X-MailFrom: shengjiu.wang@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -135,59 +136,57 @@ Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
 Best regards
 Shengjiu Wang
+
 > ---
->  sound/soc/fsl/fsl_aud2htx.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
+>  sound/soc/fsl/fsl_xcvr.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 >
-> diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
-> index ee2f6ad1f800..a6cbaa6364c7 100644
-> --- a/sound/soc/fsl/fsl_aud2htx.c
-> +++ b/sound/soc/fsl/fsl_aud2htx.c
-> @@ -261,7 +261,7 @@ static void fsl_aud2htx_remove(struct platform_device=
- *pdev)
+> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+> index c46f64557a7f..5472ace23d82 100644
+> --- a/sound/soc/fsl/fsl_xcvr.c
+> +++ b/sound/soc/fsl/fsl_xcvr.c
+> @@ -1364,7 +1364,7 @@ static void fsl_xcvr_remove(struct platform_device =
+*pdev)
 >         pm_runtime_disable(&pdev->dev);
 >  }
 >
-> -static int __maybe_unused fsl_aud2htx_runtime_suspend(struct device *dev=
-)
-> +static int fsl_aud2htx_runtime_suspend(struct device *dev)
+> -static __maybe_unused int fsl_xcvr_runtime_suspend(struct device *dev)
+> +static int fsl_xcvr_runtime_suspend(struct device *dev)
 >  {
->         struct fsl_aud2htx *aud2htx =3D dev_get_drvdata(dev);
->
-> @@ -271,7 +271,7 @@ static int __maybe_unused fsl_aud2htx_runtime_suspend=
-(struct device *dev)
+>         struct fsl_xcvr *xcvr =3D dev_get_drvdata(dev);
+>         int ret;
+> @@ -1398,7 +1398,7 @@ static __maybe_unused int fsl_xcvr_runtime_suspend(=
+struct device *dev)
 >         return 0;
 >  }
 >
-> -static int __maybe_unused fsl_aud2htx_runtime_resume(struct device *dev)
-> +static int fsl_aud2htx_runtime_resume(struct device *dev)
+> -static __maybe_unused int fsl_xcvr_runtime_resume(struct device *dev)
+> +static int fsl_xcvr_runtime_resume(struct device *dev)
 >  {
->         struct fsl_aud2htx *aud2htx =3D dev_get_drvdata(dev);
+>         struct fsl_xcvr *xcvr =3D dev_get_drvdata(dev);
 >         int ret;
-> @@ -288,9 +288,8 @@ static int __maybe_unused fsl_aud2htx_runtime_resume(=
-struct device *dev)
+> @@ -1483,9 +1483,7 @@ static __maybe_unused int fsl_xcvr_runtime_resume(s=
+truct device *dev)
 >  }
 >
->  static const struct dev_pm_ops fsl_aud2htx_pm_ops =3D {
-> -       SET_RUNTIME_PM_OPS(fsl_aud2htx_runtime_suspend,
-> -                          fsl_aud2htx_runtime_resume,
+>  static const struct dev_pm_ops fsl_xcvr_pm_ops =3D {
+> -       SET_RUNTIME_PM_OPS(fsl_xcvr_runtime_suspend,
+> -                          fsl_xcvr_runtime_resume,
 > -                          NULL)
-> +       RUNTIME_PM_OPS(fsl_aud2htx_runtime_suspend, fsl_aud2htx_runtime_r=
-esume,
-> +                      NULL)
+> +       RUNTIME_PM_OPS(fsl_xcvr_runtime_suspend, fsl_xcvr_runtime_resume,=
+ NULL)
 >         SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
 >                                 pm_runtime_force_resume)
 >  };
-> @@ -300,7 +299,7 @@ static struct platform_driver fsl_aud2htx_driver =3D =
-{
->         .remove_new =3D fsl_aud2htx_remove,
+> @@ -1494,7 +1492,7 @@ static struct platform_driver fsl_xcvr_driver =3D {
+>         .probe =3D fsl_xcvr_probe,
 >         .driver =3D {
->                 .name =3D "fsl-aud2htx",
-> -               .pm =3D &fsl_aud2htx_pm_ops,
-> +               .pm =3D pm_ptr(&fsl_aud2htx_pm_ops),
->                 .of_match_table =3D fsl_aud2htx_dt_ids,
+>                 .name =3D "fsl,imx8mp-audio-xcvr",
+> -               .pm =3D &fsl_xcvr_pm_ops,
+> +               .pm =3D pm_ptr(&fsl_xcvr_pm_ops),
+>                 .of_match_table =3D fsl_xcvr_dt_ids,
 >         },
->  };
+>         .remove_new =3D fsl_xcvr_remove,
 > --
 > 2.34.1
 >
