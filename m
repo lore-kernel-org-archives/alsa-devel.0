@@ -4,79 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64BBCC25B7A
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 19:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26026C25B77
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 19:57:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B575205;
-	Mon, 20 May 2024 21:28:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B575205
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98E001EC;
+	Mon, 20 May 2024 21:57:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98E001EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716233295;
-	bh=heBPNyLYMv8R6LBJX6UZFrWUSwJLJR/VKe8VcBYMUcc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=jekKDC271uzFQHhyMzCgzhnyX4IbpC7GxJQJDHIXLXAaPeMRKH2qCH0MFmQTtpvo2
-	 OSUECiHhLCaHJjETy8hD75O3wQoXzBNGlx82vUS3h/JWr57qxhnIwVwf0to3YsoF5v
-	 7jsnHEFTolXZ1DeHekGUR07HEuBmwQ4dUAtDaK1A=
+	s=default; t=1716235063;
+	bh=tYAI6TOAKRcbV1juyFS7/yUxVV6DkbGrmukK/JfBr+c=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=XOsTEdoHVKy2eq2Dk03gdtHyo5AALt/QptxG/XaO9m6liIO6qcwSOVQqBJclg/WTE
+	 29PcMceAn3PKYZIzqOhvSD7xaLKh5ATL7Jhvm0V32qZGN4N34KgJRPrCI5AFkTpkY3
+	 YKRCNoMSQmc0h+rVPW1q4tA24uc5tDKnhiCrYz8Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87893F805D4; Mon, 20 May 2024 21:27:24 +0200 (CEST)
+	id EB24CF805B1; Mon, 20 May 2024 21:57:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E8C6F805C4;
-	Mon, 20 May 2024 21:27:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0F5BF8020D;
+	Mon, 20 May 2024 21:57:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9E4AF8026A; Mon, 20 May 2024 21:27:19 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 4B30CF8028B; Mon, 20 May 2024 21:57:07 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5FB28F8016B
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 21:27:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FB28F8016B
+	by alsa1.perex.cz (Postfix) with ESMTPS id E0087F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 21:56:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0087F800BA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Mnd9u+8X
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 52D4CCE0CDA;
-	Mon, 20 May 2024 19:27:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A783CC32789;
-	Mon, 20 May 2024 19:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716233227;
-	bh=heBPNyLYMv8R6LBJX6UZFrWUSwJLJR/VKe8VcBYMUcc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Mnd9u+8X4gLHHC/bHqUgzkQRfAcDGrKZRYYz7dyB8mD+yGPsmsrXkT8ZUGngI3jvo
-	 hrWWzCAuvOexV30seGB1LAuEyQDED85cKXG1Zzk1zQ6fz04kQOujB2MfamY/QHOkq4
-	 QnVnOLmAbtHu/FvQ4ZWqg0WdSRVmh1pPb4HuOdxpTwn0X2bG4YPnqJxGZrt1ex1pZa
-	 DGW/oyElu1CIXZNCnvfxKgTofarjCjNZKUbeRfvvE09wddYCcHOL99XS3PpDN0XNAb
-	 wE5M0MxPTkOqpjocO0eBc9uvVpP2cTbj2CmVm/bkb1Fe4CEhoVcXCVp2k6qs7HO3qy
-	 a5y8PSOckcuHg==
-From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
- pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- liam.r.girdwood@intel.com, bard.liao@intel.com,
- yung-chuan.liao@linux.intel.com, kevin-lu@ti.com,
- cameron.berkenpas@gmail.com, tiwai@suse.de, baojun.xu@ti.com, soyer@irl.hu,
- Baojun.Xu@fpt.com
-In-Reply-To: <20240518141546.1742-1-shenghao-ding@ti.com>
-References: <20240518141546.1742-1-shenghao-ding@ti.com>
-Subject: Re: [PATCH v6] ASoC: tas2781: Fix wrong loading calibrated data
- sequence
-Message-Id: <171623322336.94469.13172149100331733795.b4-ty@kernel.org>
-Date: Mon, 20 May 2024 20:27:03 +0100
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=QVV9Vle2
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44H9KnI9081866;
+	Fri, 17 May 2024 04:20:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1715937650;
+	bh=qiiDi6iBA4vHp7ewYuXe/3jhyEOsgdvn9UBZf5Tf+Nw=;
+	h=From:To:CC:Subject:Date;
+	b=QVV9Vle2k6y0lauTeMd1Tzjy7x3gTq1uF+6qE9zTBH1UM6mUDspuObyEm0QvSVfTc
+	 lQBoBXcvGdTqhsSzW1toI5U9a/+4OAU1BlcG1TJ435LkEXJ7CFzjhv+lDMOM+YBFAG
+	 +CLlwVpzqVhhzeuAt8jL2FD6HPK3raKDoV25IOB4=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44H9KnBe090369
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 17 May 2024 04:20:49 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
+ May 2024 04:20:49 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 17 May 2024 04:20:49 -0500
+Received: from LT5CG31242FY.dhcp.ti.com (lt5cg31242fy.dhcp.ti.com
+ [10.85.14.114])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44H9KhXq036740;
+	Fri, 17 May 2024 04:20:44 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>
+CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <bard.liao@intel.com>, <yung-chuan.liao@linux.intel.com>,
+        <kevin-lu@ti.com>, <cameron.berkenpas@gmail.com>, <tiwai@suse.de>,
+        <baojun.xu@ti.com>, <soyer@irl.hu>, <Baojun.Xu@fpt.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [RESEND PATCH v5 1/3] ASoC: tas2781: Fix wrong loading calibrated
+ data sequence
+Date: Fri, 17 May 2024 17:20:36 +0800
+Message-ID: <20240517092039.688-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev-621fa
-Message-ID-Hash: CRQ5UAEUI7XYAJ7OT43K5NTDALLAIBHY
-X-Message-ID-Hash: CRQ5UAEUI7XYAJ7OT43K5NTDALLAIBHY
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-ID-Hash: Z54FYEYNUJI5FXFGBW24DWE4BSFI27XO
+X-Message-ID-Hash: Z54FYEYNUJI5FXFGBW24DWE4BSFI27XO
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CRQ5UAEUI7XYAJ7OT43K5NTDALLAIBHY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z54FYEYNUJI5FXFGBW24DWE4BSFI27XO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,41 +105,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 18 May 2024 22:15:46 +0800, Shenghao Ding wrote:
-> Calibrated data will be set to default after loading DSP config params,
-> which will cause speaker protection work abnormally. Reload calibrated
-> data after loading DSP config params. Remove declaration of unused API
-> which load calibrated data in wrong sequence, changed the copyright year
-> and correct file name in license
-> header.
-> 
-> [...]
+Remove declaration of unused API which load calibrated data in wrong
+sequence, changed the copyright year and correct file name in license
+header.
 
-Applied to
+Fixes: ef3bcde75d06 ("ASoc: tas2781: Add tas2781 driver")
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+---
+v5:
+ - correct changelog has no much relationship with the patch
+v4:
+ - Use the the culprit of the bug itself as the fixes tag
+v3:
+ - No changes.
+v2:
+ - In the Subject, fixed --> Fix
+ - Add Fixes tag
+ - Changed the copyright year to 2024 in the related files
+ - In tas2781-dsp.h, __TASDEVICE_DSP_H__ --> __TAS2781_DSP_H__
+v1:
+ - Download calibrated data after loading the new DSP config params
+ - Remove tasdevice_prmg_calibdata_load, because it is unnecessary to load
+   calibrated data after loading DSP program.
+---
+ include/sound/tas2781-dsp.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Thanks!
-
-[1/1] ASoC: tas2781: Fix wrong loading calibrated data sequence
-      commit: b195acf5266d2dee4067f89345c3e6b88d925311
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/include/sound/tas2781-dsp.h b/include/sound/tas2781-dsp.h
+index ea9af2726a53..7fba7ea26a4b 100644
+--- a/include/sound/tas2781-dsp.h
++++ b/include/sound/tas2781-dsp.h
+@@ -2,7 +2,7 @@
+ //
+ // ALSA SoC Texas Instruments TAS2781 Audio Smart Amplifier
+ //
+-// Copyright (C) 2022 - 2023 Texas Instruments Incorporated
++// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
+ // https://www.ti.com
+ //
+ // The TAS2781 driver implements a flexible and configurable
+@@ -13,8 +13,8 @@
+ // Author: Kevin Lu <kevin-lu@ti.com>
+ //
+ 
+-#ifndef __TASDEVICE_DSP_H__
+-#define __TASDEVICE_DSP_H__
++#ifndef __TAS2781_DSP_H__
++#define __TAS2781_DSP_H__
+ 
+ #define MAIN_ALL_DEVICES			0x0d
+ #define MAIN_DEVICE_A				0x01
+@@ -180,7 +180,6 @@ void tasdevice_calbin_remove(void *context);
+ int tasdevice_select_tuningprm_cfg(void *context, int prm,
+ 	int cfg_no, int rca_conf_no);
+ int tasdevice_prmg_load(void *context, int prm_no);
+-int tasdevice_prmg_calibdata_load(void *context, int prm_no);
+ void tasdevice_tuning_switch(void *context, int state);
+ int tas2781_load_calibration(void *context, char *file_name,
+ 	unsigned short i);
+-- 
+2.34.1
 
