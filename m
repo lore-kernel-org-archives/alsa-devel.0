@@ -4,90 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BD67C04FFE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:25:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF9F0C04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:29:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE32E823;
-	Mon, 20 May 2024 15:24:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE32E823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C539823;
+	Mon, 20 May 2024 15:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C539823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716211507;
-	bh=KmZVxGEYbyrP9V7WE809KECo6k1t051ppisGlj+zDQk=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Qk1l0VMc69PkIGzUI+0EScEA53mpJZPTF6uS2cZ5CmCHerePJMkFZUFLfWzB5h3qI
-	 P5weeCvolNy3mrZWz7yz361zMbgE2sDMEAoAaGkdlaJTMmLybjuQicfJl8zVNjUqc8
-	 keuzM7PQoqly0gBIxiOglFQvzxwSHlmIpVYzf54Y=
+	s=default; t=1716211750;
+	bh=6MSGlKBYOtbIfBrOwKOEfO+LalxWOYW7++dbVZ3bZ5A=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Iqb5vMQGIAkJX7DLi9Hsh3KmnpnlPekNM7ry6cKT98xx4sNXj0Ue9t64pUsFZuzpX
+	 3O0Pn7jZdqS/cmisSVKj4ukorPd+1Dp55HueJOFMpK21dIA32MNrln8+am94p5/XMy
+	 Leu51t/mHcp+RCmz3azKUpdFnRCGiVGxdDSQcmJM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 836DBF805CB; Mon, 20 May 2024 15:24:34 +0200 (CEST)
+	id 79EECF805C9; Mon, 20 May 2024 15:28:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09B64F805E5;
-	Mon, 20 May 2024 15:24:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 296C3F805DA;
+	Mon, 20 May 2024 15:28:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8DECF805BF; Mon, 20 May 2024 15:24:30 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5FBCEF805B5; Mon, 20 May 2024 14:52:50 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AA2AFF80578;
-	Mon, 20 May 2024 15:24:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA2AFF80578
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pZqUX0+Q
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 76EFE61C4B;
-	Mon, 20 May 2024 13:24:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1367C4AF08;
-	Mon, 20 May 2024 13:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716211465;
-	bh=KmZVxGEYbyrP9V7WE809KECo6k1t051ppisGlj+zDQk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pZqUX0+QMkw5pTpm4DONwaNufkqX3zzWfwapwSgBpkV2TWxHsn+grw39j7Lk9LnXz
-	 AKQRNqjcuPochJglbbEfrX6pcl+TYohqQUm5xtClM3jtnYZvMaTcRqQH3/gDSjKIhI
-	 hZXHw6KGK1csT4XJK/nhON9zaHir+22pxLIQv4zDAtw3T09tos5Cl7DkE59O7AKmU4
-	 qJXyyPd28EWmOZPVqZhGsaStx/28y0DbRTzH1m1lICPu1/t5M2LValnltn1dPD2nlY
-	 34w2l9JfjJg7g8Ezosdoup1VX77pYUISsTmVm25Hnq/NBsijKCTybcfpvNDUXEQm3w
-	 Z2M+KCBHjANSw==
-Date: Mon, 20 May 2024 14:24:18 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH 1/6] ASoC: topology: Constify an argument of
- snd_soc_tplg_component_load()
-Message-ID: <baf1789a-a573-470f-b816-ca9bb0d7f299@sirena.org.uk>
-References: 
- <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
- <1fb69d24-03af-4742-9f44-5a93704f5cfb@sirena.org.uk>
- <b736e11e-430a-462b-898a-d5e1dcf7f74a@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3ra5j95P2SXUw+yS"
-Content-Disposition: inline
-In-Reply-To: <b736e11e-430a-462b-898a-d5e1dcf7f74a@wanadoo.fr>
-X-Cookie: We are what we are.
-Message-ID-Hash: FAW7FHTXFYJGUX44MBHH3CAYLOAW4IGG
-X-Message-ID-Hash: FAW7FHTXFYJGUX44MBHH3CAYLOAW4IGG
-X-MailFrom: broonie@kernel.org
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A77EF800BA
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:52:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A77EF800BA
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D0A601A04A4;
+	Fri, 17 May 2024 12:05:34 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 86D221A0F4C;
+	Fri, 17 May 2024 12:05:34 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id DFB7B1820F76;
+	Fri, 17 May 2024 18:05:32 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shengjiu.wang@gmail.com,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 1/2] ASoC: dt-bindings: fsl,mqs: Add i.MX95 platform support
+Date: Fri, 17 May 2024 17:45:45 +0800
+Message-Id: <1715939146-13031-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1715939146-13031-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1715939146-13031-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: WUHTA5ZSQQAG7XWHGMGHDVANGHZMPUZR
+X-Message-ID-Hash: WUHTA5ZSQQAG7XWHGMGHDVANGHZMPUZR
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: lgirdwood@gmail.com, tiwai@suse.com, cezary.rojewski@intel.com,
- pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
- yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, srinivas.kandagatla@linaro.org,
- bgoswami@quicinc.com, daniel.baluta@nxp.com, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -100,41 +90,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+In order to support the MQS module on i.MX95, a new property
+"fsl,mqs-ctrl" needs to be added, as there are two MQS instances
+on the i.MX95 platform, the definition of bit positions in the
+control register is different. This new property is to distinguish
+these two instances.
 
---3ra5j95P2SXUw+yS
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Without this property, the difference of platforms except the
+i.MX95 was handled by the driver itself. But this new property can
+also be used for previous platforms.
 
-On Sat, May 18, 2024 at 10:34:33AM +0200, Christophe JAILLET wrote:
-> Le 14/05/2024 =E0 12:21, Mark Brown a =E9crit=A0:
+The MQS only has one control register, the register may be
+in General Purpose Register memory space, or MQS its own
+memory space, or controlled by System Manager.
+The bit position in the register may be different for each
+platform, there are four parts (bits for module enablement,
+bits for reset, bits for oversampling ratio, bits for divider ratio).
+This new property includes all these things.
 
-> > As mentioned in submitting-patches.rst when submitting a patch series
-> > you should supply a cover letter for that patch series which describes
-> > the overall content of the series.  This helps people understand what
-> > they are looking at and how things fit together.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ .../devicetree/bindings/sound/fsl,mqs.yaml      | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-> Ok.
-> I usually do, but I thought that the subjects were self-explanatory enough
-> in this case.
+diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.yaml b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
+index 8b33353a80ca..a2129b7cb147 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
++++ b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
+@@ -23,6 +23,7 @@ properties:
+       - fsl,imx8qm-mqs
+       - fsl,imx8qxp-mqs
+       - fsl,imx93-mqs
++      - fsl,imx95-mqs
+ 
+   clocks:
+     minItems: 1
+@@ -45,6 +46,22 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  fsl,mqs-ctrl:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 6
++    maxItems: 6
++    description: |
++      Contains the control register information, defined as,
++      Cell #1: register type
++               0 - the register in owned register map
++               1 - the register in general purpose register map
++               2 - the register in control of system manager
++      Cell #2: offset of the control register from the syscon
++      Cell #3: shift bits for module enable bit
++      Cell #4: shift bits for reset bit
++      Cell #5: shift bits for oversampling ratio bit
++      Cell #6: shift bits for divider ratio control bit
++
+ required:
+   - compatible
+   - clocks
+-- 
+2.34.1
 
-> Do you want me to resend?
-
-It's fine this time.
-
---3ra5j95P2SXUw+yS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZLTwIACgkQJNaLcl1U
-h9Dgigf+O7QTQ4V66dmxfo81LtTtdJ9xws2tiMsQz2yhw40n6x/uUnAI/DpVsJBM
-7bnp8/mWqL0S36pfO4c+ypaAOjI/V0BjVEsLBIEIcyWNHlvicUGTAE0UrkUfeUyt
-zIomDWwKLYl6V7o3dUyUn/CASeVpft1esGq8jlyvp9woke55IKQJIp+iX2H/rfZY
-4XZZ+c37WFAj1VsRKD3drP9PrXrVsVfhAzpcq2ZrPLj5llC0nltM7IgPEfZFXIjG
-VkQ8GS2lNoTHiZHgg+lLtqD2l89Ri4Yl0IS4DT1S/iez2COuCZfadttzQxJbDNUa
-ASeX6pfwcXFqRHE0F6YAYkSzaB53YA==
-=rysW
------END PGP SIGNATURE-----
-
---3ra5j95P2SXUw+yS--
