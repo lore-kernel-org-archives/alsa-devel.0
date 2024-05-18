@@ -4,99 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4534C25B78
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E29E7C04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:24:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1604A4A;
-	Mon, 20 May 2024 15:24:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1604A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E1FBAE8;
+	Mon, 20 May 2024 15:24:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E1FBAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716211466;
-	bh=KhwAmAPou2kkv7BTGP/ipZ+kQymSAtsihPeeYZuhSVs=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LG0B3VrGmqt4Rux808FgEgxMRCLxXYDPTVNU9NJuZgCZg79Eeh07kvXErzVowTcHc
-	 b7uDewErtkZ5hu+iLFL3yoceNNKAfr8ZTvlr65RKVC5Tgrsb3uMD0Be9g5Tc33IsUN
-	 XZHlB1drCSpvBdY6ISBsm6JWTVqpzUa8ATTgFwOw=
+	s=default; t=1716211488;
+	bh=zQOI/zmzrQTsBpk04HK/DvBE+JoTssigUSzA84pspKY=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=eFDm4cAxrDtpkt2XsHnQIgeHn+Lul5iwQgq9HsYp1+qAQ9zNGmN4pJ9EsbiFRXyCq
+	 pj1xf5aOoxEoVP+2fiDx1CB/LLHAaD8cRv8uQa4nfjh/en9Pz1rR+dZOqBZdsmyYgu
+	 nz2ZAZ1/jDgsSYhCUXdMIuekUbDx/X3Z4F3KyK24=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 77871F80604; Mon, 20 May 2024 15:23:44 +0200 (CEST)
+	id 7FB65F80630; Mon, 20 May 2024 15:23:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21243F805FD;
-	Mon, 20 May 2024 15:23:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02714F80622;
+	Mon, 20 May 2024 15:23:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9438F805C0; Mon, 20 May 2024 15:04:21 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	id 44085F805BF; Mon, 20 May 2024 15:23:36 +0200 (CEST)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5C122F80578
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 15:04:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C122F80578
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8346F80588
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 15:23:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8346F80588
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=jyZ5loay
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716210256; x=1747746256;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KhwAmAPou2kkv7BTGP/ipZ+kQymSAtsihPeeYZuhSVs=;
-  b=jyZ5loay5QtkLtQuNi2rP49sZEV6MOzik5nCOKWvI37k1IMpfK+JpXUb
-   flZxEH9CInLZ5kOXX3BG6bO54IQ/IOzl3jtb5Z8xQtrGl5dU+cLsNNCR3
-   XF7wEAvsk40xN2IjpBLyAVkyTF+j7lyYD1Wpn1ldQjO8gdz7+fUhFbSVy
-   B+fl4DIq9G/O9k7Y5iIHIUsD5xyzIJpHgAZO4AQcsB27uz2tGVft0tzfs
-   w4PwQC6KaCOD3h0CIAi/h1MoIL9hgF31gLHTAS0WUD2v15jhLXMB/plY1
-   dLAcypfskXH/hmBhqVTSPnweBcg8F9sUJdNervfJs41O02ssdV06Bu/tV
-   Q==;
-X-CSE-ConnectionGUID: slRlOWajQga3kCIzdRyQ3Q==
-X-CSE-MsgGUID: 6l9lNLERRBGYcl+G55wicw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11077"; a="15210582"
-X-IronPort-AV: E=Sophos;i="6.08,173,1712646000";
-   d="scan'208";a="15210582"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 May 2024 11:41:05 -0700
-X-CSE-ConnectionGUID: qLgz2vTSTBCLpNIiEA+ppQ==
-X-CSE-MsgGUID: u+JH4vW5TYW7ga04PS5/4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,173,1712646000";
-   d="scan'208";a="37243342"
-Received: from unknown (HELO 108735ec233b) ([10.239.97.151])
-  by orviesa004.jf.intel.com with ESMTP; 19 May 2024 11:40:59 -0700
-Received: from kbuild by 108735ec233b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s8lSq-00045c-2r;
-	Sun, 19 May 2024 18:40:56 +0000
-Date: Mon, 20 May 2024 02:40:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Baojun Xu <baojun.xu@ti.com>, tiwai@suse.de
-Subject: Re: [PATCH v5 1/1] ALSA: hda/tas2781: Add tas2781 hda driver based
- on SPI
-Message-ID: <202405200222.TIIew7S6-lkp@intel.com>
-References: <20240519150433.760-2-baojun.xu@ti.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=TAI54E/1
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44I3ZRpq016149;
+	Fri, 17 May 2024 22:35:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1716003327;
+	bh=aD9gzhys+SQu7Cf8GO3bNI4zQAxyzFqrA4h33Gc2N+0=;
+	h=From:To:CC:Subject:Date;
+	b=TAI54E/1Tpyw6dQPCPjLLR60SVCUMd8g1T0lRce9sFIY0dIZ75XexRyqQaX/FTH31
+	 68PHGr11lniv8DXnAJjLOF+eCKq1+Sqx5uVBEwrBPVv/qHBXEvSHytqxsxJ7+VsZrq
+	 0CHlHrLEQfmUMRzNsVG6xdutdgd3SQ19NSKuKKNM=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44I3ZRUE004573
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 17 May 2024 22:35:27 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
+ May 2024 22:35:26 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 17 May 2024 22:35:26 -0500
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.158])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44I3ZL6K084573;
+	Fri, 17 May 2024 22:35:22 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>
+Subject: [PATCH v1] ASoC: tas2552: Add TX path for capturing AUDIO-OUT data
+Date: Sat, 18 May 2024 11:35:15 +0800
+Message-ID: <20240518033515.866-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240519150433.760-2-baojun.xu@ti.com>
-Message-ID-Hash: EGBADX42QY4BYTG4KCBPAGC6HNHGZF2C
-X-Message-ID-Hash: EGBADX42QY4BYTG4KCBPAGC6HNHGZF2C
-X-MailFrom: lkp@intel.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-ID-Hash: D76B3V3UV7BQXW22UXCZDLLZGWEWRNBA
+X-Message-ID-Hash: D76B3V3UV7BQXW22UXCZDLLZGWEWRNBA
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, robh+dt@kernel.org,
- andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com, shenghao-ding@ti.com,
- navada@ti.com, 13916275206@139.com, v-po@ti.com, niranjan.hy@ti.com,
+CC: andriy.shevchenko@linux.intel.com, i-salazar@ti.com,
+ pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- liam.r.girdwood@intel.com, yung-chuan.liao@linux.intel.com, baojun.xu@ti.com,
- broonie@kernel.org, soyer@irl.hu
+ liam.r.girdwood@intel.com, kevin-lu@ti.com, tiwai@suse.de, baojun.xu@ti.com,
+ soyer@irl.hu, Baojun.Xu@fpt.com, Shenghao Ding <shenghao-ding@ti.com>
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -109,152 +98,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Baojun,
+TAS2552 is a Smartamp with I/V sense data, add TX path
+to support capturing I/V data.
 
-kernel test robot noticed the following build warnings:
+Fixes: 38803ce7b53b ("ASoC: codecs: tas*: merge .digital_mute() into .mute_stream()")
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-[auto build test WARNING on tiwai-sound/for-next]
-[also build test WARNING on tiwai-sound/for-linus rafael-pm/linux-next rafael-pm/bleeding-edge linus/master v6.9 next-20240517]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+---
+v1:
+ - Changed the copyright year to 2024 in the related files.
+ - Add tx device in tas2552_dai.
+ - Add Stream Domain Widgets for I/V capture
+ - Add INPUT widget
+ - Add I/V capture route
+---
+ sound/soc/codecs/tas2552.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Baojun-Xu/ALSA-hda-tas2781-Add-tas2781-hda-driver-based-on-SPI/20240519-230843
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-patch link:    https://lore.kernel.org/r/20240519150433.760-2-baojun.xu%40ti.com
-patch subject: [PATCH v5 1/1] ALSA: hda/tas2781: Add tas2781 hda driver based on SPI
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20240520/202405200222.TIIew7S6-lkp@intel.com/config)
-compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240520/202405200222.TIIew7S6-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405200222.TIIew7S6-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> sound/pci/hda/tas2781_spi_fwlib.c:1225:11: warning: result of comparison of constant 13656 with expression of type 'unsigned char' is always false [-Wtautological-constant-out-of-range-compare]
-    1225 |             (reg == TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG)) &&
-         |              ~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> sound/pci/hda/tas2781_spi_fwlib.c:1281:11: warning: result of comparison of constant 13660 with expression of type 'unsigned char' is always true [-Wtautological-constant-out-of-range-compare]
-    1281 |             (reg <= (TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG) + 4)))
-         |              ~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/pci/hda/tas2781_spi_fwlib.c:1280:11: warning: result of comparison of constant 13656 with expression of type 'unsigned char' is always false [-Wtautological-constant-out-of-range-compare]
-    1280 |             (reg >= TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG)) &&
-         |              ~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   sound/pci/hda/tas2781_spi_fwlib.c:2112:3: warning: variable 'status' is uninitialized when used here [-Wuninitialized]
-    2112 |                 status++;
-         |                 ^~~~~~
-   sound/pci/hda/tas2781_spi_fwlib.c:2050:12: note: initialize the variable 'status' to silence this warning
-    2050 |         int status;
-         |                   ^
-         |                    = 0
-   4 warnings generated.
-
-
-vim +1225 sound/pci/hda/tas2781_spi_fwlib.c
-
-  1206	
-  1207	static int tasdev_multibytes_chksum(struct tasdevice_priv *tasdevice,
-  1208		unsigned char book, unsigned char page,
-  1209		unsigned char reg, unsigned int len)
-  1210	{
-  1211		struct tas_crc crc_data;
-  1212		unsigned char crc_chksum = 0;
-  1213		unsigned char nBuf1[128];
-  1214		int ret = 0, i;
-  1215		bool in;
-  1216	
-  1217		if ((reg + len - 1) > 127) {
-  1218			ret = -EINVAL;
-  1219			dev_err(tasdevice->dev, "firmware error\n");
-  1220			goto end;
-  1221		}
-  1222	
-  1223		if ((book == TASDEVICE_BOOK_ID(TAS2781_SA_COEFF_SWAP_REG)) &&
-  1224		    (page == TASDEVICE_PAGE_ID(TAS2781_SA_COEFF_SWAP_REG)) &&
-> 1225		    (reg == TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG)) &&
-  1226		    (len == 4)) {
-  1227			/* DSP swap command, pass */
-  1228			ret = 0;
-  1229			goto end;
-  1230		}
-  1231	
-  1232		in = check_yram(&crc_data, book, page, reg, len);
-  1233		if (!in)
-  1234			goto end;
-  1235	
-  1236		if (len == 1) {
-  1237			dev_err(tasdevice->dev, "firmware error\n");
-  1238			ret = -EINVAL;
-  1239			goto end;
-  1240		}
-  1241	
-  1242		ret = tasdevice_spi_dev_bulk_read(tasdevice,
-  1243			TASDEVICE_REG(book, page, crc_data.offset),
-  1244			nBuf1, crc_data.len);
-  1245		if (ret < 0)
-  1246			goto end;
-  1247	
-  1248		for (i = 0; i < crc_data.len; i++) {
-  1249			if ((book == TASDEVICE_BOOK_ID(TAS2781_SA_COEFF_SWAP_REG)) &&
-  1250			    (page == TASDEVICE_PAGE_ID(TAS2781_SA_COEFF_SWAP_REG)) &&
-  1251			    ((i + crc_data.offset) >=
-  1252				TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG)) &&
-  1253			    ((i + crc_data.offset) <=
-  1254				(TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG) + 4)))
-  1255				/* DSP swap command, bypass */
-  1256				continue;
-  1257			else
-  1258				crc_chksum += crc8(tasdevice->crc8_lkp_tbl, &nBuf1[i],
-  1259					1, 0);
-  1260		}
-  1261	
-  1262		ret = crc_chksum;
-  1263	
-  1264	end:
-  1265		return ret;
-  1266	}
-  1267	
-  1268	static int do_singlereg_checksum(struct tasdevice_priv *tasdevice,
-  1269		unsigned char book, unsigned char page,
-  1270		unsigned char reg, unsigned char val)
-  1271	{
-  1272		struct tas_crc crc_data;
-  1273		unsigned int nData1;
-  1274		int ret = 0;
-  1275		bool in;
-  1276	
-  1277		/* DSP swap command, pass */
-  1278		if ((book == TASDEVICE_BOOK_ID(TAS2781_SA_COEFF_SWAP_REG)) &&
-  1279		    (page == TASDEVICE_PAGE_ID(TAS2781_SA_COEFF_SWAP_REG)) &&
-  1280		    (reg >= TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG)) &&
-> 1281		    (reg <= (TASDEVICE_PAGE_REG(TAS2781_SA_COEFF_SWAP_REG) + 4)))
-  1282			return 0;
-  1283	
-  1284		in = check_yram(&crc_data, book, page, reg, 1);
-  1285		if (!in)
-  1286			return 0;
-  1287		ret = tasdevice_spi_dev_read(tasdevice,
-  1288			TASDEVICE_REG(book, page, reg), &nData1);
-  1289		if (ret < 0)
-  1290			return ret;
-  1291	
-  1292		if (nData1 != val) {
-  1293			dev_err(tasdevice->dev,
-  1294				"B[0x%x]P[0x%x]R[0x%x] W[0x%x], R[0x%x]\n",
-  1295				book, page, reg, val, nData1);
-  1296			tasdevice->err_code |= ERROR_YRAM_CRCCHK;
-  1297			return -EAGAIN;
-  1298		}
-  1299	
-  1300		ret = crc8(tasdevice->crc8_lkp_tbl, &val, 1, 0);
-  1301	
-  1302		return ret;
-  1303	}
-  1304	
-
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+index 40f5f27e74c0..9fd3642b98b3 100644
+--- a/sound/soc/codecs/tas2552.c
++++ b/sound/soc/codecs/tas2552.c
+@@ -2,7 +2,8 @@
+ /*
+  * tas2552.c - ALSA SoC Texas Instruments TAS2552 Mono Audio Amplifier
+  *
+- * Copyright (C) 2014 Texas Instruments Incorporated -  https://www.ti.com
++ * Copyright (C) 2014 - 2024 Texas Instruments Incorporated -
++ *	https://www.ti.com
+  *
+  * Author: Dan Murphy <dmurphy@ti.com>
+  */
+@@ -119,12 +120,14 @@ static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
+ 			 &tas2552_input_mux_control),
+ 
+ 	SND_SOC_DAPM_AIF_IN("DAC IN", "DAC Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("ASI OUT", "DAC Capture", 0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_OUT_DRV("ClassD", TAS2552_CFG_2, 7, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("PLL", TAS2552_CFG_2, 3, 0, NULL, 0),
+ 	SND_SOC_DAPM_POST("Post Event", tas2552_post_event),
+ 
+-	SND_SOC_DAPM_OUTPUT("OUT")
++	SND_SOC_DAPM_OUTPUT("OUT"),
++	SND_SOC_DAPM_INPUT("DMIC")
+ };
+ 
+ static const struct snd_soc_dapm_route tas2552_audio_map[] = {
+@@ -134,6 +137,7 @@ static const struct snd_soc_dapm_route tas2552_audio_map[] = {
+ 	{"ClassD", NULL, "Input selection"},
+ 	{"OUT", NULL, "ClassD"},
+ 	{"ClassD", NULL, "PLL"},
++	{"ASI OUT", NULL, "DMIC"}
+ };
+ 
+ #ifdef CONFIG_PM
+@@ -538,6 +542,13 @@ static struct snd_soc_dai_driver tas2552_dai[] = {
+ 			.rates = SNDRV_PCM_RATE_8000_192000,
+ 			.formats = TAS2552_FORMATS,
+ 		},
++		.capture = {
++			.stream_name = "Capture",
++			.channels_min = 2,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_192000,
++			.formats = TAS2552_FORMATS,
++		},
+ 		.ops = &tas2552_speaker_dai_ops,
+ 	},
+ };
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
