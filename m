@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D37AC25B78
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69B24C25B78
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:57:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9D717F1;
-	Mon, 20 May 2024 15:57:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D717F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85C0085D;
+	Mon, 20 May 2024 15:57:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85C0085D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716213436;
-	bh=7ghoUuP1F66lo5lQILjtg4IgiT6Z0TAcd0jCIemjWlQ=;
+	s=default; t=1716213452;
+	bh=oxZAMqMqlKlTjZ/d/nZ7mM8CRcGM1aALJhSvZTlSCIE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HS4xoYKUdCNGlhYk38SNNgy56KAdQx1f+toyjwrieMjXQz2MNKi7hj2MYwbVtUhh2
-	 q1CrwXxgg0JA6RJr0eCTHJ41U4CBuvVWnC8YaJWxW1kYzvLP5ATj8INsP2zrbf29tk
-	 BJ31Qd5TaGowLo+94z4C3JO0Rdch413k1OsBv+rY=
+	b=VH+Hs98IsWnbIkh5TFMFBgyajAKVJk8nAYaCIJGVBbaW4Y/SQ4NLQpu147yGplVTG
+	 +XBBchQ1pAokR/lfwh9iDSvEgl78X1BB7LKa7cZuA/pr6AzN+O/j/R2T+0v4TD16yf
+	 ORflLDxSPEB2P4vP9FDKPS9paRsaXhyGNtLig3NM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A84F5F8061D; Mon, 20 May 2024 15:56:12 +0200 (CEST)
+	id 2119DF8063E; Mon, 20 May 2024 15:56:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 258DEF80619;
-	Mon, 20 May 2024 15:56:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45B8AF80641;
+	Mon, 20 May 2024 15:56:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C0E0F80589; Mon, 20 May 2024 14:37:27 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+	id C3F8AF805A9; Mon, 20 May 2024 14:43:28 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0C9C3F8020D
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:37:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C9C3F8020D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4EEB1F8020D
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:43:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EEB1F8020D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=R6FajXro
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-4202ca70270so27078335e9.3
+ header.s=20230601 header.b=KHhsrSRR
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-420180b58c5so17741745e9.3
         for <alsa-devel@alsa-project.org>;
- Mon, 20 May 2024 05:37:22 -0700 (PDT)
+ Mon, 20 May 2024 05:43:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716208642; x=1716813442;
+        d=gmail.com; s=20230601; t=1716209005; x=1716813805;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JckYzcWe8w+0grZPS9NysF8GgHh7PfoFNUhYz6cHvfw=;
-        b=R6FajXrotevG/39bT65Bvz+OvQAnvHxk0zxS8S2Wbh7tsgH8wmC/+mGyPD8MlYaSZn
-         SaziHsxYtWYggA7nJqY2b61i+z/4O/5YA3o85Vwhh5ABDEN38wZKoRW0LJ6eggXYdZDs
-         w1HpcNKYS5D4hk7YJAg2lwPQheNpNMMQ+FKpyhZUXrgkYJH77zAQvE0Yh+kiHuvmT8QV
-         RkttINqD6ZqWqTUf6qANQmupezKHdH9qlOcodzMN6r//iGQMHFyY9A1iCop028fzKLLB
-         IywQJibAbRZBN6J8T16712yxzZ58alL4KWV1wtAU4OuwsuiB0SHGAZs2+xWNiE5L11OZ
-         bxqA==
+        bh=GBQXsZU35VYhqiFUuzQSMRWlgIZsYX5osBGZyaRNZAc=;
+        b=KHhsrSRRHlHVBCiwe6FMMrP9kRR8n2LH1l1K/f2kILeB23d7t7WzswxIBiK7EQodD3
+         ujBlyJk6NwpQHoqiTU4VRpLThkfVoBM3F4tKE1lGK+iMM1vOZ8QC2JuDXuGZ29iIBlMk
+         0IAw6Jg6NqLrvuKDFknPqhvFFqZj4s5ys+QVSRnbUzpYTfSto+WhjUgreQ7C/mBN452D
+         w+RXspyU7UN6Z5ez673RWGpcrOqlYHOsZY/JPSQpUiYrqtG6J+sGoSiBsNmPrYD+vkNI
+         Uw6AW56WuHYz15b9jLsTQjTHQBTxpOkwz/rh0DqSPRZW12GJ0f6PCWjSyIPSpVxD4TvH
+         8SZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716208642; x=1716813442;
+        d=1e100.net; s=20230601; t=1716209005; x=1716813805;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JckYzcWe8w+0grZPS9NysF8GgHh7PfoFNUhYz6cHvfw=;
-        b=rVuboAo+sydr/3cWzJlKqFJHrpqq8n04nH8NXqxu5GlOdNai1rZoRdkSaRedEKznZl
-         NwnOaEVHsCsKb56TG/ZQgfw/xsLUx9acTidbz+X4O62aKtDpB97IjvJ8QXfPkc8vxckk
-         Vrz7w2rxWCmEmVeqhO71GF7XPilFFXfSIBVsnbacNKoSCyaTphUJXbwMYtkl4RsP5BKz
-         MqMeUWdudrL9MlZ4V7x6Qy6l7mo0TBP4H/MbAmXdHAhHM8olNT3s6vpvc8pmjORSboE3
-         RhOtsJ5gnE9SqwTJAZVW/HGJkOZeKiSoAJQEsRCC2JMrgtZWaLNFqwhfrFoI/WmBSvRb
-         2pAQ==
+        bh=GBQXsZU35VYhqiFUuzQSMRWlgIZsYX5osBGZyaRNZAc=;
+        b=uYGYksUNhVH3YFbBmBrOfTp7nkGWdrauJ0/8ekS3x7+sncl3pjwpHUUd5vNcTKOWPt
+         CCeUxBXtG4ZGLveUayP7UILvEOIFm8QpwWIZOd57q/YhXguEluSEVHLoJEoJPaMOQFU4
+         mq4etQhloTTJUY2bR0wNMQ7ftdyNWbY+8dxXzYTR7ZbHpBpbdsQxpBEeJI5m2fRSk/Kf
+         Y2rC0VanJ9O3uMgt6NnfGIk8S1sX+lokO9LqnLppCTwGHcBdQf037lShCLpOPljyeApP
+         W14SQnliNzZOaQVHmWpe71MubOSI1mWxBbej96N/2c0so7mF69YQ/BBgC2aRXvLTgXDV
+         JsnA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUhfqYIanMTAbWMTf8Clm2bObR3Z1GRzP6kT50NsAqolrBZgqwUO+B+K6bh627qUn+PcIHLp3BOE7zwHrZcWDm+uak2Ps38Z4dSA0U=
-X-Gm-Message-State: AOJu0YyLfK+c5YPhBVStCv9cw8Gjp5On54x9682qFdxRX57urOYsI0tE
-	6MVhXGHMCT6CqAGbgbCp6Ltu9Dc6yu14Gc/Di3bX4PpKtzC5rF8p1aZfGw==
+ AJvYcCUtDZj15reKGyc1qzCQySQr1oxFE6p9hgtPLoHUjOBnnhybNg639bEZ0kKobgCRHqvgE6gdq7ZnPkhmQeCBqaKXfTLIEL4xKXTjNIw=
+X-Gm-Message-State: AOJu0Yxh+x90kC7QIidcMZxgThy5/CXFGEu+KeCzU2/kNHNkZs7Edtq2
+	sdbzRK45YTkhyZGLDlhqXO+mPYp9fPUJF3GMUad4nyEdJNUwLKNdBMFqbA==
 X-Google-Smtp-Source: 
- AGHT+IG3SMaDBws1fzIkcPLAJz7n7Ag6C6la0lbxW02ImT03Ca69NZo4TJd0EVoTiNb4ZOsqOYvl9w==
-X-Received: by 2002:a50:d6c3:0:b0:575:a0c:4b8c with SMTP id
- 4fb4d7f45d1cf-5750a0c4c71mr7898781a12.38.1716106696840;
-        Sun, 19 May 2024 01:18:16 -0700 (PDT)
+ AGHT+IEilfnVxtejbu/ht9RsEU/PAmph0nDxRzwauS2k1nuOc2xrr0wwjEZekDl9AfdgWnlGYcB5Eg==
+X-Received: by 2002:a05:6512:b15:b0:51a:ca75:9ffe with SMTP id
+ 2adb3069b0e04-5221057b50bmr23433137e87.42.1716106689783;
+        Sun, 19 May 2024 01:18:09 -0700 (PDT)
 Received: from hex.my.domain (83.8.125.62.ipv4.supernova.orange.pl.
  [83.8.125.62])
         by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5733c34e5ccsm13698518a12.95.2024.05.19.01.18.15
+ 4fb4d7f45d1cf-5733c34e5ccsm13698518a12.95.2024.05.19.01.18.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 May 2024 01:18:16 -0700 (PDT)
+        Sun, 19 May 2024 01:18:09 -0700 (PDT)
 From: Artur Weber <aweber.kernel@gmail.com>
-Date: Sun, 19 May 2024 10:17:52 +0200
-Subject: [PATCH v3 6/8] ARM: dts: samsung: exynos4212-tab3: Fix headset
- mic, add jack detection
+Date: Sun, 19 May 2024 10:17:47 +0200
+Subject: [PATCH v3 1/8] ASoC: dt-bindings: samsung,midas-audio: Add headset
+ mic bias supply
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240519-midas-wm1811-gpio-jack-v3-6-0c1736144c0e@gmail.com>
+Message-Id: <20240519-midas-wm1811-gpio-jack-v3-1-0c1736144c0e@gmail.com>
 References: <20240519-midas-wm1811-gpio-jack-v3-0-0c1736144c0e@gmail.com>
 In-Reply-To: <20240519-midas-wm1811-gpio-jack-v3-0-0c1736144c0e@gmail.com>
 To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
@@ -106,11 +106,11 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
  Artur Weber <aweber.kernel@gmail.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1716106686; l=1934;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1716106686; l=1024;
  i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=7ghoUuP1F66lo5lQILjtg4IgiT6Z0TAcd0jCIemjWlQ=;
- b=7uG1N3oCFSVcHBgOu630Zb3pi3zaKhxy6TMe+0DPNU1zBvvLFKsgdfN4Ck4LNGhnW0CpYcgRE
- mdzyO/Ha9ITAAd84jXijoFHaM9QleQPYATtna13/I/VA3AuPupxCnTk
+ bh=oxZAMqMqlKlTjZ/d/nZ7mM8CRcGM1aALJhSvZTlSCIE=;
+ b=BhIKKL+8RIOGcP4bUlY911QYk1W9Fy3JXaNFWUp3TXITqmXYjEBxWsyPihAzfzCdyP0qEcTeV
+ ow6N+zBCrMNAp4ThqQJrxiywHiLgDSQJXmY+JaRKZwzCc+BvJiEYIum
 X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
  pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
 X-MailFrom: aweber.kernel@gmail.com
@@ -119,15 +119,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IEMOWRFHM2JVN5PF2BBZZZMGOJKUJ4RF
-X-Message-ID-Hash: IEMOWRFHM2JVN5PF2BBZZZMGOJKUJ4RF
+Message-ID-Hash: CWQCR55DVTWXCZD7SK3WCHYLRRY3TQVL
+X-Message-ID-Hash: CWQCR55DVTWXCZD7SK3WCHYLRRY3TQVL
 X-Mailman-Approved-At: Mon, 20 May 2024 13:56:00 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IEMOWRFHM2JVN5PF2BBZZZMGOJKUJ4RF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CWQCR55DVTWXCZD7SK3WCHYLRRY3TQVL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,66 +136,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Set up headset mic bias regulator and add the necessary properties to
-the samsung,midas-audio node to allow for headset jack detection.
+Some devices use a separate mic bias supply (also referred to as
+"ear mic bias") to enable/disable the headset mic.
+
+Add the DT property headset-mic-bias-supply to allow for specifying
+this supply.
 
 Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
 ---
-Changes in v2:
-- Added headset mic bias regulator
-- Added samsung prefix to threshold properties
-- Dropped wm1811 config changes
----
- arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-index e5254e32aa8f..8dc81112172c 100644
---- a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-+++ b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
-@@ -294,11 +294,30 @@ submic_bias_reg: voltage-regulator-5 {
- 		regulator-max-microvolt = <2800000>;
- 	};
+diff --git a/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml b/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
+index 6ec80f529d84..6ed53dd0bb53 100644
+--- a/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
++++ b/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
+@@ -53,6 +53,9 @@ properties:
+   submic-bias-supply:
+     description: Supply for the micbias on the Sub microphone
  
-+	earmic_bias_reg: voltage-regulator-6 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "EAR_MICBIAS_LDO_2.8V";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		gpio = <&gpm0 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
++  headset-mic-bias-supply:
++    description: Supply for the micbias on the Headset microphone
 +
- 	sound: sound {
- 		compatible = "samsung,midas-audio";
- 		model = "TAB3";
- 		mic-bias-supply = <&mic_bias_reg>;
- 		submic-bias-supply = <&submic_bias_reg>;
-+		headset-mic-bias-supply = <&earmic_bias_reg>;
-+
-+		lineout-sel-gpios = <&gpj1 2 GPIO_ACTIVE_HIGH>;
-+
-+		headset-detect-gpios = <&gpx0 4 GPIO_ACTIVE_LOW>;
-+		headset-key-gpios = <&gpx3 6 GPIO_ACTIVE_LOW>;
-+		samsung,headset-4pole-threshold-microvolt = <710 2000>;
-+		samsung,headset-button-threshold-microvolt = <0 130 260>;
-+		io-channel-names = "headset-detect";
-+		io-channels = <&adc 0>;
- 
- 		audio-routing = "HP", "HPOUT1L",
- 				"HP", "HPOUT1R",
-@@ -345,6 +364,11 @@ wlan_pwrseq: sdhci3-pwrseq {
- 	};
- };
- 
-+&adc {
-+	vdd-supply = <&ldo3_reg>;
-+	status = "okay";
-+};
-+
- &bus_acp {
- 	devfreq = <&bus_dmc>;
- 	status = "okay";
+   fm-sel-gpios:
+     maxItems: 1
+     description: GPIO pin for FM selection
 
 -- 
 2.45.0
