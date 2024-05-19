@@ -4,130 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE5FFC25B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 May 2024 14:07:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 286ACC25B7A
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 May 2024 14:08:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AB0EDFA;
-	Tue, 21 May 2024 16:07:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AB0EDFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 240BE828;
+	Tue, 21 May 2024 16:07:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 240BE828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716300461;
-	bh=zl7AH36vmygEV4JVzP5ZRpRVT0yrltHsi0L0sBPvpeI=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=afPaHXzCiKbS5W8fKceJSZenIVEzDudM/Y+w4ib4wguQzOhrQvWqYMgUcknIprzfr
-	 NUDDkhUjKKUmxtRMCECWWTSArGZOOfPQgfAu7ObpGVdyM48XjqPt0Eh+4n89GKa4ah
-	 IlV1claWuDMrBlGFN0yp4KOb6+zGt5ftyQCm/icI=
+	s=default; t=1716300480;
+	bh=PWlBkt8hrc3yRUjuDGOwehNTi6Z2Iv1ZIjowVOxeb4I=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Ro5U0f/q6kXlcqXSA6/qS8Fv2dsKMvh+7hns+AVhwtrFiUWRV2zVwKCBd8CM9cVzH
+	 AHDKvXpZEZ9wGEdrltTEhXB/27znkUaeZdu1p5vYLeMYwkbE8oBWuDe0a0cAhTxbPi
+	 MNUG/1eqafmhedDDHDJuk8P02pk/zgeZ32vC1ETM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79791F805E7; Tue, 21 May 2024 16:06:47 +0200 (CEST)
+	id 35930F8061E; Tue, 21 May 2024 16:06:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9B85F805F7;
-	Tue, 21 May 2024 16:06:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10B0FF8061C;
+	Tue, 21 May 2024 16:06:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7339F8026A; Mon, 20 May 2024 17:14:31 +0200 (CEST)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
- [IPv6:2a00:1450:4864:20::52b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 36029F8026A; Mon, 20 May 2024 19:10:37 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E9BA1F800BA
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 17:14:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9BA1F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id BED51F801F5
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 19:10:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BED51F801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=EVMcULvo
-Received: by mail-ed1-x52b.google.com with SMTP id
- 4fb4d7f45d1cf-572669fd9f9so7688912a12.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 20 May 2024 08:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716218067; x=1716822867;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eh0hh6ynZxtBGDzmGDI5+hS0xKp2HfOEvcy4GZsRfWo=;
-        b=EVMcULvo8bShVfJdZRHxGEo/afkR8CWtkfV1bh8K3PEQ7iIdiuHgy/YriS2npMS4Eb
-         5tAf8q2pt5sDjshaBsS4DoY7+l6tNM0Iz7xwD3lDkrmL2egfxTFVl89Y7x4k5mQsLpjx
-         Cj3b2lKWkHZFucTY6j8fDO6AeSuDuUqwMuxeC0OuP6PdJAnF87Umxhgl2IrJrODIRPDQ
-         thnhK3ScBisrxdX+CBkvUEj1Ci5OxznEvCUmerFRq/UYyQFP5zsU+VHYT7/hvda/m6so
-         NU2pZv0cHLeG+Q88zfdq3UQDDN5O5qd2dwLXSS5I1EWcmLAue8ZYNZgKlx/HYmlGVAgx
-         oF4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716218067; x=1716822867;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eh0hh6ynZxtBGDzmGDI5+hS0xKp2HfOEvcy4GZsRfWo=;
-        b=RjYNUDbzgR2bxrxRVSfCI39hNdsGY2Fqj8NjOMPjnCD1SwryAn4qRBUFt/4ByRL72N
-         i/zbhJ8oG6biuWzHJJZyK5QC7OCvgqdX2AkkN5NpHXoleYQrMCBQQSoRg1B7YSGPDbg4
-         4UavRrqUBgSBuU4n0tuGpVyRLPb+ukzrrpOZGgfSgVbn7TrI/zjCwh2DPH0cHbwgrFxA
-         btJRQYz/3pvXFROFqIeY3Zx/xp/VzyHcrhE+MSudh6/H8mx/4mRk1HMAcODzhsKM+LZU
-         vpahLcAHIqOeJna9gROUa238aDzx+g5D+5ODBhxZdyfFMOiyrin5jkm9Ej+K76Us4ETv
-         0r9w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCV7lrWs6UofxLSTOAtxuAT+xeQPt+DxyEnMB0EVsdyZs43xSflLDm1h4qrWf/9tgNM9qDzTWQnz3Pi1/ks/AO03sCbC/BQc0xN5yGw=
-X-Gm-Message-State: AOJu0YyZxmDcJJyC/O9YetklSaECltS3RitfXB32LU1Bpe6QH8fc8zol
-	mw+1FTs+q9AiRu6u3FlhyAuyPHobXZ4varTYvIjGqYRPpHeWwRTxo1LdJA==
-X-Google-Smtp-Source: 
- AGHT+IH1S6MZdqZnOCp1XHy0DROY6BRx/iUuxG5zGDEFD1Db54zL75jJp9OmheUmNZVBtKA5DxdCVw==
-X-Received: by 2002:ac2:4c4e:0:b0:523:6a08:1c91 with SMTP id
- 2adb3069b0e04-5236a081d53mr12374237e87.26.1716106695408;
-        Sun, 19 May 2024 01:18:15 -0700 (PDT)
-Received: from hex.my.domain (83.8.125.62.ipv4.supernova.orange.pl.
- [83.8.125.62])
-        by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5733c34e5ccsm13698518a12.95.2024.05.19.01.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 May 2024 01:18:15 -0700 (PDT)
-From: Artur Weber <aweber.kernel@gmail.com>
-Date: Sun, 19 May 2024 10:17:51 +0200
-Subject: [PATCH v3 5/8] ASoC: samsung: midas_wm1811: Use dev_err_probe
- where appropriate
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=Kb6rh2Lb
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44JF57U7115518;
+	Sun, 19 May 2024 10:05:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1716131107;
+	bh=Qncl48aX7pAcHQ1zL87QVnUocwPrehIzUGi9a9KR9HU=;
+	h=From:To:CC:Subject:Date;
+	b=Kb6rh2LbA4VK2PfEb6AiLUn/7kpL0TExJR6iaus4UuVfAYYi2vlkygJnud6uLXFgy
+	 hpY9QBH9kKLG4Q0z1lpO62FVH9GmIFW9+IpGwsYfbAw0ZWu0nQnRwW12uYXvlFnzaQ
+	 1fLnwypz+qiK9yCckuZIDg9QrhK0i5bFph7g1KBs=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44JF57PY119203
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 19 May 2024 10:05:07 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 19
+ May 2024 10:05:06 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 19 May 2024 10:05:07 -0500
+Received: from lelvsmtp6.itg.ti.com ([10.250.165.138])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44JF4xbC074474;
+	Sun, 19 May 2024 10:04:59 -0500
+From: Baojun Xu <baojun.xu@ti.com>
+To: <tiwai@suse.de>
+CC: <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
+        <shenghao-ding@ti.com>, <navada@ti.com>, <13916275206@139.com>,
+        <v-po@ti.com>, <niranjan.hy@ti.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <yung-chuan.liao@linux.intel.com>, <baojun.xu@ti.com>,
+        <broonie@kernel.org>, <soyer@irl.hu>
+Subject: [PATCH v5 0/1] Add tas2781 driver for SPI.
+Date: Sun, 19 May 2024 23:04:31 +0800
+Message-ID: <20240519150433.760-1-baojun.xu@ti.com>
+X-Mailer: git-send-email 2.43.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240519-midas-wm1811-gpio-jack-v3-5-0c1736144c0e@gmail.com>
-References: <20240519-midas-wm1811-gpio-jack-v3-0-0c1736144c0e@gmail.com>
-In-Reply-To: <20240519-midas-wm1811-gpio-jack-v3-0-0c1736144c0e@gmail.com>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- Artur Weber <aweber.kernel@gmail.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1716106686; l=2433;
- i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=zl7AH36vmygEV4JVzP5ZRpRVT0yrltHsi0L0sBPvpeI=;
- b=jKKalLVKlQAPEmhIQI2igaYxc0WtyONvcwLUzap5etYn+mJu5GSY7yIvEUJ6368P+Mmy+lX56
- VqeGNgA6LPfDMjvQfhUv+tlIihN+MvC3f/eFreYYxCb0L35bl6GBcXg
-X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
- pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
-X-MailFrom: aweber.kernel@gmail.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MailFrom: baojun.xu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: OBXPZBUPTEXTXYJ5PNMGJGDMIVOTKIXV
-X-Message-ID-Hash: OBXPZBUPTEXTXYJ5PNMGJGDMIVOTKIXV
+Message-ID-Hash: SCLI76SRFGQWPQQW6A54QOUGDPBFLMC2
+X-Message-ID-Hash: SCLI76SRFGQWPQQW6A54QOUGDPBFLMC2
 X-Mailman-Approved-At: Tue, 21 May 2024 14:06:38 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OBXPZBUPTEXTXYJ5PNMGJGDMIVOTKIXV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SCLI76SRFGQWPQQW6A54QOUGDPBFLMC2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,69 +103,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Since we're already using it in the newly-added GPIO requests for
-jack detection, extend it to the previous checks as well.
+This patch was used to add TAS2781 devices on SPI support in sound/pci/hda.
+It use ACPI node descript about parameters of TAS2781 on SPI, it like:
+    Scope (_SB.PC00.SPI0)
+    {
+        Device (GSPK)
+        {
+            Name (_HID, "TXNW2781")  // _HID: Hardware ID
+            Method (_CRS, 0, NotSerialized)
+            {
+                Name (RBUF, ResourceTemplate ()
+                {
+                    SpiSerialBusV2 (...)
+                    SpiSerialBusV2 (...)
+                }
+            }
+        }
+    }
 
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
----
-Changes in v2:
-- Added this commit
----
- sound/soc/samsung/midas_wm1811.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+And in platform/x86/serial-multi-instantiate.c, those spi devices will be
+added into system as a single SPI device, so TAS2781 SPI driver will
+probe twice for every single SPI device. And driver will also parser
+mono DSP firmware binary and RCA binary for itself.
 
-diff --git a/sound/soc/samsung/midas_wm1811.c b/sound/soc/samsung/midas_wm1811.c
-index ce94550ee32e..91f4be98723c 100644
---- a/sound/soc/samsung/midas_wm1811.c
-+++ b/sound/soc/samsung/midas_wm1811.c
-@@ -646,16 +646,14 @@ static int midas_probe(struct platform_device *pdev)
- 	card->dev = dev;
- 
- 	priv->reg_mic_bias = devm_regulator_get(dev, "mic-bias");
--	if (IS_ERR(priv->reg_mic_bias)) {
--		dev_err(dev, "Failed to get mic bias regulator\n");
--		return PTR_ERR(priv->reg_mic_bias);
--	}
-+	if (IS_ERR(priv->reg_mic_bias))
-+		return dev_err_probe(dev, PTR_ERR(priv->reg_mic_bias),
-+				     "Failed to get mic bias regulator\n");
- 
- 	priv->reg_submic_bias = devm_regulator_get(dev, "submic-bias");
--	if (IS_ERR(priv->reg_submic_bias)) {
--		dev_err(dev, "Failed to get submic bias regulator\n");
--		return PTR_ERR(priv->reg_submic_bias);
--	}
-+	if (IS_ERR(priv->reg_submic_bias))
-+		return dev_err_probe(dev, PTR_ERR(priv->reg_submic_bias),
-+				     "Failed to get submic bias regulator\n");
- 
- 	priv->reg_headset_mic_bias = devm_regulator_get_optional(dev,
- 							    "headset-mic-bias");
-@@ -669,17 +667,15 @@ static int midas_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->gpio_fm_sel = devm_gpiod_get_optional(dev, "fm-sel", GPIOD_OUT_HIGH);
--	if (IS_ERR(priv->gpio_fm_sel)) {
--		dev_err(dev, "Failed to get FM selection GPIO\n");
--		return PTR_ERR(priv->gpio_fm_sel);
--	}
-+	if (IS_ERR(priv->gpio_fm_sel))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpio_fm_sel),
-+				     "Failed to get FM selection GPIO\n");
- 
- 	priv->gpio_lineout_sel = devm_gpiod_get_optional(dev, "lineout-sel",
- 						    GPIOD_OUT_HIGH);
--	if (IS_ERR(priv->gpio_lineout_sel)) {
--		dev_err(dev, "Failed to get line out selection GPIO\n");
--		return PTR_ERR(priv->gpio_lineout_sel);
--	}
-+	if (IS_ERR(priv->gpio_lineout_sel))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpio_lineout_sel),
-+				     "Failed to get line out selection GPIO\n");
- 
- 	priv->gpio_headset_detect = devm_gpiod_get_optional(dev,
- 				"headset-detect", GPIOD_IN);
+Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+
+Baojun Xu (1):
+  ALSA: hda/tas2781: Add tas2781 hda driver based on SPI
+
+ drivers/acpi/scan.c                           |    1 +
+ .../platform/x86/serial-multi-instantiate.c   |   12 +
+ sound/pci/hda/Kconfig                         |   14 +
+ sound/pci/hda/Makefile                        |    2 +
+ sound/pci/hda/patch_realtek.c                 |   13 +
+ sound/pci/hda/tas2781-spi.h                   |  148 ++
+ sound/pci/hda/tas2781_hda_spi.c               | 1234 +++++++++
+ sound/pci/hda/tas2781_spi_fwlib.c             | 2247 +++++++++++++++++
+ 8 files changed, 3671 insertions(+)
+ create mode 100644 sound/pci/hda/tas2781-spi.h
+ create mode 100644 sound/pci/hda/tas2781_hda_spi.c
+ create mode 100644 sound/pci/hda/tas2781_spi_fwlib.c
 
 -- 
-2.45.0
+2.40.1
 
