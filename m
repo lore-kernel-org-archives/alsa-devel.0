@@ -4,89 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB872C25B7A
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 12:28:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A554CC04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 12:29:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A2F6E0D;
-	Mon, 20 May 2024 14:28:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A2F6E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D314B852;
+	Mon, 20 May 2024 14:29:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D314B852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716208137;
-	bh=DGcKwpnm0IaxJEb1l+kKTe6wdeH678B7xPsroNWQ1Rw=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1716208154;
+	bh=ZqfuvKtxoWyUPyoUyQdKOfjpNUI+NCOUWwVaQ/3kZ/E=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PU8901qrubXNVMtvD/R//POlV5/7CQMdy8jopIYd7mmL0iDLPKvZiwl4dVo++zBE8
-	 IHdTwVUgJcqMYPjYs1KD/7I9MPFNHsOBep28i2bjiJKw4/9byfHvg7ExSM+bNxzWzE
-	 8ldhlPdzgtQMpWFXSvxLCiCCNOVy5QbinSYWid+E=
+	b=s4SbGF5L+YUWUhg7j/lb1/KlhWgGqp/Yw0+J1Ve2kY9cWIIo5cHaxF/w3Moj1SsZs
+	 MyQsJRiVcMzSHkjwbPuBn4jg0gwNHDb8sTpmgNIQjnN4uGruG1/T8AtEGv/lXKU5jg
+	 S8IYIeifSIGp6E4iNoSTBF5080SpJrYCLjoEOw0g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2785F80699; Mon, 20 May 2024 14:26:54 +0200 (CEST)
+	id 0B20EF806C8; Mon, 20 May 2024 14:26:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 129B9F806A0;
-	Mon, 20 May 2024 14:26:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BBE7F806B4;
+	Mon, 20 May 2024 14:26:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9EDAF8026A; Mon, 20 May 2024 14:20:54 +0200 (CEST)
-Received: from msa.smtpout.orange.fr (out-65.smtpout.orange.fr
- [193.252.22.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	id 9441AF8028B; Mon, 20 May 2024 14:21:07 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9FEE7F800DF;
-	Mon, 20 May 2024 14:20:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FEE7F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3DDCF8016B
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:20:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3DDCF8016B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=wanadoo.fr header.i=@wanadoo.fr header.a=rsa-sha256
- header.s=t20230301 header.b=iwhmvtrd
-Received: from [192.168.1.37] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id 8FWTs7QkmyBie8FWTsPyIk; Sat, 18 May 2024 10:34:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1716021277;
-	bh=HvBJuxK1qEQGY419eTHQS0e80FA2YaU9Iq9DBa3kX10=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=iwhmvtrdL4BdsBWGJzKEpidQIiq9tYMuH0xt9xdOS7fc8Nl1J5yik1eSFqgb2VZgk
-	 SfKIbYIHE0a5ct0ikO52QWFqvqm67pgrZcUKpOhlNNaZSwjY+YKVWoJS9xAbRgwpso
-	 b2oBsgypqrjRFSFwu6ix9ZOftKcBVWYFM86CViQ6avj4S1KqDH0LPBBZqFNCuoA+s+
-	 BTV4OFbYmIeHwMF2gZU4G1w91Scp5bZHDLlI3pq7cApCALEzGcFQe2JqFcb11PClPJ
-	 syUymcbQu6mylvYyG3smWFis+IAGtjZ6YoDg+cbrYl18wBMHJ4ThylD4w8Jm84nPZr
-	 tCstCJWA+cZzw==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 18 May 2024 10:34:37 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <b736e11e-430a-462b-898a-d5e1dcf7f74a@wanadoo.fr>
-Date: Sat, 18 May 2024 10:34:33 +0200
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=hsLNjHAp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1716207661; x=1747743661;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZqfuvKtxoWyUPyoUyQdKOfjpNUI+NCOUWwVaQ/3kZ/E=;
+  b=hsLNjHApP4ao1nemnnAfj+5zT1PgoAMFfhy9s4dSQMHthCyXSQn7ZnG3
+   hsqTJoiTmGp4tuFQNNsVFb7vxH04ZQc2E9GvDUabujlv2nWoikaOutwjL
+   F1Uec8XTlslpXjiSSxZ9HDfHjc2h1ET9VU55d4J27ym2gfIkvcLszGoCY
+   7ygxK2pSH8jKQbshDa8hPso2C8uvq6p73n4Yq7c139mhK3wFldGMLgRLj
+   xO2NfUwmGu2MHCF6PlWHzrSj3vQOMCbcporDkzyzc/qy7AjGBdDJ2g8te
+   mDs7iOxhzExGmTh5mMV5wQI+xh4MTowP/PnxKu+DxMUK8TSmeuWPCo/1i
+   w==;
+X-CSE-ConnectionGUID: wOdCPlldQgycXgj44MM9nA==
+X-CSE-MsgGUID: +iMGfR9XRgWdPrhjaZhGMA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11077"; a="22936253"
+X-IronPort-AV: E=Sophos;i="6.08,173,1712646000";
+   d="scan'208";a="22936253"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 May 2024 10:58:00 -0700
+X-CSE-ConnectionGUID: 6jNpzaQFR5uhukJ9AM/VoQ==
+X-CSE-MsgGUID: zeNWjm6OQtKgrlPiiTlzcg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,173,1712646000";
+   d="scan'208";a="36723411"
+Received: from unknown (HELO 108735ec233b) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 19 May 2024 10:57:55 -0700
+Received: from kbuild by 108735ec233b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s8knB-00044O-1E;
+	Sun, 19 May 2024 17:57:53 +0000
+Date: Mon, 20 May 2024 01:57:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Baojun Xu <baojun.xu@ti.com>, tiwai@suse.de
+Subject: Re: [PATCH v5 1/1] ALSA: hda/tas2781: Add tas2781 hda driver based
+ on SPI
+Message-ID: <202405200105.BWxmtco7-lkp@intel.com>
+References: <20240519150433.760-2-baojun.xu@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] ASoC: topology: Constify an argument of
- snd_soc_tplg_component_load()
-To: Mark Brown <broonie@kernel.org>
-References: 
- <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
- <1fb69d24-03af-4742-9f44-5a93704f5cfb@sirena.org.uk>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <1fb69d24-03af-4742-9f44-5a93704f5cfb@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KAUSDZNKJXMVNQS77XJSXDPM5V5TKRR6
-X-Message-ID-Hash: KAUSDZNKJXMVNQS77XJSXDPM5V5TKRR6
-X-MailFrom: christophe.jaillet@wanadoo.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240519150433.760-2-baojun.xu@ti.com>
+Message-ID-Hash: UFKQH75XEZK36OS6AFMP36LSY3JFSDHQ
+X-Message-ID-Hash: UFKQH75XEZK36OS6AFMP36LSY3JFSDHQ
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: lgirdwood@gmail.com, tiwai@suse.com, cezary.rojewski@intel.com,
- pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
- yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, srinivas.kandagatla@linaro.org,
- bgoswami@quicinc.com, daniel.baluta@nxp.com, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+CC: oe-kbuild-all@lists.linux.dev, robh+dt@kernel.org,
+ andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com, shenghao-ding@ti.com,
+ navada@ti.com, 13916275206@139.com, v-po@ti.com, niranjan.hy@ti.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ liam.r.girdwood@intel.com, yung-chuan.liao@linux.intel.com, baojun.xu@ti.com,
+ broonie@kernel.org, soyer@irl.hu
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -99,20 +109,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Le 14/05/2024 à 12:21, Mark Brown a écrit :
-> On Mon, May 13, 2024 at 07:37:20PM +0200, Christophe JAILLET wrote:
->> snd_soc_tplg_component_load() does not modify its "*ops" argument. It
->> only read some values and stores it in "soc_tplg.ops".
-> 
-> As mentioned in submitting-patches.rst when submitting a patch series
-> you should supply a cover letter for that patch series which describes
-> the overall content of the series.  This helps people understand what
-> they are looking at and how things fit together.
+Hi Baojun,
 
-Ok.
-I usually do, but I thought that the subjects were self-explanatory 
-enough in this case.
+kernel test robot noticed the following build warnings:
 
-Do you want me to resend?
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on tiwai-sound/for-linus rafael-pm/linux-next rafael-pm/bleeding-edge linus/master v6.9 next-20240517]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-CJ
+url:    https://github.com/intel-lab-lkp/linux/commits/Baojun-Xu/ALSA-hda-tas2781-Add-tas2781-hda-driver-based-on-SPI/20240519-230843
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+patch link:    https://lore.kernel.org/r/20240519150433.760-2-baojun.xu%40ti.com
+patch subject: [PATCH v5 1/1] ALSA: hda/tas2781: Add tas2781 hda driver based on SPI
+config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20240520/202405200105.BWxmtco7-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240520/202405200105.BWxmtco7-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405200105.BWxmtco7-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   sound/pci/hda/tas2781_hda_spi.c: In function 'tas2781_runtime_suspend':
+>> sound/pci/hda/tas2781_hda_spi.c:1124:16: warning: unused variable 'ret' [-Wunused-variable]
+    1124 |         int i, ret;
+         |                ^~~
+>> sound/pci/hda/tas2781_hda_spi.c:1124:13: warning: unused variable 'i' [-Wunused-variable]
+    1124 |         int i, ret;
+         |             ^
+   sound/pci/hda/tas2781_hda_spi.c: In function 'tas2781_runtime_resume':
+   sound/pci/hda/tas2781_hda_spi.c:1143:16: warning: unused variable 'ret' [-Wunused-variable]
+    1143 |         int i, ret;
+         |                ^~~
+   sound/pci/hda/tas2781_hda_spi.c:1143:13: warning: unused variable 'i' [-Wunused-variable]
+    1143 |         int i, ret;
+         |             ^
+
+
+vim +/ret +1124 sound/pci/hda/tas2781_hda_spi.c
+
+  1120	
+  1121	static int tas2781_runtime_suspend(struct device *dev)
+  1122	{
+  1123		struct tas2781_hda *tas_hda = dev_get_drvdata(dev);
+> 1124		int i, ret;
+  1125	
+  1126		guard(mutex)(&tas_hda->priv->codec_lock);
+  1127	
+  1128		if (tas_hda->priv->playback_started) {
+  1129			tasdevice_spi_tuning_switch(tas_hda->priv, 1);
+  1130			tas_hda->priv->playback_started = false;
+  1131		}
+  1132	
+  1133		tas_hda->priv->cur_book = -1;
+  1134		tas_hda->priv->cur_prog = -1;
+  1135		tas_hda->priv->cur_conf = -1;
+  1136	
+  1137		return 0;
+  1138	}
+  1139	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
