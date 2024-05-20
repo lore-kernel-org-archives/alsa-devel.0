@@ -4,96 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7770C25B78
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 21:34:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 645F5C25B77
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 21:39:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CAC085D;
-	Mon, 20 May 2024 23:33:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CAC085D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31416A4A;
+	Mon, 20 May 2024 23:39:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31416A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716240847;
-	bh=WrZ5Vf7Jh3/G3dGoiHMd/08geH9pMlfqTaIaOal5dMk=;
+	s=default; t=1716241180;
+	bh=yw2rCIrCQibFXCP4yX81inyprqmfwEEpDAwGlUMhIJY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aGcTdRTl1hzW60XXMJK4vLK6Yu3101W03x0Cu5rq4k6Hrp1rfOBWkcKPppnApCBG1
-	 3bSon/NlAQOzcDolWhVT6oGeGScqU6tiyhG4XXnfnp5JXVcyu0yhLmDH2SMIY/PDfn
-	 9ReL3rODbY1uJ1N/Z8F55OWh3HQpdHKYEjPwZmjE=
+	b=NhWx+ssfdv96aOvH9qzP6z6rDZnns0Lu40qWw5Xpxca+8OnxHOXE0ZP72YHafcUH3
+	 89V6nR7kb5ppVwSgJCVqnBYEvF8IFgetBZdSv4fmmEA1zLaKEQwD9Em04/VTgD4xjg
+	 qOQBkBF2cL0g+9SX/Hq2P1dKbgnBGbVEzi3+cnVg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6580BF8057A; Mon, 20 May 2024 23:33:35 +0200 (CEST)
+	id 94DD1F805A0; Mon, 20 May 2024 23:39:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D91B0F80579;
-	Mon, 20 May 2024 23:33:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E932F8058C;
+	Mon, 20 May 2024 23:39:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ECEC8F8026A; Mon, 20 May 2024 23:33:29 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	id 21346F8026A; Mon, 20 May 2024 23:39:05 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 92A42F801F5
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 23:33:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92A42F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD0FAF800BA;
+	Mon, 20 May 2024 23:38:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD0FAF800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XBp1liKj
+ header.s=Intel header.b=JPZzBhbs
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716240804; x=1747776804;
+  t=1716241142; x=1747777142;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=WrZ5Vf7Jh3/G3dGoiHMd/08geH9pMlfqTaIaOal5dMk=;
-  b=XBp1liKjP/IPxnOv7nzgij451Zj1xKj9rvzbgQcJ9+o2vuvCK7uAG3T3
-   KsS6UF5YHol0s7ZeHpaqiEXptXpIwMBeJn+fg6UMilmFctaDy+wax/aCw
-   MqeCW44nm803gXThBKUqUukR5GETanwju0jY8PzfEknSXUhI+RWg1WnYc
-   meRTM++s/HKDgdngApgLyO1pcxnQ5H/aF3Ying8DSek8ocI909uq2BrpT
-   VFsGq8EAkfx4DIeLhhpF+2gtWr7ST6fOP1llV/IRySXl1C7ZebjhgvEtv
-   w4PJ28WmBlQKdqscukiCxAlc+tqR+o+16EE+szpsERExPhlktBKyDA1AY
-   g==;
-X-CSE-ConnectionGUID: RBiOJbAgTRa1DzeuMKJapQ==
-X-CSE-MsgGUID: CsxMcY5VR26oOoU/GyqrTw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="29922093"
+  bh=yw2rCIrCQibFXCP4yX81inyprqmfwEEpDAwGlUMhIJY=;
+  b=JPZzBhbsgkOIOM+C+390sXaMChV0BS0bwRiYDhAFMayLWCzWIk+Rx6Jg
+   9nAtliRueVmhG8lmRn2QCCBylH6SsvlJGC8fP7RBQOcJqF2uRr8gOa8hL
+   pzaAf5tPRRpZDSzp7mI4PsaB8HEmJ6GcMoRnkPsC38NaHz0CNyE1FsHx6
+   ukZcGkVVJu/LoP9r/rJWOale7a5fYT8SKH95m9GCiNsafe4XV5ZDqMrQM
+   wfGp/ZUOBFM9Z7o4+aSiUYiitDuKoPHL4WLvOD58Sx/ZDseRiPGoLlfLb
+   L/guKdtJ4szJDIMMmfU2gAh/51pal+CPoZac730Dr/a8mZ0Bwc4FkeqI/
+   A==;
+X-CSE-ConnectionGUID: U2zJd2EpRM+BlUkO0rjqsg==
+X-CSE-MsgGUID: v1cMma4fRwa5EH+TY5y/PA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="12585213"
 X-IronPort-AV: E=Sophos;i="6.08,176,1712646000";
-   d="scan'208";a="29922093"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2024 14:33:19 -0700
-X-CSE-ConnectionGUID: u4AE7DrRRte9dwLdiod1Kg==
-X-CSE-MsgGUID: K2cU40uRQLSWHZ62riEPiA==
+   d="scan'208";a="12585213"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 14:38:56 -0700
+X-CSE-ConnectionGUID: DGQ7yuvzRpeP50GVaMCv6w==
+X-CSE-MsgGUID: 0MqdF6MhR2ehoTcJGZj5ig==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,176,1712646000";
-   d="scan'208";a="32552694"
+   d="scan'208";a="70084551"
 Received: from daliomra-mobl3.amr.corp.intel.com (HELO [10.125.109.51])
  ([10.125.109.51])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2024 14:33:19 -0700
-Message-ID: <4884ef78-2b86-4dcd-bec4-d6e111fa5455@linux.intel.com>
-Date: Mon, 20 May 2024 16:33:17 -0500
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 14:38:55 -0700
+Message-ID: <c683b42c-f75c-427e-b6b0-66babce9b55e@linux.intel.com>
+Date: Mon, 20 May 2024 16:31:31 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ASoC: intel: Constify struct snd_soc_ops
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 1/6] ASoC: topology: Constify an argument of
+ snd_soc_tplg_component_load()
+To: Mark Brown <broonie@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: lgirdwood@gmail.com, tiwai@suse.com, cezary.rojewski@intel.com,
+ peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ srinivas.kandagatla@linaro.org, bgoswami@quicinc.com, daniel.baluta@nxp.com,
+ linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+ sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
 References: 
- <2f0613bf4c6018569cdaac876d0589e49cf38a80.1715622793.git.christophe.jaillet@wanadoo.fr>
+ <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
+ <1fb69d24-03af-4742-9f44-5a93704f5cfb@sirena.org.uk>
+ <b736e11e-430a-462b-898a-d5e1dcf7f74a@wanadoo.fr>
+ <baf1789a-a573-470f-b816-ca9bb0d7f299@sirena.org.uk>
 Content-Language: en-US
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: 
- <2f0613bf4c6018569cdaac876d0589e49cf38a80.1715622793.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <baf1789a-a573-470f-b816-ca9bb0d7f299@sirena.org.uk>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 6ZG7PBDPPVMLJZGO2DIF2BI4VUGICKYY
-X-Message-ID-Hash: 6ZG7PBDPPVMLJZGO2DIF2BI4VUGICKYY
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: D3FUBPF5VQM3BBJUANPFD4H2PTBRCKCM
+X-Message-ID-Hash: D3FUBPF5VQM3BBJUANPFD4H2PTBRCKCM
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ZG7PBDPPVMLJZGO2DIF2BI4VUGICKYY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D3FUBPF5VQM3BBJUANPFD4H2PTBRCKCM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,26 +118,24 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 5/13/24 12:57, Christophe JAILLET wrote:
-> Constifying "struct snd_soc_ops" moves some data to a read-only section, so
-> increase overall security.
+On 5/20/24 08:24, Mark Brown wrote:
+> On Sat, May 18, 2024 at 10:34:33AM +0200, Christophe JAILLET wrote:
+>> Le 14/05/2024 à 12:21, Mark Brown a écrit :
 > 
-> This structure is also part of scripts/const_structs.checkpatch.
+>>> As mentioned in submitting-patches.rst when submitting a patch series
+>>> you should supply a cover letter for that patch series which describes
+>>> the overall content of the series.  This helps people understand what
+>>> they are looking at and how things fit together.
 > 
-> As an example, on a x86_64, with allmodconfig:
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->    6315	   3696	      0	  10011	   271b	sound/soc/intel/boards/ehl_rt5660.o
+>> Ok.
+>> I usually do, but I thought that the subjects were self-explanatory enough
+>> in this case.
 > 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->    6379	   3648	      0	  10027	   272b	sound/soc/intel/boards/ehl_rt5660.o
+>> Do you want me to resend?
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Compile tested only.
+> It's fine this time.
 
-We don't test all the boards in CI but I don't see any issues with
+no issues with
 https://github.com/thesofproject/linux/pull/4993, so
 
 Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
