@@ -4,98 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 645F5C25B77
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 21:39:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C19C25B78
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 22:28:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31416A4A;
-	Mon, 20 May 2024 23:39:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31416A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23E1CE85;
+	Tue, 21 May 2024 00:28:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23E1CE85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716241180;
-	bh=yw2rCIrCQibFXCP4yX81inyprqmfwEEpDAwGlUMhIJY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=NhWx+ssfdv96aOvH9qzP6z6rDZnns0Lu40qWw5Xpxca+8OnxHOXE0ZP72YHafcUH3
-	 89V6nR7kb5ppVwSgJCVqnBYEvF8IFgetBZdSv4fmmEA1zLaKEQwD9Em04/VTgD4xjg
-	 qOQBkBF2cL0g+9SX/Hq2P1dKbgnBGbVEzi3+cnVg=
+	s=default; t=1716244093;
+	bh=A4335sSIXxSmnvWq25uzN3eOtMetrX9olnAwnD6I3O8=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=fATI1tSu6TgEBSHFlaDSywsrewm+jnJ0JCFa8+PkMI5DmDQ5gBYqGCsUJxZJ7CUMP
+	 kwDrA8jaB+2z3K/3SQRromqZjWUUvMKnEJ/gm1RPBHYEUXYr5Xi1FG0iAmqrXGLEN6
+	 DNLg3b3WnZ3wsxOEcx5JdVG0HIdtPAIcLtvTiLLk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94DD1F805A0; Mon, 20 May 2024 23:39:09 +0200 (CEST)
+	id 62AA7F805A0; Tue, 21 May 2024 00:27:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E932F8058C;
-	Mon, 20 May 2024 23:39:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DC27F805AD;
+	Tue, 21 May 2024 00:27:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21346F8026A; Mon, 20 May 2024 23:39:05 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E05ADF8026A; Tue, 21 May 2024 00:27:34 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DD0FAF800BA;
-	Mon, 20 May 2024 23:38:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD0FAF800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id CD126F80051
+	for <alsa-devel@alsa-project.org>; Tue, 21 May 2024 00:27:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD126F80051
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JPZzBhbs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716241142; x=1747777142;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yw2rCIrCQibFXCP4yX81inyprqmfwEEpDAwGlUMhIJY=;
-  b=JPZzBhbsgkOIOM+C+390sXaMChV0BS0bwRiYDhAFMayLWCzWIk+Rx6Jg
-   9nAtliRueVmhG8lmRn2QCCBylH6SsvlJGC8fP7RBQOcJqF2uRr8gOa8hL
-   pzaAf5tPRRpZDSzp7mI4PsaB8HEmJ6GcMoRnkPsC38NaHz0CNyE1FsHx6
-   ukZcGkVVJu/LoP9r/rJWOale7a5fYT8SKH95m9GCiNsafe4XV5ZDqMrQM
-   wfGp/ZUOBFM9Z7o4+aSiUYiitDuKoPHL4WLvOD58Sx/ZDseRiPGoLlfLb
-   L/guKdtJ4szJDIMMmfU2gAh/51pal+CPoZac730Dr/a8mZ0Bwc4FkeqI/
-   A==;
-X-CSE-ConnectionGUID: U2zJd2EpRM+BlUkO0rjqsg==
-X-CSE-MsgGUID: v1cMma4fRwa5EH+TY5y/PA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="12585213"
-X-IronPort-AV: E=Sophos;i="6.08,176,1712646000";
-   d="scan'208";a="12585213"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2024 14:38:56 -0700
-X-CSE-ConnectionGUID: DGQ7yuvzRpeP50GVaMCv6w==
-X-CSE-MsgGUID: 0MqdF6MhR2ehoTcJGZj5ig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,176,1712646000";
-   d="scan'208";a="70084551"
-Received: from daliomra-mobl3.amr.corp.intel.com (HELO [10.125.109.51])
- ([10.125.109.51])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2024 14:38:55 -0700
-Message-ID: <c683b42c-f75c-427e-b6b0-66babce9b55e@linux.intel.com>
-Date: Mon, 20 May 2024 16:31:31 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=jSWUVzZs
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 65911CE0D6B;
+	Mon, 20 May 2024 22:27:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B863C32786;
+	Mon, 20 May 2024 22:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716244043;
+	bh=A4335sSIXxSmnvWq25uzN3eOtMetrX9olnAwnD6I3O8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jSWUVzZsOzzfjNNR6COy5iu43SEw9an/h08K3UwU44Y8aVHFtKBEliBun26ei13rR
+	 Fks3mR3dWTpbxbCJpAkbW2+ORuu2WsixgPMnQfErAm0C32EBNFgffeGp+naaJDq3Lk
+	 3IZltRLT0E4TSBsXggeBVzqhI84BB6B6IqkMpukjqeAVp6pP2PunWg0j/UFy+x8uNR
+	 bDUbyXUbWQN9T0UTLNz+vJezXrmSTZ9baBQ6NU156HgcqQJVif7yTnPyUOzGhHd3ZM
+	 R3ppI4db2qLhDkviAeXGdQH2LGTMjzrUstRk0AmDM+6ciPpDCL0o7lK2ZiP6B8BWCL
+	 Ic8GCXrXq+IKQ==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Olivier Moysan <olivier.moysan@foss.st.com>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: stm32: Ensure compatible pattern matches
+ whole string
+Date: Mon, 20 May 2024 17:27:05 -0500
+Message-ID: <20240520222705.1742367-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] ASoC: topology: Constify an argument of
- snd_soc_tplg_component_load()
-To: Mark Brown <broonie@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: lgirdwood@gmail.com, tiwai@suse.com, cezary.rojewski@intel.com,
- peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- srinivas.kandagatla@linaro.org, bgoswami@quicinc.com, daniel.baluta@nxp.com,
- linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-References: 
- <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
- <1fb69d24-03af-4742-9f44-5a93704f5cfb@sirena.org.uk>
- <b736e11e-430a-462b-898a-d5e1dcf7f74a@wanadoo.fr>
- <baf1789a-a573-470f-b816-ca9bb0d7f299@sirena.org.uk>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <baf1789a-a573-470f-b816-ca9bb0d7f299@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: D3FUBPF5VQM3BBJUANPFD4H2PTBRCKCM
-X-Message-ID-Hash: D3FUBPF5VQM3BBJUANPFD4H2PTBRCKCM
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Message-ID-Hash: 42MYNY6QUUSNYXS6UQ76QRAAAG2LDQ3T
+X-Message-ID-Hash: 42MYNY6QUUSNYXS6UQ76QRAAAG2LDQ3T
+X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D3FUBPF5VQM3BBJUANPFD4H2PTBRCKCM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/42MYNY6QUUSNYXS6UQ76QRAAAG2LDQ3T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,26 +99,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The compatible pattern "st,stm32-sai-sub-[ab]" is missing starting and
+ending anchors, so any prefix and/or suffix would still be valid.
 
+This also fixes a warning on the example:
 
-On 5/20/24 08:24, Mark Brown wrote:
-> On Sat, May 18, 2024 at 10:34:33AM +0200, Christophe JAILLET wrote:
->> Le 14/05/2024 à 12:21, Mark Brown a écrit :
-> 
->>> As mentioned in submitting-patches.rst when submitting a patch series
->>> you should supply a cover letter for that patch series which describes
->>> the overall content of the series.  This helps people understand what
->>> they are looking at and how things fit together.
-> 
->> Ok.
->> I usually do, but I thought that the subjects were self-explanatory enough
->> in this case.
-> 
->> Do you want me to resend?
-> 
-> It's fine this time.
+Documentation/devicetree/bindings/sound/st,stm32-sai.example.dtb: /example-0/sai@4400b000/audio-controller@4400b004: failed to match any schema with compatible: ['st,stm32-sai-sub-a']
 
-no issues with
-https://github.com/thesofproject/linux/pull/4993, so
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/st,stm32-sai.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+index 59df8a832310..f555ccd6b00a 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+@@ -68,7 +68,7 @@ patternProperties:
+     properties:
+       compatible:
+         description: Compatible for SAI sub-block A or B.
+-        pattern: "st,stm32-sai-sub-[ab]"
++        pattern: "^st,stm32-sai-sub-[ab]$"
+ 
+       "#sound-dai-cells":
+         const: 0
+-- 
+2.43.0
+
