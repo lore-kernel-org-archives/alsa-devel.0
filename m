@@ -4,80 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF9F0C04FFE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDFE3C25B78
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:29:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C539823;
-	Mon, 20 May 2024 15:29:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C539823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37BEA1DA;
+	Mon, 20 May 2024 15:29:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37BEA1DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716211750;
-	bh=6MSGlKBYOtbIfBrOwKOEfO+LalxWOYW7++dbVZ3bZ5A=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=Iqb5vMQGIAkJX7DLi9Hsh3KmnpnlPekNM7ry6cKT98xx4sNXj0Ue9t64pUsFZuzpX
-	 3O0Pn7jZdqS/cmisSVKj4ukorPd+1Dp55HueJOFMpK21dIA32MNrln8+am94p5/XMy
-	 Leu51t/mHcp+RCmz3azKUpdFnRCGiVGxdDSQcmJM=
+	s=default; t=1716211771;
+	bh=nw8hp8/8+msTlDJ9UUY927z2ZDGlE1iKI4XjOZa7LQE=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=GDW3QtM5e8N/j1+rBg54TAmiaNfO+AzhCOPrZE85sdcQdbfpk6GefwYpgwtzXBIzf
+	 E37s23ek7Mn32py1dV05iDDiwbL14p4m31RpV6OrrfaXWI2BjNOhHQrjg2eTuHBPwX
+	 fYD8jxcKHnIE5OSAVoXHK375hz/Mrl/K/R/3LZ7I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79EECF805C9; Mon, 20 May 2024 15:28:39 +0200 (CEST)
+	id D7CAFF805F5; Mon, 20 May 2024 15:28:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 296C3F805DA;
-	Mon, 20 May 2024 15:28:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DF06F805F5;
+	Mon, 20 May 2024 15:28:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5FBCEF805B5; Mon, 20 May 2024 14:52:50 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	id C4C52F805C3; Mon, 20 May 2024 15:20:16 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7A77EF800BA
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A77EF800BA
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D0A601A04A4;
-	Fri, 17 May 2024 12:05:34 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 86D221A0F4C;
-	Fri, 17 May 2024 12:05:34 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id DFB7B1820F76;
-	Fri, 17 May 2024 18:05:32 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shengjiu.wang@gmail.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 1/2] ASoC: dt-bindings: fsl,mqs: Add i.MX95 platform support
-Date: Fri, 17 May 2024 17:45:45 +0800
-Message-Id: <1715939146-13031-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1715939146-13031-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1715939146-13031-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: WUHTA5ZSQQAG7XWHGMGHDVANGHZMPUZR
-X-Message-ID-Hash: WUHTA5ZSQQAG7XWHGMGHDVANGHZMPUZR
-X-MailFrom: shengjiu.wang@nxp.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 88CA8F80578
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 15:20:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88CA8F80578
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=dfO5vWpx
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1716211215; x=1747747215;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=nw8hp8/8+msTlDJ9UUY927z2ZDGlE1iKI4XjOZa7LQE=;
+  b=dfO5vWpxh6ggKxXMRDaJKq1RdjSsjmNszlios8/UtPgiartyHYv6VvTq
+   65H0UDHCNhaoRiTsSGjYoO+BrInHAS2ZDZkgpp5BctgnGPSmx/s58O8DO
+   HDlpErD3C7h9OmvcTMtXcVmBjVTg/atPBL0gmkjnExy6KtO3RtERgdogo
+   s1LMCFw+9hxa+adwr6fp4aOMrckLLN1YY6BbPer44S86b1PiN5Opn4nat
+   9Jn6UymYF83RKU5gKyA/VirjvBhpzgmrnQ2Uz6Jj6wpjdcpz/89yF3++s
+   4Fn2EDqjTDq7JPmC/Jev2z3+4SjOt5WWLE6uTgAvgxGLpTqhQ/2xQWKLE
+   w==;
+X-CSE-ConnectionGUID: 3OKS1yE4S62Mbniw8rUxLw==
+X-CSE-MsgGUID: +NX1zo1PRu+TqTZ7oCWsUA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="12556244"
+X-IronPort-AV: E=Sophos;i="6.08,175,1712646000";
+   d="scan'208";a="12556244"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 06:20:06 -0700
+X-CSE-ConnectionGUID: GpvW/zniQqm/NQHEMYtCbw==
+X-CSE-MsgGUID: 0vol+ruxREWyzvPY49cxmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,175,1712646000";
+   d="scan'208";a="32977289"
+Received: from daliomra-mobl3.amr.corp.intel.com (HELO [10.125.109.51])
+ ([10.125.109.51])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 06:20:03 -0700
+Message-ID: <9853cf34-105f-4430-a232-af04c25a834b@linux.intel.com>
+Date: Mon, 20 May 2024 08:19:58 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] ASoC: rt1320: Add RT1320 SDCA vendor-specific driver
+To: shumingf@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
+References: <20240520091801.399154-1-shumingf@realtek.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20240520091801.399154-1-shumingf@realtek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: DDVKZWLZXVFLI45KU5QUU5SPA6JTRBIZ
+X-Message-ID-Hash: DDVKZWLZXVFLI45KU5QUU5SPA6JTRBIZ
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
+ oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com,
+ pierre-louis.bossart@intel.com
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -90,64 +104,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In order to support the MQS module on i.MX95, a new property
-"fsl,mqs-ctrl" needs to be added, as there are two MQS instances
-on the i.MX95 platform, the definition of bit positions in the
-control register is different. This new property is to distinguish
-these two instances.
 
-Without this property, the difference of platforms except the
-i.MX95 was handled by the driver itself. But this new property can
-also be used for previous platforms.
+> +static const struct sdw_device_id rt1320_id[] = {
+> +	SDW_SLAVE_ENTRY_EXT(0x025d, 0x1320, 0x3, 0x0, 0),
+> +	SDW_SLAVE_ENTRY_EXT(0x025d, 0x1320, 0x3, 0x1, 0),
+> +	{},
 
-The MQS only has one control register, the register may be
-in General Purpose Register memory space, or MQS its own
-memory space, or controlled by System Manager.
-The bit position in the register may be different for each
-platform, there are four parts (bits for module enablement,
-bits for reset, bits for oversampling ratio, bits for divider ratio).
-This new property includes all these things.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- .../devicetree/bindings/sound/fsl,mqs.yaml      | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.yaml b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
-index 8b33353a80ca..a2129b7cb147 100644
---- a/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
-@@ -23,6 +23,7 @@ properties:
-       - fsl,imx8qm-mqs
-       - fsl,imx8qxp-mqs
-       - fsl,imx93-mqs
-+      - fsl,imx95-mqs
- 
-   clocks:
-     minItems: 1
-@@ -45,6 +46,22 @@ properties:
-   resets:
-     maxItems: 1
- 
-+  fsl,mqs-ctrl:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 6
-+    maxItems: 6
-+    description: |
-+      Contains the control register information, defined as,
-+      Cell #1: register type
-+               0 - the register in owned register map
-+               1 - the register in general purpose register map
-+               2 - the register in control of system manager
-+      Cell #2: offset of the control register from the syscon
-+      Cell #3: shift bits for module enable bit
-+      Cell #4: shift bits for reset bit
-+      Cell #5: shift bits for oversampling ratio bit
-+      Cell #6: shift bits for divider ratio control bit
-+
- required:
-   - compatible
-   - clocks
--- 
-2.34.1
-
+Sorry, not following why one of the two entries in the table is an SDCA
+class device and the other not - both rely on SDCA
+controls/entities/functions/etc. That doesn't really align with the
+notion that VA and VB only differ by their DSP capabilities, so not sure
+what the 0/1 difference means.
