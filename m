@@ -4,160 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB9D3C04FFE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:49:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0841EC04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:49:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25263208;
-	Mon, 20 May 2024 15:48:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25263208
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39A71200;
+	Mon, 20 May 2024 15:48:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39A71200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716212940;
-	bh=tL1bHXt9/YAqmnqPjn/s8RxMKcWc/S/C/wlJtqQ+WVI=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=DxuX/q8pP37cEhhrBv8UwGbBzcuq6JNOf2N6QlCttko7OdbfGjKYxpNA8wZislcjq
-	 ihxOTvapzwNR5blfxKBK7JbfuVSO0Q+GF8o/NlJIhVzSquqi227Iq6O4TjN27ZjV9m
-	 q0/lDp8cOLKmx5ZDhbtO+UsnRBl+dpoA/2BQt+mI=
+	s=default; t=1716212948;
+	bh=rGStb7POa/eACNmghIRVWWan7CtCKDW9z7QVFvd9kFg=;
+	h=From:To:Subject:Date:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ChHtpPqmdsuyfO6kJx33uhox4zqvZnBk0jJbfm9QlUxLas9FVbsyR0eUyT7+V9kjA
+	 arg28VfgGTQ2LhyRqGGNi8pGAKhjtdtfFYWMonvegOvYYmzDanPwvAvf8nE1R4Uiws
+	 28/oqaqEd7sVsP4pK2nIgh7YuslmEgNpw2sa+9no=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E8AA4F8070E; Mon, 20 May 2024 15:46:36 +0200 (CEST)
+	id 2F3F1F805EE; Mon, 20 May 2024 15:46:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 374C8F806FC;
-	Mon, 20 May 2024 15:46:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DA70F8071F;
+	Mon, 20 May 2024 15:46:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A71EAF805A8; Mon, 20 May 2024 14:42:23 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id BFE2EF8057A; Mon, 20 May 2024 14:32:00 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 03177F80579
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:42:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03177F80579
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=rFINDfci
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-a59cdd185b9so1078485266b.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 20 May 2024 05:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1716208937; x=1716813737;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X/prEkk7NlB/e4K/D05nDd1aUEil2ACTKtIqCg4p2NQ=;
-        b=rFINDfciGdd6Hw3LZw7BFI/O8CwTCOe4ZD2rPStdr2DPxEpoomJ21JOvmXnIN3lC+o
-         7pE+itDCU/M/ItmDkGA2I2YwPOY6VAM+LfnvaFjqEXsPTVUJRdn6Ckq24x5Tt/bNTnJN
-         udySoBxM1LbZI9rshSUMm7FyudY0uf0N1kYiUrFAeoqTwB6MOMIlkQYOMNOrIwAZQnpm
-         FYyVP70oz96oKdEofGSHoBkmuFW6b8100EARw6evTxZ3lIXW9dlzxuOP8xowLwbBYKY9
-         MoCH7IpiIDbEN2QKB+bJ6NtOrd4D6Fq3sRP749di49seaRdoYftXg470DeG5L7+vLrbo
-         mgIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716208937; x=1716813737;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X/prEkk7NlB/e4K/D05nDd1aUEil2ACTKtIqCg4p2NQ=;
-        b=udJgBP3w3mge22XleXgwQkprxExo3Fdd9fUcSf7W/NH1A5A5AJ5/5qaLRPIC5BHEA3
-         CKbHxoGN0Ov6AGJywRUdwkNu2ylCr1KMyhutxCcfjPLkMF8jANBdhOdC9niX2L2icujV
-         uSbLaH0FVCA6tj+VoXZhMMmzrIxR8daPYFNTvtLVZEIk94jJO2k0gpyZqRf+yc0t/Lfl
-         PMYFBw2rj1FVJf3vjRrPQwxYtWQ1buBx3CY1+9+EIfxloiUlmQ4Rq4trROT8FSOn71cU
-         3YeAFtFOQQev/ugEDowqxm8O2/hgtFZiA24lpqbnQnpG+9lOsK5x6htLDZQoRSH7tk5K
-         GjUg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWfLHNCndnl4kD8PbbjwN1Y2qJE4Dy/8fXLABVH69/jNidAlVsf19RWUtGeNGpliUU0aTuwjmfofuO8kTrLJ0YAt9poTpKiXkbnpvM=
-X-Gm-Message-State: AOJu0YzrtA4YPHhmc/bJUK5adKBlbiG5p0ZqkLs4WrQsPmGibufkQm3c
-	X4xd4KGNZKubH2f1Bml8ljtPwSngnPHI58lSK/SLC8BqhjImZNl9eG6mEGYAV1yrTwCacIYiyPR
-	8
-X-Google-Smtp-Source: 
- AGHT+IF8d/xOk/RNnnP7/4WfSzB76iIM3cflEPGPzlqVTR7AQEzeW1/6VwsH+L7iXQzc7YUlsDhB5A==
-X-Received: by 2002:a05:600c:4f49:b0:420:12df:1f7e with SMTP id
- 5b1f17b1804b1-420e19e46d4mr48893585e9.9.1716202057408;
-        Mon, 20 May 2024 03:47:37 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.206.169])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-41fccfe1277sm405621845e9.42.2024.05.20.03.47.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 May 2024 03:47:36 -0700 (PDT)
-Message-ID: <4727a091-bc64-46ea-8652-db6797dd93d2@linaro.org>
-Date: Mon, 20 May 2024 12:47:35 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id C9267F8026A
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:31:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9267F8026A
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 44K3GhZE2885027,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 44K3GhZE2885027
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 20 May 2024 11:16:43 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 20 May 2024 11:16:43 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 20 May 2024 11:16:43 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975]) by
+ RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975%5]) with mapi id
+ 15.01.2507.035; Mon, 20 May 2024 11:16:43 +0800
+From: =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "lgirdwood@gmail.com"
+	<lgirdwood@gmail.com>
+Subject: RE: [PATCH v2] ASoC: rt1320: Add RT1320 SDCA vendor-specific driver
+Thread-Topic: [PATCH v2] ASoC: rt1320: Add RT1320 SDCA vendor-specific driver
+Thread-Index: AQHaqCvMMBeBUyBRWUWY0jcyYA1OxbGa+W+AgAR6mJA=
+Date: Mon, 20 May 2024 03:16:43 +0000
+Message-ID: <38808c5a15c34e92959a109328612a5d@realtek.com>
+References: <20240517072814.330597-1-shumingf@realtek.com>
+ <e7ff0998-696c-4551-923d-7f04c7e89ba0@linux.intel.com>
+In-Reply-To: <e7ff0998-696c-4551-923d-7f04c7e89ba0@linux.intel.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.22.102.209]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: fsl,mqs: Add i.MX95 platform
- support
-To: Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org
-References: <1715939146-13031-1-git-send-email-shengjiu.wang@nxp.com>
- <1715939146-13031-2-git-send-email-shengjiu.wang@nxp.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1715939146-13031-2-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: ASVJLGSQTIO2FKTDF7LJGL36PYJL3IBJ
-X-Message-ID-Hash: ASVJLGSQTIO2FKTDF7LJGL36PYJL3IBJ
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Message-ID-Hash: WKFZBGZ4WLCFXZWKCS5B2LDSYKZP23SO
+X-Message-ID-Hash: WKFZBGZ4WLCFXZWKCS5B2LDSYKZP23SO
+X-MailFrom: shumingf@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "lars@metafoo.de" <lars@metafoo.de>, "Flove(HsinFu)" <flove@realtek.com>,
+ Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ =?utf-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -170,59 +97,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 17/05/2024 11:45, Shengjiu Wang wrote:
-> In order to support the MQS module on i.MX95, a new property
-> "fsl,mqs-ctrl" needs to be added, as there are two MQS instances
-> on the i.MX95 platform, the definition of bit positions in the
-> control register is different. This new property is to distinguish
-> these two instances.
-> 
-> Without this property, the difference of platforms except the
-> i.MX95 was handled by the driver itself. But this new property can
-> also be used for previous platforms.
-> 
-> The MQS only has one control register, the register may be
-> in General Purpose Register memory space, or MQS its own
-> memory space, or controlled by System Manager.
-> The bit position in the register may be different for each
-> platform, there are four parts (bits for module enablement,
-> bits for reset, bits for oversampling ratio, bits for divider ratio).
-> This new property includes all these things.
-
-...
-
->  
->    clocks:
->      minItems: 1
-> @@ -45,6 +46,22 @@ properties:
->    resets:
->      maxItems: 1
->  
-> +  fsl,mqs-ctrl:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 6
-> +    maxItems: 6
-> +    description: |
-> +      Contains the control register information, defined as,
-> +      Cell #1: register type
-> +               0 - the register in owned register map
-> +               1 - the register in general purpose register map
-> +               2 - the register in control of system manager
-> +      Cell #2: offset of the control register from the syscon
-> +      Cell #3: shift bits for module enable bit
-> +      Cell #4: shift bits for reset bit
-> +      Cell #5: shift bits for oversampling ratio bit
-> +      Cell #6: shift bits for divider ratio control bit
-
-Thanks for detailed explanation in commit msg, but no, please do not
-describe layout of registers in DTS. For the syscon phandles, you can
-pass an argument (although not 6 arguments...). Usually this is enough.
-For some cases, like you have differences in capabilities of this device
-or its programming model, maybe you need different compatible.
-
-If these are different capabilities, sometimes new properties are
-applicable (describing hardware, not register bits...).
-
-Best regards,
-Krzysztof
-
+PiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ19zZXF1ZW5jZSBydDEzMjBfYmxpbmRfd3JpdGVb
+XSA9IHsNCj4gPiArICAgICB7IDB4YzAwMywgMHhlMCB9LA0KPiAuLi4NCj4gPiArICAgICB7IDB4
+ZDQ4NiwgMHhjMyB9LA0KPiA+ICt9Ow0KPiANCj4gSSB3b3VsZCBhZGQgYSBjb21tZW50IHRoYXQg
+dGhlICdibGluZCB3cml0ZXMnIGlzIGFuIFNEQ0EgdGVybSB0byBkZWFsIHdpdGgNCj4gcGxhdGZv
+cm0tc3BlY2lmaWMgaW5pdGlhbGl6YXRpb24sIGJ1dCBpbiB0aGlzIGNhc2UgaXQgc2VlbXMgdGhh
+dCBhbGwgdGhlIGFkZHJlc3Nlcw0KPiB0YXJnZXRlZCBhcmUgaW4gdGhlIHZlbmRvci1zcGVjaWZp
+YyBzcGFjZQ0KDQpTdXJlLCB3aWxsIGFkZCBhIGNvbW1lbnQgdG8gZGVzY3JpYmUgd2hhdCBibGlu
+ZCB3cml0ZXMgbWVhbnMuDQoNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCByZWdfc2VxdWVuY2Ug
+cnQxMzIwX3BhdGNoX2NvZGVfd3JpdGVbXSA9IHsNCj4gPiArICAgICB7IDB4MTAwMDcwMDAsIDB4
+MzcgfSwNCj4gLi4uDQo+ID4gKyAgICAgeyAweDAwMDBkNTQwLCAweDAxIH0sDQo+ID4gK307DQo+
+IA0KPiBJIHdvdWxkIGFkZCBhIGNvbW1lbnQgb24gdGhlIHRhcmdldGVkIHJlZ2lzdGVyIHNwYWNl
+LiBJdCBzZWVtcyB0byBiZSB0aGUNCj4gU0RDQSBmdW5jdGlvbiAxLCBleGNlcHQgZm9yIHRoZSBs
+YXN0IG9uZT8NCj4gDQo+IEFsc28gcG9zc2libHkgbW92ZSB0aGUgdGFibGVzIHRvIGEgZGlmZmVy
+ZW50IGZpbGUgdG8gbWFrZSB0aGUgZHJpdmVyIGNvZGUgZWFzaWVyDQo+IHRvIGdldCB0byAobGVz
+cyBzY3JvbGxpbmcgcmVxdWlyZWQpLg0KDQpUaGUgZHJpdmVyIHdpbGwgYWRkIGEgY29tbWVudCBm
+b3IgdGhlIHBhdGNoX2NvZGVfd3JpdGUuDQpUaGUgc2V0dGluZyBvZiB0aGUgbGFzdCBvbmUgbm90
+aWZpZXMgdGhlIHBhdGNoIGNvZGUgYW5kIGJsaW5kIHdyaXRlcyBhcmUgZG9uZS4NClRoYXQgaXMg
+dGhlIGhhbmRzaGFrZSBtZWNoYW5pc20gd2Ugc2hhbGwgc2V0Lg0KDQo+ID4gK3N0YXRpYyBpbnQg
+cnQxMzIwX3JlYWRfcHJvcChzdHJ1Y3Qgc2R3X3NsYXZlICpzbGF2ZSkgew0KPiA+ICsgICAgIHN0
+cnVjdCBzZHdfc2xhdmVfcHJvcCAqcHJvcCA9ICZzbGF2ZS0+cHJvcDsNCj4gPiArICAgICBpbnQg
+bnZhbDsNCj4gPiArICAgICBpbnQgaSwgajsNCj4gPiArICAgICB1MzIgYml0Ow0KPiA+ICsgICAg
+IHVuc2lnbmVkIGxvbmcgYWRkcjsNCj4gPiArICAgICBzdHJ1Y3Qgc2R3X2Rwbl9wcm9wICpkcG47
+DQo+ID4gKw0KPiA+ICsgICAgIHNkd19zbGF2ZV9yZWFkX3Byb3Aoc2xhdmUpOw0KPiANCj4gYWRk
+IGEgY29tbWVudCB0aGF0IHRoaXMgaXMgbmVlZGVkIHRvIGZldGNoIHRoZSBsYW5lIGluZm9ybWF0
+aW9uIGZyb20gcGxhdGZvcm0NCj4gZmlybXdhcmUuDQoNCk9LLCB3aWxsIGRvLg0KDQo+ID4gK3N0
+YXRpYyBjb25zdCBzdHJ1Y3Qgc2R3X2RldmljZV9pZCBydDEzMjBfaWRbXSA9IHsNCj4gPiArICAg
+ICBTRFdfU0xBVkVfRU5UUllfRVhUKDB4MDI1ZCwgMHgxMzIwLCAweDMsIDB4MCwgMCksXA0KPiAN
+Cj4gbWlzc2luZyBjbGFzcyBJRCAxPw0KDQpXaWxsIGFkZCBjbGFzcyBJRCAxLg0KDQo+ID4gKw0K
+PiA+ICsvKiBGdW5jdGlvbl9TdGF0dXMgKi8NCj4gPiArI2RlZmluZSBGVU5DVElPTl9ORUVEU19J
+TklUSUFMSVpBVElPTiAgICAgICAgICAgICAgICBCSVQoNSkNCj4gPiArI2RlZmluZSBGVU5DVElP
+Tl9IQVNfQkVFTl9SRVNFVCAgICAgICAgICAgICAgICAgICAgICBCSVQoNikNCj4gDQo+IFlvdSBz
+ZWVtIHRvIHVzZSBvbmx5IE5FRURTX0lOSVRJQUxJWkFUSU9OLCB3aGF0IGhhcHBlbnMgb24gYSBS
+RVNFVD8NCg0KVGhlIFJFU0VUIHNob3VsZCBpbmZsdWVuY2UgdGhlIFNEQ0EgY29udHJvbC4NClRo
+ZSBibGluZCB3cml0ZXMgZG9lc24ndCBzZXQgdGhlIFNEQ0EgY29udHJvbC4gVGhlcmVmb3JlLCB0
+aGUgZHJpdmVyIGRvZXNuJ3QgY2hlY2sgUkVTRVQgZmxhZy4NCg0KPiA+ICsjZGVmaW5lIEZVTkNU
+SU9OX0JVU1kgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJJVCg3KQ0KPiBub3QgdXNl
+ZCwgY2FuIGl0IGJlIGFzc2VydGVkPw0KDQpXaWxsIHJlbW92ZSBpdC4gDQoNCj4gTG9va3MgbW9z
+dGx5IGdvb2Qgb3RoZXJ3aXNlLCB0aGFua3MgZm9yIHRoZSBwYXRjaC4NCg==
