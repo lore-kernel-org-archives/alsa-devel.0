@@ -4,88 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E29E7C04FFE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BD67C04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:25:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E1FBAE8;
-	Mon, 20 May 2024 15:24:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E1FBAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE32E823;
+	Mon, 20 May 2024 15:24:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE32E823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716211488;
-	bh=zQOI/zmzrQTsBpk04HK/DvBE+JoTssigUSzA84pspKY=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=eFDm4cAxrDtpkt2XsHnQIgeHn+Lul5iwQgq9HsYp1+qAQ9zNGmN4pJ9EsbiFRXyCq
-	 pj1xf5aOoxEoVP+2fiDx1CB/LLHAaD8cRv8uQa4nfjh/en9Pz1rR+dZOqBZdsmyYgu
-	 nz2ZAZ1/jDgsSYhCUXdMIuekUbDx/X3Z4F3KyK24=
+	s=default; t=1716211507;
+	bh=KmZVxGEYbyrP9V7WE809KECo6k1t051ppisGlj+zDQk=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Qk1l0VMc69PkIGzUI+0EScEA53mpJZPTF6uS2cZ5CmCHerePJMkFZUFLfWzB5h3qI
+	 P5weeCvolNy3mrZWz7yz361zMbgE2sDMEAoAaGkdlaJTMmLybjuQicfJl8zVNjUqc8
+	 keuzM7PQoqly0gBIxiOglFQvzxwSHlmIpVYzf54Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7FB65F80630; Mon, 20 May 2024 15:23:46 +0200 (CEST)
+	id 836DBF805CB; Mon, 20 May 2024 15:24:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02714F80622;
-	Mon, 20 May 2024 15:23:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09B64F805E5;
+	Mon, 20 May 2024 15:24:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44085F805BF; Mon, 20 May 2024 15:23:36 +0200 (CEST)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id C8DECF805BF; Mon, 20 May 2024 15:24:30 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C8346F80588
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 15:23:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8346F80588
+	by alsa1.perex.cz (Postfix) with ESMTPS id AA2AFF80578;
+	Mon, 20 May 2024 15:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA2AFF80578
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=TAI54E/1
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44I3ZRpq016149;
-	Fri, 17 May 2024 22:35:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1716003327;
-	bh=aD9gzhys+SQu7Cf8GO3bNI4zQAxyzFqrA4h33Gc2N+0=;
-	h=From:To:CC:Subject:Date;
-	b=TAI54E/1Tpyw6dQPCPjLLR60SVCUMd8g1T0lRce9sFIY0dIZ75XexRyqQaX/FTH31
-	 68PHGr11lniv8DXnAJjLOF+eCKq1+Sqx5uVBEwrBPVv/qHBXEvSHytqxsxJ7+VsZrq
-	 0CHlHrLEQfmUMRzNsVG6xdutdgd3SQ19NSKuKKNM=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44I3ZRUE004573
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 17 May 2024 22:35:27 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- May 2024 22:35:26 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 May 2024 22:35:26 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.158])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44I3ZL6K084573;
-	Fri, 17 May 2024 22:35:22 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>
-Subject: [PATCH v1] ASoC: tas2552: Add TX path for capturing AUDIO-OUT data
-Date: Sat, 18 May 2024 11:35:15 +0800
-Message-ID: <20240518033515.866-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=pZqUX0+Q
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 76EFE61C4B;
+	Mon, 20 May 2024 13:24:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1367C4AF08;
+	Mon, 20 May 2024 13:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716211465;
+	bh=KmZVxGEYbyrP9V7WE809KECo6k1t051ppisGlj+zDQk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pZqUX0+QMkw5pTpm4DONwaNufkqX3zzWfwapwSgBpkV2TWxHsn+grw39j7Lk9LnXz
+	 AKQRNqjcuPochJglbbEfrX6pcl+TYohqQUm5xtClM3jtnYZvMaTcRqQH3/gDSjKIhI
+	 hZXHw6KGK1csT4XJK/nhON9zaHir+22pxLIQv4zDAtw3T09tos5Cl7DkE59O7AKmU4
+	 qJXyyPd28EWmOZPVqZhGsaStx/28y0DbRTzH1m1lICPu1/t5M2LValnltn1dPD2nlY
+	 34w2l9JfjJg7g8Ezosdoup1VX77pYUISsTmVm25Hnq/NBsijKCTybcfpvNDUXEQm3w
+	 Z2M+KCBHjANSw==
+Date: Mon, 20 May 2024 14:24:18 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH 1/6] ASoC: topology: Constify an argument of
+ snd_soc_tplg_component_load()
+Message-ID: <baf1789a-a573-470f-b816-ca9bb0d7f299@sirena.org.uk>
+References: 
+ <f2f983e791d7f941a95556bb147f426a345d84d4.1715526069.git.christophe.jaillet@wanadoo.fr>
+ <1fb69d24-03af-4742-9f44-5a93704f5cfb@sirena.org.uk>
+ <b736e11e-430a-462b-898a-d5e1dcf7f74a@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Message-ID-Hash: D76B3V3UV7BQXW22UXCZDLLZGWEWRNBA
-X-Message-ID-Hash: D76B3V3UV7BQXW22UXCZDLLZGWEWRNBA
-X-MailFrom: shenghao-ding@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3ra5j95P2SXUw+yS"
+Content-Disposition: inline
+In-Reply-To: <b736e11e-430a-462b-898a-d5e1dcf7f74a@wanadoo.fr>
+X-Cookie: We are what we are.
+Message-ID-Hash: FAW7FHTXFYJGUX44MBHH3CAYLOAW4IGG
+X-Message-ID-Hash: FAW7FHTXFYJGUX44MBHH3CAYLOAW4IGG
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: andriy.shevchenko@linux.intel.com, i-salazar@ti.com,
- pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- liam.r.girdwood@intel.com, kevin-lu@ti.com, tiwai@suse.de, baojun.xu@ti.com,
- soyer@irl.hu, Baojun.Xu@fpt.com, Shenghao Ding <shenghao-ding@ti.com>
+CC: lgirdwood@gmail.com, tiwai@suse.com, cezary.rojewski@intel.com,
+ pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, srinivas.kandagatla@linaro.org,
+ bgoswami@quicinc.com, daniel.baluta@nxp.com, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -98,75 +100,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-TAS2552 is a Smartamp with I/V sense data, add TX path
-to support capturing I/V data.
 
-Fixes: 38803ce7b53b ("ASoC: codecs: tas*: merge .digital_mute() into .mute_stream()")
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+--3ra5j95P2SXUw+yS
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
----
-v1:
- - Changed the copyright year to 2024 in the related files.
- - Add tx device in tas2552_dai.
- - Add Stream Domain Widgets for I/V capture
- - Add INPUT widget
- - Add I/V capture route
----
- sound/soc/codecs/tas2552.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+On Sat, May 18, 2024 at 10:34:33AM +0200, Christophe JAILLET wrote:
+> Le 14/05/2024 =E0 12:21, Mark Brown a =E9crit=A0:
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 40f5f27e74c0..9fd3642b98b3 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -2,7 +2,8 @@
- /*
-  * tas2552.c - ALSA SoC Texas Instruments TAS2552 Mono Audio Amplifier
-  *
-- * Copyright (C) 2014 Texas Instruments Incorporated -  https://www.ti.com
-+ * Copyright (C) 2014 - 2024 Texas Instruments Incorporated -
-+ *	https://www.ti.com
-  *
-  * Author: Dan Murphy <dmurphy@ti.com>
-  */
-@@ -119,12 +120,14 @@ static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
- 			 &tas2552_input_mux_control),
- 
- 	SND_SOC_DAPM_AIF_IN("DAC IN", "DAC Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("ASI OUT", "DAC Capture", 0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_OUT_DRV("ClassD", TAS2552_CFG_2, 7, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("PLL", TAS2552_CFG_2, 3, 0, NULL, 0),
- 	SND_SOC_DAPM_POST("Post Event", tas2552_post_event),
- 
--	SND_SOC_DAPM_OUTPUT("OUT")
-+	SND_SOC_DAPM_OUTPUT("OUT"),
-+	SND_SOC_DAPM_INPUT("DMIC")
- };
- 
- static const struct snd_soc_dapm_route tas2552_audio_map[] = {
-@@ -134,6 +137,7 @@ static const struct snd_soc_dapm_route tas2552_audio_map[] = {
- 	{"ClassD", NULL, "Input selection"},
- 	{"OUT", NULL, "ClassD"},
- 	{"ClassD", NULL, "PLL"},
-+	{"ASI OUT", NULL, "DMIC"}
- };
- 
- #ifdef CONFIG_PM
-@@ -538,6 +542,13 @@ static struct snd_soc_dai_driver tas2552_dai[] = {
- 			.rates = SNDRV_PCM_RATE_8000_192000,
- 			.formats = TAS2552_FORMATS,
- 		},
-+		.capture = {
-+			.stream_name = "Capture",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_192000,
-+			.formats = TAS2552_FORMATS,
-+		},
- 		.ops = &tas2552_speaker_dai_ops,
- 	},
- };
--- 
-2.34.1
+> > As mentioned in submitting-patches.rst when submitting a patch series
+> > you should supply a cover letter for that patch series which describes
+> > the overall content of the series.  This helps people understand what
+> > they are looking at and how things fit together.
 
+> Ok.
+> I usually do, but I thought that the subjects were self-explanatory enough
+> in this case.
+
+> Do you want me to resend?
+
+It's fine this time.
+
+--3ra5j95P2SXUw+yS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZLTwIACgkQJNaLcl1U
+h9Dgigf+O7QTQ4V66dmxfo81LtTtdJ9xws2tiMsQz2yhw40n6x/uUnAI/DpVsJBM
+7bnp8/mWqL0S36pfO4c+ypaAOjI/V0BjVEsLBIEIcyWNHlvicUGTAE0UrkUfeUyt
+zIomDWwKLYl6V7o3dUyUn/CASeVpft1esGq8jlyvp9woke55IKQJIp+iX2H/rfZY
+4XZZ+c37WFAj1VsRKD3drP9PrXrVsVfhAzpcq2ZrPLj5llC0nltM7IgPEfZFXIjG
+VkQ8GS2lNoTHiZHgg+lLtqD2l89Ri4Yl0IS4DT1S/iez2COuCZfadttzQxJbDNUa
+ASeX6pfwcXFqRHE0F6YAYkSzaB53YA==
+=rysW
+-----END PGP SIGNATURE-----
+
+--3ra5j95P2SXUw+yS--
