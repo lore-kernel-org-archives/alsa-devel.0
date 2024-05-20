@@ -4,94 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDFE3C25B78
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87126C04FFE
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 13:46:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37BEA1DA;
-	Mon, 20 May 2024 15:29:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37BEA1DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DC42829;
+	Mon, 20 May 2024 15:46:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DC42829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716211771;
-	bh=nw8hp8/8+msTlDJ9UUY927z2ZDGlE1iKI4XjOZa7LQE=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1716212782;
+	bh=Z6En2rQ56rYKGpCjhvIFLvYQgqhZLyaWZXFlrV2UYzI=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GDW3QtM5e8N/j1+rBg54TAmiaNfO+AzhCOPrZE85sdcQdbfpk6GefwYpgwtzXBIzf
-	 E37s23ek7Mn32py1dV05iDDiwbL14p4m31RpV6OrrfaXWI2BjNOhHQrjg2eTuHBPwX
-	 fYD8jxcKHnIE5OSAVoXHK375hz/Mrl/K/R/3LZ7I=
+	b=X3JFSHEwuW+6qyH4BeGuPnfDbg0jbV53fPp2vvazZ89iZRpsmv2yrSW9OeE1C6AV1
+	 Fe2KiHAIvIfCo8ycUFX4kxAgwlL8ZLQwFRtUDyw3Kjj30VrNRbPvEqYcQ6jQY2a9EK
+	 NdfkQ0+P0jnOfjsNGXNWnf/GnaGbLzNSpjMXPD4g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7CAFF805F5; Mon, 20 May 2024 15:28:40 +0200 (CEST)
+	id AB647F80588; Mon, 20 May 2024 15:45:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DF06F805F5;
-	Mon, 20 May 2024 15:28:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5066AF805C7;
+	Mon, 20 May 2024 15:45:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4C52F805C3; Mon, 20 May 2024 15:20:16 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	id 050F2F805B2; Mon, 20 May 2024 14:51:56 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 88CA8F80578
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 15:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88CA8F80578
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3F8DDF8028B
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 14:51:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F8DDF8028B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=dfO5vWpx
+ header.s=Intel header.b=lWhs3HPx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716211215; x=1747747215;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nw8hp8/8+msTlDJ9UUY927z2ZDGlE1iKI4XjOZa7LQE=;
-  b=dfO5vWpxh6ggKxXMRDaJKq1RdjSsjmNszlios8/UtPgiartyHYv6VvTq
-   65H0UDHCNhaoRiTsSGjYoO+BrInHAS2ZDZkgpp5BctgnGPSmx/s58O8DO
-   HDlpErD3C7h9OmvcTMtXcVmBjVTg/atPBL0gmkjnExy6KtO3RtERgdogo
-   s1LMCFw+9hxa+adwr6fp4aOMrckLLN1YY6BbPer44S86b1PiN5Opn4nat
-   9Jn6UymYF83RKU5gKyA/VirjvBhpzgmrnQ2Uz6Jj6wpjdcpz/89yF3++s
-   4Fn2EDqjTDq7JPmC/Jev2z3+4SjOt5WWLE6uTgAvgxGLpTqhQ/2xQWKLE
+  t=1716209514; x=1747745514;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Z6En2rQ56rYKGpCjhvIFLvYQgqhZLyaWZXFlrV2UYzI=;
+  b=lWhs3HPxPDHUL+pebMgBsDWKe7YuLx2RaKqtjVzKVz4EXHbrJE/qo5j4
+   j4gJ4w8fxZE77EfYW51m75OOVadhLfi97qDxrrPYjc8SyDdoD58rstXC0
+   +wG2M11BeRsUc+htiWbGOq/O+ikxBm5VE71IMphkYL00i+hv/LJ5iVQAI
+   /TqNynjG4t7og2gVgsrzd+QMugiEl6wVKyOsd9UNhRJdbYgbC6MP8WXg5
+   WdYrJ5rYrSyZuBLyMm7/D/5HmX7rK1fR0o1i6A4CojYI8SBrz8E94Bl23
+   ehK0eIBOUevF5I0e3dl2g/7HTqpTbYMt3jkpcUl/xlEqmN/MVdj7YgVTB
    w==;
-X-CSE-ConnectionGUID: 3OKS1yE4S62Mbniw8rUxLw==
-X-CSE-MsgGUID: +NX1zo1PRu+TqTZ7oCWsUA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="12556244"
-X-IronPort-AV: E=Sophos;i="6.08,175,1712646000";
-   d="scan'208";a="12556244"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2024 06:20:06 -0700
-X-CSE-ConnectionGUID: GpvW/zniQqm/NQHEMYtCbw==
-X-CSE-MsgGUID: 0vol+ruxREWyzvPY49cxmA==
+X-CSE-ConnectionGUID: ZQiTH5FmQ7WGMciJrMMXuA==
+X-CSE-MsgGUID: sFAqsCRpRdyqie55H+l+6A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11077"; a="12255560"
+X-IronPort-AV: E=Sophos;i="6.08,174,1712646000";
+   d="scan'208";a="12255560"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 02:29:47 -0700
+X-CSE-ConnectionGUID: usaW+o1zQ/muIcggFC+9Yg==
+X-CSE-MsgGUID: lNzpnIzCR2iuKpS7LCl60A==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,175,1712646000";
-   d="scan'208";a="32977289"
-Received: from daliomra-mobl3.amr.corp.intel.com (HELO [10.125.109.51])
- ([10.125.109.51])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2024 06:20:03 -0700
-Message-ID: <9853cf34-105f-4430-a232-af04c25a834b@linux.intel.com>
-Date: Mon, 20 May 2024 08:19:58 -0500
+X-IronPort-AV: E=Sophos;i="6.08,174,1712646000";
+   d="scan'208";a="32495689"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 02:29:44 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s8zKv-00000009GKJ-0Cwl;
+	Mon, 20 May 2024 12:29:41 +0300
+Date: Mon, 20 May 2024 12:29:40 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Subject: Re: [PATCH v1] ASoC: tas2552: Add TX path for capturing AUDIO-OUT
+ data
+Message-ID: <ZksYBOk_gHprCd_x@smile.fi.intel.com>
+References: <20240518033515.866-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ASoC: rt1320: Add RT1320 SDCA vendor-specific driver
-To: shumingf@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
-References: <20240520091801.399154-1-shumingf@realtek.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240520091801.399154-1-shumingf@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DDVKZWLZXVFLI45KU5QUU5SPA6JTRBIZ
-X-Message-ID-Hash: DDVKZWLZXVFLI45KU5QUU5SPA6JTRBIZ
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240518033515.866-1-shenghao-ding@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: 6JSUEESZEBLHVRPEB4MO2GMB7DSXVOF3
+X-Message-ID-Hash: 6JSUEESZEBLHVRPEB4MO2GMB7DSXVOF3
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
- oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com,
- pierre-louis.bossart@intel.com
+CC: broonie@kernel.org, i-salazar@ti.com,
+ pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ liam.r.girdwood@intel.com, kevin-lu@ti.com, tiwai@suse.de, baojun.xu@ti.com,
+ soyer@irl.hu, Baojun.Xu@fpt.com
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -104,14 +109,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Sat, May 18, 2024 at 11:35:15AM +0800, Shenghao Ding wrote:
+> TAS2552 is a Smartamp with I/V sense data, add TX path
+> to support capturing I/V data.
 
-> +static const struct sdw_device_id rt1320_id[] = {
-> +	SDW_SLAVE_ENTRY_EXT(0x025d, 0x1320, 0x3, 0x0, 0),
-> +	SDW_SLAVE_ENTRY_EXT(0x025d, 0x1320, 0x3, 0x1, 0),
-> +	{},
+...
 
-Sorry, not following why one of the two entries in the table is an SDCA
-class device and the other not - both rely on SDCA
-controls/entities/functions/etc. That doesn't really align with the
-notion that VA and VB only differ by their DSP capabilities, so not sure
-what the 0/1 difference means.
+>  /*
+>   * tas2552.c - ALSA SoC Texas Instruments TAS2552 Mono Audio Amplifier
+>   *
+> - * Copyright (C) 2014 Texas Instruments Incorporated -  https://www.ti.com
+> + * Copyright (C) 2014 - 2024 Texas Instruments Incorporated -
+> + *	https://www.ti.com
+
+Is it okay to wrap the (c) line? (Just asking.)
+
+>   * Author: Dan Murphy <dmurphy@ti.com>
+>   */
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
