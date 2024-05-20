@@ -4,90 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F5FC25B7A
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 19:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7770C25B78
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 21:34:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC7B9826;
-	Mon, 20 May 2024 21:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC7B9826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CAC085D;
+	Mon, 20 May 2024 23:33:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CAC085D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716235085;
-	bh=I351u7aT7I6ouH4KN0hZjNx1w49MRdZV/3oL7OssEN0=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1716240847;
+	bh=WrZ5Vf7Jh3/G3dGoiHMd/08geH9pMlfqTaIaOal5dMk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UgB8184y1kJzmPRoMax/Br2LD4ykCHTm33l7zwCxld9jCW4gmr29vlCvNe9l8J3ln
-	 CKQJOOHOdIXjgxHkLdwOovQKABNHsPn2t4RpY2KyqZn4nhjjFkhqvh1kjsoweaaja7
-	 +v/vJ69Vfoxz3XAMHCjBQZUfetXzNbdK57pZIYgQ=
+	b=aGcTdRTl1hzW60XXMJK4vLK6Yu3101W03x0Cu5rq4k6Hrp1rfOBWkcKPppnApCBG1
+	 3bSon/NlAQOzcDolWhVT6oGeGScqU6tiyhG4XXnfnp5JXVcyu0yhLmDH2SMIY/PDfn
+	 9ReL3rODbY1uJ1N/Z8F55OWh3HQpdHKYEjPwZmjE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 340FCF805CB; Mon, 20 May 2024 21:57:17 +0200 (CEST)
+	id 6580BF8057A; Mon, 20 May 2024 23:33:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6020F805C5;
-	Mon, 20 May 2024 21:57:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D91B0F80579;
+	Mon, 20 May 2024 23:33:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 029DBF805B0; Mon, 20 May 2024 21:57:11 +0200 (CEST)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	id ECEC8F8026A; Mon, 20 May 2024 23:33:29 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CCA28F8016B
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 21:57:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCA28F8016B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 92A42F801F5
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 23:33:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92A42F801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=x3z+gZAP
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44H9KuE1081883;
-	Fri, 17 May 2024 04:20:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1715937656;
-	bh=v/JP+TebD92PX87mV21Jf/D0L7YhRppUzC72Kr69hSk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=x3z+gZAPpmIPkpTxCQM/9VMVbDxQzljZT/MrOkCITi4ME2UK7m9Q+hcfsUgD4cqWx
-	 ssSNSv9cgEUIPT1YkSVV8LB901o0vD4pQPUdfBldDc7TR368WtcAM9gng8MRE/tvu0
-	 sPWhaOiy1zsCUmr3w1g3egChgxDgBawPf8wcCwLM=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44H9KuqL129367
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 17 May 2024 04:20:56 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- May 2024 04:20:55 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 May 2024 04:20:55 -0500
-Received: from LT5CG31242FY.dhcp.ti.com (lt5cg31242fy.dhcp.ti.com
- [10.85.14.114])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44H9KhXr036740;
-	Fri, 17 May 2024 04:20:50 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>
-CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
-        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <bard.liao@intel.com>, <yung-chuan.liao@linux.intel.com>,
-        <kevin-lu@ti.com>, <cameron.berkenpas@gmail.com>, <tiwai@suse.de>,
-        <baojun.xu@ti.com>, <soyer@irl.hu>, <Baojun.Xu@fpt.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [RESEND PATCH v5 2/3] ASoC: tas2781: Fix wrong loading calibrated
- data sequence
-Date: Fri, 17 May 2024 17:20:37 +0800
-Message-ID: <20240517092039.688-2-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <20240517092039.688-1-shenghao-ding@ti.com>
-References: <20240517092039.688-1-shenghao-ding@ti.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=XBp1liKj
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1716240804; x=1747776804;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WrZ5Vf7Jh3/G3dGoiHMd/08geH9pMlfqTaIaOal5dMk=;
+  b=XBp1liKjP/IPxnOv7nzgij451Zj1xKj9rvzbgQcJ9+o2vuvCK7uAG3T3
+   KsS6UF5YHol0s7ZeHpaqiEXptXpIwMBeJn+fg6UMilmFctaDy+wax/aCw
+   MqeCW44nm803gXThBKUqUukR5GETanwju0jY8PzfEknSXUhI+RWg1WnYc
+   meRTM++s/HKDgdngApgLyO1pcxnQ5H/aF3Ying8DSek8ocI909uq2BrpT
+   VFsGq8EAkfx4DIeLhhpF+2gtWr7ST6fOP1llV/IRySXl1C7ZebjhgvEtv
+   w4PJ28WmBlQKdqscukiCxAlc+tqR+o+16EE+szpsERExPhlktBKyDA1AY
+   g==;
+X-CSE-ConnectionGUID: RBiOJbAgTRa1DzeuMKJapQ==
+X-CSE-MsgGUID: CsxMcY5VR26oOoU/GyqrTw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="29922093"
+X-IronPort-AV: E=Sophos;i="6.08,176,1712646000";
+   d="scan'208";a="29922093"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 14:33:19 -0700
+X-CSE-ConnectionGUID: u4AE7DrRRte9dwLdiod1Kg==
+X-CSE-MsgGUID: K2cU40uRQLSWHZ62riEPiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,176,1712646000";
+   d="scan'208";a="32552694"
+Received: from daliomra-mobl3.amr.corp.intel.com (HELO [10.125.109.51])
+ ([10.125.109.51])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 14:33:19 -0700
+Message-ID: <4884ef78-2b86-4dcd-bec4-d6e111fa5455@linux.intel.com>
+Date: Mon, 20 May 2024 16:33:17 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Message-ID-Hash: NLGEAG22G6RU266WV7R4ZKML3ZID64JS
-X-Message-ID-Hash: NLGEAG22G6RU266WV7R4ZKML3ZID64JS
-X-MailFrom: shenghao-ding@ti.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ASoC: intel: Constify struct snd_soc_ops
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+References: 
+ <2f0613bf4c6018569cdaac876d0589e49cf38a80.1715622793.git.christophe.jaillet@wanadoo.fr>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
+ <2f0613bf4c6018569cdaac876d0589e49cf38a80.1715622793.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 6ZG7PBDPPVMLJZGO2DIF2BI4VUGICKYY
+X-Message-ID-Hash: 6ZG7PBDPPVMLJZGO2DIF2BI4VUGICKYY
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NLGEAG22G6RU266WV7R4ZKML3ZID64JS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ZG7PBDPPVMLJZGO2DIF2BI4VUGICKYY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,183 +115,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Calibrated data will be set to default after loading DSP config params,
-which will cause speaker protection work abnormally. Reload calibrated
-data after loading DSP config params.
 
-Fixes: ef3bcde75d06 ("ASoc: tas2781: Add tas2781 driver")
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
----
-v5:
- - No change.
-v4:
- - Use the the culprit of the bug itself as the fixes tag.
- - Better variant for tasdev_load_calibrated_data in order to much easier
-   to read and understand and maintain, as it makes harder to squeeze the
-   code.
- - Fix the indentation and move operator to the previous line.
-v3:
- - Remove redundant return in tasdev_load_calibrated_data
- - Put the second function parameter into the previous line for
-   tasdev_load_calibrated_data
- - | Reported-by: kernel test robot <lkp@intel.com>
-   | Closes: https://lore.kernel.org/oe-kbuild-all/202405021200.YHInjV43-lkp@intel.com/
-v2:
- - In the Subject, fixed --> Fix
- - In tas2781-fmwlib.c, tasdevice-fmw.c ---> tas2781-fmwlib.c
- - dsp --> DSP
- - Remove unneeded parentheses for & (dereference) operator
- - Add Fixes tag
-v1:
- - Download calibrated data after loading the new DSP config params
- - call tasdevice_prmg_load instead of tasdevice_prmg_calibdata_load, it
-   is unnecessary to load calibrated data after loading DSP program. Load
-   it after loading DSP config params each time.
- - Remove tasdevice_prmg_calibdata_load, because it is unnecessary to load
-   calibrated data after loading DSP program.
----
- sound/soc/codecs/tas2781-fmwlib.c | 103 ++++++++----------------------
- 1 file changed, 27 insertions(+), 76 deletions(-)
+On 5/13/24 12:57, Christophe JAILLET wrote:
+> Constifying "struct snd_soc_ops" moves some data to a read-only section, so
+> increase overall security.
+> 
+> This structure is also part of scripts/const_structs.checkpatch.
+> 
+> As an example, on a x86_64, with allmodconfig:
+> Before:
+>    text	   data	    bss	    dec	    hex	filename
+>    6315	   3696	      0	  10011	   271b	sound/soc/intel/boards/ehl_rt5660.o
+> 
+> After:
+>    text	   data	    bss	    dec	    hex	filename
+>    6379	   3648	      0	  10027	   272b	sound/soc/intel/boards/ehl_rt5660.o
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Compile tested only.
 
-diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
-index a6be81adcb83..265a8ca25cbb 100644
---- a/sound/soc/codecs/tas2781-fmwlib.c
-+++ b/sound/soc/codecs/tas2781-fmwlib.c
-@@ -2151,6 +2151,24 @@ static int tasdevice_load_data(struct tasdevice_priv *tas_priv,
- 	return ret;
- }
- 
-+static void tasdev_load_calibrated_data(struct tasdevice_priv *priv, int i)
-+{
-+	struct tasdevice_calibration *cal;
-+	struct tasdevice_fw *cal_fmw;
-+
-+	cal_fmw = priv->tasdevice[i].cali_data_fmw;
-+
-+	/* No calibrated data for current devices, playback will go ahead. */
-+	if (!cal_fmw)
-+		return;
-+
-+	cal = cal_fmw->calibrations;
-+	if (cal)
-+		return;
-+
-+	load_calib_data(priv, &cal->dev_data);
-+}
-+
- int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
- 	int cfg_no, int rca_conf_no)
- {
-@@ -2210,21 +2228,9 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
- 		for (i = 0; i < tas_priv->ndev; i++) {
- 			if (tas_priv->tasdevice[i].is_loaderr == true)
- 				continue;
--			else if (tas_priv->tasdevice[i].is_loaderr == false
--				&& tas_priv->tasdevice[i].is_loading == true) {
--				struct tasdevice_fw *cal_fmw =
--					tas_priv->tasdevice[i].cali_data_fmw;
--
--				if (cal_fmw) {
--					struct tasdevice_calibration
--						*cal = cal_fmw->calibrations;
--
--					if (cal)
--						load_calib_data(tas_priv,
--							&(cal->dev_data));
--				}
-+			if (tas_priv->tasdevice[i].is_loaderr == false &&
-+				tas_priv->tasdevice[i].is_loading == true)
- 				tas_priv->tasdevice[i].cur_prog = prm_no;
--			}
- 		}
- 	}
- 
-@@ -2245,11 +2251,15 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
- 		tasdevice_load_data(tas_priv, &(conf->dev_data));
- 		for (i = 0; i < tas_priv->ndev; i++) {
- 			if (tas_priv->tasdevice[i].is_loaderr == true) {
--				status |= 1 << (i + 4);
-+				status |= BIT(i + 4);
- 				continue;
--			} else if (tas_priv->tasdevice[i].is_loaderr == false
--				&& tas_priv->tasdevice[i].is_loading == true)
-+			}
-+
-+			if (tas_priv->tasdevice[i].is_loaderr == false &&
-+				tas_priv->tasdevice[i].is_loading == true) {
-+				tasdev_load_calibrated_data(tas_priv, i);
- 				tas_priv->tasdevice[i].cur_conf = cfg_no;
-+			}
- 		}
- 	} else
- 		dev_dbg(tas_priv->dev, "%s: Unneeded loading dsp conf %d\n",
-@@ -2308,65 +2318,6 @@ int tasdevice_prmg_load(void *context, int prm_no)
- }
- EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_load, SND_SOC_TAS2781_FMWLIB);
- 
--int tasdevice_prmg_calibdata_load(void *context, int prm_no)
--{
--	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
--	struct tasdevice_fw *tas_fmw = tas_priv->fmw;
--	struct tasdevice_prog *program;
--	int prog_status = 0;
--	int i;
--
--	if (!tas_fmw) {
--		dev_err(tas_priv->dev, "%s: Firmware is NULL\n", __func__);
--		goto out;
--	}
--
--	if (prm_no >= tas_fmw->nr_programs) {
--		dev_err(tas_priv->dev,
--			"%s: prm(%d) is not in range of Programs %u\n",
--			__func__, prm_no, tas_fmw->nr_programs);
--		goto out;
--	}
--
--	for (i = 0, prog_status = 0; i < tas_priv->ndev; i++) {
--		if (prm_no >= 0 && tas_priv->tasdevice[i].cur_prog != prm_no) {
--			tas_priv->tasdevice[i].cur_conf = -1;
--			tas_priv->tasdevice[i].is_loading = true;
--			prog_status++;
--		}
--		tas_priv->tasdevice[i].is_loaderr = false;
--	}
--
--	if (prog_status) {
--		program = &(tas_fmw->programs[prm_no]);
--		tasdevice_load_data(tas_priv, &(program->dev_data));
--		for (i = 0; i < tas_priv->ndev; i++) {
--			if (tas_priv->tasdevice[i].is_loaderr == true)
--				continue;
--			else if (tas_priv->tasdevice[i].is_loaderr == false
--				&& tas_priv->tasdevice[i].is_loading == true) {
--				struct tasdevice_fw *cal_fmw =
--					tas_priv->tasdevice[i].cali_data_fmw;
--
--				if (cal_fmw) {
--					struct tasdevice_calibration *cal =
--						cal_fmw->calibrations;
--
--					if (cal)
--						load_calib_data(tas_priv,
--							&(cal->dev_data));
--				}
--				tas_priv->tasdevice[i].cur_prog = prm_no;
--			}
--		}
--	}
--
--out:
--	return prog_status;
--}
--EXPORT_SYMBOL_NS_GPL(tasdevice_prmg_calibdata_load,
--	SND_SOC_TAS2781_FMWLIB);
--
- void tasdevice_tuning_switch(void *context, int state)
- {
- 	struct tasdevice_priv *tas_priv = (struct tasdevice_priv *) context;
--- 
-2.34.1
+We don't test all the boards in CI but I don't see any issues with
+https://github.com/thesofproject/linux/pull/4993, so
 
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
