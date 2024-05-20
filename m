@@ -4,90 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 169E3C04FFE
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 15:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F088C25B79
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 May 2024 15:56:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45700823;
-	Mon, 20 May 2024 17:39:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45700823
+	by alsa0.perex.cz (Postfix) with ESMTPS id D61B8200;
+	Mon, 20 May 2024 17:56:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D61B8200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716219596;
-	bh=ToAwIbvzHG0YYLRGugwY07ZmC28i54igLPITw5CgNEo=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=h5gYNzhfwmBRuvTDOYg+mFReoKkHO970SmZVNXqA18oBmShfjteOnt8KeRY8CnxZZ
-	 tc5FR1bwJdMkAg+OyZIiBRKNveBwF1buSXX8OkFBF4VaMmzvk8xNQAsnsAVk63C9Xl
-	 HGWX8fcj066bRAPf65bh0xTrZs7Wf7s/qc7iXrBA=
+	s=default; t=1716220591;
+	bh=PKOTCzh7s/Hlw+lCPuwNY7ZQb0fnb29mRHIC+H6JoNQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=CYPU1weVwYfdL+Mup2UFlGR8jkj0M2H/CM9Z2UWgLhn8dJm77LMFANRy4/7qa8Mpr
+	 pj/AN9/mrOY8YUVn0r1B8RtXi/F38/cNGVDYcs6460WX6X0nNtRLUWJd9bDom3KY53
+	 FfzpyLMfSplK4fJ0AE/ZiPQ/pwHtI8BQEYhzDVPE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4717F805AD; Mon, 20 May 2024 17:39:24 +0200 (CEST)
+	id 507CEF805AF; Mon, 20 May 2024 17:55:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B9E1F805AE;
-	Mon, 20 May 2024 17:39:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C934CF805AD;
+	Mon, 20 May 2024 17:55:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BAE7F8026A; Mon, 20 May 2024 17:39:17 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	id DA634F8026A; Mon, 20 May 2024 17:55:54 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3B1BF801F5
-	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 17:39:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3B1BF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 578D9F801F5
+	for <alsa-devel@alsa-project.org>; Mon, 20 May 2024 17:55:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 578D9F801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=xtDel+lG
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 44H9L3aY103227;
-	Fri, 17 May 2024 04:21:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1715937663;
-	bh=6H5QqjfnbzXi38Mhan1b/OhNz0VkiYrd/rdH/mh5vbs=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=xtDel+lGQgGKOPIJyHlrl3/9jSJjiVQ2c8DSUkT3FlG198EWf3tf27+n3PcQYyQV1
-	 gZI9tkm9oQEUoEN+WeGRjInF+2nAuPzYjXsmcoK5w6wtq4gJCR99UPozdCM+39Mwp7
-	 wyN5wipbdAaTxv9tkb3HNMmpOkUCR+G3grXiykR8=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 44H9L3eI090552
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 17 May 2024 04:21:03 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- May 2024 04:21:02 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 May 2024 04:21:02 -0500
-Received: from LT5CG31242FY.dhcp.ti.com (lt5cg31242fy.dhcp.ti.com
- [10.85.14.114])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 44H9KhXs036740;
-	Fri, 17 May 2024 04:20:57 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>
-CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
-        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <bard.liao@intel.com>, <yung-chuan.liao@linux.intel.com>,
-        <kevin-lu@ti.com>, <cameron.berkenpas@gmail.com>, <tiwai@suse.de>,
-        <baojun.xu@ti.com>, <soyer@irl.hu>, <Baojun.Xu@fpt.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [RESEND PATCH v5 3/3] ASoC: tas2781: Fix wrong loading calibrated
- data sequence
-Date: Fri, 17 May 2024 17:20:38 +0800
-Message-ID: <20240517092039.688-3-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <20240517092039.688-1-shenghao-ding@ti.com>
-References: <20240517092039.688-1-shenghao-ding@ti.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=CIvevKup
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1716220549; x=1747756549;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=PKOTCzh7s/Hlw+lCPuwNY7ZQb0fnb29mRHIC+H6JoNQ=;
+  b=CIvevKupc7zS1moN3MjbrHYlia7BwOaVHRMhbUidT+FgjK98jjuJeoIu
+   5QRHE6mzQ2pVuFPWz7FxcaTykxjq3sfHqUhsG6xEID4R4Yx4aojtHAxjO
+   aDib6HgA1gtgr5H2Nre6KumEk4lnmYfrPpg2qtdsOViqJG5eTsj8rm8hL
+   zwmSu8eAVjRnf+BRNdWy6yvccXKB00SqfgHeXr/Rkz1d1K349/+Mbf5dG
+   f4LyupSWivk/Zyf7XCBLj8JoeJEER9oplypySpiWxhcb8hFzNx5wJcM6V
+   lwifiptyTLD0LWmuLfaCABsR/b9S089u5s+gc26GTr58QLmvPx1GFWlNp
+   A==;
+X-CSE-ConnectionGUID: g0TAq+WfSgmyI+Uw1Jz64w==
+X-CSE-MsgGUID: 8HSCiK5pQYmxBSNnW+rDCg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="12233885"
+X-IronPort-AV: E=Sophos;i="6.08,175,1712646000";
+   d="scan'208";a="12233885"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 08:55:42 -0700
+X-CSE-ConnectionGUID: Zk9AkXmXQXCmMVOXmQSITw==
+X-CSE-MsgGUID: 9ILVEuteSYeDWdkOJH4GYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,175,1712646000";
+   d="scan'208";a="37346120"
+Received: from daliomra-mobl3.amr.corp.intel.com (HELO [10.125.109.51])
+ ([10.125.109.51])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2024 08:55:39 -0700
+Message-ID: <77e9221e-05d2-453f-9ce1-ff4a4b53d09d@linux.intel.com>
+Date: Mon, 20 May 2024 10:55:38 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Message-ID-Hash: GTLV3WABABY2HGG5BM6JK6Z3IIIUS6TX
-X-Message-ID-Hash: GTLV3WABABY2HGG5BM6JK6Z3IIIUS6TX
-X-MailFrom: shenghao-ding@ti.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] ASoC: soc-pcm: Indicate warning if CPU / Codec
+ availability mismatch
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
+ Jaroslav Kysela <perex@perex.cz>, Jerome Brunet <jbrunet@baylibre.com>,
+ Jiawei Wang <me@jwang.link>, Jonathan Corbet <corbet@lwn.net>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Maso Huang <maso.huang@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>,
+ Vinod Koul <vkoul@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ alsa-devel@alsa-project.org, imx@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-sound@vger.kernel.org
+References: <87msole5wc.wl-kuninori.morimoto.gx@renesas.com>
+ <87jzjpe5vh.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87jzjpe5vh.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 6LXZFA62P666FU3P66MJWJ7DVQJWQCG3
+X-Message-ID-Hash: 6LXZFA62P666FU3P66MJWJ7DVQJWQCG3
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GTLV3WABABY2HGG5BM6JK6Z3IIIUS6TX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6LXZFA62P666FU3P66MJWJ7DVQJWQCG3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,54 +134,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use the API with correct sequence instead of the wrong one.
 
-Fixes: ef3bcde75d06 ("ASoc: tas2781: Add tas2781 driver")
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
----
-v5:
- - correct changelog has no much relationship with the patch
-v4:
- - Use the the culprit of the bug itself as the fixes tag
-v3:
- - No changes.
-v2:
- - In the Subject, fixed --> Fix
- - dsp --> DSP
- - Add Fixes tag
- - Changed the copyright year to 2024 in the related files
-v1:
- - Download calibrated data after loading the new DSP config params
- - Call tasdevice_prmg_load instead of tasdevice_prmg_calibdata_load, it
-   is unnecessary to load calibrated data after loading DSP program. Load
-   it after loading DSP config params each time.
----
- sound/soc/codecs/tas2781-i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 5/19/24 18:31, Kuninori Morimoto wrote:
+> Current DCPM is checking CPU side availability only, but it should also
+> check Codec availability. But because of long DPCM operation history,
+> it is possible that the some Codec driver check have been bypassed.
+> 
+> It should be error, but let's add grace time to update driver.
+> 
+> This patch indicates warning in above case. Each applicable driver need
+> to update during this grace time.
 
-diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
-index b5abff230e43..9350972dfefe 100644
---- a/sound/soc/codecs/tas2781-i2c.c
-+++ b/sound/soc/codecs/tas2781-i2c.c
-@@ -2,7 +2,7 @@
- //
- // ALSA SoC Texas Instruments TAS2563/TAS2781 Audio Smart Amplifier
- //
--// Copyright (C) 2022 - 2023 Texas Instruments Incorporated
-+// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
- // https://www.ti.com
- //
- // The TAS2563/TAS2781 driver implements a flexible and configurable
-@@ -414,7 +414,7 @@ static void tasdevice_fw_ready(const struct firmware *fmw,
- 				__func__, tas_priv->cal_binaryname[i]);
- 	}
- 
--	tasdevice_prmg_calibdata_load(tas_priv, 0);
-+	tasdevice_prmg_load(tas_priv, 0);
- 	tas_priv->cur_prog = 0;
- out:
- 	if (tas_priv->fw_state == TASDEVICE_DSP_FW_FAIL) {
--- 
-2.34.1
+...
 
+> +		/*
+> +		 * REMOVE ME
+> +		 *
+> +		 * Current DPCM is checking CPU side only, but both CPU and Codec should be
+> +		 * checked. Indicate warning if there was CPU / Codec mismatch.
+> +		 * To keep compatibility, warning only for now.
+> +		 */
+> +		if ((dai_link->dpcm_playback || dai_link->playback_only) &&
+> +		    !has_playback_both)
+> +			dev_warn(rtd->card->dev,
+> +				 "System requests playback, but not available (%s)."
+> +				 " Please update Codec driver\n",
+> +				 dai_link->stream_name);
+> +		if ((dai_link->dpcm_capture || dai_link->capture_only) &&
+> +		     !has_capture_both)
+> +			dev_warn(rtd->card->dev,
+> +				 "System requests capture, but not available (%s)."
+> +				 " Please update Codec driver\n",
+> +				 dai_link->stream_name);
+> +
+
+I mentioned in my previous feedback that this isn't quite right. There
+are cases where the CPU dai reports capabilities that the codec DAI does
+not support - e.g. when the AEC reference is generated in firmware on
+the host DSP.
+
+And sure enough we get that warning in the first test:
+
+https://sof-ci.01.org/linuxpr/PR5005/build3040/devicetest/index.html?model=GLK_BOB_DA7219-ipc3&testcase=verify-kernel-boot-log
+
+May 20 13:35:38 jf-glk-bob-da7219-1 kernel: sof_da7219 glk_da7219_def:
+System requests capture, but not available (SSP1-Codec). Please update
+Codec driver
+
+For those systems, trying to match CPU and codec dais is not going to
+work. Either we skip this verification or we have an escape mechanism to
+avoid triggering errors.
