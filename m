@@ -4,120 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F37F5C25B74
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 May 2024 15:05:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C16AC25B78
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 May 2024 15:13:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25637822;
-	Tue, 21 May 2024 17:05:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25637822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 587A782A;
+	Tue, 21 May 2024 17:13:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 587A782A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716303924;
-	bh=QH+jxpZJ7+q25EINDFGxXNJP1mlcv08ZKRhlur3HLdU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1716304429;
+	bh=gwzm8gYv8P6IYrQiWO8fD3QwjoBID6lrcbsigknNT9g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nd2ZFz0cp36rnL9BUnNV007NMjHNciEbnA7/8KdSG0PR+zrJkZLw8hsj/U944oJly
-	 62fdPvfxqZzxWK+179V+79M/6trnyMvX5mhxo6shWkjk7peVZkVmKuWeDp4ZqQKdHD
-	 c9IeT2Psndt5p/1U8PDBuqx2LvUzzIdEtrVsU5Vw=
+	b=noQtgXEqMzIbCh9R+qKNCZcQOL8CatRpq3cO1ikBAnxOv+9jSOfk+UTuNnpfsNPdo
+	 Qol0MhvEyZbAOxmY7dC42u/MdIBA+VYmI6S08iSqt7IF7KaZBiN2ol/LQ5hPYcyGD0
+	 mCecermObGc4oICNQkyRu9xF8W5GN8Q0ljl/9ob0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56618F805D3; Tue, 21 May 2024 17:04:32 +0200 (CEST)
+	id E910EF805AD; Tue, 21 May 2024 17:13:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AD25F805B3;
-	Tue, 21 May 2024 17:04:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B4E1F8058C;
+	Tue, 21 May 2024 17:13:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 693B2F8026A; Tue, 21 May 2024 17:04:28 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id EC88FF8026A; Tue, 21 May 2024 17:13:12 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8E290F80051
-	for <alsa-devel@alsa-project.org>; Tue, 21 May 2024 17:04:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E290F80051
+	by alsa1.perex.cz (Postfix) with ESMTPS id F22D1F801F5
+	for <alsa-devel@alsa-project.org>; Tue, 21 May 2024 17:13:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F22D1F801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lI0JRwtr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716303857; x=1747839857;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=QH+jxpZJ7+q25EINDFGxXNJP1mlcv08ZKRhlur3HLdU=;
-  b=lI0JRwtrD3GeDmHpm2jbsWufyCtR1/kJEPpxhv1pAvrx8iHRix3b33dS
-   ve2oyHYNTSZm7jiU29oQjgSdGgCsszlOXeC048K//iCgSQ+9bd7ZLWipx
-   Cr1J6+vAU6o+qaBzv+lGq658jFdIUt4GmSSbuWETL4iuaaGOiTTu4Q9z4
-   RPRqN8cVmUz6VrEqLJ7IqPZHG8vJPkYQpNlzgROrA33XqED62kqRuPYv1
-   czFNnotDvfwTSoDTLG2GZpd2XgQ3T9ivgfz+JREkbC5hAWQCMr9dt6uwa
-   SRIhNNEjVNhKd5nJNFEIW1EiWwKxA9IuiJIabh960DFUOoxdO3LvMvL5q
-   w==;
-X-CSE-ConnectionGUID: rX/MA2MdSmaAuqJYygWM+w==
-X-CSE-MsgGUID: 6mnIUGl2S8+WOr9auqtilA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="16343165"
-X-IronPort-AV: E=Sophos;i="6.08,178,1712646000";
-   d="scan'208";a="16343165"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2024 08:04:07 -0700
-X-CSE-ConnectionGUID: M2q3kxPiQWuVHkmLFXUSjA==
-X-CSE-MsgGUID: o4ITyljUTQKDVHRYws8yvw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,178,1712646000";
-   d="scan'208";a="33369001"
-Received: from rfrazer-mobl3.amr.corp.intel.com (HELO [10.125.109.138])
- ([10.125.109.138])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 May 2024 08:04:04 -0700
-Message-ID: <3e67d62d-fe08-4f55-ab5b-ece8a57154f9@linux.intel.com>
-Date: Tue, 21 May 2024 08:43:09 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=pFQKgmI8
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 56B15CE0EE3;
+	Tue, 21 May 2024 15:12:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 850C3C2BD11;
+	Tue, 21 May 2024 15:12:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716304373;
+	bh=gwzm8gYv8P6IYrQiWO8fD3QwjoBID6lrcbsigknNT9g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pFQKgmI8fZQmR3X2wWT5+znBzGtX7oIU07rSTYW8weSCst+9eb2MeisG27oFiEgeU
+	 UrGZ3Wel3StymxOt9CVZguX2OWDz42J77okxSGqY+i7vUiU6q9kDGhR91AVJRVZYqi
+	 KXvIS4LRWu23oV9F0gd71JtzzT4NvFrYwJfOHDnek/JSWYtvQjq33UQqSKuVaPDD5/
+	 b4CCvtWVtJ0/pHCPRupYO6uFwFNKBIMAdscugU3JRV74/0pfiKLi5VNftmBl/aOzWz
+	 j41gJee/nqJKBiPVPO+00+P4zKrJ8PyFUvH6zNS8t/iSswsyUrjD36z+mpI7AxVsSK
+	 xmwErKjp2+RLg==
+Date: Tue, 21 May 2024 16:12:42 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Brent Lu <brent.lu@intel.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Jerome Brunet <jbrunet@baylibre.com>, Jiawei Wang <me@jwang.link>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Maso Huang <maso.huang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
+	Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
+	imx@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-sound@vger.kernel.org
 Subject: Re: [PATCH v3 2/3] ASoC: soc-pcm: Indicate warning if CPU / Codec
  availability mismatch
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Alper Nebi Yasak <alpernebiyasak@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
- Jaroslav Kysela <perex@perex.cz>, Jerome Brunet <jbrunet@baylibre.com>,
- Jiawei Wang <me@jwang.link>, Jonathan Corbet <corbet@lwn.net>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Maso Huang <maso.huang@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>,
- Vinod Koul <vkoul@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- alsa-devel@alsa-project.org, imx@lists.linux.dev, linux-doc@vger.kernel.org,
- linux-sound@vger.kernel.org
+Message-ID: <1f8e6e3c-a116-48d8-991f-4184d1eebc79@sirena.org.uk>
 References: <87msole5wc.wl-kuninori.morimoto.gx@renesas.com>
  <87jzjpe5vh.wl-kuninori.morimoto.gx@renesas.com>
  <77e9221e-05d2-453f-9ce1-ff4a4b53d09d@linux.intel.com>
  <87y184cbed.wl-kuninori.morimoto.gx@renesas.com>
  <7b430ea3-3ce8-4ef9-8440-bac02993f676@linux.intel.com>
  <875xv8c6dn.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <875xv8c6dn.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: YQC5DUCYNXFDXQ24HC462LW7JNOKXI76
-X-Message-ID-Hash: YQC5DUCYNXFDXQ24HC462LW7JNOKXI76
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+ <3e67d62d-fe08-4f55-ab5b-ece8a57154f9@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="FlFpgoAWr8SBAUi2"
+Content-Disposition: inline
+In-Reply-To: <3e67d62d-fe08-4f55-ab5b-ece8a57154f9@linux.intel.com>
+X-Cookie: Eloquence is logic on fire.
+Message-ID-Hash: 3JZPBOTC5A4EYTF6DGNUUP35TDXFGDJC
+X-Message-ID-Hash: 3JZPBOTC5A4EYTF6DGNUUP35TDXFGDJC
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -129,7 +124,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YQC5DUCYNXFDXQ24HC462LW7JNOKXI76/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3JZPBOTC5A4EYTF6DGNUUP35TDXFGDJC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,47 +134,36 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+--FlFpgoAWr8SBAUi2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 5/20/24 20:15, Kuninori Morimoto wrote:
-> 
-> Hi Pierre-Louis, Mark
-> 
->> We cannot change the Maxim amplifier driver, it's used in a variety of
->> usages and platforms, and there's no reason to create a fake capture dai
->> just to reflect the use of a capture stream on the CPU side on some
->> Chromebooks.
-> 
-> Why cannot ??
-> There is no effect to user if Maxim driver has full channel setting same as
-> dammy DAI. It will be handled together with CPU, and system gets CPU
-> channels as-is.
+On Tue, May 21, 2024 at 08:43:09AM -0500, Pierre-Louis Bossart wrote:
 
-That would be changing the meaning and purpose of a 'dummy dai'
+> allow me to give you another counter example, beyond the AEC reference I
+> mentioned earlier. It's not uncommon for CPU DAIs to have loopback
+> capabilities, which are used for tests on boards where the codec has no
+> capture capabilities. I think it's a feature that needs to be allowed,
+> not a 'wrong setting'.
 
-A 'dummy dai' has historically been used when data was
-transmitted/received but the control of that DAI was done externally
-with a sideband interface.
+This is something we could do properly if we had full digital routing
+rather than bolting things on the side of the CPU<->CODEC model - having
+these things where we have to take a CODEC into account even though
+we're not actually using it is one of the big issues with DPCM.
 
-Here there is just no hardware for capture in the Maxim amp.
+--FlFpgoAWr8SBAUi2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Adding a pretend DAI for the sake of adding a stricter 'sanity check'
-does not sound good to me.
+-----BEGIN PGP SIGNATURE-----
 
->> I don't disagree that the unconditional use of dpcm_capture isn't very
->> elegant, but it is what it is. This platform has been around since 2019
->> and still has about 6 or 7 years of support, so we can't break it with
->> stricter criteria.
-> 
-> My opinion is that working without channels settings is wrong.
-> I can understand that it was working in long years, but it is working with
-> wrong settings. So justify a wrong-settings is not good idea for me.
-> And I don't think it is stricter criteria, it becomes *sane* criteria, IMO.
-> 
-> Because it was working with wrong-settings, we need to makes it sane.
-> This is the reason why it has grace time.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZMuekACgkQJNaLcl1U
+h9DXkAf/eKMKj9h8NR0eOAHhBEz4f302YpC54diLp0fUojlrg6wrqu+2jlSPQoT/
+HWwDANuUGnWfWOOZVMge1aR43syvN4Qy6O8VBKwSy+1xDmgKOskO0zhC6p47NBlH
+R99K+UmqxzXeoUmY29epW66azaj+q0MJXMla5WqiaaylWCV4tsyNCwIosHqaj5c/
+kjfB+wibx5JXQRQfVRJtq3ajHSGuwDZV/yysCObfkoJLcvRbjEWF86aMFHNoycCe
+5GNB1TsJYSOyP0qKGpBgBUGtN+IlBH/oSFk1A3y0a6Ok8CbHdEpe6FpNgzHAvI2v
+SBMQmUSZ9dNcTTF7FDUo/45LZrXKng==
+=EuNB
+-----END PGP SIGNATURE-----
 
-allow me to give you another counter example, beyond the AEC reference I
-mentioned earlier. It's not uncommon for CPU DAIs to have loopback
-capabilities, which are used for tests on boards where the codec has no
-capture capabilities. I think it's a feature that needs to be allowed,
-not a 'wrong setting'.
+--FlFpgoAWr8SBAUi2--
