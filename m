@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF4E6C25B78
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 May 2024 23:40:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABA21C25B78
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 May 2024 23:43:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BF0A852;
-	Thu, 23 May 2024 01:40:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BF0A852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01066839;
+	Thu, 23 May 2024 01:42:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01066839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716421256;
-	bh=8d/fPZqxglocV6DYmtWv8H8Ul9Ij9/BKaXk8/XR3VKs=;
+	s=default; t=1716421389;
+	bh=WR2XmlUO++ZRznTHcJOrYAc8fH8eLZwzKuxB7B3UH8I=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=IiTmWJTzEbR5NtPr2sG5HhY+rGer1UH/2locGbC2HpNFNXZih/gqCaIJ1vYueEtS9
-	 c9oiwN9Ke/VvYK28oADdkmwtIx1nh90tZ1tu24pXGRVgBcyUPwXYvN4IgABYQP3po3
-	 evNU7FYnjay2Sg2eUuAwe6BzuV+euxoO9F2yAO58=
+	b=CN3oKNJEYjh+lCiLbNSMNgp88wv82UsCdvR30S0BpyxWS1d/SLBf2x5NMa3axl/77
+	 co9ARf8uTzG2J7gycw61DvU0WaBoI2f96AbGCfdPNGPPhREW7VF1V3+CIwMf/3LC3u
+	 vH3jLl7fLOqeAgd552aSl7r1Gom1X9vJ0wUx5oP4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5371F805B1; Thu, 23 May 2024 01:40:22 +0200 (CEST)
+	id 7306DF80587; Thu, 23 May 2024 01:42:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E6F3F805AF;
-	Thu, 23 May 2024 01:40:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5D6BF805AD;
+	Thu, 23 May 2024 01:42:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2D6CF8026A; Thu, 23 May 2024 01:40:16 +0200 (CEST)
+	id CC4BBF8026A; Thu, 23 May 2024 01:41:24 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EC04F8016B
-	for <alsa-devel@alsa-project.org>; Thu, 23 May 2024 01:40:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EC04F8016B
+	by alsa1.perex.cz (Postfix) with ESMTP id CCD8BF800BA
+	for <alsa-devel@alsa-project.org>; Thu, 23 May 2024 01:41:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCD8BF800BA
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1716421206697678089-webhooks-bot@alsa-project.org>
-References: <1716421206697678089-webhooks-bot@alsa-project.org>
+In-Reply-To: <1716421282414216995-webhooks-bot@alsa-project.org>
+References: <1716421282414216995-webhooks-bot@alsa-project.org>
 Subject: topology: pre-processor: Introduce extends/overrides keywords for
  classes
-Message-Id: <20240522234016.A2D6CF8026A@alsa1.perex.cz>
-Date: Thu, 23 May 2024 01:40:16 +0200 (CEST)
-Message-ID-Hash: OT3NNT3A4VPVOZP6NSS7OQURPF754SFT
-X-Message-ID-Hash: OT3NNT3A4VPVOZP6NSS7OQURPF754SFT
+Message-Id: <20240522234124.CC4BBF8026A@alsa1.perex.cz>
+Date: Thu, 23 May 2024 01:41:24 +0200 (CEST)
+Message-ID-Hash: DQSV6LS3SLGMQWKBUKVCYGZW5LWUSG52
+X-Message-ID-Hash: DQSV6LS3SLGMQWKBUKVCYGZW5LWUSG52
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OT3NNT3A4VPVOZP6NSS7OQURPF754SFT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DQSV6LS3SLGMQWKBUKVCYGZW5LWUSG52/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,7 +76,7 @@ without having to duplicate everything in the new class definition.
 
 For example: Consider a pipeline class definition as below. Note that
 only the widgets & routes are shown here.
-
+```
 Class.Pipeline.mixout-gain-dai-copier-playback {
 	Object.Widget {
 		mixout."1" {}
@@ -94,10 +94,10 @@ Class.Pipeline.mixout-gain-dai-copier-playback {
 		]
 	}
 }
-
+```
 If we want to extend this pipeline with the addition of an eqiir/eqfir,
 we can create a Subtreecopy node with type extend as follows:
-
+```
 Subtreecopy.mixout-gain-eqiir-eqfir-dai-copier-playback {
 	source "Class.Pipeline.mixout-gain-dai-copier-playback"
 	target "Class.Pipeline"
@@ -121,7 +121,7 @@ Subtreecopy.mixout-gain-eqiir-eqfir-dai-copier-playback {
 		]
 	}
 }
-
+```
 But if we want to modify an existing pipeline class while modifying the
 order of widgets and/or inserting new widgets, we should use the type
 "override" instead. This allows for adding new widgets to the list of
@@ -129,7 +129,7 @@ widgets in the base class definition while also allowing overriding the
 routes to allow inserting the new widgets and reordering the widgets in
 the base class. For example, if we want to add a drc widget between the
 gain and the eqiir modules in the above class, we can do the following:
-
+```
 Subtreecopy.mixout-efx-dai-copier-playback {
 	source "Class.Pipeline.mixout-gain-eqiir-eqfir-dai-copier-playback"
 	target "Class.Pipeline"
@@ -160,7 +160,7 @@ Subtreecopy.mixout-efx-dai-copier-playback {
 		]
 	}
 }
-
+```
 Note that the routes array contains all the routes in the new subtreecopy definition.
 
 This subtreecopy feature can also be used to copy normal config blocks
@@ -168,7 +168,7 @@ without having the need to duplicate information.
 
 For example, if all the widgets in a pipeline support the same audio
 formats, we can define it as follows:
-
+```
 Class.Pipeline.dai-copier-eqiir-module-copier-capture {
 	formats {
 		num_input_audio_formats 2
@@ -242,7 +242,7 @@ Class.Pipeline.dai-copier-eqiir-module-copier-capture {
 		}
 	}
 }
-
+```
 The subtreecopy node in each widget ensures that the pipeline formats
 are applied to all widgets without the need for duplicating them for
 each widget.
