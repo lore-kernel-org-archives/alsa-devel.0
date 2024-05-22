@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6828CC25B78
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 May 2024 17:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44DF4C25B79
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 May 2024 17:47:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A369852;
-	Wed, 22 May 2024 19:17:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A369852
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD4D97F8;
+	Wed, 22 May 2024 19:47:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD4D97F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716398233;
-	bh=ltdwEzyUdwM247AlLtPwXgBN+FYyqLHcmiuIV/jXykA=;
+	s=default; t=1716400060;
+	bh=ROxzHVkfKwcHgJsmApKxWMfuCXDA0c+5ouw+MYf38q8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=J6bZMfd2uWIHHouM+PpPyCJcdGp4hLOja92Na9M1Y0qJAUQOYp9c3dNX2HdQyG7ck
-	 jhkTA4tgZGT94K1ht5jOna1+/LoGKFezopOGzJR98W8X1byostPV4h7I6C+xnuNkyZ
-	 GwRHu18AFZLOaVPmKjFHTfCCx0Sw59ggm9H1/6nc=
+	b=F5y5rVEWUxNj3vYh9IzEO0UXJugia6uk1NomLd77lgkJGTWmEKUe+okfTp5QfqZLq
+	 zgc7NCLMW8LJmNttQhwnXoBIBT7h9b5hWLc7Wab7DeY6r/36WTtR0X9J837p/FByHX
+	 9EyJ9L2Sj8kY5/0Fu/CeSyp7ufhOh7T3MhrljQ5c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 172BEF805A0; Wed, 22 May 2024 19:16:41 +0200 (CEST)
+	id 1A2ECF80578; Wed, 22 May 2024 19:47:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19145F805B1;
-	Wed, 22 May 2024 19:16:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 496F3F8026A;
+	Wed, 22 May 2024 19:47:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83DB6F80051; Wed, 22 May 2024 19:10:17 +0200 (CEST)
+	id C5614F8028B; Wed, 22 May 2024 19:41:56 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05940F80051
-	for <alsa-devel@alsa-project.org>; Wed, 22 May 2024 19:07:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05940F80051
+	by alsa1.perex.cz (Postfix) with ESMTP id B0BCAF8016B
+	for <alsa-devel@alsa-project.org>; Wed, 22 May 2024 19:37:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0BCAF8016B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1716397670635666847-webhooks-bot@alsa-project.org>
-References: <1716397670635666847-webhooks-bot@alsa-project.org>
+In-Reply-To: <1716399440580608606-webhooks-bot@alsa-project.org>
+References: <1716399440580608606-webhooks-bot@alsa-project.org>
 Subject: topology: pre-processor: Introduce extends/overrides keywords for
  classes
-Message-Id: <20240522171017.83DB6F80051@alsa1.perex.cz>
-Date: Wed, 22 May 2024 19:10:17 +0200 (CEST)
-Message-ID-Hash: 2LRHTPU747RF7IFG6LWNCNJYAWK72WPZ
-X-Message-ID-Hash: 2LRHTPU747RF7IFG6LWNCNJYAWK72WPZ
+Message-Id: <20240522174156.C5614F8028B@alsa1.perex.cz>
+Date: Wed, 22 May 2024 19:41:56 +0200 (CEST)
+Message-ID-Hash: VQEIPWAVCV3JX2I3ONQ7KWTLKDEUZTVF
+X-Message-ID-Hash: VQEIPWAVCV3JX2I3ONQ7KWTLKDEUZTVF
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2LRHTPU747RF7IFG6LWNCNJYAWK72WPZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VQEIPWAVCV3JX2I3ONQ7KWTLKDEUZTVF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,11 +67,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #268 was opened from ranj063:
+alsa-project/alsa-utils pull request #268 was edited from ranj063:
 
 Add 2 new keywords for class definitions to allow new pipeline classes extend the definitions in the base class. This feature is useful for extending previous pipeline class definitions with the addition of one or more widgets without having to duplicate everything in the new class definition.
 
 For example: Consider a pipeline class definition as below. Note that only the widgets & routes are shown here.
+```
 
 Class.Pipeline.mixout-gain-dai-copier-playback {
 	Object.Widget {
@@ -90,9 +91,9 @@ Class.Pipeline.mixout-gain-dai-copier-playback {
 		]
 	}
 }
-
+```
 If we want to extend this pipeline with the addition of an eqiir/eqfir, the extends keyword can be used as below:
-
+```
 Class.Pipeline.mixout-gain-eqiir-eqfir-dai-copier-playback {
 	extends "mixout-gain-dai-copier-playback"
 
@@ -114,11 +115,11 @@ Class.Pipeline.mixout-gain-eqiir-eqfir-dai-copier-playback {
 		]
 	}
 }
-
+```
 This allows for defining a new class without having to duplicate everything in the base class and just adding the new widgets/routes that extend the current pipeline definition in the base class. The extends keyword is useful when extending a pipeline while keeping the routes in the base class intact and adding new widgets at the end of the pipeline.
 
 But if we want to modify an existing pipeline class while modifying the order of widgets and/or inserting new widgets, we should use the overridess keyword instead. This allows for adding new widgets to the list of widgets in the base class definition while also allowing overriding the routes to allow inserting the new widgets and reordering the widgets in the base class. For example, if we want to add a drc widget between the gain and the eqiir modules in the above class, we can do the following:
-
+```
 Class.Pipeline.mixout-efx-dai-copier-playback {
 	overrides "mixout-gain-eqiir-eqfir-dai-copier-playback"
 
@@ -147,8 +148,8 @@ Class.Pipeline.mixout-efx-dai-copier-playback {
 		]
 	}
 }
-
-Nore that the routess array contains all the routes in the new class definition.
+```
+Nore that the routes array contains all the routes in the new class definition.
 
 Link: https://github.com/thesofproject/sof/issues/9082
 
