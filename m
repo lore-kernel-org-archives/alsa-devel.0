@@ -4,86 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 522EAC25B7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 May 2024 16:25:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6828CC25B78
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 May 2024 17:17:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37E19839;
-	Wed, 22 May 2024 18:24:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37E19839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A369852;
+	Wed, 22 May 2024 19:17:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A369852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716395103;
-	bh=AWTKHb0bmoEcBitaeZqYTd0+23qEPVjE572slrya0ls=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BTQbIEKSFnJaMAUuXXaDu5Bcu8gvn+t/ZQNjLKy9tU4nXr2FsviF0EivJefeglPVX
-	 Ehe3dC/7KK72/BHH734uBrQ5SQw1PFllZeAwtlSW17jk4nQhL6xj1aZfKK5odHSuz4
-	 vwftV4LBZPDUOmL1viPt9uwumSvbQelamfy143SE=
+	s=default; t=1716398233;
+	bh=ltdwEzyUdwM247AlLtPwXgBN+FYyqLHcmiuIV/jXykA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=J6bZMfd2uWIHHouM+PpPyCJcdGp4hLOja92Na9M1Y0qJAUQOYp9c3dNX2HdQyG7ck
+	 jhkTA4tgZGT94K1ht5jOna1+/LoGKFezopOGzJR98W8X1byostPV4h7I6C+xnuNkyZ
+	 GwRHu18AFZLOaVPmKjFHTfCCx0Sw59ggm9H1/6nc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35DE9F80589; Wed, 22 May 2024 18:24:37 +0200 (CEST)
+	id 172BEF805A0; Wed, 22 May 2024 19:16:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 425A1F805AA;
-	Wed, 22 May 2024 18:24:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19145F805B1;
+	Wed, 22 May 2024 19:16:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8B50F8026A; Wed, 22 May 2024 18:22:33 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9929F800BA
-	for <alsa-devel@alsa-project.org>; Wed, 22 May 2024 18:22:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9929F800BA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Fky4eMAs
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A488D62603;
-	Wed, 22 May 2024 16:22:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5C0C2BBFC;
-	Wed, 22 May 2024 16:22:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716394942;
-	bh=AWTKHb0bmoEcBitaeZqYTd0+23qEPVjE572slrya0ls=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Fky4eMAsBLnUS+z0kupJjk+N+lm7BPyuPATy7PrnPDc6XufE0Gn+auAfTvhCwPmfl
-	 avvetGb85fhHXdyDoZooW49ws3OQBB4mKM4tM6ql7fynuLgM8uD7NfESRNb3YFEtRg
-	 e1GLPba1O4ykrm3HMSYFYYwIJACKyE47Jwde7y17wRGRjAaoYBYuQHetb166tZpCEg
-	 UVoQiPuFJTim0WPru6wl/d6xdzKQVtc6ixII07M7yNSfqLgXjM7OymfVpW0yreMP6V
-	 w9Lg5C3jVNs0I8zxj5Y9z/1AUPXAZM0SvGnALDzGsnk9KqOEtX6jcSA2QNGlL0fcES
-	 K4+fxL9I5ollQ==
-Date: Wed, 22 May 2024 17:22:15 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Artur Weber <aweber.kernel@gmail.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v3 3/8] ASoC: samsung: midas_wm1811: Add headset mic bias
- supply support
-Message-ID: <d64991ee-e125-4497-8030-6ca64fbe35e6@sirena.org.uk>
-References: <20240519-midas-wm1811-gpio-jack-v3-0-0c1736144c0e@gmail.com>
- <20240519-midas-wm1811-gpio-jack-v3-3-0c1736144c0e@gmail.com>
- <1aed24a7-ab2a-4c2b-a3bc-2b907e091624@sirena.org.uk>
- <52428c0d-4b18-4707-9cda-4e6a11e256bc@gmail.com>
+	id 83DB6F80051; Wed, 22 May 2024 19:10:17 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 05940F80051
+	for <alsa-devel@alsa-project.org>; Wed, 22 May 2024 19:07:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05940F80051
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="EL4i+puPElguxjip"
-Content-Disposition: inline
-In-Reply-To: <52428c0d-4b18-4707-9cda-4e6a11e256bc@gmail.com>
-X-Cookie: Bridge ahead.  Pay troll.
-Message-ID-Hash: ZMER5FDSDCKQOHUSFKDZFRQ53EYEZQ5H
-X-Message-ID-Hash: ZMER5FDSDCKQOHUSFKDZFRQ53EYEZQ5H
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1716397670635666847-webhooks-bot@alsa-project.org>
+References: <1716397670635666847-webhooks-bot@alsa-project.org>
+Subject: topology: pre-processor: Introduce extends/overrides keywords for
+ classes
+Message-Id: <20240522171017.83DB6F80051@alsa1.perex.cz>
+Date: Wed, 22 May 2024 19:10:17 +0200 (CEST)
+Message-ID-Hash: 2LRHTPU747RF7IFG6LWNCNJYAWK72WPZ
+X-Message-ID-Hash: 2LRHTPU747RF7IFG6LWNCNJYAWK72WPZ
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZMER5FDSDCKQOHUSFKDZFRQ53EYEZQ5H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2LRHTPU747RF7IFG6LWNCNJYAWK72WPZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,37 +67,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+alsa-project/alsa-utils pull request #268 was opened from ranj063:
 
---EL4i+puPElguxjip
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Add 2 new keywords for class definitions to allow new pipeline classes extend the definitions in the base class. This feature is useful for extending previous pipeline class definitions with the addition of one or more widgets without having to duplicate everything in the new class definition.
 
-On Wed, May 22, 2024 at 06:20:14PM +0200, Artur Weber wrote:
+For example: Consider a pipeline class definition as below. Note that only the widgets & routes are shown here.
 
-> What would be the correct thing to do here - add a secondary DAPM widget
-> of type REGULATOR_SUPPLY and connect it to the MIC widget via audio-
-> routing, or replace the entire MIC widget with a REGULATOR_SUPPLY (or
-> something else entirely)?
+Class.Pipeline.mixout-gain-dai-copier-playback {
+	Object.Widget {
+		mixout."1" {}
+		dai-copier."1" {}
+		gain."1" {}
+		pipeline."1" {}
+	}
 
-The microphone is getting a supply so the first option seems better.
+	Object.Base {
+		!route [
+			{
+				source mixout.$index.1
+				sink	gain.$index.1
+			}
+		]
+	}
+}
 
-> And should this be done with the Main Mic and Sub Mic as well?
+If we want to extend this pipeline with the addition of an eqiir/eqfir, the extends keyword can be used as below:
 
-Probably yes.
+Class.Pipeline.mixout-gain-eqiir-eqfir-dai-copier-playback {
+	extends "mixout-gain-dai-copier-playback"
 
---EL4i+puPElguxjip
-Content-Type: application/pgp-signature; name="signature.asc"
+	Object.Widget {
+		eqiir.1 {}
+		eqfir.1 {}
+	}
 
------BEGIN PGP SIGNATURE-----
+	Object.Base {
+		!route [
+			{
+				source gain.$index.1
+				sink   eqiir.$index.1
+			}
+			{
+				source eqiir.$index.1
+				sink   eqfir.$index.1
+			}
+		]
+	}
+}
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZOG7cACgkQJNaLcl1U
-h9Da9Af/YiLFo0ws5uTputzZ9Vnnzu51OTlsLRlk/AI4srvbo/yePNM+Zsxysdsm
-cM6zex9GmD0DJCYpHAS6sCwGT11nGDlfAUrxi1D/xZYURxArtojJbBztByv7Y2QM
-NBjQJcKcvvwtmIG4NT6YS46w2jUBfq7j8LbqMxkby62KiWPe5t1tILfeyv9qHIay
-QuR6ILhS093P1LaNp/gM1u6d+usQTb7ymCMWhZWk3ODj23x2VdCSQ94DvUjIlGYV
-P4rIzntrO9jzQw3NgEJBLuAhIt6VQmk7Cg04H5ElZlgT7pmbr9cWiLRnepe2uR7g
-oQLU9FWtULGu/9PXCdtk2Jj3T61Liw==
-=NRmF
------END PGP SIGNATURE-----
+This allows for defining a new class without having to duplicate everything in the base class and just adding the new widgets/routes that extend the current pipeline definition in the base class. The extends keyword is useful when extending a pipeline while keeping the routes in the base class intact and adding new widgets at the end of the pipeline.
 
---EL4i+puPElguxjip--
+But if we want to modify an existing pipeline class while modifying the order of widgets and/or inserting new widgets, we should use the overridess keyword instead. This allows for adding new widgets to the list of widgets in the base class definition while also allowing overriding the routes to allow inserting the new widgets and reordering the widgets in the base class. For example, if we want to add a drc widget between the gain and the eqiir modules in the above class, we can do the following:
+
+Class.Pipeline.mixout-efx-dai-copier-playback {
+	overrides "mixout-gain-eqiir-eqfir-dai-copier-playback"
+
+	Object.Widget {
+		drc.1 {}
+	}
+
+	Object.Base {
+		!route [
+			{
+				source mixout.$index.1
+				sink	gain.$index.1
+			}
+			{
+				source gain.$index.1
+				sink	drc.$index.1
+			}
+			{
+				source	drc.$index.1
+				sink	eqiir.$index.1
+			}
+			{
+				source	eqiir.$index.1
+				sink	eqfir.$index.1
+			}
+		]
+	}
+}
+
+Nore that the routess array contains all the routes in the new class definition.
+
+Link: https://github.com/thesofproject/sof/issues/9082
+
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/268
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/268.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
