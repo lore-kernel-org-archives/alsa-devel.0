@@ -4,166 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6129C27C4F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 14:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92C30C27C6E
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 15:50:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47549E66;
-	Thu, 13 Jun 2024 16:22:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47549E66
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5F31E66;
+	Thu, 13 Jun 2024 17:50:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5F31E66
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718288571;
-	bh=sKuuZmyqqYeC6HEUHACWutcdl3zzlBnpPCFbb0N07vQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=EoG/Tb8vfjk/cAXLTivrdP2mDTcKiXAjGbPgPBJhImeSGLX56hAspNQ5EwQyA2siX
-	 f9D+M23ZKdFjgardMSChFtCzLXWVnBAe7IgVolphY8YZGGz3u6uK03l2r176SZ4TxM
-	 FckGyJk/uVP55Vf2W0ftWQ8IyeznawBCg1fxxb6g=
+	s=default; t=1718293818;
+	bh=Cf+G7MUSUrZ7+MSy0trSFBbvCcixdcWFggMfx4iRHeM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=SeXCvNIbiDcBGTLL1rkaKj1T2D82bj3ur5qApJB0XPVZOJJ9nwbXZsSohdvr2h+XP
+	 Jt0Iv/YNHKs8E43rgnNFyK0qTWnf2xpzKFFrczi4ypSDIKsM9sgsSpi9xsAAk2do8U
+	 062sgJFLz9oY/j8tpP8jovZKB7pm05Z25d5YBnrw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 748A8F805BD; Thu, 13 Jun 2024 16:22:20 +0200 (CEST)
+	id E7D18F805B6; Thu, 13 Jun 2024 17:49:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C746F805AA;
-	Thu, 13 Jun 2024 16:22:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B225F805AF;
+	Thu, 13 Jun 2024 17:49:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 431F7F80448; Thu, 13 Jun 2024 16:22:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 64466F8020D; Fri, 24 May 2024 19:01:59 +0200 (CEST)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
+ [IPv6:2607:f8b0:4864:20::62b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C2FE9F800D0
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2024 16:22:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2FE9F800D0
+	by alsa1.perex.cz (Postfix) with ESMTPS id DDCFCF8016B
+	for <alsa-devel@alsa-project.org>; Fri, 24 May 2024 19:01:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDCFCF8016B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=J4+9ZXzd;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=EbPV+//L;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=J4+9ZXzd;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=EbPV+//L
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B04D237287;
-	Thu, 13 Jun 2024 14:22:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1718288528;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cBqruwSNJ1bqtPFj/6DT+8SGZYtXxl0Ds4dcQq2/Dw=;
-	b=J4+9ZXzdwRtWghE0qwJnbZLOTy+brvzC3MxyHfxgCiBFg/jaHuxtgdIVDIbEokq49JqXLq
-	X5hrAZwiPdQ+2ygWbOSK9BpAa+nTKwKp/803IbrY083i9EngUifNH9/iid9Bogx4DwTdCP
-	2tdD94iAihp8U6wTTuquLBSJAh8QPuM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1718288528;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cBqruwSNJ1bqtPFj/6DT+8SGZYtXxl0Ds4dcQq2/Dw=;
-	b=EbPV+//LdfhaDgOboAM+4ElPS+H6zcmT/dMA2mc0MfSEz2Y0n58npYm0tFjaFS5JFXn13s
-	WO+kgDDKAj+2YgCw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=J4+9ZXzd;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="EbPV+//L"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1718288528;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cBqruwSNJ1bqtPFj/6DT+8SGZYtXxl0Ds4dcQq2/Dw=;
-	b=J4+9ZXzdwRtWghE0qwJnbZLOTy+brvzC3MxyHfxgCiBFg/jaHuxtgdIVDIbEokq49JqXLq
-	X5hrAZwiPdQ+2ygWbOSK9BpAa+nTKwKp/803IbrY083i9EngUifNH9/iid9Bogx4DwTdCP
-	2tdD94iAihp8U6wTTuquLBSJAh8QPuM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1718288528;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3cBqruwSNJ1bqtPFj/6DT+8SGZYtXxl0Ds4dcQq2/Dw=;
-	b=EbPV+//LdfhaDgOboAM+4ElPS+H6zcmT/dMA2mc0MfSEz2Y0n58npYm0tFjaFS5JFXn13s
-	WO+kgDDKAj+2YgCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8675813A7F;
-	Thu, 13 Jun 2024 14:22:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YiCOH5AAa2b8TAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 13 Jun 2024 14:22:08 +0000
-Date: Thu, 13 Jun 2024 16:22:32 +0200
-Message-ID: <871q50orbr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=LP4u2+Wv
+Received: by mail-pl1-x62b.google.com with SMTP id
+ d9443c01a7336-1f44b441b08so8024705ad.0
+        for <alsa-devel@alsa-project.org>;
+ Fri, 24 May 2024 10:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716570111; x=1717174911;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b3A5Y3TABUrw3JWh7w8rkmw88AtD1mrVDTKhYMfh+dc=;
+        b=LP4u2+WvnGMhH4hVUh1E3/sItPfC8aER7hWlsAxsvfsfIqYogBe5aFyphxISgN0Ma7
+         3qdyhX38FkI6vFNcSbPvjPU8u3yWqjJH+FDP2VcCcnUCyFqoJwo1SuHtUj41CIrRsdiQ
+         B+1QL7qqWBMHoHC4g6SpTEwHy4DoOwzURLXIK0gjmlCb6pNHyfmrRlH9xww1i13f5I7i
+         6RFblu3on/VnLP8Ea4NqhoMqD91Dm0V7Xwqt35li/YLKw3Cr2FHF06QPnOliyuykD6Wy
+         lBVk5wS+wKbHrloHts7L4cMX5zVd/byneosTBUA33SMzdpbnSXeZ2KLulUQLQlDvo3H0
+         QxQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716570111; x=1717174911;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b3A5Y3TABUrw3JWh7w8rkmw88AtD1mrVDTKhYMfh+dc=;
+        b=pfhilLOcGZrHTZ4jEjUDYmAfX0MI4QMtKR2p0vRnY5tqpoojE8cNT7XufC54sVrEVp
+         7NHUHOAUvJYRN6hZ/nd0dc8RJBHXtzRLxkC67shFhIwmztNqDBPyyId+uAe87DGQn3MP
+         zFBTXw+DrtvXG6q7FwcD4Qnz/BK6076J2LymQMDhyLFGl6ZsV9+VYsAY++6k7nfL7Viu
+         5sbTjvNGN9jQ7AoTkfqBI1sZURDrt0TtN1FTmtvi2GhpoqfXiT1zUNYHiBFEdF9UIhfW
+         0u0iqIQPqrE/N0fFtFE5QXkkVADoZNAipbPoQbj2873pJcQ2Xepbqb1PbH+P9IYH2u5r
+         Psrg==
+X-Gm-Message-State: AOJu0YwyLM+drbN1j0kt/jQHk4JR7FUsaGQeyN76JAvurzli5FSTCqVh
+	LEqnm+SP3SSqIrVF+3uDAVaR1l/o13dsxvWe4eqEUssBQCdumIo3
+X-Google-Smtp-Source: 
+ AGHT+IHEHsT1zzNtRQiEvxL9vQVA1+GMmM1tGgu0886rvjafxm8Xlqj1jhjE4F2JrqMmJP4hZy0nbQ==
+X-Received: by 2002:a17:902:e745:b0:1eb:54b7:2724 with SMTP id
+ d9443c01a7336-1f44990030emr30810925ad.64.1716570110284;
+        Fri, 24 May 2024 10:01:50 -0700 (PDT)
+Received: from localhost.localdomain ([171.61.204.81])
+        by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-1f44c9d97ccsm15992875ad.295.2024.05.24.10.01.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 May 2024 10:01:49 -0700 (PDT)
+From: Abhishek Tamboli <abhishektamboli9@gmail.com>
+To: srinivas.kandagatla@linaro.org
 Cc: alsa-devel@alsa-project.org,
-	broonie@kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH 0/3] ALSA/PCI: add PantherLake audio support
-In-Reply-To: <d7d06d90-d714-4fe6-a191-57c641cff01c@linux.intel.com>
-References: <20240612064709.51141-1-pierre-louis.bossart@linux.intel.com>
-	<878qz9nih2.wl-tiwai@suse.de>
-	<d7d06d90-d714-4fe6-a191-57c641cff01c@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Queue-Id: B04D237287
-X-Spamd-Result: default: False [-3.49 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.18)[-0.875];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-Message-ID-Hash: T3JITYRR72QP7AC26XWWLLNHYQUMIXGZ
-X-Message-ID-Hash: T3JITYRR72QP7AC26XWWLLNHYQUMIXGZ
-X-MailFrom: tiwai@suse.de
+	linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] Correct documentation for struct segdist_code
+Date: Fri, 24 May 2024 22:31:42 +0530
+Message-Id: <20240524170142.9633-1-abhishektamboli9@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: abhishektamboli9@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: KCJ6MPOCR5JMAAU6SZ2DJMVSAFDVIZ2D
+X-Message-ID-Hash: KCJ6MPOCR5JMAAU6SZ2DJMVSAFDVIZ2D
+X-Mailman-Approved-At: Thu, 13 Jun 2024 15:49:42 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T3JITYRR72QP7AC26XWWLLNHYQUMIXGZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KCJ6MPOCR5JMAAU6SZ2DJMVSAFDVIZ2D/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -172,41 +114,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 13 Jun 2024 16:16:33 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> 
-> 
-> On 6/13/24 14:19, Takashi Iwai wrote:
-> > On Wed, 12 Jun 2024 08:47:06 +0200,
-> > Pierre-Louis Bossart wrote:
-> >>
-> >> Add the PCI ID for PantherLake.
-> >>
-> >> Since there's a follow-up patchset for ASoC, these 3 patches could be
-> >> applied to the ASoC tree. Otherwise an immutable branch would be
-> >> needed.
-> >>
-> >> Pierre-Louis Bossart (3):
-> >>   PCI: pci_ids: add INTEL_HDA_PTL
-> >>   ALSA: hda: hda-intel: add PantherLake support
-> >>   ALSA: hda: intel-dsp-config: Add PTL support
-> > 
-> > Applied now to for-next branch.
-> > 
-> > There were duplicated Reviewed-by tags by Peter as checkpatch
-> > complained, so I removed the one. 
-> 
-> Thanks Takashi, how do we proceed to get those changes into AsoC?
-> 
-> the first patch is a dependency for the patchset "[PATCH v2 0/5]
-> ASoC/SOF/PCI/Intel: add PantherLake support"
+Correct the documentation for struct segdist_code by
+removing the incorrect reference to segdist_codes and
+add a note to describe the array.
 
-ASoC tree needs to merge for-next branch from my sound.git tree.
-Or vice versa, Mark sends a PR to sync the content.  (It should be
-done more often, not only once per cycle, IMHO.)
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202405190241.jIzZxFB5-lkp@intel.com/
 
+Signed-off-by: Abhishek Tamboli <abhishektamboli9@gmail.com>
+---
+The documentation for struct segdist_code contained an incorrect reference
+to segdist_codes as a member. This patch removes that incorrect reference
+and adds a note to describe the array segdist_codes[] containing all possible
+Segment Distribution codes.
 
-thanks,
+ drivers/slimbus/stream.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Takashi
+diff --git a/drivers/slimbus/stream.c b/drivers/slimbus/stream.c
+index 1d6b38657917..d9eaa8989d2e 100644
+--- a/drivers/slimbus/stream.c
++++ b/drivers/slimbus/stream.c
+@@ -18,7 +18,8 @@
+  *		and the first slot of the next  consecutive Segment.
+  * @segdist_code: Segment Distribution Code SD[11:0]
+  * @seg_offset_mask: Segment offset mask in SD[11:0]
+- * @segdist_codes: List of all possible Segmet Distribution codes.
++ *
++ * Note: segdist_codes: List of all possible Segmet Distribution codes.
+  */
+ static const struct segdist_code {
+ 	int ratem;
+
+base-commit: f3d61438b613b87afb63118bea6fb18c50ba7a6b
+prerequisite-patch-id: f30868a7fdcfaceb6bab2b6f41402a9aeae858cb
+-- 
+2.25.1
+
