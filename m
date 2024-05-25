@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 764A4C25B78
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 May 2024 17:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F8B9C25B79
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 May 2024 17:08:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3961B74C;
-	Sat, 25 May 2024 19:08:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3961B74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C0EAB65;
+	Sat, 25 May 2024 19:08:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C0EAB65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716656891;
-	bh=9FK0oboQorZhbDvmMpgtORUFCkbQSkfqiSX4FWXKE2k=;
+	s=default; t=1716656902;
+	bh=Q840FnaP3gilF3azGBeDYnmzf08+rOdLw78fbP3ixB4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eR4dO0YXb/iXBlfTlxQa36E7hR/uZukVxKZEUyT+rqeCcBBTz/fXNTbATYnqt3zxP
-	 NCb5NuQLQdJk6m91kwTceS76LQFwx2kvEAeUTLhsvlYWIR5Uyz02y85gkXkoV0bVVh
-	 BLKt4KmpZ9azQIs6BpfAB9R+gJwb217IK6HQa+3w=
+	b=aopE6Dtz9faznw9WQfxU4Up1tK8k2ehLJX49XssXxMt6KMnM8re3rcUeX9DbUPV3r
+	 0PtbqQXltcwQ5NMR3XGEwgjSaRpqpce+dtyIxwHQKTmOwwrDHXs5T5XfQ+syVTX/RJ
+	 3kGnv92Ry8Nxcpop2LfdikeqSiSrgznOtOq2JL/8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36A17F805A1; Sat, 25 May 2024 19:07:28 +0200 (CEST)
+	id 9B2B5F805C3; Sat, 25 May 2024 19:07:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1114DF805AB;
-	Sat, 25 May 2024 19:07:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 262EBF805D6;
+	Sat, 25 May 2024 19:07:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DAF8F8020D; Sat, 25 May 2024 19:03:33 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 4A98EF8020D; Sat, 25 May 2024 19:06:02 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6774BF8016B
-	for <alsa-devel@alsa-project.org>; Sat, 25 May 2024 19:03:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6774BF8016B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 93EE9F8016B
+	for <alsa-devel@alsa-project.org>; Sat, 25 May 2024 19:05:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93EE9F8016B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=iexVq+Qu
+ header.s=k20201202 header.b=T4Sf40ZT
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 2D76ACE0228;
-	Sat, 25 May 2024 17:03:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 148E8C2BD11;
-	Sat, 25 May 2024 17:03:04 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 27874CE0228;
+	Sat, 25 May 2024 17:05:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE979C2BD11;
+	Sat, 25 May 2024 17:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716656590;
-	bh=9FK0oboQorZhbDvmMpgtORUFCkbQSkfqiSX4FWXKE2k=;
+	s=k20201202; t=1716656751;
+	bh=Q840FnaP3gilF3azGBeDYnmzf08+rOdLw78fbP3ixB4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iexVq+Qu9L+ktoAOoPvqTT4kblZB6xL+rYeWbXyhu2clY+FQoZbOLwVahmGKVYbHx
-	 /BxkTPx1qolKedMcPqgTfoL6li0Nu4JLud8H9UTznmj4qv04wnO8TKTc2rZFxdU/K7
-	 vU3hS61nqZD4kVSQW8WCzIRaIKE3OOcjJWLvPbZyk4fQ4YgY05IvS29kyH4CfRnIc+
-	 /AZUV9XYXlDNq114L82O2YXBP0LQW3LA6lHm/dYFEzHDGBKQBCoLYJJcd8itEBZbPO
-	 U6NrVW4NQY4JrGIdoEUROqI5r8bYmq8zMq7/TQs0WHWhPydF8lYC7ZjUir0NyhbLiS
-	 8eKI1f3Nd+luQ==
-Message-ID: <7deee008-a2e6-45c7-8c83-5b2d7db7a04e@kernel.org>
-Date: Sat, 25 May 2024 19:03:02 +0200
+	b=T4Sf40ZT5BW1cxRi1NV1ewHrChsd1QwviWWxsCsPAluqHQIk1G1QsbwAqrxAVDeQ1
+	 X9nszTAi4tpsVdk1uRSpaR5weVYDUqGgsIPXW1yE/UrT6x8Nzqx26TXpNWeKmZosYz
+	 uCmwhmuySxF4gPslFTkgNddBZfxcMN4dHJWOmnu+ZVMxFQC0K5HwWaR1OEmW7abYwF
+	 8nfS9bTJrnM6fgRHpeeEttwBIeZBOJHpFgTb9zR1f8sCKyTJwWQYsvS31G27cwfivV
+	 k0CTv8fZFn+gaLrrhoLVQawHjLNEDQ45oGfLH/8/XOpKZMTErRereONmvAuf8khURN
+	 dpdOKb9ELNhEQ==
+Message-ID: <4a0778c3-163e-468b-9a67-e4c450e33436@kernel.org>
+Date: Sat, 25 May 2024 19:05:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd
- QCS6490 sound card
+Subject: Re: [PATCH v5 1/7] ASoC: dt-bindings: document wcd937x Audio Codec
 To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
@@ -72,8 +72,8 @@ Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com,
  quic_pkumpatl@quicinc.com
-References: <20240524035350.3118981-1-quic_mohs@quicinc.com>
- <20240524035350.3118981-2-quic_mohs@quicinc.com>
+References: <20240524035535.3119208-1-quic_mohs@quicinc.com>
+ <20240524035535.3119208-2-quic_mohs@quicinc.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -119,11 +119,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240524035350.3118981-2-quic_mohs@quicinc.com>
+In-Reply-To: <20240524035535.3119208-2-quic_mohs@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: TSDH744NHM43RW2GNL5CRTD22K2FAJTG
-X-Message-ID-Hash: TSDH744NHM43RW2GNL5CRTD22K2FAJTG
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: VZMQDOBOO7XQKGOTUF5IRN327TR2E5SJ
+X-Message-ID-Hash: VZMQDOBOO7XQKGOTUF5IRN327TR2E5SJ
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -136,7 +136,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TSDH744NHM43RW2GNL5CRTD22K2FAJTG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VZMQDOBOO7XQKGOTUF5IRN327TR2E5SJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -145,16 +145,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 24/05/2024 05:53, Mohammad Rafi Shaik wrote:
-> Document the bindings for the Qualcomm QCM6490 IDP and QCS6490 RB3Gen2
-> soc platforms sound card.
+On 24/05/2024 05:55, Mohammad Rafi Shaik wrote:
+> From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
 > 
-> The bindings are the same as for other newer Qualcomm ADSP sound cards,
-> thus keep them in existing qcom,sm8250.yaml file, even though Linux driver
-> is separate.
+> Document the Qualcomm WCD9370/WCD9375 Audio Codec and the
+> Soundwire devices than can be found on Qualcomm QCM6490 based platforms.
 > 
+> The Qualcomm WCD9370/WCD9375 Audio Codec communicates
+> with the host SoC over 2 Soundwire links to provide:
+> - 3 TX ADC paths with 4 differential AMIC inputs
+> - 6 DMIC inputs that are shared with AMIC input
+> - 4 Microphone BIAS
+> - RX paths with 4 PAs – HPHL/R, EAR and AUX
+> - Stereo Headphone output
+> - MBHC engine for Headset Detection
+> 
+> Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+> Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
