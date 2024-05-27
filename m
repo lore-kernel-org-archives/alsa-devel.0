@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A531AC25B74
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 19:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3F77C25B78
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 19:39:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D6C493A;
-	Mon, 27 May 2024 21:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D6C493A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 450FFDEE;
+	Mon, 27 May 2024 21:39:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 450FFDEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716838769;
-	bh=pT8b6UcO81biTjXtBIqTvq5DBJ9GY2SYfo6YadyiA1k=;
+	s=default; t=1716838779;
+	bh=idMrl9zK4G+zC54METxzu7CjjMB3d2KiXfv/+/cCTQQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jcgeOqmNUlGM7ylXA5O2qQLV2cZTlW50OvS9fBMx09f92QF/hqvXcCRGPlDMBtXb0
-	 +TBroNbybh2BgTPf+DUq+GUivEpa49owKQWKUC58QxUXCPP7blW/nfA1fEKsfbm5JN
-	 0pCwWt0at2axD+U3HUo+a8uFfRdrCFL+sd2CJ9EQ=
+	b=sos7CgHqiN9zFzNDRQaMBLllZbpqK9x5QvqlgIq7qRxXF7DDbcXdENk0LuNv+JfVT
+	 PJ6xgo5Y7HmoLyXCbbJeCMsAMMfNLHQv9MfkpgMrtLMcJ/DegZ14y5GhqLwrdGFVpB
+	 s/9bX/7Tu+ghJewTbIgdp8WywdmpljaesdXEl+DM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81A33F806ED; Mon, 27 May 2024 21:37:00 +0200 (CEST)
+	id CAA3CF80726; Mon, 27 May 2024 21:37:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B435DF805C4;
-	Mon, 27 May 2024 21:36:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8019AF8070C;
+	Mon, 27 May 2024 21:37:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72043F806B4; Mon, 27 May 2024 21:36:55 +0200 (CEST)
+	id 8A196F806E7; Mon, 27 May 2024 21:36:57 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3D944F8051F
-	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 21:36:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D944F8051F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9F794F80525
+	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 21:36:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F794F80525
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=RpaMUaiv
+ header.s=Intel header.b=WmP0n4LN
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1716838584; x=1748374584;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=pT8b6UcO81biTjXtBIqTvq5DBJ9GY2SYfo6YadyiA1k=;
-  b=RpaMUaivwC+wm5vRa2fF9Y33ylkXZ+pLvbNBOIBjCW5sRDUwGGbu0ufy
-   iMCSDg2z+H1IzXi2wn9kZadzkj2KgfyJSKyLvv8bTaJmaqw6Qff06Au6b
-   t+cSzbvAxls5rmazV2iK35V5/i5MfoZDm3WEcvUO919J/NF3wwPRxxee9
-   rbIr9L66PTEML6WKQaaKh5P/fgNUBfZwICZphYSLNQbGsZdjrZ2UMv/et
-   my0HQGzK2iBDhAwvGWQmTStuXJd2VDCHSiijLs8Nh66hjRpv0kZw7Xq3p
-   1PQOzApOgpzCytAxzW99/+MuaqAN9SWnbCNWrRaSlPsOgOmQls6r/DP9A
-   g==;
-X-CSE-ConnectionGUID: /+vPTS64SOCWphTdnQNqaw==
-X-CSE-MsgGUID: qvGZmXSMQiuGjXJ9UDrNuQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="13339387"
+  bh=idMrl9zK4G+zC54METxzu7CjjMB3d2KiXfv/+/cCTQQ=;
+  b=WmP0n4LNTWlJFk6j+HCYJNgxDpq/HGnpdQvCBnuIVc4t74vSF2zWOjcY
+   I4ZAuQ3+d7efUk55xkleFYFcg+vd475NI1is4ApDzHXQm5MpI4uMGgel9
+   Fi1ztaW48kNxrQ2wC+kC51KY5C8TTq3icyKUPft8JBTbd/cWWq3qXVawC
+   SO+zbBPkTAGpbWd/YYZ0PLrWj/Zj5Qn3yOH3I82NiFRcr+CT9GDS6jir+
+   UxIkVVzvNhEgk52MN/wXDOKB0OM6LGwwU39Oi+AeriDkzmzA/UYzvrMNN
+   1jAIVlP9hxPtQlCL949pgd9SOpga0AFMmUonFLUS3Tebovfe8EIcgZeO4
+   A==;
+X-CSE-ConnectionGUID: fMkCwQvwTMerz5Vw1rA4Sg==
+X-CSE-MsgGUID: jrYhVor/TSy1g31b+ZIIOA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="13339381"
 X-IronPort-AV: E=Sophos;i="6.08,193,1712646000";
-   d="scan'208";a="13339387"
+   d="scan'208";a="13339381"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 12:36:20 -0700
-X-CSE-ConnectionGUID: ybOwgpdeRLafsIn1uiQ2dg==
-X-CSE-MsgGUID: ceLCfibgSMaTf2xd0s1rYw==
+ 27 May 2024 12:36:19 -0700
+X-CSE-ConnectionGUID: dgaJvZ/bTNyiyEGIQkJ3Fg==
+X-CSE-MsgGUID: IH8YwbcjRkCzIfjJqEg1fQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,193,1712646000";
-   d="scan'208";a="58029785"
+   d="scan'208";a="58029781"
 Received: from unknown (HELO pbossart-mobl6.lan) ([10.125.110.221])
   by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 12:36:19 -0700
+ 27 May 2024 12:36:18 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -75,16 +75,17 @@ Cc: alsa-devel@alsa-project.org,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/18] ASoC: SOF: ipc3-topology: support tdm slot number query
-Date: Mon, 27 May 2024 14:35:48 -0500
-Message-ID: <20240527193552.165567-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 13/18] ASoC: SOF: sof-audio: add sof_dai_get_tdm_slots
+ function
+Date: Mon, 27 May 2024 14:35:47 -0500
+Message-ID: <20240527193552.165567-14-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527193552.165567-1-pierre-louis.bossart@linux.intel.com>
 References: <20240527193552.165567-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: P7SFMCSFLTVB45UEQDOFCZQJXUB34HXN
-X-Message-ID-Hash: P7SFMCSFLTVB45UEQDOFCZQJXUB34HXN
+Message-ID-Hash: QDJG7VKIVCCMWUCKJ6D2QTQWBP76WBWJ
+X-Message-ID-Hash: QDJG7VKIVCCMWUCKJ6D2QTQWBP76WBWJ
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P7SFMCSFLTVB45UEQDOFCZQJXUB34HXN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QDJG7VKIVCCMWUCKJ6D2QTQWBP76WBWJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,30 +109,65 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Support the new parameter type SOF_DAI_PARAM_INTEL_SSP_TDM_SLOTS in
-sof_ipc3_dai_get_param() function to get the tdm slot number of
-specific SSP port.
+An new interface, sof_dai_get_tdm_slots(), is added for machine driver
+to get tdm slot number from topology. The dai_get_param() callback
+needs to support new parameter type SOF_DAI_PARAM_INTEL_SSP_TDM_SLOTS
+by returning the tdm slot number of specific SSP port.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc3-topology.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/sound/sof.h       |  1 +
+ sound/soc/sof/sof-audio.c | 10 ++++++++++
+ sound/soc/sof/sof-audio.h |  5 +++--
+ 3 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index b68dea41cd95..be61e377e59e 100644
---- a/sound/soc/sof/ipc3-topology.c
-+++ b/sound/soc/sof/ipc3-topology.c
-@@ -2514,6 +2514,8 @@ static int sof_ipc3_dai_get_param(struct snd_sof_dev *sdev, struct snd_sof_dai *
- 			return private->dai_config->ssp.mclk_rate;
- 		case SOF_DAI_PARAM_INTEL_SSP_BCLK:
- 			return private->dai_config->ssp.bclk_rate;
-+		case SOF_DAI_PARAM_INTEL_SSP_TDM_SLOTS:
-+			return private->dai_config->ssp.tdm_slots;
- 		default:
- 			dev_err(sdev->dev, "invalid SSP param %d\n", param_type);
- 			break;
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index ec6c30d54592..64fd5504cb2b 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -173,5 +173,6 @@ struct sof_dev_desc {
+ 
+ int sof_dai_get_mclk(struct snd_soc_pcm_runtime *rtd);
+ int sof_dai_get_bclk(struct snd_soc_pcm_runtime *rtd);
++int sof_dai_get_tdm_slots(struct snd_soc_pcm_runtime *rtd);
+ 
+ #endif
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 2421a115747e..881eec38c2e2 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -1016,3 +1016,13 @@ int sof_dai_get_bclk(struct snd_soc_pcm_runtime *rtd)
+ 	return sof_dai_get_param(rtd, SOF_DAI_PARAM_INTEL_SSP_BCLK);
+ }
+ EXPORT_SYMBOL(sof_dai_get_bclk);
++
++/*
++ * Helper to get SSP TDM slot number from a pcm_runtime.
++ * Return 0 if not exist.
++ */
++int sof_dai_get_tdm_slots(struct snd_soc_pcm_runtime *rtd)
++{
++	return sof_dai_get_param(rtd, SOF_DAI_PARAM_INTEL_SSP_TDM_SLOTS);
++}
++EXPORT_SYMBOL(sof_dai_get_tdm_slots);
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index abb2a00c520d..49be02234fc3 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -44,8 +44,9 @@
+ #define WIDGET_IS_AIF_OR_DAI(id) (WIDGET_IS_DAI(id) || WIDGET_IS_AIF(id))
+ #define WIDGET_IS_COPIER(id) (WIDGET_IS_AIF_OR_DAI(id) || (id) == snd_soc_dapm_buffer)
+ 
+-#define SOF_DAI_PARAM_INTEL_SSP_MCLK	0
+-#define SOF_DAI_PARAM_INTEL_SSP_BCLK	1
++#define SOF_DAI_PARAM_INTEL_SSP_MCLK		0
++#define SOF_DAI_PARAM_INTEL_SSP_BCLK		1
++#define SOF_DAI_PARAM_INTEL_SSP_TDM_SLOTS	2
+ 
+ enum sof_widget_op {
+ 	SOF_WIDGET_PREPARE,
 -- 
 2.43.0
 
