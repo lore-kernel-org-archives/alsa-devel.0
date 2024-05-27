@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D434C25B78
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 15:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6C16C25B74
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 15:53:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83DF8DF8;
-	Mon, 27 May 2024 17:52:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83DF8DF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id F071286F;
+	Mon, 27 May 2024 17:52:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F071286F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716825172;
-	bh=2cLx1RTnLIZnsam3m/uMcFJB/9IKs3dw7YoYr5Yf46k=;
+	s=default; t=1716825190;
+	bh=Wls7pWzHp29cJlP1fBzxbPRrtJUxPMYNrWPeMV/p5hM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dtXg6l8Rnd5QJMr3MMLoizE7EqQmTk3YKkxVOCRRdGCs13wu88bgngQjouYdbIWFU
-	 NWPRk3HidWhcpHzSNbgdZEcLny7S+Y+ubQ8gYJoqUXMlFqpKWJQ/B4/3PzwMgaVm8r
-	 9z0kNiz3Vk3eUGq5+ldX3yQDJxO/WA4hFkan0e58=
+	b=viyyUKOZNGIsDWhNEe2iukSrZFy3aAbCC01HK2p968Hy+N7GzzWgrbEpMQJk9pfTB
+	 R45MLrNzBbv169X7H+Be9rgQIDFOCoZPtwV9kxvu5V4Z7mJ/jX7pUVAV8fsVQ6WImt
+	 GZcivk8ukNXZgJyk/aUg6X1/rllpStO4P0PIyHgI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB9CBF805C4; Mon, 27 May 2024 17:52:18 +0200 (CEST)
+	id CBF8AF805ED; Mon, 27 May 2024 17:52:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8B5AF805C0;
-	Mon, 27 May 2024 17:52:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E22FF805E0;
+	Mon, 27 May 2024 17:52:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E6AFF8051F; Mon, 27 May 2024 17:52:14 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 8AA4AF8051D; Mon, 27 May 2024 17:52:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9CB9AF80149
-	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 17:52:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CB9AF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 403E1F800AC
+	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 17:52:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 403E1F800AC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=XQhTrfRs
+ header.s=k20201202 header.b=ENJ1YXr1
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4850C61B1C;
-	Mon, 27 May 2024 15:52:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6584FC4AF08;
-	Mon, 27 May 2024 15:52:06 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 197C461A74;
+	Mon, 27 May 2024 15:52:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12409C32781;
+	Mon, 27 May 2024 15:52:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716825128;
-	bh=2cLx1RTnLIZnsam3m/uMcFJB/9IKs3dw7YoYr5Yf46k=;
+	s=k20201202; t=1716825131;
+	bh=Wls7pWzHp29cJlP1fBzxbPRrtJUxPMYNrWPeMV/p5hM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XQhTrfRslkJjPbNnEn1XmIuo9RlCJqoRqp71BSlUALfNy33GryknV+/cojNKVUGU2
-	 yQX5pm9zsiC0Z7GbgeziIsx7MEH3ODSdOXgu4Wb2m03lz3E/WveDrz1iD83JaL03j+
-	 otiPOm8zSgYemkVYkhTow3RTBsrh9W29uTQEwqhGtERH2xZqt8tSNqdC2Ye1TaqcPC
-	 fbYj44OsRFCHF4YJuG+XvydVwC/GC1KYd9HMarKwbiku50xToC7fuKAi5GlEz7Z4RA
-	 XYq4Uaib5q5LoQvaV5RLSa0g219fj6IzK5YLMgeh/5JcQUzsz4CUrHuFaFwgW8lv87
-	 3v2InRlsKFoyg==
+	b=ENJ1YXr1HsXDHpguh/9ljWFsbR+NpsEcr7sjmhaEzWJ+7Al6MzdGP5tBDN81laaoJ
+	 Fxix3QptCZxygdnHaPOrWxFtE5gXKEg8JAU3qiv5QlEWAi8GzTjOvtYhJX46uGr7mf
+	 OOGtR2A1xudEAMiqoIulg64hLc1GJ1xCBmYue9qdURPUcNedTMiKPTMFdgip28lkqx
+	 7srbmYb3W3076JS6jNs1ollL1Qo5ObLHi3uGxDA7v6Ao1o6oauaxLsY4/4xXhOy8tl
+	 nB9OkNU3KV6FWozF8N4bstndP0/8DoZCPgbtTpbMt/TA8n6p4PWDm/jOrJb3FaZ1F5
+	 oYnppy4ljm96g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	cezary.rojewski@intel.com,
 	liam.r.girdwood@linux.intel.com,
 	peter.ujfalusi@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
 	ranjani.sridharan@linux.intel.com,
 	kai.vehmanen@linux.intel.com,
 	perex@perex.cz,
@@ -72,10 +72,10 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	ckeepax@opensource.cirrus.com,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.9 08/23] ASoC: Intel: sof_sdw: add JD2 quirk for HP
- Omen 14
-Date: Mon, 27 May 2024 11:50:09 -0400
-Message-ID: <20240527155123.3863983-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.9 09/23] ASoC: Intel: sof_sdw: add quirk for Dell
+ SKU 0C0F
+Date: Mon, 27 May 2024 11:50:10 -0400
+Message-ID: <20240527155123.3863983-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527155123.3863983-1-sashal@kernel.org>
 References: <20240527155123.3863983-1-sashal@kernel.org>
@@ -84,8 +84,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.9.2
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MIOAGCZA6KGJG4JPO6B75GHVZXFFRHZC
-X-Message-ID-Hash: MIOAGCZA6KGJG4JPO6B75GHVZXFFRHZC
+Message-ID-Hash: U6NAMWU74WNOEF3ETUZ3YIPYLKGJUZM3
+X-Message-ID-Hash: U6NAMWU74WNOEF3ETUZ3YIPYLKGJUZM3
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MIOAGCZA6KGJG4JPO6B75GHVZXFFRHZC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U6NAMWU74WNOEF3ETUZ3YIPYLKGJUZM3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,38 +109,42 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 4fee07fbf47d2a5f1065d985459e5ce7bf7969f0 ]
+[ Upstream commit b10cb955c6c0b8dbd9a768166d71cc12680b7fdf ]
 
-The default JD1 does not seem to work, use JD2 instead.
+The JD1 jack detection doesn't seem to work, use JD2.
+Also use the 4 speaker configuration.
 
+Link: https://github.com/thesofproject/linux/issues/4900
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20240411220347.131267-4-pierre-louis.bossart@linux.intel.com
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20240411220347.131267-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 08f330ed5c2ea..f4f08e9031506 100644
+index f4f08e9031506..76ed72716b3ca 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -495,6 +495,15 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 					SOF_BT_OFFLOAD_SSP(1) |
- 					SOF_SSP_BT_OFFLOAD_PRESENT),
+@@ -429,6 +429,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 					RT711_JD2 |
+ 					SOF_SDW_FOUR_SPK),
  	},
 +	{
 +		.callback = sof_sdw_quirk_cb,
 +		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "OMEN Transcend Gaming Laptop"),
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0C0F")
 +		},
-+		.driver_data = (void *)(RT711_JD2),
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					RT711_JD2 |
++					SOF_SDW_FOUR_SPK),
 +	},
-+
- 	/* LunarLake devices */
  	{
  		.callback = sof_sdw_quirk_cb,
+ 		.matches = {
 -- 
 2.43.0
 
