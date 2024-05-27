@@ -4,89 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C10A0C25B74
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 19:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49AEDC25B78
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 19:42:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05E5EE72;
-	Mon, 27 May 2024 21:41:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05E5EE72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 616F1E7F;
+	Mon, 27 May 2024 21:41:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 616F1E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716838909;
-	bh=YUZRQX2mKZ5gfIkh+Vr07Pz1IYqZFFFZgqwYlxYqv4I=;
+	s=default; t=1716838924;
+	bh=2m3wXl1aloLbGCx8+3UjrcvRoYSfSH2cV7nQxeM9yPM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KlvwAJXEwFJ6/OE//2e/yNmeW36BBbT3NImAFzL1hTDp/G1icFDSsxxCdoqRCQfzU
-	 xpguAQb2PwCHh7eyOTHHImGBwfcFo7/UHqLinxJKj8/N1hRNGtRfoXzAQ064LIFSBh
-	 X4uPMWD7D1V6+M09yoqW10z8Ms9czfjb0JQFbfyA=
+	b=CS3JFD7ngaGwGVQeBD5u2vBOPlewSLyUwMVjJNvd9D9QrPBDPEA0zCctPNfvbXNwH
+	 lKCeJ0t9YaCjxT2rfOfHgE+Ghk4MuySFDLY6bFUJVSsuZbZr4htgkHjBfdnAZIeu1z
+	 egDKiyHYlkQxePeqfQs+lhYdAUaFy4C6YCPuf3vY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8FA29F80671; Mon, 27 May 2024 21:38:48 +0200 (CEST)
+	id F04F2F80676; Mon, 27 May 2024 21:38:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCC7FF8063B;
-	Mon, 27 May 2024 21:38:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 029AFF80688;
+	Mon, 27 May 2024 21:38:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A064CF80634; Mon, 27 May 2024 21:38:44 +0200 (CEST)
+	id 43A5FF80578; Mon, 27 May 2024 21:38:45 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7F272F804B2
-	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 21:36:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F272F804B2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 42A96F8047C
+	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 21:36:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42A96F8047C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Vhp0RxLF
+ header.s=Intel header.b=MI2mLxc0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1716838580; x=1748374580;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=YUZRQX2mKZ5gfIkh+Vr07Pz1IYqZFFFZgqwYlxYqv4I=;
-  b=Vhp0RxLFnXnI+YbHLAwG1DSLpKIWBXCaAj3f+pqMqiywojGBqdJl2kOd
-   a4MiPYf6HNNchvK6pvnjchLKURjSwOBCuIN6unBaOmn0HMOLNJ/knnDqS
-   fto8S28R8/D1e3uyz87wTdnfPaS7+JxKWzlsVUbiMUW/Zcg7cVgIdozcM
-   p8soqRUZYWc5jJscp0p3dhD2WMf+OI/hPzBdzrGvypMTIHBIuJsN8tK/V
-   segjwIvmmB3DT7+AXh5LSk2N2raTZskPNCvxtlmdNooixZpbeWCQgjK6P
-   y5R+vHoQSgjmfzCzZxrzxdIIfPsVHq2gIBsHdM9+vX8tNqhGQ+tZ57J8c
+  bh=2m3wXl1aloLbGCx8+3UjrcvRoYSfSH2cV7nQxeM9yPM=;
+  b=MI2mLxc0b5ZFFxvpvYDdFROKlSxwUln4WjAIBy4h9QKkfFI7r6d5V/lS
+   jeKhrnSH3vKSTXKAfIiEV8rB5duV6asbMzWPJgiT6vOEswphqULhJpdiF
+   A0LnHY+0X+hc1HYoDBtkVog/u3HwrwigVv/8sO2GwNQ2Q2WveGP59CtPB
+   U03PFS6RLz9Sy4QwdWptkrLJzYLw2U7pNfp9xRHSbxw2K2mndIWFnfbA9
+   LjWy9zwzy3q4zpEqxwmX0wDXPEAPfDZirj568LrageTBZyWvovpd+Hplc
+   ZCZLzgiVnis5YUDJNnzpwiVP5T7qABC0d0hIUWO6ev9VcXPyVAqkPaytc
    Q==;
-X-CSE-ConnectionGUID: knksUEz7TuKdHraAS7D50Q==
-X-CSE-MsgGUID: KpFgiBeUSYKbqHP/bm1M7Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="13339338"
+X-CSE-ConnectionGUID: sGVKuj9WQGiolgzLXJ9ZBQ==
+X-CSE-MsgGUID: XKW7weSyT8SZXay18odbiw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="13339348"
 X-IronPort-AV: E=Sophos;i="6.08,193,1712646000";
-   d="scan'208";a="13339338"
+   d="scan'208";a="13339348"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 12:36:13 -0700
-X-CSE-ConnectionGUID: KixdqEyuTE+4jttLsMiIPA==
-X-CSE-MsgGUID: dfQbgSOwRL+qeAcre3UfFw==
+ 27 May 2024 12:36:15 -0700
+X-CSE-ConnectionGUID: SzXWC9yzTX6l47CeOqX5AQ==
+X-CSE-MsgGUID: lZ55y1mQQva053ZLa7PkXw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,193,1712646000";
-   d="scan'208";a="58029762"
+   d="scan'208";a="58029767"
 Received: from unknown (HELO pbossart-mobl6.lan) ([10.125.110.221])
   by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 12:36:13 -0700
+ 27 May 2024 12:36:14 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 06/18] ASoC: Intel: sof_sdw_rt_sdca_jack_common: use dai
- parameter
-Date: Mon, 27 May 2024 14:35:40 -0500
-Message-ID: <20240527193552.165567-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 08/18] ASoC: Intel: sof_sdw: Add missing controls for
+ cs42l43/cs35l56
+Date: Mon, 27 May 2024 14:35:42 -0500
+Message-ID: <20240527193552.165567-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527193552.165567-1-pierre-louis.bossart@linux.intel.com>
 References: <20240527193552.165567-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3WAKPY5QIIR62WNSBDDHXMFMIJ752X73
-X-Message-ID-Hash: 3WAKPY5QIIR62WNSBDDHXMFMIJ752X73
+Message-ID-Hash: AF4BLXQME5Y47OUT4A5CMINQ4QMLRTU6
+X-Message-ID-Hash: AF4BLXQME5Y47OUT4A5CMINQ4QMLRTU6
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3WAKPY5QIIR62WNSBDDHXMFMIJ752X73/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AF4BLXQME5Y47OUT4A5CMINQ4QMLRTU6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,52 +107,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-The dai is passed from the parameter. We don't need to find the dai
-by name.
+No reason for cs42l43 and cs35l56 not to offer pin switch controls for
+the headphones and speakers, add these controls.
 
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
-index 012195c50519..4254e30ee4c3 100644
---- a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
-@@ -74,10 +74,6 @@ static struct snd_soc_jack_pin rt_sdca_jack_pins[] = {
- 	},
- };
- 
--static const char * const jack_codecs[] = {
--	"rt711", "rt712", "rt713", "rt722"
--};
--
- /*
-  * The sdca suffix is required for rt711 since there are two generations of the same chip.
-  * RT713 is an SDCA device but the sdca suffix is required for backwards-compatibility with
-@@ -91,17 +87,12 @@ int rt_sdca_jack_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *d
- {
- 	struct snd_soc_card *card = rtd->card;
- 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
--	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_component *component;
- 	struct snd_soc_jack *jack;
- 	int ret;
- 	int i;
- 
--	codec_dai = get_codec_dai_by_name(rtd, jack_codecs, ARRAY_SIZE(jack_codecs));
--	if (!codec_dai)
--		return -EINVAL;
--
--	component = codec_dai->component;
-+	component = dai->component;
- 	card->components = devm_kasprintf(card->dev, GFP_KERNEL,
- 					  "%s hs:%s",
- 					  card->components, component->name_prefix);
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 9dc50a6d5301..0516ae660824 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -1059,6 +1059,8 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_AMP_IN_DAI_ID},
+ 				.init = sof_sdw_cs_amp_init,
+ 				.rtd_init = cs_spk_rtd_init,
++				.controls = generic_spk_controls,
++				.num_controls = ARRAY_SIZE(generic_spk_controls),
+ 				.widgets = generic_spk_widgets,
+ 				.num_widgets = ARRAY_SIZE(generic_spk_widgets),
+ 			},
+@@ -1094,6 +1096,8 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 				.dai_type = SOF_SDW_DAI_TYPE_JACK,
+ 				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
+ 				.rtd_init = cs42l43_hs_rtd_init,
++				.controls = generic_jack_controls,
++				.num_controls = ARRAY_SIZE(generic_jack_controls),
+ 				.widgets = generic_jack_widgets,
+ 				.num_widgets = ARRAY_SIZE(generic_jack_widgets),
+ 			},
+@@ -1119,6 +1123,8 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
+ 				.init = sof_sdw_cs42l43_spk_init,
+ 				.rtd_init = cs42l43_spk_rtd_init,
++				.controls = generic_spk_controls,
++				.num_controls = ARRAY_SIZE(generic_spk_controls),
+ 				.widgets = generic_spk_widgets,
+ 				.num_widgets = ARRAY_SIZE(generic_spk_widgets),
+ 				.quirk = SOF_CODEC_SPKR | SOF_SIDECAR_AMPS,
 -- 
 2.43.0
 
