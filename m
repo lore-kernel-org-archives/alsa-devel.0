@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A533DC25B78
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 19:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0AE1C25B78
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 May 2024 19:38:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2FC082A;
-	Mon, 27 May 2024 21:38:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2FC082A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EC6CA4A;
+	Mon, 27 May 2024 21:38:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EC6CA4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716838691;
-	bh=jYtuJBvgWMuKyE6cWQ6d12Q1gxREjdJIFUCWcLL4Sls=;
+	s=default; t=1716838703;
+	bh=Mbv5Pp+x3KBmrpNjxUEHHJN4Ju5oASOGYV2/ps+Ec/k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NlA9Y2o8NlK1MZ+wEjPK34EOfKOqlEi9fEmqHQWTmPTtksb16P6D+mwP8hDE4tDgA
-	 A2yhdQHWxqzRtmuzJ1KxBMfPg9Kv7lBFfFhwHoZXaQg54u5+B7eRbLE0nRckXBE3kK
-	 BpejrIvHAgNgov1qq8Kcw3eoFJ2Zp79v/yTfDQl8=
+	b=L9/ppYEYVqYp9uB+qjtRVHnKJMLbehsnNm2hi8DTPsDBDuFuxxPYUy3DaCD+pDlPv
+	 oM7bluGl3tuKcv/ESaHpPW7lNUOiqQy8U3MNFnIaJTvsFVraAOXiSVwnKgxSAPI/ad
+	 yq9NY34Y/e8Q279ucF5E2+c4mz6gqajiqqaFH7Ng=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0AA44F8065A; Mon, 27 May 2024 21:36:41 +0200 (CEST)
+	id F3EEFF8068E; Mon, 27 May 2024 21:36:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51F3BF8063E;
-	Mon, 27 May 2024 21:36:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87A26F80682;
+	Mon, 27 May 2024 21:36:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5CD62F805D2; Mon, 27 May 2024 21:36:31 +0200 (CEST)
+	id 22800F805FF; Mon, 27 May 2024 21:36:35 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70161F8026D
-	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 21:36:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70161F8026D
+	by alsa1.perex.cz (Postfix) with ESMTPS id A018BF8051D
+	for <alsa-devel@alsa-project.org>; Mon, 27 May 2024 21:36:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A018BF8051D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Lq8LWT9c
+ header.s=Intel header.b=jfIvfXxy
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716838578; x=1748374578;
+  t=1716838582; x=1748374582;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jYtuJBvgWMuKyE6cWQ6d12Q1gxREjdJIFUCWcLL4Sls=;
-  b=Lq8LWT9c56+iDJSxUUtgsYEPouucc+9sq5OcUvQdxU5zpE6EfptOpge9
-   xcY9LfqOkL4D+MShhMmdTOiWIXJQhcPtiV5ytZnA3y7AXAftzcji9plT3
-   UEA1OlblVr4fd7MY05GmSahPYEN7BGAO1VjtE+Yt+K+ACZweekjtbj8Tx
-   AkqycmED5JEQWLtunRm7uru+HT5Go3f9VjSAXAUCNPR6BU5ltYmPiOC1k
-   GnYdE/Gonvge/Ud8hFfcM/3oRdRJCUbulAF/RYxRylukLRBZfbJff2RgL
-   W1jQCfr+1dUydh/VH0EOxljlOltP6+ZCiajKX6kIKiFtt1B2rRx29elQE
+  bh=Mbv5Pp+x3KBmrpNjxUEHHJN4Ju5oASOGYV2/ps+Ec/k=;
+  b=jfIvfXxyeKxJxSwFQUS0/60Y9Wr9Wk6sQqw8zxaGCAyDZQKzUtQ3Cw4I
+   lSXyFO4MkAMry0bFe4z7V+O2898i+M5AcuKHiIpQQUtvJ55nJTpJiKuzz
+   9DdB105HsCi8a79xJznv+GZq6cLk4a4Z3dqKI73/nxOlhfUiLy9qP1x30
+   h3icnrjSpzY68tKlYzdJz3q7YUJp3l9Lm3+N84kOJA/0WNdZ++b4PD9+T
+   8nIiZbAeeAL5fvqDoMUy4rpf7QWFf+ezm0LSE4QH/GfbXfdxfP49KYGbz
+   0ELZFs/UKMckJkN6B9TPG3NzRPgqHbSs662w6dO6wx2eDE7bOZImaYsLb
    Q==;
-X-CSE-ConnectionGUID: GSRmdLR3TSeBz3WefD/BnQ==
-X-CSE-MsgGUID: k2iQl7+ZQ9yRz5gvqi3tjQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="13339330"
+X-CSE-ConnectionGUID: scRUXAjfRVu/S99VQzSNeA==
+X-CSE-MsgGUID: hVzEW/MdRIGzlreGwTsSoA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="13339360"
 X-IronPort-AV: E=Sophos;i="6.08,193,1712646000";
-   d="scan'208";a="13339330"
+   d="scan'208";a="13339360"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
   by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 12:36:12 -0700
-X-CSE-ConnectionGUID: nkHSFpeTQsuuJNL15641LQ==
-X-CSE-MsgGUID: gs6GNEr5TZ6AIDTvAowelw==
+ 27 May 2024 12:36:17 -0700
+X-CSE-ConnectionGUID: 1xgFQ/loQvaF+L9zuifpMQ==
+X-CSE-MsgGUID: i7UE2F61SVyfigCaYlDlzw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,193,1712646000";
-   d="scan'208";a="58029760"
+   d="scan'208";a="58029772"
 Received: from unknown (HELO pbossart-mobl6.lan) ([10.125.110.221])
   by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 May 2024 12:36:11 -0700
+ 27 May 2024 12:36:16 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/18] ASoC: Intel: sof_sdw_rt700: use dai parameter
-Date: Mon, 27 May 2024 14:35:38 -0500
-Message-ID: <20240527193552.165567-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 10/18] ASoC: Intel: sof_sdw: Add quirks for some new Dell
+ laptops
+Date: Mon, 27 May 2024 14:35:44 -0500
+Message-ID: <20240527193552.165567-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527193552.165567-1-pierre-louis.bossart@linux.intel.com>
 References: <20240527193552.165567-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MECZWPJZRLV63SR6VU2XNDFN2ZXUZOVL
-X-Message-ID-Hash: MECZWPJZRLV63SR6VU2XNDFN2ZXUZOVL
+Message-ID-Hash: ZHJQUSY7UIKMA62MPOZAKAO7GNBVNPS4
+X-Message-ID-Hash: ZHJQUSY7UIKMA62MPOZAKAO7GNBVNPS4
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MECZWPJZRLV63SR6VU2XNDFN2ZXUZOVL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZHJQUSY7UIKMA62MPOZAKAO7GNBVNPS4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,48 +107,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-The dai is passed from the parameter. We don't need to find the dai
-by name.
+Add quirks for some new Dell laptops using Cirrus amplifiers in a bridge
+configuration.
 
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw_rt700.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt700.c b/sound/soc/intel/boards/sof_sdw_rt700.c
-index f9575db9d99c..0db730071be2 100644
---- a/sound/soc/intel/boards/sof_sdw_rt700.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt700.c
-@@ -33,24 +33,15 @@ static struct snd_soc_jack_pin rt700_jack_pins[] = {
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 0516ae660824..b646b32dd311 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -505,6 +505,22 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(RT711_JD2),
  	},
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0CE3")
++		},
++		.driver_data = (void *)(SOF_SIDECAR_AMPS),
++	},
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0CE4")
++		},
++		.driver_data = (void *)(SOF_SIDECAR_AMPS),
++	},
+ 	{}
  };
  
--static const char * const jack_codecs[] = {
--	"rt700"
--};
--
- int rt700_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *dai)
- {
- 	struct snd_soc_card *card = rtd->card;
- 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
--	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_component *component;
- 	struct snd_soc_jack *jack;
- 	int ret;
- 
--	codec_dai = get_codec_dai_by_name(rtd, jack_codecs, ARRAY_SIZE(jack_codecs));
--	if (!codec_dai)
--		return -EINVAL;
--
--	component = codec_dai->component;
-+	component = dai->component;
- 	card->components = devm_kasprintf(card->dev, GFP_KERNEL,
- 					  "%s hs:rt700",
- 					  card->components);
 -- 
 2.43.0
 
