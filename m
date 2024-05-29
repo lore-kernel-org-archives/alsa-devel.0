@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C8CFC25B75
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 May 2024 16:35:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 698C5C25B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 May 2024 16:35:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2982E857;
-	Wed, 29 May 2024 18:35:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2982E857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C29EDEC;
+	Wed, 29 May 2024 18:35:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C29EDEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717000510;
-	bh=3EDTejQBK8ZSb8KFoFK8hFhKx09BsYjN+k8vp/f4ouE=;
-	h=From:Subject:Date:To:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=AGrf5e7WNMTuxUaf3gP+4pmJO27qx/ZIvt/3yONSTUbYPgtIbtCe8QSqs/wMeHmgn
-	 duHTT0c7c3gXfdqpjgbe2yVH7lmRxhQVpCZKm9kdfic1BSOZX2Iv2hpZUBVBVD/r5X
-	 IQZKNtviDe+1g3I+WIT1Z1ICJ8w/ldsY6w5hiw2c=
+	s=default; t=1717000526;
+	bh=2ETKfb8VK13PTpYLFe3lnJNuwIXowCxaZWOea5Pv7io=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=h8ShXBAxhi28vrT+wOn1MUJ1LRc7hDZKLb0MAfeZ0/zK7X7eeZGNyrueDF+0Kox3j
+	 zxLo9LZJbvJugnJPNaCqnikWtpFT0Z0kNtuxFdw4OGO49DiHF+vN+SrylXtKNC694J
+	 Y8t1s1eCwhkk4yJpf+ZXMBKmAOJstwXqQNOcFPQE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A536CF805C7; Wed, 29 May 2024 18:34:18 +0200 (CEST)
+	id 7CC73F805EB; Wed, 29 May 2024 18:34:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EDF3F805D6;
-	Wed, 29 May 2024 18:34:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B747F805E7;
+	Wed, 29 May 2024 18:34:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75AD1F8026D; Wed, 29 May 2024 18:34:12 +0200 (CEST)
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com
- (mail-am0eur02on20601.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2606::601])
+	id 61B1CF805CB; Wed, 29 May 2024 18:34:18 +0200 (CEST)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04on2061e.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:260f::61e])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7C1D4F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56C8AF8003A
 	for <alsa-devel@alsa-project.org>; Wed, 29 May 2024 18:33:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C1D4F80149
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C8AF8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=axis.com header.i=@axis.com header.a=rsa-sha256
- header.s=selector1 header.b=KvQBm+m3
+ header.s=selector1 header.b=MZPxxetz
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pjm4ZdWVUu5zIAlE47DW3uOnzkDKgCI6b62nRA3JiYGDkOb93tsWgndtGQLNLVEZj9dcXjRrVRIFMI9xmMAU8h1QWvjX8YGY1OuVMcdpEmpoCk+fTBtYqbq1LsF9J2HOW6Y8Qr0fgy6KveGnTwxgcSvx67gmrDzt59hjFXEKz0POIoxApMXsd5+HkligGRffRgqPMMonJ9fkb7VrcgwoBbUWxQ9Jyfamdq3k+SbAgq4Q8lf6lAJvHPQ3Tcrbxre8BbVAUQCMSHi6VJM8c1BQkQu4R2STUHC3Wi25QLQJpq1qpY70KMfPq+Xzs8X7tv01LfwHV+hMT37jcJMJSVqkFg==
+ b=HP8ZRptf0CjccotXtNsRPR4rwlxs28sDeA0U0RQ1Bmx0SNO+RALjQkdda+as67/RuBMC/4OL6FRtZIowDwI5E9DSv8428NnDTdEx544loh4siiBmmiw4NRW9FN4cfWgoj552ob3T2Dz7l3p27mZF9ECyPBeY8m78p+T901dN4S3GCuKxfLuqYlQruPv+dp2z0+n8sFQh/UjqXdNO+dYaCYMo5ROaHJ7sjhLwv/dKJwqPgg0kuNAtC2MuIg1A5/+wyBMyBChQBJ2K5R7ugWYVqRSiEwtxJ3YrCW68kUrOclkvv8vkSqk18jSTbdUWayP3MlhudZHcZinFkmXbZkA0Jw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d4dwp47QF2kvHWQZYXvYXXkdSImV0logEUIG5VxBoM8=;
- b=AvY3r7QT2yGloBY81Lhb5FqeVL2CJcfFXnsfvEfZvXH1qLXsfwbbo1O30DHGFSCPSRRdTJMKPTOhbG5mHxSkAYI1ewKMIan1+PY81B9CqfSDRwQHJrW8wofaMu0BywkZtZ/ktNzrNKYnj2gECqfgx3D2MGT7EG9tLrVkV4BdyJlHoJBwEtE8D+8uU8cS0RpcJsqNTkaBhIQ+ro56QgNqL2RaieXlEkwym7oy1/Uf900YG/G3O+aYiLInRJQN3RGCnDZWHmG43e9olV3ZxZgCgCqWh3IFbG/Gq8wuBtn7k/11USoqhVI+Bu4naB21tR/V/tu2Dy8ALmEhIsBMixhfHQ==
+ bh=g1ZWXcyDO3jwG8kkAMerrUqvg4yIbozd2NQHtmO25kY=;
+ b=CdPYBlMvcUC4mtd2P2eoSeqZWOjHV6z6ghAmOYuIBF3S8aa3wqKMvQMU9anR/AGBcWFxPXfxC0B2EgcnE3f845cQPbZPvuEVMuAyEb//qQf9vkE7hOCwiDjoEECVtV4wr0JqJFmC9GSLMux1jkgLPh7d+z+nQClP5vmlOmIwvEC+IUis/CUuDuErYSEbU3YnFYEtGNp+1qw+C6sp1hKtmoFD3Ju5wuFOqa9f1qRVx5dB/zvt5HEChi+2WpylEYPQ3oAhpZJxfoxHUroK3i++PLrWk0RDzyx0iwdfU8PNzQ62l4JWzuy77bmtLMYa59XPPy0tnyPAW0xmeP9yeXIxkw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  195.60.68.100) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=axis.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=axis.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d4dwp47QF2kvHWQZYXvYXXkdSImV0logEUIG5VxBoM8=;
- b=KvQBm+m3G5yjZJEWfwUSca9mVeUErOpTNOU3PfD2CS71E9P92f0rUa/3s+icDkFIB+1Fh7th9e+AnkuWEOFlSB8Zyur6CtRvuiQ3HElFl38BS0FqL769xIPBjp/yR761q2T06fl9tDD221lHfF7nQaefxZo5RD663mhGAdbrnVs=
-Received: from AM0PR04CA0023.eurprd04.prod.outlook.com (2603:10a6:208:122::36)
- by DU2PR02MB10159.eurprd02.prod.outlook.com (2603:10a6:10:491::17) with
+ bh=g1ZWXcyDO3jwG8kkAMerrUqvg4yIbozd2NQHtmO25kY=;
+ b=MZPxxetzfrwYfBA1h8efOJM/lL+UIFIjLahKm12uUPJ5IZfH1H5jjtoyu5Si77moZAUqJOtsV6yUzOLp77XZlTRnqLCLXOja0XCDsULd3if5i9HXcL4H+ah1Vc+qfgGfSi/Sqep737oLcNjM+3P1ijIzBpGnUzCgxIBjeaZ3CAA=
+Received: from DU6P191CA0042.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:53f::18)
+ by PR3PR02MB6313.eurprd02.prod.outlook.com (2603:10a6:102:75::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.29; Wed, 29 May
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.19; Wed, 29 May
  2024 16:33:57 +0000
-Received: from AM1PEPF000252E0.eurprd07.prod.outlook.com
- (2603:10a6:208:122:cafe::e3) by AM0PR04CA0023.outlook.office365.com
- (2603:10a6:208:122::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.30 via Frontend
+Received: from DU2PEPF0001E9C1.eurprd03.prod.outlook.com
+ (2603:10a6:10:53f:cafe::c7) by DU6P191CA0042.outlook.office365.com
+ (2603:10a6:10:53f::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.19 via Frontend
  Transport; Wed, 29 May 2024 16:33:57 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 195.60.68.100)
  smtp.mailfrom=axis.com; dkim=none (message not signed)
@@ -71,35 +72,31 @@ Received-SPF: Pass (protection.outlook.com: domain of axis.com designates
  195.60.68.100 as permitted sender) receiver=protection.outlook.com;
  client-ip=195.60.68.100; helo=mail.axis.com; pr=C
 Received: from mail.axis.com (195.60.68.100) by
- AM1PEPF000252E0.mail.protection.outlook.com (10.167.16.58) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7633.15 via Frontend Transport; Wed, 29 May 2024 16:33:57 +0000
-Received: from SE-MAILARCH01W.axis.com (10.20.40.15) by se-mail02w.axis.com
- (10.20.40.8) with Microsoft SMTP Server (version=TLS1_2,
+ DU2PEPF0001E9C1.mail.protection.outlook.com (10.167.8.70) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7633.15 via Frontend Transport; Wed, 29 May 2024 16:33:56 +0000
+Received: from se-mail02w.axis.com (10.20.40.8) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 29 May
- 2024 18:33:56 +0200
-Received: from se-mail02w.axis.com (10.20.40.8) by SE-MAILARCH01W.axis.com
- (10.20.40.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Wed, 29 May
  2024 18:33:56 +0200
 Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail02w.axis.com
  (10.20.40.8) with Microsoft SMTP Server id 15.1.2507.39 via Frontend
  Transport; Wed, 29 May 2024 18:33:56 +0200
 Received: from pc49102-2217.se.axis.com (pc49102-2217.se.axis.com [10.88.7.5])
-	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 353C5583;
+	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 38DA02325;
 	Wed, 29 May 2024 18:33:56 +0200 (CEST)
 Received: by pc49102-2217.se.axis.com (Postfix, from userid 9470)
-	id 30965666EA08; Wed, 29 May 2024 18:33:56 +0200 (CEST)
+	id 3434A63F27EB; Wed, 29 May 2024 18:33:56 +0200 (CEST)
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH 0/2] tlv320adc3xxx: Allow MICBIAS pins to be used as GPOs
-Date: Wed, 29 May 2024 18:33:43 +0200
-Message-ID: <20240529-tlv320adc3xxx-micbias-gpo-v1-0-300d39cecc55@axis.com>
+Date: Wed, 29 May 2024 18:33:45 +0200
+Subject: [PATCH 2/2] tlv320adc3xxx: Add support for using MICBIAS pins as
+ GPO
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAOdYV2YC/x3MywqAIBBA0V+JWTdgaiH9SrTwMdVALzRCiP49a
- XkW9z6QKDIl6KsHIt2c+NgLmroCv9h9JuRQDFJILVpp8FpvJYUNXuWccWPv2CaczwOdcTo03ug
- uKCj9GWni/L+H8X0/Oes+NmsAAAA=
+Message-ID: <20240529-tlv320adc3xxx-micbias-gpo-v1-2-300d39cecc55@axis.com>
+References: <20240529-tlv320adc3xxx-micbias-gpo-v1-0-300d39cecc55@axis.com>
+In-Reply-To: <20240529-tlv320adc3xxx-micbias-gpo-v1-0-300d39cecc55@axis.com>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
 	Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>, Baojun Xu
 	<baojun.xu@ti.com>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
@@ -112,61 +109,62 @@ CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 X-Mailer: b4 0.13.0
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM1PEPF000252E0:EE_|DU2PR02MB10159:EE_
-X-MS-Office365-Filtering-Correlation-Id: 12169276-c0dc-4f41-365f-08dc7ffd2365
+X-MS-TrafficTypeDiagnostic: DU2PEPF0001E9C1:EE_|PR3PR02MB6313:EE_
+X-MS-Office365-Filtering-Correlation-Id: e7651bc9-25aa-4dfb-322e-08dc7ffd22e5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230031|36860700004|376005|82310400017|1800799015|7416005|921011;
+	BCL:0;ARA:13230031|82310400017|376005|36860700004|1800799015|7416005|921011;
 X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?RWJTQnlWTTVBZmFiZVhZWmRMSzJYUGJ2Vmo5YVROY2E1YnNzYmNvakJpK0tp?=
- =?utf-8?B?dC9jMkZ5MFVVZjh0NXFtbVVsNFVISUFSWUNEZFgra3dBTVNTTmx3aU5hb1or?=
- =?utf-8?B?RTRib0F0NU1qQnkzQWl3ZUx5NXhRVThnWEJqdXUrVVFCV3hNeG02dnlzMXh3?=
- =?utf-8?B?bVVPeWhGNVpCV2NxSDBGV3VqN0VrRlVLc3lMS2UxUVlUaEJiblhzRzUyTGdj?=
- =?utf-8?B?NmNDUUhMTldWRURncGdJQmxaYitFWW1iMnlWamxzaTkvbzhhOXc4UjUwVCtW?=
- =?utf-8?B?c1Z3L2RYRWpVUm1reDFSeWVpUFJrczJpNVMwT3FINmhoNU02Uk9idVhaY1Vn?=
- =?utf-8?B?U3RWZ1JxaWJzbjN0cm5wZlg5M1MxRWdIZ2MxZExQdUFSbG1HT2oxM2x0Ukcw?=
- =?utf-8?B?M1hMZHQ5TzlnQk9GaXlkL1JUNHVKK2FkK2FVTWRyRkRIZlpuc0VsMUtuaHBM?=
- =?utf-8?B?TnNNZktNK2dJZlFZalEvM1MxZnZ4L055NDR5bStVT2ZsUnNGWXpWZUEzNk1M?=
- =?utf-8?B?d1BmdFoxeWErS0V0Y0JrdzFaUHZXZzQ4YW9BbWQ1Rm5KZ3BJYTJlTHROMEp0?=
- =?utf-8?B?bEh5YTlJVFZTVk42L0pWbFRMTmpoczYxTkJtaWtWd1pwSDhPSjIrL2U4Q2la?=
- =?utf-8?B?RXp1b004bEl0SDNHKzlmVm5KNHAvd3FDVUNGOEZTeUREMUVjOFBuVUx4K2FO?=
- =?utf-8?B?K3pkNFNQSmNTRmJHYnJWRDFHWFg2NDhMTnB6dFE4OFpvR3ZWRnNUQWE0VjJ2?=
- =?utf-8?B?dHl0RGhYWXhvNHErSnZqMDhCNGtDTkdETmVmL2lsK1Voam9iWTU5UXk2Vk1L?=
- =?utf-8?B?SFg0aGtTbGhQdE1NbkNyejVJTXorVFdwSmpCQnNLaEVpclNHTEtrVlNwVUh5?=
- =?utf-8?B?TW05UnVaVlBoMThxenBBMUFTL1E3emNLU0hEcW1UbjUyM3VMNW55c0NaSTYr?=
- =?utf-8?B?VjZkMUxGRjlCK0s1Q1RqVEVQTkZJYVN5ZndFTm9RaTFrZWVaVFhLTVNCOUVY?=
- =?utf-8?B?UUtvRXluWTBadTFRcDhPWjVmc2RUamxXOWdva2RSUWpWWnEzV2k0Y2l6RThl?=
- =?utf-8?B?Ym9rZ3JNcFpjWGJKNnpjakxyVHRBNU1pdGpKWW9uVjRoMXo4TE5OMVBIV21B?=
- =?utf-8?B?ZmxFTkJkRGpGOXhTcll6OEhOQ0VnVGRYbkJyLy9hcE0rZUtrTUhqeW5ESDNR?=
- =?utf-8?B?M2dGdzgxVEx0UmdRTldib0hBWHJmWkYwL0U1NzdrM1FITkVPYUxqTjZXbWpQ?=
- =?utf-8?B?ZzA5TTc4NmxMN3NUQTVLbGFlZWU0T1BsNFA5Ri9JdnlFVGFRQ0wzQzlIZ3Uz?=
- =?utf-8?B?ajVhWlRLNFF5bmpLVHRub3BoaGhaeVdnK0pqbUxuajlhdmhoS0VpQ3VJZGxo?=
- =?utf-8?B?enRHNTNMOW5rZTI1QVlwUGV6RVhPVHFqS09ONFp3NDM2NUtlVUJHMVlsQ1pu?=
- =?utf-8?B?QnVnNTlFdlVxRjFCbURXd0ZaMlJmMW5tNDNMRkc3blcyQ2xyS2FiZDNRSDVG?=
- =?utf-8?B?aGpQL1lySUpjOGJKWmRUN2U4a2Nhbm5iSzNOZFpCaWNwRUloNVova2dZL015?=
- =?utf-8?B?SlRaR1Q3ZzBvWERlVEJrYzF3TmRUT2ZjV3dWbloyWTl1MXlFa1lESEhpeVV6?=
- =?utf-8?B?UTByS0J4ZElJSTUwZGprWmluYjlGY0p6aVNVZWxzZkQyZkdFRDEyWmpwdmRz?=
- =?utf-8?B?bmNhMkIwZTZLZ1k1d1ZRMTYzVmtVNXdUM3N5dS9GU1BPRWkzeHdJQW9TVEhO?=
- =?utf-8?B?cnhvbks1YlloTHNmYTc4bzRpV3E2ZWVwbEcxbFVYbmd3ZXp6L2dpWmZ4aFZT?=
- =?utf-8?B?Nk1WUWJ4bDJXZlRLNDE2Zz09?=
+	=?utf-8?B?SFBlTHlWbW03MXYvSkpZcjBVcW8xT21rc2FXenZjQ1M1STVCZmlhbFhyLy8y?=
+ =?utf-8?B?WlozNmVNazdSSnI3YURDRWUzQ09vUStNOXkxdzdsYyt4YnkzaVRJcDRiZnJw?=
+ =?utf-8?B?NHEyeGVxUHpPMW54OC9ONldOZEoyZjdCU3Q4NS83a2xhd0h6ekhqTUVNdkh3?=
+ =?utf-8?B?UmhnVnNPd3VkeFZEaHB2ZGlacTljSGdvKy8zY0orcHlrWU05OUk0K0lrUC85?=
+ =?utf-8?B?ajZJUnVkRTVGWnQ4YXlTN29vemRYY0F6UjIxajltREVpR1JNeWdRSVNYbU9D?=
+ =?utf-8?B?M3g2aG55YU05UDdLWnc3TkhseG9CSlJqUDNlNFpMa2VSaU1zVXF5c1o0cmYz?=
+ =?utf-8?B?R29nVWVOb1ZrZGc4MG5pbXZTaGpocjBwRGwybGxJWDhpK3hJRVRzV1l1cEJJ?=
+ =?utf-8?B?bE1VaitJSlhxQW8vcE1nNys0RWdzWklBemhHbDdkTExMM0hXVEdDMGlLdkVB?=
+ =?utf-8?B?bHEwb2JJSUZnM0h1K2JlejhSSk51eWtic0Zic0ZiR2ZwMnRxa1d2ZkNaeDNL?=
+ =?utf-8?B?ZXNOSUNlckhSTTl3NzhtVzlVV3lFbHBLZDB6MHpEZDZzYS92WEFDZHV6aHhp?=
+ =?utf-8?B?VUowMWN0ZWhhQkVjN25aUzJLSlB2WGRvYmwwT2hUcGxCMkFCbldWL3JmTDVh?=
+ =?utf-8?B?blF6TGlnUTJqL0JOYmhieDNOMWRncHJFYTVscjJiTWJ3cngwY0NuL1VWeGls?=
+ =?utf-8?B?MFp5bU8rN0FXWUVieTJnMEZMNkRPUEpPOFlzcC93VHA1ZEdWOC9BWndQa2lr?=
+ =?utf-8?B?Umtrclh5ZFJ5blU1Q1E0TjZGM1o2UFgvZnVGaWVwV05jaXJCV3FleDVhRld0?=
+ =?utf-8?B?eG9zNVZtcTdpSkMwSGkxakY5U2lYZGVobERnM0Rsam5FaFR3WHZodWd4K3JK?=
+ =?utf-8?B?Q2RUZ1pmeWRVUnFDOWhIMHNIamdPTFV0bXF1dzhEeGFPYy9GNTkxZG9mNkts?=
+ =?utf-8?B?STRkZkRLa21uYnB0UVp3VTN4WkpRR2Jhb3hITGlGVWdlcHdzeHJkWUgyRHZm?=
+ =?utf-8?B?SWx6WFM0S25kaFpieG0rTG9nUHFySFVscWRzeXJidFlHTHVrNE1hTUdiV2FI?=
+ =?utf-8?B?OHREZnVtdVVEcUw5WUcrZkZUaGROYjQ0THdxS1JUVG5SKzVnbkFKaEJLN1JT?=
+ =?utf-8?B?RVRYSFZua090ZlVSSFpoWG1PSzc5dGc1clJXK2VQUnlYUVJkbVFXSUxvcHBV?=
+ =?utf-8?B?akJTeE15WGZ4RHJjdndpOW1EWG5hb3BBdmJ4QTVBZi85cjJHVEpUbUVRVTZM?=
+ =?utf-8?B?VmFnTXVMNXFXSzFvY3VDZjZrN0ozcWt4NjZDN3l2ekQ3Zm5mMjFTQ3RMdHVx?=
+ =?utf-8?B?VDVOdnBLTkptZlJ5NmhqNDcxeFVmV2M0QWt4UHludm5XazVRMXByOVQxVnd3?=
+ =?utf-8?B?UzRwdmN1ODZDN2t5dmNuQUR3MVo0Wmk1ME9lT2JDYlZXYlNFL0NYZlhYWk9w?=
+ =?utf-8?B?ZGJzK3pjU1RLeC9VMy83akduMHEzTXVFc3llU3dod1BZTjFNbkZuSzZ6Umx2?=
+ =?utf-8?B?QkdXT3ZuQ2NScXJvTk81UlVjL05nY1dzQW54OFpxZ3Vhd3RSbWlUay9Pd0Ni?=
+ =?utf-8?B?YTZmVjNEa0JVVU03Tk9KZHJ2Umplb0tLbVFudG54ZGdiOGZhMGQ0YVBkV3Zu?=
+ =?utf-8?B?c0NuTUo5ZmtNMFU4eGlmNVhBdVRvVWErTXBwZWw0a3hyN0dtd2NMN0pYV29s?=
+ =?utf-8?B?R1E4VmlEcUE1UlM2Z0dFckxnRzZIaWw0VW1lSXFiYUdMbkNxd2k4WHVnb1R5?=
+ =?utf-8?B?T2IzL0EzWGtLZWNHaWJVY1ljdm5IVWhvVDNNVCsyeHBKMGpEeG9ZeWo2aE5h?=
+ =?utf-8?B?bU9Pc2F4eXROQkQ4eWZWZHJLQ1RrL0trV2FTWkh2dkZUOXhmd3VYLzBxOWFY?=
+ =?utf-8?Q?DTggcy7tL5Sb+?=
 X-Forefront-Antispam-Report: 
-	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400017)(1800799015)(7416005)(921011);DIR:OUT;SFP:1101;
+	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400017)(376005)(36860700004)(1800799015)(7416005)(921011);DIR:OUT;SFP:1101;
 X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2024 16:33:57.6744
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2024 16:33:56.7885
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 12169276-c0dc-4f41-365f-08dc7ffd2365
+ e7651bc9-25aa-4dfb-322e-08dc7ffd22e5
 X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	AM1PEPF000252E0.eurprd07.prod.outlook.com
+	DU2PEPF0001E9C1.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR02MB10159
-Message-ID-Hash: KQXWZFR7G5QF2P3OEMHMOR2IVQ3YCQDS
-X-Message-ID-Hash: KQXWZFR7G5QF2P3OEMHMOR2IVQ3YCQDS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR02MB6313
+Message-ID-Hash: B3DUIHTIQQMHFNTFLNHTIR7LOPCZD627
+X-Message-ID-Hash: B3DUIHTIQQMHFNTFLNHTIR7LOPCZD627
 X-MailFrom: Ricard.Wanderlof@axis.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -179,7 +177,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KQXWZFR7G5QF2P3OEMHMOR2IVQ3YCQDS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B3DUIHTIQQMHFNTFLNHTIR7LOPCZD627/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -188,36 +186,216 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In some cases, depending on system design, the MICBIAS pins on the
-chip are not needed as such, but a couple of extra GPIO pins would be
-useful. This patch allows the MICBIAS pins to be configured in the
-device tree as general purpose output pins, controlled via the GPIO
-framework.
+Add boolean ti,micbias1-gpo and ti,micbias2-gpo devicetree properties.
 
-Owing to their originally intended purpose there are some limitations:
-when the MICBIAS pins are deactivated, they will float, so will likely
-need a pulldown in many applications. When activated, they will
-assume the voltage specified by the micbias1-vg and micbias2-vg
-properties, respectively, meaning that the resulting output voltage
-will be 2.0 V, 2.5 V or AVDD .
+When set, the respective MICBIAS pins can be used as general purpose
+outputs controlled via the GPIO framework, in addition to the two
+configurable GPIO pins.
+
+This is useful in applications where the MICBIAS functionality is
+not required, but it is useful to have a couple of extra GPIO pins.
+
+The voltage on the respective MICBIAS pin in the active state is
+governed by the ti,micbias1-vg and ti,micbias2-vg properties,
+respectively (same properties as when the pins are used as
+MICBIAS pins).
 
 Signed-off-by: Ricard Wanderlof <ricard.wanderlof@axis.com>
 ---
-Ricard Wanderlof (2):
-      ASoC: dt-bindings: tlv320adc3xxx: Add MICBIAS-as-GPO properties
-      tlv320adc3xxx: Add support for using MICBIAS pins as GPO
+ sound/soc/codecs/tlv320adc3xxx.c | 105 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 84 insertions(+), 21 deletions(-)
 
- .../bindings/sound/ti,tlv320adc3xxx.yaml           |  20 ++++
- sound/soc/codecs/tlv320adc3xxx.c                   | 105 ++++++++++++++++-----
- 2 files changed, 104 insertions(+), 21 deletions(-)
----
-base-commit: 47d09270d7776e46858a161f94b735640b2fb056
-change-id: 20240528-tlv320adc3xxx-micbias-gpo-b8b4d1c846d3
+diff --git a/sound/soc/codecs/tlv320adc3xxx.c b/sound/soc/codecs/tlv320adc3xxx.c
+index e100cc9f5c19..182955bccebc 100644
+--- a/sound/soc/codecs/tlv320adc3xxx.c
++++ b/sound/soc/codecs/tlv320adc3xxx.c
+@@ -40,9 +40,10 @@
+  */
+ 
+ #define ADC3XXX_MICBIAS_PINS		2
++#define ADC3XXX_GPIO_PINS		2
+ 
+ /* Number of GPIO pins exposed via the gpiolib interface */
+-#define ADC3XXX_GPIOS_MAX		2
++#define ADC3XXX_GPIOS_MAX		(ADC3XXX_MICBIAS_PINS + ADC3XXX_GPIO_PINS)
+ 
+ #define ADC3XXX_RATES		SNDRV_PCM_RATE_8000_96000
+ #define ADC3XXX_FORMATS		(SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -321,7 +322,8 @@ struct adc3xxx {
+ 	struct gpio_desc *rst_pin;
+ 	unsigned int pll_mode;
+ 	unsigned int sysclk;
+-	unsigned int gpio_cfg[ADC3XXX_GPIOS_MAX]; /* value+1 (0 => not set)  */
++	unsigned int gpio_cfg[ADC3XXX_GPIO_PINS]; /* value+1 (0 => not set)  */
++	unsigned int micbias_gpo[ADC3XXX_MICBIAS_PINS]; /* 1 => pin is GPO */
+ 	unsigned int micbias_vg[ADC3XXX_MICBIAS_PINS];
+ 	int master;
+ 	u8 page_no;
+@@ -329,7 +331,7 @@ struct adc3xxx {
+ 	struct gpio_chip gpio_chip;
+ };
+ 
+-static const unsigned int adc3xxx_gpio_ctrl_reg[ADC3XXX_GPIOS_MAX] = {
++static const unsigned int adc3xxx_gpio_ctrl_reg[ADC3XXX_GPIO_PINS] = {
+ 	ADC3XXX_GPIO1_CTRL,
+ 	ADC3XXX_GPIO2_CTRL
+ };
+@@ -960,14 +962,23 @@ static int adc3xxx_gpio_request(struct gpio_chip *chip, unsigned int offset)
+ 	if (offset >= ADC3XXX_GPIOS_MAX)
+ 		return -EINVAL;
+ 
+-	/* GPIO1 is offset 0, GPIO2 is offset 1 */
+-	/* We check here that the GPIO pins are either not configured in the
+-	 * DT, or that they purposely are set as outputs.
+-	 * (Input mode not yet implemented).
+-	 */
+-	if (adc3xxx->gpio_cfg[offset] != 0 &&
+-	    adc3xxx->gpio_cfg[offset] != ADC3XXX_GPIO_GPO + 1)
+-		return -EINVAL;
++	if (offset >= 0 && offset < ADC3XXX_GPIO_PINS) {
++		/* GPIO1 is offset 0, GPIO2 is offset 1 */
++		/* We check here that the GPIO pins are either not configured
++		 * in the DT, or that they purposely are set as outputs.
++		 * (Input mode not yet implemented).
++		 */
++		if (adc3xxx->gpio_cfg[offset] != 0 &&
++		    adc3xxx->gpio_cfg[offset] != ADC3XXX_GPIO_GPO + 1)
++			return -EINVAL;
++	} else if (offset >= ADC3XXX_GPIO_PINS && offset < ADC3XXX_GPIOS_MAX) {
++		/* MICBIAS1 is offset 2, MICBIAS2 is offset 3 */
++		/* We check here if the MICBIAS pins are in fact configured
++		 * as GPOs.
++		 */
++		if (!adc3xxx->micbias_gpo[offset - ADC3XXX_GPIO_PINS])
++			return -EINVAL;
++	}
+ 
+ 	return 0;
+ }
+@@ -977,6 +988,21 @@ static int adc3xxx_gpio_direction_out(struct gpio_chip *chip,
+ {
+ 	struct adc3xxx *adc3xxx = gpiochip_get_data(chip);
+ 
++	/* For the MICBIAS pins, they are by definition outputs. */
++	if (offset >= ADC3XXX_GPIO_PINS) {
++		unsigned int vg;
++		unsigned int micbias = offset - ADC3XXX_GPIO_PINS;
++
++		if (value)
++			vg = adc3xxx->micbias_vg[micbias];
++		else
++			vg = ADC3XXX_MICBIAS_OFF;
++		return regmap_update_bits(adc3xxx->regmap,
++					   ADC3XXX_MICBIAS_CTRL,
++					   ADC3XXX_MICBIAS_MASK << adc3xxx_micbias_shift[micbias],
++					   vg << adc3xxx_micbias_shift[micbias]);
++	}
++
+ 	/* Set GPIO output function. */
+ 	return regmap_update_bits(adc3xxx->regmap,
+ 				  adc3xxx_gpio_ctrl_reg[offset],
+@@ -1005,9 +1031,17 @@ static int adc3xxx_gpio_get(struct gpio_chip *chip, unsigned int offset)
+ 	unsigned int regval;
+ 	int ret;
+ 
+-	/* We only allow output pins, so just read the value set in the output
+-	 * pin register field.
+-	 */
++	/* We only allow output pins, so just read the value prevously set. */
++	if (offset >= ADC3XXX_GPIO_PINS) {
++		/* MICBIAS pins */
++		unsigned int micbias = offset - ADC3XXX_GPIO_PINS;
++
++		ret = regmap_read(adc3xxx->regmap, ADC3XXX_MICBIAS_CTRL, &regval);
++		if (ret)
++			return ret;
++		return ((regval >> adc3xxx_micbias_shift[micbias]) & ADC3XXX_MICBIAS_MASK) !=
++		       ADC3XXX_MICBIAS_OFF;
++	}
+ 	ret = regmap_read(adc3xxx->regmap, adc3xxx_gpio_ctrl_reg[offset], &regval);
+ 	if (ret)
+ 		return ret;
+@@ -1049,7 +1083,7 @@ static void adc3xxx_init_gpio(struct adc3xxx *adc3xxx)
+ 	 * This allows us to set up things which are not software
+ 	 * controllable GPIOs, such as PDM microphone I/O,
+ 	 */
+-	for (gpio = 0; gpio < ADC3XXX_GPIOS_MAX; gpio++) {
++	for (gpio = 0; gpio < ADC3XXX_GPIO_PINS; gpio++) {
+ 		unsigned int cfg = adc3xxx->gpio_cfg[gpio];
+ 
+ 		if (cfg) {
+@@ -1061,9 +1095,15 @@ static void adc3xxx_init_gpio(struct adc3xxx *adc3xxx)
+ 		}
+ 	}
+ 
+-	/* Set up micbias voltage */
++	/* Set up micbias voltage. */
++	/* If pin is configured as GPO, set off initially. */
+ 	for (micbias = 0; micbias < ADC3XXX_MICBIAS_PINS; micbias++) {
+-		unsigned int vg = adc3xxx->micbias_vg[micbias];
++		unsigned int vg;
++
++		if (adc3xxx->micbias_gpo[micbias])
++			vg = ADC3XXX_MICBIAS_OFF;
++		else
++			vg = adc3xxx->micbias_vg[micbias];
+ 
+ 		regmap_update_bits(adc3xxx->regmap,
+ 				   ADC3XXX_MICBIAS_CTRL,
+@@ -1091,8 +1131,19 @@ static int adc3xxx_parse_dt_gpio(struct adc3xxx *adc3xxx,
+ 	return 0;
+ }
+ 
+-static int adc3xxx_parse_dt_micbias(struct adc3xxx *adc3xxx,
+-				    const char *propname, unsigned int *vg)
++static int adc3xxx_parse_dt_micbias_gpo(struct adc3xxx *adc3xxx,
++					const char *propname,
++					unsigned int *cfg)
++{
++	struct device *dev = adc3xxx->dev;
++	struct device_node *np = dev->of_node;
++
++	*cfg = of_property_read_bool(np, propname);
++	return 0;
++}
++
++static int adc3xxx_parse_dt_micbias_vg(struct adc3xxx *adc3xxx,
++				       const char *propname, unsigned int *vg)
+ {
+ 	struct device *dev = adc3xxx->dev;
+ 	struct device_node *np = dev->of_node;
+@@ -1383,16 +1434,28 @@ static int adc3xxx_i2c_probe(struct i2c_client *i2c)
+ 		dev_dbg(dev, "Enabled MCLK, freq %lu Hz\n", clk_get_rate(adc3xxx->mclk));
+ 	}
+ 
++	/* Configure mode for DMDIN/GPIO1 pin */
+ 	ret = adc3xxx_parse_dt_gpio(adc3xxx, "ti,dmdin-gpio1", &adc3xxx->gpio_cfg[0]);
+ 	if (ret < 0)
+ 		goto err_unprepare_mclk;
++	/* Configure mode for DMCLK/GPIO2 pin */
+ 	ret = adc3xxx_parse_dt_gpio(adc3xxx, "ti,dmclk-gpio2", &adc3xxx->gpio_cfg[1]);
+ 	if (ret < 0)
+ 		goto err_unprepare_mclk;
+-	ret = adc3xxx_parse_dt_micbias(adc3xxx, "ti,micbias1-vg", &adc3xxx->micbias_vg[0]);
++	/* Configure mode for MICBIAS1: as Mic Bias output or GPO */
++	ret = adc3xxx_parse_dt_micbias_gpo(adc3xxx, "ti,micbias1-gpo", &adc3xxx->micbias_gpo[0]);
++	if (ret < 0)
++		goto err_unprepare_mclk;
++	/* Configure mode for MICBIAS2: as Mic Bias output or GPO */
++	ret = adc3xxx_parse_dt_micbias_gpo(adc3xxx, "ti,micbias2-gpo", &adc3xxx->micbias_gpo[1]);
++	if (ret < 0)
++		goto err_unprepare_mclk;
++	/* Configure voltage for MICBIAS1 pin (ON voltage when used as GPO) */
++	ret = adc3xxx_parse_dt_micbias_vg(adc3xxx, "ti,micbias1-vg", &adc3xxx->micbias_vg[0]);
+ 	if (ret < 0)
+ 		goto err_unprepare_mclk;
+-	ret = adc3xxx_parse_dt_micbias(adc3xxx, "ti,micbias2-vg", &adc3xxx->micbias_vg[1]);
++	/* Configure voltage for MICBIAS2 pin (ON voltage when used as GPO) */
++	ret = adc3xxx_parse_dt_micbias_vg(adc3xxx, "ti,micbias2-vg", &adc3xxx->micbias_vg[1]);
+ 	if (ret < 0)
+ 		goto err_unprepare_mclk;
+ 
 
-Best regards,
 -- 
--- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+2.30.2
 
