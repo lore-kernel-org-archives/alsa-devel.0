@@ -4,75 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD25C25B7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 May 2024 08:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 176ECC25B75
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 May 2024 09:28:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44AD17F8;
-	Wed, 29 May 2024 10:58:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44AD17F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 521A983E;
+	Wed, 29 May 2024 11:28:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 521A983E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1716973121;
-	bh=aIeKtC8Nw2XKj9cg5CHoZdIovhCvGCSW6dffczCPMMg=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=RuMXqiUKxSkR2uEm7e63mFdSa4cbNiIbxGgugC7EVwRceLj+hBpWqBECQeyK9qrVv
-	 m1GTKh9GdQolTrtYyAcXVGh9mBjmBFdRNH/h+9Ss0qpXF3KMTTYFQkdPHFTRsyALtz
-	 86qctk9y23HQwuwHmVlAX9YYmE9gyxE6UFh7bi1Q=
+	s=default; t=1716974914;
+	bh=FnKd5nzM8mR2FvKTirbhBssTJd+tTuzMgMhZji/i2vg=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=kWZp8PH0Z4VpFbM+2i3iJT932ruJV0gI2yGnszlGld9vYArUDsopK18XZ3ITZrXbV
+	 VsT8O2UTlOAFQpr5DMg2NLMc4wFMwNtawVhQ8OWcfe71kd9zs5kCQhBoKDifNJlTf9
+	 7gJs3Hkr8tLvyAGDqLDML8TfRZq0oxhYE1MPlV88=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CEF6CF80578; Wed, 29 May 2024 10:57:58 +0200 (CEST)
+	id 73ED9F80587; Wed, 29 May 2024 11:28:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 781E8F804B2;
-	Wed, 29 May 2024 10:57:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDCEDF805A9;
+	Wed, 29 May 2024 11:28:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA2BBF80149; Wed, 29 May 2024 10:57:54 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	id 2FE4CF80149; Wed, 29 May 2024 11:27:57 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0BD84F800E9
-	for <alsa-devel@alsa-project.org>; Wed, 29 May 2024 10:56:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BD84F800E9
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A46691A1398;
-	Wed, 29 May 2024 10:56:01 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 19AE21A083E;
-	Wed, 29 May 2024 10:56:01 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 4874F183B72F;
-	Wed, 29 May 2024 16:55:58 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shengjiu.wang@gmail.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v4 1/2] ASoC: dt-bindings: fsl,xcvr: Add compatible string for
- i.MX95
-Date: Wed, 29 May 2024 16:40:01 +0800
-Message-Id: <1716972002-2315-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1716972002-2315-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1716972002-2315-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: CJPHPJQ23FVFHQXUFQFZRYOROIE5LR7H
-X-Message-ID-Hash: CJPHPJQ23FVFHQXUFQFZRYOROIE5LR7H
-X-MailFrom: shengjiu.wang@nxp.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67585F8003A
+	for <alsa-devel@alsa-project.org>; Wed, 29 May 2024 11:27:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67585F8003A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=CNygjdhq
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 44T71lYf017078;
+	Wed, 29 May 2024 04:27:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=PODMain02222019; bh=WlccN8jb3Q5to6M1Eg
+	/oq2y4/iT4u5AUxawzHNNeQbI=; b=CNygjdhqwbMv3X5jbA88rlXBo4vRPoLY4x
+	KpTRbIqGAhYoNvMopEuu7mU3MsgeWkjsmpTBR2ciuXnXtv3jVQx5lj4wdkVz5nZi
+	aQWM8/IO5LB0Nco+eonvd9X850AmoC1SPhWVaCuO+58x3WFx7NBIZ5EEQhoPK6TM
+	HR7pvznvVcfQ5F8m+xJd7v6wFJeQY5GOm83zxfb9/eRbgCiMR+Sp3oiky+ek+tpW
+	l8r0eAAOvVbaHu5n0vMTKdZRh9tOZMQsvSsxWVvnCTOjRnB18pjFCLHQwrPCynMg
+	fzmnFGPCHKMx1G88bBA2rvWXbXBe0615O2y4j/uhwO/ZY3y24XWA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ybdcwubdx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 May 2024 04:27:50 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 29 May
+ 2024 10:27:48 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Wed, 29 May 2024 10:27:48 +0100
+Received: from opensource.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 66448820270;
+	Wed, 29 May 2024 09:27:48 +0000 (UTC)
+Date: Wed, 29 May 2024 09:27:47 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <tiwai@suse.de>, <broonie@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: sof-sdw: fix missing SPI_MASTER dependency
+Message-ID: <Zlb1E1KWt9zNVj0s@opensource.cirrus.com>
+References: <20240527191940.30107-1-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240527191940.30107-1-pierre-louis.bossart@linux.intel.com>
+X-Proofpoint-GUID: 6S_Ye5YPmcC-XCDvqhj8du9Xmp-iezy3
+X-Proofpoint-ORIG-GUID: 6S_Ye5YPmcC-XCDvqhj8du9Xmp-iezy3
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 24OERAWACZASHZP7B6C5RMQP23G3KIFX
+X-Message-ID-Hash: 24OERAWACZASHZP7B6C5RMQP23G3KIFX
+X-MailFrom: prvs=3879dd8593=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CJPHPJQ23FVFHQXUFQFZRYOROIE5LR7H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/24OERAWACZASHZP7B6C5RMQP23G3KIFX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,119 +106,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add compatible string "fsl,imx95-xcvr" for i.MX95 platform.
+On Mon, May 27, 2024 at 02:19:40PM -0500, Pierre-Louis Bossart wrote:
+> The addition of the Cirrus Logic 'sidecar' amps adds a dependency on SPI_MASTER.
+> 
+> Kconfig warnings: (for reference only)
+>    WARNING: unmet direct dependencies detected for SND_SOC_CS35L56_SPI
+>    Depends on [n]:
+>      SOUND [=y] && SND [=y] && SND_SOC [=y] && SPI_MASTER [=n] &&
+>      (SOUNDWIRE [=y] || !SOUNDWIRE [=y])
+>    Selected by [y]:
+>     - SND_SOC_INTEL_SOUNDWIRE_SOF_MACH [=y] && SOUND [=y] && SND [=y]
+>       && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] &&
+>       SND_SOC_SOF_INTEL_SOUNDWIRE [=y] && I2C [=y] && ACPI [=y] &&
+>       (MFD_INTEL_LPSS [=y] || COMPILE_TEST [=n]) &&
+>       (SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES [=y] || COMPILE_TEST
+>       [=n]) && SOUNDWIRE [=y]
+> 
+> Fixes: b831b4dca48d ("ASoC: intel: sof_sdw: Add support for cs42l43-cs35l56 sidecar amps")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202405140758.o2HY4nYD-lkp@intel.com/
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
 
-The difference between each platform is in below table.
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-+---------+--------+----------+--------+
-|  SOC	  |  PHY   | eARC/ARC | SPDIF  |
-+---------+--------+----------+--------+
-| i.MX8MP |  V1    |  Yes     |  Yes   |
-+---------+--------+----------+--------+
-| i.MX93  |  N/A   |  N/A     |  Yes   |
-+---------+--------+----------+--------+
-| i.MX95  |  V2    |  N/A     |  Yes   |
-+---------+--------+----------+--------+
-
-On i.MX95, there are two PLL clock sources, they are the parent
-clocks of the XCVR root clock. one is for 8kHz series rates, named
-as 'pll8k', another one is for 11kHz series rates, named as 'pll11k'.
-They are optional clocks, if there are such clocks, then the driver
-can switch between them to support more accurate sample rates.
-
-As 'pll8k' and 'pll11k' are optional, then add 'minItems: 4' for
-clocks and clock-names properties.
-
-On i.MX95, the 'interrupts' configuration has the same constraint
-as i.MX93.
-
-Only on i.MX8MP, the 'resets' is required, but for i.MX95 and i.MX93
-there is no such hardware setting.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- .../devicetree/bindings/sound/fsl,xcvr.yaml   | 32 ++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-index 0eb0c1ba8710..197ae8ba9c30 100644
---- a/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,xcvr.yaml
-@@ -22,6 +22,7 @@ properties:
-     enum:
-       - fsl,imx8mp-xcvr
-       - fsl,imx93-xcvr
-+      - fsl,imx95-xcvr
- 
-   reg:
-     items:
-@@ -49,6 +50,9 @@ properties:
-       - description: PHY clock
-       - description: SPBA clock
-       - description: PLL clock
-+      - description: PLL clock source for 8kHz series
-+      - description: PLL clock source for 11kHz series
-+    minItems: 4
- 
-   clock-names:
-     items:
-@@ -56,6 +60,9 @@ properties:
-       - const: phy
-       - const: spba
-       - const: pll_ipg
-+      - const: pll8k
-+      - const: pll11k
-+    minItems: 4
- 
-   dmas:
-     items:
-@@ -79,15 +86,24 @@ required:
-   - clock-names
-   - dmas
-   - dma-names
--  - resets
- 
- allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx8mp-xcvr
-+    then:
-+      required:
-+        - resets
-+
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-               - fsl,imx93-xcvr
-+              - fsl,imx95-xcvr
-     then:
-       properties:
-         interrupts:
-@@ -98,6 +114,20 @@ allOf:
-         interrupts:
-           maxItems: 1
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx8mp-xcvr
-+              - fsl,imx93-xcvr
-+    then:
-+      properties:
-+        clocks:
-+          maxItems: 4
-+        clock-names:
-+          maxItems: 4
-+
- additionalProperties: false
- 
- examples:
--- 
-2.34.1
-
+Thanks,
+Charles
