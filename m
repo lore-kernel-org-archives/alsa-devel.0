@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77E42C25B74
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 May 2024 23:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B24FDC25B74
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 May 2024 23:02:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 517F1F54;
-	Fri, 31 May 2024 01:02:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 517F1F54
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEDD4F51;
+	Fri, 31 May 2024 01:02:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEDD4F51
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717110159;
-	bh=/9NwactfLrDdcsSkAc55CTXJmcNkzXYPFHItVyZLdX0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=bliVWl98JcFP6s/1Vd97k6WBcSN/x7V09p3S0KJ+nT4KPkrJrppTKBjbu+gcwDRyq
-	 c7+9z3Y7dBCJrQDwKlI7P8ts4RvOX3WUYGP5HNeJSX365jZoh2vJDp9wr47quBByiK
-	 RrHZwAVewbiWiBPBT0agnZ5QKjmEoglcHbpyDtac=
+	s=default; t=1717110176;
+	bh=AuYIRZwuv1vWCs2uWjv6nHv7VSkA6+15BzU0BIBlcXI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=GQv7VXFGvxTfiw3iu02hd2yMqeviqGLzgOM2XO7Ct3BZ8SylOwik9Q0jMwFC/AFnb
+	 FISde3dG59opb1PyanbwIlqHzvhgyGbQNC9CTOwRoGIYD6vySpPaPkcVJFvVrDisSx
+	 nQ2hN0UxWptIvU+4Y4F4LIuLpIxNtOWMIvsuaHMg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DACB8F8047C; Fri, 31 May 2024 01:01:14 +0200 (CEST)
+	id E2EDCF80651; Fri, 31 May 2024 01:01:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8789F80632;
-	Fri, 31 May 2024 01:01:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51B4CF8067D;
+	Fri, 31 May 2024 01:01:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79578F805E8; Fri, 31 May 2024 01:01:07 +0200 (CEST)
+	id BB83BF805FC; Fri, 31 May 2024 01:01:08 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 01730F800E9
-	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 01:00:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01730F800E9
+	by alsa1.perex.cz (Postfix) with ESMTPS id F071AF805A0
+	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 01:01:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F071AF805A0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=al5Gu/zN
+ header.s=Intel header.b=gt5BPzit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717110061; x=1748646061;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/9NwactfLrDdcsSkAc55CTXJmcNkzXYPFHItVyZLdX0=;
-  b=al5Gu/zN5e9wYldTeAQiJk0rrOLgzudeUSq8YqwYtS+7+Q5CECggSNk/
-   CAcMUVQeCC6P60vyrBcOVanM+e7IDsEhVYzHfvY6kpF12n3R0z7Bp8Geb
-   vaNkaUrD5cGOwgh6wKW0hKlXNa+eOaEbPW953m2s/YP3LlLQbQKmn0ZeT
-   NnAvYymz4qwJyuC5Fl/MCBUC6cam/GhYLtPjYf1StS1gyHGr0mibuLkwm
-   +ssajXJDY/UoOWMD9B9NzGl/5gGwKHmH5dhQhN4IDyzFmdHZWFP45hwlR
-   7Mnd2wZwDUVOuDQxdUkBcd/Er+r1d1uryCxUeMfsrsR5TkjME7iH+kcPy
+  t=1717110063; x=1748646063;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=AuYIRZwuv1vWCs2uWjv6nHv7VSkA6+15BzU0BIBlcXI=;
+  b=gt5BPzitSqVV08k2iSHLaR0Dj3Cnajo6zuW3cOcq2MJww/qiVp/lcuvN
+   k0tqkT/TdPu9Pyo9stcaSH26jbPkTx+qJ2kLareVFXbUWek7UdU/jcQYx
+   +RtME1rgVcJy/5pFQWxp7PBKrrir8/fIZ7jRmVL4yrQ0TN8l0cAhgK3lg
+   bQZljrcNUc/2svKe7uCkgZCoS2q6OTm1O+dvEPOeJf3CNlPHszAV4Q7co
+   kBbM9YnilSpzGvylZZ+YoA7EdvYKqPgbjF+Dl/Pgj4KxHvajJ/9FhnWYu
+   aQlh8Tl9UF5EAlvh1BUpe6YgIS+ktdxMTiVvLi3QA7WDyO5JqjCVGwWnA
    Q==;
-X-CSE-ConnectionGUID: j9gwbUkJRF2Olf3BOyAUUw==
-X-CSE-MsgGUID: hIAC5aKaQP2zrNLdFNIp3w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="24195291"
+X-CSE-ConnectionGUID: OUiHK4tiSUSFRkasQvhn7w==
+X-CSE-MsgGUID: +QPTLY2uRaCo4Xi9wI/fAg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="24195382"
 X-IronPort-AV: E=Sophos;i="6.08,202,1712646000";
-   d="scan'208";a="24195291"
+   d="scan'208";a="24195382"
 Received: from orviesa003.jf.intel.com ([10.64.159.143])
   by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 May 2024 16:00:51 -0700
-X-CSE-ConnectionGUID: oJBYKXTMS6y/WfORsCy0/A==
-X-CSE-MsgGUID: eLPKab+gQAunLOPngcKojQ==
+ 30 May 2024 16:01:00 -0700
+X-CSE-ConnectionGUID: sobAkPNVTae+BISEGqSQCg==
+X-CSE-MsgGUID: iCEpUl0ZQQiPRNOUAbqr4A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,202,1712646000";
-   d="scan'208";a="40895193"
+   d="scan'208";a="40895353"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa003.jf.intel.com with ESMTP; 30 May 2024 16:00:41 -0700
+  by orviesa003.jf.intel.com with ESMTP; 30 May 2024 16:00:50 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id E52A11A3; Fri, 31 May 2024 02:00:39 +0300 (EEST)
+	id 69C1F6AB; Fri, 31 May 2024 02:00:40 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Rob Herring <robh@kernel.org>,
 	Weidong Wang <wangweidong.a@awinic.com>,
@@ -105,14 +106,16 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>,
 	Heiko Stuebner <heiko@sntech.de>,
 	Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v1 0/6] ASoC: Drop or replace of_gpio.h
-Date: Fri, 31 May 2024 01:58:46 +0300
-Message-ID: <20240530230037.1156253-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 5/6] ASoC: generic: Replace of_gpio.h by proper one
+Date: Fri, 31 May 2024 01:58:51 +0300
+Message-ID: <20240530230037.1156253-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+In-Reply-To: <20240530230037.1156253-1-andriy.shevchenko@linux.intel.com>
+References: <20240530230037.1156253-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YPQQD6POMPC5PFOHJVSWIJNGQ3RGDMUK
-X-Message-ID-Hash: YPQQD6POMPC5PFOHJVSWIJNGQ3RGDMUK
+Message-ID-Hash: U3LI3RUFFMV74GMZAJGCUDYDSRE5YJLD
+X-Message-ID-Hash: U3LI3RUFFMV74GMZAJGCUDYDSRE5YJLD
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -125,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YPQQD6POMPC5PFOHJVSWIJNGQ3RGDMUK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U3LI3RUFFMV74GMZAJGCUDYDSRE5YJLD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,46 +137,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace or drop the legacy header that is subject to remove.
-Not all of them were compile-tested, the series might have
-hidden compilation errors.
+of_gpio.h is deprecated and subject to remove.
+The driver doesn't use it directly, replace it
+with what is really being used.
 
-Andy Shevchenko (6):
-  ASoC: codecs: Remove unused of_gpio.h
-  ASoC: fsl: Remove unused of_gpio.h
-  ASoC: rockchip: Remove unused of_gpio.h
-  ASoC: codecs: Replace of_gpio.h by proper one
-  ASoC: generic: Replace of_gpio.h by proper one
-  ASoC: samsung: Replace of_gpio.h by proper one
-
- sound/soc/codecs/ak4118.c                           | 1 -
- sound/soc/codecs/ak4458.c                           | 1 -
- sound/soc/codecs/aw88395/aw88395.c                  | 2 +-
- sound/soc/codecs/aw88399.c                          | 1 -
- sound/soc/codecs/cs53l30.c                          | 1 -
- sound/soc/codecs/max98390.c                         | 1 -
- sound/soc/codecs/pcm3168a.c                         | 1 -
- sound/soc/codecs/rk817_codec.c                      | 1 -
- sound/soc/codecs/tas2552.c                          | 1 -
- sound/soc/codecs/tas2764.c                          | 1 -
- sound/soc/codecs/tas2770.c                          | 1 -
- sound/soc/codecs/tas2780.c                          | 1 -
- sound/soc/codecs/tas2781-comlib.c                   | 1 -
- sound/soc/codecs/tas2781-fmwlib.c                   | 1 -
- sound/soc/codecs/tas2781-i2c.c                      | 1 -
- sound/soc/codecs/tlv320adc3xxx.c                    | 1 -
- sound/soc/codecs/tlv320adcx140.c                    | 1 -
- sound/soc/codecs/tlv320aic31xx.c                    | 1 -
- sound/soc/codecs/ts3a227e.c                         | 1 -
- sound/soc/codecs/wsa883x.c                          | 1 -
- sound/soc/fsl/imx-es8328.c                          | 1 -
- sound/soc/fsl/imx-rpmsg.c                           | 2 --
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
  sound/soc/generic/audio-graph-card2-custom-sample.c | 3 ++-
- sound/soc/rockchip/rockchip_i2s.c                   | 1 -
- sound/soc/rockchip/rockchip_spdif.c                 | 1 -
- sound/soc/samsung/aries_wm8994.c                    | 2 +-
- 26 files changed, 4 insertions(+), 27 deletions(-)
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/generic/audio-graph-card2-custom-sample.c b/sound/soc/generic/audio-graph-card2-custom-sample.c
+index 1b6ccd2de964..8e5a51098490 100644
+--- a/sound/soc/generic/audio-graph-card2-custom-sample.c
++++ b/sound/soc/generic/audio-graph-card2-custom-sample.c
+@@ -5,8 +5,9 @@
+ // Copyright (C) 2020 Renesas Electronics Corp.
+ // Copyright (C) 2020 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ //
++#include <linux/device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
+ #include <sound/graph_card.h>
+ 
 -- 
 2.43.0.rc1.1336.g36b5255a03ac
 
