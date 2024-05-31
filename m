@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD798C25B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 May 2024 15:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D6D8C27C4F
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 May 2024 15:32:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 281D5F94;
-	Fri, 31 May 2024 17:32:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 281D5F94
+	by alsa0.perex.cz (Postfix) with ESMTPS id 748FCFAA;
+	Fri, 31 May 2024 17:32:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 748FCFAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717169549;
-	bh=j//q7PxjjHf16S9qzs6ZEZBUjOL4lL+BxQBw8TkTaeo=;
+	s=default; t=1717169570;
+	bh=ZQKha7BG252KruQ9oU8AYSozYEYwH5AEwR9Xap5vJ0c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uQ5xMnJyxVlfapTHWCdPx6bYrGvYSoyx+/2dJRU5+8kZXy7x9F9udZF3BwjYHLL0p
-	 R0K2tdIbR9SOdANvg82o43OMJb3oXN+uM96cwL5Mwb2OK/UaWoBjBsDGE4sIRuqRTE
-	 nBwyUlKEq9Zo2eNiaC52lN2EiGG8bl5cJ6Gb3UsY=
+	b=PSbzj8ikZ/8fturJQ2d/YkruIC+lYnufxqaljEu+zr1Vmdy1h9jgGyiSz2dOM4RxQ
+	 j6l8t8vpmUoiVoL79hlQeuViW/aKjEgHrn+oOHIo7PmHSiaDhv30qgYiJzJiqUdeIz
+	 WkffCm5UR+iSknkqZHHNhGRvRETRJqC6yT0Le6qE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93AB0F80604; Fri, 31 May 2024 17:31:20 +0200 (CEST)
+	id A8482F80640; Fri, 31 May 2024 17:31:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1242EF80606;
-	Fri, 31 May 2024 17:31:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9ADFCF80633;
+	Fri, 31 May 2024 17:31:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D4ECF8026D; Fri, 31 May 2024 17:31:07 +0200 (CEST)
+	id 53B3AF8026D; Fri, 31 May 2024 17:31:09 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A47AFF80149
-	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 17:30:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A47AFF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id A54FDF8047C
+	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 17:30:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A54FDF8047C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=c0pGNEyO
+ header.s=Intel header.b=EfPHbnIk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717169459; x=1748705459;
+  t=1717169457; x=1748705457;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=j//q7PxjjHf16S9qzs6ZEZBUjOL4lL+BxQBw8TkTaeo=;
-  b=c0pGNEyOGZuFvWJnyCwpBjB55P7P5fxhH0Bet2Ehj+ruXmJzLAtKe1HW
-   +HCuPbMbNdxkwGGB+HOwYTJMClSChnB48AAk2QcrDJy7ZWDxH+vf75RrV
-   hfpD+6IWlMzshoKRCieiw+xGGgmkzOd5XKRxMbvlhIk9Pyg1NPEml2Qhz
-   be85kVmitzNkaMnQ4S4NzeUJSYUeaub2Z4IwmGgI4SRear9PJ4nMzzBAm
-   /HgndoSMZU0EPTMWAKC8C3h6K6MpWjYPaLSKGfjG+MYH8RqV58cRnyKtP
-   DaBqKc9QplzbXfsbzzU5Qe9d3HpIOdIDU/HBND0uHVLaU2To/p1sfEJ2P
+  bh=ZQKha7BG252KruQ9oU8AYSozYEYwH5AEwR9Xap5vJ0c=;
+  b=EfPHbnIkyDQkTZYsvURutBWrKSXRtFVrhdUWayuxLcbI3x9ZJuJko827
+   KNE+i8YJ+KrYYvJznd4tZTUorkQzOUcZzFJbILgK1yDTcpFwN16ApF/X4
+   FIJhXwRfmkytudLsjIiMGtARVsXfngA1AVybmvcmOv+ZnW0fPoGcCTEmw
+   NPRcowA++7e0RzDQ6GkGmR9t+MUVYQasKnYDCL7JivrMrhBa5qvyDogWT
+   Xv3mQHpeWDjoovjVmxujQpDwyUz6RMGIiyEu6ChG0n9pdxi47z2LPQB4V
+   DL+/GS13VGRMI2PLeoMU+k254TeF3Vg36xOaAmmyXwl6kkuyfGyWhgQ+4
    w==;
-X-CSE-ConnectionGUID: dGXCUpEFTnyMCmZPEyJdcA==
-X-CSE-MsgGUID: FGfoSklJQzKBjkM4Lz0WKg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="13839609"
+X-CSE-ConnectionGUID: dAe2eJYnSpiomP1iu9UK0A==
+X-CSE-MsgGUID: 38mJtSbIRHy5qnBsFDXQ4Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="13839587"
 X-IronPort-AV: E=Sophos;i="6.08,204,1712646000";
-   d="scan'208";a="13839609"
+   d="scan'208";a="13839587"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
   by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  31 May 2024 08:30:50 -0700
-X-CSE-ConnectionGUID: nwDwpn1fQ2SNJPRQUUQn3A==
-X-CSE-MsgGUID: OEXIKaNATXuTal65ZUfdtw==
+X-CSE-ConnectionGUID: 3R6qj3MvSkWKx9oZgpc3VQ==
+X-CSE-MsgGUID: 2ty8IMICQ0iFA8vS+R6Azg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,204,1712646000";
-   d="scan'208";a="40627258"
+   d="scan'208";a="40627260"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmviesa003.fm.intel.com with ESMTP; 31 May 2024 08:30:40 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id B16433B3; Fri, 31 May 2024 18:30:39 +0300 (EEST)
+	id D6770668; Fri, 31 May 2024 18:30:39 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Charles Keepax <ckeepax@opensource.cirrus.com>,
 	Rob Herring <robh@kernel.org>,
@@ -106,16 +106,16 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>,
 	Heiko Stuebner <heiko@sntech.de>,
 	Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v2 2/6] ASoC: fsl: Remove unused of_gpio.h
-Date: Fri, 31 May 2024 18:29:29 +0300
-Message-ID: <20240531153038.1590171-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 4/6] ASoC: codecs: Replace of_gpio.h by proper one
+Date: Fri, 31 May 2024 18:29:31 +0300
+Message-ID: <20240531153038.1590171-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 In-Reply-To: <20240531153038.1590171-1-andriy.shevchenko@linux.intel.com>
 References: <20240531153038.1590171-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AUISGMSW3KY3ZXKTXDPHCL5RAW4PZM27
-X-Message-ID-Hash: AUISGMSW3KY3ZXKTXDPHCL5RAW4PZM27
+Message-ID-Hash: SMRY2CST7D45KLZWEVAFLRB3FXDAHGE4
+X-Message-ID-Hash: SMRY2CST7D45KLZWEVAFLRB3FXDAHGE4
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -128,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AUISGMSW3KY3ZXKTXDPHCL5RAW4PZM27/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SMRY2CST7D45KLZWEVAFLRB3FXDAHGE4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,41 +137,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-of_gpio.h is deprecated and subject to remove. The drivers in question
-don't use it, simply remove the unused header.
+of_gpio.h is deprecated and subject to remove.
+The driver doesn't use it directly, replace it
+with what is really being used.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/fsl/imx-es8328.c | 1 -
- sound/soc/fsl/imx-rpmsg.c  | 2 --
- 2 files changed, 3 deletions(-)
+ sound/soc/codecs/aw88395/aw88395.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-index 5b9648f3b087..3ef92f6dfc6b 100644
---- a/sound/soc/fsl/imx-es8328.c
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -8,7 +8,6 @@
- #include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/i2c.h>
--#include <linux/of_gpio.h>
- #include <sound/soc.h>
- #include <sound/jack.h>
+diff --git a/sound/soc/codecs/aw88395/aw88395.c b/sound/soc/codecs/aw88395/aw88395.c
+index 3c459a67ad0c..be6ebcb51cca 100644
+--- a/sound/soc/codecs/aw88395/aw88395.c
++++ b/sound/soc/codecs/aw88395/aw88395.c
+@@ -8,9 +8,9 @@
+ // Author: Weidong Wang <wangweidong.a@awinic.com>
+ //
  
-diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
-index 0f1ad7ad7d27..ce98d2288193 100644
---- a/sound/soc/fsl/imx-rpmsg.c
-+++ b/sound/soc/fsl/imx-rpmsg.c
-@@ -5,9 +5,7 @@
- #include <linux/of_platform.h>
- #include <linux/of_reserved_mem.h>
++#include <linux/gpio/consumer.h>
  #include <linux/i2c.h>
+ #include <linux/firmware.h>
 -#include <linux/of_gpio.h>
- #include <linux/slab.h>
--#include <linux/gpio.h>
- #include <linux/clk.h>
+ #include <linux/regmap.h>
  #include <sound/soc.h>
- #include <sound/jack.h>
+ #include "aw88395.h"
 -- 
 2.43.0.rc1.1336.g36b5255a03ac
 
