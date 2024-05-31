@@ -4,111 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43BFFC25B7E
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 May 2024 14:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD2B5C25B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 May 2024 14:49:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D8D2950;
-	Fri, 31 May 2024 16:31:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D8D2950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B69BDEC;
+	Fri, 31 May 2024 16:48:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B69BDEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717165925;
-	bh=JvE95VldL4Wm6uxSEGwGimYI1FBYwpi2JYmljsv3ZAA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1717166939;
+	bh=qjG5sk5AW4DnjPOlkdayQAmvAKdwXxis0W1RtTvM0YY=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=K1srM83Lklfrv3Dz5gCRPqIgOuJ1XtGK6fu2HR/aqJSrEskSw76hDXRQkKYvXP9im
-	 wolePMG88C5z3a63TrxUckY+oms5h8sOPhsrjFlHDcJXRWYYTWl51+qI55rFjYSyH8
-	 RlHUosuHRSGucPqoIsGsCwd0vg3LROJiD69+KKjs=
+	b=rZMjN1mb4WdK0oAoimN2lZaLFoHpfCnEhXMdq1A3j2rJeHhrs1BHESbxVBtOFHuUo
+	 koj8IijW21nbPbpjJ2qzCedmp3f/FyGoV7BDveB+Kb6LDdhWmhLfR6CLYd+s0WvSDP
+	 PJos4xIKi7m6YWaJTVshVDX4Aw+w22nDx2lG5Xes=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68029F805AE; Fri, 31 May 2024 16:31:31 +0200 (CEST)
+	id ED9E4F805A9; Fri, 31 May 2024 16:48:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6152F80588;
-	Fri, 31 May 2024 16:31:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79099F8026D;
+	Fri, 31 May 2024 16:48:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 646FCF8026D; Fri, 31 May 2024 16:31:22 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9D1AFF8047C; Fri, 31 May 2024 16:48:21 +0200 (CEST)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
+ [208.88.110.44])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 77542F8003A
-	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 16:31:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77542F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id BEAE5F8003A
+	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 16:48:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEAE5F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XVZRdqcp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717165873; x=1748701873;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JvE95VldL4Wm6uxSEGwGimYI1FBYwpi2JYmljsv3ZAA=;
-  b=XVZRdqcpzboGuIRERL91XcdweWvn6KJJry42FCib6loBXsMTuSPFBHsj
-   NjPTzEKoCiXx3f3dIw/LdVDC8ERYcchpZW5Tzg7PDffdMHFAvySPJXFsK
-   ijYIW4P6OmBp7iVteXtGVg9ki0Mt7ZZoj64e8i07RiSJNRkRIzfTDC1zk
-   cs3uKrtMbwI7XQx+rFc8WTIzfV9OyPrNQZfHI3RGEaKB7srK/xX5iWzp2
-   SAUM3HgX/OX8pGUzC0jIndvMM9sse/Aun5bJKWS0kD2bT2yAAbVAQ5n9n
-   H9ZVW38KOOvJzsUR1VMaPv+k7Igr35LiJog8AMefSxLhx/fD4yVfZiMWd
-   g==;
-X-CSE-ConnectionGUID: eEfe4aCqQHqt9D/zXlqTvg==
-X-CSE-MsgGUID: gc9wZ4TNSpuJWf+Olnsw2g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="36242695"
-X-IronPort-AV: E=Sophos;i="6.08,204,1712646000";
-   d="scan'208";a="36242695"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 May 2024 07:31:06 -0700
-X-CSE-ConnectionGUID: 0FTBQ/SASnC/QvwnryK7fA==
-X-CSE-MsgGUID: KgUFmX8zTD2bMRaXcoAYwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,204,1712646000";
-   d="scan'208";a="73666970"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 May 2024 07:30:59 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1sD3HS-0000000CUNA-19F6;
-	Fri, 31 May 2024 17:30:54 +0300
-Date: Fri, 31 May 2024 17:30:53 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: kernel test robot <lkp@intel.com>
-Cc: Rob Herring <robh@kernel.org>, Weidong Wang <wangweidong.a@awinic.com>,
-	Mark Brown <broonie@kernel.org>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Shenghao Ding <shenghao-ding@ti.com>,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-	Chancel Liu <chancel.liu@nxp.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-	linuxppc-dev@lists.ozlabs.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, llvm@lists.linux.dev,
-	oe-kbuild-all@lists.linux.dev, Liam Girdwood <lgirdwood@gmail.com>,
+ unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
+ header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
+ header.b=SdiCNzQZ
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 652479C584C;
+	Fri, 31 May 2024 10:48:15 -0400 (EDT)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id X9AwXBwr79HS; Fri, 31 May 2024 10:48:14 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id CA82F9C58D5;
+	Fri, 31 May 2024 10:48:14 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com CA82F9C58D5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
+	t=1717166894; bh=kchiTinbtwESPzQeP7Vb31GmvIj0rK/lVr0ouZd4gSo=;
+	h=Date:From:To:Message-ID:MIME-Version;
+	b=SdiCNzQZ1hd90TLzQQg+YhNcEKlzhtyi0dMmWZsuakVAg4zC8oa8Ln/wuzFtjnZK6
+	 umuqOtoS5gkAHEBujnoCEOKYsXDvBh7k4WB/XCvwIBLWucfTHY73fNM4O9rU+BqSur
+	 biWGtwErgzOoA/ZiQJHHv24hgOQZUfQtinNump2ygkCTh6ox6DlEHxwE85rJMdAjBk
+	 cj9wBia7YVfb9fgXSVg18pbAViYC196NYW9D6jWI18BvnfTAn9m4XWsvWiwaGZEBGM
+	 NVyq3W/ZG6KUkux0S4tKghCh9c2/NGndA3PTc151uQ9mRgg9k7xn+nLrLuDs/1Kzb1
+	 s9Ne6y55WTWOg==
+X-Virus-Scanned: amavis at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id f6p0tkYRN10f; Fri, 31 May 2024 10:48:14 -0400 (EDT)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
+ [192.168.48.237])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 8F58C9C584C;
+	Fri, 31 May 2024 10:48:14 -0400 (EDT)
+Date: Fri, 31 May 2024 10:48:14 -0400 (EDT)
+From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	shengjiu wang <shengjiu.wang@gmail.com>,
+	Xiubo Lee <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>
-Subject: Re: [PATCH v1 1/6] ASoC: codecs: Remove unused of_gpio.h
-Message-ID: <ZlnfHWx3uPzCoJwX@smile.fi.intel.com>
-References: <20240530230037.1156253-2-andriy.shevchenko@linux.intel.com>
- <202405311428.tzsBMIPs-lkp@intel.com>
+	linux-sound <linux-sound@vger.kernel.org>,
+	devicetree <devicetree@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	alsa-devel <alsa-devel@alsa-project.org>,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Message-ID: 
+ <1220272166.706254.1717166894551.JavaMail.zimbra@savoirfairelinux.com>
+In-Reply-To: <291daed8-a2e1-44d4-9a71-5bca2c585720@sirena.org.uk>
+References: <20240515135411.343333-1-elinor.montmasson@savoirfairelinux.com>
+ <20240515135411.343333-10-elinor.montmasson@savoirfairelinux.com>
+ <ce9a87c6-4a5c-4f0a-a8df-1fdce8c1f5df@sirena.org.uk>
+ <599489232.349333.1715936741672.JavaMail.zimbra@savoirfairelinux.com>
+ <500db9de-6113-4e73-ba92-6e52ea292b32@sirena.org.uk>
+ <1598202415.701258.1717159684103.JavaMail.zimbra@savoirfairelinux.com>
+ <291daed8-a2e1-44d4-9a71-5bca2c585720@sirena.org.uk>
+Subject: Re: [PATCHv4 9/9] ASoC: dt-bindings: fsl-asoc-card: add compatible
+ for generic codec
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202405311428.tzsBMIPs-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: NDY2IO3P5PET7X24THQNR3SZULVM5O4K
-X-Message-ID-Hash: NDY2IO3P5PET7X24THQNR3SZULVM5O4K
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - GC112
+ (Linux)/8.8.15_GA_4581)
+Thread-Topic: ASoC: dt-bindings: fsl-asoc-card: add compatible for generic
+ codec
+Thread-Index: fUODjmUMbozLiD+24hweZL0h4n337g==
+Message-ID-Hash: 5JW3XLSUTEXECNBY6B7BJUO6OF5F4E4Z
+X-Message-ID-Hash: 5JW3XLSUTEXECNBY6B7BJUO6OF5F4E4Z
+X-MailFrom: elinor.montmasson@savoirfairelinux.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NDY2IO3P5PET7X24THQNR3SZULVM5O4K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5JW3XLSUTEXECNBY6B7BJUO6OF5F4E4Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,35 +128,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, May 31, 2024 at 02:42:33PM +0800, kernel test robot wrote:
-> Hi Andy,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on broonie-sound/for-next]
-> [also build test ERROR on shawnguo/for-next rockchip/for-next linus/master v6.10-rc1 next-20240529]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/ASoC-codecs-Remove-unused-of_gpio-h/20240531-070350
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> patch link:    https://lore.kernel.org/r/20240530230037.1156253-2-andriy.shevchenko%40linux.intel.com
-> patch subject: [PATCH v1 1/6] ASoC: codecs: Remove unused of_gpio.h
-> config: i386-buildonly-randconfig-006-20240531 (https://download.01.org/0day-ci/archive/20240531/202405311428.tzsBMIPs-lkp@intel.com/config)
-> compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240531/202405311428.tzsBMIPs-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202405311428.tzsBMIPs-lkp@intel.com/
+From: "Mark Brown" <broonie@kernel.org>
+Sent: Friday, 31 May, 2024 15:14:13
 
-My gosh, the whoever wrote the GPIO code in that driver has no clue what they
-are doing. It's a pure mess.
+> On Fri, May 31, 2024 at 08:48:04AM -0400, Elinor Montmasson wrote:
+> 
+>> Then maybe it's not be a good idea to make this compatible generic
+>> for this contribution.
+>> The original intention is to bring support for the S/PDIF,
+>> so maybe the contribution should focus on this use case?
+>> In that case, would changing the compatible for "fsl,imx-audio-spdif-card"
+>> be acceptable?
+>> "fsl,imx-audio-spdif" is already used for the `imx-spdif.c`
+>> which does not use the ASRC.
+> 
+> Why not just use the existing compatible - why would someone not want to
+> be able to use the ASRC if it's available in their system?
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+That's true but it will be a problem if both `fsl-asoc-card.c` and
+`imx-spdif.c` drivers have the same compatible, and they don't
+have the same DT properties.
