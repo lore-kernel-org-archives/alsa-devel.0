@@ -4,94 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CE0EC25B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 May 2024 15:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4874C25B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 May 2024 15:31:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC86BF50;
-	Fri, 31 May 2024 17:17:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC86BF50
+	by alsa0.perex.cz (Postfix) with ESMTPS id A44D8AE8;
+	Fri, 31 May 2024 17:31:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A44D8AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717168675;
-	bh=3gi9ZseK69241gs30CZ/3efH7Ik+gin5YhpjQoFRXKo=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1717169515;
+	bh=3V5pXNYUIe5amzJ/wlWv+uZ+rQkwQ0AbOeOsiYESyYs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pfg3bhq1AiPKUMnwfBuab87dD1fJ1S/a+iTATZBsoC++xnJHNmqwFh7eRmLu1r494
-	 1dgFu1f1t+FQq35vhzuJNkPKFVwJNl4nqnNjBl+eUSHMpa+EuhXtvX+fPG7MnlkIpV
-	 GRv1N+l/pOy0JZ9q6iN7WGbgfLRFhYd/ke9GwU94=
+	b=Y1k2Ur0bRQWO6VhnklgM0HBVOtvvYDghhar+bE9EsaUMxoceL7V3pF84iRvip076f
+	 KYaOnVPJnE5em2ULSaC0I+WwK397QyDLARxU+m13NSzI1GXLh/FNlHnpPRDdNTJMEh
+	 qjCKFTOhoxtMxN7KbDlbz2GdwerKYRhIk/1Y3KdU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96E47F805BE; Fri, 31 May 2024 17:17:15 +0200 (CEST)
+	id 84BC0F80589; Fri, 31 May 2024 17:31:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA4EAF805BE;
-	Fri, 31 May 2024 17:17:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A1D8F80588;
+	Fri, 31 May 2024 17:31:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D263F804FF; Fri, 31 May 2024 17:17:09 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 5FFB2F804FF; Fri, 31 May 2024 17:31:05 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E002AF804E5
-	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 17:15:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E002AF804E5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3F7E6F80051
+	for <alsa-devel@alsa-project.org>; Fri, 31 May 2024 17:30:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F7E6F80051
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=cFpkplWf
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 44VB0WSw017940;
-	Fri, 31 May 2024 10:15:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=3QEuMPZ58UQQ/qZnvQF2UXA4/Nl17NjGc0XYDAapMeM=; b=
-	cFpkplWfGxOwUz3vnOXcDZGerlktCy8PNK24Bl/mh3PF0Z8vxGAmTtS3PQ3C81L2
-	PKzk5UJ1hlp2MJuUwVG19lqKDy1Je/cG+Jxyo8pnCwDRxnuzgBCVO4gIeVerQxl9
-	RbUYr8qcj9KHirOnikEzWk1ZkKmdBve8IeMnvW/ZSFVZHluK7SjX/7iQ6tR6I4BO
-	1pRn+Y6dGWqPuU2FgAHQiXMhbd+g48pohhSqSODASzepHtDxu84ssui47KzFTYMc
-	Kp82/oSAPA/cLaARCNFQJngAIBSczu/DP2q9GwbTD3hVJ7kILUn0oYyyPpLhcEsi
-	tAQVe5ejMTniXAeQae7yXQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ybcdhe0a3-6
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 31 May 2024 10:15:15 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 31 May
- 2024 16:15:12 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Fri, 31 May 2024 16:15:12 +0100
-Received: from EDIN6ZZ2FY3.ad.cirrus.com (EDIN6ZZ2FY3.ad.cirrus.com
- [198.61.65.72])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 2874882024B;
-	Fri, 31 May 2024 15:15:12 +0000 (UTC)
-From: Simon Trimmer <simont@opensource.cirrus.com>
-To: <tiwai@suse.com>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        <soyer@irl.hu>, <shenghao-ding@ti.com>, <kevin-lu@ti.com>,
-        <baojun.xu@ti.com>, <kailang@realtek.com>,
-        Simon Trimmer
-	<simont@opensource.cirrus.com>
-Subject: [PATCH 7/7] ALSA: hda: hda_component: Protect shared data with a
- mutex
-Date: Fri, 31 May 2024 16:14:09 +0100
-Message-ID: <20240531151409.80284-8-simont@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240531151409.80284-1-simont@opensource.cirrus.com>
-References: <20240531151409.80284-1-simont@opensource.cirrus.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=XBY+/8xG
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1717169453; x=1748705453;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=3V5pXNYUIe5amzJ/wlWv+uZ+rQkwQ0AbOeOsiYESyYs=;
+  b=XBY+/8xG7GmJ2hmxdBMkSnUtS9AsG33q7QfK4ltePqZ4ZPCSC9qkwNRU
+   MlqErO3P25S/tFWZ6yn6iFHver5rsFSpUGxSu+fwXuDDAesYZQXcF18Lr
+   YWejcka/U0tepQvQys/PumuiTD5P007QU5olTMtXEAy5PW3200krmNHag
+   /TtwPFY7jJ3ekzVxAKy8JpJS2wlsL57QqyBJWhelYmJpYTtkO+///ra6m
+   nm4TXSCP8Wmen/kRSCcgGGSyNXC6eY7XhzkciFvfsTnwhwzglaR9g8mvs
+   hA8HHVCoAT3FmZTYMph0ngNZoEoMhwpDG+Ga+f+SsoV1vpC2H+HaY4XGW
+   Q==;
+X-CSE-ConnectionGUID: DW6RWDSBRJG7aQaU8RJg8Q==
+X-CSE-MsgGUID: +U/6uk0MRlm89uzCj9f8Ag==
+X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="24348118"
+X-IronPort-AV: E=Sophos;i="6.08,204,1712646000";
+   d="scan'208";a="24348118"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 May 2024 08:30:48 -0700
+X-CSE-ConnectionGUID: iuHuXjxdS6Wb+7hA5s84Sw==
+X-CSE-MsgGUID: 1IHu24H0TXCyEXpf1AgGQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,204,1712646000";
+   d="scan'208";a="73678756"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa001.jf.intel.com with ESMTP; 31 May 2024 08:30:41 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id A7B34136; Fri, 31 May 2024 18:30:39 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Rob Herring <robh@kernel.org>,
+	Weidong Wang <wangweidong.a@awinic.com>,
+	Mark Brown <broonie@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	Marco Felsch <m.felsch@pengutronix.de>,
+	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+	Chancel Liu <chancel.liu@nxp.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linuxppc-dev@lists.ozlabs.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH v2 1/6] ASoC: codecs: Remove unused of_gpio.h
+Date: Fri, 31 May 2024 18:29:28 +0300
+Message-ID: <20240531153038.1590171-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+In-Reply-To: <20240531153038.1590171-1-andriy.shevchenko@linux.intel.com>
+References: <20240531153038.1590171-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: nGfCjYqswV3BL8JY5UN8bmtU3PwI8r7i
-X-Proofpoint-ORIG-GUID: nGfCjYqswV3BL8JY5UN8bmtU3PwI8r7i
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: C344DTG5TCQVQKFP7H4VLYXLCN5Z627Q
-X-Message-ID-Hash: C344DTG5TCQVQKFP7H4VLYXLCN5Z627Q
-X-MailFrom: prvs=3881dca93d=simont@opensource.cirrus.com
+Message-ID-Hash: NGSF4BWOPJK6VS3TTT5N7AVANKYJN7Q4
+X-Message-ID-Hash: NGSF4BWOPJK6VS3TTT5N7AVANKYJN7Q4
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C344DTG5TCQVQKFP7H4VLYXLCN5Z627Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGSF4BWOPJK6VS3TTT5N7AVANKYJN7Q4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,101 +137,223 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The hda_component contains information shared from the amp drivers to
-the codec that can be altered (for example as the driver unloads). Guard
-the update and use of these to prevent use of stale data.
+of_gpio.h is deprecated and subject to remove. The drivers in question
+don't use it, simply remove the unused header.
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/pci/hda/hda_component.c | 14 +++++++++++++-
- sound/pci/hda/hda_component.h |  4 ++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ak4118.c        | 1 -
+ sound/soc/codecs/ak4458.c        | 1 -
+ sound/soc/codecs/aw88399.c       | 1 -
+ sound/soc/codecs/cs53l30.c       | 1 -
+ sound/soc/codecs/max98390.c      | 1 -
+ sound/soc/codecs/pcm3168a.c      | 1 -
+ sound/soc/codecs/rk817_codec.c   | 1 -
+ sound/soc/codecs/tas2552.c       | 1 -
+ sound/soc/codecs/tas2764.c       | 1 -
+ sound/soc/codecs/tas2770.c       | 1 -
+ sound/soc/codecs/tas2780.c       | 1 -
+ sound/soc/codecs/tlv320adc3xxx.c | 1 -
+ sound/soc/codecs/tlv320adcx140.c | 1 -
+ sound/soc/codecs/tlv320aic31xx.c | 1 -
+ sound/soc/codecs/ts3a227e.c      | 1 -
+ sound/soc/codecs/wsa883x.c       | 1 -
+ 16 files changed, 16 deletions(-)
 
-diff --git a/sound/pci/hda/hda_component.c b/sound/pci/hda/hda_component.c
-index 84add31408f7..21cd6a5eb6b1 100644
---- a/sound/pci/hda/hda_component.c
-+++ b/sound/pci/hda/hda_component.c
-@@ -21,11 +21,13 @@ void hda_component_acpi_device_notify(struct hda_component_parent *parent,
- 	struct hda_component *comp;
- 	int i;
+diff --git a/sound/soc/codecs/ak4118.c b/sound/soc/codecs/ak4118.c
+index 9a43235e6a11..23e868e4e3fb 100644
+--- a/sound/soc/codecs/ak4118.c
++++ b/sound/soc/codecs/ak4118.c
+@@ -9,7 +9,6 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
  
-+	mutex_lock(&parent->mutex);
- 	for (i = 0; i < ARRAY_SIZE(parent->comps); i++) {
- 		comp = hda_component_from_index(parent, i);
- 		if (comp->dev && comp->acpi_notify)
- 			comp->acpi_notify(acpi_device_handle(comp->adev), event, comp->dev);
- 	}
-+	mutex_unlock(&parent->mutex);
- }
- EXPORT_SYMBOL_NS_GPL(hda_component_acpi_device_notify, SND_HDA_SCODEC_COMPONENT);
+diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+index 73cf482f104f..32cb802ad635 100644
+--- a/sound/soc/codecs/ak4458.c
++++ b/sound/soc/codecs/ak4458.c
+@@ -10,7 +10,6 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/reset.h>
+diff --git a/sound/soc/codecs/aw88399.c b/sound/soc/codecs/aw88399.c
+index 9fcb805bf971..23e50d73b4c4 100644
+--- a/sound/soc/codecs/aw88399.c
++++ b/sound/soc/codecs/aw88399.c
+@@ -10,7 +10,6 @@
+ #include <linux/crc32.h>
+ #include <linux/i2c.h>
+ #include <linux/firmware.h>
+-#include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+ #include <sound/soc.h>
+ #include "aw88399.h"
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index c0893146423b..2ee13d885fdc 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -12,7 +12,6 @@
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/pcm_params.h>
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index 57fa2db1e148..1bae253618fd 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -13,7 +13,6 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <linux/time.h>
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 9d6431338fb7..3c0e0fdbfc5c 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -11,7 +11,6 @@
+ #include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
  
-@@ -87,6 +89,7 @@ void hda_component_manager_playback_hook(struct hda_component_parent *parent, in
- 	struct hda_component *comp;
- 	int i;
- 
-+	mutex_lock(&parent->mutex);
- 	for (i = 0; i < ARRAY_SIZE(parent->comps); i++) {
- 		comp = hda_component_from_index(parent, i);
- 		if (comp->dev && comp->pre_playback_hook)
-@@ -102,6 +105,7 @@ void hda_component_manager_playback_hook(struct hda_component_parent *parent, in
- 		if (comp->dev && comp->post_playback_hook)
- 			comp->post_playback_hook(comp->dev, action);
- 	}
-+	mutex_unlock(&parent->mutex);
- }
- EXPORT_SYMBOL_NS_GPL(hda_component_manager_playback_hook, SND_HDA_SCODEC_COMPONENT);
- 
-@@ -134,11 +138,19 @@ static int hda_comp_match_dev_name(struct device *dev, void *data)
- int hda_component_manager_bind(struct hda_codec *cdc,
- 			       struct hda_component_parent *parent)
- {
-+	int ret;
-+
- 	/* Init shared and component specific data */
- 	memset(parent, 0, sizeof(parent));
-+	mutex_init(&parent->mutex);
- 	parent->codec = cdc;
- 
--	return component_bind_all(hda_codec_dev(cdc), parent);
-+
-+	mutex_lock(&parent->mutex);
-+	ret = component_bind_all(hda_codec_dev(cdc), parent);
-+	mutex_unlock(&parent->mutex);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_NS_GPL(hda_component_manager_bind, SND_HDA_SCODEC_COMPONENT);
- 
-diff --git a/sound/pci/hda/hda_component.h b/sound/pci/hda/hda_component.h
-index dd4dabeae9ee..9f786608144c 100644
---- a/sound/pci/hda/hda_component.h
-+++ b/sound/pci/hda/hda_component.h
-@@ -11,6 +11,7 @@
- 
+diff --git a/sound/soc/codecs/rk817_codec.c b/sound/soc/codecs/rk817_codec.c
+index d4da98469f8b..5fea600bc3a4 100644
+--- a/sound/soc/codecs/rk817_codec.c
++++ b/sound/soc/codecs/rk817_codec.c
+@@ -10,7 +10,6 @@
+ #include <linux/mfd/rk808.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <sound/core.h>
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+index a7ed59ec49a6..9e68afc09897 100644
+--- a/sound/soc/codecs/tas2552.c
++++ b/sound/soc/codecs/tas2552.c
+@@ -13,7 +13,6 @@
+ #include <linux/device.h>
+ #include <linux/i2c.h>
+ #include <linux/gpio.h>
+-#include <linux/of_gpio.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas2764.c
+index 1dc719d726ab..5eaddf07aadc 100644
+--- a/sound/soc/codecs/tas2764.c
++++ b/sound/soc/codecs/tas2764.c
+@@ -15,7 +15,6 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/regmap.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
+diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
+index 67bc1c8b0131..5601fba17c96 100644
+--- a/sound/soc/codecs/tas2770.c
++++ b/sound/soc/codecs/tas2770.c
+@@ -20,7 +20,6 @@
+ #include <linux/firmware.h>
+ #include <linux/regmap.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
+diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
+index a18ccf5fb7ad..6902bfef185b 100644
+--- a/sound/soc/codecs/tas2780.c
++++ b/sound/soc/codecs/tas2780.c
+@@ -11,7 +11,6 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/regmap.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+diff --git a/sound/soc/codecs/tlv320adc3xxx.c b/sound/soc/codecs/tlv320adc3xxx.c
+index e100cc9f5c19..eb180df9a72a 100644
+--- a/sound/soc/codecs/tlv320adc3xxx.c
++++ b/sound/soc/codecs/tlv320adc3xxx.c
+@@ -25,7 +25,6 @@
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
+ #include <linux/cdev.h>
+-#include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 41342b340680..d594bf166c0e 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -12,7 +12,6 @@
+ #include <linux/regulator/consumer.h>
  #include <linux/acpi.h>
- #include <linux/component.h>
-+#include <linux/mutex.h>
- #include <sound/hda_codec.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 4d7c5a80c6ed..2f94cfda0e33 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -23,7 +23,6 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/acpi.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+index dbf448dd8864..b9eb59e3bfa0 100644
+--- a/sound/soc/codecs/ts3a227e.c
++++ b/sound/soc/codecs/ts3a227e.c
+@@ -10,7 +10,6 @@
+ #include <linux/init.h>
+ #include <linux/input.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+ #include <linux/acpi.h>
  
- #define HDA_MAX_COMPONENTS	4
-@@ -28,6 +29,7 @@ struct hda_component {
- };
- 
- struct hda_component_parent {
-+	struct mutex mutex;
- 	struct hda_codec *codec;
- 	struct hda_component comps[HDA_MAX_COMPONENTS];
- };
-@@ -93,7 +95,9 @@ static inline struct hda_component *hda_component_from_index(struct hda_componen
- static inline void hda_component_manager_unbind(struct hda_codec *cdc,
- 						struct hda_component_parent *parent)
- {
-+	mutex_lock(&parent->mutex);
- 	component_unbind_all(hda_codec_dev(cdc), parent);
-+	mutex_unlock(&parent->mutex);
- }
- 
- #endif /* ifndef __HDA_COMPONENT_H__ */
+diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
+index a2e86ef7d18f..8abce2160d65 100644
+--- a/sound/soc/codecs/wsa883x.c
++++ b/sound/soc/codecs/wsa883x.c
+@@ -9,7 +9,6 @@
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/of_gpio.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/printk.h>
+ #include <linux/regmap.h>
 -- 
-2.34.1
+2.43.0.rc1.1336.g36b5255a03ac
 
