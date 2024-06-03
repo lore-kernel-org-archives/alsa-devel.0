@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68CC9C25B76
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jun 2024 10:29:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF79BC25B75
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jun 2024 10:29:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC1B5820;
-	Mon,  3 Jun 2024 12:29:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC1B5820
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB37EB65;
+	Mon,  3 Jun 2024 12:29:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB37EB65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717410553;
-	bh=GFqX5r9hkOet5jHFaGDfztMJVt5pXGz34ax6hpUonoQ=;
+	s=default; t=1717410560;
+	bh=mrRMoWmxvzrAwR8G9TNIstf0By3PMvXmJHxrOKbXUJo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aP2t/RNNaawbOMKGOBqzujuJPmA3IK/Mj+C/NCUv9vb8a6xyTPU8HpvI4tLJmi49u
-	 WKsp6i1WK7VW+bMMiLtK1ymmTgIyIG+6RnnKKKrh37MzQIN/iE+PW8WEVKwqhVkMOU
-	 rmUbKu4GzbsH4MBrk3enRBu9aAXyVgarMNJcF+sg=
+	b=jQncZBhepuPMdlpNmw3X/c4236kNAprD8N+Ybr3v0rc8mlJxgGvzs8PeqhdUHXkN1
+	 H2ugi7BFzOLQAPo+TtUiVT844xSolY0inWH2vPTNOEPTpm1GKwGKqbRNWwQ4t8RAYN
+	 n2vMOKexeB5TxXYRh1nblalNd17zvNQ6fm3nefvI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59B37F8060B; Mon,  3 Jun 2024 12:28:01 +0200 (CEST)
+	id 420DEF80635; Mon,  3 Jun 2024 12:28:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD287F80615;
-	Mon,  3 Jun 2024 12:28:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9F3AF8063B;
+	Mon,  3 Jun 2024 12:28:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 28536F8025A; Mon,  3 Jun 2024 12:27:52 +0200 (CEST)
+	id E6146F80496; Mon,  3 Jun 2024 12:27:53 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 72CB8F80236
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2024 12:27:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72CB8F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 61BE2F802DB
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2024 12:27:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61BE2F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bS8C5R91
+ header.s=Intel header.b=QUf+C+M7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717410468; x=1748946468;
+  t=1717410470; x=1748946470;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GFqX5r9hkOet5jHFaGDfztMJVt5pXGz34ax6hpUonoQ=;
-  b=bS8C5R91DKG9NxWOSQ7W5np5rGQDXrp/12PqnR11NR6uBEBO2rzoZu6o
-   DFcZ4B9cvs2IOrL81IgQpOgtyKtu2yIgBYj/9Z4bYXFrrxqE8pBRE5IQR
-   lu72YzDnSS98fdmjLy7HxkY8WhhwF2aWqsgNleCv8Co5xi64WTpRb3eyo
-   w7419VbvK/i2JseHLHUFt5viJYtm2lqptX2nJBptgxgqXQ+XE5RdeeVfo
-   b1EIurluN2qN8wmdTxpiKLhqkvTPCPWJCVvAzDsRbMF0bgId/CIzHBfze
-   qCNK2hSYfGYeTXs9mIJ6muYQ8/hZFB4UfJaBYTn5jrxUFDEhbuD771dg5
-   A==;
-X-CSE-ConnectionGUID: Y/6wltOuQ6GmAGs60RgGJw==
-X-CSE-MsgGUID: uMdPgm5uROCOtwBiPJ4MCA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11091"; a="14017231"
+  bh=mrRMoWmxvzrAwR8G9TNIstf0By3PMvXmJHxrOKbXUJo=;
+  b=QUf+C+M7lgHBGsU8Dp1IknRk8Zgd/kToHQro9wZDM5ck/gb8HvkOap2A
+   zF9VvF7ZM+w2Z0mQgJvYZwox2NIHIlfoP4ln37L+cggDU7dkOCvuSvmo+
+   fGIbVVqY8YVvbpOrqVBhQ+hos3VltK+OE2ZJ350AD4NEGplXE8XJcAMB0
+   VC7Gh7vI+LVTa+4H68PPuzC1CQJg/Pleq4OJprCH062iTY2K+E/LMqUok
+   nXLD+VJITaXT8REqmXqPdyzad8+HNo8R6AAuJVA5opUlMW/5S6xjeN+lF
+   FNKsBUR58mTTw1yruZFUFXemfrqYX8T0POp7mvDhsbx5XtES+he0i7VmM
+   Q==;
+X-CSE-ConnectionGUID: /HlR4UslSneWPcr9q/k6ww==
+X-CSE-MsgGUID: zh4I81A0SgiVnh+mpYgd1w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11091"; a="14017238"
 X-IronPort-AV: E=Sophos;i="6.08,211,1712646000";
-   d="scan'208";a="14017231"
+   d="scan'208";a="14017238"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
   by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Jun 2024 03:27:45 -0700
-X-CSE-ConnectionGUID: FptEqLsIStuFGfizIt204Q==
-X-CSE-MsgGUID: 1hlQtdrKTgqqzIUQECmNXw==
+ 03 Jun 2024 03:27:47 -0700
+X-CSE-ConnectionGUID: TwKTajOsQoiHfU0xQ+QXkA==
+X-CSE-MsgGUID: 6/5mpYAsR/GfXFqanzGk5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,211,1712646000";
-   d="scan'208";a="37430047"
+   d="scan'208";a="37430053"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orviesa008.jf.intel.com with ESMTP; 03 Jun 2024 03:27:42 -0700
+  by orviesa008.jf.intel.com with ESMTP; 03 Jun 2024 03:27:45 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -79,17 +79,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Jason Montleon <jmontleo@redhat.com>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 3/4] ASoC: topology: Do not assign fields that are already set
-Date: Mon,  3 Jun 2024 12:28:17 +0200
-Message-Id: <20240603102818.36165-4-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: topology: Clean up route loading
+Date: Mon,  3 Jun 2024 12:28:18 +0200
+Message-Id: <20240603102818.36165-5-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240603102818.36165-1-amadeuszx.slawinski@linux.intel.com>
 References: <20240603102818.36165-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HOE2DXYWNIPZNHHSQND6FNFANBQDFS2H
-X-Message-ID-Hash: HOE2DXYWNIPZNHHSQND6FNFANBQDFS2H
+Message-ID-Hash: Q7ZFTIU4EKDNJCKAOFUVDGQBGVYKXIBD
+X-Message-ID-Hash: Q7ZFTIU4EKDNJCKAOFUVDGQBGVYKXIBD
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HOE2DXYWNIPZNHHSQND6FNFANBQDFS2H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q7ZFTIU4EKDNJCKAOFUVDGQBGVYKXIBD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,32 +111,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The routes are allocated with kzalloc(), so all fields are zeroed by
-default, skip unnecessary assignments.
+Instead of using very long macro name, assign it to shorter variable
+and use it instead. While doing that, we can reduce multiple if checks
+using this define to one.
 
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/soc-topology.c | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 75d9395a18ed4..1db540aaad451 100644
+index 1db540aaad451..2ac442644ed4f 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1072,11 +1072,7 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+@@ -1021,6 +1021,7 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+ 	struct snd_soc_dapm_context *dapm = &tplg->comp->dapm;
++	const size_t maxlen = SNDRV_CTL_ELEM_ID_NAME_MAXLEN;
+ 	struct snd_soc_tplg_dapm_graph_elem *elem;
+ 	struct snd_soc_dapm_route *route;
+ 	int count, i;
+@@ -1044,38 +1045,27 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 		tplg->pos += sizeof(struct snd_soc_tplg_dapm_graph_elem);
+ 
+ 		/* validate routes */
+-		if (strnlen(elem->source, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
+-			ret = -EINVAL;
+-			break;
+-		}
+-		if (strnlen(elem->sink, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
+-			ret = -EINVAL;
+-			break;
+-		}
+-		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) ==
+-			    SNDRV_CTL_ELEM_ID_NAME_MAXLEN) {
++		if ((strnlen(elem->source, maxlen) == maxlen) ||
++		    (strnlen(elem->sink, maxlen) == maxlen) ||
++		    (strnlen(elem->control, maxlen) == maxlen)) {
+ 			ret = -EINVAL;
  			break;
  		}
  
--		/* set to NULL atm for tplg users */
--		route->connected = NULL;
--		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0) {
--			route->control = NULL;
--		} else {
-+		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) != 0) {
+ 		route->source = devm_kmemdup(tplg->dev, elem->source,
+-					     min(strlen(elem->source),
+-						 SNDRV_CTL_ELEM_ID_NAME_MAXLEN),
++					     min(strlen(elem->source), maxlen),
+ 					     GFP_KERNEL);
+ 		route->sink = devm_kmemdup(tplg->dev, elem->sink,
+-					   min(strlen(elem->sink), SNDRV_CTL_ELEM_ID_NAME_MAXLEN),
++					   min(strlen(elem->sink), maxlen),
+ 					   GFP_KERNEL);
+ 		if (!route->source || !route->sink) {
+ 			ret = -ENOMEM;
+ 			break;
+ 		}
+ 
+-		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) != 0) {
++		if (strnlen(elem->control, maxlen) != 0) {
  			route->control = devm_kmemdup(tplg->dev, elem->control,
- 						      min(strlen(elem->control),
- 							  SNDRV_CTL_ELEM_ID_NAME_MAXLEN),
+-						      min(strlen(elem->control),
+-							  SNDRV_CTL_ELEM_ID_NAME_MAXLEN),
++						      min(strlen(elem->control), maxlen),
+ 						      GFP_KERNEL);
+ 			if (!route->control) {
+ 				ret = -ENOMEM;
 -- 
 2.34.1
 
