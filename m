@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B68DC25B76
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jun 2024 10:28:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE7C7C25B76
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jun 2024 10:29:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F7EA85D;
-	Mon,  3 Jun 2024 12:28:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F7EA85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 147201DF;
+	Mon,  3 Jun 2024 12:28:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 147201DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717410527;
-	bh=7NV3o9KauOpeQYT9WlCJbRb3c/G3kEQbMf65uPt62WU=;
+	s=default; t=1717410543;
+	bh=67gZRlZBaTdb8h6ch3REGCduvNYrqRietV9ZHi2R820=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gb9V9s7kg93CqyN1Lkv3uxw1zgJs0rTRgdB5FmQvKcoD7fk1TdZwKYMb1jMuuxB4C
-	 PxN9HqMQMd088czc5sHzbp0+5gKxpxndr6j3+rik6rdOZpE4oXiclEGAsyaBUtYecJ
-	 2FtPA/Px8pHfztZoWdd44+MUSLVmP5/zMOIzbq4A=
+	b=FSDYrpW0Qly4HCRfb3ewNI4a8tA50teD3FBeUEcm4pRD2pPm4PSTW7bqEV5SiMhGr
+	 87NUCXdjxU/+v1sCgpA3qz7thcYsCKWrvYVlrGQeZoOpG5RlZ+amoMPYC0qUqn7jMe
+	 nnqPWTbTapbTSxL7LVzynjraCK9L69+yy1I8lZ44=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36E2EF805BD; Mon,  3 Jun 2024 12:27:56 +0200 (CEST)
+	id 49AAAF805EE; Mon,  3 Jun 2024 12:27:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD9DDF8055C;
-	Mon,  3 Jun 2024 12:27:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9607F805D2;
+	Mon,  3 Jun 2024 12:27:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2E15F804B0; Mon,  3 Jun 2024 12:27:49 +0200 (CEST)
+	id 00B39F80496; Mon,  3 Jun 2024 12:27:50 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C7B3DF8025A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2024 12:27:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7B3DF8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id BD773F800FA
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jun 2024 12:27:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD773F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=FnKAjaEQ
+ header.s=Intel header.b=RUTIRvov
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1717410464; x=1748946464;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7NV3o9KauOpeQYT9WlCJbRb3c/G3kEQbMf65uPt62WU=;
-  b=FnKAjaEQUaz6OtoRgtF/I3TcExuf12/WrTrAA46DvpQulswmfYA+256F
-   bCqO4x0sQ47oYn8oNodYPoe8VNifjd3mBYtj0tK/UpX+8pblSQJvSp1RD
-   r8whxXEtmMx9x9hh3tblqqGmd98wgPcY8X0mn0Ts430krcNiA5z5TSyJq
-   nvVaqiWSvHl5FyUmAsJ8pm4oq5fAPayZfkZu2FNrPdO/aYM0zMcFSWPxC
-   aD/M36AKfvUd/2Z0Y1HK9vcKPedc5xC9u8m6WpF8MukgQwB7wiflkbrj8
-   tm7N5OZrEV/gzk1XSGTf49l8Pip2Pz2/lq1hH0TTjZTylz10SSMb5Q28+
-   g==;
-X-CSE-ConnectionGUID: 4v2/Nk7EQwKmTO+oqE73cw==
-X-CSE-MsgGUID: XVS9CZrnQ5SIay1P1ejfEA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11091"; a="14017214"
+  bh=67gZRlZBaTdb8h6ch3REGCduvNYrqRietV9ZHi2R820=;
+  b=RUTIRvovDgHz43t3rwO1WqR2Ht97jBqmXKH/2LroAeVkkWJGC9usYoTX
+   AjCYSVA1ujECJFs9kv2cSJFEOsm4WVbC/dZxRfj2zGukbBQK1IsDJAVhH
+   5WZ0+3aON/wPQ3aejKqLfBMS5AOlZtvktVJz7ApAjF1Z2Em6qDuyQuvYn
+   BKux1SOVYIcgZJNXhr995ucqaRJSHIvDQhjM6MgFu8FEa9VmsqVesVRA5
+   e5YlVUzlxceEzVGVIjcgJHGmvOj7BY4MyFu5X2vj94n2UdkSXPNFWeonB
+   w0buvAdqBNGhwSOzqBuUwTgIulB20gjJ3fHb6Y8ovJTciJdM8uOt8CLfn
+   Q==;
+X-CSE-ConnectionGUID: 9efDAc0sRtmK2odysyuPYw==
+X-CSE-MsgGUID: 4b/VttfSStqSe8stfdG1IA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11091"; a="14017221"
 X-IronPort-AV: E=Sophos;i="6.08,211,1712646000";
-   d="scan'208";a="14017214"
+   d="scan'208";a="14017221"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
   by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Jun 2024 03:27:40 -0700
-X-CSE-ConnectionGUID: LS3e7dOITR6X6UVDljEwfg==
-X-CSE-MsgGUID: cNZioXGnQBG8Y3II7cVKHQ==
+ 03 Jun 2024 03:27:42 -0700
+X-CSE-ConnectionGUID: IKnj8+OsS4m1S9+F3bv42g==
+X-CSE-MsgGUID: zuxYrlauT5e6p3GtU3jHtg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,211,1712646000";
-   d="scan'208";a="37430034"
+   d="scan'208";a="37430042"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orviesa008.jf.intel.com with ESMTP; 03 Jun 2024 03:27:38 -0700
+  by orviesa008.jf.intel.com with ESMTP; 03 Jun 2024 03:27:40 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -79,17 +79,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Jason Montleon <jmontleo@redhat.com>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 1/4] ASoC: topology: Fix references to freed memory
-Date: Mon,  3 Jun 2024 12:28:15 +0200
-Message-Id: <20240603102818.36165-2-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 2/4] ASoC: Intel: avs: Fix route override
+Date: Mon,  3 Jun 2024 12:28:16 +0200
+Message-Id: <20240603102818.36165-3-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240603102818.36165-1-amadeuszx.slawinski@linux.intel.com>
 References: <20240603102818.36165-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QTJK33O4MJNRH5HVLK54YKOOHZMM4FLD
-X-Message-ID-Hash: QTJK33O4MJNRH5HVLK54YKOOHZMM4FLD
+Message-ID-Hash: NVRTQON52FZO3YBOZYXDODB6WNONVQBA
+X-Message-ID-Hash: NVRTQON52FZO3YBOZYXDODB6WNONVQBA
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QTJK33O4MJNRH5HVLK54YKOOHZMM4FLD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NVRTQON52FZO3YBOZYXDODB6WNONVQBA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,60 +111,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Most users after parsing a topology file, release memory used by it, so
-having pointer references directly into topology file contents is wrong.
-Use devm_kmemdup(), to allocate memory as needed.
+Instead of overriding existing memory strings that may be too short,
+just allocate needed memory and point the route at it.
 
 Reported-by: Jason Montleon <jmontleo@redhat.com>
 Link: https://github.com/thesofproject/avs-topology-xml/issues/22#issuecomment-2127892605
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+ sound/soc/intel/avs/topology.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 90ca37e008b32..75d9395a18ed4 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1060,15 +1060,32 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 			break;
- 		}
+diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
+index 02bae207f6ece..b6c5d94a15548 100644
+--- a/sound/soc/intel/avs/topology.c
++++ b/sound/soc/intel/avs/topology.c
+@@ -1545,8 +1545,8 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
+ {
+ 	struct snd_soc_acpi_mach *mach = dev_get_platdata(comp->card->dev);
+ 	size_t len = SNDRV_CTL_ELEM_ID_NAME_MAXLEN;
+-	char buf[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	int ssp_port, tdm_slot;
++	char *buf;
  
--		route->source = elem->source;
--		route->sink = elem->sink;
-+		route->source = devm_kmemdup(tplg->dev, elem->source,
-+					     min(strlen(elem->source),
-+						 SNDRV_CTL_ELEM_ID_NAME_MAXLEN),
-+					     GFP_KERNEL);
-+		route->sink = devm_kmemdup(tplg->dev, elem->sink,
-+					   min(strlen(elem->sink), SNDRV_CTL_ELEM_ID_NAME_MAXLEN),
-+					   GFP_KERNEL);
-+		if (!route->source || !route->sink) {
-+			ret = -ENOMEM;
-+			break;
-+		}
+ 	/* See parse_link_formatted_string() for dynamic naming when(s). */
+ 	if (!avs_mach_singular_ssp(mach))
+@@ -1557,13 +1557,24 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
+ 		return 0;
+ 	tdm_slot = avs_mach_ssp_tdm(mach, ssp_port);
  
- 		/* set to NULL atm for tplg users */
- 		route->connected = NULL;
--		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0)
-+		if (strnlen(elem->control, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) == 0) {
- 			route->control = NULL;
--		else
--			route->control = elem->control;
-+		} else {
-+			route->control = devm_kmemdup(tplg->dev, elem->control,
-+						      min(strlen(elem->control),
-+							  SNDRV_CTL_ELEM_ID_NAME_MAXLEN),
-+						      GFP_KERNEL);
-+			if (!route->control) {
-+				ret = -ENOMEM;
-+				break;
-+			}
-+		}
++	buf = devm_kzalloc(comp->card->dev, len, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
+ 	avs_ssp_sprint(buf, len, route->source, ssp_port, tdm_slot);
+-	strscpy((char *)route->source, buf, len);
++	route->source = buf;
++
++	buf = devm_kzalloc(comp->card->dev, len, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
+ 	avs_ssp_sprint(buf, len, route->sink, ssp_port, tdm_slot);
+-	strscpy((char *)route->sink, buf, len);
++	route->sink = buf;
++
+ 	if (route->control) {
++		buf = devm_kzalloc(comp->card->dev, len, GFP_KERNEL);
++		if (!buf)
++			return -ENOMEM;
+ 		avs_ssp_sprint(buf, len, route->control, ssp_port, tdm_slot);
+-		strscpy((char *)route->control, buf, len);
++		route->control = buf;
+ 	}
  
- 		/* add route dobj to dobj_list */
- 		route->dobj.type = SND_SOC_DOBJ_GRAPH;
+ 	return 0;
 -- 
 2.34.1
 
