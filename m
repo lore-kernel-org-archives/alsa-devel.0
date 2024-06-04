@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0279DC25B78
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 14:58:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26F9EC25B78
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 15:01:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B093F86F;
-	Tue,  4 Jun 2024 16:58:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B093F86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CB937F8;
+	Tue,  4 Jun 2024 17:01:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CB937F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717513094;
-	bh=Lj9qAnLR2AFw/O7NEn03XeJc7aJX3ehILngKK6g72J0=;
+	s=default; t=1717513297;
+	bh=GlEUR22ZhAnZ0czhVF3LVHsj/uX/hRrel5FcmB2yiZY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iw0yZb5+tWNwgCe/noq1mYeH0l0Qx+Bj4ViEUl1sKI/xy/DsxspHJ+ZIffiVAGWjz
-	 JZ/mcvwGmu2DM0WAY3ySSHqJpms7hDMgt8zY3Xdokfk3u1UFPfe6BFRGloS97S+fHr
-	 Tu2H284kCBHLkZaEtq7ZwhMZWppCUMKp+qqVkIsA=
+	b=ujLr7TcRwNph4tz3P7br5PzwG9F7+WjRgNMkWp4vgtE7hl3vK6pAGMaI5iCeYJvhA
+	 Rapp2NSU1fiyvEs1gCZygdzHopMMUXkOUjpWFklwwe8YAVh+5PJZh/fW+Al+Gzdb2q
+	 XCW683KzmlOi6Gf0A5OkqpOCrrfY3KB8gDw4KBbU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5E49F80525; Tue,  4 Jun 2024 16:57:41 +0200 (CEST)
+	id BCD3FF805AD; Tue,  4 Jun 2024 17:01:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F25EF804B0;
-	Tue,  4 Jun 2024 16:57:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F91AF8055C;
+	Tue,  4 Jun 2024 17:01:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C48A2F802DB; Tue,  4 Jun 2024 16:57:36 +0200 (CEST)
+	id 99C78F802DB; Tue,  4 Jun 2024 17:01:02 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E4D5F8003A
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 16:57:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E4D5F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 87DC1F800FA
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 17:00:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87DC1F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Q2vRQEO4
+ header.s=k20201202 header.b=FO5candx
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id E62B26131B;
-	Tue,  4 Jun 2024 14:57:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45940C2BBFC;
-	Tue,  4 Jun 2024 14:57:27 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id A1BA7612E7;
+	Tue,  4 Jun 2024 15:00:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4328C2BBFC;
+	Tue,  4 Jun 2024 15:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717513047;
-	bh=Lj9qAnLR2AFw/O7NEn03XeJc7aJX3ehILngKK6g72J0=;
+	s=k20201202; t=1717513257;
+	bh=GlEUR22ZhAnZ0czhVF3LVHsj/uX/hRrel5FcmB2yiZY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q2vRQEO4ig5t1bFS3ootCTEDZZPubmDesUBXfVVXUPvxM8HpZ18tqF8jkX5kXMD7j
-	 RhmLHYH2WscWY7s7/ud0dNDx0Frwvk5UG9YpAkgNivn3hI/iS64aZG6EZHVKehVb3+
-	 lCTJu34AIhDOEsB6/gpT7WNJ1bHwOo30NM45/Rw62G/C0ecr+mc1es6JhJeIJM2O91
-	 +HQncN2B5y3U2ytz0GxWcidFEkUb3Hhc3i+znzLDN1AP4xU0M5C5nskntoK8nIS477
-	 Aa9THm8riSYSCbdCMMHfz9BxtAnWUdkH23X/G5TFIgtE63x9gBG5uHMCFejJGNZIFY
-	 uxEDklcSNX9ow==
-Date: Tue, 4 Jun 2024 09:57:25 -0500
-From: Rob Herring <robh@kernel.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-	Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Ricard Wanderlof <ricardw@axis.com>,
+	b=FO5candxFF+rT/EM4wzRldxm9ScSz8CgV47O38RUXqJLMJzutBYLcl+/JxigqC1aM
+	 bU0J4c9iiXxpC9AKmhkaIh0IUhJ8ZvoOdwdQm0PllzmuSxxK6nLXuWvA7Xdz8YMkgE
+	 NHe1SIzxyGd9grO01+XPWod7zLGOYivGcimb4akviHahUEU8LZmg01wKGJRPRHzA/4
+	 2sAS91L3EQLV2lzkYfuQI6Q9+GPt6xPJyJT6MNKQCsutBojEgKSsh3ep0ojtFnH2YS
+	 VcLfSa4gw28Wf53x6DQa7lkf9S6BTzs0jLaHF8PqzPPABPyOC7qtTR9gxY9qJcl8So
+	 CkJNWxksUtslQ==
+Date: Tue, 4 Jun 2024 16:00:51 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
 	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel@axis.com
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: tlv320adc3xxx: Add MICBIAS-as-GPO
- properties
-Message-ID: <20240604145725.GA588460-robh@kernel.org>
-References: <20240529-tlv320adc3xxx-micbias-gpo-v1-0-300d39cecc55@axis.com>
- <20240529-tlv320adc3xxx-micbias-gpo-v1-1-300d39cecc55@axis.com>
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	kernel@quicinc.com
+Subject: Re: [PATCH] ASoC: qcom: add missing MODULE_DESCRIPTION() macro
+Message-ID: <9a6636af-26f4-49b3-bd4c-91f9ccc29322@sirena.org.uk>
+References: <20240603-md-snd-soc-qcom-sdw-v1-1-101ea8bcdd38@quicinc.com>
+ <0bd0a518-4d85-4251-9bf9-d056dc3d7b08@sirena.org.uk>
+ <7a0cde5c-db6f-4de1-9dc2-aa2c21fd0210@moroto.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4FjINuUocUrb0j8X"
 Content-Disposition: inline
-In-Reply-To: <20240529-tlv320adc3xxx-micbias-gpo-v1-1-300d39cecc55@axis.com>
-Message-ID-Hash: DD7Y44ZB3AE3HCEHSKDOYYFTDGXYWQV6
-X-Message-ID-Hash: DD7Y44ZB3AE3HCEHSKDOYYFTDGXYWQV6
-X-MailFrom: robh@kernel.org
+In-Reply-To: <7a0cde5c-db6f-4de1-9dc2-aa2c21fd0210@moroto.mountain>
+X-Cookie: Is it clean in other dimensions?
+Message-ID-Hash: EB6KQ5SWJVM2X7CUT4MESGP6NZEVKEIW
+X-Message-ID-Hash: EB6KQ5SWJVM2X7CUT4MESGP6NZEVKEIW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DD7Y44ZB3AE3HCEHSKDOYYFTDGXYWQV6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EB6KQ5SWJVM2X7CUT4MESGP6NZEVKEIW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,55 +100,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-yOn Wed, May 29, 2024 at 06:33:44PM +0200, Ricard Wanderlof wrote:
-> Add properties for configuring the MICBIAS pins as general purpose
-> outputs, with some limitations: The voltage on the pin when activated
-> may be set using another property to 2.0 V, 2.5 V or AVDD.
-> When deactivated the pin will float.
-> 
-> Signed-off-by: Ricard Wanderlof <ricard.wanderlof@axis.com>
-> ---
->  .../devicetree/bindings/sound/ti,tlv320adc3xxx.yaml  | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml b/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-> index ede14ca2c07a..4172aced1386 100644
-> --- a/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ti,tlv320adc3xxx.yaml
-> @@ -82,6 +82,26 @@ properties:
->        Note that there is currently no support for reading the GPIO pins as
->        inputs.
->  
-> +  ti,micbias1-gpo:
-> +    type: boolean
-> +    description: |
-> +      When set, the MICBIAS1 pin may be controlled via the GPIO framework,
-> +      as pin number 3 on the device.
-> +
-> +      In this mode, when the pin is activated, it will be set to the voltage
-> +      specified by the ti,micbias1-vg property. When deactivated, the pin will
-> +      float.
-> +
-> +  ti,micbias2-gpo:
-> +    type: boolean
-> +    description: |
-> +      When set, the MICBIAS2 pin may be controlled via the GPIO framework,
-> +      as pin number 4 on the device.
-> +
-> +      In this mode, when the pin is activated, it will be set to the voltage
-> +      specified by the ti,micbias1-vg property. When deactivated, the pin will
-> +      float.
 
-Typo and sounds like a dependency between properties:
+--4FjINuUocUrb0j8X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-dependencies:
-  ti,micbias2-gpio: [ti,micbias2-vg]
+On Tue, Jun 04, 2024 at 05:46:14PM +0300, Dan Carpenter wrote:
+> On Tue, Jun 04, 2024 at 12:56:09PM +0100, Mark Brown wrote:
 
-> +
->    ti,micbias1-vg:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      enum:
-> 
-> -- 
-> 2.30.2
-> 
+> > Is anyone getting any value from these MODULE_DESCRIPTION()s?  This all
+> > just seems like a huge amount of noise and I'm having trouble thinking
+> > of a use case.
+
+> The missing MODULE_DESCRIPTION() warnings are very annoying.  We
+> recently missed a link error issue because the warning was drowned out
+> in MODULE_DESCRIPTION() warnings.
+> https://lore.kernel.org/all/202405182038.ncf1mL7Z-lkp@intel.com/
+
+Yeah, adding the warning seems premature without having first added the
+descriptions and I'm not clear in what situation anyone would actually
+care given how rare it is for someone to manually interact with module
+loading.  The number of cases where anyone would not just look at the
+source seems vanishingly small.
+
+--4FjINuUocUrb0j8X
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZfLCMACgkQJNaLcl1U
+h9C22QgAhndQ9RATpqJtQSgVZgFEEyID4beRXIYAjMsdhg6/YZUD9FP7c37lw64x
+g6ooe2ddBuxvD0qwNV29KW/rPzAJglDv0RXd8JCbC0h753RyR3d7eGDhDYlkqAMc
+hHZP0vuZT9bKnbflS7/W333OhG1H9Aj5stiNu60supirROlX4HgjjOCPCg2990Qa
+yqZqCJdYywC8i1ZRBYTpAfcuIUX0jGuHas680Do9VR5BTyWyyI/LMaWS/xVJka92
+1mQDlsXc6mSEgzrqOC+Zi+Is9lne1DMz5Xrud/srQweNCsoLnOwI5DOwbQ3SVUe+
+YDtmyebX2W/Na9jAm7JCAlDcoEOAFg==
+=E42r
+-----END PGP SIGNATURE-----
+
+--4FjINuUocUrb0j8X--
