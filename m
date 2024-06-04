@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A6B0C27C52
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 07:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C17D5C27C52
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 07:55:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5DCD844;
-	Tue,  4 Jun 2024 09:54:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5DCD844
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF3EF85D;
+	Tue,  4 Jun 2024 09:55:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF3EF85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717487653;
-	bh=4dNTR4z2BJ3pfaXEO6tM9yIxe4LDIns4WgIcbTF2vYs=;
+	s=default; t=1717487748;
+	bh=b3E/UIPslsT8I86wbPoMlWOJhjF5vCXYbMseh+Nd3tk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BNEh8OgsuUAOErPx2AUZCMMiUqf6En48qB3+L37U38CCgetcurq/nXrQqz4vLVtc2
-	 RAETPn1SP/NydjdpkQiyuONQnXxoyOnX3ZCn1ljHY90MBPj799bvPBaHwzPgKIU3CP
-	 /+HJiZ8Cajt6OwpCID9VgPRU7IpfDvpQBB8iFBMc=
+	b=BGYZrTBt6y/KjnOWLViwwHIMN5j/FW/pevAHrPU9ct6s5VPk6DIMlvghZU+lMI16k
+	 patPPofggUycUWvfvC7Ao4OlgLUDbdqUiJVLNpSoN+sJIzwisC8CW3HasZ25dV08eV
+	 SvuHarggfy8ZofD9GwlW+WfjgZxdqFHUNuH6uW9s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A3F6F805BD; Tue,  4 Jun 2024 09:53:34 +0200 (CEST)
+	id 8F54DF80588; Tue,  4 Jun 2024 09:55:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 442C0F805D3;
-	Tue,  4 Jun 2024 09:53:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B845F80525;
+	Tue,  4 Jun 2024 09:55:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44B63F804B0; Tue,  4 Jun 2024 09:53:00 +0200 (CEST)
+	id 32D17F80496; Tue,  4 Jun 2024 09:53:03 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B113EF80088
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 09:52:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B113EF80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3741FF802DB
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 09:52:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3741FF802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=d6kfXcCM
+ header.s=k20201202 header.b=tjDXtJ2B
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D4D72CE0F7B;
+	by sin.source.kernel.org (Postfix) with ESMTP id D4D3ACE0CEA;
 	Tue,  4 Jun 2024 07:52:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19789C32782;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17191C2BBFC;
 	Tue,  4 Jun 2024 07:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1717487555;
-	bh=4dNTR4z2BJ3pfaXEO6tM9yIxe4LDIns4WgIcbTF2vYs=;
+	bh=b3E/UIPslsT8I86wbPoMlWOJhjF5vCXYbMseh+Nd3tk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d6kfXcCMGKpSuvA2cir2lb03te8T5XAKFF4r3vqHWbHIEqBpJxf5BSJ470hKfvJhe
-	 YVcZWSYHuMGm2EjrDlZSTp+sXliB8A3/yOWOiIkTNO93DTMPiZrEQJ99e3tayCENrQ
-	 UIbshji7em3n8Dt1ioeo6Vu3gIKIJFd5EfvG8TyTc/XXk4x8AJpyFrgTDP4oftZ5My
-	 NuFrKIfD1sf6YV/Alor0ci1o1OjAMElPOw12S8KhdtkDJR2YZmBelK4V/LHzw0oios
-	 Rhptz7oVD8CMi3aRBVWCJqcTIkAkgpU7Kl1qkOHyCgPc2BCn7iHJV9teokjCBEASx2
-	 nF1PUuyHAiT4A==
+	b=tjDXtJ2Bnfn07g6X0XM+j297fga5v438KKDbcNVYwW2D+xQhMkkweVBBOq3AS1gnX
+	 LAT0S0hHXiRAbW0abuhjIBsb7zRZd9Vov9GSssIzB5IvYRfy0nEstMHIRPPAskPjwZ
+	 KPCRv+C8IrQHxklAXbga205F0kcrlnBKjckpEDIv6XiTukWD1DeFIjNuDugks8XN2e
+	 +NAcE3ybEZRC3RsKxXDrnGMEICl+VqRqArskLYTKbqPdtGalr7LhEMxDRIXFolzZ/z
+	 GvzdKSHVxQ/eknLuUFdKt8ZRyfKtv+2m3GlZTu3mNahck1+jtV4OGGQI18symujISv
+	 W1td3s2pCk3Mg==
 Received: from johan by xi.lan with local (Exim 4.97.1)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1sEOy9-000000005QN-2ixN;
+	id 1sEOy9-000000005QR-3RBp;
 	Tue, 04 Jun 2024 09:52:33 +0200
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
@@ -67,16 +66,16 @@ Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v2 1/4] soundwire: bus: suppress probe deferral errors
-Date: Tue,  4 Jun 2024 09:52:10 +0200
-Message-ID: <20240604075213.20815-2-johan+linaro@kernel.org>
+Subject: [PATCH v2 3/4] soundwire: bus: clean up probe warnings
+Date: Tue,  4 Jun 2024 09:52:12 +0200
+Message-ID: <20240604075213.20815-4-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.44.1
 In-Reply-To: <20240604075213.20815-1-johan+linaro@kernel.org>
 References: <20240604075213.20815-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4CY6MRMSAG3KP77UMIUPEGQZNWJPKKCI
-X-Message-ID-Hash: 4CY6MRMSAG3KP77UMIUPEGQZNWJPKKCI
+Message-ID-Hash: LIA6UYSDDZ5ODE6RAKYDSD65A6OZYVFV
+X-Message-ID-Hash: LIA6UYSDDZ5ODE6RAKYDSD65A6OZYVFV
 X-MailFrom: johan+linaro@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -88,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4CY6MRMSAG3KP77UMIUPEGQZNWJPKKCI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LIA6UYSDDZ5ODE6RAKYDSD65A6OZYVFV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,49 +96,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Soundwire driver probe errors are currently being logged both by the bus
-code and driver core:
-
-	wsa884x-codec sdw:4:0:0217:0204:00:0: Probe of wsa884x-codec failed: -12
-	wsa884x-codec sdw:4:0:0217:0204:00:0: probe with driver wsa884x-codec failed with error -12
-
-Drop the redundant bus error message, which is also incorrectly being
-logged on probe deferral:
-
-	wsa884x-codec sdw:4:0:0217:0204:00:0: Probe of wsa884x-codec failed: -517
-
-Note that no soundwire driver uses the driver struct name field, which
-will be removed by a follow-on change.
+Clean up the probe warning messages by using a common succinct format
+(e.g. without __func__ and with a space after ':').
 
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- drivers/soundwire/bus_type.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/soundwire/bus_type.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index c32faace618f..85fa5970d98a 100644
+index 3979be0f8b65..43e732ca73c0 100644
 --- a/drivers/soundwire/bus_type.c
 +++ b/drivers/soundwire/bus_type.c
-@@ -83,7 +83,6 @@ static int sdw_drv_probe(struct device *dev)
- 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
- 	const struct sdw_device_id *id;
--	const char *name;
- 	int ret;
+@@ -123,7 +123,7 @@ static int sdw_drv_probe(struct device *dev)
+ 	/* init the dynamic sysfs attributes we need */
+ 	ret = sdw_slave_sysfs_dpn_init(slave);
+ 	if (ret < 0)
+-		dev_warn(dev, "Slave sysfs init failed:%d\n", ret);
++		dev_warn(dev, "failed to initialise sysfs: %d\n", ret);
  
  	/*
-@@ -108,11 +107,6 @@ static int sdw_drv_probe(struct device *dev)
- 
- 	ret = drv->probe(slave, id);
- 	if (ret) {
--		name = drv->name;
--		if (!name)
--			name = drv->driver.name;
--
--		dev_err(dev, "Probe of %s failed: %d\n", name, ret);
- 		dev_pm_domain_detach(dev, false);
- 		return ret;
+ 	 * Check for valid clk_stop_timeout, use DisCo worst case value of
+@@ -147,7 +147,7 @@ static int sdw_drv_probe(struct device *dev)
+ 	if (drv->ops && drv->ops->update_status) {
+ 		ret = drv->ops->update_status(slave, slave->status);
+ 		if (ret < 0)
+-			dev_warn(dev, "%s: update_status failed with status %d\n", __func__, ret);
++			dev_warn(dev, "failed to update status: %d\n", ret);
  	}
+ 
+ 	mutex_unlock(&slave->sdw_dev_lock);
 -- 
 2.44.1
 
