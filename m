@@ -4,82 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26F9EC25B78
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 15:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B73C0C25B78
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 15:13:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CB937F8;
-	Tue,  4 Jun 2024 17:01:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CB937F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73872DEC;
+	Tue,  4 Jun 2024 17:12:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73872DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717513297;
-	bh=GlEUR22ZhAnZ0czhVF3LVHsj/uX/hRrel5FcmB2yiZY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1717513989;
+	bh=WI66YXFhtMtD9v7S0j/6cTY9ceJOboCB3afTlXQhJXI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ujLr7TcRwNph4tz3P7br5PzwG9F7+WjRgNMkWp4vgtE7hl3vK6pAGMaI5iCeYJvhA
-	 Rapp2NSU1fiyvEs1gCZygdzHopMMUXkOUjpWFklwwe8YAVh+5PJZh/fW+Al+Gzdb2q
-	 XCW683KzmlOi6Gf0A5OkqpOCrrfY3KB8gDw4KBbU=
+	b=S4pZOSiAHagIyEuk2BoTQxrOQBVDzmGlKoGH3n4f+8rXLqMMJircmRvdzD/2G5qvF
+	 gm07cwc/ewob/NuwmJ/NJHStG/jdQa3VixzXqgy4+GDMpBW0Ld+UWA+/f7yoNQgb9K
+	 ONLWeJ48uaWPkGez7uKUaTR1HJnbB3Ez7Rkc0cUs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BCD3FF805AD; Tue,  4 Jun 2024 17:01:05 +0200 (CEST)
+	id 481C4F805AA; Tue,  4 Jun 2024 17:12:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F91AF8055C;
-	Tue,  4 Jun 2024 17:01:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1336BF805AB;
+	Tue,  4 Jun 2024 17:12:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99C78F802DB; Tue,  4 Jun 2024 17:01:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 6E70DF80496; Tue,  4 Jun 2024 17:12:30 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87DC1F800FA
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 17:00:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87DC1F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id ACBFAF800FA
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 17:12:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACBFAF800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FO5candx
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A1BA7612E7;
-	Tue,  4 Jun 2024 15:00:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4328C2BBFC;
-	Tue,  4 Jun 2024 15:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717513257;
-	bh=GlEUR22ZhAnZ0czhVF3LVHsj/uX/hRrel5FcmB2yiZY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FO5candxFF+rT/EM4wzRldxm9ScSz8CgV47O38RUXqJLMJzutBYLcl+/JxigqC1aM
-	 bU0J4c9iiXxpC9AKmhkaIh0IUhJ8ZvoOdwdQm0PllzmuSxxK6nLXuWvA7Xdz8YMkgE
-	 NHe1SIzxyGd9grO01+XPWod7zLGOYivGcimb4akviHahUEU8LZmg01wKGJRPRHzA/4
-	 2sAS91L3EQLV2lzkYfuQI6Q9+GPt6xPJyJT6MNKQCsutBojEgKSsh3ep0ojtFnH2YS
-	 VcLfSa4gw28Wf53x6DQa7lkf9S6BTzs0jLaHF8PqzPPABPyOC7qtTR9gxY9qJcl8So
-	 CkJNWxksUtslQ==
-Date: Tue, 4 Jun 2024 16:00:51 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	kernel@quicinc.com
-Subject: Re: [PATCH] ASoC: qcom: add missing MODULE_DESCRIPTION() macro
-Message-ID: <9a6636af-26f4-49b3-bd4c-91f9ccc29322@sirena.org.uk>
-References: <20240603-md-snd-soc-qcom-sdw-v1-1-101ea8bcdd38@quicinc.com>
- <0bd0a518-4d85-4251-9bf9-d056dc3d7b08@sirena.org.uk>
- <7a0cde5c-db6f-4de1-9dc2-aa2c21fd0210@moroto.mountain>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=i78ZMRg+
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1717513947; x=1749049947;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WI66YXFhtMtD9v7S0j/6cTY9ceJOboCB3afTlXQhJXI=;
+  b=i78ZMRg+vRrR1YqQyMHM7IGByRxBcjMZnQff0ZDPlJz3L49Invb+DXue
+   tLp6anm67rUJSsFcIOQMGNrS5STU5p/zdGT6vS8JwurTZhB1fd1MAVJzP
+   gNpsklPqWVotkZYPQMmKvhqrlZeB9IYbdaMBZo/7R8+Rz8kal8922qnkz
+   weW3+auVu5HDx3bDx1IUIcCGlmC9CA2ICHbDVE6+G4hExjcaMDWYeZktA
+   hDoSgLPZZfg7ovlI1MhyQ+1HzhEMAqX/L9AFQZCNBGURdTbOxtwCcOOl0
+   Nv9iR3S/vCjvHgNlnCGtAs7EuhrZm0faYmbpUiWbE98WYNYIGKU3H2Qb8
+   g==;
+X-CSE-ConnectionGUID: P3ZaA+qQQTyexs40QaTjuQ==
+X-CSE-MsgGUID: 28zu4z3oRSy+2msymaHQ4Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11093"; a="31602486"
+X-IronPort-AV: E=Sophos;i="6.08,214,1712646000";
+   d="scan'208";a="31602486"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jun 2024 08:12:06 -0700
+X-CSE-ConnectionGUID: ISWGZxwKQBW4ys7I1KD4VA==
+X-CSE-MsgGUID: XTj7vXuSQGWxND4FIYegeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,214,1712646000";
+   d="scan'208";a="37139624"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO [10.245.246.143])
+ ([10.245.246.143])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jun 2024 08:12:04 -0700
+Message-ID: <60a99290-b71e-41e4-844b-f46d8f959c81@linux.intel.com>
+Date: Tue, 4 Jun 2024 15:29:56 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4FjINuUocUrb0j8X"
-Content-Disposition: inline
-In-Reply-To: <7a0cde5c-db6f-4de1-9dc2-aa2c21fd0210@moroto.mountain>
-X-Cookie: Is it clean in other dimensions?
-Message-ID-Hash: EB6KQ5SWJVM2X7CUT4MESGP6NZEVKEIW
-X-Message-ID-Hash: EB6KQ5SWJVM2X7CUT4MESGP6NZEVKEIW
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] soundwire: bus: suppress probe deferral errors
+To: Johan Hovold <johan@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+References: <20240604075213.20815-1-johan+linaro@kernel.org>
+ <20240604075213.20815-2-johan+linaro@kernel.org>
+ <c5ecc0cd-c2ba-4f71-ac2a-9a81793a8f0c@linux.intel.com>
+ <Zl7ZyEkmm8kHeRvL@hovoldconsulting.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <Zl7ZyEkmm8kHeRvL@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 24ODBBRJJTTYTGCMOXIKNUUULEJ5V7XX
+X-Message-ID-Hash: 24ODBBRJJTTYTGCMOXIKNUUULEJ5V7XX
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EB6KQ5SWJVM2X7CUT4MESGP6NZEVKEIW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/24ODBBRJJTTYTGCMOXIKNUUULEJ5V7XX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,41 +111,36 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---4FjINuUocUrb0j8X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jun 04, 2024 at 05:46:14PM +0300, Dan Carpenter wrote:
-> On Tue, Jun 04, 2024 at 12:56:09PM +0100, Mark Brown wrote:
+On 6/4/24 11:09, Johan Hovold wrote:
+> On Tue, Jun 04, 2024 at 10:30:21AM +0200, Pierre-Louis Bossart wrote:
+>> On 6/4/24 02:52, Johan Hovold wrote:
+>>> Soundwire driver probe errors are currently being logged both by the bus
+>>> code and driver core:
+>>>
+>>> 	wsa884x-codec sdw:4:0:0217:0204:00:0: Probe of wsa884x-codec failed: -12
+>>> 	wsa884x-codec sdw:4:0:0217:0204:00:0: probe with driver wsa884x-codec failed with error -12
+>>>
+>>> Drop the redundant bus error message, which is also incorrectly being
+>>> logged on probe deferral:
+>>
+>> It's only redundant in the QCOM case... This would remove all error logs
+>> for other codecs, e.g. see
+>>
+>> rt711_sdca_sdw_probe
+>> cs35l56_sdw_probe
+>> wcd9390_probe
+>>
+>> Looks like the wsa884x-codec is the chatty driver, others are just fine
+>> with the existing code.
+> 
+> I believe you misunderstood this patch. The error messages above are not
+> printed by the wsa884x-codec driver, but by the soundwire bus code and
+> driver core, so the redundant error message will be printed for all
+> codecs on probe failures.
+> 
+> And specifically, driver core will still log probe failures after this
+> change.
 
-> > Is anyone getting any value from these MODULE_DESCRIPTION()s?  This all
-> > just seems like a huge amount of noise and I'm having trouble thinking
-> > of a use case.
-
-> The missing MODULE_DESCRIPTION() warnings are very annoying.  We
-> recently missed a link error issue because the warning was drowned out
-> in MODULE_DESCRIPTION() warnings.
-> https://lore.kernel.org/all/202405182038.ncf1mL7Z-lkp@intel.com/
-
-Yeah, adding the warning seems premature without having first added the
-descriptions and I'm not clear in what situation anyone would actually
-care given how rare it is for someone to manually interact with module
-loading.  The number of cases where anyone would not just look at the
-source seems vanishingly small.
-
---4FjINuUocUrb0j8X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZfLCMACgkQJNaLcl1U
-h9C22QgAhndQ9RATpqJtQSgVZgFEEyID4beRXIYAjMsdhg6/YZUD9FP7c37lw64x
-g6ooe2ddBuxvD0qwNV29KW/rPzAJglDv0RXd8JCbC0h753RyR3d7eGDhDYlkqAMc
-hHZP0vuZT9bKnbflS7/W333OhG1H9Aj5stiNu60supirROlX4HgjjOCPCg2990Qa
-yqZqCJdYywC8i1ZRBYTpAfcuIUX0jGuHas680Do9VR5BTyWyyI/LMaWS/xVJka92
-1mQDlsXc6mSEgzrqOC+Zi+Is9lne1DMz5Xrud/srQweNCsoLnOwI5DOwbQ3SVUe+
-YDtmyebX2W/Na9jAm7JCAlDcoEOAFg==
-=E42r
------END PGP SIGNATURE-----
-
---4FjINuUocUrb0j8X--
+Ah yes, you're right I read 'driver core' sideways, my bad. That's fine
+then.
