@@ -4,81 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2930C25B78
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 11:56:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D21A7C25B7E
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 11:57:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 411D093A;
-	Tue,  4 Jun 2024 13:56:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 411D093A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B087E65;
+	Tue,  4 Jun 2024 13:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B087E65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717502211;
-	bh=5xynS5Cwt54RsRZeRgz/DpPruiYlzjttr/9pT7oZPno=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1717502222;
+	bh=tXhLaowrcYMXzmicpuj4T6jEZTq866kBwfpJR7KjHYw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o+4XAhCIo9uyyUqJbxtQC531EJFQw4oJDY4KcEsB0rMqkpZBdbGP5fma9SpGgvmeh
-	 jGbA9xYBwZ5YAV4DjPvz+TppvxZIkUpb0FLwQmbh0LIGEOEC6GOaojLsyYfybeTlxK
-	 6WuT/RgAGfhjbsF7hyO5wosmPL8wUNWc72UJsDMI=
+	b=I7oFJY/DKFV9Pg1S33pZyyvNS+b/7uogerujtiijx4uDjh8EiggfMOD8up2zpbsbN
+	 VtxZQH1S4xaCG6z8cNQdsi6lx3o5MF/8vmaEAmIHLxiiyWVfhyf3T7ajuWsHjhFUlW
+	 ezqFjlyI2JIww8u9bOuOQHCXD+Bcq2O9k4X1ktj0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2739BF805D3; Tue,  4 Jun 2024 13:56:00 +0200 (CEST)
+	id EC1DEF805E5; Tue,  4 Jun 2024 13:56:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80BEAF805D3;
-	Tue,  4 Jun 2024 13:56:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57043F805E7;
+	Tue,  4 Jun 2024 13:56:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69462F805B1; Tue,  4 Jun 2024 13:54:40 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 11857F802DB; Tue,  4 Jun 2024 13:56:23 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 65689F805AB
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 13:54:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65689F805AB
+	by alsa1.perex.cz (Postfix) with ESMTPS id DA1DBF800FA
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 13:56:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA1DBF800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DMb/3XWa
+ header.s=k20201202 header.b=dgYh7/YR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id F1513CE1117;
-	Tue,  4 Jun 2024 11:54:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2239FC4AF08;
-	Tue,  4 Jun 2024 11:54:24 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 7A04FCE10BD;
+	Tue,  4 Jun 2024 11:56:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E591C4AF08;
+	Tue,  4 Jun 2024 11:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717502068;
-	bh=5xynS5Cwt54RsRZeRgz/DpPruiYlzjttr/9pT7oZPno=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=DMb/3XWaUQb2OqrloX95cD48ThhwqczuEgmSk2o7Qqs32NJSz1IfNix1wNRaxtFu9
-	 F14B0kufDCtZoMyiI+Yzdi3oKvUonPRresoiNSrTjN5RaJ2yLAES3kuoN/PBf5Bls4
-	 JkF4JfcQu6KX+AqAVTtCvh/+yRznuLHJKaXFhLlrZQ+8Y3JnmMZBDF29qTGXZZ9k/O
-	 EdVsMWrz1VtUumhnXsCsz3quAYZTjgMVVm/UIjIak0hO6lrIjffr+Mf0VI4NL1nHcJ
-	 IV4HjS4OPj3IZpikLvlGgZjZZ0FZCzf1uTVeLy9kNuYlA8KXf/T4g+EAFGEFynfAZZ
-	 JYhTUH8cKz2/w==
+	s=k20201202; t=1717502174;
+	bh=tXhLaowrcYMXzmicpuj4T6jEZTq866kBwfpJR7KjHYw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dgYh7/YRAhKIjwsFQx2Yz+cbECMwgft3/F98XxETZRu4tkigfPDgdpb1Zqzo5wWfO
+	 91p0Qofhs1+TJT3TaZ7vnos/RbQEgcOAv3xdN0ZcGQkANtWaYR5bVJPwlB1EMlWA3G
+	 xjzZ/pl+BYxugx6nwsQKw7hT6789Mfa2DG+oQeSlErvJfCyt1chADHod/anBD/W/cH
+	 u4BUqhHUMeO5xdDxpkD6Vg+ptIeJ6pKeZTXeFiujIBFN8LmR2UtJ+49F8iALj4IzCE
+	 N0T5PLrZaHmdy9IxX3axhsfuxENX0Qp1U/fg62ScSWH+m1lj+bzrWss6DIRi41W5Cf
+	 k2ZoKfOCDSreg==
+Date: Tue, 4 Jun 2024 12:56:09 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-sound@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-In-Reply-To: <20240602-md-snd-fsl-imx-pcm-dma-v1-1-e7efc33c6bf3@quicinc.com>
-References: <20240602-md-snd-fsl-imx-pcm-dma-v1-1-e7efc33c6bf3@quicinc.com>
-Subject: Re: [PATCH] ASoC: fsl: add missing MODULE_DESCRIPTION() macro
-Message-Id: <171750206485.24919.11440040605308557644.b4-ty@kernel.org>
-Date: Tue, 04 Jun 2024 12:54:24 +0100
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	kernel@quicinc.com
+Subject: Re: [PATCH] ASoC: qcom: add missing MODULE_DESCRIPTION() macro
+Message-ID: <0bd0a518-4d85-4251-9bf9-d056dc3d7b08@sirena.org.uk>
+References: <20240603-md-snd-soc-qcom-sdw-v1-1-101ea8bcdd38@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: 5DAJCVPSGTQTLZ2MYVUHDBMXNEAY3GUU
-X-Message-ID-Hash: 5DAJCVPSGTQTLZ2MYVUHDBMXNEAY3GUU
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SHcC+f3LwF29Fsqc"
+Content-Disposition: inline
+In-Reply-To: <20240603-md-snd-soc-qcom-sdw-v1-1-101ea8bcdd38@quicinc.com>
+X-Cookie: Is it clean in other dimensions?
+Message-ID-Hash: ZJNEUCUMRQSXYFFFZEH4MK3BI5ZKD6KV
+X-Message-ID-Hash: ZJNEUCUMRQSXYFFFZEH4MK3BI5ZKD6KV
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5DAJCVPSGTQTLZ2MYVUHDBMXNEAY3GUU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJNEUCUMRQSXYFFFZEH4MK3BI5ZKD6KV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,39 +97,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 02 Jun 2024 10:00:27 -0700, Jeff Johnson wrote:
+
+--SHcC+f3LwF29Fsqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 03, 2024 at 05:16:07PM -0700, Jeff Johnson wrote:
 > make allmodconfig && make W=1 C=1 reports:
-> WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/fsl/imx-pcm-dma.o
-> 
-> Add the missing invocation of the MODULE_DESCRIPTION() macro.
-> 
-> 
+> WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-sdw.o
 
-Applied to
+Is anyone getting any value from these MODULE_DESCRIPTION()s?  This all
+just seems like a huge amount of noise and I'm having trouble thinking
+of a use case.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+--SHcC+f3LwF29Fsqc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks!
+-----BEGIN PGP SIGNATURE-----
 
-[1/1] ASoC: fsl: add missing MODULE_DESCRIPTION() macro
-      commit: 7478e15bcc16cbc0fa1b8c431163bf651033c088
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZfANgACgkQJNaLcl1U
+h9DD7Qf/Wbjd2t6/LWhnHPaYr8UDzVQzgJXS+fzgQ9Lou2WkHI9D2KV19uaMUqmV
+ACLaw7+m3lBGyG+FkxREZCucSN1wLhS7mPM2+41IaRAQ6/bj1LLQovR1vrwOyUcu
+bWJ+VFJLo2Yl+NIje4Z16Mg+f9QT7/VvR0Spz2LZXLwmTjis/GVwSY9I/v4ZiaTt
+dHeWr3dhPWNRnBx4PggQs0OyO3Ky4gxPVN1qfp7eiSLe9rOC3qcYsi5hdx50kVdy
+ViqX56cl1qJ2HfUZmbCVc43IViRnhVfgtrkKLTdtsM/acBnMl5oFDUkmL8+lOOFe
+V1/zKaMwRJMzabvh16khcsrHchaMSw==
+=Mgl8
+-----END PGP SIGNATURE-----
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--SHcC+f3LwF29Fsqc--
