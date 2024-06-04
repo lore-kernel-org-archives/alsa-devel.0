@@ -4,114 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AD4DC27C6E
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C4C7C27C4F
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:07:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAB3020C4;
-	Thu, 13 Jun 2024 18:07:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAB3020C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEAD81908;
+	Thu, 13 Jun 2024 18:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEAD81908
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718294840;
-	bh=mT1/rVVdWV+5QoTSApPnuEEIlkiQJf0kw1vPslyrMIY=;
-	h=From:Subject:Date:To:CC:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1718294848;
+	bh=C9QZlpACMYy1Zfnu2NImSG8I/J6FWYhPgPQBtPiN+aM=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UHqEivdmOWostOVITauueKxLfnn2qG171jZP07SKXwZm4ZuCo1yn17pGbNawuR56M
-	 aDQm2AfId8wOtaanFkiXoBcsHKmuBW38Tm8CrnbXpESocTrDM0ZLAPmLPRiuWrz8w9
-	 qLa88w7MACphrh+mhqjfvHJRHiWLC++7Ru9ZMJko=
+	b=fHFnIXcPeaMdioWWRoxVXNUHRdJ6gZ5CjttMRbF2l5DEGKjX5jWk4+v0TzITYUeQO
+	 RqxsTvjY3IC41nW1ED/lMe1wpzIhJ9OzsH/K6lp7IV9CAKxoZxWQg7DJyOqn+4qyQc
+	 sd0p7dsZSjeiW1VLCeuB+3lo1bJXdL6na7XP0Cug=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C5F4F805AA; Thu, 13 Jun 2024 18:02:37 +0200 (CEST)
+	id 43AE5F89716; Thu, 13 Jun 2024 18:02:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF37BF806A8;
-	Thu, 13 Jun 2024 18:02:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74955F89716;
+	Thu, 13 Jun 2024 18:02:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7259F804B0; Tue,  4 Jun 2024 12:10:56 +0200 (CEST)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	id 5A9E3F802DB; Tue,  4 Jun 2024 12:11:42 +0200 (CEST)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DFF09F800FA
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 12:03:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFF09F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 643FFF800FA
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 12:11:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 643FFF800FA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=JLLNPyxR
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 454A2DmO090283;
-	Tue, 4 Jun 2024 05:02:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1717495333;
-	bh=lEeeA5XVGydla/KRte/WAZAqdb4muiovvZrIFmRss1s=;
-	h=From:Subject:Date:To:CC;
-	b=JLLNPyxR1w5+lmhYx9ZbWHXKfrSIa7/v6lEB+XvtUusMK0Yuzknk+sbqSrAVYd1xk
-	 OiV92W0Z46cWH1GVjAo5FErQPN+MQkde10gOxWMnZRLyfR6KpkSYXQjzdK2UuyB0+m
-	 z2o/Y3KWPkbiUFi/MgZ6nKASyUFW3An8WmnexC1A=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 454A2CJU007010
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 4 Jun 2024 05:02:12 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 4
- Jun 2024 05:02:12 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 4 Jun 2024 05:02:12 -0500
-Received: from localhost (jluthra.dhcp.ti.com [172.24.227.116])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 454A2BRB130365;
-	Tue, 4 Jun 2024 05:02:12 -0500
-From: Jai Luthra <j-luthra@ti.com>
-Subject: [PATCH 0/2] Fixes for McASP and dmaengine_pcm
-Date: Tue, 4 Jun 2024 15:31:49 +0530
-Message-ID: <20240604-asoc_next-v1-0-e895c88e744d@ti.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=microchip.com header.i=@microchip.com
+ header.a=rsa-sha256 header.s=mchp header.b=IRJoZmGN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1717495895; x=1749031895;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=C9QZlpACMYy1Zfnu2NImSG8I/J6FWYhPgPQBtPiN+aM=;
+  b=IRJoZmGNv79ZenRbl8Pk51n3T6AwQqFIkChMlV8NbUreMZ+KmJpP6ezJ
+   B3Mb2fP/gZk+CxJlKKwD87iMF3xCZTjM2tAiq07KlmZwnFIBSQZZfVBRh
+   t7I610STFxB//ZCEEzwHfeK2ba2yusz6OctH+Jm8RX+lpseJX0Wau94+d
+   jZHGM84U1sF4DpMFcDccJhahiyzJ0cBEwG38pfrQFG+D3MmaaG9DPMps1
+   uE0LNCuZtVkC0MNCe227YafGo9XYVMfbqMPMKFu8sSjMv32jKeUG/Fa5j
+   4B/F7UWltTGFW3Aa8VKsFxDEpTpEYXvhwHOFh5KtuIm3ZC5BUTe5sU2Zo
+   g==;
+X-CSE-ConnectionGUID: wEzRrHHTQXqTSqyPNngmpw==
+X-CSE-MsgGUID: VmTWgr6UT6GmI5MeZ9Sbbw==
+X-IronPort-AV: E=Sophos;i="6.08,213,1712646000";
+   d="scan'208";a="257789211"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
+ 04 Jun 2024 03:11:30 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 4 Jun 2024 03:10:49 -0700
+Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 4 Jun 2024 03:10:47 -0700
+From: Andrei Simion <andrei.simion@microchip.com>
+To: <claudiu.beznea@tuxon.dev>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+	<perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <kuninori.morimoto.gx@renesas.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Andrei Simion <andrei.simion@microchip.com>
+Subject: [PATCH] ASoC: atmel: atmel-classd: Re-add dai_link->platform to fix
+ card init
+Date: Tue, 4 Jun 2024 13:10:30 +0300
+Message-ID: <20240604101030.237792-1-andrei.simion@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAA3mXmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDMwMT3cTi/OT4vNSKEt1kAzPjtORkQ0uDZDMloPqCotS0zAqwWdGxtbU
- AE2GY9VsAAAA=
-To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark
- Brown <broonie@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-CC: <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, Jai Luthra <j-luthra@ti.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=915; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=mT1/rVVdWV+5QoTSApPnuEEIlkiQJf0kw1vPslyrMIY=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBmXuYgB8FlkmaUfeYeISFrnAiKrV3JaFHoPcw3e
- zYjan9orCqJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZl7mIAAKCRBD3pH5JJpx
- RXaTD/9mm61MjSw+c7tSjgOLv58uadvLpqkDpKp5w8Twl1roQ+6Y/taGUyWg27a1LrAa1LYObpk
- rlHA30idq7AIFHTFvj1cBE8GUekfbnzqXYlbjsBqV11/A8qAAwCf/U/AoqHq9TqDb8xSSTHgT3c
- GhTPbvpsxp5VQDKU5jQu23LEstByqjE1IIvkQxodPNl56G+BlOmKyhnewT7fi5xwzgH/fSnxaRH
- Ak2BKvE4mwjNBk0dtKt9q7hnrLdqVmhMy6gQGLZbJYj2p+Yl0Ql2OayzDKF1Ak8346YIJXvfHf7
- rMxS47tzEFll+D2fRHQTbu1ICPJK78jg2quD0rwOPXRFFEfNI+8UuGfxFdfLGvj+GiOV3Auy3Rd
- vS+NwJwJ5NnnV50viG/mjbARnLVlTSljB5yIHP85PcNLIq678IjLL9ad42O8UKkusHIhYLB8veY
- Uasuz0kLgig8uvxk3YtewOiTQlkIXIPp9RlYlNp4PasX8V+hGrLbfUXqYN2TfMKslvxZyL2PRLU
- m2aZBx3FWwLR3n47o7yBcoDIqU1nIHCJBDLDhjpAaKYG0R252XBXiYmvyEuHZAPnUt/R4aSu86i
- IiwHTfJ12nBbkLxagoaHh7TEXHChwLM95Gw/Un88WY+ffEYAVjpBAhNlbJKeAaSj3a7pnBjg08w
- Ja3MzA2SG36zlaw==
-X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
- fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-MailFrom: j-luthra@ti.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MailFrom: prvs=87800a655=Andrei.Simion@microchip.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: NGY5WLLD7HWZF5WXBDWDAF2PZBJRGUXY
-X-Message-ID-Hash: NGY5WLLD7HWZF5WXBDWDAF2PZBJRGUXY
+Message-ID-Hash: 6Z32CGYEUUDEOPWTMAR5JNMW5GRY2BTJ
+X-Message-ID-Hash: 6Z32CGYEUUDEOPWTMAR5JNMW5GRY2BTJ
 X-Mailman-Approved-At: Thu, 13 Jun 2024 16:02:20 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGY5WLLD7HWZF5WXBDWDAF2PZBJRGUXY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6Z32CGYEUUDEOPWTMAR5JNMW5GRY2BTJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,29 +104,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series fixes two patches:
+The removed dai_link->platform component cause a fail which
+is exposed at runtime. (ex: when a sound tool is used)
+This patch re-adds the dai_link->platform component to have
+a full card registered.
 
-1. Fix the dmaengine API usage by calling dmaengine_synchronize() after
-   dmaengine_terminate_async() when xrun events occur in application
-2. Use the McASP AFIFO property from DT to refine the period size,
-   instead of hardcoding minimum to 64 samples
+Before this patch:
+:~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: CLASSD [CLASSD], device 0: CLASSD PCM snd-soc-dummy-dai-0 []
+    Subdevices: 1/1
+    Subdevice #0: subdevice #0
 
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
+:~$ speaker-test -t sine
+speaker-test 1.2.6
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Sine wave rate is 440.0000Hz
+Playback open error: -22,Invalid argument
+
+After this patch which restores the platform component:
+:~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: CLASSD [CLASSD], device 0: CLASSD PCM snd-soc-dummy-dai-0
+						[CLASSD PCM snd-soc-dummy-dai-0]
+    Subdevices: 1/1
+    Subdevice #0: subdevice #0
+-> Resolve the playback error.
+
+Fixes: 2f650f87c03c ("ASoC: atmel: remove unnecessary dai_link->platform")
+Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
 ---
-Jai Luthra (2):
-      ALSA: dmaengine: Synchronize dma channel in prepare()
-      ASoC: ti: davinci-mcasp: Set min period size using FIFO config
+ sound/soc/atmel/atmel-classd.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
- include/sound/dmaengine_pcm.h         |  1 +
- sound/core/pcm_dmaengine.c            | 10 ++++++++++
- sound/soc/soc-generic-dmaengine-pcm.c |  8 ++++++++
- sound/soc/ti/davinci-mcasp.c          |  9 +++++++--
- 4 files changed, 26 insertions(+), 2 deletions(-)
----
-base-commit: d97496ca23a2d4ee80b7302849404859d9058bcd
-change-id: 20240604-asoc_next-c063fcc190c6
-
-Best regards,
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 6aed1ee443b4..ba314b279919 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -473,19 +473,22 @@ static int atmel_classd_asoc_card_init(struct device *dev,
+ 	if (!dai_link)
+ 		return -ENOMEM;
+ 
+-	comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
++	comp = devm_kzalloc(dev, 2 * sizeof(*comp), GFP_KERNEL);
+ 	if (!comp)
+ 		return -ENOMEM;
+ 
+-	dai_link->cpus		= comp;
++	dai_link->cpus		= &comp[0];
+ 	dai_link->codecs	= &snd_soc_dummy_dlc;
++	dai_link->platforms	= &comp[1];
+ 
+ 	dai_link->num_cpus	= 1;
+ 	dai_link->num_codecs	= 1;
++	dai_link->num_platforms = 1;
+ 
+ 	dai_link->name			= "CLASSD";
+ 	dai_link->stream_name		= "CLASSD PCM";
+ 	dai_link->cpus->dai_name	= dev_name(dev);
++	dai_link->platforms->name	= dev_name(dev);
+ 
+ 	card->dai_link	= dai_link;
+ 	card->num_links	= 1;
 -- 
-Jai Luthra <j-luthra@ti.com>
+2.34.1
 
