@@ -4,74 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08BD1C25B7E
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 09:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A99ADC25B7E
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 09:18:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C853BE94;
-	Tue,  4 Jun 2024 11:15:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C853BE94
+	by alsa0.perex.cz (Postfix) with ESMTPS id A833FEF2;
+	Tue,  4 Jun 2024 11:18:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A833FEF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717492564;
-	bh=UBSE8GEPqxZdSjgPlJVW65yM+v8/dSAUhsYRVqOb1Jg=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=kczwA6ft4W+hdzFbW0LWdxHnIGyvTpbXNmkFYklhTZsJlVSrmv+dRb1FkZpRjZR0T
-	 vNsuQojC6nkB5VN4oPaEtDHgw8zGdjmzw6mQ0QVR2d3wtEcYeTAcPuU6gnbG/x4R6a
-	 pX4MkYCs201RZVTNPG9RTOTYu7chm+3TPrUnLTMU=
+	s=default; t=1717492690;
+	bh=FCrFtvGT7nfYDArMK5ytnHOL+AVDEQiP/9i3bDpr0hA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=D/JwWw6UgUe4EpujBnVxn7SSlthBtJCL22Irz3f81jaG0xV4TGYNxa0FTA/mj8U2i
+	 nEk0T2M+s0EY/0Eh7MzXamXmZ7nt4WjYwPRt7fAht/IuEPb/T0dCeNURNW5mAWTrDi
+	 5nWtqweptjUg0WQdsg2UzwXvQm+5HSnyXr+trYQU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94E5BF80587; Tue,  4 Jun 2024 11:15:19 +0200 (CEST)
+	id A293DF805A9; Tue,  4 Jun 2024 11:17:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DA42F80587;
-	Tue,  4 Jun 2024 11:15:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CD05F805A0;
+	Tue,  4 Jun 2024 11:17:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF0DEF802DB; Tue,  4 Jun 2024 11:15:14 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 503FBF802DB; Tue,  4 Jun 2024 11:17:35 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 809DBF80088
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 11:15:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 809DBF80088
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B63131A1E06;
-	Tue,  4 Jun 2024 11:15:05 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 54FFA1A1DCB;
-	Tue,  4 Jun 2024 11:15:05 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 9DE281820F76;
-	Tue,  4 Jun 2024 17:15:03 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lars@metafoo.de,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	shengjiu.wang@gmail.com
-Subject: [PATCH] ASoC: dmaengine_pcm: terminate dmaengine before synchronize
-Date: Tue,  4 Jun 2024 16:58:57 +0800
-Message-Id: <1717491537-9033-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: BMGOOMQ7ULMJEA35DK2HS5OUHH7SH7KG
-X-Message-ID-Hash: BMGOOMQ7ULMJEA35DK2HS5OUHH7SH7KG
-X-MailFrom: shengjiu.wang@nxp.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id E19DFF80088
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 11:17:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E19DFF80088
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=L3YGOQUL
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9F1F660F23;
+	Tue,  4 Jun 2024 09:17:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52111C2BBFC;
+	Tue,  4 Jun 2024 09:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717492642;
+	bh=FCrFtvGT7nfYDArMK5ytnHOL+AVDEQiP/9i3bDpr0hA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L3YGOQULFYzsdRUHxPDwrS0zuMsIKMDkRsByuPi3yXGkmGiKwxqZme5r7pqSeB8xb
+	 D8vsUY1rbs2KS6EaMvEOYpFTFpkX1u1H4LhNh4MP/kFmsO5Bt3v1doMjiCz9OWCDTn
+	 ZRuywir2hsfdLVWK7/vQtTv+6wd8rFJDcBNxB7hYb6+JOnBSKNf0lwk+r90Dg12qSg
+	 m+gdgqCMA+opVFr+bGwSXHursv8ZjOB2JH1+fblDh9h1LMaNujBgYDgRygEFNdv0ki
+	 wjBeqI1ZIpl549F832GSb1f+hp9Vp51ZHNVcFirChjnBTWOC6ZBudBb20H73DQBfiq
+	 6IjoFe9Qd/dHA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1sEQIC-000000001XF-28Nh;
+	Tue, 04 Jun 2024 11:17:21 +0200
+Date: Tue, 4 Jun 2024 11:17:20 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] soundwire: bus: clean up probe warnings
+Message-ID: <Zl7boEkMpQaELARP@hovoldconsulting.com>
+References: <20240604075213.20815-1-johan+linaro@kernel.org>
+ <20240604075213.20815-4-johan+linaro@kernel.org>
+ <8dd7cadc-138c-4ef5-b06f-7177550b1215@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8dd7cadc-138c-4ef5-b06f-7177550b1215@linux.intel.com>
+Message-ID-Hash: 3LGRTX7BYWI3DYFHTBRFKYCI46IRFDY5
+X-Message-ID-Hash: 3LGRTX7BYWI3DYFHTBRFKYCI46IRFDY5
+X-MailFrom: johan@kernel.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BMGOOMQ7ULMJEA35DK2HS5OUHH7SH7KG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3LGRTX7BYWI3DYFHTBRFKYCI46IRFDY5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -80,57 +98,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When dmaengine supports pause function, in suspend state,
-dmaengine_pause() is called instead of dmaengine_terminate_async(),
+On Tue, Jun 04, 2024 at 10:33:02AM +0200, Pierre-Louis Bossart wrote:
+> On 6/4/24 02:52, Johan Hovold wrote:
+> > Clean up the probe warning messages by using a common succinct format
+> > (e.g. without __func__ and with a space after ':').
 
-In end of playback stream, the runtime->state will go to
-SNDRV_PCM_STATE_DRAINING, if system suspend & resume happen
-at this time, application will not resume playback stream, the
-stream will be closed directly, the dmaengine_terminate_async()
-will not be called before the dmaengine_synchronize(), which
-violates the call sequence for dmaengine_synchronize().
+> > @@ -123,7 +123,7 @@ static int sdw_drv_probe(struct device *dev)
+> >  	/* init the dynamic sysfs attributes we need */
+> >  	ret = sdw_slave_sysfs_dpn_init(slave);
+> >  	if (ret < 0)
+> > -		dev_warn(dev, "Slave sysfs init failed:%d\n", ret);
+> > +		dev_warn(dev, "failed to initialise sysfs: %d\n", ret);
+> >  
+> >  	/*
+> >  	 * Check for valid clk_stop_timeout, use DisCo worst case value of
+> > @@ -147,7 +147,7 @@ static int sdw_drv_probe(struct device *dev)
+> >  	if (drv->ops && drv->ops->update_status) {
+> >  		ret = drv->ops->update_status(slave, slave->status);
+> >  		if (ret < 0)
+> > -			dev_warn(dev, "%s: update_status failed with status %d\n", __func__, ret);
+> > +			dev_warn(dev, "failed to update status: %d\n", ret);
+> 
+> the __func__ does help IMHO, 'failed to update status' is way too general...
 
-This behavior also happens for capture streams, but there is no
-SNDRV_PCM_STATE_DRAINING state for capture. So use
-dmaengine_tx_status() to check the DMA status if the status is
-DMA_PAUSED, then call dmaengine_terminate_async() to terminate
-dmaengine before dmaengine_synchronize().
+Error messages printed with dev_warn will include the device and driver
+names so this message will be quite specific still.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/core/pcm_dmaengine.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> Replacing 'with status' by ":" is fine, but do we really care about 10
+> chars in a log?
 
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 12aa1cef11a1..7346c993a067 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -358,6 +358,12 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_chan);
- int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream)
- {
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
-+	struct dma_tx_state state;
-+	enum dma_status status;
-+
-+	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
-+	if (status == DMA_PAUSED)
-+		dmaengine_terminate_async(prtd->dma_chan);
- 
- 	dmaengine_synchronize(prtd->dma_chan);
- 	kfree(prtd);
-@@ -378,6 +384,12 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_close);
- int snd_dmaengine_pcm_close_release_chan(struct snd_pcm_substream *substream)
- {
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
-+	struct dma_tx_state state;
-+	enum dma_status status;
-+
-+	status = dmaengine_tx_status(prtd->dma_chan, prtd->cookie, &state);
-+	if (status == DMA_PAUSED)
-+		dmaengine_terminate_async(prtd->dma_chan);
- 
- 	dmaengine_synchronize(prtd->dma_chan);
- 	dma_release_channel(prtd->dma_chan);
--- 
-2.34.1
+It's not primarily about the numbers of characters but about consistency.
 
+Johan
