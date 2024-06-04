@@ -4,91 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B73C0C25B78
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 15:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AACA0C27C52
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jun 2024 15:13:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73872DEC;
-	Tue,  4 Jun 2024 17:12:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73872DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15E6FE7D;
+	Tue,  4 Jun 2024 17:13:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15E6FE7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717513989;
-	bh=WI66YXFhtMtD9v7S0j/6cTY9ceJOboCB3afTlXQhJXI=;
+	s=default; t=1717514002;
+	bh=hSqtnWWeq83bRrdJrf3MfAQNHnxLuRaoyE2ioCIEo0M=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S4pZOSiAHagIyEuk2BoTQxrOQBVDzmGlKoGH3n4f+8rXLqMMJircmRvdzD/2G5qvF
-	 gm07cwc/ewob/NuwmJ/NJHStG/jdQa3VixzXqgy4+GDMpBW0Ld+UWA+/f7yoNQgb9K
-	 ONLWeJ48uaWPkGez7uKUaTR1HJnbB3Ez7Rkc0cUs=
+	b=tKy9burwXTS5KSQHACVGpiz4iDoqeSLBRPDJJoMNqD0mj1Qig7ub3BEgxFWP72MqJ
+	 9CSkfaMpLwS/6opK4amQbaNTwwIMFyILRCaUhC0Y0D3BCKJyAlRynnwVBV4aLH9T+a
+	 6uAMAo3FJZdmWon9rUl0+TOCGGdl+DXRpEaNJj9g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 481C4F805AA; Tue,  4 Jun 2024 17:12:36 +0200 (CEST)
+	id 46BD9F805D3; Tue,  4 Jun 2024 17:12:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1336BF805AB;
-	Tue,  4 Jun 2024 17:12:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 061EAF805D3;
+	Tue,  4 Jun 2024 17:12:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E70DF80496; Tue,  4 Jun 2024 17:12:30 +0200 (CEST)
+	id D6E9BF802DB; Tue,  4 Jun 2024 17:12:32 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ACBFAF800FA
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 17:12:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACBFAF800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE8EBF8003A
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jun 2024 17:12:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE8EBF8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=i78ZMRg+
+ header.s=Intel header.b=dZeHVCgT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717513947; x=1749049947;
+  t=1717513949; x=1749049949;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=WI66YXFhtMtD9v7S0j/6cTY9ceJOboCB3afTlXQhJXI=;
-  b=i78ZMRg+vRrR1YqQyMHM7IGByRxBcjMZnQff0ZDPlJz3L49Invb+DXue
-   tLp6anm67rUJSsFcIOQMGNrS5STU5p/zdGT6vS8JwurTZhB1fd1MAVJzP
-   gNpsklPqWVotkZYPQMmKvhqrlZeB9IYbdaMBZo/7R8+Rz8kal8922qnkz
-   weW3+auVu5HDx3bDx1IUIcCGlmC9CA2ICHbDVE6+G4hExjcaMDWYeZktA
-   hDoSgLPZZfg7ovlI1MhyQ+1HzhEMAqX/L9AFQZCNBGURdTbOxtwCcOOl0
-   Nv9iR3S/vCjvHgNlnCGtAs7EuhrZm0faYmbpUiWbE98WYNYIGKU3H2Qb8
-   g==;
-X-CSE-ConnectionGUID: P3ZaA+qQQTyexs40QaTjuQ==
-X-CSE-MsgGUID: 28zu4z3oRSy+2msymaHQ4Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11093"; a="31602486"
+  bh=hSqtnWWeq83bRrdJrf3MfAQNHnxLuRaoyE2ioCIEo0M=;
+  b=dZeHVCgTx8DToee3hokfCey/Gsw+6topOQaikk6wRW+i7ZG+7lCgF3BK
+   AgB3qfeUw9wakEDKdHRN9jKFs8YW1EhUu5ghMD1N8ayp3CjyrSVD9fFhJ
+   Fa5Q8ZrM6ovz44nh+kmiSrSwYPmb4ADerRtVW2icU0v+Bs5OFESkH3XHY
+   WH1iPWDWlxa0X/v8OYkWtQGJr0z93aeOpdo14G/Ts6fiV/xE2+VmrCAWs
+   jCIdjUolawzVFoyptvylVy1Xp7M9UL/V/TwH8hVFApWKYtXpZLrGfSr4A
+   HzC2BRKO7pv3qCIXyL+z19fCgwmYFzKWHjCmkgF5qRykSdtXAbP5NobWo
+   w==;
+X-CSE-ConnectionGUID: pYXj1fHMTO2reXizNuxwjQ==
+X-CSE-MsgGUID: pNXpf7VDS5q2MlbbrkrO/w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11093"; a="31602500"
 X-IronPort-AV: E=Sophos;i="6.08,214,1712646000";
-   d="scan'208";a="31602486"
+   d="scan'208";a="31602500"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jun 2024 08:12:06 -0700
-X-CSE-ConnectionGUID: ISWGZxwKQBW4ys7I1KD4VA==
-X-CSE-MsgGUID: XTj7vXuSQGWxND4FIYegeQ==
+ 04 Jun 2024 08:12:09 -0700
+X-CSE-ConnectionGUID: XIeU217HRTuXyOfBAck/OQ==
+X-CSE-MsgGUID: Oe+hRJJRQT+iPoQlktO7RQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,214,1712646000";
-   d="scan'208";a="37139624"
+   d="scan'208";a="37139630"
 Received: from fdefranc-mobl3.ger.corp.intel.com (HELO [10.245.246.143])
  ([10.245.246.143])
   by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jun 2024 08:12:04 -0700
-Message-ID: <60a99290-b71e-41e4-844b-f46d8f959c81@linux.intel.com>
-Date: Tue, 4 Jun 2024 15:29:56 +0200
+ 04 Jun 2024 08:12:07 -0700
+Message-ID: <0d15954f-0158-4a56-afef-f0d043135146@linux.intel.com>
+Date: Tue, 4 Jun 2024 17:07:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] soundwire: bus: suppress probe deferral errors
+Subject: Re: [PATCH v2 3/4] soundwire: bus: clean up probe warnings
 To: Johan Hovold <johan@kernel.org>
 Cc: Johan Hovold <johan+linaro@kernel.org>, Vinod Koul <vkoul@kernel.org>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
  Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
 References: <20240604075213.20815-1-johan+linaro@kernel.org>
- <20240604075213.20815-2-johan+linaro@kernel.org>
- <c5ecc0cd-c2ba-4f71-ac2a-9a81793a8f0c@linux.intel.com>
- <Zl7ZyEkmm8kHeRvL@hovoldconsulting.com>
+ <20240604075213.20815-4-johan+linaro@kernel.org>
+ <8dd7cadc-138c-4ef5-b06f-7177550b1215@linux.intel.com>
+ <Zl7boEkMpQaELARP@hovoldconsulting.com>
+ <970501b1-09ae-4f2c-a078-2b4f23fe460e@linux.intel.com>
+ <Zl8iUmOfrjw3gWVX@hovoldconsulting.com>
 Content-Language: en-US
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <Zl7ZyEkmm8kHeRvL@hovoldconsulting.com>
+In-Reply-To: <Zl8iUmOfrjw3gWVX@hovoldconsulting.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 24ODBBRJJTTYTGCMOXIKNUUULEJ5V7XX
-X-Message-ID-Hash: 24ODBBRJJTTYTGCMOXIKNUUULEJ5V7XX
+Message-ID-Hash: VYP6IJ4DYUXQQVD7HBSVTTQDZ5PQEWBK
+X-Message-ID-Hash: VYP6IJ4DYUXQQVD7HBSVTTQDZ5PQEWBK
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/24ODBBRJJTTYTGCMOXIKNUUULEJ5V7XX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VYP6IJ4DYUXQQVD7HBSVTTQDZ5PQEWBK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,37 +112,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 6/4/24 11:09, Johan Hovold wrote:
-> On Tue, Jun 04, 2024 at 10:30:21AM +0200, Pierre-Louis Bossart wrote:
->> On 6/4/24 02:52, Johan Hovold wrote:
->>> Soundwire driver probe errors are currently being logged both by the bus
->>> code and driver core:
+\
+>>>>> @@ -123,7 +123,7 @@ static int sdw_drv_probe(struct device *dev)
+>>>>>  	/* init the dynamic sysfs attributes we need */
+>>>>>  	ret = sdw_slave_sysfs_dpn_init(slave);
+>>>>>  	if (ret < 0)
+>>>>> -		dev_warn(dev, "Slave sysfs init failed:%d\n", ret);
+>>>>> +		dev_warn(dev, "failed to initialise sysfs: %d\n", ret);
+>>>>>  
+>>>>>  	/*
+>>>>>  	 * Check for valid clk_stop_timeout, use DisCo worst case value of
+>>>>> @@ -147,7 +147,7 @@ static int sdw_drv_probe(struct device *dev)
+>>>>>  	if (drv->ops && drv->ops->update_status) {
+>>>>>  		ret = drv->ops->update_status(slave, slave->status);
+>>>>>  		if (ret < 0)
+>>>>> -			dev_warn(dev, "%s: update_status failed with status %d\n", __func__, ret);
+>>>>> +			dev_warn(dev, "failed to update status: %d\n", ret);
+>>>>
+>>>> the __func__ does help IMHO, 'failed to update status' is way too general...
 >>>
->>> 	wsa884x-codec sdw:4:0:0217:0204:00:0: Probe of wsa884x-codec failed: -12
->>> 	wsa884x-codec sdw:4:0:0217:0204:00:0: probe with driver wsa884x-codec failed with error -12
->>>
->>> Drop the redundant bus error message, which is also incorrectly being
->>> logged on probe deferral:
+>>> Error messages printed with dev_warn will include the device and driver
+>>> names so this message will be quite specific still.
 >>
->> It's only redundant in the QCOM case... This would remove all error logs
->> for other codecs, e.g. see
->>
->> rt711_sdca_sdw_probe
->> cs35l56_sdw_probe
->> wcd9390_probe
->>
->> Looks like the wsa884x-codec is the chatty driver, others are just fine
->> with the existing code.
+>> The goal isn't to be 'quite specific' but rather 'completely
+>> straightforward'. Everyone can lookup a function name in a xref tool and
+>>  quickly find out what happened. Doing 'git grep' on message logs isn't
+>> great really, and over time logs tend to be copy-pasted. Just look at
+>> the number of patches where we had to revisit the dev_err logs to make
+>> then really unique/useful.
 > 
-> I believe you misunderstood this patch. The error messages above are not
-> printed by the wsa884x-codec driver, but by the soundwire bus code and
-> driver core, so the redundant error message will be printed for all
-> codecs on probe failures.
-> 
-> And specifically, driver core will still log probe failures after this
-> change.
+> Error message should be self-contained and give user's some idea of what
+> went wrong and not leak implementation details like function names (and
+> be greppable, which "%s:" is not).
 
-Ah yes, you're right I read 'driver core' sideways, my bad. That's fine
-then.
+"Failed to update status" doesn't sound terribly self-contained to me.
+
+It's actually a great example of making the logs less clear with good
+intentions. How many people know that the SoundWire bus exposes an
+'update_status' callback, and that callback can be invoked from two
+completely different places (probe or on device attachment)?
+
+/* Ensure driver knows that peripheral unattached */
+ret = sdw_update_slave_status(slave, status[i]);
+if (ret < 0)
+	dev_warn(&slave->dev, "Update Slave status failed:%d\n", ret);
+
+You absolutely want to know which of these two cases failed, but with
+your changes they now look rather identical except for the order of
+words. one would be 'failed to update status' and the other 'update
+status failed'.
+
+What is much better is to know WHEN this failure happens, then folks
+looking at logs to fix a problem don't need to worry about precise
+wording or word order.
+
+It's a constant battle to get meaningful messages that are useful for
+validation/integration folks, and my take is that it's a
+windmill-fighting endeavor. The function name is actually more useful,
+it's not an implementation detail, it's what you're looking for when
+reverse-engineering problematic sequences from a series of CI logs.
+
+>>>> Replacing 'with status' by ":" is fine, but do we really care about 10
+>>>> chars in a log?
+>>>
+>>> It's not primarily about the numbers of characters but about consistency.
+>>
+>> I am advocating for inclusion of __func__ everywhere...It's simpler for
+>> remote support and bug chasing.
+
+I meant everywhere in SoundWire. Other subsystems may have different
+views and different observability tools, that's fine.
+
+> A quick grep seems to suggest you're in a small minority here with some
+> 5k of 65k dev_err() including __func__.
+> 
+> [ And there's only 55 out of 750 dev_err() like that in
+> drivers/soundwire, which is inconsistent at best. ]
+
+As you mentioned yourself, the asynchronous nature of the SoundWire
+probe/attachment/interrupts makes it difficult to reverse-engineer, and
+we want to err on the side of MORE information.
+
+Also not all dev_err() are equal, most are part of paranoid checks and
+never used. An example above is the sysfs log, we've never seen it happen.
+
+That's different to changes that impact probe and interrupts which will
+fail at some point on new platforms. It's not an academic statement,
+I've spent most of my day chasing two such issues.
