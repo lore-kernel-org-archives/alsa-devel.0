@@ -4,71 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0156C25B76
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jun 2024 21:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43829C25B76
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jun 2024 21:45:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F68482A;
-	Wed,  5 Jun 2024 23:44:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F68482A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EDB97F1;
+	Wed,  5 Jun 2024 23:44:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EDB97F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717623887;
-	bh=TCvAx/XM79I+r42mKUlMSvUzDjqwLUgg2X9peC5/Qoo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ls0jfHKzaolBUF4xbp7rNsKZoHHa7zNuuWzPbRABcbkNPbqc49f5uIOCEv/Pu+aOD
-	 1qGbqKxmz1qwbAQieaE6+bozGsFxGun5nGsc3ns1MKMGSDB+Us6z7QgRIt+4T/TBle
-	 Vv1z3jeepQdwb0kDeMkggMUHskwwP05l8457occQ=
+	s=default; t=1717623908;
+	bh=D+XNwiT5oc5Dm3t9kYZHsZnZ+hfVu8uRIo4dcxzvk7c=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=omTmWyoGNxomaAlucK2jrjkdbWaSipyGPCZ8Wlcm/k72rnOYywJHioCdVQfp6AEiM
+	 vj2TiNoktTmUdv2Jw8v4KRWD3DJo1ePz2RMcNxtvpdUrMtIaRDfFyyhiCv8qk3yUjw
+	 yRqhBAqPMB6qtYdrmDnTlrKpq2+PziLF0h67f6gU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01C75F800FA; Wed,  5 Jun 2024 23:44:15 +0200 (CEST)
+	id 5F0DAF805B0; Wed,  5 Jun 2024 23:44:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91250F805AA;
-	Wed,  5 Jun 2024 23:44:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BB8DF805D4;
+	Wed,  5 Jun 2024 23:44:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9FBDF804E5; Wed,  5 Jun 2024 23:40:50 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 764AFF804B2; Wed,  5 Jun 2024 23:40:53 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60C95F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id C9B34F800FA
 	for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2024 23:38:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60C95F8003A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9B34F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rxgN1+VY
+ header.s=k20201202 header.b=vLRhpOph
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id C34B2CE19AC;
-	Wed,  5 Jun 2024 21:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0131C4AF07;
+	by sin.source.kernel.org (Postfix) with ESMTP id D4D73CE1942;
 	Wed,  5 Jun 2024 21:38:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34EC6C4AF1B;
+	Wed,  5 Jun 2024 21:38:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717623496;
-	bh=TCvAx/XM79I+r42mKUlMSvUzDjqwLUgg2X9peC5/Qoo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=rxgN1+VYaZZfdNXyEQ68EukPeA4+iRn7ZZOKgY4xZ/ee+q9NUSObMkP+RrWfHViej
-	 FCpo3pecGhogkBGQC9M+djI4Z0OUdOQBxYOKbk/5M2Q5FqwQePeCfTeDyjFKyVp1Jm
-	 AOauq9cDJ86N+10qn6SZWb4QPKPsCHtcKFF369wH+l72q7VZZWj6YDE8H7M/3iWUp4
-	 pBW5cV+dvv5LJM9jXV2i5GLii0iYXCLmtNlyrqrXEy2AQS1A1RfpYgMqJOaf3I3jvb
-	 W4x0+Cl+HhICmB5Pm7738RXSCE6tflelAz8phmdPTAAwbnrXYZ8osNStiB4vhKmqJe
-	 P3MBcAcmPWaMw==
+	s=k20201202; t=1717623495;
+	bh=D+XNwiT5oc5Dm3t9kYZHsZnZ+hfVu8uRIo4dcxzvk7c=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=vLRhpOphNGmBaQmxfLFjNesmRJ8CdhImZQC71upgsbQ9PPymnKlCzrlqFjLGIkzxY
+	 FIV7raA/XCMVmU5o+l3I5StSQvgAOUajlN6bNfywQwvMrirXHu609WSmlsKD4wM/BT
+	 MMxuQifeVDY7YfTfT0t28C7KmuTc3dUblWm+pkhhAiYha2eipBYX4fP1gE+E7wLHHn
+	 24ed61T32aZ9YM92xUTb6Xs5bFpJb8Onne/DVujNek8MEgDREqJtKyKFKnDcTuUDoX
+	 fm9vUtzVjbH0I2hRysdQTdmMrwMCnIUZgzEyk4o8mxNZyxqi55LcyecAw2wXk+2mIn
+	 7k2nMmp+sQIaA==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <87bk4qh6h8.wl-kuninori.morimoto.gx@renesas.com>
-References: <87bk4qh6h8.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 00/11] ASoC: simple-card: sync support
-Message-Id: <171762349538.565712.3175877075532659931.b4-ty@kernel.org>
-Date: Wed, 05 Jun 2024 22:38:15 +0100
+To: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1715656329-8061-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1715656329-8061-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2 0/2] ASoC: fsl_xcvr: Support i.MX95 platform
+Message-Id: <171762349194.565712.7362032139063923896.b4-ty@kernel.org>
+Date: Wed, 05 Jun 2024 22:38:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: AIQKIGCGDGAQXMAINESZ5EXKCXJP6FC4
-X-Message-ID-Hash: AIQKIGCGDGAQXMAINESZ5EXKCXJP6FC4
+Message-ID-Hash: SRLC52BNTU2RDCXT3U4SDZE2V76LVGLM
+X-Message-ID-Hash: SRLC52BNTU2RDCXT3U4SDZE2V76LVGLM
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AIQKIGCGDGAQXMAINESZ5EXKCXJP6FC4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SRLC52BNTU2RDCXT3U4SDZE2V76LVGLM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,13 +96,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 28 May 2024 05:04:58 +0000, Kuninori Morimoto wrote:
-> We have simle-card / audio-graph / audio-graph2, basically these supports
-> same feature but is using different DT style.
+On Tue, 14 May 2024 11:12:07 +0800, Shengjiu Wang wrote:
+> On i.MX95 wakeup domain, there is one instance of Audio XCVR
+> supporting SPDIF mode with a connection to the Audio XCVR physical
+> interface.
 > 
-> Because we are using 3 drivers, some feature was added to one driver,
-> but other drivers doesn't have it. This patch set try to sync it on these
-> 3 drivers.
+> changes in v2:
+> - Merge patch 1&2, 3&4 from v1 together.
+> - Add more comments in commit message
+> - Add constaint for clocks used on i.mx95
+> - Add 'select SND_SOC_FSL_UTILS' for compiling issue.
 > 
 > [...]
 
@@ -106,28 +115,10 @@ Applied to
 
 Thanks!
 
-[01/11] ASoC: simple-card-utils: remove both playback/capture_only check
-        commit: 45919c28134519080a85a5fb66d0f65955ef7572
-[02/11] ASoC: audio-graph-card2: add ep_to_port() / port_to_ports()
-        commit: 72999a1b6663f1ff604e79aea54f168f78e2441a
-[03/11] ASoC: audio-graph-card2: remove ports node name check
-        commit: 33ae57277ce08b83c65c18a09bf09499de613c01
-[04/11] ASoC: audio-graph-card2: expand dai_link property part
-        commit: 844de7eebe97a1c277f8a408457712086c957195
-[05/11] ASoC: audio-graph-card2: merge graph_parse_mclk_fs() into graph_link_init()
-        commit: f2d7e85962baf410b1bbbb4cf23a1ca59261ef76
-[06/11] ASoC: audio-graph-card: add ep_to_port() / port_to_ports()
-        commit: df23fcd56bb75ab522350bd8cb52bde9067aea45
-[07/11] ASoC: audio-graph-card: remove ports node name check
-        commit: 84c9601a92b755f869ac811607402e5b2162c225
-[08/11] ASoC: audio-graph-card: enable playback/capture_only property
-        commit: f23bac6e6913eed9eb831b4893255ea862d40ea5
-[09/11] ASoC: audio-graph-card: merge graph_parse_mclk_fs() into graph_link_init()
-        commit: a0174c88386b48bea7c35bc5a927f7057cb45d38
-[10/11] ASoC: simple-audio-card: enable playback/capture_only property
-        commit: 42d37e8de8f2d121481a65e6a3e10f6387c0ad4c
-[11/11] ASoC: simple-audio-card: merge simple_parse_mclk_fs() into simple_link_init()
-        commit: c4cfe1136d6edf8970ccdd944b7f86f7aa3edb77
+[1/2] ASoC: dt-bindings: fsl,xcvr: Add compatible string for i.MX95
+      commit: fc1277335ffa0d180c76ddccf5fe27fc75674e67
+[2/2] ASoC: fsl_xcvr: Add support for i.MX95 platform
+      commit: f13b349e3c70320ef5a86edfc888a6feb612abb0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
