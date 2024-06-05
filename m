@@ -4,72 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF0C8C25B76
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jun 2024 21:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71CCBC25B76
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jun 2024 21:46:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3377C84C;
-	Wed,  5 Jun 2024 23:45:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3377C84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99C36826;
+	Wed,  5 Jun 2024 23:46:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99C36826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717623953;
-	bh=3MQrdpD7iV1KDjW3kAGXieRxnfAenZ67QSUIaKCrQHg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=dsIW24NhwK87adHqSNtCNp0/ktEQAwWFwTlN+VeZES+ng/omuuBJieaXk9UrNwm2H
-	 lynuXS80qJlkuKo1kRL283z71agSDF4aaUX1ISX8Kvzyrqcyt9xshlKy+niJPpkS3R
-	 EpzAu8oytzilvEfw1CTC+NO0Ebmdi1BxEVP57EQc=
+	s=default; t=1717623979;
+	bh=yrMbNY2Gr7i5mUw30Jlna/5JAKzdrHFu4hvA2gyNBkg=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=UaTcBQwt2Yk+0pnqGmRsSlGv4f1d5FBXkSEB0RfT9mFyMI87cnE4wAXrNR45l71Qe
+	 hkXygH/YxWQL2gvnEiBz6ePFjrVHOXHB7kE7davcYweysHY93u3SUOPNoZ+e8wkrPM
+	 oU40gSajuoBwET8QtgK/moqsDXM/42HsGjDjB978=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E63BDF805AB; Wed,  5 Jun 2024 23:45:24 +0200 (CEST)
+	id 94A92F805D7; Wed,  5 Jun 2024 23:45:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E421F805AF;
-	Wed,  5 Jun 2024 23:45:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D385F805E1;
+	Wed,  5 Jun 2024 23:45:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD47CF804B0; Wed,  5 Jun 2024 23:41:04 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 714F5F8025A; Wed,  5 Jun 2024 23:41:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 829D9F8025A
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2024 23:38:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 829D9F8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 82534F802DB
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jun 2024 23:38:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82534F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=E+7S62m6
+ header.s=k20201202 header.b=lQxwQXuR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 1A360CE1942;
-	Wed,  5 Jun 2024 21:38:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0DC8C32786;
-	Wed,  5 Jun 2024 21:38:21 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0106D61B1C;
+	Wed,  5 Jun 2024 21:38:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9B38C4AF09;
+	Wed,  5 Jun 2024 21:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717623503;
-	bh=3MQrdpD7iV1KDjW3kAGXieRxnfAenZ67QSUIaKCrQHg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=E+7S62m6lA8IdAbQgaEptCdtxVdC1fz9DQH2aTPGIFeEJTbQx/pNcxI5iqcoLw1El
-	 YEFDW1VXwUvj+dVKegDaRqjkYtKhtbftfgO3dfS4G9rDsFP7llqWjwGFXqcVIUFiRC
-	 gWq44QH6CvrGkCwbsmWPu8ZMHhR2BMNIZtwINpfyuOM9vUZ1i0YQGuet6KSlB7mWdc
-	 kciNgB6nSVZUdQtn2MS8cWJT5mw77HRG9j7zvK+rxF9if7WWjORnQb3r9nazZSOG95
-	 0Yu7R1Khusw3p/6QP+iXQxNT95xbn5yWGXnwDeO4HFPAepVGoUYTwac0arLL5vkdq5
-	 4mWb551VaDEtQ==
+	s=k20201202; t=1717623509;
+	bh=yrMbNY2Gr7i5mUw30Jlna/5JAKzdrHFu4hvA2gyNBkg=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=lQxwQXuRvfm9OWCFsbHuZEiWtVU5w6nccY6yS+rlo0rS2J+6lU3V/M6LSrtC2U0NK
+	 l9brby4WmHNVoLDfTQn/MnwGvLoeFge6FjifxDqZTg3+7dw2P42pu3rwCcnk0Fo8LR
+	 djuvepdmdBlyxG0uerykdOmWo4+bePL3hzmdc8Ei4+0mU7ry8ttbAhtWAxpKXQLLgB
+	 Uu+PWn93L1CKJR4v/j05j+462Wa74MvY6sfGYtzT0dzNImxNELgR00pFp1Tt/7C7Zb
+	 yS8YotY8URtKUMYU24Enw0Fugh7uPxyYALCETLFebOTPKfkjyghDGIAufUNb5sMnB1
+	 Nkj1PnPb5aKLg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, linux@treblig.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240601225446.183505-1-linux@treblig.org>
-References: <20240601225446.183505-1-linux@treblig.org>
-Subject: Re: [PATCH 0/3] Dead structs in sound/soc/codecs
-Message-Id: <171762350145.565712.5432496930272405498.b4-ty@kernel.org>
-Date: Wed, 05 Jun 2024 22:38:21 +0100
+To: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1716972002-2315-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1716972002-2315-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v4 0/2] ASoC: fsl_xcvr: Support i.MX95 platform
+Message-Id: <171762350655.565712.3068600680938105880.b4-ty@kernel.org>
+Date: Wed, 05 Jun 2024 22:38:26 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: YBHDSEFIK4KS34ZYQCJJ4ZXSTWMGQ4JJ
-X-Message-ID-Hash: YBHDSEFIK4KS34ZYQCJJ4ZXSTWMGQ4JJ
+Message-ID-Hash: 5EMANZ6UJSQ2NNKM34VKUUR3DNWQUF24
+X-Message-ID-Hash: 5EMANZ6UJSQ2NNKM34VKUUR3DNWQUF24
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YBHDSEFIK4KS34ZYQCJJ4ZXSTWMGQ4JJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5EMANZ6UJSQ2NNKM34VKUUR3DNWQUF24/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,18 +96,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 01 Jun 2024 23:54:43 +0100, linux@treblig.org wrote:
-> Clean out a bunch of old structs in sound/soc/codecs.
-> Build tested only.
+On Wed, 29 May 2024 16:40:00 +0800, Shengjiu Wang wrote:
+> On i.MX95 wakeup domain, there is one instance of Audio XCVR
+> supporting SPDIF mode with a connection to the Audio XCVR physical
+> interface.
 > 
-> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
-> 
-> 
-> Dr. David Alan Gilbert (3):
->   ASoC: codecs: lpass-rx-macro: remove unused struct
->     'rx_macro_reg_mask_val'
->   ASoC: codecs: wm0010: remove unused struct 'wm0010_spi_msg'
->   ASoC: codecs: cx2072x: remove unused struct 'cx2072x_eq_ctrl'
+> changes in v4:
+> - refine the constarint for 'clocks' according to Rob's comments
 > 
 > [...]
 
@@ -112,12 +112,10 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: codecs: lpass-rx-macro: remove unused struct 'rx_macro_reg_mask_val'
-      commit: 44e55f9de9950dba091401898a931fc1a3a99146
-[2/3] ASoC: codecs: wm0010: remove unused struct 'wm0010_spi_msg'
-      commit: 62ccbe8cbe2a1b6911ec47bea8b1510dc1f82dd5
-[3/3] ASoC: codecs: cx2072x: remove unused struct 'cx2072x_eq_ctrl'
-      commit: 8080dde80a2d3657529c2172471c06cfcd9a228e
+[1/2] ASoC: dt-bindings: fsl,xcvr: Add compatible string for i.MX95
+      commit: fc1277335ffa0d180c76ddccf5fe27fc75674e67
+[2/2] ASoC: fsl_xcvr: Add support for i.MX95 platform
+      commit: f13b349e3c70320ef5a86edfc888a6feb612abb0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
