@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C84CC25B76
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jun 2024 22:16:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B41EFC25B76
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jun 2024 22:16:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45B07846;
-	Thu,  6 Jun 2024 00:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45B07846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26E61AE8;
+	Thu,  6 Jun 2024 00:16:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26E61AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717625779;
-	bh=63lwAsrH3yEqgf9hu/onZGx64FbB48uMxCRykvXnJXo=;
+	s=default; t=1717625788;
+	bh=wn+WM6bIVhW767mtc2MZ19cATq9dvFlmfYEDJLezjxw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Gz4CE1mSUGKKrDya7oS5FtRUQK5C2aHs2aRljFN8cEQUAnPxRH8mvQ3u90hw1I6FA
-	 MlA+bEjmZKMyJGIAvWcsmo+VqrQn3Fy9FLszSpwu7s32/naSbPlqO/YfWJV7Mt+nFk
-	 ZowF9OGrmbhnpnXJwagvLKmdH56VbrSFQ68QeP9I=
+	b=VWZLwz+toOOWvD1p0NDqm00/joYjHKp3zWT3OkrkWRpZu2+EeX/p8Fl0tI8JskDbH
+	 Tg3AWwdpWaYkRcxdhnYEYuFp0GOJ8hIzXsRpNOGsOWec+A1REHF2q3pOHKQa4ojqmp
+	 Xmn0Hg3OTxEhhG4pF+IgNNQFdZ1JSSZEx14Tf3+Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B995F805EC; Thu,  6 Jun 2024 00:15:27 +0200 (CEST)
+	id 036C2F805F7; Thu,  6 Jun 2024 00:15:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C3DDF805D5;
-	Thu,  6 Jun 2024 00:15:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61ECDF805D7;
+	Thu,  6 Jun 2024 00:15:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E39CF804FF; Thu,  6 Jun 2024 00:15:13 +0200 (CEST)
+	id 239BBF804E5; Thu,  6 Jun 2024 00:15:15 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70F06F80088
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 00:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F06F80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id A9E19F8025A
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 00:15:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9E19F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Ja7CRuir
+ header.s=Intel header.b=Q3LQNlh7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717625705; x=1749161705;
+  t=1717625706; x=1749161706;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=63lwAsrH3yEqgf9hu/onZGx64FbB48uMxCRykvXnJXo=;
-  b=Ja7CRuir1Ylj9/nhjje6bReSIj41S0gCPE/FXMw4WEKhit+31JbeoPTR
-   wk7alT0slnflaxWi0YYaoRXYs//ETnQZ/vzBEpbBS0EK3YmT3P+9kbzRF
-   Z76MWcSPIuFh8A704PgIEPfCOEKDLQtaeuKsn/B8I6flQIdzfnoyqy/u/
-   sEzwsR1oea6PkFiIS/069gzDPO2zdQXMATmO62Ep5S/FodkiMkSzwiAX+
-   GvRvXWAKJgTCWI22NlrfBh/tFbZ2vbNyMibhcZ/p+46kCFEHry25VazII
-   VbDRcgskl4Kp1WLFWp2xktFtquRSDKaQAuZ1Hezq6kEkiDdzKzODUn3Cg
+  bh=wn+WM6bIVhW767mtc2MZ19cATq9dvFlmfYEDJLezjxw=;
+  b=Q3LQNlh7bNDkgpviR+vATQDPHWoFZ/kR6WF33BzQKHc/OF/3Z6qEvnJk
+   xCT6NWW3/hFyRNO7Ij2uitO9H9lhLaCtw7pFhjRpJxoKNsCilpc5j1NOz
+   ZD3G2q6EPPAWvRX8zXeVHiYjz0+6mjHvVASyd2ECmC5SLwWz9vasuvZIK
+   0Ep818p1Ph+Klrq7lQxG78gbvaW5sfsUpJVSsZCqYm0m/oFR+Ub7OBOur
+   K3V6jJkAq0cM/DGccbvMkK41TpEGRHN+8mD7HCQ08AaGhTrGF7GDONSoo
+   AtNMh0izH2zEdJyFrF7JJrQEGlF/WzTeYc2uyl/lBg3sK5AIZMu0WoSrF
    Q==;
-X-CSE-ConnectionGUID: fRkLytQWQBqVGNKreSkXiA==
-X-CSE-MsgGUID: Qc4nt1vqTTe0FeSotKTnJw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11094"; a="24895479"
+X-CSE-ConnectionGUID: 657yJrVYSd6e/W5+ykvpeg==
+X-CSE-MsgGUID: GoURtIxCTGON9nnru1Itvg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11094"; a="24895491"
 X-IronPort-AV: E=Sophos;i="6.08,217,1712646000";
-   d="scan'208";a="24895479"
+   d="scan'208";a="24895491"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
   by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  05 Jun 2024 15:15:01 -0700
-X-CSE-ConnectionGUID: 5XXek5vnT86MD8jAGLoXlg==
-X-CSE-MsgGUID: FJnPPeaySs2QywiV33rbDA==
+X-CSE-ConnectionGUID: vDuyce6qQEmb/WWiwbWzNg==
+X-CSE-MsgGUID: D4oVJiRMQfCTDAoI5HxSPg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,217,1712646000";
-   d="scan'208";a="38168541"
+   d="scan'208";a="38168542"
 Received: from black.fi.intel.com ([10.237.72.28])
   by orviesa006.jf.intel.com with ESMTP; 05 Jun 2024 15:14:49 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id A8EA6F7; Thu, 06 Jun 2024 01:14:47 +0300 (EEST)
+	id DB91D56E; Thu, 06 Jun 2024 01:14:47 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Charles Keepax <ckeepax@opensource.cirrus.com>,
 	Rob Herring <robh@kernel.org>,
@@ -107,16 +107,16 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>,
 	Heiko Stuebner <heiko@sntech.de>,
 	Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH v2 1/6] ASoC: codecs: Remove unused of_gpio.h
-Date: Thu,  6 Jun 2024 00:27:24 +0300
-Message-ID: <20240605221446.2624964-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 4/6] ASoC: codecs: Replace of_gpio.h by proper one
+Date: Thu,  6 Jun 2024 00:27:27 +0300
+Message-ID: <20240605221446.2624964-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 In-Reply-To: <20240605221446.2624964-1-andriy.shevchenko@linux.intel.com>
 References: <20240605221446.2624964-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QQ3OWE2VPGMUSBCA24PJHUZDRWNYVA3O
-X-Message-ID-Hash: QQ3OWE2VPGMUSBCA24PJHUZDRWNYVA3O
+Message-ID-Hash: 6MWYEPQNGGQXPHQL34EW4AMRDC7K7G5A
+X-Message-ID-Hash: 6MWYEPQNGGQXPHQL34EW4AMRDC7K7G5A
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -129,7 +129,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QQ3OWE2VPGMUSBCA24PJHUZDRWNYVA3O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6MWYEPQNGGQXPHQL34EW4AMRDC7K7G5A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,224 +138,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-of_gpio.h is deprecated and subject to remove. The drivers in question
-don't use it, simply remove the unused header.
+of_gpio.h is deprecated and subject to remove.
+The driver doesn't use it directly, replace it
+with what is really being used.
 
-Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/codecs/ak4118.c        | 1 -
- sound/soc/codecs/ak4458.c        | 1 -
- sound/soc/codecs/aw88399.c       | 2 +-
- sound/soc/codecs/cs53l30.c       | 1 -
- sound/soc/codecs/max98390.c      | 1 -
- sound/soc/codecs/pcm3168a.c      | 1 -
- sound/soc/codecs/rk817_codec.c   | 1 -
- sound/soc/codecs/tas2552.c       | 1 -
- sound/soc/codecs/tas2764.c       | 1 -
- sound/soc/codecs/tas2770.c       | 1 -
- sound/soc/codecs/tas2780.c       | 1 -
- sound/soc/codecs/tlv320adc3xxx.c | 1 -
- sound/soc/codecs/tlv320adcx140.c | 1 -
- sound/soc/codecs/tlv320aic31xx.c | 1 -
- sound/soc/codecs/ts3a227e.c      | 1 -
- sound/soc/codecs/wsa883x.c       | 1 -
- 16 files changed, 1 insertion(+), 16 deletions(-)
+ sound/soc/codecs/aw88395/aw88395.c | 2 +-
+ sound/soc/codecs/aw88399.c         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4118.c b/sound/soc/codecs/ak4118.c
-index 9a43235e6a11..23e868e4e3fb 100644
---- a/sound/soc/codecs/ak4118.c
-+++ b/sound/soc/codecs/ak4118.c
-@@ -9,7 +9,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
+diff --git a/sound/soc/codecs/aw88395/aw88395.c b/sound/soc/codecs/aw88395/aw88395.c
+index 3c459a67ad0c..be6ebcb51cca 100644
+--- a/sound/soc/codecs/aw88395/aw88395.c
++++ b/sound/soc/codecs/aw88395/aw88395.c
+@@ -8,9 +8,9 @@
+ // Author: Weidong Wang <wangweidong.a@awinic.com>
+ //
  
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 73cf482f104f..32cb802ad635 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -10,7 +10,6 @@
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
-diff --git a/sound/soc/codecs/aw88399.c b/sound/soc/codecs/aw88399.c
-index 9fcb805bf971..df6d52a1cfef 100644
---- a/sound/soc/codecs/aw88399.c
-+++ b/sound/soc/codecs/aw88399.c
-@@ -10,7 +10,7 @@
- #include <linux/crc32.h>
++#include <linux/gpio/consumer.h>
  #include <linux/i2c.h>
  #include <linux/firmware.h>
 -#include <linux/of_gpio.h>
-+#include <linux/of_gpio.h> 
+ #include <linux/regmap.h>
+ #include <sound/soc.h>
+ #include "aw88395.h"
+diff --git a/sound/soc/codecs/aw88399.c b/sound/soc/codecs/aw88399.c
+index df6d52a1cfef..5d8481612eab 100644
+--- a/sound/soc/codecs/aw88399.c
++++ b/sound/soc/codecs/aw88399.c
+@@ -8,9 +8,9 @@
+ //
+ 
+ #include <linux/crc32.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/firmware.h>
+-#include <linux/of_gpio.h> 
  #include <linux/regmap.h>
  #include <sound/soc.h>
  #include "aw88399.h"
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index c0893146423b..2ee13d885fdc 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -12,7 +12,6 @@
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
- #include <sound/pcm_params.h>
-diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
-index 57fa2db1e148..1bae253618fd 100644
---- a/sound/soc/codecs/max98390.c
-+++ b/sound/soc/codecs/max98390.c
-@@ -13,7 +13,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/time.h>
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 9d6431338fb7..3c0e0fdbfc5c 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -11,7 +11,6 @@
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/sound/soc/codecs/rk817_codec.c b/sound/soc/codecs/rk817_codec.c
-index d4da98469f8b..5fea600bc3a4 100644
---- a/sound/soc/codecs/rk817_codec.c
-+++ b/sound/soc/codecs/rk817_codec.c
-@@ -10,7 +10,6 @@
- #include <linux/mfd/rk808.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <sound/core.h>
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index a7ed59ec49a6..9e68afc09897 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -13,7 +13,6 @@
- #include <linux/device.h>
- #include <linux/i2c.h>
- #include <linux/gpio.h>
--#include <linux/of_gpio.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas2764.c
-index 1dc719d726ab..5eaddf07aadc 100644
---- a/sound/soc/codecs/tas2764.c
-+++ b/sound/soc/codecs/tas2764.c
-@@ -15,7 +15,6 @@
- #include <linux/regulator/consumer.h>
- #include <linux/regmap.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/slab.h>
- #include <sound/soc.h>
- #include <sound/pcm.h>
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 67bc1c8b0131..5601fba17c96 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -20,7 +20,6 @@
- #include <linux/firmware.h>
- #include <linux/regmap.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/slab.h>
- #include <sound/soc.h>
- #include <sound/pcm.h>
-diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
-index a18ccf5fb7ad..6902bfef185b 100644
---- a/sound/soc/codecs/tas2780.c
-+++ b/sound/soc/codecs/tas2780.c
-@@ -11,7 +11,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/regmap.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <sound/soc.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-diff --git a/sound/soc/codecs/tlv320adc3xxx.c b/sound/soc/codecs/tlv320adc3xxx.c
-index e100cc9f5c19..eb180df9a72a 100644
---- a/sound/soc/codecs/tlv320adc3xxx.c
-+++ b/sound/soc/codecs/tlv320adc3xxx.c
-@@ -25,7 +25,6 @@
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/cdev.h>
--#include <linux/of_gpio.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 41342b340680..d594bf166c0e 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -12,7 +12,6 @@
- #include <linux/regulator/consumer.h>
- #include <linux/acpi.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 4d7c5a80c6ed..2f94cfda0e33 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -23,7 +23,6 @@
- #include <linux/regulator/consumer.h>
- #include <linux/acpi.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/jack.h>
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index dbf448dd8864..b9eb59e3bfa0 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -10,7 +10,6 @@
- #include <linux/init.h>
- #include <linux/input.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/regmap.h>
- #include <linux/acpi.h>
- 
-diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-index a2e86ef7d18f..8abce2160d65 100644
---- a/sound/soc/codecs/wsa883x.c
-+++ b/sound/soc/codecs/wsa883x.c
-@@ -9,7 +9,6 @@
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/pm_runtime.h>
- #include <linux/printk.h>
- #include <linux/regmap.h>
 -- 
 2.43.0.rc1.1336.g36b5255a03ac
 
