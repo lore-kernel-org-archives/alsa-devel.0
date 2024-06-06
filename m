@@ -4,122 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37412C27C54
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 13:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE589C25B75
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 13:21:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11DD4DF9;
-	Thu,  6 Jun 2024 15:20:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11DD4DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32E4E1D9;
+	Thu,  6 Jun 2024 15:21:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32E4E1D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717680069;
-	bh=nFhoqr2wMY0whfkoabem9irTKvdC4/rV+7S2nXCIz4s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1717680086;
+	bh=0Kx8hqLQGitntoFzXerDXeNFIOulpKRW07HQjXgMiFk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZYhbQARLrhNkbvWAyeR1cq9M7w/3hAj2DNyYSAi+BXzDHKcCu7/Fjdix2MuYo6laZ
-	 50n4gzuikPJXQrx+YhOJnriN231KItQ8WvuJSSmPt6vEpeIkIra4DpHuZ3s3jeLBO6
-	 f6OuQoFAyJ5TRTeoxFe6U6IgpRPwPohEF4Ckp+oI=
+	b=ZOMQmQsiYFnAgPnSmvWxix+qKpdFpU3QD9ZXdtEw0Fd+l6eEgTFDb+E4K/lMTH8TO
+	 tVpCnbaWpm16SWewNQWt5j+qyaahvPFSHVPU7uWSfr2P0tK1K7PVk4htOh4qV6UZsp
+	 T4wSh1T/GnV1X8okDYgGEZNb1muwrCIhTq4/mseU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78DB0F80580; Thu,  6 Jun 2024 15:20:39 +0200 (CEST)
+	id 97847F805DA; Thu,  6 Jun 2024 15:20:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 946C5F805AE;
-	Thu,  6 Jun 2024 15:20:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89C55F805DF;
+	Thu,  6 Jun 2024 15:20:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DB7AF8025A; Thu,  6 Jun 2024 15:20:31 +0200 (CEST)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
- [IPv6:2a00:1450:4864:20::135])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 63E87F805BA; Thu,  6 Jun 2024 15:20:41 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7DDE4F8025A
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 15:20:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DDE4F8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8F18F8025A
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 15:20:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F18F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=gsZWiFMm
-Received: by mail-lf1-x135.google.com with SMTP id
- 2adb3069b0e04-52b938587a4so1096434e87.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 06 Jun 2024 06:20:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1717680026; x=1718284826;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s1VkxcrZpp4kvTeXW7bP9jyRSyfs9NM9XyTq3inohO0=;
-        b=gsZWiFMmP450DcdlWP+1mVt+xl2rcv+QcG+u6+uPBq0ssZ9SePNgVTTzaYDA/mYp3g
-         /zsyangG703bd2BgWYDlutDL/0TZHabbt5Fm/Q3XcIs36KIbS8CGo96+VVfXt0okwNwq
-         S0Pn79uAHTr0FlL5Gnh3mAdv90fI3ICQgqe9wDCkeeWS5vUtM978Un5sg/yTIu7Y2fSj
-         PaCpqkzHxYQa7HnxFdZKFdB+Aqslfvi9yECbuvbcOots37BfDHzbcK+IbTQ5/xtFZsP2
-         jqp1wE/7/fVggObYBp2XyH+F8k0BCPjmk4VOHnc7Kn+yuGFnowvO81LjIDHEZ9yv6vHm
-         ufKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717680026; x=1718284826;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s1VkxcrZpp4kvTeXW7bP9jyRSyfs9NM9XyTq3inohO0=;
-        b=KS6t4NDXRp2e/HvkcYuWbNHrlezdJu/awDdTeKwUWN/uNfKXjsM0BjEzd860betH71
-         SLfW7Ye2LkQQ9ZHTeRa2my3IXs0EmeBSjFcKwPqwvCvlRtetk7VxEmQPYd5VdoiU+oe2
-         gUdEQJqG5n+/WxoxEdLqoYFxehHIocUEsbwnlLmoSN0o5quYIrAxSKDBrejIpn1T8+/P
-         2SYmeP13kDpTIO5jLMk4LvgH1e4aUxKM+MPgD+f/oNX+N93uSuXgrk5TR1wx1bo4ESST
-         8XAZ8+0icyI82DxS/ohZ7oMO1sC4GTOQBdSH0W2y+iN3vd4ZjtF/sdAVnfI4shKCOVus
-         IF3g==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWT4Q2YAwHCI+Yt8gK2eG9LriUeRoeY0lno19xf5ZA7ec3to0RrdlYx3LPCh/Z5AAaIwoCL9pwlL7HlyMnLJ1wmpPPJyLe7Ag2VQts=
-X-Gm-Message-State: AOJu0YzTGtUGTwVxG52C5ZKtHwPmoIkVR2MmQMI/+vbNzKkAF1RL8x4T
-	d07fYrO8Lgr3LIX6f1gjhqIj5SNOHm7lHgoZux+MI0KI3JHZ+6h3alaro3mcBJCJPJwGhPhPi2S
-	2
-X-Google-Smtp-Source: 
- AGHT+IFYvdUuHBNDMes2MT9Yl3Cwenx25oAenPp97LW2+dMe2ZDRFwQqBUtrPymBHEUXEvXS2p/PGA==
-X-Received: by 2002:a05:600c:1da1:b0:421:1d5:c0a3 with SMTP id
- 5b1f17b1804b1-42156351b48mr45599345e9.28.1717676779622;
-        Thu, 06 Jun 2024 05:26:19 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4216412972fsm275325e9.47.2024.06.06.05.26.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jun 2024 05:26:18 -0700 (PDT)
-From: srinivas.kandagatla@linaro.org
-To: broonie@kernel.org
-Cc: perex@perex.cz,
-	lgirdwood@gmail.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	krzk+dt@kernel.org,
-	neil.armstrong@linaro.org,
-	krzysztof.kozlowski@linaro.org,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 1/2] ASoC: codecs: lpass-macro: add helpers to get codec
- version
-Date: Thu,  6 Jun 2024 13:25:58 +0100
-Message-Id: <20240606122559.116698-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240606122559.116698-1-srinivas.kandagatla@linaro.org>
-References: <20240606122559.116698-1-srinivas.kandagatla@linaro.org>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=FH0FLrN3
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 4565uenA010646;
+	Thu, 6 Jun 2024 08:04:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	PODMain02222019; bh=PAh85hwQZsafzP/3SaO3leBJB50ZLINVkNpAHcoAWn0=; b=
+	FH0FLrN3m0ebJQajGy5R35N9fc0ADA4OorqFqdXsCWpWfOrqoI/XyUB4oObjvcTn
+	z1BZ1onkKznYp4zxkW1ArUBRLP4BU6UsLWiiBeWVBAw+8uNHEVEPD5zcOk33HzJY
+	FwPzHKT/kij1//NZ/FB36tb3QhE6Mu5eGMMkEnnzZDMEP0bicpXit+xdCcDUb1eH
+	jWLGG/WGTaVC/NUefJX2L4tRMuvwOBWWgKkZQKlQ774iWRVUF8hm8kPmdMYze4JX
+	GNc3ed2buvsmZyA3rsY2sfatiI67tk5CsRS3IKZqo8niwRHBH21rSCLE5r8gsSDJ
+	9ginf71nzCv+ex8JD9pQ/Q==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3yg11xw66m-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Jun 2024 08:04:06 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 6 Jun 2024
+ 14:03:57 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Thu, 6 Jun 2024 14:03:57 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.65.44])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 2F844820249;
+	Thu,  6 Jun 2024 13:03:57 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Stefan
+ Binding" <sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 2/4] ALSA: hda: cs35l41: Support Lenovo Thinkbook 13x Gen 4
+Date: Thu, 6 Jun 2024 14:03:49 +0100
+Message-ID: <20240606130351.333495-3-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240606130351.333495-1-sbinding@opensource.cirrus.com>
+References: <20240606130351.333495-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5254;
- i=srinivas.kandagatla@linaro.org; h=from:subject;
- bh=SVW44utVjXNuFZ+AypBWA7rXwY5vRIX97O/MMF4uf9s=;
- b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmYarX1Kwrp4yWxHLOe/EW1JkSYs+Bk1zuaPMAn
- INHrpzyxzCJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZmGq1wAKCRB6of1ZxzRV
- N7vcCACz6rY+yaz6h4BXF37jugKcZemEzbE09Ij7IgQiw+yIeGl+ZPUevNTssCSVsa+xxhT0ydX
- NDWD0BfkaTMVVoYhkK0jDGGK9SRkKEHKBhjqYGi3r8EO6u+/KVNxYnEIZj7Hy6gS+hBm2fRFBxp
- Mcr1b+DIcTm8ix2tY6QYC3IuSDEf3XnHmM6rke2wccewGoaaIsOWyU/h1gTYkPjxj6X5/oUqdff
- WU7t+PrMBaTZdrwkYCSNSghhFLYQo3vu7/pMbgSo7b6gnT/AHIpA2UQbVealQSTPnc1GtsHUGp3
- xHNI8OymXQNiU6O17CcFVMjQo5edypZtlnt+TZsbIUeGBoD1
-X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp;
- fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KJEUCCWN2XZD3WWRONFGY6NBHGKY3M4U
-X-Message-ID-Hash: KJEUCCWN2XZD3WWRONFGY6NBHGKY3M4U
-X-MailFrom: srinivas.kandagatla@linaro.org
+Content-Type: text/plain
+X-Proofpoint-GUID: qDjOc460vRMTcMGS1p0QVrb9FTBBXQgL
+X-Proofpoint-ORIG-GUID: qDjOc460vRMTcMGS1p0QVrb9FTBBXQgL
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: YFTLB3U4Y3B3DIHLMG2CA5SIBZ2IW723
+X-Message-ID-Hash: YFTLB3U4Y3B3DIHLMG2CA5SIBZ2IW723
+X-MailFrom: prvs=388799c159=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -131,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KJEUCCWN2XZD3WWRONFGY6NBHGKY3M4U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YFTLB3U4Y3B3DIHLMG2CA5SIBZ2IW723/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,159 +108,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+This laptop does not contain _DSD so needs to be supported using the
+configuration table.
 
-LPASS Digital codec have changes in register layout across multiple
-versions. Add a proper way read the codec version allowint all the lpass
-macro drivers (tx, rx, wsa, va) to configure the registers correctly.
-
-LPASS VA macro has the required registers to read the codec version.
-Read the the version and make it available to other lpass codec macros
-using the common helper functions.
-
-Existing method of using LPASS IP version is not accurate as the same
-the codec versioning is totally independent of LPASS IP block versions.
-
-These helper functions should be able to provide a convient way to get
-the codec version, and will help scale the drivers in right direction.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/soc/codecs/lpass-macro-common.c | 14 +++++++++++
- sound/soc/codecs/lpass-macro-common.h | 35 +++++++++++++++++++++++++++
- sound/soc/codecs/lpass-va-macro.c     | 29 ++++++++++++++++++++++
- 3 files changed, 78 insertions(+)
+ sound/pci/hda/cs35l41_hda_property.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/lpass-macro-common.c b/sound/soc/codecs/lpass-macro-common.c
-index da1b422250b8..a640bf88a6cd 100644
---- a/sound/soc/codecs/lpass-macro-common.c
-+++ b/sound/soc/codecs/lpass-macro-common.c
-@@ -11,6 +11,8 @@
- 
- #include "lpass-macro-common.h"
- 
-+static int lpass_codec_version;
-+
- struct lpass_macro *lpass_macro_pds_init(struct device *dev)
- {
- 	struct lpass_macro *l_pds;
-@@ -66,5 +68,17 @@ void lpass_macro_pds_exit(struct lpass_macro *pds)
- }
- EXPORT_SYMBOL_GPL(lpass_macro_pds_exit);
- 
-+void lpass_macro_set_codec_version(int version)
-+{
-+	lpass_codec_version = version;
-+}
-+EXPORT_SYMBOL_GPL(lpass_macro_set_codec_version);
-+
-+int lpass_macro_get_codec_version(void)
-+{
-+	return lpass_codec_version;
-+}
-+EXPORT_SYMBOL_GPL(lpass_macro_get_codec_version);
-+
- MODULE_DESCRIPTION("Common macro driver");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/lpass-macro-common.h b/sound/soc/codecs/lpass-macro-common.h
-index d98718b3dc4b..f6f1bfe8eb77 100644
---- a/sound/soc/codecs/lpass-macro-common.h
-+++ b/sound/soc/codecs/lpass-macro-common.h
-@@ -18,6 +18,18 @@ enum lpass_version {
- 	LPASS_VER_11_0_0,
- };
- 
-+enum lpass_codec_version {
-+	LPASS_CODEC_VERSION_1_0 = 1,
-+	LPASS_CODEC_VERSION_1_1,
-+	LPASS_CODEC_VERSION_1_2,
-+	LPASS_CODEC_VERSION_2_0,
-+	LPASS_CODEC_VERSION_2_1,
-+	LPASS_CODEC_VERSION_2_5,
-+	LPASS_CODEC_VERSION_2_6,
-+	LPASS_CODEC_VERSION_2_7,
-+	LPASS_CODEC_VERSION_2_8,
-+};
-+
- struct lpass_macro {
- 	struct device *macro_pd;
- 	struct device *dcodec_pd;
-@@ -25,5 +37,28 @@ struct lpass_macro {
- 
- struct lpass_macro *lpass_macro_pds_init(struct device *dev);
- void lpass_macro_pds_exit(struct lpass_macro *pds);
-+void lpass_macro_set_codec_version(int version);
-+int lpass_macro_get_codec_version(void);
-+
-+static inline const char *lpass_macro_get_codec_version_string(int version)
-+{
-+	switch (version) {
-+	case LPASS_CODEC_VERSION_2_0:
-+		return "v2.0";
-+	case LPASS_CODEC_VERSION_2_1:
-+		return "v2.1";
-+	case LPASS_CODEC_VERSION_2_5:
-+		return "v2.5";
-+	case LPASS_CODEC_VERSION_2_6:
-+		return "v2.6";
-+	case LPASS_CODEC_VERSION_2_7:
-+		return "v2.7";
-+	case LPASS_CODEC_VERSION_2_8:
-+		return "v2.8";
-+	default:
-+		break;
-+	}
-+	return "NA";
-+}
- 
- #endif /* __LPASS_MACRO_COMMON_H__ */
-diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-index 6eceeff10bf6..0ae9e6377e3a 100644
---- a/sound/soc/codecs/lpass-va-macro.c
-+++ b/sound/soc/codecs/lpass-va-macro.c
-@@ -1461,6 +1461,33 @@ static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
- 	return dmic_sample_rate;
- }
- 
-+static void va_macro_set_lpass_codec_version(struct va_macro *va)
-+{
-+	int core_id_0 = 0, core_id_1 = 0, core_id_2 = 0, version;
-+
-+	regmap_read(va->regmap, CDC_VA_TOP_CSR_CORE_ID_0, &core_id_0);
-+	regmap_read(va->regmap, CDC_VA_TOP_CSR_CORE_ID_1, &core_id_1);
-+	regmap_read(va->regmap, CDC_VA_TOP_CSR_CORE_ID_2, &core_id_2);
-+
-+	if ((core_id_0 == 0x01) && (core_id_1 == 0x0F))
-+		version = LPASS_CODEC_VERSION_2_0;
-+	if ((core_id_0 == 0x02) && (core_id_1 == 0x0E))
-+		version = LPASS_CODEC_VERSION_2_1;
-+	if ((core_id_0 == 0x02) && (core_id_1 == 0x0F) && (core_id_2 == 0x50 || core_id_2 == 0x51))
-+		version = LPASS_CODEC_VERSION_2_5;
-+	if ((core_id_0 == 0x02) && (core_id_1 == 0x0F) && (core_id_2 == 0x60 || core_id_2 == 0x61))
-+		version = LPASS_CODEC_VERSION_2_6;
-+	if ((core_id_0 == 0x02) && (core_id_1 == 0x0F) && (core_id_2 == 0x70 || core_id_2 == 0x71))
-+		version = LPASS_CODEC_VERSION_2_7;
-+	if ((core_id_0 == 0x02) && (core_id_1 == 0x0F) && (core_id_2 == 0x80 || core_id_2 == 0x81))
-+		version = LPASS_CODEC_VERSION_2_8;
-+
-+	lpass_macro_set_codec_version(version);
-+
-+	dev_info(va->dev, "LPASS Codec Version %s\n",
-+			lpass_macro_get_codec_version_string(version));
-+}
-+
- static int va_macro_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1554,6 +1581,8 @@ static int va_macro_probe(struct platform_device *pdev)
- 			goto err_npl;
- 	}
- 
-+	va_macro_set_lpass_codec_version(va);
-+
- 	if (va->has_swr_master) {
- 		/* Set default CLK div to 1 */
- 		regmap_update_bits(va->regmap, CDC_VA_TOP_CSR_SWR_MIC_CTL0,
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 046a94250683..51998d1c72ff 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -128,6 +128,8 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "17AA38B5", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA38B6", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA38B7", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
++	{ "17AA38C7", 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 2, -1, 1000, 4500, 24 },
++	{ "17AA38C8", 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 2, -1, 1000, 4500, 24 },
+ 	{ "17AA38F9", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
+ 	{ "17AA38FA", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
+ 	{}
+@@ -531,6 +533,8 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "17AA38B5", generic_dsd_config },
+ 	{ "CSC3551", "17AA38B6", generic_dsd_config },
+ 	{ "CSC3551", "17AA38B7", generic_dsd_config },
++	{ "CSC3551", "17AA38C7", generic_dsd_config },
++	{ "CSC3551", "17AA38C8", generic_dsd_config },
+ 	{ "CSC3551", "17AA38F9", generic_dsd_config },
+ 	{ "CSC3551", "17AA38FA", generic_dsd_config },
+ 	{}
 -- 
-2.21.0
+2.34.1
 
