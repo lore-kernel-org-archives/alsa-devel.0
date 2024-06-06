@@ -4,119 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34D6BC25B75
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 13:28:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB0F3C25B75
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 13:30:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D64ADE5;
-	Thu,  6 Jun 2024 15:28:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D64ADE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id F12A8DE5;
+	Thu,  6 Jun 2024 15:30:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F12A8DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717680516;
-	bh=lI2Wr+WdCGDlmOKaaq/1DavWKIHY7PEWV8jOUjaMVnY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=fPQ47zZ8UXCco/Q3O7pnTZ8O4mgKjDY5WE970XMDr5P6Ct8AR42mhjiSxs0/BeLCt
-	 5L87ILtr3ZWMPEfGjz8TN3vl9ylQxHnaJHq9r+qNTETzDI+auvePmIEPACgCzyqpYE
-	 b/E13y0QItSdV63YOnvPCdNoXTOIgQS7UOi25+sw=
+	s=default; t=1717680631;
+	bh=ri0OOOZWNRWsh9jBgHeTZuU2Qt1Eq8KklkhcUpeO8/E=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=awg7nt7GmlzaORnYeegEQeLmw4ymqN+Pui3F6fqmv+d42rf0bS31Y5So6rJZcUtIb
+	 nzwJ/AQGpv7F++Eyq2oBQbN5/zh9l6V30nI9A6Pk0zVuSYMdXZxG/I2A1gkVC6/LyG
+	 Lx4bmlI7W+gczywyNHFBYlyNPm6dWejI4RAdp6Rk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0127F805D6; Thu,  6 Jun 2024 15:27:58 +0200 (CEST)
+	id 93C72F805AA; Thu,  6 Jun 2024 15:29:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68C3CF805AE;
-	Thu,  6 Jun 2024 15:27:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3226EF805B1;
+	Thu,  6 Jun 2024 15:29:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90C9AF804B2; Thu,  6 Jun 2024 15:27:39 +0200 (CEST)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 6A3EEF804B2; Thu,  6 Jun 2024 15:29:38 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0758F8001D
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 15:27:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0758F8001D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1580EF80088
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 15:29:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1580EF80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=lPTKzBHw
-Received: by mail-wm1-x332.google.com with SMTP id
- 5b1f17b1804b1-42147970772so6433845e9.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 06 Jun 2024 06:27:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1717680456; x=1718285256;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PsLfgr3Xi6vscety5X2K0IsqtXVqaphhFy37TP99Jgk=;
-        b=lPTKzBHwvFhOeiOdif5a10ChJpMo74QLX4GCqRdbSBeV7EGE6bBS4EDN39H88RAqTI
-         qtv9pC49P42q6mcFIhe1wB22hLON9i/vj7XsHTok1C87ZN84NrfCDzwSINMO/02E2+C4
-         828pR5b9Lgiwb/RyKtoNzpG2sL9u1ouqZBA4VdCncluARnWVeRw7kCzCxgUel9t2KU7i
-         oGymKT2wnwbkgPoCg0G00MbQS2LMt2ixC4bRpElJyDeM/fRRnYe/41JbysM+zcjm/ha+
-         aWlbYi2BpVvrHSpMbUaHuNUyB1FVA3HhpAMYE9CZcdvzdB7ISDvZx1DD39y0nBtfbZ7R
-         inzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717680456; x=1718285256;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PsLfgr3Xi6vscety5X2K0IsqtXVqaphhFy37TP99Jgk=;
-        b=tdWkjheW08sFG1FPat/mT+eiShSUr4Ne+MzGU0JCrTIUYscUM7JwTUcKvk99/dHA1V
-         n286e1ojnjaLq9ze/0dHXmf6EcGGNsXdxeBDVN6iha4xMPAqsUTELjyZO6JIZJHc90TH
-         syBMunCfEhkxQyoS6EZfdT4qbXxvwNTcGPIBqPGXtGyc17/gpZQFyLtoJ7Hy5/+6/40Z
-         tK8zCbtFV83+l2MWw5IQpHXdEnWMq0Hd+NZ8T8EGwvKjQ6xMEOaPFzOclSPjmMKIzXvp
-         Ev9ValcnPjXpJx+7AEDGjvKJY+WO23vvYSpg5mPlOHWxUKfNjfpIGwYmdb+UO+EYkNYY
-         mDAQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVRzDukb2TlD7nVWdo4I5mfs/b34DJPZQFL9tOqqpUHmdGZfpdY+HqMETdIpGQXGbGupqhM3dTQjW1ZyV6ilJ+44/qNYG+nQNtlv24=
-X-Gm-Message-State: AOJu0YxApbUaZcpNpnzjJeqxXhQMUZ1oUajn3NsR5xdxRupuTDsJFJ7u
-	Rcw1LBaqcH0kDM1uNtSs2CQhchjR/B8p+zOwzAnGyK9iUGw3CRE2MpJK2ZpOu5SDPsBnsjSWKqb
-	g
-X-Google-Smtp-Source: 
- AGHT+IGFWMaUquMnVfZp3UMZFdvZP9pMC5U96cQtmVXdFBaIGSzynEYzdADNTXephojkOl4Dp7zQiA==
-X-Received: by 2002:adf:a1d5:0:b0:34c:f507:84b6 with SMTP id
- ffacd0b85a97d-35e8ef1b8dcmr4182580f8f.41.1717670970844;
-        Thu, 06 Jun 2024 03:49:30 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-35ef5e95bcesm1223185f8f.77.2024.06.06.03.49.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jun 2024 03:49:29 -0700 (PDT)
-From: srinivas.kandagatla@linaro.org
-To: broonie@kernel.org
-Cc: perex@perex.cz,
-	lgirdwood@gmail.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	krzk+dt@kernel.org,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 2/4] ASoC: qcom: common: add Display port Jack function
-Date: Thu,  6 Jun 2024 11:49:20 +0100
-Message-Id: <20240606104922.114229-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240606104922.114229-1-srinivas.kandagatla@linaro.org>
-References: <20240606104922.114229-1-srinivas.kandagatla@linaro.org>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=ni+GTbJJ
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 4564ueAZ021615;
+	Thu, 6 Jun 2024 08:03:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=PODMain02222019; bh=ITJde61E7SQb6Vol
+	mPyc4UokVhSx5f60rcqehJhVu64=; b=ni+GTbJJ3hwFOk/GR43llLiiLeXLD0N9
+	66x3+YSV1ou4v+gAuO4i89htcg+Ja8tXLEm2l/8d1ytiNabnWLtZ7ti16PHShSs0
+	QJjUGZ3E3CTMtQ4abHvZfOAnfaHFZS2sZEf38dhZPcHiRF5pm3LUtDRT3qvVwz/b
+	z5DpeA85zxduJZkYXcoDdUuvdlajCLqc8W68W4TmOMpPY3uSaO3J9OMP3WYG1ady
+	MXaZHw5JkdNlEfgOESKQs2HVhHYS7VUg2057avmSiAD03EzOvGNOGS/vBrq6ccD+
+	szR4PXRWVXdO0kb5syPbltXfa+F3p2zDqwE1XtH1/UbXx9pblSnTMw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3yg02hn5xp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Jun 2024 08:03:58 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 6 Jun 2024
+ 14:03:57 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Thu, 6 Jun 2024 14:03:57 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.65.44])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id B6ACF820249;
+	Thu,  6 Jun 2024 13:03:56 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Stefan
+ Binding" <sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 0/4] Add support for Lenovo Thinkbooks
+Date: Thu, 6 Jun 2024 14:03:47 +0100
+Message-ID: <20240606130351.333495-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2545;
- i=srinivas.kandagatla@linaro.org; h=from:subject;
- bh=0xU05ks6euG6v2ZrWI75v4FiGnhWGBYPQDcPdDGOsmw=;
- b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmYZQxQDX4PXA+5exUK/ygVrKmwpjaWWHAxm69M
- qofEzm+QaGJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZmGUMQAKCRB6of1ZxzRV
- N0RUB/0UByxBo38zMz7xEXFAgYCc7m6SkHWnWqEk85cHJRTF4UvdMRTpdmKgawEmhSM3BBqWzZZ
- LilAuQ4/TlKP/M4j/ahCdkGDUUuUQVMC97IK+6DjhoA3+b8PyZgI1luoQWogoKF/mMNlSHV8DNO
- Dpl8ZgJicd4yE2jzNFslCg8uoOwIIZ4xsi1EIcNXN56Ep56U+Sk93mDSlHOExGpSm6xzfr/zmJx
- 7hxjXz+I5bqk0N+WXKLvEZppv5NW29z+6NK5k3ONnR+h3MCx9oDjOv348ckD3kfXx++H0Km5azk
- QkITat4rhsNn7wpF9GLuuxubkjoNwPVoATee/bOo4f93KpND
-X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp;
- fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MLTYHVRGGOR6ELJPGPZRU73OWD7VOO64
-X-Message-ID-Hash: MLTYHVRGGOR6ELJPGPZRU73OWD7VOO64
-X-MailFrom: srinivas.kandagatla@linaro.org
+Content-Type: text/plain
+X-Proofpoint-GUID: N30JcssQ8WSJj6oXqXQV0dPfca5Q4bqG
+X-Proofpoint-ORIG-GUID: N30JcssQ8WSJj6oXqXQV0dPfca5Q4bqG
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 76B22J6BNZDJU3K7LDAL3WZFDFSZHK2K
+X-Message-ID-Hash: 76B22J6BNZDJU3K7LDAL3WZFDFSZHK2K
+X-MailFrom: prvs=388799c159=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -135,84 +102,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+These laptops do not contain _DSD required to support CS35L41 HDA.
+To workaround this, add support for these laptops into the configuration
+table in cs35l41_hda_property.c.
+Also add the required entries into patch_realtek for this SSID.
 
-Add a common function to add Display port jack.
+Stefan Binding (4):
+  ALSA: hda: cs35l41: Support Lenovo Thinkbook 16P Gen 5
+  ALSA: hda: cs35l41: Support Lenovo Thinkbook 13x Gen 4
+  ALSA: hda/realtek: Support Lenovo Thinkbook 16P Gen 5
+  ALSA: hda/realtek: Support Lenovo Thinkbook 13x Gen 4
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/common.c | 35 +++++++++++++++++++++++++++++++++++
- sound/soc/qcom/common.h |  3 +++
- 2 files changed, 38 insertions(+)
+ sound/pci/hda/cs35l41_hda_property.c | 8 ++++++++
+ sound/pci/hda/patch_realtek.c        | 4 ++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-index 3d02aa3844f2..56b4a3654aec 100644
---- a/sound/soc/qcom/common.c
-+++ b/sound/soc/qcom/common.c
-@@ -8,9 +8,19 @@
- #include <linux/input-event-codes.h>
- #include "common.h"
- 
-+#define NAME_SIZE	32
-+
- static const struct snd_soc_dapm_widget qcom_jack_snd_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP0 Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP1 Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP2 Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP3 Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP4 Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP5 Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP6 Jack", NULL),
-+	SND_SOC_DAPM_SPK("DP7 Jack", NULL),
- };
- 
- int qcom_snd_parse_of(struct snd_soc_card *card)
-@@ -240,5 +250,30 @@ int qcom_snd_wcd_jack_setup(struct snd_soc_pcm_runtime *rtd,
- }
- EXPORT_SYMBOL_GPL(qcom_snd_wcd_jack_setup);
- 
-+int qcom_snd_dp_jack_setup(struct snd_soc_pcm_runtime *rtd,
-+			   struct snd_soc_jack *dp_jack, int dp_pcm_id)
-+{
-+	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_card *card = rtd->card;
-+	char jack_name[NAME_SIZE];
-+	int rval, i;
-+
-+	snprintf(jack_name, sizeof(jack_name), "DP%d Jack", dp_pcm_id);
-+	rval = snd_soc_card_jack_new(card, jack_name, SND_JACK_AVOUT, dp_jack);
-+	if (rval)
-+		return rval;
-+
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		rval = snd_soc_component_set_jack(codec_dai->component, dp_jack, NULL);
-+		if (rval != 0 && rval != -ENOTSUPP) {
-+			dev_warn(card->dev, "Failed to set jack: %d\n", rval);
-+			return rval;
-+		}
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(qcom_snd_dp_jack_setup);
-+
- MODULE_DESCRIPTION("ASoC Qualcomm helper functions");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/common.h b/sound/soc/qcom/common.h
-index d7f80ee5ae26..1b8d3f90bffa 100644
---- a/sound/soc/qcom/common.h
-+++ b/sound/soc/qcom/common.h
-@@ -9,5 +9,8 @@
- int qcom_snd_parse_of(struct snd_soc_card *card);
- int qcom_snd_wcd_jack_setup(struct snd_soc_pcm_runtime *rtd,
- 			    struct snd_soc_jack *jack, bool *jack_setup);
-+int qcom_snd_dp_jack_setup(struct snd_soc_pcm_runtime *rtd,
-+			   struct snd_soc_jack *dp_jack, int id);
-+
- 
- #endif
 -- 
-2.43.0
+2.34.1
 
