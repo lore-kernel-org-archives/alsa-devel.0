@@ -4,90 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E5C1C25B75
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 13:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7355C25B75
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 13:46:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A26AB76;
-	Thu,  6 Jun 2024 15:45:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A26AB76
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE426DF8;
+	Thu,  6 Jun 2024 15:46:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE426DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717681526;
-	bh=vzv7fzOnv1xAOkXEu4BYsIBQKuKerxMCA5GOWF98fJc=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1717681593;
+	bh=I+6UZi7puKUhYGtPeWzvnTaY52v4RHJIizpINfnLSYM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LclFnyt+dPWwPOGDgMz0NJT6y3tC6hzDi8gyOeM/lp9kk+bfzDq2cp56IoytJUE8m
-	 UdCNzrVSJqHfTNSbImZein+OKxi26VX7M/U2W1YIYIWyf7vA/lcaJDDi+nxP7iZ+Rn
-	 5VtW4krw5hunhoUHJCVDdd/eT/prvzLqBRoqOy3A=
+	b=hEzN2HZf4mndjOmf/37PN7+2eSZpYJUOTSuOP+/g95mjUVc9peE+bRSsBmocmcELk
+	 znaaO6bXeDKCHcgkxnYV4x2kYzCDsxYnlFk1WuCq2v0EL6t6b4YhL5TnMZ8EIvpa9y
+	 d+gFbkpSfFo06C4+uuL3QM9O+APuLmEYkcGdJCf8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92501F8051D; Thu,  6 Jun 2024 15:44:50 +0200 (CEST)
+	id C3427F80587; Thu,  6 Jun 2024 15:46:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 116A8F805B3;
-	Thu,  6 Jun 2024 15:44:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E6E7F8057A;
+	Thu,  6 Jun 2024 15:46:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F048F804FD; Thu,  6 Jun 2024 15:44:46 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 74849F804E5; Thu,  6 Jun 2024 15:45:58 +0200 (CEST)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2CC80F804B2
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 15:44:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CC80F804B2
+	by alsa1.perex.cz (Postfix) with ESMTPS id C897AF80171
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 15:45:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C897AF80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=SkuJynWq
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 4565uen8010646;
-	Thu, 6 Jun 2024 08:04:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=F233C1P+w3bhjzR7UkxNmcjydh72Lcx37IOjcnR3h0I=; b=
-	SkuJynWqWhsxDXzzHDm2JN3JZOItxD8SoseiTV+S93kJ/Iu0Rnp/R4VjP1nW9Jyu
-	4YHriI13KnmHIXNG0bWk+Uwe5G8H0JV0toxheSy5CpOvb21TvsfXl3Bs0Rz2Aco9
-	xCnQV2reTZYhDYu9n3ycEPS+1BXX76AR2Hci2S6X0PzHG7mBj7dCYvXpTdgpvpL5
-	8xQvMdbI8WTMSEIFTOEegmFTrCDe5DhCZTVPH25FHGO4WRFD+BY6hkpP7DhEycDv
-	HG+BCOs5M4I/0bKQIEvtYBiv06Vs3X3z4OxkedYsrIugdljGfSBxk72iqlSO9TXz
-	8IpFPwnk4J6AxoRE7+4ZbQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3yg11xw66m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 06 Jun 2024 08:04:05 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 6 Jun 2024
- 14:03:57 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Thu, 6 Jun 2024 14:03:57 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.65.44])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id F40A6820259;
-	Thu,  6 Jun 2024 13:03:56 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 1/4] ALSA: hda: cs35l41: Support Lenovo Thinkbook 16P Gen 5
-Date: Thu, 6 Jun 2024 14:03:48 +0100
-Message-ID: <20240606130351.333495-2-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240606130351.333495-1-sbinding@opensource.cirrus.com>
-References: <20240606130351.333495-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=LleEPhyx
+Received: by mail-wr1-x430.google.com with SMTP id
+ ffacd0b85a97d-354b722fe81so986806f8f.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 06 Jun 2024 06:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1717681555; x=1718286355;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KotxQBLtmDzRH6QGny55WAgb9csIi+0GRil2s7zETak=;
+        b=LleEPhyxYIjSkn7f7yz88N0581EG/8QACzNy1hCt5rr+TejAxy+OIFIknwmhgSAjAX
+         w6BiwrW+y9ByUnf8nU1ZszerXlM4o8rpCugFSwO2FK5krZ2VCjHngNPdeIvNr1rYxOx0
+         LBnEmckXGUnd6zEJbFkO9K+m5ba3RLakhyvfSHqS+3sTCAA2dnaiMUI/aFRG6XoDWJYt
+         9GAT5rm3D1tk9Ptz4UXzxM8UXKl+LPNpFmNUInP5/85jhHZDAbpJi35nbR6OHtOBT/md
+         pPEUhuQ+na3xs1KuXyrByehLe8dS2iJLWZJL0JgL3PrLCB023t6Tph2mRqJHQA/jbdQB
+         qxZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717681555; x=1718286355;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KotxQBLtmDzRH6QGny55WAgb9csIi+0GRil2s7zETak=;
+        b=QtkK7EQvNOtoxNvxp73xAeZB8VIm98rLQ/JWz2CfHlF/a1O14iPmMVAxDDV4GH4oLy
+         5emlVva5VjKExBEIECA+yb8pBIDOYci9JyvTRameig4pwGrERHCH7PnBfdrWabpI/U6s
+         Mk8sUQ/zJK1mWzAEnK49tJqsSBRCQOSfob65jalFdSgYo+H/qu7x3kwS0m2QxzjLIVh9
+         CHxs7Qg6IDWW4Lz43czC7nH0UL43xiaeJQr2hBF3+Y1/62+Y9I4sNQZLyfpxj2dT20X4
+         /wYbn/av5leG5su3siiiXTihJLOmvN8ZAcHl0K2JpxnwpTNqnNNTHamlIhDXZ4J9r4bY
+         r8Pw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWINGkqZWIqb15swpeUvw1cRwSi2PObUj4RRe0cKVJ/LilR2/xnShH4zLOvD4KFtIajuqjes0+cNsDZqDT6BvVUrkmcOLCwssdg4uc=
+X-Gm-Message-State: AOJu0YzaL48r18m6r1vij/SCrgTC/Ivn0rgbZ/DyDO1TECMbZAW1Zfwy
+	EuGLAR/G6dEMcm6I+10iAt8CJIUFIvV2zTsYCHirTKMg66dMPb8Q3mnvpt3UOM9P683xLiHMLGi
+	+
+X-Google-Smtp-Source: 
+ AGHT+IGSCQvrfLW6lE08ifHKvN4Un/+EhdFM2F5Aprg72ymHaQ2v3OqZe8dulDUIdlz+hHyK3pMwDg==
+X-Received: by 2002:a05:6000:2aa:b0:355:161:b7e3 with SMTP id
+ ffacd0b85a97d-35e8ef7ea4dmr4949893f8f.48.1717670972249;
+        Thu, 06 Jun 2024 03:49:32 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-35ef5e95bcesm1223185f8f.77.2024.06.06.03.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jun 2024 03:49:31 -0700 (PDT)
+From: srinivas.kandagatla@linaro.org
+To: broonie@kernel.org
+Cc: perex@perex.cz,
+	lgirdwood@gmail.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	krzk+dt@kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 3/4] ASoC: qcom: sc8280xp: add Display port Jack
+Date: Thu,  6 Jun 2024 11:49:21 +0100
+Message-Id: <20240606104922.114229-4-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240606104922.114229-1-srinivas.kandagatla@linaro.org>
+References: <20240606104922.114229-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1694;
+ i=srinivas.kandagatla@linaro.org; h=from:subject;
+ bh=TUQWW37BE+q1mcU0pxnwMPllf5GS98Hiri3+qX4bwus=;
+ b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmYZQxDaK2PB42LioKGSzptd4+OTAK4jxQS4jwi
+ DlhPDmFu/eJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZmGUMQAKCRB6of1ZxzRV
+ NxfBCACAAfrzfsr30IYlz/hLdxCQonofqYtWX6I8ONji38oi22ss31ptXN0pbuEYDSPe2RdSqiC
+ DAlRv6829tTjTaalLZXL7aKaxgFqo1stJ17dLbmJ+Z+m7ZJ4rIN1ZWobe29FG+OcI8T2ibz/DHN
+ of4UIqGvxRS3xZYLu1bPelt/PvKB/x+7j+NB23W4815+wDLqkbOaS475xslL6hbrHSVXnLtI0c2
+ lRrFAMR5Y4LGVfqjipp8sMtL7yLUZhV2v/n/TATY3GssQ91wgO6UZ4xdERIEPZddcInsNtS72Ag
+ xrXug3OgfXaAwYh+J8kaPIUVct08OZ6SqhacKTVtryk9NwaC
+X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp;
+ fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: BN6R2ycMVBwHtGE8ytKA-ESAw3kbfeL7
-X-Proofpoint-ORIG-GUID: BN6R2ycMVBwHtGE8ytKA-ESAw3kbfeL7
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: JLN2T6XVOJ3C5EZMDIH5YDIPARJISZEM
-X-Message-ID-Hash: JLN2T6XVOJ3C5EZMDIH5YDIPARJISZEM
-X-MailFrom: prvs=388799c159=sbinding@opensource.cirrus.com
+Message-ID-Hash: O64J65VOSFTJEMUJ7FMTJ3NXVJ4XV3H7
+X-Message-ID-Hash: O64J65VOSFTJEMUJ7FMTJ3NXVJ4XV3H7
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JLN2T6XVOJ3C5EZMDIH5YDIPARJISZEM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O64J65VOSFTJEMUJ7FMTJ3NXVJ4XV3H7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,36 +137,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This laptop does not contain _DSD so needs to be supported using the
-configuration table.
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Add support for Display Port Jack events.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/pci/hda/cs35l41_hda_property.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/qcom/sc8280xp.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 6a7a6d486916..046a94250683 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -128,6 +128,8 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "17AA38B5", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B6", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B7", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-+	{ "17AA38F9", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
-+	{ "17AA38FA", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
- 	{}
+diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+index 06fd47c4178f..922ecada1cd8 100644
+--- a/sound/soc/qcom/sc8280xp.c
++++ b/sound/soc/qcom/sc8280xp.c
+@@ -19,6 +19,7 @@ struct sc8280xp_snd_data {
+ 	struct snd_soc_card *card;
+ 	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
+ 	struct snd_soc_jack jack;
++	struct snd_soc_jack dp_jack[8];
+ 	bool jack_setup;
  };
  
-@@ -529,6 +531,8 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "17AA38B5", generic_dsd_config },
- 	{ "CSC3551", "17AA38B6", generic_dsd_config },
- 	{ "CSC3551", "17AA38B7", generic_dsd_config },
-+	{ "CSC3551", "17AA38F9", generic_dsd_config },
-+	{ "CSC3551", "17AA38FA", generic_dsd_config },
- 	{}
- };
+@@ -27,6 +28,8 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct sc8280xp_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
+ 	struct snd_soc_card *card = rtd->card;
++	struct snd_soc_jack *dp_jack  = NULL;
++	int dp_pcm_id = 0;
+ 
+ 	switch (cpu_dai->id) {
+ 	case WSA_CODEC_DMA_RX_0:
+@@ -41,10 +44,22 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+ 		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 17);
+ 		snd_soc_limit_volume(card, "SpkrRight PA Volume", 17);
+ 		break;
++	case DISPLAY_PORT_RX_0:
++		/* DISPLAY_PORT dai ids are not contiguous */
++		dp_pcm_id = 0;
++		dp_jack = &data->dp_jack[dp_pcm_id];
++		break;
++	case DISPLAY_PORT_RX_1 ... DISPLAY_PORT_RX_7:
++		dp_pcm_id = cpu_dai->id - DISPLAY_PORT_RX_1 + 1;
++		dp_jack = &data->dp_jack[dp_pcm_id];
++		break;
+ 	default:
+ 		break;
+ 	}
+ 
++	if (dp_jack)
++		return qcom_snd_dp_jack_setup(rtd, dp_jack, dp_pcm_id);
++
+ 	return qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
+ }
  
 -- 
-2.34.1
+2.43.0
 
