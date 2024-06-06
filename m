@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDF14C25B75
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 07:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5340EC25B75
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jun 2024 07:49:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 879D57F1;
-	Thu,  6 Jun 2024 09:46:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 879D57F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7DFC820;
+	Thu,  6 Jun 2024 09:49:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7DFC820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1717660013;
-	bh=n2bFnbVhEVrvOShZE3hFXBh4jzmB5nDaAr/D1/e0dUg=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:List-Id:
+	s=default; t=1717660150;
+	bh=Z/5PfYRFanPiZ1cX8KTcWTm3qmmFzc9dXjuacLPiD+Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=P9Ex8Sw5nkIu4shQ/50u9o+G+E8Iy9In+1hIx3sXKk0TOhpd42fRW+Gp1imFtO7iI
-	 D9D8xhD0P3PL4AF0y4j49GIKetFZ3RSGie1eGuukna8lLzYOKZi87GoavfxTEbdFRN
-	 yRx/gydwOwg+j/QtHmQz0/hG8dlgIcTl/dm0Z2gA=
+	b=rSW3UZjY4GVc2wufT0lpBqHVlzL4f7flP6/21Kmu/vyGQmueQTSiwR268qTgIjbkB
+	 IrvxZyxtjsXPrXA9Y30GFB3qHKcOeu88AX39P5c948/5r5qy+TsTO6fD1PJvftQlwl
+	 8jF0TysWSQq16Xo80lCfR0OUMtJKW01jBZfLp338=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AED05F80588; Thu,  6 Jun 2024 09:46:22 +0200 (CEST)
+	id 9D955F805A0; Thu,  6 Jun 2024 09:48:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D87FFF805AC;
-	Thu,  6 Jun 2024 09:46:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AA9BF805AD;
+	Thu,  6 Jun 2024 09:48:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDC20F8025A; Thu,  6 Jun 2024 09:46:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 12512F802DB; Thu,  6 Jun 2024 09:48:31 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 695A3F8001D
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 09:46:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 695A3F8001D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 152E7F800FA
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2024 09:48:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 152E7F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VuFWuk5m
+ header.s=k20201202 header.b=MaaCmaOi
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 83B4061B8E;
-	Thu,  6 Jun 2024 07:45:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E723C32782;
-	Thu,  6 Jun 2024 07:45:55 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 34054CE091F;
+	Thu,  6 Jun 2024 07:46:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03523C2BD10;
+	Thu,  6 Jun 2024 07:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717659958;
-	bh=n2bFnbVhEVrvOShZE3hFXBh4jzmB5nDaAr/D1/e0dUg=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=VuFWuk5mg8XUtiuypbnX3eRz7G1JOLtqCqsb1TvPWVvKFFvviVC6bDn1Lgjubq77k
-	 9fpv8pKAVKtrStywLVLHmuvk199C5yzlaWbOQORlT/+XYOQwZ2VEDiacW+zSighyEZ
-	 nGTijTdlInsqJ/nOy/QfVDo92P9gBAWjFvzt3ou0d/OJFmMbZkL71XFOgBPRTPgfvJ
-	 Vpcha7aCUO5M4j7hob2RaGfubijmPP07RFXiHqLg1/LsJ1p51t0JIYfR2Ahm4xoLcT
-	 YEJNhqzWccETSbJ1BZus66ko+xftK76y0GSovX6tUa1Fn0puUIGoM7EXU6qt6DbUQb
-	 BiLk2CgIvKCVw==
-Message-ID: <4d9d7cff-1a00-459d-8ccf-d30ec2cdcaad@kernel.org>
-Date: Thu, 6 Jun 2024 09:45:53 +0200
+	s=k20201202; t=1717659923;
+	bh=Z/5PfYRFanPiZ1cX8KTcWTm3qmmFzc9dXjuacLPiD+Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MaaCmaOi/O3f1iod6jEv4FW9UD7/VQqNnNwMF7psNmmXy+rZSY5AkKjxpZmXVw/Yd
+	 4aANM+/i5SrWqraDuLPv9WxnXG8yLTz++/Y9nmCZ62NFKqcqFrZ6cv1h2MJSTVarjl
+	 0uGSOSb2gEOLlcFOOvNPt9HC1M1f+lp5gX+p4CdwiCzqu/EWCZU8vE1eG2KRwqI006
+	 +YnzXTMacg2JxpytqY5exHgBtNzcP5dYri8e4h6GtkjPciP+5hMAThJuS53t/A4sdd
+	 jBAgb2Cwx42vxCtO3JFz03Xfc3JOBE/98UbM9FqHZzlqn8XSMe8Ij+a7jRWYRdixZt
+	 Hfi8S0pGsF9FA==
+Message-ID: <05454339-9f83-4101-ac55-0dc7b5a8d45e@kernel.org>
+Date: Thu, 6 Jun 2024 09:45:19 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] ASoC: dt-binding: convert amlogic,g12a-tohdmitx to
  dt-schema
-From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Neil Armstrong <neil.armstrong@linaro.org>,
  Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
@@ -71,7 +69,7 @@ Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: 
  <20240605-topic-amlogic-upstream-bindings-convert-g12a-tohdmitx-v1-1-b851c195e241@linaro.org>
- <05454339-9f83-4101-ac55-0dc7b5a8d45e@kernel.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -116,11 +114,12 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <05454339-9f83-4101-ac55-0dc7b5a8d45e@kernel.org>
+In-Reply-To: 
+ <20240605-topic-amlogic-upstream-bindings-convert-g12a-tohdmitx-v1-1-b851c195e241@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: W7QAXZ3NIE4BRFQAQYYF7PU5Z4AYZYDV
-X-Message-ID-Hash: W7QAXZ3NIE4BRFQAQYYF7PU5Z4AYZYDV
+Message-ID-Hash: OP6SGGYFEI55AUDHTNTETPM4M4OGW25M
+X-Message-ID-Hash: OP6SGGYFEI55AUDHTNTETPM4M4OGW25M
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +132,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W7QAXZ3NIE4BRFQAQYYF7PU5Z4AYZYDV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OP6SGGYFEI55AUDHTNTETPM4M4OGW25M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,83 +141,80 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 06/06/2024 09:45, Krzysztof Kozlowski wrote:
-> On 05/06/2024 18:23, Neil Armstrong wrote:
->> Convert text bindings to dt-schema format for the Amlogic TX HDMI
->> control glue.
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+On 05/06/2024 18:23, Neil Armstrong wrote:
+> Convert text bindings to dt-schema format for the Amlogic TX HDMI
+> control glue.
 > 
-> subject: dt-bindings (missing 's')
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+
+subject: dt-bindings (missing 's')
+
+> ---
+>  .../bindings/sound/amlogic,g12a-tohdmitx.txt       | 58 ----------------------
+>  .../bindings/sound/amlogic,g12a-tohdmitx.yaml      | 56 +++++++++++++++++++++
+>  2 files changed, 56 insertions(+), 58 deletions(-)
 > 
->> ---
->>  .../bindings/sound/amlogic,g12a-tohdmitx.txt       | 58 ----------------------
->>  .../bindings/sound/amlogic,g12a-tohdmitx.yaml      | 56 +++++++++++++++++++++
->>  2 files changed, 56 insertions(+), 58 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt b/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
->> deleted file mode 100644
->> index 4e8cd7eb7cec..000000000000
->> --- a/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
->> +++ /dev/null
->> @@ -1,58 +0,0 @@
->> -* Amlogic HDMI Tx control glue
->> -
-> 
->> +
->> +title: Amlogic G12a HDMI TX Control Glue
->> +
->> +maintainers:
->> +  - Jerome Brunet <jbrunet@baylibre.com>
->> +
->> +allOf:
->> +  - $ref: dai-common.yaml#
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "^audio-controller@.*"
->> +
->> +  "#sound-dai-cells":
->> +    const: 1
->> +
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +          - const: amlogic,g12a-tohdmitx
->> +      - items:
->> +          - enum:
->> +              - amlogic,sm1-tohdmitx
->> +          - const: amlogic,g12a-tohdmitx
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  sound-name-prefix: true
-> 
-> Drop
-> 
->> +
->> +required:
->> +  - "#sound-dai-cells"
->> +  - compatible
->> +  - reg
->> +  - resets
-> 
-> Please keep the same order as in "properties:" block.
-> 
->> +
->> +additionalProperties: false
-> 
-> and here instead:
-> unevaluatedProperties: false
+> diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt b/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
+> deleted file mode 100644
+> index 4e8cd7eb7cec..000000000000
+> --- a/Documentation/devicetree/bindings/sound/amlogic,g12a-tohdmitx.txt
+> +++ /dev/null
+> @@ -1,58 +0,0 @@
+> -* Amlogic HDMI Tx control glue
+> -
+
+> +
+> +title: Amlogic G12a HDMI TX Control Glue
+> +
+> +maintainers:
+> +  - Jerome Brunet <jbrunet@baylibre.com>
+> +
+> +allOf:
+> +  - $ref: dai-common.yaml#
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^audio-controller@.*"
+> +
+> +  "#sound-dai-cells":
+> +    const: 1
+> +
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: amlogic,g12a-tohdmitx
+> +      - items:
+> +          - enum:
+> +              - amlogic,sm1-tohdmitx
+> +          - const: amlogic,g12a-tohdmitx
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  sound-name-prefix: true
+
+Drop
+
+> +
+> +required:
+> +  - "#sound-dai-cells"
+> +  - compatible
+> +  - reg
+> +  - resets
+
+Please keep the same order as in "properties:" block.
+
+> +
+> +additionalProperties: false
+
+and here instead:
+unevaluatedProperties: false
+
 > 
 
-and with above changes:
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
