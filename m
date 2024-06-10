@@ -4,253 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 494CDC27C4F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:12:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D11C27C6E
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:13:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C148210F;
-	Thu, 13 Jun 2024 18:12:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C148210F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A6C2E9F;
+	Thu, 13 Jun 2024 18:13:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A6C2E9F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718295166;
-	bh=/L5y1Dv6ivY3eszYnYmdXRYc401x9YYY2yBAmmyUG/k=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1718295205;
+	bh=O+lWqMRXwSy8zBJ1mc67aSXihmGU78/BDKwHYJeNvQw=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p2oB/vvicEeDS8jYjQLZI2dKhx979MYXCm24qm9mHY0Eg7Z5xZvMB3PLKXqCUDNkZ
-	 fuCNIk+ky1S+uPFfPJ7xcksWExP3FQIpVsNoncIyoGgYvhgL7l7EV2e6F4eYIgs+/X
-	 kderBjUUATBMFZEFafWviYRxBKzOEVzCf2D5cpss=
+	b=GGx3dr4wqyAVfHIpPSYsSfd5TYd6jnMI/9hO/VGO9GdyGoN2fKmkwtEZcsBKHfawG
+	 mNOMM/YDL04e/M/kaF7BG5xYrJffkRWPW4LEhsEp9xaz7dwhoucWX7QwGY+/Sy3npo
+	 O1gJAJRfINIpl2mMHtX1MAb03HraslBXWvuYAJs0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 566D8F80718; Thu, 13 Jun 2024 18:04:34 +0200 (CEST)
+	id D6F95F8064F; Thu, 13 Jun 2024 18:04:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F83BF806F9;
-	Thu, 13 Jun 2024 18:04:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 208CEF8085B;
+	Thu, 13 Jun 2024 18:04:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C2CAF8028D; Mon, 10 Jun 2024 10:08:33 +0200 (CEST)
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
- [IPv6:2a00:1450:4864:20::12d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A3494F80448; Mon, 10 Jun 2024 12:56:41 +0200 (CEST)
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C3964F80130
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2024 10:08:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3964F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id ABFC4F80130
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2024 12:56:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABFC4F80130
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=B03qN2gY
-Received: by mail-lf1-x12d.google.com with SMTP id
- 2adb3069b0e04-52c525257feso2195119e87.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 10 Jun 2024 01:08:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718006892; x=1718611692;
- darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/L5y1Dv6ivY3eszYnYmdXRYc401x9YYY2yBAmmyUG/k=;
-        b=B03qN2gYft3/xBlWeqQL3Y3Ry2aErt5bXuqoJEQIG8IgG2xNYUlaKM4a2ghcvtUVUu
-         GtBTYWjvnU4IQQFsDFDI9hxu7HygUZ3S2hxyLoIW+llZhzOi7AwSehl8AiqNS8yd+p+T
-         sIXuyVTFAampXqyex0GZP4mto+W399tIBt1hBkAvrzKF5a/qUm8AaGzFyBRQLChT6je1
-         UJ21x+5BhHw3PAapKNK3v26FMbG+FR7rkm1R+oNDVwq/FkIezdzqxL8SbmOHIoEp9Z2R
-         V8rm0JyGGSUxg8mU23DqeKZ2Vu1pXI9OtkQjPk2wcVdLgoC06pXZR3tQt3Kcc88a4CRr
-         5uzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718006892; x=1718611692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/L5y1Dv6ivY3eszYnYmdXRYc401x9YYY2yBAmmyUG/k=;
-        b=KvaSpX5udkfmUP0zZ4jLuy4LtF9xWETw9k/Zk1bCmIDatwl4C1C00uHd+O8vHu+65x
-         2vxqryhoH0Dhhin3iycilvNeGdiX4r4D8PyJuteTsa8x4CHWmq5MWO73VlhMPQLEGYN6
-         gImIUXwD+qhD7mFsnf60eZD3C/GOB847lZIZUShLap+mJDgbSgDxFgEndKgnzppIVMUn
-         4audYvAiSRs5QH1NtPfhOl51BwPtpPdOBzJAfVTfvO+OuvFSzSr8G0OjC93p3n+lDF3g
-         g4lHjQBzQUGsHcS7n+3LBmz9sJky+vT0BIFnIzUw9XvaGuH1puiKpjo9gO/FmRvMb8Ha
-         5ieQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUdan5HrROHo5zVIizoZmht1KHhHmt22w3dakBBkJ+R/Pf2v+hwx9HebvlNvD4dBNdogHMQz+mw4IGMgBvhjyfP7nOqImWAVlmCzvc=
-X-Gm-Message-State: AOJu0YzMQUiqigXGMN30QBFJqCqfTBP8RVzEkumLehkaMTp4bfXhFGF5
-	00hZSLm7OCMwvwBVllaoYq15zMk+veKPs52eVKuyx8d0LIZa6n2DX4fWo8nxz9mzj8kGL4Bfje1
-	MqqjIKEje86mbnDoObFGlbH6UUWNj3Y1I5skY4A==
-X-Google-Smtp-Source: 
- AGHT+IEoIIaopVbMhKiBzu+ZFeFG117iZrYhuaSy1PLsnicMvCE0nAaF1iUL9hhnUeVtUHqe9i20V059/u6XmSWe6yI=
-X-Received: by 2002:a05:6512:234d:b0:52b:be9b:cafe with SMTP id
- 2adb3069b0e04-52bbe9bcbadmr5940256e87.21.1718006892189; Mon, 10 Jun 2024
- 01:08:12 -0700 (PDT)
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=jno0hY7l
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 45AAuS2t009004;
+	Mon, 10 Jun 2024 05:56:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1718016988;
+	bh=/WPuP+3MqrfuEjdImm1fPrjNvw+T0MBh7NTiOXP2HsM=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC;
+	b=jno0hY7lIhYQBmxspZnUlszmMjEftMmiz0wE6cMssYG7tdUznQxty5JlaGzhWQ1lc
+	 KQ9IyUKCPpQSse4UVKOd6EClxyiSa74tKPViRZphiK7bdUfzykIKfAFLEW1ghBLGwd
+	 XRh4+LPwmfIbkg5gntDznAzKOCd3H3O9UTrgsvNc=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 45AAuS1d061861
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 10 Jun 2024 05:56:28 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 10
+ Jun 2024 05:56:27 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 10 Jun 2024 05:56:27 -0500
+Received: from localhost (jluthra.dhcp.ti.com [172.24.227.116])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 45AAuQnD079439;
+	Mon, 10 Jun 2024 05:56:27 -0500
+From: Jai Luthra <j-luthra@ti.com>
+Date: Mon, 10 Jun 2024 16:26:00 +0530
+Subject: [PATCH v2 1/2] ALSA: dmaengine: Synchronize dma channel in
+ prepare()
 MIME-Version: 1.0
-References: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com>
- <87tti9cfry.fsf@intel.com>
-In-Reply-To: <87tti9cfry.fsf@intel.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 10 Jun 2024 10:08:00 +0200
-Message-ID: 
- <CACRpkdZFPG_YLici-BmYfk9HZ36f4WavCN3JNotkk8cPgCODCg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] treewide: Align match_string() with
- sysfs_match_string()
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Corey Minyard <minyard@acm.org>,
-	Allen Pais <apais@linux.microsoft.com>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
- Perry Yuan <perry.yuan@amd.com>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
-	Nuno Sa <nuno.sa@analog.com>, Guenter Roeck <linux@roeck-us.net>,
-	Randy Dunlap <rdunlap@infradead.org>, Andi Shyti <andi.shyti@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>, Lee Jones <lee@kernel.org>,
-	Samuel Holland <samuel@sholland.org>, Elad Nachman <enachman@marvell.com>,
-	Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
- Johannes Berg <johannes.berg@intel.com>,
-	Gregory Greenman <gregory.greenman@intel.com>,
- Benjamin Berg <benjamin.berg@intel.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, Robert Richter <rrichter@amd.com>,
- Vinod Koul <vkoul@kernel.org>,
-	Chunfeng Yun <chunfeng.yun@mediatek.com>,
- Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Nikita Kravets <teackot@gmail.com>, Jiri Slaby <jirislaby@kernel.org>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Stanley Chang <stanley_chang@realtek.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Abdel Alkuor <abdelalkuor@geotab.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
- Eric Biggers <ebiggers@google.com>,
-	Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
- John Johansen <john.johansen@canonical.com>,
-	Mimi Zohar <zohar@linux.ibm.com>, Stefan Berger <stefanb@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
- Eric Snowberg <eric.snowberg@oracle.com>,
-	Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- Mark Brown <broonie@kernel.org>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-ide@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-	linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
-	linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org, qat-linux@intel.com,
-	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
-	linux-gpio@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-usb@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-	linux-integrity@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>, Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>, Daniel Scally <djrscally@gmail.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
- Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
- Heiko Stuebner <heiko@sntech.de>,
-	Peter De Schrijver <pdeschrijver@nvidia.com>,
- Prashant Gaikwad <pgaikwad@nvidia.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
-	Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
- Viresh Kumar <viresh.kumar@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Tvrtko Ursulin <tursulin@ursulin.net>, Karol Herbst <kherbst@redhat.com>,
- Lyude Paul <lyude@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>, Jean Delvare <jdelvare@suse.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Pavel Machek <pavel@ucw.cz>,
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Tony Lindgren <tony@atomide.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Hu Ziji <huziji@marvell.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
- Kalle Valo <kvalo@kernel.org>,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
- "Oliver O'Halloran" <oohall@gmail.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- JC Kuo <jckuo@nvidia.com>,
-	Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Sebastian Reichel <sre@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
-	Lukasz Luba <lukasz.luba@arm.com>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	Helge Deller <deller@gmx.de>, Brian Foster <bfoster@redhat.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
- Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: linus.walleij@linaro.org
-X-Mailman-Rule-Hits: max-recipients
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240610-asoc_next-v2-1-b52aaf5d67c4@ti.com>
+References: <20240610-asoc_next-v2-0-b52aaf5d67c4@ti.com>
+In-Reply-To: <20240610-asoc_next-v2-0-b52aaf5d67c4@ti.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark
+ Brown <broonie@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>
+CC: <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, Devarsh Thakkar <devarsht@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>, Jai
+ Luthra <j-luthra@ti.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3364; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=O+lWqMRXwSy8zBJ1mc67aSXihmGU78/BDKwHYJeNvQw=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBmZtvXvyGKfK9Fw7nQW8ivV8GWNEMKrun8JD93m
+ 24/mt6wReOJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZmbb1wAKCRBD3pH5JJpx
+ RRZVEACYO/2PEQhnin0tBClnmN5daonwZs/efSNQ0rQ/6aq0El9FRVHGeDUN6vYFdPMloxR5ny0
+ vpTFccQKV2DQa6uyiw5jIWjiNr1su8HEXlizOINmu/F8bsUaL/A/7hb2182YWKikBNWzbW4XkyF
+ pETB13RztXAD3d15rjIAuPIjxbf2GonuBwuqVM37ypWcrimCxNk11Qugxh3Shuw/HPEhwBdVXkb
+ cvDE2IE2m2J+uwHCiS0YSSQ7Z4hGlPa85ZF4OL47nkt2yW3b4Q8LGcrNEWZ4Vyt2ilURdL9bVS8
+ v4jakrlH8Ce0xmvvtiL2ytSl9IlRXvUzTMUNU8R+QSoNI8DgiueK4wwVbf93jta4B2WNoQcftm4
+ FL4qTkjo8l2ip6R2O68DaTTtCoGU6QAY1nEDpTXdZr3MrP3a0cPuTJXGYmwTs3vo3zLgfKum0sP
+ TsLlT3ORUdDnqNDUK8+e+7S1hLiAwGdRkv4aBv47j8bMkZQjT8sboXGnImAq2Wfef18UiyBOaxD
+ vvMHQdU3z34qfM6IvCFnLPgWqYdR+O2HK0ioMptZ4sRGTd57Zhi0ncccO0CtrDi4ZfPDW8cNEk4
+ yBz83QnS2VZAtJwogbGoO0f6rtpdxZedN0Sok+Kdm+F9IK7pyxkUMIvLxiSrX///Da0wDyv+3kl
+ Z2++lP+bEbDZepQ==
+X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
+ fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MailFrom: j-luthra@ti.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: R6I77QC6KZORAFB7K326GD4KAATM4UP5
-X-Message-ID-Hash: R6I77QC6KZORAFB7K326GD4KAATM4UP5
-X-Mailman-Approved-At: Thu, 13 Jun 2024 16:04:28 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 3KXX3GKCQSPTS3H3PR6LBTDAC5VBDS4F
+X-Message-ID-Hash: 3KXX3GKCQSPTS3H3PR6LBTDAC5VBDS4F
+X-Mailman-Approved-At: Thu, 13 Jun 2024 16:04:29 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R6I77QC6KZORAFB7K326GD4KAATM4UP5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3KXX3GKCQSPTS3H3PR6LBTDAC5VBDS4F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -259,38 +125,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jun 4, 2024 at 9:46=E2=80=AFAM Jani Nikula <jani.nikula@linux.intel=
-.com> wrote:
+Sometimes the stream may be stopped due to XRUN events, in which case
+the userspace can call snd_pcm_drop() and snd_pcm_prepare() to stop and
+start the stream again.
 
-[Maybe slightly off-topic, ranty]
+In these cases, we must wait for the DMA channel to synchronize before
+marking the stream as prepared for playback, as the DMA channel gets
+stopped by snd_pcm_drop() without any synchronization.
 
-> Why do we think it's a good idea to increase and normalize the use of
-> double-underscore function names across the kernel, like
-> __match_string() in this case? It should mean "reserved for the
-> implementation, not to be called directly".
->
-> If it's to be used directly, it should be named accordingly, right?
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Jai Luthra <j-luthra@ti.com>
+---
+ include/sound/dmaengine_pcm.h         |  1 +
+ sound/core/pcm_dmaengine.c            | 10 ++++++++++
+ sound/soc/soc-generic-dmaengine-pcm.c |  8 ++++++++
+ 3 files changed, 19 insertions(+)
 
-It's a huge mess. "__" prefix is just so ambiguous I think it just
-shouldn't be used or prolifierated, and it usually breaks Rusty Russells
-API rules times over.
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index c11aaf8079fb..9c5800e5659f 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -36,6 +36,7 @@ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream
+ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ 	struct dma_chan *chan);
+ int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream);
++int snd_dmaengine_pcm_prepare(struct snd_pcm_substream *substream);
+ 
+ int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+ 	dma_filter_fn filter_fn, void *filter_data);
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 12aa1cef11a1..dbf5c6136d68 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -349,6 +349,16 @@ int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_chan);
+ 
++int snd_dmaengine_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
++
++	dmaengine_synchronize(prtd->dma_chan);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_prepare);
++
+ /**
+  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
+  * @substream: PCM substream
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index ea3bc9318412..078fcb0ba8a2 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -318,6 +318,12 @@ static int dmaengine_copy(struct snd_soc_component *component,
+ 	return 0;
+ }
+ 
++static int dmaengine_pcm_prepare(struct snd_soc_component *component,
++				 struct snd_pcm_substream *substream)
++{
++	return snd_dmaengine_pcm_prepare(substream);
++}
++
+ static const struct snd_soc_component_driver dmaengine_pcm_component = {
+ 	.name		= SND_DMAENGINE_PCM_DRV_NAME,
+ 	.probe_order	= SND_SOC_COMP_ORDER_LATE,
+@@ -327,6 +333,7 @@ static const struct snd_soc_component_driver dmaengine_pcm_component = {
+ 	.trigger	= dmaengine_pcm_trigger,
+ 	.pointer	= dmaengine_pcm_pointer,
+ 	.pcm_construct	= dmaengine_pcm_new,
++	.prepare	= dmaengine_pcm_prepare,
+ };
+ 
+ static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
+@@ -339,6 +346,7 @@ static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
+ 	.pointer	= dmaengine_pcm_pointer,
+ 	.copy		= dmaengine_copy,
+ 	.pcm_construct	= dmaengine_pcm_new,
++	.prepare	= dmaengine_pcm_prepare,
+ };
+ 
+ static const char * const dmaengine_pcm_dma_channel_names[] = {
 
-Consider __set_bit() from <linux/bitops.h>, used all over the place,
-in contrast with set_bit() for example, what does "__" represent in
-this context that makes __set_bit() different from set_bit()?
+-- 
+2.43.0
 
-It means "non-atomic"...
-
-How does a random contributor know this?
-
-Yeah, you guess it. By the token of "everybody knows that".
-(Grep, google, repeat for the number of contributors to the kernel.)
-
-I was considering to send a script to Torvalds to just change all
-this to set_bit_nonatomic() (etc) but was hesitating because that
-makes the name unambiguous but long. I think I stayed off it
-because changing stuff like that all over the place creates churn
-and churn is bad.
-
-Yours,
-Linus Walleij
