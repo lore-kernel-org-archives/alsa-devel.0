@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 355C5C27C4F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:15:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBFF0C27C4F
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:15:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55CE3E65;
-	Thu, 13 Jun 2024 18:15:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55CE3E65
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A26B211A;
+	Thu, 13 Jun 2024 18:15:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A26B211A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718295320;
-	bh=/JEDUExWQNwoOi5zUT9iDtsEq0qd3E0WRFsxqoJeC4U=;
-	h=From:Subject:Date:To:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=a1FVSQYkiqT8lyUE7+aB6+FU2/VQMukz/mZBhrnb9QugSMWeoTkFUL/Ukn6mhLpQS
-	 +U64jEifMjLNuhaeXN4/qYE8Ru5HaMES2MxjyxNMS2K084LT9bu77+NSOQBfB4Ucyj
-	 2pjreF5sXUkq/+8HEvRzCByxue9401lFEmSVwONo=
+	s=default; t=1718295331;
+	bh=8jD5Mvn4JnvcGDrCagOrGGZetRPfvF4h/uJysM7SORY=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=EdjTuSE0Hf6H8Fa2xb3Z7MfQrJ8qYrxhIa9C3QPjXo1kLGQM2Ip4Z4CWOZexKpIP7
+	 2THSBC055x5pJ2sb6EE/Vmk4qWYCA7SoqvVpPYZ7wSfZX3h+ynmH2jMDDY5/JCCete
+	 QGTDY3lC38O8fmZomA01ihIOi+w5vVokjkqgYuak=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65B12F80797; Thu, 13 Jun 2024 18:05:22 +0200 (CEST)
+	id 75C0FF89980; Thu, 13 Jun 2024 18:05:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9AFE8F89970;
-	Thu, 13 Jun 2024 18:05:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C64F6F89980;
+	Thu, 13 Jun 2024 18:05:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1841EF80589; Tue, 11 Jun 2024 14:36:50 +0200 (CEST)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	id 4D798F80579; Tue, 11 Jun 2024 14:36:52 +0200 (CEST)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0B63CF80578
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2024 14:36:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B63CF80578
+	by alsa1.perex.cz (Postfix) with ESMTPS id A0E86F8057A
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jun 2024 14:36:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0E86F8057A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=yoblyMP9
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 45BCaXmU005559;
-	Tue, 11 Jun 2024 07:36:33 -0500
+ header.s=ti-com-17Q1 header.b=UOVolnY7
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 45BCaa6a088100;
+	Tue, 11 Jun 2024 07:36:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1718109393;
-	bh=u9cSUoRXmcbaPFPP8IaI0DTi4v+PCdOKv9htFxq5zTQ=;
-	h=From:Subject:Date:To:CC;
-	b=yoblyMP9xH97T8N+JtpU/JiOxCggmwr8F2wIvPc2jThc/rvTOZ8PdU8PQORyvVLyj
-	 p67JvHtqY1BGGuCd0EEAzYbnJ+qY/VYxRhZOj+XjIotuspDYSH62alHqQRED9lIBmP
-	 wULMQqOI0aKxRTWKBD8nDItmbNr3+JitqpGBt9AA=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 45BCaXxP007135
+	s=ti-com-17Q1; t=1718109396;
+	bh=Xi+lXeC9oOPY560HM6ndHndJe00tZZ8g5JUpqfg8mMc=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC;
+	b=UOVolnY7O4t53trTs4QTtefjTo6wP3vqPGib4PgyPlWj8IeWuogyvRFXv90TmBdxt
+	 CbJhXk6Qm63Sy+GCb2d5tsxn+/oNZGO5Xl3UABgBR5imCpyvLfI8PBYrdwqu2WVzgw
+	 k8CQRQN4lRnO6Kd2QdU6HbmfL2DKT6v7nSe5ItCA=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 45BCaamY116897
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 11 Jun 2024 07:36:33 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 11 Jun 2024 07:36:36 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 11
- Jun 2024 07:36:32 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2024 07:36:36 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 11 Jun 2024 07:36:32 -0500
+ Frontend Transport; Tue, 11 Jun 2024 07:36:35 -0500
 Received: from localhost (jluthra.dhcp.ti.com [172.24.227.116])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 45BCaWTR105880;
-	Tue, 11 Jun 2024 07:36:32 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 45BCaZcw105946;
+	Tue, 11 Jun 2024 07:36:35 -0500
 From: Jai Luthra <j-luthra@ti.com>
-Subject: [PATCH v3 0/2] Fixes for McASP and dmaengine_pcm
-Date: Tue, 11 Jun 2024 18:02:54 +0530
-Message-ID: <20240611-asoc_next-v3-0-fcfd84b12164@ti.com>
+Date: Tue, 11 Jun 2024 18:02:56 +0530
+Subject: [PATCH v3 2/2] ASoC: ti: davinci-mcasp: Set min period size using
+ FIFO config
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPZDaGYC/22MQQ6CMBBFr2Jmbc20lAKuvIcxpg6DdCE1LWkwh
- LtbWBgWLt/Pf2+GyMFxhPNhhsDJReeHDMXxANTb4cnCtZlBodJoUAsbPd0HnkZBaIqOSDZIBvL
- /Hbhz09a63jL3Lo4+fLZ0kuv6r5KkQMF1U1Jdc6V1exndifwL1kRSO03iXlNZe5TK2q5sTUX6p
- y3L8gVCtZUR1gAAAA==
+Message-ID: <20240611-asoc_next-v3-2-fcfd84b12164@ti.com>
+References: <20240611-asoc_next-v3-0-fcfd84b12164@ti.com>
+In-Reply-To: <20240611-asoc_next-v3-0-fcfd84b12164@ti.com>
 To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
         Mark
@@ -85,20 +85,20 @@ CC: <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Jayesh Choudhary <j-choudhary@ti.com>, Jai
  Luthra <j-luthra@ti.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1335; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=/JEDUExWQNwoOi5zUT9iDtsEq0qd3E0WRFsxqoJeC4U=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBmaETM0yRfcun3sNNj794JLE6yj7x6Th/YOdUPV
- xDqladjUQWJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZmhEzAAKCRBD3pH5JJpx
- RSITD/0bh6UNfq2ZtG62Xu+6cYsJBp3BUUSSosjkD4IovEKizbuhi4Ph/oTBi0BYCOAM62ZEkGf
- saPiGlg0EfdlmcTnlvY7IXpPvZUUcvFdmF77/3yYSSX1ugbbn7RvTWzHDI1ws9BMaiZXGv6typB
- EAA6coMsNiCz/OQnxLINAlXs3FNoYauWgI56PIb5Z+vwyKpeAc4KUzdfYZzaYiYNO16u3i53HKn
- DOV1Cim2D3WWq0admLs+IhkVZ2NfU7BxR2NzvGOfp4FcyVNqt0EyEGrk5czZ+b1KEHgNmr8s3uG
- AYbN1rHEO3fgUbGYQHLrSdVR0GeQxZJQU8hT2ybWqvAPUD/Esft8oHNWYXNqH7Y3bFw3GxMQULk
- xD8I9TVa65s8OMOeOVxo/Z5uRn8G8lYF2BV760bS6GZncGJ7/wQWX51yXVMGSI3OSfbLzqskUbw
- 2ZHYeZk4jNAXiE88jbKfi+QtrgRTL53srS905TTFwO7m0ngIqP6/voj2jEMkufUe2UAvfCMoC/h
- BgNX5pBm4/9QsaPDCQFnWFYsSGHViPUqNxZWmLk/nRRtf7u5nZmJQQ6hs/XUjr5L3aNS155WN6m
- c7XSNG3O1rS2SFn4ZiPKgQ6WkVluUIhmr/u9o8zWxXNDNlhcKqnuH6+y2LhS0a6lAXF0PhimZMR
- 8jQVrhh9zSxKTgQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2013; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=8jD5Mvn4JnvcGDrCagOrGGZetRPfvF4h/uJysM7SORY=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBmaETOYhZakNd8NUjZCV3kKA2TKaPzDcRwgvD8M
+ qVxONW06W+JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZmhEzgAKCRBD3pH5JJpx
+ RSG8D/9sFwAIG62LqXVjYS9r25876+BBOXvMsmJ49kxUk+X5EKAsXm97vxjtGIlIP+88MUuc7CT
+ tPKRTE+PH4RSEfGbtL7SsmRg40kUTtXMzu2aUSKF3TE1MbHYqfWX4HnxArhiHv7EL175L84kU+F
+ xkHcHo5VBOA+xAvWXA/jxQdY4tLUeLDJJbe5h4d+tjr1jx04melwPcwMgt8kjOSa79xPr23VhJV
+ 2E6lUKdotTaonOA0ZLWuNx5vFcSehwG5zj/9lbGLzo+o5texet91cetc856dpwV5iZ7JLVIUvh8
+ qVLOpNRL4kwt4zP4Ym7Sx5Or2Pg3P+DGbQ7z6tiZwR1mqWIKvIutfpeRaOByaduLu8n0jB5+/n3
+ JsYMUoEH2WHlhWS6nNDu3zb7RpWoyUSP+bz1796Jyxr0j8Szf/7Lwl/2W9OnGNURwP1xmadY+TI
+ IrrR20e3oM+SmgPICEV1o1P9GcodfaHr+ALuhWagi41WbQv5AxjkrXepNkpviZNnPm6S8D86j0E
+ 0R8ymjNggQcg6pI56GTUtqPPCI1BYTVMQOgQyP2GjV/hSTXbsbaCIwsk0HXqOr6kPRklmo/GPvp
+ LcsbmBe0cRjRBBvQ1IuJWpXp9tfCEiI0nk0iPdIkz2mvr9qbLQ3MooLbJETU9TUTAAwn1xFdAzq
+ ZgXHztXo8cnQtcA==
 X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
  fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -108,15 +108,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IU2SUFTQ4XDRLTDC3KLGQUQX4VNDVNDJ
-X-Message-ID-Hash: IU2SUFTQ4XDRLTDC3KLGQUQX4VNDVNDJ
+Message-ID-Hash: UMAS5UYOROFNOKUFWQOEMJEPK3T6VOTP
+X-Message-ID-Hash: UMAS5UYOROFNOKUFWQOEMJEPK3T6VOTP
 X-Mailman-Approved-At: Thu, 13 Jun 2024 16:05:05 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IU2SUFTQ4XDRLTDC3KLGQUQX4VNDVNDJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UMAS5UYOROFNOKUFWQOEMJEPK3T6VOTP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,40 +125,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series fixes two patches:
+The minimum period size was enforced to 64 as older devices integrating
+McASP with EDMA used an internal FIFO of 64 samples.
 
-1. Fix the dmaengine API usage by calling dmaengine_synchronize() after
-   dmaengine_terminate_async() when xrun events occur in application
-2. Use the McASP AFIFO property from DT to refine the period size,
-   instead of hardcoding minimum to 64 samples
+With UDMA based platforms this internal McASP FIFO is optional, as the
+DMA engine internally does some buffering which is already accounted for
+when registering the platform. So we should read the actual FIFO
+configuration (txnumevt/rxnumevt) instead of hardcoding frames.min to
+64.
 
+Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 Signed-off-by: Jai Luthra <j-luthra@ti.com>
 ---
-Changes in v3:
-- Use sync_stop() hook instead of a prepare() hook for the DMA channel
-  synchronization
-- Link to v2: https://lore.kernel.org/r/20240610-asoc_next-v2-0-b52aaf5d67c4@ti.com
+ sound/soc/ti/davinci-mcasp.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Changes in v2:
-- Fix compiler warning for prepare callback by marking it static
-- Pass numevt directly to hw_rule_min_periodsize()
-- Link to v1: https://lore.kernel.org/r/20240604-asoc_next-v1-0-e895c88e744d@ti.com
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index 1e760c315521..2b1ed91a736c 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -1472,10 +1472,11 @@ static int davinci_mcasp_hw_rule_min_periodsize(
+ {
+ 	struct snd_interval *period_size = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
++	u8 numevt = *((u8 *)rule->private);
+ 	struct snd_interval frames;
+ 
+ 	snd_interval_any(&frames);
+-	frames.min = 64;
++	frames.min = numevt;
+ 	frames.integer = 1;
+ 
+ 	return snd_interval_refine(period_size, &frames);
+@@ -1490,6 +1491,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 	u32 max_channels = 0;
+ 	int i, dir, ret;
+ 	int tdm_slots = mcasp->tdm_slots;
++	u8 *numevt;
+ 
+ 	/* Do not allow more then one stream per direction */
+ 	if (mcasp->substreams[substream->stream])
+@@ -1589,9 +1591,12 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
+ 			return ret;
+ 	}
+ 
++	numevt = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
++			 &mcasp->txnumevt :
++			 &mcasp->rxnumevt;
+ 	snd_pcm_hw_rule_add(substream->runtime, 0,
+ 			    SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
+-			    davinci_mcasp_hw_rule_min_periodsize, NULL,
++			    davinci_mcasp_hw_rule_min_periodsize, numevt,
+ 			    SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
+ 
+ 	return 0;
 
----
-Jai Luthra (2):
-      ALSA: dmaengine: Synchronize dma channel after drop()
-      ASoC: ti: davinci-mcasp: Set min period size using FIFO config
-
- include/sound/dmaengine_pcm.h         |  1 +
- sound/core/pcm_dmaengine.c            | 10 ++++++++++
- sound/soc/soc-generic-dmaengine-pcm.c |  8 ++++++++
- sound/soc/ti/davinci-mcasp.c          |  9 +++++++--
- 4 files changed, 26 insertions(+), 2 deletions(-)
----
-base-commit: a957267fa7e9159d3d2ee1421359ebf228570c68
-change-id: 20240604-asoc_next-c063fcc190c6
-
-Best regards,
 -- 
-Jai Luthra <j-luthra@ti.com>
+2.43.0
 
