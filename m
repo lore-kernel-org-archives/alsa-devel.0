@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51248C27C53
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 16:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BC37C27C53
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 16:19:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF2ABDF9;
-	Wed, 12 Jun 2024 18:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF2ABDF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B143EAB;
+	Wed, 12 Jun 2024 18:19:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B143EAB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718209135;
-	bh=kmHrZal9uMPsgRPbVS2wX2WDN6jgfyJMmeShmB1SJBo=;
+	s=default; t=1718209150;
+	bh=u2prIGwh5jqmNbs4Jyq4LFMn7uSJkWnvV3kkEVVaI+M=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=C/RIZ9G9k3INPtDVGuLNdj5LaBCuCvz9Hxtfc/WDs5tcS7go7q2PnHpRu65JGrZBC
-	 odFYlXSWvMbMNvfkBd+JcDbeZ3BWGthSqgNQLhf35frHBm/CTn7sKz7pntSyVUS4j8
-	 fM5yyNLSeSyYf6LSKsr8haYtN986tDChC4lzXejU=
+	b=DyVV0b4ZtVifqDsLbUHUbDG24j2OgYYiwK6of9ufkX9fk8LmQJDWpopvEp0OzUglM
+	 cQpHWe4v8wnfYlaZF8ueO6lbNEX3wIl7HXmBJrzTqgwQDtqmDYSjK9Wp5sn9Dhn70K
+	 KWqSvqbPWPEOjrHE1YmbpfgoicxvwYOoYen37CHA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 00E90F80751; Wed, 12 Jun 2024 18:16:17 +0200 (CEST)
+	id D8A25F8075B; Wed, 12 Jun 2024 18:16:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4560DF80752;
-	Wed, 12 Jun 2024 18:16:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8109AF80791;
+	Wed, 12 Jun 2024 18:16:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9BBDF805AC; Wed, 12 Jun 2024 18:16:05 +0200 (CEST)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
+	id 2E723F80685; Wed, 12 Jun 2024 18:16:07 +0200 (CEST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 75A9EF8010C
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 18:15:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75A9EF8010C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7682CF805AA
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 18:15:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7682CF805AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=gHtVPwf+
-Received: by mail-ej1-x62a.google.com with SMTP id
- a640c23a62f3a-a6f1c4800easo6785066b.3
+ header.s=google header.b=DtC+uriN
+Received: by mail-ej1-x62b.google.com with SMTP id
+ a640c23a62f3a-a6f1cf00b3aso6575366b.0
         for <alsa-devel@alsa-project.org>;
- Wed, 12 Jun 2024 09:15:47 -0700 (PDT)
+ Wed, 12 Jun 2024 09:15:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718208946; x=1718813746;
+        d=linaro.org; s=google; t=1718208950; x=1718813750;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1vbzfTDLIXVMqmme/hD5kLRfNrGqESO/8cdwhRwG3gw=;
-        b=gHtVPwf+y1fnlZyZ5WzYGwI297T0a21MCtPQ9Wuq9esbdX4iAgbX8tcMjTsk7lMm/G
-         Ei2yx5q2ZxumQG4hQ52j0uVBtv2Nucb6eluOHTrfg18p/aYHApVwdyYJq9OBryP9m+ec
-         IJ6ScMM8f6j3saMaGXK1cMSVg6Nndk4YTvIYhKtSgp/t2PhiKx4Tnim3w1DidNos+js6
-         H9QL+wULhuHDEaLPzX+4vX3ck47q9+IlrldL3lyZZsDirHfzwl5ay1GcoK/RGZz+KMNb
-         IPr9pqyedtQJe7sN3T9To52wtyaW/RRi1RBVbAVX1e1LcDcRDJe9K2We8isYHzrfcbZf
-         hyDw==
+        bh=eOJFJF+t6lUE1cjVVqmcWFg9bqxOoxHwGyxHu2Jt5/4=;
+        b=DtC+uriNpg1Zpx6rBJMZoOzahTD91WPC3Gy9Id0GqDtroPobuSTY04iymo2ODPoWC8
+         pKU+Xy4ututMtVG6zWSeOiSn1IUCjEOkkO22+QwLAI0o1b8Wi6CEtVbC9U/0SKfyX3md
+         g1FYPIwOojZ9YUn2uZw2keH97uslxry+mNWlxYsaKxBbD8SbeAMmpt6stDQcIMr63bJ1
+         KvYUaMtz3v0rq7RI/fJEiBxnPhUsARxewvqQkbqijAmTHJFycUjq+R3jSO6vIVNlodDO
+         bZrhnaXO9TGXsgOel61raykxq/bkOz6oF5lmyVPSLfyUyADp4ln537KK3dvSlYUJkBc3
+         ftcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718208946; x=1718813746;
+        d=1e100.net; s=20230601; t=1718208950; x=1718813750;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1vbzfTDLIXVMqmme/hD5kLRfNrGqESO/8cdwhRwG3gw=;
-        b=BlS2CFIiZX3mJ+U7s/JMTN1gGfgUWakdDNZD1w7HsisEjIpfB2/hA25+8CH6upwgUw
-         MDx+ifB4qjCLEJ4D7Oa0cOM0TcIIIKzzriNYjiOvz5hfj/EDa8NNBPXPG15wKbl2o54F
-         xNFan7ReE3jCrrjnSZXp0qNXTEkHrgUDsjyk0l/NNECy37ZTbIBgFnd+7Rc/7pU0nHX4
-         7jg3O/41oW+87MhxRISnoimZ73rdXOlJpNLIgUjRD2eiNF+oRJrAgFdShG93HhMYIUqO
-         ALaOv3Z5r28OMOnKaWyjqne36C1WPV7YlLtjQkuZKMC+e+peSeJaKXBhi3StH+1/Mcd8
-         lq2g==
-X-Gm-Message-State: AOJu0YzwFo4QrHSfVGzKwRebgudJdpZE3I54OyyYNMWRgoiQNLsRhPk7
-	/2BG/7biRVcrdIWfs0AR/meVSE6M1VN5tDLErz1uhcHUha2GO+gQgLXFEf1eSK8=
+        bh=eOJFJF+t6lUE1cjVVqmcWFg9bqxOoxHwGyxHu2Jt5/4=;
+        b=JiklD3p2ZnNxnGAN2JXkhxV77fSwY4fG3W/jCxhmAtHCo3FnmxYUgbezKnDbP0I30r
+         H7tt5WfcKdeO8qq/osAdeD2xFQjqM9T7U7FO9WeiW5gH0rkocmZkpyRkrq2SKm/sIM8n
+         CahYJp0FBbMuWcFcsnWZohP33dRxkmF7nX8abzrVSkoL3VrPZqi8LVuJjfBFdgpRujFr
+         /SISQcFLVrgOHNVzEzU4qWi9qSGZT3qCTPwbCMX2wKIoN3dzL2Njn1BUgTxAfqw+Sclc
+         nX2b4oQHECDy5/9imhFJOY6VLH1pazV8sTT98mZYlUnFgImQM4D8Ti78zLHHJdWPX+Ul
+         5yDQ==
+X-Gm-Message-State: AOJu0YzhPDssuLeACTQIFz32Oh2c9h98IEVGWgWg3nBN4G4pnaTkJc/d
+	sSvbFRZEpsvECLJiJbQT9j4elVHLzQLNbJoAF8cSro4WlZzXr9qgtv5dvYAJX8g=
 X-Google-Smtp-Source: 
- AGHT+IGHo7iEHrMc6jZ+1uvhQ5GWbZxNEiTM+xSPoQ25wNo69BzSn1Gz2bKI/JAgaTLz5pYO3KXTWg==
-X-Received: by 2002:a17:906:d1d1:b0:a68:cc6f:cb5a with SMTP id
- a640c23a62f3a-a6f47ff7954mr124721866b.68.1718208946393;
-        Wed, 12 Jun 2024 09:15:46 -0700 (PDT)
+ AGHT+IHUF0KmidhvpAnMl83vBdXTEssqSGLDlaWZMxVn1Dusd8E2ucNDNmW4b7weNZmhLGChKPIjNg==
+X-Received: by 2002:a17:907:390:b0:a6e:f655:ef29 with SMTP id
+ a640c23a62f3a-a6f52414220mr7988766b.17.1718208950323;
+        Wed, 12 Jun 2024 09:15:50 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a6efd6cfb74sm624815866b.20.2024.06.12.09.15.45
+ a640c23a62f3a-a6efd6cfb74sm624815866b.20.2024.06.12.09.15.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jun 2024 09:15:45 -0700 (PDT)
+        Wed, 12 Jun 2024 09:15:49 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 12 Jun 2024 18:15:16 +0200
-Subject: [PATCH 03/23] ASoC: codecs: wcd9335: Constify static data
+Date: Wed, 12 Jun 2024 18:15:19 +0200
+Subject: [PATCH 06/23] ASoC: codecs: wcd9335: Drop unused dmic rate
+ handling
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240612-asoc-wcd9xxx-wide-cleanups-v1-3-0d15885b2a06@linaro.org>
+Message-Id: <20240612-asoc-wcd9xxx-wide-cleanups-v1-6-0d15885b2a06@linaro.org>
 References: <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
 In-Reply-To: 
  <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
@@ -100,25 +101,25 @@ Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1876;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3095;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=kmHrZal9uMPsgRPbVS2wX2WDN6jgfyJMmeShmB1SJBo=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmacmZZugs/rmJyBKWN4qJvPQc9RXY0qGtUACXg
- e9KokazjtaJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZmnJmQAKCRDBN2bmhouD
- 15pqD/wMYa35jKtzWSHg52wUZoc1riTh2ujENos0BMiZu0FIaRg1JHLUX9u+s5tb1WCAuJGpaOh
- aiARbNbjZ9qYYcz3BKViBe+ns4Z3KTeM23gOwUQZjpP17RhK1xE+Aq6ZBDOh78f3g8Ep6043Cdn
- Lo1bcFH9zmhz/6N90k9YPHHZfAH9cck5rEcd/f85v7YPrcwJl2fr+pgtYjA/pUl6kmCyltlAsVu
- hZpF2g6ZqDlDwHtsijkaVGuAZaylrm/Ev1FnHmvFE0GfUnNhqZeWN+FsBrByL57TNbePY+fS5oz
- 8o1zf5dAJz/w97D7G74N+gViSe5x5a3Lkn//301EZJw02AOpG61fGOup9XKrQGMi3ujkAIY3xR2
- wQhuVesGfuWhKiQyQsALwEps4XlMviu8Zq2aHnAqZIfqrUjrp8hcaSL7wNavN9w3XA+/MTE7K7C
- EdnoWbbYMQ7DIcOE4bLRsT0j26y65+yqABu8wJZFqhBgQkVYWabWd+PnLClFdOUnQkXYI+IfQSX
- aWoYKP0xNNp2MnxJ6HUJFRY+yt30OxePV7UnpK+Gr7rIXQeLwHiUkZKM54dXZAJAxmJCeSDtqyJ
- Jn7yR+/oI3gH6kY1IfuGjU/0wi7BHO8W2XL//goRWEMIyg3Q1SinEM2akpRIkDxo4tVvnfcWkJ6
- mo5QlXMSHSiDF8A==
+ bh=u2prIGwh5jqmNbs4Jyq4LFMn7uSJkWnvV3kkEVVaI+M=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmacmcYazksfFeAD183iY592oj5Ey1hnxf+2W8n
+ pqiTV4pmYiJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZmnJnAAKCRDBN2bmhouD
+ 1yYVD/9xhjb8/1RHvXSBot2oW4imUHAfeV8TcbJ9t+iXnPPX9FAMldbq/LyJUFk2DfhjKJGMNFt
+ SaWwA0cCxCSEAiHOfwP3I9obF3YXgm2XZKBRE+yYkdiuoEzZF66gXXHKwKTuuamcu/PPWERpGhw
+ vpdXRPsyEu362gwv59jzNP38uQPZeuN3iipR8jomWaBwKH41B8muTgbo7H4FVF859fDgDPIa5fd
+ ZLrvkYfXW6Nigr53w4oqLDO1iCu1KWDZZUZL+amAEI3rmr9RwD//+1eTdO2W4RPqtoGXW8VHoUw
+ J9ROx43g3R3uEIsPj8A/5mWYtnU4gZaWpfWw9388o13h31KefPFFrwCT/ld9mCjRpshtOZ5yMuO
+ lZB5gdQcxd2Bmz7bNujs4rVS/jl0wZNDroZnpF1oBftoFPj4VH4ocBB7zOr4FNFv0GsFb+JD7Hf
+ TNB0Aef0wgTGOTOHuQloQ48Nb12NfRKR1xggnBLmHPCjwABUhfZWQtnWLHYq9kE0lobug3buf1R
+ w+p5zF3v3PT99QqgQFsgYeeHFi8KVgztWZVDciFPHhXsb2v9dGR9ZT6QevnYrApTQTDYE0TC9wO
+ ReXnwlyDpWIP0doK+LHywWZNaogywVzQclTIG2RjRK9lBJpLKATJwgmTD4lMET86Tco8Nbi6nzf
+ 6btju6azCzJ9Sfg==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: F6EPYBFYZMWEBHAVFZ2QI6MVHAL4KHNV
-X-Message-ID-Hash: F6EPYBFYZMWEBHAVFZ2QI6MVHAL4KHNV
+Message-ID-Hash: JM6U3NNRNLVIPDPFCTDKWQPEOSBV6F5G
+X-Message-ID-Hash: JM6U3NNRNLVIPDPFCTDKWQPEOSBV6F5G
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -131,7 +132,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F6EPYBFYZMWEBHAVFZ2QI6MVHAL4KHNV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JM6U3NNRNLVIPDPFCTDKWQPEOSBV6F5G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,62 +141,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Driver does not modify few static data (arrays with sample rates,
-interrupt description, regmap config), so make them const for code
-safety.
+Driver was prepared to adjust DMIC microphone parameters according to
+DMIC clock rate which is read from platform data or Devicetree.  The
+latter part never happened, so the code is always called with
+dmic_clk_rate=0, prints error and uses default/fallback values.  All
+this part can be simplified by dropping dead parts of code.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/wcd9335.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wcd9335.c | 52 +++-------------------------------------------
+ 1 file changed, 3 insertions(+), 49 deletions(-)
 
 diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 60e7704e48d2..c5ac2d46e556 100644
+index 6a1376b3b98c..f5fe2583b807 100644
 --- a/sound/soc/codecs/wcd9335.c
 +++ b/sound/soc/codecs/wcd9335.c
-@@ -394,13 +394,13 @@ struct interp_sample_rate {
- 	int rate_val;
+@@ -344,8 +344,6 @@ struct wcd9335_codec {
+ 	int dmic_0_1_clk_cnt;
+ 	int dmic_2_3_clk_cnt;
+ 	int dmic_4_5_clk_cnt;
+-	int dmic_sample_rate;
+-	int mad_dmic_sample_rate;
  };
  
--static struct interp_sample_rate int_mix_rate_val[] = {
-+static const struct interp_sample_rate int_mix_rate_val[] = {
- 	{48000, 0x4},	/* 48K */
- 	{96000, 0x5},	/* 96K */
- 	{192000, 0x6},	/* 192K */
- };
- 
--static struct interp_sample_rate int_prim_rate_val[] = {
-+static const struct interp_sample_rate int_prim_rate_val[] = {
- 	{8000, 0x0},	/* 8K */
- 	{16000, 0x1},	/* 16K */
- 	{24000, -EINVAL},/* 24K */
-@@ -4023,7 +4023,7 @@ static irqreturn_t wcd9335_slimbus_irq(int irq, void *data)
- 	return ret;
+ struct wcd9335_irq {
+@@ -2844,52 +2842,15 @@ static int wcd9335_codec_enable_dec(struct snd_soc_dapm_widget *w,
  }
  
--static struct wcd9335_irq wcd9335_irqs[] = {
-+static const struct wcd9335_irq wcd9335_irqs[] = {
- 	{
- 		.irq = WCD9335_IRQ_SLIMBUS,
- 		.handler = wcd9335_slimbus_irq,
-@@ -4960,7 +4960,7 @@ static bool wcd9335_is_volatile_register(struct device *dev, unsigned int reg)
- 	}
+ static u8 wcd9335_get_dmic_clk_val(struct snd_soc_component *component,
+-				 u32 mclk_rate, u32 dmic_clk_rate)
++				 u32 mclk_rate)
+ {
+-	u32 div_factor;
+ 	u8 dmic_ctl_val;
+ 
+-	/* Default value to return in case of error */
+ 	if (mclk_rate == WCD9335_MCLK_CLK_9P6MHZ)
+ 		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_2;
+ 	else
+ 		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_3;
+ 
+-	if (dmic_clk_rate == 0) {
+-		dev_err(component->dev,
+-			"%s: dmic_sample_rate cannot be 0\n",
+-			__func__);
+-		goto done;
+-	}
+-
+-	div_factor = mclk_rate / dmic_clk_rate;
+-	switch (div_factor) {
+-	case 2:
+-		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_2;
+-		break;
+-	case 3:
+-		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_3;
+-		break;
+-	case 4:
+-		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_4;
+-		break;
+-	case 6:
+-		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_6;
+-		break;
+-	case 8:
+-		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_8;
+-		break;
+-	case 16:
+-		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_16;
+-		break;
+-	default:
+-		dev_err(component->dev,
+-			"%s: Invalid div_factor %u, clk_rate(%u), dmic_rate(%u)\n",
+-			__func__, div_factor, mclk_rate, dmic_clk_rate);
+-		break;
+-	}
+-
+-done:
+ 	return dmic_ctl_val;
  }
  
--static struct regmap_config wcd9335_regmap_config = {
-+static const struct regmap_config wcd9335_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 8,
- 	.cache_type = REGCACHE_MAPLE,
-@@ -4984,7 +4984,7 @@ static const struct regmap_range_cfg wcd9335_ifc_ranges[] = {
- 	},
- };
+@@ -2943,11 +2904,7 @@ static int wcd9335_codec_enable_dmic(struct snd_soc_dapm_widget *w,
  
--static struct regmap_config wcd9335_ifc_regmap_config = {
-+static const struct regmap_config wcd9335_ifc_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 8,
- 	.can_multi_write = true,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		dmic_rate_val =
+-			wcd9335_get_dmic_clk_val(comp,
+-					wcd->mclk_rate,
+-					wcd->dmic_sample_rate);
+-
++		dmic_rate_val = wcd9335_get_dmic_clk_val(comp, wcd->mclk_rate);
+ 		(*dmic_clk_cnt)++;
+ 		if (*dmic_clk_cnt == 1) {
+ 			snd_soc_component_update_bits(comp, dmic_clk_reg,
+@@ -2959,10 +2916,7 @@ static int wcd9335_codec_enable_dmic(struct snd_soc_dapm_widget *w,
+ 
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		dmic_rate_val =
+-			wcd9335_get_dmic_clk_val(comp,
+-					wcd->mclk_rate,
+-					wcd->mad_dmic_sample_rate);
++		dmic_rate_val = wcd9335_get_dmic_clk_val(comp, wcd->mclk_rate);
+ 		(*dmic_clk_cnt)--;
+ 		if (*dmic_clk_cnt  == 0) {
+ 			snd_soc_component_update_bits(comp, dmic_clk_reg,
 
 -- 
 2.43.0
