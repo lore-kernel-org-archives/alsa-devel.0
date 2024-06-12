@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17F80C27C77
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 16:19:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE8DBC27C77
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 16:20:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C29FB71;
-	Wed, 12 Jun 2024 18:19:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C29FB71
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63366E69;
+	Wed, 12 Jun 2024 18:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63366E69
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718209185;
-	bh=/rK5N4p7lzNbPikFsCFIG2uN9Y+xeaegWompkr8S1aA=;
+	s=default; t=1718209199;
+	bh=k3aHGQ35T7ijjTVwTgAA+AUOyeA0WrPr6zQfs8D75H4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DzqmhMLyzNUQcUELtpQKG+SR2iG8z/0KuFFtyESaagJ2+2KKRq1y7HDOKxvMHWNTT
-	 s9Q0Kmf3FNHCmaq863yOSA+0WwppddYIjiy0onYs5RvzxqNhs2HQm8YiwcWI7FGZ9R
-	 E+0uvshVfz6VbEiNAM0BCwe8sLUvMDvPc6YQ7xaE=
+	b=VeS007K5KUcYCtCTUe6km0WiavkUYd5pBQb2zWyOtQ5YZNnBg4SsD+tohpknaqM3l
+	 ryR9ULJNds3WLlByHfEKg7oq8J7ckcBk4m70Ms0RbHwLh2IAJPlgF+YEJ6bYZ4jhRG
+	 fZLyLJrqzYVYpDuYG63hAz+yaWtEiUzLPrcH9VZg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4021BF80862; Wed, 12 Jun 2024 18:16:23 +0200 (CEST)
+	id 76932F808CC; Wed, 12 Jun 2024 18:16:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1D32F80856;
-	Wed, 12 Jun 2024 18:16:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0F1DF80C07;
+	Wed, 12 Jun 2024 18:16:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ACBF9F806B9; Wed, 12 Jun 2024 18:16:09 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
+	id 63A7EF806CA; Wed, 12 Jun 2024 18:16:11 +0200 (CEST)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
+ [IPv6:2a00:1450:4864:20::629])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D73ACF80603
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 18:15:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D73ACF80603
+	by alsa1.perex.cz (Postfix) with ESMTPS id 06D6CF80617
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 18:16:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06D6CF80617
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=lPR+KeZv
-Received: by mail-ej1-x62d.google.com with SMTP id
- a640c23a62f3a-a6f21ff4e6dso9093666b.3
+ header.s=google header.b=BiFBpSB4
+Received: by mail-ej1-x629.google.com with SMTP id
+ a640c23a62f3a-a6f0dc80ab9so9284966b.2
         for <alsa-devel@alsa-project.org>;
- Wed, 12 Jun 2024 09:15:57 -0700 (PDT)
+ Wed, 12 Jun 2024 09:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718208957; x=1718813757;
+        d=linaro.org; s=google; t=1718208959; x=1718813759;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/iEo4Md295/OTL7Myd2RIYbHSuX6XmNxZdXGojd1Rgg=;
-        b=lPR+KeZveelgIjwzae5vqYjU3fqoJYVMmvxVZNDSFPOPhj/G7m9iKa5mbCIK2hpgWA
-         53QAUgcBTdrpckLtZ09shQEJDFIws+Cvyy/FgnX/QananQRtrNQXRoS3N37wemgT+rW4
-         MbZ7gv9nByhlL7X1Dz9Omc1m8IFlQCIbqKyXEyHLpsGAlSSkOhE34fTZdPS10ViUb8mp
-         edEWx6V0Q9cwBp2zSQ86Agpt1qTDc4oRHJ7h60Hwr4jA7NpK3k9fLdqKvq3orqPWnEen
-         s7956fSF/TN/G6pVT0kc0Fx8gAJ7W3UQ4Z5yzxpX6/PJQkJn4hrGYLi1EGn4IK1/KlkO
-         wXjw==
+        bh=UcbW+JTPzOIFFpOVum5uDUaAmhIV61iigZY7iqshvBY=;
+        b=BiFBpSB4ZITG2/9wZY1atS4QKFw1dvQYZ3ndwiUtzDZUq+qKOyUWVtU9sSQC8cbMnA
+         T/fTDB45u9iZwy7Tzjxp+ImEx+f69bjB+MChjmO44hWafVT7UpBWeO/CEPhbFQsF8Y3j
+         3WzoXi9lv2YRiU6gGInq/TPCjK0SsDZ0QxLx9rwjnoOdXg3AeVYwivhBXT5NCtcMstQd
+         VaTavJJSk1P78Mfyj8I3SOkYt9McK641lYweBEBmFkDpyPsQCxhms/pN3pDoncx+dp17
+         piL6lwM7gV1SyVXw4qvKLIa9y6oonVaNLsbSRsD4G9EgO5IH+/y97GN1P9bGkeG7dUE+
+         QlZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718208957; x=1718813757;
+        d=1e100.net; s=20230601; t=1718208959; x=1718813759;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/iEo4Md295/OTL7Myd2RIYbHSuX6XmNxZdXGojd1Rgg=;
-        b=I+c8Yie841OXuIHiWsILaHT85O1v4EEP3gka/kGgsYI7oJwqryD1uvGvTOhsIsuICG
-         dDKIju2blyf6Zq+KgtkWaaHSxGWleVT+OXxZ6+xxLqhDcANdp9zVAyT+eozBzWpNgMFm
-         d1MlZ7jD/8lGyd75UqcWwKeCYxviXqvAQXlpJPP1F3TKByt6a3JlaNHYPCoGZfKfCA9K
-         sX6UIfPE4BvmBVlyQbzhV2JT5JpFC6I2Zo9gGQW0eKc1CZf4XPdz3s/C9r+/CI+XgRHh
-         797IekBY2d20JT20+Ytyvmdxj+tmzxmGQBB4CG8M5rlU3bhggJuTzYqQ5Vc+YSwUdjjP
-         PA6A==
-X-Gm-Message-State: AOJu0YxfFv1ERtuJY2qhxYjmo5x0FKUZhDE86+Pf0oOFvIOIIcSgEyFV
-	4QfgueCN8CkNrIETvA2vDcgHI/dFs1eLlH/Hf2ti/AYYgV8LzkjaSl/5djD+0hE=
+        bh=UcbW+JTPzOIFFpOVum5uDUaAmhIV61iigZY7iqshvBY=;
+        b=w4AufHg5u6Yzn/qlLqP1z1UkEnVyeiV+MYtgC6J5A3mz/MZ6pT4tANJ+2tJoO/hwsG
+         XndpxayE5epBUqkKqqqQITwvQEiplM+ActKpw/GLZP40EKMZJ/apqZ/r5oUMI3CKePY9
+         6ElnrR1hddVfwnbbDzsTAaw94/O4/DF2Kg9GgRrrj252eAtv2ALswqyoNMLY3EdTt8Go
+         GhWEPyFEUGhlqIQ/hZygihxaIYJRQ9yct2F4WMLt2cuwQaFIfTlVuLwbRO1+pubg3ATi
+         c6fByJMe7YOsUTkYGqlNgEAJS6AwA94BZAlSYeIXWAZoPNHoD+qdDhZ3SpGVjjBezXKV
+         qh+A==
+X-Gm-Message-State: AOJu0YxZiCI0TxpWcWcGpha3EHO6BXLnW/RlVAeB9CrYOsvyaYLih+2H
+	g+DyVSHRZhr0diLz3/rWUsuYLF8RixLSvruUfz9ZMLiGwsnyT9+y1D6/Vo6LeMY=
 X-Google-Smtp-Source: 
- AGHT+IEy50S8SITZi3bjq2DbDVZcQs7pImUEBnzlSKFFftxfcGZSuVKB5uF7YIpLQwSbQnYIWU2E/A==
-X-Received: by 2002:a17:907:6095:b0:a6f:526e:5f4b with SMTP id
- a640c23a62f3a-a6f526e6074mr3480066b.14.1718208956973;
-        Wed, 12 Jun 2024 09:15:56 -0700 (PDT)
+ AGHT+IEN9rj2+7IxBP1nbcBt9m7CJsmICBXS9QNlv8TKrqAIqhUGB4qf3LQZ9NZjbSz+56EqZjtyAQ==
+X-Received: by 2002:a17:906:8411:b0:a6e:f701:384d with SMTP id
+ a640c23a62f3a-a6f47c9ef68mr138716266b.29.1718208959469;
+        Wed, 12 Jun 2024 09:15:59 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a6efd6cfb74sm624815866b.20.2024.06.12.09.15.55
+ a640c23a62f3a-a6efd6cfb74sm624815866b.20.2024.06.12.09.15.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jun 2024 09:15:56 -0700 (PDT)
+        Wed, 12 Jun 2024 09:15:59 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 12 Jun 2024 18:15:24 +0200
-Subject: [PATCH 11/23] ASoC: codecs: wcd937x: Constify static data
+Date: Wed, 12 Jun 2024 18:15:26 +0200
+Subject: [PATCH 13/23] ASoC: codecs: wcd937x: Drop unused enums, defines
+ and types
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240612-asoc-wcd9xxx-wide-cleanups-v1-11-0d15885b2a06@linaro.org>
+ <20240612-asoc-wcd9xxx-wide-cleanups-v1-13-0d15885b2a06@linaro.org>
 References: <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
 In-Reply-To: 
  <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
@@ -101,25 +102,25 @@ Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1465;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1405;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=/rK5N4p7lzNbPikFsCFIG2uN9Y+xeaegWompkr8S1aA=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmacmgfrAvN9jmrz3zOenScYVJk3VRxnk6Op1wW
- DYK4/Iv3s6JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZmnJoAAKCRDBN2bmhouD
- 11nsEACB2gWgRhL36G/IHrTBMlWrvaaF6KR0xQBOPCetIqklAbL8fvnh5L+rf/eDEw7kCYPy3i1
- i8mw4seuiZYhJpCwAWrJcD4hogyGtwa3B+af+/pXC7YaaKJBAuKUlo4uj8dbcpc+yFml0P5VXiW
- /E5xGbhl7xlKmkIHhB3Fhip/r37Mlj38RPzTVQexKwR4Foys73xWfcgY5e5ZC0FLjdLlhI9wptF
- 0sKCLx9Es3zFxAl6S+nIqF19JhYlBnNDTmHHRw6zoDhVUCWbR5aMbqn8srovfpnMJd3c4rDRMw/
- jMbnGB5l6LJBo8nzc7ljuV6fo4Wf2/0egGaDmLwXw+VjxX6gWBKgc9MK+OvuwLacXrBmkomApL5
- NvaCJoiITxa0P27g0tEm3XiHJcAxICk9t4ZcqIF101QeYnSi1k7abnSRczKemTS/AeqwKIo4olM
- elHbe21+/y0LLq1L+f3313qf3BqcyygVeNR0gZWyyr/S2cOwJ4orxqkZegRrYxi/WygfbXzNG2y
- xvyW9YaAoxf6/kCLKS0mfOrkGF0HTNwBI1QA6IBDUOX7gmSOr9vs8aWzqh9H56ZB9e3mDAlt7cg
- YxQTfHb7S5PoUeo6vU4qJnER0AmKMfuLS23dc60tDw7AsRQMiiZ4ag0tFKGX378yuf/yTE7mdRU
- Iq7SaBlQ+Oks0Vw==
+ bh=k3aHGQ35T7ijjTVwTgAA+AUOyeA0WrPr6zQfs8D75H4=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmacmiUZs1tlbK6jnBBYnES4RTFwj4cUtfFCOno
+ R4s7gGO52qJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZmnJogAKCRDBN2bmhouD
+ 1+tcD/42Q1kKDqlMFYK6egSvrDjb4I3laIlWnthXZ8q/mP9P/VxLLWKe7SKkna8H5vuR2rE5l6T
+ cmSj9/GPYecCXoPSdWTKTbhBkREhIEk4Y+t+7cN6oK5ZoaHTJuUfy6TDKixktFYHx9hu/VfW/4O
+ J6CGsTtWiVKWgiIY+VmQbPbCBNjJAtmrQELlqovmVej1yKPAFzSNjgcoE7hIHxUnoteR5KFpg/Z
+ YzHXBjwy5EuFYyxU3MRKFhGajmJUWjnXMw2CAWuNodCx5eWwq77/7GIHaIeiE9DwZobMpd/ciOb
+ gaqSzQ2AaiNpChSnnZYRVnlEWROQ5UtDTW9tkYBFnxjo5bYGuVMZnFBUJ3L9IELS6fcKZ/sYyN9
+ nXqJm5bRSeunVFnT6eoCAyaTpAaqz9xltxWp2Sqb97A0c+a48MsPHT81MuI76SrA/mmy/o0myaw
+ q+ZM13T6b2t3w2mIthMaepqU3iXyy2+dHNSUhfQ/bJEudXyAAqBnrwKgX9LE4GwqDi0JTEOsfek
+ iBVgz26+46X+CVPOhFp1fPyVpg4BNGuZV7JJOjjQtN9C9P93fXhJYJTLNtHTlCMRVt1U++FrqUk
+ fdW8z5HQ8ziDaldRy22lPOuGzDe9d7Fja5OiYl04I5DDRWv1LYxZ2HC+ScDNxzdVfF07oazsdKx
+ Yi3lbgwGryYWV3A==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: OA72NPDJ4BJN5MWALHBMQG6BP77ZIZZF
-X-Message-ID-Hash: OA72NPDJ4BJN5MWALHBMQG6BP77ZIZZF
+Message-ID-Hash: HVF4YRZIUOEPRZ3WCJ36EOHY5MBUCYZX
+X-Message-ID-Hash: HVF4YRZIUOEPRZ3WCJ36EOHY5MBUCYZX
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -132,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OA72NPDJ4BJN5MWALHBMQG6BP77ZIZZF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVF4YRZIUOEPRZ3WCJ36EOHY5MBUCYZX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,45 +142,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Driver does not modify few static data (MBHC reg fields, IRQ chip), so
-make them const for code safety.
+Few declarations (defines, struct codec_port_info, enums) are not used
+and can be safely dropped.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/wcd937x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wcd937x.h | 28 ----------------------------
+ 1 file changed, 28 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd937x.c b/sound/soc/codecs/wcd937x.c
-index ef649ed77fb2..4cf17d62a0bc 100644
---- a/sound/soc/codecs/wcd937x.c
-+++ b/sound/soc/codecs/wcd937x.c
-@@ -133,7 +133,7 @@ struct wcd937x_mbhc_zdet_param {
- 	u16 btn7;
- };
+diff --git a/sound/soc/codecs/wcd937x.h b/sound/soc/codecs/wcd937x.h
+index 6f857ce7d8b7..834a3e7713a3 100644
+--- a/sound/soc/codecs/wcd937x.h
++++ b/sound/soc/codecs/wcd937x.h
+@@ -488,23 +488,6 @@
+ #define WCD937X_MAX_SWR_PORTS			5
+ #define WCD937X_MAX_SWR_CH_IDS			15
  
--static struct wcd_mbhc_field wcd_mbhc_fields[WCD_MBHC_REG_FUNC_MAX] = {
-+static const struct wcd_mbhc_field wcd_mbhc_fields[WCD_MBHC_REG_FUNC_MAX] = {
- 	WCD_MBHC_FIELD(WCD_MBHC_L_DET_EN, WCD937X_ANA_MBHC_MECH, 0x80),
- 	WCD_MBHC_FIELD(WCD_MBHC_GND_DET_EN, WCD937X_ANA_MBHC_MECH, 0x40),
- 	WCD_MBHC_FIELD(WCD_MBHC_MECH_DETECTION_TYPE, WCD937X_ANA_MBHC_MECH, 0x20),
-@@ -227,7 +227,7 @@ static const u32 wcd937x_config_regs[] = {
- 	WCD937X_DIGITAL_INTR_LEVEL_0,
- };
- 
--static struct regmap_irq_chip wcd937x_regmap_irq_chip = {
-+static const struct regmap_irq_chip wcd937x_regmap_irq_chip = {
- 	.name = "wcd937x",
- 	.irqs = wcd937x_irqs,
- 	.num_irqs = ARRAY_SIZE(wcd937x_irqs),
-@@ -2503,7 +2503,7 @@ static irqreturn_t wcd937x_wd_handle_irq(int irq, void *data)
- 	return IRQ_HANDLED;
+-/* Convert from vout ctl to micbias voltage in mV */
+-#define WCD_VOUT_CTL_TO_MICB(v)	(1000 + (v) * 50)
+-#define MAX_PORT 8
+-#define MAX_CH_PER_PORT 8
+-#define MAX_TX_PWR_CH 2
+-#define SWR_NUM_PORTS 4
+-
+-#define WCD937X_MAX_SLAVE_PORT_TYPES 10
+-
+-struct codec_port_info {
+-	u32 slave_port_type;
+-	u32 master_port_type;
+-	u32 ch_mask;
+-	u32 num_ch;
+-	u32 ch_rate;
+-};
+-
+ struct wcd937x_sdw_ch_info {
+ 	int port_num;
+ 	unsigned int ch_mask;
+@@ -570,12 +553,6 @@ int wcd937x_sdw_hw_params(struct wcd937x_sdw_priv *wcd,
  }
+ #endif
  
--static struct irq_chip wcd_irq_chip = {
-+static const struct irq_chip wcd_irq_chip = {
- 	.name = "WCD937x",
+-enum {
+-	WCD_RX1,
+-	WCD_RX2,
+-	WCD_RX3
+-};
+-
+ enum {
+ 	/* INTR_CTRL_INT_MASK_0 */
+ 	WCD937X_IRQ_MBHC_BUTTON_PRESS_DET = 0,
+@@ -645,9 +622,4 @@ enum wcd937x_rx_sdw_channels {
+ 	WCD937X_DSD_L,
  };
  
+-enum {
+-	WCD937X_SDW_DIR_RX,
+-	WCD937X_SDW_DIR_TX,
+-};
+-
+ #endif
 
 -- 
 2.43.0
