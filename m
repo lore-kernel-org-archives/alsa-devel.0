@@ -4,100 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A21F2C27C6E
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:16:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFDCCC27C6E
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 16:16:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8F33218B;
-	Thu, 13 Jun 2024 18:16:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8F33218B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28A65E65;
+	Thu, 13 Jun 2024 18:16:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28A65E65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718295384;
-	bh=/jcoXUR9wDP6KAAPbxMnAdcj2368TaJUtRP9CxBQamU=;
+	s=default; t=1718295405;
+	bh=oZhvy6kkbKYCk5v6xkrBCIcY4DF51uW5QFIx01DmAzk=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZC7thW4v8MTj1KJteaAKlxsAxlvAZwo3f2QqO5hpeAYfASjPw4ogwZX1G8l24nIqL
-	 IrhWqOo46sC/8YrJ8kGdd94PUkL7Ts38E+Dr1dCthHNBenvfyBbuUHr6qN1ovrvmQA
-	 nBtW4qkYj9tpkacWCO5tazOFK2BKvUXUnhE2wNDs=
+	b=jSXAGMYz0p0GDsCCWlz2oiE92s2GFqNZfUKufXw2q5n/Tqaqh7lgt2jXBHJCZ8XWu
+	 4rSxBicPUrPV3A5uJ6eTMpS5d6ZwvrITlJ2hDd16tiQAE0Ekh4Zv6pLsBxOeTSU5Ra
+	 gapvXWR1Fi2JU56r4aR66styDVJCw9un5Fba/Qr0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80E8CF80685; Thu, 13 Jun 2024 18:05:42 +0200 (CEST)
+	id F2933F899EF; Thu, 13 Jun 2024 18:05:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12646F899D9;
-	Thu, 13 Jun 2024 18:05:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD21AF899D9;
+	Thu, 13 Jun 2024 18:05:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4C5AF8057A; Wed, 12 Jun 2024 09:55:19 +0200 (CEST)
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com
- [IPv6:2607:f8b0:4864:20::112f])
+	id 1A480F8057A; Wed, 12 Jun 2024 10:03:08 +0200 (CEST)
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com
+ [IPv6:2607:f8b0:4864:20::f32])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33ABDF80448
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 09:55:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33ABDF80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id E6679F8010C
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 10:03:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6679F8010C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=timesys-com.20230601.gappssmtp.com
  header.i=@timesys-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=0QfiTiZP
-Received: by mail-yw1-x112f.google.com with SMTP id
- 00721157ae682-62f8dcbd4b5so6600277b3.0
+ header.s=20230601 header.b=dU2DZi8/
+Received: by mail-qv1-xf32.google.com with SMTP id
+ 6a1803df08f44-6b072522bd5so19375196d6.2
         for <alsa-devel@alsa-project.org>;
- Wed, 12 Jun 2024 00:55:09 -0700 (PDT)
+ Wed, 12 Jun 2024 01:03:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718178908;
- x=1718783708; darn=alsa-project.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718179383;
+ x=1718784183; darn=alsa-project.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s8zvLumEmzHSVfDBX+K3KODMcTb3eNmXQ7W6gFdSMig=;
-        b=0QfiTiZPUkLNF7XB4luGiAzJzamGkQD1QcelNbmbOXwopC8ugERZfhCUjMLFGcWvfp
-         iC91QuVZFszRdwg/6SkpmtDnkyNI/TCpcmK8LtwNihjXxJ6k3eRCcN3Nh2O4CEJslRjJ
-         DWiXWTD1QJRq644VfZmwLrc0lyC7KB4q5XOawvxrdmEzkY0ISJ22/fERaVK5WbI9V5VQ
-         xF583wF90ZrCDN/yn0Y+SCR2MgsrZfEofu1Ab/THTalhfOhoer0gg2jhWO9cu/wi9VyM
-         M5B2yJQdGr404ss4mUkD83H0MijAZ9zlRGaeE9ZcRW1C7BJl3wCu49usjHTvBcn8SkdN
-         mX0Q==
+        bh=oZhvy6kkbKYCk5v6xkrBCIcY4DF51uW5QFIx01DmAzk=;
+        b=dU2DZi8/5/w6FhOFTVVJ04vuVUNWxQmQg1YqGfKXp2lQLOge7MMcZtkS1zAuKzdF2a
+         DavQWQgQojUbFbn6ISc+Aw5L7MUCwLrPpflPONFEIUOVpgcuEQDZBuLNUOq31zqEugV8
+         Mg/E6q4IuWyx6rfcUQjUefgvrEyaPtT3ycBx1OoqyaJ02U0YXlrqUQD8AvUdGXI/UI2C
+         cp/x8/lP3HxVUMOMjGkRvoF3CznGC62IJQAWLEHjWsHkpGF1z4Y8b8NSibRdLsax8WBO
+         yCts7S/Be6Dsxtw2DJld9se0bV6rOK+Jjws1a3oEJg8LahvCvBHIq/LqB/ruFkDeixmE
+         hxZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718178908; x=1718783708;
+        d=1e100.net; s=20230601; t=1718179383; x=1718784183;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s8zvLumEmzHSVfDBX+K3KODMcTb3eNmXQ7W6gFdSMig=;
-        b=uNjD//LHsj3nO2wQkF6/B6/iTeAL/Vzhrje/FJMs1pr/SyP+WmnYk2V7Rpkt3UNevA
-         fW7yWrTzpHM9oTgj6zEtx1PuzkiIXzjWBcgm1TgczWr8u/i3ZuzToTTJRf/26hTpoyAh
-         5lRwoNzOf7TifhzVuG13UVFu+ut2eyGTKB7nl5rCu315fp3M9op9+IJ2zJp+cMaCCXr2
-         7+G+SZfVJ5cYyeI/vhpUhjGsnGCMmuEvbzihWsNOMjBQue9aZ2KpMGCHkwq1oRMf8vnJ
-         U3CSOyGVs2qIIqGYXqkKOz2S7FZZPMFPF/I8mgxX1Zeyl7Fh2SBQbgRzUxwmZfVlOymy
-         2u+Q==
+        bh=oZhvy6kkbKYCk5v6xkrBCIcY4DF51uW5QFIx01DmAzk=;
+        b=Knslh+A2bItdqlg2HcR3a2Qq4DszKnPBhRBaLZYBlu07t1fkoQn+qK4EnoOAqtWq5Z
+         J9eQBqvPpllQozKnq0UDvtwEwZwQafMEeJCemM82XC/RYly1PUDZjxBSzp7cEy8HZheW
+         lVqp6LAQU758CHyf543NOECtuSUQZqw5oM4fSHg8mvErxsp1sk2OnRW2fDS071RVK461
+         C+t4Qy7d3fYkHo8au3K4oVI2tseMVOiNjSvxXJ21NnwI4rq4tydfXIoW3c+DhRSx1oiU
+         E3ZowNhVxKwTqapafUVjFneo4kLNZtJinVQcfgA2sLlhMgTCIkSU4zLGjS2u3M1MI0yJ
+         J6tw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCV1ouBEZDN0kN9jSSsCbiwfVybDbzlKOKxe4iAXGwEltnXmWZbaqIS9Q8HHdNWYFsaBi3MfUs6uPpBNzAJUTF7AB6adinrdTcLwMGk=
-X-Gm-Message-State: AOJu0YxOv5zj2ACROlz4wwyaSiH8EXr0I8cVOVmavP+5iq7LHYUWXgJ7
-	zs0cqp5FR/ghuB5/OfxVRJ40k00XG3PDe+USBVx+/CWnGliXHeXLQ17uW9+7nLxfkhWV62g6JPG
-	x7wbup5qyMHw8O6iWMga4sNWSZXujzXtIShi/Ow==
+ AJvYcCXuiKZSG+jTOVqBip4pvKTr9uqBe0gzSJaUCfABkm8Lz9INNnYqCwMuhnvrigrou7iT1qGK86cAHIx3d7V4pz39eSBZysLNQRdoxLQ=
+X-Gm-Message-State: AOJu0Yw6B/0xTKN6yMxbxSA2+X4lxIhWPXBLEoHtVLuUp676bngI9kPq
+	pYlMHYjLbRTPWK93tuyGR08HL6AKpGYRb7sAirK9Gd1K1Jxa7TyssDFStkjW/fiozlTXp0ciLia
+	IY/sUSm212OtfJlxzUjcJ2sJcPqcawIV2WEeMGw==
 X-Google-Smtp-Source: 
- AGHT+IFPLy4bDjB26DeJ3OyETqud+YR8g7kmBRh3/NifyRwyRcvSuS2NJ859y2s2TX4hnMNdepvtl112sIycLjmhYjk=
-X-Received: by 2002:a25:918a:0:b0:dfe:ed7:84be with SMTP id
- 3f1490d57ef6-dfe67064dedmr951615276.25.1718178907988; Wed, 12 Jun 2024
- 00:55:07 -0700 (PDT)
+ AGHT+IFBoGLGnRCfXUTT6MkmXv5tkb/vW4wlOs2DaIN1mKJ7KPlKywflPDae5tbSNQuiVC2G0raN2IzC+x3zhZJMYtQ=
+X-Received: by 2002:a05:6214:4606:b0:6b0:77fb:8f16 with SMTP id
+ 6a1803df08f44-6b191778bdbmr10576316d6.21.1718179382867; Wed, 12 Jun 2024
+ 01:03:02 -0700 (PDT)
 MIME-Version: 1.0
 References: <20240611094810.27475-1-piotr.wojtaszczyk@timesys.com>
- <Zmgor8accyAiUkUO@finisterre.sirena.org.uk>
-In-Reply-To: <Zmgor8accyAiUkUO@finisterre.sirena.org.uk>
+ <20240611094810.27475-2-piotr.wojtaszczyk@timesys.com>
+ <1ea92ff0-7e2d-4a9f-bef4-d50fc93b86e6@kernel.org>
+In-Reply-To: <1ea92ff0-7e2d-4a9f-bef4-d50fc93b86e6@kernel.org>
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-Date: Wed, 12 Jun 2024 09:54:57 +0200
+Date: Wed, 12 Jun 2024 10:02:51 +0200
 Message-ID: 
- <CAG+cZ05=w5KbxOOtpo99B=OHBaLNRKKJVrFT67CH1-6z1gP7ZA@mail.gmail.com>
-Subject: Re: [Patch v2 1/2] ASoC: fsl: Add i2s and pcm drivers for LPC32xx
- CPUs
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ <CAG+cZ07jpi0dobjf8JYt263qqy1tYWAvzsV9cgKaAW05mBoCeQ@mail.gmail.com>
+Subject: Re: [Patch v2 2/2] ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT
+ binding
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>,
 	Vladimir Zapolskiy <vz@mleia.com>, Russell King <linux@armlinux.org.uk>,
  Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Chancel Liu <chancel.liu@nxp.com>,
- Arnd Bergmann <arnd@arndb.de>,
+	Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+ Chancel Liu <chancel.liu@nxp.com>,
 	Michael Ellerman <mpe@ellerman.id.au>, linux-sound@vger.kernel.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
@@ -110,15 +112,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: G7BGAD6PIFVKDSJVSO7O6QSXPNT25OPJ
-X-Message-ID-Hash: G7BGAD6PIFVKDSJVSO7O6QSXPNT25OPJ
+Message-ID-Hash: TDQMZTLVBSTL3EFEU3HUIU2ZS52Y55DP
+X-Message-ID-Hash: TDQMZTLVBSTL3EFEU3HUIU2ZS52Y55DP
 X-Mailman-Approved-At: Thu, 13 Jun 2024 16:05:35 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G7BGAD6PIFVKDSJVSO7O6QSXPNT25OPJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TDQMZTLVBSTL3EFEU3HUIU2ZS52Y55DP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,35 +129,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jun 11, 2024 at 12:36=E2=80=AFPM Mark Brown <broonie@kernel.org> wr=
-ote:
-> > +FREESCALE SOC LPC32XX SOUND DRIVERS
-> > +M:   Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-> > +L:   alsa-devel@alsa-project.org (moderated for non-subscribers)
-> > +L:   linuxppc-dev@lists.ozlabs.org
-> > +S:   Orphan
-> > +F:   sound/soc/fsl/lpc3xxx-*
-> > +
->
-> It seems a bit odd to add yourself as a maintainer while also marking
-> the driver as orphan?
-Nautel Ltd agreed to maintain this driver, I will add them.
-
-> > +     i2s_info_p->clk =3D devm_clk_get(dev, "i2s_clk");
-> > +     if (IS_ERR(i2s_info_p->clk))
-> > +             return dev_err_probe(dev, PTR_ERR(i2s_info_p->clk), "Can'=
-t get clock\n");
-> > +
-> > +     i2s_info_p->clkrate =3D clk_get_rate(i2s_info_p->clk);
-> > +     if (i2s_info_p->clkrate =3D=3D 0)
-> > +             return dev_err_probe(dev, -EINVAL, "Invalid returned cloc=
-k rate\n");
->
-> Nothing ever enables this clock.
-It's enabled in lpc3xxx_i2s_startup() and disabled in lpc3xxx_i2s_shutdown(=
-).
-When the clock is enabled the bit clock on I2S interface always runs.
-So this is to avoid active clock when the interface isn't used.
+On Tue, Jun 11, 2024 at 12:18=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.o=
+rg> wrote:
+> I do not see my comment about DAI being addressed.
+Were you asking if it's a DAI? yes it is.
 
 --=20
 Piotr Wojtaszczyk
