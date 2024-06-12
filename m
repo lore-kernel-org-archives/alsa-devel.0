@@ -4,91 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 762B4C27C53
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 06:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE342C27C53
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 06:49:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C345BEC7;
-	Wed, 12 Jun 2024 08:48:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C345BEC7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EB11F50;
+	Wed, 12 Jun 2024 08:49:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EB11F50
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718174945;
-	bh=IzSgx2C25j7P87Yss79wU23sCxQ9oZ4wST9PV3CCwTw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=SWqWq5MbbMg31o5CTlhjKoHDY6wRQsB8HcidJp0CZvp3yOIykE+vRjjQaEibWolAe
-	 dvpWaawD6WN1RZR5jMfEi4dj49E+qS3Vtgrci+HwUWhRG7rfz8aI1exfmbjwWwT0Jb
-	 k6ocGncnoPLltQFfLzKE/Dx7jBwEkVLwPvUMbbjs=
+	s=default; t=1718174957;
+	bh=249Jx5AQaxd0bNYD2GTJyZuwIG0Fy8JJ/BYO5WsK68c=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=W4SYqOWzP8fWYCKYN+FCzUxYPi0d78C2dFaBBO6An9ONRDKkIHxWbdYZG5X4nMi6i
+	 z1y/W0fitC/mcv7ZvTOeyx/qghQvhM+GYE8SojM3SRXCSMtsXWYFTBMxG++rIm9dNW
+	 a16ASjc02PjWNIY64fYIqLIvN6RHJpDFqNAGahA8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F1DEAF805BD; Wed, 12 Jun 2024 08:48:24 +0200 (CEST)
+	id 72737F805F8; Wed, 12 Jun 2024 08:48:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F48CF805C9;
-	Wed, 12 Jun 2024 08:48:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEE8DF80603;
+	Wed, 12 Jun 2024 08:48:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72786F80587; Wed, 12 Jun 2024 08:48:09 +0200 (CEST)
+	id DB408F80580; Wed, 12 Jun 2024 08:48:13 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C7813F80580
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 08:47:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7813F80580
+	by alsa1.perex.cz (Postfix) with ESMTPS id 83138F80448
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 08:47:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83138F80448
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=i+6DI2Kk
+ header.s=Intel header.b=ZwtX91Jm
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718174881; x=1749710881;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IzSgx2C25j7P87Yss79wU23sCxQ9oZ4wST9PV3CCwTw=;
-  b=i+6DI2KkRmkzrsdIWHuzHZL7o5svVhh5G/OR29U25OyiZ6vvoPL7AY3K
-   zO77SSwN6t0Zx6g43lQWrZkXpmuwA4jb1RUCY9ABWdBjd0xj1Y7CFCzm+
-   KaHMuG9LfcxB9Ow8Syv0Miv1gjH8qXN1elmid5Qws+7qriA1AhoYH3oEU
-   +OpCInXhlG4un+cYW9AqYv7e2JCtJBeban4Ml9wBwKE0ktAhAT1hb8N22
-   jtPfwqTrTjNqYG8regFg5Qa8kK2MCC9MffEnteHVkG0Fpz6HTVovPq8j9
-   1jh+u/krbwqJLrVjSmuv5cr7YTvEEv1NROC+e1HIWtbbfYCtd2mYP7j1s
+  t=1718174877; x=1749710877;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=249Jx5AQaxd0bNYD2GTJyZuwIG0Fy8JJ/BYO5WsK68c=;
+  b=ZwtX91JmoCHnHMjM1miXeFOq+YZA81HSCNrcL7EkSA8My7Elxb5MVQ+J
+   LqkbDlZmDPosEdMOey2nkGVz+pTA8iFUSMoGZQkWbeIAuYFAgxRO/2kSy
+   by+Md4k9Sz/Iq23TPth39mV7yJCgNb356q1g513hKK9ff6Bg4rPla9NIt
+   neoQS69l4EDPCXVsRFKLiHB18YSN/Ai1KmUcpAtY/TiZQjYS0uUFAYPeX
+   XMpVy1MlhR69FuPX3dQWxndrdoAwH3aZmtadKHcg/RQkR+H1662u7xsNl
+   Kf3VjnhQuHRZ0NjsDnlXG432uKOrLSXcsSGUMNx/EpkGhLa69BeWYWC6x
    w==;
-X-CSE-ConnectionGUID: bfTiJvPYQ/amwTZxWEVFsA==
-X-CSE-MsgGUID: Ic7HUZoHS8qLfuLfXHEkLg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11100"; a="15145914"
+X-CSE-ConnectionGUID: tLImiG7WS2u1xT9xitHHeg==
+X-CSE-MsgGUID: 1/9lONjbQh+1j96d//UGEQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11100"; a="15145880"
 X-IronPort-AV: E=Sophos;i="6.08,232,1712646000";
-   d="scan'208";a="15145914"
+   d="scan'208";a="15145880"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jun 2024 23:47:45 -0700
-X-CSE-ConnectionGUID: x6KdkC32Qb+Bl0LoDPrViA==
-X-CSE-MsgGUID: UxuUA5PyS6Oo3mafkVf2/g==
+ 11 Jun 2024 23:47:36 -0700
+X-CSE-ConnectionGUID: qraIR0ifRouPRFVmy51D1Q==
+X-CSE-MsgGUID: +kdNbNIVQc6im4c+fJx8cw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,232,1712646000";
-   d="scan'208";a="39751287"
+   d="scan'208";a="39751182"
 Received: from iklimasz-mobl1.ger.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.245.246.56])
   by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jun 2024 23:47:42 -0700
+ 11 Jun 2024 23:47:33 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	linux-pci@vger.kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 3/3] ALSA: hda: intel-dsp-config: Add PTL support
-Date: Wed, 12 Jun 2024 08:47:09 +0200
-Message-ID: <20240612064709.51141-4-pierre-louis.bossart@linux.intel.com>
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/3] ALSA/PCI: add PantherLake audio support
+Date: Wed, 12 Jun 2024 08:47:06 +0200
+Message-ID: <20240612064709.51141-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240612064709.51141-1-pierre-louis.bossart@linux.intel.com>
-References: <20240612064709.51141-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: M7KKIR7GI2LRANPTCC7FN46DP7F4ZOGO
-X-Message-ID-Hash: M7KKIR7GI2LRANPTCC7FN46DP7F4ZOGO
+Message-ID-Hash: C3SOERQYCHG3L7GASWZT3HF3WYH3GKJU
+X-Message-ID-Hash: C3SOERQYCHG3L7GASWZT3HF3WYH3GKJU
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M7KKIR7GI2LRANPTCC7FN46DP7F4ZOGO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C3SOERQYCHG3L7GASWZT3HF3WYH3GKJU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,37 +104,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Same recipes as LNL
+Add the PCI ID for PantherLake.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
+Since there's a follow-up patchset for ASoC, these 3 patches could be
+applied to the ASoC tree. Otherwise an immutable branch would be
+needed.
+
+Pierre-Louis Bossart (3):
+  PCI: pci_ids: add INTEL_HDA_PTL
+  ALSA: hda: hda-intel: add PantherLake support
+  ALSA: hda: intel-dsp-config: Add PTL support
+
+ include/linux/pci_ids.h      | 1 +
  sound/hda/intel-dsp-config.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/pci/hda/hda_intel.c    | 2 ++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 537863447358..a7419d2e912e 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -543,6 +543,15 @@ static const struct config_entry config_table[] = {
- 		.device = PCI_DEVICE_ID_INTEL_HDA_LNL_P,
- 	},
- #endif
-+
-+	/* Panther Lake */
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_PANTHERLAKE)
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-+		.device = PCI_DEVICE_ID_INTEL_HDA_PTL,
-+	},
-+#endif
-+
- };
- 
- static const struct config_entry *snd_intel_dsp_find_config
 -- 
 2.43.0
 
