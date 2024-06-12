@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3D79C27C53
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 16:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2127C27C77
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jun 2024 16:17:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAD2ADEE;
-	Wed, 12 Jun 2024 18:17:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAD2ADEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A56D1D9;
+	Wed, 12 Jun 2024 18:17:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A56D1D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718209052;
-	bh=44SvPncKGed5222crY2QmWyS1bBJY6ITGdo0S3bUKlg=;
+	s=default; t=1718209070;
+	bh=0x271Ao5g1756MkJM0YnZ2eY6hyaiNB56Snmlinm2o0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uhltNZI1PtC/liEyziR59UhByucm0pMAeDA1raO0TxnzGQWwTPoENQqc/Vxr0Czvv
-	 ZPHggIvaD8qRkPj1hN+9PC8Xmfv99iiYY2G6KByru9Z3jQvdwLP0xYJJFElJgvUGCM
-	 LQxYCuqV176m4sEATEWOet+Z1JMZbGSZJrXd0R4c=
+	b=fsXuUrx6ETFAIztI/TzkWO0N3E03NHZkn50DxlMuJG5MJVR5s/E5U+lmZUhrSLQKp
+	 OOYdkzGD13p9oJtM9dbHkke5/zKN69I0AiYULbU108j1ReJhUnRPBg7B8lnoCj4drr
+	 AgSw6KhKRSgnQhUA0yHAEaV4rXN6Zs0VhoGHMQi0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B124AF8067E; Wed, 12 Jun 2024 18:16:06 +0200 (CEST)
+	id C7525F80694; Wed, 12 Jun 2024 18:16:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E803BF8067D;
-	Wed, 12 Jun 2024 18:16:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EC51F805AC;
+	Wed, 12 Jun 2024 18:16:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69BB7F805E6; Wed, 12 Jun 2024 18:15:57 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
+	id A8DE8F805FB; Wed, 12 Jun 2024 18:15:58 +0200 (CEST)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9305FF8057A
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 18:15:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9305FF8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7CC82F805B2
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2024 18:15:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CC82F805B2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=C2+pKG1Z
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-a68b41ef3f6so8982066b.1
+ header.s=google header.b=pK+9vh2a
+Received: by mail-ej1-x62e.google.com with SMTP id
+ a640c23a62f3a-a6ef8bf500dso8460966b.0
         for <alsa-devel@alsa-project.org>;
- Wed, 12 Jun 2024 09:15:49 -0700 (PDT)
+ Wed, 12 Jun 2024 09:15:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718208949; x=1718813749;
+        d=linaro.org; s=google; t=1718208951; x=1718813751;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VmEnUku8lwCm6C2oNC52aCB1kZkiPbgX5VQWbXgPBbA=;
-        b=C2+pKG1ZLgG7WgFfAmf7XIhdP1qxpSR7enqEL9bGjMy/Jk9+WAzCLkdZa3eGGX66J9
-         Ty4khHVrH6DlBCy5vuV2xt19uhV0Mzk39VOCpKS3GCXwWpMZsjTEFOIq/JwNAXiRUAiN
-         jOrOAn9x2/XLsk6hg+kxZRxxWN+6HeK1tI5O37j74lt4WfTZxznLuw82dZt+0RhykS2n
-         u5jTlmGB5Mcpy09TyYxQlQGI2z2T1hTwd9x7EBtfHpJDVmIu41fLg3Nu8YrqJjL2nrXS
-         9lL1lJLHE0XCQ63T8S9NC00Ylk/3O5BhjF2m61hBGVDJHlNk8Rye+B6RqEXy0OFE3CK+
-         CU/g==
+        bh=nSj1wRbpqkX+8+PyNrcUZX8/G9u8adS5MtyYj32OWN4=;
+        b=pK+9vh2a3DoNycZ7u/50Q5MxlwphGoEcZPjTI6XWn2e7J2AXil3fs41mqLlZ8iMsnN
+         qWhNhz+KBpeH9kVkHRyhWxqyhmQeaLMW9x5f/uuX+MVQrxf1vp0Uc5ysudCG2yctng1e
+         z+o5/I8aPgDZSFNFlQeGwbr/SYQgr2sUzabsiCSv7fNwM9HCeOeeuOeemjpNzZa3lIcE
+         UWBC1NBDx8fiTIhH225y/AdEKMHsTD2u8oRnTHt88YxSvXUNEGeTWC0VhAT/sHA2j+ig
+         TnK2d9amRyCCDsufTKg/UBGEc9U1XT4VvYVYW2ZU59wCFijQ1rveguGQEZUhVlb5jFr1
+         KAFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718208949; x=1718813749;
+        d=1e100.net; s=20230601; t=1718208951; x=1718813751;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VmEnUku8lwCm6C2oNC52aCB1kZkiPbgX5VQWbXgPBbA=;
-        b=pFFfbaC7BucNWtTvYNiQIOqC2bFFYxOmicIdMBEr5lvjNYwyjPaiLnX3zHttphyD6N
-         zswZWT9kajdY6yQz7MQn69ngW3UDJKj9tW4jtZhRZsMXuE8qUxT4pCg0+AY7YeZdzmVg
-         tSSx7cejGjIWWs/mHu7+RPDZw/E3D4HaCMxoaFiWlk64QJ66eksynQdohpHenlfto5iO
-         cUqNnOKGMxHOzFdSUUiOPjcTSg1+Y79QzZOEBoF4ntgr127bM63XWfEifW+NCh6RwipL
-         YALQQpMIqoe2FM22Z+2J79D3v1B75rVof3Sf1lcELGV2HfXygCH/G/TTEnvJMl89PlfQ
-         iDYw==
-X-Gm-Message-State: AOJu0Yzm4ipdNw2lpQayQEuT/0EjJLx2n4g0nlwkF5u5GHFo62eurqem
-	I7eX8B35GMoBwjPqro0wY9gMCoOT2TgqG42wp01gedqrKfWfsItvyhZPy4Ls7Q0=
+        bh=nSj1wRbpqkX+8+PyNrcUZX8/G9u8adS5MtyYj32OWN4=;
+        b=P83eJ0zORqzPWVKD4ix+2hYRtJ5bkiPKXDZyNltg8FHu5hWF34LQ1mr+q7kDi4iBWt
+         JqFg+TO06kY5STIyStqigTwFiG3qiIQBWFipfaFuyqk6s4DvGeI9q8drfoPfxrpM+yif
+         /i1/GUgRqWfJx6B8UzxKdD3kaQGl741znVaaNkuYh6ZWJWI2Td+2OJMG/v4trcJ/83Fj
+         wG7a8Cq58+OLmeme1k+eOWRgha4Ux0kEL46PwzVZ/KfWRzyRkUpHy/38NF60mxwaE1ET
+         xalM8OB+bEe6u0GqPRrBsdseYMrJoPvBwzDKp4Kdf6r86OYsPqXBZphqT+kqNSDrJys5
+         /Gig==
+X-Gm-Message-State: AOJu0YwhSNAwP0XxYmlHLZ6m5kgPFS2j7S2CEtAxl7AH0PoU6ZjmZ9SC
+	HtadQO4ZQ7RKfjw8EtWP8ZRYFwOgnwGGM2/QWORWHyuhJT5BYgDyjmhe5ZGEbcY=
 X-Google-Smtp-Source: 
- AGHT+IFoKaDJDYfIyho5GczSHSkqKxu7KN6zUTd+u7cNPd4fAXx5KP0876Uwls0hd/gjuxcHkQ/dtg==
-X-Received: by 2002:a17:906:355b:b0:a6f:4e02:ce50 with SMTP id
- a640c23a62f3a-a6f4e0323c0mr68616866b.58.1718208948949;
-        Wed, 12 Jun 2024 09:15:48 -0700 (PDT)
+ AGHT+IEV+h2vbFgATGGL7Df9HCn4pV0I/mu2nGi8vVCTHaKKyDaxGp2hEWUoko7ZRX+TvbTeiXVv0w==
+X-Received: by 2002:a17:907:7208:b0:a6f:51d5:ef0d with SMTP id
+ a640c23a62f3a-a6f51d5efb7mr24161066b.60.1718208951530;
+        Wed, 12 Jun 2024 09:15:51 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a6efd6cfb74sm624815866b.20.2024.06.12.09.15.47
+ a640c23a62f3a-a6efd6cfb74sm624815866b.20.2024.06.12.09.15.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jun 2024 09:15:48 -0700 (PDT)
+        Wed, 12 Jun 2024 09:15:51 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 12 Jun 2024 18:15:18 +0200
-Subject: [PATCH 05/23] ASoC: codecs: wcd9335: Drop unneeded error message
+Date: Wed, 12 Jun 2024 18:15:20 +0200
+Subject: [PATCH 07/23] ASoC: codecs: wcd934x: Drop unused interp path enum
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240612-asoc-wcd9xxx-wide-cleanups-v1-5-0d15885b2a06@linaro.org>
+Message-Id: <20240612-asoc-wcd9xxx-wide-cleanups-v1-7-0d15885b2a06@linaro.org>
 References: <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
 In-Reply-To: 
  <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
@@ -100,25 +100,25 @@ Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=936;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=574;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=44SvPncKGed5222crY2QmWyS1bBJY6ITGdo0S3bUKlg=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmacmbvr1fmPfm/PMxuNcXIa5+ruSQV6ftFq3SU
- UD9sww97xuJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZmnJmwAKCRDBN2bmhouD
- 14i2D/9ENklcp84Bwc6wDhkbkAIOZoKpswTywzAoWiMdry4iky0WUt0gd6WLJT/qv5r7Co4+EhR
- S7yKqdbaTpPQEDfHVshh/lcsePxUi0cfYWgPYOfybJkEslsGWveTrmpl/YGUIGtb+gh+TMu88EC
- r8rXn0ZwL3jAEywWS5sqQ61SK4jXB3fYA7Cuv97vBqqaY+r9Sp7i7N0ivMV+CM2jsZYrptOM0G6
- YcpxzGgBjLaDYRfQx/Bzts2ll7eDKNzMGPivjfX1sDZKly0HxVspivE2lyReNwyuSC5LIDEtDca
- swIpoFbqUa0LIBjwqix+fx+Qm7nmz5BfO7WnohsR41EgR6+G7UzAGqAMLaY2Wo1UwEcN3aRGFcU
- lhwtwDCj1Ft9NxY/D375Eam6tH+uylUnKq9azvGq31IpL3iM3+I7lz9AAdrVxUVKkEZIEbv4azv
- XvJE11BzRVWF7aEWJo7OB/d+3wMQ8KJKEVsWShZrwYA5BNFm/T64dgTH9Ivtz8TD0BoBlEJq1ax
- tVONbpPPUAu8eaRNmyXvSmroCSMi37CDSc/Eh+XVi6oFrLXwk16FrP9kXeCCEtFWVJbpY2IgOCo
- XVjQLRJMmWo97dJTc7RALr6tH6t3DQAWupxZDsUT5GH7oZX9ajL3ULkXGxFW1nRa8r83/mcsIBn
- FGM0S/aIAx0610w==
+ bh=0x271Ao5g1756MkJM0YnZ2eY6hyaiNB56Snmlinm2o0=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmacmdGHA1Mc5AxCcNSVn2jKSCaXp7KokuKm2d+
+ NCQKnMfgTKJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZmnJnQAKCRDBN2bmhouD
+ 1+lTD/9nG9SnZKzUodnBZ9jKxGLqAYbuAcS95yXfKwvzL7gcFcHTqWYYRmWfOkUvUdXI0oY0gsm
+ f2e1nkk0kmT0EkLmhc3iqNtQyJJoyUIPl39A/Hb+F1xHJxJEKwD8ClpD04ZOk9ttcSFpL0Rp4My
+ xMc6F76okJKgmFYQEkjA+076pxMninW9PZsJ/7+4pfSHl53ZvN7OOVTnV8o+zztUXXh4ENPaRK6
+ NT0hxYfYW87xM8IDjxSoZ/gfah56JrgpkuJsLcuqnyOUax151rXLuTUSkMy229tfBykSVlnEOeh
+ COZ6QUszw1/K+kOiHIuCvmIDqxbm/AQzJ/F8Db+NLmZq70RX7Q34KQlL4EUCUVyZNTjLxv4tCWx
+ yPMnljYyvrsk0+Qt6t0BgyBpHsok0j2BNV12pheUwwHxfU4yQ9DYPDTRvgIPokPcGj3ouo8zL31
+ Voqe+7/fffZVwBdpxp7wSgQCYoipHd9JLt3a8i2dne2u2J00Dd6TvCEP3EAzZ8nz6fsuOrlgvkf
+ +tuImGM4u7PgBskHjQAsbryVbBayat5FJ9aHg4H2nc0Qd57pkZa7VXPubWcDPwVaX6/IoADkNYi
+ aUHwj8pgZ4b+vIJnI2FJyeg+Uz9KkrJMvaYbQySUq6Xr1DWkeXOSHpE2uYQD6NleQs078936UEP
+ p6r2LGdNa4noAmQ==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: VOLU3YCEMUMRI7IT3NGK3GSW6ZAAH2PT
-X-Message-ID-Hash: VOLU3YCEMUMRI7IT3NGK3GSW6ZAAH2PT
+Message-ID-Hash: NEH3EZZKYICU2Y7JUBNJTGQ3S76TSTGV
+X-Message-ID-Hash: NEH3EZZKYICU2Y7JUBNJTGQ3S76TSTGV
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -131,7 +131,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VOLU3YCEMUMRI7IT3NGK3GSW6ZAAH2PT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NEH3EZZKYICU2Y7JUBNJTGQ3S76TSTGV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,30 +140,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Error-level should not be used as debugging.  The code (function
-wcd9335_get_dmic_clk_val()) will always be called with same parameters,
-so this is not really useful debug anyway, so drop it.
+The enum with inter path is not used.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/wcd9335.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/codecs/wcd934x.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 334c5241617f..6a1376b3b98c 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -2849,10 +2849,6 @@ static u8 wcd9335_get_dmic_clk_val(struct snd_soc_component *component,
- 	u32 div_factor;
- 	u8 dmic_ctl_val;
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index fcad2c9fba55..cdb68f34e55a 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -475,11 +475,6 @@ enum {
+ 	INTn_2_INP_SEL_PROXIMITY,
+ };
  
--	dev_err(component->dev,
--		"%s: mclk_rate = %d, dmic_sample_rate = %d\n",
--		__func__, mclk_rate, dmic_clk_rate);
+-enum {
+-	INTERP_MAIN_PATH,
+-	INTERP_MIX_PATH,
+-};
 -
- 	/* Default value to return in case of error */
- 	if (mclk_rate == WCD9335_MCLK_CLK_9P6MHZ)
- 		dmic_ctl_val = WCD9335_DMIC_CLK_DIV_2;
+ struct interp_sample_rate {
+ 	int sample_rate;
+ 	int rate_val;
 
 -- 
 2.43.0
