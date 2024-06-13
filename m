@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9942CC27C4F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 06:39:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39810C27C75
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jun 2024 06:39:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70807DEE;
-	Thu, 13 Jun 2024 08:39:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70807DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F51DE94;
+	Thu, 13 Jun 2024 08:39:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F51DE94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718260759;
-	bh=crewVMHSfJKgeI4smrQVHU61rtSFJP+uy4uxd/EJzag=;
+	s=default; t=1718260761;
+	bh=tOZ91IT2s8wpY7yLumZ5kw412vfzz4MXb5MVorwZxpY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Er2t6uwZ6BdwC1DR2wxtWuqYSHIsGYcBMCqmVPoAXcvvdReffAVZiI2NEv4wEj4Tl
-	 kOlpepAIrnJoz2NAt39HR39R9/6U5nCOMynLCylr13qK8ux3s+LByG6rvbvKA/J+cv
-	 J559DbfEY335YpgTKpc5MJdQQkjzuPhm3FhsJQJw=
+	b=Vg32caIsdk3WtYhx5C82KjKWuibU01giNyWAhm2DlmGTH0bOUaYIx9+7X4oEqhjir
+	 bAybHlqFOLAUMkPyI4HIQOAkSK0A56VMu89aprwSNgN8FHjUitbXDLb9KC2UnsHLfb
+	 Yc9TwmUDegDIUBPX6GgJWT9G3zbTLJyaoERbHz54=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5628EF80603; Thu, 13 Jun 2024 08:38:14 +0200 (CEST)
+	id B7330F80618; Thu, 13 Jun 2024 08:38:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECA94F805F4;
-	Thu, 13 Jun 2024 08:38:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B7FCF805AD;
+	Thu, 13 Jun 2024 08:38:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9992EF805BF; Thu, 13 Jun 2024 08:38:04 +0200 (CEST)
+	id 4A403F805B4; Thu, 13 Jun 2024 08:38:05 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70B4AF8057A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2024 08:37:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70B4AF8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6AF14F800D0
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jun 2024 08:38:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AF14F800D0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=DRabdcSx
+ header.s=Intel header.b=NMC+NHrt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718260676; x=1749796676;
+  t=1718260682; x=1749796682;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=crewVMHSfJKgeI4smrQVHU61rtSFJP+uy4uxd/EJzag=;
-  b=DRabdcSx5WA+99kx1foo6/Bk9exz1FSkYZ68MHstdRGTeqooYxeTjE7W
-   cIA7MvpT4Zt9pSaRa8b9BxPXZQi5S1+YoPgU/NoYA1a//dbQtnwRDUBvY
-   YXB8vq9WgGbc0kYOSj1L/vrrzoQqvIAE7rRbH27MQD1pUGoOb9bHCIGKR
-   NQMaWxEwWS7KktjmiF0AbKMjNAGYN6pnAYUrx4IaWH2v3J+fJ5O5yxCba
-   LQH64EUW3OsTst/1ed6Pt1L7Rv7oFHehYrpePBobqPaQ+EC5v6llxzSgh
-   RiMnQ52PKbKdUaTYz9W8EJBMMy1p7TTj4f48V+Q41X6ZX02JiYDNCFx4M
-   Q==;
-X-CSE-ConnectionGUID: m26PHT4sSHmo98JTLzbxPQ==
-X-CSE-MsgGUID: 3zGntCf3RrGafmL07MWcwQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11101"; a="25736629"
+  bh=tOZ91IT2s8wpY7yLumZ5kw412vfzz4MXb5MVorwZxpY=;
+  b=NMC+NHrtTew5KPcSt1spWpGTKyN8DKOD0Forb8o6mh1QzrGjB6aUtC3+
+   LX5e3oxHkS2xH3mpj00t8Kxzu3qEta6DhUg8RhBPg7lVdmLaK3OFMvJo7
+   mSOErabWWxSAQHTPcoJE8vbVtbN3V0RQDQYW/RMbE/c2kV//kVOJdR497
+   Rni8ZOsnT3sfxjkxsXfOPXmEuxIedId2Xw8lWMbxfLfju7ucYoMqlqCph
+   eq8dnxeZXFpaFFPFagCzeJkhxlvPDbsoKzPQzBlfAryq3RYVbqk2tQXL3
+   K6/qwd90uCkNmaLtpkTj+Z36IKU3ByQQ8ttA26cLtc3ladpnLDWo/gaA4
+   A==;
+X-CSE-ConnectionGUID: 16TxJeMpQoSsxgtCO3RpWg==
+X-CSE-MsgGUID: 60SS10LgQjST/MsRTHSlJw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11101"; a="25736647"
 X-IronPort-AV: E=Sophos;i="6.08,234,1712646000";
-   d="scan'208";a="25736629"
+   d="scan'208";a="25736647"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
   by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jun 2024 23:37:52 -0700
-X-CSE-ConnectionGUID: xNAkxfu6QjC+ZxPaNQOSaA==
-X-CSE-MsgGUID: 7zl9+g3RRnyMoIPKRjwzsQ==
+ 12 Jun 2024 23:37:59 -0700
+X-CSE-ConnectionGUID: 6R9a3YwdQruo7RPqCtq4wg==
+X-CSE-MsgGUID: tyzxhkqlQIKI/WzbuttsPw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,234,1712646000";
-   d="scan'208";a="39960932"
+   d="scan'208";a="39960976"
 Received: from fdefranc-mobl3.ger.corp.intel.com (HELO
  pbossart-mobl6.intel.com) ([10.245.246.108])
   by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jun 2024 23:37:48 -0700
+ 12 Jun 2024 23:37:55 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -75,23 +75,22 @@ Cc: alsa-devel@alsa-project.org,
 	broonie@kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	linux-pci@vger.kernel.org,
-	Fred Oh <fred.oh@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 2/5] ASoC: SOF: Intel: add PTL specific power control
- register
-Date: Thu, 13 Jun 2024 08:37:29 +0200
-Message-ID: <20240613063732.241157-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 4/5] ASoC: Intel: soc-acpi-intel-ptl-match: add rt711-sdca
+ table
+Date: Thu, 13 Jun 2024 08:37:31 +0200
+Message-ID: <20240613063732.241157-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240613063732.241157-1-pierre-louis.bossart@linux.intel.com>
 References: <20240613063732.241157-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GOTRCR2ABGSVIN4YLMG2BXRKDRHH6WPC
-X-Message-ID-Hash: GOTRCR2ABGSVIN4YLMG2BXRKDRHH6WPC
+Message-ID-Hash: DGRDJQEH6PJM3HSES3MHNECRXYA3CDLW
+X-Message-ID-Hash: DGRDJQEH6PJM3HSES3MHNECRXYA3CDLW
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GOTRCR2ABGSVIN4YLMG2BXRKDRHH6WPC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DGRDJQEH6PJM3HSES3MHNECRXYA3CDLW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,77 +112,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Fred Oh <fred.oh@linux.intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-PTL has some differences from MTL/LNL. Need to use different register
-to power up.
+Add rt711-sdca on sdw link0.
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/mtl.c | 16 ++++++++++++++--
- sound/soc/sof/intel/mtl.h |  2 ++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ .../intel/common/soc-acpi-intel-ptl-match.c   | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
-index 1bf274509ee6..2b9d22ccf345 100644
---- a/sound/soc/sof/intel/mtl.c
-+++ b/sound/soc/sof/intel/mtl.c
-@@ -245,6 +245,18 @@ int mtl_dsp_pre_fw_run(struct snd_sof_dev *sdev)
- 	u32 cpa;
- 	u32 pgs;
- 	int ret;
-+	u32 dsppwrctl;
-+	u32 dsppwrsts;
-+	const struct sof_intel_dsp_desc *chip;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-ptl-match.c b/sound/soc/intel/common/soc-acpi-intel-ptl-match.c
+index dba45fa7a453..ce4234fd3895 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-ptl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-ptl-match.c
+@@ -15,6 +15,31 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_ptl_machines[] = {
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_ptl_machines);
+ 
++static const struct snd_soc_acpi_endpoint single_endpoint = {
++	.num = 0,
++	.aggregated = 0,
++	.group_position = 0,
++	.group_id = 0,
++};
 +
-+	chip = get_chip_info(sdev->pdata);
-+	if (chip->hw_ip_version > SOF_INTEL_ACE_2_0) {
-+		dsppwrctl = PTL_HFPWRCTL2;
-+		dsppwrsts = PTL_HFPWRSTS2;
-+	} else {
-+		dsppwrctl = MTL_HFPWRCTL;
-+		dsppwrsts = MTL_HFPWRSTS;
++static const struct snd_soc_acpi_adr_device rt711_sdca_0_adr[] = {
++	{
++		.adr = 0x000030025D071101ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "rt711"
 +	}
- 
- 	/* Set the DSP subsystem power on */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, MTL_HFDSSCS,
-@@ -264,14 +276,14 @@ int mtl_dsp_pre_fw_run(struct snd_sof_dev *sdev)
- 	}
- 
- 	/* Power up gated-DSP-0 domain in order to access the DSP shim register block. */
--	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, MTL_HFPWRCTL,
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, dsppwrctl,
- 				MTL_HFPWRCTL_WPDSPHPXPG, MTL_HFPWRCTL_WPDSPHPXPG);
- 
- 	usleep_range(1000, 1010);
- 
- 	/* poll with timeout to check if operation successful */
- 	pgs = MTL_HFPWRSTS_DSPHPXPGS_MASK;
--	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR, MTL_HFPWRSTS, dsphfpwrsts,
-+	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR, dsppwrsts, dsphfpwrsts,
- 					    (dsphfpwrsts & pgs) == pgs,
- 					    HDA_DSP_REG_POLL_INTERVAL_US,
- 					    HDA_DSP_RESET_TIMEOUT_US);
-diff --git a/sound/soc/sof/intel/mtl.h b/sound/soc/sof/intel/mtl.h
-index 7acaa7e724f4..9ab4b21c960e 100644
---- a/sound/soc/sof/intel/mtl.h
-+++ b/sound/soc/sof/intel/mtl.h
-@@ -12,9 +12,11 @@
- #define MTL_HFDSSCS_CPA_MASK		BIT(24)
- #define MTL_HFSNDWIE			0x114C
- #define MTL_HFPWRCTL			0x1D18
-+#define PTL_HFPWRCTL2			0x1D20
- #define MTL_HfPWRCTL_WPIOXPG(x)		BIT((x) + 8)
- #define MTL_HFPWRCTL_WPDSPHPXPG		BIT(0)
- #define MTL_HFPWRSTS			0x1D1C
-+#define PTL_HFPWRSTS2			0x1D24
- #define MTL_HFPWRSTS_DSPHPXPGS_MASK	BIT(0)
- #define MTL_HFINTIPPTR			0x1108
- #define MTL_IRQ_INTEN_L_HOST_IPC_MASK	BIT(0)
++};
++
++static const struct snd_soc_acpi_link_adr ptl_rvp[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt711_sdca_0_adr),
++		.adr_d = rt711_sdca_0_adr,
++	},
++	{}
++};
++
+ /* this table is used when there is no I2S codec present */
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_ptl_sdw_machines[] = {
+ 	/* mockup tests need to be first */
+@@ -36,6 +61,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_ptl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-ptl-rt715-rt711-rt1308-mono.tplg",
+ 	},
++	{
++		.link_mask = BIT(0),
++		.links = ptl_rvp,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-ptl-rt711.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_ptl_sdw_machines);
 -- 
 2.43.0
 
