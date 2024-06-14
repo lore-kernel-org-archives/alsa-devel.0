@@ -4,48 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 446B8C27C6E
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jun 2024 14:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B5D3C27C77
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jun 2024 14:17:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D587B70;
-	Fri, 14 Jun 2024 16:03:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D587B70
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC9A1BC0;
+	Fri, 14 Jun 2024 16:17:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC9A1BC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718373830;
-	bh=GNYjkjZlK0CqTsedf8YcEEoz+iTWoBBZjds+jVgxcCo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=YK1iAdj6dE6mXmivISgJOvxLCoELSgXbfZWG3VqnGItoMQcQqMLH8rRNGQb0/FEWR
-	 JNOOJwkEtKL02H0JcW+ZvdAyoMs7ohWHk6SVxsrixQl1YK2L+tDzAmbmm72/1h50Lg
-	 DKVMnFDCAtddHpGHL7PaNJnNoxBkHk3pCJXaKX0w=
+	s=default; t=1718374654;
+	bh=EX6cdofRw4dUHQuRQKyswAwkF9oaLKdLL0bEeYpkN0c=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=FEk7CYz1joPyxDrbgnYLUdS7C5GEX8yepNeqYCKYhzuBw+tSsfb0p17+pGJOMCoxF
+	 p4pU/8ier8VBQ/h3AXRp3edFMRO7GITPPk0qT4nAEGRaW8bc5PYpt3K/dOV6wQQYGg
+	 ODU8S8QedGF2vALAyybnIQFtUD0Gf/FjZtKvWOK0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8C05F805B6; Fri, 14 Jun 2024 16:03:16 +0200 (CEST)
+	id CA517F805B5; Fri, 14 Jun 2024 16:16:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B2D8F8057A;
-	Fri, 14 Jun 2024 16:03:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A41CF805B5;
+	Fri, 14 Jun 2024 16:16:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B073F80496; Fri, 14 Jun 2024 16:03:13 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1008DF802DB
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2024 16:03:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1008DF802DB
-Content-Type: text/plain; charset="utf-8"
+	id 36F83F80448; Fri, 14 Jun 2024 16:16:44 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id E1082F800E9
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jun 2024 16:16:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1082F800E9
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=rNDaWNoN
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 45EFFCE29F3;
+	Fri, 14 Jun 2024 14:16:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADBF4C3277B;
+	Fri, 14 Jun 2024 14:16:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718374588;
+	bh=EX6cdofRw4dUHQuRQKyswAwkF9oaLKdLL0bEeYpkN0c=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=rNDaWNoNl/zru7fTjvTOIiOuAI2sWjyLC0jLShFLrCcVASyQYJffYY2aPSfo3uiL7
+	 5IHl7sCy9XYPFPUfM5rKtpeAxNxAtcFMHH12uiaVxD/LGr/Ec7n+AnSujLyERoSibX
+	 y281v4Ujdvlr22DRxTxVZlWouq8mV2ALSfB4b4QhjGgYZSBBeMZsiMfE62e+m2uXen
+	 h/IKPANnC43gsAkqXyxhHnX32dPeuw10O+/E5+MSOp1vt9BzXDep5JvVTOPS8cCZsS
+	 SoPjh5AHJio5+Sex1dxcADnn1SiegUd7+/WrQErP71e7wmL6AqqueZ8yc0Mt/XyTDP
+	 zEYZs9IigIw6g==
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+In-Reply-To: <20240613090126.841189-1-amadeuszx.slawinski@linux.intel.com>
+References: <20240613090126.841189-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH] ASoC: topology: Fix route memory corruption
+Message-Id: <171837458634.276136.882653794696177346.b4-ty@kernel.org>
+Date: Fri, 14 Jun 2024 15:16:26 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1718373790903105021-webhooks-bot@alsa-project.org>
-References: <1718373790903105021-webhooks-bot@alsa-project.org>
-Subject: mic not working on Dell xps 13 9340 (2024)
-Message-Id: <20240614140313.8B073F80496@alsa1.perex.cz>
-Date: Fri, 14 Jun 2024 16:03:13 +0200 (CEST)
-Message-ID-Hash: VOXNFRKYK5MR4EKSABU6LKL6AK7HDWCY
-X-Message-ID-Hash: VOXNFRKYK5MR4EKSABU6LKL6AK7HDWCY
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.14-dev-0bd45
+Message-ID-Hash: T7S2S6LDZ43RY7ZSOCPOIHZPTK67JLSY
+X-Message-ID-Hash: T7S2S6LDZ43RY7ZSOCPOIHZPTK67JLSY
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VOXNFRKYK5MR4EKSABU6LKL6AK7HDWCY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T7S2S6LDZ43RY7ZSOCPOIHZPTK67JLSY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,71 +95,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzQyNSB3YXMgZWRpdGVkIGZyb20gbmV5
-YjoKCkhlbGxvLA0KDQpUaGUgdmVyc2lvbiAxLjIuMTIgc2VlbXMgdG8gZml4IHRoZSBzcGVha2Vy
-IG9mIHRoZSB4cHMgMTMgOTQzMCAoMjAyNCksIGJ1dCB0aGVyZSBzZWVtcyB0byBzdGlsbCBiZSBh
-IHByb2JsZW0gb24gdGhlIGludGVncmF0ZWQgbWljcm9waG9uZSwgdGhlIG1pYyBhcHBlYXJzIGJ1
-dCB0aGVpciBzZWVtcyB0byBiZSBubyBzb3VuZCByZWNvcmRlZCA6wqANCg0KYGBgc2hlbGwNCuKd
-ryBhbWl4ZXIgLWMgMCBpbmZvDQpDYXJkIHN5c2RlZmF1bHQ6MCAnc29mc291bmR3aXJlJy8nSW50
-ZWwgU291bmR3aXJlIFNPRicNCiAgTWl4ZXIgbmFtZQk6ICdJbnRlbCBNZXRlb3IgTGFrZSBIRE1J
-Jw0KICBDb21wb25lbnRzCTogJ0hEQTo4MDg2MjgxZCw4MDg2MDEwMSwwMDEwMDAwMCBjZmctc3Br
-OjIgY2ZnLWFtcDoyIHNwazpydDEzMTggbWljOnJ0NzE1LXNkY2EnDQogIENvbnRyb2xzICAgICAg
-OiA0MA0KICBTaW1wbGUgY3RybHMgIDogMTkNCmBgYA0KDQpgYGBzaGVsbA0K4p2vIGxzcGNpDQow
-MDAwOjAwOjAwLjAgSG9zdCBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIERldmljZSA3ZDAxIChy
-ZXYgMDQpDQowMDAwOjAwOjAyLjAgVkdBIGNvbXBhdGlibGUgY29udHJvbGxlcjogSW50ZWwgQ29y
-cG9yYXRpb24gTWV0ZW9yIExha2UtUCBbSW50ZWwgQXJjIEdyYXBoaWNzXSAocmV2IDA4KQ0KMDAw
-MDowMDowNC4wIFNpZ25hbCBwcm9jZXNzaW5nIGNvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9u
-IE1ldGVvciBMYWtlLVAgRHluYW1pYyBUdW5pbmcgVGVjaG5vbG9neSAocmV2IDA0KQ0KMDAwMDow
-MDowNS4wIE11bHRpbWVkaWEgY29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExh
-a2UgSVBVIChyZXYgMDQpDQowMDAwOjAwOjA2LjAgU3lzdGVtIHBlcmlwaGVyYWw6IEludGVsIENv
-cnBvcmF0aW9uIFJTVCBWTUQgTWFuYWdlZCBDb250cm9sbGVyDQowMDAwOjAwOjA3LjAgUENJIGJy
-aWRnZTogSW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBUaHVuZGVyYm9sdCA0IFBDSSBF
-eHByZXNzIFJvb3QgUG9ydCAjMCAocmV2IDEwKQ0KMDAwMDowMDowNy4zIFBDSSBicmlkZ2U6IElu
-dGVsIENvcnBvcmF0aW9uIE1ldGVvciBMYWtlLVAgVGh1bmRlcmJvbHQgNCBQQ0kgRXhwcmVzcyBS
-b290IFBvcnQgIzMgKHJldiAxMCkNCjAwMDA6MDA6MDguMCBTeXN0ZW0gcGVyaXBoZXJhbDogSW50
-ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBHYXVzc2lhbiAmIE5ldXJhbC1OZXR3b3JrIEFj
-Y2VsZXJhdG9yIChyZXYgMjApDQowMDAwOjAwOjBhLjAgU2lnbmFsIHByb2Nlc3NpbmcgY29udHJv
-bGxlcjogSW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBQbGF0Zm9ybSBNb25pdG9yaW5n
-IFRlY2hub2xvZ3kgKHJldiAwMSkNCjAwMDA6MDA6MGIuMCBQcm9jZXNzaW5nIGFjY2VsZXJhdG9y
-czogSW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UgTlBVIChyZXYgMDQpDQowMDAwOjAwOjBk
-LjAgVVNCIGNvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9uIE1ldGVvciBMYWtlLVAgVGh1bmRl
-cmJvbHQgNCBVU0IgQ29udHJvbGxlciAocmV2IDEwKQ0KMDAwMDowMDowZC4yIFVTQiBjb250cm9s
-bGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiBNZXRlb3IgTGFrZS1QIFRodW5kZXJib2x0IDQgTkhJICMw
-IChyZXYgMTApDQowMDAwOjAwOjBkLjMgVVNCIGNvbnRyb2xsZXI6IEludGVsIENvcnBvcmF0aW9u
-IE1ldGVvciBMYWtlLVAgVGh1bmRlcmJvbHQgNCBOSEkgIzEgKHJldiAxMCkNCjAwMDA6MDA6MGUu
-MCBSQUlEIGJ1cyBjb250cm9sbGVyOiBJbnRlbCBDb3Jwb3JhdGlvbiBWb2x1bWUgTWFuYWdlbWVu
-dCBEZXZpY2UgTlZNZSBSQUlEIENvbnRyb2xsZXIgSW50ZWwgQ29ycG9yYXRpb24NCjAwMDA6MDA6
-MTIuMCBTZXJpYWwgY29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBJ
-bnRlZ3JhdGVkIFNlbnNvciBIdWIgKHJldiAyMCkNCjAwMDA6MDA6MTQuMCBVU0IgY29udHJvbGxl
-cjogSW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBVU0IgMy4yIEdlbiAyeDEgeEhDSSBI
-b3N0IENvbnRyb2xsZXIgKHJldiAyMCkNCjAwMDA6MDA6MTQuMiBSQU0gbWVtb3J5OiBJbnRlbCBD
-b3Jwb3JhdGlvbiBEZXZpY2UgN2U3ZiAocmV2IDIwKQ0KMDAwMDowMDoxNS4wIFNlcmlhbCBidXMg
-Y29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBTZXJpYWwgSU8gSTJD
-IENvbnRyb2xsZXIgIzAgKHJldiAyMCkNCjAwMDA6MDA6MTUuMiBTZXJpYWwgYnVzIGNvbnRyb2xs
-ZXI6IEludGVsIENvcnBvcmF0aW9uIE1ldGVvciBMYWtlLVAgU2VyaWFsIElPIEkyQyBDb250cm9s
-bGVyICMyIChyZXYgMjApDQowMDAwOjAwOjE2LjAgQ29tbXVuaWNhdGlvbiBjb250cm9sbGVyOiBJ
-bnRlbCBDb3Jwb3JhdGlvbiBNZXRlb3IgTGFrZS1QIENTTUUgSEVDSSAjMSAocmV2IDIwKQ0KMDAw
-MDowMDoxYy4wIFBDSSBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIERldmljZSA3ZTNmIChyZXYg
-MjApDQowMDAwOjAwOjFlLjAgQ29tbXVuaWNhdGlvbiBjb250cm9sbGVyOiBJbnRlbCBDb3Jwb3Jh
-dGlvbiBNZXRlb3IgTGFrZS1QIFNlcmlhbCBJTyBVQVJUIENvbnRyb2xsZXIgIzAgKHJldiAyMCkN
-CjAwMDA6MDA6MWYuMCBJU0EgYnJpZGdlOiBJbnRlbCBDb3Jwb3JhdGlvbiBEZXZpY2UgN2UwMiAo
-cmV2IDIwKQ0KMDAwMDowMDoxZi4zIE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxlcjogSW50ZWwg
-Q29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBIRCBBdWRpbyBDb250cm9sbGVyIChyZXYgMjApDQow
-MDAwOjAwOjFmLjQgU01CdXM6IEludGVsIENvcnBvcmF0aW9uIE1ldGVvciBMYWtlLVAgU01CdXMg
-Q29udHJvbGxlciAocmV2IDIwKQ0KMDAwMDowMDoxZi41IFNlcmlhbCBidXMgY29udHJvbGxlcjog
-SW50ZWwgQ29ycG9yYXRpb24gTWV0ZW9yIExha2UtUCBTUEkgQ29udHJvbGxlciAocmV2IDIwKQ0K
-MDAwMDo3MTowMC4wIE5ldHdvcmsgY29udHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gV2ktRmkg
-Nyg4MDIuMTFiZSkgQVgxNzc1Ki9BWDE3OTAqL0JFMjAqL0JFNDAxL0JFMTc1MCogMngyIChyZXYg
-MWEpDQoxMDAwMDplMDowNi4wIFBDSSBicmlkZ2U6IEludGVsIENvcnBvcmF0aW9uIERldmljZSA3
-ZTRkIChyZXYgMjApDQoxMDAwMDplMTowMC4wIE5vbi1Wb2xhdGlsZSBtZW1vcnkgY29udHJvbGxl
-cjogTWljcm9uIFRlY2hub2xvZ3kgSW5jIDI1NTAgTlZNZSBTU0QgKERSQU0tbGVzcykgKHJldiAw
-MSkNCmBgYA0KDQpgYGBzaGVsbA0K4p2vIGFyZWNvcmQgLWwNCioqKiogTGlzdGUgZGVzIHDDqXJp
-cGjDqXJpcXVlcyBtYXTDqXJpZWxzIENBUFRVUkUgKioqKg0KY2FydGUgMCA6IHNvZnNvdW5kd2ly
-ZSBbc29mLXNvdW5kd2lyZV0sIHDDqXJpcGjDqXJpcXVlIDMgOiBBbXAgZmVlZGJhY2sgKCopIFtd
-DQogIFNvdXMtcMOpcmlwaMOpcmlxdWVzIDogMS8xDQogIFNvdXMtcMOpcmlwaMOpcmlxdWUgIzAg
-OiBzdWJkZXZpY2UgIzANCmNhcnRlIDAgOiBzb2Zzb3VuZHdpcmUgW3NvZi1zb3VuZHdpcmVdLCBw
-w6lyaXBow6lyaXF1ZSA0IDogTWljcm9waG9uZSAoKikgW10NCiAgU291cy1ww6lyaXBow6lyaXF1
-ZXMgOiAwLzENCiAgU291cy1ww6lyaXBow6lyaXF1ZSAjMCA6IHN1YmRldmljZSAjMA0KYGBgCgpJ
-c3N1ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLXVjbS1j
-b25mL2lzc3Vlcy80MjUKUmVwb3NpdG9yeSBVUkw6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXBy
-b2plY3QvYWxzYS11Y20tY29uZgo=
+On Thu, 13 Jun 2024 11:01:26 +0200, Amadeusz Sławiński wrote:
+> It was reported that recent fix for memory corruption during topology
+> load, causes corruption in other cases. Instead of being overeager with
+> checking topology, assume that it is properly formatted and just
+> duplicate strings.
+> 
+> 
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: topology: Fix route memory corruption
+      commit: 0298f51652be47b79780833e0b63194e1231fa34
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
