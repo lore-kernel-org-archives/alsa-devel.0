@@ -4,95 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 154C3C2BA15
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jun 2024 13:06:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93F73C41513
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jun 2024 13:06:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 176A1A4B;
-	Mon, 17 Jun 2024 15:05:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 176A1A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 868CD845;
+	Mon, 17 Jun 2024 15:06:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 868CD845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718629569;
-	bh=YWvpQ0ab4Dp6gKq8jwDSX4NydsgeD85hsgBWMfw0Wak=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=om1KjrIR2hcWB3E9tS9apkyVYUx8noXpuNM4N9ZZgOfWU63Tk3Azyq9lxDGIuzIML
-	 Z0CzDyd8UiXaFw/dQ2BaLnW4a0q1lJd+YqTRYumosbNxZCtCt7XEGGq4iLJD9AotBy
-	 n5OzIDHkTZV2JZlo5dqBx7VroO3gfq3js2/QU7sU=
+	s=default; t=1718629584;
+	bh=6t3ZkqcNeoQQb/+n2YWFMbCwguXnWksaQugNhpxF2Qo=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=jgUWoS75mNi23GqYXsOlX3HlH/YqegPybk8fwS9FkkU9txMh581ZMOOO8bvdvKKmD
+	 Qn3NKnTbjo/KesLr5+HfgC6eBtA2H0xjjTWHT2AyTkSAYJECMnNZblHQ7M5kuzRlmJ
+	 tDjn2serpqPowPkCygDNJg6iZgB5KAgsTQT8jXyw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D284F8069A; Mon, 17 Jun 2024 15:04:49 +0200 (CEST)
+	id F2BB9F80683; Mon, 17 Jun 2024 15:04:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E8E1F8065D;
-	Mon, 17 Jun 2024 15:04:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 479AFF80694;
+	Mon, 17 Jun 2024 15:04:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E306BF8058C; Mon, 17 Jun 2024 15:04:31 +0200 (CEST)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
+	id D0150F805E8; Mon, 17 Jun 2024 15:04:31 +0200 (CEST)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
+ [IPv6:2a00:1450:4864:20::531])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 778D6F8023A
+	by alsa1.perex.cz (Postfix) with ESMTPS id B8062F804D6
 	for <alsa-devel@alsa-project.org>; Mon, 17 Jun 2024 15:03:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 778D6F8023A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8062F804D6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=yDUXFLt2
-Received: by mail-ed1-x52d.google.com with SMTP id
- 4fb4d7f45d1cf-57c831b6085so2369620a12.1
+ header.s=google header.b=rfxCpRfq
+Received: by mail-ed1-x531.google.com with SMTP id
+ 4fb4d7f45d1cf-57ccd1111b0so1162583a12.3
         for <alsa-devel@alsa-project.org>;
  Mon, 17 Jun 2024 06:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718629414; x=1719234214;
+        d=linaro.org; s=google; t=1718629421; x=1719234221;
  darn=alsa-project.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0h98bfk6InRRrhm6wwIHnjZdloO4BC8T6hc9Gmbf7c=;
-        b=yDUXFLt2FXfNKjbIZeIp1GbQqP4eElHdcqDfE7IVKVP5rd/n0At8awD1vp20CiK+V6
-         hVGtgeVUoE1Zpt9D2ZW7E8VdgEc+NxROHYfsv2F+gJIZhQiSib6E8sRw9YqyxrP+whWl
-         yebYh9c198ja4tsO4ZThs5f6BCujenI9yNtff4pk5b8rkA2AyUiMkSWxlm1z+JLH2T+t
-         uVeZkBrV7NMKKIpPtL2XQYr/TOZdQoVeUyXwZ2k0PResDIz0EUk1zJQwI5GeXapBxgei
-         wk1PrK61xCypTV2X+3X5v/u4AgUq4hyerqBozHnM1r59gVfbIQjv1cz/euhZ7+85a2hB
-         s2bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718629414; x=1719234214;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=K0h98bfk6InRRrhm6wwIHnjZdloO4BC8T6hc9Gmbf7c=;
-        b=swGI81yONv7hmSlfb1If8a4LhUwEW3kp1NLAmrWzvWpWKY/2O+1hexqa+7I4um+NiM
-         MTHSs9pT9q7D2eqzB5+w5sH/1Et7mziyeLxC0PIE2IdQBDZWu/vYAs6VKVA0HU+5BAmi
-         bfSVasZKhu8aIRSvB5RrHJE3dpbWpFqmTvzFUuhtZYuAPsmdiHfRbeZqVD2CqQe+S9PW
-         pX7Lg+yEKYLvGHEQEmdKvVPYB8rQ0DMcb+SC/JA6AVZTv+M4INaISdni8yCuwhDrTpur
-         y5aYD4Zyj2Q90/uJzd3Ktx+JRNKMOMWObxzPfuv2DydCQUbwkDHo2TMYAE1s4caAgGHR
-         AOtQ==
+        bh=ZTDFr+Cm8nDhokWGI5gZCj0FJzBUQBkkvhzHWESthf0=;
+        b=rfxCpRfqHK1T8OcJWZd14Ast8Z2aUIwk+bbtAk4YQLjIlwpxjCa2xHTrT86dfbncrE
+         eNpQU4v28rkMQuAJI0lm8+JSRFCS1Yf+rY8gCDowyNN4B83mWXs7xbEfqwrFepdAho9P
+         uqu7l+wz4hcFUFoQlkoqVLn1M6Y/xrS53vagJg7Gyf1LonKyRixK6ZSss6JpWMB2wQQA
+         Hpu+zluMeTjld6i8pO//ybGw+CIoS8AUoZ4gIL1i4pdS7ViN8XCcQhBZnUCnrGmweWxh
+         Gnfy7GFv0z3FR9ZH0+kcgr87rIxxhSAIucb6yqK3XlZeYfTWwOkEydrKEFpxHoefCZpl
+         cVXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718629421; x=1719234221;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZTDFr+Cm8nDhokWGI5gZCj0FJzBUQBkkvhzHWESthf0=;
+        b=aBbqWnLJmCnCFNez7TlpKXlnBLDyRhmdMbDHOxhseW0M1H77DAqAENMXaKyJCfgzTk
+         j1+AO/ZGdW+q+4Mz80q3f4ODb8kQD6h5KQxc+WNaUKNQ3A1NCwofZgIDyvOf67lDSXJf
+         TZq143DCn6KgjLOJcm8d0kzc0PLjerGXx7jCA9V/yiVT8XxQZTrEJF8gN5LxMjSszqeE
+         F5e6sOweeAVkH78UtX5JyjfEM+qR8kzUoM9wxa2jGcaUU008oVnkPLzHgL3JUByK8T9V
+         dK2yVruABd0Xblqol/Y+cYIDD29tAsee7NpzmWIdSrbv4NGZM569oHp2vYygkeOACrIg
+         MZgQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWk58ovQcZAMXa6GnqEpFpFS35WgLLXEaZBH+4owcQQnrGfNJcGLtjYJ5F4TlAXkZDlbXvJTpZJLG74Pcl6VCXeL8ttHYOxqZ6mdCw=
-X-Gm-Message-State: AOJu0YwnworvMMtCf3wmZYY9Vk4PniFOq1a3uV7JRWHIKNS+aTsiLpta
-	MG12Pd3xub8fg/NIXY5Jom+qHHFWwueVXHq8iVGTFyn6tcbSk5pFx/3xWpbuEtg=
+ AJvYcCXfDZqBXyuedUHNDtxPMw+NTRx8KcXQ3HqTq26p6SWSHLv5ZBYA+Uw2bwMELoCZkZGZEjQRJq6YsWIXmjmmj8e/vsssv5EIMB8QCIk=
+X-Gm-Message-State: AOJu0YzVX9OxYtaxVNh20cf4iZZWDTL5saVAYWjCIAotxxOlLmkokQKL
+	XyLS9fuq2FSLtbgfBm1ffTSnC55uWqt2JU3uRjjXfRz7QGPeF+pbcJZnVrFgYb4=
 X-Google-Smtp-Source: 
- AGHT+IExtTHGNouiNFqgjEiT+LPP433XAeDYx1y6ZS3ofgzCUaUo3A3zQURDTqIS8cL0nLldaqPNSQ==
-X-Received: by 2002:a50:c056:0:b0:57c:6338:328a with SMTP id
- 4fb4d7f45d1cf-57cbd6c7589mr9110762a12.30.1718629413597;
-        Mon, 17 Jun 2024 06:03:33 -0700 (PDT)
+ AGHT+IG0uo6xbwCVLGemxh8QyVdwKLSreFz59C2NpY1GizeXqWOynGBerO7GobcCbP+4hBGajbjtkQ==
+X-Received: by 2002:a50:d48e:0:b0:57c:8e57:c3f0 with SMTP id
+ 4fb4d7f45d1cf-57cbd685122mr7587945a12.16.1718629420843;
+        Mon, 17 Jun 2024 06:03:40 -0700 (PDT)
 Received: from [127.0.1.1] ([78.10.207.147])
         by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-57cb72daa67sm6404349a12.38.2024.06.17.06.03.32
+ 4fb4d7f45d1cf-57cb72daa67sm6404349a12.38.2024.06.17.06.03.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jun 2024 06:03:33 -0700 (PDT)
+        Mon, 17 Jun 2024 06:03:40 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 0/6] ASoC: Few constifications (mostly arguments)
-Date: Mon, 17 Jun 2024 15:03:18 +0200
-Message-Id: 
- <20240617-n-asoc-const-auto-selectable-formats-v1-0-8004f346ee38@linaro.org>
+Date: Mon, 17 Jun 2024 15:03:23 +0200
+Subject: [PATCH 5/6] ASoC: Constify return of snd_soc_dai_get_pcm_stream()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIABc0cGYC/x2N0QrCMAwAf2Xk2UA7q4K/Ij7EmGpgNtJ0Qxj7d
- 8vu7V7uVnCpKg7XYYUqi7pa6RIPA/CbyktQn91hDGMK53jBguTGyFa8Ic3N0GUSbvSYBLPVDzX
- HeMzMp9BJCXrqWyXrb9/c7tv2BxQCUup2AAAA
+Message-Id: 
+ <20240617-n-asoc-const-auto-selectable-formats-v1-5-8004f346ee38@linaro.org>
+References: 
+ <20240617-n-asoc-const-auto-selectable-formats-v1-0-8004f346ee38@linaro.org>
+In-Reply-To: 
+ <20240617-n-asoc-const-auto-selectable-formats-v1-0-8004f346ee38@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -107,25 +110,25 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2065;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6826;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=YWvpQ0ab4Dp6gKq8jwDSX4NydsgeD85hsgBWMfw0Wak=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmcDQZw8CQ6TtEuwrDOfeyUso35j7jNCqTLG3G5
- N7+xDUTMyiJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZnA0GQAKCRDBN2bmhouD
- 1zYrD/wM2IO5gZH/cQKpnk2qBqusJLmMij0sMKKL+5bcwpi23FojEa+GuWh2EMwPnjTj4utyPdh
- 7JyboAxvTe3MZGlgXPUZr//nic+0BYW3WSW2dSWyS3VNGxTMjA8C3VMl7miscFV5+tjWrIKG/a+
- NDQzoAU9ilfXFt3ZWvOxUetiq5VTtYUFRMhLtYdOUzI2HyVSTAMvOAOzplMXLw0Kn1NM4zjOyY8
- 33Tr3e8c11tHUS8Awv97pIb8lfTuQTgT8C9oR4zvRRQUXvP34ADYrAbV7Ydf8+J5nebLRFoJD43
- SNXtRXhICMRfQTXFZPoKoVE0tGA+8uNNhGVmwL9cfpMI4MIo6lE1MS5Q7v+33zdAdEo8jzCfRD9
- mpcj8evTj7sZkVbmZ6HMHj7wZgwAdto+7I9K4W5Be0yisk2WSDiUrpo88c/gEEqNr+zJ7WgRakk
- zfD7QmCqNEGROVVso0LlINeb+qEiIWUAKol8e0JDrt75EycYs59LTFfFmdI4Ax2s1zl4m1yx/8m
- Cfk2cLZ+24AvyedFrIbf6y+NFPbCXrV14Pjc044trBQlKBO64vdetO0eFcHTD7sTiDFgjHlRqvv
- 9XzFHZRmmhR/46sCgsTx9t0k7DsM7QpepXg1Y/w/+eQELXsW6XWyG3D386IXRB5d5ber3QVrd9C
- NNtbwNuw38cNWKQ==
+ bh=6t3ZkqcNeoQQb/+n2YWFMbCwguXnWksaQugNhpxF2Qo=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmcDQi7eqb6NCoOY1F4T3SR0rHmp1JLBzjzFZAV
+ RyLBDlw2vCJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZnA0IgAKCRDBN2bmhouD
+ 10zJD/0f8jAVU8xwRZB3dmHz6NbBZYEs6J97frvD4lszp15M1r2Nj9ltmNlVz2SkyA91uxRE6tQ
+ JqLUjxdsx1ZT4mGBkH+kKn8+3b2U9KHa94WwoxU8f1qzlqiZH5J6Gnf43vheTlJlBHjRPHpswrH
+ WSm0AT5yrsNHWqcL0GOcqU6M/PosUm9E8GisLC9VyAv2rj9mmGyECBu1pmbrPmLII9SpqRUfoTx
+ pJNFAvbxwArTES3/2q/uhU1xNfk87XjEB6B8VCgf4gfvtXCjJ6sOwS6sOUcWYe1sl4iY1e1tqqQ
+ 67FniMGKICaYNQR2Y8qtpGNRIGxRsMPI7cu1aJaGUirPxRfAI9KBl3GoJeNj4EWDm7E7SFFSSWj
+ 5Jllwk6HVm/7eeQAqRMahY/aR2mIKOvEDGOn/s4dUppyFeniXbShPtb0UrdjZHWSjSaOB7d7vTd
+ lVMJHm8naCLbYnIC9irS7xN+LJ/mxEdeRmwwnfW1CgZ78YPJRe20a9c7YUXBwCiDL0lHlk6I8XB
+ 62uEI5KyNlpB+hZ9PO2Dv4gaxAGK1g+iCyqm9aNeoRzfaghDQrIZg5gm8ifWqSjBLMEeHQXWANF
+ FRvxsaQSCGLLBfQh3bsgNCC8XzlXuzeeX2aMgQIoFNr23B5q6N2VtMCNOallLX8LFk9BIk9euNi
+ scz/N+b7Bn3Z/zg==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: M6ABSGTDFZENITJTUHOURW76Y5UFUOHE
-X-Message-ID-Hash: M6ABSGTDFZENITJTUHOURW76Y5UFUOHE
+Message-ID-Hash: 2EDLULTI2ME2BX36NKLLIFS7SSQOK5NC
+X-Message-ID-Hash: 2EDLULTI2ME2BX36NKLLIFS7SSQOK5NC
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -138,7 +141,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M6ABSGTDFZENITJTUHOURW76Y5UFUOHE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2EDLULTI2ME2BX36NKLLIFS7SSQOK5NC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,53 +150,179 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Make few pointers in ASoC functions as pointers to const, so the code is
-clearer to read, a bit safer and allows further constifications (e.g.
-placing some data as rodata).
+Returned 'struct snd_soc_pcm_stream' by snd_soc_dai_get_pcm_stream() is
+not modified by the users, so it can be changed as pointer to const.
+This is a necessary step towards making the 'dai->driver' a pointer to
+const.
 
-Best regards,
-Krzysztof
-
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-Krzysztof Kozlowski (6):
-      ASoC: Constify of_phandle_args in snd_soc_dai_driver
-      ASoC: Constify of_phandle_args in snd_soc_dai_link_component
-      ASoC: Constify passed data to core function
-      ASoC: Constify DAI passed to get_channel_map
-      ASoC: Constify return of snd_soc_dai_get_pcm_stream()
-      ALSA: Cleanup trailing white-spaces
+ include/sound/soc-dai.h   |  2 +-
+ sound/soc/intel/avs/pcm.c |  4 ++--
+ sound/soc/soc-dai.c       |  2 +-
+ sound/soc/soc-pcm.c       | 26 +++++++++++++-------------
+ 4 files changed, 17 insertions(+), 17 deletions(-)
 
- include/sound/soc-dai.h            | 26 +++++++------
- include/sound/soc.h                | 19 +++++-----
- sound/core/control_compat.c        |  2 +-
- sound/core/device.c                |  4 +-
- sound/core/hwdep.c                 | 10 ++---
- sound/core/init.c                  |  3 +-
- sound/core/memalloc.c              |  2 +-
- sound/core/memory.c                |  2 +-
- sound/core/pcm.c                   | 22 +++++------
- sound/core/pcm_compat.c            |  2 +-
- sound/core/pcm_lib.c               | 41 ++++++++++----------
- sound/core/pcm_misc.c              |  2 +-
- sound/core/pcm_native.c            | 76 +++++++++++++++++++-------------------
- sound/core/seq_device.c            |  2 +-
- sound/soc/codecs/lpass-rx-macro.c  |  2 +-
- sound/soc/codecs/lpass-tx-macro.c  |  2 +-
- sound/soc/codecs/lpass-va-macro.c  |  2 +-
- sound/soc/codecs/lpass-wsa-macro.c |  2 +-
- sound/soc/codecs/wcd9335.c         |  2 +-
- sound/soc/codecs/wcd934x.c         |  2 +-
- sound/soc/intel/avs/pcm.c          |  4 +-
- sound/soc/soc-core.c               |  4 +-
- sound/soc/soc-dai.c                | 14 +++----
- sound/soc/soc-pcm.c                | 26 ++++++-------
- sound/soc/soc-utils.c              |  8 ++--
- 25 files changed, 141 insertions(+), 140 deletions(-)
----
-base-commit: cf32e2eb8404572eaacd219dde4e703fad349299
-change-id: 20240617-n-asoc-const-auto-selectable-formats-13fcc5000044
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index e9751cc94f8c..bbb72ad4c951 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -473,7 +473,7 @@ struct snd_soc_dai {
+ 	unsigned int probed:1;
+ };
+ 
+-static inline struct snd_soc_pcm_stream *
++static inline const struct snd_soc_pcm_stream *
+ snd_soc_dai_get_pcm_stream(const struct snd_soc_dai *dai, int stream)
+ {
+ 	return (stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 88e711875004..c76b86254a8b 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -341,7 +341,7 @@ static int avs_dai_hda_be_prepare(struct snd_pcm_substream *substream, struct sn
+ {
+ 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_stream *stream_info;
++	const struct snd_soc_pcm_stream *stream_info;
+ 	struct hdac_ext_stream *link_stream;
+ 	struct hdac_ext_link *link;
+ 	struct avs_dma_data *data;
+@@ -637,7 +637,7 @@ static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_so
+ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_stream *stream_info;
++	const struct snd_soc_pcm_stream *stream_info;
+ 	struct avs_dma_data *data;
+ 	struct hdac_ext_stream *host_stream;
+ 	unsigned int format_val;
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index 0c3a834e504d..9e47053419c1 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -473,7 +473,7 @@ int snd_soc_dai_compress_new(struct snd_soc_dai *dai,
+  */
+ bool snd_soc_dai_stream_valid(const struct snd_soc_dai *dai, int dir)
+ {
+-	struct snd_soc_pcm_stream *stream = snd_soc_dai_get_pcm_stream(dai, dir);
++	const struct snd_soc_pcm_stream *stream = snd_soc_dai_get_pcm_stream(dai, dir);
+ 
+ 	/* If the codec specifies any channels at all, it supports the stream */
+ 	return stream->channels_min;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 711b2f49ed88..bad823718ae4 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -504,7 +504,7 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+ 	unsigned int bits = 0, cpu_bits = 0;
+ 
+ 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+-		struct snd_soc_pcm_stream *pcm_codec = snd_soc_dai_get_pcm_stream(codec_dai, stream);
++		const struct snd_soc_pcm_stream *pcm_codec = snd_soc_dai_get_pcm_stream(codec_dai, stream);
+ 
+ 		if (pcm_codec->sig_bits == 0) {
+ 			bits = 0;
+@@ -514,7 +514,7 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+-		struct snd_soc_pcm_stream *pcm_cpu = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
++		const struct snd_soc_pcm_stream *pcm_cpu = snd_soc_dai_get_pcm_stream(cpu_dai, stream);
+ 
+ 		if (pcm_cpu->sig_bits == 0) {
+ 			cpu_bits = 0;
+@@ -538,7 +538,7 @@ static void soc_pcm_hw_init(struct snd_pcm_hardware *hw)
+ }
+ 
+ static void soc_pcm_hw_update_rate(struct snd_pcm_hardware *hw,
+-				   struct snd_soc_pcm_stream *p)
++				   const struct snd_soc_pcm_stream *p)
+ {
+ 	hw->rates = snd_pcm_rate_mask_intersect(hw->rates, p->rates);
+ 
+@@ -551,20 +551,20 @@ static void soc_pcm_hw_update_rate(struct snd_pcm_hardware *hw,
+ }
+ 
+ static void soc_pcm_hw_update_chan(struct snd_pcm_hardware *hw,
+-				   struct snd_soc_pcm_stream *p)
++				   const struct snd_soc_pcm_stream *p)
+ {
+ 	hw->channels_min = max(hw->channels_min, p->channels_min);
+ 	hw->channels_max = min(hw->channels_max, p->channels_max);
+ }
+ 
+ static void soc_pcm_hw_update_format(struct snd_pcm_hardware *hw,
+-				     struct snd_soc_pcm_stream *p)
++				     const struct snd_soc_pcm_stream *p)
+ {
+ 	hw->formats &= p->formats;
+ }
+ 
+ static void soc_pcm_hw_update_subformat(struct snd_pcm_hardware *hw,
+-					struct snd_soc_pcm_stream *p)
++					const struct snd_soc_pcm_stream *p)
+ {
+ 	hw->subformats &= p->subformats;
+ }
+@@ -583,8 +583,8 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dai *cpu_dai;
+-	struct snd_soc_pcm_stream *codec_stream;
+-	struct snd_soc_pcm_stream *cpu_stream;
++	const struct snd_soc_pcm_stream *codec_stream;
++	const struct snd_soc_pcm_stream *cpu_stream;
+ 	unsigned int cpu_chan_min = 0, cpu_chan_max = UINT_MAX;
+ 	int i;
+ 
+@@ -1712,7 +1712,7 @@ static void dpcm_runtime_setup_fe(struct snd_pcm_substream *substream)
+ 		hw->formats &= formats;
+ 
+ 	for_each_rtd_cpu_dais(fe, i, dai) {
+-		struct snd_soc_pcm_stream *cpu_stream;
++		const struct snd_soc_pcm_stream *cpu_stream;
+ 
+ 		/*
+ 		 * Skip CPUs which don't support the current stream
+@@ -1750,7 +1750,7 @@ static void dpcm_runtime_setup_be_format(struct snd_pcm_substream *substream)
+ 
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+-		struct snd_soc_pcm_stream *codec_stream;
++		const struct snd_soc_pcm_stream *codec_stream;
+ 		int i;
+ 
+ 		for_each_rtd_codec_dais(be, i, dai) {
+@@ -1787,7 +1787,7 @@ static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
+ 
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+-		struct snd_soc_pcm_stream *cpu_stream;
++		const struct snd_soc_pcm_stream *cpu_stream;
+ 		struct snd_soc_dai *dai;
+ 		int i;
+ 
+@@ -1809,7 +1809,7 @@ static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
+ 		 * DAIs connected to a single CPU DAI, use CPU DAI's directly
+ 		 */
+ 		if (be->dai_link->num_codecs == 1) {
+-			struct snd_soc_pcm_stream *codec_stream = snd_soc_dai_get_pcm_stream(
++			const struct snd_soc_pcm_stream *codec_stream = snd_soc_dai_get_pcm_stream(
+ 				snd_soc_rtd_to_codec(be, 0), stream);
+ 
+ 			soc_pcm_hw_update_chan(hw, codec_stream);
+@@ -1835,7 +1835,7 @@ static void dpcm_runtime_setup_be_rate(struct snd_pcm_substream *substream)
+ 
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+-		struct snd_soc_pcm_stream *pcm;
++		const struct snd_soc_pcm_stream *pcm;
+ 		struct snd_soc_dai *dai;
+ 		int i;
+ 
 
-Best regards,
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+2.43.0
 
