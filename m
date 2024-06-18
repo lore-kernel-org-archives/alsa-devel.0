@@ -4,97 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76E37C2BA15
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 07:56:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 990E3C41513
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 07:56:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EDBE851;
-	Tue, 18 Jun 2024 09:56:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EDBE851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6711C84C;
+	Tue, 18 Jun 2024 09:56:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6711C84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718697382;
-	bh=Ab59u20NrNQ+uF4hqX6azwaqctg5fthXLNtJ2VVPaY4=;
+	s=default; t=1718697399;
+	bh=8zVZ1QZzcKJDu/t/Xy6y+Q42Mb4hgC7Bc2ytdvmKrIg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=n+7lkv4gNZHFvkyFeJUh8clVGrmChEajAzcr9K+HFD6Eb6G+aGSPec3r0vkHdM5bh
-	 QerJ3C10+Xg+gHReENzcxoV0oxJUIpN0zKWibFGeRhRvKgTxdm3q51tLjCY3XGTiS3
-	 YRMKmI3DrktThjDN01d7Tzs9tFb5hRpFxImFyWJY=
+	b=Qedjz2VfqCqDzRuG8i5cHmpOPCHptKCs9TVmQvyH0rGIwK2XNWbGqChnxYThTimT9
+	 uLNoodJeYRoiLcWKRopOu0WFDR1cmm4Wq9g1xGgOUHC0+gIVrIYMLEieYUYp03gumx
+	 A5x+ZBBEjfDFUq5rDZuSWCZWxTR2kJcoj6PM5bUE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E53DF805D4; Tue, 18 Jun 2024 09:55:36 +0200 (CEST)
+	id 4DDB8F805FB; Tue, 18 Jun 2024 09:55:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34F85F805EA;
-	Tue, 18 Jun 2024 09:55:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19F8BF80602;
+	Tue, 18 Jun 2024 09:55:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95165F800FA; Tue, 18 Jun 2024 09:49:00 +0200 (CEST)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
- [IPv6:2a00:1450:4864:20::52f])
+	id 88254F804D6; Tue, 18 Jun 2024 09:50:36 +0200 (CEST)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
+ [IPv6:2a00:1450:4864:20::530])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9663AF800FA
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 09:45:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9663AF800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id A4DDBF80269
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 09:47:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4DDBF80269
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=BVwLXK8i
-Received: by mail-ed1-x52f.google.com with SMTP id
- 4fb4d7f45d1cf-57c83100bd6so6246140a12.3
+ header.s=google header.b=p2X6XnUB
+Received: by mail-ed1-x530.google.com with SMTP id
+ 4fb4d7f45d1cf-57ccd1111aeso2965566a12.0
         for <alsa-devel@alsa-project.org>;
- Tue, 18 Jun 2024 00:45:28 -0700 (PDT)
+ Tue, 18 Jun 2024 00:47:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718696727; x=1719301527;
+        d=linaro.org; s=google; t=1718696838; x=1719301638;
  darn=alsa-project.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ORuiSvO1a0ISdw62Fl/ug35usqH1cIyMdPxcbofZt50=;
-        b=BVwLXK8i+FpEZfV7H5x3Dx2lOf5hAMnzMb3EjcBAbWsX85r2xUfKomOLH8B88W2Qup
-         5NwtL4Z1/tmYTZVyQ5KY4LCyrTErD1KMZXWk30E5GqDqd9yi681y3Dd5kU0HLfoqo/O+
-         C8itDghvvbR36QXBwkX8QvprXhWFycEKX3IoHHX51je0nU3HQoOeDkS7Hy1tDDyjUPb8
-         N1iCvWnLq3WN1Wn2cKbMbaWWVzuaXYvKtkqA+IwYObiaCETdJalB30oSG+qwa6SKOQdO
-         ic8IE84CPTWeQywXQusIWVtkNL003WRVS43AnWcv3VxUUb7eTjBsRNmwAhXwuHvi27KY
-         9JsA==
+        bh=NjiZ2sjUkcvDeXpIcdQuz4Wg+HTzZbzXQEAsw90ig4E=;
+        b=p2X6XnUBPiPZhNM8PTThBPdFIjH2V3yUc4vJ/TC5NEq93nPCPSc14v8ppJ8xbkHuDF
+         e7gTu4w4c7+wg1ubFLrNeoifDzdyeAZw75vM7tA74obKTDf04hCuOhUQsU6u2+JWnyOX
+         GaBiMnvdK4cgtdj/9oC9fg/FF2430tFwcKkQfAlH/jj3XUsdm5Xkc9ch2+QdV0dDTmRi
+         XyovLABKm4aSdRw+vtsh/6hUaAzsr2my0qH+hX+xpAA3SP5MiRoIY4diFyDquaVknGK/
+         nz+BJJQUzj0nbMkCHgBkNAEU4VBzPMq9Mwm7TD8B9Ga0xK75DP+a1PQkfCQk5cCYjQ9C
+         KQ8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718696727; x=1719301527;
+        d=1e100.net; s=20230601; t=1718696838; x=1719301638;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ORuiSvO1a0ISdw62Fl/ug35usqH1cIyMdPxcbofZt50=;
-        b=TS7Ok0J6I5hETu1GiCzM5M51SxUEZX7Y5S7ASdelCVXOkSIAnYDS3c5VfZvSncTHX5
-         SvBMchzwY+CXYdPl8plJrw/lV5voLgOTogyzjbsJgpm5e0JE5Hd9oG5Pc3gM26A/DX8m
-         bX3/cdA7cBKhq1UqdmIfqnirW7ijTZK2CbOFgm3/egwZ9XSYUT95fGT6mFfi+2dB/qf7
-         8cSTAv0F02ptOZaL5DThGI1+2YENImjEK+gCUoNwyOvXEecBESmDyKVQoCiq6N3J0orP
-         qtp7QjmYKIQpVwUpjalKMTCiJAVM6YJAXf9L9+jVGD/+ekfMF4Wfm1kwNSuVCrtyRfbQ
-         jxWQ==
-X-Gm-Message-State: AOJu0YwK8JMPDqDj8Z/3yjpTcOeA6grUUgiXrl34dNKo2qsD+GTteUFO
-	azhE+ize99TQ/mAeJqLKOkJwa/9WAl5nPP2Ghn5Rkuy9yfFunrCqpJcxHdYIrHs=
+        bh=NjiZ2sjUkcvDeXpIcdQuz4Wg+HTzZbzXQEAsw90ig4E=;
+        b=J2YvuT0tQ8A8/zF5S2ALFBYjJjxIh/WEdjstbhgy3+DoIl9BHjKFPxCwoUqhugY8Nz
+         eJEuGEwf20LBvY7wqeip8NLbV3n5qVU7VyahSf6h0UoSJ19yzyDvBtiCf9aYvYkpbWII
+         Ns1+YBAIvOXcCUtLUlJSJQHKg2+Myf95lMESSDdR81kBCZkQcmKmINdQf78fGwB3K6Qp
+         Hh52SzIHlph+ZrJUyv6x92vgbWpASquKYt7KW4A/Ov1kxaunrFbIW1oE1wrylkZrOQ95
+         HvuBrBMhWCd/B6gFcxcRb5FeKQDErlDb0vUhyakGJsc4U0Tn3vx0h5ahSeu+Bqz9fMFz
+         dMdw==
+X-Gm-Message-State: AOJu0Yy7f5mkaakiqjuHEp5aUi3Lxk6A9B5tqzA9YnQCVLOImYu457xJ
+	JYT2QvZEg/QxzLiK8+F4ueGyBRHMrSPAW9lGAhho79dcoj/KrMBHENAxtSUmQzU=
 X-Google-Smtp-Source: 
- AGHT+IHsDdMpxeivsw/oHsNvLcTuaRl+mvnt9o5Y31j4pAvNeWqgijoSXWco+cRdPCS0wjiKC/LPqA==
-X-Received: by 2002:a50:cd0e:0:b0:57c:aab2:7319 with SMTP id
- 4fb4d7f45d1cf-57cbd6527d1mr6691843a12.4.1718696726566;
-        Tue, 18 Jun 2024 00:45:26 -0700 (PDT)
+ AGHT+IG/qU9mPI294FpBYQRofozB7O115d2vD4Qj7p46wydaRcDYP6jx+aNWdRt0PFwJURKg8MApGg==
+X-Received: by 2002:a17:906:aed6:b0:a6f:1036:98cf with SMTP id
+ a640c23a62f3a-a6f60dc7fb6mr789750066b.54.1718696837944;
+        Tue, 18 Jun 2024 00:47:17 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-57cb72ea3b2sm7472634a12.55.2024.06.18.00.45.25
+ a640c23a62f3a-a6f6a1f2cb9sm463759466b.17.2024.06.18.00.47.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jun 2024 00:45:26 -0700 (PDT)
-Message-ID: <67c0b5b0-0e76-4e8c-be65-6f13e234448c@linaro.org>
-Date: Tue, 18 Jun 2024 09:45:24 +0200
+        Tue, 18 Jun 2024 00:47:17 -0700 (PDT)
+Message-ID: <e46d3674-1b1a-4bd8-9f32-0fab6182e70a@linaro.org>
+Date: Tue, 18 Jun 2024 09:47:16 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: ak4619: Add initial DT binding
+Subject: Re: [PATCH 3/5] ASoC: dt-bindings: rename ak4375.yaml to
+ asahi-kasei,ak4375.yaml
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree@vger.kernel.org,
- Khanh Le <khanh.le.xr@renesas.com>
-References: <87frtb3x4k.wl-kuninori.morimoto.gx@renesas.com>
- <87cyof3x3q.wl-kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree@vger.kernel.org
+References: <87sexb3yfo.wl-kuninori.morimoto.gx@renesas.com>
+ <87o77z3yeu.wl-kuninori.morimoto.gx@renesas.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -141,11 +141,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <87cyof3x3q.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87o77z3yeu.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: D4V6RUD6OUC76MXX5TT3MSVMXTABQCTQ
-X-Message-ID-Hash: D4V6RUD6OUC76MXX5TT3MSVMXTABQCTQ
+Message-ID-Hash: CBSHVOY2AMFOSV432EIRD4OY4ZMZAGLF
+X-Message-ID-Hash: CBSHVOY2AMFOSV432EIRD4OY4ZMZAGLF
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -158,7 +158,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D4V6RUD6OUC76MXX5TT3MSVMXTABQCTQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CBSHVOY2AMFOSV432EIRD4OY4ZMZAGLF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -167,17 +167,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 18/06/2024 02:36, Kuninori Morimoto wrote:
-> Add Asahi Kasei ak4619 audio codec bindings.
-> 
+On 18/06/2024 02:08, Kuninori Morimoto wrote:
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  .../bindings/sound/asahi-kasei,ak4619.yaml    | 62 +++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/asahi-kasei,ak4619.yaml
-> 
+>  .../bindings/sound/{ak4375.yaml => asahi-kasei,ak4375.yaml}     | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>  rename Documentation/devicetree/bindings/sound/{ak4375.yaml => asahi-kasei,ak4375.yaml} (94%)
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I don't think this is necessary, but just churn. Why only AsahiKasei,
+not entire DT bindings?
 
 Best regards,
 Krzysztof
