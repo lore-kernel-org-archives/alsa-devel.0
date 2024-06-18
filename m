@@ -4,119 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3E05C27C4F
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 14:24:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E77FC2BA18
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 14:25:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7968A4B;
-	Tue, 18 Jun 2024 16:24:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7968A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C49B836;
+	Tue, 18 Jun 2024 16:24:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C49B836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718720678;
-	bh=pqG99NiBWHTOG1yuOzvntktNTElMoxg2aP15S8zgv/o=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=P/dArV6vCGb6+IJgY3hft3QXb3AWigvlaTJTcxRx4UpEKeZKsLipOnewFwGyMHlzb
-	 SAXTDq4WA0qlrCScQbaY33mWHXXhEpnGmhK//HtsQG+Ea0LLcMsRUJ5upEiZ7unFk3
-	 Qm7uHi96wbZOyhJJiamjR6NJjmmTQfOuULS9qFOw=
+	s=default; t=1718720702;
+	bh=z0aiqnYxRofh69taB3z0ijaSldf6h5lhocM5coo9Xdc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=hpREqK2ZwNIBjirHhVxhR0SLwzFew/aLB0tbOMu4fPN5LkTKFWF1jXq0FqZAIz4VQ
+	 GY4R/LmKLCZ88CI4HfejQxq1vUT5Q27ukIBwZqH/SU3MWnN8FuoMmh2PtDJ3ybow9d
+	 wem7dQkBRg4s+5MI4bKfWuAvNcklSXxFduiHc7OM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8975F806BA; Tue, 18 Jun 2024 16:22:26 +0200 (CEST)
+	id 52C67F806D7; Tue, 18 Jun 2024 16:22:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A28B7F8068C;
-	Tue, 18 Jun 2024 16:22:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05A4EF806E8;
+	Tue, 18 Jun 2024 16:22:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6DC7F80266; Tue, 18 Jun 2024 16:20:27 +0200 (CEST)
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com
- [209.85.128.43])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id ED204F804F2; Tue, 18 Jun 2024 16:22:35 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9F48F804F2
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 16:15:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9F48F804F2
+	by alsa1.perex.cz (Postfix) with ESMTPS id D8281F800FA
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 16:22:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8281F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=tuJ2MEly
-Received: by mail-wm1-f43.google.com with SMTP id
- 5b1f17b1804b1-4217a96de38so39868885e9.1
-        for <alsa-devel@alsa-project.org>;
- Tue, 18 Jun 2024 07:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718719586; x=1719324386;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8cq8BNVyT1lxgezLa3xN77vJrD/ds6UBuIoYNpcAHr8=;
-        b=tuJ2MElyTN9Dpkyk0LNQUzv2XJxZGZjFBqtgM7mwaBLzY+3MiQxinTodDpddPe/rWv
-         5wZUichQ6jI6SvEfZxBFCw4QfYRTho5P/zGAm3A2nDNstLJSkhoaP095f+bwxU1vyvIz
-         o4l5rez+3f5zGwBoB7ENv42SO5yB5PVNwBVR8UEmEzXq0vMEM+gCeLnLDLUoY0/RGmDa
-         K1rT9rZy9aAEdYmtrPVJOhAvEN6wAKaLgT3PsJasvaumEY1qIzxt+Pzd0tJa2lr6n0kY
-         +LqXVOFCqdB0eWBaOuf1VH8W7eoYj42M7xbLIp988SUx8/tM++qBl56GXmSNYY/Au/6t
-         zA3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718719586; x=1719324386;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8cq8BNVyT1lxgezLa3xN77vJrD/ds6UBuIoYNpcAHr8=;
-        b=OsmD7uWbIOIA5ZwQwWRlq2zMQM0jL3cXrHN9WM/MRDzLrmFvso8d8deTLtYLRAe8ec
-         OJjEf4EDuRyc0f/NPq/YLzuv5/0k9aTBNL4M/wxiU6KdA7GOy1YYi9gMpKyOXZ/hpo1H
-         TxOaf9RmL/X14oBMy+1IpDcBVgErmAr//79TLKII+mkIP7rzU1RafNGNnn8FStTJpVKm
-         CJb3kkLI+5mAX31SpgxiZUfBPmTwQBQ/OL+hzYD5qPNc5Tg93e9H7JEMjbwONl6XJEOh
-         pVzCLY+/l9tchtHwkm69Il06480BkncAmDGPZE+ihCVfW0u+T49QpkA2ENXJTiAQuH8k
-         kYpw==
-X-Gm-Message-State: AOJu0YwvmdSwTEiXk/pmqG3FJFcQCi8Y5IpkC0dkbmoIJTiMttafZBuD
-	yzSNX+ohDkrUmk3LRU5iTEIIrwsum5ysDLtuxXQgZt8DKE3huMQjz4K8Zaor1bkDyDM7p0sBliK
-	F95A=
-X-Google-Smtp-Source: 
- AGHT+IH06zBAori5j78Ra33E+DRN1FHFA/kbfAGU8rA9O9veM5BnTvopHWzqDv6cMnW1092Kp2+/mw==
-X-Received: by 2002:a50:cc9c:0:b0:57c:6efa:8381 with SMTP id
- 4fb4d7f45d1cf-57cbd6a8656mr7531606a12.42.1718718560123;
-        Tue, 18 Jun 2024 06:49:20 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-57cbdfe1428sm6678397a12.27.2024.06.18.06.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jun 2024 06:49:19 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 18 Jun 2024 14:49:01 +0100
-Subject: [PATCH 2/2] ASoC: codecs:lpass-wsa-macro: Fix logic of enabling vi
- channels
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=hJrjCGPa
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9FEA3619A5;
+	Tue, 18 Jun 2024 14:22:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD3C1C4AF1C;
+	Tue, 18 Jun 2024 14:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718720547;
+	bh=z0aiqnYxRofh69taB3z0ijaSldf6h5lhocM5coo9Xdc=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=hJrjCGPaaGr9k+pN1RjTpxGrrTV6mUiO6Im0ZzxwrIjjBFA8ZYrOosj/6UYiRjF0L
+	 agmThfPkP8To6o4lywlwNX0u7z82no77gYQIUwzz7ME+G6h1KBtzPb+WyX8MGRytFO
+	 NQZVGM4rR/cuvSo3+XGRdCS7bPisyWlIB4YXDvXPPsT3S0rXuRHNf8s6KoAn3uMFqw
+	 J14/dt8zuBOtI9q6usgUUHvEU83EUpEWubi3A9z03/DFNZOPh+w5ZfJ0P4Tuo4TW9I
+	 8BSjRkoITdC7uX2YnobxJmwsan8ExmaFIVAJEqwqdELv6tgnRN0h5cynzOPmEeEFLS
+	 O6RDinvi5fzpg==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Support Opensource <support.opensource@diasemi.com>,
+ Herve Codina <herve.codina@bootlin.com>,
+ Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240617125735.582963-1-krzysztof.kozlowski@linaro.org>
+References: <20240617125735.582963-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 1/2] ASoC: soc-dai.h: Constify DAI ops
+ auto_selectable_formats
+Message-Id: <171872054460.81836.3714158879000443319.b4-ty@kernel.org>
+Date: Tue, 18 Jun 2024 15:22:24 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240618-lpass-wsa-vi-v1-2-416a6f162c81@linaro.org>
-References: <20240618-lpass-wsa-vi-v1-0-416a6f162c81@linaro.org>
-In-Reply-To: <20240618-lpass-wsa-vi-v1-0-416a6f162c81@linaro.org>
-To: Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Manikantan R <quic_manrav@quicinc.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5876;
- i=srinivas.kandagatla@linaro.org; h=from:subject:message-id;
- bh=pqG99NiBWHTOG1yuOzvntktNTElMoxg2aP15S8zgv/o=;
- b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmcZBcvMB+6ZwW+EnK6qwhD7CqaHmPJAw6oa11a
- z5zg0bOOBKJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZnGQXAAKCRB6of1ZxzRV
- N9zXCAClFg7FM8O1767qza2EL7Ysm1biOGceunEJhBnkfwOpoPartajuKcOhnni0xR17yVoOLLV
- IDyZZZO8OUeftIbUjGus18unyLvGPtlSoW/H7NkUqdomkU/KBmFB6A8/2geK8t5RGyy4JuyVlTJ
- lAmoYTp42swJJKt7TxbwriZS6uyb+L93hGiZdepqMu1n1Eoe4DwzWwsUJQPM4L64sOvdu8J9EA5
- 3fI6weJ1eh8rGFkdhijE/NuR0OAWwbbXEDvm+XtmO1GOPVTzUpgI2u5SopoJ4Tuimn5MDxWwwxu
- e6OhUD3ewCUb+lIPNzRt+s9LTXM/U23Dc7nmmqzMulpccknT
-X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp;
- fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
-Message-ID-Hash: 2EWPUCFWSEFIAUUR4R4FFPY2SFUKXMNA
-X-Message-ID-Hash: 2EWPUCFWSEFIAUUR4R4FFPY2SFUKXMNA
-X-MailFrom: srinivas.kandagatla@linaro.org
+X-Mailer: b4 0.14-dev-d4707
+Message-ID-Hash: GA6SVDK2DBNMHN5VMAMPL6GCFV6M32JC
+X-Message-ID-Hash: GA6SVDK2DBNMHN5VMAMPL6GCFV6M32JC
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -128,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2EWPUCFWSEFIAUUR4R4FFPY2SFUKXMNA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GA6SVDK2DBNMHN5VMAMPL6GCFV6M32JC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,146 +96,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Existing code only configures one of WSA_MACRO_TX0 or WSA_MACRO_TX1
-paths eventhough we enable both of them. Fix this bug by adding proper
-checks and rearranging some of the common code to able to allow setting
-both TX0 and TX1 paths
+On Mon, 17 Jun 2024 14:57:34 +0200, Krzysztof Kozlowski wrote:
+> The core ASoC code does not modify contents of the
+> 'auto_selectable_formats' array passed in 'struct snd_soc_dai_ops', so
+> make it const for code safety.
+> 
+> 
 
-Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-Co-developed-by: Manikantan R <quic_manrav@quicinc.com>
-Signed-off-by: Manikantan R <quic_manrav@quicinc.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/lpass-wsa-macro.c | 105 ++++++++++++++++++++++++-------------
- 1 file changed, 69 insertions(+), 36 deletions(-)
+Applied to
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 7b6d495ef596..7251fb179db9 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1162,6 +1162,73 @@ static int wsa_macro_mclk_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+
-+static void wsa_macro_enable_disable_vi_sense(struct snd_soc_component *component, bool enable,
-+						u32 tx_reg0, u32 tx_reg1, u32 val)
-+{
-+	if (enable) {
-+		/* Enable V&I sensing */
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
-+					      val);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
-+					      val);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
-+	} else {
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_RESET);
-+		snd_soc_component_update_bits(component, tx_reg0,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
-+		snd_soc_component_update_bits(component, tx_reg1,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
-+					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
-+	}
-+}
-+
-+static void wsa_macro_enable_disable_vi_feedback(struct snd_soc_component *component,
-+						 bool enable, u32 rate)
-+{
-+	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
-+	u32 tx_reg0, tx_reg1;
-+
-+	if (test_bit(WSA_MACRO_TX0, &wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+		tx_reg0 = CDC_WSA_TX0_SPKR_PROT_PATH_CTL;
-+		tx_reg1 = CDC_WSA_TX1_SPKR_PROT_PATH_CTL;
-+		wsa_macro_enable_disable_vi_sense(component, enable, tx_reg0, tx_reg1, rate);
-+	}
-+
-+	if (test_bit(WSA_MACRO_TX1, &wsa->active_ch_mask[WSA_MACRO_AIF_VI])) {
-+		tx_reg0 = CDC_WSA_TX2_SPKR_PROT_PATH_CTL;
-+		tx_reg1 = CDC_WSA_TX3_SPKR_PROT_PATH_CTL;
-+		wsa_macro_enable_disable_vi_sense(component, enable, tx_reg0, tx_reg1, rate);
-+
-+	}
-+
-+}
-+
- static int wsa_macro_enable_vi_feedback(struct snd_soc_dapm_widget *w,
- 					struct snd_kcontrol *kcontrol,
- 					int event)
-@@ -1203,45 +1270,11 @@ static int wsa_macro_enable_vi_feedback(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 			/* Enable V&I sensing */
--		snd_soc_component_update_bits(component, tx_reg0,
--					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
--					      CDC_WSA_TX_SPKR_PROT_RESET);
--		snd_soc_component_update_bits(component, tx_reg1,
--					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
--					      CDC_WSA_TX_SPKR_PROT_RESET);
--		snd_soc_component_update_bits(component, tx_reg0,
--					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
--					      rate_val);
--		snd_soc_component_update_bits(component, tx_reg1,
--					      CDC_WSA_TX_SPKR_PROT_PCM_RATE_MASK,
--					      rate_val);
--		snd_soc_component_update_bits(component, tx_reg0,
--					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
--					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
--		snd_soc_component_update_bits(component, tx_reg1,
--					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
--					      CDC_WSA_TX_SPKR_PROT_CLK_ENABLE);
--		snd_soc_component_update_bits(component, tx_reg0,
--					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
--					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
--		snd_soc_component_update_bits(component, tx_reg1,
--					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
--					      CDC_WSA_TX_SPKR_PROT_NO_RESET);
-+		wsa_macro_enable_disable_vi_feedback(component, true, rate_val);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
- 		/* Disable V&I sensing */
--		snd_soc_component_update_bits(component, tx_reg0,
--					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
--					      CDC_WSA_TX_SPKR_PROT_RESET);
--		snd_soc_component_update_bits(component, tx_reg1,
--					      CDC_WSA_TX_SPKR_PROT_RESET_MASK,
--					      CDC_WSA_TX_SPKR_PROT_RESET);
--		snd_soc_component_update_bits(component, tx_reg0,
--					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
--					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
--		snd_soc_component_update_bits(component, tx_reg1,
--					      CDC_WSA_TX_SPKR_PROT_CLK_EN_MASK,
--					      CDC_WSA_TX_SPKR_PROT_CLK_DISABLE);
-+		wsa_macro_enable_disable_vi_feedback(component, false, rate_val);
- 		break;
- 	}
- 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-2.25.1
+Thanks!
+
+[1/2] ASoC: soc-dai.h: Constify DAI ops auto_selectable_formats
+      commit: d4a7d067e061c95c6387cf537258082074a4d299
+[2/2] ASoC: Constify DAI ops auto_selectable_formats
+      commit: 595265c92668cbdbd9f299c49907734d468c12e9
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
