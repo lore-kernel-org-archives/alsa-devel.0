@@ -4,100 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE760C2BA15
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 12:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB1CAC27C4F
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 14:23:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A559BAE8;
-	Tue, 18 Jun 2024 14:01:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A559BAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06469B6A;
+	Tue, 18 Jun 2024 16:22:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06469B6A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718712070;
-	bh=jc50N0RnVWNFD2GgL6AtQC0sltoDiHKgy3x3xfHb+ew=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=NT7j/vHU1AOp61zI3bXocSvSgq15uUQt+dkpirkeDuleXiEI1OagvRVpFkdJBotDk
-	 +Z1UBzWqLmK+qot80jboPHboQFdI2lsJuE6U35mEWzLbg6rwG7ECVdVH0+Qug9Mu1t
-	 OTQbQ8GMiqfD399U3LIldGjY6TVED0M1gUUl7qAs=
+	s=default; t=1718720582;
+	bh=iGI7rBJgHu8DUEHU/uaWXIvRgpjCEyXg+PI+OEEUOBI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=UAbwShVxF+B61R7yP3zD+PFHufE82eQqZQcjpelgcHjjGnxtidv+ret9exCkoRgr1
+	 8KsILskM2WWk4r48uR1is3DaIPt5CvBjPM4iNkKvH3YMZTuBiY+QteRNEvNIBb+EpS
+	 W4otg6Mfycx4Hh6yCXtrRr8S+JJ0CclGiqfM/whU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4058F800FA; Tue, 18 Jun 2024 14:00:38 +0200 (CEST)
+	id 9C3EEF805B2; Tue, 18 Jun 2024 16:22:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B9B2F805B5;
-	Tue, 18 Jun 2024 14:00:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D5BEF805B2;
+	Tue, 18 Jun 2024 16:22:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF61AF8023A; Tue, 18 Jun 2024 14:00:28 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id A6588F804D6; Tue, 18 Jun 2024 15:42:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5EDA6F800FA
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 14:00:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EDA6F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2EDDEF80266
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 15:29:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EDDEF80266
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=S/tXZM8/
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 45IA2Cuf014186;
-	Tue, 18 Jun 2024 14:00:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=selector1; bh=pRncs9djhWB9Ja92W3g41f
-	UBElkvpH4tn5xTWy10eG0=; b=S/tXZM8/EV++30E8fS2Xvuf5Z0QCJH1k5K8+Ri
-	8pgtJS+4aBG+qT56h/wb62Zh9qFZS6ZpM3AYtfqQfmRvCJC+OUudFZSnYzxBTV5A
-	OPWgbBc16XtxSPw6+Eqj7IkhNMH8waXw0NBrJhDemrIj9ShGqi1cl1Yqqc6cMhDa
-	syihGUqouebz49ENPUyKnIg1KlC7HMkuOY/N0uJEZFmbkJzcZR4Apu6a8ONLM4+g
-	2HGECQaxT3S7spWfvLdhF85cARpW/9N7awzOb3NueNgw5ouowHK+nu/eIjPBH4JH
-	f5zN719srZ3DNUwt/8KClIR0l9PK94D/yvHXTDPT8C9d/Ruw==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ys035k7pb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 18 Jun 2024 14:00:20 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 720F040044;
-	Tue, 18 Jun 2024 14:00:14 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 55CFD21682C;
-	Tue, 18 Jun 2024 13:59:24 +0200 (CEST)
-Received: from localhost (10.252.27.64) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 18 Jun
- 2024 13:59:24 +0200
-From: Olivier Moysan <olivier.moysan@foss.st.com>
-To: Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen
-	<arnaud.pouliquen@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-CC: <alsa-devel@alsa-project.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dt-bindings: iio: stm32: dfsdm: fix dtbs warnings on dfsdm
- audio port
-Date: Tue, 18 Jun 2024 13:59:12 +0200
-Message-ID: <20240618115912.706912-1-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=YaQRLVof
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id EB1066197E;
+	Tue, 18 Jun 2024 13:20:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE65BC3277B;
+	Tue, 18 Jun 2024 13:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718716812;
+	bh=iGI7rBJgHu8DUEHU/uaWXIvRgpjCEyXg+PI+OEEUOBI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YaQRLVof/ZQnet0TvACOwyCCYrbmTv719c70lp/aFvnFh7gwRByME3Xc6l+v8DKet
+	 R3FPcyFypjIlzmjAMiCp4xMKSIQuosdI+lUd4MeNDgX1df9cc3OLCpvKYnq8gt22m8
+	 m/8wTmCEEQpu/7DPd+RUqxqKxB7jd5MWU8357PDDNJ9rkv99r/c3Pctz5eLjBG6pUh
+	 qBSVkge7YkpreHJ3Ew21CKyXhSMdg5d6xrcv1d/aNrAQX6kOjUZ0+ZjdnVG7wtJr20
+	 z4ttEKpGo2IOBn9N795cHmVNPRbEyhfi5jcXpd7OFNUYT5TZEfxVAhhidqPAXcOL60
+	 Fbn++5te5qWGA==
+Date: Tue, 18 Jun 2024 14:20:01 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: =?utf-8?B?IkFtYWRldXN6IFPFgmF3acWEc2tpIg==?=
+ <amadeuszx.slawinski@linux.intel.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Brent Lu <brent.lu@intel.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Jerome Brunet <jbrunet@baylibre.com>, Jiawei Wang <me@jwang.link>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Maso Huang <maso.huang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
+	Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
+	imx@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] ASoC: grace time for DPCM cleanup
+Message-ID: <6bf6adc9-9620-4ace-97c9-7de0cedd7d07@sirena.org.uk>
+References: <87bk4oqerx.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.252.27.64]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-18_02,2024-06-17_01,2024-05-17_01
-Message-ID-Hash: LEAFHSF5NBXB5CQTFXZEZFPUJMDR6H4U
-X-Message-ID-Hash: LEAFHSF5NBXB5CQTFXZEZFPUJMDR6H4U
-X-MailFrom: prvs=68998c6755=olivier.moysan@foss.st.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="e5HrHBf54JKzRBsN"
+Content-Disposition: inline
+In-Reply-To: <87bk4oqerx.wl-kuninori.morimoto.gx@renesas.com>
+X-Cookie: If you can read this, you're too close.
+Message-ID-Hash: XGTS6KA5AUBTHNMEZC43HKPT7T3YG7MZ
+X-Message-ID-Hash: XGTS6KA5AUBTHNMEZC43HKPT7T3YG7MZ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LEAFHSF5NBXB5CQTFXZEZFPUJMDR6H4U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XGTS6KA5AUBTHNMEZC43HKPT7T3YG7MZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,31 +126,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fix warnings on DFSDM dtbs check
-Unevaluated properties are not allowed ('dfsdm-dai' was unexpected)
-'port' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-Fixes: 11183ac07a74 ("dt-bindings: stm32: convert dfsdm to json-schema")
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
----
- .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml       | 4 ++++
- 1 file changed, 4 insertions(+)
+--e5HrHBf54JKzRBsN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-index c1b1324fa132..2722edab1d9a 100644
---- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-@@ -246,6 +246,10 @@ patternProperties:
-                     From common IIO binding. Used to pipe external sigma delta
-                     modulator or internal ADC output to DFSDM channel.
- 
-+                port:
-+                  $ref: /schemas/sound/audio-graph-port.yaml#
-+                  unevaluatedProperties: false
-+
-               required:
-                 - compatible
-                 - "#sound-dai-cells"
--- 
-2.25.1
+On Thu, May 30, 2024 at 01:17:39AM +0000, Kuninori Morimoto wrote:
 
+> As we discussed in [1], we don't need to use dpcm_playback/capture flag,
+> so we remove it. But we have been using it for 10 years, some driver might
+> get damage. The most likely case is that the device/driver can use both
+> playback/capture, but have only one flag, and not using xxx_only flag.
+> [1/3] patch indicates warning in such case.
+
+This doesn't apply against current code, please check and resend (it's
+simple-card and audio-graph-card2 that conflict).
+
+--e5HrHBf54JKzRBsN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZxiYEACgkQJNaLcl1U
+h9CT2Af/TIz3sGLRzIL23jSsjCN+Qsm7udl7I62HN0gip2VR9e0+otYDtGfJcXWp
+zrVbznJTkkSt4SsAxfiucjtkhY+1m4IKnMmpSWwlgLqiDJiuFad2qVfWOsY6d+NY
+3DNOj2KtwsvBhMpTTvsoX9H1r0iRcU9saFz0Os14iDcjbf2UAOO31vFaAqz8SMlN
+05CFIk/QPU7k9iZN6iqrFkXlTya/VOJzGKPEqGq7pQ37+h4n2d6vLv2zCd/6l4at
+fCMT2H+VgTGLQOcfA2ifL+q6KRlSm2A0ZIJk98lI2yNWUwEGdSK+Teea1J55K3MC
+3ka6NLcUh4KixXZZgooMqJRn2KtHsA==
+=Jc6T
+-----END PGP SIGNATURE-----
+
+--e5HrHBf54JKzRBsN--
