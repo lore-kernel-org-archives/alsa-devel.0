@@ -4,100 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFD5EC2BB85
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 14:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E73A4C41513
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jun 2024 14:23:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 351DD84D;
-	Tue, 18 Jun 2024 16:23:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 351DD84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F660E72;
+	Tue, 18 Jun 2024 16:23:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F660E72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718720614;
-	bh=5a6B7OS5y/6qcp1oPN+ywcFiRxZ6JJXCwOzY6VEkxZg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=pIru8PfYM1XUnqRo0EFqhaUUklly1pefzu+wZUtSCDruTN4W5nc94GRGMjWTFF4dh
-	 IIGCIy0ScExAQQz5UEN8MjWVIgEC9aY6xf/iymY+YwVm/XrcDM6syHy4tymbneoEiD
-	 hb26Vi0cHKtEqCRX3pghYoXcLBOiybYMpz1eU0uU=
+	s=default; t=1718720627;
+	bh=0rziP/IoVXP3TfzQU7TMnmqKwrX7EBGqSRuKglqc2j8=;
+	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=PjCRT6OxR9DuDNl046/0RVhTfnoB7k+oN/VcM4KuCWsSpyGDxyxjeu9uXA6DANk2Q
+	 Ufc1BX+adD1HzyMqhiNuMgZW88z5k8jf6P9RB2lBphmuSal37yH8Kr7DxNum7qdXxt
+	 DPshUOvUkOMH8Zg0OMagOfsWqpbCc42hmAGYWVg0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C4C6F80607; Tue, 18 Jun 2024 16:22:23 +0200 (CEST)
+	id BE088F80611; Tue, 18 Jun 2024 16:22:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B84A5F80605;
-	Tue, 18 Jun 2024 16:22:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7FB6F8065C;
+	Tue, 18 Jun 2024 16:22:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6BF8AF8023A; Tue, 18 Jun 2024 14:44:07 +0200 (CEST)
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com
- [IPv6:2607:f8b0:4864:20::1029])
+	id B0E28F80266; Tue, 18 Jun 2024 16:20:21 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 68891F800FA
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 14:41:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68891F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98E6EF80587
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jun 2024 16:15:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98E6EF80587
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=VV3Hwg34
-Received: by mail-pj1-x1029.google.com with SMTP id
- 98e67ed59e1d1-2c2d25b5432so4190940a91.2
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=JExa4W6M
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-421a1b834acso46444255e9.3
         for <alsa-devel@alsa-project.org>;
- Tue, 18 Jun 2024 05:41:50 -0700 (PDT)
+ Tue, 18 Jun 2024 07:15:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718714436; x=1719319236;
+        d=linaro.org; s=google; t=1718719964; x=1719324764;
  darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5a6B7OS5y/6qcp1oPN+ywcFiRxZ6JJXCwOzY6VEkxZg=;
-        b=VV3Hwg349w8NlyLXvc51cE39NByOHq4A0NaRrpAJpZ0YXQjMaqqahMeplXF0QRs0TM
-         viDKSeVTo8cjyT1rIM/xIpLkU+MaOrXzRrLj0SctHiIR2UkRF44kbRuBADWYsNGZ/83L
-         KC5R0wT7woPh3qgIaIxYj+JzFxjeJNHQtufNjy02L8D4K5lEwmp9Rg6MBMtBwfhTlpzA
-         GdyAGh6WYAiQMRqo5rDaQk4LYGmP7mYJ1VkwGbaNH1GAsVrxtG5X5gqJHDPRSpkzx0i7
-         nwNdVQOAkju48Le6w1wsVUlqCnhbfNNTksvHkWEakPhtn+vHHjD7VPNQCyPopWxVQgV1
-         7pwA==
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BuVWP4GVK7L2zp39JVZyz0tyrIh2tPWyuf/GeYuNsvk=;
+        b=JExa4W6M45u6q2bBVtHpvDpGrMxKdApHG+anC2Ma1PpO4Zc8MGligtLFVTA05DFDw5
+         mqqAVGHmDZDoxIyXGGxZCpRuXwyWyGfYlvWImF23Ot8KzgUARzdlmTdpEBSbWj3jZBgM
+         pOLtjEbtEYSLlo1KROAKMRQbQgxV7Hugn14sSCwE0L+MMkP8Lw8UNlJXdvDMH4bEJ621
+         AlS+FUhgjK71Zv3NyUy3sfzetuXAWcT++w6KW/GYa4xyN+ioIaDSfBq0y4N5xeeG5Bvt
+         dr9reb0RcWpcu6BFJiVVUOo+QM+l7/uPIAEbthEMNEBnuS0BKzPPRmJQVfKnG6vz6z6K
+         9L8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718714436; x=1719319236;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1718719964; x=1719324764;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5a6B7OS5y/6qcp1oPN+ywcFiRxZ6JJXCwOzY6VEkxZg=;
-        b=bZMV06znWsNfANNSDKTJiUqoWVbPxEr/UBC8z1Oga4HCdCNqlLRbRj3Td10Us562Az
-         FwMBIfpWPD8Jkn/s6XLzSDnltUXP9oaS4HUHqkaYgfMRrAyFyi6PmHtvGhUUdXSorCCB
-         RMt7+Qg09ild8whEvXx9sjPd8i5FgXtuBA7EXFtLIJ3uzA6KO23P0sBHDqWHP69RJnOV
-         zYErgx4D7UkzXyY21u79hTI77tWhCH+CPq1meyyBaQS86Fd8aXC8GuyGLvCsoGyV7ZKQ
-         jcES0T4BQja/2Wp1wJaO8ayLdNzhXxqZU6ThGsB8+Gl2SuDG0EJz9f0TRbIU8Yy9fJcf
-         vHXA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVubMgYXJTJDh9BoY007ouAQg+gcqKrbfECEh7d7QRGkPANpwlBivP6KqZTIXCUkdqj3ShVg5715veDEErd4B520MSChVlkyGy+2Lo=
-X-Gm-Message-State: AOJu0Yy+0X+PESvvt0amu6qd6/6nJ04lLJK6paVfO9+vViesQYGS6MR/
-	tk8958L/ti8BloW8Bu32/S+CHc5oVbAkez5/F2N7yr0cdz2hOkJmIIZwrTbNJ2vtkv00oS5KLz7
-	ERlnpgF8b9pR88zXV6ALdwK0XvbY=
+        bh=BuVWP4GVK7L2zp39JVZyz0tyrIh2tPWyuf/GeYuNsvk=;
+        b=JfGiqurHawSP4GHGae8Pu9C88/ZaDFZSx2K0y/e/Iu2lRxl/MP1iZea8dZ8YOHK0yC
+         9bB7R0C+Fb3+ZwxPMDNu0t3w8kG6mhdveAl5kdhvijifsshwehkcz35lBeuS4c9YEb/c
+         ekZpBvIkyQTiKntC8aYQPW4u6rI7h+Jym4/G0D34+UmBGjUw4a2HfUxAHdi0+eF20y6j
+         0zAnl43pwvt/fUkkLlimSg+xX4/pnllh4XgWJnBtZv6X5XuI9cr+DrLYToSLpuhgA0rr
+         zymrY4gF3Wu8WxBsm/bxo/l2r+Xf5U6eHXmhqTdNvAHdBq3pb9oqffNtJvMEHJZQHeAc
+         iJ8g==
+X-Gm-Message-State: AOJu0YzZl0VUHOVYjgNueHieiHBgfGj47DsEbDSe7pCrPxxPm421KF7i
+	r/mbtu1Ef/ox1b+DtjQAbJd1aVPELBzOYEr/i/EgUCHLWhEdtiR4l9OEQEH3YHAU5H0/3tYPSo8
+	uQG4=
 X-Google-Smtp-Source: 
- AGHT+IHzJ+FQXBDprzDLivYXPnBaHoSRGyFKlPdv4yqmqIcli49NimXBrXz6EdcJ6mVtfetMmC1KIax8TCU52XOcrsY=
-X-Received: by 2002:a17:90b:253:b0:2c7:6305:9905 with SMTP id
- 98e67ed59e1d1-2c76305b4aemr956131a91.10.1718714435549; Tue, 18 Jun 2024
- 05:40:35 -0700 (PDT)
+ AGHT+IHtLz8KllMMtdCRU487RnyWpaHO2FxTL+sG63GWh7A5oH2EYJFnivoVxsZYulKG+Tu4+suuqA==
+X-Received: by 2002:a50:9518:0:b0:57d:32d:cacd with SMTP id
+ 4fb4d7f45d1cf-57d032dcc18mr773381a12.29.1718718557369;
+        Tue, 18 Jun 2024 06:49:17 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id
+ 4fb4d7f45d1cf-57cbdfe1428sm6678397a12.27.2024.06.18.06.49.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jun 2024 06:49:16 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/2] ASoC: codecs: lpass-wsa: fix vi capture setup
+Date: Tue, 18 Jun 2024 14:48:59 +0100
+Message-Id: <20240618-lpass-wsa-vi-v1-0-416a6f162c81@linaro.org>
 MIME-Version: 1.0
-References: <20240615125457.167844-1-rauty@altlinux.org>
- <2c9ba341bc95d4b9010bf5f8794c0d14b1c57dc9.camel@irl.hu>
-In-Reply-To: <2c9ba341bc95d4b9010bf5f8794c0d14b1c57dc9.camel@irl.hu>
-From: Rauty <rautyrauty@gmail.com>
-Date: Tue, 18 Jun 2024 15:39:58 +0300
-Message-ID: 
- <CAGpJQTHoBAixmxta2WuZfjHjiK9GXF=hkfPyV7PBD5rt9Z_0WA@mail.gmail.com>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable headset mic on IdeaPad
- 330-17IKB 81DM
-To: Gergo Koteles <soyer@irl.hu>, alsa-devel@alsa-project.org, tiwai@suse.com
-Cc: perex@perex.cz, kailang@realtek.com, sbinding@opensource.cirrus.com,
-	luke@ljones.dev, shenghao-ding@ti.com, simont@opensource.cirrus.com,
-	foss@athaariq.my.id, rf@opensource.cirrus.com, wzhd@ustc.edu,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Message-ID-Hash: ZJTBYE62TCKLRJVJR2UU3L4AUBFPZSZK
-X-Message-ID-Hash: ZJTBYE62TCKLRJVJR2UU3L4AUBFPZSZK
-X-MailFrom: rautyrauty@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEuQcWYC/x2N0QqDMAwAf0XyvIBtt274K8OHVOMMbFUS0YH47
+ 6t7PI7jdjBWYYOm2kF5FZMpF3CXCrqR8otR+sLga3+to3vgeyYz3IxwFUwxhPtt8K6PAUqSyBi
+ TUu7GM/qQLaynmJUH+f4/z/Y4fr9rHRN3AAAA
+To: Banajit Goswami <bgoswami@quicinc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Manikantan R <quic_manrav@quicinc.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=617;
+ i=srinivas.kandagatla@linaro.org; h=from:subject:message-id;
+ bh=0rziP/IoVXP3TfzQU7TMnmqKwrX7EBGqSRuKglqc2j8=;
+ b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmcZBchruVRYLTqV2qgDLV2m1brX+2D6w8mliGx
+ nMEC4qHyT6JATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZnGQXAAKCRB6of1ZxzRV
+ NzZmB/0b1yOCj8uIGXSEGCFq9LTGF1SrtMQlN/XPPJMs3FCcUZsCVEaN73ZWsKI6sfct1WEIoOv
+ HUkjDjBNHrYya09svQYDlJb31l6BOeRAvRd8a1sVqljMaULMQqYWvJopLkB9tS+EUbUErQ0ombC
+ XjeM7CZoFGWK88W6r0RdK9M0iA5oSe8nhkABDjfsB4TFr+39znDjipnR7D/wJJmGbrGygNXzWgM
+ 24IoWC83QY3fhTzOaiNWL2wM4/HMQdtSR8EXKTQwqC5CTYNPPD9wjksR5hn9g3bgJI1Xj+mOsQm
+ q0i8dbpSEfEdBDjRAgUthelIv93ynf5RvPmOwHuWEk8x3wo3
+X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp;
+ fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
+Message-ID-Hash: VA4KBA4XK3QXWH4UR2AAG7QLCBZJG2KX
+X-Message-ID-Hash: VA4KBA4XK3QXWH4UR2AAG7QLCBZJG2KX
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +126,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJTBYE62TCKLRJVJR2UU3L4AUBFPZSZK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VA4KBA4XK3QXWH4UR2AAG7QLCBZJG2KX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,15 +135,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 16 Jun 2024 at 10:38, Takashi Iwai <tiwai@suse.de> wrote:
-> Your From address and Signed-off-by address are different.
-> Could you try to align them?
+This two patches fixes issues with VI capture rate and path setup.
 
-Ok.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+Srinivas Kandagatla (2):
+      ASoC: codecs:lpass-wsa-macro: Fix vi feedback rate
+      ASoC: codecs:lpass-wsa-macro: Fix logic of enabling vi channels
 
-On Sun, 16 Jun 2024 at 21:08, Gergo Koteles <soyer@irl.hu> wrote:
-> There are some similar collisions with Lenovo laptops.
-> Please see commit 0ac32a396e4f41e88df76ce2282423188a2d2ed0 for an
-> example how to handle one.
+ sound/soc/codecs/lpass-wsa-macro.c | 111 +++++++++++++++++++++++++++++--------
+ 1 file changed, 88 insertions(+), 23 deletions(-)
+---
+base-commit: 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0
+change-id: 20240618-lpass-wsa-vi-b63375f21d63
 
-Yes, you're right. I'll do the same and send v3.
+Best regards,
+-- 
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
