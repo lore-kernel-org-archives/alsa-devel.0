@@ -4,74 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8F5FC2BA15
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jun 2024 10:55:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C74EC2BA15
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jun 2024 11:02:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDA26847;
-	Wed, 19 Jun 2024 12:55:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDA26847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CD07DEC;
+	Wed, 19 Jun 2024 13:01:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CD07DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718794531;
-	bh=N0AaIoaI8diruOmcEr/EmRanq5T/ngLihO0rujTQU78=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1718794921;
+	bh=wV3LwNiIkukhZS1LfFIfEtDSB8xpDVKZ9+NbICekbT0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZzD+WXWRkOJ4nhcC1Hcfg5A6rWWMF83v9l4k1Pnx86nHJ+M0AIH2j4Y2FIMd6T10T
-	 r/jjeR+HUeOjjap102iHyMPO9G2yN589RrlLxy3W1qqozErNSBRhjBcYfThqW6eUd6
-	 sWyg4mzACfSZtz2xnABNsMy8qV55q2W4tkP4q/80=
+	b=oNJSVtP6WH5BAoz0uwxybDn2HPqH/2vfXoDF50JADMDbUCdMn2wJLHOAjer6gLm5w
+	 2YGAEnaj/gt1Cfnpybf13N0XpLnfT9Os/WO/o7I1APxmHIj0PgyB22TIvzfmSsOeX4
+	 jHQJXOyD/TBPtLfh4V56epsGUKFD4xStFOQ8dUxg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C974EF805E7; Wed, 19 Jun 2024 12:54:48 +0200 (CEST)
+	id 119A6F805B3; Wed, 19 Jun 2024 13:01:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F24CF805E5;
-	Wed, 19 Jun 2024 12:54:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F237F805B6;
+	Wed, 19 Jun 2024 13:01:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 830D3F805BF; Wed, 19 Jun 2024 12:54:44 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id B176AF8023A; Wed, 19 Jun 2024 13:01:21 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4A46FF80587
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2024 12:54:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A46FF80587
+	by alsa1.perex.cz (Postfix) with ESMTPS id B8067F8010C
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2024 13:01:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8067F8010C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=f2/oRfA8
+ header.s=k20201202 header.b=Fwb3x8y0
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D66E3CE0AFF;
-	Wed, 19 Jun 2024 10:54:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9098AC2BBFC;
-	Wed, 19 Jun 2024 10:54:13 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8CC0B61D41;
+	Wed, 19 Jun 2024 11:01:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C301C2BBFC;
+	Wed, 19 Jun 2024 11:01:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718794455;
-	bh=N0AaIoaI8diruOmcEr/EmRanq5T/ngLihO0rujTQU78=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=f2/oRfA8kROKWSq4TTqiPkVBRCclvzSMTfpEg3PfQ399JVGn2LthCJKcB36KNvJLW
-	 5idm9KaPMxumoWwQXogxmR/u5ie+TjVPMk1GUJJall/UbJXUci0Js2uiOuf1ZXg8O4
-	 Jz+om+pD6ghTUqgMfboeaaqEDzXdeeOZuIaWQ+GFwEEJQmJnBZotG1WWHj7gw81Kow
-	 WJXDlMrzVYTaM33/0ZCoVdhQSnDa5cAXdafPkVKTmwr7ICZGaH04beD12TvsC/SPkS
-	 WR4mosDtnq41UZkMraUJF6ykZhWYxnidGeJ/Nk9YlsCAeBQNkGIxaB2lVY2KvhFFnV
-	 NeD4dEcuMaLqg==
+	s=k20201202; t=1718794875;
+	bh=wV3LwNiIkukhZS1LfFIfEtDSB8xpDVKZ9+NbICekbT0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Fwb3x8y0vt3PQhoI6ECI5rtqj/iau8k765t71XQQ87w34sDFSmKorGgLwfmis087j
+	 RCCIL75jZQkMh04MdWBTKIW74y3GDKiFn3J24ffzUGWVds+InqpviRvGnnwRIbUJ0D
+	 1dZJKdrq3Rzg1DgVvsOMBZu9+RA7KqnqksmxPteHYpLgykLrp1q8YO/Aa+5aUHxWDh
+	 q2tCFNEsvdBYXn9lp7A5Gft6zJ+VN0Fa7wrESKoDz0BJXX4Hc/cPaq4nvgq7dgI+I1
+	 10fucWe4lo8FDsF0hKxCcQgRQt8bfi7/P8U/RcjzSSy7y17TDkHOymPFI2JRmjyI1A
+	 xsn4kIWtg+CtQ==
+Date: Wed, 19 Jun 2024 12:01:03 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree@vger.kernel.org
-In-Reply-To: <87jzin3yc8.wl-kuninori.morimoto.gx@renesas.com>
-References: <87jzin3yc8.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: audio-graph-card2: add support for
- aux devices
-Message-Id: <171879445303.57943.18127033845572445791.b4-ty@kernel.org>
-Date: Wed, 19 Jun 2024 11:54:13 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: =?utf-8?B?IkFtYWRldXN6IFPFgmF3acWEc2tpIg==?=
+ <amadeuszx.slawinski@linux.intel.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Brent Lu <brent.lu@intel.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Jerome Brunet <jbrunet@baylibre.com>, Jiawei Wang <me@jwang.link>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Maso Huang <maso.huang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
+	Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
+	imx@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] ASoC: grace time for DPCM cleanup
+Message-ID: <71a31778-5709-4342-b813-75899ed4e90f@sirena.org.uk>
+References: <87bk4oqerx.wl-kuninori.morimoto.gx@renesas.com>
+ <6bf6adc9-9620-4ace-97c9-7de0cedd7d07@sirena.org.uk>
+ <877celwmvh.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: 6STJQIKQPLIR5MRVG4RQHD7XCSVSMGXT
-X-Message-ID-Hash: 6STJQIKQPLIR5MRVG4RQHD7XCSVSMGXT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="d4Pd4HMwg9L5DQDu"
+Content-Disposition: inline
+In-Reply-To: <877celwmvh.wl-kuninori.morimoto.gx@renesas.com>
+X-Cookie: Don't I know you?
+Message-ID-Hash: OITVGT6KDQG7HXDK3EFBZGQJBOBCMAXA
+X-Message-ID-Hash: OITVGT6KDQG7HXDK3EFBZGQJBOBCMAXA
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6STJQIKQPLIR5MRVG4RQHD7XCSVSMGXT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OITVGT6KDQG7HXDK3EFBZGQJBOBCMAXA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,37 +129,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 18 Jun 2024 00:10:15 +0000, Kuninori Morimoto wrote:
-> Add device tree property to define auxiliary devices to be added to
-> Audio Graph Card which is already supported on Simle Card.
-> 
-> 
 
-Applied to
+--d4Pd4HMwg9L5DQDu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Wed, Jun 19, 2024 at 04:57:22AM +0000, Kuninori Morimoto wrote:
 
-Thanks!
+> > This doesn't apply against current code, please check and resend (it's
+> > simple-card and audio-graph-card2 that conflict).
 
-[1/1] ASoC: dt-bindings: audio-graph-card2: add support for aux devices
-      commit: 7109f10ca4225c4a7e47dee5eab0d8d72edbf324
+> Ah, I guess you used "v5 original" patch-set.
+> "v5 resend" patch-set or today's "v6" patch-set should be OK.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Oh, if you mark something as a resend then it sounds like it should be
+exactly the same as it was before, if you've rebased you should increase
+the version number.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--d4Pd4HMwg9L5DQDu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZyum4ACgkQJNaLcl1U
+h9CY0gf9HLsXbwCJULJAm9FlV4eh/DYA7VbD8zXkipHVgvH0XIpxP3UGX+Bsl79r
+Zoieqsq8m08fTI7MNaw0TIsb77di3O/LpWoxTfi56fDpBPmWPsS70cv0NO7eL5lb
+AJHsWzfAdtzyRT8gUTJoUIimYvB8kwxuEpMhN6VRgIpTYZulN2JiBTfD+XypCdjY
+ZCqFYh2GAISbrciQD5SVh0cLI9jkkF2OudyeY4rq8IIPGE8tggGuqDqjpUa79DNB
+vyhxa0rCnlfjshMjFHgPfjHVytb7MuzSueN25L5iQvty/q/hzLX7C3dH9d3zRJWm
+VFd4p0vPpH3kOL7x1+pzcUmVveO/mQ==
+=OSUR
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
-
+--d4Pd4HMwg9L5DQDu--
