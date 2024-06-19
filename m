@@ -4,112 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBE18C27C53
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jun 2024 15:29:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 345FCC27C79
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jun 2024 15:29:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 011E5DE5;
-	Wed, 19 Jun 2024 17:29:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 011E5DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47B94DF6;
+	Wed, 19 Jun 2024 17:29:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47B94DF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718810966;
-	bh=igA+pMrIHj0aA5tw+c4Co0K5K5XbKx6I/lEP2rwGHMQ=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=gdkM36/2bmZJb+mxp0wPSDBA4L9eybHBIxG9ysRZZDj7AVoaTtMScyRoluT9KktvM
-	 QRfA3GqXMhshXfBi7Sy7TAe90XBNpla7tj7QaIx5A1gvfEKEAR1H4LZ6f7BIBz+lU8
-	 zdVQBLYATDL5rLhGDjuZ+ymObYD53knvcXR/lBgU=
+	s=default; t=1718810979;
+	bh=/CP89v/oyIOkIYfjLv/ePA04URYRSfQkYQR6vHnLkRQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=UYwqw/+gInAw2G9KG1NH+LdcrV8e4sw3FyWd+ZsX6QMz9UBnfxGXnhX7ObqZRnSgx
+	 /kn8Rz38xSh6hfdXRMcBHVXJFC29s0VcBW9G5acAV5ILlUbZq2RmssYpfH+SEjDab+
+	 LlUSvBrUl1+I+myS2xbNRik/UoLCB1dcF6Y1ai10=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B3804F805AA; Wed, 19 Jun 2024 17:28:54 +0200 (CEST)
+	id D307AF805E0; Wed, 19 Jun 2024 17:28:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 503A5F805B3;
-	Wed, 19 Jun 2024 17:28:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46FFFF805D8;
+	Wed, 19 Jun 2024 17:28:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39DDCF804F2; Wed, 19 Jun 2024 17:28:45 +0200 (CEST)
+	id D5611F804D6; Wed, 19 Jun 2024 17:28:50 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ED9D7F80154
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2024 17:28:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED9D7F80154
+	by alsa1.perex.cz (Postfix) with ESMTPS id C58F5F8010C
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jun 2024 17:28:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C58F5F8010C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=F8skvmEk;
+ header.s=susede2_rsa header.b=mQ71kAoL;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ZNZk3Nbz;
+ header.s=susede2_ed25519 header.b=cwbJFZJk;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=F8skvmEk;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=mQ71kAoL;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ZNZk3Nbz
+ header.s=susede2_ed25519 header.b=cwbJFZJk
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DD57321A2D;
-	Wed, 19 Jun 2024 15:28:30 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 795E621A43;
+	Wed, 19 Jun 2024 15:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1718810910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1718810911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=sTiceUumyFuX10RTfw4OjGbsVR70tqVan6SC9YEUva0=;
-	b=F8skvmEk+9IJb4zEG/mT+E1h48GohYJODk/7H8uOFiq9n/qv8rsh7WGEkN8BLf9mO/DuUU
-	omqbIHoMtKPLF5JnTrV0LV/WKzZ0A3/yjWDXGpKtaXjuYYvpbBPCY+zaTee6pFHl5Hiq0N
-	T9ibGDPJRuoNMpYrhFI3zYbF3/fP/H8=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/5v6wbIkt4sfaU0VL2iwZ4JkEGTp7LHrCqCzSVGvcLY=;
+	b=mQ71kAoLBiZzo84fZJpd6CsC0NcbnKyf9EANq6IzmaNu2WituKEFvdk9dsssf3S5QaM9zl
+	zPHFS8IFuHwvkL4KZARiA6cZuMPdKF7VKjxC2/Xh2PcLjnlZ1XAAA1GPjeZXH4hjLQFg3B
+	sbO2SbFlxc9tsdQOY+viwYhP2Y8hbwA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1718810910;
+	s=susede2_ed25519; t=1718810911;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=sTiceUumyFuX10RTfw4OjGbsVR70tqVan6SC9YEUva0=;
-	b=ZNZk3NbzbswbphKfuplrI8LWkmj36jnRN83zJDvgA2UiT7+SxAcZtLvwEV9VbnAx8Am1Y+
-	/hz81eGZmzP/hzAQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/5v6wbIkt4sfaU0VL2iwZ4JkEGTp7LHrCqCzSVGvcLY=;
+	b=cwbJFZJk2oRiybupTJu5er/PFSqEsrXjBdiAaPMTtErlw6BdNxrLhO7TppNsKw1s5N7/ZR
+	sZb0/m4xuuYQfVCw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1718810910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1718810911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=sTiceUumyFuX10RTfw4OjGbsVR70tqVan6SC9YEUva0=;
-	b=F8skvmEk+9IJb4zEG/mT+E1h48GohYJODk/7H8uOFiq9n/qv8rsh7WGEkN8BLf9mO/DuUU
-	omqbIHoMtKPLF5JnTrV0LV/WKzZ0A3/yjWDXGpKtaXjuYYvpbBPCY+zaTee6pFHl5Hiq0N
-	T9ibGDPJRuoNMpYrhFI3zYbF3/fP/H8=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/5v6wbIkt4sfaU0VL2iwZ4JkEGTp7LHrCqCzSVGvcLY=;
+	b=mQ71kAoLBiZzo84fZJpd6CsC0NcbnKyf9EANq6IzmaNu2WituKEFvdk9dsssf3S5QaM9zl
+	zPHFS8IFuHwvkL4KZARiA6cZuMPdKF7VKjxC2/Xh2PcLjnlZ1XAAA1GPjeZXH4hjLQFg3B
+	sbO2SbFlxc9tsdQOY+viwYhP2Y8hbwA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1718810910;
+	s=susede2_ed25519; t=1718810911;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=sTiceUumyFuX10RTfw4OjGbsVR70tqVan6SC9YEUva0=;
-	b=ZNZk3NbzbswbphKfuplrI8LWkmj36jnRN83zJDvgA2UiT7+SxAcZtLvwEV9VbnAx8Am1Y+
-	/hz81eGZmzP/hzAQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/5v6wbIkt4sfaU0VL2iwZ4JkEGTp7LHrCqCzSVGvcLY=;
+	b=cwbJFZJk2oRiybupTJu5er/PFSqEsrXjBdiAaPMTtErlw6BdNxrLhO7TppNsKw1s5N7/ZR
+	sZb0/m4xuuYQfVCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0FA413668;
-	Wed, 19 Jun 2024 15:28:30 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5362113668;
+	Wed, 19 Jun 2024 15:28:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8v3tLR75cmYRJAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 19 Jun 2024 15:28:30 +0000
+	id 6K1CEx/5cmYRJAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 19 Jun 2024 15:28:31 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 0/4] Add API helper functions for creating UMP
- Endpoint and Blocks
-Date: Wed, 19 Jun 2024 17:28:49 +0200
-Message-ID: <20240619152855.6809-1-tiwai@suse.de>
+Subject: [PATCH alsa-lib 4/4] Add test/seq-ump-example to .gitignore
+Date: Wed, 19 Jun 2024 17:28:53 +0200
+Message-ID: <20240619152855.6809-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240619152855.6809-1-tiwai@suse.de>
+References: <20240619152855.6809-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.33 / 50.00];
-	BAYES_HAM(-1.53)[91.89%];
+X-Spamd-Result: default: False [-1.62 / 50.00];
+	BAYES_HAM(-1.82)[93.96%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
@@ -128,8 +134,8 @@ X-Spamd-Result: default: False [-1.33 / 50.00];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
 	RCVD_TLS_ALL(0.00)[]
-Message-ID-Hash: I4LD2DQL26EFKMW3SOCY4YZG6QUHOVRR
-X-Message-ID-Hash: I4LD2DQL26EFKMW3SOCY4YZG6QUHOVRR
+Message-ID-Hash: JTWZMD5XNPV2IECUWKZ2GH3BWALRNCEJ
+X-Message-ID-Hash: JTWZMD5XNPV2IECUWKZ2GH3BWALRNCEJ
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +148,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I4LD2DQL26EFKMW3SOCY4YZG6QUHOVRR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JTWZMD5XNPV2IECUWKZ2GH3BWALRNCEJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,38 +157,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-this is a patch set to alsa-lib to add the new API functions for
-creating a virtual UMP Endpoint and UMP Blocks arbitrarily from a
-user-space, that is, to create a virtual UMP device.
-
-An example program is included in test directory.
-
-
-Takashi
-
-===
-
-Takashi Iwai (4):
-  ump: Add missing *_set variants for snd_ump_endpoint_info and
-    snd_ump_block_info
-  seq: Add API helper functions for creating UMP Endpoint and Blocks
-  test: Add an example program to create a virtual UMP Endpoint
-  Add test/seq-ump-example to .gitignore
-
- .gitignore             |   1 +
- include/seqmid.h       |   7 +
- include/ump.h          |  36 ++++-
- src/rawmidi/ump.c      | 304 +++++++++++++++++++++++++++++++++++++++--
- src/seq/seq.c          |   6 +-
- src/seq/seq_local.h    |   4 +
- src/seq/seqmid.c       | 249 +++++++++++++++++++++++++++++++++
- test/Makefile.am       |   3 +-
- test/seq-ump-example.c | 187 +++++++++++++++++++++++++
- 9 files changed, 783 insertions(+), 14 deletions(-)
- create mode 100644 test/seq-ump-example.c
-
+diff --git a/.gitignore b/.gitignore
+index a74b5195a7d9..947eba45c685 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -65,6 +65,7 @@ test/playmidi1
+ test/queue_timer
+ test/rawmidi
+ test/seq
++test/seq-ump-example
+ test/timer
+ test/lsb/config
+ test/lsb/midi_event
 -- 
 2.43.0
 
