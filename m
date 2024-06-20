@@ -4,79 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34E42C27C79
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 11:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFD03C27C79
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 13:27:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF0C4E80;
-	Thu, 20 Jun 2024 13:48:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF0C4E80
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5925AE9D;
+	Thu, 20 Jun 2024 15:27:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5925AE9D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718884103;
-	bh=rbeOxems1FuSby3UK5MmTHjuVfReL3BNUB/fTrMgsSQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1718890048;
+	bh=RvP66MGZQKO50spCBDsPb9yVYBK+JXQ7W1AFlr+gI/g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bIM69AhOXTv8Cr4GYUV97IIc4p4aALq4CVl0WkD5ccGSO9wJ/SNJxKw9G5jgKmR8G
-	 /Qoxdt6gUGFlD7pYYia8QlQnjcWZywg07lzIH7BlxrP6yvx3HcB38ko2xQzeJ9IbZS
-	 Em1sZt73Ubn7O9B0Hrf9BNoqDFIhaOvu3aKqkGXk=
+	b=t+4QZlRL03+889Ad2Sai4tMDJgp3b08gfQuSZfIMSfiNI97PzTAZwDJinmyo/615W
+	 a9lIRSfQEKh1Bfx0ZYg99mMT2I5f7Yw5Tu3wuVGUpGw4aymqaoKPuziGEmSzjzTuAh
+	 1ajuO6A3XrZFg4GGq43+kwn1C+uOac99m59vFU1k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4FD40F805B5; Thu, 20 Jun 2024 13:47:49 +0200 (CEST)
+	id E33C1F805BD; Thu, 20 Jun 2024 15:26:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07C1EF805B6;
-	Thu, 20 Jun 2024 13:47:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1610F805BE;
+	Thu, 20 Jun 2024 15:26:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC0ADF8023A; Thu, 20 Jun 2024 13:47:43 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 9EC97F80269; Thu, 20 Jun 2024 15:26:34 +0200 (CEST)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
+ [208.88.110.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A4DF9F801EB
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 13:47:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4DF9F801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 25715F8023A
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 15:26:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25715F8023A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ND7yUXF0
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 6A0756218E;
-	Thu, 20 Jun 2024 11:47:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA6EC4AF0B;
-	Thu, 20 Jun 2024 11:47:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718884044;
-	bh=rbeOxems1FuSby3UK5MmTHjuVfReL3BNUB/fTrMgsSQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ND7yUXF05VcA9LHJDB+fZ/aK7w4Kib15dQY470C2WchRa7f6li1bXbBO7PlFuwsEu
-	 N9j3Su5Ul3f0pdNS6FH5Xv3s76ln1SFife/y2RYbFklB++NE5XJGKAgAWA7LR3X+5E
-	 d5KhaDN2vba9O0Dxsk9olM8EFYgl8sQUi4JGJ4HDskgJuFIVMfN+aWygBQP6BWoCX5
-	 AlWAeW0knBdARv3YUpkTnpC5LaG9OdRFkUHW2E5RFC6rXp+yIRC7X2fwxzj2iTPRV7
-	 50D2ixnxkLzb0UCm2k11DBNUSEj/aAjvD8DK7o/4xsb4fubk8T6c4GQzerB5GF3ACL
-	 nokANLX6c73Rg==
-From: Mark Brown <broonie@kernel.org>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, venkataprasad.potturu@amd.com,
- Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <linux-sound@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20240617072844.871468-1-Vijendar.Mukunda@amd.com>
-References: <20240617072844.871468-1-Vijendar.Mukunda@amd.com>
-Subject: Re: (subset) [PATCH 1/8] ASoC: amd: acp: add a null check for
- chip_pdev structure
-Message-Id: <171888404167.51171.12647863943133504224.b4-ty@kernel.org>
-Date: Thu, 20 Jun 2024 12:47:21 +0100
+ unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
+ header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
+ header.b=B5L9UxOR
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 042249C3240;
+	Thu, 20 Jun 2024 09:26:28 -0400 (EDT)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id iMhGuKzcpnbW; Thu, 20 Jun 2024 09:26:27 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 10B2E9C57BB;
+	Thu, 20 Jun 2024 09:26:27 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 10B2E9C57BB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
+	t=1718889987; bh=ao0WzsH9C9Fs3h30ZfBXgXnzt2j72vf6eP80hXlg++o=;
+	h=From:To:Date:Message-Id:MIME-Version;
+	b=B5L9UxORS1oQU7YxuD78I9ddj3NppF6gbtdxlkF69ABYmslCDJUkO6QPb5kzuF/an
+	 wjBp/YaDJHaEOyrdG8dj146t/dhA6IrbSyu69Y880FcT1o59LGp7YHVSMXSpCS+g7Z
+	 r9Q6fFWzxM6hNo10PdgPIW4vfq3hOhbNzZ72e9Za5RDFwm3ZzYKFUimq2/ryAxup6H
+	 DVc1NI9ipllgfWtKDdyyIce+pFSoBmc63pTOpvDuhnAeQQOK8GY96Sm7TI7r2qcYnL
+	 I24CNqChjRb7G+idfO5tWmNuIp+GK6/LhHeFje6dFMg4XfsqhSufD6A5o8mrRZtL8j
+	 Wts0ToO6nq5kw==
+X-Virus-Scanned: amavis at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id 5L5N86gzCHlc; Thu, 20 Jun 2024 09:26:26 -0400 (EDT)
+Received: from gerard.rennes.sfl
+ (lmontsouris-657-1-69-118.w80-15.abo.wanadoo.fr [80.15.101.118])
+	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 34E9A9C5625;
+	Thu, 20 Jun 2024 09:26:24 -0400 (EDT)
+From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>,
+	Philip-Dylan <philip-dylan.gleonec@savoirfairelinux.com>
+Subject: [PATCHv5 2/9] ASoC: fsl-asoc-card: add support for dai links with
+ multiple codecs
+Date: Thu, 20 Jun 2024 15:25:04 +0200
+Message-Id: <20240620132511.4291-3-elinor.montmasson@savoirfairelinux.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240620132511.4291-1-elinor.montmasson@savoirfairelinux.com>
+References: <20240620132511.4291-1-elinor.montmasson@savoirfairelinux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: P2F7BJKSRVZLOELBZLSONSU5VKLHEQ5G
-X-Message-ID-Hash: P2F7BJKSRVZLOELBZLSONSU5VKLHEQ5G
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: K5FVODGLSTWUG3VK32HUVE2EJ4LFSNBP
+X-Message-ID-Hash: K5FVODGLSTWUG3VK32HUVE2EJ4LFSNBP
+X-MailFrom: elinor.montmasson@savoirfairelinux.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P2F7BJKSRVZLOELBZLSONSU5VKLHEQ5G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K5FVODGLSTWUG3VK32HUVE2EJ4LFSNBP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,42 +129,86 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 17 Jun 2024 12:58:34 +0530, Vijendar Mukunda wrote:
-> When acp platform device creation is skipped, chip->chip_pdev value will
-> remain NULL. Add NULL check for chip->chip_pdev structure in
-> snd_acp_resume() function to avoid null pointer dereference.
-> 
-> 
+Add support for dai links using multiple codecs for multi-codec
+use cases.
 
-Applied to
+Co-developed-by: Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelinu=
+x.com>
+Signed-off-by: Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelinux.=
+com>
+Signed-off-by: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
+---
+ sound/soc/fsl/fsl-asoc-card.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/8] ASoC: amd: acp: add a null check for chip_pdev structure
-      commit: 98d919dfee1cc402ca29d45da642852d7c9a2301
-[2/8] ASoC: amd: acp: remove i2s configuration check in acp_i2s_probe()
-      commit: 70fa3900c3ed92158628710e81d274e5cb52f92b
-[3/8] ASoC: amd: acp: move chip->flag variable assignment
-      commit: 379bcd2c9197bf2c429434e8a01cea0ee1852316
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index eb67689dcd6e..e8003fbc8092 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -542,6 +542,7 @@ static int fsl_asoc_card_late_probe(struct snd_soc_card=
+ *card)
+ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *cpu_np, *codec_np, *asrc_np;
++	struct snd_soc_dai_link_component *codec_comp;
+ 	struct device_node *np =3D pdev->dev.of_node;
+ 	struct platform_device *asrc_pdev =3D NULL;
+ 	struct device_node *bitclkprovider =3D NULL;
+@@ -552,6 +553,7 @@ static int fsl_asoc_card_probe(struct platform_device *=
+pdev)
+ 	const char *codec_dai_name;
+ 	const char *codec_dev_name;
+ 	u32 asrc_fmt =3D 0;
++	int codec_idx;
+ 	u32 width;
+ 	int ret;
+=20
+@@ -816,10 +818,10 @@ static int fsl_asoc_card_probe(struct platform_device=
+ *pdev)
+=20
+ 	/* Normal DAI Link */
+ 	priv->dai_link[0].cpus->of_node =3D cpu_np;
+-	priv->dai_link[0].codecs->dai_name =3D codec_dai_name;
++	priv->dai_link[0].codecs[0].dai_name =3D codec_dai_name;
+=20
+ 	if (!fsl_asoc_card_is_ac97(priv))
+-		priv->dai_link[0].codecs->of_node =3D codec_np;
++		priv->dai_link[0].codecs[0].of_node =3D codec_np;
+ 	else {
+ 		u32 idx;
+=20
+@@ -830,11 +832,11 @@ static int fsl_asoc_card_probe(struct platform_device=
+ *pdev)
+ 			goto asrc_fail;
+ 		}
+=20
+-		priv->dai_link[0].codecs->name =3D
++		priv->dai_link[0].codecs[0].name =3D
+ 				devm_kasprintf(&pdev->dev, GFP_KERNEL,
+ 					       "ac97-codec.%u",
+ 					       (unsigned int)idx);
+-		if (!priv->dai_link[0].codecs->name) {
++		if (!priv->dai_link[0].codecs[0].name) {
+ 			ret =3D -ENOMEM;
+ 			goto asrc_fail;
+ 		}
+@@ -848,10 +850,11 @@ static int fsl_asoc_card_probe(struct platform_device=
+ *pdev)
+ 		/* DPCM DAI Links only if ASRC exists */
+ 		priv->dai_link[1].cpus->of_node =3D asrc_np;
+ 		priv->dai_link[1].platforms->of_node =3D asrc_np;
+-		priv->dai_link[2].codecs->dai_name =3D codec_dai_name;
+-		priv->dai_link[2].codecs->of_node =3D codec_np;
+-		priv->dai_link[2].codecs->name =3D
+-				priv->dai_link[0].codecs->name;
++		for_each_link_codecs((&(priv->dai_link[2])), codec_idx, codec_comp) {
++			codec_comp->dai_name =3D priv->dai_link[0].codecs[codec_idx].dai_name;
++			codec_comp->of_node =3D priv->dai_link[0].codecs[codec_idx].of_node;
++			codec_comp->name =3D priv->dai_link[0].codecs[codec_idx].name;
++		}
+ 		priv->dai_link[2].cpus->of_node =3D cpu_np;
+ 		priv->dai_link[2].dai_fmt =3D priv->dai_fmt;
+ 		priv->card.num_links =3D 3;
+--=20
+2.34.1
 
