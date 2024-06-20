@@ -4,146 +4,185 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DD27C30653
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC291C30653
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:26:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2A6527A9;
-	Mon,  1 Jul 2024 14:25:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2A6527A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60182211B;
+	Mon,  1 Jul 2024 14:25:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60182211B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719836740;
-	bh=T0AdqBMK9lkL1kcLkmUERSGkLaTYUdQ6VqLsNTB1DZU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1719836760;
+	bh=29OxgEL3l6wtk/wr9HSlAcydEGnms+qvS9bonjZCeq4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DjTpKiKcy/tWXB1IIcgcyNsJtutw6Ib7EXY57i3Cd5/ozDuTOOAr0tFMJZ4H23Rkx
-	 +NoixN4CyrdH/c2tfF/Dh6W+/WLOMXH1z21wZQ/ED0Zviv7iaK6n1iKrYluXWc4Yzp
-	 5iVsH/v0b8GyT1txWdTjxRUw0pAVqnZqGEez4J6E=
+	b=kWlhR8CYszroPjrY/ELB3vVRiyRumxSCV+12Cqxk5etqrK3w6QIyWGhGj9vx2DBJ1
+	 IF6b5gjFtFP40pMCZncsrKuqntMRzcr89FM0955f+5k5Qkf0q83G0DNMegRqaEs3TW
+	 LOE7VuoV44zNDGhxyWsCdybXoleIsd6yfUtlmpI4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04731F896E7; Mon,  1 Jul 2024 14:21:04 +0200 (CEST)
+	id A0153F80620; Mon,  1 Jul 2024 14:21:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD06AF896B8;
-	Mon,  1 Jul 2024 14:21:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8024EF80606;
+	Mon,  1 Jul 2024 14:21:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C517DF8023A; Thu, 20 Jun 2024 20:01:11 +0200 (CEST)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
+	id 213CBF8023A; Thu, 20 Jun 2024 20:01:20 +0200 (CEST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5A79BF800ED
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 20:01:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A79BF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54D0DF800ED
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 20:01:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54D0DF800ED
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=timesys-com.20230601.gappssmtp.com
- header.i=@timesys-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=RGeH7ANd
-Received: by mail-ej1-x62b.google.com with SMTP id
- a640c23a62f3a-a6fb696d2e5so135954366b.3
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linux-foundation.org header.i=@linux-foundation.org
+ header.a=rsa-sha256 header.s=google header.b=KQc3aKgT
+Received: by mail-lf1-x12d.google.com with SMTP id
+ 2adb3069b0e04-52bc27cfb14so1663365e87.0
         for <alsa-devel@alsa-project.org>;
- Thu, 20 Jun 2024 11:01:08 -0700 (PDT)
+ Thu, 20 Jun 2024 11:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906468;
- x=1719511268; darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qz8kTOxdaIm1u93eV0Is+4r0vyFAn21pP7Hjv/L4wvo=;
-        b=RGeH7ANdGTVeErsyuG6kZcGexQH7RgRFrZMNh28sTNsIaH1YDKarBu/4VvgRtzWTeO
-         oVsMg/QT70RybCDGpVV13VqjWyZPIsLfESheEl/Grxm9slYJjCZtkWnRCYT12d0F+SOs
-         f0Vdrsuxf7pZOrreOGcAPNhJETbSOYG+J0v4b7z4eCZpaekor2X/ntCekGa3PTOPiAGH
-         3FCobTChVaoCesFdYgsbre6IQ2PtRxS1rbP3SwSCUYQtN2mKe+udmXIPkfOebM1s0uW9
-         bjehK5o9ptJp1qSp+JKFLFaRUBtYEEaz1LGGXvzcC0zyLMiN1VLpiocwpulXA6ZOIBCo
-         ciGQ==
+        d=linux-foundation.org; s=google; t=1718906477; x=1719511277;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fuatl8An2r1cXJScFESolD1f90VPFvdc9a3mKIi/oro=;
+        b=KQc3aKgTkJF1Q8qY5xv3vNc2fwG/6675AHj4HISBcYQyWbrStxpdvctiCzR0feL0zY
+         FQgtcue92lfMEZdFY2e6SLU6zj6YE2nGThV049odzMi+FOOK+BmzWLBHcJtIFgyZCrXM
+         HdFgfBnSH+f760nBAwgCN7D/HwoHZWOVOyAZE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906468; x=1719511268;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qz8kTOxdaIm1u93eV0Is+4r0vyFAn21pP7Hjv/L4wvo=;
-        b=ZT9x+R0wMyrtaPw6NpU9JUolSCqfMQrqJ1eOLcA1ad+4jGc/Os6I+bjuXpGeLtpA2U
-         bsADLicb57FJi1/BQCDN6n1pHeJCcIzISsH4arqP/zWUSoWM9UReGCmEZFnuAJaev20U
-         ZZD5iqFa/mfeCyHUPNWqE+kJexIU8pOuXLkBCu7SK2qUACrGgRjJDlH8KV59hJ2qTv9o
-         d4qpsq5iB6kyjWQTpeSebXp0sSPqUNSnxMBEsjMMY9hrtezG6OrWEUAMqKziTHIui5xO
-         zbRqI5qeY5FN+ynbV6j10VgJ0E0wGP/qnNgwTZ2MALS153vSSt/FA2WS9CsDkGkrQK6y
-         192g==
+        d=1e100.net; s=20230601; t=1718906477; x=1719511277;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fuatl8An2r1cXJScFESolD1f90VPFvdc9a3mKIi/oro=;
+        b=TgdjBtZerOYa3oPrKJXGVAvRfvAUlauzVzCdDwL5qyHylo4L4VTX48amkqJPsQf9kw
+         MswXvqwgs+OVFFVN8R42ec0t7vxSWHO+xyBL/53JieLKPwPZySererDPjtdD9mv8dgAg
+         f8dpvtlt9CMTix+9gnB2Z9LPSHdefqrRErkNT3SU+I4fatZ8DmvenUC3gWiVUdE5HLlr
+         gUNUZnx+3r3lSzY1QuDNOHTaxzgeycrjrkxbcZbSz3AT4pwMaR1u2s9bkY1xfm0utbuU
+         rI00b4f26dga+hcQMuzdzzSVvABXS6pYfWzitQq4GqQlRVapp3/L15EvrHXhS4eEx/v0
+         UPwg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCW1pLM4BpcfVrY6bLyh+O4L8CpE+VHAPK8Fqc2NpuycOSQua4bOF4TpMcyJO5AfWX/Kjp/ZPRMp8EYwhFWgtxvPXayE5x5FwSOxL94=
-X-Gm-Message-State: AOJu0Yy6Mr2d2EnWbn03NELydSH2uzGkJEzY8c2iIzrNbo0FSqNxlMz5
-	Q8RVewSvs+hDoJIn8In3KgYLyY9JWP0fHGVUVYD6bnhjFdVIcaimyhI+DPh8YvI=
+ AJvYcCWNr7gPN3ta0H5ThcU8WIPkf/2YHoQ9hZaxk/3MX8eBmDhDKz6WF+/kSa/kkdE9kOibxVWTKCaAhA2mZtirORRvQML2BDt0qqP/hUo=
+X-Gm-Message-State: AOJu0Yx3kGFksQTeQA0/NvoWRt9DtBOOi0RssJ1qeikgYhJMZTP0IjKK
+	uixVlwWEtgnyW6ITOFvXIyRrvtZZNL/yT70K8dICam9XLiVv5jphB2jFmp7nOrxGwmOCQcyOtx7
+	BZ8mG2Ro4
 X-Google-Smtp-Source: 
- AGHT+IG8eY8d/PSntzHXSfPtqV/wO9neoC+Na07hB+VY1pAoMYT9SP6YNE1GHB/rvuCByUpgceEg7w==
-X-Received: by 2002:a17:907:a80f:b0:a6f:b67d:959e with SMTP id
- a640c23a62f3a-a6fb67d9870mr344459666b.53.1718906468099;
-        Thu, 20 Jun 2024 11:01:08 -0700 (PDT)
-Received: from localhost.localdomain ([91.216.213.152])
+ AGHT+IF77JcnWX0m4ayIx5LM4fwSzhI/3BbNUCD34eWlWk1prVx3s+KnYgYjRCpdeqyRatLsnTIoDw==
+X-Received: by 2002:a05:6512:208e:b0:52b:c1d4:7df4 with SMTP id
+ 2adb3069b0e04-52ccaa590eemr4084912e87.56.1718906476709;
+        Thu, 20 Jun 2024 11:01:16 -0700 (PDT)
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com.
+ [209.85.128.42])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.11.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 11:01:07 -0700 (PDT)
-From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"J.M.B. Downing" <jonathan.downing@nautel.com>,
-	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Yangtao Li <frank.li@vivo.com>,
-	Li Zetao <lizetao1@huawei.com>,
-	Chancel Liu <chancel.liu@nxp.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: Markus Elfring <Markus.Elfring@web.de>
-Subject: [Patch v4 10/10] i2x: pnx: Use threaded irq to fix warning from
- del_timer_sync()
-Date: Thu, 20 Jun 2024 19:56:41 +0200
-Message-Id: <20240620175657.358273-11-piotr.wojtaszczyk@timesys.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
-References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+ a640c23a62f3a-a6f56db5b3asm792767966b.52.2024.06.20.11.01.16
+        for <alsa-devel@alsa-project.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jun 2024 11:01:16 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id
+ 5b1f17b1804b1-421757d217aso13818895e9.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 20 Jun 2024 11:01:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXpYFsI4m5h3uhR0qwh+B6qvcXpnOsvleaswvXSI3/iM4AT3iu1Mr61V/0a9IkV+ONiVXfgEO25ae5tTrEU9dowX2EVfmqO4xar20k=
+X-Received: by 2002:a50:96cf:0:b0:57c:5874:4f5c with SMTP id
+ 4fb4d7f45d1cf-57d07ea857fmr5124279a12.32.1718906455555; Thu, 20 Jun 2024
+ 11:00:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: piotr.wojtaszczyk@timesys.com
-X-Mailman-Rule-Hits: nonmember-moderation
+References: <20240620175703.605111-1-yury.norov@gmail.com>
+In-Reply-To: <20240620175703.605111-1-yury.norov@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 20 Jun 2024 11:00:38 -0700
+X-Gmail-Original-Message-ID: 
+ <CAHk-=wiUTXC452qbypG3jW6XCZGfc8d-iehSavxn5JkQ=sv0zA@mail.gmail.com>
+Message-ID: 
+ <CAHk-=wiUTXC452qbypG3jW6XCZGfc8d-iehSavxn5JkQ=sv0zA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/40] lib/find: add atomic find_bit() primitives
+To: Yury Norov <yury.norov@gmail.com>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+ "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>, Eric Dumazet <edumazet@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>, Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
+ Kalle Valo <kvalo@kernel.org>,
+	Karsten Graul <kgraul@linux.ibm.com>, Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>, Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+ Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>, Oliver Neukum <oneukum@suse.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
+ Rob Herring <robh@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>, Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>, Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+ Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>, Wenjia Zhang <wenjia@linux.ibm.com>,
+	Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
+	ath10k@lists.infradead.org, dmaengine@vger.kernel.org, iommu@lists.linux.dev,
+	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
+	linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org,
+	Alexey Klimov <alexey.klimov@linaro.org>,
+ Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+ Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: torvalds@linuxfoundation.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: MYEKMEDGDBSIROIPZ3SHDEUDM33TXKYM
-X-Message-ID-Hash: MYEKMEDGDBSIROIPZ3SHDEUDM33TXKYM
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: IR7RKJJ5ZFGWMOC4CA572QSWRHDTXYKL
+X-Message-ID-Hash: IR7RKJJ5ZFGWMOC4CA572QSWRHDTXYKL
 X-Mailman-Approved-At: Mon, 01 Jul 2024 12:20:18 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MYEKMEDGDBSIROIPZ3SHDEUDM33TXKYM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IR7RKJJ5ZFGWMOC4CA572QSWRHDTXYKL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,30 +191,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When del_timer_sync() is called in an interrupt context it throws a warning
-because of potential deadlock. Threaded irq handler fixes the potential
-problem.
+On Thu, 20 Jun 2024 at 10:57, Yury Norov <yury.norov@gmail.com> wrote:
+>
+>
+> The typical lock-protected bit allocation may look like this:
 
-Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
----
- drivers/i2c/busses/i2c-pnx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+If it looks like this, then nobody cares. Clearly the user in question
+never actually cared about performance, and you SHOULD NOT then say
+"let's optimize this that nobody cares about":.
 
-diff --git a/drivers/i2c/busses/i2c-pnx.c b/drivers/i2c/busses/i2c-pnx.c
-index a12525b3186b..b2ab6fb168bf 100644
---- a/drivers/i2c/busses/i2c-pnx.c
-+++ b/drivers/i2c/busses/i2c-pnx.c
-@@ -718,8 +718,8 @@ static int i2c_pnx_probe(struct platform_device *pdev)
- 		ret = alg_data->irq;
- 		goto out_clock;
- 	}
--	ret = devm_request_irq(&pdev->dev, alg_data->irq, i2c_pnx_interrupt,
--			       0, pdev->name, alg_data);
-+	ret = devm_request_threaded_irq(&pdev->dev, alg_data->irq, NULL, i2c_pnx_interrupt,
-+					IRQF_ONESHOT, pdev->name, alg_data);
- 	if (ret)
- 		goto out_clock;
- 
--- 
-2.25.1
+Yury, I spend an inordinate amount of time just double-checking your
+patches. I ended up having to basically undo one of them just days
+ago.
 
+New rule: before you send some optimization, you need to have NUMBERS.
+
+Some kind of "look, this code is visible in profiles, so we actually care".
+
+Because without numbers, I'm just not going to pull anything from you.
+These insane inlines for things that don't matter need to stop.
+
+And if they *DO* matter, you need to show that they matter.
+
+               Linus
