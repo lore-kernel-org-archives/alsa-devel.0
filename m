@@ -4,101 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FD2FC27C79
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 09:12:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3760C27C79
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 11:15:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 549291DF;
-	Thu, 20 Jun 2024 11:12:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 549291DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 978C5A4A;
+	Thu, 20 Jun 2024 13:15:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 978C5A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718874765;
-	bh=c4D7Z9CR9MfOFr8x4TqhuN903N+QSpMF6a7kToVGrDc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=oC3fjSbFtvU0QTDa8czpiGtTEu7BNJWsJnYGbUDFWTg449hYX+5EM/PKnqzk1QbXL
-	 IrNfxQnzq+gBSlLhpeNIqNULfh3Yaz3SYTuK8cmiOzFwM6sIspQt/2E6UGLr9zjE5x
-	 WrygP+/RfXrbsvZotMIddmhIsgQjGD2yya4uyOtQ=
+	s=default; t=1718882135;
+	bh=R2NB2dD7Vzl5o6yFPTha42LD8dT0EaIaGzHj+oxhCUc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=vn2RMqqPZuSjt3z6grG7YjHB6loCFfTFI2MlcJ7MSjJoFwck/KnM5uA1DujyM0hT9
+	 Vu019gue1JUQpIBaXolQCc3Ah0avyv2Nml1Zm/YF6dbkeNYaoPslluJdbRDkGYlQvj
+	 /eOf2R78UHZdFIGvMVzF5iOHhJ+W40B9KvpYPu4k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02F79F80587; Thu, 20 Jun 2024 11:12:11 +0200 (CEST)
+	id B34B7F805BA; Thu, 20 Jun 2024 13:15:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F4F7F805AC;
-	Thu, 20 Jun 2024 11:12:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B1D0F80587;
+	Thu, 20 Jun 2024 13:15:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84D90F8023A; Thu, 20 Jun 2024 11:11:09 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 36FCFF80266; Thu, 20 Jun 2024 13:13:39 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 25DEAF80154
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 11:10:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25DEAF80154
+	by alsa1.perex.cz (Postfix) with ESMTPS id DB12DF800ED
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 13:13:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB12DF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=jg3zdH1h
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-4217a96de38so5262795e9.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 20 Jun 2024 02:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718874651; x=1719479451;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PHBkJAins6g8k8CRgVDBSrncktJoQ1zQZ+ZidiRGnrM=;
-        b=jg3zdH1hiQKvoR7y16lGg76Ggp87MiG7g7GAMgOfuZ9lfL9OIvnvgypYFSGdzGOCw6
-         23BvJc77I+mrf5TqZWl3Pr6NYo8yLsCuUortSuAyVhtGl3xvCXfRsKtxZlXJgk7H1Af+
-         s7ok+rcGgtgK3pksOUVKVlri7oAQZxq2kA1pyh5K7EcV0rZs3zXaEVSQsMvqVPdedcXo
-         k7Ag0shoP52USadNamsUpYu4ux7IjfmA257Hg7yUeo5azC4pcBEnkHf93X1nD3GOCCGd
-         zc1lugsu+j/9nkpNStFCzmGTMrHq2lVOY2myZhcT3FFwbgb1gES4VfDct5+oqaHjNaQT
-         5yNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718874651; x=1719479451;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PHBkJAins6g8k8CRgVDBSrncktJoQ1zQZ+ZidiRGnrM=;
-        b=WqLyssCD5Kd4DXabllC+/5QoVaHLgk7GM8aGqTPep7NVo6CY425gIhnSiUujoUBBQE
-         Ry0wwvl/eQIUzWwYEtV8ufxbubXEyXLX0yBXXkocHeunFs8vKPaE279owLQFaT/9nTdr
-         +KEJ4EHlIAssDWBiYocxdhVumqjbAzOjnDI00KnVDLHDJSqKdWa0l9mvfuXe0QFFMOE1
-         m/AulXjDlbofafEfevdND+8W5eDC7PU8H1MUsTWrANbcoTYG26cWoG/ecXekFKAaJjd+
-         EE5KyWi+T7e4icPv/DSqL8o0W5Ca89ZbfkoeHNPYCEz1EeHYAE/lCZATCuxynRtUGJV+
-         cPHg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCX7oCwBDBHWd3zebihyJvXP0XxEGc4LZSP4lbVmTW0q3AW0D+1W4puw9rQiP/MDiMNkodeQ0wtPzpYUsFBYh9wZPHkqhulY8ASuCF4=
-X-Gm-Message-State: AOJu0YwYXfsyDYbue9tyEH7+5UYLyMjbp2dhjR5ssR4w4y5Gceg/wysn
-	0NTGPKJNOKV3RvBJy4ct0fuKbKVNYOwnR4znHiLihndpxP3+vLaM9fSEHZBBnvY=
-X-Google-Smtp-Source: 
- AGHT+IGbAsr4VCtVmR91oxpzAar7lPnAha8zhGqOQi2bz0FL/BFRbaDZAys1bZaV9FZphUYTqCbqqA==
-X-Received: by 2002:a05:600c:158c:b0:422:dfb0:8644 with SMTP id
- 5b1f17b1804b1-4247529bc07mr38253855e9.33.1718874651188;
-        Thu, 20 Jun 2024 02:10:51 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.219.137])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4247ef50750sm8238195e9.14.2024.06.20.02.10.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 02:10:50 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Vinod Koul <vkoul@kernel.org>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Sanyog Kale <sanyog.r.kale@intel.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] soundwire: bus: simplify by using local slave->prop
-Date: Thu, 20 Jun 2024 11:10:46 +0200
-Message-ID: <20240620091046.12426-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.43.0
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ucygHIlH
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 57B4862155;
+	Thu, 20 Jun 2024 11:13:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79FEDC32781;
+	Thu, 20 Jun 2024 11:13:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718882010;
+	bh=R2NB2dD7Vzl5o6yFPTha42LD8dT0EaIaGzHj+oxhCUc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ucygHIlHyWU4C7EZlSnLKPYUfCv+DCzIrlH56q88HLNjb+bVzU1nxO32F9UHfOWYT
+	 SFvuMoZ8jQyHHDA9M8omJd9bxzI6dy5F9mF4MM+r7SLP0F5YqS+sehuxgApaeO6Jfw
+	 At6tU+Ca+K54JveHCGWAVjLOndG+hyMv6esNQkyMP3ziOFaJywjCI6oTpq/loo+iId
+	 D6TVaieLl/OQe3H8HPPT9TBznrD9Me070U6Algbu1Thic5yOV6q41E/rf6BUhX0S2D
+	 7DuJ3w/+jU/zelkfh4tNvj+jw13OD2e+Ez3uAKJ0MOB/3D6JIwkrhoHPKvwj4VCk/A
+	 TRakVVcEileig==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, Jack Yu <jack.yu@realtek.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
+ "Flove(HsinFu)" <flove@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
+ =?utf-8?q?Shuming_=5B=E8=8C=83=E6=9B=B8=E9=8A=98=5D?= <shumingf@realtek.com>,
+ =?utf-8?q?Derek_=5B=E6=96=B9=E5=BE=B7=E7=BE=A9=5D?= <derek.fang@realtek.com>
+In-Reply-To: <b3055442ce6d4994aa01aa1fad6ba1fe@realtek.com>
+References: <b3055442ce6d4994aa01aa1fad6ba1fe@realtek.com>
+Subject: Re: [PATCH v3] ASoC: rt1318: Add RT1318 audio amplifier driver
+Message-Id: <171888200821.41155.10538174248657308306.b4-ty@kernel.org>
+Date: Thu, 20 Jun 2024 12:13:28 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UNCR7ROULTESYYIVLGNV2C4ORLYENRRG
-X-Message-ID-Hash: UNCR7ROULTESYYIVLGNV2C4ORLYENRRG
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev-d4707
+Message-ID-Hash: 567COV6GJA7UUPPRBXAWRXCAVYLHQHCS
+X-Message-ID-Hash: 567COV6GJA7UUPPRBXAWRXCAVYLHQHCS
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UNCR7ROULTESYYIVLGNV2C4ORLYENRRG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/567COV6GJA7UUPPRBXAWRXCAVYLHQHCS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,45 +94,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The sdw_initialize_slave() function stores 'slave->prop' as local 'prop'
-variable, so use it in all applicable places to make code a bit simpler.
+On Wed, 19 Jun 2024 05:53:42 +0000, Jack Yu wrote:
+> This is the initial i2s-based amplifier driver for rt1318.
+> 
+> 
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/soundwire/bus.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Applied to
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 191e6cc6f962..263ca32f0c5c 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1410,7 +1410,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 		}
- 	}
- 	if ((slave->bus->prop.quirks & SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY) &&
--	    !(slave->prop.quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY)) {
-+	    !(prop->quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY)) {
- 		/* Clear parity interrupt before enabling interrupt mask */
- 		status = sdw_read_no_pm(slave, SDW_SCP_INT1);
- 		if (status < 0) {
-@@ -1436,7 +1436,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 	 * device-dependent, it might e.g. only be enabled in
- 	 * steady-state after a couple of frames.
- 	 */
--	val = slave->prop.scp_int1_mask;
-+	val = prop->scp_int1_mask;
- 
- 	/* Enable SCP interrupts */
- 	ret = sdw_update_no_pm(slave, SDW_SCP_INTMASK1, val, val);
-@@ -1447,7 +1447,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 	}
- 
- 	/* No need to continue if DP0 is not present */
--	if (!slave->prop.dp0_prop)
-+	if (!prop->dp0_prop)
- 		return 0;
- 
- 	/* Enable DP0 interrupts */
--- 
-2.43.0
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: rt1318: Add RT1318 audio amplifier driver
+      commit: fe1ff61487ace69cd4e680e36169c90667eb9624
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
