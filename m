@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B90EFC30653
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 022D9C2BD09
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:22:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDB3A227D;
-	Mon,  1 Jul 2024 14:21:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDB3A227D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5F5622AA;
+	Mon,  1 Jul 2024 14:22:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5F5622AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719836528;
-	bh=lL5HxCJiZymjowcOr7xVA2M7Te/xs6i3j2oxZgMh+rs=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=B8M4S02v9OUl7XKOsC1OAC8H5jsbYkVq8bLNvoTp4WgAEQ4s02owuIlgjOE8bIqG5
-	 ILljwZ4UvqoJXhBb6uKtFJeI6Z1Nc3Zo0Rue3jdo8P5eZeY3bAe7Tm9irnSbsFyER3
-	 lyz5xasmm93eXM7HVTXY8TWt8ob3iaR/QQRIDN+U=
+	s=default; t=1719836559;
+	bh=57mSqvK5F8icDZvtosz8MW5pSg98mK2P/IkbkOYFjBo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=dHLGQLwTyj694DJIvVa0H6JczUL5v7lZq5sF7H+w7zbDed32rmOWI7tZzlcwne6Bw
+	 yt27UYZ8aTB7D9BS4eDpCaSt3OPcSzFem6yJto99gHXa7YgUN6B+DPIFdAy5Ak6+Dq
+	 4ZE7jBj6dv/eX+V5WQfNEnqa6KQ6ZofjVAew9G3A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3C76F805B3; Mon,  1 Jul 2024 14:20:19 +0200 (CEST)
+	id 56BB6F806EC; Mon,  1 Jul 2024 14:20:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAF6BF806B4;
-	Mon,  1 Jul 2024 14:20:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00032F806DD;
+	Mon,  1 Jul 2024 14:20:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 759EAF8023A; Thu, 20 Jun 2024 19:57:46 +0200 (CEST)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
- [IPv6:2a00:1450:4864:20::52c])
+	id 6A908F80266; Thu, 20 Jun 2024 19:58:04 +0200 (CEST)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C3F50F80266
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 19:57:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3F50F80266
+	by alsa1.perex.cz (Postfix) with ESMTPS id C76E9F801EB
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 19:58:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C76E9F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=timesys-com.20230601.gappssmtp.com
  header.i=@timesys-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=25raIcO/
-Received: by mail-ed1-x52c.google.com with SMTP id
- 4fb4d7f45d1cf-57d07673185so1098848a12.1
+ header.s=20230601 header.b=v2Dr1uz9
+Received: by mail-ej1-x62d.google.com with SMTP id
+ a640c23a62f3a-a6e349c0f2bso138732766b.2
         for <alsa-devel@alsa-project.org>;
- Thu, 20 Jun 2024 10:57:16 -0700 (PDT)
+ Thu, 20 Jun 2024 10:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906235;
- x=1719511035; darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UP/GNN9hhxz4nMUGrLaNfWrPk3mVaVMWtBi9huNJxPk=;
-        b=25raIcO/uGAgg3FtFHQKGIGmzo1JmlOMnyXZH1E5oPYs7eNtUfbmnH4WQCtmSbRrUm
-         XtnVTkWsvtxu882lo3iwAQVE+TAXvSfErcThr3uYfH8UIBI8VrTXuoAwdizkUEmA+p/3
-         OiP/VPKjgK5wZ5eMrgJ5xK7vDaGwt+C+FoaPrSTiCx8xezMHACNm+VqKFPVDUlOKYCKl
-         ElNO7L3Xy/ll7eDmm5IboohWPKFgkoF05KybQZ2cdtMWANFnwJ3IN/aZ41wIVUiwcwhu
-         50YnGpjo40C9U59I1KpnQqkFHZanuDlsmOD8nAIGD1/2WfCdAcON3qqGz2fegcBacPyL
-         Pyag==
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906280;
+ x=1719511080; darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LLJSsUsQJimHeyehvy4obxzFbfnPiiocs4Of944Xm3I=;
+        b=v2Dr1uz93QxOvgWvC9mtI+VbE6fJ7gw+zHNKv/3CD/z+PXe+TAdLoslPrJIcJABT1p
+         Z9+qSxqN9oYNn2j5RnzteicEIVgnHDos474QUGedPETyGebE5/pDPuElTfEF3UzQ8QxF
+         dcV2xp8FeMLSP+8q+2xGyTVLbxLE8cf3l7kx3AlC+W+TEv0qr9GvE5VzZAXpzfLhSNkO
+         6661z+UPiJWxIDBm4UWUolugAU1SeZHcxgMbkAeH+rzho1y+pdoILSD5EBUp00OTbqM6
+         K8Crdz1SaDb+spi3spoj626Kb/k3TxXqU5txwmYTtvlhXl/SZZ4C3IiWvpE+/WxnolXK
+         +JQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906235; x=1719511035;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UP/GNN9hhxz4nMUGrLaNfWrPk3mVaVMWtBi9huNJxPk=;
-        b=mA/PwjT+xClYxiyiiV60COX2zlPIKyYmrRnMOCEZv9kaN+YwAIC0tVNCjSuZTd3Cln
-         kNBV30q88O0heKja+DY7bXwnSyaeWMaZm7BVuqqnHvmjV9PM08lKX6LyUI8XiJ4tDNDB
-         N4pVEp444YRv2FqLFB5KKaS/fQ7OP/BFW9BP1B3zn/Sn3PgGcd9IPLv0Xoq5Hhap49Q0
-         9IM0a7OnRfI8Sy+5xUDeGSDxsdyiVlGvyi7FipO1b2R8hSGFyOH3nKG0Pt9VfJ5daCLu
-         JcffDUPJdocjvIjrNoQaQJaAOvtjQb6gYEIR+oBsnjpHshRBVU9zPo8Je1GmkO5FcP19
-         DL3A==
+        d=1e100.net; s=20230601; t=1718906280; x=1719511080;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LLJSsUsQJimHeyehvy4obxzFbfnPiiocs4Of944Xm3I=;
+        b=euunJZI2Wblp1zkwm+U54d/LKbHKqPdZe/+mSDJs8vGM80is604pfxjEPXtpCaWnEW
+         8baDmmw2AwC/TURwJ+jlppumefhZH58OcEK/9SGxil+K2xxNX1I+dn0pQqH7tbGlVg+n
+         GnJb08/cUYos1lgQBFQsv4luSU/Wnl6EvHCoh8rhihJklJhDsgtH18n5r8LodAnlnrUE
+         UxFmX20StTe+F3KSvwyx2TGUUfZukIy+L/R2J78uiwFb6GfeOqro3Ho6XjsjRil7KAg1
+         KELC0FV7FA2zyQ1kBq9tPvMoASCZIHQcPrBRsS9l1tl+DAuDqXFWLLn6lwD0LLQ/g4ov
+         E+rQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXcO0EaPANYhqxrCWttFxxflfyqI2paBA824Qbq0nrxp/tEyIAgYWcF1L4RtVBany3Vem/t9K0lPuZRdgcW7rtoJfxEdXbZxQnHAN8=
-X-Gm-Message-State: AOJu0Yysa358QsRBCrn9UnXFWYvpS6NOlwNQapQCCWDchUCeankHxNbj
-	rM5dSHq1yTqP5mIKuMqveDaFdOkf8lqBZpN7XfCwIVd2VZ1DmdSyrUEwayRCp7M=
+ AJvYcCXcOZTu4HTMvFlh0J/C/O7CcUd3gla1LHTbVAiMuDHdrWN79Rtl89QseyE6z5FG2GquHhIDIGbqbXTpsytQpjQaIal7d8AKdz8vIag=
+X-Gm-Message-State: AOJu0YwAes6k/qYwzKKJrCu2yWoAjhbguSZvA4vZAboq5HysKw6+XRMn
+	veu8HRTUn1G28f7r5U5b7c31zxJXXafP7RdNqnv3ZacGXlyDaw/jMBaDJJ2dhVk=
 X-Google-Smtp-Source: 
- AGHT+IHwzCxasTWecNI2BQg/1Mqv76qvz0pqMMUj9hgHTBodTuDhBkY00q2aX9YgUG43J9U17WwHFQ==
-X-Received: by 2002:a17:906:a09:b0:a6e:f7bf:712e with SMTP id
- a640c23a62f3a-a6fab618973mr379689666b.27.1718906235388;
-        Thu, 20 Jun 2024 10:57:15 -0700 (PDT)
+ AGHT+IGXtwYdokrlfBxhK8FxTp2sWYE+r/rA8OXrz8ajsAvjdcVPMUue0BkFzpXPCbEPXWGLdile5Q==
+X-Received: by 2002:a17:907:8025:b0:a6f:147f:7d06 with SMTP id
+ a640c23a62f3a-a6fab7de093mr273780966b.77.1718906280266;
+        Thu, 20 Jun 2024 10:58:00 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.10.57.13
+ a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.10.57.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 10:57:14 -0700 (PDT)
+        Thu, 20 Jun 2024 10:57:59 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -105,8 +107,8 @@ To: Vinod Koul <vkoul@kernel.org>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Yangtao Li <frank.li@vivo.com>,
 	Li Zetao <lizetao1@huawei.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
 	Chancel Liu <chancel.liu@nxp.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	dmaengine@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -118,10 +120,12 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
 Cc: Markus Elfring <Markus.Elfring@web.de>
-Subject: [Patch v4 00/10] Add audio support for LPC32XX CPUs
-Date: Thu, 20 Jun 2024 19:56:31 +0200
-Message-Id: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v4 01/10] dt-bindings: dma: pl08x: Add dma-cells description
+Date: Thu, 20 Jun 2024 19:56:32 +0200
+Message-Id: <20240620175657.358273-2-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: piotr.wojtaszczyk@timesys.com
@@ -130,15 +134,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: N2WJ62JZ5RNBUNQJ3VHYCZKTRKOXGRHV
-X-Message-ID-Hash: N2WJ62JZ5RNBUNQJ3VHYCZKTRKOXGRHV
+Message-ID-Hash: 4RAA56UQFKMHQIT4CUTHHHUX7A3J62VX
+X-Message-ID-Hash: 4RAA56UQFKMHQIT4CUTHHHUX7A3J62VX
 X-Mailman-Approved-At: Mon, 01 Jul 2024 12:20:06 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N2WJ62JZ5RNBUNQJ3VHYCZKTRKOXGRHV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4RAA56UQFKMHQIT4CUTHHHUX7A3J62VX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,49 +151,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This pach set is to bring back audio to machines with a LPC32XX CPU.
-The legacy LPC32XX SoC used to have audio spport in linux 2.6.27.
-The support was dropped due to lack of interest from mainaeners.
+Recover dma-cells description from the legacy DT binding.
 
-Piotr Wojtaszczyk (10):
-  dt-bindings: dma: pl08x: Add dma-cells description
-  dt-bindings: dma: Add lpc32xx DMA mux binding
-  ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT binding
-  ARM: dts: lpc32xx: Add missing dma and i2s properties
-  clk: lpc32xx: initialize regmap using parent syscon
-  dmaengine: Add dma router for pl08x in LPC32XX SoC
-  ARM: lpc32xx: Remove pl08x platform data in favor for device tree
-  mtd: rawnand: lpx32xx: Request DMA channels using DT entries
-  ASoC: fsl: Add i2s and pcm drivers for LPC32xx CPUs
-  i2x: pnx: Use threaded irq to fix warning from del_timer_sync()
+Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+---
+Changes for v4:
+- This patch is new in v4
 
- .../devicetree/bindings/dma/arm-pl08x.yaml    |   7 +
- .../bindings/dma/nxp,lpc3220-dmamux.yaml      |  56 +++
- .../bindings/sound/nxp,lpc3220-i2s.yaml       |  73 ++++
- MAINTAINERS                                   |  21 +
- arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi        |  53 ++-
- arch/arm/mach-lpc32xx/phy3250.c               |  54 ---
- drivers/clk/Kconfig                           |   1 +
- drivers/clk/nxp/clk-lpc32xx.c                 |  10 +-
- drivers/dma/Kconfig                           |   9 +
- drivers/dma/Makefile                          |   1 +
- drivers/dma/lpc32xx-dmamux.c                  | 195 +++++++++
- drivers/i2c/busses/i2c-pnx.c                  |   4 +-
- drivers/mtd/nand/raw/lpc32xx_mlc.c            |  10 +-
- drivers/mtd/nand/raw/lpc32xx_slc.c            |  10 +-
- sound/soc/fsl/Kconfig                         |   7 +
- sound/soc/fsl/Makefile                        |   2 +
- sound/soc/fsl/lpc3xxx-i2s.c                   | 376 ++++++++++++++++++
- sound/soc/fsl/lpc3xxx-i2s.h                   |  79 ++++
- sound/soc/fsl/lpc3xxx-pcm.c                   |  73 ++++
- 19 files changed, 954 insertions(+), 87 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
- create mode 100644 drivers/dma/lpc32xx-dmamux.c
- create mode 100644 sound/soc/fsl/lpc3xxx-i2s.c
- create mode 100644 sound/soc/fsl/lpc3xxx-i2s.h
- create mode 100644 sound/soc/fsl/lpc3xxx-pcm.c
+ Documentation/devicetree/bindings/dma/arm-pl08x.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/dma/arm-pl08x.yaml b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+index ab25ae63d2c3..191215d36c85 100644
+--- a/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
++++ b/Documentation/devicetree/bindings/dma/arm-pl08x.yaml
+@@ -52,6 +52,13 @@ properties:
+   clock-names:
+     maxItems: 1
+ 
++  "#dma-cells":
++    const: 2
++    description: |
++      First cell should contain the DMA request,
++      second cell should contain either 1 or 2 depending on
++      which AHB master that is used.
++
+   lli-bus-interface-ahb1:
+     type: boolean
+     description: if AHB master 1 is eligible for fetching LLIs
 -- 
 2.25.1
 
