@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D42FC27C79
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 08:50:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 681DEC2BA18
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 08:51:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B360D844;
-	Thu, 20 Jun 2024 10:50:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B360D844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8617AE72;
+	Thu, 20 Jun 2024 10:50:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8617AE72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718873442;
-	bh=g06udzdr3FQ3GGjFDr6DB3X29brZkwlgc30sknmNjdM=;
+	s=default; t=1718873459;
+	bh=/gkMygh09ZpiD7BTBSHMvPXyxlus217LmQzwwIIdnOk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SbgF+Oe8QjtqaDYOn5p3FV2a9VadNcNbP8nT7UyJ5pCLFlVmiEGF7pdPgTL95MiPU
-	 LmuPCWBTAxXCHOSSQ9n3OBdZW/qVRXCvgGkBZYoBfs7kKw7FJWkOuyOHuvjxRfo6qX
-	 jX4VfAR2IGiZia8haL9ip45rMVdz3e4QOBDLjbgA=
+	b=bG9XAoUoRPXsFHd+T+/wKE1T6DoDcccI6KUCy01oLf+Ek3QjSiA+K5PeCxJw0qIfI
+	 P0gyyc7nUOqAAzfCUYC6g8+lMFRCepWfwkyynk2l/k8MkNr/w//6cGV/ELoFoSrgRu
+	 DSJyFuCmkp2JErSkU0yamohEXofpvQKE2nywna04=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A08D0F805E7; Thu, 20 Jun 2024 10:50:01 +0200 (CEST)
+	id 902D4F80601; Thu, 20 Jun 2024 10:50:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2F86F805E6;
-	Thu, 20 Jun 2024 10:50:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D750DF805F7;
+	Thu, 20 Jun 2024 10:50:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5570DF80588; Thu, 20 Jun 2024 10:43:39 +0200 (CEST)
+	id AFCADF80266; Thu, 20 Jun 2024 10:43:40 +0200 (CEST)
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::227])
+ [217.70.183.200])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C4960F8023A
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 10:43:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4960F8023A
+	by alsa1.perex.cz (Postfix) with ESMTPS id A79ACF804F2
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 10:43:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A79ACF804F2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=a97esiVn
-Received: by mail.gandi.net (Postfix) with ESMTPA id E8D0920005;
-	Thu, 20 Jun 2024 08:43:14 +0000 (UTC)
+ header.s=gm1 header.b=BYraRfk7
+Received: by mail.gandi.net (Postfix) with ESMTPA id 5E33D20012;
+	Thu, 20 Jun 2024 08:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1718872996;
+	t=1718872999;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/jcw3B7br9mMf7ih+RGvbztJQGfoFsNFtd4Dmae4m5o=;
-	b=a97esiVnJn41eMUraY8MB3Zy2tdFjuOc1bB72Im5wsV7wGp00opmdS75RCaZBrcqwnIYBo
-	CbExXz+Zmlrrhg8vhuMJGJYFSIAMM4jOP7IJc9opSTfpOo3ouxRuigsFbZICp/rV/iTbc7
-	XDLhPEN9H05uYDZD+5fR1JYISMPCUHD7PBTGx3ATXXuQ7q5rWkdA4jDUMaEswD+IdlEXXN
-	IYPMadbr9RX4TDh3vxDWzpAQ1WAPAJMycwZMrIXr/DP5WlYDVVKduYe9asrAadK3KzJMX3
-	7RIwBS3G86/V3qG1f0VDh4g1lwgkkZ3Yk9vsbgzuFpaO9Vb8e9wjeVvG+Sc00w==
+	bh=YDLRcTY0BkTaFAdlLFjztJqIMTmDai9TLYinXM16row=;
+	b=BYraRfk7fEz5L1838NbMQUtgasaGC3yafWba1AA59mzifxKYEytwkNwf8SyIWpTY3kgf6B
+	XVylMtJ5iP8zPd51l9KZueVKs9oinG3sl6rbBmqPv7N/6EmTdGrluo/VNLTg6qjw1NVJ5K
+	FxI9ONYG7CI54wUSXtP8pOp/P6Q7OuDTS/4XCYA8fJ3iZ5xX/HN37b9QFIO0OqRZskePlB
+	L91Bt6v+i5rN5HUE8T5+kkQFZ0M0AKz8O/Spdg6uN9XAhBPsCZbP6cwciBfrvrhyDFvpEf
+	ggReD1B+0vtfuCPOfKDWeEOU4Tr4aTq27ArjK8IYP4XQs5WublUbr+biTu74ig==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -75,18 +75,18 @@ Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 05/10] ASoC: fsl: fsl_qmc_audio: Introduce
- qmc_audio_pcm_{read,write}_submit()
-Date: Thu, 20 Jun 2024 10:42:52 +0200
-Message-ID: <20240620084300.397853-6-herve.codina@bootlin.com>
+Subject: [PATCH 08/10] soc: fsl: cpm1: qmc: Introduce
+ qmc_chan_count_phandles()
+Date: Thu, 20 Jun 2024 10:42:55 +0200
+Message-ID: <20240620084300.397853-9-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240620084300.397853-1-herve.codina@bootlin.com>
 References: <20240620084300.397853-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: 2MR3HCRHMR4Z5GTG4P5O46YAE3PHNANH
-X-Message-ID-Hash: 2MR3HCRHMR4Z5GTG4P5O46YAE3PHNANH
+Message-ID-Hash: I26R3EO5LCWO4O3PBJYB5HZDZWEAOZEF
+X-Message-ID-Hash: I26R3EO5LCWO4O3PBJYB5HZDZWEAOZEF
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2MR3HCRHMR4Z5GTG4P5O46YAE3PHNANH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I26R3EO5LCWO4O3PBJYB5HZDZWEAOZEF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,183 +108,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Submitting data to QMC channels is done in several places: transfer
-completions and DAI start. The operation done is simple and consist in
-one function call.
+No function in the QMC API is available to get the number of phandles
+present in a phandle list.
 
-With the future introduction of support for non-interleaved mode,
-submitting data will be more complex.
-
-To avoid copy/paste of code in several places, introduce
-qmc_audio_pcm_{read,write}_submit() whose goal is to handle this
-data submission.
+Fill this lack introducing qmc_chan_count_phandles().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- sound/soc/fsl/fsl_qmc_audio.c | 93 +++++++++++++++++------------------
- 1 file changed, 45 insertions(+), 48 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 13 +++++++++++++
+ include/soc/fsl/qe/qmc.h |  2 ++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_qmc_audio.c b/sound/soc/fsl/fsl_qmc_audio.c
-index b07770257bad..36145f1ddbf1 100644
---- a/sound/soc/fsl/fsl_qmc_audio.c
-+++ b/sound/soc/fsl/fsl_qmc_audio.c
-@@ -90,11 +90,29 @@ static int qmc_audio_pcm_hw_params(struct snd_soc_component *component,
- 	return 0;
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index e23d60018400..76bb496305a0 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -1777,6 +1777,19 @@ static struct qmc_chan *qmc_chan_get_from_qmc(struct device_node *qmc_np, unsign
+ 	return qmc_chan;
  }
  
-+static void qmc_audio_pcm_write_complete(void *context);
-+
-+static int qmc_audio_pcm_write_submit(struct qmc_dai_prtd *prtd)
++int qmc_chan_count_phandles(struct device_node *np, const char *phandles_name)
 +{
-+	int ret;
++	int count;
 +
-+	ret = qmc_chan_write_submit(prtd->qmc_dai->chan.qmc_chan,
-+				    prtd->ch_dma_addr_current, prtd->ch_dma_size,
-+				    qmc_audio_pcm_write_complete,
-+				    &prtd->qmc_dai->chan);
-+	if (ret) {
-+		dev_err(prtd->qmc_dai->dev, "write_submit failed %d\n",
-+			ret);
-+		return ret;
-+	}
++	/* phandles are fixed args phandles with one arg */
++	count = of_count_phandle_with_args(np, phandles_name, NULL);
++	if (count < 0)
++		return count;
 +
-+	return 0;
++	return count / 2;
 +}
++EXPORT_SYMBOL(qmc_chan_count_phandles);
 +
- static void qmc_audio_pcm_write_complete(void *context)
- {
- 	struct qmc_dai_chan *chan = context;
- 	struct qmc_dai_prtd *prtd;
--	int ret;
+ struct qmc_chan *qmc_chan_get_byphandles_index(struct device_node *np,
+ 					       const char *phandles_name,
+ 					       int index)
+diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
+index 0fa7205145ce..294e42ea8d4c 100644
+--- a/include/soc/fsl/qe/qmc.h
++++ b/include/soc/fsl/qe/qmc.h
+@@ -16,6 +16,8 @@ struct device_node;
+ struct device;
+ struct qmc_chan;
  
- 	prtd = chan->prtd_tx;
- 
-@@ -106,23 +124,33 @@ static void qmc_audio_pcm_write_complete(void *context)
- 	if (prtd->ch_dma_addr_current >= prtd->ch_dma_addr_end)
- 		prtd->ch_dma_addr_current = prtd->ch_dma_addr_start;
- 
--	ret = qmc_chan_write_submit(prtd->qmc_dai->chan.qmc_chan,
--				    prtd->ch_dma_addr_current, prtd->ch_dma_size,
--				    qmc_audio_pcm_write_complete,
--				    &prtd->qmc_dai->chan);
-+	qmc_audio_pcm_write_submit(prtd);
++int qmc_chan_count_phandles(struct device_node *np, const char *phandles_name);
 +
-+	snd_pcm_period_elapsed(prtd->substream);
-+}
-+
-+static void qmc_audio_pcm_read_complete(void *context, size_t length, unsigned int flags);
-+
-+static int qmc_audio_pcm_read_submit(struct qmc_dai_prtd *prtd)
-+{
-+	int ret;
-+
-+	ret = qmc_chan_read_submit(prtd->qmc_dai->chan.qmc_chan,
-+				   prtd->ch_dma_addr_current, prtd->ch_dma_size,
-+				   qmc_audio_pcm_read_complete,
-+				   &prtd->qmc_dai->chan);
- 	if (ret) {
--		dev_err(prtd->qmc_dai->dev, "write_submit failed %d\n",
-+		dev_err(prtd->qmc_dai->dev, "read_submit failed %d\n",
- 			ret);
- 	}
- 
--	snd_pcm_period_elapsed(prtd->substream);
-+	return 0;
- }
- 
- static void qmc_audio_pcm_read_complete(void *context, size_t length, unsigned int flags)
- {
- 	struct qmc_dai_chan *chan = context;
- 	struct qmc_dai_prtd *prtd;
--	int ret;
- 
- 	prtd = chan->prtd_rx;
- 
-@@ -139,14 +167,7 @@ static void qmc_audio_pcm_read_complete(void *context, size_t length, unsigned i
- 	if (prtd->ch_dma_addr_current >= prtd->ch_dma_addr_end)
- 		prtd->ch_dma_addr_current = prtd->ch_dma_addr_start;
- 
--	ret = qmc_chan_read_submit(prtd->qmc_dai->chan.qmc_chan,
--				   prtd->ch_dma_addr_current, prtd->ch_dma_size,
--				   qmc_audio_pcm_read_complete,
--				   &prtd->qmc_dai->chan);
--	if (ret) {
--		dev_err(prtd->qmc_dai->dev, "read_submit failed %d\n",
--			ret);
--	}
-+	qmc_audio_pcm_read_submit(prtd);
- 
- 	snd_pcm_period_elapsed(prtd->substream);
- }
-@@ -168,15 +189,9 @@ static int qmc_audio_pcm_trigger(struct snd_soc_component *component,
- 			prtd->qmc_dai->chan.prtd_tx = prtd;
- 
- 			/* Submit first chunk ... */
--			ret = qmc_chan_write_submit(prtd->qmc_dai->chan.qmc_chan,
--						    prtd->ch_dma_addr_current, prtd->ch_dma_size,
--						    qmc_audio_pcm_write_complete,
--						    &prtd->qmc_dai->chan);
--			if (ret) {
--				dev_err(component->dev, "write_submit failed %d\n",
--					ret);
-+			ret = qmc_audio_pcm_write_submit(prtd);
-+			if (ret)
- 				return ret;
--			}
- 
- 			/* ... prepare next one ... */
- 			prtd->ch_dma_addr_current += prtd->ch_dma_size;
-@@ -184,28 +199,16 @@ static int qmc_audio_pcm_trigger(struct snd_soc_component *component,
- 				prtd->ch_dma_addr_current = prtd->ch_dma_addr_start;
- 
- 			/* ... and send it */
--			ret = qmc_chan_write_submit(prtd->qmc_dai->chan.qmc_chan,
--						    prtd->ch_dma_addr_current, prtd->ch_dma_size,
--						    qmc_audio_pcm_write_complete,
--						    &prtd->qmc_dai->chan);
--			if (ret) {
--				dev_err(component->dev, "write_submit failed %d\n",
--					ret);
-+			ret = qmc_audio_pcm_write_submit(prtd);
-+			if (ret)
- 				return ret;
--			}
- 		} else {
- 			prtd->qmc_dai->chan.prtd_rx = prtd;
- 
- 			/* Submit first chunk ... */
--			ret = qmc_chan_read_submit(prtd->qmc_dai->chan.qmc_chan,
--						   prtd->ch_dma_addr_current, prtd->ch_dma_size,
--						   qmc_audio_pcm_read_complete,
--						   &prtd->qmc_dai->chan);
--			if (ret) {
--				dev_err(component->dev, "read_submit failed %d\n",
--					ret);
-+			ret = qmc_audio_pcm_read_submit(prtd);
-+			if (ret)
- 				return ret;
--			}
- 
- 			/* ... prepare next one ... */
- 			prtd->ch_dma_addr_current += prtd->ch_dma_size;
-@@ -213,15 +216,9 @@ static int qmc_audio_pcm_trigger(struct snd_soc_component *component,
- 				prtd->ch_dma_addr_current = prtd->ch_dma_addr_start;
- 
- 			/* ... and send it */
--			ret = qmc_chan_read_submit(prtd->qmc_dai->chan.qmc_chan,
--						   prtd->ch_dma_addr_current, prtd->ch_dma_size,
--						   qmc_audio_pcm_read_complete,
--						   &prtd->qmc_dai->chan);
--			if (ret) {
--				dev_err(component->dev, "write_submit failed %d\n",
--					ret);
-+			ret = qmc_audio_pcm_read_submit(prtd);
-+			if (ret)
- 				return ret;
--			}
- 		}
- 		break;
- 
+ struct qmc_chan *qmc_chan_get_byphandles_index(struct device_node *np,
+ 					       const char *phandles_name,
+ 					       int index);
 -- 
 2.45.0
 
