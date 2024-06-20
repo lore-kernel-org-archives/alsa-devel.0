@@ -4,145 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F978C30653
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:22:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04AEDC2BD09
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:23:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 828A223CE;
-	Mon,  1 Jul 2024 14:22:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 828A223CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EBFD233D;
+	Mon,  1 Jul 2024 14:23:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EBFD233D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719836573;
-	bh=qFS8dbUIltaliP34b4s9iOYNBl/H/n7Qhca0kv+Esfk=;
+	s=default; t=1719836590;
+	bh=RuFo+rj7IH+rMOczKL4ih3dsBtps5oyKpsIg/YRyQz0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=k7twPZFakCE9hMpggYdePbj3gVMTMCi6zHXsuZaI0yMHZ9FGIiyW3y6rwWw2Sbho/
-	 pOKOEHu5xqRO01omve0P5FghGfLs+ZfsiWLC8wjdzQNlXdl25E4WL+9VMgB9uTQjTV
-	 /fJq4HGuaSACKnV/KS6Up03kOKYyyUepXQElwOCM=
+	b=tUhsmxktFIW6orJIlBNssc1QQcUXPFvpUqmh1tK3/Mm9g9MwpU0wAjWV4ugy2oEKD
+	 HB8okSUo4mnC3+JPBAYf5002H5X63EmdNzKAVpRbozJ+FECdJR/pmkVd2k21WuAaMP
+	 R/isBgMFQYBxaMb15S0v1Z5i7pRfSui1GAyYY+64=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0BB9F805BE; Mon,  1 Jul 2024 14:20:25 +0200 (CEST)
+	id 4DFA6F8075B; Mon,  1 Jul 2024 14:20:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A437F80713;
-	Mon,  1 Jul 2024 14:20:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1695F80726;
+	Mon,  1 Jul 2024 14:20:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 256E2F80266; Thu, 20 Jun 2024 19:58:27 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
+	id 89E53F801EB; Thu, 20 Jun 2024 19:58:40 +0200 (CEST)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
+ [IPv6:2607:f8b0:4864:20::431])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39D5AF801EB
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 19:58:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39D5AF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56BE8F801EB
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 19:58:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56BE8F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=timesys-com.20230601.gappssmtp.com
- header.i=@timesys-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=RpoEQVN/
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-a6265d3ba8fso123791266b.0
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=XME0/YLT
+Received: by mail-pf1-x431.google.com with SMTP id
+ d2e1a72fcca58-7046211e455so847222b3a.3
         for <alsa-devel@alsa-project.org>;
- Thu, 20 Jun 2024 10:58:20 -0700 (PDT)
+ Thu, 20 Jun 2024 10:58:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906300;
- x=1719511100; darn=alsa-project.org;
+        d=gmail.com; s=20230601; t=1718906314; x=1719511114;
+ darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dj3DX12QYavc1OOQJN+Lhj+prqOyJf9zJxwWhTZ5aE8=;
-        b=RpoEQVN/Adr001dDQ2t2CZcQ++gue66qEFBvBTD3tWr/BY2w5UUKT+qgC+8mYMuZ9v
-         ty1CA4hiSk2Dn6qWyakZwDFgP7ZsDdpHxrFgQe1gA8aPoWoypHPr1PwXMaZSsyKp7rEr
-         CqEdKFCiO5uEU3TJTRGqowTfCY7l8n5FIyIautADGaLW1z7EqReCOaj4XYOLrrhnTYfY
-         mcmgiVU7OYSWNZ9IZmOT7g047ZUhFM9N64Idq69I4N+DyiOPPzez/Du9qwc/CZBFvXG9
-         IGN2xIodPbyVfwhnqH2L7N2+p6MzgOwMblIw2ez5GEgZR8xeFw2dkIsWh8/84pSAAYWD
-         38Jg==
+        bh=FW85PghmUwc3BgHXRaYJ+DzXpmwYGv3Aew2YdRltNsw=;
+        b=XME0/YLTSqCKRNcpkkjstXmn9kA8qdPjgdDJwmMj2NmZULvWRGcrwD5Zhhu6uR2+LZ
+         4u7n3IsNGX/Z4mWCgbCAF+oJCy8xSh0CIVLMCvO/PZnCeGQDNiPDXelaaQSLi9bYI0Ju
+         yqV23apRjR2OVUtf21BUKrQ3pDfkw+a9nnW9Yym8ALgtB1mMp5mu83/gKerIwMxKC2p6
+         4wcw6y/z7yXMCt22/SuE6+fir5TFbrpN4nyPpviBJevYthUWjGjTt/0Ey0rWXG/owZyI
+         TKfkMARiHLNbvsEWq909MkRn1edSLi8fuLxjMMYc7XX+HymzKQn/WSjcAA0ruSV3Q4wO
+         pc7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906300; x=1719511100;
+        d=1e100.net; s=20230601; t=1718906314; x=1719511114;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Dj3DX12QYavc1OOQJN+Lhj+prqOyJf9zJxwWhTZ5aE8=;
-        b=DQL0Yzc+3XLHj+Fcjk6FF7a8aKp8IRTIw2eSCYrpBsOKTwzPy++FNqzKaHQejEiqaO
-         nkp36zP+ElwPnlXoRATV/ZCM5jnvvlf75eTF9p+A4mNuu6sj0kv+HL1Noen4t41IReFb
-         KA5K0mBbK2Vhfp/DsFay5gUCYzCBdGzYOfLrTIcvJkG9ifehCB+3uA//P85RUaUMRYhL
-         d0oNmsBqJVzyFY7kqnkEMN6KRvEDcmkVy7WT7AOXnczRVAUQp6Uee+uQju9BYiaTrnvF
-         s9IHskvXAbNTEbA7OAK5hgSmREb3DFvk+1PGo5hWOBery4x9n7f4VDjC+u/2dfSG35Es
-         yyQw==
+        bh=FW85PghmUwc3BgHXRaYJ+DzXpmwYGv3Aew2YdRltNsw=;
+        b=CP2qky9Jdb0bcOG/lClYod2WCcJWQwZhlxcHA4hCAhl5vLf+A6muPWDDHFHLN53+y0
+         XzhIqkmK0EdHXmHw7W5NFxYMWUnFc+BPMBH5sn9MJPV2++ATsV2hQ34veDahdGQO5t9h
+         +Z2Q5P0uFvTJVCrktwtNRmdlpnh9Ms8EmDkgmEAVD7Wb5ONXOtRaYshVBuCQC1g+wsnC
+         nSgjspTOpaiSZxGCDIJu49odrYRxa5VbB4RNm05/+9GDLvjCW+D7gRnrm64TIjsdSK9B
+         FaMFQZrSQoZBeEOcT/8riHUzbw7HeSAr5kb3KxMLjRSG9BH/g5TzQQN7OsnmYiqvQ8aH
+         IODw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCW/KkpcWkQhVLHURGRIcCaoAMBHywI5S5QID2+RKnoGg6xlADxhFrTflcL+VsqTtXbQDtU+CfdPH08jYX6S8Xjvpi3FYNbDrUnkak0=
-X-Gm-Message-State: AOJu0YxTAbIvB6+dVZA1Z6cu9P+oQ20jbd5RICfck87pBxLoOAJhwNgN
-	iJ07HIr6vxISk4mki7LgCv2CWIdwoVBPWGCep7IDLZCQv6filo4UCoFS0anUrfA=
+ AJvYcCX59TBze/BlOCLDRaxyMyX3Gn9LxNdF9WjkFSUAMm9pPV2EfqKWK5YiwYqnflU3pWI05se4lEQAM1QLWieuJQUWbiUsL6BIh5mGQmM=
+X-Gm-Message-State: AOJu0Yz/fDphxHWpa5BAo6zINPlEQ3qyeZx5chedfLbJ5ason4uLMVXw
+	twruIwhHU/DeDN/L76McAyuzzL43cfxP5GecxyVG1Dvbx0bevbQN
 X-Google-Smtp-Source: 
- AGHT+IEhPPFEKagTHzQMOwX7NrYh9+xyhRsxpQErqvlswtZC5Lb/tm5y+kINO8slxfzNDjQFWUOp4Q==
-X-Received: by 2002:a17:907:a646:b0:a6f:5192:6f4d with SMTP id
- a640c23a62f3a-a6fab60321fmr428721866b.8.1718906299800;
-        Thu, 20 Jun 2024 10:58:19 -0700 (PDT)
-Received: from localhost.localdomain ([91.216.213.152])
+ AGHT+IEoH3Qng23SGIOniQLh/mfoKH0d8yH2qow3ztjr66B8CysNLSQkypEK4r+/80Kz1cmwQvxiZw==
+X-Received: by 2002:a05:6a20:7291:b0:1b5:cf26:ecfd with SMTP id
+ adf61e73a8af0-1bcbb426fb3mr7450803637.24.1718906314118;
+        Thu, 20 Jun 2024 10:58:34 -0700 (PDT)
+Received: from localhost ([216.228.127.128])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.10.58.18
+ 41be03b00d2f7-6fee2d34cc2sm11211938a12.64.2024.06.20.10.58.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 10:58:19 -0700 (PDT)
-From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"J.M.B. Downing" <jonathan.downing@nautel.com>,
-	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
+        Thu, 20 Jun 2024 10:58:33 -0700 (PDT)
+From: Yury Norov <yury.norov@gmail.com>
+To: linux-kernel@vger.kernel.org,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Yangtao Li <frank.li@vivo.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Li Zetao <lizetao1@huawei.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Chancel Liu <chancel.liu@nxp.com>,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
+	Daniel Mack <zonque@gmail.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Kees Cook <keescook@chromium.org>,
 	linux-sound@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: Markus Elfring <Markus.Elfring@web.de>
-Subject: [Patch v4 02/10] dt-bindings: dma: Add lpc32xx DMA mux binding
-Date: Thu, 20 Jun 2024 19:56:33 +0200
-Message-Id: <20240620175657.358273-3-piotr.wojtaszczyk@timesys.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
-References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+	alsa-devel@alsa-project.org
+Cc: Alexey Klimov <alexey.klimov@linaro.org>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Jan Kara <jack@suse.cz>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v4 30/40] ALSA: use atomic find_bit() functions where
+ applicable
+Date: Thu, 20 Jun 2024 10:56:53 -0700
+Message-ID: <20240620175703.605111-31-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240620175703.605111-1-yury.norov@gmail.com>
+References: <20240620175703.605111-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: piotr.wojtaszczyk@timesys.com
+X-MailFrom: yury.norov@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 564QSAPPFM74FTDMNELCBUG4G265YKYA
-X-Message-ID-Hash: 564QSAPPFM74FTDMNELCBUG4G265YKYA
+Message-ID-Hash: MH7KOFKDWSQPLC5JWCYTGQBFSMJCZTZ6
+X-Message-ID-Hash: MH7KOFKDWSQPLC5JWCYTGQBFSMJCZTZ6
 X-Mailman-Approved-At: Mon, 01 Jul 2024 12:20:06 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/564QSAPPFM74FTDMNELCBUG4G265YKYA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MH7KOFKDWSQPLC5JWCYTGQBFSMJCZTZ6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,102 +136,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-LPC32XX SoCs use pl080 dma controller which have few request signals
-multiplexed between peripherals. This binding describes how devices can
-use the multiplexed request signals.
+ALSA code tests each bit in bitmaps in a for-loop. Switch it to
+using dedicated atomic find_bit() API.
 
-Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
 ---
-Changes for v4:
-- This patch is new in v4
+ sound/pci/hda/hda_codec.c |  8 ++++----
+ sound/usb/caiaq/audio.c   | 14 ++++++--------
+ 2 files changed, 10 insertions(+), 12 deletions(-)
 
- .../bindings/dma/nxp,lpc3220-dmamux.yaml      | 56 +++++++++++++++++++
- MAINTAINERS                                   |  9 +++
- 2 files changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
-
-diff --git a/Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml b/Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
-new file mode 100644
-index 000000000000..a5384b6c67fc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dma/nxp,lpc3220-dmamux.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: DMA multiplexer for LPC32XX SoC (DMA request router)
-+
-+maintainers:
-+  - J.M.B. Downing <jonathan.downing@nautel.com>
-+  - Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-+
-+allOf:
-+  - $ref: dma-router.yaml#
-+
-+properties:
-+  "#dma-cells":
-+    const: 3
-+    description: |
-+      First two cells same as for device pointed in dma-masters.
-+      Third cell represents mux value for the request.
-+
-+  compatible:
-+    const: nxp,lpc3220-dmamux
-+
-+  dma-masters:
-+    description: phandle to a dma node compatible with arm,pl080
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - dma-masters
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    syscon@40004000 {
-+      compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
-+      reg = <0x40004000 0x114>;
-+      ranges = <0 0x40004000 0x114>;
-+      #address-cells = <1>;
-+      #size-cells = <1>;
-+
-+      dma-router@7c {
-+        compatible = "nxp,lpc3220-dmamux";
-+        reg = <0x7c 0x8>;
-+        #dma-cells = <3>;
-+        dma-masters = <&dma>;
-+      };
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aacccb376c28..f7adf9f66dfa 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2396,6 +2396,15 @@ F:	drivers/usb/host/ohci-nxp.c
- F:	drivers/watchdog/pnx4008_wdt.c
- N:	lpc32xx
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 325e8f0b99a8..7201afa82990 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -7,6 +7,7 @@
  
-+ARM/LPC32XX DMAMUX SUPPORT
-+M:	J.M.B. Downing <jonathan.downing@nautel.com>
-+M:	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-+R:	Vladimir Zapolskiy <vz@mleia.com>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
-+N:	lpc32xx
+ #include <linux/init.h>
+ #include <linux/delay.h>
++#include <linux/find_atomic.h>
+ #include <linux/slab.h>
+ #include <linux/mutex.h>
+ #include <linux/module.h>
+@@ -3263,10 +3264,9 @@ static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
+ 
+ #ifdef CONFIG_SND_DYNAMIC_MINORS
+ 	/* non-fixed slots starting from 10 */
+-	for (i = 10; i < 32; i++) {
+-		if (!test_and_set_bit(i, bus->pcm_dev_bits))
+-			return i;
+-	}
++	i = find_and_set_next_bit(bus->pcm_dev_bits, 32, 10);
++	if (i < 32)
++		return i;
+ #endif
+ 
+ 	dev_warn(bus->card->dev, "Too many %s devices\n",
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index 4981753652a7..93ecd5cfcb7d 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -4,6 +4,7 @@
+ */
+ 
+ #include <linux/device.h>
++#include <linux/find_atomic.h>
+ #include <linux/spinlock.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+@@ -610,7 +611,7 @@ static void read_completed(struct urb *urb)
+ 	struct snd_usb_caiaq_cb_info *info = urb->context;
+ 	struct snd_usb_caiaqdev *cdev;
+ 	struct device *dev;
+-	struct urb *out = NULL;
++	struct urb *out;
+ 	int i, frame, len, send_it = 0, outframe = 0;
+ 	unsigned long flags;
+ 	size_t offset = 0;
+@@ -625,17 +626,14 @@ static void read_completed(struct urb *urb)
+ 		return;
+ 
+ 	/* find an unused output urb that is unused */
+-	for (i = 0; i < N_URBS; i++)
+-		if (test_and_set_bit(i, &cdev->outurb_active_mask) == 0) {
+-			out = cdev->data_urbs_out[i];
+-			break;
+-		}
+-
+-	if (!out) {
++	i = find_and_set_bit(&cdev->outurb_active_mask, N_URBS);
++	if (i >= N_URBS) {
+ 		dev_err(dev, "Unable to find an output urb to use\n");
+ 		goto requeue;
+ 	}
+ 
++	out = cdev->data_urbs_out[i];
 +
- ARM/Marvell Dove/MV78xx0/Orion SOC support
- M:	Andrew Lunn <andrew@lunn.ch>
- M:	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+ 	/* read the recently received packet and send back one which has
+ 	 * the same layout */
+ 	for (frame = 0; frame < FRAMES_PER_URB; frame++) {
 -- 
-2.25.1
+2.43.0
 
