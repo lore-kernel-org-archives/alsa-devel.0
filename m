@@ -4,109 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C2A0C2BA18
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 08:09:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3587FC27C79
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jun 2024 08:49:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7042A84A;
-	Thu, 20 Jun 2024 10:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7042A84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67A9E86E;
+	Thu, 20 Jun 2024 10:48:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67A9E86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718870939;
-	bh=S8QVhNlYqwY0mp7fvMRUSvmspg5AnOSJ/oJNb895TMQ=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=AY6X9vdb0hwJ/40q0KnSwq8YBxYPrbBy6jQP+ml0NhtuF/eni2mj2asyTXC0fjOhu
-	 n12UTZ+XNBves9QYNnjG1wQQPJKmJbHlKc7Y1l+OQynil2iIblPNNR+5auDVWj4dVc
-	 YOP5LgEYOLv2YZeafYtXWosDe5Jj9NuGR48x0blg=
+	s=default; t=1718873344;
+	bh=tYtDaVenY5VhTlX/bH/FbzM2s8oP7yy7scmWE/99cFY=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=KtY96ZjggwwUEyBxhAE1Ja7BVZrmQYF6buL4J4hPuWrOp6yfe++A7z10tYOioeHIz
+	 GNZ9RSX3+BNw5+/M/B1ByaCu2dxKvv1jpPFIh0lOKPvInYqTXdQy5oioIzfjJgCil+
+	 70R8t1UKxmsVnLf/pcodo7OMfLGxTMiM/M4kQPhg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E555F805DA; Thu, 20 Jun 2024 10:08:15 +0200 (CEST)
+	id E2DC3F805B5; Thu, 20 Jun 2024 10:48:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8834F805DF;
-	Thu, 20 Jun 2024 10:08:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F363F805B1;
+	Thu, 20 Jun 2024 10:48:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF495F8023A; Thu, 20 Jun 2024 10:05:27 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [185.132.182.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 6E859F8058C; Thu, 20 Jun 2024 10:43:22 +0200 (CEST)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
+ [217.70.183.200])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CC17BF801EB
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 10:04:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC17BF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 056B8F800ED
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 10:43:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 056B8F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=yFFFpxI+
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 45K75doe021903;
-	Thu, 20 Jun 2024 10:04:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=selector1; bh=
-	29Qvz1Xviwr3psGJQapaZwCmNwh9pWS+KTq7s99H4m8=; b=yFFFpxI+oGQEFLU1
-	NxJS4ZOjNzsIrzXacuzADB19sgKM7Rx2PamHDZ8FnAlMVvcVv9peIdFCAbLj0unA
-	1zkuu3Dn9IcAe5nI7P84EOd6xUBLPCRRiiw5LjXQaKCCxZRfx8ZIAw7XruPWrKc9
-	lEvRg+5wZrV/KBP8KCi40WDQ9czGSu7XdUiX3y3siZtNg7OLfsUQhQqzXaUxjreV
-	shi+XKVTC/CNOUA43/TFDo+6ZqVgY2A80WDBYV8mLhchjvIbtTUDCvEv+r3Mhu7t
-	1QBsAzIZLLb7dzqfQDzoe9suHGxkjTIeb+fBIwsViGEBpPm3eEXyppSuK5TcPP00
-	AB7JsQ==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3yuj9n72a4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 20 Jun 2024 10:04:45 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 24E944002D;
-	Thu, 20 Jun 2024 10:04:40 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4894B215132;
-	Thu, 20 Jun 2024 10:03:46 +0200 (CEST)
-Received: from [10.48.86.132] (10.48.86.132) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 20 Jun
- 2024 10:03:45 +0200
-Message-ID: <4734e915-9ea7-4e65-a9ef-bc1e88c40e76@foss.st.com>
-Date: Thu, 20 Jun 2024 10:03:44 +0200
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=FFr+/Gbn
+Received: by mail.gandi.net (Postfix) with ESMTPA id 330E420002;
+	Thu, 20 Jun 2024 08:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1718872990;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=bcqP/4Bzw72Fti9Nz8gpJCdKx5nEIN7PgHfX5LT8OWo=;
+	b=FFr+/GbnH9ugA6vdC2XhsIiie53JB2O3yt0rQvNGeMUg6zk4l5chVUH9dQD0HK7vVqVyQW
+	CJuKRnK1foti8pk66vu8/eMEweBo6Mfg7aFpaPg6Q7UNAoFLWYcXJJrPIy6KGZoiQ13O0C
+	Ch/jW7WE6LMqOi+rGfas7LsauYvJIu9U4otaSfL+GR7UOi4jFDFySQlOzVHZuVODUSxQrr
+	/DrAYd/jVD45bHbi+5InmQs1QYLxBU4EpbHUxCQkLD0nnlXdgsDFyZ1R95XQCDS2jRXRjA
+	a7IdT/cUeRjXFX1TKmYiEO9MXrbI2P0i4maX4vQKgIJiLdJcuUTR3tM5Z6GYTQ==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Qiang Zhao <qiang.zhao@nxp.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH 00/10] Add support for non-interleaved mode in qmc_audio
+Date: Thu, 20 Jun 2024 10:42:47 +0200
+Message-ID: <20240620084300.397853-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.45.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/8] dt-bindings: iio: dfsdm: move to backend framework
-To: Conor Dooley <conor@kernel.org>
-CC: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Jonathan Cameron
-	<jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre
- Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier
-	<fabrice.gasnier@foss.st.com>,
-        <alsa-devel@alsa-project.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240618160836.945242-1-olivier.moysan@foss.st.com>
- <20240618160836.945242-5-olivier.moysan@foss.st.com>
- <20240618-footwear-impotence-5284985a609d@spud>
-Content-Language: en-US
-From: Olivier MOYSAN <olivier.moysan@foss.st.com>
-In-Reply-To: <20240618-footwear-impotence-5284985a609d@spud>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.48.86.132]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-20_04,2024-06-19_01,2024-05-17_01
-Message-ID-Hash: FSRGDCH4PY6GNLJV6LOT7EITSGDWSPTV
-X-Message-ID-Hash: FSRGDCH4PY6GNLJV6LOT7EITSGDWSPTV
-X-MailFrom: prvs=690171046d=olivier.moysan@foss.st.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: WDVPEC5GPVHULUI2Q7ZEJ22V7B7RIZ3K
+X-Message-ID-Hash: WDVPEC5GPVHULUI2Q7ZEJ22V7B7RIZ3K
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -118,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FSRGDCH4PY6GNLJV6LOT7EITSGDWSPTV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WDVPEC5GPVHULUI2Q7ZEJ22V7B7RIZ3K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,221 +104,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Conor,
+The qmc_audio driver supports only audio in interleaved mode.
+Non-interleaved mode can be easily supported using several QMC channel
+per DAI. In that case, data related to ch0 are sent to (received from)
+the first QMC channel, data related to ch1 use the next QMC channel and
+so on up to the last channel.
 
-On 6/18/24 20:10, Conor Dooley wrote:
-> On Tue, Jun 18, 2024 at 06:08:30PM +0200, Olivier Moysan wrote:
->> Change the DFSDM binding to use the new IIO backend framework,
->> along with the adoption of IIO generic channels.
->> This binding change allows to add scaling support to the DFSDM.
->>
->> Keep the legacy binding as deprecated for backward compatibility.
->>
->> The io-backends property is supported only in generic IIO channel
->> binding.
->>
->> - Channel description with the generic binding (Audio and Analog):
->>
->>    Properties supersed by generic properties:
->>      st,adc-channels: becomes "reg" property in channel node
->>      st,adc-channel-names: becomes "label" property in channel node
->>    Properties moved to channel child node:
->>      st,adc-channel-types, st,adc-channel-clk-src, st,adc-alt-channel
->>
->> - Analog binding:
->>
->>    DFSDM filter channel is configured as an IIO backend consumer.
->>    Add io-backends property in channel child nodes.
->>
->>    DFSDM is no more configured as a channel consumer from SD modulator.
->>    Use of io-channels in DFSDM node is deprecated.
->>
->> - Audio binding:
->>
->>    DFSDM audio DAI is configured as a channel consumer from DFSDM filter.
->>    No change compare to legacy.
->>
->> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
->> ---
->>   .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  | 158 +++++++++++++++++-
->>   1 file changed, 152 insertions(+), 6 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
->> index c1b1324fa132..dd414bab74c1 100644
->> --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
->> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
->> @@ -102,9 +102,11 @@ patternProperties:
->>           items:
->>             minimum: 0
->>             maximum: 7
->> +        deprecated: true
->>   
->>         st,adc-channel-names:
->>           description: List of single-ended channel names.
->> +        deprecated: true
->>   
->>         st,filter-order:
->>           description: |
->> @@ -118,6 +120,12 @@ patternProperties:
->>         "#io-channel-cells":
->>           const: 1
->>   
->> +      '#address-cells':
->> +        const: 1
->> +
->> +      '#size-cells':
->> +        const: 0
->> +
->>         st,adc-channel-types:
->>           description: |
->>             Single-ended channel input type.
->> @@ -128,6 +136,7 @@ patternProperties:
->>           items:
->>             enum: [ SPI_R, SPI_F, MANCH_R, MANCH_F ]
->>           $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->> +        deprecated: true
->>   
->>         st,adc-channel-clk-src:
->>           description: |
->> @@ -139,6 +148,7 @@ patternProperties:
->>           items:
->>             enum: [ CLKIN, CLKOUT, CLKOUT_F, CLKOUT_R ]
->>           $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->> +        deprecated: true
->>   
->>         st,adc-alt-channel:
->>           description:
->> @@ -147,6 +157,7 @@ patternProperties:
->>             If not set, channel n is connected to SPI input n.
->>             If set, channel n is connected to SPI input n + 1.
->>           type: boolean
->> +        deprecated: true
->>   
->>         st,filter0-sync:
->>           description:
->> @@ -165,11 +176,65 @@ patternProperties:
->>         - compatible
->>         - reg
->>         - interrupts
->> -      - st,adc-channels
->> -      - st,adc-channel-names
->>         - st,filter-order
->>         - "#io-channel-cells"
->>   
->> +    patternProperties:
->> +      "^channel@([0-9]|1[0-9])$":
->> +        type: object
->> +        $ref: adc.yaml
->> +        description: Represents the external channels which are connected to the DFSDM.
->> +
->> +        properties:
->> +          reg:
->> +            items:
->> +              minimum: 0
->> +              maximum: 8
->> +
->> +          label:
->> +            description:
->> +              Unique name to identify which channel this is.
->> +
->> +          st,adc-channel-types:
->> +            description: |
->> +              Single-ended channel input type.
->> +              - "SPI_R": SPI with data on rising edge (default)
->> +              - "SPI_F": SPI with data on falling edge
->> +              - "MANCH_R": manchester codec, rising edge = logic 0, falling edge = logic 1
->> +              - "MANCH_F": manchester codec, rising edge = logic 1, falling edge = logic 0
->> +            items:
->> +              enum: [ SPI_R, SPI_F, MANCH_R, MANCH_F ]
->> +            $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> 
-> Why is this an array? And why is the property plural? Can a channel have
-> more than one type?
-> 
+In terms of constraints and settings, the interleaved and
+non-interleaved modes are slightly different.
 
-You are right. In channel node context, this property is no more an 
-array. It has to be managed as a single string (This is already the case 
-in the driver). I will change the type in binding and the name, to 
-reflect this.
+In interleaved mode:
+  - The sample size should fit in the number of time-slots available for
+    the QMC channel.
+  - The number of audio channels should fit in the number of time-slots
+    (taking into account the sample size) available for the QMC channel.
 
->> +
->> +          st,adc-channel-clk-src:
->> +            description: |
->> +              Conversion clock source.
->> +              - "CLKIN": external SPI clock (CLKIN x)
->> +              - "CLKOUT": internal SPI clock (CLKOUT) (default)
->> +              - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
->> +              - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
->> +            items:
->> +              enum: [ CLKIN, CLKOUT, CLKOUT_F, CLKOUT_R ]
->> +            $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> 
-> Ditto here, but s/type/clock source/
-> 
+In non-interleaved mode:
+  - The number of audio channels is the number of available QMC
+    channels.
+  - Each QMC channel should have the same number of time-slots.
+  - The sample size equals the number of time-slots of one QMC channel.
 
-Same here.
+This series add support for the non-interleaved mode in the qmc_audio
+driver and is composed of the following parts:
+  - Patches 1 and 2: Fix some issues in the qmc_audio
+  - Patches 3 to 6: Prepare qmc_audio for the non-interleaved mode
+  - Patches 7 and 8: Extend the QMC driver API
+  - Patches 9 and 10: The support for non-interleaved mode itself
 
-> Thanks,
-> Conor.
-> 
->> +
->> +          st,adc-alt-channel:
->> +            description:
->> +              Must be defined if two sigma delta modulators are
->> +              connected on same SPI input.
->> +              If not set, channel n is connected to SPI input n.
->> +              If set, channel n is connected to SPI input n + 1.
->> +            type: boolean
->> +
->> +          io-backends:
->> +            description:
->> +              From common IIO binding.
-> 
-> Drop this from the description.
-> 
->> Used to pipe external sigma delta
->> +              modulator or internal ADC backend to DFSDM channel.
->> +
->> +        required:
->> +          - reg
->> +
->> +        additionalProperties: false
->> +
->>       allOf:
->>         - if:
->>             properties:
->> @@ -199,9 +264,19 @@ patternProperties:
->>                 description:
->>                   From common IIO binding. Used to pipe external sigma delta
->>                   modulator or internal ADC output to DFSDM channel.
->> +              deprecated: true
->>   
->> -          required:
->> -            - io-channels
->> +          if:
->> +            required:
->> +              - st,adc-channels
->> +          then:
->> +            required:
->> +              - io-channels
->> +
->> +          patternProperties:
->> +            "^channel@([0-9]|1[0-9])$":
->> +              required:
->> +                - io-backends
-> 
-> Why is this here, rather than with reg above? Only some channels require
-> a backend?
+Best regards,
+Hervé
 
-The io-backends property is required only when we use st,stm32-dfsdm-adc 
-compatible. In other words, when we are in an analog use case. In this 
-case the channel is a consumer of a backend (typically a sd modulator)
-In an audio use case (compatible st,stm32-dfsdm-dmic) the backend is not 
-required.
+Herve Codina (10):
+  ASoC: fsl: fsl_qmc_audio: Check devm_kasprintf() returned value
+  ASoC: fsl: fsl_qmc_audio: Fix issues detected by checkpatch
+  ASoC: fsl: fsl_qmc_audio: Split channel buffer and PCM pointer
+    handling
+  ASoC: fsl: fsl_qmc_audio: Identify the QMC channel involved in
+    completion routines
+  ASoC: fsl: fsl_qmc_audio: Introduce
+    qmc_audio_pcm_{read,write}_submit()
+  ASoC: fsl: fsl_qmc_audio: Introduce qmc_dai_constraints_interleaved()
+  soc: fsl: cpm1: qmc: Introduce functions to get a channel from a
+    phandle list
+  soc: fsl: cpm1: qmc: Introduce qmc_chan_count_phandles()
+  dt-bindings: sound: fsl,qmc-audio: Add support for multiple QMC
+    channels per DAI
+  ASoC: fsl: fsl_qmc_audio: Add support for non-interleaved mode.
 
-BRs
-Olivier
+ .../bindings/sound/fsl,qmc-audio.yaml         |  41 +-
+ drivers/soc/fsl/qe/qmc.c                      |  32 +-
+ include/soc/fsl/qe/qmc.h                      |  27 +-
+ sound/soc/fsl/fsl_qmc_audio.c                 | 590 +++++++++++++-----
+ 4 files changed, 505 insertions(+), 185 deletions(-)
 
-
-
+-- 
+2.45.0
 
