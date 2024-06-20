@@ -4,209 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 984BFC2BD09
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38AB6C30653
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:24:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C51332394;
-	Mon,  1 Jul 2024 14:23:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C51332394
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0E9E23D1;
+	Mon,  1 Jul 2024 14:23:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0E9E23D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719836625;
-	bh=NJiSXR/2q9k2YAA0gEDwZCqD1aqsLC5sqUDA5CWKQZQ=;
+	s=default; t=1719836638;
+	bh=EMyHs6b9ptSnKztiiVKCqZSXFWuzO60Th0vGvDdv00s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rrK6rU5hw4g7Q3yyZbL8P3Y+V4BpJwhFReoybOs6jLJtK56L+lfYLA0XAdGTxM2NK
-	 BW0zV+ck1RRMkvcql3xWlQJyduWsel8PXoE0aCuTuuQukO6N+R9FbE/nVtOzXElDpr
-	 WrDWgn6kB8UHTvvGsEMrAbzbKGyMKl6SP7fBDAFw=
+	b=Rzq+XgKr6gTtScQ2UOCUWZU7oMIqhHNzrMxPAheixpNRBhbgV6qlwAv8kUAmZvyS2
+	 fVX8Iqe6EVGjIBQvHkRDcNlWTLgWLAAbbsz2MMjWrSPYT6RHTw8jYn+wv566dJ8TlT
+	 cF4iaA8svS5/IQ1aO6IqKOyrBQCHCdLiTGJwKe8k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7166F805DA; Mon,  1 Jul 2024 14:20:35 +0200 (CEST)
+	id 7F73EF8085E; Mon,  1 Jul 2024 14:20:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C99E9F80808;
-	Mon,  1 Jul 2024 14:20:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B975FF80844;
+	Mon,  1 Jul 2024 14:20:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFE3FF8023A; Thu, 20 Jun 2024 19:58:52 +0200 (CEST)
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com
- [IPv6:2607:f8b0:4864:20::633])
+	id BDB32F8023A; Thu, 20 Jun 2024 19:59:06 +0200 (CEST)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
+ [IPv6:2a00:1450:4864:20::52e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4AB6DF800ED
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 19:57:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AB6DF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7588FF801EB
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jun 2024 19:59:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7588FF801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=LoXRRIGv
-Received: by mail-pl1-x633.google.com with SMTP id
- d9443c01a7336-1f6da06ba24so8856275ad.2
+ unprotected) header.d=timesys-com.20230601.gappssmtp.com
+ header.i=@timesys-com.20230601.gappssmtp.com header.a=rsa-sha256
+ header.s=20230601 header.b=qabs/PYj
+Received: by mail-ed1-x52e.google.com with SMTP id
+ 4fb4d7f45d1cf-57d280e2d5dso561001a12.1
         for <alsa-devel@alsa-project.org>;
- Thu, 20 Jun 2024 10:57:13 -0700 (PDT)
+ Thu, 20 Jun 2024 10:59:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718906232; x=1719511032;
- darn=alsa-project.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906340;
+ x=1719511140; darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HgI5gEOuAZO9UYkmZKgqrzsmCGfdpvzU4+T+xEGqCGc=;
-        b=LoXRRIGvdZbeEFg8QdG4IonX9TRKNy9AUYzfgAiJWFQVwTmISsyn+OuK+FNdAAyXZ4
-         TAtyowsSJQkkdhdaL2YStBv2wd8gkZsbBPG55nicp9FF/euY7TuitNXKOEPrPXQLlb1w
-         hGuz2S47Njs3AdDhxQP1T48O35IucijXLXQZgqryrK/E70ve4ZYN9vwaITf1BzGhRNtA
-         SJt1/rnQIr/myNK9Xff5Dc1PEpH8mPULKn6kfJeVwUkxfGw6Ycrxu7Rr1yaXA8yjOlOC
-         t4PDKr5WAqNmpzmlwKlO69D4qdg6GpuyNcFnHZSjmwGX8xiEl95uWf8q4TcjmX+oGnrv
-         2+6g==
+        bh=IJI26duvfMm0hH2VM1fi6stFJmPonSLGaDj169i8hcM=;
+        b=qabs/PYjqlIdxXHlkkihNdKb50Z1PvO1V+Y1pWFb2ZnsRR051ZZqxd/KVR9V/TJloV
+         FpUHSTmNtUZmBq1wuAVgurWtSEcui9CxrBonufrZJISdETmIHifWSR1YtAoag9lyQaku
+         p+2Tt1JBpCznKlQrPDP1YAN4SOzn/af5KXQSi6FMpwJgdNPW+ppVyPF63VBpVGcKOzEg
+         smkocX7igq97B100iGoaA4NfkqkjPgzD6xD+zE8Y5EZJqy9f01ji9OcPUEJMBmZhbfXr
+         B2httBeLJtF22pC1N2r6B5nEjJBss8xTxgLbzIWK+V81/Dj0YLNMay8R93Kt3q4l9eSF
+         +1TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906232; x=1719511032;
+        d=1e100.net; s=20230601; t=1718906341; x=1719511141;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HgI5gEOuAZO9UYkmZKgqrzsmCGfdpvzU4+T+xEGqCGc=;
-        b=ZRmE91fNgFXGQZMZqYlTAxuDy9cgrD9gB4+3Omp9Q7CvCmFVDW418mc5wIcV8Jy0dg
-         WC+MUsMQVHSGlJIrsLiSXHwfhxu88kQD7utnz/6mQTJnNMFPXIjbjnv5VMg/uaQj5gSZ
-         fv8KZZYqOjCtZGwsX0yFkQ3dDLDXrTumb80FDsl2BHGBsJnbYM+3vBerOWJQXvBvO1iF
-         kvznTmahNmu6r4JzH5Q6Vq3zxQc4zV92x0kC7vuqyz713kGP6K7ca4pZraIUMqDtA2au
-         Y4n6oP9u0wsumYSN9oWrqzzg0sUg+FRoTdmZm5lZMVqnf7vxPNIasc6PUJxqeXKrpbuS
-         soRw==
+        bh=IJI26duvfMm0hH2VM1fi6stFJmPonSLGaDj169i8hcM=;
+        b=LBYzzPisDPxuCxltdEj3mHhrrxxY4JyUGflJuXmtlrq1naTrG1beUORvzjps8SWh/t
+         EJzIOCaqTaXQBZ2Pf6wpotpmHNFydm2vyBQcpGZXiLhWFF+O+5wy3+MfvXxXsH42B6v9
+         b90KrsUadZ5j/BdSlQ+aQlGcm+M4wnmmtQAXBoEuExOYIrLsKvJJhFe641uWElXJlMrD
+         7ykbrXgzoHxa2FtkK3Zn5am2mkFoqFf7VaoyWZ2+sf0SyjCmkA/VFsP6cJasaUEq9gRt
+         0C4jfeGfat4Q1rQCgj22rjkNchQ+FDUKUJx/BPoCBZpMhKxGnhm5DOOjC7G5JnGF+9+2
+         7LuA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWEi6uV6uro/92l67/ENpVJ+GKHTX2MBv8l45kBR0fL8w0PMw2t0+5LsyotVFLGkpQy9w6gO3TrajSW6MNZHfK6h2Bem5XUVI4+muM=
-X-Gm-Message-State: AOJu0YzqrQOzC1gH2d2efgneCj20y6dWLh0gA43NNCdjErc0zorPrEPg
-	1IGBw9J1JKRdg1X7ozQUeAZTD7XUtcZ9rJUfB06+H3bxbGsmzvys
+ AJvYcCU2bARoSOxGERyMolcK9a3J/wraXPis0Zl1XyXGUtJ3Md6eQus3/JpAgG0MTc99wmqpg/LIMu/Hw3eoXSpdO+N/9oZhTXHxBfBfBIU=
+X-Gm-Message-State: AOJu0YxbAKb2kYY+gerTbB8zK/BX5eJiZKvHeRFAisiAM5mBHnpq2wcn
+	Da8oBJFCgajtHGfW8fGsO8Ti9l4NNs5mT7ROwNTNvEAVwLDHj/YNaUb+a/8yfTw=
 X-Google-Smtp-Source: 
- AGHT+IELGiFFQYXDLuYwffpBy+2gvOLdiLXmpqp8gF/i2JmFW6wub2L8+md2wz99GOx5tRmisC4VJQ==
-X-Received: by 2002:a17:903:2445:b0:1f9:d282:7a28 with SMTP id
- d9443c01a7336-1f9d2829be3mr19305765ad.41.1718906231479;
-        Thu, 20 Jun 2024 10:57:11 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
+ AGHT+IFE99yiH6KlSLSijoysmvGidn2b7gOkfW49nNmYq3cUnll4tztljhinaCegKpYiciiy0oFs8g==
+X-Received: by 2002:a17:907:1606:b0:a6f:b19d:90ac with SMTP id
+ a640c23a62f3a-a6fb19d9667mr375299966b.69.1718906340595;
+        Thu, 20 Jun 2024 10:59:00 -0700 (PDT)
+Received: from localhost.localdomain ([91.216.213.152])
         by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-1f9d0ec7a7asm15684145ad.251.2024.06.20.10.57.10
+ a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.10.58.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 10:57:10 -0700 (PDT)
-From: Yury Norov <yury.norov@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Disseldorp <ddiss@suse.de>,
-	Edward Cree <ecree.xilinx@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	Karsten Graul <kgraul@linux.ibm.com>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Oliver Neukum <oneukum@suse.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ping-Ke Shih <pkshih@realtek.com>,
-	Rich Felker <dalias@libc.org>,
+        Thu, 20 Jun 2024 10:59:00 -0700 (PDT)
+From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Stanislaw Gruszka <stf_xl@wp.pl>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	alsa-devel@alsa-project.org,
-	ath10k@lists.infradead.org,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"J.M.B. Downing" <jonathan.downing@nautel.com>,
+	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yangtao Li <frank.li@vivo.com>,
+	Li Zetao <lizetao1@huawei.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Chancel Liu <chancel.liu@nxp.com>,
 	dmaengine@vger.kernel.org,
-	iommu@lists.linux.dev,
-	kvm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-bluetooth@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-media@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-net-drivers@amd.com,
-	linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
+	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org,
-	mpi3mr-linuxdrv.pdl@broadcom.com,
-	netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	x86@kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Alexey Klimov <alexey.klimov@linaro.org>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Jan Kara <jack@suse.cz>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v4 01/40] lib/find: add atomic find_bit() primitives
-Date: Thu, 20 Jun 2024 10:56:24 -0700
-Message-ID: <20240620175703.605111-2-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240620175703.605111-1-yury.norov@gmail.com>
-References: <20240620175703.605111-1-yury.norov@gmail.com>
+	linux-sound@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Markus Elfring <Markus.Elfring@web.de>
+Subject: [Patch v4 04/10] ARM: dts: lpc32xx: Add missing dma and i2s
+ properties
+Date: Thu, 20 Jun 2024 19:56:35 +0200
+Message-Id: <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: yury.norov@gmail.com
+X-MailFrom: piotr.wojtaszczyk@timesys.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7HD3VJVODONJJGLFKMJMBK5JRWA5RQIW
-X-Message-ID-Hash: 7HD3VJVODONJJGLFKMJMBK5JRWA5RQIW
+Message-ID-Hash: XFJ6CX6SXEQXNTS6V5DDGK4WQMBN4CWX
+X-Message-ID-Hash: XFJ6CX6SXEQXNTS6V5DDGK4WQMBN4CWX
 X-Mailman-Approved-At: Mon, 01 Jul 2024 12:20:07 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7HD3VJVODONJJGLFKMJMBK5JRWA5RQIW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XFJ6CX6SXEQXNTS6V5DDGK4WQMBN4CWX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -215,617 +152,191 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add helpers around test_and_{set,clear}_bit() to allow searching for
-clear or set bits and flipping them atomically.
+Adds properties declared in the new DT bindings:
+ - nxp,lpc3220-i2s.yaml
+ - nxp,lpc3220-dmamux.yaml
+for dma router/mux and I2S interface.
 
-Using atomic search primitives allows to implement lockless bitmap
-handling where only individual bits are touched by concurrent processes,
-and where people have to protect their bitmaps to search for a free
-or set bit due to the lack of atomic searching routines.
-
-The typical locking routines may look like this:
-
-	unsigned long alloc_bit()
-	{
-		unsigned long bit;
-
-		spin_lock(bitmap_lock);
-		bit = find_first_zero_bit(bitmap, nbits);
-		if (bit < nbits)
-			__set_bit(bit, bitmap);
-		spin_unlock(bitmap_lock);
-
-		return bit;
-	}
-
-	void free_bit(unsigned long bit)
-	{
-		spin_lock(bitmap_lock);
-		__clear_bit(bit, bitmap);
-		spin_unlock(bitmap_lock);
-	}
-
-Now with atomic find_and_set_bit(), the above can be implemented
-lockless, directly by using it and atomic clear_bit().
-
-Patches 36-40 do this in few places in the kernel where the
-transition is clear. There is likely more candidates for
-refactoring.
-
-The other important case is when people opencode atomic search
-or atomic traverse on the maps with the patterns looking like:
-
-	for (idx = 0; idx < nbits; idx++)
-		if (test_and_clear_bit(idx, bitmap))
-			do_something(idx);
-
-Or like this:
-
-	do {
-		bit = find_first_bit(bitmap, nbits);
-		if (bit >= nbits)
-			return nbits;
-
-	} while (!test_and_clear_bit(bit, bitmap));
-
-	return bit;
-
-In both cases, the opencoded loop may be converted to a single function
-or iterator call. Correspondingly:
-
-	for_each_test_and_clear_bit(idx, bitmap, nbits)
-		do_something(idx);
-
-Or:
-	return find_and_clear_bit(bitmap, nbits);
-
-Obviously, the less routine code people have to write themself, the
-less probability to make a mistake.
-
-The new API is not only a handy helpers - it also resolves a non-trivial
-issue of using non-atomic find_bit() together with atomic
-test_and_{set,clear)_bit().
-
-The trick is that find_bit() implies that the bitmap is a regular
-non-volatile piece of memory, and compiler is allowed to use such
-optimization techniques like re-fetching memory instead of caching it.
-
-For example, find_first_bit() is implemented like:
-
-      for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
-              val = addr[idx];
-              if (val) {
-                      sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
-                      break;
-              }
-      }
-
-On register-memory architectures, like x86, compiler may decide to
-access memory twice - first time to compare against 0, and second time
-to fetch its value to pass it to __ffs().
-
-When running find_first_bit() on volatile memory, the memory may get
-changed in-between, and for instance, it may lead to passing 0 to
-__ffs(), which is undefined. This is a potentially dangerous call.
-
-find_and_clear_bit() as a wrapper around test_and_clear_bit()
-naturally treats underlying bitmap as a volatile memory and prevents
-compiler from such optimizations.
-
-Now that KCSAN is catching exactly this type of situations and warns on
-undercover memory modifications. We can use it to reveal improper usage
-of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
-
-In some cases concurrent operations with plain find_bit() are acceptable.
-For example:
-
- - two threads running find_*_bit(): safe wrt ffs(0) and returns correct
-   value, because underlying bitmap is unchanged;
- - find_next_bit() in parallel with set or clear_bit(), when modifying
-   a bit prior to the start bit to search: safe and correct;
- - find_first_bit() in parallel with set_bit(): safe, but may return wrong
-   bit number;
- - find_first_zero_bit() in parallel with clear_bit(): same as above.
-
-In last 2 cases find_bit() may not return a correct bit number, but
-it may be OK if caller requires any (not exactly the first) set or clear
-bit, correspondingly.
-
-In such cases, KCSAN may be safely silenced with data_race(). But in most
-cases where KCSAN detects concurrency we should carefully review their
-code and likely protect critical sections or switch to atomic
-find_and_bit(), as appropriate.
-
-This patch adds the following atomic primitives:
-
-	find_and_set_bit(addr, nbits);
-	find_and_set_next_bit(addr, nbits, start);
-	...
-
-Here find_and_{set,clear} part refers to the corresponding
-test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
-derive their semantics from corresponding find() or test() functions.
-
-For brevity, the naming omits the fact that we search for zero bit in
-find_and_set, and correspondingly search for set bit in find_and_clear
-functions.
-
-The patch also adds iterators with atomic semantics, like
-for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
-corresponding atomic operation with 'for_each'.
-
-CC: Bart Van Assche <bvanassche@acm.org>
-CC: Sergey Shtylyov <s.shtylyov@omp.ru>
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 ---
- MAINTAINERS                 |   1 +
- include/linux/find.h        |   4 -
- include/linux/find_atomic.h | 324 ++++++++++++++++++++++++++++++++++++
- lib/find_bit.c              |  86 ++++++++++
- 4 files changed, 411 insertions(+), 4 deletions(-)
- create mode 100644 include/linux/find_atomic.h
+Changes for v4:
+- This patch is renamed from
+  "ARM: dts: lpc32xx: Add missing properties for the i2s interfaces"
+  to describe dma changes as well
+- Added dmas and dma-names properties in to all node which have dma request signals
+- Add bus properties to pl08x dma node since they are removed from platform data in phy3250.c
+- Put clock-controller@0 and dma-router@7c under the same syscon, simple-mfd device
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b68c8b25bb93..54f37d4f33dd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3730,6 +3730,7 @@ F:	include/linux/bitmap-str.h
- F:	include/linux/bitmap.h
- F:	include/linux/bits.h
- F:	include/linux/cpumask.h
-+F:	include/linux/find_atomic.h
- F:	include/linux/find.h
- F:	include/linux/nodemask.h
- F:	include/vdso/bits.h
-diff --git a/include/linux/find.h b/include/linux/find.h
-index 5dfca4225fef..a855f82ab9ad 100644
---- a/include/linux/find.h
-+++ b/include/linux/find.h
-@@ -2,10 +2,6 @@
- #ifndef __LINUX_FIND_H_
- #define __LINUX_FIND_H_
+Changes for v3:
+- Split previous commit for separate subsystems
+- Add properties to match dt binding
+
+ arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi | 53 +++++++++++++++++++++++---
+ 1 file changed, 48 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
+index 974410918f35..c58dc127e59f 100644
+--- a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
++++ b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
+@@ -67,6 +67,8 @@ slc: flash@20020000 {
+ 			reg = <0x20020000 0x1000>;
+ 			clocks = <&clk LPC32XX_CLK_SLC>;
+ 			status = "disabled";
++			dmas = <&dma 1 1>;
++			dma-names = "rx-tx";
+ 		};
  
--#ifndef __LINUX_BITMAP_H
--#error only <linux/bitmap.h> can be included directly
--#endif
+ 		mlc: flash@200a8000 {
+@@ -75,6 +77,8 @@ mlc: flash@200a8000 {
+ 			interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&clk LPC32XX_CLK_MLC>;
+ 			status = "disabled";
++			dmas = <&dma 12 1>;
++			dma-names = "rx-tx";
+ 		};
+ 
+ 		dma: dma@31000000 {
+@@ -83,6 +87,13 @@ dma: dma@31000000 {
+ 			interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&clk LPC32XX_CLK_DMA>;
+ 			clock-names = "apb_pclk";
++			#dma-cells = <2>;
++			dma-channels = <8>;
++			dma-requests = <16>;
++			lli-bus-interface-ahb1;
++			mem-bus-interface-ahb1;
++			memcpy-burst-size = <256>;
++			memcpy-bus-width = <32>;
+ 		};
+ 
+ 		usb {
+@@ -182,6 +193,8 @@ ssp0: spi@20084000 {
+ 				clock-names = "apb_pclk";
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 14 1 1>, <&dmamux 15 1 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -191,6 +204,8 @@ spi1: spi@20088000 {
+ 				clocks = <&clk LPC32XX_CLK_SPI1>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 11 1 0>;
++				dma-names = "rx-tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -206,6 +221,8 @@ ssp1: spi@2008c000 {
+ 				clock-names = "apb_pclk";
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 3 1 1>, <&dmamux 11 1 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -215,12 +232,19 @@ spi2: spi@20090000 {
+ 				clocks = <&clk LPC32XX_CLK_SPI2>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 3 1 0>;
++				dma-names = "rx-tx";
+ 				status = "disabled";
+ 			};
+ 
+ 			i2s0: i2s@20094000 {
+ 				compatible = "nxp,lpc3220-i2s";
+ 				reg = <0x20094000 0x1000>;
++				interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk LPC32XX_CLK_I2S0>;
++				dmas = <&dma 0 1>, <&dma 13 1>;
++				dma-names = "rx", "tx";
++				#sound-dai-cells = <0>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -231,12 +255,19 @@ sd: sd@20098000 {
+ 					     <13 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&clk LPC32XX_CLK_SD>;
+ 				clock-names = "apb_pclk";
++				dmas = <&dma 4 1>;
++				dma-names = "rx";
+ 				status = "disabled";
+ 			};
+ 
+ 			i2s1: i2s@2009c000 {
+ 				compatible = "nxp,lpc3220-i2s";
+ 				reg = <0x2009c000 0x1000>;
++				interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk LPC32XX_CLK_I2S1>;
++				dmas = <&dma 2 1>, <&dmamux 10 1 1>;
++				dma-names = "rx", "tx";
++				#sound-dai-cells = <0>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -312,21 +343,27 @@ fab {
+ 			compatible = "simple-bus";
+ 			ranges = <0x20000000 0x20000000 0x30000000>;
+ 
+-			/* System Control Block */
+-			scb {
+-				compatible = "simple-bus";
+-				ranges = <0x0 0x40004000 0x00001000>;
++			syscon@40004000 {
++				compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
++				reg = <0x40004000 0x114>;
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
++				ranges = <0 0x40004000 0x114>;
+ 
+ 				clk: clock-controller@0 {
+ 					compatible = "nxp,lpc3220-clk";
+ 					reg = <0x00 0x114>;
+ 					#clock-cells = <1>;
 -
- #include <linux/bitops.h>
+ 					clocks = <&xtal_32k>, <&xtal>;
+ 					clock-names = "xtal_32k", "xtal";
+ 				};
++
++				dmamux: dma-router@7c {
++					compatible = "nxp,lpc3220-dmamux";
++					reg = <0x7c 0x8>;
++					#dma-cells = <3>;
++					dma-masters = <&dma>;
++				};
+ 			};
  
- unsigned long _find_next_bit(const unsigned long *addr1, unsigned long nbits,
-diff --git a/include/linux/find_atomic.h b/include/linux/find_atomic.h
-new file mode 100644
-index 000000000000..a9e238f88d0b
---- /dev/null
-+++ b/include/linux/find_atomic.h
-@@ -0,0 +1,324 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __LINUX_FIND_ATOMIC_H_
-+#define __LINUX_FIND_ATOMIC_H_
-+
-+#include <linux/bitops.h>
-+#include <linux/find.h>
-+
-+unsigned long _find_and_set_bit(volatile unsigned long *addr, unsigned long nbits);
-+unsigned long _find_and_set_next_bit(volatile unsigned long *addr, unsigned long nbits,
-+				unsigned long start);
-+unsigned long _find_and_set_bit_lock(volatile unsigned long *addr, unsigned long nbits);
-+unsigned long _find_and_set_next_bit_lock(volatile unsigned long *addr, unsigned long nbits,
-+					  unsigned long start);
-+unsigned long _find_and_clear_bit(volatile unsigned long *addr, unsigned long nbits);
-+unsigned long _find_and_clear_next_bit(volatile unsigned long *addr, unsigned long nbits,
-+				unsigned long start);
-+
-+/**
-+ * find_and_set_bit - Find a zero bit and set it atomically
-+ * @addr: The address to base the search on
-+ * @nbits: The bitmap size in bits
-+ *
-+ * This function is designed to operate in concurrent access environment.
-+ *
-+ * Because of concurrency and volatile nature of underlying bitmap, it's not
-+ * guaranteed that the found bit is the 1st bit in the bitmap. It's also not
-+ * guaranteed that if >= @nbits is returned, the bitmap is empty.
-+ *
-+ * The function does guarantee that if returned value is in range [0 .. @nbits),
-+ * the acquired bit belongs to the caller exclusively.
-+ *
-+ * Returns: found and set bit, or >= @nbits if no bits found
-+ */
-+static inline
-+unsigned long find_and_set_bit(volatile unsigned long *addr, unsigned long nbits)
-+{
-+	if (small_const_nbits(nbits)) {
-+		unsigned long val, ret;
-+
-+		do {
-+			val = *addr | ~GENMASK(nbits - 1, 0);
-+			if (val == ~0UL)
-+				return nbits;
-+			ret = ffz(val);
-+		} while (test_and_set_bit(ret, addr));
-+
-+		return ret;
-+	}
-+
-+	return _find_and_set_bit(addr, nbits);
-+}
-+
-+
-+/**
-+ * find_and_set_next_bit - Find a zero bit and set it, starting from @offset
-+ * @addr: The address to base the search on
-+ * @nbits: The bitmap nbits in bits
-+ * @offset: The bitnumber to start searching at
-+ *
-+ * This function is designed to operate in concurrent access environment.
-+ *
-+ * Because of concurrency and volatile nature of underlying bitmap, it's not
-+ * guaranteed that the found bit is the 1st bit in the bitmap, starting from
-+ * @offset. It's also not guaranteed that if >= @nbits is returned, the bitmap
-+ * is empty.
-+ *
-+ * The function does guarantee that if returned value is in range [@offset .. @nbits),
-+ * the acquired bit belongs to the caller exclusively.
-+ *
-+ * Returns: found and set bit, or >= @nbits if no bits found
-+ */
-+static inline
-+unsigned long find_and_set_next_bit(volatile unsigned long *addr,
-+				    unsigned long nbits, unsigned long offset)
-+{
-+	if (small_const_nbits(nbits)) {
-+		unsigned long val, ret;
-+
-+		do {
-+			val = *addr | ~GENMASK(nbits - 1, offset);
-+			if (val == ~0UL)
-+				return nbits;
-+			ret = ffz(val);
-+		} while (test_and_set_bit(ret, addr));
-+
-+		return ret;
-+	}
-+
-+	return _find_and_set_next_bit(addr, nbits, offset);
-+}
-+
-+/**
-+ * find_and_set_bit_wrap - find and set bit starting at @offset, wrapping around zero
-+ * @addr: The first address to base the search on
-+ * @nbits: The bitmap size in bits
-+ * @offset: The bitnumber to start searching at
-+ *
-+ * Returns: the bit number for the next clear bit, or first clear bit up to @offset,
-+ * while atomically setting it. If no bits are found, returns >= @nbits.
-+ */
-+static inline
-+unsigned long find_and_set_bit_wrap(volatile unsigned long *addr,
-+					unsigned long nbits, unsigned long offset)
-+{
-+	unsigned long bit = find_and_set_next_bit(addr, nbits, offset);
-+
-+	if (bit < nbits || offset == 0)
-+		return bit;
-+
-+	bit = find_and_set_bit(addr, offset);
-+	return bit < offset ? bit : nbits;
-+}
-+
-+/**
-+ * find_and_set_bit_lock - find a zero bit, then set it atomically with lock
-+ * @addr: The address to base the search on
-+ * @nbits: The bitmap nbits in bits
-+ *
-+ * This function is designed to operate in concurrent access environment.
-+ *
-+ * Because of concurrency and volatile nature of underlying bitmap, it's not
-+ * guaranteed that the found bit is the 1st bit in the bitmap. It's also not
-+ * guaranteed that if >= @nbits is returned, the bitmap is empty.
-+ *
-+ * The function does guarantee that if returned value is in range [0 .. @nbits),
-+ * the acquired bit belongs to the caller exclusively.
-+ *
-+ * Returns: found and set bit, or >= @nbits if no bits found
-+ */
-+static inline
-+unsigned long find_and_set_bit_lock(volatile unsigned long *addr, unsigned long nbits)
-+{
-+	if (small_const_nbits(nbits)) {
-+		unsigned long val, ret;
-+
-+		do {
-+			val = *addr | ~GENMASK(nbits - 1, 0);
-+			if (val == ~0UL)
-+				return nbits;
-+			ret = ffz(val);
-+		} while (test_and_set_bit_lock(ret, addr));
-+
-+		return ret;
-+	}
-+
-+	return _find_and_set_bit_lock(addr, nbits);
-+}
-+
-+/**
-+ * find_and_set_next_bit_lock - find a zero bit and set it atomically with lock
-+ * @addr: The address to base the search on
-+ * @nbits: The bitmap size in bits
-+ * @offset: The bitnumber to start searching at
-+ *
-+ * This function is designed to operate in concurrent access environment.
-+ *
-+ * Because of concurrency and volatile nature of underlying bitmap, it's not
-+ * guaranteed that the found bit is the 1st bit in the range. It's also not
-+ * guaranteed that if >= @nbits is returned, the bitmap is empty.
-+ *
-+ * The function does guarantee that if returned value is in range [@offset .. @nbits),
-+ * the acquired bit belongs to the caller exclusively.
-+ *
-+ * Returns: found and set bit, or >= @nbits if no bits found
-+ */
-+static inline
-+unsigned long find_and_set_next_bit_lock(volatile unsigned long *addr,
-+					 unsigned long nbits, unsigned long offset)
-+{
-+	if (small_const_nbits(nbits)) {
-+		unsigned long val, ret;
-+
-+		do {
-+			val = *addr | ~GENMASK(nbits - 1, offset);
-+			if (val == ~0UL)
-+				return nbits;
-+			ret = ffz(val);
-+		} while (test_and_set_bit_lock(ret, addr));
-+
-+		return ret;
-+	}
-+
-+	return _find_and_set_next_bit_lock(addr, nbits, offset);
-+}
-+
-+/**
-+ * find_and_set_bit_wrap_lock - find zero bit starting at @ofset and set it
-+ *				with lock, and wrap around zero if nothing found
-+ * @addr: The first address to base the search on
-+ * @nbits: The bitmap size in bits
-+ * @offset: The bitnumber to start searching at
-+ *
-+ * Returns: the bit number for the next set bit, or first set bit up to @offset
-+ * If no bits are set, returns >= @nbits.
-+ */
-+static inline
-+unsigned long find_and_set_bit_wrap_lock(volatile unsigned long *addr,
-+					unsigned long nbits, unsigned long offset)
-+{
-+	unsigned long bit = find_and_set_next_bit_lock(addr, nbits, offset);
-+
-+	if (bit < nbits || offset == 0)
-+		return bit;
-+
-+	bit = find_and_set_bit_lock(addr, offset);
-+	return bit < offset ? bit : nbits;
-+}
-+
-+/**
-+ * find_and_clear_bit - Find a set bit and clear it atomically
-+ * @addr: The address to base the search on
-+ * @nbits: The bitmap nbits in bits
-+ *
-+ * This function is designed to operate in concurrent access environment.
-+ *
-+ * Because of concurrency and volatile nature of underlying bitmap, it's not
-+ * guaranteed that the found bit is the 1st bit in the bitmap. It's also not
-+ * guaranteed that if >= @nbits is returned, the bitmap is empty.
-+ *
-+ * The function does guarantee that if returned value is in range [0 .. @nbits),
-+ * the acquired bit belongs to the caller exclusively.
-+ *
-+ * Returns: found and cleared bit, or >= @nbits if no bits found
-+ */
-+static inline unsigned long find_and_clear_bit(volatile unsigned long *addr, unsigned long nbits)
-+{
-+	if (small_const_nbits(nbits)) {
-+		unsigned long val, ret;
-+
-+		do {
-+			val = *addr & GENMASK(nbits - 1, 0);
-+			if (val == 0)
-+				return nbits;
-+			ret = __ffs(val);
-+		} while (!test_and_clear_bit(ret, addr));
-+
-+		return ret;
-+	}
-+
-+	return _find_and_clear_bit(addr, nbits);
-+}
-+
-+/**
-+ * find_and_clear_next_bit - Find a set bit next after @offset, and clear it atomically
-+ * @addr: The address to base the search on
-+ * @nbits: The bitmap nbits in bits
-+ * @offset: bit offset at which to start searching
-+ *
-+ * This function is designed to operate in concurrent access environment.
-+ *
-+ * Because of concurrency and volatile nature of underlying bitmap, it's not
-+ * guaranteed that the found bit is the 1st bit in the range It's also not
-+ * guaranteed that if >= @nbits is returned, there's no set bits after @offset.
-+ *
-+ * The function does guarantee that if returned value is in range [@offset .. @nbits),
-+ * the acquired bit belongs to the caller exclusively.
-+ *
-+ * Returns: found and cleared bit, or >= @nbits if no bits found
-+ */
-+static inline
-+unsigned long find_and_clear_next_bit(volatile unsigned long *addr,
-+					unsigned long nbits, unsigned long offset)
-+{
-+	if (small_const_nbits(nbits)) {
-+		unsigned long val, ret;
-+
-+		do {
-+			val = *addr & GENMASK(nbits - 1, offset);
-+			if (val == 0)
-+				return nbits;
-+			ret = __ffs(val);
-+		} while (!test_and_clear_bit(ret, addr));
-+
-+		return ret;
-+	}
-+
-+	return _find_and_clear_next_bit(addr, nbits, offset);
-+}
-+
-+/**
-+ * __find_and_set_bit - Find a zero bit and set it non-atomically
-+ * @addr: The address to base the search on
-+ * @nbits: The bitmap size in bits
-+ *
-+ * A non-atomic version of find_and_set_bit() needed to help writing
-+ * common-looking code where atomicity is provided externally.
-+ *
-+ * Returns: found and set bit, or >= @nbits if no bits found
-+ */
-+static inline
-+unsigned long __find_and_set_bit(unsigned long *addr, unsigned long nbits)
-+{
-+	unsigned long bit;
-+
-+	bit = find_first_zero_bit(addr, nbits);
-+	if (bit < nbits)
-+		__set_bit(bit, addr);
-+
-+	return bit;
-+}
-+
-+/* same as for_each_set_bit() but atomically clears each found bit */
-+#define for_each_test_and_clear_bit(bit, addr, size) \
-+	for ((bit) = 0; \
-+	     (bit) = find_and_clear_next_bit((addr), (size), (bit)), (bit) < (size); \
-+	     (bit)++)
-+
-+/* same as for_each_set_bit_from() but atomically clears each found bit */
-+#define for_each_test_and_clear_bit_from(bit, addr, size) \
-+	for (; (bit) = find_and_clear_next_bit((addr), (size), (bit)), (bit) < (size); (bit)++)
-+
-+/* same as for_each_clear_bit() but atomically sets each found bit */
-+#define for_each_test_and_set_bit(bit, addr, size) \
-+	for ((bit) = 0; \
-+	     (bit) = find_and_set_next_bit((addr), (size), (bit)), (bit) < (size); \
-+	     (bit)++)
-+
-+/* same as for_each_clear_bit_from() but atomically clears each found bit */
-+#define for_each_test_and_set_bit_from(bit, addr, size) \
-+	for (; \
-+	     (bit) = find_and_set_next_bit((addr), (size), (bit)), (bit) < (size); \
-+	     (bit)++)
-+
-+#endif /* __LINUX_FIND_ATOMIC_H_ */
-diff --git a/lib/find_bit.c b/lib/find_bit.c
-index 0836bb3d76c5..a322abd1e540 100644
---- a/lib/find_bit.c
-+++ b/lib/find_bit.c
-@@ -14,6 +14,7 @@
+ 			mic: interrupt-controller@40008000 {
+@@ -362,6 +399,8 @@ uart1: serial@40014000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x40014000 0x1000>;
+ 				interrupts = <26 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dma 6 1>, <&dma 5 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
  
- #include <linux/bitops.h>
- #include <linux/bitmap.h>
-+#include <linux/find_atomic.h>
- #include <linux/export.h>
- #include <linux/math.h>
- #include <linux/minmax.h>
-@@ -128,6 +129,91 @@ unsigned long _find_first_and_and_bit(const unsigned long *addr1,
- }
- EXPORT_SYMBOL(_find_first_and_and_bit);
+@@ -369,6 +408,8 @@ uart2: serial@40018000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x40018000 0x1000>;
+ 				interrupts = <25 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dma 8 1>, <&dma 7 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
  
-+unsigned long _find_and_set_bit(volatile unsigned long *addr, unsigned long nbits)
-+{
-+	unsigned long bit;
-+
-+	do {
-+		bit = FIND_FIRST_BIT(~addr[idx], /* nop */, nbits);
-+		if (bit >= nbits)
-+			return nbits;
-+	} while (test_and_set_bit(bit, addr));
-+
-+	return bit;
-+}
-+EXPORT_SYMBOL(_find_and_set_bit);
-+
-+unsigned long _find_and_set_next_bit(volatile unsigned long *addr,
-+				     unsigned long nbits, unsigned long start)
-+{
-+	unsigned long bit;
-+
-+	do {
-+		bit = FIND_NEXT_BIT(~addr[idx], /* nop */, nbits, start);
-+		if (bit >= nbits)
-+			return nbits;
-+	} while (test_and_set_bit(bit, addr));
-+
-+	return bit;
-+}
-+EXPORT_SYMBOL(_find_and_set_next_bit);
-+
-+unsigned long _find_and_set_bit_lock(volatile unsigned long *addr, unsigned long nbits)
-+{
-+	unsigned long bit;
-+
-+	do {
-+		bit = FIND_FIRST_BIT(~addr[idx], /* nop */, nbits);
-+		if (bit >= nbits)
-+			return nbits;
-+	} while (test_and_set_bit_lock(bit, addr));
-+
-+	return bit;
-+}
-+EXPORT_SYMBOL(_find_and_set_bit_lock);
-+
-+unsigned long _find_and_set_next_bit_lock(volatile unsigned long *addr,
-+					  unsigned long nbits, unsigned long start)
-+{
-+	unsigned long bit;
-+
-+	do {
-+		bit = FIND_NEXT_BIT(~addr[idx], /* nop */, nbits, start);
-+		if (bit >= nbits)
-+			return nbits;
-+	} while (test_and_set_bit_lock(bit, addr));
-+
-+	return bit;
-+}
-+EXPORT_SYMBOL(_find_and_set_next_bit_lock);
-+
-+unsigned long _find_and_clear_bit(volatile unsigned long *addr, unsigned long nbits)
-+{
-+	unsigned long bit;
-+
-+	do {
-+		bit = FIND_FIRST_BIT(addr[idx], /* nop */, nbits);
-+		if (bit >= nbits)
-+			return nbits;
-+	} while (!test_and_clear_bit(bit, addr));
-+
-+	return bit;
-+}
-+EXPORT_SYMBOL(_find_and_clear_bit);
-+
-+unsigned long _find_and_clear_next_bit(volatile unsigned long *addr,
-+					unsigned long nbits, unsigned long start)
-+{
-+	do {
-+		start =  FIND_NEXT_BIT(addr[idx], /* nop */, nbits, start);
-+		if (start >= nbits)
-+			return nbits;
-+	} while (!test_and_clear_bit(start, addr));
-+
-+	return start;
-+}
-+EXPORT_SYMBOL(_find_and_clear_next_bit);
-+
- #ifndef find_first_zero_bit
- /*
-  * Find the first cleared bit in a memory region.
+@@ -376,6 +417,8 @@ uart7: serial@4001c000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x4001c000 0x1000>;
+ 				interrupts = <24 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dmamux 10 1 0>, <&dma 9 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
 -- 
-2.43.0
+2.25.1
 
