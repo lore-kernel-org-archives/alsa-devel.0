@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5705C27C4F
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jun 2024 06:20:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC5D8C2BA1A
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jun 2024 06:21:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC1A5DEE;
-	Fri, 21 Jun 2024 08:19:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC1A5DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id E62AA93A;
+	Fri, 21 Jun 2024 08:21:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E62AA93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1718950803;
-	bh=iOKs0kuwYeauur49traV6Ei5QgiBo+V6ci2r2oGoz5Y=;
+	s=default; t=1718950889;
+	bh=IiCPd22GUUG2UxULkuTSSyyTZ/pmI4F7nyOYPBord1k=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nd39czq3yGv0QPcTF7rrNPV/nNPRHIGJ9Xx6HussQSDaEnPuWn5H6QnKpKlHVCc8G
-	 5s/SsNdtFcu9KyYUbKBjbjU4mrOR4b2eO0EMfqpmQN6ohpPHfVH+rA2sYxOdn6WZUP
-	 jsCyQKadYFR9RPBxARDoddsSu3Ev52LrLeipjZD0=
+	b=ADFVCeMTg0VafOgC1pReXJiIKl7pMQZ5sDKZ96U8CDEWCrny15+SJ1RDOyWpdNRK1
+	 HZfzK3DRgFUzTaG+TzOVrg3fnBLxRiqf8qfAnbY8ahs1f5XtNKr3m5Obn6mrvxoJY4
+	 wpYgViqXpBsttZRRJFrfPQIKrTcFg1u25laWlzDY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F5F6F805AE; Fri, 21 Jun 2024 08:19:32 +0200 (CEST)
+	id 62000F800ED; Fri, 21 Jun 2024 08:21:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C1F3F805B4;
-	Fri, 21 Jun 2024 08:19:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FA35F805B5;
+	Fri, 21 Jun 2024 08:21:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E2623F8023A; Fri, 21 Jun 2024 08:19:24 +0200 (CEST)
+	id 82B22F80266; Fri, 21 Jun 2024 08:21:05 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org
  [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2543FF8010C
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2024 08:19:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2543FF8010C
+	by alsa1.perex.cz (Postfix) with ESMTPS id D8B8CF800ED
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jun 2024 08:21:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8B8CF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=CQ5+RO+e
+ header.s=k20201202 header.b=OhtXpZpL
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E4DD8CE2B38;
-	Fri, 21 Jun 2024 06:18:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22111C2BBFC;
-	Fri, 21 Jun 2024 06:18:43 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 9868ACE2B4D;
+	Fri, 21 Jun 2024 06:20:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AB4C2BBFC;
+	Fri, 21 Jun 2024 06:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718950735;
-	bh=iOKs0kuwYeauur49traV6Ei5QgiBo+V6ci2r2oGoz5Y=;
+	s=k20201202; t=1718950857;
+	bh=IiCPd22GUUG2UxULkuTSSyyTZ/pmI4F7nyOYPBord1k=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CQ5+RO+eixfOSNiyNe6mYshUgJvT0bBT4RbBHfzXKwWoWUVDdMTdin7bNvMeociBa
-	 nsxe1skVxv8y216/k3GjD97zpMhRmVcHnKNoQQjUEIDFLDXLOx3HazsbPRQpp8Wgtd
-	 URk3Blz7BFahR8cKNcyHmn2uxfK86Y/OqF9sI1Q245ew1hsIEgxFDimmiZ9+leoFKN
-	 bFTDPzHrfjIDkH0vL43WSNL6GWH6QcG//xXqawpgJXcVrGqP+6n8pqSHSc0LN28WsZ
-	 IWtKNkMhQE4HAfPFsV1PtgcWsaTID0wJ9ME+tjwO5TMqWlHdX4Miz81t8+Qz01ZGXY
-	 CxmBFLYjgBjFg==
-Message-ID: <f49c5ee8-6bdb-481b-a131-a6478526f1e1@kernel.org>
-Date: Fri, 21 Jun 2024 08:18:41 +0200
+	b=OhtXpZpLrdBOpdBtgNAUDtgMaVbFjc/ppNy+deGKwuXAwkwbRJ1Q7kpX96yURiGPY
+	 Q+dS4zFpn9mijqwy+WF/PZQ/03NZquYSWhFf19qDH0Luyyw82dLwx8dKv1b9KcLbaE
+	 9+aUalJ2KoxVeOXUo35FcrpjXarIeQU0DgKVv4nvLyNc7eRiH/lP7r3c3+pbZlgFk+
+	 7lpve1YzSqsiXwzhIpGbYBzxGhzgtpUXU9bG7w8uHxLTXUC04cAgC49mQwYt5r9n0x
+	 BuhgXKvau/UMRX6lN0ZzKsdUufBNeCR6S/URsPykjbdQ+V12JoV8wx9m4LufStkpzU
+	 dwN+w1x/CopKQ==
+Message-ID: <23a12b79-b3ac-47a1-9bc3-73a62f96e60f@kernel.org>
+Date: Fri, 21 Jun 2024 08:20:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v4 03/10] ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT
- binding
+Subject: Re: [Patch v4 04/10] ARM: dts: lpc32xx: Add missing dma and i2s
+ properties
 To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
@@ -73,7 +72,7 @@ To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>,
+ Arnd Bergmann <arnd@arndb.de>, Yangtao Li <frank.li@vivo.com>,
  Li Zetao <lizetao1@huawei.com>, Michael Ellerman <mpe@ellerman.id.au>,
  Chancel Liu <chancel.liu@nxp.com>, dmaengine@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -83,7 +82,7 @@ To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  linux-mtd@lists.infradead.org
 Cc: Markus Elfring <Markus.Elfring@web.de>
 References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
- <20240620175657.358273-4-piotr.wojtaszczyk@timesys.com>
+ <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -129,11 +128,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240620175657.358273-4-piotr.wojtaszczyk@timesys.com>
+In-Reply-To: <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: K66Z2G3IRFCEWYLNUK5FD5T6Y3ROOC2T
-X-Message-ID-Hash: K66Z2G3IRFCEWYLNUK5FD5T6Y3ROOC2T
+Message-ID-Hash: DODV2VSRTD6OCQTBGAR5ZXSEH7AE3ST3
+X-Message-ID-Hash: DODV2VSRTD6OCQTBGAR5ZXSEH7AE3ST3
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -146,7 +145,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K66Z2G3IRFCEWYLNUK5FD5T6Y3ROOC2T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DODV2VSRTD6OCQTBGAR5ZXSEH7AE3ST3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -156,26 +155,67 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 20/06/2024 19:56, Piotr Wojtaszczyk wrote:
-> Add nxp,lpc3220-i2s DT binding documentation.
+> Adds properties declared in the new DT bindings:
+>  - nxp,lpc3220-i2s.yaml
+>  - nxp,lpc3220-dmamux.yaml
+> for dma router/mux and I2S interface.
 > 
 > Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 
-Thanks for doing this. Appreciated.
+You are doing here multiple things at once. This should be
+
+One patch is dma properties.
 
 >  
-> +FREESCALE SOC LPC32XX SOUND DRIVERS
-> +M:	J.M.B. Downing <jonathan.downing@nautel.com>
-> +M:	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-> +R:	Vladimir Zapolskiy <vz@mleia.com>
-> +L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-> +L:	linuxppc-dev@lists.ozlabs.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-> +N:	lpc32xx
+>  			i2s0: i2s@20094000 {
+>  				compatible = "nxp,lpc3220-i2s";
+>  				reg = <0x20094000 0x1000>;
+> +				interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk LPC32XX_CLK_I2S0>;
+> +				dmas = <&dma 0 1>, <&dma 13 1>;
+> +				dma-names = "rx", "tx";
+> +				#sound-dai-cells = <0>;
 
-Drop the last "N:".
+Sound dai cells is another patch (or entire node is separate patch).
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>  				status = "disabled";
+>  			};
+>  
+> @@ -231,12 +255,19 @@ sd: sd@20098000 {
+>  					     <13 IRQ_TYPE_LEVEL_HIGH>;
+>  				clocks = <&clk LPC32XX_CLK_SD>;
+>  				clock-names = "apb_pclk";
+> +				dmas = <&dma 4 1>;
+> +				dma-names = "rx";
+>  				status = "disabled";
+>  			};
+>  
+>  			i2s1: i2s@2009c000 {
+>  				compatible = "nxp,lpc3220-i2s";
+>  				reg = <0x2009c000 0x1000>;
+> +				interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk LPC32XX_CLK_I2S1>;
+> +				dmas = <&dma 2 1>, <&dmamux 10 1 1>;
+> +				dma-names = "rx", "tx";
+> +				#sound-dai-cells = <0>;
+>  				status = "disabled";
+>  			};
+>  
+> @@ -312,21 +343,27 @@ fab {
+>  			compatible = "simple-bus";
+>  			ranges = <0x20000000 0x20000000 0x30000000>;
+>  
+> -			/* System Control Block */
+> -			scb {
+> -				compatible = "simple-bus";
+> -				ranges = <0x0 0x40004000 0x00001000>;
+> +			syscon@40004000 {
+> +				compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
+> +				reg = <0x40004000 0x114>;
+
+This hunk is also separate patch.
+
+
 
 Best regards,
 Krzysztof
