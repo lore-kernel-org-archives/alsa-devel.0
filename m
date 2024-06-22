@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3FEEC27C53
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Jun 2024 13:04:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83A68C27C78
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Jun 2024 13:05:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 932ED868;
-	Sat, 22 Jun 2024 15:04:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 932ED868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8203A9F6;
+	Sat, 22 Jun 2024 15:05:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8203A9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719061467;
-	bh=UrxnrK5wRWLLAqbFuJQdybESu+fL2JUBL/OQiQsMn1A=;
+	s=default; t=1719061554;
+	bh=8pC44r9Oj1dhrw5UE75tXX29ELdK1m8cQNkcWGEG6R4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ec66Gj//oX/QARIpLy5BopfTLPiw2Ri2vyBzPCZ6gbq1k8a+IjJyBDDQTKalU58nG
-	 E7xqIRUaWVoVyoOR4FiCX/32DZP0lz7WrkbPg4EVwOqBKEj6jRtNz57qa1ySBtBves
-	 cya8/CcA7im7TYg3HywWca4ZIQDJBhDWF4cOAaMo=
+	b=BaSp8VlG7TI52rjVdR1H17u3hYn4owU47DbuisRLlVquR+rrB8lSV5XUyTlAa8o0S
+	 Pla8471hLmZ8ybc0idYTMVo7B3LRMvcOclHRRW69LdbHe9m7ae+VAVLMfHiDLMe8GB
+	 siDH2NWHq24J5xErsPP13Q+j1uZBfb0hsMoKSK5A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20EF0F80236; Sat, 22 Jun 2024 15:03:56 +0200 (CEST)
+	id 5542FF805A8; Sat, 22 Jun 2024 15:05:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDFE3F805B2;
-	Sat, 22 Jun 2024 15:03:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7969F805B5;
+	Sat, 22 Jun 2024 15:05:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1C76F8023A; Sat, 22 Jun 2024 15:03:49 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id B33E0F8023A; Sat, 22 Jun 2024 15:05:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1C98F800ED
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2024 15:03:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1C98F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 942FDF80154
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2024 15:05:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 942FDF80154
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rICmA/7h
+ header.s=k20201202 header.b=KAleG/5A
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 3F487CE09BA;
-	Sat, 22 Jun 2024 13:03:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B16BBC3277B;
-	Sat, 22 Jun 2024 13:03:32 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id E08BA60F32;
+	Sat, 22 Jun 2024 13:05:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0A45C3277B;
+	Sat, 22 Jun 2024 13:05:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719061415;
-	bh=UrxnrK5wRWLLAqbFuJQdybESu+fL2JUBL/OQiQsMn1A=;
+	s=k20201202; t=1719061512;
+	bh=8pC44r9Oj1dhrw5UE75tXX29ELdK1m8cQNkcWGEG6R4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rICmA/7hK70cX0IM8LZFNqXzboC014+YqVAuaOumofoi5yYT73G7QM/sPccdVDXRC
-	 Ds/JWgeRnBygStUgniH4iZAEy82fp3Hlq4a0dNFCrhTSd56vOua4AXaTQad9KMfz0I
-	 uP9KFkg8gS8/8L4KgN+1KIXLam4+bHx9vIFTemOaQC3KIRjJo9wcqKLGrzz7Emn6G5
-	 SqI4KtrZmSMe1aVqyjbgitUy/CTLYQJO9Q2LAGszmeZhCkB9ppCrqXK8JEjEs1QeOh
-	 D90xD3WapBblbNM03i3Lk7mQ/ue7KOZNZw7X9T+O8X5rtL1P6oJSo92LFKpzSBmv6t
-	 wMZRI4tt+7+DA==
-Date: Sat, 22 Jun 2024 14:03:29 +0100
+	b=KAleG/5Acfo1bhnjlfm8PNQXxHcfwPSE0D4d742XuC1jCrt/9miUA+z2/pMtSsG/E
+	 KipNZaAgEyzzpmkQLtyzFymbQ7Ui4rMOjijk/+MH8nuslc8XEvKfU6VfFUVRzoyvRH
+	 6mg9UL2bQfneheUeprchOqJFgwfjwrhZdWM8bVOxKKGxVZFVTAgyj7n1GkzxU0/Qx7
+	 8/JxEhySiNK8hstGEhwWjOrr43xKmj++Ddv2Sr5w89mMwkEslH96EUGZU2h6KRjLC4
+	 XwSDhvs955rq3ekRC2IF9+E1AnyDtnntymPDaTfVFOpKTDcXngBZIWhVdBBFF8iHKI
+	 vshdVZSq4BC8Q==
+Date: Sat, 22 Jun 2024 14:05:06 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Christian Hewitt <christianshewitt@gmail.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
@@ -67,19 +67,18 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
 	Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/2] ASoC: Add support for ti,pcm5242 to the pcm512x
- driver
-Message-ID: <57f0036c-4412-48fa-a6f9-3fa721717be9@sirena.org.uk>
+Subject: Re: [PATCH 1/2] dt-bindings: sound: add ti,pcm5424 to pcm512x
+Message-ID: <92bb82cf-47c3-4216-9a54-466ad7de43ce@sirena.org.uk>
 References: <20240622124603.2606770-1-christianshewitt@gmail.com>
- <20240622124603.2606770-3-christianshewitt@gmail.com>
+ <20240622124603.2606770-2-christianshewitt@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ns7W6Wuqxln5UvNz"
+	protocol="application/pgp-signature"; boundary="qd5lMr36o2A9Y9hn"
 Content-Disposition: inline
-In-Reply-To: <20240622124603.2606770-3-christianshewitt@gmail.com>
+In-Reply-To: <20240622124603.2606770-2-christianshewitt@gmail.com>
 X-Cookie: No stopping or standing.
-Message-ID-Hash: E23MDSW2EXDJ3YHW5NKRE7LHSLSEV6SG
-X-Message-ID-Hash: E23MDSW2EXDJ3YHW5NKRE7LHSLSEV6SG
+Message-ID-Hash: 6E6JVTQARDUC2CTAY3HXN6F27KQCLUBB
+X-Message-ID-Hash: 6E6JVTQARDUC2CTAY3HXN6F27KQCLUBB
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E23MDSW2EXDJ3YHW5NKRE7LHSLSEV6SG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6E6JVTQARDUC2CTAY3HXN6F27KQCLUBB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,38 +101,35 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---Ns7W6Wuqxln5UvNz
+--qd5lMr36o2A9Y9hn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 22, 2024 at 12:46:03PM +0000, Christian Hewitt wrote:
-> Add a compatible string to enable support for the ti,pcm5242 DAC chip
-> in the pcm512x driver.
+On Sat, Jun 22, 2024 at 12:46:02PM +0000, Christian Hewitt wrote:
+> Add ti,pcm5424 to the list of pcm512x compatible chips
 >=20
 > Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 > ---
->  sound/soc/codecs/pcm512x-i2c.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  Documentation/devicetree/bindings/sound/pcm512x.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-The device appears to have SPI support too like the other devices in the
-family, why not add the ID for SPI as well:
+Ideally this would also be converted to YAML but for such a trivial
+addition I don't think this should be a blocker.
 
-   https://www.ti.com/product/PCM5242
-
---Ns7W6Wuqxln5UvNz
+--qd5lMr36o2A9Y9hn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZ2y6EACgkQJNaLcl1U
-h9BmaAf/Wf4dlhJjpl3fS3/Wwz1IA7U7HfafHCnGFTG5WaABcOG2qOrxjfPC42iR
-KUeRAaU4lqzPSWjayl/eVXWAB6v+x7qKiZuAcQ4vP7g5odGfmIKt+syT5RN4P+xP
-R/EC9NkzmlgH0nb23+NJXnuI+sekheoJvxEt2dkbOsDQivW4IMWwzmiOfTzwLCux
-3zOVaKR+MzriPl0P06oDNsiDycmByd/S2q/bbAbcdrdacAoURmI7mY+F2Q5lVGOL
-07n+SC66baBDVYndWfWS28+50cenwUOAwm1+am3xFTIiNa5U7Zr3ShBj+S67sDzV
-ijKbKj9dvuc7CO9qB3dyJcvkOi9s0Q==
-=lfJ9
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZ2zAIACgkQJNaLcl1U
+h9BEqgf+O3MTXzJeES2cciAQyyKWA0LbO6xd++EtqKFeu+JSeIyP3Js+ZxUJrCDS
+wQEiJs9qsB0m2AsaG2UI5rfVRfwakK9QG2VyIwTrNA1j/B4XFaKlv8WJO78wac6M
+bgq+W9roe7jLIgjUNylPySe6uresKIJD0XacIkexmVC1Lod5Twku9HXf8KqIBaRg
+0dTbK+QNjXJDJS69rWAc3acULRaYBnJ52B8xkW1ixXUBqnP8V2aMpcQ7Clm7ZI/N
+fJTFptfQ1P2xVKYW73UkkVOE8gFHsgw7l56GyHPMlooWZ9xtzNvvT3B3LfuAtoMD
+kasjjkyVU+b9LOuyt114z7zRBLbTzA==
+=o1cf
 -----END PGP SIGNATURE-----
 
---Ns7W6Wuqxln5UvNz--
+--qd5lMr36o2A9Y9hn--
