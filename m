@@ -4,83 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EB6BC27C53
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Jun 2024 12:51:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44993C27C53
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Jun 2024 12:51:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E540984A;
-	Sat, 22 Jun 2024 14:50:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E540984A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BD08DF8;
+	Sat, 22 Jun 2024 14:51:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BD08DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719060664;
-	bh=j5hoJYoMKSeN68PQ+0IMQBerfpAUDkUHtQ+qPa7GUp8=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=vU48ifMEHlmoyYw/kkKOtV4agE+ckNO7xyVt1ovMjroQxkK1jAn76IyWe+7uXzGLn
-	 60DYHSmAPogVx1nB/Q5aYJZN6DqYi9T2ucT8cJhKBfHvNl0R4ZJneWRFlCB3l1dktn
-	 h5IkZ4EBeg5kUkFKXkJmwdGDdtbRL2eP0fz3qw1M=
+	s=default; t=1719060686;
+	bh=keK1XYJG51HSPMkUrZrJr9eY/iWHfg/MR+unKus+/qU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=k91BMivCeYuNtLD78IK/vZsKw3+mlFepXn8L3kn5t1wejf2DJMqiLSlxYkfCJ8Vx5
+	 wtUYLNbpMdxw/w1UMCklhUg9DyQLJBkjmqAwoVVWjNE8jxwRhYgp12FjF6zj9k2JTD
+	 Ll0ZafdFkw4lRk3Q5PMmNXkBFOJ85O01Cefp3Guk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8536F805B6; Sat, 22 Jun 2024 14:50:42 +0200 (CEST)
+	id B3B58F8059F; Sat, 22 Jun 2024 14:50:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CB4FF805A9;
-	Sat, 22 Jun 2024 14:50:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA2D6F805E3;
+	Sat, 22 Jun 2024 14:50:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47D5EF80269; Sat, 22 Jun 2024 14:46:16 +0200 (CEST)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
+	id C28A7F80266; Sat, 22 Jun 2024 14:46:23 +0200 (CEST)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6A434F80154
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2024 14:46:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A434F80154
+	by alsa1.perex.cz (Postfix) with ESMTPS id ED9ABF80236
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jun 2024 14:46:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED9ABF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=Lr7kgi17
-Received: by mail-ed1-x535.google.com with SMTP id
- 4fb4d7f45d1cf-57cfe600cbeso3414843a12.2
+ header.s=20230601 header.b=VyuDANQY
+Received: by mail-ed1-x52c.google.com with SMTP id
+ 4fb4d7f45d1cf-57a30dbdb7fso3554895a12.3
         for <alsa-devel@alsa-project.org>;
- Sat, 22 Jun 2024 05:46:08 -0700 (PDT)
+ Sat, 22 Jun 2024 05:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719060368; x=1719665168;
+        d=gmail.com; s=20230601; t=1719060373; x=1719665173;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uHeugCYvp8fzC+q2GNZHm0YL0KES8S+qA5+Z5NcvAl0=;
-        b=Lr7kgi17wl4pWvTZFnn8wwEDI/xK5iEPqLZmXwAbQQY4h6NCy76KElC3eJiRwj912u
-         /MsOyT8RLt3x/8LgOfwTDIuVR1X9ZYPBVHaZ6rkNJVsxxCOcsx0gRiojDw1JauSrJxAh
-         Q7A5/ARCKKTQ5fEdpczCJNusx5zE/OqUZtx0VwuNW35Es4mHsq8WEWvbjVrGavj//6R2
-         Kv7fyhE1Ddj6czjorx32z8aLIUyALPI0EClzxfOfn+vQCnIm5SJTZWBVzrhcgoXbhoG5
-         KDSBTXQa5hEkNJshuizgTzVo4Loo1S5MobP4mjxDOScyYKHSQEfSYwSHNndp53T3ZBO1
-         0qEA==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xtc3YQWwhEs2vXvOR2PH5mI51fSfcNplDTd0O8+xCVQ=;
+        b=VyuDANQYIUHUecQV+rE17L82w5JCN2JDtk2ugk7LVw+S1qs4xHW9jHp0Vddtz4riSW
+         RJy/Km0mAcDh55KhCFkyUAkhTkhMvVt9T81VhgvZrArbnZ1CePfO7hlNO1ki+wpQhsrT
+         dyd8eIYE1Bqxl+QwHLsTe+AnVraWyp1Thr2Aucb+zLdoD5Dy0RuBtpr8b4MNZL2rG7Fu
+         4jsqZsmONifLgz2g42P0LhtFh0TPeUNVvnF+01t12y5zrRo8wK3ArTPsK9BULLC3015M
+         o86EMSpl5L9ugjWOakIFEAx5sgqaAKKMuJZ/e7h3ch1nyyPdBiOLwONHJBy0NFrT4G3h
+         unfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719060368; x=1719665168;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uHeugCYvp8fzC+q2GNZHm0YL0KES8S+qA5+Z5NcvAl0=;
-        b=BZjR5WwXM0TMbmwcrZqjhn9WUvh+YHiw5XlpKu5xtZNxJf4Z7eYspMqcFR8H5wYxo0
-         Rqk0kCjF+MRNiGqJX0sjiYerNd4eXTqyvEUs6WblgdWQlnLR4weGygpWs3Gh76ZUAtTG
-         HXWb83FxnObyYj6dSBBhuRQ5fV3YQ7HUvJZp5NlR+hNoJVY14f5g7qWcyMtw0YhUHYYD
-         L5Z7Kr9t98spYXYVQs7op5EP3cUZ9qTpZ80SzJSmdy/Iox5GwgTSqvDJbqWPWiPbOAWw
-         OLpSVAQitDd4l0fQTdnrqybvxDYRNFhi1mqLdIIbCEXu/b58mui1Meqt5zSXUJmm5lsz
-         5tVQ==
+        d=1e100.net; s=20230601; t=1719060373; x=1719665173;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xtc3YQWwhEs2vXvOR2PH5mI51fSfcNplDTd0O8+xCVQ=;
+        b=d+y0XtHlXo681PNkkvEbBwLsP/VO5+zwhfhEZlMXIuqR3xNkCFwyelyrNtjjTysvXv
+         wnGroM8Xa29u2jIan3Dz5MRsnz22tXwuM9CfV3JWycqftB7LJvO+xEVijpN7jg5zZGmL
+         gzlLm9aIXUaFvs0NViLqwmJe1ddBO3Rp6lzemh+D8NiRvLS2FNlNy65mA5CO5tOu24t0
+         3hL+b3+6R02prR8OECPcp6VFqQ9ui6qjer3N+AX6zpTcqmNNErgFhMCTuTEEyaes/KXc
+         5d1vuyfSskRX6LBQwskPVq7Vys3cHHT4f3kHWAp4lkM2sdjSVXtX4699vmmAukd56bhU
+         Mb8Q==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVWE9pUVSlb1i6tJeV8QF0eC6cpAZVmH3/ApGeTnCToaUHsTc4rV8prbcqUeg8jv0GdFpquZht8rWsjjw2919bGZJcqp2IIcDlP/oM=
-X-Gm-Message-State: AOJu0YxU7prGoRRsgxx4SKWWy+dtQaznxFtnHfshnT4jiEEh+eQxUWhy
-	WClsel4FeWORHV3bbM5hXgHNnXfeViz+L4Bmq0u2uppuJC+ofEEl
+ AJvYcCUJgAq5m8v/OSw41hROhdCIzXbKZcH8fZKcJFtDUAFk97wfdbNrxa1YUGNtewte7v96pIjQ62BR+9r8btha2r/FltzW8FhJGgISQDg=
+X-Gm-Message-State: AOJu0YwuU5rYXJxRoleGvoOx9NfbLbP5XeDk25vEktd3WSmwVy7KGXbK
+	TQU29ZB9UoM/z6Q1gTWkjcT6PfqrOVdSAOHNpGMauqm0QSGAklmK
 X-Google-Smtp-Source: 
- AGHT+IHhU0OmigKaPH5wvUVtPVqpNMfKaC2dTNLFNkgOjpiCVtyhuqi+ngksHV8C90I/5T0QQAt0Wg==
-X-Received: by 2002:a50:9f66:0:b0:575:954:7ef with SMTP id
- 4fb4d7f45d1cf-57d4bd56636mr9334a12.3.1719060367739;
-        Sat, 22 Jun 2024 05:46:07 -0700 (PDT)
+ AGHT+IFBzxDcxx1CE0ZViNgLB0t0MgmBfPXQf2y4zveVJIRjgSOlbuN6rI8Qp7AbWoS6dX8BDOzBdw==
+X-Received: by 2002:a50:d58e:0:b0:57c:7eb6:440a with SMTP id
+ 4fb4d7f45d1cf-57d4a27397emr231724a12.3.1719060372830;
+        Sat, 22 Jun 2024 05:46:12 -0700 (PDT)
 Received: from toolbox.. ([87.200.95.144])
         by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-57d31f33086sm2122853a12.61.2024.06.22.05.46.05
+ 4fb4d7f45d1cf-57d31f33086sm2122853a12.61.2024.06.22.05.46.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jun 2024 05:46:07 -0700 (PDT)
+        Sat, 22 Jun 2024 05:46:12 -0700 (PDT)
 From: Christian Hewitt <christianshewitt@gmail.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -96,14 +99,16 @@ To: Liam Girdwood <lgirdwood@gmail.com>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ASoC: add compatible for ti,pcm5242
-Date: Sat, 22 Jun 2024 12:46:01 +0000
-Message-Id: <20240622124603.2606770-1-christianshewitt@gmail.com>
+Subject: [PATCH 2/2] ASoC: Add support for ti,pcm5242 to the pcm512x driver
+Date: Sat, 22 Jun 2024 12:46:03 +0000
+Message-Id: <20240622124603.2606770-3-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240622124603.2606770-1-christianshewitt@gmail.com>
+References: <20240622124603.2606770-1-christianshewitt@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QKYWUR6MOBYE33Y33EDUIVM75MONZ5YE
-X-Message-ID-Hash: QKYWUR6MOBYE33Y33EDUIVM75MONZ5YE
+Message-ID-Hash: QMYFXDNBGJIQFMSZTQE3YK7AXF65ITXT
+X-Message-ID-Hash: QMYFXDNBGJIQFMSZTQE3YK7AXF65ITXT
 X-MailFrom: christianshewitt@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -116,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QKYWUR6MOBYE33Y33EDUIVM75MONZ5YE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QMYFXDNBGJIQFMSZTQE3YK7AXF65ITXT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,17 +130,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Update bindings and add a driver compatible for the pcm5242
-chip used on the Odroid HiFi-Shield2 i2c mezzanine board.
+Add a compatible string to enable support for the ti,pcm5242 DAC chip
+in the pcm512x driver.
 
-Christian Hewitt (2):
-  dt-bindings: sound: add ti,pcm5424 to pcm512x
-  ASoC: Add support for ti,pcm5242 to the pcm512x driver
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ sound/soc/codecs/pcm512x-i2c.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- Documentation/devicetree/bindings/sound/pcm512x.txt | 2 +-
- sound/soc/codecs/pcm512x-i2c.c                      | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
+diff --git a/sound/soc/codecs/pcm512x-i2c.c b/sound/soc/codecs/pcm512x-i2c.c
+index 4be476a280e1..92bcf5179779 100644
+--- a/sound/soc/codecs/pcm512x-i2c.c
++++ b/sound/soc/codecs/pcm512x-i2c.c
+@@ -39,6 +39,7 @@ static const struct i2c_device_id pcm512x_i2c_id[] = {
+ 	{ "pcm5122", },
+ 	{ "pcm5141", },
+ 	{ "pcm5142", },
++	{ "pcm5242", },
+ 	{ "tas5754", },
+ 	{ "tas5756", },
+ 	{ }
+@@ -51,6 +52,7 @@ static const struct of_device_id pcm512x_of_match[] = {
+ 	{ .compatible = "ti,pcm5122", },
+ 	{ .compatible = "ti,pcm5141", },
+ 	{ .compatible = "ti,pcm5142", },
++	{ .compatible = "ti,pcm5242", },
+ 	{ .compatible = "ti,tas5754", },
+ 	{ .compatible = "ti,tas5756", },
+ 	{ }
 -- 
 2.34.1
 
