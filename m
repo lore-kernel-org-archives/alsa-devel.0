@@ -4,86 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8ED1BC27C4F
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Jun 2024 17:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B1E2C27C4F
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Jun 2024 17:23:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77EFE857;
-	Sun, 23 Jun 2024 19:22:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77EFE857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90C10DFA;
+	Sun, 23 Jun 2024 19:23:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90C10DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719163379;
-	bh=lCnpI6MGZ7tqlfHmo6/4lQWWdf2FV5VM4Utg4pbRtes=;
+	s=default; t=1719163390;
+	bh=Forj5XhRH3uV4vJJQYS/LVUyREwgZsaM1YGmaz5sfQg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S1V9oEcXeGTVdWBgse7Xf/SPckuNtzI7hsgdF+Pt8/aWsxP3FnRuf5kx4GoHL66EB
-	 YMiu6kCnNiNS3QJXCUNGobqRywz476IKRmuaT97Sy5MqPnn+zQ0lxlpJwUUtBKQtTb
-	 HAFf9djsZ88C8Uq66P5NPVh29+xBz98LTeuTXF9Y=
+	b=Wq68H+yzb0oLFp1Ltkj+NaS/xl96+BjhhV7+7+BFjpJKhxI4cUL7Q91A1wofQufgq
+	 9ww7K//9SHE5Mv5zBmsT/Y7g9D3cHfAlZfYm3ASIda73Im0T9ZZ3pyFZ/Mey9cj39Z
+	 fQppP5dnJXRWzB7M7yCuzaWYJoWMMZgH3tEhLf+0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EC3ECF805E2; Sun, 23 Jun 2024 19:22:08 +0200 (CEST)
+	id 23412F805F2; Sun, 23 Jun 2024 19:22:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96758F805E2;
-	Sun, 23 Jun 2024 19:22:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD39BF80602;
+	Sun, 23 Jun 2024 19:22:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9219F804F2; Sun, 23 Jun 2024 19:22:01 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id BA7F7F8058C; Sun, 23 Jun 2024 19:22:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC884F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id C6508F80495
 	for <alsa-devel@alsa-project.org>; Sun, 23 Jun 2024 19:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC884F800E4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6508F80495
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Oq29rr7T
+ header.s=k20201202 header.b=p3SjiZTY
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E1C19CE0F9B;
-	Sun, 23 Jun 2024 17:21:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D0B4C2BD10;
-	Sun, 23 Jun 2024 17:21:41 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3404362557;
+	Sun, 23 Jun 2024 17:21:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D533C2BD10;
+	Sun, 23 Jun 2024 17:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719163304;
-	bh=lCnpI6MGZ7tqlfHmo6/4lQWWdf2FV5VM4Utg4pbRtes=;
+	s=k20201202; t=1719163310;
+	bh=Forj5XhRH3uV4vJJQYS/LVUyREwgZsaM1YGmaz5sfQg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Oq29rr7TfplWGhY9I1T+8UTDsjBlfbhLmKJ7zUn3d0nl0sFWwQ9rm1i32rXS88P50
-	 pDH5bAODX1/zGOYQrfMwGHNqB4PMZWM1iUciFte8Lr1rYB9Nr9AwcyzWHDtzg8o3aF
-	 oD5CSz1kOWjWXCA/kODq3SNggZYLkHpEafY3EnU+QoxsJmp2n8LV+kMzPwefc7KULw
-	 WCX8+Mh2E0AnpmTMkrHtY8e07kUvbjrWtbpviTfXD4hCjFQbKBIIPHqWYT6Fj4z3ZA
-	 KUGjfSv4qOiHVchYVQJH+LSPo9t9AaSPetUaj2qZLA4HgABFyYx8qbR6yTBsvPDXcW
-	 HZAixc2ES1KLg==
+	b=p3SjiZTY9vSSQhiRynn+3++nSIt9JrU5+9sbXsi5hbOH9iQ/P33zsCa5XXQy4D9NQ
+	 remTyo5SzzDimPpXgp0GdgDfYrWhfGf66ChjPI4IZoWf363cNtgpy/VPG1jFBTQYB+
+	 zszRnG0e8vxs1FI3oq0Sr2+yWU4UDWyubH1ODmfFOmmlLZl+jX/nvSoiT5fTFzIn5D
+	 kYngjln+Kh09QTyl1D8qcSufi/i9op8+lXAIH/7BktrQ+lwloo4TGL9cwaihcCIEiA
+	 ieIl6TMVjg7xK0t6AuQSdLZ/4taaGLxGqt9GGqZEdmHvyVKLViMQTzB0a08IZHtS8w
+	 gRdadcJiuUGDw==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
-In-Reply-To: 
- <20240617-n-asoc-const-auto-selectable-formats-v1-0-8004f346ee38@linaro.org>
-References: 
- <20240617-n-asoc-const-auto-selectable-formats-v1-0-8004f346ee38@linaro.org>
-Subject: Re: (subset) [PATCH 0/6] ASoC: Few constifications (mostly
- arguments)
-Message-Id: <171916330129.350242.13312693360705760410.b4-ty@kernel.org>
-Date: Sun, 23 Jun 2024 18:21:41 +0100
+To: srinivas.kandagatla@linaro.org
+Cc: perex@perex.cz, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ krzk+dt@kernel.org
+In-Reply-To: <20240606104922.114229-1-srinivas.kandagatla@linaro.org>
+References: <20240606104922.114229-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 0/4] ASoC: qcom: display port changes
+Message-Id: <171916330923.350242.338813871607705802.b4-ty@kernel.org>
+Date: Sun, 23 Jun 2024 18:21:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: C3VP32MZZI6LTRRFFI5GRK72K2DEMVIP
-X-Message-ID-Hash: C3VP32MZZI6LTRRFFI5GRK72K2DEMVIP
+Message-ID-Hash: BD6Q7JNXFKB2YTYGJTIH4ZN7BYFB5GDG
+X-Message-ID-Hash: BD6Q7JNXFKB2YTYGJTIH4ZN7BYFB5GDG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C3VP32MZZI6LTRRFFI5GRK72K2DEMVIP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BD6Q7JNXFKB2YTYGJTIH4ZN7BYFB5GDG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,13 +91,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 17 Jun 2024 15:03:18 +0200, Krzysztof Kozlowski wrote:
-> Make few pointers in ASoC functions as pointers to const, so the code is
-> clearer to read, a bit safer and allows further constifications (e.g.
-> placing some data as rodata).
+On Thu, 06 Jun 2024 11:49:18 +0100, srinivas.kandagatla@linaro.org wrote:
+> This patchset adds support for.
+> 	1. parse Display Port module tokens from ASoC topology
+> 	2. add support to DP/HDMI Jack events.
+> 	3. fixes a typo in function name in sm8250
 > 
-> Best regards,
-> Krzysztof
+> Verified these patches on X13s along with changes to tplg in
+> https://git.codelinaro.org/linaro/qcomlt/audioreach-topology/-/tree/topic/x13s-dp?ref_type=heads
+> and ucm changes from https://github.com/Srinivas-Kandagatla/alsa-ucm-conf/tree/topic/x13s-dp
 > 
 > [...]
 
@@ -121,16 +109,14 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: Constify of_phandle_args in snd_soc_dai_driver
-      commit: 2fbafecb0f05818e25f6c926c6f9ad9ef597429c
-[2/6] ASoC: Constify of_phandle_args in snd_soc_dai_link_component
-      commit: 020b37d06f97de289940805bc821190d5858eda0
-[3/6] ASoC: Constify passed data to core function
-      commit: f3ac3da7e4d0957b3402fb31a4ca480e739e086f
-[4/6] ASoC: Constify DAI passed to get_channel_map
-      commit: 785d64c4941221044940ab199e6625af17296470
-[5/6] ASoC: Constify return of snd_soc_dai_get_pcm_stream()
-      commit: de267e7a6ea8e6fa29af2287adfc9fc9d87e6dc9
+[1/4] ASoC: qcom: q6dsp: parse Display port tokens
+      commit: 6d620e50bb055e072c8c50cf95cd397fc24378c2
+[2/4] ASoC: qcom: common: add Display port Jack function
+      commit: 735db4ea16caaebf8e4884ec0c2e419c96391ac8
+[3/4] ASoC: qcom: sc8280xp: add Display port Jack
+      commit: 7e815bb9abd16f99c987987242a9fe13dfa0f052
+[4/4] ASoC: qcom: x1e80100: Add USB DisplayPort plug support
+      commit: 24790a3cd1bdc083f9989f2fdb223f6494ebc99c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
