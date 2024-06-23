@@ -4,83 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 647B6C27C4F
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Jun 2024 15:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C1ABC27C4F
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Jun 2024 17:22:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7B23950;
-	Sun, 23 Jun 2024 17:15:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7B23950
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4EA3DE5;
+	Sun, 23 Jun 2024 19:22:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4EA3DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719155762;
-	bh=VTtHoMRrh/CknLnrTiA6cISWe0B7QIazQmbA5Bs4n5g=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=GRoxipZAw7nzBz3WLdDlAmTPz44NEf91soZg6fLJSYr5QlK3E8npnwV/4TTTVvEoA
-	 dQo53P9K17Bz8ufYwWKohzTO0/by8ZIIwqcLUPJLgSvQqlMdMVDaq4vaf+q0NJ1YZU
-	 Z5i+rpXbw5NAB25vA3K5gH7RTux3t5gE3ttZLx2c=
+	s=default; t=1719163357;
+	bh=hqHsU/ytros7zlMhVXXRaDb8uWaZIiY2BwlJTdGlQi0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=f5sPldadkSNQBG5tueGnyBc/+GZ0rKgIH4CZ9Mrvx84dTQMD9Bgju/cKYY11emH3W
+	 fmE3tI0j+Vu2i11InuWSMdGqLfWpa1b/vUG95qP36LkowXAiziSNVyStZRWVk6W297
+	 Jn8Y7bfyVKS9R+xYoj89ZV8XCZ68rTB3kLeLCCtQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5D4EF805B0; Sun, 23 Jun 2024 17:15:30 +0200 (CEST)
+	id 7D22FF805AB; Sun, 23 Jun 2024 19:22:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A30A4F805B5;
-	Sun, 23 Jun 2024 17:15:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29FA9F805BE;
+	Sun, 23 Jun 2024 19:22:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9990F80495; Sun, 23 Jun 2024 17:15:25 +0200 (CEST)
-Received: from msa.smtpout.orange.fr (msa-211.smtpout.orange.fr
- [193.252.23.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	id 8BF1EF804F2; Sun, 23 Jun 2024 19:21:59 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15CD9F800E4
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jun 2024 17:15:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15CD9F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98F43F80154
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jun 2024 19:21:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98F43F80154
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=wanadoo.fr header.i=@wanadoo.fr header.a=rsa-sha256
- header.s=t20230301 header.b=QCd1Vmfi
-Received: from fedora.home ([86.243.222.230])
-	by smtp.orange.fr with ESMTPA
-	id LOvzs9RlN2GQtLOvzsbDUH; Sun, 23 Jun 2024 17:15:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1719155719;
-	bh=6xc2xyXmsrpTItWg6IptTdpN90W19e46SCweNrwd4z4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=QCd1Vmfi7/8s3qsK8bcJq1V3dXy73L7NZiNWiMW2h/YlojSzlRfWprMCDw3ibhUk2
-	 W6vX3VEQsVlKfW1edVOsjY6V/EhNgQNszuWZH/BS9yyRwaR5+yQ93jQIHmSm/+j79y
-	 YOoAdA2eMSBy5sq7mRbob3AguiMoy95CsrbLvgDwD7u4z4DKAAaxq2diqhomNZoN+H
-	 eQ8JcyJ128zs2PY923RLqCPMgGbdeBEKLbcGAyV8G5PIc4fQuPgO7zgICNwhoFv+jv
-	 6muz8tudmTkaRTOLabI5bXCM2DXdgFRef7pHsEL4PUEvn7CllwapiA6mL99TA6Z+dZ
-	 N798nWjA/7hPw==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 23 Jun 2024 17:15:19 +0200
-X-ME-IP: 86.243.222.230
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: [PATCH] ASoC: Intel: sst: Constify struct intel_sst_ops
-Date: Sun, 23 Jun 2024 17:15:11 +0200
-Message-ID: 
- <098acdf266b2f4a922d6a624e9032ec24a09093c.1719155688.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.45.2
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=RUDRwJn+
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5A1C562446;
+	Sun, 23 Jun 2024 17:21:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84CB9C32786;
+	Sun, 23 Jun 2024 17:21:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719163309;
+	bh=hqHsU/ytros7zlMhVXXRaDb8uWaZIiY2BwlJTdGlQi0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=RUDRwJn+ir7NGPEFmk3ra3S/+A1uMRkOSuavbEo0zJkzbZxXb1VAHprHB27Si7t51
+	 L4R971MZWLsJJ6iUBzx2GujCIHLVjstNoboNvuaIGUzWBdZtFhWkRDPvVBhDk1EyGW
+	 nf/FJXkq9+00ewfzo09PuoNRTRWkYOKx1T93cer79rlvuBkJyiKaUDrfgWgXDEZEcD
+	 MLnW0NZNgGfEFS+s5npUEDR4oIMI3CA37tR0SBZfWi/b35wifp8x6MsbP2uLQyxXA2
+	 H99H8s8RvcQEvf3MQ6C/jP0qF5yY5V8Z81JP8SPsZn0sTEi01hWcEwCmXFwaIlYlDl
+	 h62TZT4NUxfLQ==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Ricard Wanderlof <ricardw@axis.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@axis.com
+In-Reply-To: <20240607-tlv320adc3xxx-micbias-gpo-v3-0-59dbec8b98f4@axis.com>
+References: <20240607-tlv320adc3xxx-micbias-gpo-v3-0-59dbec8b98f4@axis.com>
+Subject: Re: [PATCH v3 0/2] tlv320adc3xxx: Allow MICBIAS pins to be used as
+ GPOs
+Message-Id: <171916330513.350242.3221156381590082355.b4-ty@kernel.org>
+Date: Sun, 23 Jun 2024 18:21:45 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AVRDRDRRLNEQD4JLHIK6F6HQGS2QCL5K
-X-Message-ID-Hash: AVRDRDRRLNEQD4JLHIK6F6HQGS2QCL5K
-X-MailFrom: christophe.jaillet@wanadoo.fr
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev-d4707
+Message-ID-Hash: VWRO35TWZHZTNU44ILLVJNDA3XXP3EPK
+X-Message-ID-Hash: VWRO35TWZHZTNU44ILLVJNDA3XXP3EPK
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AVRDRDRRLNEQD4JLHIK6F6HQGS2QCL5K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VWRO35TWZHZTNU44ILLVJNDA3XXP3EPK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,56 +98,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-'struct intel_sst_ops' is not modified in this driver.
+On Fri, 07 Jun 2024 17:22:03 +0200, Ricard Wanderlof wrote:
+> In some cases, depending on system design, the MICBIAS pins on the
+> chip are not needed as such, but a couple of extra GPIO pins would be
+> useful. This patch allows the MICBIAS pins to be configured in the
+> device tree as general purpose output pins, controlled via the GPIO
+> framework.
+> 
+> Owing to their originally intended purpose there are some limitations:
+> when the MICBIAS pins are deactivated, they will float, so will likely
+> need a pulldown in many applications. When activated, they will
+> assume the voltage specified by the micbias1-vg and micbias2-vg
+> properties, respectively, meaning that the resulting output voltage
+> will be 2.0 V, 2.5 V or AVDD .
+> 
+> [...]
 
-Constifying this structure moves some data to a read-only section, so
-increase overall security.
+Applied to
 
-On a x86_64, with allmodconfig:
-Before:
-======
-   text	   data	    bss	    dec	    hex	filename
-  12250	   1000	    112	  13362	   3432	sound/soc/intel/atom/sst/sst.o
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-After:
-=====
-   text	   data	    bss	    dec	    hex	filename
-  12378	    888	    112	  13378	   3442	sound/soc/intel/atom/sst/sst.o
+Thanks!
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile tested-only
----
- sound/soc/intel/atom/sst/sst.c | 2 +-
- sound/soc/intel/atom/sst/sst.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+[1/2] ASoC: dt-bindings: tlv320adc3xxx: Add MICBIAS-as-GPO properties
+      commit: 4e617f0cb2dd9675a3b2707c10d89f0f5303ad1e
+[2/2] tlv320adc3xxx: Add support for using MICBIAS pins as GPO
+      commit: 6c01001414ce477311d872c40e23dfec4866d608
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index e0357d257c6c..ff03fde12151 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -158,7 +158,7 @@ static int sst_save_dsp_context_v2(struct intel_sst_drv *sst)
- }
- 
- 
--static struct intel_sst_ops mrfld_ops = {
-+static const struct intel_sst_ops mrfld_ops = {
- 	.interrupt = intel_sst_interrupt_mrfld,
- 	.irq_thread = intel_sst_irq_thread_mrfld,
- 	.clear_interrupt = intel_sst_clear_intr_mrfld,
-diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index 126903e126e4..e0db7434543c 100644
---- a/sound/soc/intel/atom/sst/sst.h
-+++ b/sound/soc/intel/atom/sst/sst.h
-@@ -391,7 +391,7 @@ struct intel_sst_drv {
- 	unsigned int		csr_value;
- 	void			*fw_in_mem;
- 	struct sst_sg_list	fw_sg_list, library_list;
--	struct intel_sst_ops	*ops;
-+	const struct intel_sst_ops	*ops;
- 	struct sst_info		info;
- 	struct pm_qos_request	*qos;
- 	unsigned int		use_dma;
--- 
-2.45.2
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
