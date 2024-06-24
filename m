@@ -4,78 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D668C2BA18
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Jun 2024 17:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 752C3C2BD05
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jun 2024 05:43:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4ECAE7D;
-	Sun, 23 Jun 2024 19:24:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4ECAE7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0360868;
+	Mon, 24 Jun 2024 07:43:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0360868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719163472;
-	bh=FFR/1c1wfsHIvFV5vtSMY0ZRCwh3bSTMRyZbp5Z9kdo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1719207825;
+	bh=jJ/Xhogs+nACCcEGlLfB6HJx/oX5Us+Ij/qie1qauF4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qE29MpuG0gd5OoVLGzsU6YPiAtyw6Dhn/EV3LD6X3pBFITp9WljgyrCfFPm0U9/5T
-	 qNEu5PuESmpJtHxh/ZdJ9BIZWoLTxhbeA8AQwUnrnrPOmtyRrzzcq6trVjxqKMddWG
-	 KFO3AknaDZeOhext0iDBjqSDxIjG1F8sKhUyZAb8=
+	b=s7Pxm+uiSSoqI1fRcf4B1NzYneXUHaHTAmEwXusfudINNnrF70aD46QrSCKBGT/lw
+	 NU+SXVtG25wW49bq47qRKWsqFM1QhUe5p8hNXhAh/caY3dIEzHOrg7JQwh0hqGI6/m
+	 HesfBJjvQ4sEwx3twhbeoG3QmoRxsMKvVVxri12w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A10D3F805E4; Sun, 23 Jun 2024 19:23:44 +0200 (CEST)
+	id DBB24F805AB; Mon, 24 Jun 2024 07:43:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C27D1F805E2;
-	Sun, 23 Jun 2024 19:23:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B944F800E4;
+	Mon, 24 Jun 2024 07:43:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75EF2F80588; Sun, 23 Jun 2024 19:23:36 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id CA576F80495; Mon, 24 Jun 2024 07:39:30 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C2B5F8049C
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jun 2024 19:21:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C2B5F8049C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8DA10F80154
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2024 07:39:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DA10F80154
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KUI9ou/l
+ header.s=k20201202 header.b=sz4Qa+Wi
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 639766255B;
-	Sun, 23 Jun 2024 17:21:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2DFC2BD10;
-	Sun, 23 Jun 2024 17:21:53 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 1F6C0CE1027;
+	Mon, 24 Jun 2024 05:39:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B15F4C2BBFC;
+	Mon, 24 Jun 2024 05:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719163315;
-	bh=FFR/1c1wfsHIvFV5vtSMY0ZRCwh3bSTMRyZbp5Z9kdo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=KUI9ou/lCpJs2B8R55lqMzNuyG6my4REWiPS5mSVqgUxoHCMbvRZ59mJ5+srhJ4Rs
-	 zEsrjsoQksLBeZUyxiNuPeovhEnmVv4ps8SYMrG9HJYli6cVGecKYnb7df1Kg2PvY9
-	 gE5td45ZidxZ0xetz0vEhr9v7yydWNC8+4rufUD77OliPYvHm/EvfJqFpPxVYpXEjA
-	 r9JDLO5q6EJdHaNP8kJzPqe1iFKThB2Zte3s/2xvd2t7kBj4LrUoVdumWeL/m7fvng
-	 XWCcxqxMrEEk+hu15H5r/XEIPWMWaXBj+KvuNb/vdHw/XKWAefu10+cMRhuhXbmWOQ
-	 a9LWiP984ezxg==
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: 
- <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
-References: <20240612-asoc-wcd9xxx-wide-cleanups-v1-0-0d15885b2a06@linaro.org>
-Subject: Re: [PATCH 00/23] ASoC: codecs: wcd family: cleanups
-Message-Id: <171916331297.350242.2469313252117376450.b4-ty@kernel.org>
-Date: Sun, 23 Jun 2024 18:21:52 +0100
+	s=k20201202; t=1719207543;
+	bh=jJ/Xhogs+nACCcEGlLfB6HJx/oX5Us+Ij/qie1qauF4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sz4Qa+WiiSVBfHghGys3is+d97crwImMZeX7km8DzqnirbEPwfFZiUsmg6QqCM+N6
+	 c3c9aY7v1tMgkJLVofzfYgrdifCkut9gb4NmvmjJRWjmnT6OYukYuIyWAQEhngcX4F
+	 O8/e/Z44xYgaTJz/QYq9RKcZvEoLmyQ3jf8pDlTBkg74DTdqTZnQoZsWorOW4NgJvh
+	 xvLb//6rdSGgcpcwEunLcd0qoLukSM6AWY9RA2dcg61pLa34v87nkJNg60bx1O9K6A
+	 Hwy8zWgE3SCaqvfHiFzOcl+K9aM7hfFXbQXNEPSrtRPKdZ/UjFUoVfxDApoXdr8U6V
+	 K+8UhvHhXxQsg==
+Date: Mon, 24 Jun 2024 11:08:59 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"J.M.B. Downing" <jonathan.downing@nautel.com>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>,
+	Li Zetao <lizetao1@huawei.com>, Chancel Liu <chancel.liu@nxp.com>,
+	Michael Ellerman <mpe@ellerman.id.au>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Markus Elfring <Markus.Elfring@web.de>
+Subject: Re: [Patch v4 06/10] dmaengine: Add dma router for pl08x in LPC32XX
+ SoC
+Message-ID: <ZnkGcwd8M1QFfmxl@matsya>
+References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+ <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: DU474LESCKS6BN4Z5HDEVOFHAG64TBKA
-X-Message-ID-Hash: DU474LESCKS6BN4Z5HDEVOFHAG64TBKA
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
+Message-ID-Hash: FMOCMOQUYR7EEDVLTQCI4CUHAJTPSX3I
+X-Message-ID-Hash: FMOCMOQUYR7EEDVLTQCI4CUHAJTPSX3I
+X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DU474LESCKS6BN4Z5HDEVOFHAG64TBKA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FMOCMOQUYR7EEDVLTQCI4CUHAJTPSX3I/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,85 +112,279 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 12 Jun 2024 18:15:13 +0200, Krzysztof Kozlowski wrote:
-> Set of simple cleanups from similar issues in all Qualcomm WCD93xx
-> codecs.
+Hi Piotr,
+
+Any reason why dmaengine parts cant be sent separately, why are they
+clubbed together, I dont see any obvious dependencies...
+
+On 20-06-24, 19:56, Piotr Wojtaszczyk wrote:
+> LPC32XX connects few of its peripherals to pl08x DMA thru a multiplexer,
+> this driver allows to route a signal request line thru the multiplexer for
+> given peripheral.
+
+What is the difference b/w this and lpc18xx driver, why not reuse that
+one?
+
 > 
-> The first patch "ASoC: codecs: wcd-mbhc: Constify passed MBHC reg
-> fields" is a requirement for few others, but except this they are
-> independent.
+> Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+> ---
+> Changes for v4:
+> - This patch is new in v4
 > 
-> [...]
+>  MAINTAINERS                  |   1 +
+>  drivers/dma/Kconfig          |   9 ++
+>  drivers/dma/Makefile         |   1 +
+>  drivers/dma/lpc32xx-dmamux.c | 195 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 206 insertions(+)
+>  create mode 100644 drivers/dma/lpc32xx-dmamux.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fadf1baafd89..5ffe988ee282 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2403,6 +2403,7 @@ R:	Vladimir Zapolskiy <vz@mleia.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
+> +F:	drivers/dma/lpc32xx-dmamux.c
+>  N:	lpc32xx
+>  
+>  ARM/Marvell Dove/MV78xx0/Orion SOC support
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index 002a5ec80620..aeace3d7e066 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -378,6 +378,15 @@ config LPC18XX_DMAMUX
+>  	  Enable support for DMA on NXP LPC18xx/43xx platforms
+>  	  with PL080 and multiplexed DMA request lines.
+>  
+> +config LPC32XX_DMAMUX
+> +	bool "NXP LPC32xx DMA MUX for PL080"
+> +	depends on ARCH_LPC32XX || COMPILE_TEST
+> +	depends on OF && AMBA_PL08X
+> +	select MFD_SYSCON
+> +	help
+> +	  Support for PL080 multiplexed DMA request lines on
+> +	  LPC32XX platrofm.
+> +
+>  config LS2X_APB_DMA
+>  	tristate "Loongson LS2X APB DMA support"
+>  	depends on LOONGARCH || COMPILE_TEST
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index 802ca916f05f..6f1350b62e7f 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -50,6 +50,7 @@ obj-$(CONFIG_INTEL_IOATDMA) += ioat/
+>  obj-y += idxd/
+>  obj-$(CONFIG_K3_DMA) += k3dma.o
+>  obj-$(CONFIG_LPC18XX_DMAMUX) += lpc18xx-dmamux.o
+> +obj-$(CONFIG_LPC32XX_DMAMUX) += lpc32xx-dmamux.o
+>  obj-$(CONFIG_LS2X_APB_DMA) += ls2x-apb-dma.o
+>  obj-$(CONFIG_MILBEAUT_HDMAC) += milbeaut-hdmac.o
+>  obj-$(CONFIG_MILBEAUT_XDMAC) += milbeaut-xdmac.o
+> diff --git a/drivers/dma/lpc32xx-dmamux.c b/drivers/dma/lpc32xx-dmamux.c
+> new file mode 100644
+> index 000000000000..4e6ce6026164
+> --- /dev/null
+> +++ b/drivers/dma/lpc32xx-dmamux.c
+> @@ -0,0 +1,195 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright 2024 Timesys Corporation <piotr.wojtaszczyk@timesys.com>
+> +//
+> +// Based on TI DMA Crossbar driver by:
+> +//   Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com
+> +//   Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> +
+> +#include <linux/err.h>
+> +#include <linux/init.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/of.h>
+> +#include <linux/of_dma.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/spinlock.h>
+> +
+> +#define LPC32XX_SSP_CLK_CTRL 0x78
+> +#define LPC32XX_I2S_CLK_CTRL 0x7c
+> +
+> +struct lpc32xx_dmamux {
+> +	int signal;
+> +	char *name_sel0;
+> +	char *name_sel1;
+> +	int muxval;
+> +	int muxreg;
+> +	int bit;
+> +	bool busy;
+> +};
+> +
+> +/* From LPC32x0 User manual "3.2.1 DMA request signals" */
+> +static struct lpc32xx_dmamux lpc32xx_muxes[] = {
+> +	{
+> +		.signal = 3,
+> +		.name_sel0 = "spi2-rx-tx",
+> +		.name_sel1 = "ssp1-rx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 5,
+> +	},
+> +	{
+> +		.signal = 10,
+> +		.name_sel0 = "uart7-rx",
+> +		.name_sel1 = "i2s1-dma1",
+> +		.muxreg = LPC32XX_I2S_CLK_CTRL,
+> +		.bit = 4,
+> +	},
+> +	{
+> +		.signal = 11,
+> +		.name_sel0 = "spi1-rx-tx",
+> +		.name_sel1 = "ssp1-tx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 4,
+> +	},
+> +	{
+> +		.signal = 14,
+> +		.name_sel0 = "none",
+> +		.name_sel1 = "ssp0-rx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 3,
+> +	},
+> +	{
+> +		.signal = 15,
+> +		.name_sel0 = "none",
+> +		.name_sel1 = "ssp0-tx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 2,
+> +	},
+> +};
+> +
+> +struct lpc32xx_dmamux_data {
+> +	struct dma_router dmarouter;
+> +	struct regmap *reg;
+> +	spinlock_t lock; /* protects busy status flag */
+> +};
+> +
+> +static void lpc32xx_dmamux_release(struct device *dev, void *route_data)
+> +{
+> +	struct lpc32xx_dmamux_data *dmamux = dev_get_drvdata(dev);
+> +	struct lpc32xx_dmamux *mux = route_data;
+> +	unsigned long flags;
+> +
+> +	dev_dbg(dev, "releasing dma request signal %d routed to %s\n",
+> +		mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
+> +
+> +	guard(spinlock)(&dmamux->lock);
+> +
+> +	mux->busy = false;
+> +}
+> +
+> +static void *lpc32xx_dmamux_reserve(struct of_phandle_args *dma_spec,
+> +				    struct of_dma *ofdma)
+> +{
+> +	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
+> +	struct device *dev = &pdev->dev;
+> +	struct lpc32xx_dmamux_data *dmamux = platform_get_drvdata(pdev);
+> +	unsigned long flags;
+> +	struct lpc32xx_dmamux *mux = NULL;
+> +	int i;
+> +
+> +	if (dma_spec->args_count != 3) {
+> +		dev_err(&pdev->dev, "invalid number of dma mux args\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(lpc32xx_muxes); i++) {
+> +		if (lpc32xx_muxes[i].signal == dma_spec->args[0])
+> +			mux = &lpc32xx_muxes[i];
+> +	}
+> +	if (!mux) {
+> +		dev_err(&pdev->dev, "invalid mux request number: %d\n",
+> +			dma_spec->args[0]);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	if (dma_spec->args[2] > 1) {
+> +		dev_err(&pdev->dev, "invalid dma mux value: %d\n",
+> +			dma_spec->args[1]);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	/* The of_node_put() will be done in the core for the node */
+> +	dma_spec->np = of_parse_phandle(ofdma->of_node, "dma-masters", 0);
+> +	if (!dma_spec->np) {
+> +		dev_err(&pdev->dev, "can't get dma master\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	spin_lock_irqsave(&dmamux->lock, flags);
+> +	if (mux->busy) {
+> +		spin_unlock_irqrestore(&dmamux->lock, flags);
+> +		dev_err(dev, "dma request signal %d busy, routed to %s\n",
+> +			mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
+> +		of_node_put(dma_spec->np);
+> +		return ERR_PTR(-EBUSY);
+> +	}
+> +
+> +	mux->busy = true;
+> +	mux->muxval = dma_spec->args[2] ? BIT(mux->bit) : 0;
+> +
+> +	regmap_update_bits(dmamux->reg, mux->muxreg, BIT(mux->bit), mux->muxval);
+> +	spin_unlock_irqrestore(&dmamux->lock, flags);
+> +
+> +	dma_spec->args[2] = 0;
+> +	dma_spec->args_count = 2;
+> +
+> +	dev_dbg(dev, "dma request signal %d routed to %s\n",
+> +		mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
+> +
+> +	return mux;
+> +}
+> +
+> +static int lpc32xx_dmamux_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct lpc32xx_dmamux_data *dmamux;
+> +	int ret;
+> +
+> +	dmamux = devm_kzalloc(&pdev->dev, sizeof(*dmamux), GFP_KERNEL);
+> +	if (!dmamux)
+> +		return -ENOMEM;
+> +
+> +	dmamux->reg = syscon_node_to_regmap(np->parent);
+> +	if (IS_ERR(dmamux->reg)) {
+> +		dev_err(&pdev->dev, "syscon lookup failed\n");
+> +		return PTR_ERR(dmamux->reg);
+> +	}
+> +
+> +	spin_lock_init(&dmamux->lock);
+> +	platform_set_drvdata(pdev, dmamux);
+> +	dmamux->dmarouter.dev = &pdev->dev;
+> +	dmamux->dmarouter.route_free = lpc32xx_dmamux_release;
+> +
+> +	return of_dma_router_register(np, lpc32xx_dmamux_reserve,
+> +				      &dmamux->dmarouter);
+> +}
+> +
+> +static const struct of_device_id lpc32xx_dmamux_match[] = {
+> +	{ .compatible = "nxp,lpc3220-dmamux" },
+> +	{},
+> +};
+> +
+> +static struct platform_driver lpc32xx_dmamux_driver = {
+> +	.probe	= lpc32xx_dmamux_probe,
+> +	.driver = {
+> +		.name = "lpc32xx-dmamux",
+> +		.of_match_table = lpc32xx_dmamux_match,
+> +	},
+> +};
+> +
+> +static int __init lpc32xx_dmamux_init(void)
+> +{
+> +	return platform_driver_register(&lpc32xx_dmamux_driver);
+> +}
+> +arch_initcall(lpc32xx_dmamux_init);
+> -- 
+> 2.25.1
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[01/23] ASoC: codecs: wcd-mbhc: Constify passed MBHC reg fields
-        commit: e565ab184946650f19afb9fe74f8be84fcb6d210
-[02/23] ASoC: codecs: wcd9335: Drop unused state container fields
-        commit: 60ce48f5311103dd7a09e12d0b75d7ec44e291d9
-[03/23] ASoC: codecs: wcd9335: Constify static data
-        commit: b2ff7c88bf751fa502f5707f0b7b047afcba87dc
-[04/23] ASoC: codecs: wcd9335: Handle nicer probe deferral and simplify with dev_err_probe()
-        commit: 4a03b5dbad466c902d522f3405daa4e5d80578c5
-[05/23] ASoC: codecs: wcd9335: Drop unneeded error message
-        commit: 3ed4beba49463997eb9a4afa0d46ece7dc5dbf19
-[06/23] ASoC: codecs: wcd9335: Drop unused dmic rate handling
-        commit: 1d1cda22da5db03a0c794d139e06519e3a94f815
-[07/23] ASoC: codecs: wcd934x: Drop unused interp path enum
-        commit: 1bce5c586ba56dfa6acf8d13f0f608f5f5d717bd
-[08/23] ASoC: codecs: wcd934x: Constify static data
-        commit: 5ad81bf49a18dc22bd7e1c56f67be9b5eb50267c
-[09/23] ASoC: codecs: wcd934x: Drop unused mic bias voltage fields
-        commit: a252188244aeff72e4331abba2fee6b9093c847b
-[10/23] ASoC: codecs: wcd934x: Handle nicer probe deferral and simplify with dev_err_probe()
-        commit: 9ea22713227397b56a2b36a68c8bda13f0b43d70
-[11/23] ASoC: codecs: wcd937x: Constify static data
-        commit: 0ad42c04e9b223d913ad4b1463c0f1cdc00f3cc5
-[12/23] ASoC: codecs: wcd937x: Constify wcd937x_sdw_ch_info
-        commit: c8ed66cbc3b7ccd9e5ae98b06023c1fe3e834ca8
-[13/23] ASoC: codecs: wcd937x: Drop unused enums, defines and types
-        commit: d8e746719d705427e69c7f0ac2ca20aaf560a03e
-[14/23] ASoC: codecs: wcd937x: Drop unused state container fields
-        commit: c2d9fd2e94588eb83f8855e942d77b5f539c5a5f
-[15/23] ASoC: codecs: wcd937x: Drop unused chipid member
-        commit: 6dc7b8a10419a267cd5eb7ac2bb407f7fc7865e2
-[16/23] ASoC: codecs: wcd938x: Constify static data
-        commit: 424e6bc4328b39a924cc2acb251868cfd23fe369
-[17/23] ASoC: codecs: wcd938x: Constify wcd938x_sdw_ch_info
-        commit: af57d5e3b58886ee5efc6ba9d0e25c8d1d3c3c37
-[18/23] ASoC: codecs: wcd938x: Drop unused RX/TX direction enum
-        commit: 43e7400f6bf51ecedf4ddad942cd812fe351ce74
-[19/23] ASoC: codecs: wcd938x: Drop unused num_ports field
-        commit: 3f1deca19e68e48bd89a72c4fe648275d9af574b
-[20/23] ASoC: codecs: wcd939x: Constify static data
-        commit: 8e5d5b2c96fadecdaebff5afcbb7f51580701122
-[21/23] ASoC: codecs: wcd939x: Constify wcd939x_sdw_ch_info
-        commit: f49100faccb5d2ffb4c9e5e4bba6173f5ac43d22
-[22/23] ASoC: codecs: wcd939x: Drop unused RX/TX direction enum
-        commit: 2642b6aa9d0f43c52c83461bc7ae4917336e7643
-[23/23] ASoC: codecs: wcd939x: Drop unused num_ports field
-        commit: 34935cd4721f0492eafbc516dd1fc7f5f687fa76
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+~Vinod
