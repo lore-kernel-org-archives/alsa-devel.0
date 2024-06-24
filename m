@@ -4,80 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B370C2BD09
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jun 2024 15:36:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D7EC2D0D1
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jun 2024 15:38:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0175784A;
-	Mon, 24 Jun 2024 17:36:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0175784A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9BEF851;
+	Mon, 24 Jun 2024 17:38:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9BEF851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719243399;
-	bh=EgQFS3N3hCwlYCyajVqk4Zaaf9e5hnpWdPb+4aYNjC8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1719243493;
+	bh=0s/P6tQyVgfOjIMVFT5641OfgAy/JT433Ll7izxB0ZU=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=V0H1uec5JaXWRbagI59xS3Y8l1uuJMX1CEsql/uNOi81AFUG04EzcYFSb9TOJVFg0
-	 L7m2BQC5CgkAwf2TfY1iQQvWm1VDHgAupEyZwsmeZo1DanRC7uWZB1Lcf9v7aihz/e
-	 MHkepIIlofx1FNwO6jfntcfaCxeoD8EactjxAveE=
+	b=TjP5mSukmjynUJgbDWGQ++5DtMJTYX3O+3k14CfGeZEMA9lqzdwisFjjeTTBVWYNV
+	 S2VwKjbcMN8LzueU8fEZo7CvMxt5i6kzi1+uwUE5Frm75UqjZFC694xGtzbMsV0ODO
+	 h758Hg3yTL60VkCBiFl1M7cgr+D8ubloVIrR+m1k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 408D5F805AC; Mon, 24 Jun 2024 17:36:06 +0200 (CEST)
+	id 5D637F805BB; Mon, 24 Jun 2024 17:37:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8D4FF800E4;
-	Mon, 24 Jun 2024 17:36:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9735F805BE;
+	Mon, 24 Jun 2024 17:37:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4A00F80495; Mon, 24 Jun 2024 17:36:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 802DAF804D6; Mon, 24 Jun 2024 17:37:35 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D8861F800E4
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2024 17:35:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8861F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7C914F800ED
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jun 2024 17:37:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C914F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VjdGYeA4
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id AA8CB60CF6;
-	Mon, 24 Jun 2024 15:35:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0105BC2BBFC;
-	Mon, 24 Jun 2024 15:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719243356;
-	bh=EgQFS3N3hCwlYCyajVqk4Zaaf9e5hnpWdPb+4aYNjC8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VjdGYeA4syzMQZkxTRcer3cCsEaZxlx6PKpC99s07L7jeXNfAmqzvLSO+v4dBYaxQ
-	 AX0b77QZbhnNZ7Qy7JtrjGDQto6t2gz7pFX92K3sXHG+xeSp6gErNWRSOYIvyrja6D
-	 wg1GUFhI9hVdaGAdrJ31iPl3w8xs0q+iKi5WMyuTl+5I06itUm5nlEtjpW8f3AnM1F
-	 yPnRlJtChYQDVVhA68QbC/tOZC7wCSZ7gEqMvpOpq2Di2PFvOzQauYzX7PLFL09j7q
-	 czo90fYVYggkHsFmllID/Z4qSPsQkbTo9dquxtKWd7rBtCrUAolJLKYUMYzIDu7YpS
-	 EpxZ3cL/IDbvg==
-Date: Mon, 24 Jun 2024 16:35:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.de,
-	Brent Lu <brent.lu@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 2/4] ASoC: Intel: maxim-common: add max_98373_get_tx_mask
- function
-Message-ID: <93abf3e8-ceef-4ad4-923f-ad7f9d9d7f85@sirena.org.uk>
-References: <20240624121119.91552-1-pierre-louis.bossart@linux.intel.com>
- <20240624121119.91552-3-pierre-louis.bossart@linux.intel.com>
- <f3b5caee-a27e-42f9-b541-4f6bf8e8d2f2@sirena.org.uk>
- <9394ab7c-d628-489b-9b88-66eb11fca0d7@linux.intel.com>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=ZeS1n9X3
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 45O49C58019003;
+	Mon, 24 Jun 2024 10:37:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	PODMain02222019; bh=JIBBI7ri/JiGWlrbGC0yAtwpafwJ8QnAF4gdojL3wyQ=; b=
+	ZeS1n9X3Pi9GTu0OIFbwpvwDA399+Ggs0zAZzF8SQSlDlO6vx28Rb7FmIML966fc
+	ePm55YmmqJYAp9YLWxOllwN3X+Y8mWbhWKVC9+EkdOB/aVTKFwA6XPi8stMY7yDW
+	IejBVAqqg0sTm7wrmDmOeq6OK8daffPGsV7TSgDOzXUNZCB8gJ9xz+ISFmPQH6OA
+	robucayr7S/mpkZjwMIgPlAupAo6g3Tm/O91tJ5feGDsJLcbSCnhlq2hnup/Ruca
+	ihlWBjWn4pOdF8xv2XZKd0+1fUkaTfmOUc5gu2DSHFEaMBEX9h+yQH1KeA4vXcXs
+	LRHprOjG5tv8kj0jaPXCFg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ywv0x9su9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 24 Jun 2024 10:37:22 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 24 Jun
+ 2024 16:37:19 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Mon, 24 Jun 2024 16:37:19 +0100
+Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com
+ [198.90.208.14])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id AA75D82024D;
+	Mon, 24 Jun 2024 15:37:19 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <perex@perex.cz>
+CC: <pierre-louis.bossart@linux.intel.com>, <bard.liao@intel.com>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>
+Subject: [PATCH alsa-ucm-conf v2 2/2] sof-soundwire: Add support for
+ cs42l43/cs35l56 bridge configuration
+Date: Mon, 24 Jun 2024 16:37:19 +0100
+Message-ID: <20240624153719.1053093-2-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240624153719.1053093-1-ckeepax@opensource.cirrus.com>
+References: <20240624153719.1053093-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gELP69sMmSUr3IJ+"
-Content-Disposition: inline
-In-Reply-To: <9394ab7c-d628-489b-9b88-66eb11fca0d7@linux.intel.com>
-X-Cookie: Allow 6 to 8 weeks for delivery.
-Message-ID-Hash: CD5T6WN6QCFVLMPV34L3U24YBA7SAOM6
-X-Message-ID-Hash: CD5T6WN6QCFVLMPV34L3U24YBA7SAOM6
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: KhaWOxRabp-kXA9tQZ0LXn9GNafY31aK
+X-Proofpoint-GUID: KhaWOxRabp-kXA9tQZ0LXn9GNafY31aK
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: RSTEXYFU3YFHF6YXZFIMTCAQJFCZWMGA
+X-Message-ID-Hash: RSTEXYFU3YFHF6YXZFIMTCAQJFCZWMGA
+X-MailFrom: prvs=3905e7e383=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CD5T6WN6QCFVLMPV34L3U24YBA7SAOM6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RSTEXYFU3YFHF6YXZFIMTCAQJFCZWMGA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,46 +108,105 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The cs42l43 has both a SPI master and an I2S interface, in some
+configurations 2 cs35l56 amplifiers are connected to these to provide
+bass speakers whilst the cs42l43's internal speaker drivers are used for
+the tweeters. Add UCM configuration for this type of system.
 
---gELP69sMmSUr3IJ+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-On Mon, Jun 24, 2024 at 05:26:37PM +0200, Pierre-Louis Bossart wrote:
-> On 6/24/24 14:37, Mark Brown wrote:
-> > On Mon, Jun 24, 2024 at 02:11:17PM +0200, Pierre-Louis Bossart wrote:
-> >> From: Brent Lu <brent.lu@intel.com>
+Changes since v1:
+ - Update control names to just "Speaker Switch/Volume"
 
-> >> Add a helper function max_98373_get_tx_mask() to get tx mask from
-> >> max98373 ACPI device properties at runtime.
+Thanks,
+Charles
 
-> > Similarly here.
+ ucm2/sof-soundwire/cs35l56-bridge.conf | 61 ++++++++++++++++++++++++++
+ ucm2/sof-soundwire/sof-soundwire.conf  |  2 +-
+ 2 files changed, 62 insertions(+), 1 deletion(-)
+ create mode 100644 ucm2/sof-soundwire/cs35l56-bridge.conf
 
-> I may have misunderstood Brent's patch but this isn't a fix really, more
-> a cleanup to use ACPI when possible, with a fallback to the existing
-> hard-coded setup if ACPI properties are not found.
+diff --git a/ucm2/sof-soundwire/cs35l56-bridge.conf b/ucm2/sof-soundwire/cs35l56-bridge.conf
+new file mode 100644
+index 0000000..dcf5e5c
+--- /dev/null
++++ b/ucm2/sof-soundwire/cs35l56-bridge.conf
+@@ -0,0 +1,61 @@
++# Use case Configuration for sof-soundwire card
++
++LibraryConfig.remap.Config {
++	ctl.default.map {
++		"name='Speaker Switch'" {
++			"name='AMPL Speaker Switch'".vindex.0 0
++			"name='AMPR Speaker Switch'".vindex.1 0
++		}
++		"name='Speaker Volume'" {
++			"name='AMPL Speaker Volume'".vindex.0 0
++			"name='AMPR Speaker Volume'".vindex.1 0
++		}
++	}
++}
++
++SectionDevice."Speaker" {
++	Comment "Speaker"
++
++	ConflictingDevice [
++		"Headphones"
++	]
++
++	EnableSequence [
++		cset "name='cs42l43 Speaker L Input 1' 'ASPRX1'"
++		cset "name='cs42l43 Speaker R Input 1' 'ASPRX2'"
++		cset "name='cs42l43 ASPTX1 Input' 'DP5RX1'"
++		cset "name='cs42l43 ASPTX2 Input' 'DP5RX2'"
++
++		cset "name='AMPL ASP1 TX1 Source' 'DSP1TX1'"
++		cset "name='AMPL ASP1 TX2 Source' 'None'"
++		cset "name='AMPL ASP1 TX3 Source' 'None'"
++		cset "name='AMPL ASP1 TX4 Source' 'None'"
++
++		cset "name='AMPR ASP1 TX1 Source' 'None'"
++		cset "name='AMPR ASP1 TX2 Source' 'DSP1TX1'"
++		cset "name='AMPR ASP1 TX3 Source' 'None'"
++		cset "name='AMPR ASP1 TX4 Source' 'None'"
++
++		cset "name='cs42l43 Speaker Digital Switch' 1"
++		cset "name='cs42l43 Speaker Digital Volume' 128"
++	]
++
++	DisableSequence [
++		cset "name='cs42l43 Speaker Digital Switch' 0"
++
++		cset "name='AMPL ASP1 TX2 Source' 'None'"
++		cset "name='AMPR ASP1 TX1 Source' 'None'"
++
++		cset "name='cs42l43 ASPTX1 Input' 'None'"
++		cset "name='cs42l43 ASPTX2 Input' 'None'"
++		cset "name='cs42l43 Speaker L Input 1' 'None'"
++		cset "name='cs42l43 Speaker R Input 1' 'None'"
++	]
++
++	Value {
++		PlaybackPriority 100
++		PlaybackPCM "hw:${CardId},0"
++		PlaybackMixer "default:${CardId}"
++		PlaybackMixerElem "Speaker"
++	}
++}
+diff --git a/ucm2/sof-soundwire/sof-soundwire.conf b/ucm2/sof-soundwire/sof-soundwire.conf
+index 2f61d11..2ede1cd 100644
+--- a/ucm2/sof-soundwire/sof-soundwire.conf
++++ b/ucm2/sof-soundwire/sof-soundwire.conf
+@@ -21,7 +21,7 @@ Define {
+ 
+ DefineRegex {
+ 	SpeakerCodec {
+-		Regex " spk:([a-z0-9]+((-sdca)|(-spk))?)"
++		Regex " spk:([a-z0-9]+((-sdca)|(-spk)|(-bridge))?)"
+ 		String "${CardComponents}"
+ 	}
+ 	SpeakerChannels {
+-- 
+2.39.2
 
-> I don't think it's a real 'fix' impacting users, in the linux-stable
-> sense, nor that this needs to be back-ported with case.
-
-> Brent, please chime in if I am mistaken?
-
-Yes, in this case the issue is that everything else looked like it
-should be a fix but this isn't.
-
---gELP69sMmSUr3IJ+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmZ5klcACgkQJNaLcl1U
-h9ATaQf7BS0MRUDq8ll2yZy/3GxQTDr1QWBMj4d8XiPFn1wPdMU4X105ErVUPZSa
-hRop3SqlCJlrJ+YfqaCfjtq26517mHXrUtADTN3zmGcJIjG6UTmjox2pFxI82yFa
-wxxDrRUCTLnZwIQJDZGy2zQPvXueWy9+psxHKMM2K7t47feb43Iw2drpxByKUUYQ
-H1DCxOT1Dv6ZEsVLqpzrhfAuE8MAxBB75g76BoiDvJBpvyDheuVZqMfFIHbsCmwZ
-sUPE7SvN04hbB5xaj88TFxcBoe1AfmL9roQAGUcd8w08QdNBRuOHht4291Dpa8mm
-ss5+gq0LDmeHVQjVJo4Dq8yf7oeXpQ==
-=0k7m
------END PGP SIGNATURE-----
-
---gELP69sMmSUr3IJ+--
