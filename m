@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D20C30653
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:30:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B370C30653
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:31:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31B8B1A2D;
-	Mon,  1 Jul 2024 14:30:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31B8B1A2D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 217B22BE2;
+	Mon,  1 Jul 2024 14:31:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 217B22BE2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719837058;
-	bh=5J5ZNAAJbWkqzsag62Y82/cg4YZqgDN0MGp8CKzv1Bo=;
+	s=default; t=1719837073;
+	bh=RwEbAitLFL9PC/JlGA/nlGvdPfzpJSsLUjUj4Z2NcZY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=T3jP73X9Ys6uHobAyIP/fO+Ui6ka7Z6Rcu1qP8bATED4X5I4gpyJ9nv8q9XHcdbeS
-	 ku3ZUwUIX4D/9B1CYsLnnJN/eVK41XiU2/tEYbZAEIdBy+W2ST+kkbojusAMtjz3Ld
-	 iyjFrZC4VNm+PkOCo+Zs1Yyx4aoMJbYauOS1QeTg=
+	b=M8prlV9OtcpKb7e2qnBCn3Dd/xjQ2iCn1SupZUKAiXnU/waMWUqyIcgBo7gNqxASj
+	 88Bu6u46SOEFAwS9+qYHZDby2LhUnPg1GYxHSslMIZblNuNAvc2cD1aA9N8Ljk0SNt
+	 vOMJfo3eolkB3nDsBCVSf5if7o4aVHJJtwWP6fzc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A466BF898DC; Mon,  1 Jul 2024 14:22:13 +0200 (CEST)
+	id 9C9D6F89902; Mon,  1 Jul 2024 14:22:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 495AAF898E5;
-	Mon,  1 Jul 2024 14:22:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 419F9F898F7;
+	Mon,  1 Jul 2024 14:22:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01609F8049C; Tue, 25 Jun 2024 10:46:07 +0200 (CEST)
+	id 5A28BF80495; Tue, 25 Jun 2024 10:46:11 +0200 (CEST)
 Received: from mail78-63.sinamail.sina.com.cn (mail78-63.sinamail.sina.com.cn
  [219.142.78.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D13FFF80495
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2024 10:41:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D13FFF80495
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2F07FF80154
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2024 10:41:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F07FF80154
 Received: from unknown (HELO zy-virtual-machine.localdomain)([116.227.101.59])
 	by sina.net (10.75.30.239) with ESMTP
-	id 667A82A40003052C; Tue, 25 Jun 2024 16:41:11 +0800 (CST)
+	id 667A82A40003052C; Tue, 25 Jun 2024 16:41:14 +0800 (CST)
 X-Sender: zhangyi@everest-semi.com
 X-Auth-ID: zhangyi@everest-semi.com
 Authentication-Results: sina.net;
 	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 497D618406DB483D9F6B597236DEACE6
-X-SMAIL-UIID: 497D618406DB483D9F6B597236DEACE6-20240625-164111
+X-SMAIL-MID: BEDC5FDE2F4A442898948933E9459461
+X-SMAIL-UIID: BEDC5FDE2F4A442898948933E9459461-20240625-164114
 From: Zhang Yi <zhangyi@everest-semi.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
@@ -54,9 +54,9 @@ Cc: tiwai@suse.com,
 	yangxiaohua@everest-semi.com,
 	zhuning@everest-semi.com,
 	zhangyi@everest-semi.com
-Subject: [PATCH v1 1/4] ASoC: codecs: ES8326: Slove headphone detection issue
-Date: Tue, 25 Jun 2024 16:41:04 +0800
-Message-Id: <20240625084107.3177-2-zhangyi@everest-semi.com>
+Subject: [PATCH v1 4/4] ASoC: codecs: ES8326: regcache_sync error issue
+Date: Tue, 25 Jun 2024 16:41:07 +0800
+Message-Id: <20240625084107.3177-5-zhangyi@everest-semi.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240625084107.3177-1-zhangyi@everest-semi.com>
 References: <20240625084107.3177-1-zhangyi@everest-semi.com>
@@ -66,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: VRDAHVKVYYFI2NCBFL2G45WVM5FBKLP7
-X-Message-ID-Hash: VRDAHVKVYYFI2NCBFL2G45WVM5FBKLP7
+Message-ID-Hash: 6VIXDSTQW5ZHA5ALTYWB5MBECXGN2WMU
+X-Message-ID-Hash: 6VIXDSTQW5ZHA5ALTYWB5MBECXGN2WMU
 X-Mailman-Approved-At: Mon, 01 Jul 2024 12:21:45 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VRDAHVKVYYFI2NCBFL2G45WVM5FBKLP7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VIXDSTQW5ZHA5ALTYWB5MBECXGN2WMU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,50 +83,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We modified the headphone detection setting to avoid an error button state
-after codec resume from suspend state
+There are several registers that should be read-only registers.
+If these registers are written while synchronizing the register values,
+the codec will enter an error state.So we create es8326_writeable_register,
+and set these registers to false
 
 Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
 ---
- sound/soc/codecs/es8326.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/es8326.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 4d87bebca5c1..8c9d79686185 100755
+index 51ca17b779c2..d665fdbfc94f 100755
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
-@@ -877,6 +877,8 @@ static void es8326_jack_detect_handler(struct work_struct *work)
- 		if (es8326->jack->status & SND_JACK_HEADSET) {
- 			/* detect button */
- 			dev_dbg(comp->dev, "button pressed\n");
-+			regmap_write(es8326->regmap, ES8326_INT_SOURCE,
-+					(ES8326_INT_SRC_PIN9 | ES8326_INT_SRC_BUTTON));
- 			queue_delayed_work(system_wq, &es8326->button_press_work, 10);
- 			goto exit;
- 		}
-@@ -1052,11 +1054,6 @@ static int es8326_resume(struct snd_soc_component *component)
- 
- 	regmap_write(es8326->regmap, ES8326_ADC_MUTE, 0x0f);
- 
--	es8326->jack_remove_retry = 0;
--	es8326->hp = 0;
--	es8326->hpl_vol = 0x03;
--	es8326->hpr_vol = 0x03;
--
- 	es8326_irq(es8326->irq, es8326);
- 	return 0;
- }
-@@ -1211,6 +1208,10 @@ static int es8326_i2c_probe(struct i2c_client *i2c)
+@@ -329,11 +329,29 @@ static bool es8326_volatile_register(struct device *dev, unsigned int reg)
  	}
+ }
  
- 	es8326->irq = i2c->irq;
-+	es8326->jack_remove_retry = 0;
-+	es8326->hp = 0;
-+	es8326->hpl_vol = 0x03;
-+	es8326->hpr_vol = 0x03;
- 	INIT_DELAYED_WORK(&es8326->jack_detect_work,
- 			  es8326_jack_detect_handler);
- 	INIT_DELAYED_WORK(&es8326->button_press_work,
++static bool es8326_writeable_register(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case ES8326_BIAS_SW1:
++	case ES8326_BIAS_SW2:
++	case ES8326_BIAS_SW3:
++	case ES8326_BIAS_SW4:
++	case ES8326_ADC_HPFS1:
++	case ES8326_ADC_HPFS2:
++		return false;
++	default:
++		return true;
++	}
++}
++
+ static const struct regmap_config es8326_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+ 	.max_register = 0xff,
++	.use_single_read = true,
++	.use_single_write = true,
+ 	.volatile_reg = es8326_volatile_register,
++	.writeable_reg = es8326_writeable_register,
+ 	.cache_type = REGCACHE_RBTREE,
+ };
+ 
 -- 
 2.17.1
 
