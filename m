@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E2ADC2BBCA
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jun 2024 17:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 361CDC2BBCA
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jun 2024 17:03:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67CAADF6;
-	Tue, 25 Jun 2024 19:02:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67CAADF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 910FFA4A;
+	Tue, 25 Jun 2024 19:03:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 910FFA4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719334939;
-	bh=vF37Z0aZiJEeLWEKoNSeoRo+xDDMR/tNEztnp1b16K4=;
+	s=default; t=1719334996;
+	bh=y3htqwDN0XseeP3AmeXvMD2+z6ibtcfQIpv1xEtcXxY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=a4hMVAE8O84kamugPzX47NgohCtyZZaRpluIp+73k6WXfYB5i04Kf0mLmAVgX/M5H
-	 e8abISZClgfKRpfcxq3d3Qp9IcTyYBO02ZBo2+ibFQpPqB9Smk1hgmI3tTv0UmKckb
-	 OR586ZBEgyT91ct9m/ciootQmPBv0Ph2wIXCEeC4=
+	b=h+YQfYrKpr+whXHjATpsdACfy7RHXRGb+3nh79f3VUq42iV4+JGW5ogojMgjmzxsR
+	 uLKJACYcmlru9yzf242w0ryF3JXSWCGPMpIneopij6uVV//3bDtlEmvjYn1s6+BZ5I
+	 w+y9uHmuFmUN8gxS5jZpwHfT6bGUK9loMWFTUIgE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40FC0F805BA; Tue, 25 Jun 2024 19:01:59 +0200 (CEST)
+	id 7F32BF805B5; Tue, 25 Jun 2024 19:02:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52170F805C1;
-	Tue, 25 Jun 2024 19:01:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C93F5F805B0;
+	Tue, 25 Jun 2024 19:02:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7ED0BF804D6; Tue, 25 Jun 2024 18:59:14 +0200 (CEST)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
- [IPv6:2a00:1450:4864:20::22d])
+	id 7AEF4F8049C; Tue, 25 Jun 2024 18:59:23 +0200 (CEST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A60BFF80423
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2024 18:59:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A60BFF80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id 15740F80495
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jun 2024 18:59:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15740F80495
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=UcR1Z7aw
-Received: by mail-lj1-x22d.google.com with SMTP id
- 38308e7fff4ca-2ec52fbb50aso42181641fa.3
+ header.s=google header.b=te4bBZ8c
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-424a3199302so8920025e9.1
         for <alsa-devel@alsa-project.org>;
- Tue, 25 Jun 2024 09:59:04 -0700 (PDT)
+ Tue, 25 Jun 2024 09:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719334743; x=1719939543;
+        d=linaro.org; s=google; t=1719334746; x=1719939546;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=re76ACXG9OmJmqLT6FZEpdvG6nPrWdtBRKUnS+4yqic=;
-        b=UcR1Z7aweAZDGu4AugYhsFBmQlBWc578AXTphzBeod31dOoHOT0hqOZTjbR+jWXR5F
-         b4rMAcmRzPGhSoV1BNidUkcyWxloTAGXs+EyxaPxzLbZhTymI9XIvNjtj/hgyyU1WPiT
-         SuhMM5xlYhOfcDtzpjk2Ll2eI1vFBBPFetkkaNlM5yxUpYHZPt2BJfzTPFuIui/8GUgn
-         NdW/MnY786UZBTahtiZkyDu7yLHpLVcX80cmQaCpOALkej5gURJjbDEhjY28LD/EHpbG
-         lBvPQePRwkMMNvH0j475r0I6dkHNBcj9f1FfsYphUtN+BdG65kxXaYWAPATZNgNzcElo
-         ZAww==
+        bh=Feb3wBs1ylh68PPfyazYh/ye8uWe345y7ux2XOxGtQc=;
+        b=te4bBZ8cOmqEvn80BF6W4BJthkdrl6F5PzbiswpC4TxCh3bi6z+w3FXt6swmH19qMX
+         /Oq/yVBVn3PZqjdZgvC1QS2t8Fx8HX5Sp3wOxN4Mu7uoM2POuVmNthvoY/4LdgHRx3j8
+         wA1SUyK3NliLPjAeptPhFIAefXZxlS6rB9zYXG19ZHtU5ckECNF0s3MJWMSchwspdiBM
+         7P3WQODRbhUjj91FwhrJ3kFv+WO2NzuJsmudgyXsyay5z+B/+L93QYhys//wit2kIrRq
+         qLfwHFOHlbgxRCxkTng0gwgLAFadFGpsAo1VLoJt+pnEt4SKee7mjUEzSNmqRJhq82PQ
+         KyAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719334743; x=1719939543;
+        d=1e100.net; s=20230601; t=1719334746; x=1719939546;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=re76ACXG9OmJmqLT6FZEpdvG6nPrWdtBRKUnS+4yqic=;
-        b=JlA7K4qHuLAJNacZJNRr7BUAObS7G74vdtIA1E69U5wPreakTjNWLd00s59luVTXSb
-         bAz6J9jVaKaRz4j6oMh9H/TONdprD+NOPJnwM3It5YCE1QvnktZCe1sIZGZGcsdy/Ux7
-         9PDIb5dOK7/hzkxquyfFeKH0QdUfQsKTK966g53uXAJvwv+yZU2Bd6/4Ji7lHqaMhYG8
-         6RHhVcLfdtQEWb/5w1rO+Lj3DwUhS+lF310b+dwFGXPzpAbpKtOVmK8QHUpOZIf8fnOh
-         0M/hiLWvfs/Ig08srDV32OBABy5dApHUnyzanNeCSQNmMOql4PZgTBbYFHCSFROr3BNk
-         jhHw==
-X-Gm-Message-State: AOJu0YxtfjJx375xDKYrEE9JBWzSQW/8fsvy4oFc1pi4awJqk0WnivDB
-	RCnxTf0Vw5GWRVhvTgSa700DhJJaZDPcu2fOqKJ3zkXp4GOM6AP0zn/E/+KMma4=
+        bh=Feb3wBs1ylh68PPfyazYh/ye8uWe345y7ux2XOxGtQc=;
+        b=iLhIdkG74kThbvcOe68m6YNvMhEO7hw0KeLScwvA8OLA1bvoEaOiRhUmPCroVUqkZ5
+         V//LjvURb4tqvDNS4i3fiMfOabh1+i8jxfSS4556kpZHyl0cKArfTHLJI3Bx36bzijBR
+         TGvuNTxJ1q5hQYFuahQvmzEiyvFGKonAn/coCjaTBNOL816rAE4fV4RmmSJl+FglOD81
+         d0Vs7xj7/G0patTrO34HGRFhA+Wx2ItlB9zbybzEkJVAyLW0DaOxKCzU0+Cgml6zmOyJ
+         gpR4Z9UHn1gLcOWAxt/aPCh4nwSZYj6ww+FDhYHtBUijtLv1BzUPt74z0gHd/bUusABG
+         7ofg==
+X-Gm-Message-State: AOJu0YzgkkMMlMrmFMlViQH+EtKHGKXEiZNryoJrKcIbJiRsCq+/bAWN
+	hZDKy2hSYn5VdBUvkw0myD4OxLelXve7VicuHwdhWMkx1fmy8mEQgWGxc2d4200=
 X-Google-Smtp-Source: 
- AGHT+IGR7Qhyf8Y3HWNl1SPoUEbvvo2YHcOxUjAhBJioVQV9vrofLD/WBQj8YIQ9FREJo6iOttG1lg==
-X-Received: by 2002:ac2:515d:0:b0:52b:c233:113c with SMTP id
- 2adb3069b0e04-52ce1835167mr5952139e87.17.1719334743050;
-        Tue, 25 Jun 2024 09:59:03 -0700 (PDT)
+ AGHT+IF22UzZEXFpOzb2iTYo18q9uFVJ17yVvrzfWKhY5vzcQTEtrJtYbkUY+Dxz7erSrRO6h1E3Uw==
+X-Received: by 2002:a05:600c:5692:b0:424:8dba:4a43 with SMTP id
+ 5b1f17b1804b1-4248dba4d52mr64609925e9.5.1719334745824;
+        Tue, 25 Jun 2024 09:59:05 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4247d211881sm217969785e9.46.2024.06.25.09.59.01
+ 5b1f17b1804b1-4247d211881sm217969785e9.46.2024.06.25.09.59.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jun 2024 09:59:02 -0700 (PDT)
+        Tue, 25 Jun 2024 09:59:05 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Tue, 25 Jun 2024 18:58:45 +0200
-Subject: [PATCH 1/3] ASoC: codecs: lpass-wsa-macro: Drop unused define
+Date: Tue, 25 Jun 2024 18:58:47 +0200
+Subject: [PATCH 3/3] ASoC: codecs: lpass-wsa-macro: Correct support for
+ newer v2.5 version
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240625-qcom-audio-wsa-second-speaker-v1-1-f65ffdfc368c@linaro.org>
+ <20240625-qcom-audio-wsa-second-speaker-v1-3-f65ffdfc368c@linaro.org>
 References: 
  <20240625-qcom-audio-wsa-second-speaker-v1-0-f65ffdfc368c@linaro.org>
 In-Reply-To: 
@@ -102,25 +103,25 @@ Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=701;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=17313;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=vF37Z0aZiJEeLWEKoNSeoRo+xDDMR/tNEztnp1b16K4=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmevdR2h79GggPHusd3v4VoaUckqX1xpQHoZro9
- O3/5py+BuSJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZnr3UQAKCRDBN2bmhouD
- 17waEACaU+lphVs4h28nyJ272D/X1VUo+55FfxobbeqYsSpPQ51epzL42gqR6bZv/EAhLTwpt9p
- tIis5PZNOFo84hb8oeOmO+BOQJ2mLXJlXxZqQIyKY5up0QeZVRjsPhiuKEfXgBEMCHNHfHFMN3+
- HphpHgIKzGKXUYKrhe9Ymyz9/idKlT7q+YbJ8kaIMSNGHAmxhnBio7z87BR0u4oepsPiMYb4XRk
- 6OwBj/p0uW9Ux2VOb7qn33XJvVRAxJXLVDQIsktfSKvVKaNQWBZouBalLkU7PpAXhxbZt85qgrA
- X2TgQkWpNalV4iUINTzg1xdLleD6++IOMBvrfyLtotLRV95YQwZjjqCgPXCjVJJJzZTUeVBpJgN
- M8F9oqkjDzJVvPd+85LopPzGg/LN7PeJwumRXczq8KZ6un/s+JJNOrYMadyjc39bULymJ7P/CxJ
- IUne9tVtpFoyvXGI6sivNZ0ZlWhPzMo4ysolyQZW6t/VAXU17mxWsZguBDEbwgNlZZSfbWd1Axu
- AgYjSR37ujOpePfPwL+Qw6/fnZxEtLxoGTvXQ6szdtfzkY7r4AaN3GdZ1IxXqOewTt5Lo8iaOi2
- zGCzV+jMP4w2wcumATat+vyR/pQ/kSw8Xd/n8tGi2foCCe6J3y3xQXqUt/Y3zKtvNRPwfDa0TN7
- KvinIJNSTw+speg==
+ bh=y3htqwDN0XseeP3AmeXvMD2+z6ibtcfQIpv1xEtcXxY=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmevdTrYCdl0xpneRexSl2DMx1gUNiw1OaG/46W
+ Wv43wh7eYCJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZnr3UwAKCRDBN2bmhouD
+ 15ZzD/0QyjS8pm+NZhuquJtxoPqTkvHKXJooFqpHPE9I30J1LxK12yQ/k2Qc0GTVFlSUfcacA0k
+ CoF7Jj9Lm2Kq0nC9VR65L0/0luuI3zItFWmRY+XrNKwVm1SqdlODVdQ6G2+xmTlHO9hNjBYXv2y
+ 6Dhc+d2jfrdjcaPSu+AE56LvU4vltSHpLlOSbLWUT3i6rtoEWnEnYVBKboENXFtoYUN8829mqMa
+ LEMsw6HZlyT+hRIn8hgYukKTFasW0bElwPpO9/b1r+xoBkCJes0rj9oXZZm2f6BOoI/VQDYpJOc
+ vU+vutYstpNEHL/kD9qJG5hD09q5C6TJiRRZdgEhs3yoL6JMjeyFV9crtJRINqOSphWxtku+HjL
+ fKHxvURtttOP4G5me2Jvjz2W7/OAePl92m0eotEELRklVcKUQO89CjqX1r1rY5G4QNOGiHTjq9W
+ 01OrCx0lD+/fo1bd+F+NtNuYbHelbeJZNc9EWcCgOSdN5pdpBCMZcRP/q3wEb93JgeJs5faje6S
+ d8UXXvHHtYrr5JLCJE9zyhHvYCcprfr+YVDrTN+9IwlRsuO5LEC65GU18SuDhOqdG4lSqgf6IQz
+ jn13QLkUoQRJVrxUt9n1/uVmXaanjeeWXnOu9p/dlDmETW2UTREwTR9ga0UwQePU5wclp82gmAx
+ jlHuL7hjXRTAp9A==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: WLIDS2QIVNX3AO5OX7IJPXK4XE5BRC7B
-X-Message-ID-Hash: WLIDS2QIVNX3AO5OX7IJPXK4XE5BRC7B
+Message-ID-Hash: KCZQHICTTL24V42U5A45LKDPHHHHMXCJ
+X-Message-ID-Hash: KCZQHICTTL24V42U5A45LKDPHHHHMXCJ
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +134,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WLIDS2QIVNX3AO5OX7IJPXK4XE5BRC7B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KCZQHICTTL24V42U5A45LKDPHHHHMXCJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,25 +143,463 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-WSA_MACRO_MUX_INP_MASK2 define is not used.
+Starting with v2.5 of Qualcomm LPASS Codec, few registers in the WSA
+macro block change.  Bring proper support for this v2.5 and newer
+versions, to fix second speaker playback (speaker was silent).
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/lpass-wsa-macro.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/lpass-wsa-macro.c | 309 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 306 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 6ce309980cd1..d12aff62a868 100644
+index 7888bc6c7dbb..10900c6bca7d 100644
 --- a/sound/soc/codecs/lpass-wsa-macro.c
 +++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -235,7 +235,6 @@
- #define NUM_INTERPOLATORS 2
- #define WSA_NUM_CLKS_MAX	5
- #define WSA_MACRO_MCLK_FREQ 19200000
--#define WSA_MACRO_MUX_INP_MASK2 0x38
- #define WSA_MACRO_MUX_CFG_OFFSET 0x8
- #define WSA_MACRO_MUX_CFG1_OFFSET 0x4
- #define WSA_MACRO_RX_COMP_OFFSET 0x40
+@@ -216,6 +216,47 @@
+ #define CDC_WSA_SOFTCLIP1_CRC			(0x0640)
+ #define CDC_WSA_SOFTCLIP1_SOFTCLIP_CTRL		(0x0644)
+ 
++/* LPASS codec version >=2.5 register offsets */
++#define CDC_WSA_TOP_FS_UNGATE			(0x00AC)
++#define CDC_WSA_TOP_GRP_SEL			(0x00B0)
++#define CDC_WSA_TOP_FS_UNGATE2			(0x00DC)
++#define CDC_2_5_WSA_COMPANDER0_CTL8		(0x05A0)
++#define CDC_2_5_WSA_COMPANDER0_CTL9		(0x05A4)
++#define CDC_2_5_WSA_COMPANDER0_CTL10		(0x05A8)
++#define CDC_2_5_WSA_COMPANDER0_CTL11		(0x05AC)
++#define CDC_2_5_WSA_COMPANDER0_CTL12		(0x05B0)
++#define CDC_2_5_WSA_COMPANDER0_CTL13		(0x05B4)
++#define CDC_2_5_WSA_COMPANDER0_CTL14		(0x05B8)
++#define CDC_2_5_WSA_COMPANDER0_CTL15		(0x05BC)
++#define CDC_2_5_WSA_COMPANDER0_CTL16		(0x05C0)
++#define CDC_2_5_WSA_COMPANDER0_CTL17		(0x05C4)
++#define CDC_2_5_WSA_COMPANDER0_CTL18		(0x05C8)
++#define CDC_2_5_WSA_COMPANDER0_CTL19		(0x05CC)
++#define CDC_2_5_WSA_COMPANDER1_CTL0		(0x05E0)
++#define CDC_2_5_WSA_COMPANDER1_CTL1		(0x05E4)
++#define CDC_2_5_WSA_COMPANDER1_CTL2		(0x05E8)
++#define CDC_2_5_WSA_COMPANDER1_CTL3		(0x05EC)
++#define CDC_2_5_WSA_COMPANDER1_CTL4		(0x05F0)
++#define CDC_2_5_WSA_COMPANDER1_CTL5		(0x05F4)
++#define CDC_2_5_WSA_COMPANDER1_CTL6		(0x05F8)
++#define CDC_2_5_WSA_COMPANDER1_CTL7		(0x05FC)
++#define CDC_2_5_WSA_COMPANDER1_CTL8		(0x0600)
++#define CDC_2_5_WSA_COMPANDER1_CTL9		(0x0604)
++#define CDC_2_5_WSA_COMPANDER1_CTL10		(0x0608)
++#define CDC_2_5_WSA_COMPANDER1_CTL11		(0x060C)
++#define CDC_2_5_WSA_COMPANDER1_CTL12		(0x0610)
++#define CDC_2_5_WSA_COMPANDER1_CTL13		(0x0614)
++#define CDC_2_5_WSA_COMPANDER1_CTL14		(0x0618)
++#define CDC_2_5_WSA_COMPANDER1_CTL15		(0x061C)
++#define CDC_2_5_WSA_COMPANDER1_CTL16		(0x0620)
++#define CDC_2_5_WSA_COMPANDER1_CTL17		(0x0624)
++#define CDC_2_5_WSA_COMPANDER1_CTL18		(0x0628)
++#define CDC_2_5_WSA_COMPANDER1_CTL19		(0x062C)
++#define CDC_2_5_WSA_SOFTCLIP0_CRC		(0x0640)
++#define CDC_2_5_WSA_SOFTCLIP0_SOFTCLIP_CTRL	(0x0644)
++#define CDC_2_5_WSA_SOFTCLIP1_CRC		(0x0660)
++#define CDC_2_5_WSA_SOFTCLIP1_SOFTCLIP_CTRL	(0x0664)
++
+ #define WSA_MACRO_RX_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
+ 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
+ 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
+@@ -387,16 +428,34 @@ static const struct wsa_reg_layout wsa_codec_v2_1 = {
+ 	.softclip1_reg_offset			= 0x40,
+ };
+ 
++static const struct wsa_reg_layout wsa_codec_v2_5 = {
++	.rx_intx_1_mix_inp0_sel_mask		= GENMASK(3, 0),
++	.rx_intx_1_mix_inp1_sel_mask		= GENMASK(7, 4),
++	.rx_intx_1_mix_inp2_sel_mask		= GENMASK(7, 4),
++	.rx_intx_2_sel_mask			= GENMASK(3, 0),
++	.compander1_reg_offset			= 0x60,
++	.softclip0_reg_base			= 0x640,
++	.softclip1_reg_offset			= 0x20,
++};
++
+ static const DECLARE_TLV_DB_SCALE(digital_gain, -8400, 100, -8400);
+ 
+ static const char *const rx_text_v2_1[] = {
+ 	"ZERO", "RX0", "RX1", "RX_MIX0", "RX_MIX1", "DEC0", "DEC1"
+ };
+ 
++static const char *const rx_text_v2_5[] = {
++	"ZERO", "RX0", "RX1", "RX_MIX0", "RX_MIX1", "RX4", "RX5", "RX6", "RX7", "RX8", "DEC0", "DEC1"
++};
++
+ static const char *const rx_mix_text_v2_1[] = {
+ 	"ZERO", "RX0", "RX1", "RX_MIX0", "RX_MIX1"
+ };
+ 
++static const char *const rx_mix_text_v2_5[] = {
++	"ZERO", "RX0", "RX1", "RX_MIX0", "RX_MIX1", "RX4", "RX5", "RX6", "RX7", "RX8"
++};
++
+ static const char *const rx_mix_ec_text[] = {
+ 	"ZERO", "RX_MIX_TX0", "RX_MIX_TX1"
+ };
+@@ -434,6 +493,22 @@ static const struct soc_enum rx0_mix_chain_enum_v2_1 =
+ 	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT0_CFG1,
+ 		0, 5, rx_mix_text_v2_1);
+ 
++static const struct soc_enum rx0_prim_inp0_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT0_CFG0,
++		0, 12, rx_text_v2_5);
++
++static const struct soc_enum rx0_prim_inp1_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT0_CFG0,
++		4, 12, rx_text_v2_5);
++
++static const struct soc_enum rx0_prim_inp2_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT0_CFG1,
++		4, 12, rx_text_v2_5);
++
++static const struct soc_enum rx0_mix_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT0_CFG1,
++		0, 10, rx_mix_text_v2_5);
++
+ static const struct soc_enum rx0_sidetone_mix_enum =
+ 	SOC_ENUM_SINGLE(SND_SOC_NOPM, 0, 2, rx_sidetone_mix_text);
+ 
+@@ -449,6 +524,18 @@ static const struct snd_kcontrol_new rx0_prim_inp2_mux_v2_1 =
+ static const struct snd_kcontrol_new rx0_mix_mux_v2_1 =
+ 	SOC_DAPM_ENUM("WSA_RX0 MIX Mux", rx0_mix_chain_enum_v2_1);
+ 
++static const struct snd_kcontrol_new rx0_prim_inp0_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX0 INP0 Mux", rx0_prim_inp0_chain_enum_v2_5);
++
++static const struct snd_kcontrol_new rx0_prim_inp1_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX0 INP1 Mux", rx0_prim_inp1_chain_enum_v2_5);
++
++static const struct snd_kcontrol_new rx0_prim_inp2_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX0 INP2 Mux", rx0_prim_inp2_chain_enum_v2_5);
++
++static const struct snd_kcontrol_new rx0_mix_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX0 MIX Mux", rx0_mix_chain_enum_v2_5);
++
+ static const struct snd_kcontrol_new rx0_sidetone_mix_mux =
+ 	SOC_DAPM_ENUM("WSA_RX0 SIDETONE MIX Mux", rx0_sidetone_mix_enum);
+ 
+@@ -469,6 +556,22 @@ static const struct soc_enum rx1_mix_chain_enum_v2_1 =
+ 	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT1_CFG1,
+ 		0, 5, rx_mix_text_v2_1);
+ 
++static const struct soc_enum rx1_prim_inp0_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT1_CFG0,
++		0, 12, rx_text_v2_5);
++
++static const struct soc_enum rx1_prim_inp1_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT1_CFG0,
++		4, 12, rx_text_v2_5);
++
++static const struct soc_enum rx1_prim_inp2_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT1_CFG1,
++		4, 12, rx_text_v2_5);
++
++static const struct soc_enum rx1_mix_chain_enum_v2_5 =
++	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_INT1_CFG1,
++		0, 10, rx_mix_text_v2_5);
++
+ static const struct snd_kcontrol_new rx1_prim_inp0_mux_v2_1 =
+ 	SOC_DAPM_ENUM("WSA_RX1 INP0 Mux", rx1_prim_inp0_chain_enum_v2_1);
+ 
+@@ -481,6 +584,18 @@ static const struct snd_kcontrol_new rx1_prim_inp2_mux_v2_1 =
+ static const struct snd_kcontrol_new rx1_mix_mux_v2_1 =
+ 	SOC_DAPM_ENUM("WSA_RX1 MIX Mux", rx1_mix_chain_enum_v2_1);
+ 
++static const struct snd_kcontrol_new rx1_prim_inp0_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX1 INP0 Mux", rx1_prim_inp0_chain_enum_v2_5);
++
++static const struct snd_kcontrol_new rx1_prim_inp1_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX1 INP1 Mux", rx1_prim_inp1_chain_enum_v2_5);
++
++static const struct snd_kcontrol_new rx1_prim_inp2_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX1 INP2 Mux", rx1_prim_inp2_chain_enum_v2_5);
++
++static const struct snd_kcontrol_new rx1_mix_mux_v2_5 =
++	SOC_DAPM_ENUM("WSA_RX1 MIX Mux", rx1_mix_chain_enum_v2_5);
++
+ static const struct soc_enum rx_mix_ec0_enum =
+ 	SOC_ENUM_SINGLE(CDC_WSA_RX_INP_MUX_RX_MIX_CFG0,
+ 		0, 3, rx_mix_ec_text);
+@@ -629,6 +744,56 @@ static const struct reg_default wsa_defaults_v2_1[] = {
+ 	{ CDC_WSA_SOFTCLIP1_SOFTCLIP_CTRL, 0x38},
+ };
+ 
++static const struct reg_default wsa_defaults_v2_5[] = {
++	{ CDC_WSA_TOP_FS_UNGATE, 0xFF},
++	{ CDC_WSA_TOP_GRP_SEL, 0x08},
++	{ CDC_WSA_TOP_FS_UNGATE2, 0x1F},
++	{ CDC_WSA_TX0_SPKR_PROT_PATH_CTL, 0x04},
++	{ CDC_WSA_TX0_SPKR_PROT_PATH_CFG0, 0x02},
++	{ CDC_WSA_TX1_SPKR_PROT_PATH_CTL, 0x04},
++	{ CDC_WSA_TX1_SPKR_PROT_PATH_CFG0, 0x02},
++	{ CDC_WSA_TX2_SPKR_PROT_PATH_CTL, 0x04},
++	{ CDC_WSA_TX2_SPKR_PROT_PATH_CFG0, 0x02},
++	{ CDC_WSA_TX3_SPKR_PROT_PATH_CTL, 0x04},
++	{ CDC_WSA_TX3_SPKR_PROT_PATH_CFG0, 0x02},
++	{ CDC_2_5_WSA_COMPANDER0_CTL8, 0x00},
++	{ CDC_2_5_WSA_COMPANDER0_CTL9, 0x00},
++	{ CDC_2_5_WSA_COMPANDER0_CTL10, 0x06},
++	{ CDC_2_5_WSA_COMPANDER0_CTL11, 0x12},
++	{ CDC_2_5_WSA_COMPANDER0_CTL12, 0x1E},
++	{ CDC_2_5_WSA_COMPANDER0_CTL13, 0x24},
++	{ CDC_2_5_WSA_COMPANDER0_CTL14, 0x24},
++	{ CDC_2_5_WSA_COMPANDER0_CTL15, 0x24},
++	{ CDC_2_5_WSA_COMPANDER0_CTL16, 0x00},
++	{ CDC_2_5_WSA_COMPANDER0_CTL17, 0x24},
++	{ CDC_2_5_WSA_COMPANDER0_CTL18, 0x2A},
++	{ CDC_2_5_WSA_COMPANDER0_CTL19, 0x16},
++	{ CDC_2_5_WSA_COMPANDER1_CTL0, 0x60},
++	{ CDC_2_5_WSA_COMPANDER1_CTL1, 0xDB},
++	{ CDC_2_5_WSA_COMPANDER1_CTL2, 0xFF},
++	{ CDC_2_5_WSA_COMPANDER1_CTL3, 0x35},
++	{ CDC_2_5_WSA_COMPANDER1_CTL4, 0xFF},
++	{ CDC_2_5_WSA_COMPANDER1_CTL5, 0x00},
++	{ CDC_2_5_WSA_COMPANDER1_CTL6, 0x01},
++	{ CDC_2_5_WSA_COMPANDER1_CTL7, 0x28},
++	{ CDC_2_5_WSA_COMPANDER1_CTL8, 0x00},
++	{ CDC_2_5_WSA_COMPANDER1_CTL9, 0x00},
++	{ CDC_2_5_WSA_COMPANDER1_CTL10, 0x06},
++	{ CDC_2_5_WSA_COMPANDER1_CTL11, 0x12},
++	{ CDC_2_5_WSA_COMPANDER1_CTL12, 0x1E},
++	{ CDC_2_5_WSA_COMPANDER1_CTL13, 0x24},
++	{ CDC_2_5_WSA_COMPANDER1_CTL14, 0x24},
++	{ CDC_2_5_WSA_COMPANDER1_CTL15, 0x24},
++	{ CDC_2_5_WSA_COMPANDER1_CTL16, 0x00},
++	{ CDC_2_5_WSA_COMPANDER1_CTL17, 0x24},
++	{ CDC_2_5_WSA_COMPANDER1_CTL18, 0x2A},
++	{ CDC_2_5_WSA_COMPANDER1_CTL19, 0x16},
++	{ CDC_2_5_WSA_SOFTCLIP0_CRC, 0x00},
++	{ CDC_2_5_WSA_SOFTCLIP0_SOFTCLIP_CTRL, 0x38},
++	{ CDC_2_5_WSA_SOFTCLIP1_CRC, 0x00},
++	{ CDC_2_5_WSA_SOFTCLIP1_SOFTCLIP_CTRL, 0x38},
++};
++
+ static bool wsa_is_wronly_register(struct device *dev,
+ 					unsigned int reg)
+ {
+@@ -662,8 +827,57 @@ static bool wsa_is_rw_register_v2_1(struct device *dev, unsigned int reg)
+ 	return false;
+ }
+ 
++static bool wsa_is_rw_register_v2_5(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CDC_WSA_TOP_FS_UNGATE:
++	case CDC_WSA_TOP_GRP_SEL:
++	case CDC_WSA_TOP_FS_UNGATE2:
++	case CDC_2_5_WSA_COMPANDER0_CTL8:
++	case CDC_2_5_WSA_COMPANDER0_CTL9:
++	case CDC_2_5_WSA_COMPANDER0_CTL10:
++	case CDC_2_5_WSA_COMPANDER0_CTL11:
++	case CDC_2_5_WSA_COMPANDER0_CTL12:
++	case CDC_2_5_WSA_COMPANDER0_CTL13:
++	case CDC_2_5_WSA_COMPANDER0_CTL14:
++	case CDC_2_5_WSA_COMPANDER0_CTL15:
++	case CDC_2_5_WSA_COMPANDER0_CTL16:
++	case CDC_2_5_WSA_COMPANDER0_CTL17:
++	case CDC_2_5_WSA_COMPANDER0_CTL18:
++	case CDC_2_5_WSA_COMPANDER0_CTL19:
++	case CDC_2_5_WSA_COMPANDER1_CTL0:
++	case CDC_2_5_WSA_COMPANDER1_CTL1:
++	case CDC_2_5_WSA_COMPANDER1_CTL2:
++	case CDC_2_5_WSA_COMPANDER1_CTL3:
++	case CDC_2_5_WSA_COMPANDER1_CTL4:
++	case CDC_2_5_WSA_COMPANDER1_CTL5:
++	case CDC_2_5_WSA_COMPANDER1_CTL7:
++	case CDC_2_5_WSA_COMPANDER1_CTL8:
++	case CDC_2_5_WSA_COMPANDER1_CTL9:
++	case CDC_2_5_WSA_COMPANDER1_CTL10:
++	case CDC_2_5_WSA_COMPANDER1_CTL11:
++	case CDC_2_5_WSA_COMPANDER1_CTL12:
++	case CDC_2_5_WSA_COMPANDER1_CTL13:
++	case CDC_2_5_WSA_COMPANDER1_CTL14:
++	case CDC_2_5_WSA_COMPANDER1_CTL15:
++	case CDC_2_5_WSA_COMPANDER1_CTL16:
++	case CDC_2_5_WSA_COMPANDER1_CTL17:
++	case CDC_2_5_WSA_COMPANDER1_CTL18:
++	case CDC_2_5_WSA_COMPANDER1_CTL19:
++	case CDC_2_5_WSA_SOFTCLIP0_CRC:
++	case CDC_2_5_WSA_SOFTCLIP0_SOFTCLIP_CTRL:
++	case CDC_2_5_WSA_SOFTCLIP1_CRC:
++	case CDC_2_5_WSA_SOFTCLIP1_SOFTCLIP_CTRL:
++		return true;
++	}
++
++	return false;
++}
++
+ static bool wsa_is_rw_register(struct device *dev, unsigned int reg)
+ {
++	struct wsa_macro *wsa = dev_get_drvdata(dev);
++
+ 	switch (reg) {
+ 	case CDC_WSA_CLK_RST_CTRL_MCLK_CONTROL:
+ 	case CDC_WSA_CLK_RST_CTRL_FS_CNT_CONTROL:
+@@ -768,6 +982,9 @@ static bool wsa_is_rw_register(struct device *dev, unsigned int reg)
+ 		return true;
+ 	}
+ 
++	if (wsa->codec_version >= LPASS_CODEC_VERSION_2_5)
++		return wsa_is_rw_register_v2_5(dev, reg);
++
+ 	return wsa_is_rw_register_v2_1(dev, reg);
+ }
+ 
+@@ -792,8 +1009,20 @@ static bool wsa_is_readable_register_v2_1(struct device *dev, unsigned int reg)
+ 	return wsa_is_rw_register(dev, reg);
+ }
+ 
++static bool wsa_is_readable_register_v2_5(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CDC_2_5_WSA_COMPANDER1_CTL6:
++		return true;
++	}
++
++	return wsa_is_rw_register(dev, reg);
++}
++
+ static bool wsa_is_readable_register(struct device *dev, unsigned int reg)
+ {
++	struct wsa_macro *wsa = dev_get_drvdata(dev);
++
+ 	switch (reg) {
+ 	case CDC_WSA_INTR_CTRL_CLR_COMMIT:
+ 	case CDC_WSA_INTR_CTRL_PIN1_CLEAR0:
+@@ -814,6 +1043,9 @@ static bool wsa_is_readable_register(struct device *dev, unsigned int reg)
+ 		return true;
+ 	}
+ 
++	if (wsa->codec_version >= LPASS_CODEC_VERSION_2_5)
++		return wsa_is_readable_register_v2_5(dev, reg);
++
+ 	return wsa_is_readable_register_v2_1(dev, reg);
+ }
+ 
+@@ -827,8 +1059,20 @@ static bool wsa_is_volatile_register_v2_1(struct device *dev, unsigned int reg)
+ 	return false;
+ }
+ 
++static bool wsa_is_volatile_register_v2_5(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case CDC_2_5_WSA_COMPANDER1_CTL6:
++		return true;
++	}
++
++	return false;
++}
++
+ static bool wsa_is_volatile_register(struct device *dev, unsigned int reg)
+ {
++	struct wsa_macro *wsa = dev_get_drvdata(dev);
++
+ 	/* Update volatile list for rx/tx macros */
+ 	switch (reg) {
+ 	case CDC_WSA_INTR_CTRL_PIN1_STATUS0:
+@@ -847,6 +1091,9 @@ static bool wsa_is_volatile_register(struct device *dev, unsigned int reg)
+ 		return true;
+ 	}
+ 
++	if (wsa->codec_version >= LPASS_CODEC_VERSION_2_5)
++		return wsa_is_volatile_register_v2_5(dev, reg);
++
+ 	return wsa_is_volatile_register_v2_1(dev, reg);
+ }
+ 
+@@ -2198,6 +2445,21 @@ static const struct snd_soc_dapm_widget wsa_macro_dapm_widgets_v2_1[] = {
+ 			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ };
+ 
++static const struct snd_soc_dapm_widget wsa_macro_dapm_widgets_v2_5[] = {
++	SND_SOC_DAPM_MUX("WSA_RX0 INP0", SND_SOC_NOPM, 0, 0, &rx0_prim_inp0_mux_v2_5),
++	SND_SOC_DAPM_MUX("WSA_RX0 INP1", SND_SOC_NOPM, 0, 0, &rx0_prim_inp1_mux_v2_5),
++	SND_SOC_DAPM_MUX("WSA_RX0 INP2", SND_SOC_NOPM, 0, 0, &rx0_prim_inp2_mux_v2_5),
++	SND_SOC_DAPM_MUX_E("WSA_RX0 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX0,
++			   0, &rx0_mix_mux_v2_5, wsa_macro_enable_mix_path,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MUX("WSA_RX1 INP0", SND_SOC_NOPM, 0, 0, &rx1_prim_inp0_mux_v2_5),
++	SND_SOC_DAPM_MUX("WSA_RX1 INP1", SND_SOC_NOPM, 0, 0, &rx1_prim_inp1_mux_v2_5),
++	SND_SOC_DAPM_MUX("WSA_RX1 INP2", SND_SOC_NOPM, 0, 0, &rx1_prim_inp2_mux_v2_5),
++	SND_SOC_DAPM_MUX_E("WSA_RX1 MIX INP", SND_SOC_NOPM, WSA_MACRO_RX_MIX1,
++			   0, &rx1_mix_mux_v2_5, wsa_macro_enable_mix_path,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++};
++
+ static const struct snd_soc_dapm_route wsa_audio_map[] = {
+ 	/* VI Feedback */
+ 	{"WSA_AIF_VI Mixer", "WSA_SPKR_VI_1", "VIINPUT_WSA"},
+@@ -2363,8 +2625,25 @@ static int wsa_macro_component_probe(struct snd_soc_component *comp)
+ 
+ 	wsa_macro_set_spkr_mode(comp, WSA_MACRO_SPKR_MODE_1);
+ 
+-	widgets = wsa_macro_dapm_widgets_v2_1;
+-	num_widgets = ARRAY_SIZE(wsa_macro_dapm_widgets_v2_1);
++	switch (wsa->codec_version) {
++	case LPASS_CODEC_VERSION_1_0:
++	case LPASS_CODEC_VERSION_1_1:
++	case LPASS_CODEC_VERSION_1_2:
++	case LPASS_CODEC_VERSION_2_0:
++	case LPASS_CODEC_VERSION_2_1:
++		widgets = wsa_macro_dapm_widgets_v2_1;
++		num_widgets = ARRAY_SIZE(wsa_macro_dapm_widgets_v2_1);
++		break;
++	case LPASS_CODEC_VERSION_2_5:
++	case LPASS_CODEC_VERSION_2_6:
++	case LPASS_CODEC_VERSION_2_7:
++	case LPASS_CODEC_VERSION_2_8:
++		widgets = wsa_macro_dapm_widgets_v2_5;
++		num_widgets = ARRAY_SIZE(wsa_macro_dapm_widgets_v2_5);
++		break;
++	default:
++		return -EINVAL;
++	}
+ 
+ 	return snd_soc_dapm_new_controls(dapm, widgets, num_widgets);
+ }
+@@ -2487,7 +2766,11 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 
+ 	wsa->codec_version = lpass_macro_get_codec_version();
+ 	switch (wsa->codec_version) {
+-	default:
++	case LPASS_CODEC_VERSION_1_0:
++	case LPASS_CODEC_VERSION_1_1:
++	case LPASS_CODEC_VERSION_1_2:
++	case LPASS_CODEC_VERSION_2_0:
++	case LPASS_CODEC_VERSION_2_1:
+ 		wsa->reg_layout = &wsa_codec_v2_1;
+ 		def_count = ARRAY_SIZE(wsa_defaults) + ARRAY_SIZE(wsa_defaults_v2_1);
+ 		reg_defaults = devm_kmalloc_array(dev, def_count,
+@@ -2499,6 +2782,26 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 		memcpy(&reg_defaults[ARRAY_SIZE(wsa_defaults)],
+ 		       wsa_defaults_v2_1, sizeof(wsa_defaults_v2_1));
+ 		break;
++
++	case LPASS_CODEC_VERSION_2_5:
++	case LPASS_CODEC_VERSION_2_6:
++	case LPASS_CODEC_VERSION_2_7:
++	case LPASS_CODEC_VERSION_2_8:
++		wsa->reg_layout = &wsa_codec_v2_5;
++		def_count = ARRAY_SIZE(wsa_defaults) + ARRAY_SIZE(wsa_defaults_v2_5);
++		reg_defaults = devm_kmalloc_array(dev, def_count,
++						  sizeof(*reg_defaults),
++						  GFP_KERNEL);
++		if (!reg_defaults)
++			return -ENOMEM;
++		memcpy(&reg_defaults[0], wsa_defaults, sizeof(wsa_defaults));
++		memcpy(&reg_defaults[ARRAY_SIZE(wsa_defaults)],
++		       wsa_defaults_v2_5, sizeof(wsa_defaults_v2_5));
++		break;
++
++	default:
++		dev_err(wsa->dev, "Unsupported Codec version (%d)\n", wsa->codec_version);
++		return -EINVAL;
+ 	}
+ 
+ 	reg_config = devm_kmemdup(dev, &wsa_regmap_config,
 
 -- 
 2.43.0
