@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91825C2BD09
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77DC2C30653
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:35:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D75B2C1F;
-	Mon,  1 Jul 2024 14:34:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D75B2C1F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF8AF2C38;
+	Mon,  1 Jul 2024 14:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF8AF2C38
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719837283;
-	bh=hz9vMGQkJCRjJHzyKADPoZQ1+W9Qq2q+0aeL6AyIwwE=;
+	s=default; t=1719837317;
+	bh=p5CJPkIQTWB8uzvXru7xjOtLt2s3gbP3ldoTOznVVpY=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=fcZ4HEgW6XHU8QoeRMf2jEqxBrVUU1s55We784/ZInewlURDSKJSZ05kFfON27pB8
-	 HqWpTiGoOm4z3m/5BGFazdJlIB8H2TruIUHnpHyXf54/dBMmGXpZbwG3tGswtDy/BA
-	 3e41yUEAnpTiOhTzXpmJen0r7b+CtWXREJSJbHG4=
+	b=FqidwuCOAq8fyG/sDXm7+lUf8T9MpVAQRAg3hRReWzF5ZXCQ1tORee+WQYJiJHsvW
+	 ut6eliafGPSOo0cF62GWyK5WzSOBqlaFaWKv4utVRlBFgL7dUsHPmbQ/lVEmPmaq+h
+	 O3PjjFCO2bPZFX0UDdi9KwcAYtM6Pj28v4Cg4Yyo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36FDAF89A19; Mon,  1 Jul 2024 14:23:35 +0200 (CEST)
+	id D108BF89A2A; Mon,  1 Jul 2024 14:23:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1A1DF89A04;
-	Mon,  1 Jul 2024 14:23:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EB67F89A5D;
+	Mon,  1 Jul 2024 14:23:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BFC67F80423; Thu, 27 Jun 2024 17:03:51 +0200 (CEST)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
+	id 77403F80423; Thu, 27 Jun 2024 17:04:43 +0200 (CEST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
+ [IPv6:2a00:1450:4864:20::635])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 29589F800ED
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 17:03:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29589F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3E379F800ED
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 17:04:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E379F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=timesys-com.20230601.gappssmtp.com
  header.i=@timesys-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=1zc0iP22
-Received: by mail-ej1-x632.google.com with SMTP id
- a640c23a62f3a-a72420e84feso734208366b.0
+ header.s=20230601 header.b=1q4bsUcS
+Received: by mail-ej1-x635.google.com with SMTP id
+ a640c23a62f3a-a724b4f1218so697069966b.2
         for <alsa-devel@alsa-project.org>;
- Thu, 27 Jun 2024 08:03:43 -0700 (PDT)
+ Thu, 27 Jun 2024 08:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500623;
- x=1720105423; darn=alsa-project.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500680;
+ x=1720105480; darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HK3YnwUakD5I0BhgcE6EqxKNTh3E2b909JJ6LJOQWzo=;
-        b=1zc0iP22CfO5rm72ANjLXqezqiw7xMKcbwKmlShlmg0fJeI0DMdKfFmauN71KCqLX7
-         H74YQ76WNwRS4CqQhxljDeRLM4cGJPYIOuLyM6WFR2GrUbfoHJEV1K433cQYet/ANOGE
-         86rbSwf0qitezOIx5xtdeS7y5zK22H/EN4ifLApIfiMjNBjqCWkbOipRMIRz9gss/SQC
-         0esUwv99H0miHA1Atl5nHk/U+LzstzYFt7QZnBMK5L8jz+/PPaSPZXnbQ4nxaxHLTZyK
-         SFAtDwkODeuq1hUfkbDbag8bmpwqf4INcsdWqanPcL73UrJ0ZLCkyNecWoPoYHK945qv
-         6tjA==
+        bh=0kKU0V25b+NdpL5Nxb/CadexmGEKpxevd8xM2vqH8ko=;
+        b=1q4bsUcSzTto9KXmzBHRZyKoWxrvSHp4Qi3tVfbj/3pXYeZIfNz5m+gyqH77a9vjRV
+         DGALk3mvZ0mq1Cm6HcgxMO1mO2irU4rCV9R3SDRqkBzcyFz8KwcYgEUkmDr8q63EaUcQ
+         LPmeb0ELHZurtjBWQx1p4teDVZeG6yFRS4VQrii2AClsAnHaSV2ypu5GC2VC5TSqQRub
+         53VBzwlM7GTGw5oCFU6lBfborpXbQ7+Q8vP2UoAVfIa0roGJLYC7u98ol9xztvHsLY0x
+         6m6m1/qSFiBlI6YeOUekgWUR2S/PWGFOEKoQgTDUsA6esGNXK6IOfcREo++6nu/Fzsb7
+         WoKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500623; x=1720105423;
+        d=1e100.net; s=20230601; t=1719500680; x=1720105480;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HK3YnwUakD5I0BhgcE6EqxKNTh3E2b909JJ6LJOQWzo=;
-        b=c14XFw0DmxicxoShfys4iaIZtWUvPSV3eNM8qxuS2bg0h3craHLms6WZg2km03oQtx
-         lw7S+34y73APibrPv49rblNhoLalYy/EbQ0/pp41e1GNO0zMMI30wnf+Yh33HGhPkQcX
-         hfLXrASGL+NvIwsWV8c1a3IXCktmoGjo6H/1pDJDasmx/8OjY9TfmQ6WpHL4M53vOThM
-         rM1Qj0hWB9x2H64nuW8c5CgRy/LQGHWKDPCmbcjBVcFNUsPPkJ2vaDhd0w75L7WrNckH
-         OU4hVkzcMtPvrnESK6XJv5JpGVTLc9yxq5lhiZ0axXuxrzALgpzpdkqPqVlFCMqEfl/A
-         0l2A==
+        bh=0kKU0V25b+NdpL5Nxb/CadexmGEKpxevd8xM2vqH8ko=;
+        b=KZLOgJILyVW/MgVmG6XypE/89DH+wrzOUFOkOSofM61ylBdYCb6NhbeoNQrv+jSoWQ
+         F9dFgG3TfrWMz2me1TDC6LUJHtQN1MiuBDZYAJiysZexLY0zZfGgNOQwox7HUzjWve7h
+         gaEtgG/XEm5QlehDsTOd/1crcJjM64pe7YJgd5ggJQpEthyNFcr8uecker7W3ukZoGgQ
+         yacLoEMaB3Ykgh81gDNz41mCfKOnwMzEl9kOwNqBTa2LOYTJI+RUA020B1UkN4Is3BnL
+         hfHP06MS0wcODg+2o3fUMkI4yQIvTnrCJzcsMTRKNuCPglqYKQIgVpQz9q5vj1USrXeJ
+         6hLw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXF8xV1mLDupB/Dm/8jVVOkj3tMVSj27UbZuNdqQQdPFf2XSHovtpPH4wEXUuxxcQYCO9uO0NF7K+88zFc/iT4f/sZm36/PhqUHqL0=
-X-Gm-Message-State: AOJu0YyeN87I2NFSXs2h5v5Q2izEydL8KAAvKkwzQ2gB7DqP/19jY+kQ
-	IAppLC/jU2jZW3lrNWD1mvHfP/d2Y1/l+pYfGS1/oWhphih8FrAivIN4A0XjXsA=
+ AJvYcCU5sPqnjaVaJhJSNrPF2VwlN3GNxY3ly5pdB+5XQ76cDFUAI2ttei85x2Cq4q13cMjxofG2+Ch+7zrZvoCYUNj0Wbjg3kDU3vC3I/s=
+X-Gm-Message-State: AOJu0YxUdZm/pVmouCFxX8pQWYhxhOezzlqZe8z5sY8O4BNsAZ2HIdYy
+	HNIXRlfjjFxgeHmmwaNNPvoi8s+0HespIe5Zz76HEgjTq0uePwmlOo7Z1F8kIRc=
 X-Google-Smtp-Source: 
- AGHT+IEAPzD6OW6I5gXrK5R5rKDBnBfIPb8ujVS2DyQUrkTnzInDvDleYelSt4/XGlIg6GkZNz/Tdg==
-X-Received: by 2002:a17:907:d386:b0:a72:8d4f:6720 with SMTP id
- a640c23a62f3a-a728d4f6df3mr385836766b.69.1719500620657;
-        Thu, 27 Jun 2024 08:03:40 -0700 (PDT)
+ AGHT+IEDRv7diooeJV6LJXwf0EjCsVi9YKqxuCA0IYC1Rui0S1k3Zcq9kDuWbuWeuGO8t2Iv/ci0ng==
+X-Received: by 2002:a17:906:d509:b0:a6f:5192:6f4d with SMTP id
+ a640c23a62f3a-a7242c4dfd3mr693613366b.8.1719500679193;
+        Thu, 27 Jun 2024 08:04:39 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.03.38
+ a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.04.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 08:03:40 -0700 (PDT)
+        Thu, 27 Jun 2024 08:04:38 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -107,8 +107,8 @@ To: Vinod Koul <vkoul@kernel.org>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Yangtao Li <frank.li@vivo.com>,
 	Li Zetao <lizetao1@huawei.com>,
-	Chancel Liu <chancel.liu@nxp.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
+	Chancel Liu <chancel.liu@nxp.com>,
 	Corentin Labbe <clabbe@baylibre.com>,
 	dmaengine@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -120,9 +120,10 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-clk@vger.kernel.org,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [Patch v5 07/12] clk: lpc32xx: initialize regmap using parent syscon
-Date: Thu, 27 Jun 2024 17:00:25 +0200
-Message-Id: <20240627150046.258795-8-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v5 10/12] mtd: rawnand: lpx32xx: Request DMA channels using DT
+ entries
+Date: Thu, 27 Jun 2024 17:00:28 +0200
+Message-Id: <20240627150046.258795-11-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
@@ -134,15 +135,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: LSZWT7F3ES3PZPUKIOBCSBZIVSLUWZJO
-X-Message-ID-Hash: LSZWT7F3ES3PZPUKIOBCSBZIVSLUWZJO
-X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:05 +0000
+Message-ID-Hash: CQB75IDCBV226UXAGBVBC3T4HT4OKCVP
+X-Message-ID-Hash: CQB75IDCBV226UXAGBVBC3T4HT4OKCVP
+X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:16 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSZWT7F3ES3PZPUKIOBCSBZIVSLUWZJO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQB75IDCBV226UXAGBVBC3T4HT4OKCVP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,78 +152,97 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This allows to share the regmap with other simple-mfd devices like
-nxp,lpc32xx-dmamux
+Move away from pl08x platform data towards device tree.
 
 Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 ---
 Changes for v5:
-- Add fallback regmap for previous simple-bus DT entry
+- Added fallback dma channel request for backward compatibility with DMA with
+  platform data instead DT
 
 Changes for v4:
 - This patch is new in v4
 
- drivers/clk/Kconfig           |  1 +
- drivers/clk/nxp/clk-lpc32xx.c | 26 +++++++++++++++-----------
- 2 files changed, 16 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/lpc32xx_mlc.c | 26 +++++++++++++++-----------
+ drivers/mtd/nand/raw/lpc32xx_slc.c | 26 +++++++++++++++-----------
+ 2 files changed, 30 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 3e9099504fad..85ef57d5cccf 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -346,6 +346,7 @@ config COMMON_CLK_LOONGSON2
- config COMMON_CLK_NXP
- 	def_bool COMMON_CLK && (ARCH_LPC18XX || ARCH_LPC32XX)
- 	select REGMAP_MMIO if ARCH_LPC32XX
-+	select MFD_SYSCON if ARCH_LPC32XX
- 	select MFD_SYSCON if ARCH_LPC18XX
- 	help
- 	  Support for clock providers on NXP platforms.
-diff --git a/drivers/clk/nxp/clk-lpc32xx.c b/drivers/clk/nxp/clk-lpc32xx.c
-index d0f870eff0d6..b8de7f66d1b5 100644
---- a/drivers/clk/nxp/clk-lpc32xx.c
-+++ b/drivers/clk/nxp/clk-lpc32xx.c
-@@ -7,6 +7,7 @@
- #include <linux/clk-provider.h>
- #include <linux/io.h>
- #include <linux/of_address.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
+diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+index 677fcb03f9be..92cebe871bb4 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+@@ -574,18 +574,22 @@ static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
+ 	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 	dma_cap_mask_t mask;
  
- #include <dt-bindings/clock/lpc32xx-clock.h>
-@@ -1511,18 +1512,21 @@ static void __init lpc32xx_clk_init(struct device_node *np)
- 		return;
- 	}
- 
--	base = of_iomap(np, 0);
--	if (!base) {
--		pr_err("failed to map system control block registers\n");
--		return;
+-	if (!host->pdata || !host->pdata->dma_filter) {
+-		dev_err(mtd->dev.parent, "no DMA platform data\n");
+-		return -ENOENT;
 -	}
 -
--	clk_regmap = regmap_init_mmio(NULL, base, &lpc32xx_scb_regmap_config);
-+	clk_regmap = syscon_node_to_regmap(np->parent);
- 	if (IS_ERR(clk_regmap)) {
--		pr_err("failed to regmap system control block: %ld\n",
--			PTR_ERR(clk_regmap));
--		iounmap(base);
--		return;
-+		/* fallback to mmio if syscon fails */
-+		base = of_iomap(np, 0);
-+		if (!base) {
-+			pr_err("failed to map system control block registers\n");
-+			return;
+-	dma_cap_zero(mask);
+-	dma_cap_set(DMA_SLAVE, mask);
+-	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
+-					     "nand-mlc");
++	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
+ 	if (!host->dma_chan) {
+-		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
+-		return -EBUSY;
++		/* fallback to request using platform data */
++		if (!host->pdata || !host->pdata->dma_filter) {
++			dev_err(mtd->dev.parent, "no DMA platform data\n");
++			return -ENOENT;
 +		}
-+		clk_regmap = regmap_init_mmio(NULL, base, &lpc32xx_scb_regmap_config);
-+		if (IS_ERR(clk_regmap)) {
-+			pr_err("failed to regmap system control block: %ld\n",
-+			       PTR_ERR(clk_regmap));
-+			iounmap(base);
-+			return;
++
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_SLAVE, mask);
++		host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter, "nand-mlc");
++
++		if (!host->dma_chan) {
++			dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
++			return -EBUSY;
 +		}
  	}
  
  	/*
+diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+index 1c5fa855b9f2..3b7e3d259785 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_slc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
+@@ -721,18 +721,22 @@ static int lpc32xx_nand_dma_setup(struct lpc32xx_nand_host *host)
+ 	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 	dma_cap_mask_t mask;
+ 
+-	if (!host->pdata || !host->pdata->dma_filter) {
+-		dev_err(mtd->dev.parent, "no DMA platform data\n");
+-		return -ENOENT;
+-	}
+-
+-	dma_cap_zero(mask);
+-	dma_cap_set(DMA_SLAVE, mask);
+-	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
+-					     "nand-slc");
++	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
+ 	if (!host->dma_chan) {
+-		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
+-		return -EBUSY;
++		/* fallback to request using platform data */
++		if (!host->pdata || !host->pdata->dma_filter) {
++			dev_err(mtd->dev.parent, "no DMA platform data\n");
++			return -ENOENT;
++		}
++
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_SLAVE, mask);
++		host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter, "nand-slc");
++
++		if (!host->dma_chan) {
++			dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
++			return -EBUSY;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.25.1
 
