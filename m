@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F310C2BD09
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jun 2024 14:45:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AD24C3064D
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jun 2024 14:46:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4AC920C6;
-	Thu, 27 Jun 2024 16:45:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4AC920C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DE31211B;
+	Thu, 27 Jun 2024 16:46:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DE31211B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719499557;
-	bh=im24zS9c8NElT+N/gENu7NEwrDfO/2oaS1esQxJvmIE=;
+	s=default; t=1719499583;
+	bh=lE5cuvuL9G95IfOe9RWKWZGLXmj/X5MR2oSFCb1vVEw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A1oGbTgtVjqJEdyg/WkDvTCKY00NMcg9JSII/eHiMgIUOMFJaX+6VNpGbEixg8ZBj
-	 zrg1czH2tObUZjz4LQOZNNeD/nwsWm5uNAJhLb/QdI0djvB1lzks/Z+3W9SYbiQdpI
-	 uN84o74SGQKfxhrgLRLwDHOyoebzu/TfVdD7H1ow=
+	b=H/uIWv77t9Ee4PUBJRAniNNny9Swf1Xir33+YFEl4dU3rwa08WGkDeyfEWUrqc5FW
+	 aut2xsW1EF/LA/Pjd8l/Pty43tkovosdd6qUJN0FZkRdtSG5PPZrOscV0VGtPueeAh
+	 ETTqBIu7Zxpcy88TYnWWvg2hwZ9hNOatXmjdrZWo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03534F80601; Thu, 27 Jun 2024 16:45:01 +0200 (CEST)
+	id B8B1FF80620; Thu, 27 Jun 2024 16:45:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDC0AF80601;
-	Thu, 27 Jun 2024 16:45:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E78BEF80589;
+	Thu, 27 Jun 2024 16:45:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0343F805B1; Thu, 27 Jun 2024 16:44:53 +0200 (CEST)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
+	id BD9CEF805C0; Thu, 27 Jun 2024 16:44:55 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 78D73F8013D
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 16:44:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78D73F8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6939EF805A9
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 16:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6939EF805A9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=y2u2Vbo+
-Received: by mail-lj1-x234.google.com with SMTP id
- 38308e7fff4ca-2ec5fad1984so68985391fa.0
+ header.s=google header.b=YifmdX/X
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-424acfff613so24237565e9.0
         for <alsa-devel@alsa-project.org>;
- Thu, 27 Jun 2024 07:44:46 -0700 (PDT)
+ Thu, 27 Jun 2024 07:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719499485; x=1720104285;
+        d=linaro.org; s=google; t=1719499491; x=1720104291;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9fv7G4wggBcVvOCA5q2uk0HwTlQqcu/RAhSIH1THEBs=;
-        b=y2u2Vbo+83wk06XqH4dPwdEtCwxfJnZRiiYR9MUPk1fcYYdj/oJqaUuyCNlZX8dnLv
-         yOiCXMlEfkijmM2z6jIMMnZCp0zZ0gVlGKeSnQLueCD2EznZrpMTF081zr9V0qWlL4Jl
-         jqPDprwr1myM8ldZxxsWqcCk/s4iBkvOlPZY3ZlagcqEJb/BaxRDjxQC+JZdDxgRx7Jd
-         LVDPP+Oj/UdANseHLJznzcrhMMY4mBSTYe+fOdhtxnLcWLY+KRAx7jLCg3FXE60Csc8Q
-         wskvZC4JyxQBy1kqK91ENHx5gHuQtiAkvbMK7PqFekICrCq3YA9BL5SoUwtbgmKad68B
-         1IFw==
+        bh=gRJmTF7L/9R7w6etZ1hOgP2bjz9f74jpdrGthQ0OD1c=;
+        b=YifmdX/XRHjU5RdKx18Mft5nJeuamsv/YlloodNgpXknAgt8ClqiNczZWjMY1vPjhp
+         U05M8t6UDe2qgWUyQTFWAjm3frC95KZGRQFIYSzvpgyqIOObC3K/B207JIRiIzyrEQwg
+         zeFn6hfaDGvcGLz3J8F8sAOg/XXykGNPV5eAHQqoKU5LmfDCByxfRbDYQn0D0XVZ61RK
+         87JauFl29dezzdLSuq5t3W0+DCTtxqc8YsRGDJJ2jiTXjMg4+J93Nyy24L+QKFwLu6qj
+         /ZqfBK6F8hixZiqbzHIgwMGOGJrod4PjJom+Rnyu+6QFOehtY13JRmRueiJPPlw9VGbb
+         QqxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719499485; x=1720104285;
+        d=1e100.net; s=20230601; t=1719499491; x=1720104291;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9fv7G4wggBcVvOCA5q2uk0HwTlQqcu/RAhSIH1THEBs=;
-        b=Vo4u35Z24m3KyAEuhFwtglIZtUQIHWWyimwSgKQRxmKWQfSl5jGwEM3qjFJgtEEfIC
-         ujv3jzzIB8HLWa+2hcjv8CFeDExYM8mRTlLL+kDOvqoKKL4s5yu2E5USZ+UOz17+nyeJ
-         PIEot/xEqmEYT3HXXWXXeV0/0Z7xNizqTJFyVjNzdsQzgAnlS2u48wcsk6cig0ohCqrj
-         f6kfbr2qypFNsjlD9yIp4o+Silz8oaXfLMvHo6tRJsbYb9Yr3TrLjo/XfpCj6vttVZ3R
-         xRwU85KHtqWpv3YJwzsUEuZ4+nsdGlvrkC7EBCaJaNvsvIRUdWzPEpwuMd0FwJMf5pR1
-         +Iaw==
+        bh=gRJmTF7L/9R7w6etZ1hOgP2bjz9f74jpdrGthQ0OD1c=;
+        b=t+gjaxPD15emIOCbGw+raDaSVZ4X32nj2lqORBFAW6MSHLBNHGnHGFEgFK5aHCF/+R
+         1MuqaiuatdO79FKEJaV9d9zJaeelleveyAQMce7wJLvzKD8oUJ2hXT1Eeh6OYTdjvTx+
+         a1N8W1XlRtQeWagXmmpM4h6p+FVDvru52zMgRnzYxR8LBiqlHnVEgEBrkHxw449JaGJY
+         aet0FPpB17Isg/mJWYJmzTQlvk4mnk9ByJn/bHtF0Febz4PxlNzXrbkFOylkWUoqi50S
+         qf4Vf7OvXqo8eU6FoWtDguf88pO6pqYte9jkNnKmFjXm1uVPLBJzx6HXaXI+bIT/lE0g
+         W8DQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWbEY6SGoBFX4Eb+/LGp+3S7U84GvX8JYTSF+4TIiTfvFoZUr0oyZpynakf3bPQCxZiSENwA7+HQRQQGB2Wg3h7W8OL4UPzxnBiRPM=
-X-Gm-Message-State: AOJu0YxgE5m+nj+Djtt88wU8hSgA+pDW9W9cP8bpzjRkHtVVVyvLs4KE
-	bCA5lh5/DLsKNGG/Ez1B7nbTCyYry5z4f1OgAaZPzicom/ixYbDXYmrJZMEOqTg=
+ AJvYcCVb1RqZtFGyIzpujFpglEfOcN6RPdkzoaWwDmQNIo9NsZ5o4D0FCUZ0Cf8e+iXsJcWogbFUtfL3z+dNDM8YC9s/3lrF/6Jm+eR5+JA=
+X-Gm-Message-State: AOJu0YyzMEfJOtdxm+ocUGcYWQT7iXfB/lCm4tm4Yotu4AthZwYuhmdZ
+	yffCroQNHH4eBXmsy6lsylDIiHdnZnEfDfRa5rse8Nqd4bhMh/RebIEmtYt0a90=
 X-Google-Smtp-Source: 
- AGHT+IEbLn33fk1NZx+p9Ng/LEPBTTHcSVtjsRY8RIe4VyoU34O7xYRjTaOVTRSNTon7MnYbskEVdw==
-X-Received: by 2002:a05:6512:2254:b0:52c:df55:e11a with SMTP id
- 2adb3069b0e04-52ce18325f3mr13317733e87.9.1719499485122;
-        Thu, 27 Jun 2024 07:44:45 -0700 (PDT)
+ AGHT+IGNUBrnTko7rPX48x8ABrouRQvgTCE+3KFWPLeGW85kH8CD41VU6V7kD+IEBwpxVGEhVujWHA==
+X-Received: by 2002:a05:600c:2e04:b0:425:641c:5f40 with SMTP id
+ 5b1f17b1804b1-425641c606amr19393175e9.39.1719499491245;
+        Thu, 27 Jun 2024 07:44:51 -0700 (PDT)
 Received: from [192.168.1.195] ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-42564b7b7c1sm31254075e9.23.2024.06.27.07.44.42
+ 5b1f17b1804b1-42564b7b7c1sm31254075e9.23.2024.06.27.07.44.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 07:44:43 -0700 (PDT)
-From: srinivas.kandagatla@linaro.org
-Date: Thu, 27 Jun 2024 15:44:38 +0100
-Subject: [PATCH v2 1/6] ASoC: dt-bindings: wsa883x: Document port mapping
+        Thu, 27 Jun 2024 07:44:47 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 27 Jun 2024 15:44:40 +0100
+Subject: [PATCH v2 3/6] ASoC: dt-bindings: wsa8840: Document port mapping
  property
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240626-port-map-v2-1-6cc1c5608cdd@linaro.org>
+Message-Id: <20240626-port-map-v2-3-6cc1c5608cdd@linaro.org>
 References: <20240626-port-map-v2-0-6cc1c5608cdd@linaro.org>
 In-Reply-To: <20240626-port-map-v2-0-6cc1c5608cdd@linaro.org>
 To: Banajit Goswami <bgoswami@quicinc.com>,
@@ -105,23 +105,22 @@ Cc: linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Manikantan R <quic_manrav@quicinc.com>
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1352;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1295;
  i=srinivas.kandagatla@linaro.org; h=from:subject:message-id;
- bh=q2lXJvgATkQ9232ugFsaVN0aY0h1slxdwjETCG0KBuY=;
- b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmfXrYexE0bCsXqMCoJMK2qX+Svh51N1PDv/q+a
- oMQdJLI6uWJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZn162AAKCRB6of1ZxzRV
- Nz0nCACuIuRa5RKmZhysyKUIBtuAriVtIlqHhca5rq1Wr1TgcuGQt2d3t2Dpc6p65k9z952Qrsc
- PF0LonPY3dvyUdhdFAfBB3oYPGdcwkjwq+Az48KLVhIrpmWmvU6FrbF06ynqu+JAI9Ymy5POxJ5
- t9zEc8dEvJFqxt3K3a3NVsD1BsLKJcN6GA+Ox7LVtqDtr5AQMhBK95yqNQ9argu/vJnbYp4kyKp
- hJ2dEmDEQtcIu5SF5qia2lLudFGqZZVqyrQ/iPy0EdsgPpTHkoY7FTXSUoj7xAuUHYYFoTkz9DA
- c7ALvhsGe1nVX9sbecWWyamkZblYNyi7uhv1q1MbEgCYTW7B
+ bh=lE5cuvuL9G95IfOe9RWKWZGLXmj/X5MR2oSFCb1vVEw=;
+ b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBmfXrYwbTrjcD2u071XMsefeUX9UvlY3GzadeVQ
+ LSyDLhB39qJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZn162AAKCRB6of1ZxzRV
+ NwNDB/wKyhxatFXvVz/JsbO1otbEB2++w45VwdupIDhwMMbziatHubmsQuubODvbWYR3lIbDq8/
+ QZrqhc8BxXjqNRUvJmr55IpLHDivtCipYSievqCmGYlQ1ue2Lj/shYo4UuSaJ9YXtti7c0aT520
+ whvV1Er/oW8PXxOD7xI9Fn2qmtHN292sM8gdImW5z+sVHow21Aq1pg7YTPW7jkGWuzJUqo/hYrG
+ ieFfyX7PJXMu5gnArHOImyPGjSka0jhDVTk006jh/ypG99OO4E6jCeedtr1o56Fr54GhgCYhQuc
+ vOeA07iMxEZqqJDKXGx5oCySNpC/XyOzpseJQtC3wYxp+WJj
 X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp;
  fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
-Message-ID-Hash: QKAKIBKEBT2KQ2F627E2WBSJURR2PZ5M
-X-Message-ID-Hash: QKAKIBKEBT2KQ2F627E2WBSJURR2PZ5M
+Message-ID-Hash: OB6IRFMFTRGOCCZA4CKZNTB4S6E7PNY6
+X-Message-ID-Hash: OB6IRFMFTRGOCCZA4CKZNTB4S6E7PNY6
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -134,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QKAKIBKEBT2KQ2F627E2WBSJURR2PZ5M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OB6IRFMFTRGOCCZA4CKZNTB4S6E7PNY6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -143,39 +142,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Manikantan R <quic_manrav@quicinc.com>
-
-Document port mapping property for wsa883x. Port mapping is required
-to be able map correct master ports for VI feedback.
+Document port mapping property for wsa884x. Port mapping is required
+to be able map correct master ports.
 
 All the device ports are not mapped in same order as master ports, so
 there is a need for having static port mapping for WSA codecs.
 
-Signed-off-by: Manikantan R <quic_manrav@quicinc.com>
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8650-HDK
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml | 8 ++++++++
+ Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-index 8e462cdf0018..14d312f9c345 100644
---- a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+index 22798d22d981..83e0360301e1 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
 @@ -32,6 +32,14 @@ properties:
-   vdd-supply:
-     description: VDD Supply for the Codec
+     description: Powerdown/Shutdown line to use (pin SD_N)
+     maxItems: 1
  
 +  qcom,port-mapping:
 +    description: |
 +      Specifies static port mapping between slave and master ports.
 +      In the order of slave port index.
 +    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 4
-+    maxItems: 4
++    minItems: 6
++    maxItems: 6
 +
-   '#thermal-sensor-cells':
+   '#sound-dai-cells':
      const: 0
  
 
