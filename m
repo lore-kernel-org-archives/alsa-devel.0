@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 736B7C2BD09
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47E51C3065C
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:35:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52DF02345;
-	Mon,  1 Jul 2024 14:35:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52DF02345
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C02B2BB3;
+	Mon,  1 Jul 2024 14:35:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C02B2BB3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719837328;
-	bh=+MoA5T7a5GTI46GqiwhJRXiMixeE8zhFLC4/mfXz7cs=;
+	s=default; t=1719837352;
+	bh=EVdDvyzNX81crbjdLKs6Wo3nyF9HNCLTnL9r0uF0UR0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=F9AcPTXiRUVAxequq5Q6NPp0K2R+nidc5vjpYYnpCCgSz/0bf13N3vVMXptb7c4B+
-	 1LNTMUNX1LbtK7IVFMBhItdgnVv9tOgXdVqB7N8OzhOPFpxlZBYqtsTMGzGhh+dSLn
-	 2F4lQxUY9kElPceeqw9+3CYg0IlQz27TK4KZdUjU=
+	b=qAdKUQyW2WG6rWliAS6seYdL4rRn0BrmVx9KnKFBxRMLpQWfMypKUFTXCViGCKu29
+	 FpjQ0RjtG7NI+2cWId8q4iI9Ilt7nkYnxH2R6GyPpr3E8lElyvsplysqfevvFZB0/M
+	 OqJoSUfDDpeGd7tST5H+SVBQVjOMQWwszIgNmkyk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB185F89A3B; Mon,  1 Jul 2024 14:23:41 +0200 (CEST)
+	id 8B3A4F89A99; Mon,  1 Jul 2024 14:23:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93D31F805E6;
-	Mon,  1 Jul 2024 14:23:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4505CF89A93;
+	Mon,  1 Jul 2024 14:23:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B06A9F80423; Thu, 27 Jun 2024 17:04:26 +0200 (CEST)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
+	id BC5A2F80423; Thu, 27 Jun 2024 17:05:25 +0200 (CEST)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
+ [IPv6:2a00:1450:4864:20::62a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14A7BF8013D
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 17:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14A7BF8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA84EF8013D
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 17:05:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA84EF8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=timesys-com.20230601.gappssmtp.com
  header.i=@timesys-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=xZxf5JXU
-Received: by mail-ej1-x62e.google.com with SMTP id
- a640c23a62f3a-a72510ebc3fso722297066b.2
+ header.s=20230601 header.b=Svq5js4v
+Received: by mail-ej1-x62a.google.com with SMTP id
+ a640c23a62f3a-a724440f597so695976766b.0
         for <alsa-devel@alsa-project.org>;
- Thu, 27 Jun 2024 08:04:20 -0700 (PDT)
+ Thu, 27 Jun 2024 08:05:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500660;
- x=1720105460; darn=alsa-project.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500720;
+ x=1720105520; darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SAbEFx8Qx1jb1E3qZFdMOF6RPU8ZJ7qI5KSjiERwRt4=;
-        b=xZxf5JXUBwTo++KJ4tZY9Q6oXbjg4UGRMznO4Q9Gojrnqe88MSvjDzHJZivhvyIrjU
-         DJzKbh1XQy1xMMuST87MjXHUrsUC4SbFHmmh6lEBN8gLap+LFUl1Jt0fk4BfQ6yFGHDt
-         EkFg47P4RIGGQRB8pmfvrtD6SN1yAsy59Qa1vJco61J5QzFy6GGl1bheG9+A3mWFLS+G
-         lUfcz1eVj7pi3tYbJR7UCNKZLbtQV8H9HTyVOn+I6avLt4xX9npHeu37Da46c4mPyVfH
-         rNo8ltMAAdasIT5q58WPGm+ZkWhf4YhS+GQaSRr1inQgb+0dE1he4FCHFeMDenNiBx9d
-         lWyw==
+        bh=c0en4a04xGUdMe3CHuzskBvRxKjfQMua42qeg+gKOfI=;
+        b=Svq5js4vbKpJ6Sw0RKC8tKZpmf9So0NPM90sDC+qX98M0OpHq9iPVe5OpBSM4q840r
+         cEVxvM724/XQsYcMv7AdElTzRPEWrEE+2SvC+79+nulbt5JGDmKOMT9c/qqNX9ym+cwq
+         f2wJnEBJvly2cDBEd7lRgN0LbHY083JpS3Ltrd/vcFm0WcwwtbdmQGiy87NJXNS28/4c
+         vFc9KJsLHFmlmh71Px9uAFiOoL+NXsfQzsuw2gJUSZr7olLhU6D5KEMW2R5wMGtAkm8q
+         NrO3lKpydZT1284IkguHqLMxmLU75ByMkIj6798NVEUexdreSI5hH5uXjqjBi7QbURoU
+         f1qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500660; x=1720105460;
+        d=1e100.net; s=20230601; t=1719500720; x=1720105520;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SAbEFx8Qx1jb1E3qZFdMOF6RPU8ZJ7qI5KSjiERwRt4=;
-        b=dZHQmJt9XBXNUSbwqrhFhhcSyyJ3kelfxRIS0/AXIITAsUMy43GagFNJhegEzWuqL+
-         9xiwpcpgL2KkXh0tQiCNKN3h5v6FBtmt9bj/PKuxZWfNSa6OGEuSz66fD5rnNadY7a7m
-         raGPi/ihpA4yCylOTUMsjLWmyuYbOCxm9AHkYv/+pL44jOW6doLwJTDO7PvQdIEh90nC
-         KNBH2Jzx+22VDnXi98T4uMSmFwieaFCm5J1JtHYsh75RlW2cBCMKwD49Ki8levRzBEjm
-         0PXHuJuqjsAEuNLgLMjOrYM1MPgMrtR03vyW09TaBzs5HnzFG56wmOcNpCxF3R693kNI
-         xcpQ==
+        bh=c0en4a04xGUdMe3CHuzskBvRxKjfQMua42qeg+gKOfI=;
+        b=JCRD5Sf0phUl8frmG31rYvU2Q6H1L7NbAJ3OGab6SGgKzBAwphxvNBOwkRxsj12tNn
+         +/ToU/btKLnx0iR/byMpxQU1uMiR9iTBFriEs/pxamaycrNvDNU8GsbkWFHSw2jWKNAT
+         r5o1ftsQxJxwbS3Csk4KeR06ID/h2mGmmZPLk31e5902XQMF9TR1yz5DW37h3AE1j525
+         az9DgPX9GC3a/KcgjYaHl22mSnHBx48PHd6/4kMNNT94mNvX653r+0Lays8rI3oj/Zbr
+         y6SmaFEObPwtsGrhNI08ZGlyNZNJc74xJO7L+fdooQ3YLDTSPswOSzgYCndz/AqJTauj
+         bYhQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCV85L3oGIjh2S5TW9jqUpwEagqhu/Eny7CYXcw3mHjk8quFDliZRwtp3MwIF9f1paG8l/BwcKT/wx8tVNUPN+OKeMDT0S8rgeupkK0=
-X-Gm-Message-State: AOJu0Yxtu1D8uVWmdgvehJM6cRfpFMPI+ncnh6ZHY83U7zJy4feeutnS
-	TAes547PIdxR6sHCGDmrYOpPhb/ipH6rseNkcR0W0tQSnzrCfMR5IT8FIZVHz0Y=
+ AJvYcCUlXcBuiL75xmYgcJl1hHIAyNg2FBIyF/YCBqm8FMKyRKawJmJBpM0VY3w0BHXxXi4XnxIa8IvMGzOtQx2aNsa9an242Y7TSWo+K4o=
+X-Gm-Message-State: AOJu0YxotcTvz73FKS4qGWuyqsIj+L3hGpq2PdYS6UcfgEj8mHFPmO++
+	vO27/+2FFCrjIX7SWuN4+nBEi9LMWFzHtTI9fF/6LgElI7yVXksinf1+jbw3K8A=
 X-Google-Smtp-Source: 
- AGHT+IGWWjdS8xPoV3qLbjKKjfLtKfd3PYZl/5ZuwXyyzk52xq360p0PA+fjmtbO1v8hyBEWixy7Fw==
-X-Received: by 2002:a17:906:c44d:b0:a72:548a:6f42 with SMTP id
- a640c23a62f3a-a72548a702emr877880166b.18.1719500659616;
-        Thu, 27 Jun 2024 08:04:19 -0700 (PDT)
+ AGHT+IFWt98+h6PiAC5RUj8DxZquK6YDjOivxXx0avHukTQoTFEMXOT45G3SobQ5Q+1zYPM7YJ42Nw==
+X-Received: by 2002:a17:907:3ad4:b0:a6f:4de6:79f with SMTP id
+ a640c23a62f3a-a7245bad98emr764943466b.40.1719500720489;
+        Thu, 27 Jun 2024 08:05:20 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.04.17
+ a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.05.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 08:04:18 -0700 (PDT)
+        Thu, 27 Jun 2024 08:05:19 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -120,10 +120,10 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-clk@vger.kernel.org,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [Patch v5 09/12] ARM: lpc32xx: Remove pl08x platform data in favor
- for device tree
-Date: Thu, 27 Jun 2024 17:00:27 +0200
-Message-Id: <20240627150046.258795-10-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v5 12/12] i2x: pnx: Fix potential deadlock warning from
+ del_timer_sync() call in isr
+Date: Thu, 27 Jun 2024 17:00:30 +0200
+Message-Id: <20240627150046.258795-13-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
@@ -135,15 +135,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: A4ZOEAR2OJNZZ4VU3BBB2YBRXPPS4ESV
-X-Message-ID-Hash: A4ZOEAR2OJNZZ4VU3BBB2YBRXPPS4ESV
-X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:16 +0000
+Message-ID-Hash: 4EYQ4WDHNURANLDQ5A4HB4J5MNTBLIQR
+X-Message-ID-Hash: 4EYQ4WDHNURANLDQ5A4HB4J5MNTBLIQR
+X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:17 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A4ZOEAR2OJNZZ4VU3BBB2YBRXPPS4ESV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4EYQ4WDHNURANLDQ5A4HB4J5MNTBLIQR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,87 +152,185 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-With the driver for nxp,lpc3220-dmamux we can remove the pl08x platform
-data and let pl08x driver to create peripheral channels from the DT
-properties.
+When del_timer_sync() is called in an interrupt context it throws a warning
+because of potential deadlock. The timer is used only to exit from
+wait_for_completion() after a timeout so replacing the call with
+wait_for_completion_timeout() allows to remove the problematic timer and
+its related functions altogether.
 
 Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 ---
+Changes for v5:
+- Replaced wait_for_completion() with wait_for_completion_timeout().
+- Removed unneded "alg_data->mif.timer" and its functions
+- Request irq with devm_request_irq() as before the patch
+- Renamed the patch and reword description for the new way to fix
+  the warning
+
 Changes for v4:
-- This patch is new in v4
+- Request irq with devm_request_threaded_irq() to prevent the warning
 
- arch/arm/mach-lpc32xx/phy3250.c | 54 ---------------------------------
- 1 file changed, 54 deletions(-)
+ drivers/i2c/busses/i2c-pnx.c | 48 ++++++++----------------------------
+ 1 file changed, 10 insertions(+), 38 deletions(-)
 
-diff --git a/arch/arm/mach-lpc32xx/phy3250.c b/arch/arm/mach-lpc32xx/phy3250.c
-index 66701bf43248..0c7797a0e44e 100644
---- a/arch/arm/mach-lpc32xx/phy3250.c
-+++ b/arch/arm/mach-lpc32xx/phy3250.c
-@@ -16,64 +16,10 @@
- #include <asm/mach/arch.h>
- #include "common.h"
- 
--static struct pl08x_channel_data pl08x_slave_channels[] = {
--	{
--		.bus_id = "nand-slc",
--		.min_signal = 1, /* SLC NAND Flash */
--		.max_signal = 1,
--		.periph_buses = PL08X_AHB1,
--	},
--	{
--		.bus_id = "nand-mlc",
--		.min_signal = 12, /* MLC NAND Flash */
--		.max_signal = 12,
--		.periph_buses = PL08X_AHB1,
--	},
--};
--
--static int pl08x_get_signal(const struct pl08x_channel_data *cd)
--{
--	return cd->min_signal;
--}
--
--static void pl08x_put_signal(const struct pl08x_channel_data *cd, int ch)
--{
--}
--
--static struct pl08x_platform_data pl08x_pd = {
--	/* Some reasonable memcpy defaults */
--	.memcpy_burst_size = PL08X_BURST_SZ_256,
--	.memcpy_bus_width = PL08X_BUS_WIDTH_32_BITS,
--	.slave_channels = &pl08x_slave_channels[0],
--	.num_slave_channels = ARRAY_SIZE(pl08x_slave_channels),
--	.get_xfer_signal = pl08x_get_signal,
--	.put_xfer_signal = pl08x_put_signal,
--	.lli_buses = PL08X_AHB1,
--	.mem_buses = PL08X_AHB1,
--};
--
--static struct lpc32xx_slc_platform_data lpc32xx_slc_data = {
--	.dma_filter = pl08x_filter_id,
--};
--
--static struct lpc32xx_mlc_platform_data lpc32xx_mlc_data = {
--	.dma_filter = pl08x_filter_id,
--};
--
--static const struct of_dev_auxdata lpc32xx_auxdata_lookup[] __initconst = {
--	OF_DEV_AUXDATA("arm,pl080", 0x31000000, "pl08xdmac", &pl08x_pd),
--	OF_DEV_AUXDATA("nxp,lpc3220-slc", 0x20020000, "20020000.flash",
--		       &lpc32xx_slc_data),
--	OF_DEV_AUXDATA("nxp,lpc3220-mlc", 0x200a8000, "200a8000.flash",
--		       &lpc32xx_mlc_data),
--	{ }
--};
--
- static void __init lpc3250_machine_init(void)
- {
- 	lpc32xx_serial_init();
- 
--	of_platform_default_populate(NULL, lpc32xx_auxdata_lookup, NULL);
+diff --git a/drivers/i2c/busses/i2c-pnx.c b/drivers/i2c/busses/i2c-pnx.c
+index a12525b3186b..f448505d5468 100644
+--- a/drivers/i2c/busses/i2c-pnx.c
++++ b/drivers/i2c/busses/i2c-pnx.c
+@@ -15,7 +15,6 @@
+ #include <linux/ioport.h>
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+-#include <linux/timer.h>
+ #include <linux/completion.h>
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+@@ -32,7 +31,6 @@ struct i2c_pnx_mif {
+ 	int			ret;		/* Return value */
+ 	int			mode;		/* Interface mode */
+ 	struct completion	complete;	/* I/O completion */
+-	struct timer_list	timer;		/* Timeout */
+ 	u8 *			buf;		/* Data buffer */
+ 	int			len;		/* Length of data buffer */
+ 	int			order;		/* RX Bytes to order via TX */
+@@ -117,24 +115,6 @@ static inline int wait_reset(struct i2c_pnx_algo_data *data)
+ 	return (timeout <= 0);
  }
  
- static const char *const lpc32xx_dt_compat[] __initconst = {
+-static inline void i2c_pnx_arm_timer(struct i2c_pnx_algo_data *alg_data)
+-{
+-	struct timer_list *timer = &alg_data->mif.timer;
+-	unsigned long expires = msecs_to_jiffies(alg_data->timeout);
+-
+-	if (expires <= 1)
+-		expires = 2;
+-
+-	del_timer_sync(timer);
+-
+-	dev_dbg(&alg_data->adapter.dev, "Timer armed at %lu plus %lu jiffies.\n",
+-		jiffies, expires);
+-
+-	timer->expires = jiffies + expires;
+-
+-	add_timer(timer);
+-}
+-
+ /**
+  * i2c_pnx_start - start a device
+  * @slave_addr:		slave address
+@@ -259,8 +239,6 @@ static int i2c_pnx_master_xmit(struct i2c_pnx_algo_data *alg_data)
+ 				~(mcntrl_afie | mcntrl_naie | mcntrl_drmie),
+ 				  I2C_REG_CTL(alg_data));
+ 
+-			del_timer_sync(&alg_data->mif.timer);
+-
+ 			dev_dbg(&alg_data->adapter.dev,
+ 				"%s(): Waking up xfer routine.\n",
+ 				__func__);
+@@ -276,8 +254,6 @@ static int i2c_pnx_master_xmit(struct i2c_pnx_algo_data *alg_data)
+ 			~(mcntrl_afie | mcntrl_naie | mcntrl_drmie),
+ 			  I2C_REG_CTL(alg_data));
+ 
+-		/* Stop timer. */
+-		del_timer_sync(&alg_data->mif.timer);
+ 		dev_dbg(&alg_data->adapter.dev,
+ 			"%s(): Waking up xfer routine after zero-xfer.\n",
+ 			__func__);
+@@ -364,8 +340,6 @@ static int i2c_pnx_master_rcv(struct i2c_pnx_algo_data *alg_data)
+ 				 mcntrl_drmie | mcntrl_daie);
+ 			iowrite32(ctl, I2C_REG_CTL(alg_data));
+ 
+-			/* Kill timer. */
+-			del_timer_sync(&alg_data->mif.timer);
+ 			complete(&alg_data->mif.complete);
+ 		}
+ 	}
+@@ -400,8 +374,6 @@ static irqreturn_t i2c_pnx_interrupt(int irq, void *dev_id)
+ 			 mcntrl_drmie);
+ 		iowrite32(ctl, I2C_REG_CTL(alg_data));
+ 
+-		/* Stop timer, to prevent timeout. */
+-		del_timer_sync(&alg_data->mif.timer);
+ 		complete(&alg_data->mif.complete);
+ 	} else if (stat & mstatus_nai) {
+ 		/* Slave did not acknowledge, generate a STOP */
+@@ -419,8 +391,6 @@ static irqreturn_t i2c_pnx_interrupt(int irq, void *dev_id)
+ 		/* Our return value. */
+ 		alg_data->mif.ret = -EIO;
+ 
+-		/* Stop timer, to prevent timeout. */
+-		del_timer_sync(&alg_data->mif.timer);
+ 		complete(&alg_data->mif.complete);
+ 	} else {
+ 		/*
+@@ -453,9 +423,8 @@ static irqreturn_t i2c_pnx_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void i2c_pnx_timeout(struct timer_list *t)
++static void i2c_pnx_timeout(struct i2c_pnx_algo_data *alg_data)
+ {
+-	struct i2c_pnx_algo_data *alg_data = from_timer(alg_data, t, mif.timer);
+ 	u32 ctl;
+ 
+ 	dev_err(&alg_data->adapter.dev,
+@@ -472,7 +441,6 @@ static void i2c_pnx_timeout(struct timer_list *t)
+ 	iowrite32(ctl, I2C_REG_CTL(alg_data));
+ 	wait_reset(alg_data);
+ 	alg_data->mif.ret = -EIO;
+-	complete(&alg_data->mif.complete);
+ }
+ 
+ static inline void bus_reset_if_active(struct i2c_pnx_algo_data *alg_data)
+@@ -514,6 +482,7 @@ i2c_pnx_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 	struct i2c_msg *pmsg;
+ 	int rc = 0, completed = 0, i;
+ 	struct i2c_pnx_algo_data *alg_data = adap->algo_data;
++	unsigned long time_left;
+ 	u32 stat;
+ 
+ 	dev_dbg(&alg_data->adapter.dev,
+@@ -548,7 +517,6 @@ i2c_pnx_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 		dev_dbg(&alg_data->adapter.dev, "%s(): mode %d, %d bytes\n",
+ 			__func__, alg_data->mif.mode, alg_data->mif.len);
+ 
+-		i2c_pnx_arm_timer(alg_data);
+ 
+ 		/* initialize the completion var */
+ 		init_completion(&alg_data->mif.complete);
+@@ -564,7 +532,10 @@ i2c_pnx_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 			break;
+ 
+ 		/* Wait for completion */
+-		wait_for_completion(&alg_data->mif.complete);
++		time_left = wait_for_completion_timeout(&alg_data->mif.complete,
++							alg_data->timeout);
++		if (time_left == 0)
++			i2c_pnx_timeout(alg_data);
+ 
+ 		if (!(rc = alg_data->mif.ret))
+ 			completed++;
+@@ -653,7 +624,10 @@ static int i2c_pnx_probe(struct platform_device *pdev)
+ 	alg_data->adapter.algo_data = alg_data;
+ 	alg_data->adapter.nr = pdev->id;
+ 
+-	alg_data->timeout = I2C_PNX_TIMEOUT_DEFAULT;
++	alg_data->timeout = msecs_to_jiffies(I2C_PNX_TIMEOUT_DEFAULT);
++	if (alg_data->timeout <= 1)
++		alg_data->timeout = 2;
++
+ #ifdef CONFIG_OF
+ 	alg_data->adapter.dev.of_node = of_node_get(pdev->dev.of_node);
+ 	if (pdev->dev.of_node) {
+@@ -673,8 +647,6 @@ static int i2c_pnx_probe(struct platform_device *pdev)
+ 	if (IS_ERR(alg_data->clk))
+ 		return PTR_ERR(alg_data->clk);
+ 
+-	timer_setup(&alg_data->mif.timer, i2c_pnx_timeout, 0);
+-
+ 	snprintf(alg_data->adapter.name, sizeof(alg_data->adapter.name),
+ 		 "%s", pdev->name);
+ 
 -- 
 2.25.1
 
