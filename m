@@ -4,61 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0B0BC2BD09
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jun 2024 14:15:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88BA1C3064D
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jun 2024 14:15:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A27BD1947;
-	Thu, 27 Jun 2024 16:15:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A27BD1947
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D061E72;
+	Thu, 27 Jun 2024 16:15:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D061E72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719497718;
-	bh=9D/2PaOW6MKVyp7k7rOu+102ZV2kHkSiZRo5a83CszQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=D94m9MS2ygaIzru4iBz0aQC9nWfYZoj6B2sd80V+JPvhEdrw1eQ/h88oSAAWqEvzM
-	 D/oyr/GOjisIe4xKJks9kO4lLqeG6naLfSu0rYyuFbz2PWjSRt8ZvLicjmAlJkooLS
-	 t4f4OrT4P8pLFuyngHbXDsg1TJFvV4Aye+WeKVhY=
+	s=default; t=1719497739;
+	bh=OQ0U4kjpqazjir74iOIxPPwvSKrOayMnsLvpYVcMIPs=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=W90p+M24fDDIZwQ88ZtxzXgvhHVzdOYtDNHE++vF8SdlJ1+wWX4T3wBP7NjNWmRpd
+	 nWGUVdLDpdfb76EPFZzxWSROck/f2sap92AfrNmOruiXnYcNU3yhe9caFLICqVNYNC
+	 mER8P/+17qiy3aT4wOnPsHewhQZx4+dGYyVTxDS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6CAFF805AA; Thu, 27 Jun 2024 16:14:47 +0200 (CEST)
+	id 6B95BF805C8; Thu, 27 Jun 2024 16:14:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33CF5F8059F;
-	Thu, 27 Jun 2024 16:14:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8784F805E5;
+	Thu, 27 Jun 2024 16:14:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A7A7F804F2; Thu, 27 Jun 2024 16:14:41 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 59C91F804D6; Thu, 27 Jun 2024 16:14:42 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2BF25F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2F3CFF80154
 	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 16:14:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BF25F800E4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F3CFF80154
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=PTQRTOUk
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 45RCpTLL015656;
-	Thu, 27 Jun 2024 09:14:34 -0500
+ header.s=PODMain02222019 header.b=a4XRwywB
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 45RCpZV9009358;
+	Thu, 27 Jun 2024 09:14:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=Mf466zPNszl4cwSOtyzf4Z5XuNbdlzhvEDQrtGPSQks=; b=
-	PTQRTOUkPHyjAvMeLpRrIGQr314Oo2gkaCmYvUe3WtufnzQdRPudpl8m8EpepXtM
-	c3s5Wbn6CTEimuT2ld7NaaENdu8oYi3U32x+FJXO/S6+cGEb4tq31N3S/xISd6ai
-	RYvRckxqd14yEvq/W5tnNMXCIWb/CzTSUiBrM+sIszw8vpR6e/8ZwZ9KDC+Of7r7
-	fv1zkZn4PSqzZHNq+nKH3RBC/VVqAPia3PxUUqvK3lzHgJAMQ+Y9SSHP5h1ULTZ0
-	5u/R1cLsbzgHdW6dxgeJmRS+ZvkvrBI0kB0Km7QAUKTU3H8N/6E6JIebT40tZNJb
-	vySqSX5jUxNbbOqsLztxKA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ywu1hwh36-1
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=PODMain02222019; bh=MCVtrJtn2IVRVV12
+	a/GpV1qk2cW+zeuMidMKP6Eg6FY=; b=a4XRwywBjRsYPB+vFcyH9JdsCtezXVLj
+	IZG11DhzbmBA2dV35iuUtvHOQjCyYnH/RVnRv1J4Sf1es73e2sCpaNFezWTY01jf
+	o0BdUHnEnAS73LSl4Fzbn6lUkIZNfYVkb7ZWXWI8Fru3u2/Ye99GeAf/yNcrAnAz
+	lkkRyjuYsWURoTh+FiVtmw25r/yOc/PF3NXDSX8Ud/Kz7+YG58oo/y+ALXzXLTEm
+	isn2ojniBagL2GrOgr8xRBgvnQvoO9VLTEnAN/UcuVZZgA+KqQg1QReN/iHsJ0/w
+	GSdzvz3pu0IW7v37B7I1VApuaMf8KOXbtjqyQDllpYN5nNBewwqbrA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 400nbds7rc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 27 Jun 2024 09:14:34 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 27 Jun
  2024 15:14:32 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
@@ -66,27 +64,25 @@ Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  15.2.1544.9 via Frontend Transport; Thu, 27 Jun 2024 15:14:32 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
  [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 690FE82F2A2;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 54B3C820270;
 	Thu, 27 Jun 2024 14:14:32 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-Subject: [PATCH 3/4] firmware: cs_dsp: Validate payload length before
- processing block
-Date: Thu, 27 Jun 2024 15:14:31 +0100
-Message-ID: <20240627141432.93056-4-rf@opensource.cirrus.com>
+Subject: [PATCH 0/4] firmware: cs_dsp: Add check to prevent overrunning the
+ firmware file
+Date: Thu, 27 Jun 2024 15:14:28 +0100
+Message-ID: <20240627141432.93056-1-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240627141432.93056-1-rf@opensource.cirrus.com>
-References: <20240627141432.93056-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: SwvW2r7efNwRyuBMy-RoQ0aJXmVsIGtF
-X-Proofpoint-GUID: SwvW2r7efNwRyuBMy-RoQ0aJXmVsIGtF
+X-Proofpoint-ORIG-GUID: NqvQZcRcVTqnG_vpKPiSt7_IRLYcV8ql
+X-Proofpoint-GUID: NqvQZcRcVTqnG_vpKPiSt7_IRLYcV8ql
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: SF5J6N3JFC4HWUJXZTK42RZIE2QOTFDJ
-X-Message-ID-Hash: SF5J6N3JFC4HWUJXZTK42RZIE2QOTFDJ
+Message-ID-Hash: IRTIS7AAOOAKHGTXFGQAH6FWC56BACH3
+X-Message-ID-Hash: IRTIS7AAOOAKHGTXFGQAH6FWC56BACH3
 X-MailFrom: prvs=3908a169f9=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SF5J6N3JFC4HWUJXZTK42RZIE2QOTFDJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IRTIS7AAOOAKHGTXFGQAH6FWC56BACH3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,95 +104,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Move the payload length check in cs_dsp_load() and cs_dsp_coeff_load()
-to be done before the block is processed.
+This series fixes various missing length checks when processing
+variable-length data from the firmware file. These could have
+caused overrunning the end of firmware file buffer, or wild
+pointer accesses.
 
-The check that the length of a block payload does not exceed the number
-of remaining bytes in the firwmware file buffer was being done near the
-end of the loop iteration. However, some code before that check used the
-length field without validating it.
+Richard Fitzgerald (4):
+  firmware: cs_dsp: Fix overflow checking of wmfw header
+  firmware: cs_dsp: Return error if block header overflows file
+  firmware: cs_dsp: Validate payload length before processing block
+  firmware: cs_dsp: Prevent buffer overrun when processing V2 alg
+    headers
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: f6bc909e7673 ("firmware: cs_dsp: add driver to support firmware loading on Cirrus Logic DSPs")
----
- drivers/firmware/cirrus/cs_dsp.c | 36 +++++++++++++-------------------
- 1 file changed, 15 insertions(+), 21 deletions(-)
+ drivers/firmware/cirrus/cs_dsp.c | 223 ++++++++++++++++++++++---------
+ 1 file changed, 160 insertions(+), 63 deletions(-)
 
-diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index 47cf91be99a1..13ff08870d69 100644
---- a/drivers/firmware/cirrus/cs_dsp.c
-+++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -1452,6 +1452,12 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
- 		}
- 
- 		region = (void *)&(firmware->data[pos]);
-+
-+		if (le32_to_cpu(region->len) > firmware->size - pos - sizeof(*region)) {
-+			ret = -EOVERFLOW;
-+			goto out_fw;
-+		}
-+
- 		region_name = "Unknown";
- 		reg = 0;
- 		text = NULL;
-@@ -1508,16 +1514,6 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
- 			   regions, le32_to_cpu(region->len), offset,
- 			   region_name);
- 
--		if (le32_to_cpu(region->len) >
--		    firmware->size - pos - sizeof(*region)) {
--			cs_dsp_err(dsp,
--				   "%s.%d: %s region len %d bytes exceeds file length %zu\n",
--				   file, regions, region_name,
--				   le32_to_cpu(region->len), firmware->size);
--			ret = -EINVAL;
--			goto out_fw;
--		}
--
- 		if (text) {
- 			memcpy(text, region->data, le32_to_cpu(region->len));
- 			cs_dsp_info(dsp, "%s: %s\n", file, text);
-@@ -2147,6 +2143,11 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
- 
- 		blk = (void *)(&firmware->data[pos]);
- 
-+		if (le32_to_cpu(blk->len) > firmware->size - pos - sizeof(*blk)) {
-+			ret = -EOVERFLOW;
-+			goto out_fw;
-+		}
-+
- 		type = le16_to_cpu(blk->type);
- 		offset = le16_to_cpu(blk->offset);
- 		version = le32_to_cpu(blk->ver) >> 8;
-@@ -2243,17 +2244,6 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
- 		}
- 
- 		if (reg) {
--			if (le32_to_cpu(blk->len) >
--			    firmware->size - pos - sizeof(*blk)) {
--				cs_dsp_err(dsp,
--					   "%s.%d: %s region len %d bytes exceeds file length %zu\n",
--					   file, blocks, region_name,
--					   le32_to_cpu(blk->len),
--					   firmware->size);
--				ret = -EINVAL;
--				goto out_fw;
--			}
--
- 			buf = cs_dsp_buf_alloc(blk->data,
- 					       le32_to_cpu(blk->len),
- 					       &buf_list);
-@@ -2293,6 +2283,10 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
- 	regmap_async_complete(regmap);
- 	cs_dsp_buf_free(&buf_list);
- 	kfree(text);
-+
-+	if (ret == -EOVERFLOW)
-+		cs_dsp_err(dsp, "%s: file content overflows file data\n", file);
-+
- 	return ret;
- }
- 
 -- 
 2.39.2
 
