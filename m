@@ -4,80 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB6FFC2BD09
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jun 2024 20:30:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAB91C2BD09
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jun 2024 21:26:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 206F4210F;
-	Thu, 27 Jun 2024 22:29:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 206F4210F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 749C0211E;
+	Thu, 27 Jun 2024 23:26:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 749C0211E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719520205;
-	bh=b/0aNRPKXl+pJqUGj/VmecpemqeGNH4lJFUTEQRPRiA=;
+	s=default; t=1719523574;
+	bh=sw6QJkUOx6dnvHnOUYkmwDviR+5bis7nK5kklIGe8B4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NeM5ztHbtVDWLx/LyRdbGr5dWJkkgbRS/UxWOalTdKTHSVpw38IxG+IpaSKaut0cD
-	 jrOCU58Tg2I0v0qszig9iT2kM9iR6anA9wBzC2bYjUXIZqTQ2P/QVtjIN4T77lSMQ1
-	 Y6JlHG/okOG2YNbup707kd/JUHWFfqyiHPmWTWCs=
+	b=asyrHfz7udQ4moDdbWnGgbOU+nmKYE8oRnQQ6wQb/1GIqrtkcvJ4wYhkgBbsFKOQA
+	 gxTAXe1KdgL9JDqGgmMCExFVcL0ePzB/NBaQkAKbRLgCu7ccH99DKShgT6sVRi3VMq
+	 EWTGifaF6DVDuC3e3Jpft22GU4adW7v1gMGDzl3Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A366F805AC; Thu, 27 Jun 2024 22:29:33 +0200 (CEST)
+	id 88113F805B5; Thu, 27 Jun 2024 23:25:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04A8FF805B5;
-	Thu, 27 Jun 2024 22:29:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2005CF805B5;
+	Thu, 27 Jun 2024 23:25:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3CCD3F80423; Thu, 27 Jun 2024 22:29:25 +0200 (CEST)
+	id CB9A8F80423; Thu, 27 Jun 2024 23:25:31 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE056F800ED
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 22:29:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE056F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id B5530F8013D
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jun 2024 23:25:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5530F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=HW62N1IA
+ header.s=k20201202 header.b=mqrAhONa
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 59E21CE2E48;
-	Thu, 27 Jun 2024 20:29:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D203C2BBFC;
-	Thu, 27 Jun 2024 20:29:09 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 2289DCE1B5F;
+	Thu, 27 Jun 2024 21:25:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37D25C2BBFC;
+	Thu, 27 Jun 2024 21:25:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719520149;
-	bh=b/0aNRPKXl+pJqUGj/VmecpemqeGNH4lJFUTEQRPRiA=;
+	s=k20201202; t=1719523520;
+	bh=sw6QJkUOx6dnvHnOUYkmwDviR+5bis7nK5kklIGe8B4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HW62N1IA8g8PIp+7o+yoQhE0hOXTHkRgKocLCbgHI0RLPk+UFoPuCaGY2ZZGjri4b
-	 fc8VwD+KoLHMAljmElaUY793rAo3nXm7W6885i4xvIIDYbgd//GXTGjZNGa5fzTDYY
-	 bQHJuN2Rp390mMzefwCVUAmXZgYSzTee40UsNb9F0f4wtzm9WeMyST27nj+PUeoDbF
-	 CZTc2whCBRq9aLn3irP6dW1/OZVjr+Lj5AOe/+T/dwWBsFNEHhUdSt+7ih4cgYmJn9
-	 vmdxZ2n5L4WAwVCDrT0NIu/zae3YK+41Ft3dyPCAoUGxk7XbGtQYcbzx2drU9jRq5S
-	 EZjuAOv1T8s1w==
-Date: Thu, 27 Jun 2024 14:29:08 -0600
+	b=mqrAhONa3b8WIQ5LFtilKlUEIBKRc58ZejXGCuDCIhhNavv15R6ocbrxAtJdukAq3
+	 FaqCGgq5D79cWs7DpsS+7Dt9z+vMkhEkIv9NTJ1tc7U3z/LVPxmwONgM+sqOEZP+Se
+	 IrGOAiEUFtUcGpGg/2u5TXujcynjDQc3mJ2yY2PXRd3vTKnuSXgSGlu5HXcPWpNpwC
+	 gCU+kumkVWCX/RNvlXnBhnDwiszNVrbQaBPuZCAxxpFSqAoO275PVFEzqXvv/NdqfX
+	 Tt17cLoclyJ5KHzaBcD6uGse95ob/oOeubV3ic+nWUAhu6H2Dy0oTXl87QuTF5COsB
+	 KQeM8DU5j5zGg==
+Date: Thu, 27 Jun 2024 15:25:18 -0600
 From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Olivier Moysan <olivier.moysan@foss.st.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: linux-arm-kernel@lists.infradead.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>, devicetree@vger.kernel.org,
+	Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+	linuxppc-dev@lists.ozlabs.org, Jaroslav Kysela <perex@perex.cz>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org, Qiang Zhao <qiang.zhao@nxp.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Fabio Estevam <festevam@gmail.com>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] dt-bindings: iio: stm32: dfsdm: fix dtbs warnings on
- dfsdm audio port
-Message-ID: <171952014620.474983.15354726969773132715.robh@kernel.org>
-References: <20240618115912.706912-1-olivier.moysan@foss.st.com>
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH 09/10] dt-bindings: sound: fsl,qmc-audio: Add support for
+ multiple QMC channels per DAI
+Message-ID: <171952351643.593434.7474652355291518276.robh@kernel.org>
+References: <20240620084300.397853-1-herve.codina@bootlin.com>
+ <20240620084300.397853-10-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240618115912.706912-1-olivier.moysan@foss.st.com>
-Message-ID-Hash: U542FWJVB5XV55WNQPR4WQBXPRQT6IV3
-X-Message-ID-Hash: U542FWJVB5XV55WNQPR4WQBXPRQT6IV3
+In-Reply-To: <20240620084300.397853-10-herve.codina@bootlin.com>
+Message-ID-Hash: HYKMGRYEHJORKQIEDCCLZCA73F2GP2GI
+X-Message-ID-Hash: HYKMGRYEHJORKQIEDCCLZCA73F2GP2GI
 X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U542FWJVB5XV55WNQPR4WQBXPRQT6IV3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HYKMGRYEHJORKQIEDCCLZCA73F2GP2GI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,17 +104,21 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Tue, 18 Jun 2024 13:59:12 +0200, Olivier Moysan wrote:
-> Fix warnings on DFSDM dtbs check
-> Unevaluated properties are not allowed ('dfsdm-dai' was unexpected)
-> 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+On Thu, 20 Jun 2024 10:42:56 +0200, Herve Codina wrote:
+> The QMC audio uses one QMC channel per DAI and uses this QMC channel to
+> transmit interleaved audio channel samples.
 > 
-> Fixes: 11183ac07a74 ("dt-bindings: stm32: convert dfsdm to json-schema")
-> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> In order to work in non-interleave mode, a QMC audio DAI needs to use
+> multiple QMC channels. In that case, the DAI maps each QMC channel to
+> exactly one audio channel.
+> 
+> Allow QMC audio DAIs with multiple QMC channels attached.
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 > ---
->  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml       | 4 ++++
->  1 file changed, 4 insertions(+)
+>  .../bindings/sound/fsl,qmc-audio.yaml         | 41 ++++++++++++++++---
+>  1 file changed, 35 insertions(+), 6 deletions(-)
 > 
 
-Acked-by: Rob Herring (Arm) <robh@kernel.org>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 
