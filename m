@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93CF6C30659
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 07:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17704C2BBCA
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 07:49:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC188233F;
-	Fri, 28 Jun 2024 09:48:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC188233F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FF182389;
+	Fri, 28 Jun 2024 09:49:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FF182389
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719560936;
-	bh=uCD5TGiepGiYZ3McqKERrGy9PD1OaIIbz3xxYakKfFw=;
+	s=default; t=1719560976;
+	bh=Med/e/5poH47sw+X9ut1CH7guRvVlCNxLW8j4nDVLsk=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=hVsAdId0QnzAlEJ8tK2Njt03HeWcunzUeB1RkRaYRruD7pIX8abdeCkZhy9DCZoni
-	 QhiwNFRpNro8epdO7FyWkG1pfddn/eU+IUfTD+wsTDQO9Ujd0Z56u2WL4fT52jETkM
-	 mzGPZxJKTL/cvx/Tuqpsbn5yJwTKIyzKw9zVOcgY=
+	b=NM9VPrmuGtmH7j1adgUro01wrVRyvOy/M8O7+oSjr9fYp9E/9RvOSKOVf6PoOHBce
+	 XNqWQOLEkyApx69rkp/N4RTxT41pIGUiHYAQ9LrWIRLr4AbXCNCzdpgzXew1ou1mZ2
+	 yMAf5HO0ye24RcPlcvdlDJhdMSGsyUjrjv2ivu+U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D056AF8060A; Fri, 28 Jun 2024 09:48:02 +0200 (CEST)
+	id 5BE14F805BA; Fri, 28 Jun 2024 09:49:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6909AF80612;
-	Fri, 28 Jun 2024 09:48:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02302F805BE;
+	Fri, 28 Jun 2024 09:49:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C163FF804D6; Fri, 28 Jun 2024 09:47:56 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id F40D5F80423; Fri, 28 Jun 2024 09:48:58 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 35F2AF8016E
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 09:47:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35F2AF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 38D86F80154
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 09:48:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38D86F80154
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rw85o+ri
+ header.s=k20201202 header.b=Y6RiG23z
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D7B1FCE1FEC;
-	Fri, 28 Jun 2024 07:47:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2B71C116B1;
-	Fri, 28 Jun 2024 07:47:31 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 61564618FE;
+	Fri, 28 Jun 2024 07:48:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 386D8C2BD10;
+	Fri, 28 Jun 2024 07:48:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719560863;
-	bh=uCD5TGiepGiYZ3McqKERrGy9PD1OaIIbz3xxYakKfFw=;
+	s=k20201202; t=1719560923;
+	bh=Med/e/5poH47sw+X9ut1CH7guRvVlCNxLW8j4nDVLsk=;
 	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=rw85o+rim2AaTbsryjVXocCSTIlky1QApL8M2f6EISMpuQnbVCy6DKELhPL2Y+ves
-	 ic0hueZT0Vhjw5W/WMP8ScUwtmWgYe5ddFkp0WSMnfwkKyOIaPm8g72GAP4a9oRYIh
-	 eczRGNHi2x+9ZbEtaBPBCMAIRUWwewUQq0n+9WN/mn+H0p/41j6p7w9R7UUftUP2wp
-	 p5aDOhdD69kHxVxNI4gy4WJqN98J5POMN/Lrn6XJI0YFiO5MZcM4CjWCO4LKStdKd5
-	 zLwOMKhLv6NWw5ozJgMSKa7zNwOjxzyqTMkrfFOmbmAxHjZrQPoRrM9g8di5jQbsrx
-	 llS6jAQ+ZH/pA==
-Message-ID: <c99dbf5e-9396-44bc-973f-cb7edaf6c0dc@kernel.org>
-Date: Fri, 28 Jun 2024 09:47:29 +0200
+	b=Y6RiG23z69aCffJy0NTLVKqSETo/QxSs1fcdyqXXZiDFikz81WLMMGSrZ8fpX2Xgs
+	 UrFrYHnFJp/x5hxoWuPRKpveFjZwJdEBRLsakz4VKTJS0nwReePrv5EPrifL+UTrKM
+	 ItWXec9mMmFLpcgb2r8w3JaP8gc2W4FKVhnWpwJS+5b3LIKggNTUPlwXlD/FX2RTaF
+	 0Bny5YFR3Tc6gV0IGjnPxS6imOUUb0XCfRMePJQ8AgAi3lg2Xp02u3qDH6zq4HO3qr
+	 RLbRySEO/+jFRA1BByRnPbR6TBap24tsrx1qrleN8F18zR3uLtTUFGE3qiiuToQg8A
+	 Sjp3BAR5UXmNg==
+Message-ID: <819cda69-8502-4a1d-94ed-742cb7e2b50c@kernel.org>
+Date: Fri, 28 Jun 2024 09:48:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v5 02/12] dt-bindings: dma: Add lpc32xx DMA mux binding
+Subject: Re: [Patch v5 12/12] i2x: pnx: Fix potential deadlock warning from
+ del_timer_sync() call in isr
 To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
@@ -73,15 +74,15 @@ To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>,
- Li Zetao <lizetao1@huawei.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Chancel Liu <chancel.liu@nxp.com>, Corentin Labbe <clabbe@baylibre.com>,
+ Li Zetao <lizetao1@huawei.com>, Chancel Liu <chancel.liu@nxp.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Corentin Labbe <clabbe@baylibre.com>,
  dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
  linux-sound@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
- <20240627150046.258795-3-piotr.wojtaszczyk@timesys.com>
+ <20240627150046.258795-13-piotr.wojtaszczyk@timesys.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -127,11 +128,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240627150046.258795-3-piotr.wojtaszczyk@timesys.com>
+In-Reply-To: <20240627150046.258795-13-piotr.wojtaszczyk@timesys.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: CS74SORJ6K2GM5EMHOBQOR27XLADWBKV
-X-Message-ID-Hash: CS74SORJ6K2GM5EMHOBQOR27XLADWBKV
+Message-ID-Hash: QUI3J4CRQNATTXIVC4MMXGI7EVWWZSZQ
+X-Message-ID-Hash: QUI3J4CRQNATTXIVC4MMXGI7EVWWZSZQ
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -144,7 +145,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CS74SORJ6K2GM5EMHOBQOR27XLADWBKV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QUI3J4CRQNATTXIVC4MMXGI7EVWWZSZQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -154,13 +155,14 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 27/06/2024 17:00, Piotr Wojtaszczyk wrote:
-> LPC32XX SoCs use pl080 dma controller which have few request signals
-> multiplexed between peripherals. This binding describes how devices can
-> use the multiplexed request signals.
-> 
-> Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+> When del_timer_sync() is called in an interrupt context it throws a warning
+> because of potential deadlock. The timer is used only to exit from
+> wait_for_completion() after a timeout so replacing the call with
+> wait_for_completion_timeout() allows to remove the problematic timer and
+> its related functions altogether.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject typo: i2c
+
 
 Best regards,
 Krzysztof
