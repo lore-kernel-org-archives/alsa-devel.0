@@ -4,94 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15E54C3064D
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 10:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3A2CC2BBCA
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 10:14:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60FB42369;
-	Fri, 28 Jun 2024 12:12:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60FB42369
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03BCD2365;
+	Fri, 28 Jun 2024 12:14:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03BCD2365
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719569570;
-	bh=ycHPrSfshLbhaVlOmSrBNFLaE6akGY9mtxIkStrGvh4=;
+	s=default; t=1719569652;
+	bh=mHTTaZNpcGoV/mUxNlKDTFQQYgAom9YHnI/rebyFS7Q=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NWyO5VfIy7SQboa6c9wAtK53a6VGDz77ebvEDU9w6KlUIauiolLTbFA4od0j5VSyp
-	 eFi7Cv+c8FiE8YOiWJKsvCXnTd7I0gcOQDxlV6YhnGpMVcnFUqOfV/yLqe/h2itcQM
-	 W4lvbE9MkCzgl5o2hzqGFXICTkiSLv7SaClLcVzU=
+	b=M02tyTKHPhLGlb2lQe2/o5KZbOQk+uUnerz470enW0t0NVIuL6flsnwMQjLarMU9G
+	 BseL+mRunhBSEX5C572AQH+NqEXYiRRINgSo2hO18pG5oxOohrbLH/UH0A3VQIA8f0
+	 tsG6jDrZrMXlm4QX2Zfz5FftB2/PcE5Z4CSAVEP0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 861F3F805FC; Fri, 28 Jun 2024 12:11:51 +0200 (CEST)
+	id 47AA8F805BA; Fri, 28 Jun 2024 12:13:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2A91F805ED;
-	Fri, 28 Jun 2024 12:11:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82477F805C1;
+	Fri, 28 Jun 2024 12:13:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53838F8016E; Fri, 28 Jun 2024 12:11:46 +0200 (CEST)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
+	id ECBFCF800E4; Fri, 28 Jun 2024 12:13:33 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 175ADF8016E
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 12:11:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 175ADF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6075DF800E4
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 12:11:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6075DF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=l5Q9l1EO
-Received: by mail-lj1-x235.google.com with SMTP id
- 38308e7fff4ca-2ec61eeed8eso4732061fa.0
+ header.s=google header.b=jKGIVRcw
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-42561c16ffeso3817505e9.3
         for <alsa-devel@alsa-project.org>;
- Fri, 28 Jun 2024 03:11:34 -0700 (PDT)
+ Fri, 28 Jun 2024 03:11:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719569494; x=1720174294;
+        d=linaro.org; s=google; t=1719569497; x=1720174297;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JrC0oanY/xXM5tNplzJFb5TLPsl7ab1mW6qPRTKsSC8=;
-        b=l5Q9l1EOizYVbfVPcfKDasxdte7KP1mpRltGJoW0g4NEu5faZGyh1r5jo94POZwzxu
-         i6vTYAylUrvTdoCIscVIn2WJKoFSW6GwIIFGhYT4ppzXdQOg+R4FQGk91yAtz2nqEDmh
-         agL7u5wh3PHxhEZQPmsVqxrV7c/3aEv2i4whni8nvz8p+fHLejqhSmbJMNXPblA7LE8C
-         PMVg9TRmZJYiYkhVGvzVY7zL8kOUMFB5BYeU5tVwMDXdMQIkE/TiHTn5p3yM9LSO//y6
-         QwtwCrxvc8Dae+ZJ8yyYamrlxI2AL/5r6p2E6RNrCNH6tdCyjDdplW2RUGZPTv5bHbhV
-         AlOA==
+        bh=LkhZEX+m4yRFERQhljwkeNudJNH97Tx+yLOdy4DNmag=;
+        b=jKGIVRcwd39Twv0/S6Rflc4pAECxVpD2mYrTmUtH46mQlEND0DYzwQJKTB/6cLo46s
+         wJSpVqf/NvmnXQslenv+elhNtrwvOy0mkyITyIb0KXfpenI9wZXnn3foUhmQCG41npr/
+         x3Hoqf9Z2YS4dXssQl25/7XJLYzm95C06C9kqpGgPspKSfCK5f2BQwUG9LSfo3ptxiNK
+         2lfsTRlOVG2pqfti7jTTPSzr7z/zqYsn3A+VU9R5XyTHokJhIACe/f4+gPBfj57RjsgK
+         astVYLlyYIKWSMk6djJIH+GGOxLgVkODkgYX/LSka/KtTkLnabmLRxAHyCh04zhX1Od6
+         nNjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719569494; x=1720174294;
+        d=1e100.net; s=20230601; t=1719569497; x=1720174297;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JrC0oanY/xXM5tNplzJFb5TLPsl7ab1mW6qPRTKsSC8=;
-        b=BacSk+gFyOpGKHl2OUE/zayWKoQRH6Tu6yboAc2VBu0k7IuoLBQv65Hw2uA/eiyEGa
-         KA4emfLGUFFOF6rzlmJKBL0UmlPsoMugQB37JSAHWxbv50uc6FaHd5EhUuX38bxgF2lJ
-         Dc/MpJH3wMVnTrb7FIFJwzG/n8xMdfwMN2X0oyqQXH7lRCEsEh5EZ8qbnleXBWwiaDsv
-         wCU6nOISMCNm5OdcyW/OIi4lqT7PKWfPb15RZZGGQOyHdV3zPug2cimMu/yiUFREx+H9
-         YPpmszDGkkb9BUAL/s5/jWLorO7lIA/VqI/HhC4Fzip6165ixLhIpXdywhXVglcHdFv3
-         X4QQ==
-X-Gm-Message-State: AOJu0YyWtiFRA3Nt/06qLE0AO5SqVB/B5t2miW+3v0NXt9C9oHS1CYBp
-	sYuq/harGob4V0YXsMsusO7Z7kN4xTxBhtNCDGdT5qb7+At26EG4LRAVLpfBuwFSz2JH6dMyYOL
-	0
+        bh=LkhZEX+m4yRFERQhljwkeNudJNH97Tx+yLOdy4DNmag=;
+        b=ifwRyCrFx/tgaGw0eW3TP6zszDxFdEVo0BZiQkuqBW5Vhx0nLoo6B6RCOnJAjsjWYF
+         NOAmRi9ofP94qaBTzvTg4wWlTqYkLpGAsNn3ZleJqKUteqFlNDz26xga6BpVf99wlGPL
+         k/aXvn1qqv3wrZZNHyGb7S7Dmu7ii4lOFh56yxT2bArXFKZ7pYNU/9Tvm7xjZPsUDLUO
+         bwa8p0u5fhtUIUEFYhuuvlY6Zviklje5S2+WDfIdQfRgBcnxudyi4wtZFH0ynuHETx6q
+         Mph4PD+h+VsANvN1CDZF9PqENLT3vmHkCW9Kq1Hx5FGDQK9F1Z7aPcb4kMFMdaN0jVUb
+         MLsg==
+X-Gm-Message-State: AOJu0YxxpexwPJ2rxDuw2e2+bhE3RX4NFwyfZ4XZrcovMjYNaausqWDu
+	ublEf7YecN9YE9lazaQxYljgLjybwsYed8Cns/xJI9A0D/w6R0lU5xFygRF/acE=
 X-Google-Smtp-Source: 
- AGHT+IFKhIJpRNXOaeJJ2eW2v9e+5Ei4zrnP5FIL9QTBjvfsw4tDY8rG0xk7rsZ1cWCftr3DLKVXYg==
-X-Received: by 2002:a05:651c:10a2:b0:2ec:5cfe:2e99 with SMTP id
- 38308e7fff4ca-2ec5cfe2efcmr86889161fa.6.1719569493806;
-        Fri, 28 Jun 2024 03:11:33 -0700 (PDT)
+ AGHT+IFZAKYRP0ELHRLqVkzPXiFVn5Ahxi3UScj47Vi/DSByvBMN7t47V/esD9G6nGISyat/slInbA==
+X-Received: by 2002:a05:600c:5819:b0:421:5966:ca40 with SMTP id
+ 5b1f17b1804b1-4248cc2a7c5mr108666635e9.10.1719569497596;
+        Fri, 28 Jun 2024 03:11:37 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4256b0c15f8sm27024605e9.47.2024.06.28.03.11.32
+ 5b1f17b1804b1-4256b0c15f8sm27024605e9.47.2024.06.28.03.11.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jun 2024 03:11:33 -0700 (PDT)
+        Fri, 28 Jun 2024 03:11:37 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Fri, 28 Jun 2024 12:10:56 +0200
-Subject: [PATCH v2 2/5] ASoC: codecs: lpass-rx-macro: Keep static
- regmap_config as const
+Date: Fri, 28 Jun 2024 12:10:59 +0200
+Subject: [PATCH v2 5/5] ASoC: codecs: lpass-wsa-macro: Simplify with
+ cleanup.h
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240628-b4-qcom-audio-lpass-codec-cleanups-v2-2-e9741143e485@linaro.org>
+ <20240628-b4-qcom-audio-lpass-codec-cleanups-v2-5-e9741143e485@linaro.org>
 References: 
  <20240628-b4-qcom-audio-lpass-codec-cleanups-v2-0-e9741143e485@linaro.org>
 In-Reply-To: 
@@ -104,25 +103,25 @@ Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2080;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3389;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=ycHPrSfshLbhaVlOmSrBNFLaE6akGY9mtxIkStrGvh4=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmfow+5/Q8/abTSGqS3WeeJmNN/eGY2CApICxtv
- 1RpQy+alaiJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZn6MPgAKCRDBN2bmhouD
- 1z1SD/977JGgYit9iIszAbc1+SmnkFG1Z8kCb/Hm66RsrpD3PCec7xncGbzpllIJD25/MWPHp3s
- KeYM25mJNwmtrsXQ2yAc1Mje5nEN6Oouc0m7Wt4UQUNvKGJ38kDZ7/zhj1H8bQ81swJyEFnDBT4
- +0ibiITHjvLRXNi/1kQ1e2PxR9s9P20Uwxc0PD65gCXuIjDT9wsl0fpk3kH9t2C8w5TR+TwAkpw
- Mm2vgKQoLVlLyNE7h45yUka8PXhaDFqZ+7oOt1EYcYTv+h9nrk+YaAx9lkjxhZ3PgvuD7JccnKu
- ldQy3ghq9c0MgtN/S+JwHESNLt+OTx0IaKy9W/IohMVioYPFqVYXJVUyBBK8oXmbEjgv1bEI7do
- 3WQGEdEseFyaVbxm2uTD4gSEu7RER7FK9TtLTV/nxIZYxxy+QB7+DJaZRm5ib5Uv8ncmz07NMtF
- Jd+CWFUp3UZQKvCgc/Po6aTyAQajsF44iSbqV8XwLhC1m5WXe9loIEJqGkgI+iLWCL2Mqju8E5Q
- NK1VsC+W8KlfYce5yJoV7D7ohAJfGxoti96qi0H/FWbTGYZstQDvKbUICAVcRImPV7DXbKST2rI
- A4Ba+TyOP1XmyZrzMxoqKNasLw8KlgceFqahbL7BiX+7IdW/yn2LiMW5gkA3XC4nh0wg4LM5Ohn
- 1cPt/M88ksZ2LIA==
+ bh=mHTTaZNpcGoV/mUxNlKDTFQQYgAom9YHnI/rebyFS7Q=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmfoxByjErZrFpA2io6CZmKX5eVHl0S31rLIcwQ
+ 2f2VwflwMOJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZn6MQQAKCRDBN2bmhouD
+ 18JEEACLa57k2Kdt04/TAWG2YVD7j2medFXWR35HQqZq7tCGbwlbGgmOIKAkK7gTKhV0C29W70s
+ K4EUklMzCu1T1sfEXj6loRtyiBuF8ECRNzkDmUSRosn79fMoSb0O5AjiFEREM/x+kTZB8dhE5P8
+ eGSW7/ZSPR6xwngg/6MXkoYvAkoUhygozoe+s28L9kOdaHGyWL+P+dR1vt68dR4xieRaD4ODGE3
+ AACvLmKGSDKw9nnyo+d+2+KMPX9rmgZTPXFLA4WAS1X+C5i6ZK5MkDI2SyGs18M9Mhn/beLJ8+2
+ +RmSuGfpAiaeD3el/FM1sIQPLbPE96AcoxHB9SwtogsJF9HvO7+PkiRGhtDmOk+G84pgt9NGwgA
+ 9/Tyo5wZffwXH3UmzTC5VylYGtZ30lcZDR/K4Ls/iLMZowfqF2UtAIbEKj6t3ds3SYLZ5TNxYT/
+ vxetsm0/b8K/2eKgcsmN4RRQYCFmSUYv42sy/Aa0KhPMltTdaPfJmcPZI8DcEo27ihzMdM8i8fG
+ SbtIZf5DlMSMQMKqSkLMu/1PqlIOlHNMyhIpHJJ+5WbOfWiFdL9TZ8SAYwjR/5hwIs0U4PVE2JO
+ BO4yzz6ETyhEimP5i9EWWrxI0n5JPxufOWDo2CKnk9XoLTyFXCUVAfQtUOFXBKrLDa3PAQMhqN9
+ fC8hCTxQmqvjJaA==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: C2Q3VGWRQ6Z34C6LWONGV4BYDK3KYVFD
-X-Message-ID-Hash: C2Q3VGWRQ6Z34C6LWONGV4BYDK3KYVFD
+Message-ID-Hash: RGMJKPFPC6CQ2WU4RE3DAB7ZIC4NN72F
+X-Message-ID-Hash: RGMJKPFPC6CQ2WU4RE3DAB7ZIC4NN72F
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -135,7 +134,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C2Q3VGWRQ6Z34C6LWONGV4BYDK3KYVFD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGMJKPFPC6CQ2WU4RE3DAB7ZIC4NN72F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,60 +143,99 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The driver has static 'struct regmap_config', which is then customized
-depending on device version.  This works fine, because there should not
-be two devices in a system simultaneously and even less likely that such
-two devices would have different versions, thus different regmap config.
-However code is cleaner and more obvious when static data in the driver
-is also const - it serves as a template.
+Driver's probe() has two allocations which are needed only within the
+probe() itself - for devm_regmap_init_mmio().
 
-Mark the 'struct regmap_config' as const and duplicate it in the probe()
-with kmemdup to allow customizing per detected device variant.
+Usage of devm interface is a bit misleading here, because these can be
+freed right after each scope finishes.
+
+This makes the code a bit more obvious and self documenting.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
 
-Not adding Dmitry's Rb tag, because of major change devm->cleanup.h.
+Changes in v2:
+1. New patch
 ---
- sound/soc/codecs/lpass-rx-macro.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ sound/soc/codecs/lpass-wsa-macro.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 4cf030760d74..1d2dce1f600c 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -1663,7 +1663,7 @@ static bool rx_is_readable_register(struct device *dev, unsigned int reg)
- 	return rx_is_rw_register(dev, reg);
- }
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index b4e7139bac61..73a588289408 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ // Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
  
--static struct regmap_config rx_regmap_config = {
-+static const struct regmap_config rx_regmap_config = {
- 	.name = "rx_macro",
- 	.reg_bits = 16,
- 	.val_bits = 32, /* 8 but with 32 bit read/write */
-@@ -3849,10 +3849,18 @@ static int rx_macro_probe(struct platform_device *pdev)
- 		goto err;
++#include <linux/cleanup.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -2725,8 +2726,6 @@ static const struct snd_soc_component_driver wsa_macro_component_drv = {
+ static int wsa_macro_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct reg_default *reg_defaults;
+-	struct regmap_config *reg_config;
+ 	struct wsa_macro *wsa;
+ 	kernel_ulong_t flags;
+ 	void __iomem *base;
+@@ -2765,6 +2764,8 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 		return PTR_ERR(base);
+ 
+ 	wsa->codec_version = lpass_macro_get_codec_version();
++	struct reg_default *reg_defaults __free(kfree) = NULL;
++
+ 	switch (wsa->codec_version) {
+ 	case LPASS_CODEC_VERSION_1_0:
+ 	case LPASS_CODEC_VERSION_1_1:
+@@ -2773,9 +2774,8 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 	case LPASS_CODEC_VERSION_2_1:
+ 		wsa->reg_layout = &wsa_codec_v2_1;
+ 		def_count = ARRAY_SIZE(wsa_defaults) + ARRAY_SIZE(wsa_defaults_v2_1);
+-		reg_defaults = devm_kmalloc_array(dev, def_count,
+-						  sizeof(*reg_defaults),
+-						  GFP_KERNEL);
++		reg_defaults = kmalloc_array(def_count, sizeof(*reg_defaults),
++					     GFP_KERNEL);
+ 		if (!reg_defaults)
+ 			return -ENOMEM;
+ 		memcpy(&reg_defaults[0], wsa_defaults, sizeof(wsa_defaults));
+@@ -2789,9 +2789,8 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 	case LPASS_CODEC_VERSION_2_8:
+ 		wsa->reg_layout = &wsa_codec_v2_5;
+ 		def_count = ARRAY_SIZE(wsa_defaults) + ARRAY_SIZE(wsa_defaults_v2_5);
+-		reg_defaults = devm_kmalloc_array(dev, def_count,
+-						  sizeof(*reg_defaults),
+-						  GFP_KERNEL);
++		reg_defaults = kmalloc_array(def_count, sizeof(*reg_defaults),
++					     GFP_KERNEL);
+ 		if (!reg_defaults)
+ 			return -ENOMEM;
+ 		memcpy(&reg_defaults[0], wsa_defaults, sizeof(wsa_defaults));
+@@ -2804,8 +2803,9 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
--	rx_regmap_config.reg_defaults = reg_defaults;
--	rx_regmap_config.num_reg_defaults = def_count;
-+	struct regmap_config *reg_config __free(kfree) = kmemdup(&rx_regmap_config,
+-	reg_config = devm_kmemdup(dev, &wsa_regmap_config,
+-				  sizeof(*reg_config), GFP_KERNEL);
++	struct regmap_config *reg_config __free(kfree) = kmemdup(&wsa_regmap_config,
 +								 sizeof(*reg_config),
 +								 GFP_KERNEL);
-+	if (!reg_config) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
+ 	if (!reg_config)
+ 		return -ENOMEM;
  
--	rx->regmap = devm_regmap_init_mmio(dev, base, &rx_regmap_config);
-+	reg_config->reg_defaults = reg_defaults;
-+	reg_config->num_reg_defaults = def_count;
-+
-+	rx->regmap = devm_regmap_init_mmio(dev, base, reg_config);
- 	if (IS_ERR(rx->regmap)) {
- 		ret = PTR_ERR(rx->regmap);
- 		goto err;
+@@ -2816,8 +2816,6 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 	if (IS_ERR(wsa->regmap))
+ 		return PTR_ERR(wsa->regmap);
+ 
+-	devm_kfree(dev, reg_config);
+-	devm_kfree(dev, reg_defaults);
+ 	dev_set_drvdata(dev, wsa);
+ 
+ 	wsa->dev = dev;
 
 -- 
 2.43.0
