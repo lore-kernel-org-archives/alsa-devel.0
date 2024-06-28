@@ -4,131 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96FF2C2BD09
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ADE9C30653
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:38:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 961C52BB8;
-	Mon,  1 Jul 2024 14:38:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 961C52BB8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B2622C18;
+	Mon,  1 Jul 2024 14:38:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B2622C18
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719837497;
-	bh=eAsxPRlEzNTeurZUlbb1dRpSlSCLeJU/Bps8eIDqRWY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MmJiVnKhu+EFXRLAklXtn7QmsAYJ6g8OZNDnpLIC7ZNNpTfIld3mRW+019sLCZ94q
-	 2O9IRlcCfH1ns4iFHSSeNqM9DsftY/j44s8MXkx72ZxoaHJ2gfCyS370+6JldsFZaB
-	 ZlOmhO2PfEZIQ5lbYedTnc/cWNCJ9W23gpIHD/lI=
+	s=default; t=1719837508;
+	bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=TFeTNnguN82t/ZZv0qaacZDrFEh5mHi/n4uv9uB6B3oO+UZsUC1e83u3uNHycUKkz
+	 c0mra/kB88VOKNwmVnkn2HKGcjWNZRloLcgyKSohl3UuTet7M5tmStyPKM6iBh864u
+	 wG1TjKmaTHHM0REig4qR1k08udbNXrwYupe6uCuk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5AFF0F89B59; Mon,  1 Jul 2024 14:24:13 +0200 (CEST)
+	id B8BD9F89B8D; Mon,  1 Jul 2024 14:24:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFD65F89B6D;
-	Mon,  1 Jul 2024 14:24:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9428F89B82;
+	Mon,  1 Jul 2024 14:24:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A39BFF80495; Fri, 28 Jun 2024 03:07:34 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+	id 81CE4F80423; Fri, 28 Jun 2024 11:56:56 +0200 (CEST)
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com
+ [IPv6:2607:f8b0:4864:20::a2a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0CEDF80423
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 03:07:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0CEDF80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3CE56F800E4
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 11:56:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CE56F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=f/tJkR24
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-42563a9fa58so572595e9.0
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=R4J6GX/q
+Received: by mail-vk1-xa2a.google.com with SMTP id
+ 71dfb90a1353d-4ef5c772f7bso172082e0c.3
         for <alsa-devel@alsa-project.org>;
- Thu, 27 Jun 2024 18:07:22 -0700 (PDT)
+ Fri, 28 Jun 2024 02:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719536841; x=1720141641;
+        d=gmail.com; s=20230601; t=1719568612; x=1720173412;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z8Cullp4heLq3j3LJu15lP4LYL9Xcky4j2OZDLvmJ7E=;
-        b=f/tJkR245D+xSRsLamOCiGime6kztCP58Mws+QOT2O4JvWFhGcQDvua4YiSrrvGlOd
-         REssRZuPLdNedhSRMpN0+Y9j7wXnpvl89T+9lfWngIE+Zq4hvzxkkwtQ0CMO0MEytccs
-         zdzhXyKHISe04qyKPvotAomg42cuCPJMU0dPGIXK0S8UeV+ox6C+/JAjD8PCw4tmQXOr
-         Hjxby68obi6ewp6YoLRPZMm+0AzAkqhvDnPucc52HLZCyNhSyMWcBkcBLpCI71VaxjSD
-         5zbHl6bjn/34f7Bera5pHEFYtKCAn1gH56hM+T08XAtgHIjTldkaRJLlL7efAcQiTjoG
-         wewA==
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RNmB+UpedCg532JlCsKBVA8SRpLlVPtu3AOlQEXhEek=;
+        b=R4J6GX/qR66Lq/8hy27r8090PJTFAFYQyf43f8hpMZhfPcwuJqHuWLK6zUiZiHojHI
+         FS2n0y3H2jHtTThzgZ1tKZWtmNls8LYY8BFyzH7XARUzfF9DytzjY8mvkJdXvMdYonxY
+         IkrwSskD5s/pFcqvkR/tMkpohikY3aKsSn7iuNmUVbFCrtwEF+cwHWoFlvsoKUCCTgGm
+         nTLFOnGeVQe+Mfd8ejrPvGC6H1iuRtcf7qpVkAUVAA/3rV6OY5jHVBa/1JVX+eb3yMR3
+         gAmQIlFIBPt3Y9y/0jzkYZAnbH9DiBFmCMwvar+tSKcO5Qce0HbF+84QOCvaMvw3J+iQ
+         9BIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719536841; x=1720141641;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z8Cullp4heLq3j3LJu15lP4LYL9Xcky4j2OZDLvmJ7E=;
-        b=mS26tXuDilFO3P7HubyFryk7wbhXY2Rgr6nCKl3A0jEjglYBXtMpFMy8xqujMidqBl
-         4U+G8EgJE/L2a7CNLLuCPVwVd/o5QJps5rWIlNYMHucuxGgPPgE50Uz9yHNSYEcMBXwT
-         GP4/BUbwXW3+TlqXUstS3iZfortN6rDW8VWQPLmIvVjPLc0C2QbLLJ1sHhJO5K65BM+A
-         uE5KkCThM5ahswvSiL0skpIUHs9Q1C88SUF76C5nX0YOgcBgVuyhH+HjINPvpFDmM3Gl
-         9gPrkooiFfxwf5fLUN0k/UUrqp7fm+RbEIi6m8nGkIVZAop8fvLgg47F0Yi4xE75DZyG
-         4qlg==
+        d=1e100.net; s=20230601; t=1719568612; x=1720173412;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RNmB+UpedCg532JlCsKBVA8SRpLlVPtu3AOlQEXhEek=;
+        b=wMcDmkzoKP5Q8XickHkeZeH2E/6qxHjuYx+/isyc9cSbiqBFEx56Dhj9fgLIVyL9y8
+         EUtqq0CMApQiFkNN7zrK19cffFVe1qyDcMlkv7OOTkDa2vVeq3JWeWhoyHBiuuXthVZP
+         75uaqKVoPozCsHaXslk2ekDvZtyUFB0iEZQm58Qzbt6daqW2GnOG/dwpMIDeNYThLjaq
+         0Uu6tSkLoaolQHIgqqkzgdl71h+YMXo+lu87QdhYcgB5mOAwwIFqQIY91lGtnzbF4MYy
+         VlWc83gtwrqDSQrH/HaMMtnewShEtEfNlZHDWmPKHNJVIA7LbU/8wfWy7R148BVQWYW8
+         sNXw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCX+Vy5dclyotXmC3fDv6STYnbcDy2TDmISkrHmqPXXkbrHrzQ4c/xX9cAy4bsQjXTKVuqEXiMwpBoR8NN3U0bP9+xgyp62L+p62p18=
-X-Gm-Message-State: AOJu0YxwLqSV0Zut7TuCOc3qkWeXjluSKm9F8eiRyfbU2i945gTiwSTG
-	3ZfzGgYSbqtrdRpCr+yedYUheP31jQQ/iK5UhKumclKVnDIGvTplo9bLWU0QHDI=
+ AJvYcCVFxvs0XfV/Kc/zSWcD2NnksGgGOrtakaFfbZvk8Mo9uNDVfzu7xUI76r4AxNNE0ToysxaNGy+tmL1x3cJc53CeNI8dz6J9abUBOjw=
+X-Gm-Message-State: AOJu0YzMRggHb4DeT9fdXczfL9NPR8wuBckTaG8PvVgqYc6c8Bsrvp0D
+	PJAugDGK5ggP7NvJQoEwIOj3/iDg1IINvHGfafMEI6qDCcNmaQ9/+DJ3PRzvgosJhl1Foa3zHbi
+	u41aLgazq8e05Fzes7SZ/ItSR7Rc=
 X-Google-Smtp-Source: 
- AGHT+IFE15Or4v64XjwbEff7c+MWOISRCnhFWtQM6ObQ3evXM/ffhHAIMMW/rwLFVOHlxMVgJL8Gew==
-X-Received: by 2002:a05:600c:1504:b0:425:633d:926a with SMTP id
- 5b1f17b1804b1-425633d9463mr28806335e9.21.1719536841671;
-        Thu, 27 Jun 2024 18:07:21 -0700 (PDT)
-Received: from fuerta.Home ([2a02:c7c:7213:c700:2cd1:b0e8:abb:540])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4256af3c27dsm13075805e9.7.2024.06.27.18.07.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 18:07:21 -0700 (PDT)
-From: Alexey Klimov <alexey.klimov@linaro.org>
-To: linux-sound@vger.kernel.org,
-	srinivas.kandagatla@linaro.org,
-	bgoswami@quicinc.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	elder@linaro.org,
-	dmitry.baryshkov@linaro.org,
-	krzysztof.kozlowski@linaro.org,
-	caleb.connolly@linaro.org,
-	linux-kernel@vger.kernel.org,
-	alexey.klimov@linaro.org
-Subject: [PATCH 5/7] arm64: dts: qcom: sm6115: add LPASS LPI pin controller
-Date: Fri, 28 Jun 2024 02:07:13 +0100
-Message-ID: <20240628010715.438471-6-alexey.klimov@linaro.org>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240628010715.438471-1-alexey.klimov@linaro.org>
-References: <20240628010715.438471-1-alexey.klimov@linaro.org>
+ AGHT+IECgGkPzJ7jrqkK1IdnkK2Szz076qmUCbHfh1HXOoUs4I/SNr/5ik7Gqk0SVv1GQSJVxnOPmZAih30ecRDu660=
+X-Received: by 2002:a05:6122:d9a:b0:4ef:58d4:70f2 with SMTP id
+ 71dfb90a1353d-4ef6d7cf660mr15328324e0c.1.1719568611442; Fri, 28 Jun 2024
+ 02:56:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: alexey.klimov@linaro.org
+From: Peter Jennings <peterj76108@gmail.com>
+Date: Fri, 28 Jun 2024 03:56:40 -0600
+Message-ID: 
+ <CACTyByJ6rt5CmzwQYG40paGkT7FFedSTaHxY8_mZSgW4Gtvq6Q@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr: Improve suspend/resume flow in
+ fsl_xcvr_trigger()
+To: chancel.liu@nxp.com
+Cc: Xiubo.Lee@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org,
+	festevam@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	nicoleotsuka@gmail.com, perex@perex.cz, shengjiu.wang@gmail.com,
+	tiwai@suse.com
+X-MailFrom: peterj76108@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PHHO7VLSMO6Z3LVUPHBT4FQVEK2HN53K
-X-Message-ID-Hash: PHHO7VLSMO6Z3LVUPHBT4FQVEK2HN53K
+Message-ID-Hash: WJE6IBUSJYOIWSYDVNJEHUU2SPEBL3BH
+X-Message-ID-Hash: WJE6IBUSJYOIWSYDVNJEHUU2SPEBL3BH
 X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:58 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PHHO7VLSMO6Z3LVUPHBT4FQVEK2HN53K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WJE6IBUSJYOIWSYDVNJEHUU2SPEBL3BH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,59 +116,4 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add the Low Power Audio SubSystem Low Power Island (LPASS LPI)
-pin controller device node required for audio subsystem on
-Qualcomm QRB4210 RB2.
-
-Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm6115.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-index c49aca3d0772..3a9fb1780c90 100644
---- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-@@ -15,6 +15,7 @@
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
- #include <dt-bindings/soc/qcom,apr.h>
-+#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- / {
-@@ -809,6 +810,21 @@ data-pins {
- 			};
- 		};
- 
-+		lpass_tlmm: pinctrl@a7c0000 {
-+			compatible = "qcom,sm4250-lpass-lpi-pinctrl";
-+			reg = <0x0 0xa7c0000 0x0 0x20000>,
-+			      <0x0 0xa950000 0x0 0x10000>;
-+
-+			clocks = <&q6afecc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
-+			clock-names = "audio";
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&lpass_tlmm 0 0 26>;
-+
-+			status = "disabled";
-+		};
-+
- 		gcc: clock-controller@1400000 {
- 			compatible = "qcom,gcc-sm6115";
- 			reg = <0x0 0x01400000 0x0 0x1f0000>;
-@@ -3068,6 +3084,9 @@ cpufreq_hw: cpufreq@f521000 {
- 		};
- 	};
- 
-+	sound: sound {
-+	};
-+
- 	thermal-zones {
- 		mapss-thermal {
- 			polling-delay-passive = <0>;
--- 
-2.45.2
-
+DQo=
