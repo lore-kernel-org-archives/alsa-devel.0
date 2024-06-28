@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40AA6C30653
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EADD2C30659
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:37:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FFCB2BBE;
-	Mon,  1 Jul 2024 14:37:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FFCB2BBE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 253D42BAA;
+	Mon,  1 Jul 2024 14:37:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 253D42BAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719837441;
-	bh=ZZbdHFT9ZRAwH2jwxwKvq+WMg4pTAYm+sxzcfmphUPY=;
+	s=default; t=1719837459;
+	bh=2fLNT1nXHgsFGK9SfQggEdsqimQIX4e/hXkHKmU5TxU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RLKn2wwqu10KUFzFo75HpZLoYcivDbL6d8LOxb2aqZxyxgyyym5dD7ECYw1NOwH69
-	 40fmx8GHNDpjNw+vkjt7BnzA71dvyFTCXWsBCNPXE5bvnVkRsuAt5WQIP+NuMd59nj
-	 Lu0qkO9sfHS4HiRrvtmxam/syyA62an+odUykC40=
+	b=ZTDslniRbhEfedcBt2Gs/DmfmHjfZee0vujBR90nLiDoCK4axC46rABBbA0MLop5F
+	 FzpN1GYztj9qLGfCM1f1qRzRwtuwHW+J8zoKHiaOIkvhjv8S8ATbJAYP8eTetYyLLl
+	 5FrwME79SKExWGaD5lBlHCQ4dt0FUvfg/nCpU9PQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E51A9F8086D; Mon,  1 Jul 2024 14:24:05 +0200 (CEST)
+	id 4C098F89B2F; Mon,  1 Jul 2024 14:24:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 524A4F89B06;
-	Mon,  1 Jul 2024 14:24:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F02FEF89B39;
+	Mon,  1 Jul 2024 14:24:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51B7EF804F2; Fri, 28 Jun 2024 03:07:29 +0200 (CEST)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
+	id 50E55F805A1; Fri, 28 Jun 2024 03:07:30 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 69D05F8013D
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 03:07:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69D05F8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 17E25F8049C
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 03:07:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17E25F8049C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=zU5JgWWI
-Received: by mail-wm1-x32a.google.com with SMTP id
- 5b1f17b1804b1-424ad289912so414055e9.2
+ header.s=google header.b=X9m1W20w
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-4249196a361so623995e9.0
         for <alsa-devel@alsa-project.org>;
- Thu, 27 Jun 2024 18:07:23 -0700 (PDT)
+ Thu, 27 Jun 2024 18:07:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719536842; x=1720141642;
+        d=linaro.org; s=google; t=1719536840; x=1720141640;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dynAb/Zg+8LwHqw/4XbLMs/MXNbFYTrBo5jd++nUj2c=;
-        b=zU5JgWWIOteISzOhnEXjBURT3pEtav9OQ3e5LgJRcNOtxzMyjPsW80H6xmR43LNNUB
-         /I6U/k3Cto4D5qnn8xnqG/MeaNN0yxK1GuNBjIyvcsxp/tshZwOEwpT9HYWPyt1s23Oy
-         FE38RvfH61y+oFqDoEQoG+TQTsg4Js7HR/I6XovR5I3uDkka30U2l5spY31q7FaPgn5/
-         7isXy6cLWCQrzPCTJR5M3wwyDvvBafb80rs7BzU1f/BZDOISgoRtLaQLjs40qW6rcxlO
-         0jLtcJBQF537VQIxHc4172vCtaPvuzrhBuD/6HB0K5FElwmpMcY8Az9Egf49LMqF0L/L
-         6BHg==
+        bh=gJhqgpKH8xpri6xgGQ+p8sz4lqzbwizt046mSH+TQQE=;
+        b=X9m1W20wkr4yxE4Zsre5ML49OP1Vv5B/2gyE9mQ1IaY/yKb8UIyog5mRBvm4EeGdDI
+         DJwR23Pio6j+ytzc59lDxUGZC7cxThFB7OGIqfPBwPThOvhD5E150zlU/5+LqQaMRek2
+         FE7f/7baM/2DhnaGjnddelraU2ieeZvJHgR2LotHA3dT5S0FU9J0W+ArIKjv+RfS4zRa
+         IzMHexqDJy9d+i9q4qMav2EcexOc7WwxR68MQfYd3AJTykVToz9Nd64r8Jj7do7HgwMg
+         uq1KFPFseEWMVllreQb5erd0uObmDSnY7nMJ3C1q3sf5mGGH0N2Ffrz+ry2x0sOzYzL9
+         h+HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719536842; x=1720141642;
+        d=1e100.net; s=20230601; t=1719536840; x=1720141640;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dynAb/Zg+8LwHqw/4XbLMs/MXNbFYTrBo5jd++nUj2c=;
-        b=HJ9Br1aOAXWtTKEQ1XC09wwtILxgu2LCYASOgKDxooq5QD9Mtmb2Ojcdlnp+2QgGlb
-         6FZsEz5PWiMsEadF39tiIixBADVwoTHrm22iBBu0u7tqujoCpcFgB2ZC6zfgz5TarbWP
-         Gh7PJD2V1B2ejHgX+3Pd2PT6w67+NeJ2VJrBuGjwdH/L+NJsp7VbRD3BhFArebDmhx3U
-         koJvvakyOlv3Cjg4ZIDnzwCg1MvFduNxj8Nf259KWwdsbZtC3MxJrnosY5hxTTAGx173
-         /PvuB9fXeGsag7+3HBLy2wde+fAN2CB9Z3Nquy8ZvuVJbM4BgZvgMkaKUV09d7tZXuSV
-         Kx6A==
+        bh=gJhqgpKH8xpri6xgGQ+p8sz4lqzbwizt046mSH+TQQE=;
+        b=hF8BiGib5YK3RY0nKH8rrbU3FkDfBjj+f+Xj9fqbCI6IVZy3Ezcgh07h6qp8BGMnAk
+         ntYSLN/zVH7OMszg/1h4dfVcJkqL4Aiyzxoop7mNuiRe6ITJgyXuolAsMgyiOFr4r8L0
+         jGjsu74GFfePIyZrTB+z6e2pqdMjJGTJy4DbJOCti3SCPlGVhw1ay89WyXJR3wJ9O4w5
+         KG5DfhpJLXJC2geQkF89B6GZGEZbZqnFbF1zxiybtkkerXQOoCOzOFWmkDn3hR3MzYvp
+         kqeQvUiw6PYJCw+nxdpG/0nPDBtABJGj3AZemf98+NLwW2Heu05ARDYw1uLWn05PvcRa
+         4dsQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWUFuvxiaR9LnbH0ljpbMZ6jnScSM8FUYxAP496d6M6A9jTV2GrDXfsDa9448KoWvYCmhShOLwIqxI/k9RAwvKvRm1B5z2xHAGZhq0=
-X-Gm-Message-State: AOJu0Yx6m7EFtXTGSohWafAJRgZRiOFI/vJF4K3/7rsUO89NU+2PJGM1
-	uHiruMabSlXadzys7olbWPbSL7OwOKDokkr0Xy0UvEqpuk3LuGukhaHIJMrMTdE=
+ AJvYcCXx+Vy7CL7PUCAJ9jOP3MNeWL7Zo5nocwFfGEjMrNNQ3k09j7q2qA0uTYGE/c68jY3O1VLqm0Co6lsMoqpiJjeTM2TN4mnYkPdoVao=
+X-Gm-Message-State: AOJu0YyzNfXpYkvpj9E8NIsK4SzmWkHjBOpIvzx01VKYfTHgfQNQh73+
+	2X/cxfmtyl9A0Xh7UgbFY5N5GeWcs6YTTStxYgzkRHoINuxpywm694R7NGvwbP8=
 X-Google-Smtp-Source: 
- AGHT+IGOKI5oJNmHOq5jyVwdpyCLf2KYJIoEqX0YWFdClIjga1qqCIxKbsEXzORyUUOyqTbaEueFlA==
-X-Received: by 2002:a05:600c:1789:b0:424:a403:565f with SMTP id
- 5b1f17b1804b1-424a4035701mr65078085e9.11.1719536842616;
-        Thu, 27 Jun 2024 18:07:22 -0700 (PDT)
+ AGHT+IHxICLv8rGCo59jeDyowuTcbYQXuR/fFVeImMfjYukUzMJrpYuiyKtWcPlrPunnuKXL3er48A==
+X-Received: by 2002:a7b:c8cf:0:b0:425:63a9:f96e with SMTP id
+ 5b1f17b1804b1-42563a9fadbmr30979815e9.36.1719536839842;
+        Thu, 27 Jun 2024 18:07:19 -0700 (PDT)
 Received: from fuerta.Home ([2a02:c7c:7213:c700:2cd1:b0e8:abb:540])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4256af3c27dsm13075805e9.7.2024.06.27.18.07.21
+ 5b1f17b1804b1-4256af3c27dsm13075805e9.7.2024.06.27.18.07.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 18:07:22 -0700 (PDT)
+        Thu, 27 Jun 2024 18:07:19 -0700 (PDT)
 From: Alexey Klimov <alexey.klimov@linaro.org>
 To: linux-sound@vger.kernel.org,
 	srinivas.kandagatla@linaro.org,
@@ -106,10 +106,9 @@ Cc: robh@kernel.org,
 	caleb.connolly@linaro.org,
 	linux-kernel@vger.kernel.org,
 	alexey.klimov@linaro.org
-Subject: [PATCH 6/7] arm64: dts: qcom: sm6115: add description of lpi_i2s2
- pins
-Date: Fri, 28 Jun 2024 02:07:14 +0100
-Message-ID: <20240628010715.438471-7-alexey.klimov@linaro.org>
+Subject: [PATCH 3/7] ASoC: qcom: sm8250: add handling of secondary MI2S clock
+Date: Fri, 28 Jun 2024 02:07:11 +0100
+Message-ID: <20240628010715.438471-4-alexey.klimov@linaro.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240628010715.438471-1-alexey.klimov@linaro.org>
 References: <20240628010715.438471-1-alexey.klimov@linaro.org>
@@ -121,15 +120,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DC6IQFKCEHLN4ITINPYYGQT6F36UGMHO
-X-Message-ID-Hash: DC6IQFKCEHLN4ITINPYYGQT6F36UGMHO
-X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:57 +0000
+Message-ID-Hash: TWMTROK7ZQNX4HAOFXD2FI6QTYQGG2UG
+X-Message-ID-Hash: TWMTROK7ZQNX4HAOFXD2FI6QTYQGG2UG
+X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:58 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DC6IQFKCEHLN4ITINPYYGQT6F36UGMHO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TWMTROK7ZQNX4HAOFXD2FI6QTYQGG2UG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,59 +137,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This is required to enable to HDMI audio playback on
-QRB4210 RB2 board.
+Add handling of clock related to secondary MI2S_RX in
+sm8250_snd_startup() and sm2450_snd_shutdown().
 
 Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sm6115.dtsi | 34 ++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ sound/soc/qcom/sm8250.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-index 3a9fb1780c90..5487b274836f 100644
---- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-@@ -823,6 +823,40 @@ lpass_tlmm: pinctrl@a7c0000 {
- 			gpio-ranges = <&lpass_tlmm 0 0 26>;
+diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
+index 50e175fd521c..9864d803114d 100644
+--- a/sound/soc/qcom/sm8250.c
++++ b/sound/soc/qcom/sm8250.c
+@@ -55,6 +55,14 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
  
- 			status = "disabled";
-+
-+			lpi_i2s2_active: lpi-i2s2-active-state {
-+				sck-pin {
-+					pins = "gpio10";
-+					function = "i2s2_clk";
-+					bias-disable;
-+					drive-strength = <8>;
-+					output-high;
-+				};
-+
-+				ws-pins {
-+					pins = "gpio11";
-+					function = "i2s2_ws";
-+					bias-disable;
-+					drive-strength = <8>;
-+					output-high;
-+				};
-+
-+				data-pins {
-+					pins = "gpio12";
-+					function = "i2s2_data";
-+					bias-disable;
-+					drive-strength = <8>;
-+					output-high;
-+				};
-+
-+				ext-mclk1 {
-+					pins = "gpio18";
-+					function = "ext_mclk1_a";
-+					bias-disable;
-+					drive-strength = <16>;
-+					output-high;
-+				};
-+			};
- 		};
+ 	switch (cpu_dai->id) {
++	case SECONDARY_MI2S_RX:
++		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S;
++		snd_soc_dai_set_sysclk(cpu_dai,
++			Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT,
++			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
++		snd_soc_dai_set_fmt(cpu_dai, fmt);
++		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
++		break;
+ 	case TERTIARY_MI2S_RX:
+ 		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S;
+ 		snd_soc_dai_set_sysclk(cpu_dai,
+@@ -77,6 +85,16 @@ static void sm2450_snd_shutdown(struct snd_pcm_substream *substream)
+ 	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
+ 	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
  
- 		gcc: clock-controller@1400000 {
++	switch (cpu_dai->id) {
++	case SECONDARY_MI2S_RX:
++		snd_soc_dai_set_sysclk(cpu_dai,
++			Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT,
++			0, SNDRV_PCM_STREAM_PLAYBACK);
++		break;
++	default:
++		break;
++	}
++
+ 	data->sruntime[cpu_dai->id] = NULL;
+ 	sdw_release_stream(sruntime);
+ }
 -- 
 2.45.2
 
