@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 858FAC2BBCA
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 07:48:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 796ACC3064D
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 07:48:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6E6E2343;
-	Fri, 28 Jun 2024 09:48:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6E6E2343
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98E73231C;
+	Fri, 28 Jun 2024 09:48:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98E73231C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719560895;
-	bh=OBZJ6up/5UrmGgqTrk/JjQcPbrTRKR/bsWTSe04PzAc=;
+	s=default; t=1719560916;
+	bh=X1XDg4CWqLekR5BIvTtoObyb6G/m6s5Hzu4qSPrR74o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BhVq38eyRNAf8wdAgmJn61dfeRwHhudkBGa+dhmXpngLXdlC9cXuzCJmM0UY+Z40U
-	 IbLmY/j4CCz8VGClSPm5l60pv2s/ng5LvqBFiw97VhiYmQTeXH8DhxjLm3u5daw30k
-	 2KH+jg3xesbJxAGkolVjvQEq1N2Xbfk/yYg4GasU=
+	b=KcYQWGx9GZnj0eCmGgm1sTevW9QW66PH6Y9kj3fsHzxBdGzrMzRnpBhp75xhDiVZm
+	 oue/eEF4IME6VtTFjgZn6U8eT5lyWys9E5+9RazI/TJjze4VbKPO9NM10LFhqBTpNi
+	 1QCcv9lbDYwyp0+dP08GAFFge/4nvQMpqYuZMkro=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 457A9F805D6; Fri, 28 Jun 2024 09:47:36 +0200 (CEST)
+	id 7798AF805EA; Fri, 28 Jun 2024 09:47:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 359A5F805E4;
-	Fri, 28 Jun 2024 09:47:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABE72F805EA;
+	Fri, 28 Jun 2024 09:47:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31C92F80423; Fri, 28 Jun 2024 09:46:10 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+	id 4BAB0F80495; Fri, 28 Jun 2024 09:47:24 +0200 (CEST)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
+ [IPv6:2a00:1450:4864:20::129])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF18CF800E4
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 09:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF18CF800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 55724F80154
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 09:47:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55724F80154
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Pakv0i/Z
-Received: by mail-lf1-x12b.google.com with SMTP id
- 2adb3069b0e04-52cdd03d6aaso344025e87.0
+ header.s=google header.b=n+jooK8h
+Received: by mail-lf1-x129.google.com with SMTP id
+ 2adb3069b0e04-52cdcd26d61so302468e87.2
         for <alsa-devel@alsa-project.org>;
- Fri, 28 Jun 2024 00:43:52 -0700 (PDT)
+ Fri, 28 Jun 2024 00:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719560631; x=1720165431;
+        d=linaro.org; s=google; t=1719560830; x=1720165630;
  darn=alsa-project.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rhe0rB7DF1acvlU18g3LpAyirHMKvmNtptxT67xMN9g=;
-        b=Pakv0i/ZWs1w+3+FJ1QMf5wMxOYJVuNQrdFO722NV6/MkjxOMXRW0reoQfRzdDSccj
-         pPUU41qcFWkrjBbwBW6JN0S5jlvdyYwdl+/JuRAycEWoTURP+NfNUokDVZ85zyINESra
-         +XK8wAE3Tmx3scl+EGE+kMxm0EOwaCCIpvtjcB90ibLvUmWeUFzQ45PyiPjP0IO7oCYs
-         u/2B7BV/+uFsschA5kwXkQ3oI3waqU6SC08s884EKWZMSvtwF5sAXoxWNP4eZGuleUGU
-         rzNg0cjaMArgrGFH+u9PdILdKu3PbyP8+JErGop91/6qsXmZ73qtyFhWx/3/sC18vzsS
-         kMdw==
+        bh=Nc4Qf7GLtkVCveBTGX7EpUl9LATF5aggezB8l/JLORQ=;
+        b=n+jooK8h78wKd9dThli8g9+AkiWtyCD1EuUAogXPaSPssS0Z7JoqSE20w/aq8w4+Ia
+         QK8NsHdNLir7d4vBSN4fWVDmgSX6aGXBa7BpzQvcDN/7d3kHd7cEDbR0JWtEgVF/Uz7k
+         L4/MeQY8czcVOBFNm8ap3rIHKy/9eYxC+WKh5+Avu155QayaNYhkw+b9E9cTRwzIZQhY
+         nmyB8yG86nhSliUkvM0kEsREshc/emFxEg1E1g481FEVbExI2tzDpEVNG/OsSc1pxBTV
+         c0iZwToehNx/e5ALYielBRplUjc7MpLfZ22QbMiRENg2DgsmeVr5y8obhVjtMvHD3R8e
+         SryQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719560631; x=1720165431;
+        d=1e100.net; s=20230601; t=1719560830; x=1720165630;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rhe0rB7DF1acvlU18g3LpAyirHMKvmNtptxT67xMN9g=;
-        b=MF03nIN3G3wiTgRAdb51ObWz/o5LGtf0AMz7Rqv3YScPPX3Os/z87W1i4X+PVXZseB
-         nIMsNRDNUsKJkroj/uRyc0DnPAjkKIGfvRIwoS+9troesU2ECh4zuDiZujHkXjlMRO2R
-         /mrZO/eXkRMe6u/B/FpTdRyEeCNPzF5pcniVnsQlA0NFCaT2FhJBCmZBOlHeUZMbUhEe
-         hKlkeTYQmZ2BuSAnQaVKF/7JtisX3Ng4LtXHEPq7JqhnlF1JL6RUUh5LDa76r5OKspoi
-         vZwWdrXHQ7uqTXR8AvMwNy2MP4QE6w7jXtGqZ4vXawf3YXQSkDz3dFoBtZf9ySV+K7BG
-         cn1w==
+        bh=Nc4Qf7GLtkVCveBTGX7EpUl9LATF5aggezB8l/JLORQ=;
+        b=lGQv28YmGup5G6CpBofRk5ykOzRgA6YWHAFS9+b/lnO84Eb+8EHgN8L999yVTEkmG3
+         eDSKb8vCaI2Fxqe9xzxU2bAK72oe8SqDQwVONuITFK9LbI4a0l6hQ2GFWln/hhv2jLzi
+         eSR/xFjFNiw54y9v3zgoXe4ycHAquozaAjgdxxaIcImI+dQTCnrtkQAWZLVnr7+QvfhW
+         JDdaTl/vIubmolZjwqNMcNkBwLUmf9eixxemZyt/UIc3IaGW0nZkc4au42V8sxcL4kte
+         sXPOwB0BmelvxtdqgTz7ckiDG7WABCk5YrnBdadV4tBviyOsVkDRJ9jyNfI21/SRgF4v
+         aehQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXDMJb7yqRvMsoOonlCGEXBfZ51HFaHwtS41N3Cv2f8/ZUA3BH7kTRmfhoNKwQe3FxnDWbcyoh1ilkYQolo2S/t6HOB6go50hwykSc=
-X-Gm-Message-State: AOJu0Yzanz6pP0653AzS7Bp9pAvbm2g+lC+aNn6dlBf+zXy8c47qAnvk
-	f67oCbqAGgHtalvkAeHECg3TUe8ymeKX5ktELvUpHKCIlNzGBYIPXU1XZF7Fwzo=
+ AJvYcCWktiEbZg70pPp+2aw1ekSsDuD3cn2vV5M8ZxlMTNRiu57DAKUEt4Yu0WCUcmgifws2stwXD4axk3X9O9h5ZC+GVlhrJfHDFnUZqT8=
+X-Gm-Message-State: AOJu0YwxhDf6Ko+eE0udcXMMorsKydxU1oIQzuQFOBHTwBxFk1YiLoP5
+	6+mYdpgLpS+UV9wRCmRuNhEloYt6Bmq5k9WDmxOvxf8T1UZJjczeNl/xZzjDfVo=
 X-Google-Smtp-Source: 
- AGHT+IGwqQ+G0h94gLaKfw7sf2Mdz7eYA/MoYsZAgQXx1KUjBDLepYtp64shbi0qnmb/a6DdWqkCkQ==
-X-Received: by 2002:ac2:4105:0:b0:52c:dfa2:5ac1 with SMTP id
- 2adb3069b0e04-52ce06442a2mr10134496e87.24.1719560631358;
-        Fri, 28 Jun 2024 00:43:51 -0700 (PDT)
+ AGHT+IEDr3s7URgwk4byM1UEJod82amd+japUT2kSdheEtNmdtI5YyE+4VmV/k4KdQ5AmSQUb0CC7w==
+X-Received: by 2002:a05:6512:6c7:b0:52e:6d6e:577e with SMTP id
+ 2adb3069b0e04-52e6d6e5833mr4844105e87.2.1719560830271;
+        Fri, 28 Jun 2024 00:47:10 -0700 (PDT)
 Received: from eriador.lumag.spb.ru
  (dzdbxzyyyyyyyyyyybrhy-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::b8c])
         by smtp.gmail.com with ESMTPSA id
- 2adb3069b0e04-52e7ab2ea60sm194159e87.218.2024.06.28.00.43.50
+ 2adb3069b0e04-52e7ab278edsm193556e87.173.2024.06.28.00.47.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jun 2024 00:43:50 -0700 (PDT)
-Date: Fri, 28 Jun 2024 10:43:49 +0300
+        Fri, 28 Jun 2024 00:47:09 -0700 (PDT)
+Date: Fri, 28 Jun 2024 10:47:08 +0300
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To: Alexey Klimov <alexey.klimov@linaro.org>
 Cc: linux-sound@vger.kernel.org, srinivas.kandagatla@linaro.org,
@@ -96,17 +96,17 @@ Cc: linux-sound@vger.kernel.org, srinivas.kandagatla@linaro.org,
 	alsa-devel@alsa-project.org, devicetree@vger.kernel.org, elder@linaro.org,
 	krzysztof.kozlowski@linaro.org, caleb.connolly@linaro.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/7] arm64: dts: qcom: sm6115: add LPASS LPI pin
- controller
-Message-ID: <yozlwsmrvolhaxobal4reootcfmgjyre7sv74pztbtqr6lcfhr@vuixh6qyalaz>
+Subject: Re: [PATCH 7/7] arm64: dts: qcom: qrb4210-rb2: add HDMI audio
+ playback support
+Message-ID: <tqjjrkpdrqjobg5fp5jml5pj23ollc4yolln46lb533kwsgncf@tfzaxwydqhht>
 References: <20240628010715.438471-1-alexey.klimov@linaro.org>
- <20240628010715.438471-6-alexey.klimov@linaro.org>
+ <20240628010715.438471-8-alexey.klimov@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240628010715.438471-6-alexey.klimov@linaro.org>
-Message-ID-Hash: Z6DURRGFCRMMXP4VRKCLOLQETLCMZX3O
-X-Message-ID-Hash: Z6DURRGFCRMMXP4VRKCLOLQETLCMZX3O
+In-Reply-To: <20240628010715.438471-8-alexey.klimov@linaro.org>
+Message-ID-Hash: ZJFRBRWYPYQ7OPDC4PNTYG45LSISFK5I
+X-Message-ID-Hash: ZJFRBRWYPYQ7OPDC4PNTYG45LSISFK5I
 X-MailFrom: dmitry.baryshkov@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z6DURRGFCRMMXP4VRKCLOLQETLCMZX3O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJFRBRWYPYQ7OPDC4PNTYG45LSISFK5I/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,53 +128,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Jun 28, 2024 at 02:07:13AM GMT, Alexey Klimov wrote:
-> Add the Low Power Audio SubSystem Low Power Island (LPASS LPI)
-> pin controller device node required for audio subsystem on
-> Qualcomm QRB4210 RB2.
+On Fri, Jun 28, 2024 at 02:07:15AM GMT, Alexey Klimov wrote:
+> Add sound node, dsp-related pieces and LPASS pinctrl to enable
+> HDMI audio support on Qualcomm QRB4210 RB2 board. That is the
+> only sound output supported for now.
+
+I see that you have also added the MultiMedia DAIs, which don't seem to
+be used with this patch.
+
 > 
 > Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
 > ---
->  arch/arm64/boot/dts/qcom/sm6115.dtsi | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+>  arch/arm64/boot/dts/qcom/qrb4210-rb2.dts | 73 ++++++++++++++++++++++++
+>  1 file changed, 73 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> index c49aca3d0772..3a9fb1780c90 100644
-> --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-> @@ -15,6 +15,7 @@
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/power/qcom-rpmpd.h>
->  #include <dt-bindings/soc/qcom,apr.h>
-> +#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
->  #include <dt-bindings/thermal/thermal.h>
->  
->  / {
-> @@ -809,6 +810,21 @@ data-pins {
->  			};
->  		};
->  
-> +		lpass_tlmm: pinctrl@a7c0000 {
-> +			compatible = "qcom,sm4250-lpass-lpi-pinctrl";
-
-Is it so? Or should it be qcom,sm6115-lpass-lpi-pinctrl instead?
-
-> +			reg = <0x0 0xa7c0000 0x0 0x20000>,
-> +			      <0x0 0xa950000 0x0 0x10000>;
+> +&sound {
+> +	compatible = "qcom,qrb4210-rb2-sndcard";
+> +	pinctrl-0 = <&lpi_i2s2_active>;
+> +	pinctrl-names = "default";
+> +	model = "Qualcomm-RB2-WSA8815-Speakers-DMIC0";
+> +	audio-routing = "MM_DL1",  "MultiMedia1 Playback",
+> +			"MM_DL2",  "MultiMedia2 Playback";
 > +
-> +			clocks = <&q6afecc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
-> +			clock-names = "audio";
+> +	mm1-dai-link {
+> +		link-name = "MultiMedia1";
+> +		cpu {
+> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
+> +		};
+> +	};
 > +
-> +			gpio-controller;
-> +			#gpio-cells = <2>;
-> +			gpio-ranges = <&lpass_tlmm 0 0 26>;
+> +	mm2-dai-link {
+> +		link-name = "MultiMedia2";
+> +		cpu {
+> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA2>;
+> +		};
+> +	};
 > +
-> +			status = "disabled";
+> +	mm3-dai-link {
+> +		link-name = "MultiMedia3";
+> +		cpu {
+> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
+> +		};
+> +	};
+> +
+> +	hdmi-dai-link {
+> +		link-name = "HDMI Playback";
+> +		cpu {
+> +			sound-dai = <&q6afedai SECONDARY_MI2S_RX>;
 > +		};
 > +
->  		gcc: clock-controller@1400000 {
->  			compatible = "qcom,gcc-sm6115";
->  			reg = <0x0 0x01400000 0x0 0x1f0000>;
+> +		platform {
+> +			sound-dai = <&q6routing>;
+> +		};
+> +
+> +		codec {
+> +			sound-dai = <&lt9611_codec 0>;
+> +		};
+> +	};
+> +};
+> +
+>  &tlmm {
+>  	gpio-reserved-ranges = <43 2>, <49 1>, <54 1>,
+>  			       <56 3>, <61 2>, <64 1>,
+> -- 
+> 2.45.2
+> 
 
 -- 
 With best wishes
