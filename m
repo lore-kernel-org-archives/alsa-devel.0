@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87190C2BBCA
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 06:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 228EAC3064D
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 06:26:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B10EB2367;
-	Fri, 28 Jun 2024 08:26:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B10EB2367
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94BBF23CF;
+	Fri, 28 Jun 2024 08:26:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94BBF23CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719555970;
-	bh=CoZpPaIVx8YVW8mjXAoTrmwo9/8K5PCV+Yw5r106JqM=;
+	s=default; t=1719555983;
+	bh=XAVawEvkUjw4F5rP/7SvaAZ+lSjFkdzyftZk2Gs+RRA=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BNzSMoNcPx7QEAooUxsi76RQMonI0YqQTtve1a5W5KD8+XPxIUhCkIrdCiYFmvUFu
-	 WBAGvx0nyur8VfsDWkO9Pf7wVmHChWKOq2SC4QXEcin8o6SBvEpGHObLPUwjWe+B8R
-	 N5UqyRufyo4xlE7TGx+Cn4QpjD1Kv81uF2uU1Z40=
+	b=YZspG4+waL/wkVUMfvKBnQJ4dOTSKJ3CAB93VoQAtaa+rvFlfZ5pReeHhca3350o0
+	 OhEcMufyhuc0+psgh25nMj9xJiSx1Sn0um2/z1ITz5e17CEW9W2iz2Pqkk4SjjGTyN
+	 HdRBQxuJX3r6Zgfi54XiH9vyhLYNz7tLDot1JyOY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B67A4F80588; Fri, 28 Jun 2024 08:25:40 +0200 (CEST)
+	id 81CF6F805E3; Fri, 28 Jun 2024 08:25:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E93BEF805B5;
-	Fri, 28 Jun 2024 08:25:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE051F805DF;
+	Fri, 28 Jun 2024 08:25:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54435F80495; Fri, 28 Jun 2024 08:25:32 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 97DFCF80423; Fri, 28 Jun 2024 08:25:32 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32F2CF800E4
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 08:24:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32F2CF800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6D797F8016E
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 08:25:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D797F8016E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DhHULUZd
+ header.s=k20201202 header.b=cPP7+3Yj
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 10E8BCE33AB;
-	Fri, 28 Jun 2024 06:24:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE13BC32789;
-	Fri, 28 Jun 2024 06:24:20 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id D822ECE3989;
+	Fri, 28 Jun 2024 06:25:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA450C32781;
+	Fri, 28 Jun 2024 06:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719555865;
-	bh=CoZpPaIVx8YVW8mjXAoTrmwo9/8K5PCV+Yw5r106JqM=;
+	s=k20201202; t=1719555906;
+	bh=XAVawEvkUjw4F5rP/7SvaAZ+lSjFkdzyftZk2Gs+RRA=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DhHULUZdd6C/jTaHjWsbZUYCi8zwOJyCvNrBdJhnYOQM0neOIStILxWa1Kk0dS2WL
-	 w7TuGQt4BoRTyzOhsX5SyHUZjWn7AHz45IbnIprBlcybGdSPvhyfJOsUSlzrQCC0UY
-	 mSUWOVX62CViNGk4sZR4MHmkQIFB7kdRNo4fWKEBiRE+4kcUkT3aBkKhjvK2zDNcpn
-	 FRmEDfP2Sy7TVOikkDbJWyNyoaT+IjDqak3+p8KmUTy/mUskgdjY8LTBFDK3u3DS5k
-	 KVticidszd5oL60o31h2z8frMCjy696IrIgrfLRMKalhkl40AerupZcGZ7igYIn5Pt
-	 +uz94afLLo99A==
-Message-ID: <e177530a-046b-407b-8da5-85947d2d1340@kernel.org>
-Date: Fri, 28 Jun 2024 08:24:18 +0200
+	b=cPP7+3YjY7m6qXORAYXgBjvLuPUyUeV9HfA+ICpQiOtbGPVJN1jBptUVVapMBi9Ln
+	 WPT+0R3HD79ce5iQHBvoVS85fspFhn26reyuc5lzmoiw9gNHOQ88roPrPiNZ8Hdy7R
+	 ++jgqXGOwcVhPoKnIrwu2gfOrrYSlcshcbWSzEWUKYxJmBmD4W9KQJ8gRthy+5xuUN
+	 yRybpP1ZVJDau4UxLn6QmJ23cBjBakJdSlSSuF+Ntq+5qKv6EMFxxpygqnqjCwcTEt
+	 hjFaaoYM1KeUvFUnj8IfGSfGyj8uZePknKzfeErCxamlkgkDInoQpc9/XUQViq66Uk
+	 MIsOTzpfIfuEg==
+Message-ID: <e358a75e-a18c-45dd-9cae-ae7ded815c4a@kernel.org>
+Date: Fri, 28 Jun 2024 08:24:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] ASoC: codecs: nau8824: Add master clock handling
+Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: nau8824: Add master clock
+ handling
 To: Maxim Kochetkov <fido_max@inbox.ru>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>,
@@ -70,7 +72,7 @@ To: Maxim Kochetkov <fido_max@inbox.ru>, Liam Girdwood <lgirdwood@gmail.com>,
 Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  alsa-devel@alsa-project.org
 References: <20240628061750.11141-1-fido_max@inbox.ru>
- <20240628061750.11141-2-fido_max@inbox.ru>
+ <20240628061750.11141-3-fido_max@inbox.ru>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -116,11 +118,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240628061750.11141-2-fido_max@inbox.ru>
+In-Reply-To: <20240628061750.11141-3-fido_max@inbox.ru>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 3UJCZA6RC7TY6DNOHFD2ZOBAW2KM7TU5
-X-Message-ID-Hash: 3UJCZA6RC7TY6DNOHFD2ZOBAW2KM7TU5
+Message-ID-Hash: CJGYHXNYAG36VVL6OTYUYYY6OQZYUBTE
+X-Message-ID-Hash: CJGYHXNYAG36VVL6OTYUYYY6OQZYUBTE
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3UJCZA6RC7TY6DNOHFD2ZOBAW2KM7TU5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CJGYHXNYAG36VVL6OTYUYYY6OQZYUBTE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,68 +149,31 @@ On 28/06/2024 08:17, Maxim Kochetkov wrote:
 > 
 > Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
 > ---
->  sound/soc/codecs/nau8824.c | 21 +++++++++++++++++++--
->  sound/soc/codecs/nau8824.h |  1 +
->  2 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-> index f92b95b21cae..7153b746f4b1 100644
-> --- a/sound/soc/codecs/nau8824.c
-> +++ b/sound/soc/codecs/nau8824.c
-> @@ -520,8 +520,15 @@ static int system_clock_control(struct snd_soc_dapm_widget *w,
->  		} else {
->  			nau8824_config_sysclk(nau8824, NAU8824_CLK_DIS, 0);
->  		}
-> +
-> +		if (!IS_ERR(nau8824->mclk))
-> +			clk_disable_unprepare(nau8824->mclk);
->  	} else {
->  		dev_dbg(nau8824->dev, "system clock control : POWER ON\n");
-> +
-> +		if (!IS_ERR(nau8824->mclk))
+>  .../devicetree/bindings/sound/nuvoton,nau8824.yaml        | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 
-Nah, clock API is not used like this. Open clk_prepare_enable() and look
-how it handles NULL ptr.
+Bindings are before their users. Order the patches correctly.
 
-> +			clk_prepare_enable(nau8824->mclk);
-> +
->  		/* Check the clock source setting is proper or not
->  		 * no matter the source is from FLL or MCLK.
->  		 */
-> @@ -563,16 +570,22 @@ static int dmic_clock_control(struct snd_soc_dapm_widget *w,
->  	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
->  	struct nau8824 *nau8824 = snd_soc_component_get_drvdata(component);
->  	int src;
-> +	unsigned int freq;
-> +
-> +	if (!IS_ERR(nau8824->mclk))
-> +		freq = clk_get_rate(nau8824->mclk);
-> +	else
-> +		freq = nau8824->fs * 256;
->  
->  	/* The DMIC clock is gotten from system clock (256fs) divided by
->  	 * DMIC_SRC (1, 2, 4, 8, 16, 32). The clock has to be equal or
->  	 * less than 3.072 MHz.
->  	 */
->  	for (src = 0; src < 5; src++) {
-> -		if ((0x1 << (8 - src)) * nau8824->fs <= DMIC_CLK)
-> +		if (freq / (0x1 << src) <= DMIC_CLK)
->  			break;
->  	}
-> -	dev_dbg(nau8824->dev, "dmic src %d for mclk %d\n", src, nau8824->fs * 256);
-> +	dev_dbg(nau8824->dev, "dmic src %d for mclk %d\n", src, freq);
->  	regmap_update_bits(nau8824->regmap, NAU8824_REG_CLK_DIVIDER,
->  		NAU8824_CLK_DMIC_SRC_MASK, (src << NAU8824_CLK_DMIC_SRC_SFT));
->  
-> @@ -1871,6 +1884,10 @@ static int nau8824_read_device_properties(struct device *dev,
->  	if (ret)
->  		nau8824->jack_eject_debounce = 1;
->  
-> +	nau8824->mclk = devm_clk_get(dev, "mclk");
-> +	if (PTR_ERR(nau8824->mclk) == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Aren't you open-coding getting optional clock?
+
+---
+
+<form letter>
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+</form letter>
 
 Best regards,
 Krzysztof
