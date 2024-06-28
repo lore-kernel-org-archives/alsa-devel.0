@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BF92C3064D
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 06:18:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC961C2BBCA
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Jun 2024 06:18:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81423211D;
-	Fri, 28 Jun 2024 08:17:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81423211D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5387321DE;
+	Fri, 28 Jun 2024 08:18:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5387321DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719555479;
-	bh=l7gsLp5MjVP+M2ZyjhkH26uqU/8io5Y0iOIiXhbVAnM=;
+	s=default; t=1719555505;
+	bh=AneQCkbY/cQogK9upva4XOfFk3Om035v2bCBkchxhEM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pDCzjzFQPbc163b57jzszSlmtrOSI2lG0huQ7POSRAx2Uy0+fikCjIASa73HnTauw
-	 5gJ5TMt/OPvVO8U+Frz7k9z/M2SG1pnxrVQlGpa63zEAVj51+0dLcWw64w9swdab/2
-	 KVcV2UH/6wCN5muvyDhAFAqMEVjIrzoCDmnE0hIw=
+	b=ce02By+ealCk8bY/ZTyAYIseYMTPwySWHpT5R/u5evOjXGK4WdnAGxu+Fx9GjYo+8
+	 GpbgF+ho8EsjgjO8xuFtCJDN6XnQVh70JEPHBKqAzIO5uPwQSFINatwZaE+SamwSRE
+	 jwveZrOiHBuht+gAd+d37162aaakd5Yvj/WBkZmQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 865DEF8060C; Fri, 28 Jun 2024 08:16:52 +0200 (CEST)
+	id 23D97F8063D; Fri, 28 Jun 2024 08:16:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 403C6F805DF;
-	Fri, 28 Jun 2024 08:16:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23B24F8065D;
+	Fri, 28 Jun 2024 08:16:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE24FF80423; Fri, 28 Jun 2024 08:15:27 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+	id 68FD7F80423; Fri, 28 Jun 2024 08:16:13 +0200 (CEST)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6515EF8013D
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 08:15:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6515EF8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3C3CCF8013D
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 08:16:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C3CCF8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ufKCslKs
-Received: by mail-wr1-x431.google.com with SMTP id
- ffacd0b85a97d-367339bd00aso198723f8f.3
+ header.s=google header.b=M3zj08Rf
+Received: by mail-lf1-x133.google.com with SMTP id
+ 2adb3069b0e04-52cd628f21cso229433e87.3
         for <alsa-devel@alsa-project.org>;
- Thu, 27 Jun 2024 23:15:22 -0700 (PDT)
+ Thu, 27 Jun 2024 23:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1719555322; x=1720160122;
+        d=linaro.org; s=google; t=1719555367; x=1720160167;
  darn=alsa-project.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=AtUb5OQN/rCaRa+K3+Qo1zvtzQ8MrCKt+xQVUJDy3Ew=;
-        b=ufKCslKs+aRMElKmGt2eLlqIAKaFn9N6iGc0WtD15pRjrFdsYEczltFhGvVyy+cU+e
-         7zcWa1daAf7epym8KUmmAARLEEuhwIf4BxGuvLS4JQcZpLtM9q6Ps8VKar/JV01Gq5fK
-         ySpYwGX4SvUH9ELtxoN5eMjU7r4gQ4UgTdOmaBpOEx0uoB+Eh3dis3wVjw+/wIsPhXHj
-         xbGdx1BcC706Es/kpnWRmDU8Jlhwr+hQht98r4CtcQVWQO5Jv8ee4WGohdq4XAV+dtW7
-         p1XsypUwTk2LeadaD/T6s80Rz/6PelTutWDgc0rZlfj/MmldEJe5CNRHw1bGhIi/BPqe
-         ImTg==
+        bh=4kMx75Yulrng/FdlL6y95jTJoRfya8ekwLjBMuEhsaQ=;
+        b=M3zj08Rf4i+ju1UjXzZIPl+QQH8RuwCrx2W2v3HFfS9h/FhxCySnOqjixYNggLWN8g
+         dI+LAU6U+76IVTvLbbdlnD+8H5o6I4g84ih+m3QmNiC1Zjr8fIbZnhm0ZFRICsiwc8dG
+         xkmwzBTFl5+oQbBwHRrLYKE5XoIvs2h4TwQwk73l9NuHOBZG0HAWx71pkZEfivFuGN7J
+         FCSBUn9NP10VXO0McUYK5XXWJpkh+9s0IMQ17SJDTIND/ObdM69i1QRvWpG8kZgnXuQQ
+         Nx1DycL6KZ4J+ZZIxB+bpxCwRIl9bBtr6R4g6r1Szz/hxMWdWmhczmi/Fy5pAopHfb0J
+         7qUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719555322; x=1720160122;
+        d=1e100.net; s=20230601; t=1719555367; x=1720160167;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :from:references:cc:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AtUb5OQN/rCaRa+K3+Qo1zvtzQ8MrCKt+xQVUJDy3Ew=;
-        b=Qf8W/WOktMTwBSOPZ78Fdp2Qid3qCahc016Cmzcfk9054XdCJaULiVYp5BHOWYS3Hi
-         Tg1uohHK4dPolNLNEzSm12ZNogUXy6Kz9s/hL6bEIupwUO23aoAPZ+xrtIx4N/wRdwOp
-         xrF0LgL+gHMRqY3caeMKMAaxnpeJQxuMRjoFJ3uCEHmJNH9/ssiR4VQI3Dx+0HrXewu2
-         64ZySO3aJlZrgWr47cnMUcNTMtSP7T7Uk+ut/s5qIu2gXwZr1RYmcnMOjOVfkN7xyd3m
-         scT5G1agpq0Wp7UYMN3BRBYTDogcQCmwUcoq8agcPEDEG2Axs2CxubxcXesjt08cgtIk
-         7nng==
+        bh=4kMx75Yulrng/FdlL6y95jTJoRfya8ekwLjBMuEhsaQ=;
+        b=bDHLeNIPbuwypJDZe9ZBNJFCE6at5ZJZXq4K/T58/rk24WuIwZpmryG6Vigqz4IwRi
+         CJtuWoPpbfI8XBao4HwRoAjwlF1mC8ohTA8GibqJi8ZjlqUBIsheGQIKHqFIq9cIRkT7
+         it6TNj7r+vsk+5afDRGljeBbjq6B7g9paNHysN/GTCq9xJcr20hg/+J4TZc1NeOsUHVd
+         7unYQ/VMzPheuxRGH1rLL0nUlZISQkhUCMJCXpgmuqu9skDo2LdLFL90bNQgCpJudHeS
+         9Yt2GyeJ3ESaSikPtiZj6fqyRWF4WuAX2bfhdNrHs7LCQgQfwury9A72dayQf8gYfj/w
+         /S7Q==
 X-Forwarded-Encrypted: i=1;
- AJvYcCURADNJxzUKDTqh+XEKZ3QFGD4wFQWRDTvblfWdvYXExJVE7Ok3MjluKE1/Se2o3rrUBITh5rTBuStdS+Dc2MJqOtkwjqYaAxM9QMQ=
-X-Gm-Message-State: AOJu0Yz0RUtBEUgaVEqBHelC70Iop12Qqm4+fT3VY6Nk5WMIIfb8TojT
-	YnYgiGWvHKw5yUjXc7LWNHIBxtFnmNUskVmSs8/qY3gHQdqkOAlFtrE3oZCdOd8=
+ AJvYcCXqmq494sIPtEpQGgXct2BSnp5s/FyQ4YnemV2exZhgZf/yboj2wBR07IMj3R4G58d9ebmuV8CLMdzSJtm13rfhVYYZSZ1V7leKB8w=
+X-Gm-Message-State: AOJu0YznYJzB/2i5e3kzkmueRnk+MgqpfN945eygXQlwBIillmHBRP+g
+	NgONCRw7uIoDA7mV1Mht1/dPulSbHE2jz5+hEjqQzCZ7YPYpZtBw5WwPQkzt+Fk=
 X-Google-Smtp-Source: 
- AGHT+IE2QoQjlin+H5o8GTIG1qWNDbgtelmMLz2cdWhmBexcriO9gnaQbsPO7pk+8IYqza/O8cphCQ==
-X-Received: by 2002:adf:f006:0:b0:35f:e0f:69a6 with SMTP id
- ffacd0b85a97d-366e9495cd7mr10154059f8f.27.1719555322104;
-        Thu, 27 Jun 2024 23:15:22 -0700 (PDT)
+ AGHT+IEV7eFaSP/m3xouuSYf9kFIIXNH+dXsGe0h6ycnpBTVM544dUvJ1G53bzN62Zf7TG6R/+nejw==
+X-Received: by 2002:ac2:4ed4:0:b0:52c:d8ce:c323 with SMTP id
+ 2adb3069b0e04-52ce183b77emr8380535e87.35.1719555366868;
+        Thu, 27 Jun 2024 23:16:06 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3675a0cd72asm1227673f8f.10.2024.06.27.23.15.20
+ 5b1f17b1804b1-4256b09a828sm19847595e9.37.2024.06.27.23.16.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jun 2024 23:15:21 -0700 (PDT)
-Message-ID: <9b723a41-26ec-41f4-92b2-801db79c6023@linaro.org>
-Date: Fri, 28 Jun 2024 08:15:19 +0200
+        Thu, 27 Jun 2024 23:16:06 -0700 (PDT)
+Message-ID: <33b7e7f7-0965-4538-94af-67108ebf9b76@linaro.org>
+Date: Fri, 28 Jun 2024 08:16:04 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] ASoC: dt-bindings: qcom,sm8250: add
- qrb4210-rb2-sndcard
+Subject: Re: [PATCH 4/7] arm64: dts: qcom: sm6115: add apr, its services and
+ simple sound node
 To: Alexey Klimov <alexey.klimov@linaro.org>, linux-sound@vger.kernel.org,
  srinivas.kandagatla@linaro.org, bgoswami@quicinc.com, lgirdwood@gmail.com,
  broonie@kernel.org
@@ -100,7 +100,7 @@ Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
  devicetree@vger.kernel.org, elder@linaro.org, dmitry.baryshkov@linaro.org,
  caleb.connolly@linaro.org, linux-kernel@vger.kernel.org
 References: <20240628010715.438471-1-alexey.klimov@linaro.org>
- <20240628010715.438471-2-alexey.klimov@linaro.org>
+ <20240628010715.438471-5-alexey.klimov@linaro.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -147,11 +147,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240628010715.438471-2-alexey.klimov@linaro.org>
+In-Reply-To: <20240628010715.438471-5-alexey.klimov@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: U7VXT7A3G5PQPIWAJWPXXYRVYIVCI7FO
-X-Message-ID-Hash: U7VXT7A3G5PQPIWAJWPXXYRVYIVCI7FO
+Message-ID-Hash: DR6VM724YBCY2VWC3SAHBC277Z3FVQSF
+X-Message-ID-Hash: DR6VM724YBCY2VWC3SAHBC277Z3FVQSF
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -164,7 +164,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7VXT7A3G5PQPIWAJWPXXYRVYIVCI7FO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DR6VM724YBCY2VWC3SAHBC277Z3FVQSF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -174,25 +174,17 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 28/06/2024 03:07, Alexey Klimov wrote:
-> Add adsp-backed soundcard compatible for QRB4210 RB2 platform,
-> which as of now looks fully compatible with SM8250.
+> Add apr (asynchronous packet router) node and its associated services
+> required to enable audio on QRB4210 RB2 platform.
+> Also, add an empty sound{} device node. This allows board dts
+> files to fill in required board specific properties.
 > 
 > Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
 > ---
->  Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> index b2e15ebbd1bc..a92ac8501138 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> @@ -31,6 +31,7 @@ properties:
->            - qcom,msm8916-qdsp6-sndcard
->            - qcom,qcm6490-idp-sndcard
->            - qcom,qcs6490-rb3gen2-sndcard
-> +          - qcom,qrb4210-rb2-sndcard
+>  arch/arm64/boot/dts/qcom/sm6115.dtsi | 59 ++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
 
-Looks like fully compatible with sm8250, no?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
