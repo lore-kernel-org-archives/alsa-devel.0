@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 952A2C2BD09
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 15:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B29FC2BD09
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 16:09:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29E0321A4;
-	Mon,  1 Jul 2024 17:15:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29E0321A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16336E85;
+	Mon,  1 Jul 2024 18:08:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16336E85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719846944;
-	bh=D+dqZWEYQrj6N5dhh+KIXd+1VWrn8ph2xtTWAgXfdLc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=lBovxuAfiULBOFIihtNO0JAg8fOj1jzwTSUGCG7ml4vrXwfyv/AdOoowyNec8bWGB
-	 Vr1YFFouWf52xhSu15KRvxQ42v3Z0JyP99HLt/MeCSa1yMRqhBfdT5ETO+uMR7wY2c
-	 LeiQbTgnEOmt+LKf73fpbriPx7yD+hGCve2M9QDM=
+	s=default; t=1719850146;
+	bh=xo/lQLEgp4T9tOodEdYdrv/WFpbI3LH5AIIdorooP/M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=UPRBSMPaLD1gWFXMRkPzkNea61lkCNPq5qXVlK2YtPj5J3xHAlYG5Nd/n72f4SEvA
+	 EvWrKZZIeMkewCAi4QOSd2/SX5vEoy3JJpAuDLzmDHpR0yCBsBvbYyUGlNRNVlFHjc
+	 /5RsMY8oDSZoQUWFMV+/BONogQpMEhAbVPeVhl9E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E45D6F805B2; Mon,  1 Jul 2024 17:15:09 +0200 (CEST)
+	id 13DDAF805B2; Mon,  1 Jul 2024 18:08:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7149DF8013D;
-	Mon,  1 Jul 2024 17:15:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E60EF805A0;
+	Mon,  1 Jul 2024 18:08:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE8BBF8028B; Mon,  1 Jul 2024 17:15:03 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 6C355F8028B; Mon,  1 Jul 2024 18:08:28 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6FADEF8013D
-	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 17:14:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FADEF8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8A061F8003A
+	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 18:08:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A061F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=M/bhFd5x
+ header.s=k20201202 header.b=cwoLHCTK
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 6A6E7CE175F;
-	Mon,  1 Jul 2024 15:14:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0F46C32781;
-	Mon,  1 Jul 2024 15:14:44 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id E8F4D614C9;
+	Mon,  1 Jul 2024 16:08:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E2B2C116B1;
+	Mon,  1 Jul 2024 16:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719846887;
-	bh=D+dqZWEYQrj6N5dhh+KIXd+1VWrn8ph2xtTWAgXfdLc=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=M/bhFd5xZ5iddEfYtFWXKCJHnYnW7vRiv1kIhHLhM8S2P1F2ALEZp3TK71Zx8eQsr
-	 WCWLE2IT1rjREDCaT/b1TNMTMU5nJP7yzvcHVFnitjXVdvBvPKx75yA4Kfh0veEoeO
-	 tX9Vru9TZU0n8lw36uI5wtCXLn7qC2oVRffPCDFEOJrGW91egpXUT6eIMSMYxQwIei
-	 F4haOj2bPDs3FkW5pe1VsNA3jI/DkUqVATz+lGOVcLURgR2yO91W4jUMLfhyRvWV7k
-	 Ge2SlJvy4AHT0ABeM1fN6PKVC91IOkaPfSj9EsM/bO4BE6myEHI0joz2G/K5WpaA3b
-	 NNOZz8SlYEh1g==
+	s=k20201202; t=1719850100;
+	bh=xo/lQLEgp4T9tOodEdYdrv/WFpbI3LH5AIIdorooP/M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=cwoLHCTKrl1c3Bo7IVHu2E2rOLxdFCDLCz/fiqC1Hr0UDY4sSn6KYiUb68E2mjhVt
+	 rF0RhoL/ILqR+JCyKuh0rWrXGmnANCeJ9ZstoFhfmA7toz8lqXpTG0i1W4JEXVTBtF
+	 Wvi2Lsl6H4nyTLFvo70y0rmPeo3wnQkEp8dfQor1iB+YOAiTJaWmjKf5E8FP5nTkUR
+	 ksfg3lq/t3pJymPH/n+qclsoWakdXXRuy3AUjwkXbSSWBBYkZbavN29UcrVJ8W2DA3
+	 5RliJ7TXYPLUg4zoyKunLW+/pjhkg0LjCotqsC28eGr0UJo5fEuVTuOftAif5o6iko
+	 fAf8ebBmYoSOQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
- linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- devicetree@vger.kernel.org, Chancel Liu <chancel.liu@nxp.com>
-In-Reply-To: <20240626071202.7149-1-chancel.liu@nxp.com>
-References: <20240626071202.7149-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: fsl_rpmsg: Add compatible
- string for i.MX95
-Message-Id: <171984688438.72817.17478121699254917987.b4-ty@kernel.org>
-Date: Mon, 01 Jul 2024 16:14:44 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+In-Reply-To: <20240627141432.93056-1-rf@opensource.cirrus.com>
+References: <20240627141432.93056-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 0/4] firmware: cs_dsp: Add check to prevent overrunning
+ the firmware file
+Message-Id: <171985009864.89113.4517197771955831374.b4-ty@kernel.org>
+Date: Mon, 01 Jul 2024 17:08:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: QPPSXZBYOA275IRTYRKS6RGEF7OVDJAF
-X-Message-ID-Hash: QPPSXZBYOA275IRTYRKS6RGEF7OVDJAF
+Message-ID-Hash: 3MDNJ5SE3P3XHHYP5NUH5VVUPHNGCNP6
+X-Message-ID-Hash: 3MDNJ5SE3P3XHHYP5NUH5VVUPHNGCNP6
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QPPSXZBYOA275IRTYRKS6RGEF7OVDJAF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3MDNJ5SE3P3XHHYP5NUH5VVUPHNGCNP6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,11 +92,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 26 Jun 2024 16:12:01 +0900, Chancel Liu wrote:
-> Add compatible string for i.MX95 platform which supports audio
-> function through rpmsg channel between Cortex-A and Cortex-M core.
+On Thu, 27 Jun 2024 15:14:28 +0100, Richard Fitzgerald wrote:
+> This series fixes various missing length checks when processing
+> variable-length data from the firmware file. These could have
+> caused overrunning the end of firmware file buffer, or wild
+> pointer accesses.
 > 
+> Richard Fitzgerald (4):
+>   firmware: cs_dsp: Fix overflow checking of wmfw header
+>   firmware: cs_dsp: Return error if block header overflows file
+>   firmware: cs_dsp: Validate payload length before processing block
+>   firmware: cs_dsp: Prevent buffer overrun when processing V2 alg
+>     headers
 > 
+> [...]
 
 Applied to
 
@@ -108,10 +113,14 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: fsl_rpmsg: Add compatible string for i.MX95
-      commit: 8e5c11963c5ca4af90b36147cabb4835e59990aa
-[2/2] ASoC: fsl_rpmsg: Add support for i.MX95 platform
-      commit: 19dec6650e3fd02de8752c4e0ab1c4894ce7fcb7
+[1/4] firmware: cs_dsp: Fix overflow checking of wmfw header
+      commit: 3019b86bce16fbb5bc1964f3544d0ce7d0137278
+[2/4] firmware: cs_dsp: Return error if block header overflows file
+      commit: 959fe01e85b7241e3ec305d657febbe82da16a02
+[3/4] firmware: cs_dsp: Validate payload length before processing block
+      commit: 6598afa9320b6ab13041616950ca5f8f938c0cf1
+[4/4] firmware: cs_dsp: Prevent buffer overrun when processing V2 alg headers
+      commit: 2163aff6bebbb752edf73f79700f5e2095f3559e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
