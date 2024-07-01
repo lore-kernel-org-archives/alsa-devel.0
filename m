@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D06FCC27C4F
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 00:18:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE44FC27C4F
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 00:18:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8EEBE2097;
-	Mon,  1 Jul 2024 02:18:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EEBE2097
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4CA82394;
+	Mon,  1 Jul 2024 02:18:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4CA82394
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719793113;
-	bh=VSZj8vRMujLB5UOFE2+NyN8F5a9YuB+XhvEijdmZaUA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=nQejvczaq+lw+xOPDAq/lOeWxd6D190g4rQoEf+Clv2UjfqXCyhTZyBbQfp7I0Fvl
-	 AD6h2p+eCIbtlS80oIu+sPeO7N0NzwARH7vLjMq1RAWeyYnIcYijYnKl76JBpw2M0g
-	 zqAQDUhStGMuMuxYIgs49fSvXUQOoWtQ4rZo45aI=
+	s=default; t=1719793125;
+	bh=8CBDmhLz+8J4PuBzSNyB3ZurzFK7tWdr0uApKUnp+D4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=SxbP+kKQNjR63x4p30F2brn9XIQjsAv62aIiMfVoG1m+wdvwMZedt7lEk6SQGKJA+
+	 S/iBlddBqmvCOKJ46DKLjWY0qw0lNVBgP019YOLEdEUcnBk/cHTYaZoD2cuTogz/FN
+	 fz3v8CZZGbV3/MLiETCyYYMrRfwHMLTc0BGU3wgk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31E6FF8058C; Mon,  1 Jul 2024 02:18:01 +0200 (CEST)
+	id 6B459F805DF; Mon,  1 Jul 2024 02:18:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82991F805B5;
-	Mon,  1 Jul 2024 02:18:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE73DF805E7;
+	Mon,  1 Jul 2024 02:18:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09716F8045D; Mon,  1 Jul 2024 02:12:25 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 4D6CAF8042F; Mon,  1 Jul 2024 02:12:28 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 06E82F800E4
-	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 02:12:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06E82F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 84FB2F8013D
+	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 02:12:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84FB2F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ZUUxROcL
+ header.s=k20201202 header.b=RK1G9lU4
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0AA816108D;
-	Mon,  1 Jul 2024 00:12:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C1D3C2BD10;
-	Mon,  1 Jul 2024 00:12:11 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id E8DD6CE0F1B;
+	Mon,  1 Jul 2024 00:12:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2050DC2BD10;
+	Mon,  1 Jul 2024 00:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719792732;
-	bh=VSZj8vRMujLB5UOFE2+NyN8F5a9YuB+XhvEijdmZaUA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ZUUxROcLlUabgTprCn6rXEdHV8l5OIwL8OsV0kXyeyGsbMiWshwwi9w7HJ7dT0xoN
-	 hxmK+EilVS6/Mca8ltbhu8/7igeCDL/K4+//Q+HUl3Vn1jeAhCMJuMeNv1SB+R04nq
-	 9kAv4Nszxuh//Z+VPcO+1abQrXrYSrsuZyOZ0TVm2qRPD5NjlaMN6Iu5Si8t0lZzwX
-	 fyCPXX7eiRwuozZWHr0EOGwk40DDfKl6FuWxPEnxLAj13c0fG3lEv8DwbZ+S+eW464
-	 o2prpmwTfPA7w/GP8AeyT4FtcMWxi1U2rN5LVExgFA2TtqUFws9BpN6fiala03YfVP
-	 RBeeFdWdnmAuA==
+	s=k20201202; t=1719792738;
+	bh=8CBDmhLz+8J4PuBzSNyB3ZurzFK7tWdr0uApKUnp+D4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=RK1G9lU4g9pnqvSi6Bjtlqn/eV7WkSDwZBrmV9dXBAAgoB5CpHUIPrHrXWejGvxIl
+	 5ZpQpv2jUAf6XtPj+js6+zUKB+uKvxhsOcxplsyqFntTKjYC8ZPR7o7oxZVoQuOOzf
+	 XxAlpctFuQSx4StdecXrzU8OFLV/B1ZTpkK0J5vDgUtnCqRtSaU8hsXe7ZJ99cGjsE
+	 zErgZqeeR9hDxS1OT91tT8HFzH9iUyT5uCS0hTkK7GIO6OtOkhjqx11u4COzGVTwuq
+	 HMw4PNOMQbveCeqgzfR74xDlZUVdNvYXtqsw9LaMCHopt/QdpWoKDyoaQJszBze6QR
+	 eU4g9tiC7+tGw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Simon Trimmer <simont@opensource.cirrus.com>,
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
 	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
 	david.rhodes@cirrus.com,
@@ -68,18 +68,20 @@ Cc: Simon Trimmer <simont@opensource.cirrus.com>,
 	alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.9 01/20] ALSA: hda: cs35l56: Fix lifecycle of codec
- pointer
-Date: Sun, 30 Jun 2024 20:11:06 -0400
-Message-ID: <20240701001209.2920293-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.9 04/20] ALSA: hda: cs35l41: Support Lenovo
+ Thinkbook 13x Gen 4
+Date: Sun, 30 Jun 2024 20:11:09 -0400
+Message-ID: <20240701001209.2920293-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240701001209.2920293-1-sashal@kernel.org>
+References: <20240701001209.2920293-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.9.7
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FHUH3U7FLKU5B6TH7WFVN72F4ALV7R2L
-X-Message-ID-Hash: FHUH3U7FLKU5B6TH7WFVN72F4ALV7R2L
+Message-ID-Hash: LNLJ2Y3I6HKJFMVVUCHDKQ4EBDPZ6ZBJ
+X-Message-ID-Hash: LNLJ2Y3I6HKJFMVVUCHDKQ4EBDPZ6ZBJ
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FHUH3U7FLKU5B6TH7WFVN72F4ALV7R2L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LNLJ2Y3I6HKJFMVVUCHDKQ4EBDPZ6ZBJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,45 +103,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-[ Upstream commit d339131bf02d4ed918415574082caf5e8af6e664 ]
+[ Upstream commit b32f92d1af3789038f03c2899e3be0d00b43faf2 ]
 
-The codec should be cleared when the amp driver is unbound and when
-resuming it should be tested to prevent loading firmware into the device
-and ALSA in a partially configured system state.
+This laptop does not contain _DSD so needs to be supported using the
+configuration table.
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20240531112716.25323-1-simont@opensource.cirrus.com
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20240606130351.333495-3-sbinding@opensource.cirrus.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/cs35l56_hda.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/hda/cs35l41_hda_property.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 11b0570ff56d4..0923e2589f5f7 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -735,6 +735,8 @@ static void cs35l56_hda_unbind(struct device *dev, struct device *master, void *
- 	if (comps[cs35l56->index].dev == dev)
- 		memset(&comps[cs35l56->index], 0, sizeof(*comps));
- 
-+	cs35l56->codec = NULL;
-+
- 	dev_dbg(cs35l56->base.dev, "Unbound\n");
- }
- 
-@@ -840,6 +842,9 @@ static int cs35l56_hda_system_resume(struct device *dev)
- 
- 	cs35l56->suspended = false;
- 
-+	if (!cs35l56->codec)
-+		return 0;
-+
- 	ret = cs35l56_is_fw_reload_needed(&cs35l56->base);
- 	dev_dbg(cs35l56->base.dev, "fw_reload_needed: %d\n", ret);
- 	if (ret > 0) {
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index e034828df4452..6ad6cb176d43a 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -118,6 +118,8 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "17AA38B5", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA38B6", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA38B7", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
++	{ "17AA38C7", 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 2, -1, 1000, 4500, 24 },
++	{ "17AA38C8", 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 2, -1, 1000, 4500, 24 },
+ 	{ "17AA38F9", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
+ 	{ "17AA38FA", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
+ 	{}
+@@ -511,6 +513,8 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "17AA38B5", generic_dsd_config },
+ 	{ "CSC3551", "17AA38B6", generic_dsd_config },
+ 	{ "CSC3551", "17AA38B7", generic_dsd_config },
++	{ "CSC3551", "17AA38C7", generic_dsd_config },
++	{ "CSC3551", "17AA38C8", generic_dsd_config },
+ 	{ "CSC3551", "17AA38F9", generic_dsd_config },
+ 	{ "CSC3551", "17AA38FA", generic_dsd_config },
+ 	{}
 -- 
 2.43.0
 
