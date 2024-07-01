@@ -4,101 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69A00C3DA47
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 15:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E5EDC2BD09
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 15:48:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9666E0D;
-	Tue,  9 Jul 2024 17:34:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9666E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A267EDF9;
+	Tue,  9 Jul 2024 17:47:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A267EDF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720539308;
-	bh=FvWdonThAmJ/q75JTUddBwM9tvlSfcVWOIEazl2kr/I=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1720540087;
+	bh=C+cYYC9X+gJAXTMk4alU3FVgfl36sHfH3czWazAdLFk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pqH2XReiS9tWCcsQbsXO+Z7IjalndpXybbOaEGRyhiACaES8zSSJ65it4lEaP9rLk
-	 WJJQWG+MO4MyaU2RFWfTRAkwBqudQ9akPn2XFirtd0lodzmpMflM5W5tnb+pBuGL8s
-	 DTs55ZtcTMGfWoI09MSX9ylu0NO87Kie4o3ajXMo=
+	b=jVqVO5i+IdNNtv53H7l/A61BDMCGM8Mnjq/8EaFwboERCkkYjSnnGQ9Zk6A7/L7bd
+	 iakVJaTLXPmAlmb1SD1nLmP5H5+dtm5aMTb7vi3PQu1MU+2Snas3A8iXo/dbm93QkW
+	 QN+USKr61jA/7Dc69oRTtGCJzNcRR2Kr1hL+X8Qk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9EABF805AF; Tue,  9 Jul 2024 17:34:37 +0200 (CEST)
+	id 06ED5F805AF; Tue,  9 Jul 2024 17:47:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBC1AF80587;
-	Tue,  9 Jul 2024 17:34:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C8D7F805B1;
+	Tue,  9 Jul 2024 17:47:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 800F0F801F5; Tue,  9 Jul 2024 17:34:26 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 36AD7F8028B; Mon,  1 Jul 2024 18:03:18 +0200 (CEST)
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
+ [IPv6:2607:f8b0:4864:20::1129])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2A3E7F8013D
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2024 17:34:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A3E7F8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 226CFF8013D
+	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 18:03:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 226CFF8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=IV16cnaW
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 4699T296013261;
-	Tue, 9 Jul 2024 10:34:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=PODMain02222019; bh=6Xe73+JU2eVQQ8xYXG
-	t1Vn3w9CgNx65jHpc54wpvgKw=; b=IV16cnaWsSggxGT2sPvUjQSCnusIo7kGAe
-	KmPur7U0780Xmq1vgMGMC8W2fQCWRqSkkoEd54VxA9lkyMUtw8FeyRSv5S9IEcEV
-	P7OXD2QnC6dl3a05WFjyQXBvtdvWddhNxwlpl2L9cnQKN2Lo0yPUV2ByaCmMdLbn
-	x8rkDgGD2SAGRdzo1UUUODr47n4+2PZSkFJ/GV49ILMvOXtQcFX3YdkDNXKQ630e
-	TGW2/QLE8Psbfm9qnOJEcomZX3ceWuFNJh0IgNKaDlPnBScQGn0Rh2VEyJ7jYeT6
-	rsAVzzH7K99CkuLyF59fCrj7YbIM9K/IUJ/48xjB873dc1C+8/XA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 4072bjaumh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jul 2024 10:34:16 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 9 Jul 2024
- 16:33:57 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Tue, 9 Jul 2024 16:33:57 +0100
-Received: from opensource.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 644CE820244;
-	Tue,  9 Jul 2024 15:33:57 +0000 (UTC)
-Date: Tue, 9 Jul 2024 16:33:56 +0100
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-CC: <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-sound@vger.kernel.org>
-Subject: Re: [PATCH 3/4] firmware: cs_dsp: Merge wmfw format log message into
- INFO message
-Message-ID: <Zo1YZHiE6WK3d8rm@opensource.cirrus.com>
-References: <20240709145156.268074-1-rf@opensource.cirrus.com>
- <20240709145156.268074-4-rf@opensource.cirrus.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=a4k9ubcK
+Received: by mail-yw1-x1129.google.com with SMTP id
+ 00721157ae682-63036fa87dbso20240887b3.1
+        for <alsa-devel@alsa-project.org>;
+ Mon, 01 Jul 2024 09:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719849789; x=1720454589;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Er1wA55kdFZAWRumjECp8j01gkOQSx6T6hFb38aD+oM=;
+        b=a4k9ubcKANc4Av6D93ZS+Rf/4TZ/HbCFgo3qXY37xOY86TKw4FYWeJNjQ9Gy4A5FWf
+         ZUIRefNLQLclPNUKZiWrrG9q7iG5i6m/JhjRxSq5bY4vvp33876qzt2vytrlIj6FCaty
+         Uk1wPEgXFeVOiWjm5LFv4uepvQYznAH8BPTcq5aomSlPdFhRdUwh9udtyufkDGnk1kaW
+         VoEy5kruTvE8Xc5QfmtpxHK7Aykv2TMn7rJLMEcvDU5ayBTI/5FoShTkY6ZM3AvWfkX2
+         1KNQLrKBW0FgidSxGA+9EDVzAghQFvxPY4ne6IQ5+eHQ/sZMC5fSJtzBTL9tuvTyTsyJ
+         omCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719849789; x=1720454589;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Er1wA55kdFZAWRumjECp8j01gkOQSx6T6hFb38aD+oM=;
+        b=eJp1kXlqYsTrcO+LHGXnO8ZHI2U8l/cRquGF9tbB9Qk1KKVODDrV3WZ12IeTJmHqYs
+         we7+3JUBnnpt2ihear8k3QCpFdQIzjwW8JtXO/ytEsIjNfnNrd08yykdJ07MDvXWlEq3
+         UzVp/8lxuIC7gLChcNE3QwtgU5Bys2rB+XUqrQ+zuTPOCp5IilrKSJHi9JNV9BMgpYpn
+         G0EfM1exgYecUQ53XbU8m66kwAq0qH3FYJANkjdsFutVLHqNuCpR5+3eMqX8qrH8AzIo
+         MGTaC37mFSWoNUaWUdzRRNKh8L84EE4ZowQwEhxLypuFvGkHWBW8l3zrshFdUBJcJi5p
+         TlOw==
+X-Gm-Message-State: AOJu0YyjHB49/r7cttowaJzj+n/aPNvOJw2vGXXvaabOKFOXMSnfN/Ak
+	RwcMMW8oj2z3SKs61sqNR6vP6kGSIY84Iu1ncWuuyUDLzU7Bfz9Y9tbowj0zVftEFJ+Dpa0Jvbw
+	+Sf2U7QSscE8lWlGWEs+NM2ZzaRk=
+X-Google-Smtp-Source: 
+ AGHT+IH4wm6EYAolUF2icKhZAk+Xl17odp3eBRXmfCjj/78q9ExCq18t5FPvWsQksl4Zv56KoAl/KeMkEaXvmYTt/XI=
+X-Received: by 2002:a81:ad1e:0:b0:643:9ee0:25e0 with SMTP id
+ 00721157ae682-64c6e7ad290mr34631077b3.22.1719849789413; Mon, 01 Jul 2024
+ 09:03:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240709145156.268074-4-rf@opensource.cirrus.com>
-X-Proofpoint-ORIG-GUID: hRAaVAlz16HcPybssSt-C_PeHfg3_Xgs
-X-Proofpoint-GUID: hRAaVAlz16HcPybssSt-C_PeHfg3_Xgs
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: AW344QXGG6ZGP4P2JMTHGJSKBNFDELNF
-X-Message-ID-Hash: AW344QXGG6ZGP4P2JMTHGJSKBNFDELNF
-X-MailFrom: prvs=4920ac58a6=ckeepax@opensource.cirrus.com
+References: <20240616203231.43724-1-av2082000@gmail.com>
+ <d6cd7441-53f2-4c88-a361-729e3abe81c1@marliere.net>
+ <CAPMW_r+sPGF5=+=edLY81X+Cd4bMWKFJw3sDd0mzaZEM9b75BQ@mail.gmail.com>
+ <f64523f0-db39-4e3a-85a6-1a3cb07e2d08@marliere.net>
+In-Reply-To: <f64523f0-db39-4e3a-85a6-1a3cb07e2d08@marliere.net>
+From: Amit Vadhavana <av2082000@gmail.com>
+Date: Mon, 1 Jul 2024 21:32:58 +0530
+Message-ID: 
+ <CAPMW_r+Nysco8bb+AJQ1OrhZHK4qwkD0WWv6X9gHzef6uo1Thg@mail.gmail.com>
+Subject: Re: [PATCH v2] slimbus: Fix struct and documentation alignment in
+ stream.c
+To: srinivas.kandagatla@linaro.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	rbmarliere@gmail.com, skhan@linuxfoundation.org,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+ linux-kernel-mentees@lists.linuxfoundation.org
+X-MailFrom: av2082000@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: VEH55AA32YKVKWU3I6QAY7SWEVBQZ7J6
+X-Message-ID-Hash: VEH55AA32YKVKWU3I6QAY7SWEVBQZ7J6
+X-Mailman-Approved-At: Tue, 09 Jul 2024 15:45:33 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AW344QXGG6ZGP4P2JMTHGJSKBNFDELNF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VEH55AA32YKVKWU3I6QAY7SWEVBQZ7J6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,43 +120,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jul 09, 2024 at 03:51:55PM +0100, Richard Fitzgerald wrote:
-> Log the WMFW file format version with the INFO_TEST message.
-> 
-> The behaviour of firmware controls depends on the WMFW format version,
-> so this is useful information to log for debugging. But there's no
-> need to use a separate log line just for this value.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
->  drivers/firmware/cirrus/cs_dsp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-> index 1bc2e0b6d40b..141a6c9d6737 100644
-> --- a/drivers/firmware/cirrus/cs_dsp.c
-> +++ b/drivers/firmware/cirrus/cs_dsp.c
-> @@ -1502,7 +1502,6 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
->  		goto out_fw;
->  	}
->  
-> -	cs_dsp_info(dsp, "Firmware version: %d\n", header->ver);
->  	dsp->fw_ver = header->ver;
->  
->  	if (header->core != dsp->type) {
-> @@ -1552,7 +1551,7 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
->  		case WMFW_INFO_TEXT:
->  		case WMFW_NAME_TEXT:
->  			region_name = "Info/Name";
-> -			cs_dsp_info(dsp, "%s: %.*s\n", file,
-> +			cs_dsp_info(dsp, "%s (rev %d): %.*s\n", file, dsp->fw_ver,
->  				    min(le32_to_cpu(region->len), 100), region->data);
-
-Are we sure on this one? I don't think a WMFW is required to
-include an INFO/NAME block so it is now possible for this to not
-get printed. Granted I have not seen one that doesn't include
-at least one of these blocks but it isn't required. I think I
-would lean towards keening the separate print personally.
-
-Thanks,
-Charles
+SGkgU3Jpbml2YXMsDQoNCkkgaG9wZSB5b3UgYXJlIHdlbGwuIEkgYW0gZm9sbG93aW5nIHVwIG9u
+IGEgcGF0Y2ggSSBzdWJtaXR0ZWQgb24gMTkgSnVuDQpyZWdhcmRpbmcgYSBrZXJuZWwgZG9jdW1l
+bnQgYW5kIFJpY2FyZG8gcmV2aWV3ZWQgdGhlIHBhdGNoLg0KSSB1bmRlcnN0YW5kIHlvdSBoYXZl
+IGEgYnVzeSBzY2hlZHVsZSwgYnV0IGlmIHlvdSBjb3VsZCBmaW5kIHNvbWUgdGltZSB0bw0KcmV2
+aWV3IHRoZSBwYXRjaCwgSSB3b3VsZCBncmVhdGx5IGFwcHJlY2lhdGUgaXQuDQpZb3VyIGZlZWRi
+YWNrIHdvdWxkIGJlIGludmFsdWFibGUgaW4gaGVscGluZyB0byBpbXByb3ZlIHRoZSBxdWFsaXR5
+IG9mIHRoaXMNCmNvbnRyaWJ1dGlvbi4NCklmIHRoZXJlIGFyZSBhbnkgY2hhbmdlcyBuZWVkZWQg
+b3IgYWRkaXRpb25hbCBzdGVwcyBJIHNob3VsZCB0YWtlLCBwbGVhc2UNCmxldCBtZSBrbm93Lg0K
+DQpUaGFua3MNCkFtaXQgVg0KDQpPbiBUaHUsIDIwIEp1biAyMDI0IGF0IDE4OjAwLCBSaWNhcmRv
+IEIuIE1hcmxpZXJlIDxyaWNhcmRvQG1hcmxpZXJlLm5ldD4NCndyb3RlOg0KDQo+IEhpIEFtaXQs
+DQo+DQo+IE9uIDE5IEp1biAyNCAyMzoyOCwgQW1pdCBWYWRoYXZhbmEgd3JvdGU6DQo+ID4gSGkg
+UmljYXJkbywNCj4gPg0KPiA+IEkgaGF2ZSByZWJ1aWx0IGl0IGFnYWluLCBhbmQgdGhlcmUgYXJl
+IG5vIGFueSB3YXJuaW5ncyBvciBlcnJvcnMuDQo+DQo+IFRoYW5rcyBmb3IgY2hlY2tpbmcsIEZX
+SVc6DQo+DQo+IFJldmlld2VkLWJ5OiBSaWNhcmRvIEIuIE1hcmxpZXJlIDxyaWNhcmRvQG1hcmxp
+ZXJlLm5ldD4NCj4NCj4gQlRXLCBJIHJlY2VpdmVkIHRoaXMgbWVzc2FnZSBwbHVzIGFub3RoZXIg
+dHdvIGVtcHR5IG9uZXMuIFBsZWFzZSBjaGVjaw0KPiB5b3VyIHNldHRpbmdzLiBBbHNvLCBtYWtl
+IHN1cmUgbm90IHRvIHRvcC1wb3N0IFsxXS4NCj4NCj4gQmVzdCByZWdhcmRzLA0KPiAtICAgICAg
+IFJpY2FyZG8uDQo+DQo+DQo+IFsxXSBodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9Qb3N0
+aW5nX3N0eWxlI1RvcC1wb3N0aW5nDQo+DQo+DQo+DQo+ID4NCj4gPiBUaGFua3MNCj4gPiBBbWl0
+IHYNCj4NCg==
