@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99F6DC3DA41
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 15:48:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C214C3DA41
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 15:49:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA220846;
-	Tue,  9 Jul 2024 17:48:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA220846
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF8EFDF9;
+	Tue,  9 Jul 2024 17:48:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF8EFDF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720540126;
-	bh=5Gt/4k9mgPZdpTsbKXZnxv3TFYkof3L2QcKkHduCoH0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XN2cXMzbGnufyvJVpFhB0cx00bo2GzLQa0LiIbhC9KVOeRxwT/GYA8njdGwwC6xs7
-	 MYm8bODGSCGNqLcyV8nHDgEUMh7cZDNymMR/Nz4hLic1RpYhHs+4lN64bTPYGp4yOu
-	 sSfVp7PjaFXA3ou5brX5aogFvlwDY+gP+O22Rmk4=
+	s=default; t=1720540140;
+	bh=eXonUE1RrE/ne2nKS7mqWbpxoQqbkkm2/6w7XMI0Vkg=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=dcp+M4i4YyqljqbWwhLljhgPmvYiKBlqxoA08EHZkDNAha91tkr63Hf+Qh/4eJSln
+	 WSFyEa+WSxI7yXiugzRK3F2bUooDve4gJvYVD9H0B0EpGW/Pcc91hSzriwF/VXtmIz
+	 BSBE1gESpDPLUjL1SrGHmy8sstcwbf9TpjulTce4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D057F805F4; Tue,  9 Jul 2024 17:47:39 +0200 (CEST)
+	id 14C9BF80612; Tue,  9 Jul 2024 17:47:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A249F805F5;
-	Tue,  9 Jul 2024 17:47:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEC9EF80620;
+	Tue,  9 Jul 2024 17:47:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90774F8042F; Mon,  1 Jul 2024 22:59:18 +0200 (CEST)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
- [IPv6:2a00:1450:4864:20::22d])
+	id 9EA4EF8028B; Mon,  1 Jul 2024 22:59:21 +0200 (CEST)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
+ [IPv6:2a00:1450:4864:20::22e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CC16AF8003A
-	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 22:55:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC16AF8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 89349F8013D
+	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 22:55:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89349F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=PT+JvSuF
-Received: by mail-lj1-x22d.google.com with SMTP id
- 38308e7fff4ca-2ec3f875e68so38618861fa.0
+ header.s=20230601 header.b=Z6RqkexF
+Received: by mail-lj1-x22e.google.com with SMTP id
+ 38308e7fff4ca-2ebe785b234so34991361fa.1
         for <alsa-devel@alsa-project.org>;
- Mon, 01 Jul 2024 13:55:42 -0700 (PDT)
+ Mon, 01 Jul 2024 13:55:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719867341; x=1720472141;
+        d=gmail.com; s=20230601; t=1719867331; x=1720472131;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0fwJUmViPq6GaQ0BxwJByTYGz7zx3jNDcizMNQWq45E=;
-        b=PT+JvSuFOjpB5E0YxESuCyUZhF023NjMNex1HZ31446cPP9cv/im46ozCQlZfHb406
-         rA80GqwRyaVoxDNVPqxMKjfPvkEr6NRyo4f6UR3XELE7s/hvwdFEFhcmBk0ss1sApZe5
-         sRyS9EbsBxY0W6or4yosI01WBposbiIFMsHQ9Z5hINOZY3LKIQVWQHdwFcQ9cQlJhaLC
-         /2Afpojd4G/lbeOdSa4CDG0lNnG0k1ruoYVF3U/o9bT/2Rf+cc5gVZuKywzvZw9Tq+oy
-         5kt6LjE4++N+CUKx3i8Cy1qp/UjaXpgHoD5adXsp55uEg7mtDAD1pdOFB8/bCuHsPxf5
-         6S9g==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J5tw+LPpfQNSWF+mfgTJ8lz4ywv5saeFlFnwyBL+2Yc=;
+        b=Z6RqkexFaQr5iIk6oTtOE85Y/7iyQsadF7y0PvlHkzU5N0j01BFNfh/nlxxexw7bTc
+         o8rhz12HHAmKEQyb3WLmt64FeyEtO+7O+RXixhGqBRI1kqXfOBX/HIxAsv29rsf1eR8Z
+         SutSmJ3IIP2dfa2DSnFDhQHoVzLWaXhBvPcqGl5QCTafCA5mdXZ6s0aE84uDKDfk9ykc
+         DRwyoiv1dhSZVoMkjOs9/oFDjWEzFFXi2kB74m7QolBP53heT8DvomNg3+c0sNCh2f0Q
+         cw3otFo0lSwtslNkvkcQtGBcWUGLbtksfJr8yXW1zgx7ZU7jc5b0R2q1MaFabVgX7uZ+
+         B2rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719867341; x=1720472141;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0fwJUmViPq6GaQ0BxwJByTYGz7zx3jNDcizMNQWq45E=;
-        b=BNEp58mvLJNyRP/XP96yANGp6ck8mn11MwK+CKmZGB/G2+Lkcfl+2b4oUJHPI0SDYW
-         s54A4izkFh9g55UJ39q13VCqmOMuD6UOOGoKRdN0kaXJKMYE/7tBv2g0bBPn2InitaIT
-         ZXa1dHCO0I1gIvriwdU/Esd8AcwR0sIXCclfh942tDyhJZuyhE8RYVsysWJCMtpM90lo
-         L4bxtK2235rhW/64eJ6YmZd5FztHL3nkTmrOsXf6EjGA1CoZJfqEVqyprcC1ZGVEcIGJ
-         7K85/BUWirJNUwlKIB0Km3EEo4guemC8Zu3KR1ObzhAgeRYcTLxcfD70QvUonGyE7p8R
-         WmNA==
+        d=1e100.net; s=20230601; t=1719867331; x=1720472131;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J5tw+LPpfQNSWF+mfgTJ8lz4ywv5saeFlFnwyBL+2Yc=;
+        b=unrP0H/t6/MR0yyK0IivSSTujW+ZIxPW0u+KpoBhn1oYG3KnQwxFogGLpUuYZwSuz9
+         B41jEa0F8+d6r4P50Ocy3tfl3R4kKfzTh42A1HJ7buBHahETQpq+4ibT0rTT/vJRMTsu
+         m7MDdFmgIrtYHQV8mXbc8gJ2V4zVMVoReWbJaDCUlb24/QXCYA4AxgoIeUu2HmrqV1uC
+         mfaftIUICZqz1gr5/X4uNEbnc3E3frOdGx0OzlNJGdnZqN0CXRcYxx16RHZtbc3KcSK+
+         C3rg0ZOdApKephjfkcWT0yYie6ECk4o0XxJp7QXjvueCzGqHJXiY5+Y6ZOcpnBwY72eX
+         m9Jg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCV6N+mVaz1gUN9LXL3yz/DQ2+fRQNHyKgf/TfFOaCCSPGfscoNdo9kyDwhDNNTG1Ccm4VV8UIF8XAm196tcBpE/Oi6d/MOkIlrr4PY=
-X-Gm-Message-State: AOJu0YzG1196xU3ky9JZcMfm8C3DMVLo1RtHuauku3Egeq7GEI3e6zzr
-	BneqIgaTB97mD5tBEvxYruuL9IN6UnnVxKMg+g5sDimscDXJDwpI
+ AJvYcCWTy/pzmNljYJqiheBgArMFoiCAJVxjYuAmlUjKcomJSNLQnRp9JUEg3Vqe6rjLUrcevrb5tb6CeaOsw34hO12THCnnF+j1KkPJisI=
+X-Gm-Message-State: AOJu0Yx49hadFyWENL11C1RRfubq5C6pKh0GC83oQ5lpMlY7V/2pcbWd
+	P7Pne+Nja6/nbgqMJ+SW4dgcRj0CKBE3OHD0mh+bk7FomYy/n4xK
 X-Google-Smtp-Source: 
- AGHT+IFjmSYiJajwe0sxeFBUimrBjfc+BpFZ4m4LK5Ufh4BWXjwVQt7BXsByZg3/Ov5iDy2xodDlkw==
-X-Received: by 2002:a2e:a989:0:b0:2ec:54ec:1741 with SMTP id
- 38308e7fff4ca-2ee5e36d166mr55902221fa.18.1719867341165;
-        Mon, 01 Jul 2024 13:55:41 -0700 (PDT)
+ AGHT+IFD/ydAAz6irAM3P6vWUoXOHr5tFUaraSDAt3FesCGvz/qlUZ9C+sXeR43Q6R++irkCayMj6Q==
+X-Received: by 2002:a05:6512:a8b:b0:52c:7fc3:601 with SMTP id
+ 2adb3069b0e04-52e8272ab76mr3918669e87.61.1719867330903;
+        Mon, 01 Jul 2024 13:55:30 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:4b00:c010:c300:105d:dc14:8157:17])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4256af5b626sm166345865e9.15.2024.07.01.13.55.40
+ 5b1f17b1804b1-4256af5b626sm166345865e9.15.2024.07.01.13.55.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jul 2024 13:55:40 -0700 (PDT)
+        Mon, 01 Jul 2024 13:55:30 -0700 (PDT)
 From: MadEnvel <envelsavinds@gmail.com>
 To: tiwai@suse.com,
 	rf@opensource.cirrus.com
@@ -91,13 +89,10 @@ Cc: david.rhodes@cirrus.com,
 	alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	MadEnvel <envelsavinds@gmail.com>
-Subject: [PATCH 1/1] Fix swapped left and right channels for Lenovo ThinBook
- 13x Gen4 sound
-Date: Mon,  1 Jul 2024 21:55:16 +0100
-Message-ID: <20240701205516.22662-2-envelsavinds@gmail.com>
+Subject: [PATCH 0/1] Swapped l/r channels on ThinkBook 13x Gen4
+Date: Mon,  1 Jul 2024 21:55:15 +0100
+Message-ID: <20240701205516.22662-1-envelsavinds@gmail.com>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240701205516.22662-1-envelsavinds@gmail.com>
-References: <20240701205516.22662-1-envelsavinds@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: envelsavinds@gmail.com
@@ -106,15 +101,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: E7R7G65S65GZRNFDQYQEUR243TPMVSIV
-X-Message-ID-Hash: E7R7G65S65GZRNFDQYQEUR243TPMVSIV
-X-Mailman-Approved-At: Tue, 09 Jul 2024 15:45:54 +0000
+Message-ID-Hash: DBCGF6YYWT3H3PO7NUF5A6EC4EJ35224
+X-Message-ID-Hash: DBCGF6YYWT3H3PO7NUF5A6EC4EJ35224
+X-Mailman-Approved-At: Tue, 09 Jul 2024 15:46:02 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E7R7G65S65GZRNFDQYQEUR243TPMVSIV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBCGF6YYWT3H3PO7NUF5A6EC4EJ35224/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,26 +118,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Signed-off-by: MadEnvel <envelsavinds@gmail.com>
----
+Earlier commits introduced audio support for Lenovo ThinBook 13x Gen 4
+that needed a patch due to missing _DSD config.
+Unfortunately, it looks like the left and right channels in the config are swapped.
+This patch fixes channel assignment. Tested on Lenovo ThinkBook 13x
+Gen4.
+
+MadEnvel (1):
+  Fix swapped left and right channels for Lenovo ThinBook 13x Gen4 sound
+
  sound/pci/hda/cs35l41_hda_property.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 51998d1c72ff..80c816922f78 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -128,8 +128,8 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "17AA38B5", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B6", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B7", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
--	{ "17AA38C7", 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 2, -1, 1000, 4500, 24 },
--	{ "17AA38C8", 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 2, -1, 1000, 4500, 24 },
-+	{ "17AA38C7", 4, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT }, 0, 2, -1, 1000, 4500, 24 },
-+	{ "17AA38C8", 4, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT }, 0, 2, -1, 1000, 4500, 24 },
- 	{ "17AA38F9", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
- 	{ "17AA38FA", 2, EXTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
- 	{}
 -- 
 2.45.2
 
