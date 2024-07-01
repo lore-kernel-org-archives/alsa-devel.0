@@ -4,110 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ADE9C30653
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:38:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E524EC30653
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Jul 2024 12:38:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B2622C18;
-	Mon,  1 Jul 2024 14:38:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B2622C18
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE45A2366;
+	Mon,  1 Jul 2024 14:38:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE45A2366
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719837508;
-	bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=TFeTNnguN82t/ZZv0qaacZDrFEh5mHi/n4uv9uB6B3oO+UZsUC1e83u3uNHycUKkz
-	 c0mra/kB88VOKNwmVnkn2HKGcjWNZRloLcgyKSohl3UuTet7M5tmStyPKM6iBh864u
-	 wG1TjKmaTHHM0REig4qR1k08udbNXrwYupe6uCuk=
+	s=default; t=1719837529;
+	bh=Kk7hKCQ0rQ+4DfET7z3nKVAwpR0YpyaypAt5Z4/yygU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=vA3vSAkgcKQd4gW5ni6F/469x/XoT9gK2fqy8JUYHqLi+g6l4MOPGLSTFfDR15oqQ
+	 McGbvF4QEiqWWAXt7BEfb402OcasV9ZueXI9nKsu9CQpNdaWbHl+As9K3zxzyrGe2B
+	 iSSl+vePqeSkJc1QwDn5V2MSyyA2O/QWCL7u+pB8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8BD9F89B8D; Mon,  1 Jul 2024 14:24:16 +0200 (CEST)
+	id 97CA6F89B97; Mon,  1 Jul 2024 14:24:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9428F89B82;
-	Mon,  1 Jul 2024 14:24:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86C44F89B08;
+	Mon,  1 Jul 2024 14:24:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81CE4F80423; Fri, 28 Jun 2024 11:56:56 +0200 (CEST)
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com
- [IPv6:2607:f8b0:4864:20::a2a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5834BF89B17; Mon,  1 Jul 2024 14:24:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3CE56F800E4
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jun 2024 11:56:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CE56F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 99451F89A4C
+	for <alsa-devel@alsa-project.org>; Mon,  1 Jul 2024 14:23:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99451F89A4C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=R4J6GX/q
-Received: by mail-vk1-xa2a.google.com with SMTP id
- 71dfb90a1353d-4ef5c772f7bso172082e0c.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 28 Jun 2024 02:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719568612; x=1720173412;
- darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RNmB+UpedCg532JlCsKBVA8SRpLlVPtu3AOlQEXhEek=;
-        b=R4J6GX/qR66Lq/8hy27r8090PJTFAFYQyf43f8hpMZhfPcwuJqHuWLK6zUiZiHojHI
-         FS2n0y3H2jHtTThzgZ1tKZWtmNls8LYY8BFyzH7XARUzfF9DytzjY8mvkJdXvMdYonxY
-         IkrwSskD5s/pFcqvkR/tMkpohikY3aKsSn7iuNmUVbFCrtwEF+cwHWoFlvsoKUCCTgGm
-         nTLFOnGeVQe+Mfd8ejrPvGC6H1iuRtcf7qpVkAUVAA/3rV6OY5jHVBa/1JVX+eb3yMR3
-         gAmQIlFIBPt3Y9y/0jzkYZAnbH9DiBFmCMwvar+tSKcO5Qce0HbF+84QOCvaMvw3J+iQ
-         9BIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719568612; x=1720173412;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RNmB+UpedCg532JlCsKBVA8SRpLlVPtu3AOlQEXhEek=;
-        b=wMcDmkzoKP5Q8XickHkeZeH2E/6qxHjuYx+/isyc9cSbiqBFEx56Dhj9fgLIVyL9y8
-         EUtqq0CMApQiFkNN7zrK19cffFVe1qyDcMlkv7OOTkDa2vVeq3JWeWhoyHBiuuXthVZP
-         75uaqKVoPozCsHaXslk2ekDvZtyUFB0iEZQm58Qzbt6daqW2GnOG/dwpMIDeNYThLjaq
-         0Uu6tSkLoaolQHIgqqkzgdl71h+YMXo+lu87QdhYcgB5mOAwwIFqQIY91lGtnzbF4MYy
-         VlWc83gtwrqDSQrH/HaMMtnewShEtEfNlZHDWmPKHNJVIA7LbU/8wfWy7R148BVQWYW8
-         sNXw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVFxvs0XfV/Kc/zSWcD2NnksGgGOrtakaFfbZvk8Mo9uNDVfzu7xUI76r4AxNNE0ToysxaNGy+tmL1x3cJc53CeNI8dz6J9abUBOjw=
-X-Gm-Message-State: AOJu0YzMRggHb4DeT9fdXczfL9NPR8wuBckTaG8PvVgqYc6c8Bsrvp0D
-	PJAugDGK5ggP7NvJQoEwIOj3/iDg1IINvHGfafMEI6qDCcNmaQ9/+DJ3PRzvgosJhl1Foa3zHbi
-	u41aLgazq8e05Fzes7SZ/ItSR7Rc=
-X-Google-Smtp-Source: 
- AGHT+IECgGkPzJ7jrqkK1IdnkK2Szz076qmUCbHfh1HXOoUs4I/SNr/5ik7Gqk0SVv1GQSJVxnOPmZAih30ecRDu660=
-X-Received: by 2002:a05:6122:d9a:b0:4ef:58d4:70f2 with SMTP id
- 71dfb90a1353d-4ef6d7cf660mr15328324e0c.1.1719568611442; Fri, 28 Jun 2024
- 02:56:51 -0700 (PDT)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=RYTfgAP+
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id EE48C61286;
+	Mon,  1 Jul 2024 12:23:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF2C4C116B1;
+	Mon,  1 Jul 2024 12:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719836617;
+	bh=Kk7hKCQ0rQ+4DfET7z3nKVAwpR0YpyaypAt5Z4/yygU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RYTfgAP+PnpdcDvOiS6uYiXMxnWqyUy7iLWgwdJFh19XyfL1qVPmyEE0Dk30LvsiE
+	 MOzQdka3sE0v7NxV9dM3OJ9nyLKvjvq7H9DRcqRdMReMAUq/tsD0zjJHysna6E8wMX
+	 ehhzIOT039uU9Fk/B9AVhrg3p0tYYNamVa43fFFHS2cHC0LunA1TY13DDeROhtGh8P
+	 7hnmDSfyQ57ma4p7IGwNgii10cHwBgIKWjuhOah5KGsgbDsjarUxD+2SES8r53WO6g
+	 +fkEgdgkVBOg8q7sqrju1riU8sqwcSuBRG/MIyDCPwZlIZ5kKwcfXdHXLWom90ZhV+
+	 nxawNl1MEnFTA==
+Date: Mon, 1 Jul 2024 13:23:28 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+	zhourui@huaqin.com, alsa-devel@alsa-project.org, i-salazar@ti.com,
+	linux-kernel@vger.kernel.org, j-chadha@ti.com,
+	liam.r.girdwood@intel.com, jaden-yue@ti.com,
+	yung-chuan.liao@linux.intel.com, dipa@ti.com, yuhsuan@google.com,
+	henry.lo@ti.com, tiwai@suse.de, baojun.xu@ti.com, soyer@irl.hu,
+	Baojun.Xu@fpt.com, judyhsiao@google.com, navada@ti.com,
+	cujomalainey@google.com, aanya@ti.com, nayeem.mahmud@ti.com,
+	savyasanchi.shukla@netradyne.com, flaviopr@microsoft.com,
+	jesse-ji@ti.com, darren.ye@mediatek.com
+Subject: Re: [PATCH v1] ASoc: tas2781: Add name_prefix as the prefix name of
+ DSP firmwares and calibrated data files
+Message-ID: <8245d8e7-3ff0-4f05-9f99-666e9693603f@sirena.org.uk>
+References: <20240629101112.628-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-From: Peter Jennings <peterj76108@gmail.com>
-Date: Fri, 28 Jun 2024 03:56:40 -0600
-Message-ID: 
- <CACTyByJ6rt5CmzwQYG40paGkT7FFedSTaHxY8_mZSgW4Gtvq6Q@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_xcvr: Improve suspend/resume flow in
- fsl_xcvr_trigger()
-To: chancel.liu@nxp.com
-Cc: Xiubo.Lee@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org,
-	festevam@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	nicoleotsuka@gmail.com, perex@perex.cz, shengjiu.wang@gmail.com,
-	tiwai@suse.com
-X-MailFrom: peterj76108@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oDtmPYbAjS8IMFoF"
+Content-Disposition: inline
+In-Reply-To: <20240629101112.628-1-shenghao-ding@ti.com>
+X-Cookie: Microwaves frizz your heir.
+Message-ID-Hash: 5XQJFMQ6SJHJMMAWIBDOLNDYTGQAT2P6
+X-Message-ID-Hash: 5XQJFMQ6SJHJMMAWIBDOLNDYTGQAT2P6
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WJE6IBUSJYOIWSYDVNJEHUU2SPEBL3BH
-X-Message-ID-Hash: WJE6IBUSJYOIWSYDVNJEHUU2SPEBL3BH
-X-Mailman-Approved-At: Mon, 01 Jul 2024 12:23:58 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WJE6IBUSJYOIWSYDVNJEHUU2SPEBL3BH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5XQJFMQ6SJHJMMAWIBDOLNDYTGQAT2P6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,4 +101,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DQo=
+
+--oDtmPYbAjS8IMFoF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Jun 29, 2024 at 06:11:10PM +0800, Shenghao Ding wrote:
+
+>  	tas_priv->fw_state = TASDEVICE_RCA_FW_OK;
+> -	scnprintf(tas_priv->coef_binaryname, 64, "%s_coef.bin",
+> -		tas_priv->dev_name);
+> +	if (tas_priv->name_prefix)
+> +		scnprintf(tas_priv->rca_binaryname, 64, "%s-%s_coef.bin",
+> +			tas_priv->name_prefix, tas_priv->dev_name);
+> +	else
+> +		scnprintf(tas_priv->coef_binaryname, 64, "%s_coef.bin",
+> +			tas_priv->dev_name);
+
+I'll apply this but I do wonder if it's worth falling back to trying to
+load the unprefixed name if we fail to load the prefixed one.
+
+--oDtmPYbAjS8IMFoF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmaCn8AACgkQJNaLcl1U
+h9AjwAf+J1+DRZh2rLJitmV5riPW1tq3dorqJvTbAeR/1xGl1WZ7R2aHDVOroOTb
+mZSHnVpCNk1L1+rU61q2Os1+rxCLgVfTlWOWWaqWcmRak15vDsvF875AT5GAy9I6
+pYxsqfFkAWsQEhXL+4FnWu63CF1AR1x5nAclAwz86n263fH7aI0xpBlwzWyAAilA
+SoGUTcqDCylt7Y1YFPqGYbfwmEVYOikhb8tjk07UdJ9pUwO1J/c7zTr3jbZvu8eU
+BNv/g94BlUAugDDUGUdu7vhaalk9kT79H1PLFnc9LGpMruTr3CzomQU+YG9yRRHf
+JJ7Y/N2M2KyS12GA3oZksRxkg9sepg==
+=bwuW
+-----END PGP SIGNATURE-----
+
+--oDtmPYbAjS8IMFoF--
