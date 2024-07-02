@@ -4,81 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52036C3065C
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jul 2024 18:05:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0019C31D97
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jul 2024 20:22:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 904ED1923;
-	Tue,  2 Jul 2024 20:05:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 904ED1923
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D523193B;
+	Tue,  2 Jul 2024 22:22:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D523193B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1719943548;
-	bh=1PTZ3uQgLKGQChj25rDAqkSCJmHzdA4sq5F+oAYqs4I=;
+	s=default; t=1719951748;
+	bh=kWqtMEy8NiJo/fu7ZdT4UQqXiPF3djtgdRsFAOR4Afw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KiZkg2QQwJYJPPAcA2kltIm62fCiDAPGtqCLvtmC3MW0nSSTYuCnkbxh0I7MGHmpJ
-	 BBdnBv4C5Pn6jMEDfd/4hWECRzT5jnHl9Sn3ncoYtxjBVC5cPUC4D2c08scG3kk/Pc
-	 6rEYjcwzoYpcAz4Rz/RIJCSEJU6KY0BzWNtpaTCw=
+	b=FdShvpWxW3EIfEX2j6JIVMLclQiLlVmGrGr4Oq+RgGXEVB1kPPuC4ivWx++gdbSzG
+	 lx2bSULtMtZR+HQ5QbhPNdIMg2OVwaWdRpvStKENsCeiCmQOaLFttgKdGCNov1mB9R
+	 Bw7zWy5Xwun4dddUhEMxi2LNYw9CCPEQMuyyEz+g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D21A0F805BD; Tue,  2 Jul 2024 20:05:17 +0200 (CEST)
+	id 03BCCF805B6; Tue,  2 Jul 2024 22:21:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 126CEF805B5;
-	Tue,  2 Jul 2024 20:05:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C2F7F80589;
+	Tue,  2 Jul 2024 22:21:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44DF5F8025E; Tue,  2 Jul 2024 20:03:31 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id E77CCF8025E; Tue,  2 Jul 2024 22:21:49 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A8602F8013D
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2024 20:03:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8602F8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id E1398F800FE
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jul 2024 22:21:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1398F800FE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=hDW/sPSj
+ header.s=k20201202 header.b=WxJ3aaQY
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 7D46FCE1C9A;
-	Tue,  2 Jul 2024 18:03:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EFD5C4AF0C;
-	Tue,  2 Jul 2024 18:03:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 061B861F7B;
+	Tue,  2 Jul 2024 20:21:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3729DC116B1;
+	Tue,  2 Jul 2024 20:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719943400;
-	bh=1PTZ3uQgLKGQChj25rDAqkSCJmHzdA4sq5F+oAYqs4I=;
+	s=k20201202; t=1719951699;
+	bh=kWqtMEy8NiJo/fu7ZdT4UQqXiPF3djtgdRsFAOR4Afw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=hDW/sPSj3h9jL8Kqc/SGeHmG7EvO/537Jie5OQ1hK7jsU0foy6ZK+y+hdhYn3EmLY
-	 0TNhVNo+fTLbLYQcFJGD/BCz4/fwCil5Qe+2z+FMBUhNJj9Ih+2fUOAscAzXnNaOeG
-	 tn8IDzbb0205hCfEqIIalNz2dEGDvoXvpIZVySK4qpOVMfRIzuwKPWvdjhp0F6buBO
-	 0mHqPGeUxfC1KbEP1G8HhhwKidkXeyRko+fpoab6x6s32w9h/uLvCkB3kP8pO7UpPT
-	 ZziXOWTUF0bPcPz0LTD8bFOjaPdbqg+S5wrnkkAkQlmw9OS5lJMe8tU3J0HDuKzL/Y
-	 NPMVyKHUfl8UQ==
+	b=WxJ3aaQYCW2CjCLULVLN3y/0y1IH09ffW3+est+9t4CZRMV+EfMZvWc8wlYtz4JuV
+	 hYh4NgAXuQ1U42MSr1yLcMSp30HZjb3Bn/UAR0o0Tx8CBWLNRRYB5cKisCgg4o0T1q
+	 nM1lbb3XXo/6e0nEc9kS/6fxg/gHGaD78D/VFuwiQD6xSlfb50nd/KdprE9PGBXPyl
+	 pXr0LmLwyTENAGWhF7KdLOoIaLyIOD6AbXne7aNsqGEybvFWwxiwCXv+lv3CH1r5cg
+	 1rP9nZBkevXAHt/yZTanoskdLWZkfi8+bdLYizda6kG+Gaeky1C227ERqEv9YIAENp
+	 H5xof790cPFtg==
 From: Mark Brown <broonie@kernel.org>
-To: Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, srinivas.kandagatla@linaro.org
-Cc: linux-arm-msm@vger.kernel.org,
- Neil Armstrong <neil.armstrong@linaro.org>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Manikantan R <quic_manrav@quicinc.com>
-In-Reply-To: <20240626-port-map-v2-0-6cc1c5608cdd@linaro.org>
-References: <20240626-port-map-v2-0-6cc1c5608cdd@linaro.org>
-Subject: Re: (subset) [PATCH v2 0/6] ASoC: codecs: wsa88xx: add support for
- static port mapping.
-Message-Id: <171994339579.996226.3049749876359199381.b4-ty@kernel.org>
-Date: Tue, 02 Jul 2024 19:03:15 +0100
+ Conor Dooley <conor+dt@kernel.org>, John Hsu <KCHSU0@nuvoton.com>,
+ Maxim Kochetkov <fido_max@inbox.ru>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20240701211631.92384-1-fido_max@inbox.ru>
+References: <20240701211631.92384-1-fido_max@inbox.ru>
+Subject: Re: [PATCH v3 0/2] Add master clock handling for nau8824
+Message-Id: <171995169693.1021506.3631768688604058732.b4-ty@kernel.org>
+Date: Tue, 02 Jul 2024 21:21:36 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: UFMZZ7TVIR57VEBJWFEZC2EORLC73LPE
-X-Message-ID-Hash: UFMZZ7TVIR57VEBJWFEZC2EORLC73LPE
+Message-ID-Hash: 6RXTVHLEQAGUQWFBD5O7RWWOSJOOWXY7
+X-Message-ID-Hash: 6RXTVHLEQAGUQWFBD5O7RWWOSJOOWXY7
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UFMZZ7TVIR57VEBJWFEZC2EORLC73LPE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6RXTVHLEQAGUQWFBD5O7RWWOSJOOWXY7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,19 +97,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 27 Jun 2024 15:44:37 +0100, srinivas.kandagatla@linaro.org wrote:
-> Existing way of allocating soundwire master ports on Qualcommm platforms is
-> dynamic, and in linear order starting from 1 to MAX_PORTS.
-> This will work as long as soundwire device ports are 1:1 mapped
-> linearly. However on most Qcom SoCs like SM8550, SM8650, x1e80100, these
-> are NOT mapped in that order.
+On Tue, 02 Jul 2024 00:16:20 +0300, Maxim Kochetkov wrote:
+> nau8824 has external MCLK pin. So add enable/disable external clock
+> management.
 > 
-> The result of this is that only one speaker among the pair of speakers
-> is always silent, With recent changes for WSA codec to support codec
-> versions and along with these patches we are able to get all speakers
-> working on these SoCs.
 > 
-> [...]
 
 Applied to
 
@@ -120,14 +109,10 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: dt-bindings: wsa883x: Document port mapping property
-      commit: 49beb4d2e85634ec1e1c82d76461d9552676045d
-[2/6] ASoC: codecs: wsa883x: parse port-mapping information
-      commit: 1cf3295bd108abbd7f128071ae9775fd18394ca9
-[3/6] ASoC: dt-bindings: wsa8840: Document port mapping property
-      commit: d47abee9fede21b19d5227061c5a8761ec1659fb
-[4/6] ASoC: codecs: wsa884x: parse port-mapping information
-      commit: e1bc5c324bcca3acdbe817ccbf9aa7992d89479d
+[1/2] ASoC: dt-bindings: nau8824: Add master clock handling
+      commit: fcad7177eb7854ce244ce863c82583d8a6ce5952
+[2/2] ASoC: codecs: nau8824: Add master clock handling
+      commit: 1d3724c92dc20584f76033347384b8c1536480af
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
