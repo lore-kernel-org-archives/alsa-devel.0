@@ -4,123 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF2DC2BD09
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 12:17:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52311C2BD09
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 14:08:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CF89847;
-	Wed,  3 Jul 2024 14:17:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CF89847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59CC2DFA;
+	Wed,  3 Jul 2024 16:08:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59CC2DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720009039;
-	bh=5n2U7Ii8u9qpjNSh5gTMMpFE3U1zzbLfE0z6dwMWgWY=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1720015696;
+	bh=cg4oQWa4mAvOE44mdOlcpdj6cbZ+HMPUwfv7SHiAbQ0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=elH7eIHgviNQgxBQwai0BePbEON85UwByDfivnWFuekHWe5BBEyB1SlgpWX9JqdfJ
-	 4lfkOCP2BfPYsqM7ppCwkkaOAuSa/woc83OxRxrQLydkQhskr1Tg4qT9yC+/ch8L+b
-	 XMvnbiCVcTx4OjxAsL/MYIO9g5tVoclwog0l28RQ=
+	b=qcWo/5MtOMgTHgexPkODlj6Tsol9OxuLPgapJ/2lGMs6mf41WjsNqOuI+VeyurOvo
+	 HgaS1Aapsrrod2mJSliI0qiLy5SOOQCCS0jMHYcYs20jCxhZaCgFQgRnr7cJOgvtAn
+	 UYi4nPvoHJzuJZCcBij+WODPDVrP5abzUYT7tyic=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6343DF8074C; Wed,  3 Jul 2024 14:14:21 +0200 (CEST)
+	id DD730F800F8; Wed,  3 Jul 2024 16:07:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E0F3F8074A;
-	Wed,  3 Jul 2024 14:14:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B78DF805AC;
+	Wed,  3 Jul 2024 16:07:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45232F8014C; Wed,  3 Jul 2024 14:13:55 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 5D94EF8025E; Wed,  3 Jul 2024 16:07:32 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5B6B5F80301
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 14:11:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6B5F80301
+	by alsa1.perex.cz (Postfix) with ESMTPS id 276E5F800F8
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 16:07:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 276E5F800F8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=aN9EIqPU
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-3626c29d3f0so2638719f8f.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 03 Jul 2024 05:11:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1720008676; x=1720613476;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=voPxYQD0gS+6s0oE8RPo9jZsqMZNTCeTe5vHHnILF0s=;
-        b=aN9EIqPUZTI84TzgZjvOk5lt1atK0PTazodjRQYkpq0DJwiokEb9hOTf3s4yhWVQbA
-         gIDj+XwBVCl9sC9mW78dr9ikKu1tHU/1U7xY1gHLuM7ZlYBiUXgWoN9TanzGfnc+Pgh2
-         mi8hIkcLH/xhJ24np2h17jvXi4Ovf76JYDE8zRwdqS/6coOPlQjiobIs5BKn11WwOn3H
-         dQPeA8ctzovb5ZPyRQKJxeqVOXi3KEsNmS93Snqhs/Lgw3IFO+a8wrzq4lI/uHpfk9Og
-         NdE2HxdBMfk7BaNT22LZ90ZfHwYXgRq2UF5tmpZk7gAPQA6P2Et760YHjG+zRh/Vtm0c
-         6geA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720008676; x=1720613476;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=voPxYQD0gS+6s0oE8RPo9jZsqMZNTCeTe5vHHnILF0s=;
-        b=Nz5xIszKWbmn0/Q4IOaDQX603Uyx8R6BXYmyY9jh0DDtA8/hVTTDVaqPbWXlc03VI8
-         mI4sUp2zJ2SrrHYmaWaLQfY1U80XkYw/WLAJxW7x1ycjxFWmpwyxlrqyg2BD9i8FlsA5
-         GvCoA4OTEwDNZasuMOmGKhgeqjs5j+fdBemkYqOA1kLjNT0l+HUKDEm/IO2B1mnQ7AIE
-         DkEvTmtcSpixJsQevMh+THmj0Mf0CRGchfuoulafc/hk79vqsienHs4TV/fP+Pm+VzLK
-         b9CkoC3FOFdlyPDfet5eHQ8qSM0HTydUQG9yhPge/8cJ+ZzTKXxVWbQOYEClWtgJor2p
-         j2Mg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUEkaqgrVQsgud5yw5+m//m/bZng7L2Eo3ITWiOHmlJoC0tBwaMmFssybiwu0m7XbVYJVZSwbs9tAjLsmtiJ3KI8JZUy+QS4v3W63I=
-X-Gm-Message-State: AOJu0YwxwAyw5uuQXF9+c5tSv843PoFARhbgvfEEuwJXa/3XxzSGSwH7
-	kbpFjQHN8/SiPfiUJz7X6x3am2Z5hje1fPQTkhY+oAzSx+sf8nCS/+Nk30C89Mw=
-X-Google-Smtp-Source: 
- AGHT+IHUpJv09c/tX0BJoWGcywOs1/igC2JtMah//K7mGQHmsYLuuC/hM6I4L59TczjXLvEdh4+MWg==
-X-Received: by 2002:adf:fe88:0:b0:364:aafb:5fd7 with SMTP id
- ffacd0b85a97d-36775725e0bmr7848385f8f.45.1720008676185;
-        Wed, 03 Jul 2024 05:11:16 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.219.137])
-        by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3675a10307bsm15716222f8f.94.2024.07.03.05.11.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 05:11:15 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 03 Jul 2024 14:10:59 +0200
-Subject: [PATCH 05/11] ASoC: simple-card-utils: Simplify with cleanup.h
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=pozSQlOP
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 0966CCE2B48;
+	Wed,  3 Jul 2024 14:07:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5C45C4AF07;
+	Wed,  3 Jul 2024 14:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720015632;
+	bh=cg4oQWa4mAvOE44mdOlcpdj6cbZ+HMPUwfv7SHiAbQ0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=pozSQlOP0sdfd+dpy5AHIdtEZc2q59DrIN3Ite/3XX7RzlDpnJ0Zp8o4ocQSD1fWp
+	 5Vgp2/jRIfWDsgm9HsK2G1f8krds1YE8j4PCvvEqPSE7aEGyrT094SkcyPALUhHABc
+	 EC46aHoU3H6cft9nY3M6P+uN6NVuQGu6DpLttyw/q0gfWt90yllorgQKaEfSs5XlMg
+	 f1mKGCZi6Pj6Rk0DmnwSMaQaFxPIYdX41Y0/rcXI5nwLZm2ZXegGRAA6Yb9sRvVjgr
+	 657oKwd+BTXoxDK5TnzX8SV//1M6GHKg2ox9QJ9muwltAeUxaxsd7WDesk1TmVB1Yx
+	 Wc6S2OYm97T0g==
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ "Rob Herring (Arm)" <robh@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240702215402.839673-1-robh@kernel.org>
+References: <20240702215402.839673-1-robh@kernel.org>
+Subject: Re: [PATCH] ASoC: tas2781: Use of_property_read_reg()
+Message-Id: <172001563047.37877.18071249071920971995.b4-ty@kernel.org>
+Date: Wed, 03 Jul 2024 15:07:10 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240703-asoc-cleanup-h-v1-5-71219dfd0aef@linaro.org>
-References: <20240703-asoc-cleanup-h-v1-0-71219dfd0aef@linaro.org>
-In-Reply-To: <20240703-asoc-cleanup-h-v1-0-71219dfd0aef@linaro.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1989;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=5n2U7Ii8u9qpjNSh5gTMMpFE3U1zzbLfE0z6dwMWgWY=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhT/VpH4b1lQMWfJeGjQDjMJ4k7DARxOdBMzRK
- YzljfxO+aqJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoU/1QAKCRDBN2bmhouD
- 172hEACWQQu3Q5imqmfhy2Da+4TNTvqC5znQ4ArWh4RI66hNVDgTQHmyb+N0fxWIL3qrevl8eSr
- 0AN3N1lmd6D7W5upGGqIks/nPJgFiEe7VqIhy13tVhA7ebEYCWp88sNtgOYg55zmOJh5E+Bsf5H
- DlSPHhaaDgKoFK6wwXe9XGHUMDnSuuortUIxpQeiKT7U1DKNHYHfeUsKuB1y1miIV0ZO2F+15Uw
- Ek5WblZNHEWX5C9PS9z6mW8epDNRqFh6wuCZNXx7UnVD7845z5wO6Kq6etIlVxVi2m3wzdPh2ED
- URWvk1er5OxmQgbjwYoZlZTHY5Na/xooBuKB9bywJATWbzltzlE1RHlcJJT4JsHMnd62Gf7/bGq
- Y1yeVYjgi2LV2ocil3//TPQItf1LRV/odPQ8BLUssFP3BLg1gfFLfZq+bZ/sb2wny8cLVE2Zm/T
- /xX4nd0/068uemcuJIOOrzOv6RFH5u71oP3Pw5WhhqPybcpXw/KhztBlBBNv79PtO5MOjH86s3E
- hVzSxSqHUtzRB0nvkkPw+Z/7uV0sovANZSF25ogEV8Yb92eQg+KNfeS5pbHryj2Lhzekufvp6wD
- 5uEgE8Og4+VCN28mAw2TKrmk1fGO+0o8ETKvaYlPlWTUghUVwV0O0pu8xEnjXMiNB3MSf0ZwV7w
- rA74nq0PkFkfJyA==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: LSVXU3DZXTRX3AUGK4X323A37SVLAOBB
-X-Message-ID-Hash: LSVXU3DZXTRX3AUGK4X323A37SVLAOBB
-X-MailFrom: krzysztof.kozlowski@linaro.org
+X-Mailer: b4 0.14-dev-d4707
+Message-ID-Hash: FCWWL5UUKZK4YJU3KUEK6P3PHF6XT5NI
+X-Message-ID-Hash: FCWWL5UUKZK4YJU3KUEK6P3PHF6XT5NI
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -132,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSVXU3DZXTRX3AUGK4X323A37SVLAOBB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FCWWL5UUKZK4YJU3KUEK6P3PHF6XT5NI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,68 +94,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allocate the memory with scoped/cleanup.h to reduce error handling (less
-error paths) and make the code a bit simpler.
+On Tue, 02 Jul 2024 15:54:01 -0600, Rob Herring (Arm) wrote:
+> Replace the open-coded parsing of "reg" with of_property_read_reg().
+> The #ifdef is also easily replaced with IS_ENABLED().
+> 
+> 
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/generic/simple-card-utils.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Applied to
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index a18de86b3c88..fedae7f6f70c 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -5,6 +5,7 @@
- // Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
- 
- #include <dt-bindings/sound/audio-graph.h>
-+#include <linux/cleanup.h>
- #include <linux/clk.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
-@@ -135,8 +136,8 @@ EXPORT_SYMBOL_GPL(simple_util_parse_daifmt);
- int simple_util_parse_tdm_width_map(struct device *dev, struct device_node *np,
- 				    struct simple_util_dai *dai)
- {
--	u32 *array_values, *p;
- 	int n, i, ret;
-+	u32 *p;
- 
- 	if (!of_property_read_bool(np, "dai-tdm-slot-width-map"))
- 		return 0;
-@@ -151,14 +152,15 @@ int simple_util_parse_tdm_width_map(struct device *dev, struct device_node *np,
- 	if (!dai->tdm_width_map)
- 		return -ENOMEM;
- 
--	array_values = kcalloc(n, sizeof(*array_values), GFP_KERNEL);
-+	u32 *array_values __free(kfree) = kcalloc(n, sizeof(*array_values),
-+						  GFP_KERNEL);
- 	if (!array_values)
- 		return -ENOMEM;
- 
- 	ret = of_property_read_u32_array(np, "dai-tdm-slot-width-map", array_values, n);
- 	if (ret < 0) {
- 		dev_err(dev, "Could not read dai-tdm-slot-width-map: %d\n", ret);
--		goto out;
-+		return ret;
- 	}
- 
- 	p = array_values;
-@@ -169,11 +171,8 @@ int simple_util_parse_tdm_width_map(struct device *dev, struct device_node *np,
- 	}
- 
- 	dai->n_tdm_widths = i;
--	ret = 0;
--out:
--	kfree(array_values);
- 
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(simple_util_parse_tdm_width_map);
- 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-2.43.0
+Thanks!
+
+[1/1] ASoC: tas2781: Use of_property_read_reg()
+      commit: 31a45f9190b5b4f5cd8cdec8471babd5215eee04
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
