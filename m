@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF24FC2BD09
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 12:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F39DAC30653
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 12:15:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D736314E1;
-	Wed,  3 Jul 2024 14:15:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D736314E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31B351665;
+	Wed,  3 Jul 2024 14:15:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31B351665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720008925;
-	bh=X9RGNO5wB0C8KAI2bKN+Sff6tTbKWBwR8b9RYI6jmJE=;
+	s=default; t=1720008943;
+	bh=zkBYXA5XhH4F6q1m9UDysUTPImTnL2Gru3YtQza5a+s=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aHyvNfj1iDEKONMRS4PbeTGl0WO5E08UO1CBNMCyHtS/W2hddwu7ucFRERZAdh92y
-	 11CmSboFCgnqr4N+99RECfiVYAbpPsXi3rhtrfgttD0O6dl2cHqvX8YE+C97+gjTcX
-	 8hryPka8T5XPM2NeBn4ypLwKJASBOLF/A1VIngpo=
+	b=foyFOVko+HLmPBYOXLBQPVA4perOGql2OrQXDPldljkPWrLfoBJz8jIHnj+boOiPc
+	 PbV7G6U1j79iMA9PFZscRp50rWUJUjIjt6BF0NvmWIPbtty+goyZQ2z2Srw1WPm2fD
+	 X6dIrD8SmZwDWu/MEqG7svX0Qh7beM1E5oBdMF5M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 880E9F80621; Wed,  3 Jul 2024 14:14:06 +0200 (CEST)
+	id 04C87F80654; Wed,  3 Jul 2024 14:14:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD745F8061A;
-	Wed,  3 Jul 2024 14:14:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CE35F80654;
+	Wed,  3 Jul 2024 14:14:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C89A7F804FC; Wed,  3 Jul 2024 14:11:42 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+	id EE7ADF804FC; Wed,  3 Jul 2024 14:11:47 +0200 (CEST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2D574F80508
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 14:11:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D574F80508
+	by alsa1.perex.cz (Postfix) with ESMTPS id DFBE8F8013D
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 14:11:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFBE8F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=eaf1UOWy
-Received: by mail-wr1-x430.google.com with SMTP id
- ffacd0b85a97d-36794da7c96so272794f8f.0
+ header.s=google header.b=JlEs8Hxj
+Received: by mail-wr1-x432.google.com with SMTP id
+ ffacd0b85a97d-362f62ae4c5so349327f8f.1
         for <alsa-devel@alsa-project.org>;
- Wed, 03 Jul 2024 05:11:21 -0700 (PDT)
+ Wed, 03 Jul 2024 05:11:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1720008680; x=1720613480;
+        d=linaro.org; s=google; t=1720008671; x=1720613471;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=30H4wuVh6MTN8EFct4l0si8PnCcJgk04g6gE9lXf/C0=;
-        b=eaf1UOWy4LnnxZ0BsKXMnRwV+EdM6vEhBKQEuzWHLQOnfZi3moCGMfiC+sI8p+XdO8
-         BBShOk/LXeiM6xUIruT2suerco95PurubUp6Dyi9nEt/RJk8eYc8j8646Q7x3ICauicQ
-         akX0gyP/6A1LqOLtClmCfhMiQXyXGrF3UE/neJNzWBjhTE55QH4nxToACU02XZWIhrmw
-         xYooU8DNwf5Mgsa4f6PFTmozvctUUkEMdlmEa9S8yw/MQbXXvqf6WsfgxkIMAvx4rkdp
-         HmtskY0yq7tCp7wlvrue5kmZKxOucxfOF05r3HAXKJ+15Wvth+uqQB5tAKWo6TUN4p34
-         Iq1A==
+        bh=7cLxowQxGXKyItHO9t5LQNge45csaHkg4VU8jx6Qm+I=;
+        b=JlEs8HxjZ8/BUOTzOZArlO0SV/XWSdzHa2MfyRKEYlSIh92i8ucU/t9rrptlkyzg50
+         R/YCN2Un5Z1klO8GUad0x9Dlot9v2GH8GwOsiwPfyedVmNezE0yWR8Z9nnOyCwKGik5i
+         4in+vnP+tExqDPr4i/o/t+w4+IVEMH5R4rplqbbi+EpoYo/xkzs/i86YfdRPgD3HA0wE
+         ymhIhgAYO686OrwvngwqXymdIYLcS0/RlaWN3pCbFsVqAcwVfBYA9on1U0lHa3y+PCSR
+         s4ksuHkdfQA6nx+ekSfRqYrSKKgBSqM/mw8fMPrBr6+zRMoyTjABXT60T62gakuEa3Eu
+         /axQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720008680; x=1720613480;
+        d=1e100.net; s=20230601; t=1720008671; x=1720613471;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=30H4wuVh6MTN8EFct4l0si8PnCcJgk04g6gE9lXf/C0=;
-        b=tU1534x/57C+OVG/YpAD6kM1q5e3r93wUcTCfn+1MKt/1/d3bdkt0/wEpIyHs5+whF
-         IYK4/w1pAVd+elXYazhAULL8XSSovFR4Uqsmfm5cmg8xQbRUSb8GXNBFtmKSyqkWvHbV
-         a20l3zwaHG1MTTkvg47zhCBD8VZcuXpnG3OAPhb0EJ4zaHX0DxsnhIDkvrK26ZFBxFHF
-         UDJthUta0vFK1irmQxchyD8ewS6HnDL53ojImAWbBVZZQ9YhDix2kGAmKRNYI5mwvXk4
-         Qi/QXgnuR+uaP2Kc+Qi+cNR3dDNmTPddR5qXzML6wgDgJy8oNHWBk/DQzq2fKfglG7HV
-         3NOw==
+        bh=7cLxowQxGXKyItHO9t5LQNge45csaHkg4VU8jx6Qm+I=;
+        b=X0D/eW1pSfF9JNH4mpJ2r4+SILXNM3vXQ0jNDa0ysgb7CRaVSe9mdObot8vQYFwny6
+         pfu4/CyK5IEPfw/Qpxg/7GaKA0oYJWO3Wi6z5UTE6AFLRZ8QEFhUiiREZ5/hqIT14JZ3
+         mvzOfdPVQY0h5zQNYkGmrKChptGM7cFlaYee9fan2Iffut43HPaSYhAGZfu7oivbnDib
+         Y9Ca8BM5uU+6X2sE4B+6EyDGzuZiBLDKtvhkY1/k7m4ZPGA93tgtLn2/69TE2GNNuf+C
+         45j+7NzWqPaGMj7es481eIeNgosyh1AUZQTUMrTpgAY+qytDhYs2G1wj6RvRClgIEsAn
+         8t8A==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXU6cIYXs6ek7CCil/qQqs0O6b/RRcz2ZUyOhY4RoNhrzuctFyJo7BmZEGCLtJuBxC6kwOadJOcT5ovUN+YOXWQog9P0m7PZ4mKX9I=
-X-Gm-Message-State: AOJu0Yzw8bVySVb+3h4DYxagm0j3CrX6AVyZaSSRMBvfZvMEuWzmRoYb
-	tBi9zRgaxApc8spvwD4YVPkLacT1kBwmSISNhEU1FmLsLk6TU+EWyhh5keD4r4A=
+ AJvYcCUZnm7BqF21J4yiMsW/KgLmdKhe0z+offrDxnTDDLvFx3tqdHqQuIR6rztpMxIjJm8T77G7JUX3/ygyvH16K5PJKoDwgDcx5EgoPjA=
+X-Gm-Message-State: AOJu0YwSxGo+A1aDv0xyVuSBAV7BA+BO11g6Qx6ttNbcspvkr89j3uY/
+	wdIVEZiSjER6SkUU6epP+G82daDLDc3gjf+twtcp3Z9EAm55PVQpVhhnfmH3vHo=
 X-Google-Smtp-Source: 
- AGHT+IEDsnzvMssWW12W73oyc5NjjqnLZ9RF8bwCkjxaj+IHTX4GIR6Mw8E9wybObB/fyceJvM28mQ==
-X-Received: by 2002:a05:6000:156a:b0:366:e508:c7d7 with SMTP id
- ffacd0b85a97d-36775696c9emr9653713f8f.7.1720008680569;
-        Wed, 03 Jul 2024 05:11:20 -0700 (PDT)
+ AGHT+IFy7XIwYIBv75NcGjjGCl0VS2oKdh8CqLT1sJCeuF/ePWgLta3XoHjrEoA8051q0A7kko4l1Q==
+X-Received: by 2002:adf:f652:0:b0:363:337a:3e0 with SMTP id
+ ffacd0b85a97d-36794780b27mr1367398f8f.1.1720008670720;
+        Wed, 03 Jul 2024 05:11:10 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3675a10307bsm15716222f8f.94.2024.07.03.05.11.19
+ ffacd0b85a97d-3675a10307bsm15716222f8f.94.2024.07.03.05.11.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 05:11:20 -0700 (PDT)
+        Wed, 03 Jul 2024 05:11:10 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 03 Jul 2024 14:11:02 +0200
-Subject: [PATCH 08/11] ASoC: simple-card: Use cleanup.h instead of
- devm_kfree()
+Date: Wed, 03 Jul 2024 14:10:55 +0200
+Subject: [PATCH 01/11] ASoC: codecs: audio-iio-aux: Simplify
+ audio_iio_aux_add_dapms() with cleanup.h
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240703-asoc-cleanup-h-v1-8-71219dfd0aef@linaro.org>
+Message-Id: <20240703-asoc-cleanup-h-v1-1-71219dfd0aef@linaro.org>
 References: <20240703-asoc-cleanup-h-v1-0-71219dfd0aef@linaro.org>
 In-Reply-To: <20240703-asoc-cleanup-h-v1-0-71219dfd0aef@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -102,25 +102,25 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1558;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2812;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=X9RGNO5wB0C8KAI2bKN+Sff6tTbKWBwR8b9RYI6jmJE=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhT/YMEj7J9NvFTYv5P+4OQRpfot2iJsqj4iuF
- QE/7PDROlCJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoU/2AAKCRDBN2bmhouD
- 1yMlD/9U1tGNEULLbx4K0Qb3ti9u79wPsPOGSVTGfeT4IvhdfTtElmd6RNSsJxBuhTXESGpgNLM
- BmhcGaYslhtTD5iwD6vr/ytTPHZHB6olK1Q7+BMin5qZfeFVIf+rFICGdJy6UZnvy5491siZ1qq
- NUSYVGoY0JPq8xa0CdB7vTiKEUFofiWfIr9DEqxJG1LsbA1goDvah5Iu2alGtaZmmDojm0CJwjL
- O1MmfJx/7mxQvCrYj1gdENaI3q7b4DPDa+QDqY5HG5MIfBAad0EaANQSaKQRABSpZs9aagn+oF+
- ucjzTD3VGG4Bv7rzp8mDddiADe0ew/umdLAkcFACuAfDXntAsYA08R4Ers9+7B2RbreeFEU9yQw
- i/aMefqRpMeMYEjd/Gmb+KMUHt28mbk7P92iIOTTNB99yxn662j1EjY2tDC2bZWSeD2XAgMwDja
- hBd4XutXGRhK4PL3sRvKWiJnJByM0ybhTpTzKsE/AxF5YWiADGrXrPeGBOktP0/+J+gmwmBQHQL
- 9qDUp++viikr3mnx++adqlVaRCg1x4A3qp7c6O3GO8hfSWn2DUGjnJE1kVFGQql/5IlIUQy0mEm
- UbiTrZ86Sg9n836zL7qIJHai2oZrfWzs2Gd8wq57VVVUOZ8clFwJDeQfcznZ9kBlY0hE5UTqm0N
- R6WtkzOurrfY+yw==
+ bh=zkBYXA5XhH4F6q1m9UDysUTPImTnL2Gru3YtQza5a+s=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhT/SBRZL/pAdnmTHzMWcEt1sae0bOVf+MOlLi
+ 9Iouwdrzt+JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoU/0gAKCRDBN2bmhouD
+ 1++xD/4smEI7/Q/xqQ8kHg3Br1em0PyUgtV32GF4yvl2OjiJmfHfqwc4MC8tYzguMEV3m9v143t
+ 3is1DhFHdotHjyQMMJiMG+/b3egvgKx8MxxKLDTGJ3MbXRecLSlQAaMuSCGeuLk4bCEXAZtN2nZ
+ 59l6mosBbXKPDZGIBe3M+soiCM03Ydl01cJl8dSK5suDjwRpkMhb0+JXQjOl4yk2ZO0u8RmvM0j
+ uTtxKpGljxGv78qEXDf1jblZH1uShAGNoK1Ox0ZKWxrhVpaG14Ytg1DC66Mpd7oomSWnyWBt1wU
+ EshhBKabPnUlVVJObbJ1XFzGZURbnFu/lUXJgmBgaxhNczlYsv9/5T60tarIxLoFEClMrdN5NF4
+ 7an704jrG2hU0kQtKZznWsT3bxDivQfnUj/7hEgnVcadq4eChOBHgZKl886/hgKB4b7l25UUdxr
+ 7Zw7a1u0wlt1n9SPZTdlqdQwGj/1eL8hAkZkxLW54Dn6o59EUy415ArhoHSaawTLZFbER5UtXSs
+ JrKvhfVNnjlmMmOGlnXUwCWRTfLqf9HBuynCCUJsjfA4B6sMDo0lV+P5grGPlQlghYxPgiaUAzU
+ H96CRf99qS+tBY6o3K4/0HEsWzv1FLK3oz/6DmIkUKweb/sR9xpbL8JxcMRwZsi762H3cuL7vTE
+ RVySwVK/E7N7Ziw==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: BPHVJU4WOS2UCOTBTXXYDSHYRLJXELCX
-X-Message-ID-Hash: BPHVJU4WOS2UCOTBTXXYDSHYRLJXELCX
+Message-ID-Hash: 5SKQ4COB4UUBJ6H2JFP6JMDUSUM2PCMW
+X-Message-ID-Hash: 5SKQ4COB4UUBJ6H2JFP6JMDUSUM2PCMW
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BPHVJU4WOS2UCOTBTXXYDSHYRLJXELCX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5SKQ4COB4UUBJ6H2JFP6JMDUSUM2PCMW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,51 +142,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allocate the memory with scoped/cleanup.h, instead of devm interface, to
-make the code more obvious that memory is not used outside this scope.
+Allocate the memory with scoped/cleanup.h in audio_iio_aux_add_dapms()
+to reduce error handling (less error paths) and make the code a bit
+simpler.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/generic/simple-card.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/audio-iio-aux.c | 36 +++++++++++-------------------------
+ 1 file changed, 11 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index edbb6322e9be..d2588f1ea54e 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -5,6 +5,7 @@
- // Copyright (C) 2012 Renesas Solutions Corp.
- // Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+diff --git a/sound/soc/codecs/audio-iio-aux.c b/sound/soc/codecs/audio-iio-aux.c
+index 1e8e1effc2af..3969ee45f41e 100644
+--- a/sound/soc/codecs/audio-iio-aux.c
++++ b/sound/soc/codecs/audio-iio-aux.c
+@@ -6,6 +6,7 @@
+ //
+ // Author: Herve Codina <herve.codina@bootlin.com>
  
 +#include <linux/cleanup.h>
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/module.h>
-@@ -727,7 +728,6 @@ static int simple_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
- 	struct snd_soc_card *card;
--	struct link_info *li;
+ #include <linux/iio/consumer.h>
+ #include <linux/minmax.h>
+ #include <linux/mod_devicetable.h>
+@@ -131,33 +132,27 @@ static int audio_iio_aux_add_dapms(struct snd_soc_component *component,
+ 				   struct audio_iio_aux_chan *chan)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+-	char *output_name;
+-	char *input_name;
+-	char *pga_name;
  	int ret;
  
- 	/* Allocate the private data and the DAI link array */
-@@ -741,7 +741,7 @@ static int simple_probe(struct platform_device *pdev)
- 	card->probe		= simple_soc_probe;
- 	card->driver_name       = "simple-card";
- 
--	li = devm_kzalloc(dev, sizeof(*li), GFP_KERNEL);
-+	struct link_info *li __free(kfree) = kzalloc(sizeof(*li), GFP_KERNEL);
- 	if (!li)
+-	input_name = kasprintf(GFP_KERNEL, "%s IN", chan->name);
++	/* Allocated names are not needed afterwards (duplicated in ASoC internals) */
++	char *input_name __free(kfree) = kasprintf(GFP_KERNEL, "%s IN", chan->name);
+ 	if (!input_name)
  		return -ENOMEM;
  
-@@ -818,7 +818,6 @@ static int simple_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		goto err;
+-	output_name = kasprintf(GFP_KERNEL, "%s OUT", chan->name);
+-	if (!output_name) {
+-		ret = -ENOMEM;
+-		goto out_free_input_name;
+-	}
++	char *output_name __free(kfree) = kasprintf(GFP_KERNEL, "%s OUT", chan->name);
++	if (!output_name)
++		return -ENOMEM;
  
--	devm_kfree(dev, li);
- 	return 0;
- err:
- 	simple_util_clean_reference(card);
+-	pga_name = kasprintf(GFP_KERNEL, "%s PGA", chan->name);
+-	if (!pga_name) {
+-		ret = -ENOMEM;
+-		goto out_free_output_name;
+-	}
++	char *pga_name __free(kfree) = kasprintf(GFP_KERNEL, "%s PGA", chan->name);
++	if (!pga_name)
++		return -ENOMEM;
+ 
+ 	widgets[0] = SND_SOC_DAPM_INPUT(input_name);
+ 	widgets[1] = SND_SOC_DAPM_OUTPUT(output_name);
+ 	widgets[2] = SND_SOC_DAPM_PGA(pga_name, SND_SOC_NOPM, 0, 0, NULL, 0);
+ 	ret = snd_soc_dapm_new_controls(dapm, widgets, 3);
+ 	if (ret)
+-		goto out_free_pga_name;
++		return ret;
+ 
+ 	routes[0].sink = pga_name;
+ 	routes[0].control = NULL;
+@@ -165,17 +160,8 @@ static int audio_iio_aux_add_dapms(struct snd_soc_component *component,
+ 	routes[1].sink = output_name;
+ 	routes[1].control = NULL;
+ 	routes[1].source = pga_name;
+-	ret = snd_soc_dapm_add_routes(dapm, routes, 2);
+ 
+-	/* Allocated names are no more needed (duplicated in ASoC internals) */
+-
+-out_free_pga_name:
+-	kfree(pga_name);
+-out_free_output_name:
+-	kfree(output_name);
+-out_free_input_name:
+-	kfree(input_name);
+-	return ret;
++	return snd_soc_dapm_add_routes(dapm, routes, 2);
+ }
+ 
+ static int audio_iio_aux_component_probe(struct snd_soc_component *component)
 
 -- 
 2.43.0
