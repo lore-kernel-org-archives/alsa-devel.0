@@ -4,119 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 655FCC2BD09
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 10:37:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03920C2BD09
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 12:12:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6076920C6;
-	Wed,  3 Jul 2024 12:37:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6076920C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B56AEF2;
+	Wed,  3 Jul 2024 14:12:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B56AEF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720003073;
-	bh=2Hgb11TSE9fOERRmOGKvCbJsU5ExxL44Ao0bbckq9aI=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tcXyehWvVRksF+DY2+E+2TGGgCJnc6H4bZe8/ZcZuGk1pMBJJhll48azhwgFcFw3v
-	 05omvnNIYW6eVjaz27H3pZ2nCBSfXTqK1DVB5LHvJ+rJ5ECfZYC4KK5Xk0Ue9p8zRq
-	 jUBietnsx3nrUaXPpoNPvYqIcTlWEbZkyBbPkxQk=
+	s=default; t=1720008764;
+	bh=38E+3ou+E/LV2E8yp/WlqkpQYFuVfruI6m/kZhWQIwI=;
+	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BX6P44kObCQs0XHBs5mng7w4Az6EUDWI2KBraCho9jHr8CtMTqUN8CakkI5BNGS0d
+	 wVcEwMES8FWI01SG0+0ppq65XteMWM90v+P4P00yReFehF1x/So3AttchY7CtbpltV
+	 Uz7X/iDb4hQpKfpcMPVs5yaJBcK+ArUoqxqy0CwI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B6F55F80587; Wed,  3 Jul 2024 12:36:48 +0200 (CEST)
+	id 986F9F805B5; Wed,  3 Jul 2024 14:12:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 793A6F805F1;
-	Wed,  3 Jul 2024 12:36:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 050EBF8013D;
+	Wed,  3 Jul 2024 14:12:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B12C9F8014C; Wed,  3 Jul 2024 12:28:51 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
+	id 09E03F80568; Wed,  3 Jul 2024 14:11:19 +0200 (CEST)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F1DC8F80588
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 12:18:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1DC8F80588
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1EBFEF800FE
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 14:11:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EBFEF800FE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ZTazhEE0
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-a751ed17b1eso77786266b.1
+ header.s=google header.b=xdCLXjco
+Received: by mail-lj1-x234.google.com with SMTP id
+ 38308e7fff4ca-2eaa89464a3so54390521fa.3
         for <alsa-devel@alsa-project.org>;
- Wed, 03 Jul 2024 03:18:05 -0700 (PDT)
+ Wed, 03 Jul 2024 05:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1720001782; x=1720606582;
+        d=linaro.org; s=google; t=1720008669; x=1720613469;
  darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3joTjD/EvzvybWiPdLIbHTzIsLTnwS1UMLvS3hxDr3Y=;
-        b=ZTazhEE0qrjzKbzhYn+8TUdXMDVhQa9kz5jRdT1PkbzIpCPKihF0qIBy5ghTg33w+M
-         3bU6hJkzgd0vKkkhaL3r3MN8od5LAvJYZm0XKlMpIUp9X0O4VaXzYQAfmf/xPTU9bmBQ
-         O/F4ji63InLu6yRKbnAwBW/To1Y+vQe3EREJ0Iqfo+aP2QRPV0ZVd6HRUMKw+l5XtjO9
-         Iutzvk3KjIvLDilzTNypK70DWQHbEFSO6Eh3U7ryeZ26k6Jb1A1IMunnZTQ4JyRYX6dU
-         MtHffuK8riMquflTYd9FOvtfDdnNx1oa+yHe+4e6AIwYon/3EuonhFZuDCLRyBr4WvTr
-         pnmA==
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cedFw99A7YSckyMyYKT6p5GP9raiQYHtK+ru95zornE=;
+        b=xdCLXjcoLb+EYfgTBbqYPwDS3xcgveq7+sFb8e/3be/4bE/no2A4bRGrbipA4VJYdZ
+         kmUcmZ5ClS+/VT3obxQ+ZO8fiZSJJHigW1e5AiUtlkODt1JomhS36sHidd7T29YYbWa/
+         98GR0OmRo1hJtt6Eg1l0FGWgqGgZ6zzwbXzlA7B2wCVZWjc7owIMTToO9Bc2jXoPrniA
+         kEr/clirlg0SKI3/TRI5NwjPvQqGa8z4NsA3qbzyPdFSgVZVbHlcQDPh1TIcVG2OdDYJ
+         JlloJ/R+nwdcOgkQPvmDBu3HiQK0t0GMZqagfsc3LLUzqk9OPvExEbzjtPY+exNsG18t
+         O/mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720001782; x=1720606582;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3joTjD/EvzvybWiPdLIbHTzIsLTnwS1UMLvS3hxDr3Y=;
-        b=P23Yi8Zzprt+wU2Zn7OznqzcaOAwxIF0dWc+Sg38nWJhXb1YWLcyzn0Pg73HfnhbIC
-         EfUeimhGh1n6KVUdzvHEa6ccTFs7gxmRe++e7USHJNfExTeSglbLOdv1klfQB+rz3+E3
-         nqrirk3ff46S4Dy0D7ZNE9eKp5yyVjPy0aNTkh63qwr1aE21p30NGFSWPmip2qZU0MMv
-         xRrcOG6n/a93DMPBYyD/hE5vtycJqoIh/bN7175pe3rBc9KoX7Xj74B9pi0KmtDjqfFg
-         n1GrQmUqHoKtnb3gXtTd1jKFDBmyGHWo5fYbjc2tVLcmeTQhpHmvbeJ1AtBHh/Gl1Ozj
-         h2kA==
-X-Gm-Message-State: AOJu0YxduNNm+0AY6ZeRq0ElODH3W3nMHFHqu0hkdHGHYqzgt3/HpOxj
-	gFBfc4vQZqwOfpKulWqPBpY18Bt/7i7FDpGNYHxovJv9xxuZVp60ZBhUGS9M+wU=
+        d=1e100.net; s=20230601; t=1720008669; x=1720613469;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cedFw99A7YSckyMyYKT6p5GP9raiQYHtK+ru95zornE=;
+        b=IMSvOB0vgoK6aqTqayJmb8Nae3sd85rwVp4ve3sZ6VSG9emV9u1b/kAfyCKqz0N0Tc
+         cjoj9uIvicuU7s/237dPnUFTVXuf3B+WZAagiHDuaH40m3yRXdS6H7QgbNOPY4467v4Z
+         VbghFMQq0xlAYZc4Mhalw+4wZr1XnQE2GVLx/R8MaB9YqG6xTFNMt6l8NJCTz8vWUoRu
+         8aZxG/CaXCQkL0rtbXdjAeBkkB0Y3Z30zErhNwst42RfJlLgY/zpvtd+M+pPUcE0dE8G
+         lnueSJcEzeLax650NK9v4hSV8kHY87Lv6AjTZVoG4O1iTHATXoQnxUcP5z14ZwTpMT7E
+         cfdg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCX8v4Q4I3ypWm26dQwF+ZrRTyJLoAE5OXV2A2XuSlLFknj12V5+PmOJAsnfljwRSFb7LbZf5ncycOjr0fcW90mUXUe5G/njz0DTLpw=
+X-Gm-Message-State: AOJu0YzDCA3h1Ig0fmPXmOfjDeVicv43irtr7WbTJHznTwpFCtKsNyFC
+	wj9mpzosJ1QaWWaQueMRPB5ja3gVIQ/5eKvbmjinDbb08xYsadw8L7/GbWQeMoE=
 X-Google-Smtp-Source: 
- AGHT+IEELsiExLgIL8ViDXZhbHcr5lLNtKgOIwnhglxgd+MvGmadP9WGtD7IcS1FdBHJkN8UmxvuUQ==
-X-Received: by 2002:a17:906:3390:b0:a75:1923:eb2e with SMTP id
- a640c23a62f3a-a77a24202d2mr96155166b.14.1720001782114;
-        Wed, 03 Jul 2024 03:16:22 -0700 (PDT)
+ AGHT+IEfM0+Ld6ncT+ouSLf7osIs906r0Y0FWWGPtojIiKffNhJRaOyCEHrvJZ4Lf1JkvL2wmGUvJg==
+X-Received: by 2002:a2e:a7c2:0:b0:2ec:5172:dbc4 with SMTP id
+ 38308e7fff4ca-2ee5e393c8cmr73155651fa.12.1720008669249;
+        Wed, 03 Jul 2024 05:11:09 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a72ab06565csm494291466b.103.2024.07.03.03.16.21
+ ffacd0b85a97d-3675a10307bsm15716222f8f.94.2024.07.03.05.11.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 03:16:21 -0700 (PDT)
+        Wed, 03 Jul 2024 05:11:08 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 03 Jul 2024 12:16:00 +0200
-Subject: [PATCH 8/9] soundwire: cadence: simplify with cleanup.h
+Subject: [PATCH 00/11] ASoC: Simplify code with cleanup.h
+Date: Wed, 03 Jul 2024 14:10:54 +0200
+Message-Id: <20240703-asoc-cleanup-h-v1-0-71219dfd0aef@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240703-soundwire-cleanup-h-v1-8-24fa0dbb948f@linaro.org>
-References: <20240703-soundwire-cleanup-h-v1-0-24fa0dbb948f@linaro.org>
-In-Reply-To: <20240703-soundwire-cleanup-h-v1-0-24fa0dbb948f@linaro.org>
-To: Vinod Koul <vkoul@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+X-B4-Tracking: v=1; b=H4sIAM8/hWYC/x3MQQqAIBBA0avIrBswC6WuEi3UxhwIC6UIorsnL
+ d/i/wcKZaYCo3gg08WF91TRNgJ8tGkl5KUalFS9NLJDW3aPfiObzgMjUhi8C04bpzXU6MgU+P6
+ H0/y+H1dRFIhgAAAA
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1247;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1657;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=2Hgb11TSE9fOERRmOGKvCbJsU5ExxL44Ao0bbckq9aI=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhSToVO7krJpsryvmNegqDera+Tzu8RsMQNven
- Pl+d2kxioeJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoUk6AAKCRDBN2bmhouD
- 10eBD/wOYMaY6NC26kuLeUu0bJQ+sYDgl1g6Q7lkH1bSLC5TO9SnH/0h4y+otOvZV67HNOwAd8N
- cH2zTy/Z2E+pNrHspUPiOSxzg9tDPXMpcdSSnkBvqqine3JZhibf6kXd0c73jtRcTTRleFWfMy6
- J4SOVEjrRO2VSXzv+M3iNRyUC9FU3ObCHmT55JAnRdRSwf5BYLZzD9GqqWtRtfmmAP/rY5CWWRe
- zOEDY+edSJHyVzoANpMEySXRE5xTcQpCs/qSjW/ZXTKfLH4NNKdEgpkfP5XBQD4Q7+PdmM7c6NM
- FGvnKZzzhMQaB8780Awfj0aJnoQePjrz9gVJR7eqyT2OByegp3MjXPEFye5daGwyUs+A3+st2Xe
- s8YO29KiNQUs0XuOXqtCPgQWQaOqeyRuiojdUr9LUk4DtwwAHpctlQzpbCAKcNI+mTLCI05PsQQ
- hgMuEtwxzPRyV/brU8MILtqInRt7H29Rm130MdNAe4ZopUxqoLeuz3m8jtUZ7Ujn3BJWYGpi9P/
- UZfv4ulXMnDaAzhV4NITyL7vL525gjJveZi9/fb0FAFnGHnO1mBVOhAFTZEt8z0+xF15ibZINOr
- Pfp6TunC1dFQJKp7P8LsFxDOoNeVkJJ9nFsFn1ckc9zlLHE1Ev492Zl5aDKlzYbF4nurrDdwhJ6
- /PNP2BP22TZcJaQ==
+ bh=38E+3ou+E/LV2E8yp/WlqkpQYFuVfruI6m/kZhWQIwI=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhT/R5G66T/ENazdFQQUl8BkzHTGMOaqY5guUy
+ WT86/WIaeKJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoU/0QAKCRDBN2bmhouD
+ 11luEACJdPtrllcn7nyU28iQn6ZABmnMGhwYKmPRCiJO9rGZe1Ua2bJ9Sa9uSvdYwL857338dsO
+ rqc9dp62eIt/FJGnsUV+Q6pH9fav3duzuOv0S3efQBGskRG+4oSi0pF49z3Zr2srf52bq3o1j7w
+ IYikBTMiLyvTXAKLoNmHrDOIGm7imjTUIw3+EcQH9iceHRv8cfgRflt5hZKVBxflZzivq6iSKGK
+ Dymd0tsWzbYV46WL81f4Fq0nwR9q6Vi3/REU5qMPMNVJrzCZKGySs2UDYuDJw8GKJVgsv3DREWr
+ ypsEU3uGoz/q9K42KSVB3DkjuEsZklahVLCjFjPHB9ImFVYZI4zAXovpT1XRtoob1PLdxnMkhvG
+ LsBVtekE5MBYQ3UmQif88KWseLAE926zvHfIv7N/TjsjS09DP3cI8yx27hMmPBEOGYy9VjPiEPL
+ isWmkWdzm+9gLZIFMP33igefnO/smk6xmBoY/gOsce3fHvn7loIhbTrWhHRI5rAmBkv+Dt1JWcS
+ zq1nm8ZBUUIOSscNrXjiAChP/gxojbrHNYaJTBAcmvQqHuyQPMLNeLLjIBeuwvDf6jUhMv0Kwkj
+ Za3LssnmMDG/fvG6+ZmvW/3KAOQ9ixu/1WK28FYb/bvYjR9MaFFuI4zlvQ7dJmACvrSzBE8oai9
+ 9dUOtBj+/gs/E/w==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: 5FDJEMOBIZGKUBV6MBPBNAT5QOLXNHL5
-X-Message-ID-Hash: 5FDJEMOBIZGKUBV6MBPBNAT5QOLXNHL5
+Message-ID-Hash: Z6BCFG2BCUAQBHGENR5EYIG3FK7TLRKZ
+X-Message-ID-Hash: Z6BCFG2BCUAQBHGENR5EYIG3FK7TLRKZ
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -129,7 +131,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5FDJEMOBIZGKUBV6MBPBNAT5QOLXNHL5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z6BCFG2BCUAQBHGENR5EYIG3FK7TLRKZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,49 +140,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allocate the memory with scoped/cleanup.h to reduce error handling and
-make the code a bit simpler.
+Allocate the memory with scoped/cleanup.h to reduce error handling
+(simpler error paths) and make the code a bit smaller.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Best regards,
+Krzysztof
+
 ---
- drivers/soundwire/cadence_master.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Krzysztof Kozlowski (11):
+      ASoC: codecs: audio-iio-aux: Simplify audio_iio_aux_add_dapms() with cleanup.h
+      ASoC: codecs: audio-iio-aux: Simplify audio_iio_aux_probe() with cleanup.h
+      ASoC: codecs: wcd9335: Simplify with cleanup.h
+      ASoC: codecs: wcd934x: Simplify with cleanup.h
+      ASoC: simple-card-utils: Simplify with cleanup.h
+      ASoC: audio-graph-card: Use cleanup.h instead of devm_kfree()
+      ASoC: audio-graph-card2: Use cleanup.h instead of devm_kfree()
+      ASoC: simple-card: Use cleanup.h instead of devm_kfree()
+      ASoC: ops: Simplify with cleanup.h
+      ASoC: dapm: Simplify dapm_cnew_widget() with cleanup.h
+      ASoC: dapm: Simplify snd_soc_dai_link_event_pre_pmu() with cleanup.h
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 74da99034dab..e0683a5975d1 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -6,6 +6,7 @@
-  * Used by Master driver
-  */
- 
-+#include <linux/cleanup.h>
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/debugfs.h>
-@@ -323,12 +324,11 @@ static ssize_t cdns_sprintf(struct sdw_cdns *cdns,
- static int cdns_reg_show(struct seq_file *s, void *data)
- {
- 	struct sdw_cdns *cdns = s->private;
--	char *buf;
- 	ssize_t ret;
- 	int num_ports;
- 	int i, j;
- 
--	buf = kzalloc(RD_BUF, GFP_KERNEL);
-+	char *buf __free(kfree) = kzalloc(RD_BUF, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
- 
-@@ -389,7 +389,6 @@ static int cdns_reg_show(struct seq_file *s, void *data)
- 		ret += cdns_sprintf(cdns, buf, ret, CDNS_PDI_CONFIG(i));
- 
- 	seq_printf(s, "%s", buf);
--	kfree(buf);
- 
- 	return 0;
- }
+ sound/soc/codecs/audio-iio-aux.c      | 83 ++++++++++++-----------------------
+ sound/soc/codecs/wcd9335.c            | 22 ++++------
+ sound/soc/codecs/wcd934x.c            | 22 ++++------
+ sound/soc/generic/audio-graph-card.c  |  5 +--
+ sound/soc/generic/audio-graph-card2.c |  5 +--
+ sound/soc/generic/simple-card-utils.c | 13 +++---
+ sound/soc/generic/simple-card.c       |  5 +--
+ sound/soc/soc-dapm.c                  | 47 ++++++++------------
+ sound/soc/soc-ops.c                   | 26 +++++------
+ 9 files changed, 87 insertions(+), 141 deletions(-)
+---
+base-commit: cf601827c51b0496f6bb8a1865f1bf69ebd246b7
+change-id: 20240703-asoc-cleanup-h-ef9cbfb67b66
 
+Best regards,
 -- 
-2.43.0
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
