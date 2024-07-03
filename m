@@ -4,90 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6AA8C30653
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 09:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57C89C30653
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 10:31:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBD541605;
-	Wed,  3 Jul 2024 11:56:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBD541605
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E10BE85;
+	Wed,  3 Jul 2024 12:31:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E10BE85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720000599;
-	bh=esBEZWhMiBRliaM1qYn3jnE+yA8P72YVy85h047u40c=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=eQ0ltmeanr15D15qWlUNiRtiQN/nip/L31UPYDruGCMGPAQT93nwDmiDMAMMuIJyM
-	 0jwlZnkKUdXb8zAgYERrJjWk/Pe3JbV3ZLR4VBRqK6hUemtT99uuRsgK0XXkiaebd2
-	 vCDSJlR18kjATj7D5bJEy8fjxIhG8Hssgk3BiY+s=
+	s=default; t=1720002682;
+	bh=rVRf9n1bFnXgcGWnl9warbbpA8WJWg1GWzSYHcOBEF0=;
+	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=t7tnED56dabietrH+dyjQGaafQO1lNNFONAj8KrA01Zw5Qe4au5x387QrJ/w6ezlu
+	 rZSEuU0OfV7QZl702UNqje2vgMdJLMY7/pqoE1RdVMcgNSOn1U0dC6WPdNVaVP3o8n
+	 5Cc280jps3DYaIAuUvJoj4+3moT0cee+SFmkPpxg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8411DF80604; Wed,  3 Jul 2024 11:55:37 +0200 (CEST)
+	id 61096F805B3; Wed,  3 Jul 2024 12:30:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 206F8F805F8;
-	Wed,  3 Jul 2024 11:55:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC5E8F805B3;
+	Wed,  3 Jul 2024 12:30:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63EB7F8025E; Wed,  3 Jul 2024 11:55:29 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id EE01FF8058C; Wed,  3 Jul 2024 12:23:58 +0200 (CEST)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 30EDFF8014C
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 11:55:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30EDFF8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 77A07F8013D
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 12:18:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77A07F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=V9VrI4AN
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 4637xDTR029630;
-	Wed, 3 Jul 2024 04:55:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=RmlRDYIfTUKyUgfRgzYWrwMdS4KjZ1LZo4J4TljIXaY=; b=
-	V9VrI4ANN3cLU6Ih6QiWqyyLuUyZ0krQoI9XQT9ssf46/R91mfDIzsFYzbroB9j1
-	KttzOIpalgxE9pkxC11y6H44zruL6H76QK2UBLQZcoln++K7BMejoTHLs5I/DCTf
-	35r96sh19IFciYdh+L+PhcOFMJFwbweeVa6G5JMHgOx6Q9w1fiB+SE0aEExVD7wS
-	+N2pSh6ZuXiQoXvZJduHjYPpHQGEjIc3byor3NcguI3rSNMge9U1mMraAwmgmy9K
-	A++US4AJUzlEmy3TZjrA2AHy9s8mwAGTD0EQGdWuws8jN6EZ0nevEPHzICZaO0w0
-	4L5ZVdK7QJDIp5SJm4STcg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 402fnxcq1c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Jul 2024 04:55:20 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 3 Jul 2024
- 10:55:18 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Wed, 3 Jul 2024 10:55:18 +0100
-Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
- [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 02BA282024D;
-	Wed,  3 Jul 2024 09:55:18 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-Subject: [PATCH 1/2] ASoC: cs35l56: Use header defines for Speaker Volume
- control definition
-Date: Wed, 3 Jul 2024 10:55:16 +0100
-Message-ID: <20240703095517.208077-2-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240703095517.208077-1-rf@opensource.cirrus.com>
-References: <20240703095517.208077-1-rf@opensource.cirrus.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=C48pg3q/
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-a72477a60fbso628500166b.2
+        for <alsa-devel@alsa-project.org>;
+ Wed, 03 Jul 2024 03:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1720001771; x=1720606571;
+ darn=alsa-project.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8n4l537zzmVevTwRxYF/dAXb8Lz3WH76s41W0uF6dT4=;
+        b=C48pg3q/xKorMoChdqXyYf41FQQ+6undrla/rXIazMNgQzbrV/m/plon0dZ5qFaViw
+         aAL3qU/rhOlGFc8o1JtpUEtK2EbmR7akTBWNGen8XyStcE1MBL4MhvCyamoB6p8nijJ9
+         /PQyUdcGOjJYV/OXWyo2OA3fAGx9WYQJh88z0PAPugqVpQZKeftbF1tJQ9xaByfWFExG
+         kXyN7FC0q0szWHo8oHUlNR2ZvEy4okVUj2dkWqIUeGxMnd2tdNk2YZT+2PGedhbKWTls
+         qHrLBgXGdkge3zi++4aV/vWKp7fQ1fakNkLux7vpFWhAa7jp6fnJ1Iuq8mb7rglf2Di3
+         kZ5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720001771; x=1720606571;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8n4l537zzmVevTwRxYF/dAXb8Lz3WH76s41W0uF6dT4=;
+        b=DdbUZuM5CNqm4qfhVDdTdwIH6xNNY+WGcDj02SE6E+zpr55Nlfe9U0z5yCkpSzYDi9
+         UAHZIjZjKc2x3nUhNJC9scJPy57fFwxvlo7xYtwqLmkQOi+6Uwra4zf/M6rc2BhRX0zl
+         QoABryBnbpCZuGjjzolHC+CtJgZpgFgNbeFt1akaIqheXKmfndWglqF5El2Mz90/AKvB
+         CCNdvjj0P4oxrbbmFFF3ARPMooLRiw64b8wefblbcGKTOwJqbJDslhsxHjc4zdYVOdyo
+         SXYRxup/OdhpeW5gYSQTv42zBnPox1Og6VZ5hup/Nf1ZcMihu3DZDDsgDTul2b2l3lSN
+         KIxQ==
+X-Gm-Message-State: AOJu0YyZzVvb9J5wUzBYpv+ktWY5sBxdqyoo0qmYhtTNwVe3pFowhHqw
+	0SmnERJ+E9PVLP5a4LgBXBKXivysBvzondwVCq0LVubzuNzCiq/sQzmDrz6RFGE=
+X-Google-Smtp-Source: 
+ AGHT+IHjh2iPIsDOndUbytlmALDqW/1/ZBtRvtQbnsaiAJOFDAAUYImBknXBOAZcTuBdDGgTPdlzUA==
+X-Received: by 2002:a17:906:584f:b0:a72:7e5f:a0af with SMTP id
+ a640c23a62f3a-a75144a8f07mr645953066b.55.1720001771282;
+        Wed, 03 Jul 2024 03:16:11 -0700 (PDT)
+Received: from [127.0.1.1] ([178.197.219.137])
+        by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a72ab06565csm494291466b.103.2024.07.03.03.16.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jul 2024 03:16:10 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 0/9] soundwire: simplify code with cleanup.h
+Date: Wed, 03 Jul 2024 12:15:52 +0200
+Message-Id: <20240703-soundwire-cleanup-h-v1-0-24fa0dbb948f@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: JuavNmVy9FjEPBFVai9Kd07yRzthcEcE
-X-Proofpoint-ORIG-GUID: JuavNmVy9FjEPBFVai9Kd07yRzthcEcE
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: Z7AETLZKAWW4CUJZJHU3U3ZO4IH2CLOY
-X-Message-ID-Hash: Z7AETLZKAWW4CUJZJHU3U3ZO4IH2CLOY
-X-MailFrom: prvs=4914b47104=rf@opensource.cirrus.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANgkhWYC/x3MTQqAIBBA4avErBswE6KuEi1MpxoIFaUfEO+et
+ PwW72VIFJkSTE2GSDcn9q6iaxswh3Y7IdtqkEIqMYgek7+cfTgSmpO0uwIeqOU4qm5be2sV1DJ
+ E2vj9r/NSygddFtd4ZQAAAA==
+To: Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1253;
+ i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
+ bh=rVRf9n1bFnXgcGWnl9warbbpA8WJWg1GWzSYHcOBEF0=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhSTh4vNh28srE5LybUlslx4pM9JAnEQM5PQHj
+ jj/t4OlYayJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoUk4QAKCRDBN2bmhouD
+ 19DWEACDV3MRzK5iIKIoPiqXrVovBLjGHnXr+WtQcAuAHt+JTG+TlogroB4bLtm9lZCwjz3nkkM
+ ZcSupxjD4d11w2qwV4vaUney+SzbwnwwTsfC5cfkEcy0IvWnAb5mg9jC73mBR/v0IkttK9Imwys
+ rOMFwwOravADKKcfGX59/gUg3XZbTt4fHtr8TVXIqTGXdyauW5JQuIn3Son97SXrSa6vWt3q+Yf
+ V0fclztDuT0+vcQQwuezNry+5mrZZZ2lMEOF7X4jtWeXVioAXVxlOUjyhvEiufxfa9kVLxyT36U
+ aRi4kqYzpnIvGTCyDIehUJoUhTnEP53yBP8ouybuNyyrWrX14wbTEL9zYIkWjyz52EK/ancJIWi
+ fz2ltZK8CFciAhskExjJfLBYXZhaU+12qNM6XRdVQylHHqLk3JFHMwWyv2RxXgJcFlr1pmeOz7k
+ yIuNxIxsNhXTLKiJ7iroz9nlYkQiUpd6AREmxFshBYeqQc0tMfc80M1fuIMu00ukTKg+/4uJqAR
+ IXzD4L/UaafnGKHzKE9RfouxSLqwPar02lITaC3kpLYQV8op22EFylp6qra8+h+aIHXsQmbiqTa
+ dkAUAttjkf3hC8377GulhB/NPX71dfqYRQbg7dhVy7uIo2gQpn52CwOOJjntw1lBBM+2YyMqW+z
+ tKhM1vgxwI+xjIw==
+X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+Message-ID-Hash: WP3LJHCFY3TJHDPF5ZNAC4MJCP2U6ZX5
+X-Message-ID-Hash: WP3LJHCFY3TJHDPF5ZNAC4MJCP2U6ZX5
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z7AETLZKAWW4CUJZJHU3U3ZO4IH2CLOY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WP3LJHCFY3TJHDPF5ZNAC4MJCP2U6ZX5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,32 +137,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The "Speaker Volume" control was being defined using four hardcoded magic
-numbers. There are #defines in the cs35l56.h header for these numbers, so
-change the code to use the defined constants.
+Allocate the memory with scoped/cleanup.h to reduce error handling
+(simpler error paths) and make the code a bit smaller.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Best regards,
+Krzysztof
+
 ---
- sound/soc/codecs/cs35l56.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Krzysztof Kozlowski (9):
+      soundwire: amd: simplify return path in hw_params
+      soundwire: amd: simplify with cleanup.h
+      soundwire: amd_init: simplify with cleanup.h
+      soundwire: intel: simplify return path in hw_params
+      soundwire: intel: simplify with cleanup.h
+      soundwire: intel_ace2x: simplify return path in hw_params
+      soundwire: intel_ace2x: simplify with cleanup.h
+      soundwire: cadence: simplify with cleanup.h
+      soundwire: debugfs: simplify with cleanup.h
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 7cac9812f5b5..84c34f5b1a51 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -71,7 +71,11 @@ static const struct snd_kcontrol_new cs35l56_controls[] = {
- 		       cs35l56_dspwait_get_volsw, cs35l56_dspwait_put_volsw),
- 	SOC_SINGLE_S_EXT_TLV("Speaker Volume",
- 			     CS35L56_MAIN_RENDER_USER_VOLUME,
--			     6, -400, 400, 9, 0,
-+			     CS35L56_MAIN_RENDER_USER_VOLUME_SHIFT,
-+			     CS35L56_MAIN_RENDER_USER_VOLUME_MIN,
-+			     CS35L56_MAIN_RENDER_USER_VOLUME_MAX,
-+			     CS35L56_MAIN_RENDER_USER_VOLUME_SIGNBIT,
-+			     0,
- 			     cs35l56_dspwait_get_volsw,
- 			     cs35l56_dspwait_put_volsw,
- 			     vol_tlv),
+ drivers/soundwire/amd_init.c       |  7 +++----
+ drivers/soundwire/amd_manager.c    | 13 +++++--------
+ drivers/soundwire/cadence_master.c |  5 ++---
+ drivers/soundwire/debugfs.c        |  7 ++-----
+ drivers/soundwire/intel.c          | 25 +++++++++----------------
+ drivers/soundwire/intel_ace2x.c    | 22 ++++++++--------------
+ 6 files changed, 29 insertions(+), 50 deletions(-)
+---
+base-commit: 246cf92bafedeea46cb16964d16478d6b68f8e5a
+change-id: 20240703-soundwire-cleanup-h-a29941fb3dd4
+
+Best regards,
 -- 
-2.39.2
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
