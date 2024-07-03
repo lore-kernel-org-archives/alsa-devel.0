@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1452C2BD09
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 15:50:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F24FCC3DA47
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 15:50:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CDE515FB;
-	Tue,  9 Jul 2024 17:50:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CDE515FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E751EBE;
+	Tue,  9 Jul 2024 17:50:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E751EBE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720540243;
-	bh=4sjnkaXwLNp7p5DTjkC6jZAwMMW/qwiVCY05YVLu0yc=;
+	s=default; t=1720540244;
+	bh=NwcjSKqDE0VK2dDbdmqM/92kBglAO28ukjiQXm09KUU=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=igFE9HrUfN/sYgp43b/xV+wu/WxjJwTjEBRlLSRAL2Z87gaKDGkRXF3upM0/3lCB5
-	 Su1rsTMovcCnQ2ec1bDRvdqim5Ul2vD6eSH6nPg+nXfudMTKKSZs+WyObLOqnN6Y75
-	 HOaWZ/MghQESP0Tv+/ZEIDSwDfxKC8l0jT+0jUwc=
+	b=cQHhKNf9AHhEtdikd3PjS5AENrPn57pgNhToJL6DF2aIWXFIAw6fAQzCnYgxu0seE
+	 AURejsf7KaBYLsmEw4pLcsd/Dpyn1G3kRJbj4HVAaaaN3dW19JPLs8gVOUy2BT3QXc
+	 og+1e3dJmRjfwoA2HCw/IqTObfyslmJY6Ja9VQ/c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6C28F8061B; Tue,  9 Jul 2024 17:48:45 +0200 (CEST)
+	id 475EBF806C5; Tue,  9 Jul 2024 17:48:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A7BFF806C2;
-	Tue,  9 Jul 2024 17:48:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7208F806B8;
+	Tue,  9 Jul 2024 17:48:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33AF6F804FC; Wed,  3 Jul 2024 18:21:20 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
+	id DDDF4F8025E; Wed,  3 Jul 2024 18:21:17 +0200 (CEST)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A25DAF8014C
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 18:21:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A25DAF8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2F120F800FE
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 18:21:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F120F800FE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=cXg++YIA
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-a6fe617966fso504877566b.1
+ header.s=20230601 header.b=OGyDHcac
+Received: by mail-ed1-x52c.google.com with SMTP id
+ 4fb4d7f45d1cf-57cc1c00ba6so4139065a12.1
         for <alsa-devel@alsa-project.org>;
- Wed, 03 Jul 2024 09:21:18 -0700 (PDT)
+ Wed, 03 Jul 2024 09:21:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720023678; x=1720628478;
+        d=gmail.com; s=20230601; t=1720023675; x=1720628475;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HSyNvDm6zVDNskeAuatJPuva+eHFR+zlE1Zqp5rhiEk=;
-        b=cXg++YIAP0JEgPgCpmO2E5QRmGfI6kHNLo/Uoiep9kmdrimlDdpagTuWIw11IFoif3
-         UU+FmAHbfP3wVhFWbhxJxvLwpaNw2xAnIazS2OMI2KpsZxYzHW8XGpTNXeEQdf5budgn
-         sXYzESDMj/Crp9QGB0EbJjOlBfRCnhu8MJMRPdsSLh6Sn83mkrrysXoAVCGjjle3xXtK
-         Ro5D31KH7k9pKtL2Tf/iHk/Y7MtFE/EtngmYmisqd+UgNw5B5bsn6ZThQjYv5ABcpU8Y
-         IBcHkwf5ZE+hT+C/LjLbYvDttp1kGyRNA+66xKBaAGYjHXZslEihVN2KsUqUlC6v3BZB
-         QTPA==
+        bh=3hjyRNvMZXMYBEm5NP3z8RmRqPF9CkIDkfVc08IOZB8=;
+        b=OGyDHcacdJiY0gCYwGfCPC3yuD7g+b24II8SLZH/RBvK+HkzyLBkJe0EU8f4H/UYqr
+         izy+0LwIIDC9FS0DaIgqkjJ37ud4VYD88LvbzvXxjely8YjS5jtUno3K5WaN4vKiCQE9
+         MZGZej9kzt6LQCxQPwjEBImQMavbyr45k4ItE64b1oBmM6duCuW8767udEvkAz6OrerL
+         paD4SV2GcM3mSPLF/18d9VuLC2ljXEd4hZc74trFyyl9JLx+FQDDYIbEIPkgFZFeBEK9
+         sqiPCOUga7JVOIaSQibdS9xDcnk1k0Vz/UWy7PB7ciTUdRY5m562r7POnzw29I4Ywr3K
+         5Q+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720023678; x=1720628478;
+        d=1e100.net; s=20230601; t=1720023675; x=1720628475;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HSyNvDm6zVDNskeAuatJPuva+eHFR+zlE1Zqp5rhiEk=;
-        b=PhrM33/oXvGcKxHQShZfiv5V9MxntLkTk8jJIOP6IM2BbjBWKbOamwgDGRJCSXvxtb
-         tv+FgYWOJMhE7SZ36xJBJsrfHETPh/ESXhLhuL7ioUNMZIxT6SzSKhC3lvhUjXLwbgBH
-         PE1h1+nxQ7bX6rJqP+8lOW3r5efwWKhd61R/8wQF2dGZrH9Ayj4+9XmzPiv0poAO7YtG
-         vZl+HODv1opRMt2VzD/xvFTi/BmZBh7/lIEh6CPmRic4kLStONVUSV8f0/9Limr8EIN5
-         S5klSbFR61P1hhdpF/dbOUfgcTt17PY+hoOgg36o/iGQDIE352OmR+LtHXEr/A/htI6j
-         iqjw==
-X-Gm-Message-State: AOJu0YxIySogvUtmPbtC05F4sYG6RCswwr6adww+rLg3TPR0GIFJ1QUV
-	Pkb9OUAJ4b6YO21NwXcQQ9l6+FlqENY3cwCjc6L2JOMF8DDHE7lU
+        bh=3hjyRNvMZXMYBEm5NP3z8RmRqPF9CkIDkfVc08IOZB8=;
+        b=mLEKQSXOQwTTBF3fbHc/LfUVqVxELsKF8WcrbqDPy3MSHbI7i/RQpZxWlebFGp4qPp
+         nP0h7P1P39ETISaVCRTl49dCY0GTqZBLpf9yb0z9lOkb4lmBigbZyFq+b7GMJ5nMg3mw
+         4NBAe9deEPfGWZD1OBx7eIRNqtXsIRevh/ol0BywG9GpCob+HZLQZLNQRWQXfpFsLi+g
+         aGALi+3c0b6Bh2yDVm6ZPeisqntupfjby7pQ2RNaEVl7iOnymfCv4SXgBVvEvOs5BLwb
+         FNpaQfni4ELRXcdoSY8eCDmMztfqikfvV7lnc9qzLQiP1aK+tf/tsYHIA1NdgORx1GkF
+         mz9w==
+X-Gm-Message-State: AOJu0YxlsWd3LQKWgcQiK5O1ZBTgx8ZNxzjVJ3ItzhwRKcRGndgwAinB
+	D7yY5LTGqo1c7W15pE5cCrZ29OgjMImNro56SMVhXg/ETobKcird3WZajXYE
 X-Google-Smtp-Source: 
- AGHT+IHpV6OONoKSXjg7fmv0v4P9t/xb/YGq3hRdnf4TgeAqAi3cLe0CsUSlt5CpfgVGn9qzjXc4Sw==
-X-Received: by 2002:a17:907:724c:b0:a6c:8b01:3f78 with SMTP id
- a640c23a62f3a-a75144630ddmr1006920266b.9.1720023677891;
-        Wed, 03 Jul 2024 09:21:17 -0700 (PDT)
+ AGHT+IFOgOBRrS9IUtn6qtfyrq5vCvZtNpLMPWCmi322966ijwSGZ4lwhvUtQ+TzJoBprglknSsVuA==
+X-Received: by 2002:a17:906:455a:b0:a77:b249:7845 with SMTP id
+ a640c23a62f3a-a77b24978dfmr6398866b.68.1720023675011;
+        Wed, 03 Jul 2024 09:21:15 -0700 (PDT)
 Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at.
  [91.118.163.37])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a72b5abddaesm473075166b.140.2024.07.03.09.21.16
+ a640c23a62f3a-a72b5abddaesm473075166b.140.2024.07.03.09.21.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 09:21:17 -0700 (PDT)
+        Wed, 03 Jul 2024 09:21:14 -0700 (PDT)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Wed, 03 Jul 2024 18:21:00 +0200
-Subject: [PATCH 4/9] ASoC: cs53l30: Constify struct regmap_config
+Date: Wed, 03 Jul 2024 18:20:58 +0200
+Subject: [PATCH 2/9] ASoC: cs35l35: Constify struct regmap_config
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240703-sound-const-regmap_config-v1-4-2e379b0446a7@gmail.com>
+Message-Id: <20240703-sound-const-regmap_config-v1-2-2e379b0446a7@gmail.com>
 References: <20240703-sound-const-regmap_config-v1-0-2e379b0446a7@gmail.com>
 In-Reply-To: <20240703-sound-const-regmap_config-v1-0-2e379b0446a7@gmail.com>
 To: David Rhodes <david.rhodes@cirrus.com>,
@@ -104,11 +104,11 @@ Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  linux-mips@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1720023669; l=714;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1720023669; l=727;
  i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=4sjnkaXwLNp7p5DTjkC6jZAwMMW/qwiVCY05YVLu0yc=;
- b=JQkgJLw1miJzjpf5mCChsQHJZ0BOe0MkRMyozKA01N2dFbb36jeC4afQ69b/KKR93UYuvPuKy
- MKMLpuKq21kC/iZQM1qW5tCvHq16FYDlHoRrDIXYg66TIxHVE7eZiDl
+ bh=NwcjSKqDE0VK2dDbdmqM/92kBglAO28ukjiQXm09KUU=;
+ b=qRGQKMbhjYvNJI99p/tB7KMd8jCtxTve1uuNNnquwCevb6IQukXQIFf3b4dH2atJCTqzqRdZG
+ i9gkyQUG0ToAAElojBWoubl2XVu3HmlbhADGvlciUCcyvbujH5dzuD8
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 X-MailFrom: javier.carrasco.cruz@gmail.com
@@ -117,15 +117,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: JETUXSOTE2RJSYRXDOZAU7U5QYTQL4PW
-X-Message-ID-Hash: JETUXSOTE2RJSYRXDOZAU7U5QYTQL4PW
+Message-ID-Hash: ZJEAAUOXKGVKPYUOR7F4WQ7HXBOSYWRO
+X-Message-ID-Hash: ZJEAAUOXKGVKPYUOR7F4WQ7HXBOSYWRO
 X-Mailman-Approved-At: Tue, 09 Jul 2024 15:48:36 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JETUXSOTE2RJSYRXDOZAU7U5QYTQL4PW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJEAAUOXKGVKPYUOR7F4WQ7HXBOSYWRO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,24 +134,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-`cs53l30_regmap` is not modified and can be declared as const to move
+`cs35l35_regmap` is not modified and can be declared as const to move
 its data to a read-only section.
 
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- sound/soc/codecs/cs53l30.c | 2 +-
+ sound/soc/codecs/cs35l35.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index 2ee13d885fdc..bcbaf28a0b2d 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -900,7 +900,7 @@ static const struct snd_soc_component_driver cs53l30_driver = {
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index c39b3cfe9574..7a01b1d9fc9d 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -1086,7 +1086,7 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l35 = {
  	.endianness		= 1,
  };
  
--static struct regmap_config cs53l30_regmap = {
-+static const struct regmap_config cs53l30_regmap = {
+-static struct regmap_config cs35l35_regmap = {
++static const struct regmap_config cs35l35_regmap = {
  	.reg_bits = 8,
  	.val_bits = 8,
  
