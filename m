@@ -4,94 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4F76C30653
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 12:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2064AC30653
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jul 2024 12:16:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27F2514E8;
-	Wed,  3 Jul 2024 14:16:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27F2514E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AEE3B60;
+	Wed,  3 Jul 2024 14:16:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AEE3B60
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720009007;
-	bh=DS/IDp+LqdRHE3mvtnrgUtVAz5GNkmhuj8B4aFV9euQ=;
+	s=default; t=1720009013;
+	bh=kohttqfCWrqbGc8ure/Vt69RKlLKq333AiDxnpMSqxs=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WqJDY1YegV7R8tS++8JY+Gq1uuncRh6LPFRmxEyXoTSXbb/VOkU16jhLaVR3st+pf
-	 KtWW949oywxoJ+8Q33/n0P0yrZXftbC8Pf9sqOleAVfzrlXT387F+me7W7sqxWQyky
-	 9DWFH9WZS56y3ktB4/W09i9D8l7E90OCVTp7g84Y=
+	b=afCEpo1Cny9u/PSxFVUFwDLGm3Fh0GvUY/+HYH0RqtvF1YpT6Xmf4qC7tyht51UOJ
+	 1tNevr0z/aVw18yag9syZKiGDvl/6XNvN2PBCWKvQrrvvG4tGjw7jb4d4o8c+bB53l
+	 2dol8jDVsX9c8T2gbOO2JAhWPEfHeeKh1Rbi7IQE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D7E6F806DE; Wed,  3 Jul 2024 14:14:17 +0200 (CEST)
+	id 5FBFDF80714; Wed,  3 Jul 2024 14:14:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60069F806C2;
-	Wed,  3 Jul 2024 14:14:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1B07F806F5;
+	Wed,  3 Jul 2024 14:14:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 044EDF8025E; Wed,  3 Jul 2024 14:13:50 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+	id AA205F8014C; Wed,  3 Jul 2024 14:13:52 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DCC82F800FE
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 14:11:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCC82F800FE
+	by alsa1.perex.cz (Postfix) with ESMTPS id ECFB6F80272
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jul 2024 14:11:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECFB6F80272
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=uAZHHVVD
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-424ad991cbbso41182375e9.0
+ header.s=google header.b=x+6A4/vQ
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-42567ddf099so37061395e9.3
         for <alsa-devel@alsa-project.org>;
- Wed, 03 Jul 2024 05:11:18 -0700 (PDT)
+ Wed, 03 Jul 2024 05:11:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1720008678; x=1720613478;
+        d=linaro.org; s=google; t=1720008675; x=1720613475;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=V81m9R3WE5N86wntgnBniIBHNui3TaNJXIYWRSi4OAc=;
-        b=uAZHHVVDpfwPC7bD9Mru9q02duUantYu6+IKyZ5vQwjjGLAYBbeDQc37PD6E6buCIW
-         VP2nFyoULwiS3qBMpQ02G/u60yZDQjU688zIZSkE+XqofWgjh5aow4aBWOcPkJc0JPVz
-         9eumhrd5qkvQ28OwwL/d+K4wmqiIXOT08moDZrqxXQHG6lZ63sLAHmAsu2TQM6cblYGH
-         lBkCUi42rKZ4QirjjqG/rDzSADI9m8Kuxfwu8THTUrsZRPbF6JiZXNuGOGbjZfQkWInH
-         gwXtj7o+vBfsz+gWGC44YRDYW0dm4TpJ1eBnKFr89TwHWN3e0Al3n8581bnCDUHFFMou
-         3l+w==
+        bh=rdbATdFaTptmFaDd3LBcoz91pHQr1cKSbt3yHXPYoFA=;
+        b=x+6A4/vQNGg/KKQj7Io+EtNexfxm+35MNZ70+f4nPuqgRlRN/qi94LbyT4ue7V+yBY
+         lT1fiIJZLAqYM/IjSwh8VNODJ9rpVKsFqG41aqyRYrSTfaXIXELpn+m8ljAzac4FT39J
+         wLN6A4+IAmBSj3bvtpwWXwng63jOoCj01ijQXE7er4Ha2kdVEa/fS8PcaVpVuBwiNjP0
+         Hm98wett7h9Oz83/RKz1uJRLysL8HJnZCs5VBAqC3tB0GK1xtVgcnZxNq8d7163pzr4d
+         WVloVvFsew2h2521zPxQVjMWGVTyviMdR225s5w78q/QeolXMGOIojejIHkD3pexM4e6
+         KnvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720008678; x=1720613478;
+        d=1e100.net; s=20230601; t=1720008675; x=1720613475;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V81m9R3WE5N86wntgnBniIBHNui3TaNJXIYWRSi4OAc=;
-        b=rFbd07vXSQ84u4GCjxC/efB1p4xIWD5sOik9zN44ZjuVTYWHitpahtmQXTXBa4/qpA
-         Nhflg9eysO3p4vl4npsqS61psWbJyORe27CNAlU93kBffQAwQYha9USeZQMy6g4Rmk4U
-         ejXsWW8R2JT8A7VrZeArUhr8yhijZqU7BGY9ZtcNewsWO1TF/Mx0m4JDl8/diojfmCiW
-         jM8A+5q2B7rc4n2D8+b4ZlW5qYxktIGAyJMmt1SB8KHhhZeGyh5ekSumhYt9TOeIuYgT
-         utzUCTb9Rg15cp47WKKP68ntYzq9qr12aM77WAOG5zpcTv+SXw3eEx7y+kJKONl3w8fk
-         a/0A==
+        bh=rdbATdFaTptmFaDd3LBcoz91pHQr1cKSbt3yHXPYoFA=;
+        b=vRgeJpIwjbkO27wLpQmc5zWyBMPqwakmCVIZiCtxTY4Qi6hTMNudu/4ZaldJpK0TNx
+         9sj/DbfG/s9u70y1h+THBomFb8zhFO6P12xosiurEEcJzpdgsKEfbydV+dD0MCd8SIt/
+         1tsFeQqXahj5JrR8/swkzswxcL0t3eHcyX+cujtsDFNH5Af1Q9fo4IqZL6rsHG5fWs9C
+         kd7SGkFETtVGfNVUG7Vm2gPd8okaMh9hzmAttkNwjymc3FUY0XgwwSy7yZ8y6Cglr6ig
+         jisxcE/CH1pbNH9dBHwbjj2xHhHFtRq5EPsZKQTSp0vjVMYCquKLzkgHBFY9zgLmD9xw
+         B69g==
 X-Forwarded-Encrypted: i=1;
- AJvYcCU5QxuB31QhTILuwk6vko46ABOSziGpp9YfPUZrV+D11fyIlnrDbUeu3gLix2czZHszWtmhKj1fY6oax/73kQL4dvRYkcKh+Cz8ntc=
-X-Gm-Message-State: AOJu0Yywmg8VaKUJXRrzShsEq1pFljLbWbo+pVYxpi8iqRxPywizHWex
-	rwFYMVuCHWdQIOTf8F/yZlfEtpltRpv8wJLOuvS1ASKqydGAOYbBkHHWXZhnsbc=
+ AJvYcCX3vo+h8Hh6eKDuuBrJkjwx6ZZaE1TZ3sNZfzADslay4iGjL9xw1gwWrZl9S8Cl2Ky3IXove9rQaOvUo2H+jBX03cEIXwvh4d1DBZQ=
+X-Gm-Message-State: AOJu0YwRZfQulEHkXIpncf4bbDi8q8tfyP2z2JRCFC5cKrxwZl4T8oqF
+	lmMU7+Dt+YNSEVyJJli7RMgHTY7+Xuiv9iujKhiwuCbuuTRVmPUq6xzt+2bw1PE=
 X-Google-Smtp-Source: 
- AGHT+IEy3cvbIPXgRehmrxbeY1VP2hPk71QJIpRF5k9fYxa9g3eh0P0YLDcrqZVRfqAtmQR/bgW1Eg==
-X-Received: by 2002:a5d:58c8:0:b0:367:4d9d:569e with SMTP id
- ffacd0b85a97d-3677573211fmr7148838f8f.71.1720008677736;
-        Wed, 03 Jul 2024 05:11:17 -0700 (PDT)
+ AGHT+IGrLsHp3VA6L8jTQ5ej6pjKRa1e82AI7Hd2/DqZYivIJ2FyYoGUJpc1Ou30fG1o2MruG9SS7g==
+X-Received: by 2002:a05:600c:4c14:b0:424:abd7:2321 with SMTP id
+ 5b1f17b1804b1-4257a00dc53mr75429565e9.12.1720008674781;
+        Wed, 03 Jul 2024 05:11:14 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3675a10307bsm15716222f8f.94.2024.07.03.05.11.16
+ ffacd0b85a97d-3675a10307bsm15716222f8f.94.2024.07.03.05.11.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 05:11:17 -0700 (PDT)
+        Wed, 03 Jul 2024 05:11:14 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 03 Jul 2024 14:11:00 +0200
-Subject: [PATCH 06/11] ASoC: audio-graph-card: Use cleanup.h instead of
- devm_kfree()
+Date: Wed, 03 Jul 2024 14:10:58 +0200
+Subject: [PATCH 04/11] ASoC: codecs: wcd934x: Simplify with cleanup.h
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240703-asoc-cleanup-h-v1-6-71219dfd0aef@linaro.org>
+Message-Id: <20240703-asoc-cleanup-h-v1-4-71219dfd0aef@linaro.org>
 References: <20240703-asoc-cleanup-h-v1-0-71219dfd0aef@linaro.org>
 In-Reply-To: <20240703-asoc-cleanup-h-v1-0-71219dfd0aef@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -102,25 +101,25 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1357;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2346;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=DS/IDp+LqdRHE3mvtnrgUtVAz5GNkmhuj8B4aFV9euQ=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhT/WXyjhdMmNo0GaMA/nQmQHmNLei7121GkMX
- 9CXdHbwkg2JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoU/1gAKCRDBN2bmhouD
- 1zySD/9moQASzEdIyJNIMW/1XTuG74QTsA+WHBfP/SMJNsQ14mbjd5gXLpmMxWJ5nTj2Tn3HvqP
- FGGryHmFFr3jexVUU5Ueq8LvG8EfsLNZLrGhJQdeTGo5CPdCR00RvhkIWBBzvT8r3ix7fltedvS
- KD79KoVa6+ARsgBCqGNmzmfaiUjsOTIyfzG4BX3lHtBoJ01r6g2HhjStY2Tp6xvqQlHvG8S12md
- pBW8QUI1YM+gk6L0L/wSzBMIb6C5q7aTJpRjY4rAP5267YeLa/m994LCzRcjHz8DYihyO3AlxfX
- wvrHCLk89XyUuS+LavCeHanMxHB0/AlaEeF8eE9vtudNWKrTFhQU0w26qVqWHq9lVw3C+jqqs4x
- GgpgQgl6k3QzHJQziZ05kyolA/N0hPYuPGBUGxjgJZVn4/q8FuaB4VYlJfmocBRNJe4kYJnUqXI
- 5azhw7+mDi7iJSMQe1QazVFW0Q8M5JuEc6lRRggJ8ZH6+lTqnUn6UtPM4EQGzqytgduJXtaXm7z
- XWERZodnnF9NJ4B3YEaCO47KNoW/ZRxGgXAviKq7L8U4uaxuKV7Qgvk2rLNaqzOKAkPV1lzcmLO
- 0s5ffkOj2vDYNcjqLFht/W2+R8i97qRsLWTf7l9GWinkLTZSaTTJYXVoK0fhKqpjTs4eM3roqP3
- SVE73xekq9kTZcA==
+ bh=kohttqfCWrqbGc8ure/Vt69RKlLKq333AiDxnpMSqxs=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmhT/Up3Lhqw1lG8hf6t79kWGG+4wCsdFcumtsc
+ T9S3yaOibyJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZoU/1AAKCRDBN2bmhouD
+ 18TVD/sFzG/Chwmi1OFCni8P6wToAEF0mWU3fsKO4cdcBdThHB5JG0otzPtaSKk/NngKHF8qFYx
+ 7bXfnXw65p0AIzyIi+K/KT/HS2JqWziHSf8ztIiu/eMt3jxbSaC71V5k1gfSZxJEvLNMIcBUOhU
+ s8IQoNsMSSatumy4nLovUfHNChCas82BtISCmoEpHftZIr4FJZ1G5mGgJWWdX2wbxBia3stm11X
+ VYBQxG18BC7NsyLY0Y0KVdOOMNYbB4zOJYCA96xlTzOwiWz0etfgvArlb7y5nl1pq7HdGoJ7NTm
+ hrX4nR5SaQudQg1PWP7HlVuOtyYH4DmGw4PNaV/7CImP+hPBSh5bHjp3PpDMOcHLcyVmX/xu5Mk
+ nJ0kAi4Yyqo33sFw5jKjCDtMmy3C065QqrP4gpssMYt+yVluRTme+gD6VXEufkCLn1HXiWkET3Y
+ 2tYePWhNHAWy2r1kLkVLmEJUnICPHQh3KV8gRdsE58tTNb2CUIKALHqTzKVMn5PvY/DD6rW5ze2
+ 1ypvy76pvgSdXSz8O1ZlRw4m/LfpkUWp3PhaD7GyzsHE3gDnXakzA/PySna6wcTQl2a8jJKBIQr
+ f6fwRFI8zzDPmUpI8d/ixZSZNGdMOtURZgzK5GYpzsyfgq0m6s2IP6rI7FXctnclehMYDltwEAR
+ 8r+c07k6ETwUrSQ==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: XKHQL2VGX455OXRNXOJFXFJZB6FSZYFR
-X-Message-ID-Hash: XKHQL2VGX455OXRNXOJFXFJZB6FSZYFR
+Message-ID-Hash: LLOOJI5GGRASWR3NIQSU755BGFD3FI3Z
+X-Message-ID-Hash: LLOOJI5GGRASWR3NIQSU755BGFD3FI3Z
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +132,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XKHQL2VGX455OXRNXOJFXFJZB6FSZYFR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LLOOJI5GGRASWR3NIQSU755BGFD3FI3Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,46 +141,86 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allocate the memory with scoped/cleanup.h, instead of devm interface, to
-make the code more obvious that memory is not used outside this scope.
+Allocate the memory with scoped/cleanup.h to reduce error handling (less
+error paths) and make the code a bit simpler.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/generic/audio-graph-card.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wcd934x.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index acf7d92d21e6..3425fbbcbd7e 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -7,6 +7,7 @@
- //
- // based on ${LINUX}/sound/soc/generic/simple-card.c
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index 6c65b46e2dc9..291d0c80a6fc 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2019, Linaro Limited
  
 +#include <linux/cleanup.h>
  #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/gpio/consumer.h>
-@@ -573,10 +574,9 @@ static int graph_get_dais_count(struct simple_util_priv *priv,
- int audio_graph_parse_of(struct simple_util_priv *priv, struct device *dev)
- {
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
--	struct link_info *li;
- 	int ret;
+ #include <linux/clk-provider.h>
+ #include <linux/interrupt.h>
+@@ -4973,25 +4974,23 @@ static int wcd934x_codec_enable_dec(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+ 	unsigned int decimator;
+ 	char *dec_adc_mux_name = NULL;
+-	char *widget_name = NULL;
+-	char *wname;
++	char *widget_name;
+ 	int ret = 0, amic_n;
+ 	u16 tx_vol_ctl_reg, pwr_level_reg = 0, dec_cfg_reg, hpf_gate_reg;
+ 	u16 tx_gain_ctl_reg;
+ 	char *dec;
+ 	u8 hpf_coff_freq;
  
--	li = devm_kzalloc(dev, sizeof(*li), GFP_KERNEL);
-+	struct link_info *li __free(kfree) = kzalloc(sizeof(*li), GFP_KERNEL);
- 	if (!li)
+-	widget_name = kstrndup(w->name, 15, GFP_KERNEL);
+-	if (!widget_name)
++	char *wname __free(kfree) = kstrndup(w->name, 15, GFP_KERNEL);
++	if (!wname)
  		return -ENOMEM;
  
-@@ -628,7 +628,6 @@ int audio_graph_parse_of(struct simple_util_priv *priv, struct device *dev)
- 	if (ret < 0)
- 		goto err;
+-	wname = widget_name;
++	widget_name = wname;
+ 	dec_adc_mux_name = strsep(&widget_name, " ");
+ 	if (!dec_adc_mux_name) {
+ 		dev_err(comp->dev, "%s: Invalid decimator = %s\n",
+ 			__func__, w->name);
+-		ret =  -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 	dec_adc_mux_name = widget_name;
  
--	devm_kfree(dev, li);
- 	return 0;
+@@ -4999,16 +4998,14 @@ static int wcd934x_codec_enable_dec(struct snd_soc_dapm_widget *w,
+ 	if (!dec) {
+ 		dev_err(comp->dev, "%s: decimator index not found\n",
+ 			__func__);
+-		ret =  -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
  
- err:
+ 	ret = kstrtouint(dec, 10, &decimator);
+ 	if (ret < 0) {
+ 		dev_err(comp->dev, "%s: Invalid decimator = %s\n",
+ 			__func__, wname);
+-		ret =  -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	tx_vol_ctl_reg = WCD934X_CDC_TX0_TX_PATH_CTL + 16 * decimator;
+@@ -5101,8 +5098,7 @@ static int wcd934x_codec_enable_dec(struct snd_soc_dapm_widget *w,
+ 					      WCD934X_DEC_PWR_LVL_DF);
+ 		break;
+ 	}
+-out:
+-	kfree(wname);
++
+ 	return ret;
+ }
+ 
 
 -- 
 2.43.0
