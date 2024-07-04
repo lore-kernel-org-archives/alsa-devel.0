@@ -4,73 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20DDBC30653
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jul 2024 09:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41D6AC3065C
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jul 2024 09:00:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0A3BE7D;
-	Thu,  4 Jul 2024 11:00:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0A3BE7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 735BBE8E;
+	Thu,  4 Jul 2024 11:00:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 735BBE8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720083619;
-	bh=WbXzrLYbelpWYb+vWRColZJQkfGtkoJg8hCor2oynf8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1720083642;
+	bh=tqqJI6wD144Ba0q2mBEunzNzlWBhDW4D6RtTx5VSFGA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vW+2ascOfaY0puY69Xhqtk0EUlXLSScEOLe8k/3fCKY45Tz2mQ+Mu1Gj8PW/vu00o
-	 gpsP0wOgiDUEs5iQ3zFj62Zjb8Om82UitLRIRxDNQ7ozU6i9AHxv5aJPqKczY7/Lrm
-	 fLZIH8VmfWzgJEUwRZJfC53eeP5CMwe/jCgHdxSA=
+	b=r/W3EW12+78xpzHDnV7e5tUSqtFM0NE81oICmDB/u6CYYXhcCMt6DwNbZBf2YlkSS
+	 UH86Lqn9LCHP8Sa+SYmDrUFz0rqb+bRVUGlY/sGICrcwxvAEBpz3MWwuY4Tu++okaB
+	 uz85LmRBrFMAnJxqS1wHiBWZDRqB7yQO1c+UP3NA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7DF49F8061A; Thu,  4 Jul 2024 10:59:01 +0200 (CEST)
+	id 48379F8061C; Thu,  4 Jul 2024 10:59:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CCC0F8061F;
-	Thu,  4 Jul 2024 10:59:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E792EF80654;
+	Thu,  4 Jul 2024 10:59:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43B19F80508; Thu,  4 Jul 2024 10:56:00 +0200 (CEST)
-Received: from disco.pogo.org.uk (disco.pogo.org.uk [93.93.128.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0BFC9F804FC; Thu,  4 Jul 2024 10:56:15 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 121D3F8014C
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2024 10:55:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 121D3F8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19652F800FA
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2024 10:54:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19652F800FA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=xwax.org header.i=@xwax.org header.a=rsa-sha256
- header.s=swing header.b=HYF35//5
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xwax.org;
-	s=swing; h=Content-Type:MIME-Version:References:Message-ID:In-Reply-To:
-	Subject:cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description; bh=Mg5N1u3NQwC0syyKbSSGXV2bOG4ZP1SInZ/6+jwqoRE=; b=HYF35
-	//55ipLifYlR5Cr36CmvuBr6m7/FGtH91JJ0Carn1SD9pDdd8ZiVjE/mhKiXehddjTMkN/ol7Z1ZG
-	ADvidtbirlngCNUJaGnOdypeWsxqfaJ8qbSXUpFRWPhQLZTVVE3hc8tzibF0ftLbk0+9P9Tam3EH8
-	o4MWgWbF3RXU=;
-Received: from cpc93786-hari17-2-0-cust786.20-2.cable.virginm.net
- ([82.36.99.19] helo=tamla)
-	by disco.pogo.org.uk with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.97.1 (FreeBSD))
-	(envelope-from <mark@xwax.org>)
-	id 1sPIFo-000000007H5-3d36;
-	Thu, 04 Jul 2024 09:55:48 +0100
-Received: from localhost (tamla.localdomain [local])
-	by tamla.localdomain (OpenSMTPD) with ESMTPA id 715619dd;
-	Thu, 4 Jul 2024 09:55:33 +0100 (BST)
-Date: Thu, 4 Jul 2024 09:55:33 +0100 (BST)
-From: Mark Hills <mark@xwax.org>
-To: Asahi Lina <lina@asahilina.net>
-cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-    Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Handling complex matrix mixers in ALSA
-In-Reply-To: <48beda37-1795-4d48-987d-1e2582cb3a18@asahilina.net>
-Message-ID: <5e0a07da-c5d2-1209-0f26-d164f25a31f1@xwax.org>
-References: <48beda37-1795-4d48-987d-1e2582cb3a18@asahilina.net>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=AsMuDZ6J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720083247; x=1751619247;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=tqqJI6wD144Ba0q2mBEunzNzlWBhDW4D6RtTx5VSFGA=;
+  b=AsMuDZ6Jd6NZPEwfh+mhFnwYuEaOgEjDdLwfN/mL1y4fCPqSLoyImBMG
+   y+0MIWt+9MSUlt93DXWjS2zjur6N8lCx5yyHbqNt9l7iDpKMwQEx29Jg0
+   iaV1vxctQvh0nGD0MaqEBGkxliQx7mqNd/MPR/mTqi0FmJtcLK2n6B+mN
+   vKczR6JowWxr3QNkGGfcIdhrQLOEkWKrNnwGqJ+5icf34IGNuvI/Cf4O2
+   KDOB3weVKESTb2iAtD1/lgZzDDizRSnUge7OrpUPgj9wxCScdcqhgqfgM
+   QyeWUOFvO63Iglty5SwQ6ktBO8umzDLiFbUETvh4nt9JVxJ0YAjTmEUWu
+   g==;
+X-CSE-ConnectionGUID: OJGlvTDXSMCMe7M6pppCXA==
+X-CSE-MsgGUID: HbUqpysLQY2VrLZJnsLUOg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11122"; a="17300630"
+X-IronPort-AV: E=Sophos;i="6.09,183,1716274800";
+   d="scan'208";a="17300630"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jul 2024 01:54:02 -0700
+X-CSE-ConnectionGUID: xTETAE2ZTNaJKvgcdcv0wQ==
+X-CSE-MsgGUID: l7GzGtQ9SK6N+9G7AgNkiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,183,1716274800";
+   d="scan'208";a="51708597"
+Received: from bergbenj-mobl1.ger.corp.intel.com (HELO
+ pbossart-mobl6.intel.com) ([10.245.246.90])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jul 2024 01:53:58 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: linux-sound@vger.kernel.org
+Cc: alsa-devel@alsa-project.org,
+	tiwai@suse.de,
+	broonie@kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 5/6] ASoC: Intel: soc-acpi-intel-ptl-match: Add rt722
+ support
+Date: Thu,  4 Jul 2024 10:53:29 +0200
+Message-ID: <20240704085330.371332-6-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240704085330.371332-1-pierre-louis.bossart@linux.intel.com>
+References: <20240704085330.371332-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID-Hash: WJRA5S2HSG6HFYS7FLJKI7WZJKH4VXDN
-X-Message-ID-Hash: WJRA5S2HSG6HFYS7FLJKI7WZJKH4VXDN
-X-MailFrom: mark@xwax.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ULKHOZ53IO5RW5MILS5PJJVS3ZRKYHVP
+X-Message-ID-Hash: ULKHOZ53IO5RW5MILS5PJJVS3ZRKYHVP
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -82,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WJRA5S2HSG6HFYS7FLJKI7WZJKH4VXDN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ULKHOZ53IO5RW5MILS5PJJVS3ZRKYHVP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,36 +112,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 1 Jul 2024, Asahi Lina wrote:
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-[...]
-> The problem is that the device has a 66x34 matrix mixer, with up to 2048
-> cross points enabled at once. Exposing each cross point as an ALSA mixer
-> control (similar to how mixer_scarlett2.c does it) would mean 2244
-> controls just for the mixer... which seems like a bit too much.
-> 
-> On top of that there is also VU meter feedback for all the
-> inputs/outputs, as well as general fader controls for each output and
-> global output configs and status. I'm not sure about the VU meters, but
-> everything else sounds like it would map fine to normal mixer controls.
-> 
-> Is there some recommended way to expose this kind of matrix mixer
-> interface to userspace?
+This patch adds match table for rt722 multiple
+function codec on link 0.
 
-I don't know if it's recommended practice, but the echo3g driver may be a 
-prior art as it has a working matrix mixer for the Layla, and the 
-corresponding echomixer in alsa-tools.
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ .../intel/common/soc-acpi-intel-ptl-match.c   | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-> I think for something like this you pretty much have to rely on 
-> device-specific tools to make the UX manageable
-
-For a full UX, perhaps. But the concept of a matrix mixer itself is 
-general enough.
-
-Perhaps there could be a UI tool which is self contained with one purpose, 
-to control a 'standard' matrix mixer. It could be invoked alongside 
-alsamixer or other mixer tool, and multiple times if there are multiple 
-matrix mixers on a piece of hardware.
-
+diff --git a/sound/soc/intel/common/soc-acpi-intel-ptl-match.c b/sound/soc/intel/common/soc-acpi-intel-ptl-match.c
+index ce4234fd3895..d01646f52d1f 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-ptl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-ptl-match.c
+@@ -22,6 +22,31 @@ static const struct snd_soc_acpi_endpoint single_endpoint = {
+ 	.group_id = 0,
+ };
+ 
++/*
++ * RT722 is a multi-function codec, three endpoints are created for
++ * its headset, amp and dmic functions.
++ */
++static const struct snd_soc_acpi_endpoint rt722_endpoints[] = {
++	{
++		.num = 0,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{
++		.num = 1,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{
++		.num = 2,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++};
++
+ static const struct snd_soc_acpi_adr_device rt711_sdca_0_adr[] = {
+ 	{
+ 		.adr = 0x000030025D071101ull,
+@@ -31,6 +56,24 @@ static const struct snd_soc_acpi_adr_device rt711_sdca_0_adr[] = {
+ 	}
+ };
+ 
++static const struct snd_soc_acpi_adr_device rt722_0_single_adr[] = {
++	{
++		.adr = 0x000030025d072201ull,
++		.num_endpoints = ARRAY_SIZE(rt722_endpoints),
++		.endpoints = rt722_endpoints,
++		.name_prefix = "rt722"
++	}
++};
++
++static const struct snd_soc_acpi_link_adr ptl_rt722_only[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt722_0_single_adr),
++		.adr_d = rt722_0_single_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_link_adr ptl_rvp[] = {
+ 	{
+ 		.mask = BIT(0),
+@@ -67,6 +110,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_ptl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-ptl-rt711.tplg",
+ 	},
++	{
++		.link_mask = BIT(0),
++		.links = ptl_rt722_only,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-ptl-rt722-l0.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_ptl_sdw_machines);
 -- 
-Mark
+2.43.0
+
