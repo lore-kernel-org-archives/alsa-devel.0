@@ -4,93 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDEFAC3271F
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jul 2024 09:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20DDBC30653
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jul 2024 09:00:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DA0BEF2;
-	Thu,  4 Jul 2024 10:59:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DA0BEF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0A3BE7D;
+	Thu,  4 Jul 2024 11:00:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0A3BE7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720083601;
-	bh=TFp9KTxFH8YkiPBoejjkkcdXXFeSeaXuTbZHmIoFrOs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1720083619;
+	bh=WbXzrLYbelpWYb+vWRColZJQkfGtkoJg8hCor2oynf8=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KjG+z67tT492WWFF9kfAWY27xgIuS6fQjxMKUcpX95ZoB8HRU/VW8aFdQEWhG8mxY
-	 l4z/stcSQPAK2F6ADsuwgpaMFxEkIaFxHUxAS7PbDKr3Hz7vqE1kL6LJwp7Bxew3XG
-	 5pjSCRduVgb+mmwd43cfBWaPsGfnOAU2p0x2rM+U=
+	b=vW+2ascOfaY0puY69Xhqtk0EUlXLSScEOLe8k/3fCKY45Tz2mQ+Mu1Gj8PW/vu00o
+	 gpsP0wOgiDUEs5iQ3zFj62Zjb8Om82UitLRIRxDNQ7ozU6i9AHxv5aJPqKczY7/Lrm
+	 fLZIH8VmfWzgJEUwRZJfC53eeP5CMwe/jCgHdxSA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F7B7F805E2; Thu,  4 Jul 2024 10:59:00 +0200 (CEST)
+	id 7DF49F8061A; Thu,  4 Jul 2024 10:59:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 180C1F80601;
-	Thu,  4 Jul 2024 10:59:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CCC0F8061F;
+	Thu,  4 Jul 2024 10:59:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5276F80508; Thu,  4 Jul 2024 10:54:20 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 43B19F80508; Thu,  4 Jul 2024 10:56:00 +0200 (CEST)
+Received: from disco.pogo.org.uk (disco.pogo.org.uk [93.93.128.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E68CCF8025E
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2024 10:53:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E68CCF8025E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 121D3F8014C
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jul 2024 10:55:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 121D3F8014C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=d5UuZ2yM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1720083237; x=1751619237;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TFp9KTxFH8YkiPBoejjkkcdXXFeSeaXuTbZHmIoFrOs=;
-  b=d5UuZ2yMtQhrC+DZbG02kIxeY3UtwgNfQpTvai2gGgkVKwaAwmKlJ2R8
-   kArRINlkXFrHxFJ3Tr7Bw8K688Ye/viiydVTSWyiuIwm16tPA03MyjzNS
-   s9yJKjn3RjvCFHqGaJJl4xvPGwKcAykiINx6mAcsdwrfh1MF0tvGKs5eV
-   WNUK9Ia6lOSECqiH8/YxR9xEgYQRzZ4HIh0glNyrSbqe2jrsxOqOyf7EV
-   zYgxsm7dYltbBP0zjuya2qdM9URDa61XYuuJFbZw4EXNhXKKtX/gi9Gy0
-   zke+5sEpyDezyEL/25R2QeIaS9A0074XWXiD3PiNXZOqp0JGWOxYNvR7I
-   A==;
-X-CSE-ConnectionGUID: aRjeTPfwQkeCqcHcT3UUKw==
-X-CSE-MsgGUID: uP34ZO3AQN6+JPC1AeFpgg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11122"; a="17300603"
-X-IronPort-AV: E=Sophos;i="6.09,183,1716274800";
-   d="scan'208";a="17300603"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2024 01:53:54 -0700
-X-CSE-ConnectionGUID: OqDSlWtaTteD9puN6w6JaQ==
-X-CSE-MsgGUID: PrG8aF5TSmi5SkTPrfHNTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,183,1716274800";
-   d="scan'208";a="51708555"
-Received: from bergbenj-mobl1.ger.corp.intel.com (HELO
- pbossart-mobl6.intel.com) ([10.245.246.90])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2024 01:53:51 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: linux-sound@vger.kernel.org
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	broonie@kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH v3 3/6] ASoC: SOF: Intel: add initial support for PTL
-Date: Thu,  4 Jul 2024 10:53:27 +0200
-Message-ID: <20240704085330.371332-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240704085330.371332-1-pierre-louis.bossart@linux.intel.com>
-References: <20240704085330.371332-1-pierre-louis.bossart@linux.intel.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=xwax.org header.i=@xwax.org header.a=rsa-sha256
+ header.s=swing header.b=HYF35//5
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xwax.org;
+	s=swing; h=Content-Type:MIME-Version:References:Message-ID:In-Reply-To:
+	Subject:cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description; bh=Mg5N1u3NQwC0syyKbSSGXV2bOG4ZP1SInZ/6+jwqoRE=; b=HYF35
+	//55ipLifYlR5Cr36CmvuBr6m7/FGtH91JJ0Carn1SD9pDdd8ZiVjE/mhKiXehddjTMkN/ol7Z1ZG
+	ADvidtbirlngCNUJaGnOdypeWsxqfaJ8qbSXUpFRWPhQLZTVVE3hc8tzibF0ftLbk0+9P9Tam3EH8
+	o4MWgWbF3RXU=;
+Received: from cpc93786-hari17-2-0-cust786.20-2.cable.virginm.net
+ ([82.36.99.19] helo=tamla)
+	by disco.pogo.org.uk with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.97.1 (FreeBSD))
+	(envelope-from <mark@xwax.org>)
+	id 1sPIFo-000000007H5-3d36;
+	Thu, 04 Jul 2024 09:55:48 +0100
+Received: from localhost (tamla.localdomain [local])
+	by tamla.localdomain (OpenSMTPD) with ESMTPA id 715619dd;
+	Thu, 4 Jul 2024 09:55:33 +0100 (BST)
+Date: Thu, 4 Jul 2024 09:55:33 +0100 (BST)
+From: Mark Hills <mark@xwax.org>
+To: Asahi Lina <lina@asahilina.net>
+cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+    Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Handling complex matrix mixers in ALSA
+In-Reply-To: <48beda37-1795-4d48-987d-1e2582cb3a18@asahilina.net>
+Message-ID: <5e0a07da-c5d2-1209-0f26-d164f25a31f1@xwax.org>
+References: <48beda37-1795-4d48-987d-1e2582cb3a18@asahilina.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CAX67RJZOUTMTXEGIFJBF5OAPI4AF6RD
-X-Message-ID-Hash: CAX67RJZOUTMTXEGIFJBF5OAPI4AF6RD
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Message-ID-Hash: WJRA5S2HSG6HFYS7FLJKI7WZJKH4VXDN
+X-Message-ID-Hash: WJRA5S2HSG6HFYS7FLJKI7WZJKH4VXDN
+X-MailFrom: mark@xwax.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CAX67RJZOUTMTXEGIFJBF5OAPI4AF6RD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WJRA5S2HSG6HFYS7FLJKI7WZJKH4VXDN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,236 +91,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Clone LNL for now.
+On Mon, 1 Jul 2024, Asahi Lina wrote:
 
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/intel/Kconfig   | 17 ++++++++
- sound/soc/sof/intel/Makefile  |  2 +
- sound/soc/sof/intel/hda-dsp.c |  1 +
- sound/soc/sof/intel/hda.h     |  1 +
- sound/soc/sof/intel/lnl.c     | 27 ++++++++++++
- sound/soc/sof/intel/pci-ptl.c | 77 +++++++++++++++++++++++++++++++++++
- sound/soc/sof/intel/shim.h    |  1 +
- 7 files changed, 126 insertions(+)
- create mode 100644 sound/soc/sof/intel/pci-ptl.c
+[...]
+> The problem is that the device has a 66x34 matrix mixer, with up to 2048
+> cross points enabled at once. Exposing each cross point as an ALSA mixer
+> control (similar to how mixer_scarlett2.c does it) would mean 2244
+> controls just for the mixer... which seems like a bit too much.
+> 
+> On top of that there is also VU meter feedback for all the
+> inputs/outputs, as well as general fader controls for each output and
+> global output configs and status. I'm not sure about the VU meters, but
+> everything else sounds like it would map fine to normal mixer controls.
+> 
+> Is there some recommended way to expose this kind of matrix mixer
+> interface to userspace?
 
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 3396bd46b778..2c43558d96b9 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -281,6 +281,23 @@ config SND_SOC_SOF_LUNARLAKE
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-+config SND_SOC_SOF_INTEL_PTL
-+	tristate
-+	select SND_SOC_SOF_HDA_COMMON
-+	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
-+	select SND_SOC_SOF_IPC4
-+	select SND_SOC_SOF_INTEL_LNL
-+
-+config SND_SOC_SOF_PANTHERLAKE
-+	tristate "SOF support for Pantherlake"
-+	default SND_SOC_SOF_PCI
-+	select SND_SOC_SOF_INTEL_PTL
-+	help
-+	  This adds support for Sound Open Firmware for Intel(R) platforms
-+	  using the Pantherlake processors.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
- config SND_SOC_SOF_HDA_COMMON
- 	tristate
- 
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-index b56fa5530b8b..f40daa616803 100644
---- a/sound/soc/sof/intel/Makefile
-+++ b/sound/soc/sof/intel/Makefile
-@@ -34,6 +34,7 @@ snd-sof-pci-intel-icl-y := pci-icl.o icl.o
- snd-sof-pci-intel-tgl-y := pci-tgl.o tgl.o
- snd-sof-pci-intel-mtl-y := pci-mtl.o mtl.o
- snd-sof-pci-intel-lnl-y := pci-lnl.o lnl.o
-+snd-sof-pci-intel-ptl-y := pci-ptl.o
- 
- obj-$(CONFIG_SND_SOC_SOF_MERRIFIELD) += snd-sof-pci-intel-tng.o
- obj-$(CONFIG_SND_SOC_SOF_INTEL_SKL) += snd-sof-pci-intel-skl.o
-@@ -43,3 +44,4 @@ obj-$(CONFIG_SND_SOC_SOF_INTEL_ICL) += snd-sof-pci-intel-icl.o
- obj-$(CONFIG_SND_SOC_SOF_INTEL_TGL) += snd-sof-pci-intel-tgl.o
- obj-$(CONFIG_SND_SOC_SOF_INTEL_MTL) += snd-sof-pci-intel-mtl.o
- obj-$(CONFIG_SND_SOC_SOF_INTEL_LNL) += snd-sof-pci-intel-lnl.o
-+obj-$(CONFIG_SND_SOC_SOF_INTEL_PTL) += snd-sof-pci-intel-ptl.o
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 1315f5bc3e31..4c88522d4048 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -69,6 +69,7 @@ static void hda_get_interfaces(struct snd_sof_dev *sdev, u32 *interface_mask)
- 		interface_mask[SOF_DAI_HOST_ACCESS] = BIT(SOF_DAI_INTEL_HDA);
- 		break;
- 	case SOF_INTEL_ACE_2_0:
-+	case SOF_INTEL_ACE_3_0:
- 		interface_mask[SOF_DAI_DSP_ACCESS] =
- 			BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
- 			BIT(SOF_DAI_INTEL_HDA) | BIT(SOF_DAI_INTEL_ALH);
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 3c9e1d59e1ab..b74a472435b5 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -920,6 +920,7 @@ extern const struct sof_intel_dsp_desc adls_chip_info;
- extern const struct sof_intel_dsp_desc mtl_chip_info;
- extern const struct sof_intel_dsp_desc arl_s_chip_info;
- extern const struct sof_intel_dsp_desc lnl_chip_info;
-+extern const struct sof_intel_dsp_desc ptl_chip_info;
- 
- /* Probes support */
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-diff --git a/sound/soc/sof/intel/lnl.c b/sound/soc/sof/intel/lnl.c
-index 4b5665f82170..3d5a1f8b17e5 100644
---- a/sound/soc/sof/intel/lnl.c
-+++ b/sound/soc/sof/intel/lnl.c
-@@ -22,6 +22,7 @@
- 
- /* LunarLake ops */
- struct snd_sof_dsp_ops sof_lnl_ops;
-+EXPORT_SYMBOL_NS(sof_lnl_ops, SND_SOC_SOF_INTEL_LNL);
- 
- static const struct snd_sof_debugfs_map lnl_dsp_debugfs[] = {
- 	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000, SOF_DEBUGFS_ACCESS_ALWAYS},
-@@ -181,6 +182,7 @@ int sof_lnl_ops_init(struct snd_sof_dev *sdev)
- 
- 	return 0;
- };
-+EXPORT_SYMBOL_NS(sof_lnl_ops_init, SND_SOC_SOF_INTEL_LNL);
- 
- /* Check if an SDW IRQ occurred */
- static bool lnl_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
-@@ -245,3 +247,28 @@ const struct sof_intel_dsp_desc lnl_chip_info = {
- 	.disable_interrupts = lnl_dsp_disable_interrupts,
- 	.hw_ip_version = SOF_INTEL_ACE_2_0,
- };
-+
-+const struct sof_intel_dsp_desc ptl_chip_info = {
-+	.cores_num = 5,
-+	.init_core_mask = BIT(0),
-+	.host_managed_cores_mask = BIT(0),
-+	.ipc_req = MTL_DSP_REG_HFIPCXIDR,
-+	.ipc_req_mask = MTL_DSP_REG_HFIPCXIDR_BUSY,
-+	.ipc_ack = MTL_DSP_REG_HFIPCXIDA,
-+	.ipc_ack_mask = MTL_DSP_REG_HFIPCXIDA_DONE,
-+	.ipc_ctl = MTL_DSP_REG_HFIPCXCTL,
-+	.rom_status_reg = LNL_DSP_REG_HFDSC,
-+	.rom_init_timeout = 300,
-+	.ssp_count = MTL_SSP_COUNT,
-+	.d0i3_offset = MTL_HDA_VS_D0I3C,
-+	.read_sdw_lcount =  hda_sdw_check_lcount_ext,
-+	.enable_sdw_irq = lnl_enable_sdw_irq,
-+	.check_sdw_irq = lnl_dsp_check_sdw_irq,
-+	.check_sdw_wakeen_irq = lnl_sdw_check_wakeen_irq,
-+	.check_ipc_irq = mtl_dsp_check_ipc_irq,
-+	.cl_init = mtl_dsp_cl_init,
-+	.power_down_dsp = mtl_power_down_dsp,
-+	.disable_interrupts = lnl_dsp_disable_interrupts,
-+	.hw_ip_version = SOF_INTEL_ACE_3_0,
-+};
-+EXPORT_SYMBOL_NS(ptl_chip_info, SND_SOC_SOF_INTEL_LNL);
-diff --git a/sound/soc/sof/intel/pci-ptl.c b/sound/soc/sof/intel/pci-ptl.c
-new file mode 100644
-index 000000000000..69195b5e7b1a
---- /dev/null
-+++ b/sound/soc/sof/intel/pci-ptl.c
-@@ -0,0 +1,77 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2024 Intel Corporation.
-+//
-+
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+#include <sound/sof.h>
-+#include "../ops.h"
-+#include "../sof-pci-dev.h"
-+
-+/* platform specific devices */
-+#include "hda.h"
-+#include "mtl.h"
-+
-+static const struct sof_dev_desc ptl_desc = {
-+	.use_acpi_target_states	= true,
-+	.machines               = snd_soc_acpi_intel_ptl_machines,
-+	.alt_machines		= snd_soc_acpi_intel_ptl_sdw_machines,
-+	.resindex_lpe_base      = 0,
-+	.resindex_pcicfg_base   = -1,
-+	.resindex_imr_base      = -1,
-+	.irqindex_host_ipc      = -1,
-+	.chip_info		= &ptl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_4,
-+	.dspless_mode_supported	= true,
-+	.default_fw_path = {
-+		[SOF_IPC_TYPE_4] = "intel/sof-ipc4/ptl",
-+	},
-+	.default_lib_path = {
-+		[SOF_IPC_TYPE_4] = "intel/sof-ipc4-lib/ptl",
-+	},
-+	.default_tplg_path = {
-+		[SOF_IPC_TYPE_4] = "intel/sof-ipc4-tplg",
-+	},
-+	.default_fw_filename = {
-+		[SOF_IPC_TYPE_4] = "sof-ptl.ri",
-+	},
-+	.nocodec_tplg_filename = "sof-ptl-nocodec.tplg",
-+	.ops = &sof_lnl_ops,
-+	.ops_init = sof_lnl_ops_init,
-+};
-+
-+/* PCI IDs */
-+static const struct pci_device_id sof_pci_ids[] = {
-+	{ PCI_DEVICE_DATA(INTEL, HDA_PTL, &ptl_desc) }, /* PTL */
-+	{ 0, }
-+};
-+MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-+
-+/* pci_driver definition */
-+static struct pci_driver snd_sof_pci_intel_ptl_driver = {
-+	.name = "sof-audio-pci-intel-ptl",
-+	.id_table = sof_pci_ids,
-+	.probe = hda_pci_intel_probe,
-+	.remove = sof_pci_remove,
-+	.shutdown = sof_pci_shutdown,
-+	.driver = {
-+		.pm = &sof_pci_pm,
-+	},
-+};
-+module_pci_driver(snd_sof_pci_intel_ptl_driver);
-+
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_DESCRIPTION("SOF support for PantherLake platforms");
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_GENERIC);
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_COMMON);
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_LNL);
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_MTL);
-+MODULE_IMPORT_NS(SND_SOC_SOF_HDA_MLINK);
-+MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
-diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
-index 9328d2bbfd03..8709b750a11e 100644
---- a/sound/soc/sof/intel/shim.h
-+++ b/sound/soc/sof/intel/shim.h
-@@ -22,6 +22,7 @@ enum sof_intel_hw_ip_version {
- 	SOF_INTEL_CAVS_2_5,	/* TigerLake, AlderLake */
- 	SOF_INTEL_ACE_1_0,	/* MeteorLake */
- 	SOF_INTEL_ACE_2_0,	/* LunarLake */
-+	SOF_INTEL_ACE_3_0,	/* PantherLake */
- };
- 
- /*
+I don't know if it's recommended practice, but the echo3g driver may be a 
+prior art as it has a working matrix mixer for the Layla, and the 
+corresponding echomixer in alsa-tools.
+
+> I think for something like this you pretty much have to rely on 
+> device-specific tools to make the UX manageable
+
+For a full UX, perhaps. But the concept of a matrix mixer itself is 
+general enough.
+
+Perhaps there could be a UI tool which is self contained with one purpose, 
+to control a 'standard' matrix mixer. It could be invoked alongside 
+alsamixer or other mixer tool, and multiple times if there are multiple 
+matrix mixers on a piece of hardware.
+
 -- 
-2.43.0
-
+Mark
