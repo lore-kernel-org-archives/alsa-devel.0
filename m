@@ -4,138 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81BE5C2BD09
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Jul 2024 07:46:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAF19C2BD09
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Jul 2024 07:47:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84384F54;
-	Sat,  6 Jul 2024 09:46:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84384F54
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB60715FA;
+	Sat,  6 Jul 2024 09:47:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB60715FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720252015;
-	bh=NhxqSolfEx3PxzgeuRE+cmdVyDaWHgQEDjzpe+aF4Eo=;
+	s=default; t=1720252033;
+	bh=e+BwI6fyR/Z1Gzf02y/1MLRK9tnD1x01n2dR3l8a+RM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=nxpkVrFTMAqVqDIJQmbhIjrgEjgsmc8UBYZ07ynlDcSPT5o33Ht6VsM8X7kCd9gQi
-	 YlfCN6Ks+aQDaVdHUAmGmP61efmvHJqRGzg+213HBVIm4AgP3g7Hata+bJpZKF5ahu
-	 z2RLpJhKXz5RcfQjZm46yfNPczGYJlDorObxDBEE=
+	b=N/3Q0G0Q2Kbq2foQ4lB+jL9WwYdgqZe8qhx2vxW1yJlDj8gjYQQqDL4+W5E9uSK7L
+	 s1AdtXiKsU7B1ZDqSyGuTdRTw4mnYyPemzSv5yw4ydAcqvC8+KvUgu5FsvV9wfdSli
+	 iR14sQ5tZdpSMK0jPrtuTCbv1nabyA5ROlC7d37w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C4AEF805F3; Sat,  6 Jul 2024 09:45:53 +0200 (CEST)
+	id 5B121F8061F; Sat,  6 Jul 2024 09:45:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8677AF80603;
-	Sat,  6 Jul 2024 09:45:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF15CF80609;
+	Sat,  6 Jul 2024 09:45:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3F3FF80272; Sat,  6 Jul 2024 09:42:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	id CF71FF8025E; Sat,  6 Jul 2024 09:44:46 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 79D6AF800F8
-	for <alsa-devel@alsa-project.org>; Sat,  6 Jul 2024 09:42:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79D6AF800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3ABD3F800FE
+	for <alsa-devel@alsa-project.org>; Sat,  6 Jul 2024 09:42:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ABD3F800FE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=XmDI8I1M;
+ header.s=susede2_rsa header.b=KXorJ6wM;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=dxi0jqnR;
+ header.s=susede2_ed25519 header.b=6jCkh5pu;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=XmDI8I1M;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=KXorJ6wM;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=dxi0jqnR
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ header.s=susede2_ed25519 header.b=6jCkh5pu
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 738AA2115D;
-	Sat,  6 Jul 2024 07:42:05 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 03EF31F810;
+	Sat,  6 Jul 2024 07:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1720251725; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1720251726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QDDLF9T0yXhO03nMxbF1t+nbgVY/qneMMu309/pau8A=;
-	b=XmDI8I1M+khDOcZOQJ895ABL84KxE/pksxFp+mhqBCFO/QPOWWjchPsYuL3K6ZZYMXMpxT
-	R3fXk80F8tR+bI8kuqX+OgMc63+KyrRU9iQJ7OY4bOLqnO1o4/sN7tmlq1s+UIwrS6MuUv
-	zIIsV/Z9vxPoHcZ935QZa6Cr86WoCU0=
+	bh=3fKggnObg8PtyhU8ULSvdeZ8B1JPeYI2t4LteJrZ/sE=;
+	b=KXorJ6wMS5MXfHLK5rArI6ygfqMLHYIvPFCLcEZtBqJtnoUulD8SNZFq+/tstnFUGvU5nL
+	yEHlphZwi80osEjGA6MDnzVLBzXsPbmmVM5W9uiUTmF5LRSyuyiaView12Da3dVTW6Xjpo
+	wkxdZ5yg6qzufCa6OtfSammjBzmOIlA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1720251725;
+	s=susede2_ed25519; t=1720251726;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QDDLF9T0yXhO03nMxbF1t+nbgVY/qneMMu309/pau8A=;
-	b=dxi0jqnRSAFAnraWje/U80Gt2V0RpsrfJ8QQh9oD1n6WDdrEDGLqmXDxTTrVSuEnWd/bE0
-	z6hsfLKxMgxEjGDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=3fKggnObg8PtyhU8ULSvdeZ8B1JPeYI2t4LteJrZ/sE=;
+	b=6jCkh5pucxzxZa8id9hOiE8p5GIPsCVIK8kSHz4/43wX5n++tRTKfsqaYwksIeYluaIblh
+	6Cz5QW36pgaleyDw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=KXorJ6wM;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=6jCkh5pu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1720251725; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1720251726; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QDDLF9T0yXhO03nMxbF1t+nbgVY/qneMMu309/pau8A=;
-	b=XmDI8I1M+khDOcZOQJ895ABL84KxE/pksxFp+mhqBCFO/QPOWWjchPsYuL3K6ZZYMXMpxT
-	R3fXk80F8tR+bI8kuqX+OgMc63+KyrRU9iQJ7OY4bOLqnO1o4/sN7tmlq1s+UIwrS6MuUv
-	zIIsV/Z9vxPoHcZ935QZa6Cr86WoCU0=
+	bh=3fKggnObg8PtyhU8ULSvdeZ8B1JPeYI2t4LteJrZ/sE=;
+	b=KXorJ6wMS5MXfHLK5rArI6ygfqMLHYIvPFCLcEZtBqJtnoUulD8SNZFq+/tstnFUGvU5nL
+	yEHlphZwi80osEjGA6MDnzVLBzXsPbmmVM5W9uiUTmF5LRSyuyiaView12Da3dVTW6Xjpo
+	wkxdZ5yg6qzufCa6OtfSammjBzmOIlA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1720251725;
+	s=susede2_ed25519; t=1720251726;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QDDLF9T0yXhO03nMxbF1t+nbgVY/qneMMu309/pau8A=;
-	b=dxi0jqnRSAFAnraWje/U80Gt2V0RpsrfJ8QQh9oD1n6WDdrEDGLqmXDxTTrVSuEnWd/bE0
-	z6hsfLKxMgxEjGDw==
+	bh=3fKggnObg8PtyhU8ULSvdeZ8B1JPeYI2t4LteJrZ/sE=;
+	b=6jCkh5pucxzxZa8id9hOiE8p5GIPsCVIK8kSHz4/43wX5n++tRTKfsqaYwksIeYluaIblh
+	6Cz5QW36pgaleyDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 570A913A7B;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D363C13A7B;
 	Sat,  6 Jul 2024 07:42:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4ELYE031iGZRDgAAD6G6ig
+	id EOw/Mk31iGZRDgAAD6G6ig
 	(envelope-from <tiwai@suse.de>); Sat, 06 Jul 2024 07:42:05 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-utils 2/5] arecordmidi2: Add initial version
-Date: Sat,  6 Jul 2024 09:42:28 +0200
-Message-ID: <20240706074232.6364-2-tiwai@suse.de>
+Subject: [PATCH alsa-utils 5/5] arecordmidi2: Add passive mode and interactive
+ mode
+Date: Sat,  6 Jul 2024 09:42:31 +0200
+Message-ID: <20240706074232.6364-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240706074232.6364-1-tiwai@suse.de>
 References: <20240706074232.6364-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Rspamd-Queue-Id: 03EF31F810
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MX_GOOD(-0.01)[];
 	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-Message-ID-Hash: PSUV7M27PDQQWKI6OLAVUXZ4T5QL2BK2
-X-Message-ID-Hash: PSUV7M27PDQQWKI6OLAVUXZ4T5QL2BK2
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:dkim];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+Message-ID-Hash: 47TXE4GXKADOQA6JR46KOR7CLSXVNAJH
+X-Message-ID-Hash: 47TXE4GXKADOQA6JR46KOR7CLSXVNAJH
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -148,7 +159,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PSUV7M27PDQQWKI6OLAVUXZ4T5QL2BK2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/47TXE4GXKADOQA6JR46KOR7CLSXVNAJH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -157,633 +168,252 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-arecordmidi2 is a similar program like arecordmidi for recording the
-incoming MIDI events, but storing in a MIDI Clip file for MIDI 2.0.
+Allow arecordmidi2 running without specifying the source ports via -p
+option.  This will create a UMP Endpoint with the full 16 FBs, and
+simply reads from the input ports via subscribers.  User needs to
+connect to the ports manually, though.
 
-Most options are kept from arecordmidi, but some are dropped: namely,
-the -l, -m and -f options are dropped for code simplicity.
-Also -s option is dropped as well, as there is no need for split for
-MIDI Clip file unlike SMF.
+Also, add -r option to run in the interactive mode.  In the
+interactive mode, arecordmidi2 waits for the RETURN key entered from
+the terminal to start the recording, and the recording ends after
+another RETURN key.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- seq/aplaymidi2/Makefile.am    |   6 +-
- seq/aplaymidi2/arecordmidi2.1 |  73 +++++
- seq/aplaymidi2/arecordmidi2.c | 512 ++++++++++++++++++++++++++++++++++
- 3 files changed, 588 insertions(+), 3 deletions(-)
- create mode 100644 seq/aplaymidi2/arecordmidi2.1
- create mode 100644 seq/aplaymidi2/arecordmidi2.c
+ seq/aplaymidi2/arecordmidi2.1 | 20 +++++++++-
+ seq/aplaymidi2/arecordmidi2.c | 75 +++++++++++++++++++++++++++--------
+ 2 files changed, 77 insertions(+), 18 deletions(-)
 
-diff --git a/seq/aplaymidi2/Makefile.am b/seq/aplaymidi2/Makefile.am
-index 0c5c743f7eb8..8985382efe82 100644
---- a/seq/aplaymidi2/Makefile.am
-+++ b/seq/aplaymidi2/Makefile.am
-@@ -1,5 +1,5 @@
- AM_CPPFLAGS = -I$(top_srcdir)/include
--EXTRA_DIST = aplaymidi2.1
-+EXTRA_DIST = aplaymidi2.1 arecordmidi2.1
- 
--bin_PROGRAMS = aplaymidi2
--man_MANS = aplaymidi2.1
-+bin_PROGRAMS = aplaymidi2 arecordmidi2
-+man_MANS = aplaymidi2.1 arecordmidi2.1
 diff --git a/seq/aplaymidi2/arecordmidi2.1 b/seq/aplaymidi2/arecordmidi2.1
-new file mode 100644
-index 000000000000..0e41a300b553
---- /dev/null
+index 0e41a300b553..a9cfb00d0318 100644
+--- a/seq/aplaymidi2/arecordmidi2.1
 +++ b/seq/aplaymidi2/arecordmidi2.1
-@@ -0,0 +1,73 @@
-+.TH ARECORDMIDI2 1 "4 July 2024"
+@@ -5,7 +5,7 @@ arecordmidi2 \- record a MIDI Clip file
+ 
+ .SH SYNOPSIS
+ .B arecordmidi2
+-\-p client:port[,...] [options] midi2file
++[options] midi2file
+ 
+ .SH DESCRIPTION
+ .B arecordmidi2
+@@ -32,6 +32,16 @@ A client can be specified by its number, its name, or a prefix of its
+ name. A port is specified by its number; for port 0 of a client, the
+ ":0" part of the port specification can be omitted.
+ 
++\fBarecordmidi2\fP creates a UMP Endpoint containing the same number
++of Function Blocks as specified by this option, each of which is
++connected to the specified port as a source.
 +
-+.SH NAME
-+arecordmidi2 \- record a MIDI Clip file
++When no source ports are specified with \fI\-p\fP option,
++\fBarecordmidi2\fP creates a UMP Endpoint with full 16 Function Blocks
++and records from those inputs.  User can connect the sequencer ports
++freely via \fBaconnect\fP, for example.  This mode can be used
++together with the interactive mode via \fI\-r\fP option.
 +
-+.SH SYNOPSIS
-+.B arecordmidi2
-+\-p client:port[,...] [options] midi2file
-+
-+.SH DESCRIPTION
-+.B arecordmidi2
-+is a command-line utility that records a MIDI Clip file from one or
-+more ALSA sequencer ports.
-+
-+To stop recording, press Ctrl+C.
-+
-+.SH OPTIONS
-+
+ .TP
+ .I \-b,\-\-bpm=beats
+ Sets the musical tempo of the MIDI file, in beats per minute.
+@@ -62,6 +72,14 @@ Sets the UMP MIDI protocol version. Either 1 or 2 has to be given for
+ MIDI 1.0 and MIDI 2.0 protocol, respectively.
+ Default is 1.
+ 
 +.TP
-+.I \-h,\-\-help
-+Prints a list of options.
++.I \-r,\-\-interactive
++Run in the interactive mode.  \fBarecordmidi2\fP waits for a RETURN
++key input from the terminal to start the recording.  After starting,
++the recording ends when another RETURN key is input from the
++terminal.  The received events before the start of recording are
++discarded.
 +
-+.TP
-+.I \-V,\-\-version
-+Prints the current version.
-+
-+.TP
-+.I \-p,\-\-port=client:port,...
-+Sets the sequencer port(s) from which events are recorded.
-+
-+A client can be specified by its number, its name, or a prefix of its
-+name. A port is specified by its number; for port 0 of a client, the
-+":0" part of the port specification can be omitted.
-+
-+.TP
-+.I \-b,\-\-bpm=beats
-+Sets the musical tempo of the MIDI file, in beats per minute.
-+The default value is 120 BPM.
-+
-+.TP
-+.I \-t,\-\-ticks=ticks
-+Sets the resolution of timestamps (ticks) in the MIDI file,
-+in ticks per beat.
-+The default value is 384 ticks/beat.
-+
-+.TP
-+.I \-i,\-\-timesig=numerator:denominator
-+Sets the time signature for the MIDI file.
-+
-+The time signature is specified as usual with two numbers, representing
-+the numerator and denominator of the time signature as it would be
-+notated. The denominator must be a power of two. Both numbers should be
-+separated by a colon. The time signature is 4:4 by default.
-+
-+.TP
-+.I \-n,\-\-num-events=events
-+Stops the recording after receiving the given number of events.
-+
-+.TP
-+.I \-u,\-\-ump=version
-+Sets the UMP MIDI protocol version. Either 1 or 2 has to be given for
-+MIDI 1.0 and MIDI 2.0 protocol, respectively.
-+Default is 1.
-+
-+.SH SEE ALSO
-+arecordmidi(1)
-+.br
-+aplaymidi2(1)
-+
-+.SH AUTHOR
-+Takashi Iwai <tiwai@suse.de>
-+
-+
+ .SH SEE ALSO
+ arecordmidi(1)
+ .br
 diff --git a/seq/aplaymidi2/arecordmidi2.c b/seq/aplaymidi2/arecordmidi2.c
-new file mode 100644
-index 000000000000..32693854b7a8
---- /dev/null
+index 32693854b7a8..cad5851c48ea 100644
+--- a/seq/aplaymidi2/arecordmidi2.c
 +++ b/seq/aplaymidi2/arecordmidi2.c
-@@ -0,0 +1,512 @@
-+/*
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <stdarg.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <getopt.h>
-+#include <poll.h>
-+#include <alsa/asoundlib.h>
-+#include <alsa/ump_msg.h>
-+#include "aconfig.h"
-+#include "version.h"
-+
-+static snd_seq_t *seq;
-+static int client;
-+static int port_count;
-+static snd_seq_addr_t *ports;
-+static int queue;
-+static int midi_version = 1;
-+static int beats = 120;
-+static int ticks = 384;
-+static int tempo_base = 10;
-+static volatile sig_atomic_t stop;
-+static int ts_num = 4; /* time signature: numerator */
-+static int ts_div = 4; /* time signature: denominator */
-+static int last_tick;
-+
-+/* Parse a decimal number from a command line argument. */
-+static long arg_parse_decimal_num(const char *str, int *err)
-+{
-+	long val;
-+	char *endptr;
-+
-+	errno = 0;
-+	val = strtol(str, &endptr, 0);
-+	if (errno > 0) {
-+		*err = -errno;
-+		return 0;
-+	}
-+	if (*endptr != '\0') {
-+		*err = -EINVAL;
-+		return 0;
-+	}
-+
-+	return val;
-+}
-+
-+/* prints an error message to stderr, and dies */
-+static void fatal(const char *msg, ...)
-+{
-+	va_list ap;
-+
-+	va_start(ap, msg);
-+	vfprintf(stderr, msg, ap);
-+	va_end(ap);
-+	fputc('\n', stderr);
-+	exit(EXIT_FAILURE);
-+}
-+
-+/* memory allocation error handling */
-+static void check_mem(void *p)
-+{
-+	if (!p)
-+		fatal("Out of memory");
-+}
-+
-+/* error handling for ALSA functions */
-+static void check_snd(const char *operation, int err)
-+{
-+	if (err < 0)
-+		fatal("Cannot %s - %s", operation, snd_strerror(err));
-+}
-+
-+/* open a sequencer client */
-+static void init_seq(void)
-+{
-+	int err;
-+
-+	/* open sequencer */
-+	err = snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, 0);
-+	check_snd("open sequencer", err);
-+
-+	/* find out our client's id */
-+	client = snd_seq_client_id(seq);
-+	check_snd("get client id", client);
-+}
-+
-+/* set up UMP virtual client/port */
-+static void create_ump_client(void)
-+{
-+	snd_ump_endpoint_info_t *ep;
-+	snd_ump_block_info_t *blk;
-+	snd_seq_port_info_t *pinfo;
-+	int i, err;
-+
-+	/* create a UMP Endpoint */
-+	snd_ump_endpoint_info_alloca(&ep);
-+	snd_ump_endpoint_info_set_name(ep, "arecordmidi2");
-+	if (midi_version == 1) {
-+		snd_ump_endpoint_info_set_protocol_caps(ep, SND_UMP_EP_INFO_PROTO_MIDI1);
-+		snd_ump_endpoint_info_set_protocol(ep, SND_UMP_EP_INFO_PROTO_MIDI1);
-+	} else {
-+		snd_ump_endpoint_info_set_protocol_caps(ep, SND_UMP_EP_INFO_PROTO_MIDI2);
-+		snd_ump_endpoint_info_set_protocol(ep, SND_UMP_EP_INFO_PROTO_MIDI2);
-+	}
-+	snd_ump_endpoint_info_set_num_blocks(ep, port_count);
-+
-+	err = snd_seq_create_ump_endpoint(seq, ep, port_count);
-+	check_snd("create UMP endpoint", err);
-+
-+	/* create UMP Function Blocks */
-+	snd_ump_block_info_alloca(&blk);
-+	for (i = 0; i < port_count; i++) {
-+		char blkname[32];
-+
-+		sprintf(blkname, "Group %d", i + 1);
-+		snd_ump_block_info_set_name(blk, blkname);
-+		snd_ump_block_info_set_direction(blk, SND_UMP_DIR_INPUT);
-+		snd_ump_block_info_set_first_group(blk, i);
-+		snd_ump_block_info_set_num_groups(blk, 1);
-+		snd_ump_block_info_set_ui_hint(blk, SND_UMP_BLOCK_UI_HINT_RECEIVER);
-+
-+		err = snd_seq_create_ump_block(seq, i, blk);
-+		check_snd("create UMP block", err);
-+	}
-+
-+	/* toggle timestamping for all input ports */
-+	snd_seq_port_info_alloca(&pinfo);
-+	for (i = 0; i <= port_count; i++) {
-+		err = snd_seq_get_port_info(seq, i, pinfo);
-+		check_snd("get port info", err);
-+		snd_seq_port_info_set_timestamping(pinfo, 1);
-+		snd_seq_port_info_set_timestamp_queue(pinfo, queue);
-+		snd_seq_set_port_info(seq, i, pinfo);
-+		check_snd("set port info", err);
-+	}
-+}
-+
-+/* parses one or more port addresses from the string */
-+static void parse_ports(const char *arg)
-+{
-+	char *buf, *s, *port_name;
-+	int err;
-+
-+	/* make a copy of the string because we're going to modify it */
-+	buf = strdup(arg);
-+	check_mem(buf);
-+
-+	for (port_name = s = buf; s; port_name = s + 1) {
-+		/* Assume that ports are separated by commas.  We don't use
-+		 * spaces because those are valid in client names.
-+		 */
-+		s = strchr(port_name, ',');
-+		if (s)
-+			*s = '\0';
-+
-+		++port_count;
-+		ports = realloc(ports, port_count * sizeof(snd_seq_addr_t));
-+		check_mem(ports);
-+
-+		err = snd_seq_parse_address(seq, &ports[port_count - 1], port_name);
-+		if (err < 0)
-+			fatal("Invalid port %s - %s", port_name, snd_strerror(err));
-+	}
-+
-+	free(buf);
-+}
-+
-+/* parses time signature specification */
-+static void time_signature(const char *arg)
-+{
-+	long x = 0;
-+	char *sep;
-+
-+	x = strtol(arg, &sep, 10);
-+	if (x < 1 || x > 64 || *sep != ':')
-+		fatal("Invalid time signature (%s)", arg);
-+	ts_num = x;
-+	x = strtol(++sep, NULL, 10);
-+	if (x < 1 || x > 64)
-+		fatal("Invalid time signature (%s)", arg);
-+	ts_div = x;
-+}
-+
-+/* create a queue, set up the default tempo */
-+static void create_queue(void)
-+{
-+	snd_seq_queue_tempo_t *tempo;
-+
-+	if (!snd_seq_has_queue_tempo_base(seq))
-+		tempo_base = 1000;
-+
-+	queue = snd_seq_alloc_named_queue(seq, "arecordmidi2");
-+	check_snd("create queue", queue);
-+
-+	snd_seq_queue_tempo_alloca(&tempo);
-+	if (tempo_base == 1000)
-+		snd_seq_queue_tempo_set_tempo(tempo, 60000000 / beats);
+@@ -93,8 +93,15 @@ static void create_ump_client(void)
+ 	snd_ump_endpoint_info_t *ep;
+ 	snd_ump_block_info_t *blk;
+ 	snd_seq_port_info_t *pinfo;
++	int num_groups;
+ 	int i, err;
+ 
++	/* in passive mode, create full 16 groups */
++	if (port_count)
++		num_groups = port_count;
 +	else
-+		snd_seq_queue_tempo_set_tempo(tempo, (unsigned int)(6000000000ULL / beats));
-+	snd_seq_queue_tempo_set_ppq(tempo, ticks);
-+	snd_seq_queue_tempo_set_tempo_base(tempo, tempo_base);
-+	if (snd_seq_set_queue_tempo(seq, queue, tempo) < 0)
-+		fatal("Cannot set queue tempo (%d)", queue);
++		num_groups = 16;
++
+ 	/* create a UMP Endpoint */
+ 	snd_ump_endpoint_info_alloca(&ep);
+ 	snd_ump_endpoint_info_set_name(ep, "arecordmidi2");
+@@ -105,14 +112,14 @@ static void create_ump_client(void)
+ 		snd_ump_endpoint_info_set_protocol_caps(ep, SND_UMP_EP_INFO_PROTO_MIDI2);
+ 		snd_ump_endpoint_info_set_protocol(ep, SND_UMP_EP_INFO_PROTO_MIDI2);
+ 	}
+-	snd_ump_endpoint_info_set_num_blocks(ep, port_count);
++	snd_ump_endpoint_info_set_num_blocks(ep, num_groups);
+ 
+-	err = snd_seq_create_ump_endpoint(seq, ep, port_count);
++	err = snd_seq_create_ump_endpoint(seq, ep, num_groups);
+ 	check_snd("create UMP endpoint", err);
+ 
+ 	/* create UMP Function Blocks */
+ 	snd_ump_block_info_alloca(&blk);
+-	for (i = 0; i < port_count; i++) {
++	for (i = 0; i < num_groups; i++) {
+ 		char blkname[32];
+ 
+ 		sprintf(blkname, "Group %d", i + 1);
+@@ -128,7 +135,7 @@ static void create_ump_client(void)
+ 
+ 	/* toggle timestamping for all input ports */
+ 	snd_seq_port_info_alloca(&pinfo);
+-	for (i = 0; i <= port_count; i++) {
++	for (i = 0; i <= num_groups; i++) {
+ 		err = snd_seq_get_port_info(seq, i, pinfo);
+ 		check_snd("get port info", err);
+ 		snd_seq_port_info_set_timestamping(pinfo, 1);
+@@ -343,8 +350,11 @@ static void write_file_header(FILE *file)
+ 	/* first DCS */
+ 	write_dcs(file, 0);
+ 	write_dctpq(file);
 +}
-+
-+/* connect to the input ports */
-+static void connect_ports(void)
+ 
+-	/* start bar */
++/* write start bar */
++static void start_bar(FILE *file)
 +{
-+	int i, err;
-+
-+	for (i = 0; i < port_count; ++i) {
-+		err = snd_seq_connect_from(seq, i + 1,
-+					   ports[i].client, ports[i].port);
-+		check_snd("port connection", err);
+ 	write_start_clip(file);
+ 	write_tempo(file);
+ 	write_time_sig(file);
+@@ -361,7 +371,8 @@ static void help(const char *argv0)
+ 		"  -t,--ticks=ticks           resolution in ticks per beat or frame\n"
+ 		"  -i,--timesig=nn:dd         time signature\n"
+ 		"  -n,--num-events=events     fixed number of events to record, then exit\n"
+-		"  -u,--ump=version           UMP MIDI version (1 or 2)\n",
++		"  -u,--ump=version           UMP MIDI version (1 or 2)\n"
++		"  -r,--interactive           Interactive mode\n",
+ 		argv0);
+ }
+ 
+@@ -377,7 +388,7 @@ static void sighandler(int sig ATTRIBUTE_UNUSED)
+ 
+ int main(int argc, char *argv[])
+ {
+-	static const char short_options[] = "hVp:b:t:n:u:";
++	static const char short_options[] = "hVp:b:t:n:u:r";
+ 	static const struct option long_options[] = {
+ 		{"help", 0, NULL, 'h'},
+ 		{"version", 0, NULL, 'V'},
+@@ -387,6 +398,7 @@ int main(int argc, char *argv[])
+ 		{"timesig", 1, NULL, 'i'},
+ 		{"num-events", 1, NULL, 'n'},
+ 		{"ump", 1, NULL, 'u'},
++		{"interactive", 0, NULL, 'r'},
+ 		{0}
+ 	};
+ 
+@@ -398,6 +410,8 @@ int main(int argc, char *argv[])
+ 	/* If |num_events| isn't specified, leave it at 0. */
+ 	long num_events = 0;
+ 	long events_received = 0;
++	int start = 0;
++	int interactive = 0;
+ 
+ 	init_seq();
+ 
+@@ -441,17 +455,15 @@ int main(int argc, char *argv[])
+ 			if (midi_version != 1 && midi_version != 2)
+ 				fatal("Invalid MIDI version %d\n", midi_version);
+ 			break;
++		case 'r':
++			interactive = 1;
++			break;
+ 		default:
+ 			help(argv[0]);
+ 			return 1;
+ 		}
+ 	}
+ 
+-	if (port_count < 1) {
+-		fputs("Pleast specify a source port with --port.\n", stderr);
+-		return 1;
+-	}
+-
+ 	if (optind >= argc) {
+ 		fputs("Please specify a file to record to.\n", stderr);
+ 		return 1;
+@@ -459,7 +471,8 @@ int main(int argc, char *argv[])
+ 
+ 	create_queue();
+ 	create_ump_client();
+-	connect_ports();
++	if (port_count)
++		connect_ports();
+ 
+ 	filename = argv[optind];
+ 
+@@ -468,6 +481,13 @@ int main(int argc, char *argv[])
+ 		fatal("Cannot open %s - %s", filename, strerror(errno));
+ 
+ 	write_file_header(file);
++	if (interactive) {
++		printf("Press RETURN to start recording:");
++		fflush(stdout);
++	} else {
++		start_bar(file);
++		start = 1;
 +	}
-+}
-+
-+/* write the given UMP packet */
-+static void write_ump(FILE *file, const void *src)
-+{
-+	const snd_ump_msg_hdr_t *h = src;
-+	const uint32_t *p = src;
-+	uint32_t v;
-+	int len;
-+
-+	len = snd_ump_packet_length(h->type);
-+	while (len-- > 0) {
-+		v = htobe32(*p++);
-+		fwrite(&v, 4, 1, file);
-+	}
-+}
-+
-+/* write a DC message */
-+static void write_dcs(FILE *file, unsigned int t)
-+{
-+	snd_ump_msg_dc_t d = {};
-+
-+	d.type = SND_UMP_MSG_TYPE_UTILITY;
-+	d.status = SND_UMP_UTILITY_MSG_STATUS_DC;
-+	d.ticks = t;
-+	write_ump(file, &d);
-+}
-+
-+/* write a DCTPQ message */
-+static void write_dctpq(FILE *file)
-+{
-+	snd_ump_msg_dctpq_t d = {};
-+
-+	d.type = SND_UMP_MSG_TYPE_UTILITY;
-+	d.status = SND_UMP_UTILITY_MSG_STATUS_DCTPQ;
-+	d.ticks = ticks;
-+	write_ump(file, &d);
-+}
-+
-+/* write a Start Clip message */
-+static void write_start_clip(FILE *file)
-+{
-+	snd_ump_msg_stream_gen_t d = {};
-+
-+	d.type = SND_UMP_MSG_TYPE_STREAM;
-+	d.status = SND_UMP_STREAM_MSG_STATUS_START_CLIP;
-+	write_ump(file, &d);
-+}
-+
-+/* write an End Clip message */
-+static void write_end_clip(FILE *file)
-+{
-+	snd_ump_msg_stream_gen_t d = {};
-+
-+	d.type = SND_UMP_MSG_TYPE_STREAM;
-+	d.status = SND_UMP_STREAM_MSG_STATUS_END_CLIP;
-+	write_ump(file, &d);
-+}
-+
-+/* write a Set Tempo message */
-+static void write_tempo(FILE *file)
-+{
-+	snd_ump_msg_set_tempo_t d = {};
-+
-+	d.type = SND_UMP_MSG_TYPE_FLEX_DATA;
-+	d.group = 0;
-+	d.format = SND_UMP_FLEX_DATA_MSG_FORMAT_SINGLE;
-+	d.addrs = SND_UMP_FLEX_DATA_MSG_ADDR_GROUP;
-+	d.status_bank = SND_UMP_FLEX_DATA_MSG_BANK_SETUP;
-+	d.status = SND_UMP_FLEX_DATA_MSG_STATUS_SET_TEMPO;
-+	d.tempo = (unsigned int)(6000000000ULL / beats);
-+	write_ump(file, &d);
-+}
-+
-+/* write a Set Time Signature message */
-+static void write_time_sig(FILE *file)
-+{
-+	snd_ump_msg_set_time_sig_t d = {};
-+
-+	d.type = SND_UMP_MSG_TYPE_FLEX_DATA;
-+	d.group = 0;
-+	d.format = SND_UMP_FLEX_DATA_MSG_FORMAT_SINGLE;
-+	d.addrs = SND_UMP_FLEX_DATA_MSG_ADDR_GROUP;
-+	d.status_bank = SND_UMP_FLEX_DATA_MSG_BANK_SETUP;
-+	d.status = SND_UMP_FLEX_DATA_MSG_STATUS_SET_TIME_SIGNATURE;
-+	d.numerator = ts_num;
-+	d.denominator = ts_div;
-+	d.num_notes = 8;
-+	write_ump(file, &d);
-+}
-+
-+/* record the delta time from the last event */
-+static void delta_time(FILE *file, const snd_seq_ump_event_t *ev)
-+{
-+	int diff = ev->time.tick - last_tick;
-+
-+	if (diff <= 0)
-+		return;
-+	if (tempo_base == 1000)
-+		diff *= 100;
-+	write_dcs(file, diff);
-+	last_tick = ev->time.tick;
-+}
-+
-+static void record_event(FILE *file, const snd_seq_ump_event_t *ev)
-+{
-+	/* ignore events without proper timestamps */
-+	if (ev->queue != queue || !snd_seq_ev_is_tick(ev) ||
-+	    !snd_seq_ev_is_ump(ev))
-+		return;
-+
-+	delta_time(file, ev);
-+	write_ump(file, ev->ump);
-+}
-+
-+/* write MIDI Clip file header and the configuration packets */
-+static void write_file_header(FILE *file)
-+{
-+	/* header id */
-+	fwrite("SMF2CLIP", 1, 8, file);
-+
-+	/* clip configuration header */
-+	/* FIXME: add profiles */
-+
-+	/* first DCS */
-+	write_dcs(file, 0);
-+	write_dctpq(file);
-+
-+	/* start bar */
-+	write_start_clip(file);
-+	write_tempo(file);
-+	write_time_sig(file);
-+}
-+
-+static void help(const char *argv0)
-+{
-+	fprintf(stderr, "Usage: %s [options] outputfile\n"
-+		"\nAvailable options:\n"
-+		"  -h,--help                  this help\n"
-+		"  -V,--version               show version\n"
-+		"  -p,--port=client:port,...  source port(s)\n"
-+		"  -b,--bpm=beats             tempo in beats per minute\n"
-+		"  -t,--ticks=ticks           resolution in ticks per beat or frame\n"
-+		"  -i,--timesig=nn:dd         time signature\n"
-+		"  -n,--num-events=events     fixed number of events to record, then exit\n"
-+		"  -u,--ump=version           UMP MIDI version (1 or 2)\n",
-+		argv0);
-+}
-+
-+static void version(void)
-+{
-+	fputs("arecordmidi version " SND_UTIL_VERSION_STR "\n", stderr);
-+}
-+
-+static void sighandler(int sig ATTRIBUTE_UNUSED)
-+{
-+	stop = 1;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	static const char short_options[] = "hVp:b:t:n:u:";
-+	static const struct option long_options[] = {
-+		{"help", 0, NULL, 'h'},
-+		{"version", 0, NULL, 'V'},
-+		{"port", 1, NULL, 'p'},
-+		{"bpm", 1, NULL, 'b'},
-+		{"ticks", 1, NULL, 't'},
-+		{"timesig", 1, NULL, 'i'},
-+		{"num-events", 1, NULL, 'n'},
-+		{"ump", 1, NULL, 'u'},
-+		{0}
-+	};
-+
-+	char *filename;
-+	FILE *file;
-+	struct pollfd *pfds;
-+	int npfds;
-+	int c, err;
-+	/* If |num_events| isn't specified, leave it at 0. */
-+	long num_events = 0;
-+	long events_received = 0;
-+
-+	init_seq();
-+
-+	while ((c = getopt_long(argc, argv, short_options,
-+				long_options, NULL)) != -1) {
-+		switch (c) {
-+		case 'h':
-+			help(argv[0]);
-+			return 0;
-+		case 'V':
-+			version();
-+			return 0;
-+		case 'p':
-+			parse_ports(optarg);
-+			break;
-+		case 'b':
-+			beats = atoi(optarg);
-+			if (beats < 4 || beats > 6000)
-+				fatal("Invalid tempo");
-+			break;
-+		case 't':
-+			ticks = atoi(optarg);
-+			if (ticks < 1 || ticks > 0x7fff)
-+				fatal("Invalid number of ticks");
-+			break;
-+		case 'i':
-+			time_signature(optarg);
-+			break;
-+		case 'n':
-+			err = 0;
-+			num_events = arg_parse_decimal_num(optarg, &err);
-+			if (err != 0) {
-+				fatal("Couldn't parse num_events argument: %s\n",
-+					strerror(-err));
-+			}
-+			if (num_events <= 0)
-+				fatal("num_events must be greater than 0");
-+			break;
-+		case 'u':
-+			midi_version = atoi(optarg);
-+			if (midi_version != 1 && midi_version != 2)
-+				fatal("Invalid MIDI version %d\n", midi_version);
-+			break;
-+		default:
-+			help(argv[0]);
-+			return 1;
-+		}
-+	}
-+
-+	if (port_count < 1) {
-+		fputs("Pleast specify a source port with --port.\n", stderr);
-+		return 1;
-+	}
-+
-+	if (optind >= argc) {
-+		fputs("Please specify a file to record to.\n", stderr);
-+		return 1;
-+	}
-+
-+	create_queue();
-+	create_ump_client();
-+	connect_ports();
-+
-+	filename = argv[optind];
-+
-+	file = fopen(filename, "wb");
-+	if (!file)
-+		fatal("Cannot open %s - %s", filename, strerror(errno));
-+
-+	write_file_header(file);
-+
-+	err = snd_seq_start_queue(seq, queue, NULL);
-+	check_snd("start queue", err);
-+	snd_seq_drain_output(seq);
-+
-+	err = snd_seq_nonblock(seq, 1);
-+	check_snd("set nonblock mode", err);
-+
-+	signal(SIGINT, sighandler);
-+	signal(SIGTERM, sighandler);
-+
-+	npfds = snd_seq_poll_descriptors_count(seq, POLLIN);
-+	pfds = alloca(sizeof(*pfds) * npfds);
-+	for (;;) {
-+		snd_seq_poll_descriptors(seq, pfds, npfds, POLLIN);
-+		if (poll(pfds, npfds, -1) < 0)
-+			break;
-+		do {
-+			snd_seq_ump_event_t *event;
-+
-+			err = snd_seq_ump_event_input(seq, &event);
-+			if (err < 0)
+ 
+ 	err = snd_seq_start_queue(seq, queue, NULL);
+ 	check_snd("start queue", err);
+@@ -480,18 +500,39 @@ int main(int argc, char *argv[])
+ 	signal(SIGTERM, sighandler);
+ 
+ 	npfds = snd_seq_poll_descriptors_count(seq, POLLIN);
+-	pfds = alloca(sizeof(*pfds) * npfds);
++	pfds = alloca(sizeof(*pfds) * (npfds + 1));
+ 	for (;;) {
+ 		snd_seq_poll_descriptors(seq, pfds, npfds, POLLIN);
+-		if (poll(pfds, npfds, -1) < 0)
+-			break;
++		if (interactive) {
++			pfds[npfds].fd = STDIN_FILENO;
++			pfds[npfds].events = POLLIN | POLLERR | POLLNVAL;
++			if (poll(pfds, npfds + 1, -1) < 0)
 +				break;
-+			if (event) {
-+				record_event(file, event);
-+				events_received++;
++			if (pfds[npfds].revents & POLLIN) {
++				while (!feof(stdin) && getchar() != '\n')
++					;
++				if (!start) {
++					start_bar(file);
++					start = 1;
++					printf("Press RETURN to stop recording:");
++					fflush(stdout);
++					continue;
++				} else {
++					stop = 1;
++				}
 +			}
-+		} while (err > 0);
-+		if (stop)
-+			break;
-+		if (num_events && (events_received >= num_events))
-+			break;
-+	}
++		} else {
++			if (poll(pfds, npfds, -1) < 0)
++				break;
++		}
 +
-+	if (num_events && events_received < num_events)
-+		fputs("Warning: Received signal before num_events\n", stdout);
-+
-+	write_end_clip(file);
-+	fclose(file);
-+	snd_seq_close(seq);
-+	return 0;
-+}
+ 		do {
+ 			snd_seq_ump_event_t *event;
+ 
+ 			err = snd_seq_ump_event_input(seq, &event);
+ 			if (err < 0)
+ 				break;
+-			if (event) {
++			if (start && event) {
+ 				record_event(file, event);
+ 				events_received++;
+ 			}
 -- 
 2.43.0
 
