@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 088A1C3271E
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jul 2024 18:46:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16950C3DA41
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jul 2024 18:47:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29988857;
-	Mon,  8 Jul 2024 20:46:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29988857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 441DB84C;
+	Mon,  8 Jul 2024 20:46:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 441DB84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720464414;
-	bh=ksmP6oDEO07D5RKdVCFp88+im2tVce4XbdHSop2FIrE=;
+	s=default; t=1720464429;
+	bh=wH+4vw1iTn/WFnjhTQVBkbVxvm1I8qtHsjAoPCjnDc4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hOF9SetGmKTe5J964aRHDTezQ3qS1Lb4fRJ62v/2EQrL5+JlzyqaDljkHbnpv9BqU
-	 yshgAd0MhTD/Y4gPizo1v192XBrS7pYjJXqhSZXLO9uruYg55BDAMgM+sx4RDd6e60
-	 n1vGx85I9gQvdEvlph0LoF1qi2h9IMvpSL67T7WA=
+	b=KcRqTwgac6izoxGtabJRnrZMD5qrxmadqxlvk8xxRgolAa1kVB1K7z3jkbeQYJrR+
+	 Id8AFeSfCyYqFxpWc9X8LxEJihNQMHDF/6oL1MFTgCxU6DXLl7PngfJbYnUaLQw8KP
+	 EuFrZ/aDKmXN5yC3F4I3uQRO29UX611U5o9iy+jI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15CC3F805B6; Mon,  8 Jul 2024 20:46:22 +0200 (CEST)
+	id 2AA7EF805C4; Mon,  8 Jul 2024 20:46:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63F0AF805B1;
-	Mon,  8 Jul 2024 20:46:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C647FF805C2;
+	Mon,  8 Jul 2024 20:46:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F13D6F801F5; Mon,  8 Jul 2024 20:46:18 +0200 (CEST)
+	id D31C2F8020D; Mon,  8 Jul 2024 20:46:44 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A3E38F800FA
-	for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2024 20:46:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id CF179F801F5
+	for <alsa-devel@alsa-project.org>; Mon,  8 Jul 2024 20:46:42 +0200 (CEST)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C1E074BAF;
-	Mon,  8 Jul 2024 20:46:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C1E074BAF
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 921B236212;
+	Mon,  8 Jul 2024 20:46:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 921B236212
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1720464374; bh=Q6bMXMPKjYSGU+fu03Lo5vqNOMKpOX3Qq7Z2PQxkaFo=;
+	t=1720464401; bh=Ey59BxoH++KCRuSdjZha/ny4rRf2U8syAsPMqFOAaKg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VQJ6jTLT4a7CyvhoUQH3Z2R1icRtEsjUl4oQhlq+4cNRCLP8mbvzcmNqzyeIkxwes
-	 Jlag1asJBfPm/BpKWkd4N+8gzZuqIm68FrcKEsJY7xS28TkRXkzzfbV7gsYlAI+54I
-	 oTQ3bx0ItdSR3rIjnQzKVKaiOoPbk1m0ayxzR/O8=
+	b=F8LGL8K3/nTPOpTEjlg/hINiHEQdDhJSL7SanGJiFd8QJxqx8lngy7SaUWvpSTXkY
+	 V0xMOQkoac5H9ok1QbCG28zp5BF68Acaq2tLex5d+eqmNcimgPYBlecI+KgMKJRjuk
+	 qrixwy7lmsBHuivxoDl2Q/pMfX41j4+o2D986R0w=
 Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
@@ -52,19 +52,20 @@ Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(No client certificate requested)
 	(Authenticated sender: perex)
 	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Mon,  8 Jul 2024 20:46:09 +0200 (CEST)
-Message-ID: <ee6bf198-29c8-4bc2-85b8-de39e8a4bf3b@perex.cz>
-Date: Mon, 8 Jul 2024 20:46:09 +0200
+	Mon,  8 Jul 2024 20:46:36 +0200 (CEST)
+Message-ID: <34523cbf-179a-4637-843e-855f4711aca3@perex.cz>
+Date: Mon, 8 Jul 2024 20:46:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH alsa-ucm-conf v3 1/2] sof-soundwire: Add missing match for
- cs42l43 speakers
+Subject: Re: [PATCH v3 alsa-ucm-conf 2/2] sof-soundwire: Add support for
+ cs42l43/cs35l56 bridge configuration
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
 Cc: pierre-louis.bossart@linux.intel.com, bard.liao@intel.com,
  patches@opensource.cirrus.com, alsa-devel@alsa-project.org
 References: <20240708115919.2506891-1-ckeepax@opensource.cirrus.com>
-Content-Language: en-US
+ <20240708115919.2506891-2-ckeepax@opensource.cirrus.com>
 From: Jaroslav Kysela <perex@perex.cz>
+Content-Language: en-US
 Autocrypt: addr=perex@perex.cz; keydata=
  xsFNBFvNeCsBEACUu2ZgwoGXmVFGukNPWjA68/7eMWI7AvNHpekSGv3z42Iy4DGZabs2Jtvk
  ZeWulJmMOh9ktP9rVWYKL9H54gH5LSdxjYYTQpSCPzM37nisJaksC8XCwD4yTDR+VFCtB5z/
@@ -108,11 +109,11 @@ Autocrypt: addr=perex@perex.cz; keydata=
  k8vz1gDNeG7HOIh46GnKIrQiUXVzAuUvM5vI9YaW3YRNTcn3pguQRt+Tl9Y6G+j+yvuLL173
  m4zRUU6DOygmpQAVYSOJvKAJ07AhQGaWAAi5msM6BcTU4YGcpW7FHr6+xaFDlRHzf1lkvavX
  WoxP1IA1DFuBMeYMzfyi4qDWjXc+C51ZaQd39EulYMh+JVaWRoY=
-In-Reply-To: <20240708115919.2506891-1-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20240708115919.2506891-2-ckeepax@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: SO6ZVDO53BDQMH4MB5JGDAL3OYA7ANZR
-X-Message-ID-Hash: SO6ZVDO53BDQMH4MB5JGDAL3OYA7ANZR
+Message-ID-Hash: W5XNDPKEAQV2UMFNBPHSNWP4SFA27PEI
+X-Message-ID-Hash: W5XNDPKEAQV2UMFNBPHSNWP4SFA27PEI
 X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -125,7 +126,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SO6ZVDO53BDQMH4MB5JGDAL3OYA7ANZR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W5XNDPKEAQV2UMFNBPHSNWP4SFA27PEI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,10 +136,11 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 08. 07. 24 13:59, Charles Keepax wrote:
-> The cs42l43 reports as cs42l43-spk in the speaker case, the regex in
-> sof-soundwire needs updated to recognise that.
+> The cs42l43 has both a SPI master and an I2S interface, in some
+> configurations 2 cs35l56 amplifiers are connected to these to provide
+> bass speakers whilst the cs42l43's internal speaker drivers are used for
+> the tweeters. Add UCM configuration for this type of system.
 > 
-> Fixes: 035d9206cffd ("sof-soundwire: Add basic support for cs42l43's speaker")
 > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Applied. Thank you.
