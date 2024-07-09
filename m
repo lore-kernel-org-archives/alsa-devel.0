@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0EA4C2BD09
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 16:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C62C5C2BD09
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 16:24:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8790EBE;
-	Tue,  9 Jul 2024 18:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8790EBE
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF1C8E8E;
+	Tue,  9 Jul 2024 18:24:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF1C8E8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720542244;
-	bh=Xs7KqgNnRre63IGaFjAAQd7xd6ANQBVKXDlQIX5cul8=;
+	s=default; t=1720542256;
+	bh=9xPoarv9U0RMmmwGjz2KH5mcE2cMmo3OmRe08XZCiqw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z/OSpnZx+BR29QGJy7icw4Byli8KTOMy+WuP4X8B4L3BJxrDuDtqZw/R+aXdQwwj4
-	 gYErNjKXL2H17Hu2rACutrlp7mBDy8990LiQ0DiQXUDl7Tx29dJTs+af5ia0B0M2Pe
-	 IobJOKT8IgxxBEql5e/6fHGf149Xz/4nnGIQJlPc=
+	b=ocOhs2eHxEerv2pTIbGwVFUuDF5SOHoEFJYtw76piGgXsQA1F/qg4J1LjsdF1cjns
+	 jU+0N/HNIa+GLLNa127nYHtKyKsuw6Qs7muoEtPpsm1k+KVGKup8fSEum3CBDXYa6t
+	 UmtcQJO/1bwEDkDpejGwBYG/l4RexiLNFAUjRxqc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EC61F80587; Tue,  9 Jul 2024 18:23:25 +0200 (CEST)
+	id AFFE9F80611; Tue,  9 Jul 2024 18:23:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98626F80587;
-	Tue,  9 Jul 2024 18:23:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5F9AF805E4;
+	Tue,  9 Jul 2024 18:23:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2E9DF80568; Tue,  9 Jul 2024 18:21:34 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 0C59BF804FC; Tue,  9 Jul 2024 18:21:34 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60682F80074
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2024 18:20:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60682F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id C6672F8019B
+	for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2024 18:20:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6672F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=d5tTULeu
+ header.s=k20201202 header.b=Tnwq6Khq
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3A8B2614BF;
-	Tue,  9 Jul 2024 16:20:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14026C32786;
-	Tue,  9 Jul 2024 16:20:26 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 5BB61CE1153;
+	Tue,  9 Jul 2024 16:20:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 539B8C32786;
+	Tue,  9 Jul 2024 16:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720542028;
-	bh=Xs7KqgNnRre63IGaFjAAQd7xd6ANQBVKXDlQIX5cul8=;
+	s=k20201202; t=1720542036;
+	bh=9xPoarv9U0RMmmwGjz2KH5mcE2cMmo3OmRe08XZCiqw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d5tTULeuhc8DySIX492MCnFOEFBe74HI0D3wrgNkkvsypnbjGBHtzV+wzZmnX/w5i
-	 RxXVdEvJqIZT5ponaZKNs7kdd1vYb+HCwpQesPgvlwTo7/FlRa+srP3hUj6N5PQyNM
-	 J2XGz7x6+mXVXfc4ne7FJxb/PXroviOoS6eo4ENpuq1YOp7as15gatCbQlRxwJmD6z
-	 PRQA4tMIUgt3FgVKvAS3o/yUsXkj7H92R1peEy2iLsuYf6IItDRK8uaPPvHXTb3Bqp
-	 m8Dqa/d0yVdXUvy93oVk6svbB9Q111FRqYy3ifiWFbHFExjlCXyrhA2AU+C8n+6ZHg
-	 vY/XwcI+P5S/g==
+	b=Tnwq6KhqE1lels9ZIRLjFmP2A3enBPsQkzkb2I/6rnWx02TSeZm7/AO4ahOALwNgZ
+	 Ya7qzmWVXFn8ajZvtYl8PCplX2KmucRDeh+1mdyuiNH9M61UPD34mBV9El2s7Kbf4C
+	 WBy1CpoTAmAAz47fsG34ZiKL2i0Jm/H2mBON0ZEp6JXs1ZGtCSpS2nly2BDPMq0Lsl
+	 CJtJX8qdY2baRYVWD6Ow/5+5tQOm7LkqYwcUxoY54+1ue0lpYVfc4qJgdq/lLYWv11
+	 ZtkcH4FizPchU/TghrzEHFSbJqLC/Fi0amNwONc5ld9aXlQAJhSy1aFbJwlMNDthTG
+	 GvF9UmWAz+6uQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
-	Jason Montleon <jmontleo@redhat.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
+Cc: Thomas GENTY <tomlohave@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	pierre-louis.bossart@linux.intel.com,
+	cezary.rojewski@intel.com,
 	liam.r.girdwood@linux.intel.com,
 	peter.ujfalusi@linux.intel.com,
 	yung-chuan.liao@linux.intel.com,
@@ -72,23 +71,24 @@ Cc: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
 	kai.vehmanen@linux.intel.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	justinstitt@google.com,
+	kuninori.morimoto.gx@renesas.com,
+	alban.boye@protonmail.com,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.9 08/40] ASoC: Intel: avs: Fix route override
-Date: Tue,  9 Jul 2024 12:18:48 -0400
-Message-ID: <20240709162007.30160-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.9 11/40] bytcr_rt5640 : inverse jack detect for
+ Archos 101 cesium
+Date: Tue,  9 Jul 2024 12:18:51 -0400
+Message-ID: <20240709162007.30160-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240709162007.30160-1-sashal@kernel.org>
 References: <20240709162007.30160-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.9.8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VTHDLL2KUCWPGAURGDUD7JVSMQUELBYN
-X-Message-ID-Hash: VTHDLL2KUCWPGAURGDUD7JVSMQUELBYN
+Message-ID-Hash: DHH6HKFKFCWUFMVVRORHOL3IFIUQWXW2
+X-Message-ID-Hash: DHH6HKFKFCWUFMVVRORHOL3IFIUQWXW2
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VTHDLL2KUCWPGAURGDUD7JVSMQUELBYN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DHH6HKFKFCWUFMVVRORHOL3IFIUQWXW2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,66 +110,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+From: Thomas GENTY <tomlohave@gmail.com>
 
-[ Upstream commit fd660b1bd015e5aa9a558ee04088f2431010548d ]
+[ Upstream commit e3209a1827646daaab744aa6a5767b1f57fb5385 ]
 
-Instead of overriding existing memory strings that may be too short,
-just allocate needed memory and point the route at it.
+When headphones are plugged in, they appear absent; when they are removed,
+they appear present.
+Add a specific entry in bytcr_rt5640 for this device
 
-Reported-by: Jason Montleon <jmontleo@redhat.com>
-Link: https://github.com/thesofproject/avs-topology-xml/issues/22#issuecomment-2127892605
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20240603102818.36165-3-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Thomas GENTY <tomlohave@gmail.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20240608170251.99936-1-tomlohave@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/avs/topology.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-index 42b42903ae9de..691d16ce95a0f 100644
---- a/sound/soc/intel/avs/topology.c
-+++ b/sound/soc/intel/avs/topology.c
-@@ -1545,8 +1545,8 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
- {
- 	struct snd_soc_acpi_mach *mach = dev_get_platdata(comp->card->dev);
- 	size_t len = SNDRV_CTL_ELEM_ID_NAME_MAXLEN;
--	char buf[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	int ssp_port, tdm_slot;
-+	char *buf;
- 
- 	/* See parse_link_formatted_string() for dynamic naming when(s). */
- 	if (!avs_mach_singular_ssp(mach))
-@@ -1557,13 +1557,24 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
- 		return 0;
- 	tdm_slot = avs_mach_ssp_tdm(mach, ssp_port);
- 
-+	buf = devm_kzalloc(comp->card->dev, len, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
- 	avs_ssp_sprint(buf, len, route->source, ssp_port, tdm_slot);
--	strscpy((char *)route->source, buf, len);
-+	route->source = buf;
-+
-+	buf = devm_kzalloc(comp->card->dev, len, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
- 	avs_ssp_sprint(buf, len, route->sink, ssp_port, tdm_slot);
--	strscpy((char *)route->sink, buf, len);
-+	route->sink = buf;
-+
- 	if (route->control) {
-+		buf = devm_kzalloc(comp->card->dev, len, GFP_KERNEL);
-+		if (!buf)
-+			return -ENOMEM;
- 		avs_ssp_sprint(buf, len, route->control, ssp_port, tdm_slot);
--		strscpy((char *)route->control, buf, len);
-+		route->control = buf;
- 	}
- 
- 	return 0;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index b41a1147f1c34..a64d1989e28a5 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -610,6 +610,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 101 CESIUM"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_JD_NOT_INV |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
 -- 
 2.43.0
 
