@@ -4,157 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2949FC3DA4B
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jul 2024 09:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE723C3DA4B
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jul 2024 09:30:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79D251D7;
-	Wed, 17 Jul 2024 11:28:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79D251D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 821EBA4B;
+	Wed, 17 Jul 2024 11:30:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 821EBA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1721208509;
-	bh=GSeA4PcrdkP6SJWYfJVHD1jiIOgZl3XKc2jY4obLw4k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1721208631;
+	bh=QL6vfS7t2ZXZBqDE+w38HqrlAOgIQ5D/Jl7C3qGdIq0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DmhfcEYhKNraRTz3xM2DbsHAUEvjxDd3i6vkMQ7JksbNrwu01Inx+NVeZZAK5EtGo
-	 yF3ilfe0w4adNWLCCWcvS+C636wnXQDakrHo6MJUwL/FfFIfuK7qATPcuIvGrN3nRR
-	 R5gm6+qoW6IIdDuBHHpo3nRHBzcP/w8qqDLwBWPg=
+	b=i+ashztsHNeE6CdYwl5PNcD8oJdC4KLadiR5rgpnDI27R3XOfBxHNCprYOCehu7Zc
+	 GSQ0W/Nd5ftcuJOF0JaayLBV8/6Ptcr5uz6l2WIYFukes+VCFluf4KfGMgiV2BBjoy
+	 ajtt4wTuNU4kpuRcFUqSaOEHwEa0/tH0yIw13mZY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1602BF805B3; Wed, 17 Jul 2024 11:27:54 +0200 (CEST)
+	id F2FFCF805BA; Wed, 17 Jul 2024 11:29:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B6C0F8026D;
-	Wed, 17 Jul 2024 11:27:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23B70F80588;
+	Wed, 17 Jul 2024 11:29:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36140F8026D; Wed, 17 Jul 2024 11:25:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 32C78F801F5; Tue,  9 Jul 2024 20:13:49 +0200 (CEST)
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com
+ [IPv6:2607:f8b0:4864:20::234])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85C51F8007E
-	for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2024 11:25:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85C51F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A435F80074
+	for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2024 20:13:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A435F80074
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=DPJ73xBr;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=nq6a81xg;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=DPJ73xBr;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=nq6a81xg
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7135221AD1;
-	Wed, 17 Jul 2024 09:25:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1721208313;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VmNCkLtrjI+fG5BWtot2mLs+buqGfR+f5WECiw7z6xw=;
-	b=DPJ73xBr4gGkyARfcnUrOKT6aP9aH8BISgFqvA/qx8WjtfcVDwSZ/A59mRX+znKADqp4aR
-	+QKLMu37ceYMKMdEOszElbZyo+oNU6Eu2G4SzbPKhYmf3eSfX9VEbQ6nmstb+60IcW0Ia/
-	V3TYmn65q6QK4HbMoFNv3sgZgqlA7bk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1721208313;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VmNCkLtrjI+fG5BWtot2mLs+buqGfR+f5WECiw7z6xw=;
-	b=nq6a81xgMgSEYZaqc2YKb0IvdncZ3D5mP2JFKLS3bN4mnTEfzkBo6SCV+22agDw2gtRFkt
-	kqKl8nbDk8c1jHBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1721208313;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VmNCkLtrjI+fG5BWtot2mLs+buqGfR+f5WECiw7z6xw=;
-	b=DPJ73xBr4gGkyARfcnUrOKT6aP9aH8BISgFqvA/qx8WjtfcVDwSZ/A59mRX+znKADqp4aR
-	+QKLMu37ceYMKMdEOszElbZyo+oNU6Eu2G4SzbPKhYmf3eSfX9VEbQ6nmstb+60IcW0Ia/
-	V3TYmn65q6QK4HbMoFNv3sgZgqlA7bk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1721208313;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VmNCkLtrjI+fG5BWtot2mLs+buqGfR+f5WECiw7z6xw=;
-	b=nq6a81xgMgSEYZaqc2YKb0IvdncZ3D5mP2JFKLS3bN4mnTEfzkBo6SCV+22agDw2gtRFkt
-	kqKl8nbDk8c1jHBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 33CE4136E5;
-	Wed, 17 Jul 2024 09:25:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0r1wC/mNl2a7JQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 17 Jul 2024 09:25:13 +0000
-Date: Wed, 17 Jul 2024 11:25:45 +0200
-Message-ID: <87sew8xtd2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: wangdicheng <wangdich9700@163.com>
-Cc: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-arm-kernel@lists.infradead.org,
-	wangdicheng <wangdicheng@kylinos.cn>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix microphone sound on HD webcam.
-In-Reply-To: <20240717091951.11344-1-wangdich9700@163.com>
-References: <20240717091951.11344-1-wangdich9700@163.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [0.70 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_TO(0.00)[163.com];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[163.com,gmail.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,perex.cz,suse.com,vger.kernel.org,alsa-project.org,lists.infradead.org,kylinos.cn];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: X4YEJ65ZSS5HTET2XJX5JX5FBJRBXW5F
-X-Message-ID-Hash: X4YEJ65ZSS5HTET2XJX5JX5FBJRBXW5F
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=iO+yXysg
+Received: by mail-oi1-x234.google.com with SMTP id
+ 5614622812f47-3d938024c67so815746b6e.2
+        for <alsa-devel@alsa-project.org>;
+ Tue, 09 Jul 2024 11:13:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720548823; x=1721153623;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ROMHyto+2d5m9gvIVW0NcBrDATzh3Wi6vpT55RVsNsM=;
+        b=iO+yXysgTa8UJRgBD1k9OdFrSbWkhx7ylJcAMSIdUsKGO7cXMAbng9AaaovKBfr6BG
+         FlKvKcORsYgd8JV6vNVccScBqrink0IjX4fV5NdRhc6V5nmFi48FXuJwTb7IHOS//b/B
+         K3+Z/kwCCAAVTLFvMn+NuVwSPWYZu3O33ORW4ZtO13/CxC2RjpOLz6Pf1QQBl/3wWSrb
+         2Jk0wJyyH4dcVZvpEfiMjVrOxF9hMq2MljhswYCJ+0An7aqmnASZYgb4vLM2ocb9W5cl
+         27Z+qHKuolH+Bu9v05pLMDQIsM/SKRLWM8YgB3odP2RYPZoUd/uCXy51RQoSmjDLKSSk
+         0rOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720548823; x=1721153623;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ROMHyto+2d5m9gvIVW0NcBrDATzh3Wi6vpT55RVsNsM=;
+        b=MjOjFqo5y/Zq2Nppr41VihwDBKwibAytl1NxMY3j94BMTnx39cJHVv8njLDO9mazVE
+         uDGm4WQR7lM1yt68QcVq+LfXYhAFE1Wc4FWrrZ/8gg7C+mbYH5ORx86yhS5fA6lY4Cvj
+         ZcY247ANEY6StWRBqKHwzeBN5NNGmOhg5pNUlOWa+ySpoiZYItlI6YyePnkv7Qhv67R9
+         97KSwVoMTrFj5nzUqwPnIzSSbqi4JM+HVVPpcNL74MsBpnSEPkXLF3bGRY5/nz1ujqGM
+         CpSHdqWtDwD91cueXE9lUlenM5G92UDxLIqDsW6RxKUzd3V8HX5nin/mxgidaLQypvGJ
+         Xm1Q==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXebiVrIBVrZyCyy7N2YnAEr1ON3oRqwOqjRoCVlJGqOHogusgjGb4HafMwc2NtjgzZhykR8rat6so5g0uj22EsR/GUY5i+LsxKwVc=
+X-Gm-Message-State: AOJu0YylC6SX7Vns9X/EyT+MWWO6Uek5AwBCdyNEF85AAsONn0Sodjsy
+	d3I0kvjhLpekiUAuHlZSu1KO/lAPONPzEOoY70WWmoBcVTyigG7icxkzmqA4gsEbI2GmsnJaaol
+	JSIktltWcp5Zz9huoDFX/u7Cyvm4=
+X-Google-Smtp-Source: 
+ AGHT+IHevraVd4VAfdho+QOwUt6YVkQU8bdQp+gENg36rqNZi9wUtYbQlbdAXUq6zj6JrypsVOIIC94IzJBFd1iJw6o=
+X-Received: by 2002:a05:6871:b23:b0:25e:2b26:e05e with SMTP id
+ 586e51a60fabf-25eae83c5demr2302832fac.23.1720548822974; Tue, 09 Jul 2024
+ 11:13:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20240707062702.174390-1-animeshagarwal28@gmail.com>
+ <3d40f02f-529b-45ac-aa31-c4342f6f4f55@kernel.org>
+In-Reply-To: <3d40f02f-529b-45ac-aa31-c4342f6f4f55@kernel.org>
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+Date: Tue, 9 Jul 2024 23:43:31 +0530
+Message-ID: 
+ <CAE3Oz82KvEv3uJw-ha4RjXDuwqbMAy5ifEnK-gtR9ajkEbm-bA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: cirrus,cs4270: Convert to dtschema
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ patches@opensource.cirrus.com,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: animeshagarwal28@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: J7DU7Z5JPDNGINEUJRWZLJ23NEUXSTIK
+X-Message-ID-Hash: J7DU7Z5JPDNGINEUJRWZLJ23NEUXSTIK
+X-Mailman-Approved-At: Wed, 17 Jul 2024 09:29:46 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X4YEJ65ZSS5HTET2XJX5JX5FBJRBXW5F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J7DU7Z5JPDNGINEUJRWZLJ23NEUXSTIK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -163,32 +124,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 17 Jul 2024 11:19:51 +0200,
-wangdicheng wrote:
-> V1 -> V2: align the space
+xOn Mon, Jul 8, 2024 at 1:08=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.or=
+g> wrote:
+>
+> On 07/07/2024 08:26, Animesh Agarwal wrote:
+> > +  va-supply:
+> > +    description: Voltage regulator phandle for the VA supply.
+>
+> Your description is redundant: you did not say anything more than it is
+> already said in the property name. This could be in such case just:
+> ": true"
+>
+> Please keep this feedback for any future work (I feel I already said it
+> once...).
+>
 
-Please put "v2" in the subject, i.e. "[PATCH v2] ALSA: ..."
+I'll add proper descriptions for each of these instead, thanks for the head=
+s-up.
 
-> --- a/sound/usb/quirks.c
-> +++ b/sound/usb/quirks.c
-> @@ -2179,6 +2179,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
->  		   QUIRK_FLAG_FIXED_RATE),
->  	DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo N930AF FHD Webcam */
->  		   QUIRK_FLAG_GET_SAMPLE_RATE),
-> +	DEVICE_FLG(0x1bcf, 0x2281, /* HD Webcam */
-> +		   QUIRK_FLAG_GET_SAMPLE_RATE),
->  
->  	/* Vendor matches */
->  	VENDOR_FLG(0x045e, /* MS Lifecam */
+> > +
+> > +  vd-supply:
+> > +    description: Voltage regulator phandle for the VD supply.
+> > +
+> > +  vlc-supply:
+> > +    description: Voltage regulator phandle for the VLC supply.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+>
+> This won't validate DTS... test the DTS. You miss dai-common.
+>
 
-This still doesn't to apply the latest code cleanly.
-You must be using an old kernel code.  There was rearrangement of the
-table entries in the commit 668abe6dc7b6, and this has been backported
-to some stable kernels as well.
+Weirdly, this wasn't giving any errors upon running the dtbs_check,
+however I should fix this.
 
-Please try to rebase to the latest code.
+> > +
+> > +examples:
+> > +  - |
+> > +    i2c {
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <0>;
+> > +
+> > +      codec: cs4270@48 {
+>
+> Node names should be generic. See also an explanation and list of
+> examples (not exhaustive) in DT specification:
+> https://devicetree-specification.readthedocs.io/en/latest/chapter2-device=
+tree-basics.html#generic-names-recommendation
+> e.g. audio-codec or codec
+>
+> And drop unused label "codec:"
+>
 
+I can see some other cirrus bindings with this mistake, maybe because
+they were written/converted several years ago. I shall fix it here.
 
-thanks,
-
-Takashi
+>
+> Best regards,
+> Krzysztof
+>
