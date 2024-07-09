@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 518F6C3DA41
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 16:25:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E6DC2BD09
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jul 2024 16:26:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C0FA86E;
-	Tue,  9 Jul 2024 18:25:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C0FA86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9521EB6;
+	Tue,  9 Jul 2024 18:25:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9521EB6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720542349;
-	bh=nLWJVFLnUTBOHp+Zg4qjHCWvREOSbRepbVtkv3TIICw=;
+	s=default; t=1720542369;
+	bh=8oT57BKV7X17i5eAy7BuCjT16TKuGxfGKjmjCHWzGY4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PtX6lrpEoVDgiYM9uCduP6uMUaaS9mEYBO/NSq8Vs9ZCPvF+CoHqlfK3cjCT/hCCN
-	 oITdnzH9xPqbK0adCPeu9F0gthY9TRymk/uH+grSyC+Cu/l0BAEPo3gx2Gg8ywU7Nm
-	 TisDE1YPOaolkH1JtmIW7QtZ4tAfmv/u50cEWJh8=
+	b=fbaks0mdBM7ZoSG2mx2wfBirYvonwS+nokuo4umywpSijWNf+0FFXl+eA5hzJXVqj
+	 dcnxzu0P+PqIL2XOUX39tBEvrI+8NLUdkkFa/MywpFK72SsbmhXZOi4Z8qijri9lnL
+	 YofRngSpy3ftUBnQZ7Qc+rLlsVRebjj7khEgxnqs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 890D6F80642; Tue,  9 Jul 2024 18:24:37 +0200 (CEST)
+	id DD98DF8067F; Tue,  9 Jul 2024 18:24:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7709DF8063B;
-	Tue,  9 Jul 2024 18:24:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75806F80631;
+	Tue,  9 Jul 2024 18:24:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75F93F801F5; Tue,  9 Jul 2024 18:23:01 +0200 (CEST)
+	id 10AEDF804FC; Tue,  9 Jul 2024 18:24:22 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5A32EF8013D
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2024 18:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A32EF8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62124F8019B
+	for <alsa-devel@alsa-project.org>; Tue,  9 Jul 2024 18:24:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62124F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=M1OFwLGx
+ header.s=k20201202 header.b=q+XjzjiU
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 96D41CE12BF;
-	Tue,  9 Jul 2024 16:22:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C5D6C3277B;
-	Tue,  9 Jul 2024 16:22:42 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 427A6CE1291;
+	Tue,  9 Jul 2024 16:24:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EC5BC32782;
+	Tue,  9 Jul 2024 16:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720542164;
-	bh=nLWJVFLnUTBOHp+Zg4qjHCWvREOSbRepbVtkv3TIICw=;
+	s=k20201202; t=1720542255;
+	bh=8oT57BKV7X17i5eAy7BuCjT16TKuGxfGKjmjCHWzGY4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M1OFwLGxMAzzV/6ZGoh5RZBnxVDQFldZoBihdDhUegOCI90U6YmrcWU0vx2hbilOC
-	 XT1Byr/QE2xHhYGinY7yiqjd3iSrDds2rWzdZQWCDbsfw3TTe7ud2voCi3FcJ5paml
-	 5QPsKaivw18c+jDPni/qKta0CaxxxMUEIQaLkWdMZR6cMC8PABAQZJOLwWuAXFeQ1c
-	 HtiIaVGOFba6otwqBC1beST1LsGYn6a5I7UlJqR1KAdkDl8P4MekMewXDOlWSKSSW2
-	 ZOEaiOMfo9oRNcRHXDTD5/yfSWx1glUoffHh+vWfBstqKC3SQGiZFxwWuaW4voL4v/
-	 SSbZhv85NSZXQ==
+	b=q+XjzjiU6gnzM5svprSnbkZ/5iPPcTcr1WED24Y0iTIsoIkn9zlnxplbf9xEdmfIJ
+	 vFIs/t4Gk29IhQXO1A/dM3TSKFdw/7E6wj+tBJ8GJDoL3r9dyUYy7+7ytegpzJl1pY
+	 /j2qvhrhJm4+gp0r9SUQahuBaRN+GowfXTaMOpjXdnOxK/stx4yWmbXy//qKUS5MAg
+	 gUJTOJ14ECjH7lFB5Aw46wJC7FXxTXrIGemRCG43hX24ZkqsjQRJ0X7BJcPMbalSID
+	 INvhGbxJvAZdspyONTCw6Ri0ly8Lkili/4Hn4bUfiBZlrnw4rcHPJ3k0DrvotgQ6qa
+	 2niKEqq7fcXtA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -70,24 +70,24 @@ Cc: Thomas GENTY <tomlohave@gmail.com>,
 	kai.vehmanen@linux.intel.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	alban.boye@protonmail.com,
 	kuninori.morimoto.gx@renesas.com,
+	alban.boye@protonmail.com,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 08/33] bytcr_rt5640 : inverse jack detect for
+Subject: [PATCH AUTOSEL 6.1 06/27] bytcr_rt5640 : inverse jack detect for
  Archos 101 cesium
-Date: Tue,  9 Jul 2024 12:21:34 -0400
-Message-ID: <20240709162224.31148-8-sashal@kernel.org>
+Date: Tue,  9 Jul 2024 12:23:20 -0400
+Message-ID: <20240709162401.31946-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240709162224.31148-1-sashal@kernel.org>
-References: <20240709162224.31148-1-sashal@kernel.org>
+In-Reply-To: <20240709162401.31946-1-sashal@kernel.org>
+References: <20240709162401.31946-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.38
+X-stable-base: Linux 6.1.97
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SKR5R2B3222ETUGQ5IECYHGYLT2W6W5L
-X-Message-ID-Hash: SKR5R2B3222ETUGQ5IECYHGYLT2W6W5L
+Message-ID-Hash: 76VNGNWVZZXSATO2K6CUOHL4QPATQVA2
+X-Message-ID-Hash: 76VNGNWVZZXSATO2K6CUOHL4QPATQVA2
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SKR5R2B3222ETUGQ5IECYHGYLT2W6W5L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/76VNGNWVZZXSATO2K6CUOHL4QPATQVA2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,7 +128,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 651408c6f399d..5b8b21ade9cfe 100644
+index d6ef8e850412b..ff879e173d51d 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
 @@ -610,6 +610,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
