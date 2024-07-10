@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94520C38150
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jul 2024 08:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E088BC3DA42
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jul 2024 08:30:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DF5482A;
-	Wed, 10 Jul 2024 10:30:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DF5482A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57F5893A;
+	Wed, 10 Jul 2024 10:30:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57F5893A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720600234;
-	bh=fvB2g0Xiz+QuOEyjJz2Jei/hZ/zPhy+LZkMMMFz6D6U=;
+	s=default; t=1720600257;
+	bh=AtEcfmnTvOwc9nEyYBFY1bYCvXjYsG6hq/Lk6iuvbrI=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Rb1H0N6MGmA4S9vB4awEh8T9ugSPT2UWiKNFA9ZlGMXZZOVtdECdaJKQDV191zDdP
-	 LGA96C4D8DvyXBtxZJIxZTHHK7Lzj0LlkdAKGbESXULXJJ/ZHAZ7w0s5Mz9NZ0pR6U
-	 7fpSliEGTsoFdkZW58CoamOXbT0v13SZCZE3iK+c=
+	b=Z+lT/PIDZxF98mlIbOF77YuZa88ysUhPEt5e/0GASYwnaj3HgrLa3HJElMvMi89rf
+	 JmB6dHLTK/41xvt8oC/17AwYM82sDPucMRdNsvfK1eglvA6eAyrJJQGloXs5mIb/lV
+	 hQ0H8KZDJjDQbJNZa5ko+LbzdxBQc02CsslSKYLY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85362F805A9; Wed, 10 Jul 2024 10:30:02 +0200 (CEST)
+	id F1E9EF805CB; Wed, 10 Jul 2024 10:30:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51E57F80568;
-	Wed, 10 Jul 2024 10:30:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFAEAF805BB;
+	Wed, 10 Jul 2024 10:30:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BE54F801F5; Wed, 10 Jul 2024 10:26:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 38E3BF801F5; Wed, 10 Jul 2024 10:27:30 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DEC61F800FA
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2024 10:26:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEC61F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 15B24F8013D
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2024 10:27:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15B24F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Cslxb1Mi
+ header.s=k20201202 header.b=lug/6Gx3
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 297A8619EE;
-	Wed, 10 Jul 2024 08:26:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77AC9C32786;
-	Wed, 10 Jul 2024 08:25:56 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 70154CE0FB1;
+	Wed, 10 Jul 2024 08:27:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3727C32781;
+	Wed, 10 Jul 2024 08:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720599960;
-	bh=fvB2g0Xiz+QuOEyjJz2Jei/hZ/zPhy+LZkMMMFz6D6U=;
+	s=k20201202; t=1720600040;
+	bh=AtEcfmnTvOwc9nEyYBFY1bYCvXjYsG6hq/Lk6iuvbrI=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Cslxb1MiQ0wVZ3OJrJ2gefb4pb+I0KCz1MOLyTf1TGKk1WAux/905mxPolVTgsMXb
-	 rQecD0l7dDKDib+wKzTxVoAazgQmKZYa/zVjS6Z6+xH5YgNthm9B5I0cCtpVaXk8HU
-	 i1/Zz09xnFoXa3bdC4GkMVlM+EL6pFz7Vx3zdRmqK6+5mp1P8t0LU5VCo7P/XD+L9E
-	 mx4HDYP+/xKCqkCpX3WQuTm6cRSH6BbgycJDKt4OgXnT49jK52Efq7bB9UjUxWl8Qp
-	 K7gzn8TpDp5lJYvAUJecQWbQBxnl69ecOlm0HbrYfLN7klIfAPtt/Oi//UJ1/bN2Cq
-	 Yhnl7yTpZDTLg==
-Message-ID: <9f1d3c63-8b1c-43a8-b002-5399a81e704d@kernel.org>
-Date: Wed, 10 Jul 2024 10:25:53 +0200
+	b=lug/6Gx3pnGyoxU5EuJ/HJBOca8L/gxQ9rHAdan9CN5dT8GjFPE/lv+FYKzaLs2Qb
+	 EUjDren1/4ov4s7Y4HTrENKzzaXVeZUQtaX7HRs9ciz0Y7q+16fgVjl0oxQB6pDtr0
+	 E/r6m4pW0Cjj7+kBUL59ML2rj87RyCTlQkgW6Y6dmyH2mG0/U60CYFMItDLrPSCRqA
+	 Sn2oCsDmZriyW+ToukELG6OYpnAXSS5RFQ43/6vGysQxxq6694zKShIj+gQH+vwcKx
+	 aQRKYtcGRb7YCztYuQ5oSKollHaw5r2bKkUnkKAgS8nhAzmHGHYdrwCDaxVqHe4WXA
+	 4TsVPOXksuDBQ==
+Message-ID: <7940d869-5cd8-4ef3-a50c-486ffd940b84@kernel.org>
+Date: Wed, 10 Jul 2024 10:27:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: qcom,msm8916-wcd-digital-codec:
- convert to dtschema
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: qcom,apq8096-sndcard: use dtschema
 To: Rayyan Ansari <rayyan.ansari@linaro.org>, devicetree@vger.kernel.org
 Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@quicinc.com>,
  Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
@@ -71,7 +70,7 @@ Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@quicinc.com>,
  Rob Herring <robh@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 References: <20240709152808.155405-1-rayyan.ansari@linaro.org>
- <20240709152808.155405-2-rayyan.ansari@linaro.org>
+ <20240709152808.155405-3-rayyan.ansari@linaro.org>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -117,11 +116,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240709152808.155405-2-rayyan.ansari@linaro.org>
+In-Reply-To: <20240709152808.155405-3-rayyan.ansari@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: GXNF6KMOBN5TEEPSXKVRQP4GVOYQIHXT
-X-Message-ID-Hash: GXNF6KMOBN5TEEPSXKVRQP4GVOYQIHXT
+Message-ID-Hash: DR5OQ5LPKFQJFP2QWSBLXQWB34RPOBFO
+X-Message-ID-Hash: DR5OQ5LPKFQJFP2QWSBLXQWB34RPOBFO
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -134,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GXNF6KMOBN5TEEPSXKVRQP4GVOYQIHXT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DR5OQ5LPKFQJFP2QWSBLXQWB34RPOBFO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,49 +143,13 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 09/07/2024 17:24, Rayyan Ansari wrote:
-> Convert the Qualcomm MSM8916 WCD Digital Audio Codec bindings from text
-> to yaml dt schema format.
-> Make bindings complete by adding #sound-dai-cells.
+> Remove old txt bindings and add apq8096 soundcard entry to existing
+> dt schema.
+> 
+> Signed-off-by: Rayyan Ansari <rayyan.ansari@linaro.org>
 
 
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,msm8916-wcd-digital-codec
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 2
-
-You can drop minItems if they equal max.
-
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ahbix-clk
-> +      - const: mclk
-> +
-> +  '#sound-dai-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#sound-dai-cells'
-> +
-
-You need here allOf: with $ref to dai-common.yaml.
-
-> +additionalProperties: false
-
-... and this then becomes:
-unevaluatedProperties: false
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
