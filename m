@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C29E5C41513
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jul 2024 10:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EED4C3DA42
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jul 2024 10:39:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48CD393A;
-	Wed, 10 Jul 2024 12:39:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48CD393A
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACB01A4D;
+	Wed, 10 Jul 2024 12:39:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACB01A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720607975;
-	bh=mzgC7Iflzc1BlOGQq+JGPHCe1nBZjTuOzsMPE1uQueE=;
+	s=default; t=1720607986;
+	bh=sUFRpB9tn4pKYjz656dcZgE4v6AXfR+oBbjTGOOHJNc=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ki3Z2i7K2qkWy6m53LBEx6wvFG6CAnsKx4qmdlPgVfZl1uxEyy9lW0JDJZMzwhNlU
-	 XVg3WajAYkfVOgBV8XTcCWI12j2r6XtYUjnIXVVa5TXe55luRO3SVjqD7YG0Iui7eW
-	 CKUIsHjCc3jc3ZafW1JKRYHeA3qTqbmmXaOds95E=
+	b=KrbyonCTPH+gFjlhzlKS1ZsNOFr/6xgtr4r36gT6GibIBYVakRIKlklLgrkBi1lCp
+	 aUPE03krWCJ9X3/r/wERPghUvaxbHl7lITgPHvVY1CdWVeCnaMlgZeWdvZo8p49Ugm
+	 JBIGNSpIQpmf8dNDCbNF8G/V8IuP3nx3iF5F8VMw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 302C7F8061D; Wed, 10 Jul 2024 12:38:18 +0200 (CEST)
+	id E6BA2F80631; Wed, 10 Jul 2024 12:38:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88F9EF80620;
-	Wed, 10 Jul 2024 12:38:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FC4CF80652;
+	Wed, 10 Jul 2024 12:38:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 480F4F801F5; Wed, 10 Jul 2024 12:37:08 +0200 (CEST)
+	id B395CF805AD; Wed, 10 Jul 2024 12:38:10 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B4192F8020D
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2024 12:36:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4192F8020D
+	by alsa1.perex.cz (Postfix) with ESMTPS id F1828F8019B
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jul 2024 12:36:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1828F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=l+gbOCs4
+ header.s=PODMain02222019 header.b=fHD/CQIg
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 46A4s4Gq006601;
-	Wed, 10 Jul 2024 05:36:47 -0500
+ 46A4s4Gn006601;
+	Wed, 10 Jul 2024 05:36:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=748w9BISOBmfWOXmvCHF0/7TRcQPumgRgnCu07iWs58=; b=
-	l+gbOCs4bv0qv/Edmu6cDB+1sNBHgBcJpYXIJ47V4Gz/EyP3MsRNUR5rGIIg2X2i
-	W+SuSuGvUSTAR29YZoCjZr3zsx56lA1DkHxj3BR842HH8t/qyBLfPYMFJxEbRzZ4
-	WeOgz5mDu0w6ORBci1rC7EPZG4z0lKP97spVDJfO4xpSxwxZCYpQ9AaSXlwTji7X
-	F+Pi0WquV6+0t+XhYdd/hFEAMZokG1eczpznmuQrILxhZpeQ6sUQqBdvVcD45i5G
-	oVFNYFdv4qXSEibgKbwE4ykFCDh5OcuZ9B0loGF3Kx+wCpf7GC1dHk0/f4VnST/O
-	KfMyhQg/tD4j8ldfZMcZJQ==
+	PODMain02222019; bh=BI9y81EZerHwzLYzPxJaK7fauU2DS3/I335/BNTzokk=; b=
+	fHD/CQIg+GJ4M2YeonM3cgEBEm8p5rmhB1Jkp8sBbiaqkKSNOrs0/FQ/46+31M5d
+	T50y4llA2PZLxMEbUhrGOett+RJxlBCByBm8ES93NTeJvSnw0dFoCRBiaxLC46PT
+	9jOTo0BEIKbT4hnk8IxLPQ7sRBgLQFLPirFLRJ3qdU1tW3mn9OxJQrjvVS7NW+Mg
+	EtsvnMNrnszwHhn49bV0rQ+T1usnd/4puF4Rm4YVekRrziM1gJLa0yoHIpV/w+pR
+	9vV95aHf4iH4khEoTwo1F9X1KZ2jZsa3FW5qamMb/MwHgK33pI21Vg03j2ainytk
+	6kDmyBN5Dw7ZusWVptA+PA==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 409c9a8h0p-5
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 409c9a8h0p-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jul 2024 05:36:47 -0500 (CDT)
+	Wed, 10 Jul 2024 05:36:43 -0500 (CDT)
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 10 Jul
@@ -66,26 +66,27 @@ Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  15.2.1544.9 via Frontend Transport; Wed, 10 Jul 2024 11:36:40 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
  [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 867E8820259;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 6982C82024D;
 	Wed, 10 Jul 2024 10:36:40 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-Subject: [PATCH v2 4/4] firmware: cs_dsp: Rename fw_ver to wmfw_ver
-Date: Wed, 10 Jul 2024 11:36:40 +0100
-Message-ID: <20240710103640.78197-5-rf@opensource.cirrus.com>
+Subject: [PATCH v2 1/4] firmware: cs_dsp: Don't allocate temporary buffer for
+ info text
+Date: Wed, 10 Jul 2024 11:36:37 +0100
+Message-ID: <20240710103640.78197-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240710103640.78197-1-rf@opensource.cirrus.com>
 References: <20240710103640.78197-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: _iLuBainntKiVg-9qkx4_4uaoQM5j5xA
-X-Proofpoint-GUID: _iLuBainntKiVg-9qkx4_4uaoQM5j5xA
+X-Proofpoint-ORIG-GUID: BAv89DRGGZKKLyszZ4f9DljKiPAN78pc
+X-Proofpoint-GUID: BAv89DRGGZKKLyszZ4f9DljKiPAN78pc
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: LOKRMDUCA4UWP6DRZC3N3SDMKQO5HM3E
-X-Message-ID-Hash: LOKRMDUCA4UWP6DRZC3N3SDMKQO5HM3E
+Message-ID-Hash: 4EYV5VBZOONLXRQQWWW5LA34RFMZM25L
+X-Message-ID-Hash: 4EYV5VBZOONLXRQQWWW5LA34RFMZM25L
 X-MailFrom: prvs=4921fba11f=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LOKRMDUCA4UWP6DRZC3N3SDMKQO5HM3E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4EYV5VBZOONLXRQQWWW5LA34RFMZM25L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,142 +108,139 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Rename the confusingly named struct member fw_ver to wmfw_ver. It
-contains the wmfw format version of the loaded wmfw file.
+Don't allocate a temporary buffer to hold a NUL-terminated copy
+of the NAME/INFO string from the wmfw/bin. It can be printed
+directly to the log. Also limit the maximum number of characters
+that will be logged from this string.
 
-This commit also contains an update to wm_adsp for the new name.
+The NAME/INFO blocks in the firmware files are an array of
+characters with a length, not a NUL-terminated C string. The
+original code allocated a temporary buffer to make a
+NUL-terminated copy of the string and then passed that to
+dev_info(). There's no need for this: printf formatting can
+use "%.*s" to print a character array of a given length.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
-Changes since V1:
-Rebased onto the new commit #3. This removes a single-line change
-from this commit. The rest of this commit is the same as V1.
+No changes since V1
 ---
- drivers/firmware/cirrus/cs_dsp.c       | 20 ++++++++++----------
- include/linux/firmware/cirrus/cs_dsp.h |  2 +-
- sound/soc/codecs/wm_adsp.c             |  2 +-
- 3 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/firmware/cirrus/cs_dsp.c | 35 +++++++-------------------------
+ 1 file changed, 7 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index cce81a3f68f9..a7b56eff086f 100644
+index 89fd63205a6e..bf25107a98ee 100644
 --- a/drivers/firmware/cirrus/cs_dsp.c
 +++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -1051,7 +1051,7 @@ static int cs_dsp_create_control(struct cs_dsp *dsp,
- 
- 	ctl->fw_name = dsp->fw_name;
- 	ctl->alg_region = *alg_region;
--	if (subname && dsp->fw_ver >= 2) {
-+	if (subname && dsp->wmfw_ver >= 2) {
- 		ctl->subname_len = subname_len;
- 		ctl->subname = kasprintf(GFP_KERNEL, "%.*s", subname_len, subname);
- 		if (!ctl->subname) {
-@@ -1178,7 +1178,7 @@ static int cs_dsp_coeff_parse_alg(struct cs_dsp *dsp,
- 
- 	raw = (const struct wmfw_adsp_alg_data *)region->data;
- 
--	switch (dsp->fw_ver) {
-+	switch (dsp->wmfw_ver) {
- 	case 0:
- 	case 1:
- 		if (sizeof(*raw) > data_len)
-@@ -1255,7 +1255,7 @@ static int cs_dsp_coeff_parse_coeff(struct cs_dsp *dsp,
- 	blk->offset = le16_to_cpu(raw->hdr.offset);
- 	blk->mem_type = le16_to_cpu(raw->hdr.type);
- 
--	switch (dsp->fw_ver) {
-+	switch (dsp->wmfw_ver) {
- 	case 0:
- 	case 1:
- 		if (sizeof(*raw) > (data_len - pos))
-@@ -1502,7 +1502,7 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
- 		goto out_fw;
- 	}
- 
--	dsp->fw_ver = header->ver;
-+	dsp->wmfw_ver = header->ver;
- 
- 	if (header->core != dsp->type) {
- 		cs_dsp_err(dsp, "%s: invalid core %d != %d\n",
-@@ -1782,7 +1782,7 @@ static struct cs_dsp_alg_region *cs_dsp_create_region(struct cs_dsp *dsp,
- 
- 	list_add_tail(&alg_region->list, &dsp->alg_regions);
- 
--	if (dsp->fw_ver > 0)
-+	if (dsp->wmfw_ver > 0)
- 		cs_dsp_ctl_fixup_base(dsp, alg_region);
- 
- 	return alg_region;
-@@ -1905,7 +1905,7 @@ static int cs_dsp_adsp1_setup_algs(struct cs_dsp *dsp)
- 			ret = PTR_ERR(alg_region);
- 			goto out;
- 		}
--		if (dsp->fw_ver == 0) {
-+		if (dsp->wmfw_ver == 0) {
- 			if (i + 1 < n_algs) {
- 				len = be32_to_cpu(adsp1_alg[i + 1].dm);
- 				len -= be32_to_cpu(adsp1_alg[i].dm);
-@@ -1927,7 +1927,7 @@ static int cs_dsp_adsp1_setup_algs(struct cs_dsp *dsp)
- 			ret = PTR_ERR(alg_region);
- 			goto out;
- 		}
--		if (dsp->fw_ver == 0) {
-+		if (dsp->wmfw_ver == 0) {
- 			if (i + 1 < n_algs) {
- 				len = be32_to_cpu(adsp1_alg[i + 1].zm);
- 				len -= be32_to_cpu(adsp1_alg[i].zm);
-@@ -2018,7 +2018,7 @@ static int cs_dsp_adsp2_setup_algs(struct cs_dsp *dsp)
- 			ret = PTR_ERR(alg_region);
- 			goto out;
- 		}
--		if (dsp->fw_ver == 0) {
-+		if (dsp->wmfw_ver == 0) {
- 			if (i + 1 < n_algs) {
- 				len = be32_to_cpu(adsp2_alg[i + 1].xm);
- 				len -= be32_to_cpu(adsp2_alg[i].xm);
-@@ -2040,7 +2040,7 @@ static int cs_dsp_adsp2_setup_algs(struct cs_dsp *dsp)
- 			ret = PTR_ERR(alg_region);
- 			goto out;
- 		}
--		if (dsp->fw_ver == 0) {
-+		if (dsp->wmfw_ver == 0) {
- 			if (i + 1 < n_algs) {
- 				len = be32_to_cpu(adsp2_alg[i + 1].ym);
- 				len -= be32_to_cpu(adsp2_alg[i].ym);
-@@ -2062,7 +2062,7 @@ static int cs_dsp_adsp2_setup_algs(struct cs_dsp *dsp)
- 			ret = PTR_ERR(alg_region);
- 			goto out;
- 		}
--		if (dsp->fw_ver == 0) {
-+		if (dsp->wmfw_ver == 0) {
- 			if (i + 1 < n_algs) {
- 				len = be32_to_cpu(adsp2_alg[i + 1].zm);
- 				len -= be32_to_cpu(adsp2_alg[i].zm);
-diff --git a/include/linux/firmware/cirrus/cs_dsp.h b/include/linux/firmware/cirrus/cs_dsp.h
-index 8078dc377948..2e649810169f 100644
---- a/include/linux/firmware/cirrus/cs_dsp.h
-+++ b/include/linux/firmware/cirrus/cs_dsp.h
-@@ -167,7 +167,7 @@ struct cs_dsp {
+@@ -12,6 +12,7 @@
+ #include <linux/ctype.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
++#include <linux/minmax.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/seq_file.h>
+@@ -1473,7 +1474,6 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
+ 	const struct wmfw_region *region;
  	const struct cs_dsp_region *mem;
- 	int num_mems;
+ 	const char *region_name;
+-	char *text = NULL;
+ 	struct cs_dsp_buf *buf;
+ 	unsigned int reg;
+ 	int regions = 0;
+@@ -1545,15 +1545,15 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
  
--	int fw_ver;
-+	int wmfw_ver;
+ 		region_name = "Unknown";
+ 		reg = 0;
+-		text = NULL;
+ 		offset = le32_to_cpu(region->offset) & 0xffffff;
+ 		type = be32_to_cpu(region->type) & 0xff;
  
- 	bool booted;
- 	bool running;
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 68d2d6444533..9f8549b34e30 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -601,7 +601,7 @@ static int wm_adsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl)
- 		return -EINVAL;
- 	}
+ 		switch (type) {
++		case WMFW_INFO_TEXT:
+ 		case WMFW_NAME_TEXT:
+-			region_name = "Firmware name";
+-			text = kzalloc(le32_to_cpu(region->len) + 1,
+-				       GFP_KERNEL);
++			region_name = "Info/Name";
++			cs_dsp_info(dsp, "%s: %.*s\n", file,
++				    min(le32_to_cpu(region->len), 100), region->data);
+ 			break;
+ 		case WMFW_ALGORITHM_DATA:
+ 			region_name = "Algorithm";
+@@ -1561,11 +1561,6 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
+ 			if (ret != 0)
+ 				goto out_fw;
+ 			break;
+-		case WMFW_INFO_TEXT:
+-			region_name = "Information";
+-			text = kzalloc(le32_to_cpu(region->len) + 1,
+-				       GFP_KERNEL);
+-			break;
+ 		case WMFW_ABSOLUTE:
+ 			region_name = "Absolute";
+ 			reg = offset;
+@@ -1599,13 +1594,6 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
+ 			   regions, le32_to_cpu(region->len), offset,
+ 			   region_name);
  
--	switch (cs_dsp->fw_ver) {
-+	switch (cs_dsp->wmfw_ver) {
- 	case 0:
- 	case 1:
- 		ret = scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
+-		if (text) {
+-			memcpy(text, region->data, le32_to_cpu(region->len));
+-			cs_dsp_info(dsp, "%s: %s\n", file, text);
+-			kfree(text);
+-			text = NULL;
+-		}
+-
+ 		if (reg) {
+ 			buf = cs_dsp_buf_alloc(region->data,
+ 					       le32_to_cpu(region->len),
+@@ -1647,7 +1635,6 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
+ out_fw:
+ 	regmap_async_complete(regmap);
+ 	cs_dsp_buf_free(&buf_list);
+-	kfree(text);
+ 
+ 	if (ret == -EOVERFLOW)
+ 		cs_dsp_err(dsp, "%s: file content overflows file data\n", file);
+@@ -2180,7 +2167,6 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 	struct cs_dsp_alg_region *alg_region;
+ 	const char *region_name;
+ 	int ret, pos, blocks, type, offset, reg, version;
+-	char *text = NULL;
+ 	struct cs_dsp_buf *buf;
+ 
+ 	if (!firmware)
+@@ -2249,7 +2235,8 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 		region_name = "Unknown";
+ 		switch (type) {
+ 		case (WMFW_NAME_TEXT << 8):
+-			text = kzalloc(le32_to_cpu(blk->len) + 1, GFP_KERNEL);
++			cs_dsp_info(dsp, "%s: %.*s\n", dsp->fw_name,
++				    min(le32_to_cpu(blk->len), 100), blk->data);
+ 			break;
+ 		case (WMFW_INFO_TEXT << 8):
+ 		case (WMFW_METADATA << 8):
+@@ -2321,13 +2308,6 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 			break;
+ 		}
+ 
+-		if (text) {
+-			memcpy(text, blk->data, le32_to_cpu(blk->len));
+-			cs_dsp_info(dsp, "%s: %s\n", dsp->fw_name, text);
+-			kfree(text);
+-			text = NULL;
+-		}
+-
+ 		if (reg) {
+ 			buf = cs_dsp_buf_alloc(blk->data,
+ 					       le32_to_cpu(blk->len),
+@@ -2367,7 +2347,6 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ out_fw:
+ 	regmap_async_complete(regmap);
+ 	cs_dsp_buf_free(&buf_list);
+-	kfree(text);
+ 
+ 	if (ret == -EOVERFLOW)
+ 		cs_dsp_err(dsp, "%s: file content overflows file data\n", file);
 -- 
 2.39.2
 
