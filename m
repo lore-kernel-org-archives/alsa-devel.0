@@ -4,74 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4075FC3DA42
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jul 2024 01:19:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E147FC3DA45
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jul 2024 14:51:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73893850;
-	Thu, 11 Jul 2024 03:19:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73893850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27CC3852;
+	Thu, 11 Jul 2024 16:51:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27CC3852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720660780;
-	bh=Z9aIB8pJH2qeFtWfaUtf4EZPQw2VoEaVqsMNNYoG7Mk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=H9dec5N9TBodwhWnxuuvThJLacGzivsj/jFGpCxReeMLl6yZBMQcVn6VPSifxK02e
-	 t43oE+fcIswzQXB+UaV1ShUQNqTH/fta1LYM7ysD0aad1j4GeLB/hSkhUnkAJj+TF6
-	 qhhC6tHejy0/mlGorCYeNYVCFx3wyXmSKo3N19Fo=
+	s=default; t=1720709475;
+	bh=jIm0gbSdlluRGwzaIYKo6qKZk7oEjv4Q+rIwTgym9d4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=hrPiB4ralXPD1R5dhJWXbJCKJqKSduQy3KydayJzY1g/I/mmOp4eKWWtt/chkplOv
+	 dFwOJaaHLWpcfVkCRPYxwNhTvZR61kc4Iu/r6JNvvuqVwl0C8cYTJId3s4ZswRlV8a
+	 5zn7+54AyhfvxFegK2910PSLRzwUoJGS0etxw5ck=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B73E3F805DA; Thu, 11 Jul 2024 03:19:01 +0200 (CEST)
+	id 77E70F801F5; Thu, 11 Jul 2024 16:50:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE800F805B6;
-	Thu, 11 Jul 2024 03:19:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3752F805B4;
+	Thu, 11 Jul 2024 16:50:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3482F801F5; Thu, 11 Jul 2024 03:12:40 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 88A12F801F5; Thu, 11 Jul 2024 16:47:17 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B5D87F8013D
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2024 03:10:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5D87F8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id CD749F8013D
+	for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2024 16:47:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD749F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Z4Z10GMy
+ header.s=k20201202 header.b=OO0Uw3Cd
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 70D2C61B71;
-	Thu, 11 Jul 2024 01:10:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F365FC32781;
-	Thu, 11 Jul 2024 01:10:40 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id C6582CE12C7;
+	Thu, 11 Jul 2024 14:47:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C250C116B1;
+	Thu, 11 Jul 2024 14:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720660242;
-	bh=Z9aIB8pJH2qeFtWfaUtf4EZPQw2VoEaVqsMNNYoG7Mk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Z4Z10GMyYjQCy6mZcfRyAWLb6MFxNbfIP8BVr74nh37DVVgc7IxdwTxR3Z2XBMYTK
-	 dif7lT800XF+c3EpL9cuCGOEQQOyc/QC1w0hgkYO6nyqDdOowCDeHyDZDajzlmKbE0
-	 r+YUOmafSdXc2teSs033EoaYbyVCPaxsHNusX32TaijKS5ffCYpJrB65UfWTZ30Chh
-	 JxB3q8M4HoyMNnpBR/DorQByL9L77aMTYwwGS21FNrZ4iVV8TnTTt/4uf/Ohn2Pe8u
-	 +0rcnB8HgI0KIeMr9CUDLYLPwKJcGIQb0jDeROryxZF0dfrQRZv3LnfDmeTJ6QY2uf
-	 W4aMQVZz3aWYg==
+	s=k20201202; t=1720709222;
+	bh=jIm0gbSdlluRGwzaIYKo6qKZk7oEjv4Q+rIwTgym9d4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OO0Uw3Cd5g7suSLJd06nXuSQmZ6GHhegSq0TVorsu4PzJZywx1BgftIySRE3kfghX
+	 Ky8x4rIuH6d6vhL0OMuFmNa/v690EcRz0MrK38oNuqsR254CHQR5NdSLLSd9bmcpYX
+	 JVjO5cY0UmuCfm9ZBdymXg95aYryDhfAf4lL8cScrPporvHGKjMuSup9dQahExJD4t
+	 rpyUGJTGaiN4FBuH+DFUahKIo4k1h8wPa5AvyaU6dSSWgeAJXWJRGJv/laYju0015T
+	 xFWb2Txr4IjPdGzahOPJ2ycy0zY128rKu/qZYz33IllsXlRbfTo55id/sH2bgngZFj
+	 i4StsIGZhS3hg==
+Message-ID: <b612cf49c9449f240cfb709d876b7d0c.broonie@kernel.org>
 From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-In-Reply-To: <20240710103640.78197-1-rf@opensource.cirrus.com>
-References: <20240710103640.78197-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH v2 0/4] firmware: cs_dsp: Some small coding
- improvements
-Message-Id: <172066024060.393700.15835907433889376478.b4-ty@kernel.org>
-Date: Thu, 11 Jul 2024 02:10:40 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev-0bd45
-Message-ID-Hash: VAUZMOJYHCP5C6NYCCFUGRYUJ4JBRLGK
-X-Message-ID-Hash: VAUZMOJYHCP5C6NYCCFUGRYUJ4JBRLGK
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v6.10-rc7
+Date: Thu, 11 Jul 2024 15:46:50 +0100
+Message-ID-Hash: SO5AVXWPUK67XPHAMLYUIGMHDMYIKMS3
+X-Message-ID-Hash: SO5AVXWPUK67XPHAMLYUIGMHDMYIKMS3
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VAUZMOJYHCP5C6NYCCFUGRYUJ4JBRLGK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SO5AVXWPUK67XPHAMLYUIGMHDMYIKMS3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,42 +85,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 10 Jul 2024 11:36:36 +0100, Richard Fitzgerald wrote:
-> Commit series that makes some small improvements to code and the
-> kernel log messages.
-> 
+The following changes since commit 68f97fe330e01450ace63da0ce5cab676fc97f9a:
 
-Applied to
+  ASoC: rt5645: fix issue of random interrupt from push-button (2024-06-26 16:34:48 +0100)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+are available in the Git repository at:
 
-Thanks!
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.10-rc7
 
-[1/4] firmware: cs_dsp: Don't allocate temporary buffer for info text
-      commit: bff92858dfb9897e4c06c11aab0322e1aab822f7
-[2/4] firmware: cs_dsp: Make wmfw and bin filename arguments const char *
-      commit: 584e86e14c59d36688633002613792923620d8c0
-[3/4] firmware: cs_dsp: Clarify wmfw format version log message
-      commit: a4939119055d5c97aff2cea040f1af8c4606bfa1
-[4/4] firmware: cs_dsp: Rename fw_ver to wmfw_ver
-      commit: dc0e5ca8856dc6a97e3b117879dfb2b52bda06b6
+for you to fetch changes up to 680e126ec0400f6daecf0510c5bb97a55779ff03:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+  firmware: cs_dsp: Use strnlen() on name fields in V1 wmfw files (2024-07-08 15:55:11 +0100)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+----------------------------------------------------------------
+ASoC: Fixes for v6.10
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+A few fairly small fixes for ASoC, there's a relatively large set of
+hardening changes for the cs_dsp firmware file parsing and a couple of
+other small device specific fixes.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+----------------------------------------------------------------
+Bard Liao (1):
+      ASoC: rt711-sdw: add missing readable registers
 
-Thanks,
-Mark
+Kai Vehmanen (1):
+      ASoC: SOF: Intel: hda: fix null deref on system suspend entry
 
+Peter Ujfalusi (1):
+      ASoC: SOF: Intel: hda-pcm: Limit the maximum number of periods by MAX_BDL_ENTRIES
+
+Richard Fitzgerald (5):
+      firmware: cs_dsp: Fix overflow checking of wmfw header
+      firmware: cs_dsp: Return error if block header overflows file
+      firmware: cs_dsp: Validate payload length before processing block
+      firmware: cs_dsp: Prevent buffer overrun when processing V2 alg headers
+      firmware: cs_dsp: Use strnlen() on name fields in V1 wmfw files
+
+ drivers/firmware/cirrus/cs_dsp.c | 227 ++++++++++++++++++++++++++++-----------
+ sound/soc/codecs/rt711-sdw.c     |   2 +
+ sound/soc/sof/intel/hda-dai.c    |  12 +--
+ sound/soc/sof/intel/hda-pcm.c    |   6 ++
+ 4 files changed, 176 insertions(+), 71 deletions(-)
