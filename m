@@ -4,78 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66539C3DA42
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jul 2024 01:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4075FC3DA42
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jul 2024 01:19:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6C8E93A;
-	Thu, 11 Jul 2024 03:19:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6C8E93A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73893850;
+	Thu, 11 Jul 2024 03:19:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73893850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1720660771;
-	bh=4adTuxbDi35JH0mF6nibIf+rZaUnp1ZHEwRyH+5+8PI=;
+	s=default; t=1720660780;
+	bh=Z9aIB8pJH2qeFtWfaUtf4EZPQw2VoEaVqsMNNYoG7Mk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bFJC+6JiyqLgm3Qpnho0fPlM9mowzh9KREeD805IbfVpOUpQuqpj71l8kADUhjja3
-	 7I0Ikw33WwX5spczOklNNyIxQBs5wweryl4IyH4NfvrK71DXBdfTRXSTmNqqgj/KUf
-	 UWt1l1l8GLfwXq3QMz3f9SXwtL0W2+NetOjNyFEw=
+	b=H9dec5N9TBodwhWnxuuvThJLacGzivsj/jFGpCxReeMLl6yZBMQcVn6VPSifxK02e
+	 t43oE+fcIswzQXB+UaV1ShUQNqTH/fta1LYM7ysD0aad1j4GeLB/hSkhUnkAJj+TF6
+	 qhhC6tHejy0/mlGorCYeNYVCFx3wyXmSKo3N19Fo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A9FCF805AE; Thu, 11 Jul 2024 03:19:00 +0200 (CEST)
+	id B73E3F805DA; Thu, 11 Jul 2024 03:19:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9D3CF80508;
-	Thu, 11 Jul 2024 03:18:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE800F805B6;
+	Thu, 11 Jul 2024 03:19:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 947A8F8020D; Thu, 11 Jul 2024 03:12:38 +0200 (CEST)
+	id E3482F801F5; Thu, 11 Jul 2024 03:12:40 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DA5CAF800FE
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2024 03:10:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA5CAF800FE
+	by alsa1.perex.cz (Postfix) with ESMTPS id B5D87F8013D
+	for <alsa-devel@alsa-project.org>; Thu, 11 Jul 2024 03:10:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5D87F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=CnITX3Ag
+ header.s=k20201202 header.b=Z4Z10GMy
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B47C761A81;
-	Thu, 11 Jul 2024 01:10:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3F76C4AF07;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 70D2C61B71;
 	Thu, 11 Jul 2024 01:10:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F365FC32781;
+	Thu, 11 Jul 2024 01:10:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720660245;
-	bh=4adTuxbDi35JH0mF6nibIf+rZaUnp1ZHEwRyH+5+8PI=;
+	s=k20201202; t=1720660242;
+	bh=Z9aIB8pJH2qeFtWfaUtf4EZPQw2VoEaVqsMNNYoG7Mk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=CnITX3AgLGKOxCjH5CBLtEW5HAngIKzDD9FF+XtS46V2CsusfOu98wN2mxuDbg87U
-	 RCDyDUcGDG+Du0JpTyAo4VgKe/DDEAe/lSMRQ4c0+U13DSCwuHkLVWQo2xMthg3ObN
-	 uf0lmxAAnoFM1j8IYOHa3desJnc35uWDFzPwbTYXVx6G6gl7GcUkuJh+sgNQaypWE0
-	 rhF1vDWEoumZGnP/jOufzNTdQqa/akzJSTyAHtNI1a2SLx7ecw5z1yH+mtHz2q0zyi
-	 ZTg2K1wnyZc14smU0qqpXKO1VLJZoDJTPkhWDjshaod3t8LjmWXjiaOHAh8n8PjY6/
-	 /CywQyV+yxlTg==
+	b=Z4Z10GMyYjQCy6mZcfRyAWLb6MFxNbfIP8BVr74nh37DVVgc7IxdwTxR3Z2XBMYTK
+	 dif7lT800XF+c3EpL9cuCGOEQQOyc/QC1w0hgkYO6nyqDdOowCDeHyDZDajzlmKbE0
+	 r+YUOmafSdXc2teSs033EoaYbyVCPaxsHNusX32TaijKS5ffCYpJrB65UfWTZ30Chh
+	 JxB3q8M4HoyMNnpBR/DorQByL9L77aMTYwwGS21FNrZ4iVV8TnTTt/4uf/Ohn2Pe8u
+	 +0rcnB8HgI0KIeMr9CUDLYLPwKJcGIQb0jDeROryxZF0dfrQRZv3LnfDmeTJ6QY2uf
+	 W4aMQVZz3aWYg==
 From: Mark Brown <broonie@kernel.org>
-To: devicetree@vger.kernel.org, Rayyan Ansari <rayyan.ansari@linaro.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@quicinc.com>,
- Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org,
- Rob Herring <robh@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20240710113833.39859-1-rayyan.ansari@linaro.org>
-References: <20240710113833.39859-1-rayyan.ansari@linaro.org>
-Subject: Re: [PATCH v2 0/2] ASoC: dt-bindings: convert qcom sound bindings
- to yaml
-Message-Id: <172066024227.393700.11903720765661169490.b4-ty@kernel.org>
-Date: Thu, 11 Jul 2024 02:10:42 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+In-Reply-To: <20240710103640.78197-1-rf@opensource.cirrus.com>
+References: <20240710103640.78197-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/4] firmware: cs_dsp: Some small coding
+ improvements
+Message-Id: <172066024060.393700.15835907433889376478.b4-ty@kernel.org>
+Date: Thu, 11 Jul 2024 02:10:40 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev-0bd45
-Message-ID-Hash: K4ROTXYCQ2WGSJXPAZCKYQAGQBC54AZS
-X-Message-ID-Hash: K4ROTXYCQ2WGSJXPAZCKYQAGQBC54AZS
+Message-ID-Hash: VAUZMOJYHCP5C6NYCCFUGRYUJ4JBRLGK
+X-Message-ID-Hash: VAUZMOJYHCP5C6NYCCFUGRYUJ4JBRLGK
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K4ROTXYCQ2WGSJXPAZCKYQAGQBC54AZS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VAUZMOJYHCP5C6NYCCFUGRYUJ4JBRLGK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,17 +93,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 10 Jul 2024 12:36:05 +0100, Rayyan Ansari wrote:
-> These patches convert the remaining plain text bindings for Qualcomm
-> sound drivers to dt schema, so device trees can be validated against
-> them.
+On Wed, 10 Jul 2024 11:36:36 +0100, Richard Fitzgerald wrote:
+> Commit series that makes some small improvements to code and the
+> kernel log messages.
 > 
-> v1: https://lore.kernel.org/all/20240709152808.155405-1-rayyan.ansari@linaro.org/
-> 
-> Thanks,
-> Rayyan
-> 
-> [...]
 
 Applied to
 
@@ -115,10 +104,14 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: qcom,msm8916-wcd-digital-codec: convert to dtschema
-      commit: 054ac9c97c7d9eb55f471fc6f019b654d17332a7
-[2/2] ASoC: dt-bindings: qcom,apq8096-sndcard: use dtschema
-      commit: 3cbda25e2db28b4352c73d4167f0dab10049ea54
+[1/4] firmware: cs_dsp: Don't allocate temporary buffer for info text
+      commit: bff92858dfb9897e4c06c11aab0322e1aab822f7
+[2/4] firmware: cs_dsp: Make wmfw and bin filename arguments const char *
+      commit: 584e86e14c59d36688633002613792923620d8c0
+[3/4] firmware: cs_dsp: Clarify wmfw format version log message
+      commit: a4939119055d5c97aff2cea040f1af8c4606bfa1
+[4/4] firmware: cs_dsp: Rename fw_ver to wmfw_ver
+      commit: dc0e5ca8856dc6a97e3b117879dfb2b52bda06b6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
