@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D384FC3DA59
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jul 2024 10:24:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DF13C3DA59
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Jul 2024 10:24:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CC3E84C;
-	Mon, 15 Jul 2024 12:24:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CC3E84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E657DFA;
+	Mon, 15 Jul 2024 12:24:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E657DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1721039066;
-	bh=8UdBXthv6kcV8OL3lTKGH5Wv7aPW5LihpSVs90pR3pE=;
+	s=default; t=1721039077;
+	bh=L1bddvNpW2JSZGxsWMXxNwVCNw6Mlro5NMh+sB6z/Z4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=T3j6rcXhegjBeAuKUl+uY8R8lnlxo03BgpXnee98GYlHHIDqISl/1xttsVSKJvkpq
-	 Xw8fucTojvzuW3ujnBYYSloi40HWjPrHRSOWOF2rjoCQ2H4gaj5xfIxFL13jVjPgkn
-	 tlE5DRq8dOA1rqW+2ONdojupu3Ha0zSYsXvKFQOY=
+	b=FO9K7Y97EaPX6pvdTDauYlKsgS8cllnwCpSyhUjdXxhtxWETrnqyM4UKqR7JNje8z
+	 mxtNZLinRjmZYxI8lwxU3oWcEt0Zx4dVW5E2/JjxhlbBzsoxmVwco2ntRVYb0uZDFr
+	 xMd1/6s/O1jRCDqGB5EBU/uEDH++lhgxOrVSKqkg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04B50F805C9; Mon, 15 Jul 2024 12:24:04 +0200 (CEST)
+	id 501E0F805AD; Mon, 15 Jul 2024 12:24:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 402C4F805B4;
-	Mon, 15 Jul 2024 12:24:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3963EF805E2;
+	Mon, 15 Jul 2024 12:24:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06B61F800FA; Mon, 15 Jul 2024 12:18:41 +0200 (CEST)
+	id 2450BF801C0; Mon, 15 Jul 2024 12:18:52 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6BEF3F800FA
-	for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2024 12:14:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BEF3F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 42D2FF8026D
+	for <alsa-devel@alsa-project.org>; Mon, 15 Jul 2024 12:14:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42D2FF8026D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Q+YRYPQx
+ header.s=Intel header.b=Ql+EdNr7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1721038467; x=1752574467;
+  t=1721038471; x=1752574471;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=8UdBXthv6kcV8OL3lTKGH5Wv7aPW5LihpSVs90pR3pE=;
-  b=Q+YRYPQxQd3J0rxNjDq2xxtAt/voq0t8AX69yZo4Xbvlpyi62GAf+OtY
-   z3DfymCtGrP2t1YsrAF6FNQviDjMVgeybVKZFbzUHxVOeWKaWnI0AJmbC
-   TqfV3eXCEaG86AWfWrwAHf0SONePlPhJHMnqBP8Tuank+41SjFYR2t56E
-   oQcMVSl8tLbKQsq2IiT1N2B3r6sSLamVGJDmV9gGPAXb0emdmGj5y8Gzu
-   GH3yRTO+ouHWnosyucq706fyRP48gRCZy13v3f8t2jxsWDOIasTkSoTho
-   OB1TB+c17Iuuz9SormT5HRtuyll0vVbC85XCzMTWTNXKWx1dNBQWo+70F
-   A==;
-X-CSE-ConnectionGUID: GiGw76BdSlCvotJnQqYRQg==
-X-CSE-MsgGUID: iSAVICnsTgSfoqaR67UeJg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11133"; a="35950254"
+  bh=L1bddvNpW2JSZGxsWMXxNwVCNw6Mlro5NMh+sB6z/Z4=;
+  b=Ql+EdNr7WbhXq2FvnUPGj96AdaJKWy2cJwjtIh+GU/WzETKTTTzq71bZ
+   ZoSMM5UBHJl3n9/dBmOjTyVpdyAETtdzv5aWaC1Q9Ici1swOHQedLvoHk
+   mPOpxyfGrNzl9j4zGOpZwRx1sOF3EfR92YfERV+0I9ILuYtubKUP0sb5+
+   GkbJcJngg6UoieYwlLcDhVou8T7GZWNC1XbFFQraIHtBZHJnZBBNDHAjW
+   OaUFtVcD0VYx1zFtqscdF7iJFlS87/9OKrr/Oltpdl4gvnUOcKPjM57EP
+   h1qtfVwQNw7Tr4XVQa+fn1Dma1rPb43FEsDTYQJ39l0RLDEj0+fTbc1jZ
+   Q==;
+X-CSE-ConnectionGUID: 2Jz4U2kOQ7+hjbqhOYxeuA==
+X-CSE-MsgGUID: v/GEVWDaSruDz+MDMJvVJA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11133"; a="35950258"
 X-IronPort-AV: E=Sophos;i="6.09,210,1716274800";
-   d="scan'208";a="35950254"
+   d="scan'208";a="35950258"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2024 03:14:21 -0700
-X-CSE-ConnectionGUID: XApP/1ylRAaC9ZxzUMezUg==
-X-CSE-MsgGUID: Pxd7zbB6SoaYGbcTy2LFFw==
+ 15 Jul 2024 03:14:24 -0700
+X-CSE-ConnectionGUID: 5/dgto6aSs2Kmkae56FYHw==
+X-CSE-MsgGUID: sHt4WkWgROqcSe9Ym6+ndA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,210,1716274800";
-   d="scan'208";a="49455945"
+   d="scan'208";a="49455954"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO [10.245.246.147])
  ([10.245.246.147])
   by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2024 03:14:19 -0700
-Message-ID: <28fbcffb-bf79-418d-93c9-cfe2516a69a5@linux.intel.com>
-Date: Mon, 15 Jul 2024 11:23:27 +0200
+ 15 Jul 2024 03:14:21 -0700
+Message-ID: <5a39e413-a17e-413b-9bd2-f8e0b0d0e86b@linux.intel.com>
+Date: Mon, 15 Jul 2024 11:24:38 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] soundwire: bus: suppress probe deferral errors
+Subject: Re: [PATCH v3 2/3] soundwire: bus: drop unused driver name field
 To: Johan Hovold <johan+linaro@kernel.org>, Vinod Koul <vkoul@kernel.org>,
  Bard Liao <yung-chuan.liao@linux.intel.com>
 Cc: Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
 References: <20240712140801.24267-1-johan+linaro@kernel.org>
- <20240712140801.24267-2-johan+linaro@kernel.org>
+ <20240712140801.24267-3-johan+linaro@kernel.org>
 Content-Language: en-US
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240712140801.24267-2-johan+linaro@kernel.org>
+In-Reply-To: <20240712140801.24267-3-johan+linaro@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: F2OR7EBXJF5FANRTE3KZLWTDJ5FGFUPW
-X-Message-ID-Hash: F2OR7EBXJF5FANRTE3KZLWTDJ5FGFUPW
+Message-ID-Hash: 4QJUV6X4KNHSC5PEVJYAMA6V5ZVKE2X7
+X-Message-ID-Hash: 4QJUV6X4KNHSC5PEVJYAMA6V5ZVKE2X7
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F2OR7EBXJF5FANRTE3KZLWTDJ5FGFUPW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4QJUV6X4KNHSC5PEVJYAMA6V5ZVKE2X7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,50 +109,52 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 7/12/24 16:07, Johan Hovold wrote:
-> Soundwire driver probe errors are currently being logged both by the bus
-> code and driver core:
-> 
-> 	wsa884x-codec sdw:4:0:0217:0204:00:0: Probe of wsa884x-codec failed: -12
-> 	wsa884x-codec sdw:4:0:0217:0204:00:0: probe with driver wsa884x-codec failed with error -12
-> 
-> Drop the redundant bus error message, which is also incorrectly being
-> logged on probe deferral:
-> 
-> 	wsa884x-codec sdw:4:0:0217:0204:00:0: Probe of wsa884x-codec failed: -517
-> 
-> Note that no soundwire driver uses the driver struct name field, which
-> will be removed by a follow-on change.
+On 7/12/24 16:08, Johan Hovold wrote:
+> The soundwire driver name field is not currently used by any driver (and
+> even appears to never have been used) so drop it.
 > 
 > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 > ---
->  drivers/soundwire/bus_type.c | 6 ------
->  1 file changed, 6 deletions(-)
+>  drivers/soundwire/bus_type.c  | 9 ++-------
+>  include/linux/soundwire/sdw.h | 2 --
+>  2 files changed, 2 insertions(+), 9 deletions(-)
 > 
 > diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-> index c32faace618f..85fa5970d98a 100644
+> index 85fa5970d98a..3979be0f8b65 100644
 > --- a/drivers/soundwire/bus_type.c
 > +++ b/drivers/soundwire/bus_type.c
-> @@ -83,7 +83,6 @@ static int sdw_drv_probe(struct device *dev)
->  	struct sdw_slave *slave = dev_to_sdw_dev(dev);
->  	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
->  	const struct sdw_device_id *id;
+> @@ -198,16 +198,11 @@ static void sdw_drv_shutdown(struct device *dev)
+>   */
+>  int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
+>  {
 > -	const char *name;
->  	int ret;
+> -
+>  	drv->driver.bus = &sdw_bus_type;
 >  
->  	/*
-> @@ -108,11 +107,6 @@ static int sdw_drv_probe(struct device *dev)
->  
->  	ret = drv->probe(slave, id);
->  	if (ret) {
+>  	if (!drv->probe) {
 > -		name = drv->name;
 > -		if (!name)
 > -			name = drv->driver.name;
 > -
-> -		dev_err(dev, "Probe of %s failed: %d\n", name, ret);
->  		dev_pm_domain_detach(dev, false);
->  		return ret;
+> -		pr_err("driver %s didn't provide SDW probe routine\n", name);
+> +		pr_err("driver %s didn't provide SDW probe routine\n",
+> +				drv->driver.name);
+>  		return -EINVAL;
 >  	}
+>  
+> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+> index 13e96d8b7423..5e133dfec8f2 100644
+> --- a/include/linux/soundwire/sdw.h
+> +++ b/include/linux/soundwire/sdw.h
+> @@ -704,8 +704,6 @@ struct sdw_master_device {
+>  	container_of(d, struct sdw_master_device, dev)
+>  
+>  struct sdw_driver {
+> -	const char *name;
+> -
+>  	int (*probe)(struct sdw_slave *sdw,
+>  			const struct sdw_device_id *id);
+>  	int (*remove)(struct sdw_slave *sdw);
