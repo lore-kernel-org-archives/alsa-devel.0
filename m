@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BDE0C3DA59
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 13:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46ED0C3DA59
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 13:00:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23588E67;
-	Mon, 22 Jul 2024 14:59:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23588E67
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13A71EB1;
+	Mon, 22 Jul 2024 15:00:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13A71EB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1721653198;
-	bh=WdpJmIpDPJ/VygoU7Bxc4nOdSXY4ypscxsKOOgIR+TA=;
+	s=default; t=1721653211;
+	bh=ZegcCl/GlPv/utyNLL6/bM9sMNKAtaNRsXaLmtQ5CHQ=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RFqNm1DFwMrehVjV4zmX8yaoLuUV25zhTDwukN7tRq5l3c+ORWSEkMAo2MJyuZnOu
-	 YkHOKTf+qx3xfD1dhTtLrgyLyUgFf5Odlalawt/gRgtWFhfNI+WMJvw/oFPAmIcZN1
-	 J9HgdbekJWlNtoBjZlSHA2wqOyLMKfZw0fjFnBNA=
+	b=kvfIXb6IEj158UX27mgWtEYrh1TEHKix3SI+onklC2Y1GT0QDjkuIIXjoM0ZRZ/Lk
+	 SEsjcu9D//LTvnyFcU91WVKMha5WMuf6P8B5ehccKj0y8olh7cvhphfcV6wR9MKRxQ
+	 hYxbU9DrUjOSmNU1torIRV5dJIxQFqE49eX3b67o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2726FF805B5; Mon, 22 Jul 2024 14:59:26 +0200 (CEST)
+	id 21DC2F805D4; Mon, 22 Jul 2024 14:59:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 370A1F805B5;
-	Mon, 22 Jul 2024 14:59:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80E67F805D3;
+	Mon, 22 Jul 2024 14:59:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6E68F8026D; Wed, 17 Jul 2024 11:56:59 +0200 (CEST)
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80758F800FA
-	for <alsa-devel@alsa-project.org>; Wed, 17 Jul 2024 11:56:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80758F800FA
+	id DDF0DF8026D; Thu, 18 Jul 2024 08:08:17 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D650F800C1
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2024 08:08:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D650F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
- header.s=s110527 header.b=a3eyEo7X
+ header.s=s110527 header.b=c6QbtYWm
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5noMy
-	VEH65r+MCncRbdXscdedw7+GqbdcN8kOZsWqGk=; b=a3eyEo7XO0VLl6Jbca8dj
-	1NZ5TG9qVGamJ9RGy6Tfmw1acgngz+aAoVcH0y1z2REp8CI6hzuypCj56CqJREgd
-	bYDJpfZGypDb0r3iild1YcVAE1RCFn/pu3UFeoOODRJ0JkC6OU3zgPHdxvvywXhh
-	Dwtp9kxPnJ6tPtLcz7SRbU=
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=FSp2v
+	95tkSIfbt1VFh0n0vhdmzySiMpH/D6OFSlbU5M=; b=c6QbtYWmrEULUyCcd6bfg
+	1Cr+y3kancLBPaDq6S/4YJ5TWmMd++4S0uLWnQoSOiWvYBNwnNbk2d4tfTQ/Nf9a
+	CoGgWq1IOgfi8qMmt/ohQZ7dtGcMp8wKoDxDF4xB/VoiVnTHYcAugpzTaJ8UeRL6
+	GjiMszuQS/LwdAzi0FpWXE=
 Received: from localhost.localdomain (unknown [111.48.69.245])
-	by gzga-smtp-mta-g0-4 (Coremail) with SMTP id
- _____wDXPnNZlZdm+MncDA--.62596S2;
-	Wed, 17 Jul 2024 17:56:42 +0800 (CST)
+	by gzga-smtp-mta-g2-5 (Coremail) with SMTP id
+ _____wD3vzY+sZhmlum7Aw--.54868S2;
+	Thu, 18 Jul 2024 14:07:59 +0800 (CST)
 From: wangdicheng <wangdich9700@163.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
@@ -55,34 +55,34 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	wangdicheng <wangdich9700@163.com>,
 	wangdicheng <wangdicheng@kylinos.cn>
-Subject: [PATCH] ALSA: usb-audio: Fix microphone sound on HD webcam.
-Date: Wed, 17 Jul 2024 17:56:38 +0800
-Message-Id: <20240717095638.13264-1-wangdich9700@163.com>
+Subject: [PATCH v2] ALSA: usb-audio: Fix microphone sound on HD webcam.
+Date: Thu, 18 Jul 2024 14:07:56 +0800
+Message-Id: <20240718060756.15322-1-wangdich9700@163.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDXPnNZlZdm+MncDA--.62596S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXw43JFy5tFyrCF45Xw13urg_yoWrCw15pr
-	1Iya97Jryktr17Xr48CayUu3yrXws2y398Ca4qkwnI9ryfK34rta47t39rAFWakrWrC34j
+X-CM-TRANSID: _____wD3vzY+sZhmlum7Aw--.54868S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXw43JFy5tFyrCF45Xw13urg_yoWrCFW3pr
+	1Iya97Jryktr17Xr48CayUu3yrXws2y398Ca4qkwna9ryfK34rta47t3yDAayakrWrC34j
 	qryjy3yqg3y5Gw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pim9aDUUUUU=
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piGYLkUUUUU=
 X-Originating-IP: [111.48.69.245]
-X-CM-SenderInfo: pzdqwv5lfkmliqq6il2tof0z/1tbiNRwfT2V4IpRruAAAsB
+X-CM-SenderInfo: pzdqwv5lfkmliqq6il2tof0z/1tbiRwQgT2V4KWD5UgAAsT
 X-MailFrom: wangdich9700@163.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: LTAM3WB4L3QCJSCF2Q6JJJEPKIGSH6X7
-X-Message-ID-Hash: LTAM3WB4L3QCJSCF2Q6JJJEPKIGSH6X7
-X-Mailman-Approved-At: Mon, 22 Jul 2024 12:59:21 +0000
+Message-ID-Hash: UXWWQPJKZQ32L3BJF3CQJVZGDIPW62ON
+X-Message-ID-Hash: UXWWQPJKZQ32L3BJF3CQJVZGDIPW62ON
+X-Mailman-Approved-At: Mon, 22 Jul 2024 12:59:24 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LTAM3WB4L3QCJSCF2Q6JJJEPKIGSH6X7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UXWWQPJKZQ32L3BJF3CQJVZGDIPW62ON/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -183,8 +183,7 @@ Testing patch provides consistent good sound recording quality and volume range.
 
 Signed-off-by: wangdicheng <wangdicheng@kylinos.cn>
 ---
-v2 -> v3: Update code to v6.8-rc3,and make modifications based on it
-V1 -> V2: align the space
+V1 -> V2: align the space,Update code to v6.8-rc3,and make modifications based on it
 ---
  sound/usb/mixer.c  | 7 +++++++
  sound/usb/quirks.c | 2 ++
