@@ -4,149 +4,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BA87C3DA59
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 17:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD4BC3DA5D
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 17:58:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4791C84C;
-	Mon, 22 Jul 2024 19:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4791C84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84BAF7F4;
+	Mon, 22 Jul 2024 19:58:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84BAF7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1721671074;
-	bh=+tpB5eqdy875gs58wJLc2B7iOxb/6Obx4HxfAyXXToo=;
+	s=default; t=1721671092;
+	bh=jSXRBTmea23Bh6nLSKsfzc5du2S/jA66z5wIWiahhIE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=mL8GzCGRxSHLzot9XNVy82CqNtwhvE0wDZtDHVfTECEyTXlk53pL7y+23FLDU2Pnk
-	 ZrgSUXo+W1UfRbPZsOcdS1lA2L/YlAXAwDyYpihgriPKpSgtZxvmQG6B7SspQ6xR+P
-	 sDf9/GlRV4lH7skiptd5Y0njFE+kO8jWbruA98Ak=
+	b=PZHynpUq2S12xfGzzOr8pWYGXY/Uxv8fSzUVyiHJGKdBU8K80+dAPQhhNkR5TvtVq
+	 xGGeal6CWUMxyMw0wBb4PKC1feKSK/I0nHZiPMrD2rUJP4WRSe/tCXr/FQh7No/iS2
+	 +Lz+70kQUYtHoYljMWUPflpqSmOrz0foo2WTGiV8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0215BF805EF; Mon, 22 Jul 2024 19:57:04 +0200 (CEST)
+	id F2BBBF8060E; Mon, 22 Jul 2024 19:57:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E8AEF805D6;
-	Mon, 22 Jul 2024 19:57:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB258F80601;
+	Mon, 22 Jul 2024 19:57:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1CE65F8058C; Mon, 22 Jul 2024 19:52:09 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	id C932DF80580; Mon, 22 Jul 2024 19:52:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B4499F80580
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2024 19:51:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4499F80580
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5BE13F80579
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2024 19:51:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BE13F80579
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=qlnFt8JQ;
+ header.s=susede2_rsa header.b=l+IWxvmh;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=USFQFDs1;
+ header.s=susede2_ed25519 header.b=ylgCWHwS;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=qlnFt8JQ;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=PkynghIN;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=USFQFDs1
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ header.s=susede2_ed25519 header.b=cT6akZwn
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1CEDE1FB8C;
-	Mon, 22 Jul 2024 17:51:46 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EE1E721B9F;
+	Mon, 22 Jul 2024 17:51:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
 	t=1721670706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o6TqIe/3TUfmEjqrPwJrqZLMAyiQupKUf/wJsTvS1Lc=;
-	b=qlnFt8JQaLqQ6CV+O61uJpC+EMWYCTPEZQz29capM8Qt2WHrgGOaJ6UdE+0t2BhVClf2ij
-	hHdObJupLspi9VlI8L7CgSRCnWXcMQYSdYqNSlDwJ/EgeTn0K16RCUaslccGlKpKlUlcm5
-	9uch72/VGYuxA2PVMTGAd+CoqUCDeIE=
+	bh=6CFIWZTpRPaq/HrxpiVG6Y2tOufbF5OzW8UiwtRMJa4=;
+	b=l+IWxvmhefEgsRJ3zuC2x8ggdz3mz+o1Swr4i/f2YGqRhKolEEivDMRUy6qt/OIBEHFHVG
+	ekatkHkVlqBXb16qVtNmU8rfi7WFcs3nSuDDYN4IwfTWhJ91u5jbJnNMaz08o2ZIf5140E
+	yH/iI2XgS4xy/DQyNPMZ51zqBnOzYyM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1721670706;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o6TqIe/3TUfmEjqrPwJrqZLMAyiQupKUf/wJsTvS1Lc=;
-	b=USFQFDs1R4hnGLJ4vMwolfiyFixXmn6vnQS8kVy6qXHey5ftUMe80oxyUbSR1AQkFX6Sow
-	SQOG1BXPCGBtTLDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=qlnFt8JQ;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=USFQFDs1
+	bh=6CFIWZTpRPaq/HrxpiVG6Y2tOufbF5OzW8UiwtRMJa4=;
+	b=ylgCWHwSvOgApJWU/kkUSLY2gIzsw9VylMsecEVyA3UUe2DJBPGMlkhZZnHGgZCEQCK6xq
+	qfPB5L8dwxob5hBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1721670706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1721670705; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o6TqIe/3TUfmEjqrPwJrqZLMAyiQupKUf/wJsTvS1Lc=;
-	b=qlnFt8JQaLqQ6CV+O61uJpC+EMWYCTPEZQz29capM8Qt2WHrgGOaJ6UdE+0t2BhVClf2ij
-	hHdObJupLspi9VlI8L7CgSRCnWXcMQYSdYqNSlDwJ/EgeTn0K16RCUaslccGlKpKlUlcm5
-	9uch72/VGYuxA2PVMTGAd+CoqUCDeIE=
+	bh=6CFIWZTpRPaq/HrxpiVG6Y2tOufbF5OzW8UiwtRMJa4=;
+	b=PkynghINQBfa4HAI4WM2DNyNNztzF46G0c9QT/erW8BPvkTynJ1s09RIuI936xLGWWacug
+	nM37wnnrFOsreEVMNduYQEIhpOAp26G35FqzP0lzTOZhRdynI7FuTlWi2iurgwSy/SKvC/
+	N0dyCuQsmbgCZ3z+360GzjAiuSMx8k8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1721670706;
+	s=susede2_ed25519; t=1721670705;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o6TqIe/3TUfmEjqrPwJrqZLMAyiQupKUf/wJsTvS1Lc=;
-	b=USFQFDs1R4hnGLJ4vMwolfiyFixXmn6vnQS8kVy6qXHey5ftUMe80oxyUbSR1AQkFX6Sow
-	SQOG1BXPCGBtTLDA==
+	bh=6CFIWZTpRPaq/HrxpiVG6Y2tOufbF5OzW8UiwtRMJa4=;
+	b=cT6akZwn+tgwa/iQblnwx5VM1R43Zffbzt6aZVWNNB8j8GyH81a8eUdqfz41J+R6M8U+F5
+	/nAFim3ouX1Ps3BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F4143138A7;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C5A2D1398E;
 	Mon, 22 Jul 2024 17:51:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qI5SOjGcnmbyBgAAD6G6ig
+	id 6Aj0LjGcnmbyBgAAD6G6ig
 	(envelope-from <tiwai@suse.de>); Mon, 22 Jul 2024 17:51:45 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-utils 09/10] aseqsend: Support UMP mode
-Date: Mon, 22 Jul 2024 19:52:13 +0200
-Message-ID: <20240722175215.8223-10-tiwai@suse.de>
+Subject: [PATCH alsa-utils 08/10] aseqdump: Show SysEx prefix to UMP SysEx
+ data dump
+Date: Mon, 22 Jul 2024 19:52:12 +0200
+Message-ID: <20240722175215.8223-9-tiwai@suse.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240722175215.8223-1-tiwai@suse.de>
 References: <20240722175215.8223-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.19 / 50.00];
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
 	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_LONG(-1.00)[-0.999];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:email];
 	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:email];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 1CEDE1FB8C
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Bar: /
-Message-ID-Hash: FYHDZME7QWAEO45M7QYY6WCX3A3TFRCM
-X-Message-ID-Hash: FYHDZME7QWAEO45M7QYY6WCX3A3TFRCM
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[]
+Message-ID-Hash: Q6R2HF6KMFPCX67K5LZ4YZZ6GW6Q75KO
+X-Message-ID-Hash: Q6R2HF6KMFPCX67K5LZ4YZZ6GW6Q75KO
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -159,7 +149,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FYHDZME7QWAEO45M7QYY6WCX3A3TFRCM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6R2HF6KMFPCX67K5LZ4YZZ6GW6Q75KO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,146 +158,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a new option -u to specify the UMP MIDI1 or MIDI2 mode.  As
-default (-u 0), the program reads the legacy MIDI 1.0 byte stream,
-while in UMP mode, it reads as UMP packets and send to the target.
-The UMP packet bytes are encoded in big endian.
+Show the event prefix "SysEx" for UMP SysEx data.  Otherwise it's
+difficult to know what it is.
 
+Fixes: 506097ebb184 ("aseqdump: Show UMP SysEx messages")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- seq/aseqsend/aseqsend.1 | 13 ++++++++++---
- seq/aseqsend/aseqsend.c | 43 ++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 52 insertions(+), 4 deletions(-)
+ seq/aseqdump/aseqdump.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/seq/aseqsend/aseqsend.1 b/seq/aseqsend/aseqsend.1
-index 340c3292f5ed..febbf55dfb16 100644
---- a/seq/aseqsend/aseqsend.1
-+++ b/seq/aseqsend/aseqsend.1
-@@ -14,6 +14,10 @@ It can also send any other MIDI commands.
- Messages to be send can be given in the last argument as hex encoded byte string or can be read from raw binary file.
- When sending several SysEx messages at once there is a delay of 1ms after each message as deafult and can be set to different value with option \-i.
+diff --git a/seq/aseqdump/aseqdump.c b/seq/aseqdump/aseqdump.c
+index f717557824ad..7be988fa094b 100644
+--- a/seq/aseqdump/aseqdump.c
++++ b/seq/aseqdump/aseqdump.c
+@@ -673,6 +673,7 @@ static void dump_ump_sysex_event(const unsigned int *ump)
+ 	int i, length;
  
-+A client can be specified by its number, its name, or a prefix of its
-+name.  A port is specified by its number; for port 0 of a client, the
-+":0" part of the port specification can be omitted.
-+
- .SH OPTIONS
- 
- .TP
-@@ -44,10 +48,13 @@ Send raw binary data from given file name
- \-i
- Interval between SysEx messages in miliseconds
- 
-+.TP
-+\-u
-+Specify the MIDI version. 0 for the legacy MIDI 1.0 (default),
-+1 for UMP MIDI 1.0 protocol and 2 for UMP MIDI 2.0 protocol.
- 
--A client can be specified by its number, its name, or a prefix of its
--name.  A port is specified by its number; for port 0 of a client, the
--":0" part of the port specification can be omitted.
-+When UMP MIDI 1.0 or MIDI 2.0 protocol is specified, \fBaseqsend\fP
-+reads the input as raw UMP packets, 4 each byte in big endian.
- 
- .SH EXAMPLES
- 
-diff --git a/seq/aseqsend/aseqsend.c b/seq/aseqsend/aseqsend.c
-index 95b0024c0fd6..bd1a221d4149 100644
---- a/seq/aseqsend/aseqsend.c
-+++ b/seq/aseqsend/aseqsend.c
-@@ -33,6 +33,7 @@
- #include <signal.h>
- #include <unistd.h>
- #include <alsa/asoundlib.h>
-+#include <alsa/ump_msg.h>
- 
- typedef unsigned char mbyte_t;
- 
-@@ -43,6 +44,7 @@ static char *send_hex;
- static mbyte_t *send_data;
- static snd_seq_addr_t addr;
- static int send_data_length;
-+static int ump_version;
- 
- static void error(const char *format, ...)
- {
-@@ -320,6 +322,32 @@ static void send_midi_msg(snd_seq_event_type_t type, mbyte_t *data, int len)
- 	snd_seq_drain_output(seq);
- }
- 
-+static int send_ump(const unsigned char *data)
-+{
-+	static int ump_len = 0, offset = 0;
-+	unsigned int ump[4];
-+	snd_seq_ump_event_t ev;
-+
-+	ump[offset] = (data[0] << 24) | (data[1] << 16) |
-+		(data[2] << 8) | data[3];
-+	if (!offset)
-+		ump_len = snd_ump_packet_length(snd_ump_msg_type(ump));
-+
-+	offset++;
-+	if (offset < ump_len)
-+		return 0;
-+
-+	snd_seq_ump_ev_clear(&ev);
-+	snd_seq_ev_set_source(&ev, 0);
-+	snd_seq_ev_set_dest(&ev, addr.client, addr.port);
-+	snd_seq_ev_set_direct(&ev);
-+	snd_seq_ev_set_ump_data(&ev, ump, ump_len * 4);
-+	snd_seq_ump_event_output(seq, &ev);
-+	snd_seq_drain_output(seq);
-+	offset = 0;
-+	return ump_len * 4;
-+}
-+
- static int msg_byte_in_range(mbyte_t *data, mbyte_t len)
- {
- 	for (int i = 0; i < len; i++) {
-@@ -342,7 +370,7 @@ int main(int argc, char *argv[])
- 	int sent_data_c;
- 	int k;
- 
--	while ((c = getopt(argc, argv, "hi:Vvlp:s:")) != -1) {
-+	while ((c = getopt(argc, argv, "hi:Vvlp:s:u:")) != -1) {
- 		switch (c) {
- 		case 'h':
- 			usage();
-@@ -366,6 +394,9 @@ int main(int argc, char *argv[])
- 		case 'i':
- 			sysex_interval = atoi(optarg) * 1000; //ms--->us
- 			break;
-+		case 'u':
-+			ump_version = atoi(optarg);
-+			break;
- 		default:
- 			error("Try 'aseqsend -h' for more information.");
- 			exit(EXIT_FAILURE);
-@@ -401,7 +432,11 @@ int main(int argc, char *argv[])
- 	if (!send_data)
- 		exit(EXIT_SUCCESS);
- 
-+	if (ump_version && (send_data_length % 4) != 0)
-+		fatal("UMP data must be aligned to 4 bytes");
-+
- 	init_seq();
-+	snd_seq_set_client_midi_version(seq, ump_version);
- 	create_port();
- 
- 	if (snd_seq_parse_address(seq, &addr, port_name) < 0) {
-@@ -414,6 +449,12 @@ int main(int argc, char *argv[])
- 
- 	while (k < send_data_length) {
- 
-+		if (ump_version) {
-+			sent_data_c += send_ump(send_data + k);
-+			k += 4;
-+			continue;
-+		}
-+
- 		if (send_data[k] == 0xF0) {
- 
- 			int c1 = k;
+ 	printf("Group %2d, ", group_number(snd_ump_msg_group(ump)));
++	printf("SysEx ");
+ 	switch (snd_ump_sysex_msg_status(ump)) {
+ 	case SND_UMP_SYSEX_STATUS_SINGLE:
+ 		printf("Single  ");
 -- 
 2.43.0
 
