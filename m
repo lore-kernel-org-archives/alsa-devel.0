@@ -4,111 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FB8BC3DA59
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 12:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D958C3DA5D
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 12:47:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50C3DE82;
-	Mon, 22 Jul 2024 14:01:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50C3DE82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72BBBE0D;
+	Mon, 22 Jul 2024 14:47:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72BBBE0D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1721649680;
-	bh=/H5dtfxa+Nw4zsSc6z5aDmVUmIULoNGWM3agejyxotY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1721652445;
+	bh=kuaQwPMati7m35nPk4I2tMuXSmbSKoGY0kQGQdeFVQI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NIRquvE38AtEvVkQhyc5nus7BGs/cKoSFDKHZfWTAC39x89gGPhQY41WGqDAPKDfm
-	 LF5oW54jBAoifR1C/q44lYYPS6zq0L/rpsibmbvgxnpMiNzi1ZcL/by1J9L54r7AsE
-	 ZNsthzpRdq1mR04Y3yj3F+V4Sjx1YtWK2GOQxm74=
+	b=cUuKKOu0L/cPn4Q64x2y7ImGB16TAN9fAWKcl1Uf2hJUjla5ou7WZY6B2JiLWaFQh
+	 lDxDZiqq7h2ucWqyGN6wc/yh/kIDFcmzWHG3pQyf/cQl6rqbIr74TpOpaxHHk+vMHl
+	 soIRI6VDG4SqmE3UOgw03DWWowuh1NjPfEL5/X3w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8409F805A9; Mon, 22 Jul 2024 14:00:48 +0200 (CEST)
+	id 23A2EF805BA; Mon, 22 Jul 2024 14:46:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 868B2F8019B;
-	Mon, 22 Jul 2024 14:00:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D793F80579;
+	Mon, 22 Jul 2024 14:46:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1304FF801F5; Mon, 22 Jul 2024 14:00:42 +0200 (CEST)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 541CCF801F5; Mon, 22 Jul 2024 14:45:24 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D715EF8013D
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2024 14:00:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D715EF8013D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0D742F800C9
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2024 14:45:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D742F800C9
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=nEgoNX4w
-Received: by mail-lj1-x235.google.com with SMTP id
- 38308e7fff4ca-2ef2cce8c08so12500701fa.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 22 Jul 2024 05:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1721649629; x=1722254429;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=trXo2Kud/+4CHx1yH0TBjLSkOLQ44ny84aia5JfqCsM=;
-        b=nEgoNX4wzvIeixuyLRWcd7hSyHcfJM51GQfnmWTJg6hQ6liJvpGLNbE57WYTlMAw6A
-         2HDD8IWUKEyb3yk2MUr2c9VB1VckPeT6R7Z1eGEDWiOeZvXUmjVEpwz1hJcA6zGa8rPp
-         BNUOfscdXr3RcEXJV7ltVRVB46r+b5sKxgcaEgBb1EJfTxVBTJJI6cA9wWKojXkYYQTE
-         bhXv1vfr/CadN42aJ4cB7pyTjPeBcGIz1TxiuOh6duBgdQS1bJ9igToHI1w6RcXS3g1U
-         Lj5uVf0c6MoBe+J5+ML6mpQR4fhww0gLE/K3xiRUMSa1SctzwCnZVcQil5RLbT8jF00q
-         3U3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721649629; x=1722254429;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=trXo2Kud/+4CHx1yH0TBjLSkOLQ44ny84aia5JfqCsM=;
-        b=JRgxzBTE9Yu/QhdofL91oV4eFsR2RXT7mpKCsqktqktCWfTNbFSmkLknTmQBcSCRvE
-         5lvbsPVInYRSOUZQufMBim7i17Lx51mnUqY948vdk8T5d6FE9WTz13DDiNrLQca8AgJC
-         4Q9Avw6gcd/aEc5wgldaZ1MzNIt2frm+D6GTJe7Eb3dh7N33d4CAQGyrNzotPNxa5G5+
-         GmozHbYuGfQ2EtKzgkxIGAJhKk6DTDHGMpwaI/AwRi21KQNsCtswZpv7O5jc7VovslwQ
-         G6lNGcZM2TLHwGQPpplLo/AzupiZtFxV3TmPO1/OMLVEDhYGgZ1PIVr2j7UdWiPi90wa
-         NiBw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVY8gcQon7QP0bxM9GKlA1RCfpeGUukYe8SrwscDRt6WsF8/hgNAIllQu5PjankLBqDppXqn/AGda5ZwzOq9JagT/CdwzZZPI9IbQs=
-X-Gm-Message-State: AOJu0YzO4hZsJityLmGwq/T5WBZcBc/38GGvc6eP1+BmV+WyVqc4hsBe
-	sPU7yb6vKjfBSTnAXFQKxxq/OpSoq87NN76LNAh30sgfcvrNjwS7h4zsquXnfFE=
-X-Google-Smtp-Source: 
- AGHT+IHfpRkiwCwyjhMtcbqX/KMogZuiuVRMVA2GKfuTw4dL3YtZnf0Zu/Vpy6wLwRiUYsUM8T5TnQ==
-X-Received: by 2002:a2e:9f57:0:b0:2ef:2006:bfb1 with SMTP id
- 38308e7fff4ca-2ef2006c9e1mr40429441fa.15.1721649629135;
-        Mon, 22 Jul 2024 05:00:29 -0700 (PDT)
-Received: from eriador.lumag.spb.ru
- (dzdbxzyyyyyyyyyyybrhy-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::b8c])
-        by smtp.gmail.com with ESMTPSA id
- 38308e7fff4ca-2ef2eae89ecsm4705601fa.68.2024.07.22.05.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jul 2024 05:00:28 -0700 (PDT)
-Date: Mon, 22 Jul 2024 15:00:27 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Adam Skladowski <a39.skl@gmail.com>
-Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Vladimir Lypak <vladimir.lypak@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: qcom: apq8016_sbc.c: Add Quinary support
-Message-ID: <jx26jgbw2appm4yvcz45lisa2nr3uf7r4lvdd3i2eazl5nwjar@mk2xug4zhb7h>
-References: <20240722095147.3372-1-a39.skl@gmail.com>
- <20240722095147.3372-2-a39.skl@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240722095147.3372-2-a39.skl@gmail.com>
-Message-ID-Hash: QT53YKQDZ3IB243XZ5KGGLYFLFMVTNVD
-X-Message-ID-Hash: QT53YKQDZ3IB243XZ5KGGLYFLFMVTNVD
-X-MailFrom: dmitry.baryshkov@linaro.org
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=YodbXtWz;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=eFIUdsPP;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=RvDrWgVF;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=dbSQVP1h
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ED9B71FB6C;
+	Mon, 22 Jul 2024 12:45:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1721652316;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/etjPssqXa/0nw7ISXY16x5fVisX+gbyQ66tS2GbOII=;
+	b=YodbXtWzJ5c4pOmbh5tCX6X2dDtenyzhOKfQUplqCUGguYKyH5cQ+C8L8S6W+RPVnWiSnY
+	DSJ/EnExuKjSgjPgu+SGYzGU9HEw/XtmGOeRBqKb/oSDN2pwNKk7TSAhU/PKbSAxpqEvck
+	d+LPoSS2I4QXxqID1zYv5c5/zTuYVyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1721652316;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/etjPssqXa/0nw7ISXY16x5fVisX+gbyQ66tS2GbOII=;
+	b=eFIUdsPPcw+ndDmv4DHB2OdlNwr7lFtvkkBrBT32Zze3SxYZvI76S1kQcE927AGG8p7VYJ
+	kd7J8ytnWbn2h8Aw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1721652315;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/etjPssqXa/0nw7ISXY16x5fVisX+gbyQ66tS2GbOII=;
+	b=RvDrWgVFhs3Oro3DEfs0oWo0WDYCDCS8v5NdVytwCRyLEhAnmSa7rLStJ+EL9f6IkZYsq5
+	fCI7wqzB73zbXHPXd/0DAU2UpNKdvme553lBFpbZB+6ZVSYLSSML+ttbWjKjz63kg+etxH
+	394TXTRhUJPubY4TSuKf7OUDF+tb1iM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1721652315;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/etjPssqXa/0nw7ISXY16x5fVisX+gbyQ66tS2GbOII=;
+	b=dbSQVP1hau4I5q9Iw6a45CFR7odqRqiVJWA32I5Ue5l6ewG/IhMt3rB1Oyf3j56Rb8hU1o
+	JR6H6OuQyy3O3OCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B01BD13A2D;
+	Mon, 22 Jul 2024 12:45:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id C7bFKVtUnmY1KgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 22 Jul 2024 12:45:15 +0000
+Date: Mon, 22 Jul 2024 14:45:49 +0200
+Message-ID: <871q3lppc2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: wangdicheng <wangdich9700@163.com>
+Cc: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-arm-kernel@lists.infradead.org,
+	wangdicheng <wangdicheng@kylinos.cn>
+Subject: Re: [PATCH v3] ALSA: usb-audio: Add a quirk for Sonix HD USB Camera
+In-Reply-To: <20240722084822.31620-1-wangdich9700@163.com>
+References: <20240722084822.31620-1-wangdich9700@163.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.10 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_TO(0.00)[163.com];
+	FREEMAIL_ENVRCPT(0.00)[163.com,gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,perex.cz,suse.com,vger.kernel.org,alsa-project.org,lists.infradead.org,kylinos.cn];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+Message-ID-Hash: 7TPELJD2QGZDCHII7UY5CMJTGC3TIIZK
+X-Message-ID-Hash: 7TPELJD2QGZDCHII7UY5CMJTGC3TIIZK
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +156,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QT53YKQDZ3IB243XZ5KGGLYFLFMVTNVD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TPELJD2QGZDCHII7UY5CMJTGC3TIIZK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,42 +165,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 22, 2024 at 11:51:05AM GMT, Adam Skladowski wrote:
-> From: Vladimir Lypak <vladimir.lypak@gmail.com>
+On Mon, 22 Jul 2024 10:48:22 +0200,
+wangdicheng wrote:
 > 
-> Add support for configuring Quinary Mi2S interface
-> it will be used on MSM8953 and MSM8976 platform.
+> From: wangdicheng <wangdicheng@kylinos.cn>
 > 
-> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-> [Adam: Split from MSM8953 support patch,add msg]
-> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
+> Sonix HD USB Camera does not support reading the sample rate which leads
+> to many lines of "cannot get freq at ep 0x84".
+> This patch adds the USB ID to quirks.c and avoids those error messages.
+> 
+> (snip)
+> [1.789698] usb 3-3: new high-speed USB device number 2 using xhci_hcd
+> [1.984121] usb 3-3: New USB device found, idVendor=0c45, idProduct=6340, bcdDevice= 0.00
+> [1.984124] usb 3-3: New USB device strings: Mfr=2, Product=1, SerialNumber=0
+> [1.984127] usb 3-3: Product: USB 2.0 Camera
+> [1.984128] usb 3-3: Manufacturer: Sonix Technology Co., Ltd.
+> [5.440957] usb 3-3: 3:1: cannot get freq at ep 0x84
+> [12.130679] usb 3-3: 3:1: cannot get freq at ep 0x84
+> [12.175065] usb 3-3: 3:1: cannot get freq at ep 0x84
+> 
+> Signed-off-by: wangdicheng <wangdicheng@kylinos.cn>
 > ---
->  sound/soc/qcom/apq8016_sbc.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-> index 3023cf180a75..8971f4f5d339 100644
-> --- a/sound/soc/qcom/apq8016_sbc.c
-> +++ b/sound/soc/qcom/apq8016_sbc.c
-> @@ -320,6 +330,10 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
->  	if (IS_ERR(data->spkr_iomux))
->  		return PTR_ERR(data->spkr_iomux);
->  
-> +	data->quin_iomux = devm_platform_ioremap_resource_byname(pdev, "quin-iomux");
+> v2 -> v3: Update the insertion order of ID 0c45
+> v1 -> v2: Arrange the ID in order
 
-This should probably handle -ENOENT (or -ENODEV?) case and set the
-pointer to NULL.
+Thanks, applied now.
 
-> +	if (IS_ERR(data->quin_iomux))
-> +		return PTR_ERR(data->quin_iomux);
-> +
->  	snd_soc_card_set_drvdata(card, data);
->  
->  	add_ops(card);
-> -- 
-> 2.45.2
-> 
 
--- 
-With best wishes
-Dmitry
+Takashi
