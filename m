@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA6CC3DA5D
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 19:13:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83D7DC3DA5D
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jul 2024 19:13:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46BEFE94;
-	Mon, 22 Jul 2024 21:13:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46BEFE94
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D1EDEC0;
+	Mon, 22 Jul 2024 21:13:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D1EDEC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1721675597;
-	bh=qJaKIk6+DCF4AXqlRywZH6G44gwfDvN4DfZHy3E4aqI=;
+	s=default; t=1721675608;
+	bh=08Ix2ICoI12/cLhY4GIhbhpOUaxPusqc257F2p4YRgo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GlHGQIh25Qr2XqIlVR4Nld7RPGBZFilBJLBeekSlcg4CEWdgpAyof8XfKz7S1FNbm
-	 mVLzJGTEOx634kW1xdenTCObP/7XwMYlf8ppHZc5Uka2x3WrxJlWvQcgS3irosjB25
-	 zby66+pEx23cvmVYd9Nh+FIEDXb56HKTSzrADE28=
+	b=dyQ0SCv34XXB/KnATyuezumdxrxosrRDYRO3uDa88CpXIDqKzOeYjUbIXSi1GS5Qq
+	 gShUIshHDnQbBVpxQ9c5A1ko53z4JgG7LPAqRIfTuROObt+oZzA1GeKTkJRf4EN9Mc
+	 9s0sPziYcC+J/Ule6nD+MJMUzjj7hPOEXk8USZhA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4501CF805AA; Mon, 22 Jul 2024 21:12:45 +0200 (CEST)
+	id 19EE3F805DF; Mon, 22 Jul 2024 21:12:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 032F0F805AB;
-	Mon, 22 Jul 2024 21:12:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7FB9F805CA;
+	Mon, 22 Jul 2024 21:12:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DBF3F8026D; Mon, 22 Jul 2024 21:12:35 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 51EC8F801F5; Mon, 22 Jul 2024 21:12:39 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 766C5F800C9
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2024 21:12:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 766C5F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 30FF4F8007E
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jul 2024 21:12:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30FF4F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=PwkHTE30
+ header.s=k20201202 header.b=IZX7dIjw
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id BAF58CE0B24;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4436E601D7;
+	Mon, 22 Jul 2024 19:12:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A204DC4AF0B;
 	Mon, 22 Jul 2024 19:12:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7D68C116B1;
-	Mon, 22 Jul 2024 19:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721675543;
-	bh=qJaKIk6+DCF4AXqlRywZH6G44gwfDvN4DfZHy3E4aqI=;
+	s=k20201202; t=1721675546;
+	bh=08Ix2ICoI12/cLhY4GIhbhpOUaxPusqc257F2p4YRgo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=PwkHTE30Kl7ROzM2ZPHCTzHnu8MVPga9ssfUJcp0adnOwVG6aSqTL7UQ8j5dhV/26
-	 aYxwwczchip/IrmDUoPBsK4+rw+yA83FRwHkt6m/ShUVpxdMPSgwSfFT8mlrXH2fCt
-	 1hTcAzzoPqRp8gQY+mn41f703/brpjQsIAQC+MAl7pGZuMQ6njC3kwTg07FDh6XbBv
-	 5t3/2sfHLHsC6F3Q3W56mXxnD5vUKsBk7op0Abjzd6xbEwrxo16jV3QHCM81cqu+9I
-	 64RCNkleAC0BzMh/zAz30uIlrQJkQu7C8nHJEvSUf8ZbJsHomXYfPgV6iWti/+NYpX
-	 XzdhSBKxVwFwQ==
+	b=IZX7dIjwMPLhTMKg000zPem6udIF24kPaDuiDggQk3CWEcji8KaVHC3rsAK+5x+aL
+	 12eckH04vW7DW02IiuZnuxQjCsAWS0EsuBOX3ExIA/+RDep67EIuAr0CTuAokRKxY4
+	 t8u7uYyrTzMdKMyzaXIQUJae1gw9K02phDM1i1pal3dRvdAoTo5GC1dYh/x6+cWrMR
+	 XrCi0EjU0zISuMaN5O5izRLhr6PccUY+SF4oTRrSKIDJBi98/Z/t9eE00FPNOnc4W0
+	 U3Y0afjAATl06kBHC3A/9yNVugX6TYYpqUvcexza1yz6kB5c+wmI9LmNJb5BGXtI0u
+	 TzhjArwt7inpg==
 From: Mark Brown <broonie@kernel.org>
-To: linux-sound@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
- kernel test robot <lkp@intel.com>,
- =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-In-Reply-To: <20240722083002.10800-1-pierre-louis.bossart@linux.intel.com>
-References: <20240722083002.10800-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: use soc_intel_is_byt_cr() only when
- IOSF_MBI is reachable
-Message-Id: <172167554047.83479.17939715379049478337.b4-ty@kernel.org>
-Date: Mon, 22 Jul 2024 20:12:20 +0100
+To: Shenghao Ding <shenghao-ding@ti.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+In-Reply-To: <18a29b68-cc85-4139-b7c7-2514e8409a42@stanley.mountain>
+References: <18a29b68-cc85-4139-b7c7-2514e8409a42@stanley.mountain>
+Subject: Re: [PATCH] ASoc: TAS2781: Fix tasdev_load_calibrated_data()
+Message-Id: <172167554332.83479.1180608727450798301.b4-ty@kernel.org>
+Date: Mon, 22 Jul 2024 20:12:23 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev-d4707
-Message-ID-Hash: E5RGXIJFRTQAVGJBJFAI4WU4R7EXAXV6
-X-Message-ID-Hash: E5RGXIJFRTQAVGJBJFAI4WU4R7EXAXV6
+Message-ID-Hash: DBSX7PVLPG7VZLN6SSPKEPQ7UHDCXXI2
+X-Message-ID-Hash: DBSX7PVLPG7VZLN6SSPKEPQ7UHDCXXI2
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E5RGXIJFRTQAVGJBJFAI4WU4R7EXAXV6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBSX7PVLPG7VZLN6SSPKEPQ7UHDCXXI2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,17 +95,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 22 Jul 2024 10:30:02 +0200, Pierre-Louis Bossart wrote:
-> the Intel kbuild bot reports a link failure when IOSF_MBI is built-in
-> but the Merrifield driver is configured as a module. The
-> soc-intel-quirks.h is included for Merrifield platforms, but IOSF_MBI
-> is not selected for that platform.
+On Fri, 19 Jul 2024 18:53:48 -0500, Dan Carpenter wrote:
+> This function has a reversed if statement so it's either a no-op or it
+> leads to a NULL dereference.
 > 
-> ld.lld: error: undefined symbol: iosf_mbi_read
-> >>> referenced by atom.c
-> >>>               sound/soc/sof/intel/atom.o:(atom_machine_select) in archive vmlinux.a
 > 
-> [...]
 
 Applied to
 
@@ -114,8 +107,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: use soc_intel_is_byt_cr() only when IOSF_MBI is reachable
-      commit: 9931f7d5d251882a147cc5811060097df43e79f5
+[1/1] ASoc: TAS2781: Fix tasdev_load_calibrated_data()
+      commit: 92c78222168e9035a9bfb8841c2e56ce23e51f73
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
