@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06127C3DA49
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jul 2024 14:12:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22B0FC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jul 2024 14:12:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D163E82;
-	Fri, 26 Jul 2024 16:11:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D163E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67F85E76;
+	Fri, 26 Jul 2024 16:12:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67F85E76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722003121;
-	bh=cGgEjpzzxGI973pctJv1X1Xqrenmzkw5jm4bI9/CPUs=;
+	s=default; t=1722003136;
+	bh=U0iQgUf77isNWPz5wSO/QalnZ8ymeec3WHS6WdettZs=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KcuKKgrsyb8/vrblte1hmapd6ZKhyQNBUw41UVPzsOI2YuoRYaueO75tnlmnar45C
-	 aQ3d83eRLxiZ3SrFPhLP1aKBq3QCuE0Ml9DsFfzrLbzcXQypyvwp+j6CfJYJLMIAco
-	 shsVN1lkysksjcqCoX8zWwXeKLp25wH2VC+KyDbA=
+	b=MuyWX1Y8XNxfSBYOvdKJFVZWV4F2JFn128CGcQNvZzzO6ZGrnYrDQebEkEr8wvx6E
+	 0R6wMR2dJ9HQqJdbcOJSA/QEDCji0cDsqNnAvY6Y/AelgNqUwRWIiVipKUfRvkkYdu
+	 7gVlFnvekpGO87bfpSBLkBqaHaOArzWxoJBO4N5Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7559F805E5; Fri, 26 Jul 2024 16:11:15 +0200 (CEST)
+	id CE69BF80607; Fri, 26 Jul 2024 16:11:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFAF9F805E9;
-	Fri, 26 Jul 2024 16:11:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17192F80605;
+	Fri, 26 Jul 2024 16:11:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31357F805AC; Fri, 26 Jul 2024 16:11:09 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+	id 65CAAF805C4; Fri, 26 Jul 2024 16:11:13 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 661FDF801F5
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2024 16:10:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 661FDF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6322CF8013D
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2024 16:10:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6322CF8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=rv2tmP6Q
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-427d2c8c632so15552075e9.2
+ header.s=google header.b=MITWT61G
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-427d2cc1c4eso15603265e9.1
         for <alsa-devel@alsa-project.org>;
- Fri, 26 Jul 2024 07:10:59 -0700 (PDT)
+ Fri, 26 Jul 2024 07:10:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722003059; x=1722607859;
+        d=linaro.org; s=google; t=1722003057; x=1722607857;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kTGsbAfRUm3WZ5fb53jExCzdO/XEBE/ZTI+TszbFHcE=;
-        b=rv2tmP6QiZMnh2bvphSZbeAnkgBcwkgM1PdYOwuXsy2oMFe+n8tLC5o2LpcgLQwJpM
-         2NDPGmKGFfoKI3MOji9yJ1W+Pe47GnoR5qVFLfnsz9ecqj4C/XjkS+Wv9nMAA8/J1D7t
-         p1ONGBWw2twrCee+1C3mapDc33AqH3hSGjG9Iq2GxPTMZGt+dBTbX/awu2/cnPGMqK2G
-         NMVEwiDtTX3DlXSTi4ghr36aYJCaGOwz5G83BaSxI6sOZ/y0SmK4mwi+ec0eSwf+p+Ds
-         gk9JPLOgAxPRjwlXm7PcVOFIwuVcpv/0VkWZwPBQWtHRRzmpQzzEN8ILa9aR1b0EmCsn
-         vsTA==
+        bh=vEkK+be/9njUC3Is9y04g3ij2793OMGUHZjC8ZIJXBo=;
+        b=MITWT61Gom133Q1iGu0u1dt0gMi1vzmF3iE27UD9tDlbqXjYhQ62KJGQTzwcYTc7Ai
+         QNldHqAZtybJ7MfJPlyyINzb6S1QpV6wszzQaNA/7geUAMDyFyhYjfa538B4PqIIcyrZ
+         mccBLoLLZDUhr8VdaFG6ZEsnqallIgveV1KRH6jO5xOSwYj4GoZW3ofwsnOX370uflRX
+         Zs5/T3AdmwrX24Tvk6scm60G9AmVQeJNHlUy9tBL6+2C3iPDgbL85qcgPrw8v8G4Hndk
+         8DBjii5VRnsfo0pKuU8uKaqqh8EnJmtF3pWmU1q3C2dn46ww93Vc0oNsKK7UZE36+ieG
+         qSAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722003059; x=1722607859;
+        d=1e100.net; s=20230601; t=1722003057; x=1722607857;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kTGsbAfRUm3WZ5fb53jExCzdO/XEBE/ZTI+TszbFHcE=;
-        b=r7Vfj5LdWKjVT9nGSX3eHEgcAV8OCwHe1cT9HM6Zy2m+5va2lk8RQL0gpKxLQHhDiW
-         CXo0DHzAhB7C5xn9vyMDtdJYRDybwnqWfjrNIFjHPWF7k1k7xJdc7l0WbTb4zdm+aDJe
-         RVp2NyoSWTg0HEMNmD8yKDviH+3l+6XZCQc1y5sXyy/2dcV9XAxyLrvUxBikYH5GqgYE
-         jhHCWFc0QbO3zgdiewj37hQ3/FvHFX8O8zVDPRpDbib8R6BAfCjNMYlTON2DaVlW2VxM
-         XGguvXahix7pLXYkSVGRs8253atleY12VHq4S8BCANZpFZiyD5FGvxHXBFV19S+X5gj3
-         n1Og==
+        bh=vEkK+be/9njUC3Is9y04g3ij2793OMGUHZjC8ZIJXBo=;
+        b=kbJD/J6w9Gytv2bqsNQQIwt1hJb1+5JNWywQWb7l8vkjIU29BJZF3XWLcDDxdyi6hl
+         NGGGQShtDfQ4XwQBg2RfhGoYSfNbjlTFYo3PLdqGS/okn9cz32lpMsGkkRCQpu4hYxjE
+         V6m0gufCnoF+UNp6eVxK144TbbvOPJ775Xwpx6nq1XTKsQo1sK2Id046afOeErjYERIH
+         htIx2Y0M239jOzeROuZrXNBIj845+veenx4ckJNcrgUHMOWHK69EJ+piY8QPNhYYqQ0p
+         hr2f2aQWJULG81p7om9iKqs/lRVMAm28BU9BvPI9krGtDruGfl0a/fpp4YbrF6mjFqQe
+         WMcg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUuFZ10nAaC4RVl5Hr1zQnnVaeUEfjM0Cg0yebNW3Hcxqo35P/wtjm/eN0D5hLXZkH5ww6xgd391YfJpff9Cl+PXHUtwZuKufk/8s0=
-X-Gm-Message-State: AOJu0YwZjlWQrRePvJLRX44YtSUK+EBRFapjKDrP15lX46WV0yMy+39Z
-	L8fLHL99aJ5phjJjUrziEzxN2stMFChEjSAPHQDqFWepikgHbuvpH8R1Q+V2zOs=
+ AJvYcCXLfjnYLDImWxGX719/cmBkzhVyDPx7R1rMmobCVhnxQt63aqIdg/0w2gBnS9ATmQKrMsP35Hp+T0tNLQuwX3XbnQcfaQdVUT7mzL8=
+X-Gm-Message-State: AOJu0YxQeJ+H4fw1i3Hdc/56eOGlp3HuksHBiIItzgXnn12yI1N4iuRk
+	nN30zTyCCHjA1ofeJHxlS583epE23BNQkh19bJ9Hd1BxwmW4VJT1FocTM7vKDn0=
 X-Google-Smtp-Source: 
- AGHT+IFz/JUl+8u/JK2MqcXdpWEoos3z2kzWUCjz3VughnmpNQSqc2rMtp7GCgrM4Xlo9AdJw/qt2A==
-X-Received: by 2002:a05:600c:5253:b0:426:6320:7ddf with SMTP id
- 5b1f17b1804b1-42806bfe266mr35213265e9.35.1722003058921;
-        Fri, 26 Jul 2024 07:10:58 -0700 (PDT)
+ AGHT+IFV/ZpujOQQuNU4y5xUkqHK9TT5v4LwDRDBL4tAqj/tx/FvrWYNs9CZlkMnnbNmp4SxPWDCKQ==
+X-Received: by 2002:a05:600c:45d0:b0:426:6945:75b8 with SMTP id
+ 5b1f17b1804b1-4280579e92cmr43011845e9.31.1722003057369;
+        Fri, 26 Jul 2024 07:10:57 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-427f941352asm120841115e9.41.2024.07.26.07.10.57
+ 5b1f17b1804b1-427f941352asm120841115e9.41.2024.07.26.07.10.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 07:10:58 -0700 (PDT)
+        Fri, 26 Jul 2024 07:10:56 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Fri, 26 Jul 2024 16:10:42 +0200
-Subject: [PATCH 2/6] ASoC: codecs: wcd938x-sdw: Correct Soundwire ports
+Date: Fri, 26 Jul 2024 16:10:41 +0200
+Subject: [PATCH 1/6] ASoC: codecs: wcd937x-sdw: Correct Soundwire ports
  mask
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-2-d4d7a8b56f05@linaro.org>
+ <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-1-d4d7a8b56f05@linaro.org>
 References: 
  <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-0-d4d7a8b56f05@linaro.org>
 In-Reply-To: 
@@ -109,25 +109,25 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1776;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1998;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=cGgEjpzzxGI973pctJv1X1Xqrenmzkw5jm4bI9/CPUs=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmo65pRGgV5B1JytKHlbz6JcNxoIZORTr8B+r6k
- 1jeQWWl6hWJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZqOuaQAKCRDBN2bmhouD
- 15dOD/9vCxKIo8VXq63ApLgbGCqko0MTCPw7y8OqbfI6J7s/NmZYrKzQ/Giyked/yjhq88hfeDs
- /RgAzAEvfZDgX2gBzrp5kdyXpudEXxJje5tyKU+CVkRrV2VD7eX25Ffs4+ecdvv9sIK75G48OX7
- c//034fCz8FAPfACs1ME0OphEyX3rH7y74bMuDIZjUS02lt7wZ+EHZfEdf202e7Nj0WFg8RL+uj
- RIzDibfyrF6AKyzk8gg+taa42qLJwcw0CgjHCWzvk2bEEnJ8XZ1uYZnXIN3d1BaKDp+jte46aT8
- vPYiQKGciYt0habUV9R7GWkKnEEp9MMmZ7NO1UmOG17oALbMjZ6bFFLk4qjlDlZTIrKH2UiOx4s
- nh8nB+OvGcvHarLpE8zWQt25mN80ziz6ECGGKUHrOucr7A6v8KgdKRGecYqZGB8H7q9ymJrKPtw
- MBFt3alHXQSitx4eQxWePlb4k9XZdtBj2gvfzYjEcRrhQyLOfbVNWnQqIAgD6vBDm9bXgO8a3d4
- LFlkOKmtA7iQi6MZ262xykI/maLj+BD5R/27gnZQa+MLAOQyr51RAFSKjxUoQ506+3BMSOcnHKu
- hgLTmA0b01zEIxmHsqxSPr5Nz+N4Mbu9HIGTX5qOg+99eZFGhzh7MIgc5WUYJRDnXThdrv5JxoC
- F7LCmf/cGx29Emw==
+ bh=U0iQgUf77isNWPz5wSO/QalnZ8ymeec3WHS6WdettZs=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmo65oM7TrQ4WPQo4XevW2lOaGA4R95dKCpZlv6
+ wW46Z1aQP+JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZqOuaAAKCRDBN2bmhouD
+ 1/fvEACZejwshy7ORBUx21bbMgVsL7J/sztl10qJqNBoJeYs/gzMUsbENWm5JgO41XERX3/pfSo
+ njQhapIsqRFLzlnen+Ok8TM/VRFoJUcXy5ttXSSOeSg/VRqNXO3op1XZQVgQkthRMruMwLtpQfv
+ p7Ioldc0W1i2+muv17N+dtEVTsiVqQHDeMxTLZyUehIqIh0ujJG3Epa/uY+L49uSDoDKmpDPfQN
+ Kb+BGzsuOCNeSorxevLNxmXad8la64bfdRXcxA29XsM5dht0wps8ECiIa4UEJRKowxISObJp/Wi
+ ssDC4gmOguXoqxa/d1b7jCpx+6CnGgAWr85xitDbo0u/eJcBtJJuabta0yinmIHEjs34mRAae6X
+ IT4p8mC7im5Ci/ErNcqoSwu1P2KrF0Hj3NyhrKBQ0UKUfgl1KyBk5xVHpLXEq4lLP4hpJMM+pZI
+ XXKqLLfLc9owJQYBlFp0i/E4pq8xUpQOPTUAPBDnwoPe9tG0LXpApktVOEbv1EOCkMcelM1MitR
+ zx6dHe1tFQ4WrJxFcx50DYUrsg3AVxtgH0HHPNC3w3Uy3ymLQc9RMGR7eTML5ZuqbMFf1gtzMjG
+ R7VzVUxbGQomk/JoXeagI4n3whtWwoR3JUgTD3Bkx6oIpEqJHsIUYcdbaKuNM9S4TuyGGxPartk
+ vl9HRMjVQGz3lGw==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: NWF2LA7OX634HIDY7FW4WJHRHCTKNESX
-X-Message-ID-Hash: NWF2LA7OX634HIDY7FW4WJHRHCTKNESX
+Message-ID-Hash: MCRNXUU3A3BZCFJTKVUIBXW55NGD644Q
+X-Message-ID-Hash: MCRNXUU3A3BZCFJTKVUIBXW55NGD644Q
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -140,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NWF2LA7OX634HIDY7FW4WJHRHCTKNESX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MCRNXUU3A3BZCFJTKVUIBXW55NGD644Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,18 +149,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Device has up to WCD938X_MAX_SWR_PORTS number of ports and the array
-assigned to prop.src_dpn_prop and prop.sink_dpn_prop has
-0..WCD938X_MAX_SWR_PORTS-1 elements.  On the other hand, GENMASK(high,
-low) creates an inclusive mask between <high, low>, so we need the mask
-from 0 up to WCD938X_MAX_SWR_PORTS-1.
+Device has up to WCD937X_MAX_TX_SWR_PORTS (or WCD937X_MAX_SWR_PORTS
+for sink) number of ports and the array assigned to prop.src_dpn_prop
+and prop.sink_dpn_prop has 0..WCD937X_MAX_TX_SWR_PORTS-1 elements.  On
+the other hand, GENMASK(high, low) creates an inclusive mask between
+<high, low>, so we need the mask from 0 up to WCD937X_MAX_TX_SWR_PORTS-1.
 
 Theoretically, too wide mask could cause an out of bounds read in
 sdw_get_slave_dpn_prop() in stream.c, however only in the case of buggy
 driver, e.g. adding incorrect number of ports via
 sdw_stream_add_slave().
 
-Fixes: 16572522aece ("ASoC: codecs: wcd938x-sdw: add SoundWire driver")
+Fixes: c99a515ff153 ("ASoC: codecs: wcd937x-sdw: add SoundWire driver")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
@@ -168,27 +168,30 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Not adding Cc-stable because I don't think the issue can lead to real
 out-of-bounds read.
 ---
- sound/soc/codecs/wcd938x-sdw.c | 4 ++--
+ sound/soc/codecs/wcd937x-sdw.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
-index c995bcc59ead..7da8a10bd0a9 100644
---- a/sound/soc/codecs/wcd938x-sdw.c
-+++ b/sound/soc/codecs/wcd938x-sdw.c
-@@ -1252,12 +1252,12 @@ static int wcd9380_probe(struct sdw_slave *pdev,
+diff --git a/sound/soc/codecs/wcd937x-sdw.c b/sound/soc/codecs/wcd937x-sdw.c
+index 3abc8041406a..0c33f7f3dc25 100644
+--- a/sound/soc/codecs/wcd937x-sdw.c
++++ b/sound/soc/codecs/wcd937x-sdw.c
+@@ -1049,7 +1049,7 @@ static int wcd9370_probe(struct sdw_slave *pdev,
  	pdev->prop.lane_control_support = true;
  	pdev->prop.simple_clk_stop_capable = true;
  	if (wcd->is_tx) {
--		pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
-+		pdev->prop.source_ports = GENMASK(WCD938X_MAX_SWR_PORTS - 1, 0);
- 		pdev->prop.src_dpn_prop = wcd938x_dpn_prop;
- 		wcd->ch_info = &wcd938x_sdw_tx_ch_info[0];
+-		pdev->prop.source_ports = GENMASK(WCD937X_MAX_TX_SWR_PORTS, 0);
++		pdev->prop.source_ports = GENMASK(WCD937X_MAX_TX_SWR_PORTS - 1, 0);
+ 		pdev->prop.src_dpn_prop = wcd937x_dpn_prop;
+ 		wcd->ch_info = &wcd937x_sdw_tx_ch_info[0];
  		pdev->prop.wake_capable = true;
+@@ -1062,7 +1062,7 @@ static int wcd9370_probe(struct sdw_slave *pdev,
+ 		/* Start in cache-only until device is enumerated */
+ 		regcache_cache_only(wcd->regmap, true);
  	} else {
--		pdev->prop.sink_ports = GENMASK(WCD938X_MAX_SWR_PORTS, 0);
-+		pdev->prop.sink_ports = GENMASK(WCD938X_MAX_SWR_PORTS - 1, 0);
- 		pdev->prop.sink_dpn_prop = wcd938x_dpn_prop;
- 		wcd->ch_info = &wcd938x_sdw_rx_ch_info[0];
+-		pdev->prop.sink_ports = GENMASK(WCD937X_MAX_SWR_PORTS, 0);
++		pdev->prop.sink_ports = GENMASK(WCD937X_MAX_SWR_PORTS - 1, 0);
+ 		pdev->prop.sink_dpn_prop = wcd937x_dpn_prop;
+ 		wcd->ch_info = &wcd937x_sdw_rx_ch_info[0];
  	}
 
 -- 
