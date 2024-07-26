@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5604FC3DA49
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jul 2024 14:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0E2CC3DA49
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jul 2024 14:13:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78BCAE64;
-	Fri, 26 Jul 2024 16:12:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78BCAE64
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1A6AE82;
+	Fri, 26 Jul 2024 16:13:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1A6AE82
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722003151;
-	bh=vYWYuVN4lK3XkrzlF4N+aA8raJCbc8inqKOksPmsXIE=;
+	s=default; t=1722003209;
+	bh=dP7UEMsz7e5SQeBIvoJx2Y/Pic6CV31hwYtlba9OL/E=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=N6AT3KsUumFuMAviIkfVJuJtwTHkGAGoHUaBgRsifpPsLdM1z0KVLSCAngA89wH3e
-	 s+ChRIdBLA/nEhqd0fH/dj77qlEGTrzr0OCqNG2m1rUC18Rf6B7v8DiOCAcxvgYD4F
-	 V01P0GOXhpyR0W5V8BbYKAaX15+VnXcCQUgzTgVY=
+	b=G6pQQcoyvRJe+w4lZxFEqPsHoKeBZ7a4fOe3pwkxfwdlnXV1zx0A6biE2TKDFerw3
+	 MbkM5kiP+PAj3Y05CASEM2OzUCi2z3tNuJOCmU2lky0K7Xd+SVIZSN3eJyeBIrxnhk
+	 0yREhj92TKo2QUrptX81A2iwZ8A+09izTcPIAbQk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C808F8061C; Fri, 26 Jul 2024 16:11:21 +0200 (CEST)
+	id 85825F80579; Fri, 26 Jul 2024 16:12:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECE26F80620;
-	Fri, 26 Jul 2024 16:11:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78BECF805BB;
+	Fri, 26 Jul 2024 16:12:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7A2EF805E3; Fri, 26 Jul 2024 16:11:15 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+	id 35559F8057A; Fri, 26 Jul 2024 16:12:55 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 614EDF8057A
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2024 16:11:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 614EDF8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54A09F8026D
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2024 16:11:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54A09F8026D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=pOAcHobS
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-428035c0bb2so11928315e9.1
+ header.s=google header.b=zJVciAV9
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-427d8f1f363so16262225e9.2
         for <alsa-devel@alsa-project.org>;
- Fri, 26 Jul 2024 07:11:06 -0700 (PDT)
+ Fri, 26 Jul 2024 07:11:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722003065; x=1722607865;
+        d=linaro.org; s=google; t=1722003061; x=1722607861;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zm4i9m/ncQZPuov6nCVEVOfcxXDmdJCtPoFsZxzq7VE=;
-        b=pOAcHobSyz+Qhdkd0ZCLOWL6eV2shncqca6/lMyOuI5p3Q+5HKgt8zOfeNoajgDOpR
-         iT3s9+sw2c9nnrepdxT9+Rv2SWN3mqDyQCpLMIo9c2fn68TX5LEqqn0Q3oijBaaY/YZu
-         Ir0tdAeHEQAyBly73x9RW88ZC5Gxnx8hl6wrRpaHlPg7eanCS7gziTBHm0oeerwG1uEz
-         OCuVrY+sXOOL66FCRczTPGtCiRRUUQzmXL2J+KJ8N8h77PX6OTveNEhJgovaDSn97+/e
-         rtWMK+8yFaMX6fP9Cef7OipbLWuRjXDnL6YIKmX9jhNaJKQsgR+4OLJeqPJDTSltfLmX
-         WBsw==
+        bh=wq5Zwrj0wwcriRSju7UpectgcbI2N6emEEV2p6g72bY=;
+        b=zJVciAV9xoFu4SLoVEprLr0m5f7CV36+yAlzUbIEOJAPeChLuaktNEOXhl8GIG0cUw
+         ubxFHW4RtUvKOtxlipv+GChR1y2CL6WkF1wUgJf1v+CyQgJoJSLPIho0OkEQ9OhZYJNd
+         yM7IKEXzYSQjxRrProHE5oBAUrJcpZq3s+l+NphF7kk4Txi0gzB15Trftn9ktbvWLdjC
+         H6HUodg2fI+T7cypnfWFPK5pZPBPEF4M2NLl40QZ6HgxK8HXeGghtOzk9Q9BkM8wr+b7
+         UBZB/MheMGdobKH0y9day1XL2EQaHsNrr2CUXD1sC7aniS44DLCO0s+1/e8k5X77vsw7
+         l2AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722003065; x=1722607865;
+        d=1e100.net; s=20230601; t=1722003061; x=1722607861;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zm4i9m/ncQZPuov6nCVEVOfcxXDmdJCtPoFsZxzq7VE=;
-        b=oGN3Fl7OQHab6OZ5HQLs0qH2l0rgVGVttBxdgOSXt9xyyhnctxaZ653TFDyuaN4yi/
-         r56Es5FbeHBnuTMJCDUp6zf6s3e49jnwoz2qGrhGGJkPE2VOE7ert+srj8SBnobQBir4
-         ffxGUmqFjsWoycFcc5igyx7lvq+0RNs4UBLboBdAG04NM7ZX0Hsl4vUN56PoAY1nnDa8
-         mspz7NLKcTxd11NFzfhL4sDyy7T14a6UW+4EHIWWh/Vnl2bUcKLpW2FZmPF+ouoH+Vwi
-         1LTHy6uXAkVPRuam6Qaf/aRj4GgMUqJLEx+C+JYKX9t95TlIgiyE8pd2gsLFOgYCSiYU
-         aBIg==
+        bh=wq5Zwrj0wwcriRSju7UpectgcbI2N6emEEV2p6g72bY=;
+        b=i1dg4S2VjTqoLQ/7zu7tshuzRHeIqyTQJzAMnJQOI4HQLCHNrDInDz6vFVolOzkX1k
+         BLpCp1ouW6k2BK6DnjmQXY9WzKtOZxx/ehQi6V7jl29Ru/ZYGxgoIV0JiNdTum5w/25/
+         n4Xj4KFIz3vZhj65y3wbjTpnjC+gtM/NeP1RPK+fm3ItVAEBPIK9F8/jVFDyKz/tfboU
+         9kG6jjWgL76eJprs/56xlzJ82DpU+2BX0Bh1Opua6s8yXoq/ISmPivUIM0U4JTeNnm5k
+         lyLtjFraq65wBHQuugxATN4HWxVN5cRGw6sp46BJ32TpSeIQEkJ/ZLqzRxR84QlqoXkT
+         SSdQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUCm4uk5vKLscRV5p9YLAmkl/GlfOG3Pv08IdvqHRtza1aGCj1oJPuUqhtiCsiJEEA/Vd58U8ZNEpnt28eoInvzXO36mgDWsKtrt4g=
-X-Gm-Message-State: AOJu0Yxihl9OQQ6udOp+rOyqhZ0sN9Rc29jS59tdHMpu/EmTm3Jl7hSX
-	GQmpRd8JKTCxsB56eYzkNNEy8b5v8QyiTCWKJJQy7LG01IK/QYvPyhmQnMlI1r4=
+ AJvYcCUuQ+xBq03Dm+sKkg/TqxCHpiGxMUb27uHLnyAef/wM93ehp3LbCAdXBuJpDG8to8Rfm+H+2TTQBGJuHM3YwejQmQgwaD8JznsjDes=
+X-Gm-Message-State: AOJu0Ywi2b3KCnSHO71N+JkuOgTV1vKXuP2kVvD9GsDD/H5FjHxUZAJX
+	t+WbRDzvaZbg/sFuVcepw/+uyDnOxObisNX7F7lsb6O88OzMkAGj0/929qgT1X8=
 X-Google-Smtp-Source: 
- AGHT+IHwl9iv5umoPhExYwiCZKYi87nvMtqxmxK8Rx49dM71Q/xYQD0kJO7Hzb+m82Le5VpchJQRlA==
-X-Received: by 2002:a05:600c:5247:b0:426:526f:4a1f with SMTP id
- 5b1f17b1804b1-42803b5b181mr45562735e9.16.1722003065313;
-        Fri, 26 Jul 2024 07:11:05 -0700 (PDT)
+ AGHT+IEG7AI5NN6YZ75+21NHmNdxvxhxO5Szstl2Ms6b99fP/MAH4f9xbyIPABZDEYOTNcVmNiXk9Q==
+X-Received: by 2002:a05:600c:3b87:b0:425:7974:2266 with SMTP id
+ 5b1f17b1804b1-42806bd9f52mr39504875e9.24.1722003060682;
+        Fri, 26 Jul 2024 07:11:00 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.219.137])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-427f941352asm120841115e9.41.2024.07.26.07.11.04
+ 5b1f17b1804b1-427f941352asm120841115e9.41.2024.07.26.07.10.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 07:11:04 -0700 (PDT)
+        Fri, 26 Jul 2024 07:11:00 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Fri, 26 Jul 2024 16:10:46 +0200
-Subject: [PATCH 6/6] ASoC: codecs: wsa884x: Correct Soundwire ports mask
+Date: Fri, 26 Jul 2024 16:10:43 +0200
+Subject: [PATCH 3/6] ASoC: codecs: wcd939x-sdw: Correct Soundwire ports
+ mask
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-6-d4d7a8b56f05@linaro.org>
+ <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-3-d4d7a8b56f05@linaro.org>
 References: 
  <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-0-d4d7a8b56f05@linaro.org>
 In-Reply-To: 
@@ -108,25 +109,25 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1508;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1877;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=vYWYuVN4lK3XkrzlF4N+aA8raJCbc8inqKOksPmsXIE=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmo65te5MyhCVdZRhQoHqqUXph8EfgHYbDMktc+
- pR/3JMeV2eJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZqOubQAKCRDBN2bmhouD
- 17QID/9o+ExG1syoZx5GLY0VzNCNteL6E5cuNOrA+OdQ1Nwtug1RHqQ17IoqY4nYjtU1xZuKl2i
- eU7iEHYb5Ak2H9DHF0jbUsWP7ymH9YOY1WsPCQ5Pe2bNj7iJpru18vvrFABFVrqP1bMjZt37vUb
- Okr+pWTx0kPweMewQCs8jwl2uzQh1dYoh+mutI3sZ1bZLXDD0RM+db37/KQU2Ptrqn28XU+pVIR
- i0svhkxEOoSQUgLAGwQXviUnOLHFB57YjBlwIh6bZ9B26xMEWDKsWVrIvwoxny5crwDJHPxskUS
- KGe6PlEErlhXGeDYueBPkTgNsAb5JGWGeL16VpeqVXKBu1N/xZKT7lHHk1cT7bQuYlC6GoDu77d
- sQzT/MM0h6aWxFF46cKn71HA5/7+Mf9v3Y6X5Oifc0lj6G87IAHxTIFmA0xaFXvMMOubh8HYDVW
- Q/PvTuMQKp6Pn0OD5Q182HtBc5VJYmmS2+SNAxqbPX57XKCjrzNaFOrVe+4QZp1do9y+ztGF1fJ
- ymixiwT3tNPclmBqOXqGvaik23plgrnrOde+GRei6PivJtCkBo+a1dnOoEWOkOVI7RzjdxVWi0q
- AUaQ3YXZuTLyzGaS4vALPi2g8flrO3ev5qKxZ4nLyJlXxUPqEXO6bssiPuO8RkfBf5yrbyfY/1B
- 3fDQ1WwNDYRRw2g==
+ bh=dP7UEMsz7e5SQeBIvoJx2Y/Pic6CV31hwYtlba9OL/E=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmo65qRbZcLLRSFDbSoF0d0nw+PnV31kip12ewV
+ IsrK0K2QvOJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZqOuagAKCRDBN2bmhouD
+ 15q/D/93LrXG6IqxDSqzRNmqwo2E/ibyo4QxN+fHgz4wRiqe0TlnGGeEQ+gxtN/TsToXPtd14uQ
+ KsnEb7dGNIRHFGSGUnLB6k+n6OSaIPy/1L5YoiXcLbiWJJyBvzexvmE2kYckW7bBn820xkFNOqm
+ iZk/vRMqxFoq33FNv5JpRqufH+Icg21of5p9NIuYgDT/C9SOUGiOl0kzRn7XMnZDMwW8c1/jkpq
+ 5gI7Hg7mzfdABuXkenHnQq7phecWnB+ip+MJfFhjQ4bDImdcvIy9PRY/1qi1brwy+ofE7mb+aIs
+ YufA3koh/4r+90fO9XyRVTOYtEWhbsncegZ0Mc5UiOngqgCkMO/7OMh6BHNnJH71Q8qh08t3v7J
+ aQJAR3DbMiwVYep3/GnS4VzdzPG92SwjznHisLCgMMwBF9vCZnzue1/N3dLip9I10C2O/cmRMas
+ C4y5aP/lVKJjKVzuPANynpmAS0uR1uvOQdbJ3qo/HvHgfABrIiC/AeZjPqdnnGF9DaOTl+CZL65
+ YhtnBlSv3xvc59opcNjQBWH2aZlMW+NNhj/Y51fqm+OhXsuvBIm+18fV+5hbMhouDABvpc5SBBq
+ VUvYNShK+k6XncLytZh5zYSqGEnCa3TRqwYgNXjF1tu6SUg+DcmdbVUC65YT5Irn4klnHrZIt0R
+ 0Uu946k19b4UFAw==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: TLZ3WM5BVKCQPRZRII63NVAGNE4AKFHR
-X-Message-ID-Hash: TLZ3WM5BVKCQPRZRII63NVAGNE4AKFHR
+Message-ID-Hash: 3AH47CKMBLIMGIDBW254KMNDGGVKHYBX
+X-Message-ID-Hash: 3AH47CKMBLIMGIDBW254KMNDGGVKHYBX
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -139,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TLZ3WM5BVKCQPRZRII63NVAGNE4AKFHR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3AH47CKMBLIMGIDBW254KMNDGGVKHYBX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -148,17 +149,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Device has up to WSA884X_MAX_SWR_PORTS number of ports and the array
-assigned to prop.sink_dpn_prop has 0..WSA884X_MAX_SWR_PORTS-1 elements.
-On the other hand, GENMASK(high, low) creates an inclusive mask between
-<high, low>, so we need the mask from 0 up to WSA884X_MAX_SWR_PORTS-1.
+Device has up to WCD939X_MAX_TX_SWR_PORTS (or WCD939X_MAX_RX_SWR_PORTS
+for sink) number of ports and the array assigned to prop.src_dpn_prop
+and prop.sink_dpn_prop has 0..WCD939X_MAX_TX_SWR_PORTS-1 elements.  On
+the other hand, GENMASK(high, low) creates an inclusive mask between
+<high, low>, so we need the mask from 0 up to WCD939X_MAX_TX_SWR_PORTS-1.
 
 Theoretically, too wide mask could cause an out of bounds read in
 sdw_get_slave_dpn_prop() in stream.c, however only in the case of buggy
 driver, e.g. adding incorrect number of ports via
 sdw_stream_add_slave().
 
-Fixes: aa21a7d4f68a ("ASoC: codecs: wsa884x: Add WSA884x family of speakers")
+Fixes: be2af391cea0 ("ASoC: codecs: Add WCD939x Soundwire devices driver")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
@@ -166,22 +168,28 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Not adding Cc-stable because I don't think the issue can lead to real
 out-of-bounds read.
 ---
- sound/soc/codecs/wsa884x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wcd939x-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
-index d17ae17b2938..89eb5e03a617 100644
---- a/sound/soc/codecs/wsa884x.c
-+++ b/sound/soc/codecs/wsa884x.c
-@@ -1895,7 +1895,7 @@ static int wsa884x_probe(struct sdw_slave *pdev,
- 					WSA884X_MAX_SWR_PORTS))
- 		dev_dbg(dev, "Static Port mapping not specified\n");
- 
--	pdev->prop.sink_ports = GENMASK(WSA884X_MAX_SWR_PORTS, 0);
-+	pdev->prop.sink_ports = GENMASK(WSA884X_MAX_SWR_PORTS - 1, 0);
+diff --git a/sound/soc/codecs/wcd939x-sdw.c b/sound/soc/codecs/wcd939x-sdw.c
+index 94b1e99a3ca0..fca95777a75a 100644
+--- a/sound/soc/codecs/wcd939x-sdw.c
++++ b/sound/soc/codecs/wcd939x-sdw.c
+@@ -1453,12 +1453,12 @@ static int wcd9390_probe(struct sdw_slave *pdev, const struct sdw_device_id *id)
+ 	pdev->prop.lane_control_support = true;
  	pdev->prop.simple_clk_stop_capable = true;
- 	pdev->prop.sink_dpn_prop = wsa884x_sink_dpn_prop;
- 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
+ 	if (wcd->is_tx) {
+-		pdev->prop.source_ports = GENMASK(WCD939X_MAX_TX_SWR_PORTS, 0);
++		pdev->prop.source_ports = GENMASK(WCD939X_MAX_TX_SWR_PORTS - 1, 0);
+ 		pdev->prop.src_dpn_prop = wcd939x_tx_dpn_prop;
+ 		wcd->ch_info = &wcd939x_sdw_tx_ch_info[0];
+ 		pdev->prop.wake_capable = true;
+ 	} else {
+-		pdev->prop.sink_ports = GENMASK(WCD939X_MAX_RX_SWR_PORTS, 0);
++		pdev->prop.sink_ports = GENMASK(WCD939X_MAX_RX_SWR_PORTS - 1, 0);
+ 		pdev->prop.sink_dpn_prop = wcd939x_rx_dpn_prop;
+ 		wcd->ch_info = &wcd939x_sdw_rx_ch_info[0];
+ 	}
 
 -- 
 2.43.0
