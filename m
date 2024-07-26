@@ -4,130 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21257C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jul 2024 14:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 918B0C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jul 2024 20:09:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4105CE85;
-	Fri, 26 Jul 2024 16:13:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4105CE85
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30930E8E;
+	Fri, 26 Jul 2024 22:09:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30930E8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722003245;
-	bh=Vu+vQdTFKWsQq9i9w0o9ZFa+ZQrVAJEgITfkg5lDM4Y=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1722024589;
+	bh=RItrGGuVLmlSCWHomQhd90T1QLhUEfGxr2jZ5urvIQ4=;
+	h=Date:Subject:From:To:CC:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dV9AFHbMzFJI8aezqqDMNtVV4CCjeD6TVOmwYwN4P6jzNDI7d6ZNFrvAN6NSFZzN8
-	 5C8p3DBgIVA1Lb8VH80xiN8RY/0/3c2Zq2CQX6QMHNPgHN2Wy50FK1LwONf/WqKKuE
-	 RzgKKqOuC+/nYNhgDTPvzF1mnggSXL7lRsPZy38M=
+	b=JA+QmTCiCJdxoxshElUNBEX/gxqGwfusFwpvBezuymVGbEBaJmyzHYVdZbIze7lk2
+	 4Z0Y/sPE2XKNXsWYyNfB9z2BJsAcf90nYVKYWDg6uEpmcIUeuIKl2ztd/WB5RAH0II
+	 wRXb5ltE6m6IOP2z8Hd6sK00NlMda5FhBQiA7bjs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 91C75F805E4; Fri, 26 Jul 2024 16:13:05 +0200 (CEST)
+	id 77FF0F805A8; Fri, 26 Jul 2024 22:09:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33842F80602;
-	Fri, 26 Jul 2024 16:13:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DF3DF805B5;
+	Fri, 26 Jul 2024 22:09:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 973DDF805B3; Fri, 26 Jul 2024 16:12:59 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B4A26F8026D; Fri, 26 Jul 2024 21:57:01 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8B99CF80579
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2024 16:11:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B99CF80579
+	by alsa1.perex.cz (Postfix) with ESMTPS id C917AF8013D
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2024 21:53:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C917AF8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=p2kc2g/c
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-42809d6e719so8885565e9.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 26 Jul 2024 07:11:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722003064; x=1722607864;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nnPQ2n6JhiYWWn9VeOeK/rEp99NPC+ELvUYPMv+J6Iw=;
-        b=p2kc2g/cLcfUofTTANdXOZLRd8RxD6UpohdNlNdJWIt0BwnGk9YkC07KfReObqKLtN
-         5grSsF12FpZ44fGw+12naSWgakTIQVyNSgIjeJ75mpV5KLkd/tlmtLkXquFMafQlKbM8
-         SguhZ8uCPOu4Pkf+48pTtl3gtl7Y2Yghhm+EJI6uDphRD+6FSUFBq1x2alRIvKmedyX4
-         H43zvpU3SO33IUAFMGdQXk508Idd74z8/ZeTdEncSDFCld8CCRpEX9JvPyj4zA+UjkaO
-         3g0G7HNzirlOkx2sTCXGx8g5Om8w6w10y8VsqjLSvSqmmZg9mgTu/CYyKXjwBlRln0g3
-         +UWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722003064; x=1722607864;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nnPQ2n6JhiYWWn9VeOeK/rEp99NPC+ELvUYPMv+J6Iw=;
-        b=m0CtbaNvmo3kAQ32bJHr7VrACNR0bzL1eSjV8pHY/I0oyCw4gS+IkbkXsFmhDwLwnZ
-         G1jZjBNl/k0nW6OUgD58P7+n+FDOawTMkVxA3OGWaDEvEHsHlSMmZ1ii61sGIqE3pT+s
-         ofT4rQAgldt1pC0wyTn9hH6OXvvae+KY3AwMi1WXg3n6O4ioIfNOfZqsLzpMt3K7GTek
-         1DLf75XWAU1jh8g4gDovTAXlFV79czwkVA6cb6QF7vhXUdNHVNr7GzZHXnn72BJE8nY9
-         fuLtUu/cEJuK9Ys397DS7DxpVH716UfXBDaLjzgFRUuYdwhNrA9JLMNN134FVgJxEeUc
-         mJhA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCU2mbl+JR73i0HT1knyxbWJNNLAa0XWpoeJT1Njun5k8oD1EDQCnGHjvR3Rm4AB+z947TlNqr3PR4/UgD9FL8YbCX+l9RhkqT5Ohos=
-X-Gm-Message-State: AOJu0YyM7rv+cScRBlHvpo4HS4gZQpYiQMjnyMUkjqXyPokq4cJKKsgr
-	Cxx8QTP3ExsXshfCHGMTt34hADxRSGsLedicSj+DoLzLByrh5u3/KjezQyHNN0s=
-X-Google-Smtp-Source: 
- AGHT+IFEX4rzg7NrNx6gbQi2pw9HHCL43584sSMR3P82rbrDcYIFr+PaqQ5QJ29wTGiIy5vcKmx21g==
-X-Received: by 2002:a05:600c:4712:b0:426:58cb:8ca3 with SMTP id
- 5b1f17b1804b1-428057104eamr39404725e9.21.1722003063990;
-        Fri, 26 Jul 2024 07:11:03 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.219.137])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-427f941352asm120841115e9.41.2024.07.26.07.11.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 07:11:03 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Fri, 26 Jul 2024 16:10:45 +0200
-Subject: [PATCH 5/6] ASoC: codecs: wsa883x: Correct Soundwire ports mask
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=WkMmgtEU
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 46QBfuNZ013396;
+	Fri, 26 Jul 2024 19:53:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	RItrGGuVLmlSCWHomQhd90T1QLhUEfGxr2jZ5urvIQ4=; b=WkMmgtEUiak64LIH
+	+TUl60yVMD3b4c/uRJMToOMVLifnQW/BuYeoLfFxynVYz8zzxx4VLRMPy9jS5E5l
+	mNXHMo1A7odzLGq/GX6Zi6RsBqVqzAYn8/I6t/JV+/ZyLy8jG044Gd13E3O5/J7+
+	ckPk49tn5rb0KCs9RoCsXd7/w31RALr1NWPgaDxvoGUWzqvAjOZSEYqvwlq8Fy/3
+	WEUkxRifCq9HTlOkYJNfZK20+ZaRcGfprQIms6U1jwURqCbucEXtNSMP2SfK23lq
+	HM5Mew7XaNL/zAusWifm5CCdqkneyEYyaWg3JZJwQ6XphZXpxSrOJfmS/41HCW7H
+	kUTW0w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40m2192app-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jul 2024 19:53:08 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id
+ 46QJr661016526
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 Jul 2024 19:53:07 GMT
+Received: from [10.71.113.104] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 26 Jul
+ 2024 12:53:06 -0700
+Message-ID: <957b3c13-e4ba-45e3-b880-7a313e48c33f@quicinc.com>
+Date: Fri, 26 Jul 2024 12:52:52 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: 
- <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-5-d4d7a8b56f05@linaro.org>
-References: 
- <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-0-d4d7a8b56f05@linaro.org>
-In-Reply-To: 
- <20240726-asoc-wcd-wsa-swr-ports-genmask-v1-0-d4d7a8b56f05@linaro.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
- Prasad Kumpatla <quic_pkumpatl@quicinc.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
-X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1494;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=Vu+vQdTFKWsQq9i9w0o9ZFa+ZQrVAJEgITfkg5lDM4Y=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmo65sdY4HV/1FoN5HkK5c6lQNXwdRdwBIMLNys
- QrDcxPsPziJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZqOubAAKCRDBN2bmhouD
- 1zCID/4viT8zslptT+J+Wyj3J9niHRv30fzKO8dyhhocsvtCsFJ42+NDmGPkTmHOOub3SxgLP9p
- CVa180tqGAVdwWlFCbFSGFPYzMsITwNnSS60fIwtqBcEbCToxyMQf8OwPX+nSeyzUUiU6iYYzqU
- FWcLRTupCcUfpDXsMPS5BKsnQFpjrnem3hTIMFgofs+kPHsElcmNMaGzrgoMiyQ/kQSy2DFI95U
- JD2yXtUfnhAQbof1PmfMA8g0rl2Z1jin2Xj6GqYUHvjT1ULI6VUs+5DL8VI5fsx3cz1V47XSKok
- wtUly+RB3YL630VU4tfMS6acALC/0bOv64GLuXLgGcdftot+Bueb69WzVF7Y1CdAv8YpL4+7+tJ
- QWGM41WCQVRW24EvCoOWPDLybVAQPUqUG4NYsFY2uokPc5QeB/w/hAprlCgIggY/YMsYj699004
- X12s2MmtS7wnEiiV2o4X7qdb3LxvRXdHRw4Vh0kmlxSL1IHljB2JVRN0icjSa1NLBoeYtZsrycU
- NmiutNzyT0q7S4++eUxqmN+Xw/q5D7Wck+1cHxXWxtnI4Y8k+w02fykXMRsVWtqe58SU4MqZU9t
- xE8/kWlSaXC9a7CDDVpvLXaWXjaeJbp87KFkyy0tLZvi8HeVs8HrNAz6medqWhwmgRAXUUeX0Ws
- WxDpoYEDH8Zyauw==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: QZXD2OPT6VOHECRNZJPPAB34QD7W3KRI
-X-Message-ID-Hash: QZXD2OPT6VOHECRNZJPPAB34QD7W3KRI
-X-MailFrom: krzysztof.kozlowski@linaro.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v23 32/32] ASoC: doc: Add documentation for SOC USB
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+	<amadeuszx.slawinski@linux.intel.com>,
+        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <broonie@kernel.org>, <lgirdwood@gmail.com>, <krzk+dt@kernel.org>,
+        <Thinh.Nguyen@synopsys.com>, <bgoswami@quicinc.com>, <tiwai@suse.com>,
+        <robh@kernel.org>, <gregkh@linuxfoundation.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>
+References: <20240610235808.22173-1-quic_wcheng@quicinc.com>
+ <ca1e1063-e1bd-4e03-a7cd-91985e9954e9@linux.intel.com>
+ <096d59a0-5e18-092c-c9ae-d98130226f06@quicinc.com>
+ <368d9019-2c96-468e-b472-7e1127f76213@linux.intel.com>
+ <eb6370ea-47a0-3659-3c10-cb7f95e3e520@quicinc.com>
+ <510468c7-b181-48d0-bf2d-3e478b2f2aca@linux.intel.com>
+ <c7a95157-1b71-1489-3657-8fe67f9acb4e@quicinc.com>
+ <90463a4e-c2e7-4b59-9a79-23533b4acd1e@linux.intel.com>
+ <fd8f1eb0-4b21-4697-8175-a61bc3858852@quicinc.com>
+ <f982842a-1804-420b-a539-a609ecf8fb8a@linux.intel.com>
+ <3c358604-6926-4f90-8fc8-8139c68c3418@quicinc.com>
+ <70bf10a7-7f87-4fd1-bd44-1733d3b2b15e@linux.intel.com>
+ <b1fcef2a-2af9-4985-ae00-f348ca5df3f1@linux.intel.com>
+ <ab734271-58ee-4981-926c-9b57f36b8ac6@linux.intel.com>
+ <ccbf9366-f3de-4a80-bffc-e32a8409e1a7@quicinc.com>
+ <adb4e27b-b328-4eef-87ca-9b8bad6639e6@linux.intel.com>
+ <f9923336-3dd3-4f36-b5f6-f45f4ed09e0c@linux.intel.com>
+ <3634f704-a496-4341-a01d-07182248eccf@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <3634f704-a496-4341-a01d-07182248eccf@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: DuesmGckL6g633jTihSWh-2zcTYsVcDD
+X-Proofpoint-GUID: DuesmGckL6g633jTihSWh-2zcTYsVcDD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-26_12,2024-07-26_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 adultscore=0
+ clxscore=1011 priorityscore=1501 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 mlxlogscore=962 bulkscore=0 phishscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2407260135
+Message-ID-Hash: KNHO5MJSQM7RXIFRAPS575LHY7EHZTLS
+X-Message-ID-Hash: KNHO5MJSQM7RXIFRAPS575LHY7EHZTLS
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -139,7 +139,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QZXD2OPT6VOHECRNZJPPAB34QD7W3KRI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KNHO5MJSQM7RXIFRAPS575LHY7EHZTLS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -148,41 +148,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Device has up to WSA883X_MAX_SWR_PORTS number of ports and the array
-assigned to prop.sink_dpn_prop has 0..WSA883X_MAX_SWR_PORTS-1 elements.
-On the other hand, GENMASK(high, low) creates an inclusive mask between
-<high, low>, so we need the mask from 0 up to WSA883X_MAX_SWR_PORTS-1.
+Hi Pierre/Amadeusz,
 
-Theoretically, too wide mask could cause an out of bounds read in
-sdw_get_slave_dpn_prop() in stream.c, however only in the case of buggy
-driver, e.g. adding incorrect number of ports via
-sdw_stream_add_slave().
+On 7/8/2024 4:16 PM, Wesley Cheng wrote:
+> On 7/4/2024 4:25 AM, Pierre-Louis Bossart wrote:
+>>>> Just so I understand...is it really desired that userspace doesn't
+>>>> have the flexibility to choose which USB device is offloaded?  I know
+>>>> it complicates what needs to be done, but it could be just an
+>>>> additional feature that can be added later on.  Again, by default, we
+>>>> select the last USB headset plugged in to be enabled for offload by
+>>>> default.
+>>> If it chooses endpoint by itself perhaps you can send patch set without
+>>> controls first? This has added benefit of less patches in series, making
+>>> it easier to review and it won't block whole patch set by discussion on
+>>> controls feature. Controls can be added in followup series.
+>> We do need read-only controls for userspace to know that offload is
+>> possible and which card/device to use. That can be done in a first step
+>> assuming there's a single device plugged-in.
+> I agree, some kcontrol need to be present to at least determine:
+>
+> 1. USB SND device is offload capable (ASoC card and PCM index)- Fetches associated (mapped) ASoC platform card and PCM index (read only)
+>
+> 2. ASoC platform card offload status - Current offload status (read only)
+>
+> Those would be the minimum kcontrols we could have at this time.  I will remove the device selection part, and leave that for future discussions.  Does this sound good, Amadeusz/Pierre?
 
-Fixes: 43b8c7dc85a1 ("ASoC: codecs: add wsa883x amplifier support")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+So I reworked the series a bit with respects to the kcontrols that we had, and I simplified it for the next submission.  I went ahead and just have a read only kcontrol residing in the USB SND device and will implement #1 above:
 
----
+/ # tinymix -D 1 contents
+Number of controls: 9
+ctl     type    num     name                                    value
+0       INT     2       Capture Channel Map                     0, 0 (range 0->36)
+1       INT     2       Playback Channel Map                    0, 0 (range 0->36)
+2       BOOL    1       Headset Capture Switch                  On
+3       INT     1       Headset Capture Volume                  10 (range 0->13)
+4       BOOL    1       Sidetone Playback Switch                On
+5       INT     1       Sidetone Playback Volume                4096 (range 0->8192)
+6       BOOL    1       Headset Playback Switch                 On
+7       INT     2       Headset Playback Volume                 20, 20 (range 0->24)
+8       INT     2       USB Offload Playback Route PCM#0        0, 0 (range -1->255)
 
-Not adding Cc-stable because I don't think the issue can lead to real
-out-of-bounds read.
----
- sound/soc/codecs/wsa883x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If there is an available audio offload path, then the value will show the card and pcm index that it is mapped to.  That way the application will know which card/pcm device to open from there.  In the above example, the offload path is mapped to card#0 pcm#0.  If there is no offload path available, it will show -1, -1.
 
-diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-index d0ab4e2290b6..3e4fdaa3f44f 100644
---- a/sound/soc/codecs/wsa883x.c
-+++ b/sound/soc/codecs/wsa883x.c
-@@ -1406,7 +1406,7 @@ static int wsa883x_probe(struct sdw_slave *pdev,
- 					WSA883X_MAX_SWR_PORTS))
- 		dev_dbg(dev, "Static Port mapping not specified\n");
- 
--	pdev->prop.sink_ports = GENMASK(WSA883X_MAX_SWR_PORTS, 0);
-+	pdev->prop.sink_ports = GENMASK(WSA883X_MAX_SWR_PORTS - 1, 0);
- 	pdev->prop.simple_clk_stop_capable = true;
- 	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
- 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
+For now, I removed the control that allows for explicit selection of which USB card and PCM device to offload, and will take this up on a separate series as we see fit.  The codebase I have now will select the last USB headset plugged in for offloading.  Will clean up the changes and submit a new revision with the other feedback included as well.
 
--- 
-2.43.0
 
+Thanks
+
+Wesley Cheng
+
+>
+>> Dealing with multiple devices and defining rules or configuration
+>> options to select the offloaded device is a second-level problem.
+>>
+>> In most cases the only thing that will be offloaded is a headset
+>> anyways, so the selection could be rather static based on a
+>> vendor/system ID, all other USB devices would be ignored.
+> If the USB SND offload driver (ie qc_audio_offload) isn't compiled in, then it would be disabled.  Do we need some over-arching mechanism to disable the offload functionality?  Although, one thing I can see if I can add is some device classification within the USB offload vendor driver.
+>
+> Thanks
+>
+> Wesley Cheng
+>
