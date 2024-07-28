@@ -4,137 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB587C3DA64
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:51:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0A78C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:51:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 680622BD0;
-	Wed, 31 Jul 2024 10:51:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 680622BD0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 920FF218F;
+	Wed, 31 Jul 2024 10:51:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 920FF218F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722415894;
-	bh=EFy7tExuqG9na7Q+Y80CJaISj3tjIZbe4+zf3f1TTaQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=YjlRsM/GfwY+LuneEqoDHedJj70gXypbgXHDvYzulPPoEzN6jMoNp7u9/i155mAbu
-	 8Pd5MrXSaolfmcyVbT9WApL+bJKpcuSQE4hM0g2EG+YjYgEoVJcgJlhwPJq8eY1r+F
-	 10MxrIMlBnos8fybE6UAs8JuF/jhWsAX2TQFo5Gk=
+	s=default; t=1722415901;
+	bh=MAxeEGmgS9693J0PQhUIRbfqko2MsleF4u/sBRGsb4Y=;
+	h=Date:To:From:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=HDh1tFwXP190DoAx9rgUdotfafuNri3LCi1AD/yoC8Y1/gUF9hq8jS1Px5nsiT3NO
+	 8CZ75GHWz8060qYeL1Bk+HWyput2GolEH4fjTupa7IFR1YOFNjKgJIGYr0gMytijIY
+	 f8OWkcQnl44/mdr1LQ/9vdJWK4hnCNlNUclacg0w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B43AF80684; Wed, 31 Jul 2024 10:49:35 +0200 (CEST)
+	id 9FEDCF806AC; Wed, 31 Jul 2024 10:49:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DB8EF80684;
-	Wed, 31 Jul 2024 10:49:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C636DF806C0;
+	Wed, 31 Jul 2024 10:49:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6927FF8026D; Sat, 27 Jul 2024 20:27:37 +0200 (CEST)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
- [IPv6:2a00:1450:4864:20::233])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 5CC20F80579; Sun, 28 Jul 2024 14:29:18 +0200 (CEST)
+Received: from mail-40141.protonmail.ch (mail-40141.protonmail.ch
+ [185.70.40.141])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 45E12F801F5
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2024 20:20:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45E12F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 03924F80269
+	for <alsa-devel@alsa-project.org>; Sun, 28 Jul 2024 14:26:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03924F80269
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=Ar1n7SzY
-Received: by mail-lj1-x233.google.com with SMTP id
- 38308e7fff4ca-2f035ae0fd1so26359571fa.2
-        for <alsa-devel@alsa-project.org>;
- Sat, 27 Jul 2024 11:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722104452; x=1722709252;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GF6xFxPj/ytlezNbhhUqMrRGdstZMHpzQeT2XWw6wjY=;
-        b=Ar1n7SzY/FlNFd7vyowz9lJFFj/8F2gLk3wmuXyw/m763uRjL2K/506rYEZsZiwTTI
-         E5P1Apr4cpmFzES5uJvjDcCtAvVGhxTicGfZXYE6D15YF/0AFPZ0lOY+4Z9ERKnz6VEJ
-         VKMFp4Hi5TSrHkOzwjA/99GkU5zwzFwiVq3rwTnJJNgG8cKvLPYFdlxAoRqm0uob2WGM
-         D1qj6b40OdORlsPpzYmMqm6jYgPkwa2QytyggviptSae5UjYlfLAvEoi15MI1Th50BqM
-         rN+slxuhvKOhOUKvQ1L1SN4/mLjqUhKOxhA7ruAMe1cflsJRILZe2TYsywB2EKulgQEX
-         TbkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722104452; x=1722709252;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GF6xFxPj/ytlezNbhhUqMrRGdstZMHpzQeT2XWw6wjY=;
-        b=Cru0iJV2hvl2tyADV64DSSwUQV8VG6RIoE8SXk6PVfMuxEc6Y8HeNlnRwjDHXFu91D
-         pN6Y8Am3nWaMHCpUzHUC/Z+PiJeY2Mr/p3iKRJRBLD0Jq41GfmHC71HuO7T5KizPqw5j
-         1pokO8soQfRc/vUZsgXLapPGupJZdyQyO20Zcsr46g8g8Y6gCQJyvauVNYh8xXloovtx
-         PjDpEvmtRekOxWIHU51Hx3fXKj/hrH9McrZ6flCq8HJMpHNUkzc5+0DTa/ojhKaEGEtD
-         6AaNPA91PrvkJLji5Db1Lxw6s80opXd8jyH8as0ZPwU0E2BAIxeUmcPYDQF0txZHbMME
-         umBw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVx8VwuOoqpILU3O6HMqeXowuf3ynh4lv/Im49rFqEa9wwuum6zOoBBZ2DFQuLgJweyq68P76jbuIoGepCajjb77YgbDcSOCP3zYMY=
-X-Gm-Message-State: AOJu0Yyz7MQJVyVB9tdTbXKOAcrYcudL0W8iDhUaMKAbIyDehxovYBuo
-	MpwPSoY/uUqX4uMnsGOubTJ2dfySaXgPJSYQihE9Tx8I8I3YeCA6
-X-Google-Smtp-Source: 
- AGHT+IEm/COoGFbHv82FK7uvxWXcLwKhJWA1hhbjMFP9GYJUO820ubZBT+LuGLrHoMr/gFZyfg3itg==
-X-Received: by 2002:a2e:3a19:0:b0:2ee:4c2e:3d3b with SMTP id
- 38308e7fff4ca-2f12ee02fa2mr19973671fa.4.1722104451431;
-        Sat, 27 Jul 2024 11:20:51 -0700 (PDT)
-Received: from localhost.localdomain (byw127.neoplus.adsl.tpnet.pl.
- [83.30.42.127])
-        by smtp.gmail.com with ESMTPSA id
- 38308e7fff4ca-2f03d077226sm7504891fa.126.2024.07.27.11.20.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jul 2024 11:20:50 -0700 (PDT)
-From: Adam Skladowski <a39.skl@gmail.com>
-To: 
-Cc: phone-devel@vger.kernel.org,
-	~postmarketos/upstreaming@lists.sr.ht,
-	Adam Skladowski <a39.skl@gmail.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Stephan Gerhold <stephan@gerhold.net>,
-	alsa-devel@alsa-project.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev,
-	Vladimir Lypak <vladimir.lypak@gmail.com>
-Subject: [PATCH v2 2/4] ASoC: msm8916-wcd-analog: add cajon and cajon v2
- support
-Date: Sat, 27 Jul 2024 20:20:25 +0200
-Message-ID: <20240727182031.35069-3-a39.skl@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240727182031.35069-1-a39.skl@gmail.com>
-References: <20240727182031.35069-1-a39.skl@gmail.com>
+ unprotected) header.d=protonmail.com header.i=@protonmail.com
+ header.a=rsa-sha256 header.s=protonmail3 header.b=svThna/8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1722169588; x=1722428788;
+	bh=74jrJoeOKYDJalJmIabOoA19hszvpDADNvzc31C/j48=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=svThna/84zGaTHZ4yVuXTMAPuIKprGMAJgK7BKsrz/2IJ3mtALCljNiP7PKoeeloi
+	 9UZK7bQDnEYP7Dxy6bvH59KKLXVBUJkRVGmyGb+at+aSem6UZgzWEHL6xDkBKhbDLB
+	 Fw/RczRop40p2PrH0pe1myvGS8NUKQ9J4b523FNjndbt6c4n318/c4Hpy+Ph5sWmmq
+	 5ffzHo++EXN+j7+C1xr07rOYxCWzkxOilSJ9guvUci4RdebBwq6G2LmqP69+1DRSu3
+	 bR37HpKHPxJ+cuuM3DDa8i82S0Emn4il8DmdF67z2h38/7ZqwoSIZBdhKvTO71HqrQ
+	 D0Y68FqqhpLrQ==
+Date: Sun, 28 Jul 2024 12:26:21 +0000
+To: o-takashi@sakamocchi.jp, clemens@ladisch.de
+From: Edmund Raile <edmund.raile@protonmail.com>
+Cc: tiwai@suse.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, edmund.raile@protonmail.com,
+ stable@vger.kernel.org
+Subject: [PATCH v2 0/2] ALSA: firewire-lib: restore process context workqueue
+ to prevent deadlock
+Message-ID: <20240728122614.329544-1-edmund.raile@protonmail.com>
+Feedback-ID: 43016623:user:proton
+X-Pm-Message-ID: 7405776f7170639ffa300581e17a2b4f23d866bf
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: a39.skl@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: edmund.raile@protonmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ORPBNGCNQZKWG2SUUTFZK6IUWFUZ3RRN
-X-Message-ID-Hash: ORPBNGCNQZKWG2SUUTFZK6IUWFUZ3RRN
+Message-ID-Hash: S5LTA2X7LOVHTQM66N2TVPUPNGOGUDPM
+X-Message-ID-Hash: S5LTA2X7LOVHTQM66N2TVPUPNGOGUDPM
 X-Mailman-Approved-At: Wed, 31 Jul 2024 08:49:02 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ORPBNGCNQZKWG2SUUTFZK6IUWFUZ3RRN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5LTA2X7LOVHTQM66N2TVPUPNGOGUDPM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -143,119 +88,86 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Vladimir Lypak <vladimir.lypak@gmail.com>
+This patchset serves to prevent a deadlock between
+process context and softIRQ context:
 
-Add regs overrides for Cajon(PM8952) and Cajon v2(PM8953) codecs.
+A. In the process context
+    * (lock A) Acquiring spin_lock by snd_pcm_stream_lock_irq() in
+               snd_pcm_status64()
+    * (lock B) Then attempt to enter tasklet
 
-Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-[Adam: Add Cajon support,add msg]
-Co-developed-by: Adam Skladowski <a39.skl@gmail.com>
-Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 63 +++++++++++++++++++++++++--
- 1 file changed, 60 insertions(+), 3 deletions(-)
+B. In the softIRQ context
+    * (lock B) Enter tasklet
+    * (lock A) Attempt to acquire spin_lock by snd_pcm_stream_lock_irqsave(=
+) in
+               snd_pcm_period_elapsed()
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 9ca381812975..daf65f5d4e99 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -250,6 +250,7 @@
- 		SPKR_DRV_CAL_EN | SPKR_DRV_SETTLE_EN | \
- 		SPKR_DRV_FW_EN | SPKR_DRV_BOOST_SET | \
- 		SPKR_DRV_CMFB_SET | SPKR_DRV_GAIN_SET)
-+#define CDC_A_SPKR_ANA_BIAS_SET		(0xf1B3)
- #define CDC_A_SPKR_OCP_CTL		(0xf1B4)
- #define CDC_A_SPKR_PWRSTG_CTL		(0xf1B5)
- #define SPKR_PWRSTG_CTL_DAC_EN_MASK	BIT(0)
-@@ -264,12 +265,15 @@
- 
- #define CDC_A_SPKR_DRV_DBG		(0xf1B7)
- #define CDC_A_CURRENT_LIMIT		(0xf1C0)
-+#define CDC_A_BYPASS_MODE		(0xf1C2)
- #define CDC_A_BOOST_EN_CTL		(0xf1C3)
- #define CDC_A_SLOPE_COMP_IP_ZERO	(0xf1C4)
- #define CDC_A_SEC_ACCESS		(0xf1D0)
- #define CDC_A_PERPH_RESET_CTL3		(0xf1DA)
- #define CDC_A_PERPH_RESET_CTL4		(0xf1DB)
- 
-+#define CDC_A_RX_EAR_STATUS		(0xf1A1)
-+
- #define MSM8916_WCD_ANALOG_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
- 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
- #define MSM8916_WCD_ANALOG_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-@@ -715,6 +719,50 @@ static const struct reg_default wcd_reg_defaults_2_0[] = {
- 	{CDC_A_MASTER_BIAS_CTL, 0x30},
- };
- 
-+static const struct reg_default wcd_reg_defaults_cajon[] = {
-+	{CDC_A_RX_COM_OCP_CTL, 0xD1},
-+	{CDC_A_RX_COM_OCP_COUNT, 0xFF},
-+	{CDC_D_SEC_ACCESS, 0xA5},
-+	{CDC_D_PERPH_RESET_CTL3, 0x0F},
-+	{CDC_A_TX_1_2_OPAMP_BIAS, 0x4C},
-+	{CDC_A_NCP_FBCTRL, 0xA8},
-+	{CDC_A_NCP_VCTRL, 0xA4},
-+	{CDC_A_SPKR_DRV_CTL, 0x69},
-+	{CDC_A_SPKR_DRV_DBG, 0x01},
-+	{CDC_A_SEC_ACCESS, 0xA5},
-+	{CDC_A_PERPH_RESET_CTL3, 0x0F},
-+	{CDC_A_CURRENT_LIMIT, 0x82},
-+	{CDC_A_SPKR_ANA_BIAS_SET, 0x41},
-+	{CDC_A_SPKR_DAC_CTL, 0x03},
-+	{CDC_A_SPKR_OCP_CTL, 0xE1},
-+	{CDC_A_RX_HPH_BIAS_PA, 0xFA},
-+	{CDC_A_MASTER_BIAS_CTL, 0x30},
-+	{CDC_A_MICB_1_INT_RBIAS, 0x00},
-+};
-+
-+static const struct reg_default wcd_reg_defaults_cajon_2_0[] = {
-+	{CDC_A_RX_COM_OCP_CTL, 0xD1},
-+	{CDC_A_RX_COM_OCP_COUNT, 0xFF},
-+	{CDC_D_SEC_ACCESS, 0xA5},
-+	{CDC_D_PERPH_RESET_CTL3, 0x0F},
-+	{CDC_A_TX_1_2_OPAMP_BIAS, 0x4C},
-+	{CDC_A_NCP_FBCTRL, 0xA8},
-+	{CDC_A_NCP_VCTRL, 0xA4},
-+	{CDC_A_SPKR_DRV_CTL, 0x69},
-+	{CDC_A_SPKR_DRV_DBG, 0x01},
-+	{CDC_A_SEC_ACCESS, 0xA5},
-+	{CDC_A_PERPH_RESET_CTL3, 0x0F},
-+	{CDC_A_CURRENT_LIMIT, 0xA2},
-+	{CDC_A_BYPASS_MODE, 0x18},
-+	{CDC_A_SPKR_ANA_BIAS_SET, 0x41},
-+	{CDC_A_SPKR_DAC_CTL, 0x03},
-+	{CDC_A_SPKR_OCP_CTL, 0xE1},
-+	{CDC_A_RX_HPH_BIAS_PA, 0xFA},
-+	{CDC_A_RX_EAR_STATUS, 0x10},
-+	{CDC_A_MASTER_BIAS_CTL, 0x30},
-+	{CDC_A_MICB_1_INT_RBIAS, 0x00},
-+};
-+
- static int pm8916_wcd_analog_probe(struct snd_soc_component *component)
- {
- 	struct pm8916_wcd_analog_priv *priv = dev_get_drvdata(component->dev);
-@@ -738,9 +786,18 @@ static int pm8916_wcd_analog_probe(struct snd_soc_component *component)
- 	snd_soc_component_write(component, CDC_D_PERPH_RESET_CTL4, 0x01);
- 	snd_soc_component_write(component, CDC_A_PERPH_RESET_CTL4, 0x01);
- 
--	for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults_2_0); reg++)
--		snd_soc_component_write(component, wcd_reg_defaults_2_0[reg].reg,
--			      wcd_reg_defaults_2_0[reg].def);
-+	if (priv->codec_version == 4)
-+		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults_cajon_2_0); reg++)
-+			snd_soc_component_write(component, wcd_reg_defaults_cajon_2_0[reg].reg,
-+					wcd_reg_defaults_cajon_2_0[reg].def);
-+	else if (priv->codec_version == 3)
-+		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults_cajon); reg++)
-+			snd_soc_component_write(component, wcd_reg_defaults_cajon[reg].reg,
-+					wcd_reg_defaults_cajon[reg].def);
-+	else
-+		for (reg = 0; reg < ARRAY_SIZE(wcd_reg_defaults_2_0); reg++)
-+			snd_soc_component_write(component, wcd_reg_defaults_2_0[reg].reg,
-+					wcd_reg_defaults_2_0[reg].def);
- 
- 	priv->component = component;
- 
--- 
+? tasklet_unlock_spin_wait
+ </NMI>
+ <TASK>
+ohci_flush_iso_completions firewire_ohci
+amdtp_domain_stream_pcm_pointer snd_firewire_lib
+snd_pcm_update_hw_ptr0 snd_pcm
+snd_pcm_status64 snd_pcm
+
+? native_queued_spin_lock_slowpath
+ </NMI>
+ <IRQ>
+_raw_spin_lock_irqsave
+snd_pcm_period_elapsed snd_pcm
+process_rx_packets snd_firewire_lib
+irq_target_callback snd_firewire_lib
+handle_it_packet firewire_ohci
+context_tasklet firewire_ohci
+
+The issue has been reported as a regression of kernel 5.14:
+Link: https://lore.kernel.org/regressions/kwryofzdmjvzkuw6j3clftsxmoolynljz=
+txqwg76hzeo4simnl@jn3eo7pe642q/T/#u
+("[REGRESSION] ALSA: firewire-lib: snd_pcm_period_elapsed deadlock with
+Fireface 800")
+
+Commit 7ba5ca32fe6e ("ALSA: firewire-lib: operate for period elapse event
+in process context") removed the process context workqueue from
+amdtp_domain_stream_pcm_pointer() and update_pcm_pointers() to remove
+its overhead.
+Commit b5b519965c4c ("ALSA: firewire-lib: obsolete workqueue for period
+update") belongs to the same patch series and removed
+the now-unused workqueue entirely.
+
+Though being observed on RME Fireface 800, this issue would affect all
+Firewire audio interfaces using ohci amdtp + pcm streaming.
+
+ALSA streaming, especially under intensive CPU load will reveal this issue
+the soonest due to issuing more hardIRQs, with time to occurrence ranging
+from 2 secons to 30 minutes after starting playback.
+
+to reproduce the issue:
+direct ALSA playback to the device:
+  mpv --audio-device=3Dalsa/sysdefault:CARD=3DFireface800 Spor-Ignition.fla=
+c
+Time to occurrence: 2s to 30m
+Likelihood increased by:
+  - high CPU load
+    stress --cpu $(nproc)
+  - switching between applications via workspaces
+    tested with i915 in Xfce
+PulsaAudio / PipeWire conceal the issue as they run PCM substream
+without period wakeup mode, issuing less hardIRQs.
+
+Backport note:
+Also applies to and fixes on (tested):
+6.10.2, 6.9.12, 6.6.43, 6.1.102, 5.15.164
+
+Edmund Raile (2):
+  ALSA: firewire-lib: restore workqueue for process context
+  ALSA: firewire-lib: prevent deadlock between process and softIRQ
+    context
+
+ sound/firewire/amdtp-stream.c | 36 ++++++++++++++++++++++-------------
+ sound/firewire/amdtp-stream.h |  1 +
+ 2 files changed, 24 insertions(+), 13 deletions(-)
+
+--=20
 2.45.2
+
 
