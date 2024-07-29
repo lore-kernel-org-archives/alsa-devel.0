@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6553DC3DA61
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 18:30:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 139EEC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 18:30:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DB91843;
-	Mon, 29 Jul 2024 20:30:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DB91843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E3FBAE8;
+	Mon, 29 Jul 2024 20:30:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E3FBAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722277840;
-	bh=feFjL61VY6k6DILxtWSL1BYBFj1CfxSdHr6gcy+dSH4=;
+	s=default; t=1722277851;
+	bh=IgGPgeudGRZ3VVlhR5DSGTj9KvKP6DefgGLMu8OF8Qw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uhx20xILxjlfp6OrkN4Gx3CenpmWwz79fCd7FQy4L1pk6ZoBSqM0/S8slW3wQHC6e
-	 BaYNu+sUx8U3LBauDunA27zORfX/yaKpm9dAHRo+05UmC0I1i+Rf/RkA/ZAxhT9yJX
-	 OTJPt6DzHwk/M/I5XP1QiFIQtuZvVmxa+8tSm+ZA=
+	b=i6vBiPd1X/glzOiMsMiVGMJl+ITC/gWR0insK0h+S+61Or6ANtglZsg/ERleewQYg
+	 tBikVVEcLwhBxj3m21rqUn/+EZ7M3vo+sYTE4+xxMzRW/c9tekjdILTsHrAgwp4Uw9
+	 B4xCQhTnvcNMxS4WxpI4ABpYga9gJtER17+TXrYQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CEC56F805BD; Mon, 29 Jul 2024 20:29:50 +0200 (CEST)
+	id 84B45F805E4; Mon, 29 Jul 2024 20:29:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA9B6F805E3;
-	Mon, 29 Jul 2024 20:29:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4EA6F805E6;
+	Mon, 29 Jul 2024 20:29:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81662F80579; Mon, 29 Jul 2024 19:17:42 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id AC76AF80579; Mon, 29 Jul 2024 19:17:49 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E68EAF8007E
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 19:17:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E68EAF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 64C29F8007E
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 19:17:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64C29F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qrkGTrFM
+ header.s=k20201202 header.b=hvM9NnbE
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 70FDC61B8D;
-	Mon, 29 Jul 2024 17:17:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E45E4C4AF09;
-	Mon, 29 Jul 2024 17:17:36 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2C9A261BB2;
+	Mon, 29 Jul 2024 17:17:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67709C4AF0A;
+	Mon, 29 Jul 2024 17:17:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722273458;
-	bh=feFjL61VY6k6DILxtWSL1BYBFj1CfxSdHr6gcy+dSH4=;
+	s=k20201202; t=1722273463;
+	bh=IgGPgeudGRZ3VVlhR5DSGTj9KvKP6DefgGLMu8OF8Qw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qrkGTrFMdGi2XRKS52G1LE7tfUAx+XFh1wIiplavzpbVCfJUDZYkXOrddmJea4SWK
-	 QjfBVR9Vq9TKyR6J3tC1gx9aJpbt/dX8eB+EJu/D4PQbX88YCtaPNfhk796O5fCVSX
-	 VhRBQZL9DxpgPwt/iuc9pm27U1wOCRH4gBnzETcYFncJgbvq+AJ9JuWoeyPK4a4QRP
-	 XPLIfLg+rSuVCo9vsoGf6jHRgoDcspXMGQb/e0X+Zvf56Az3m1OL0KQ3PF/BVaOf8w
-	 rcy+gr6oGHTwQUCM4H1EubJhqevKcgPwW4NfN5lDf8bvART9Fiah6rT7v5ptEZDVFa
-	 tRuGCr00SzCBA==
+	b=hvM9NnbEV128nkj8XteXiokTuYFvJikp8m0r2kZrxGzwq3fb45cwuPyyin9o7702Y
+	 lgybZW+YK89nWs7DJmu/nPFHmz2W9I5lgRUMahRm3nPnDXdYrOqjnNV4Ef0oilZm0G
+	 dzzmLJ7lgnfgj/xcKa1BHKtHvN3ZMUgnOJHgx5n/Mxl96//LFp4oCEMZlg5ap8v+T5
+	 R0UmgkJIPx5e+PZPizSQ/ykiZX28KlzN0NMGC7rll1Lt5I5a2ZFAnVPbZxlBhASud1
+	 XYktslMZBBAvyHAtfDOwyhUKdDfUc5HJcuHkGwwEpCAzoKypxppdfwIAVYgo6qXDl9
+	 r/o3sd2n3u/AA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Zhang Yi <zhangyi@everest-semi.com>
-Cc: tiwai@suse.com, amadeuszx.slawinski@linux.intel.com,
- yangxiaohua@everest-semi.com, zhuning@everest-semi.com
-In-Reply-To: <20240726031002.35055-1-zhangyi@everest-semi.com>
-References: <20240726031002.35055-1-zhangyi@everest-semi.com>
-Subject: Re: [RESEND] ASoC: codecs: ES8326: suspend issue
-Message-Id: <172227345665.109775.4878116647111928082.b4-ty@kernel.org>
-Date: Mon, 29 Jul 2024 18:17:36 +0100
+To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Jerome Audu <jau@free.fr>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240727-sti-audio-fix-v2-1-208bde546c3f@free.fr>
+References: <20240727-sti-audio-fix-v2-1-208bde546c3f@free.fr>
+Subject: Re: [PATCH v2] ASoC: sti: add missing probe entry for player and
+ reader
+Message-Id: <172227346114.109775.10465470972478318748.b4-ty@kernel.org>
+Date: Mon, 29 Jul 2024 18:17:41 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: TW63GNVSI2ZGFCSJ3MOQO4XDCT4KZA6H
-X-Message-ID-Hash: TW63GNVSI2ZGFCSJ3MOQO4XDCT4KZA6H
+Message-ID-Hash: JG7TKEDZYF52ORXZIBRVEHERVTERE7XJ
+X-Message-ID-Hash: JG7TKEDZYF52ORXZIBRVEHERVTERE7XJ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TW63GNVSI2ZGFCSJ3MOQO4XDCT4KZA6H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JG7TKEDZYF52ORXZIBRVEHERVTERE7XJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,11 +93,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 26 Jul 2024 11:10:02 +0800, Zhang Yi wrote:
-> We find that we need to disable micbias for the codec to enter suspend
-> So We modify the trigger conditions for enable_micbias and disable_micbias
+On Sat, 27 Jul 2024 15:40:15 +0200, Jerome Audu wrote:
+> This patch addresses a regression in the ASoC STI drivers that was
+> introduced in Linux version 6.6.y. The issue originated from a series of
+> patches (see https://lore.kernel.org/all/87wmy5b0wt.wl-kuninori.morimoto.gx@renesas.com/)
+> that unintentionally omitted necessary probe functions for the player
+> and reader components.
 > 
+> Probe function in `sound/soc/sti/sti_uniperif.c:415` is being replaced
+> by another probe function located at `sound/soc/sti/sti_uniperif.c:453`,
+> which should instead be derived from the player and reader components.
+> This patch correctly reinserts the missing probe entries,
+> restoring the intended functionality.
 > 
+> [...]
 
 Applied to
 
@@ -103,8 +114,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: ES8326: suspend issue
-      commit: 6024f3429fd1ac4948bac9610ecd4d0139088f0b
+[1/1] ASoC: sti: add missing probe entry for player and reader
+      commit: 6b99068d5ea0aa295f15f30afc98db74d056ec7b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
