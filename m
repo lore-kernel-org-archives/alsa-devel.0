@@ -4,88 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18552C3DA7E
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 16:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B37DC3DA61
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 16:49:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 453FAE76;
-	Mon, 29 Jul 2024 18:24:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 453FAE76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28858E7D;
+	Mon, 29 Jul 2024 18:49:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28858E7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722270304;
-	bh=e25RnGm3UUfzN+5y7ZyHo2fNUQbHueNz+JQ13IN92Q8=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SoHeura6cxORVe5E1rK9xb8ufHKraoyMkRkTwXzCXBQfkZN+M8CdyJZNHwI1mLs1s
-	 yQQkeaBGkpbN/9o+3db07j4Dh+oKCqXWECz9Unluwo1/9CA6mu6WqppAdIGvutSZHu
-	 xAjaDplTasCmbapGIfBi285JGXCj4VfFvIutgaJk=
+	s=default; t=1722271774;
+	bh=BgcRqKiDCihQph7GkqrD4JQhL/HY9twKibTZZYxxhjk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=PUXuirxYChghYO0ihYouyAFp5bysnPLJhUWXGjkh8qVJZtTxmuwemlBd1uwYwc/KO
+	 Gj4d/TyExcRMHXPasokYYKtdXyr/BYy4H/m2Q5IOtKj400DheuZfL06BvqxbhYSZ3t
+	 CDuM9UXZI0qeBUigtVeIYfP7+TZ/TVDW0OxaUGYo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D9C5F8059F; Mon, 29 Jul 2024 18:24:32 +0200 (CEST)
+	id 6BA85F805AA; Mon, 29 Jul 2024 18:49:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80A3EF80448;
-	Mon, 29 Jul 2024 18:24:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AD7BF8059F;
+	Mon, 29 Jul 2024 18:49:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B414FF802DB; Mon, 29 Jul 2024 18:16:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id BA753F802DB; Mon, 29 Jul 2024 18:43:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7464DF8007E
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 18:15:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7464DF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 18692F800E3
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 18:42:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18692F800E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=nFLP2IPC
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 46TFGMTM019487;
-	Mon, 29 Jul 2024 11:15:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=PODMain02222019; bh=qRzBBbqoXOWQyyYO
-	JMgkXOAR8+qV4bh0yhqqlwUEGVA=; b=nFLP2IPC2OwvDdvbC44c7L85phYx/Lz+
-	aavMdD6RmN/mkSRX9N/a/bUz9SiEI/Gg8FU/yEC6Wer/XZhFH5B2HaG6h13TIlK9
-	Hv5PxrNsPRikZ1+KD9tvgX/KSBLh6ELrdJRQKEXU2Kj6yT3HUfpvTrNxgGh3GSZf
-	sxAV7mvY8g9GK1CcwAPM9r1bb2+ELpuCFgPBy4m9IKu0GMHQu2GmBXFm6V320GBr
-	9Qnl33OzKSErJRGAIJgtqS0bISnI/eeCT3IcnMJBvSmY53ae1ZrIVyviFifosaju
-	0So/5sAQVTNF0KRbzZz88NWQvW0/PlFQzjFKjwzafkvbi0xuW4KZLQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 40mwajtbgb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jul 2024 11:15:36 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 29 Jul
- 2024 17:15:34 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Mon, 29 Jul 2024 17:15:34 +0100
-Received: from lonswws01.ad.cirrus.com (lonswws01.ad.cirrus.com
- [198.90.188.26])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3E6F6820244;
-	Mon, 29 Jul 2024 16:15:34 +0000 (UTC)
-From: Simon Trimmer <simont@opensource.cirrus.com>
-To: <tiwai@suse.com>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Simon
- Trimmer" <simont@opensource.cirrus.com>
-Subject: [PATCH] ALSA: hda: cs35l56: Stop creating ALSA controls for firmware
- coefficients
-Date: Mon, 29 Jul 2024 16:15:32 +0000
-Message-ID: <20240729161532.147893-1-simont@opensource.cirrus.com>
-X-Mailer: git-send-email 2.43.0
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=R5tqtdLZ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id F039561B6F;
+	Mon, 29 Jul 2024 16:42:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 947B8C32786;
+	Mon, 29 Jul 2024 16:42:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722271340;
+	bh=BgcRqKiDCihQph7GkqrD4JQhL/HY9twKibTZZYxxhjk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R5tqtdLZgPI+wH5vT8AwzFSQuutBwUQXSMlOpoJVm43rIqpMCbDHcD6aCiysLb12n
+	 POGf1IPb0yXn78b312PT/Gu4MISy4OuGHTfQMCaOjO5J5WMlJWWWVFyHDrYXDoZsdO
+	 SKzUl2HV7kDh3R73dz1SayQQgSjXb8TK1Bt8OLuSro89QVHzC+I9MBhtZ4Rdvk3U1y
+	 6JY6szNEEemCjrl4BGJKmBEXlBSeD/Kf04B4FQttMTG1H9/Lebc/VtXTVGgDBVASPP
+	 2I34eM/S/O3eeMHR3Fklnoij1uCO7KQaRHX0VAtnDDa0b8XJs/UN4BMO0oOs3ZVQ9W
+	 H1G72iq/6w6DA==
+Date: Mon, 29 Jul 2024 17:42:10 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+	zhourui@huaqin.com, alsa-devel@alsa-project.org, i-salazar@ti.com,
+	linux-kernel@vger.kernel.org, j-chadha@ti.com,
+	liam.r.girdwood@intel.com, jaden-yue@ti.com,
+	yung-chuan.liao@linux.intel.com, dipa@ti.com, yuhsuan@google.com,
+	henry.lo@ti.com, tiwai@suse.de, baojun.xu@ti.com, soyer@irl.hu,
+	Baojun.Xu@fpt.com, judyhsiao@google.com, navada@ti.com,
+	cujomalainey@google.com, aanya@ti.com, nayeem.mahmud@ti.com,
+	savyasanchi.shukla@netradyne.com, flaviopr@microsoft.com,
+	jesse-ji@ti.com, darren.ye@mediatek.com, antheas.dk@gmail.com
+Subject: Re: [PATCH v1] ASoc: tas2781: Move tas2563_dvc_table into a separate
+ Header file
+Message-ID: <1dc0518a-f0b3-4617-9c79-ac903ca9ee33@sirena.org.uk>
+References: <20240716061123.127-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: JDXsPmEN9C12lN1Lyq9L7W6c4TiV9wzo
-X-Proofpoint-ORIG-GUID: JDXsPmEN9C12lN1Lyq9L7W6c4TiV9wzo
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: IFFYP2ANW4NDKCFHMCOJAZY6W6JDU2JH
-X-Message-ID-Hash: IFFYP2ANW4NDKCFHMCOJAZY6W6JDU2JH
-X-MailFrom: prvs=5940d8ee55=simont@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Uj2v2I2plHuUzS/C"
+Content-Disposition: inline
+In-Reply-To: <20240716061123.127-1-shenghao-ding@ti.com>
+X-Cookie: Penalty for private use.
+Message-ID-Hash: L2SQ262HNXNLPQHOTGXV3UZFVMXRN64C
+X-Message-ID-Hash: L2SQ262HNXNLPQHOTGXV3UZFVMXRN64C
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IFFYP2ANW4NDKCFHMCOJAZY6W6JDU2JH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2SQ262HNXNLPQHOTGXV3UZFVMXRN64C/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,48 +103,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A number of laptops have gone to market with old firmware versions that
-export controls that have since been hidden, but we can't just install a
-newer firmware because the firmware for each product is customized and
-qualified by the OEM. The issue is that alsactl save and restore has no
-idea what controls are good to persist which can lead to
-misconfiguration.
 
-As the ALSA controls for the firmware coefficients are not used in
-normal operation they can all be hidden, but add a kernel parameter so
-that they can be re-enabled for debugging.
+--Uj2v2I2plHuUzS/C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 73cfbfa9caea ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
----
- sound/pci/hda/cs35l56_hda.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Tue, Jul 16, 2024 at 02:11:21PM +0800, Shenghao Ding wrote:
+> Move tas2563_dvc_table into a separate Header file, as only tas2781
+> codec driver use this table, and hda side codec driver won't use it.
 
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 96d3f13c5abf..1494383b22c9 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -23,6 +23,10 @@
- #include "hda_cs_dsp_ctl.h"
- #include "hda_generic.h"
- 
-+static bool expose_dsp_controls;
-+module_param(expose_dsp_controls, bool, 0444);
-+MODULE_PARM_DESC(expose_dsp_controls, "Expose firmware controls as ALSA controls 0=no (default), 1=yes");
-+
-  /*
-   * The cs35l56_hda_dai_config[] reg sequence configures the device as
-   *  ASP1_BCLK_FREQ = 3.072 MHz
-@@ -758,6 +762,9 @@ static int cs35l56_hda_bind(struct device *dev, struct device *master, void *mas
- 
- 	cs35l56_hda_create_controls(cs35l56);
- 
-+	if (expose_dsp_controls)
-+		cs35l56_hda_add_dsp_controls(cs35l56);
-+
- #if IS_ENABLED(CONFIG_SND_DEBUG)
- 	cs35l56->debugfs_root = debugfs_create_dir(dev_name(cs35l56->base.dev), sound_debugfs_root);
- 	cs_dsp_init_debugfs(&cs35l56->cs_dsp, cs35l56->debugfs_root);
--- 
-2.43.0
+This doesn't apply against current code (or your other patch to this
+driver from the same day), please check and resend?
 
+--Uj2v2I2plHuUzS/C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmanxmEACgkQJNaLcl1U
+h9BzyAf8D0ct9/VEgNw15CMnmzG4y4KRg9EHMkwsoF+BaINwcHnkiwJNDpFxglMv
+I5yVs+R11sSTd1ANo3WEAkqVBmSuRax/wnxG0Ffdq/vFCkqdneSMsBYLqLu5A28M
+1uyy0XN6IG83iG9ctvMs7ArHhS3vXBYdLVBMbh5WnmjUV+B/+1GkcmTVSUFfgzYw
+6lBI2zyWCLZ5+1FuwYQAvVpPu7OJn8c7zbzRLPJqja87nWCEimxy7bURkovKRCCj
+J/+IDL2VNVmfKnsDg9NpN1gW+D/mFQBfFsBcjZ0r27dBJdqN/989mqqFDt+8otYt
+AI8a2Kqf7KnKe6DYJzk0M86mqoHh5g==
+=v+3f
+-----END PGP SIGNATURE-----
+
+--Uj2v2I2plHuUzS/C--
