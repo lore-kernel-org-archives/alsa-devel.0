@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6F66C3DA61
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 18:30:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6553DC3DA61
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 18:30:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65945847;
-	Mon, 29 Jul 2024 20:30:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65945847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DB91843;
+	Mon, 29 Jul 2024 20:30:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DB91843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722277818;
-	bh=DNrVoUJkcRCMV4GV4Cb5m+gKYLNldACz3l/Xe20yxuQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=oC4xEjhUqcCs83TEFVPuq9fuPJ3sCoZNTls20wHAMNPW/LOoxuev8J22VQY693Cxs
-	 yDRxvH7S9T3dG5sABsAQFC9/TjN14/JqQj5DkVGL1JfJ3DCXmTSFoj5QArGF0zkjd+
-	 24Iqxq8uxRrB+7jVWPLeFTep5CZCi6Mu8sNsAifY=
+	s=default; t=1722277840;
+	bh=feFjL61VY6k6DILxtWSL1BYBFj1CfxSdHr6gcy+dSH4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=uhx20xILxjlfp6OrkN4Gx3CenpmWwz79fCd7FQy4L1pk6ZoBSqM0/S8slW3wQHC6e
+	 BaYNu+sUx8U3LBauDunA27zORfX/yaKpm9dAHRo+05UmC0I1i+Rf/RkA/ZAxhT9yJX
+	 OTJPt6DzHwk/M/I5XP1QiFIQtuZvVmxa+8tSm+ZA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14975F802DB; Mon, 29 Jul 2024 20:29:46 +0200 (CEST)
+	id CEC56F805BD; Mon, 29 Jul 2024 20:29:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAC89F805B6;
-	Mon, 29 Jul 2024 20:29:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA9B6F805E3;
+	Mon, 29 Jul 2024 20:29:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1BC9F80448; Mon, 29 Jul 2024 19:17:39 +0200 (CEST)
+	id 81662F80579; Mon, 29 Jul 2024 19:17:42 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CF621F8026A
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 19:17:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF621F8026A
+	by alsa1.perex.cz (Postfix) with ESMTPS id E68EAF8007E
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 19:17:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E68EAF8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=HFnLcZn/
+ header.s=k20201202 header.b=qrkGTrFM
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2CD4A61BD5;
-	Mon, 29 Jul 2024 17:17:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5BFC4AF09;
-	Mon, 29 Jul 2024 17:17:31 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 70FDC61B8D;
+	Mon, 29 Jul 2024 17:17:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E45E4C4AF09;
+	Mon, 29 Jul 2024 17:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722273454;
-	bh=DNrVoUJkcRCMV4GV4Cb5m+gKYLNldACz3l/Xe20yxuQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=HFnLcZn/OptUIW8YU8D1Vi9bESeu55eoV8fBlFc0xw5Nl3N3AOH4RK8TxALMYUfV4
-	 O7D+zbQZTTgHIL3QsIu+L6MSje4TZ09ZL2iPEXn7vqdCNZ7LIuC0Cos0+EoRrSnyr5
-	 Qxz/kZxxsoDN7We1OWWvI70kAHpB97v2K/6bKLaRJz62sDxyk1QhVsmOuDzIujhPBt
-	 K5SVx9dKmql83GU8c6NrRdwOyV6ik26tHgMdTT+p9Nf159L3NuraeL4hbhgkQZzHff
-	 dVKnfEE5G8EAOuZllCIcCKr5qbBPAaZ9etKLqI6LY9xKipo4mpqILSDnMxXaJ5dJGC
-	 8DOz4t7xD8/tA==
+	s=k20201202; t=1722273458;
+	bh=feFjL61VY6k6DILxtWSL1BYBFj1CfxSdHr6gcy+dSH4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=qrkGTrFMdGi2XRKS52G1LE7tfUAx+XFh1wIiplavzpbVCfJUDZYkXOrddmJea4SWK
+	 QjfBVR9Vq9TKyR6J3tC1gx9aJpbt/dX8eB+EJu/D4PQbX88YCtaPNfhk796O5fCVSX
+	 VhRBQZL9DxpgPwt/iuc9pm27U1wOCRH4gBnzETcYFncJgbvq+AJ9JuWoeyPK4a4QRP
+	 XPLIfLg+rSuVCo9vsoGf6jHRgoDcspXMGQb/e0X+Zvf56Az3m1OL0KQ3PF/BVaOf8w
+	 rcy+gr6oGHTwQUCM4H1EubJhqevKcgPwW4NfN5lDf8bvART9Fiah6rT7v5ptEZDVFa
+	 tRuGCr00SzCBA==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240723144607.123240-1-krzysztof.kozlowski@linaro.org>
-References: <20240723144607.123240-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: codecs: lpass-wsa-macro: Do not hard-code dai in
- VI mixer
-Message-Id: <172227345178.109775.370117860725078883.b4-ty@kernel.org>
-Date: Mon, 29 Jul 2024 18:17:31 +0100
+To: alsa-devel@alsa-project.org, Zhang Yi <zhangyi@everest-semi.com>
+Cc: tiwai@suse.com, amadeuszx.slawinski@linux.intel.com,
+ yangxiaohua@everest-semi.com, zhuning@everest-semi.com
+In-Reply-To: <20240726031002.35055-1-zhangyi@everest-semi.com>
+References: <20240726031002.35055-1-zhangyi@everest-semi.com>
+Subject: Re: [RESEND] ASoC: codecs: ES8326: suspend issue
+Message-Id: <172227345665.109775.4878116647111928082.b4-ty@kernel.org>
+Date: Mon, 29 Jul 2024 18:17:36 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: 2RWQUVITAXX7J7M5MYFTWUZWDWLHL4QL
-X-Message-ID-Hash: 2RWQUVITAXX7J7M5MYFTWUZWDWLHL4QL
+Message-ID-Hash: TW63GNVSI2ZGFCSJ3MOQO4XDCT4KZA6H
+X-Message-ID-Hash: TW63GNVSI2ZGFCSJ3MOQO4XDCT4KZA6H
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2RWQUVITAXX7J7M5MYFTWUZWDWLHL4QL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TW63GNVSI2ZGFCSJ3MOQO4XDCT4KZA6H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,15 +91,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 23 Jul 2024 16:46:07 +0200, Krzysztof Kozlowski wrote:
-> The wsa_macro_vi_feed_mixer_put() callback for setting VI feedback mixer
-> value could be used for different DAIs (planned in the future CPS DAI),
-> so make the code a bit more generic by using DAI ID from widget->shift,
-> instead of hard-coding it.  The get() callback already follows such
-> convention.
+On Fri, 26 Jul 2024 11:10:02 +0800, Zhang Yi wrote:
+> We find that we need to disable micbias for the codec to enter suspend
+> So We modify the trigger conditions for enable_micbias and disable_micbias
 > 
 > 
-> [...]
 
 Applied to
 
@@ -111,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-wsa-macro: Do not hard-code dai in VI mixer
-      commit: b3f35bae68c0ff9b9339b819ec5f5f341d798bbe
+[1/1] ASoC: codecs: ES8326: suspend issue
+      commit: 6024f3429fd1ac4948bac9610ecd4d0139088f0b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
