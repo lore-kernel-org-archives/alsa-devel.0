@@ -4,86 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DD11C3DA7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 049BCC3DA64
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:53:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 680D62CA2;
-	Wed, 31 Jul 2024 10:53:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 680D62CA2
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAFF22CBF;
+	Wed, 31 Jul 2024 10:53:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAFF22CBF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722415991;
-	bh=zYeI0RXOOsfL8/wFCi+vO2omAPFQKXW51I6FzL+Chhs=;
-	h=Date:To:From:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1722416004;
+	bh=wAda8xQPhY/5MLE9114YUL4s08mmQAnyb/WJmp3W3Q0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kcRpKlTNyumgnn8/WAxYwpSCV9YowMOjB9hl7SIEJY9ZyGWYfD90SsQ/+CweBlBQw
-	 QTUnRHg73pchrbMkIiTSXx+cRocBSvZPGc1s0WgqpHokp8WlpVTzOlbOLzzYuBVNH3
-	 7KIvfjX+RxUiC7ipqRI6lr0ux+GBEKkDYi2BccYI=
+	b=e0OIxa2ohd0bGGxXBIiT+3XpdjZddCa2WqecFJcAar26D2JDeVFHNG8jWkN1ChnEl
+	 8UaFyZT92JjflWJsTcsiVUQWiWUErJ7jHqErx1WxUoaVdcfQs/sUheesqj4dMbpcIa
+	 rCcmuiF39SVJiDSxYMZCA16gudQt7Jr9OtxduORA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D242FF80853; Wed, 31 Jul 2024 10:50:04 +0200 (CEST)
+	id C8516F807A2; Wed, 31 Jul 2024 10:50:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42E22F80787;
-	Wed, 31 Jul 2024 10:50:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F230F80857;
+	Wed, 31 Jul 2024 10:50:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0814F802DB; Sun, 28 Jul 2024 14:31:10 +0200 (CEST)
-Received: from mail-4325.protonmail.ch (mail-4325.protonmail.ch
- [185.70.43.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id E9B04F80269; Mon, 29 Jul 2024 11:40:33 +0200 (CEST)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4199AF80269
-	for <alsa-devel@alsa-project.org>; Sun, 28 Jul 2024 14:31:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4199AF80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86FEBF80269
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 11:37:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86FEBF80269
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=protonmail.com header.i=@protonmail.com
- header.a=rsa-sha256 header.s=protonmail3 header.b=a1KjOzNc
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1722169867; x=1722429067;
-	bh=KBafj0W+hLUSbIhjE/xmSCOMhfBOVKrA7riUOgwT7ls=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=a1KjOzNcElvwgZR+zofIEb5MYjjMzwqyPOZl0LHgc9yPH3JVWDU238enBD++qXpNi
-	 OTXQHGgqoPmOJr48llF0f1pJsHbon+M0sF8YUnHjhW5uaGqxlQ3DVcWrUXM4IATro9
-	 n2DLow+7vrkx3HqthV9IemMBBKmVUJQu9TnkzPMcIhgLFVlcCLgy2L4JhAa7Cg1fsk
-	 wxl7zp0TTjNYaMwe8Xu7A3Zckg7U1WjzVi34ECZPFW4kpW+fb9ysoV6EzK/OhnZEtb
-	 3FETPM8X8DvuSdrhlDcPurtEUmTdgJ3PInl4VX4nxp/s6GAjSVFuUFs5IZCqDBAT24
-	 KyiZInE5KhP6w==
-Date: Sun, 28 Jul 2024 12:31:03 +0000
-To: o-takashi@sakamocchi.jp, clemens@ladisch.de
-From: Edmund Raile <edmund.raile@protonmail.com>
-Cc: tiwai@suse.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, edmund.raile@protonmail.com,
- stable@vger.kernel.org
-Subject: [PATCH v2 2/2] ALSA: firewire-lib: restore process context workqueue
- to prevent deadlock
-Message-ID: <20240728123041.330216-3-edmund.raile@protonmail.com>
-In-Reply-To: <20240728123041.330216-1-edmund.raile@protonmail.com>
-References: <20240728123041.330216-1-edmund.raile@protonmail.com>
-Feedback-ID: 43016623:user:proton
-X-Pm-Message-ID: 5e1ed2a306242a75e68ed5c02831d4a3f6f0a481
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=lbPyXhg5
+Received: by mail-lf1-x133.google.com with SMTP id
+ 2adb3069b0e04-52efd08e6d9so4937111e87.1
+        for <alsa-devel@alsa-project.org>;
+ Mon, 29 Jul 2024 02:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722245870; x=1722850670;
+ darn=alsa-project.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yOeiGXeuTWh9ihbymAzgAMoDAdspVLgp4kSjE/YSgxc=;
+        b=lbPyXhg5uh7gEloQ4SLJ76gKEVUiTK/H9wNwZgQz/XLDHZBS+1CfwpVfWaHHvy/EXZ
+         TlBCH96Z5d1R++qufqOLEO2fiao+CRikXxL8S57b0riEYuqxHn2/XtNE9Rq3l/P7cEst
+         RVHPxbGQ85+jvpbR//FwCYQ6Ikb8W18DUSR0mNmh8u7QtV19TohNmmzVR/hTXqwnym5l
+         CdW7egX2ZgY6pvhwZcj5/pfLtvKTkjcxDMx9TGuFbIl92JL14kvDMUq0tfo0962bGiCS
+         leN1p+jWYzpetchu4J2mv1EvOSA/qRyubQPvNxOYfPiSIH6VmpYrbzjuJ1b3TW5EE2a3
+         Q2hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722245870; x=1722850670;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yOeiGXeuTWh9ihbymAzgAMoDAdspVLgp4kSjE/YSgxc=;
+        b=BygNewkoG02H6b1DbitR4QJJOYoiscWB/1KK7+/URVEZOnDL0xFSAOnQkM5yZw5lHl
+         RvQdJ/MkhUxaZTJ7/IIavDr2ygGqdPkDcDEuqsTp2RIwLYOSPuprLOPFWMPOD5boR9PX
+         vUdwYcj6QIyS6bdYb9enuxqWMXTtoLsMjyKKzd/UZcF1Fkre5NIrX1amQIdWGG64NQD6
+         T9RaiR71FleDHE7hZ8Q3Pi3OCP5Uba1JbMEd1ONsUzth/c7yef8ju40lplRUyYmsHl8s
+         RfaZkF1sG9JXCQezwMSu/wGeaO6B7hSXh1FtTX2+7QsKgBCw0qb3ju76IHonKi4qZGAM
+         WU9A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCV0cprUcQ8nwjeCyE+dAd+d1gcBHBNa2ugZdeCEKQk7cNaqNoewTpphUq3HqpPh6V24rijxy6L8TgQis6JkZntozukv9ZBeGarl3Ao=
+X-Gm-Message-State: AOJu0YwFh28xxeExjo8ETjBus/eAAeZwkDYnTe3X+AgcVlW3cPnTtHsI
+	lkg6f3P4Y5x/o3ddTWxfaFdFRfMlROvIM4Ckan60BVppfivdamde
+X-Google-Smtp-Source: 
+ AGHT+IGp8Xl1NyteK2cTJheiqkYuxoPksdVWbAT4rxFLqcdzbR1MWL/U0yFGfpkoM2CelSanXwxOeQ==
+X-Received: by 2002:ac2:4bd2:0:b0:52e:9be7:91aa with SMTP id
+ 2adb3069b0e04-5309b259b5dmr6037212e87.10.1722245869608;
+        Mon, 29 Jul 2024 02:37:49 -0700 (PDT)
+Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at.
+ [91.118.163.37])
+        by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a7acad41b24sm481617966b.116.2024.07.29.02.37.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jul 2024 02:37:49 -0700 (PDT)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date: Mon, 29 Jul 2024 11:37:37 +0200
+Subject: [PATCH v2 1/2] media: i2c: tda1997x: constify
+ snd_soc_component_driver struct
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: edmund.raile@protonmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: 
+ <20240729-const_snd_soc_component_driver-v2-1-1994f44f1ec2@gmail.com>
+References: 
+ <20240729-const_snd_soc_component_driver-v2-0-1994f44f1ec2@gmail.com>
+In-Reply-To: 
+ <20240729-const_snd_soc_component_driver-v2-0-1994f44f1ec2@gmail.com>
+To: Tim Harvey <tharvey@gateworks.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+ Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>, Olivier Moysan <olivier.moysan@foss.st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1722245866; l=964;
+ i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
+ bh=wAda8xQPhY/5MLE9114YUL4s08mmQAnyb/WJmp3W3Q0=;
+ b=VMyTy/QXOHFk3SHVvDT19NltCELdp9XjDYOsQIhbx4wsTvUrAlC+4pd5dk7/VTqxZG3pTVCol
+ Ay5w0EMq1AkB3kS+nWJsctwKtLCO2KA8PB5McC/Lm/vGTVmaaQFcDeo
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
+X-MailFrom: javier.carrasco.cruz@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: H4UOEHOLJGJI6PC357O37REOTV4FQOXB
-X-Message-ID-Hash: H4UOEHOLJGJI6PC357O37REOTV4FQOXB
-X-Mailman-Approved-At: Wed, 31 Jul 2024 08:49:11 +0000
+Message-ID-Hash: 3F74WKPBJISNPZJGBFUZPI4PHL3XLDVN
+X-Message-ID-Hash: 3F74WKPBJISNPZJGBFUZPI4PHL3XLDVN
+X-Mailman-Approved-At: Wed, 31 Jul 2024 08:49:35 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H4UOEHOLJGJI6PC357O37REOTV4FQOXB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3F74WKPBJISNPZJGBFUZPI4PHL3XLDVN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,107 +146,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Commit 7ba5ca32fe6e ("ALSA: firewire-lib: operate for period elapse event
-in process context") removed the process context workqueue from
-amdtp_domain_stream_pcm_pointer() and update_pcm_pointers() to remove
-its overhead.
+`tda1997x_codec_driver` is not modified after its declaration, and it
+is only passed to `devm_snd_soc_register_component()`, which expects
+a constant `snd_soc_component_driver`.
 
-With RME Fireface 800, this lead to a regression since Kernels 5.14.0,
-causing a deadlock with eventual system freeze under ALSA operation:
+Move `tda1997x_codec_driver` to a read-only section by declaring it
+const.
 
-A. In the process context
-    * (lock A) Acquiring spin_lock by snd_pcm_stream_lock_irq() in
-=09snd_pcm_status64()
-    * (lock B) Then attempt to enter tasklet
-
-B. In the softIRQ context
-    * (lock B) Enter tasklet
-    * (lock A) Attempt to acquire spin_lock by
-=09snd_pcm_stream_lock_irqsave() in snd_pcm_period_elapsed()
-
-? tasklet_unlock_spin_wait
- </NMI>
- <TASK>
-ohci_flush_iso_completions firewire_ohci
-amdtp_domain_stream_pcm_pointer snd_firewire_lib
-snd_pcm_update_hw_ptr0 snd_pcm
-snd_pcm_status64 snd_pcm
-
-? native_queued_spin_lock_slowpath
- </NMI>
- <IRQ>
-_raw_spin_lock_irqsave
-snd_pcm_period_elapsed snd_pcm
-process_rx_packets snd_firewire_lib
-irq_target_callback snd_firewire_lib
-handle_it_packet firewire_ohci
-context_tasklet firewire_ohci
-
-Restore the process context work queue to prevent deadlock
-between ALSA substream process context spin_lock of
-snd_pcm_stream_lock_irq() in snd_pcm_status64()
-and OHCI 1394 IT softIRQ context spin_lock of
-snd_pcm_stream_lock_irqsave() in snd_pcm_period_elapsed().
-
-Cc: stable@vger.kernel.org
-Fixes: 7ba5ca32fe6e ("ALSA: firewire-lib: operate for period elapse event i=
-n process context")
-Link: https://lore.kernel.org/r/kwryofzdmjvzkuw6j3clftsxmoolynljztxqwg76hze=
-o4simnl@jn3eo7pe642q/
-Reported-by: edmund.raile <edmund.raile@proton.me>
-Signed-off-by: Edmund Raile <edmund.raile@protonmail.com>
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- sound/firewire/amdtp-stream.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+ drivers/media/i2c/tda1997x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 31201d506a21..c037d7de1fdc 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -615,16 +615,9 @@ static void update_pcm_pointers(struct amdtp_stream *s=
-,
- =09=09// The program in user process should periodically check the status =
-of intermediate
- =09=09// buffer associated to PCM substream to process PCM frames in the b=
-uffer, instead
- =09=09// of receiving notification of period elapsed by poll wait.
--=09=09if (!pcm->runtime->no_period_wakeup) {
--=09=09=09if (in_softirq()) {
--=09=09=09=09// In software IRQ context for 1394 OHCI.
--=09=09=09=09snd_pcm_period_elapsed(pcm);
--=09=09=09} else {
--=09=09=09=09// In process context of ALSA PCM application under acquired l=
-ock of
--=09=09=09=09// PCM substream.
--=09=09=09=09snd_pcm_period_elapsed_under_stream_lock(pcm);
--=09=09=09}
--=09=09}
-+=09=09if (!pcm->runtime->no_period_wakeup)
-+=09=09=09// wq used with amdtp_domain_stream_pcm_pointer() to prevent dead=
-lock
-+=09=09=09queue_work(system_highpri_wq, &s->period_work);
- =09}
+diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
+index 58ce8fec3041..3b7e5ff5b010 100644
+--- a/drivers/media/i2c/tda1997x.c
++++ b/drivers/media/i2c/tda1997x.c
+@@ -2514,7 +2514,7 @@ static void tda1997x_codec_remove(struct snd_soc_component *component)
+ {
  }
-=20
-@@ -1866,9 +1859,11 @@ unsigned long amdtp_domain_stream_pcm_pointer(struct=
- amdtp_domain *d,
-=20
- =09// Process isochronous packets queued till recent isochronous cycle to =
-handle PCM frames.
- =09if (irq_target && amdtp_stream_running(irq_target)) {
--=09=09// In software IRQ context, the call causes dead-lock to disable the=
- tasklet
--=09=09// synchronously.
--=09=09if (!in_softirq())
-+=09=09// use wq to prevent deadlock between process context spin_lock
-+=09=09// of snd_pcm_stream_lock_irq() in snd_pcm_status64() and
-+=09=09// softIRQ context spin_lock of snd_pcm_stream_lock_irqsave()
-+=09=09// in snd_pcm_period_elapsed()
-+=09=09if ((!in_softirq()) && (current_work() !=3D &s->period_work))
- =09=09=09fw_iso_context_flush_completions(irq_target->context);
- =09}
-=20
---=20
-2.45.2
+ 
+-static struct snd_soc_component_driver tda1997x_codec_driver = {
++static const struct snd_soc_component_driver tda1997x_codec_driver = {
+ 	.probe			= tda1997x_codec_probe,
+ 	.remove			= tda1997x_codec_remove,
+ 	.idle_bias_on		= 1,
 
+-- 
+2.43.0
 
