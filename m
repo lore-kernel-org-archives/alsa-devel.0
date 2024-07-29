@@ -4,76 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABEB1C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 18:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD8FC3DA61
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jul 2024 18:36:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1011BB71;
-	Mon, 29 Jul 2024 20:36:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1011BB71
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EFDC83E;
+	Mon, 29 Jul 2024 20:36:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EFDC83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722278190;
-	bh=PgElLeI3tFPy/LsURTvcVNpZeWCApAcr+hd4F8EhJ/c=;
+	s=default; t=1722278200;
+	bh=WZi2WB+ezf+8ZuZSA/9WSVZyOflnes8c4WhG9OHbKSM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cPic04NEk4LWUTB3Djfi69vHjWuSPJ8H/sUV2h8Sq1066QN4l7a65ONZ73M6lj7KA
-	 A14PQG/J5YjC9Fb7Fw0jLu6oyAFB0WXeEWjXn93JhEU8uoCtvTS/rugiTvAfCmueUJ
-	 LduK2JcjOS5LGlK9U42kJ3if33ZDCzV1Z7VDJAoY=
+	b=f4NDqj46AutoqWiKPZFY8VkW3fIjDnBQL/72lePKWV3zQU3UobSQ/dtrWU9oXrhUb
+	 LYyRpH+UgHvAIdiUNneogWZJ+/XbuGTqiY+IdphkNIrt7B8bvq9juhCW24NMt6dfQc
+	 AAgDmMCnLxdJpjWsHWSBsvlpdPMR9mfuzXInyRw8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AAA17F805B1; Mon, 29 Jul 2024 20:35:55 +0200 (CEST)
+	id 155FAF805D9; Mon, 29 Jul 2024 20:36:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E11CF805A9;
-	Mon, 29 Jul 2024 20:35:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A13BF805D9;
+	Mon, 29 Jul 2024 20:36:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E27FF80448; Mon, 29 Jul 2024 19:17:52 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id ECF3AF802DB; Mon, 29 Jul 2024 19:18:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1A04EF8026A
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 19:17:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A04EF8026A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1F855F80269
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 19:17:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F855F80269
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KWRUWMIQ
+ header.s=k20201202 header.b=HvqqIwhF
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8D75761BBE;
-	Mon, 29 Jul 2024 17:17:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E468C32786;
-	Mon, 29 Jul 2024 17:17:43 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3CC6E61B8D;
+	Mon, 29 Jul 2024 17:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1495C4AF09;
+	Mon, 29 Jul 2024 17:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722273465;
-	bh=PgElLeI3tFPy/LsURTvcVNpZeWCApAcr+hd4F8EhJ/c=;
+	s=k20201202; t=1722273435;
+	bh=WZi2WB+ezf+8ZuZSA/9WSVZyOflnes8c4WhG9OHbKSM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=KWRUWMIQdA/RvQwuPlYCs6Dtxi6qaZm+SsgMtmWr9hwxabdg2BhDaq4EMijH4kec9
-	 V8hzV+g/HVG7F/57DtSm8Fl4vBcTuBd7vqtpCkkcBQIcxoDOBiLovpgI1qJeouFh+b
-	 5dXSd8cOxY85kyj39TZ2lN44hOJyOcnOu4derSo0Ed7M0wpYE2Q2pLJ3ih+3lbdM0n
-	 Vd7NvZvH0njAY6a3nvIaIjV82lCgXglUix9iuOXleR3bxbqDPU8gs5la2vl48mM4Jh
-	 gBb9+/Ob/cFZdVOH6yh9uuM3RXdT1YP6CvguuUW8+BzMPH7zeTIlTWclAoQsihafT5
-	 k87n9fNRU9JlQ==
+	b=HvqqIwhFTPi/2O2OcCDM+0ICAi+5ega/pV8ivBwWyVQAvqULngMmL+0Jp6OA6eAJX
+	 ecQgYDz7sA1s5YSFLJzzH8+/otov1OWXkn0aMHdhGlrj67W1jT3tUobdI3mE/nJitn
+	 BI1VoAnnkbq+UFgGDM2jkYPocf3Rllps4xZgyMYxDMB5qesIXqU8dZqgfRY2qwj4Ya
+	 vjiJuNhzLaBQJMjTFcOy98KqyVq6QqoeMfaEXPYg3J3hojPHPiiMX6RItZwhX9saI1
+	 HWI4O9UYjL7oa96DdmiFuDESsEz6MQvbX1Xn4oke/VwuYpWAbpPEKB94ytNkMKVGTg
+	 3nLBALZiJ7rtg==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+To: david.rhodes@cirrus.com, rf@opensource.cirrus.com, lgirdwood@gmail.com,
+ perex@perex.cz, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+ sbinding@opensource.cirrus.com, Chen Ni <nichen@iscas.ac.cn>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240725-asoc-wsa88xx-port-arrays-v1-0-80a03f440c72@linaro.org>
-References: <20240725-asoc-wsa88xx-port-arrays-v1-0-80a03f440c72@linaro.org>
-Subject: Re: [PATCH 0/7] ASoC: codecs: wsa88xx and wcd93xx: Soundwire port
- non-functional cleanup
-Message-Id: <172227346318.109775.1944723976181257603.b4-ty@kernel.org>
-Date: Mon, 29 Jul 2024 18:17:43 +0100
+In-Reply-To: <20240716025307.400156-1-nichen@iscas.ac.cn>
+References: <20240716025307.400156-1-nichen@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: cs42l42: Convert comma to semicolon
+Message-Id: <172227343251.109775.8280078818149425619.b4-ty@kernel.org>
+Date: Mon, 29 Jul 2024 18:17:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: WFRXSYUHBVULVOACOPUYXCKSVDY3LC4D
-X-Message-ID-Hash: WFRXSYUHBVULVOACOPUYXCKSVDY3LC4D
+Message-ID-Hash: ASO7CTUBDJ54OGLGIUYKFPBYSPUL7AON
+X-Message-ID-Hash: ASO7CTUBDJ54OGLGIUYKFPBYSPUL7AON
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WFRXSYUHBVULVOACOPUYXCKSVDY3LC4D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ASO7CTUBDJ54OGLGIUYKFPBYSPUL7AON/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,12 +93,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 25 Jul 2024 13:23:42 +0200, Krzysztof Kozlowski wrote:
-> Few cleanups to make the code more robust or readable.  No functional
-> impact (compiled objects stay the same).
+On Tue, 16 Jul 2024 10:53:07 +0800, Chen Ni wrote:
+> Replace a comma between expression statements by a semicolon.
 > 
-> Best regards,
-> Krzysztof
 > 
 
 Applied to
@@ -109,20 +104,8 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: codecs: wsa881x: Use designator array initializers for Soundwire ports
-      commit: 874d04fe15d12cafa09dd36e8555cea4eb0653f6
-[2/7] ASoC: codecs: wsa883x: Use designator array initializers for Soundwire ports
-      commit: add41ea55060d5e41d62268aa0bda2a27e0f5053
-[3/7] ASoC: codecs: wsa884x: Use designator array initializers for Soundwire ports
-      commit: 125ed86b0d669334dbc567f441d10163ff0c44bc
-[4/7] ASoC: codecs: wcd938x: Drop unused defines and enums
-      commit: 06fa8271273d8181cb8727e63aeec3f87a48d8c7
-[5/7] ASoC: codecs: wcd937x: Move max port number defines to enum
-      commit: 42f3a2caf80910d0c251b2a407d4d220c0d3a79f
-[6/7] ASoC: codecs: wcd938x: Move max port number defines to enum
-      commit: 5e388488f0a1dd6d340f3925e7b371e212ee3cc2
-[7/7] ASoC: codecs: wcd939x: Move max port number defines to enum
-      commit: a9d843e6b231e550f8141f27e930f90ded4edae2
+[1/1] ASoC: cs42l42: Convert comma to semicolon
+      commit: 275d57ae441f34749cbf8621441ce2148f83d5e6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
