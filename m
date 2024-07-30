@@ -4,81 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 243BEC3DA64
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:55:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B98E7C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:55:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C57E72D94;
-	Wed, 31 Jul 2024 10:54:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C57E72D94
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD1E52D7C;
+	Wed, 31 Jul 2024 10:55:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD1E52D7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722416108;
-	bh=7qJtw/UvlNXcAPicePSmEwYf5d2bgVGEcAntS/y13O8=;
-	h=Date:To:From:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=GNCfR+uhZXIKWC2WgHXz4H7K4A1f4Sx0hMBDtH70jGgk1EDMZbQfm6lMjWSMoMeNV
-	 RmiwJJz1XQFa2F05/XEgVtvYMOxdr5Q4L9o7LST+7O3Rut1u3bR/EHjiY6E8ZGE/Ap
-	 dA9J6vQLTABVWICEPiX/j+S2KxJjWw362xGI9QVk=
+	s=default; t=1722416128;
+	bh=+SZusJMwP5eTibZ0Xgy1WVMZxJPy4VghvcWPJCa+v2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=eBpzF0GG2UUIgvbiIFEh10DRuSrgkNHygGxqMz/oPF+qxclTKXbEf7IUYcmmZj3dm
+	 IgaqwXIJXh1sRIG+9jDS3WmWZ+msdNFLY7kyv9bGpOUiPkb47cniBIpUAKz969REt4
+	 uDOdIdr2bb6p/kcnqxSqp+2TsXZG2pQRwra6Q3us=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A259AF89630; Wed, 31 Jul 2024 10:50:23 +0200 (CEST)
+	id 2110CF896E5; Wed, 31 Jul 2024 10:50:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E7DAF89674;
-	Wed, 31 Jul 2024 10:50:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2107F896FC;
+	Wed, 31 Jul 2024 10:50:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72787F8057A; Mon, 29 Jul 2024 23:54:16 +0200 (CEST)
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com
- [51.77.79.158])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 7151DF802DB; Tue, 30 Jul 2024 12:30:58 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E7F2EF80269
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2024 23:44:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7F2EF80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id 31057F800E3
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2024 12:30:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31057F800E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=protonmail.com header.i=@protonmail.com
- header.a=rsa-sha256 header.s=protonmail3 header.b=pIjcGNld
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1722289330; x=1722548530;
-	bh=HEq22jk5NAJ4QPno+5COoC2Tm/I0lDMtAHj74ZnsIdE=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=pIjcGNld7NYClv7ZkFK1RuWiP9F1tpLvRoLP8rGTifQhaNbE2GBiEKfS0E9Jz6V3r
-	 ZE/ufTRFm8PSvOFbj3yOq9mQl9/LsEqa9KxZp/YQuto/+FM3YQQ16vr6F0riraSr+h
-	 NAzivbXI8mDlQUbyUH353eQpXGee2TEwDXDDdOKlil81qMa8S6moLYkV68FpFFTYrA
-	 6rVNtlcx3J2DvFV1h7efmOZJLADUI76I2QLzr3j3eQyBg4TQZ2fw+/2+dzxQqGM41U
-	 t0l9gXkouECBB9mLpiNuJS5r+p4SE33xepLyX0rGuNSn6JD9oKSilei51kWXrASaDD
-	 /0+iXpQ1Phnlg==
-Date: Mon, 29 Jul 2024 21:42:02 +0000
-To: o-takashi@sakamocchi.jp, clemens@ladisch.de
-From: Edmund Raile <edmund.raile@protonmail.com>
-Cc: tiwai@suse.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH v3 0/3] ALSA: firewire-lib: restore process context workqueue
- to prevent deadlock
-Message-ID: <20240729214149.752663-1-edmund.raile@protonmail.com>
-Feedback-ID: 43016623:user:proton
-X-Pm-Message-ID: e00f443d75923ea0f965957ed92a6031714d5273
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=FiuxUBES
+Received: by mail-ed1-x534.google.com with SMTP id
+ 4fb4d7f45d1cf-5b01af9b0c9so3241582a12.3
+        for <alsa-devel@alsa-project.org>;
+ Tue, 30 Jul 2024 03:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1722335440; x=1722940240;
+ darn=alsa-project.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gfgTeO7eFehEfuHZo0dSc8+LCrIJf/o/Tpdg8fxovkI=;
+        b=FiuxUBESBOBK1nVv0UE60b3K3EWiFDZWHh+WvCcYkZravIdDa/HW8ePVk1J462Si3T
+         RQSi6vcPL+m1gGgnPtiWRgvI/ooB5GyhSqB/n9mFDBEgJwbzIQ2pvXaShm6zkoEZzSqE
+         olORhRNBehwTqKnbPc3KKWIvsPvDjvCafGEA47xVqXibNcXeuNHbr2wdexELfEaFt/uH
+         Xm1fISb3XcLoP/1kvHPI4luiNxwipa6vnzJX52J8+r5Dn/U5SLH9SopXQKr7wb+zbjjd
+         8FpP/lgSA9wtqm1vxpMeDKT+KbtRh75KiMn4Tt6dnV1TLE2Jk+NH9uFSEjahC3JWgFuZ
+         2t5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722335440; x=1722940240;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gfgTeO7eFehEfuHZo0dSc8+LCrIJf/o/Tpdg8fxovkI=;
+        b=lIGFKYrt2AZZeSnN332eipCkZMkerdc6g59TUT9BywFXQEffNZZNk2/Ku3xz5IXixA
+         KSLGY75dKJ0V/c6sNNqvMDkX+Vyj02sQeA7mm5mt3T9vfa+vM9SCjbhGGS9ZD57UiytM
+         k9wah6zEHRQ4BNr3/i8BU/kx5+cMIsLjWyv6h9yCgu//SnZ53WuCzklOfyuC/ENA18+A
+         qNTR1vrHOViW5pJKegCKr4QsAZcjgZaN/DhQmNSpG/V4mrd23gXBK/s5f1ENnKYo/lSP
+         fLyCq2dPn32OX9qldb9OpxiQg/cES1bkFP4tXrbWs7IUtTQeQvHYSo5IfGXbLf99geo8
+         oDLA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCW21x2yrJDmPUmnZSLNPmdsausdlRF+bI49Y+OfWmaY4X1hTMXiD7owafez60TY8yX6z6DneydDadLt+k7jaKh5VffU4aT0wNdqCuE=
+X-Gm-Message-State: AOJu0Yw0uFUUQX9uwGCCSBiafXEBvu859g9SyGWI5/HQd+DaDJNvzQQf
+	D4jomWRn9YyObAKW8kC5kwTABFgHrqYb6amSubMrG2mBKgfRB4LJXMJzKYoKRyk=
+X-Google-Smtp-Source: 
+ AGHT+IGxx92z7IX9vhw/RN+EO3wwfQ/M++6atfLPhpUAf+bjo2ykfbCE8+G6Hz0TR83vimf4DR4ZTQ==
+X-Received: by 2002:a17:906:dc8b:b0:a7a:aa35:4091 with SMTP id
+ a640c23a62f3a-a7d3ff5b256mr842252966b.25.1722335440243;
+        Tue, 30 Jul 2024 03:30:40 -0700 (PDT)
+Received: from linaro.org ([2a02:2454:ff1f:b280:8303:a4e9:79c5:e939])
+        by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-a7acab4ddefsm625461366b.59.2024.07.30.03.30.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jul 2024 03:30:39 -0700 (PDT)
+Date: Tue, 30 Jul 2024 12:30:38 +0200
+From: Stephan Gerhold <stephan.gerhold@linaro.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Stephan Gerhold <stephan@gerhold.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
+	linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Adam Skladowski <a39.skl@gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: qcom,apq8016-sbc-sndcard: move to
+ separate binding
+Message-ID: <ZqjAzgoKo-5vaCtK@linaro.org>
+References: <20240723083300.35605-1-krzysztof.kozlowski@linaro.org>
+ <ZqVXUI37fNB5D0DM@gerhold.net>
+ <3d9f76c1-2e14-43dc-b438-5fac94ffc73e@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: edmund.raile@protonmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d9f76c1-2e14-43dc-b438-5fac94ffc73e@kernel.org>
+X-MailFrom: stephan.gerhold@linaro.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: O7R5LG7O26VHSZ35OKLJ7QMOCE7KZ3Q4
-X-Message-ID-Hash: O7R5LG7O26VHSZ35OKLJ7QMOCE7KZ3Q4
-X-Mailman-Approved-At: Wed, 31 Jul 2024 08:50:12 +0000
+Message-ID-Hash: KG6EITHZTRMX3YH3A4OGGDTTMTJS7VOZ
+X-Message-ID-Hash: KG6EITHZTRMX3YH3A4OGGDTTMTJS7VOZ
+X-Mailman-Approved-At: Wed, 31 Jul 2024 08:50:13 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O7R5LG7O26VHSZ35OKLJ7QMOCE7KZ3Q4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KG6EITHZTRMX3YH3A4OGGDTTMTJS7VOZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,95 +130,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patchset serves to prevent an AB/BA deadlock:
+On Sun, Jul 28, 2024 at 12:30:12PM +0200, Krzysztof Kozlowski wrote:
+> On 27/07/2024 22:23, Stephan Gerhold wrote:
+> > On Tue, Jul 23, 2024 at 10:33:00AM +0200, Krzysztof Kozlowski wrote:
+> >> The APQ8016 SBC and MSM8916 QDSP6 sound cards are a bit different from
+> >> others: they have additional IO muxing address space and pin control.
+> >> Move them to separate schema, so the original qcom,sm8250.yaml will be
+> >> easier to manage.  New schema is going to grow for other platforms
+> >> having more of IO muxing address spaces.
+> >>
+> >> Cc: Adam Skladowski <a39.skl@gmail.com>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >> ---
+> >> .../sound/qcom,apq8016-sbc-sndcard.yaml       | 205 ++++++++++++++++++
+> >> .../bindings/sound/qcom,sm8250.yaml           | 137 ------------
+> >> 2 files changed, 205 insertions(+), 137 deletions(-)
+> >> create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8016-sbc-sndcard.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc-sndcard.yaml b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc-sndcard.yaml
+> >> new file mode 100644
+> >> index 000000000000..6ad451549036
+> >> [...]
+> >> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> >> index c9076dcd44c1..1d3acdc0c733 100644
+> >> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> >> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> >> @@ -27,9 +27,7 @@ properties:
+> >>               - qcom,sm8650-sndcard
+> >>           - const: qcom,sm8450-sndcard
+> >>       - enum:
+> >> -          - qcom,apq8016-sbc-sndcard
+> >>           - qcom,apq8096-sndcard
+> >> -          - qcom,msm8916-qdsp6-sndcard
+> >>           - qcom,qcm6490-idp-sndcard
+> >>           - qcom,qcs6490-rb3gen2-sndcard
+> >>           - qcom,qrb5165-rb5-sndcard
+> >> @@ -58,18 +56,6 @@ properties:
+> >>     $ref: /schemas/types.yaml#/definitions/string
+> >>     description: User visible long sound card name
+> >>
+> >> -  pin-switches:
+> >> -    description: List of widget names for which pin switches should be created.
+> >> -    $ref: /schemas/types.yaml#/definitions/string-array
+> >> -
+> >> -  widgets:
+> >> -    description: User specified audio sound widgets.
+> >> -    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> >> -
+> > 
+> > These two properties are also valid and supported on all newer
+> > platforms, please keep them here! There are certain use cases where
+> > these are needed independent of the platform, e.g. to control an analog
+> > switch or mux connected to speaker or headphone outputs.
+> > 
+> > I agree that it is cleaner to move the IO muxing to a new schema though.
+> > Perhaps we could define something like a shared qcom,sndcard-common.yaml
+> > schema to avoid duplication for these generic properties? In the Linux
+> > driver, these are handled for all platforms in sound/soc/qcom/common.c.
+> 
+> This was added to the common driver code but it does not mean it is
+> reasonable binding. I don't understand why for example we even accept
+> here aux-devs, instead of putting them into one of DAI links.
+> 
 
-thread 0:
-    * (lock A) acquire substream lock by
-=09snd_pcm_stream_lock_irq() in
-=09snd_pcm_status64()
-    * (lock B) wait for tasklet to finish by calling
-    =09tasklet_unlock_spin_wait() in
-=09tasklet_disable_in_atomic() in
-=09ohci_flush_iso_completions() of ohci.c
+The auxiliary devices (typically analog audio components) are not
+necessarily related to one particular digital audio interface link. It
+is typically the case (e.g. an analog speaker amplifier connected in
+parallel to the headphone output of one of the codecs), but I don't
+think we can assume that as a general rule. There are often multiple DAI
+links that go to one codec and then it might be tricky to decide which
+of the DAI links the aux-dev belongs to.
 
-thread 1:
-    * (lock B) enter tasklet
-    * (lock A) attempt to acquire substream lock,
-    =09waiting for it to be released:
-=09snd_pcm_stream_lock_irqsave() in
-    =09snd_pcm_period_elapsed() in
-=09update_pcm_pointers() in
-=09process_ctx_payloads() in
-=09process_rx_packets() of amdtp-stream.c
+> The pin-switches and widgets could be used, but are they? The only valid
+> argument to keep them is that you added them to common driver code.
 
-? tasklet_unlock_spin_wait
- </NMI>
- <TASK>
-ohci_flush_iso_completions firewire_ohci
-amdtp_domain_stream_pcm_pointer snd_firewire_lib
-snd_pcm_update_hw_ptr0 snd_pcm
-snd_pcm_status64 snd_pcm
+These go hand in hand with the aux-devs property. If you have multiple
+analog audio components connected to a codec output (e.g. an analog
+speaker amplifier connected to the codec headphone output) then the
+pin-switches/widgets describe that the output paths (speaker and
+headphones) should be separately controllable.
 
-? native_queued_spin_lock_slowpath
- </NMI>
- <IRQ>
-_raw_spin_lock_irqsave
-snd_pcm_period_elapsed snd_pcm
-process_rx_packets snd_firewire_lib
-irq_target_callback snd_firewire_lib
-handle_it_packet firewire_ohci
-context_tasklet firewire_ohci
+The alternative for pin-switches and widgets in the DT is to hardcode
+them in the ASoC board/machine driver with a separate board-specific
+compatible. Personally, I would prefer to keep the machine driver
+specific to the SoC instead of having definitions for each and every
+board.
 
-The issue has been reported as a regression of kernel 5.14:
-Link: https://lore.kernel.org/regressions/kwryofzdmjvzkuw6j3clftsxmoolynljz=
-txqwg76hzeo4simnl@jn3eo7pe642q/T/#u
-("[REGRESSION] ALSA: firewire-lib: snd_pcm_period_elapsed deadlock with
-Fireface 800")
-
-Commit 7ba5ca32fe6e ("ALSA: firewire-lib: operate for period elapse event
-in process context") removed the process context workqueue from
-amdtp_domain_stream_pcm_pointer() and update_pcm_pointers() to remove
-its overhead.
-Commit b5b519965c4c ("ALSA: firewire-lib: obsolete workqueue for period
-update") belongs to the same patch series and removed
-the now-unused workqueue entirely.
-
-Though being observed on RME Fireface 800, this issue would affect all
-Firewire audio interfaces using ohci amdtp + pcm streaming.
-
-ALSA streaming, especially under intensive CPU load will reveal this issue
-the soonest due to issuing more hardIRQs, with time to occurrence ranging
-from 2 secons to 30 minutes after starting playback.
-
-to reproduce the issue:
-direct ALSA playback to the device:
-  mpv --audio-device=3Dalsa/sysdefault:CARD=3DFireface800 Spor-Ignition.fla=
-c
-Time to occurrence: 2s to 30m
-Likelihood increased by:
-  - high CPU load
-    stress --cpu $(nproc)
-  - switching between applications via workspaces
-    tested with i915 in Xfce
-PulsaAudio / PipeWire conceal the issue as they run PCM substream
-without period wakeup mode, issuing less hardIRQs.
-
-Cc: stable@vger.kernel.org
-Backport note:
-Also applies to and fixes on (tested):
-6.10.2, 6.9.12, 6.6.43, 6.1.102, 5.15.164
-
-Edmund Raile (3):
-  Revert "ALSA: firewire-lib: obsolete workqueue for period update"
-  Revert "ALSA: firewire-lib: operate for period elapse event in process
-    context"
-  ALSA: firewire-lib: amdtp-stream work queue inline description
-
- sound/firewire/amdtp-stream.c | 38 ++++++++++++++++++++++-------------
- sound/firewire/amdtp-stream.h |  1 +
- 2 files changed, 25 insertions(+), 14 deletions(-)
-
---=20
-2.45.2
-
-
+Thanks,
+Stephan
