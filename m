@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C3E7C3DA64
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 12:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89425C3DA64
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 12:13:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAF0E3F4F;
-	Thu,  1 Aug 2024 14:12:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAF0E3F4F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C83D03F83;
+	Thu,  1 Aug 2024 14:12:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C83D03F83
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722514367;
-	bh=ue+vpUOG4ZnyGYEi2iXto0ytfCqxL7uNzt6OO5tHUHM=;
+	s=default; t=1722514386;
+	bh=lyyOSz5mnVlYsXDZyPPBuvrk6tGYt4/xz9ZU1RO5S4A=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ixno1ihu30wZnmEhkJlKzfgffnQlnK3RBoesx3fEXdnWO5qXBzFF5ZXsYxigoK0lN
-	 8+1JXTm4tWQPtbkYvafCvWayc1nyXVwg7mFuMS1BVaj5JN4Wwx1/z1El+kYuyynLIv
-	 U5UJetcNnIa4IPM/iLS8iMjsnB6dMqYluY+g9o48=
+	b=VCqWXs1O3eFi4j4djl5dRvk5VLrU7Aw1bn+lNcI+ujHT8Ygj/jLgtUh4wwX0im7y0
+	 HFuspdBeYoFYDnscKyeJ+0s42YEWUiHfpYoZnczb/C4Aqs+OBoiJkkfKar9M6xuIUM
+	 Os/mNgEXREYx+aZr5CvA7YAFxswFUnPXL5sgeZSQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B70FF80605; Thu,  1 Aug 2024 14:11:35 +0200 (CEST)
+	id 3C563F8062E; Thu,  1 Aug 2024 14:11:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E564F80621;
-	Thu,  1 Aug 2024 14:11:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F82AF80622;
+	Thu,  1 Aug 2024 14:11:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86DBAF80588; Wed, 31 Jul 2024 17:27:07 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+	id C148FF802DB; Wed, 31 Jul 2024 17:31:00 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ECD9BF8057A
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 17:26:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECD9BF8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2DC63F80269
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 17:26:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DC63F80269
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=CvVae2qp
-Received: by mail-wm1-x32e.google.com with SMTP id
- 5b1f17b1804b1-4257d5fc9b7so49299335e9.2
+ header.s=20230601 header.b=fhAa+WYK
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-428243f928fso22700875e9.0
         for <alsa-devel@alsa-project.org>;
- Wed, 31 Jul 2024 08:26:14 -0700 (PDT)
+ Wed, 31 Jul 2024 08:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722439574; x=1723044374;
+        d=gmail.com; s=20230601; t=1722439564; x=1723044364;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=y7acxoGv0kNGN7BdTg0LbHlXp+SwEqZuAjJ2EFuphzY=;
-        b=CvVae2qp76CSU1enShOqEpv0O/QXAB7SB/qrbDdVuja9lVGJiK0M7GWD0GdOGWf9qi
-         kG0aaHmAd+j9e6wO/u3prPEQYJ0z2Apn0dHK87fvhWhQsi8mSOYOOpWi21mT9veCebkn
-         JF+vsGYQWwc9wiaayz62UVyfDu4b2muMkC6KNmvklThfLrYATGt2lgaTA0r4oHMp1TyZ
-         qc1TLdyUqNnBV5PiRs8Yz/y8ys/BxxncTZeNDCtqlZItPzPYYj0O9U3KzqlWO2PInpjG
-         3Tk1t9MR8DjSWYGeufgI8sJzC5h80SqnKrN18Na7+eNfD4EH0LthnDbdmlIVuIK4Aiqb
-         I4lg==
+        bh=FC0xYn/ikx2v85GL/8Br0D4pnaNCpqHqIy3/h9Umxsk=;
+        b=fhAa+WYKa0cO1gGarWcWJ+yrLhaSpwk+dm6C6X6ZfFg8F/d8d+xuWyjZzMwbeJpN+a
+         DuFa5LEjTyuCbCaaY+dH9dwPq0XhvKxh3OGP0A2jyRUM0hl1JKgQCR4wjbV+UjDvMaNp
+         C+kt6Rm1LJPxzj2YG35PS+EiO1vax6vb8Ye3sCsA9ZExV84lB3lTdIwVc0Uv5qO0UY0v
+         Bvhwz3jFj0YBZSTlrhw1Y+hEZGutqgIHwPSIffSBYE+BBAUBdaBLA5KIXLnRkqFb6caz
+         sgfUghxkFXYTUe+irYrf4GZax+mdSgGs98Vbc+vH0w9UiN0mzC2mh1sSA6vGatiSGbWY
+         TwYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722439574; x=1723044374;
+        d=1e100.net; s=20230601; t=1722439564; x=1723044364;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y7acxoGv0kNGN7BdTg0LbHlXp+SwEqZuAjJ2EFuphzY=;
-        b=C5e2gIpFhfaNX5nlRPF8oOEG3w0hXY7lcnN0aOOGWfiPRVu1bisCEQ+0frtCBw8UvN
-         Obl1nHDAwXjqn+ZZznxviRGNJh/1pXynMMS0trn/s/3YUMy9Kgzuiu5Thwh/ewtuWaxA
-         F8dCM1MynJ+xburz99B2ZZm3mFJQtt/ue7/5zOgOQK9Pjns2KKPCBeUO2QksOPHtrBsh
-         eKeoNUKwNxnyFYMxojXPRIloXKoLGXJZJakmHJBJgANtg8u+yvMZNPcCg30gLntSvqct
-         zLPTIbiUEfWqcu7zlreAS6pi3GF0uOuK3dAlOA2XO5jONcL4DP8Lo3/u2XYKQW95a7+F
-         gBkw==
-X-Gm-Message-State: AOJu0YxEkJfLwS+g5q6ipzIHxPHN2chvvdirfncupuxunnjsJI5tY7/F
-	f3AaZipNI3KT030njxLSTPj1JYa2tYYrGE4Qd4psL1Em7gc3cUUY
+        bh=FC0xYn/ikx2v85GL/8Br0D4pnaNCpqHqIy3/h9Umxsk=;
+        b=C0p4qRWItcyqLiyMKMjZemmeJfm3KFHeIuEASo1lHSl44TP49jgpaEA+jLoAXFZ7v+
+         FWrtjwK/mOLxMCn67PzVZIwW9maWxb9K6FHQ8IWhWsilzmqFPzj+VCrsEOHUH/eLTvuA
+         V1Gf8kIw2n8feMMfmpGtSwfQWmVctBUHiwRW5Crxkau8bqJOlr0i59JUdHDY0gPYUvls
+         imhcWd37ayYCiruWuneiihJhXQgoCximJZXJ9pBjSCbZ0UB6QXR4W2oUQmnRLe5xvDpf
+         F8qq/WswioAsvX4YYir2h58AvNjlvJKcHhYFtlCOQVkWi0/veIvEaIRyy1eB9Pe7dWyk
+         xkNA==
+X-Gm-Message-State: AOJu0YzwwmcQ52n6lw8KoKw+o/VxJAOpCSrzo0GngDhYSgadBrsbXgj6
+	0ITLgXa6onzjRjmIEF+t1MPOYR20viLSekmilCOeb/pMoNOkHTm5
 X-Google-Smtp-Source: 
- AGHT+IEudtEsD9vtF73wmt/UCZjRipmWNhTtdiBDvrtFMRz0YZRF3+kCI0jf70h7wmb2E3E950aO3g==
-X-Received: by 2002:a05:600c:198b:b0:426:6b14:1839 with SMTP id
- 5b1f17b1804b1-42811a9886fmr139704645e9.0.1722439574189;
-        Wed, 31 Jul 2024 08:26:14 -0700 (PDT)
+ AGHT+IGV5Tyg8OIw9jbYm8EISXLPoSoS24RYZm1S5mUY09Ep05QHPxO5cMSJU7Ibzbu5TFy9NWYQ+w==
+X-Received: by 2002:a05:600c:3590:b0:426:5c81:2538 with SMTP id
+ 5b1f17b1804b1-42828544a87mr33856585e9.14.1722439563745;
+        Wed, 31 Jul 2024 08:26:03 -0700 (PDT)
 Received: from [127.0.1.1] (byv161.neoplus.adsl.tpnet.pl. [83.30.41.161])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4282bb64755sm25430985e9.36.2024.07.31.08.26.12
+ 5b1f17b1804b1-4282bb64755sm25430985e9.36.2024.07.31.08.26.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 08:26:13 -0700 (PDT)
+        Wed, 31 Jul 2024 08:26:03 -0700 (PDT)
 From: Adam Skladowski <a39.skl@gmail.com>
-Date: Wed, 31 Jul 2024 17:25:30 +0200
-Subject: [PATCH v3 6/8] ASoC: qcom: apq8016_sbc: Add support for msm8953
- SoC
+Date: Wed, 31 Jul 2024 17:25:25 +0200
+Subject: [PATCH v3 1/8] ASoC: qcom: apq8016_sbc.c: Add Quinary support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240731-msm8953-msm8976-asoc-v3-6-163f23c3a28d@gmail.com>
+Message-Id: <20240731-msm8953-msm8976-asoc-v3-1-163f23c3a28d@gmail.com>
 References: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
 In-Reply-To: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -110,15 +109,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XGFPHCXPDDX5HA7JI3W3SHX4WKOKJOSV
-X-Message-ID-Hash: XGFPHCXPDDX5HA7JI3W3SHX4WKOKJOSV
+Message-ID-Hash: RFTOMY6JAQ537QLQR4L6BMVGCTLVGKNY
+X-Message-ID-Hash: RFTOMY6JAQ537QLQR4L6BMVGCTLVGKNY
 X-Mailman-Approved-At: Thu, 01 Aug 2024 12:06:31 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XGFPHCXPDDX5HA7JI3W3SHX4WKOKJOSV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RFTOMY6JAQ537QLQR4L6BMVGCTLVGKNY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,126 +128,77 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Vladimir Lypak <vladimir.lypak@gmail.com>
 
-Introduce support for audio card on MSM8953 platform.
-Main difference between MSM8953 and MSM8916 is Q6AFE CLK API
-supported by firmware which influence way we set codec clocks.
-SoCs shipping on at least msm-3.18 should use v2 clocks.
+Add support for configuring Quinary Mi2S interface
+it will be used on MSM8953 and MSM8976 platform.
 
 Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-[Adam: rename functions, add msg]
-Co-developed-by: Adam Skladowski <a39.skl@gmail.com>
+[Adam: Split from MSM8953 support patch,add msg]
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 ---
- sound/soc/qcom/apq8016_sbc.c | 43 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 41 insertions(+), 2 deletions(-)
+ sound/soc/qcom/apq8016_sbc.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index 5a29adbd3f82..3ed35beb671a 100644
+index 3023cf180a75..5a29adbd3f82 100644
 --- a/sound/soc/qcom/apq8016_sbc.c
 +++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -22,6 +22,11 @@
+@@ -20,12 +20,13 @@
+ #include "common.h"
+ #include "qdsp6/q6afe.h"
  
- #define MI2S_COUNT  (MI2S_QUINARY + 1)
+-#define MI2S_COUNT  (MI2S_QUATERNARY + 1)
++#define MI2S_COUNT  (MI2S_QUINARY + 1)
  
-+enum afe_clk_api {
-+	Q6AFE_CLK_V1,
-+	Q6AFE_CLK_V2
-+};
-+
  struct apq8016_sbc_data {
  	struct snd_soc_card card;
  	void __iomem *mic_iomux;
-@@ -29,6 +34,7 @@ struct apq8016_sbc_data {
- 	void __iomem *quin_iomux;
+ 	void __iomem *spkr_iomux;
++	void __iomem *quin_iomux;
  	struct snd_soc_jack jack;
  	bool jack_setup;
-+	enum afe_clk_api q6afe_clk_ver;
  	int mi2s_clk_count[MI2S_COUNT];
- };
- 
-@@ -192,6 +198,28 @@ static int qdsp6_dai_get_lpass_id(struct snd_soc_dai *cpu_dai)
+@@ -86,6 +87,12 @@ static int apq8016_dai_init(struct snd_soc_pcm_runtime *rtd, int mi2s)
+ 			SPKR_CTL_TLMM_DATA1_EN | SPKR_CTL_TLMM_WS_OUT_SEL_SEC |
+ 			SPKR_CTL_TLMM_WS_EN_SEL_SEC, pdata->spkr_iomux);
+ 		break;
++	case MI2S_QUINARY:
++		/* Configure Quinary MI2S */
++		if (!pdata->quin_iomux)
++			return -ENOENT;
++		writel(readl(pdata->quin_iomux) | 0x01, pdata->quin_iomux);
++		break;
+ 	case MI2S_TERTIARY:
+ 		writel(readl(pdata->mic_iomux) | MIC_CTRL_TER_WS_SLAVE_SEL |
+ 			MIC_CTRL_TLMM_SCLK_EN,
+@@ -177,6 +184,9 @@ static int qdsp6_dai_get_lpass_id(struct snd_soc_dai *cpu_dai)
+ 	case QUATERNARY_MI2S_RX:
+ 	case QUATERNARY_MI2S_TX:
+ 		return MI2S_QUATERNARY;
++	case QUINARY_MI2S_RX:
++	case QUINARY_MI2S_TX:
++		return MI2S_QUINARY;
+ 	default:
+ 		return -EINVAL;
  	}
- }
+@@ -290,6 +300,7 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_card *card;
+ 	struct apq8016_sbc_data *data;
++	struct resource *res;
+ 	int ret;
  
-+static int qdsp6_get_clk_id(struct apq8016_sbc_data *data, int mi2s_id)
-+{
-+	if (data->q6afe_clk_ver == Q6AFE_CLK_V2) {
-+		switch (mi2s_id) {
-+		case MI2S_PRIMARY:
-+			return Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT;
-+		case MI2S_SECONDARY:
-+			return Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT;
-+		case MI2S_TERTIARY:
-+			return Q6AFE_LPASS_CLK_ID_TER_MI2S_IBIT;
-+		case MI2S_QUATERNARY:
-+			return Q6AFE_LPASS_CLK_ID_QUAD_MI2S_IBIT;
-+		case MI2S_QUINARY:
-+			return Q6AFE_LPASS_CLK_ID_QUI_MI2S_IBIT;
-+		default:
-+			break;
-+		}
-+	}
-+	/* If AFE CLK isn't V2 return V1 */
-+	return LPAIF_BIT_CLK;
-+}
+ 	add_ops = device_get_match_data(&pdev->dev);
+@@ -320,6 +331,10 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
+ 	if (IS_ERR(data->spkr_iomux))
+ 		return PTR_ERR(data->spkr_iomux);
+ 
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "quin-iomux");
++	if (res != NULL)
++		data->quin_iomux = devm_ioremap_resource(&pdev->dev, res);
 +
- static int msm8916_qdsp6_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-@@ -215,7 +243,7 @@ static int msm8916_qdsp6_startup(struct snd_pcm_substream *substream)
- 	if (++data->mi2s_clk_count[mi2s] > 1)
- 		return 0;
+ 	snd_soc_card_set_drvdata(card, data);
  
--	ret = snd_soc_dai_set_sysclk(cpu_dai, LPAIF_BIT_CLK, MI2S_BCLK_RATE, 0);
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, qdsp6_get_clk_id(data, mi2s), MI2S_BCLK_RATE, 0);
- 	if (ret)
- 		dev_err(card->dev, "Failed to enable LPAIF bit clk: %d\n", ret);
- 	return ret;
-@@ -236,7 +264,7 @@ static void msm8916_qdsp6_shutdown(struct snd_pcm_substream *substream)
- 	if (--data->mi2s_clk_count[mi2s] > 0)
- 		return;
- 
--	ret = snd_soc_dai_set_sysclk(cpu_dai, LPAIF_BIT_CLK, 0, 0);
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, qdsp6_get_clk_id(data, mi2s), 0, 0);
- 	if (ret)
- 		dev_err(card->dev, "Failed to disable LPAIF bit clk: %d\n", ret);
- }
-@@ -265,10 +293,12 @@ static int msm8916_qdsp6_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- static void msm8916_qdsp6_add_ops(struct snd_soc_card *card)
- {
- 	struct snd_soc_dai_link *link;
-+	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
- 	int i;
- 
- 	/* Make it obvious to userspace that QDSP6 is used */
- 	card->components = "qdsp6";
-+	pdata->q6afe_clk_ver = Q6AFE_CLK_V1;
- 
- 	for_each_card_prelinks(card, i, link) {
- 		if (link->no_pcm) {
-@@ -279,6 +309,14 @@ static void msm8916_qdsp6_add_ops(struct snd_soc_card *card)
- 	}
- }
- 
-+static void msm8953_qdsp6_add_ops(struct snd_soc_card *card)
-+{
-+	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
-+
-+	msm8916_qdsp6_add_ops(card);
-+	pdata->q6afe_clk_ver = Q6AFE_CLK_V2;
-+}
-+
- static const struct snd_kcontrol_new apq8016_sbc_snd_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- 	SOC_DAPM_PIN_SWITCH("Mic Jack"),
-@@ -344,6 +382,7 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
- static const struct of_device_id apq8016_sbc_device_id[] __maybe_unused = {
- 	{ .compatible = "qcom,apq8016-sbc-sndcard", .data = apq8016_sbc_add_ops },
- 	{ .compatible = "qcom,msm8916-qdsp6-sndcard", .data = msm8916_qdsp6_add_ops },
-+	{ .compatible = "qcom,msm8953-qdsp6-sndcard", .data = msm8953_qdsp6_add_ops },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, apq8016_sbc_device_id);
+ 	add_ops(card);
 
 -- 
 2.45.2
