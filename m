@@ -4,76 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72CE9C3DA7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 13:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02CDCC3DA7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 14:11:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 753BA2D2A;
-	Wed, 31 Jul 2024 15:58:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 753BA2D2A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5912C45;
+	Wed, 31 Jul 2024 16:11:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5912C45
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722434294;
-	bh=2MGuZRFEEO1kB1smAVjl0s8IfGp3OX6tTyo+GBf16NU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1722435110;
+	bh=g0FCq4nnchDFfxh51t3tr65YF79O4pzb8rTXeXDOps0=;
+	h=Date:To:Subject:Cc:From:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=P48xT8Ri1TLyxvkT2z6hEy2hGlbz/JAqaDYq+0Nk/ZMWLP4xtBWHAyYsHl8gmNADB
-	 wJRLbi8rVcIqT4t4+Nz2Zy56DxqAhcxxj98WmlorqTFJuOeYrJ+ODKk5SJrU/4p6Re
-	 JFKpBcQgxDrQ0eY8BPHe4PRvEwwkmAFD9L9gYPPM=
+	b=HxapYOfVJG/9P1z5wYdCe5+FHXdLTkDMEpfJKoQOcO585vuBk7ALP1lCcelYhvQf2
+	 jTQUv8KLnjBxXgBNiJBhIX+SWjOIGVcATYsbnZzlYMmZXuHgrpXyVN3FV24OW8Vusl
+	 A9msZjKvJHLpxq/Li609RGTioHnu7UFCMoekSlMM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62432F80448; Wed, 31 Jul 2024 15:58:00 +0200 (CEST)
+	id 39EAEF80588; Wed, 31 Jul 2024 16:11:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58752F80448;
-	Wed, 31 Jul 2024 15:57:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE356F805B3;
+	Wed, 31 Jul 2024 16:11:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29C5FF8026A; Wed, 31 Jul 2024 15:57:40 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id A271DF802DB; Wed, 31 Jul 2024 16:11:13 +0200 (CEST)
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 13FFBF802DB
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 15:53:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13FFBF802DB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 82902F800C9
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 16:11:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82902F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ZhXMBpD2
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A42CF6242A;
-	Wed, 31 Jul 2024 13:53:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44AB9C116B1;
-	Wed, 31 Jul 2024 13:53:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722434011;
-	bh=2MGuZRFEEO1kB1smAVjl0s8IfGp3OX6tTyo+GBf16NU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ZhXMBpD24kmFimLqzac/C2Qh7SIf/ozyB+RInbe8ZcyLRzxirnJ4bLlmC3wTFwceu
-	 IlBFqIZmrai4jH5OxOMzoaIW9yMYUghWzG8iEid3B4opPuvztrl8plAEgUcExNuGsd
-	 WyssPCFaTyCsGc+u0yyh06zj8X3E84/WmmxdoK6DlISSH1lzrY6azg2GieWCO0K547
-	 ibsxXvsJB5tktzUjMoGSJX7fKBPhvYwZrw5BoMbPIWXNB3EiA9ClqjZ1k6NtH1O7Xu
-	 KNWl/3bJtqyB5Jcr4zDvE7mDTHiBa4WnO1IGeU/jDVGCz3OWMoQOeAklxHWfGpV/01
-	 nYzQGPhPQoyqw==
-From: Mark Brown <broonie@kernel.org>
-To: jonathan.downing@nautel.com, piotr.wojtaszczyk@timesys.com,
- vz@mleia.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- Yue Haibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240731022949.135016-1-yuehaibing@huawei.com>
-References: <20240731022949.135016-1-yuehaibing@huawei.com>
-Subject: Re: [PATCH -next] ASoC: fsl: lpc3xxx-i2s: Remove set but not used
- variable 'savedbitclkrate'
-Message-Id: <172243400901.75630.3817479503151078602.b4-ty@kernel.org>
-Date: Wed, 31 Jul 2024 14:53:29 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: MREVDFZRUYMARQX2TFOIIQVJO3SMNU33
-X-Message-ID-Hash: MREVDFZRUYMARQX2TFOIIQVJO3SMNU33
-X-MailFrom: broonie@kernel.org
+ unprotected) header.d=walle.cc header.i=@walle.cc header.a=rsa-sha256
+ header.s=mail2022082101 header.b=RheJVGsL
+Received: from localhost (unknown [213.135.10.150])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id E4BD2505D;
+	Wed, 31 Jul 2024 16:11:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2022082101;
+	t=1722435067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
+	 references:references; bh=g0FCq4nnchDFfxh51t3tr65YF79O4pzb8rTXeXDOps0=;
+	b=RheJVGsLyDe1VaZaZGyLz41KRqG0eQbpu4lcvjRkmhqYsQxVpnY6SHspc+AJsru6X0q+4H
+	bFookNN2M2VflPjpAAD+KOxP9DSJKXFp+N5ii2OEzP5Mgf0JxBAhKMVXa+A/z9hdaMiFVU
+	fIYwA/Yrhh0W5AFk+8q9MlwIDS81LaZkUIvk2pT5xihTXbtf6qz8ClP1SJsvpKShFVOdsd
+	d9SijFRnSMSkdjPpL9ejDJsPMgkEgPbHP2qO4t795kQoPdBkT7deSy2NsBu4gEQc2GD+eq
+	+UD6qx97Lzo8BKfKecddrJISdAvVIB3G0WsxUA5xQY7a7wjGLRtxXewwju3sqQ==
+Content-Type: multipart/signed;
+ boundary=96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+Date: Wed, 31 Jul 2024 16:11:05 +0200
+Message-Id: <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc>
+To: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
+ <amit.kumar-mahapatra@amd.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
+ "broonie@kernel.org" <broonie@kernel.org>, "pratyush@kernel.org"
+ <pratyush@kernel.org>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
+ "vigneshr@ti.com" <vigneshr@ti.com>, "sbinding@opensource.cirrus.com"
+ <sbinding@opensource.cirrus.com>, "lee@kernel.org" <lee@kernel.org>,
+ "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+ "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+ "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>, "perex@perex.cz"
+ <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
+Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+ "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org"
+ <alsa-devel@alsa-project.org>, "patches@opensource.cirrus.com"
+ <patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
+ <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
+ "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, "Conor Dooley"
+ <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
+From: "Michael Walle" <michael@walle.cc>
+X-Mailer: aerc 0.16.0
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
+ <BN7PR12MB2802E87F1A6CD22D904CAEACDC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
+ <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org>
+ <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org>
+ <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org>
+ <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org>
+ <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com>
+ <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc>
+ <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com>
+ <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc>
+ <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
+In-Reply-To: <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
+Message-ID-Hash: EIEA4X5SNNMMQOD75IJUCSZ4NWEL4MSR
+X-Message-ID-Hash: EIEA4X5SNNMMQOD75IJUCSZ4NWEL4MSR
+X-MailFrom: michael@walle.cc
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MREVDFZRUYMARQX2TFOIIQVJO3SMNU33/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EIEA4X5SNNMMQOD75IJUCSZ4NWEL4MSR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,38 +132,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 31 Jul 2024 10:29:49 +0800, Yue Haibing wrote:
-> The variable savedbitclkrate is assigned and never used, so can be removed.
-> 
-> sound/soc/fsl/lpc3xxx-i2s.c:42:13: warning: variable ‘savedbitclkrate’ set but not used [-Wunused-but-set-variable]
-> 
-> 
+--96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Applied to
+> > All I'm saying is that you shouldn't put burden on us (the SPI NOR
+> > maintainers) for what seems to me at least as a niche. Thus I was
+> > asking for performance numbers and users. Convince me that I'm
+> > wrong and that is worth our time.
+>
+> No. It is not really just feature of our evaluation boards. Customers are=
+ using=20
+> it. I was talking to one guy from field and he confirms me that these=20
+> configurations are used by his multiple customers in real products.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Which begs the question, do we really have to support every feature
+in the core (I'd like to hear Tudors and Pratyush opinion here).
+Honestly, this just looks like a concatenation of two QSPI
+controllers. Why didn't you just use a normal octal controller which
+is a protocol also backed by the JEDEC standard. Is it any faster?
+Do you get more capacity? Does anyone really use large SPI-NOR
+flashes? If so, why? I mean you've put that controller on your SoC,
+you must have some convincing arguments why a customer should use
+it.
 
-Thanks!
+> > The first round of patches were really invasive regarding the core
+> > code. So if there is a clean layering approach which can be enabled
+> > as a module and you are maintaining it I'm fine with that (even if
+> > the core code needs some changes then like hooks or so, not sure).
+>
+> That discussion started with Miquel some years ago when he was trying to =
+to=20
+> solve description in DT which is merged for a while in the kernel.
 
-[1/1] ASoC: fsl: lpc3xxx-i2s: Remove set but not used variable 'savedbitclkrate'
-      commit: d5742b5d4d7b99531e352ea814506641f9fc8981
+What's your point here? From what I can tell the DT binding is wrong
+and needs to be reworked anyway.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> And Amit is trying to figure it out which way to go.
+> I don't want to predict where that code should be going or how it should =
+look=20
+> like because don't have spi-nor experience. But I hope we finally move fo=
+rward=20
+> on this topic to see the path how to upstream support for it.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+You still didn't answer my initial question. Will AMD support and
+maintain that code? I was pushing you towards putting that code into
+your own driver because then that's up to you what you are doing
+there.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+So how do we move forward? I'd like to see as little as core changes
+possible to get your dual flash setup working. I'm fine with having a
+layer in spi-nor/ (not sure that's how it will work with mtdcat
+which looks like it's similar as your stacked flash) as long as it
+can be a module (selected by the driver).
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-michael
 
-Thanks,
-Mark
+--96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZqpF+REcbWljaGFlbEB3
+YWxsZS5jYwAKCRASJzzuPgIf+L4FAYD66zueUFU1636OvgoGDTll3VhlpfWvCNks
+ygBkg8btX0/kDdus+Zs1Lz63qoncGBIBfjSOIExt4q/UijTQMIfXmQjnzxUHEsUH
+/aUgW/mzMqFLKqdncy63f8sPZX5ZY3vmAA==
+=2i8/
+-----END PGP SIGNATURE-----
+
+--96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c--
