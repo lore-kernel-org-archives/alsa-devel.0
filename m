@@ -4,80 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CBBCC3DA7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C02D0C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 08:57:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FFC327AB;
-	Wed, 31 Jul 2024 10:56:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FFC327AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B93572E1C;
+	Wed, 31 Jul 2024 10:56:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B93572E1C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722416209;
-	bh=csOnIy/jvpspB9nK47a8ST2AMrQk4NsCoXW6553uEbo=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=TqrOJQ5347Xt2S1hJpcqIbRiirNJ4Cm+EM4MzW/H/5YFkJXIsU0ncm2XP30sPO4VJ
-	 MGMu4kKj97jQj9qHAID90BhlGmJd16H2XcIZpYiPCbpWF20xFREpZm9u559IZzlLqg
-	 anTv/BaYFjI8bib9HLz1UpCPh78HGaGj4cSRCKIg=
+	s=default; t=1722416226;
+	bh=V9Run24YjNoyGq66FBbC6lVjACSwTiuXq1CwQ7z1P3E=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=T9yeYAp08UtdUEXyGYtfJPB2X16lDnZNpdHqMM4jl7h5Niz4k0vQ434Sfdidas+No
+	 vQFExdUViE1S4wo5gqE8OKPA+AUijfBaY66rrkHYCwsNlwnt1e0vS3Ozdm1ip9ynq0
+	 cacJDEHVFrCkY2bV5IB9OX4fCVp2F3L2Z72aDNgw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4EC7CF89777; Wed, 31 Jul 2024 10:50:55 +0200 (CEST)
+	id BCAF0F8065B; Wed, 31 Jul 2024 10:51:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A25E1F8976C;
-	Wed, 31 Jul 2024 10:50:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F3A7F80673;
+	Wed, 31 Jul 2024 10:51:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DE452F802DB; Wed, 31 Jul 2024 09:47:55 +0200 (CEST)
-Received: from mail.vertone.co.uk (mail.vertone.co.uk [80.229.143.59])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 62ADFF805D2; Wed, 31 Jul 2024 10:51:26 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D6942F800C9
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 09:44:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6942F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 34323F805B2
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 10:46:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34323F805B2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=vertone.co.uk header.i=@vertone.co.uk
- header.a=rsa-sha256 header.s=t header.b=IQOvIHs5
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=vertone.co.uk; s=t; h=Content-Type:Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=wdQ6Mr33/UoTCXYa8G+anhAttrejw9E2vFQmxARDreg=; b=IQOvIHs56RH8SGflsHDCI2Y/FF
-	zWuOC1n2R7Chwdo0d5EONM2p9Y6w/Fa+B9z8GNtAEOnzSUZwyghKzTJhhEg8cEci4YXdJCCLrlx/+
-	6wz0Nzz1IYXE0SURmO7l+NQL3b0w6p071M9o0Dr6ZnqDp+uIStix5XLORNrbaZEVHD/w=;
-Received: from jupiter.vertone.co.uk ([192.168.31.4] helo=jupiter.localnet)
-	by mail.vertone.co.uk with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <linux@vertone.co.uk>)
-	id 1sZ40z-00088T-Ls; Wed, 31 Jul 2024 08:44:54 +0100
-From: Terry Sanders <linux@vertone.co.uk>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
- Baojun Xu <baojun.xu@ti.com>
-Cc: alsa-devel@alsa-project.org
-Subject: Bug in tlv320adc3101 driver
-Date: Wed, 31 Jul 2024 08:44:53 +0100
-Message-ID: <5652371.ZASKD2KPVS@jupiter>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=dEH+fCqo
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722415576; x=1753951576;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=V9Run24YjNoyGq66FBbC6lVjACSwTiuXq1CwQ7z1P3E=;
+  b=dEH+fCqo6eb/pYslmEMsTKQeq56QWAqh3IaRaP9wLcwD6uvh01479PQY
+   +kxh3ebSNhbUSA2yvzzy+9fiBuQ4e6sefJLw5RCIXrJsjn+jF0bXrLgvv
+   pFVjJlU+G4s8mjJ1bpk25Daql0z8WCwca4dKOi2kV5g7mgPz4MPu3eRrM
+   iFAvKicJUp8wikK2G4Nry6vmSnAbixcnq8+usizRki0kvuc7fTzKPSTN9
+   MrcTxB/oRyOHKCuKBemwQTWEGhzwcCy6LkfvJl44QNqOzL24xwhL+3V9i
+   +Y3UTsBcL8LSCiNlm6rxTXfEoFv4qoaTtNVDJb/lXMhUqZKiFpNEBVhOQ
+   w==;
+X-CSE-ConnectionGUID: VD7mQZrvQc6uGbCMPLy5YA==
+X-CSE-MsgGUID: 0DNGWatVQtGTKRtfXp0EuA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11149"; a="31428283"
+X-IronPort-AV: E=Sophos;i="6.09,251,1716274800";
+   d="scan'208";a="31428283"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2024 01:46:12 -0700
+X-CSE-ConnectionGUID: eUn+BenwSaulz/6QChuy1Q==
+X-CSE-MsgGUID: RTe2u23zS2qdqnWYrMB6tA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,251,1716274800";
+   d="scan'208";a="54605677"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.53])
+ ([10.94.0.53])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2024 01:46:11 -0700
+Message-ID: <0796c157-1ac3-47a3-9d54-ba86f59d64d5@linux.intel.com>
+Date: Wed, 31 Jul 2024 10:46:08 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-MailFrom: linux@vertone.co.uk
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH alsa-lib 2/4] seq: Add API helper functions for creating
+ UMP Endpoint and Blocks
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20240619152855.6809-1-tiwai@suse.de>
+ <20240619152855.6809-3-tiwai@suse.de>
+From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20240619152855.6809-3-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ZEBJT72IXA62Q3GXCIQTYNKYZMUPFR7G
+X-Message-ID-Hash: ZEBJT72IXA62Q3GXCIQTYNKYZMUPFR7G
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: KD2TM7DQZ2QJ7RIRW55RYUJPTWGKLSFF
-X-Message-ID-Hash: KD2TM7DQZ2QJ7RIRW55RYUJPTWGKLSFF
-X-Mailman-Approved-At: Wed, 31 Jul 2024 08:50:41 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KD2TM7DQZ2QJ7RIRW55RYUJPTWGKLSFF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZEBJT72IXA62Q3GXCIQTYNKYZMUPFR7G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,45 +106,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+On 6/19/2024 5:28 PM, Takashi Iwai wrote:
+> For making it easer for applications to create a virtual UMP Endpoint
+> and UMP blocks, add two API helper functions.
+> 
+> snd_seq_create_ump_endpoint() creates (unsurprisingly) a UMP Endpoint,
+> based on the given snd_ump_endpoint_info_t information.  The number of
+> (max) UMP groups belonging to this Endpoint has to be specified.
+> This function sets up the Endpoint info on the sequencer client, and
+> creates a MIDI 2.0 UMP port as well as UMP Group ports automatically.
+> The name of the sequencer client is updated from the Endpoint name,
+> too.
+> 
+> After creating a UMP Endpoint, create each UMP Block via
+> snd_seq_create_ump_block() function with a snd_ump_block_info_t info.
+> The associated groups for each block have to be specified there.
+> The port names and capability bits are updated accordingly after
+> setting each block information.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
 
-There is a bug in the code for the tlv320adc3101 driver when setting up the D value for PLL.
+...
 
-The D value is set via I2C using page 0 registers 7 (MSB) and 8 (LSB).  The data sheet has the following information for the registers:
+> +			if (*blknames) {
+> +				strlcat(blknames, ", ", sizeof(blknames));
+> +				strlcat(blknames, (const char *)bp->name,
+> +					sizeof(blknames));
 
-     "Page 0 / Register 7 will be updated when Page 0 / Register 8 is written immediately after Page 0 / Register 7 is written"
+FYI, this seems to introduce build problems on systems that do not have 
+strlcpy:
 
-and:
+During build:
+seqmid.c: In function ‘update_group_ports’:
+seqmid.c:672:33: warning: implicit declaration of function ‘strlcat’; 
+did you mean ‘strncat’? [-Wimplicit-function-declaration]
+   672 |                                 strlcat(blknames, ", ", 
+sizeof(blknames));
+       |                                 ^~~~~~~
+       |                                 strncat
 
-   "Page 0 / Register 8 must be written immediately after writing to Page 0 / Register 7"
-
-The function that implements this is adc3xxx_setup_pll() in file    soc/codecs/tlv320adc3xxx.c line 1172 - 1189. The function is shown below:
-
-static void adc3xxx_setup_pll(struct snd_soc_component *component,
-			      int div_entry)
-{
-	int i = div_entry;
-
-	/* P & R values */
-	snd_soc_component_write(component, ADC3XXX_PLL_PROG_PR,
-				(adc3xxx_divs[i].pll_p << ADC3XXX_PLLP_SHIFT) |
-				(adc3xxx_divs[i].pll_r << ADC3XXX_PLLR_SHIFT));
-	/* J value */
-	snd_soc_component_write(component, ADC3XXX_PLL_PROG_J,
-				adc3xxx_divs[i].pll_j & ADC3XXX_PLLJ_MASK);
-	/* D value */
-	snd_soc_component_write(component, ADC3XXX_PLL_PROG_D_LSB,
-				adc3xxx_divs[i].pll_d & ADC3XXX_PLLD_LSB_MASK);
-	snd_soc_component_write(component, ADC3XXX_PLL_PROG_D_MSB,
-				(adc3xxx_divs[i].pll_d >> 8) & ADC3XXX_PLLD_MSB_MASK);
-}
-
-In the function the LSB (register 8) is written first followed by the MSB (register 7). This is the wrong way around and should be swapped so that the MSB is written first.
-
-Regards
-
-Terry Sanders
-
+And then during linking:
+/usr/bin/ld: seq/.libs/libseq.a(seqmid.o): in function `update_group_ports':
+/home/amade/workdir/avs/alsa-lib/src/seq/seqmid.c:672: undefined 
+reference to `strlcat'
+/usr/bin/ld: /home/amade/workdir/avs/alsa-lib/src/seq/seqmid.c:673: 
+undefined reference to `strlcat'
+collect2: error: ld returned 1 exit status
 
 
 
