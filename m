@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 772F1C3DA7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 13:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20671C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 13:57:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3EA12CAD;
-	Wed, 31 Jul 2024 15:55:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3EA12CAD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A8DE2CAF;
+	Wed, 31 Jul 2024 15:56:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A8DE2CAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722434119;
-	bh=h4jkxfwJQEcLEg45LO0JMK3kGyr4gy5FVoR95arp49E=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=PBMZoGMG8TM2Pjn/wWIMpUe4cnuAYen0NEFOTXMLqqU+tq3x0TPZNzHjR8CDllAvx
-	 3eHHPhuUozu2XIK9vbxfP2zPeqqPpaUQGiVeNU+EOKazmUBBHp7UiBmvXI3Gtv1Dzc
-	 qc4TFjPlPNR/gXatNFp56wcrkOR+7nITXHdN7Khs=
+	s=default; t=1722434219;
+	bh=ln6Q+aYkwTRjyD3KHMZFLtZDwase6FG+Ro94HJwcCc4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hlIu5j7seT6r3XKSY2M2NbIYlVQhYnDQVEi5oghgfbbeOSWMkMb0EquOL4w4AkFPY
+	 dqQgPaSnwC+YzZ57dleNsalOECdWSAdl02gORkDTUS8aH7gS1DNCMxxJLKExAX41IH
+	 ZtsqCiH2mp5WRD9aOml9oc0x4oTpdDGEybIv1/l4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EE7E3F8058C; Wed, 31 Jul 2024 15:54:47 +0200 (CEST)
+	id ECD39F805B5; Wed, 31 Jul 2024 15:56:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0786F805B6;
-	Wed, 31 Jul 2024 15:54:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5B4EF805B6;
+	Wed, 31 Jul 2024 15:56:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A70C0F8057A; Wed, 31 Jul 2024 15:53:41 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 9FA81F80579; Wed, 31 Jul 2024 15:53:43 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 89EE5F80269
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 15:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89EE5F80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id 88EEEF8026A
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 15:53:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88EEEF8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fsCfmhZS
+ header.s=k20201202 header.b=FOMPeX1a
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3EA3962388;
+	by sin.source.kernel.org (Postfix) with ESMTP id 94B31CE16B9;
+	Wed, 31 Jul 2024 13:53:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60430C32786;
 	Wed, 31 Jul 2024 13:53:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8D1EC116B1;
-	Wed, 31 Jul 2024 13:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722434006;
-	bh=h4jkxfwJQEcLEg45LO0JMK3kGyr4gy5FVoR95arp49E=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=fsCfmhZSDqAoNxS7TL+g2Cyvt+P/djSELkOmXa7C+3x69n/p7AFXQLdp2LZdv1Uva
-	 N6idLgS1d45bF4NwpxbF4ai0HmK61KoO0CBvLcOAIr0a3XT/+daWBl+E7Y9Htsof+3
-	 6oeBJt5ZvQyZjPAH6gUD4Nd0+7yFubIJL3QzbOAaAwo/Efb/XaE28ORi0xDqbbYIYi
-	 Zw8l179LS9wrWRqCetYFm+GD9YWwsPEgYBC84TU5FxTr0Zyq2D/2s7dJva9X0yRnIj
-	 Ks4BYMr873zY+q6Hx/Rk8GzroKrJpVeSA5K2DQOSPzzuvxBgXm3h7d6UJK4iav9xQ8
-	 0uEV4bU/px5XA==
+	s=k20201202; t=1722434007;
+	bh=ln6Q+aYkwTRjyD3KHMZFLtZDwase6FG+Ro94HJwcCc4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=FOMPeX1amn3gIQ1+Pk1NnzxSogkay/hj5SvRcmYwFiHTd6TKQ204nrepLmTaH0Ba5
+	 J/2lWm7q5gBmBEGEdq5rUYicNXXcS3x3EQOkmuH6+0cVoXO0HZT3rtdJQ8s1FCefo5
+	 fygrgWc4DVRln2qy9YoSsSO+ToVRVTaY5EkijRzWI0VocM0DV7wJ9m1pcGW+3pl5VG
+	 FYYPraWSTvxEumlAXDe4jxUHlSbkquYpKAzjqIk3lkLPNQs+hL7kAQtkClptX0mfR8
+	 tJzgr8H1izeFEtpZ05MJWmlwSHVRr6Ek2opa3UqMqTX4cVhG1ybgu5uEEEBTa9nk4L
+	 zs9g3GQERzw+w==
 From: Mark Brown <broonie@kernel.org>
-To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1721897694-6088-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1721897694-6088-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 0/2] ASoC: fsl_micfil: Check the difference for i.MX8
- and i.MX9
-Message-Id: <172243400439.75630.6636735348572180704.b4-ty@kernel.org>
-Date: Wed, 31 Jul 2024 14:53:24 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <87ed7bk4qt.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ed7bk4qt.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: remove rsnd_mod_confirm_ssi() under DEBUG
+Message-Id: <172243400712.75630.16807614406428007489.b4-ty@kernel.org>
+Date: Wed, 31 Jul 2024 14:53:27 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: ZGCOYCK73SZGSCQZEZYDFUHF5ANWQHSX
-X-Message-ID-Hash: ZGCOYCK73SZGSCQZEZYDFUHF5ANWQHSX
+Message-ID-Hash: BQG5ZDNS5GVXLCSLWFADBU7IQRRMYOZB
+X-Message-ID-Hash: BQG5ZDNS5GVXLCSLWFADBU7IQRRMYOZB
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZGCOYCK73SZGSCQZEZYDFUHF5ANWQHSX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BQG5ZDNS5GVXLCSLWFADBU7IQRRMYOZB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,18 +91,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 25 Jul 2024 16:54:52 +0800, Shengjiu Wang wrote:
-> There are some register difference for i.MX8 and i.MX9
-> REG_MICFIL_FIFO_CTRL definition is updated.
-> REG_MICFIL_FSYNC_CTRL, REG_MICFIL_VERID, REG_MICFIL_PARAM are added from
-> i.MX9
+On Tue, 30 Jul 2024 02:12:10 +0000, Kuninori Morimoto wrote:
+> rsnd_mod_confirm_ssi() confirms mod sanity, it should always be
+> confirmed, not only when DEBUG. This patch tidyup it.
 > 
-> Shengjiu Wang (2):
->   ASoC: fsl_micfil: Expand the range of FIFO watermark mask
->   ASoC: fsl_micfil: Differentiate register access permission for
->     platforms
 > 
-> [...]
 
 Applied to
 
@@ -114,10 +103,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: fsl_micfil: Expand the range of FIFO watermark mask
-      commit: 4ddd51ccff911a2e9e961307692532a325f6c78a
-[2/2] ASoC: fsl_micfil: Differentiate register access permission for platforms
-      commit: aa4f76ef09a993efa9b5fab6ddf5d6d324baaea3
+[1/1] ASoC: rsnd: remove rsnd_mod_confirm_ssi() under DEBUG
+      commit: 80565764c7f53b47be266c90d635285e295684dc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
