@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B4C5C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 12:14:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EDACC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 12:14:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C5343FCC;
-	Thu,  1 Aug 2024 14:13:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C5343FCC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A17914034;
+	Thu,  1 Aug 2024 14:13:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A17914034
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722514416;
-	bh=cAiwEYPyhie5YN0PaVJrgMAafcZxhlOZNQ26oDH/bMM=;
+	s=default; t=1722514433;
+	bh=7ih/twfj7Vu9/nowcpH2q0+GyQypwWFRSVqFIt9jL5M=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dncQnJz5Ae2YpYUZ2+qwshjvdPfhuts12KVy9OpBXGd94vbb4iZJTb0UVN8I3pmKG
-	 mwHIPd64nXfh5DzYX1QRx5dF7yeOVMjx4HIsNnjquxLucr5A/sD7xjJX5I3LNiDZVQ
-	 qAHJo9eF513GgSOrXu6aYuHTJXpa0veMK9Mh94ZE=
+	b=O6NI+IL7JFQvruBinGzTTqBJ4WYeZNg32j8o4fAsWF5QbZOsv5Hl295on7lJ/dKZH
+	 IXWslqFa8tlF9tW1OrxyrOsvqTS+0gKknAjcJJ9SkAGSXnXCmIhBHvOA70G9fXMqvJ
+	 pCLzoeENyS0jAu+MH0GoIguc3UDIahCBWtXLap2I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0096CF80579; Thu,  1 Aug 2024 14:11:41 +0200 (CEST)
+	id 45227F806AB; Thu,  1 Aug 2024 14:11:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17FC8F806A8;
-	Thu,  1 Aug 2024 14:11:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 990A0F806C2;
+	Thu,  1 Aug 2024 14:11:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A6CBF8026A; Wed, 31 Jul 2024 17:31:05 +0200 (CEST)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
- [IPv6:2a00:1450:4864:20::229])
+	id 6F3C5F8026A; Wed, 31 Jul 2024 17:31:08 +0200 (CEST)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2DEBEF80448
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 17:26:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DEBEF80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3D1AAF80580
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 17:26:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D1AAF80580
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=WALn5UDy
-Received: by mail-lj1-x229.google.com with SMTP id
- 38308e7fff4ca-2ef23d04541so71017861fa.2
+ header.s=20230601 header.b=LAZ4TZb5
+Received: by mail-lj1-x234.google.com with SMTP id
+ 38308e7fff4ca-2ef2d96164aso67289201fa.3
         for <alsa-devel@alsa-project.org>;
- Wed, 31 Jul 2024 08:26:11 -0700 (PDT)
+ Wed, 31 Jul 2024 08:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722439570; x=1723044370;
+        d=gmail.com; s=20230601; t=1722439577; x=1723044377;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HNjd7IUt9Z8kpFWJyPP/P05dyp4sHdu+T/jMNypx4g4=;
-        b=WALn5UDy/TD9OIU7Dnw+5ipElaUnGVirQn3pMqsa+mlqSqwYxRsPq3N7NadE7+BUQS
-         kK8qxsoiIV2xniMmhM8hThHe183Jyun2Zjm66poQP0BPmoggYB95ZBLQEdGah8GWKExC
-         /IM6WML6Qb0srVCPiqNDcnG1t0CqtwxvtS9IXf6tyhlzC3Nbbd0Tx9MSLx159xDMhtaM
-         eUr8r/eVA4KzhEsIt7OKWVDPe6xL/sHjU+V7BucmE93Qqw7SL423o36Kc/Js2Z8XMOya
-         voXEEtdLFvrLG54yIKStkQTmLWpFY98jnbReE8bQl+c7i53MXYcOKGv6KJu6VvH/VbSp
-         LOHw==
+        bh=QiPIHigZUWEy/gTiB3EmC11NKGqz88RzfHr+wLDLdBQ=;
+        b=LAZ4TZb5IPhfjmQwm1yqFEoIf52CZmbYqToInHnnigScnh7157UCOKKSOqAkHKeaEw
+         cR6u7jXWJRi1CatUvEI+oXXpbI0MecSdJya+UYwiz6+ilfAsbk3D5BHJ43YzlupO5dDG
+         BRKGvh+RxigN1oHXgIrb4W8LVWOHW8U3lPJfCd5NgzU2SRdNCx/b6hiGY3a2OppbSaYg
+         PSsBM35t8xuMA2IMnILadZh+RWiQXHCL4nfcbHQ2JkWsMQGyD/BkibvnQNl7iJdHn2e7
+         wl/Ca8gDuEZI8PPuqs18q3yoOHZ2LkzPrBnshXnApFIjNyomnxL6ubHHVpCSmqfvmNGD
+         ZAPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722439570; x=1723044370;
+        d=1e100.net; s=20230601; t=1722439577; x=1723044377;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HNjd7IUt9Z8kpFWJyPP/P05dyp4sHdu+T/jMNypx4g4=;
-        b=sVl4BkBZaeKkI5v4d3epFF2dy6XNMNX9720uGCd9pjJ4XZw+VBaE770ivrJjlLWnlm
-         tuewONCS8D70NhhGweeE80zjBrTWT9q+v1pfoN5drXamAcnhkrpe27HAsIzb1U1Tu3zl
-         hf0+M63RPnXDBDHeKgSy7LjKiPIc33CrFzTTZTTnjgSjAihtA3XqMFlCJ/ZfwOiMS4BQ
-         w+UYjI+qUzGno/F0UyX5bkdWfL0ZIvfWtlNc4vPPY2STxVj2r4TPR4RiO4ohoPfqgwre
-         rQ1uQz18XJ6AAZUslyNb9rkq51hiYjxb73cW0spBVXUNLcOEC2R8Gs6yRWkZIoRAinRs
-         ZSKA==
-X-Gm-Message-State: AOJu0YyjuUtEWQ9LoGjc0nPoirzuqWxVhh3xQP04f6QNDmG7MsXseYTq
-	DkGKxTVSb3+q3AN34j19qLx/Wo3ethaCzTk+penumPtVy3/ZOxE7
+        bh=QiPIHigZUWEy/gTiB3EmC11NKGqz88RzfHr+wLDLdBQ=;
+        b=UCNcIH6vk38gjgzP6UFwxRUJfOFtZ4jsQEWXLEuNIX00rZuVBXGOQbEUVsKK3W4f5x
+         ZSUcoi+0QNak7HdRseSTe2kXkY5IoMUjVSUa2GApLCcH8N37b/b28crLOOdu4HwH1CQ5
+         R7N5C4UMpbfBx9+apGaa7tfQaiUdGz+IncQ1um2a2TCYqQ6d1wazqEG27BzSjd3avmQP
+         6BuL1o1LsxggeLKZ9W2UPHVssmCogU9842cDOp1LRUb7XtmtY6TVTYP7eo7WY4fGSBZY
+         Sp+WCDpjNF9rdW4ah1JbEm0D6HFegsykb5ZAFUDXy4vX5EqetF55rkiUI0fC+/1EcaCj
+         QBew==
+X-Gm-Message-State: AOJu0YyO3I+INIzRaYAR+MuA+8J/+/p2p1ZmZhoWRB8dmhgrAIW+/j4C
+	BP8EMkOH1iskhvAatk+hGeiqeTxxYY4AbWCGEa1ZVE+EWAeJvjNL
 X-Google-Smtp-Source: 
- AGHT+IFQXiJjYzgQhwbnofWVANeBtgbuGWzLTcGQFaQNCs4mjjL1q369HZTUzjEqcwg8HucG/ozxpQ==
-X-Received: by 2002:a05:651c:545:b0:2f0:1fd5:2f29 with SMTP id
- 38308e7fff4ca-2f12edfef11mr114493221fa.19.1722439570019;
-        Wed, 31 Jul 2024 08:26:10 -0700 (PDT)
+ AGHT+IGfiiY8nEDh5Jy5pRnrx5JgptFO0aaTdFxWxnCuI2DfwVrpN841vJxt9dac7N5AxkUuFMo2zw==
+X-Received: by 2002:a2e:7d13:0:b0:2ef:2b38:879c with SMTP id
+ 38308e7fff4ca-2f12edf02b2mr97756941fa.3.1722439576327;
+        Wed, 31 Jul 2024 08:26:16 -0700 (PDT)
 Received: from [127.0.1.1] (byv161.neoplus.adsl.tpnet.pl. [83.30.41.161])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4282bb64755sm25430985e9.36.2024.07.31.08.26.08
+ 5b1f17b1804b1-4282bb64755sm25430985e9.36.2024.07.31.08.26.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 08:26:09 -0700 (PDT)
+        Wed, 31 Jul 2024 08:26:15 -0700 (PDT)
 From: Adam Skladowski <a39.skl@gmail.com>
-Date: Wed, 31 Jul 2024 17:25:28 +0200
-Subject: [PATCH v3 4/8] ASoC: msm8916-wcd-analog: add pm8953 codec
+Date: Wed, 31 Jul 2024 17:25:31 +0200
+Subject: [PATCH v3 7/8] ASoC: qcom: apq8016_sbc: Add support for msm8976
+ SoC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240731-msm8953-msm8976-asoc-v3-4-163f23c3a28d@gmail.com>
+Message-Id: <20240731-msm8953-msm8976-asoc-v3-7-163f23c3a28d@gmail.com>
 References: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
 In-Reply-To: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -100,8 +101,7 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Stephan Gerhold <stephan@gerhold.net>
 Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Adam Skladowski <a39.skl@gmail.com>,
- Vladimir Lypak <vladimir.lypak@gmail.com>
+ devicetree@vger.kernel.org, Adam Skladowski <a39.skl@gmail.com>
 X-Mailer: b4 0.14.0
 X-MailFrom: a39.skl@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
@@ -109,15 +109,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 4M6CQRO7VKUZNQ5RPYADORQXES5OPYFE
-X-Message-ID-Hash: 4M6CQRO7VKUZNQ5RPYADORQXES5OPYFE
+Message-ID-Hash: TVSN3IGVA4L6WUJ5LGGLZIH7TZ7YGO23
+X-Message-ID-Hash: TVSN3IGVA4L6WUJ5LGGLZIH7TZ7YGO23
 X-Mailman-Approved-At: Thu, 01 Aug 2024 12:06:32 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4M6CQRO7VKUZNQ5RPYADORQXES5OPYFE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TVSN3IGVA4L6WUJ5LGGLZIH7TZ7YGO23/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,64 +126,84 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Vladimir Lypak <vladimir.lypak@gmail.com>
+Introduce support for audio card on MSM8976 platform.
+While MSM8976 falls into v1 category with MSM8916, digitial codec clock
+is not available in GCC so we have to set it in machine driver.
+For that reason for V1 clocks new boolean is added to check
+if we need to enable codec clock.
 
-Add regs overrides for PM8953 codec.
-
-Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-[Adam: rename codec]
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/soc/qcom/apq8016_sbc.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 13df60409857..b9325290c28d 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -755,6 +755,34 @@ static const struct wcd_reg_seq pm8950_data = {
- 	.seq_size = ARRAY_SIZE(wcd_reg_defaults_pm8950),
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index 3ed35beb671a..8219d4d55625 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -35,6 +35,7 @@ struct apq8016_sbc_data {
+ 	struct snd_soc_jack jack;
+ 	bool jack_setup;
+ 	enum afe_clk_api q6afe_clk_ver;
++	bool dig_cdc_mclk_en;
+ 	int mi2s_clk_count[MI2S_COUNT];
  };
  
-+static const struct reg_default wcd_reg_defaults_pm8953[] = {
-+	{CDC_A_RX_COM_OCP_CTL, 0xd1},
-+	{CDC_A_RX_COM_OCP_COUNT, 0xff},
-+	{CDC_D_SEC_ACCESS, 0xa5},
-+	{CDC_D_PERPH_RESET_CTL3, 0x0f},
-+	{CDC_A_TX_1_2_OPAMP_BIAS, 0x4c},
-+	{CDC_A_NCP_FBCTRL, 0xa8},
-+	{CDC_A_NCP_VCTRL, 0xa4},
-+	{CDC_A_SPKR_DRV_CTL, 0x69},
-+	{CDC_A_SPKR_DRV_DBG, 0x01},
-+	{CDC_A_SEC_ACCESS, 0xa5},
-+	{CDC_A_PERPH_RESET_CTL3, 0x0f},
-+	{CDC_A_CURRENT_LIMIT, 0xa2},
-+	{CDC_A_BYPASS_MODE, 0x18},
-+	{CDC_A_SPKR_ANA_BIAS_SET, 0x41},
-+	{CDC_A_SPKR_DAC_CTL, 0x03},
-+	{CDC_A_SPKR_OCP_CTL, 0xe1},
-+	{CDC_A_RX_HPH_BIAS_PA, 0xfa},
-+	{CDC_A_RX_EAR_STATUS, 0x10},
-+	{CDC_A_MASTER_BIAS_CTL, 0x30},
-+	{CDC_A_MICB_1_INT_RBIAS, 0x00},
-+};
-+
-+static const struct wcd_reg_seq pm8953_data = {
-+	.seq = wcd_reg_defaults_pm8953,
-+	.seq_size = ARRAY_SIZE(wcd_reg_defaults_pm8953),
-+};
-+
- static int pm8916_wcd_analog_probe(struct snd_soc_component *component)
- {
- 	struct pm8916_wcd_analog_priv *priv = dev_get_drvdata(component->dev);
-@@ -1304,6 +1332,7 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
- static const struct of_device_id pm8916_wcd_analog_spmi_match_table[] = {
- 	{ .compatible = "qcom,pm8916-wcd-analog-codec", .data = &pm8916_data },
- 	{ .compatible = "qcom,pm8950-wcd-analog-codec", .data = &pm8950_data },
-+	{ .compatible = "qcom,pm8953-wcd-analog-codec", .data = &pm8953_data },
- 	{ }
- };
+@@ -242,6 +243,16 @@ static int msm8916_qdsp6_startup(struct snd_pcm_substream *substream)
  
+ 	if (++data->mi2s_clk_count[mi2s] > 1)
+ 		return 0;
++	/*
++	 * On newer legacy SoC (MSM8976) lpass codec clocks are not available in gcc region
++	 * so we have to request clock from machine driver using V1 API)
++	 */
++	if (data->q6afe_clk_ver == Q6AFE_CLK_V1 &&
++	    data->dig_cdc_mclk_en) {
++		ret = snd_soc_dai_set_sysclk(cpu_dai,  LPAIF_DIG_CLK, DEFAULT_MCLK_RATE, 0);
++		if (ret)
++			dev_err(card->dev, "Failed to enable LPAIF dig clk: %d\n", ret);
++	}
+ 
+ 	ret = snd_soc_dai_set_sysclk(cpu_dai, qdsp6_get_clk_id(data, mi2s), MI2S_BCLK_RATE, 0);
+ 	if (ret)
+@@ -267,6 +278,13 @@ static void msm8916_qdsp6_shutdown(struct snd_pcm_substream *substream)
+ 	ret = snd_soc_dai_set_sysclk(cpu_dai, qdsp6_get_clk_id(data, mi2s), 0, 0);
+ 	if (ret)
+ 		dev_err(card->dev, "Failed to disable LPAIF bit clk: %d\n", ret);
++
++	if (data->q6afe_clk_ver == Q6AFE_CLK_V1 &&
++	    data->dig_cdc_mclk_en) {
++		ret = snd_soc_dai_set_sysclk(cpu_dai,  LPAIF_DIG_CLK, 0, 0);
++		if (ret)
++			dev_err(card->dev, "Failed to disable LPAIF dig clk: %d\n", ret);
++	}
+ }
+ 
+ static const struct snd_soc_ops msm8916_qdsp6_be_ops = {
+@@ -317,6 +335,15 @@ static void msm8953_qdsp6_add_ops(struct snd_soc_card *card)
+ 	pdata->q6afe_clk_ver = Q6AFE_CLK_V2;
+ }
+ 
++static void msm8976_qdsp6_add_ops(struct snd_soc_card *card)
++{
++	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
++
++	msm8916_qdsp6_add_ops(card);
++	pdata->q6afe_clk_ver = Q6AFE_CLK_V1;
++	pdata->dig_cdc_mclk_en = true;
++}
++
+ static const struct snd_kcontrol_new apq8016_sbc_snd_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Mic Jack"),
+@@ -383,6 +410,7 @@ static const struct of_device_id apq8016_sbc_device_id[] __maybe_unused = {
+ 	{ .compatible = "qcom,apq8016-sbc-sndcard", .data = apq8016_sbc_add_ops },
+ 	{ .compatible = "qcom,msm8916-qdsp6-sndcard", .data = msm8916_qdsp6_add_ops },
+ 	{ .compatible = "qcom,msm8953-qdsp6-sndcard", .data = msm8953_qdsp6_add_ops },
++	{ .compatible = "qcom,msm8976-qdsp6-sndcard", .data = msm8976_qdsp6_add_ops },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, apq8016_sbc_device_id);
 
 -- 
 2.45.2
