@@ -4,78 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02CDCC3DA7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 14:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF75AC3DA7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 14:15:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5912C45;
-	Wed, 31 Jul 2024 16:11:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5912C45
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5940F2C78;
+	Wed, 31 Jul 2024 16:14:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5940F2C78
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722435110;
-	bh=g0FCq4nnchDFfxh51t3tr65YF79O4pzb8rTXeXDOps0=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To:List-Id:
+	s=default; t=1722435296;
+	bh=zx5QL81elKNi3Hk3O7l2BXurVkNfaLTDR0RVBgJkx7A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HxapYOfVJG/9P1z5wYdCe5+FHXdLTkDMEpfJKoQOcO585vuBk7ALP1lCcelYhvQf2
-	 jTQUv8KLnjBxXgBNiJBhIX+SWjOIGVcATYsbnZzlYMmZXuHgrpXyVN3FV24OW8Vusl
-	 A9msZjKvJHLpxq/Li609RGTioHnu7UFCMoekSlMM=
+	b=DsGvz/qu9BYOV1kbtkMbZhjTmXR/olQRNePuxW8ceRHFzezXdztsvthInxWbnfFwF
+	 vDOjeChdYQdl/mIRoyg2av7mb7ppuVDcLU2LdCEo2t6igQsQtAJhCvbRHTSEVfDfmu
+	 yNUSrRIoZ5+wjM2RUbQDgilMb48Wbkk7HNjeRg+Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39EAEF80588; Wed, 31 Jul 2024 16:11:18 +0200 (CEST)
+	id 2F780F80589; Wed, 31 Jul 2024 16:14:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE356F805B3;
-	Wed, 31 Jul 2024 16:11:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05BE1F805AE;
+	Wed, 31 Jul 2024 16:14:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A271DF802DB; Wed, 31 Jul 2024 16:11:13 +0200 (CEST)
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D827FF802DB; Wed, 31 Jul 2024 10:59:16 +0200 (CEST)
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com
+ (mail-bn7nam10on20620.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2009::620])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 82902F800C9
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 16:11:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82902F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id EAE99F8007E
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 10:58:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAE99F8007E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=walle.cc header.i=@walle.cc header.a=rsa-sha256
- header.s=mail2022082101 header.b=RheJVGsL
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id E4BD2505D;
-	Wed, 31 Jul 2024 16:11:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2022082101;
-	t=1722435067;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=g0FCq4nnchDFfxh51t3tr65YF79O4pzb8rTXeXDOps0=;
-	b=RheJVGsLyDe1VaZaZGyLz41KRqG0eQbpu4lcvjRkmhqYsQxVpnY6SHspc+AJsru6X0q+4H
-	bFookNN2M2VflPjpAAD+KOxP9DSJKXFp+N5ii2OEzP5Mgf0JxBAhKMVXa+A/z9hdaMiFVU
-	fIYwA/Yrhh0W5AFk+8q9MlwIDS81LaZkUIvk2pT5xihTXbtf6qz8ClP1SJsvpKShFVOdsd
-	d9SijFRnSMSkdjPpL9ejDJsPMgkEgPbHP2qO4t795kQoPdBkT7deSy2NsBu4gEQc2GD+eq
-	+UD6qx97Lzo8BKfKecddrJISdAvVIB3G0WsxUA5xQY7a7wjGLRtxXewwju3sqQ==
-Content-Type: multipart/signed;
- boundary=96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-Date: Wed, 31 Jul 2024 16:11:05 +0200
-Message-Id: <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc>
-To: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
- <amit.kumar-mahapatra@amd.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "broonie@kernel.org" <broonie@kernel.org>, "pratyush@kernel.org"
- <pratyush@kernel.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
- "vigneshr@ti.com" <vigneshr@ti.com>, "sbinding@opensource.cirrus.com"
- <sbinding@opensource.cirrus.com>, "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>, "perex@perex.cz"
- <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=stMKYT+G
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ujGgMoufQR7m0NhyfnxznMOQYSJqjW9tHVCefyzuQa8u6pxwtkDYfrWW1c6297NWd9ATxFj49rvt/u3IOLqDsI3VH9DQxAoQpOHn+b6IFQryXaIX/TTtb3fXVUp7JiWnbt3OnF6FzFkda6Di6I8VGYs84tFL+samp9lquW84jDDc3toIToLmLp9tUx36LMHne4h5Lm2Udbx+yNS7iVXlT6ybtHPlZuxPXibsHvxhEMKjk0dJ1AKavjEZpFrqvjAj2Fd3EslJYQ5i78JfAO0MUMfZYP4f7lH7cJbbdrmdE290f+UsqGGtRK7nojkL4zPKZd2YbpXYbWArA2MgPn16NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hT44oiJXV3gnb6p7ArHuvR9ad1u96eoBmnFY6VopABA=;
+ b=Sir6pwfrD1igm/FmlZIkEAjTfQDGS0azS3HjwkTVBTodMQgojc8w5HYx/ClRMCKi2Qem4aWA+LG60Td8/4D6kjxKmzHb9tVBjyYgKAoG3lbzr9sfQyMPENxv+y09E8PoEQzSlFGAOAJdeKs2Ck3Y1FokvgMQe6ZyGz4RFpCOtrrmhdT8hJhqkxYidOQ7dfDpT8bvhUJLYOMxLWBV5h5d8YTWHMjYE6tr8TfTH1TeptFhhTLw5vsRUdrojGuDCGViHh7UIkQCBap1yry2D8nzV0qV0q1UjSTiANl+rbJVYZ2RWcEfaNUrDqK7O2J8ytfTR08WaOngFbsnJQyiGKVl0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hT44oiJXV3gnb6p7ArHuvR9ad1u96eoBmnFY6VopABA=;
+ b=stMKYT+G8h8nYDL0zXjdJ+GTioquaG6q0bOIYqGwwOCx+J0B6V8PcEAu61ucSAYL6uDvb/oWv8pTPp+gxxQVBu6tWfrsMNgsUKwa15i+U2AzbdZhLW1s3K98jHEhERiU0kQQip9Y6jAacWS4Iq6XLzteoTPB2JVWkHl/VZF5kQY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8109.namprd12.prod.outlook.com (2603:10b6:a03:4f5::8)
+ by PH7PR12MB8015.namprd12.prod.outlook.com (2603:10b6:510:26a::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7807.30; Wed, 31 Jul
+ 2024 08:58:51 +0000
+Received: from SJ2PR12MB8109.namprd12.prod.outlook.com
+ ([fe80::7f35:efe7:5e82:5e30]) by SJ2PR12MB8109.namprd12.prod.outlook.com
+ ([fe80::7f35:efe7:5e82:5e30%5]) with mapi id 15.20.7807.026; Wed, 31 Jul 2024
+ 08:58:50 +0000
+Message-ID: <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com>
+Date: Wed, 31 Jul 2024 10:58:26 +0200
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
  spi-nor
+To: Michael Walle <michael@walle.cc>,
+ "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "pratyush@kernel.org" <pratyush@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
+ "lee@kernel.org" <lee@kernel.org>,
+ "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+ "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+ "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+ "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
 Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -83,15 +90,16 @@ Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
  "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
  "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>, "patches@opensource.cirrus.com"
- <patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
- <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, "Conor Dooley"
- <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
-From: "Michael Walle" <michael@walle.cc>
-X-Mailer: aerc 0.16.0
+ <linux-arm-kernel@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ "git (AMD-Xilinx)" <git@amd.com>,
+ "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ "beanhuo@micron.com" <beanhuo@micron.com>
 References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
  <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
  <BN7PR12MB2802E87F1A6CD22D904CAEACDC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
  <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
@@ -105,25 +113,167 @@ References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
  <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com>
  <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com>
  <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc>
- <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com>
- <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc>
- <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
-In-Reply-To: <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
-Message-ID-Hash: EIEA4X5SNNMMQOD75IJUCSZ4NWEL4MSR
-X-Message-ID-Hash: EIEA4X5SNNMMQOD75IJUCSZ4NWEL4MSR
-X-MailFrom: michael@walle.cc
+Content-Language: en-US
+From: Michal Simek <michal.simek@amd.com>
+Autocrypt: addr=michal.simek@amd.com; keydata=
+ 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
+ 3i3l5DA=
+In-Reply-To: <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1P190CA0005.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:2b::18) To SJ2PR12MB8109.namprd12.prod.outlook.com
+ (2603:10b6:a03:4f5::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8109:EE_|PH7PR12MB8015:EE_
+X-MS-Office365-Filtering-Correlation-Id: e725290d-aa98-4d82-a558-08dcb13eff11
+X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|376014|366016|1800799024|7416014|921020;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?dUVvay82cTVWVDltdys1VlhMRUx5L1RzS3NKVkZrbFZSVW9pM2lYTHBNazI1?=
+ =?utf-8?B?clB3TFBncUZLckgyeXNwdzZxeElFRDBsQnlQeDFkclFGUmMrRnVaQnpKVUpn?=
+ =?utf-8?B?WUZnZ0IzdFZBVEZtcTRla3BCUHVWUUswNFdiT3VOV0VPeHZVWGROUnNaa3Jt?=
+ =?utf-8?B?RWp6WDREQ3laMVh3ZlZuZllFdTBJMHVFczJ3WUlrTlcvN2pQWlhkenNRMUUz?=
+ =?utf-8?B?V29USkRpcTJTZHg1Wm8wQVJRQUN4Y3pxZmo1cWJaTDZndmZxNXFkL1d5UUU5?=
+ =?utf-8?B?bXArZjNiNjlETFZCQXVVelhHbVkweno3dGtEQ1dUMkpNTEFwRW5rM1dCN0dv?=
+ =?utf-8?B?a3NVbW0rU2g2cTdCTkZGL3VaVzNMbXhXOHQ3SnVnc1RNa1pMZ1o4dUFFM05p?=
+ =?utf-8?B?VkV5d3hsU0U4UlNxQjRiVmtvUG9NemRxZ01zKzA2dEpjckVJVWdSTkpJMGk0?=
+ =?utf-8?B?dkdiMzJuSTliQnNIN2ljQWNxUzI1SmJQV2ZiTEdaQVI1T3J1dCtobmFXb1Bn?=
+ =?utf-8?B?Q3BieVRpRnBlUWhlcG1BSHJ4RlpJd3hoL0tBb2x1cXhzYlBhVWRLUjVCL2VF?=
+ =?utf-8?B?N2R0WnBsb1B4Z0FwSWhBd1Bma0Z2R0ZadlhJK2c2WFhmazRiOUlIWmZ5Ynls?=
+ =?utf-8?B?ZHovcUtBdmZaKzBSaEFZMFFQc0w4c2lzYlZ0WHVmUjl5L3JMUHZkc3N5bVhT?=
+ =?utf-8?B?VHVPWEIza25jV0tUV0I3OEJPT2k4c0lGdDBaeGx5REhkQkVtcUNFMll3N3h5?=
+ =?utf-8?B?Rk1OQlVqbSsvRWttWk0yOHZocGRaS05MbjJrRVdTVGdFblMrdXljN1NmaW1W?=
+ =?utf-8?B?ZUdONVZQM0pBUzBIZ2NsNXQ3UTljakRTaE5vd1h2RTI0NjRsMkE2YjNBQ3pU?=
+ =?utf-8?B?N0xMVGJOTVIwdDBsQnU1QnUrR0hILzdycStWaFZlV3BRblRVaGcwVTBMUnJG?=
+ =?utf-8?B?blQ2dVdMbFVCYmhwNVVQWWV5a2dONDNjT1dyNXFBRGZyOUxBMWJBQ0lpV0p5?=
+ =?utf-8?B?VTVwdXZZQzNnRlJDb1hFTzYrdDRsY28vYTRmWGRqaHk2ZWNKUEQzbHNYZVBC?=
+ =?utf-8?B?OHNOQVdQbFEySE1qY0Z3dEQxamI0Yk15b00zYlp2TDBxWjZCZGMwQUNRa2Jv?=
+ =?utf-8?B?VlNiMnRaTmdaZjgvU0RHU3NvMTBBMFFVcXZJeUtvVWJpVjJJYWluaUhJUFVl?=
+ =?utf-8?B?TGpWSVFRMzhZckZZRXRoUTNxOENyYkVaNDNxQjlodk1LYVBCZ1VrNTkyRkt2?=
+ =?utf-8?B?SGVXL2hzYklZbHhBR0Q4Q0ZaRm9laDhXdzB6TVdkN2ZpcmxWYjlDbzlSSWwr?=
+ =?utf-8?B?MlZRT0lwaWxnc2ZkTkhmRlhHUXBZb2VkUlV0UzRRUjZ6OWphZXl4b2VlcXdQ?=
+ =?utf-8?B?eUNEMnlKcTFLZ2pOcFAwQkhJdHdtQk1iVDhXNE5ucXc1TU1EWkZHeTRXczd4?=
+ =?utf-8?B?QlV1V1I1Tzg4blRscDRDR3ZEdzBvWXNVbXdYSzYvTnZmOGUyNjJXOWJsaW1v?=
+ =?utf-8?B?QTFGTzV2VWxjNk0zeTJVMUR1RFQycjVWd2xSMzFGQStyOVZzMTgrYW1XcWhj?=
+ =?utf-8?B?dlZQOC9VWG1MeVQxWGFPWFVrVy9JTWNYOS9Fei9pWkFFcnRtUTl2MXkvcldF?=
+ =?utf-8?B?RmYxYnF6RWFwaUxVQU9CMElOUUF6eHFUNVYwc1dpVDJ5ZDIxcDg2ZkY2RFQw?=
+ =?utf-8?B?U1JnME81cC9MNGR2bnRxRzNhVTRIUHZWR2pYUWIzcFJHNlIvcWx2NlltTFNq?=
+ =?utf-8?B?V0JnRnZmS1NiaU1wRlVmREZTbUFYM00ra1d1MmNEMTM0WW9uRjY5Unl4ZW9U?=
+ =?utf-8?B?SHhvMlJSeU5xcE80bUVSZz09?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8109.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(7416014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?SmdyektYbDVkcmFHUndOTlJoL0FCOEtaRm41Um1OdDhLN0pFSkp0MmNzZzJz?=
+ =?utf-8?B?bVVvcDhuZTUvdGNidW4wZDNwSnI3YzVzWTVwZFEyQndSQXF6dkVKeDY4M1JT?=
+ =?utf-8?B?NDgrcDRCTVBlUG11RjNuMEtHUDZBR3lwTjVFa3BQckhibGdoSVFpeFVVdVJ3?=
+ =?utf-8?B?R0Ivc1FoYnhYVGFoWFdQd3NsQ2ZrUVp1RHRtZlFPdlJFWmFvNUVFaTRmSEQy?=
+ =?utf-8?B?bWZ4aUV2WmhGeG5aOGpQaFpic0tvdGhJWS9tMkRmU3hHeUErTHZ2WWZVcjlP?=
+ =?utf-8?B?YnphUE8xMFAwNEtkRHl4dGtDTUNyWUEzdC9mZkJqSWIxMzRDK3VyNk5LNXFQ?=
+ =?utf-8?B?eCs2QjRnRHJNWnFZQUtJTkJvNVQvZXRwUitvZFRSWHBXVUp6azFiYm9ML3dn?=
+ =?utf-8?B?WEdGNWkxR0Y3SHloNWMxa1F2UnZWRXUwSElFNmllVklhdVF3cXBFendjOU1L?=
+ =?utf-8?B?cXg1VUtyTTJXOTJGVHd4bEd4TktDUWNFbWtWZmdqd2E0VWVESG1MY01yT3p5?=
+ =?utf-8?B?OTNSR3ZxVE9JSStXOVBRbUtKNmRuMDB4LzQ5VG5LNjl5czdzWklhNkx6ZTZy?=
+ =?utf-8?B?TGpPMGNRd2ZsZm92cUI5RkNKV3V0V0JtZCtuWndJKzRzOWN4QitWYXRIVTU3?=
+ =?utf-8?B?b1pYa0NleFBsMU01WUZtWFhPN3pBb3dDMmFScDVtNnAwN1Z2RGt1dENrM24w?=
+ =?utf-8?B?bU9JNzdiUDBWMEYyWkZnZTVIOHFqVGZyTEpzUDVwM251QS9SZFpCK3JsaDlt?=
+ =?utf-8?B?NkFha3JZYXdBR2NqTTVGclRpSVpvM1p3M1NOaWxKYThpaHk5dW5hTDNpQmky?=
+ =?utf-8?B?OVJ5QS9tOXJpN2N6YUtJS1VOWEVVdGt0NXRQYWo2U1BuTjEvZ1VVdW8zTUkw?=
+ =?utf-8?B?WEw2VFBsK0FiZnhVc25XN01qYWlnYjA0UG00Q1JidUJSYklQOTZ6NEFMNzc5?=
+ =?utf-8?B?djZyUTZROWlBYndtM1dsMXQrRThSOFg1VmVwVlY4OEVYZEhIMkhPdDdBR1BJ?=
+ =?utf-8?B?azRvWVlWZFA1cXRqNzhTaDlWVnpIT1FRdXgvbjZFZ2J3NUJ1dEkyazlkVDFo?=
+ =?utf-8?B?bnBUQzc4UCtmUnNyK00yVFdPVEd0SUtoVG4rcDFKemRYZGtwMGc1SDNVRjNk?=
+ =?utf-8?B?eFFJcjVGbERKcGZHTzdvcjFsWTRVaTF0WEJkS2dvNXBxY2FEc0cyN0ZLc3kz?=
+ =?utf-8?B?eFROazVuWVVyWHhsMkM5NE5DV3c4bmc1d1RlNll4eDh3MFp1MVgzT1pFQ0tS?=
+ =?utf-8?B?S1RMMVhjMnNFZ2gzSkU2S25obmM0UERpMGxWVWlWNTNjR2pnc1QvUXRDcTZ1?=
+ =?utf-8?B?ZktQeXBzSFBULzhTblBsUDZRMkI1SUQzcHVsNUk3MzVETWZUNFAwTXR4eHlq?=
+ =?utf-8?B?KzJ1N3VyQW5UVkJ0eis3TUdSRGkwTjFZdEVjbHQrSmJZMkdkSExqeEJKUlZP?=
+ =?utf-8?B?Mzl6dzlvWVh0RDk1aFZCaVA0bDkwdlpaend6ckZ2eFYrV0FBNU1ZQXhDRkI1?=
+ =?utf-8?B?T1ZqVHRzOGhWRjNYZ1dNUUlXSDI0UmFMdkN6TzZMU04zOWhEaGplazFXWXRM?=
+ =?utf-8?B?MkRDK011OFpsUjVJbit1RElRWDhES2lDODhXamN4elFXelFSNUczZmI1N25w?=
+ =?utf-8?B?U1FCalFYZEFmMXZOODZia1JPcFhyRGhYN1AzNDcwT3lSN2tkS05HWW9RdFVM?=
+ =?utf-8?B?Y1prdlRpNXczaU5pa2xRRmI5RjJKdTZBYllvSXQyVCtRR1YrUGZZUnhPN3RP?=
+ =?utf-8?B?aVNDUW12amMySkJtRWsrSE92RU5YekdaY3pIV3ZwWkloUUV2WVZyUDJkRktr?=
+ =?utf-8?B?WFF2WWZ3UjZnUTZBR1JwSGZhdnErL1o4ZHFzcVBYTFFvMzFkb0VsbFAvVTVZ?=
+ =?utf-8?B?WHd6UFk5cDRhaHZhR3RyQjhWRmpNWGZrRXNVNDZzWEwyMTRHRkF1a2YvMER1?=
+ =?utf-8?B?YkVyQ1lYTTJPYWhaK0llUTlzK21BMytoWEswSnZpOG5NYkpxL2JxclBoUEtM?=
+ =?utf-8?B?ZEtFYXB1MDQzZy92ditoWlhTNm03bDlCbDVpL2Y1M0J5UGlKaVRrNTFTc0Nt?=
+ =?utf-8?B?a1ZTZkdPY3hDb1loSmtTaHkySmxFNnMxbWk5d3JyelY5eXFVUlFKamNwWXhp?=
+ =?utf-8?Q?wywLyW0Qg6Y2FsojwF9hBXcPp?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ e725290d-aa98-4d82-a558-08dcb13eff11
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8109.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2024 08:58:50.7974
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ wwBZvdgy1mZDzKeCz80gewMzQPUmT/Zl3Azl2Qux37KkW4vC1IWXeynDW1pA7QUa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8015
+X-MailFrom: michal.simek@amd.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: RILE4M7ZWP7BWW2TMJYECY5IHVSYUKPS
+X-Message-ID-Hash: RILE4M7ZWP7BWW2TMJYECY5IHVSYUKPS
+X-Mailman-Approved-At: Wed, 31 Jul 2024 14:14:11 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EIEA4X5SNNMMQOD75IJUCSZ4NWEL4MSR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RILE4M7ZWP7BWW2TMJYECY5IHVSYUKPS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,73 +282,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Hi Michael,
 
-> > All I'm saying is that you shouldn't put burden on us (the SPI NOR
-> > maintainers) for what seems to me at least as a niche. Thus I was
-> > asking for performance numbers and users. Convince me that I'm
-> > wrong and that is worth our time.
->
-> No. It is not really just feature of our evaluation boards. Customers are=
- using=20
-> it. I was talking to one guy from field and he confirms me that these=20
-> configurations are used by his multiple customers in real products.
+On 7/26/24 14:55, Michael Walle wrote:
+> Hi,
+> 
+>> Based on the inputs/suggestions from Tudor, i am planning to add a new
+>> layer between the SPI-NOR and MTD layers to support stacked and parallel
+>> configurations. This new layer will be part of the spi-nor and located in
+>> mtd/spi-nor/
+> 
+> Will AMD submit to maintain this layer? What happens if the
+> maintainer will leave AMD? TBH, personally, I don't like to
+> maintain such a niche feature.
+> I'd really like to see some use cases and performance reports for
+> this, like actual boards (and no evaluation boards don't count). Why
+> wouldn't someone just use an octal flash?
 
-Which begs the question, do we really have to support every feature
-in the core (I'd like to hear Tudors and Pratyush opinion here).
-Honestly, this just looks like a concatenation of two QSPI
-controllers. Why didn't you just use a normal octal controller which
-is a protocol also backed by the JEDEC standard. Is it any faster?
-Do you get more capacity? Does anyone really use large SPI-NOR
-flashes? If so, why? I mean you've put that controller on your SoC,
-you must have some convincing arguments why a customer should use
-it.
+AMD/Xilinx is not creating products that's why we don't have data on actual 
+boards but I don't really understand why evaluation boards don't count. A lot of 
+customers are taking schematics from us and removing parts which they don't need 
+and add their custom part.
 
-> > The first round of patches were really invasive regarding the core
-> > code. So if there is a clean layering approach which can be enabled
-> > as a module and you are maintaining it I'm fine with that (even if
-> > the core code needs some changes then like hooks or so, not sure).
->
-> That discussion started with Miquel some years ago when he was trying to =
-to=20
-> solve description in DT which is merged for a while in the kernel.
+But one product for parallel configuration which is publicly saying that it is 
+using it is for example this SOM.
+https://shop.trenz-electronic.de/en/TE0820-05-2AI21MA-MPSoC-Module-with-AMD-Zynq-UltraScale-ZU2CG-1I-2-GByte-DDR4-SDRAM-4-x-5-cm
 
-What's your point here? From what I can tell the DT binding is wrong
-and needs to be reworked anyway.
+I am not marketing guy to tell if there is any other which publicly saying we 
+are using this feature but we can only develop/support/maintain support for 
+these configurations on our evaluation boards because that's what we have access 
+to and what we know how it is done.
 
-> And Amit is trying to figure it out which way to go.
-> I don't want to predict where that code should be going or how it should =
-look=20
-> like because don't have spi-nor experience. But I hope we finally move fo=
-rward=20
-> on this topic to see the path how to upstream support for it.
+Also performance numbers from us can be only provided against our evaluation boards.
 
-You still didn't answer my initial question. Will AMD support and
-maintain that code? I was pushing you towards putting that code into
-your own driver because then that's up to you what you are doing
-there.
-
-So how do we move forward? I'd like to see as little as core changes
-possible to get your dual flash setup working. I'm fine with having a
-layer in spi-nor/ (not sure that's how it will work with mtdcat
-which looks like it's similar as your stacked flash) as long as it
-can be a module (selected by the driver).
-
--michael
-
---96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZqpF+REcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+L4FAYD66zueUFU1636OvgoGDTll3VhlpfWvCNks
-ygBkg8btX0/kDdus+Zs1Lz63qoncGBIBfjSOIExt4q/UijTQMIfXmQjnzxUHEsUH
-/aUgW/mzMqFLKqdncy63f8sPZX5ZY3vmAA==
-=2i8/
------END PGP SIGNATURE-----
-
---96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c--
+Thanks,
+Michal
