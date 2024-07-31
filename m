@@ -4,92 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C58AC3DA64
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 12:09:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57407C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 12:12:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBB123E25;
-	Thu,  1 Aug 2024 14:09:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBB123E25
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D1F53E8B;
+	Thu,  1 Aug 2024 14:11:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D1F53E8B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722514171;
-	bh=UphWNVZYlMYttOLUSGt7chhQN6dwPnt9BAjSq7UQ/tw=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=nkCDVHS2TV71XBtgO99+OByEYeVBOfQXVt94v8LjAs/jgVErFwj7w0pxz3f57qhFX
-	 lo+BSnlwFcDZRwuMDFVr3dD7pDEnBOSHP0+eSG/k5JuP+GbHRz9gFeI3ieaXyCI6MJ
-	 +IjQsV+VMi4kPWwQ6cOQgddacRbu4GSRxsn4KQyQ=
+	s=default; t=1722514322;
+	bh=EVyv4o1kWKU9C0RpwE8ZBKEBCpkeLQtTeetB5bkp+NI=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Px5xgTngO7qsnLx6Q+qHU0N8rSN9Kd3LvmsNkuKfHFLRNPnRecnDNG4v32/su5l6h
+	 4DP2EYCKGPK269Ub44qVJeIzcDzDMhILGwNhfWWkOvUh/ItBwW3td+RhwEw0kXLGiF
+	 2mBGaJQdS9FgGoKUeMydXp5V30sT4kMs89MEpOUo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DE76F805B4; Thu,  1 Aug 2024 14:09:01 +0200 (CEST)
+	id 8A826F805B6; Thu,  1 Aug 2024 14:11:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 930B3F805B5;
-	Thu,  1 Aug 2024 14:09:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB772F805B6;
+	Thu,  1 Aug 2024 14:11:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC96BF80589; Wed, 31 Jul 2024 17:26:16 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+	id 5D882F8059F; Wed, 31 Jul 2024 17:26:43 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D95ADF800C9
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 17:26:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D95ADF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9D868F8026A
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 17:26:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D868F8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=Zo9YXxdi
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-42803bbf842so49366355e9.1
+ header.s=20230601 header.b=CPJmrd3c
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-4281abc65daso31402365e9.2
         for <alsa-devel@alsa-project.org>;
- Wed, 31 Jul 2024 08:26:03 -0700 (PDT)
+ Wed, 31 Jul 2024 08:26:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722439562; x=1723044362;
+        d=gmail.com; s=20230601; t=1722439566; x=1723044366;
  darn=alsa-project.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+RQ2igsSgu9UFJsBcOr+mrcxTGh+1fHmdEJppZglmtA=;
-        b=Zo9YXxdims79DQZXIDHZTBV+g79gF5upcLnWjSYnEy80Wv71g1ql0967YiiWQmcxcJ
-         1e9NJ4QsdA7gtuTqWUjZs9C205ObOGof5ruP67gRJbx058ph5PWY2ZKRDr9/A9nTmBov
-         1TlDyTYptlVFdtEcOxaFDgPESgUp3fIYtp0ss/xvMmytg3+4pPMRiU5C0nVk/hV5YSYT
-         8lO0mJVOC5HvXJlfTwY3hgeTWu1YE9gs3Y7wwXdTvJV2LeBrFDYQfTY73p1Ric2PbKYp
-         JB8/yFGm7zVRoDOv00kerLalFr12rorMl3c1sN7CTE3D9Ua44RiG/LBbfxBKa9Pns3Eq
-         XeiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722439562; x=1723044362;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+RQ2igsSgu9UFJsBcOr+mrcxTGh+1fHmdEJppZglmtA=;
-        b=adQScBswqovJtwbGSZ7I8aRH3SkS78cso0sGEAzbKeu29YjFQG5bkMuXbia7Oc2BtS
-         8wvNEnHSKcr/HLftRCE2/itq/mYUIDxP4nVXok1f0+VnjsBIHzBrYX993A6pnB+A3QAl
-         GVIFe0VEwf3YLLfXHNrkLnGjUYunHtgyyPwEoknj4dC50CQnKlbT+21xSl1UUIHQLEok
-         S/bjd1uwMqpFE/XC9Bfl8a9UqksROt6frhpWp6xe6DwRxVLmzBq1wavj0Pj0Iu1bLOKJ
-         GV1P4K6cm81bRTQHqmRdNfVGCKYxOvg56mP4Inh6fBRS5bfu3vMvfJxj11Rn/pO0vdup
-         TiNg==
-X-Gm-Message-State: AOJu0YzjQMdTneHB79605ZcDMDnxK+GQ86sVco1kamuUCMs09kZ03UTs
-	vRAG0sV45k1lAdv/iiSPaqs/7tvDC6EjobS/zCylxucLJuTDfAsu
+        bh=X/h0VtcfMml9IUjMbcpLtg90CxFRBSo+axnBjZNg8dc=;
+        b=CPJmrd3cI3jaf8E/M6WiZMAmeYFCnS62pwyItEUKp1ontPQV9S6yPqA3xyHJU38oxX
+         id6Lj3lElcrhY3RRCrvJ9yEdqdP8brTSZkwOnQOH0ZuCipexAJ0fIUpDcJbbg0ElHs+d
+         Z7S73o8DTxMhRbseBc1iIIFI+q1Xm6AHEE+V3QERm9CqgknONs12CNuGgnbfbxIM9ck+
+         mPyXWZj9Ema1KHSoRm+YUr4Fzb5ywGyKUnAvbb/EAWi/AwRvmhrDndk4JVRvSRWUPKAO
+         1Avr4JiQJPK3feMUdaAmBP4RmjRwvQW8dLyohFCy+olODWi6hDxTIM5AlDQReFk1/QuB
+         GZfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722439566; x=1723044366;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X/h0VtcfMml9IUjMbcpLtg90CxFRBSo+axnBjZNg8dc=;
+        b=odKkgSa+j+1y2GZCGEvr6jFBxTir2a1tw3PUZTGBrXWoY4rAa82/mu6PKCcH6t+a6b
+         l+GulDhtyHb0WjlYdYDoP/R1BkaPOnAFDOS0gpsz2gJ/qJsBlR6Lc+bs3Y4ivz5+K0XJ
+         j/747ucjJSz+chrTHCpS5m7OI23HVLxmuqJqFqkroeERmY29HASNTqR9Fnm/HxDTMPNu
+         X5XHm/Jl/8aRuTUbSOey+sXJXuLtJ7H1OjhtweHTcetcwddZ2Y6CE+lJhpzoAPB7jbLX
+         yT0/+IEZw02zxlWVB9wieKJS0ha3HHa88frDNwNJg84b6Xh1g0IYZInYwSkKM7Kp3X4e
+         MudA==
+X-Gm-Message-State: AOJu0YxXV86qmaJ8HudiGUlUXDY0WU9F7IDmu47bkWnpqZY9q6BI9z2R
+	v1cNpsRVSh3kA5aJufCOmr2GpeHivQAlezUyv7EEyUgMjhp2uv0f
 X-Google-Smtp-Source: 
- AGHT+IH8SmEzgsU5TS8q5NHJu0t7KaDmruJEjzuMDt40zq8SuzZBjHxDJtmKvuaYlFSFEyogD0rI2w==
-X-Received: by 2002:a05:600c:a08:b0:426:62c5:4731 with SMTP id
- 5b1f17b1804b1-42811dd43c9mr126256445e9.29.1722439561517;
-        Wed, 31 Jul 2024 08:26:01 -0700 (PDT)
+ AGHT+IFaIxFIYcq+H0ksfzt6nQVNfYnsBfjPxrNT5e1tHpK2RZqBXDqp7VIHxXKG3HBqlL+UiNXlFQ==
+X-Received: by 2002:a05:600c:996:b0:426:59ad:bbb3 with SMTP id
+ 5b1f17b1804b1-42811dfc5f7mr123868005e9.32.1722439565757;
+        Wed, 31 Jul 2024 08:26:05 -0700 (PDT)
 Received: from [127.0.1.1] (byv161.neoplus.adsl.tpnet.pl. [83.30.41.161])
         by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4282bb64755sm25430985e9.36.2024.07.31.08.25.59
+ 5b1f17b1804b1-4282bb64755sm25430985e9.36.2024.07.31.08.26.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 08:26:01 -0700 (PDT)
+        Wed, 31 Jul 2024 08:26:05 -0700 (PDT)
 From: Adam Skladowski <a39.skl@gmail.com>
-Subject: [PATCH v3 0/8] MSM8953/MSM8976 ASoC support
-Date: Wed, 31 Jul 2024 17:25:24 +0200
-Message-Id: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
+Date: Wed, 31 Jul 2024 17:25:26 +0200
+Subject: [PATCH v3 2/8] ASoC: dt-bindings: pm8916-wcd-analog-codec:
+ Document pm8950/pm8953
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAGRXqmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHUUlJIzE
- vPSU3UzU4B8JSMDIxMDcyNL3dziXAtLU2MIbW6mm1icn6xrZppmaW6caGhsaGaqBNRaUJSallk
- BNjY6FsIvSi0sBZpeAhWsrQUA3RJ1fXsAAAA=
+Message-Id: <20240731-msm8953-msm8976-asoc-v3-2-163f23c3a28d@gmail.com>
+References: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
+In-Reply-To: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
@@ -99,8 +101,7 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Stephan Gerhold <stephan@gerhold.net>
 Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Adam Skladowski <a39.skl@gmail.com>,
- Vladimir Lypak <vladimir.lypak@gmail.com>
+ devicetree@vger.kernel.org, Adam Skladowski <a39.skl@gmail.com>
 X-Mailer: b4 0.14.0
 X-MailFrom: a39.skl@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
@@ -108,15 +109,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RX5VTSV5KOOUMMYC3TQZ3P2ZCZBRZ47R
-X-Message-ID-Hash: RX5VTSV5KOOUMMYC3TQZ3P2ZCZBRZ47R
-X-Mailman-Approved-At: Thu, 01 Aug 2024 12:06:25 +0000
+Message-ID-Hash: 36L6THG4JGUTAAU5HPKPTSXVYKFAMHHP
+X-Message-ID-Hash: 36L6THG4JGUTAAU5HPKPTSXVYKFAMHHP
+X-Mailman-Approved-At: Thu, 01 Aug 2024 12:06:29 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RX5VTSV5KOOUMMYC3TQZ3P2ZCZBRZ47R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36L6THG4JGUTAAU5HPKPTSXVYKFAMHHP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,53 +126,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Introduce support for basic sound card setup on MSM8953/MSM8976
-platforms, document new compatibles and introduce support for more dais.
-Most of code is sourced from msm8953-mainline fork over github
-with some changes implemented by me,some basic changes are 
-mentioned in each patch.
-
-Changes since v2
-===============
-1. Guarded ioremap on quinary mux with checking if resource is not NULL
-2. Introduced compatible based reg overriding in wcd-analog driver
-3. Separated PM8950/PM8953 codec patches
-4. Moved reg/reg-names back into top-level and rewrote as in comments
-5. Separated MSM8953/MSM8976 QDSP6 patches
-6. Added Lineout patch
-
-[1] - https://lore.kernel.org/lkml/20240723083300.35605-1-krzysztof.kozlowski@linaro.org/T/
-
-Changes since v1
-================
-1. Rebased dt-bindings documentation based on Krzysztof's split patch[1]
-2. Resolved clang errors by guarding ret verification inside if
-3. Switched quin-iomux to devm_ioremap_resource to not fail on msm8916
+Document pm8950 and pm8953 analog audio codecs.
 
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 ---
-Adam Skladowski (4):
-      ASoC: dt-bindings: pm8916-wcd-analog-codec: Document pm8950/pm8953
-      ASoC: msm8916-wcd-analog: add pm8950 codec
-      ASoC: dt-bindings: apq8016-sbc: Add msm8953/msm8976-qdsp6-sndcard
-      ASoC: qcom: apq8016_sbc: Add support for msm8976 SoC
+ .../devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml     | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Vladimir Lypak (4):
-      ASoC: qcom: apq8016_sbc.c: Add Quinary support
-      ASoC: msm8916-wcd-analog: add pm8953 codec
-      ASoC: qcom: apq8016_sbc: Add support for msm8953 SoC
-      ASoC: msm8916-wcd-analog: add lineout output
+diff --git a/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
+index 94e7a1860977..8af8bb747abe 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
+@@ -14,8 +14,10 @@ description:
+ 
+ properties:
+   compatible:
+-    const: qcom,pm8916-wcd-analog-codec
+-
++    enum:
++      - qcom,pm8916-wcd-analog-codec
++      - qcom,pm8950-wcd-analog-codec
++      - qcom,pm8953-wcd-analog-codec
+   reg:
+     maxItems: 1
+ 
 
- .../bindings/sound/qcom,apq8016-sbc-sndcard.yaml   |  27 ++++
- .../sound/qcom,pm8916-wcd-analog-codec.yaml        |   6 +-
- sound/soc/codecs/msm8916-wcd-analog.c              | 145 ++++++++++++++++++++-
- sound/soc/qcom/apq8016_sbc.c                       |  88 ++++++++++++-
- 4 files changed, 257 insertions(+), 9 deletions(-)
----
-base-commit: 31c2a5c4bf3673b0bf098f358ea931b9ada1e7de
-change-id: 20240729-msm8953-msm8976-asoc-65f973a13165
-
-Best regards,
 -- 
-Adam Skladowski <a39.skl@gmail.com>
+2.45.2
 
