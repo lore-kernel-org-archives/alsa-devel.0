@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C783C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 09:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7423C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 09:13:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC6313774;
-	Thu,  1 Aug 2024 11:12:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC6313774
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58C7A37BA;
+	Thu,  1 Aug 2024 11:13:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58C7A37BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722503569;
-	bh=bWXEw8TFjsKa/Hb4/Eb5rG16j7U/8Z24Kda92N1MJ4I=;
+	s=default; t=1722503591;
+	bh=tscyAirBL6Y/hiFr/fYWfIAghFNfqHxPlsqlAVXu9hE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pUfviv/MtOxRNNzzeLeHAut5C8R74OOVe1yUmaijQa5wu4e6G795lbj5T2+qvq1SV
-	 Vx7AoOSPMPJOMprc/yzRQr+btDzBEiHAoKsrDYFZTcLoF2vlSEHSXqS4AQCGBM2IoS
-	 JvuLzDbeEDuU+3YNl5G6OlRNa9WzYqPBRK5MiQes=
+	b=FiB/dg7tpiaGQOMx3m+nmrJeJv4PRea53Bup3VMXs3rFWUyMzO0MeVfJ50gwC6xv8
+	 NeUtnxMHmt8DD1JJxPEHguZHTNIysz9dGH/FlkC4tPDUy2EbR2TXzh9nU/44fa5RxQ
+	 zwDpWwbib+qqYtV3Gmd9e5YQI/chHdgIlkKmOqIQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57835F8007E; Thu,  1 Aug 2024 11:12:16 +0200 (CEST)
+	id 8C8CFF805BE; Thu,  1 Aug 2024 11:12:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1BC4F805AD;
-	Thu,  1 Aug 2024 11:12:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A53FCF805E3;
+	Thu,  1 Aug 2024 11:12:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65BB9F80580; Thu,  1 Aug 2024 11:12:03 +0200 (CEST)
+	id 015BEF8057A; Thu,  1 Aug 2024 11:12:03 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 56275F8019B
-	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 11:11:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56275F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id A2F27F8026A
+	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 11:11:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2F27F8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=C5sfOjqP
+ header.s=Intel header.b=kr80wOQM
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1722503518; x=1754039518;
+  t=1722503520; x=1754039520;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=bWXEw8TFjsKa/Hb4/Eb5rG16j7U/8Z24Kda92N1MJ4I=;
-  b=C5sfOjqP2rjl1C1KLk4MpTYqS0UEd9xfzgvev8kbtVybbXDB1g80tP67
-   +nMrzFyfsvZvahyO28d+3tRshvNAjhVGnmXWGLWLZpdR1ZdZgQIXyTyVF
-   z+OX3zlcPIWB9hkFfAM4pko2SXG3oUV7LqyEHT6JukDYb1dU18SAM0rRn
-   N9PK7upb+ZDYVfMO9p8Hd6iDUAhol+Z1n5Lok+DeI4q32FtmLflOdPFII
-   /uZI3jE3gG8S2e6T44bsoprXSG+jdi63M3QqqUrGusH3rFe19Jyyh56Sd
-   ncinQGPHquiv/MMy7fdnfE2mnPcDTcaXEs2kWUw6ZB5Gq4WUBXlFWrk1f
+  bh=tscyAirBL6Y/hiFr/fYWfIAghFNfqHxPlsqlAVXu9hE=;
+  b=kr80wOQMyscN1r9XcUA9cyZedwMed7+++We+6KLYRrq8hfjIlYm2Tx9/
+   CSd7FC73gDy31VCMxa4Emmr30uaqpuzUG1xCUKlw7utSq2pOeqXADWsdg
+   12MtYkGWZ1vzsXzt0pOLzkuo67DupNvM/sPzySVhK5L1updCYtYVor5Ia
+   nzDnhSqJBNjh3O60H/v8CsatQXg70Z3sednyxYY3LCE+xKYvU8fy+fWsj
+   Vor6eDcNC/m06lSajz21/0QOB2VGrKVgOqSrlfkazJharBSLZCZIPVMRL
+   aUUPBbu2GIjPKKCL3Efslqdr4KHOpWhsoIu2NwA9KrW+0PDK08MQGw+z2
    g==;
-X-CSE-ConnectionGUID: RrhRysN2TVqZRuzEKVp0tA==
-X-CSE-MsgGUID: ZQWwrCeQRm6BQRJd2qpc8A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11150"; a="20383381"
+X-CSE-ConnectionGUID: b2h1p+0zTrG77T9lsLFWvQ==
+X-CSE-MsgGUID: x5YJEPWlRjuGxmDLySQtCQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11150"; a="20383461"
 X-IronPort-AV: E=Sophos;i="6.09,254,1716274800";
-   d="scan'208";a="20383381"
+   d="scan'208";a="20383461"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
   by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Aug 2024 02:10:59 -0700
-X-CSE-ConnectionGUID: wD2mZchpQ2uK+zw06fP8TQ==
-X-CSE-MsgGUID: 2y4A7VElRRC8qWG3k+0cRQ==
+ 01 Aug 2024 02:11:15 -0700
+X-CSE-ConnectionGUID: X/4AQvn4RX2vRaRVo8BBHw==
+X-CSE-MsgGUID: nybOwouiQnOiwizSYTfNMQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,254,1716274800";
-   d="scan'208";a="59089784"
+   d="scan'208";a="59089811"
 Received: from lfiedoro-mobl.ger.corp.intel.com (HELO [10.245.246.220])
  ([10.245.246.220])
   by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Aug 2024 02:10:53 -0700
-Message-ID: <f70b6f65-fd8f-4d2c-ba41-fa814d0b5154@linux.intel.com>
-Date: Thu, 1 Aug 2024 11:10:50 +0200
+ 01 Aug 2024 02:11:08 -0700
+Message-ID: <89b10ddb-9d0e-480e-846f-64f2a4592f6f@linux.intel.com>
+Date: Thu, 1 Aug 2024 10:07:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v24 00/34] Introduce QC USB SND audio offloading support
+Subject: Re: [PATCH v24 10/34] ASoC: usb: Create SOC USB SND jack kcontrol
 To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
  mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
  corbet@lwn.net, broonie@kernel.org, lgirdwood@gmail.com, krzk+dt@kernel.org,
@@ -83,13 +83,14 @@ Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
  alsa-devel@alsa-project.org
 References: <20240801011730.4797-1-quic_wcheng@quicinc.com>
+ <20240801011730.4797-11-quic_wcheng@quicinc.com>
 Content-Language: en-US
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240801011730.4797-1-quic_wcheng@quicinc.com>
+In-Reply-To: <20240801011730.4797-11-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: H6XFQH5AI352NWBRF4222S3QDYMZNCXC
-X-Message-ID-Hash: H6XFQH5AI352NWBRF4222S3QDYMZNCXC
+Message-ID-Hash: 2P4NPURM7ZZTTDR3DWCY246UNMAWIYRP
+X-Message-ID-Hash: 2P4NPURM7ZZTTDR3DWCY246UNMAWIYRP
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H6XFQH5AI352NWBRF4222S3QDYMZNCXC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2P4NPURM7ZZTTDR3DWCY246UNMAWIYRP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,15 +114,46 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 8/1/24 03:16, Wesley Cheng wrote:
-> Requesting to see if we can get some Acked-By tags, and merge on usb-next.
 
-I find this update a lot easier to review than previous versions, thanks
-for this. That said, there are still quite a few confusing parts in the
-documentation and implementation - specifically the get_offload_dev()
-stuff makes sense at a high-level but the details can be improved a
-great deal.
+> +static inline int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
+> +						 struct snd_soc_jack *jack)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +static inline int snd_soc_usb_disable_offload_jack(struct snd_soc_component *component)
+> +{
+> +	return -ENODEV;
+> +}
 
-It's encouraging though, there aren't any major conceptual issues IMHO,
-it shouldn't be too hard to make the patches clearer/cleaner.
+usually fallback functions return 0, is the error code intentional?
 
+
+> +int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
+> +					struct snd_soc_jack *jack)
+> +{
+> +	int ret;
+> +
+> +	ret = snd_soc_card_jack_new(component->card, "USB Offload Playback Jack",
+
+do we need the reference to Playback?
+
+> +					SND_JACK_HEADPHONE, jack);
+
+wondering if there would be any merit in defining a new type of jack,
+e.g. SND_JACK_USB since here the purpose is to notify that there's a USB
+device connected. The type of device does not really matter, does it?
+
+
+> +	if (ret < 0) {
+> +		dev_err(component->card->dev, "Unable to add USB offload jack\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = snd_soc_component_set_jack(component, jack, NULL);
+> +	if (ret) {
+> +		dev_err(component->card->dev, "Failed to set jack: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
