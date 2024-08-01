@@ -4,111 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE40BC3DA64
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 08:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F28AAC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 08:52:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7762F37CF;
-	Thu,  1 Aug 2024 10:51:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7762F37CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDC5B37E7;
+	Thu,  1 Aug 2024 10:51:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDC5B37E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722502285;
-	bh=rK9+4xszQg7uMRd6Ykpz7uwRVsL3C1LMnad37+zazpc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1722502295;
+	bh=kToZ6DZN3bFkEWpJg2KNEaPPOHmkG/700tM2Y/uwC+0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Cdr+AcVS3MwUHw7FFtg6802DoRhBeSYWVs3ImqJPQdcgxkFuDLc+hUP292REovFoa
-	 Ehos3mIQ7Wz8Eq+B8niLzIp3gpKT4Ge9IcSW3jgg0KKvi7bIIQkkCgVHe2LWGVxIJh
-	 26p0ax5x3Z7b3XJOrYZ33Vw13tjMxgNe15hULbhE=
+	b=XP7aNxa7jXtqQcKPCkNnXKa20QlitJs+65Iat2BxlG4kCtk1EmfBFf1237PFErs7m
+	 YHkUyTV1K2yz+FShUMx3snBe0kyKrjRY7JNmLfNu3pYY58IGVCQU5AR+mcKnyNjshW
+	 ZZ2Q+2lniF6nIRv9HPZSPk8vIjmfHNH0L/DthkW0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05E5DF806CF; Thu,  1 Aug 2024 10:49:20 +0200 (CEST)
+	id 021D1F806DB; Thu,  1 Aug 2024 10:49:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26383F806C2;
-	Thu,  1 Aug 2024 10:49:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A331F806F1;
+	Thu,  1 Aug 2024 10:49:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31C29F8026A; Thu,  1 Aug 2024 10:23:23 +0200 (CEST)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
- [IPv6:2a00:1450:4864:20::22b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 25CD2F8026A; Thu,  1 Aug 2024 10:36:27 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5B89FF800E3
-	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 10:23:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B89FF800E3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3A7B1F8019B
+	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 10:36:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A7B1F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=d9zpY1yZ
-Received: by mail-lj1-x22b.google.com with SMTP id
- 38308e7fff4ca-2ee920b0781so72590691fa.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 01 Aug 2024 01:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722500598; x=1723105398;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=50e7wz/bvIR8jdrexV5sLmzxSxGtSe1Rc+ihQs4UK3I=;
-        b=d9zpY1yZEMaz8dT79w3EmQjYWWx2q8hLsPvE+3f4w7EupZFkAnFIT5SkQWyg8ZzfL4
-         nW5oOQjj8BG3drdUDqki6jbnvYRf1wGR8r5j5b7nK5vr1kUmHD0ffrEXQ91k+4SpMKeM
-         Jo+PblJPw4BawSn1VDWlOoJVu5oO9VqXn+fK9cxxTifsH8z8uvSxVyBYVbdexLT2M98E
-         lf6HFpWL/qJTnJYc1HIN2D2Y0w5t6LZMYCew7fJy1exhKgq76Xqk0z7VoTtoyYwQ9Yci
-         oFTOvFX3vHemRpNp2uXNyfLTCIyjRE/Ca+KtNbBjH/EGQunTqQS4aNDDXGhyQWy87Weu
-         bi9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722500598; x=1723105398;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=50e7wz/bvIR8jdrexV5sLmzxSxGtSe1Rc+ihQs4UK3I=;
-        b=rZY7Ld0z7elvS7+ooO1C0GTbn/zDeYKztaV/XF9cnErURqqNd8QGKhwTAwHgV3HJfu
-         rCGeBom5j8d7H5GRVKhHraUpzKUKFn2s649sClTypopKNbxMA1UpxNL0IwkUiS6XoSvC
-         FUcjfLB29BbZxHifp2J938Ag6W8qOZWl0jg0/ElHrdemJoFsIasuDXLXeYj5nWgjEy7e
-         DUeyD5hIZUvbAZwMipvTvFqH/yuARk/4ngggZiEmV4rg8qjMM7NvwMI/jk1nsavpwxB9
-         Cd4OieKn/RZVM8EbHRR3iGgjpR4C/mbqMKsFHyUai3erPEMgc1GGQrzwPgJ3vsjaaCGV
-         4B2w==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVzdPpnqYEueS1WqQBKkm0z5yWH471Ss6omss0f9mDp71FKuM1vfbSv3wu8dSNeIiAAz+TgBRCZUFemdJjH1VXQuH4iGrWbqKWZg8Y=
-X-Gm-Message-State: AOJu0YxVBS4wIGBEwiXPYq29EiCdUnTMTlggTQfiW5fbLtmYB9jvk4bl
-	8KP3Mpg/Mz5LbpQoWImJhnuAxxWtLtQ3LwPN+IqaH/Of8BnDTWb+R8ozbdOpt7E=
-X-Google-Smtp-Source: 
- AGHT+IG1pMfm6YPrJpMIq1jkLKGGURJ71PgP2FoNYW5t3JnWPlJG7+H3KkAZHgFPOV8oJmjfUNP5lA==
-X-Received: by 2002:a05:6512:304f:b0:52c:e047:5c38 with SMTP id
- 2adb3069b0e04-530b61afebbmr1125327e87.15.1722500598275;
-        Thu, 01 Aug 2024 01:23:18 -0700 (PDT)
-Received: from eriador.lumag.spb.ru
- (dzdbxzyyyyyyyyyyybrhy-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::b8c])
-        by smtp.gmail.com with ESMTPSA id
- 2adb3069b0e04-52fd5c19a40sm2498745e87.199.2024.08.01.01.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Aug 2024 01:23:17 -0700 (PDT)
-Date: Thu, 1 Aug 2024 11:23:16 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Adam Skladowski <a39.skl@gmail.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>,
-	Stephan Gerhold <stephan@gerhold.net>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 7/8] ASoC: qcom: apq8016_sbc: Add support for msm8976
- SoC
-Message-ID: <o5k2oxabdewh6faf5xkmboyc34pqqieytbvoyngkowngkaonkz@ctqv6izs247z>
-References: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
- <20240731-msm8953-msm8976-asoc-v3-7-163f23c3a28d@gmail.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=VLrhxaOX
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id D27BFCE172C;
+	Thu,  1 Aug 2024 08:36:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2022C4AF0A;
+	Thu,  1 Aug 2024 08:36:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722501372;
+	bh=kToZ6DZN3bFkEWpJg2KNEaPPOHmkG/700tM2Y/uwC+0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VLrhxaOX4PX/0DIu6qpOcie50YWnPC8GTK+YPBX9WKJrXecs7MOCGPBJj4jZIh+6o
+	 DYrvpQYAGKbe7W+9oFtz9lkMCnAg2kzp3XkGCs2xgKoEf39T29WVr7pWhyxqUgiMWa
+	 fYvhEHtA43AcyUJTL3X/WMm1ZCGGfP8gtzKcM4lS+3/9qc8LPvlzBnI2DJfOC4Thhw
+	 2VIw+J5Ur5OwpBsXKpoC0CKRAUcK6s5ZMEJYTAlVDJlesl9t18Q5NZarzQfLIVDhS9
+	 jHbfnIg0jea9Q7wFA69Rh2mvmmOGTyoAktXok6FvSYg1mHsuz0ECQxcjkY2mzz+l1r
+	 Z5ViKhMzv4AJQ==
+Message-ID: <0b86676e-0750-46dd-815b-8959a77d4f2d@kernel.org>
+Date: Thu, 1 Aug 2024 10:36:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240731-msm8953-msm8976-asoc-v3-7-163f23c3a28d@gmail.com>
-Message-ID-Hash: SVUI2JMRY43PIVX5DPWBYJHN43A3H5HK
-X-Message-ID-Hash: SVUI2JMRY43PIVX5DPWBYJHN43A3H5HK
-X-MailFrom: dmitry.baryshkov@linaro.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v24 00/34] Introduce QC USB SND audio offloading support
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+ corbet@lwn.net, broonie@kernel.org, lgirdwood@gmail.com, krzk+dt@kernel.org,
+ Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com, tiwai@suse.com,
+ gregkh@linuxfoundation.org, robh@kernel.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+ alsa-devel@alsa-project.org
+References: <20240801011730.4797-1-quic_wcheng@quicinc.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240801011730.4797-1-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: TD5GKDL6DK5TFXRAL54KGSAQXXSZPEK6
+X-Message-ID-Hash: TD5GKDL6DK5TFXRAL54KGSAQXXSZPEK6
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +132,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SVUI2JMRY43PIVX5DPWBYJHN43A3H5HK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TD5GKDL6DK5TFXRAL54KGSAQXXSZPEK6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,22 +141,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Jul 31, 2024 at 05:25:31PM GMT, Adam Skladowski wrote:
-> Introduce support for audio card on MSM8976 platform.
-> While MSM8976 falls into v1 category with MSM8916, digitial codec clock
-> is not available in GCC so we have to set it in machine driver.
-> For that reason for V1 clocks new boolean is added to check
-> if we need to enable codec clock.
+On 01/08/2024 03:16, Wesley Cheng wrote:
+> Requesting to see if we can get some Acked-By tags, and merge on usb-next.
 > 
-> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
-> ---
->  sound/soc/qcom/apq8016_sbc.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
+> Several Qualcomm based chipsets can support USB audio offloading to a
+> dedicated audio DSP, which can take over issuing transfers to the USB
+> host controller.  The intention is to reduce the load on the main
+> processors in the SoC, and allow them to be placed into lower power modes.
+> There are several parts to this design:
+>   1. Adding ASoC binding layer
+>   2. Create a USB backend for Q6DSP
+>   3. Introduce XHCI interrupter support
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Your patchset is not bisectable. It's v24 and such issues should not pop
+up... So please wait a week for reviews and then post v25 fixing all
+bisectability issues and any other comments.
 
+Best regards,
+Krzysztof
 
--- 
-With best wishes
-Dmitry
