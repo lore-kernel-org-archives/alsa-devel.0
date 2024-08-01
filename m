@@ -4,110 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DE57C3DA64
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Jul 2024 21:23:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE74C3DA64
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 01:18:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 896CA2DB8;
-	Wed, 31 Jul 2024 23:23:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 896CA2DB8
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBB162DC9;
+	Thu,  1 Aug 2024 03:18:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBB162DC9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722461017;
-	bh=TaSJA4z+shWPsD5xKsY4kzGjtvxTZrzChFedH7x0ST8=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dsuAAC8O1B3JNA4mJQh9ambx47ciOnO9fZFn8II5pqktM2NxkmqiZvqyEGAjBJGcQ
-	 m7D3rYmeUszdnrgWoCKZOwRvfQfXUwIGZksETZ8iiE5Murm7Nj00DJXgxf9qzl5RuB
-	 E/iPpd8qLDDO2aU2M70jVsvMJU+JZiX0L9Y/amMs=
+	s=default; t=1722475114;
+	bh=izD+DbozS8oGydYFz+5Vb7dIzvHhxa3xSOkF47CTxH8=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RbSSyuJmjmezSPJ9G+HlZiz31PCfBMuxDWIc70b+W9Hed+xrBZmvnvSwVsfOe/fDU
+	 4qgqc9RrWmH9Uh6kuNQmuQrdl4TdN+Pm01PDCClcjp+GsKQ3F+Qu9X27GA66KIKNwK
+	 g7moirSl9HzFqZn8bgWb/gmitMJXJLUZygfGGmhs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 977F9F805B6; Wed, 31 Jul 2024 23:22:48 +0200 (CEST)
+	id E0226F805DA; Thu,  1 Aug 2024 03:18:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EF0EF805B6;
-	Wed, 31 Jul 2024 23:22:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9738AF805C9;
+	Thu,  1 Aug 2024 03:18:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14764F802DB; Wed, 31 Jul 2024 23:22:20 +0200 (CEST)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
- [IPv6:2607:f8b0:4864:20::42f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 65A52F805A9; Thu,  1 Aug 2024 03:17:55 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7CB20F80269
-	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2024 23:22:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CB20F80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C4E7F80269
+	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 03:17:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C4E7F80269
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
- header.s=google header.b=RhYvrWU3
-Received: by mail-pf1-x42f.google.com with SMTP id
- d2e1a72fcca58-70d18d4b94cso4584240b3a.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 31 Jul 2024 14:22:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1722460928; x=1723065728;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HQoygPRsO7fuc8InmrgIFH74TmYM5vf/QmGY1GXB8QA=;
-        b=RhYvrWU3Cfcnrg9LnAelmSG0mln6jgIgvjydy9Oeteva797lPjr8/+7JZSOTy5ddvJ
-         tr1Q0ng54/JGQzOA0PJ2OdMEjwMyhXsXgpf597XlTzLAXgXxAlSpetRMyy5KA5DNvyqR
-         UWZ+PFlhJlE7Gmw7ceyCTpvQlIBDz0bRNEjWs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722460928; x=1723065728;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HQoygPRsO7fuc8InmrgIFH74TmYM5vf/QmGY1GXB8QA=;
-        b=rG7nXuycqq4QBVMJIeI+/bCmtAjOZ4GWde6Mrb/0ZNVa49RarQcdSrc6fsPLQjJP/i
-         +iftmgk25fPqpeJjpg2Sn77qE189CuQVruL/SrXAmLPU/DTPGVzZSaxGyjiqi0Eu+RCx
-         wQmpyKY++Lhvx+Cn08QGpSa3rPlkXGG+Rh77urTSb0iKMVZdCeUj3GDVHE8zZOOwdTum
-         YgYyCB7TpqHmyMB2LtBEVpV69e14tUAe9KVolx0c9El8SIp4nAfgyFtsVpTAQ/mado3p
-         ACPGQQz3pihv8Cl/w31DbRgYBTiYhMjv/AA3BJUz6IH0inkEPQxiVOtnt5BSeQfGmdLH
-         1ORQ==
-X-Gm-Message-State: AOJu0YyYT+aOqMHeToW27N1lNiyJ8PxTwEL7Kp9K0FrnErO/67A8g/u1
-	ErycU9qebrAx8804iVrCVke7H00JIqHnk7DQuxjIUVM5BOJpp8cBGxQc1LWDcqZzhnM2N6oy4g=
-	=
-X-Google-Smtp-Source: 
- AGHT+IFdnzTDfvmRv5xGcTjAKdn+O94ZCOILB4FUfqHYh7QWrhEL82tbEtZTc9qKamQymC5LPvfuRw==
-X-Received: by 2002:a05:6a21:7881:b0:1c1:30fc:90d6 with SMTP id
- adf61e73a8af0-1c68ce777camr882082637.3.1722460927827;
-        Wed, 31 Jul 2024 14:22:07 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:4:6a6b:4e74:edc6:135c])
-        by smtp.gmail.com with UTF8SMTPSA id
- d9443c01a7336-1fed7f75972sm125234265ad.240.2024.07.31.14.22.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jul 2024 14:22:07 -0700 (PDT)
-From: cujomalainey@chromium.org
-To: alsa-devel@alsa-project.org
-Cc: Curtis Malainey <cujomalainey@chromium.org>,
-	Wojciech Macek <wmacek@google.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Trevor Wu <trevor.wu@mediatek.com>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: SOF: Remove libraries from topology lookups
-Date: Wed, 31 Jul 2024 14:21:44 -0700
-Message-ID: <20240731212153.921327-1-cujomalainey@chromium.org>
-X-Mailer: git-send-email 2.46.0.rc2.264.g509ed76dc8-goog
+	dkim=pass (2048-bit key,
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=W8a8hguu
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 46VNMbev030523;
+	Thu, 1 Aug 2024 01:17:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=qcppdkim1; bh=DYLWwo/G+1Jgv2CP4pXZ8GM4
+	oRunCFe5DUVQ7F3XSlY=; b=W8a8hguujs00OcPpNn5uDap/sLoigiddDEY8DILN
+	IR/DnqPoPvx5f3DwCrNzCbowXZpiLBur8SH7856b9Vfb+YbVqZctRQY+JNO1W06Y
+	cgGfV7Qa/ARsi4rWmpCbCL7UUB3awGutP33FiTtbrbfRlCUqTofU7tgwk80PpFgU
+	UtaoSWw9RirfLDLrR6Ia1/XCH7y/2GM9CpLyoza2k5+iAyKO179nbNtfxMojK2K3
+	SQapshRmDax610FSMfdy4Xq7U+AG0QJZMPSByfwshSes+FNVcd08q4i9f+3WYB5J
+	FZAzbbhMTJEWxJU6aaFLY0y30F9bawDAQtEszSZuSCQ8+g==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40qm0825bp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Aug 2024 01:17:46 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id
+ 4711Hj54026894
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 1 Aug 2024 01:17:45 GMT
+Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Wed, 31 Jul 2024 18:17:44 -0700
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <broonie@kernel.org>, <lgirdwood@gmail.com>, <krzk+dt@kernel.org>,
+        <Thinh.Nguyen@synopsys.com>, <bgoswami@quicinc.com>, <tiwai@suse.com>,
+        <gregkh@linuxfoundation.org>, <robh@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v24 13/34] ASoC: dt-bindings: Update example for enabling USB
+ offload on SM8250
+Date: Wed, 31 Jul 2024 18:17:09 -0700
+Message-ID: <20240801011730.4797-14-quic_wcheng@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240801011730.4797-1-quic_wcheng@quicinc.com>
+References: <20240801011730.4797-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: J66P3DTSBMX7EWCEZLIQHFZ27FNO7U2F
-X-Message-ID-Hash: J66P3DTSBMX7EWCEZLIQHFZ27FNO7U2F
-X-MailFrom: cujomalainey@chromium.org
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: 4Jxg3kxzMJetKVzayKSptjZagDJySRLr
+X-Proofpoint-ORIG-GUID: 4Jxg3kxzMJetKVzayKSptjZagDJySRLr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-31_11,2024-07-31_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 bulkscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=999 spamscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 phishscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408010005
+Message-ID-Hash: DKOQNJPR6T52IRHNKVXFPVMZAHTSDCI6
+X-Message-ID-Hash: DKOQNJPR6T52IRHNKVXFPVMZAHTSDCI6
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J66P3DTSBMX7EWCEZLIQHFZ27FNO7U2F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DKOQNJPR6T52IRHNKVXFPVMZAHTSDCI6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,34 +126,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Curtis Malainey <cujomalainey@chromium.org>
+Add an example on enabling of USB offload for the Q6DSP.  The routing can
+be done by the mixer, which can pass the multimedia stream to the USB
+backend.
 
-Default firmware shipped in open source are not licensed for 3P
-libraries, therefore topologies should not reference them.
-
-If a OS wants to use 3P (that they have licensed) then they should use
-the appropriate topology override mechanisms.
-
-Fixes: 8a7d5d85ed2161 ("ASoC: SOF: mediatek: mt8195: Add devicetree support to select topologies")
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Cc: Wojciech Macek <wmacek@google.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/sof/mediatek/mt8195/mt8195.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/qcom,sm8250.yaml    | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 24ae1d4959be..1c6e035fd313 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -573,7 +573,7 @@ static const struct snd_sof_dsp_ops sof_mt8195_ops = {
- static struct snd_sof_of_mach sof_mt8195_machs[] = {
- 	{
- 		.compatible = "google,tomato",
--		.sof_tplg_filename = "sof-mt8195-mt6359-rt1019-rt5682-dts.tplg"
-+		.sof_tplg_filename = "sof-mt8195-mt6359-rt1019-rt5682.tplg"
- 	}, {
- 		.compatible = "mediatek,mt8195",
- 		.sof_tplg_filename = "sof-mt8195.tplg"
--- 
-2.46.0.rc2.264.g509ed76dc8-goog
-
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+index b2e15ebbd1bc..f2d708f899bf 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+@@ -229,6 +229,21 @@ examples:
+                 sound-dai = <&vamacro 0>;
+             };
+         };
++
++        usb-dai-link {
++            link-name = "USB Playback";
++            cpu {
++                sound-dai = <&q6afedai USB_RX>;
++            };
++
++            codec {
++                sound-dai = <&usbdai USB_RX>;
++            };
++
++            platform {
++                sound-dai = <&q6routing>;
++            };
++        };
+     };
+ 
+   - |
