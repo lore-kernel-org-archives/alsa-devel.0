@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E5D9C3DA64
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 01:24:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE8CBC3DA64
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 01:25:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFB2B301E;
-	Thu,  1 Aug 2024 03:24:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFB2B301E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BE1B3039;
+	Thu,  1 Aug 2024 03:24:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BE1B3039
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722475455;
-	bh=cUtHOLNf0R5GOdviTZVOeP6thiX8pbViVYJ0ZvcMhT0=;
+	s=default; t=1722475469;
+	bh=SiRRoStMJLVowcJiEYms1eLJh/IALYUgMouih7w73vU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Y1vKc5NGaN6q9KSqzX5s0DGSgK2JSwTqMymd80r9XmnvzzI/tvjHKE9U8JhuH026R
-	 0AC/QR8C6BCSEpO9jlu3RBKVmijqBooQt2bRHIGsHko+OTjSO14faQVLXvLQ0q/fQj
-	 rS5wZW55615rNVaxjgNpuzNfNKWpAPoiRDyQHJLo=
+	b=VKLx5TWt9mOsZUFlnecZMYSPzgHdzXHm8Jvc274w+BvUNUZg5WHLxZ3KJDNRyuiYx
+	 6WlFk6dDP3g6NGIH1aYAr7NviXG4Y+rnYEuPYRFxWT4tXqqqfKl4duW/Rvi7Xqju1p
+	 3ysitjTPHFoBCQxWrnOqK81Ch+gQtoZlfPAehRv0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7838EF80768; Thu,  1 Aug 2024 03:21:17 +0200 (CEST)
+	id 166E1F807B6; Thu,  1 Aug 2024 03:21:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72074F8076A;
-	Thu,  1 Aug 2024 03:21:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52993F807A6;
+	Thu,  1 Aug 2024 03:21:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5451AF80580; Thu,  1 Aug 2024 03:18:17 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id A5DA9F80580; Thu,  1 Aug 2024 03:18:17 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5BB5FF805A0
-	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 03:17:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BB5FF805A0
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5BF7F805A8
+	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 03:17:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5BF7F805A8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=fUV3t+8G
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=gMcjLCV6
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 46VGDclB024192;
-	Thu, 1 Aug 2024 01:17:43 GMT
+ 4710VJvZ030394;
+	Thu, 1 Aug 2024 01:17:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=qcppdkim1; bh=db1DiRDPnPzv2WrnCumz0mnC
-	v8rXyp8CcEMm0K1v/Ns=; b=fUV3t+8GgWjAldffE18vsDBAowSCmE9WxLH1C79M
-	l6O7DIwrKzmTQUAKMaWRaLjgsh8kjZQ5AH0vFM26cYSmCnaJC86satoyhXJDLeZ/
-	xyV6BRF1FssbvK5F5THx3hpzNq1EtfeM11xxRc5FB5e0CCc0o9a8Fs50ICtZZJag
-	qcW+RtG3KCliCzR9TJF2FF50caDnPAZhR4r5hj60eSZZYYAZ91140KVBi6nAVLxY
-	ap0YRUffjAbC3ahfbbzoNOx3/Zp2UA1KpnKgLTxxlw+n/hilIK633Y3LGVrN0Iq2
-	4batYyPIQ52ZD0KT7/o2AtCCrg1pqh1j8yhfuQuq9AUy4w==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+	:references:subject:to; s=qcppdkim1; bh=MF15WFpZlEPlZKaH7jrLwfZ0
+	WIOTOPgtdyH1a5eGX+s=; b=gMcjLCV6XbYF0eRYS7S46w6Q3ohk/I2Awe2ryWAm
+	CyxtfAX3Muk6wz0FP8j9xKaFR27X4nGLROsnrYFHPqBB6VhyAymFP44uG08A56lh
+	SjvExrj937mRa4Fi46LraiBk3vZjy+BB4iKx22HOd5MwOBHZHVIfowqx+WJ7Zk36
+	pD2U9oOmpiXIRZPyoBtJ6XccdVqpBYwFFbUzRfdF2nhtn49xoaunIZXHbIjRqw+N
+	0Fee3o7On5cd6j5b+M79hNToH+2jaCa+6jjjkuQ9739+jk9qLXgz9nK7qzvMzOAN
+	WzLLbClFg1jTitj64N+14bQIeH8aLzdGWDDsBGK0aiEPSg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40ms43d1sn-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 40pw446egn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Aug 2024 01:17:43 +0000 (GMT)
+	Thu, 01 Aug 2024 01:17:49 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id
- 4711HgZ0030334
+	by NALASPPMTA02.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id
+ 4711HmqB012418
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 1 Aug 2024 01:17:42 GMT
+	Thu, 1 Aug 2024 01:17:48 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 31 Jul 2024 18:17:41 -0700
+ 15.2.1544.9; Wed, 31 Jul 2024 18:17:47 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -77,10 +77,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v24 02/34] usb: host: xhci: Repurpose event handler for
- skipping interrupter events
-Date: Wed, 31 Jul 2024 18:16:58 -0700
-Message-ID: <20240801011730.4797-3-quic_wcheng@quicinc.com>
+Subject: [PATCH v24 23/34] ALSA: usb-audio: Prevent starting of audio stream
+ if in use
+Date: Wed, 31 Jul 2024 18:17:19 -0700
+Message-ID: <20240801011730.4797-24-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240801011730.4797-1-quic_wcheng@quicinc.com>
 References: <20240801011730.4797-1-quic_wcheng@quicinc.com>
@@ -92,19 +92,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: Ys5foNK6LHAaqNr8SWorc9dVpDIidomw
-X-Proofpoint-ORIG-GUID: Ys5foNK6LHAaqNr8SWorc9dVpDIidomw
+X-Proofpoint-GUID: uTBFVQZ2iFH_JvqJVyY9hgJMOBIAHMns
+X-Proofpoint-ORIG-GUID: uTBFVQZ2iFH_JvqJVyY9hgJMOBIAHMns
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-07-31_11,2024-07-31_01,2024-05-17_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0
- impostorscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0
- mlxlogscore=896 suspectscore=0 phishscore=0 priorityscore=1501
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408010004
-Message-ID-Hash: 3TNR2HBERCGD7SVAN2OEVMEWFU2K645K
-X-Message-ID-Hash: 3TNR2HBERCGD7SVAN2OEVMEWFU2K645K
+ phishscore=0 mlxscore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408010005
+Message-ID-Hash: C4C2QD3AQQ2U77CFVMUZ3NWHWPEH4FXC
+X-Message-ID-Hash: C4C2QD3AQQ2U77CFVMUZ3NWHWPEH4FXC
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -117,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3TNR2HBERCGD7SVAN2OEVMEWFU2K645K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C4C2QD3AQQ2U77CFVMUZ3NWHWPEH4FXC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,67 +126,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Depending on the interrupter use case, the OS may only be used to handle
-the interrupter event ring clean up.  In these scenarios, event TRBs don't
-need to be handled by the OS, so introduce an xhci interrupter flag to tag
-if the events from an interrupter needs to be handled or not.
+With USB audio offloading, an audio session is started from the ASoC
+platform sound card and PCM devices.  Likewise, the USB SND path is still
+readily available for use, in case the non-offload path is desired.  In
+order to prevent the two entities from attempting to use the USB bus,
+introduce a flag that determines when either paths are in use.
+
+If a PCM device is already in use, the check will return an error to
+userspace notifying that the stream is currently busy.  This ensures that
+only one path is using the USB substream.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-ring.c | 17 +++++++++++++----
- drivers/usb/host/xhci.h      |  1 +
- 2 files changed, 14 insertions(+), 4 deletions(-)
+ sound/usb/card.h |  1 +
+ sound/usb/pcm.c  | 29 ++++++++++++++++++++++++++---
+ 2 files changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 9e90d2952760..80dca780317a 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2951,14 +2951,22 @@ static int handle_tx_event(struct xhci_hcd *xhci,
- }
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 02e4ea898db5..e98883785301 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -165,6 +165,7 @@ struct snd_usb_substream {
+ 	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */
+ 	unsigned int stream_offset_adj;	/* Bytes to drop from beginning of stream (for non-compliant devices) */
  
- /*
-- * This function handles one OS-owned event on the event ring. It may drop
-- * xhci->lock between event processing (e.g. to pass up port status changes).
-+ * This function handles one OS-owned event on the event ring, or ignores one event
-+ * on interrupters which are non-OS owned. It may drop xhci->lock between event
-+ * processing (e.g. to pass up port status changes).
-  */
- static int xhci_handle_event_trb(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
- 				 union xhci_trb *event)
- {
- 	u32 trb_type;
++	unsigned int opened:1;		/* pcm device opened */
+ 	unsigned int running: 1;	/* running status */
+ 	unsigned int period_elapsed_pending;	/* delay period handling */
  
-+	/*
-+	 * Some interrupters do not need to handle event TRBs, as they may be
-+	 * managed by another entity, but rely on the OS to clean up.
-+	 */
-+	if (ir->skip_events)
-+		return 0;
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 3adb09ce1702..3e6d33de6ce6 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1241,8 +1241,17 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+ 	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_usb_substream *subs = &as->substream[direction];
++	struct snd_usb_audio *chip = subs->stream->chip;
+ 	int ret;
+ 
++	mutex_lock(&chip->mutex);
++	if (subs->opened) {
++		mutex_unlock(&chip->mutex);
++		return -EBUSY;
++	}
++	subs->opened = 1;
++	mutex_unlock(&chip->mutex);
 +
- 	trace_xhci_handle_event(ir->event_ring, &event->generic);
+ 	runtime->hw = snd_usb_hardware;
+ 	/* need an explicit sync to catch applptr update in low-latency mode */
+ 	if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+@@ -1259,13 +1268,23 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
  
- 	/*
-@@ -3047,8 +3055,9 @@ static void xhci_clear_interrupt_pending(struct xhci_hcd *xhci,
+ 	ret = setup_hw_info(runtime, subs);
+ 	if (ret < 0)
+-		return ret;
++		goto err_open;
+ 	ret = snd_usb_autoresume(subs->stream->chip);
+ 	if (ret < 0)
+-		return ret;
++		goto err_open;
+ 	ret = snd_media_stream_init(subs, as->pcm, direction);
+ 	if (ret < 0)
+-		snd_usb_autosuspend(subs->stream->chip);
++		goto err_resume;
++
++	return 0;
++
++err_resume:
++	snd_usb_autosuspend(subs->stream->chip);
++err_open:
++	mutex_lock(&chip->mutex);
++	subs->opened = 0;
++	mutex_unlock(&chip->mutex);
++
+ 	return ret;
  }
  
- /*
-- * Handle all OS-owned events on an interrupter event ring. It may drop
-- * and reaquire xhci->lock between event processing.
-+ * Handle all OS-owned events on an interrupter event ring, or skip pending events
-+ * for non OS owned interrupter event ring. It may drop and reaquire xhci->lock
-+ * between event processing.
-  */
- static int xhci_handle_events(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- {
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 1c6126ed55b0..efbd1f651da4 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1430,6 +1430,7 @@ struct xhci_interrupter {
- 	struct xhci_intr_reg __iomem *ir_set;
- 	unsigned int		intr_num;
- 	bool			ip_autoclear;
-+	bool			skip_events;
- 	u32			isoc_bei_interval;
- 	/* For interrupter registers save and restore over suspend/resume */
- 	u32	s3_irq_pending;
+@@ -1274,6 +1293,7 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+ 	int direction = substream->stream;
+ 	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+ 	struct snd_usb_substream *subs = &as->substream[direction];
++	struct snd_usb_audio *chip = subs->stream->chip;
+ 	int ret;
+ 
+ 	snd_media_stop_pipeline(subs);
+@@ -1287,6 +1307,9 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+ 
+ 	subs->pcm_substream = NULL;
+ 	snd_usb_autosuspend(subs->stream->chip);
++	mutex_lock(&chip->mutex);
++	subs->opened = 0;
++	mutex_unlock(&chip->mutex);
+ 
+ 	return 0;
+ }
