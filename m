@@ -4,95 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F23EBC3DA4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 09:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3A17C49EA1
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 09:16:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B95C43913;
-	Thu,  1 Aug 2024 11:15:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B95C43913
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDA39394C;
+	Thu,  1 Aug 2024 11:15:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDA39394C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722503725;
-	bh=X2yTZOgmtPzRmB9EZfWm8834SLBb4s6ZqLKVNWv52yE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=N165jcqdYTGqvKmycQPsTmHChTyz85JkbERdYqR38lZVvE7sfa30H62+Rjomem8+4
-	 cnTWnXmro3j0qthd9Hm4VO0xjkYqglu7VeSEM/Z7FluCgpdHi/Qf9horekH38AK6wm
-	 7mCmmrXKNDs5yyO6qs5S699sKofyJMxhM/9YkkAI=
+	s=default; t=1722503744;
+	bh=cctBst5WQtaOA5JUEHLkAivMeQsyiT6XqwpHOMVGXG4=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=DFx2RGjhgeuH+I2A4Vn368H7EiUylNYCiaB4b28QrMW/yGwqWZ48HUY043VA9Xqca
+	 oXzzGnHaXsJsBJ43nySME+kd/raMZCaXJxp8sPUPfM5xoJiiyKPrSaI+tZRtTJJpcI
+	 r74CnvGsfvMlxuJviDUGOFBCM5j19mmz3K0g0BWw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D09AF805FA; Thu,  1 Aug 2024 11:13:28 +0200 (CEST)
+	id A11D2F805A8; Thu,  1 Aug 2024 11:15:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 422B6F806B3;
-	Thu,  1 Aug 2024 11:13:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D965BF8059F;
+	Thu,  1 Aug 2024 11:15:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37D77F80589; Thu,  1 Aug 2024 11:12:46 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	id 7C442F80589; Thu,  1 Aug 2024 11:15:25 +0200 (CEST)
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com
+ (mail-bn7nam10on20600.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2009::600])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4CA43F805E6
-	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 11:12:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CA43F805E6
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7EF83F80269
+	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 11:15:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EF83F80269
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=YVYkcZ+L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1722503544; x=1754039544;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=X2yTZOgmtPzRmB9EZfWm8834SLBb4s6ZqLKVNWv52yE=;
-  b=YVYkcZ+LWNkK3GQze6frM3pI2VoLJIWm6aDhs4/4SVdvw4q46n2CpJMd
-   yhldbn8RZTNZaa1jAYS+mWntd6TtUtAb39eofBwMxOODycMA9WTKL0k0U
-   EPc2LSYOeHOtkjV1rnBP22vzMjjZxTlBAWShhYvOgn/qr6QryeT7090ZT
-   yuTSE5eKY6K32YAqr9rsbaijq74rwhtAnCTzwp8i9pxp32lsQ1RyybjGQ
-   xw+UL2fN61Ga6JttmXid7eoaac9Y2r5DEl2GDjSV4vad95n5/AGFt0QmM
-   VZAniE/KdLi5h4V+pw4a+AJCv+DGOugRY1RGEQADCtbyClNQtu2Dbzo10
-   A==;
-X-CSE-ConnectionGUID: OagN88mLQWSZR8evpmPzRQ==
-X-CSE-MsgGUID: LnVlPjEDStevo9gYXjTzVQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11150"; a="20383724"
-X-IronPort-AV: E=Sophos;i="6.09,254,1716274800";
-   d="scan'208";a="20383724"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Aug 2024 02:12:22 -0700
-X-CSE-ConnectionGUID: CIBWS+VXTECq+Rc+1hXfhQ==
-X-CSE-MsgGUID: vzCEqILAQRmz4OwjGFWoOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,254,1716274800";
-   d="scan'208";a="59090241"
-Received: from lfiedoro-mobl.ger.corp.intel.com (HELO [10.245.246.220])
- ([10.245.246.220])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Aug 2024 02:12:16 -0700
-Message-ID: <c0b5be27-4a7a-4e53-ad90-f384b066791b@linux.intel.com>
-Date: Thu, 1 Aug 2024 11:04:26 +0200
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=udSYwyI5
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=auakybDfsl6O0giC1d0LNXZi7/ZqEIiVg/ZsjxF/3O5Ww5kDjYSNyq+nheQ4v45CtpNQi0712DYz8qLhlTtl4jA698n+GkMnyFhA6xHVeMaHvyo5mN1SLUpvQQ/xkvAJGgvS55XxDXq7mwyXbq4kOaRr9Zkc/lWrJTfQ7Aht+D+TKjbEzX5zepf90u8QuvahJryvmqxjQot5C8OGQnk/CocR9ncJvgueFokrH3wFqAxbDnC7Y5CrwxYfzVu6SwYZaNL7OH+TXfyc2X9rVjY7O+012JUPU/kmLlJAOiKElgeVBQJxTRu8O298aX7GtsWUQkC70+LyA/q/HbF+YXBbgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7QrcztA9oVpBtTLxpPo2f/GqXPy1RPpKta7cMTaBVUU=;
+ b=HubpwWvDCpup/BQDsc//rlNGe1TnDjI6gL/FGy/yXubyxLMwcgNJRahb/3ZKj7hDo+SaN6NFa0flQswdRz5w/RxtuL3iI7y6DJj7/bro8VJqpUe8FrsJwEA+REzJ9VmmNagSLQt56FtZ9LjbrW3DgfefbWCXePIfuKRzeL/ppCget3zSbso3ShqW6xU809IQSsYAjhlsA/pUXa/UcIZqaeF36+LrYoNKncujpSLZ/KcgZnwzvNDk0rgC34hYVHRMP2OTRq31HjorRyB18098VMNBsgTi3GMUdburUnlYaB2FYXiWhzPW3BpHj6eyozVGyT+BZkUkw7aIwEhAiCPdaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7QrcztA9oVpBtTLxpPo2f/GqXPy1RPpKta7cMTaBVUU=;
+ b=udSYwyI5kBxcIPMEWCcRv6R47na0/lbeBcWIvZtOE98cD+3lDitTNID3NWTiFcr/ceSPwV1XDYUDfbd1QyA4kG9oV3Y8GEBS0Mby/AWmXttQEDchpdLJTf3mkm9tnP24qwfvfPxP6Cbvf6ApBa865NDwQt0+n819Ou+NeOWzVno=
+Received: from CH3P220CA0001.NAMP220.PROD.OUTLOOK.COM (2603:10b6:610:1e8::23)
+ by MW4PR12MB7142.namprd12.prod.outlook.com (2603:10b6:303:220::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7807.27; Thu, 1 Aug
+ 2024 09:15:00 +0000
+Received: from CH2PEPF00000140.namprd02.prod.outlook.com
+ (2603:10b6:610:1e8:cafe::1a) by CH3P220CA0001.outlook.office365.com
+ (2603:10b6:610:1e8::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.23 via Frontend
+ Transport; Thu, 1 Aug 2024 09:14:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CH2PEPF00000140.mail.protection.outlook.com (10.167.244.72) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7828.19 via Frontend Transport; Thu, 1 Aug 2024 09:14:59 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 1 Aug
+ 2024 04:14:58 -0500
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.39
+ via Frontend Transport; Thu, 1 Aug 2024 04:14:56 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <pierre-louis.bossart@linux.intel.com>,
+	<yung-chuan.liao@linux.intel.com>, <Basavaraj.Hiregoudar@amd.com>,
+	<Sunil-kumar.Dommati@amd.com>, <venkataprasad.potturu@amd.com>, "Vijendar
+ Mukunda" <Vijendar.Mukunda@amd.com>
+Subject: [PATCH RESEND 00/31] AMD SOF based generic SoundWire machine driver
+Date: Thu, 1 Aug 2024 14:44:15 +0530
+Message-ID: <20240801091446.10457-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v24 34/34] ASoC: qcom: qdsp6: Ensure PCM format is
- supported by USB audio device
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
- corbet@lwn.net, broonie@kernel.org, lgirdwood@gmail.com, krzk+dt@kernel.org,
- Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com, tiwai@suse.com,
- gregkh@linuxfoundation.org, robh@kernel.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
- alsa-devel@alsa-project.org
-References: <20240801011730.4797-1-quic_wcheng@quicinc.com>
- <20240801011730.4797-35-quic_wcheng@quicinc.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240801011730.4797-35-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: RUWXROKKMAXUJ5EPTNBPLIXCGZVTDJYJ
-X-Message-ID-Hash: RUWXROKKMAXUJ5EPTNBPLIXCGZVTDJYJ
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (SATLEXMB03.amd.com: Vijendar.Mukunda@amd.com does not
+ designate permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF00000140:EE_|MW4PR12MB7142:EE_
+X-MS-Office365-Filtering-Correlation-Id: f15a1b59-16ee-4104-cc59-08dcb20a6b0e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|1800799024|36860700013|376014|82310400026;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?amgzhfCwOZZD6GHjOJH6hLUodojp8tVKJ6fyNh2TkGaDHMt/o3hMbg97w61x?=
+ =?us-ascii?Q?ogZaTM3WK3UUxgYaUl6Qhueo4YI1C9cDvmsMPRE7EXDVh9o0+4YlPfIYSENG?=
+ =?us-ascii?Q?5euicBACyk7aO/3NP6QJAe6WDwVMb6ofDaylYVU3BgUGdsz9oOgFBi/2PQco?=
+ =?us-ascii?Q?E/Q3ZjOpOevfG9QBq3dn+rBUw3pTjSB7GNuJmePdBKFajaosIb6/5wWSki25?=
+ =?us-ascii?Q?C28dU0XlEOZmap9x/4AgM4SUg1/b8ueFy6/XnO1KEP3YJDWVnPUeE8arDsGP?=
+ =?us-ascii?Q?sXbSDRfRr43bdZyh55dbmT+kfRTNmn5gMP6EBrhxQ5QyYhkY5Fxtu/IcyTxp?=
+ =?us-ascii?Q?hGyKr/hVKebQ+lNBTMw4uwUAMDyTtzei99Fwqe1y8u1HDfnMc4H61B4JvcFX?=
+ =?us-ascii?Q?bT3pqX7bZALPRHiQzing7ogHpQ1ueUFRNNZoiCftfY4Jd6f+tEzfbB2mcFhr?=
+ =?us-ascii?Q?U69I2YkgLw7ltKU+NmXlICRoG5NV0ldeeLb+tEdrapmBBeHChJwhGGmnF6o+?=
+ =?us-ascii?Q?8TjOyVwG5254+QdB5k6dKfx2VGqQupyeAwOyxk45jgiVgHLcZ1W/LPBMWLSd?=
+ =?us-ascii?Q?0nEzv/hRFmlQkE5Yk8A2K5W9xvfu8gwWPD/A3laAJC+Hvjd9b8SNSJqH47SN?=
+ =?us-ascii?Q?KO1zx4QPXLAw2kLIlymcIz8B4GIQjMZTckqpiyK8/gcaEPPlH2Sbqj9YHWFg?=
+ =?us-ascii?Q?Zc2mi+3ys95eBDsncxyoM86E6qrcoLNs89poKh+wvNCOOCxGzLgQsGVLZxkX?=
+ =?us-ascii?Q?gGkoURgCWi/086lCB40Y6Dk1lmcEoqB9l3eKpLoeOiv71WEE36vhWLQWhcs3?=
+ =?us-ascii?Q?R5CL6rUAZAA7zBPLAY7d7gRQBBiYasbzc4q00ahP+GHRkiCJKaPLJ2U/XfnM?=
+ =?us-ascii?Q?4aCiuNAY/421wpyM+k+OZUp/Qfda2ahzb6VNZJmt4iKyEWqPtQBodBDkAlZt?=
+ =?us-ascii?Q?LPZr5MkjgT/gPiLFZcvWFlW2ArTJ7eWEPzjOejsmeeASAgXrb06cc9Vbo1Cj?=
+ =?us-ascii?Q?5C/+XBEyMRxD79N+XnHPA+idzSXU40iHX4FehyqzLOoFZEbys8hPza/o4u8V?=
+ =?us-ascii?Q?cmFmoBglpiyt7sMH1Vxp0Mc6tYRGpTB3cbyrmjYNC/j9bzbtnlnk+LPVRoda?=
+ =?us-ascii?Q?COPPplYsx1pG1W1Z23Fj8ctwyeW926GuG3hYTHZA3RZ29mgM9F+DhLPUZ+7w?=
+ =?us-ascii?Q?geOv7Pbc97YzjGj+DU7kxD0F4hxxELzOd50PJhF+gQ26ZKrUuaR2HI3U7Cuz?=
+ =?us-ascii?Q?AiSCM1WFQkCV/aNb1lRHNXB6/lH76uaWX/oeojYRKTq8yCaFcMPQdk6EyoAa?=
+ =?us-ascii?Q?U0pNoyCjQj2dibGzVSJsouDnKSR1NuClsO0Oen8Ti678NL8tjRaVjGspOBR/?=
+ =?us-ascii?Q?j/IpSGEGnG5vsWBhBxJ0jHoUZW2l?=
+X-Forefront-Antispam-Report: 
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2024 09:14:59.4535
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ f15a1b59-16ee-4104-cc59-08dcb20a6b0e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	CH2PEPF00000140.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7142
+Message-ID-Hash: JRYQKFFFN6DUS3JP5B4FSY4FBNPVYM5Y
+X-Message-ID-Hash: JRYQKFFFN6DUS3JP5B4FSY4FBNPVYM5Y
+X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +158,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RUWXROKKMAXUJ5EPTNBPLIXCGZVTDJYJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JRYQKFFFN6DUS3JP5B4FSY4FBNPVYM5Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,42 +167,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+This patch series majorly consists of below changes.
+- Rename structures, macros and codec helper names used in Intel
+SoundWire generic driver to make it generic.
+- Move Intel SoundWire driver common structures, macros and codec
+helper functions to common placeholder so that it can be used by
+other platform machine driver.
+- Refactor few SoundWire common codec helper functions.
+- AMD SOF based generic SoundWire machine driver for ACP 6.3 variant.
 
+This work started a couple of months ago to avoid duplication of code
+that wasn't really Intel-specific in the "sof_sdw" machine driver.
+The code went through multiple iterations, was tested for multiple weeks
+and a couple of build issues reported by the Intel kbuild bots were
+corrected.
 
-On 8/1/24 03:17, Wesley Cheng wrote:
-> Check for if the PCM format is supported during the hw_params callback.  If
-> the profile is not supported then the userspace ALSA entity will receive an
-> error, and can take further action.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  sound/soc/qcom/qdsp6/q6usb.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-> index d8f1bb4ec497..9a3fb3cb32b2 100644
-> --- a/sound/soc/qcom/qdsp6/q6usb.c
-> +++ b/sound/soc/qcom/qdsp6/q6usb.c
-> @@ -52,6 +52,7 @@ static int q6usb_hw_params(struct snd_pcm_substream *substream,
->  	struct q6usb_port_data *data = dev_get_drvdata(dai->dev);
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->  	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> +	int direction = substream->stream;
->  	struct q6afe_port *q6usb_afe;
->  	struct snd_soc_usb_device *sdev;
->  	int ret;
-> @@ -63,6 +64,10 @@ static int q6usb_hw_params(struct snd_pcm_substream *substream,
->  	mutex_lock(&data->mutex);
->  	sdev = list_last_entry(&data->devices, struct snd_soc_usb_device, list);
->  
-> +	ret = snd_soc_usb_find_supported_format(sdev->chip_idx, params, direction);
-> +	if (ret < 0)
-> +		goto out;
-> +
->  	q6usb_afe = q6afe_port_get_from_id(cpu_dai->dev, USB_RX);
->  	if (IS_ERR(q6usb_afe))
->  		goto out;
+This is the initial version of SoundWire machine driver for AMD
+platforms. Additional code refactoring will be done in the next step on
+the AMD side.
 
-This patch and the previous patch 33 should be added before patch 17,
-see comments there.
+Link: https://github.com/thesofproject/linux/pull/5068
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Vijendar Mukunda (31):
+  ASoC: intel: rename codec_info and dai_info structures names
+  ASoC: intel: rename soundwire common header macros
+  ASoC: intel: rename soundwire machine driver soc ops
+  ASoC: intel: rename soundwire codec helper functions
+  ASoC: intel: rename maxim codec macros
+  ASoC: intel: rename ignore_pch_dmic variable name
+  ASoC: intel/sdw-utils: move soundwire machine driver soc ops
+  ASoC: intel: move soundwire machine driver common structures
+  ASoC: intel/sdw_utils: move soundwire machine driver helper functions
+  ASoC: intel/sdw_utils: move dmic codec helper function
+  ASoC: intel/sdw_utils: move rtk dmic helper functions
+  ASoC: intel/sdw_utils: move rt712 sdca helper functions
+  ASoC: intel/sdw_utils: move rt722 sdca helper functions
+  ASoC: intel: split soundwire machine driver private data
+  ASoC: intel/sdw_utils: move rt5682 codec helper function
+  ASoC: intel/sdw_utils: move rtk jack common helper functions
+  ASoC: intel/sdw_utils: move rt700 and rt711 codec helper functions
+  ASoC: intel/sdw_utils: move rtk amp codec helper functions
+  ASoC: intel/sdw_utils: move cirrus soundwire codec helper functions
+  ASoC: intel/sdw_utils: move maxim codec helper functions
+  ASoC: intel/sdw_utils: move dai id common macros
+  ASoC: intel/sdw_utils: move soundwire dai type macros
+  ASoC: intel/sdw_utils: move soundwire codec_info_list structure
+  ASoC: intel/sdw_utils: move machine driver dai link helper functions
+  ASoC: sdw_utils: refactor sof_sdw_card_late_probe function
+  ASoC: intel/sdw_utils: refactor init_dai_link() and
+    init_simple_dai_link()
+  ASoC: soc-acpi: add pci revision id field in mach params structure
+  ASoC: amd: acp: add soundwire machines for acp6.3 based platform
+  ASoC: SOF: amd: add alternate machines for acp6.3 based platform
+  ASoC: SOF: amd: update mach params subsystem_rev variable
+  ASoC: amd/sdw_utils: add sof based soundwire generic machine driver
+
+ include/sound/soc-acpi.h                      |    2 +
+ include/sound/soc_sdw_utils.h                 |  216 ++++
+ sound/soc/Kconfig                             |    2 +
+ sound/soc/Makefile                            |    1 +
+ sound/soc/amd/acp/Kconfig                     |   22 +
+ sound/soc/amd/acp/Makefile                    |    4 +
+ sound/soc/amd/acp/acp-sdw-sof-mach.c          |  742 +++++++++++
+ sound/soc/amd/acp/amd-acp63-acpi-match.c      |   90 ++
+ sound/soc/amd/acp/soc_amd_sdw_common.h        |   44 +
+ sound/soc/amd/mach-config.h                   |    1 +
+ sound/soc/intel/boards/Kconfig                |    1 +
+ sound/soc/intel/boards/Makefile               |    9 -
+ sound/soc/intel/boards/sof_sdw.c              | 1142 ++---------------
+ sound/soc/intel/boards/sof_sdw_common.h       |  166 +--
+ sound/soc/intel/boards/sof_sdw_hdmi.c         |   14 +-
+ sound/soc/sdw_utils/Kconfig                   |    6 +
+ sound/soc/sdw_utils/Makefile                  |   11 +
+ .../soc_sdw_bridge_cs35l56.c}                 |   56 +-
+ .../soc_sdw_cs42l42.c}                        |   13 +-
+ .../soc_sdw_cs42l43.c}                        |   38 +-
+ .../soc_sdw_cs_amp.c}                         |   18 +-
+ .../soc_sdw_dmic.c}                           |   10 +-
+ .../soc_sdw_maxim.c}                          |   56 +-
+ .../soc_sdw_rt5682.c}                         |   12 +-
+ .../soc_sdw_rt700.c}                          |   12 +-
+ .../soc_sdw_rt711.c}                          |   38 +-
+ .../soc_sdw_rt712_sdca.c}                     |   10 +-
+ .../soc_sdw_rt722_sdca.c}                     |   10 +-
+ .../soc_sdw_rt_amp.c}                         |   32 +-
+ .../soc_sdw_rt_amp_coeff_tables.h}            |    6 +-
+ .../soc_sdw_rt_dmic.c}                        |   11 +-
+ .../soc_sdw_rt_sdca_jack_common.c}            |   40 +-
+ sound/soc/sdw_utils/soc_sdw_utils.c           |  990 ++++++++++++++
+ sound/soc/sof/amd/Kconfig                     |    1 +
+ sound/soc/sof/amd/acp-common.c                |    3 +
+ sound/soc/sof/amd/acp.c                       |    1 +
+ sound/soc/sof/amd/acp.h                       |    1 +
+ sound/soc/sof/amd/pci-acp63.c                 |    1 +
+ 38 files changed, 2475 insertions(+), 1357 deletions(-)
+ create mode 100644 include/sound/soc_sdw_utils.h
+ create mode 100644 sound/soc/amd/acp/acp-sdw-sof-mach.c
+ create mode 100644 sound/soc/amd/acp/amd-acp63-acpi-match.c
+ create mode 100644 sound/soc/amd/acp/soc_amd_sdw_common.h
+ create mode 100644 sound/soc/sdw_utils/Kconfig
+ create mode 100644 sound/soc/sdw_utils/Makefile
+ rename sound/soc/{intel/boards/bridge_cs35l56.c => sdw_utils/soc_sdw_bridge_cs35l56.c} (63%)
+ rename sound/soc/{intel/boards/sof_sdw_cs42l42.c => sdw_utils/soc_sdw_cs42l42.c} (82%)
+ rename sound/soc/{intel/boards/sof_sdw_cs42l43.c => sdw_utils/soc_sdw_cs42l43.c} (73%)
+ rename sound/soc/{intel/boards/sof_sdw_cs_amp.c => sdw_utils/soc_sdw_cs_amp.c} (66%)
+ rename sound/soc/{intel/boards/sof_sdw_dmic.c => sdw_utils/soc_sdw_dmic.c} (71%)
+ rename sound/soc/{intel/boards/sof_sdw_maxim.c => sdw_utils/soc_sdw_maxim.c} (63%)
+ rename sound/soc/{intel/boards/sof_sdw_rt5682.c => sdw_utils/soc_sdw_rt5682.c} (82%)
+ rename sound/soc/{intel/boards/sof_sdw_rt700.c => sdw_utils/soc_sdw_rt700.c} (81%)
+ rename sound/soc/{intel/boards/sof_sdw_rt711.c => sdw_utils/soc_sdw_rt711.c} (70%)
+ rename sound/soc/{intel/boards/sof_sdw_rt712_sdca.c => sdw_utils/soc_sdw_rt712_sdca.c} (74%)
+ rename sound/soc/{intel/boards/sof_sdw_rt722_sdca.c => sdw_utils/soc_sdw_rt722_sdca.c} (68%)
+ rename sound/soc/{intel/boards/sof_sdw_rt_amp.c => sdw_utils/soc_sdw_rt_amp.c} (87%)
+ rename sound/soc/{intel/boards/sof_sdw_amp_coeff_tables.h => sdw_utils/soc_sdw_rt_amp_coeff_tables.h} (97%)
+ rename sound/soc/{intel/boards/sof_sdw_rt_dmic.c => sdw_utils/soc_sdw_rt_dmic.c} (70%)
+ rename sound/soc/{intel/boards/sof_sdw_rt_sdca_jack_common.c => sdw_utils/soc_sdw_rt_sdca_jack_common.c} (78%)
+ create mode 100644 sound/soc/sdw_utils/soc_sdw_utils.c
+
+-- 
+2.34.1
 
