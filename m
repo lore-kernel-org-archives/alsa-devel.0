@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C75EC3DA4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 07:36:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36D11C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 07:38:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEAD432FF;
-	Thu,  1 Aug 2024 09:35:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEAD432FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C984332D;
+	Thu,  1 Aug 2024 09:38:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C984332D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722497752;
-	bh=RDO+vloBM2GX4x3HsozmjsErgtAplHVdtbM9kcsLnNk=;
+	s=default; t=1722497923;
+	bh=DEyriH/vPZc9JnNMAOgPz51EJsfR+N8BIQziaDRC/is=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q9/nNQ3VCGtWeH7taribSofvmvKh7OVWQWl+7R9G/q+t5RAXk54jvnwuSy7ICmDru
-	 A9XWlELLT2dTpge1aQULsCWJMFRkLLBclepx9g4hyd9Mew1PlxJCUZ5SB0aMBG69K0
-	 d6eN/S7XsVocEyDJ5nb+T1gvejlK39Lx36GA0Tos=
+	b=LJSAcEnXueGCwlx4EGR79oGQc++1raEJfG5RBH6UZeSmYRRlyJFJBqwPulCxO8efB
+	 yy9OzgWOSB7UlFwQhaH9ZqSbVfB54s/bHntYJBIOxj0CTDiMz+379+sM0RFNJqEmuU
+	 +CMRfqVm6xXjVUC1onRV5wRwljokIJ9VY1oZgERk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8278AF805C6; Thu,  1 Aug 2024 09:35:09 +0200 (CEST)
+	id 4761CF802DB; Thu,  1 Aug 2024 09:38:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8627CF805E4;
-	Thu,  1 Aug 2024 09:35:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EBD3F805B6;
+	Thu,  1 Aug 2024 09:38:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48D29F80269; Thu,  1 Aug 2024 08:27:05 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on20601.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2417::601])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 9E569F802DB; Thu,  1 Aug 2024 08:27:04 +0200 (CEST)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10on20621.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2412::621])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD2F3F80448
-	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 08:25:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD2F3F80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86EEAF800E3
+	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 08:25:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86EEAF800E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=hjRTEXJp
+ header.s=selector1 header.b=4T3LD/sC
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mxtxVWza04IqvGfofHRvO5ktYlZ8Aem96q9Ki00S2kvQNFpgjtkPBRDjW5z/O5/aDvMdhbx1IlclIrLyIE+TU13tG93FSU/hlwP9+293TVcrkozoW7FONCW1PWSSspXdZHovnmSWSAPFGpn5p6UVMIgJcQM+nZBWdgqsgrGcGqBKHnMnt9VYUrSM/owB6qkZaB3p6VDcZ3puzf43lIXEbgNUeUVFAyPurpBS2BoP3+PMC7PwSQhBdXbYHnq+1LZveZkYre36C5cJ3GaA02Of/gN9U5KxtYet0nlAEjc/DYNeVRZcOdWG26QsdLVD4ttEC7KveZKZJI4dB7jI8w2GFA==
+ b=WcXgnYyyz0WjwbsgRQmeQC4YUMj6b0Ar7KZHYOOc1O1mS4HE12O46kplRyaNNf/naofoWrkupsjLh3J++1RJga5UgTEUjC9OURbQdtCE9V1xzYoXlwQFPcoz3vht70Eh9GdfgJSKkH+s05e/Im3KVgq6Fz7TWby9IEh5BIKOlENpVrH6L4htuX9oiAanu/fmfiWhw9ROTbv5fetv6oiwcUHhWcxyKoXG64pBY/O65tKIo+6oQJTkQW4Lpl4oggV7uoA5xYX8w7bTC2jGLymoxmX25s7VbFMvPfYs1HNeoCIEmbI4CXvxu+kI4UW2do0yTlHZVN7zdpiV4ka1JLbC/Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8PN6D6XRbeecwMVkpspR8HoNG+SKkdTm3cCEgvNTAC0=;
- b=ygl7Yb/sf8L88VdXfs/rieP7eW+lOz8ZYCJKkam/9PL/d50TA7jDCGGYn9LoLJaLzehiTG36XIZBhgWViA7/h/e/KP4L2so6h30WlJmNORKa0ejqpxEFa3nnnhqr/NTzCh0s2cZXmgLVjUmcxqenxTpAeXa4kAmZ8nO0IgEAiViS7v7vOS0xTvmdKhSKSK4E3tM3+oWE1itVMY6GFZ+Eyb6AGRM/o8inJ+JQJUYnQO6gICm/yoz8qyWKYMRpPGtf20VpgPC546BxsrAOSX6MzLhz1WqwYjx/v4z4RFEVQLpEmdwc5GOayDz4svC4W4rYaYfB6YHQqYx+Y5du+uHBNQ==
+ bh=nh6/9O6N5hkFvqNYO32bq/fMSHVHNmmNJeYjTlzMNZ4=;
+ b=axU8o2Lj5N3wwuCbcRTYUoDh5NtLAZQ4W9VyKfpnGUI9qdbMeHPEysKEtrv454QczBHgHsAlWNKkzvBbNNoZRBlgX7BHaHmfLHEpq4lxZyStqj6AzxqdVDFqRguLMWBxfuGo91gtroc7z6ouP9tad6bgz4V25zohytYzbIZGclaj0cfTZSdTAokUJupAAZcuC8y5dbgMEDGVVRX2KmuiGyZhZSD0rEhy+jvR50uO9amgvdj8kmVRp4oyOe3rGWmrhKoPzLdYy+gL6tdqKqd0XCOdJX15SDjDJTUirFMAb6JazUF6z8SFFLtYFNodjuTswJsAQRcg4fUwX2WPxPTQtw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8PN6D6XRbeecwMVkpspR8HoNG+SKkdTm3cCEgvNTAC0=;
- b=hjRTEXJpI/b6dTFHEXTvdjdQYeM9Wa8Tz6PcF+qRqafH1wkqoZ6sddhgtvTBPKxfViAMPKVtx65iwxHPEAwTGuFrSegiwAQr7sNJ3RX4dwEBloH1pm6KTdaeDly/3xAMBSVGYHT6FjooaLCWE5BmLwL4jIj//FJqAp5+pC1SYp8=
-Received: from CH5P220CA0022.NAMP220.PROD.OUTLOOK.COM (2603:10b6:610:1ef::28)
- by MW4PR12MB6997.namprd12.prod.outlook.com (2603:10b6:303:20a::14) with
+ bh=nh6/9O6N5hkFvqNYO32bq/fMSHVHNmmNJeYjTlzMNZ4=;
+ b=4T3LD/sClXZM1MqWu848spWQ8SHSc/QMviJ48Yfgq0hBkitoF61PtK5U4/HE4NS0eM7+lHcVpWFRu2XRmmvHS0NNxcG3eUPdpB4DDzqWAAz5bFCMizuijFRIfxZ2aJajq1kdwnwsiRALXldAGvxCbsc5V1xDjXYW33cxTAKz7PE=
+Received: from BL1P223CA0025.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::30)
+ by SN7PR12MB7323.namprd12.prod.outlook.com (2603:10b6:806:29a::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.22; Thu, 1 Aug
- 2024 06:25:54 +0000
-Received: from DS3PEPF0000C37A.namprd04.prod.outlook.com
- (2603:10b6:610:1ef:cafe::97) by CH5P220CA0022.outlook.office365.com
- (2603:10b6:610:1ef::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.22 via Frontend
- Transport; Thu, 1 Aug 2024 06:25:53 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.20; Thu, 1 Aug
+ 2024 06:25:05 +0000
+Received: from MN1PEPF0000F0E4.namprd04.prod.outlook.com
+ (2603:10b6:208:2c4:cafe::28) by BL1P223CA0025.outlook.office365.com
+ (2603:10b6:208:2c4::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.34 via Frontend
+ Transport; Thu, 1 Aug 2024 06:25:05 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF0000C37A.mail.protection.outlook.com (10.167.23.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7828.19 via Frontend Transport; Thu, 1 Aug 2024 06:25:53 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ MN1PEPF0000F0E4.mail.protection.outlook.com (10.167.242.42) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7828.19 via Frontend Transport; Thu, 1 Aug 2024 06:25:05 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 1 Aug
- 2024 01:25:52 -0500
+ 2024 01:25:03 -0500
 Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
  SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.39
- via Frontend Transport; Thu, 1 Aug 2024 01:25:47 -0500
+ via Frontend Transport; Thu, 1 Aug 2024 01:24:56 -0500
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <yung-chuan.liao@linux.intel.com>,
@@ -96,71 +94,74 @@ CC: <alsa-devel@alsa-project.org>, <yung-chuan.liao@linux.intel.com>,
 	<kai.vehmanen@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, "Takashi
  Iwai" <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.cirrus.com>,
 	"Maciej Strozek" <mstrozek@opensource.cirrus.com>, Chao Song
-	<chao.song@linux.intel.com>, Brent Lu <brent.lu@intel.com>, Kuninori Morimoto
-	<kuninori.morimoto.gx@renesas.com>, "open list:SOUND - SOC LAYER / DYNAMIC
- AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
+	<chao.song@linux.intel.com>, Kuninori Morimoto
+	<kuninori.morimoto.gx@renesas.com>, Richard Fitzgerald
+	<rf@opensource.cirrus.com>, Brent Lu <brent.lu@intel.com>, Christophe JAILLET
+	<christophe.jaillet@wanadoo.fr>, "open list:SOUND - SOC LAYER / DYNAMIC AUDIO
+ POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH 03/31] ASoC: intel: rename soundwire machine driver soc ops
-Date: Thu, 1 Aug 2024 11:53:48 +0530
-Message-ID: <20240801062416.2203673-4-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 01/31] ASoC: intel: rename codec_info and dai_info structures
+ names
+Date: Thu, 1 Aug 2024 11:53:46 +0530
+Message-ID: <20240801062416.2203673-2-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240801062416.2203673-1-Vijendar.Mukunda@amd.com>
 References: <20240801062416.2203673-1-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Received-SPF: None (SATLEXMB04.amd.com: Vijendar.Mukunda@amd.com does not
+Received-SPF: None (SATLEXMB03.amd.com: Vijendar.Mukunda@amd.com does not
  designate permitted sender hosts)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF0000C37A:EE_|MW4PR12MB6997:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37fc51f4-d49c-41e2-f882-08dcb1f2cbb3
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E4:EE_|SN7PR12MB7323:EE_
+X-MS-Office365-Filtering-Correlation-Id: 523d5a07-531f-4b5b-c840-08dcb1f2aec0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|376014|7416014|1800799024|82310400026|36860700013;
+	BCL:0;ARA:13230040|36860700013|1800799024|376014|7416014|82310400026;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?GPoB4yPKY4bqTsWXdvzskvI0EuSilralOZi/pCB6a+mfmWHKKF2QYYsAFP81?=
- =?us-ascii?Q?xixG+YeEvwNbnE3BDLQvtFVklzdDwRMuLsVMQ4T8CArMRo5LxsnpAJQq/U1L?=
- =?us-ascii?Q?4YiX6lzikpZAOvVe/UdsZAd5Z2K45n81Oukk7l09+vOoZ/IIHyWwzZZHUBW3?=
- =?us-ascii?Q?aeuDqTASXNnYUgB4EZalMtWEjrqeMtSchHaCUu3YwyhUU5mQyisonizQLyEo?=
- =?us-ascii?Q?TQ10UUrugc1nDR/8ChZSC13Zc1AP6rfGRV+1GUfTnZP2SqIs0h2YOzHmxcQn?=
- =?us-ascii?Q?QugDqUEZn6WBZd3TD46VsvIVW3fVGJSOEdf2OwN/YiePL/krTbd9DUe2hbkm?=
- =?us-ascii?Q?5k/QslSFCPTCQtaO7AJOTYEOmjIcK3didSxpH7Wf1WF7Du295Ky+xiMpVnl4?=
- =?us-ascii?Q?2YxTgSbErK6wsm98aE0CKoyQHyqAeVW8FH/6JCzfSaet9KH5SGxNGcAxzWxy?=
- =?us-ascii?Q?Y1jr2hFJj+k2UPW6/COFKQHPTUu1f2X9/vVpzkc3rUBGxiMdSrJ3lEUu7x8Y?=
- =?us-ascii?Q?7BSyZNL20vuMDj1gvzDoGHMpv3B3aLSN0SbE5xlHxs8IABSsmyFB/t+gaN+7?=
- =?us-ascii?Q?kUhqosCwfGXTBbpdzEiz+PVnV1gjDtOk4wyv1LyYvFiAG+R52WbEXbovVtq1?=
- =?us-ascii?Q?nUSpZuutUY1D7xLM9XeTDK8ilmbx+lKY5fpDyyCj5zDK5pId5aDvJ0xgzG9h?=
- =?us-ascii?Q?rywuovBv9sOptRlKNyHrmnjx1+OTEmHlX+/5vjk0WSsEBNgz59uzhWtSYyoU?=
- =?us-ascii?Q?2uQxlsEwq9+mq3vJR89u8Y6U+FhYsJjqmv0/DXu9PlbaPrP3MifV/uEgV5Z6?=
- =?us-ascii?Q?9pts052/CEJBQI9LoRoG1tBoXO1BxmN71vz6hUtkKeiVt8YRHNEe3kwz9xhw?=
- =?us-ascii?Q?dgz3n7IM2Wrjl5tiNdYJngIjrqJm6CiAslqAa0XxdtrnX5AdQqljQ7K0jn9O?=
- =?us-ascii?Q?Txo4rbSUCHl9ly7DHO23K6E6cl1QuHsLWm/dHEOqMmEZmhonHbKBB1zcbSzL?=
- =?us-ascii?Q?Sx0NV838ybRON8CQE7NJA+3fRwg4aApFiQPUQCobN9dUQ+OJNP/28klfvAMV?=
- =?us-ascii?Q?uIS9z8DguogrS24JDXnxRib2zjbQNrIBwvipwyrPMfHmvVDd2ipMPsA312Qt?=
- =?us-ascii?Q?bI5VNPr5i9hBLVdN9kfq5EJXnCqDdS9UGtg/BAkp15nbE2dplldjmdn3e3cC?=
- =?us-ascii?Q?LsyE8DdnCaH/TkJL9GVq2xKYn0TT8mWYgFpvvLUiUIJyG5CBk9IO/LpiKz7b?=
- =?us-ascii?Q?zj096o+NY/WByH/s58Wvvbcc0lNO/DRFCPPrXbKPz0vw8iaYGekHFv0d+d+X?=
- =?us-ascii?Q?8sjbASgzCOqpckY97Hi3cCanokqcc2kZJlAgJAIy9S4Xd9TkthyJqfr+J3Qz?=
- =?us-ascii?Q?t6dLEMZq48KAXcZbAbFXVawOCX7GQfVbTDBG07YzspsVOx0T6w=3D=3D?=
+	=?us-ascii?Q?+efY75fO5rzXuku6Sgcm/PH5aFGN9UkXwWmWjBob74KLbuSmnUO9/y2r1cOh?=
+ =?us-ascii?Q?+173HL2kVPckXEGLBiind2uy2NxOYWv0FuIlKqDXhKC22Psfnyn098O1cIse?=
+ =?us-ascii?Q?9lWOkCJKiQH+EeJGsh4DqtHh5tGyRlVjapAHoR7bHBeUp13k7Dw2rkxJ1TOk?=
+ =?us-ascii?Q?r8Fk7f7xiXpoF5+V2T5XGVTeikjRJLZ272X4AuD3LaDwd4eh/7jCg9M9Etjd?=
+ =?us-ascii?Q?b0UiD4fkzq6ZuR2sG2V+JYtpaQ7eyC5/ayvw0KzEU1GVTdu2pTA1SEvQ4aJB?=
+ =?us-ascii?Q?sZT622/0SxxTZSYcJLJP17a7Y33lgW1qLirP2mrn58jfJIGSkR08+FV0Dhj/?=
+ =?us-ascii?Q?F6ioHQo3WOEU2HUY1M2Cp6uhRfyLnT9CtizhE4tisZ/RUPOa7w0kIeJyjrvx?=
+ =?us-ascii?Q?bbempp6kgJHfn0dKgMK0F20bfjPQEdK1O4vILWfTaNPWXBu2kNrdZk8DHnIk?=
+ =?us-ascii?Q?2hfbrndYNEdMHANshARChSAYWurh9ma5NE2edIhE3XCFt4cLirjqm/ReQY8F?=
+ =?us-ascii?Q?e4ANOZKJ4fIzSjtRJkPg9HZgUcGQzIJfGUwHNJj0bQNYNjYoa2t0Tb5JG7nB?=
+ =?us-ascii?Q?8cWTjE/7mZrqQdZkylqhUnFKRZKznB6jdaCd0EgOjGwhMQJgZ0UEIJb065Kl?=
+ =?us-ascii?Q?B0NOsS5BojWec6FhSOyc0l9whK5BZdhk3wuaqhXyf0/Vpb9gtG8LMjioH9s+?=
+ =?us-ascii?Q?zfsTPpRDJgKZgnQ4O7DqoOMp0kVxrwEnJQ3NMYhygUV68seCgFLHhZYkrNsY?=
+ =?us-ascii?Q?L7K5H74ewdYZ50CEFPOy03Vzbh7xMjuVjuI2iHL8aep3zpREJKR/OTGrn9N9?=
+ =?us-ascii?Q?xCHGiClmAmVWRYTLiSJVIIicILLBfC/G0iLIzrhikKTv+w0/ixf91d+v0Opx?=
+ =?us-ascii?Q?eiDX6eaqLyrjHqpQpYzadrO8qIel9qEszYoSFvb4yF6KmEX37IKnUYltjFG3?=
+ =?us-ascii?Q?bv6Z18x5/mF7lucdYEr6OLnE64EGk8H7qgXA4zN6M05T/wGyKafQ1a4QamYO?=
+ =?us-ascii?Q?leSPide5E1ol1iKa7VuWLIRkkhh2V669juXpVB8pMkmSzg9Twb82MrOIC+Y0?=
+ =?us-ascii?Q?zfJ1t6NcBIlSYSpejvsXeC86dF9wS9icTjhnvNIZaNfRX6xNWJ6AYy06sEq2?=
+ =?us-ascii?Q?vp2cyI8mgE1ALCVg9Pn7JmAERqJQc2zROzJButRq/8dBvdBvIv03X4nQ5nJI?=
+ =?us-ascii?Q?adzZ4zUNrMJ6l0njUn1gS6KQYkWiT25v2rw5+vDaBw1QA7i9jMwTf9Jy21FI?=
+ =?us-ascii?Q?YZ2viol1QgyO2u54Igz/ZXf/sNf0jz/EknYJLeE8aet7VmbZQsewnN+OPHkZ?=
+ =?us-ascii?Q?dD5WY9U3EweTrG7yrdSmBUiLDOaubPqP2gEkmltyg0ER8GWCcbXp6u8UToh8?=
+ =?us-ascii?Q?DNx126uPeI3wdpbunRR/MWFS1SWclCkBrIHlmu01TWOpiJ6jfQ=3D=3D?=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(82310400026)(36860700013);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(376014)(7416014)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2024 06:25:53.6601
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2024 06:25:05.1214
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 37fc51f4-d49c-41e2-f882-08dcb1f2cbb3
+ 523d5a07-531f-4b5b-c840-08dcb1f2aec0
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	DS3PEPF0000C37A.namprd04.prod.outlook.com
+	MN1PEPF0000F0E4.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6997
-Message-ID-Hash: M2ZBA5RIJAYEJFLFPRBTFBCMHP2EAG6N
-X-Message-ID-Hash: M2ZBA5RIJAYEJFLFPRBTFBCMHP2EAG6N
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7323
+Message-ID-Hash: 3AQRZ6XOCCLWQ6IVUCG4LZFZIWUUKROO
+X-Message-ID-Hash: 3AQRZ6XOCCLWQ6IVUCG4LZFZIWUUKROO
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -173,7 +174,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M2ZBA5RIJAYEJFLFPRBTFBCMHP2EAG6N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3AQRZ6XOCCLWQ6IVUCG4LZFZIWUUKROO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -182,156 +183,324 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Rename Soundwire generic machine driver soc ops with tag "asoc".
+To make it generic, rename structure 'sof_sdw_codec_info' as
+'asoc_sdw_codec_info' and 'sof_sdw_dai_info' as 'asoc_sdw_dai_info'.
+These structures will be moved to common header file so that it can
+be used by other platform machine driver.
 
 Link: https://github.com/thesofproject/linux/pull/5068
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c        | 26 ++++++++++++-------------
- sound/soc/intel/boards/sof_sdw_common.h | 14 ++++++-------
- sound/soc/intel/boards/sof_sdw_maxim.c  | 12 ++++++------
- 3 files changed, 26 insertions(+), 26 deletions(-)
+ sound/soc/intel/boards/bridge_cs35l56.c       |  2 +-
+ sound/soc/intel/boards/sof_sdw.c              | 26 +++++++++----------
+ sound/soc/intel/boards/sof_sdw_common.h       | 24 ++++++++---------
+ sound/soc/intel/boards/sof_sdw_cs42l43.c      |  2 +-
+ sound/soc/intel/boards/sof_sdw_cs_amp.c       |  2 +-
+ sound/soc/intel/boards/sof_sdw_maxim.c        |  2 +-
+ sound/soc/intel/boards/sof_sdw_rt711.c        |  2 +-
+ sound/soc/intel/boards/sof_sdw_rt_amp.c       |  2 +-
+ .../boards/sof_sdw_rt_sdca_jack_common.c      |  2 +-
+ 9 files changed, 32 insertions(+), 32 deletions(-)
 
+diff --git a/sound/soc/intel/boards/bridge_cs35l56.c b/sound/soc/intel/boards/bridge_cs35l56.c
+index c3995e724aed..b289bcb3847a 100644
+--- a/sound/soc/intel/boards/bridge_cs35l56.c
++++ b/sound/soc/intel/boards/bridge_cs35l56.c
+@@ -127,7 +127,7 @@ int bridge_cs35l56_add_sidecar(struct snd_soc_card *card,
+ 
+ int bridge_cs35l56_spk_init(struct snd_soc_card *card,
+ 			    struct snd_soc_dai_link *dai_links,
+-			    struct sof_sdw_codec_info *info,
++			    struct asoc_sdw_codec_info *info,
+ 			    bool playback)
+ {
+ 	if (sof_sdw_quirk & SOF_SIDECAR_AMPS)
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 64fb53772c04..9395daf220e9 100644
+index e5feaef669d1..26c467bb81a3 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -594,12 +594,12 @@ static const struct snd_kcontrol_new rt700_controls[] = {
+@@ -731,7 +731,7 @@ static const struct snd_soc_ops sdw_ops = {
+ 	.shutdown = sdw_shutdown,
  };
  
- /* these wrappers are only needed to avoid typecast compilation errors */
--int sdw_startup(struct snd_pcm_substream *substream)
-+int asoc_sdw_startup(struct snd_pcm_substream *substream)
- {
- 	return sdw_startup_stream(substream);
- }
- 
--int sdw_prepare(struct snd_pcm_substream *substream)
-+int asoc_sdw_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct sdw_stream_runtime *sdw_stream;
-@@ -617,7 +617,7 @@ int sdw_prepare(struct snd_pcm_substream *substream)
- 	return sdw_prepare_stream(sdw_stream);
- }
- 
--int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
-+int asoc_sdw_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct sdw_stream_runtime *sdw_stream;
-@@ -656,8 +656,8 @@ int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--int sdw_hw_params(struct snd_pcm_substream *substream,
--		  struct snd_pcm_hw_params *params)
-+int asoc_sdw_hw_params(struct snd_pcm_substream *substream,
-+		       struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct snd_soc_dai_link_ch_map *ch_maps;
-@@ -699,7 +699,7 @@ int sdw_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--int sdw_hw_free(struct snd_pcm_substream *substream)
-+int asoc_sdw_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct sdw_stream_runtime *sdw_stream;
-@@ -717,18 +717,18 @@ int sdw_hw_free(struct snd_pcm_substream *substream)
- 	return sdw_deprepare_stream(sdw_stream);
- }
- 
--void sdw_shutdown(struct snd_pcm_substream *substream)
-+void asoc_sdw_shutdown(struct snd_pcm_substream *substream)
- {
- 	sdw_shutdown_stream(substream);
- }
- 
- static const struct snd_soc_ops sdw_ops = {
--	.startup = sdw_startup,
--	.prepare = sdw_prepare,
--	.trigger = sdw_trigger,
--	.hw_params = sdw_hw_params,
--	.hw_free = sdw_hw_free,
--	.shutdown = sdw_shutdown,
-+	.startup = asoc_sdw_startup,
-+	.prepare = asoc_sdw_prepare,
-+	.trigger = asoc_sdw_trigger,
-+	.hw_params = asoc_sdw_hw_params,
-+	.hw_free = asoc_sdw_hw_free,
-+	.shutdown = asoc_sdw_shutdown,
+-static struct sof_sdw_codec_info codec_info_list[] = {
++static struct asoc_sdw_codec_info codec_info_list[] = {
+ 	{
+ 		.part_id = 0x700,
+ 		.dais = {
+@@ -1220,7 +1220,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 	},
  };
  
- static struct asoc_sdw_codec_info codec_info_list[] = {
+-static struct sof_sdw_codec_info *find_codec_info_part(const u64 adr)
++static struct asoc_sdw_codec_info *find_codec_info_part(const u64 adr)
+ {
+ 	unsigned int part_id, sdw_version;
+ 	int i;
+@@ -1241,7 +1241,7 @@ static struct sof_sdw_codec_info *find_codec_info_part(const u64 adr)
+ 
+ }
+ 
+-static struct sof_sdw_codec_info *find_codec_info_acpi(const u8 *acpi_id)
++static struct asoc_sdw_codec_info *find_codec_info_acpi(const u8 *acpi_id)
+ {
+ 	int i;
+ 
+@@ -1255,8 +1255,8 @@ static struct sof_sdw_codec_info *find_codec_info_acpi(const u8 *acpi_id)
+ 	return NULL;
+ }
+ 
+-static struct sof_sdw_codec_info *find_codec_info_dai(const char *dai_name,
+-						      int *dai_index)
++static struct asoc_sdw_codec_info *find_codec_info_dai(const char *dai_name,
++						       int *dai_index)
+ {
+ 	int i, j;
+ 
+@@ -1355,7 +1355,7 @@ static bool is_unique_device(const struct snd_soc_acpi_link_adr *adr_link,
+ }
+ 
+ static const char *get_codec_name(struct device *dev,
+-				  const struct sof_sdw_codec_info *codec_info,
++				  const struct asoc_sdw_codec_info *codec_info,
+ 				  const struct snd_soc_acpi_link_adr *adr_link,
+ 				  int adr_index)
+ {
+@@ -1383,7 +1383,7 @@ static const char *get_codec_name(struct device *dev,
+ static int sof_sdw_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_card *card = rtd->card;
+-	struct sof_sdw_codec_info *codec_info;
++	struct asoc_sdw_codec_info *codec_info;
+ 	struct snd_soc_dai *dai;
+ 	int dai_index;
+ 	int ret;
+@@ -1451,8 +1451,8 @@ struct sof_sdw_endpoint {
+ 	const char *name_prefix;
+ 	bool include_sidecar;
+ 
+-	struct sof_sdw_codec_info *codec_info;
+-	const struct sof_sdw_dai_info *dai_info;
++	struct asoc_sdw_codec_info *codec_info;
++	const struct asoc_sdw_dai_info *dai_info;
+ };
+ 
+ struct sof_sdw_dailink {
+@@ -1529,7 +1529,7 @@ static int parse_sdw_endpoints(struct snd_soc_card *card,
+ 
+ 		for (i = 0; i < adr_link->num_adr; i++) {
+ 			const struct snd_soc_acpi_adr_device *adr_dev = &adr_link->adr_d[i];
+-			struct sof_sdw_codec_info *codec_info;
++			struct asoc_sdw_codec_info *codec_info;
+ 			const char *codec_name;
+ 
+ 			if (!adr_dev->name_prefix) {
+@@ -1563,7 +1563,7 @@ static int parse_sdw_endpoints(struct snd_soc_card *card,
+ 
+ 			for (j = 0; j < adr_dev->num_endpoints; j++) {
+ 				const struct snd_soc_acpi_endpoint *adr_end;
+-				const struct sof_sdw_dai_info *dai_info;
++				const struct asoc_sdw_dai_info *dai_info;
+ 				struct sof_sdw_dailink *sof_dai;
+ 				int stream;
+ 
+@@ -1790,7 +1790,7 @@ static int create_sdw_dailinks(struct snd_soc_card *card,
+ 
+ static int create_ssp_dailinks(struct snd_soc_card *card,
+ 			       struct snd_soc_dai_link **dai_links, int *be_id,
+-			       struct sof_sdw_codec_info *ssp_info,
++			       struct asoc_sdw_codec_info *ssp_info,
+ 			       unsigned long ssp_mask)
+ {
+ 	struct device *dev = card->dev;
+@@ -1914,7 +1914,7 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct snd_soc_acpi_mach_params *mach_params = &mach->mach_params;
+ 	struct snd_soc_codec_conf *codec_conf;
+-	struct sof_sdw_codec_info *ssp_info;
++	struct asoc_sdw_codec_info *ssp_info;
+ 	struct sof_sdw_endpoint *sof_ends;
+ 	struct sof_sdw_dailink *sof_dais;
+ 	int num_devs = 0;
 diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
-index 6ddfb1f9639a..e88b5627560b 100644
+index 2a3145d1feb6..ebacb55de318 100644
 --- a/sound/soc/intel/boards/sof_sdw_common.h
 +++ b/sound/soc/intel/boards/sof_sdw_common.h
-@@ -134,13 +134,13 @@ struct mc_private {
+@@ -79,9 +79,9 @@ enum {
  
- extern unsigned long sof_sdw_quirk;
+ #define SOF_SDW_MAX_DAI_NUM		8
  
--int sdw_startup(struct snd_pcm_substream *substream);
--int sdw_prepare(struct snd_pcm_substream *substream);
--int sdw_trigger(struct snd_pcm_substream *substream, int cmd);
--int sdw_hw_params(struct snd_pcm_substream *substream,
--		  struct snd_pcm_hw_params *params);
--int sdw_hw_free(struct snd_pcm_substream *substream);
--void sdw_shutdown(struct snd_pcm_substream *substream);
-+int asoc_sdw_startup(struct snd_pcm_substream *substream);
-+int asoc_sdw_prepare(struct snd_pcm_substream *substream);
-+int asoc_sdw_trigger(struct snd_pcm_substream *substream, int cmd);
-+int asoc_sdw_hw_params(struct snd_pcm_substream *substream,
-+		       struct snd_pcm_hw_params *params);
-+int asoc_sdw_hw_free(struct snd_pcm_substream *substream);
-+void asoc_sdw_shutdown(struct snd_pcm_substream *substream);
+-struct sof_sdw_codec_info;
++struct asoc_sdw_codec_info;
  
- /* generic HDMI support */
- int sof_sdw_hdmi_init(struct snd_soc_pcm_runtime *rtd);
-diff --git a/sound/soc/intel/boards/sof_sdw_maxim.c b/sound/soc/intel/boards/sof_sdw_maxim.c
-index 8faa06824869..f689dc29c493 100644
---- a/sound/soc/intel/boards/sof_sdw_maxim.c
-+++ b/sound/soc/intel/boards/sof_sdw_maxim.c
-@@ -80,7 +80,7 @@ static int mx8373_sdw_prepare(struct snd_pcm_substream *substream)
- 	int ret;
- 
- 	/* according to soc_pcm_prepare dai link prepare is called first */
--	ret = sdw_prepare(substream);
-+	ret = asoc_sdw_prepare(substream);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -92,7 +92,7 @@ static int mx8373_sdw_hw_free(struct snd_pcm_substream *substream)
- 	int ret;
- 
- 	/* according to soc_pcm_hw_free dai link free is called first */
--	ret = sdw_hw_free(substream);
-+	ret = asoc_sdw_hw_free(substream);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -100,12 +100,12 @@ static int mx8373_sdw_hw_free(struct snd_pcm_substream *substream)
- }
- 
- static const struct snd_soc_ops max_98373_sdw_ops = {
--	.startup = sdw_startup,
-+	.startup = asoc_sdw_startup,
- 	.prepare = mx8373_sdw_prepare,
--	.trigger = sdw_trigger,
--	.hw_params = sdw_hw_params,
-+	.trigger = asoc_sdw_trigger,
-+	.hw_params = asoc_sdw_hw_params,
- 	.hw_free = mx8373_sdw_hw_free,
--	.shutdown = sdw_shutdown,
-+	.shutdown = asoc_sdw_shutdown,
+-struct sof_sdw_dai_info {
++struct asoc_sdw_dai_info {
+ 	const bool direction[2]; /* playback & capture support */
+ 	const char *dai_name;
+ 	const int dai_type;
+@@ -92,7 +92,7 @@ struct sof_sdw_dai_info {
+ 	const int num_widgets;
+ 	int  (*init)(struct snd_soc_card *card,
+ 		     struct snd_soc_dai_link *dai_links,
+-		     struct sof_sdw_codec_info *info,
++		     struct asoc_sdw_codec_info *info,
+ 		     bool playback);
+ 	int (*exit)(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
+ 	int (*rtd_init)(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *dai);
+@@ -100,7 +100,7 @@ struct sof_sdw_dai_info {
+ 	unsigned long quirk;
  };
  
- static int mx8373_sdw_late_probe(struct snd_soc_card *card)
+-struct sof_sdw_codec_info {
++struct asoc_sdw_codec_info {
+ 	const int part_id;
+ 	const int version_id;
+ 	const char *codec_name;
+@@ -108,7 +108,7 @@ struct sof_sdw_codec_info {
+ 	const u8 acpi_id[ACPI_ID_LEN];
+ 	const bool ignore_pch_dmic;
+ 	const struct snd_soc_ops *ops;
+-	struct sof_sdw_dai_info dais[SOF_SDW_MAX_DAI_NUM];
++	struct asoc_sdw_dai_info dais[SOF_SDW_MAX_DAI_NUM];
+ 	const int dai_num;
+ 
+ 	int (*codec_card_late_probe)(struct snd_soc_card *card);
+@@ -153,14 +153,14 @@ int sof_sdw_dmic_init(struct snd_soc_pcm_runtime *rtd);
+ /* RT711 support */
+ int sof_sdw_rt711_init(struct snd_soc_card *card,
+ 		       struct snd_soc_dai_link *dai_links,
+-		       struct sof_sdw_codec_info *info,
++		       struct asoc_sdw_codec_info *info,
+ 		       bool playback);
+ int sof_sdw_rt711_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
+ 
+ /* RT711-SDCA support */
+ int sof_sdw_rt_sdca_jack_init(struct snd_soc_card *card,
+ 			      struct snd_soc_dai_link *dai_links,
+-			      struct sof_sdw_codec_info *info,
++			      struct asoc_sdw_codec_info *info,
+ 			      bool playback);
+ int sof_sdw_rt_sdca_jack_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
+ 
+@@ -170,20 +170,20 @@ extern const struct snd_soc_ops sof_sdw_rt1308_i2s_ops;
+ /* generic amp support */
+ int sof_sdw_rt_amp_init(struct snd_soc_card *card,
+ 			struct snd_soc_dai_link *dai_links,
+-			struct sof_sdw_codec_info *info,
++			struct asoc_sdw_codec_info *info,
+ 			bool playback);
+ int sof_sdw_rt_amp_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
+ 
+ /* MAXIM codec support */
+ int sof_sdw_maxim_init(struct snd_soc_card *card,
+ 		       struct snd_soc_dai_link *dai_links,
+-		       struct sof_sdw_codec_info *info,
++		       struct asoc_sdw_codec_info *info,
+ 		       bool playback);
+ 
+ /* CS42L43 support */
+ int sof_sdw_cs42l43_spk_init(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_links,
+-			     struct sof_sdw_codec_info *info,
++			     struct asoc_sdw_codec_info *info,
+ 			     bool playback);
+ 
+ /* CS AMP support */
+@@ -194,12 +194,12 @@ int bridge_cs35l56_add_sidecar(struct snd_soc_card *card,
+ 			       struct snd_soc_codec_conf **codec_conf);
+ int bridge_cs35l56_spk_init(struct snd_soc_card *card,
+ 			    struct snd_soc_dai_link *dai_links,
+-			    struct sof_sdw_codec_info *info,
++			    struct asoc_sdw_codec_info *info,
+ 			    bool playback);
+ 
+ int sof_sdw_cs_amp_init(struct snd_soc_card *card,
+ 			struct snd_soc_dai_link *dai_links,
+-			struct sof_sdw_codec_info *info,
++			struct asoc_sdw_codec_info *info,
+ 			bool playback);
+ 
+ /* dai_link init callbacks */
+diff --git a/sound/soc/intel/boards/sof_sdw_cs42l43.c b/sound/soc/intel/boards/sof_sdw_cs42l43.c
+index b7e2750c1074..e8370c3c96fd 100644
+--- a/sound/soc/intel/boards/sof_sdw_cs42l43.c
++++ b/sound/soc/intel/boards/sof_sdw_cs42l43.c
+@@ -123,7 +123,7 @@ int cs42l43_spk_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *da
+ 
+ int sof_sdw_cs42l43_spk_init(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_links,
+-			     struct sof_sdw_codec_info *info,
++			     struct asoc_sdw_codec_info *info,
+ 			     bool playback)
+ {
+ 	/* Do init on playback link only. */
+diff --git a/sound/soc/intel/boards/sof_sdw_cs_amp.c b/sound/soc/intel/boards/sof_sdw_cs_amp.c
+index 10e08207619a..206fe7610a56 100644
+--- a/sound/soc/intel/boards/sof_sdw_cs_amp.c
++++ b/sound/soc/intel/boards/sof_sdw_cs_amp.c
+@@ -47,7 +47,7 @@ int cs_spk_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *dai)
+ 
+ int sof_sdw_cs_amp_init(struct snd_soc_card *card,
+ 			struct snd_soc_dai_link *dai_links,
+-			struct sof_sdw_codec_info *info,
++			struct asoc_sdw_codec_info *info,
+ 			bool playback)
+ {
+ 	/* Do init on playback link only. */
+diff --git a/sound/soc/intel/boards/sof_sdw_maxim.c b/sound/soc/intel/boards/sof_sdw_maxim.c
+index b7f73177867f..8faa06824869 100644
+--- a/sound/soc/intel/boards/sof_sdw_maxim.c
++++ b/sound/soc/intel/boards/sof_sdw_maxim.c
+@@ -120,7 +120,7 @@ static int mx8373_sdw_late_probe(struct snd_soc_card *card)
+ 
+ int sof_sdw_maxim_init(struct snd_soc_card *card,
+ 		       struct snd_soc_dai_link *dai_links,
+-		       struct sof_sdw_codec_info *info,
++		       struct asoc_sdw_codec_info *info,
+ 		       bool playback)
+ {
+ 	info->amp_num++;
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
+index 60ff4d88e2dc..9ea8de609669 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711.c
+@@ -126,7 +126,7 @@ int sof_sdw_rt711_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_l
+ 
+ int sof_sdw_rt711_init(struct snd_soc_card *card,
+ 		       struct snd_soc_dai_link *dai_links,
+-		       struct sof_sdw_codec_info *info,
++		       struct asoc_sdw_codec_info *info,
+ 		       bool playback)
+ {
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+diff --git a/sound/soc/intel/boards/sof_sdw_rt_amp.c b/sound/soc/intel/boards/sof_sdw_rt_amp.c
+index d1c0f91ce589..da1a8cc1c63d 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt_amp.c
++++ b/sound/soc/intel/boards/sof_sdw_rt_amp.c
+@@ -256,7 +256,7 @@ int sof_sdw_rt_amp_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_
+ 
+ int sof_sdw_rt_amp_init(struct snd_soc_card *card,
+ 			struct snd_soc_dai_link *dai_links,
+-			struct sof_sdw_codec_info *info,
++			struct asoc_sdw_codec_info *info,
+ 			bool playback)
+ {
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+diff --git a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
+index 4254e30ee4c3..b63f4952e7d1 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
++++ b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
+@@ -180,7 +180,7 @@ int sof_sdw_rt_sdca_jack_exit(struct snd_soc_card *card, struct snd_soc_dai_link
+ 
+ int sof_sdw_rt_sdca_jack_init(struct snd_soc_card *card,
+ 			      struct snd_soc_dai_link *dai_links,
+-			      struct sof_sdw_codec_info *info,
++			      struct asoc_sdw_codec_info *info,
+ 			      bool playback)
+ {
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
 -- 
 2.34.1
 
