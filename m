@@ -4,90 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BF58C3DA64
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 08:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2402BC3DA64
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Aug 2024 08:50:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76B503703;
-	Thu,  1 Aug 2024 10:49:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76B503703
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0CA736CA;
+	Thu,  1 Aug 2024 10:50:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0CA736CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722502198;
-	bh=lkx6BQgqONdqFQOIbH/EuQ8hnuW8Il25wmr3Eq2tXco=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1722502218;
+	bh=Z/R/jE3UetsT6jIzeeUL2oO4nHocrgIt0QNSJ9yXa1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bYXhVeELFYooquFhaTwWJ9ebLlAzjtxV2DBr128speI2CzZWXUAbRadrGH/J/lf8o
-	 kDe/0J5Z9QAacTMMrkbeUgutai7HTuzRB/KlLSihmYQQki8biMMlihq49vAdSOSEpk
-	 n+0y0aa4aNmwJimrVvPlodkagbFCM0toLL7xrcQA=
+	b=lXtV45ZhKYp0RVyXDBvzXO3lBbsGT+NP+POuq5Y3QbSf7+45r1imNx2Y2Lo4egMSO
+	 7J3jJEgCZNirJ1rUTKFf7fkfU/dv/lPqRJCRzjsGQY4iar/WfYTkHD+xGVl6v858pb
+	 Cx5+seNxctkIy5wvra6xrfJhr8Z+6WTtJ3s3cvZg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31B2CF80611; Thu,  1 Aug 2024 10:49:07 +0200 (CEST)
+	id 2EEC5F8060B; Thu,  1 Aug 2024 10:49:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F694F80605;
-	Thu,  1 Aug 2024 10:49:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76D71F8062D;
+	Thu,  1 Aug 2024 10:49:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 625B7F8026A; Thu,  1 Aug 2024 09:17:39 +0200 (CEST)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [46.235.227.194])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 032A8F8007E
-	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 09:17:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 032A8F8007E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=pMO3uwxz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1722496642;
-	bh=lkx6BQgqONdqFQOIbH/EuQ8hnuW8Il25wmr3Eq2tXco=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pMO3uwxzZs+sN12cZxxfKRBkEDfgUws7FD7Yc+UorE4oYcdGaviLFKnMwPN31JZsh
-	 +4cqHouiClFMsB/yUv3/aDN5mrAD2C0t8Rxx6hTbq71IOQ+3qZIkdRfZCHvtOyCzqI
-	 9uooYBMXQ0joA9Jn/XVaICHrPtc6NuO9UVmaraqlGGuX0kp1AdjKSXwTZGqPyJ6L1F
-	 vVQ+Ww0MHkdQZTM/w+JD/IGUJn8+jP1FSG8dXTJAG6DsVTJIX420uUz8aDyrT8er/e
-	 xYDJGR/tqKT360JuRgGY70BDryzGWDcfNZcGKIgS3eHJws38X45ok2MyOd92lXwUjZ
-	 YPMKN+7LrG6Mg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	id CA5F9F8026A; Thu,  1 Aug 2024 10:21:17 +0200 (CEST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6EA7C3781139;
-	Thu,  1 Aug 2024 07:17:21 +0000 (UTC)
-Message-ID: <87ef7ba3-2bf7-4c46-bdf4-801bd2920695@collabora.com>
-Date: Thu, 1 Aug 2024 09:17:20 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1449BF800E3
+	for <alsa-devel@alsa-project.org>; Thu,  1 Aug 2024 10:21:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1449BF800E3
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=LjNqK8yo
+Received: by mail-lj1-x22d.google.com with SMTP id
+ 38308e7fff4ca-2ef2c56d9dcso84228621fa.2
+        for <alsa-devel@alsa-project.org>;
+ Thu, 01 Aug 2024 01:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1722500463; x=1723105263;
+ darn=alsa-project.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WwtmoHKhwxmQ7ba/RVWyEJFACGd+bpfz3WwZuXqhvo4=;
+        b=LjNqK8yoVesiE+HNEorM6/FlFIoKOmb7JYGuBuSHryFHmwHomw6VbzqfrtfdoRlCT/
+         S0mNWynajbVdFvlRntvHGHRn7HHTskBSDj0x/byaNO4iQ4G2w7LnPLtROHah7/4/lLN+
+         VnWJ+fHiGlbNrCHSXz0U3tDzhyqLF5y53hymS7lbwI98UM35F6uxaMZdfdXlFhUHnm/v
+         Eo/rWXVZiaDhD/KAJ6zcFqYbuozulWO9plFOtY+2WczdCvV+fAM7oFE/e+as8eCRUeqo
+         5mVPvqflPdwkJRVENuu326ZDpzl1mLqhanJLKTS4Q7fq5xhwTZFa4AvBv47nonopTtLz
+         NM5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722500463; x=1723105263;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WwtmoHKhwxmQ7ba/RVWyEJFACGd+bpfz3WwZuXqhvo4=;
+        b=djefghKhWKzccsSgGq6m7tXQLseu+znvb8MOKW3pzOsb2CcVf/wk79URbOcYczhtmK
+         q3dUIn2kD36B++az/HjZDDdcHmlDnqMFPj/J8UXwhmgP6jp3tZJWsHcz4irUuHyE8cvu
+         NeYwQbcHfJNXEa+EGQ9JqB/WHXQJwZSUPam3kCo/MTafisEBVYyTObiUhqmQcjavD4no
+         7se8Ur7Ee1e0pLFfP7S3CkkJ5U4KvUmSH0A8XLRQBw642hYgdn4p9zzFVPPJFfHcEmSP
+         MEAteNipVUxkSpv2MJSyu8Iq9y2ii1+ZGYuxrZQXdaW6GjHbm29L4/CNYG9AnOMyJLir
+         nSTw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUt4FBbhwbsxyINsvM8SQZor4E3Ktj/P1FbKqhGNs3C18d4yHvv+GIJrX2ubi64gDprhXNa+yqnIudOANOZ8Juvc9s3ebVy3ryB9MQ=
+X-Gm-Message-State: AOJu0YwN+dgwmtEV3qFV+P3GhvxISO0CVuRx+HGYiB1NTSZjNHPpmPwC
+	kxndcH5LVBswsotug3CnyGut5amzeT7rKEsFP/JWcH2+pWFrX+SY0hDW9KIj/+U=
+X-Google-Smtp-Source: 
+ AGHT+IH2rrp/DcZo+alL+PQQLhSzxuBc4O3JwWhJX/xYrbDZk4ReJ8Td8cb1JnBDOgBdEencF/BngA==
+X-Received: by 2002:a2e:9b1a:0:b0:2ee:8d19:85af with SMTP id
+ 38308e7fff4ca-2f1532d3daemr12584361fa.36.1722500461234;
+        Thu, 01 Aug 2024 01:21:01 -0700 (PDT)
+Received: from eriador.lumag.spb.ru
+ (dzdbxzyyyyyyyyyyybrhy-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::b8c])
+        by smtp.gmail.com with ESMTPSA id
+ 38308e7fff4ca-2f03d074b19sm22171011fa.110.2024.08.01.01.21.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Aug 2024 01:21:00 -0700 (PDT)
+Date: Thu, 1 Aug 2024 11:20:59 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Adam Skladowski <a39.skl@gmail.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>,
+	Stephan Gerhold <stephan@gerhold.net>, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org,
+	Vladimir Lypak <vladimir.lypak@gmail.com>
+Subject: Re: [PATCH v3 1/8] ASoC: qcom: apq8016_sbc.c: Add Quinary support
+Message-ID: <fm6wqsznxxxlofht2nouqtaryl7delloatc2v3b737unt7hqd4@l46iayvs64ru>
+References: <20240731-msm8953-msm8976-asoc-v3-0-163f23c3a28d@gmail.com>
+ <20240731-msm8953-msm8976-asoc-v3-1-163f23c3a28d@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: SOF: Remove libraries from topology lookups
-To: cujomalainey@chromium.org, alsa-devel@alsa-project.org
-Cc: Wojciech Macek <wmacek@google.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- Trevor Wu <trevor.wu@mediatek.com>, Krzysztof Kozlowski <krzk@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <20240731212153.921327-1-cujomalainey@chromium.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240731212153.921327-1-cujomalainey@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 7PTRAADXDDDV4SJWHCFBTMPGNDKR5LMF
-X-Message-ID-Hash: 7PTRAADXDDDV4SJWHCFBTMPGNDKR5LMF
-X-MailFrom: angelogioacchino.delregno@collabora.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240731-msm8953-msm8976-asoc-v3-1-163f23c3a28d@gmail.com>
+Message-ID-Hash: IUEVZDJROE34CQAHUF7JIXOXIOUPEH2A
+X-Message-ID-Hash: IUEVZDJROE34CQAHUF7JIXOXIOUPEH2A
+X-MailFrom: dmitry.baryshkov@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7PTRAADXDDDV4SJWHCFBTMPGNDKR5LMF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUEVZDJROE34CQAHUF7JIXOXIOUPEH2A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,36 +129,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Il 31/07/24 23:21, cujomalainey@chromium.org ha scritto:
-> From: Curtis Malainey <cujomalainey@chromium.org>
+On Wed, Jul 31, 2024 at 05:25:25PM GMT, Adam Skladowski wrote:
+> From: Vladimir Lypak <vladimir.lypak@gmail.com>
 > 
-> Default firmware shipped in open source are not licensed for 3P
-> libraries, therefore topologies should not reference them.
+> Add support for configuring Quinary Mi2S interface
+> it will be used on MSM8953 and MSM8976 platform.
 > 
-> If a OS wants to use 3P (that they have licensed) then they should use
-> the appropriate topology override mechanisms.
-> 
-> Fixes: 8a7d5d85ed2161 ("ASoC: SOF: mediatek: mt8195: Add devicetree support to select topologies")
-> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-> Cc: Wojciech Macek <wmacek@google.com>
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
+> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+> [Adam: Split from MSM8953 support patch,add msg]
+> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 > ---
->   sound/soc/sof/mediatek/mt8195/mt8195.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  sound/soc/qcom/apq8016_sbc.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-> index 24ae1d4959be..1c6e035fd313 100644
-> --- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-> +++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-> @@ -573,7 +573,7 @@ static const struct snd_sof_dsp_ops sof_mt8195_ops = {
->   static struct snd_sof_of_mach sof_mt8195_machs[] = {
->   	{
->   		.compatible = "google,tomato",
-> -		.sof_tplg_filename = "sof-mt8195-mt6359-rt1019-rt5682-dts.tplg"
-> +		.sof_tplg_filename = "sof-mt8195-mt6359-rt1019-rt5682.tplg"
->   	}, {
->   		.compatible = "mediatek,mt8195",
->   		.sof_tplg_filename = "sof-mt8195.tplg"
 
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+
+-- 
+With best wishes
+Dmitry
