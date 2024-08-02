@@ -4,84 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A88CC3DA4A
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Aug 2024 18:22:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 488B8C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Aug 2024 18:40:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDD893F39;
-	Fri,  2 Aug 2024 20:21:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDD893F39
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66CE34760;
+	Fri,  2 Aug 2024 20:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66CE34760
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722622930;
-	bh=CawFQq0JzNWd9rAAFylss7w6aAw+SMvSoc1d7h2tRyI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=SFv/z86ZUBbdujlYPZjz4LPbwUDJwH2CwQ+yqfzc0GOViGgyqU+UVVwi482xDmIh4
-	 ogp2f6sK73/6gWbr8LtZa14qaf43/qjMGVc5Y+KZxxYsAhACwGjuBJEmDCdvw430J8
-	 n1UHXpLoWIrww/QtWjLnEHbeqQE6zruWNdhtq/yE=
+	s=default; t=1722624012;
+	bh=uTZqiMGFQ/jGkRHiamEEHtPD07usskeQyvZpi4sCpv8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=W9+QqgcGk4qAfjCKYiuLX8XbgTpclUZ5kVOR2YZyT0z6tNb/C482qvVbRAIjcisQ/
+	 v8Q48tKyS0FUjHgMfI9Tx3DLC3ILxe6sLAgCWxxkqVZlIe2stIl4p+a7lEoEbbhbIW
+	 ozxkQN37BgcX/kkncXmgNJi47TWa5DZg7hwE5Mmw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 075D9F805D3; Fri,  2 Aug 2024 20:21:27 +0200 (CEST)
+	id 666F5F805A1; Fri,  2 Aug 2024 20:39:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AF7CF805E3;
-	Fri,  2 Aug 2024 20:21:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1AC2F805A8;
+	Fri,  2 Aug 2024 20:39:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B3117F805BE; Fri,  2 Aug 2024 20:21:22 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D26B9F801C0
-	for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2024 20:21:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D26B9F801C0
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=cJirmEhS
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3187E62B24;
-	Fri,  2 Aug 2024 18:21:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16925C32782;
-	Fri,  2 Aug 2024 18:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722622875;
-	bh=CawFQq0JzNWd9rAAFylss7w6aAw+SMvSoc1d7h2tRyI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=cJirmEhSuJ0jCCnvoF/y3V3uaJwxr/+Ki/NYvGI5gH+ftaBcaQAy28OCxrrL658OR
-	 0gxG8uim/Qq6btGYQlhRd/d8Nc8yqpUdEC/nvn4fxN05FNrOz9FhiTIPFgE9hx6cUu
-	 lC7URGwoR/DonRwZZh/loyb3mLZK1hLY9tXpI/hBaWVPFgG1DyLvQ8q8wBbuFbhjw7
-	 yxcRAscleI07hyNAGC1Vq6BmClil0goz+tTBEMGJoHPQldsXZ574pIUFjtcllyexPT
-	 lxtAacIEy45T111cuUqEYCYbCWmkjjAJyOV0q8/uqLFugeUYq3VoheL5D1jxYbNW8t
-	 4y6M81Qb0ZuZQ==
-From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
- pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
- zhourui@huaqin.com, alsa-devel@alsa-project.org, i-salazar@ti.com,
- linux-kernel@vger.kernel.org, j-chadha@ti.com, liam.r.girdwood@intel.com,
- jaden-yue@ti.com, yung-chuan.liao@linux.intel.com, dipa@ti.com,
- yuhsuan@google.com, henry.lo@ti.com, tiwai@suse.de, baojun.xu@ti.com,
- soyer@irl.hu, Baojun.Xu@fpt.com, judyhsiao@google.com, navada@ti.com,
- cujomalainey@google.com, aanya@ti.com, nayeem.mahmud@ti.com,
- savyasanchi.shukla@netradyne.com, flaviopr@microsoft.com, jesse-ji@ti.com,
- darren.ye@mediatek.com, antheas.dk@gmail.com,
- Jerry2.Huang@lcfuturecenter.com
-In-Reply-To: <20240802072055.1462-1-shenghao-ding@ti.com>
-References: <20240802072055.1462-1-shenghao-ding@ti.com>
-Subject: Re: [RESEND PATCH v2] ASoc: tas2781: Fix a compiling warning
- reported by robot kernel test due to adding tas2563_dvc_table
-Message-Id: <172262286781.83468.4726261083691249080.b4-ty@kernel.org>
-Date: Fri, 02 Aug 2024 19:21:07 +0100
+	id 8B3F7F80269; Fri,  2 Aug 2024 20:39:35 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id AEACEF800B0
+	for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2024 20:39:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEACEF800B0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: ACV2DI35H2WLCE5245HTBTRCF4R2RTBT
-X-Message-ID-Hash: ACV2DI35H2WLCE5245HTBTRCF4R2RTBT
-X-MailFrom: broonie@kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1722623971060228348-webhooks-bot@alsa-project.org>
+References: <1722623971060228348-webhooks-bot@alsa-project.org>
+Subject: Soundblaster AE-5 100% Muted on alsamixer every boot!!
+Message-Id: <20240802183935.8B3F7F80269@alsa1.perex.cz>
+Date: Fri,  2 Aug 2024 20:39:35 +0200 (CEST)
+Message-ID-Hash: 4F6VQ725HE2T4LJHKRXNIARRETFI5HK4
+X-Message-ID-Hash: 4F6VQ725HE2T4LJHKRXNIARRETFI5HK4
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ACV2DI35H2WLCE5245HTBTRCF4R2RTBT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4F6VQ725HE2T4LJHKRXNIARRETFI5HK4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,37 +66,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 02 Aug 2024 15:20:52 +0800, Shenghao Ding wrote:
-> Move tas2563_dvc_table into a separate Header file, as only tas2781
-> codec driver use this table, and hda side codec driver won't use it.
-> 
-> 
+alsa-project/alsa-lib issue #404 was opened from DavidRLTG:
 
-Applied to
+I am on Linux Mint Wilma (22), 64-bit.
+Obviously, I have a Soundblaster AE-5 Sound card
+The issue I am encountering is, well, every boot I have to enter Alsamixer and unmute every channel on my Soundblaster AE-5.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+alsactl store does nothing, and yes I ran it as superuser.
+Also, I'm on pipewire! I think Wilma comes with it preinstalled.
 
-Thanks!
+sudo alsactl store is also temporary, the config is lost at every reboot, and doing sudo alsactl restore does nothing.
 
-[1/1] ASoc: tas2781: Fix a compiling warning reported by robot kernel test due to adding tas2563_dvc_table
-      commit: 92b796845a4a8789c2d9434c6a77baa88a99121e
+Any ideas for a fix?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/404
+Repository URL: https://github.com/alsa-project/alsa-lib
