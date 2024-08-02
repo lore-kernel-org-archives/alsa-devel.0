@@ -4,96 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1608C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Aug 2024 12:13:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A50C2C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Aug 2024 12:41:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2E1D40AF;
-	Fri,  2 Aug 2024 14:13:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2E1D40AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8D833461;
+	Fri,  2 Aug 2024 14:41:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8D833461
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722600821;
-	bh=KEYXx/jAB3vyQ6OMi4gTqUazWDOQK45pIkjybNC7SuQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=aVEW5s+bahMLO4odU3mXp1eervZg/fhk/mTqSQD6R38kBKENVwwbt37H10mGzzIWy
-	 gkU/69sgdnN5l+QyKuRNBQtkAesGQtkIAa+CaD4whJCYclDGBniBL1ac7YMOA647nv
-	 liqjJjT1KIGwpNeRjLSqxVwQGJCBff3AcpzAlD4M=
+	s=default; t=1722602498;
+	bh=WTSJwv/19uap5j9vdOZH9IINjQPo/rKXf2y1UW7I5Ig=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=eZ8lOV7KNtFma/hoWiZLjx5BiWE9cIHfkAIkKWmd6EVgY2OsxyTkprCuRxI4m+7Tm
+	 C+7Q0Hb07XHEyduCZEh8g8pD6VTxzFbFdIu4sygmX5WsTiKcQagNgYOJID3b/jFf2c
+	 jOYHgmPDNpGRsUkjINqytNH4OAGUX1hmt3s8rauY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A830F80580; Fri,  2 Aug 2024 14:13:12 +0200 (CEST)
+	id 8BCEDF805BA; Fri,  2 Aug 2024 14:41:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C478F805C3;
-	Fri,  2 Aug 2024 14:13:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE54FF80589;
+	Fri,  2 Aug 2024 14:41:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DEBD1F8026A; Fri,  2 Aug 2024 14:13:07 +0200 (CEST)
+	id 8D3BBF800E3; Fri,  2 Aug 2024 14:40:32 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 78395F8019B
-	for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2024 14:10:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78395F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id E13F4F800E3
+	for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2024 14:40:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E13F4F800E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=U4I50ePU
+ header.s=Intel header.b=Wke5AfZt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1722600654; x=1754136654;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KEYXx/jAB3vyQ6OMi4gTqUazWDOQK45pIkjybNC7SuQ=;
-  b=U4I50ePUyzDDIxUwt5C0CwZntvlyMbDR7e036NIotH/+o3LSxPPYS139
-   tPCfqBdzXYyZSdQ4pgQ9nCpohrId/ICfMYChN9cPoyV3MLjKxW+5KrdSN
-   6IVEkHNTuUZb3XcZAXwMSJHGlQJVeKn+nYbXUXAKYnG1To+JORMOgTlcM
-   growXZnB7cbBRpNVINMQOweCzImDjZftr7/1vgrIdv/+zCnVH4Le0qcyG
-   QJ8wnp1jJtG0uhHTa/Qe+M/rlruTAkokTbeMBHReIAlGPT377yazroFKu
-   tUL65GYI8KYd9lDDN4wZgx+YYiF7Mnon8Un45P6YSBA15cihQNlCfzNHl
+  t=1722602426; x=1754138426;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=WTSJwv/19uap5j9vdOZH9IINjQPo/rKXf2y1UW7I5Ig=;
+  b=Wke5AfZtuJm0pVg397RDHMwIHTaOWdLwNbfQq2NwSsxM/GJhg00NSxD+
+   F+d1KpXMy3Os9Cc74gC8Th/1OPJgP9n7ClKIjXV7JGAY1MFZpa8T2eDvG
+   aqKt2o81BAeK63kr299I4X9lkoE7XfaZR7Gf4BHClKN3mIk72f/jwXIS4
+   MnbgcD8XjrKE1HTnGAUa2pP5oL6SLkzTVSPLqz0j0/CJiPrDj1McjXRup
+   ST2W92Drv3IGSAet7FJijqt/m8olzD7yxV58hVgIrdusz9XDAXLU+8esl
+   ZqrGPTcp8/zAnkEr14J3vQrRPPCUWnvAf+6Kw+/nqYukBnW/UnZxHek1k
    Q==;
-X-CSE-ConnectionGUID: qprGbDEdSXqW0emFAY1L5g==
-X-CSE-MsgGUID: Yjht/CzhTJ+kuNz+vJyxGA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11151"; a="24484214"
+X-CSE-ConnectionGUID: G+e/PTA7SV2u8EM5VFI3ZQ==
+X-CSE-MsgGUID: TyjWCa0PQwO4ZvuJOWUmfg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11152"; a="24488163"
 X-IronPort-AV: E=Sophos;i="6.09,257,1716274800";
-   d="scan'208";a="24484214"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
+   d="scan'208";a="24488163"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
   by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2024 05:10:53 -0700
-X-CSE-ConnectionGUID: eze3z9pvRdWNf/nfC0oIGw==
-X-CSE-MsgGUID: nX2dhYZKTa2IYxh8hBSGJg==
+ 02 Aug 2024 05:40:22 -0700
+X-CSE-ConnectionGUID: CWHzzN24SrqeQhVc6ZEudw==
+X-CSE-MsgGUID: VBN6K++MS8SZ0DYAT0XFCg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,257,1716274800";
-   d="scan'208";a="55978928"
-Received: from ltuz-desk.ger.corp.intel.com (HELO [10.245.246.89])
+   d="scan'208";a="55024685"
+Received: from ltuz-desk.ger.corp.intel.com (HELO pbossart-mobl6.intel.com)
  ([10.245.246.89])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2024 05:10:48 -0700
-Message-ID: <1a2d0962-405d-4ccf-a0da-00a624c0f3e8@linux.intel.com>
-Date: Fri, 2 Aug 2024 08:32:30 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v24 17/34] ASoC: qcom: qdsp6: Add USB backend ASoC driver
- for Q6
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
- corbet@lwn.net, broonie@kernel.org, lgirdwood@gmail.com, krzk+dt@kernel.org,
- Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com, tiwai@suse.com,
- gregkh@linuxfoundation.org, robh@kernel.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
- alsa-devel@alsa-project.org
-References: <20240801011730.4797-1-quic_wcheng@quicinc.com>
- <20240801011730.4797-18-quic_wcheng@quicinc.com>
- <5f37c04d-f564-40b9-a9f3-d071ea0a6f19@linux.intel.com>
- <1a284449-204a-4d01-90c9-ec6b1ed56e30@quicinc.com>
-Content-Language: en-US
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2024 05:40:20 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <1a284449-204a-4d01-90c9-ec6b1ed56e30@quicinc.com>
+To: linux-sound@vger.kernel.org
+Cc: alsa-devel@alsa-project.org,
+	tiwai@suse.de,
+	broonie@kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 0/5] ASoC/SOF/PCI/Intel: add PantherLake support
+Date: Fri,  2 Aug 2024 14:40:06 +0200
+Message-ID: <20240802124011.173820-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZTLRQ3AB7AH2TTILWQ5RSFBF4EBPD54L
-X-Message-ID-Hash: ZTLRQ3AB7AH2TTILWQ5RSFBF4EBPD54L
+Message-ID-Hash: VH52TAAI4BPUELIZ7PAIV3OVYE2LYC4X
+X-Message-ID-Hash: VH52TAAI4BPUELIZ7PAIV3OVYE2LYC4X
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZTLRQ3AB7AH2TTILWQ5RSFBF4EBPD54L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VH52TAAI4BPUELIZ7PAIV3OVYE2LYC4X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,61 +105,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Add initial support for the PantherLake platform, and initial ACPI
+configurations.
 
+All the dependencies required in the initial versions are now
+available in ASoc for-next branch.
 
-On 8/2/24 01:10, Wesley Cheng wrote:
-> Hi Pierre,
-> 
-> On 8/1/2024 1:40 AM, Pierre-Louis Bossart wrote:
->>
->>
->>> +static int q6usb_hw_params(struct snd_pcm_substream *substream,
->>> +			   struct snd_pcm_hw_params *params,
->>> +			   struct snd_soc_dai *dai)
->>> +{
->>> +	struct q6usb_port_data *data = dev_get_drvdata(dai->dev);
->>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->>> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
->>> +	struct q6afe_port *q6usb_afe;
->>> +	struct snd_soc_usb_device *sdev;
->>> +	int ret;
->>> +
->>> +	/* No active chip index */
->>> +	if (list_empty(&data->devices))
->>> +		return -EINVAL;
->>> +
->>> +	mutex_lock(&data->mutex);
->>> +	sdev = list_last_entry(&data->devices, struct snd_soc_usb_device, list);
->>> +
->>> +	q6usb_afe = q6afe_port_get_from_id(cpu_dai->dev, USB_RX);
->>> +	if (IS_ERR(q6usb_afe))
->>> +		goto out;
->>> +
->>> +	/* Notify audio DSP about the devices being offloaded */
->>> +	ret = afe_port_send_usb_dev_param(q6usb_afe, sdev->card_idx,
->>> +						sdev->pcm_idx);
->>> +
->>> +out:
->>> +	mutex_unlock(&data->mutex);
->>> +
->>> +	return ret;
->>> +}
->> Humm, multiple questions here
->>
->> a) is this intentional that the params are not used in a hw_params routine?
-> Think this was answered in patch#34.
+v4: topology name simplification for rt722
 
-yes, but that really begs the question if the format check shouldn't be
-added here.
+v3: add configuration with rt722 on Link3 
 
->> b) if yes, could this be replaced by a .prepare callback
->>
->> c) along the same lines as b), is suspend-resume during playback
->> supported? Usually this is handled with a .prepare callback to restore
->> connections.
-> 
-> I don't see us supporting that throughout any of the QC based DAI drivers, so this probably isn't implemented yet.  In terms of supporting system PM suspend for this USB offload path, we're going to explicitly stop the audio stream from the USB offload driver (qc_audio_offload) before we suspend the usb device. (refer to qc_usb_audio_offload_suspend()
+v2: changed order of patches to fix git bisect error reported by Intel
+kbuild bot
+https://lore.kernel.org/oe-kbuild-all/202406131144.L6gW0I47-lkp@intel.com/
 
-The system suspend-resume during playback is not enabled in all
-platforms indeed, it mostly depends on what userspace does. IIRC this is
-required for Chrome/CRAS and it's supported by aplay.
+Bard Liao (2):
+  ASoC: Intel: soc-acpi-intel-ptl-match: add rt711-sdca table
+  ASoC: Intel: soc-acpi-intel-ptl-match: Add rt722 support
+
+Fred Oh (1):
+  ASoC: SOF: Intel: add PTL specific power control register
+
+Pierre-Louis Bossart (2):
+  ASoC: Intel: soc-acpi: add PTL match tables
+  ASoC: SOF: Intel: add initial support for PTL
+
+ include/sound/soc-acpi-intel-match.h          |   2 +
+ sound/soc/intel/common/Makefile               |   1 +
+ .../intel/common/soc-acpi-intel-ptl-match.c   | 145 ++++++++++++++++++
+ sound/soc/sof/intel/Kconfig                   |  17 ++
+ sound/soc/sof/intel/Makefile                  |   2 +
+ sound/soc/sof/intel/hda-dsp.c                 |   1 +
+ sound/soc/sof/intel/hda.h                     |   1 +
+ sound/soc/sof/intel/lnl.c                     |  27 ++++
+ sound/soc/sof/intel/mtl.c                     |  16 +-
+ sound/soc/sof/intel/mtl.h                     |   2 +
+ sound/soc/sof/intel/pci-ptl.c                 |  77 ++++++++++
+ sound/soc/sof/intel/shim.h                    |   1 +
+ 12 files changed, 290 insertions(+), 2 deletions(-)
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-ptl-match.c
+ create mode 100644 sound/soc/sof/intel/pci-ptl.c
+
+-- 
+2.43.0
+
