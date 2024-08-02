@@ -4,49 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27073C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Aug 2024 14:29:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9630BC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Aug 2024 17:36:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A984C46CF;
-	Fri,  2 Aug 2024 16:29:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A984C46CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B8E74696;
+	Fri,  2 Aug 2024 19:35:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B8E74696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722608979;
-	bh=rcjXhvsDuJeuTyGqAQ6tnKXCWD0eYSsMOcl8vWz6m80=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=invGJUL2rZazOl4oBYiiqLEk+7xdA2PmjmeCHvmAEUx10OnwrkhW1CLG5TGg2+UY5
-	 6dA3Jny+CaK9BXq2xivux0VMgKQS8peulFQeHZlFwSojgM/Ra14wSO/D16KRBrBvDX
-	 U6243nFQ8PVWq4sHEbQ0syUXz3dLPe4MbsecdkPY=
+	s=default; t=1722620166;
+	bh=YWvezw92xAZWv7n4r3RrTRKa6gnXq4ASQa04Qmrwlcg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=F0WwH+xus9NzSzhQApFM+mjUZo11EOVaroeLYyu8kaH2M71myskBTK29HFPUE9Pfv
+	 b/PH8WPMMUB5GmBRPXEAONUWvou/PNLr9IRZPXq2Mzd4yTfIIpsYcPJOawxxLQQ1mm
+	 HoFqNUkEXjZo0bs5b6+eAmSa59IpgazmTj8kQs64=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E7B4F805AC; Fri,  2 Aug 2024 16:29:08 +0200 (CEST)
+	id 9BE84F805AE; Fri,  2 Aug 2024 19:35:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D35BDF805B5;
-	Fri,  2 Aug 2024 16:29:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6490FF805AF;
+	Fri,  2 Aug 2024 19:35:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82D39F80269; Fri,  2 Aug 2024 16:29:02 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A6ABF800B0
-	for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2024 16:28:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A6ABF800B0
+	id 5C402F8026A; Fri,  2 Aug 2024 19:35:28 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7220FF800E3
+	for <alsa-devel@alsa-project.org>; Fri,  2 Aug 2024 19:35:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7220FF800E3
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=OQKJYQpD
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id DDCCC62B0B;
+	Fri,  2 Aug 2024 17:35:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95EF2C4AF0A;
+	Fri,  2 Aug 2024 17:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722620120;
+	bh=YWvezw92xAZWv7n4r3RrTRKa6gnXq4ASQa04Qmrwlcg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=OQKJYQpDP9k12LhGXQpYibv78JOlREWlm6aLhP5b+OKbI1QunhDylm7Kg7Yep0SLe
+	 P2hWyZXLpmOVu3lByB8KGFcPuzMuvVCW4Go6v6mUz+jcCBpKR16fb3S0RhEOk8g+b9
+	 C7VzfuG/KtToI/S9R93WRi3ZyN0Qaycjh4JLSOAQP3I5ytAMJFvnsUIGyHwpzqMN/0
+	 UBXsgXXWqCUWENf4aVXrJRLJKQ9DSSaDiH8rNhtz7b7cgdothx0e+2aQAWCGtTSPyN
+	 28bV5u0FhJsVS7NLX5ac4dYZpuMLFaj8dH9jRAriXfdc4AFxOc+FNkD+SVdrnPT1FC
+	 SnORQRIj/pMWQ==
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <87wml3k539.wl-kuninori.morimoto.gx@renesas.com>
+References: <87wml3k539.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: (subset) [PATCH 00/12] ALSA/ASoC: use snd_pcm_direction_name()
+Message-Id: <172262011922.68355.11972812555968212748.b4-ty@kernel.org>
+Date: Fri, 02 Aug 2024 18:35:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1722608939700242281-webhooks-bot@alsa-project.org>
-References: <1722608939700242281-webhooks-bot@alsa-project.org>
-Subject: common: pcm: hdmi/sof-hda-dsp/sof-soundwire: Syntax 7 dependent macro
- to generate the hdmi device sections
-Message-Id: <20240802142902.82D39F80269@alsa1.perex.cz>
-Date: Fri,  2 Aug 2024 16:29:02 +0200 (CEST)
-Message-ID-Hash: Q73CMK35PIDUV5NKTJVSDHSLF2RWSDHR
-X-Message-ID-Hash: Q73CMK35PIDUV5NKTJVSDHSLF2RWSDHR
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.15-dev-37811
+Message-ID-Hash: IWDALNG3EZAAVTJUPUFIQHXPZCFRCJZM
+X-Message-ID-Hash: IWDALNG3EZAAVTJUPUFIQHXPZCFRCJZM
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q73CMK35PIDUV5NKTJVSDHSLF2RWSDHR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IWDALNG3EZAAVTJUPUFIQHXPZCFRCJZM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,16 +92,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #413 was edited from ujfalusi:
+On Tue, 30 Jul 2024 02:04:43 +0000, Kuninori Morimoto wrote:
+> Many drivers are selecting strings "playback" / "capture" by own
+> handling, but we have snd_pcm_direction_name() function for it.
+> This patch use it.
+> 
+> One note is that snd_pcm_direction_name() will select
+> "Playback" and "Capture", instead of "playback" / "capture".
+> Almost all drivers are using it as dev_dbg() or dev_err()
+> so no problem. But some other drivers are using it as other
+> purpose. It might be issue (?). For example ASoC debugfs dir name
+> will be changed by this patch.
+> 
+> [...]
 
-Hi,
+Applied to
 
-The PR will introduce a generic `HdmiDevice` macro, which can replace duplicated conditions in sof UCM files and potentially used by other devices to generate the needed section for the hdmi PCM devices to allow passthrough.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-The PR is marked as DNM and is in draft since the change depends on Syntax 7 support, which is only available in git version of alsa-lib, it is not a simple ask for a user (or developer) to use it and the change would break UCM for released alsa-lib.
+Thanks!
 
-@perexg, is this something that you were suggesting? I think the macro and it's definition is generic enough, I hope that it will be usable for non SOF setups.
+[06/12] ASoC: stm: use snd_pcm_direction_name()
+        commit: 7dfdcde20179383d4acfee61692a22955d5a8217
+[07/12] ASoC: sof: pcm: use snd_pcm_direction_name()
+        commit: cda4aa0069b73e3404ee61864b4814ccc7b7a6ad
+[08/12] ASoC: sof: intel: use snd_pcm_direction_name()
+        commit: baa779902020d8921cf652944309d1284a63811c
+[09/12] ASoC: fsl: lpc3xxx-i2s: use snd_pcm_direction_name()
+        commit: 8156921e620827319460e8daa9831d731b0d75fd
+[10/12] ASoC: tegra: use snd_pcm_direction_name()
+        commit: d6db65bc62fd19915a9926e08b9cbcfbadd64291
+[11/12] ASoC: soc-pcm: use snd_pcm_direction_name()
+        commit: ebbd6703d4635d36b35f12a1365dfd7894c0ff12
+[12/12] ASoC: soc-dapm: use snd_pcm_direction_name()
+        commit: bb660132868b5208d6a5f2bd184425cf788f4ef9
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/413
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/413.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
