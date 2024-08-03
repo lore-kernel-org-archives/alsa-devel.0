@@ -4,119 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BEA3C52D6D
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Aug 2024 10:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48DE7C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Aug 2024 15:25:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD6C447E7;
-	Sat,  3 Aug 2024 12:48:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD6C447E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DE824613;
+	Sat,  3 Aug 2024 17:25:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DE824613
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722682096;
-	bh=5AgJN5aHDblbftkEIFfXfOsOG4+a7awLLmKJqobEli0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1722698714;
+	bh=nm5cQkyRZVUeKzhFs1HWWxL1TF+UFk5CcqlIwj2tOzk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YJWCu4vVC05Nb6qCBY3NZZbAsmUYHdOSmJZeINCQlDsrU9eIob6G4DQcZZ2rhnrZu
-	 hXR2ZCdfjntWr331jGk/WB/k9QnWJ54Kf93FKnIJREZCK3HBO24AI9V9v53ZI0QgNY
-	 SD0ioXyirNggywCeeVQpLeDrhFyyt0WLnBEQ710Q=
+	b=TKQeSxaX8VSgznveS7cw4OfWihcNGWqEp8zbQME2vTJ4vUtqmP7uzns7VyliGfhTs
+	 4JY/LRjHgEIE0UeuIUTNBdwIDTM4Szj0GBa+8vnMp0LkN/pMl3uZRmz4/HySDWtCcq
+	 kupwCVhadaHdJcezIyF9Pt1s4k/3rrP27KRSMoBY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F30CF805E4; Sat,  3 Aug 2024 12:47:13 +0200 (CEST)
+	id C8D68F805A9; Sat,  3 Aug 2024 17:24:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 281F4F80601;
-	Sat,  3 Aug 2024 12:47:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56BBFF805BD;
+	Sat,  3 Aug 2024 17:24:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D307FF8007E; Sat,  3 Aug 2024 12:44:12 +0200 (CEST)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
- [IPv6:2a00:1450:4864:20::531])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id CE938F8007E; Sat,  3 Aug 2024 17:18:54 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 65619F8007E
-	for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2024 12:41:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65619F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1B677F8007E
+	for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2024 17:13:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B677F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Q7OseUAt
-Received: by mail-ed1-x531.google.com with SMTP id
- 4fb4d7f45d1cf-5af326eddb2so6851624a12.1
-        for <alsa-devel@alsa-project.org>;
- Sat, 03 Aug 2024 03:41:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722681706; x=1723286506;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m8XLJ+HA0unzIKoKdtjXDUtkUVFRpH3N4K5zB2zQ6s4=;
-        b=Q7OseUAtlWp6CSlXN3Mp/juxeyKDSUkJ+Uz2H61AVmj+/hek12ssn5+bQ5M51gj9NB
-         WFRD4uPfvpYMgExMxECajrd4TYPBMOA0ZEPR4jExr+scZkMguD/iNVukMAQajRG6U6r8
-         TJUnWYUm00v7oii0yzwZVvT/1h2kqt+PX9XjEd0v2ZzMoEdIiBqwVzXqnlErtXKnl+kM
-         D3vmnmEpk9l2bFwI/ODakmDXwqsq4tJAmuDr1w7egsStuSFBkAmXYoqk82Zrgfs/8Med
-         5giS9sFIglcwoGbWs/zZLnDj6DfsnA7Xz+LnjGQuvgIye/r6CP0ByQT557n+xhFnGmGn
-         MI7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722681706; x=1723286506;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m8XLJ+HA0unzIKoKdtjXDUtkUVFRpH3N4K5zB2zQ6s4=;
-        b=OltdOCFJhvi1IjOM2mvuyF+oZg6MaUAGF3yMBp4aaBk804mkHpOSR0aiwn5Ubvmdlg
-         LdKgLe6YiKcfXQYtNIvvXYbadtxASTtIpxBhu2htYTMCWL5GeSaoZJQ14CH/RbP7FKPb
-         gr0KqQKlOxEs+tOJ1lwxoaJ0DKIl39BwObW1tL/ScJttGQhKgtuu3KUg7WH1O7bF3ySr
-         FGoOe02cLYSay5KEiMDOpqBcUfA6q8RWLEi3HDriVr2ncymw+2QukxHgh7mjgfF6QM+Z
-         zFgHzbePwpNUtA7zLYgWB+ErEjklA4f0H5CPFKt/qrtsexwBHwqFvSP+Ti2CkbIZFaVG
-         Yb+Q==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUsyMU2iUmkIdfkhZypwQF02tuQ679r9QL2npSakCW2M2Nv6ZElNgOGAL7RUODakSwDn+zB479iI1w9/3I+rmP3ZAHVnnida2d1RTA=
-X-Gm-Message-State: AOJu0YzjVe7NnII9fiW+OTMYwvWHnOdHb9LHVPX8EKxF+Wn6K3/UnR6h
-	wqyv6ndlxVrTsIKgZgHc75Am5quBzHF9VbA7UUJxI6YJ2LamRz8QkN0xgzqUwfg=
-X-Google-Smtp-Source: 
- AGHT+IHvt7AU+zU7xwu3ztuEExFnHw0l6EN0M9aJEJT/i5CZBMm1ydae3AJtvueqBZdlyT6zILCzIg==
-X-Received: by 2002:a17:907:9689:b0:a7a:81ba:8eb3 with SMTP id
- a640c23a62f3a-a7dbe630868mr712622766b.27.1722681705810;
-        Sat, 03 Aug 2024 03:41:45 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a7dc9e7feecsm202086366b.176.2024.08.03.03.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Aug 2024 03:41:45 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 03 Aug 2024 13:41:40 +0300
-Subject: [PATCH 1/2] ASoC: codecs: lpass-macro: fix version strings
- returned for 1.x codecs
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=LyEZKGg2
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 32B98CE0225;
+	Sat,  3 Aug 2024 15:13:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADBDCC116B1;
+	Sat,  3 Aug 2024 15:13:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722698024;
+	bh=nm5cQkyRZVUeKzhFs1HWWxL1TF+UFk5CcqlIwj2tOzk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LyEZKGg23ciGyzuv/ViKG+lhWMW0xwIy+G/9YszNWN3e3/W/F4jOsZNhDatR5x1kn
+	 ctW9Vi0ZMl2+YjV3zUNuubkOpwElaMOFANLliZLNOFNhuwLOGmeOD93jIqe5nsGJb8
+	 IMxuesWYW/edUDdKv/9t/5yxJrScQpKovDeqkA+TKbenoLSGpnk0BNhQmeVqnBxpMV
+	 PdxJyYI/76lqYrHQbzUp7cNKeXTGWf0WSjl1+22W4Z3oF5teO7s7bZVOu9QS0bLiUT
+	 nzrPQ8Wyo+nm2XgsNr3NoPQA5L+R08HaDufq2qIx9Qo0pQ7suvWAXypfk9SE/t+MMo
+	 stzuZoyndklPA==
+Date: Sat, 3 Aug 2024 16:13:34 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: <fabrice.gasnier@foss.st.com>, Lars-Peter Clausen <lars@metafoo.de>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
+ Dooley <conor+dt@kernel.org>, Arnaud Pouliquen
+ <arnaud.pouliquen@foss.st.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Nuno Sa <nuno.sa@analog.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 0/9] iio: adc: dfsdm: add scaling support
+Message-ID: <20240803161334.5e627178@jic23-huawei>
+In-Reply-To: <20240730084640.1307938-1-olivier.moysan@foss.st.com>
+References: <20240730084640.1307938-1-olivier.moysan@foss.st.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240803-codec-version-v1-1-bc29baa5e417@linaro.org>
-References: <20240803-codec-version-v1-0-bc29baa5e417@linaro.org>
-In-Reply-To: <20240803-codec-version-v1-0-bc29baa5e417@linaro.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1032;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=5AgJN5aHDblbftkEIFfXfOsOG4+a7awLLmKJqobEli0=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmrglmLHOXtJFkuzvtwm4NKEq4/Mw0jlQEd65rl
- co+5GQLEJmJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZq4JZgAKCRCLPIo+Aiko
- 1VFGCACvWH4yrjqDg8O8sGmAjvsoB7gb1LhWyK1QKUHycyeWlFzFIe+RQMGDqrWahB7sI+3kVCV
- o57BPiJmwj3QT9WRDwqaRt/N35ws7e8rmLeg33I2mVe2aimoKjenIQsiU31f82e9oxyfAxriF3z
- cgsdqXUiubsimZUB6bNQUtCWDWBdAW3kHD98O6eAV+fN/70yoCp13O+sLh2eIFwI85BQJHpBBLv
- MZCkKSIfQTFcPQNq4IqtffQt7+o++ReYgL39jsSq+mHzj7ACmXa5yG0OsCRrxVZY9/u8DmSqmnL
- na6rBtue7cMa1CdXkfliOOOhjaofxxnj2TiuNvFgW0bqyb2K
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
-Message-ID-Hash: 6H2KSKMWWSQM5O7SDOUBYVHRPM7H46G2
-X-Message-ID-Hash: 6H2KSKMWWSQM5O7SDOUBYVHRPM7H46G2
-X-MailFrom: dmitry.baryshkov@linaro.org
+Message-ID-Hash: QXMD46WCEWNJHXSKFMLGXR3BU6NY4XSF
+X-Message-ID-Hash: QXMD46WCEWNJHXSKFMLGXR3BU6NY4XSF
+X-MailFrom: jic23@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -128,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6H2KSKMWWSQM5O7SDOUBYVHRPM7H46G2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QXMD46WCEWNJHXSKFMLGXR3BU6NY4XSF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,33 +101,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add missing cases to lpass_macro_get_codec_version_string() to let it
-print the correct codec version for 1.x codec platforms.
+On Tue, 30 Jul 2024 10:46:30 +0200
+Olivier Moysan <olivier.moysan@foss.st.com> wrote:
 
-Fixes: 378918d59181 ("ASoC: codecs: lpass-macro: add helpers to get codec version")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- sound/soc/codecs/lpass-macro-common.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+> The aim of this serie is to add scaling support to STM32 DFSDM
+> peripheral in the analog context.
+> 
+All looks good to me.  I'll leave it a little longer though as
+some of the dt-bindings patches don't have tags from the maintainers yet.
 
-diff --git a/sound/soc/codecs/lpass-macro-common.h b/sound/soc/codecs/lpass-macro-common.h
-index 21cb30ab706d..fb4b96cb2b23 100644
---- a/sound/soc/codecs/lpass-macro-common.h
-+++ b/sound/soc/codecs/lpass-macro-common.h
-@@ -49,6 +49,12 @@ static inline void lpass_macro_pds_exit_action(void *pds)
- static inline const char *lpass_macro_get_codec_version_string(int version)
- {
- 	switch (version) {
-+	case LPASS_CODEC_VERSION_1_0:
-+		return "v1.0";
-+	case LPASS_CODEC_VERSION_1_1:
-+		return "v1.1";
-+	case LPASS_CODEC_VERSION_1_2:
-+		return "v1.2";
- 	case LPASS_CODEC_VERSION_2_0:
- 		return "v2.0";
- 	case LPASS_CODEC_VERSION_2_1:
-
--- 
-2.39.2
-
+Jonathan
