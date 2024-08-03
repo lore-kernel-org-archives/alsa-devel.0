@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36D40C52D6D
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Aug 2024 10:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00298C52D6D
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Aug 2024 10:48:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73438476C;
-	Sat,  3 Aug 2024 12:47:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73438476C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88B5947CB;
+	Sat,  3 Aug 2024 12:47:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88B5947CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722682063;
-	bh=/keCe+RYTAEof6iY2K+Bnv28/+hoBwjA1/9NQ0Hke4I=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=LUUJE6wHzLACE5mrVJBN25kIpMBFzHKca6HB4BpfJIQbIME742whAkN2PeGdy+bXa
-	 81IfmiGXrIcLmNVFPlR7rcHoq3kKrf2g3KGjWzLQiyIkf+Dr04QFYeQK5mhifiPS5M
-	 DRngriK1mipATzSKlcSlBk2j5U4zJFP3uMCkDY2c=
+	s=default; t=1722682085;
+	bh=8swDYCKlHMm/RjEDI1jjvRnoWAi33eYa7CllXV/57qw=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=sevkQ1WLoVOsc+1dzXPjWCp7FvH/6kI0hW0/a1p33SF/Bo08MXSJXwL1s4my28tHx
+	 2yOdpB2DGhemN8gFxmDpdCH+nbSgEwgiiEkba//wIPirKZdCgnqkdo5nJYK9eR/G7p
+	 A4xUdvCXw1nw3sQRCczLIsb+AC4Va6WpRpfWnTgQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C315F805A9; Sat,  3 Aug 2024 12:47:11 +0200 (CEST)
+	id A959DF805BD; Sat,  3 Aug 2024 12:47:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E054BF805A9;
-	Sat,  3 Aug 2024 12:47:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18FCFF805E2;
+	Sat,  3 Aug 2024 12:47:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69521F802DB; Sat,  3 Aug 2024 12:41:55 +0200 (CEST)
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
- [IPv6:2a00:1450:4864:20::12d])
+	id 2C5A8F8026A; Sat,  3 Aug 2024 12:42:12 +0200 (CEST)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7DAC5F8019B
-	for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2024 12:41:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DAC5F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 92FBDF801C0
+	for <alsa-devel@alsa-project.org>; Sat,  3 Aug 2024 12:41:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92FBDF801C0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=JdFJGS4T
-Received: by mail-lf1-x12d.google.com with SMTP id
- 2adb3069b0e04-52f04b3cb33so19468180e87.0
+ header.s=google header.b=Aqq5fypB
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-a7a843bef98so941684566b.2
         for <alsa-devel@alsa-project.org>;
- Sat, 03 Aug 2024 03:41:45 -0700 (PDT)
+ Sat, 03 Aug 2024 03:41:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1722681705; x=1723286505;
+        d=linaro.org; s=google; t=1722681707; x=1723286507;
  darn=alsa-project.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X6XfE0wuy/HIDAoO9pP4NYutSvJQFGt1Hra+lGxkJO4=;
-        b=JdFJGS4T6x08NIxbZwZ9BE7npvNv8rlm5i7S4Z2UujpMGYKL4G1WezteMwmLK1N5fj
-         nApA++Iku/6w7GQZnQVmtM+s/uVCItCnNyVdgXzZaHj1D1ULZClmzX51R5CXFDgyu9Gi
-         d71uzCAbq+T3QVbPANm4GqRerqTuvd+qKhWnoHwUcq/hZO+ds/xiqNmnqRNSs9wDr9DD
-         5QNHyVha01u38vlV4VSacKNAPEiNJkrvNDnbPOm4zRKVFz0On6QkDWVt8xbHowkMbKp0
-         OJNqaG/f9zG4FGK1IvdSUx03W0MHLKWfJkOtd2MJFAdpZMHrD0Cm1kiS4EDqNR9twqyb
-         vJxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722681705; x=1723286505;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X6XfE0wuy/HIDAoO9pP4NYutSvJQFGt1Hra+lGxkJO4=;
-        b=mffsKrICpSA8Wbu7PKUOnqbTFQQVFFmoE2PACkSD+VQJXdutUg20LgUVgWRmtkmubp
-         3Najphry3m7GLmUHR4VqUGfqzsMZSz9TuONfCv2JeGyB2zHmN1ieLaO23p3tfogqb3O1
-         bTVXmMzqKXvvvsc3HXPfEz3OVcKF+bcuKhfByBv4JhGBPUJwDy6AExJFIbM0d2oIK2j0
-         2GlEAR+uZ2GXPc081bmej6/akPxBIxTZ3Er5wzPbt4l+egfsE/pZHtD5zT7RO4GkNv1R
-         I57rIAg6cvMWenJ1cNFqZ/55HjO814WabTeOOS6gemhKzCUKY5DII4sKs0ZCVbSqilpo
-         +fJw==
+        bh=h2P5CUm71nRXIdibIz1zY1EQPaX8kSIUbjLIcJ8FN4Y=;
+        b=Aqq5fypBDZc1c2jmta3B86PLBdD/Kfy8QRA7PIiBwHU+dB1zUXkam82bcHZLGDge+g
+         mUTnyYugbSaFLekpBV1X8cv/5hW/vS5AwFzl/F3S+1BZ43oYqjHqqa/zBtzSQAYNn5V4
+         lm3O5s1y16bOduLM23jO9/zII8AdFGLh+LwetmzTzZuoCc9WIcN+beQIEhGFpU6cnrDq
+         H38CNh54ULwXNvedslAOVQyK7prqRerEL9HPaeBC/nkoEpf3AyiUR4cD3MCDJQvU54ls
+         qonUHs6eG9uyL4082qKQ8xGNQzCcsCbJzVQ3JUxCrv55FvLvxgsUHC6gdQgNwayLLjlP
+         hqhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722681707; x=1723286507;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h2P5CUm71nRXIdibIz1zY1EQPaX8kSIUbjLIcJ8FN4Y=;
+        b=QIhR3RiuBmbDajUSHK4jUTJj4P+K9jGltv/L/P4MTsCof8GuDAjzwWr6yXoanKZitP
+         4PdbciDcLOeb7I08P4LAvJZsUhgilAuD6UVWokFXgS51M2MpoBIwnKP6f10L5DRrcLZo
+         /Exp83s+mhPD0vtmT/dtKxhrIcsESB3LqwKAzP8ZZElfp4O+O6eWqugBX9Sk4AO2V7dN
+         +nrsV6JLAmVu+rMceBPehncpJGn7cdut0jNQNKlOj/JxXQq5OfodLftppxEkHblWGkIc
+         4PnIYPB3tkDhnZPeHQZWgpAv7Uy6h2d++37ALf6pyJX4Df2I3He0lLEXzmWCdAEroh2Q
+         QOFw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXu1CCUEh/TJa+eGu4jurjWHpBpbdLt15z4MqgLIMRhrpa085TQBMFYW9iazstHcu5CRiMbY4h9P5dTwD8AXv2s+47xKSNZAQgcePk=
-X-Gm-Message-State: AOJu0Yx/YrHX5N6sT3OESbMr5qPmPU+sS/60JiteO7lAHzLbXyJ54p8A
-	8fYy5LHIvzhBs4xEjj042VX7/5h+leZoBI+HuJrQmJfXfpn18QMFb7GBWvTHYmE=
+ AJvYcCVekL18oHaXcTzmAkOatiwnA47Pr0wljzKUIRQpC7v8xfWI5gurkjmfs1mHbJgmVDo6VrZsOWIX27Box6sOhLmKYawhr7EAF9hS5DM=
+X-Gm-Message-State: AOJu0YywFeRlJgrTplTf0jYXmY8JHNu1e+H6RoMHhaSHQ/kU5tRDxckO
+	NXAKHy5F7RsOgG10dwVeFil7CDBxDSOwG78gcoUiUFJUHMlQ/2cmykfIKYFbe7U=
 X-Google-Smtp-Source: 
- AGHT+IF800af46goSmkquETHEPslclS/M3eT6WGABoZvnDas++CS/5VA5nNGupa/GwDs2mHuxpiZKg==
-X-Received: by 2002:a05:6512:1094:b0:52c:df55:e110 with SMTP id
- 2adb3069b0e04-530bb373806mr5208762e87.12.1722681704438;
-        Sat, 03 Aug 2024 03:41:44 -0700 (PDT)
+ AGHT+IGx8JIglmqEtvVOloITy2p1V5U6PesAEG1DHceXHVPF+dkLXz1ocl5KFlVXTMxUWNwK3835aA==
+X-Received: by 2002:a17:907:6093:b0:a7a:a7b8:ada7 with SMTP id
+ a640c23a62f3a-a7dc4df97f8mr402428566b.24.1722681706827;
+        Sat, 03 Aug 2024 03:41:46 -0700 (PDT)
 Received: from umbar.lan ([192.130.178.91])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a7dc9e7feecsm202086366b.176.2024.08.03.03.41.43
+ a640c23a62f3a-a7dc9e7feecsm202086366b.176.2024.08.03.03.41.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Aug 2024 03:41:43 -0700 (PDT)
+        Sat, 03 Aug 2024 03:41:46 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH 0/2] ASoC: codecs: warn on unknown codec version
-Date: Sat, 03 Aug 2024 13:41:39 +0300
-Message-Id: <20240803-codec-version-v1-0-bc29baa5e417@linaro.org>
+Date: Sat, 03 Aug 2024 13:41:41 +0300
+Subject: [PATCH 2/2] ASoC: codecs: lpass-va-macro: warn on unknown version
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAGQJrmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDCwNj3eT8lNRk3bLUIpBK3ZQkszQz08QkU8PkVCWgnoKi1LTMCrB50bG
- 1tQASd7tkXwAAAA==
+Message-Id: <20240803-codec-version-v1-2-bc29baa5e417@linaro.org>
+References: <20240803-codec-version-v1-0-bc29baa5e417@linaro.org>
+In-Reply-To: <20240803-codec-version-v1-0-bc29baa5e417@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -100,20 +101,20 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=967;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1126;
  i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=/keCe+RYTAEof6iY2K+Bnv28/+hoBwjA1/9NQ0Hke4I=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmrglmKnfdtOGxXRACB8UtRgTdRs5sMF7sJRo7w
- 3EY4ygT+smJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZq4JZgAKCRCLPIo+Aiko
- 1WG/CACayIklwe1wlfXJJ61EnWlvC8/+TtjBvjCNMmW6IlKA8j+pUQYqOb+lXwgofI8nDEAN7mG
- nC4IqS1m583hIVeTvOVh+A714w9AgQ1lRSBHIn//0Wo4RXGYOfuPZUuQg+BknlbWx6iE+X14gwN
- mLSDiebkQtEx5ePwbUl41NGCM3i8XHCssI8Kl9ptHceBty9qD6lwk5XdyTbQn7RbzbeWXk8vVc/
- 25iTZbVmDW4iIEG37IzqszToAl+A8YkD4xEN5x/F8Yr1wA5+uZyiY8aO9zAPrdlLKtaiDLf1ME2
- xpy3DXb2xx2u+DNMojPMNf68mgvEShp/c4KgWQNeRq1KjCZC
+ bh=8swDYCKlHMm/RjEDI1jjvRnoWAi33eYa7CllXV/57qw=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmrglnQf2eSPxhCPoW50YyCE1b+UmchLkcoNa1+
+ dvwTlj910+JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZq4JZwAKCRCLPIo+Aiko
+ 1VfsCACUeTsaUC8cUzv19Lh7pPQnhShgpW6Nj2314n5dvpeCHe4zpggfLbi8sxpB6rdB/mz6e9H
+ ILm68xJuIZXE+HtM5m0JwHucNwU7sNeTWqPL/vhcgNKyH4jZeoyAHwMYutMqkeXoIuspg36KcU4
+ nMqEIszCdROdPeJ7pzaXs7pP05lW67SDv9bJi6u4YTCPIJuhlMVcpEl7nEWKHJ8xbRsDghHhf0T
+ sQM/WWIddmjWKwEG298mvWjM6wsDDjfMLlSMkmH65C+EZctbnxD+EijiFMdjHhpRN6wJ0qUDUMr
+ OhV4HE4+/VdZBtnQLKlXKDH9paR4HGoCR8FGMNvgSJPsfQxN
 X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
  fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
-Message-ID-Hash: ONRWW4VV4S5O5USDXAF5C5TXFVSYCRK5
-X-Message-ID-Hash: ONRWW4VV4S5O5USDXAF5C5TXFVSYCRK5
+Message-ID-Hash: 5A6HO4WYA6VNDKO25OW3RW26JJVMCUQV
+X-Message-ID-Hash: 5A6HO4WYA6VNDKO25OW3RW26JJVMCUQV
 X-MailFrom: dmitry.baryshkov@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -126,7 +127,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ONRWW4VV4S5O5USDXAF5C5TXFVSYCRK5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5A6HO4WYA6VNDKO25OW3RW26JJVMCUQV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,29 +136,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-While debugging broken audio issues on some of Qualcomm platforms I
-stumbled upon the kernel not providing the actual error information.
-It prints an error from the wsa_macro driver, but the actual issue is in
-the VA macro driver. Add error message to point to the actual error
-location.
+Warn the users if the driver doesn't know the codec version. This helps
+in debugging the issues with other codec not detecting the correct
+version.
 
 va_macro 3370000.codec: Unknown VA Codec version, ID: 00 / 0f / 00
-wsa_macro 3240000.codec: Unsupported Codec version (0)
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
-Dmitry Baryshkov (2):
-      ASoC: codecs: lpass-macro: fix version strings returned for 1.x codecs
-      ASoC: codecs: lpass-va-macro: warn on unknown version
+ sound/soc/codecs/lpass-va-macro.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- sound/soc/codecs/lpass-macro-common.h | 6 ++++++
- sound/soc/codecs/lpass-va-macro.c     | 4 ++++
- 2 files changed, 10 insertions(+)
----
-base-commit: 668d33c9ff922c4590c58754ab064aaf53c387dd
-change-id: 20240803-codec-version-db6f65ab51ce
+diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+index b852cc7ffad9..cdc090418d74 100644
+--- a/sound/soc/codecs/lpass-va-macro.c
++++ b/sound/soc/codecs/lpass-va-macro.c
+@@ -1483,6 +1483,10 @@ static void va_macro_set_lpass_codec_version(struct va_macro *va)
+ 	if ((core_id_0 == 0x02) && (core_id_1 == 0x0F) && (core_id_2 == 0x80 || core_id_2 == 0x81))
+ 		version = LPASS_CODEC_VERSION_2_8;
+ 
++	if (version == LPASS_CODEC_VERSION_UNKNOWN)
++		dev_warn(va->dev, "Unknown Codec version, ID: %02x / %02x / %02x\n",
++			 core_id_0, core_id_1, core_id_2);
++
+ 	lpass_macro_set_codec_version(version);
+ 
+ 	dev_dbg(va->dev, "LPASS Codec Version %s\n", lpass_macro_get_codec_version_string(version));
 
-Best regards,
 -- 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+2.39.2
 
