@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4719C3DA64
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Aug 2024 00:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79073C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Aug 2024 00:58:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B0D8529D;
-	Mon,  5 Aug 2024 02:55:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B0D8529D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A28752C9;
+	Mon,  5 Aug 2024 02:55:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A28752C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722819320;
-	bh=75M3W4tVW9VeOc3MM+rbL8QGy0lIRnEwziVOJroiqOQ=;
+	s=default; t=1722819337;
+	bh=4IKzE/0l6+rAy+h0bK7iSf8LM5SK26AwN1VMZBa1tEM=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CPVZeJEG9qLVnw5L92einmUMsTa+sgIddR1paxGimZFfX0KRVZ+5DvRyFjbuHJ51Y
-	 jKdttDz3XJPaKTo9oYEg82KO1UD9dKBWJGncfOrDrenApDj4VN1VsRdxV4mlGGT5KA
-	 cpp1r6kzIqzf4akhbim5OtpOVZhCEkMgRBW05Cvk=
+	b=NvNkBQY8ckSDzAXZP7wLEU+TrxybZ9c+RrT+HCll1cJBCICTYxpp7Qmy+TEr9JHm8
+	 8qa8Tj/APkVr9dAxOAIoEBI4iyEJ3mEQesle36t5XPAFCaS90ANczHagwOZ5QUrJQ9
+	 MlzhxNFCSrR+CqMWjxESCVEEsemsWSkcL58A8YH0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97333F8067A; Mon,  5 Aug 2024 02:40:47 +0200 (CEST)
+	id 09476F89B5F; Mon,  5 Aug 2024 02:40:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5A56F89B63;
-	Mon,  5 Aug 2024 02:40:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31373F89B43;
+	Mon,  5 Aug 2024 02:40:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11197F89AE2; Mon,  5 Aug 2024 02:40:33 +0200 (CEST)
+	id 0F884F89A19; Mon,  5 Aug 2024 02:40:03 +0200 (CEST)
 Received: from TYVP286CU001.outbound.protection.outlook.com
  (mail-japaneastazlp170110002.outbound.protection.outlook.com
  [IPv6:2a01:111:f403:c405::2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ACB24F89A35
-	for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2024 02:40:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACB24F89A35
+	by alsa1.perex.cz (Postfix) with ESMTPS id 76CAFF899CE
+	for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2024 02:39:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76CAFF899CE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=a0gxzLkS
+ header.s=selector1 header.b=LCpb5vxZ
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pXzAnQrxY2LWf0DK86sPZcVr3+Pp2dW8zdPOpLiV2u6oqqL+xFblQfEH0s871sVNh9kKBYk8BnVhm/CcIJErcOtKIL9CHArHL1L6C+VDLFFGhcBMGdZSTlNffRAGN0DFAaremQ2Hkouzu1g4cqeYWIKSNAtjFJokVRmSXt6Wo/mzi9z+yxgM7Yc+2qUfZSxCZ9dQZt7vWwRt6/68zOw4ePeUqEQVVU+ASEvCqYfeyqzUPJWuz+UrvU3kuJ6oA3rjquoutuTYEaJM2PywBBIUSXcuyN60FvztykvVPKV78CeMQA5/zsYTX46rYuUSAQfDCFJmfwfckI7JYOKo9+InKQ==
+ b=TdfgM8/HT/79HmaxQD4F6MYhNx+8/LkjFt+gpQ25b+kPHPTp747xdGalhs+SIfchtzFiHeB+/mEzsr+XqDAoxfbJE0MJCfqZ+a36xu653amNPW/+8SVyAWdMXw84UvOk8caiEZViAALnZLWtf50Km8HqohbnRgbbwoNEt/sR1TMKwcQYfIkxQTlEMOE/exKj9ywuFSOmZHPAMItS6KGuMR7JzzNS3p89ZDktCJibZshqW2hnHmjMDtQ9rYNsjw2gJacIxsZTbqit5HE9C5DWDyUXRUzu5lgTDom4YmQfa67ckJB2hZTF+FFYcwt0Wm1LcUm80rEfEDv5PAP7AyEzng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kxRIoimJe05t2bsWKGO+/4Yh3+LXfJPxjHOA16YHuZ8=;
- b=gaWdf+S7gxq70YXPbHm3sYHVurf9SZ+QF/j0+WUjeH7qniYWm7cxXAOKqGVUZpiKEXPXorgv16GTtWEOmLCtEgWyfmf11PCWO58GxwMlPnhPwkZ8Sp4NKdDVdk17BtpTrExnSP+H5YAIJBWjid6tiwWY8jdWORF9bstaXaR1kD3SNvwNr+WcEmIlhkAptTzAqu3M6kegynplpch/AY+C+Rbs7X5hLrx3OJ+MwYcawoLfEm+buXUhmE2wd6MBiZfCrHuHBtF/GhNOeLa/A3EeGp3yvP382tQUQFrwSuHeQCvigaFoxHFw3XQ5rOhUqCjqklLRgiTqnV1R3gpLmEmw/Q==
+ bh=sdlERduANgxTCIKQW1Wf2vcHnEtrtSsPVn4SI5YZBLA=;
+ b=E55nYkF4mgF0imuBWN3V2RuDE5gv1lOo2lRDw8zP2ybn9TVTsTWm1HSwmCvaIu5SQONmbOuI05eRRCFpyvnSGCZdQyaPWqa0mpqLv8EfYNPfK6AvR5FV7YtXiRpnpTudJB2c+2HHp6XB6iavtazdR8aw4EkuI6bC07F6M/HgQkt6pX3zPj4ZiGPlKrUGHbPjOeGT7IHpnmXFJas71/3AvokRaYNT/YAD0C4nLuBPNuqZLqWW2MYseIW9Vu+Pa7mSuchZ9Gg+7uRaLIfcQvwYVwukiQG4dmUjtXeZ95NiNjFARYwOQnv9PlWDSwsrHuVpEnZb/zO6Xskr8DnJikGqHw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
  dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kxRIoimJe05t2bsWKGO+/4Yh3+LXfJPxjHOA16YHuZ8=;
- b=a0gxzLkSRFBSzJb6cFD7lYfPQdRtbau7Wr3vcmtXC6XV3zz4+1yshIgZXnZ2X+5b0mdPMZvmRDcE+as2+wfWVU0U+62XTf038PoR4w1Y5l0e9KjZAFXaMPjh+oLwANtYVWWo6QGXWBHhPToePMe7UnJMcMA59/Y4XoC8rGfjCxk=
+ bh=sdlERduANgxTCIKQW1Wf2vcHnEtrtSsPVn4SI5YZBLA=;
+ b=LCpb5vxZubtf5WP9vXNEhSDC9ZEqZaeWmbelCgHg9z/n6ei8AtcE1e0NayRIruRR0eI/jwJhwL7U7Aihiy3LEBxve95ZtG1bzbk9xJ+OICy+QKwGZ7RIAdX8+xSOvXTbEZBmRLaAuXifplDbOIImQqIlkrnmcDhDh6G8BKV8aw8=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=renesas.com;
 Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
  (2603:1096:400:3a9::11) by OSZPR01MB9459.jpnprd01.prod.outlook.com
  (2603:1096:604:1d0::5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.25; Mon, 5 Aug
- 2024 00:40:12 +0000
+ 2024 00:39:47 +0000
 Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
  ([fe80::c568:1028:2fd1:6e11]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
  ([fe80::c568:1028:2fd1:6e11%5]) with mapi id 15.20.7828.023; Mon, 5 Aug 2024
- 00:40:12 +0000
-Message-ID: <87mslryf83.wl-kuninori.morimoto.gx@renesas.com>
+ 00:39:46 +0000
+Message-ID: <87v80fyf8t.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 062/113] ASoC: intel: use snd_pcm_is_playback/capture()
+Subject: [PATCH 056/113] ASoC: qcom: use snd_pcm_is_playback/capture()
 User-Agent: Wanderlust/2.15.9 Emacs/29.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -78,90 +78,90 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 In-Reply-To: <874j7z3j1a.wl-kuninori.morimoto.gx@renesas.com>
 References: <874j7z3j1a.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=US-ASCII
-Date: Mon, 5 Aug 2024 00:40:12 +0000
-X-ClientProxiedBy: TYCP286CA0257.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:455::8) To TYCPR01MB10914.jpnprd01.prod.outlook.com
+Date: Mon, 5 Aug 2024 00:39:46 +0000
+X-ClientProxiedBy: TY2PR04CA0008.apcprd04.prod.outlook.com
+ (2603:1096:404:f6::20) To TYCPR01MB10914.jpnprd01.prod.outlook.com
  (2603:1096:400:3a9::11)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|OSZPR01MB9459:EE_
-X-MS-Office365-Filtering-Correlation-Id: 944a19d4-bcb0-4bac-c189-08dcb4e72ab3
+X-MS-Office365-Filtering-Correlation-Id: 83b25108-146c-4309-5c02-08dcb4e71b14
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
 	BCL:0;ARA:13230040|366016|1800799024|376014|52116014|38350700014;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?Gvb3nm7ohmvwAan/Fta5CjsNa7NJVnWe0l/kwehd2n7Pphfr3J3c87Wo6GJ+?=
- =?us-ascii?Q?sHMcI+prPxA6dtPpChlnEvuzZG30VVLDvTlC7SzStg0l1CYhyaP0RRmmyvZZ?=
- =?us-ascii?Q?BWvly+segHJSRu7VTqA7Lch6OKJlgBaEo+zRm7If5F9w6zhg2HjGdwGQjAoI?=
- =?us-ascii?Q?2TqYOyy2vaRw9Dx9uLke/hFQPGrZrQoahHF5UiPyUmwf+QtnJ9sgEGZnN0PZ?=
- =?us-ascii?Q?bltz6e7SFSHDKT2d4kAGVtqzvhVVQFdHsvBGN/n20SmcIbMc2J+fnVhHfYuj?=
- =?us-ascii?Q?4+gmUGn85VMLT0aSOdxSJ5Xy8j7XjIb2tdJm9SxjWppI4a8v+QyKhw2wZKCQ?=
- =?us-ascii?Q?Zhst4zzU7nfWJPbGm1SMb3Zu+zW/6FIgze8gZMNN9KQSMuNXywYqBKelvSq7?=
- =?us-ascii?Q?pZitdISqqX5AzRwddCNDI0yo11NW+Kf5D1QqlGFFfKxnH0xFbiyxj4m70FOn?=
- =?us-ascii?Q?lRx+PyNdbu38u/HYcADnUXP0kPzHjjAVfJZ5gRr1NxtL0harcFYs5XRQL4bF?=
- =?us-ascii?Q?wttmamxHwo0PdzS5XzW23fevtlUOyJH2qwE4g6IXuhEfO2IVrm3R7vV9YiqJ?=
- =?us-ascii?Q?WdnWKM1bAExMUm5iBkkvL5qYQeglGfyMfzuK3ffNvIesZtb78VZazm3FC75G?=
- =?us-ascii?Q?dS8da84fgxI5E0vlmCHx1RLYP1q9BA453IuJPM+S9LC2ZICvJZWVpfx08jUM?=
- =?us-ascii?Q?xMhEgvkJcOUzCl5av0tebo981sSOiUTKdWGvsUm7JjrmyEHDgJERM7lmqdI1?=
- =?us-ascii?Q?982zLo1nPo6h2NteDBN2c9xAlasYO0iAnPzrVU5qccjZ+yfbAK3T/Wc1LCcv?=
- =?us-ascii?Q?JkPwMLfRNaEJOstBDpdIYB/tvGXnUJAuDRl4dILO+qRXHrbQjgoutXKF47QP?=
- =?us-ascii?Q?riGawV4AbxIUCeaxxAO1QktV+m6/8MHnx5yZ0HYJHS2XaGhwBeroh0iKHDOv?=
- =?us-ascii?Q?p4AXKtdSj5yAzQW1kLKxeEe5iegj1GdZdCh4NMZPbfQG/s2pUUZGTfSlV9bC?=
- =?us-ascii?Q?Q2duhxUIuhXhbGI5ywQq4K515TdeywgOZQKCf/opvucQUsBrP0jQGCv7Rpyx?=
- =?us-ascii?Q?IwddF0flC7+179dRd2nfPgiAim7yq1BkcnhBs9Wx0f9QXSKKLkgebYCKl53/?=
- =?us-ascii?Q?XHwiXfdLZgMxEqwB/U3HKGRZWXM61cwUi0+2Q26J2vSO/ra5Wleh0YBcRCZV?=
- =?us-ascii?Q?Ci9O62Da1V4vQ8+C3dA+bFEBoGfaoRCvEmKwvNX6KXA31TZ/9poE2O9DtICg?=
- =?us-ascii?Q?/tCwan7sYtc799eM3MQy5W12bT/W5MzyLtXT+K8qY6wWhyodD7Aa8s8YnaIA?=
- =?us-ascii?Q?APUmf5XnJ/Q/KFsYropMAMsRxZ5Kdd6MqT0mUSjmDIO9xCm0+DP7wj/m+MCC?=
- =?us-ascii?Q?Ti7+Kf4miz8vyrElib2LQUv+3wf2GYF3mRvkjo+bEnFItc4boA=3D=3D?=
+	=?us-ascii?Q?qWtHgdWLhn52TXfwojw68TZNGk9m72zt5tA2Bj4aPA2OoeWxsqf/v9omAnrZ?=
+ =?us-ascii?Q?DqJfasMjWNXCEn8ibdRnTh6I5Xqb946y5lk3h5flNFod3cjBapfZunrX8l5Y?=
+ =?us-ascii?Q?tUxvKnfevgnVMSwc+Iu5XMNYgSLHshSMdXXlUwcBMs2T2MI1wUft32CNh0sB?=
+ =?us-ascii?Q?l2QPXGU7/s4AuJY2cil1HMMG37ZnqdBH1ksHuXHwSAt8gsHXlq3BHWk/TX/O?=
+ =?us-ascii?Q?0GUwdbM5O1OU1fwxI5gc1SHjflEvvS2Spj3uchdD0S1t1hXCbdzbLcgX74e9?=
+ =?us-ascii?Q?OvAcK6q7vV+cdxXqJlU75P8PIm4/PNNyRHpF4t1+T6eOTm1HIXI+JLBDanfG?=
+ =?us-ascii?Q?V8hPGRrPXHrmV2jOVFWCd/wCXdCPiHrw8Aeg5r2LMod21o5NTtaTSVoGOpFV?=
+ =?us-ascii?Q?rvCWKxHRAncL6OsbKoJFxtUJLQLjX1zgyR4JbltNpswctw407s1FgFjmPsIS?=
+ =?us-ascii?Q?/XzVh3E6KvBhEUfuiOuquxtuESwT6cQVoelN45M3vZDYq6WEGu8gsiNawJCc?=
+ =?us-ascii?Q?+8ggnzcoZdBaHjrUh1egm/z1TuEVB6Mly7pERS2j+H9/n208jPgqJBH3ZV9d?=
+ =?us-ascii?Q?rdejIW8/MvH/m312shEM4sM4zsCugs5CTxCWHGrdYWyV4CNhjf9PP5ckvXyU?=
+ =?us-ascii?Q?VOphR8Warm2gzW8h7C+Dl3TCSgstuaFbSX02oL+HR3ivVO1Goz3kY30R8Uui?=
+ =?us-ascii?Q?W5wvGmt3wlrJSUnISrJ1ArKaNt+AyrUqtUyrGtr3e403fdKqrTYYc4JqCLU+?=
+ =?us-ascii?Q?DBVECgWKXhZ24/wTKUOTtcPjsNuQdHIqOmSy3NJtEtmJyXBkm5FmQo7NZTgV?=
+ =?us-ascii?Q?cXDUnkjI7UqRkOuZ7Fa2+NQfRBrHR02XrBWivdm2GwpxeEmkdwRx14UU/+Q+?=
+ =?us-ascii?Q?+AG/ohFvhotFs/o4aruVJvNDDMf7UGpPxKi/AOLkO5IySzLlLo00joIXQikq?=
+ =?us-ascii?Q?1K4JY0IOHuugtRkBoDGH0Mwci0d7PVxzbjyb4s/hKz4cv3jBUSUk9K3aPJ/j?=
+ =?us-ascii?Q?ia85MZpwMyI2uZZCldYbDhV1R6NhwjDLzPa5PqDpd6Twiatu6L6Y1epO3UYU?=
+ =?us-ascii?Q?hHpsgFtqDbdbwG5o/CEsatpvj1jUQ+1BBtqvChIziOAtVKKg/E/hr8NVbLae?=
+ =?us-ascii?Q?b3uLziRd/UevMurSb9S4saoMVXonZzhDFfm5H8SrgXUOneX2QE8+2PxXIInW?=
+ =?us-ascii?Q?/MqzcHKBzggJZjVv5tITs4kpvNLOuO/XHoYaezY3d5RGBqW7QpP+79zmbavf?=
+ =?us-ascii?Q?96UNTiwObr+nb9k3n5NHX2RY6MizsTfzLnUPWckDSS39WSswVd5fPJSxzwBs?=
+ =?us-ascii?Q?CJU0Pqg/kgUb1zYHu13PHMDryAqQ7+VJbypt6F5JDQKIzVOxOD+d4AVuVQU3?=
+ =?us-ascii?Q?NCgClu8yyLvDFBuexAbWwQUqD1NU3YgEl0j7cRbxELVSxs08SA=3D=3D?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(52116014)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?lMe25fXS//aO5TPGkigH6QkjIKzwcMvMF59GliZzWtYWJojS2vKkurtflbzo?=
- =?us-ascii?Q?DAtRVLY4MoBrkJKbyGVnG2waFVPBrkPHSXRov0zduTh/oMhF6qsLPk3HoU/U?=
- =?us-ascii?Q?iUoBy9xRH4hVh9VJfW5YcXGqs878lp90DQ6oUZ8IlkmW3Bl63bu5krp09Scw?=
- =?us-ascii?Q?WgW4lW50+twzenGf8bGlB9bSuucCVH7nqZcP5/78BlSj7MbWT129uaWUODtr?=
- =?us-ascii?Q?M++/hs0EQ7OVNdGG8o/CvxOo114EZYOW/kF2nvc7fEDu2N2mFpD9UOajoZ60?=
- =?us-ascii?Q?qQJfhhKSrg4Hq2XjNs1Z7lYbRDzzzbBb2nY4ovveWsVJRak1kJEVs7H6qvE1?=
- =?us-ascii?Q?yU1kq4HketwH5ymnf0pTVcQlCt6Bg1TOoTxCivbH5rcL4WGBTiFxVuNRYQsP?=
- =?us-ascii?Q?1gvmE8wjD7s/u08FmkN36LQ3OZ0WDGVATmBTc029dZUk0Spss3ZWXTmQrxVG?=
- =?us-ascii?Q?R7A0R1WQYosWngdHeByEyarLKJd59zFK265I41pkvYI7c95QVLedg+dd9+rN?=
- =?us-ascii?Q?+B2G2dtMJ/tQ1/1qHTJKq7nvFosXh0JIWQf+z9RCzv4DGYS+QR5+M0j49uRy?=
- =?us-ascii?Q?/R1jY9mcF5OrPOIXyWWe4vgB5u2GmE3fHBz73ngjJtKneKAjEio7EeDOZrGL?=
- =?us-ascii?Q?kDcdxermO1GYgMCJB3Vc4uBR1vxKN3pazxHcbYG76xL+PlZiZLr4NiSKrMJA?=
- =?us-ascii?Q?oOF1Jsl36CTPanY3BJ4sAydFDVIhg4N+lNm4nacCyoGRiQNZvE8bQ3klyiRY?=
- =?us-ascii?Q?0HK+orVwzVV9znjT1Ju+mIsl5sIxzz58nFHbK61p1ooB/CEyQwh+KqL8DlVP?=
- =?us-ascii?Q?7u2uPg0lyNcilXlY0JSJcRK/LUvsgrlpAztKxlbjBy4QH8ciWY0C7qLzNl0V?=
- =?us-ascii?Q?eSC5Ci0BcOyhdMyuFPw/YSULRj1EOBpvgxkzPpBkmKfbVNh8Jz0AWqtoDb01?=
- =?us-ascii?Q?RPUgPqLGInhT7UMzej+Oi3hD7jLrtXhht25akaAZlqp89QDgwdF5X4JcAhv/?=
- =?us-ascii?Q?15ztrdTqThfPpql9t+KvpP6mqaZr/rSLL/PxSaTjHn7fkYJkKkrVQr5hcTHD?=
- =?us-ascii?Q?1PNPMcVTiK9aiV38EFAEOzrGNJ/O6O7IGhh0K69tHH/v8HdOuZdRk8aVQgeY?=
- =?us-ascii?Q?jjqFE2K/fAnS7qPgInFZ+z1Ka/7okR03PEx757SNHE9MfT1biubOiVJkNnog?=
- =?us-ascii?Q?uoQ/Z7IKGvH7WUrIkTg2JG5b3e9Pm3BDHptkrWGdgioziTDz9jLryC5KLOvE?=
- =?us-ascii?Q?+2taeownwtCzsvpg/CgNNhGOsOWH+hRC0/Wonv0GqS4riu9Jw0YyVTGs4w2f?=
- =?us-ascii?Q?DW1GEScqt4IW6xuB8NqqXQ9SLCVsMjNOH8gDH1Xw+QKZ1Pq1SZde8Bs41Co/?=
- =?us-ascii?Q?5T6hh9JbmE3ZDyM1Q9PE/ZD5HJtFRwsFlHBWGS/jQglMgnyX/RARN3imnKcv?=
- =?us-ascii?Q?EOCDVU3SopL/mKgI1cGEkHvhXWAoXXwJBuxiLKG0KwOx07HEyaE7y8YCRgMi?=
- =?us-ascii?Q?8xcwYu5wKdB22Tu22Kcxs+nkVEJulijYOFAiLDg74LPAAWsEXnqYdPE7puYb?=
- =?us-ascii?Q?gPBq5855YBqJDi4SEAey0x7h7IbItBj0CW2K87Sr0GTpksVkp3FQFKeSKdGo?=
- =?us-ascii?Q?Yh2SF3CegFpTJ6wb7kmtIAs=3D?=
+	=?us-ascii?Q?QHWQX+lJobd8a6y4lXYIrqxMhxeeNNIN+VPEHk7Zc7oSAxktuu0xz6Fy1toz?=
+ =?us-ascii?Q?2da5v4hkpYEwtrM0pcgkxpFaYUWmH9e+/SmEuL8TGoTojN+XV3WingvKHdJY?=
+ =?us-ascii?Q?VU7wfvGD2SDrgTg0wPp8LJm2u4DIL8uFMiFUDbdop6EI60pPacBQk4pmEsWh?=
+ =?us-ascii?Q?Kd7Cq8vymqab6jfN2bkb4vc/AcHSbIOVH1ZCdmwFyczQSh+aBbD+CJWN65HO?=
+ =?us-ascii?Q?XBb8raJilKaLnqJZ7eu6poWLY4DBp1ZXKSoJeWUoYQS83I9t9Cvo/Sfr6g0d?=
+ =?us-ascii?Q?WqlDAJhInUUtOjhWhBu5MVmOZwdRtCWjWM+98jsmbBaowpiRHQ44do4ekJIb?=
+ =?us-ascii?Q?EY3RQACOpKnJwgZFa96UgxQGN94rY2IrmxkQ+tv16zbv7/UZzbu5hZUQjUUX?=
+ =?us-ascii?Q?PMLpKhs+u15T/2lI3ijK3c3ZhvuQwOdWywNyK2AZ5o58bp0fpcReHvR4SQZk?=
+ =?us-ascii?Q?C2Fqb5GXlT6dv5xwLKxrAYxPesWzGTHgPmh+OfoVofOrrzyagOOX4xSwSB1T?=
+ =?us-ascii?Q?qTHLW6qcuEJPb0ubsPBCiUtm4Q5P/A8Xuu+3F0XU/85gOXVurz4xWAbIE+vn?=
+ =?us-ascii?Q?fuJWY49uCMWsyCGIR1sZi0aIWJnMqn8Sb/zNqIBZ+hYjoMTMukckWGsGfR9C?=
+ =?us-ascii?Q?IvU1xorhXlp55peKsPhFMtH3ZT3DM6MdBLQbQptLJtpkNitQMkl9/Cs3mHGS?=
+ =?us-ascii?Q?hB6LeCDtMkHTMK21+bFjp32/TW72VGHV87afYi5YnJRO3qYCmBScpR9Icm3P?=
+ =?us-ascii?Q?aHLYgKz0Q+81cOY4p7xZa14OgX/BGRaI4cE+FIBYqVGcmSg/X9dmpYqecmpt?=
+ =?us-ascii?Q?t/KaYcs5Fdn0CI5c+bQXX8VKkOCuMGQjFj3AB2c0v2EVp6iUa0IzIAKTOQ0n?=
+ =?us-ascii?Q?uvL8uUPi0Rv7NBMgRVYldmwGQKFQYCXBHYLbKWXdVmfPCrNW/ij3TRI9lswN?=
+ =?us-ascii?Q?xNsuRGPu+wJRfUEXi8BEftU8ZXsdvGRMrNuJBtgiedLlDl8uGAncra6/W0A/?=
+ =?us-ascii?Q?GlJax/nhMIAmctbQv0i8pwHnVEbc4RetOz0vKCnFtv8SCqcagAMjYEEN9C8D?=
+ =?us-ascii?Q?OzefHsZydvDhpvSm7oQcDmJbQZI2eDogMUpvF/pIGmofmcLr0FS6yNAhcPbb?=
+ =?us-ascii?Q?+lz379Bj6JXizTLF3ZtuHB1AaJcOwn2YuY4S7KLpv6T7mjD7dKFgOy7A+t2i?=
+ =?us-ascii?Q?9s/rZvFmP5RFOBIcI46cnEQFpDBs3Plg9PUtyJSs9twCYSDrk5RjcQCGJ8kW?=
+ =?us-ascii?Q?TD4v1BIe0itD21j4MhlthQaPBL2os+nDhpNx/Qv/9ANOd0qV5Lw0J9MF+dsn?=
+ =?us-ascii?Q?hwfs5msqioYiXNoK4n2z6naMnCRpWrzQpHRQQbZ2Zy7UoTzE3LkB4CRHLaWW?=
+ =?us-ascii?Q?KomjCIvU9xWnhfP4WZURJi2NdDuRt7nwZFlqtGnIt4uGKJdvbXEcgSLSvb9J?=
+ =?us-ascii?Q?TngJHfpe78q5YBV49fAuVPyrXMjPq+Sk30aE/PRFuhDkMRca3Mh4bwVgmmK4?=
+ =?us-ascii?Q?zy8pQwQh4c/u4xhhd8pzoNdhTvZb1+fSnM/p/W0pSAgXUicEyxHo6pR0lblA?=
+ =?us-ascii?Q?r7kNyoxDQ8m6xjCVsLgmeWWSslZaAFxF/zHB4E5P1tHY1/XY830logc83/6c?=
+ =?us-ascii?Q?CvX1qJqYMe172ruft43pEOo=3D?=
 X-OriginatorOrg: renesas.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 944a19d4-bcb0-4bac-c189-08dcb4e72ab3
+ 83b25108-146c-4309-5c02-08dcb4e71b14
 X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2024 00:40:12.7454
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2024 00:39:46.5978
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- SQ4vBiGo7hIxn9C5VXriDnMNgruvZL87cAbd22LoEuT8Qpd4C0JAma4vBzx2D0HQT5t3IVQ6Gz4sefDA5NR0ye1OCNa1Wgaf03uADAabTLCO/ZRAyYwyZAaH/rR9KXxJ
+ 7ZB04sNGtDPzHAgPw83fsCVroZY62Kmnbz+n4BIpsCxLaTbz/1691uEcUyTrPAKqEacYMUDvxhE+s195hQvtFWWg+hD8WuYXFzsouxWEpee6VdT8odvxKg0wwMkAGDEE
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB9459
-Message-ID-Hash: H76Z343XSOI47M6FO37QWSIDK5RCV4FH
-X-Message-ID-Hash: H76Z343XSOI47M6FO37QWSIDK5RCV4FH
+Message-ID-Hash: 5XICHGYIGGPJSHD6FFVZCMO6LYXJIFSA
+X-Message-ID-Hash: 5XICHGYIGGPJSHD6FFVZCMO6LYXJIFSA
 X-MailFrom: kuninori.morimoto.gx@renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -174,7 +174,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H76Z343XSOI47M6FO37QWSIDK5RCV4FH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5XICHGYIGGPJSHD6FFVZCMO6LYXJIFSA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -187,378 +187,436 @@ We can use snd_pcm_is_playback/capture(). Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/intel/atom/sst-atom-controls.c     |  2 +-
- sound/soc/intel/atom/sst/sst_drv_interface.c |  2 +-
- sound/soc/intel/boards/bdw-rt5650.c          |  2 +-
- sound/soc/intel/boards/sof_maxim_common.c    |  2 +-
- sound/soc/intel/boards/sof_sdw.c             |  4 +--
- sound/soc/intel/catpt/pcm.c                  |  4 +--
- sound/soc/intel/keembay/kmb_platform.c       | 28 ++++++++++----------
- sound/soc/intel/skylake/skl-pcm.c            | 14 +++++-----
- sound/soc/intel/skylake/skl-topology.c       | 18 ++++++-------
- 9 files changed, 38 insertions(+), 38 deletions(-)
+ sound/soc/qcom/apq8096.c                |  2 +-
+ sound/soc/qcom/lpass-apq8016.c          |  2 +-
+ sound/soc/qcom/lpass-cpu.c              | 12 ++++++------
+ sound/soc/qcom/lpass-ipq806x.c          |  2 +-
+ sound/soc/qcom/lpass-platform.c         |  8 ++++----
+ sound/soc/qcom/lpass-sc7180.c           |  4 ++--
+ sound/soc/qcom/lpass-sc7280.c           |  2 +-
+ sound/soc/qcom/qdsp6/audioreach.c       |  2 +-
+ sound/soc/qcom/qdsp6/q6apm-dai.c        | 10 +++++-----
+ sound/soc/qcom/qdsp6/q6apm-lpass-dais.c |  6 +++---
+ sound/soc/qcom/qdsp6/q6apm.c            | 12 ++++++------
+ sound/soc/qcom/qdsp6/q6asm-dai.c        | 16 ++++++++--------
+ sound/soc/qcom/qdsp6/q6routing.c        |  2 +-
+ sound/soc/qcom/sdm845.c                 |  4 ++--
+ 14 files changed, 42 insertions(+), 42 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index 38116c7587174..0c6ce403148f8 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -1333,7 +1333,7 @@ int sst_send_pipe_gains(struct snd_soc_dai *dai, int stream, int mute)
- 	dev_dbg(dai->dev, "enter, dai-name=%s dir=%d\n", dai->name, stream);
- 	dev_dbg(dai->dev, "Stream name=%s\n", w->name);
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+index 4f6594cc723ce..a5305f33c32c5 100644
+--- a/sound/soc/qcom/apq8096.c
++++ b/sound/soc/qcom/apq8096.c
+@@ -46,7 +46,7 @@ static int msm_snd_hw_params(struct snd_pcm_substream *substream,
+ 		return 0;
+ 	}
  
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		snd_soc_dapm_widget_for_each_sink_path(w, p) {
- 			if (p->connected && !p->connected(w, p->sink))
- 				continue;
-diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-index dc31c2c8f54c8..f02ee7f48a2a4 100644
---- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-@@ -487,7 +487,7 @@ static inline int sst_calc_tstamp(struct intel_sst_drv *ctx,
- 			fw_tstamp->ring_buffer_counter);
- 	dev_dbg(ctx->dev, "mrfld hardware_counter %llu in bytes\n",
- 			 fw_tstamp->hardware_counter);
 -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 +	if (snd_pcm_is_playback(substream))
- 		delay_bytes = (size_t) (fw_tstamp->ring_buffer_counter -
- 					fw_tstamp->hardware_counter);
+ 		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
+ 						  rx_ch_cnt, rx_ch);
  	else
-diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
-index 3c7cee03a02e6..a5df4d3067d71 100644
---- a/sound/soc/intel/boards/bdw-rt5650.c
-+++ b/sound/soc/intel/boards/bdw-rt5650.c
-@@ -150,7 +150,7 @@ static int bdw_rt5650_fe_startup(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index 9005c85f8c547..5dfcd547cfcd5 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -126,7 +126,7 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+ 	const struct lpass_variant *v = drvdata->variant;
+ 	int chan = 0;
  
- 	/* Board supports stereo and quad configurations for capture */
--	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
-+	if (!snd_pcm_is_capture(substream))
- 		return 0;
+-	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(direction)) {
+ 		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
+ 					v->rdma_channels);
  
- 	runtime->hw.channels_max = 4;
-diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-index fcc3b95e57a4f..f520442bbb096 100644
---- a/sound/soc/intel/boards/sof_maxim_common.c
-+++ b/sound/soc/intel/boards/sof_maxim_common.c
-@@ -196,7 +196,7 @@ static int max_98373_trigger(struct snd_pcm_substream *substream, int cmd)
- 	int ret = 0;
- 
- 	/* set spk pin by playback only */
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+	if (snd_pcm_is_capture(substream))
- 		return 0;
- 
- 	cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index d258728d64cf5..5818c21173032 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -846,8 +846,8 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 
- 		WARN_ON(i != num_cpus || j != num_codecs);
- 
--		playback = (stream == SNDRV_PCM_STREAM_PLAYBACK);
--		capture = (stream == SNDRV_PCM_STREAM_CAPTURE);
-+		playback = snd_pcm_is_playback(stream);
-+		capture  = snd_pcm_is_capture(stream);
- 
- 		asoc_sdw_init_dai_link(dev, *dai_links, be_id, name, playback, capture,
- 				       cpus, num_cpus, platform_component,
-diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
-index 81a2f0339e055..c32c101e65b9c 100644
---- a/sound/soc/intel/catpt/pcm.c
-+++ b/sound/soc/intel/catpt/pcm.c
-@@ -83,11 +83,11 @@ catpt_get_stream_template(struct snd_pcm_substream *substream)
- 	/* account for capture in bidirectional dais */
- 	switch (type) {
- 	case CATPT_STRM_TYPE_SYSTEM:
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		if (snd_pcm_is_capture(substream))
- 			type = CATPT_STRM_TYPE_CAPTURE;
- 		break;
- 	case CATPT_STRM_TYPE_BLUETOOTH_RENDER:
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		if (snd_pcm_is_capture(substream))
- 			type = CATPT_STRM_TYPE_BLUETOOTH_CAPTURE;
- 		break;
- 	default:
-diff --git a/sound/soc/intel/keembay/kmb_platform.c b/sound/soc/intel/keembay/kmb_platform.c
-index 37ea2e1d2e922..eab7b8223b51b 100644
---- a/sound/soc/intel/keembay/kmb_platform.c
-+++ b/sound/soc/intel/keembay/kmb_platform.c
-@@ -170,7 +170,7 @@ static inline void kmb_i2s_disable_channels(struct kmb_i2s_info *kmb_i2s,
- 	u32 i;
- 
- 	/* Disable all channels regardless of configuration*/
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		for (i = 0; i < MAX_ISR; i++)
- 			writel(0, kmb_i2s->i2s_base + TER(i));
- 	} else {
-@@ -184,7 +184,7 @@ static inline void kmb_i2s_clear_irqs(struct kmb_i2s_info *kmb_i2s, u32 stream)
- 	struct i2s_clk_config_data *config = &kmb_i2s->config;
- 	u32 i;
- 
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		for (i = 0; i < config->chan_nr / 2; i++)
- 			readl(kmb_i2s->i2s_base + TOR(i));
- 	} else {
-@@ -199,7 +199,7 @@ static inline void kmb_i2s_irq_trigger(struct kmb_i2s_info *kmb_i2s,
- 	u32 i, irq;
- 	u32 flag;
- 
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(stream))
- 		flag = TX_INT_FLAG;
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 5a47f661e0c6f..81036c49bce1b 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -113,7 +113,7 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+ 	 * Will not impact if disabled in lpass_cpu_daiops_trigger()
+ 	 * suspend.
+ 	 */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
  	else
- 		flag = RX_INT_FLAG;
-@@ -270,7 +270,7 @@ static int kmb_pcm_trigger(struct snd_soc_component *component,
+ 		regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
+@@ -185,7 +185,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
  
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		mode = drvdata->mi2s_playback_sd_mode[id];
+ 	else
+ 		mode = drvdata->mi2s_capture_sd_mode[id];
+@@ -249,7 +249,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		ret = regmap_fields_write(i2sctl->spkmode, id,
+ 					 LPAIF_I2SCTL_SPKMODE(mode));
+ 		if (ret) {
+@@ -320,7 +320,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 		 *     turn off the shared BCLK while other devices are using
+ 		 *     it.
+ 		 */
 -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 +		if (snd_pcm_is_playback(substream)) {
- 			kmb_i2s->tx_ptr = 0;
- 			kmb_i2s->tx_substream = substream;
- 		} else {
-@@ -279,7 +279,7 @@ static int kmb_pcm_trigger(struct snd_soc_component *component,
- 		}
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_ENABLE);
+ 		} else  {
+@@ -345,7 +345,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 		 * To ensure lpass BCLK/LRCLK is disabled during
+ 		 * device suspend.
+ 		 */
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (snd_pcm_is_playback(substream)) {
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_DISABLE);
+ 		} else  {
+@@ -378,7 +378,7 @@ static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
+ 	 * the data flow.
+ 	 * (ex: to drop start up pop noise before capture starts).
+ 	 */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
+ 	else
+ 		ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
+diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
+index 5c874139f39d4..dbaaed1f3d8e3 100644
+--- a/sound/soc/qcom/lpass-ipq806x.c
++++ b/sound/soc/qcom/lpass-ipq806x.c
+@@ -97,7 +97,7 @@ static int ipq806x_lpass_exit(struct platform_device *pdev)
+ 
+ static int ipq806x_lpass_alloc_dma_channel(struct lpass_data *drvdata, int dir, unsigned int dai_id)
+ {
+-	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(dir))
+ 		return IPQ806X_LPAIF_RDMA_CHAN_MI2S;
+ 	else	/* Capture currently not implemented */
+ 		return -EINVAL;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index addd2c4bdd3e8..f8e223e73fa02 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -329,7 +329,7 @@ static struct lpaif_dmactl *__lpass_get_dmactl_handle(const struct snd_pcm_subst
+ 
+ 	switch (cpu_dai->driver->id) {
+ 	case MI2S_PRIMARY ... MI2S_QUINARY:
 -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 +		if (snd_pcm_is_playback(substream))
- 			kmb_i2s->tx_substream = NULL;
+ 			dmactl = drvdata->rd_dmactl;
  		else
- 			kmb_i2s->rx_substream = NULL;
-@@ -378,7 +378,7 @@ static snd_pcm_uframes_t kmb_pcm_pointer(struct snd_soc_component *component,
- 	struct kmb_i2s_info *kmb_i2s = runtime->private_data;
- 	snd_pcm_uframes_t pos;
+ 			dmactl = drvdata->wr_dmactl;
+@@ -364,7 +364,7 @@ static int __lpass_get_id(const struct snd_pcm_substream *substream,
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		pos = kmb_i2s->tx_ptr;
- 	else
- 		pos = kmb_i2s->rx_ptr;
-@@ -419,7 +419,7 @@ static inline void kmb_i2s_enable_dma(struct kmb_i2s_info *kmb_i2s, u32 stream)
+ 	switch (cpu_dai->driver->id) {
+ 	case MI2S_PRIMARY ... MI2S_QUINARY:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			id = pcm_data->dma_ch;
+ 		else
+ 			id = pcm_data->dma_ch - v->wrdma_channel_start;
+@@ -1230,14 +1230,14 @@ static int lpass_platform_copy(struct snd_soc_component *component,
+ 	void __iomem *dma_buf = (void __iomem *) (rt->dma_area + pos +
+ 				channel * (rt->dma_bytes / rt->channels));
  
- 	dma_reg = readl(kmb_i2s->i2s_base + I2S_DMACR);
- 	/* Enable DMA handshake for stream */
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(stream))
- 		dma_reg |= I2S_DMAEN_TXBLOCK;
- 	else
- 		dma_reg |= I2S_DMAEN_RXBLOCK;
-@@ -433,7 +433,7 @@ static inline void kmb_i2s_disable_dma(struct kmb_i2s_info *kmb_i2s, u32 stream)
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		if (is_cdc_dma_port(dai_id)) {
+ 			ret = copy_from_iter_toio(dma_buf, buf, bytes);
+ 		} else {
+ 			if (copy_from_iter((void __force *)dma_buf, bytes, buf) != bytes)
+ 				ret = -EFAULT;
+ 		}
+-	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++	} else if (snd_pcm_is_capture(substream)) {
+ 		if (is_cdc_dma_port(dai_id)) {
+ 			ret = copy_to_iter_fromio(buf, dma_buf, bytes);
+ 		} else {
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index e6bcdf6ed7965..6898e9254a78d 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -80,7 +80,7 @@ static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+ 	int chan = 0;
  
- 	dma_reg = readl(kmb_i2s->i2s_base + I2S_DMACR);
- 	/* Disable DMA handshake for stream */
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		dma_reg &= ~I2S_DMAEN_TXBLOCK;
- 		writel(1, kmb_i2s->i2s_base + I2S_RTXDMA);
+ 	if (dai_id == LPASS_DP_RX) {
+-		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (snd_pcm_is_playback(direction)) {
+ 			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
+ 						v->hdmi_rdma_channels);
+ 
+@@ -89,7 +89,7 @@ static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+ 		}
+ 		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
  	} else {
-@@ -451,7 +451,7 @@ static void kmb_i2s_start(struct kmb_i2s_info *kmb_i2s,
- 	/* I2S Programming sequence in Keem_Bay_VPU_DB_v1.1 */
- 	writel(1, kmb_i2s->i2s_base + IER);
+-		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (snd_pcm_is_playback(direction)) {
+ 			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
+ 						v->rdma_channels);
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		writel(1, kmb_i2s->i2s_base + ITER);
+diff --git a/sound/soc/qcom/lpass-sc7280.c b/sound/soc/qcom/lpass-sc7280.c
+index 47c622327a8d3..d5a1c27652e48 100644
+--- a/sound/soc/qcom/lpass-sc7280.c
++++ b/sound/soc/qcom/lpass-sc7280.c
+@@ -115,7 +115,7 @@ static int sc7280_lpass_alloc_dma_channel(struct lpass_data *drvdata,
+ 
+ 	switch (dai_id) {
+ 	case MI2S_PRIMARY ... MI2S_QUINARY:
+-		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (snd_pcm_is_playback(direction)) {
+ 			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
+ 						   v->rdma_channels);
+ 
+diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
+index 4ebaaf736fb98..cd7d99f9b8b40 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.c
++++ b/sound/soc/qcom/qdsp6/audioreach.c
+@@ -1309,7 +1309,7 @@ int audioreach_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, s
+ 	void *p;
+ 	int rc, i;
+ 
+-	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(dir))
+ 		data = &graph->rx_data;
  	else
- 		writel(1, kmb_i2s->i2s_base + IRER);
-@@ -474,7 +474,7 @@ static void kmb_i2s_stop(struct kmb_i2s_info *kmb_i2s,
- 	/* I2S Programming sequence in Keem_Bay_VPU_DB_v1.1 */
- 	kmb_i2s_clear_irqs(kmb_i2s, substream->stream);
+ 		data = &graph->tx_data;
+diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
+index c9404b5934c7e..26c6051a53a0a 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
+@@ -280,7 +280,7 @@ static int q6apm_dai_prepare(struct snd_soc_component *component,
+ 		return ret;
+ 	}
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		writel(0, kmb_i2s->i2s_base + ITER);
- 	else
- 		writel(0, kmb_i2s->i2s_base + IRER);
-@@ -556,7 +556,7 @@ static void kmb_i2s_config(struct kmb_i2s_info *kmb_i2s, int stream)
- 	kmb_i2s_disable_channels(kmb_i2s, stream);
- 
- 	for (ch_reg = 0; ch_reg < config->chan_nr / 2; ch_reg++) {
--		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_pcm_is_playback(stream)) {
- 			writel(kmb_i2s->xfer_resolution,
- 			       kmb_i2s->i2s_base + TCR(ch_reg));
- 
-@@ -678,7 +678,7 @@ static int kmb_dai_prepare(struct snd_pcm_substream *substream,
- {
- 	struct kmb_i2s_info *kmb_i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		writel(1, kmb_i2s->i2s_base + TXFFR);
- 	else
- 		writel(1, kmb_i2s->i2s_base + RXFFR);
-@@ -695,7 +695,7 @@ static int kmb_dai_startup(struct snd_pcm_substream *substream,
- 	if (kmb_i2s->use_pio)
- 		return 0;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		dma_data = &kmb_i2s->play_dma_data;
- 	else
- 		dma_data = &kmb_i2s->capture_dma_data;
-@@ -713,7 +713,7 @@ static int kmb_dai_hw_free(struct snd_pcm_substream *substream,
- 	if (kmb_i2s->use_pio)
- 		kmb_i2s_clear_irqs(kmb_i2s, substream->stream);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		writel(0, kmb_i2s->i2s_base + ITER);
- 	else
- 		writel(0, kmb_i2s->i2s_base + IRER);
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 613b27b8da134..2ffd511eedfe4 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -189,7 +189,7 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
- 	snd_hdac_ext_stream_setup(stream, format_val);
- 
- 	stream_tag = hstream->stream_tag;
--	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream->hstream.direction)) {
- 		list_for_each_entry(link, &bus->hlink_list, list) {
- 			if (link->index == params->link_index)
- 				snd_hdac_ext_bus_link_set_stream_id(link,
-@@ -225,7 +225,7 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	 * disable WALLCLOCK timestamps for capture streams
- 	 * until we figure out how to handle digital inputs
- 	 */
 -	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
 +	if (snd_pcm_is_capture(substream)) {
- 		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_WALL_CLOCK; /* legacy */
- 		runtime->hw.info &= ~SNDRV_PCM_INFO_HAS_LINK_ATIME;
- 	}
-@@ -319,7 +319,7 @@ static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
- 	p_params.host_dma_id = dma_id;
- 	p_params.stream = substream->stream;
- 	p_params.format = params_format(params);
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		p_params.host_bps = dai->driver->playback.sig_bits;
- 	else
- 		p_params.host_bps = dai->driver->capture.sig_bits;
-@@ -574,7 +574,7 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	p_params.link_index = link->index;
- 	p_params.format = params_format(params);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		p_params.link_bps = codec_dai->driver->playback.sig_bits;
- 	else
- 		p_params.link_bps = codec_dai->driver->capture.sig_bits;
-@@ -645,7 +645,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 	if (!link)
- 		return -EINVAL;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		stream_tag = hdac_stream(link_dev)->stream_tag;
- 		snd_hdac_ext_bus_link_clear_stream_id(link, stream_tag);
- 	}
-@@ -1193,7 +1193,7 @@ static snd_pcm_uframes_t skl_platform_soc_pointer(
- 	 * or greater than period boundary.
- 	 */
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		pos = readl(bus->remap_addr + AZX_REG_VS_SDXDPIB_XBASE +
- 				(AZX_REG_VS_SDXDPIB_XINTERVAL *
- 				hdac_stream(hstream)->index));
-@@ -1226,7 +1226,7 @@ static u64 skl_adjust_codec_delay(struct snd_pcm_substream *substream,
- 	codec_nsecs = div_u64(codec_frames * 1000000000LL,
- 			      substream->runtime->rate);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+	if (snd_pcm_is_capture(substream))
- 		return nsec + codec_nsecs;
- 
- 	return (nsec > codec_nsecs) ? nsec - codec_nsecs : 0;
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 602ef43211221..cb51b98b92c9a 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -198,7 +198,7 @@ static void skl_tplg_update_params_fixup(struct skl_module_cfg *m_cfg,
- 	in_fmt = &m_cfg->module->formats[m_cfg->fmt_idx].inputs[0].fmt;
- 	out_fmt = &m_cfg->module->formats[m_cfg->fmt_idx].outputs[0].fmt;
- 
--	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(params->stream)) {
- 		if (is_fe) {
- 			in_fixup = m_cfg->params_fixup;
- 			out_fixup = (~m_cfg->converter) &
-@@ -618,9 +618,9 @@ skl_tplg_get_pipe_config(struct skl_dev *skl, struct skl_module_cfg *mconfig)
- 	}
- 
- 	if ((pipe->conn_type == SKL_PIPE_CONN_TYPE_FE &&
--	     pipe->direction == SNDRV_PCM_STREAM_PLAYBACK) ||
-+	     snd_pcm_is_playback(pipe->direction)) ||
- 	     (pipe->conn_type == SKL_PIPE_CONN_TYPE_BE &&
--	     pipe->direction == SNDRV_PCM_STREAM_CAPTURE))
-+	      snd_pcm_is_capture(pipe->direction)))
- 		in_fmt = true;
- 
- 	for (i = 0; i < pipe->nr_cfgs; i++) {
-@@ -1612,7 +1612,7 @@ int skl_tplg_update_pipe_params(struct device *dev,
- 	if (skl->nr_modules)
- 		return 0;
- 
--	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(params->stream))
- 		format = &mconfig->module->formats[mconfig->fmt_idx].inputs[0].fmt;
- 	else
- 		format = &mconfig->module->formats[mconfig->fmt_idx].outputs[0].fmt;
-@@ -1642,7 +1642,7 @@ int skl_tplg_update_pipe_params(struct device *dev,
- 		return -EINVAL;
- 	}
- 
--	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(params->stream)) {
- 		res->ibs = (format->s_freq / 1000) *
- 				(format->channels) *
- 				(format->bit_depth >> 3);
-@@ -1666,7 +1666,7 @@ skl_tplg_fe_get_cpr_module(struct snd_soc_dai *dai, int stream)
- 	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(dai, stream);
- 	struct snd_soc_dapm_path *p = NULL;
- 
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		snd_soc_dapm_widget_for_each_sink_path(w, p) {
- 			if (p->connect && p->sink->power &&
- 				!is_skl_dsp_widget_type(p->sink, dai->dev))
-@@ -1745,7 +1745,7 @@ skl_tplg_be_get_cpr_module(struct snd_soc_dai *dai, int stream)
- 	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(dai, stream);
- 	struct skl_module_cfg *mconfig;
- 
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		mconfig = skl_get_mconfig_pb_cpr(dai, w);
- 	} else {
- 		mconfig = skl_get_mconfig_cap_cpr(dai, w);
-@@ -1813,7 +1813,7 @@ static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
+ 		int i;
+ 		/* Queue the buffers for Capture ONLY after graph is started */
+ 		for (i = 0; i < runtime->periods; i++)
+@@ -306,7 +306,7 @@ static int q6apm_dai_trigger(struct snd_soc_component *component,
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		 /* start writing buffers for playback only as we already queued capture buffers */
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			ret = q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, 0);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+@@ -356,9 +356,9 @@ static int q6apm_dai_open(struct snd_soc_component *component,
  		goto err;
+ 	}
  
- 	dev_dbg(skl->dev, "%s using pipe config: %d\n", __func__, pipe->cur_config_idx);
--	if (pipe->direction == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(pipe->direction))
- 		pipe_fmt = &pipe->configs[pipe->cur_config_idx].out_fmt;
- 	else
- 		pipe_fmt = &pipe->configs[pipe->cur_config_idx].in_fmt;
-@@ -1903,7 +1903,7 @@ int skl_tplg_be_update_params(struct snd_soc_dai *dai,
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		runtime->hw = q6apm_dai_hardware_playback;
+-	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++	else if (snd_pcm_is_capture(substream))
+ 		runtime->hw = q6apm_dai_hardware_capture;
+ 
+ 	/* Ensure that buffer size is a multiple of period size */
+@@ -368,7 +368,7 @@ static int q6apm_dai_open(struct snd_soc_component *component,
+ 		goto err;
+ 	}
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 						   BUFFER_BYTES_MIN, BUFFER_BYTES_MAX);
+ 		if (ret < 0) {
+diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+index 9c98a35ad0994..3189a10b2f28a 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
++++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+@@ -171,7 +171,7 @@ static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct s
+ 		q6apm_graph_stop(dai_data->graph[dai->id]);
+ 		dai_data->is_port_started[dai->id] = false;
+ 
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (snd_pcm_is_playback(substream)) {
+ 			q6apm_graph_close(dai_data->graph[dai->id]);
+ 			dai_data->graph[dai->id] = NULL;
+ 		}
+@@ -181,7 +181,7 @@ static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct s
+ 	 * It is recommend to load DSP with source graph first and then sink
+ 	 * graph, so sequence for playback and capture will be different
+ 	 */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
+ 		if (IS_ERR(graph)) {
+ 			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
+@@ -224,7 +224,7 @@ static int q6apm_lpass_dai_startup(struct snd_pcm_substream *substream, struct s
+ 	struct q6apm_graph *graph;
+ 	int graph_id = dai->id;
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++	if (snd_pcm_is_capture(substream)) {
+ 		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
+ 		if (IS_ERR(graph)) {
+ 			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
+diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
+index 2a2a5bd98110b..38d8aaab876d2 100644
+--- a/sound/soc/qcom/qdsp6/q6apm.c
++++ b/sound/soc/qcom/qdsp6/q6apm.c
+@@ -195,7 +195,7 @@ int q6apm_graph_media_format_shmem(struct q6apm_graph *graph,
  {
- 	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(dai, params->stream);
+ 	struct audioreach_module *module;
  
--	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(params->stream)) {
- 		return skl_tplg_be_set_src_pipe_params(dai, w, params);
- 	} else {
- 		return skl_tplg_be_set_sink_pipe_params(dai, w, params);
+-	if (cfg->direction == SNDRV_PCM_STREAM_CAPTURE)
++	if (snd_pcm_is_capture(cfg->direction))
+ 		module = q6apm_find_module_by_mid(graph, MODULE_ID_RD_SHARED_MEM_EP);
+ 	else
+ 		module = q6apm_find_module_by_mid(graph, MODULE_ID_WR_SHARED_MEM_EP);
+@@ -218,7 +218,7 @@ int q6apm_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, phys_a
+ 	int cnt;
+ 	int rc;
+ 
+-	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(dir))
+ 		data = &graph->rx_data;
+ 	else
+ 		data = &graph->tx_data;
+@@ -236,7 +236,7 @@ int q6apm_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, phys_a
+ 		return -ENOMEM;
+ 	}
+ 
+-	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(dir))
+ 		data = &graph->rx_data;
+ 	else
+ 		data = &graph->tx_data;
+@@ -273,7 +273,7 @@ int q6apm_unmap_memory_regions(struct q6apm_graph *graph, unsigned int dir)
+ 	struct gpr_pkt *pkt;
+ 	int rc;
+ 
+-	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(dir))
+ 		data = &graph->rx_data;
+ 	else
+ 		data = &graph->tx_data;
+@@ -538,7 +538,7 @@ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
+ 		graph->result.status = 0;
+ 		rsp = data->payload;
+ 
+-		if (hdr->token == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(hdr->token))
+ 			graph->rx_data.mem_map_handle = rsp->mem_map_handle;
+ 		else
+ 			graph->tx_data.mem_map_handle = rsp->mem_map_handle;
+@@ -575,7 +575,7 @@ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
+ 		case APM_CMD_SHARED_MEM_UNMAP_REGIONS:
+ 			graph->result.opcode = result->opcode;
+ 			graph->result.status = 0;
+-			if (hdr->token == SNDRV_PCM_STREAM_PLAYBACK)
++			if (snd_pcm_is_playback(hdr->token))
+ 				graph->rx_data.mem_map_handle = 0;
+ 			else
+ 				graph->tx_data.mem_map_handle = 0;
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 3913706ccdc5f..3e3d2847f992b 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -187,7 +187,7 @@ static void event_handler(uint32_t opcode, uint32_t token,
+ 
+ 	switch (opcode) {
+ 	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
+ 				   prtd->pcm_count, 0, 0, 0);
+ 		break;
+@@ -258,11 +258,11 @@ static int q6asm_dai_prepare(struct snd_soc_component *component,
+ 		return -ENOMEM;
+ 	}
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		ret = q6asm_open_write(prtd->audio_client, prtd->stream_id,
+ 				       FORMAT_LINEAR_PCM,
+ 				       0, prtd->bits_per_sample, false);
+-	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++	} else if (snd_pcm_is_capture(substream)) {
+ 		ret = q6asm_open_read(prtd->audio_client, prtd->stream_id,
+ 				      FORMAT_LINEAR_PCM,
+ 				      prtd->bits_per_sample);
+@@ -281,12 +281,12 @@ static int q6asm_dai_prepare(struct snd_soc_component *component,
+ 		goto routing_err;
+ 	}
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		ret = q6asm_media_format_block_multi_ch_pcm(
+ 				prtd->audio_client, prtd->stream_id,
+ 				runtime->rate, runtime->channels, NULL,
+ 				prtd->bits_per_sample);
+-	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++	} else if (snd_pcm_is_capture(substream)) {
+ 		ret = q6asm_enc_cfg_blk_pcm_format_support(prtd->audio_client,
+ 							   prtd->stream_id,
+ 							   runtime->rate,
+@@ -385,9 +385,9 @@ static int q6asm_dai_open(struct snd_soc_component *component,
+ 	/* DSP expects stream id from 1 */
+ 	prtd->stream_id = 1;
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		runtime->hw = q6asm_dai_hardware_playback;
+-	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++	else if (snd_pcm_is_capture(substream))
+ 		runtime->hw = q6asm_dai_hardware_capture;
+ 
+ 	ret = snd_pcm_hw_constraint_list(runtime, 0,
+@@ -401,7 +401,7 @@ static int q6asm_dai_open(struct snd_soc_component *component,
+ 	if (ret < 0)
+ 		dev_info(dev, "snd_pcm_hw_constraint_integer failed\n");
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		ret = snd_pcm_hw_constraint_minmax(runtime,
+ 			SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 			PLAYBACK_MIN_NUM_PERIODS * PLAYBACK_MIN_PERIOD_SIZE,
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 81fde0681f952..7e7ad072700d2 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -1055,7 +1055,7 @@ static int routing_hw_params(struct snd_soc_component *component,
+ 	struct session_data *session;
+ 	int path_type;
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		path_type = ADM_PATH_PLAYBACK;
+ 	else
+ 		path_type = ADM_PATH_LIVE_REC;
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 75701546b6ea8..daa38d07a50f2 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -84,7 +84,7 @@ static int sdm845_slim_snd_hw_params(struct snd_pcm_substream *substream,
+ 			continue;
+ 		}
+ 
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
+ 							  rx_ch_cnt, rx_ch);
+ 		else
+@@ -115,7 +115,7 @@ static int sdm845_tdm_snd_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	channels = params_channels(params);
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (snd_pcm_is_playback(substream)) {
+ 		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0x3,
+ 				8, slot_width);
+ 		if (ret < 0) {
 -- 
 2.43.0
 
