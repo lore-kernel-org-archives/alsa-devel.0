@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4704DC3DA7F
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Aug 2024 00:58:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C0C0C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Aug 2024 01:00:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D367A5455;
-	Mon,  5 Aug 2024 02:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D367A5455
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FBE1339D;
+	Mon,  5 Aug 2024 02:56:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FBE1339D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722819378;
-	bh=IAMDvzRra5MeuVT1tM2FeOOX5KqdE+0He4WrUT6IZmI=;
+	s=default; t=1722819406;
+	bh=w4POZFC8qzCasyoyfYf3hhQyxmo2cgU4bohFHq6IT5w=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jR6HQf17HL4+uJIRgu2OxTRaN/G2FEJpFOqvN06GtnJw8tOyAIba4Dm4Jdy9WhaAS
-	 QUsB8T3/ApYJOa1UtJKvW5LPZ3nJ3lCn5ilQsyvOQl0nJ4CcxJCOMNz7mGL1s1YZTy
-	 yI2xzGtb+8+ad9e8SO/q4AIQue1+u+jimGavgzzY=
+	b=MW0vuNORx31HM5nenT7EYH+kqTt4f725kV6DjZIAo0QTfMMqkz4zj2agfVMQXviwb
+	 zgO1F2QBHrXqM/KRuFd2FjWGqE5tKNYd9AQf88L7KvSupF8oHwJANn+O1T/Q3V1edg
+	 erloe6YJ49IXC07PyaTi17fQYIoZ+/F2XPbkA+ts=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B2F0F89B9D; Mon,  5 Aug 2024 02:40:58 +0200 (CEST)
+	id 2CC35F89BD2; Mon,  5 Aug 2024 02:41:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38145F89BAD;
-	Mon,  5 Aug 2024 02:40:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAD86F89BC0;
+	Mon,  5 Aug 2024 02:41:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3144FF899F1; Mon,  5 Aug 2024 02:40:31 +0200 (CEST)
-Received: from TYVP286CU001.outbound.protection.outlook.com
- (mail-japaneastazlp170110002.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:c405::2])
+	id CD14DF80673; Mon,  5 Aug 2024 02:40:43 +0200 (CEST)
+Received: from OS0P286CU011.outbound.protection.outlook.com
+ (mail-japanwestazlp170100001.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:c406::1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9394EF8990B
-	for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2024 02:40:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9394EF8990B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 89606F89A8E
+	for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2024 02:40:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89606F89A8E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=MdT7GRF2
+ header.s=selector1 header.b=F7vE0YF1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DQVaUIcdLqm7lG6oml0Q/9HUvjC6NWLBcryVD+cJdsvbsJyhoOma2C02RMdKtweVwRYKIqPxaWT0GSLEcEmL+BWfli02EJGLL0W10fHyUmib93NyrNxgqexI7bUP3unEHDBLJ5JZZ/AlGw8sBBF5PECjsUMQW/l2A41gvi/I7/XXn2mFCwSasnyztzS859L0qwYEMPDugtoC7eDrooW9+xq+Ckwjm/I+n3ViJtKGvQwULal04K1QHEqKstOQx/GzfK0N6ajNzLl0IY89GIOAMYGFofema82njBV1O2JKt+kpvJIR+4hSaxH7DINaJXbq2K2yazm968rDQSJl1O3CTg==
+ b=d+RFLlhGwVMLN2h4Onx88gqsk5Sed6WLPuepHHHwNZpzIO7eJXTa+HiHl5rBjKWVppIF7uDMw4xSva90xPa1hacIae4MqxnB2cbbyx8RDO0A/f+oMLOPwoCkUNxx8Ynh6nIIIXUPhOQeNzetXYmHTnTtjBMCPQ+22Gg1Jk/isEKyKHJUWzxEnXqxV3doNHHLm10bBOpyBFqmJZzn3ziDC975BMu8ryge12ze00JyxnuIiUdAFH2XA8BNyGCWxKwNsHo/bxE5tIyFc4YuY8RR/yETrBr7wttBP6EsgyLqO1bM387EhxVnPxFwepS63FbMSso5L0S6WyoHQVCO0uKeBQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FW5a6qc7CqTdA20LP48e5waaE0QSt6DPfGZDBEvYLsc=;
- b=Z0pX2P+SljSLkxGRhMscnRAHYxYwQE1g7GFA2r0BTjyPysyMgEkA3+jM70vbhEpSe0Rd1cpl/eIg7trc46Rav7BnJ41SEy+UkBjGchpq1u5e74E6WEZmZAKwh1C7Zo7MQ17iF7YbFI2TGQ3gIH39Gv9q9wtpQzaDRQBmFxyBaZYAjjG7sMwP9xd1+ecepi46/xy1wx3lm3GwHBLerv7g6J/uPJeWtnuAgXD4w1G3ol/Jf/s3ydMaJFABHrJRwBkiuQ7fDEjnMSjJXXKb2d2PjcWIDTuH81ObiZ0H2dF+wRntSop4aol0bA1TSCx9k6PXtnN7kOqI6ZGMuuxLeaKe3w==
+ bh=6HvUe/NFKSULjc/2Zipssjdlc2fWORF+gcJjjGqjJb8=;
+ b=uLbpIyelGBhDTPYDRDheRiRHgWu+dpCW7NqPxJ56/Tmj2AGUKplx5HOtmrfT8NBlf19CuQrh8grV+ZZ1a16y9jFpUaULcRgvLMLMFJH0klmPbV0UhtU7Ov5oGsqGeOIA196OefGFUGeXREjBKoe7n2rYbwtxJLATNOwrEh4bVPHXqDezobjJdKQJNQdJHBNP6dXRB62yB2edNeSmiCn22lD1Jy6OJ76CA5S3xyFJvT3hDCuuc/NxBw1gaQNua0PP53WiV1n+gFWgh/ovfbFxvjgJG0ijDx7j+njRup1oUt3qpQOXNRxS0d9qxTIcfnYq/pd8nlvMTNzlkR1RLIc70A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
  dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FW5a6qc7CqTdA20LP48e5waaE0QSt6DPfGZDBEvYLsc=;
- b=MdT7GRF2d+H7sRZgQvnQNNw6jr9b8Wgr/gwzKjCE4rvlxSCI1rjeKD1qv4BqiupG1dTrz0bJZ+EUrxqchaQGdV9YIPRIMW7Rt2k2jVnI+gkXBeYshF7i2i4bqd++IFF3eihCPLODz7GyT2R6BFPNWZfRAHgLtMMWqiOenBXszqk=
+ bh=6HvUe/NFKSULjc/2Zipssjdlc2fWORF+gcJjjGqjJb8=;
+ b=F7vE0YF1Ov8+D+uNUf1NsiXUnrGh7q3CM0oH6eEf44zMxXyyDaFm3zB5CQ9JhDY9mziU55eoYYLS1mzeXWAZYQrwqjdM0KFlMuuRUxTmJzxKnzzPMbxwxAOcB+RS6cGZvKeIic82VkqQDbxELlHMDJoN8hBfSC8mfW6gn0EdppU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=renesas.com;
 Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
  (2603:1096:400:3a9::11) by OS3PR01MB9302.jpnprd01.prod.outlook.com
  (2603:1096:604:1cf::11) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.25; Mon, 5 Aug
- 2024 00:40:17 +0000
+ 2024 00:40:27 +0000
 Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
  ([fe80::c568:1028:2fd1:6e11]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
  ([fe80::c568:1028:2fd1:6e11%5]) with mapi id 15.20.7828.023; Mon, 5 Aug 2024
- 00:40:17 +0000
-Message-ID: <87le1byf7z.wl-kuninori.morimoto.gx@renesas.com>
+ 00:40:27 +0000
+Message-ID: <87ikwfyf7p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 063/113] ASoC: soc-*: use snd_pcm_is_playback/capture()
+Subject: [PATCH 065/113] ASoC: sunxi: use snd_pcm_is_playback/capture()
 User-Agent: Wanderlust/2.15.9 Emacs/29.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -78,90 +78,90 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 In-Reply-To: <874j7z3j1a.wl-kuninori.morimoto.gx@renesas.com>
 References: <874j7z3j1a.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=US-ASCII
-Date: Mon, 5 Aug 2024 00:40:16 +0000
-X-ClientProxiedBy: TY2PR02CA0055.apcprd02.prod.outlook.com
- (2603:1096:404:e2::19) To TYCPR01MB10914.jpnprd01.prod.outlook.com
+Date: Mon, 5 Aug 2024 00:40:26 +0000
+X-ClientProxiedBy: TYCP286CA0358.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:405:7c::9) To TYCPR01MB10914.jpnprd01.prod.outlook.com
  (2603:1096:400:3a9::11)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|OS3PR01MB9302:EE_
-X-MS-Office365-Filtering-Correlation-Id: 880f5b9a-f3df-48fa-ccf4-08dcb4e72d47
+X-MS-Office365-Filtering-Correlation-Id: 87160f72-7a33-4688-7048-08dcb4e732ff
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
 	BCL:0;ARA:13230040|366016|1800799024|376014|52116014|38350700014;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?dwxGdyNrR/QWB+2Nnz5HpIdcYaUF5EuKDLziowkbwdpbhJ2hNUt6a/Y7vHPC?=
- =?us-ascii?Q?SASU+eR5ugTzC6Qicd9Td9X6BZZ1xzbfx1Fs4IvhQ8g3mSBaYFkbwjd1bdxF?=
- =?us-ascii?Q?yuSyTuqkDbnrnpSFA5Bdq5bjmbBXEnVm5GgGOtQqqcKU713mDQk8vQqyDmQn?=
- =?us-ascii?Q?TPh0LsiCgaA0TXiYXeDHDEpQPF8ARAQtM3hxaa59wAI73kgQL9XBO59R5+Hw?=
- =?us-ascii?Q?l95HO4w8dWcK39A7WjQX/AomoUdo6TLAWAcE+jXPjgj3Eh/qRg8lxcDW+ua0?=
- =?us-ascii?Q?ulFDx+vWxDiAEefTY0GKbD58/R4IhDeeNiYsArrQxuDNEq3Yd9L0vEbUsJ9f?=
- =?us-ascii?Q?BkVdBxKXGiWV3lmQKebOzC2hWJ8qEFv6LfwQR/h6/9WMubdX3YWlEgQYAIH4?=
- =?us-ascii?Q?s+Mh0bkBoYOkpwcUToLdkdSIDnsaSdvnqp8gkSxs0NTohwC7ugltcPRGukQD?=
- =?us-ascii?Q?nHz9uCiNhDPTxlZEBBXHrECEvqOlct2xQ2hJ6axV6GuhAc5KpT698slUEkHy?=
- =?us-ascii?Q?D/hmeQVMLgqcDeVWxYQOxZK6+O69zrdIELTBhnX/7KUwLJ14MqSlgyNshC8y?=
- =?us-ascii?Q?gZx7sNzfPsapHqm/ArQqjfJcp8X2M+8ZIscbLdEcr3mhOmAmyMw60aPaWPZc?=
- =?us-ascii?Q?tG0bRfQq13Yv9r5vQetagt1EGe0Hva09Fnf8jWdjqQcgtQWH5p2dkTdXkG4O?=
- =?us-ascii?Q?440UJvD7lPLn6ysKS6vB/U6v1syuI4YNqvA8jNqna+1Iod1z4qV50cNi1sid?=
- =?us-ascii?Q?xHuEUy5iD0xRg14vPKgkZWy3bxc+7SBZoPQmJSe3+sciS1WNAXSiZtCrGcod?=
- =?us-ascii?Q?YJql8o/tvAYEpJ8/CpLH+HnWCdZqcgwwRP29qCrGPioGcnxTKrWQXO+YzOpB?=
- =?us-ascii?Q?R8kRYFMbWpANz3QLs84wJuT1KkKXlwdY1AmqwpOrsZj9b2P9goWuKl6766l1?=
- =?us-ascii?Q?02Gwdj8PlVPTT73Fe9ICKZ5WZFEbTMkxKlalh2KMF/XKpxby/UhXtr8m0Qvf?=
- =?us-ascii?Q?QA9ie9/m8ZRpqY8GcXfgs1+o+g5HDnYaNO1RFpsy2jw5U2MOnOEaAgXpCtPM?=
- =?us-ascii?Q?mLMVNWoYBraGp70n43velWg8+v8umqMuZiRsAM2Ly5RiLlSJifTvPhAmvemb?=
- =?us-ascii?Q?b92ekdkg3WBaRx1soXfxUDV+pirkSIpmz3kU9exI7JXsCq1r1QQNbjp1t4Dl?=
- =?us-ascii?Q?Dk7ABbDo2oUFfNzP/eYGzs9OjffOGLbxqoqKZtvUJMX91FHoD7bZ6c2VJSeu?=
- =?us-ascii?Q?4LBGvtfTYo0QIi8+KAQYlV/nXIRZxtF/QT+LUwZIjIEoKDLGBq0a+Vkob/wz?=
- =?us-ascii?Q?pDndnWzcV6Mm+P9l49x3QO/1pEStvnyEkC5Uj5RAK1J502J74oX2nFCUZGwZ?=
- =?us-ascii?Q?letzG6YAGyvaU/yMWDpGVafyQP7yptNKFhN0aVgVjMDZiMU+cQ=3D=3D?=
+	=?us-ascii?Q?+RBiRCky5A4H5LRKyAeDNkYDBEAyxyK597MQ6HSdI2r+hrDpinMgmSY8UjZF?=
+ =?us-ascii?Q?QAHtSk02Ml1ZMnfBMidD57OmTqGtbZ1IFCHH+NFlZdtoHQa7ewh+mmUVGdp6?=
+ =?us-ascii?Q?EU+JLhWk+YSPT/elo5rbsERWR5fDFEPH2yJfi1e31dOKYoU/GKPSsh2H3lo3?=
+ =?us-ascii?Q?bKsfuZubp4FgYH0nSBPXJeuk5jiD2cK3pj9/MjieFImFuQ7ZA2bUnSo6mviA?=
+ =?us-ascii?Q?RW54QUIS+2jhdvJXHauzW+waZBPysAdmBaD9iui1E6anJ6yO7dG6essmAqv9?=
+ =?us-ascii?Q?Y9DWiakCCxo2l9iQK9BfeIIeziD9J1ixz+7Uzn2Fhg3LLSt0IY9BRlHt1xfG?=
+ =?us-ascii?Q?BtB0QQc1igAnNVJBjbx15dK93293j8R3YYUK2Ljik+Hh2nfgxy/jpG/1g7KF?=
+ =?us-ascii?Q?E7+QbfQKK7rZLIlWKUMeUYC5KYrSKSUY3S/PBU73xTCwSPczAg7SMe2QbQ8O?=
+ =?us-ascii?Q?v2wgdm5rYolVSzQY11JMjumaoUuasFpFeNvtHtjjGQMBuZ2DhoC1bMIflQaQ?=
+ =?us-ascii?Q?dO9Ud5oJ0eq77akKYBmkoOJNvMSw/A2YPHG6b/nSF3QfOKypUI+rZ+EFPesf?=
+ =?us-ascii?Q?Z00eSXWMth7mutmOcDrdA7PInUa90K05pGIdUd0QLX4XvyLfTAyIrIBi6fSS?=
+ =?us-ascii?Q?1dO9RwBEQXnGnRWaVubcyjhv1Eh6b3DkudTf5f/sY32vXyt/UZGTQWjksCYI?=
+ =?us-ascii?Q?RBPdRTEHMNf2sMiamzbU9JoiKE19y9AnkmD4sB6gWR3saANJfzoamaKe86UB?=
+ =?us-ascii?Q?1RUSZVUPZKOjKJ89W8TA3cAtgvoGtnEi6U2rb8Fb/X1xdpsObEP5H1PcdA9z?=
+ =?us-ascii?Q?VKqXcX33bjn+t1le8UNR15pNgtFA+H3yFwN/41okbWrdFmiVdr9XxxtWeqpX?=
+ =?us-ascii?Q?VHMIff4frEyMazbsVfIX8+fGC/YbDRR5Sv9I5YAw+W5lRYsRX9GBoFqO3ZeP?=
+ =?us-ascii?Q?+FAZw6SDbNiDhJ8fnN2Zy3ZkCczojkHYZ0parXDGYtvbE75ZGKSdHn/efL4a?=
+ =?us-ascii?Q?4GW6MKF3akTYMKGF0GxniqVzPfKuq5YqxYmn4L8H9aUQWlgi0jft1p1rIN6I?=
+ =?us-ascii?Q?dO5/o3m5iJI2C41n3eVKhFW/i2fz9Ym8fMkQ2bjOaWCO/AF73xUu9n/rI2T3?=
+ =?us-ascii?Q?Ym2fa8sJqTOT9Jh3LelaZQ5n9pc/O4Jy9nSFhuBJaureCmwdCGoYX+TybJT7?=
+ =?us-ascii?Q?YnLdY3P1o+pz9nvNNMnHURfllN6Nd4I9iok28afI4GEwgAYP3kQLcbIgdjft?=
+ =?us-ascii?Q?qRC+Ngs5tbD7QIf0PvN+zmc6fJXOLJ/spLbW6NuSCFmab1skkNrk00yTim+J?=
+ =?us-ascii?Q?JZvhf1N/zkAi9Qil64qz1O5ol1522PQSHHpaTEBd9NSJVXKp/tfVPRJHjbtv?=
+ =?us-ascii?Q?IQ20yY1mXuvrMunZtQcW4qyRltntUOSbkiIlRfscelqxqwg5tQ=3D=3D?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(52116014)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?PEJWKpj0gUddbFXKdgS5PbcCYY4QRDJzIYs6JfFJ88hycn0FTFZ65DQ1iNmm?=
- =?us-ascii?Q?FF2CipmOx+vOGn9Qh7oV03Ltt6hvcFD+KWVftW87M8MNOnyJLaTmd/vDPrDd?=
- =?us-ascii?Q?S9qGdkh7gDKAiJw6r2pyuMiV/ehUxsCkGtcBlKXudAv10gQl5QzG7d91L5qC?=
- =?us-ascii?Q?+M4RV2IZl5k2xYzlUldrrMKbBz+sXr1xveePoh+TulkSqDy2ZIy3WR3+xJun?=
- =?us-ascii?Q?l88Y8O8IfBubvfYuwb+sIeY6G2XQmtvuHjemDx3YYe6/tJQFj9evOuNcuKDX?=
- =?us-ascii?Q?p62bed3IawGNnIR81/wsaHw1WAnuCHFwWtosnh0WDFCO0/+tcXK9BrERN+1K?=
- =?us-ascii?Q?cX4eMmxJZx0MWySxdWIF9nzMiLoH91OXm8JlOI04sLKGLvAdJ2HVfSn6Cv12?=
- =?us-ascii?Q?oGS0oc9BYGYpbDLclGHIcJvcB6R/PUkZPegEueKU2EQUxH19My+/dEtfxYkk?=
- =?us-ascii?Q?3MH2bjOnQSU95fHrg0cfidA71/NElLU+nalry8Y9xQDskmvU/zXMlvvGHYYK?=
- =?us-ascii?Q?hZuFCALh89ot86qnfWA9maXkLwN1sZdWHLyhJYgr9Tv9P2+l+dbLGQ6Eze72?=
- =?us-ascii?Q?dqLsVfQIvVtMQ5Q5s2qyPiIlfi06lzv0VoJ6elv32322phQTYYOC+nIyYiB+?=
- =?us-ascii?Q?pqvKn3VlUI0wVoXjKmqKCT3r384FGUHDSih5+9ahTOhYeMK/aj0g099EeCU7?=
- =?us-ascii?Q?03DOLWZitT2kmishgjk3w20lB/G8mW4p/FtUq1EI/uUdwvWQL3nasgs8Kqvm?=
- =?us-ascii?Q?HhTwODG77sQs/19WsnJVsffPZBxUS3NnWQ79Yszk9mgm9pcjHjeYWQU+sA+5?=
- =?us-ascii?Q?i+X2mckj2bRFcOguRs4kcrcnSJ/iufsVltaCbDPYb1cP6bITprWDcLgBwrmu?=
- =?us-ascii?Q?D1NRGCLPUl38HPtVcvrbmfATnuoeY7tOafszXcDnTkBbw/wVu32ZMjkmX/99?=
- =?us-ascii?Q?GDFgT2z07mnQN/cYVeP5Zs/9Hk/hrXMN0zJqwD91Rsn2zEogaczgqMQ7Gt4o?=
- =?us-ascii?Q?FxtV3HEr563JXUDqloqcTmvISMHoMT4S/KUO2JblCYBRmozJt9c7OvNkQYIn?=
- =?us-ascii?Q?9sEwS6+2ZrlVt+yGCTewZeUWKgQAM9cFEC9tdd/2Ml0eNhtWq/KpB1XHpp3T?=
- =?us-ascii?Q?Z/1wrQ8PbqjkSXY4HM7ZMHccQKXD7e3H9gYFZfCbUJ63ThlR5SN15e3gJg/V?=
- =?us-ascii?Q?4ZB2WPuFKCntn5TmnX6WWQatNAGpSCuILo4CJ1RCALGnLnuenjkj3XagR2hf?=
- =?us-ascii?Q?WsxFf9JF5kke8q9b/C2ouPQW3+6Z/wDkiHd/gP4gCyjslg0lfNrnhKSJ2DY4?=
- =?us-ascii?Q?6rNf8xIi2U1isK4yzX9N8kDFW7/4DZ7e1OJnaWaSPfqk1FasxjR9w47XGqpA?=
- =?us-ascii?Q?/rLsVmJvvA3JCwPDyo5rjQigyvuRjbPTZiAGpcx/4hhfu0YkKw9WXMJOeDkb?=
- =?us-ascii?Q?6r4hauZpIvntwG2So4GPHzYSOWr50QRJ9G/bBO9Bn9Fad2avULV1bJjQ+D1L?=
- =?us-ascii?Q?PmiDTiN04fJATMGKWaS+8g4swIsjb4nzT1VRNWjDbiI8Xy5bBSOPJrN6Tu+p?=
- =?us-ascii?Q?8M4QUekphaIoEXNDg/vHYLXZ0h3YxanLd6jOocwy5pRlZbtLdzgPz5JiNnW8?=
- =?us-ascii?Q?giE9/yZ3dpBmnEzgLh8OrJ4=3D?=
+	=?us-ascii?Q?wcx0lVzeLPUAKDE7bqkCnAQ+7htTmprUamEtPV0mjdh3MHXUNRGzTWhyc1Y1?=
+ =?us-ascii?Q?CsvIq3PZeL4zGlKpWynlc33UGPvfGn5qL/RlNWe0zR68pcXDNBNe1Y0vRYv6?=
+ =?us-ascii?Q?/FkX2fJYbfWAbX6VEjFgEQef1m+clhSdMdjM0kjr4Mp3qfRjFvYTQlsuDSpD?=
+ =?us-ascii?Q?z4QF6APheqX29XjWc6U2H/TrF+KrJfCs6Q1nBbRsNMl3qyZixH9BPhjaSHCn?=
+ =?us-ascii?Q?faEatxmLM6fw+JdM5IKKOSvpj4o0FhV/pIbUhcpGkQQPYOL/x8yYGIkEDTC9?=
+ =?us-ascii?Q?eQYjP/WryormikLfU+XTU+ExAQBKMuvrU5WaZWOo34bn0sYVCIPZrCWCLa97?=
+ =?us-ascii?Q?tcWwwpB5Z1VJY9SIeJAx+MrtMTvc5cjaJ0sm+hr91WqDMecKFPyeQdDsRLA4?=
+ =?us-ascii?Q?ajYfVTVLHVeaZeVJiWaP/ZiDaKI64buVnsBPHLVVgoABXF3fdyOxuVnaHxrE?=
+ =?us-ascii?Q?hGMcw9eTGwTv7DZ51xZ5V1LpuV5wHceg6Ss7SVigDctD/vkTtJPww0b0kta5?=
+ =?us-ascii?Q?cJJRkmprcqBRjGjR+11a8vDleGG/sd7yZamFO0pw4LBWCXZyAwxIodW5mGvi?=
+ =?us-ascii?Q?6mwsRsSoHsvxrXox89wWzom65krXrwzGrBpQ0yGKqrR9vtVauQb9HnROroTv?=
+ =?us-ascii?Q?8bR2e7O54DdEgKOnMcnJx/ZnWiVSWgAScTe8t+IfAWvLxIAaGN0aqqOb9o83?=
+ =?us-ascii?Q?pM9k2xsOVlfRJ6KBbGyh/ewHEYuK4eDCsDnGCR9146cno1JP1X1fu0BHSSAK?=
+ =?us-ascii?Q?K7Lj7+/YYkAFAuuRA/Kv3LqEjc57E6iEgy2GqYkkYIqP1nnK4cnup0/V3adZ?=
+ =?us-ascii?Q?ZPcgO3sefrvDOYbvzLAMjwySBL6TavrVu5ec/GaAi67pIG0XF+qFl+p5L+ED?=
+ =?us-ascii?Q?p2ou6HL5xw73ls4bgDGjGkzUWGEc3k/zfIhczNG7blg5XuRK7MgNWOOwMhtG?=
+ =?us-ascii?Q?rRK8W+FCrt1vwKxJ2/W/70THNaFdNSoWt6Gt4dvzzK//fwjcjlZqo+3TlBSB?=
+ =?us-ascii?Q?OLZAZHL92+VPzZ51aauRJL4D0Op9VFFEvWllqCSetwx3SVg4jMrPVxNwtWqE?=
+ =?us-ascii?Q?mId0SYqBunYW+RGWES6ZhJ935BSoddQj8DlLkiEUtQjsny4K+tORX5CczyWw?=
+ =?us-ascii?Q?o1VAhGN1GRRCSrfWhbx/z7pkuVaw47OMIMzoU1rAj3w/flRocyw5/OaeV+cF?=
+ =?us-ascii?Q?E1jDqq8/1FP8HXHfjF/EywWxwNhYmF9MS1jSmsWroSXvek2YJ7P0dxMp3gBK?=
+ =?us-ascii?Q?LNoyleA0vNELNOe7PLRWN8/neAF5m1a9XA6xybwZQCvWgTrc458q1kL6Sov0?=
+ =?us-ascii?Q?tuIb9YeSFz1zRuyAKYn53aLXkLevFbShKG5ML8SN/DEx06np0z0WTTP/cSIl?=
+ =?us-ascii?Q?HLv/IZiihQcdvjdD0qmdZvONYjDHD+mUo9ZjmcLGFH0iV1t+GJ7IMpgnaKAS?=
+ =?us-ascii?Q?aQgN0f8bIQ0bA/U1R3l7i+ZmiKfF4pulHrl60inF43xjgccaVDp+7rIT0JAK?=
+ =?us-ascii?Q?W3GNGm8siq5ltA/Mf1jXP6lckR0p8B/QaoZYMU3b35SsZud4ZiT4HqLDmQMS?=
+ =?us-ascii?Q?BKaHuNwCIdusKsJ+kDdPeIDv21E241Mlh5xBrxLnSgtRzdi07uU+vj5yBix1?=
+ =?us-ascii?Q?ZTgZzpa3xCTX/gSMEfLsGDc=3D?=
 X-OriginatorOrg: renesas.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 880f5b9a-f3df-48fa-ccf4-08dcb4e72d47
+ 87160f72-7a33-4688-7048-08dcb4e732ff
 X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2024 00:40:17.0775
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2024 00:40:26.6593
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- IH2hkaagf8Oq4sfxXR8KURVMTufKDYGWlxA2hOEz6HqP42IHnQkPf5dq3A6C4zwZqL1IpgipHuR1KpDEYdx4VNyQ7cTVtsOKMm00sH4RkFbJLJwT1p3Bc/oosT/Sjjkc
+ oDP6SxeL8XwQdgjj/cTa/3zn+WXr7wR+6U6K6Z4L2cl4rZOmNa+RX/ytR0u0kQWpcqqr7b3f+Ox/FIwmcH68NwD23JTBg6myLDjpn8fRvQXPKNVq9qlZ8lwBDv8anN1z
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB9302
-Message-ID-Hash: HQUWEKDEMMYMSGY6Z6M4B4BTCJSEQ4A2
-X-Message-ID-Hash: HQUWEKDEMMYMSGY6Z6M4B4BTCJSEQ4A2
+Message-ID-Hash: LSAZS4OGI2TBAPJJXS2TBKHT5QV3CTCC
+X-Message-ID-Hash: LSAZS4OGI2TBAPJJXS2TBKHT5QV3CTCC
 X-MailFrom: kuninori.morimoto.gx@renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -174,7 +174,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HQUWEKDEMMYMSGY6Z6M4B4BTCJSEQ4A2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSAZS4OGI2TBAPJJXS2TBKHT5QV3CTCC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -187,101 +187,118 @@ We can use snd_pcm_is_playback/capture(). Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c                  | 2 +-
- sound/soc/soc-dai.c                   | 2 +-
- sound/soc/soc-dapm.c                  | 4 ++--
- sound/soc/soc-generic-dmaengine-pcm.c | 2 +-
- sound/soc/soc-pcm.c                   | 6 +++---
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 8 ++++----
+ sound/soc/sunxi/sun4i-i2s.c   | 4 ++--
+ sound/soc/sunxi/sun4i-spdif.c | 4 ++--
+ sound/soc/sunxi/sun50i-dmic.c | 4 ++--
+ 4 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 20248a29d1674..286e872ae4547 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3456,7 +3456,7 @@ int snd_soc_get_stream_cpu(const struct snd_soc_dai_link *dai_link, int stream)
- 	 *	CPU  : SNDRV_PCM_STREAM_PLAYBACK
- 	 *	Codec: SNDRV_PCM_STREAM_CAPTURE
- 	 */
--	if (stream == SNDRV_PCM_STREAM_CAPTURE)
-+	if (snd_pcm_is_capture(stream))
- 		return SNDRV_PCM_STREAM_PLAYBACK;
- 
- 	return SNDRV_PCM_STREAM_CAPTURE;
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index 9e47053419c16..28a0a7a0993af 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -379,7 +379,7 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
- 	 */
- 	if (dai->driver->ops &&
- 	    dai->driver->ops->mute_stream &&
--	    (direction == SNDRV_PCM_STREAM_PLAYBACK ||
-+	    (snd_pcm_is_playback(direction) ||
- 	     !dai->driver->ops->no_capture_mute))
- 		ret = dai->driver->ops->mute_stream(dai, mute, direction);
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index d7d6dbb9d9eae..0d60942f64113 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1312,7 +1312,7 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- 
- 	snd_soc_dapm_mutex_lock(card);
- 
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		invalidate_paths_ep(w, SND_SOC_DAPM_DIR_OUT);
- 		paths = is_connected_output_ep(w, &widgets,
- 				custom_stop_condition);
-@@ -4539,7 +4539,7 @@ void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- 
- void snd_soc_dapm_stream_stop(struct snd_soc_pcm_runtime *rtd, int stream)
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index a2618ed650b00..edde5cb84ab61 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -285,7 +285,7 @@ static int sun4i_codec_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			sun4i_codec_start_playback(scodec);
+ 		else
+ 			sun4i_codec_start_capture(scodec);
+@@ -294,7 +294,7 @@ static int sun4i_codec_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			sun4i_codec_stop_playback(scodec);
+ 		else
+ 			sun4i_codec_stop_capture(scodec);
+@@ -385,7 +385,7 @@ static int sun4i_codec_prepare_playback(struct snd_pcm_substream *substream,
+ static int sun4i_codec_prepare(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
  {
--	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(stream)) {
- 		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
- 			/* powered down playback stream now */
- 			snd_soc_dapm_stream_event(rtd,
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index a63e942fdc0b7..4265e8052d6bf 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -297,7 +297,7 @@ static int dmaengine_copy(struct snd_soc_component *component,
- 	int (*process)(struct snd_pcm_substream *substream,
- 		       int channel, unsigned long hwoff,
- 		       unsigned long bytes) = pcm->config->process;
--	bool is_playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	bool is_playback = snd_pcm_is_playback(substream);
- 	void *dma_ptr = runtime->dma_area + hwoff +
- 			channel * (runtime->dma_bytes / runtime->channels);
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		return sun4i_codec_prepare_playback(substream, dai);
  
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 5520944ac9ddc..8f501178195e9 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -905,7 +905,7 @@ static int __soc_pcm_prepare(struct snd_soc_pcm_runtime *rtd,
- 		goto out;
+ 	return sun4i_codec_prepare_capture(substream, dai);
+@@ -569,7 +569,7 @@ static int sun4i_codec_hw_params(struct snd_pcm_substream *substream,
+ 	if (hwrate < 0)
+ 		return hwrate;
  
- 	/* cancel any delayed stream shutdown that is pending */
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
-+	if (snd_pcm_is_playback(substream) &&
- 	    rtd->pop_wait) {
- 		rtd->pop_wait = 0;
- 		cancel_delayed_work(&rtd->delayed_work);
-@@ -1517,11 +1517,11 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (snd_pcm_is_playback(substream))
+ 		return sun4i_codec_hw_params_playback(scodec, params,
+ 						      hwrate);
  
- 		switch (widget->id) {
- 		case snd_soc_dapm_dai_in:
--			if (stream != SNDRV_PCM_STREAM_PLAYBACK)
-+			if (!snd_pcm_is_playback(stream))
- 				continue;
- 			break;
- 		case snd_soc_dapm_dai_out:
--			if (stream != SNDRV_PCM_STREAM_CAPTURE)
-+			if (!snd_pcm_is_capture(stream))
- 				continue;
- 			break;
- 		default:
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 5f8d979585b69..0b1bce325f04e 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -1033,7 +1033,7 @@ static int sun4i_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			sun4i_i2s_start_playback(i2s);
+ 		else
+ 			sun4i_i2s_start_capture(i2s);
+@@ -1042,7 +1042,7 @@ static int sun4i_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		if (snd_pcm_is_playback(substream))
+ 			sun4i_i2s_stop_playback(i2s);
+ 		else
+ 			sun4i_i2s_stop_capture(i2s);
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index f41c309558579..989cebb55798f 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -248,7 +248,7 @@ static int sun4i_spdif_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(snd_soc_rtd_to_cpu(rtd, 0));
+ 
+-	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++	if (!snd_pcm_is_playback(substream))
+ 		return -EINVAL;
+ 
+ 	sun4i_spdif_configure(host);
+@@ -364,7 +364,7 @@ static int sun4i_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	int ret = 0;
+ 	struct sun4i_spdif_dev *host = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++	if (!snd_pcm_is_playback(substream))
+ 		return -EINVAL;
+ 
+ 	switch (cmd) {
+diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+index 884394ddaf86b..1b662b40b7b6c 100644
+--- a/sound/soc/sunxi/sun50i-dmic.c
++++ b/sound/soc/sunxi/sun50i-dmic.c
+@@ -90,7 +90,7 @@ static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
+ 	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(snd_soc_rtd_to_cpu(rtd, 0));
+ 
+ 	/* only support capture */
+-	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++	if (!snd_pcm_is_capture(substream))
+ 		return -EINVAL;
+ 
+ 	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
+@@ -205,7 +205,7 @@ static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	int ret = 0;
+ 	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++	if (!snd_pcm_is_capture(substream))
+ 		return -EINVAL;
+ 
+ 	switch (cmd) {
 -- 
 2.43.0
 
