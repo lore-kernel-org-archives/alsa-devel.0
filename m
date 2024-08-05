@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79073C3DA7F
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Aug 2024 00:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BC73C3DA64
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Aug 2024 00:58:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A28752C9;
-	Mon,  5 Aug 2024 02:55:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A28752C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ADB6530D;
+	Mon,  5 Aug 2024 02:55:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ADB6530D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722819337;
-	bh=4IKzE/0l6+rAy+h0bK7iSf8LM5SK26AwN1VMZBa1tEM=;
+	s=default; t=1722819359;
+	bh=8pgZPLzpETYsEjk4S5mKJr/kSvZF0jU8EIjtzsLOq1E=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NvNkBQY8ckSDzAXZP7wLEU+TrxybZ9c+RrT+HCll1cJBCICTYxpp7Qmy+TEr9JHm8
-	 8qa8Tj/APkVr9dAxOAIoEBI4iyEJ3mEQesle36t5XPAFCaS90ANczHagwOZ5QUrJQ9
-	 MlzhxNFCSrR+CqMWjxESCVEEsemsWSkcL58A8YH0=
+	b=AxceahUbWmJPamF5OMtAQkCWqKUIb201gKqQqFr1/PLA9fF2rc7xLA0bGQS1HZ3Kb
+	 wE5n9YWq8IAJH7r+OTJxEuDYf24CBUQHWPxAdplu5xZqb17QsL1bLVF0SgIoFG4Fr3
+	 G0146fG3ES2t8UYo+HF3SEY3RvVjv9OwWhBFVyuk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09476F89B5F; Mon,  5 Aug 2024 02:40:44 +0200 (CEST)
+	id 5FF84F89B6D; Mon,  5 Aug 2024 02:40:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31373F89B43;
-	Mon,  5 Aug 2024 02:40:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C47FF89B76;
+	Mon,  5 Aug 2024 02:40:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F884F89A19; Mon,  5 Aug 2024 02:40:03 +0200 (CEST)
-Received: from TYVP286CU001.outbound.protection.outlook.com
- (mail-japaneastazlp170110002.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:c405::2])
+	id 5B9E3F89AE1; Mon,  5 Aug 2024 02:40:35 +0200 (CEST)
+Received: from OS0P286CU011.outbound.protection.outlook.com
+ (mail-japanwestazlp170100001.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:c406::1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 76CAFF899CE
-	for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2024 02:39:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76CAFF899CE
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD5A0F89AB5
+	for <alsa-devel@alsa-project.org>; Mon,  5 Aug 2024 02:40:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD5A0F89AB5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=LCpb5vxZ
+ header.s=selector1 header.b=g2g/PsyX
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TdfgM8/HT/79HmaxQD4F6MYhNx+8/LkjFt+gpQ25b+kPHPTp747xdGalhs+SIfchtzFiHeB+/mEzsr+XqDAoxfbJE0MJCfqZ+a36xu653amNPW/+8SVyAWdMXw84UvOk8caiEZViAALnZLWtf50Km8HqohbnRgbbwoNEt/sR1TMKwcQYfIkxQTlEMOE/exKj9ywuFSOmZHPAMItS6KGuMR7JzzNS3p89ZDktCJibZshqW2hnHmjMDtQ9rYNsjw2gJacIxsZTbqit5HE9C5DWDyUXRUzu5lgTDom4YmQfa67ckJB2hZTF+FFYcwt0Wm1LcUm80rEfEDv5PAP7AyEzng==
+ b=LeQ7+pi1cAUIJdbMxgXCRanm1tsu7kmkqcjV68kebBrnhsOnvua/KF8rcNI4IrzUSTQbUMgrYBMozQKZTaXFfXncbvrrtxJbs/q/dTJm8zK5bL6viARlbdmud4TzLRQRmzdkr8aot5jd5APlHtFePI9I/BwZtAnf3pMh/bZsQx1FnjllMUZUwfzBqaUIZAJzAEHAxx7Yfh6ZZlLhipdPFBCyU1wV5xK9f8fHeVYV855N1HmXAVl0JiQlfGYW5pLNepx6SeunObM8bwPXS9tGnAEcXWXQkWHW47lAljm7La7wtM+iRHCw/9c4QIRhpWbMpZOu3U2DaOnSRia5sXo/Cg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sdlERduANgxTCIKQW1Wf2vcHnEtrtSsPVn4SI5YZBLA=;
- b=E55nYkF4mgF0imuBWN3V2RuDE5gv1lOo2lRDw8zP2ybn9TVTsTWm1HSwmCvaIu5SQONmbOuI05eRRCFpyvnSGCZdQyaPWqa0mpqLv8EfYNPfK6AvR5FV7YtXiRpnpTudJB2c+2HHp6XB6iavtazdR8aw4EkuI6bC07F6M/HgQkt6pX3zPj4ZiGPlKrUGHbPjOeGT7IHpnmXFJas71/3AvokRaYNT/YAD0C4nLuBPNuqZLqWW2MYseIW9Vu+Pa7mSuchZ9Gg+7uRaLIfcQvwYVwukiQG4dmUjtXeZ95NiNjFARYwOQnv9PlWDSwsrHuVpEnZb/zO6Xskr8DnJikGqHw==
+ bh=VQwoA9N2310Uv1b3t9PCch1GoJUUIBOIEb5NAg6nWC0=;
+ b=MUtvX9DgXUIxbAn05M2QDjSPoqLGy/9QD7HOZd7Fl1+OScrjo8Xb12jL/UEgCi+wfJrc0e4ZZNnoNO37Eqa+xms18nTC9JrDX9QbBTrUswOUDVV6oNFO10ByDr19QrRBlt/4KqD+kKtsCHEQptm/G44hAy+Akg3lbdIBPws02EJ8U1FBInPrNefiXDSqP1dnuIZD0L0bE9GEuTBJH8z6u1cueHVnm5F0EgBludZrnKwxbrCXFI1ljzJJNLR00BuBD/Mc4KsVJ0EH+vFoS5kjQ4Cl/nWFl374TXxgX7KbLjvCve7aDjU0akHGkFPGN59HB51aohJpTdcpy5AdEwbDIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
  dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sdlERduANgxTCIKQW1Wf2vcHnEtrtSsPVn4SI5YZBLA=;
- b=LCpb5vxZubtf5WP9vXNEhSDC9ZEqZaeWmbelCgHg9z/n6ei8AtcE1e0NayRIruRR0eI/jwJhwL7U7Aihiy3LEBxve95ZtG1bzbk9xJ+OICy+QKwGZ7RIAdX8+xSOvXTbEZBmRLaAuXifplDbOIImQqIlkrnmcDhDh6G8BKV8aw8=
+ bh=VQwoA9N2310Uv1b3t9PCch1GoJUUIBOIEb5NAg6nWC0=;
+ b=g2g/PsyXEt/vIyPLNJfcyj2sYByi23nx6Y6Jl7h0CbrMUt/AOzOI6iHvCiQ64p6d1+xFVX4OB8PMzgOjNJ6KIVIEbtB4Eg1lJdyXDMktNo9M6jm8yek5lHrS8DP8SIQb/IVcZABWoub4hlj8m9s6H0G2/hRPPelQIE0pMEdAxcM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=renesas.com;
 Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11) by OSZPR01MB9459.jpnprd01.prod.outlook.com
- (2603:1096:604:1d0::5) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:1096:400:3a9::11) by OS3PR01MB9302.jpnprd01.prod.outlook.com
+ (2603:1096:604:1cf::11) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.25; Mon, 5 Aug
- 2024 00:39:47 +0000
+ 2024 00:40:21 +0000
 Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
  ([fe80::c568:1028:2fd1:6e11]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
  ([fe80::c568:1028:2fd1:6e11%5]) with mapi id 15.20.7828.023; Mon, 5 Aug 2024
- 00:39:46 +0000
-Message-ID: <87v80fyf8t.wl-kuninori.morimoto.gx@renesas.com>
+ 00:40:21 +0000
+Message-ID: <87jzgvyf7v.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 056/113] ASoC: qcom: use snd_pcm_is_playback/capture()
+Subject: [PATCH 064/113] ASoC: spear: use snd_pcm_is_playback/capture()
 User-Agent: Wanderlust/2.15.9 Emacs/29.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -78,90 +78,90 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 In-Reply-To: <874j7z3j1a.wl-kuninori.morimoto.gx@renesas.com>
 References: <874j7z3j1a.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=US-ASCII
-Date: Mon, 5 Aug 2024 00:39:46 +0000
-X-ClientProxiedBy: TY2PR04CA0008.apcprd04.prod.outlook.com
- (2603:1096:404:f6::20) To TYCPR01MB10914.jpnprd01.prod.outlook.com
+Date: Mon, 5 Aug 2024 00:40:21 +0000
+X-ClientProxiedBy: TY2PR06CA0028.apcprd06.prod.outlook.com
+ (2603:1096:404:2e::16) To TYCPR01MB10914.jpnprd01.prod.outlook.com
  (2603:1096:400:3a9::11)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|OSZPR01MB9459:EE_
-X-MS-Office365-Filtering-Correlation-Id: 83b25108-146c-4309-5c02-08dcb4e71b14
+X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|OS3PR01MB9302:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce77ba9d-ec14-4129-588a-08dcb4e72fd3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
 	BCL:0;ARA:13230040|366016|1800799024|376014|52116014|38350700014;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?qWtHgdWLhn52TXfwojw68TZNGk9m72zt5tA2Bj4aPA2OoeWxsqf/v9omAnrZ?=
- =?us-ascii?Q?DqJfasMjWNXCEn8ibdRnTh6I5Xqb946y5lk3h5flNFod3cjBapfZunrX8l5Y?=
- =?us-ascii?Q?tUxvKnfevgnVMSwc+Iu5XMNYgSLHshSMdXXlUwcBMs2T2MI1wUft32CNh0sB?=
- =?us-ascii?Q?l2QPXGU7/s4AuJY2cil1HMMG37ZnqdBH1ksHuXHwSAt8gsHXlq3BHWk/TX/O?=
- =?us-ascii?Q?0GUwdbM5O1OU1fwxI5gc1SHjflEvvS2Spj3uchdD0S1t1hXCbdzbLcgX74e9?=
- =?us-ascii?Q?OvAcK6q7vV+cdxXqJlU75P8PIm4/PNNyRHpF4t1+T6eOTm1HIXI+JLBDanfG?=
- =?us-ascii?Q?V8hPGRrPXHrmV2jOVFWCd/wCXdCPiHrw8Aeg5r2LMod21o5NTtaTSVoGOpFV?=
- =?us-ascii?Q?rvCWKxHRAncL6OsbKoJFxtUJLQLjX1zgyR4JbltNpswctw407s1FgFjmPsIS?=
- =?us-ascii?Q?/XzVh3E6KvBhEUfuiOuquxtuESwT6cQVoelN45M3vZDYq6WEGu8gsiNawJCc?=
- =?us-ascii?Q?+8ggnzcoZdBaHjrUh1egm/z1TuEVB6Mly7pERS2j+H9/n208jPgqJBH3ZV9d?=
- =?us-ascii?Q?rdejIW8/MvH/m312shEM4sM4zsCugs5CTxCWHGrdYWyV4CNhjf9PP5ckvXyU?=
- =?us-ascii?Q?VOphR8Warm2gzW8h7C+Dl3TCSgstuaFbSX02oL+HR3ivVO1Goz3kY30R8Uui?=
- =?us-ascii?Q?W5wvGmt3wlrJSUnISrJ1ArKaNt+AyrUqtUyrGtr3e403fdKqrTYYc4JqCLU+?=
- =?us-ascii?Q?DBVECgWKXhZ24/wTKUOTtcPjsNuQdHIqOmSy3NJtEtmJyXBkm5FmQo7NZTgV?=
- =?us-ascii?Q?cXDUnkjI7UqRkOuZ7Fa2+NQfRBrHR02XrBWivdm2GwpxeEmkdwRx14UU/+Q+?=
- =?us-ascii?Q?+AG/ohFvhotFs/o4aruVJvNDDMf7UGpPxKi/AOLkO5IySzLlLo00joIXQikq?=
- =?us-ascii?Q?1K4JY0IOHuugtRkBoDGH0Mwci0d7PVxzbjyb4s/hKz4cv3jBUSUk9K3aPJ/j?=
- =?us-ascii?Q?ia85MZpwMyI2uZZCldYbDhV1R6NhwjDLzPa5PqDpd6Twiatu6L6Y1epO3UYU?=
- =?us-ascii?Q?hHpsgFtqDbdbwG5o/CEsatpvj1jUQ+1BBtqvChIziOAtVKKg/E/hr8NVbLae?=
- =?us-ascii?Q?b3uLziRd/UevMurSb9S4saoMVXonZzhDFfm5H8SrgXUOneX2QE8+2PxXIInW?=
- =?us-ascii?Q?/MqzcHKBzggJZjVv5tITs4kpvNLOuO/XHoYaezY3d5RGBqW7QpP+79zmbavf?=
- =?us-ascii?Q?96UNTiwObr+nb9k3n5NHX2RY6MizsTfzLnUPWckDSS39WSswVd5fPJSxzwBs?=
- =?us-ascii?Q?CJU0Pqg/kgUb1zYHu13PHMDryAqQ7+VJbypt6F5JDQKIzVOxOD+d4AVuVQU3?=
- =?us-ascii?Q?NCgClu8yyLvDFBuexAbWwQUqD1NU3YgEl0j7cRbxELVSxs08SA=3D=3D?=
+	=?us-ascii?Q?qT9G3A1tnLaoHpPTgIuv1I5vwQfEBrXUSMxoExb1ugNSNWVA3qjTbrZv7nEy?=
+ =?us-ascii?Q?8BBTurMKeTih5ntHkO/o4ssolU75c4ajeBUDyAwHo5m5tyKpmhuuuUndvKxo?=
+ =?us-ascii?Q?IBTsK8f2sMfdWvbiI9ke1+jFFiv2B0Mn09TGVJwoA4/8cWoCIbr6/CA4FILA?=
+ =?us-ascii?Q?zTTmlGqVsr0VBWsjAJ0Wbk/OAk5/fIkTkOwTZSf4ZVNokY4VNxQwpdl+i5Fk?=
+ =?us-ascii?Q?47bgGL5qS+edMkQYuJfu403D8DsAunT3DPuXAK4q55t+LoH2c8KuLjvfuScn?=
+ =?us-ascii?Q?XO434khBFJQU4xnnnJp1QTcSedyH+/7Y2PToPuX9BCg8nKfAr7qDFhgLhvn6?=
+ =?us-ascii?Q?WTtMOfiR//BoiMaYbxLd+JTaZbTGgWXbf62uW/3QiXzr3nIkq0+4f+Ww9M9H?=
+ =?us-ascii?Q?oWnsBay904AaHcLOp/1zBEEHgGSQtt1CiXfqZAG/g1ElKw6PcxRAjSTLWjr9?=
+ =?us-ascii?Q?9BBRCekIqT+HMgEWXXJOLF8oKO1iSceQ8wxvEsYGIkYipH/FHfc04cxIEEW6?=
+ =?us-ascii?Q?di1hbGdwZSuKeJTHdm6j+DL3tqzNEu/mv7ZeSzXTmpcSARpTiQFoKWvtvrKG?=
+ =?us-ascii?Q?INaC00Xg59qvd/+qQ5uvQFo4m/AXt6Vyn6tf8JEDGjv5Ii+51x7PL/WS4S95?=
+ =?us-ascii?Q?pUCYNulFzfAlzmXP3vbh11qtMD1qA40oggpYGp+rgezTXJp5gQ8mqu/FJzPQ?=
+ =?us-ascii?Q?OTQLYRSskfIm9eeXQPXS7X5lJM3PXL3kc5keQKZOpQNwsygv3PcXu41IlqKh?=
+ =?us-ascii?Q?iDI714srwtZYq07/iE2odmLIr8QAQndB/UU4VOjwTS/fGiQkuyzMy+PTCziZ?=
+ =?us-ascii?Q?BoaU1/vJWjKSAeTEt46SFWsaVk9x0TdSUinRJqhziq5DyQKua7UDd///iQt9?=
+ =?us-ascii?Q?8yCjzT896Ijmyuh9glOfkzsfQ8n2B+MKweJduSIlVmMEg8hM0id0yHoH/v6R?=
+ =?us-ascii?Q?LEn/V1DF40Rbplp4LwKRUvssnvy5rajhwVFKXqXBJR1ypWwghGLPeI/nr+Pn?=
+ =?us-ascii?Q?9M94fWcrza1n7TDYNjCg5e6aAoocNl/3b1tPuwdW+Uh/gBi2DGwrb1oOKoy7?=
+ =?us-ascii?Q?rOGjG4llcR1B8zdipND9E5LHQypy5sG4CCrn8nZ8omYaiPj1g2hy66Au1CXJ?=
+ =?us-ascii?Q?FJ3ptkoHCCVX9/qpReQpkH0Ve7y8ZF0m52gGv7t29yxNIGKs3aZrQIHNFdvh?=
+ =?us-ascii?Q?v7xs8lZl8PU8ZxntDHLzWRNYNThnFFGcQhE5kaJTdddWEVP6lHidcpNrfmH8?=
+ =?us-ascii?Q?ns14rvKHCUsXKphff5Gwjl5mIFmPGSaqBAn+MpgE7D64+PBvvlk6MCMwENuI?=
+ =?us-ascii?Q?/PyXfGr/duZtpomqF5xqNiw+yoqFyWVYlIG/mV83P6GJLt/fMzGbObKpUyAn?=
+ =?us-ascii?Q?525TIUdbOFRhc+sc/jlX1/xk01ZOLEkoNr7Yq7leU8fq/b9+VA=3D=3D?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(52116014)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?QHWQX+lJobd8a6y4lXYIrqxMhxeeNNIN+VPEHk7Zc7oSAxktuu0xz6Fy1toz?=
- =?us-ascii?Q?2da5v4hkpYEwtrM0pcgkxpFaYUWmH9e+/SmEuL8TGoTojN+XV3WingvKHdJY?=
- =?us-ascii?Q?VU7wfvGD2SDrgTg0wPp8LJm2u4DIL8uFMiFUDbdop6EI60pPacBQk4pmEsWh?=
- =?us-ascii?Q?Kd7Cq8vymqab6jfN2bkb4vc/AcHSbIOVH1ZCdmwFyczQSh+aBbD+CJWN65HO?=
- =?us-ascii?Q?XBb8raJilKaLnqJZ7eu6poWLY4DBp1ZXKSoJeWUoYQS83I9t9Cvo/Sfr6g0d?=
- =?us-ascii?Q?WqlDAJhInUUtOjhWhBu5MVmOZwdRtCWjWM+98jsmbBaowpiRHQ44do4ekJIb?=
- =?us-ascii?Q?EY3RQACOpKnJwgZFa96UgxQGN94rY2IrmxkQ+tv16zbv7/UZzbu5hZUQjUUX?=
- =?us-ascii?Q?PMLpKhs+u15T/2lI3ijK3c3ZhvuQwOdWywNyK2AZ5o58bp0fpcReHvR4SQZk?=
- =?us-ascii?Q?C2Fqb5GXlT6dv5xwLKxrAYxPesWzGTHgPmh+OfoVofOrrzyagOOX4xSwSB1T?=
- =?us-ascii?Q?qTHLW6qcuEJPb0ubsPBCiUtm4Q5P/A8Xuu+3F0XU/85gOXVurz4xWAbIE+vn?=
- =?us-ascii?Q?fuJWY49uCMWsyCGIR1sZi0aIWJnMqn8Sb/zNqIBZ+hYjoMTMukckWGsGfR9C?=
- =?us-ascii?Q?IvU1xorhXlp55peKsPhFMtH3ZT3DM6MdBLQbQptLJtpkNitQMkl9/Cs3mHGS?=
- =?us-ascii?Q?hB6LeCDtMkHTMK21+bFjp32/TW72VGHV87afYi5YnJRO3qYCmBScpR9Icm3P?=
- =?us-ascii?Q?aHLYgKz0Q+81cOY4p7xZa14OgX/BGRaI4cE+FIBYqVGcmSg/X9dmpYqecmpt?=
- =?us-ascii?Q?t/KaYcs5Fdn0CI5c+bQXX8VKkOCuMGQjFj3AB2c0v2EVp6iUa0IzIAKTOQ0n?=
- =?us-ascii?Q?uvL8uUPi0Rv7NBMgRVYldmwGQKFQYCXBHYLbKWXdVmfPCrNW/ij3TRI9lswN?=
- =?us-ascii?Q?xNsuRGPu+wJRfUEXi8BEftU8ZXsdvGRMrNuJBtgiedLlDl8uGAncra6/W0A/?=
- =?us-ascii?Q?GlJax/nhMIAmctbQv0i8pwHnVEbc4RetOz0vKCnFtv8SCqcagAMjYEEN9C8D?=
- =?us-ascii?Q?OzefHsZydvDhpvSm7oQcDmJbQZI2eDogMUpvF/pIGmofmcLr0FS6yNAhcPbb?=
- =?us-ascii?Q?+lz379Bj6JXizTLF3ZtuHB1AaJcOwn2YuY4S7KLpv6T7mjD7dKFgOy7A+t2i?=
- =?us-ascii?Q?9s/rZvFmP5RFOBIcI46cnEQFpDBs3Plg9PUtyJSs9twCYSDrk5RjcQCGJ8kW?=
- =?us-ascii?Q?TD4v1BIe0itD21j4MhlthQaPBL2os+nDhpNx/Qv/9ANOd0qV5Lw0J9MF+dsn?=
- =?us-ascii?Q?hwfs5msqioYiXNoK4n2z6naMnCRpWrzQpHRQQbZ2Zy7UoTzE3LkB4CRHLaWW?=
- =?us-ascii?Q?KomjCIvU9xWnhfP4WZURJi2NdDuRt7nwZFlqtGnIt4uGKJdvbXEcgSLSvb9J?=
- =?us-ascii?Q?TngJHfpe78q5YBV49fAuVPyrXMjPq+Sk30aE/PRFuhDkMRca3Mh4bwVgmmK4?=
- =?us-ascii?Q?zy8pQwQh4c/u4xhhd8pzoNdhTvZb1+fSnM/p/W0pSAgXUicEyxHo6pR0lblA?=
- =?us-ascii?Q?r7kNyoxDQ8m6xjCVsLgmeWWSslZaAFxF/zHB4E5P1tHY1/XY830logc83/6c?=
- =?us-ascii?Q?CvX1qJqYMe172ruft43pEOo=3D?=
+	=?us-ascii?Q?N0RDeJD6alQOuCyLOqo1Dzan0uslEYqJjYO+7ksR2hHkmXOOdcnLDe0G+Cuk?=
+ =?us-ascii?Q?3Yxtz5I0bIwO4yYLLavWkbBRX/vb1bRwvSg1Dpd/cilXY1trZB12bBI1Gbor?=
+ =?us-ascii?Q?lgv9BuY0JfErpKvueCLwy4AxhdZggpaWEiQAxOw8xgBWEWosuoyrle98WREs?=
+ =?us-ascii?Q?RkJr5Q/UR/XhMR51wWOQ6QdWi2NNW0vIs7k5WMYcoCiYOLyKlKjf+VhoJQtR?=
+ =?us-ascii?Q?XEtlErirCiXZ1l8M5SGXvPjf1dZwU+g9Qzt/VQNTTT0RSC6gIN40DmxINTXp?=
+ =?us-ascii?Q?bFxJBi/Juu6G/VLgbkyavaUYZF/McTQt78Nf17hIMtCVjDRvZj63o79maLcM?=
+ =?us-ascii?Q?y4GR1z5ri+WJsZZPGGFFXaSj/VsiWAO1jMR361O4UekODi8jibzZYq5EgRGy?=
+ =?us-ascii?Q?ujBcb2Y9QOE3m31vbk7CGC2KxqjTNv9hpxJeBGLszIK9SZGMrwQFmEtUsGuP?=
+ =?us-ascii?Q?bUgaiprSuX+GUYwbS7WljcTkMT8uBYVFrBBlVQY5GwMkDuoRxm/jDltEfbe1?=
+ =?us-ascii?Q?QCCmdm5mIJ5D3vwaaIjjFKqO9Oz0PxrJNgudqiRq+tOV1AFHPTtQbDl+Vo6r?=
+ =?us-ascii?Q?MfewUpG3gzGzdVrIUrEQ7E38kNmxduZsjGr3Yz9kDXeCL3d/1aamerXV8Ext?=
+ =?us-ascii?Q?uY4WeI9yMQ6K9euhADbPUPm8njWQ9LsvxKEKrLduQR7pttm1ych6spszTn6V?=
+ =?us-ascii?Q?F/TcQG5FOXUlA4uorReaUzX7yA1Hg4/HV0rgD51DE6TfaD9scn29hp0F6Ntu?=
+ =?us-ascii?Q?3az1fsaXeuu/V6cQrfWJw5/LPm9PxwFuplgzbEXRosuOAhdC8Ru7R/rGJ6jJ?=
+ =?us-ascii?Q?3nmTm2r9spEmqtK9iRKI2QwhIVEhlAaFhLA9JK2EGT5+YpYcH3PVN5YSJXRt?=
+ =?us-ascii?Q?SsID+CwhvGCz0bO/qo8qlREfpNqBeli/pye2cSl/fZdb1sEaRhtMCjwIMAx5?=
+ =?us-ascii?Q?LOssiY786JGCPjLINRu72epb+pejubDhLeBqDZ74s3fXzDHNBN3ETLBuMdlv?=
+ =?us-ascii?Q?kQzagmzTTmBIZEx15KJGs8jSLB+H1Bmi9lMht2w37NpI4j5D4f07kGUW8c0S?=
+ =?us-ascii?Q?O0R0Mrk1W7QkPk4j387wLYFEf2pEBOOsYq64NAAXGBkNK2C5rSzOqYRtqp97?=
+ =?us-ascii?Q?h/c4GZxYe4VpHK7rU0uuMpLP9db2e32JQat9M1X98Sj6XK7mLNS5YStAHdEu?=
+ =?us-ascii?Q?NDTUi7knHjN9pn7biUjK8ngP1KlulIL9ENqc8odGM9+Ny8FeXBs6YiMCw3VB?=
+ =?us-ascii?Q?5TeUGbMXKXiUiwDBc5aHjKar8uCHfSTe0BDoP8WbvNopAd7yQxcf/mGqyQRq?=
+ =?us-ascii?Q?oXMUS9gjq6tRc3vI4WVPAl8ggyjYcCyhvhA45xi8LTCkw6XqXjVYcKBA7vIx?=
+ =?us-ascii?Q?6zeKEy0bBtEfPW4p0XSNudh7ccrL7+1yYrQv0zaAqHnykB9nDlx/jbeZfR/j?=
+ =?us-ascii?Q?3JpwkVGNL+J2RoXTbwrJku4tMK5GsmmVEgEzqUd1rD7pin/FYIph1A9cEddj?=
+ =?us-ascii?Q?qlshvYHHLdVoXxPyRJKcDsYiziIS0OOuJ5I9guTsjrYgzRKpj7B2SDZvfg8q?=
+ =?us-ascii?Q?rnehBRTVg5TzE0ng/IdQpAeXsgvJCQqTNpNq2J+/5txFg/CwU7SmqP1BQVGC?=
+ =?us-ascii?Q?xHnBIHZZwEXCOpuUMROza7w=3D?=
 X-OriginatorOrg: renesas.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 83b25108-146c-4309-5c02-08dcb4e71b14
+ ce77ba9d-ec14-4129-588a-08dcb4e72fd3
 X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2024 00:39:46.5978
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2024 00:40:21.3479
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- 7ZB04sNGtDPzHAgPw83fsCVroZY62Kmnbz+n4BIpsCxLaTbz/1691uEcUyTrPAKqEacYMUDvxhE+s195hQvtFWWg+hD8WuYXFzsouxWEpee6VdT8odvxKg0wwMkAGDEE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB9459
-Message-ID-Hash: 5XICHGYIGGPJSHD6FFVZCMO6LYXJIFSA
-X-Message-ID-Hash: 5XICHGYIGGPJSHD6FFVZCMO6LYXJIFSA
+ A2QJNUcnwfGIooAZQQg25YCTYEraqJvFdmctY7lY24+RLDgZJ5jeqzI9XiseFYQfe67aCS5mMc353NF9s0a9WQXeNnu0gxiXa+rnEznzgtDE7OFegPcWHMQsyN6i8Tiq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB9302
+Message-ID-Hash: MR4ZFOEBLG5NSIHVKPV7TH7KEUQIZB3W
+X-Message-ID-Hash: MR4ZFOEBLG5NSIHVKPV7TH7KEUQIZB3W
 X-MailFrom: kuninori.morimoto.gx@renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -174,7 +174,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5XICHGYIGGPJSHD6FFVZCMO6LYXJIFSA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MR4ZFOEBLG5NSIHVKPV7TH7KEUQIZB3W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -187,436 +187,81 @@ We can use snd_pcm_is_playback/capture(). Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/qcom/apq8096.c                |  2 +-
- sound/soc/qcom/lpass-apq8016.c          |  2 +-
- sound/soc/qcom/lpass-cpu.c              | 12 ++++++------
- sound/soc/qcom/lpass-ipq806x.c          |  2 +-
- sound/soc/qcom/lpass-platform.c         |  8 ++++----
- sound/soc/qcom/lpass-sc7180.c           |  4 ++--
- sound/soc/qcom/lpass-sc7280.c           |  2 +-
- sound/soc/qcom/qdsp6/audioreach.c       |  2 +-
- sound/soc/qcom/qdsp6/q6apm-dai.c        | 10 +++++-----
- sound/soc/qcom/qdsp6/q6apm-lpass-dais.c |  6 +++---
- sound/soc/qcom/qdsp6/q6apm.c            | 12 ++++++------
- sound/soc/qcom/qdsp6/q6asm-dai.c        | 16 ++++++++--------
- sound/soc/qcom/qdsp6/q6routing.c        |  2 +-
- sound/soc/qcom/sdm845.c                 |  4 ++--
- 14 files changed, 42 insertions(+), 42 deletions(-)
+ sound/soc/spear/spdif_in.c  | 6 +++---
+ sound/soc/spear/spdif_out.c | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 4f6594cc723ce..a5305f33c32c5 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -46,7 +46,7 @@ static int msm_snd_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
- 						  rx_ch_cnt, rx_ch);
- 	else
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 9005c85f8c547..5dfcd547cfcd5 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -126,7 +126,7 @@ static int apq8016_lpass_alloc_dma_channel(struct lpass_data *drvdata,
- 	const struct lpass_variant *v = drvdata->variant;
- 	int chan = 0;
- 
--	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(direction)) {
- 		chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
- 					v->rdma_channels);
- 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 5a47f661e0c6f..81036c49bce1b 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -113,7 +113,7 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
- 	 * Will not impact if disabled in lpass_cpu_daiops_trigger()
- 	 * suspend.
- 	 */
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
- 	else
- 		regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
-@@ -185,7 +185,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		mode = drvdata->mi2s_playback_sd_mode[id];
- 	else
- 		mode = drvdata->mi2s_capture_sd_mode[id];
-@@ -249,7 +249,7 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		ret = regmap_fields_write(i2sctl->spkmode, id,
- 					 LPAIF_I2SCTL_SPKMODE(mode));
- 		if (ret) {
-@@ -320,7 +320,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		 *     turn off the shared BCLK while other devices are using
- 		 *     it.
- 		 */
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_pcm_is_playback(substream)) {
- 			ret = regmap_fields_write(i2sctl->spken, id,
- 						 LPAIF_I2SCTL_SPKEN_ENABLE);
- 		} else  {
-@@ -345,7 +345,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		 * To ensure lpass BCLK/LRCLK is disabled during
- 		 * device suspend.
- 		 */
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_pcm_is_playback(substream)) {
- 			ret = regmap_fields_write(i2sctl->spken, id,
- 						 LPAIF_I2SCTL_SPKEN_DISABLE);
- 		} else  {
-@@ -378,7 +378,7 @@ static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
- 	 * the data flow.
- 	 * (ex: to drop start up pop noise before capture starts).
- 	 */
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
- 	else
- 		ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
-diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index 5c874139f39d4..dbaaed1f3d8e3 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -97,7 +97,7 @@ static int ipq806x_lpass_exit(struct platform_device *pdev)
- 
- static int ipq806x_lpass_alloc_dma_channel(struct lpass_data *drvdata, int dir, unsigned int dai_id)
+diff --git a/sound/soc/spear/spdif_in.c b/sound/soc/spear/spdif_in.c
+index 4ad8b1fc713a7..fb1b54019194a 100644
+--- a/sound/soc/spear/spdif_in.c
++++ b/sound/soc/spear/spdif_in.c
+@@ -68,7 +68,7 @@ static void spdif_in_shutdown(struct snd_pcm_substream *substream,
  {
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(dir))
- 		return IPQ806X_LPAIF_RDMA_CHAN_MI2S;
- 	else	/* Capture currently not implemented */
+ 	struct spdif_in_dev *host = snd_soc_dai_get_drvdata(dai);
+ 
+-	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++	if (!snd_pcm_is_capture(substream))
+ 		return;
+ 
+ 	writel(0x0, host->io_base + SPDIF_IN_IRQ_MASK);
+@@ -98,7 +98,7 @@ static int spdif_in_hw_params(struct snd_pcm_substream *substream,
+ 	struct spdif_in_dev *host = snd_soc_dai_get_drvdata(dai);
+ 	u32 format;
+ 
+-	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++	if (!snd_pcm_is_capture(substream))
  		return -EINVAL;
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index addd2c4bdd3e8..f8e223e73fa02 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -329,7 +329,7 @@ static struct lpaif_dmactl *__lpass_get_dmactl_handle(const struct snd_pcm_subst
  
- 	switch (cpu_dai->driver->id) {
- 	case MI2S_PRIMARY ... MI2S_QUINARY:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (snd_pcm_is_playback(substream))
- 			dmactl = drvdata->rd_dmactl;
- 		else
- 			dmactl = drvdata->wr_dmactl;
-@@ -364,7 +364,7 @@ static int __lpass_get_id(const struct snd_pcm_substream *substream,
+ 	format = params_format(params);
+@@ -114,7 +114,7 @@ static int spdif_in_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	u32 ctrl;
+ 	int ret = 0;
  
- 	switch (cpu_dai->driver->id) {
- 	case MI2S_PRIMARY ... MI2S_QUINARY:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (snd_pcm_is_playback(substream))
- 			id = pcm_data->dma_ch;
- 		else
- 			id = pcm_data->dma_ch - v->wrdma_channel_start;
-@@ -1230,14 +1230,14 @@ static int lpass_platform_copy(struct snd_soc_component *component,
- 	void __iomem *dma_buf = (void __iomem *) (rt->dma_area + pos +
- 				channel * (rt->dma_bytes / rt->channels));
+-	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++	if (!snd_pcm_is_capture(substream))
+ 		return -EINVAL;
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		if (is_cdc_dma_port(dai_id)) {
- 			ret = copy_from_iter_toio(dma_buf, buf, bytes);
- 		} else {
- 			if (copy_from_iter((void __force *)dma_buf, bytes, buf) != bytes)
- 				ret = -EFAULT;
- 		}
--	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+	} else if (snd_pcm_is_capture(substream)) {
- 		if (is_cdc_dma_port(dai_id)) {
- 			ret = copy_to_iter_fromio(buf, dma_buf, bytes);
- 		} else {
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index e6bcdf6ed7965..6898e9254a78d 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -80,7 +80,7 @@ static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
- 	int chan = 0;
+ 	switch (cmd) {
+diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
+index 469373d1bb418..a95a9b9e61e3b 100644
+--- a/sound/soc/spear/spdif_out.c
++++ b/sound/soc/spear/spdif_out.c
+@@ -63,7 +63,7 @@ static int spdif_out_startup(struct snd_pcm_substream *substream,
+ 	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int ret;
  
- 	if (dai_id == LPASS_DP_RX) {
--		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_pcm_is_playback(direction)) {
- 			chan = find_first_zero_bit(&drvdata->hdmi_dma_ch_bit_map,
- 						v->hdmi_rdma_channels);
+-	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++	if (!snd_pcm_is_playback(substream))
+ 		return -EINVAL;
  
-@@ -89,7 +89,7 @@ static int sc7180_lpass_alloc_dma_channel(struct lpass_data *drvdata,
- 		}
- 		set_bit(chan, &drvdata->hdmi_dma_ch_bit_map);
- 	} else {
--		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_pcm_is_playback(direction)) {
- 			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
- 						v->rdma_channels);
- 
-diff --git a/sound/soc/qcom/lpass-sc7280.c b/sound/soc/qcom/lpass-sc7280.c
-index 47c622327a8d3..d5a1c27652e48 100644
---- a/sound/soc/qcom/lpass-sc7280.c
-+++ b/sound/soc/qcom/lpass-sc7280.c
-@@ -115,7 +115,7 @@ static int sc7280_lpass_alloc_dma_channel(struct lpass_data *drvdata,
- 
- 	switch (dai_id) {
- 	case MI2S_PRIMARY ... MI2S_QUINARY:
--		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_pcm_is_playback(direction)) {
- 			chan = find_first_zero_bit(&drvdata->dma_ch_bit_map,
- 						   v->rdma_channels);
- 
-diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 4ebaaf736fb98..cd7d99f9b8b40 100644
---- a/sound/soc/qcom/qdsp6/audioreach.c
-+++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -1309,7 +1309,7 @@ int audioreach_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, s
- 	void *p;
- 	int rc, i;
- 
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(dir))
- 		data = &graph->rx_data;
- 	else
- 		data = &graph->tx_data;
-diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
-index c9404b5934c7e..26c6051a53a0a 100644
---- a/sound/soc/qcom/qdsp6/q6apm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
-@@ -280,7 +280,7 @@ static int q6apm_dai_prepare(struct snd_soc_component *component,
- 		return ret;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+	if (snd_pcm_is_capture(substream)) {
- 		int i;
- 		/* Queue the buffers for Capture ONLY after graph is started */
- 		for (i = 0; i < runtime->periods; i++)
-@@ -306,7 +306,7 @@ static int q6apm_dai_trigger(struct snd_soc_component *component,
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		 /* start writing buffers for playback only as we already queued capture buffers */
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (snd_pcm_is_playback(substream))
- 			ret = q6apm_write_async(prtd->graph, prtd->pcm_count, 0, 0, 0);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
-@@ -356,9 +356,9 @@ static int q6apm_dai_open(struct snd_soc_component *component,
- 		goto err;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		runtime->hw = q6apm_dai_hardware_playback;
--	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+	else if (snd_pcm_is_capture(substream))
- 		runtime->hw = q6apm_dai_hardware_capture;
- 
- 	/* Ensure that buffer size is a multiple of period size */
-@@ -368,7 +368,7 @@ static int q6apm_dai_open(struct snd_soc_component *component,
- 		goto err;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
- 						   BUFFER_BYTES_MIN, BUFFER_BYTES_MAX);
- 		if (ret < 0) {
-diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-index 9c98a35ad0994..3189a10b2f28a 100644
---- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-@@ -171,7 +171,7 @@ static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct s
- 		q6apm_graph_stop(dai_data->graph[dai->id]);
- 		dai_data->is_port_started[dai->id] = false;
- 
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_pcm_is_playback(substream)) {
- 			q6apm_graph_close(dai_data->graph[dai->id]);
- 			dai_data->graph[dai->id] = NULL;
- 		}
-@@ -181,7 +181,7 @@ static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct s
- 	 * It is recommend to load DSP with source graph first and then sink
- 	 * graph, so sequence for playback and capture will be different
- 	 */
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
- 		if (IS_ERR(graph)) {
- 			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
-@@ -224,7 +224,7 @@ static int q6apm_lpass_dai_startup(struct snd_pcm_substream *substream, struct s
- 	struct q6apm_graph *graph;
- 	int graph_id = dai->id;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+	if (snd_pcm_is_capture(substream)) {
- 		graph = q6apm_graph_open(dai->dev, NULL, dai->dev, graph_id);
- 		if (IS_ERR(graph)) {
- 			dev_err(dai->dev, "Failed to open graph (%d)\n", graph_id);
-diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
-index 2a2a5bd98110b..38d8aaab876d2 100644
---- a/sound/soc/qcom/qdsp6/q6apm.c
-+++ b/sound/soc/qcom/qdsp6/q6apm.c
-@@ -195,7 +195,7 @@ int q6apm_graph_media_format_shmem(struct q6apm_graph *graph,
+ 	ret = clk_enable(host->clk);
+@@ -81,7 +81,7 @@ static void spdif_out_shutdown(struct snd_pcm_substream *substream,
  {
- 	struct audioreach_module *module;
+ 	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
  
--	if (cfg->direction == SNDRV_PCM_STREAM_CAPTURE)
-+	if (snd_pcm_is_capture(cfg->direction))
- 		module = q6apm_find_module_by_mid(graph, MODULE_ID_RD_SHARED_MEM_EP);
- 	else
- 		module = q6apm_find_module_by_mid(graph, MODULE_ID_WR_SHARED_MEM_EP);
-@@ -218,7 +218,7 @@ int q6apm_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, phys_a
- 	int cnt;
- 	int rc;
+-	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++	if (!snd_pcm_is_playback(substream))
+ 		return;
  
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(dir))
- 		data = &graph->rx_data;
- 	else
- 		data = &graph->tx_data;
-@@ -236,7 +236,7 @@ int q6apm_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, phys_a
- 		return -ENOMEM;
- 	}
+ 	clk_disable(host->clk);
+@@ -109,7 +109,7 @@ static int spdif_out_hw_params(struct snd_pcm_substream *substream,
+ 	struct spdif_out_dev *host = snd_soc_dai_get_drvdata(dai);
+ 	u32 rate, core_freq;
  
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(dir))
- 		data = &graph->rx_data;
- 	else
- 		data = &graph->tx_data;
-@@ -273,7 +273,7 @@ int q6apm_unmap_memory_regions(struct q6apm_graph *graph, unsigned int dir)
- 	struct gpr_pkt *pkt;
- 	int rc;
+-	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++	if (!snd_pcm_is_playback(substream))
+ 		return -EINVAL;
  
--	if (dir == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(dir))
- 		data = &graph->rx_data;
- 	else
- 		data = &graph->tx_data;
-@@ -538,7 +538,7 @@ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
- 		graph->result.status = 0;
- 		rsp = data->payload;
+ 	rate = params_rate(params);
+@@ -155,7 +155,7 @@ static int spdif_out_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	u32 ctrl;
+ 	int ret = 0;
  
--		if (hdr->token == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (snd_pcm_is_playback(hdr->token))
- 			graph->rx_data.mem_map_handle = rsp->mem_map_handle;
- 		else
- 			graph->tx_data.mem_map_handle = rsp->mem_map_handle;
-@@ -575,7 +575,7 @@ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
- 		case APM_CMD_SHARED_MEM_UNMAP_REGIONS:
- 			graph->result.opcode = result->opcode;
- 			graph->result.status = 0;
--			if (hdr->token == SNDRV_PCM_STREAM_PLAYBACK)
-+			if (snd_pcm_is_playback(hdr->token))
- 				graph->rx_data.mem_map_handle = 0;
- 			else
- 				graph->tx_data.mem_map_handle = 0;
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 3913706ccdc5f..3e3d2847f992b 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -187,7 +187,7 @@ static void event_handler(uint32_t opcode, uint32_t token,
+-	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++	if (!snd_pcm_is_playback(substream))
+ 		return -EINVAL;
  
- 	switch (opcode) {
- 	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (snd_pcm_is_playback(substream))
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
- 				   prtd->pcm_count, 0, 0, 0);
- 		break;
-@@ -258,11 +258,11 @@ static int q6asm_dai_prepare(struct snd_soc_component *component,
- 		return -ENOMEM;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		ret = q6asm_open_write(prtd->audio_client, prtd->stream_id,
- 				       FORMAT_LINEAR_PCM,
- 				       0, prtd->bits_per_sample, false);
--	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+	} else if (snd_pcm_is_capture(substream)) {
- 		ret = q6asm_open_read(prtd->audio_client, prtd->stream_id,
- 				      FORMAT_LINEAR_PCM,
- 				      prtd->bits_per_sample);
-@@ -281,12 +281,12 @@ static int q6asm_dai_prepare(struct snd_soc_component *component,
- 		goto routing_err;
- 	}
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		ret = q6asm_media_format_block_multi_ch_pcm(
- 				prtd->audio_client, prtd->stream_id,
- 				runtime->rate, runtime->channels, NULL,
- 				prtd->bits_per_sample);
--	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+	} else if (snd_pcm_is_capture(substream)) {
- 		ret = q6asm_enc_cfg_blk_pcm_format_support(prtd->audio_client,
- 							   prtd->stream_id,
- 							   runtime->rate,
-@@ -385,9 +385,9 @@ static int q6asm_dai_open(struct snd_soc_component *component,
- 	/* DSP expects stream id from 1 */
- 	prtd->stream_id = 1;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		runtime->hw = q6asm_dai_hardware_playback;
--	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+	else if (snd_pcm_is_capture(substream))
- 		runtime->hw = q6asm_dai_hardware_capture;
- 
- 	ret = snd_pcm_hw_constraint_list(runtime, 0,
-@@ -401,7 +401,7 @@ static int q6asm_dai_open(struct snd_soc_component *component,
- 	if (ret < 0)
- 		dev_info(dev, "snd_pcm_hw_constraint_integer failed\n");
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		ret = snd_pcm_hw_constraint_minmax(runtime,
- 			SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
- 			PLAYBACK_MIN_NUM_PERIODS * PLAYBACK_MIN_PERIOD_SIZE,
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 81fde0681f952..7e7ad072700d2 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -1055,7 +1055,7 @@ static int routing_hw_params(struct snd_soc_component *component,
- 	struct session_data *session;
- 	int path_type;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (snd_pcm_is_playback(substream))
- 		path_type = ADM_PATH_PLAYBACK;
- 	else
- 		path_type = ADM_PATH_LIVE_REC;
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 75701546b6ea8..daa38d07a50f2 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -84,7 +84,7 @@ static int sdm845_slim_snd_hw_params(struct snd_pcm_substream *substream,
- 			continue;
- 		}
- 
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (snd_pcm_is_playback(substream))
- 			ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
- 							  rx_ch_cnt, rx_ch);
- 		else
-@@ -115,7 +115,7 @@ static int sdm845_tdm_snd_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	channels = params_channels(params);
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (snd_pcm_is_playback(substream)) {
- 		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0x3,
- 				8, slot_width);
- 		if (ret < 0) {
+ 	switch (cmd) {
 -- 
 2.43.0
 
