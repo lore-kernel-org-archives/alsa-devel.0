@@ -4,150 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B16CC52D6F
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 10:44:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB8CEC52D6F
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 10:48:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC8C439DB;
-	Tue,  6 Aug 2024 12:44:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC8C439DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65E423A42;
+	Tue,  6 Aug 2024 12:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65E423A42
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722941064;
-	bh=QkpGSkbekU65CyNZ6Go/3sPioDO7v6PTx9Io42oqkMc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=sRNJgKML1SkDeerDr64DA3V09VZsdkiVrsGnu9NjtsrQcAv/iZ5CV3KqurOC4GhkF
-	 604P2n/ocg6ILwm9NWi+C8Z9rk1f+hfdb9eaOpVLGLaGDbmKo4lairqoW2To1mYBfo
-	 K2GDR1VThB6Y/QsTQ5l+UuCXAR+v5DgfbDkq2R5Y=
+	s=default; t=1722941330;
+	bh=9fdUbeL5VmVbgc4V2YDBBj0iZm0h0ykJsMbO/3e+Wo8=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=t2rPZxWf6tktdmVOTkVJ4tTfpem5OHy/SyIoE9Q8hZtQRKipkeaqqg4pEsdP1CWD0
+	 EV3fJ4Nya6RuJgcXtRFothxBnalKs9PoiSKw+aEmgw7KNA2ex66aFbiEG07LaljtRw
+	 pKScDLpPeowrMOueqdPpqgRSB0UgYiYJ0bFxYMAM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B3B6F80588; Tue,  6 Aug 2024 12:43:53 +0200 (CEST)
+	id 770D7F80589; Tue,  6 Aug 2024 12:48:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 995ABF8049C;
-	Tue,  6 Aug 2024 12:43:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EEFBF805B0;
+	Tue,  6 Aug 2024 12:48:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D502F8023A; Tue,  6 Aug 2024 12:39:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0DDAFF80579; Tue,  6 Aug 2024 12:47:42 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39047F8049C
-	for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2024 12:37:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39047F8049C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=F78/w7Hc;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=dCM/3xqn;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=F78/w7Hc;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=dCM/3xqn
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0D1901FB44;
-	Tue,  6 Aug 2024 10:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1722940638;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxDufsMSRoTTfgOt2HU3HOyQ+7jkyAj1dGKnhs/i/ig=;
-	b=F78/w7Hc51nyhOlt9terW1GCXpwSDjuqSktl0PbrKoUuaDi/FSJ0aPoOG26aDG4ML3M1DF
-	h6ZDK+EyV3rLA75t2pEaIui99Tkwq7+9a5TsNnV+nfiJ0tiZnwOa4W5ghAiVvKtQR9sgmg
-	t2ldvl4y1Qd51GVbuTcS/w6tlp1ulfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1722940638;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxDufsMSRoTTfgOt2HU3HOyQ+7jkyAj1dGKnhs/i/ig=;
-	b=dCM/3xqniYmTqr5RlXi4A4zkLMcxcug5UGiygmea6frFFzxRH8bB6ZLWybm86yhTuYb8Ev
-	8zAoFZxTTKaTiLAg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="F78/w7Hc";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="dCM/3xqn"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1722940638;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxDufsMSRoTTfgOt2HU3HOyQ+7jkyAj1dGKnhs/i/ig=;
-	b=F78/w7Hc51nyhOlt9terW1GCXpwSDjuqSktl0PbrKoUuaDi/FSJ0aPoOG26aDG4ML3M1DF
-	h6ZDK+EyV3rLA75t2pEaIui99Tkwq7+9a5TsNnV+nfiJ0tiZnwOa4W5ghAiVvKtQR9sgmg
-	t2ldvl4y1Qd51GVbuTcS/w6tlp1ulfQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1722940638;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxDufsMSRoTTfgOt2HU3HOyQ+7jkyAj1dGKnhs/i/ig=;
-	b=dCM/3xqniYmTqr5RlXi4A4zkLMcxcug5UGiygmea6frFFzxRH8bB6ZLWybm86yhTuYb8Ev
-	8zAoFZxTTKaTiLAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F3FB513770;
-	Tue,  6 Aug 2024 10:37:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XpUFO938sWaQFAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 06 Aug 2024 10:37:17 +0000
-Date: Tue, 06 Aug 2024 12:37:56 +0200
-Message-ID: <87jzgu9bsr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Stistrup <sstistrup@gmail.com>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: usb-audio: Add input gain and master output mixer
- controls for RME Babyface Pro
-In-Reply-To: <20240802142439.2823864-1-sstistrup@gmail.com>
-References: <20240802142439.2823864-1-sstistrup@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 0D1901FB44
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-Message-ID-Hash: CTTD2ZKZCM3BNQTNJWAVJEQXN63CWJDC
-X-Message-ID-Hash: CTTD2ZKZCM3BNQTNJWAVJEQXN63CWJDC
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id B043EF800E3
+	for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2024 12:47:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B043EF800E3
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C7017200691;
+	Tue,  6 Aug 2024 12:47:33 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D918200E65;
+	Tue,  6 Aug 2024 12:47:33 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id D12E4183487B;
+	Tue,  6 Aug 2024 18:47:31 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: vkoul@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [RFC PATCH 0/6] ASoC: fsl: add memory to memory function for ASRC
+Date: Tue,  6 Aug 2024 18:26:37 +0800
+Message-Id: <1722940003-20126-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: 4U2XMYMHPT75TRF6AHYCW7BANPGWJAR4
+X-Message-ID-Hash: 4U2XMYMHPT75TRF6AHYCW7BANPGWJAR4
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -159,7 +77,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CTTD2ZKZCM3BNQTNJWAVJEQXN63CWJDC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4U2XMYMHPT75TRF6AHYCW7BANPGWJAR4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,50 +86,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 02 Aug 2024 16:24:39 +0200,
-Stefan Stistrup wrote:
-> 
-> Add missing input gain and master output mixer controls for RME Babyface Pro
-> 
-> This patch implements:
-> 
-> 1. Input gain controls for 2 mic and 2 line inputs
-> 2. Master output volume controls for all 12 output channels
-> 
-> These additions allow for more complete control of the Babyface Pro under Linux.
-> 
-> Signed-off-by: Stefan Stistrup <sstistrup@gmail.com>
-> +static int snd_bbfpro_gain_update(struct usb_mixer_interface *mixer,
-> +				  u8 channel, u8 gain)
-> +{
-> +	int err;
-> +
-> +	struct snd_usb_audio *chip = mixer->chip;
+This function is base on the accelerator implementation
+for compress API:
+https://patchwork.kernel.org/project/alsa-devel/patch/20240731083843.59911-1-perex@perex.cz/
 
-An unneeded blank line.  There are a few other coding style issues, as
-it seems.  Please correct the errors reported by checkpatch.pl.
+Audio signal processing also has the requirement for memory to
+memory similar as Video.
 
-> +static int snd_bbfpro_gain_put(struct snd_kcontrol *kcontrol,
-> +                               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	int pv, channel, old_value, value, err;
-> +
-> +	struct usb_mixer_elem_list *list = snd_kcontrol_chip(kcontrol);
-> +	struct usb_mixer_interface *mixer = list->mixer;
-> +
-> +	pv = kcontrol->private_value;
-> +	channel = (pv >> SND_BBFPRO_GAIN_CHANNEL_SHIFT) &
-> +		  SND_BBFPRO_GAIN_CHANNEL_MASK;
-> +	old_value = pv & SND_BBFPRO_GAIN_VAL_MASK;
-> +	value = ucontrol->value.integer.value[0];
-> +
-> +	if (channel < 2) {
-> +		if (value > SND_BBFPRO_GAIN_VAL_MIC_MAX)
-> +			return -EINVAL;
+This asrc memory to memory (memory ->asrc->memory) case is a non
+real time use case.
 
-Also check an invalid negative value, too.
+User fills the input buffer to the asrc module, after conversion, then asrc
+sends back the output buffer to user. So it is not a traditional ALSA playback
+and capture case.
 
+Because we had implemented the "memory -> asrc ->i2s device-> codec"
+use case in ALSA.  Now the "memory->asrc->memory" needs
+to reuse the code in asrc driver, so the patch 1 and patch 2 is for refining
+the code to make it can be shared by the "memory->asrc->memory"
+driver.
 
-thanks,
+Other change is to add memory to memory support for two kinds of i.MX ASRC
+modules.
 
-Takashi
+Shengjiu Wang (6):
+  ALSA: compress: add Sample Rate Converter codec support
+  ASoC: fsl_asrc: define functions for memory to memory usage
+  ASoC: fsl_easrc: define functions for memory to memory usage
+  ASoC: fsl_asrc_m2m: Add memory to memory function
+  ASoC: fsl_asrc: register m2m platform device
+  ASoC: fsl_easrc: register m2m platform device
+
+ include/uapi/sound/compress_offload.h |   2 +
+ include/uapi/sound/compress_params.h  |   9 +-
+ sound/soc/fsl/Kconfig                 |   1 +
+ sound/soc/fsl/Makefile                |   2 +-
+ sound/soc/fsl/fsl_asrc.c              | 176 +++++-
+ sound/soc/fsl/fsl_asrc.h              |   2 +
+ sound/soc/fsl/fsl_asrc_common.h       |  68 +++
+ sound/soc/fsl/fsl_asrc_m2m.c          | 769 ++++++++++++++++++++++++++
+ sound/soc/fsl/fsl_easrc.c             | 259 ++++++++-
+ sound/soc/fsl/fsl_easrc.h             |   4 +
+ 10 files changed, 1284 insertions(+), 8 deletions(-)
+ create mode 100644 sound/soc/fsl/fsl_asrc_m2m.c
+
+-- 
+2.34.1
+
