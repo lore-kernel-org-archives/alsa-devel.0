@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DADF8C52D70
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 18:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F921C52D70
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 18:54:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F045B2BCF;
-	Tue,  6 Aug 2024 20:54:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F045B2BCF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D8D02BEE;
+	Tue,  6 Aug 2024 20:54:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D8D02BEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722970454;
-	bh=6jxvk6q4X3fsFfH3j2Y1KkDUo3CAllzioPD8AKzLmuU=;
+	s=default; t=1722970476;
+	bh=GwyW3Er/ZhM1U9JNMXLYlDUeNmLpjI408pDROmOiuKw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=MhD7/VrSpmvmF8MZdxo8ojece0he00YhMmRuQUbH4FhhtPKfDRgIxOQDLCex/ux1y
-	 TCFCFfxSj5r3UJrQvHA6mh/Cq1FaNwxQcxPt1Y9UENOiQCuZVR9efUT6RiyUNvbIfe
-	 qUA779AD3qqGlhMWoHdhcfD8x5uzcUnVvXVDu4y8=
+	b=hOwytclH0rtaR1JPndd3Pv+f1tI/P6anrE5KiFNeuzAGKaQy1dY8O5OBEbBWBmVec
+	 EWpbOlF9wAMdEHtSQIoRZb6IdED9Rgup/Lv9AqDDXGiWgHEAZTFjdEzUV1yDku7yRB
+	 ktxH4QoLD+LH41/8i5lNBP0/EuzI02yGgmMQNcLY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EF0AF805AE; Tue,  6 Aug 2024 20:53:41 +0200 (CEST)
+	id 59B9EF805EE; Tue,  6 Aug 2024 20:53:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29580F805B5;
-	Tue,  6 Aug 2024 20:53:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A000F805E1;
+	Tue,  6 Aug 2024 20:53:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F9F3F8047C; Tue,  6 Aug 2024 20:44:45 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 776BFF80448; Tue,  6 Aug 2024 20:44:57 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E6BD3F800E3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 847D0F800B0
 	for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2024 20:44:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6BD3F800E3
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 847D0F800B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Dg71MR8W
+ header.s=k20201202 header.b=Xx3k9QQ3
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 77372CE0E8B;
-	Tue,  6 Aug 2024 18:44:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6C9DC4AF0C;
-	Tue,  6 Aug 2024 18:44:29 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 0B231CE09AF;
+	Tue,  6 Aug 2024 18:44:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD573C32786;
+	Tue,  6 Aug 2024 18:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722969870;
-	bh=6jxvk6q4X3fsFfH3j2Y1KkDUo3CAllzioPD8AKzLmuU=;
+	s=k20201202; t=1722969869;
+	bh=GwyW3Er/ZhM1U9JNMXLYlDUeNmLpjI408pDROmOiuKw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Dg71MR8Wh+30wmZ7fsrDPLaCggnXaQNLUB5R0dY9WlTGNn0VmccOt1Dqb7MMnhk3r
-	 UIWR5PIb+BHFa5unHl8FVKLmQFqk4CF5G3r8T8Hbxgd4mIGXkUtKO7n3JxTFsW84I4
-	 0r+qYA0TdX5t/8X2cK0zW+A94bgdL0P5W2AESPHaNGwudO/7um5ah4ZBtnhOoKyn4Q
-	 oLXEwjPAFvxZpWFpZcKfWLU9QyrGdo7O6JRHjziLNsnE0G7r7pmkpLgdwQB/Nz8JZQ
-	 T1DRtPXZx8p8fBMeQGBSE6lGIJBsKDKz5GeVwj8Xi+y+Y8sBDNlzQ1jCSUSDhSZB/k
-	 ctx5id6JltH7w==
+	b=Xx3k9QQ3niwQzXEYL3YjZSlWjEOwarZUxKWcqCIjXtUK1O+VUTU6OOMEOLmtP1Ica
+	 UpQZmP8U+D8ptRKrWzFbneKEpDV++oCTCNoC1ZJ5WJ28PzCRm/1CQqi+XtFL3VZLCk
+	 lPd8tDRo1JZ/D49swpOK+z2pI8vjZwKaVSiwns2n7bBLFea1SKhTaUWwHpElQo1ywI
+	 kZysReRi116C7IK9vDGvla4q4KmZPoR2XdeBm1s7s96MMJ6ZI6IPWdCSIJ6r2y2gJ1
+	 3EANIiSLcChsBeXSlnr/rm/GHY9JTq+6GxjIrGgZXZG4d36hwF3iMDTzRE8UBKNZGY
+	 HEK0XTlmKLowQ==
 From: Mark Brown <broonie@kernel.org>
-To: Simon Trimmer <simont@opensource.cirrus.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240805102721.30102-1-simont@opensource.cirrus.com>
-References: <20240805102721.30102-1-simont@opensource.cirrus.com>
-Subject: Re: [PATCH 0/2] ASoC: Extend wm_adsp so cs35l56 can suppress
- controls
-Message-Id: <172296986941.432413.5644373888144309517.b4-ty@kernel.org>
-Date: Tue, 06 Aug 2024 19:44:29 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <8734nrll6x.wl-kuninori.morimoto.gx@renesas.com>
+References: <8734nrll6x.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: remove bespoke trigger support
+Message-Id: <172296986843.432413.17945462453331217568.b4-ty@kernel.org>
+Date: Tue, 06 Aug 2024 19:44:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: ZNN3VOIEERQCYA6NZ6IQ75JIRKS2ZRZ4
-X-Message-ID-Hash: ZNN3VOIEERQCYA6NZ6IQ75JIRKS2ZRZ4
+Message-ID-Hash: B3SNHKO5AG42SZQAIW3CMNRYTV4CTA63
+X-Message-ID-Hash: B3SNHKO5AG42SZQAIW3CMNRYTV4CTA63
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZNN3VOIEERQCYA6NZ6IQ75JIRKS2ZRZ4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B3SNHKO5AG42SZQAIW3CMNRYTV4CTA63/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,15 +90,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 05 Aug 2024 10:27:19 +0000, Simon Trimmer wrote:
-> This pair of patches extend wm_adsp to add a callback that can be used
-> to control whether ALSA controls are added and then tweak cs35l56 to use
-> it to suppress controls made from firmware coefficients.
+On Tue, 30 Jul 2024 01:31:34 +0000, Kuninori Morimoto wrote:
+> Bespoke trigger support was added when Linux v3.5 by this patch.
 > 
-> Simon Trimmer (2):
->   ASoC: wm_adsp: Add control_add callback and export
->     wm_adsp_control_add()
->   ASoC: cs35l56: Stop creating ALSA controls for firmware coefficients
+> 	commit 07bf84aaf736781a283b1bd36eaa911453b14574
+> 	("ASoC: dpcm: Add bespoke trigger()")
+> 
+> test-component driver is using it, but this is because it indicates used
+> function for debug/trace purpose. Except test-component driver, bespoke
+> trigger has never been used over 10 years in upstream.
 > 
 > [...]
 
@@ -111,10 +108,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: wm_adsp: Add control_add callback and export wm_adsp_control_add()
-      commit: 45b4acab4cac79503663f0a4be9eb3752db04d4b
-[2/2] ASoC: cs35l56: Stop creating ALSA controls for firmware coefficients
-      commit: 2c3640b82213cf2beb7c1cc3cfce2ecf5349b0de
+[1/1] ASoC: remove bespoke trigger support
+      commit: 7d2fb3812acde0a76e0d361877e8295db065f9f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
