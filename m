@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F921C52D70
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 18:54:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09BE2C52D70
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 18:54:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D8D02BEE;
-	Tue,  6 Aug 2024 20:54:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D8D02BEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id E50E92BC6;
+	Tue,  6 Aug 2024 20:54:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E50E92BC6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722970476;
-	bh=GwyW3Er/ZhM1U9JNMXLYlDUeNmLpjI408pDROmOiuKw=;
+	s=default; t=1722970488;
+	bh=ifBn+eLvRJeozKdAii61GizU/bo+ZkvXBhRT4MugnQs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hOwytclH0rtaR1JPndd3Pv+f1tI/P6anrE5KiFNeuzAGKaQy1dY8O5OBEbBWBmVec
-	 EWpbOlF9wAMdEHtSQIoRZb6IdED9Rgup/Lv9AqDDXGiWgHEAZTFjdEzUV1yDku7yRB
-	 ktxH4QoLD+LH41/8i5lNBP0/EuzI02yGgmMQNcLY=
+	b=GzKlrzVIEmtJ+W2RI8NPugomQkl8An6XsWwMETu7A4oun9WhRTZ/WDmYF00xEugiB
+	 4eKoWqJTOKBrVfOs3nfZgtjOdr/8p4ccWB8Y3A1BqGm9CwJd745j2T2cFgpSzlqzOu
+	 vIQNqHxZ3CXOJsmy+Iqm8a+EQTRmnXpI0ZbBF25c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59B9EF805EE; Tue,  6 Aug 2024 20:53:45 +0200 (CEST)
+	id 29496F805FA; Tue,  6 Aug 2024 20:53:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A000F805E1;
-	Tue,  6 Aug 2024 20:53:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F980F80603;
+	Tue,  6 Aug 2024 20:53:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 776BFF80448; Tue,  6 Aug 2024 20:44:57 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 22D8DF8023A; Tue,  6 Aug 2024 20:48:05 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 847D0F800B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 324CAF8023A
 	for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2024 20:44:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 847D0F800B0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 324CAF8023A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Xx3k9QQ3
+ header.s=k20201202 header.b=sMKXXOfM
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 0B231CE09AF;
+	by dfw.source.kernel.org (Postfix) with ESMTP id ECF866104F;
+	Tue,  6 Aug 2024 18:44:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27A1BC4AF0D;
 	Tue,  6 Aug 2024 18:44:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD573C32786;
-	Tue,  6 Aug 2024 18:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722969869;
-	bh=GwyW3Er/ZhM1U9JNMXLYlDUeNmLpjI408pDROmOiuKw=;
+	s=k20201202; t=1722969871;
+	bh=ifBn+eLvRJeozKdAii61GizU/bo+ZkvXBhRT4MugnQs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Xx3k9QQ3niwQzXEYL3YjZSlWjEOwarZUxKWcqCIjXtUK1O+VUTU6OOMEOLmtP1Ica
-	 UpQZmP8U+D8ptRKrWzFbneKEpDV++oCTCNoC1ZJ5WJ28PzCRm/1CQqi+XtFL3VZLCk
-	 lPd8tDRo1JZ/D49swpOK+z2pI8vjZwKaVSiwns2n7bBLFea1SKhTaUWwHpElQo1ywI
-	 kZysReRi116C7IK9vDGvla4q4KmZPoR2XdeBm1s7s96MMJ6ZI6IPWdCSIJ6r2y2gJ1
-	 3EANIiSLcChsBeXSlnr/rm/GHY9JTq+6GxjIrGgZXZG4d36hwF3iMDTzRE8UBKNZGY
-	 HEK0XTlmKLowQ==
+	b=sMKXXOfMcud+smmnpt7F+tOx7WM8FmdVyGgeB6u/PSXwgfnBy1TObxeBfdCtzVZop
+	 NGBRUYiV7DhGaVokYFeO2VUREPM10nSjnh3y0V1KpP8V9COARqw3GP6GL1EZH0eAmK
+	 /TTQ/lHQwxZGuuaUaG9NSugGAyyHCuDMux/BA3yt4MsGKQRvlpFv6plZqQ8xQvNedA
+	 BBZ/+/cm7wiH6aWPfH1jJ4jxo4N69Tg8zlsSf5CJ5yd0tKVeBfm5W9/DOay+U8tvug
+	 JGCHvsGin9hpjBPozRsuf939wWZUYws1OyoLm58zXHY2Xp+wCa5eU9+2coAccg2e0t
+	 QcS/jEdP6KLrg==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <8734nrll6x.wl-kuninori.morimoto.gx@renesas.com>
-References: <8734nrll6x.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: remove bespoke trigger support
-Message-Id: <172296986843.432413.17945462453331217568.b4-ty@kernel.org>
-Date: Tue, 06 Aug 2024 19:44:28 +0100
+In-Reply-To: <87v80ewmdi.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v80ewmdi.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2] ASoC: remove bespoke trigger support
+Message-Id: <172296987089.432413.12674692958731080217.b4-ty@kernel.org>
+Date: Tue, 06 Aug 2024 19:44:30 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: B3SNHKO5AG42SZQAIW3CMNRYTV4CTA63
-X-Message-ID-Hash: B3SNHKO5AG42SZQAIW3CMNRYTV4CTA63
+Message-ID-Hash: SPEQW7EODRAPQWN2C2UT5HR2HWZVXP6N
+X-Message-ID-Hash: SPEQW7EODRAPQWN2C2UT5HR2HWZVXP6N
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B3SNHKO5AG42SZQAIW3CMNRYTV4CTA63/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SPEQW7EODRAPQWN2C2UT5HR2HWZVXP6N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,7 +91,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 30 Jul 2024 01:31:34 +0000, Kuninori Morimoto wrote:
+On Tue, 06 Aug 2024 00:00:57 +0000, Kuninori Morimoto wrote:
 > Bespoke trigger support was added when Linux v3.5 by this patch.
 > 
 > 	commit 07bf84aaf736781a283b1bd36eaa911453b14574
