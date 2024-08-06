@@ -4,96 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E27FC3DA64
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 15:05:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D870CC52D70
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Aug 2024 16:44:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 151173D24;
-	Tue,  6 Aug 2024 17:04:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 151173D24
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F2C73CFC;
+	Tue,  6 Aug 2024 18:44:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F2C73CFC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1722956699;
-	bh=Oz7qSUD/KpSY3UkpQxjeZSRwS0zAQNSUl64r7woFeHY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1722962663;
+	bh=I9H7A7FupsbFLzyt6LiuEeDW4TvHpRMJlvPZymABxTI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qwMHfyPJA1uTn/2rTB+WzQ1NE8qJmiy4o2hI1qK5PakO8GBSc6gn3R9chJcOpqINF
-	 n8fwdUCxgQDRKYcv42B4tW8eNqkITyiz07G9QhS52jpqvS/tgWt1/nDv3d3RFzECV5
-	 2Emlwi0Cho4VTLAWWKU6iqno7gJt6eUxsnH+Ehyg=
+	b=bXwLQplNdLdTGcnN4Of44HBPNRcs6kjNM4qa8/FHNI9qPyktfl4i+e24vPCzY0Iqt
+	 4ehWgnf6dEObjcLZPHNOHEtmc9i084oCe/nRF53dh8b9g3wh2iho/AL11WZNVnnuJh
+	 DZ5hnJMzb2Px7d8sKyoCn+qaaYdxe+3i8bQsxnA8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50D89F800E3; Tue,  6 Aug 2024 17:04:28 +0200 (CEST)
+	id E1AAEF8049C; Tue,  6 Aug 2024 18:43:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A89D6F8049C;
-	Tue,  6 Aug 2024 17:04:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F070F805B4;
+	Tue,  6 Aug 2024 18:43:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2F0CF802DB; Tue,  6 Aug 2024 16:53:04 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9466EF802DB; Tue,  6 Aug 2024 18:40:08 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 603ADF8023A
-	for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2024 16:50:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 603ADF8023A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 963B4F800B0
+	for <alsa-devel@alsa-project.org>; Tue,  6 Aug 2024 18:39:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 963B4F800B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=CxnmDHcp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1722955819; x=1754491819;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Oz7qSUD/KpSY3UkpQxjeZSRwS0zAQNSUl64r7woFeHY=;
-  b=CxnmDHcpYZCLGu5cajQd/7xItET4wTlIrNBouWYgi0+NxFCyldM1FWti
-   GHWuOJxlh5tYVcgfYVJ49fhDNRGxdPVpDLTKEMDuaWvaS53FJXbYR39Qr
-   TJWyMdFlTVg7aLrMNpbxmIuuitR7tPs4oNg5+WV7cPGFLbgL4yjDBT0L8
-   91TYFv19tlSBURWJZbT1NABhPHumjIgmbtVSxunUYFfm6JIhXWZ1jBngK
-   L/ZB0VsN2OT7G12vH0usGrjjuhQKqkwieO6hyEQEIdJ0/AikzsLRSBZLE
-   SPNbY6bL+mSJRadef8eHFG7N30zzRSAxDi/zwbyUbWvcofQkk1am3ZV3T
-   g==;
-X-CSE-ConnectionGUID: FI13XXnTR/C94Or8snrueg==
-X-CSE-MsgGUID: hf3A86YISZy8tiopLADMxg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11156"; a="21101458"
-X-IronPort-AV: E=Sophos;i="6.09,268,1716274800";
-   d="scan'208";a="21101458"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Aug 2024 07:50:12 -0700
-X-CSE-ConnectionGUID: gpz1VDRMRQiy+vklacVUxA==
-X-CSE-MsgGUID: /WU0HS0aRFe10vT6NSeMCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,268,1716274800";
-   d="scan'208";a="87476457"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.53])
- ([10.94.0.53])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Aug 2024 07:50:06 -0700
-Message-ID: <b8e67410-49a0-4ee8-a0a5-4b7ba03483c8@linux.intel.com>
-Date: Tue, 6 Aug 2024 16:50:06 +0200
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=L49ZGAD6
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 986A461043;
+	Tue,  6 Aug 2024 16:39:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBF5EC32786;
+	Tue,  6 Aug 2024 16:39:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722962392;
+	bh=I9H7A7FupsbFLzyt6LiuEeDW4TvHpRMJlvPZymABxTI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=L49ZGAD63IjjcOZfz6f+kmlxItx4dH5ZlZmPRi1pQrD4SFDcuw0rMcQykXH1HlpPX
+	 LIO+dBTHM5yhS25UTAHWoIBzXC2v7/POfhHmLo3Ob0JO4fbAisiNfeeh6BpZoFwjDl
+	 8aEsKq3GWz5ioLnQquf1Z6qyBtfakQD9gSeN+4oYJKZ4Y+M4nVCfujcp2TCR6zPjqq
+	 lAw2PkfFOpB+bYYXHJ6gDxEiC/mrnWCTLfF0gMJno61RMJKquADdswx4rTHbiuTixk
+	 Uiwly4lKczYfXmp0KXmHaEEg+fRKaWJrM3eWrFBjnbkUMlqO4N1ekG9V0zpjXI6y8+
+	 AjfLwz8L9W4FQ==
+Date: Tue, 6 Aug 2024 17:39:41 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: <fabrice.gasnier@foss.st.com>, Lars-Peter Clausen <lars@metafoo.de>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
+ Dooley <conor+dt@kernel.org>, Arnaud Pouliquen
+ <arnaud.pouliquen@foss.st.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Nuno Sa <nuno.sa@analog.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 0/9] iio: adc: dfsdm: add scaling support
+Message-ID: <20240806173941.074d37ee@jic23-huawei>
+In-Reply-To: <20240803161334.5e627178@jic23-huawei>
+References: <20240730084640.1307938-1-olivier.moysan@foss.st.com>
+	<20240803161334.5e627178@jic23-huawei>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v24 05/34] usb: host: xhci-mem: Cleanup pending secondary
- event ring events
-Content-Language: en-US
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
- corbet@lwn.net, broonie@kernel.org, lgirdwood@gmail.com, krzk+dt@kernel.org,
- Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com, tiwai@suse.com,
- gregkh@linuxfoundation.org, robh@kernel.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
- alsa-devel@alsa-project.org
-References: <20240801011730.4797-1-quic_wcheng@quicinc.com>
- <20240801011730.4797-6-quic_wcheng@quicinc.com>
-From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20240801011730.4797-6-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DQQVXQS7Q2KZPNMFM3KQGFAGLIWBN463
-X-Message-ID-Hash: DQQVXQS7Q2KZPNMFM3KQGFAGLIWBN463
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+Message-ID-Hash: 5IKOQG6A3M7F4RQBHSL2EDK3A7OWTAMJ
+X-Message-ID-Hash: 5IKOQG6A3M7F4RQBHSL2EDK3A7OWTAMJ
+X-MailFrom: jic23@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DQQVXQS7Q2KZPNMFM3KQGFAGLIWBN463/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5IKOQG6A3M7F4RQBHSL2EDK3A7OWTAMJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,86 +102,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 8/1/2024 3:17 AM, Wesley Cheng wrote:
-> As part of xHCI bus suspend, the XHCI is halted.  However, if there are
+On Sat, 3 Aug 2024 16:13:34 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-XHCI -> xHCI
-
-> pending events in the secondary event ring, it is observed that the xHCI
-> controller stops responding to further commands upon host or device
-> initiated bus resume.  Iterate through all pending events and update the
-> dequeue pointer to the beginning of the event ring.
+> On Tue, 30 Jul 2024 10:46:30 +0200
+> Olivier Moysan <olivier.moysan@foss.st.com> wrote:
 > 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->   drivers/usb/host/xhci-mem.c  |  7 ++++++-
->   drivers/usb/host/xhci-ring.c | 33 ++++++++++++++++++++++++++++++++-
->   drivers/usb/host/xhci.c      |  2 +-
->   drivers/usb/host/xhci.h      |  6 ++++++
->   4 files changed, 45 insertions(+), 3 deletions(-)
+> > The aim of this serie is to add scaling support to STM32 DFSDM
+> > peripheral in the analog context.
+> >   
+> All looks good to me.  I'll leave it a little longer though as
+> some of the dt-bindings patches don't have tags from the maintainers yet.
 > 
-> diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-> index 2ca5937b73f4..60dfc59260d8 100644
-> --- a/drivers/usb/host/xhci-mem.c
-> +++ b/drivers/usb/host/xhci-mem.c
-> @@ -1816,7 +1816,7 @@ xhci_remove_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
->   		tmp &= ERST_SIZE_MASK;
->   		writel(tmp, &ir->ir_set->erst_size);
->   
-> -		xhci_write_64(xhci, ERST_EHB, &ir->ir_set->erst_dequeue);
-> +		xhci_update_erst_dequeue(xhci, ir, true);
->   	}
->   }
->   
-> @@ -1859,6 +1859,11 @@ void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrup
->   		return;
->   	}
->   
-> +	/*
-> +	 * Cleanup secondary interrupter to ensure there are no pending events.
-> +	 * This also updates event ring dequeue pointer back to the start.
-> +	 */
-> +	xhci_skip_sec_intr_events(xhci, ir->event_ring, ir);
->   	intr_num = ir->intr_num;
->   
->   	xhci_remove_interrupter(xhci, ir);
-> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-> index 80dca780317a..a012ddf94fb5 100644
-> --- a/drivers/usb/host/xhci-ring.c
-> +++ b/drivers/usb/host/xhci-ring.c
-> @@ -3012,7 +3012,7 @@ static int xhci_handle_event_trb(struct xhci_hcd *xhci, struct xhci_interrupter
->    * - When all events have finished
->    * - To avoid "Event Ring Full Error" condition
->    */
-> -static void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
-> +void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
->   				     struct xhci_interrupter *ir,
->   				     bool clear_ehb)
->   {
-> @@ -3112,6 +3112,37 @@ static int xhci_handle_events(struct xhci_hcd *xhci, struct xhci_interrupter *ir
->   	return 0;
->   }
->   
-> +/*
-> + * Move the event ring dequeue pointer to skip events kept in the secondary
-> + * event ring.  This is used to ensure that pending events in the ring are
-> + * acknowledged, so the XHCI HCD can properly enter suspend/resume.  The
+> Jonathan
+> 
 
-XHCI -> xHCI
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to poke at it etc.
 
-> + * secondary ring is typically maintained by an external component.
-> + */
-> +void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
-> +	struct xhci_ring *ring,	struct xhci_interrupter *ir)
-> +{
-> +	union xhci_trb *current_trb;
-> +	u64 erdp_reg;
-> +	dma_addr_t deq;
-> +
-> +	/* disable irq, ack pending interrupt and ack all pending events */
-> +	xhci_disable_interrupter(ir);
+Thanks,
 
-That seems like a bit weird place to disable interrupter? Perhaps 
-suspend and resume functions should be updated to handle more 
-interrupters instead?
-
+Jonathan
