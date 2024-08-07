@@ -4,94 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A89BC52D71
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Aug 2024 15:14:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0AF3C52D71
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Aug 2024 15:14:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C94C191C;
-	Wed,  7 Aug 2024 17:13:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C94C191C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D07716B7;
+	Wed,  7 Aug 2024 17:14:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D07716B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723043638;
-	bh=+wyWa9keKYvJvojA0lUFTGTwanpx4GNfWBttcW1dW/g=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SW3dyncIrXpXvyh14BxNkxqMgnwxJz1IDwi5R8dyBcwic4g7CNlguT2UmfAsoW5ga
-	 yrIqSSvWJ3h21flUuS8glTFtXyHjQX+YYsPamq/yy8CDPnKcj36QYh5h3e6RmlnljR
-	 jh43Sm3kwCPP5piq3L/oBa3epLUqstGkDfozUfzk=
+	s=default; t=1723043657;
+	bh=Y7W8wbrOkuNmZ8CQ0WcwZSJsXls2By5/tn0Y2KGbT34=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ctN7x5/8pIva+4bau/K05XOVKCleqML2NtgyswgQc7ivPenaaWZEllZjMwePXWaed
+	 RZ/1jwip9Fv1UILe9M2PgL85Zl6qWSTlHpnCX/4PSZxyfxZxHcdie/JB8as0mXy6eX
+	 eRUDDqAbKwYII+aKO+WovMVCyNWY3VzibLbmHTdQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48331F805B4; Wed,  7 Aug 2024 17:13:24 +0200 (CEST)
+	id EB06CF805AD; Wed,  7 Aug 2024 17:13:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A998CF805B6;
-	Wed,  7 Aug 2024 17:13:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58EEBF805BF;
+	Wed,  7 Aug 2024 17:13:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02F3CF8047C; Wed,  7 Aug 2024 17:06:46 +0200 (CEST)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
+	id E58D2F80448; Wed,  7 Aug 2024 17:06:50 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 028DFF800BF
-	for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2024 17:02:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 028DFF800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C9EAF80236
+	for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2024 17:02:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C9EAF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=vw5EmAYF
-Received: by mail-ed1-x532.google.com with SMTP id
- 4fb4d7f45d1cf-5a2a90243c9so1818300a12.0
+ header.s=google header.b=c4c5lNhq
+Received: by mail-ed1-x534.google.com with SMTP id
+ 4fb4d7f45d1cf-5a1c49632deso2279885a12.2
         for <alsa-devel@alsa-project.org>;
- Wed, 07 Aug 2024 08:02:39 -0700 (PDT)
+ Wed, 07 Aug 2024 08:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1723042958; x=1723647758;
+        d=linaro.org; s=google; t=1723042962; x=1723647762;
  darn=alsa-project.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gboyXAEeXuINog3pkYnMpOO7y/D6nwWKyvX/1H9FuXk=;
-        b=vw5EmAYFsPLfQ38iXfum93k7U3le1LTYp3tUmkxJbvigZQoaejtMuWYi/+akAr9w/q
-         qk1i9IgWTiuXWNuBS+SoZsrfzOhmP54tzNx7eqeXt6AhTZ6XzROF17+tIozsHo1NB3zt
-         dsJuSi7yOt8xLf75Mxqb6kSdSpDGvW0vgzhjos2fujzgijuqcDChH5oiIUlr9OGMB3Ib
-         WANkJTY/VToh9aBtYao8lafm63YhFBUzP0vcRe68rlt6wwLpAxv+9+5PaqrcGxSjzTpo
-         RvfpFvy35NwqgUGrGtdyS9cauJNa8nxyYZ+joWsFPy1c1C0KErz7RRbg95AwVdqzzhQ2
-         w79A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723042958; x=1723647758;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gboyXAEeXuINog3pkYnMpOO7y/D6nwWKyvX/1H9FuXk=;
-        b=e6sCpXRJfSkJzaHOvkL7jdmHYMpIG/JD2aTWPvJttX1RYmriOGTb/hQcNyoC8OxaBr
-         xxAhEIlgx9WsexS52LFIZuhldxhAzMGFp/HcqPmsRF5QLtr2E0g5cZrl/3gfxzN+lJVv
-         6JOTJwkBBD44X2jusVqV60ohjmG4w9YXSxFRGlPBwMoxn1U0ABe+DOurcIcOCv8DYHRK
-         zgBqKSvElG8/KniKd/TO5JrKKOFEMtgIQUVzPigpkkT654RqMlC4UUzBMhgUVn7EOtEZ
-         BHai4PM04GSiuwX3B8mtj47wJX/wE+Mi9sgtAbYi4KRFExX2Dm6qNqE73DrmUApuIyYh
-         rokA==
+        bh=WPaeIu/7/ToaPftt+nmZwaEM7lBvNV082estk80tIAQ=;
+        b=c4c5lNhqCjXcByG3maa1o6N1ppq+RHST1ww4/W1kxThVY1NHTDn/LEDMjvB+zHZ77q
+         8KCMrI2yd0tj2Jy82HMbsQcsitEYuwq4mS+yu4wwKsPEBczkJrLLnuw3G+xzKGqUqzV3
+         ZI8uah9T5R/wrC31LqmDKmZDXQaX01EecShYunML18y8Us1HCrJJWDw0BYjNDe2Z8xkZ
+         EmTt+sUnESaojRmBTsAUTraosw1Trxf2ksAB1/sRRrc8yN1tQ+G/f0J2CoCAHITX9wO0
+         mlGM42vpGO2sUnSqgDwTKnXDQKpDlUq/fvEbWCAbmW3mbHhRZeiFffUHJk/BR4kR5+if
+         EJYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723042962; x=1723647762;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WPaeIu/7/ToaPftt+nmZwaEM7lBvNV082estk80tIAQ=;
+        b=iorKj8VVwDhGEpj/mNIFfAPyFDRP1mXm2k5tx20sJ8g8mKIVXskTZz+VJ8jh2RE4Zw
+         Y2k3yvvcIQxM/J7/+E1m3NT01It2fz/anQep6/iNqALF/yixAe+Vl1OlPDQ19pLG181x
+         0k9WZf7tLvelV1eQx/svp9jIaZAwrxG20/divpdVHqFp7pl1NiSQoF4OQF91aTM/ImIW
+         SI0Z99f+vCbVVbj71ji3bvD5cawQMGvv+8DVXD9qX5BMvchAp7PpZABtsgZui1F17zFR
+         QbO+qRmVi/GzmLhc3rEIHrrKFu7uFEiouuvv8yQG40chTVuX2IE2x2ozmZDbuArVuPFP
+         opwg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVH+ujnlaAb/5IHZqomFr+nXeUwsla5yYy/YoAeFiXgjhkNtB0s1Mn9ulGsnp6i/WBiIzupL60MYSQDCNgmYIer/GewFX825so1VeQ=
-X-Gm-Message-State: AOJu0Ywe9G8ZPVufLeZyRkU6CzOecMp+utfZttfu9yY79IrBCfeAGc5i
-	YZj3oTQWCb4+/coLRN8cZh+2U73uA02yUz1lo+DoIpPdYsCe+jHn17ndgy2Edn4=
+ AJvYcCVxznUTU6TKLrFx1ut6lLjGahl4ALjUsiXa86baFQmsEbgcrsLh5ieezeB06jJBMauJGlO2t/ucikfgiPIi/8IkNEOhZ4sdLcpza8U=
+X-Gm-Message-State: AOJu0Yzwjqtkcbb+IbVj9V34yLoyREPwh+339Af62C7AvExrC4WyzApd
+	CFzHQbU2hzqpuXckhJ2m1TCu/EtQx4sHfwa2JLT84rVt2oHKUerHq4NSletVZZEvb3uQZ+Xwd42
+	1
 X-Google-Smtp-Source: 
- AGHT+IFAVMAyBYgyjB17PgBIAsqIPvYIgbKexhMjycc9NMyI226M25xxGJarXKv+Tma4MwJ18ohlaQ==
-X-Received: by 2002:aa7:dcd9:0:b0:5a1:40d9:6a46 with SMTP id
- 4fb4d7f45d1cf-5b7f5dc5d68mr12204944a12.36.1723042957750;
-        Wed, 07 Aug 2024 08:02:37 -0700 (PDT)
+ AGHT+IEYpjjpJDMbHBEqI4Rw2M2UUag+5UjvthzgGzzeXam2hAGeCohE28/rAsaJU5XDD5v2iV+kRw==
+X-Received: by 2002:a05:6402:331:b0:5a2:2654:7fd1 with SMTP id
+ 4fb4d7f45d1cf-5b7f59e04d9mr11178515a12.36.1723042961586;
+        Wed, 07 Aug 2024 08:02:41 -0700 (PDT)
 Received: from lino.lan ([85.235.12.238])
         by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5bb90be3a91sm2583047a12.65.2024.08.07.08.02.36
+ 4fb4d7f45d1cf-5bb90be3a91sm2583047a12.65.2024.08.07.08.02.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Aug 2024 08:02:37 -0700 (PDT)
+        Wed, 07 Aug 2024 08:02:39 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 0/3] ASoC: tas*: Fix up GPIO usage
-Date: Wed, 07 Aug 2024 17:02:31 +0200
-Message-Id: <20240807-asoc-tas-gpios-v2-0-bd0f2705d58b@linaro.org>
+Date: Wed, 07 Aug 2024 17:02:33 +0200
+Subject: [PATCH v2 2/3] ASoC: tas2781-i2c: Get the right GPIO line
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAIeMs2YC/3XMywrCMBCF4Vcps3YkifYSV76HdBGS2A5IU2ZKU
- Ere3di9y//A+XaQyBQFbs0OHDMJpaWGOTXgZ7dMESnUBqPMVfVKo5PkcXOC00pJsPWq1WFQoe8
- GqKeV45PeB/gYa88kW+LP4Wf9W/9SWaPC0Nno29Bbe7H3Fy2O0znxBGMp5QsYLWOsrQAAAA==
+Message-Id: <20240807-asoc-tas-gpios-v2-2-bd0f2705d58b@linaro.org>
+References: <20240807-asoc-tas-gpios-v2-0-bd0f2705d58b@linaro.org>
+In-Reply-To: <20240807-asoc-tas-gpios-v2-0-bd0f2705d58b@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
@@ -100,8 +102,8 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  Shenghao Ding <13916275206@139.com>, alsa-devel@alsa-project.org,
  Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.14.0
-Message-ID-Hash: EQZHG5S5VRET6WEZWZT2ENEU7EENRU2S
-X-Message-ID-Hash: EQZHG5S5VRET6WEZWZT2ENEU7EENRU2S
+Message-ID-Hash: APW5T35D2UG2Y326ZW6EXYHTYTW5TVTD
+X-Message-ID-Hash: APW5T35D2UG2Y326ZW6EXYHTYTW5TVTD
 X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -114,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EQZHG5S5VRET6WEZWZT2ENEU7EENRU2S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/APW5T35D2UG2Y326ZW6EXYHTYTW5TVTD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,45 +125,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The TI TAS drivers use some legacy GPIO code and headers,
-this series fixes it up.
+The code is obtaining a GPIO reset using the reset GPIO
+name "reset-gpios", but the gpiolib is already adding the
+suffix "-gpios" to anything passed to this function and
+will be looking for "reset-gpios-gpios" which is most
+certainly not what the author desired.
 
-The TAS2781 is a special case since it adds a handful of
-lines of deviating code to reconfigure a GPIO line for
-IRQ mode and then never actually use the IRQ obtained in
-the code. Is the line used by autonomous hardware? I'm
-puzzled by this.
+Fix it up.
 
-Anyways the patch suggest how to solve this properly by
-fixing the parent irqchip and I'm happy to help.
-
+Fixes: ef3bcde75d06 ("ASoC: tas2781: Add tas2781 driver")
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
-Changes in v2:
-- Rebased onto v6.11-rc1
-- Link to v1: https://lore.kernel.org/r/20240701-asoc-tas-gpios-v1-0-d69ec5d79939@linaro.org
+ sound/soc/codecs/tas2781-i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
----
-Linus Walleij (3):
-      ASoC: tas2781-i2c: Drop weird GPIO code
-      ASoC: tas2781-i2c: Get the right GPIO line
-      ASoC: tas*: Drop unused GPIO includes
+diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
+index fdf0840ac6c7..bac5ea6d99b9 100644
+--- a/sound/soc/codecs/tas2781-i2c.c
++++ b/sound/soc/codecs/tas2781-i2c.c
+@@ -793,7 +793,7 @@ static void tasdevice_parse_dt(struct tasdevice_priv *tas_priv)
+ 		tas_priv->tasdevice[i].dev_addr = dev_addrs[i];
+ 
+ 	tas_priv->reset = devm_gpiod_get_optional(&client->dev,
+-			"reset-gpios", GPIOD_OUT_HIGH);
++			"reset", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(tas_priv->reset))
+ 		dev_err(tas_priv->dev, "%s Can't get reset GPIO\n",
+ 			__func__);
 
- include/sound/tas2781.h           |  7 +------
- sound/pci/hda/tas2781_hda_i2c.c   |  2 +-
- sound/soc/codecs/tas2552.c        |  1 -
- sound/soc/codecs/tas2764.c        |  1 -
- sound/soc/codecs/tas2770.c        |  1 -
- sound/soc/codecs/tas2780.c        |  1 -
- sound/soc/codecs/tas2781-comlib.c |  3 ---
- sound/soc/codecs/tas2781-fmwlib.c |  1 -
- sound/soc/codecs/tas2781-i2c.c    | 26 ++++----------------------
- 9 files changed, 6 insertions(+), 37 deletions(-)
----
-base-commit: 8400291e289ee6b2bf9779ff1c83a291501f017b
-change-id: 20240701-asoc-tas-gpios-5c051d80d768
-
-Best regards,
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.45.2
 
