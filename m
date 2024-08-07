@@ -4,92 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12381C3DA7F
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Aug 2024 15:27:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91C92C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Aug 2024 16:42:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0988A1925;
-	Wed,  7 Aug 2024 17:27:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0988A1925
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CBB3192A;
+	Wed,  7 Aug 2024 18:42:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CBB3192A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723044469;
-	bh=9RcYMtMM4r+MQSxgDOMv3UjOKLUb1JBAjfVJavx3WSE=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=RKVLTo0gwA/1LlxlVTsM0NwFyoso+dvuwpxSmDXc4g2SG2giPF2XEMCO4BdxtXSWe
-	 5yTGPDmK5eIqJ/9pAFiR6m9fhUx+90Ngt99T62XnqtHKC8FdHl7C6gwtBqBRxwBHOa
-	 CkJX4rYM+AuawNO37EyOAJHGOmp+Vwd4SpNxQww8=
+	s=default; t=1723048950;
+	bh=Ng+/JCc1gUQ4aifD/rVtKKq53bnVZwaYRNuOqvikte8=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=C80KBaPHGbVXhb/sjpgmmBT41ZhMVlevxO5lF0NJH3narreEHsJXjM1G+18Yf03HL
+	 Bo5J7a7IiRBlnnWU8t096t6KjkHkqUd0AehLUXXolOxsWAcX/S9vd3SzMevaD9DZJC
+	 sm5c99ptN0b+0hRgW0A40IGp+dpBQcE9UJWdazKk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E53EBF805B4; Wed,  7 Aug 2024 17:27:17 +0200 (CEST)
+	id 8B8E6F805B4; Wed,  7 Aug 2024 18:41:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44748F805B5;
-	Wed,  7 Aug 2024 17:27:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EA22F8058C;
+	Wed,  7 Aug 2024 18:41:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59583F802DB; Wed,  7 Aug 2024 17:26:58 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id A7E9FF802DB; Wed,  7 Aug 2024 18:32:57 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DE850F80236
-	for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2024 17:26:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE850F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF69BF8023A
+	for <alsa-devel@alsa-project.org>; Wed,  7 Aug 2024 18:27:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF69BF8023A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=c+xSjutt
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 4755WGqT021667;
-	Mon, 5 Aug 2024 05:27:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=d2cHf22ZBP8FBiZHr6wfdXREEjqKc/hSUSPbj/TXBFw=; b=
-	c+xSjuttdqX8ncc91jkijhbgVBzbb9knAtvIarBKShOMSWjlk9CcLux0QEqAWFdP
-	cGAtXiE1SlZ6sVH1dDks1tzW7XTo7PanQ4lirmFEW0pnBF4iqpqSrX3XcCywb6wG
-	DtZXdNz+lhHKuXIe9pewCTfm0hL+7ecsl/V8hz08jD2aJX+/FtNznhgmGNajqXUS
-	1b8q/IWEt/Yd/LC8B95VlV5GpG/YXN0QbhR2VHsG1k6EeC+aDo1CrX334Xay7fa9
-	+Jnr3VcOFatHUMdQXVy9l1G+0e0a7o/qMKooYLihqxY3tIbnvmdlaqeBG3TUrZp3
-	AlZ61JyVr5Xfe3U1KIP5NA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 40shxx1n3t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 05 Aug 2024 05:27:44 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 5 Aug 2024
- 11:27:42 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Mon, 5 Aug 2024 11:27:41 +0100
-Received: from lonswws01.ad.cirrus.com (lonswws01.ad.cirrus.com
- [198.90.188.26])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id C8A62820241;
-	Mon,  5 Aug 2024 10:27:41 +0000 (UTC)
-From: Simon Trimmer <simont@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Simon
- Trimmer" <simont@opensource.cirrus.com>
-Subject: [PATCH 2/2] ASoC: cs35l56: Stop creating ALSA controls for firmware
- coefficients
-Date: Mon, 5 Aug 2024 10:27:21 +0000
-Message-ID: <20240805102721.30102-3-simont@opensource.cirrus.com>
+ unprotected) header.d=baylibre-com.20230601.gappssmtp.com
+ header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
+ header.s=20230601 header.b=2al10gmv
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-368712acb8dso11577f8f.2
+        for <alsa-devel@alsa-project.org>;
+ Wed, 07 Aug 2024 09:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1723048036;
+ x=1723652836; darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x+dBIqzE9uz4423Miwg6qL/QPsaguESKxdu18p0e9Wk=;
+        b=2al10gmvSAai4iry2TTkVG52GLc3t6CWJ/L8OOwQFVdQ8xa8jVsuYyH+OKF/d8xrEZ
+         4kCpimrfiaXS7z0hI8V/MMAC0TCKK9/X+T2DyPN/vm1Rz6rW4Kttx7nxXGX13VIubWyL
+         CgO6Z/OrG5MAaDN8eyvnYOuj2wTu+RGG2orlKUU5WbCRH7YxNrlBe4C4QUPlgVPRHc1D
+         sPLP7W13TlCb4ez4KjCeZaVpdtf2ZUVZMECZKqGq38uBRHCKyNi3flT+jKyoIMzdcZ+w
+         VgyNkT1rzPTxdW8on5L6C6BPSiplxINa2DnYRbb2uOsE+XmHXyCGelyCV0E0NZWSg3Mf
+         8C1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723048036; x=1723652836;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x+dBIqzE9uz4423Miwg6qL/QPsaguESKxdu18p0e9Wk=;
+        b=hVqBvGI57H4a1OF6lHVQJTK8/x2eE+N7NzrTRJXJ6mZbUKxpb91c3IkPb0CO3jX0+U
+         Iz9MmbL5RPbCVhuZW7X5LAb9KMZfFFKFHpzTPhC57zfztFlIT+u5Bn+t4ZueTlQ1tIN+
+         eTIaZZIaZX3Q5xi6ZbxOtAXrUyyliQI9Trys36tCnsmEeUqehf1d1ukgK+fK8cPfOaBx
+         ru6o48oKXQEXOTv8K4VmDK5Z0ZB05tr2gMPeQOKyw+T4lYSCFKnYpsGSgOT1KdODJcaC
+         S/zs6K/zHnJZyxB0EPzDLWYRXAs804l9WEoEZ5w9kqjuTJGvb8EcKey/x9Yw3dtGRMwb
+         YxsQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWN9Cf/lELjHaxYCJFOMIGtSIJ8LSqKZzTJlLZZdYkTSCHUvHrmoAEJ2Mk2/54PyRyVhd8IpQuOH4u0SKWLdEjT0FalBoQPiHjXz88=
+X-Gm-Message-State: AOJu0Yw11oYqUGrXQxidRjZyoW2H3rgpsyA0MtC1HFCR/BNKe3hYEtIe
+	jtWj49QqzdEsn1wbc2TJvnRwmPAkz/WFc4S1erckbCFdXMcNbasecl5H0jHugoE=
+X-Google-Smtp-Source: 
+ AGHT+IFwKsKtdGBREmHTq2kOs7k4+/3e+X9EV8QnAXRSEkHZm0dwuN3Fu+VfeXznpGNYYLj47KdTtw==
+X-Received: by 2002:a5d:5c87:0:b0:36b:bd75:ed73 with SMTP id
+ ffacd0b85a97d-36bbd75ef23mr13891573f8f.23.1723048036168;
+        Wed, 07 Aug 2024 09:27:16 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:90f1:3c4c:261c:b0f5])
+        by smtp.googlemail.com with ESMTPSA id
+ ffacd0b85a97d-36bbd169697sm16494184f8f.107.2024.08.07.09.27.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Aug 2024 09:27:15 -0700 (PDT)
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-amlogic@lists.infradead.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v2] ASoC: meson: axg-fifo: fix irq scheduling issue with
+ PREEMPT_RT
+Date: Wed,  7 Aug 2024 18:27:03 +0200
+Message-ID: <20240807162705.4024136-1-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240805102721.30102-1-simont@opensource.cirrus.com>
-References: <20240805102721.30102-1-simont@opensource.cirrus.com>
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: sBVzMXPYgLNwkSpv0ZkT_I88tf6S0Cns
-X-Proofpoint-ORIG-GUID: sBVzMXPYgLNwkSpv0ZkT_I88tf6S0Cns
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: XYTAQVGMY4GC47CJ5PJG37BSYL7NNF2M
-X-Message-ID-Hash: XYTAQVGMY4GC47CJ5PJG37BSYL7NNF2M
-X-MailFrom: prvs=59476c0938=simont@opensource.cirrus.com
+Message-ID-Hash: 7J65LMCSWYYE7X75OBEFM2W6G6Q2BSXH
+X-Message-ID-Hash: 7J65LMCSWYYE7X75OBEFM2W6G6Q2BSXH
+X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XYTAQVGMY4GC47CJ5PJG37BSYL7NNF2M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7J65LMCSWYYE7X75OBEFM2W6G6Q2BSXH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,52 +124,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A number of laptops have gone to market with old firmware versions that
-export controls that have since been hidden, but we can't just install a
-newer firmware because the firmware for each product is customized and
-qualified by the OEM. The issue is that alsactl save and restore has no
-idea what controls are good to persist which can lead to
-misconfiguration.
+With PREEMPT_RT enabled a spinlock_t becomes a sleeping lock.
 
-There is no reason that the UCM or user should need to interact with any
-of the ALSA controls for the firmware coefficients so they can be
-removed entirely.
+This is usually not a problem with spinlocks used in IRQ context since
+IRQ handlers get threaded. However, if IRQF_ONESHOT is set, the primary
+handler won't be force-threaded and runs always in hardirq context. This is
+a problem because spinlock_t requires a preemptible context on PREEMPT_RT.
 
-Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+In this particular instance, regmap mmio uses spinlock_t to protect the
+register access and IRQF_ONESHOT is set on the IRQ. In this case, it is
+actually better to do everything in threaded handler and it solves the
+problem with PREEMPT_RT.
+
+Reported-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+Closes: https://lore.kernel.org/linux-amlogic/20240729131652.3012327-1-avkrasnov@salutedevices.com
+Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Fixes: b11d26660dff ("ASoC: meson: axg-fifo: use threaded irq to check periods")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/codecs/cs35l56.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/meson/axg-fifo.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 84c34f5b1a51..757ade6373ed 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -1095,6 +1095,11 @@ int cs35l56_system_resume(struct device *dev)
+diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
+index 7e6090af720b..75909196b769 100644
+--- a/sound/soc/meson/axg-fifo.c
++++ b/sound/soc/meson/axg-fifo.c
+@@ -207,25 +207,18 @@ static irqreturn_t axg_fifo_pcm_irq_block(int irq, void *dev_id)
+ 	status = FIELD_GET(STATUS1_INT_STS, status);
+ 	axg_fifo_ack_irq(fifo, status);
+ 
+-	/* Use the thread to call period elapsed on nonatomic links */
+-	if (status & FIFO_INT_COUNT_REPEAT)
+-		return IRQ_WAKE_THREAD;
++	if (status & ~FIFO_INT_COUNT_REPEAT)
++		dev_dbg(axg_fifo_dev(ss), "unexpected irq - STS 0x%02x\n",
++			status);
+ 
+-	dev_dbg(axg_fifo_dev(ss), "unexpected irq - STS 0x%02x\n",
+-		status);
++	if (status & FIFO_INT_COUNT_REPEAT) {
++		snd_pcm_period_elapsed(ss);
++		return IRQ_HANDLED;
++	}
+ 
+ 	return IRQ_NONE;
  }
- EXPORT_SYMBOL_GPL(cs35l56_system_resume);
  
-+static int cs35l56_control_add_nop(struct wm_adsp *dsp, struct cs_dsp_coeff_ctl *cs_ctl)
-+{
-+	return 0;
-+}
-+
- static int cs35l56_dsp_init(struct cs35l56_private *cs35l56)
+-static irqreturn_t axg_fifo_pcm_irq_block_thread(int irq, void *dev_id)
+-{
+-	struct snd_pcm_substream *ss = dev_id;
+-
+-	snd_pcm_period_elapsed(ss);
+-
+-	return IRQ_HANDLED;
+-}
+-
+ int axg_fifo_pcm_open(struct snd_soc_component *component,
+ 		      struct snd_pcm_substream *ss)
  {
- 	struct wm_adsp *dsp;
-@@ -1117,6 +1122,12 @@ static int cs35l56_dsp_init(struct cs35l56_private *cs35l56)
- 	dsp->fw = 12;
- 	dsp->wmfw_optional = true;
+@@ -251,8 +244,9 @@ int axg_fifo_pcm_open(struct snd_soc_component *component,
+ 	if (ret)
+ 		return ret;
  
-+	/*
-+	 * None of the firmware controls need to be exported so add a no-op
-+	 * callback that suppresses creating an ALSA control.
-+	 */
-+	dsp->control_add = &cs35l56_control_add_nop;
-+
- 	dev_dbg(cs35l56->base.dev, "DSP system name: '%s'\n", dsp->system_name);
- 
- 	ret = wm_halo_init(dsp);
+-	ret = request_threaded_irq(fifo->irq, axg_fifo_pcm_irq_block,
+-				   axg_fifo_pcm_irq_block_thread,
++	/* Use the threaded irq handler only with non-atomic links */
++	ret = request_threaded_irq(fifo->irq, NULL,
++				   axg_fifo_pcm_irq_block,
+ 				   IRQF_ONESHOT, dev_name(dev), ss);
+ 	if (ret)
+ 		return ret;
 -- 
 2.43.0
 
