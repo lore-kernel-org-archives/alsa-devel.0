@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F820C52D71
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 20:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4C88C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 22:04:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA414E76;
-	Thu,  8 Aug 2024 22:58:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA414E76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F45CB71;
+	Fri,  9 Aug 2024 00:04:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F45CB71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723150696;
-	bh=3gMQ/W5MtQjyMsV0X0nPhRzuZIpjk6OuKMuGIcJFv6Q=;
+	s=default; t=1723154662;
+	bh=SrCA00LIf/8WOXQ3qcmUmKiAAagWu7ZJgow5VDaam+c=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RSAbsFcd5YxpQRn7niwh9Gi4ZqWOUvlXQFZdHeGFzM0vPE235TezssddMJF5wth9Z
-	 8LrS7T0rQWhmaTXRIWO0KOH1yqrGrGdyLqzSIdw2/zIjo+GGk08GNrqjH0nV0nfm9Q
-	 F26Vgdvxj7Q8DrpMfEF/uqFaWqyhfhnNz1CjPzQ0=
+	b=IoxgqjoPTgpJcuMYA7t6xakic3EK91IBgQTpN6KS7SfA6eenqJZQceJN0W9ywQD8E
+	 ZIEI076IekZ42AecbkFzB6ChOlExjxWDxISO5OsLNwzm1EJFEThicpDG9f+hfdtWko
+	 46AuUhp4prXj2zbPCKDyf/02XC6RTK0WcOpueQk0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B544F80637; Thu,  8 Aug 2024 22:57:13 +0200 (CEST)
+	id 3FB29F805B4; Fri,  9 Aug 2024 00:03:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 144DAF80632;
-	Thu,  8 Aug 2024 22:57:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2520DF805B4;
+	Fri,  9 Aug 2024 00:03:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61D1AF80602; Thu,  8 Aug 2024 22:57:09 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id EB2DEF800E3; Thu,  8 Aug 2024 23:52:32 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 938C0F80579
-	for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2024 22:57:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 938C0F80579
+	by alsa1.perex.cz (Postfix) with ESMTPS id 11568F800E3
+	for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2024 23:46:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11568F800E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=q2sQyGd3
+ header.s=k20201202 header.b=bZ9cjZe0
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 50900615AF;
-	Thu,  8 Aug 2024 20:57:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33533C4AF0F;
-	Thu,  8 Aug 2024 20:56:59 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 36F1F615D3;
+	Thu,  8 Aug 2024 21:46:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E72C4AF09;
+	Thu,  8 Aug 2024 21:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723150625;
-	bh=3gMQ/W5MtQjyMsV0X0nPhRzuZIpjk6OuKMuGIcJFv6Q=;
+	s=k20201202; t=1723153611;
+	bh=SrCA00LIf/8WOXQ3qcmUmKiAAagWu7ZJgow5VDaam+c=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=q2sQyGd3xhLLhyJ0+0WxAsuxr5H53VpCEx19OqoMBm04uz/FRwH4OE25JGbUc1cGS
-	 QIndHedZ4c/vG+zzq+Y6x8uCUbQw7wxshth79NsQtPzVu3BbBvxsY7dp149x+bwhiY
-	 NKj6Yf2akZvpFq11I/xvJBhts4gM5GjXL9pXaAgjVTiqLC0O+fXPxktxefcIdrkBKX
-	 XgYD/CpKWGHsg14aRouLFfys2kpoKflz73zAqa9NamjdUvhYtbGJAYDOHhLBS86AXK
-	 /Yt3nEHgpNr5j9mr0JG53vZLwIp7tdHjAduaoruYjLMfwMnAQD0ypYpSc8IlJEyAjS
-	 tr0YLjzpmXrQQ==
+	b=bZ9cjZe0POp4JGOuDLjdD6aQkYB+P7985cL9FZtK88aqOJBK768izyFn6wcwfL5W+
+	 XcP0+JAdA8Z+wPTtJjE0mvOQl1w4ZduBXONflK1+08LBQXMDxOzmdqIC01Qc50uacl
+	 lr1ORJYjMFgcDuUnw81+w1o2qpPb9PoqlTh5c/dlhppguJbk6e2axJvPwVcG9tC6mW
+	 U+2HvWvvIv+Sm7tQytU3ev+8tic3NCGltcOArLUIjhSW+iUVqX+peYhsndOOPXCZhx
+	 BQuJlAfsj/ZgK0y/2iqPv/HJRBfXhOytWI4w4Nk10ue+DBjDJ/RZ9wMUmKCoTOj9wp
+	 vO/9KY2+tFXZg==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Zhang Yi <zhangyi@everest-semi.com>
-Cc: tiwai@suse.com, amadeuszx.slawinski@linux.intel.com,
- yangxiaohua@everest-semi.com, zhuning@everest-semi.com
-In-Reply-To: <20240807025356.24904-1-zhangyi@everest-semi.com>
-References: <20240807025356.24904-1-zhangyi@everest-semi.com>
-Subject: Re: (subset) [PATCH 0/2] ASoC: codecs: ES8326: button and input
- issue
-Message-Id: <172315062082.475406.2464189744882534601.b4-ty@kernel.org>
-Date: Thu, 08 Aug 2024 21:57:00 +0100
+To: Simon Trimmer <simont@opensource.cirrus.com>
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20240807142648.46932-1-simont@opensource.cirrus.com>
+References: <20240807142648.46932-1-simont@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l56: Patch CS35L56_IRQ1_MASK_18 to the
+ default value
+Message-Id: <172315360941.480667.13660715615333697845.b4-ty@kernel.org>
+Date: Thu, 08 Aug 2024 22:46:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: F3N42BK2PSYBG66XPITH2VSWVICKG7VQ
-X-Message-ID-Hash: F3N42BK2PSYBG66XPITH2VSWVICKG7VQ
+Message-ID-Hash: RQEAJXVBN4MZWV2EQ7TTJHCI5E57IFQG
+X-Message-ID-Hash: RQEAJXVBN4MZWV2EQ7TTJHCI5E57IFQG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F3N42BK2PSYBG66XPITH2VSWVICKG7VQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RQEAJXVBN4MZWV2EQ7TTJHCI5E57IFQG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,13 +93,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 07 Aug 2024 10:53:54 +0800, Zhang Yi wrote:
-> TO solve button and input issue, We have modified parts of the driver
-> related to button and input.
+On Wed, 07 Aug 2024 14:26:48 +0000, Simon Trimmer wrote:
+> Device tuning files made with early revision tooling may contain
+> configuration that can unmask IRQ signals that are owned by the host.
 > 
-> Zhang Yi (2):
->   ASoC: codecs: ES8326: button detect issue
->   ASoC: codecs: ES8326: input issue after init
+> Adding a safe default to the regmap patch ensures that the hardware
+> matches the driver expectations.
+> 
 > 
 > [...]
 
@@ -107,8 +109,8 @@ Applied to
 
 Thanks!
 
-[2/2] ASoC: codecs: ES8326: input issue after init
-      commit: be942e3d20cf666f6174f47826914c3b5ea61d85
+[1/1] ASoC: cs35l56: Patch CS35L56_IRQ1_MASK_18 to the default value
+      commit: 72776774b55bb59b7b1b09117e915a5030110304
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
