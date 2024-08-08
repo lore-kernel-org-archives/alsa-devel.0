@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C029C52D71
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 20:57:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA91C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 20:57:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 116F6E82;
-	Thu,  8 Aug 2024 22:57:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 116F6E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93F1AEAB;
+	Thu,  8 Aug 2024 22:57:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93F1AEAB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723150640;
-	bh=6d3cWqVCdJO0OpAjDetmkYiZ9As4WBJyrx0zuxN2k+U=;
+	s=default; t=1723150659;
+	bh=7c4tQRSAELTB1T8amQAP3q6kd8OVoXeWj2W715x9jIM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CkWy9znxBna6os7J7LWaYnjGJlAifF+sz3fnTgzaiIcbX1E9tpG8/rAzIOVtt0TGO
-	 HRbYjiLQ4eioIuR/D6cRngFdEtJSGiDV5Rxs/6QRRleffmMLpt6b6rSvDinYHvi2wC
-	 blhfvv3OOmJdc719gEf60VEXzNgnLkVaVUl5PTHE=
+	b=XOcQxIOeubfnpW2kbqbQPUTiQElZw+A4sGlIx8/FvpY1h1Sz/xGEMwbZllEnkGe3C
+	 TYCxZ2Z7rU744xqDZmm3tjr5xAZhXPUtbGDbWbGPsmeKy9d4SkoFJ5b4eeE2cdku6p
+	 kTtibTzNA0idpQmXpeujaQzTI4QRF08IZhxJZz+8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC5C0F805D2; Thu,  8 Aug 2024 22:56:38 +0200 (CEST)
+	id A1451F805F5; Thu,  8 Aug 2024 22:56:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5585FF805E0;
-	Thu,  8 Aug 2024 22:56:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08C5BF805EA;
+	Thu,  8 Aug 2024 22:56:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32B33F805A1; Thu,  8 Aug 2024 22:56:34 +0200 (CEST)
+	id 20C78F8057A; Thu,  8 Aug 2024 22:56:48 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B2EDDF800B0
-	for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2024 22:56:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2EDDF800B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 79F03F802DB
+	for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2024 22:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79F03F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=RLZH+0Br
+ header.s=k20201202 header.b=WixlTFq0
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 26FA5CE13D8;
-	Thu,  8 Aug 2024 20:56:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75058C32782;
-	Thu,  8 Aug 2024 20:56:17 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 61A03CE1381;
+	Thu,  8 Aug 2024 20:56:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DABCCC32782;
+	Thu,  8 Aug 2024 20:56:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723150587;
-	bh=6d3cWqVCdJO0OpAjDetmkYiZ9As4WBJyrx0zuxN2k+U=;
+	s=k20201202; t=1723150600;
+	bh=7c4tQRSAELTB1T8amQAP3q6kd8OVoXeWj2W715x9jIM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=RLZH+0BrYEX8+NwfuPPkQOYJDmsWVbSjFDJwM8AB+vpzzKH6OTLaucifTi/8W5uK4
-	 obr+VKnBrJlivSVXeeMbEu9Ng1yAdvO4AgfrKf+FHIXOiPkhAIlUGVHqPzlhccJZrZ
-	 VCYwDA0RIXOz5dDFQSGG3HElLp5MFLk0dxzw8Bg7ZVlrRFkFc8q3WzmjOZ18zzWT0Q
-	 s6hZcEq59cUWjcKdKIz26ACxS4Pg71VMR2t+nXrMewPzxZLZxBB8z8flerJuTmZLAK
-	 O0fZETGPoErof4OBIXXvbSKYOqalrPcv0UaxIpkmBaVXThWzayCTzyfMcBrAOs2Uiu
-	 nZia1eftxWpyg==
+	b=WixlTFq0j1bNZegfuhsDPidaMkO1UMMoCEpakA6WQAbgHAATKM/qL2CrLZlYrteet
+	 Rtcs4/Dx/Ur2nCg7lOjqBEcP/SVmChvg7VMZayqpBWwLddXZRmM6ExqymPzYZjRT6E
+	 mI3nRNUruH8YhEg3rXpPr8cLGttvEL/SC6AnXtrdf2HBH+UzKCkj4AnIRO7z1H9Lkk
+	 3cpbWo3vtTxDYBtjav95DrXk44TMyJ4E9elV5v/8GRi89DtjgYOqC6Ck8k4FGBglgq
+	 4tKkN+ibwx7DqrxlfUCRTHgcEt/0Dsbcpf99EhVG/G0Q+lYoA42RpEAVkpfRcK3j2S
+	 vpxkaROuzrBJQ==
 From: Mark Brown <broonie@kernel.org>
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, krzk@kernel.org,
- Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
- venkataprasad.potturu@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
+ sunpeng.li@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>,
  "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
  <linux-sound@vger.kernel.org>,
  open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20240807050846.1616725-1-Vijendar.Mukunda@amd.com>
-References: <20240807050846.1616725-1-Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: amd: acp: remove MODULE_ALIAS for SoundWire
- machine driver
-Message-Id: <172315057813.475406.17002949847981977222.b4-ty@kernel.org>
-Date: Thu, 08 Aug 2024 21:56:18 +0100
+In-Reply-To: <20240807085154.1987681-1-Vijendar.Mukunda@amd.com>
+References: <20240807085154.1987681-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: amd: acp: add ZSC control register programming
+ sequence
+Message-Id: <172315059143.475406.15663956148866112375.b4-ty@kernel.org>
+Date: Thu, 08 Aug 2024 21:56:31 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: OCFMEWBAVH5DTGHNQW6QRB3Y2BIWQAEE
-X-Message-ID-Hash: OCFMEWBAVH5DTGHNQW6QRB3Y2BIWQAEE
+Message-ID-Hash: EZUUSGJVY5ISVJOVR4LCXZCQLVJAS4DM
+X-Message-ID-Hash: EZUUSGJVY5ISVJOVR4LCXZCQLVJAS4DM
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OCFMEWBAVH5DTGHNQW6QRB3Y2BIWQAEE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EZUUSGJVY5ISVJOVR4LCXZCQLVJAS4DM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,9 +99,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 07 Aug 2024 10:38:39 +0530, Vijendar Mukunda wrote:
-> As module device table added for AMD SoundWire machine driver MODULE_ALIAS
-> is not required. Remove MODULE_ALIAS for AMD SoundWire machine driver.
+On Wed, 07 Aug 2024 14:21:48 +0530, Vijendar Mukunda wrote:
+> Add ZSC Control register programming sequence for ACP D0 and D3 state
+> transitions for ACP7.0 onwards. This will allow ACP to enter low power
+> state when ACP enters D3 state. When ACP enters D0 State, ZSC control
+> should be disabled.
 > 
 > 
 
@@ -111,8 +113,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: remove MODULE_ALIAS for SoundWire machine driver
-      commit: 20288905e1ee33af82570b79adee3f15018030d4
+[1/1] ASoC: amd: acp: add ZSC control register programming sequence
+      commit: c35fad6f7e0d69b0e9e7e196bdbca3ed03ac24ea
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
