@@ -4,65 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D83C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 22:07:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A684EC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 22:08:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20BAF84C;
-	Fri,  9 Aug 2024 00:07:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20BAF84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E44F3E67;
+	Fri,  9 Aug 2024 00:07:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E44F3E67
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723154875;
-	bh=lMwtVtmFybSekMnySqFfNLNPgs8kbqAJdRJj9agRW78=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=AUeIWIT9aEUDROQn41tYuvWZhGyskzgSMu1kSSmi6w3ALntJ/v5Cau53P1n7vd1D+
-	 d4PK6DUeJKxJgJPi4AiHSvOgrpKEEgP0v6+tdQoE03pSx9N3L1WwZCETZj1OfnZR4h
-	 l5P79NrSrt3+VMISs+eNvLTbl2JjrmiCZ33zvyBs=
+	s=default; t=1723154885;
+	bh=U55zr8nmJOAbnMqspv1F23aPrgO2gDK8goya8/ZMJb8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=r1/MaaUznvm6G2q+7BJZuct0X6ymNMWSaTDS/Nr0ee5Dovr4Mx5XnGj9YMhnjF2iJ
+	 OxkVyoXoKyncDYuMC/F2hptFZLgfdb8kSkmn7CwbMiTC1uYhB+CUdPnIEifB+dNcMh
+	 Bfzx7QERJIMzphP+5Fr897f0ncoC62EB+D040yRk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99EDFF805FF; Fri,  9 Aug 2024 00:06:49 +0200 (CEST)
+	id DD328F8060A; Fri,  9 Aug 2024 00:06:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B9E0F80603;
-	Fri,  9 Aug 2024 00:06:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20A56F80615;
+	Fri,  9 Aug 2024 00:06:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6281F802DB; Thu,  8 Aug 2024 23:54:02 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 6C5C9F8049C; Thu,  8 Aug 2024 23:53:55 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54004F80448
-	for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2024 23:50:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54004F80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id 265E1F802DB
+	for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2024 23:47:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 265E1F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=JkDe7uB+
+ header.s=k20201202 header.b=KGm1kxPN
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 0A734CE0E5F;
-	Thu,  8 Aug 2024 21:50:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0A44C32782;
-	Thu,  8 Aug 2024 21:50:03 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0436B60659;
+	Thu,  8 Aug 2024 21:47:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB115C4AF12;
+	Thu,  8 Aug 2024 21:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723153804;
-	bh=lMwtVtmFybSekMnySqFfNLNPgs8kbqAJdRJj9agRW78=;
-	h=From:To:Cc:Subject:Date:From;
-	b=JkDe7uB+zXoxZiKn4jadu7ehCWE1WF4gI/n3iw4Nkp3L6qDg/KU0jnKVOHHvIUh7N
-	 3N18g8bsKwfEV9xOiyF441sfmPUlqzuM4gLivYle7/Fbe5FFSQk7d9+iaAghF/Ocyo
-	 1SzgSaQ3kjNHWy3SA8tRgcaudhqd7/hyEDPix2fqZtsi+8MAWvwVTWDS2EnJ/OZS+q
-	 agtB/UCqf1VfvNwV3mWX8Y/zA/v7zq1/c9GklT8E/EJSJZsUVdZOgCQwA/Jd9+S2W5
-	 9oDt8HEl6fVbM841PIqhfMzUkZ3NohQzscq3hC0z2Cz5tNN3GCnzvznHRxlZ50hfGj
-	 e1re+RIH3xHtw==
-Message-ID: <6bdf8d7232943e6210f6560931e6d2ab.broonie@kernel.org>
+	s=k20201202; t=1723153626;
+	bh=U55zr8nmJOAbnMqspv1F23aPrgO2gDK8goya8/ZMJb8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=KGm1kxPNo9FWiD+NdC9BHLIxg3omvTRrbd5okPmbZyrqZKpxgtKS9DuFOjKkus7sq
+	 eTCmr5Vd2pdquUsV6/N+BZwDd01ac3jp9fXy3xf7WKVn52y25Algdz58SH/qSG6w9W
+	 Mn/OGN86xhD3laejbCwPjG2B5K/x9v+EkDGYVG3NSoRl7M6PuGOJpbWlySLF3nHWzr
+	 ndxbEoMDRKf7Ppr34bhxznfcV23yr8ToT0FVPiKQqNBnmlocoTI6VialKiyBVtG0xW
+	 OAP8B5QzrBLMgDI+t6dnYJuaBIjfUA5VXqvvMbppBuibK2dwxWOvUOGurPJV1X9ELB
+	 mWYWszTXEDGPA==
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v6.11-rc2
-Date: Thu, 08 Aug 2024 22:49:42 +0100
-Message-ID-Hash: DJNZ3XNFWN4QX52Y332GJXRJMBAIVUFS
-X-Message-ID-Hash: DJNZ3XNFWN4QX52Y332GJXRJMBAIVUFS
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+ linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Arseniy Krasnov <avkrasnov@salutedevices.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+In-Reply-To: <20240807162705.4024136-1-jbrunet@baylibre.com>
+References: <20240807162705.4024136-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH v2] ASoC: meson: axg-fifo: fix irq scheduling issue
+ with PREEMPT_RT
+Message-Id: <172315362437.480667.7263502304351371986.b4-ty@kernel.org>
+Date: Thu, 08 Aug 2024 22:47:04 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
+Message-ID-Hash: ZEYKIKOV4R5VDCZ3ACBR5BO3TSWQ5YWA
+X-Message-ID-Hash: ZEYKIKOV4R5VDCZ3ACBR5BO3TSWQ5YWA
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DJNZ3XNFWN4QX52Y332GJXRJMBAIVUFS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZEYKIKOV4R5VDCZ3ACBR5BO3TSWQ5YWA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,128 +95,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit 8400291e289ee6b2bf9779ff1c83a291501f017b:
+On Wed, 07 Aug 2024 18:27:03 +0200, Jerome Brunet wrote:
+> With PREEMPT_RT enabled a spinlock_t becomes a sleeping lock.
+> 
+> This is usually not a problem with spinlocks used in IRQ context since
+> IRQ handlers get threaded. However, if IRQF_ONESHOT is set, the primary
+> handler won't be force-threaded and runs always in hardirq context. This is
+> a problem because spinlock_t requires a preemptible context on PREEMPT_RT.
+> 
+> [...]
 
-  Linux 6.11-rc1 (2024-07-28 14:19:55 -0700)
+Applied to
 
-are available in the Git repository at:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.11-rc2
+Thanks!
 
-for you to fetch changes up to 72776774b55bb59b7b1b09117e915a5030110304:
+[1/1] ASoC: meson: axg-fifo: fix irq scheduling issue with PREEMPT_RT
+      commit: 5003d0ce5c7da3a02c0aff771f516f99731e7390
 
-  ASoC: cs35l56: Patch CS35L56_IRQ1_MASK_18 to the default value (2024-08-08 20:34:56 +0100)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-----------------------------------------------------------------
-ASoC: Fixes for v6.11
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Quite a lot of fixes have come in since the merge window, there's some
-repetitive fixes over the Qualcomm drivers increasing the patch count,
-along with a large batch of fixes from Cirrus.  We also have some quirks
-and some individual fixes.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-----------------------------------------------------------------
-Bruno Ancona (1):
-      ASoC: amd: yc: Support mic on HP 14-em0002la
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Charles Keepax (5):
-      ASoC: cs42l43: Remove redundant semi-colon at end of function
-      ASoC: soc-component: Add new snd_soc_component_get_kcontrol() helpers
-      ASoC: cs35l45: Use new snd_soc_component_get_kcontrol_locked() helper
-      ASoC: cs42l43: Cache shutter IRQ control pointers
-      MAINTAINERS: Update Cirrus Logic parts to linux-sound mailing list
+Thanks,
+Mark
 
-Curtis Malainey (1):
-      ASoC: SOF: Remove libraries from topology lookups
-
-Francesco Dolcini (1):
-      ASoC: nau8822: Lower debug print priority
-
-Jerome Audu (1):
-      ASoC: sti: add missing probe entry for player and reader
-
-Jerome Brunet (1):
-      ASoC: meson: axg-fifo: fix irq scheduling issue with PREEMPT_RT
-
-Johan Hovold (1):
-      ASoC: codecs: lpass-macro: fix missing codec version
-
-Krzysztof Kozlowski (10):
-      ASoC: codecs: wcd937x-sdw: Correct Soundwire ports mask
-      ASoC: codecs: wcd938x-sdw: Correct Soundwire ports mask
-      ASoC: codecs: wcd939x-sdw: Correct Soundwire ports mask
-      ASoC: codecs: wsa881x: Correct Soundwire ports mask
-      ASoC: codecs: wsa883x: Correct Soundwire ports mask
-      ASoC: codecs: wsa884x: Correct Soundwire ports mask
-      ASoC: dt-bindings: qcom,wcd937x: Correct reset GPIO polarity in example
-      ASoC: dt-bindings: qcom,wcd934x: Correct reset GPIO polarity in example
-      ASoC: dt-bindings: qcom,wcd938x: Correct reset GPIO polarity in example
-      ASoC: dt-bindings: qcom,wcd939x: Correct reset GPIO polarity in example
-
-Krzysztof Stępniak (1):
-      ASoC: amd: yc: Support mic on Lenovo Thinkpad E14 Gen 6
-
-Mark Brown (3):
-      ASoC: codecs: wcd93xx/wsa88xx: Correct Soundwire ports
-      ASoC: fsl_micfil: Check the difference for i.MX8 and
-      ASoC: Extend wm_adsp so cs35l56 can suppress controls
-
-Paul Handrigan (1):
-      ASoC: cs530x: Change IN HPF Select kcontrol name
-
-Richard Fitzgerald (2):
-      ASoC: cs-amp-lib: Fix NULL pointer crash if efi.get_variable is NULL
-      ASoC: cs35l56: Handle OTP read latency over SoundWire
-
-Shengjiu Wang (2):
-      ASoC: fsl_micfil: Expand the range of FIFO watermark mask
-      ASoC: fsl_micfil: Differentiate register access permission for platforms
-
-Simon Trimmer (3):
-      ASoC: wm_adsp: Add control_add callback and export wm_adsp_control_add()
-      ASoC: cs35l56: Stop creating ALSA controls for firmware coefficients
-      ASoC: cs35l56: Patch CS35L56_IRQ1_MASK_18 to the default value
-
-Takashi Iwai (1):
-      ASoC: amd: yc: Add quirk entry for OMEN by HP Gaming Laptop 16-n0xxx
-
-Zhang Yi (1):
-      ASoC: codecs: ES8326: button detect issue
-
- .../devicetree/bindings/sound/qcom,wcd934x.yaml    |  3 +-
- .../devicetree/bindings/sound/qcom,wcd937x.yaml    |  2 +-
- .../devicetree/bindings/sound/qcom,wcd938x.yaml    |  3 +-
- .../devicetree/bindings/sound/qcom,wcd939x.yaml    |  4 +-
- MAINTAINERS                                        |  4 +-
- include/sound/cs35l56.h                            |  5 ++
- include/sound/soc-component.h                      |  5 ++
- sound/soc/amd/yc/acp6x-mach.c                      | 21 ++++++
- sound/soc/codecs/cs-amp-lib.c                      |  2 +-
- sound/soc/codecs/cs35l45.c                         | 11 +---
- sound/soc/codecs/cs35l56-sdw.c                     | 77 ++++++++++++++++++++++
- sound/soc/codecs/cs35l56-shared.c                  |  1 +
- sound/soc/codecs/cs35l56.c                         | 11 ++++
- sound/soc/codecs/cs42l43.c                         | 75 ++++++++++++++++-----
- sound/soc/codecs/cs42l43.h                         |  2 +
- sound/soc/codecs/cs530x.c                          |  8 +--
- sound/soc/codecs/es8326.c                          |  2 +
- sound/soc/codecs/lpass-va-macro.c                  |  2 +
- sound/soc/codecs/nau8822.c                         |  2 +-
- sound/soc/codecs/wcd937x-sdw.c                     |  4 +-
- sound/soc/codecs/wcd938x-sdw.c                     |  4 +-
- sound/soc/codecs/wcd939x-sdw.c                     |  4 +-
- sound/soc/codecs/wm_adsp.c                         | 17 ++++-
- sound/soc/codecs/wm_adsp.h                         |  3 +
- sound/soc/codecs/wsa881x.c                         |  2 +-
- sound/soc/codecs/wsa883x.c                         |  2 +-
- sound/soc/codecs/wsa884x.c                         |  2 +-
- sound/soc/fsl/fsl_micfil.c                         | 20 ++++--
- sound/soc/fsl/fsl_micfil.h                         |  2 +-
- sound/soc/meson/axg-fifo.c                         | 26 +++-----
- sound/soc/soc-component.c                          | 42 +++++++++---
- sound/soc/sof/mediatek/mt8195/mt8195.c             |  2 +-
- sound/soc/sti/sti_uniperif.c                       |  2 +-
- sound/soc/sti/uniperif.h                           |  1 +
- sound/soc/sti/uniperif_player.c                    |  1 +
- sound/soc/sti/uniperif_reader.c                    |  1 +
- 36 files changed, 291 insertions(+), 84 deletions(-)
