@@ -4,157 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FCB3C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 18:23:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BF2FC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Aug 2024 18:23:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74DE1E82;
-	Thu,  8 Aug 2024 20:23:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74DE1E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9E13846;
+	Thu,  8 Aug 2024 20:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9E13846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723141407;
-	bh=3Dcu6aJU8X/aJgTk736SCzyefoHjdCUG7aL9wcxERrk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=n/dnDxElC6gH6V5L6fwy/jIj3pmpySjDur1nrTq7+ztelGwBb+rI/6a518rbz/Ezo
-	 xnLIuleI4rULipIraOvsEQ/ZafWpTn+z3T7ng6bW5hK0gi1vp5HkQfToILek6AXOkn
-	 n0/gIRRPkaNE11MWk46S+k2jfd9lTDeAEKQyeXkA=
+	s=default; t=1723141426;
+	bh=fBYzb9q58GUyO+F6s8oW2cvMI2xtXQ/irUMXIi6iaFE=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=XYnVHrsic9oIPpFXoefSzGZYlOydwxha2YDfYrAzSFwX5YesS7bmlpRmuQ/M8A9Pl
+	 IbaTpAQM7J81d+yurX8FwWRe0Ke5l6arLxQtiTAG2VbMlIABFUW6ok8P9hlgZ5lsBJ
+	 mszpaZhlaGzHDayhKHy4TM5nNxNAKp3zGo9gusOo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57F7FF806DB; Thu,  8 Aug 2024 20:21:15 +0200 (CEST)
+	id B9195F805E7; Thu,  8 Aug 2024 20:21:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B97B7F806AF;
-	Thu,  8 Aug 2024 20:21:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2211F80715;
+	Thu,  8 Aug 2024 20:21:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1FF0F80448; Thu,  8 Aug 2024 18:59:05 +0200 (CEST)
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam11on20601.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2415::601])
+	id C08B6F802DB; Thu,  8 Aug 2024 19:53:05 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BFF1CF802DB;
-	Thu,  8 Aug 2024 18:58:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFF1CF802DB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0BFD8F80236
+	for <alsa-devel@alsa-project.org>; Thu,  8 Aug 2024 19:52:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BFD8F80236
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=EzNrThNF
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=aSldk5ncTv4n0aBIGe3Cm2BVxBQCGxX/gvWpks+vmBfN2blu6Rjbxr/KnX58+DKnnIK7kCr5r6vTi4223kPLYabUUqkBaZnWYFZFNrFCy04tjMulZ8XyZcJHfTjDWWvxS8UXXNuilLttNxgdE+ZpFctzPl7bXKz9Iq51mnT/Hlp+StQ+SYdm3+CtG7zGCzqdVoVVIMiFarv9O1wpdGSCTkiFaFHjQLIpLxs/cYkQ7zjvNIq1TSTEVzIl11sH9YX5EvotlODR+fEg17CeusTyGz4oBIwPRmN4Wi0XKqanTuCieLL1FNh9LRUxhkrIlYYY00h58m/7H/VD99rLrLQ3Lw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I2KCJG/+YUEu+WHixSrZZlPKZxJ6pb4opybJ0tKtTd4=;
- b=rqykIFEOEWZDyoE3gXusVrRK0C4SszWauoU0a6/5zSV4JdDbBehtjauuYB+zRKcXAmzvcMAEUV+WKEaOZaf6VJX2raCgmjlCguqTAqn5vet6jpfN0S2RfzrvVpxYmfpF5819L0tVrQZPtvi33oM7VCvikspheFG6XGXbQtRkhc/RteSWkJeYi1u76v6CJx2pK06XMFE/OzU0wLLuu8JxgH01W8ouFeSEFcEBb5kOYk5abSfgMkkycBerCCnwBFCHD5m26cJPJ1pBv8c7whV9LtUTA6ZWQ6o/Tmgn9Bw5JolqynU6zp14i5lX5aczM/23SjU79LtBgW6cSy1alWwuPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I2KCJG/+YUEu+WHixSrZZlPKZxJ6pb4opybJ0tKtTd4=;
- b=EzNrThNFt1tXRFuvHRiGOLjDHAJfciYsqRgVEXKBqy65IIqFBvJ15IRIJ81VK7QRWkfV7A+QNbesPDF2ltqpAgxzguz6/AbCSnaBU9mu3mNwZm7heorBfon8pCKVv0eQbiMjFNgkwhcDM66EzcvFrmmEcreVhc7U7Vz9ooYaoKc=
-Received: from BN9PR03CA0226.namprd03.prod.outlook.com (2603:10b6:408:f8::21)
- by CH3PR12MB8548.namprd12.prod.outlook.com (2603:10b6:610:165::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7849.13; Thu, 8 Aug
- 2024 16:58:27 +0000
-Received: from BL6PEPF0001AB53.namprd02.prod.outlook.com
- (2603:10b6:408:f8:cafe::ec) by BN9PR03CA0226.outlook.office365.com
- (2603:10b6:408:f8::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.29 via Frontend
- Transport; Thu, 8 Aug 2024 16:58:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB53.mail.protection.outlook.com (10.167.241.5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7849.8 via Frontend Transport; Thu, 8 Aug 2024 16:58:27 +0000
-Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 8 Aug 2024 11:58:22 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <sound-open-firmware@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-	<pierre-louis.bossart@linux.intel.com>, <yung-chuan.liao@linux.intel.com>,
-	<ranjani.sridharan@linux.intel.com>, <perex@perex.cz>, <tiwai@suse.com>,
-	<lgirdwood@gmail.com>, <kai.vehmanen@linux.intel.com>,
-	<daniel.baluta@nxp.com>, <Basavaraj.Hiregoudar@amd.com>,
-	<Sunil-kumar.Dommati@amd.com>, <venkataprasad.potturu@amd.com>,
-	<cristian.ciocaltea@collabora.com>, Vijendar Mukunda
-	<Vijendar.Mukunda@amd.com>
-Subject: [PATCH RESEND 3/8] ASoC: SOF: amd: move iram-dram fence register
- programming sequence
-Date: Thu, 8 Aug 2024 22:27:48 +0530
-Message-ID: <20240808165753.3414464-4-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240808165753.3414464-1-Vijendar.Mukunda@amd.com>
-References: <20240808165753.3414464-1-Vijendar.Mukunda@amd.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=LsSc0sXu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723139569; x=1754675569;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=fBYzb9q58GUyO+F6s8oW2cvMI2xtXQ/irUMXIi6iaFE=;
+  b=LsSc0sXuRd5LAB4lbc6AQPwRVQfeC1FdD4CrNltd6LayB+g8BgsFwpyz
+   ZX739A/WVOOIHUApKELk9YhRj4MNNmC8Pp9v72P/nOpiYhyxfCyVZx3XD
+   c0r/ilFzJhQdtgwSkjGrwGJPuduyD17TSIUGbIgntzxN5LCFp1rp5CeS9
+   VdvGBBK5IlrK77XIYFpRfAqN6oX565x4QP1xB2fCgY5v3/FEobrkk0q4N
+   sPvJhU4tjbmvg1CEtUtuPQVWjj0qiqd0GyO2SzUduG/de7Zk0hyvWKHed
+   +0N4cv2E7sqhJDvRwZVHc+LwD3RhHUgNDCAsCChg8eH3g2nECSargFryP
+   Q==;
+X-CSE-ConnectionGUID: Vs0H6sfgS9yaa0lxpRrggQ==
+X-CSE-MsgGUID: o7hU5AdaTKSV8rES2wIYQg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11158"; a="32433599"
+X-IronPort-AV: E=Sophos;i="6.09,273,1716274800";
+   d="scan'208";a="32433599"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Aug 2024 10:52:43 -0700
+X-CSE-ConnectionGUID: ISTeMbyLSyuhUOk3z5pfCQ==
+X-CSE-MsgGUID: Cwk/nXO2RYaAN3s29GK5gw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,273,1716274800";
+   d="scan'208";a="57537432"
+Received: from unknown (HELO b6bf6c95bbab) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 08 Aug 2024 10:52:41 -0700
+Received: from kbuild by b6bf6c95bbab with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sc7JW-0006OJ-1p;
+	Thu, 08 Aug 2024 17:52:38 +0000
+Date: Fri, 9 Aug 2024 01:52:34 +0800
+From: kernel test robot <lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: [tiwai-sound:for-next 69/82] sound/pcmcia/vx/vxpocket.c:273:26:
+ error: 'pdev' undeclared; did you mean 'p_dev'?
+Message-ID: <202408090110.t0mWbTyh-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB53:EE_|CH3PR12MB8548:EE_
-X-MS-Office365-Filtering-Correlation-Id: a84714e4-e8a9-4620-2654-08dcb7cb52d3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|36860700013|82310400026|7416014|376014|1800799024;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?bKV+OQO2gn/MUaAu5SudUqR+DpNq7ZjyuhcJW4BEWdQvgJWf2vUBtPTYFm0T?=
- =?us-ascii?Q?auKIFcTkfuvexQ9FPEk1rcs14NkQ6fKnC+Th71yUMAUQG93KE/5H/R61Wjvs?=
- =?us-ascii?Q?691dTfc6ZZCO+6hCuGVNTBrowBShGgKKkL2QSJapPD2bgX1jO3JBaFvKnevN?=
- =?us-ascii?Q?fIkx0CpJXprVGyLprVHn0PRKhL6mHJy/3ff87UgmYO1Hp89yBCsFlN2NR/q5?=
- =?us-ascii?Q?bgBjPR0N977UWz6PIdr5CFd47dZbeZH5sl9miQUxo3WoOLa6Ql0HZTGlPdc7?=
- =?us-ascii?Q?BRIaHHdK40gA2OjXKvsg6y8wJUxRkcEM3veU4a7ieqC7CojfBlV/6txeJbyl?=
- =?us-ascii?Q?G9CTNRbpljBpdL/gVwimpfX53J1LJrLwqoq5XJOUTVc+wdIG/Ia/LG4kDCvj?=
- =?us-ascii?Q?FeZNHG4DlDubJWzfd9nErtfZOdjq5dh0ajR5Y8moE0GA9CgZxstfqtOKbogn?=
- =?us-ascii?Q?e6uNwJGsbvlTMEAN85hPCUOh5YPGkry5ywj71wWFLYGDUlZ9BIb/W9Do6doy?=
- =?us-ascii?Q?YXWPw+AsKDaoA28KjG9GUCBQ0ZrhSU64D04fhnnyc9kKWCkhXBVjR3H6R5rr?=
- =?us-ascii?Q?0UK8H3OL1pEdfwGRcOcQxnmx3vrPnE+dwhryCn9N3heKIm0+WK00mkXchPHB?=
- =?us-ascii?Q?7xJDXfWimNNUS9nnHm/NQpsI3A3YC215kNRwoiROLKVNmcI/GydU99l9qVfI?=
- =?us-ascii?Q?YtS6J9t0OTfdoX/FvETw3k2SffhmyZ/Rwdh/ulmBwKcUZ1AlTRj+9CqzqnZJ?=
- =?us-ascii?Q?zgKFdFidzMiU4htlKeMdwx2EoptAdn+yu4TKoTYKKByLS611Yny7ulfBr29q?=
- =?us-ascii?Q?C4cRR94Ie6ZnC1SxiNQ2kQf8QhttjyGcwnWJawcGexORMW/b9Vx5zUmVgesL?=
- =?us-ascii?Q?zBfendkop5msWvThGXjwDlXK6x8if8hxkKINknEzPg+fErBsjznFdCWFX28r?=
- =?us-ascii?Q?kZTlZ5X6mOmO00iJPzZA5bXJ4KZC+TjzMTEHREc7OJKJKUIzm0yFKsGNkcrL?=
- =?us-ascii?Q?eYMqEwilK9CJ9X6G/2UJkCkZ1a3rypUZIAJwxCgLrGJrsqQS0K4O+Cve6Yi/?=
- =?us-ascii?Q?buMA3vmmrb7CE8qH7N7s1r6qlOdi3+Mfon03WNYLdEO5zEFBcYjsRSnKKOs+?=
- =?us-ascii?Q?FEGTN0MabSHMgE22kMLHZxhqMLI/3K1j900b4+NxPz1M3wHp/2KusPgE0LRc?=
- =?us-ascii?Q?XCOZ+ZElSqJuMsZ79RKcQECyT5PcrlMdm/ggkrpJMqxedenJX4EuQGKFCByT?=
- =?us-ascii?Q?039jm4UwITLu5xrzEHTrF7FwjmFAsFJLrId3HN+i61BDFPPFhs/yC71kPRCS?=
- =?us-ascii?Q?Xkoq8E8hhqriysm1YUktvrdzgodz0PFGkHCcF70XYqJBu+nK9U558WBycRzy?=
- =?us-ascii?Q?B+1AfkuSNM6gpWbf+keb10F8wLIEKID32PpQ/JsjLBjDvXQH0GzxZj3iHYVo?=
- =?us-ascii?Q?GWcn5x7iFWzTf/+yPrIybjJlUa0rw1el?=
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Aug 2024 16:58:27.4800
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- a84714e4-e8a9-4620-2654-08dcb7cb52d3
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	BL6PEPF0001AB53.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8548
-Message-ID-Hash: P7E5OQZWLMGUDWSTXP2CRWQJKFQ6SCFX
-X-Message-ID-Hash: P7E5OQZWLMGUDWSTXP2CRWQJKFQ6SCFX
-X-MailFrom: Vijendar.Mukunda@amd.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Message-ID-Hash: JUDCWT6XS52VZRW32I3DX2HLBO4THDFN
+X-Message-ID-Hash: JUDCWT6XS52VZRW32I3DX2HLBO4THDFN
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -166,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P7E5OQZWLMGUDWSTXP2CRWQJKFQ6SCFX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JUDCWT6XS52VZRW32I3DX2HLBO4THDFN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -175,58 +102,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As per design, ACP iram-dram fence register sequence should be initiated
-before triggering SHA dma. This ensures that IRAM size will programmed
-correctly before initiaing SHA dma.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+head:   e95b9f7f2ee05bbef3bf6a4cd7da6e887f17f652
+commit: 2acbb5e57230830016e0fb2d61886e7a8c7f59ce [69/82] ALSA: vxpocket: Use standard print API
+config: i386-randconfig-141-20240808 (https://download.01.org/0day-ci/archive/20240809/202408090110.t0mWbTyh-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240809/202408090110.t0mWbTyh-lkp@intel.com/reproduce)
 
-Fixes: 094d11768f74 ("ASoC: SOF: amd: Skip IRAM/DRAM size modification for Steam Deck OLED")
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/amd/acp.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408090110.t0mWbTyh-lkp@intel.com/
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 9ce8b5ccb3d7..d0ba641ba28c 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -264,6 +264,17 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_STRT_ADDR, start_addr);
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_DESTINATION_ADDR, dest_addr);
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_MSG_LENGTH, image_length);
-+
-+	/* psp_send_cmd only required for vangogh platform (rev - 5) */
-+	if (desc->rev == 5 && !(adata->quirks && adata->quirks->skip_iram_dram_size_mod)) {
-+		/* Modify IRAM and DRAM size */
-+		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | IRAM_DRAM_FENCE_2);
-+		if (ret)
-+			return ret;
-+		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | MBOX_ISREADY_FLAG);
-+		if (ret)
-+			return ret;
-+	}
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_CMD, ACP_SHA_RUN);
- 
- 	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SHA_TRANSFER_BYTE_CNT,
-@@ -281,17 +292,6 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
- 			return ret;
- 	}
- 
--	/* psp_send_cmd only required for vangogh platform (rev - 5) */
--	if (desc->rev == 5 && !(adata->quirks && adata->quirks->skip_iram_dram_size_mod)) {
--		/* Modify IRAM and DRAM size */
--		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | IRAM_DRAM_FENCE_2);
--		if (ret)
--			return ret;
--		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | MBOX_ISREADY_FLAG);
--		if (ret)
--			return ret;
--	}
--
- 	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER,
- 					    fw_qualifier, fw_qualifier & DSP_FW_RUN_ENABLE,
- 					    ACP_REG_POLL_INTERVAL, ACP_DMA_COMPLETE_TIMEOUT_US);
+All errors (new ones prefixed by >>):
+
+   sound/pcmcia/vx/vxpocket.c: In function 'vxpocket_config':
+   sound/pcmcia/vx/vxpocket.c:207:13: error: 'struct vx_core' has no member named 'dev'
+     207 |         chip->dev = &link->dev;
+         |             ^~
+   In file included from include/linux/device.h:15,
+                    from include/sound/core.h:10,
+                    from sound/pcmcia/vx/vxpocket.c:13:
+   sound/pcmcia/vx/vxpocket.c: In function 'vxpocket_probe':
+>> sound/pcmcia/vx/vxpocket.c:273:26: error: 'pdev' undeclared (first use in this function); did you mean 'p_dev'?
+     273 |                 dev_err(&pdev->dev, "vxpocket: cannot create a card instance\n");
+         |                          ^~~~
+   include/linux/dev_printk.h:110:25: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                         ^~~
+   sound/pcmcia/vx/vxpocket.c:273:17: note: in expansion of macro 'dev_err'
+     273 |                 dev_err(&pdev->dev, "vxpocket: cannot create a card instance\n");
+         |                 ^~~~~~~
+   sound/pcmcia/vx/vxpocket.c:273:26: note: each undeclared identifier is reported only once for each function it appears in
+     273 |                 dev_err(&pdev->dev, "vxpocket: cannot create a card instance\n");
+         |                          ^~~~
+   include/linux/dev_printk.h:110:25: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                         ^~~
+   sound/pcmcia/vx/vxpocket.c:273:17: note: in expansion of macro 'dev_err'
+     273 |                 dev_err(&pdev->dev, "vxpocket: cannot create a card instance\n");
+         |                 ^~~~~~~
+
+
+vim +273 sound/pcmcia/vx/vxpocket.c
+
+   247	
+   248	
+   249	/*
+   250	 */
+   251	static int vxpocket_probe(struct pcmcia_device *p_dev)
+   252	{
+   253		struct snd_card *card;
+   254		struct snd_vxpocket *vxp;
+   255		int i, err;
+   256	
+   257		/* find an empty slot from the card list */
+   258		for (i = 0; i < SNDRV_CARDS; i++) {
+   259			if (!(card_alloc & (1 << i)))
+   260				break;
+   261		}
+   262		if (i >= SNDRV_CARDS) {
+   263			dev_err(&p_dev->dev, "vxpocket: too many cards found\n");
+   264			return -EINVAL;
+   265		}
+   266		if (! enable[i])
+   267			return -ENODEV; /* disabled explicitly */
+   268	
+   269		/* ok, create a card instance */
+   270		err = snd_card_new(&p_dev->dev, index[i], id[i], THIS_MODULE,
+   271				   0, &card);
+   272		if (err < 0) {
+ > 273			dev_err(&pdev->dev, "vxpocket: cannot create a card instance\n");
+   274			return err;
+   275		}
+   276	
+   277		err = snd_vxpocket_new(card, ibl[i], p_dev, &vxp);
+   278		if (err < 0) {
+   279			snd_card_free(card);
+   280			return err;
+   281		}
+   282		card->private_data = vxp;
+   283	
+   284		vxp->index = i;
+   285		card_alloc |= 1 << i;
+   286	
+   287		vxp->p_dev = p_dev;
+   288	
+   289		return vxpocket_config(p_dev);
+   290	}
+   291	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
