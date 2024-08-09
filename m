@@ -4,102 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96A8AC3DA4A
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Aug 2024 19:27:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D9B3C52D7D
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Aug 2024 23:36:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B94C814E7;
-	Fri,  9 Aug 2024 21:27:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B94C814E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BBA21060;
+	Sat, 10 Aug 2024 01:36:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BBA21060
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723231673;
-	bh=EjHqHHKYoRZX3HoUBZAvpzA3I2pO6ift5GDZ3LPhRnc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1723246607;
+	bh=lN/OqN7miAwFNcF8H3xwMIZzDoeycCOqpmGCgUI+PSY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=se12loK1/ywl3XMGM9gjJuiAJ2TxAgJNiyZdxjzwd7sNzxAFyTEq+XvM7ohkz1F8O
-	 RQ68iTAW5iFQ4kXhXYVGpOpYUzcq1dPE43vAHYi2Ix3/pz5QVGNyRHjIDBLVGEG32e
-	 tZ5XmgTr31f+vROuCQ0I4DXR00V0jI4Zw/hZh2eU=
+	b=fU7NtZ2azi1xfxWKIbPJxxyahzQjO2Fywe8xXiuKX5e7Ts+k4mQDaElMvtKVWy5tW
+	 t2eJCXW+j9KMdlYI+wmSPW+ISqo8Xv/Ui/Y8N4mLkHmXBGXmM7nySOnCQ5f0681wKc
+	 CTvw5aKw0PJ7gan66hAh42YEPeKRlU72lwm1bjBY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BEB3F8057A; Fri,  9 Aug 2024 21:27:23 +0200 (CEST)
+	id 6D5FEF805B1; Sat, 10 Aug 2024 01:36:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D49DFF805B5;
-	Fri,  9 Aug 2024 21:27:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 760EDF805B6;
+	Sat, 10 Aug 2024 01:36:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB678F802DB; Fri,  9 Aug 2024 21:22:12 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 78A59F802DB; Sat, 10 Aug 2024 01:26:38 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A2548F8059F
-	for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2024 21:20:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2548F8059F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 452CAF800E3;
+	Sat, 10 Aug 2024 01:26:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 452CAF800E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=BY82d7Gx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723231251; x=1754767251;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=EjHqHHKYoRZX3HoUBZAvpzA3I2pO6ift5GDZ3LPhRnc=;
-  b=BY82d7Gx1Q4HrVajP7IkWbWt7hCaA7HbJSWOduwUEIo8n/CwurPrA2kH
-   3wW8Tmx1a//Z588h8MMgeW1AM1+CkrRm+FOUT61/gjp5+Fwe727PZHqHM
-   s28jWOpjNwMoCxWLiOSNEZvff8NvHRnEkf/HnkLPV3bIsq9EyL/mdWglx
-   xBjzXJf+fq8X+sjmsKJkCL8KNnxR006vqFXc5orx+bYr1aoaGcHxpfEGM
-   yOtxvQn4rweZO2eNW7wcFFp40TjgrczeWsD4UZEK9pjtOGp/+40B4HaA/
-   bqWkenvmTICECpdcaHTbrVq9mrKrCzs7FWpQouSGW7QKfmrDLN1hCT2o2
-   A==;
-X-CSE-ConnectionGUID: nZwAjSZRRoSemIY2ydQUeQ==
-X-CSE-MsgGUID: fe/B8iWMSly4Rr0SfQyr/g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11159"; a="25285244"
-X-IronPort-AV: E=Sophos;i="6.09,277,1716274800";
-   d="scan'208";a="25285244"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Aug 2024 12:20:45 -0700
-X-CSE-ConnectionGUID: WCOiZLDZT+WOhIWdX/i3CQ==
-X-CSE-MsgGUID: UZY+OjWrRDqm300lv/H98g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,277,1716274800";
-   d="scan'208";a="61793214"
-Received: from kniemiec-mobl1.ger.corp.intel.com (HELO [10.245.246.249])
- ([10.245.246.249])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Aug 2024 12:20:41 -0700
-Message-ID: <a41029df-a1a3-4540-b28d-55fbfc3dcf1c@linux.intel.com>
-Date: Fri, 9 Aug 2024 21:20:39 +0200
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=GOXt9KEi
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id AD8766177D;
+	Fri,  9 Aug 2024 23:26:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3133CC32782;
+	Fri,  9 Aug 2024 23:26:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723245982;
+	bh=lN/OqN7miAwFNcF8H3xwMIZzDoeycCOqpmGCgUI+PSY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GOXt9KEig8TOSTEtraorQBKpBqKyG9RnFmXv78GMccG7EYlWNlhl7Oj0syMgcJrnn
+	 kyzNv9i4QTjO4QGxQUBXWLHIqlfpzxWxQw5nmrFwANQMFWvBnIfdfzT6noXhlPIMwr
+	 1tOKWUNtLChcJdSUcJguNS8kxhHjVydUCkgSTXM0u6n+p2Olrvv+i43zpkbY8L1uY2
+	 igAKn++xAgGzPoBlBLKl2NQr7Y4rVgea1LK4swoSByJTa5YjOEY67bLcrEBMsD19Am
+	 JIPPhz1juMdpwEcx4LKcdVcn35dgWbTorNDp9x21fRhSmpcc2vLmU27LmvbRAjrnRy
+	 nQE/qhqrAzEDw==
+Date: Sat, 10 Aug 2024 00:26:15 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
+	Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	"moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS"
+ <sound-open-firmware@alsa-project.org>,
+	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <linux-sound@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/8] ASoC: SOF: amd: fix for acp error reason registers
+ wrong offset
+Message-ID: <Zrall8SwKewe2_hJ@finisterre.sirena.org.uk>
+References: <20240807051341.1616925-1-Vijendar.Mukunda@amd.com>
+ <20240807051341.1616925-2-Vijendar.Mukunda@amd.com>
+ <ZrUdOyGiFRH0sRlt@finisterre.sirena.org.uk>
+ <a6a0c975-728b-4379-b074-b88ac928c58b@amd.com>
+ <ZrXGzmhgyIJ9ID6I@finisterre.sirena.org.uk>
+ <adeb6cf8-1fb6-4bf7-8d36-504b22c366be@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/6] ALSA: compress: add Sample Rate Converter codec
- support
-To: Jaroslav Kysela <perex@perex.cz>, Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, vkoul@kernel.org, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- linuxppc-dev@lists.ozlabs.org
-References: <1722940003-20126-1-git-send-email-shengjiu.wang@nxp.com>
- <1722940003-20126-2-git-send-email-shengjiu.wang@nxp.com>
- <e89a56bf-c377-43d8-bba8-6a09e571ed64@linux.intel.com>
- <CAA+D8AN9JXJr-BZf8aY7d4rB6M60pXS_DG=qv=P6=2r1A18ATA@mail.gmail.com>
- <ffa85004-8d86-4168-b278-afd24d79f9d8@linux.intel.com>
- <116041ee-7139-4b77-89be-3a68f699c01b@perex.cz>
- <930bb152-860a-4ec5-9ef0-1c96f554f365@linux.intel.com>
- <c9039808-cd04-452d-9f6c-f91811088456@perex.cz>
- <ed1192e0-00e7-4739-a687-c96dc2d62898@linux.intel.com>
- <CAA+D8AMOh=G7W5-dYw_=Xx-s0PqEu2suKYorscoWku86Rn-=+A@mail.gmail.com>
- <542d47c5-7ce3-4c17-8c0a-3a2b2a9e6c6a@linux.intel.com>
- <c3b8f7b8-fc5e-4285-bee8-7edd448a405d@perex.cz>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <c3b8f7b8-fc5e-4285-bee8-7edd448a405d@perex.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WLRR7DBYVFO5PMLXIWCXTAN5SDHTSKMK
-X-Message-ID-Hash: WLRR7DBYVFO5PMLXIWCXTAN5SDHTSKMK
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="IlVGhZeaPl9FJZ8o"
+Content-Disposition: inline
+In-Reply-To: <adeb6cf8-1fb6-4bf7-8d36-504b22c366be@amd.com>
+X-Cookie: Your love life will be... interesting.
+Message-ID-Hash: 3LUNIFQNBAZEJW5P4ESH5L4IAJPBN7IJ
+X-Message-ID-Hash: 3LUNIFQNBAZEJW5P4ESH5L4IAJPBN7IJ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WLRR7DBYVFO5PMLXIWCXTAN5SDHTSKMK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3LUNIFQNBAZEJW5P4ESH5L4IAJPBN7IJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,44 +115,60 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+--IlVGhZeaPl9FJZ8o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->>> And metadata
->>> ioctl can be called many times which can meet the ratio modifier
->>> requirement (ratio may be drift on the fly)
->>
->> Interesting, that's yet another way of handling the drift with userspace
->> modifying the ratio dynamically. That's different to what I've seen
->> before.
-> 
-> Note that the "timing" is managed by the user space with this scheme.
-> 
->>> And compress API uses codec as the unit for capability query and
->>> parameter setting,  So I think need to define "SND_AUDIOCODEC_SRC'
->>> and 'struct snd_dec_src',  for the 'snd_dec_src' just defined output
->>> format and output rate, channels definition just reuse the
->>> snd_codec.ch_in.
->>
->> The capability query is an interesting point as well, it's not clear how
->> to expose to userspace what this specific implementation can do, while
->> at the same time *requiring* userpace to update the ratio dynamically.
->> For something like this to work, userspace needs to have pre-existing
->> information on how the SRC works.
-> 
-> Yes, it's about abstraction. The user space wants to push data, read
-> data back converted to the target rate and eventually modify the drift
-> using a control managing clocks using own way. We can eventually assume,
-> that if this control does not exist, the drift cannot be controlled.
-> Also, nice thing is that the control has min and max values (range), so
-> driver can specify the drift range, too.
+On Fri, Aug 09, 2024 at 01:49:37PM +0530, Mukunda,Vijendar wrote:
+> On 09/08/24 13:05, Mark Brown wrote:
 
-This mode of operation would be fine, but if you add the SRC as part of
-the processing allowed in a compressed stream, it might be used in a
-'regular' real-time pipeline and the arguments  and implementation could
-be very different.
+> > We want the resulting git tree to be bisectable, that means testing each
+> > commit not just the final result.
 
-In other words, this SRC support looks like an extension of the compress
-API for a very narrow usage restricted to the memory-to-memory case
-only. I worry a bit about the next steps... Are there going to be other
-types of PCM processing like this, and if yes, how would we know if they
-are intended to be used for the 'regular' compress API or for the
-memory-to-memory scheme?
+> This patch series is prepared on top of
+> 20240801111821.18076-1-Vijendar.Mukunda@amd.com
+> which are incremental changes and also has dependency.
+
+For the benefit of those playing at home that's "ASoC: intel/sdw_utils:
+move dai id common macros" which is in -next as 8f87e292a34813e.  It's
+not great to base a fix for something that's in Linus' tree like this
+one which has:
+
+   Fixes: 96eb81851012 ("ASoC: SOF: amd: add interrupt handling for SoundWi=
+re manager devices")
+
+in it, and any such dependency really needs to get called out in the
+cover letter if it exists. =20
+
+In general you should expect bug fixes to be applied for Linus' tree by
+default, especially if they're tagged as fixing a particular commit in
+there.  That means no dependencies on anything that's already in -next
+unless explicitly called out, and if the thing in -next is just a
+cleanup or refactoring then generally it's best to just do the fix for
+Linus' tree and then separately merge it up to -next and integrate with
+whtaever cleanup/refactoring is going on there.
+
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
+
+--IlVGhZeaPl9FJZ8o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAma2pZQACgkQJNaLcl1U
+h9CqmQf9Ell6DPD08llQhhPHkKPMmyMVMH3Em6EclWBfkZwMwcEkfeDi/gAmk/Nz
+tq5bPTJlwqHSpHpYrhos+kf5H2ObSccJw5NqtHBtP5gZk/1TiKmh9e2zfH9Z4n29
+hO5MKZ26/2OR1er7onLT9wq6WtC4VL0zO4wUTLq2N+VJPonmzUVLgarvpfZoiTGK
+QxNFESF5EJ49Ci3WGfAFM9m395WBCJN5f1GXiUAxBvxe0pSt9g85zekj2KTlTBAt
+dpSJsmM646UPt8H29qgOs4kC9O+MqCNqg9ws0sRF5gD6Pewsp1J0wHn2WN5lfln/
+LHa+GWZR6Fp4wDP6q6FaB4GdyJdCgg==
+=djWk
+-----END PGP SIGNATURE-----
+
+--IlVGhZeaPl9FJZ8o--
