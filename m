@@ -4,99 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DA54C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Aug 2024 15:49:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ADB7C52D7C
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Aug 2024 19:25:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD55B14E5;
-	Fri,  9 Aug 2024 17:49:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD55B14E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 672F314E2;
+	Fri,  9 Aug 2024 21:25:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 672F314E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723218561;
-	bh=6AqbC+HU4YQ2LAJOxXnEAW/+2QcWo16Jjv40Zr+G2ic=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=bPLYDQYfxqmRAHZi01+nH6NM+LGa/bhiNff64K3spbcS/TSdQand8IjhQhbAH5Z8v
-	 n6F6/6B2yje13k9YSDVCey37J9CA4eknq3qE+klvGoWgsV6MLUqi9opVftOVjUt5UP
-	 H6wF+MpjwE9XAmqR36p+zV7m2Usi391y1axoZeNI=
+	s=default; t=1723231541;
+	bh=V3+CQZgbTgl14ME8n95u0pJ7yNic3HhEf0zOpt431bs=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=fgxC63UkzyerdJv50z41AbuYYrp7/1KyroUJZp2yJ5JltdssE2JPLbH70sIMjztnA
+	 CV15fW+GgenT7ZVLcGaLlOrHhLTaOqkhCrUkmdkf+BAZbXuFxcHLFJX+nX9c79BirH
+	 GGbYa3ISK2uiSnnr13DfJLuaM7YyJz24xgWyeqRs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F948F805B5; Fri,  9 Aug 2024 17:48:50 +0200 (CEST)
+	id 16B8AF805B5; Fri,  9 Aug 2024 21:25:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D1D6F805B5;
-	Fri,  9 Aug 2024 17:48:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DA08F805B5;
+	Fri,  9 Aug 2024 21:25:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0263EF802DB; Fri,  9 Aug 2024 17:20:29 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1148F8023A
-	for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2024 17:18:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1148F8023A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=J6jiLE/T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723216684; x=1754752684;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6AqbC+HU4YQ2LAJOxXnEAW/+2QcWo16Jjv40Zr+G2ic=;
-  b=J6jiLE/T2KlXnz5/12Y/VK3gIJAwCO8gBRhcAJlCj4UapCNdPOLzkqtB
-   9KZMNGFLGrGgLnz0QfFbdlqNbgiptOVA4KH13S1envvmhlhpbsR11QW+3
-   MUr9+brP+jvvayvQqfBIsx2uyY5JpZrUItAVONeQdKhyRULWXIx/WAd64
-   LTLgHKutYIZmgB0fcL23RGibq9IJYfrgsPpPdXdKzZoSqKBGM+qnIcNFY
-   UM0QfVjDKkUX+NGc8BJsvQvNMWVcYOzIVt4Ru2A7ligkEoPuaiwlE1n/i
-   HcAMDrICn3W7l1lg+VOt7VlftCgL/acJJQRgJ6qLGe3MIaIXJ3XzIVHMq
-   w==;
-X-CSE-ConnectionGUID: ekJQyQWeQbGvD0yBkUtbmg==
-X-CSE-MsgGUID: iSNaMJLyRD+NxR2ZrggzDg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11159"; a="38899786"
-X-IronPort-AV: E=Sophos;i="6.09,276,1716274800";
-   d="scan'208";a="38899786"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Aug 2024 08:17:58 -0700
-X-CSE-ConnectionGUID: 1ZdI463DT5yFGavFpXhXCg==
-X-CSE-MsgGUID: VbYX1t7MTqGnHCVcT/gqjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,276,1716274800";
-   d="scan'208";a="88233745"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Aug 2024 08:17:49 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.98)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1scRNB-0000000DSBD-3BY5;
-	Fri, 09 Aug 2024 18:17:45 +0300
-Date: Fri, 9 Aug 2024 18:17:45 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
-	zhourui@huaqin.com, alsa-devel@alsa-project.org, i-salazar@ti.com,
-	linux-kernel@vger.kernel.org, j-chadha@ti.com,
-	liam.r.girdwood@intel.com, jaden-yue@ti.com,
-	yung-chuan.liao@linux.intel.com, dipa@ti.com, yuhsuan@google.com,
-	henry.lo@ti.com, tiwai@suse.de, baojun.xu@ti.com, soyer@irl.hu,
-	Baojun.Xu@fpt.com, judyhsiao@google.com, navada@ti.com,
-	cujomalainey@google.com, aanya@ti.com, nayeem.mahmud@ti.com,
-	savyasanchi.shukla@netradyne.com, flaviopr@microsoft.com,
-	jesse-ji@ti.com, darren.ye@mediatek.com
-Subject: Re: [PATCH v1] ASoc: tas2781: Add new Kontrol to set tas2563 digital
- gain
-Message-ID: <ZrYzGWQRdsTlYxQg@smile.fi.intel.com>
-References: <20240628041844.1776-1-shenghao-ding@ti.com>
+	id 42E15F8049C; Fri,  9 Aug 2024 21:22:02 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 01726F805A1
+	for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2024 21:20:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01726F805A1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240628041844.1776-1-shenghao-ding@ti.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: WXZ3ZPE73OWMAVEXF3EHGNWZT7I2MUWF
-X-Message-ID-Hash: WXZ3ZPE73OWMAVEXF3EHGNWZT7I2MUWF
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1723231258971286535-webhooks-bot@alsa-project.org>
+References: <1723231258971286535-webhooks-bot@alsa-project.org>
+Subject: (Question) Difference between defaults.pcm.srate and
+ defaults.pcm.rate
+Message-Id: <20240809192202.42E15F8049C@alsa1.perex.cz>
+Date: Fri,  9 Aug 2024 21:22:02 +0200 (CEST)
+Message-ID-Hash: 6GYDPCUG6SMRDGX2SZXEO4BXO6Q63PA3
+X-Message-ID-Hash: 6GYDPCUG6SMRDGX2SZXEO4BXO6Q63PA3
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WXZ3ZPE73OWMAVEXF3EHGNWZT7I2MUWF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6GYDPCUG6SMRDGX2SZXEO4BXO6Q63PA3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,52 +67,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Jun 28, 2024 at 12:18:43PM +0800, Shenghao Ding wrote:
-> Requriment from customer to add new kcontrol to set tas2563 digital gain
-> and set "Speaker Force Firmware Load" as the common kcontrol for both
-> tas27871 and tas2563.
+alsa-project/alsa-lib issue #406 was edited from ViNi-Arco:
 
-...
+What is the difference between `defaults.pcm.srate`?
 
->  #include <sound/tas2781.h>
->  #include <sound/tlv.h>
->  #include <sound/tas2781-tlv.h>
+I know there's `defaults.pcm.!rate` and `defaults.pcm.rate`, but I couldn't find any information about defaults.pcm.srate
 
-> +#include <asm/unaligned.h>
+I'm asking because I was given this configuration:
 
-Before sound would be better, but I'm not insisting.
+![IMG](https://github.com/user-attachments/assets/84316655-2d44-4f54-a842-86bd60a780e3)
 
-...
-
-> +	ret =  tasdevice_dev_bulk_read(tas_dev, 0, reg, data, 4);
-
-Too many spaces.
-
-...
-
-> +	/* find out the member same as or closer to the current volume */
-> +	ucontrol->value.integer.value[0] =
-> +		abs(target - ar_l) <= abs(target - ar_r) ? l : r;
-
-Why do you need to have target to be applied here? IIUC arithmetics correctly
-it makes no value to use target in this equation.
-
-...
-
-> +out:
-> +	mutex_unlock(&tas_dev->codec_lock);
-
-Why not using cleanup.h?
-
-> +	return 0;
-
-...
-
-This all reminds me that I already gave same/similar comments in the past...
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/406
+Repository URL: https://github.com/alsa-project/alsa-lib
