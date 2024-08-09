@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 112A2C52D71
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Aug 2024 09:32:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8286C52D71
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Aug 2024 09:32:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C68E6EBE;
-	Fri,  9 Aug 2024 11:32:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C68E6EBE
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0AA5E7D;
+	Fri,  9 Aug 2024 11:32:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0AA5E7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723195944;
-	bh=MF6DnJf7RlkwgK2dPBAlcsElsLGqpbCbwaFGF0OXEAc=;
+	s=default; t=1723195962;
+	bh=mFpnnpwV2r8XXhHMMyFUdyOYgupXqsasHls95VA7GWg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AMm/M3FCJC7yxcf7bmFT9B0YFcV8SKiQpUxcOQ74jvAyHuPw3y8cFff0AmDqdAY58
-	 0IJCxM9mYtlqT899CVL5zcXeO48grS462IQ1HWNYnFzrqRi0mz6fi7uXAthDrTvYvP
-	 8agPklsVLYdvaih8g581ij9YxzqBfhvtKrudpi70=
+	b=cAZyB2YcPjGNeeeD54os0wEwvr1S7K0tUJz0YiTV7fbzXeW207E+TeKSxdDtM/ID6
+	 BpL6L8nqEq6ig8vrfUPXqrVFJpJ2B58DVi1RuczsLflxkQlVmysDHjIGAsotq1DpN9
+	 Nayct3YvrNqSKzNpR4gLz8DqiBx/BQ69pGZYw7Ko=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D96FEF805B0; Fri,  9 Aug 2024 11:31:49 +0200 (CEST)
+	id 9BD2FF805C5; Fri,  9 Aug 2024 11:32:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5016BF805B5;
-	Fri,  9 Aug 2024 11:31:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2A63F805D8;
+	Fri,  9 Aug 2024 11:32:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57A0FF8047C; Fri,  9 Aug 2024 11:16:33 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 87843F802DB; Fri,  9 Aug 2024 11:21:40 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 946E3F800BF
-	for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2024 11:10:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 946E3F800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id BAA41F802DB
+	for <alsa-devel@alsa-project.org>; Fri,  9 Aug 2024 11:13:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAA41F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=tgpT3YlM
+ header.s=k20201202 header.b=ph+gMM/0
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id ED898CE130A;
-	Fri,  9 Aug 2024 09:10:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 584BBC32782;
-	Fri,  9 Aug 2024 09:10:46 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id B9F0261626;
+	Fri,  9 Aug 2024 09:13:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9E15C32782;
+	Fri,  9 Aug 2024 09:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723194652;
-	bh=MF6DnJf7RlkwgK2dPBAlcsElsLGqpbCbwaFGF0OXEAc=;
+	s=k20201202; t=1723194817;
+	bh=mFpnnpwV2r8XXhHMMyFUdyOYgupXqsasHls95VA7GWg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tgpT3YlMGB0SaeUS9uq+8H4964Gt26uIgwAs7fRfW0LMOaYVzBuJ/XGF0RGOv+dZh
-	 uBdf7GfXc1CBLHgwI6quIcuGLc5Sj03jMy4IW49dAHlP5ryWOR9r/hxDuAC5eHIXXH
-	 LMjwsE7mB3CGyWp1GvyTF/vxoo/TGsiM4Dx2OKx8R6Lf79avLSBFzIMx8WN3zkTft5
-	 v2ezrcOMT6A54oL7Vxqa9eWLUDTPf/5e+wnS3+1AqYHl/QNOA/icTIvr5KVeuVf/Wd
-	 pXZZYkcoZFS/Zb/mH/yE30JGObbO75ea8yKeHOtz3QrOTyInrVT9GY+tAQpR9FJBkT
-	 cnyu8elBk7oYg==
-Message-ID: <36b7bbb9-7eea-4db2-86a6-80af206c29ad@kernel.org>
-Date: Fri, 9 Aug 2024 11:10:44 +0200
+	b=ph+gMM/0W29Qhrhc3XWAUexcDuvS3wXYZQ6HA8TZ9FNWXiBMdHSYYR/WDXiOJWGwH
+	 66rUqWgis9MgVkWlypb/dPZQpfWPjXSDT23IlHTQwWhRdrrRL70Dw/RC7GYry1L0Li
+	 tKuv0MWTX6Yl3a8cXcksvCCPKmtPu7kOvaAsp5Jtm0soKzc6oAABeZoMay0DNrj1mR
+	 VEIerRNp7D7BSOAyy0T7IFFfGlWdBshl5wg8cm4YzAajdQLt/nwJXI8xzao6hvREaT
+	 AS9amvvl40rZPEDITmovgf7/qlAIrS6m7vqqw5/MiHdM3O/LG5CexCEz75Gg0NSPb0
+	 BboyOAVLARZgw==
+Message-ID: <7ab7905d-5f30-4a86-af31-d3649d3587bf@kernel.org>
+Date: Fri, 9 Aug 2024 11:13:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] Add DisplayPort sound support for Fairphone 5
- smartphone
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: qcom,sm8250: Add generic QCM6490
+ sound card
 To: Luca Weiss <luca.weiss@fairphone.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
@@ -75,6 +74,9 @@ Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
  linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20240809-fp5-dp-sound-v1-0-d7ba2c24f6b9@fairphone.com>
+ <20240809-fp5-dp-sound-v1-1-d7ba2c24f6b9@fairphone.com>
+ <e8a24709-de96-4d09-ba00-1e084a656c68@kernel.org>
+ <D3B9K69AAWNT.2KIHAZRFNB8NP@fairphone.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -120,11 +122,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240809-fp5-dp-sound-v1-0-d7ba2c24f6b9@fairphone.com>
+In-Reply-To: <D3B9K69AAWNT.2KIHAZRFNB8NP@fairphone.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: RIVPNPCWMAG7OZTWIB5N5WDSYOJVJSN2
-X-Message-ID-Hash: RIVPNPCWMAG7OZTWIB5N5WDSYOJVJSN2
+Message-ID-Hash: G6LCATCZDKCSXI5G7GG2MIQOTCMKD4UI
+X-Message-ID-Hash: G6LCATCZDKCSXI5G7GG2MIQOTCMKD4UI
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -137,7 +139,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RIVPNPCWMAG7OZTWIB5N5WDSYOJVJSN2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G6LCATCZDKCSXI5G7GG2MIQOTCMKD4UI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -146,27 +148,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 09/08/2024 10:33, Luca Weiss wrote:
-> Add the necessary sound card bits and some dts additions to enable sound
-> over DisplayPort-over-USB-C, e.g. to a connected TV or monitor.
+On 09/08/2024 11:12, Luca Weiss wrote:
+> On Fri Aug 9, 2024 at 11:09 AM CEST, Krzysztof Kozlowski wrote:
+>> On 09/08/2024 10:33, Luca Weiss wrote:
+>>> Document the bindings for the Qualcomm QCM6490 sound card.
+>>>
+>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+>>> index c9076dcd44c1..0a31be6d917f 100644
+>>> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+>>> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+>>> @@ -31,6 +31,7 @@ properties:
+>>>            - qcom,apq8096-sndcard
+>>>            - qcom,msm8916-qdsp6-sndcard
+>>>            - qcom,qcm6490-idp-sndcard
+>>> +          - qcom,qcm6490-sndcard
+>>
+>> I think it would be better to make it a board-compatible and also
+>> followed by qcom,qcm6490-idp-sndcard fallback, thus no need for driver
+>> changes.
 > 
-> The UCM files can be found here:
-> https://gitlab.com/postmarketOS/pmaports/-/tree/master/device/testing/device-fairphone-fp5/ucm
+> Hi Krzysztof,
 > 
-> Two extra notes:
-> 
-> 1. I don't quite understand whether the sound driver should have
->    SoC-specific compatible or device-specific compatible. Some earlier
->    patches by another author for a QCM6490 board and a QCS6490 board use
->    device-specific compatible - but from what I can tell this is not how
->    it's generally done for other sound drivers?
+> So that we get "fairphone,fp5-sndcard", "qcom,qcm6490-idp-sndcard"?
 
-We (including me) were/are a bit inconsistent here, but last statement
-was that these should be board-specific compatibles.
-
-Last discussion I recall:
-https://lore.kernel.org/all/baa6543c-5e2e-4f28-a95b-a086b32d1f2d@linaro.org/
-
+Yes.
 
 Best regards,
 Krzysztof
