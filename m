@@ -4,81 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C97DC52D7C
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 15:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 750E7C52D7B
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 15:55:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0694C2408;
-	Tue, 13 Aug 2024 17:54:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0694C2408
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D81423E1;
+	Tue, 13 Aug 2024 17:55:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D81423E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723564492;
-	bh=IjWYqvVozMU5xDb4PvFiGRW9tuYNkqmyRRFkJ2XA9nE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1723564512;
+	bh=SCILEbD9383LEVKt7wlG2zqcA2/nxq5Pc5x9g0ZN3xo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TX6qMn41s9kQpEpyem1ej1OEs+h8UHQqrIHUjkU1yEGux0IwGcHaa/WHExy6d/W5V
-	 /7B3TuOnC/z4wxv6/4a7kG+iEWa947i3Naki1BexVWl3ygMdsX8V3EQW5TFGGRiL59
-	 XOcQGbLvcGBc/vrrlRZs1VbwhjqZxhchIkqu1WCw=
+	b=eNOl2Car5bUzFKfBJxg96SgtQVZC3WBhcw6V5jtlzm9k43n0ZXb7Lf93wy7a25mUj
+	 WvlH0d1sM3go4GAtKWOnb8C3qq1Mxq5yvIrGfsOBwrinOtdr9Rz6iL7cseKG5zH3K/
+	 qXaBAND5NUeWWUCtlfuJvPb+sKEi6bcgXtZGZNJs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF949F805D7; Tue, 13 Aug 2024 17:54:12 +0200 (CEST)
+	id 9F01BF805FA; Tue, 13 Aug 2024 17:54:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2FFDF805DF;
-	Tue, 13 Aug 2024 17:54:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC587F805FC;
+	Tue, 13 Aug 2024 17:54:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BBBA8F8047C; Tue, 13 Aug 2024 17:44:10 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id C3A5EF80423; Tue, 13 Aug 2024 17:44:38 +0200 (CEST)
+Received: from galois.linutronix.de (galois.linutronix.de
+ [IPv6:2a0a:51c0:0:12e:550::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D6E77F800BF
-	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 17:43:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6E77F800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05BF3F800BF
+	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 17:44:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05BF3F800BF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=urTqw7Fx
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id DA528CE140D;
-	Tue, 13 Aug 2024 15:19:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2F6C4AF19;
-	Tue, 13 Aug 2024 15:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723562373;
-	bh=IjWYqvVozMU5xDb4PvFiGRW9tuYNkqmyRRFkJ2XA9nE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=urTqw7Fx3BrW36RwafkTtFLwboqOd8JmA+uleBl5yfSLbyapeVyeqXh9yHQobaZ1f
-	 tK9BQBwCk21H0M4rC4il842m/GbJo3ayEpSE+U5Wku7PwTYfNNlWvQCYhlWr5ZcoLM
-	 gyluLp7NjnuVtc/yRlCrGVxOqJ17O78NRxWXhBszyD61XwRZkOEwzrpGvaFKObERUB
-	 1j16KIWTr9y4o8FOYbLdDLeylZfWMPbzrLqU+2K3ka5tIqA+pjcjg8WN4RRQv3TCab
-	 tNagbceOOkFmHfAyJzFfaDr9Gw57W5A24FuTsnscYLcw8LRQ30A+/twSYmn1pqkIn3
-	 yYkc0xcIMfAbA==
-From: Mark Brown <broonie@kernel.org>
-To: David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org
-In-Reply-To: 
- <5b906a0cc9b7be15d0d6310069f54254a75ea767.1722951770.git.christophe.jaillet@wanadoo.fr>
-References: 
- <5b906a0cc9b7be15d0d6310069f54254a75ea767.1722951770.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: cs43130: Constify struct reg_sequence and
- reg_sequences
-Message-Id: <172356237111.72636.8665526019609243174.b4-ty@kernel.org>
-Date: Tue, 13 Aug 2024 16:19:31 +0100
+ unprotected) header.d=linutronix.de header.i=@linutronix.de
+ header.a=rsa-sha256 header.s=2020 header.b=VJTBe3qh;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de
+ header.a=ed25519-sha256 header.s=2020e header.b=AyjWMK10
+Date: Tue, 13 Aug 2024 17:22:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1723562564;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b5/E7ZJ4wGcPnowXOcotLGIaNe6xlDkthLXxOfxn/IM=;
+	b=VJTBe3qhTwmSyv+Ep8Zivpuql5YfALl0d/U7P1AMY7WCPIA5MnJ+zsEXrNlS7fHI16EGoF
+	r9S7Qu/+dQXBUAEIQWwoiepOvs18fbWedjqFtEoaIkfpz2pubpdm41RHztQPWFzWpiI02S
+	c2WylEwIkJLwB7nOezbEjnl+UX9DZ6jkydFdWl5it12EHofrb88wvdwCI2nJzGhdLwDcPq
+	LYO1Srf5SU+SCqTG0zO08c8BVHfeKsj0l0tLKQF0tPPhsHk0aLWu6kAC2ss5oe1uUxmpD5
+	/rwXbRmAf+FyeJH/cCxnBs+l8WenvM0sZMRTwwUH2V5vc0m/uC5C1cKbiPosXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1723562564;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b5/E7ZJ4wGcPnowXOcotLGIaNe6xlDkthLXxOfxn/IM=;
+	b=AyjWMK10XA1oBwhboOrf9Z46wxNRgkQKjVvE2863FVPVuOPdvctQMbo1SBvhbdxtkkzAg4
+	8gFC0gzk/LbN4NCw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>
+Subject: Re: [PATCH] ASoC: meson: axg-fifo: fix irq scheduling issue with
+ PREEMPT_RT
+Message-ID: <20240813152243.2H3-mnx5@linutronix.de>
+References: <20240806102707.3825703-1-jbrunet@baylibre.com>
+ <172356023429.57695.4053614993109219592.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: UM453KFWZXR3MAW7QKYUVBAJP7PJULJ6
-X-Message-ID-Hash: UM453KFWZXR3MAW7QKYUVBAJP7PJULJ6
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <172356023429.57695.4053614993109219592.b4-ty@kernel.org>
+Message-ID-Hash: KQFJPPRRALN72UNYI2YGUZ433WLK73O6
+X-Message-ID-Hash: KQFJPPRRALN72UNYI2YGUZ433WLK73O6
+X-MailFrom: bigeasy@linutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -90,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UM453KFWZXR3MAW7QKYUVBAJP7PJULJ6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KQFJPPRRALN72UNYI2YGUZ433WLK73O6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,46 +103,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 06 Aug 2024 15:43:00 +0200, Christophe JAILLET wrote:
-> 'struct reg_sequence' and 'struct reg_sequences' are not modified in this
-> drivers.
+On 2024-08-13 15:43:54 [+0100], Mark Brown wrote:
+> On Tue, 06 Aug 2024 12:27:03 +0200, Jerome Brunet wrote:
+> > With PREEMPT_RT enabled, spinlocks become preemptible.
+> > This is usually not a problem with spinlocks used in IRQ context since
+> > IRQ handlers get threaded. However, if IRQF_ONESHOT is set, the upper half
+> > of a threaded irq handler won't be threaded and this causes scheduling
+> > problems if spinlocks are used in the upper half, like with regmap when
+> > '.fast_io' is set.
+> > 
+> > [...]
 > 
-> Constifying these structures moves some data to a read-only section, so
-> increase overall security.
+> Applied to
 > 
-> On a x86_64, with allmodconfig:
-> Before:
-> ======
->    text	   data	    bss	    dec	    hex	filename
->   54409	   7881	     64	  62354	   f392	sound/soc/codecs/cs43130.o
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 > 
-> [...]
+> Thanks!
+> 
+> [1/1] ASoC: meson: axg-fifo: fix irq scheduling issue with PREEMPT_RT
+>       commit: 5003d0ce5c7da3a02c0aff771f516f99731e7390
 
-Applied to
+Didn't you already apply v2 of this?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: cs43130: Constify struct reg_sequence and reg_sequences
-      commit: 86297bb30ae094e14a3a6c62b870a2f301a180a2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Sebastian
