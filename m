@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E5C1C52D7C
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 13:27:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C34CC52D7C
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 13:27:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBF3523DF;
-	Tue, 13 Aug 2024 15:26:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBF3523DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09A552393;
+	Tue, 13 Aug 2024 15:27:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09A552393
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723555618;
-	bh=IxBzL8jZcrNuPWO/7D8XwVLbEykT+21gC+FbHu5yEzg=;
+	s=default; t=1723555640;
+	bh=BwejMU6ZUIgz8lGX+Skc7VtQTPN1+y9vWUPFbkYCZ50=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dvbP8bKLHezmdiTGO8XAFgD4Py3pGJfUiXbAtd+5ZLzUswNmX8nbeo3/wo2h3S79A
-	 ZpcBZ77+fWstIpXJc8LceTHubQlnxRjXiVHwyR8CX60VvauR1qWIH2LDHQRVShEiIx
-	 parRm7O2qhTN79ARiwCP38jSuUZdG3jISe0Xm/ZQ=
+	b=ZXN8TyyovticL1JHAfqdOoGly2pUdvbWcNJiIw0p2A2zQginDRV3yafEsG5LfKxYn
+	 zOLvD4PUfNchyhUnKs9ykf7Gk1c0spzYUE+00vWo6ncPXqDJ3vrcdS5F8z55I9TmPW
+	 G3tbUsTl6xPZnL8+llOEjYFHjPr19iNPeenge7vE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6B24F80641; Tue, 13 Aug 2024 15:26:04 +0200 (CEST)
+	id 4ED1BF80624; Tue, 13 Aug 2024 15:26:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47319F8061A;
-	Tue, 13 Aug 2024 15:26:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A097F8061A;
+	Tue, 13 Aug 2024 15:26:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7333CF8047C; Tue, 13 Aug 2024 15:10:43 +0200 (CEST)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
+	id 7178BF800B0; Tue, 13 Aug 2024 15:12:31 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0DCBF8049C
-	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 15:10:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0DCBF8049C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 12EAAF800BF
+	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 15:10:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12EAAF800BF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=tqbAlE2w
-Received: by mail-wr1-x433.google.com with SMTP id
- ffacd0b85a97d-3685a5e7d3cso3371088f8f.1
+ header.s=google header.b=H0XlXtE2
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-367ab76d5e1so2486879f8f.3
         for <alsa-devel@alsa-project.org>;
- Tue, 13 Aug 2024 06:10:16 -0700 (PDT)
+ Tue, 13 Aug 2024 06:10:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1723554615; x=1724159415;
+        d=linaro.org; s=google; t=1723554602; x=1724159402;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rJOIZffdYgY6uiS66ZwE+qixLpFdnbV3QcaMFwjqIS8=;
-        b=tqbAlE2wGeVM+TV8el3SUgPInuMhwgpdANf2Trh38juJK4bIvhPnvvUWzlrg85vUVe
-         nQsOQyPCAM+kt944qBhtrVbhPHNDRj1jiLNnm9Gs/muMYujm/p3IA2UM45ZR3qabHWRM
-         bXZRk2MZYCC1V6K/dBpUVFeVoLvAFom3hNvQCAaKi1TVE4bOloUuQ5EH5dQvPtFgbl0g
-         nSistmfYBie/eGd/G+uabOTDDbI6jkRARPnonxjw6PdLiJBjFGhxbsDR/YxOjWX/E+bj
-         Ogvls9fnz6/XoRpQ6sqrmN6Bl4++omPNuEz/clQfFJvvCvAIjmwa8GjIzFnxAfXgRQuz
-         PROg==
+        bh=vYV2yBaiU1eNGbD5nUDJdPAfLsrnpN3FqBevnmPD6R8=;
+        b=H0XlXtE2AbXMslP5aT7BEB5p2QaXHnhSRCd4VAKnPILO5CEPfSUcp7FKHDF01oNxc1
+         I6GoujLunyywHxLu4Twiz/w7DgUq3vP4kc8LDKyBbVQIJ120cZEnc9iHhzPiYvl+D2J6
+         kCUppOTZ+VgaIXW+IJtRWQBwvEWkKo7Eirq9GvemZu4bO6jPPqHrzn6rbXX16U2CphpV
+         HNDwYbRTOj7RssELvMGVbLb+ooZH3dpGNvUbHZxzYqfzzQoEWes1MTRe9O6EcgKGV1Is
+         DApdx8Kss+vv6r2q2Ym8dTevpZXfccE0tNxYrxKkFZxRlYuZcRsVP9ELnezWUmVT9Wx1
+         sC6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723554615; x=1724159415;
+        d=1e100.net; s=20230601; t=1723554602; x=1724159402;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rJOIZffdYgY6uiS66ZwE+qixLpFdnbV3QcaMFwjqIS8=;
-        b=mqcFXM4RZywbonjOg3Gz11zXdOYUWvFq7kPzg+fJlXqJaJyRiIqnZPkX0cnRqFrSDy
-         U4T3BtuI7s5mrxBIraRX9kn5uOg+DsxGQQjXmLrJL2aJOTxp2E0ydJjL7tdED+CJnC7f
-         nSD56D3c55fbmI5/5ug7vtsbrZhFBcusJzKANbNgOtjqGJ9eSelaY3iOz51GBI7evezx
-         iXJqXbdyImJFYD1SI0pHO+mU6sSw9nOd6r5xPN/mcb2gItM3aSmKBMRHJ7WnLeRdlOmg
-         tSMdw17357btiY46bt4YIWnJE6PC2QKTzQ+gf/pBShwXP9xvO6yfsF/gc34YzgxRr42W
-         V69g==
-X-Gm-Message-State: AOJu0Yz9jbWwkoAloTTKfg4/2Or2bZi8ofVZhCDEf1t4GD1CFX0feXjy
-	AbYy9wb0hvgo8M8mmMWO7TSkTENJ2znQtiJyrm2ooi5J3IcWqfmvxj5eUUCWKfk=
+        bh=vYV2yBaiU1eNGbD5nUDJdPAfLsrnpN3FqBevnmPD6R8=;
+        b=TNiKFE/K36wiMkUgi2Z55khKOFtnQzpvSZKXWOWmYwBE7K0rVpUYTHaVZkOdm3yK29
+         ZrdtowpU/YM61YhrRpQV12/RZyoYGc0RvKbpkhR0QjxAzShiJNW1JmJHtLKdk9iE+weB
+         st9PYekn8ISccjYq/MEaxxpfkcRG4dgSLsfkuowtdZmpNvWhn31RcFr4stP/lkOAs9yB
+         le/I7K4H4yi5uuk2T2aVQI+1mXUYeyCnHJ0Si1STr3KQpwAhGgksBfdZaaWcfqTGdT0h
+         TvpxcBfqjxue3Jy9nrxLnX5TdFn18lTMHqzyeTSoRE6/vC8Z8vMu0gOBFXlh8+s/Qpw4
+         I+jw==
+X-Gm-Message-State: AOJu0Yy9n+XOYfHg+QvuupGKdPcw+S42AQyZDS5XFofTBi8CM0nQ//RE
+	UODl6eLKU/m5yCUhxe53m7AVYMx5Y8PKk52DCJQ1EYeTUeqaEKu1pW6SM7dYU+o=
 X-Google-Smtp-Source: 
- AGHT+IH2fWoDkGNXR0eRrjdb6m7GxMgF+j9Va9DvtxfYZzZLGqKP3dmGXHQVk6zw5owlp+AcpM80rQ==
-X-Received: by 2002:a5d:5f55:0:b0:35f:cd7:5ba1 with SMTP id
- ffacd0b85a97d-3716cd45ff1mr2848538f8f.60.1723554615211;
-        Tue, 13 Aug 2024 06:10:15 -0700 (PDT)
+ AGHT+IHEtXM/0I0GAyREg5EKER0DYF7+YSxuj3da4+f2SEaAk7GsANHFPwX5vhUb957YGIRTjSasUA==
+X-Received: by 2002:a5d:6dca:0:b0:367:8aa2:d41f with SMTP id
+ ffacd0b85a97d-3716cd32235mr2372644f8f.51.1723554602500;
+        Tue, 13 Aug 2024 06:10:02 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.215.209])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-36e4c938280sm10305003f8f.36.2024.08.13.06.10.13
+ ffacd0b85a97d-36e4c938280sm10305003f8f.36.2024.08.13.06.10.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2024 06:10:14 -0700 (PDT)
+        Tue, 13 Aug 2024 06:10:01 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Tue, 13 Aug 2024 15:09:51 +0200
-Subject: [PATCH 5/6] soc: qcom: pbs: use scoped device node handling to
- simplify error paths
+Date: Tue, 13 Aug 2024 15:09:47 +0200
+Subject: [PATCH 1/6] soc: qcom: apr: simplify with scoped for each OF child
+ loop
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240813-b4-cleanup-h-of-node-put-other-v1-5-cfb67323a95c@linaro.org>
+ <20240813-b4-cleanup-h-of-node-put-other-v1-1-cfb67323a95c@linaro.org>
 References: 
  <20240813-b4-cleanup-h-of-node-put-other-v1-0-cfb67323a95c@linaro.org>
 In-Reply-To: 
@@ -103,25 +103,25 @@ Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2160;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1394;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=IxBzL8jZcrNuPWO/7D8XwVLbEykT+21gC+FbHu5yEzg=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmu1sjtqc3LW0OQNAOtQMO9+aLWWp94JHd3wNgK
- r/V4thgZHyJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZrtbIwAKCRDBN2bmhouD
- 1xhVD/0RgrZURCzpXb3YXvnPk6hKrlLP06DLbvCh62dHZC7woXTSyVi7a8IL4ASirn+Sb2K3X9q
- d3xyu3wLmnNLwCMt8/oAbK8OCelqtGjohE/HWKV+4w2dpHLI+BfdBlv9dXG07iWeDFGImCtYJaf
- FHZQD21L1VuhPv53cz2rAnF0t1rsVh8Py6TNfOTQ4Xe3Ko9WCYtqS68W5hzuNHs+bnFrKgARQYa
- xzPw8NoDX2Z7iXZSGQ4iEhM9W/HLPAeAlGPNnaqLkucx+mp/uNWmCIouUYtZJdwn8+kjSvH+/iW
- xSEn7wI2yxrAj9PeGCxbz50rnvkuj5xcnRKF30sJSYhm+O9VVq8b4CffXZH6D2FFjYkJfLLxtXX
- hELXzZnEaihOvGuY6FkBLWg0bpVeec/vgG93UtmE1/yArs+kyqtaPAkrcYk6TnJDZswr/Nry7jN
- QVZ0sMCg+uP/BVPmokjBVl3wvRKuF1qJ8q1hsKs6yYPKI04ow/NnPPEMBgFqEU2NZWd0MNlu2vX
- 8l1HxlV4MpRquSCvz5L7/VG35i1kIOimX8/tLkip0PAlD/pOBGZPtargXrpTgyhy2l9KcCqU+hG
- tF9B7iEHl8akSUQtX2rairPy+sOwumSqE+jvjj8y11gFz27qtrNI7vLXop7r2tNleIoDP1IgACA
- wfFtE7W6uRM0Oqw==
+ bh=BwejMU6ZUIgz8lGX+Skc7VtQTPN1+y9vWUPFbkYCZ50=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmu1sf7WFjqKtqbnO/o4IKv/eNdOe1rxw8n+MXW
+ V6xxEWEnqOJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZrtbHwAKCRDBN2bmhouD
+ 11T1EACOn5uWT6CrmTfB2xyhTbC2MNwPQUICTvz64hAaEmeUl7lnqitjw4SEnJYJ7g5AMu7kt/e
+ cNiVSP7xKl/6h5qbl0u1wdaQNPlhQ4ateDxP+X5SQBN5kSsuWcOzAENTBZupjo1cFhOYOa9X77A
+ +8DMfXJZznJcMzWfKHVN/spGMyvGablCdileKkoJGtjYmhmWThN7D9z42+QB0du2e921go9fMzp
+ Io/wsmtWzimOd4E08/JFiVoK9jeoKATne2GYbJTvyvSn/XKAt662X8UFSm9Q1Elna9HyeVZLk82
+ TN9LoFNn1K/XG0+08mhyxuNTMFc+B2/8zt34OWIR0VOFSunlh4PIZzgP0WA+ChjHNc3gLSH7lGH
+ O+pxC3ks4aUqOdmvt26XBse1wvzcLh6gx4vR0YJA/8oDETijzhBqtuvZqElb/GINXmYhLorCCQS
+ 4VySRPgKG2obt6y9zPps6U2ex5Z/5TrFFbmJSCM6fKZ631hyVczy76QG6nGkx7VtV3fZhbDe7/s
+ Y8dEc5TCSMJd4W1DgezIzxeDiN8mF87zTJ0oj5uD6B0DIueTahdu2JlTCCxqow2FJim11nGrHS0
+ rUmI4XjaXCPdZ4buW/dGENZF93AyP0GtONfuKIKUcMnCSNpB1IdvcAzQyfjBLEVTLfWO2sIJrps
+ 8S+vyqL5BNINP2w==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Message-ID-Hash: 776QZUWNLQL27R2EQJYMH5M6P7BAZPN7
-X-Message-ID-Hash: 776QZUWNLQL27R2EQJYMH5M6P7BAZPN7
+Message-ID-Hash: 4WYXGYX3RWYE3EG7EO4OMVESHQGCW6KN
+X-Message-ID-Hash: 4WYXGYX3RWYE3EG7EO4OMVESHQGCW6KN
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -134,7 +134,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/776QZUWNLQL27R2EQJYMH5M6P7BAZPN7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4WYXGYX3RWYE3EG7EO4OMVESHQGCW6KN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -143,72 +143,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Obtain the device node reference with scoped/cleanup.h to reduce error
-handling and make the code a bit simpler.
+Use scoped for_each_child_of_node_scoped() when iterating over device
+nodes to make code a bit simpler.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/soc/qcom/qcom-pbs.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ drivers/soc/qcom/apr.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/soc/qcom/qcom-pbs.c b/drivers/soc/qcom/qcom-pbs.c
-index 6af49b5060e5..77a70d3d0d0b 100644
---- a/drivers/soc/qcom/qcom-pbs.c
-+++ b/drivers/soc/qcom/qcom-pbs.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-  */
- 
-+#include <linux/cleanup.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/module.h>
-@@ -148,11 +149,11 @@ EXPORT_SYMBOL_GPL(qcom_pbs_trigger_event);
-  */
- struct pbs_dev *get_pbs_client_device(struct device *dev)
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index 4fbff3a890e2..a956c407ce03 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -485,11 +485,10 @@ static int of_apr_add_pd_lookups(struct device *dev)
  {
--	struct device_node *pbs_dev_node;
- 	struct platform_device *pdev;
- 	struct pbs_dev *pbs;
+ 	const char *service_name, *service_path;
+ 	struct packet_router *apr = dev_get_drvdata(dev);
+-	struct device_node *node;
+ 	struct pdr_service *pds;
+ 	int ret;
  
--	pbs_dev_node = of_parse_phandle(dev->of_node, "qcom,pbs", 0);
-+	struct device_node *pbs_dev_node __free(device_node) = of_parse_phandle(dev->of_node,
-+										"qcom,pbs", 0);
- 	if (!pbs_dev_node) {
- 		dev_err(dev, "Missing qcom,pbs property\n");
- 		return ERR_PTR(-ENODEV);
-@@ -161,28 +162,23 @@ struct pbs_dev *get_pbs_client_device(struct device *dev)
- 	pdev = of_find_device_by_node(pbs_dev_node);
- 	if (!pdev) {
- 		dev_err(dev, "Unable to find PBS dev_node\n");
--		pbs = ERR_PTR(-EPROBE_DEFER);
--		goto out;
-+		return ERR_PTR(-EPROBE_DEFER);
+-	for_each_child_of_node(dev->of_node, node) {
++	for_each_child_of_node_scoped(dev->of_node, node) {
+ 		ret = of_property_read_string_index(node, "qcom,protection-domain",
+ 						    0, &service_name);
+ 		if (ret < 0)
+@@ -499,14 +498,12 @@ static int of_apr_add_pd_lookups(struct device *dev)
+ 						    1, &service_path);
+ 		if (ret < 0) {
+ 			dev_err(dev, "pdr service path missing: %d\n", ret);
+-			of_node_put(node);
+ 			return ret;
+ 		}
+ 
+ 		pds = pdr_add_lookup(apr->pdr, service_name, service_path);
+ 		if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
+ 			dev_err(dev, "pdr add lookup failed: %ld\n", PTR_ERR(pds));
+-			of_node_put(node);
+ 			return PTR_ERR(pds);
+ 		}
  	}
- 
- 	pbs = platform_get_drvdata(pdev);
- 	if (!pbs) {
- 		dev_err(dev, "Cannot get pbs instance from %s\n", dev_name(&pdev->dev));
- 		platform_device_put(pdev);
--		pbs = ERR_PTR(-EPROBE_DEFER);
--		goto out;
-+		return ERR_PTR(-EPROBE_DEFER);
- 	}
- 
- 	pbs->link = device_link_add(dev, &pdev->dev, DL_FLAG_AUTOREMOVE_SUPPLIER);
- 	if (!pbs->link) {
- 		dev_err(&pdev->dev, "Failed to create device link to consumer %s\n", dev_name(dev));
- 		platform_device_put(pdev);
--		pbs = ERR_PTR(-EINVAL);
--		goto out;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
--out:
--	of_node_put(pbs_dev_node);
- 	return pbs;
- }
- EXPORT_SYMBOL_GPL(get_pbs_client_device);
 
 -- 
 2.43.0
