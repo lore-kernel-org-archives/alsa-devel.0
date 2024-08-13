@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B1E0C52D7C
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 16:00:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0474C52D7C
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 16:00:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3B0A238B;
-	Tue, 13 Aug 2024 17:59:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3B0A238B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A61123D2;
+	Tue, 13 Aug 2024 18:00:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A61123D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723564804;
-	bh=ksXyluLLYgdlqdn91WjgN2vBXtQGAqRyYBlq8qUlv20=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=nhJJqRZg5RBIehP6TskazK/2SU+MJOxfaSob+FZ3SsR02kX9HVXwnGzLvaRqMB7dL
-	 Qwdw6gZnfyTDkeXCpek3UtFWjcaNIPMiWmqr73PKlntuh0ZBf911FHSYiPzDeAychv
-	 8+E7IhY/BsKPTkSsXHcVPcRMUmWjM3yOaHtcSucs=
+	s=default; t=1723564819;
+	bh=/cDaT9MMZ7PXAGsvzduJNxiq9wgQt4bUH8UgICoMreY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=FRrkgiJAbf9MPL+DUS9RbDmSUw+Kp3Q8R57GzoB+AcKQ2QIGzAMgYaJdh/F5sebGG
+	 LvnHuorCR3m1b9JN9rzv/2gHplKsg1gIX7Rr1YvBcfTOVMn3jm3Pb7OhimrnbuO75Q
+	 7V2wQKM5Ye5E8Hl/i9Ttm405zKZ6VVIa8teqkeCk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 844B8F8057A; Tue, 13 Aug 2024 17:59:26 +0200 (CEST)
+	id B7C5BF805D6; Tue, 13 Aug 2024 17:59:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D401F8047C;
-	Tue, 13 Aug 2024 17:59:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C934F805E0;
+	Tue, 13 Aug 2024 17:59:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE911F80517; Tue, 13 Aug 2024 17:59:00 +0200 (CEST)
+	id 43CD5F8049C; Tue, 13 Aug 2024 17:59:01 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A6BFEF8047C
-	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 17:58:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6BFEF8047C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3AEB8F80301;
+	Tue, 13 Aug 2024 17:58:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AEB8F80301
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Pn6iQWG6
+ header.s=k20201202 header.b=p1iQzcJY
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 221CA6175C;
-	Tue, 13 Aug 2024 14:52:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BB58C4AF0B;
-	Tue, 13 Aug 2024 14:52:53 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6910A6176A;
+	Tue, 13 Aug 2024 14:53:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E4F5C4AF11;
+	Tue, 13 Aug 2024 14:52:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723560775;
-	bh=ksXyluLLYgdlqdn91WjgN2vBXtQGAqRyYBlq8qUlv20=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=Pn6iQWG60deVyCYZm963Lp2xMpbZeR0kPmWcgWKo7LfxYQ+CWxjtt+/16wdtKNCad
-	 COyvaaCQeDaBBaoUwAQGsGiPIJBAaYMsbYxXDBnn4k+I25PprHtaYNcUirOeZzbjxD
-	 YEoNOtrCLyNsm/6qGuYcVZ5DxJWp5NBpa79dR8FUS1eL/ALQ9CQtgTTViGLwcCRxrl
-	 Rsm+Zm+uXXQJvTPbKipzzvGc7xkUFn9LDbgWY0tAKFvYUjOW3wTpDLOKlETIvVpaCl
-	 3x8Mq3v+72TsvOo0sjiCLyjEhhd4Th9qWyOnG2MNT8n7v0HMmK479ltVBVFDj8g1NU
-	 KQ7Lpp6kLVfJw==
+	s=k20201202; t=1723560783;
+	bh=/cDaT9MMZ7PXAGsvzduJNxiq9wgQt4bUH8UgICoMreY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=p1iQzcJYssZzZcK91NoTPOY5o0F0yzRU9O4/B1TcXOkx9PlrxWGIPAFAMdjRFlHAs
+	 RTHqCr1REzfRgMPUgElmvU50Hycmv5I5iX7+JMJy2K0ybLQFv0uzYE08d5PUdqcayv
+	 TMTcHltSBt6Y+/MH4KxKwLQD+ahYlsseo0sCM63IrxIYSHYzGMRgyOGoRiQOurA6ey
+	 wtoHI3lt1Uz/TbcO/uBCjPywPuorpcY3LqZP6exZqMIkKDefrSZYOO3xXo/lTo8OQ1
+	 a/ifJyopkUzV2UDWlUUDMrA8gvwmUaKaTMW3r6S/oZ5riGoSNq8fIa/7BFxBaqWgXG
+	 lmIGuv44dqdcg==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240730103511.21728-1-krzysztof.kozlowski@linaro.org>
-References: <20240730103511.21728-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: MAINTAINERS: Drop Banajit Goswami from Qualcomm
- sound drivers
-Message-Id: <172356077381.62411.63886383103399038.b4-ty@kernel.org>
-Date: Tue, 13 Aug 2024 15:52:53 +0100
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+ Basavaraj.Hiregoudar@amd.com, venkataprasad.potturu@amd.com,
+ pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ yung-chuan.liao@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, perex@perex.cz, tiwai@suse.com,
+ cristian.ciocaltea@collabora.com, Markus.Elfring@web.de,
+ sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240813105944.3126903-1-Vijendar.Mukunda@amd.com>
+References: <20240813105944.3126903-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH V2 1/2] ASoC: SOF: amd: move iram-dram fence register
+ programming sequence
+Message-Id: <172356077984.62411.5834566001022810605.b4-ty@kernel.org>
+Date: Tue, 13 Aug 2024 15:52:59 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: KN4XOQ7DYAQRBCCUZT7QOHTCQREQJGO4
-X-Message-ID-Hash: KN4XOQ7DYAQRBCCUZT7QOHTCQREQJGO4
+Message-ID-Hash: 3W7DMNICQY5ST2XHPP3PLQC2JXB3HB6U
+X-Message-ID-Hash: 3W7DMNICQY5ST2XHPP3PLQC2JXB3HB6U
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KN4XOQ7DYAQRBCCUZT7QOHTCQREQJGO4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3W7DMNICQY5ST2XHPP3PLQC2JXB3HB6U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,12 +98,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 30 Jul 2024 12:35:11 +0200, Krzysztof Kozlowski wrote:
-> There was no active maintenance from Banajit Goswami - last email is
-> from 2019 - so make obvious that Qualcomm sound drivers are maintained
-> by only one person.
+On Tue, 13 Aug 2024 16:29:43 +0530, Vijendar Mukunda wrote:
+> The existing code modifies IRAM and DRAM size after sha dma start for
+> vangogh platform. The problem with this sequence is that it might cause
+> sha dma failure when firmware code binary size is greater than the default
+> IRAM size. To fix this issue, Move the iram-dram fence register sequence
+> prior to sha dma start.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -108,8 +114,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: MAINTAINERS: Drop Banajit Goswami from Qualcomm sound drivers
-      commit: b919a27fab37e108164d657ac6e77bf870bf95e6
+[1/2] ASoC: SOF: amd: move iram-dram fence register programming sequence
+      commit: c56ba3e44784527fd6efe5eb7a4fa6c9f6969a58
+[2/2] ASoC: SOF: amd: Fix for incorrect acp error register offsets
+      commit: 897e91e995b338002b00454fd0018af26a098148
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
