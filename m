@@ -4,153 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81BCDC531DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 11:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76972C52D7B
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 11:43:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD1882369;
-	Tue, 13 Aug 2024 13:12:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD1882369
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF83D2345;
+	Tue, 13 Aug 2024 13:43:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF83D2345
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723547573;
-	bh=eiL6s26raOgfrD1L3K1rHWY9zGMgZlq4g3aOws5bu58=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=fdY5KcPQN6pVFgdLog3/TfZD2tf3nOCvSUrJf9agrWy3VoSqKXDE63UuEeJrzS+VZ
-	 6WVLdyZEvzGr15ZTL4Trr6tGAPEnTBonUHarEfCMWJ6Ik9H8JUQE7Bt/1zhhPpTZ2s
-	 Bi5h45cbzHHCT9dTlYDYfjfOv3YdCV9E7AOTkdwA=
+	s=default; t=1723549414;
+	bh=QPnuwFoAnkb9n+0YixvBFxqQZjB7ohOBsMqeqI4zqp0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=naX2arPKoHlqY+mRBOXroRGhYkmAd77HP/rubkEAB/2FgFZpFIsDaekC+Bl9xtkXI
+	 LGu6wAdly/Fj1/bbJf2uwce3tZgT+flIRzQhSCVi8+HZl31P1gg5bp1coxVT6FqGSU
+	 0SFsRGwI4qHv5bjV3E69gTk1ztDVLvF/ODR0RJfI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C9580F805F3; Tue, 13 Aug 2024 13:12:00 +0200 (CEST)
+	id 54771F80588; Tue, 13 Aug 2024 13:43:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 522A8F805EB;
-	Tue, 13 Aug 2024 13:11:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAD0BF805B4;
+	Tue, 13 Aug 2024 13:43:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33BD5F800B0; Tue, 13 Aug 2024 13:03:57 +0200 (CEST)
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam04on20631.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:240a::631])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 98F76F80423; Tue, 13 Aug 2024 13:35:54 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70AA9F800B0;
-	Tue, 13 Aug 2024 13:00:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70AA9F800B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id CCD94F800BF
+	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 13:35:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCD94F800BF
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=U55C6sk/
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qH+JXHZ2m4AhpM+squrb+c6pFZhkGDmilqAiSt1JMS8y+5m5Cfh105hXzYCk5RYVt5ystINTtOtADTe5hhOV2pV0NWqLprSUOqEG5kNqZKYfFB10pQnifxKONHHLFQX+obBfRS9uzFOEXnp5j5l0FheH5fY1EYpCSZcsPhan7G0QDXWSlDE5fSakpSRSgCp7FfiNRGmNfHnc21UUlh373tA9vVCKzmatBsQxSPuscdyrIbxkAj3Wree17k2l1QR5iTid0YX+PATqHHTdOnluR7vZ6W9Z/aDTolRkE0JQQc2LNp34LvaK0dDksv+OSSXnc5SR5wx7jGgmAGSHDWcm6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VyKANzPYvNrLaSOvs3T932HMKi61kHkK49likocuQ2E=;
- b=cUxw4p7Nm1Jh1riCHMBH3wbHeEnWR6axuoE2uoZsqcQ6gX6rYmf2LqJvENKJSGTBVe0cXD4JlFgef2I44mQhFpPFFldziNcSFK47DxmnQsPu/9ZZtgzp7wAjngojkcZsLs0msTUJVcEDb4mxcRfK/S4rx34e3cpcIcADyWxHZh7afoIPMww38/v+Psxkpfhzh1GNE+qVE/y5NEtZzl9gVe2Y9ZHUcB1tigZXqrjW2AE8r2/fsqiwzr4j0RWvMeM5f2R9mda16jt3nOR+peutAvvcgX3A9D98gVwyw99lrVv0YKFlZJNtDAZh7nt8OAvWgCaKdRPjvLG+rZNoUVm4nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VyKANzPYvNrLaSOvs3T932HMKi61kHkK49likocuQ2E=;
- b=U55C6sk/9ktoSm4NciCN5zX/Az9YsctGgmFhu3c5OfIT0jXwKLtcAO5f30XGkqoL8VHFRYviAM3oOVPT085KPUW9P7mFv+gooLIbq2EkUf/v8lCrMa+zFrcQPNCcaZwTCdbb+YbOsB6km3+Dy9y7we4jtiYP/BvxwYnemTmIxKA=
-Received: from SJ0PR03CA0065.namprd03.prod.outlook.com (2603:10b6:a03:331::10)
- by CH3PR12MB9148.namprd12.prod.outlook.com (2603:10b6:610:19d::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7849.22; Tue, 13 Aug
- 2024 11:00:22 +0000
-Received: from CO1PEPF000075F2.namprd03.prod.outlook.com
- (2603:10b6:a03:331:cafe::8b) by SJ0PR03CA0065.outlook.office365.com
- (2603:10b6:a03:331::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.33 via Frontend
- Transport; Tue, 13 Aug 2024 11:00:22 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000075F2.mail.protection.outlook.com (10.167.249.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7828.19 via Frontend Transport; Tue, 13 Aug 2024 11:00:22 +0000
-Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 13 Aug 2024 06:00:16 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <Sunil-kumar.Dommati@amd.com>,
-	<Basavaraj.Hiregoudar@amd.com>, <venkataprasad.potturu@amd.com>,
-	<pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
-	<yung-chuan.liao@linux.intel.com>, <peter.ujfalusi@linux.intel.com>,
-	<ranjani.sridharan@linux.intel.com>, <perex@perex.cz>, <tiwai@suse.com>,
-	<cristian.ciocaltea@collabora.com>, <Markus.Elfring@web.de>,
-	<sound-open-firmware@alsa-project.org>, <linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH V2 1/2] ASoC: SOF: amd: move iram-dram fence register
- programming sequence
-Date: Tue, 13 Aug 2024 16:29:43 +0530
-Message-ID: <20240813105944.3126903-1-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=c+sHFPR1
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id DF4F8CE1294;
+	Tue, 13 Aug 2024 11:35:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAC8BC4AF09;
+	Tue, 13 Aug 2024 11:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723548934;
+	bh=QPnuwFoAnkb9n+0YixvBFxqQZjB7ohOBsMqeqI4zqp0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=c+sHFPR1SYZ9hcwXubjAD68XPNBiKSSi37HHxOHCKXafQqTC4YYcNl6Y9YzBcgUm2
+	 I+FkeCRhu245lMhVP4SpyyLtHwbcM0QOBbxomJpm4bC9a+3rnftmywiQTsqriV7ed6
+	 fe0Eg06IBXRCUZkq89jkFV7gK5DF3WjVkvNpmO0wWINwbLnuRgI6kPQurisDBFIOJC
+	 nI1pd+P0vMaQV33Uhlw1wO3Ou2wtGWeRx9hD6RaxldHgfCllr9HIIZoT7k9Vo08Vck
+	 b1QRDa1p8F5S1TIs4n0P6+OG6aBjyirSE6SmlTZF1AltDWfo6+MzcYSzW/Yt8ifJy5
+	 BB/3PGehv6pHA==
+Date: Tue, 13 Aug 2024 12:35:29 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Zhang Yi <zhangyi@everest-semi.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com,
+	amadeuszx.slawinski@linux.intel.com, yangxiaohua@everest-semi.com,
+	zhuning@everest-semi.com
+Subject: Re: [PATCH] ASoC: codecs: ES8326: Adjust buttons
+Message-ID: <c112c284-67a1-42b4-8e31-fca917487820@sirena.org.uk>
+References: <20240813045149.106488-1-zhangyi@everest-semi.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000075F2:EE_|CH3PR12MB9148:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8829dd5c-66f8-4baa-2528-08dcbb8720aa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|7416014|1800799024|376014|36860700013|82310400026;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?AUtM4IUZupazWFPGa9d7W1YHFtREpwyQnMfsiADF73F+y2UkwrxyImfDTZEJ?=
- =?us-ascii?Q?vpnnzkGlyrweXl2w7N3QlF+Bvi56KdkfXW9VHeK4y7c3cosUdHrJH4g7JsZg?=
- =?us-ascii?Q?ukqV/8yZocCnFVFSlfcfbIJBcyO3FpeJHBynK/CCg41uHTRhlzFoHEakRyjG?=
- =?us-ascii?Q?pBdA20HxlPBfyu1okWEdr6r+Eak0IkiTzilEg8CRNJLqzxQBn46Fl8IVbN/f?=
- =?us-ascii?Q?l9Ls690MMMcMK3PmzF0xq2qGqQI7yIQsOaiWYlSTNlEa2dIYZ517/OgMvA2F?=
- =?us-ascii?Q?UZPsa0+L5UKuJ8/ZQXATTClyQnok5TeppQZxtOow4PdprXJZi3WjAiiCG/PA?=
- =?us-ascii?Q?gB0CY7U/3Hb7kyXFzrs2CdVJE0t2bEejusDrtlfbPd7kQ5HJsvknzhAPnKL4?=
- =?us-ascii?Q?cVmUWBXb1XzWk7zyZPob3b4JKhrFhwEPIBd/sN4552baSNb2ovXKkJ6mxM4c?=
- =?us-ascii?Q?cPgN0efFIzo878snMUXho2ycYWCZfPtaPGcrD0BgrorgyIeTwaGDM6+R64Dq?=
- =?us-ascii?Q?npRY0kQ54ZK6+NkivzKLxtVp5gnumK8l1Bb8Hga3TcNo/pB0TJVAPzyw45fr?=
- =?us-ascii?Q?lT5825XXDnaCnhncqyKDSRJiEfBXRz20u6wt/XL+iIJpMfiEMxhNTi/eD4YE?=
- =?us-ascii?Q?DbVKd6o0e32WPvwHafb6m8+JH8HpOpPFmYV9J5B2dMwstggRrvx3A+Y6UDVq?=
- =?us-ascii?Q?QRSHmIBXHnOPDooLBZ0+5HpsQ8Knp6oJCKqDRqGhUwxzKhmO8o3/zGoSY+oY?=
- =?us-ascii?Q?x/OyGvGF8ImrW3fX6S8UuJn5BHcY7aHMkfsUC9q9xV9pDb8OoWHixvn1aVum?=
- =?us-ascii?Q?KsD0Ve/5gTjsSVFRDz+N4nRBhWs2WCZ4NRXUi85kbib24KyGZTcTpPJ+YPCG?=
- =?us-ascii?Q?yOT3tUCj7ea/h3nA3R4yzPIjTOs6y+RN2FB04fn7gaQg0pzjgTGDh58ME/gw?=
- =?us-ascii?Q?UVwpmOvIFRgXQoGoNvs3m06Wxdiy3CFRfFsNrOqW0Fur/9+wpdnzmKvfVU29?=
- =?us-ascii?Q?YEEsbRuzR62XsctrZVjw6GJxPGUJr0KzLaf5YTZV2Ey1tWbJwaYUd6j7yOic?=
- =?us-ascii?Q?RnVpSE0kLXk/3qLXfjxZPCpQxzxXDGPABQZZ/PJCzq8uXQRFCgbxC/gqtP4q?=
- =?us-ascii?Q?yyl3oAPZmDou3Zd3hXgC5UOikp1nH9c9/VRyIiknrUbim+6/mj10oT/I3prb?=
- =?us-ascii?Q?97ExgjXnqo0wxTYVTilQTXKEB5mmBzj3wdDu7rrJVq39NerC7svK+CW/hHPE?=
- =?us-ascii?Q?fZjm4YusjO4ABy2vYksYRyTssuleIikJACHbhuWJ0wtrN7fkmxtkOc/doveg?=
- =?us-ascii?Q?1xtrgj6mY1YVjovlkR0+C1eb9+tITrHm/0o+ZyewteC8eWpYWWFuVOhkSo3o?=
- =?us-ascii?Q?D4mIG59SNxRYgcf1DHmV0Ye0Y0pSGglGdDhufEzjWKNGQuuyP6cOufZCO/0s?=
- =?us-ascii?Q?Lhm1vkutwjBMm++ayVqDhtMR7CS2rkdK?=
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(36860700013)(82310400026);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2024 11:00:22.1205
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 8829dd5c-66f8-4baa-2528-08dcbb8720aa
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	CO1PEPF000075F2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9148
-Message-ID-Hash: 4FLKJ4INV4ITL2OWVAV3NCHQ3GFBWQKF
-X-Message-ID-Hash: 4FLKJ4INV4ITL2OWVAV3NCHQ3GFBWQKF
-X-MailFrom: Vijendar.Mukunda@amd.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3RCONXoBrp0wnWBv"
+Content-Disposition: inline
+In-Reply-To: <20240813045149.106488-1-zhangyi@everest-semi.com>
+X-Cookie: Say no, then negotiate.
+Message-ID-Hash: ZCQ5UCE45SMU65CESDOEXVCPKXIYRLRO
+X-Message-ID-Hash: ZCQ5UCE45SMU65CESDOEXVCPKXIYRLRO
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -162,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4FLKJ4INV4ITL2OWVAV3NCHQ3GFBWQKF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZCQ5UCE45SMU65CESDOEXVCPKXIYRLRO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -171,61 +94,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The existing code modifies IRAM and DRAM size after sha dma start for
-vangogh platform. The problem with this sequence is that it might cause
-sha dma failure when firmware code binary size is greater than the default
-IRAM size. To fix this issue, Move the iram-dram fence register sequence
-prior to sha dma start.
 
-Fixes: 094d11768f74 ("ASoC: SOF: amd: Skip IRAM/DRAM size modification for Steam Deck OLED")
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
-changes since v1:
-	- Rephrase commit description
+--3RCONXoBrp0wnWBv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/soc/sof/amd/acp.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+On Tue, Aug 13, 2024 at 12:51:49PM +0800, Zhang Yi wrote:
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 7b122656efd1..b8d4f986f89d 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -263,6 +263,17 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_STRT_ADDR, start_addr);
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_DESTINATION_ADDR, dest_addr);
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_MSG_LENGTH, image_length);
-+
-+	/* psp_send_cmd only required for vangogh platform (rev - 5) */
-+	if (desc->rev == 5 && !(adata->quirks && adata->quirks->skip_iram_dram_size_mod)) {
-+		/* Modify IRAM and DRAM size */
-+		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | IRAM_DRAM_FENCE_2);
-+		if (ret)
-+			return ret;
-+		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | MBOX_ISREADY_FLAG);
-+		if (ret)
-+			return ret;
-+	}
- 	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_CMD, ACP_SHA_RUN);
- 
- 	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SHA_TRANSFER_BYTE_CNT,
-@@ -280,17 +291,6 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
- 			return ret;
- 	}
- 
--	/* psp_send_cmd only required for vangogh platform (rev - 5) */
--	if (desc->rev == 5 && !(adata->quirks && adata->quirks->skip_iram_dram_size_mod)) {
--		/* Modify IRAM and DRAM size */
--		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | IRAM_DRAM_FENCE_2);
--		if (ret)
--			return ret;
--		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | MBOX_ISREADY_FLAG);
--		if (ret)
--			return ret;
--	}
--
- 	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER,
- 					    fw_qualifier, fw_qualifier & DSP_FW_RUN_ENABLE,
- 					    ACP_REG_POLL_INTERVAL, ACP_DMA_COMPLETE_TIMEOUT_US);
--- 
-2.34.1
+> To adapt to chrome, we have adjusted the buttons to match the system.
 
+>  	case 0x4b:
+>  		/* button volume up */
+> -		cur_button = SND_JACK_BTN_1;
+> +		cur_button = SND_JACK_BTN_2;
+>  		break;
+>  	case 0x27:
+>  		/* button volume down */
+> -		cur_button = SND_JACK_BTN_2;
+> +		cur_button = SND_JACK_BTN_3;
+>  		break;
+
+This is really problematic, we're changing the keys reported here in a
+way that's not ABI compatible.  If this was a new driver then fine but
+this is quite old, it's in LTS releases, so we might be disrupting
+people's existing systems.  I'm not sure we have a good solution for
+this at this point, we're not even swapping the buttons here but rather
+using a different set of buttons.  Probably ChromeOS needs to work
+around this somehow, or we need to add some mechanism which allows
+userspace to configure the driver mapping at runtime.
+
+--3RCONXoBrp0wnWBv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAma7RQAACgkQJNaLcl1U
+h9Dapwf/e52yytnpQlqAOh+Cug4Skiil7vcf5dPEZo9EY1sT8rjh2LKtLQKgtBuU
+OFsSmVjlLza1h/NTweUKhXsCsDSqADcKuwKA83N4+PRMqNiboFVulgWX0F2+3KPS
+jqGru5iGzt51MkqkAxqULf+uYEeeJO4a9NcQgwb0J5GQv2Q4ODXVXmJgt3htWx4J
+oQolEbLvebdtE5f0GSWjIHeRFjZCqeIt2PWnxNih+1rI1jMLcybt7YRk8x55V1wL
+T86N0R5x/i1ArOHisJ6bClOcKTIAmgfwgVtoVUehhQAqL79BzB9lPFZQKEEbKmO7
+8ksecDr2l1EumecJ5/pAlgkMfLb8ig==
+=KknK
+-----END PGP SIGNATURE-----
+
+--3RCONXoBrp0wnWBv--
