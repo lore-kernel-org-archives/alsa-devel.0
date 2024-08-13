@@ -4,85 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 750E7C52D7B
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 15:55:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B1E0C52D7C
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Aug 2024 16:00:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D81423E1;
-	Tue, 13 Aug 2024 17:55:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D81423E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3B0A238B;
+	Tue, 13 Aug 2024 17:59:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3B0A238B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723564512;
-	bh=SCILEbD9383LEVKt7wlG2zqcA2/nxq5Pc5x9g0ZN3xo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=eNOl2Car5bUzFKfBJxg96SgtQVZC3WBhcw6V5jtlzm9k43n0ZXb7Lf93wy7a25mUj
-	 WvlH0d1sM3go4GAtKWOnb8C3qq1Mxq5yvIrGfsOBwrinOtdr9Rz6iL7cseKG5zH3K/
-	 qXaBAND5NUeWWUCtlfuJvPb+sKEi6bcgXtZGZNJs=
+	s=default; t=1723564804;
+	bh=ksXyluLLYgdlqdn91WjgN2vBXtQGAqRyYBlq8qUlv20=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=nhJJqRZg5RBIehP6TskazK/2SU+MJOxfaSob+FZ3SsR02kX9HVXwnGzLvaRqMB7dL
+	 Qwdw6gZnfyTDkeXCpek3UtFWjcaNIPMiWmqr73PKlntuh0ZBf911FHSYiPzDeAychv
+	 8+E7IhY/BsKPTkSsXHcVPcRMUmWjM3yOaHtcSucs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F01BF805FA; Tue, 13 Aug 2024 17:54:25 +0200 (CEST)
+	id 844B8F8057A; Tue, 13 Aug 2024 17:59:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC587F805FC;
-	Tue, 13 Aug 2024 17:54:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D401F8047C;
+	Tue, 13 Aug 2024 17:59:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3A5EF80423; Tue, 13 Aug 2024 17:44:38 +0200 (CEST)
-Received: from galois.linutronix.de (galois.linutronix.de
- [IPv6:2a0a:51c0:0:12e:550::1])
+	id BE911F80517; Tue, 13 Aug 2024 17:59:00 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 05BF3F800BF
-	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 17:44:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05BF3F800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id A6BFEF8047C
+	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2024 17:58:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6BFEF8047C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linutronix.de header.i=@linutronix.de
- header.a=rsa-sha256 header.s=2020 header.b=VJTBe3qh;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de
- header.a=ed25519-sha256 header.s=2020e header.b=AyjWMK10
-Date: Tue, 13 Aug 2024 17:22:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1723562564;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5/E7ZJ4wGcPnowXOcotLGIaNe6xlDkthLXxOfxn/IM=;
-	b=VJTBe3qhTwmSyv+Ep8Zivpuql5YfALl0d/U7P1AMY7WCPIA5MnJ+zsEXrNlS7fHI16EGoF
-	r9S7Qu/+dQXBUAEIQWwoiepOvs18fbWedjqFtEoaIkfpz2pubpdm41RHztQPWFzWpiI02S
-	c2WylEwIkJLwB7nOezbEjnl+UX9DZ6jkydFdWl5it12EHofrb88wvdwCI2nJzGhdLwDcPq
-	LYO1Srf5SU+SCqTG0zO08c8BVHfeKsj0l0tLKQF0tPPhsHk0aLWu6kAC2ss5oe1uUxmpD5
-	/rwXbRmAf+FyeJH/cCxnBs+l8WenvM0sZMRTwwUH2V5vc0m/uC5C1cKbiPosXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1723562564;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5/E7ZJ4wGcPnowXOcotLGIaNe6xlDkthLXxOfxn/IM=;
-	b=AyjWMK10XA1oBwhboOrf9Z46wxNRgkQKjVvE2863FVPVuOPdvctQMbo1SBvhbdxtkkzAg4
-	8gFC0gzk/LbN4NCw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Arseniy Krasnov <avkrasnov@salutedevices.com>
-Subject: Re: [PATCH] ASoC: meson: axg-fifo: fix irq scheduling issue with
- PREEMPT_RT
-Message-ID: <20240813152243.2H3-mnx5@linutronix.de>
-References: <20240806102707.3825703-1-jbrunet@baylibre.com>
- <172356023429.57695.4053614993109219592.b4-ty@kernel.org>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Pn6iQWG6
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 221CA6175C;
+	Tue, 13 Aug 2024 14:52:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BB58C4AF0B;
+	Tue, 13 Aug 2024 14:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723560775;
+	bh=ksXyluLLYgdlqdn91WjgN2vBXtQGAqRyYBlq8qUlv20=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=Pn6iQWG60deVyCYZm963Lp2xMpbZeR0kPmWcgWKo7LfxYQ+CWxjtt+/16wdtKNCad
+	 COyvaaCQeDaBBaoUwAQGsGiPIJBAaYMsbYxXDBnn4k+I25PprHtaYNcUirOeZzbjxD
+	 YEoNOtrCLyNsm/6qGuYcVZ5DxJWp5NBpa79dR8FUS1eL/ALQ9CQtgTTViGLwcCRxrl
+	 Rsm+Zm+uXXQJvTPbKipzzvGc7xkUFn9LDbgWY0tAKFvYUjOW3wTpDLOKlETIvVpaCl
+	 3x8Mq3v+72TsvOo0sjiCLyjEhhd4Th9qWyOnG2MNT8n7v0HMmK479ltVBVFDj8g1NU
+	 KQ7Lpp6kLVfJw==
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240730103511.21728-1-krzysztof.kozlowski@linaro.org>
+References: <20240730103511.21728-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: MAINTAINERS: Drop Banajit Goswami from Qualcomm
+ sound drivers
+Message-Id: <172356077381.62411.63886383103399038.b4-ty@kernel.org>
+Date: Tue, 13 Aug 2024 15:52:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <172356023429.57695.4053614993109219592.b4-ty@kernel.org>
-Message-ID-Hash: KQFJPPRRALN72UNYI2YGUZ433WLK73O6
-X-Message-ID-Hash: KQFJPPRRALN72UNYI2YGUZ433WLK73O6
-X-MailFrom: bigeasy@linutronix.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
+Message-ID-Hash: KN4XOQ7DYAQRBCCUZT7QOHTCQREQJGO4
+X-Message-ID-Hash: KN4XOQ7DYAQRBCCUZT7QOHTCQREQJGO4
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KQFJPPRRALN72UNYI2YGUZ433WLK73O6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KN4XOQ7DYAQRBCCUZT7QOHTCQREQJGO4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,26 +95,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2024-08-13 15:43:54 [+0100], Mark Brown wrote:
-> On Tue, 06 Aug 2024 12:27:03 +0200, Jerome Brunet wrote:
-> > With PREEMPT_RT enabled, spinlocks become preemptible.
-> > This is usually not a problem with spinlocks used in IRQ context since
-> > IRQ handlers get threaded. However, if IRQF_ONESHOT is set, the upper half
-> > of a threaded irq handler won't be threaded and this causes scheduling
-> > problems if spinlocks are used in the upper half, like with regmap when
-> > '.fast_io' is set.
-> > 
-> > [...]
+On Tue, 30 Jul 2024 12:35:11 +0200, Krzysztof Kozlowski wrote:
+> There was no active maintenance from Banajit Goswami - last email is
+> from 2019 - so make obvious that Qualcomm sound drivers are maintained
+> by only one person.
 > 
-> Applied to
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> 
-> Thanks!
-> 
-> [1/1] ASoC: meson: axg-fifo: fix irq scheduling issue with PREEMPT_RT
->       commit: 5003d0ce5c7da3a02c0aff771f516f99731e7390
 
-Didn't you already apply v2 of this?
+Applied to
 
-Sebastian
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: MAINTAINERS: Drop Banajit Goswami from Qualcomm sound drivers
+      commit: b919a27fab37e108164d657ac6e77bf870bf95e6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
