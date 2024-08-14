@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDC22C52D7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Aug 2024 08:45:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 470ABC52D7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Aug 2024 08:45:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC3512342;
-	Wed, 14 Aug 2024 10:45:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC3512342
+	by alsa0.perex.cz (Postfix) with ESMTPS id F36A22346;
+	Wed, 14 Aug 2024 10:45:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F36A22346
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723625111;
-	bh=dSFS4Ni1FULSXvzN+U9h9xBHT2gLjAntPAgAMJftT8s=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ZH9ni61OPuDaDv4bU09xZx70FkeHPnUKaT0IMOFupI+881d2g6/FsTZ+VaMfmgxmF
-	 ys7v3yJoDJ0XwNc2deQ6Ovevu0/NG4gfaTqo0all1dpJc8iQOdlKDJS5x/FvAelx8p
-	 R1HRGPlV8YOTegEbtK2dxX2o4HqtnAw0njTrCDWE=
+	s=default; t=1723625131;
+	bh=qlozRJ3xQk/1szgD7uZbvh9GJmSvk2Z3IeOSOhy/+M8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=d+IQ2+B+4VvRs83WDCpT8IJHrfeDDMY+gvYDnqhFBsJmxr5yWmCfvoLdST2xxRfpC
+	 EC6PQ11lXYNaaxJBR4GO9FuzEGLralscGWgCU5ZV47cfTQQAxuLxXsaR/Lsg+s0Nve
+	 oWd4vh6qhILRpbaI/hupAdKU7kvET9+Ir0RaMbwE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60BB8F80588; Wed, 14 Aug 2024 10:44:37 +0200 (CEST)
+	id DCE7AF805C9; Wed, 14 Aug 2024 10:44:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32A2FF8049C;
-	Wed, 14 Aug 2024 10:44:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3130F805B5;
+	Wed, 14 Aug 2024 10:44:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B88CCF80580; Wed, 14 Aug 2024 10:40:19 +0200 (CEST)
+	id A34B8F80589; Wed, 14 Aug 2024 10:40:28 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EE34F800B0
-	for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2024 10:40:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EE34F800B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62AD5F80423
+	for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2024 10:40:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62AD5F80423
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ir2/tkeT
+ header.s=Intel header.b=K6PHbFVs
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723624803; x=1755160803;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dSFS4Ni1FULSXvzN+U9h9xBHT2gLjAntPAgAMJftT8s=;
-  b=ir2/tkeTUHlllYfSLzgCgy4Dtm+ahqbMb8WEBAxWiXeI3FsOybOL6se+
-   ms+k+JWBW7jo5W+lRkL+7uF5uzbG5VwmxUUM55fHFqjteJ5F1aYVYKK0R
-   Chqvfi+BBi++khbmKTuqOGAH3OHSfPWi4G6zn0/yRFJ8acrLEOokhSzqx
-   GnA2ERpsNlkrQnAcuTXVBz7Fqe5egvDyjoD+RkoeJGSQC+nhuOSEHsCjH
-   KLq6kJFWRUcv9KauY5D1xJ4XbtUm2i9Bdh2AdtRcff2KXUOKV5W02Vwvf
-   AIWmiSdoAMx91x2zWnAFmjwNahE7CDna6/hrmYezUmSp6mibyKOhT/Oi+
-   A==;
-X-CSE-ConnectionGUID: 8+TJGLfOQKeD6BGUC5D9iQ==
-X-CSE-MsgGUID: L+2rSzTZR9SbZvk6e+Ibxg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11163"; a="24735098"
+  t=1723624807; x=1755160807;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=qlozRJ3xQk/1szgD7uZbvh9GJmSvk2Z3IeOSOhy/+M8=;
+  b=K6PHbFVsOylRjuuGuDRzZ9QM9S6ZtQDylLI+3eWcGf7YoAiFAWSVxsUB
+   gC7Pl1bSHKgJDbR5s36mhYXXs2IUn0gFQQbkQa3dKcT0cjK7H3D9BhvgN
+   H4o8pxOlgbgfhQFdlXu1eLnk4FUx+2oLhYVqN1TwvE0hHJsmAzFN0K2+W
+   7S/PIsESIOLkISo5N2FfIrNKnpAARVMv/XaHhjl3mrcVseqYgNQciTkFe
+   ta6z71JXPx1rLxOd3Z2MFmAt5hU4nUstI1DR+mUgQfvuFh+OxJtrrzXJD
+   mUgnC8sAZ5XOYC/qObsEUUFGF/g4krmisBbulA5UIxqzaqHkFDHNnFKzm
+   Q==;
+X-CSE-ConnectionGUID: rB98EZbkQEqdT45qgBB3hA==
+X-CSE-MsgGUID: lKLDqpq8RkW7jX0Pdq7tWw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11163"; a="24735122"
 X-IronPort-AV: E=Sophos;i="6.09,288,1716274800";
-   d="scan'208";a="24735098"
+   d="scan'208";a="24735122"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2024 01:39:57 -0700
-X-CSE-ConnectionGUID: fewIiJQIQLeO1SXBkCN8XA==
-X-CSE-MsgGUID: agmeZqDyRUKXHRU+IUpUZw==
+ 14 Aug 2024 01:40:03 -0700
+X-CSE-ConnectionGUID: G8eThFI9S+CXYZZmjUaVhQ==
+X-CSE-MsgGUID: awWq5zn0QmmYmy2QECY+NA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,288,1716274800";
-   d="scan'208";a="63867874"
+   d="scan'208";a="63867912"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orviesa004.jf.intel.com with ESMTP; 14 Aug 2024 01:39:53 -0700
+  by orviesa004.jf.intel.com with ESMTP; 14 Aug 2024 01:40:00 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,14 +79,16 @@ Cc: alsa-devel@alsa-project.org,
 	cujomalainey@chromium.org,
 	lmajczak@google.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH v2 00/14] ASoC: Intel: Remove skylake driver
-Date: Wed, 14 Aug 2024 10:39:15 +0200
-Message-Id: <20240814083929.1217319-1-cezary.rojewski@intel.com>
+Subject: [PATCH v2 02/14] ASoC: Intel: Drop skl_machine_pdata usage
+Date: Wed, 14 Aug 2024 10:39:17 +0200
+Message-Id: <20240814083929.1217319-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240814083929.1217319-1-cezary.rojewski@intel.com>
+References: <20240814083929.1217319-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IJQPWPZ4WLKJ2CUBAVKFUJGXABNHN2O4
-X-Message-ID-Hash: IJQPWPZ4WLKJ2CUBAVKFUJGXABNHN2O4
+Message-ID-Hash: DF4SKXYK773PZFATLVZF75NDLXBIVENR
+X-Message-ID-Hash: DF4SKXYK773PZFATLVZF75NDLXBIVENR
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IJQPWPZ4WLKJ2CUBAVKFUJGXABNHN2O4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DF4SKXYK773PZFATLVZF75NDLXBIVENR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,138 +110,217 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A spiritual successor to haswell/baytrail removal series [1].
+Preparation step in the skylake-driver removal process.
 
-The avs-driver found in sound/soc/intel/avs is a direct replacement to
-the existing skylake-driver. It covers all features supported by it and
-more and aligns with the recommended flows and requirements based on
-Windows driver equivalent.
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c |  6 ------
+ sound/soc/intel/common/soc-acpi-intel-ehl-match.c |  1 -
+ sound/soc/intel/common/soc-acpi-intel-hda-match.c |  6 ------
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c |  6 ------
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 11 -----------
+ sound/soc/intel/common/soc-acpi-intel-skl-match.c |  5 -----
+ 6 files changed, 35 deletions(-)
 
-The skylake-driver related UAPI has been removed with "ASoC: Drop
-soc-topology ABI v4 support" [2].
-
-For the official kernel tree the deprecation begun with v6.0. Most
-skylake-drivers users moved to avs- or SOF-driver when AudioDSP
-capabilities are available on the platform or to snd-hda-intel
-(sound/pci/hda) when such capabilities are not.
-
-For the supported trees the deprecation begun with v5.4 with v5.15 being
-the first where the skylake-driver is disabled entirely.
-
-All machine board drivers that consume this DSP driver have their
-replacements present within sound/soc/intel/avs/boards/ directory.
-
-
-Changes in v2:
-- added two new patches (leading the series)
-- the first moves all device entries previously under the skylake-driver
-  dependency under the avs-driver
-- the second patch drops struct skl_machine_pdata usage to fix
-  compilation errors as pointed out by IKP
-- no further changes, retained Acked-by tags for these
-
-[1]: https://lore.kernel.org/alsa-devel/20201006064907.16277-1-cezary.rojewski@intel.com/
-[2]: https://lore.kernel.org/alsa-devel/20240403091629.647267-1-cezary.rojewski@intel.com/
-
-
-Cezary Rojewski (14):
-  ALSA: hda: Move SST device entries to AVS
-  ASoC: Intel: Drop skl_machine_pdata usage
-  ASoC: Intel: Remove bxt_rt298 board driver
-  ASoC: Intel: Remove bxt_da7219_max98357a board driver
-  ASoC: Intel: Remove kbl_rt5663_rt5514_max98927 board driver
-  ASoC: Intel: Remove kbl_rt5663_max98927 board driver
-  ASoC: Intel: Remove kbl_rt5660 board driver
-  ASoC: Intel: Remove kbl_da7219_max98927 board driver
-  ASoC: Intel: Remove kbl_da7219_max98357a board driver
-  ASoC: Intel: Remove skl_rt286 board driver
-  ASoC: Intel: Remove skl_nau88l25_ssm4567 board driver
-  ASoC: Intel: Remove skl_nau88l25_max98357a board driver
-  ASoC: Intel: Remove skylake driver
-  ASoC: Intel: avs: Enable by default for all SST configurations
-
- sound/hda/intel-dsp-config.c                  |  111 +-
- sound/soc/intel/Kconfig                       |  120 -
- sound/soc/intel/Makefile                      |    1 -
- sound/soc/intel/avs/core.c                    |    8 +-
- sound/soc/intel/boards/Kconfig                |  152 +-
- sound/soc/intel/boards/Makefile               |   20 -
- sound/soc/intel/boards/bxt_da7219_max98357a.c |  720 ----
- sound/soc/intel/boards/bxt_rt298.c            |  670 ---
- sound/soc/intel/boards/kbl_da7219_max98357a.c |  688 ----
- sound/soc/intel/boards/kbl_da7219_max98927.c  | 1175 ------
- sound/soc/intel/boards/kbl_rt5660.c           |  567 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c  | 1073 -----
- .../intel/boards/kbl_rt5663_rt5514_max98927.c |  869 ----
- .../soc/intel/boards/skl_nau88l25_max98357a.c |  704 ----
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c |  751 ----
- sound/soc/intel/boards/skl_rt286.c            |  568 ---
- .../intel/common/soc-acpi-intel-cnl-match.c   |    6 -
- .../intel/common/soc-acpi-intel-ehl-match.c   |    1 -
- .../intel/common/soc-acpi-intel-hda-match.c   |    6 -
- .../intel/common/soc-acpi-intel-icl-match.c   |    6 -
- .../intel/common/soc-acpi-intel-kbl-match.c   |   11 -
- .../intel/common/soc-acpi-intel-skl-match.c   |    5 -
- sound/soc/intel/skylake/Makefile              |   15 -
- sound/soc/intel/skylake/bxt-sst.c             |  629 ---
- sound/soc/intel/skylake/cnl-sst-dsp.c         |  266 --
- sound/soc/intel/skylake/cnl-sst-dsp.h         |  103 -
- sound/soc/intel/skylake/cnl-sst.c             |  508 ---
- sound/soc/intel/skylake/skl-debug.c           |  248 --
- sound/soc/intel/skylake/skl-i2s.h             |   87 -
- sound/soc/intel/skylake/skl-messages.c        | 1419 -------
- sound/soc/intel/skylake/skl-nhlt.c            |  269 --
- sound/soc/intel/skylake/skl-pcm.c             | 1507 -------
- sound/soc/intel/skylake/skl-ssp-clk.c         |  428 --
- sound/soc/intel/skylake/skl-ssp-clk.h         |  108 -
- sound/soc/intel/skylake/skl-sst-cldma.c       |  373 --
- sound/soc/intel/skylake/skl-sst-cldma.h       |  243 --
- sound/soc/intel/skylake/skl-sst-dsp.c         |  462 ---
- sound/soc/intel/skylake/skl-sst-dsp.h         |  256 --
- sound/soc/intel/skylake/skl-sst-ipc.c         | 1071 -----
- sound/soc/intel/skylake/skl-sst-ipc.h         |  169 -
- sound/soc/intel/skylake/skl-sst-utils.c       |  425 --
- sound/soc/intel/skylake/skl-sst.c             |  599 ---
- sound/soc/intel/skylake/skl-topology.c        | 3605 -----------------
- sound/soc/intel/skylake/skl-topology.h        |  524 ---
- sound/soc/intel/skylake/skl.c                 | 1177 ------
- sound/soc/intel/skylake/skl.h                 |  207 -
- 46 files changed, 59 insertions(+), 22871 deletions(-)
- delete mode 100644 sound/soc/intel/boards/bxt_da7219_max98357a.c
- delete mode 100644 sound/soc/intel/boards/bxt_rt298.c
- delete mode 100644 sound/soc/intel/boards/kbl_da7219_max98357a.c
- delete mode 100644 sound/soc/intel/boards/kbl_da7219_max98927.c
- delete mode 100644 sound/soc/intel/boards/kbl_rt5660.c
- delete mode 100644 sound/soc/intel/boards/kbl_rt5663_max98927.c
- delete mode 100644 sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
- delete mode 100644 sound/soc/intel/boards/skl_nau88l25_max98357a.c
- delete mode 100644 sound/soc/intel/boards/skl_nau88l25_ssm4567.c
- delete mode 100644 sound/soc/intel/boards/skl_rt286.c
- delete mode 100644 sound/soc/intel/skylake/Makefile
- delete mode 100644 sound/soc/intel/skylake/bxt-sst.c
- delete mode 100644 sound/soc/intel/skylake/cnl-sst-dsp.c
- delete mode 100644 sound/soc/intel/skylake/cnl-sst-dsp.h
- delete mode 100644 sound/soc/intel/skylake/cnl-sst.c
- delete mode 100644 sound/soc/intel/skylake/skl-debug.c
- delete mode 100644 sound/soc/intel/skylake/skl-i2s.h
- delete mode 100644 sound/soc/intel/skylake/skl-messages.c
- delete mode 100644 sound/soc/intel/skylake/skl-nhlt.c
- delete mode 100644 sound/soc/intel/skylake/skl-pcm.c
- delete mode 100644 sound/soc/intel/skylake/skl-ssp-clk.c
- delete mode 100644 sound/soc/intel/skylake/skl-ssp-clk.h
- delete mode 100644 sound/soc/intel/skylake/skl-sst-cldma.c
- delete mode 100644 sound/soc/intel/skylake/skl-sst-cldma.h
- delete mode 100644 sound/soc/intel/skylake/skl-sst-dsp.c
- delete mode 100644 sound/soc/intel/skylake/skl-sst-dsp.h
- delete mode 100644 sound/soc/intel/skylake/skl-sst-ipc.c
- delete mode 100644 sound/soc/intel/skylake/skl-sst-ipc.h
- delete mode 100644 sound/soc/intel/skylake/skl-sst-utils.c
- delete mode 100644 sound/soc/intel/skylake/skl-sst.c
- delete mode 100644 sound/soc/intel/skylake/skl-topology.c
- delete mode 100644 sound/soc/intel/skylake/skl-topology.h
- delete mode 100644 sound/soc/intel/skylake/skl.c
- delete mode 100644 sound/soc/intel/skylake/skl.h
-
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+index 3df89e4511da..8bbb1052faf2 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+@@ -8,7 +8,6 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
+-#include "../skylake/skl.h"
+ #include "soc-acpi-intel-sdw-mockup-match.h"
+ 
+ static const struct snd_soc_acpi_codecs essx_83x6 = {
+@@ -16,16 +15,11 @@ static const struct snd_soc_acpi_codecs essx_83x6 = {
+ 	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
+ };
+ 
+-static struct skl_machine_pdata cnl_pdata = {
+-	.use_tplg_pcm = true,
+-};
+-
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
+ 	{
+ 		.id = "INT34C2",
+ 		.drv_name = "cnl_rt274",
+ 		.fw_filename = "intel/dsp_fw_cnl.bin",
+-		.pdata = &cnl_pdata,
+ 		.sof_tplg_filename = "sof-cnl-rt274.tplg",
+ 	},
+ 	{
+diff --git a/sound/soc/intel/common/soc-acpi-intel-ehl-match.c b/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
+index 84639c41a268..78255d56b08c 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-ehl-match.c
+@@ -8,7 +8,6 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
+-#include "../skylake/skl.h"
+ 
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_ehl_machines[] = {
+ 	{
+diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+index 2017fd0d676f..007ccd8a60e5 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-hda-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+@@ -8,11 +8,6 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
+-#include "../skylake/skl.h"
+-
+-static struct skl_machine_pdata hda_pdata = {
+-	.use_tplg_pcm = true,
+-};
+ 
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
+ 	{
+@@ -28,7 +23,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
+ 		 * can be used if we need a more complicated machine driver
+ 		 * combining HDA+other device (e.g. DMIC).
+ 		 */
+-		.pdata = &hda_pdata,
+ 	},
+ 	{},
+ };
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 39875d67dcd1..6ce75fbb842e 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -8,23 +8,17 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
+-#include "../skylake/skl.h"
+ 
+ static const struct snd_soc_acpi_codecs essx_83x6 = {
+ 	.num_codecs = 3,
+ 	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
+ };
+ 
+-static struct skl_machine_pdata icl_pdata = {
+-	.use_tplg_pcm = true,
+-};
+-
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ 	{
+ 		.id = "INT34C2",
+ 		.drv_name = "icl_rt274",
+ 		.fw_filename = "intel/dsp_fw_icl.bin",
+-		.pdata = &icl_pdata,
+ 		.sof_tplg_filename = "sof-icl-rt274.tplg",
+ 	},
+ 	{
+diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+index 4e817f559d38..d4c158d8441b 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+@@ -8,9 +8,6 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
+-#include "../skylake/skl.h"
+-
+-static struct skl_machine_pdata skl_dmic_data;
+ 
+ static const struct snd_soc_acpi_codecs kbl_codecs = {
+ 	.num_codecs = 1,
+@@ -54,7 +51,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_codecs,
+-		.pdata = &skl_dmic_data,
+ 	},
+ 	{
+ 		.id = "MX98357A",
+@@ -62,7 +58,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_codecs,
+-		.pdata = &skl_dmic_data,
+ 	},
+ 	{
+ 		.id = "MX98927",
+@@ -70,7 +65,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_5663_5514_codecs,
+-		.pdata = &skl_dmic_data,
+ 	},
+ 	{
+ 		.id = "MX98927",
+@@ -78,7 +72,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_poppy_codecs,
+-		.pdata = &skl_dmic_data,
+ 	},
+ 	{
+ 		.id = "10EC5663",
+@@ -91,7 +84,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_7219_98357_codecs,
+-		.pdata = &skl_dmic_data,
+ 	},
+ 	{
+ 		.id = "DLGS7219",
+@@ -99,7 +91,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_7219_98927_codecs,
+-		.pdata = &skl_dmic_data
+ 	},
+ 	{
+ 		.id = "10EC5660",
+@@ -117,13 +108,11 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &kbl_7219_98373_codecs,
+-		.pdata = &skl_dmic_data
+ 	},
+ 	{
+ 		.id = "MX98373",
+ 		.drv_name = "kbl_max98373",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+-		.pdata = &skl_dmic_data
+ 	},
+ 	{},
+ };
+diff --git a/sound/soc/intel/common/soc-acpi-intel-skl-match.c b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
+index 75302e956742..ee6463202918 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-skl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
+@@ -8,9 +8,6 @@
+ 
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
+-#include "../skylake/skl.h"
+-
+-static struct skl_machine_pdata skl_dmic_data;
+ 
+ static const struct snd_soc_acpi_codecs skl_codecs = {
+ 	.num_codecs = 1,
+@@ -29,7 +26,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_skl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_release.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &skl_codecs,
+-		.pdata = &skl_dmic_data,
+ 	},
+ 	{
+ 		.id = "MX98357A",
+@@ -37,7 +33,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_skl_machines[] = {
+ 		.fw_filename = "intel/dsp_fw_release.bin",
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &skl_codecs,
+-		.pdata = &skl_dmic_data,
+ 	},
+ 	{},
+ };
 -- 
 2.25.1
 
