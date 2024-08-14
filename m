@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11BE0C52D7B
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Aug 2024 10:47:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B56CC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Aug 2024 10:47:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC0682346;
-	Wed, 14 Aug 2024 12:46:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC0682346
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75ACD2110;
+	Wed, 14 Aug 2024 12:47:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75ACD2110
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723632429;
-	bh=25Yh7i840+n9VSAPS3/KHDWjppX0Uft3d5Kv3ZIq8jA=;
+	s=default; t=1723632447;
+	bh=82upgUa1NZPeVwMaCrnZFNIdUf9gvWRTqyBNOtflUNQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uh1vpY/VrAWdUQRcalVVXUirnj/1v2spRMJ/9mT0kCrdYXneYJRDluY33BizTEiaN
-	 Wu/VCPTclFRUOVwRyiEp8SEuAe266N8WSMb2Gd54EP5Z71GfcqJ3eH+6616aEKO1/k
-	 CEFvKmsdroe6HYlbeMbjELkzrxMLahlNM014YS38=
+	b=OdGSlkngElYwUmZo+08otmoL6Iafr+l4wl2f5PfmCs15IaeQyO5INXmyy3y1OY+rn
+	 36thG9k7SLHzzPezKf1FYEDBvtQCX2t00tZrdnhnAwdc27G9A4zUr7zd+0bQa6Dtvz
+	 hl8OwmJrdKLBgMQpd8V3zKHXw4Y0oGhBipHklz20=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 921A5F805C3; Wed, 14 Aug 2024 12:46:39 +0200 (CEST)
+	id 0033AF805AB; Wed, 14 Aug 2024 12:46:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77550F805B3;
-	Wed, 14 Aug 2024 12:46:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 665F1F805E3;
+	Wed, 14 Aug 2024 12:46:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05BAFF8057A; Wed, 14 Aug 2024 10:41:12 +0200 (CEST)
+	id 8AB6CF80579; Wed, 14 Aug 2024 10:41:15 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AB907F800B0
-	for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2024 10:40:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB907F800B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 534A4F80580
+	for <alsa-devel@alsa-project.org>; Wed, 14 Aug 2024 10:40:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 534A4F80580
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Li9cHaty
+ header.s=Intel header.b=dcdmFFF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723624822; x=1755160822;
+  t=1723624829; x=1755160829;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=25Yh7i840+n9VSAPS3/KHDWjppX0Uft3d5Kv3ZIq8jA=;
-  b=Li9cHatysNnkWr/oqyhKOWn08BzujefaenJEUHSZGg3e6JXPDopXyt6Q
-   uv7HZJPQK3c45Aa5Tci02EmRBURjFcwEWI+qBg1RliB06HYuSevciDVom
-   bt1T3W3Y7BGkqC2d8kniF5fOFJCMqMLhjsp/TGeEKifFDKxI0GgOIUUKr
-   urJWkmrfnU2AKlWnVTQCM8/AT1Kc6LcCylh9XFN1jwnGvLVS2+288enpU
-   Yt89yv+D6Z+y3bchou6MpXtCQqrVjA7il0tJN9YaTr83fFTjUGTo2ITHl
-   ARGUS50Q3nTeWJQ++pGjYGdJxarbDujb802bePevDlMKN6fZL62QKTmgy
-   w==;
-X-CSE-ConnectionGUID: GOzqkdBlTYa3J0VrnNpDcw==
-X-CSE-MsgGUID: rihMSjLHTOun5+5rjjbYVg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11163"; a="24735211"
+  bh=82upgUa1NZPeVwMaCrnZFNIdUf9gvWRTqyBNOtflUNQ=;
+  b=dcdmFFF0+cdkvi67dIM7Cv5Qr5712y1J6/CQ2FwhDluSRUcLKTSOX0g/
+   4GmNq+P5DJ7CP9qyxgwCbHuKsueO42aFimSwoX68Rc8ZPlEJqGwL7ROax
+   BW3nC5yiGI5pqIChFu8s0qVVQoAr/iOG9Uz2XXVugq8xtTt1qmZ4d//V8
+   HIJyu6WeLcyK5asASUoxF2APS3R0wABmhYqHLwUSDbcF1YiIvCJtIHVy5
+   ODmnR0suQ9ux47ww/TxdFp4vXApFBIyaTYN7ZUqteEXZ6DWrzmHd1c85E
+   L6fGS6GUtCWfZ4hM/vtVA4zDwn02x1MntjI++7jjCKAGxad9FSGOsCk62
+   Q==;
+X-CSE-ConnectionGUID: RLH/a0jaRpuX2Hn20de3VQ==
+X-CSE-MsgGUID: XZLTr85sRfGNVpQ9Bzv+Dw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11163"; a="24735249"
 X-IronPort-AV: E=Sophos;i="6.09,288,1716274800";
-   d="scan'208";a="24735211"
+   d="scan'208";a="24735249"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2024 01:40:20 -0700
-X-CSE-ConnectionGUID: kN5t8JT5TGWHmcmOjFQO/Q==
-X-CSE-MsgGUID: Dtak7qUrTji4py8EaOcuFQ==
+ 14 Aug 2024 01:40:26 -0700
+X-CSE-ConnectionGUID: 2TcpANlBRQe3OmSNROu3Cg==
+X-CSE-MsgGUID: Vv29dKrrTCeS9epyv6VrIg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,288,1716274800";
-   d="scan'208";a="63867994"
+   d="scan'208";a="63868012"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orviesa004.jf.intel.com with ESMTP; 14 Aug 2024 01:40:16 -0700
+  by orviesa004.jf.intel.com with ESMTP; 14 Aug 2024 01:40:23 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -79,16 +79,17 @@ Cc: alsa-devel@alsa-project.org,
 	cujomalainey@chromium.org,
 	lmajczak@google.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH v2 07/14] ASoC: Intel: Remove kbl_rt5660 board driver
-Date: Wed, 14 Aug 2024 10:39:22 +0200
-Message-Id: <20240814083929.1217319-8-cezary.rojewski@intel.com>
+Subject: [PATCH v2 09/14] ASoC: Intel: Remove kbl_da7219_max98357a board
+ driver
+Date: Wed, 14 Aug 2024 10:39:24 +0200
+Message-Id: <20240814083929.1217319-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240814083929.1217319-1-cezary.rojewski@intel.com>
 References: <20240814083929.1217319-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MM4BDH4ADNU7SAZG4BDJFTIARIG67ZO2
-X-Message-ID-Hash: MM4BDH4ADNU7SAZG4BDJFTIARIG67ZO2
+Message-ID-Hash: GLXZYKNUJL63O2ARBVBDUYSFNNQJKZQE
+X-Message-ID-Hash: GLXZYKNUJL63O2ARBVBDUYSFNNQJKZQE
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MM4BDH4ADNU7SAZG4BDJFTIARIG67ZO2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GLXZYKNUJL63O2ARBVBDUYSFNNQJKZQE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,99 +114,99 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 The driver has no users.
 
 Succeeded by:
-- avs_rt5660 (./intel/avs/boards/rt5660.c)
+- avs_da7219 (./intel/avs/boards/da7219.c)
+- avs_max98357a (./intel/avs/boards/max98357a.c)
 
 Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/boards/Kconfig      |  12 -
- sound/soc/intel/boards/Makefile     |   2 -
- sound/soc/intel/boards/kbl_rt5660.c | 567 ----------------------------
- 3 files changed, 581 deletions(-)
- delete mode 100644 sound/soc/intel/boards/kbl_rt5660.c
+ sound/soc/intel/boards/Kconfig                |  14 -
+ sound/soc/intel/boards/Makefile               |   2 -
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 688 ------------------
+ 3 files changed, 704 deletions(-)
+ delete mode 100644 sound/soc/intel/boards/kbl_da7219_max98357a.c
 
 diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 842003b4dbe9..5fb9b993ae3f 100644
+index b53678203e3f..3973f5c351d3 100644
 --- a/sound/soc/intel/boards/Kconfig
 +++ b/sound/soc/intel/boards/Kconfig
-@@ -348,18 +348,6 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
+@@ -321,20 +321,6 @@ config SND_SOC_INTEL_SOF_WM8804_MACH
  
--config SND_SOC_INTEL_KBL_RT5660_MACH
--	tristate "KBL with RT5660 in I2S Mode"
+ endif ## SND_SOC_SOF_APOLLOLAKE
+ 
+-if SND_SOC_INTEL_KBL
+-
+-config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+-	tristate "KBL with DA7219 and MAX98357A in I2S Mode"
 -	depends on I2C && ACPI
 -	depends on MFD_INTEL_LPSS || COMPILE_TEST
--	depends on GPIOLIB || COMPILE_TEST
--	select SND_SOC_RT5660
--	select SND_SOC_HDAC_HDMI
+-	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
 -	help
 -	  This adds support for ASoC Onboard Codec I2S machine driver. This will
--	  create an alsa sound card for RT5660 I2S audio codec.
+-	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec.
 -	  Say Y if you have such a device.
 -
- endif ## SND_SOC_INTEL_KBL
- 
+-endif ## SND_SOC_INTEL_KBL
+-
  if SND_SOC_SOF_GEMINILAKE
+ 
+ config SND_SOC_INTEL_GLK_DA7219_MAX98357A_MACH
 diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index d4a1ada47b38..be1b8cc4028a 100644
+index ff8985783d13..37f301a302a4 100644
 --- a/sound/soc/intel/boards/Makefile
 +++ b/sound/soc/intel/boards/Makefile
-@@ -23,7 +23,6 @@ snd-soc-sof_nau8825-y := sof_nau8825.o
+@@ -21,7 +21,6 @@ snd-soc-sof_cs42l42-y := sof_cs42l42.o
+ snd-soc-sof_es8336-y := sof_es8336.o
+ snd-soc-sof_nau8825-y := sof_nau8825.o
  snd-soc-sof_da7219-y := sof_da7219.o
- snd-soc-kbl_da7219_max98357a-y := kbl_da7219_max98357a.o
- snd-soc-kbl_da7219_max98927-y := kbl_da7219_max98927.o
--snd-soc-kbl_rt5660-y := kbl_rt5660.o
+-snd-soc-kbl_da7219_max98357a-y := kbl_da7219_max98357a.o
  snd-soc-skl_rt286-y := skl_rt286.o
  snd-soc-skl_hda_dsp-y := skl_hda_dsp_generic.o skl_hda_dsp_common.o
  snd-skl_nau88l25_max98357a-y := skl_nau88l25_max98357a.o
-@@ -56,7 +55,6 @@ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
+@@ -52,7 +51,6 @@ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_CX2072X_MACH) += snd-soc-sst-byt-cht-cx2072x.
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
  obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
- obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH) += snd-soc-kbl_da7219_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH) += snd-soc-kbl_da7219_max98927.o
--obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5660_MACH) += snd-soc-kbl_rt5660.o
+-obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH) += snd-soc-kbl_da7219_max98357a.o
  obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
  obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
  obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
-diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
 deleted file mode 100644
-index 66885cb36f24..000000000000
---- a/sound/soc/intel/boards/kbl_rt5660.c
+index 154f6a74ed15..000000000000
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
 +++ /dev/null
-@@ -1,567 +0,0 @@
+@@ -1,688 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0-only
--// Copyright(c) 2018-19 Canonical Corporation.
+-// Copyright(c) 2017-18 Intel Corporation.
 -
 -/*
-- * Intel Kabylake I2S Machine Driver with RT5660 Codec
+- * Intel Kabylake I2S Machine Driver with MAX98357A & DA7219 Codecs
 - *
 - * Modified from:
-- *   Intel Kabylake I2S Machine driver supporting MAXIM98357a and
-- *   DA7219 codecs
-- * Also referred to:
-- *   Intel Broadwell I2S Machine driver supporting RT5677 codec
+- *   Intel Kabylake I2S Machine driver supporting MAXIM98927 and
+- *   RT5663 codecs
 - */
 -
+-#include <linux/input.h>
 -#include <linux/module.h>
 -#include <linux/platform_device.h>
--#include <linux/gpio/consumer.h>
--#include <linux/acpi.h>
 -#include <sound/core.h>
 -#include <sound/jack.h>
 -#include <sound/pcm.h>
 -#include <sound/pcm_params.h>
 -#include <sound/soc.h>
--
+-#include "../../codecs/da7219.h"
 -#include "../../codecs/hdac_hdmi.h"
--#include "../../codecs/rt5660.h"
 -
--#define KBL_RT5660_CODEC_DAI "rt5660-aif1"
+-#define KBL_DIALOG_CODEC_DAI "da7219-hifi"
+-#define KBL_MAXIM_CODEC_DAI "HiFi"
+-#define MAXIM_DEV0_NAME "MX98357A:00"
 -#define DUAL_CHANNEL 2
+-#define QUAD_CHANNEL 4
 -
 -static struct snd_soc_card *kabylake_audio_card;
 -static struct snd_soc_jack skylake_hdmi[3];
--static struct snd_soc_jack lineout_jack;
--static struct snd_soc_jack mic_jack;
 -
 -struct kbl_hdmi_pcm {
 -	struct list_head head;
@@ -214,101 +215,127 @@ index 66885cb36f24..000000000000
 -};
 -
 -struct kbl_codec_private {
--	struct gpio_desc *gpio_lo_mute;
+-	struct snd_soc_jack kabylake_headset;
 -	struct list_head hdmi_pcm_list;
 -};
 -
 -enum {
 -	KBL_DPCM_AUDIO_PB = 0,
 -	KBL_DPCM_AUDIO_CP,
+-	KBL_DPCM_AUDIO_REF_CP,
+-	KBL_DPCM_AUDIO_DMIC_CP,
 -	KBL_DPCM_AUDIO_HDMI1_PB,
 -	KBL_DPCM_AUDIO_HDMI2_PB,
 -	KBL_DPCM_AUDIO_HDMI3_PB,
 -};
 -
--#define GPIO_LINEOUT_MUTE_INDEX 0
--#define GPIO_LINEOUT_DET_INDEX 3
--#define GPIO_LINEIN_DET_INDEX 4
--
--static const struct acpi_gpio_params lineout_mute_gpio = { GPIO_LINEOUT_MUTE_INDEX, 0, true };
--static const struct acpi_gpio_params lineout_det_gpio = { GPIO_LINEOUT_DET_INDEX, 0, false };
--static const struct acpi_gpio_params mic_det_gpio = { GPIO_LINEIN_DET_INDEX, 0, false };
--
--
--static const struct acpi_gpio_mapping acpi_rt5660_gpios[] = {
--	{ "lineout-mute-gpios", &lineout_mute_gpio, 1 },
--	{ "lineout-det-gpios", &lineout_det_gpio, 1 },
--	{ "mic-det-gpios", &mic_det_gpio, 1 },
--	{ NULL },
--};
--
--static struct snd_soc_jack_pin lineout_jack_pin = {
--	.pin	= "Line Out",
--	.mask	= SND_JACK_LINEOUT,
--};
--
--static struct snd_soc_jack_pin mic_jack_pin = {
--	.pin	= "Line In",
--	.mask	= SND_JACK_MICROPHONE,
--};
--
--static struct snd_soc_jack_gpio lineout_jack_gpio = {
--	.name			= "lineout-det",
--	.report			= SND_JACK_LINEOUT,
--	.debounce_time		= 200,
--};
--
--static struct snd_soc_jack_gpio mic_jack_gpio = {
--	.name			= "mic-det",
--	.report			= SND_JACK_MICROPHONE,
--	.debounce_time		= 200,
--};
--
--static int kabylake_5660_event_lineout(struct snd_soc_dapm_widget *w,
--			struct snd_kcontrol *k, int event)
+-static int platform_clock_control(struct snd_soc_dapm_widget *w,
+-					struct snd_kcontrol *k, int  event)
 -{
 -	struct snd_soc_dapm_context *dapm = w->dapm;
--	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(dapm->card);
+-	struct snd_soc_card *card = dapm->card;
+-	struct snd_soc_dai *codec_dai;
+-	int ret = 0;
 -
--	gpiod_set_value_cansleep(priv->gpio_lo_mute,
--			!(SND_SOC_DAPM_EVENT_ON(event)));
+-	codec_dai = snd_soc_card_get_codec_dai(card, KBL_DIALOG_CODEC_DAI);
+-	if (!codec_dai) {
+-		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
+-		return -EIO;
+-	}
 -
--	return 0;
+-	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+-		ret = snd_soc_dai_set_pll(codec_dai, 0,
+-				     DA7219_SYSCLK_MCLK, 0, 0);
+-		if (ret)
+-			dev_err(card->dev, "failed to stop PLL: %d\n", ret);
+-	} else if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		ret = snd_soc_dai_set_pll(codec_dai, 0,	DA7219_SYSCLK_PLL_SRM,
+-				     0, DA7219_PLL_FREQ_OUT_98304);
+-		if (ret)
+-			dev_err(card->dev, "failed to start PLL: %d\n", ret);
+-	}
+-
+-	return ret;
 -}
 -
--static const struct snd_kcontrol_new kabylake_rt5660_controls[] = {
--	SOC_DAPM_PIN_SWITCH("Line In"),
+-static const struct snd_kcontrol_new kabylake_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+-	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+-	SOC_DAPM_PIN_SWITCH("Spk"),
 -	SOC_DAPM_PIN_SWITCH("Line Out"),
 -};
 -
--static const struct snd_soc_dapm_widget kabylake_rt5660_widgets[] = {
--	SND_SOC_DAPM_MIC("Line In", NULL),
--	SND_SOC_DAPM_LINE("Line Out", kabylake_5660_event_lineout),
+-static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+-	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+-	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+-	SND_SOC_DAPM_SPK("Spk", NULL),
+-	SND_SOC_DAPM_LINE("Line Out", NULL),
+-	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+-	SND_SOC_DAPM_SPK("HDMI1", NULL),
+-	SND_SOC_DAPM_SPK("HDMI2", NULL),
+-	SND_SOC_DAPM_SPK("HDMI3", NULL),
+-	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+-			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
+-			SND_SOC_DAPM_POST_PMD),
 -};
 -
--static const struct snd_soc_dapm_route kabylake_rt5660_map[] = {
+-static struct snd_soc_jack_pin jack_pins[] = {
+-	{
+-		.pin    = "Headphone Jack",
+-		.mask   = SND_JACK_HEADPHONE,
+-	},
+-	{
+-		.pin    = "Headset Mic",
+-		.mask   = SND_JACK_MICROPHONE,
+-	},
+-	{
+-		.pin    = "Line Out",
+-		.mask   = SND_JACK_LINEOUT,
+-	},
+-};
+-
+-static const struct snd_soc_dapm_route kabylake_map[] = {
+-	{ "Headphone Jack", NULL, "HPL" },
+-	{ "Headphone Jack", NULL, "HPR" },
+-
+-	/* speaker */
+-	{ "Spk", NULL, "Speaker" },
+-
 -	/* other jacks */
--	{"IN1P", NULL, "Line In"},
--	{"IN2P", NULL, "Line In"},
--	{"Line Out", NULL, "LOUTR"},
--	{"Line Out", NULL, "LOUTL"},
+-	{ "MIC", NULL, "Headset Mic" },
+-	{ "DMic", NULL, "SoC DMIC" },
+-
+-	{"HDMI1", NULL, "hif5-0 Output"},
+-	{"HDMI2", NULL, "hif6-0 Output"},
+-	{"HDMI3", NULL, "hif7-0 Output"},
 -
 -	/* CODEC BE connections */
--	{ "AIF1 Playback", NULL, "ssp0 Tx"},
--	{ "ssp0 Tx", NULL, "codec0_out"},
+-	{ "HiFi Playback", NULL, "ssp0 Tx" },
+-	{ "ssp0 Tx", NULL, "codec0_out" },
 -
--	{ "codec0_in", NULL, "ssp0 Rx" },
--	{ "ssp0 Rx", NULL, "AIF1 Capture" },
+-	{ "Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "codec1_out" },
 -
--	{ "hifi1", NULL, "iDisp1 Tx"},
--	{ "iDisp1 Tx", NULL, "iDisp1_out"},
--	{ "hifi2", NULL, "iDisp2 Tx"},
--	{ "iDisp2 Tx", NULL, "iDisp2_out"},
+-	{ "codec0_in", NULL, "ssp1 Rx" },
+-	{ "ssp1 Rx", NULL, "Capture" },
+-
+-	/* DMIC */
+-	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
+-	{ "DMIC01 Rx", NULL, "DMIC AIF" },
+-
+-	{ "hifi1", NULL, "iDisp1 Tx" },
+-	{ "iDisp1 Tx", NULL, "iDisp1_out" },
+-	{ "hifi2", NULL, "iDisp2 Tx" },
+-	{ "iDisp2 Tx", NULL, "iDisp2_out" },
 -	{ "hifi3", NULL, "iDisp3 Tx"},
 -	{ "iDisp3 Tx", NULL, "iDisp3_out"},
+-
+-	{ "Headphone Jack", NULL, "Platform Clock" },
+-	{ "Headset Mic", NULL, "Platform Clock" },
+-	{ "Line Out", NULL, "Platform Clock" },
 -};
 -
--static int kabylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+-static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
 -			struct snd_pcm_hw_params *params)
 -{
 -	struct snd_interval *rate = hw_param_interval(params,
@@ -321,77 +348,57 @@ index 66885cb36f24..000000000000
 -	rate->min = rate->max = 48000;
 -	chan->min = chan->max = DUAL_CHANNEL;
 -
--	/* set SSP0 to 24 bit */
+-	/* set SSP to 24 bit */
 -	snd_mask_none(fmt);
 -	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
 -
 -	return 0;
 -}
 -
--static int kabylake_rt5660_codec_init(struct snd_soc_pcm_runtime *rtd)
+-static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
 -{
--	int ret;
 -	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
 -	struct snd_soc_component *component = snd_soc_rtd_to_codec(rtd, 0)->component;
--	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+-	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
+-	struct snd_soc_jack *jack;
+-	int ret;
 -
--	ret = devm_acpi_dev_add_driver_gpios(component->dev, acpi_rt5660_gpios);
--	if (ret)
--		dev_warn(component->dev, "Failed to add driver gpios\n");
--
--	/* Request rt5660 GPIO for lineout mute control, return if fails */
--	ctx->gpio_lo_mute = gpiod_get(component->dev, "lineout-mute",
--				      GPIOD_OUT_HIGH);
--	if (IS_ERR(ctx->gpio_lo_mute)) {
--		dev_err(component->dev, "Can't find GPIO_MUTE# gpio\n");
--		return PTR_ERR(ctx->gpio_lo_mute);
+-	/* Configure sysclk for codec */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+-						SND_SOC_CLOCK_IN);
+-	if (ret) {
+-		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
+-		return ret;
 -	}
--
--	/* Create and initialize headphone jack, this jack is not mandatory, don't return if fails */
--	ret = snd_soc_card_jack_new_pins(rtd->card, "Lineout Jack",
--					 SND_JACK_LINEOUT, &lineout_jack,
--					 &lineout_jack_pin, 1);
--	if (ret)
--		dev_warn(component->dev, "Can't create Lineout jack\n");
--	else {
--		lineout_jack_gpio.gpiod_dev = component->dev;
--		ret = snd_soc_jack_add_gpios(&lineout_jack, 1,
--					     &lineout_jack_gpio);
--		if (ret)
--			dev_warn(component->dev, "Can't add Lineout jack gpio\n");
--	}
--
--	/* Create and initialize mic jack, this jack is not mandatory, don't return if fails */
--	ret = snd_soc_card_jack_new_pins(rtd->card, "Mic Jack",
--					 SND_JACK_MICROPHONE, &mic_jack,
--					 &mic_jack_pin, 1);
--	if (ret)
--		dev_warn(component->dev, "Can't create mic jack\n");
--	else {
--		mic_jack_gpio.gpiod_dev = component->dev;
--		ret = snd_soc_jack_add_gpios(&mic_jack, 1, &mic_jack_gpio);
--		if (ret)
--			dev_warn(component->dev, "Can't add mic jack gpio\n");
--	}
--
--	/* Here we enable some dapms in advance to reduce the pop noise for recording via line-in */
--	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
--	snd_soc_dapm_force_enable_pin(dapm, "BST1");
--	snd_soc_dapm_force_enable_pin(dapm, "BST2");
--
--	return 0;
--}
--
--static void kabylake_rt5660_codec_exit(struct snd_soc_pcm_runtime *rtd)
--{
--	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
 -
 -	/*
--	 * The .exit() can be reached without going through the .init()
--	 * so explicitly test if the gpiod is valid
+-	 * Headset buttons map to the google Reference headset.
+-	 * These can be configured by userspace.
 -	 */
--	if (!IS_ERR_OR_NULL(ctx->gpio_lo_mute))
--		gpiod_put(ctx->gpio_lo_mute);
+-	ret = snd_soc_card_jack_new_pins(kabylake_audio_card, "Headset Jack",
+-					 SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-					 SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
+-					 &ctx->kabylake_headset,
+-					 jack_pins,
+-					 ARRAY_SIZE(jack_pins));
+-	if (ret) {
+-		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
+-		return ret;
+-	}
+-
+-	jack = &ctx->kabylake_headset;
+-
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+-	snd_soc_component_set_jack(component, &ctx->kabylake_headset, NULL);
+-
+-	ret = snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "SoC DMIC");
+-	if (ret)
+-		dev_err(rtd->dev, "SoC DMIC - Ignore suspend failed %d\n", ret);
+-
+-	return ret;
 -}
 -
 -static int kabylake_hdmi_init(struct snd_soc_pcm_runtime *rtd, int device)
@@ -427,34 +434,16 @@ index 66885cb36f24..000000000000
 -	return kabylake_hdmi_init(rtd, KBL_DPCM_AUDIO_HDMI3_PB);
 -}
 -
--static int kabylake_rt5660_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
+-static int kabylake_da7219_fe_init(struct snd_soc_pcm_runtime *rtd)
 -{
--	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
--	int ret;
+-	struct snd_soc_dapm_context *dapm;
+-	struct snd_soc_component *component = snd_soc_rtd_to_cpu(rtd, 0)->component;
 -
--	ret = snd_soc_dai_set_sysclk(codec_dai,
--				     RT5660_SCLK_S_PLL1, params_rate(params) * 512,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
--		return ret;
--	}
+-	dapm = snd_soc_component_get_dapm(component);
+-	snd_soc_dapm_ignore_suspend(dapm, "Reference Capture");
 -
--	ret = snd_soc_dai_set_pll(codec_dai, 0,
--				  RT5660_PLL1_S_BCLK,
--				  params_rate(params) * 50,
--				  params_rate(params) * 512);
--	if (ret < 0)
--		dev_err(codec_dai->dev, "can't set codec pll: %d\n", ret);
--
--	return ret;
+-	return 0;
 -}
--
--static const struct snd_soc_ops kabylake_rt5660_ops = {
--	.hw_params = kabylake_rt5660_hw_params,
--};
 -
 -static const unsigned int rates[] = {
 -	48000,
@@ -473,6 +462,16 @@ index 66885cb36f24..000000000000
 -static const struct snd_pcm_hw_constraint_list constraints_channels = {
 -	.count = ARRAY_SIZE(channels),
 -	.list = channels,
+-	.mask = 0,
+-};
+-
+-static unsigned int channels_quad[] = {
+-	QUAD_CHANNEL,
+-};
+-
+-static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
+-	.count = ARRAY_SIZE(channels_quad),
+-	.list = channels_quad,
 -	.mask = 0,
 -};
 -
@@ -500,8 +499,76 @@ index 66885cb36f24..000000000000
 -	return 0;
 -}
 -
--static const struct snd_soc_ops kabylake_rt5660_fe_ops = {
+-static const struct snd_soc_ops kabylake_da7219_fe_ops = {
 -	.startup = kbl_fe_startup,
+-};
+-
+-static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+-		struct snd_pcm_hw_params *params)
+-{
+-	struct snd_interval *chan = hw_param_interval(params,
+-				SNDRV_PCM_HW_PARAM_CHANNELS);
+-
+-	/*
+-	 * set BE channel constraint as user FE channels
+-	 */
+-
+-	if (params_channels(params) == 2)
+-		chan->min = chan->max = 2;
+-	else
+-		chan->min = chan->max = 4;
+-
+-	return 0;
+-}
+-
+-static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	runtime->hw.channels_min = runtime->hw.channels_max = QUAD_CHANNEL;
+-	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-			&constraints_channels_quad);
+-
+-	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+-			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+-}
+-
+-static const struct snd_soc_ops kabylake_dmic_ops = {
+-	.startup = kabylake_dmic_startup,
+-};
+-
+-static unsigned int rates_16000[] = {
+-        16000,
+-};
+-
+-static const struct snd_pcm_hw_constraint_list constraints_16000 = {
+-        .count = ARRAY_SIZE(rates_16000),
+-        .list  = rates_16000,
+-};
+-
+-static const unsigned int ch_mono[] = {
+-	1,
+-};
+-
+-static const struct snd_pcm_hw_constraint_list constraints_refcap = {
+-	.count = ARRAY_SIZE(ch_mono),
+-	.list  = ch_mono,
+-};
+-
+-static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
+-{
+-	substream->runtime->hw.channels_max = 1;
+-	snd_pcm_hw_constraint_list(substream->runtime, 0,
+-					SNDRV_PCM_HW_PARAM_CHANNELS,
+-					&constraints_refcap);
+-
+-	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+-					SNDRV_PCM_HW_PARAM_RATE,
+-					&constraints_16000);
+-}
+-
+-static const struct snd_soc_ops skylake_refcap_ops = {
+-	.startup = kabylake_refcap_startup,
 -};
 -
 -SND_SOC_DAILINK_DEF(dummy,
@@ -509,6 +576,12 @@ index 66885cb36f24..000000000000
 -
 -SND_SOC_DAILINK_DEF(system,
 -	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
+-
+-SND_SOC_DAILINK_DEF(reference,
+-	DAILINK_COMP_ARRAY(COMP_CPU("Reference Pin")));
+-
+-SND_SOC_DAILINK_DEF(dmic,
+-	DAILINK_COMP_ARRAY(COMP_CPU("DMIC Pin")));
 -
 -SND_SOC_DAILINK_DEF(hdmi1,
 -	DAILINK_COMP_ARRAY(COMP_CPU("HDMI1 Pin")));
@@ -522,12 +595,25 @@ index 66885cb36f24..000000000000
 -SND_SOC_DAILINK_DEF(ssp0_pin,
 -	DAILINK_COMP_ARRAY(COMP_CPU("SSP0 Pin")));
 -SND_SOC_DAILINK_DEF(ssp0_codec,
--	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC3277:00", KBL_RT5660_CODEC_DAI)));
+-	DAILINK_COMP_ARRAY(COMP_CODEC(MAXIM_DEV0_NAME,
+-				      KBL_MAXIM_CODEC_DAI)));
+-
+-SND_SOC_DAILINK_DEF(ssp1_pin,
+-	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
+-SND_SOC_DAILINK_DEF(ssp1_codec,
+-	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-DLGS7219:00",
+-				      KBL_DIALOG_CODEC_DAI)));
+-
+-SND_SOC_DAILINK_DEF(dmic_pin,
+-	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
+-SND_SOC_DAILINK_DEF(dmic_codec,
+-	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
 -
 -SND_SOC_DAILINK_DEF(idisp1_pin,
--		    DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
+-	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
 -SND_SOC_DAILINK_DEF(idisp1_codec,
--	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
+-	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2",
+-				      "intel-hdmi-hifi1")));
 -
 -SND_SOC_DAILINK_DEF(idisp2_pin,
 -	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")));
@@ -542,18 +628,19 @@ index 66885cb36f24..000000000000
 -SND_SOC_DAILINK_DEF(platform,
 -	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:1f.3")));
 -
--/* kabylake digital audio interface glue - connects rt5660 codec <--> CPU */
--static struct snd_soc_dai_link kabylake_rt5660_dais[] = {
+-/* kabylake digital audio interface glue - connects codec <--> CPU */
+-static struct snd_soc_dai_link kabylake_dais[] = {
 -	/* Front End DAI links */
 -	[KBL_DPCM_AUDIO_PB] = {
 -		.name = "Kbl Audio Port",
 -		.stream_name = "Audio",
 -		.dynamic = 1,
 -		.nonatomic = 1,
+-		.init = kabylake_da7219_fe_init,
 -		.trigger = {
 -			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
 -		.dpcm_playback = 1,
--		.ops = &kabylake_rt5660_fe_ops,
+-		.ops = &kabylake_da7219_fe_ops,
 -		SND_SOC_DAILINK_REG(system, dummy, platform),
 -	},
 -	[KBL_DPCM_AUDIO_CP] = {
@@ -564,8 +651,28 @@ index 66885cb36f24..000000000000
 -		.trigger = {
 -			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
 -		.dpcm_capture = 1,
--		.ops = &kabylake_rt5660_fe_ops,
+-		.ops = &kabylake_da7219_fe_ops,
 -		SND_SOC_DAILINK_REG(system, dummy, platform),
+-	},
+-	[KBL_DPCM_AUDIO_REF_CP] = {
+-		.name = "Kbl Audio Reference cap",
+-		.stream_name = "Wake on Voice",
+-		.init = NULL,
+-		.dpcm_capture = 1,
+-		.nonatomic = 1,
+-		.dynamic = 1,
+-		.ops = &skylake_refcap_ops,
+-		SND_SOC_DAILINK_REG(reference, dummy, platform),
+-	},
+-	[KBL_DPCM_AUDIO_DMIC_CP] = {
+-		.name = "Kbl Audio DMIC cap",
+-		.stream_name = "dmiccap",
+-		.init = NULL,
+-		.dpcm_capture = 1,
+-		.nonatomic = 1,
+-		.dynamic = 1,
+-		.ops = &kabylake_dmic_ops,
+-		SND_SOC_DAILINK_REG(dmic, dummy, platform),
 -	},
 -	[KBL_DPCM_AUDIO_HDMI1_PB] = {
 -		.name = "Kbl HDMI Port1",
@@ -607,21 +714,40 @@ index 66885cb36f24..000000000000
 -		.name = "SSP0-Codec",
 -		.id = 0,
 -		.no_pcm = 1,
--		.init = kabylake_rt5660_codec_init,
--		.exit = kabylake_rt5660_codec_exit,
 -		.dai_fmt = SND_SOC_DAIFMT_I2S |
--		SND_SOC_DAIFMT_NB_NF |
--		SND_SOC_DAIFMT_CBC_CFC,
+-			SND_SOC_DAIFMT_NB_NF |
+-			SND_SOC_DAIFMT_CBC_CFC,
 -		.ignore_pmdown_time = 1,
--		.be_hw_params_fixup = kabylake_ssp0_fixup,
--		.ops = &kabylake_rt5660_ops,
+-		.be_hw_params_fixup = kabylake_ssp_fixup,
 -		.dpcm_playback = 1,
--		.dpcm_capture = 1,
 -		SND_SOC_DAILINK_REG(ssp0_pin, ssp0_codec, platform),
 -	},
 -	{
--		.name = "iDisp1",
+-		/* SSP1 - Codec */
+-		.name = "SSP1-Codec",
 -		.id = 1,
+-		.no_pcm = 1,
+-		.init = kabylake_da7219_codec_init,
+-		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-			SND_SOC_DAIFMT_CBC_CFC,
+-		.ignore_pmdown_time = 1,
+-		.be_hw_params_fixup = kabylake_ssp_fixup,
+-		.dpcm_playback = 1,
+-		.dpcm_capture = 1,
+-		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
+-	},
+-	{
+-		.name = "dmic01",
+-		.id = 2,
+-		.be_hw_params_fixup = kabylake_dmic_fixup,
+-		.ignore_suspend = 1,
+-		.dpcm_capture = 1,
+-		.no_pcm = 1,
+-		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
+-	},
+-	{
+-		.name = "iDisp1",
+-		.id = 3,
 -		.dpcm_playback = 1,
 -		.init = kabylake_hdmi1_init,
 -		.no_pcm = 1,
@@ -629,7 +755,7 @@ index 66885cb36f24..000000000000
 -	},
 -	{
 -		.name = "iDisp2",
--		.id = 2,
+-		.id = 4,
 -		.init = kabylake_hdmi2_init,
 -		.dpcm_playback = 1,
 -		.no_pcm = 1,
@@ -637,14 +763,13 @@ index 66885cb36f24..000000000000
 -	},
 -	{
 -		.name = "iDisp3",
--		.id = 3,
+-		.id = 5,
 -		.init = kabylake_hdmi3_init,
 -		.dpcm_playback = 1,
 -		.no_pcm = 1,
 -		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
 -	},
 -};
--
 -
 -#define NAME_SIZE	32
 -static int kabylake_card_late_probe(struct snd_soc_card *card)
@@ -680,18 +805,18 @@ index 66885cb36f24..000000000000
 -	return hdac_hdmi_jack_port_init(component, &card->dapm);
 -}
 -
--/* kabylake audio machine driver for rt5660 */
--static struct snd_soc_card kabylake_audio_card_rt5660 = {
--	.name = "kblrt5660",
+-/* kabylake audio machine driver for SPT + DA7219 */
+-static struct snd_soc_card kabylake_audio_card_da7219_m98357a = {
+-	.name = "kblda7219max",
 -	.owner = THIS_MODULE,
--	.dai_link = kabylake_rt5660_dais,
--	.num_links = ARRAY_SIZE(kabylake_rt5660_dais),
--	.controls = kabylake_rt5660_controls,
--	.num_controls = ARRAY_SIZE(kabylake_rt5660_controls),
--	.dapm_widgets = kabylake_rt5660_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(kabylake_rt5660_widgets),
--	.dapm_routes = kabylake_rt5660_map,
--	.num_dapm_routes = ARRAY_SIZE(kabylake_rt5660_map),
+-	.dai_link = kabylake_dais,
+-	.num_links = ARRAY_SIZE(kabylake_dais),
+-	.controls = kabylake_controls,
+-	.num_controls = ARRAY_SIZE(kabylake_controls),
+-	.dapm_widgets = kabylake_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(kabylake_widgets),
+-	.dapm_routes = kabylake_map,
+-	.num_dapm_routes = ARRAY_SIZE(kabylake_map),
 -	.fully_routed = true,
 -	.disable_route_checks = true,
 -	.late_probe = kabylake_card_late_probe,
@@ -717,9 +842,9 @@ index 66885cb36f24..000000000000
 -
 -static const struct platform_device_id kbl_board_ids[] = {
 -	{
--		.name = "kbl_rt5660",
+-		.name = "kbl_da7219_mx98357a",
 -		.driver_data =
--			(kernel_ulong_t)&kabylake_audio_card_rt5660,
+-			(kernel_ulong_t)&kabylake_audio_card_da7219_m98357a,
 -	},
 -	{ }
 -};
@@ -728,7 +853,7 @@ index 66885cb36f24..000000000000
 -static struct platform_driver kabylake_audio = {
 -	.probe = kabylake_audio_probe,
 -	.driver = {
--		.name = "kbl_rt5660",
+-		.name = "kbl_da7219_max98357a",
 -		.pm = &snd_soc_pm_ops,
 -	},
 -	.id_table = kbl_board_ids,
@@ -737,8 +862,8 @@ index 66885cb36f24..000000000000
 -module_platform_driver(kabylake_audio)
 -
 -/* Module information */
--MODULE_DESCRIPTION("Audio Machine driver-RT5660 in I2S mode");
--MODULE_AUTHOR("Hui Wang <hui.wang@canonical.com>");
+-MODULE_DESCRIPTION("Audio Machine driver-DA7219 & MAX98357A in I2S mode");
+-MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
 -MODULE_LICENSE("GPL v2");
 -- 
 2.25.1
