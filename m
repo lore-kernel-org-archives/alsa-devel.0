@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4555C52D7F
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 18:57:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97053C52D7F
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 18:57:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 968112BDA;
-	Thu, 15 Aug 2024 20:57:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 968112BDA
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD62F2BCD;
+	Thu, 15 Aug 2024 20:57:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD62F2BCD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723748246;
-	bh=8D+5IP71jfA/D1I8gAgCLQ4v5xhQBs7M+g1lfHZY7d8=;
+	s=default; t=1723748256;
+	bh=2v5UYXgVUnFkOvu8VsuExWfoNXFGfxVHvewNI2XXRO8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=rUcvDEsMgw535tconhdBVc4o0inbm1iWP2siCVbNgGYFMoxERMWlYYfyz4+/IXDti
-	 H3pWr5IqvgNeRCAsARvsJa7raGBIpLvSNicFsJKGSNT66jEozDFJtPRbkmBbx6GvQO
-	 pNl43AYq2uLR/RjY6tSSpOXtNWL00hXPh5xyLVSE=
+	b=j6hUenOIxMmPMBo3HUujEES9pdOK3iYrbceGAYS8sMXVgCCptth5pW3gSENfIsO/K
+	 Ow/Au6tgBoxrdmW7IoZoyJQRR3UZl6CwksAhb/h6rV3xCjulDdxCDPFHE+xxaoLLPQ
+	 257Yem8ZlDRcvJp8q/MzgHzRyOuNrdsiUVTlA3sk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6648AF805DA; Thu, 15 Aug 2024 20:56:54 +0200 (CEST)
+	id 7E0BFF805C8; Thu, 15 Aug 2024 20:56:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AD39F8059F;
-	Thu, 15 Aug 2024 20:56:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2A12F805C3;
+	Thu, 15 Aug 2024 20:56:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C957F80423; Thu, 15 Aug 2024 20:55:16 +0200 (CEST)
+	id 2EC03F80423; Thu, 15 Aug 2024 20:56:14 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BC2EF80107
-	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 20:55:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BC2EF80107
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BD4BF800BF
+	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 20:56:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BD4BF800BF
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1723748112429690599-webhooks-bot@alsa-project.org>
-References: <1723748112429690599-webhooks-bot@alsa-project.org>
+In-Reply-To: <1723748172268389463-webhooks-bot@alsa-project.org>
+References: <1723748172268389463-webhooks-bot@alsa-project.org>
 Subject: hctltest1.py crashes with utf-8 decoding error on IEC958 "status"
-Message-Id: <20240815185516.2C957F80423@alsa1.perex.cz>
-Date: Thu, 15 Aug 2024 20:55:16 +0200 (CEST)
-Message-ID-Hash: A6OXPEYEAMVSAWDSQQTCMOWVWCFVX7BD
-X-Message-ID-Hash: A6OXPEYEAMVSAWDSQQTCMOWVWCFVX7BD
+Message-Id: <20240815185614.2EC03F80423@alsa1.perex.cz>
+Date: Thu, 15 Aug 2024 20:56:14 +0200 (CEST)
+Message-ID-Hash: FKIUZRRGWPUGSQFY7GNFXGF3XQ43ABWV
+X-Message-ID-Hash: FKIUZRRGWPUGSQFY7GNFXGF3XQ43ABWV
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A6OXPEYEAMVSAWDSQQTCMOWVWCFVX7BD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FKIUZRRGWPUGSQFY7GNFXGF3XQ43ABWV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,7 +66,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-python issue #13 was opened from tormodvolden:
+alsa-project/alsa-python issue #13 was edited from tormodvolden:
+
+Version 1.2.12, on Ubuntu 24.04, Python 3.12.
 
 It seems like the "status" member returned by `snd_ctl_elem_value_get_iec958(self->value, iec958);` on pyalsa/alsahcontrol.c line 1053 starts with 0xff then a 0x00.
 
