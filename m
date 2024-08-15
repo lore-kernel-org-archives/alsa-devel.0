@@ -4,98 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ED4FC3DA7F
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 12:34:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE90BC3DA7F
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 14:49:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 209FA2BDF;
-	Thu, 15 Aug 2024 14:34:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 209FA2BDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 005D82BB8;
+	Thu, 15 Aug 2024 16:49:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 005D82BB8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723725295;
-	bh=+fvBVhqwVxnnLELp45LxE5B3Ly84i4Yh9U1qnszQeKk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1723733364;
+	bh=j166Tnom1+Y3yM3OvCJCDtTfV/zCRiRZAbrAwgsB4wg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OWeXgmQxwo2PSaG/MR0Ekp1LWoG8SLtXsQVAbbp/FM9CjiSwFcl/uulwGTVcIgGMY
-	 OTKkkRUPHgHbsaYmh3O68WTYLbtC3Vi2ZEsSaiJkNZKe2PTqcBXvEDCeb9LRKWrqUo
-	 lnfYpgPNNP/1zQGPPp1EQgXyqRcHOCgCXgcjq+zo=
+	b=JszcmbdcUpEAf5nnAWayu1K4UPLRXhJYPHorAV69lk2feYhScMYrJkSWyRT7/MnKv
+	 J49S/tf6EIllq7wkPrZInCf/tVKjhRnDVOdesxkIvZ8q7MkIpJlserEBgQgbuf9NmK
+	 7SdKnw5YYhLQA/JOqPBY2+6IKX1IPnMCpsCA+EqM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95F4EF80517; Thu, 15 Aug 2024 14:34:23 +0200 (CEST)
+	id 7AA0CF805AA; Thu, 15 Aug 2024 16:48:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37C32F805B5;
-	Thu, 15 Aug 2024 14:34:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0760F805B4;
+	Thu, 15 Aug 2024 16:48:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DB67F80517; Thu, 15 Aug 2024 14:05:57 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id B598AF80423; Thu, 15 Aug 2024 15:42:54 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 140D3F800B0
-	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 14:00:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 140D3F800B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74C13F800BF
+	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 15:40:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74C13F800BF
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OEDZBK3U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723723226; x=1755259226;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+fvBVhqwVxnnLELp45LxE5B3Ly84i4Yh9U1qnszQeKk=;
-  b=OEDZBK3UfpsJrtOTYbSsMxkk7vVIE0lWhGKmi29JrSpkTG62jzKl6wvV
-   hxKvYXTc7Xceg0c5IlXhFkTKpKNEGrvSSC0HMAjNPjIZqtc8FE7ywDi4H
-   NyFBFhcLc+mlpZkMrINGh7v/9zZ6bTxbuzHetHxTbZbXkAYJhK6x89uL3
-   DQbeBhvNIj2VdnDQdrtCv6vSX9u/x2UV9rpX7m7ta8bbmb7LMBYJad2WF
-   msp/7VakdePW+NCPfIxn+ifOA72eKc1qQ4LDeYONfHOc+V47Xnca+HA4o
-   Mtc/8BmtcjHF0310wK6YzqmsSWxHS4avA7QKFSEYocq3lE9YKj1P93HDF
-   w==;
-X-CSE-ConnectionGUID: ZI5nNIcbSGG3CIMAMdBFwg==
-X-CSE-MsgGUID: +vb8YWLDTAepDiRj1xdFMw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11164"; a="22135679"
-X-IronPort-AV: E=Sophos;i="6.10,148,1719903600";
-   d="scan'208";a="22135679"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Aug 2024 05:00:18 -0700
-X-CSE-ConnectionGUID: 9pGFL3JARHqhgTEDSbWx6Q==
-X-CSE-MsgGUID: FzBAoAyVSieqIx8P4Ogn+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,148,1719903600";
-   d="scan'208";a="58960860"
-Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 15 Aug 2024 05:00:15 -0700
-Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1seZ9J-0003Xg-15;
-	Thu, 15 Aug 2024 12:00:13 +0000
-Date: Thu, 15 Aug 2024 20:00:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Frank Li <Frank.Li@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>, Sebastian Reichel <sre@kernel.org>,
-	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <linux-sound@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"moderated list:TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS"
- <alsa-devel@alsa-project.org>
-Cc: oe-kbuild-all@lists.linux.dev, imx@lists.linux.dev
-Subject: Re: [PATCH 1/1] ASoC: dt-bindings: Convert tpa6130a2.txt to yaml
-Message-ID: <202408151906.gY9zpl8b-lkp@intel.com>
-References: <20240814175129.4027097-1-Frank.Li@nxp.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=0mhkicfJ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id B5D0B61E9F;
+	Thu, 15 Aug 2024 13:40:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85C6C32786;
+	Thu, 15 Aug 2024 13:40:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1723729250;
+	bh=j166Tnom1+Y3yM3OvCJCDtTfV/zCRiRZAbrAwgsB4wg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=0mhkicfJobEZ1aW+FLQwryHrVYOlx/pN/5mmGzBDGVF6p+mBPjlzfhxojoX5mgHCm
+	 NMrcFQ4p2yvIqw5IDbzH25ptNHOifgjXu1CSx9kBmqoG2JBlDxDI4Nwvoy3WJOY8iu
+	 i+Wa0Y/pxf9LeFzp/7qQ02Hk0GmhUBO805drH+XU=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Mark Brown <broonie@kernel.org>,
+	alsa-devel@alsa-project.org,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 039/484] ARM: pxa: spitz: use gpio descriptors for audio
+Date: Thu, 15 Aug 2024 15:18:17 +0200
+Message-ID: <20240815131942.785079397@linuxfoundation.org>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240815131941.255804951@linuxfoundation.org>
+References: <20240815131941.255804951@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240814175129.4027097-1-Frank.Li@nxp.com>
-Message-ID-Hash: A2ZGHSO7LAAS7UV5X2GEQLFIKJAMHVLT
-X-Message-ID-Hash: A2ZGHSO7LAAS7UV5X2GEQLFIKJAMHVLT
-X-MailFrom: lkp@intel.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XIKGIQHS4Z723KBGL45BBN6WJJMGFO3L
+X-Message-ID-Hash: XIKGIQHS4Z723KBGL45BBN6WJJMGFO3L
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2ZGHSO7LAAS7UV5X2GEQLFIKJAMHVLT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XIKGIQHS4Z723KBGL45BBN6WJJMGFO3L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,37 +95,260 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Frank,
+5.15-stable review patch.  If anyone has any objections, please let me know.
 
-kernel test robot noticed the following build warnings:
+------------------
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on robh/for-next linus/master v6.11-rc3 next-20240815]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+From: Arnd Bergmann <arnd@arndb.de>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/ASoC-dt-bindings-Convert-tpa6130a2-txt-to-yaml/20240815-021426
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20240814175129.4027097-1-Frank.Li%40nxp.com
-patch subject: [PATCH 1/1] ASoC: dt-bindings: Convert tpa6130a2.txt to yaml
-reproduce: (https://download.01.org/0day-ci/archive/20240815/202408151906.gY9zpl8b-lkp@intel.com/reproduce)
+[ Upstream commit 726d8c965bae2d7468445d990849e281dca8cbf7 ]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408151906.gY9zpl8b-lkp@intel.com/
+The audio driver should not use a hardwired gpio number
+from the header. Change it to use a lookup table.
 
-All warnings (new ones prefixed by >>):
+Acked-by: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Stable-dep-of: 78ab3d352f29 ("ARM: spitz: fix GPIO assignment for backlight")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/mach-pxa/spitz.c                    | 33 ++++++++++-
+ arch/arm/mach-pxa/{include/mach => }/spitz.h |  2 +-
+ arch/arm/mach-pxa/spitz_pm.c                 |  2 +-
+ sound/soc/pxa/spitz.c                        | 58 ++++++++------------
+ 4 files changed, 57 insertions(+), 38 deletions(-)
+ rename arch/arm/mach-pxa/{include/mach => }/spitz.h (99%)
 
-   Warning: Documentation/userspace-api/netlink/index.rst references a file that doesn't exist: Documentation/networking/netlink_spec/index.rst
-   Warning: Documentation/userspace-api/netlink/specs.rst references a file that doesn't exist: Documentation/networking/netlink_spec/index.rst
-   Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/reserved-memory/qcom
-   Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/display/exynos/
-   Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/misc/fsl,qoriq-mc.txt
->> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/sound/tpa6130a2.txt
-   Using alabaster theme
-
+diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
+index 264de0bc97d68..8f880dbc05fdb 100644
+--- a/arch/arm/mach-pxa/spitz.c
++++ b/arch/arm/mach-pxa/spitz.c
+@@ -43,7 +43,7 @@
+ #include <linux/platform_data/mmc-pxamci.h>
+ #include <linux/platform_data/usb-ohci-pxa27x.h>
+ #include <linux/platform_data/video-pxafb.h>
+-#include <mach/spitz.h>
++#include "spitz.h"
+ #include "sharpsl_pm.h"
+ #include <mach/smemc.h>
+ 
+@@ -954,11 +954,42 @@ static void __init spitz_i2c_init(void)
+ static inline void spitz_i2c_init(void) {}
+ #endif
+ 
++static struct gpiod_lookup_table spitz_audio_gpio_table = {
++	.dev_id = "spitz-audio",
++	.table = {
++		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_L - SPITZ_SCP_GPIO_BASE,
++			    "mute-l", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_R - SPITZ_SCP_GPIO_BASE,
++			    "mute-r", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("sharp-scoop.1", SPITZ_GPIO_MIC_BIAS - SPITZ_SCP2_GPIO_BASE,
++			    "mic", GPIO_ACTIVE_HIGH),
++		{ },
++	},
++};
++
++static struct gpiod_lookup_table akita_audio_gpio_table = {
++	.dev_id = "spitz-audio",
++	.table = {
++		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_L - SPITZ_SCP_GPIO_BASE,
++			    "mute-l", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_R - SPITZ_SCP_GPIO_BASE,
++			    "mute-r", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("i2c-max7310", AKITA_GPIO_MIC_BIAS - AKITA_IOEXP_GPIO_BASE,
++			    "mic", GPIO_ACTIVE_HIGH),
++		{ },
++	},
++};
++
+ /******************************************************************************
+  * Audio devices
+  ******************************************************************************/
+ static inline void spitz_audio_init(void)
+ {
++	if (machine_is_akita())
++		gpiod_add_lookup_table(&akita_audio_gpio_table);
++	else
++		gpiod_add_lookup_table(&spitz_audio_gpio_table);
++
+ 	platform_device_register_simple("spitz-audio", -1, NULL, 0);
+ }
+ 
+diff --git a/arch/arm/mach-pxa/include/mach/spitz.h b/arch/arm/mach-pxa/spitz.h
+similarity index 99%
+rename from arch/arm/mach-pxa/include/mach/spitz.h
+rename to arch/arm/mach-pxa/spitz.h
+index 04828d8918aa3..f97e3ebd762d5 100644
+--- a/arch/arm/mach-pxa/include/mach/spitz.h
++++ b/arch/arm/mach-pxa/spitz.h
+@@ -11,7 +11,7 @@
+ #define __ASM_ARCH_SPITZ_H  1
+ #endif
+ 
+-#include "irqs.h" /* PXA_NR_BUILTIN_GPIO, PXA_GPIO_TO_IRQ */
++#include <mach/irqs.h> /* PXA_NR_BUILTIN_GPIO, PXA_GPIO_TO_IRQ */
+ #include <linux/fb.h>
+ 
+ /* Spitz/Akita GPIOs */
+diff --git a/arch/arm/mach-pxa/spitz_pm.c b/arch/arm/mach-pxa/spitz_pm.c
+index 25a1f8c5a7382..6167f96d7b41e 100644
+--- a/arch/arm/mach-pxa/spitz_pm.c
++++ b/arch/arm/mach-pxa/spitz_pm.c
+@@ -20,7 +20,7 @@
+ #include <asm/mach-types.h>
+ #include <mach/hardware.h>
+ 
+-#include <mach/spitz.h>
++#include "spitz.h"
+ #include "pxa27x.h"
+ #include "sharpsl_pm.h"
+ 
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 7c1384a869ca4..44303b6eb228b 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -14,13 +14,12 @@
+ #include <linux/timer.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
+ #include <asm/mach-types.h>
+-#include <mach/spitz.h>
+ #include "../codecs/wm8750.h"
+ #include "pxa2xx-i2s.h"
+ 
+@@ -37,7 +36,7 @@
+ 
+ static int spitz_jack_func;
+ static int spitz_spk_func;
+-static int spitz_mic_gpio;
++static struct gpio_desc *gpiod_mic, *gpiod_mute_l, *gpiod_mute_r;
+ 
+ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+ {
+@@ -56,8 +55,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphone Jack");
+-		gpio_set_value(SPITZ_GPIO_MUTE_L, 1);
+-		gpio_set_value(SPITZ_GPIO_MUTE_R, 1);
++		gpiod_set_value(gpiod_mute_l, 1);
++		gpiod_set_value(gpiod_mute_r, 1);
+ 		break;
+ 	case SPITZ_MIC:
+ 		/* enable mic jack and bias, mute hp */
+@@ -65,8 +64,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
+-		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+-		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
++		gpiod_set_value(gpiod_mute_l, 0);
++		gpiod_set_value(gpiod_mute_r, 0);
+ 		break;
+ 	case SPITZ_LINE:
+ 		/* enable line jack, disable mic bias and mute hp */
+@@ -74,8 +73,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Line Jack");
+-		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+-		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
++		gpiod_set_value(gpiod_mute_l, 0);
++		gpiod_set_value(gpiod_mute_r, 0);
+ 		break;
+ 	case SPITZ_HEADSET:
+ 		/* enable and unmute headset jack enable mic bias, mute L hp */
+@@ -83,8 +82,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Headset Jack");
+-		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+-		gpio_set_value(SPITZ_GPIO_MUTE_R, 1);
++		gpiod_set_value(gpiod_mute_l, 0);
++		gpiod_set_value(gpiod_mute_r, 1);
+ 		break;
+ 	case SPITZ_HP_OFF:
+ 
+@@ -93,8 +92,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
+-		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
+-		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
++		gpiod_set_value(gpiod_mute_l, 0);
++		gpiod_set_value(gpiod_mute_r, 0);
+ 		break;
+ 	}
+ 
+@@ -199,7 +198,7 @@ static int spitz_set_spk(struct snd_kcontrol *kcontrol,
+ static int spitz_mic_bias(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *k, int event)
+ {
+-	gpio_set_value_cansleep(spitz_mic_gpio, SND_SOC_DAPM_EVENT_ON(event));
++	gpiod_set_value_cansleep(gpiod_mic, SND_SOC_DAPM_EVENT_ON(event));
+ 	return 0;
+ }
+ 
+@@ -287,39 +286,28 @@ static int spitz_probe(struct platform_device *pdev)
+ 	struct snd_soc_card *card = &snd_soc_spitz;
+ 	int ret;
+ 
+-	if (machine_is_akita())
+-		spitz_mic_gpio = AKITA_GPIO_MIC_BIAS;
+-	else
+-		spitz_mic_gpio = SPITZ_GPIO_MIC_BIAS;
+-
+-	ret = gpio_request(spitz_mic_gpio, "MIC GPIO");
+-	if (ret)
+-		goto err1;
+-
+-	ret = gpio_direction_output(spitz_mic_gpio, 0);
+-	if (ret)
+-		goto err2;
++	gpiod_mic = devm_gpiod_get(&pdev->dev, "mic", GPIOD_OUT_LOW);
++	if (IS_ERR(gpiod_mic))
++		return PTR_ERR(gpiod_mic);
++	gpiod_mute_l = devm_gpiod_get(&pdev->dev, "mute-l", GPIOD_OUT_LOW);
++	if (IS_ERR(gpiod_mute_l))
++		return PTR_ERR(gpiod_mute_l);
++	gpiod_mute_r = devm_gpiod_get(&pdev->dev, "mute-r", GPIOD_OUT_LOW);
++	if (IS_ERR(gpiod_mute_r))
++		return PTR_ERR(gpiod_mute_r);
+ 
+ 	card->dev = &pdev->dev;
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+-	if (ret) {
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		goto err2;
+-	}
+-
+-	return 0;
+ 
+-err2:
+-	gpio_free(spitz_mic_gpio);
+-err1:
+ 	return ret;
+ }
+ 
+ static int spitz_remove(struct platform_device *pdev)
+ {
+-	gpio_free(spitz_mic_gpio);
+ 	return 0;
+ }
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
+
+
