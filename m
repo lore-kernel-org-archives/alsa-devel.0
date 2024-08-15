@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE90BC3DA7F
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 14:49:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0F20C3DA7F
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 14:49:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 005D82BB8;
-	Thu, 15 Aug 2024 16:49:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 005D82BB8
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4D7C2BB3;
+	Thu, 15 Aug 2024 16:49:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4D7C2BB3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723733364;
-	bh=j166Tnom1+Y3yM3OvCJCDtTfV/zCRiRZAbrAwgsB4wg=;
+	s=default; t=1723733377;
+	bh=VTnVy/D1vHM2QitU1pFETY5YvWjblm/Vf5Q93jSj6lg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JszcmbdcUpEAf5nnAWayu1K4UPLRXhJYPHorAV69lk2feYhScMYrJkSWyRT7/MnKv
-	 J49S/tf6EIllq7wkPrZInCf/tVKjhRnDVOdesxkIvZ8q7MkIpJlserEBgQgbuf9NmK
-	 7SdKnw5YYhLQA/JOqPBY2+6IKX1IPnMCpsCA+EqM=
+	b=bZs0CExtEsjp2ucjkxF/Hg1jhGGxjp7WUI5tuEgSBAhbAwyppFm1qYdIa6EAnPsyk
+	 Bk5HW2erKfLhIWPTrEc0qoWWfVxv453J0GRie1xBZZYiwH60FSs+q3FhebPI6sxHnZ
+	 6YxgEJHlligxbez3x6AKbCIHwmXYSO4ANblza6TI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AA0CF805AA; Thu, 15 Aug 2024 16:48:53 +0200 (CEST)
+	id 5604BF805D5; Thu, 15 Aug 2024 16:48:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0760F805B4;
-	Thu, 15 Aug 2024 16:48:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BE27F805DA;
+	Thu, 15 Aug 2024 16:48:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B598AF80423; Thu, 15 Aug 2024 15:42:54 +0200 (CEST)
+	id D5286F80423; Thu, 15 Aug 2024 16:30:30 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 74C13F800BF
-	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 15:40:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74C13F800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id DDE4EF800B0
+	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 16:26:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDE4EF800B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=0mhkicfJ
+ header.a=rsa-sha256 header.s=korg header.b=l7dJDRKC
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B5D0B61E9F;
-	Thu, 15 Aug 2024 13:40:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85C6C32786;
-	Thu, 15 Aug 2024 13:40:49 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1548161EC4;
+	Thu, 15 Aug 2024 14:26:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E63C4AF0A;
+	Thu, 15 Aug 2024 14:26:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1723729250;
-	bh=j166Tnom1+Y3yM3OvCJCDtTfV/zCRiRZAbrAwgsB4wg=;
+	s=korg; t=1723731962;
+	bh=VTnVy/D1vHM2QitU1pFETY5YvWjblm/Vf5Q93jSj6lg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=0mhkicfJobEZ1aW+FLQwryHrVYOlx/pN/5mmGzBDGVF6p+mBPjlzfhxojoX5mgHCm
-	 NMrcFQ4p2yvIqw5IDbzH25ptNHOifgjXu1CSx9kBmqoG2JBlDxDI4Nwvoy3WJOY8iu
-	 i+Wa0Y/pxf9LeFzp/7qQ02Hk0GmhUBO805drH+XU=
+	b=l7dJDRKCXB4b4941hc+DWQEMd7Clqsb3J6jugAkbGa9eY1Z1n2GqXhf6F929o9fpo
+	 gq7+am4QoVHb4P5AZfPgtds8QfhBkgii7NGCyxvLrmCH8rmCMbaFObWAEb/4aWMr/d
+	 G9tNkwS3llpnwY8cNWEwRA7VtHecjMk26FKtuj8A=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -61,19 +60,19 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Linus Walleij <linus.walleij@linaro.org>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 039/484] ARM: pxa: spitz: use gpio descriptors for audio
-Date: Thu, 15 Aug 2024 15:18:17 +0200
-Message-ID: <20240815131942.785079397@linuxfoundation.org>
+Subject: [PATCH 5.10 031/352] ARM: pxa: spitz: use gpio descriptors for audio
+Date: Thu, 15 Aug 2024 15:21:37 +0200
+Message-ID: <20240815131920.429456786@linuxfoundation.org>
 X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240815131941.255804951@linuxfoundation.org>
-References: <20240815131941.255804951@linuxfoundation.org>
+In-Reply-To: <20240815131919.196120297@linuxfoundation.org>
+References: <20240815131919.196120297@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XIKGIQHS4Z723KBGL45BBN6WJJMGFO3L
-X-Message-ID-Hash: XIKGIQHS4Z723KBGL45BBN6WJJMGFO3L
+Message-ID-Hash: 5BZBEET6SLWIANE7SLS5X55WMP2KSL5C
+X-Message-ID-Hash: 5BZBEET6SLWIANE7SLS5X55WMP2KSL5C
 X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XIKGIQHS4Z723KBGL45BBN6WJJMGFO3L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5BZBEET6SLWIANE7SLS5X55WMP2KSL5C/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,7 +94,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-5.15-stable review patch.  If anyone has any objections, please let me know.
+5.10-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
