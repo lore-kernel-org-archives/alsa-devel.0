@@ -4,160 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68599C3DA7F
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 09:11:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D057DC52D7C
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Aug 2024 12:16:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B8922BA9;
-	Thu, 15 Aug 2024 11:11:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B8922BA9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 675052BC5;
+	Thu, 15 Aug 2024 14:16:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 675052BC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723713117;
-	bh=LV56AJxudgL24toWGOMCu5drTkNEj0f0SOc/cSvQqwM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1723724184;
+	bh=7w2WAn9we+FD6ex2wl3Xn3ZqIPU69CfzpP3JIvlQ1uA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lNm4kD1mGwDFnxR5Y1jUBNr6XGhpBH480/Ve7vh03XvwoxeiRcuHi5tKYjC5r2DfC
-	 KoCgvL8Bl4mbT15X6wckCn5UC/Dx3N2DxOubSOoFWGDMRNlA/beW4fJplmWALkLaQc
-	 yctZrbfHxekYKXgLExN+D2cIs67TAQWV/BVVUK4A=
+	b=QAaXMQV2imrjcs6LQz47z30hLTPBnL4Kuzevdx13GEHZfXXcKuPNrJppPmcGw79M1
+	 bxxU97KnICCyXQDnkYgNVVGkcqm8516yBv/UvmWg/eS1UW70RuAcdZ3ZIdelHCdBZD
+	 xPUS4WpjkscyRtA0+eZFAyP8mnNs8tirJcNMpDHw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B19DF805A9; Thu, 15 Aug 2024 11:11:16 +0200 (CEST)
+	id 1C9C9F805AC; Thu, 15 Aug 2024 14:15:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91228F8049C;
-	Thu, 15 Aug 2024 11:11:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C524CF805B6;
+	Thu, 15 Aug 2024 14:15:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A371F80423; Thu, 15 Aug 2024 11:10:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id BB733F8049C; Thu, 15 Aug 2024 14:06:11 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D1F9EF800BF
-	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 11:08:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1F9EF800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id CFE70F800BF
+	for <alsa-devel@alsa-project.org>; Thu, 15 Aug 2024 14:02:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFE70F800BF
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=OP+WoPF2;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Vh7gBJs/;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=OP+WoPF2;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Vh7gBJs/
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A13241FFDC;
-	Thu, 15 Aug 2024 09:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1723712898;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zvV7rDnQuEkYG7+I3UuDsGSUYF02JhMNqD6FrhNzFJQ=;
-	b=OP+WoPF2t8co2G1jmoZ5DiN3lmNr9pwbVCTU2NK/+sTqDJssXV+ZIPPsBzDCHh5NxwfhqO
-	uizENqkSwn4RGwhhnGWVVq/6fq49Jav4opWuHbPKpSnUjZ7v7MV60guy1av9Kwq+51Xklp
-	DramEnYQp3MXO6/KWR5wTXkwXK9RI58=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1723712898;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zvV7rDnQuEkYG7+I3UuDsGSUYF02JhMNqD6FrhNzFJQ=;
-	b=Vh7gBJs/wwFxKvsQwwa/PsrZ8pmArsKMrXmI76kFBn3vUKTvFg0Qhxe4KoGYwLsbDL1vb2
-	p0NZaqOrvIcYD7Aw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1723712898;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zvV7rDnQuEkYG7+I3UuDsGSUYF02JhMNqD6FrhNzFJQ=;
-	b=OP+WoPF2t8co2G1jmoZ5DiN3lmNr9pwbVCTU2NK/+sTqDJssXV+ZIPPsBzDCHh5NxwfhqO
-	uizENqkSwn4RGwhhnGWVVq/6fq49Jav4opWuHbPKpSnUjZ7v7MV60guy1av9Kwq+51Xklp
-	DramEnYQp3MXO6/KWR5wTXkwXK9RI58=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1723712898;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zvV7rDnQuEkYG7+I3UuDsGSUYF02JhMNqD6FrhNzFJQ=;
-	b=Vh7gBJs/wwFxKvsQwwa/PsrZ8pmArsKMrXmI76kFBn3vUKTvFg0Qhxe4KoGYwLsbDL1vb2
-	p0NZaqOrvIcYD7Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DCE613983;
-	Thu, 15 Aug 2024 09:08:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4K8IBoLFvWYIDwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 15 Aug 2024 09:08:18 +0000
-Date: Thu, 15 Aug 2024 11:08:58 +0200
-Message-ID: <87ikw25f11.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-    Hans de Goede <hdegoede@redhat.com>,
-    <robh+dt@kernel.org>,
-	<andriy.shevchenko@linux.intel.com>,
-	<lgirdwood@gmail.com>,
-	<perex@perex.cz>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<kevin-lu@ti.com>,
-	<shenghao-ding@ti.com>,
-	<navada@ti.com>,
-	<13916275206@139.com>,
-	<v-hampiholi@ti.com>,
-	<v-po@ti.com>,
-	<niranjan.hy@ti.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<liam.r.girdwood@intel.com>,
-	<yung-chuan.liao@linux.intel.com>,
-	<broonie@kernel.org>,
-	<soyer@irl.hu>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=JIMQZKUN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723723344; x=1755259344;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7w2WAn9we+FD6ex2wl3Xn3ZqIPU69CfzpP3JIvlQ1uA=;
+  b=JIMQZKUNSTm5WgrRmbyANrnd96zuD3jfk/InzgGhW6PblqQki3I1b4Q6
+   qi/Q1JVcB9J//V4lHkCTac9W9ejBJv6F8up3Z91mwIB0CbPLn3L4EpU3E
+   i9RYQAJdbIcQJO5hRbMHL4O5FcGez18PFIIqionV9ZT+mmtnSPFTcYcOR
+   dCXAyxgEDQT5tPFPMBzNVcRqCxtsVoFn5GmvxDIWIvJfePdD0zrDo6hnu
+   B7Kbd06Z+Mnwqjbk6j+B3M398zpFmYoASGZQwJOls8bIpjES716xDJpZS
+   qphAhxJjfEMWIvPcDHz3nlupPRzNnN14taKqfdrydvQvCW1vFawfTCsxJ
+   Q==;
+X-CSE-ConnectionGUID: bOtskXJAQUS9n6/9a3kzFQ==
+X-CSE-MsgGUID: pSJUanJRRH+7y9qsEXt7Sw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11164"; a="22108613"
+X-IronPort-AV: E=Sophos;i="6.10,148,1719903600";
+   d="scan'208";a="22108613"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Aug 2024 05:02:20 -0700
+X-CSE-ConnectionGUID: 7EqQnAK0TomwmR2fczP8uA==
+X-CSE-MsgGUID: lRRRWmGbRk6GO2DkjkO1QA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,148,1719903600";
+   d="scan'208";a="82533379"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Aug 2024 05:02:15 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1seZBD-0000000FXmp-2vKJ;
+	Thu, 15 Aug 2024 15:02:11 +0300
+Date: Thu, 15 Aug 2024 15:02:11 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Baojun Xu <baojun.xu@ti.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Hans de Goede <hdegoede@redhat.com>, robh+dt@kernel.org,
+	lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com,
+	shenghao-ding@ti.com, navada@ti.com, 13916275206@139.com,
+	v-hampiholi@ti.com, v-po@ti.com, niranjan.hy@ti.com,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	liam.r.girdwood@intel.com, yung-chuan.liao@linux.intel.com,
+	broonie@kernel.org, soyer@irl.hu
 Subject: Re: [PATCH v11] ALSA: hda/tas2781: Add tas2781 hda SPI driver
-In-Reply-To: <20240727085048.1092-1-baojun.xu@ti.com>
+Message-ID: <Zr3uQ7jdtxqF1FlB@smile.fi.intel.com>
 References: <20240727085048.1092-1-baojun.xu@ti.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
-	FREEMAIL_CC(0.00)[kernel.org,redhat.com,linux.intel.com,gmail.com,perex.cz,ti.com,139.com,alsa-project.org,vger.kernel.org,intel.com,irl.hu];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[dt];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: ZDYG6XL4VHWMJH5EXQ23TGPDQ6UOIGJB
-X-Message-ID-Hash: ZDYG6XL4VHWMJH5EXQ23TGPDQ6UOIGJB
-X-MailFrom: tiwai@suse.de
+ <87ikw25f11.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ikw25f11.wl-tiwai@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: FJIER3KYUIQAVO4QKQJ57QJAZG2T3HFA
+X-Message-ID-Hash: FJIER3KYUIQAVO4QKQJ57QJAZG2T3HFA
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -169,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZDYG6XL4VHWMJH5EXQ23TGPDQ6UOIGJB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FJIER3KYUIQAVO4QKQJ57QJAZG2T3HFA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,94 +115,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 27 Jul 2024 10:50:48 +0200,
-Baojun Xu wrote:
+On Thu, Aug 15, 2024 at 11:08:58AM +0200, Takashi Iwai wrote:
+> On Sat, 27 Jul 2024 10:50:48 +0200,
+> Baojun Xu wrote:
+> > 
+> > This patch was used to add TAS2781 devices on SPI support in sound/pci/hda.
+> > It use ACPI node descript about parameters of TAS2781 on SPI, it like:
+> >     Scope (_SB.PC00.SPI0)
+> >     {
+> >         Device (GSPK)
+> >         {
+> >             Name (_HID, "TXNW2781")  // _HID: Hardware ID
+> >             Method (_CRS, 0, NotSerialized)
+> >             {
+> >                 Name (RBUF, ResourceTemplate ()
+> >                 {
+> >                     SpiSerialBusV2 (...)
+> >                     SpiSerialBusV2 (...)
+> >                 }
+> >             }
+> >         }
+> >     }
+> > 
+> > And in platform/x86/serial-multi-instantiate.c, those spi devices will be
+> > added into system as a single SPI device, so TAS2781 SPI driver will
+> > probe twice for every single SPI device. And driver will also parser
+> > mono DSP firmware binary and RCA binary for itself.
+> > The code support Realtek as the primary codec.
+> > In patch version-10, add multi devices firmware binary support,
+> > to compatble with windows driver, they can share same firmware binary.
+
+> Now it's v11, and I'd love to move this forward finally, instead of
+> hanging forever.
 > 
-> This patch was used to add TAS2781 devices on SPI support in sound/pci/hda.
-> It use ACPI node descript about parameters of TAS2781 on SPI, it like:
->     Scope (_SB.PC00.SPI0)
->     {
->         Device (GSPK)
->         {
->             Name (_HID, "TXNW2781")  // _HID: Hardware ID
->             Method (_CRS, 0, NotSerialized)
->             {
->                 Name (RBUF, ResourceTemplate ()
->                 {
->                     SpiSerialBusV2 (...)
->                     SpiSerialBusV2 (...)
->                 }
->             }
->         }
->     }
+> The HD-audio part looks more or less OK, but I'd need acks for the
+> ACPI and serial-multi-instance parts below.
 > 
-> And in platform/x86/serial-multi-instantiate.c, those spi devices will be
-> added into system as a single SPI device, so TAS2781 SPI driver will
-> probe twice for every single SPI device. And driver will also parser
-> mono DSP firmware binary and RCA binary for itself.
-> The code support Realtek as the primary codec.
-> In patch version-10, add multi devices firmware binary support,
-> to compatble with windows driver, they can share same firmware binary.
-> 
-> Signed-off-by: Baojun Xu <baojun.xu@ti.com>
-> 
-> ---
-> v11:
+> Put ACPI and serial-multi-instance maintainers to Cc.
+> Rafael, Hans, let me know if that looks OK to take.
 
-Now it's v11, and I'd love to move this forward finally, instead of
-hanging forever.
+FWIW, the ACPI ID part is legit, if the requirement to include it to those
+tables, it looks good.
 
-The HD-audio part looks more or less OK, but I'd need acks for the
-ACPI and serial-multi-instance parts below.
-
-Put ACPI and serial-multi-instance maintainers to Cc.
-Rafael, Hans, let me know if that looks OK to take.
-
-The original patch is found at
-https://lore.kernel.org/20240727085048.1092-1-baojun.xu@ti.com
-
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -1769,6 +1769,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
->  		{"CSC3557", },
->  		{"INT33FE", },
->  		{"INT3515", },
-> +		{"TXNW2781", },
->  		/* Non-conforming _HID for Cirrus Logic already released */
->  		{"CLSA0100", },
->  		{"CLSA0101", },
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-> index 3be016cfe601..b15c819023d0 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -368,6 +368,17 @@ static const struct smi_node cs35l57_hda = {
->  	.bus_type = SMI_AUTO_DETECT,
->  };
->  
-> +static const struct smi_node tas2781_hda = {
-> +	.instances = {
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{}
-> +	},
-> +	.bus_type = SMI_AUTO_DETECT,
-> +};
-> +
->  /*
->   * Note new device-ids must also be added to ignore_serial_bus_ids in
->   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-> @@ -380,6 +391,7 @@ static const struct acpi_device_id smi_acpi_ids[] = {
->  	{ "CSC3556", (unsigned long)&cs35l56_hda },
->  	{ "CSC3557", (unsigned long)&cs35l57_hda },
->  	{ "INT3515", (unsigned long)&int3515_data },
-> +	{ "TXNW2781", (unsigned long)&tas2781_hda },
->  	/* Non-conforming _HID for Cirrus Logic already released */
->  	{ "CLSA0100", (unsigned long)&cs35l41_hda },
->  	{ "CLSA0101", (unsigned long)&cs35l41_hda },
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-thanks,
-
-Takashi
