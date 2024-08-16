@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8FA9C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Aug 2024 15:55:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3769DC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Aug 2024 15:58:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C83982BF5;
-	Fri, 16 Aug 2024 17:55:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C83982BF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 132BE2C19;
+	Fri, 16 Aug 2024 17:58:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 132BE2C19
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1723823750;
-	bh=eRpribolsbXeIXpIuizDGboVNKXIHp9yhhNEjM0r3Z0=;
+	s=default; t=1723823903;
+	bh=t+EqLwjorMrygoysJLVlVpV6+2GHXFKVPamtG5fTN/c=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=uhEw0yzPEHbNGmUPCvDQ9bwo6PWP9rNMFaWDARFABh+qTeAE8s92wn9CLo46o+pvQ
-	 3nIAl24/qH0WFcz6nDcfaCIUhppOGQoZfq1CNHyJxvhRuaPhLd4dMmNJHmuveetrEc
-	 azOtIs1ASARRbwFRdV5kDW+E5+ug6NuEGwfYrLzQ=
+	b=mt6KcEl1j/BnD43L4eRB8Zt3GCg4QINS29GHPTdNIQe86TWPPJ4CbUDjBASM0rLIC
+	 /g6wmtHJkPREUo1SGLJldYVw3xtQiTeLK6cYkXECYr193G4kOvYbRE/jo9LQRutj6k
+	 4xnh8soVE3nKJOUTAEfNRKEhmQSDn31FbK3dDwmg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4292F805B3; Fri, 16 Aug 2024 17:55:18 +0200 (CEST)
+	id D2365F805B0; Fri, 16 Aug 2024 17:57:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D01CF805AA;
-	Fri, 16 Aug 2024 17:55:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 039BBF80589;
+	Fri, 16 Aug 2024 17:57:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75EC9F80423; Fri, 16 Aug 2024 17:55:12 +0200 (CEST)
+	id 6C27CF80423; Fri, 16 Aug 2024 17:57:45 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D98EF80107
-	for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2024 17:55:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D98EF80107
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DE8DF8016E
+	for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2024 17:57:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DE8DF8016E
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1723823709856508732-webhooks-bot@alsa-project.org>
-References: <1723823709856508732-webhooks-bot@alsa-project.org>
+In-Reply-To: <1723823861260833979-webhooks-bot@alsa-project.org>
+References: <1723823861260833979-webhooks-bot@alsa-project.org>
 Subject: Use PyBytes and not Unicode strings for IEC958 values
-Message-Id: <20240816155512.75EC9F80423@alsa1.perex.cz>
-Date: Fri, 16 Aug 2024 17:55:12 +0200 (CEST)
-Message-ID-Hash: O2EAINPUNN34VWRGFPILPGWY5YEHOYKX
-X-Message-ID-Hash: O2EAINPUNN34VWRGFPILPGWY5YEHOYKX
+Message-Id: <20240816155745.6C27CF80423@alsa1.perex.cz>
+Date: Fri, 16 Aug 2024 17:57:45 +0200 (CEST)
+Message-ID-Hash: GTAPKHQU4NSBF3RYVASQEBE2WWSLOWG4
+X-Message-ID-Hash: GTAPKHQU4NSBF3RYVASQEBE2WWSLOWG4
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O2EAINPUNN34VWRGFPILPGWY5YEHOYKX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GTAPKHQU4NSBF3RYVASQEBE2WWSLOWG4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -80,6 +80,8 @@ Suggested fix for #13.
 - following the existing code style, no empty lines were inserted, but this could help readability
 
 - the third commit is not for fixing the crash, but for fixing set_tuple() to actually do anything for IEC958
+
+- I haven't changed the reference counting, which seems wrong to me in the original code as well. This would be a different issue.
 
 Request URL   : https://github.com/alsa-project/alsa-python/pull/14
 Patch URL     : https://github.com/alsa-project/alsa-python/pull/14.patch
