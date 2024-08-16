@@ -4,90 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31EEFC3DA4A
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Aug 2024 14:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 138D9C531DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Aug 2024 14:25:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B77CB823;
-	Tue, 20 Aug 2024 16:20:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B77CB823
+	by alsa0.perex.cz (Postfix) with ESMTPS id D700D832;
+	Tue, 20 Aug 2024 16:25:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D700D832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724163622;
-	bh=PbOxquV5o7WuWMJBCMJR6LWOsyiINGnqBTBjqgFyKq0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=Uz3ih8fxy+YWp7IEEej9rzmdIgfmrDCC0GmCwt+/dtkoifUcPn2Zx5/Cebfq8cnuy
-	 goCCHgZJRwgxiJhLg/li8UOV85Q2aCdL8S5VUbHK9MFNBJQ4KQoOTwwCNcPjYYJrKf
-	 yBiD4niE9qjopk3lD/gKryg0V0hZTdFLHHk3pi4A=
+	s=default; t=1724163915;
+	bh=lEnmrIkFvsy5hIu+1qdGwntMujuiUAiGGHpqP61ry90=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=EZiVIFR07Q8w68mPAInoxECITN2vZLLE7ru+QWxTLSI2rAdCG+Q9K6y0an6YVcaVN
+	 lV7qDEwrsQcmzJdFAGn52ln9nCJT4920tMQ8oW1C2tLlhTz5LHFfOMjzXoPxV2WPBk
+	 xaYtzLB7svK/oHmC/raIEj8w5Zfy4U+A9gfe0cgs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45B7EF80579; Tue, 20 Aug 2024 16:19:50 +0200 (CEST)
+	id BF837F805AE; Tue, 20 Aug 2024 16:24:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECF41F805A8;
-	Tue, 20 Aug 2024 16:19:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A844DF8057A;
+	Tue, 20 Aug 2024 16:24:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5366FF80494; Tue, 20 Aug 2024 16:19:44 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5000FF80423; Fri, 16 Aug 2024 13:50:15 +0200 (CEST)
+Received: from smtp134-89.sina.com.cn (smtp134-89.sina.com.cn
+ [180.149.134.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF080F800F0
-	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2024 16:19:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF080F800F0
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=kteWXbtl
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 7707BCE0A1D;
-	Tue, 20 Aug 2024 14:19:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E398AC4AF0F;
-	Tue, 20 Aug 2024 14:19:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724163565;
-	bh=PbOxquV5o7WuWMJBCMJR6LWOsyiINGnqBTBjqgFyKq0=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=kteWXbtl1ef/jQEYZ17TOZN1lPRRWuqUDxz6PNHGeA9Qqaz7kanUc9groVf6l24CK
-	 suHYMXrdSowWba4mkX6BsYIcVVYQOEU81BCPM3p+sV/AwMCHvo1+meutTMLYVFh2Q6
-	 Bqhyeqe8G2A9xbchzDQ9e6gUo5LPB41XqFfr8tqPkFdiCL8b8Z7FKYbkD+Qjvt5w2l
-	 ruGh0O9buFp1BQfSr8snHhcp5KmQPGkOGOw4bJ2GuV2WsXgr4fytbS5PqpiCn8Wz8/
-	 k+zKjp4ME40doeNmANH+ZpPMdVAIToAM7FT2z+cisp1W3eVu0/jceqORtyw4xhbBN/
-	 LCyy8B+zLew5A==
-From: Mark Brown <broonie@kernel.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240818173037.122152-1-krzysztof.kozlowski@linaro.org>
-References: <20240818173037.122152-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: samsung,odroid: drop stale clocks
-Message-Id: <172416356364.261879.10105106383289811025.b4-ty@kernel.org>
-Date: Tue, 20 Aug 2024 15:19:23 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: FXDCEKFDXYRHLS42LNHFKCRVL55CLBKK
-X-Message-ID-Hash: FXDCEKFDXYRHLS42LNHFKCRVL55CLBKK
-X-MailFrom: broonie@kernel.org
+	by alsa1.perex.cz (Postfix) with ESMTPS id E0D7DF80107
+	for <alsa-devel@alsa-project.org>; Fri, 16 Aug 2024 13:49:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0D7DF80107
+Received: from unknown (HELO zy-virtual-machine.localdomain)([180.172.39.131])
+	by sina.net (10.185.250.31) with ESMTP
+	id 66BF3CC200006906; Fri, 16 Aug 2024 19:49:23 +0800 (CST)
+X-Sender: zhangyi@everest-semi.com
+X-Auth-ID: zhangyi@everest-semi.com
+Authentication-Results: sina.net;
+	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=zhangyi@everest-semi.com
+X-SMAIL-MID: DF4C84A618314BC380BB6DD67516E836
+X-SMAIL-UIID: DF4C84A618314BC380BB6DD67516E836-20240816-194923
+From: Zhang Yi <zhangyi@everest-semi.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org,
+	angelogioacchino.delregno@collabora.com
+Cc: tiwai@suse.com,
+	amadeuszx.slawinski@linux.intel.com,
+	linux-mediatek@lists.infradead.org,
+	yangxiaohua@everest-semi.com,
+	zhuning@everest-semi.com,
+	zhangyi@everest-semi.com
+Subject: [PATCH] ASoC: mediatek: mt8188-mt6359: Modify key
+Date: Fri, 16 Aug 2024 19:49:21 +0800
+Message-Id: <20240816114921.48913-1-zhangyi@everest-semi.com>
+X-Mailer: git-send-email 2.17.1
+X-MailFrom: zhangyi@everest-semi.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: JHLGTPBKQ6BXLAHRFWXACIIDXPFHIT4Q
+X-Message-ID-Hash: JHLGTPBKQ6BXLAHRFWXACIIDXPFHIT4Q
+X-Mailman-Approved-At: Tue, 20 Aug 2024 14:24:36 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FXDCEKFDXYRHLS42LNHFKCRVL55CLBKK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JHLGTPBKQ6BXLAHRFWXACIIDXPFHIT4Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,41 +82,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 18 Aug 2024 19:30:37 +0200, Krzysztof Kozlowski wrote:
-> Clocks property was present only to allow usage of assigned-clocks in
-> the sound card node, however in upstream DTS the assigned-clocks were
-> moved in commit 4afb06afd768 ("ARM: dts: exynos: move assigned-clock*
-> properties to i2s0 node in Odroid XU4") to respective I2S nodes.  Linux
-> drivers never parsed "clocks" so it can be safely dropped.
-> 
-> 
-> [...]
+In order to get the correct keys when using the ES8326.We will associate
+SND_JACK_BTN_1 to KEY_VOLUMEUP and SND_JACK_BTN_2 to KEY_VOLUMEDOWN
+when the ES8326 flag is recognized.
 
-Applied to
+Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
+---
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: dt-bindings: samsung,odroid: drop stale clocks
-      commit: e6c1d9068295796e34d59ef08fa80f6ff8f3530a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+index eba6f4c445ff..08ae962afeb9 100644
+--- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
++++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+@@ -734,6 +734,7 @@ static int mt8188_headset_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8188_JACK_HEADSET];
+ 	struct snd_soc_component *component = snd_soc_rtd_to_codec(rtd, 0)->component;
++	struct mtk_platform_card_data *card_data = soc_card_data->card_data;
+ 	int ret;
+ 
+ 	ret = snd_soc_dapm_new_controls(&card->dapm, mt8188_nau8825_widgets,
+@@ -762,10 +763,18 @@ static int mt8188_headset_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
+ 
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
++	if (card_data->flags & ES8326_HS_PRESENT) {
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);			
++	} else {
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
++		snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);	
++	}
++	
+ 	ret = snd_soc_component_set_jack(component, jack, NULL);
+ 
+ 	if (ret) {
+-- 
+2.17.1
 
