@@ -4,47 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5126C531DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Aug 2024 09:42:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 396D5C3DA4A
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Aug 2024 09:43:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C07A03E8;
-	Tue, 20 Aug 2024 11:42:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C07A03E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5568A1E6;
+	Tue, 20 Aug 2024 11:42:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5568A1E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724146965;
-	bh=Fbuc8k6ZW3C2X1ainxjkV8AzJ1GGhDZzAx2VkKPARCo=;
-	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1724146978;
+	bh=GSGcrWdKy8xdyAe9WTbQA7s0aDKh7eze/Y69ghGAjWI=;
+	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ua+eWrUppmjtnk0DcOUiZekREcIO6a1f+8rCkbjg00A8rp8CjBTDRQVz7u6eYBq0d
-	 hT9nEc4QwnBKuEa5XHZ08ZbIklKCEanpIaPWe4qsV5wLGGpYGMlmb9l0X0ukZWrTP9
-	 +ldcUioxPCp8jr8cqsBxwBPBY7FZZ1mlPGHwohvg=
+	b=kWRlqxdybqTzDUREIBZYQSXXvO4PjZ5P0siYBkZyHxGsbLCYXH4UF/VAy/hDZroCB
+	 SD+LzDPMQC1KBaqAwVNMx4OzJicFlzinCjaDnin7fzUCF3ODyLTXF+IiYP0SDhIT8k
+	 8x9OovTmRWkk19ChqBEHeApcenFV/0w9S4OFLAFA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0900F805C2; Tue, 20 Aug 2024 11:41:55 +0200 (CEST)
+	id 62EACF80614; Tue, 20 Aug 2024 11:41:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 149A1F805E2;
-	Tue, 20 Aug 2024 11:41:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F77DF80601;
+	Tue, 20 Aug 2024 11:41:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30E91F80494; Tue, 20 Aug 2024 11:34:32 +0200 (CEST)
-Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
- [10.254.200.11])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C11FF800F0
-	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2024 11:34:32 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	id C32F0F80496; Tue, 20 Aug 2024 11:40:59 +0200 (CEST)
+Received: from mail-40140.protonmail.ch (mail-40140.protonmail.ch
+ [185.70.40.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4CC9F80494
+	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2024 11:38:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4CC9F80494
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=proton.me header.i=@proton.me header.a=rsa-sha256
+ header.s=protonmail header.b=W/LsJMje
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1724146696; x=1724405896;
+	bh=lqNxzRgC5JPARXtzFarbOoRV7YdnPnEu9GNEgaOKR6g=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=W/LsJMjerFCLqm4KMKBnVpwzfOkjN8f8fno78MfILI1eO2jqOd5kME79ila07ftCe
+	 +ojmDat97Bwfl0YgJXHVEvhmQEd6d2UlA0ZqwSP6StNugp0eTukKZvRZMG6y2M+tvd
+	 mZgD4Zznmfz8rLWsqsUnZ0odPRJffbCw7Y7YSsxhXf/R636QV9Ldqfw2iN+5iFCc94
+	 HGN7685MrlCDEqEOm7M3K/CtuTeszpyrQXc+04AuA2vyDEwWFM4b16qdeS4D+x1e8x
+	 tt/OE83riFRRTcb94FvPjQxXCTkkpAXLsqbp70DzzVXkFO42dzfVnXJbBTMNExYrSS
+	 mUpziRiiA3z6g==
+Date: Tue, 20 Aug 2024 09:38:12 +0000
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Xerox Slayer <xeroxslayer@proton.me>
 Subject: [DISCUSSION] Why doesn't ALSA autogenerate/autoconfigure the mono
- profile by
- default?
-From: xeroxslayer@proton.me
-To: alsa-devel@alsa-project.org
-Date: Tue, 20 Aug 2024 09:34:32 -0000
+ profile by default?
 Message-ID: 
- <172414647211.10290.14177580558285587657@mailman-web.alsa-project.org>
-User-Agent: HyperKitty on https://mailman.alsa-project.org/
-Message-ID-Hash: U2GGFW5IKCLG2TUZPOJK3TSIGDP3QQTC
-X-Message-ID-Hash: U2GGFW5IKCLG2TUZPOJK3TSIGDP3QQTC
+ <-hY2k_-HP_RpNxt1vOEArHKgjIw69LG4IcnstasrAk_1knJNIpf7OhREgR7QSJky95DP4pn8-fo7Ne1YDbqQKbqNh0m_b-p2Id1cd5Kq3TU=@proton.me>
+Feedback-ID: 112401143:user:proton
+X-Pm-Message-ID: 5753455aae0c525378f2cbc161b60e5bcfe94079
+MIME-Version: 1.0
+Message-ID-Hash: BXE5N7U2Z6DUXY5C65PVXMQYWKITFJEV
+X-Message-ID-Hash: BXE5N7U2Z6DUXY5C65PVXMQYWKITFJEV
 X-MailFrom: xeroxslayer@proton.me
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -52,12 +70,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CKXP3KNWNSJQW75AYQPHIXVLYROIYZR3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXE5N7U2Z6DUXY5C65PVXMQYWKITFJEV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,10 +87,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Sorry if this is the wrong place to discuss this, but from what I managed to find out, this is primarily the responsibility of ALSA.
-
-This was pointed out by a reddit user, and to be frank, I was kinda surprised that this is not done by default. The user in question is hearing impaired (can listen on only one ear), so the user has no benefit of actually listening to stereo or any other multichannel audio, thus wanted to just set everything to mono (dual mono I presume) and was puzzled when there was no such option in pulseaudio (which pulls the profiles from ALSA). I did some more investigation and as it turns out, this profile is autogenerated, but only if the hardware has such capability (as is the case with any other profile). You can enable it manually by editing config files (in which case I presume the channel downconversion is done in software), but it seemed odd that one has to go through such trouble just to listen to mono sound.
-
-Thus, I think the mono profile should be taken as a special case scenario and be autogenerated/configured by default, regardless if it's supported in hardware or not.
-
-Once again, I'm sorry if this is not the place to ask/discuss this, but would appreciate if someone pointed me to where I can actually do this.
+U29ycnkgaWYgdGhpcyBpcyB0aGUgd3JvbmcgcGxhY2UgdG8gZGlzY3VzcyB0aGlzLCBidXQgZnJv
+bSB3aGF0IEkgbWFuYWdlZCB0byBmaW5kIG91dCwgdGhpcyBpcyBwcmltYXJpbHkgdGhlIHJlc3Bv
+bnNpYmlsaXR5IG9mIEFMU0EuCgpUaGlzIHdhcyBwb2ludGVkIG91dCBieSBhIHJlZGRpdCB1c2Vy
+LCBhbmQgdG8gYmUgZnJhbmssIEkgd2FzIGtpbmRhIHN1cnByaXNlZCB0aGF0IHRoaXMgaXMgbm90
+IGRvbmUgYnkgZGVmYXVsdC4gVGhlIHVzZXIgaW4gcXVlc3Rpb24gaXMgaGVhcmluZyBpbXBhaXJl
+ZCAoY2FuIGxpc3RlbiBvbiBvbmx5IG9uZSBlYXIpLCBzbyB0aGUgdXNlciBoYXMgbm8gYmVuZWZp
+dCBvZiBhY3R1YWxseSBsaXN0ZW5pbmcgdG8gc3RlcmVvIG9yIGFueSBvdGhlciBtdWx0aWNoYW5u
+ZWwgYXVkaW8sIHRodXMgd2FudGVkIHRvIGp1c3Qgc2V0IGV2ZXJ5dGhpbmcgdG8gbW9ubyAoZHVh
+bCBtb25vIEkgcHJlc3VtZSkgYW5kIHdhcyBwdXp6bGVkIHdoZW4gdGhlcmUgd2FzIG5vIHN1Y2gg
+b3B0aW9uIGluIHB1bHNlYXVkaW8gKHdoaWNoIHB1bGxzIHRoZSBwcm9maWxlcyBmcm9tIEFMU0Ep
+LiBJIGRpZCBzb21lIG1vcmUgaW52ZXN0aWdhdGlvbiBhbmQgYXMgaXQgdHVybnMgb3V0LCB0aGlz
+IHByb2ZpbGUgaXMgYXV0b2dlbmVyYXRlZCwgYnV0IG9ubHkgaWYgdGhlIGhhcmR3YXJlIGhhcyBz
+dWNoIGNhcGFiaWxpdHkgKGFzIGlzIHRoZSBjYXNlIHdpdGggYW55IG90aGVyIHByb2ZpbGUpLiBZ
+b3UgY2FuIGVuYWJsZSBpdCBtYW51YWxseSBieSBlZGl0aW5nIGNvbmZpZyBmaWxlcyAoaW4gd2hp
+Y2ggY2FzZSBJIHByZXN1bWUgdGhlIGNoYW5uZWwgZG93bmNvbnZlcnNpb24gaXMgZG9uZSBpbiBz
+b2Z0d2FyZSksIGJ1dCBpdCBzZWVtZWQgb2RkIHRoYXQgb25lIGhhcyB0byBnbyB0aHJvdWdoIHN1
+Y2ggdHJvdWJsZSBqdXN0IHRvIGxpc3RlbiB0byBtb25vIHNvdW5kLgoKVGh1cywgSSB0aGluayB0
+aGUgbW9ubyBwcm9maWxlIHNob3VsZCBiZSB0YWtlbiBhcyBhIHNwZWNpYWwgY2FzZSBzY2VuYXJp
+byBhbmQgYmUgYXV0b2dlbmVyYXRlZC9jb25maWd1cmVkIGJ5IGRlZmF1bHQsIHJlZ2FyZGxlc3Mg
+aWYgaXQncyBzdXBwb3J0ZWQgaW4gaGFyZHdhcmUgb3Igbm90LgpPbmNlIGFnYWluLCBJJ20gc29y
+cnkgaWYgdGhpcyBpcyBub3QgdGhlIHBsYWNlIHRvIGFzay9kaXNjdXNzIHRoaXMsIGJ1dCB3b3Vs
+ZCBhcHByZWNpYXRlIGlmIHNvbWVvbmUgcG9pbnRlZCBtZSB0byB3aGVyZSBJIGNhbiBhY3R1YWxs
+eSBkbyB0aGlzLg==
