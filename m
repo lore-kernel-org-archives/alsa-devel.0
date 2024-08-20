@@ -4,67 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8615C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Aug 2024 13:45:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31EEFC3DA4A
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Aug 2024 14:20:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42ABC826;
-	Tue, 20 Aug 2024 15:45:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42ABC826
+	by alsa0.perex.cz (Postfix) with ESMTPS id B77CB823;
+	Tue, 20 Aug 2024 16:20:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B77CB823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724161541;
-	bh=3y3kbVFUd9gvsIIuZEIRaTQlIljPGi/zVwSyj3Je7VQ=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=pZOSQUYq+ibZ+mD8+Lc4XkGcO1b9pHwuprMAvCkpjp34mZ3wZDvXj9ePrj4kaqXem
-	 kMUoiLNrSm7S8i5LjGvwBLiD+Jd9EQ/hvkdLkFhlN74+cW+oq5xke+23EdK12ELbzy
-	 KVNLN92f/ZUuHamLJuI4HIKSaK0bXHPxQ3YR7t3E=
+	s=default; t=1724163622;
+	bh=PbOxquV5o7WuWMJBCMJR6LWOsyiINGnqBTBjqgFyKq0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Uz3ih8fxy+YWp7IEEej9rzmdIgfmrDCC0GmCwt+/dtkoifUcPn2Zx5/Cebfq8cnuy
+	 goCCHgZJRwgxiJhLg/li8UOV85Q2aCdL8S5VUbHK9MFNBJQ4KQoOTwwCNcPjYYJrKf
+	 yBiD4niE9qjopk3lD/gKryg0V0hZTdFLHHk3pi4A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D242EF805B4; Tue, 20 Aug 2024 15:45:10 +0200 (CEST)
+	id 45B7EF80579; Tue, 20 Aug 2024 16:19:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15205F805AD;
-	Tue, 20 Aug 2024 15:45:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECF41F805A8;
+	Tue, 20 Aug 2024 16:19:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4472F80494; Tue, 20 Aug 2024 15:45:02 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	id 5366FF80494; Tue, 20 Aug 2024 16:19:44 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 797C4F80107
-	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2024 15:44:56 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E96382E91;
-	Tue, 20 Aug 2024 15:44:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E96382E91
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1724161495; bh=pMJ/jqUsNDthyJux6lBfdVItPujYym23/PnZsNDl69s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ndrTmtgH0b9vSjWkEyy7b5KxFH9re+1h5Kt5jc12wz8KAJWh6lL7N4DowjqqgjG1V
-	 Su5eS8/8FVrKXFQkl10rna9Q2ThOUpum4qSL5vPkkjo1sqSbMqWrqj8+rYuIYn7F6Y
-	 bUFjryvwWXak72PvNQ+gqFJLfb/JxWv3j98r84mo=
-Received: from p1gen4.perex-int.cz (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Tue, 20 Aug 2024 15:44:53 +0200 (CEST)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-lib] pcm: implement snd_pcm_hw_params_get_sync() and
- obsolete snd_pcm_info_get_sync()
-Date: Tue, 20 Aug 2024 15:44:49 +0200
-Message-ID: <20240820134449.2622498-1-perex@perex.cz>
-X-Mailer: git-send-email 2.45.2
+	by alsa1.perex.cz (Postfix) with ESMTPS id EF080F800F0
+	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2024 16:19:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF080F800F0
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=kteWXbtl
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 7707BCE0A1D;
+	Tue, 20 Aug 2024 14:19:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E398AC4AF0F;
+	Tue, 20 Aug 2024 14:19:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724163565;
+	bh=PbOxquV5o7WuWMJBCMJR6LWOsyiINGnqBTBjqgFyKq0=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=kteWXbtl1ef/jQEYZ17TOZN1lPRRWuqUDxz6PNHGeA9Qqaz7kanUc9groVf6l24CK
+	 suHYMXrdSowWba4mkX6BsYIcVVYQOEU81BCPM3p+sV/AwMCHvo1+meutTMLYVFh2Q6
+	 Bqhyeqe8G2A9xbchzDQ9e6gUo5LPB41XqFfr8tqPkFdiCL8b8Z7FKYbkD+Qjvt5w2l
+	 ruGh0O9buFp1BQfSr8snHhcp5KmQPGkOGOw4bJ2GuV2WsXgr4fytbS5PqpiCn8Wz8/
+	 k+zKjp4ME40doeNmANH+ZpPMdVAIToAM7FT2z+cisp1W3eVu0/jceqORtyw4xhbBN/
+	 LCyy8B+zLew5A==
+From: Mark Brown <broonie@kernel.org>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240818173037.122152-1-krzysztof.kozlowski@linaro.org>
+References: <20240818173037.122152-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: samsung,odroid: drop stale clocks
+Message-Id: <172416356364.261879.10105106383289811025.b4-ty@kernel.org>
+Date: Tue, 20 Aug 2024 15:19:23 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IOL4LOJ7HICVOJNAHVEMSL4TVNSP22KY
-X-Message-ID-Hash: IOL4LOJ7HICVOJNAHVEMSL4TVNSP22KY
-X-MailFrom: perex@perex.cz
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
+Message-ID-Hash: FXDCEKFDXYRHLS42LNHFKCRVL55CLBKK
+X-Message-ID-Hash: FXDCEKFDXYRHLS42LNHFKCRVL55CLBKK
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -76,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IOL4LOJ7HICVOJNAHVEMSL4TVNSP22KY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FXDCEKFDXYRHLS42LNHFKCRVL55CLBKK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,117 +96,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use the new clock source mechanism to get information about
-similar PCM clock sources for PCM streams.
+On Sun, 18 Aug 2024 19:30:37 +0200, Krzysztof Kozlowski wrote:
+> Clocks property was present only to allow usage of assigned-clocks in
+> the sound card node, however in upstream DTS the assigned-clocks were
+> moved in commit 4afb06afd768 ("ARM: dts: exynos: move assigned-clock*
+> properties to i2s0 node in Odroid XU4") to respective I2S nodes.  Linux
+> drivers never parsed "clocks" so it can be safely dropped.
+> 
+> 
+> [...]
 
-Link: https://lore.kernel.org/linux-sound/20240625172836.589380-1-perex@perex.cz/
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- include/pcm.h               |  4 ++++
- include/sound/uapi/asound.h |  3 ++-
- src/pcm/pcm.c               | 30 ++++++++++++++++++++++++++----
- 3 files changed, 32 insertions(+), 5 deletions(-)
+Applied to
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 102ff812..b5c67889 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -508,6 +508,9 @@ typedef union _snd_pcm_sync_id {
- 	unsigned int id32[4];
- } snd_pcm_sync_id_t;
- 
-+/** synchronization ID size (see snd_pcm_hw_params_get_sync) */
-+#define SND_PCM_HW_PARAMS_SYNC_SIZE	16
-+
- /** Infinite wait for snd_pcm_wait() */
- #define SND_PCM_WAIT_INFINITE		(-1)
- /** Wait for next i/o in snd_pcm_wait() */
-@@ -747,6 +750,7 @@ int snd_pcm_hw_params_get_rate_numden(const snd_pcm_hw_params_t *params,
- 				      unsigned int *rate_den);
- int snd_pcm_hw_params_get_sbits(const snd_pcm_hw_params_t *params);
- int snd_pcm_hw_params_get_fifo_size(const snd_pcm_hw_params_t *params);
-+const unsigned char * snd_pcm_hw_params_get_sync(const snd_pcm_hw_params_t *params);
- 
- #if 0
- typedef struct _snd_pcm_hw_strategy snd_pcm_hw_strategy_t;
-diff --git a/include/sound/uapi/asound.h b/include/sound/uapi/asound.h
-index f3b2b94d..012fd890 100644
---- a/include/sound/uapi/asound.h
-+++ b/include/sound/uapi/asound.h
-@@ -426,7 +426,8 @@ struct snd_pcm_hw_params {
- 	unsigned int rate_num;		/* R: rate numerator */
- 	unsigned int rate_den;		/* R: rate denominator */
- 	snd_pcm_uframes_t fifo_size;	/* R: chip FIFO size in frames */
--	unsigned char reserved[64];	/* reserved for future */
-+	unsigned char sync[16];         /* R: synchronization ID (perfect sync - one clock source) */
-+	unsigned char reserved[48];	/* reserved for future */
- };
- 
- enum {
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 62e76e7e..f8581191 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -494,8 +494,8 @@ software parameter.
- There are two functions allowing link multiple streams together. In the
- case, the linking means that all operations are synchronized. Because the
- drivers cannot guarantee the synchronization (sample resolution) on hardware
--lacking this feature, the #snd_pcm_info_get_sync() function
--returns synchronization ID - #snd_pcm_sync_id_t, which is equal
-+lacking this feature, the #snd_pcm_hw_params_get_sync() function
-+returns 16-byte synchronization ID, which is equal
- for hardware synchronized streams. When the #snd_pcm_link()
- function is called, all operations managing the stream state for these two
- streams are joined. The opposite function is #snd_pcm_unlink().
-@@ -3948,6 +3948,25 @@ int snd_pcm_hw_params_get_fifo_size(const snd_pcm_hw_params_t *params)
- 	return params->fifo_size;
- }
- 
-+/**
-+ * \brief Get hardware synchronization ID from a PCM info container
-+ * \param params Configuration space
-+ * \return 16-byte synchronization ID (use #SND_PCM_HW_PARAMS_SYNC_SIZE)
-+ *
-+ * This synchronization ID determines the similar clocks for the
-+ * PCM stream between multiple devices (including different cards).
-+ * "All zeros" means "not set". The contents of the ID can be used
-+ * only for a comparison with the contents of another ID returned
-+ * from this function. Applications should not do a comparison with
-+ * hard-coded values, because the implementation generating such
-+ * synchronization IDs may be changed in future.
-+ */
-+const unsigned char *snd_pcm_hw_params_get_sync(const snd_pcm_hw_params_t *params)
-+{
-+	assert(params);
-+	return params->sync;
-+}
-+
- /**
-  * \brief Fill params with a full configuration space for a PCM
-  * \param pcm PCM handle
-@@ -7332,7 +7351,7 @@ unsigned int snd_pcm_info_get_subdevices_avail(const snd_pcm_info_t *obj)
- }
- 
- /**
-- * \brief Get hardware synchronization ID from a PCM info container
-+ * \brief (DEPRECATED) Get hardware synchronization ID from a PCM info container
-  * \param obj PCM info container
-  * \return hardware synchronization ID
-  */
-@@ -7340,9 +7359,12 @@ snd_pcm_sync_id_t snd_pcm_info_get_sync(const snd_pcm_info_t *obj)
- {
- 	snd_pcm_sync_id_t res;
- 	assert(obj);
--	memcpy(&res, &obj->sync, sizeof(res));
-+	bzero(&res, sizeof(res));
- 	return res;
- }
-+#ifndef DOC_HIDDEN
-+link_warning(snd_pcm_info_get_sync, "Warning: snd_pcm_info_get_sync is deprecated, consider to use snd_pcm_hw_params_get_sync");
-+#endif
- 
- /**
-  * \brief Set wanted device inside a PCM info container (see #snd_ctl_pcm_info)
--- 
-2.45.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: dt-bindings: samsung,odroid: drop stale clocks
+      commit: e6c1d9068295796e34d59ef08fa80f6ff8f3530a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
