@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A037C3DA4A
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Aug 2024 07:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF2E9C531DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Aug 2024 07:33:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1A35829;
-	Thu, 22 Aug 2024 09:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1A35829
+	by alsa0.perex.cz (Postfix) with ESMTPS id A27613E7;
+	Thu, 22 Aug 2024 09:33:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A27613E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724312017;
-	bh=piXbiGVvY4Z7McD5MuSb1uPg8CaOYhJJ02CXfa8WQVo=;
+	s=default; t=1724312019;
+	bh=YMTcMRAmuMV/qyUnZuT+QygntPpHZMYDL7Q6RWLxqG0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bNnr8I2il2aYKcATlXiNBZ/dZczNFIGYT2eu/9xGjJJwRyx2Zi1YTR8BTLvFsuHjl
-	 91vtCbevuSIGnsIdkicCKAEMzNVeoHyBuncJSJxTjFYUXmIG2o1J4tgTCtyMdsauJN
-	 sFNHpq251zOD04s53g4PRnCiwi35NKauRTwRL0cE=
+	b=nPl6BrxOx6jGGoQavpbuO4/DkLSw6mZSjirlm6QKsMJUJMWQXuUF8HCk417jm01pa
+	 LmhBtr0qOYqAwthHiGs79O0o1pXaeKx2MbmzAaHHer5BmiA5CwdJOejFTR1crJt+wb
+	 NoQTUWdyEnitOgQpFCSV7OeNvRtAU7krcJ/eMTUE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A846CF806C4; Thu, 22 Aug 2024 09:31:49 +0200 (CEST)
+	id 38CA4F80654; Thu, 22 Aug 2024 09:31:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60D87F806A3;
-	Thu, 22 Aug 2024 09:31:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B907BF80655;
+	Thu, 22 Aug 2024 09:31:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4097F80580; Wed, 21 Aug 2024 09:03:20 +0200 (CEST)
+	id DD909F80496; Wed, 21 Aug 2024 09:00:59 +0200 (CEST)
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C50A0F800F0
-	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2024 09:00:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C50A0F800F0
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WpcdJ2HyVzpTMd;
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8D51F80494
+	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2024 09:00:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8D51F80494
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WpcdJ49KXzpTPd;
 	Wed, 21 Aug 2024 14:59:16 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7636518006C;
+	by mail.maildlp.com (Postfix) with ESMTPS id B70961401F4;
 	Wed, 21 Aug 2024 15:00:47 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
  (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
@@ -49,10 +49,10 @@ To: <peter.ujfalusi@gmail.com>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
 	<perex@perex.cz>, <tiwai@suse.com>
 CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<lihongbo22@huawei.com>
-Subject: [PATCH -next 2/5] sound/soc remove unused substream in macro
- soc_component_mark_pop
-Date: Wed, 21 Aug 2024 15:08:12 +0800
-Message-ID: <20240821070815.2326534-3-lihongbo22@huawei.com>
+Subject: [PATCH -next 4/5] sound/soc remove unused substream in macro
+ soc_link_mark_pop
+Date: Wed, 21 Aug 2024 15:08:14 +0800
+Message-ID: <20240821070815.2326534-5-lihongbo22@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240821070815.2326534-1-lihongbo22@huawei.com>
 References: <20240821070815.2326534-1-lihongbo22@huawei.com>
@@ -68,15 +68,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: JFUNM6WK65BYDIAHZE56OZHJEGIYZWA7
-X-Message-ID-Hash: JFUNM6WK65BYDIAHZE56OZHJEGIYZWA7
-X-Mailman-Approved-At: Thu, 22 Aug 2024 07:28:29 +0000
+Message-ID-Hash: 5YLEBYSXSQBSZT6RQKFEUISZXWHBNY6Y
+X-Message-ID-Hash: 5YLEBYSXSQBSZT6RQKFEUISZXWHBNY6Y
+X-Mailman-Approved-At: Thu, 22 Aug 2024 07:28:28 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JFUNM6WK65BYDIAHZE56OZHJEGIYZWA7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5YLEBYSXSQBSZT6RQKFEUISZXWHBNY6Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,81 +85,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The soc_component_mark_pop don't need substream, and also
-substream is not used in this macro, so we can remove it.
-This is detected by macro_checker.py script.
+The soc_link_mark_pop don't need substream, therefore we can
+remove it.
 
 Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
 ---
- sound/soc/soc-component.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/soc-link.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index b3d7bb91e294..b67ef78f405c 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -58,7 +58,7 @@ static inline int soc_component_field_shift(struct snd_soc_component *component,
+diff --git a/sound/soc/soc-link.c b/sound/soc/soc-link.c
+index fee4022708bc..7f1f1bc717e2 100644
+--- a/sound/soc/soc-link.c
++++ b/sound/soc/soc-link.c
+@@ -35,7 +35,7 @@ static inline int _soc_link_ret(struct snd_soc_pcm_runtime *rtd,
   * In such case, we can update these macros.
   */
- #define soc_component_mark_push(component, substream, tgt)	((component)->mark_##tgt = substream)
--#define soc_component_mark_pop(component, substream, tgt)	((component)->mark_##tgt = NULL)
-+#define soc_component_mark_pop(component, tgt)	((component)->mark_##tgt = NULL)
- #define soc_component_mark_match(component, substream, tgt)	((component)->mark_##tgt == substream)
+ #define soc_link_mark_push(rtd, substream, tgt)		((rtd)->mark_##tgt = substream)
+-#define soc_link_mark_pop(rtd, substream, tgt)		((rtd)->mark_##tgt = NULL)
++#define soc_link_mark_pop(rtd, tgt)		((rtd)->mark_##tgt = NULL)
+ #define soc_link_mark_match(rtd, substream, tgt)	((rtd)->mark_##tgt == substream)
  
- void snd_soc_component_set_aux(struct snd_soc_component *component,
-@@ -339,7 +339,7 @@ void snd_soc_component_module_put(struct snd_soc_component *component,
- 		module_put(component->dev->driver->owner);
- 
- 	/* remove the mark from module */
--	soc_component_mark_pop(component, mark, module);
-+	soc_component_mark_pop(component, module);
- }
- 
- int snd_soc_component_open(struct snd_soc_component *component,
-@@ -370,7 +370,7 @@ int snd_soc_component_close(struct snd_soc_component *component,
- 		ret = component->driver->close(component, substream);
+ int snd_soc_link_init(struct snd_soc_pcm_runtime *rtd)
+@@ -94,7 +94,7 @@ void snd_soc_link_shutdown(struct snd_pcm_substream *substream,
+ 		rtd->dai_link->ops->shutdown(substream);
  
  	/* remove marked substream */
--	soc_component_mark_pop(component, substream, open);
-+	soc_component_mark_pop(component, open);
- 
- 	return soc_component_ret(component, ret);
+-	soc_link_mark_pop(rtd, substream, startup);
++	soc_link_mark_pop(rtd, startup);
  }
-@@ -515,7 +515,7 @@ void snd_soc_component_compr_free(struct snd_soc_component *component,
- 		component->driver->compress_ops->free(component, cstream);
+ 
+ int snd_soc_link_prepare(struct snd_pcm_substream *substream)
+@@ -138,7 +138,7 @@ void snd_soc_link_hw_free(struct snd_pcm_substream *substream, int rollback)
+ 		rtd->dai_link->ops->hw_free(substream);
  
  	/* remove marked substream */
--	soc_component_mark_pop(component, cstream, compr_open);
-+	soc_component_mark_pop(component, compr_open);
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_compr_free);
- 
-@@ -1210,7 +1210,7 @@ void snd_soc_pcm_component_hw_free(struct snd_pcm_substream *substream,
- 		}
- 
- 		/* remove marked substream */
--		soc_component_mark_pop(component, substream, hw_params);
-+		soc_component_mark_pop(component, hw_params);
- 	}
+-	soc_link_mark_pop(rtd, substream, hw_params);
++	soc_link_mark_pop(rtd, hw_params);
  }
  
-@@ -1254,7 +1254,7 @@ int snd_soc_pcm_component_trigger(struct snd_pcm_substream *substream,
- 			r = soc_component_trigger(component, substream, cmd);
- 			if (r < 0)
- 				ret = r; /* use last ret */
--			soc_component_mark_pop(component, substream, trigger);
-+			soc_component_mark_pop(component, trigger);
- 		}
+ static int soc_link_trigger(struct snd_pcm_substream *substream, int cmd)
+@@ -175,7 +175,7 @@ int snd_soc_link_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			break;
+ 
+ 		ret = soc_link_trigger(substream, cmd);
+-		soc_link_mark_pop(rtd, substream, startup);
++		soc_link_mark_pop(rtd, startup);
  	}
  
-@@ -1294,7 +1294,7 @@ void snd_soc_pcm_component_pm_runtime_put(struct snd_soc_pcm_runtime *rtd,
- 		pm_runtime_put_autosuspend(component->dev);
+ 	return ret;
+@@ -209,7 +209,7 @@ void snd_soc_link_compr_shutdown(struct snd_compr_stream *cstream,
+ 	    rtd->dai_link->compr_ops->shutdown)
+ 		rtd->dai_link->compr_ops->shutdown(cstream);
  
- 		/* remove marked stream */
--		soc_component_mark_pop(component, stream, pm);
-+		soc_component_mark_pop(component, pm);
- 	}
+-	soc_link_mark_pop(rtd, cstream, compr_startup);
++	soc_link_mark_pop(rtd, compr_startup);
  }
+ EXPORT_SYMBOL_GPL(snd_soc_link_compr_shutdown);
  
 -- 
 2.34.1
