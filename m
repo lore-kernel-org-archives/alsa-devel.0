@@ -4,82 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57C84C52D7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Aug 2024 15:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C5CC52D7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Aug 2024 19:13:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 232E6203;
-	Wed, 21 Aug 2024 17:29:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 232E6203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2435B826;
+	Wed, 21 Aug 2024 21:12:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2435B826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724254173;
-	bh=tOqJ4Sp3k8TWd0V/CZ/nJlVfE8iwPi5+JHFivu0fwAQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ptfgiO4BVSeZoRA8TKm5lS17onBp60evWiOXT2HKDOrTE+M6uxpVtNXiMy75Y0hqE
-	 AAKiXdjDMNAFjaA37pyCJXcC0O+Sdt/l9H0najBKvaqptS1GYee5vy6ockhf+pX7/U
-	 NQEgiwaiWAoAK25+jgHqbcY2SrKVAJmaFUkzlX04=
+	s=default; t=1724267579;
+	bh=SxWEWx4TinLZrxno5ALgxrwD74WG09ZwCxUcPqSBUc8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=TYL+9fLLrgcbdh6lSJNxwCw8d7r67QAgsDnyLzKC18+oLQduioBStKCtxihNmV57A
+	 3apurTXhc2wTd2U8ZEOnCT9gUN+4vrZb5nI1Fza5TpHYLf1jTQTMakWxWulqiSbcmx
+	 bzEGxrSrxOhtHs5qoAjCCyMjiLUAmlAmyNiB0Ty4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87B6AF8061F; Wed, 21 Aug 2024 17:28:21 +0200 (CEST)
+	id 4318AF805BB; Wed, 21 Aug 2024 21:12:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5B72F80620;
-	Wed, 21 Aug 2024 17:28:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B7E4F805B5;
+	Wed, 21 Aug 2024 21:12:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66049F80496; Wed, 21 Aug 2024 17:27:43 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 505B1F80494
-	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2024 17:24:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 505B1F80494
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Xwr1NtCB
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3D5C361040;
-	Wed, 21 Aug 2024 15:24:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D15AC4AF09;
-	Wed, 21 Aug 2024 15:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724253887;
-	bh=tOqJ4Sp3k8TWd0V/CZ/nJlVfE8iwPi5+JHFivu0fwAQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Xwr1NtCBzKXAPLdGfkMp0pnkvuULQ86fqbaW17IIvnKq8izRQHxY7dSSUKzV4p+im
-	 G3mw7dAd6Fn1xJxwaQb35rGv43Yw9ZLHIinhntRTmkSWkSyWsa4IU+FGN9abDvM3zA
-	 QnXg98rSCrHTED3kM+2jfwgHz9BqQZCrP7IDzY0d9AsWjLjFubVnkTeQ0m1By+JxMc
-	 5Jxc6jwy0TQmtHNbG1VkisrL5BGc7wq+FeMvgx+bQkAWfn+kLmSbVw2wYGVNbKd+Z0
-	 QFDpFIkbkPp7tGRO6FmqG25qpBVe+KJar9ZMFd7zyyIenp3yDqJHxgu3ZnXATi8kxg
-	 AwfSGBmz1t3Fg==
-From: Mark Brown <broonie@kernel.org>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
- pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
- zhourui@huaqin.com, alsa-devel@alsa-project.org, i-salazar@ti.com,
- liam.r.girdwood@intel.com, jaden-yue@ti.com,
- yung-chuan.liao@linux.intel.com, dipa@ti.com, yuhsuan@google.com,
- henry.lo@ti.com, tiwai@suse.de, Baojun.Xu@fpt.com, judyhsiao@google.com,
- navada@ti.com, cujomalainey@google.com, aanya@ti.com, nayeem.mahmud@ti.com,
- savyasanchi.shukla@netradyne.com, flaviopr@microsoft.com, jesse-ji@ti.com,
- darren.ye@mediatek.com, antheas.dk@gmail.com,
- Jerry2.Huang@lcfuturecenter.com, jim.shil@goertek.com
-In-Reply-To: <20240821072527.1294-1-baojun.xu@ti.com>
-References: <20240821072527.1294-1-baojun.xu@ti.com>
-Subject: Re: [PATCH v1] ASoC: tas2781: Remove unnecessary line feed for
- tasdevice_codec_remove
-Message-Id: <172425388198.1704682.13904947014009773175.b4-ty@kernel.org>
-Date: Wed, 21 Aug 2024 16:24:41 +0100
+	id BC015F80496; Wed, 21 Aug 2024 21:12:19 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id BE62EF800F0
+	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2024 21:12:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE62EF800F0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: WQIQP2OLINQVPXJYXEQSW7XC55GAYV53
-X-Message-ID-Hash: WQIQP2OLINQVPXJYXEQSW7XC55GAYV53
-X-MailFrom: broonie@kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1724267534578495026-webhooks-bot@alsa-project.org>
+References: <1724267534578495026-webhooks-bot@alsa-project.org>
+Subject: No sound from XonarDX
+Message-Id: <20240821191219.BC015F80496@alsa1.perex.cz>
+Date: Wed, 21 Aug 2024 21:12:19 +0200 (CEST)
+Message-ID-Hash: X4L37PMRDRUGPUSIJCOU47CO2VPLHEXV
+X-Message-ID-Hash: X4L37PMRDRUGPUSIJCOU47CO2VPLHEXV
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQIQP2OLINQVPXJYXEQSW7XC55GAYV53/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X4L37PMRDRUGPUSIJCOU47CO2VPLHEXV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,37 +66,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 21 Aug 2024 15:25:27 +0800, Baojun Xu wrote:
-> Remove unnecessary line feed for tasdevice_codec_remove.
-> Add comma at the end the last member of the array.
-> 
-> 
+alsa-project/alsa-lib issue #408 was opened from 3bitbrain:
 
-Applied to
+No matter what wiki or advice I try, no sound at all from a known good Xonar DX card.
+Distro : Gentoo, fresh install.
+Always un-muted everything in the console alsamixer.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+alsa-lib version 1.2.11
 
-Thanks!
+[alsa.txt](https://github.com/user-attachments/files/16697602/alsa.txt)
 
-[1/1] ASoC: tas2781: Remove unnecessary line feed for tasdevice_codec_remove
-      commit: 8a8dcf702673787543173b8ac5dafae2f7f13e87
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/408
+Repository URL: https://github.com/alsa-project/alsa-lib
