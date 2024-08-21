@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF1A5C52D7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Aug 2024 15:28:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73AF5C52D7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Aug 2024 15:29:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9322823;
-	Wed, 21 Aug 2024 17:28:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9322823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8592984D;
+	Wed, 21 Aug 2024 17:29:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8592984D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724254129;
-	bh=W6Dm+pw4jKVI1NoMBaeLuQYMNAlSSIuKPuzkfQBk0wU=;
+	s=default; t=1724254151;
+	bh=KtFrt9WfErChRtcLn7HkhtzBOi0BwJCKu2TQs5yEJko=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=M76HL1Ht/uaIu8tDkRPVh8DM2e6EAZJiO9XjrCMakw5H3sXV/T+PE3DBcoP373CiP
-	 /E3nIjksGGJVxFmPbk450zoSFYyKUYDIQViPf1UFDv00iXw6pROd8oMyd+kOpvXqQ8
-	 SrCmpBmT98CQS7xBnwcGLO1oPpxFQn7PMPlhx0HA=
+	b=uFp/TdQCC8Gsxr6OnbJTOLoQJanyoo9A8iSVAAN37CCldsw6pBxGqJ7xap3PqNZ5V
+	 bqadHjXMPyB4XaJE7yUYomcYZmIjg4rWz3wVl8dYGRf1SGnoHsdR24zx5dBzsCqgme
+	 J7Hh4NIfc6tnmCvmLxQvh6FnJIqlYZB6fHOMLhCw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 997CCF805C9; Wed, 21 Aug 2024 17:28:18 +0200 (CEST)
+	id 625BBF805EF; Wed, 21 Aug 2024 17:28:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44DF5F805AF;
-	Wed, 21 Aug 2024 17:28:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA3F7F805E2;
+	Wed, 21 Aug 2024 17:28:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF4AFF80579; Wed, 21 Aug 2024 17:25:08 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id A0B58F80517; Wed, 21 Aug 2024 17:25:12 +0200 (CEST)
+Received: from nyc.source.kernel.org (nyc.source.kernel.org
+ [IPv6:2604:1380:45d1:ec00::3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BD9DCF800F0
-	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2024 17:24:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD9DCF800F0
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE1B6F8025E
+	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2024 17:24:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE1B6F8025E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YVXmxd1e
+ header.s=k20201202 header.b=t8zD01d1
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 9DD0B60FF0;
+	by nyc.source.kernel.org (Postfix) with ESMTP id 2AAEEA41D67;
+	Wed, 21 Aug 2024 15:24:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE18C32786;
 	Wed, 21 Aug 2024 15:24:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D56EC32781;
-	Wed, 21 Aug 2024 15:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724253890;
-	bh=W6Dm+pw4jKVI1NoMBaeLuQYMNAlSSIuKPuzkfQBk0wU=;
+	s=k20201202; t=1724253893;
+	bh=KtFrt9WfErChRtcLn7HkhtzBOi0BwJCKu2TQs5yEJko=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=YVXmxd1eK1rsVkqeL1K3kB85wpV5tsEhKpBR7XuGnOPqUwBOqNEcxhL0cvCXR9l2J
-	 QkixuXmAmzleeGVMTlAAaW4PUhlGy2Ik+eP7EMqc5LQEaJL70m+kAlousN44o2lNoN
-	 6YLvZyb2iBqgwccb0ckkq5bCwef5FpwNqbLZGqyEnAFWYZOAV4VI72XWiJY7seFnnc
-	 pLW1Yzr5Mbcn85sx9TVhsaEzBlYue48aXHMyBEeuqd8d2nMH6lBN7R8JC2M93an0HO
-	 ur93a+PHoXdbrVZ+3jNjYoDtSO7myjqO7NHoug1uxh8uWcUswhgwZNbdAYSZPRs5t7
-	 kc0HkwI38pC4Q==
+	b=t8zD01d1WE1dJSFTPtWnx3Sh5orii5BzZcFXYPPXB5EtmUSilq7J5IxQIygEq/Che
+	 FI9mU+4bqHUmrW+mXUxOBYPoLmOGN62Ggtfyg9gQUoADX4c5Ft2lK6mIOZ/NHhsowJ
+	 FG6/DEFJGmue9CUI3qBpKsVqXel35YVN2kbq5vPDHJaG+J7qqrZg6rAJ6kDrXtJTrF
+	 EXI+yxclGVLxt7enY2/caw1wCCWMH9YPCzaOp6+MV4IAzufZjtZx6puv6BJBYqw3I7
+	 qP5r+g6eKE1Zwoy14LE3tpNmhi6sY4yJ2gQTEf5XRQ9eJwb8RxHD7vYcObJCqiqrQW
+	 9EJgUvNiL5Ldg==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
- Colin Ian King <colin.i.king@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240821114927.520193-1-colin.i.king@gmail.com>
-References: <20240821114927.520193-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH] ASoC: codecs: wcd934x: make read-only array
- minCode_param static const
-Message-Id: <172425388817.1704682.13476563163594836442.b4-ty@kernel.org>
-Date: Wed, 21 Aug 2024 16:24:48 +0100
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+ venkataprasad.potturu@amd.com, cristian.ciocaltea@collabora.com,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240821064650.2850310-1-Vijendar.Mukunda@amd.com>
+References: <20240821064650.2850310-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: SOF: amd: remove unused variable from
+ sof_amd_acp_desc structure
+Message-Id: <172425389056.1704682.17614913530491434962.b4-ty@kernel.org>
+Date: Wed, 21 Aug 2024 16:24:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: SG6GBAN3FDD3CBBB4TGDEBDIGEWW2BJN
-X-Message-ID-Hash: SG6GBAN3FDD3CBBB4TGDEBDIGEWW2BJN
+Message-ID-Hash: 3ZIDDN6XGE3ZD33MW2WQLWCTUHQ34Q3O
+X-Message-ID-Hash: 3ZIDDN6XGE3ZD33MW2WQLWCTUHQ34Q3O
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SG6GBAN3FDD3CBBB4TGDEBDIGEWW2BJN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3ZIDDN6XGE3ZD33MW2WQLWCTUHQ34Q3O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,9 +97,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 21 Aug 2024 12:49:27 +0100, Colin Ian King wrote:
-> Don't populate the read-only array minCode_param on the stack at
-> run time, instead make it static const.
+On Wed, 21 Aug 2024 12:16:50 +0530, Vijendar Mukunda wrote:
+> Remove unused structure member 'rev' from sof_amd_acp_desc structure.
 > 
 > 
 
@@ -108,8 +108,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: wcd934x: make read-only array minCode_param static const
-      commit: 6f6d8b2d49299492e704030632ab79257685e5d3
+[1/1] ASoC: SOF: amd: remove unused variable from sof_amd_acp_desc structure
+      commit: 61c80c77b4f35e229347551d13e265752f067151
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
