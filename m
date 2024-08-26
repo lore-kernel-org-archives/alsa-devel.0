@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C762C54735
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Aug 2024 12:03:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEDDEC54735
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Aug 2024 12:03:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34A0A832;
-	Tue, 27 Aug 2024 14:03:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34A0A832
+	by alsa0.perex.cz (Postfix) with ESMTPS id 117D284A;
+	Tue, 27 Aug 2024 14:03:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 117D284A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724760222;
-	bh=pZGOERsvhHa8WHbFHYy/SccQjvulZF6Isev0LBjxEqU=;
+	s=default; t=1724760233;
+	bh=5POpXNON5NQRXTjqqdtKhe5QaC0FzuhkdRz7WSB7mH4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fpSSQoKvhlltUDsrEVj5qvozkuwvPyNBjBFV2aSsc00L44q7qRuCoxnP0YZjf01xp
-	 yJdA1BfNTd9xnHWkfrsWrVboROM+iDVxbE7bYuQcTTiQZh15v8EsUTaf6OUblT0F3G
-	 KxSokysYybc/CAe6PH/IDlqYfUni98aj+jtPTCF0=
+	b=gZcq+u4601Ee1WLRT+wgAAarutPDFak78D7hTuNJ6hvUopX5nVX2X9Usl1u0z5H1J
+	 ihBlvzZXSX87V4UkYaCn6qCs3ISVhJJ6JLu2aayCduEm5KfOyivP35k3SyGBXfi/ma
+	 RnM1bed12nOr9ED41nNL/85TNdUHflKL9AIxvZos=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F30F0F805AE; Tue, 27 Aug 2024 14:03:11 +0200 (CEST)
+	id 83CB8F805D3; Tue, 27 Aug 2024 14:03:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 619BBF805AF;
-	Tue, 27 Aug 2024 14:03:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5966FF805E5;
+	Tue, 27 Aug 2024 14:03:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2B5BF80568; Mon, 26 Aug 2024 10:57:52 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	id 67379F80518; Mon, 26 Aug 2024 10:58:04 +0200 (CEST)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 220F8F8025E
-	for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2024 10:57:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 220F8F8025E
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Wsl0f1txGzpVjH;
-	Mon, 26 Aug 2024 16:56:50 +0800 (CST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1F6A2F80494
+	for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2024 10:57:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F6A2F80494
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Wsl1L2MjWz1S8wj;
+	Mon, 26 Aug 2024 16:57:26 +0800 (CST)
 Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
-	by mail.maildlp.com (Postfix) with ESMTPS id 01D5D14037E;
-	Mon, 26 Aug 2024 16:57:36 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 8AF30140120;
+	Mon, 26 Aug 2024 16:57:35 +0800 (CST)
 Received: from huawei.com (10.67.174.77) by dggpemm500020.china.huawei.com
  (7.185.36.49) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 26 Aug
@@ -54,9 +54,9 @@ CC: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
 	<kai.vehmanen@linux.intel.com>, <liaochen4@huawei.com>,
 	<u.kleine-koenig@pengutronix.de>, <andy.shevchenko@gmail.com>,
 	<kuninori.morimoto.gx@renesas.com>, <robh@kernel.org>
-Subject: [PATCH -next 3/4] ASoC: tda7419: fix module autoloading
-Date: Mon, 26 Aug 2024 08:49:23 +0000
-Message-ID: <20240826084924.368387-4-liaochen4@huawei.com>
+Subject: [PATCH -next 1/4] ASoC: intel: fix module autoloading
+Date: Mon, 26 Aug 2024 08:49:21 +0000
+Message-ID: <20240826084924.368387-2-liaochen4@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240826084924.368387-1-liaochen4@huawei.com>
 References: <20240826084924.368387-1-liaochen4@huawei.com>
@@ -72,15 +72,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DFFYBQ3IJYURO2CIFYOPR2LKOFVOKRHX
-X-Message-ID-Hash: DFFYBQ3IJYURO2CIFYOPR2LKOFVOKRHX
-X-Mailman-Approved-At: Tue, 27 Aug 2024 12:02:45 +0000
+Message-ID-Hash: GIOYIFYQ2QMIE6RZQVZBKTZG4UYMQXU2
+X-Message-ID-Hash: GIOYIFYQ2QMIE6RZQVZBKTZG4UYMQXU2
+X-Mailman-Approved-At: Tue, 27 Aug 2024 12:02:46 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DFFYBQ3IJYURO2CIFYOPR2LKOFVOKRHX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GIOYIFYQ2QMIE6RZQVZBKTZG4UYMQXU2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,21 +94,21 @@ based on the alias from of_device_id table.
 
 Signed-off-by: Liao Chen <liaochen4@huawei.com>
 ---
- sound/soc/codecs/tda7419.c | 1 +
+ sound/soc/intel/keembay/kmb_platform.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tda7419.c b/sound/soc/codecs/tda7419.c
-index 386b99c8023b..7d6fcba9986e 100644
---- a/sound/soc/codecs/tda7419.c
-+++ b/sound/soc/codecs/tda7419.c
-@@ -623,6 +623,7 @@ static const struct of_device_id tda7419_of_match[] = {
- 	{ .compatible = "st,tda7419" },
- 	{ },
+diff --git a/sound/soc/intel/keembay/kmb_platform.c b/sound/soc/intel/keembay/kmb_platform.c
+index 37ea2e1d2e92..aa5de167e790 100644
+--- a/sound/soc/intel/keembay/kmb_platform.c
++++ b/sound/soc/intel/keembay/kmb_platform.c
+@@ -814,6 +814,7 @@ static const struct of_device_id kmb_plat_of_match[] = {
+ 	{ .compatible = "intel,keembay-tdm", .data = &intel_kmb_tdm_dai},
+ 	{}
  };
-+MODULE_DEVICE_TABLE(of, tda7419_of_match);
++MODULE_DEVICE_TABLE(of, kmb_plat_of_match);
  
- static struct i2c_driver tda7419_driver = {
- 	.driver = {
+ static int kmb_plat_dai_probe(struct platform_device *pdev)
+ {
 -- 
 2.34.1
 
