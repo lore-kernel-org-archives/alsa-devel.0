@@ -4,97 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33E1BC5321E
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Aug 2024 12:10:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B3AEC5321D
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Aug 2024 12:23:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B72F3E7;
-	Mon, 26 Aug 2024 14:10:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B72F3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 977D2868;
+	Mon, 26 Aug 2024 14:23:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 977D2868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724674228;
-	bh=CNlgUOIhnZS0GrsQng07UAMdA7zQHT5HyZ7gwUjR7Rk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1724675002;
+	bh=nrCh+MbG7gRxvIMzEnBTFyKz9LeiQJGA21Had33NToE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BvVNe4OOuGe8EnaLWottQTPt2hJjZmUVks7aPEysf6JuzLQZ9waIf7zz6RfQ4VeoL
-	 4s/zdn68rc3WwU8LPFedIiJBIuZNa1NKfz8drgtwnwC3hvcL1q67Li6g4l469KpTfJ
-	 ge7H8SP/5suRQZKqEe8sGP21EApzl3cn15KSShI0=
+	b=sInlXcVjgnak/9H0ExUUKVnAjL395joe81/hjsczgrA08gM66a/HKa2Vm2hpzY4fX
+	 O0TZdUmfYYEYKZA2Q9KObV7KVYGUazmmyn5Tb+aK6lVYnyB40ORyj1qOpA8GNtA9bj
+	 B6MhKx8Oq4gCtR8PG8yDfTaH706GAw1U5XvkR/ME=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 585AAF805BA; Mon, 26 Aug 2024 14:09:57 +0200 (CEST)
+	id C04A0F805AA; Mon, 26 Aug 2024 14:22:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F92BF80494;
-	Mon, 26 Aug 2024 14:09:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABEEBF805B5;
+	Mon, 26 Aug 2024 14:22:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 226B7F80423; Mon, 26 Aug 2024 14:04:15 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	id 591F8F80423; Mon, 26 Aug 2024 14:22:35 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7DE5AF8025E
-	for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2024 14:03:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DE5AF8025E
+	by alsa1.perex.cz (Postfix) with ESMTPS id D7232F800AC
+	for <alsa-devel@alsa-project.org>; Mon, 26 Aug 2024 14:22:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7232F800AC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=b8zo5yxS
+ header.s=Intel header.b=c4urj4WZ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724673836; x=1756209836;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=CNlgUOIhnZS0GrsQng07UAMdA7zQHT5HyZ7gwUjR7Rk=;
-  b=b8zo5yxSWMKMZ3mmng6IUhl4Q0RK0/a+BfLvhTLcDyj3cA6QYbTVWho4
-   DK+s98aOSqnW4oLq01NlcygMf5/LE6TxqtMOCiF+45RjWwB9MtAp7hpH6
-   KvomTK5UKA8Iv2wKTrnyIsC3Z9nAjfbevQnQpZFRjdqvlem3itU3Xz1U+
-   bSnNixdKkaNPKb3T12MuV7eDU2FXccIxhvIqkHWmo6MXBMXnjpsT+5oKx
-   HPbfBF2Sqt1f9KUI8b3JK2Hwy+Ov2jUtMER7fUiTyeyvtiCn3Z3n59HeA
-   HJMVwQUaAEKHz8hXL6f2+k5oqaNHtt7nm2j9nHRElGHi8cLuEma4AG15P
-   Q==;
-X-CSE-ConnectionGUID: /8QQ4k52RcmAPh4jWqHExw==
-X-CSE-MsgGUID: /uUkJiq4Sqyfp5npUjpCVA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11175"; a="25967065"
+  t=1724674930; x=1756210930;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nrCh+MbG7gRxvIMzEnBTFyKz9LeiQJGA21Had33NToE=;
+  b=c4urj4WZITcvPqXJLI7heDtgQeIq7zTieBE0zlNLmt6rzVq2R4mGDE+0
+   kEHNe+P/lFQsM2d+mtx3XZwu2H/euRmdhYKMJotMr1umu5204j6mT0IYl
+   go4b1Xn6nz2waYEiDrVVkXt1S6fDYaptJ33xZhLbbQy0d/xEZj2CkMzeY
+   zGWgpcJJ4ENKQ2TKK0DhuSP0qMCgfTFhLWHRD0ltSHRaLIcVt2/8gKEZB
+   2+u7iDayVtsr2boLzpoiekm/d50Tbja/B21AtHyu1Fsg+JKQhuOzLNua7
+   VYjXq50hLkTS7c0rsTIyBMTQ5t4J4lKV7u8xXndP9IM8wAXj8Om+NYekp
+   w==;
+X-CSE-ConnectionGUID: F0pcG9QtTP2t5rkyUFvaxg==
+X-CSE-MsgGUID: 7RqGvSm+SVOxxNU4D+Omqw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11175"; a="26843340"
 X-IronPort-AV: E=Sophos;i="6.10,177,1719903600";
-   d="scan'208";a="25967065"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Aug 2024 02:32:55 -0700
-X-CSE-ConnectionGUID: wdvPnAEPTqmZhETgD1WLmA==
-X-CSE-MsgGUID: RKvQAKVwRa24HsNafnwANQ==
+   d="scan'208";a="26843340"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Aug 2024 03:02:43 -0700
+X-CSE-ConnectionGUID: CH7XDuMNQJqNtfnFa+2fHA==
+X-CSE-MsgGUID: 5TTPLJ8hSOCmWgnsBO6BBw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,177,1719903600";
-   d="scan'208";a="62134672"
-Received: from cpetruta-mobl1.ger.corp.intel.com (HELO [10.245.246.121])
- ([10.245.246.121])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Aug 2024 02:32:49 -0700
-Message-ID: <9f25b900-ae1c-41af-a380-ac5e00860283@linux.intel.com>
-Date: Mon, 26 Aug 2024 10:48:24 +0200
+   d="scan'208";a="62979990"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Aug 2024 03:02:36 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1siWYR-00000001pDM-3oMG;
+	Mon, 26 Aug 2024 13:02:31 +0300
+Date: Mon, 26 Aug 2024 13:02:31 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: "Ding, Shenghao" <shenghao-ding@ti.com>
+Cc: "broonie@kernel.org" <broonie@kernel.org>,
+	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+	"perex@perex.cz" <perex@perex.cz>,
+	"pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+	"13916275206@139.com" <13916275206@139.com>,
+	"zhourui@huaqin.com" <zhourui@huaqin.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"Salazar, Ivan" <i-salazar@ti.com>,
+	"liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+	"Yue, Jaden" <jaden-yue@ti.com>,
+	"yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+	"Rao, Dipa" <dipa@ti.com>,
+	"yuhsuan@google.com" <yuhsuan@google.com>,
+	"Lo, Henry" <henry.lo@ti.com>, "tiwai@suse.de" <tiwai@suse.de>,
+	"Xu, Baojun" <baojun.xu@ti.com>,
+	"Baojun.Xu@fpt.com" <Baojun.Xu@fpt.com>,
+	"judyhsiao@google.com" <judyhsiao@google.com>,
+	"Navada Kanyana, Mukund" <navada@ti.com>,
+	"cujomalainey@google.com" <cujomalainey@google.com>,
+	"Kutty, Aanya" <aanya@ti.com>,
+	"Mahmud, Nayeem" <nayeem.mahmud@ti.com>,
+	"savyasanchi.shukla@netradyne.com" <savyasanchi.shukla@netradyne.com>,
+	"flaviopr@microsoft.com" <flaviopr@microsoft.com>,
+	"Ji, Jesse" <jesse-ji@ti.com>,
+	"darren.ye@mediatek.com" <darren.ye@mediatek.com>,
+	"antheas.dk@gmail.com" <antheas.dk@gmail.com>,
+	"Jerry2.Huang@lcfuturecenter.com" <Jerry2.Huang@lcfuturecenter.com>,
+	"jim.shil@goertek.com" <jim.shil@goertek.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v1] ASoC: tas2781: mark const variables
+ tas2563_dvc_table as __maybe_unused
+Message-ID: <ZsxStyum6bU4z3eS@smile.fi.intel.com>
+References: <20240822063205.662-1-shenghao-ding@ti.com>
+ <Zsc-9PVnh8GpPrrP@smile.fi.intel.com>
+ <0ec3e8f6fb404fee94fa9195cf67b044@ti.com>
+ <ZsiPzPevJ0ucM-_5@smile.fi.intel.com>
+ <b9293d922c194d62b845c4ec6b1bf2b6@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v25 01/33] xhci: add helper to stop endpoint and wait for
- completion
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
- dmitry.torokhov@gmail.com, corbet@lwn.net, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, krzk+dt@kernel.org,
- Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com, robh@kernel.org,
- gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-input@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-doc@vger.kernel.org, alsa-devel@alsa-project.org,
- Mathias Nyman <mathias.nyman@linux.intel.com>
-References: <20240823200101.26755-1-quic_wcheng@quicinc.com>
- <20240823200101.26755-2-quic_wcheng@quicinc.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240823200101.26755-2-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NIR5OHUM7QO6LEGWIEWTIB4AFHINXAGR
-X-Message-ID-Hash: NIR5OHUM7QO6LEGWIEWTIB4AFHINXAGR
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b9293d922c194d62b845c4ec6b1bf2b6@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: 4DBX2WDE5XAKHB4KGDOFIDGWTQ2HTJFT
+X-Message-ID-Hash: 4DBX2WDE5XAKHB4KGDOFIDGWTQ2HTJFT
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +130,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NIR5OHUM7QO6LEGWIEWTIB4AFHINXAGR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4DBX2WDE5XAKHB4KGDOFIDGWTQ2HTJFT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,89 +139,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Sat, Aug 24, 2024 at 06:33:41AM +0000, Ding, Shenghao wrote:
+> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Sent: Friday, August 23, 2024 9:34 PM
+> > On Fri, Aug 23, 2024 at 02:24:17AM +0000, Ding, Shenghao wrote:
+> > > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > Sent: Thursday, August 22, 2024 9:37 PM
+> > > > To: Ding, Shenghao <shenghao-ding@ti.com> On Thu, Aug 22, 2024 at
+> > > > 02:32:02PM +0800, Shenghao Ding wrote:
 
+...
 
-On 8/23/24 22:00, Wesley Cheng wrote:
-> From: Mathias Nyman <mathias.nyman@linux.intel.com>
-> 
-> Expose xhci_stop_endpoint_sync() which is a synchronous variant of
-> xhci_queue_stop_endpoint().  This is useful for client drivers that are
-> using the secondary interrupters, and need to stop/clean up the current
-> session.  The stop endpoint command handler will also take care of cleaning
-> up the ring.
-> 
-> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  drivers/usb/host/xhci.c | 39 +++++++++++++++++++++++++++++++++++++++
->  drivers/usb/host/xhci.h |  2 ++
->  2 files changed, 41 insertions(+)
-> 
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index 37eb37b0affa..3a051ed32907 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -2784,6 +2784,45 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
->  	return -ENOMEM;
->  }
->  
-> +/*
-> + * Synchronous XHCI stop endpoint helper.  Issues the stop endpoint command and
-> + * waits for the command completion before returning.
-> + */
-> +int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep, int suspend,
-> +			    gfp_t gfp_flags)
-> +{
-> +	struct xhci_command *command;
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	command = xhci_alloc_command(xhci, true, gfp_flags);
-> +	if (!command)
-> +		return -ENOMEM;
-> +
-> +	spin_lock_irqsave(&xhci->lock, flags);
-> +	ret = xhci_queue_stop_endpoint(xhci, command, ep->vdev->slot_id,
-> +				       ep->ep_index, suspend);
-> +	if (ret < 0) {
-> +		spin_unlock_irqrestore(&xhci->lock, flags);
-> +		goto out;
-> +	}
-> +
-> +	xhci_ring_cmd_db(xhci);
-> +	spin_unlock_irqrestore(&xhci->lock, flags);
-> +
-> +	wait_for_completion(command->completion);
-> +
-> +	if (command->status == COMP_COMMAND_ABORTED ||
-> +	    command->status == COMP_COMMAND_RING_STOPPED) {
-> +		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
+> > > > >  /* pow(10, db/20) * pow(2,30) */
+> > > > > -static const unsigned char tas2563_dvc_table[][4] = {
+> > > > > +static const __maybe_unused unsigned char tas2563_dvc_table[][4]
+> > > > > += {
+> > > > >  	{ 0X00, 0X00, 0X00, 0X00 }, /* -121.5db */
+> > > > >  	{ 0X00, 0X00, 0X03, 0XBC }, /* -121.0db */
+> > > > >  	{ 0X00, 0X00, 0X03, 0XF5 }, /* -120.5db */
+> > > >
+> > > > As far as I can see in the latest Linux Next the above mentioned
+> > > > table is used solely in sound/soc/codecs/tas2781-i2c.c. Why not
+> > > > moving it to the C file instead?
+> > > We have a big plan to implement the digital gain for tas2563 in the
+> > > side codec driver too, so abstracted this table into a separated header file.
+> > 
+> > So, this __maybe_unused is a temporary stub, correct? Just don't forget to
+> > remove it when the mentioned functionality will be ready.
+> > 
+> > Thanks for the explanation.
+> To add __maybe_unused is not temporary, because this driver support both 
+> tas2563 and tas2781, if the hardware only contains tas2781 chips, 
+> tas2563_dvc_table is obviously useless, so marked it as __maybe_unused.
 
-nit-pick: is this really a timeout? In that case you would have used
-wait_for_completion_timeout(), no?
+You got me confused.
 
-> +		ret = -ETIME;
-> +	}
-> +out:
-> +	xhci_free_command(xhci, command);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(xhci_stop_endpoint_sync);
->  
->  /* Issue a configure endpoint command or evaluate context command
->   * and wait for it to finish.
-> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-> index 30415158ed3c..1c6126ed55b0 100644
-> --- a/drivers/usb/host/xhci.h
-> +++ b/drivers/usb/host/xhci.h
-> @@ -1914,6 +1914,8 @@ void xhci_ring_doorbell_for_active_rings(struct xhci_hcd *xhci,
->  void xhci_cleanup_command_queue(struct xhci_hcd *xhci);
->  void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
->  unsigned int count_trbs(u64 addr, u64 len);
-> +int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
-> +			    int suspend, gfp_t gfp_flags);
->  
->  /* xHCI roothub code */
->  void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
+__maybe_unused is a compile-time (okay, link-time) attribute. If what you are
+telling is true, why do you need it and can't use respective #ifdef?
+
+Otherwise, why is it in the _header_ file and not in the C-file?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
