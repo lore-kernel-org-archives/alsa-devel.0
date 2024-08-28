@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C33C636EE
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Aug 2024 17:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B98FC636EE
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Aug 2024 17:37:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80310E97;
-	Wed, 28 Aug 2024 19:37:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80310E97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68493DF6;
+	Wed, 28 Aug 2024 19:37:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68493DF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724866639;
-	bh=uuULYpzyY7vkv83GFC4CMHlgmGCvwWuQ0GzW2p7rV30=;
+	s=default; t=1724866657;
+	bh=dI3XobX0HGmeBe0PSd1pA+FcZCDnu6L9bIjK6p7fdVc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ka0BLjug7SSY2l3P5cJ024lmNqj6FXl8vu7N6WK8UfycuLm8Oj6BWfcCdBvvME464
-	 JjmY6m3Qx6WIlIXC8Q1z3IN3Irqxz8knuA5P98/HxPyOETi3t2L05NdErXtL3Y5FH6
-	 s424xOPY8cNb4fkCEDDPUyyk/34xHpLt5xeHnSl0=
+	b=V8ehSnrUh9VJsA5yBLj5HjTqeShCBCZZ/bDU3/smBoX4dl7toCdgkgRVitjKl9rV2
+	 V75UdnwOukgUhXiil4hexMTa9e5FO9+Cts0MWOC2GYU+ED6bMxKZGPXC/TLpNxOM9b
+	 5di4Kti3aRjFpfaGqkvFhNOmx+UwHM8dY23WD3dQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0F18F805C4; Wed, 28 Aug 2024 19:36:35 +0200 (CEST)
+	id BCE3EF805FB; Wed, 28 Aug 2024 19:36:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD738F805E4;
-	Wed, 28 Aug 2024 19:36:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C790CF80603;
+	Wed, 28 Aug 2024 19:36:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48BDDF80518; Wed, 28 Aug 2024 19:36:28 +0200 (CEST)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org
- [IPv6:2604:1380:45d1:ec00::3])
+	id 22D12F805BF; Wed, 28 Aug 2024 19:36:33 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7DF5F80107
-	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2024 19:36:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7DF5F80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id 083ADF80107
+	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2024 19:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 083ADF80107
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=iP2RtPcJ
+ header.s=k20201202 header.b=fT+42xt7
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 5B58DA4282A;
-	Wed, 28 Aug 2024 17:36:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A0B7C4CEC3;
-	Wed, 28 Aug 2024 17:36:23 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id BDD34AE2CA9;
+	Wed, 28 Aug 2024 17:36:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 208BBC4CEC2;
+	Wed, 28 Aug 2024 17:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724866583;
-	bh=uuULYpzyY7vkv83GFC4CMHlgmGCvwWuQ0GzW2p7rV30=;
+	s=k20201202; t=1724866586;
+	bh=dI3XobX0HGmeBe0PSd1pA+FcZCDnu6L9bIjK6p7fdVc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=iP2RtPcJC4SUMZJww3Wl9DWkCBVXXswtktuD3s4Tlvdk0IOOqOqt0JaStBOYfIbXf
-	 C6TnvZ52qgTI0GEYNCp3YH+fTTur8L7SbCGrd9fI+pPQIKwS7OPcNITNoq+3egkIJY
-	 6B0pMsStRTiBPlkUY2Dsl+FsWpZGEuhANYe2UwrF8tIGbn1Y40x/dNM3C3x7WdmE9x
-	 WPUuqzE8w80MenQBwsbcfaqsxshvd+N39aadz+BFfWZlSawyn4+wIip1MAnYGMQK1X
-	 p6Sgesb3Ky5XjcZ1PiODytKfRJJyiR7hVUbi6kU03O+YPCgDCGu64d2TnVdjulhAHN
-	 lbqgNyTZqJDdA==
+	b=fT+42xt7zb8mUMGYjW2uGHbQCoTmiaeAbgImwZCLDcpSFdQvwXv+a6In+QPQEIcaF
+	 b8V6zrDtRiQXr4CQ3AlhCON6Zbi5Fxz0h0d7K/kPxM1VU00vydwbA0WznDwRmRRU6+
+	 wUkThXtpP5LI7DtpZKDfggt8S8pXW+O7d+GYKio8cG0Eh5c0AXnmH6rH80fYbZvaUn
+	 9dfcMF8soEE9w2cE1vctzmW2nEyv+UKnMe36Q+W/iys7d+THN+BMN0568hdT0uJVEK
+	 q1qt59+vub+WP76su0N21qLt3nXXm0yP6nBR3Zb4yuv7YOru1pyZ6wRFjnOJ8LEPmR
+	 xysIoB5xoBnWQ==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <87zfpzk6jq.wl-kuninori.morimoto.gx@renesas.com>
-References: <871q3bll5c.wl-kuninori.morimoto.gx@renesas.com>
- <87zfpzk6jq.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 1/2] ASoC: soc-pcm: move snd_soc_dpcm_can_be_xxx() to
- top
-Message-Id: <172486658303.355291.17125853343768254170.b4-ty@kernel.org>
-Date: Wed, 28 Aug 2024 18:36:23 +0100
+In-Reply-To: <87jzg2df7x.wl-kuninori.morimoto.gx@renesas.com>
+References: <87jzg2df7x.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2-resend 0/2] ASoC: soc-pcm: makes
+ snd_soc_dpcm_can_be_xxx() local function
+Message-Id: <172486658585.355291.3036547245885851698.b4-ty@kernel.org>
+Date: Wed, 28 Aug 2024 18:36:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
-Message-ID-Hash: LMN3VLIIGWWR33RXCNIVXMQ4O37R3RFE
-X-Message-ID-Hash: LMN3VLIIGWWR33RXCNIVXMQ4O37R3RFE
+Message-ID-Hash: LIZASBQU3BUGMWKD7QLLR3KRMQT6DEJC
+X-Message-ID-Hash: LIZASBQU3BUGMWKD7QLLR3KRMQT6DEJC
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LMN3VLIIGWWR33RXCNIVXMQ4O37R3RFE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LIZASBQU3BUGMWKD7QLLR3KRMQT6DEJC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,11 +91,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 30 Jul 2024 01:33:13 +0000, Kuninori Morimoto wrote:
-> This patch moves snd_soc_dpcm_can_be_xxx() functions to top of soc-pcm.c
-> This is prepare for cleanup.
+On Mon, 26 Aug 2024 23:41:38 +0000, Kuninori Morimoto wrote:
+> This is resend patch-set
 > 
+> No driver is calling snd_soc_dpcm_can_be_xxx() functions. We don't need
+> to have EXPORT_SYMBOL_GPL() for them. This patch-set makes it static function.
 > 
+> v1 -> v2
+> 	- rebased to latest branch (for-6.12)
+> 
+> [...]
 
 Applied to
 
