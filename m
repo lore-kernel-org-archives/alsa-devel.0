@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B542EC54FC6
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Aug 2024 13:54:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23E95C54FAA
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Aug 2024 13:55:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF890E7D;
-	Wed, 28 Aug 2024 15:54:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF890E7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28726868;
+	Wed, 28 Aug 2024 15:55:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28726868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724853294;
-	bh=H1c4ha+5GYzDLEbE4i1lNMGNdBCv90PmwIHjIeK7TAo=;
+	s=default; t=1724853317;
+	bh=H+G0uR0uGtkQ/5/97rdsSRom5F7Ggvn+WvWc7nnJ2JY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CoslaOMW6qHsoDX1homkHTR51JAyORuH9QOgkzm+kxwo23oWHMXpSNMdQVVts6x9z
-	 ATJW71hM+b0O69M8Gqltv24B4FVY0kTC6oa0+1Z+A+riOHGb4GH+xjdMFNOUwIJElE
-	 5/dSTvduk8wDKY27hW7C5eRBfh1Z3t3gNa9huB4A=
+	b=uXxxm0ypLJl+Hy2pn9aFhWKJDcQ56YzYnMtzgad6xjUMUNd5olFwZ1MvXz7Y21wcm
+	 usqD24nEGaGZoaTJwPxhbZRBuNZ8YL3lsrDccBGTl2WCFlZK8Mu2a5ZSE5ZrVGrenn
+	 NfFB9QPQvxqtcS7sBLAnbgoOALvbFz09zuXWtHBI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B4D3F805B0; Wed, 28 Aug 2024 15:54:14 +0200 (CEST)
+	id DC3D0F80608; Wed, 28 Aug 2024 15:54:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D288F805D5;
-	Wed, 28 Aug 2024 15:54:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B81FF80605;
+	Wed, 28 Aug 2024 15:54:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6CB32F80568; Wed, 28 Aug 2024 15:54:06 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+	id A4369F80528; Wed, 28 Aug 2024 15:54:07 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 23CA2F80087
-	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2024 15:54:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23CA2F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8CA83F8025E
+	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2024 15:54:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CA83F8025E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=yMvZcliQ
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-42816ca797fso61244755e9.2
+ header.s=google header.b=BdapqkTy
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-3718c176ed7so3791250f8f.2
         for <alsa-devel@alsa-project.org>;
- Wed, 28 Aug 2024 06:54:02 -0700 (PDT)
+ Wed, 28 Aug 2024 06:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1724853242; x=1725458042;
+        d=linaro.org; s=google; t=1724853243; x=1725458043;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DKFmLO3/lL3Nmg2MZkLt12OObockGDaQF70Wv4NVfcg=;
-        b=yMvZcliQz/ZX4EGf6Yjql/rHoeHgy9VQlSk+3BeY4xn2u/Cn8MDgZZH1BP/JcdOen3
-         jnF1EQmmDQ8hTIS86tZaL+NyVG/dUFtUGxJ7Ud2RkKC2mFM8rQhn87EY/iSmS2lzUpSr
-         ViGMQA4Yee118YHQbKS9t+ZSozwzycCObjqU796r6hVPJhWCIiqvdlsjhVfdude74XZE
-         4DO9C4QP8JJt+q3dthN0+zt2nSnLbxWmv2jqTXsy18JGzznyh68M7Ujx6o3pcO5nIa4I
-         hQAJtEG7Hhff5fq08ndZWJFMrZP6f1Q0qGN7VjVW9zI5RA3fHtG9WLuiK2Xt25csc33O
-         uvhQ==
+        bh=TTWHuW86NTs+103uuN2zaYjUY11Ov5iBD80i8ni2ivs=;
+        b=BdapqkTyr7h8cRDnbg17PKV5ESGIuYLbCS+rE4JwGCrtiX2BJlolHFCQKu9Sv97ni3
+         REIQSNxAMzalYbfyXL99N+VGX/rPjBeOBsvFKyWPIxZwl5eQOh5hmAEaNFfdIujaop6h
+         b3w8tFlr8dlQTKF9m0WILmvrddqly4D96RaKoC1yAuiu5TnRhGGBp7BBPI6fu0AdlS6y
+         a9nkIviLBsdf16yMkRn1iIyyhVMlfYdOOSS4b1lJLAM7XvaVnG3nTwLwainDQW3AjkKi
+         Q6JgUOQZXGOxZu7OcMAaM439jQ50LfHe+0B70E5E7S+nkrQKyIIF2UjqK9ub/OZQ8IkK
+         2l0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724853242; x=1725458042;
+        d=1e100.net; s=20230601; t=1724853243; x=1725458043;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DKFmLO3/lL3Nmg2MZkLt12OObockGDaQF70Wv4NVfcg=;
-        b=qH9oylVvzL4zZ7M18u78xvA8f/DXuv+C5+pv1UydrXkijwt2t4EMd0KlZDQZA1vHVY
-         zlhYJe2YwXLu4PmQqRgO/Ton1mcDwzGxFG5P6Qh4XYWjPosJjRgkPOV52NUdtThZ6Lho
-         4DDLBngk/wVbN/eR1Wxs3ItppjsIjpVkKPmsGvpldVeMWoFgq3O/6FpORko85PFZ27IE
-         f739karrO5/po71uGqAw903LL5wc0rsAxnDnUzseWqGsr7Cp88PatI8nkEEk+/4nzkN1
-         U/tPzlq1blQ8Gs6XT1JO/+oA9xBbSPFP7cbxAbfCsDXgTjWlJ72pc3SVaTg6zmeb8oHJ
-         JRlA==
-X-Gm-Message-State: AOJu0Yw2uOhwl3ms5ARfD0wLb+Wzd5T0thdMCD6BHG2Z4Hfp/IH/QFy1
-	imHNX6wF4XeWxPpz3WtsaoKHHF/xe45SvuRVsJCg+M3IbEoCTFCKP+fHDlvvg+Y=
+        bh=TTWHuW86NTs+103uuN2zaYjUY11Ov5iBD80i8ni2ivs=;
+        b=Sbq/50vGaZC7QwKlRWeI3E+O8wqpzdQvuqZf7fg5oKL8tbVwaXFCIPTiJ7ufNElVE8
+         pxjX2GfzaNl5kXckZfl0GA7zBxc+NxFVdBijK2yrbBUXOFAv7qss+/nrr0vBD4dQ6wEv
+         lNBJZwl3BWCIf5dHCjsk0xT6FcaRUkJACDlAaExuuRt4CaFmwo0Qq+QdbdLIbGwW6nbO
+         vLrrzjBL/sGZ0+8Mt2IptRNzl+Df+Xfmc8eqP/jk+ISNGIL/t/Tg/nRuB6qBS3KZUsQT
+         d/zk7LQsmV3ZVKKKVjNaGX8Cy9X4Zwrcdav/jjzrV3cyQDCYreWcOJiZna6l23acaNuR
+         5lXA==
+X-Gm-Message-State: AOJu0YyYoiKggUaFAjts7JRg1N79iOY2e4dOkvlsxh1B0z+3wueHwmGx
+	5eFhhB98T2aIBiVpe9QrAeqvlXTN6bSZXnvd8pVP6R6i9v6SLJ/V9HIFnD8/QBE=
 X-Google-Smtp-Source: 
- AGHT+IHSwoWHMFDjpKFcK9pcwJPtwmfEIa1A/D9/8Z2Dvd6+CqPWbqEAoRbKZE5vSyxTCHeL3rK7vw==
-X-Received: by 2002:a05:600c:19d2:b0:427:9a8f:9717 with SMTP id
- 5b1f17b1804b1-42ba64c2453mr17313295e9.0.1724853241539;
-        Wed, 28 Aug 2024 06:54:01 -0700 (PDT)
+ AGHT+IEIRP7AywU7RW8H7GuK91sm441qq/B1K30YGS/4flS761qiJ+wLNYFmEH4P9KhRRx0bXPBEsg==
+X-Received: by 2002:adf:a416:0:b0:371:8d47:c174 with SMTP id
+ ffacd0b85a97d-37311865093mr10293637f8f.30.1724853242544;
+        Wed, 28 Aug 2024 06:54:02 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3730813c44asm15613395f8f.34.2024.08.28.06.54.00
+ ffacd0b85a97d-3730813c44asm15613395f8f.34.2024.08.28.06.54.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 06:54:01 -0700 (PDT)
+        Wed, 28 Aug 2024 06:54:02 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Wed, 28 Aug 2024 15:53:54 +0200
-Subject: [PATCH v2 1/3] ASoC: dt-bindings: amlogic,axg-sound-card: document
+Date: Wed, 28 Aug 2024 15:53:55 +0200
+Subject: [PATCH v2 2/3] ASoC: dt-bindings: amlogic,gx-sound-card: document
  clocks property
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20240828-topic-amlogic-upstream-bindings-fixes-audio-snd-card-v2-1-58159abf0779@linaro.org>
+ <20240828-topic-amlogic-upstream-bindings-fixes-audio-snd-card-v2-2-58159abf0779@linaro.org>
 References: 
  <20240828-topic-amlogic-upstream-bindings-fixes-audio-snd-card-v2-0-58159abf0779@linaro.org>
 In-Reply-To: 
@@ -105,24 +105,24 @@ Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
  Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1726;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1722;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=H1c4ha+5GYzDLEbE4i1lNMGNdBCv90PmwIHjIeK7TAo=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBmzyv2DUmjHipIUmDw1VvFv3gYyKSp37htJ4T7g7y2
- Yy5W4c+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZs8r9gAKCRB33NvayMhJ0UQcD/
- wM1sahnvh7BlHNGmJyn8QxdB0ucze7tbl3ftwdIlJoqnyAF9V5NGDbe15HkoR1MXxiIICMBEVrKl/8
- +q1dz5aZMfphY7lHShsY/MdZ6lNm7kSOSU8kM9L40Nd2XOTkr5PU8mfaONDidmxwC/jFiPHE7ilFpQ
- C5uYMvoa84cRrhXVk4uMPnkA8w2qybW+LfxiEUvlt5fNv5CkDlRdogs14syofwQdCNe9ezW8UR5pLY
- ivKIGzTSD3CBNUsmnzRx3w2wFgQ9ZJ8Aca9D2feC1G/3c3CRbWUzvs9WkzKYY+XEYtECJRoWJEx9Ot
- 8yZT/colrVm615sewPkKOMszEzWfm3Rc+bojYiiIJTIvdAQDv/VUvt+BFXdfkdqdIyvLhVvAhp5+Hu
- ch01cknvRXXb5EPJ0lu+sKGMnJ7KWrs20e2kJRp6HLRkIhKpvDrJCWL6Kj/FWdJcBh3B7TRqbDuycr
- BVLF/PYIv6xGoCzxwKihusUc0faG2WzwlJybQkrBoxdkM2lYyR90TlII0fuBYAGEcunlDs2Nfs5JTB
- 2FFrFaM/spiPI9vvfhI5tr/4jk+Z1qIXo7lQ6PLam6VRz2jnhGMs+fsjnuxYibONBgsQ7T8nprvCkz
- wYDlC5p2qBePzz82BZ9ZopTxv1KqASLS4YV4Khg06DsRsXdmrk1Co7mrATag==
+ bh=H+G0uR0uGtkQ/5/97rdsSRom5F7Ggvn+WvWc7nnJ2JY=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBmzyv2GqTu1q87S0Q2rSDxbQeeYYgHw/Riu2gqWSyE
+ 6fyZXPGJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZs8r9gAKCRB33NvayMhJ0QPDD/
+ 9WZk9izqKs6sRDdw/RiFAlLH3jgXyr8Oen2cHF65E/3nU+f0raTKs8LFYUXB4keLMiIPjka4JMJ+qT
+ Kq7U0XPlmrLBw+975gaJMTgvS347fDb9Lyy5925kgoniTSsUiQ7dFxSC8jHi8ag/FRTAE7hVDsy344
+ pYCtFpDbcGbdFIqe4XiIBasUsV5d4cr0aMpde+pWil+jzt0fV3vUw4m0ZHO8u54FxV8vFApmMuqIpv
+ oeOQdoUIzP3hmOFDjwV5N/CeX2fEB5YOcHupvL1toZyr1Z9cG1ih1IGQg4okSvoxeP/u9o1/hB5GX6
+ atENd4NA66+Aa/uDTzZZS+VNIhkDxrhtLiA1RV1kgnnZ3TyeZogfz+hlTRLrWK1L6AM8s9A+DMtCHW
+ zp4lL22MVI0tobGLNnzUAFdoF79ywKYXF8hGJj50NUOOSWWXddV/5I5mbDDi+kWUi+1WeUemaGeqTy
+ O5e1X90OQP8GwSQ+1O1pLSSTHGPfVABg/NWSOzKytNNK8CVbTrMmLPHwAZTp2gssbn3Z06fayAKDxg
+ GuTpXrh0m2b/gWmrqxaYDOz30LO2OrZnAZGufIpgiEZhou0WRyh4FmFdGOMeOsIe3mP9H5oKGaHesx
+ WgrGpPI7vhohkcivoGL9ksfQ7YFP+fBABfp2a8u97oT2ZJJTqcASilQYZiYw==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-Message-ID-Hash: VUJKO2YRC5UZO7QY65HLFQPMOKDY3D6W
-X-Message-ID-Hash: VUJKO2YRC5UZO7QY65HLFQPMOKDY3D6W
+Message-ID-Hash: F5S6UWERMNAI4Y2F3M4NKYZQ7A6FYMZB
+X-Message-ID-Hash: F5S6UWERMNAI4Y2F3M4NKYZQ7A6FYMZB
 X-MailFrom: neil.armstrong@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -135,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VUJKO2YRC5UZO7QY65HLFQPMOKDY3D6W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F5S6UWERMNAI4Y2F3M4NKYZQ7A6FYMZB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -162,14 +162,14 @@ audio uses-cases involving those root frequencies.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../devicetree/bindings/sound/amlogic,axg-sound-card.yaml          | 7 +++++++
+ Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-index 5db718e4d0e7..4f13e8ab50b2 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-@@ -26,6 +26,13 @@ properties:
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+index 0ecdaf7190e9..413b47778181 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+@@ -27,6 +27,13 @@ properties:
        A list off component DAPM widget. Each entry is a pair of strings,
        the first being the widget type, the second being the widget name
  
