@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D550CC87FD2
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Aug 2024 19:46:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E52B1C87FD6
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Aug 2024 19:47:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 278FC14DC;
-	Thu, 29 Aug 2024 21:46:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 278FC14DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B5F784D;
+	Thu, 29 Aug 2024 21:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B5F784D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1724960797;
-	bh=izD+DbozS8oGydYFz+5Vb7dIzvHhxa3xSOkF47CTxH8=;
+	s=default; t=1724960821;
+	bh=Xy2dynXV01NKyV7D3L3Zbq7vIaNvtqLLnoiCLrnWh0s=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=faKiO/eQVv45sQ3LMtkpeDO+EsXklvt0xAEYBHBphpbAOoiznCEfrgUgLZlgUSM0Q
-	 fwLoW/t+LMc9YkfJyzCcHxQB+wTPz6XKKD0Hx1L77VJZwNIHufKW+HpHUXc4s0DTwb
-	 gsOWQ+3ZOXeGSXBo7vO2OoN8jiRpGq0VhSenNB1k=
+	b=NNl3SnK98TJVIF8eCwCC+kp/SFBTSq9J0kXU83nP8wRNnRQU3CHskHlxLQ51m7XKQ
+	 S10b+lVbZFwxOIna19Ht4TfLg0QXN5DR4Q3797FVYaqA768a7MsaYJrwJbfnYZZelV
+	 KFphfMno129vJZTdEBooY7jyOi17k+0iVBlDrYU4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF32EF80C6D; Thu, 29 Aug 2024 21:42:48 +0200 (CEST)
+	id 68DD5F80636; Thu, 29 Aug 2024 21:42:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 049EBF80C71;
-	Thu, 29 Aug 2024 21:42:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35C32F80C87;
+	Thu, 29 Aug 2024 21:42:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E7A6F80649; Thu, 29 Aug 2024 21:41:52 +0200 (CEST)
+	id E3013F80651; Thu, 29 Aug 2024 21:41:53 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6CBA3F805A9
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0064F805AD
 	for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2024 21:41:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CBA3F805A9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0064F805AD
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=P9CvN8W5
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=mbLhCYNe
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 47TBfRLb027539;
+ 47TGJ9Ik032541;
 	Thu, 29 Aug 2024 19:41:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	DYLWwo/G+1Jgv2CP4pXZ8GM4oRunCFe5DUVQ7F3XSlY=; b=P9CvN8W5Q7V1Wh22
-	gNlIatw/humrCNWPr/bWLIznvvdtASsRktHL2nGs9nCDQucN6HdB+sch8E66j+w2
-	58qW1iQV0V8bWjdYzsBB2IbesED6Wc5H4TyQ+QwreJqCtUuDbRFkGknB0WhZjMMQ
-	qkpmeIZ6q0F97Dcx+t+Mt/WjrH6WDgNbVyJzITws24r5WHB2/lBj5iGi3AxpSOTP
-	apjBDzXi/ZUBMrYWkJoo76LPA000xWmkfniwz/3+tCLelm1mKgSCnjDtKposu346
-	iA6gtR4Y3QFwV6nBkw/Zl+C9dEf0fDW9Wpv/cmYAJDT7sblE+IGuyre9it+A2ffK
-	s7QW0A==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+	L7GRZvFhUAM1aUApy2n6R+bEscizECUFlbSvia1HGhg=; b=mbLhCYNemjXvNgFZ
+	FzbGBG6YgvZ0nObRmNrStyMETgjm2oCpdCfwkRh/hI/f/7V4hPiucwK7C2DNcT/l
+	OmDukaKwRQkV6voQISasvgckK/jxY6sWSTprAqqP1bdvL3Kvo1WUWppj0spU5slF
+	rn+P0XkP8/jgmpNXRZlk2Vzj4vEgLQVnWF9ZYLugBpqtwqlGXBt2ECaFSwJ7cIrB
+	QDcUnwJTsIBW/jFqzImmxe3VUMogP/UEsiyGNjbNdVnJIa1pTsYC6J2625xwSUvU
+	9iqobFeIpKMIfjUOGyc1i7q78oFo1YVdK/TkQBfAEFm0DancoednYVb75sDumkLq
+	ySfLFg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41arax1d9p-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 419puw6gmb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Aug 2024 19:41:30 +0000 (GMT)
+	Thu, 29 Aug 2024 19:41:31 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 47TJfTj3018233
+	by NALASPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 47TJfU5O016280
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Aug 2024 19:41:29 GMT
+	Thu, 29 Aug 2024 19:41:30 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -81,10 +81,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v26 18/33] ASoC: dt-bindings: Update example for enabling USB
- offload on SM8250
-Date: Thu, 29 Aug 2024 12:40:50 -0700
-Message-ID: <20240829194105.1504814-19-quic_wcheng@quicinc.com>
+Subject: [PATCH v26 20/33] ASoC: qcom: qdsp6: q6afe: Increase APR timeout
+Date: Thu, 29 Aug 2024 12:40:52 -0700
+Message-ID: <20240829194105.1504814-21-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240829194105.1504814-1-quic_wcheng@quicinc.com>
 References: <20240829194105.1504814-1-quic_wcheng@quicinc.com>
@@ -97,19 +96,20 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: yygzDB-ZOao-wUYNyTOaaB63Bbmj3t7N
-X-Proofpoint-GUID: yygzDB-ZOao-wUYNyTOaaB63Bbmj3t7N
+X-Proofpoint-ORIG-GUID: cDltcrnSAFMXMQe6OrDSUib1SNB3tE0-
+X-Proofpoint-GUID: cDltcrnSAFMXMQe6OrDSUib1SNB3tE0-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-08-29_06,2024-08-29_02,2024-05-17_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 phishscore=0
- lowpriorityscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 priorityscore=1501 spamscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408290139
-Message-ID-Hash: KDREW4LP3L4ZKFNRRGCJPRML3H2YXUGO
-X-Message-ID-Hash: KDREW4LP3L4ZKFNRRGCJPRML3H2YXUGO
+ clxscore=1015
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=954 suspectscore=0
+ adultscore=0 spamscore=0 impostorscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2407110000
+ definitions=main-2408290139
+Message-ID-Hash: JTZNO4WXNQ2J7O5LBQCF5U6S3BSY3Y6M
+X-Message-ID-Hash: JTZNO4WXNQ2J7O5LBQCF5U6S3BSY3Y6M
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -122,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KDREW4LP3L4ZKFNRRGCJPRML3H2YXUGO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JTZNO4WXNQ2J7O5LBQCF5U6S3BSY3Y6M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,39 +131,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add an example on enabling of USB offload for the Q6DSP.  The routing can
-be done by the mixer, which can pass the multimedia stream to the USB
-backend.
+For USB offloading situations, the AFE port start command will result in a
+QMI handshake between the Q6DSP and the main processor.  Depending on if
+the USB bus is suspended, this routine would require more time to complete,
+as resuming the USB bus has some overhead associated with it.  Increase the
+timeout to 3s to allow for sufficient time for the USB QMI stream enable
+handshake to complete.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- .../devicetree/bindings/sound/qcom,sm8250.yaml    | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-index b2e15ebbd1bc..f2d708f899bf 100644
---- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -229,6 +229,21 @@ examples:
-                 sound-dai = <&vamacro 0>;
-             };
-         };
-+
-+        usb-dai-link {
-+            link-name = "USB Playback";
-+            cpu {
-+                sound-dai = <&q6afedai USB_RX>;
-+            };
-+
-+            codec {
-+                sound-dai = <&usbdai USB_RX>;
-+            };
-+
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
-+        };
-     };
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 3ee6ff8a6bc3..b5b2af2ce50c 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -366,7 +366,7 @@
+ #define AFE_API_VERSION_SLOT_MAPPING_CONFIG	1
+ #define AFE_API_VERSION_CODEC_DMA_CONFIG	1
  
-   - |
+-#define TIMEOUT_MS 1000
++#define TIMEOUT_MS 3000
+ #define AFE_CMD_RESP_AVAIL	0
+ #define AFE_CMD_RESP_NONE	1
+ #define AFE_CLK_TOKEN		1024
