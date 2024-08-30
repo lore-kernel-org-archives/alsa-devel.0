@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66D62CA0EFB
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2024 10:14:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E108FCA0EFB
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2024 10:15:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B4FC85D;
-	Fri, 30 Aug 2024 12:14:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B4FC85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8C29210;
+	Fri, 30 Aug 2024 12:15:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8C29210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725012894;
-	bh=3I2S+/y3zRWREP8+H0SqebmdItXfXZ9zPC2+cYey4Qw=;
+	s=default; t=1725012914;
+	bh=cJ4zekY4nY/hrZXn6e6Oix0rkFFzk6yzaxUwLzAdoJM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S/AXWCQIleNoXIsYpCZwoGIrmbGDCX2EclQQNEqw3Ldxr4Q0EKLQNNrqeBHTJlefS
-	 YwbJOawYQf4R+yJIf1xXnFXkDcMT/feSYVEcnFSQGiPy1jvyw2Dh/kHEs6f0sR/6Kh
-	 I6GDu1KWvP3mzZ9LIwrxA9l2JrSKz0o+1pA6XUcY=
+	b=U9iE/JQeBAIqOn7Gy9GdzWYBnpoiyfwvAjaTXQoV/ILvJcg28WSm30jtvMTFjjt7V
+	 Wvn37u3ULdIHC0RuQ988/+515IyJdfBhxpviaLsbtxiH809zWOsP82Z7CdW1uJG/Ka
+	 Z1zJ7aoakf7jq8XTxzbdBA86cMCGqXP34rIDCbaU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58D73F805F7; Fri, 30 Aug 2024 12:12:42 +0200 (CEST)
+	id 42B2AF806FA; Fri, 30 Aug 2024 12:12:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B55CCF806D6;
-	Fri, 30 Aug 2024 12:12:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10E8EF8070B;
+	Fri, 30 Aug 2024 12:12:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5624F805F2; Fri, 30 Aug 2024 12:12:35 +0200 (CEST)
+	id DA9CFF805FF; Fri, 30 Aug 2024 12:12:43 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7207F805ED
-	for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2024 12:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7207F805ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4BD39F805ED
+	for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2024 12:12:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BD39F805ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bVR9zy+q
+ header.s=Intel header.b=DoJ+Au9a
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725012755; x=1756548755;
+  t=1725012760; x=1756548760;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=3I2S+/y3zRWREP8+H0SqebmdItXfXZ9zPC2+cYey4Qw=;
-  b=bVR9zy+qR/RoEl5+z8DYnyVggbXFtqwDbTiMAh2+pYqCbOFMu9YLl9J6
-   +7HA0FNTrO6W0nMuHKfjECRU1T37o5Z/zNR90WNN2ApytnT3RVhwRa2Gx
-   uE5q4IEcMXpRJT6JbznEWyWP/has9q6SkKllSsTP8uvXIUjL3v/OlUxXw
-   ecx1xcm6KZXDmWwrmaQNzL+MTsa5j668pmunacWUxwUHZPjkaavcSBntz
-   M+A+JP7CaojbfwzOyla77/vftihuCu6SwWOoDepjCAUEYvNcAEZPszdIb
-   mjaMyrFRdNVJRpTtzT7OHtf78l55WYh591nK3nC0v7CsCFUZbbaflJXFA
-   w==;
-X-CSE-ConnectionGUID: DtchkNOOSBCzFGVx4dum6g==
-X-CSE-MsgGUID: anZQRBpYQ2mfaRg3avX+aA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="34218877"
+  bh=cJ4zekY4nY/hrZXn6e6Oix0rkFFzk6yzaxUwLzAdoJM=;
+  b=DoJ+Au9aiwh34W7rrRfPsY5f3/6Ez1gwqR9LxbBqpf96TD/EaQVstjP4
+   62MmPvXSZ3AEarbr27qFV3sbV891gCU/USBeM/wR+0lwSBNJIEhekBWOj
+   nvMyJhkt9XbY5yKxl6aKxZYTQrHFCHR58yr684zhGu/HEvz8x+l4nWYKC
+   ixr0+rwkM4Rsq+me/8Tg4VWcQXVNK+Go2O6bLn8T//4DrDRDDxAEmgk2D
+   CPQrKXK1VSq9hFCCglwFH0It9HGhxBdy5qUC3X1r1AAnr5geeBnDC234s
+   Gh8awfNvuRU1tEQ1uOt5XXX31dx6PAE/7GWadxHFTpgr5DCDynuEnjEAM
+   g==;
+X-CSE-ConnectionGUID: akf5jDhjT5GeyLfBxvBHOw==
+X-CSE-MsgGUID: ZnSQl9rdSYW11d3bnHIM8w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="34218892"
 X-IronPort-AV: E=Sophos;i="6.10,188,1719903600";
-   d="scan'208";a="34218877"
+   d="scan'208";a="34218892"
 Received: from fmviesa006.fm.intel.com ([10.60.135.146])
   by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Aug 2024 03:12:31 -0700
-X-CSE-ConnectionGUID: gtK2iHKfSeuDG2GH68lbnw==
-X-CSE-MsgGUID: tIZC8KOQQ4uGb8DXCiEqOA==
+ 30 Aug 2024 03:12:38 -0700
+X-CSE-ConnectionGUID: Cvjsu1XNRWO8wvK1K+mugw==
+X-CSE-MsgGUID: gpSvdWLkRjKotyvtx6UTlg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,188,1719903600";
-   d="scan'208";a="63481724"
+   d="scan'208";a="63481752"
 Received: from ltuz-desk.ger.corp.intel.com (HELO [10.245.246.101])
  ([10.245.246.101])
   by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Aug 2024 03:12:25 -0700
-Message-ID: <afe37014-8ec5-4808-bc24-09ac0f2d93b6@linux.intel.com>
-Date: Fri, 30 Aug 2024 11:21:22 +0200
+ 30 Aug 2024 03:12:32 -0700
+Message-ID: <39e1e90e-116c-4f13-b223-84e6991c8a32@linux.intel.com>
+Date: Fri, 30 Aug 2024 11:27:02 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v26 21/33] ASoC: qcom: qdsp6: Add USB backend ASoC driver
- for Q6
+Subject: Re: [PATCH v26 22/33] ASoC: qcom: qdsp6: Add headphone jack for
+ offload connection status
 To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
  mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
  dmitry.torokhov@gmail.com, corbet@lwn.net, broonie@kernel.org,
@@ -85,14 +85,14 @@ Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
  linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
 References: <20240829194105.1504814-1-quic_wcheng@quicinc.com>
- <20240829194105.1504814-22-quic_wcheng@quicinc.com>
+ <20240829194105.1504814-23-quic_wcheng@quicinc.com>
 Content-Language: en-US
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240829194105.1504814-22-quic_wcheng@quicinc.com>
+In-Reply-To: <20240829194105.1504814-23-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 7MNHBZLZ4HMM73B5PZA3PHJ5TMBSSNXB
-X-Message-ID-Hash: 7MNHBZLZ4HMM73B5PZA3PHJ5TMBSSNXB
+Message-ID-Hash: JCKLEVDER7IPEIPU3RQKP7KM6UMZRO3O
+X-Message-ID-Hash: JCKLEVDER7IPEIPU3RQKP7KM6UMZRO3O
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7MNHBZLZ4HMM73B5PZA3PHJ5TMBSSNXB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JCKLEVDER7IPEIPU3RQKP7KM6UMZRO3O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,96 +116,22 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 8/29/24 21:40, Wesley Cheng wrote:
-> Create a USB BE component that will register a new USB port to the ASoC USB
-> framework.  This will handle determination on if the requested audio
-> profile is supported by the USB device currently selected.
-> 
-> Check for if the PCM format is supported during the hw_params callback.  If
-> the profile is not supported then the userspace ALSA entity will receive an
-> error, and can take further action.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  include/sound/q6usboffload.h  |  20 +++
->  sound/soc/qcom/Kconfig        |  10 ++
->  sound/soc/qcom/qdsp6/Makefile |   1 +
->  sound/soc/qcom/qdsp6/q6usb.c  | 246 ++++++++++++++++++++++++++++++++++
->  4 files changed, 277 insertions(+)
->  create mode 100644 include/sound/q6usboffload.h
->  create mode 100644 sound/soc/qcom/qdsp6/q6usb.c
-> 
-> diff --git a/include/sound/q6usboffload.h b/include/sound/q6usboffload.h
-> new file mode 100644
-> index 000000000000..49ab2c34b84c
-> --- /dev/null
-> +++ b/include/sound/q6usboffload.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * linux/sound/q6usboffload.h -- QDSP6 USB offload
-
-not sure about the linux/ prefix?
-
-> + *
-> + * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
+>  		/* Selects the latest USB headset plugged in for offloading */
+> +		if (data->hs_jack && list_empty(&data->devices))
+> +			snd_jack_report(data->hs_jack->jack, SND_JACK_USB);
 > +
-> +/**
-> + * struct q6usb_offload
-> + * @dev - dev handle to usb be
-> + * @sid - streamID for iommu
-> + * @intr_num - usb interrupter number
-> + * @domain - allocated iommu domain
-> + **/
-> +struct q6usb_offload {
-> +	struct device *dev;
-> +	long long sid;
-> +	u16 intr_num;
-> +	struct iommu_domain *domain;
-> +};
 
-consider reordering to avoid holes/alignment issues, e.g. all pointers
-first, then long long then u16
+with the list_empty check, this looks like only the first connected
+headset will be handled, not the last?
 
-
-> +static int q6usb_hw_params(struct snd_pcm_substream *substream,
-> +			   struct snd_pcm_hw_params *params,
-> +			   struct snd_soc_dai *dai)
-> +{
-> +	struct q6usb_port_data *data = dev_get_drvdata(dai->dev);
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> +	int direction = substream->stream;
-> +	struct q6afe_port *q6usb_afe;
-> +	struct snd_soc_usb_device *sdev;
-> +	int ret = -EINVAL;
+>  		list_add_tail(&sdev->list, &data->devices);
+>  	} else {
+>  		list_del(&sdev->list);
 > +
-> +	mutex_lock(&data->mutex);
-> +
-> +	/* No active chip index */
-> +	if (list_empty(&data->devices))
-> +		goto out;
-
--ENODEV for the default return value>?
-
-> +
-> +	sdev = list_last_entry(&data->devices, struct snd_soc_usb_device, list);
-> +
-> +	ret = snd_soc_usb_find_supported_format(sdev->chip_idx, params, direction);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	q6usb_afe = q6afe_port_get_from_id(cpu_dai->dev, USB_RX);
-> +	if (IS_ERR(q6usb_afe))
-> +		goto out;
-> +
-> +	/* Notify audio DSP about the devices being offloaded */
-> +	ret = afe_port_send_usb_dev_param(q6usb_afe, sdev->card_idx,
-> +					  sdev->ppcm_idx[sdev->num_playback - 1]);
-
-don't you need a symmetrical notification upon hw_free()?
-
-Also what happens if there are multiple calls to hw_params, which is
-quite legit in ALSA/ASoC?
-
+> +		if (data->hs_jack && list_empty(&data->devices))
+> +			snd_jack_report(data->hs_jack->jack, 0);
+>  	}
+>  	mutex_unlock(&data->mutex);
+>  
+>  	return 0;
+>  }
