@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18CF9CA0EFB
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2024 10:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDEFCCA0EC5
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Aug 2024 10:12:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C0AAA4A;
-	Fri, 30 Aug 2024 12:12:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C0AAA4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F3AA86F;
+	Fri, 30 Aug 2024 12:12:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F3AA86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725012764;
-	bh=WjrGopvfWBwqadCF5AMZbTn86mU67OhWuakpxI4+ldA=;
+	s=default; t=1725012775;
+	bh=l9psxk81nRdSzjW/aRnloNwiDJhvsUtP9o/wLWJZwKQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=axnSFwyDbgRKohnBSqOHhllcLQ1CJ34+H/GswWo/5bJUk8UAt/fXxFxL6rMUbA+BW
-	 c5TZQ/3b7bcZ2v5NRX2cz+RAzOz09OMIkGytz65uEqXQf18USKpsaBhE+YRCSnh9/3
-	 jhR8n5lODiUvPEpsqOsdbciRyuTb9QnojyiK8dAc=
+	b=D0r+DarV6265UXXwwT+X7btYy0qBIZ6rqbrasqjPbM7LryF2fQPpowFqD77SX6f5y
+	 lZUtJjVVZtNKqokkoPTWdYGUsaA7aMNcLqHTkTvKoZcwstFN5djyzrWZa5T80uvbff
+	 aN+AwvVSTwaTSSPe2kMPMTO2QgJHJ7+9GnzgRm+w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3C34F805D3; Fri, 30 Aug 2024 12:11:49 +0200 (CEST)
+	id 36379F80614; Fri, 30 Aug 2024 12:11:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CFA2F805D3;
-	Fri, 30 Aug 2024 12:11:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 200CCF8061E;
+	Fri, 30 Aug 2024 12:11:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D799F805D3; Fri, 30 Aug 2024 12:11:41 +0200 (CEST)
+	id 418D2F805E8; Fri, 30 Aug 2024 12:11:43 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 75506F80087
-	for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2024 12:11:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75506F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D5CEF805E7
+	for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2024 12:11:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D5CEF805E7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=edk/qeRS
+ header.s=Intel header.b=Ys/lsZUW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725012695; x=1756548695;
+  t=1725012702; x=1756548702;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=WjrGopvfWBwqadCF5AMZbTn86mU67OhWuakpxI4+ldA=;
-  b=edk/qeRSpRocz+zvk5XqqwMqIzrfhVkjq/nAwrs5rjOYFFqcndCn0u7V
-   Bq74etYRJFQxIcYybgCMWCFqV6DqywYsUNBm7HwsaPKn9pJ3qNTGYT02f
-   1nQfDdawJJoHrnFOYL4OM8CGwzbVzLP8ViIYp8d+YW2ksdYBofGbONrko
-   DKu+kH/VxzAeyWO+BUTP7I1FoQPCiBqd0NSV+vYZvDTetQpdSDRJYHu/b
-   DJBsl9zQlkuYRB4lzEFhjJtNw3oZyMoTszDiiyttXwnwP0iceMbxoHzqe
-   CrZTngZRl4dH6UNslPpa7rCJwKsEgdCZgHZLv4fMUgQzfQAHbFpDVPMne
+  bh=l9psxk81nRdSzjW/aRnloNwiDJhvsUtP9o/wLWJZwKQ=;
+  b=Ys/lsZUW0fbdqWJ8GAxufwcZBMlsHerPq6PxvJKbe/F7EGZ52W+ts69d
+   T6c2hMgx/4pS23m+Vb6j+wNCxl/x5D/rOwBaKue5x/djgHabVf59GNEDe
+   RMVU/OJFJRua/DJGJJx+lSrAiMKi3WAiQlvKd7VbMpYT8sfXjbox2t5Jb
+   E6MhyRG3QDccHhbayXohHto+nyFLAhO2K+IZhw38/EZHeVqwYSf0lrYAS
+   s1n1pDeKidvptwCjipx6ezNQiiiKKaDRxNuYMlwrJxwzWiHd1qdnTIRhL
+   k2HhXKSr7R8qlWixWlKOqKSf0fc/zXJ1y4QZSoBMxCLCFc5dif5KeQJQf
    g==;
-X-CSE-ConnectionGUID: iDxhPETETpSomAuzWE9eJg==
-X-CSE-MsgGUID: 0qm+jqDHSgGpYjufHdt+Lw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="34218721"
+X-CSE-ConnectionGUID: 5vBw6TBETRerXyX+c/Dl7A==
+X-CSE-MsgGUID: ynfKjUF2TGqsYjy6c8nEyg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="34218750"
 X-IronPort-AV: E=Sophos;i="6.10,188,1719903600";
-   d="scan'208";a="34218721"
+   d="scan'208";a="34218750"
 Received: from fmviesa006.fm.intel.com ([10.60.135.146])
   by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Aug 2024 03:11:33 -0700
-X-CSE-ConnectionGUID: fdk8jU+yTuSP5Li9jQhozA==
-X-CSE-MsgGUID: iX//HswMRjeENxKXJX8Byw==
+ 30 Aug 2024 03:11:40 -0700
+X-CSE-ConnectionGUID: E7jW+uSASPyOaK0CNUGchw==
+X-CSE-MsgGUID: Nx/fGtg6QJ2j9EB7fcvsVQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,188,1719903600";
-   d="scan'208";a="63481353"
+   d="scan'208";a="63481408"
 Received: from ltuz-desk.ger.corp.intel.com (HELO [10.245.246.101])
  ([10.245.246.101])
   by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Aug 2024 03:11:27 -0700
-Message-ID: <fedfc810-fcc2-49fa-9165-34003b111fc5@linux.intel.com>
-Date: Fri, 30 Aug 2024 10:34:12 +0200
+ 30 Aug 2024 03:11:33 -0700
+Message-ID: <1bcf8eee-7d7f-48b2-aa0f-2c578d4ca79c@linux.intel.com>
+Date: Fri, 30 Aug 2024 10:40:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v26 11/33] ALSA: usb-audio: Check for support for
- requested audio format
+Subject: Re: [PATCH v26 12/33] ASoC: Add SOC USB APIs for adding an USB
+ backend
 To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
  mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
  dmitry.torokhov@gmail.com, corbet@lwn.net, broonie@kernel.org,
@@ -85,14 +85,14 @@ Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
  linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
  linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
 References: <20240829194105.1504814-1-quic_wcheng@quicinc.com>
- <20240829194105.1504814-12-quic_wcheng@quicinc.com>
+ <20240829194105.1504814-13-quic_wcheng@quicinc.com>
 Content-Language: en-US
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240829194105.1504814-12-quic_wcheng@quicinc.com>
+In-Reply-To: <20240829194105.1504814-13-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: EJDGZRO2JPOBA256PCHBGL6WUP2QHLEB
-X-Message-ID-Hash: EJDGZRO2JPOBA256PCHBGL6WUP2QHLEB
+Message-ID-Hash: RTBAP63RMINUJUHP64GTBSGCQOIGHVKB
+X-Message-ID-Hash: RTBAP63RMINUJUHP64GTBSGCQOIGHVKB
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EJDGZRO2JPOBA256PCHBGL6WUP2QHLEB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RTBAP63RMINUJUHP64GTBSGCQOIGHVKB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,11 +117,64 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 On 8/29/24 21:40, Wesley Cheng wrote:
-> Allow for checks on a specific USB audio device to see if a requested PCM
-> format is supported.  This is needed for support when playback is
-> initiated by the ASoC USB backend path.
+> Some platforms may have support for offloading USB audio devices to a
+> dedicated audio DSP.  Introduce a set of APIs that allow for management of
+> USB sound card and PCM devices enumerated by the USB SND class driver.
+> This allows for the ASoC components to be aware of what USB devices are
+> available for offloading.
 > 
 > Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+minor nit-picks below if you respin the series.
+
+> +
+> +/**
+> + * struct snd_soc_usb_device
+> + * @card_idx - sound card index associated with USB device
+> + * @chip_idx - USB sound chip array index
+> + * @cpcm_idx - capture PCM index array associated with USB device
+> + * @ppcm_idx - playback PCM index array associated with USB device
+> + * @num_playback - number of playback streams
+> + * @num_capture - number of capture streams
+> + * @list - list head for SoC USB devices
+> + **/
+> +struct snd_soc_usb_device {
+> +	int card_idx;
+> +	int chip_idx;
+> +
+> +	/* PCM index arrays */
+> +	unsigned int *cpcm_idx; /* TODO: capture path is not tested yet */
+> +	unsigned int *ppcm_idx;
+> +	int num_playback;
+> +	int num_capture; /* TODO: capture path is not tested yet */
+
+nit-pick: I would keep the order between capture and playback consistent.
+
+> +int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+> +int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+> +void *snd_soc_usb_find_priv_data(struct device *dev);
+
+nit-pick: I would keep the parameter naming consistent with
+struct device *usbdev
+
+
+> +static inline void *snd_soc_usb_find_priv_data(struct device *dev)
+
+same here.
+
+> +/**
+> + * snd_soc_usb_allocate_port() - allocate a SOC USB port for offloading support
+> + * @component: USB DPCM backend DAI component
+> + * @num_streams: number of offloading sessions supported
+> + * @data: private data
+> + *
+> + * Allocate and initialize a SOC USB port.  The SOC USB port is used to communicate
+> + * different USB audio devices attached, in order to start audio offloading handled
+> + * by an ASoC entity.  USB device plug in/out events are signalled with a
+
+typo: signaled
+
+
 
