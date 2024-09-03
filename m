@@ -4,44 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4199CA101E
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2024 05:45:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71030CD342F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Sep 2024 05:45:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DCB5836;
-	Tue,  3 Sep 2024 07:45:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DCB5836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 433E0857;
+	Tue,  3 Sep 2024 07:45:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 433E0857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725342331;
-	bh=JG0CIN7HKbfX/Ly7I0J/JBHVj7lFObJRbViJUVmWrgE=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=LUmWcF2GjB6woikpi+NRt54iW/Weqv6wG4f9pOKHOZKMHwwYb+hTb1idckjMHTU/P
-	 cDPe0faUMfyXeQYz1j1/U64I+8bKHoAjFOyGl4osoFCMUvY3iK61AUaJwCqzRJO6th
-	 mdpQjY3Lpo2hJg78Pa3ZoJXV9+n7Vkb1O0Mh4pWs=
+	s=default; t=1725342346;
+	bh=641dztNgJ/r4mDuDgj/U69IllRQdoP8QIyzkMV33b1I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=WTplDkz2QVfG45I0s+B+PJNq0U4qP0RP4A752NTPci2u1ooJ6HQnwipHouGwO+rN3
+	 AXskRTKeGgDSWF7nUfOXB2Grz9dhEgaNwJTmWaCEsuQSB503+XYhNHko5Iz7ktFdS4
+	 QcqgLHJywXcHo9GeNVCcJT9Hyoy5BbohKiao6j78=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74981F805BB; Tue,  3 Sep 2024 07:44:59 +0200 (CEST)
+	id 48C28F805D6; Tue,  3 Sep 2024 07:45:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5CD1F805BB;
-	Tue,  3 Sep 2024 07:44:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D64FF8016C;
+	Tue,  3 Sep 2024 07:45:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1BFBAF80199; Tue,  3 Sep 2024 07:44:55 +0200 (CEST)
+	id 541A8F805C3; Tue,  3 Sep 2024 07:45:05 +0200 (CEST)
 Received: from PUWP216CU001.outbound.protection.outlook.com
  (mail-koreasouthazlp170100001.outbound.protection.outlook.com
  [IPv6:2a01:111:f403:c410::1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 507C1F80107
-	for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2024 07:44:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 507C1F80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id 44E0AF8032D
+	for <alsa-devel@alsa-project.org>; Tue,  3 Sep 2024 07:44:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44E0AF8032D
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=a1A/lFLmHrowMp6PaSpA5SCgPhXhf0T4x9t3snl5Tj8bG+ELbpmfeOQK0N3roiwY93K62QcLQD+ZIdsL9TlEP8R13rzJ3XHvydZRnvqKWxfh0PbedW1iyvKTNLVB5CllgU/M2xduznqTjqW599Pp/6WxpnVpEAnGToAqowGIiWtnecL9BkYO+bIJ1N7Rdu4u7yPSISw6YdmLco63iTpyhl6BTRA28heDsoM4XMkIY+NKB/vYqZVXCFNOsdRUja8WJG1EQQsvW8VbjTZceeHOw4GSyEFsvz8XgsKF/pf89OG+bkQSiX4xqlx3+7myJmsS9Kq3aqJscBOMerNtolcOUg==
+ b=lqfSe5RY1gWlpW848Kof//AWkQf5INr1Q1XZEE580uqq1yt14QYb9iCxl9Baww3vVo+8kN1uDHOCXgGe95XiDDh3s7gls+RZ+RbbrvqiRht+PFajBSui/QflxtwUzHJ4rOHLX4eA05biJ80ZhQsGhsllx/6yYfZJ9w0PkCz6wyYXs5V4QAJ6Dve1qBYjdeAkXuUAsEVPScm+naCnO073lFZuL4ZycqbN2M+mlTakWCakVUFaDG6WEWuBstNUXThSEW17QG3yr+1IAlyYOIf4T1kIahbxS9RZbYterxvsIL8XWHalRuhue4Y+xgf+PqD5IXoNSP4lUNhbTbhaFEAghg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nqnYnQChZIr4fIVThBRa0BmRuXg1/5loPBRtAOM57UA=;
- b=o5jLlC7LPShhrLI+UpJmigyIJMf+Z+BLrSMnkc5esbXvNVK3uKjBnOAQeDPGLM0l9ivxXQMUsaa3bPSdAO46+QlDfSrYQY5RdNuW0KqvolndiUdHDcuXD8My/Tl313xqrNTpea2AA5R8OGtY+uEO5CShhNvtXdu2SWspTP6V+7iIaa7yt1de15ShE3XFh57z4s3f6w+N/iGCuHn9+vRZBY0JvzXoIUTimCV1v6o6F1xu8waf1mezO7C0diZCOcv+ZaPeZFI1AQKKaz2Iv/d2D38gYO2Zdfa3aYShtJQ9Nf5LjvQ4r7LuarYJ4qn1+7ki+gYx4PnZPf4fsDNFoxTStQ==
+ bh=ZxQMdi5tqW8awP2NOlmAdeUdJU+ymAw0xV3f4lqGGBQ=;
+ b=VFsHuMpzn6w0a5S9sdSkIqlRAOHFdzP+bOMGe6wweYB4k9z5kAMTHkKaydpDaSNGRcbCaWQPd3Jjbn/gddrDdDN4asJ+EdqcZpNMAuehN2RilYaYVN8/QeXcgxTDvSVu+HW0j/AL1OzC8AVqeVyEB8iS1p/ASxs09iLZ7R/AhHkbNrI4OQJcxtT/xvYYlNWcGKEQ/i0PAjDXcAjj/GGByZJKW2kAa5SgKqqmexE19IhuUXXHG09iWdrMcRic8chjNLoyXarN5kQnc6KgzRY6UHKe+80a5RxTMpggNwgEsfI/AHIT5kuKiZdg/93lDFYOqx+F2G4L0b/BXuRBDoFNNQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=irondevice.com; dmarc=pass action=none
  header.from=irondevice.com; dkim=pass header.d=irondevice.com; arc=none
@@ -51,11 +52,11 @@ Received: from SL2P216MB2337.KORP216.PROD.OUTLOOK.COM (2603:1096:101:14c::11)
  by SE1P216MB1543.KORP216.PROD.OUTLOOK.COM (2603:1096:101:29::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.25; Tue, 3 Sep
- 2024 05:44:44 +0000
+ 2024 05:44:54 +0000
 Received: from SL2P216MB2337.KORP216.PROD.OUTLOOK.COM
  ([fe80::7e8d:9550:c46b:2756]) by SL2P216MB2337.KORP216.PROD.OUTLOOK.COM
  ([fe80::7e8d:9550:c46b:2756%3]) with mapi id 15.20.7918.024; Tue, 3 Sep 2024
- 05:44:44 +0000
+ 05:44:54 +0000
 From: Kiseok Jo <kiseok.jo@irondevice.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -69,10 +70,13 @@ Cc: alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	application@irondevice.com,
 	Kiseok Jo <kiseok.jo@irondevice.com>
-Subject: [PATCH v2 0/3] Add a driver for the Iron Device SMA1307 Amp
-Date: Tue,  3 Sep 2024 14:44:32 +0900
-Message-Id: <20240903054435.2659-1-kiseok.jo@irondevice.com>
+Subject: [PATCH v2 2/3] ASoC: dt-bindings: irondevice,sma1307: Add initial DT
+ binding
+Date: Tue,  3 Sep 2024 14:44:34 +0900
+Message-Id: <20240903054435.2659-3-kiseok.jo@irondevice.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240903054435.2659-1-kiseok.jo@irondevice.com>
+References: <20240903054435.2659-1-kiseok.jo@irondevice.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SE2P216CA0056.KORP216.PROD.OUTLOOK.COM
@@ -81,82 +85,81 @@ X-ClientProxiedBy: SE2P216CA0056.KORP216.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SL2P216MB2337:EE_|SE1P216MB1543:EE_
-X-MS-Office365-Filtering-Correlation-Id: b76ebf10-fbab-4044-83e3-08dccbdb837c
+X-MS-Office365-Filtering-Correlation-Id: 4685b217-5dcf-4210-dd01-08dccbdb891e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
 	BCL:0;ARA:13230040|7416014|376014|52116014|1800799024|366016|38350700014;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?4DnCVyFbCKQbdSaVvaRH1qiPRH078jdUDYyBXhRAdBJ4Gn+WK/eSG4hKEU9r?=
- =?us-ascii?Q?yyRRvPdz6VB4K5r1yZ+rKo7Sm6ghEMWu2kQYOMSl00MpTfVpoqa2hnpc9PqQ?=
- =?us-ascii?Q?HwsReAPMH5hEplWokzbMkvydQwvAaynQRyP6CfFJFbs+hmsKygAGLxsBaGbU?=
- =?us-ascii?Q?Pu/bvdjx5IF3Zh1zz+z9ubmdRWQx3IBkVBd80v2rlWHRiqmhboYIOJ2Q/ddw?=
- =?us-ascii?Q?30j+8279rWF6Kx85o5z347PwyJ2PrSm/gGkkwUf0EPfC4zMfdM3HWiFfQ3Fz?=
- =?us-ascii?Q?ttCYhnggKXct2PpPEUMYqdP1f7FY/w66K8i0Fl5A4oIosIJXdd0ctDsReQnS?=
- =?us-ascii?Q?yxfGEKvtljVcbGBWpe7UVJwbArv4nyndcew2mCsKVov1OiQ+rJ8tVP7+8Sxm?=
- =?us-ascii?Q?ImDLowDLJ8d2brO6m/+HlHiAxwo1ztmNrwYb+C6JN+iq7us6U7muN5PPE7yS?=
- =?us-ascii?Q?OuoVcZk6NHEJ4XTxmt0aOLoMQz4xE2+KhgmF0683i+pQSpQbtQ6Nf4mtlol+?=
- =?us-ascii?Q?ptVecC2jPGZ5Pmf4ERKeb9GFg3dcaliqUso4anCWusiCGudmcYtStMhLpzW3?=
- =?us-ascii?Q?miX7PBF+EDTlVbi4o2656Mu1S2hyXuZMSK5WHovF8ARRUBhynuwT5FrhEeGX?=
- =?us-ascii?Q?2ouFS3fiNCOQD4V1iX0ny3S9vh2ykgioQx2T3cC2HaJMTlum8BusB7xqM/iU?=
- =?us-ascii?Q?8MJqArYNKt9cjgtfKvVb+jrkSh4XqlPxUAUdk2RjDax3vf7fjtRFq91LOE4S?=
- =?us-ascii?Q?tpXEYwygW0fTPXljQz1q/XKzapQ8VQS2vp+qYGKVVDxnZ1MF8OxTUPHJTDmr?=
- =?us-ascii?Q?zxRg4KbIksZeGXPNzewnpcakA1HeYUkI1LtQD1FN9nsOpBCVO95TvDK+ceb5?=
- =?us-ascii?Q?OysTWygcZr1TRsvZbCQ7hMMx9fn5j57SDxJX0FI9cADYVCaFF0B6uXKhHtYF?=
- =?us-ascii?Q?Q5zeilAKF0DKuQUVgNdDf5q6MEXChZGUwr/IpeiHeTumCi2NrbD4ds/ZrQKr?=
- =?us-ascii?Q?OyDnWrMt08TKYGBNLeOkGfEw2Quw8h8KJ9zXLjTVt/uQ/T5/OHuUBQZ4yo7k?=
- =?us-ascii?Q?d3hQPdNlLDPa+tS1q/Q0tbmTKyj4w3MDz4KnRrGGpVLIsjDM6n2Y7qVRS5Oi?=
- =?us-ascii?Q?3DD4xupQbRPgR2ILbDXI0mVuVYO5QrBhTLKHVZbsSC8H/7kkWa33PCdDOBmq?=
- =?us-ascii?Q?UwAGd7go0AjluggZ3ssmr+7kxFYbSs31n5bgDp/d30hh2U6RqNsjFH4hNUEv?=
- =?us-ascii?Q?linrS3jo7ZFzsonvR7FXQKcdxHFGM+Vojncldg8KjskDuF0yWMXAiHGCF9gj?=
- =?us-ascii?Q?ukjiYT4/7JF7q00YrvGUb0Vgk8XacKL806g0F4WTAZAzlLqUldzxVBVqHfa2?=
- =?us-ascii?Q?wTBq9yw1AO1GsRras1kPUuWK5wwd?=
+	=?us-ascii?Q?H/41ahi7IjCXlGkFkmJrLsOhTL3FUH71RZ6AGLOMA0m8HBjIJZ8l2FfHmYVb?=
+ =?us-ascii?Q?S/g3cFjGKShquvqqDPjnmSLIiRFcovL9ub3I6ApNwPFncKRTpjcRZufD63WJ?=
+ =?us-ascii?Q?Sx32Dyv74LW9JuUW/pedetBerYodCLyNNSh+Qw+cHPd9FHmFrpX6Ub6if8aW?=
+ =?us-ascii?Q?V6HL0fUTsr0fdtE19saHRoxfXK7LbY1uglN1mZd8X1M7f2xBICLKxoINt9Qu?=
+ =?us-ascii?Q?4A2UMyDnKm2fNmlKquTCV+4Xw7aaH+beT/hWSlVf/y0QmJGpqXsylDLmQ0pH?=
+ =?us-ascii?Q?0cfK1LaMYZPbv7EKLHFXZ5JG1RkHSEAsuLp0aU9o59W0iTM+galkMqmQp5rg?=
+ =?us-ascii?Q?uB7wJbo2AOQK7FztHv0J4YR1uA2Tl9OYrLt0kGBv3guGjp7rEzZS8EtN6XCN?=
+ =?us-ascii?Q?EO2JtfnMjwIzQB1mAXlMUbK0p7GLGyQ9RbmFw3k35bAtU9IIHQliwkGfRrPU?=
+ =?us-ascii?Q?+evGz2ERsDdmXrm4aa+h63cemCFWCHDSHTgP2z20+IKYa6fDLFfRfr+LJYuN?=
+ =?us-ascii?Q?mDERJfO7P0lQSjX4qy4iLlrbnm7KB58XPMheEUdgokX7ED3vIqaAwi60WWO2?=
+ =?us-ascii?Q?vM+1a9f1VYySjl7fwDGvvKXizuwql0+pbrNIA22NSSeo316Dv04qy+hXRots?=
+ =?us-ascii?Q?OtiLO8bhAo06u8If/HvPVpzR92mn7w+sSgrLyR1AUF9HlOU/Vsjr9ebV4oEu?=
+ =?us-ascii?Q?MgcFLavajtYvDAlRLZ8hZIY9KKN8I3fEmoDXh71HXwE2k2vk5+/z3oAq549g?=
+ =?us-ascii?Q?sZT3iSIpfzXhF2RKyIpLfxK6UzYOyWY05XnIglAq6O754YRsDprgMprhxcJ2?=
+ =?us-ascii?Q?pQBGXq0ZdBV//PecA0wGUhaKlx5VVcVKSKq27RSjS3OA8J8cuZGHBcQ6A22u?=
+ =?us-ascii?Q?LcPjoEKdaZQwlj4CuQnGwVoNOf1/41il99ehOxLvPDabdGocj2RdBnPFM7hN?=
+ =?us-ascii?Q?TgWgRoZStmchzRfMRoHTgHsZdapiDxOMZrv11pTsM0ps8kk4ToWSqLCw1OSN?=
+ =?us-ascii?Q?PdZuZtwBKljzrKhmu3Nb+ylkYFKuXrwFWCQUrGjZfDL5YLgzZo4u7NyqLMNM?=
+ =?us-ascii?Q?dOJdgei2cuvFfSiOhRkOSKILAjm9McQRLu252ZlO0AMA+05YzsjgasDF2oVg?=
+ =?us-ascii?Q?fcUaTq0GDAL/P5wqtT7YC5NGuMMjH+qjgsf2XJJL5mTjPge85erqn74mPDY0?=
+ =?us-ascii?Q?Q4KYISozQ222xQ83l29/SxY4hv70Vj3Z6zsN/A3+uatcPuTnzoWyGJC1jQga?=
+ =?us-ascii?Q?nxMQoxxJEtXRWjpcHvQw0LTaepk6tc+Cqe52a0zBYaXUG5yMwirGV1RvLVHj?=
+ =?us-ascii?Q?2dHJ5J+QssgFW9F/Ye17AcoM17r1AZwEpOrcLzLF2qlWiw=3D=3D?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2P216MB2337.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(52116014)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?yszIpI52EmWGXLIta4Syohh5YV9pxTOV7HuV2elH/UHZeRDodTTmtN9XG0mP?=
- =?us-ascii?Q?LktZEH1QN8kqjEQ8MXu2Tqg6fi5Kognp6nN7o0FUWvaL6vmlRWiPygqNQe11?=
- =?us-ascii?Q?KTW1j31oPMLEcazWvmxQDHXTT2bSp/PzurZ635EFJX0jAl8a6q+UzUjgL8AA?=
- =?us-ascii?Q?AHQRnWLZ4Qp/plP9QOPcX1r4WXK+AdGoUxrtB/BCpFeMh8G86zEZaTZt+eUZ?=
- =?us-ascii?Q?gk5Bc1s8miZo2DAXVa0lK97+pE24Se+P4LK7tWahyrZRcYzHAn+9b/CUfUCH?=
- =?us-ascii?Q?Df1tX6oicbBbycMkqI4U5NNufFb5kh/CKjkA2Iv+64oZU/ZP2Mt60qfvG8F9?=
- =?us-ascii?Q?hfQAupiEGyA4YQgZ21NFD9WU24/hMmP/4plYpxM/oEDMgWmVBxaxqnPs1fuR?=
- =?us-ascii?Q?9otp2dYz+B7mzdwFOG4n80iM9NoLfcR8TL8BFBj+zc68TtmdSs+S6g19fqwo?=
- =?us-ascii?Q?9EMdE6QOrf/gYf2TrhwsmmqYgvonv6ANFN0uvWZV4IXRuv4G9F+QlJYRAR3+?=
- =?us-ascii?Q?U3MF7H4OFmVmO/WpWpdQ/y902TpsmwdaxwfZX5B5Y/9Cl7Atw+6yp65Ta3Cf?=
- =?us-ascii?Q?zY/J1KFcPxEp2a5Q1n1T13PJGRk8C0g5LViJrWhhJsRnRJkqkmQRK99AZaR9?=
- =?us-ascii?Q?nfy3BwVTUbv7ifdkgYQf3zFFkg+f5flL6tM9xwvWJxp55dbTc33Gq0Db1Uxl?=
- =?us-ascii?Q?Yh5hBIK8k6p4o7SwJbvOdpqSdwqkz7ru7I7WtcPDoDUCyrkGUvYj8FkAyRut?=
- =?us-ascii?Q?3j9UCkbGjiyJyZ1b0ivKp+ox+ciAQ3s4gXieU/o06ufjtdEwaen9Eqn5PtHg?=
- =?us-ascii?Q?ELZ/b0mI6XKLEvXd0TpSexxR+RRmD1RF1PfuwayVG5Bjg4MBBOxUaoRLvgw7?=
- =?us-ascii?Q?ifMxAx9nZ5Deu5fmCQAbeSzQTz1MrbqmdwXji65cLJp5Iyqvr7kwQWEEFBni?=
- =?us-ascii?Q?ovcAMtbgpQreEW/YwRtae/FMjdImzQ8/JPgEmp2xLNC8SBkIAMVc0bL/+/2o?=
- =?us-ascii?Q?hgoJRdiNwbspVNFWJrMcZEzwoNCmxrQwixV+Iy9TToBAuiBOTSFvu9YBb9aw?=
- =?us-ascii?Q?4BXHrXMb2zMunR6sK+c2hDDdNBHb0TdIHkK32Z/foGplSUiieZup8tYnmPCt?=
- =?us-ascii?Q?u2bntNa2aRiJKpGCBSppns+ow5GOsRR188shx+/eFg7kL5//o4uAkwa+VSXo?=
- =?us-ascii?Q?SohQ+vMFCuh/nX+hUj1MXU9wDWdwoUyoHqO7r1XTFxop0QROkntyp0RfliU/?=
- =?us-ascii?Q?cWLYOYgVXkWDHNRbxwkCUfIpnPOqW74ukowxW/8sNCLyZGcsr9ocKdRy33JH?=
- =?us-ascii?Q?8wNlTHZob9fFkdO6eU2B7sfUIJU9p2rCizpM4DQDC/0NLSd1EhwwMIdPYOVU?=
- =?us-ascii?Q?Ai3miQsazbQ6+K0bApSghF3wOM5U5Aesgr7+q8AEgWGWqZMcaa0s2+LpOn1B?=
- =?us-ascii?Q?zbKdyEaFWOoQif9hNS/1bCm2V+8887LAn7+zwL0+BNOEkwQzcF+aIgnfpAi6?=
- =?us-ascii?Q?ASkwyOabdSJxqTvfqejm7I9bXINHJlBWZXRZ3FW+3rYXO9Bd0LbEKINF/+LK?=
- =?us-ascii?Q?TZ77buVt2qMSgTqd77aNyVE8V06XAfPu1r6gWjON?=
+	=?us-ascii?Q?wdQ3a+XPHNoCk/qnLUCZlV5BckLkKgYQf6HrtxJC5WWDFZcWUeUdCrHbCcXh?=
+ =?us-ascii?Q?pp0M1hZIyi7DUZ4HHRl4jdjcyoENbXyyrmrT9q1oUx1DyeMFB9HdhOMdS4gY?=
+ =?us-ascii?Q?9WFn6D/tIxAFMYUyl0IrHEoZ4Oose9geBgHdRM3uGM1FfNZmsSsPhj3dEZEG?=
+ =?us-ascii?Q?HpuKDrSieUaw31fybGAan/v6SqY3qgXjZA5cG+hFfWQcfmqIxiibLojYAO9u?=
+ =?us-ascii?Q?AhMkJYXNKca73ifU1But+tDvYMkAbHt8GSE2vXC/I7srltyKvXFI7anfxOdb?=
+ =?us-ascii?Q?/N/TPf8jP3a4vy4zzOUXA1v6PIYvtrNftLVZBuE0BcehIzGWkf7ad1uC/q5u?=
+ =?us-ascii?Q?S27cuLBOs+H6B5CDInGNlGDh9LL/afeXb9yEECXRmhmMMaiN2DTXd9ZZtPei?=
+ =?us-ascii?Q?g2LiXpvnDMDdTBt1W6j9IFGFIL7WhXzwDjqGqFg9+/Mjy2RHNlJlikqfKyKI?=
+ =?us-ascii?Q?HvYTJw6piE5exQvTHmkzhEg47iN4QF53AtV9Ysr1omCj9IYbpriI7sHmqzGO?=
+ =?us-ascii?Q?d1CPkIzQR9BWx/tX4d4ECbLdcY6Y6DlRKXKkOe41mLZTGS4OwfyyMnwvGmsg?=
+ =?us-ascii?Q?ZN2s0s4Jmo1vQ5G5morixAzyjUNKLB1dP4LO76XRC8RM+6ibAIdo7ggQsOpV?=
+ =?us-ascii?Q?X9VjmqarLQgHwtVZsGSk5JDg7LFNGCsZ0HyhKvfgGhYR8i9gbNHD0p/iIlfD?=
+ =?us-ascii?Q?iAY53CLBDiQf/3fxEsyWx2L8UCXpYyKLvr+mxBznTKllR1HVjlRh9+7IJHDl?=
+ =?us-ascii?Q?mBh+WIwu8Kdufc8olXTYzhibbfUECoB3SoLjy0PAL+FXBr1by3ToOq8fNBKj?=
+ =?us-ascii?Q?xQA1W1bEeCJu6Pu1Csc6CFYDZrchQ3H2rwCdC2DC5b6u1kAG8nIr6srLB68/?=
+ =?us-ascii?Q?PFp9hy5lLQqGDItXecnn9R59Ki9D92JCrvUMP1X04mJ3/s4OA5w9+L04yRUV?=
+ =?us-ascii?Q?S8AunIvfhK00NjpT5LM7U5YbmS9xtR3MENl/BPvnrIBomAz2SQGDE+bLK6rY?=
+ =?us-ascii?Q?wp/MwbpbHF8PfQknAOxkwRpZgZ3P9ihyqhwLIZ3hqG0Jy1AgwuppAsJ9bQaK?=
+ =?us-ascii?Q?YB79AmfwRIGKhmGTqTjJAgP+11CCYPZkeZNbXP94fwfmYnP3MyzpZlVcciwJ?=
+ =?us-ascii?Q?qy6vmLvznMtsRjYNnZbnxZgHbsPtDfV1N/uZ4NpTeT5doVHM1aBNIBUIqExl?=
+ =?us-ascii?Q?4MjuBhYVuG0Ta4a2UHZm61AmCmhX7Ey04eyazBJiCmhb1tk78QRZd0ytJZm/?=
+ =?us-ascii?Q?Ua/S9toXa/UvuE/mYO2Sl/78pm9OZCc+SiPVkT0DpJcjZa6lg66vsMxRLR82?=
+ =?us-ascii?Q?8wq3SfBgu9xiR3h9slcepVkvC193VwL+3Io90CfJvLe26Wy6NwdCKdCR9rir?=
+ =?us-ascii?Q?1M4WSIJMNkaoyneZNzRY3Pq33QTAC69Cr6MT8gAYxxoqEmP6nU2r/W5S8hwT?=
+ =?us-ascii?Q?UAflSDwNA6GPKN+LErf9Xlyx3h5zl0V758QG50jAfQ6WUGdikRy3irJQAuBt?=
+ =?us-ascii?Q?xbBikyHts1Sfllu5NqYMFy1vxMcLZgmVatM42WNszOHHQaT3DlhURjeE5eB7?=
+ =?us-ascii?Q?yCi074veQdn+zQng4xEBr6NhFMx6YZAHxwwX7Ac4?=
 X-OriginatorOrg: irondevice.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- b76ebf10-fbab-4044-83e3-08dccbdb837c
+ 4685b217-5dcf-4210-dd01-08dccbdb891e
 X-MS-Exchange-CrossTenant-AuthSource: SL2P216MB2337.KORP216.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2024 05:44:44.5988
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2024 05:44:53.9939
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: b4849faa-3337-494e-a76a-cb25a3b3d7d1
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- rEaLp6v9BbnHT44v+l4aZB6tuIIUZm96TmuOtBdurPy36IApT0u5Wo6IBy+F9yh5Yh1aJt4+zOPIuqh6pGQwnINNLUR404+oRH1mRikI5s0=
+ 4XrPDRPnxYMscwk6aDr/A2t2uKqQRDDDKs+X1Pm17gJF3iX1p5In7BCg2NafuqPtZTdeNqHlweGxec5/K7CpKg+TA9WLCRaGK3YJnFpR+jA=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SE1P216MB1543
-Message-ID-Hash: NN5PVONTNO46P6MMTN7NB4H74VNSRSQ3
-X-Message-ID-Hash: NN5PVONTNO46P6MMTN7NB4H74VNSRSQ3
+Message-ID-Hash: 7ZYIN2GXWTTIB5KGDB5D6LL5JJPT34UX
+X-Message-ID-Hash: 7ZYIN2GXWTTIB5KGDB5D6LL5JJPT34UX
 X-MailFrom: kiseok.jo@irondevice.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -169,7 +172,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NN5PVONTNO46P6MMTN7NB4H74VNSRSQ3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7ZYIN2GXWTTIB5KGDB5D6LL5JJPT34UX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,25 +181,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This adds basic audio support for the Iron Device SMA1307 amplifier
-
-Kiseok Jo (3):
-  ASoC: sma1307: Add driver for Iron Device SMA1307
-  ASoC: dt-bindings: irondevice,sma1307: Add initial DT binding
-  doc: ABI: testing: sma1307: Add support for SMA1307
-
- .../ABI/testing/sysfs-bus-i2c-devices-sma1307 |   17 +
- .../bindings/sound/irondevice,sma1307.yaml    |   54 +
- sound/soc/codecs/Kconfig                      |    8 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/sma1307.c                    | 2191 +++++++++++++++++
- sound/soc/codecs/sma1307.h                    |  454 ++++
- 6 files changed, 2726 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-i2c-devices-sma1307
+Signed-off-by: Kiseok Jo <kiseok.jo@irondevice.com>
+---
+ .../bindings/sound/irondevice,sma1307.yaml    | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/irondevice,sma1307.yaml
- create mode 100644 sound/soc/codecs/sma1307.c
- create mode 100644 sound/soc/codecs/sma1307.h
 
+diff --git a/Documentation/devicetree/bindings/sound/irondevice,sma1307.yaml b/Documentation/devicetree/bindings/sound/irondevice,sma1307.yaml
+new file mode 100644
+index 000000000..0bb4ee664
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/irondevice,sma1307.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/irondevice,sma1307.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Iron Device SMA1307 Audio Amplifier
++
++maintainers:
++  - Kiseok Jo <kiseok.jo@irondevice.com>
++
++description:
++  SMA1307 boosted digital speaker amplifier
++  with feedback-loop.
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    enum:
++      - irondevice,sma1307a
++      - irondevice,sma1307aq
++    description:
++      If a 'q' is added, it indicated the product is AEC-Q100
++      qualified for automotive applications. SMA1307A supports
++      both WLCSP and QFN packages. However, SMA1307AQ only
++      supports the QFN package.
++
++  reg:
++    maxItems: 1
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - '#sound-dai-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        amplifier@1e {
++            compatible = "irondevice,sma1307a";
++            reg = <0x1e>;
++            #sound-dai-cells = <1>;
++        };
++    };
 -- 
 2.39.2
 
