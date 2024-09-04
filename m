@@ -4,92 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 857D9CA0ED3
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2024 13:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A05B7CD484F
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2024 14:53:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0477DAE8;
-	Wed,  4 Sep 2024 15:47:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0477DAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA88B950;
+	Wed,  4 Sep 2024 16:53:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA88B950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725457632;
-	bh=AjpnI5qp5wSl9R+DpXde2r7+CO38FpagY+Ve8gS9etk=;
-	h=From:To:CC:References:In-Reply-To:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=u2fCvIIbUvRzpmmxUUKbw2I/a2Ff5TYoMRxmyzJ7PIkC5m9nObIHiqcCnSAELxZOL
-	 O83l7UjGR2t7FFaU4rnuB5gRrq50JAbc9JzJJDHZUyZGa82aMdAU9p/e8XSiCPNwGP
-	 ShI2129zeSKDsPw9gDqNCBuKLLb4JFdRA8usjtAE=
+	s=default; t=1725461602;
+	bh=voyOYZWjEblOB0Gzb74raxPK2rOaJWiesmUXjO3gSkg=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Fc62nABK8DJ7TPQhJGFVvbDdY9g3vCK716o3ololBH0lDaiLUTPm3BGcwlYLxb6+h
+	 45C3zTIipb962Cu4oOX9kCyQqPsVx6SLqkI3Lf+cIuIHEsekTTJM0eotVZwP+Nh/g6
+	 O483m+N00UzH3M2SSFLy9oEuxnMbzs/+q29Slcek=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71B18F800E9; Wed,  4 Sep 2024 15:46:40 +0200 (CEST)
+	id 3B2F3F805B1; Wed,  4 Sep 2024 16:52:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06A7BF805A1;
-	Wed,  4 Sep 2024 15:46:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3C67F805BA;
+	Wed,  4 Sep 2024 16:52:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DF42F80199; Wed,  4 Sep 2024 15:46:37 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 2286FF80199; Wed,  4 Sep 2024 16:52:46 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B9E26F800E9
-	for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2024 15:46:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9E26F800E9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4218BF800E9
+	for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2024 16:52:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4218BF800E9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=I930DrXP
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 4844i0ic006144;
-	Wed, 4 Sep 2024 08:46:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=dL34FBVTjgHT8QW2Am75+/hWuPFunEOFpjLE1kFYkho=; b=
-	I930DrXPhgWl7p/EJGC4I/rz7cVBJ31Et1psAaSpqBIT58ILwtJX7NwSwo5EpVbQ
-	PSjarKBguzeMaSjVdB1/JBIn0kNoE5oJ5Ffu5J6OUNVlx3aFPDhm7WjpWf6gxtsG
-	A9OawqPgb5z8M1b8TRtOvqATXYzuLx4DJVbFndjOO27T8NyZvtFq/J4Wx5UqGJFu
-	2DgoHOSstXf4P3tJXgqz69qTLHzy/QSPIYD/N3+hbEhcSdCg8U/0ziBb8TT0oQY3
-	F+2dMggy5+L725z3V7O0v5Z/D1IXrq/DLd18245it0sf+B4VOHRHYBXrezKf+2SN
-	1J1nBbCYmmPDpl7c3bVOLw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 41bykkckyc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 04 Sep 2024 08:46:32 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 4 Sep 2024
- 14:46:30 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Wed, 4 Sep 2024 14:46:30 +0100
-Received: from EDIN6ZZ2FY3 (unknown [198.90.188.28])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 9E3E182024A;
-	Wed,  4 Sep 2024 13:46:30 +0000 (UTC)
-From: Simon Trimmer <simont@opensource.cirrus.com>
-To: 'Mark Brown' <broonie@kernel.org>
-CC: <tiwai@suse.com>, <linux-sound@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-References: <20240904120700.188644-1-simont@opensource.cirrus.com>
- <e1aeb66c-ecb3-4778-b306-f3a212caf879@sirena.org.uk>
-In-Reply-To: <e1aeb66c-ecb3-4778-b306-f3a212caf879@sirena.org.uk>
-Subject: RE: [PATCH] ASoC/HDA cs35l56: Remove redundant IRQ handling
-Date: Wed, 4 Sep 2024 14:46:30 +0100
-Message-ID: <004601dafed0$d8ff8cd0$8afea670$@opensource.cirrus.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=EvGT+svx
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-42bbd3bed1bso7464775e9.1
+        for <alsa-devel@alsa-project.org>;
+ Wed, 04 Sep 2024 07:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1725461563; x=1726066363;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MbOpSXNYVcQhcvwtIzrMQlGRTGRRC7rPZsCeaAArmmk=;
+        b=EvGT+svx9ey/AfoKtelWXh1TJu7vFoC03rdBQbHw1+Dy7k9bpLBct2odMEJ2qRJCnq
+         2LKf3qCUNcu2wc0DaxSsCcv37STCtb+uigIj0E2FZ6u+lS03Q6wJid72nQ4A+pNUDRsj
+         gLlzQdYQLcRp7y4fb2wRFV40L0PhfCu4FDtPVB9fTiwbm2pN0xM7gIO3v2X89gdRnfs5
+         rCwnK3qpuWWRzGkNgBTf+x64f1L8Dke549YHnjWDr6E/bRiVtBQhzomJKYq1T2Yse49M
+         mcEqMI+JYogq8KheKQEj7JV4PTo99do9i11SN2I7r3GatvdNG0CqZh55S8kwmj7n3V0x
+         K7SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725461563; x=1726066363;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MbOpSXNYVcQhcvwtIzrMQlGRTGRRC7rPZsCeaAArmmk=;
+        b=TbBVcbElYBlzkPWGGEldJ/7CJTr4PeL4QonrnIlzCFWaJxqWRN3MG5lOYcW8cBi9MZ
+         KWqb4r+AV/iLC4YCNhJlg2/60ZtZNv+NgUlPz8jMmU3EmlIP7FtYvikC5ow5tAP1qbyv
+         +qw0TlhskojT2WKHpfn70bTtJVArgvjAlkuJGMZP6xTAFMLdkxM2l3xA8GPgMWEK5yPq
+         kdyQdDMThQ5AR72vL45x12pFVp8BDoGSwCW09ENfL9Gy9cKsda6Q0parfZHS4jWOTJWS
+         lQH2yCmBXbVDikbrCpmh8qhGsmJHfIdfUHI9el7x1I/Aw00pQrQknSJXv2TxorZPDN68
+         9qMg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWi6raEMHOuWvfVK/vpjllVtW7PdNgVSzJerqA36xAPVs2LDHiLcUs82EsWCwxNyW+fsRmpv7P4htd4@alsa-project.org
+X-Gm-Message-State: AOJu0YxfaZYOI9d4sa4YoD6v0nEfrBSvkG96WdT3N/9fKGKd7uCfRbJO
+	e9fAeurvt9AbjQxiAHM80xYIKNYzikaJyLpUyWWFMv4/lPtcvEdzYoAcDLwtUdE=
+X-Google-Smtp-Source: 
+ AGHT+IFigIDgeK0AYS1NHvcazhvwSBWTvpXPKjRSJmmszC2cebhtjsf44CObPbChB6ovhvnuWTp5LA==
+X-Received: by 2002:a5d:64c8:0:b0:374:c800:dc3d with SMTP id
+ ffacd0b85a97d-374c800df1amr4487507f8f.1.1725461562709;
+        Wed, 04 Sep 2024 07:52:42 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.82])
+        by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-374c03595fcsm11963357f8f.98.2024.09.04.07.52.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Sep 2024 07:52:42 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Vinod Koul <vkoul@kernel.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] soundwire: stream: Revert "soundwire: stream: fix programming
+ slave ports for non-continous port maps"
+Date: Wed,  4 Sep 2024 16:52:28 +0200
+Message-ID: <20240904145228.289891-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-gb
-Thread-Index: AQKHzAIo361Zljfa9iRBQSN4dy/XOQEQvrcusOV2n+A=
-X-Proofpoint-GUID: T5wFkE1A2qVSP_Pao5lY3hzYA-hzzW2G
-X-Proofpoint-ORIG-GUID: T5wFkE1A2qVSP_Pao5lY3hzYA-hzzW2G
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: KLCAMZCHI35XI4L57QNQZTTNB36A6U3P
-X-Message-ID-Hash: KLCAMZCHI35XI4L57QNQZTTNB36A6U3P
-X-MailFrom: prvs=6977ef6907=simont@opensource.cirrus.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 3S2YJOQXT6R3ZEHR6NLUZWZRB42JNESM
+X-Message-ID-Hash: 3S2YJOQXT6R3ZEHR6NLUZWZRB42JNESM
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KLCAMZCHI35XI4L57QNQZTTNB36A6U3P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3S2YJOQXT6R3ZEHR6NLUZWZRB42JNESM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,34 +119,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Sep 04, 2024 at 12:25:00PM +0000, Mark Brown wrote:
-> On Wed, Sep 04, 2024 at 12:07:00PM +0000, Simon Trimmer wrote:
-> > The IRQ handling in the cs35l56 driver was purely informational. It was
-> > not necessary to support the HDA or ASoC driver functionality and added
-> > unnecessary complexity to the drivers.
-> >
-> > As the IRQ signal GPIO line could be connected and shared with other
-> > components the handling is replaced with a regmap patch to ensure the
-> > cs35l56 IRQ sources are masked and will not generate interrupts that go
-> > unhandled.
-> 
-> Given that the code is there now and has been since the driver was
-> introduced about 18 months ago what's the ongoing cost of having it?
-> The information it's providing is notification of hardware faults,
-> reporting those does seem useful.
+This reverts commit ab8d66d132bc8f1992d3eb6cab8d32dda6733c84 because it
+breaks codecs using non-continuous masks in source and sink ports.  The
+commit missed the point that port numbers are not used as indices for
+iterating over prop.sink_ports or prop.source_ports.
 
-Originally we were expecting to use the IRQ mechanism for an event logging
-stream that would function in a similar manner to compressed streams to be
-able to get an information feed for debug and tuning tools, but those were
-never created and the logging infrastructure not implemented.
+Soundwire core and existing codecs expect that the array passed as
+prop.sink_ports and prop.source_ports is continuous.  The port mask still
+might be non-continuous, but that's unrelated.
 
-It's quite a spread of code and a lot of complexity in the regular execution
-paths managing them / synchronizing the contexts, there is more going on in
-the SoundWire bus variant compared to the conventional i2c/spi that it is
-hard to justify maintaining it all for a couple of log messages - in the
-event that someone did encounter the two situations being reported the
-regmap dump would point us to the cause pretty quickly.
+Reported-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Closes: https://lore.kernel.org/all/b6c75eee-761d-44c8-8413-2a5b34ee2f98@linux.intel.com/
+Fixes: ab8d66d132bc ("soundwire: stream: fix programming slave ports for non-continous port maps")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
--Simon
+---
 
+I will need to fix my codec drivers, but that's independent.
+---
+ drivers/soundwire/stream.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index f275143d7b18..7aa4900dcf31 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1291,18 +1291,18 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
+ 					    unsigned int port_num)
+ {
+ 	struct sdw_dpn_prop *dpn_prop;
+-	unsigned long mask;
++	u8 num_ports;
+ 	int i;
+ 
+ 	if (direction == SDW_DATA_DIR_TX) {
+-		mask = slave->prop.source_ports;
++		num_ports = hweight32(slave->prop.source_ports);
+ 		dpn_prop = slave->prop.src_dpn_prop;
+ 	} else {
+-		mask = slave->prop.sink_ports;
++		num_ports = hweight32(slave->prop.sink_ports);
+ 		dpn_prop = slave->prop.sink_dpn_prop;
+ 	}
+ 
+-	for_each_set_bit(i, &mask, 32) {
++	for (i = 0; i < num_ports; i++) {
+ 		if (dpn_prop[i].num == port_num)
+ 			return &dpn_prop[i];
+ 	}
+-- 
+2.43.0
 
