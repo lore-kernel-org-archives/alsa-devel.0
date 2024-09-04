@@ -4,77 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F3D8CD4857
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2024 17:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FBDACD4847
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Sep 2024 18:12:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1296E0D;
-	Wed,  4 Sep 2024 19:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1296E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1466DE66;
+	Wed,  4 Sep 2024 20:12:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1466DE66
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725470876;
-	bh=0oB+h2PhvzTSs4fr1OfLknaixVNmBNFPA/pyFAhoqQs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1725473534;
+	bh=QpCF2EcCr823CZTZEr74srNB7EvaKB2j2fP3kYYsUcM=;
+	h=From:To:CC:References:In-Reply-To:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pyxnhF04lY6wtRifzDmfvDDMWkYRdwLqF02eY/4IpzqpCn7qUQD2H9zHhMq5uDXJr
-	 JxgcUn47O0qesClOTsWdYXTUYJ5c2BDcAwxbn7uqXJOlSYCxnlQEDrEfKB0857vDYg
-	 i6ijD7fPx6q1oOVZq+qlBkzqoEGBAShAMceX4HKY=
+	b=JTetW7RZ4ZwG1dlf+VJIoK6iXjCvyNKnu7KghnsDJfqK7LMhDm23MpP+wVtIh+cLp
+	 VT2EOY2nkqU7R5snJBj2+Hz0wbBgi2nO7dNli9RtK33jJzLqPV+YQDZAklRwlnTRbw
+	 S5jsCLBpiPmTrTrYO7xKtrK0fi7FB5Q3044zKLEg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0EC7EF805BF; Wed,  4 Sep 2024 19:27:24 +0200 (CEST)
+	id EE586F805AD; Wed,  4 Sep 2024 20:11:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CA5AF805B1;
-	Wed,  4 Sep 2024 19:27:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91380F8059F;
+	Wed,  4 Sep 2024 20:11:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9559AF8016C; Wed,  4 Sep 2024 19:27:20 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 62E7FF8016C; Wed,  4 Sep 2024 20:11:37 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 553E6F80027
-	for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2024 19:27:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 553E6F80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 179B8F800E9
+	for <alsa-devel@alsa-project.org>; Wed,  4 Sep 2024 20:11:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 179B8F800E9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jn0N2Gr6
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 616155C53AA;
-	Wed,  4 Sep 2024 17:27:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D865C4CEC2;
-	Wed,  4 Sep 2024 17:27:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725470835;
-	bh=0oB+h2PhvzTSs4fr1OfLknaixVNmBNFPA/pyFAhoqQs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jn0N2Gr6B2dzGEyrfKLldvYgYNsuotQy90NgjEKdtkadrXqOPntThkDe3kqxdkbwU
-	 3pxa43PpV8zmEcJNrb2QB79/QaVQpW9iGQ8dP7QW4aAEr+Bi3HiS1SYpio/A5mFglj
-	 D46GKnwSnyyCu9tTJMMqaqxdOA7dPPOy19nDyN8Siit8MKeJ9TOov6qRjKDwS56fw0
-	 wgCDNOCGZ1c+8axxdmShT0IGgJbKvr7vXIloqwh+qQs8ZtXwgm5Dhj9KRQ0x6NBj8Q
-	 n23dVIQDM5ze8ta7FlhjX+pUNgJ+Pxke5wt7hSxUl27HiCu6aGc2jm96GxxSN4ypPv
-	 04Mzx279aVFnA==
-Date: Wed, 4 Sep 2024 18:27:10 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Simon Trimmer <simont@opensource.cirrus.com>
-Cc: tiwai@suse.com, linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	patches@opensource.cirrus.com
-Subject: Re: [PATCH] ASoC/HDA cs35l56: Remove redundant IRQ handling
-Message-ID: <6eb95724-9ba3-410f-a42e-e1013c449458@sirena.org.uk>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=K9uG+68N
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 484As7kh004907;
+	Wed, 4 Sep 2024 11:17:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	PODMain02222019; bh=7MRbvudIjt/ekH04rmXTHtiizoxZ4eaQvQXwLxu/c64=; b=
+	K9uG+68NjLDmx9ntDZMMlw0gUDE6ngaW0iOMeeP54zqS822RutGN58Nrwz7tQlij
+	VqkeLFeW0tQ2WZcDyDb04/rGFpfe583vqVGYj0YOTYb+Kqu9QoJrL9LVvk1Pd4Xw
+	6KrCYkz/pTnaAhiNiOeuWxvVxqgAdvlwih/IieBpKcn87w4KE6rGUDRwK3i+dnF3
+	sGva26a5H3lXgPyKIoDD/mdb0+puzLoXsPqo7h8KcB9RuE7Ch/bYpBwESMYq/5bm
+	hbXJdaXwIcjqLQEBdphtN5dPt16p0NzHUrw+eXpwlwvezWPrSvhoajbd3Fm8RsOb
+	dmxnexH1gPOxu+8xHZ7Qhw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 41c0jxcyve-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 04 Sep 2024 11:17:54 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 4 Sep 2024
+ 17:17:51 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Wed, 4 Sep 2024 17:17:51 +0100
+Received: from EDIN6ZZ2FY3 (unknown [198.90.188.28])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 974DF820244;
+	Wed,  4 Sep 2024 16:17:51 +0000 (UTC)
+From: Simon Trimmer <simont@opensource.cirrus.com>
+To: 'Mark Brown' <broonie@kernel.org>
+CC: <tiwai@suse.com>, <linux-sound@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
 References: <20240904120700.188644-1-simont@opensource.cirrus.com>
  <e1aeb66c-ecb3-4778-b306-f3a212caf879@sirena.org.uk>
  <004601dafed0$d8ff8cd0$8afea670$@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yS1URVebDMM4Ze5M"
-Content-Disposition: inline
 In-Reply-To: <004601dafed0$d8ff8cd0$8afea670$@opensource.cirrus.com>
-X-Cookie: Linux is obsolete
-Message-ID-Hash: EI6DNWRWBFPXA4W34XAZYE4ZOAIUDEDA
-X-Message-ID-Hash: EI6DNWRWBFPXA4W34XAZYE4ZOAIUDEDA
-X-MailFrom: broonie@kernel.org
+Subject: RE: [PATCH] ASoC/HDA cs35l56: Remove redundant IRQ handling
+Date: Wed, 4 Sep 2024 17:17:51 +0100
+Message-ID: <006301dafee5$fdb00c70$f9102550$@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQKHzAIo361Zljfa9iRBQSN4dy/XOQEQvrcuAYmGn2uw2V/tEA==
+X-Proofpoint-ORIG-GUID: Oyai2-nBQdNx8TilC22DZeG_82szV4zS
+X-Proofpoint-GUID: Oyai2-nBQdNx8TilC22DZeG_82szV4zS
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 3Y5AONR5M7GYWOEMN75ZSFTBEW4OZZOT
+X-Message-ID-Hash: 3Y5AONR5M7GYWOEMN75ZSFTBEW4OZZOT
+X-MailFrom: prvs=6977ef6907=simont@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EI6DNWRWBFPXA4W34XAZYE4ZOAIUDEDA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3Y5AONR5M7GYWOEMN75ZSFTBEW4OZZOT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,67 +111,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
---yS1URVebDMM4Ze5M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Sep 04, 2024 at 02:46:30PM +0100, Simon Trimmer wrote:
+On Wed, Sep 04, 2024 at 13:47:00PM +0000, Simon Trimmer wrote:
 > On Wed, Sep 04, 2024 at 12:25:00PM +0000, Mark Brown wrote:
 > > On Wed, Sep 04, 2024 at 12:07:00PM +0000, Simon Trimmer wrote:
-
-> > > The IRQ handling in the cs35l56 driver was purely informational. It was
-> > > not necessary to support the HDA or ASoC driver functionality and added
+> > > The IRQ handling in the cs35l56 driver was purely informational. It
+was
+> > > not necessary to support the HDA or ASoC driver functionality and
+added
 > > > unnecessary complexity to the drivers.
-
+> > >
+> > > As the IRQ signal GPIO line could be connected and shared with other
+> > > components the handling is replaced with a regmap patch to ensure the
+> > > cs35l56 IRQ sources are masked and will not generate interrupts that
+go
+> > > unhandled.
+> >
 > > Given that the code is there now and has been since the driver was
 > > introduced about 18 months ago what's the ongoing cost of having it?
 > > The information it's providing is notification of hardware faults,
 > > reporting those does seem useful.
-
+> 
 > Originally we were expecting to use the IRQ mechanism for an event logging
 > stream that would function in a similar manner to compressed streams to be
 > able to get an information feed for debug and tuning tools, but those were
 > never created and the logging infrastructure not implemented.
-
-Right.  Though ideally we might actually do something about some of
-the errors that are reported.
-
-> It's quite a spread of code and a lot of complexity in the regular execution
-> paths managing them / synchronizing the contexts, there is more going on in
+> 
+> It's quite a spread of code and a lot of complexity in the regular
+execution
+> paths managing them / synchronizing the contexts, there is more going on
+in
 > the SoundWire bus variant compared to the conventional i2c/spi that it is
 > hard to justify maintaining it all for a couple of log messages - in the
 > event that someone did encounter the two situations being reported the
 > regmap dump would point us to the cause pretty quickly.
 
-I'm not sure how many end users are going to get as far as talking to
-you in the event that they have issues - people often won't get as far
-as trying to contact their distros or upstreams.  Even errors in dmesg
-are pretty obscure but they're more discoverable than interpreting the
-regmap, people would need to identify that they need to look at the chip
-first and actually be experiencing the problem when they figure that
-out.  Ideally we'd hae better handling for this (I did note that the
-latest Iron Devices driver will back off speaker volume during a thermal
-warning which isn't a terrible idea, though there's potential issues).
+Hi Mark and Takashi,
+Hold off merging this one - we should think about it a bit more and people
+are off on PTO.
+-Simon
 
-It sounds like the only real concern is the Soundwire stuff (I2C and SPI
-interrupt stuff should generally be trivial?) - if that's the case I'd
-be more inclined to only pull out the Soundwire bits and leave the
-support there for the simpler buses.
-
---yS1URVebDMM4Ze5M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmbYmG0ACgkQJNaLcl1U
-h9CWaAf/SZYintLOxVkSO/wJvznvuXO8nkPUG7BDqNaMyap000lphqeP9Q7omZrg
-wsmJm/om/i6qef2DCsrJxNKU0DRTMXx9DH1/rUnfPBn2mAjqWCFYLPXBtoBLVHwU
-4YZ1IEDV5wYtrz/MPBz4PPTfjYv33IFlxKEzBaw5N2nTnfewjAk6zBws/x+CSrUG
-dIR12Vzo7XrcLufw4uexjqTMsS05FKAQT5roUTpXIWnmjqG6hVToKL6pOSijWMeK
-eN2rktIo40P3HzcF9WMCbY4Gnn8WY1RoPHCnNn5CI0WlxF2h/Kj0gYB3tbdx0419
-JE8FZCb/CtMhGH1ilPHFRkh29lptwQ==
-=Kn4O
------END PGP SIGNATURE-----
-
---yS1URVebDMM4Ze5M--
