@@ -4,95 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51F78CD5BC7
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2024 14:17:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6B67CD5BC7
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2024 14:17:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E90DDF6;
-	Thu,  5 Sep 2024 16:17:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E90DDF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2948A868;
+	Thu,  5 Sep 2024 16:17:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2948A868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725545835;
-	bh=1uqZdGxPQGBnP8j4g6VlFe4rJuLJoGF/D9uni1/dnBU=;
+	s=default; t=1725545852;
+	bh=HGKKWuwE3+8ouI0WFbu/VAtPy+LRBtX+ATMaNod25ho=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QS43X8wlIBnAObY0d3JLk7mLUGnytoE5P6jKdKbXVohd+R344qhPUznPaFLbJz1kl
-	 uSmrrbufjsS4MXIPrjMXJzoR3V/UuVKu/qpe4/2jzQw2lneKGb76TRXg7xLUS7uWEW
-	 IeaG1sd+BvxmtCuV1ZdvopgupO6Nae1PIUPy7cto=
+	b=cywdtPrJt02JC1uDG3d4LPlE0ssCpTruflhe/m9MnJe1dEzvzuJ7QHBlTKfLcyu17
+	 WfIGOrRiHah044w042GFN4ITaTX4OGCJ65pckHf8xaoaLKRVzFVTj+j0TLy3odt3Sl
+	 QbVNKupZxazso+QYQynwX1WcgQxx/wjNgVu9KpAM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09570F807A2; Thu,  5 Sep 2024 16:14:15 +0200 (CEST)
+	id 32513F80847; Thu,  5 Sep 2024 16:14:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0213FF8077B;
-	Thu,  5 Sep 2024 16:14:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95C14F80809;
+	Thu,  5 Sep 2024 16:14:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D279BF80611; Thu,  5 Sep 2024 16:13:49 +0200 (CEST)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
+	id 06E49F805B4; Thu,  5 Sep 2024 16:13:51 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4CE9CF805F4
-	for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2024 16:13:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CE9CF805F4
+	by alsa1.perex.cz (Postfix) with ESMTPS id BED1DF80605
+	for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2024 16:13:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BED1DF80605
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20230601.gappssmtp.com
  header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=JB+RLusb
-Received: by mail-wm1-x32a.google.com with SMTP id
- 5b1f17b1804b1-42bb7298bdeso8811105e9.1
+ header.s=20230601 header.b=YX2fyYEv
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-42c94e59b93so11220435e9.1
         for <alsa-devel@alsa-project.org>;
- Thu, 05 Sep 2024 07:13:45 -0700 (PDT)
+ Thu, 05 Sep 2024 07:13:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1725545624;
- x=1726150424; darn=alsa-project.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1725545627;
+ x=1726150427; darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NInuXK75oVteTq8w9+Oc9GnjLQbH18gVkPWMAJJFJ/U=;
-        b=JB+RLusbsEo43Cus8sXyBW9CHLz0BfO1Zlvb019c+xEepBof1aS0G3Iv7LRMad8tWp
-         dbDf4bFxB2y4iJjjXf6WEXJ4MOQdMfzxGPd1swz6i6Sh8Vr1vkmQKBkl1eCH+nTO+eoP
-         P7+Ah2VmCcAsvYkMxgj0XsYYnnKozBsWP6rIvp70j/ymCFyb+6epFunRtS28v3jFeJ+l
-         w1zWe8kr1BPN6rbpMLigGjlkuCHB3/ejRop+XU96Va8uYZOu2+ABdYo/NTKIulIA+LDQ
-         MGkIkfCMaZiNc+KT2LJdE3v6qxGdt7ZjJXmrMmMH8GG3YJP+IALFJXYjzFbMJaFC0LUv
-         xASQ==
+        bh=u3kylnJVXfNp6rw3d/1irQrhp19zNyQdKhcZsUU9cnk=;
+        b=YX2fyYEv0upITTzImTQT1efT7HQ8Il7VAp9BL7+Qg/AD5JsdNiffxctheHi9/epwCw
+         doSrwX9wpyGFefP9zzggt/AZenvN7VaZK5ELAexxLUb885L/8jBn4sHWOwQeoD5R8EnQ
+         CU5nH2qFjODYyTJQRaWdMtMpIu2GyfwB7dtA85l4NJn3nJLFhxaoVpFdI1Gpi0HgRjaR
+         iEPHS0IFL0J69hlozoFf0eMzIbsaHdEYLPGiHvS8nkpfKV2zT3s+aWh4kwUkNIpJMyZf
+         dKMneABU5LxkqEkZPFxUK+XdF7lcWaT/ciMKZkJ6W+5cLqc9oHzrjbK/FUhriz9jx3YP
+         +mww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725545624; x=1726150424;
+        d=1e100.net; s=20230601; t=1725545627; x=1726150427;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NInuXK75oVteTq8w9+Oc9GnjLQbH18gVkPWMAJJFJ/U=;
-        b=TAGMnxLmZ13IYwpu96K9Yi+gYadTpy8c8oBWq9gTMTRds+zIQMQaRfZ7mpbUH48E6b
-         umlIoIeJeptZpbgBgWdFMQ3s+EdFMvEXkVW+CHL7EuLHFSYjnIRkk8uTLsscTbqxHPk2
-         j9JylMEss3Rt5sBuFp239+jx/jF+lGmcpeWLD51LeJelGDFwtZKcJgs/1LCbXqOhBnFe
-         D375aQDMPohAEZcexd1pXkNndze70w8o4yJC3zcbaaqpeAVY4eVZqNI196aNb1W6xIaw
-         rtDehXgDrB+eubkLZwHKmt6SZluqQkiOoYZ7r93FD4G0iVfNdr70yEvdc/z6JArq3L5Q
-         Bg4A==
+        bh=u3kylnJVXfNp6rw3d/1irQrhp19zNyQdKhcZsUU9cnk=;
+        b=Voqf6ofPHZWJEjslold2g6PTUujUGSn/ZprphMhjWwb1sNeIDznJqYxFmx45fCrpGK
+         TJHpYjLdKybEp7t1/MKcK6fY0OKJ2aN8RmIeLbwEuj7d5yPbJUulQI3V/NwqKW8jvB2v
+         qpa43GjwfDz+3qtjNd4tpNGWc1b6hiF3NArxDi61HL7lUTBBwzpOJN+WUDbdmHtVOCn8
+         y8+etg9gyiwN8M52FoSs4729T7X5hZFe5e+E9W/8uqW4aDQrjYQ8F5MtPw0GukAG2h/G
+         bsLg4V7PuVIjYXUbj6yI6/yg7Fivz21VyYApoDQ2tu+PApf4bCN2Jv3pQE2CGG0B0/SR
+         yZOA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWVg0zgHTeugChcVNCEn2gZKFgC9id7Oef38GuzOCkaskD+lZLAfWLVpmJpZZDFoBIlgHpQcwKotUDa@alsa-project.org
-X-Gm-Message-State: AOJu0YyLSIvidhsHs6twXfglBAUVwmpFxSa34y1SklXs7C3Vr+JhWP53
-	KObgq+GnVWl0yvRiGZ9t87x07c+xYFcjX/aLveVnqq0AIiN+WtivcCHkOyMgUcv8v/KFRkXQ1bR
-	U
+ AJvYcCVzASSVWwFh85tAmQ+taU5azodhiVlyK9OZnvo45vpc9s+TPF+zPc0vCpzwEmxhIFH8KMM/fjUAvZcD@alsa-project.org
+X-Gm-Message-State: AOJu0YwyCikOS9yDt9N4vJ1nD27+3raC58olS5itpr+cIXJ8k/ejIQ/0
+	CPhXz6E22GH9teQDGyyr1GrktdQLGzEgs4CBvieyiVZbO3VabkRxzSSSqb7Jt/o=
 X-Google-Smtp-Source: 
- AGHT+IF1Rnp0BlEo/3O3FvtMVAQD9zYxpmEVsCSjem+AnuxVcV5GOUWE75yL3i/75iLee6d74WlhdA==
-X-Received: by 2002:a05:600c:4f4e:b0:426:5e8e:aa48 with SMTP id
- 5b1f17b1804b1-42c9a36ce9bmr25508875e9.22.1725545624078;
-        Thu, 05 Sep 2024 07:13:44 -0700 (PDT)
+ AGHT+IFM7C/kDhVKsqo8gQ6poeqRmyyUiqotKRoAB2OwlkxpEQHF6JubaidKOiZBM8wLmGV88wvgwA==
+X-Received: by 2002:adf:f745:0:b0:374:bd00:d1e with SMTP id
+ ffacd0b85a97d-377998aafbcmr3833233f8f.3.1725545626528;
+        Thu, 05 Sep 2024 07:13:46 -0700 (PDT)
 Received: from toaster.baylibre.com ([2a01:e0a:3c5:5fb1:4763:343b:23f3:f45])
         by smtp.googlemail.com with ESMTPSA id
- ffacd0b85a97d-3749ef81146sm19514621f8f.82.2024.09.05.07.13.43
+ ffacd0b85a97d-3749ef81146sm19514621f8f.82.2024.09.05.07.13.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 07:13:43 -0700 (PDT)
+        Thu, 05 Sep 2024 07:13:46 -0700 (PDT)
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 05 Sep 2024 16:13:02 +0200
-Subject: [PATCH 11/13] ASoC: sunxi: sun4i-codec: drop SNDRV_PCM_RATE_KNOT
+Date: Thu, 05 Sep 2024 16:13:04 +0200
+Subject: [PATCH 13/13] ASoC: spdif: extend supported rates to 768kHz
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240905-alsa-12-24-128-v1-11-8371948d3921@baylibre.com>
+Message-Id: <20240905-alsa-12-24-128-v1-13-8371948d3921@baylibre.com>
 References: <20240905-alsa-12-24-128-v1-0-8371948d3921@baylibre.com>
 In-Reply-To: <20240905-alsa-12-24-128-v1-0-8371948d3921@baylibre.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -114,24 +113,24 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-sunxi@lists.linux.dev, Jerome Brunet <jbrunet@baylibre.com>
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2799; i=jbrunet@baylibre.com;
- h=from:subject:message-id; bh=1uqZdGxPQGBnP8j4g6VlFe4rJuLJoGF/D9uni1/dnBU=;
- b=owEBbQKS/ZANAwAKAeb8Dxw38tqFAcsmYgBm2byHCX1aj4AmJj1Q1JWPzGMx85ey7eOOxJr+R
- rAU5MJYHhGJAjMEAAEKAB0WIQT04VmuGPP1bV8btxvm/A8cN/LahQUCZtm8hwAKCRDm/A8cN/La
- he0WD/9ZWAdHLFmtFB3mqYO/QGvuN52rpe1DwhCaM2ZCwcGDXqJ2yN32wMIZlvW2Ws2qBR7xuJq
- mZ6HjgYXOG0wJIW3Pe9fiUdRSxdJM7ILbnodGi7Mpb1b8f9TITFHjR9OCxaskxFs6MlMTsovZco
- TyhNEo7x4TbKgjNxELQKMqvTW4A7XA/Uz05XKJ1Ys0tZ/AsiJccuDCmv0Igy5VezRVRubCOjzwz
- A+2bUFPbOtq0OPrKr8Z2tfZkjKdR0RDuNcEV0SGtwWIijxxhlEy+eidNFq1tzVQbTTcPzNHObnu
- /iU5f7f3tExu0ipT1WcGmJrb6WePR8T5r/iQul8HGDekZnPnXDFutlqNZZsX5EYdOajvF4klddC
- mP7PzOAG0QHyZkgwOU7JwrwetBknkEeeA+KFAMKU/30+Q6bWsIXE9UDjBR9ZvxgWts8ey+nP8/o
- Z8LKus8tsEv23crdsPdSGzxJNQuC0x2SqBhoqk9e+Lk2qECPJorgQHhIANw6BMd0Mp43ugYA7J8
- zqWrr6BzE3JtJKGjfH+Lyad+DpAmzLHAjEsoE9nvV8ZP9qdQq473Tbn1ePNgDQjkEdndiv5N2HA
- bUJdAvFHiQqTxVq/x7icSTe7dOwERMEm0XEF05xTExrKh1d8lbdlaIqbjp2sZbXHoI7Sy4/dOtC
- FIFFrECzeVOEwHg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1441; i=jbrunet@baylibre.com;
+ h=from:subject:message-id; bh=HGKKWuwE3+8ouI0WFbu/VAtPy+LRBtX+ATMaNod25ho=;
+ b=owEBbQKS/ZANAwAKAeb8Dxw38tqFAcsmYgBm2byIdu+85ezuHy93WyoVP+yWVeGiEH5uiklbm
+ ulYpPtqetGJAjMEAAEKAB0WIQT04VmuGPP1bV8btxvm/A8cN/LahQUCZtm8iAAKCRDm/A8cN/La
+ hSFOD/9TXxTKB/AmL9i5/scP75UlZWF2gxl0FZzdSxtB9odmLY4QtohIVqBLWKF/m10g5rOpk+x
+ eUR9f+9WMuTP6Ya1RfwSxUydN9Vc/CGtInW+6uPNAQq9ucANTIRbu/ZwEjpoyraXshUAXjaq6ky
+ i0TlxG4s7qKuY/0ZLoQLKSylnqxgUEqxPMGe/ys5q6eqbJAF8Z5wmgu0efKW+a2HPZsFkATOaUA
+ HNR5J4aoEDZ+YlNh79i9yFG5Cfv0BuZp2s7wKrE6/xbN5pe7STe2mPjnaLtLzjJunezCPpgOR5g
+ zFXVHXXxuS518z0uYjIp1Lu8LsE+Hok0Yy+1hMNvd+jctg0iQWNxZ9Y8YflraJ8/HnSpZPeQJgr
+ ajQDDm9amsoB6wGM7YpsQiE7GTN+cA0QMRlp30521hVu/6yeCEDqZyW+8qkdtDIt1EJb3JhMsx4
+ VzLTkeMEdHtWZ2GXKlfNvNaWYnksLfi6q2C7T08h05VzXkohE8jSmP9WHeoPMFtMG8rnjXN9Rrx
+ 6mwyHNApsEomVX5gx0JcJxBDpXKKW5Ny6b6KTDXQus4C+j+lF1E3NndGyGbZX2uDtBDEERybCRF
+ 4Rpja3xmwdlmvg31mLCavX9pnnV9xJGyiSS0z6e4s/b2yBf/m7IIBNzHuKZY6LpRt186CTo7+ze
+ OH0S7WtKYhGB5nQ==
 X-Developer-Key: i=jbrunet@baylibre.com; a=openpgp;
  fpr=F29F26CF27BAE1A9719AE6BDC3C92AAF3E60AED9
-Message-ID-Hash: JDFFIESX7I2OXQMI35O5HZ6ZM3RKRTR4
-X-Message-ID-Hash: JDFFIESX7I2OXQMI35O5HZ6ZM3RKRTR4
+Message-ID-Hash: 4OA353ZCW66IGR72ZRNCNE2O6N2CNNM3
+X-Message-ID-Hash: 4OA353ZCW66IGR72ZRNCNE2O6N2CNNM3
 X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -144,7 +143,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JDFFIESX7I2OXQMI35O5HZ6ZM3RKRTR4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4OA353ZCW66IGR72ZRNCNE2O6N2CNNM3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,90 +152,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The custom rate constraint lists was necessary to support 12kHz and 24kHz.
-These rates are now available through SNDRV_PCM_RATE_12000 and
-SNDRV_PCM_RATE_24000.
-
-Use them and drop the custom rate constraint rule.
+IEC958-3 defines sampling rate up to 768 kHz.
+Such rates maybe used with high bandwidth IEC958 links, such as eARC.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/sunxi/sun4i-codec.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
+ sound/soc/codecs/spdif_receiver.c    | 3 ++-
+ sound/soc/codecs/spdif_transmitter.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index a2618ed650b0..25af47b63bdd 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -577,28 +577,12 @@ static int sun4i_codec_hw_params(struct snd_pcm_substream *substream,
- 					     hwrate);
- }
- 
--
--static unsigned int sun4i_codec_src_rates[] = {
--	8000, 11025, 12000, 16000, 22050, 24000, 32000,
--	44100, 48000, 96000, 192000
--};
--
--
--static struct snd_pcm_hw_constraint_list sun4i_codec_constraints = {
--	.count  = ARRAY_SIZE(sun4i_codec_src_rates),
--	.list   = sun4i_codec_src_rates,
--};
--
--
- static int sun4i_codec_startup(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(rtd->card);
- 
--	snd_pcm_hw_constraint_list(substream->runtime, 0,
--				SNDRV_PCM_HW_PARAM_RATE, &sun4i_codec_constraints);
--
- 	/*
- 	 * Stop issuing DRQ when we have room for less than 16 samples
- 	 * in our TX FIFO
-@@ -626,6 +610,13 @@ static const struct snd_soc_dai_ops sun4i_codec_dai_ops = {
- 	.prepare	= sun4i_codec_prepare,
+diff --git a/sound/soc/codecs/spdif_receiver.c b/sound/soc/codecs/spdif_receiver.c
+index 862e0b654a1c..310123d2bb5f 100644
+--- a/sound/soc/codecs/spdif_receiver.c
++++ b/sound/soc/codecs/spdif_receiver.c
+@@ -28,7 +28,8 @@ static const struct snd_soc_dapm_route dir_routes[] = {
+ 	{ "Capture", NULL, "spdif-in" },
  };
  
-+#define SUN4I_CODEC_RATES (			\
-+		SNDRV_PCM_RATE_8000_48000 |	\
-+		SNDRV_PCM_RATE_12000 |		\
-+		SNDRV_PCM_RATE_24000 |		\
-+		SNDRV_PCM_RATE_96000 |		\
-+		SNDRV_PCM_RATE_192000)
-+
- static struct snd_soc_dai_driver sun4i_codec_dai = {
- 	.name	= "Codec",
- 	.ops	= &sun4i_codec_dai_ops,
-@@ -635,7 +626,7 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
- 		.channels_max	= 2,
- 		.rate_min	= 8000,
- 		.rate_max	= 192000,
--		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
-+		.rates		= SUN4I_CODEC_RATES,
- 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
- 				  SNDRV_PCM_FMTBIT_S32_LE,
- 		.sig_bits	= 24,
-@@ -646,7 +637,7 @@ static struct snd_soc_dai_driver sun4i_codec_dai = {
- 		.channels_max	= 2,
- 		.rate_min	= 8000,
- 		.rate_max	= 48000,
--		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
-+		.rates		= SUN4I_CODEC_RATES,
- 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
- 				  SNDRV_PCM_FMTBIT_S32_LE,
- 		.sig_bits	= 24,
-@@ -1233,7 +1224,6 @@ static const struct snd_soc_component_driver sun4i_codec_component = {
- #endif
- };
+-#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
++#define STUB_RATES	(SNDRV_PCM_RATE_8000_768000 | \
++			 SNDRV_PCM_RATE_128000)
+ #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
+ 			SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE  | \
+diff --git a/sound/soc/codecs/spdif_transmitter.c b/sound/soc/codecs/spdif_transmitter.c
+index 736518921555..db51a46e689d 100644
+--- a/sound/soc/codecs/spdif_transmitter.c
++++ b/sound/soc/codecs/spdif_transmitter.c
+@@ -21,7 +21,8 @@
  
--#define SUN4I_CODEC_RATES	SNDRV_PCM_RATE_CONTINUOUS
- #define SUN4I_CODEC_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
- 				 SNDRV_PCM_FMTBIT_S32_LE)
+ #define DRV_NAME "spdif-dit"
  
+-#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
++#define STUB_RATES	(SNDRV_PCM_RATE_8000_768000 | \
++			 SNDRV_PCM_RATE_128000)
+ #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
+ 			SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE  | \
 
 -- 
 2.45.2
