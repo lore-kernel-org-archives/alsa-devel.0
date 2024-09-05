@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D13ECD5BC8
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2024 14:16:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94258CD5BC8
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Sep 2024 14:16:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB56CE65;
-	Thu,  5 Sep 2024 16:15:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB56CE65
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9147F84D;
+	Thu,  5 Sep 2024 16:16:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9147F84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725545765;
-	bh=/9PPWU/V3ndhMwxKTLQBCr4ABO0MKQnJNgh6SuoSWJA=;
+	s=default; t=1725545783;
+	bh=drSScU2kqBTHjL0A8KzaYHR+/F7xoFGHMQYfWWJ7pnE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tJvSoXoSrrrn9AZFDwOH/2Q7FIF9Li+z9e+RGlQmlMX1I7WeyVSw3J7BOhrErfPdU
-	 Lhq9D7k5LKY3iGIhTWpQwidfaaHZ6Xk6Z8w7rvG0NtICoelp+T22aytiQHn0Cbb805
-	 pBvyi2NGBDaNRMCiXEITPLuQznGP54sE6tA0u0vw=
+	b=YN4ItbTCkSibTNL71jueKJ0qbIbHR9M2FvUcvE8KLEA+Qs362PIQqIe82VW2pDLSZ
+	 RqxySPL/CBW4oNkw/SQI0xl7w93FpFmgGoZwKLa0YUPdyHeleUI4mCt9QzvKW2Ooaa
+	 XDAyonFBs+L1bbgp42jOG6Of2LizNlvp2qD0DpzU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E477F805A1; Thu,  5 Sep 2024 16:14:03 +0200 (CEST)
+	id 72188F806E1; Thu,  5 Sep 2024 16:14:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBFD0F805A1;
-	Thu,  5 Sep 2024 16:14:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E831EF806F0;
+	Thu,  5 Sep 2024 16:14:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27E36F805C8; Thu,  5 Sep 2024 16:13:45 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
+	id 200B0F805ED; Thu,  5 Sep 2024 16:13:45 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7D418F805BA
-	for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2024 16:13:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D418F805BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8189F805E8
+	for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2024 16:13:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8189F805E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20230601.gappssmtp.com
  header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=w+zNSWgw
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-42c7bc97423so8869005e9.0
+ header.s=20230601 header.b=JVwnC8pG
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-42c828c8863so7070375e9.3
         for <alsa-devel@alsa-project.org>;
- Thu, 05 Sep 2024 07:13:40 -0700 (PDT)
+ Thu, 05 Sep 2024 07:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1725545619;
- x=1726150419; darn=alsa-project.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1725545622;
+ x=1726150422; darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2Z+rj5y3R0mNy6TrxdjS8zRh7/rFaHDdfIRk7QJqw5Y=;
-        b=w+zNSWgwsTuW6kZboztf0sZdw6lXo9lUu613vGhaPej0OPbz2TqnZceVmc+RcHg2cq
-         PNwsLpjAhTVOmBsHxO+RdGQ2AngK7/g2kKQ7BE/hMCvGsO7J9u0Ks1letpBA3jhPzIAt
-         pPXDIqgkHKPEw1V/7vYjFSV757oZuhCxEGt05Fch9P/iG61GmHfFOFQlfgsxd6SDp+oJ
-         ruoXCrpnL4Nec3Ec3QdTFqBGi/+4jVldnak39X2SQA8e5809yCR6w0mDgbotcAkBggJ8
-         F1ThT7Ylep+D3JAx3KAx2yTHtH01UDhItG70ThajC9nYhnVte6X6rfWi2IGD9Q9FLORJ
-         2EBg==
+        bh=fLGY2r4E5D5nEZeix2orNxNRil3E6loR/QGg/DpFo+A=;
+        b=JVwnC8pGRNpSa9lDQYF+mC7d+fM05u9UjhYdkVO9SToNoaCWbUCjSVZtGUNdn0e2bL
+         i8y47vfO9n/BBzdR0heHY5ZqPlZKWNRsYPFoim1uaVQ7pZOa8b7YJh8OJJViv8Z72hpG
+         Z2xLb/te/2Yyck6FS7MZ9ZLCQKeDVP1EScj1WkoxVWa1hTszC7+dI/dZWSfe09VBq22p
+         IvqI2Nt5a14kUP2ftLDsUcj7dDxK3gazPNiYbWeaO/xhfvWtkhYFT+WtBhXKkQkyL0uf
+         0PP0RBHtgMrvJmMAFcoasam9TXkLMoGRpU/bT0EjI2l8L3r6oEmOVbph2SL9cizOIeVd
+         BS4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725545619; x=1726150419;
+        d=1e100.net; s=20230601; t=1725545622; x=1726150422;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2Z+rj5y3R0mNy6TrxdjS8zRh7/rFaHDdfIRk7QJqw5Y=;
-        b=aGbxaAPf0Lo4TL8ojrAe5dDFB9WS2LqQSi1juwUJlU5S8z2YI2x5LYHAc4Pl/rOct2
-         ZbXuV1IQdPfUuI9GR3EzGsFGaPXd7GumllgNw/WCBGm9TQ4rs2f7swZ43Dv1oPyImGEa
-         LS6xqoGHeqDRwDHqEUHCxSLtoT4Yyb86tAAVdI8D4TRu4w8QXhg9gOtC5vQJQOhilI8M
-         s+97wDPyEQEJlWk44iMG/UbYWAtWMSLDLazfpkuvWdKG+kvgKbAHIYig30NAN2IG1Ccn
-         cPHb88ehk9vanR004pg/MBSRB9JHRpVd8I0K/CLSA38GC+kcioGIZTEWCeK/EjH8fxLg
-         T28Q==
+        bh=fLGY2r4E5D5nEZeix2orNxNRil3E6loR/QGg/DpFo+A=;
+        b=RuhUW4AFG4wYePb/HWf02iDFCdVYY3qfr6xC3EYvSarfXfawWSAxAp9bTZU3iSrYQU
+         NDQ98050bhZXufVJ6j1VlfdekhiFQlKu4Q9xFzWXD3Yaj5PNtPYkK5rhiXDebUzKoLxu
+         mwkYiwXzecb6B7PxfIufzy6hYKTZBvzzujfv64fEjZ4R0bPeLKaSGmqbQpcyDPV96ZCm
+         fcI8GmNtJ8ykNlY40IO8jXRByv3i4c452oNsAIre35ocS1D8eypfXvRoOPJXix5W7XXh
+         UZkBGL7QXX72UMxptn2FBNrJc9mqYs1AD4OwqCYvtX+VsqNMqTKTqDLnRdbF8itgXIq+
+         jkRw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWhREa4onD3iBfap1o9U2w0N8yI71L7IpzHqdvByS7fh4jZtSryfNYOAwFNMM58Rm//gQhZ64/UDH7Y@alsa-project.org
-X-Gm-Message-State: AOJu0YwMPJmNV11/iyro2NV3AQm3JRelUY6fetR/wO0pUkvISsJCjN6I
-	s5OyuJ68txvr9s0MIvpK63YWWx9Jb9733Rzj+62sOcLcAtLKVrjz0vKuL+Pb1a4=
+ AJvYcCU/Q0ToDqvh/9Kh+cElWgIrJU6ytldyiRwkOQLpyHaHRVWbcf6RNDPUbTUO/JiKuy8oVexPJVMb2pTt@alsa-project.org
+X-Gm-Message-State: AOJu0YyA4WGC7MIB45vVafJKQZDCZBKIzL6/hoP1+88mXjSZcNGSeLEV
+	xHEh4qLiaJGBO24l72q/C/T6Kh7kr9firisqWSPcr5JsxsuW9n5lorGcbHgjb0U=
 X-Google-Smtp-Source: 
- AGHT+IFnCqbQW/W0tCcOFZOUTrgOvDDfD/BF7Qm+j3pcmxyp5nmWJMclM/a4f2XaIjQkMTPnmvJFyQ==
-X-Received: by 2002:a05:600c:291:b0:426:5b44:2be7 with SMTP id
- 5b1f17b1804b1-42c9e82bb6cmr1594685e9.10.1725545619306;
-        Thu, 05 Sep 2024 07:13:39 -0700 (PDT)
+ AGHT+IEGRCC4e+BbZUypR7krz2a4gQq1qGWOiNgWFE+vKhBXsfkEaZmALu0yOYGqYwZOJmoKA993YQ==
+X-Received: by 2002:a05:600c:3d92:b0:42b:afbb:171b with SMTP id
+ 5b1f17b1804b1-42be48fa9e7mr115228615e9.35.1725545621670;
+        Thu, 05 Sep 2024 07:13:41 -0700 (PDT)
 Received: from toaster.baylibre.com ([2a01:e0a:3c5:5fb1:4763:343b:23f3:f45])
         by smtp.googlemail.com with ESMTPSA id
- ffacd0b85a97d-3749ef81146sm19514621f8f.82.2024.09.05.07.13.38
+ ffacd0b85a97d-3749ef81146sm19514621f8f.82.2024.09.05.07.13.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 07:13:38 -0700 (PDT)
+        Thu, 05 Sep 2024 07:13:41 -0700 (PDT)
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Thu, 05 Sep 2024 16:12:58 +0200
-Subject: [PATCH 07/13] ASoC: cs35l41: drop SNDRV_PCM_RATE_KNOT
+Date: Thu, 05 Sep 2024 16:13:00 +0200
+Subject: [PATCH 09/13] ASoC: Intel: avs: drop SNDRV_PCM_RATE_KNOT
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240905-alsa-12-24-128-v1-7-8371948d3921@baylibre.com>
+Message-Id: <20240905-alsa-12-24-128-v1-9-8371948d3921@baylibre.com>
 References: <20240905-alsa-12-24-128-v1-0-8371948d3921@baylibre.com>
 In-Reply-To: <20240905-alsa-12-24-128-v1-0-8371948d3921@baylibre.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -113,24 +113,24 @@ Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-sunxi@lists.linux.dev, Jerome Brunet <jbrunet@baylibre.com>
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2629; i=jbrunet@baylibre.com;
- h=from:subject:message-id; bh=/9PPWU/V3ndhMwxKTLQBCr4ABO0MKQnJNgh6SuoSWJA=;
- b=owEBbQKS/ZANAwAKAeb8Dxw38tqFAcsmYgBm2byDjJ5MAQwKUXUi9Qx9lRk2zC2qtJAg3cVqb
- F68ud1AS6GJAjMEAAEKAB0WIQT04VmuGPP1bV8btxvm/A8cN/LahQUCZtm8gwAKCRDm/A8cN/La
- hbs7D/9jkFwqwrmKgv0ZhPh3d28WC+JMl2LeePbM44C62MIMmX09vhcW2vLNov6JfPakVj22wyO
- 8sScRFOllDrWOHNaBxlRiYfCl3X0/qiuzBDB9JOrCpl4ag5IT8bRf9zGVqZvJ35O+DvurKLz9c/
- zm05MLmKv1tlE3WTKoOTjB2GjDiFhEd68kCrkmBols9ApTtWxut7rV4yjIJk/+2gxaO1lc5iOCE
- xyKIumdiL7cAyQYLyQ5k5qi+1tPU7jf94tIDGTd8iiucGvZ+BhfVjcSsfBhoXEIDKuPIGxQdxvV
- yrGNlJIx4GYc5iYEXWWE02UY0JMkgCsVurF476/18TTh02FgffBqaLjlo8bC0C+efK4ipU36wZ5
- QQOJq7uLQuEQ7kC6NQ4I9D64jRE9+NA4R11zvlvDh0MXAntJfxDogIJDmFiJ3cQoVXCBIBoppdm
- J7DTxylEbgD5dlPXFgGUW3yCALXVgGoJwyg6afC81A96488Yd2bPDXZk3Saz9WiQ6Oz3E6V5WwE
- BKUjPqjy15Q3pVWSIc7YzFLJ4MeRww/EZUBLPCftmmUNT7PSTYhgRekdcPuUeEaeKiFzuh9iJzB
- /k9TzDFclI7URRUkSFQv04/lO6TfZjdfpD2HAJ3DqXYuR1ty+S9c2nVkBcbfrl/yTePFp8+xd6t
- pBlkHqVpOmWX1Gg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2545; i=jbrunet@baylibre.com;
+ h=from:subject:message-id; bh=drSScU2kqBTHjL0A8KzaYHR+/F7xoFGHMQYfWWJ7pnE=;
+ b=owEBbQKS/ZANAwAKAeb8Dxw38tqFAcsmYgBm2byF5Z7tNiZhe6e816749oi0zUTNuNg77PRA8
+ jsKC/9KehyJAjMEAAEKAB0WIQT04VmuGPP1bV8btxvm/A8cN/LahQUCZtm8hQAKCRDm/A8cN/La
+ hbCND/9QmZRemz2Otghu3R9RnK3p2ChrnyTSdSBbVXRpvQu/8ZIqU4Co8aEGyMpZhAzh+ZuourF
+ QXKy8b8BOGlBLpuvtssdH83C857coUohvv9CGY5KiaznFQNnFAFO8G9pLCGrmLnSktHRYT3E6UE
+ RNKE9tQXZNDwele7SVDxFKC5H5cmBcOBo35DAhZUCC159eSbvPmJ2LRb1eHgVwEHA4+u+uaKH0B
+ 7FxNeK3JSYRbXU6Bic8nvp8GBMwYUvqahENbQG/vqG4FZqpHuXfVXwqcCJYfTLtVo6CgJhbb3KN
+ xFgGKl5P9noIkOjIsK2TcWjCgQvCx2k05xiBjiwIHLQjVxuSSCULF0dp1uT8462NSn5Wlq/a72o
+ WuVevmzC5mcpPSm7VVTmxDgBEsyoQfydLTw0p67qMvlBQGEBv0MKgEAp0GFgxu5dX4NmYQmvgi8
+ Noo9s1SYgOHLvx38mjsM4MfZ8hQ2KUBiAhVIZwrxY3prg+t55nyv7hrbebTdEeXXacxmkb+0/HH
+ UeGw9nMm8XZggMrqc4OkHYSVSL+X30tj2m8zbuyEkpVrOnM5jZqRku0n/p8muHSAaXrH3gXFW7Q
+ K1e/20qPKuebTTG9S/YrlyLCQBL1VzQF4nQfwwFaXHlvwGUO5F5toZYfcCK451E5lTMSAxb1Csb
+ oFNIoD886sMAeSA==
 X-Developer-Key: i=jbrunet@baylibre.com; a=openpgp;
  fpr=F29F26CF27BAE1A9719AE6BDC3C92AAF3E60AED9
-Message-ID-Hash: KIJKW7F2W3SEVJAAXKXB4TKFC4QJEB4N
-X-Message-ID-Hash: KIJKW7F2W3SEVJAAXKXB4TKFC4QJEB4N
+Message-ID-Hash: 4XMZX425APZ6SEOWXNO4TDFF7VR22MOO
+X-Message-ID-Hash: 4XMZX425APZ6SEOWXNO4TDFF7VR22MOO
 X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -143,7 +143,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KIJKW7F2W3SEVJAAXKXB4TKFC4QJEB4N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4XMZX425APZ6SEOWXNO4TDFF7VR22MOO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,88 +152,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The custom rate constraint list was necessary to support 12kHz and 24kHz.
-These rates are now available through SNDRV_PCM_RATE_12000 and
-SNDRV_PCM_RATE_24000.
+The custom rate constraint list was necessary to support 12kHz, 24kHz and
+128kHz. These rates are now available through SNDRV_PCM_RATE_12000,
+SNDRV_PCM_RATE_24000 and SNDRV_PCM_RATE_128000.
 
 Use them and drop the custom rate constraint rule.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/codecs/cs35l41.c | 34 +++++++++++-----------------------
- 1 file changed, 11 insertions(+), 23 deletions(-)
+ sound/soc/intel/avs/pcm.c | 22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 1688c2c688f0..07a5cab35fe1 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -808,26 +808,6 @@ static int cs35l41_get_clk_config(int freq)
- 	return -EINVAL;
- }
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index c76b86254a8b..afc0fc74cf94 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -471,16 +471,6 @@ static int hw_rule_param_size(struct snd_pcm_hw_params *params, struct snd_pcm_h
+ static int avs_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	static const unsigned int rates[] = {
+-		8000, 11025, 12000, 16000,
+-		22050, 24000, 32000, 44100,
+-		48000, 64000, 88200, 96000,
+-		128000, 176400, 192000,
+-	};
+-	static const struct snd_pcm_hw_constraint_list rate_list = {
+-		.count = ARRAY_SIZE(rates),
+-		.list = rates,
+-	};
+ 	int ret;
  
--static const unsigned int cs35l41_src_rates[] = {
--	8000, 12000, 11025, 16000, 22050, 24000, 32000,
--	44100, 48000, 88200, 96000, 176400, 192000
--};
--
--static const struct snd_pcm_hw_constraint_list cs35l41_constraints = {
--	.count = ARRAY_SIZE(cs35l41_src_rates),
--	.list = cs35l41_src_rates,
--};
--
--static int cs35l41_pcm_startup(struct snd_pcm_substream *substream,
--			       struct snd_soc_dai *dai)
--{
--	if (substream->runtime)
--		return snd_pcm_hw_constraint_list(substream->runtime, 0,
--						  SNDRV_PCM_HW_PARAM_RATE,
--						  &cs35l41_constraints);
--	return 0;
--}
--
- static int cs35l41_component_set_sysclk(struct snd_soc_component *component,
- 					int clk_id, int source,
- 					unsigned int freq, int dir)
-@@ -974,13 +954,21 @@ static void cs35l41_component_remove(struct snd_soc_component *component)
- }
+ 	ret = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+@@ -492,10 +482,6 @@ static int avs_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
+ 	if (ret < 0)
+ 		return ret;
  
- static const struct snd_soc_dai_ops cs35l41_ops = {
--	.startup = cs35l41_pcm_startup,
- 	.set_fmt = cs35l41_set_dai_fmt,
- 	.hw_params = cs35l41_pcm_hw_params,
- 	.set_sysclk = cs35l41_dai_set_sysclk,
- 	.set_channel_map = cs35l41_set_channel_map,
- };
- 
-+#define CS35L41_RATES (		    \
-+	SNDRV_PCM_RATE_8000_48000 | \
-+	SNDRV_PCM_RATE_12000 |	    \
-+	SNDRV_PCM_RATE_24000 |	    \
-+	SNDRV_PCM_RATE_88200 |	    \
-+	SNDRV_PCM_RATE_96000 |	    \
-+	SNDRV_PCM_RATE_176400 |	    \
-+	SNDRV_PCM_RATE_192000)
-+
- static struct snd_soc_dai_driver cs35l41_dai[] = {
- 	{
- 		.name = "cs35l41-pcm",
-@@ -989,14 +977,14 @@ static struct snd_soc_dai_driver cs35l41_dai[] = {
- 			.stream_name = "AMP Playback",
- 			.channels_min = 1,
- 			.channels_max = 2,
--			.rates = SNDRV_PCM_RATE_KNOT,
-+			.rates = CS35L41_RATES,
- 			.formats = CS35L41_RX_FORMATS,
- 		},
- 		.capture = {
- 			.stream_name = "AMP Capture",
- 			.channels_min = 1,
- 			.channels_max = 4,
--			.rates = SNDRV_PCM_RATE_KNOT,
-+			.rates = CS35L41_RATES,
- 			.formats = CS35L41_TX_FORMATS,
- 		},
- 		.ops = &cs35l41_ops,
+-	ret = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &rate_list);
+-	if (ret < 0)
+-		return ret;
+-
+ 	/* Adjust buffer and period size based on the audio format. */
+ 	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, hw_rule_param_size, NULL,
+ 			    SNDRV_PCM_HW_PARAM_FORMAT, SNDRV_PCM_HW_PARAM_CHANNELS,
+@@ -1332,7 +1318,9 @@ static const struct snd_soc_dai_driver i2s_dai_template = {
+ 		.channels_min	= 1,
+ 		.channels_max	= 8,
+ 		.rates		= SNDRV_PCM_RATE_8000_192000 |
+-				  SNDRV_PCM_RATE_KNOT,
++				  SNDRV_PCM_RATE_12000 |
++				  SNDRV_PCM_RATE_24000 |
++				  SNDRV_PCM_RATE_128000,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
+ 		.subformats	= SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
+@@ -1343,7 +1331,9 @@ static const struct snd_soc_dai_driver i2s_dai_template = {
+ 		.channels_min	= 1,
+ 		.channels_max	= 8,
+ 		.rates		= SNDRV_PCM_RATE_8000_192000 |
+-				  SNDRV_PCM_RATE_KNOT,
++				  SNDRV_PCM_RATE_12000 |
++				  SNDRV_PCM_RATE_24000 |
++				  SNDRV_PCM_RATE_128000,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
+ 		.subformats	= SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
 
 -- 
 2.45.2
