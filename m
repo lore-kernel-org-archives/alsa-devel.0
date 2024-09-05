@@ -4,90 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF576CE7B0D
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2024 13:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F50ECE7B17
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Sep 2024 13:55:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64DD8E68;
-	Fri,  6 Sep 2024 15:33:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64DD8E68
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4811E7D;
+	Fri,  6 Sep 2024 15:55:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4811E7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1725629591;
-	bh=jPQMwo2WkKJKXe6v7Il4chHkFsl4n5PuJaD7noNAQyw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hmbQyJYwWTEGQa0Cy8GjPhD9YnPxl06w1rkeUQETO7aGhcucZ6c04WOWXcwm4KJs0
-	 +4wXZxsSUM9tqwML+skK6mHjRzC1eC5WcZEYUpAMLKPslazRiLC+VJnMJqWPXHRGh9
-	 n76p7jWR/eQtD1rAk+yxaj2XkCMGbNUw3ubk9SmA=
+	s=default; t=1725630919;
+	bh=sIIPZUk/McFrEGOpzaiTsFXpvninZCb+Pc2SfB0iyAM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=JK3gKamqxt47goyBLrzsiygOuz0FdTLYOochSGOHaGlS/rtcWj9ex+ulgPhzsgnja
+	 G80ywTroMrWncM+x9flpvrpd0ieumwsrWqEir9Bskm6AeZJmx9qnd8Edc4Xq8WH8hj
+	 r3pX/GF9BkulpSwI/g/Kf9V7dWClApkvBXDd0eo0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32E5DF8014C; Fri,  6 Sep 2024 15:32:39 +0200 (CEST)
+	id 7F3F2F805A1; Fri,  6 Sep 2024 15:54:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FBF4F805B3;
-	Fri,  6 Sep 2024 15:32:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 640F9F805A0;
+	Fri,  6 Sep 2024 15:54:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93023F8016C; Fri,  6 Sep 2024 15:32:35 +0200 (CEST)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+	id C8D31F8016C; Thu,  5 Sep 2024 04:21:32 +0200 (CEST)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9E28EF80107
-	for <alsa-devel@alsa-project.org>; Fri,  6 Sep 2024 15:32:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E28EF80107
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=OXNLGZ+n
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 4B51BA44F4D;
-	Fri,  6 Sep 2024 13:32:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24896C4CEC4;
-	Fri,  6 Sep 2024 13:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725629551;
-	bh=jPQMwo2WkKJKXe6v7Il4chHkFsl4n5PuJaD7noNAQyw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OXNLGZ+nH5U9TTxNaaAOiUj5t/kdUlH0S0qzq736x6URBmi7KC4GJBnclZ8kX6L1c
-	 EKxUBA2jW/C68E0Dp/vNyYZyL0Ed42nL0iL4IvBmmBuSzZ7UaWLFsOSA3ogRDfuk7K
-	 QJhLJ9cZNaHvXC5hVdFNxwGIZxqJNIzf7sbKRbsvCReFvTsmiqW70G6rhCoiJGBJYh
-	 gnLF7edxp+9Kg84ioAPNWRtIwlXRggfYp5eLQu4uysKYZU6KEep8fYxD5mUATINB2P
-	 EJnVIm+cIs0+8F4Ue0M5rFmdJFjy7tCc0r5Hor5mkbsIV0T2dZPWYDDuIocpNsss+f
-	 ao10l0MKZ1QSg==
-Date: Fri, 6 Sep 2024 14:32:22 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: How to handle complex Codec2Codec
-Message-ID: <ZtsEZmOAsgaPnlti@finisterre.sirena.org.uk>
-References: <8734moq6ca.wl-kuninori.morimoto.gx@renesas.com>
- <31fb2975-4a27-43e5-b9cb-37db3206f5f3@sirena.org.uk>
- <87ed62ogvp.wl-kuninori.morimoto.gx@renesas.com>
- <fe428f02-3eca-4dce-9eef-675cf3e56831@sirena.org.uk>
- <87plpikfgv.wl-kuninori.morimoto.gx@renesas.com>
- <aeb9d0e9-ac50-40c4-88dd-30cfa164d7c8@sirena.org.uk>
- <87seudr89e.wl-kuninori.morimoto.gx@renesas.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id D05B6F80027
+	for <alsa-devel@alsa-project.org>; Thu,  5 Sep 2024 04:21:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D05B6F80027
+Received: from localhost (unknown [124.16.138.129])
+	by APP-05 (Coremail) with SMTP id zQCowADnyuqeFdlmBX9ZAQ--.17465S2;
+	Thu, 05 Sep 2024 10:21:18 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: cezary.rojewski@intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	liam.r.girdwood@linux.intel.com,
+	peter.ujfalusi@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	brent.lu@intel.com,
+	kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] ASoC: Intel: skl_hda_dsp_generic: convert comma to semicolon
+Date: Thu,  5 Sep 2024 10:20:17 +0800
+Message-Id: <20240905022017.1642550-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="suCKr30lQO5L7R9u"
-Content-Disposition: inline
-In-Reply-To: <87seudr89e.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: Your love life will be... interesting.
-Message-ID-Hash: O4MQMAMLVA32VHNCMEOJQQNJFOO4O4BT
-X-Message-ID-Hash: O4MQMAMLVA32VHNCMEOJQQNJFOO4O4BT
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: zQCowADnyuqeFdlmBX9ZAQ--.17465S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF17ur4DKrWUZF4kCw1kGrg_yoW8XFWfpF
+	1v9wn8KF98Xa4vvay7XF17CasxXan7Ja47Ww45J34qqF1rXw1rurWqgFn7ZFWUKF93Gr1j
+	vrsrKrykKFyfAFJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+	4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+	Yx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4
+	AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY
+	1x02628vn2kIc2xKxwCY1x0262kKe7AKxVW8ZVWrXwCY02Avz4vE14v_Gr1l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUUXdbUUUUU
+X-Originating-IP: [124.16.138.129]
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+X-MailFrom: nichen@iscas.ac.cn
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 76UMHFVF7T5WIIOOA6MUSENZCUAK4IPH
+X-Message-ID-Hash: 76UMHFVF7T5WIIOOA6MUSENZCUAK4IPH
+X-Mailman-Approved-At: Fri, 06 Sep 2024 13:54:42 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O4MQMAMLVA32VHNCMEOJQQNJFOO4O4BT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/76UMHFVF7T5WIIOOA6MUSENZCUAK4IPH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,83 +103,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Replace comma between expressions with semicolons.
 
---suCKr30lQO5L7R9u
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Using a ',' in place of a ';' can have unintended side effects.
+Although that is not the case here, it is seems best to use ';'
+unless ',' is intended.
 
-On Thu, Sep 05, 2024 at 11:27:41PM +0000, Kuninori Morimoto wrote:
+Found by inspection.
+No functional change intended.
+Compile tested only.
 
-> > Yeah, at a super high level we want to be able to handle digital audio
-> > with DAPM like analog audio, the main thing is we'd need to propagate
-> > digital parameters along as well as just on/off status, and support
-> > conversions.
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ sound/soc/intel/boards/skl_hda_dsp_generic.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-> Very rough speaking, we don't want to break existing connections
-> (normal, DPCM, Codec2Codec, etc), and enable to use new style right ?
-> Let's name current style as PCMv1. I think we want to grouping related
-> things into one place, let's say soc-pcm.c, in roughly.
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+index 225867bb3310..8e104874d58c 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
+@@ -217,14 +217,14 @@ static int skl_hda_audio_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	card = &ctx->card;
+-	card->name = "hda-dsp",
+-	card->owner = THIS_MODULE,
+-	card->dai_link = skl_hda_be_dai_links,
+-	card->dapm_widgets = skl_hda_widgets,
+-	card->dapm_routes = skl_hda_map,
+-	card->add_dai_link = skl_hda_add_dai_link,
+-	card->fully_routed = true,
+-	card->late_probe = skl_hda_card_late_probe,
++	card->name = "hda-dsp";
++	card->owner = THIS_MODULE;
++	card->dai_link = skl_hda_be_dai_links;
++	card->dapm_widgets = skl_hda_widgets;
++	card->dapm_routes = skl_hda_map;
++	card->add_dai_link = skl_hda_add_dai_link;
++	card->fully_routed = true;
++	card->late_probe = skl_hda_card_late_probe;
+ 
+ 	snd_soc_card_set_drvdata(card, ctx);
+ 
+-- 
+2.25.1
 
-Well, long term we'd want to remove DPCM and CODEC 2 CODEC but kind of I
-think.
-
-> And make new style (PCMv2) at soc-pcm2.c, for example.
-> Then, we can swtich v1 or v2 somehow, like below ?
->=20
-> 	-------- soc-pcm.c -----
-> 	struct pcm_connection pcm1_connection =3D {
-> 		.ver =3D 1,
-> 		.new_pcm =3D soc_new_pcm,
-> 		...
-> 	};
-> 	-------- soc-pcm2.c -----
-> 	struct pcm_connection pcm2_connection =3D {
-> 		.ver =3D 2,
-> 		.new_pcm =3D new_pcm,
-> 		...
-> 	};
-> 	-------- soc-core.c -----
-> 	if (ver =3D=3D v1)
-> 		connection =3D pcm1_connection
-> 	else (ver =3D=3D v2)
-> 		connection =3D pcm2_connection
->=20
-> -	ret =3D soc_new_pcm(rtd, num);
-> +	ret =3D connection->new_pcm(rtd, num);
-
-It's not clear to me if we'd need to specify things as an explicitly PCM
-link, or if we'd be able to just use a DPCM route to link things and
-then have be able to automatically configure the digital bits based on
-capabilities of the things being linked.  We would need to provide a lot
-more information on the things being connected in order to do that, and
-some of them would need digital operations.  Ideally we'd be able to do
-things in such a way that we can transparently transition the
-implementation used for simpler existing boards without requring them to
-be rewriten if they're not using one of the more complex things like
-DPCM that we're trying to replace.
-
-> We can create PCMv3, v4, v5... in the future if existing connection
-> style was not good enough. ... well... this is almost "ideal" ;P
-
-Doing things as described above means that there's much less information
-in the individual drivers, just descriptions of what's connected to what
-as much as possible.  To a certain extent the fact that that's not the
-case is kind of the problem we're trying to solve here.
-
---suCKr30lQO5L7R9u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmbbBGUACgkQJNaLcl1U
-h9BvDAf/QWiThK+TUmbZll6yKG45tV1g/CaUP1WdgXYJksQ70iMArpI/eAICr+bj
-cBJGfhFKQTitP8SMdGcv2wsgFO9rfB/jQtSaXUrE8deO06YeP7ensmS3+rJ2TEOm
-D72xZHpWFJdu3PEoVNfgPgOqeZlKM3p4iZDXvRlP4BGSyXI3WYNtZEfPkxP5n07a
-rQpVsu7V0pUGGhSaK58/D3bTDv7glz25X9LC+dqv0l2kBereHg8SFZMXoQ1sxjUP
-ED0Xj7sYeKii25Qwo4FV/mSzNUyPwf7RK2//bEAty1yfwI8UVeTVVYWM8hmT3hrN
-0Isfooj34zdhYWanaaqUZrD1g0/RwA==
-=0rkv
------END PGP SIGNATURE-----
-
---suCKr30lQO5L7R9u--
