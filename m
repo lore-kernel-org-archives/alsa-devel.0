@@ -4,117 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBC1AFA3743
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2024 11:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4736FA3745
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2024 11:14:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C93C1ED1;
-	Fri, 13 Sep 2024 13:14:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C93C1ED1
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE22EB60;
+	Fri, 13 Sep 2024 13:14:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE22EB60
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726226056;
-	bh=vDgjIBjhHTJrGIyXLK3F1O9eH8ttQJqEQh1v0D44fkc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=gdVRcdRRBA1zY1JURZkJqEPxmDLEt5Ad+c1nZBukRZG+jBvp1ogcjNtLKA5NpEuQ7
-	 MKf63QmxdM3IozFbZL8dfKWyFmSf3Q4BA3jixNGZ6stZDCTbI5GjN7l++/jB1ItN3y
-	 ieZryAsUdYCfJgtPBk7mdxC1hASiWduP4wbEXh8w=
+	s=default; t=1726226070;
+	bh=BZq6+q8bbZt0R5ucjpyVPmu6SzP5lx4HOz9jWC47YHA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=tvgi5nobnlWEchutHQHLasLT2iTjU3r3UlUVyoDzAh7zBgcoAbSHGDDvJ8OfAy0xc
+	 HW8jPkpbNlvL3i20WFvoW8O0lS0wp5JkGJPHwMO4qi1e4lgxhPBVBRQ6TpIS+oAoY3
+	 7GZjJ/UzRwAYDdnxWcN34qH7fC6rVnXOATFYc1fs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55972F806C8; Fri, 13 Sep 2024 13:12:17 +0200 (CEST)
+	id 8AB47F806D1; Fri, 13 Sep 2024 13:12:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF1B0F805BD;
-	Fri, 13 Sep 2024 13:12:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0950FF806D1;
+	Fri, 13 Sep 2024 13:12:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95965F801F5; Tue, 10 Sep 2024 23:13:14 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+	id 41349F801F5; Wed, 11 Sep 2024 10:07:19 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A3283F800E9
-	for <alsa-devel@alsa-project.org>; Tue, 10 Sep 2024 23:13:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3283F800E9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6C156F80027
+	for <alsa-devel@alsa-project.org>; Wed, 11 Sep 2024 10:07:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C156F80027
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=eiLqYg0Z
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-374c326c638so4445014f8f.2
+ header.s=20230601 header.b=KIq3uXIL
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-42cd46f3ac9so1594935e9.3
         for <alsa-devel@alsa-project.org>;
- Tue, 10 Sep 2024 14:13:11 -0700 (PDT)
+ Wed, 11 Sep 2024 01:07:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726002790; x=1726607590;
+        d=gmail.com; s=20230601; t=1726042036; x=1726646836;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mShm0KIU0OZ83/t9phYF8kP86kSg8BrKV+H1Ffpa/nc=;
-        b=eiLqYg0ZNToph7STc0RCw25M4xgwofZHgSsuSU7lDt2jCSRA+8BO3hASSgxpefhwKB
-         94y3mlFakO3PRnSyKN+SVduYarB4OnTILw+ZEBLJEheiQRy390Y/qcjHd7A3DSR5KXFG
-         FjTZWnRioWermcx5FgHhFiutdR7SjOfCMz2qUcfzYVQ2JZUM22J/076AP4LertdzUpQB
-         t2+LVEkHBqztIdebzOO26EivRG0WTSaFtGhEGQRe76feOUrFoC3t3uRMrkpKVbzYkzco
-         JoMmTjUEBULeCJC1yVka+owZJeWWR/is/T9NTf6AfSaKcxIPQvH6MKzzgRuXIrfa5A2l
-         UTaQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KlrFnjoiCduc+X7w1TixBUXFhOeoooXPO+ytTh1hP4g=;
+        b=KIq3uXIL8aPTZ2WbX+lUSrGNV24qwE+vQ9prGc2PRETbllnOTc+c8IP9kZzb/hGikj
+         EO/+p79LsxyOA0p+nxhc2LVh7kwQaUIWiQ/qJFlm9RPrF2kcQgA6quj4EHKCDuE49a15
+         cdLLWuklxaP/WPYJeyH1Hp8OdDobepF1AaINtBek9qY+rIWlTIVhl8prap0VuwdvKn4M
+         LNoF+m/ZrmmBwMQe+gWVu5v6LSnFdXyl2gJIeIX1QkpVbPg3/6bDMMBqfeJSyWQlY3u6
+         hk9EU9AaItab1Yr34zW6cpj5vK7pqFaSE0gToVyQDOk2Zw5wGbmnCc+RKpbV9sJPRmZp
+         zg+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726002790; x=1726607590;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mShm0KIU0OZ83/t9phYF8kP86kSg8BrKV+H1Ffpa/nc=;
-        b=qm70O9NXBZSSfiWB3gBBuUJUZIBztp539RLEuHT+Lynr+cs3VX9vdK0kLE9sPGlTeG
-         snIlR717Sqq2zOcZEtLKbZG/xYYLKBRPm+wW1sFSjXGLc0c0t0n3dOlCGpVpapJ6baL/
-         SPSkAy1dW9YAlg1sOTn3tQQP3D0/m2RwX5lRaQwjcdwGPGKRbouPAJrr0XHB2zEj2ljY
-         u1D4Y9wO9kivoAH122e5pOJfzUQ0p39WCCALmdwPIbIRCYAKw4vPeWEylFUZlhWHM/fz
-         NXeebxtmodfg7Uirk0N7JnAmm3ytPq6kLitUIbU5cM4eFjvSUtw0Gv5hk+PjoITGSyEZ
-         wHig==
-X-Gm-Message-State: AOJu0Ywnn07iGXvGCHjHNJE+eaNuhyez6g5qrCU6HoKkVRwQ9tpkuzVb
-	8PH9xWdmabkTm+6svociHr+tFa+Mc0icYZsW6KXUwEn1jYV+GZNb
+        d=1e100.net; s=20230601; t=1726042036; x=1726646836;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KlrFnjoiCduc+X7w1TixBUXFhOeoooXPO+ytTh1hP4g=;
+        b=hRndH1r7u7fgm6iDr6kWre5xTE/k+fmK+hnu4cFxCcWxAAdxgKSq7sm9RspfgVZfuM
+         fWs/aUf4fHzHXsx2K8Onz0CJ2I5msNOjc3GXZZvCtGuJA8cn3/N8otOk5CylQPTcH264
+         m4z37dwj+FZFGqGroBcqujkax1ECa+JJwl4Gfz5aUiVa+z8GTu+HNcZ4QIbyt/mauha9
+         sS/6ZfKAE+chVbEtpwEHRbacrf+j8IC+QZyTCd3VaugvPAzbcdWF6ai72YiP32Qnbjky
+         g2rGSbS64Riefkvz51U7+MP4G/dK8+md1n4/rnzWDQcYPH9ZcMfZJtzZC5E+zZfTJ7bx
+         ntlw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUpvv31OqSYygJ0r6h7MRAX4dibyEsRE5yNZsfRGlbblgo0nrB770o1TY5g9aVy2LPiTD9Yw6sQDDoH@alsa-project.org
+X-Gm-Message-State: AOJu0Yw3ggFlTUICkcHMOXnV1qHFwwph+OxhyFVmBkjXeI51PHg0eBr/
+	pV0qmRIoIaXth86CMTLiqVEkywkjtmR2KzzJ6gc1eb4MQR7vTnME
 X-Google-Smtp-Source: 
- AGHT+IFwmCNPL5aE3FgmJvUfyIwFUQvYFcinWghCIonakDEYeycDzAajn6O7VZPeDDDMSpsKOoIGHw==
-X-Received: by 2002:a5d:6aca:0:b0:371:8688:1660 with SMTP id
- ffacd0b85a97d-378896c800cmr11271977f8f.51.1726002789527;
-        Tue, 10 Sep 2024 14:13:09 -0700 (PDT)
-Received: from void.void ([188.120.129.44])
+ AGHT+IFtsWzA1krV4TnK5wYQrFD2heYZw9fKGrydZsvH/HYHpnoRdSvc7bg3h9Az1MjCWnJBSC2HzQ==
+X-Received: by 2002:a05:600c:4713:b0:426:5fe1:ec7a with SMTP id
+ 5b1f17b1804b1-42c9f9d38a7mr122692515e9.31.1726042035638;
+        Wed, 11 Sep 2024 01:07:15 -0700 (PDT)
+Received: from void.void ([141.226.10.46])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3789564a279sm9879024f8f.9.2024.09.10.14.13.08
+ 5b1f17b1804b1-42cb1f0140dsm120034425e9.39.2024.09.11.01.07.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2024 14:13:09 -0700 (PDT)
+        Wed, 11 Sep 2024 01:07:15 -0700 (PDT)
+Date: Wed, 11 Sep 2024 11:07:12 +0300
 From: Andrew Kreimer <algonell@gmail.com>
-To: Shenghao Ding <shenghao-ding@ti.com>,
-	Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Andrew Kreimer <algonell@gmail.com>,
+To: Mark Brown <broonie@kernel.org>
+Cc: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
 	Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH] ASoC: tlv320aic31xx: Fix typos
-Date: Wed, 11 Sep 2024 00:12:41 +0300
-Message-ID: <20240910211302.8909-1-algonell@gmail.com>
-X-Mailer: git-send-email 2.46.0
+Subject: Re: [PATCH] ASoC: tlv320aic31xx: Fix typos
+Message-ID: <ZuFPsKkobcws-iZ4@void.void>
+References: <20240910211302.8909-1-algonell@gmail.com>
+ <a8e6f267-9eae-48db-8a8a-b9e6d93809c8@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a8e6f267-9eae-48db-8a8a-b9e6d93809c8@sirena.org.uk>
 X-MailFrom: algonell@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: E6VQ4FR52VC5XEPIGO2FCRSLKC6DRUC4
-X-Message-ID-Hash: E6VQ4FR52VC5XEPIGO2FCRSLKC6DRUC4
+Message-ID-Hash: WHF5RDXDSCZ5K2KHHYK4LQBC3AVYTPKX
+X-Message-ID-Hash: WHF5RDXDSCZ5K2KHHYK4LQBC3AVYTPKX
 X-Mailman-Approved-At: Fri, 13 Sep 2024 11:12:12 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E6VQ4FR52VC5XEPIGO2FCRSLKC6DRUC4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WHF5RDXDSCZ5K2KHHYK4LQBC3AVYTPKX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,27 +123,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fix typos in comments.
+On Tue, Sep 10, 2024 at 11:03:52PM +0100, Mark Brown wrote:
+> On Wed, Sep 11, 2024 at 12:12:41AM +0300, Andrew Kreimer wrote:
+> 
+> > -		/* See bellow for details how fix this. */
+> > +		/* See below for details on how to fix this. */
+> >  		return -EINVAL;
+> 
+> This is audio, bellowing seems entirely appropriate!
 
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Andrew Kreimer <algonell@gmail.com>
----
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 7e624c4b77b6..187d68e8688c 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -895,7 +895,7 @@ static int aic31xx_setup_pll(struct snd_soc_component *component,
- 		dev_err(component->dev,
- 			"%s: Sample rate (%u) and format not supported\n",
- 			__func__, params_rate(params));
--		/* See bellow for details how fix this. */
-+		/* See below for details on how to fix this. */
- 		return -EINVAL;
- 	}
- 	if (bclk_score != 0) {
--- 
-2.46.0
-
+My bad!
