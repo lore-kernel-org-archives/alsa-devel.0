@@ -4,120 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75EFEFA3746
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2024 11:17:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DD93FA3748
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Sep 2024 11:52:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7F64210F;
-	Fri, 13 Sep 2024 13:17:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7F64210F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD116A4B;
+	Fri, 13 Sep 2024 13:52:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD116A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726226254;
-	bh=DmD/oFS9ztHwN6LHCihrKLQc89zTH//9v3d7Pudf0gE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=ItxJPtFG4lOB+MBOeUUSF/5SRtq6+Flw7CeZ+j5111OLCKKT8zmAgjZLCN8EmNJS7
-	 HiA0D3GhEdZIPLznLNH8s4PJ7B6U5tPo9KxG8eCkDDqoAER2ZcLttkR2uZ7GmzxeJc
-	 gJS3VOLt7D0a6el/YgxC/Y2KqRvVk27JkYj/gUx4=
+	s=default; t=1726228334;
+	bh=bDQ2cHKwBgZirp1r+Hr2bpHWKmVZ+wjLFiy68UToSsk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=S1DdTjXVsMm0AmOj5m4kMVylZRbX/Ahda/KByo69jfrbraAuqpalKF3/C+5euiz2N
+	 Ol5xU7HnxYci4KK9YWdDb+ywvOOE39tb3ES0P6dRAPbryKClLF6OwihF0z1wSthBO6
+	 49KLWrv3EaMGh41yPiGh3Q0EMB2WN45E0QLVxzig=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B285DF806A4; Fri, 13 Sep 2024 13:13:49 +0200 (CEST)
+	id DDCC1F80527; Fri, 13 Sep 2024 13:51:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEC4EF80605;
-	Fri, 13 Sep 2024 13:13:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8FB6F80527;
+	Fri, 13 Sep 2024 13:51:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 331F0F801F5; Fri, 13 Sep 2024 10:32:47 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id B1407F801F5; Fri, 13 Sep 2024 13:51:37 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4E044F80074
-	for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2024 10:32:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E044F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id D8F71F80074
+	for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2024 13:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8F71F80074
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=Dyl6Fpge
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-42cb57f8b41so8515505e9.0
-        for <alsa-devel@alsa-project.org>;
- Fri, 13 Sep 2024 01:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726216364; x=1726821164;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:in-reply-to:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wp9Y737ViR4EfOInl3nplGoJAcdlB+yuFRrQ0BSzktk=;
-        b=Dyl6FpgeUAwyAXGzMbHgCusHTtyAMjQCNnrXgGQq/lw39biUTt6CRHegrUCQsb5aLv
-         4NWab87NulHfJnNBO1IFxd8ZqtaRkZgrQ3u/AZEsFDWBSgATHFZVlXFqdwZfCbbqGjIf
-         ligIk0J7QCdI9KIGPTGaP61RXrzZGpd95Q+5EJnlfgxwfWY2QaTzOGuQvG+zBJbCzdaN
-         14ia306E3BsAm/WYTYke3IoYG5s2st6xvzLfuAut45xE2jM+SmkjYZgHVVZGhrlg14x+
-         BmtHyD11peQ1OlEtYbxGS2Styz8I88Q6SglKZlbNlpBGHHEFvMzCWRaRs10ChnVBWXlx
-         l2HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726216364; x=1726821164;
-        h=content-transfer-encoding:mime-version:in-reply-to:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wp9Y737ViR4EfOInl3nplGoJAcdlB+yuFRrQ0BSzktk=;
-        b=BnPlxC+t8BoSeNNf0M/nb6DFDQPRMPxBVoQips8lm7jnxD5AR8mWIzgSh90OS+21vf
-         dzyfum3xKB386mqdK1KK+HJvGovWv7vX+kGZCwAYccnINZ8dnmqBF8looeAolBLoHo+8
-         1oQE2umcUzhL1UmQai23FTOYYDPrrosPgrXd7ZDqNUjQhr19lLPCZnDqSaihLNn703fF
-         1d9fal+TswXxvQn7SF8S+TBh55UvvuQ5BNPqUUzBhL6GFoRICM7RFruMteQ6Y37woQ2n
-         dUs8UImdE0qTlnrNZqCXHLlWDvER4CmmekM9HOzm26PkVXknK6SRjuExEC33xfuwQ5E5
-         F1TA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVi/AusE4JOk+/jeUbPDjKviNgIwyj59e42RuSx8DgqLabITOKj1p/YirigxUkvfgvOWbvpHzsVPPTa@alsa-project.org
-X-Gm-Message-State: AOJu0YwpIyAq3GQW0D+zMVuG0mJT4PYfwNrAkEQf7MydGsyXtkPWLBnB
-	4qGaS3QhsH5FsIygl6rusIBNtGUXDUL6k0Al39W3E5EQmuw5xZr8
-X-Google-Smtp-Source: 
- AGHT+IE2Ku5Yqa7DnoqdH5xDY5dD9ozv14FV0pNO09UH2LmGbvbqmw1nTSHM8AvIojolJCXpaHwH8w==
-X-Received: by 2002:a5d:5150:0:b0:374:bd48:fae8 with SMTP id
- ffacd0b85a97d-378d61f090fmr1570895f8f.25.1726216363746;
-        Fri, 13 Sep 2024 01:32:43 -0700 (PDT)
-Received: from foxbook (bio60.neoplus.adsl.tpnet.pl. [83.28.130.60])
-        by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a8d25cf03ccsm846921566b.183.2024.09.13.01.32.41
-        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
-        Fri, 13 Sep 2024 01:32:43 -0700 (PDT)
-Date: Fri, 13 Sep 2024 10:32:37 +0200
-From: =?UTF-8?B?TWljaGHFgg==?= Pecio <michal.pecio@gmail.com>
-To: quic_wcheng@quicinc.com, mathias.nyman@linux.intel.com
-Cc: Thinh.Nguyen@synopsys.com, alsa-devel@alsa-project.org,
- bgoswami@quicinc.com, broonie@kernel.org, conor+dt@kernel.org,
- corbet@lwn.net, devicetree@vger.kernel.org, dmitry.torokhov@gmail.com,
- gregkh@linuxfoundation.org, krzk+dt@kernel.org, lgirdwood@gmail.com,
- linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
- mathias.nyman@intel.com, perex@perex.cz,
- pierre-louis.bossart@linux.intel.com, robh@kernel.org,
- srinivas.kandagatla@linaro.org, tiwai@suse.com
-Subject: Re: [PATCH v27 01/32] xhci: add helper to stop endpoint and wait
- for completion
-Message-ID: <20240913103237.2f5dc796@foxbook>
-In-Reply-To: <20240912193935.1916426-2-quic_wcheng@quicinc.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Cnw0/Jrj
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7E78B5C5D31;
+	Fri, 13 Sep 2024 11:51:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D26BC4CEC0;
+	Fri, 13 Sep 2024 11:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726228290;
+	bh=bDQ2cHKwBgZirp1r+Hr2bpHWKmVZ+wjLFiy68UToSsk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cnw0/Jrj2V/AnMFdy16uEyvcUU9eEyu/3xxKMDM2cTRbzZSNWAP9C7uF5z6/avJfc
+	 8aBl0mQVSY9DP3osEYsrAq9Nmh1rnYJCgcS97AzgCugxHjYvCBq4i7pqRXpL39uejY
+	 TLf1ONc/DsRr/n0cof4p0CVA2lzcIjIirKJTAuHImByJLPCinlyyQC5jjt+fwntTKK
+	 igk/thqZJUx809wRqwuQgANDuDTFcuy9LzSYJoMdOF/UhqZuEau18025GmX2slI240
+	 bwoSMHU2RuYUjp0IUcOPYeMgumptePJFqZ8KYm7J24KGjwrwQBY+oz92SmKu7t50JZ
+	 OTXQ5KvLjR/uw==
+Date: Fri, 13 Sep 2024 17:21:26 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	yung-chuan.liao@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	krzysztof.kozlowski@linaro.org, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH stable-6.10 regression] Revert "soundwire: stream: fix
+ programming slave ports for non-continous port maps"
+Message-ID: <ZuQnPnRsXaUEBv6X@vaman>
+References: <20240910124009.10183-1-peter.ujfalusi@linux.intel.com>
+ <febaa630-7bf4-4bb8-8bcf-a185f1b2ed65@linux.intel.com>
+ <2024091130-detail-remix-34f7@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-MailFrom: michal.pecio@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2024091130-detail-remix-34f7@gregkh>
+Message-ID-Hash: 5OWOMDRUIWHIIKBQYEENU77QLHA5PWFV
+X-Message-ID-Hash: 5OWOMDRUIWHIIKBQYEENU77QLHA5PWFV
+X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: FJBXVZCIGNPXF5ANWDFIB64VZXONWI77
-X-Message-ID-Hash: FJBXVZCIGNPXF5ANWDFIB64VZXONWI77
-X-Mailman-Approved-At: Fri, 13 Sep 2024 11:13:45 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FJBXVZCIGNPXF5ANWDFIB64VZXONWI77/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5OWOMDRUIWHIIKBQYEENU77QLHA5PWFV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,22 +98,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+On 11-09-24, 14:31, Greg KH wrote:
+> On Tue, Sep 10, 2024 at 04:02:29PM +0300, Péter Ujfalusi wrote:
+> > Hi,
+> > 
+> > On 10/09/2024 15:40, Peter Ujfalusi wrote:
+> > > The prop->src_dpn_prop and prop.sink_dpn_prop is allocated for the _number_
+> > > of ports and it is forced as 0 index based.
+> > > 
+> > > The original code was correct while the change to walk the bits and use
+> > > their position as index into the arrays is not correct.
+> > > 
+> > > For exmple we can have the prop.source_ports=0x2, which means we have one
+> > > port, but the prop.src_dpn_prop[1] is accessing outside of the allocated
+> > > memory.
+> > > 
+> > > This reverts commit 6fa78e9c41471fe43052cd6feba6eae1b0277ae3.
+> > 
+> > I just noticed that Krzysztof already sent the revert patch but it is
+> > not picked up for stable-6.10.y
+> > 
+> > https://lore.kernel.org/lkml/20240909164746.136629-1-krzysztof.kozlowski@linaro.org/
+> 
+> Is this in Linus's tree yet?  That's what we are waiting for.
 
-> Expose xhci_stop_endpoint_sync() which is a synchronous variant of
-> xhci_queue_stop_endpoint().  This is useful for client drivers that are
-> using the secondary interrupters, and need to stop/clean up the current
-> session.  The stop endpoint command handler will also take care of
-> cleaning up the ring.
+Yes I was waiting for that as well, the pull request has been sent to
+Linus, this should be in his tree, hopefully tomorow..
 
-I'm not entirely sure what you meant by "cleaning up the ring" (maybe a
-comment would be in order?), but I see nothing being done here after the
-command completes and FYI xhci-ring.c will not run the default handler if
-the command is queued with a completion, like here.
+> 
+> > > Cc: stable@vger.kernel.org # 6.10.y
+> > > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> > > ---
+> > > Hi,
+> > > 
+> > > The reverted patch causes major regression on soundwire causing all audio
+> > > to fail.
+> > > Interestingly the patch is only in 6.10.8 and 6.10.9, not in mainline or linux-next.
+> 
+> Really?  Commit ab8d66d132bc ("soundwire: stream: fix programming slave
+> ports for non-continous port maps") is in Linus's tree, why isn't it
+> being reverted there first?
 
-At least that's the case for certain command types and there is probably
-a story behind each of them. I know that xhci_stop_device() queues a
-Stop EP with completion (and also a few without(?)). Maybe it's a bug...
+I guess Peter jumped the gun, I was planning to ask you once this is
+picked up Linus
 
-Regards,
-Michal
+-- 
+~Vinod
