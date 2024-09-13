@@ -4,195 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5533CE8D78
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 11:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADB6ACDD578
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 13:13:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0842D868;
-	Thu, 19 Sep 2024 13:52:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0842D868
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF500B71;
+	Thu, 19 Sep 2024 15:13:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF500B71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726746778;
-	bh=9eL39pWNtZV6yqST0+0AgBoGtFhWafKkwSV+APQCnhg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kzlme8Y9nwLxIyOdb/PYz67ywhAo6kTVpIc7/Sk+7YeP9feQD8TMV3oQt6IAWynWi
-	 sjkg3AavT2npgCqm4y1r5jeta7mzdbMq0ZYr8xZpqLOa1IugeIhGBSTh7ulb2rCSR5
-	 11EznXHKDOYj8RsGvwrlgoraDC/81x5yXlKcS7VY=
+	s=default; t=1726751592;
+	bh=V6u2eHa/w9HQk3WWvCdMr/y/+BoQMgcZ+Nl2/14uCeA=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BOWTVxHeX+AnjWZsTfWPIfr7nbk6Buu8Wd8GX9OncGC/806xNUCCb8he8siivN/PR
+	 yAggEwOdCqMw5ITG0Uof13WQQNeE+2m0n8V3uB5FETWvW95X6UnUwgRIn7JDt85/+1
+	 Y2n+sOLwnM8r+URb3VWwPh+5zLRYyO/UxxBtnSyw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 927C6F805AD; Thu, 19 Sep 2024 13:52:26 +0200 (CEST)
+	id 01E37F805B5; Thu, 19 Sep 2024 15:12:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E583DF805AA;
-	Thu, 19 Sep 2024 13:52:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C0BCF805B5;
+	Thu, 19 Sep 2024 15:12:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C4FBF8020D; Thu, 19 Sep 2024 13:52:15 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0FB65F801F5; Fri, 13 Sep 2024 14:07:41 +0200 (CEST)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7495EF80107
-	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2024 13:52:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7495EF80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id A5DAAF800E9
+	for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2024 14:07:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5DAAF800E9
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xCqOuoFv;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Z/1rHCTD;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=xCqOuoFv;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Z/1rHCTD
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 27717338AE;
-	Thu, 19 Sep 2024 11:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1726746732;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QUG72A/WvYD5gdJENBZhBjFBGf0eaF04UEVxM/2BrHM=;
-	b=xCqOuoFvkQ8q1MSDjQH8UXwTtm03moULVhCwGHqnftCNLCret6y8Ut3aw2tBsduvrCt6Rd
-	/KC+TrawDd7Gvn+s3Or4FbwMQJPFnHEtO+W6PRxuPfkm4AupFazizV+V7EU3uzV7N2odSO
-	p1FR/eZWhARzRKGDZdBiZcAo5n/W3Nc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1726746732;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QUG72A/WvYD5gdJENBZhBjFBGf0eaF04UEVxM/2BrHM=;
-	b=Z/1rHCTD4dHLW1ON6f2G8MmL2jUjMytqfrAJL6POMwxQU9FV/l+65fIJeIFly69dNDlNVK
-	CWvd2FIlS/JZHKBw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=xCqOuoFv;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="Z/1rHCTD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1726746732;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QUG72A/WvYD5gdJENBZhBjFBGf0eaF04UEVxM/2BrHM=;
-	b=xCqOuoFvkQ8q1MSDjQH8UXwTtm03moULVhCwGHqnftCNLCret6y8Ut3aw2tBsduvrCt6Rd
-	/KC+TrawDd7Gvn+s3Or4FbwMQJPFnHEtO+W6PRxuPfkm4AupFazizV+V7EU3uzV7N2odSO
-	p1FR/eZWhARzRKGDZdBiZcAo5n/W3Nc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1726746732;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QUG72A/WvYD5gdJENBZhBjFBGf0eaF04UEVxM/2BrHM=;
-	b=Z/1rHCTD4dHLW1ON6f2G8MmL2jUjMytqfrAJL6POMwxQU9FV/l+65fIJeIFly69dNDlNVK
-	CWvd2FIlS/JZHKBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 72B0613A5F;
-	Thu, 19 Sep 2024 11:52:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9mfKGmsQ7GajHwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 19 Sep 2024 11:52:11 +0000
-Date: Thu, 19 Sep 2024 13:53:01 +0200
-Message-ID: <87msk3c12a.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: <broonie@kernel.org>,
-	<andriy.shevchenko@linux.intel.com>,
-	<lgirdwood@gmail.com>,
-	<perex@perex.cz>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<13916275206@139.com>,
-	<zhourui@huaqin.com>,
-	<alsa-devel@alsa-project.org>,
-	<i-salazar@ti.com>,
-	<liam.r.girdwood@intel.com>,
-	<jaden-yue@ti.com>,
-	<yung-chuan.liao@linux.intel.com>,
-	<dipa@ti.com>,
-	<yuhsuan@google.com>,
-	<henry.lo@ti.com>,
-	<Baojun.Xu@fpt.com>,
-	<judyhsiao@google.com>,
-	<navada@ti.com>,
-	<cujomalainey@google.com>,
-	<aanya@ti.com>,
-	<nayeem.mahmud@ti.com>,
-	<savyasanchi.shukla@netradyne.com>,
-	<flaviopr@microsoft.com>,
-	<jesse-ji@ti.com>,
-	<darren.ye@mediatek.com>,
-	<antheas.dk@gmail.com>,
-	<Jerry2.Huang@lcfuturecenter.com>,
-	<jim.shil@goertek.com>
-Subject: Re: [PATCH v1] ALSA: hda/tas2781: Add new quirk for Lenovo Y990
- Laptop
-In-Reply-To: <20240919075743.259-1-baojun.xu@ti.com>
-References: <20240919075743.259-1-baojun.xu@ti.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Queue-Id: 27717338AE
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
-	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,gmail.com,perex.cz,139.com,huaqin.com,alsa-project.org,ti.com,intel.com,google.com,fpt.com,netradyne.com,microsoft.com,mediatek.com,lcfuturecenter.com,goertek.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	R_RATELIMIT(0.00)[to_ip_from(RLzobujmu8iyhcj93zycigsqsp)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-Message-ID-Hash: YAXY6ASX4KMDEPWZVZDNABT26B7UO3ER
-X-Message-ID-Hash: YAXY6ASX4KMDEPWZVZDNABT26B7UO3ER
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=microchip.com header.i=@microchip.com
+ header.a=rsa-sha256 header.s=mchp header.b=DsWd7aJR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1726229260; x=1757765260;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=V6u2eHa/w9HQk3WWvCdMr/y/+BoQMgcZ+Nl2/14uCeA=;
+  b=DsWd7aJRQIDd6KEj1jZ1g5LxvNGfbxSQe7YWCaLVFp0N3Weh6+5y+JOo
+   qOcFKe6jAPy21UAUNJAsehiAioiaktxZE+idpk2fEBVEorLGqKI7XfL7k
+   NAxmJumq14M6wWGQNBjX9EM0OrCJdPLfGrkrFupY3I65Tf+qqxqZMJz6v
+   irFr0u3JoEDz+uDZGKpFBuiFpYEBFHG5/sfSYQ6SFfKgoOtuMmWRKPm8H
+   r29HxBtyTAP7YXGrP9RQZtekepP/cTeosKTnT+l8RJRKU34SOyM43q7HJ
+   2EPE7u0kE6xOj459qoZu92fed6eMhJG/+WVJ6yMMHZ6U6Ph4GBx0ycbmT
+   w==;
+X-CSE-ConnectionGUID: ap9aDqYYRZ2h/RrZKGCbqA==
+X-CSE-MsgGUID: FyIGOBtkRr+rtkG0jt9EvA==
+X-IronPort-AV: E=Sophos;i="6.10,225,1719903600";
+   d="scan'208";a="31749888"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
+ 13 Sep 2024 05:07:36 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 13 Sep 2024 05:07:25 -0700
+Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Fri, 13 Sep 2024 05:07:21 -0700
+From: Andrei Simion <andrei.simion@microchip.com>
+To: <claudiu.beznea@tuxon.dev>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+	<perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Andrei Simion
+	<andrei.simion@microchip.com>
+Subject: [PATCH v2] ASoC: atmel: mchp-pdmc: Retain Non-Runtime Controls
+Date: Fri, 13 Sep 2024 15:06:22 +0300
+Message-ID: <20240913120621.79088-1-andrei.simion@microchip.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MailFrom: prvs=97946740d=Andrei.Simion@microchip.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: BSUJ622NZFMBZSOESMUHX6GCWIUXV5N2
+X-Message-ID-Hash: BSUJ622NZFMBZSOESMUHX6GCWIUXV5N2
+X-Mailman-Approved-At: Thu, 19 Sep 2024 13:12:34 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YAXY6ASX4KMDEPWZVZDNABT26B7UO3ER/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BSUJ622NZFMBZSOESMUHX6GCWIUXV5N2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -201,14 +104,137 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 19 Sep 2024 09:57:43 +0200,
-Baojun Xu wrote:
-> 
-> Add new vendor_id and subsystem_id in quirk for Lenovo Y990 Laptop.
-> 
-> Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-Thanks, applied now.
+Avoid removing these controls, as doing so can cause issues if the stream
+is initiated from another control. Ensure these controls remain intact when
+the stream is started or finished. Instead of removing them, return an
+-EBUSY error code to indicate that the controller is busy, especially when
+the audio filter and the SINC filter are in use.
 
+[andrei.simion@microchip.com: Reword the commit title and the commit
+message. Replace spinlock and busy variable with atomic_t busy_stream.]
 
-Takashi
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
+---
+v1 -> v2:
+- drop spinlock and u8 busy:1;
+- use atomic_t variable busy_stream
+- use atomic_read, atomic_set
+---
+ sound/soc/atmel/mchp-pdmc.c | 57 ++++++++++---------------------------
+ 1 file changed, 15 insertions(+), 42 deletions(-)
+
+diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
+index d97d153ee375..939cd44ebc8a 100644
+--- a/sound/soc/atmel/mchp-pdmc.c
++++ b/sound/soc/atmel/mchp-pdmc.c
+@@ -124,6 +124,7 @@ struct mchp_pdmc {
+ 	int mic_no;
+ 	int sinc_order;
+ 	bool audio_filter_en;
++	atomic_t busy_stream;
+ };
+ 
+ static const char *const mchp_pdmc_sinc_filter_order_text[] = {
+@@ -167,6 +168,10 @@ static int mchp_pdmc_sinc_order_put(struct snd_kcontrol *kcontrol,
+ 		return -EINVAL;
+ 
+ 	val = snd_soc_enum_item_to_val(e, item[0]) << e->shift_l;
++
++	if (atomic_read(&dd->busy_stream))
++		return -EBUSY;
++
+ 	if (val == dd->sinc_order)
+ 		return 0;
+ 
+@@ -193,6 +198,9 @@ static int mchp_pdmc_af_put(struct snd_kcontrol *kcontrol,
+ 	struct mchp_pdmc *dd = snd_soc_component_get_drvdata(component);
+ 	bool af = uvalue->value.integer.value[0] ? true : false;
+ 
++	if (atomic_read(&dd->busy_stream))
++		return -EBUSY;
++
+ 	if (dd->audio_filter_en == af)
+ 		return 0;
+ 
+@@ -379,52 +387,10 @@ static const struct snd_kcontrol_new mchp_pdmc_snd_controls[] = {
+ 	},
+ };
+ 
+-static int mchp_pdmc_close(struct snd_soc_component *component,
+-			   struct snd_pcm_substream *substream)
+-{
+-	return snd_soc_add_component_controls(component, mchp_pdmc_snd_controls,
+-					      ARRAY_SIZE(mchp_pdmc_snd_controls));
+-}
+-
+-static int mchp_pdmc_open(struct snd_soc_component *component,
+-			  struct snd_pcm_substream *substream)
+-{
+-	int i;
+-
+-	/* remove controls that can't be changed at runtime */
+-	for (i = 0; i < ARRAY_SIZE(mchp_pdmc_snd_controls); i++) {
+-		const struct snd_kcontrol_new *control = &mchp_pdmc_snd_controls[i];
+-		struct snd_ctl_elem_id id;
+-		int err;
+-
+-		if (component->name_prefix)
+-			snprintf(id.name, sizeof(id.name), "%s %s", component->name_prefix,
+-				 control->name);
+-		else
+-			strscpy(id.name, control->name, sizeof(id.name));
+-
+-		id.numid = 0;
+-		id.iface = control->iface;
+-		id.device = control->device;
+-		id.subdevice = control->subdevice;
+-		id.index = control->index;
+-		err = snd_ctl_remove_id(component->card->snd_card, &id);
+-		if (err < 0)
+-			dev_err(component->dev, "%d: Failed to remove %s\n", err,
+-				control->name);
+-	}
+-
+-	return 0;
+-}
+-
+ static const struct snd_soc_component_driver mchp_pdmc_dai_component = {
+ 	.name = "mchp-pdmc",
+ 	.controls = mchp_pdmc_snd_controls,
+ 	.num_controls = ARRAY_SIZE(mchp_pdmc_snd_controls),
+-	.open = &mchp_pdmc_open,
+-	.close = &mchp_pdmc_close,
+-	.legacy_dai_naming = 1,
+-	.trigger_start = SND_SOC_TRIGGER_ORDER_LDC,
+ };
+ 
+ static const unsigned int mchp_pdmc_1mic[] = {1};
+@@ -587,6 +553,11 @@ static int mchp_pdmc_hw_params(struct snd_pcm_substream *substream,
+ 			cfgr_val |= MCHP_PDMC_CFGR_BSSEL(i);
+ 	}
+ 
++	/*
++	 * from these point forward, we consider the controller busy, so the
++	 * audio filter and SINC order can't be changed
++	 */
++	atomic_set(&dd->busy_stream, 1);
+ 	for (osr_start = dd->audio_filter_en ? 64 : 8;
+ 	     osr_start <= 256 && best_diff_rate; osr_start *= 2) {
+ 		long round_rate;
+@@ -1143,6 +1114,8 @@ static void mchp_pdmc_remove(struct platform_device *pdev)
+ {
+ 	struct mchp_pdmc *dd = platform_get_drvdata(pdev);
+ 
++	atomic_set(&dd->busy_stream, 0);
++
+ 	if (!pm_runtime_status_suspended(dd->dev))
+ 		mchp_pdmc_runtime_suspend(dd->dev);
+ 
+
+base-commit: 5acd9952f95fb4b7da6d09a3be39195a80845eb6
+-- 
+2.34.1
+
