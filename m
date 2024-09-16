@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29832C3ABB2
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2024 10:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6E78C3ABA2
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2024 12:31:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31F34E0D;
-	Mon, 16 Sep 2024 12:00:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31F34E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CD62E94;
+	Mon, 16 Sep 2024 14:31:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CD62E94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726480848;
-	bh=UkkJhVmPZRFzZAuAcyiy2i8RwGIpDoJ5oqfQ2KdcAd8=;
+	s=default; t=1726489886;
+	bh=XlofpYMtyVQKy2CQEZ9vtgpMy0tI2NYSeC/qF+i14OQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pHpJLL3fmfN88wf0d53VuhFuX1nYjeexEcIc9og7Ud+AsXvBzMOSDZjP1N8WLN5x7
-	 OCbq87SNOg4AqSbqM3TrDJsoS4H3LI6D2ocdjQYDYvk/q7z/QoXb6auRS67IS6voCc
-	 6Fc7eUmVoDPXoW9gPjLFkVd7ehYN2HZhUNJLcOww=
+	b=pVujTAYEXobFhH7jhb4aMo1nx+SFbxZVfqSGCUWo4xy/IExD+ntpRN8rY7SVVb2jX
+	 6Dk0xIkKtGg82NpexSgisZUgQA5pPbHpIFPFi1tyauPJhU3VC3FZf0vLx4Xojw69Y6
+	 LDM7FhM3TG7TXThTl8HUcRBE2usOBd2kmS0gcnU0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9D5AF805C8; Mon, 16 Sep 2024 12:00:18 +0200 (CEST)
+	id 2C081F805B0; Mon, 16 Sep 2024 14:30:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35993F805DA;
-	Mon, 16 Sep 2024 12:00:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 860E0F80301;
+	Mon, 16 Sep 2024 14:30:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DE99F80236; Mon, 16 Sep 2024 12:00:12 +0200 (CEST)
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
- [217.70.183.201])
+	id 8B252F8020D; Mon, 16 Sep 2024 14:30:50 +0200 (CEST)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::224])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 515FBF801C0
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 12:00:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 515FBF801C0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 85EC8F80074
+	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 14:30:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85EC8F80074
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=O4ETYETg
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CF3B51BF208;
-	Mon, 16 Sep 2024 10:00:07 +0000 (UTC)
+ header.s=gm1 header.b=pzyO8VcD
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 649CCE0002;
+	Mon, 16 Sep 2024 12:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1726480809;
+	t=1726489847;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PVcKgmtsHiY6zmy9L9WXJLjM0R6FE0qNoX99Did6GQM=;
-	b=O4ETYETgxUUfpMvCpGK0TLhjTTodnCl3fjQh1P7pEW+3zQqfh8d6XdMLf9WLIoOYAS68RE
-	vMc2GkAH78QTrgbizmeJyIw0nRLXkrhK2MMgfndA4tVpHq0lp4HEBiI4A/0JNbCknYfZDv
-	2+9y994TBls8TJDXetU4jwuToRmSGKJ2rtMTnOd5sTvjDt93KM/JGppcR48QPpoGOGAsE7
-	1dz3eHHhjdMhjGGQr+jYjzrQ6PqnzODM6CrU1LDkQcPRdGii1SzENOFIm5VY0hjAiKP11m
-	CysVURAD7KhecdypD9YKtsvljbA33yR++yVQ4Gz/VEpKefuePHWjQoA6bWkMiA==
-Date: Mon, 16 Sep 2024 12:00:06 +0200
+	bh=tFf33Dr3Av9cjGRxcivDJ7jSpxWV5p1tiUMWvEOn8Fs=;
+	b=pzyO8VcD5eOWNbaF6y5cYWnDO6KCPDjbQFX46CYw8eVowhXH+FOzUJRqgXamOzGtfCk8o+
+	l9agNcz7sCkPqj9f/VpFUBciP8le0nMok+7c6gWmjxRoAVSTt5kS+pGT4DyJAm4nq1qzvU
+	YPXxSOLi6bDJIb75NFS3QBdz7qsJ/4ghANlb+/daht7GxJIbeEL8eFZKQrqeJeXqlGRd1r
+	acaUGZhe1/4tJf2C16Y3y06gDaX1e6g14hbOhuwFAOxW4BsuzFBRK6GeLMsulNNu15tItF
+	f6DnNB9CfFndwYLdF8aeREWLYE9slv6onfb91NryaQQJpTZi2/SnDrgLwzEEBg==
+Date: Mon, 16 Sep 2024 14:30:45 +0200
 From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 To: Andrei Simion <andrei.simion@microchip.com>
-Cc: claudiu.beznea@tuxon.dev, lgirdwood@gmail.com, broonie@kernel.org,
-	perex@perex.cz, tiwai@suse.com, nicolas.ferre@microchip.com,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH 1/2] ASoC: atmel: atmel_ssc_dai: Add stream names
-Message-ID: <20240916100006f2db7b06@mail.local>
-References: <20240916085214.11083-1-andrei.simion@microchip.com>
- <20240916085214.11083-2-andrei.simion@microchip.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+	claudiu.beznea@tuxon.dev, codrin.ciubotariu@microchip.com,
+	lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org,
+	nicolas.ferre@microchip.com, perex@perex.cz, tiwai@suse.com
+Subject: Re: [PATCH 2/2] ASoC: atmel: atmel_ssc_dai: Drop S24_LE support due
+ to single channel limitation
+Message-ID: <2024091612304529f5ebe1@mail.local>
+References: <20240916100006f2db7b06@mail.local>
+ <20240916113203.17871-1-andrei.simion@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240916085214.11083-2-andrei.simion@microchip.com>
+In-Reply-To: <20240916113203.17871-1-andrei.simion@microchip.com>
 X-GND-Sasl: alexandre.belloni@bootlin.com
-Message-ID-Hash: UEE2XJM7RVANKTL2XQUL4ITU4ZNN4YEJ
-X-Message-ID-Hash: UEE2XJM7RVANKTL2XQUL4ITU4ZNN4YEJ
+Message-ID-Hash: 56MOHOV2MKIRBKKTZ4Q52SN7VPRJIXKO
+X-Message-ID-Hash: 56MOHOV2MKIRBKKTZ4Q52SN7VPRJIXKO
 X-MailFrom: alexandre.belloni@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEE2XJM7RVANKTL2XQUL4ITU4ZNN4YEJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/56MOHOV2MKIRBKKTZ4Q52SN7VPRJIXKO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,44 +93,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 16/09/2024 11:52:14+0300, Andrei Simion wrote:
-> From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+On 16/09/2024 14:32:05+0300, Andrei Simion wrote:
+> On 16.09.2024 12:59, Alexandre Belloni wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 16/09/2024 11:52:15+0300, Andrei Simion wrote:
+> >> From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> >>
+> >> Drop S24_LE format because it is not supported if more than 2 channels
+> >> (of TDM slots) are used. This limitation makes it impractical for use cases
+> >> requiring more than 2 TDM slots, leading to potential issues in
+> >> multi-channel configurations.
+> >>
+> >> [andrei.simion@microchip.com: Reword the commit title and the commit
+> >> message.]
+> >>
+> >> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> >> Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
+> >> ---
+> >>  sound/soc/atmel/atmel_ssc_dai.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+> >> index 7047f17fe7a8..475e7579c64c 100644
+> >> --- a/sound/soc/atmel/atmel_ssc_dai.c
+> >> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> >> @@ -822,7 +822,7 @@ static int atmel_ssc_resume(struct snd_soc_component *component)
+> >>  }
+> >>
+> >>  #define ATMEL_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
+> >> -                       SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+> >> +                        SNDRV_PCM_FMTBIT_S32_LE)
+> >
+> > I believe this requires a comment. Else someone may add it back later
+> > on.
+> >
 > 
-> Add required stream names for DPCM and future use-cases.
+> It is unclear to me. Would it be good to send v2 with this update?
 > 
-> [andrei.simion@microchip.com: Adjust commit title. Reword commit message.]
-> 
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
 
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
->  sound/soc/atmel/atmel_ssc_dai.c | 2 ++
->  1 file changed, 2 insertions(+)
+Yes, please send a new version. My point is that it is explained in the
+commit log. This is fine when you are adding something because then
+people will easily use git blame and find the commit and log. However,
+because you are removing code, it is not obvious there is a reason why
+it isn't there;
+
+> >>
+> >>  static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+> >>       .startup        = atmel_ssc_startup,
+> >> --
+> >> 2.34.1
+> >>
+> >
+> > --
+> > Alexandre Belloni, co-owner and COO, Bootlin
+> > Embedded Linux and Kernel engineering
+> > https://bootlin.com
 > 
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index 3763454436c1..7047f17fe7a8 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -836,6 +836,7 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
->  
->  static struct snd_soc_dai_driver atmel_ssc_dai = {
->  		.playback = {
-> +			.stream_name = "Playback",
->  			.channels_min = 1,
->  			.channels_max = 2,
->  			.rates = SNDRV_PCM_RATE_CONTINUOUS,
-> @@ -843,6 +844,7 @@ static struct snd_soc_dai_driver atmel_ssc_dai = {
->  			.rate_max = 384000,
->  			.formats = ATMEL_SSC_FORMATS,},
->  		.capture = {
-> +			.stream_name = "Capture",
->  			.channels_min = 1,
->  			.channels_max = 2,
->  			.rates = SNDRV_PCM_RATE_CONTINUOUS,
-> -- 
-> 2.34.1
-> 
+> Best regards,
+> Andrei Simion
 
 -- 
 Alexandre Belloni, co-owner and COO, Bootlin
