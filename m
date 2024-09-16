@@ -4,150 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 634DCC3ABA2
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2024 07:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5026C3ABB2
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Sep 2024 07:25:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABCF1E82;
-	Mon, 16 Sep 2024 09:16:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABCF1E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2592BE94;
+	Mon, 16 Sep 2024 09:25:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2592BE94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726471009;
-	bh=HSY+P674ZC//NI+yJrY0M1U5P0BgZX3TedYhmPf6JCc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1726471526;
+	bh=47xPVJrzm6Sz8Ky0GorJhQI2r9rwb/mpjHTKV1Qxpjc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JXMb0rosOzeFYQOqjvvUZnMJUx+azOQU2BgeQr03sSgHzH/FFTtL262cFUIsh+DUG
-	 YdRy9wiB7XPyqtBRkK6lc6KvCDxD8O22KkVhfIrgYPIUUhcekNAE2I3iJLB95WOkup
-	 TXx5t+U04c5VsuzgS+yHZ1QRLMhlerBEkmYsvoqA=
+	b=SJiRNrzBa9YHmuFwEuDUilR41n774OZ9yGpHvOmK+H+QBM0V1iC5D08/j0gOUg8bi
+	 Fk1q/w30LmICUCyAhApVQPty6WLfWhDyG2lVZKWV5DemDlS48QoguP73sqZZCNWpe2
+	 jaUCA6cUi5zzk9ThVWMuHPYl9QFio3GQXGFp0E+A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6D1AF805AE; Mon, 16 Sep 2024 09:16:18 +0200 (CEST)
+	id CFB1DF805A8; Mon, 16 Sep 2024 09:24:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 435DAF805B6;
-	Mon, 16 Sep 2024 09:16:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 193A2F805B5;
+	Mon, 16 Sep 2024 09:24:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B80ECF8020D; Mon, 16 Sep 2024 09:16:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+	id 62E05F8020D; Mon, 16 Sep 2024 09:24:50 +0200 (CEST)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E375FF80107
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 09:16:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E375FF80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F0A4F80107
+	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 09:24:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F0A4F80107
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=tWC+tkRZ;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=uqmp8RwK;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=D/PWzUlj;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=PgXA8jh8
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C9F411F86B;
-	Mon, 16 Sep 2024 07:16:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1726470970;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/sSjzr5HtMz2pqKGcdEToj0QWZJuyrJg/ZaZJWn3ez0=;
-	b=tWC+tkRZSIILrMkX3PiwGWsBW6zdfHTqG3kqixGQ7cPTArpL8x/xRtnqqWgB4AecZAGn0g
-	wFsDCBVexmux1UA6KQO89Rxu/04unwGKJJdyC5jIGf5BfwBXkh9a0PiF82MsAY8nnkkMGB
-	MGB/SEZ9U/q01KQ4s40yDbVinqT4a78=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1726470970;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/sSjzr5HtMz2pqKGcdEToj0QWZJuyrJg/ZaZJWn3ez0=;
-	b=uqmp8RwKdGFtm4DmshUo59x2lZGJMy1LTO02FLGgrIMEFy3ZLY3iFPOV4fDwfF79Yrr2Xq
-	KHFhEf3l2zp6fhAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1726470968;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/sSjzr5HtMz2pqKGcdEToj0QWZJuyrJg/ZaZJWn3ez0=;
-	b=D/PWzUljxJ8oLF8aG3BG/eE3gmGfrLC9qv1ZM+Ut4tBAkgI5nVmUqTI+Ng6w3jNOTbtaiF
-	5zVuQQTL4Y8pSrjjnVpfR2XhxGG59Ia2ywk7jzhKXZhq3VqtjIsjNksMOQwZbqI+YZM5hx
-	mxophtHHZFqZDZKXcomFx/Ie0VC0q/0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1726470968;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/sSjzr5HtMz2pqKGcdEToj0QWZJuyrJg/ZaZJWn3ez0=;
-	b=PgXA8jh8vvF6cxpxPAmnG5qnK/9FOOAFAdo2uTAh+5Eg6kRMavX6GfiJPqfP9zkFPV8eye
-	huOSo+Y9fOspuYAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 96C631397F;
-	Mon, 16 Sep 2024 07:16:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qWQ2Izjb52b0KAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 16 Sep 2024 07:16:08 +0000
-Date: Mon, 16 Sep 2024 09:16:58 +0200
-Message-ID: <874j6g9ifp.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=infradead.org header.i=@infradead.org
+ header.a=rsa-sha256 header.s=bombadil.20210309 header.b=Pn9FC1x6
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=htINtMKW1HHHTz6jXf4cYaZiT3xsT/nN0J8Q13owBXQ=; b=Pn9FC1x6nnL0y9Cn7Z9N7H7ytU
+	cnlXuztesp1Ehje2r9n2mP9UmGrD44lQT6tOQ5ADkWRaKwb8R6I7Tpqg887T3I6M3vWHX2gjKeLVr
+	McgOkSWOVNM5zTI6182gNcaJM+eN5U60ysxN4vYhN5f3PPW8dnRw5KHtlOPllrR5ATMEtcKXXsiPw
+	rmvmNKdTTSWRBPx/3MJtoWxl9S6n8T32ttqeufOQlPfRXQu85xrXE/oT5jQU4tj3N79sBYNkOEtZo
+	FO/40oEM+s/FyGzhKQOq4mHmISg54wN862PYFIhB9dC6ZkjnvzA22QGKPt1pnf4CNL02uqk5DNzB0
+	mK4aPqfg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat
+ Linux))
+	id 1sq66E-00000003Iyc-1rAO;
+	Mon, 16 Sep 2024 07:24:42 +0000
+Date: Mon, 16 Sep 2024 00:24:42 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
 	Ariadne Conill <ariadne@ariadne.space>,
-	xen-devel@lists.xenproject.org,
-	alsa-devel@alsa-project.org,
+	xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org,
 	stable@vger.kernel.org
 Subject: Re: [PATCH] Revert "ALSA: memalloc: Workaround for Xen PV"
-In-Reply-To: <ZuK6xcmAE4sngFqk@infradead.org>
+Message-ID: <ZufdOjFCdqQQX7tz@infradead.org>
 References: <20240906184209.25423-1-ariadne@ariadne.space>
-	<877cbnewib.wl-tiwai@suse.de>
-	<9eda21ac-2ce7-47d5-be49-65b941e76340@citrix.com>
-	<ZuK6xcmAE4sngFqk@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
-Message-ID-Hash: FO4SIX6TBTMOHC3ZYKNMYTV6YXKTRXNK
-X-Message-ID-Hash: FO4SIX6TBTMOHC3ZYKNMYTV6YXKTRXNK
-X-MailFrom: tiwai@suse.de
+ <877cbnewib.wl-tiwai@suse.de>
+ <9eda21ac-2ce7-47d5-be49-65b941e76340@citrix.com>
+ <ZuK6xcmAE4sngFqk@infradead.org>
+ <874j6g9ifp.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874j6g9ifp.wl-tiwai@suse.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Message-ID-Hash: IK6YW6DPN2UNXYQFXX6KUNIKWSFR3OTT
+X-Message-ID-Hash: IK6YW6DPN2UNXYQFXX6KUNIKWSFR3OTT
+X-MailFrom: 
+ BATV+500305f64adcbfb43b9e+7694+infradead.org+hch@bombadil.srs.infradead.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -159,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FO4SIX6TBTMOHC3ZYKNMYTV6YXKTRXNK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IK6YW6DPN2UNXYQFXX6KUNIKWSFR3OTT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,40 +100,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 12 Sep 2024 11:56:21 +0200,
-Christoph Hellwig wrote:
-> 
-> On Sat, Sep 07, 2024 at 11:38:50AM +0100, Andrew Cooper wrote:
-> > Individual subsystems ought not to know or care about XENPV; it's a
-> > layering violation.
-> 
-> Agreed.
-> 
-> > If the main APIs don't behave properly, then it probably means we've got
-> > a bug at a lower level (e.g. Xen SWIOTLB is a constant source of fun)
-> > which is probably affecting other subsystems too.
-> > 
-> > I think we need to re-analyse the original bug.  Right now, the
-> > behaviour resulting from 53466ebde is worse than what it was trying to fix.
-> 
-> 53466ebde looks bogus to me, and the commit message doesn't even
-> try to explain what bad behavior it works around.  I'd also like to
-> state once again that if you think something is broken about dma
-> allocation or mapping helpers please Cc me and the iommu list.
-> 
-> Most of the time it's actually the drivers doing something invalid, but
-> sometimes it is a core dma layer bug or something that needs a proper
-> API.
-> 
-> Also while looking at the above commit I noticed the broken fallback
-> code in snd_dma_noncontig_alloc - get_dma_ops is not for driver use,
-> and starting with the code queued up for 6.12 will also return NULL
-> when using dma-iommu for example.
+On Mon, Sep 16, 2024 at 09:16:58AM +0200, Takashi Iwai wrote:
+> Yes, all those are really ugly hacks and have been already removed for
+> 6.12.  Let's hope everything works as expected with it.
 
-Yes, all those are really ugly hacks and have been already removed for
-6.12.  Let's hope everything works as expected with it.
+The code currently in linux-next will not work as explained in my
+previous mail, because it tries to side step the DMA API and abuses
+get_dma_ops in an unsupported way.
 
-
-thanks,
-
-Takashi
