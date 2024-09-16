@@ -4,79 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50DA5CDD573
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 13:16:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E99CACDD578
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 13:16:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B397E69;
-	Thu, 19 Sep 2024 15:16:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B397E69
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09A4E85D;
+	Thu, 19 Sep 2024 15:16:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09A4E85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726751777;
-	bh=ERdIfMR2uvWrz1IUsYwPvNndgl85YW06MtCLXaZa2bA=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=LBmXgqa4mpM6HDpUVPTdToFgOzfMo8xHnnt/OoOSDsnLjE/tNGqgCiuVR1SROG79S
-	 p2TbUs+k44aMBb44PbQ3LNN7G/NycT/w+PaxSnPv+fJIxwaAH0edJs7u6OWdBrdcHQ
-	 fErUP/GzBTW2oL4uPkinaW0xlWTylrNVOzbLlFcg=
+	s=default; t=1726751790;
+	bh=LtyrK8rT+ddKnOKr4OAF9a6sJB7r1UWxYnOf39Qe6Bg=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=StE3bC4HsTPxXYdS7dnQKhsBEtWTEppV7PwkSxMfNfopr/Vath+xypuZaLjYL4ngw
+	 fWGByLoSD+nTtU5YGHWYV+yyd+jd6zbSBQgASRpqjjXPWjRpHgYOJcK3qQ150QI9e0
+	 TyG+jl5p8ONvtpl+2GfFDLwGfQxolsERQ8SoeX14=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EC313F805E3; Thu, 19 Sep 2024 15:13:33 +0200 (CEST)
+	id 4DCFDF805F3; Thu, 19 Sep 2024 15:13:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B24BF80750;
-	Thu, 19 Sep 2024 15:13:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64B16F80765;
+	Thu, 19 Sep 2024 15:13:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9194F8020D; Mon, 16 Sep 2024 15:19:56 +0200 (CEST)
+	id ADBBBF8020D; Mon, 16 Sep 2024 15:20:20 +0200 (CEST)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.154.123])
+ [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D835AF800D0
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 15:19:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D835AF800D0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 72CE6F80107
+	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 15:20:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72CE6F80107
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=toafnVj/
+ header.a=rsa-sha256 header.s=mchp header.b=g4BRnS1H
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1726492796; x=1758028796;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ERdIfMR2uvWrz1IUsYwPvNndgl85YW06MtCLXaZa2bA=;
-  b=toafnVj/UJQw+/bvvmLlAR1rXle3+Pto1Cm7QMagX5OUI33TGgtomTYr
-   2i0djabsJB2+X9j8xmFiWo3bPICDkIGyBA0I5fGntjabJEGlCjJO412+n
-   qDZ4oh9eFfhxSy8U+6khdDNMQwgkMwoKQj/YdYvdSR4GyOd3PDRRbK/xp
-   k9u5xOJXe/qWzXRaXSPKwNRVXTaVs6urqX+Cs8fIxb+ilppikQmLewxYv
-   /V2u7EkF9GxP7aujLG5wN4YVA1YpN6sP6gHOiqLoef/WrBo60bkSQWyR6
-   5goAbkrFLcZqRmCMmjKMBOGIM60Z4Tpn/vBggxylNSVd+k+TLR/XiedO8
-   A==;
-X-CSE-ConnectionGUID: oIAdU8ucQc2W5w/WcMunEw==
-X-CSE-MsgGUID: UzSuz8qSS7G2B7V5/I5gkQ==
+  t=1726492820; x=1758028820;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=LtyrK8rT+ddKnOKr4OAF9a6sJB7r1UWxYnOf39Qe6Bg=;
+  b=g4BRnS1HIM6pVDia17xWtVk53PBjKfqA3k2AqN0D48nca3udNdWAJITF
+   S4AObKxnAYEaa0bB0JOf4hglWFUCVrv2p/Ue0EYNUFmKi+afgPX7dPP1B
+   wEXlHAoX+ztseaP9nTU2WVK0fjCV8gIHPuVIIF0SvuAakmx+K65j+KEbG
+   PI5opxnydPWwnca0T4N/hBQmkXoDGVtGZDFG5UlHCquBjWtl8P4m5EReQ
+   g3G+K3FqKv98w4ZFqrYtzW6KPeiQCjJpPwk8IfYZ6qv691Gnlv5I7HkYI
+   boRDvbnIEl/xqiwMR6Rpg0oGKBr2SafP9M8T4EwYDq1bOiJK96bH7Z888
+   g==;
+X-CSE-ConnectionGUID: 50Z/Q3YNQtGxx5+pLOGVZA==
+X-CSE-MsgGUID: UsZZD4kASkGvuL/uCyRMpQ==
 X-IronPort-AV: E=Sophos;i="6.10,233,1719903600";
-   d="scan'208";a="31717729"
+   d="scan'208";a="262829818"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
- 16 Sep 2024 06:19:52 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
+ 16 Sep 2024 06:20:16 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 16 Sep 2024 06:19:29 -0700
+ 15.1.2507.35; Mon, 16 Sep 2024 06:19:35 -0700
 Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Mon, 16 Sep 2024 06:19:26 -0700
+ 15.1.2507.35 via Frontend Transport; Mon, 16 Sep 2024 06:19:32 -0700
 From: Andrei Simion <andrei.simion@microchip.com>
 To: <claudiu.beznea@tuxon.dev>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
 	<perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
 	<alexandre.belloni@bootlin.com>
 CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Andrei Simion <andrei.simion@microchip.com>
-Subject: [PATCH v2 0/2] Updates for Atmel SSC DAI
-Date: Mon, 16 Sep 2024 16:19:08 +0300
-Message-ID: <20240916131910.22680-1-andrei.simion@microchip.com>
+	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Andrei Simion
+	<andrei.simion@microchip.com>
+Subject: [PATCH v2 2/2] ASoC: atmel: atmel_ssc_dai: Drop S24_LE support due to
+ single channel limitation
+Date: Mon, 16 Sep 2024 16:19:10 +0300
+Message-ID: <20240916131910.22680-3-andrei.simion@microchip.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240916131910.22680-1-andrei.simion@microchip.com>
+References: <20240916131910.22680-1-andrei.simion@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -86,15 +91,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RZVZMNMYJ7WVOSMMFQWLUCWKLPT2UUFE
-X-Message-ID-Hash: RZVZMNMYJ7WVOSMMFQWLUCWKLPT2UUFE
-X-Mailman-Approved-At: Thu, 19 Sep 2024 13:13:10 +0000
+Message-ID-Hash: 5WL4HWI2QTIHRAJZVWK3BPTJUEL2A4BZ
+X-Message-ID-Hash: 5WL4HWI2QTIHRAJZVWK3BPTJUEL2A4BZ
+X-Mailman-Approved-At: Thu, 19 Sep 2024 13:13:11 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RZVZMNMYJ7WVOSMMFQWLUCWKLPT2UUFE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WL4HWI2QTIHRAJZVWK3BPTJUEL2A4BZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,20 +108,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch set includes two updates for the Atmel SSC DAI driver:
-- Address the limitation with the S24_LE format.
-- Add stream names for DPCM and future use-cases.
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-Codrin Ciubotariu (2):
-  ASoC: atmel: atmel_ssc_dai: Add stream names
-  ASoC: atmel: atmel_ssc_dai: Drop S24_LE support due to single channel
-    limitation
+Drop S24_LE format because it is not supported if more than 2 channels
+(of TDM slots) are used. This limitation makes it impractical for use cases
+requiring more than 2 TDM slots, leading to potential issues in
+multi-channel configurations.
 
- sound/soc/atmel/atmel_ssc_dai.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+[andrei.simion@microchip.com: Reword the commit title and the commit
+message. Add code comment to explain the removed code.]
 
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
+---
+v1 -> v2:
+- add code comment to explain why S24_LE is dropped.
+---
+ sound/soc/atmel/atmel_ssc_dai.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-base-commit: 7083504315d64199a329de322fce989e1e10f4f7
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 7047f17fe7a8..89098f41679c 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -821,8 +821,9 @@ static int atmel_ssc_resume(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
++/* S24_LE is not supported if more than 2 channels (of TDM slots) are used. */
+ #define ATMEL_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
+-			  SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
++			   SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ 	.startup	= atmel_ssc_startup,
 -- 
 2.34.1
 
