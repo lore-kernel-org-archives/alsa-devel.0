@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5332CDD573
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 13:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6118DCDD578
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 13:16:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9D65850;
-	Thu, 19 Sep 2024 15:15:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D65850
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7D06E82;
+	Thu, 19 Sep 2024 15:15:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7D06E82
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726751739;
-	bh=04M62AnevvKOpl+yrEWkhUipAMKBwSj5m1kfSIBHe7E=;
+	s=default; t=1726751759;
+	bh=u4Do+N2Ea5j3qFHQaToclHAxoELiSMZ8zNaCm7eJIwY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qa8A9hsIJp2dYrwb/J9u6jfVk53tSed+cPrdOwPzkFYv+f99GtTSVHQqZG4vfDO5Q
-	 v5zDCTgAkDmLBVsc/N0+240huYWHqvpXqpJGUXaT+OhBS8QjeWvRtfKwiQFdqw79Q4
-	 FaKmo21AIq19F33hx1Vst2JpJ3wwYyyqLyzxyGDU=
+	b=N6nGzRRvvqw9FqD0HIuArmWnudpB0zWVwMvzwc15msCpP5DvzH1TUvQ1XFEaMyw8x
+	 mci6m8sMNf163EYOuOewDcpoBurL2Gvy8gtQgnG5Ta/RuI8q7LJcTi+BKx7MMZztyb
+	 LeqoEfXGDOg0w8FOUghxEeVi+9Zp05F4ELh3PHeU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A383F806D9; Thu, 19 Sep 2024 15:13:25 +0200 (CEST)
+	id E25E0F8071F; Thu, 19 Sep 2024 15:13:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45D2DF806D9;
-	Thu, 19 Sep 2024 15:13:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 633D6F80716;
+	Thu, 19 Sep 2024 15:13:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F283F8020D; Mon, 16 Sep 2024 13:34:17 +0200 (CEST)
+	id CDF28F80236; Mon, 16 Sep 2024 15:19:48 +0200 (CEST)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A19FAF80107
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 13:34:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A19FAF80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9711CF80107
+	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 15:19:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9711CF80107
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=YP0KVLnk
+ header.a=rsa-sha256 header.s=mchp header.b=dTW0HoNK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1726486456; x=1758022456;
+  t=1726492787; x=1758028787;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=04M62AnevvKOpl+yrEWkhUipAMKBwSj5m1kfSIBHe7E=;
-  b=YP0KVLnkfZmW5TS81gTX22hnn4EaCTDkjBlFe8oYkAgvBjRRe+kZ083i
-   XsXYXXGD+ZIYi88tIZqNbfIyD35DKekA6PowM71fi6+Bg26iSPNqrCbFQ
-   QwmyBPJltfH6K+x1N/QLa1hLmEOJmg4d+FkYAIv4abo9PNXsyHNThR4lV
-   +UVp/0V0JUBCdjbx6TdK+1QMiMhkCgglGt63vvwwqjMHot6MDIR+eaKfF
-   UfRGRKVzIe5RbRQy83qt7OCwAiwstifYTC91xkhYn2VjVGhXlTiIXdC86
-   1ufPRS+DerdU4/WyzTEjxJdwsjKqDj6LAHYPP9TRik0wTXlFfPWZuTrOM
+  bh=u4Do+N2Ea5j3qFHQaToclHAxoELiSMZ8zNaCm7eJIwY=;
+  b=dTW0HoNKUN2Ml9dgH2VO+acf/0ct4AHwWY1Bideqb6uxJ9+FrfGYrUr4
+   T14C2BadYHMGXi49DTB1My+FD59NUnc1sHyJrAkJAFU+va8QSotGP33Vh
+   u3WCqcT9TNrfQb+mVur1FJVd9iseMvaH6GxR1TF5SB54JFDUUlP3qJr6C
+   U/mFwK/XHfXN16F7UE/Os6LrNogiqM+sjQhNOp67Vw1MaI71J/CwWM0ca
+   4wL1NqMA6kwn1wwAHpQ5cuJ25Kw4RIihoMduf32Urm+AuNdttWofA5stQ
+   3FED7P3g9SG3g2L1rKTwj8NPkKAqh9VC9MdrWHgjeKW2puNWA1DenuqCY
    A==;
-X-CSE-ConnectionGUID: Onkqnjp3T4uu7VkYLySsmg==
-X-CSE-MsgGUID: DF5Odg+jTkKSP28grZCI6g==
+X-CSE-ConnectionGUID: eEp7On7+SIiSQUXcJYfpmQ==
+X-CSE-MsgGUID: G1Q9K5xbT6qTVD8dcFEO6w==
 X-IronPort-AV: E=Sophos;i="6.10,233,1719903600";
-   d="scan'208";a="32447859"
+   d="scan'208";a="32452553"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
   by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
- 16 Sep 2024 04:34:11 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ 16 Sep 2024 06:19:42 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 16 Sep 2024 04:34:05 -0700
+ 15.1.2507.35; Mon, 16 Sep 2024 06:19:32 -0700
 Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Mon, 16 Sep 2024 04:34:03 -0700
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Mon, 16 Sep 2024 06:19:29 -0700
 From: Andrei Simion <andrei.simion@microchip.com>
-To: <alexandre.belloni@bootlin.com>
-CC: <alsa-devel@alsa-project.org>, <andrei.simion@microchip.com>,
-	<broonie@kernel.org>, <claudiu.beznea@tuxon.dev>,
-	<codrin.ciubotariu@microchip.com>, <lgirdwood@gmail.com>,
+To: <claudiu.beznea@tuxon.dev>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+	<perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-sound@vger.kernel.org>, <nicolas.ferre@microchip.com>,
-	<perex@perex.cz>, <tiwai@suse.com>
-Subject: Re: [PATCH 2/2] ASoC: atmel: atmel_ssc_dai: Drop S24_LE support due
- to single channel limitation
-Date: Mon, 16 Sep 2024 14:32:05 +0300
-Message-ID: <20240916113203.17871-1-andrei.simion@microchip.com>
+	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Andrei Simion
+	<andrei.simion@microchip.com>
+Subject: [PATCH v2 1/2] ASoC: atmel: atmel_ssc_dai: Add stream names
+Date: Mon, 16 Sep 2024 16:19:09 +0300
+Message-ID: <20240916131910.22680-2-andrei.simion@microchip.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240916100006f2db7b06@mail.local>
-References: <20240916100006f2db7b06@mail.local>
+In-Reply-To: <20240916131910.22680-1-andrei.simion@microchip.com>
+References: <20240916131910.22680-1-andrei.simion@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -91,15 +90,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7VUQBQGSL3PMQD2NA2QFC77M4LHSQO2A
-X-Message-ID-Hash: 7VUQBQGSL3PMQD2NA2QFC77M4LHSQO2A
+Message-ID-Hash: Z5OELH6MRB4GYOFZTA3GDUCV3CGTCL24
+X-Message-ID-Hash: Z5OELH6MRB4GYOFZTA3GDUCV3CGTCL24
 X-Mailman-Approved-At: Thu, 19 Sep 2024 13:13:10 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7VUQBQGSL3PMQD2NA2QFC77M4LHSQO2A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z5OELH6MRB4GYOFZTA3GDUCV3CGTCL24/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,54 +107,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 16.09.2024 12:59, Alexandre Belloni wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On 16/09/2024 11:52:15+0300, Andrei Simion wrote:
->> From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->>
->> Drop S24_LE format because it is not supported if more than 2 channels
->> (of TDM slots) are used. This limitation makes it impractical for use cases
->> requiring more than 2 TDM slots, leading to potential issues in
->> multi-channel configurations.
->>
->> [andrei.simion@microchip.com: Reword the commit title and the commit
->> message.]
->>
->> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->> Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
->> ---
->>  sound/soc/atmel/atmel_ssc_dai.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
->> index 7047f17fe7a8..475e7579c64c 100644
->> --- a/sound/soc/atmel/atmel_ssc_dai.c
->> +++ b/sound/soc/atmel/atmel_ssc_dai.c
->> @@ -822,7 +822,7 @@ static int atmel_ssc_resume(struct snd_soc_component *component)
->>  }
->>
->>  #define ATMEL_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
->> -                       SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
->> +                        SNDRV_PCM_FMTBIT_S32_LE)
->
-> I believe this requires a comment. Else someone may add it back later
-> on.
->
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-It is unclear to me. Would it be good to send v2 with this update?
+Add required stream names for DPCM and future use-cases.
 
->>
->>  static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
->>       .startup        = atmel_ssc_startup,
->> --
->> 2.34.1
->>
->
-> --
-> Alexandre Belloni, co-owner and COO, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+[andrei.simion@microchip.com: Adjust commit title. Reword commit message.]
 
-Best regards,
-Andrei Simion
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
+---
+v1 -> v2:
+- add Reviewed-by tag
+---
+ sound/soc/atmel/atmel_ssc_dai.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index 3763454436c1..7047f17fe7a8 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -836,6 +836,7 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ 
+ static struct snd_soc_dai_driver atmel_ssc_dai = {
+ 		.playback = {
++			.stream_name = "Playback",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+ 			.rates = SNDRV_PCM_RATE_CONTINUOUS,
+@@ -843,6 +844,7 @@ static struct snd_soc_dai_driver atmel_ssc_dai = {
+ 			.rate_max = 384000,
+ 			.formats = ATMEL_SSC_FORMATS,},
+ 		.capture = {
++			.stream_name = "Capture",
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+ 			.rates = SNDRV_PCM_RATE_CONTINUOUS,
+-- 
+2.34.1
+
