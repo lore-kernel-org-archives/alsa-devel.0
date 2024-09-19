@@ -4,102 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E99CACDD578
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 13:16:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EBC6CDD578
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Sep 2024 13:16:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09A4E85D;
-	Thu, 19 Sep 2024 15:16:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09A4E85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71144826;
+	Thu, 19 Sep 2024 15:16:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71144826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1726751790;
-	bh=LtyrK8rT+ddKnOKr4OAF9a6sJB7r1UWxYnOf39Qe6Bg=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=StE3bC4HsTPxXYdS7dnQKhsBEtWTEppV7PwkSxMfNfopr/Vath+xypuZaLjYL4ngw
-	 fWGByLoSD+nTtU5YGHWYV+yyd+jd6zbSBQgASRpqjjXPWjRpHgYOJcK3qQ150QI9e0
-	 TyG+jl5p8ONvtpl+2GfFDLwGfQxolsERQ8SoeX14=
+	s=default; t=1726751808;
+	bh=oB0IG1FZpNX8qGHKBepB0vaYITM6YVeiaNw0chda+lY=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=spRpJRcEoJSCowMOrGzfMKYv8MFEEgUtiZg7FWeQvddrTU8nkswzAyYLLiBr8ADIW
+	 Pj+ymoPXcH5aHtM6DyM4XeJXd+/6RpxUVn5LhEC0zUGAnUrTMdfDCXiDl0n9188YmT
+	 yUqA81q526FP45AvpYyjW3bQ13JTcj8jGkmArCs8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4DCFDF805F3; Thu, 19 Sep 2024 15:13:37 +0200 (CEST)
+	id 1A221F80600; Thu, 19 Sep 2024 15:14:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64B16F80765;
-	Thu, 19 Sep 2024 15:13:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19F40F805FE;
+	Thu, 19 Sep 2024 15:14:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADBBBF8020D; Mon, 16 Sep 2024 15:20:20 +0200 (CEST)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.153.233])
+	id 89CC9F8020D; Thu, 19 Sep 2024 09:58:29 +0200 (CEST)
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 72CE6F80107
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2024 15:20:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72CE6F80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id 07A59F80074
+	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2024 09:58:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07A59F80074
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=g4BRnS1H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1726492820; x=1758028820;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=LtyrK8rT+ddKnOKr4OAF9a6sJB7r1UWxYnOf39Qe6Bg=;
-  b=g4BRnS1HIM6pVDia17xWtVk53PBjKfqA3k2AqN0D48nca3udNdWAJITF
-   S4AObKxnAYEaa0bB0JOf4hglWFUCVrv2p/Ue0EYNUFmKi+afgPX7dPP1B
-   wEXlHAoX+ztseaP9nTU2WVK0fjCV8gIHPuVIIF0SvuAakmx+K65j+KEbG
-   PI5opxnydPWwnca0T4N/hBQmkXoDGVtGZDFG5UlHCquBjWtl8P4m5EReQ
-   g3G+K3FqKv98w4ZFqrYtzW6KPeiQCjJpPwk8IfYZ6qv691Gnlv5I7HkYI
-   boRDvbnIEl/xqiwMR6Rpg0oGKBr2SafP9M8T4EwYDq1bOiJK96bH7Z888
-   g==;
-X-CSE-ConnectionGUID: 50Z/Q3YNQtGxx5+pLOGVZA==
-X-CSE-MsgGUID: UsZZD4kASkGvuL/uCyRMpQ==
-X-IronPort-AV: E=Sophos;i="6.10,233,1719903600";
-   d="scan'208";a="262829818"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
- 16 Sep 2024 06:20:16 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 16 Sep 2024 06:19:35 -0700
-Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Mon, 16 Sep 2024 06:19:32 -0700
-From: Andrei Simion <andrei.simion@microchip.com>
-To: <claudiu.beznea@tuxon.dev>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
-	<perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Andrei Simion
-	<andrei.simion@microchip.com>
-Subject: [PATCH v2 2/2] ASoC: atmel: atmel_ssc_dai: Drop S24_LE support due to
- single channel limitation
-Date: Mon, 16 Sep 2024 16:19:10 +0300
-Message-ID: <20240916131910.22680-3-andrei.simion@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240916131910.22680-1-andrei.simion@microchip.com>
-References: <20240916131910.22680-1-andrei.simion@microchip.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=nnx1t/bc
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 48J7wLn0102849;
+	Thu, 19 Sep 2024 02:58:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1726732701;
+	bh=WBIO8ghc5BO7KnE+trij/v76xdOBbr/wF5H+L5REiYE=;
+	h=From:To:CC:Subject:Date;
+	b=nnx1t/bcQYPkrA4tunXM4zqVESCEy26aFKQKmlfh8B/axDHTA+l7sQClWczyxdSW5
+	 anwzA+Jv1M7nicjfnOIQ+nlF6y1ICSilQLVxtlZtUYcnb/68iCpPnXnk/nrWbDUNKE
+	 Hqc4coqdJY1oDhRlqSeKk4RdbaKBC7FD6ir3iTOM=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTP id 48J7wLmt052629;
+	Thu, 19 Sep 2024 02:58:21 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 19
+ Sep 2024 02:58:20 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 19 Sep 2024 02:58:20 -0500
+Received: from lelvsmtp5.itg.ti.com ([10.250.165.138])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 48J7w8aB122919;
+	Thu, 19 Sep 2024 02:58:09 -0500
+From: Baojun Xu <baojun.xu@ti.com>
+To: <broonie@kernel.org>
+CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
+        <13916275206@139.com>, <zhourui@huaqin.com>,
+        <alsa-devel@alsa-project.org>, <i-salazar@ti.com>,
+        <liam.r.girdwood@intel.com>, <jaden-yue@ti.com>,
+        <yung-chuan.liao@linux.intel.com>, <dipa@ti.com>,
+ <yuhsuan@google.com>,
+        <henry.lo@ti.com>, <tiwai@suse.de>, <baojun.xu@ti.com>,
+        <Baojun.Xu@fpt.com>, <judyhsiao@google.com>, <navada@ti.com>,
+        <cujomalainey@google.com>, <aanya@ti.com>, <nayeem.mahmud@ti.com>,
+        <savyasanchi.shukla@netradyne.com>, <flaviopr@microsoft.com>,
+        <jesse-ji@ti.com>, <darren.ye@mediatek.com>, <antheas.dk@gmail.com>,
+        <Jerry2.Huang@lcfuturecenter.com>, <jim.shil@goertek.com>
+Subject: [PATCH v1] ALSA: hda/tas2781: Add new quirk for Lenovo Y990 Laptop
+Date: Thu, 19 Sep 2024 15:57:43 +0800
+Message-ID: <20240919075743.259-1-baojun.xu@ti.com>
+X-Mailer: git-send-email 2.43.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-MailFrom: prvs=98237714c=Andrei.Simion@microchip.com
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-MailFrom: baojun.xu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 5WL4HWI2QTIHRAJZVWK3BPTJUEL2A4BZ
-X-Message-ID-Hash: 5WL4HWI2QTIHRAJZVWK3BPTJUEL2A4BZ
-X-Mailman-Approved-At: Thu, 19 Sep 2024 13:13:11 +0000
+Message-ID-Hash: QUW5Q3O2EDEM2ETONMNUKWZLBORY5RRQ
+X-Message-ID-Hash: QUW5Q3O2EDEM2ETONMNUKWZLBORY5RRQ
+X-Mailman-Approved-At: Thu, 19 Sep 2024 13:14:03 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WL4HWI2QTIHRAJZVWK3BPTJUEL2A4BZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QUW5Q3O2EDEM2ETONMNUKWZLBORY5RRQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,40 +107,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Add new vendor_id and subsystem_id in quirk for Lenovo Y990 Laptop.
 
-Drop S24_LE format because it is not supported if more than 2 channels
-(of TDM slots) are used. This limitation makes it impractical for use cases
-requiring more than 2 TDM slots, leading to potential issues in
-multi-channel configurations.
-
-[andrei.simion@microchip.com: Reword the commit title and the commit
-message. Add code comment to explain the removed code.]
-
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
+Signed-off-by: Baojun Xu <baojun.xu@ti.com>
 ---
-v1 -> v2:
-- add code comment to explain why S24_LE is dropped.
----
- sound/soc/atmel/atmel_ssc_dai.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index 7047f17fe7a8..89098f41679c 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -821,8 +821,9 @@ static int atmel_ssc_resume(struct snd_soc_component *component)
- 	return 0;
- }
- 
-+/* S24_LE is not supported if more than 2 channels (of TDM slots) are used. */
- #define ATMEL_SSC_FORMATS (SNDRV_PCM_FMTBIT_S8     | SNDRV_PCM_FMTBIT_S16_LE |\
--			  SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+			   SNDRV_PCM_FMTBIT_S32_LE)
- 
- static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
- 	.startup	= atmel_ssc_startup,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 480e82df7a4c..4f69fd30fdce 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10612,6 +10612,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x38cd, "Y790 VECO DUAL", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x38d2, "Lenovo Yoga 9 14IMH9", ALC287_FIXUP_YOGA9_14IMH9_BASS_SPK_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x38d7, "Lenovo Yoga 9 14IMH9", ALC287_FIXUP_YOGA9_14IMH9_BASS_SPK_PIN),
++	SND_PCI_QUIRK(0x17aa, 0x38df, "Y990 YG DUAL", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x38f9, "Thinkbook 16P Gen5", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x38fa, "Thinkbook 16P Gen5", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
 -- 
-2.34.1
+2.43.0
 
