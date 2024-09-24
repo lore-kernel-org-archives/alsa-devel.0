@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1628CCF9C6B
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2024 06:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29B3DCF9C6B
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2024 06:20:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CCCDB6A;
-	Tue, 24 Sep 2024 08:20:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CCCDB6A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5840D86F;
+	Tue, 24 Sep 2024 08:20:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5840D86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727158837;
-	bh=lOX1HUGFHBX1DNs2BNOg1eNej5qsVEYz7keCjTQ/4w4=;
+	s=default; t=1727158855;
+	bh=hOezVq1+7iN2CEX2zu6ii4h12kDi7pUnqfq+F/a582U=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jSqIO3DzhciY8MNLPwB4WyMl2w3F0D8S0JCaonuIXPvKCzUcM8V+Ga1ikWBay1+Wy
-	 ebQBxF6iK4DFERhDhPQP8aU+0eoQRo3M1mdnMH300zS0Q+RrlMHEcXLlDPNgUVjuO0
-	 N7xr1N1tu7kv/mdB8ioKCr1AaPdixodfbtYP+DtQ=
+	b=QfpVY7SCibZr45PdcndpkK1Xx6E4FPclmiJVngwvelog9UsGJEy3BlfLeFoeyOJ3w
+	 wwWohLQryfYXyaYUSkl4M7HGxzmKSneImeJFo6FEX0rzD3/+6teXQY9H/IJVhvvYEm
+	 foFLXjxCGVYZCxeU1bgMs3YhY4mEiNZnGNMg2hik=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 352D3F8065D; Tue, 24 Sep 2024 08:19:18 +0200 (CEST)
+	id 7961EF8067F; Tue, 24 Sep 2024 08:19:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75C35F8065C;
-	Tue, 24 Sep 2024 08:19:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49D95F80678;
+	Tue, 24 Sep 2024 08:19:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49C68F805E7; Tue, 24 Sep 2024 08:19:05 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on2061c.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2417::61c])
+	id 75E02F805E7; Tue, 24 Sep 2024 08:19:06 +0200 (CEST)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on2062f.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2416::62f])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EAEEEF805AE
-	for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2024 08:18:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAEEEF805AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 50463F805C7
+	for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2024 08:19:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50463F805C7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=jjDeuVOZ
+ header.s=selector1 header.b=fOBWK81q
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=enyo1EDa5eDfZJ2Jjnho1uuiwkg2AEuIbZIYrU1iidytGiTP5GaMQShUDNyK26Pmih0xsNbC4Jx7UHt85vNbPK6w90WqzRYjfCrShDQp25H1NqwQa9MSKt9iTs5PBATnuuoheioZL7DuKzrWx4oa/xn7zHL3VpznLs26I1ySSpKU3oAht9BX3LHNDDrCeg0TbGrL128wTSZH5IjHEIRfJe0DdXdGUDt8TZaDuf+JL3d43XqmoM7HPjOpRr2s369T41FSTfm+iZihYAcfvXbpjmM1oe1P4ej1KMudVdQuV4ew9UFq6wU8a5FVUXVfA+0e5n350pAbw7rz4JaAhpzP0Q==
+ b=IN5sbvDCzUvkPPKjE/jbo4IygQSJym2aivmoveu4C6lJRZnonaKI/8uIxFPk7U9DbPtk2nE4KUIuucdsbhMvPJSBY7a5nJkpUI2ER/xxDxDC8GErBBXcluoquS8WzWfIXdnZcQoMAj5rsRIeHhZ6uE/Q4Q8dxcx9VZv34E8B8NQBJt9i7tCM2cJ+jWX/toKXi3QWfwf863yp5A54ZQ54tKg6Gxg8ZGFeuAdy31EgpqFgqFAYN4wRVP5n6ODo97aApDxEXCf/wFQMtiBuQFoLEssizVCkbzBSWMdW5MVZPPmSxQKdl8W0tvpJc/WhbXiVWqs2wwEcNHDJYKELZDoe5A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5H0wI6+uJGaRPBAubRwJVI2iQJgonhHPTKDcye/8Cfo=;
- b=PtsOXUApUJruS4+lmZvQdCBngg/ZcGg8aM/lzChZ3bc5aHcsu5DZnNToLgav2Bfy709aT7IZeGTsmY1oJ0tkAghk6SbNfWCZRcAGqrUINX3ZvR5hx3N3udAwnHG42OGemMTNBIEeKt52RzYr8vzBJzxYw0aImDI1ZD6BJ4BAzO0ejBaYMDFex3JhsHzXndEfGfzNIccxQr/n8gjeQjZDQDzBLD+Yg992Fh4Ubi7PbZ9Tv3RP+8FMNBVu04+QOtkK49sqlFSrPFZAzAhCjS/UdRsMIuK2s0vFb1JOAjUTXDdoFPr4XYpvlCsoBvbRJZa5QcJFd3z8ixpf8TFbSfmaaA==
+ bh=9DbNpM1+Et8OoKgJBCBnOtnExxvpnwQEy2lpYYAnl4c=;
+ b=aZU/L56VuuoG5jifHXE8z9WBrBxmu3X9oUjp9AjavAMdITzjt6pNG+4nSM5/FvRekEM6dzb/zvxn0Z+cPh0HqBsA3Odz85CSnTlWXEfaZdNy/PUEGEBFnTJqmj2QtsES0RSOLw9OU8LXVMlx7HbhNyPlZlTr1hfipXhji9xXLrmodk7Op6bIMEJvBCAXo9DIoLmIf6sci6F+DzauK+kLWmUMt+2tm52y1NABQTTplfnk9x6rPzE3/xTy0cdEeQx+/Y/0qjx+eRif+9EZrClFuIaYKqV+EPuoc31B6IPnS43tIQBBelxHPQUCVoGNNDFSBGJzmptaxP9+ML0S2EKFgg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5H0wI6+uJGaRPBAubRwJVI2iQJgonhHPTKDcye/8Cfo=;
- b=jjDeuVOZvqA6ti7c0oiJXcc5IGa+FwvRaxdNt1vT5jx7bTzeGO37ci03QsnoVon4S78N5i9JEtf8AIy6UKoMv74HFO+R9TnxleR7Ewx/mKlItaN1C5iQ1qp5pwB3R42XwCAv1IPOSSraWawbLVitWkeIu6Rv0faSXJ+3aop2RdQ=
-Received: from SA9PR13CA0005.namprd13.prod.outlook.com (2603:10b6:806:21::10)
- by PH7PR12MB6659.namprd12.prod.outlook.com (2603:10b6:510:210::5) with
+ bh=9DbNpM1+Et8OoKgJBCBnOtnExxvpnwQEy2lpYYAnl4c=;
+ b=fOBWK81qihbSJSsNj3khjyBRd2309lTlEqz5Md1uH7dTMKU0/Hw/cwc/p5XtGDPzlkoi0v+X89YDuiNf1EUWlEXgF30q+hs1Q72sjhwWo3zBUKlEIDEcB3zzgYLn9IuQzDnccsh7wjdIj8ScpyvBSCHxftZvWrPevZ0zzyM2ORI=
+Received: from SA9PR13CA0042.namprd13.prod.outlook.com (2603:10b6:806:22::17)
+ by DM4PR12MB6039.namprd12.prod.outlook.com (2603:10b6:8:aa::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.25; Tue, 24 Sep
- 2024 06:18:48 +0000
-Received: from SN1PEPF0002BA4F.namprd03.prod.outlook.com
- (2603:10b6:806:21:cafe::67) by SA9PR13CA0005.outlook.office365.com
- (2603:10b6:806:21::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8005.15 via Frontend
- Transport; Tue, 24 Sep 2024 06:18:48 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.26; Tue, 24 Sep
+ 2024 06:18:56 +0000
+Received: from SN1PEPF0002BA50.namprd03.prod.outlook.com
+ (2603:10b6:806:22:cafe::fb) by SA9PR13CA0042.outlook.office365.com
+ (2603:10b6:806:22::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.16 via Frontend
+ Transport; Tue, 24 Sep 2024 06:18:56 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -72,13 +72,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002BA4F.mail.protection.outlook.com (10.167.242.72) with Microsoft
+ SN1PEPF0002BA50.mail.protection.outlook.com (10.167.242.73) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8005.15 via Frontend Transport; Tue, 24 Sep 2024 06:18:48 +0000
+ 15.20.7918.13 via Frontend Transport; Tue, 24 Sep 2024 06:18:56 +0000
 Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 24 Sep 2024 01:18:44 -0500
+ 15.1.2507.39; Tue, 24 Sep 2024 01:18:52 -0500
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
@@ -86,10 +86,10 @@ CC: <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
 	<Sunil-kumar.Dommati@amd.com>, <venkataprasad.potturu@amd.com>,
 	<linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Vijendar
  Mukunda" <Vijendar.Mukunda@amd.com>
-Subject: [PATCH V2 3/9] ASoC: amd: acp: use acp pci revision id for platform
- differntiation
-Date: Tue, 24 Sep 2024 11:48:15 +0530
-Message-ID: <20240924061821.1127054-4-Vijendar.Mukunda@amd.com>
+Subject: [PATCH V2 5/9] ASoC: amd: acp: pass acp pci revision id as platform
+ data
+Date: Tue, 24 Sep 2024 11:48:17 +0530
+Message-ID: <20240924061821.1127054-6-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240924061821.1127054-1-Vijendar.Mukunda@amd.com>
 References: <20240924061821.1127054-1-Vijendar.Mukunda@amd.com>
@@ -101,54 +101,55 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4F:EE_|PH7PR12MB6659:EE_
-X-MS-Office365-Filtering-Correlation-Id: 927674e4-1599-4a16-7a82-08dcdc60c096
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA50:EE_|DM4PR12MB6039:EE_
+X-MS-Office365-Filtering-Correlation-Id: d049b8c0-fbce-43a9-4663-08dcdc60c543
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|36860700013;
+	BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?N2AZHnQGtYkiBEQ9DxVh26prIva1fxDIWlZGCHrsC6/5OntTg326dv/zlrz+?=
- =?us-ascii?Q?zpMLTxsdXjkjiw/5FzIYep33/9LagAPD2G45+ddKErtx7kN7TuKFkfVtrigQ?=
- =?us-ascii?Q?AjSUnFToJkZLZcPaFG/lOXBJAbkaQJ9cZ/iAS0DMOTdF/6X1+d/tO6mpg2Pk?=
- =?us-ascii?Q?zMJxGv68KmgbXszuMMAEqsV7axsfklbP0nK30N7r5gnClKnGA94VnDPL6JKx?=
- =?us-ascii?Q?QV7DtFpIJn5P7J4vUKhSczY/TC4fW9VrkDnFW3xmN/Bpaidzp1IfTWld4S46?=
- =?us-ascii?Q?1Ajl5nAYEUSQIeCL3Ea+1Q7pmgXYlASUNqZLdCfJBxeX/sJV2f0eCaPG2h+4?=
- =?us-ascii?Q?Yy2Me1HFBBHG3pbX1JdoVWlNwxwdyfS9tLjkEa6yoLl4sNfNoTN+b8gc3vyA?=
- =?us-ascii?Q?jbryDkUHZOWAEPG6xWlKlXAijdjDyVEJrTOiTU3eCw/p0sDRr4qiqYubk3XX?=
- =?us-ascii?Q?IKEzERfHJlvuHzDDTppJTt5eaAoytkh0fKb6GR/GDmpk5g8O6hajd7MaslcO?=
- =?us-ascii?Q?WPpOz1kmYkhLU6jpJVQ7WltKAQV9SQPnwgnBpMCF9b737hwXNwa+R4/aGxln?=
- =?us-ascii?Q?VvnSWDrNvsp6aCp9k77mbyz1hvmbL5E67Q8CeYU40vmIpOE5vK6UBvzwCAHJ?=
- =?us-ascii?Q?42+X1HnKXUs4oI12r2AfAzOxDo3dMxYyDcGz0iINHZ5SbDBhT9whd63Rdsp5?=
- =?us-ascii?Q?ERWlMUs0bQNq3vu6C/dfLc4Ndk5urRintIPL44jevQrWKICtiIV9YfJozxhc?=
- =?us-ascii?Q?ohBhctDNg4v4Y/84+83gEmLH38b+t0KAYWSIj+eUo7OEqJ+seyXez0UJfsdk?=
- =?us-ascii?Q?84an9IISovziSUdxbTIaxX44WTjcyn7rh6JKD8yah478cWFKrUmpaEHQLQqL?=
- =?us-ascii?Q?hAWk8mm8DGd0DY6ZMkvauhntX+XAVSO4rAgNajt3GLEFrzFc9JTD72q2nbho?=
- =?us-ascii?Q?EB6hVS4tyiZ/xHYxW9CZwc3U3Ds2p+1UmnguEh8PJ06M7IiUNAcHhrbyXV0i?=
- =?us-ascii?Q?G/r/3SovXSBGYQ61IantIFCk6Qncx1O6AWGQez5FIW0ZpLsluN6plKHa4Weq?=
- =?us-ascii?Q?aHaMXI1Wq9DBUNkJeu5qE/8CZHe+ofaiOTK/YWgKa1JlSX39kQiwmV5VVmKD?=
- =?us-ascii?Q?dqg4/a+PCZQaZz+Eh45lAs2ImNjTvQr3+6YlHcZNLg0aUZYEmPtvrzZxosbC?=
- =?us-ascii?Q?xka+KPNvYaVFqBaM2jTUy/PrtMi/2xgEqI8/R9OTKHSwMwOBHrj5yNQJiENT?=
- =?us-ascii?Q?WkTG/SImOO88wl6jotXQ81JEP3M9kq1HroPe1Rt49xYpwV2NtMo/bDSrhJ+m?=
- =?us-ascii?Q?QSqJ6RFsUeC6WG9WsgW+veLGfzIJlqtkQbN8f1TmS6AHbiU8kvIiefoqQnzi?=
- =?us-ascii?Q?u9dbybKjB/A9zgBA75KIVP9vPKkn?=
+	=?us-ascii?Q?eIf+3O/YiyA9uY9ZwQIvebocyquybIMzEKVw9iEyyTe8vzlGpd0ilp/FREJp?=
+ =?us-ascii?Q?0lE6d2Fxvnp8/Bk9Q/c5loutUcWtIEtVhRWsVMCoxvLQ5wVsAQXSJ9Nxmv4f?=
+ =?us-ascii?Q?0oesTp0zeJTNZWsknsdj/ynWJoPshhaV0wuRX8s7+/mXbqoG3gOnv9tlD1pR?=
+ =?us-ascii?Q?jPwfFZhmOtHmcvdiLcfGAWeu1BNtjudu2J08YNTVx4tG9c0iRZLODlOAUkv0?=
+ =?us-ascii?Q?xhwWMXSgicrlE/AeVa1IGi6weYQWQCF0enpgyEjWf1p5Xmx2njQAan/HskNH?=
+ =?us-ascii?Q?fGGXwTitpfBTfBYhjz4+FKnVg0Azruch98Wy90HMatjCGqXzrtAHqtM5ebU0?=
+ =?us-ascii?Q?Y4uXUXV4GDjmOPuPiovqteLoGOzv5yXNdcJvythN/CRpGoCA8rHPqUFaBTu4?=
+ =?us-ascii?Q?kgk4N9l8Alu4p6eAyBPz6GdhvEZ3HVgYs85gE3KdAk4mjGC/kDii3msbWsl2?=
+ =?us-ascii?Q?pggSN0OJk112JguyJHSKTyA16FidY+GxFaTuYiQPCOwb/b1B08wnYvDDr7kM?=
+ =?us-ascii?Q?uQBXiUr/BhJrBIK6OEntbniKAnIZ9PvRHy+FWIiylP2kduuGUfJWhhfRX7mT?=
+ =?us-ascii?Q?GG0hj8Et9kFAQFXz4oVICzj9dCtuC4PoHKHQG7jtou/w3Z58rHNHQZcYjuFp?=
+ =?us-ascii?Q?ArXsUCjfGtH3ed3iAtnIIGiNRcLAD1s3VHJsZ2e6yPtbKmxXxnOW8NUyH17m?=
+ =?us-ascii?Q?Jkv6DxHr7nlgsurQfKoa0n2rTL9Xmha591CEgsd5cz0gc4NWKZy866CDSuDU?=
+ =?us-ascii?Q?iGuyO0kZwixA1R4OdRHc/wAOjNkiLiKOcVWsDunG0dnbxu6UrqQutCaQIlNv?=
+ =?us-ascii?Q?NE++d+/XurWqWfzsXdEhSjWTwTPAfqN5mV4bSbnz1J/8eoOrRM84Vr40dwfW?=
+ =?us-ascii?Q?9hD2Gta6DAeT2nnWWShEBfLhixLJVYNJ3aTH3ChnMFIVHimGndKy5Q/sfKg1?=
+ =?us-ascii?Q?WKoJTXYJU9ZbnWISM4aKkwMPIa6DgeI051UtsYem5ZY4EyJwNfDnl+ghJq7f?=
+ =?us-ascii?Q?0vjsnpWDIIiYSfYBnnWlpphxnWS/w/O7x7LWTbzZAve0xjkMmRq3qTnQ+UGQ?=
+ =?us-ascii?Q?5H3iZn9IeW/KSVCbvXc7i+0d6WK+m48EiFxE4QSz1CG4bu1SNLE+JAouFxTV?=
+ =?us-ascii?Q?KLOk9p9JmtLmBTnVVxC32dd4bW8ml7NlVwk0/g8+4KsVa6lnK2Tqb6fNnfN5?=
+ =?us-ascii?Q?gKxIpsaSO8/r6vjs8zFWqpcp3y8JG7plhgIBI8O5sLfZMRSmcxqkOju0OcL8?=
+ =?us-ascii?Q?LGS1xAo2/SjeIiSJD6/pQ5STxqDb6qF4Jn7U6QsTUDI1xoDO0r99rVuXzFD3?=
+ =?us-ascii?Q?MJNwTANdMVDks8KDttYd6TYYh6H8caE7CE3MCYUlddeEhiok34DZnm/IY9zB?=
+ =?us-ascii?Q?oTUGy/REvtgMqFM5ihvIJkjXeGViczYS1W9LnQwAgjIkKaAIAkdZn1b/OA7a?=
+ =?us-ascii?Q?86+cCIHFiN1gPag01k3l5XXlRgupesCT?=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(36860700013);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2024 06:18:48.4888
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2024 06:18:56.3321
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 927674e4-1599-4a16-7a82-08dcdc60c096
+ d049b8c0-fbce-43a9-4663-08dcdc60c543
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	SN1PEPF0002BA4F.namprd03.prod.outlook.com
+	SN1PEPF0002BA50.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6659
-Message-ID-Hash: KLEKKZOPCSJSPESTZRWMWUASXWY3TQX4
-X-Message-ID-Hash: KLEKKZOPCSJSPESTZRWMWUASXWY3TQX4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6039
+Message-ID-Hash: YDUWBMENXHPEGSRWW74ZQC3JCGRIAI6Z
+X-Message-ID-Hash: YDUWBMENXHPEGSRWW74ZQC3JCGRIAI6Z
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -161,7 +162,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KLEKKZOPCSJSPESTZRWMWUASXWY3TQX4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YDUWBMENXHPEGSRWW74ZQC3JCGRIAI6Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -170,364 +171,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Store acp pci revision id value in 'acp_rev' variable.
-Use common ACP PCI revision id macros throughout the code for acp_rev
-check and remove unused macros for platform differentiation from
-common header file for acp platform driver.
+Pass acp pci revision id as platform data to machine driver instead of
+'platform' variable when ACP PDM configuration is selected. 'acp_rev'
+should be retrieved from mach params revision id for other configuration.
+Modify the conditional check for the same.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/acp/acp-i2s.c           | 38 +++++++++++++--------------
- sound/soc/amd/acp/acp-legacy-common.c | 24 ++++++++---------
- sound/soc/amd/acp/acp-pci.c           |  7 +----
- sound/soc/amd/acp/acp-pdm.c           |  2 +-
- sound/soc/amd/acp/acp-platform.c      |  6 ++---
- sound/soc/amd/acp/acp-rembrandt.c     |  2 +-
- sound/soc/amd/acp/acp-renoir.c        |  2 +-
- sound/soc/amd/acp/acp63.c             |  2 +-
- sound/soc/amd/acp/acp70.c             |  6 ++---
- sound/soc/amd/acp/amd.h               |  7 +----
- 10 files changed, 43 insertions(+), 53 deletions(-)
+ sound/soc/amd/acp/acp-legacy-mach.c | 5 +++--
+ sound/soc/amd/acp/acp-platform.c    | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/amd/acp/acp-i2s.c b/sound/soc/amd/acp/acp-i2s.c
-index 56ce9e4b6acc..515bf862deb5 100644
---- a/sound/soc/amd/acp/acp-i2s.c
-+++ b/sound/soc/amd/acp/acp-i2s.c
-@@ -59,9 +59,9 @@ static inline void acp_set_i2s_clk(struct acp_dev_data *adata, int dai_id)
- 		val |= BIT(1);
- 
- 	switch (chip->acp_rev) {
--	case ACP63_DEV:
--	case ACP70_DEV:
--	case ACP71_DEV:
-+	case ACP63_PCI_ID:
-+	case ACP70_PCI_ID:
-+	case ACP71_PCI_ID:
- 		val |= FIELD_PREP(ACP63_LRCLK_DIV_FIELD, adata->lrclk_div);
- 		val |= FIELD_PREP(ACP63_BCLK_DIV_FIELD, adata->bclk_div);
- 		break;
-@@ -121,8 +121,8 @@ static int acp_i2s_set_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask, u32 rx_mas
+diff --git a/sound/soc/amd/acp/acp-legacy-mach.c b/sound/soc/amd/acp/acp-legacy-mach.c
+index 2a59f7916e15..3526fbe2c84d 100644
+--- a/sound/soc/amd/acp/acp-legacy-mach.c
++++ b/sound/soc/amd/acp/acp-legacy-mach.c
+@@ -172,9 +172,10 @@ static int acp_asoc_probe(struct platform_device *pdev)
+ 		goto out;
  	}
+ 	if (!strcmp(pdev->name, "acp-pdm-mach"))
+-		acp_card_drvdata->platform =  *((int *)dev->platform_data);
++		acp_card_drvdata->acp_rev =  *((int *)dev->platform_data);
++	else
++		acp_card_drvdata->acp_rev = mach->mach_params.subsystem_rev;
  
- 	switch (chip->acp_rev) {
--	case ACP3X_DEV:
--	case ACP6X_DEV:
-+	case ACP_RN_PCI_ID:
-+	case ACP_RMB_PCI_ID:
- 		switch (slots) {
- 		case 1 ... 7:
- 			no_of_slots = slots;
-@@ -135,9 +135,9 @@ static int acp_i2s_set_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask, u32 rx_mas
- 			return -EINVAL;
- 		}
- 		break;
--	case ACP63_DEV:
--	case ACP70_DEV:
--	case ACP71_DEV:
-+	case ACP63_PCI_ID:
-+	case ACP70_PCI_ID:
-+	case ACP71_PCI_ID:
- 		switch (slots) {
- 		case 1 ... 31:
- 			no_of_slots = slots;
-@@ -160,8 +160,8 @@ static int acp_i2s_set_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask, u32 rx_mas
- 	spin_lock_irq(&adata->acp_lock);
- 	list_for_each_entry(stream, &adata->stream_list, list) {
- 		switch (chip->acp_rev) {
--		case ACP3X_DEV:
--		case ACP6X_DEV:
-+		case ACP_RN_PCI_ID:
-+		case ACP_RMB_PCI_ID:
- 			if (tx_mask && stream->dir == SNDRV_PCM_STREAM_PLAYBACK)
- 				adata->tdm_tx_fmt[stream->dai_id - 1] =
- 					FRM_LEN | (slots << 15) | (slot_len << 18);
-@@ -169,9 +169,9 @@ static int acp_i2s_set_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask, u32 rx_mas
- 				adata->tdm_rx_fmt[stream->dai_id - 1] =
- 					FRM_LEN | (slots << 15) | (slot_len << 18);
- 			break;
--		case ACP63_DEV:
--		case ACP70_DEV:
--		case ACP71_DEV:
-+		case ACP63_PCI_ID:
-+		case ACP70_PCI_ID:
-+		case ACP71_PCI_ID:
- 			if (tx_mask && stream->dir == SNDRV_PCM_STREAM_PLAYBACK)
- 				adata->tdm_tx_fmt[stream->dai_id - 1] =
- 						FRM_LEN | (slots << 13) | (slot_len << 18);
-@@ -534,7 +534,7 @@ static int acp_i2s_prepare(struct snd_pcm_substream *substream, struct snd_soc_d
- 			reg_fifo_addr =	ACP_I2S_TX_FIFOADDR(adata);
- 			reg_fifo_size = ACP_I2S_TX_FIFOSIZE(adata);
- 
--			if (chip->acp_rev >= ACP70_DEV)
-+			if (chip->acp_rev >= ACP70_PCI_ID)
- 				phy_addr = ACP7x_I2S_SP_TX_MEM_WINDOW_START;
- 			else
- 				phy_addr = I2S_SP_TX_MEM_WINDOW_START + stream->reg_offset;
-@@ -546,7 +546,7 @@ static int acp_i2s_prepare(struct snd_pcm_substream *substream, struct snd_soc_d
- 			reg_fifo_addr = ACP_I2S_RX_FIFOADDR(adata);
- 			reg_fifo_size = ACP_I2S_RX_FIFOSIZE(adata);
- 
--			if (chip->acp_rev >= ACP70_DEV)
-+			if (chip->acp_rev >= ACP70_PCI_ID)
- 				phy_addr = ACP7x_I2S_SP_RX_MEM_WINDOW_START;
- 			else
- 				phy_addr = I2S_SP_RX_MEM_WINDOW_START + stream->reg_offset;
-@@ -561,7 +561,7 @@ static int acp_i2s_prepare(struct snd_pcm_substream *substream, struct snd_soc_d
- 			reg_fifo_addr = ACP_BT_TX_FIFOADDR(adata);
- 			reg_fifo_size = ACP_BT_TX_FIFOSIZE(adata);
- 
--			if (chip->acp_rev >= ACP70_DEV)
-+			if (chip->acp_rev >= ACP70_PCI_ID)
- 				phy_addr = ACP7x_I2S_BT_TX_MEM_WINDOW_START;
- 			else
- 				phy_addr = I2S_BT_TX_MEM_WINDOW_START + stream->reg_offset;
-@@ -573,7 +573,7 @@ static int acp_i2s_prepare(struct snd_pcm_substream *substream, struct snd_soc_d
- 			reg_fifo_addr = ACP_BT_RX_FIFOADDR(adata);
- 			reg_fifo_size = ACP_BT_RX_FIFOSIZE(adata);
- 
--			if (chip->acp_rev >= ACP70_DEV)
-+			if (chip->acp_rev >= ACP70_PCI_ID)
- 				phy_addr = ACP7x_I2S_BT_RX_MEM_WINDOW_START;
- 			else
- 				phy_addr = I2S_BT_TX_MEM_WINDOW_START + stream->reg_offset;
-@@ -588,7 +588,7 @@ static int acp_i2s_prepare(struct snd_pcm_substream *substream, struct snd_soc_d
- 			reg_fifo_addr = ACP_HS_TX_FIFOADDR;
- 			reg_fifo_size = ACP_HS_TX_FIFOSIZE;
- 
--			if (chip->acp_rev >= ACP70_DEV)
-+			if (chip->acp_rev >= ACP70_PCI_ID)
- 				phy_addr = ACP7x_I2S_HS_TX_MEM_WINDOW_START;
- 			else
- 				phy_addr = I2S_HS_TX_MEM_WINDOW_START + stream->reg_offset;
-@@ -600,7 +600,7 @@ static int acp_i2s_prepare(struct snd_pcm_substream *substream, struct snd_soc_d
- 			reg_fifo_addr = ACP_HS_RX_FIFOADDR;
- 			reg_fifo_size = ACP_HS_RX_FIFOSIZE;
- 
--			if (chip->acp_rev >= ACP70_DEV)
-+			if (chip->acp_rev >= ACP70_PCI_ID)
- 				phy_addr = ACP7x_I2S_HS_RX_MEM_WINDOW_START;
- 			else
- 				phy_addr = I2S_HS_RX_MEM_WINDOW_START + stream->reg_offset;
-diff --git a/sound/soc/amd/acp/acp-legacy-common.c b/sound/soc/amd/acp/acp-legacy-common.c
-index be01b178172e..3f76d1f0a9e7 100644
---- a/sound/soc/amd/acp/acp-legacy-common.c
-+++ b/sound/soc/amd/acp/acp-legacy-common.c
-@@ -257,20 +257,20 @@ static int acp_power_on(struct acp_chip_info *chip)
- 
- 	base = chip->base;
- 	switch (chip->acp_rev) {
--	case ACP3X_DEV:
-+	case ACP_RN_PCI_ID:
- 		acp_pgfsm_stat_reg = ACP_PGFSM_STATUS;
- 		acp_pgfsm_ctrl_reg = ACP_PGFSM_CONTROL;
- 		break;
--	case ACP6X_DEV:
-+	case ACP_RMB_PCI_ID:
- 		acp_pgfsm_stat_reg = ACP6X_PGFSM_STATUS;
- 		acp_pgfsm_ctrl_reg = ACP6X_PGFSM_CONTROL;
- 		break;
--	case ACP63_DEV:
-+	case ACP63_PCI_ID:
- 		acp_pgfsm_stat_reg = ACP63_PGFSM_STATUS;
- 		acp_pgfsm_ctrl_reg = ACP63_PGFSM_CONTROL;
- 		break;
--	case ACP70_DEV:
--	case ACP71_DEV:
-+	case ACP70_PCI_ID:
-+	case ACP71_PCI_ID:
- 		acp_pgfsm_stat_reg = ACP70_PGFSM_STATUS;
- 		acp_pgfsm_ctrl_reg = ACP70_PGFSM_CONTROL;
- 		break;
-@@ -322,7 +322,7 @@ int acp_init(struct acp_chip_info *chip)
- 		pr_err("ACP reset failed\n");
- 		return ret;
- 	}
--	if (chip->acp_rev >= ACP70_DEV)
-+	if (chip->acp_rev >= ACP70_PCI_ID)
- 		writel(0, chip->base + ACP_ZSC_DSP_CTRL);
- 	return 0;
- }
-@@ -337,7 +337,7 @@ int acp_deinit(struct acp_chip_info *chip)
- 	if (ret)
- 		return ret;
- 
--	if (chip->acp_rev < ACP70_DEV)
-+	if (chip->acp_rev < ACP70_PCI_ID)
- 		writel(0, chip->base + ACP_CONTROL);
- 	else
- 		writel(0x01, chip->base + ACP_ZSC_DSP_CTRL);
-@@ -448,20 +448,20 @@ void check_acp_config(struct pci_dev *pci, struct acp_chip_info *chip)
- 	u32 pdm_addr;
- 
- 	switch (chip->acp_rev) {
--	case ACP3X_DEV:
-+	case ACP_RN_PCI_ID:
- 		pdm_addr = ACP_RENOIR_PDM_ADDR;
- 		check_acp3x_config(chip);
- 		break;
--	case ACP6X_DEV:
-+	case ACP_RMB_PCI_ID:
- 		pdm_addr = ACP_REMBRANDT_PDM_ADDR;
- 		check_acp6x_config(chip);
- 		break;
--	case ACP63_DEV:
-+	case ACP63_PCI_ID:
- 		pdm_addr = ACP63_PDM_ADDR;
- 		check_acp6x_config(chip);
- 		break;
--	case ACP70_DEV:
--	case ACP71_DEV:
-+	case ACP70_PCI_ID:
-+	case ACP71_PCI_ID:
- 		pdm_addr = ACP70_PDM_ADDR;
- 		check_acp70_config(chip);
- 		break;
-diff --git a/sound/soc/amd/acp/acp-pci.c b/sound/soc/amd/acp/acp-pci.c
-index f7450a5bd103..4b6ad7abc3ba 100644
---- a/sound/soc/amd/acp/acp-pci.c
-+++ b/sound/soc/amd/acp/acp-pci.c
-@@ -77,27 +77,22 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
- 
- 	res_acp = acp_res;
- 	num_res = ARRAY_SIZE(acp_res);
--
-+	chip->acp_rev = pci->revision;
- 	switch (pci->revision) {
- 	case 0x01:
- 		chip->name = "acp_asoc_renoir";
--		chip->acp_rev = ACP3X_DEV;
- 		break;
- 	case 0x6f:
- 		chip->name = "acp_asoc_rembrandt";
--		chip->acp_rev = ACP6X_DEV;
- 		break;
- 	case 0x63:
- 		chip->name = "acp_asoc_acp63";
--		chip->acp_rev = ACP63_DEV;
- 		break;
- 	case 0x70:
- 		chip->name = "acp_asoc_acp70";
--		chip->acp_rev = ACP70_DEV;
- 		break;
- 	case 0x71:
- 		chip->name = "acp_asoc_acp70";
--		chip->acp_rev = ACP71_DEV;
- 		break;
- 	default:
- 		dev_err(dev, "Unsupported device revision:0x%x\n", pci->revision);
-diff --git a/sound/soc/amd/acp/acp-pdm.c b/sound/soc/amd/acp/acp-pdm.c
-index 22dd8988d005..48faafe724ed 100644
---- a/sound/soc/amd/acp/acp-pdm.c
-+++ b/sound/soc/amd/acp/acp-pdm.c
-@@ -47,7 +47,7 @@ static int acp_dmic_prepare(struct snd_pcm_substream *substream,
- 	size_dmic = frames_to_bytes(substream->runtime,
- 			substream->runtime->buffer_size);
- 
--	if (chip->acp_rev >= ACP70_DEV)
-+	if (chip->acp_rev >= ACP70_PCI_ID)
- 		physical_addr = ACP7x_DMIC_MEM_WINDOW_START;
- 	else
- 		physical_addr = stream->reg_offset + MEM_WINDOW_START;
+-	acp_card_drvdata->acp_rev = mach->mach_params.subsystem_rev;
+ 	dmi_id = dmi_first_match(acp_quirk_table);
+ 	if (dmi_id && dmi_id->driver_data)
+ 		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
 diff --git a/sound/soc/amd/acp/acp-platform.c b/sound/soc/amd/acp/acp-platform.c
-index 3a7a467b7063..c772520227c7 100644
+index c772520227c7..a6e5cb263377 100644
 --- a/sound/soc/amd/acp/acp-platform.c
 +++ b/sound/soc/amd/acp/acp-platform.c
-@@ -270,9 +270,9 @@ static int acp_dma_open(struct snd_soc_component *component, struct snd_pcm_subs
- 	stream->substream = substream;
- 	chip = dev_get_platdata(dev);
- 	switch (chip->acp_rev) {
--	case ACP63_DEV:
--	case ACP70_DEV:
--	case ACP71_DEV:
-+	case ACP63_PCI_ID:
-+	case ACP70_PCI_ID:
-+	case ACP71_PCI_ID:
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 			runtime->hw = acp6x_pcm_hardware_playback;
- 		else
-diff --git a/sound/soc/amd/acp/acp-rembrandt.c b/sound/soc/amd/acp/acp-rembrandt.c
-index 396434a45eea..af6005888c82 100644
---- a/sound/soc/amd/acp/acp-rembrandt.c
-+++ b/sound/soc/amd/acp/acp-rembrandt.c
-@@ -197,7 +197,7 @@ static int rembrandt_audio_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
+@@ -114,7 +114,7 @@ int acp_machine_select(struct acp_dev_data *adata)
+ 	int size, platform;
  
--	if (chip->acp_rev != ACP6X_DEV) {
-+	if (chip->acp_rev != ACP_RMB_PCI_ID) {
- 		dev_err(&pdev->dev, "Un-supported ACP Revision %d\n", chip->acp_rev);
- 		return -ENODEV;
- 	}
-diff --git a/sound/soc/amd/acp/acp-renoir.c b/sound/soc/amd/acp/acp-renoir.c
-index 5e3f730aa6bf..65782023435e 100644
---- a/sound/soc/amd/acp/acp-renoir.c
-+++ b/sound/soc/amd/acp/acp-renoir.c
-@@ -157,7 +157,7 @@ static int renoir_audio_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	if (chip->acp_rev != ACP3X_DEV) {
-+	if (chip->acp_rev != ACP_RN_PCI_ID) {
- 		dev_err(&pdev->dev, "Un-supported ACP Revision %d\n", chip->acp_rev);
- 		return -ENODEV;
- 	}
-diff --git a/sound/soc/amd/acp/acp63.c b/sound/soc/amd/acp/acp63.c
-index f325c374f228..099e2df5558d 100644
---- a/sound/soc/amd/acp/acp63.c
-+++ b/sound/soc/amd/acp/acp63.c
-@@ -207,7 +207,7 @@ static int acp63_audio_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	if (chip->acp_rev != ACP63_DEV) {
-+	if (chip->acp_rev != ACP63_PCI_ID) {
- 		dev_err(&pdev->dev, "Un-supported ACP Revision %d\n", chip->acp_rev);
- 		return -ENODEV;
- 	}
-diff --git a/sound/soc/amd/acp/acp70.c b/sound/soc/amd/acp/acp70.c
-index 68d2590e1a4e..0cd3daf677f5 100644
---- a/sound/soc/amd/acp/acp70.c
-+++ b/sound/soc/amd/acp/acp70.c
-@@ -175,8 +175,8 @@ static int acp_acp70_audio_probe(struct platform_device *pdev)
- 	}
- 
- 	switch (chip->acp_rev) {
--	case ACP70_DEV:
--	case ACP71_DEV:
-+	case ACP70_PCI_ID:
-+	case ACP71_PCI_ID:
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "Un-supported ACP Revision %d\n", chip->acp_rev);
-@@ -209,7 +209,7 @@ static int acp_acp70_audio_probe(struct platform_device *pdev)
- 	adata->num_dai = ARRAY_SIZE(acp70_dai);
- 	adata->rsrc = &rsrc;
- 	adata->machines = snd_soc_acpi_amd_acp70_acp_machines;
--	if (chip->acp_rev == ACP70_DEV)
-+	if (chip->acp_rev == ACP70_PCI_ID)
- 		adata->platform = ACP70;
- 	else
- 		adata->platform = ACP71;
-diff --git a/sound/soc/amd/acp/amd.h b/sound/soc/amd/acp/amd.h
-index 854269fea875..c82e438a1712 100644
---- a/sound/soc/amd/acp/amd.h
-+++ b/sound/soc/amd/acp/amd.h
-@@ -16,14 +16,9 @@
- #include <sound/soc-acpi.h>
- #include <sound/soc-dai.h>
- 
-+#include "acp_common.h"
- #include "chip_offset_byte.h"
- 
--#define ACP3X_DEV			3
--#define ACP6X_DEV			6
--#define ACP63_DEV			0x63
--#define ACP70_DEV			0x70
--#define ACP71_DEV			0x71
--
- #define DMIC_INSTANCE			0x00
- #define I2S_SP_INSTANCE			0x01
- #define I2S_BT_INSTANCE			0x02
+ 	if (adata->flag == FLAG_AMD_LEGACY_ONLY_DMIC) {
+-		platform = adata->platform;
++		platform = adata->acp_rev;
+ 		adata->mach_dev = platform_device_register_data(adata->dev, "acp-pdm-mach",
+ 								PLATFORM_DEVID_NONE, &platform,
+ 								sizeof(platform));
 -- 
 2.34.1
 
