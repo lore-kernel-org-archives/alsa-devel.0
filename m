@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4358FC369A4
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2024 07:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DF32C369A3
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2024 07:19:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BA55DE5;
-	Wed, 25 Sep 2024 09:19:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BA55DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE477E7F;
+	Wed, 25 Sep 2024 09:19:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE477E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727248764;
-	bh=jUu/gw9EyeaLrWHEIcS7oVbSQyZEBWsLMRaM9p5I8zY=;
+	s=default; t=1727248775;
+	bh=xaAIhX1TtREmjaCVFwOnH37FD+glohLokg7cZt7/iCM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=RYX450Dg/GpkNbbzk94fApoM1Ps0E53SzCR3C4cuyV27B7Yu13pqYzigChuEc+J6W
-	 vqGE9iGqabmWCIIbpXvL8i6JQHZHqgrCnRxYLBjDPaZ7LzVuek9AaOaafJwGvLLk8b
-	 SF7vVDAJcOC0g4zfHSphJ2ONISEtfiRr/159fxlg=
+	b=psZecv4XZMqBzWrcWpV46naViZ1I2F3SiNUVE9ofk0dxYQ5YljIV7dLaBpLcjxTnb
+	 7OS5miNMd/lcGVXHtSgWharmFOcfBtaXqD9aedqgwRN7PVXfTFLkNGCVVfVCUymhh2
+	 W6hD9X8wySctE46sQu4n8ZHU+K+/sZU4FQjjtmLI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DA8BF80623; Wed, 25 Sep 2024 09:18:19 +0200 (CEST)
+	id 1AC16F80631; Wed, 25 Sep 2024 09:18:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D748CF80624;
-	Wed, 25 Sep 2024 09:18:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0F43F80656;
+	Wed, 25 Sep 2024 09:18:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 119EFF8049C; Wed, 25 Sep 2024 09:17:57 +0200 (CEST)
+	id 8C680F805C2; Wed, 25 Sep 2024 09:18:02 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 446CFF80107
-	for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2024 09:17:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 446CFF80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91DD6F8010B
+	for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2024 09:17:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91DD6F8010B
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 683732016BA;
-	Wed, 25 Sep 2024 09:17:51 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2F9F4202A32;
+	Wed, 25 Sep 2024 09:17:56 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3A86D202A12;
-	Wed, 25 Sep 2024 09:17:51 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F18642016AA;
+	Wed, 25 Sep 2024 09:17:55 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 8AB56183AD44;
-	Wed, 25 Sep 2024 15:17:49 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 4D83C183AD44;
+	Wed, 25 Sep 2024 15:17:54 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: vkoul@kernel.org,
 	perex@perex.cz,
@@ -59,16 +59,15 @@ To: vkoul@kernel.org,
 	lgirdwood@gmail.com,
 	broonie@kernel.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v4 2/7] ALSA: compress: Add output rate and output format
- support
-Date: Wed, 25 Sep 2024 14:55:11 +0800
-Message-Id: <1727247316-16156-3-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v4 6/7] ASoC: fsl_asrc: register m2m platform device
+Date: Wed, 25 Sep 2024 14:55:15 +0800
+Message-Id: <1727247316-16156-7-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1727247316-16156-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1727247316-16156-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 7MVRTHFDZ43VJMZZKKXYRK62YKJQ6THD
-X-Message-ID-Hash: 7MVRTHFDZ43VJMZZKKXYRK62YKJQ6THD
+Message-ID-Hash: KYP43DYDIJ3R7U5AQGZ6U3YMPPMKTSUV
+X-Message-ID-Hash: KYP43DYDIJ3R7U5AQGZ6U3YMPPMKTSUV
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +80,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7MVRTHFDZ43VJMZZKKXYRK62YKJQ6THD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KYP43DYDIJ3R7U5AQGZ6U3YMPPMKTSUV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,82 +89,84 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add 'pcm_format' for struct snd_codec, add 'pcm_formats' for
-struct snd_codec_desc, these are used for accelerator usage.
+Register m2m platform device, that user can
+use M2M feature.
 
-Current accelerator example is sample rate converter (SRC).
-Define struct snd_codec_desc_src for descript minmum and maxmum
-sample rates. And add 'src_d' in union snd_codec_options
-structure. These are mainly used for capbility query.
-
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- include/uapi/sound/compress_params.h | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 37 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 4 deletions(-)
 
-diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
-index ddc77322d571..bc7648a30746 100644
---- a/include/uapi/sound/compress_params.h
-+++ b/include/uapi/sound/compress_params.h
-@@ -334,6 +334,14 @@ union snd_codec_options {
- 	struct snd_dec_wma wma_d;
- 	struct snd_dec_alac alac_d;
- 	struct snd_dec_ape ape_d;
-+	struct {
-+		__u32 out_sample_rate;
-+	} src_d;
-+} __attribute__((packed, aligned(4)));
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index b1b35954f7ac..b1d13774e2a7 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -1384,6 +1384,12 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 		goto err_pm_get_sync;
+ 	}
+ 
++	ret = fsl_asrc_m2m_init(asrc);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to init m2m device %d\n", ret);
++		return ret;
++	}
 +
-+struct snd_codec_desc_src {
-+	__u32 out_sample_rate_min;
-+	__u32 out_sample_rate_max;
- } __attribute__((packed, aligned(4)));
+ 	return 0;
  
- /** struct snd_codec_desc - description of codec capabilities
-@@ -347,6 +355,9 @@ union snd_codec_options {
-  * @modes: Supported modes. See SND_AUDIOMODE defines
-  * @formats: Supported formats. See SND_AUDIOSTREAMFORMAT defines
-  * @min_buffer: Minimum buffer size handled by codec implementation
-+ * @pcm_formats: Output (for decoders) or input (for encoders)
-+ *               PCM formats (required to accel mode, 0 for other modes)
-+ * @u_space: union space (for codec dependent data)
-  * @reserved: reserved for future use
-  *
-  * This structure provides a scalar value for profiles, modes and stream
-@@ -370,7 +381,12 @@ struct snd_codec_desc {
- 	__u32 modes;
- 	__u32 formats;
- 	__u32 min_buffer;
--	__u32 reserved[15];
-+	__u32 pcm_formats;
-+	union {
-+		__u32 u_space[6];
-+		struct snd_codec_desc_src src;
-+	} __attribute__((packed, aligned(4)));
-+	__u32 reserved[8];
- } __attribute__((packed, aligned(4)));
+ err_pm_get_sync:
+@@ -1396,6 +1402,10 @@ static int fsl_asrc_probe(struct platform_device *pdev)
  
- /** struct snd_codec
-@@ -395,6 +411,8 @@ struct snd_codec_desc {
-  * @align: Block alignment in bytes of an audio sample.
-  *		Only required for PCM or IEC formats.
-  * @options: encoder-specific settings
-+ * @pcm_format: Output (for decoders) or input (for encoders)
-+ *               PCM formats (required to accel mode, 0 for other modes)
-  * @reserved: reserved for future use
-  */
+ static void fsl_asrc_remove(struct platform_device *pdev)
+ {
++	struct fsl_asrc *asrc = dev_get_drvdata(&pdev->dev);
++
++	fsl_asrc_m2m_exit(asrc);
++
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		fsl_asrc_runtime_suspend(&pdev->dev);
+@@ -1497,10 +1507,29 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
  
-@@ -411,7 +429,8 @@ struct snd_codec {
- 	__u32 format;
- 	__u32 align;
- 	union snd_codec_options options;
--	__u32 reserved[3];
-+	__u32 pcm_format;
-+	__u32 reserved[2];
- } __attribute__((packed, aligned(4)));
++static int fsl_asrc_suspend(struct device *dev)
++{
++	struct fsl_asrc *asrc = dev_get_drvdata(dev);
++	int ret;
++
++	fsl_asrc_m2m_suspend(asrc);
++	ret = pm_runtime_force_suspend(dev);
++	return ret;
++}
++
++static int fsl_asrc_resume(struct device *dev)
++{
++	struct fsl_asrc *asrc = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_runtime_force_resume(dev);
++	fsl_asrc_m2m_resume(asrc);
++	return ret;
++}
++
+ static const struct dev_pm_ops fsl_asrc_pm = {
+-	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
+-	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+-				pm_runtime_force_resume)
++	RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
++	SYSTEM_SLEEP_PM_OPS(fsl_asrc_suspend, fsl_asrc_resume)
+ };
  
- #endif
+ static const struct fsl_asrc_soc_data fsl_asrc_imx35_data = {
+@@ -1538,7 +1567,7 @@ static struct platform_driver fsl_asrc_driver = {
+ 	.driver = {
+ 		.name = "fsl-asrc",
+ 		.of_match_table = fsl_asrc_ids,
+-		.pm = &fsl_asrc_pm,
++		.pm = pm_ptr(&fsl_asrc_pm),
+ 	},
+ };
+ module_platform_driver(fsl_asrc_driver);
 -- 
 2.34.1
 
