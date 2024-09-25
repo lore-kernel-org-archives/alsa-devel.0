@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3622ECF9C69
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2024 01:01:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A367BCF9C71
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2024 01:01:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4395684D;
-	Wed, 25 Sep 2024 03:01:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4395684D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 878F8DFA;
+	Wed, 25 Sep 2024 03:01:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 878F8DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727226074;
-	bh=3nFyRTVOUVhLHMFASESfShsxhY8idPyIGAYXXG9qqd0=;
+	s=default; t=1727226088;
+	bh=S7gNn/zMH9Mq7yohNCakzHW+ZK7IqUedqKKHCL3FDOU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Qxui65iZUjg2BPkBSFStMdXWrbdrm3svdZc9SsCvPtJ5310guzlI8p9DD8mEQ2mM6
-	 3wRlDdBX9GBDY8nDTEFCNBgyew70ttKuB+KOkBhZ0LIyhT0t2swx5azlCGyblEtok6
-	 zwXWAOmxrifw98vY5HjUcoJU/AFwKOIwcd4ewVew=
+	b=V15SIPfKJthSzfFQa++SJpOyjArURVkbBIu1UPAISG1oxT2Kln4HH90xT/Ak4/rS8
+	 cv4HZWFXe/iIFJ1KkDeCu4dfrF1+JiYHgM3JaExTCMy/WR9+BoObV0t652RhNTJGZu
+	 U9MkoLEvCOS9ROYBqlqFZH/ENJPlvcBc1Wr8MCyo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E70DF805FE; Wed, 25 Sep 2024 03:00:27 +0200 (CEST)
+	id 68950F80614; Wed, 25 Sep 2024 03:00:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6545CF805FD;
-	Wed, 25 Sep 2024 03:00:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC41CF8061A;
+	Wed, 25 Sep 2024 03:00:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4FDA5F805A8; Wed, 25 Sep 2024 03:00:19 +0200 (CEST)
+	id 0FE57F805AA; Wed, 25 Sep 2024 03:00:20 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7C197F80266
-	for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2024 03:00:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C197F80266
+	by alsa1.perex.cz (Postfix) with ESMTPS id DFD79F802DB
+	for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2024 03:00:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFD79F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=L05KghCp
+ header.s=qcppdkim1 header.b=gOY1VxMN
 Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 48OHQCK5026499;
-	Wed, 25 Sep 2024 01:00:13 GMT
+ 48OHnxLj030180;
+	Wed, 25 Sep 2024 01:00:14 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	SVZiV+f4SnId4RLZpdWICppkMgvqXrXjIq8fTSzECKc=; b=L05KghCpw+SucqSl
-	goZXCXKKZ2PrwNmCZX8jmu/0d7fnyorDgSfLJ1ZX6dRH5c2H8SJP1nAMNjISxXS0
-	n726FBaGtgPL5ZcIT7f6HyTPbjq46dSvfFO1gBI/3fhRcqN1ZXn622AVmqCsgtwa
-	6jd73AEUf96lDL1XCrvY14/FssTkkTfi2cxoImWERqDcIMzJ8qz0ax+v2fz7gWbT
-	V9nCr+7YvMTSk1dYOyWq0OCGbp8gd6ocZ5HyOmaf/9OrgbqQbtycB4dUD4zS4mm7
-	lF+UOrd9uCVPQoWAhJ18F9TPNjPYDofvbXafo1KkuIcClrz5Yy2RMBhg/Kxsvg70
-	cKVsoA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+	c5gwoddCxMnmmFAKaTw4cQrxCONcapW95+AyW+pR6yQ=; b=gOY1VxMN5b76TVVW
+	MLxJTbwzxWf7oXPgpfolJloTPTycHmPbJeyh2ma4A/uB4oTJyDbDOsUi09ZlOsDT
+	3OYCZcj+UxQGxzdhx6B3Cm3I9JntI8jlU1FrvdGy9SoaPtuY7P525JZeQYS7g9Qa
+	WwVXRuteMtaCf+5KYEgMfWfpkNNNI7c+qwUxU2Xg+WlDFyYFQCd6j7b8nhbdQM6Q
+	Ce3B8Xj//85fZeIksaJ+82xOJ7WB5apR4ZrDwyu8K1b1QLxtONz+cAsFKslc4sjh
+	OT1GQ38MAU26d74BtyVRbH55Gl8+Cf6LP3P7zMGUML9nYHdhXoedYhLLWIpKXcDu
+	8UPxKg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41sp7ujj72-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41sp7ujj77-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 25 Sep 2024 01:00:13 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 48P10B0U005984
+	by NALASPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 48P10CRs032382
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 25 Sep 2024 01:00:11 GMT
+	Wed, 25 Sep 2024 01:00:12 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Tue, 24 Sep 2024 18:00:11 -0700
+ 15.2.1544.9; Tue, 24 Sep 2024 18:00:12 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <dmitry.torokhov@gmail.com>,
@@ -80,13 +80,12 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-input@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        Mathias Nyman
-	<mathias.nyman@linux.intel.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v28 01/32] xhci: add helper to stop endpoint and wait for
- completion
-Date: Tue, 24 Sep 2024 17:59:29 -0700
-Message-ID: <20240925010000.2231406-2-quic_wcheng@quicinc.com>
+        Wesley Cheng
+	<quic_wcheng@quicinc.com>
+Subject: [PATCH v28 04/32] usb: xhci: xhci-sideband: Set IMOD for xHCI
+ sideband clients
+Date: Tue, 24 Sep 2024 17:59:32 -0700
+Message-ID: <20240925010000.2231406-5-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240925010000.2231406-1-quic_wcheng@quicinc.com>
 References: <20240925010000.2231406-1-quic_wcheng@quicinc.com>
@@ -99,19 +98,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: IY5S9hcSr9jgpHRkSSzoKy6uwHXKU3tp
-X-Proofpoint-ORIG-GUID: IY5S9hcSr9jgpHRkSSzoKy6uwHXKU3tp
+X-Proofpoint-GUID: MSXKG88uuFqnuUmaDxAA4ItNFXJ8SOSA
+X-Proofpoint-ORIG-GUID: MSXKG88uuFqnuUmaDxAA4ItNFXJ8SOSA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=680 mlxscore=0 phishscore=0
  suspectscore=0 impostorscore=0 spamscore=0 malwarescore=0
  priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.19.0-2408220000 definitions=main-2409250005
-Message-ID-Hash: OPAOKVXDH5TNRP4RS62UCLKS7G6LUNGP
-X-Message-ID-Hash: OPAOKVXDH5TNRP4RS62UCLKS7G6LUNGP
+Message-ID-Hash: HBEDRH4GCKWVZMI6J3YRIGFENQVQDFRS
+X-Message-ID-Hash: HBEDRH4GCKWVZMI6J3YRIGFENQVQDFRS
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -124,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OPAOKVXDH5TNRP4RS62UCLKS7G6LUNGP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HBEDRH4GCKWVZMI6J3YRIGFENQVQDFRS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,92 +132,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+When creating a secondary interrupter over xHCI, add an argument for
+xHCI sideband clients to specify an interrupt moderation value for
+the interrupter context assigned.
 
-Expose xhci_stop_endpoint_sync() which is a synchronous variant of
-xhci_queue_stop_endpoint().  This is useful for client drivers that are
-using the secondary interrupters, and need to stop the current endpoint
-session.
-
-This does not go through the normal xhci_handle_cmd_stop_ep() command
-completion handler, because it utilizes the completion path to achieve
-synchronous behavior.  Users of this API are primarily intended to be
-clients that maintain their own transfer rings, such as in the case of USB
-audio offload.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci.c | 45 +++++++++++++++++++++++++++++++++++++++++
- drivers/usb/host/xhci.h |  2 ++
- 2 files changed, 47 insertions(+)
+ drivers/usb/host/xhci-sideband.c  | 4 ++--
+ include/linux/usb/xhci-sideband.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index ed1bb7ed44b0..8d7566e33faf 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -2784,6 +2784,51 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
- 	return -ENOMEM;
- }
+diff --git a/drivers/usb/host/xhci-sideband.c b/drivers/usb/host/xhci-sideband.c
+index 69bc234818d2..248d9713570e 100644
+--- a/drivers/usb/host/xhci-sideband.c
++++ b/drivers/usb/host/xhci-sideband.c
+@@ -259,7 +259,7 @@ EXPORT_SYMBOL_GPL(xhci_sideband_get_event_buffer);
+  */
+ int
+ xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg,
+-				 bool ip_autoclear)
++				 bool ip_autoclear, u32 imod_interval)
+ {
+ 	int ret = 0;
  
-+/*
-+ * Synchronous XHCI stop endpoint helper.  Issues the stop endpoint command and
-+ * waits for the command completion before returning.  This does not call
-+ * xhci_handle_cmd_stop_ep(), which has additional handling for 'context error'
-+ * cases, along with transfer ring cleanup.
-+ *
-+ * xhci_stop_endpoint_sync() is intended to be utilized by clients that manage
-+ * their own transfer ring, such as offload situations.
-+ */
-+int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep, int suspend,
-+			    gfp_t gfp_flags)
-+{
-+	struct xhci_command *command;
-+	unsigned long flags;
-+	int ret;
-+
-+	command = xhci_alloc_command(xhci, true, gfp_flags);
-+	if (!command)
-+		return -ENOMEM;
-+
-+	spin_lock_irqsave(&xhci->lock, flags);
-+	ret = xhci_queue_stop_endpoint(xhci, command, ep->vdev->slot_id,
-+				       ep->ep_index, suspend);
-+	if (ret < 0) {
-+		spin_unlock_irqrestore(&xhci->lock, flags);
-+		goto out;
-+	}
-+
-+	xhci_ring_cmd_db(xhci);
-+	spin_unlock_irqrestore(&xhci->lock, flags);
-+
-+	wait_for_completion(command->completion);
-+
-+	/* No handling for COMP_CONTEXT_STATE_ERROR done at command completion*/
-+	if (command->status == COMP_COMMAND_ABORTED ||
-+	    command->status == COMP_COMMAND_RING_STOPPED) {
-+		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
-+		ret = -ETIME;
-+	}
-+out:
-+	xhci_free_command(xhci, command);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(xhci_stop_endpoint_sync);
+@@ -273,7 +273,7 @@ xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg,
+ 	}
  
- /* Issue a configure endpoint command or evaluate context command
-  * and wait for it to finish.
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 324644165d93..51a992d8ffcf 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1917,6 +1917,8 @@ void xhci_ring_doorbell_for_active_rings(struct xhci_hcd *xhci,
- void xhci_cleanup_command_queue(struct xhci_hcd *xhci);
- void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
- unsigned int count_trbs(u64 addr, u64 len);
-+int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
-+			    int suspend, gfp_t gfp_flags);
+ 	sb->ir = xhci_create_secondary_interrupter(xhci_to_hcd(sb->xhci),
+-						   num_seg);
++						   num_seg, imod_interval);
+ 	if (!sb->ir) {
+ 		ret = -ENOMEM;
+ 		goto out;
+diff --git a/include/linux/usb/xhci-sideband.h b/include/linux/usb/xhci-sideband.h
+index 6c11e240fbca..bc5b56a77e37 100644
+--- a/include/linux/usb/xhci-sideband.h
++++ b/include/linux/usb/xhci-sideband.h
+@@ -59,7 +59,7 @@ xhci_sideband_get_event_buffer(struct xhci_sideband *sb);
  
- /* xHCI roothub code */
- void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
+ int
+ xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg,
+-				 bool ip_autoclear);
++				 bool ip_autoclear, u32 imod_interval);
+ 
+ void
+ xhci_sideband_remove_interrupter(struct xhci_sideband *sb);
