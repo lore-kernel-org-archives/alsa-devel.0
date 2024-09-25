@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 202A7CF9C71
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2024 01:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A675CF9C69
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2024 01:05:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B48EE66;
-	Wed, 25 Sep 2024 03:04:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B48EE66
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF4C61E8;
+	Wed, 25 Sep 2024 03:04:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF4C61E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727226295;
-	bh=H2VvMAmjHHXuPhfwtxy05hMZvGM02stpNq1uNd09GGg=;
+	s=default; t=1727226306;
+	bh=izD+DbozS8oGydYFz+5Vb7dIzvHhxa3xSOkF47CTxH8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=c2aDQdmMj5fC1dLqKa/vlshhq4/tpYNsW3YCQgsN9X9DSLDRUvnve7P2aDg/CvEyz
-	 aR6nJADcxBXiTguPSwehXCZOiGkZIw3U8jTZx2oVYL79KIhP1hz7yhkb8NOQCOcRLV
-	 ApQFGZvF+HA1Fmdo/pfGs77MxkUfkqBmAxyKCmh0=
+	b=Oi4fIDxB8gXIeqOZbWEsM6C8Ra19b3JP7dt47dTC/980C7gH568EMo2a/yw56OP0y
+	 EuY7tjj5Ke9xIkcobg73BjEk5PbYQU+Y/9UhH7Ir4QqEgUl//84ooKyV0HOrGg73pB
+	 tk/Otv7UgdTLlkqya2cs4UX2FhGKhTe0IsF/jv58=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABF81F80617; Wed, 25 Sep 2024 03:01:30 +0200 (CEST)
+	id D3699F80856; Wed, 25 Sep 2024 03:01:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6C0DF80853;
-	Wed, 25 Sep 2024 03:01:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D9EAF808CA;
+	Wed, 25 Sep 2024 03:01:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D51F9F8065E; Wed, 25 Sep 2024 03:00:40 +0200 (CEST)
+	id EE66BF80654; Wed, 25 Sep 2024 03:00:43 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3BDAFF80266
-	for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2024 03:00:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BDAFF80266
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91EEEF805A9
+	for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2024 03:00:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91EEEF805A9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=eRicVfZE
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=US0ZtrlO
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 48OGxCiR032075;
-	Wed, 25 Sep 2024 01:00:16 GMT
+ 48OI1RDc010270;
+	Wed, 25 Sep 2024 01:00:18 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	Duu2pk9fYk9yJEWt+Uf2phJwawOP/BI2KR50wacEDKE=; b=eRicVfZE4ScOzJLl
-	ovCVnKFGa1e+I7knX50EyRkmfgPYLIbHdmDQLj7uUeFljRGADrBsOQCAVpL0mqv2
-	CGRQL9+u8KKBLrRI+NRdHd6oqU1pf5hJp0vBGOVgQ2NZ4sCgYybDuReAiyuigQIK
-	a+78IgSLoj9m1p0QE/ouD4e+OEYZPnq13uFTz0PNoZbrefw8muQnmfnqb1juZgjx
-	Kee32EU77VdGMh+CTZh7PBgc0AA9Pd1gnxcb2IGpTrBZDzfj1cypaIOg0HOH+Nwk
-	35SCG5XIzuks/GOGPoeRzOwwb89oY3ESkdDwcuhSYsUyEfKaImwteG3StD3DnyvA
-	vUbWxA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+	DYLWwo/G+1Jgv2CP4pXZ8GM4oRunCFe5DUVQ7F3XSlY=; b=US0ZtrlORMVDTqwd
+	OesL5I5H9W0bnoPiiCUZrnPVJ2Jsql2bBu49tV2lczaVKIWDNfTU/UM1+iI6rnJd
+	d+wjNJJiKJDb8uUnN9xJBD7K56UhwDfyKEi/Jq6Q46jgK9j20RCXB3WRX+ibbhYd
+	1t9JsqJym8Ks1G8b1tF6AoRGDtN6z+EKngA+RsZ8rlBE0jLq/bboW6m3yzn0QRfR
+	Fl+/xpvYz6txLLX7WBk6ut4aDClXi2npg+zAtzj4WnpqluGZkP/sXpZ51duY/1+K
+	iprE7D6C9SrbhDyd6+SEhvtw32EXbOOnJ/K/u2x9jjr51S23x31nkO8HxTW+Gwuu
+	pdlDAw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41snfh2ku5-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 41sp7ujj87-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 25 Sep 2024 01:00:15 +0000 (GMT)
+	Wed, 25 Sep 2024 01:00:18 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 48P10D8x010558
+	by NALASPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 48P10HHY006088
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 25 Sep 2024 01:00:14 GMT
+	Wed, 25 Sep 2024 01:00:17 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Tue, 24 Sep 2024 18:00:13 -0700
+ 15.2.1544.9; Tue, 24 Sep 2024 18:00:16 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <dmitry.torokhov@gmail.com>,
@@ -82,9 +82,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v28 09/32] ALSA: Add USB audio device jack type
-Date: Tue, 24 Sep 2024 17:59:37 -0700
-Message-ID: <20240925010000.2231406-10-quic_wcheng@quicinc.com>
+Subject: [PATCH v28 20/32] ASoC: dt-bindings: Update example for enabling USB
+ offload on SM8250
+Date: Tue, 24 Sep 2024 17:59:48 -0700
+Message-ID: <20240925010000.2231406-21-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240925010000.2231406-1-quic_wcheng@quicinc.com>
 References: <20240925010000.2231406-1-quic_wcheng@quicinc.com>
@@ -97,19 +98,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: FDslvmMeyF2osHSZYferWEWNxzAgFuAQ
-X-Proofpoint-GUID: FDslvmMeyF2osHSZYferWEWNxzAgFuAQ
+X-Proofpoint-GUID: A-tJ9SyNvB5aT27m_zBl5-_b9T79bCBC
+X-Proofpoint-ORIG-GUID: A-tJ9SyNvB5aT27m_zBl5-_b9T79bCBC
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 adultscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
- suspectscore=0 impostorscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2408220000 definitions=main-2409250006
-Message-ID-Hash: FDAZYEWXSMCJBV4K3IB7GCHD5RVRCEEX
-X-Message-ID-Hash: FDAZYEWXSMCJBV4K3IB7GCHD5RVRCEEX
+ lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 mlxscore=0 phishscore=0
+ suspectscore=0 impostorscore=0 spamscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2408220000 definitions=main-2409250005
+Message-ID-Hash: C2YX2QWQNG7YAJKPSMZZT7C5FNYMYPLQ
+X-Message-ID-Hash: C2YX2QWQNG7YAJKPSMZZT7C5FNYMYPLQ
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -122,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FDAZYEWXSMCJBV4K3IB7GCHD5RVRCEEX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C2YX2QWQNG7YAJKPSMZZT7C5FNYMYPLQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,97 +132,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add an USB jack type, in order to support notifying of a valid USB audio
-device.  Since USB audio devices can have a slew of different
-configurations that reach beyond the basic headset and headphone use cases,
-classify these devices differently.
+Add an example on enabling of USB offload for the Q6DSP.  The routing can
+be done by the mixer, which can pass the multimedia stream to the USB
+backend.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- include/linux/mod_devicetable.h        | 2 +-
- include/sound/jack.h                   | 4 +++-
- include/uapi/linux/input-event-codes.h | 3 ++-
- sound/core/jack.c                      | 6 ++++--
- 4 files changed, 10 insertions(+), 5 deletions(-)
+ .../devicetree/bindings/sound/qcom,sm8250.yaml    | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index 4338b1b4ac44..82826f5a3741 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -340,7 +340,7 @@ struct pcmcia_device_id {
- #define INPUT_DEVICE_ID_LED_MAX		0x0f
- #define INPUT_DEVICE_ID_SND_MAX		0x07
- #define INPUT_DEVICE_ID_FF_MAX		0x7f
--#define INPUT_DEVICE_ID_SW_MAX		0x10
-+#define INPUT_DEVICE_ID_SW_MAX		0x11
- #define INPUT_DEVICE_ID_PROP_MAX	0x1f
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+index b2e15ebbd1bc..f2d708f899bf 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+@@ -229,6 +229,21 @@ examples:
+                 sound-dai = <&vamacro 0>;
+             };
+         };
++
++        usb-dai-link {
++            link-name = "USB Playback";
++            cpu {
++                sound-dai = <&q6afedai USB_RX>;
++            };
++
++            codec {
++                sound-dai = <&usbdai USB_RX>;
++            };
++
++            platform {
++                sound-dai = <&q6routing>;
++            };
++        };
+     };
  
- #define INPUT_DEVICE_ID_MATCH_BUS	1
-diff --git a/include/sound/jack.h b/include/sound/jack.h
-index 1ed90e2109e9..bd3f62281c97 100644
---- a/include/sound/jack.h
-+++ b/include/sound/jack.h
-@@ -22,6 +22,7 @@ struct input_dev;
-  * @SND_JACK_VIDEOOUT: Video out
-  * @SND_JACK_AVOUT: AV (Audio Video) out
-  * @SND_JACK_LINEIN:  Line in
-+ * @SND_JACK_USB: USB audio device
-  * @SND_JACK_BTN_0: Button 0
-  * @SND_JACK_BTN_1: Button 1
-  * @SND_JACK_BTN_2: Button 2
-@@ -43,6 +44,7 @@ enum snd_jack_types {
- 	SND_JACK_VIDEOOUT	= 0x0010,
- 	SND_JACK_AVOUT		= SND_JACK_LINEOUT | SND_JACK_VIDEOOUT,
- 	SND_JACK_LINEIN		= 0x0020,
-+	SND_JACK_USB		= 0x0040,
- 
- 	/* Kept separate from switches to facilitate implementation */
- 	SND_JACK_BTN_0		= 0x4000,
-@@ -54,7 +56,7 @@ enum snd_jack_types {
- };
- 
- /* Keep in sync with definitions above */
--#define SND_JACK_SWITCH_TYPES 6
-+#define SND_JACK_SWITCH_TYPES 7
- 
- struct snd_jack {
- 	struct list_head kctl_list;
-diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index 03edf2ccdf6c..607a0c0fc20a 100644
---- a/include/uapi/linux/input-event-codes.h
-+++ b/include/uapi/linux/input-event-codes.h
-@@ -922,7 +922,8 @@
- #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
- #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
- #define SW_MACHINE_COVER	0x10  /* set = cover closed */
--#define SW_MAX			0x10
-+#define SW_USB_INSERT		0x11  /* set = USB audio device connected */
-+#define SW_MAX			0x11
- #define SW_CNT			(SW_MAX+1)
- 
- /*
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index e4bcecdf89b7..de7c603e92b7 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -34,6 +34,7 @@ static const int jack_switch_types[SND_JACK_SWITCH_TYPES] = {
- 	SW_JACK_PHYSICAL_INSERT,
- 	SW_VIDEOOUT_INSERT,
- 	SW_LINEIN_INSERT,
-+	SW_USB_INSERT,
- };
- #endif /* CONFIG_SND_JACK_INPUT_DEV */
- 
-@@ -241,8 +242,9 @@ static ssize_t jack_kctl_id_read(struct file *file,
- static const char * const jack_events_name[] = {
- 	"HEADPHONE(0x0001)", "MICROPHONE(0x0002)", "LINEOUT(0x0004)",
- 	"MECHANICAL(0x0008)", "VIDEOOUT(0x0010)", "LINEIN(0x0020)",
--	"", "", "", "BTN_5(0x0200)", "BTN_4(0x0400)", "BTN_3(0x0800)",
--	"BTN_2(0x1000)", "BTN_1(0x2000)", "BTN_0(0x4000)", "",
-+	"USB(0x0040)", "", "", "BTN_5(0x0200)", "BTN_4(0x0400)",
-+	"BTN_3(0x0800)", "BTN_2(0x1000)", "BTN_1(0x2000)", "BTN_0(0x4000)",
-+	"",
- };
- 
- /* the recommended buffer size is 256 */
+   - |
