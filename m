@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB52ECDD1A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69AE2CDD1A1
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:46:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E67AE82;
-	Fri, 27 Sep 2024 14:45:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E67AE82
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0556EB1;
+	Fri, 27 Sep 2024 14:45:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0556EB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727441145;
-	bh=0oT8HubRYLhka+374/lmmpGRB4f0urrBFL2k7RW0Wp4=;
+	s=default; t=1727441163;
+	bh=Kkd9tSqRHa9vtAL1isGx0C8vpTPnoQQejNAyURUlpbY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B2GO2yKBiIkdOOO5FTWAF8cw3LSyO5JNtw0dvErxbX8OJGVKKFWB/gDdK3IxL2hFS
-	 MsTGVrgoJ2FKM+5olGdjtrY4kziS8FBUEt8oSZEFjC4JRtSh2X0RG9hVB7eQMgR5Vg
-	 nIzo5pxVpDWgGa4VC+WKoqF6uIQK9F3Ta+UiO+kk=
+	b=krW4ZVM/En24vbMduUgJdmpmXPRzsPC4t89VoKeA/Tx8x9QcYB8ifiiF092M6hEph
+	 XhsXUTYzpYD4ykzQl9p2/NK740h749kJ+jMUsSv4WpmH+Yw3/cwMe++gu/7oOqqdUk
+	 O0kwC4UGbME0kNcYSh34cPsY/pnfAHIOHsiw1aqo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06172F806BF; Fri, 27 Sep 2024 14:43:40 +0200 (CEST)
+	id B9CBEF805B1; Fri, 27 Sep 2024 14:43:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4944F806BF;
-	Fri, 27 Sep 2024 14:43:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4203AF806E1;
+	Fri, 27 Sep 2024 14:43:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4BC46F802DB; Fri, 27 Sep 2024 14:43:09 +0200 (CEST)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be
- [IPv6:2a02:1800:120:4::f00:13])
+	id 75F01F802DB; Fri, 27 Sep 2024 14:43:10 +0200 (CEST)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be
+ [IPv6:2a02:1800:120:4::f00:14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AE04DF80527
+	by alsa1.perex.cz (Postfix) with ESMTPS id AB940F80508
 	for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2024 14:43:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE04DF80527
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB940F80508
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:b47d:fd74:3975:15b7])
-	by baptiste.telenet-ops.be with cmsmtp
-	id HQic2D00F3BfLyr01Qicju; Fri, 27 Sep 2024 14:43:02 +0200
+	by xavier.telenet-ops.be with cmsmtp
+	id HQic2D0083BfLyr01QicD2; Fri, 27 Sep 2024 14:43:02 +0200
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtp (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIj-000fQE-K6;
+	id 1suAIj-000fQ0-IM;
 	Fri, 27 Sep 2024 14:42:31 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIp-008IEH-6X;
+	id 1suAIp-008IE1-4R;
 	Fri, 27 Sep 2024 14:42:31 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Liam Girdwood <lgirdwood@gmail.com>,
@@ -83,18 +83,18 @@ Cc: linux-sound@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH treewide 11/11] arm64: dts: freescale: imx: Switch to
- hp-det-gpios
-Date: Fri, 27 Sep 2024 14:42:26 +0200
+Subject: [PATCH treewide 09/11] mips: dts: ingenic: Switch to
+ simple-audio-card,hp-det-gpios
+Date: Fri, 27 Sep 2024 14:42:24 +0200
 Message-Id: 
- <9e9dde7e770a1787742a88685a258730ec50cd93.1727438777.git.geert+renesas@glider.be>
+ <0466c746d6276842d6993fae41efb315188e1f3f.1727438777.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1727438777.git.geert+renesas@glider.be>
 References: <cover.1727438777.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ECFDKZUC2TQRKMUT23ZM7UEUONBRNMC7
-X-Message-ID-Hash: ECFDKZUC2TQRKMUT23ZM7UEUONBRNMC7
+Message-ID-Hash: YIR7TCJLMDVPRF3XK5KMZTFQMDKYNWBV
+X-Message-ID-Hash: YIR7TCJLMDVPRF3XK5KMZTFQMDKYNWBV
 X-MailFrom: geert@linux-m68k.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ECFDKZUC2TQRKMUT23ZM7UEUONBRNMC7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YIR7TCJLMDVPRF3XK5KMZTFQMDKYNWBV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,58 +116,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace the deprecated "hp-det-gpio" property by "hp-det-gpios" in
-Freescale Generic ASoC Sound Card device nodes.
+Replace the deprecated "simple-audio-card,hp-det-gpio" property by
+"simple-audio-card,hp-det-gpios" in Simple Audio Card device nodes.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-This has a run-time dependency on "ASoC: fsl-asoc-card: Add missing
-handling of {hp,mic}-dt-gpios".
----
- arch/arm64/boot/dts/freescale/imx8qm-mek.dts      | 2 +-
- arch/arm64/boot/dts/freescale/imx8qxp-mek.dts     | 2 +-
- arch/arm64/boot/dts/freescale/imx95-19x19-evk.dts | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
+ arch/mips/boot/dts/ingenic/rs90.dts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-index 62203eed6a6cb144..12b36418fb44f49e 100644
---- a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-@@ -217,7 +217,7 @@ sound-wm8960 {
- 		model = "wm8960-audio";
- 		audio-cpu = <&sai1>;
- 		audio-codec = <&wm8960>;
--		hp-det-gpio = <&lsio_gpio0 31 GPIO_ACTIVE_HIGH>;
-+		hp-det-gpios = <&lsio_gpio0 31 GPIO_ACTIVE_HIGH>;
- 		audio-routing =	"Headphone Jack", "HP_L",
- 				"Headphone Jack", "HP_R",
- 				"Ext Spk", "SPK_LP",
-diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-index 936ba5ecdcac76fd..c0782124aad69db3 100644
---- a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-@@ -50,7 +50,7 @@ sound-wm8960 {
- 		model = "wm8960-audio";
- 		audio-cpu = <&sai1>;
- 		audio-codec = <&wm8960>;
--		hp-det-gpio = <&lsio_gpio1 0 GPIO_ACTIVE_HIGH>;
-+		hp-det-gpios = <&lsio_gpio1 0 GPIO_ACTIVE_HIGH>;
- 		audio-routing = "Headphone Jack", "HP_L",
- 				"Headphone Jack", "HP_R",
- 				"Ext Spk", "SPK_LP",
-diff --git a/arch/arm64/boot/dts/freescale/imx95-19x19-evk.dts b/arch/arm64/boot/dts/freescale/imx95-19x19-evk.dts
-index 37a1d4ca1b207988..a69ba75ed41bda65 100644
---- a/arch/arm64/boot/dts/freescale/imx95-19x19-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx95-19x19-evk.dts
-@@ -160,7 +160,7 @@ sound-wm8962 {
- 		model = "wm8962-audio";
- 		audio-cpu = <&sai3>;
- 		audio-codec = <&wm8962>;
--		hp-det-gpio = <&gpio2 11 GPIO_ACTIVE_HIGH>;
-+		hp-det-gpios = <&gpio2 11 GPIO_ACTIVE_HIGH>;
- 		audio-routing = "Headphone Jack", "HPOUTL",
- 				"Headphone Jack", "HPOUTR",
- 				"Ext Spk", "SPKOUTL",
+diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts b/arch/mips/boot/dts/ingenic/gcw0.dts
+index 5d33f26fd28c8bd8..8455778928b71cee 100644
+--- a/arch/mips/boot/dts/ingenic/gcw0.dts
++++ b/arch/mips/boot/dts/ingenic/gcw0.dts
+@@ -91,7 +91,7 @@ sound {
+ 			"MIC1N", "Built-in Mic";
+ 		simple-audio-card,pin-switches = "Speaker", "Headphones";
+ 
+-		simple-audio-card,hp-det-gpio = <&gpf 21 GPIO_ACTIVE_LOW>;
++		simple-audio-card,hp-det-gpios = <&gpf 21 GPIO_ACTIVE_LOW>;
+ 		simple-audio-card,aux-devs = <&speaker_amp>, <&headphones_amp>;
+ 
+ 		simple-audio-card,bitclock-master = <&dai_codec>;
+diff --git a/arch/mips/boot/dts/ingenic/rs90.dts b/arch/mips/boot/dts/ingenic/rs90.dts
+index e8df70dd42bf8e4c..6d2c8aea5f499d34 100644
+--- a/arch/mips/boot/dts/ingenic/rs90.dts
++++ b/arch/mips/boot/dts/ingenic/rs90.dts
+@@ -148,7 +148,7 @@ sound {
+ 			"Speaker", "OUTR";
+ 		simple-audio-card,pin-switches = "Speaker";
+ 
+-		simple-audio-card,hp-det-gpio = <&gpd 16 GPIO_ACTIVE_LOW>;
++		simple-audio-card,hp-det-gpios = <&gpd 16 GPIO_ACTIVE_LOW>;
+ 		simple-audio-card,aux-devs = <&amp>;
+ 
+ 		simple-audio-card,bitclock-master = <&dai_codec>;
 -- 
 2.34.1
 
