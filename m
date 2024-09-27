@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FB97CDD1A1
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:43:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8F63CDD1A0
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:44:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9AE8B60;
-	Fri, 27 Sep 2024 14:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9AE8B60
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCE98E0D;
+	Fri, 27 Sep 2024 14:43:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCE98E0D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727441026;
-	bh=H04kX0shIMHo/Br80lC188m3VFriBQiy/Kjtvzl6jHs=;
+	s=default; t=1727441039;
+	bh=qZMQP9Pxla42En9Gk638J2dnegrtAevouU1hZQr5nqw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mpQvaMwf12p8IYAOwVoKZMQ5YbzkauFs8YboVDmCQVfsnuYMDOCb8C72Gy5sn70aw
-	 19g9cWqs+OHZV70DFJTM3JZkHHkrGevtq0XXuA6+ABqZ3Vvr/BVjLgTsyHbBBt480y
-	 ggUW9Esb7QIWcuQr4HgTQhaWLg02tHh5HSvloYaM=
+	b=nEKuFK3pqW323QytEJuVnqgmtwXP7I6zpqzFBsk0AF6n4O9DId6PR2lZatSVtg8AK
+	 LaK2aEUQdt7XYy+q7jYy75PRsnSOfcPubMPM4pIuXEfS0U9O4xbbRfztE522S81cpu
+	 1NkiVN1WdHCB4GOZ02hfJeIPhSV6IRrBo5JErCuQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF505F805BE; Fri, 27 Sep 2024 14:43:15 +0200 (CEST)
+	id 53444F805D3; Fri, 27 Sep 2024 14:43:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 883E3F805B4;
-	Fri, 27 Sep 2024 14:43:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0E90F805D6;
+	Fri, 27 Sep 2024 14:43:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 551C3F805A1; Fri, 27 Sep 2024 14:43:05 +0200 (CEST)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be
- [IPv6:2a02:1800:120:4::f00:15])
+	id 0B496F805A0; Fri, 27 Sep 2024 14:43:06 +0200 (CEST)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be
+ [IPv6:2a02:1800:110:4::f00:19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EF39F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id A1B5EF802DB
 	for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2024 14:43:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EF39F80074
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1B5EF802DB
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:b47d:fd74:3975:15b7])
-	by andre.telenet-ops.be with cmsmtp
-	id HQic2D0043BfLyr01Qicie; Fri, 27 Sep 2024 14:43:02 +0200
+	by laurent.telenet-ops.be with cmsmtp
+	id HQic2D00F3BfLyr01QicDy; Fri, 27 Sep 2024 14:43:02 +0200
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtp (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIj-000fPx-HO;
+	id 1suAIj-000fPt-HH;
 	Fri, 27 Sep 2024 14:42:31 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIp-008IDy-3S;
+	id 1suAIp-008IDp-17;
 	Fri, 27 Sep 2024 14:42:31 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Liam Girdwood <lgirdwood@gmail.com>,
@@ -83,17 +83,18 @@ Cc: linux-sound@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH treewide 08/11] arm64: dts: uniphier: Switch to hp-det-gpios
-Date: Fri, 27 Sep 2024 14:42:23 +0200
+Subject: [PATCH treewide 05/11] arm64: dts: renesas: beacon-renesom: Switch to
+ mic-det-gpios
+Date: Fri, 27 Sep 2024 14:42:20 +0200
 Message-Id: 
- <b14b8512181c2a3b0744698e8a21b4e16451d7b3.1727438777.git.geert+renesas@glider.be>
+ <750d6ac7911aef9a461dca6d07e5c1fab6211ecb.1727438777.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1727438777.git.geert+renesas@glider.be>
 References: <cover.1727438777.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KU33QA7J4YLRL2KGDUE6QJOGVQY5EZAX
-X-Message-ID-Hash: KU33QA7J4YLRL2KGDUE6QJOGVQY5EZAX
+Message-ID-Hash: 65EQ4GKBBPUHD6AYZYBHRBR3T6RMBLVF
+X-Message-ID-Hash: 65EQ4GKBBPUHD6AYZYBHRBR3T6RMBLVF
 X-MailFrom: geert@linux-m68k.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KU33QA7J4YLRL2KGDUE6QJOGVQY5EZAX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/65EQ4GKBBPUHD6AYZYBHRBR3T6RMBLVF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,41 +116,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace the deprecated "hp-det-gpio" property by "hp-det-gpios" in Audio
-Graph Card device nodes.
+Replace the deprecated "mic-det-gpio" property by "mic-det-gpios" in
+Audio Graph Card device nodes.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts | 2 +-
- arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-index a251c4343548f477..de219570bbc933e3 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-@@ -61,7 +61,7 @@ &i2s_port3
- 			&i2s_port4
- 			&spdif_port0
- 			&comp_spdif_port0>;
--		hp-det-gpio = <&gpio UNIPHIER_GPIO_IRQ(0) GPIO_ACTIVE_LOW>;
-+		hp-det-gpios = <&gpio UNIPHIER_GPIO_IRQ(0) GPIO_ACTIVE_LOW>;
- 	};
- 
- 	spdif-out {
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-index 79f6db2455c1726f..20e5fb724fae39f1 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-@@ -61,7 +61,7 @@ &i2s_port3
- 			&i2s_port4
- 			&spdif_port0
- 			&comp_spdif_port0>;
--		hp-det-gpio = <&gpio UNIPHIER_GPIO_IRQ(0) GPIO_ACTIVE_LOW>;
-+		hp-det-gpios = <&gpio UNIPHIER_GPIO_IRQ(0) GPIO_ACTIVE_LOW>;
- 	};
- 
- 	spdif-out {
+diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+index 5a14f116f7a1eedf..9436b249ebdd9dcd 100644
+--- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
++++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+@@ -200,7 +200,7 @@ sound_card {
+ 		widgets = "Microphone", "Mic Jack",
+ 			  "Line", "Line In Jack",
+ 			  "Headphone", "Headphone Jack";
+-		mic-det-gpio = <&gpio0 2 GPIO_ACTIVE_LOW>;
++		mic-det-gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
+ 		routing = "Headphone Jack", "HPOUTL",
+ 			 "Headphone Jack", "HPOUTR",
+ 			 "IN3R", "MICBIAS",
 -- 
 2.34.1
 
