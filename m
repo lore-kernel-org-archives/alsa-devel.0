@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C2D1CDD1A5
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0D85CDD1A5
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:57:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05A19E9A;
-	Fri, 27 Sep 2024 14:56:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05A19E9A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 313D914E7;
+	Fri, 27 Sep 2024 14:57:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 313D914E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727441821;
-	bh=fu156uxeird2hNWrSxrugsPh3enEYYlUXqzTq+EWDW4=;
+	s=default; t=1727441839;
+	bh=wK3MLDP3hW0cynD+DWMyY0deUf7g+0vOrHq3Fjg44/I=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ee2WEuHZcqBvs9gZWHqifUNOL+qT6voM9QGxelkORgfuQ6puMSvuQJAvPu83ELvwP
-	 cuFEry7LAWKidQo1K7fWpPttyBwVbl5lXdrNL7hxMBV/RvPepO7gWSBDrX0T6+JzEd
-	 L0xF0PCtR5bj9cty/k8VpE1mK81AdUZiWDuaJyfs=
+	b=WHFjBsnaRatFwiAMiOw7li9wjebxwKuzCXLJSQcSWmVwvGd/i9yyjCTH5zh+iwbA9
+	 9CSrLqRPqLb0qVi+qYYe/qFf1WRLYI3J33sJo6nWHusHcoySnErq451FX7IrtO3DED
+	 Ii339YiFLDc71JvX/7ZdIzNCT/72au5ITPABMF7U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53A72F805A8; Fri, 27 Sep 2024 14:56:23 +0200 (CEST)
+	id 51AD4F80107; Fri, 27 Sep 2024 14:56:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81938F805B5;
-	Fri, 27 Sep 2024 14:56:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6D8DF805AE;
+	Fri, 27 Sep 2024 14:56:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ACF4F802DB; Fri, 27 Sep 2024 14:56:18 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id D8713F802DB; Fri, 27 Sep 2024 14:56:54 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 629DAF80074
-	for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2024 14:56:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 629DAF80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05269F80074
+	for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2024 14:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05269F80074
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jntmT+eF
+ header.s=k20201202 header.b=Sfezg91K
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2AC2C5C01AC;
-	Fri, 27 Sep 2024 12:56:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF83C4CEC4;
-	Fri, 27 Sep 2024 12:56:07 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 571F45C5A34;
+	Fri, 27 Sep 2024 12:56:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B535C4CEC4;
+	Fri, 27 Sep 2024 12:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727441774;
-	bh=fu156uxeird2hNWrSxrugsPh3enEYYlUXqzTq+EWDW4=;
+	s=k20201202; t=1727441811;
+	bh=wK3MLDP3hW0cynD+DWMyY0deUf7g+0vOrHq3Fjg44/I=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jntmT+eFCBZLCVjSgdjANQdHCvGQsNChvEwoy/hf3h7CkolnsQyU3Qvz67yxRDgc9
-	 hemt3nFVw0se9LznIn1rIrKQWqmCOJ+kUICV8SRUOufx0oMHrmDxNSRc6MpNV2loyh
-	 U2okOx3mLalzZU8di7/nfHzDQ1JRpowFlNrhcejg1PFZp9O3Fqvq5+5OLbL4qqSXdJ
-	 Xyb5m7kg3U092Hulgecr9ChDMwwlRlsCkG8zkgxdulxef/9x7wJLjVPmny4VewjOg4
-	 tXbDRPkK2f7dX0Rpj2fr8JlB6yMyQbEjx5Pzk9/FcE2xVM3Ox/IJcLP1UI14rrviPD
-	 EWZuTTSGYIovA==
-Message-ID: <510da637-2c28-4d3f-aadf-88b159156e04@kernel.org>
-Date: Fri, 27 Sep 2024 14:56:05 +0200
+	b=Sfezg91KwXQ3SLpWDGk9+iZ4VyVcuwapRNiUP8bkDDmF1gJqp0RT5LJfqY2sBEA/F
+	 gHsQuOsdboOOmGP+AtwbiZ3DBmMJSTr21JJH9Ng23D7przGr54fVarLRZZXhj9fqox
+	 2rGlbIFTdAuKwObZB+0M8RCaHVeucyhXJeipAviMaZwKXMlmwkvBbF+ltH3tYKe+XL
+	 aaVEuTJtt/PlVIzpZxLekqh0P8c98pnV0SIHQmnIM9+dh7XfpYEZrbDPLtwlcLHSpV
+	 liHGD94RcO+znCut6UbEEqFMnfY6zP3yfACGPfgw3Fq+HnLr0FzLR58TjnTKmHDZab
+	 smQyaVSBOva7A==
+Message-ID: <0bd21761-a81f-494a-9934-877f24b7fe0a@kernel.org>
+Date: Fri, 27 Sep 2024 14:56:40 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH treewide 04/11] arm64: dts: freescale: imx: Switch to
- simple-audio-card,hp-det-gpios
+Subject: Re: [PATCH treewide 05/11] arm64: dts: renesas: beacon-renesom:
+ Switch to mic-det-gpios
 To: Geert Uytterhoeven <geert+renesas@glider.be>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -83,9 +83,9 @@ Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  linux-mips@vger.kernel.org, alsa-devel@alsa-project.org,
  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 References: <cover.1727438777.git.geert+renesas@glider.be>
- <b38545c29d6cbf0b394ddb4747ce810c679f95d1.1727438777.git.geert+renesas@glider.be>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+ <750d6ac7911aef9a461dca6d07e5c1fab6211ecb.1727438777.git.geert+renesas@glider.be>
 Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -130,11 +130,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
 In-Reply-To: 
- <b38545c29d6cbf0b394ddb4747ce810c679f95d1.1727438777.git.geert+renesas@glider.be>
+ <750d6ac7911aef9a461dca6d07e5c1fab6211ecb.1727438777.git.geert+renesas@glider.be>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: AM26OLPVO6LVG7D5VFXNRY7RSTFRNFAD
-X-Message-ID-Hash: AM26OLPVO6LVG7D5VFXNRY7RSTFRNFAD
+Message-ID-Hash: ZV652OIVJ323C6IXJLOJ6TL7PKDR55JY
+X-Message-ID-Hash: ZV652OIVJ323C6IXJLOJ6TL7PKDR55JY
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -147,7 +147,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AM26OLPVO6LVG7D5VFXNRY7RSTFRNFAD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZV652OIVJ323C6IXJLOJ6TL7PKDR55JY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -157,13 +157,13 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 27/09/2024 14:42, Geert Uytterhoeven wrote:
-> Replace the deprecated "simple-audio-card,hp-det-gpio" property by
-> "simple-audio-card,hp-det-gpios" in Simple Audio Card device nodes.
+> Replace the deprecated "mic-det-gpio" property by "mic-det-gpios" in
+> Audio Graph Card device nodes.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Subject: drop freescale prefix.
-
+> ---
+>  arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
