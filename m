@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46E84CDD1A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15BA0CDD1A0
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2024 12:45:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E228B76;
-	Fri, 27 Sep 2024 14:44:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E228B76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6363193A;
+	Fri, 27 Sep 2024 14:45:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6363193A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727441100;
-	bh=iT5rXWgkVPcbkFWW81Uc2zGRtQvQkpapAwr3dLRdXHs=;
+	s=default; t=1727441114;
+	bh=ysNXCS5d03ZwzODzN3Ux5C/aLATkpUW/PgOS0n4jwzI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kUfv/HdnNyDukKHcGyL+1J4VBhRzzBIMOzE/5I0p9Bz8HzI0vjvSfVytSiuwRZEk2
-	 NsUdnem2NnuV011NSjn0mwfx/4Mrr7sybU9084AvjEKAwUQf2dP+zUQT+/S/WykFca
-	 CIrX1j9THJ6qHHTEeU5QMpbC8yFiIFSuAWKx+W60=
+	b=T7VR8RKm7FLPkG86tem40H3zcl6nYR8nz8XOWWXeuYCz7ohSlVMXbrjYc7ZJw6X+x
+	 GNUlD7H1EEqhaxlXY+n6DpiEN9HQd+q7Rq2akztVcKbg9WTnxgagD3UQL4Z4Pe5kp/
+	 vu0aoOmNVihgr6viQGzoUUY6SJNIqb2oeDMtIafQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 424EAF80671; Fri, 27 Sep 2024 14:43:28 +0200 (CEST)
+	id 94F49F8058C; Fri, 27 Sep 2024 14:43:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51399F8065A;
-	Fri, 27 Sep 2024 14:43:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1D34F80682;
+	Fri, 27 Sep 2024 14:43:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD43FF8047C; Fri, 27 Sep 2024 14:43:08 +0200 (CEST)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:1a])
+	id C92F7F80266; Fri, 27 Sep 2024 14:43:08 +0200 (CEST)
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be
+ [IPv6:2a02:1800:120:4::f00:13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A60B4F8049C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9EA54F80266
 	for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2024 14:43:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A60B4F8049C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EA54F80266
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:b47d:fd74:3975:15b7])
-	by albert.telenet-ops.be with cmsmtp
-	id HQic2D00E3BfLyr06Qiclu; Fri, 27 Sep 2024 14:43:02 +0200
+	by baptiste.telenet-ops.be with cmsmtp
+	id HQic2D00D3BfLyr01Qicjt; Fri, 27 Sep 2024 14:43:02 +0200
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtp (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIj-000fPu-HI;
+	id 1suAIj-000fPs-HD;
 	Fri, 27 Sep 2024 14:42:31 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1suAIp-008IDm-0M;
-	Fri, 27 Sep 2024 14:42:31 +0200
+	id 1suAIo-008IDj-Vr;
+	Fri, 27 Sep 2024 14:42:30 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -83,18 +83,18 @@ Cc: linux-sound@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH treewide 04/11] arm64: dts: freescale: imx: Switch to
- simple-audio-card,hp-det-gpios
-Date: Fri, 27 Sep 2024 14:42:19 +0200
+Subject: [PATCH treewide 03/11] ARM: dts: marvell: mmp2-olpc-xo-1-75: Switch
+ to {hp,mic}-det-gpios
+Date: Fri, 27 Sep 2024 14:42:18 +0200
 Message-Id: 
- <b38545c29d6cbf0b394ddb4747ce810c679f95d1.1727438777.git.geert+renesas@glider.be>
+ <7b4d7d735189fb346175a95e29db33f01c8cf93d.1727438777.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1727438777.git.geert+renesas@glider.be>
 References: <cover.1727438777.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: O4OI3SZC7C424ZFJ4NVXUC2CVJFDGFM7
-X-Message-ID-Hash: O4OI3SZC7C424ZFJ4NVXUC2CVJFDGFM7
+Message-ID-Hash: CQVL37GD5YLFYXQ6OZVJXLZWMGL7UEOK
+X-Message-ID-Hash: CQVL37GD5YLFYXQ6OZVJXLZWMGL7UEOK
 X-MailFrom: geert@linux-m68k.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O4OI3SZC7C424ZFJ4NVXUC2CVJFDGFM7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQVL37GD5YLFYXQ6OZVJXLZWMGL7UEOK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,41 +116,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace the deprecated "simple-audio-card,hp-det-gpio" property by
-"simple-audio-card,hp-det-gpios" in Simple Audio Card device nodes.
+Replace the deprecated "hp-det-gpio" and "mic-det-gpio" properties by
+"hp-det-gpios" resp. "mic-det-gpios" in Audio Graph Card device nodes.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 2 +-
- arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi       | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/marvell/mmp2-olpc-xo-1-75.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-index b268ba7a0e12a3f8..9d8e7231b7c63742 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-@@ -172,7 +172,7 @@ sound {
- 			"Headphones", "HP_OUT",
- 			"Builtin Speaker", "Speaker Amp OUTR",
- 			"Speaker Amp INR", "LINE_OUT";
--		simple-audio-card,hp-det-gpio = <&gpio3 20 GPIO_ACTIVE_HIGH>;
-+		simple-audio-card,hp-det-gpios = <&gpio3 20 GPIO_ACTIVE_HIGH>;
+diff --git a/arch/arm/boot/dts/marvell/mmp2-olpc-xo-1-75.dts b/arch/arm/boot/dts/marvell/mmp2-olpc-xo-1-75.dts
+index 55ea87870af3e039..86c425b72fa711b5 100644
+--- a/arch/arm/boot/dts/marvell/mmp2-olpc-xo-1-75.dts
++++ b/arch/arm/boot/dts/marvell/mmp2-olpc-xo-1-75.dts
+@@ -113,8 +113,8 @@ sound-card {
+ 			  "Headphones", "HPOR",
+ 			  "MIC2", "Mic Jack";
+ 		widgets = "Headphone", "Headphones", "Microphone", "Mic Jack";
+-		hp-det-gpio = <&gpio 97 GPIO_ACTIVE_HIGH>;
+-		mic-det-gpio = <&gpio 96 GPIO_ACTIVE_HIGH>;
++		hp-det-gpios = <&gpio 97 GPIO_ACTIVE_HIGH>;
++		mic-det-gpios = <&gpio 96 GPIO_ACTIVE_HIGH>;
+ 	};
  
- 		simple-audio-card,cpu {
- 			sound-dai = <&sai2>;
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index 1b39514d5c12aafc..bb37a32ce4616d9f 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -241,7 +241,7 @@ sound {
- 			"Headset Mic", "MICBIAS",
- 			"IN3R", "Headset Mic",
- 			"DMICDAT", "Digital Mic";
--		simple-audio-card,hp-det-gpio = <&gpio3 9 GPIO_ACTIVE_HIGH>;
-+		simple-audio-card,hp-det-gpios = <&gpio3 9 GPIO_ACTIVE_HIGH>;
- 
- 		simple-audio-card,cpu {
- 			sound-dai = <&sai2>;
+ 	soc {
 -- 
 2.34.1
 
