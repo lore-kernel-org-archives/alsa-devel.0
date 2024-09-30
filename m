@@ -4,74 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA0E5CEB2C2
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2024 21:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FCB2CEB2C2
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2024 21:31:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B897B1948;
-	Mon, 30 Sep 2024 23:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B897B1948
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52E8C218F;
+	Mon, 30 Sep 2024 23:31:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52E8C218F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727731675;
-	bh=NkRqiuMzhon0316LV3Kd2sU6eM23gxXjReXGVuES79I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1727731904;
+	bh=sG0WjLTVUV4DLkeZIrde7W6dgLLQSQa+eK0I6BJYcWw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WXYGDFM08Jsjjv7vKpSzn7xMyCTlrQX0keWu+WsBVt72BolVtA9QKxvABxeSSTgj3
-	 3Map+4VDb4zHM3v8Bmmmk4c9ktWuK15Loouxjo/k9FADTldwAnAoLcclqKqKgMAhQx
-	 KFm9GD6R9eeJMAdikI5xXr0nOvAJ/kj3IdyaLmMA=
+	b=eLWPT0YYX5bwalYR7T0/TaOknE4o/DJ9bGamT+dtwJ3HTtYOnyhoR+F+7ZMtL2mNd
+	 Cpjz+YKmA7H/ARk3iaX6T47dyt8xB206c5x4ttotflRhNRbzUEeS9PjI45eFZeiusT
+	 sbXTPiMd6FM0Td92fNdENRrxSVhn2u+OKuaiP3YA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF6F2F805EB; Mon, 30 Sep 2024 23:26:56 +0200 (CEST)
+	id 9F563F805B6; Mon, 30 Sep 2024 23:31:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FE1DF80602;
-	Mon, 30 Sep 2024 23:26:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 505D4F805A1;
+	Mon, 30 Sep 2024 23:31:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5CF2F805BB; Mon, 30 Sep 2024 23:26:48 +0200 (CEST)
+	id 3C256F80517; Mon, 30 Sep 2024 23:31:07 +0200 (CEST)
 Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4081EF80527
-	for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2024 23:26:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4081EF80527
+	by alsa1.perex.cz (Postfix) with ESMTPS id 27018F80007
+	for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2024 23:31:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27018F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Qx9+ijmC
+ header.s=k20201202 header.b=rw4MlEot
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 5F8FFA416D9;
-	Mon, 30 Sep 2024 21:26:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8B21C4CEC7;
-	Mon, 30 Sep 2024 21:26:40 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 6F987A416D3;
+	Mon, 30 Sep 2024 21:30:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4759C4CECD;
+	Mon, 30 Sep 2024 21:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727731602;
-	bh=NkRqiuMzhon0316LV3Kd2sU6eM23gxXjReXGVuES79I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Qx9+ijmCV0QWEi1Y3/I0BppzWyFZVGTnGK/kuxt4amCNYMWAAhex2Ojp/1Ipd9w6j
-	 Zu1EdY6/lt9gWstfSbToWwF/U0xEqJL5FQNpw9tIQ1btd/ffNA1LphbiwBMaykzNQc
-	 5W+JJWj9I/6Jt4IkmgZG2zLhZDJJ+Y8t9B/VyxzY8ied3nAfZqBqQO+k6Ej2I6Nl7Q
-	 JZS08jHRK9gfNiigzZrtzKjMgApPH3zvwQwmArLAm+qnO6TjSNS2i9UzYTbDwFFXo1
-	 n7DoD4qEZXHUktUmxCMz9EewyNE7yBHCrYyI4CeCzjQULmZxZuRg143ACLMmJdP4aM
-	 1hs7qx0qdQn+g==
+	s=k20201202; t=1727731862;
+	bh=sG0WjLTVUV4DLkeZIrde7W6dgLLQSQa+eK0I6BJYcWw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rw4MlEotZEFE5Npk0WTvCl1Fvj9NKs0Gg30zelvD9leBFFOzoYZbKcblUYbQ46VBa
+	 abAXJ7v9Pznolkbs4xHDTfm09ofvSUt5R+14FGbMxCGD6yeoAN8p5Q6PU2MY0K2PBS
+	 DJmvz1+gjt6iKyplREY8EMYD9FXssBJwW2OWV5bV8iPlA63/3F7LNDBmuFuShyFJ6T
+	 NNzaFSgYIB4/lVJkNcw9U85MQmq+Rbgd9x6rfFZHB8Y6YBos5RCp7UOTc8+lxH9sYg
+	 MP/J2eagbdSEVNY6csQvo1z8Eyyl21Mqaq/9JdaBwW/tdO2uJY0YMCjQKyHFvIfv2h
+	 DqVLfiwzQcIpg==
+Date: Mon, 30 Sep 2024 22:30:59 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240924-asoc-imx-maple-v1-1-8b993901f71e@kernel.org>
-References: <20240924-asoc-imx-maple-v1-1-8b993901f71e@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: Use maple tree register cache
-Message-Id: <172773160047.2197048.13783696550298838000.b4-ty@kernel.org>
-Date: Mon, 30 Sep 2024 22:26:40 +0100
+To: Benjamin Hahn <B.Hahn@phytec.de>
+Cc: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Teresa Remmet <t.remmet@phytec.de>, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	upstream@lists.phytec.de
+Subject: Re: [PATCH] sound: soc: codecs: tlv320aic3x: Fix codec gpio-reset
+Message-ID: <ZvsYk4aGCPvR2kyf@finisterre.sirena.org.uk>
+References: 
+ <20240930-wip-bhahn-tlv320aic3x_fix_reset-v1-1-c040d86a4b93@phytec.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-99b12
-Message-ID-Hash: GYNJ3GBGLO4HX776KVIKP2FJ3XNSVRNT
-X-Message-ID-Hash: GYNJ3GBGLO4HX776KVIKP2FJ3XNSVRNT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ss51HuvtAhdbVrv8"
+Content-Disposition: inline
+In-Reply-To: 
+ <20240930-wip-bhahn-tlv320aic3x_fix_reset-v1-1-c040d86a4b93@phytec.de>
+X-Cookie: Editing is a rewording activity.
+Message-ID-Hash: UAMBYL6AWADUUQDMVMVAH5SJRCYCQFF6
+X-Message-ID-Hash: UAMBYL6AWADUUQDMVMVAH5SJRCYCQFF6
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GYNJ3GBGLO4HX776KVIKP2FJ3XNSVRNT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UAMBYL6AWADUUQDMVMVAH5SJRCYCQFF6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,39 +97,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 24 Sep 2024 15:58:42 +0200, Mark Brown wrote:
-> Several of the NXP drivers use regmaps with a rbtree register cache. Since
-> the maple tree cache is uisng a generally more modern data structure which
-> makes implementation choices more suitable for modern systems let's convert
-> these drivers to it. This should have no practical impact.
-> 
-> 
 
-Applied to
+--ss51HuvtAhdbVrv8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Sep 30, 2024 at 09:16:46AM +0200, Benjamin Hahn wrote:
 
-Thanks!
+> The TLV320AIC3007 requires a hardware reset after power-up for proper
+> operation. After all power supplies are at their specified values,
+> the RESET pin must be driven low for at least 10 ns. Even though the
+> datasheet sais min 10ns, I needed more than 10ns when testing this out.
+> 15ns worked for me.
 
-[1/1] ASoC: fsl: Use maple tree register cache
-      commit: bbeffdda5f26a56072cb8cf741f4c52bc2174838
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> -		if (aic3x->gpio_reset)
+> +		if (aic3x->gpio_reset) {
+>  			gpiod_set_value(aic3x->gpio_reset, 1);
+> +			ndelay(15);
+> +			gpiod_set_value(aic3x->gpio_reset, 0);
+> +		}
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This seems obviously buggy, it leaves the GPIO with the opposite state
+to that it would have prior to the patch.  It's also not joined up with
+your changelog, that talks about actions taken after powering up the
+device but this is a callback run after power has been removed from the
+device so nothing in your changelog motivates leaving reset deasserted.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>  		regcache_mark_dirty(aic3x->regmap);
+>  	}
+> =20
+> @@ -1813,6 +1816,10 @@ int aic3x_probe(struct device *dev, struct regmap =
+*regmap, kernel_ulong_t driver
+> =20
+>  	gpiod_set_consumer_name(aic3x->gpio_reset, "tlv320aic3x reset");
+> =20
+> +	/* CODEC datasheet says minimum of 10ns */
+> +	ndelay(15);
+> +	gpiod_set_value(aic3x->gpio_reset, 0);
+> +
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+This seems more relevant to your changelog, but I don't understand why
+aic3x_set_power() is not also (instead?) updated?
 
-Thanks,
-Mark
+--ss51HuvtAhdbVrv8
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmb7GJMACgkQJNaLcl1U
+h9BieAf/Vp5HfjKUfjOE+hQQ22cmOPcRL2UDliOw+WcX/kxj1TfBpi34eMlq9njN
+D/tYemfgRJ6+oro0mi3vBb+tETc3XkQWqOXBEtogrOmQyjZLRW3SBYqcFUX2rwBA
+iG2U+132Mw6cGF6HA9obD+W9zIlB8vDg+FktjJ1FTkyo2Wjk7IFgkbNl1q+V5gk5
+5t2PIRfDuxCG9GwN8QZzDXZUlsN9Q8kF647JXP3CezOxr8UwUfjZENRD/UaENwol
+rUW+5drNKUk+brOMPKGSD2IRY6nE9rnWpGRkoNQuFbwZgyALOZ5NHpJdBsHrV8hc
+aUvt4u7yfr6Q1+pM2GT8sO9lSABsWQ==
+=+A+z
+-----END PGP SIGNATURE-----
+
+--ss51HuvtAhdbVrv8--
