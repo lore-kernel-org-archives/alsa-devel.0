@@ -4,78 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F163ACF6497
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2024 11:22:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AD01CF6499
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2024 11:23:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1BCF192C;
-	Mon, 30 Sep 2024 13:22:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1BCF192C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAE3F20C6;
+	Mon, 30 Sep 2024 13:23:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAE3F20C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727695361;
-	bh=zY5fLQx5eAob2m8RVjDYU4PsTYf3zrfWO5TzD8j7olM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=rl8YTLtlWC74ZYUjHg6ULrBT/m1NGvCg6KPvMaJ1H0o+3v0SE9xVG7SKTGaMzcz6x
-	 97PY2nVUw/IdqX8s6hXY/trK+2N5cN9kJsfKk4pClV5j6X0h9d2mTLTmXbPABoclOF
-	 DL5DGUAADZAQv86LeiCQZRxV7aqoOuNPa1V9HL/Q=
+	s=default; t=1727695431;
+	bh=3eL3qfnDaGzIruezHRCLn+D/JB4x3aDmARBWVpK0BBU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=bKtVLBw2RmUcziU0EiKp6lC8bj4n6Zn7u28u93daLxrzklFTC1Hdbh4JpVFZ/+Aej
+	 eT9Lg83Th1RxL/q1HzyoLtF/SVlWqfgC8pYsH0J1+D0IVB/VcWOD1Tchy97mZ6G8/I
+	 ljizBevwmiJ1U5phtZo/WIAfvJhKtDeS8XTGf95c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 77453F805FC; Mon, 30 Sep 2024 13:21:45 +0200 (CEST)
+	id 83D24F805AE; Mon, 30 Sep 2024 13:23:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2D35F805E9;
-	Mon, 30 Sep 2024 13:21:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC316F805AC;
+	Mon, 30 Sep 2024 13:23:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8318BF805A1; Mon, 30 Sep 2024 13:21:34 +0200 (CEST)
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 977DCF800FA
-	for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2024 13:21:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 977DCF800FA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=inria.fr header.i=@inria.fr header.a=rsa-sha256
- header.s=dc header.b=h/tOh7AW
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1Kr5dOKa8hZztibt/ZHFgdGNFDX6J60qxqGmrL527Zk=;
-  b=h/tOh7AWoEhfvDreNIbqZe2D24GWlprTaC7/tBKl3GHFD5uorJ1ghT3o
-   I4gvxyIFeb3Yka9YAeLAXqw6VAxILrf6iCAaSRAdoKP2rU7VJNigOb4mF
-   URE8UR4/IyJDo4uTYNplKRwLCjjeRCFMyo8fXhDNfjkD+lcJv8ScgmqNg
-   M=;
-Authentication-Results: mail2-relais-roc.national.inria.fr;
- dkim=none (message not signed) header.i=none;
- spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr;
- dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.11,165,1725314400";
-   d="scan'208";a="185956883"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail2-relais-roc.national.inria.fr with
- ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2024 13:21:26 +0200
-From: Julia Lawall <Julia.Lawall@inria.fr>
-To: Vinod Koul <vkoul@kernel.org>
-Cc: kernel-janitors@vger.kernel.org,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>,
-	Sanyog Kale <sanyog.r.kale@intel.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 12/35] soundwire: stream: Reorganize kerneldoc parameter names
-Date: Mon, 30 Sep 2024 13:20:58 +0200
-Message-Id: <20240930112121.95324-13-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240930112121.95324-1-Julia.Lawall@inria.fr>
-References: <20240930112121.95324-1-Julia.Lawall@inria.fr>
+	id 581DBF80517; Mon, 30 Sep 2024 13:23:14 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D20AF800FA
+	for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2024 13:23:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D20AF800FA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RJ7ZNH2GHRBIWP2I622KBXFI4HOGO5SQ
-X-Message-ID-Hash: RJ7ZNH2GHRBIWP2I622KBXFI4HOGO5SQ
-X-MailFrom: Julia.Lawall@inria.fr
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1727695392199932337-webhooks-bot@alsa-project.org>
+References: <1727695392199932337-webhooks-bot@alsa-project.org>
+Subject: ucm2: USB-Audio: add Steinberg UR22C (USB0499:172f)
+Message-Id: <20240930112314.581DBF80517@alsa1.perex.cz>
+Date: Mon, 30 Sep 2024 13:23:14 +0200 (CEST)
+Message-ID-Hash: A5SZTU6MDQBUYNSJGFFXKHUBAWJXPPE3
+X-Message-ID-Hash: A5SZTU6MDQBUYNSJGFFXKHUBAWJXPPE3
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RJ7ZNH2GHRBIWP2I622KBXFI4HOGO5SQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A5SZTU6MDQBUYNSJGFFXKHUBAWJXPPE3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,30 +66,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Reorganize kerneldoc parameter names to match the parameter
-order in the function header.
+alsa-project/alsa-ucm-conf pull request #446 was opened from CoelacanthusHex:
 
-Problems identified using Coccinelle.
+Similar to UR24C and UR44C, but with 2 inputs 2 outputs.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
 
----
- drivers/soundwire/stream.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 7aa4900dcf31..0e1875c31a3d 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1977,9 +1977,9 @@ EXPORT_SYMBOL(sdw_stream_remove_master);
-  *
-  * @slave: SDW Slave instance
-  * @stream_config: Stream configuration for audio stream
-- * @stream: SoundWire stream
-  * @port_config: Port configuration for audio stream
-  * @num_ports: Number of ports
-+ * @stream: SoundWire stream
-  *
-  * It is expected that Slave is added before adding Master
-  * to the Stream.
-
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/446
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/446.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
