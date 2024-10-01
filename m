@@ -4,91 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20BF5CE7D0D
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2024 10:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA970CE7D0D
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2024 11:14:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38A8B93A;
-	Tue,  1 Oct 2024 12:52:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38A8B93A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 547B4B6A;
+	Tue,  1 Oct 2024 13:14:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 547B4B6A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1727779967;
-	bh=l15OJaO7d8uLTv/eIYExf6EaBWBetMphAWDSVSJGy8Y=;
-	h=Subject:From:To:CC:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=fzgC+kMQDUlR+QVYwrzf7bb8mntJp0TLo9YJOUwS4Msl2DLkhm+AF9Vxzz535R/8O
-	 cmi0IsxZ30PuBuz3cNht56xmR2JRNpIaeOYaoQu3Btt39ujoOpL8wwPOkyYlPjvtKF
-	 ywl2r2O8U+tPDeYG9CgpRhBWJpLZMcNHNWZcjniQ=
+	s=default; t=1727781270;
+	bh=uzylzzEuT8st5r1GDFGho8NGlqZCts0HU6U/XLuQMR8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=oDamkqX4dNNoeHYjE58kOcCTzzb1k6c7dt8OK02IIIkd9RwvLIc/nxXAEKxSIysgV
+	 CQ0HiILGPlhKZg8p9/1VxPpQ9QE+3t8I/YU3ckps+rfWrNt9r+ZxCaUZJFY/2RPDgQ
+	 lx0Pd3f1+wEDYQh/zEYM50VMk/BX0xSO3sojICp8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF40CF8058C; Tue,  1 Oct 2024 12:52:15 +0200 (CEST)
+	id B8150F805B0; Tue,  1 Oct 2024 13:13:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C233EF805B5;
-	Tue,  1 Oct 2024 12:52:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 905FBF805AC;
+	Tue,  1 Oct 2024 13:13:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3CDA9F80517; Tue,  1 Oct 2024 12:52:07 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 24B47F80517; Tue,  1 Oct 2024 13:13:49 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDC39F80107
-	for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2024 12:52:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDC39F80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id D8F15F80107
+	for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2024 13:13:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8F15F80107
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Jh3bI9wI
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 4914LGQH016993;
-	Tue, 1 Oct 2024 05:52:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=l15OJaO7d8uLTv/eIYExf6EaBWBetMphAWDSVSJGy8Y=; b=
-	Jh3bI9wIx01UA64qYHVuQRJQ5y/IKjCTzsUquV1L9pdisEwEq6QCf4BuPs29tS0h
-	0kektofLSYPFE4yv5zdL7aNs+KejTNd69tncoyp6l5fpMovnnCD/AXRi3onOHDtt
-	LJdvYCb2DtPWiWF2K+KebNH54q3cjtG3EUJ67p/IB8yET5j7umzVEkRtlAXkEf5c
-	dWtyroXaqc4d+vlmx8nppqFcBELxPcpM20FoZvDgUtaC+z1UPl1XUQeXzgXZgMGY
-	086BznGyOo1KcqYHdEtqa/oUJvHmE/4ObK3uSVozPa3E2SgSBZYDvNuY2LhTj+EI
-	g/uL7V6qYz8b6kBJ1+aqyw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 41xf6xbktp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 01 Oct 2024 05:52:00 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 1 Oct 2024
- 11:51:58 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Tue, 1 Oct 2024 11:51:58 +0100
-Received: from ediswws03.ad.cirrus.com (ediswws03.ad.cirrus.com
- [198.90.208.11])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 8F46D820244;
-	Tue,  1 Oct 2024 10:51:58 +0000 (UTC)
-Message-ID: 
- <8e8afecd15264e14d72bfa569b8ae4e83552bc32.camel@opensource.cirrus.com>
-Subject: Re: [PATCH alsa-ucm-conf 1/2] sof-soundwire: Change mapped control
- names to make them unique
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>
-CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>
-Date: Tue, 1 Oct 2024 10:51:58 +0000
-In-Reply-To: <b113be76-2c10-4739-a34f-4487ce129da7@perex.cz>
-References: <20240930134118.2640509-1-mstrozek@opensource.cirrus.com>
-	 <b113be76-2c10-4739-a34f-4487ce129da7@perex.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=jiCbGyoL
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 860AF5C4769;
+	Tue,  1 Oct 2024 11:13:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 522D7C4CED2;
+	Tue,  1 Oct 2024 11:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727781222;
+	bh=uzylzzEuT8st5r1GDFGho8NGlqZCts0HU6U/XLuQMR8=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=jiCbGyoLA/AwlO5tcvz+hWeVL91xgjw+Jv5wABi6oRclBCAnwfxAm3gxrshOY2SJC
+	 zK67yNlOoa3lu8gxuxL3d1QODvZjRAMTtz47vNNfXjY5T6ci9gRoDqoTcxK7WSeWDM
+	 q831zSyCnXrw983Juyz9MLqlIO4xpNR9dGAeaOdnmaOE1VFSEjY/UHUkosDLqnFuC2
+	 T+CSEuNZaIhzv3R6btsjP/rKge9TdCj2WH32Y9z98PKBZymkYeTKDfYQec0vQByJHF
+	 HbxLYcz+bsciC2fUZjdjACem+C+23D3t/N/TigYeEl93gc33/fKvj/5VNXddMY6kI7
+	 uNleuFTBa+fGg==
+From: Mark Brown <broonie@kernel.org>
+To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1727676508-22830-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1727676508-22830-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Enable 'FIFO continue on error' FCONT
+ bit
+Message-Id: <172778121960.2280749.6663720660194136965.b4-ty@kernel.org>
+Date: Tue, 01 Oct 2024 12:13:39 +0100
 MIME-Version: 1.0
-X-Proofpoint-ORIG-GUID: QksoES7UFdwZjngM0vJEq-VX0Qk0sYgf
-X-Proofpoint-GUID: QksoES7UFdwZjngM0vJEq-VX0Qk0sYgf
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: N5TRLFVQVFLZLUFPEUCKPCWNKCDBADBK
-X-Message-ID-Hash: N5TRLFVQVFLZLUFPEUCKPCWNKCDBADBK
-X-MailFrom: prvs=70044ac006=mstrozek@opensource.cirrus.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-99b12
+Message-ID-Hash: 6W72WODP6UIHWCLE6MX2IG2HTEJOU4RW
+X-Message-ID-Hash: 6W72WODP6UIHWCLE6MX2IG2HTEJOU4RW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N5TRLFVQVFLZLUFPEUCKPCWNKCDBADBK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6W72WODP6UIHWCLE6MX2IG2HTEJOU4RW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,25 +94,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-W=C2=A0dniu wto, 01.10.2024 o=C2=A0godzinie 12=E2=88=B638=E2=80=89+0200, u=
-=C5=BCytkownik Jaroslav
-Kysela napisa=C5=82:
->=20
-> > =C2=A0 LibraryConfig.remap.Config {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ctl.default.map {
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0"name=3D'Speaker Digital Switch'" {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0"name=3D'Speaker Combined Switch'" {
->=20
-> Combined? This string is for users not for developers. Please, find a
-> better=20
-> name describing the purpose of the control from the the user view.
-> The old=20
-> name is fine IMHO.
->=20
-Unfortunately it can't be "Speaker Digital", what do you think of
-"Speaker Stereo", or maybe "Speaker Control"? "Speaker Master"?
---=20
-Regards,
-Maciej
+On Mon, 30 Sep 2024 14:08:28 +0800, Shengjiu Wang wrote:
+> FCONT=1 means On FIFO error, the SAI will continue from the
+> same word that caused the FIFO error to set after the FIFO
+> warning flag has been cleared.
+> 
+> Set FCONT bit in control register to avoid the channel swap
+> issue after SAI xrun.
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: fsl_sai: Enable 'FIFO continue on error' FCONT bit
+      commit: 72455e33173c1a00c0ce93d2b0198eb45d5f4195
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
