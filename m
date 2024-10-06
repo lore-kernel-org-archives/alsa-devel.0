@@ -4,83 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC394CFB424
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Oct 2024 10:09:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 408B4CFB43F
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Oct 2024 11:13:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95310850;
-	Sun,  6 Oct 2024 12:08:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95310850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20A13852;
+	Sun,  6 Oct 2024 13:13:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A13852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728209347;
-	bh=SRdoJ/oFK8ch6KkyAW3YApgRnZkaX3MlPZjHqx/wc9U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1728213208;
+	bh=2M+3ugLDADABIISUhE1rjXIToJMZ9lQU9ApRZODMpQs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=a4vleNh2LGNuyHYTiAbiWFgMuCO572Yofsh+VKqnZPEQ3orsPahTVQcNcML3I8OkA
-	 inzASvXZbDxDFSUOw40J8e6M0EJ4bk8yJwkCOj6ho1MfyoZO9iENrlo1IhaDt0tWcs
-	 fuIdk0lI01G4nRkiUeztko6fmIAohiahxlhVzHPI=
+	b=F42ywjxNdW5l83igiaKWg97M6Zk9Zn/dJlMTJnHoMEH4ptGnQNAzgcvmuJ0UTFJU1
+	 ADjtUdvynmc0E736fwFr69+BPxx6zG3v+4/chc926MRc9QmZ8YGh8BAmRWOEU0Gobo
+	 O6T/kvk5UBLxd1ie8DqzDcpe1qc5etGilFmsQpHw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3ABD3F805A9; Sun,  6 Oct 2024 12:08:35 +0200 (CEST)
+	id 3A6A6F805BA; Sun,  6 Oct 2024 13:12:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBC30F80528;
-	Sun,  6 Oct 2024 12:08:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD416F80568;
+	Sun,  6 Oct 2024 13:12:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1834F80528; Sun,  6 Oct 2024 12:08:25 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 2539EF80528; Sun,  6 Oct 2024 13:12:46 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5C797F80496
-	for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2024 12:08:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C797F80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1E5C3F80496
+	for <alsa-devel@alsa-project.org>; Sun,  6 Oct 2024 13:12:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E5C3F80496
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=H7SDFpix
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A8F675C06B7;
-	Sun,  6 Oct 2024 10:08:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD40AC4CEC5;
-	Sun,  6 Oct 2024 10:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1728209300;
-	bh=SRdoJ/oFK8ch6KkyAW3YApgRnZkaX3MlPZjHqx/wc9U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H7SDFpixabJQXU5lZJLkiEFqpQS9BlhXRpx0oDUoocdqZytKIzB0HGu19gve3R0qt
-	 R7rD6b9WQCwTgG146lqLOaNbGvnBX0V2um69KNlPQt4BR7eCeXStX/dr3wwFpdA1ob
-	 ndR4YlsSteOd34NZwSW5zHuGMn5i6srQzCFDWbCE=
-Date: Sun, 6 Oct 2024 12:08:16 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Zichen Xie <zichenxie0106@gmail.com>, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rohit kumar <quic_rohkumar@quicinc.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Chenyuan Yang <chenyuan0y@gmail.com>,
-	Zijie Zhao <zzjas98@gmail.com>
-Subject: Re: [PATCH] ASoC: qcom: Fix NULL Dereference in
+	dkim=pass (2048-bit key,
+ unprotected) header.d=web.de header.i=markus.elfring@web.de
+ header.a=rsa-sha256 header.s=s29768273 header.b=S50nD9Rp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1728213154; x=1728817954; i=markus.elfring@web.de;
+	bh=Tb+T09tvkffYYzsIjM2Eq9r0VO5GwmF24AJDTdB3JCQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=S50nD9Rpr63Z+S/pAis+bydyXCrJxgPX9WKKQ7w5UFIR8V7bzYjXpVGgAiZJldni
+	 LBtOJgLd7jGwcNKLazvpI3Ox23XnbPFbmY9ynSFXIILxaJQM+QdJarP/DRLx5IwWM
+	 VUavB/EJTFBPK9fRbaEkLvdI6AsaNfzlbPVgAr9avMRQg7EiAu7XATNwR49P0GYBi
+	 Sg53L2EaCfcyEN4/Ro2T2OR7p66BHbwS5jNLZYshL/pEADpVaUcjsg16DMIGpc50j
+	 dPdWGlut0zZBDQT/cimxR+7mCmdPtTXkbPbgtGDkkjgxoqfG7zcK5kieYfujHfWcC
+	 15Pkl57VEEhfYrnMqg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1N14tM-1tyhD60k94-01029J; Sun, 06
+ Oct 2024 13:12:34 +0200
+Message-ID: <8e4fe108-cfde-40c0-83f5-c1ce60b0940f@web.de>
+Date: Sun, 6 Oct 2024 13:12:26 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: ASoC: qcom: Fix NULL Dereference in
  asoc_qcom_lpass_cpu_platform_probe()
-Message-ID: <2024100608-chomp-undiluted-c3e2@gregkh>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Zichen Xie <zichenxie0106@gmail.com>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rohit kumar <quic_rohkumar@quicinc.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, Chenyuan Yang <chenyuan0y@gmail.com>,
+ Zijie Zhao <zzjas98@gmail.com>
 References: <20241003152739.9650-1-zichenxie0106@gmail.com>
  <ee94b16a-baa7-471c-997e-f1bf17b074b8@web.de>
  <2024100620-decency-discuss-df6e@gregkh>
  <6d17006d-ee97-4c7c-a355-245f32fe1fc3@web.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6d17006d-ee97-4c7c-a355-245f32fe1fc3@web.de>
-Message-ID-Hash: ESTHV2TZMPW2EJFIDXOE5OVGGQDOL3B7
-X-Message-ID-Hash: ESTHV2TZMPW2EJFIDXOE5OVGGQDOL3B7
-X-MailFrom: gregkh@linuxfoundation.org
+ <2024100608-chomp-undiluted-c3e2@gregkh>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <2024100608-chomp-undiluted-c3e2@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yRTbD6sd3+21UNILTwyen9xGDcqeDXPJVM2pwF9pSM2QeHcmLjP
+ 1yVdgSeocfPe/3sQBJC6vnkeAelYEq3Tw4q3vbHmFDEC1XMAUn3QPw6kssQVq8RQhuMMNux
+ zpTVqPDM2AS1Z06J0FrFoQAMvEBlICCMrhaNJq3je+qlH/B4U8zG85LUUfaxmaB1bJlMMC2
+ 26xXZJD3MigttCtcRL9RA==
+UI-OutboundReport: notjunk:1;M01:P0:RSBHA8Qa5SQ=;/s/d7cD8oOtzcIkiGSlmatb5uuU
+ cKJixBxA/JdU6u04XbR9kF24yaTTgv62j2NuR+lGXYAtDYP3QL1jvY+N3TJZGuFpXKE3U2Gxn
+ ESDcbRqyxeO9ZfDEigmrhiz1KhLM3+5BzjuK73nytqYZnyN+4A/1BAmJylgq8GqRDJaCSjlRq
+ Uf52NPZSzEFVCLqYvOYPsfIxoQhlV70O6EXtcQSXoABBj0TTR/gHze1XudE5mMaDDqDhrffls
+ EcDn9Lp04gBN+kEq+0Ema75iBhXiRRfDf7jFAbIUjxo9+EbA4iYTQjOp2uvDDRsIyUF/dx0ii
+ sJsaP99NxOthe715M6I0Hp5OZdPLrXcb+WT71Vv0WXyHOJSFvmbJe+9/5YE7HHobavlc1NU0r
+ Q3tFi54IWrKp2fwmMZ+uhsQPJH5oJsT97GrwZ1HutnMcwIdprCyWG+xkA/KRzvYPzO1sSdL0U
+ Y//Ihhfi2w531qQNSby9ZAauyCEnNXC3ynAG4Ar6VQwoWC5poasYwu+96PsNu6Wwd90mhZKn5
+ ICA8kZ0gT2J+/mpkP2Ei9if1L55VWq+IRaFBeXCBG1Fm8Ssx8qtHQQQYNFuCHvFyQpOXQaN86
+ L4pf69gh3F12sEZov8rzQN1vfw1nQpGW4KdYRLgtBPGcgnf5+rwLfKTj8H3CX5eBfFdtVrNhC
+ LTYBeqt2ZaXEUaDZiT5FRBmzzI+vSYRIjVBD74Lo0KDqRNJZAXHV/hyeNPyZWTXcL3gdViPX+
+ 5wB2XiUua3FCv67f7BZTi/uZWLbU760sSJExHWnfIr3MkA/TXLEKKym94g37Up6/vmDyVEdu/
+ IPRseMHC2ZngLkfHfgxnEgkw==
+Message-ID-Hash: WHO5G6TVNISQSF32GQLYJ3YRHEKVJJUU
+X-Message-ID-Hash: WHO5G6TVNISQSF32GQLYJ3YRHEKVJJUU
+X-MailFrom: Markus.Elfring@web.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ESTHV2TZMPW2EJFIDXOE5OVGGQDOL3B7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WHO5G6TVNISQSF32GQLYJ3YRHEKVJJUU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,47 +123,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, Oct 06, 2024 at 10:56:51AM +0200, Markus Elfring wrote:
-> >>> A devm_kzalloc() in asoc_qcom_lpass_cpu_platform_probe() could
-> >>
-> >>                    call?
-> >>
-> >>
-> >>> possibly return NULL pointer. NULL Pointer Dereference may be
-> >>> triggerred without addtional check.
-> >> …
-> >>
-> >> * How do you think about to use the term “null pointer dereference”
-> >>   for the final commit message (including the summary phrase)?
-> >>
-> >> * Would you like to avoid any typos here?
-> >>
-> >>
-> >> …
-> >>> ---
-> >>>  sound/soc/qcom/lpass-cpu.c | 2 ++
-> >>
-> >> Did you overlook to add a version description behind the marker line?
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.12-rc1#n723
-> …
-> > This is the semi-friendly patch-bot of Greg Kroah-Hartman.
-> >
-> > Markus, you seem to have sent a nonsensical or otherwise pointless
-> > review comment to a patch submission on a Linux kernel developer mailing
-> > list.  I strongly suggest that you not do this anymore.  Please do not
-> > bother developers who are actively working to produce patches and
-> > features with comments that, in the end, are a waste of time.
-> >
-> > Patch submitter, please ignore Markus's suggestion; you do not need to
-> > follow it at all.  The person/bot/AI that sent it is being ignored by
-> > almost all Linux kernel maintainers for having a persistent pattern of
-> > behavior of producing distracting and pointless commentary, and
-> > inability to adapt to feedback.  Please feel free to also ignore emails
-> > from them.
-> * Do you care for any spell checking?
+>>>>> A devm_kzalloc() in asoc_qcom_lpass_cpu_platform_probe() could
+>>>>
+>>>>                    call?
+>>>>
+>>>>
+>>>>> possibly return NULL pointer. NULL Pointer Dereference may be
+>>>>> triggerred without addtional check.
+>>>> =E2=80=A6
+>>>>
+>>>> * How do you think about to use the term =E2=80=9Cnull pointer derefe=
+rence=E2=80=9D
+>>>>   for the final commit message (including the summary phrase)?
+>>>>
+>>>> * Would you like to avoid any typos here?
+>>>>
+>>>>
+>>>> =E2=80=A6
+>>>>> ---
+>>>>>  sound/soc/qcom/lpass-cpu.c | 2 ++
+>>>>
+>>>> Did you overlook to add a version description behind the marker line?
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/Documentation/process/submitting-patches.rst?h=3Dv6.12-rc1#n723
+>> =E2=80=A6
+>>> This is the semi-friendly patch-bot of Greg Kroah-Hartman.
+=E2=80=A6
+>> * Do you care for any spell checking?
+>
+> No.
 
-No.
+I find such a feedback surprising.
+Does it indicate any recurring communication difficulties?
 
-> * Do you find any related advice (from other automated responses) helpful?
 
-No.
+>> * Do you find any related advice (from other automated responses) helpf=
+ul?
+>
+> No.
+
+I wonder how this answer fits to reminders for the Linux patch review proc=
+ess
+(which were also automatically sent) according to your inbox filter rules.
+
+Regards,
+Markus
