@@ -4,172 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A309ACFD30B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 09:19:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F832CFD2FD
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 09:20:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4191851;
-	Fri, 11 Oct 2024 11:19:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4191851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BC07DF8;
+	Fri, 11 Oct 2024 11:19:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BC07DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728638355;
-	bh=4NTSIwXIbmOxmLhPnN+AhvGzzmlq9GG3PcJTduzs9M8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1728638400;
+	bh=fbA6yVZzuhHWvM2Ov7wvMLJR3FQvIpHqXvwZDC5zg30=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=s2mdDd4+JcVn/X7sZQp5vv1HUD0uNeurtHtBoIyBRtORSFZysQd27y12wvdtW7CGa
-	 wzV8mf7t/a/Bwbx0lnS2hmgXSxv125FoHRYpzWkr9/heXJVdX8EHmad4tRWdlhmUQ2
-	 LErzVfw6vHFwgotJxFZ5A1vP/XYa/PYfkmXdfkZs=
+	b=gBuYq4j6Nb5sER9w/u9Jgvw+9bLiHwkuhZ8v+tFmxAkmMTQOhiJKXmQ1JigunErLj
+	 P1z1+v6KTVrrN56DE8B1LDXPSl1KC3bLnZg+HJm6+RJp4NLHJYI782vflJ2mQhSKXy
+	 4qwkxYZlBUona1TrIHc8LWMW1EauyujfiVBjQ/oE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1338DF80579; Fri, 11 Oct 2024 11:18:53 +0200 (CEST)
+	id 0D8C0F805AF; Fri, 11 Oct 2024 11:19:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7981F80568;
-	Fri, 11 Oct 2024 11:18:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE827F805A9;
+	Fri, 11 Oct 2024 11:19:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80DAFF80528; Fri, 11 Oct 2024 11:18:46 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 714F2F80496
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 11:18:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 714F2F80496
+	id 2052CF80528; Tue,  8 Oct 2024 20:42:43 +0200 (CEST)
+Received: from bout3.ijzerbout.nl (bout3.ijzerbout.nl [136.144.140.114])
+	by alsa1.perex.cz (Postfix) with ESMTP id 38944F800ED
+	for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2024 20:42:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38944F800ED
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=sJIjbXAk;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=VCLJYrxe;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=sJIjbXAk;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=VCLJYrxe
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8B3D31FC26;
-	Fri, 11 Oct 2024 09:18:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1728638323;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWHTgPaGCE5lwyYr2ve/c/4MokteWT6gdE430QbnNeQ=;
-	b=sJIjbXAkB67Ko9NMFiPrXh4+0A3fz5d2WsIcGVOU83SVnGOz5sHf9NOgOzhomMw4uMva8H
-	dAb6l8AmANZqtxyQeTFnnISeOoOP/mwQyeCRFNzPKMpld+Cc5vAeKhP8/BdEj65kN19l0M
-	IQwRc4IEB3kX6b4N0ok2hKxpCi2ZlYQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1728638323;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWHTgPaGCE5lwyYr2ve/c/4MokteWT6gdE430QbnNeQ=;
-	b=VCLJYrxeacbzU2aXP68vacg/mO5mTCFrVzxP/R5R0awDQ7yUQrsYCRFGGTgg2lnRMIEQYW
-	D6sI3Epfwtx1h+Ag==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1728638323;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWHTgPaGCE5lwyYr2ve/c/4MokteWT6gdE430QbnNeQ=;
-	b=sJIjbXAkB67Ko9NMFiPrXh4+0A3fz5d2WsIcGVOU83SVnGOz5sHf9NOgOzhomMw4uMva8H
-	dAb6l8AmANZqtxyQeTFnnISeOoOP/mwQyeCRFNzPKMpld+Cc5vAeKhP8/BdEj65kN19l0M
-	IQwRc4IEB3kX6b4N0ok2hKxpCi2ZlYQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1728638323;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kWHTgPaGCE5lwyYr2ve/c/4MokteWT6gdE430QbnNeQ=;
-	b=VCLJYrxeacbzU2aXP68vacg/mO5mTCFrVzxP/R5R0awDQ7yUQrsYCRFGGTgg2lnRMIEQYW
-	D6sI3Epfwtx1h+Ag==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FC3A1370C;
-	Fri, 11 Oct 2024 09:18:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id m7ycBnPtCGeQKwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 11 Oct 2024 09:18:43 +0000
-Date: Fri, 11 Oct 2024 11:19:40 +0200
-Message-ID: <87iktzm1xv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: <robh+dt@kernel.org>,
-	<andriy.shevchenko@linux.intel.com>,
-	<lgirdwood@gmail.com>,
-	<perex@perex.cz>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<kevin-lu@ti.com>,
-	<shenghao-ding@ti.com>,
-	<navada@ti.com>,
-	<13916275206@139.com>,
-	<v-hampiholi@ti.com>,
-	<v-po@ti.com>,
-	<niranjan.hy@ti.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<liam.r.girdwood@intel.com>,
-	<yung-chuan.liao@linux.intel.com>,
-	<broonie@kernel.org>,
-	<soyer@irl.hu>
-Subject: Re: [PATCH v1] ALSA: hda/tas2781: Add speaker id check for ASUS
- projects
-In-Reply-To: <87plo7m2ff.wl-tiwai@suse.de>
-References: <20241011085303.738-1-baojun.xu@ti.com>
-	<87plo7m2ff.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[dt];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,gmail.com,perex.cz,ti.com,139.com,alsa-project.org,vger.kernel.org,intel.com,irl.hu];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: C3BDLTFIZJZANC5KFWXOEMINRYE4Y6MU
-X-Message-ID-Hash: C3BDLTFIZJZANC5KFWXOEMINRYE4Y6MU
-X-MailFrom: tiwai@suse.de
+	dkim=pass (4096-bit key,
+ unprotected) header.d=ijzerbout.nl header.i=@ijzerbout.nl header.a=rsa-sha256
+ header.s=key header.b=RvbkmYnP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ijzerbout.nl; s=key;
+	t=1728412960; bh=fbA6yVZzuhHWvM2Ov7wvMLJR3FQvIpHqXvwZDC5zg30=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RvbkmYnPEo5qwaLIvRjfCZuBLSxS88guS0+d1hL1VdYNxdF+C3aA6y0Jr4w13L/CI
+	 1BHVAwGxR7KF/mffvgGvHy0BcPyu8Q+7KSdH5CVi1qWJOtIdKEYegy5cj5ygpnr3ai
+	 4XVyIic7HUYYPn3mTAr9gr2iIswZUewGVB/9YKKqJH9t38v7mS3oqXgko8GYGqazT1
+	 bvYldF3XBXxFKpKpzUcM/++VIzUDjsmP47aPV9l3Qq/gTZxjc+OndFSF+wLMT6iGlY
+	 MzLVK/2KQvHXqW3nMbaZRB+bmR9oCJsiHVVl5pZkaA0hLM5lQGRYcZDV8ikqVXfKsV
+	 SuX9+konASBJm6/gsuuV32UVnkkbI0lvxk6SPB98NwyA6TKH3IhmqwmacJNX70ObZw
+	 rpN4GBdaOAPfshgSAmjmmG38guwPhTSoy6cT/ltbmgQYhT3Dg5Qz0JGAeb1xbC22gx
+	 +yiE7TcR82LqOwx/jvkdVWK4bnlKAwy4DBwTIcOkgtqRpCqrpUsb8AJI3AfZad2/o4
+	 Atb089EBF2mkuCzdn0G5xKZ3yqPxf8HnH5qgMED5yRjcvuKNT6pL742W27Jx4zMxfC
+	 fE4i1jgp+L1JR+CTsq3SW87QPN80Q2NjUpyaAPqTdPH/P+T+bWbCztEHJsOtIKE/g2
+	 ZI6z4NxkhRngZs5GL3Bu/zPk=
+Received: from [IPV6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a] (racer.ijzerbout.nl
+ [IPv6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a])
+	by bout3.ijzerbout.nl (Postfix) with ESMTPSA id F07CD18D842;
+	Tue,  8 Oct 2024 20:42:39 +0200 (CEST)
+Message-ID: <4da61143-5a52-4ff1-b62d-84f3290f78e3@ijzerbout.nl>
+Date: Tue, 8 Oct 2024 20:42:37 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] ASoC: rt721-sdca: Add RT721 SDCA driver
+To: Jack Yu <jack.yu@realtek.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "lars@metafoo.de" <lars@metafoo.de>, "Flove(HsinFu)" <flove@realtek.com>,
+ Oder Chiou <oder_chiou@realtek.com>, =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?=
+ <shumingf@realtek.com>, =?UTF-8?B?RGVyZWsgW+aWueW+t+e+qV0=?=
+ <derek.fang@realtek.com>
+References: <d18b35f8b6934fc6a2be6c4458a63fe5@realtek.com>
+Content-Language: en-US
+From: Kees Bakker <kees@ijzerbout.nl>
+In-Reply-To: <d18b35f8b6934fc6a2be6c4458a63fe5@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: kees@ijzerbout.nl
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 2AYR3KYFKILCYILFO2Y5MWGILC5JYRI5
+X-Message-ID-Hash: 2AYR3KYFKILCYILFO2Y5MWGILC5JYRI5
+X-Mailman-Approved-At: Fri, 11 Oct 2024 09:19:24 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C3BDLTFIZJZANC5KFWXOEMINRYE4Y6MU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2AYR3KYFKILCYILFO2Y5MWGILC5JYRI5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,131 +95,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 11 Oct 2024 11:09:08 +0200,
-Takashi Iwai wrote:
-> 
-> On Fri, 11 Oct 2024 10:53:03 +0200,
-> Baojun Xu wrote:
-> > 
-> > Add speaker id check by gpio in ACPI for ASUS projects.
-> 
-> Please give more background info.  e.g. why is the speaker id check
-> needed, what does this patch actually fix, and why it's specific to
-> ASUS?
-
-Also, for the future submissions, please send to
-linux-sound@vger.kernel.org instead of alsa-devel ML.
-
-
-thanks,
-
-Takashi
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > Signed-off-by: Baojun Xu <baojun.xu@ti.com>
-> > ---
-> >  include/sound/tas2781.h         |  3 +++
-> >  sound/pci/hda/tas2781_hda_i2c.c | 39 ++++++++++++++++++++++++++++++---
-> >  2 files changed, 39 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
-> > index 8cd6da0480b7..f8a3dc13cbbc 100644
-> > --- a/include/sound/tas2781.h
-> > +++ b/include/sound/tas2781.h
-> > @@ -107,6 +107,8 @@
-> >  #define TASDEVICE_CMD_DELAY		0x3
-> >  #define TASDEVICE_CMD_FIELD_W		0x4
-> >  
-> > +#define TAS2781_ASUS_ID			0x10430000
-> > +
-> >  enum audio_device {
-> >  	TAS2563,
-> >  	TAS2781,
-> > @@ -156,6 +158,7 @@ struct tasdevice_priv {
-> >  	struct tasdevice_rca rcabin;
-> >  	struct calidata cali_data;
-> >  	struct tasdevice_fw *fmw;
-> > +	struct gpio_desc *speaker_id;
-> >  	struct gpio_desc *reset;
-> >  	struct mutex codec_lock;
-> >  	struct regmap *regmap;
-> > diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-> > index 370d847517f9..1f71927825b2 100644
-> > --- a/sound/pci/hda/tas2781_hda_i2c.c
-> > +++ b/sound/pci/hda/tas2781_hda_i2c.c
-> > @@ -615,7 +615,7 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
-> >  	struct tasdevice_priv *tas_priv = context;
-> >  	struct tas2781_hda *tas_hda = dev_get_drvdata(tas_priv->dev);
-> >  	struct hda_codec *codec = tas_priv->codec;
-> > -	int i, ret;
-> > +	int i, ret, spk_id;
-> >  
-> >  	pm_runtime_get_sync(tas_priv->dev);
-> >  	mutex_lock(&tas_priv->codec_lock);
-> > @@ -648,8 +648,23 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
-> >  	tasdevice_dsp_remove(tas_priv);
-> >  
-> >  	tas_priv->fw_state = TASDEVICE_DSP_FW_PENDING;
-> > -	scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X.bin",
-> > -		codec->core.subsystem_id & 0xffff);
-> > +	if ((codec->core.subsystem_id & 0xffff0000) == TAS2781_ASUS_ID) {
-> > +		// Speaker id need to be checked.
-> > +		if (tas_priv->speaker_id)
-> > +			spk_id = gpiod_get_value(tas_priv->speaker_id);
-> > +		else
-> > +			spk_id = 0;
-> > +		if (spk_id < 0 || spk_id > 1) {
-> > +			// Speaker id is not valid, use default.
-> > +			dev_dbg(tas_priv->dev, "Wrong spk_id = %d\n", spk_id);
-> > +			spk_id = 0;
-> > +		}
-> > +		scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X%01d.bin",
-> > +			codec->core.subsystem_id & 0xffff, spk_id);
-> > +	} else {
-> > +		scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X.bin",
-> > +			codec->core.subsystem_id & 0xffff);
-> > +	}
-> >  	ret = tasdevice_dsp_parser(tas_priv);
-> >  	if (ret) {
-> >  		dev_err(tas_priv->dev, "dspfw load %s error\n",
-> > @@ -787,6 +802,15 @@ static void tas2781_hda_remove(struct device *dev)
-> >  	tasdevice_remove(tas_hda->priv);
-> >  }
-> >  
-> > +static const struct acpi_gpio_params speakerid_gpios = { 0, 0, false };
-> > +static const struct acpi_gpio_params interrupt_gpios = { 1, 0, false };
-> > +
-> > +static const struct acpi_gpio_mapping tas2781_speaker_id_gpios[] = {
-> > +	{ "speakerid-gpios", &speakerid_gpios, 1 },
-> > +	{ "interrupt-gpios", &interrupt_gpios, 1 },
-> > +	{ }
-> > +};
-> > +
-> >  static int tas2781_hda_i2c_probe(struct i2c_client *clt)
-> >  {
-> >  	struct tas2781_hda *tas_hda;
-> > @@ -823,6 +847,15 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
-> >  	if (ret)
-> >  		return dev_err_probe(tas_hda->dev, ret,
-> >  			"Platform not supported\n");
-> > +	ret = devm_acpi_dev_add_driver_gpios(tas_hda->dev,
-> > +					     tas2781_speaker_id_gpios);
-> > +	if (ret)
-> > +		dev_info(tas_hda->dev, "Unable to add GPIO mapping table\n");
-> > +
-> > +	tas_hda->priv->speaker_id = devm_gpiod_get(tas_hda->dev, "speakerid",
-> > +						   GPIOD_IN);
-> > +	if (IS_ERR(tas_hda->priv->speaker_id))
-> > +		dev_info(tas_hda->dev, "Failed to get Speaker id gpio.\n");
-> >  
-> >  	ret = tasdevice_init(tas_hda->priv);
-> >  	if (ret)
-> > -- 
-> > 2.43.0
-> > 
+Op 01-10-2024 om 11:17 schreef Jack Yu:
+> This is the initial codec driver for rt721-sdca.
+> It's a three functions (jack,mic,amp) soundwire driver.
+>
+> Signed-off-by: Jack Yu <jack.yu@realtek.com>
+>
+> v2: Fix typo in mbq default registers.
+> v3: Include soundwire common functions for Realtek.
+> ---
+>   sound/soc/codecs/Kconfig          |    7 +
+>   sound/soc/codecs/Makefile         |    2 +
+>   sound/soc/codecs/rt721-sdca-sdw.c |  551 ++++++++++
+>   sound/soc/codecs/rt721-sdca-sdw.h |  150 +++
+>   sound/soc/codecs/rt721-sdca.c     | 1547 +++++++++++++++++++++++++++++
+>   sound/soc/codecs/rt721-sdca.h     |  268 +++++
+>   6 files changed, 2525 insertions(+)
+>   create mode 100644 sound/soc/codecs/rt721-sdca-sdw.c
+>   create mode 100644 sound/soc/codecs/rt721-sdca-sdw.h
+>   create mode 100644 sound/soc/codecs/rt721-sdca.c
+>   create mode 100644 sound/soc/codecs/rt721-sdca.h
+>
+> [...]
+> +static int rt721_sdca_dmic_set_gain_get(struct snd_kcontrol *kcontrol,
+> +		struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+> +	struct rt721_sdca_priv *rt721 = snd_soc_component_get_drvdata(component);
+> +	struct rt721_sdca_dmic_kctrl_priv *p =
+> +		(struct rt721_sdca_dmic_kctrl_priv *)kcontrol->private_value;
+> +	unsigned int boost_step = 0x0a00;
+> +	unsigned int vol_max = 0x1e00;
+> +	unsigned int regvalue, ctl, i;
+> +	unsigned int adc_vol_flag = 0;
+> +	const unsigned int interval_offset = 0xc0;
+> +
+> +	if (strstr(ucontrol->id.name, "FU1E Capture Volume"))
+> +		adc_vol_flag = 1;
+> +
+> +	/* check all channels */
+> +	for (i = 0; i < p->count; i++) {
+> +		regmap_read(rt721->mbq_regmap, p->reg_base + i, &regvalue);
+> +
+> +		if (!adc_vol_flag) /* boost gain */
+> +			ctl = regvalue / boost_step;
+> +		else { /* ADC gain */
+> +			if (adc_vol_flag)
+> +				ctl = p->max - (((vol_max - regvalue) & 0xffff) / interval_offset);
+> +			else
+At this point it is dead code.
+BTW This was detected by Coverity Scan; CID 1600271
+> +				ctl = p->max - (((0 - regvalue) & 0xffff) / interval_offset);
+> +		}
+> +
+> +		ucontrol->value.integer.value[i] = ctl;
+> +	}
+> +
+> +	return 0;
+> +}
+>
