@@ -4,110 +4,171 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7393CFD2E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 08:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DE07CFD302
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 09:08:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60E4393A;
-	Fri, 11 Oct 2024 10:32:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60E4393A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FF47852;
+	Fri, 11 Oct 2024 11:08:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FF47852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728635574;
-	bh=da9Ib1Q+3bALjm/XBbYsseR1KCB/RNv4+Kfc1BjKB9U=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1728637731;
+	bh=RQ7Lxb9941hJIWIjknEb0KZH3t22jRdOrvwNUZ7gKEc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rUd7VOP74pvqCktNvCM8hcodQw1XqSWjUAZh+YpU3iX1o+c/aEqbNjIU5AruJ/rSC
-	 aC5e1+Inr5+PJepG2mUbFGbu6/8Oeh9QBPihKpHUF+zIEwWrU9uBfHOx8Ac41XFtXw
-	 KPmANOTJ5AzsLcEUE3lBz6oTT7tW2WXpuTO23riM=
+	b=UFXFWutFBgU0cxKaoZ9U3t+wASH8e4O9aEq6mXZbmt4mx6Hq59R9SD26QFEyAHOKU
+	 7GBcfXDro/uZL2ua/VF6tKqbiYd0S+fb65x/GPg5W11z2PlsYRSvt+39kXRilQw9qS
+	 WrVunzknP9AcelQnpgTXLF5oF3rpDPW6oKC2fXPg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C77FF805B0; Fri, 11 Oct 2024 10:32:23 +0200 (CEST)
+	id B4FC7F805BB; Fri, 11 Oct 2024 11:08:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D975F805A9;
-	Fri, 11 Oct 2024 10:32:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC1D7F80587;
+	Fri, 11 Oct 2024 11:08:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1C81F80528; Fri, 11 Oct 2024 10:32:18 +0200 (CEST)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id E39F6F80528; Fri, 11 Oct 2024 11:08:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D31BF80496
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 10:32:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D31BF80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id BE6E6F80496
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 11:08:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE6E6F80496
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=BAaJKL1V
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-37d47eff9acso947192f8f.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 11 Oct 2024 01:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1728635535; x=1729240335;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OuBJyVPjdmLk3k1ra2zO4vQLdzSev+Zb32HBzRL6iFY=;
-        b=BAaJKL1VQNEPYDekiQNho+ZaKgD+boBBCfkqAPmK3mujIEjMNkxd8sz5AxWr5wPUWm
-         efTHtRmpJBcI7i5b6IetF9yYoqdwFSt2AgEDJu21fZyjRk8YWq8Csz67xL1fnfi+eebh
-         7GEllscrcNZ9tTFF25dIjOqussRAp3iAG6mePVpL0lIaqRP8R1bt70ZvwDlky0ZCCRJV
-         T/YiENfbEmIzapebp3vOxdgscLREVarmBeOQrG1IwdVWue6VeoclUeatnv6grn+IuL0R
-         azLv7vJgZXuXmy396l6NFjF42YtACDnOk0lAROgPiALwtVSex3QkIzvSR3GyvlwqBUFY
-         Pzuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728635535; x=1729240335;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OuBJyVPjdmLk3k1ra2zO4vQLdzSev+Zb32HBzRL6iFY=;
-        b=WrM7UNOt361bcJxZiGqItbncW2nYJv0crYc3c732KZbcxl07aWZdD/XNiCyqGH3ygq
-         wajBDJjEMMK3ZExYOkD7xHF12Jo3Ggh8qYudhuoAUNKndrJfS1OFfLbnT3cEoZPdxz7t
-         o8wwzqxsHB96aKP3STuZsfGNDj3O0WghlF2wIK70xi//qvFzN8/Ew1EygcuTigXfeq0Y
-         bW8yQvgwgOnt0DBgv6KkTc7ONH6krrs3PbEhHCu8xhIiNcZlyiRDSWO1HpjPnK6ajmte
-         sGlssbN3G6ZdQuPwAwUcTxHW94vlHmCoXp0tdqHL0b/yzZS/OMhlFaquBjQMIvVkx6I1
-         IeDg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUdhzY+uc3H/o/Xy+3q9sXF6rfhwqtkA7/4Uj69dwPEgr0l9BBW3X6Hg1DrCZ+dkaS9EhASlbmMlK1A@alsa-project.org
-X-Gm-Message-State: AOJu0Yykigr4ppRyTxsz2xW1ejd2MKwvEVVrboShZyo2tCnwGyd3VSaW
-	CqdhoUPjLl8WqOUm52cKJ2QKsBrAPrel2t6L8HeVEefzDJQWZ3/nRivcNWl/su4=
-X-Google-Smtp-Source: 
- AGHT+IFPWIbBeQSD+CTpngfMKgXD0t4h4yzKZ6VgOCY9b3ODwQLPfQ5lVlsnoCju/m4widjGgCvIWg==
-X-Received: by 2002:a5d:4dc6:0:b0:37c:cee9:4684 with SMTP id
- ffacd0b85a97d-37d551c0694mr1077752f8f.14.1728635535027;
-        Fri, 11 Oct 2024 01:32:15 -0700 (PDT)
-Received: from [192.168.68.111] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id
- ffacd0b85a97d-37d4b917f54sm3369019f8f.110.2024.10.11.01.32.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Oct 2024 01:32:14 -0700 (PDT)
-Message-ID: <ddd2601d-c169-47f2-b127-38217926a768@linaro.org>
-Date: Fri, 11 Oct 2024 09:32:11 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Working on audio for qcom apq8098 / msm8998
-To: Marc Gonzalez <mgonzalez@freebox.fr>, MSM
- <linux-arm-msm@vger.kernel.org>, alsa-devel@alsa-project.org
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Konrad Dybcio <konradybcio@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Arnaud Vrac <avrac@freebox.fr>, Pierre-Hugues Husson <phhusson@freebox.fr>,
- Bjorn Andersson <andersson@kernel.org>, Jeffrey Hugo
- <quic_jhugo@quicinc.com>, Rohit kumar <quic_rohkumar@quicinc.com>
-References: <d9a7bfde-ea1e-4676-9993-62024e1b790d@freebox.fr>
- <96969a70-bf3b-4df4-b6fa-60eb20a15e13@freebox.fr>
- <429e80fb-c999-407c-b101-4a0f4284db43@freebox.fr>
-Content-Language: en-US
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <429e80fb-c999-407c-b101-4a0f4284db43@freebox.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: SC6AXGZP3F3C2XYUDDRNO3SKK2RFKZ5H
-X-Message-ID-Hash: SC6AXGZP3F3C2XYUDDRNO3SKK2RFKZ5H
-X-MailFrom: srinivas.kandagatla@linaro.org
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=1U+EnOyh;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=RcgRk04j;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=1U+EnOyh;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=RcgRk04j
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B1A3422006;
+	Fri, 11 Oct 2024 09:08:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1728637691;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRtkyU1XwOFtiE9AeGs8BXfcw5siT/eDeiiVg8cjBIE=;
+	b=1U+EnOyhpEaNx7NrHFLfdshoEkclnxLJ3ZqISbCoioJE516o2kiXE51TZHXOmB+U/NokQA
+	Q2fa7Z8cDWq+flVN8myQ+7GThNR7QKGCBcJ+cG+7nL76DYOML2hqLDsCCkuyAJ3dscEAoo
+	SzxDqc6w4YWgBNr4fp4JuA1EjbExHT4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1728637691;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRtkyU1XwOFtiE9AeGs8BXfcw5siT/eDeiiVg8cjBIE=;
+	b=RcgRk04jXRDLFa3PIdIWkxQxQOB8++W6+LtLBXZjxqtmVlP046MMyrgicMykMPp5XRXgaN
+	mtY4i/I6LjQZs2Bw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=1U+EnOyh;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=RcgRk04j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1728637691;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRtkyU1XwOFtiE9AeGs8BXfcw5siT/eDeiiVg8cjBIE=;
+	b=1U+EnOyhpEaNx7NrHFLfdshoEkclnxLJ3ZqISbCoioJE516o2kiXE51TZHXOmB+U/NokQA
+	Q2fa7Z8cDWq+flVN8myQ+7GThNR7QKGCBcJ+cG+7nL76DYOML2hqLDsCCkuyAJ3dscEAoo
+	SzxDqc6w4YWgBNr4fp4JuA1EjbExHT4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1728637691;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRtkyU1XwOFtiE9AeGs8BXfcw5siT/eDeiiVg8cjBIE=;
+	b=RcgRk04jXRDLFa3PIdIWkxQxQOB8++W6+LtLBXZjxqtmVlP046MMyrgicMykMPp5XRXgaN
+	mtY4i/I6LjQZs2Bw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3BE5D136E0;
+	Fri, 11 Oct 2024 09:08:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id K8V5DfvqCGdsKAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 11 Oct 2024 09:08:11 +0000
+Date: Fri, 11 Oct 2024 11:09:08 +0200
+Message-ID: <87plo7m2ff.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Baojun Xu <baojun.xu@ti.com>
+Cc: <robh+dt@kernel.org>,
+	<andriy.shevchenko@linux.intel.com>,
+	<lgirdwood@gmail.com>,
+	<perex@perex.cz>,
+	<pierre-louis.bossart@linux.intel.com>,
+	<kevin-lu@ti.com>,
+	<shenghao-ding@ti.com>,
+	<navada@ti.com>,
+	<13916275206@139.com>,
+	<v-hampiholi@ti.com>,
+	<v-po@ti.com>,
+	<niranjan.hy@ti.com>,
+	<alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>,
+	<liam.r.girdwood@intel.com>,
+	<yung-chuan.liao@linux.intel.com>,
+	<broonie@kernel.org>,
+	<soyer@irl.hu>
+Subject: Re: [PATCH v1] ALSA: hda/tas2781: Add speaker id check for ASUS
+ projects
+In-Reply-To: <20241011085303.738-1-baojun.xu@ti.com>
+References: <20241011085303.738-1-baojun.xu@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: B1A3422006
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-2.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
+	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,gmail.com,perex.cz,ti.com,139.com,alsa-project.org,vger.kernel.org,intel.com,irl.hu];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[dt];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+Message-ID-Hash: 3CNHVK3PAMMBSHRGJDSKIYH4EHXU3KIG
+X-Message-ID-Hash: 3CNHVK3PAMMBSHRGJDSKIYH4EHXU3KIG
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +180,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SC6AXGZP3F3C2XYUDDRNO3SKK2RFKZ5H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3CNHVK3PAMMBSHRGJDSKIYH4EHXU3KIG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,216 +189,119 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Marc,
+On Fri, 11 Oct 2024 10:53:03 +0200,
+Baojun Xu wrote:
+> 
+> Add speaker id check by gpio in ACPI for ASUS projects.
 
-There are two ways you could enable MI2S audio via HDMI,
-1. via ADSP, which is what you have in the DT.
-2. by passing DSP directly configuring to LPASS MI2S registers.(this 
-needs a speical tz firmware to allow cpu to access LPASS registers)
+Please give more background info.  e.g. why is the speaker id check
+needed, what does this patch actually fix, and why it's specific to
+ASUS?
 
-You need to do only one thing, not the both.
-
-By looking at some of the errors i would suggest you to
-
-1. check if the MI2S pins are correctly configured.
-2. if MCLK and BITCLK for these are MI2S are configured correctly with 
-the required clk rate. (Pl take a look at existing examples sdm845/8016...)
-3. set the correct mixers to connect FE and BE dai links.(look at 
-existing ucm files for hints)
 
 thanks,
-Srini
 
+Takashi
 
-On 10/10/2024 17:10, Marc Gonzalez wrote:
-> On 08/10/2024 17:49, Marc Gonzalez wrote:
 > 
->> On 08/10/2024 15:46, Marc Gonzalez wrote:
->>
->>> [   15.106412] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:3
->>> [   15.109935] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:4
->>> [   15.119041] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_probe:1759
->>> [   15.134672] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6afe_dai_dev_probe
->>> [   15.137948] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: of_q6afe_parse_dai_data
->>> [   15.146461] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:7
->>> [   15.153563] remoteproc remoteproc0: powering up 4080000.remoteproc
->>> [   15.166371] remoteproc remoteproc0: Booting fw image mba.mbn, size 234152
->>> [   15.169747] q6asm-dai 17300000.remoteproc:glink-edge:apr:apr-service@7:dais: Adding to iommu group 5
->>> [   15.170559] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:8
->>> [   15.179732] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: msm_dai_q6_dai_probe
->>> [   15.199345] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_find_port:860
->>> [   15.208834] msm-snd-msm8998 sound: ASoC: registered pcm #0 MultiMedia1 (*)
->>> [   15.216194] msm-snd-msm8998 sound: snd-soc-dummy-dai <-> MultiMedia1 mapping ok
->>> [   15.221994] msm-snd-msm8998 sound: ASoC: registered pcm #1 MultiMedia2 (*)
->>> [   15.229582] msm-snd-msm8998 sound: snd-soc-dummy-dai <-> MultiMedia2 mapping ok
->>> [   15.236045] msm-snd-msm8998 sound: ASoC: registered pcm #2 (HDMI)
->>> [   15.243211] msm-snd-msm8998 sound: i2s-hifi <-> HDMI mapping ok
->>> [   15.285770] input: batfish Headset Jack as /devices/platform/sound/sound/card0/input2
->>> [   15.298010] qcom-q6v5-mss 4080000.remoteproc: MBA booted without debug policy, loading mpss
->>> [   15.542937] remoteproc remoteproc0: remote processor 4080000.remoteproc is now up
->>
->> If I try to play sound on the HDMI link:
->>
->> # tinymix set "HDMI Mixer MultiMedia1" 1
->> (no logs on the command line or in dmesg)
->>
->> # tinyplay /home/equinox.wav
->> playing '/home/equinox.wav': 2 ch, 48000 hz, 16 bit
->> error playing sample
->>
->> The corresponding kernel logs are:
->>
->> [  204.324095] msm-snd-msm8998 sound: ASoC: find BE for widget MultiMedia1 Playback
->> [  204.324280] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
->> [  204.330832] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
->> [  204.336452] msm-snd-msm8998 sound: ASoC: find BE for widget MM_DL1
->> [  204.342361] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
->> [  204.348471] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
->> [  204.354319] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI Mixer
->> [  204.360152] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
->> [  204.366702] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
->> [  204.372545] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI_RX
->> [  204.378439] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
->> [  204.384520] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
->> [  204.390471] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI Playback
->> [  204.396400] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
->> [  204.403231]  MultiMedia1: ASoC: found 2 audio Playback paths
->> [  204.408912]  MultiMedia1: YO: dpcm_add_paths:1595
->> [  204.414855]  MultiMedia1: YO: dpcm_add_paths:1601
->> [  204.419435]  MultiMedia1: YO: dpcm_add_paths:1605 widget=MM_DL1
->> [  204.424105]  MultiMedia1: YO: dpcm_add_paths:1605 widget=HDMI Mixer
->> [  204.429867]  MultiMedia1: YO: dpcm_add_paths:1605 widget=HDMI_RX
->> [  204.436139]  MultiMedia1: YO: dpcm_add_paths:1605 widget=HDMI Playback
->> [  204.442394] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI Playback
->> [  204.448691] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
->> [  204.455581]  MultiMedia1: YO: dpcm_add_paths:1638
->> [  204.461316]  MultiMedia1: connected new DPCM Playback path MultiMedia1 -> HDMI
->> [  204.466220]  MultiMedia1: ASoC: found 1 new BE paths
->> [  204.473232]  HDMI: ASoC: open Playback BE HDMI
->> [  204.478379]  MultiMedia1: ASoC: open FE MultiMedia1
->> [  204.482911]  HDMI: ASoC: hw_params BE HDMI
->> [  204.487489] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6hdmi_hw_params
->> [  204.491715]  MultiMedia1: ASoC: hw_params FE MultiMedia1 rate 48000 chan 2 fmt 2
->> [  204.500814]  MultiMedia1: ASoC: prepare FE MultiMedia1
->> [  204.508108]  HDMI: ASoC: prepare BE HDMI
->> [  204.512978] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6afe_dai_prepare
->> [  204.517117] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_hdmi_port_prepare:1317
->> [  204.525864] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_port_start:1511
->> [  204.533151] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_port_set_param_v2:1050
->> [  204.540129] qcom-q6afe aprsvc:apr-service:4:4: YO: afe_apr_send_pkt:947
->> [  204.547820] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_callback:880
->> [  204.553692] qcom-q6afe aprsvc:apr-service:4:4: cmd = 0x100ef returned error = 0x18
->> [  204.560292] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_find_port:860
->> [  204.567937] qcom-q6afe aprsvc:apr-service:4:4: DSP returned error[18]
->> [  204.574262] qcom-q6afe aprsvc:apr-service:4:4: AFE enable for port 0x100e failed -22
->> [  204.583561] qcom-q6afe aprsvc:apr-service:4:4: AFE enable for port 0x100e failed -22
->> [  204.591317] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: fail to start AFE port 1
->> [  204.599101] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: ASoC: error at snd_soc_pcm_dai_prepare on HDMI: -22
->> [  204.608501]  MultiMedia1: ASoC: hw_free FE MultiMedia1
->> [  204.619781]  HDMI: ASoC: hw_free BE HDMI
->> [  204.624821] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6afe_dai_shutdown
->> [  204.628835]  MultiMedia1: ASoC: close FE MultiMedia1
->> [  204.637798]  HDMI: ASoC: BE HDMI event 2 dir 0
->> [  204.642745]  MultiMedia1: ASoC: BE Playback disconnect check for HDMI
->> [  204.646987]  MultiMedia1: freed DSP Playback path MultiMedia1 -> HDMI
->>
->>
->> Looks like the audio DSP might not be correctly initialized?
+> Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+> ---
+>  include/sound/tas2781.h         |  3 +++
+>  sound/pci/hda/tas2781_hda_i2c.c | 39 ++++++++++++++++++++++++++++++---
+>  2 files changed, 39 insertions(+), 3 deletions(-)
 > 
-> [ Adding Bjorn & Jeffrey & Rohit ]
-> 
-> Right now, I'm thinking I might (??) need the code in sound/soc/qcom/lpass-cpu.c
-> to be called.
-> 
-> $ git grep asoc_qcom_lpass_cpu_platform_probe
-> sound/soc/qcom/lpass-apq8016.c: .probe  = asoc_qcom_lpass_cpu_platform_probe,
-> sound/soc/qcom/lpass-cpu.c:int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
-> sound/soc/qcom/lpass-cpu.c:EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_probe);
-> sound/soc/qcom/lpass-ipq806x.c: .probe  = asoc_qcom_lpass_cpu_platform_probe,
-> sound/soc/qcom/lpass-msm8998.c: .probe = asoc_qcom_lpass_cpu_platform_probe,
-> sound/soc/qcom/lpass-sc7180.c:  .probe = asoc_qcom_lpass_cpu_platform_probe,
-> sound/soc/qcom/lpass-sc7280.c:  .probe = asoc_qcom_lpass_cpu_platform_probe,
-> sound/soc/qcom/lpass.h:int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
-> 
-> 
-> For example, lpass-sc7280.c defines "qcom,sc7280-lpass-cpu"
-> 
-> Binding:
-> Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-> 
-> Corresponding DTS in arch/arm64/boot/dts/qcom/sc7280.dtsi
-> 
-> 		lpass_cpu: audio@3987000 {
-> 			compatible = "qcom,sc7280-lpass-cpu";
-> 
-> 			reg = <0 0x03987000 0 0x68000>,
-> 			      <0 0x03b00000 0 0x29000>,
-> 			      <0 0x03260000 0 0xc000>,
-> 			      <0 0x03280000 0 0x29000>,
-> 			      <0 0x03340000 0 0x29000>,
-> 			      <0 0x0336c000 0 0x3000>;
-> 			reg-names = "lpass-hdmiif",
-> 				    "lpass-lpaif",
-> 				    "lpass-rxtx-cdc-dma-lpm",
-> 				    "lpass-rxtx-lpaif",
-> 				    "lpass-va-lpaif",
-> 				    "lpass-va-cdc-dma-lpm";
-> 
-> 			iommus = <&apps_smmu 0x1820 0>,
-> 				 <&apps_smmu 0x1821 0>,
-> 				 <&apps_smmu 0x1832 0>;
-> 
-> 			power-domains = <&rpmhpd SC7280_LCX>;
-> 			power-domain-names = "lcx";
-> 			required-opps = <&rpmhpd_opp_nom>;
-> 
-> 			clocks = <&lpass_aon LPASS_AON_CC_AUDIO_HM_H_CLK>,
-> 				 <&lpass_core LPASS_CORE_CC_EXT_MCLK0_CLK>,
-> 				 <&lpass_core LPASS_CORE_CC_SYSNOC_MPORT_CORE_CLK>,
-> 				 <&lpass_core LPASS_CORE_CC_EXT_IF0_IBIT_CLK>,
-> 				 <&lpass_core LPASS_CORE_CC_EXT_IF1_IBIT_CLK>,
-> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM_CLK>,
-> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM0_CLK>,
-> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM1_CLK>,
-> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM2_CLK>,
-> 				 <&lpass_aon LPASS_AON_CC_VA_MEM0_CLK>;
-> 			clock-names = "aon_cc_audio_hm_h",
-> 				      "audio_cc_ext_mclk0",
-> 				      "core_cc_sysnoc_mport_core",
-> 				      "core_cc_ext_if0_ibit",
-> 				      "core_cc_ext_if1_ibit",
-> 				      "audio_cc_codec_mem",
-> 				      "audio_cc_codec_mem0",
-> 				      "audio_cc_codec_mem1",
-> 				      "audio_cc_codec_mem2",
-> 				      "aon_cc_va_mem0";
-> 
-> 			#sound-dai-cells = <1>;
-> 			#address-cells = <1>;
-> 			#size-cells = <0>;
-> 
-> 			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>,
-> 				     <GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>,
-> 				     <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>,
-> 				     <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
-> 			interrupt-names = "lpass-irq-lpaif",
-> 					  "lpass-irq-hdmi",
-> 					  "lpass-irq-vaif",
-> 					  "lpass-irq-rxtxif";
-> 
-> 			status = "disabled";
-> 		};
-> 
-> 
-> Is there an equivalent HW block for msm8998?
-> 
-> Vendor kernel has no hits for hdmiif.
-> 
-> I don't see anything relevant downstream :(
-> 
-> Do I need to look at the HW block at address 0xee000000 ?
-> 
-> lpass-lpaif could be LPASS_LPA_IF_REG_BASE at LPASS_BASE + 0x00100000 ?
-> 
-> Regards
+> diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
+> index 8cd6da0480b7..f8a3dc13cbbc 100644
+> --- a/include/sound/tas2781.h
+> +++ b/include/sound/tas2781.h
+> @@ -107,6 +107,8 @@
+>  #define TASDEVICE_CMD_DELAY		0x3
+>  #define TASDEVICE_CMD_FIELD_W		0x4
+>  
+> +#define TAS2781_ASUS_ID			0x10430000
+> +
+>  enum audio_device {
+>  	TAS2563,
+>  	TAS2781,
+> @@ -156,6 +158,7 @@ struct tasdevice_priv {
+>  	struct tasdevice_rca rcabin;
+>  	struct calidata cali_data;
+>  	struct tasdevice_fw *fmw;
+> +	struct gpio_desc *speaker_id;
+>  	struct gpio_desc *reset;
+>  	struct mutex codec_lock;
+>  	struct regmap *regmap;
+> diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+> index 370d847517f9..1f71927825b2 100644
+> --- a/sound/pci/hda/tas2781_hda_i2c.c
+> +++ b/sound/pci/hda/tas2781_hda_i2c.c
+> @@ -615,7 +615,7 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
+>  	struct tasdevice_priv *tas_priv = context;
+>  	struct tas2781_hda *tas_hda = dev_get_drvdata(tas_priv->dev);
+>  	struct hda_codec *codec = tas_priv->codec;
+> -	int i, ret;
+> +	int i, ret, spk_id;
+>  
+>  	pm_runtime_get_sync(tas_priv->dev);
+>  	mutex_lock(&tas_priv->codec_lock);
+> @@ -648,8 +648,23 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
+>  	tasdevice_dsp_remove(tas_priv);
+>  
+>  	tas_priv->fw_state = TASDEVICE_DSP_FW_PENDING;
+> -	scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X.bin",
+> -		codec->core.subsystem_id & 0xffff);
+> +	if ((codec->core.subsystem_id & 0xffff0000) == TAS2781_ASUS_ID) {
+> +		// Speaker id need to be checked.
+> +		if (tas_priv->speaker_id)
+> +			spk_id = gpiod_get_value(tas_priv->speaker_id);
+> +		else
+> +			spk_id = 0;
+> +		if (spk_id < 0 || spk_id > 1) {
+> +			// Speaker id is not valid, use default.
+> +			dev_dbg(tas_priv->dev, "Wrong spk_id = %d\n", spk_id);
+> +			spk_id = 0;
+> +		}
+> +		scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X%01d.bin",
+> +			codec->core.subsystem_id & 0xffff, spk_id);
+> +	} else {
+> +		scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X.bin",
+> +			codec->core.subsystem_id & 0xffff);
+> +	}
+>  	ret = tasdevice_dsp_parser(tas_priv);
+>  	if (ret) {
+>  		dev_err(tas_priv->dev, "dspfw load %s error\n",
+> @@ -787,6 +802,15 @@ static void tas2781_hda_remove(struct device *dev)
+>  	tasdevice_remove(tas_hda->priv);
+>  }
+>  
+> +static const struct acpi_gpio_params speakerid_gpios = { 0, 0, false };
+> +static const struct acpi_gpio_params interrupt_gpios = { 1, 0, false };
+> +
+> +static const struct acpi_gpio_mapping tas2781_speaker_id_gpios[] = {
+> +	{ "speakerid-gpios", &speakerid_gpios, 1 },
+> +	{ "interrupt-gpios", &interrupt_gpios, 1 },
+> +	{ }
+> +};
+> +
+>  static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+>  {
+>  	struct tas2781_hda *tas_hda;
+> @@ -823,6 +847,15 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+>  	if (ret)
+>  		return dev_err_probe(tas_hda->dev, ret,
+>  			"Platform not supported\n");
+> +	ret = devm_acpi_dev_add_driver_gpios(tas_hda->dev,
+> +					     tas2781_speaker_id_gpios);
+> +	if (ret)
+> +		dev_info(tas_hda->dev, "Unable to add GPIO mapping table\n");
+> +
+> +	tas_hda->priv->speaker_id = devm_gpiod_get(tas_hda->dev, "speakerid",
+> +						   GPIOD_IN);
+> +	if (IS_ERR(tas_hda->priv->speaker_id))
+> +		dev_info(tas_hda->dev, "Failed to get Speaker id gpio.\n");
+>  
+>  	ret = tasdevice_init(tas_hda->priv);
+>  	if (ret)
+> -- 
+> 2.43.0
 > 
