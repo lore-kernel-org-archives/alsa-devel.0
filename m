@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A00DD24462
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A23E5D2444F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:24:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D63241931;
-	Fri, 11 Oct 2024 02:24:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D63241931
+	by alsa0.perex.cz (Postfix) with ESMTPS id 113D61667;
+	Fri, 11 Oct 2024 02:24:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 113D61667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728606264;
-	bh=9cdnbJPdjIkgUwVVDViOSctU4pwRwxYTjPMbwEvbRI8=;
+	s=default; t=1728606288;
+	bh=Z2vXdqza1mKzaYCDwoc0E+XwQviWreyyPzXX84kItQs=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ouvH48tDz6GlDga714898XFr9qu+hSrY9lfP9PJEjwuXQ5GVJMy7S6gE8W8p4kq5r
-	 R0cavoRW9GQGpsEU/oaOxCMdfNM/nf+NAqZjMEMOnhzhN1gwqm8VWUVVq629h/1XQf
-	 zkZ+zTDCZhWr/MMk/lu5ymBRAx7kHB4Q1VN+xxCM=
+	b=Ghh7PPIA6hZ9mCX3pArBbs3cY0UV6zJKM6+03+XEfsc3tqP8CO9lq4dH5HXHu/C6C
+	 XlNnKLwa0R/2Ywpg6RbVtH0gLgyC+XhSV1xQvJMqBM0/bxvzrf0qwV5FBU2H+gGlC3
+	 E+spBqPKYxP3Nyr/3p32GD/+s6t2Rj5th4HPKC6w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1F2F4F89A7E; Fri, 11 Oct 2024 02:11:59 +0200 (CEST)
+	id 17CACF89A93; Fri, 11 Oct 2024 02:12:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BEC4F89A7A;
-	Fri, 11 Oct 2024 02:11:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A46CFF89A9A;
+	Fri, 11 Oct 2024 02:12:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0B36F8087A; Fri, 11 Oct 2024 02:08:51 +0200 (CEST)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id EAB0BF808C8; Fri, 11 Oct 2024 02:08:51 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48F24F8058C
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48F24F8058C
+	by alsa1.perex.cz (Postfix) with ESMTPS id BEE9EF805DF
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEE9EF805DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=BEsYq3J7
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=a69AxnDf
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 49ACZXC1026260;
-	Fri, 11 Oct 2024 00:07:20 GMT
+ 49AAbcpA020040;
+	Fri, 11 Oct 2024 00:07:21 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	/iXWyJ+VSbDCGIDrA8mF4MYZ6p5L8xVjpkuwHayJnho=; b=BEsYq3J7PAEMPFUR
-	pJY/HGpcBTgatJQXOHnoJm/Kpknfd5gNhUFUU3sY9hWVZIRraiALP8Qo+MejE1G5
-	l0bdYLhxYAiPblQQTnuvozjekG23MDye7SX7jJtlLZ/jFIYswFl5N9kS3XwXWlbx
-	5XA9s8PDY+gDng5s/ub0OMOjoD86YqmnI7uQsx1KFTDjzxRaKPSt0HD0uhUHvef5
-	16BQYyNg6MTSg0sAE8VImZsFjntq6C1xmqK9Ycw0dTKYu6cx3MM+g/N6Ap28O6/r
-	h8MlmdLCIxK9lWqJ3/mwXl8XMjBuHpuNxWzg134ZymjGk74oaL0YeVlbyLT8OcZi
-	ToEL8g==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+	hhypoh1YkPhSPXaYJ78fwY0e2/AKkzkM+fGnN1dHQGY=; b=a69AxnDfylrYLbGJ
+	lbiijATARxKBHg04hen/lGE4mEoBHyKe3Ibudm4CtzsVxUKoz0F+iBjzXtztHLog
+	n63fuQ9JKNskeGIckf0YnLW7gUxb2R9gki3cdZ7A7td9c08Pzya5v50fxfIIE2u9
+	uIQdJCsGBPVEiYKn+LrdcEZ5jXQnh3plnJlyFFGFBnhcDk6lwHB9rJiMK0lKjuzk
+	yF4KgSsXD9O7YiXfkJV7C0OcL253SRDDI0Fni/n3t5kv5zOhnbS6I3h40QBZngaN
+	SFltf3uzNtHtd2+yLmlCeI9unq1kDDXnB3w5wbnj4GLSWxcQpukr+GtEeg2lly4I
+	fLxZfQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 425c8qydrp-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 426db7hvkb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 00:07:19 +0000 (GMT)
+	Fri, 11 Oct 2024 00:07:20 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 49B07IcZ016418
+	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 49B07KSX020174
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 00:07:18 GMT
+	Fri, 11 Oct 2024 00:07:20 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 10 Oct 2024 17:07:17 -0700
+ 15.2.1544.9; Thu, 10 Oct 2024 17:07:19 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <dmitry.torokhov@gmail.com>,
@@ -82,9 +82,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v28 28/33] ALSA: usb-audio: qcom: Add USB QMI definitions
-Date: Thu, 10 Oct 2024 17:06:40 -0700
-Message-ID: <20241011000650.2585600-56-quic_wcheng@quicinc.com>
+Subject: [PATCH v28 31/32] ALSA: usb-audio: Allow for rediscovery of connected
+ USB SND devices
+Date: Thu, 10 Oct 2024 17:06:47 -0700
+Message-ID: <20241011000650.2585600-63-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
 References: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
@@ -97,19 +98,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: P_S3VkJUYDtdThCLhMDNLaHloZHAyZ0T
-X-Proofpoint-ORIG-GUID: P_S3VkJUYDtdThCLhMDNLaHloZHAyZ0T
+X-Proofpoint-ORIG-GUID: HeEFn5-xjUQPSWcrKDAWd6EOwXWl_L_W
+X-Proofpoint-GUID: HeEFn5-xjUQPSWcrKDAWd6EOwXWl_L_W
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 phishscore=0 clxscore=1015
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2409260000 definitions=main-2410100159
-Message-ID-Hash: IASARM777ELPPHOAOER3PDY47KGYCAQE
-X-Message-ID-Hash: IASARM777ELPPHOAOER3PDY47KGYCAQE
+ suspectscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 bulkscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 clxscore=1015 spamscore=0
+ adultscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2409260000 definitions=main-2410100158
+Message-ID-Hash: ADUNB5RCPWV2XY2ZZ6CJHQLBA7O7X2BG
+X-Message-ID-Hash: ADUNB5RCPWV2XY2ZZ6CJHQLBA7O7X2BG
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -122,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IASARM777ELPPHOAOER3PDY47KGYCAQE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ADUNB5RCPWV2XY2ZZ6CJHQLBA7O7X2BG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,1055 +132,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Qualcomm USB audio offload driver utilizes the QMI protocol to
-communicate with the audio DSP.  Add the necessary QMI header and field
-definitions, so the QMI interface driver is able to route the QMI packet
-received to the USB audio offload driver.
+In case of notifying SND platform drivers of connection events, some of
+these use cases, such as offloading, require an ASoC USB backend device to
+be initialized before the events can be handled.  If the USB backend device
+has not yet been probed, this leads to missing initial USB audio device
+connection events.
+
+Expose an API that traverses the usb_chip array for connected devices, and
+to call the respective connection callback registered to the SND platform
+driver.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/qcom/usb_audio_qmi_v01.c | 863 +++++++++++++++++++++++++++++
- sound/usb/qcom/usb_audio_qmi_v01.h | 164 ++++++
- 2 files changed, 1027 insertions(+)
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.h
+ sound/usb/card.c                  | 21 +++++++++++++++++++++
+ sound/usb/card.h                  |  2 ++
+ sound/usb/qcom/qc_audio_offload.c |  2 ++
+ 3 files changed, 25 insertions(+)
 
-diff --git a/sound/usb/qcom/usb_audio_qmi_v01.c b/sound/usb/qcom/usb_audio_qmi_v01.c
-new file mode 100644
-index 000000000000..5e8efbec3922
---- /dev/null
-+++ b/sound/usb/qcom/usb_audio_qmi_v01.c
-@@ -0,0 +1,863 @@
-+// SPDX-License-Identifier: GPL-2.0
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 326292f37841..1f21d11416f9 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -155,6 +155,27 @@ int snd_usb_unregister_platform_ops(void)
+ }
+ EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
+ 
 +/*
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
++ * in case the platform driver was not ready at the time of USB SND
++ * device connect, expose an API to discover all connected USB devices
++ * so it can populate any dependent resources/structures.
 + */
++void snd_usb_rediscover_devices(void)
++{
++	int i;
 +
-+#include <linux/soc/qcom/qmi.h>
++	guard(mutex)(&register_mutex);
 +
-+#include "usb_audio_qmi_v01.h"
++	if (!platform_ops || !platform_ops->connect_cb)
++		return;
 +
-+static const struct qmi_elem_info mem_info_v01_ei[] = {
-+	{
-+		.data_type	= QMI_UNSIGNED_8_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u64),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct mem_info_v01, va),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_8_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u64),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct mem_info_v01, pa),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct mem_info_v01, size),
-+	},
-+	{
-+		.data_type	= QMI_EOTI,
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= QMI_COMMON_TLV_TYPE,
-+	},
-+};
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (usb_chip[i])
++			platform_ops->connect_cb(usb_chip[i]);
++	}
++}
++EXPORT_SYMBOL_GPL(snd_usb_rediscover_devices);
 +
-+static const struct qmi_elem_info apps_mem_info_v01_ei[] = {
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct mem_info_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct apps_mem_info_v01, evt_ring),
-+		.ei_array	= mem_info_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct mem_info_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct apps_mem_info_v01, tr_data),
-+		.ei_array	= mem_info_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct mem_info_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct apps_mem_info_v01, tr_sync),
-+		.ei_array	= mem_info_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct mem_info_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct apps_mem_info_v01, xfer_buff),
-+		.ei_array	= mem_info_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct mem_info_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct apps_mem_info_v01, dcba),
-+		.ei_array	= mem_info_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_EOTI,
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= QMI_COMMON_TLV_TYPE,
-+	},
-+};
+ /*
+  * Checks to see if requested audio profile, i.e sample rate, # of
+  * channels, etc... is supported by the substream associated to the
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index d8b8522e1613..94404c24d240 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -222,4 +222,6 @@ snd_usb_find_suppported_substream(int card_idx, struct snd_pcm_hw_params *params
+ 
+ int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
+ int snd_usb_unregister_platform_ops(void);
 +
-+static const struct qmi_elem_info usb_endpoint_descriptor_v01_ei[] = {
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						bLength),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						bDescriptorType),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						bEndpointAddress),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						bmAttributes),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_2_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u16),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						wMaxPacketSize),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						bInterval),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						bRefresh),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_endpoint_descriptor_v01,
-+						bSynchAddress),
-+	},
-+	{
-+		.data_type	= QMI_EOTI,
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= QMI_COMMON_TLV_TYPE,
-+	},
-+};
++void snd_usb_rediscover_devices(void);
+ #endif /* __USBAUDIO_CARD_H */
+diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
+index 5b9262a116be..2dc651cd3d05 100644
+--- a/sound/usb/qcom/qc_audio_offload.c
++++ b/sound/usb/qcom/qc_audio_offload.c
+@@ -1929,6 +1929,8 @@ static int __init qc_usb_audio_offload_init(void)
+ 	if (ret < 0)
+ 		goto release_qmi;
+ 
++	snd_usb_rediscover_devices();
 +
-+static const struct qmi_elem_info usb_interface_descriptor_v01_ei[] = {
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bLength),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bDescriptorType),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bInterfaceNumber),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bAlternateSetting),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bNumEndpoints),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bInterfaceClass),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bInterfaceSubClass),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						bInterfaceProtocol),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0,
-+		.offset		= offsetof(struct usb_interface_descriptor_v01,
-+						iInterface),
-+	},
-+	{
-+		.data_type	= QMI_EOTI,
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= QMI_COMMON_TLV_TYPE,
-+	},
-+};
-+
-+const struct qmi_elem_info qmi_uaudio_stream_req_msg_v01_ei[] = {
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x01,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						enable),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x02,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						usb_token),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x10,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						audio_format_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x10,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						audio_format),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x11,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						number_of_ch_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x11,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						number_of_ch),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x12,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						bit_rate_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x12,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						bit_rate),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x13,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						xfer_buff_size_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x13,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						xfer_buff_size),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x14,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						service_interval_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x14,
-+		.offset		= offsetof(struct qmi_uaudio_stream_req_msg_v01,
-+						service_interval),
-+	},
-+	{
-+		.data_type	= QMI_EOTI,
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= QMI_COMMON_TLV_TYPE,
-+	},
-+};
-+
-+const struct qmi_elem_info qmi_uaudio_stream_resp_msg_v01_ei[] = {
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct qmi_response_type_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x02,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					resp),
-+		.ei_array	= qmi_response_type_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x10,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					status_valid),
-+	},
-+	{
-+		.data_type	= QMI_SIGNED_4_BYTE_ENUM,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(enum usb_qmi_audio_stream_status_enum_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x10,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					status),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x11,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					internal_status_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x11,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					internal_status),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x12,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					slot_id_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x12,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					slot_id),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x13,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					usb_token_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x13,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					usb_token),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x14,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					std_as_opr_intf_desc_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct usb_interface_descriptor_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x14,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					std_as_opr_intf_desc),
-+		.ei_array	= usb_interface_descriptor_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x15,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					std_as_data_ep_desc_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct usb_endpoint_descriptor_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x15,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					std_as_data_ep_desc),
-+		.ei_array	= usb_endpoint_descriptor_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x16,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					std_as_sync_ep_desc_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct usb_endpoint_descriptor_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x16,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					std_as_sync_ep_desc),
-+		.ei_array	= usb_endpoint_descriptor_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x17,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					usb_audio_spec_revision_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_2_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u16),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x17,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					usb_audio_spec_revision),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x18,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					data_path_delay_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x18,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					data_path_delay),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x19,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					usb_audio_subslot_size_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x19,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					usb_audio_subslot_size),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1A,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					xhci_mem_info_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct apps_mem_info_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1A,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					xhci_mem_info),
-+		.ei_array	= apps_mem_info_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1B,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					interrupter_num_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1B,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					interrupter_num),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1C,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					speed_info_valid),
-+	},
-+	{
-+		.data_type	= QMI_SIGNED_4_BYTE_ENUM,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(enum usb_qmi_audio_device_speed_enum_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1C,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					speed_info),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1D,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					controller_num_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x1D,
-+		.offset		= offsetof(struct qmi_uaudio_stream_resp_msg_v01,
-+					controller_num),
-+	},
-+	{
-+		.data_type	= QMI_EOTI,
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= QMI_COMMON_TLV_TYPE,
-+	},
-+};
-+
-+const struct qmi_elem_info qmi_uaudio_stream_ind_msg_v01_ei[] = {
-+	{
-+		.data_type	= QMI_SIGNED_4_BYTE_ENUM,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(
-+				enum usb_qmi_audio_device_indication_enum_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x01,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						dev_event),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x02,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						slot_id),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x10,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						usb_token_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_4_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u32),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x10,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						usb_token),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x11,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						std_as_opr_intf_desc_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct usb_interface_descriptor_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x11,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						std_as_opr_intf_desc),
-+		.ei_array	= usb_interface_descriptor_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x12,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						std_as_data_ep_desc_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct usb_endpoint_descriptor_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x12,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						std_as_data_ep_desc),
-+		.ei_array	= usb_endpoint_descriptor_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x13,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						std_as_sync_ep_desc_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct usb_endpoint_descriptor_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x13,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						std_as_sync_ep_desc),
-+		.ei_array	= usb_endpoint_descriptor_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x14,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						usb_audio_spec_revision_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_2_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u16),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x14,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						usb_audio_spec_revision),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x15,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						data_path_delay_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x15,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						data_path_delay),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x16,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						usb_audio_subslot_size_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x16,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						usb_audio_subslot_size),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x17,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						xhci_mem_info_valid),
-+	},
-+	{
-+		.data_type	= QMI_STRUCT,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(struct apps_mem_info_v01),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x17,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						xhci_mem_info),
-+		.ei_array	= apps_mem_info_v01_ei,
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x18,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						interrupter_num_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x18,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						interrupter_num),
-+	},
-+	{
-+		.data_type	= QMI_OPT_FLAG,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x19,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						controller_num_valid),
-+	},
-+	{
-+		.data_type	= QMI_UNSIGNED_1_BYTE,
-+		.elem_len	= 1,
-+		.elem_size	= sizeof(u8),
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= 0x19,
-+		.offset		= offsetof(struct qmi_uaudio_stream_ind_msg_v01,
-+						controller_num),
-+	},
-+	{
-+		.data_type	= QMI_EOTI,
-+		.array_type	= NO_ARRAY,
-+		.tlv_type	= QMI_COMMON_TLV_TYPE,
-+	},
-+};
-diff --git a/sound/usb/qcom/usb_audio_qmi_v01.h b/sound/usb/qcom/usb_audio_qmi_v01.h
-new file mode 100644
-index 000000000000..b549b025fe67
---- /dev/null
-+++ b/sound/usb/qcom/usb_audio_qmi_v01.h
-@@ -0,0 +1,164 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef USB_QMI_V01_H
-+#define USB_QMI_V01_H
-+
-+#define UAUDIO_STREAM_SERVICE_ID_V01 0x41D
-+#define UAUDIO_STREAM_SERVICE_VERS_V01 0x01
-+
-+#define QMI_UAUDIO_STREAM_RESP_V01 0x0001
-+#define QMI_UAUDIO_STREAM_REQ_V01 0x0001
-+#define QMI_UAUDIO_STREAM_IND_V01 0x0001
-+
-+struct mem_info_v01 {
-+	u64 va;
-+	u64 pa;
-+	u32 size;
-+};
-+
-+struct apps_mem_info_v01 {
-+	struct mem_info_v01 evt_ring;
-+	struct mem_info_v01 tr_data;
-+	struct mem_info_v01 tr_sync;
-+	struct mem_info_v01 xfer_buff;
-+	struct mem_info_v01 dcba;
-+};
-+
-+struct usb_endpoint_descriptor_v01 {
-+	u8 bLength;
-+	u8 bDescriptorType;
-+	u8 bEndpointAddress;
-+	u8 bmAttributes;
-+	u16 wMaxPacketSize;
-+	u8 bInterval;
-+	u8 bRefresh;
-+	u8 bSynchAddress;
-+};
-+
-+struct usb_interface_descriptor_v01 {
-+	u8 bLength;
-+	u8 bDescriptorType;
-+	u8 bInterfaceNumber;
-+	u8 bAlternateSetting;
-+	u8 bNumEndpoints;
-+	u8 bInterfaceClass;
-+	u8 bInterfaceSubClass;
-+	u8 bInterfaceProtocol;
-+	u8 iInterface;
-+};
-+
-+enum usb_qmi_audio_stream_status_enum_v01 {
-+	USB_QMI_STREAM_STATUS_ENUM_MIN_VAL_V01 = INT_MIN,
-+	USB_QMI_STREAM_REQ_SUCCESS_V01 = 0,
-+	USB_QMI_STREAM_REQ_FAILURE_V01 = 1,
-+	USB_QMI_STREAM_REQ_FAILURE_NOT_FOUND_V01 = 2,
-+	USB_QMI_STREAM_REQ_FAILURE_INVALID_PARAM_V01 = 3,
-+	USB_QMI_STREAM_REQ_FAILURE_MEMALLOC_V01 = 4,
-+	USB_QMI_STREAM_STATUS_ENUM_MAX_VAL_V01 = INT_MAX,
-+};
-+
-+enum usb_qmi_audio_device_indication_enum_v01 {
-+	USB_QMI_DEVICE_INDICATION_ENUM_MIN_VAL_V01 = INT_MIN,
-+	USB_QMI_DEV_CONNECT_V01 = 0,
-+	USB_QMI_DEV_DISCONNECT_V01 = 1,
-+	USB_QMI_DEV_SUSPEND_V01 = 2,
-+	USB_QMI_DEV_RESUME_V01 = 3,
-+	USB_QMI_DEVICE_INDICATION_ENUM_MAX_VAL_V01 = INT_MAX,
-+};
-+
-+enum usb_qmi_audio_device_speed_enum_v01 {
-+	USB_QMI_DEVICE_SPEED_ENUM_MIN_VAL_V01 = INT_MIN,
-+	USB_QMI_DEVICE_SPEED_INVALID_V01 = 0,
-+	USB_QMI_DEVICE_SPEED_LOW_V01 = 1,
-+	USB_QMI_DEVICE_SPEED_FULL_V01 = 2,
-+	USB_QMI_DEVICE_SPEED_HIGH_V01 = 3,
-+	USB_QMI_DEVICE_SPEED_SUPER_V01 = 4,
-+	USB_QMI_DEVICE_SPEED_SUPER_PLUS_V01 = 5,
-+	USB_QMI_DEVICE_SPEED_ENUM_MAX_VAL_V01 = INT_MAX,
-+};
-+
-+struct qmi_uaudio_stream_req_msg_v01 {
-+	u8 enable;
-+	u32 usb_token;
-+	u8 audio_format_valid;
-+	u32 audio_format;
-+	u8 number_of_ch_valid;
-+	u32 number_of_ch;
-+	u8 bit_rate_valid;
-+	u32 bit_rate;
-+	u8 xfer_buff_size_valid;
-+	u32 xfer_buff_size;
-+	u8 service_interval_valid;
-+	u32 service_interval;
-+};
-+
-+#define QMI_UAUDIO_STREAM_REQ_MSG_V01_MAX_MSG_LEN 46
-+extern const struct qmi_elem_info qmi_uaudio_stream_req_msg_v01_ei[];
-+
-+struct qmi_uaudio_stream_resp_msg_v01 {
-+	struct qmi_response_type_v01 resp;
-+	u8 status_valid;
-+	enum usb_qmi_audio_stream_status_enum_v01 status;
-+	u8 internal_status_valid;
-+	u32 internal_status;
-+	u8 slot_id_valid;
-+	u32 slot_id;
-+	u8 usb_token_valid;
-+	u32 usb_token;
-+	u8 std_as_opr_intf_desc_valid;
-+	struct usb_interface_descriptor_v01 std_as_opr_intf_desc;
-+	u8 std_as_data_ep_desc_valid;
-+	struct usb_endpoint_descriptor_v01 std_as_data_ep_desc;
-+	u8 std_as_sync_ep_desc_valid;
-+	struct usb_endpoint_descriptor_v01 std_as_sync_ep_desc;
-+	u8 usb_audio_spec_revision_valid;
-+	u16 usb_audio_spec_revision;
-+	u8 data_path_delay_valid;
-+	u8 data_path_delay;
-+	u8 usb_audio_subslot_size_valid;
-+	u8 usb_audio_subslot_size;
-+	u8 xhci_mem_info_valid;
-+	struct apps_mem_info_v01 xhci_mem_info;
-+	u8 interrupter_num_valid;
-+	u8 interrupter_num;
-+	u8 speed_info_valid;
-+	enum usb_qmi_audio_device_speed_enum_v01 speed_info;
-+	u8 controller_num_valid;
-+	u8 controller_num;
-+};
-+
-+#define QMI_UAUDIO_STREAM_RESP_MSG_V01_MAX_MSG_LEN 202
-+extern const struct qmi_elem_info qmi_uaudio_stream_resp_msg_v01_ei[];
-+
-+struct qmi_uaudio_stream_ind_msg_v01 {
-+	enum usb_qmi_audio_device_indication_enum_v01 dev_event;
-+	u32 slot_id;
-+	u8 usb_token_valid;
-+	u32 usb_token;
-+	u8 std_as_opr_intf_desc_valid;
-+	struct usb_interface_descriptor_v01 std_as_opr_intf_desc;
-+	u8 std_as_data_ep_desc_valid;
-+	struct usb_endpoint_descriptor_v01 std_as_data_ep_desc;
-+	u8 std_as_sync_ep_desc_valid;
-+	struct usb_endpoint_descriptor_v01 std_as_sync_ep_desc;
-+	u8 usb_audio_spec_revision_valid;
-+	u16 usb_audio_spec_revision;
-+	u8 data_path_delay_valid;
-+	u8 data_path_delay;
-+	u8 usb_audio_subslot_size_valid;
-+	u8 usb_audio_subslot_size;
-+	u8 xhci_mem_info_valid;
-+	struct apps_mem_info_v01 xhci_mem_info;
-+	u8 interrupter_num_valid;
-+	u8 interrupter_num;
-+	u8 controller_num_valid;
-+	u8 controller_num;
-+};
-+
-+#define QMI_UAUDIO_STREAM_IND_MSG_V01_MAX_MSG_LEN 181
-+extern const struct qmi_elem_info qmi_uaudio_stream_ind_msg_v01_ei[];
-+
-+#endif
+ 	return 0;
+ 
+ release_qmi:
