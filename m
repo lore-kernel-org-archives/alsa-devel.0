@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8357D2444F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:24:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A00DD24462
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:24:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68019192C;
-	Fri, 11 Oct 2024 02:24:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68019192C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D63241931;
+	Fri, 11 Oct 2024 02:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D63241931
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728606252;
+	s=default; t=1728606264;
 	bh=9cdnbJPdjIkgUwVVDViOSctU4pwRwxYTjPMbwEvbRI8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NpiY9cGR5aS+UlU1WUNmKncx1W1d/SN12Et7x2he8/OIIxmf/U1TsHQ1Kq5qJw+Hj
-	 S7Li9+OS/Cb5teNqXTpkE55m/zrp22M7balu30Tvj26h2QMSwBqcah/UZLFP81RnkJ
-	 0E32uVqZ2DgAbzyx8aUncv0cDggKsKjdu5t+3J7U=
+	b=ouvH48tDz6GlDga714898XFr9qu+hSrY9lfP9PJEjwuXQ5GVJMy7S6gE8W8p4kq5r
+	 R0cavoRW9GQGpsEU/oaOxCMdfNM/nf+NAqZjMEMOnhzhN1gwqm8VWUVVq629h/1XQf
+	 zkZ+zTDCZhWr/MMk/lu5ymBRAx7kHB4Q1VN+xxCM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B225F89A65; Fri, 11 Oct 2024 02:11:53 +0200 (CEST)
+	id 1F2F4F89A7E; Fri, 11 Oct 2024 02:11:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36884F8081B;
-	Fri, 11 Oct 2024 02:11:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BEC4F89A7A;
+	Fri, 11 Oct 2024 02:11:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 498DCF8085E; Fri, 11 Oct 2024 02:08:48 +0200 (CEST)
+	id B0B36F8087A; Fri, 11 Oct 2024 02:08:51 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1491BF805D2
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1491BF805D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 48F24F8058C
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48F24F8058C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=KFiwVBZ2
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=BEsYq3J7
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 49ACPw2T000772;
-	Fri, 11 Oct 2024 00:07:19 GMT
+ 49ACZXC1026260;
+	Fri, 11 Oct 2024 00:07:20 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	/iXWyJ+VSbDCGIDrA8mF4MYZ6p5L8xVjpkuwHayJnho=; b=KFiwVBZ2mn0jinFq
-	nUaGqhRpqW/4m+8NGXf+H4Zz186RW2kpn9SZNTIKUtQtL0YGeiNOQTX2vLfuRrkh
-	iAJQrvHdXdh4AFYnu9szT/TPJEr2W/viAupTEqEf547NPwFDSFcjkl4+I4AjCp81
-	RESpdLmyPBBOicCcQ33KDZ5VuS2mUfkTA+8jU8DKro41PvQ/2uTJqWD0N7eTyn1l
-	Ex+LTob4WJjEFjcUB6HWy7MvIQbBYHQW6VGTLQB5x8S2LV+ZiwsG1U5fxn7HPKSF
-	u9hXv5fc3a8aejddBCXbjQmej1wI2XomJjjt3FbLUspV0acs505X/S+L8Ra0zWft
-	FNKB1w==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
+	/iXWyJ+VSbDCGIDrA8mF4MYZ6p5L8xVjpkuwHayJnho=; b=BEsYq3J7PAEMPFUR
+	pJY/HGpcBTgatJQXOHnoJm/Kpknfd5gNhUFUU3sY9hWVZIRraiALP8Qo+MejE1G5
+	l0bdYLhxYAiPblQQTnuvozjekG23MDye7SX7jJtlLZ/jFIYswFl5N9kS3XwXWlbx
+	5XA9s8PDY+gDng5s/ub0OMOjoD86YqmnI7uQsx1KFTDjzxRaKPSt0HD0uhUHvef5
+	16BQYyNg6MTSg0sAE8VImZsFjntq6C1xmqK9Ycw0dTKYu6cx3MM+g/N6Ap28O6/r
+	h8MlmdLCIxK9lWqJ3/mwXl8XMjBuHpuNxWzg134ZymjGk74oaL0YeVlbyLT8OcZi
+	ToEL8g==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 424cy7mjyx-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 425c8qydrp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 11 Oct 2024 00:07:19 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 49B07IL2003458
+	by NALASPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 49B07IcZ016418
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 11 Oct 2024 00:07:18 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
@@ -82,9 +82,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v28 27/32] ALSA: usb-audio: qcom: Add USB QMI definitions
-Date: Thu, 10 Oct 2024 17:06:39 -0700
-Message-ID: <20241011000650.2585600-55-quic_wcheng@quicinc.com>
+Subject: [PATCH v28 28/33] ALSA: usb-audio: qcom: Add USB QMI definitions
+Date: Thu, 10 Oct 2024 17:06:40 -0700
+Message-ID: <20241011000650.2585600-56-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
 References: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
@@ -97,19 +97,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: aFBJ3_dkUACOrqQfXXqGdZIPxCpM7v4q
-X-Proofpoint-GUID: aFBJ3_dkUACOrqQfXXqGdZIPxCpM7v4q
+X-Proofpoint-GUID: P_S3VkJUYDtdThCLhMDNLaHloZHAyZ0T
+X-Proofpoint-ORIG-GUID: P_S3VkJUYDtdThCLhMDNLaHloZHAyZ0T
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 impostorscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410100159
-Message-ID-Hash: FBNARIOG6VZJ5FDQ5AED7D56S27HWQDX
-X-Message-ID-Hash: FBNARIOG6VZJ5FDQ5AED7D56S27HWQDX
+ adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2409260000 definitions=main-2410100159
+Message-ID-Hash: IASARM777ELPPHOAOER3PDY47KGYCAQE
+X-Message-ID-Hash: IASARM777ELPPHOAOER3PDY47KGYCAQE
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -122,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FBNARIOG6VZJ5FDQ5AED7D56S27HWQDX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IASARM777ELPPHOAOER3PDY47KGYCAQE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
