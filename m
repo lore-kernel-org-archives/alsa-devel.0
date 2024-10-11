@@ -4,180 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEAC7CFC611
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 08:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7393CFD2E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 08:32:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58F3C84C;
-	Fri, 11 Oct 2024 10:01:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58F3C84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60E4393A;
+	Fri, 11 Oct 2024 10:32:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60E4393A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728633681;
-	bh=6RGojeqQe2VRlH0qgWViVH3YpqWM+D/puigWbnutVds=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=UoB9QC4Q/y4vC2gt+t22yAniVH7g4kQfnZyJkN/t73xcWu0+E30uYHo/F1tMbbeHX
-	 O0wX8du9ic9R5UWLal+wx74EVxhD3M7RPf+d5X4GdTWEDF1w4u2SJ2KrrmH7HWT1Nb
-	 Y1B8KYDfRmPPreiiyc8XvrO5x5xpu75eIlp5A0vo=
+	s=default; t=1728635574;
+	bh=da9Ib1Q+3bALjm/XBbYsseR1KCB/RNv4+Kfc1BjKB9U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rUd7VOP74pvqCktNvCM8hcodQw1XqSWjUAZh+YpU3iX1o+c/aEqbNjIU5AruJ/rSC
+	 aC5e1+Inr5+PJepG2mUbFGbu6/8Oeh9QBPihKpHUF+zIEwWrU9uBfHOx8Ac41XFtXw
+	 KPmANOTJ5AzsLcEUE3lBz6oTT7tW2WXpuTO23riM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30AD1F805AD; Fri, 11 Oct 2024 10:00:50 +0200 (CEST)
+	id 2C77FF805B0; Fri, 11 Oct 2024 10:32:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C005F805B4;
-	Fri, 11 Oct 2024 10:00:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D975F805A9;
+	Fri, 11 Oct 2024 10:32:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0884F80528; Fri, 11 Oct 2024 10:00:42 +0200 (CEST)
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05on2060a.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:2613::60a])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D1C81F80528; Fri, 11 Oct 2024 10:32:18 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3716F8001E
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 10:00:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3716F8001E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9D31BF80496
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 10:32:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D31BF80496
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
- header.s=selector1 header.b=mPKBLWe/
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vJkNxa5TGSAV1Lk8ZwR3n8uMFGrZhyKYia0uY78uI3PbOcErpR2oP3dzxpFSBSorKbBxSLpDi6vbUI+RVgcpWSaViCL7dWRlvqGoX5a5TjkrIDk4U6aWWdRKzMwrY9nl/ja5GeFTR+A7vA9ECbidUZIFq9Fp5xpIJIY32uBliO1awxBp269ZfJysYxAUM8vdOTmQNxB1iN4RKILxySDaf4rcmZDQKbM2JV5XzO5K3MqefA0VfxrHPvigeAaYIm+nhyUtheBx5TmVk8mQwygdlRV+jVfHHX9NwBtm/M1RAiEoA04Hw7B7yag7nKR2Q6ujUq+U+Wf5wy8pDbrQifa1ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yGdGZXhiw8hHKRFGjER0MxAs7u/WmLTZtqTLAtllPRg=;
- b=Z+tCltKJW++tmD+GwXecMyPbYRQkmVpb9T7ZiOV7z2ytk2VmjrTU87dL1feHPv9euR34dFUIreztH4CR82jtee3qjEoVeZoUc/qNZeMqYNBEwd4pmLv14SJBdSk3ayJWf27goNqnLxD1B0J2vSithij1+z1FTATzDypMBBhylSRqBLHIIHl8cFbH+jF1iwdWf+qxPZoUskmgV0Zc5ttRdCS2WHiZm5iHDb2rM5EEvyOsYVOFrqL2eHE48BYlyUXMQrvtHaqegGHuSiW46Mi184uUgbWYfpo+0LGlIqFDzVnnD31DGuHzUVFJFJ0KOiRl+pu5sX/pfDIhaekIdJN30Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yGdGZXhiw8hHKRFGjER0MxAs7u/WmLTZtqTLAtllPRg=;
- b=mPKBLWe/RZ0GT7D0xmGf/CR7QBFxVEGZ5n19dSzfD+ajmCoWUmY/yCHa/RnoTp+vKR6jQCdsaY+NxVUHJLsTIHtQ7A2mhxhjp96lcsVA+yT89fGawyrzHe+DrvmyxpdnXPJZXiv5T6JGYV8biipdt++ryoCW9d4q4fQve9vzaSy0vm23Ui0uqYVzNTkocKaZ6TsOKITbzynRKJ+Dw3sWi39sBu81yw5JmZC3SAuWPFVOq1WSl6OIcopUhnUuiGxcb1hSTTVYBPnzKkZpiOwBAiAK16OSSaio7BWnpzBi5cFxf6hqzQOsrSG2InHfyvT1YJisMoVAjlZFSIZbnRTG7A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
- by DB9PR04MB8252.eurprd04.prod.outlook.com (2603:10a6:10:24d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.18; Fri, 11 Oct
- 2024 08:00:38 +0000
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::88b8:8584:24dc:e2a1]) by DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::88b8:8584:24dc:e2a1%5]) with mapi id 15.20.8026.020; Fri, 11 Oct 2024
- 08:00:37 +0000
-Message-ID: <9c590d45-ba6e-48dc-aa32-e70029885867@nxp.com>
-Date: Fri, 11 Oct 2024 11:00:34 +0300
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=BAaJKL1V
+Received: by mail-wr1-x42f.google.com with SMTP id
+ ffacd0b85a97d-37d47eff9acso947192f8f.3
+        for <alsa-devel@alsa-project.org>;
+ Fri, 11 Oct 2024 01:32:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1728635535; x=1729240335;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OuBJyVPjdmLk3k1ra2zO4vQLdzSev+Zb32HBzRL6iFY=;
+        b=BAaJKL1VQNEPYDekiQNho+ZaKgD+boBBCfkqAPmK3mujIEjMNkxd8sz5AxWr5wPUWm
+         efTHtRmpJBcI7i5b6IetF9yYoqdwFSt2AgEDJu21fZyjRk8YWq8Csz67xL1fnfi+eebh
+         7GEllscrcNZ9tTFF25dIjOqussRAp3iAG6mePVpL0lIaqRP8R1bt70ZvwDlky0ZCCRJV
+         T/YiENfbEmIzapebp3vOxdgscLREVarmBeOQrG1IwdVWue6VeoclUeatnv6grn+IuL0R
+         azLv7vJgZXuXmy396l6NFjF42YtACDnOk0lAROgPiALwtVSex3QkIzvSR3GyvlwqBUFY
+         Pzuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728635535; x=1729240335;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OuBJyVPjdmLk3k1ra2zO4vQLdzSev+Zb32HBzRL6iFY=;
+        b=WrM7UNOt361bcJxZiGqItbncW2nYJv0crYc3c732KZbcxl07aWZdD/XNiCyqGH3ygq
+         wajBDJjEMMK3ZExYOkD7xHF12Jo3Ggh8qYudhuoAUNKndrJfS1OFfLbnT3cEoZPdxz7t
+         o8wwzqxsHB96aKP3STuZsfGNDj3O0WghlF2wIK70xi//qvFzN8/Ew1EygcuTigXfeq0Y
+         bW8yQvgwgOnt0DBgv6KkTc7ONH6krrs3PbEhHCu8xhIiNcZlyiRDSWO1HpjPnK6ajmte
+         sGlssbN3G6ZdQuPwAwUcTxHW94vlHmCoXp0tdqHL0b/yzZS/OMhlFaquBjQMIvVkx6I1
+         IeDg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUdhzY+uc3H/o/Xy+3q9sXF6rfhwqtkA7/4Uj69dwPEgr0l9BBW3X6Hg1DrCZ+dkaS9EhASlbmMlK1A@alsa-project.org
+X-Gm-Message-State: AOJu0Yykigr4ppRyTxsz2xW1ejd2MKwvEVVrboShZyo2tCnwGyd3VSaW
+	CqdhoUPjLl8WqOUm52cKJ2QKsBrAPrel2t6L8HeVEefzDJQWZ3/nRivcNWl/su4=
+X-Google-Smtp-Source: 
+ AGHT+IFPWIbBeQSD+CTpngfMKgXD0t4h4yzKZ6VgOCY9b3ODwQLPfQ5lVlsnoCju/m4widjGgCvIWg==
+X-Received: by 2002:a5d:4dc6:0:b0:37c:cee9:4684 with SMTP id
+ ffacd0b85a97d-37d551c0694mr1077752f8f.14.1728635535027;
+        Fri, 11 Oct 2024 01:32:15 -0700 (PDT)
+Received: from [192.168.68.111] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id
+ ffacd0b85a97d-37d4b917f54sm3369019f8f.110.2024.10.11.01.32.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Oct 2024 01:32:14 -0700 (PDT)
+Message-ID: <ddd2601d-c169-47f2-b127-38217926a768@linaro.org>
+Date: Fri, 11 Oct 2024 09:32:11 +0100
+MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: fsl_esai: change dev_warn to dev_dbg in irq handler
-To: Shengjiu Wang <shengjiu.wang@nxp.com>, shengjiu.wang@gmail.com,
- Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1728622433-2873-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: Working on audio for qcom apq8098 / msm8998
+To: Marc Gonzalez <mgonzalez@freebox.fr>, MSM
+ <linux-arm-msm@vger.kernel.org>, alsa-devel@alsa-project.org
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Konrad Dybcio <konradybcio@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Arnaud Vrac <avrac@freebox.fr>, Pierre-Hugues Husson <phhusson@freebox.fr>,
+ Bjorn Andersson <andersson@kernel.org>, Jeffrey Hugo
+ <quic_jhugo@quicinc.com>, Rohit kumar <quic_rohkumar@quicinc.com>
+References: <d9a7bfde-ea1e-4676-9993-62024e1b790d@freebox.fr>
+ <96969a70-bf3b-4df4-b6fa-60eb20a15e13@freebox.fr>
+ <429e80fb-c999-407c-b101-4a0f4284db43@freebox.fr>
 Content-Language: en-US
-From: Iuliana Prodan <iuliana.prodan@nxp.com>
-In-Reply-To: <1728622433-2873-1-git-send-email-shengjiu.wang@nxp.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <429e80fb-c999-407c-b101-4a0f4284db43@freebox.fr>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM8P191CA0012.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21a::17) To DU2PR04MB8774.eurprd04.prod.outlook.com
- (2603:10a6:10:2e1::21)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8774:EE_|DB9PR04MB8252:EE_
-X-MS-Office365-Filtering-Correlation-Id: aa81792f-cf7f-452b-8db9-08dce9cacaa2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|7416014|366016|376014|1800799024|921020;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?ak1Zc1JxWER2ekJRVFJNaDJ1bEltOEM2TzArYUttbjlTVjdiLysvTkFrVGlw?=
- =?utf-8?B?SCtZeE96R05ZVTh0b1JYZ0F4OGE0T0xreXJQY2pPbHZYUk02VU1aQ0VtZEt1?=
- =?utf-8?B?WGlOMldsMVZjVFhhdXBsWm1rMkFyMTJJZmdJOHdKNXpwTmtOSzA4WDRHeG5x?=
- =?utf-8?B?TUJWbTBUSmZGVm1OdnZodlI5ZEIzNzZ0WXpoczRIaFVTaDdiS3ozODJqS1Qy?=
- =?utf-8?B?SFJRblRQMkJZRW8wRlB6amZBTmdQbzcvU1F0bGN6SGVnZ3B6d1YrR3p5YTcz?=
- =?utf-8?B?UkkrNUNDUUlzTEI0RnZZSDZUdzVHVU03cTU0eUI0bzFYYkc3ZW9lMFI5cFVi?=
- =?utf-8?B?RkxQbldMTjdzckozaDdRUVN4M1l4VUV6Y2xPNjAvNGFONWxwMGY2dUU4Q3Rr?=
- =?utf-8?B?aVBHTlJzTHd6aXZxMnRCNzRiMytnakRPOEc3SjhoKzcrdWxkSkU1WWszdXBz?=
- =?utf-8?B?K2NHOXBrTDd4L0xwWGE5YWdHODd3S0dUYURZS3BFQUJyeTUva1ZLdTc3VVR2?=
- =?utf-8?B?WWRpQXMvdk9pR1NCeFF1TTJOcjU2OU8wTXkrc0p5b1FwZDVTNUozOVNXTlpQ?=
- =?utf-8?B?dEs4WEIzUjZEU21YM0J0dE1RaTIvSkJNQTU4Nk4xcFlsUGV6ekNUb1NUQ2lJ?=
- =?utf-8?B?RUhvbWFOTWtqMk13TnRLQkdxUFRzQUF5YWxObkltVUtyd0t0WVZBd2NYNytx?=
- =?utf-8?B?d29nRXhTeGtHaGd5dm9xWFRDNWNnOCsyakJoL1dVUHJsSVplajVENVc1aUVo?=
- =?utf-8?B?bGtwZWdtTW1JcnBJNit2c1RkR3FpcmI5eGtlMWU1MHhxL0o0ZE8vdklxNU5R?=
- =?utf-8?B?c2g0TEpvN29PK0pEaGZGSHhUZU9IVGU0UldWaVRpR2NlTjR3UFZkdnFOdVVV?=
- =?utf-8?B?RXpMdHpRb3RpUzIycVZueC9lM3NURFV2ZVhGcUdrR2NXS3RNdU80V3dQZXJi?=
- =?utf-8?B?QTJxaE41Qy82bC9EakRVNURuVENLcVdIN2RERFprdGVTZTh5Y0txZmNsWUxa?=
- =?utf-8?B?U2tYcWU1YldxZFZJTTJYNlRiMk9zMlVtQ3NRU2lxS0R4Yys1emlJZDh2WVF4?=
- =?utf-8?B?L2ViUGlsMTBkT1R4bkU2cG1ySHJOYlo5SXRQYm9BUVFLRDBYWThrbzVEZkFx?=
- =?utf-8?B?N1BnV1M5eDFCcG5WWU15cDRSeE9UQW4vWjV6Y3V4N3RaQ3NLWmNXQ1pBcy9t?=
- =?utf-8?B?OFdxcnA2aFlWSkNMNGczK0NCbFI5SEhLUTBYUlQzL1RpdUlRNkp4Q2FnUTh5?=
- =?utf-8?B?SHpXMS9yNmdEYkIrRFNTdlBmNDFEVXYvczZvM2dOQk1ZNWs0RG44eWlNOFh6?=
- =?utf-8?B?K0ZzQUEwYXNaZGZzdzFYQy9LT2Z4TFl0S0RVZEpvMzU0WHEzRVN5bUQzNnB0?=
- =?utf-8?B?blI1OWxOUmVrVVhyeVp1T3VSMldnVHVZdU1pUElEV1V2cDlYQ1laVnV1ejAx?=
- =?utf-8?B?cWZDNnBWQUZpYWYrUFpJY3pDek9zWFZ4eWN6VGM1WVV2MEd5aWVQMUVZSitE?=
- =?utf-8?B?eWJOcllUMmwyalAyMU1mQktWU1BaU1FiaEF3RlNxOWJMMTVwMjR4a24wMk9D?=
- =?utf-8?B?anE1b0JvM0F4cjJnMlI4SE52bFowS1VrVGkrVUxnSnJvUXZscFNIUlBFUVVs?=
- =?utf-8?B?NkplT0k2Z2FnaldYZE5KS0ZhYUljQU1uMmYrN21DNnlTWGF3S1JWYmRIZkR2?=
- =?utf-8?B?TnFjbWQ0MDJXL2oyb2FwYS9hVENFTEdKT1kxSnJMZG5LUE0rOWtwdTV4SFI1?=
- =?utf-8?Q?s015l95n6zVQvQRD7xWJkU2rVFopP4C/BJPobA5?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(1800799024)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?RUZNbjF2WWM5ZElpOEw4Qm10L1VISFlUVnVQa1RlOUhuMUVUM3ptZjlDTlA0?=
- =?utf-8?B?clpZSC9LMXNKZEJGeVJXN2pDbk01emRrQVJYR1g5YlA3b3Q5dE5YQWw4SGxv?=
- =?utf-8?B?L1ZLQzFrNlNJa2pSTUNKQUp4bFBzK0pjYjhRK0FJTmVFc2kwb3BIb01rMXUx?=
- =?utf-8?B?RndYVWttK2cvQUozczRETVZwRmJNSVdyMkdRMzhLeG0zdXpoTjF5c0x2UjlT?=
- =?utf-8?B?L3kxbnFkNVNXQkhYUzRYOWZ6MVpJSVYwUnVLYy95dmRScStJUys0Vk54bWZz?=
- =?utf-8?B?cHRlRE10N252VzMzTXkrcXRFWk50SXZhdERmZk1tRWtYeXBSNFhhb0VPQ2g5?=
- =?utf-8?B?L1Vicm05MUNOTjhDb3YycVhJLzlEZklyVDhJWk5KL2ExK055OERvNzhpM2xi?=
- =?utf-8?B?MDFwYnYrK2thSEVhcEMrSVVzY3dYN2NaOWhKQWhsMTdIbmxPU3ZKZlNrWStP?=
- =?utf-8?B?TndXVDNjMEdqODFyU0JPbUlGeGw4V2lVS1RleE9WQjNwTHlVV1B0VGlrVlhn?=
- =?utf-8?B?dUduM1E1Uzl6MnZWSnd6dEZxbURvLzZmdVF4RzZyUjRIODBpNm4zc1lraG5o?=
- =?utf-8?B?SFB5U2dwTzdNYjZSc3hUMnRyQ3dVVGdIOVl6UHUwZkE2MHlha1dNZTQybDU1?=
- =?utf-8?B?K2pXTE5kMlE5NnB0UEcyb09ZQWtyK2kwUVNRVnJ0eVVLNnYrTW9GblN6VmFs?=
- =?utf-8?B?Nm5kb1QyWFZBTE9TWkNXQkFoQ1JwSmNGYmsvcldRb1Nlb1JSM1RLVWgrMWJ6?=
- =?utf-8?B?VnJXWXVvTHhDQWV5dXRIcyt5b1Z2a0RBWU5udkN5WFRBV20zQlFpeW5NNnlP?=
- =?utf-8?B?K01wN0NEajBlenpPZWIxeXV0NG1pckN0YjNucStHd2pYdm1LUFVTU2p5UXhW?=
- =?utf-8?B?R2ZqYjBBOWNYWnRPT1JEWVdzMk9xWTFUMlRIUk9HMUtHdnMwMFJuNnlLMzUx?=
- =?utf-8?B?a2NRRUwzZExmRFBuVy9icjhPRlNmRldnV3ZkME5lbElqVEJCWGFVSExCQTRq?=
- =?utf-8?B?QXVlZEsvTkdnOUNrbnNGYzdzZjFuRVB4cmlka2I3QlUzUWplamswQ3ZVU0tm?=
- =?utf-8?B?MjBBUVFuTk5lMUdTRmZoUW9IdWtyTVZRNzF4TkRHbGRsTzZ0TzNWZ1loNHla?=
- =?utf-8?B?SDIwNnRmU3ZNV3dHaGtFb1JnY0grUmJKTHV1d2dRV09FRTF2RlEwVDU5cFcx?=
- =?utf-8?B?ZFZOZk4wL25ZY1FBMXlFOFdOd2RqZUJYMnFxVHh4NkFicGJLTnp0Q3BMYVFL?=
- =?utf-8?B?aUkwa2ZiYkNnSHBxNERmS0RzMXFXelpYUGpJb2xFVHFKbWtLR0NoMTBGM1Vn?=
- =?utf-8?B?TjVPczVIWmozNlZKb1lYRE5wSnZFR1FUcHVmV3pJS1VtbEsyT2RQY2JzRnAy?=
- =?utf-8?B?dG90NHh4b0ZzR3ppRHR4ejNrZmpVYjBGNUFxNkYrSDdhWVZPWDB3N3RDanhG?=
- =?utf-8?B?cUJhekNqbXpmdXdjUFRoUHdnT0dLdzBpNkFMb25MSHFmRmxaWFJLdlpmUkoz?=
- =?utf-8?B?RHFSSDd2SnFCMDZTb3ZsdW1ZaXRFamZlNjVaNTlHUUZQVDgrOTQyZ3lXRit0?=
- =?utf-8?B?N3Z3Uk8wVm50MUl4RGxMZTRsMGFxQmt5MkxvZXE0ditqbys4THhLL0d5Z2VW?=
- =?utf-8?B?bFo3eHRyYjlFcWNFTWd5aysxUkF0RzlObWlrQWNtQy9na1pZV2w3VW1ubEpN?=
- =?utf-8?B?MFo4bGltQ3FBRVo3dUlkZHpMcUNRRTQ1Vmp2a0V3RzJWVEp3Y2hHUFFscGZw?=
- =?utf-8?B?ZHFJbFVzYmxVMWp1TkR4c2plRGluQnVLUWxhVENYQnQvdzJ0SG9jOEw1dFVZ?=
- =?utf-8?B?cXpYcnloc213OW15dFlUMEwzdVRFMWJVVisvNGxFUXpRTWF6NW1pb1k1bXlE?=
- =?utf-8?B?SjJQbk92c3k2Y2hWSkQ2KzdYNEJkQUVxRGRmZmFDYW1NRWI4V0QvQTJXTWRo?=
- =?utf-8?B?VndIWDdKeTZsQ1hDeTVRRjJjcWk3eGdWdmlOOTRDNDQyZDVsVzNpZzkxZDNo?=
- =?utf-8?B?ZVdHUEcwUlBDOW9VNThVYXlNRGgzUjN5NnluZkgrYzNWVmRlZVN4d2V2NDNK?=
- =?utf-8?B?Rm0ySlZWRmRBNXdyWDJ2QXFMNUJlRHE3K1UvL3B6aTdTQTIveDJPazM0TUxw?=
- =?utf-8?Q?8ViunmMU4O/GUakEXpeJJok38?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- aa81792f-cf7f-452b-8db9-08dce9cacaa2
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 08:00:37.7957
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- I7tQaywfsLVS9Z5yx541OpRbt9Qj2vpX+/K7Vwd0SdPAxwVeipE1xht6GJgdRBDGKafUMSBFHIENPMVhA9B7hw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8252
-Message-ID-Hash: 4ISPAHROOSIIYMTBQYFDM5RVJJ5X2R5G
-X-Message-ID-Hash: 4ISPAHROOSIIYMTBQYFDM5RVJJ5X2R5G
-X-MailFrom: iuliana.prodan@nxp.com
+Message-ID-Hash: SC6AXGZP3F3C2XYUDDRNO3SKK2RFKZ5H
+X-Message-ID-Hash: SC6AXGZP3F3C2XYUDDRNO3SKK2RFKZ5H
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -189,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4ISPAHROOSIIYMTBQYFDM5RVJJ5X2R5G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SC6AXGZP3F3C2XYUDDRNO3SKK2RFKZ5H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -198,34 +128,216 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 10/11/2024 7:53 AM, Shengjiu Wang wrote:
-> Irq handler need to be executed as fast as possible, so
-> the log in irq handler is better to use dev_dbg which needs
-> to be enabled when debugging.
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+Hi Marc,
 
-Thanks,
-Iulia
-> ---
->   sound/soc/fsl/fsl_esai.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index a65f5b9935a2..0b247f16a163 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -119,10 +119,10 @@ static irqreturn_t esai_isr(int irq, void *devid)
->   		dev_dbg(&pdev->dev, "isr: Transmission Initialized\n");
->   
->   	if (esr & ESAI_ESR_RFF_MASK)
-> -		dev_warn(&pdev->dev, "isr: Receiving overrun\n");
-> +		dev_dbg(&pdev->dev, "isr: Receiving overrun\n");
->   
->   	if (esr & ESAI_ESR_TFE_MASK)
-> -		dev_warn(&pdev->dev, "isr: Transmission underrun\n");
-> +		dev_dbg(&pdev->dev, "isr: Transmission underrun\n");
->   
->   	if (esr & ESAI_ESR_TLS_MASK)
->   		dev_dbg(&pdev->dev, "isr: Just transmitted the last slot\n");
+There are two ways you could enable MI2S audio via HDMI,
+1. via ADSP, which is what you have in the DT.
+2. by passing DSP directly configuring to LPASS MI2S registers.(this 
+needs a speical tz firmware to allow cpu to access LPASS registers)
+
+You need to do only one thing, not the both.
+
+By looking at some of the errors i would suggest you to
+
+1. check if the MI2S pins are correctly configured.
+2. if MCLK and BITCLK for these are MI2S are configured correctly with 
+the required clk rate. (Pl take a look at existing examples sdm845/8016...)
+3. set the correct mixers to connect FE and BE dai links.(look at 
+existing ucm files for hints)
+
+thanks,
+Srini
+
+
+On 10/10/2024 17:10, Marc Gonzalez wrote:
+> On 08/10/2024 17:49, Marc Gonzalez wrote:
+> 
+>> On 08/10/2024 15:46, Marc Gonzalez wrote:
+>>
+>>> [   15.106412] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:3
+>>> [   15.109935] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:4
+>>> [   15.119041] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_probe:1759
+>>> [   15.134672] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6afe_dai_dev_probe
+>>> [   15.137948] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: of_q6afe_parse_dai_data
+>>> [   15.146461] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:7
+>>> [   15.153563] remoteproc remoteproc0: powering up 4080000.remoteproc
+>>> [   15.166371] remoteproc remoteproc0: Booting fw image mba.mbn, size 234152
+>>> [   15.169747] q6asm-dai 17300000.remoteproc:glink-edge:apr:apr-service@7:dais: Adding to iommu group 5
+>>> [   15.170559] qcom,apr 17300000.remoteproc:glink-edge.apr_audio_svc.-1.-1: Adding APR/GPR dev: aprsvc:apr-service:4:8
+>>> [   15.179732] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: msm_dai_q6_dai_probe
+>>> [   15.199345] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_find_port:860
+>>> [   15.208834] msm-snd-msm8998 sound: ASoC: registered pcm #0 MultiMedia1 (*)
+>>> [   15.216194] msm-snd-msm8998 sound: snd-soc-dummy-dai <-> MultiMedia1 mapping ok
+>>> [   15.221994] msm-snd-msm8998 sound: ASoC: registered pcm #1 MultiMedia2 (*)
+>>> [   15.229582] msm-snd-msm8998 sound: snd-soc-dummy-dai <-> MultiMedia2 mapping ok
+>>> [   15.236045] msm-snd-msm8998 sound: ASoC: registered pcm #2 (HDMI)
+>>> [   15.243211] msm-snd-msm8998 sound: i2s-hifi <-> HDMI mapping ok
+>>> [   15.285770] input: batfish Headset Jack as /devices/platform/sound/sound/card0/input2
+>>> [   15.298010] qcom-q6v5-mss 4080000.remoteproc: MBA booted without debug policy, loading mpss
+>>> [   15.542937] remoteproc remoteproc0: remote processor 4080000.remoteproc is now up
+>>
+>> If I try to play sound on the HDMI link:
+>>
+>> # tinymix set "HDMI Mixer MultiMedia1" 1
+>> (no logs on the command line or in dmesg)
+>>
+>> # tinyplay /home/equinox.wav
+>> playing '/home/equinox.wav': 2 ch, 48000 hz, 16 bit
+>> error playing sample
+>>
+>> The corresponding kernel logs are:
+>>
+>> [  204.324095] msm-snd-msm8998 sound: ASoC: find BE for widget MultiMedia1 Playback
+>> [  204.324280] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
+>> [  204.330832] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
+>> [  204.336452] msm-snd-msm8998 sound: ASoC: find BE for widget MM_DL1
+>> [  204.342361] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
+>> [  204.348471] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
+>> [  204.354319] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI Mixer
+>> [  204.360152] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
+>> [  204.366702] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
+>> [  204.372545] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI_RX
+>> [  204.378439] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
+>> [  204.384520] msm-snd-msm8998 sound: ASoC: try BE : I2S Playback
+>> [  204.390471] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI Playback
+>> [  204.396400] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
+>> [  204.403231]  MultiMedia1: ASoC: found 2 audio Playback paths
+>> [  204.408912]  MultiMedia1: YO: dpcm_add_paths:1595
+>> [  204.414855]  MultiMedia1: YO: dpcm_add_paths:1601
+>> [  204.419435]  MultiMedia1: YO: dpcm_add_paths:1605 widget=MM_DL1
+>> [  204.424105]  MultiMedia1: YO: dpcm_add_paths:1605 widget=HDMI Mixer
+>> [  204.429867]  MultiMedia1: YO: dpcm_add_paths:1605 widget=HDMI_RX
+>> [  204.436139]  MultiMedia1: YO: dpcm_add_paths:1605 widget=HDMI Playback
+>> [  204.442394] msm-snd-msm8998 sound: ASoC: find BE for widget HDMI Playback
+>> [  204.448691] msm-snd-msm8998 sound: ASoC: try BE : HDMI Playback
+>> [  204.455581]  MultiMedia1: YO: dpcm_add_paths:1638
+>> [  204.461316]  MultiMedia1: connected new DPCM Playback path MultiMedia1 -> HDMI
+>> [  204.466220]  MultiMedia1: ASoC: found 1 new BE paths
+>> [  204.473232]  HDMI: ASoC: open Playback BE HDMI
+>> [  204.478379]  MultiMedia1: ASoC: open FE MultiMedia1
+>> [  204.482911]  HDMI: ASoC: hw_params BE HDMI
+>> [  204.487489] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6hdmi_hw_params
+>> [  204.491715]  MultiMedia1: ASoC: hw_params FE MultiMedia1 rate 48000 chan 2 fmt 2
+>> [  204.500814]  MultiMedia1: ASoC: prepare FE MultiMedia1
+>> [  204.508108]  HDMI: ASoC: prepare BE HDMI
+>> [  204.512978] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6afe_dai_prepare
+>> [  204.517117] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_hdmi_port_prepare:1317
+>> [  204.525864] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_port_start:1511
+>> [  204.533151] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_port_set_param_v2:1050
+>> [  204.540129] qcom-q6afe aprsvc:apr-service:4:4: YO: afe_apr_send_pkt:947
+>> [  204.547820] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_callback:880
+>> [  204.553692] qcom-q6afe aprsvc:apr-service:4:4: cmd = 0x100ef returned error = 0x18
+>> [  204.560292] qcom-q6afe aprsvc:apr-service:4:4: YO: q6afe_find_port:860
+>> [  204.567937] qcom-q6afe aprsvc:apr-service:4:4: DSP returned error[18]
+>> [  204.574262] qcom-q6afe aprsvc:apr-service:4:4: AFE enable for port 0x100e failed -22
+>> [  204.583561] qcom-q6afe aprsvc:apr-service:4:4: AFE enable for port 0x100e failed -22
+>> [  204.591317] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: fail to start AFE port 1
+>> [  204.599101] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: ASoC: error at snd_soc_pcm_dai_prepare on HDMI: -22
+>> [  204.608501]  MultiMedia1: ASoC: hw_free FE MultiMedia1
+>> [  204.619781]  HDMI: ASoC: hw_free BE HDMI
+>> [  204.624821] q6afe-dai 17300000.remoteproc:glink-edge:apr:apr-service@4:dais: YOA: q6afe_dai_shutdown
+>> [  204.628835]  MultiMedia1: ASoC: close FE MultiMedia1
+>> [  204.637798]  HDMI: ASoC: BE HDMI event 2 dir 0
+>> [  204.642745]  MultiMedia1: ASoC: BE Playback disconnect check for HDMI
+>> [  204.646987]  MultiMedia1: freed DSP Playback path MultiMedia1 -> HDMI
+>>
+>>
+>> Looks like the audio DSP might not be correctly initialized?
+> 
+> [ Adding Bjorn & Jeffrey & Rohit ]
+> 
+> Right now, I'm thinking I might (??) need the code in sound/soc/qcom/lpass-cpu.c
+> to be called.
+> 
+> $ git grep asoc_qcom_lpass_cpu_platform_probe
+> sound/soc/qcom/lpass-apq8016.c: .probe  = asoc_qcom_lpass_cpu_platform_probe,
+> sound/soc/qcom/lpass-cpu.c:int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+> sound/soc/qcom/lpass-cpu.c:EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_probe);
+> sound/soc/qcom/lpass-ipq806x.c: .probe  = asoc_qcom_lpass_cpu_platform_probe,
+> sound/soc/qcom/lpass-msm8998.c: .probe = asoc_qcom_lpass_cpu_platform_probe,
+> sound/soc/qcom/lpass-sc7180.c:  .probe = asoc_qcom_lpass_cpu_platform_probe,
+> sound/soc/qcom/lpass-sc7280.c:  .probe = asoc_qcom_lpass_cpu_platform_probe,
+> sound/soc/qcom/lpass.h:int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
+> 
+> 
+> For example, lpass-sc7280.c defines "qcom,sc7280-lpass-cpu"
+> 
+> Binding:
+> Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> 
+> Corresponding DTS in arch/arm64/boot/dts/qcom/sc7280.dtsi
+> 
+> 		lpass_cpu: audio@3987000 {
+> 			compatible = "qcom,sc7280-lpass-cpu";
+> 
+> 			reg = <0 0x03987000 0 0x68000>,
+> 			      <0 0x03b00000 0 0x29000>,
+> 			      <0 0x03260000 0 0xc000>,
+> 			      <0 0x03280000 0 0x29000>,
+> 			      <0 0x03340000 0 0x29000>,
+> 			      <0 0x0336c000 0 0x3000>;
+> 			reg-names = "lpass-hdmiif",
+> 				    "lpass-lpaif",
+> 				    "lpass-rxtx-cdc-dma-lpm",
+> 				    "lpass-rxtx-lpaif",
+> 				    "lpass-va-lpaif",
+> 				    "lpass-va-cdc-dma-lpm";
+> 
+> 			iommus = <&apps_smmu 0x1820 0>,
+> 				 <&apps_smmu 0x1821 0>,
+> 				 <&apps_smmu 0x1832 0>;
+> 
+> 			power-domains = <&rpmhpd SC7280_LCX>;
+> 			power-domain-names = "lcx";
+> 			required-opps = <&rpmhpd_opp_nom>;
+> 
+> 			clocks = <&lpass_aon LPASS_AON_CC_AUDIO_HM_H_CLK>,
+> 				 <&lpass_core LPASS_CORE_CC_EXT_MCLK0_CLK>,
+> 				 <&lpass_core LPASS_CORE_CC_SYSNOC_MPORT_CORE_CLK>,
+> 				 <&lpass_core LPASS_CORE_CC_EXT_IF0_IBIT_CLK>,
+> 				 <&lpass_core LPASS_CORE_CC_EXT_IF1_IBIT_CLK>,
+> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM_CLK>,
+> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM0_CLK>,
+> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM1_CLK>,
+> 				 <&lpass_audiocc LPASS_AUDIO_CC_CODEC_MEM2_CLK>,
+> 				 <&lpass_aon LPASS_AON_CC_VA_MEM0_CLK>;
+> 			clock-names = "aon_cc_audio_hm_h",
+> 				      "audio_cc_ext_mclk0",
+> 				      "core_cc_sysnoc_mport_core",
+> 				      "core_cc_ext_if0_ibit",
+> 				      "core_cc_ext_if1_ibit",
+> 				      "audio_cc_codec_mem",
+> 				      "audio_cc_codec_mem0",
+> 				      "audio_cc_codec_mem1",
+> 				      "audio_cc_codec_mem2",
+> 				      "aon_cc_va_mem0";
+> 
+> 			#sound-dai-cells = <1>;
+> 			#address-cells = <1>;
+> 			#size-cells = <0>;
+> 
+> 			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>,
+> 				     <GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>,
+> 				     <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>,
+> 				     <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
+> 			interrupt-names = "lpass-irq-lpaif",
+> 					  "lpass-irq-hdmi",
+> 					  "lpass-irq-vaif",
+> 					  "lpass-irq-rxtxif";
+> 
+> 			status = "disabled";
+> 		};
+> 
+> 
+> Is there an equivalent HW block for msm8998?
+> 
+> Vendor kernel has no hits for hdmiif.
+> 
+> I don't see anything relevant downstream :(
+> 
+> Do I need to look at the HW block at address 0xee000000 ?
+> 
+> lpass-lpaif could be LPASS_LPA_IF_REG_BASE at LPASS_BASE + 0x00100000 ?
+> 
+> Regards
+> 
