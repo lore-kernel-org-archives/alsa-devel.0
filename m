@@ -4,96 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB451CFD2FD
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 09:23:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8A7FCFD341
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 10:58:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13D15F55;
-	Fri, 11 Oct 2024 11:23:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13D15F55
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BD29AE8;
+	Fri, 11 Oct 2024 12:57:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BD29AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728638620;
-	bh=0yFtKQoVOjJqZvJsyiHOb8icb0oscB8+syNQOO/JFu4=;
+	s=default; t=1728644288;
+	bh=fqNWX9aJ4eQahTMafLFccTpsclKWxBQcLRTn0YneEJE=;
 	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qZkfES2KVjPHdiDoza/o00ooeHFrtIct8QULW8pOmhlvBdgzHG9YNE8cqr6V4d8w6
-	 l/JqiUY3pJ8291K1h6PbfKVHd043qelV2yPuwHBxiMtbnialTEa/W5gMfssi1Mc9+g
-	 k4xhGaiQPeecSBJYMT3egzoh2JHN3aWIlRtumt+k=
+	b=K7HK9dvuMFc+ODLPSDPzGYU3ruGwKA+33Dkee182yxBYUiPL13U11SP+4rafSFG9z
+	 52YbMIWXK/K4J6XtLe7VulwZIgHFrYCpdyK6d+y3UJ7GuwVl44vjEBCsbisjuPups8
+	 ypU8BAv58MyDaTu7KVmICDMRlVj7bkx33zDhvU6Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3EE08F8074E; Fri, 11 Oct 2024 11:21:02 +0200 (CEST)
+	id 3B44CF805AA; Fri, 11 Oct 2024 12:57:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5C91F8060E;
-	Fri, 11 Oct 2024 11:21:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33881F805A0;
+	Fri, 11 Oct 2024 12:57:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 220BFF80528; Fri, 11 Oct 2024 10:53:45 +0200 (CEST)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	id CDA64F80528; Fri, 11 Oct 2024 12:57:21 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D862EF80496
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 10:53:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D862EF80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id 704A9F80496
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 12:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 704A9F80496
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=N6YoSBhf
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 49B8rbxh024524;
-	Fri, 11 Oct 2024 03:53:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1728636817;
-	bh=+Shu2aoaU2vVehSY+LLbrY6m+HHX1k5cPbMb75n6AKY=;
-	h=From:To:CC:Subject:Date;
-	b=N6YoSBhfXO/KEWrZNVMhTG1OQ80/GWyLSbpUkh7Byvd8omCYsdkcB2QMqo85cFxhu
-	 VWPErC4HXTfUt+qdCVicPfrlrcfykHFA8wkmS1B95GNdW/tWb2LI02pik8JOGgus1j
-	 Daf0KAq4+sFdm0JyvgyXf6lfnb7QNlq7pf9Q7m8o=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTP id 49B8rbBD064864;
-	Fri, 11 Oct 2024 03:53:37 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Oct 2024 03:53:36 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Oct 2024 03:53:36 -0500
-Received: from lelvsmtp5.itg.ti.com ([10.250.165.138])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 49B8rS0M127994;
-	Fri, 11 Oct 2024 03:53:29 -0500
-From: Baojun Xu <baojun.xu@ti.com>
-To: <tiwai@suse.de>
-CC: <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <lgirdwood@gmail.com>, <perex@perex.cz>,
-        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
-        <shenghao-ding@ti.com>, <navada@ti.com>, <13916275206@139.com>,
-        <v-hampiholi@ti.com>, <v-po@ti.com>, <niranjan.hy@ti.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <liam.r.girdwood@intel.com>, <yung-chuan.liao@linux.intel.com>,
-        <baojun.xu@ti.com>, <broonie@kernel.org>, <soyer@irl.hu>
-Subject: [PATCH v1] ALSA: hda/tas2781: Add speaker id check for ASUS projects
-Date: Fri, 11 Oct 2024 16:53:03 +0800
-Message-ID: <20241011085303.738-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=NJMqXs4U
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 49B4pl5H015709;
+	Fri, 11 Oct 2024 05:57:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=PODMain02222019; bh=Fq85ne27V4BxqUHf
+	HjoSy3gS5VgWSSoTeX/P9lG8bcs=; b=NJMqXs4U6kaP9Gwq3xLZ5moBwa+d1Twi
+	AP596bjLRKyFwkWUynsIdhVPOcoUyYvrtbS/vZ3JhU7ZZferYzsmLf8Q0spIFBmW
+	UmWtNf8gd+1oHMqvwkeFSBXVIWtZie70DCtj0d7etgQafdfgqONGdn1lz85p9t9i
+	3f/M62vXnpI4E3fZ+qf/Ijl91IyXHcvZgReyw+IPd0I2W/aI/I5lwaLPTk6t+GfJ
+	+aA3nii5qYkvGQxgk18uyvIgJDWv1T5I6t5gIyVYvSuQ7DlroH9o5VdbUwGBrj2S
+	tSoeT3Nm2npv/OJHjiGpwgtQ6alTPW7nFZ+fsIbl7I+5vcg4WR5BNQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 4231vj0jph-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 11 Oct 2024 05:57:16 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 11 Oct
+ 2024 11:57:15 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Fri, 11 Oct 2024 11:57:15 +0100
+Received: from ediswws03.ad.cirrus.com (ediswws03.ad.cirrus.com
+ [198.90.208.11])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 16A2D820248;
+	Fri, 11 Oct 2024 10:57:15 +0000 (UTC)
+From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+To: <perex@perex.cz>
+CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        "Maciej
+ Strozek" <mstrozek@opensource.cirrus.com>
+Subject: [PATCH alsa-ucm-conf v3 1/2] sof-soundwire: Change map control names
+ to make them unique and user friendly
+Date: Fri, 11 Oct 2024 11:57:09 +0100
+Message-ID: <20241011105710.1998823-1-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-MailFrom: baojun.xu@ti.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-Proofpoint-GUID: Qe7lwCjOgYKVt6LnC5Ysgjqy9StZ8XIr
+X-Proofpoint-ORIG-GUID: Qe7lwCjOgYKVt6LnC5Ysgjqy9StZ8XIr
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: L7KUTCDPWRR3ALX56UAWZNPQKY6TTY3S
+X-Message-ID-Hash: L7KUTCDPWRR3ALX56UAWZNPQKY6TTY3S
+X-MailFrom: prvs=701410cdec=mstrozek@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: KHCSI75CCEUHSVCPPFNB7QUTHHA6CRUI
-X-Message-ID-Hash: KHCSI75CCEUHSVCPPFNB7QUTHHA6CRUI
-X-Mailman-Approved-At: Fri, 11 Oct 2024 09:20:31 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHCSI75CCEUHSVCPPFNB7QUTHHA6CRUI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L7KUTCDPWRR3ALX56UAWZNPQKY6TTY3S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,106 +105,99 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add speaker id check by gpio in ACPI for ASUS projects.
+Both 'Speaker Digital' and 'cs42l43 PDM2' names were found in other alsa
+controls, confusing the MixerElems paths. Make them unique to avoid errors for
+hardware mutes. Also add 'Capture' string into microphone controls to make
+them work properly.
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
 ---
- include/sound/tas2781.h         |  3 +++
- sound/pci/hda/tas2781_hda_i2c.c | 39 ++++++++++++++++++++++++++++++---
- 2 files changed, 39 insertions(+), 3 deletions(-)
+v3: Make Headset Microphone more user-friendly and contain the word "Capture"
+v2: Rename to "Speaker Playback" instead of "Speaker Combined"
+---
+ ucm2/codecs/cs42l43/init.conf          | 10 ++++++++--
+ ucm2/sof-soundwire/cs35l56-bridge.conf |  6 +++---
+ ucm2/sof-soundwire/cs42l43-dmic.conf   |  2 +-
+ ucm2/sof-soundwire/cs42l43.conf        |  2 +-
+ 4 files changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
-index 8cd6da0480b7..f8a3dc13cbbc 100644
---- a/include/sound/tas2781.h
-+++ b/include/sound/tas2781.h
-@@ -107,6 +107,8 @@
- #define TASDEVICE_CMD_DELAY		0x3
- #define TASDEVICE_CMD_FIELD_W		0x4
- 
-+#define TAS2781_ASUS_ID			0x10430000
-+
- enum audio_device {
- 	TAS2563,
- 	TAS2781,
-@@ -156,6 +158,7 @@ struct tasdevice_priv {
- 	struct tasdevice_rca rcabin;
- 	struct calidata cali_data;
- 	struct tasdevice_fw *fmw;
-+	struct gpio_desc *speaker_id;
- 	struct gpio_desc *reset;
- 	struct mutex codec_lock;
- 	struct regmap *regmap;
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index 370d847517f9..1f71927825b2 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -615,7 +615,7 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
- 	struct tasdevice_priv *tas_priv = context;
- 	struct tas2781_hda *tas_hda = dev_get_drvdata(tas_priv->dev);
- 	struct hda_codec *codec = tas_priv->codec;
--	int i, ret;
-+	int i, ret, spk_id;
- 
- 	pm_runtime_get_sync(tas_priv->dev);
- 	mutex_lock(&tas_priv->codec_lock);
-@@ -648,8 +648,23 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
- 	tasdevice_dsp_remove(tas_priv);
- 
- 	tas_priv->fw_state = TASDEVICE_DSP_FW_PENDING;
--	scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X.bin",
--		codec->core.subsystem_id & 0xffff);
-+	if ((codec->core.subsystem_id & 0xffff0000) == TAS2781_ASUS_ID) {
-+		// Speaker id need to be checked.
-+		if (tas_priv->speaker_id)
-+			spk_id = gpiod_get_value(tas_priv->speaker_id);
-+		else
-+			spk_id = 0;
-+		if (spk_id < 0 || spk_id > 1) {
-+			// Speaker id is not valid, use default.
-+			dev_dbg(tas_priv->dev, "Wrong spk_id = %d\n", spk_id);
-+			spk_id = 0;
+diff --git a/ucm2/codecs/cs42l43/init.conf b/ucm2/codecs/cs42l43/init.conf
+index 10a6e1f..b2796e2 100644
+--- a/ucm2/codecs/cs42l43/init.conf
++++ b/ucm2/codecs/cs42l43/init.conf
+@@ -2,13 +2,19 @@
+
+ LibraryConfig.remap.Config {
+ 	ctl.default.map {
+-		"name='cs42l43 PDM2 Switch'" {
++		"name='cs42l43 Microphone Capture Switch'" {
+ 			"name='cs42l43 Decimator 3 Switch'".vindex.0 0
+ 			"name='cs42l43 Decimator 4 Switch'".vindex.1 0
+ 		}
+-		"name='cs42l43 PDM2 Volume'" {
++		"name='cs42l43 Microphone Capture Volume'" {
+ 			"name='cs42l43 Decimator 3 Volume'".vindex.0 0
+ 			"name='cs42l43 Decimator 4 Volume'".vindex.1 0
+ 		}
++		"name='cs42l43 Headset Microphone Capture Switch'" {
++			"name='cs42l43 Decimator 1 Switch'".vindex.0 0
 +		}
-+		scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X%01d.bin",
-+			codec->core.subsystem_id & 0xffff, spk_id);
-+	} else {
-+		scnprintf(tas_priv->coef_binaryname, 64, "TAS2XXX%04X.bin",
-+			codec->core.subsystem_id & 0xffff);
-+	}
- 	ret = tasdevice_dsp_parser(tas_priv);
- 	if (ret) {
- 		dev_err(tas_priv->dev, "dspfw load %s error\n",
-@@ -787,6 +802,15 @@ static void tas2781_hda_remove(struct device *dev)
- 	tasdevice_remove(tas_hda->priv);
++		"name='cs42l43 Headset Microphone Capture Volume'" {
++			"name='cs42l43 Decimator 1 Volume'".vindex.0 0
++		}
+ 	}
  }
- 
-+static const struct acpi_gpio_params speakerid_gpios = { 0, 0, false };
-+static const struct acpi_gpio_params interrupt_gpios = { 1, 0, false };
-+
-+static const struct acpi_gpio_mapping tas2781_speaker_id_gpios[] = {
-+	{ "speakerid-gpios", &speakerid_gpios, 1 },
-+	{ "interrupt-gpios", &interrupt_gpios, 1 },
-+	{ }
-+};
-+
- static int tas2781_hda_i2c_probe(struct i2c_client *clt)
- {
- 	struct tas2781_hda *tas_hda;
-@@ -823,6 +847,15 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
- 	if (ret)
- 		return dev_err_probe(tas_hda->dev, ret,
- 			"Platform not supported\n");
-+	ret = devm_acpi_dev_add_driver_gpios(tas_hda->dev,
-+					     tas2781_speaker_id_gpios);
-+	if (ret)
-+		dev_info(tas_hda->dev, "Unable to add GPIO mapping table\n");
-+
-+	tas_hda->priv->speaker_id = devm_gpiod_get(tas_hda->dev, "speakerid",
-+						   GPIOD_IN);
-+	if (IS_ERR(tas_hda->priv->speaker_id))
-+		dev_info(tas_hda->dev, "Failed to get Speaker id gpio.\n");
- 
- 	ret = tasdevice_init(tas_hda->priv);
- 	if (ret)
--- 
-2.43.0
+diff --git a/ucm2/sof-soundwire/cs35l56-bridge.conf b/ucm2/sof-soundwire/cs35l56-bridge.conf
+index 5435b11..a3cf6ad 100644
+--- a/ucm2/sof-soundwire/cs35l56-bridge.conf
++++ b/ucm2/sof-soundwire/cs35l56-bridge.conf
+@@ -2,11 +2,11 @@
+
+ LibraryConfig.remap.Config {
+ 	ctl.default.map {
+-		"name='Speaker Digital Switch'" {
++		"name='Speaker Playback Switch'" {
+ 			"name='AMPL Speaker Switch'".vindex.0 0
+ 			"name='AMPR Speaker Switch'".vindex.1 0
+ 		}
+-		"name='Speaker Digital Volume'" {
++		"name='Speaker Playback Volume'" {
+ 			"name='AMPL Speaker Volume'".vindex.0 0
+ 			"name='AMPR Speaker Volume'".vindex.1 0
+ 		}
+@@ -56,6 +56,6 @@ SectionDevice."Speaker" {
+ 		PlaybackPriority 100
+ 		PlaybackPCM "hw:${CardId},0"
+ 		PlaybackMixer "default:${CardId}"
+-		PlaybackMixerElem "Speaker Digital"
++		PlaybackMixerElem "Speaker Playback"
+ 	}
+ }
+diff --git a/ucm2/sof-soundwire/cs42l43-dmic.conf b/ucm2/sof-soundwire/cs42l43-dmic.conf
+index d5f895d..b68a70d 100644
+--- a/ucm2/sof-soundwire/cs42l43-dmic.conf
++++ b/ucm2/sof-soundwire/cs42l43-dmic.conf
+@@ -21,6 +21,6 @@ SectionDevice."Mic" {
+ 		CapturePriority 100
+ 		CapturePCM "hw:${CardId},4"
+ 		CaptureMixer "default:${CardId}"
+-		CaptureMixerElem "cs42l43 PDM2"
++		CaptureMixerElem "cs42l43 Microphone"
+ 	}
+ }
+diff --git a/ucm2/sof-soundwire/cs42l43.conf b/ucm2/sof-soundwire/cs42l43.conf
+index 1702cf0..7e74fb8 100644
+--- a/ucm2/sof-soundwire/cs42l43.conf
++++ b/ucm2/sof-soundwire/cs42l43.conf
+@@ -40,7 +40,7 @@ SectionDevice."Headset" {
+ 	Value {
+ 		CapturePriority 200
+ 		CapturePCM "hw:${CardId},4"
+-		CaptureMixerElem "cs42l43 Decimator 1"
++		CaptureMixerElem "cs42l43 Headset Microphone"
+ 		JackControl "Headset Mic Jack"
+ 	}
+ }
+--
+2.39.5
 
