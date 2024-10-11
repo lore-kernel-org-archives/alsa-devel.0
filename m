@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D405D24462
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:26:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07E66D24462
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:26:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B8FD210F;
-	Fri, 11 Oct 2024 02:26:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B8FD210F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 624EB21B5;
+	Fri, 11 Oct 2024 02:26:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 624EB21B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728606373;
-	bh=4trjLWNIb819U9eQL0MDWHTJ/XtRtL19cAMVtQHvDsY=;
+	s=default; t=1728606384;
+	bh=aaxyCRw1AD1ff8sVrI+4ncHKxsls0eNZZADXQWxNF+0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=H5VIII3dwB+ZDnuhQdZgrHhPoNydkscHxj6bB28wC/IUnhhXQ35t/1ks2SkhxaZ6H
-	 7fVV8PlpCrMbcp4d3QTPQz0rgeHkf4qF7MgS3tHaoldbkf6bc6Ot/LTq5NNq6ByaJ7
-	 a/6nx0Hyt90pl4ZkLlyT3UDd4Vc9cdSAOMCkSPO8=
+	b=MnWu0Ocft9d2KabJFBieVCTb8ew2GCY9+8b+Yg3GDF+SjcZL1XQc27vFmoTUB3q0G
+	 825Ef4zgGK253qlioEerA2s3Rsmb7vVV5gazfIeD4gkxUgDKH1BF79GGLdWWTi84vo
+	 ix4JkdE6XVCJNUPYXXn0fpzMQlfo4V463BIVLFEM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58616F89B20; Fri, 11 Oct 2024 02:12:27 +0200 (CEST)
+	id 14286F89B32; Fri, 11 Oct 2024 02:12:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33555F80654;
-	Fri, 11 Oct 2024 02:12:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 237CCF89B29;
+	Fri, 11 Oct 2024 02:12:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 672C8F80C93; Fri, 11 Oct 2024 02:09:09 +0200 (CEST)
+	id 01679F80CAD; Fri, 11 Oct 2024 02:09:12 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4C879F805E1
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C879F805E1
+	by alsa1.perex.cz (Postfix) with ESMTPS id EB36EF8059F
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB36EF8059F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=Xj2NaaHX
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=NQXcoVpn
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 49AAbcrx020039;
+ 49ACRGjT022466;
 	Fri, 11 Oct 2024 00:07:20 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	2vezV3Zza/xgH0BZ3VNkKFXpb1xQQt3wj73SiZQny8c=; b=Xj2NaaHXVJOFXIif
-	yn/6Z6GFsgsGV79Ror7Num/QOirb4yzwAZ68AMJUt/STtKPQfx5mNBzACZy+irFL
-	Saod362zUuJVH+t68pTUkAfj/q//hteKxc4C5MQCYpai8Z86MRWZX9vSw5kut4dE
-	f0RHtSnyeMgn84aVkwlm60MpZWZ4+dUdat77fJMCfSCc6lA5Ok7SFs6aZaj/reCg
-	COhC4EcVRD/iHAu+zfyrClpVELovLYyGigFhQHmpxPjypppKMUa0TJ5AhiLIlZKw
-	p62pHoyRnbKaHRQMEFBchnT+7h/H1E00IJmW6EyE0F0pbPgraUr2pV3ubU5cQ3aj
-	arEbCQ==
+	IjexLbgTwBWjCfUumEPiufhDs3BE8h+iEIt5iTZ5I/c=; b=NQXcoVpnXovQFUlA
+	/3qhiE6d4WIw48bT3P/09xiksA9doRFYZmiC/djcT3Gw/OdExxjn05OhkzjlHBdD
+	jX0FevjRzUXD8mGaMz1R26S3E7J/mtC63YJ39Bre+aqgWhNklX176ucXCWZpYlqK
+	H8uDej4BFvhTINDKeEKT5jshR8OeZcMch3SAyVdJVNi8/RfnQ8Bkc08yLf7m2qdk
+	I7vvwXgk+aevYauB7kV8Jr9cCBtdYz2YiIqEf97PgIgvI4rIAnnnH06YJzNC2Ryk
+	NR9GjhOqb5/iiy+2Wx8FVWQhhaEepC0Neift5YqFIq+e5y+UpkSl04ntGywsT7/X
+	GmFo7w==
 Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 426db7hvk9-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 425xptv1f0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 00:07:20 +0000 (GMT)
+	Fri, 11 Oct 2024 00:07:19 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
 	by NALASPPMTA02.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 49B07JcY016431
+ 49B07IbC016421
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 00:07:19 GMT
+	Fri, 11 Oct 2024 00:07:18 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -82,10 +82,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v28 29/33] ALSA: usb-audio: qcom: Introduce QC USB SND
+Subject: [PATCH v28 28/32] ALSA: usb-audio: qcom: Introduce QC USB SND
  offloading support
-Date: Thu, 10 Oct 2024 17:06:43 -0700
-Message-ID: <20241011000650.2585600-59-quic_wcheng@quicinc.com>
+Date: Thu, 10 Oct 2024 17:06:41 -0700
+Message-ID: <20241011000650.2585600-57-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
 References: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
@@ -98,19 +98,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: 3q4rOatBbmj7Z87TpqKMQK8x7WZjmAlU
-X-Proofpoint-GUID: 3q4rOatBbmj7Z87TpqKMQK8x7WZjmAlU
+X-Proofpoint-ORIG-GUID: RsXaO9Y4CoM7erN9i2wqUGk3PIW3Jwzb
+X-Proofpoint-GUID: RsXaO9Y4CoM7erN9i2wqUGk3PIW3Jwzb
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 bulkscore=0
- malwarescore=0 mlxscore=0 phishscore=0 clxscore=1015 spamscore=0
- adultscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2409260000 definitions=main-2410100158
-Message-ID-Hash: APVEWYNKPQW775GU5LJKF7XZHOA64EIF
-X-Message-ID-Hash: APVEWYNKPQW775GU5LJKF7XZHOA64EIF
+ priorityscore=1501
+ adultscore=0 suspectscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015
+ impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2409260000 definitions=main-2410100159
+Message-ID-Hash: U6PSWQH2IKMBKBFJM2EAUNOOICNDKUZ4
+X-Message-ID-Hash: U6PSWQH2IKMBKBFJM2EAUNOOICNDKUZ4
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/APVEWYNKPQW775GU5LJKF7XZHOA64EIF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U6PSWQH2IKMBKBFJM2EAUNOOICNDKUZ4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -169,8 +169,8 @@ Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
  sound/usb/Kconfig                 |   15 +
  sound/usb/Makefile                |    2 +-
  sound/usb/qcom/Makefile           |    2 +
- sound/usb/qcom/qc_audio_offload.c | 1957 +++++++++++++++++++++++++++++
- 4 files changed, 1975 insertions(+), 1 deletion(-)
+ sound/usb/qcom/qc_audio_offload.c | 1951 +++++++++++++++++++++++++++++
+ 4 files changed, 1969 insertions(+), 1 deletion(-)
  create mode 100644 sound/usb/qcom/Makefile
  create mode 100644 sound/usb/qcom/qc_audio_offload.c
 
@@ -222,10 +222,10 @@ index 000000000000..a81c9b28d484
 \ No newline at end of file
 diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
 new file mode 100644
-index 000000000000..ca5be81a7fbd
+index 000000000000..4de4b8b3d2a2
 --- /dev/null
 +++ b/sound/usb/qcom/qc_audio_offload.c
-@@ -0,0 +1,1957 @@
+@@ -0,0 +1,1951 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
@@ -1739,26 +1739,20 @@ index 000000000000..ca5be81a7fbd
 +		if (info->data_ep_pipe) {
 +			ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
 +					       info->data_ep_pipe);
-+			if (ep) {
++			if (ep)
 +				xhci_sideband_stop_endpoint(uadev[pcm_card_num].sb,
 +							    ep);
-+				xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb,
-+							      ep);
-+			}
-+
++			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
 +			info->data_ep_pipe = 0;
 +		}
 +
 +		if (info->sync_ep_pipe) {
 +			ep = usb_pipe_endpoint(uadev[pcm_card_num].udev,
 +					       info->sync_ep_pipe);
-+			if (ep) {
++			if (ep)
 +				xhci_sideband_stop_endpoint(uadev[pcm_card_num].sb,
 +							    ep);
-+				xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb,
-+							      ep);
-+			}
-+
++			xhci_sideband_remove_endpoint(uadev[pcm_card_num].sb, ep);
 +			info->sync_ep_pipe = 0;
 +		}
 +
