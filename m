@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29A6ED2444F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:17:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B510DD2444F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2024 00:17:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FF75190B;
-	Fri, 11 Oct 2024 02:16:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FF75190B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAB91EDB;
+	Fri, 11 Oct 2024 02:17:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAB91EDB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728605822;
-	bh=FiFxYrrPO0f4AZFgLNMhwElfx+Sn2apeIdL47dNx34U=;
+	s=default; t=1728605839;
+	bh=t7n8rhO3AEi7st/FJuPVX9s4BxgP3J6zupir+2XpTCw=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KjWP8wv9O/hUx8Cow02c989yFzu8fnUBEQX6YSLFM+NygJCxmlW1/4P4qa/VzYdNU
-	 qign7cYv9yoK2E1zjCwNa/hjALqSlUHDoNJ0Vm/EoJeEXDZDjplpPJEiznffDjETUO
-	 CN7pQAWcdQybtRUmta1fEbLPV8OtIHnmoilXjAJQ=
+	b=G1dTT9775Rhj+Y15EQiUsjk7zch2aYTws7JE4gIKAgwvT7iJc/RfK+6wHd+WmBMUX
+	 R7IXs6Rb8HSVyA6ufaa2HXj3TSmuVLwdevC7I22KcETGvpYzW+MzlNtbSCI/yRiW3+
+	 4kZ7+lWqUuTEXgkQO9OCDxIhoIXYlidrcXNzVl2Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E73E6F897D8; Fri, 11 Oct 2024 02:10:10 +0200 (CEST)
+	id D01A9F89801; Fri, 11 Oct 2024 02:10:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 466E1F80600;
-	Fri, 11 Oct 2024 02:10:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D42EF897EC;
+	Fri, 11 Oct 2024 02:10:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3FAAF806A8; Fri, 11 Oct 2024 02:07:51 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id 42170F806A5; Fri, 11 Oct 2024 02:07:53 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2CB82F805B6
-	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CB82F805B6
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6E727F805B4
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2024 02:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E727F805B4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=k6D9d14g
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=TTafVq1j
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 49ABuv93009168;
-	Fri, 11 Oct 2024 00:07:12 GMT
+ 49AHLBQ7024403;
+	Fri, 11 Oct 2024 00:07:14 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	4SJdymAG2H1VKUMjaN5IwJUm/vorM6te+0pqk5xcZUQ=; b=k6D9d14gf95RevyS
-	DIf1CN2TPqQdRLm9AqS316SiTZxDd3LZmsh05FKeaN8H324WEPcivv4Uo8LP03mm
-	LCL7swvNQSdnplKLt7bUYM3VrjuK8EmEVDKV+lIKjDZOFZ3mDRVU5U50/9VhGZik
-	RLYE1vt9htgSJCGQsv5EO4xO4kVb2wyx2Y6NxolxHJ1BJrJyY89/j1FZ145nGRwB
-	aiOXBBftysHKjnOcqC9xX8hhxGFWZUWyPdEj+zcNuP9qyEMAGgCwgxSqxVJESRY/
-	q0t3HH+3xZjfGAGeECf0TIUBlP57azjAwWzJ+41ZuESxXJTtIe8nwM+7IBC+gAWA
-	aF7Log==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	swybFnIRHPLzluHHFQvvDyLicOhSUsPc7nkVL7emCFI=; b=TTafVq1jRYl8uQvS
+	Rx1z0RXwWY+MMeyTlX5LKqLM6QE2OH9WY6BMsk8hKUUC1j4A5Kkbotjegbq+KUsb
+	h84tC1xKxCaQ9GivS9S1yPR6gHtmwJmFwYh1o6Mu4AbWueoNJpCPpSet8x9CtXAm
+	yqY1xFwrTy6vaEmxMwR+tiFQE5dX1kNBGHDt5YlyqdaB+cFI+48VaS+tvZ4ax3j2
+	Z+aaaAhZzzTUzuLvIw0Q3j5Gs0hGybG0CVENnTSxJAS1K2PIHwDM3cc6WdJolsMz
+	sXklCQAjA+IwLTkFbpP5+EU52I6+KbEZxS4XxyUlgM3r5iN8X4rg47UNMxL/XwiG
+	aaMTtw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 425tn150w5-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 426adhjdnx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 00:07:12 +0000 (GMT)
+	Fri, 11 Oct 2024 00:07:13 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 49B07BYj009280
+	by NALASPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 49B07C8u015320
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 11 Oct 2024 00:07:11 GMT
+	Fri, 11 Oct 2024 00:07:12 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 10 Oct 2024 17:07:11 -0700
+ 15.2.1544.9; Thu, 10 Oct 2024 17:07:12 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <dmitry.torokhov@gmail.com>,
@@ -82,9 +82,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v28 16/33] ASoC: usb: Add PCM format check API for USB backend
-Date: Thu, 10 Oct 2024 17:06:16 -0700
-Message-ID: <20241011000650.2585600-32-quic_wcheng@quicinc.com>
+Subject: [PATCH v28 17/32] ASoC: usb: Fetch ASoC card and pcm device
+ information
+Date: Thu, 10 Oct 2024 17:06:19 -0700
+Message-ID: <20241011000650.2585600-35-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
 References: <20241011000650.2585600-1-quic_wcheng@quicinc.com>
@@ -97,19 +98,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: qTlhH1TDkyK1yhtseQsxlyHq4vJvwK25
-X-Proofpoint-GUID: qTlhH1TDkyK1yhtseQsxlyHq4vJvwK25
+X-Proofpoint-GUID: 4SLCCg8hUpH4QgYhx696zIWz2XYe_nBT
+X-Proofpoint-ORIG-GUID: 4SLCCg8hUpH4QgYhx696zIWz2XYe_nBT
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 bulkscore=0
- suspectscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410100159
-Message-ID-Hash: IBAWKRAUYB5MDENRNJBSFZBBFS6B6QDK
-X-Message-ID-Hash: IBAWKRAUYB5MDENRNJBSFZBBFS6B6QDK
+ malwarescore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 impostorscore=0 phishscore=0
+ bulkscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2409260000 definitions=main-2410100159
+Message-ID-Hash: GW4KCFJLEPILCB7TFQCMOK5IRBONOESG
+X-Message-ID-Hash: GW4KCFJLEPILCB7TFQCMOK5IRBONOESG
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -122,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IBAWKRAUYB5MDENRNJBSFZBBFS6B6QDK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GW4KCFJLEPILCB7TFQCMOK5IRBONOESG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,81 +132,108 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Introduce a helper to check if a particular PCM format is supported by the
-USB audio device connected.  If the USB audio device does not have an
-audio profile which can support the requested format, then notify the USB
-backend.
+USB SND needs to know how the USB offload path is being routed.  This would
+allow for applications to open the corresponding sound card and pcm device
+when it wants to take the audio offload path.  This callback should return
+the mapped indexes based on the USB SND device information.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- include/sound/soc-usb.h | 11 +++++++++++
- sound/soc/soc-usb.c     | 26 ++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ include/sound/soc-usb.h | 16 ++++++++++++++++
+ sound/soc/soc-usb.c     | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
 
 diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
-index 34240321bbca..db9ff0b4191d 100644
+index b32af08030ae..4c6af57291d8 100644
 --- a/include/sound/soc-usb.h
 +++ b/include/sound/soc-usb.h
-@@ -48,6 +48,10 @@ struct snd_soc_usb {
+@@ -36,6 +36,11 @@ struct snd_soc_usb_device {
+  * @list - list head for SND SOC struct list
+  * @component - reference to ASoC component
+  * @connection_status_cb - callback to notify connection events
++ * @update_offload_route_info - callback to fetch mapped ASoC card and pcm
++ *				device pair.  This is unrelated to the concept
++ *				of DAPM route.  The "route" argument carries
++ *				an array used for a kcontrol output and should
++ *				contain two integers, card and pcm device index
+  * @priv_data - driver data
+  **/
+ struct snd_soc_usb {
+@@ -44,6 +49,9 @@ struct snd_soc_usb {
+ 	int (*connection_status_cb)(struct snd_soc_usb *usb,
+ 				    struct snd_soc_usb_device *sdev,
+ 				    bool connected);
++	int (*update_offload_route_info)(struct snd_soc_component *component,
++					 int card, int pcm, int direction,
++					 long *route);
+ 	void *priv_data;
  };
  
- #if IS_ENABLED(CONFIG_SND_SOC_USB)
-+int snd_soc_usb_find_supported_format(int card_idx,
-+				      struct snd_pcm_hw_params *params,
-+				      int direction);
-+
- int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
- int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
- void *snd_soc_usb_find_priv_data(struct device *usbdev);
-@@ -58,6 +62,13 @@ void snd_soc_usb_free_port(struct snd_soc_usb *usb);
- void snd_soc_usb_add_port(struct snd_soc_usb *usb);
- void snd_soc_usb_remove_port(struct snd_soc_usb *usb);
- #else
-+static inline int
-+snd_soc_usb_find_supported_format(int card_idx, struct snd_pcm_hw_params *params,
-+				  int direction)
+@@ -59,6 +67,8 @@ void *snd_soc_usb_find_priv_data(struct device *usbdev);
+ int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
+ 				   struct snd_soc_jack *jack);
+ int snd_soc_usb_disable_offload_jack(struct snd_soc_component *component);
++int snd_soc_usb_update_offload_route(struct device *dev, int card, int pcm,
++				     int direction, long *route);
+ 
+ struct snd_soc_usb *snd_soc_usb_allocate_port(struct snd_soc_component *component,
+ 					      void *data);
+@@ -101,6 +111,12 @@ static inline int snd_soc_usb_disable_offload_jack(struct snd_soc_component *com
+ 	return 0;
+ }
+ 
++static int snd_soc_usb_update_offload_route(struct device *dev, int card, int pcm,
++					    int direction, long *route)
 +{
-+	return -EINVAL;
++	return -ENODEV;
 +}
 +
- static inline int snd_soc_usb_connect(struct device *usbdev,
- 				      struct snd_soc_usb_device *sdev)
+ static inline struct snd_soc_usb *
+ snd_soc_usb_allocate_port(struct snd_soc_component *component, void *data)
  {
 diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-index bd2d68164206..c63033468e4a 100644
+index 70d8f854c017..f88ccf90df32 100644
 --- a/sound/soc/soc-usb.c
 +++ b/sound/soc/soc-usb.c
-@@ -73,6 +73,32 @@ void *snd_soc_usb_find_priv_data(struct device *usbdev)
+@@ -118,6 +118,40 @@ int snd_soc_usb_disable_offload_jack(struct snd_soc_component *component)
  }
- EXPORT_SYMBOL_GPL(snd_soc_usb_find_priv_data);
+ EXPORT_SYMBOL_GPL(snd_soc_usb_disable_offload_jack);
  
 +/**
-+ * snd_soc_usb_find_supported_format() - Check if audio format is supported
-+ * @card_idx: USB sound chip array index
-+ * @params: PCM parameters
-+ * @direction: capture or playback
++ * snd_soc_usb_update_offload_route - Find active USB offload path
++ * @dev - USB device to get offload status
++ * @card - USB card index
++ * @pcm - USB PCM device index
++ * @direction - playback or capture direction
++ * @route - pointer to route output array
 + *
-+ * Ensure that a requested audio profile from the ASoC side is able to be
-+ * supported by the USB device.
-+ *
-+ * Return 0 on success, negative on error.
-+ *
++ * Fetch the current status for the USB SND card and PCM device indexes
++ * specified.  The "route" argument should be an array of integers being
++ * used for a kcontrol output.  The first element should have the selected
++ * card index, and the second element should have the selected pcm device
++ * index.
 + */
-+int snd_soc_usb_find_supported_format(int card_idx,
-+				      struct snd_pcm_hw_params *params,
-+				      int direction)
++int snd_soc_usb_update_offload_route(struct device *dev, int card, int pcm,
++				     int direction, long *route)
 +{
-+	struct snd_usb_stream *as;
++	struct snd_soc_usb *ctx;
++	int ret;
 +
-+	as = snd_usb_find_suppported_substream(card_idx, params, direction);
-+	if (!as)
-+		return -EOPNOTSUPP;
++	ctx = snd_soc_find_usb_ctx(dev);
++	if (!ctx)
++		return -ENODEV;
 +
-+	return 0;
++	mutex_lock(&ctx_mutex);
++	if (ctx && ctx->update_offload_route_info)
++		ret = ctx->update_offload_route_info(ctx->component, card, pcm,
++						     direction, route);
++	mutex_unlock(&ctx_mutex);
++
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_find_supported_format);
++EXPORT_SYMBOL_GPL(snd_soc_usb_update_offload_route);
 +
  /**
-  * snd_soc_usb_allocate_port() - allocate a SOC USB port for offloading support
-  * @component: USB DPCM backend DAI component
+  * snd_soc_usb_find_priv_data() - Retrieve private data stored
+  * @usbdev: device reference
