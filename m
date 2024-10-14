@@ -4,83 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D935BCFC52C
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2024 09:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BEB1CFC52C
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2024 09:54:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20BD686E;
-	Mon, 14 Oct 2024 11:32:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20BD686E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 452F4DE5;
+	Mon, 14 Oct 2024 11:53:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 452F4DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1728898376;
-	bh=IlDfWywMkDy1/yps7ONr78oYawji6pl/sxY/6NJ20rg=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=eAtLPWZ2psDtO+5adikGXeanAg3EmTmCs1/skIYsAqoAyJLYOgJcSRILRsGlDrzQ7
-	 Stju09FbEhs/roGr13/gmfgN7llSAf+wjaVMCi623mZ4rSEd0NFQ6kKdBf+IZPf0tY
-	 n1nKe5fsLj6rest7Boc+9wxOh1b9TpfNLnxMksM0=
+	s=default; t=1728899648;
+	bh=wTznNRxq4Ol6evXe6YrBE+3/cUzghRmBUThX1urQc6c=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Pw2fYdHY7mV7OPG+bq94Gp6C7B6P4ACrKS0t3arYOu2JpWUuSOJaPFEdlQg9XfwtG
+	 uuO5oft1NvAbV8yFobT4aTYQIELI5ki4Lsk0olKRZd3/l1isLnsROkURlKeWdKSX9y
+	 QzSTGK8C342PEr1QtqQJQf5zQ5Z45DDokYgPvzoA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A254F805DA; Mon, 14 Oct 2024 11:32:18 +0200 (CEST)
+	id D325DF805AC; Mon, 14 Oct 2024 11:53:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2A70F805C2;
-	Mon, 14 Oct 2024 11:32:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E4F1F805A9;
+	Mon, 14 Oct 2024 11:53:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4683F805C0; Mon, 14 Oct 2024 11:32:11 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	id 29F0AF80448; Mon, 14 Oct 2024 11:53:29 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 36F5AF805B0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2024 11:32:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36F5AF805B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id D5A02F80104
+	for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2024 11:53:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5A02F80104
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=en5S8Nkq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728898330; x=1760434330;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=IlDfWywMkDy1/yps7ONr78oYawji6pl/sxY/6NJ20rg=;
-  b=en5S8NkqyHEY1SzpIpa2eR0w6cBzcVBDT4fq+ONetnSuJ8PVoXmbFXpO
-   qICHpRi3V/k1gobhvbjR+spuMFBIqR6E/bGLg5dTlMpTvuhSJg+kFEKFh
-   uO0TnY5kf3tUA0UIdKw6eVvJLex3D/W6aNUYqmpfmuOnc/8aSmJ+AUpP+
-   8EYsF+Bq7erJOmkc1AR1SBOcyghYZZ1MUkfaFwfQtydTAbwzC1JYU6HLR
-   y8cNku43jXwKc/EZPe4JrrQ323SL2CNvw2RvBAmL4BkP78XXs04gswEsS
-   biMBIFAGOXJORYULue0mky9p8r1+sODbYsGHXBGT3PI2I5QmVf6/MZidD
-   w==;
-X-CSE-ConnectionGUID: 36IlHgMPS6aFhoFBCHRDew==
-X-CSE-MsgGUID: 3sBRJPA7Rdik35zJ61NPrg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11224"; a="27696089"
-X-IronPort-AV: E=Sophos;i="6.11,202,1725346800";
-   d="scan'208";a="27696089"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Oct 2024 02:31:58 -0700
-X-CSE-ConnectionGUID: CwdgGs0gRrOD9okJXw9a0A==
-X-CSE-MsgGUID: zgJJtuqtT+eHvjyWgOaWaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,202,1725346800";
-   d="scan'208";a="81515024"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 14 Oct 2024 02:31:57 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t0HQh-000F8n-0E;
-	Mon, 14 Oct 2024 09:31:55 +0000
-Date: Mon, 14 Oct 2024 17:31:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org
-Subject: [tiwai-sound:for-next 9/14] sound/pci/hda/hda_local.h:312:58: error:
- 'const struct hda_quirk' has no member named 'name'
-Message-ID: <202410141700.bF6I8r36-lkp@intel.com>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=qvrvoKJX
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 49E5B8Wv014355;
+	Mon, 14 Oct 2024 04:53:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=PODMain02222019; bh=n5EOpM0QtmkhjQP2SV
+	HPp5yw+kmLesybGOkVGs2/VvU=; b=qvrvoKJXGcQoDkzT2X5ov19HcxPBN99zwY
+	pddlGKyiSmvXJcbRfU9bzmFMlVQau/11ye01tW1IRmPVrCJDZUMMWR9d/iaFLens
+	2HYA44Tp23nlq3SgA2WI3h6eVdfC+Oo54tNikzC7uATYgVsYMtxmCjDBZhBg9SEw
+	0wOsSvnq0PPbbJ1w9NgVIs/xa2T6JeCyB66nJMO6KY3TY5rz0GjEkx7kArmoAhVn
+	0+GcEFP8mkhKeNPdUbABql/yShbI47iACA/k8jXhRgzN41Mnm4yw0eXAtRtmHYzN
+	GE4DUfHcRk1BL4oEevXVCD+9MsfsQ6+J8vucz0OpWcAx7n2Zdl5Q==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 427pgxhyqk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 14 Oct 2024 04:53:23 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 14 Oct
+ 2024 10:53:21 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
+ 15.2.1544.9 via Frontend Transport; Mon, 14 Oct 2024 10:53:21 +0100
+Received: from opensource.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 6491B820248;
+	Mon, 14 Oct 2024 09:53:21 +0000 (UTC)
+Date: Mon, 14 Oct 2024 10:53:20 +0100
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>
+CC: <perex@perex.cz>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>
+Subject: Re: [PATCH alsa-ucm-conf v3 1/2] sof-soundwire: Change map control
+ names to make them unique and user friendly
+Message-ID: <ZwzqEO3lokmsoBbC@opensource.cirrus.com>
+References: <20241011105710.1998823-1-mstrozek@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Message-ID-Hash: ABW3BYRKEUP5QNJZMMJM4KSEMVKCE2KL
-X-Message-ID-Hash: ABW3BYRKEUP5QNJZMMJM4KSEMVKCE2KL
-X-MailFrom: lkp@intel.com
+In-Reply-To: <20241011105710.1998823-1-mstrozek@opensource.cirrus.com>
+X-Proofpoint-GUID: 9jcXcqNCpJWxYw5KeKA3GUZ5GoL-KryX
+X-Proofpoint-ORIG-GUID: 9jcXcqNCpJWxYw5KeKA3GUZ5GoL-KryX
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: BENVJ4W2E4HJP6OIYDZPH4JJ37ZPLGOJ
+X-Message-ID-Hash: BENVJ4W2E4HJP6OIYDZPH4JJ37ZPLGOJ
+X-MailFrom: prvs=701735cebf=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ABW3BYRKEUP5QNJZMMJM4KSEMVKCE2KL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BENVJ4W2E4HJP6OIYDZPH4JJ37ZPLGOJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,76 +105,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-head:   0ddf2784d6c29e59409a62b8f32dc5abe56135a4
-commit: 1f55e3699fc9ced72400cdca39fe248bf2b288a2 [9/14] ALSA: hda/conexant: Use the new codec SSID matching
-config: i386-buildonly-randconfig-006-20241014 (https://download.01.org/0day-ci/archive/20241014/202410141700.bF6I8r36-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241014/202410141700.bF6I8r36-lkp@intel.com/reproduce)
+On Fri, Oct 11, 2024 at 11:57:09AM +0100, Maciej Strozek wrote:
+> Both 'Speaker Digital' and 'cs42l43 PDM2' names were found in other alsa
+> controls, confusing the MixerElems paths. Make them unique to avoid errors for
+> hardware mutes. Also add 'Capture' string into microphone controls to make
+> them work properly.
+> 
+> Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+> ---
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410141700.bF6I8r36-lkp@intel.com/
+Both patches look good to me:
 
-Note: the tiwai-sound/for-next HEAD 0ddf2784d6c29e59409a62b8f32dc5abe56135a4 builds fine.
-      It only hurts bisectability.
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-All error/warnings (new ones prefixed by >>):
-
-   In file included from sound/pci/hda/patch_conexant.c:18:
->> sound/pci/hda/hda_local.h:312:58: error: 'const struct hda_quirk' has no member named 'name'
-     312 |         { _SND_PCI_QUIRK_ID(vend, dev), .value = (val), .name = (xname),\
-         |                                                          ^~~~
-   sound/pci/hda/patch_conexant.c:1081:9: note: in expansion of macro 'HDA_CODEC_QUIRK'
-    1081 |         HDA_CODEC_QUIRK(0x2782, 0x12c3, "Sirius Gen1", CXT_PINCFG_TOP_SPEAKER),
-         |         ^~~~~~~~~~~~~~~
->> sound/pci/hda/hda_local.h:312:65: warning: excess elements in struct initializer
-     312 |         { _SND_PCI_QUIRK_ID(vend, dev), .value = (val), .name = (xname),\
-         |                                                                 ^
-   sound/pci/hda/patch_conexant.c:1081:9: note: in expansion of macro 'HDA_CODEC_QUIRK'
-    1081 |         HDA_CODEC_QUIRK(0x2782, 0x12c3, "Sirius Gen1", CXT_PINCFG_TOP_SPEAKER),
-         |         ^~~~~~~~~~~~~~~
-   sound/pci/hda/hda_local.h:312:65: note: (near initialization for 'cxt5066_fixups[47]')
-     312 |         { _SND_PCI_QUIRK_ID(vend, dev), .value = (val), .name = (xname),\
-         |                                                                 ^
-   sound/pci/hda/patch_conexant.c:1081:9: note: in expansion of macro 'HDA_CODEC_QUIRK'
-    1081 |         HDA_CODEC_QUIRK(0x2782, 0x12c3, "Sirius Gen1", CXT_PINCFG_TOP_SPEAKER),
-         |         ^~~~~~~~~~~~~~~
->> sound/pci/hda/hda_local.h:312:58: error: 'const struct hda_quirk' has no member named 'name'
-     312 |         { _SND_PCI_QUIRK_ID(vend, dev), .value = (val), .name = (xname),\
-         |                                                          ^~~~
-   sound/pci/hda/patch_conexant.c:1082:9: note: in expansion of macro 'HDA_CODEC_QUIRK'
-    1082 |         HDA_CODEC_QUIRK(0x2782, 0x12c5, "Sirius Gen2", CXT_PINCFG_TOP_SPEAKER),
-         |         ^~~~~~~~~~~~~~~
->> sound/pci/hda/hda_local.h:312:65: warning: excess elements in struct initializer
-     312 |         { _SND_PCI_QUIRK_ID(vend, dev), .value = (val), .name = (xname),\
-         |                                                                 ^
-   sound/pci/hda/patch_conexant.c:1082:9: note: in expansion of macro 'HDA_CODEC_QUIRK'
-    1082 |         HDA_CODEC_QUIRK(0x2782, 0x12c5, "Sirius Gen2", CXT_PINCFG_TOP_SPEAKER),
-         |         ^~~~~~~~~~~~~~~
-   sound/pci/hda/hda_local.h:312:65: note: (near initialization for 'cxt5066_fixups[48]')
-     312 |         { _SND_PCI_QUIRK_ID(vend, dev), .value = (val), .name = (xname),\
-         |                                                                 ^
-   sound/pci/hda/patch_conexant.c:1082:9: note: in expansion of macro 'HDA_CODEC_QUIRK'
-    1082 |         HDA_CODEC_QUIRK(0x2782, 0x12c5, "Sirius Gen2", CXT_PINCFG_TOP_SPEAKER),
-         |         ^~~~~~~~~~~~~~~
-
-
-vim +312 sound/pci/hda/hda_local.h
-
-5b1913a79c3e05 Takashi Iwai 2024-10-08  310  
-5b1913a79c3e05 Takashi Iwai 2024-10-08  311  #define HDA_CODEC_QUIRK(vend, dev, xname, val) \
-5b1913a79c3e05 Takashi Iwai 2024-10-08 @312  	{ _SND_PCI_QUIRK_ID(vend, dev), .value = (val), .name = (xname),\
-5b1913a79c3e05 Takashi Iwai 2024-10-08  313  			.match_codec_ssid = true }
-5b1913a79c3e05 Takashi Iwai 2024-10-08  314  
-
-:::::: The code at line 312 was first introduced by commit
-:::::: 5b1913a79c3e0518d9c5db343fa9fc4edcea041f ALSA: hda: Use own quirk lookup helper
-
-:::::: TO: Takashi Iwai <tiwai@suse.de>
-:::::: CC: Takashi Iwai <tiwai@suse.de>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Charles
