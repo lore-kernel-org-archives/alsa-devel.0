@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DD91D1F9D8
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2024 21:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3BEFD1F9DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2024 21:36:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC3FEE65;
-	Tue, 15 Oct 2024 23:36:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC3FEE65
+	by alsa0.perex.cz (Postfix) with ESMTPS id E262516B7;
+	Tue, 15 Oct 2024 23:36:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E262516B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1729028175;
-	bh=h9Y1cdj3S7SChaa7F6arX081nDigjqC1HDiLCdhPpJc=;
+	s=default; t=1729028190;
+	bh=2azGS4Mn0hl3bJLIVZjYNoRlE2MsVGBfb5n8aG0ud74=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S8Usk12AzVrEubLXy0aoEk3ZX5HqomoXZRzLuvTioGGSXSJrqRogeFoPurYbSp0RJ
-	 Fb6YL83SWAteGtLrn1WdvOgScXla9cGtwB7Y3PfTn33mJ1rWMfj1hlHSGsg8K+mPUy
-	 NB9erk/6GwBwjxtixQ/31Ug/0okudLkuIjF1iTdg=
+	b=PoDS1IO9v6P/crsorD6bnza4nMDKDqwgw2erV/azJkd0kxuG/LRrVSG5goApkNFzK
+	 fBwjqFz6BrW13zdZOt6mv12o/BGwHBfBWbzxBQDi44E30wiyIGP9ZJPQJvOz2ZSa0w
+	 ePxwmlW0oXr/wKfM2seWLQZVY1BX3poZlHbQKzKM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A80BEF80630; Tue, 15 Oct 2024 23:31:11 +0200 (CEST)
+	id 20293F89721; Tue, 15 Oct 2024 23:31:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CF8AF8970E;
-	Tue, 15 Oct 2024 23:31:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 700D5F89721;
+	Tue, 15 Oct 2024 23:31:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3578FF805AE; Tue, 15 Oct 2024 23:30:07 +0200 (CEST)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id 468D2F8067E; Tue, 15 Oct 2024 23:30:10 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7C77F805AE
-	for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2024 23:29:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7C77F805AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id ACE24F80527
+	for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2024 23:29:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACE24F80527
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=hvMjvO5I
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=VKGBFrTw
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 49FHowJY007419;
-	Tue, 15 Oct 2024 21:29:36 GMT
+ 49FJG82n003634;
+	Tue, 15 Oct 2024 21:29:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	tcQSUGQDNQN5yLhmKTUokyJRkF6R5HGF/HngXA/tYEM=; b=hvMjvO5IrS/qE0HO
-	UZPwXrhV/WAO2OG83EDsVwMDu9QMJKQ0ynYG4oVUv198+4NinlueVloJpFlOekWa
-	Ptl+uoJ8f0JPlEFiaSVqEBg4mW7GIbMtF8CwY1oBOGSw6LSTd+UM8IvKxF8bHnGC
-	uy/I6Xvg2bm4vO8UeBNT2e0/52unWLHwdQG2prmuJCYzirUmsiHP03i3GnUMdPQI
-	/p3X2GzNOigfgzq0l+mXPMlQ29TMOXCbC7FtwC1NWW20WT1kgSsgpKwGdbZIyc9Y
-	Mdl9L4ImEw83fWbitssC3M4kJK09mYxMmgr5WewTdFblIQpR3rQAKVpF6If/PpNo
-	y/W+bg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	8pUtfboEtVwzj3gvJFEJdvS9Fn04qc2yCNOn552kLBs=; b=VKGBFrTwEMeZEZNV
+	wNPw0MOUr20Xy2mZQX1ZA67V78NkyCR68MyCzxVyq6lRilu2P7P2zmVea/AYp1DF
+	aecVcgYp5j4ASWeS8GNAJAemkkErY+UMFz4c4zWKaFT2un+tkEWt1kUG89C3kEiR
+	W7o6TXhzCYf5idhU0qC+J+n15xeXvg3xv3IIJNYMrAfCOIuTeYwG92+vjYxY02j3
+	ltzEMajGusM6t5Amd0UDraSdshVmc5dGD8x5pgjpjExFgZMeGVSUqeIhfjXyhor2
+	AhQLXIK7UeodjZ1u+pPm5bQ2FQUBSfMmzGuPXHzQIkdmseEgoik9k2Vfzo0whBqh
+	BTcSew==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 429mh5287v-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 429xdb8a2g-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 21:29:35 +0000 (GMT)
+	Tue, 15 Oct 2024 21:29:28 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 49FLTUaD029927
+	by NALASPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 49FLTRWL026390
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 21:29:30 GMT
+	Tue, 15 Oct 2024 21:29:28 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Tue, 15 Oct 2024 14:29:29 -0700
+ 15.2.1544.9; Tue, 15 Oct 2024 14:29:27 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <dmitry.torokhov@gmail.com>,
@@ -82,9 +82,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v29 11/33] ALSA: usb-audio: Export USB SND APIs for modules
-Date: Tue, 15 Oct 2024 14:28:53 -0700
-Message-ID: <20241015212915.1206789-12-quic_wcheng@quicinc.com>
+Subject: [PATCH v29 03/33] usb: host: xhci: Repurpose event handler for
+ skipping interrupter events
+Date: Tue, 15 Oct 2024 14:28:45 -0700
+Message-ID: <20241015212915.1206789-4-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241015212915.1206789-1-quic_wcheng@quicinc.com>
 References: <20241015212915.1206789-1-quic_wcheng@quicinc.com>
@@ -97,19 +98,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: FnuM62IFb5YuBfdiPk0ZAiHCAmBpZwqN
-X-Proofpoint-ORIG-GUID: FnuM62IFb5YuBfdiPk0ZAiHCAmBpZwqN
+X-Proofpoint-ORIG-GUID: CYwzxnLAF86VcLP-4puC6RHVMlXjokcH
+X-Proofpoint-GUID: CYwzxnLAF86VcLP-4puC6RHVMlXjokcH
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 adultscore=0 mlxlogscore=999
- lowpriorityscore=0 mlxscore=0 phishscore=0 malwarescore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ spamscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=929 impostorscore=0
+ phishscore=0 clxscore=1015 adultscore=0 mlxscore=0 malwarescore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2409260000 definitions=main-2410150143
-Message-ID-Hash: YPCIJQBFM5OWKRPVAQLT2HIT63XJQK6X
-X-Message-ID-Hash: YPCIJQBFM5OWKRPVAQLT2HIT63XJQK6X
+Message-ID-Hash: M3EDVFV36CWTYN362RQQWW2GQRP4T3OI
+X-Message-ID-Hash: M3EDVFV36CWTYN362RQQWW2GQRP4T3OI
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -122,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YPCIJQBFM5OWKRPVAQLT2HIT63XJQK6X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M3EDVFV36CWTYN362RQQWW2GQRP4T3OI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,238 +132,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some vendor modules will utilize useful parsing and endpoint management
-APIs to start audio playback/capture.
+Depending on the interrupter use case, the OS may only be used to handle
+the interrupter event ring clean up.  In these scenarios, event TRBs don't
+need to be handled by the OS, so introduce an xhci interrupter flag to tag
+if the events from an interrupter needs to be handled or not.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/card.c     |  4 +++
- sound/usb/endpoint.c |  1 +
- sound/usb/helper.c   |  1 +
- sound/usb/pcm.c      | 75 +++++++++++++++++++++++++++++++-------------
- sound/usb/pcm.h      | 11 +++++++
- 5 files changed, 71 insertions(+), 21 deletions(-)
+ drivers/usb/host/xhci-ring.c | 17 +++++++++++++----
+ drivers/usb/host/xhci.h      |  1 +
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index bdb04fa37a71..c6d9d8d548b4 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -1022,6 +1022,7 @@ int snd_usb_lock_shutdown(struct snd_usb_audio *chip)
- 		wake_up(&chip->shutdown_wait);
- 	return err;
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 9e90d2952760..74bdc94d863b 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -2951,14 +2951,22 @@ static int handle_tx_event(struct xhci_hcd *xhci,
  }
-+EXPORT_SYMBOL_GPL(snd_usb_lock_shutdown);
- 
- /* autosuspend and unlock the shutdown */
- void snd_usb_unlock_shutdown(struct snd_usb_audio *chip)
-@@ -1030,6 +1031,7 @@ void snd_usb_unlock_shutdown(struct snd_usb_audio *chip)
- 	if (atomic_dec_and_test(&chip->usage_count))
- 		wake_up(&chip->shutdown_wait);
- }
-+EXPORT_SYMBOL_GPL(snd_usb_unlock_shutdown);
- 
- int snd_usb_autoresume(struct snd_usb_audio *chip)
- {
-@@ -1052,6 +1054,7 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
- 	}
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_usb_autoresume);
- 
- void snd_usb_autosuspend(struct snd_usb_audio *chip)
- {
-@@ -1065,6 +1068,7 @@ void snd_usb_autosuspend(struct snd_usb_audio *chip)
- 	for (i = 0; i < chip->num_interfaces; i++)
- 		usb_autopm_put_interface(chip->intf[i]);
- }
-+EXPORT_SYMBOL_GPL(snd_usb_autosuspend);
- 
- static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- {
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 8f65349a06d3..9876abb80853 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1513,6 +1513,7 @@ int snd_usb_endpoint_prepare(struct snd_usb_audio *chip,
- 	mutex_unlock(&chip->mutex);
- 	return err;
- }
-+EXPORT_SYMBOL_GPL(snd_usb_endpoint_prepare);
- 
- /* get the current rate set to the given clock by any endpoint */
- int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
-diff --git a/sound/usb/helper.c b/sound/usb/helper.c
-index bf80e55d013a..4322ae3738e6 100644
---- a/sound/usb/helper.c
-+++ b/sound/usb/helper.c
-@@ -62,6 +62,7 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
- 	}
- 	return NULL;
- }
-+EXPORT_SYMBOL_GPL(snd_usb_find_csint_desc);
  
  /*
-  * Wrapper for usb_control_msg().
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 08bf535ed163..18467da6fd9e 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -148,6 +148,16 @@ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
- 	return found;
- }
- 
-+const struct audioformat *
-+snd_usb_find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
-+		    unsigned int rate, unsigned int channels, bool strict_match,
-+		    struct snd_usb_substream *subs)
-+{
-+	return find_format(fmt_list_head, format, rate, channels, strict_match,
-+			subs);
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_find_format);
-+
- static const struct audioformat *
- find_substream_format(struct snd_usb_substream *subs,
- 		      const struct snd_pcm_hw_params *params)
-@@ -157,6 +167,14 @@ find_substream_format(struct snd_usb_substream *subs,
- 			   true, subs);
- }
- 
-+const struct audioformat *
-+snd_usb_find_substream_format(struct snd_usb_substream *subs,
-+			      const struct snd_pcm_hw_params *params)
-+{
-+	return find_substream_format(subs, params);
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_find_substream_format);
-+
- bool snd_usb_pcm_has_fixed_rate(struct snd_usb_substream *subs)
- {
- 	const struct audioformat *fp;
-@@ -461,20 +479,9 @@ static void close_endpoints(struct snd_usb_audio *chip,
- 	}
- }
- 
--/*
-- * hw_params callback
-- *
-- * allocate a buffer and set the given audio format.
-- *
-- * so far we use a physically linear buffer although packetize transfer
-- * doesn't need a continuous area.
-- * if sg buffer is supported on the later version of alsa, we'll follow
-- * that.
-- */
--static int snd_usb_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *hw_params)
-+int snd_usb_hw_params(struct snd_usb_substream *subs,
-+		      struct snd_pcm_hw_params *hw_params)
- {
--	struct snd_usb_substream *subs = substream->runtime->private_data;
- 	struct snd_usb_audio *chip = subs->stream->chip;
- 	const struct audioformat *fmt;
- 	const struct audioformat *sync_fmt;
-@@ -499,7 +506,7 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 	if (fmt->implicit_fb) {
- 		sync_fmt = snd_usb_find_implicit_fb_sync_format(chip, fmt,
- 								hw_params,
--								!substream->stream,
-+								!subs->direction,
- 								&sync_fixed_rate);
- 		if (!sync_fmt) {
- 			usb_audio_dbg(chip,
-@@ -579,15 +586,28 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(snd_usb_hw_params);
- 
- /*
-- * hw_free callback
-+ * hw_params callback
-  *
-- * reset the audio format and release the buffer
-+ * allocate a buffer and set the given audio format.
-+ *
-+ * so far we use a physically linear buffer although packetize transfer
-+ * doesn't need a continuous area.
-+ * if sg buffer is supported on the later version of alsa, we'll follow
-+ * that.
+- * This function handles one OS-owned event on the event ring. It may drop
+- * xhci->lock between event processing (e.g. to pass up port status changes).
++ * This function handles one OS-owned event on the event ring, or ignores one event
++ * on interrupters which are non-OS owned. It may drop xhci->lock between event
++ * processing (e.g. to pass up port status changes).
   */
--static int snd_usb_hw_free(struct snd_pcm_substream *substream)
-+static int snd_usb_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *hw_params)
+ static int xhci_handle_event_trb(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
+ 				 union xhci_trb *event)
  {
- 	struct snd_usb_substream *subs = substream->runtime->private_data;
-+
-+	return snd_usb_hw_params(subs, hw_params);
-+}
-+
-+int snd_usb_hw_free(struct snd_usb_substream *subs)
-+{
- 	struct snd_usb_audio *chip = subs->stream->chip;
+ 	u32 trb_type;
  
- 	snd_media_stop_pipeline(subs);
-@@ -603,6 +623,19 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
++	/*
++	 * Some interrupters do not need to handle event TRBs, as they may be
++	 * managed by another entity, but rely on the OS to clean up.
++	 */
++	if (ir->skip_events)
++		return 0;
++
+ 	trace_xhci_handle_event(ir->event_ring, &event->generic);
  
- 	return 0;
+ 	/*
+@@ -3047,8 +3055,9 @@ static void xhci_clear_interrupt_pending(struct xhci_hcd *xhci,
  }
-+EXPORT_SYMBOL_GPL(snd_usb_hw_free);
-+
-+/*
-+ * hw_free callback
-+ *
-+ * reset the audio format and release the buffer
-+ */
-+static int snd_usb_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_usb_substream *subs = substream->runtime->private_data;
-+
-+	return snd_usb_hw_free(subs);
-+}
  
- /* free-wheeling mode? (e.g. dmix) */
- static int in_free_wheeling_mode(struct snd_pcm_runtime *runtime)
-@@ -1746,8 +1779,8 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
- static const struct snd_pcm_ops snd_usb_playback_ops = {
- 	.open =		snd_usb_pcm_open,
- 	.close =	snd_usb_pcm_close,
--	.hw_params =	snd_usb_hw_params,
--	.hw_free =	snd_usb_hw_free,
-+	.hw_params =	snd_usb_pcm_hw_params,
-+	.hw_free =	snd_usb_pcm_hw_free,
- 	.prepare =	snd_usb_pcm_prepare,
- 	.trigger =	snd_usb_substream_playback_trigger,
- 	.sync_stop =	snd_usb_pcm_sync_stop,
-@@ -1758,8 +1791,8 @@ static const struct snd_pcm_ops snd_usb_playback_ops = {
- static const struct snd_pcm_ops snd_usb_capture_ops = {
- 	.open =		snd_usb_pcm_open,
- 	.close =	snd_usb_pcm_close,
--	.hw_params =	snd_usb_hw_params,
--	.hw_free =	snd_usb_hw_free,
-+	.hw_params =	snd_usb_pcm_hw_params,
-+	.hw_free =	snd_usb_pcm_hw_free,
- 	.prepare =	snd_usb_pcm_prepare,
- 	.trigger =	snd_usb_substream_capture_trigger,
- 	.sync_stop =	snd_usb_pcm_sync_stop,
-diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
-index 388fe2ba346d..c096021adb2b 100644
---- a/sound/usb/pcm.h
-+++ b/sound/usb/pcm.h
-@@ -15,4 +15,15 @@ void snd_usb_preallocate_buffer(struct snd_usb_substream *subs);
- int snd_usb_audioformat_set_sync_ep(struct snd_usb_audio *chip,
- 				    struct audioformat *fmt);
- 
-+const struct audioformat *
-+snd_usb_find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
-+		    unsigned int rate, unsigned int channels, bool strict_match,
-+		    struct snd_usb_substream *subs);
-+const struct audioformat *
-+snd_usb_find_substream_format(struct snd_usb_substream *subs,
-+			      const struct snd_pcm_hw_params *params);
-+
-+int snd_usb_hw_params(struct snd_usb_substream *subs,
-+		      struct snd_pcm_hw_params *hw_params);
-+int snd_usb_hw_free(struct snd_usb_substream *subs);
- #endif /* __USBAUDIO_PCM_H */
+ /*
+- * Handle all OS-owned events on an interrupter event ring. It may drop
+- * and reaquire xhci->lock between event processing.
++ * Handle all OS-owned events on an interrupter event ring, or skip pending events
++ * for non OS owned interrupter event ring. It may drop and reacquire xhci->lock
++ * between event processing.
+  */
+ static int xhci_handle_events(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+ {
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 51a992d8ffcf..a6fbfc11fb1d 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1430,6 +1430,7 @@ struct xhci_interrupter {
+ 	struct xhci_intr_reg __iomem *ir_set;
+ 	unsigned int		intr_num;
+ 	bool			ip_autoclear;
++	bool			skip_events;
+ 	u32			isoc_bei_interval;
+ 	/* For interrupter registers save and restore over suspend/resume */
+ 	u32	s3_irq_pending;
