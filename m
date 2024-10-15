@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3D0BD1F9D8
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2024 21:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 735A2D1F9D8
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2024 21:38:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E13391605;
-	Tue, 15 Oct 2024 23:38:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E13391605
+	by alsa0.perex.cz (Postfix) with ESMTPS id 977B585D;
+	Tue, 15 Oct 2024 23:38:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 977B585D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1729028295;
-	bh=qU0dUNxFUuN/ND2hfWc0/b53f/OYr4+0HIcF9EoyLxI=;
+	s=default; t=1729028315;
+	bh=S7gNn/zMH9Mq7yohNCakzHW+ZK7IqUedqKKHCL3FDOU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gEttN1lOo0JL1Wopz7bzgQVTBlp4ulFDmdTFhx2HYxIiy/eNpAuQDV6nleGqBE9Cx
-	 ROOH9EEF2p4HWrSboSGhwiAp9eEZdWRwYvjDrpiY6Ux9VUz4hBAJw/RUXd4jdILCtq
-	 xanu7ST09cO4Pi24E+VjkzMNO3Tq46T9R+8pJhWI=
+	b=OoGjnOMOJn4fkPH2lIY1bsFRsO631KG81K+G52qWqWbd8Y1Nz3jAAX30Ajv2JtcwT
+	 WoyCztssA7sKW1shXRi0pWrUSz0aR/Y3DXzZl9zqzX/yurUMu6t2cqHhA/four9/TY
+	 4xHBBzOqbF5e3FoD3Xq+LkWsiPD8d6Pq0KG3kfQE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C56A1F897BF; Tue, 15 Oct 2024 23:31:38 +0200 (CEST)
+	id 15999F897E2; Tue, 15 Oct 2024 23:31:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C40CBF897BD;
-	Tue, 15 Oct 2024 23:31:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 160F5F897ED;
+	Tue, 15 Oct 2024 23:31:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF418F80698; Tue, 15 Oct 2024 23:30:18 +0200 (CEST)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id A3460F806CD; Tue, 15 Oct 2024 23:30:21 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 959F2F80587
-	for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2024 23:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 959F2F80587
+	by alsa1.perex.cz (Postfix) with ESMTPS id 974B5F8016B
+	for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2024 23:29:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 974B5F8016B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=f2tMuNF4
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=jflm0P0G
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 49FG0st4022433;
-	Tue, 15 Oct 2024 21:29:37 GMT
+ 49FER2IW025730;
+	Tue, 15 Oct 2024 21:29:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	M4IGsOidRHFIubeJL9OdlEYfFZx1GNBQBMy1HdndUaw=; b=f2tMuNF42vXkVMdF
-	desTF0/M6ewcPC08DKVUMdLdOpI9Pfi2vhqn9iVID91xpooBq/RTtAzC+W42Sa0L
-	MslWurW3IL/6hxWOVQs5pPYjgONYWYyRd85o8JuCzMznieQdG7MX+BzQm5ELj31m
-	wTDfNwayHnyr4TnoaC0ZgcKzYmb1RWG/rL5ITRmJCVrHlM2zJ7XAuScRF3q39mr2
-	tq82JxxRoGGBY6+g6TASJWfwFIcOWhqTxArnfVvocXykr1yYf4zfctHXb43asgda
-	XcDSl7h/e53ecQbKYCSVYyanhxoL+S8bWcBUe28kCubAE66V2kqAS7+ntBPcMP4n
-	RySPXA==
+	c5gwoddCxMnmmFAKaTw4cQrxCONcapW95+AyW+pR6yQ=; b=jflm0P0GA1CY7UJI
+	IUDDwpO2yBektHtxKVgIjP1nLkbgVHWJjmBLdPpMFh9FoU/PEmG2HdMmriowOF3A
+	liH9Ro8KbdPwwfJSPldrNOe+Dtg0KJboiBL1DHJEonkPp4WxpspLQcQFhNFpj9qQ
+	Sqkq6RlJ4bpLiDNKLQcRXEhdbyPvVJKSHsOSak/8O5qtVTE+v5Xq6tovWMYE2YCM
+	yKCbCeEdKlMo9zSa2NNNOBkaalPWkS9NHntbFCGfFg1qYmp537HO1XL7pu4ezAGn
+	xIVqlgWJLnym//wcsSAwVadHk8SqJ1Y4m0lUKrKTmf3ciLrpEjH+FfJuxwRkzKu6
+	qbfBog==
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 429jrfah4f-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 429t5kh89h-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 21:29:37 +0000 (GMT)
+	Tue, 15 Oct 2024 21:29:29 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
 	by NALASPPMTA01.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
- 49FLTagg022414
+ 49FLTSPe022317
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 15 Oct 2024 21:29:36 GMT
+	Tue, 15 Oct 2024 21:29:28 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Tue, 15 Oct 2024 14:29:35 -0700
+ 15.2.1544.9; Tue, 15 Oct 2024 14:29:28 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <dmitry.torokhov@gmail.com>,
@@ -82,10 +82,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         Wesley Cheng
 	<quic_wcheng@quicinc.com>
-Subject: [PATCH v29 33/33] ASoC: usb: Rediscover USB SND devices on USB port
- add
-Date: Tue, 15 Oct 2024 14:29:15 -0700
-Message-ID: <20241015212915.1206789-34-quic_wcheng@quicinc.com>
+Subject: [PATCH v29 05/33] usb: xhci: xhci-sideband: Set IMOD for xHCI
+ sideband clients
+Date: Tue, 15 Oct 2024 14:28:47 -0700
+Message-ID: <20241015212915.1206789-6-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241015212915.1206789-1-quic_wcheng@quicinc.com>
 References: <20241015212915.1206789-1-quic_wcheng@quicinc.com>
@@ -98,19 +98,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: JVvQOaJwyXwMJ44vtvzxisdPyv94LuQr
-X-Proofpoint-ORIG-GUID: JVvQOaJwyXwMJ44vtvzxisdPyv94LuQr
+X-Proofpoint-ORIG-GUID: 7k6m7wafILGF1agNjjMI426F17m3W6S-
+X-Proofpoint-GUID: 7k6m7wafILGF1agNjjMI426F17m3W6S-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
  definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 mlxscore=0
- spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 impostorscore=0
- clxscore=1015 mlxlogscore=999 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410150143
-Message-ID-Hash: DNWPBUXOL6EKYD2OFF5NSFKCM3BO7WWN
-X-Message-ID-Hash: DNWPBUXOL6EKYD2OFF5NSFKCM3BO7WWN
+ adultscore=0 impostorscore=0
+ bulkscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 clxscore=1015 suspectscore=0 mlxlogscore=664
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
+ definitions=main-2410150143
+Message-ID-Hash: QOYRHYDAT7FMRHWKCTPM2GJ4XVL46KT4
+X-Message-ID-Hash: QOYRHYDAT7FMRHWKCTPM2GJ4XVL46KT4
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DNWPBUXOL6EKYD2OFF5NSFKCM3BO7WWN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QOYRHYDAT7FMRHWKCTPM2GJ4XVL46KT4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,52 +132,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In case the USB backend device has not been initialized/probed, USB SND
-device connections can still occur.  When the USB backend is eventually
-made available, previous USB SND device connections are not communicated to
-the USB backend.  Call snd_usb_rediscover_devices() to generate the connect
-callbacks for all USB SND devices connected.  This will allow for the USB
-backend to be updated with the current set of devices available.
-
-The chip array entries are all populated and removed while under the
-register_mutex, so going over potential race conditions:
-
-Thread#1:
-  q6usb_component_probe()
-    --> snd_soc_usb_add_port()
-      --> snd_usb_rediscover_devices()
-        --> mutex_lock(register_mutex)
-
-Thread#2
-  --> usb_audio_disconnect()
-    --> mutex_lock(register_mutex)
-
-So either thread#1 or thread#2 will complete first.  If
-
-Thread#1 completes before thread#2:
-  SOC USB will notify DPCM backend of the device connection.  Shortly
-  after, once thread#2 runs, we will get a disconnect event for the
-  connected device.
-
-Thread#2 completes before thread#1:
-  Then during snd_usb_rediscover_devices() it won't notify of any
-  connection for that particular chip index.
+When creating a secondary interrupter over xHCI, add an argument for
+xHCI sideband clients to specify an interrupt moderation value for
+the interrupter context assigned.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/soc-usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/host/xhci-sideband.c  | 4 ++--
+ include/linux/usb/xhci-sideband.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-index e56826f1df71..ee566ca7c675 100644
---- a/sound/soc/soc-usb.c
-+++ b/sound/soc/soc-usb.c
-@@ -279,6 +279,8 @@ void snd_soc_usb_add_port(struct snd_soc_usb *usb)
- 	mutex_lock(&ctx_mutex);
- 	list_add_tail(&usb->list, &usb_ctx_list);
- 	mutex_unlock(&ctx_mutex);
-+
-+	snd_usb_rediscover_devices();
- }
- EXPORT_SYMBOL_GPL(snd_soc_usb_add_port);
+diff --git a/drivers/usb/host/xhci-sideband.c b/drivers/usb/host/xhci-sideband.c
+index 69bc234818d2..248d9713570e 100644
+--- a/drivers/usb/host/xhci-sideband.c
++++ b/drivers/usb/host/xhci-sideband.c
+@@ -259,7 +259,7 @@ EXPORT_SYMBOL_GPL(xhci_sideband_get_event_buffer);
+  */
+ int
+ xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg,
+-				 bool ip_autoclear)
++				 bool ip_autoclear, u32 imod_interval)
+ {
+ 	int ret = 0;
  
+@@ -273,7 +273,7 @@ xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg,
+ 	}
+ 
+ 	sb->ir = xhci_create_secondary_interrupter(xhci_to_hcd(sb->xhci),
+-						   num_seg);
++						   num_seg, imod_interval);
+ 	if (!sb->ir) {
+ 		ret = -ENOMEM;
+ 		goto out;
+diff --git a/include/linux/usb/xhci-sideband.h b/include/linux/usb/xhci-sideband.h
+index 6c11e240fbca..bc5b56a77e37 100644
+--- a/include/linux/usb/xhci-sideband.h
++++ b/include/linux/usb/xhci-sideband.h
+@@ -59,7 +59,7 @@ xhci_sideband_get_event_buffer(struct xhci_sideband *sb);
+ 
+ int
+ xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg,
+-				 bool ip_autoclear);
++				 bool ip_autoclear, u32 imod_interval);
+ 
+ void
+ xhci_sideband_remove_interrupter(struct xhci_sideband *sb);
