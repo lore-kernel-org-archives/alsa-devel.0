@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C2A4D1714E
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2024 01:13:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB559D1714E
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2024 01:13:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56ECFB70;
-	Tue, 22 Oct 2024 03:13:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56ECFB70
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51B5ADF6;
+	Tue, 22 Oct 2024 03:13:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51B5ADF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1729559623;
-	bh=zznZuV5BSYyHPdP10aHlx6qycRdWxJALVq24/p1846M=;
+	s=default; t=1729559636;
+	bh=uvkDvs7FjFUmP11GS9EWAOnbt5BjXtNf7QczaVMT/8E=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=fC57UZxo29hJILm4jtu3pT3f+jQoE7Z9Nvf8BGPqFIQTEBrAsAzSuVfEuadDFvLYm
-	 T1UVagkEHCXX0AjR2gswJgGwlW0CshNlSVywI3Dt2byLLbl8lSuFWD6GPhBfEGEijh
-	 S65FxZAFCVdrHtjJgU0luIHMwZl5EyxYzQvEKTPQ=
+	b=ml9fs0GuTJyc6rvQU4HQVvIA48rz4fL7awAGAyPf+DhN14D0GxuDhiEjzyd5BSs6d
+	 RPRfl/7PNYwh/W/kUdLyimhT9piyaH6WKAy76JCvloh4iO/DNYdqGFnTeFQBbPAYbV
+	 Uw3GZ2D7KmHDDJV8FQY767NGY13del7PqofOnGVg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27323F805C6; Tue, 22 Oct 2024 03:13:04 +0200 (CEST)
+	id 47C0AF8059F; Tue, 22 Oct 2024 03:13:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9499F805C3;
-	Tue, 22 Oct 2024 03:13:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF7D5F805AF;
+	Tue, 22 Oct 2024 03:13:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5FC48F805AB; Tue, 22 Oct 2024 03:12:56 +0200 (CEST)
+	id 36A78F80272; Tue, 22 Oct 2024 03:13:29 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6D33F8016C
-	for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2024 03:12:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6D33F8016C
+	by alsa1.perex.cz (Postfix) with ESMTP id 75963F80149
+	for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2024 03:13:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75963F80149
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1729559574734588385-webhooks-bot@alsa-project.org>
-References: <1729559574734588385-webhooks-bot@alsa-project.org>
+In-Reply-To: <1729559607451637030-webhooks-bot@alsa-project.org>
+References: <1729559607451637030-webhooks-bot@alsa-project.org>
 Subject: AlSA problem , audio on/off across multiple ubuntu releases
-Message-Id: <20241022011256.5FC48F805AB@alsa1.perex.cz>
-Date: Tue, 22 Oct 2024 03:12:56 +0200 (CEST)
-Message-ID-Hash: BIVX6O2SIGZ2DP2YFE5PBBXKUTHWFQWH
-X-Message-ID-Hash: BIVX6O2SIGZ2DP2YFE5PBBXKUTHWFQWH
+Message-Id: <20241022011329.36A78F80272@alsa1.perex.cz>
+Date: Tue, 22 Oct 2024 03:13:29 +0200 (CEST)
+Message-ID-Hash: 3EB46BQQS2SO62PSTDBSRHLSP7KLZGA6
+X-Message-ID-Hash: 3EB46BQQS2SO62PSTDBSRHLSP7KLZGA6
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BIVX6O2SIGZ2DP2YFE5PBBXKUTHWFQWH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3EB46BQQS2SO62PSTDBSRHLSP7KLZGA6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -78,6 +78,7 @@ Could not open/initialize audio device -> no sound.
 Audio: no sound
 Video: no video
 ` 
+
 sudo pulseaudio -vvv gives
 
 `E: [pulseaudio] module-alsa-card.c: Failed to find a working profile.
