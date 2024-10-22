@@ -4,77 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91B19D17141
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2024 21:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86F15D17151
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2024 01:13:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35B4BB71;
-	Mon, 21 Oct 2024 23:39:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35B4BB71
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B83A839;
+	Tue, 22 Oct 2024 03:13:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B83A839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1729546785;
-	bh=B0KKRH8HOU33LivcqwGcmlZ9cxEPL+NmEn6pp5H5jcA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=N+19faVRdx1C+8NbTQ76A4SnMSzfIm/mxEGb8jTYP1WHFilVw0qPEJ6fAR3oPMoGx
-	 nY9CaRqtukWavl6o2gzAalvN7cRHbfgLpiuxKHVkvSzt5zemSJOrvnW1lLCdQngFQp
-	 QUYPdVx+iBucQK4PyAQ2iA+3sgMiN3z1cpkHf+p4=
+	s=default; t=1729559608;
+	bh=rTjlElDCTb1dvfsylNEz5S5rf1ez0dSFrmIAuIdavPg=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=mwxWD0BehjkT+KfWrepJZEf55OJgSQy0kmK8+nYzeDo2HvsOgumKdhe41HbLUKd5S
+	 ByUKE2aSeOr641vbgDoUQel0XOTt1h/uYHMuLJYwjuPw8vSV0ZAgeolwFlkyE65di2
+	 v4CLtDTaM7zGqXl0vkiI/7wDAuFTh7EeYG+MTCDI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CCF39F805A0; Mon, 21 Oct 2024 23:39:09 +0200 (CEST)
+	id 835E5F805A8; Tue, 22 Oct 2024 03:12:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01FBAF80579;
-	Mon, 21 Oct 2024 23:39:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A101CF805B6;
+	Tue, 22 Oct 2024 03:12:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0C1BF8016C; Mon, 21 Oct 2024 23:39:04 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D15EBF8014C
-	for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2024 23:39:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D15EBF8014C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Mp9F3qia
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B81E65C4C10;
-	Mon, 21 Oct 2024 21:38:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 671BBC4CEC3;
-	Mon, 21 Oct 2024 21:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729546740;
-	bh=B0KKRH8HOU33LivcqwGcmlZ9cxEPL+NmEn6pp5H5jcA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Mp9F3qiafs8LS+w7Qjw1bgSxNWo9AM3/Ux3iUsS46ZLU6TFU6s67heHnAbITlMuHH
-	 qJOueR2v37OtEA8BAwnsPyQ1Yxid8kNCMwwUaHFsIdk8fbe7ZyGn5X3GDpzxDW2azx
-	 GN4LBGa9HGvU7C4Zw5RYUPL2SAH9n0rADMdbDVsrTC+hgsw3RVciEQGukpHGMpjRo6
-	 //E+5qDb8YPWztO6cBZg81eEazaZIApE7wlNAORjCK5T0+uc1n7wtMecFgFInfB28C
-	 DjERXfpHyyJwFRSzklYkWrvTuqUbevwH6ygeqCr5SZc7+UH4frY1BiSiWk54yvp8fZ
-	 gwbc/vN2gKOsA==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Jack Yu <jack.yu@realtek.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
- "Flove(HsinFu)" <flove@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
- =?utf-8?q?Shuming_=5B=E8=8C=83=E6=9B=B8=E9=8A=98=5D?= <shumingf@realtek.com>,
- =?utf-8?q?Derek_=5B=E6=96=B9=E5=BE=B7=E7=BE=A9=5D?= <derek.fang@realtek.com>
-In-Reply-To: <cd26275d9fc54374a18dc016755cb72d@realtek.com>
-References: <cd26275d9fc54374a18dc016755cb72d@realtek.com>
-Subject: Re: [PATCH] ASoC: rt722-sdca: increase clk_stop_timeout to fix
- clock stop issue
-Message-Id: <172954673816.144868.3043462366415424049.b4-ty@kernel.org>
-Date: Mon, 21 Oct 2024 22:38:58 +0100
+	id 4EBCDF8016C; Tue, 22 Oct 2024 03:12:34 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id A02FCF80104
+	for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2024 03:12:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A02FCF80104
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-9b746
-Message-ID-Hash: B26X45BYERK37Z2TAFQBDATD4L7A4C6J
-X-Message-ID-Hash: B26X45BYERK37Z2TAFQBDATD4L7A4C6J
-X-MailFrom: broonie@kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1729559552091383696-webhooks-bot@alsa-project.org>
+References: <1729559552091383696-webhooks-bot@alsa-project.org>
+Subject: AlSA problem , audio on/off across multiple ubutnu
+Message-Id: <20241022011234.4EBCDF8016C@alsa1.perex.cz>
+Date: Tue, 22 Oct 2024 03:12:34 +0200 (CEST)
+Message-ID-Hash: 5WAEE5MJXQEXTYPCTELYDE64Z2UTM6VM
+X-Message-ID-Hash: 5WAEE5MJXQEXTYPCTELYDE64Z2UTM6VM
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B26X45BYERK37Z2TAFQBDATD4L7A4C6J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WAEE5MJXQEXTYPCTELYDE64Z2UTM6VM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,36 +66,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 21 Oct 2024 06:15:44 +0000, Jack Yu wrote:
-> clk_stop_timeout should be increased to 900ms to fix clock stop issue.
-> 
-> 
+alsa-project/alsa-lib issue #414 was opened from Kermilli:
 
-Applied to
+Hi, 
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+I've been having problems with audio on ubuntu on and off. I'm not a professional but everything seems to point at alsa . The pulse troubleshooting page at some point recommends to run alsa directly/bypass pulse with the command `mplayer -ao alsa:device=hw=0 yourchosentrack.mp3`  which  gives 
+`[AO_ALSA] alsa-lib: pcm_hw.c:1715:(snd_pcm_hw_open) open '/dev/snd/pcmC0D0p' failed (-2): No such file or directory
+[AO_ALSA] Playback open error: No such file or directory
+Failed to initialize audio driver 'alsa:device=hw=0'
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+Video: no video
+` 
+sudo pulseaudio -vvv gives
 
-Thanks!
+`E: [pulseaudio] module-alsa-card.c: Failed to find a working profile.
+E: [pulseaudio] module.c: Failed to load module "module-alsa-card" (argument: "device_id="1" name="pci-0000_00_1b.0" card_name="alsa_card.pci-0000_00_1b.0" namereg_fail=false tsched=yes fixed_latency_range=no ignore_dB=no deferred_volume=yes use_ucm=yes avoid_resampling=no card_properties="module-udev-detect.discovered=1""): initialization failed.`
 
-[1/1] ASoC: rt722-sdca: increase clk_stop_timeout to fix clock stop issue
-      commit: 038fa6ddf5d22694f61ff7a7a53c8887c6b08c45
+ 
+I've tried everything . The only time it worked was when I added options snd-hda-intel model=auto to  /etc/modprobe.d/alsa-base.conf. , but even then it stopped working after some time when I was listening to audio.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Any help would be greatly appreciated!
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/414
+Repository URL: https://github.com/alsa-project/alsa-lib
