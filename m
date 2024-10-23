@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B5DFCFA45D
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2024 17:51:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64B83CFA45D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2024 17:52:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1713BBC0;
-	Wed, 23 Oct 2024 19:51:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1713BBC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4EF4B65;
+	Wed, 23 Oct 2024 19:51:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4EF4B65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1729705908;
-	bh=c2WzyIX4sWl7qX+/hZrSf2EBXAGnkp4nmO/PSorBmmE=;
+	s=default; t=1729705920;
+	bh=8r/O1HmDTz+nPdfGKkbI7nNeijD5lk5Okl3fAADNg7g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rzGjdJdFD1Es3aG+XoUoxRuRH8r5/a/JAfudW+FX5e2bTNiQw6uQCCdb4KVt90QZT
-	 Y4Gm67RxVgICeKMFe+1F9p7JHZIhLi2FK/bqpXb3x2ZJQrKfjAYUHvpTCnWEXVp/yD
-	 w2Pl9pnk7Pgn7jvPq397InVxLcilS6gy5p/vh9Xs=
+	b=jrch7eCNIxsB4AcQ3g4w7mNcZ9drhnJfIkAnXMlx4PGeroo4Oph82Km3aS80SB9eY
+	 kOKM/Mora8flzHWgviyNt6ncLlQ1J3iM/JdZuTsPIxUP725aBF/tVRmUli8WdJSrZT
+	 /UoeaXW5SdEsyNNZ+IK9DRslO2KEikdwShq/HiRA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3286DF805B1; Wed, 23 Oct 2024 19:51:16 +0200 (CEST)
+	id DFD30F805D6; Wed, 23 Oct 2024 19:51:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54C99F8023A;
-	Wed, 23 Oct 2024 19:51:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3054AF805D9;
+	Wed, 23 Oct 2024 19:51:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 177DCF8023A; Wed, 23 Oct 2024 19:51:08 +0200 (CEST)
+	id 29E49F8016C; Wed, 23 Oct 2024 19:51:10 +0200 (CEST)
 Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70B8FF800ED
-	for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2024 19:51:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70B8FF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 94755F80104
+	for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2024 19:51:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94755F80104
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=BMiEhyoa
+ header.s=k20201202 header.b=UPDMKBDT
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id C4BF7A41B67;
-	Wed, 23 Oct 2024 17:50:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0FD0C4CEE5;
-	Wed, 23 Oct 2024 17:51:01 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id E74BAA439D7;
+	Wed, 23 Oct 2024 17:50:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20A8BC4CEC7;
+	Wed, 23 Oct 2024 17:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729705862;
-	bh=c2WzyIX4sWl7qX+/hZrSf2EBXAGnkp4nmO/PSorBmmE=;
+	s=k20201202; t=1729705863;
+	bh=8r/O1HmDTz+nPdfGKkbI7nNeijD5lk5Okl3fAADNg7g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=BMiEhyoalBDieptxTjgZHygfWwFWBMyu/c7izbVbM2cs12sQdgAmja3j4YJWBmORS
-	 BWqn3o2MEZ3XFLd0+t042Z77lgMSJM2emoTyd0liHN2Ro70HVuZWQtSR2eTCJ1T2xA
-	 LEWdQ2lTIXbq0lc235E9OBsU41Ji/VtpYA0cytMjmoJCSUmyFVcNil1PuS3q80elLc
-	 TQNm4WaQgmdhIBNqRWUtLtCnp0IglpVPvyNFf+wsuYglztNYXn5ZAQ5FvJ5ksqPSIT
-	 bBuO2WjVZ3yGF85TwJDhg0hhCQDWIiWOI/fu3q2fZZAVa0pSje6Fp6lIZPLu4ddJVi
-	 XjHus071rqQ1g==
+	b=UPDMKBDTmTZyrAzga12Q8QXzpN6C1a4nYr8ZdYN7kqarC86rMbRIg/CBvqQBp7Zqg
+	 5O+gQ/vB2IkthkfkNigQ1e6lrMM+gmztyW9odzVxp3Nacifcsmb6/6oBowypp+OXPH
+	 FoTvmJD8kR6X3QICFfwnWcMDP7fabn/2ln+PG4R+6OVdJebnnaC3peV5vzQiJnaKQN
+	 ZnX33WYHIJlL+bxNHxsFye5+my8JUMqsiOSyDwUlFT3VDG6GKbYCwti91UgC13u3X+
+	 F24pEObNggXSdpcww/fLDmmMn4KjxN2Y7gfoTZNjE8BbzphV34wZkezKW/QS4ZG+rp
+	 PyUYBBrBlPxyg==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-In-Reply-To: <87o73mqj5b.wl-kuninori.morimoto.gx@renesas.com>
-References: <87o73mqj5b.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v4 00/13] ASoC: remove dpcm_xxx flags
-Message-Id: <172970586171.110994.6170499612142580470.b4-ty@kernel.org>
-Date: Wed, 23 Oct 2024 18:51:01 +0100
+In-Reply-To: <87ldyi9vje.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ldyi9vje.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v5 00/13] ASoC: remove dpcm_xxx flags
+Message-Id: <172970586286.110994.11698115661977770053.b4-ty@kernel.org>
+Date: Wed, 23 Oct 2024 18:51:02 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-9b746
-Message-ID-Hash: 7ALQ7EXMKTXCAGM7R3S6JBPNIYDD2JQG
-X-Message-ID-Hash: 7ALQ7EXMKTXCAGM7R3S6JBPNIYDD2JQG
+Message-ID-Hash: 4EIG4QFEHLHYJPMCPNKL2CFWZBWWMLD6
+X-Message-ID-Hash: 4EIG4QFEHLHYJPMCPNKL2CFWZBWWMLD6
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +80,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7ALQ7EXMKTXCAGM7R3S6JBPNIYDD2JQG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4EIG4QFEHLHYJPMCPNKL2CFWZBWWMLD6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,15 +89,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 15 Oct 2024 00:55:44 +0000, Kuninori Morimoto wrote:
-> 2 weeks past. This is v4 patch-set
+On Sun, 20 Oct 2024 23:58:13 +0000, Kuninori Morimoto wrote:
+> I got kernel-test report that v4 had compile warning.
+> This is v5 patch-set
 > 
 > Now, we don't need to use dpcm_playback/capture flags for DPCM since v6.11,
 > and thus we can use playback/capture_only flags instead too for DPCM,
 > which is same as non-DPCM.
-> 
-> Let's remove dpcm_playback/capture flags, and use playback/capture_only flags
-> instead.
 > 
 > [...]
 
