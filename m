@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 791FCD10399
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2024 15:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB5CD0BB56
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2024 15:32:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A470DF8;
-	Fri, 25 Oct 2024 17:31:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A470DF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DD0286E;
+	Fri, 25 Oct 2024 17:32:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DD0286E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1729870312;
-	bh=AkQu2yW3liKjQfD9wCOU4VjmxlD+B1YAe2IpYa3DcjY=;
+	s=default; t=1729870330;
+	bh=5OcFpSABnOSARsKPcGKVKIqGtXTPwjaFYNzoJKZxgpo=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Z7iYpOXeul7hleIoieYDkx8SYVPHgFLjtjyQ/s8zEV1+G7YO1J/H0kTCGbkzq20wc
-	 cYhlUbnPRtZIuCJ+oeL19KS4xNcqpnny2P9jUZwBFc0joZSwX1nl7/tWJbTBPMrTuN
-	 +6hWslP++BjPLGVKJyJG8RCdcrU9jz0H39G+RHzk=
+	b=LVk05uST7I28QZBPlHXITl3btDFaXY+qFZNN8K5o8LP4yhpCF9ALPs7Ldp9eZteqB
+	 /8b7gmn8j7GDOss0kdIGaYXZbw5bM/+8oxXoLaBD4kvXr82j+Bl+A4F8V4oaFCQiJB
+	 vSxJobodwf8WhPkt/MXjTXMv5IZhWzMTeFiy+psI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7D64F805A9; Fri, 25 Oct 2024 17:31:20 +0200 (CEST)
+	id C9CECF805C6; Fri, 25 Oct 2024 17:31:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A849F80588;
-	Fri, 25 Oct 2024 17:31:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3306BF805C4;
+	Fri, 25 Oct 2024 17:31:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 76F03F8016C; Fri, 25 Oct 2024 17:31:15 +0200 (CEST)
+	id 99656F8023A; Fri, 25 Oct 2024 17:31:42 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9CCAF80149
-	for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2024 17:31:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9CCAF80149
+	by alsa1.perex.cz (Postfix) with ESMTP id D0CBFF80154
+	for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2024 17:31:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0CBFF80154
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1729870273090391874-webhooks-bot@alsa-project.org>
-References: <1729870273090391874-webhooks-bot@alsa-project.org>
-Subject: Help to address pop at end of buffer
-Message-Id: <20241025153115.76F03F8016C@alsa1.perex.cz>
-Date: Fri, 25 Oct 2024 17:31:15 +0200 (CEST)
-Message-ID-Hash: 74WJ3AYECGT5GRSISBXKY3LBKL3MB4MF
-X-Message-ID-Hash: 74WJ3AYECGT5GRSISBXKY3LBKL3MB4MF
+In-Reply-To: <1729870300826364279-webhooks-bot@alsa-project.org>
+References: <1729870300826364279-webhooks-bot@alsa-project.org>
+Subject: Help to solve pop when sound loops
+Message-Id: <20241025153142.99656F8023A@alsa1.perex.cz>
+Date: Fri, 25 Oct 2024 17:31:42 +0200 (CEST)
+Message-ID-Hash: GHKBBBVFY5NFGTZ3LJVOXDYMXHZWWDBQ
+X-Message-ID-Hash: GHKBBBVFY5NFGTZ3LJVOXDYMXHZWWDBQ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/74WJ3AYECGT5GRSISBXKY3LBKL3MB4MF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GHKBBBVFY5NFGTZ3LJVOXDYMXHZWWDBQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,7 +66,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #417 was opened from charlesmulder:
+alsa-project/alsa-lib issue #417 was edited from charlesmulder:
 
 Hi.
 
