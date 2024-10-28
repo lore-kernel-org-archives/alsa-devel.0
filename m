@@ -4,116 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8516D3399E
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2024 16:45:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6FD3D339AE
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2024 18:12:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7B0514DD;
-	Mon, 28 Oct 2024 17:45:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7B0514DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EC77EC0;
+	Mon, 28 Oct 2024 19:12:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EC77EC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1730133944;
-	bh=oGPN80qbKjwSppJ/U6TVsMTO1C1mG/KjaipR+Ky4Rus=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=P3mV4StheMXFb6aGNTrUdqB6lhFnWA6MOr5lDTe2XcqiHKV/OD0y/jwJAFP9uPXT+
-	 +xjiZPadihQ/6bmCXrzLBDI8Q2WhEyzuPu1iPsXOUVR7fE3k8KuvPKuQteNIvX8ErP
-	 Adrav+fGUY47WCta5Mg0G2OpIuv9RL6bRqJjj1c0=
+	s=default; t=1730139176;
+	bh=sEUoxC02iCpTxcYJhl7YWFX1HCD6NzBw0eWUjpJiVwg=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=uM3+6VMzRpOzA5tVWBMEF84FvG+W4+i84+6yTRnksXHKODCpkkhj4UPeC7wdV8D1U
+	 Zba1rzY0r1QM+kx4VRkQvoc6z16mq2vqDcgJ9AUgU9jJdxnJveBPflexMJoMLSvZck
+	 MDd0tBEpCOhfq9sovioC2QFUZ0YPzdSDAtL/lN6w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2DF3CF805EC; Mon, 28 Oct 2024 17:43:29 +0100 (CET)
+	id 9B67DF805AF; Mon, 28 Oct 2024 19:12:20 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DC5AF805EA;
-	Mon, 28 Oct 2024 17:43:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C3B2F805B5;
+	Mon, 28 Oct 2024 19:12:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA04DF80269; Mon, 28 Oct 2024 16:55:27 +0100 (CET)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
- [IPv6:2607:f8b0:4864:20::1035])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id F33F5F80269; Mon, 28 Oct 2024 19:12:14 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F2E98F8014C
-	for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2024 16:55:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2E98F8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id D5D0BF80104
+	for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2024 19:12:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5D0BF80104
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=eFXi7O2v
-Received: by mail-pj1-x1035.google.com with SMTP id
- 98e67ed59e1d1-2e2e050b1c3so3848719a91.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 28 Oct 2024 08:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730130923; x=1730735723;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+avY+0FraZezaA2ZJ3j6/+NsGewm/RnEb+AyA9oKYCU=;
-        b=eFXi7O2v/S7nCWvQ8tkk3WtiXe+b8AqxWAKRCaA2p+xvQcitJQsniqX4R+kBOsPDZO
-         gqkIzREYtn+GMnjSudZv8JUun9aHHgv1wSfUblqCVL2N2NJK6szJrlBX3dMVoVMIP0zm
-         W3psQZAnxDD49ET1iWkHnsSAozEXfUz/eErRt3XacnlL32PJ1yfVjBTKg1e2cVFUDpca
-         6bS6t/WoYIuIGDwZXnPU81TOEgWSL8w2RBIOAKt2FFungUiJ/T2pQJyq6YOaS/3xfNCG
-         D7S9ep/7EHEIco5AT3TA8ijdAcNjvJegxHkHeCGLYNlR1fn/9YW2NK8jU6EmS7cqQl7Z
-         5LpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730130923; x=1730735723;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+avY+0FraZezaA2ZJ3j6/+NsGewm/RnEb+AyA9oKYCU=;
-        b=c9J1+gE3vTpic3HXZiLPliF4bBFr1GZ78BxUmcCVYHWQNPhsDsYEI6utK1UoZROajX
-         XguyGoXykgrErmNn5TD/orvSYFFRBQcyV9ULU7C0EjITwbKU3aLQHT/60fa3F9g4EgEZ
-         ErtTurhdRfzoCMGBu30VmGu6gIVehC3bSCUGhVLV/lpv9JuKlnrOKjuaoeTFZFAXc3sm
-         ZqG9MEL+gtCHF28tft53lUEN0KACGGWmqayTrIK3Sr+2nktN5OgMUdD8Xvl7VL5/38+f
-         tOGu7EYjhhdzfOBtiswe3Bmfiz9l8p0JZu0B2KUH0HISS32NH3eX5KVBhPLak1F1AzWg
-         5Tsg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCV3gRrT11KczhbDM9j+B6OdXwBI/OBTobiFvVSP9P52Gr1mJIIORUFC3cHzayqufRLkngnJx7gHKAgZ@alsa-project.org
-X-Gm-Message-State: AOJu0Yw4g0S7Tp4/JTCO4r6aRhM/dTwh3+vHnXB46HEOGHj60AtOqiVC
-	ArcjOo/7jIcie2+LVYaG7aZ1AFk37f3AO0RC1kxt0rlNRTJ95Lc0
-X-Google-Smtp-Source: 
- AGHT+IGf5oOGN6C9vxAsUtBS/oSx/LaZEx7CgMwc3vpxc8EjXI9w7WWE1LAXjpLS5Xt2LWC5TjoBiQ==
-X-Received: by 2002:a17:90b:3505:b0:2e2:a5fd:7e4c with SMTP id
- 98e67ed59e1d1-2e91e824872mr105242a91.8.1730130923364;
-        Mon, 28 Oct 2024 08:55:23 -0700 (PDT)
-Received: from
- codespaces-c8bc9f.dxrpqgqhlb3ehogrxrezr215ye.rx.internal.cloudapp.net
- ([20.192.21.48])
-        by smtp.gmail.com with ESMTPSA id
- 98e67ed59e1d1-2e8e37490cesm7431977a91.37.2024.10.28.08.55.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2024 08:55:23 -0700 (PDT)
-From: Piyush Raj Chouhan <piyushchouhan1598@gmail.com>
-X-Google-Original-From: Piyush Raj Chouhan <piyuschouhan1598@gmail.com>
-To: =inux-sound@vger.kernel.org,
-	linux-sound@vger.kernel.org
-Cc: tiwai@suse.de,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	Piyush Raj Chouhan <piyushchouhan1598@gmail.com>
-Subject: [PATCH] ALSA: hda/realtek: Add subwoofer quirk for Infinix ZERO BOOK
- 13
-Date: Mon, 28 Oct 2024 15:55:16 +0000
-Message-ID: <20241028155516.15552-1-piyuschouhan1598@gmail.com>
-X-Mailer: git-send-email 2.46.2
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=SZRcYieq
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 49SAv1pG005093;
+	Mon, 28 Oct 2024 18:12:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	sEUoxC02iCpTxcYJhl7YWFX1HCD6NzBw0eWUjpJiVwg=; b=SZRcYieqr1duO6jN
+	yNPU+IPfmU5epd+/o81r40LC4ldLZCIxxkZjlAkUm0IpqlMxvPWXcCU1XBkzNRaC
+	TP7nTfoabSBoIEFd9oUJxyH8ssxT3RMVVy6b1jtpFrGzR4Qr9S53G356VCRfaWGR
+	e0AnvtjH6VYpYYPfGf1XC09U3+7KSWJYNeVHPyXSb/F5vqb519sM99cu5UY56mKi
+	nLQWpX+LNtMePMDN4WQu5efqc5IUJX7MFL7F5AKVFzVhpOnpRjh5Yo1iOH3bw7nE
+	D/KHDSkVLNE3b5W37aYUqFwulXlJTuqei1PCdAs0SH8ah1ZumWVhoYwIz0PpMB8r
+	sMF64w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42gsq8dw7k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 28 Oct 2024 18:12:09 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 49SIC861013622
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 28 Oct 2024 18:12:08 GMT
+Received: from [10.110.31.141] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 28 Oct
+ 2024 11:12:07 -0700
+Message-ID: <8f6e35c0-8cd6-495d-92ad-21d76a726785@quicinc.com>
+Date: Mon, 28 Oct 2024 11:12:07 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v29 01/33] xhci: support setting interrupt moderation IMOD
+ for secondary interrupters
+To: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+	<amadeuszx.slawinski@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.de>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <dmitry.torokhov@gmail.com>,
+        <corbet@lwn.net>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
+        <krzk+dt@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <robh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+References: <20241015212915.1206789-1-quic_wcheng@quicinc.com>
+ <20241015212915.1206789-2-quic_wcheng@quicinc.com>
+ <2024101747-defog-squiggly-ef54@gregkh>
+ <5847c380-75ce-492a-9a30-0899b7ebe98c@quicinc.com>
+ <2024101824-hammock-elastic-8d38@gregkh> <87wmi02qcj.wl-tiwai@suse.de>
+ <2024102240-gag-famished-245c@gregkh>
+ <8795c4ad-e3ac-47aa-92dd-f899042cefc0@linux.intel.com>
+Content-Language: en-US
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <8795c4ad-e3ac-47aa-92dd-f899042cefc0@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-MailFrom: piyushchouhan1598@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: 3VvqAHZW17ni7Z9fnrpLfG7y2SqeBCje
+X-Proofpoint-ORIG-GUID: 3VvqAHZW17ni7Z9fnrpLfG7y2SqeBCje
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 bulkscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1011 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
+ definitions=main-2410280143
+Message-ID-Hash: NIE35SJ5O6B2VWQ5S62ZSXQZGY2ZFLAM
+X-Message-ID-Hash: NIE35SJ5O6B2VWQ5S62ZSXQZGY2ZFLAM
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2BFE2HKZFU4TBU3NMTKEHDF6CAU7L3K4
-X-Message-ID-Hash: 2BFE2HKZFU4TBU3NMTKEHDF6CAU7L3K4
-X-Mailman-Approved-At: Mon, 28 Oct 2024 16:43:24 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2BFE2HKZFU4TBU3NMTKEHDF6CAU7L3K4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NIE35SJ5O6B2VWQ5S62ZSXQZGY2ZFLAM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,56 +140,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Infinix ZERO BOOK 13 has a 2+2 speaker system which isn't probed correctly.
-This patch adds a quirk with the proper pin connections.
-Also The mic in this laptop suffers too high gain resulting in mostly fan noise being recorded,
-This patch Also limit mic boost.
 
-HW Probe for device; https://linux-hardware.org/?probe=a2e892c47b
+On 10/22/2024 8:04 AM, Amadeusz Sławiński wrote:
+> On 10/22/2024 4:02 PM, Greg KH wrote:
+>> On Tue, Oct 22, 2024 at 03:56:44PM +0200, Takashi Iwai wrote:
+>>> On Fri, 18 Oct 2024 07:52:35 +0200,
+>>> Greg KH wrote:
+>>>>
+>>>> On Thu, Oct 17, 2024 at 05:07:12PM -0700, Wesley Cheng wrote:
+>>>>> Hi Greg,
+>>>>>
+>>>>> On 10/16/2024 11:40 PM, Greg KH wrote:
+>>>>>> On Tue, Oct 15, 2024 at 02:28:43PM -0700, Wesley Cheng wrote:
+>>>>>>> From: Mathias Nyman <mathias.nyman@linux.intel.com>
+>>>>>>>
+>>>>>>> Allow creators of xHCI secondary interrupters to specify the interrupt
+>>>>>>> moderation interval value in nanoseconds when creating the interrupter.
+>>>>>>>
+>>>>>>> If not sure what value to use then use the xhci driver default
+>>>>>>> xhci->imod_interval
+>>>>>>>
+>>>>>>> Suggested-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>>>>>>> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+>>>>>>> Link: https://lore.kernel.org/r/20240905143300.1959279-13-mathias.nyman@linux.intel.com
+>>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>> ---
+>>>>>>>   drivers/usb/host/xhci-mem.c | 8 +++++++-
+>>>>>>>   drivers/usb/host/xhci.c     | 4 ++--
+>>>>>>>   drivers/usb/host/xhci.h     | 5 ++++-
+>>>>>>>   3 files changed, 13 insertions(+), 4 deletions(-)
+>>>>>> This is already in 6.12-rc1, which makes me confused as to what tree you
+>>>>>> made this series against.
+>>>>>
+>>>>> Sorry, I didn't fetch the latest changes from usb-next.
+>>>>
+>>>> It wasn't even usb-next, it was 6.12-rc1, so I don't know what tree you
+>>>> based this on :(
+>>>>
+>>>>> In this case, should I rebase and resbumit?
+>>>>
+>>>> As the series can't be applied as-is, probably.  But I think you might
+>>>> want to collect some acks from the sound people and xhci developers, as
+>>>> I can't do anything with this until they look at the changes.
+>>>
+>>> Honestly speaking, I couldn't follow fully the discussions about the
+>>> fundamental design -- IIRC, Pierre and others had concerns to the way
+>>> to manage the offload device via kcontrols.  Did we get consensus?
+>>
+>> I don't think so.
 
-Test: All 4 speaker works, Mic has low noise.
-Signed-off-by: Piyush Raj Chouhan <piyushchouhan1598@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+As mentioned by Amadeusz, the overall USB offload concept hasn't changed significantly since the initial series, and will rely on having two sounds cards, ie leaving the one created by USB SND untouched (and still usable), while creating a path to an ASoC based platform card, which handles the offload path.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3567b14b52b7..075935707f8a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7551,6 +7551,7 @@ enum {
- 	ALC290_FIXUP_SUBWOOFER_HSJACK,
- 	ALC269_FIXUP_THINKPAD_ACPI,
- 	ALC269_FIXUP_DMIC_THINKPAD_ACPI,
-+	ALC269VB_FIXUP_INFINIX_ZERO_BOOK_13,
- 	ALC269VB_FIXUP_CHUWI_COREBOOK_XPRO,
- 	ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
- 	ALC255_FIXUP_ASUS_MIC_NO_PRESENCE,
-@@ -7996,6 +7997,16 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_pincfg_U7x7_headset_mic,
- 	},
-+	[ALC269VB_FIXUP_INFINIX_ZERO_BOOK_13] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x14, 0x90170151 }, /* use as internal speaker (LFE) */
-+			{ 0x1b, 0x90170152 }, /* use as internal speaker (back) */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST
-+	},
- 	[ALC269VB_FIXUP_CHUWI_COREBOOK_XPRO] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -10989,6 +11000,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1d72, 0x1945, "Redmi G", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x2782, 0x0214, "VAIO VJFE-CL", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x2782, 0x0228, "Infinix ZERO BOOK 13", ALC269VB_FIXUP_INFINIX_ZERO_BOOK_13),
- 	SND_PCI_QUIRK(0x2782, 0x0232, "CHUWI CoreBook XPro", ALC269VB_FIXUP_CHUWI_COREBOOK_XPRO),
- 	SND_PCI_QUIRK(0x2782, 0x1707, "Vaio VJFE-ADL", ALC298_FIXUP_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
--- 
-2.46.2
+The follow ups that I've had with Pierre was more towards how the offload parameters are going to be exposed to userspace, so that it can be properly utilized.  I think for the most part, we've agreed that the set of kcontrols we have now are sufficient, and there is proper controls for userspace to know which devices to use.
 
+>>
+>>> I believe that's the biggest obstacle in the audio side, i.e. what's
+>>> visible to users.  The kernel internals can be corrected at any time
+>>> later.
+>>
+>> I would like to see that agreed on before I even look at the usb side.
+>
+> My main concern is still that one USB audio device can be accessed via two different cards exposed in userspace. Usual USB one, and the one from device which does "offload". Suggested implementation achieves it by adding additional controls, which need to be set in specific way to achieve offload. Overall while I understand the mechanism, I'm not exactly convinced that it is the best way from end user point of view.
+>
+> "Implementation" part in Documentation added in patch 19 shows how it looks in userspace now.
+>
+> If you don't mind two sound cards being used to access same piece of HW, current implementation looks ok to me.
+>
+@Takashi, this was something we discussed really early on, even before the series was made, and I think it was agreed upon to avoid doing this with a single card.  I remember putting in the initial work to scope out this path, but it was going to require significant/major modifications to USB SND core, hence why we decided on the path to have two sound cards. (USB SND legacy path still usable)
+
+Thanks
+
+Wesley Cheng 
+
+> See also:
+> https://lore.kernel.org/linux-sound/75ffde3a-7fef-4c15-bfc8-87756e1c3f11@linux.intel.com/
+> where I described how I would prefer it to look.
