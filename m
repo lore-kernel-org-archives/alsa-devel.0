@@ -4,81 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51388D2AB3C
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2024 12:52:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8753ED3A67B
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2024 18:58:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA5B7DE;
-	Tue, 29 Oct 2024 13:51:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA5B7DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id D919DBC0;
+	Tue, 29 Oct 2024 19:58:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D919DBC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1730206319;
-	bh=xH2CMMFqSLKMd0Tqh+sts1ypcYbz4BgYEKnYl4eRMaU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1730228327;
+	bh=4W0HlC2Kj2crp2BfxjlLbRWtQ2TtBDLWnNobKyX3lLw=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WXqenkFKsEkmiC8b7J1mwCn9TNIGl+Y5YFU3L8SJb+g6cydQfKCYYJxIyuEl45Pw/
-	 ovYmhEpSpNZbC386ufo+iLKnzHjx7FKvD9hNPCciGbQX5GblnIEnEOcfiW43xTqoo4
-	 Q98p8t0fNcaNyNn56BOoy5n9ikDJogNeGSEOpKJY=
+	b=RNTCrj9DyPO13Yfrif8aHAa9TsRKI6biqh8Ew+fSfqKd0ydnVRphE4QwBZFKtFoJN
+	 kc/ODQ1UABBMrWdwpn5ebtHLu4SXx7y9jtYkcayYME+1X4u96kH/2uYpr/rngdOqsd
+	 LQcmOTz7efIDeA0ob4kiXXngbFMMNLrfvel5DtRA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D02AF805BA; Tue, 29 Oct 2024 13:51:17 +0100 (CET)
+	id 6CD00F805AF; Tue, 29 Oct 2024 19:58:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71510F805AF;
-	Tue, 29 Oct 2024 13:51:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC99EF805B5;
+	Tue, 29 Oct 2024 19:58:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79418F80269; Tue, 29 Oct 2024 13:51:10 +0100 (CET)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E8BE4F80269; Tue, 29 Oct 2024 19:58:09 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0756DF80104
-	for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2024 13:51:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0756DF80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id C4C05F800ED
+	for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2024 19:58:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4C05F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jN+aAOis
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 2C62AA42A83;
-	Tue, 29 Oct 2024 12:49:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3ECBC4CECD;
-	Tue, 29 Oct 2024 12:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730206263;
-	bh=xH2CMMFqSLKMd0Tqh+sts1ypcYbz4BgYEKnYl4eRMaU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jN+aAOislgsiZkqy8L7fbHRyZz+NQOBV0qJGY4pzMJkzCJcjefelD9kwVP+8zWCnR
-	 4KjNTSaizoBKtJVtw8XuCzkOV0BxYAQPJWMV4bepj/tARQ7Jhbb96BW2Rh37s3uFBU
-	 y1ix+JSyP9enJMR0BHIpOHTlrT8LtGBwrxWMeYljZytRUFN5p+AFq8PxZkTApo4hoP
-	 WtxAxBIFbvOxjm3Rg7wjhm5Or0nKLcODsK6GgatXr11mJFXBojsHRPNnluIB39G4MY
-	 QS2yYfDWq/Azm4HEInOXntrCXH82kuOHd7Sn0NBMSyqBVR889/6kZI+MYoDrHj7AGc
-	 H/vAn9ph/tF0A==
-Date: Tue, 29 Oct 2024 12:50:59 +0000
-From: Mark Brown <broonie@kernel.org>
-To: "Shalini Manjunatha (Consultant) (QUIC)" <quic_c_shalma@quicinc.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	"Raghu Ballappa Bankapur (QUIC)" <quic_rbankapu@quicinc.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-	"Krishna Kishor Jha (QUIC)" <quic_kkishorj@quicinc.com>
-Subject: Re: ASoC Kernel 6.1: Query regarding dynamic dai link/dapm
- registration during bootup
-Message-ID: <aa1a8eb7-685c-4aa7-b73c-640bbcebdcd5@sirena.org.uk>
-References: 
- <MW4PR02MB7266556C7EA581EB90AE81EDD44B2@MW4PR02MB7266.namprd02.prod.outlook.com>
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=GM6laftD
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 49T8kLjZ028808;
+	Tue, 29 Oct 2024 18:58:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	mMCcaLZmre/30OJO8WljAYdE/vnQtOlJelWRG+D9fQ4=; b=GM6laftDmoACMeta
+	BGKsZRxJqJKeXyKxqGjSiNchu2K5PA15B3h46GOvrHwp6Wtv6zSVqGsQv5URM09L
+	UlyvGyeJusABpXzGrTci4IJP8MoqqwvAtZdAobJwEw8MDbXHTnXpAvFLbShPFZMN
+	cGM2oWendTaWZDn3aue/EDMztyOZVzBtvmLaPFHg87vugWVzvKkZZedct0jN1jjL
+	LsSWcbxL+0pRjInhfRZ9avM2w2QQ0PUu61MNeYTrUsrh0r1znk3aCbLZffibCSBi
+	5bw1eOVXJEXBoh0PUO4MMhnYrQuRS5QjcepsdWgBnrL9JhxhtilF3KdZyXkA/uib
+	J7zDCw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42gsq8heue-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 29 Oct 2024 18:58:04 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id
+ 49TIw3DJ014208
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 29 Oct 2024 18:58:03 GMT
+Received: from [10.71.115.184] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 29 Oct
+ 2024 11:58:03 -0700
+Message-ID: <52ea0b32-79c7-42e8-8e2c-192d08f41e64@quicinc.com>
+Date: Tue, 29 Oct 2024 11:58:03 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="b1KLVv4xEzbzkh0+"
-Content-Disposition: inline
-In-Reply-To: 
- <MW4PR02MB7266556C7EA581EB90AE81EDD44B2@MW4PR02MB7266.namprd02.prod.outlook.com>
-X-Cookie: May be too intense for some viewers.
-Message-ID-Hash: JZTYHPJAIMFRJM44MBK6AFYQU6UMPQTQ
-X-Message-ID-Hash: JZTYHPJAIMFRJM44MBK6AFYQU6UMPQTQ
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v29 04/33] xhci: sideband: add initial api to register a
+ sideband entity
+To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC: "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "mathias.nyman@intel.com" <mathias.nyman@intel.com>,
+        "perex@perex.cz"
+	<perex@perex.cz>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
+        "corbet@lwn.net"
+	<corbet@lwn.net>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "krzk+dt@kernel.org" <krzk+dt@kernel.org>,
+        "pierre-louis.bossart@linux.intel.com"
+	<pierre-louis.bossart@linux.intel.com>,
+        "broonie@kernel.org"
+	<broonie@kernel.org>,
+        "bgoswami@quicinc.com" <bgoswami@quicinc.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "gregkh@linuxfoundation.org"
+	<gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-sound@vger.kernel.org"
+	<linux-sound@vger.kernel.org>,
+        "linux-input@vger.kernel.org"
+	<linux-input@vger.kernel.org>,
+        "linux-usb@vger.kernel.org"
+	<linux-usb@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>,
+        "alsa-devel@alsa-project.org"
+	<alsa-devel@alsa-project.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+References: <20241015212915.1206789-1-quic_wcheng@quicinc.com>
+ <20241015212915.1206789-5-quic_wcheng@quicinc.com>
+ <20241025232252.wsk4lviqzyzqjzuh@synopsys.com>
+Content-Language: en-US
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <20241025232252.wsk4lviqzyzqjzuh@synopsys.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: 47BSqjjk7MLktpZ_JdwbGROYbtTP0iEy
+X-Proofpoint-ORIG-GUID: 47BSqjjk7MLktpZ_JdwbGROYbtTP0iEy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 bulkscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=893 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
+ definitions=main-2410290142
+Message-ID-Hash: 2L4WPJA6I5OOO3X7WFFULCK7MHUVX77G
+X-Message-ID-Hash: 2L4WPJA6I5OOO3X7WFFULCK7MHUVX77G
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -90,7 +150,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JZTYHPJAIMFRJM44MBK6AFYQU6UMPQTQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2L4WPJA6I5OOO3X7WFFULCK7MHUVX77G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,44 +159,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi Thinh,
 
---b1KLVv4xEzbzkh0+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 10/25/2024 4:22 PM, Thinh Nguyen wrote:
+> Hi,
+>
+> On Tue, Oct 15, 2024, Wesley Cheng wrote:
+>> From: Mathias Nyman <mathias.nyman@linux.intel.com>
+>>
+>> Introduce XHCI sideband, which manages the USB endpoints being requested by
+>> a client driver.  This is used for when client drivers are attempting to
+>> offload USB endpoints to another entity for handling USB transfers.  XHCI
+>> sideband will allow for drivers to fetch the required information about the
+>> transfer ring, so the user can submit transfers independently.  Expose the
+>> required APIs for drivers to register and request for a USB endpoint and to
+>> manage XHCI secondary interrupters.
+>>
+>> Multiple ring segment page linking, proper endpoint clean up, and allowing
+>> module compilation added by Wesley Cheng to complete original concept code
+>> by Mathias Nyman.
+>>
+>> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+>> Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> ---
+>>  drivers/usb/host/Kconfig          |   9 +
+>>  drivers/usb/host/Makefile         |   2 +
+>>  drivers/usb/host/xhci-sideband.c  | 424 ++++++++++++++++++++++++++++++
+>>  drivers/usb/host/xhci.h           |   4 +
+>>  include/linux/usb/xhci-sideband.h |  70 +++++
+>>  5 files changed, 509 insertions(+)
+>>  create mode 100644 drivers/usb/host/xhci-sideband.c
+>>  create mode 100644 include/linux/usb/xhci-sideband.h
+>>
+>> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+>> index 4448d0ab06f0..96659efa4be5 100644
+>> --- a/drivers/usb/host/Kconfig
+>> +++ b/drivers/usb/host/Kconfig
+>> @@ -104,6 +104,15 @@ config USB_XHCI_RZV2M
+>>  	  Say 'Y' to enable the support for the xHCI host controller
+>>  	  found in Renesas RZ/V2M SoC.
+>>  
+>> +config USB_XHCI_SIDEBAND
+>> +	tristate "xHCI support for sideband"
+>> +	help
+>> +	  Say 'Y' to enable the support for the xHCI sideband capability.
+>> +	  Provide a mechanism for a sideband datapath for payload associated
+> Please correct me if I'm wrong, but this doesn't look like the actual
+> xHCI Audio Sideband capability described in the xHCI spec section 7.9
+> but rather a specific implementation for Qcom right? For the xHCI Audio
+> Sideband xHCI capability, the driver should detect this capability
+> through the xHCI get extended capability. If this is not xHCI Audio
+> Sideband capability, we should properly clarify this in the
+> documentation and the naming of things to avoid any confusion.
 
-On Tue, Oct 29, 2024 at 10:35:08AM +0000, Shalini Manjunatha (Consultant) (QUIC) wrote:
+Sure, that's a good point.  It does still currently rely on utilizing the system memory for USB IO transfers.  I can add some comments and update some of the documentation to reflect that this is different. 
 
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
+Thanks
 
-> 1) can we register sound card twice during bootup, once with limited
-> dai links and next with all required ones?
+Wesley Cheng
 
-You can certainly register a card driver, then unregister it and
-register a new one that binds to the same firmware?
-
-> 2) can we register dai links/dapm dynamically based on use case requriement?
-> 3) If it is possible, could you share any reference from any other vendor who is able to achieve the same?.
-
-In theory you should be able to dynamically add controls, but it's not
-something people really do at the minute.  You'd have to be careful with
-locking and make sure that your userspace can cope with things appearing
-dynamically.
-
---b1KLVv4xEzbzkh0+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmcg2jIACgkQJNaLcl1U
-h9Bk4Qf9ENT4rpQ4sGRuPWeviGEqMjgdAJRmCgmPktLIyvrE4O5n3RMEAKvu09Ds
-pigNtDBEiFUHeAHhfWuDffWDf9G0Kb+uiriSxk09K6MGvnp/wFXzoTvgs1yIMOSO
-UBye7FDFxQBZkJa/nkJmrEe0q+C1vZLPgKG++BWGKGdHtWTG4Vxv7/q/wm92xnj6
-yRFgwSV9fBIfbUNe1/Ac7JMCYQfarSxuP0AtYvL6GSAG7efaV3MYQ+0N08N6xJBT
-eqwpUSK7yx+HHPu8uNYf97UZRVlTH07behQcWfZ606RWUTk3PdvNj6fLeNsnHkA0
-Loz2a05AxSnIG14Sl/m+XIPMonxXxg==
-=YqSQ
------END PGP SIGNATURE-----
-
---b1KLVv4xEzbzkh0+--
+> I believe your implementation still needs to provide the data to the
+> host controller through the system memory right? The xHCI Audio Sideband
+> capability may pass the data to the xHC other than the main memory.
+>
+> BR,
+> Thinh
+>
+>> +	  with audio class endpoints. This allows for an audio DSP to use
+>> +	  xHCI USB endpoints directly, allowing CPU to sleep while playing
+>> +	  audio.
+>> +
+>>  config USB_XHCI_TEGRA
+>>  	tristate "xHCI support for NVIDIA Tegra SoCs"
+>>  	depends on PHY_TEGRA_XUSB
