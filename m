@@ -4,81 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F11DD44D75
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2024 14:06:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19900D44D77
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2024 14:11:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73AC914DF;
-	Wed,  6 Nov 2024 15:05:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73AC914DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A69414E2;
+	Wed,  6 Nov 2024 15:11:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A69414E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1730901965;
-	bh=j1W9k4oVkIQL68KFIkXY480BVKIr5DP71SiPlfPiec0=;
+	s=default; t=1730902298;
+	bh=PUuS0tCe3CTdgQYCNE9gH0S9LxjXaMV04akfmdLt1xs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=L4/cF2xLZ8ae4nMRbkVOqtXPdOHTS/aqnFug8vFjHccpiJy4D9ohMBLcGPNOUg5KA
-	 KTisRIBNSlwCKNkuo/Doo997tYIL9//UwxRX9LGGS9LcydO7g/qtj/PXvqIZ8PnO6E
-	 8c7spwgkmuKuWBnFUeNvm+A0KfhW33Ilrg4zBOag=
+	b=nMwPcUpcU+5Sjl9hEaBw8Jv4zc2cS66P0W5lSlAML4S94YXcQBgkzSHvOsTHOi3dA
+	 OCt8K5zcm/uXbgE64phSs8SOMRcHVssCP5Xs1r0e1Y8ZdNcmSRBB0hnxXRAV6j86Yr
+	 n+BxSotO+t4U0GwX8ecTILpaEX6sY9+H/AkvPUYM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA32AF8058C; Wed,  6 Nov 2024 15:05:33 +0100 (CET)
+	id D38FCF805A1; Wed,  6 Nov 2024 15:11:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52F0AF805A0;
-	Wed,  6 Nov 2024 15:05:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14E9FF805A1;
+	Wed,  6 Nov 2024 15:11:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F8CBF8013D; Wed,  6 Nov 2024 15:05:29 +0100 (CET)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org
- [IPv6:2604:1380:45d1:ec00::3])
+	id A8422F8013D; Wed,  6 Nov 2024 15:11:01 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BA959F800AA
-	for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2024 15:05:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA959F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id E38FDF800C8;
+	Wed,  6 Nov 2024 15:10:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E38FDF800C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WGC5ALmY
+ header.s=k20201202 header.b=QxbH4Fy1
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 895B5A43D25;
-	Wed,  6 Nov 2024 14:03:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3D01C4CECD;
-	Wed,  6 Nov 2024 14:05:23 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id CCE435C107C;
+	Wed,  6 Nov 2024 14:10:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DEB8C4CEC6;
+	Wed,  6 Nov 2024 14:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730901926;
-	bh=j1W9k4oVkIQL68KFIkXY480BVKIr5DP71SiPlfPiec0=;
+	s=k20201202; t=1730902256;
+	bh=PUuS0tCe3CTdgQYCNE9gH0S9LxjXaMV04akfmdLt1xs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WGC5ALmYPQWR5iJ2S0XpFdPr7MjA8d8poSP2BqJbGh/BYlBL54G/wFDKbktAYTLfY
-	 r9fIDGuk73SjSSUaXu3ir5NPlwkCnXyzZjLy5enuQm1qK6GemkA+PjQzx4w53VY8A7
-	 lxMjqzUS+UQtIi1DwGkbt/b+WsgDcLro+ATkj9tkzCxYpol6WBsd8uUq3b28PkiFLx
-	 7OppV9IBsVa3SUGRvk3b0hBMFReSK4o8fLx+9dflAw2UAiFP5oHBuBJFo3oUAuggUS
-	 u/4/o760lT0O7ZWQ3r3hL+9SdV7fp0TDF44aWJozT5stfWXU5//2yGwxjzIDxSQehh
-	 d3vRdyBCgpxUQ==
-Date: Wed, 6 Nov 2024 14:05:21 +0000
+	b=QxbH4Fy1pHJGyPJ41m5e8emEMCv+1P3lPgpD4yb/wjS3uXFcz2crCkvWANABOzvOc
+	 rbfJddnBnRCOl/q4LDwWwi+nGY84IESfg58bpVcdy8SJSDNF/vqR0NBdgqZXYpbC4N
+	 ymryP4ePwsJjTPSxDxLtXyof+w9HgOIcIUzZGX03UPDpBMhPM1M8yxpEaxir2KUAFB
+	 077dGpmyQjttR0Uc5S7ehZPPGeET2YLNVl7LmaGSLIZaocltrG+VGv4LOXtVeeBCN8
+	 BGRquysPKdlW2R+IhbHurjwXdehrmqqKOXo2MUl8vds4Ojo6ts7U23D/7rNlcr8/xH
+	 QiFvgSp1TSqKA==
+Date: Wed, 6 Nov 2024 14:10:49 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Kiseok Jo <kiseok.jo@irondevice.com>,
-	Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v4 1/2] ASoC: dt-bindings: irondevice,sma1307: Add
- initial DT
-Message-ID: <092cfb04-378f-4997-88e0-35c247b8c445@sirena.org.uk>
-References: <20241106005800.7520-1-kiseok.jo@irondevice.com>
- <20241106005800.7520-2-kiseok.jo@irondevice.com>
- <kspk7qajv7r5glbcawmecbup36cv4wi3hjrgyfyyejjectwwt5@u5nx5y5zirsa>
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Cc: alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com,
+	Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+	syed.sabakareem@amd.com,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Emil Velikov <emil.velikov@collabora.com>,
+	"moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS"
+ <sound-open-firmware@alsa-project.org>,
+	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <linux-sound@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: SOF: amd: Fix for incorrect DMA ch status register
+ offset
+Message-ID: <5e1f7675-1f64-4078-a923-ee51945f3c03@sirena.org.uk>
+References: <20241106101455.1229113-1-venkataprasad.potturu@amd.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="x/ijW8mKOHC/k6vi"
+	protocol="application/pgp-signature"; boundary="sV4lFD4NC59+GAjz"
 Content-Disposition: inline
-In-Reply-To: <kspk7qajv7r5glbcawmecbup36cv4wi3hjrgyfyyejjectwwt5@u5nx5y5zirsa>
-X-Cookie: Include me out.
-Message-ID-Hash: E3CLIH2BZBYAIIVG2MDGQWDMTYD2MJ24
-X-Message-ID-Hash: E3CLIH2BZBYAIIVG2MDGQWDMTYD2MJ24
+In-Reply-To: <20241106101455.1229113-1-venkataprasad.potturu@amd.com>
+X-Cookie: Polymer physicists are into chains.
+Message-ID-Hash: 2YCP3KE2OYVGZYTZ2TS273H2PXCLF4EP
+X-Message-ID-Hash: 2YCP3KE2OYVGZYTZ2TS273H2PXCLF4EP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E3CLIH2BZBYAIIVG2MDGQWDMTYD2MJ24/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2YCP3KE2OYVGZYTZ2TS273H2PXCLF4EP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,34 +110,33 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---x/ijW8mKOHC/k6vi
+--sV4lFD4NC59+GAjz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 06, 2024 at 02:55:21PM +0100, Krzysztof Kozlowski wrote:
-> On Wed, Nov 06, 2024 at 09:57:59AM +0900, Kiseok Jo wrote:
-> > This adds the schema binding for the Iron Device SMA1307 Amp
+On Wed, Nov 06, 2024 at 03:44:53PM +0530, Venkata Prasad Potturu wrote:
 
-> That's a v5. RESEND means you send exactly the same or the same plus
-> tags.
+> Update correct register offset for DMA ch status register.
+>=20
+> Fixes: bff3c2a4062d ("ASoC: SOF: amd: add support for acp7.0 based platfo=
+rm")
 
-No, this is actually a resend - he's resending the v4 that you replied
-to just before this one which was sent with mangled subject lines and
-missing changelogs.
+I can't seem to find this commit.
 
---x/ijW8mKOHC/k6vi
+--sV4lFD4NC59+GAjz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmcrd6AACgkQJNaLcl1U
-h9A9EQf+IMZncqsxypZL+DNHZLVibRmnJzwUQ3E0MWBrX1jUxeu1XYC1FYLY8oez
-t1TYTsBkYw+dbZt1Ia7M3PkEAo4KxcAY/nFr/wUjWt7RYRpNUEi1Fcp8qNCRumnx
-yPpanG1xxPgDx0hJ9/lQo3x781dcEOjy2wZQjyxYiiJdhSNFbXxpxSVoScG9xhXo
-1MZisRDS2wUEqORD3E+ejcDr9Sc6fnEr0fshHzfK5dlReGjDAjMw5sTfd7ww73mU
-IC63KnNvtjMSJEdLlTSYZRH7L/Hx4cgDE5JYDrAWCgybiba9MxwDPolhGNIw42Eu
-1ibvbAhNnALQEVMv61Nyke46/X60uw==
-=C9SO
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmcreOgACgkQJNaLcl1U
+h9BORAf9GKqaFL4aeOlaQ2Hl3x4DbSrO+YV7ljPwZhaeL2BwWMAEOWd8YkiWOa03
+XsQKgPIWJZu97/1/I1O8FOMRrh0o7Kgea8wz7LO8QgsoH1c2e0Uxzqh9ZZvEKyHn
+wlTX+Ulan8s9IKID24TuaT2Ba++7ce0qTM54+eR5gw0xNpgBMJ6YgnRG0NoCKodz
+rg701vF7M339+wo5ylJ+KKXq4hgOr1pxMmAktHDmuPPIi7ZoqO9qmoj/g8qo6Rk1
+xKU6GEdLJLxBO3xioi5lXv69u0GDawFqoBOTc/4liixQ4o2k3Lkx3qVBdAttWeIF
+eUuGNr/6hiV4EsZN2j6sL232T6ikTg==
+=OyQE
 -----END PGP SIGNATURE-----
 
---x/ijW8mKOHC/k6vi--
+--sV4lFD4NC59+GAjz--
