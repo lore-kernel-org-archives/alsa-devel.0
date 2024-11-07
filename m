@@ -4,100 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5050DD4334B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2024 11:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94ADCD43354
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2024 12:10:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE18CEC7;
-	Thu,  7 Nov 2024 12:33:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE18CEC7
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCDB0EDB;
+	Thu,  7 Nov 2024 13:10:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCDB0EDB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1730979222;
-	bh=eGIe0oFw+GHv8xOkX6MBCbhVwuwBtD/s5khyAN8QmvM=;
-	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Vra8DSblZ+bjZ8TenxRHXY9Q3jKWdGeDtXFjTEi1EigwQKSv3qYMILh3XarfKHEyR
-	 CBMND3BSWXzCL7lYScYbMFGW5c3xdkpNPjnP6tatAeUFan7Ql+VjnN0W0FIgSJVZjw
-	 27T1jP9KqzUnqRsuHtUpTxYEc9u6b1NMTIJO79yw=
+	s=default; t=1730981432;
+	bh=aBBTmbdG9cxUZWz57CPZY1U0vdBGGz8EIap9msps0XU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=ahiIacLhJ0uK3hn5ktFOlUfyAMvRFwad/fH7xX3Q/0liceuLfKxFAdJAKtEz2cbH7
+	 J0DKayQJPEeiNFO0tkIZPWVSOKbs1DZLDjkeqWLRO7zDwSRD+6ax69Gd0/MU7Vg9PU
+	 y85IqX2CEzKncPuxyd8GweARPDy5pyh7UeJ6DZEc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4E77F805BD; Thu,  7 Nov 2024 12:33:10 +0100 (CET)
+	id 46A36F805B2; Thu,  7 Nov 2024 13:10:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 196F7F805B6;
-	Thu,  7 Nov 2024 12:33:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7133F8059F;
+	Thu,  7 Nov 2024 13:10:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6251AF8013D; Thu,  7 Nov 2024 12:33:00 +0100 (CET)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 699F2F800C8
-	for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2024 12:32:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 699F2F800C8
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=PD84/w/r
-Received: by mail-ej1-x62e.google.com with SMTP id
- a640c23a62f3a-a9a4031f69fso139489466b.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 07 Nov 2024 03:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730979177; x=1731583977;
- darn=alsa-project.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vM3xPbYb8EGb2aB7pJUZJEs3h9UVOlus31UR+lG9I+U=;
-        b=PD84/w/rH9X0WHJ1KjW+nlRZWh4/7AbXtYNYpLbqpZbnSc86pX2fn/njP0dy3RzSY7
-         tl0pJyG0l6EinPV9EyZyK2Fy6GUXXGekRJSisbftNWeROQSZZaTA6Ivrdr3A8HAb4r/D
-         5OS9+CaXhdcdz/J8LniKK7/sufxujlgigLExFSsTEopcL1vCkhgiMIgWIc5PvwCEVpky
-         YAz2+f7NQ1kxMlPmgqQyFIoAAyysojc4bCzL0jp5DZ1lrXa9f5Ez2d77s/COfoIFi308
-         S1RDNbilDgiSLzxMeRJqoSQwfJ3w8FIYuWDpUedPBjOu7/ex0VVhAif6HJD9o3u06lte
-         o9ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730979177; x=1731583977;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vM3xPbYb8EGb2aB7pJUZJEs3h9UVOlus31UR+lG9I+U=;
-        b=N8E13+jN5kswqqy3BjfGxS3Otk0uxmWWd9RJVxYZZqwywQ/SNaHqm0Wj1Q/H7dtR4y
-         O/LGyI25YQMImTYtSj8u0uuiv9hEKrrP/yOUkkY4Iz/ON6ya9N6z8/m8OzWK1IZ1+InN
-         NpvyzLlg+kRq53QcUQcOVNVa/dwR3mLdfwbvLzrCjg5PtrJ6u3Mp9KSh5vZVLj85ZBWU
-         Zd6IvUpiy2wA4nGB6/yQvIOQsciVENgpS0s/CujJlYswk30FEsGuMJcCsl0uG7IMmpyq
-         AuIGIsCzD282W0yCjU0d/1jY5Fe5f5Mo9yvv4AfnnpYHseyjBNp+85FisKbKcM9ca8Qv
-         pnow==
-X-Gm-Message-State: AOJu0YwO7Ws6ii6EgHTC2g/RWqam1zKUVN43BizK5OFscFrhqElWFZ3w
-	uPWEnjy2SZfoyr+us92NqOTHgcDT8G0QToIpJWRBgP4WbxmulVnjPjZujeHv
-X-Google-Smtp-Source: 
- AGHT+IHX2eIsXcf/wPyVmntb16jVYp7CGnx7Q87Voui/QIP4T3LqsqsMF+HEj75LtaVxesPx0Sq3Sw==
-X-Received: by 2002:a17:907:86a2:b0:a9a:134:9887 with SMTP id
- a640c23a62f3a-a9de6167ad2mr4018428966b.41.1730979177074;
-        Thu, 07 Nov 2024 03:32:57 -0800 (PST)
-Received: from ?IPV6:2a02:8071:3484:bc0:caf7:50ff:fe30:727e?
- ([2a02:8071:3484:bc0:caf7:50ff:fe30:727e])
-        by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-a9ee0dc5234sm81279266b.124.2024.11.07.03.32.56
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Nov 2024 03:32:56 -0800 (PST)
-Message-ID: <820966f0-7ee4-4922-b458-3855eb9721fc@gmail.com>
-Date: Thu, 7 Nov 2024 12:32:56 +0100
+	id 7483FF8013D; Thu,  7 Nov 2024 13:09:56 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id C7D51F800C8
+	for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2024 13:09:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7D51F800C8
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US, de-DE
-To: alsa-devel@alsa-project.org
-From: schorpp <thomas.schorpp@gmail.com>
-Subject: [BUG] HDA Intel PCH, HDMI , HDA Intel PCH, ALC886 Digital, no IEC958
- / HDMI output/passthrough to AVR
-X-Priority: 4 (Low)
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NXTG6SO4O3GV46DSVIE5J5Y3OLQAT4QK
-X-Message-ID-Hash: NXTG6SO4O3GV46DSVIE5J5Y3OLQAT4QK
-X-MailFrom: thomas.schorpp@gmail.com
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1730981394094357252-webhooks-bot@alsa-project.org>
+References: <1730981394094357252-webhooks-bot@alsa-project.org>
+Subject: topology: Fix strcat() to uninitialized memory in add_define()
+Message-Id: <20241107120956.7483FF8013D@alsa1.perex.cz>
+Date: Thu,  7 Nov 2024 13:09:56 +0100 (CET)
+Message-ID-Hash: GZXWGQY74L54LSEPHMET6HAEPYJ566XO
+X-Message-ID-Hash: GZXWGQY74L54LSEPHMET6HAEPYJ566XO
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NXTG6SO4O3GV46DSVIE5J5Y3OLQAT4QK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GZXWGQY74L54LSEPHMET6HAEPYJ566XO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,30 +66,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-[BUG] HDA Intel PCH, HDMI , HDA Intel PCH, ALC886 Digital, no IEC958 / 
-HDMI output/passthrough to AVR
+alsa-project/alsa-utils pull request #277 was opened from rfvirgil:
 
-ALSA versions 1.0.25...current
+If *defs == NULL the realloc() will be a simple malloc() and return a pointer to uninitialized memory. Doing a strcat() to this is bad, so in that case strcpy() the string into the newly allocated buffer.
 
-Kernel Driver versions 3.12.40...6.x
+This fixes the buffer overflow bug, such as:
 
-Hardware:
+*** buffer overflow detected ***: terminated
+Program received signal SIGABRT, Aborted.
+__pthread_kill_implementation (no_tid=0, signo=6, threadid=<optimized out>) at ./nptl/pthread_kill.c:44
+warning: 44     ./nptl/pthread_kill.c: No such file or directory
+(gdb) bt
+    at ../sysdeps/posix/libc_fatal.c:132
+    at ./debug/fortify_fail.c:24
+    dest=dest@entry=0x5555555682c0 "hUUU\005PLATFORM=mtl,PREPROCESS_PLUGINS=nhlt,NHLT_BIN=nhlt-sof-mtl-sdw-cs42l42-l0-max98363-l2-4ch-48k-96k.bin,NUM_DMICS=4,PDM1_MIC_A_ENABLE=1,PDM1_MIC_B_ENABLE=1,DMIC0_ID=3,DMIC1_ID=4,DMIC1_ENABLE=passth"...,
+    src=src@entry=0x7fffffffe0fa "PLATFORM=mtl,PREPROCESS_PLUGINS=nhlt,NHLT_BIN=nhlt-sof-mtl-sdw-cs42l42-l0-max98363-l2-4ch-48k-96k.bin,NUM_DMICS=4,PDM1_MIC_A_ENABLE=1,PDM1_MIC_B_ENABLE=1,DMIC0_ID=3,DMIC1_ID=4,DMIC1_ENABLE=passthrough"..., destlen=<optimized out>) at ./debug/strcat_chk.c:34
+    __src=0x7fffffffe0fa "PLATFORM=mtl,PREPROCESS_PLUGINS=nhlt,NHLT_BIN=nhlt-sof-mtl-sdw-cs42l42-l0-max98363-l2-4ch-48k-96k.bin,NUM_DMICS=4,PDM1_MIC_A_ENABLE=1,PDM1_MIC_B_ENABLE=1,DMIC0_ID=3,DMIC1_ID=4,DMIC1_ENABLE=passthrough"...,
+    __dest=<optimized out>) at /usr/include/x86_64-linux-gnu/bits/string_fortified.h:130
+    d=0x7fffffffe0fa "PLATFORM=mtl,PREPROCESS_PLUGINS=nhlt,NHLT_BIN=nhlt-sof-mtl-sdw-cs42l42-l0-max98363-l2-4ch-48k-96k.bin,NUM_DMICS=4,PDM1_MIC_A_ENABLE=1,PDM1_MIC_B_ENABLE=1,DMIC0_ID=3,DMIC1_ID=4,DMIC1_ENABLE=passthrough"...,
+    defs=<synthetic pointer>) at topology.c:400
 
-DFI Mainboard MB330-CRM
-
-https://www.dfi.com/de/product/index/273#specification
-
-Reproducible Always
-
-Steps to reproduce and full report:
-
-https://www-vdr--portal-de.translate.goog/forum/index.php?thread/136519-gel%C3%B6st-xineliboutput-config-f%C3%BCr-dd-passthrough-zu-avr-und-5-1-surround-headset/&postID=1375883&_x_tr_sl=de&_x_tr_tl=en&_x_tr_hl=de&_x_tr_pto=wapp#post1375883
-
-Software crosscheck with CM106 USB Soundbox iec958: works OK.
-
-Where to start in the drivers source code to fix it?
-
-y
-tom
-
-
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/277
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/277.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
