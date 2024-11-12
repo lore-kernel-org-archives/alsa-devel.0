@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38259D32D8E
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2024 10:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 936D3D32D8E
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2024 10:36:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D00D14E4;
-	Tue, 12 Nov 2024 11:35:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D00D14E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEE0D1939;
+	Tue, 12 Nov 2024 11:36:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEE0D1939
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1731407767;
-	bh=pdSncvsYhLrAorO6FVqM+GPIWFy5+i+cKGmIQoIAhm8=;
+	s=default; t=1731407788;
+	bh=Kga5T+ah2FU3Ou2fNm/+P5B4ui4zBo7U8oJFsAlVAeU=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Kd1BFTxV8Sjl/VZIsoox8tupVXry3jupEXQ5Ca/xzMJjw0+0Q/2k8j/iBMbJstxEk
-	 QNA3lXoWs0nIixlRCS2OE/UYNvqizUTqE0VtulLWVRnntQTT+bGP7ZvTlIZsMPgWHs
-	 IDESs29PtKlHArMvUppkJiavv7rm39sIC9h3+Cgo=
+	b=Ou55oXmpbxc8AAgUciV4v7qyPP2uB7SNwTnd66cQvYb1bLP3nMV/dXJbrbyt/r6yk
+	 /B1rjU2DsXXoSsaLs/o9tI32aEtXOS5dKPYn/sD21stNmJ5DW69pr5kQgehtv9ew4l
+	 jCQSFsdBA4EkXZ6WZeaTBYgU4JNJz6+Jhi1RhxhQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0BD87F8062E; Tue, 12 Nov 2024 11:34:55 +0100 (CET)
+	id B39F5F805A0; Tue, 12 Nov 2024 11:35:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F236F80634;
-	Tue, 12 Nov 2024 11:34:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06281F80673;
+	Tue, 12 Nov 2024 11:35:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8A0BF805F0; Tue, 12 Nov 2024 11:34:46 +0100 (CET)
-Received: from DB3PR0202CU003.outbound.protection.outlook.com
- (mail-northeuropeazlp170110001.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:c200::1])
+	id 39CB6F80640; Tue, 12 Nov 2024 11:34:58 +0100 (CET)
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur02on20624.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2607::624])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D50D4F805EE
-	for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2024 11:34:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D50D4F805EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 37E5AF80639
+	for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2024 11:34:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37E5AF80639
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
- header.s=selector1 header.b=H3MSp4As
+ header.s=selector1 header.b=hlQHZJtj
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Q+EQjw68E9XWU7o5vejt9HaCUqRL+oNyWB/BdwjEGu55psRBo4ByloSLmhnBQzrNaxvNm8TtktRKmgVlrKyJns8pyIIaCpi8NuxLthLUmkHqSlND6L6vyJsCIIDTHJx8Ngv5bDYMBamVBaAAjll/OlkJ//tBQ6kNAEoVwmBGxnoUnYiyYfKWHX8xm2yCL89JtpMqzXI1j6+7deFWBZdJNmlvbGPRVtHpdpdioGCkN6LQPNFZ1CftUR3KMC8qh+9sWIDPSUjSirtwJfs76uqN5oyNVpdM/SvtjbEmYK4IQnVj3O5E1EX4P0SIzPfmkPlAMDA2bMHaOeOS97BrxsMKcg==
+ b=uGJdCHpS6MuLE+E50cdzhkOsS6vCxxpkvuVYq+y0pm3yKmUEM/UWBT07QZvypdHjJFuCkoB5RE67UeLM/bVDk8XfWbVqlhgVF9t2e2qxLH6/QJMH1sJkbLOC9H7dka0ri8aHNkogpHaCsvm5hb7vZbBJhLwr1TrsKtI1lKsGqZCaLZSYnXRR6ZyCFJHFzXqL6s/DfJZY/K3kwFl+nLUOZetFntg2w2EnGKitSK6VTcL2oMVZRZsfba9nb/f3tELEywgHW3XV3xiANGjbFTvttX/gOmnSnp7WxbGRo38KSxknw5SLTc9T0JrVk3fjDFbAAlWkw1CIn/TlgxzyAiSO1w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=asHgnuhLl7u97cA8ELXln78RhYt/mxLwaxyHgw0InHM=;
- b=ZnvbpYGcZc8G94Ha0CVFwHYsYWQG2OD2E2NP1mEsAO1IjGBSVIyyugIc0jRhqLV1jnUeoGwXGZfohpYZ1DYMcv6a1MWVWO55bxk/Dl8Ua23BeRBGvrDCnU6PqmEjqhj2BSEzRl4YRCTm2z3P8KqwAHrkZ1KYhtjjea4M3p65nqF7o80fSzU+HRWcOWDeHGzAXrpB75k2kxp70H4iuMLQSLnS5uvGKniYwDimC7Q5O4isr1Rx22Q/81ZXCfnsxwRVakiFWyAq2wrcEK1uU93095YC/4woPrtWjFsEawpwlaCi4Q+vosqJbufAWr3J8PyTPuX967cb3kV0uR46YbOvNg==
+ bh=Gx4r59MsUrRSAYnRBL2LULLZNbMWnLuBxzcN1FydhN0=;
+ b=keVKNjRCo5Q26JadeLImSQzBygErDSYFXVGvLG5qO62MM5QlsUwmM0xa+eB2Ojurh3ZVCWuJGHwkF7Ic6WeDrQyZ8dw8r/St1QhM7FmabJslqtLhieM8zpv7pbEvo08wqfNO7PYgeNBClNBu0Wmljy2fOociRG3zGnYJeUCEvMm7AXoiu34fVLADDFPse0AxDYBKyGxwnHQdPq7WthJ9yrFp4B/hIm2X6oNV/lyUQfhF3ZW2LqoFovYZ5mVJY/CeSjXX0EhMketL2wz5Xp8YJLFpFDxGGUmHyV2kdz9O+Dz2IiLulVDYggqo0SQ2FUVIOfLT91rIJBVpDw1PoRcjUw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=asHgnuhLl7u97cA8ELXln78RhYt/mxLwaxyHgw0InHM=;
- b=H3MSp4As77kErRkyi+frno9dYJqscxiNEMbV81ceEppmQBQ9Tq2AIZjCvbcQS3oXRsn/C0t5NicqQ9fQUofVtyB3X6LFjuOJWvPfA7Gequay0riqAJp9o3wc5fxC+Ek17+wnupJpCiHZE/P/2XsnnIeeZLhXTDsf+059rKtWGM8c3PhIohZC1rS4RSKuLT4eHNMbM+3U69ZT70LfBcgEZiiSQcDBJ9iyXs2eeA0Nc+OhI7nYxGDj0A0NjlETTmFpu6H0Ch7Joi3QKyoG3oynQMUuW7bXHsm4gLWvAYRHUYpsWfJNyNnF58/uSJNijUFx4HedGibSECa8syKJm87ixg==
+ bh=Gx4r59MsUrRSAYnRBL2LULLZNbMWnLuBxzcN1FydhN0=;
+ b=hlQHZJtjmbiN68QIEbyz+qcEMY+QoVW8hSPe5lLRcFUXuvfOgE/qrUNPtyLAGPT/GQRizjepxM9Vf2W8PeGWv8TicF1V8zPh5EZmKsosSPkgQ1XuS/vuQZLqqtEVIxpg2NpArnb5sw/ofaHX9/P7BrJuVoJ6DWZAWcbjys2/jxjz3HHncPlcjR41rmngZCQ4VJ1qZ6L0x8pkA+o4xbOLZrt6WIeNZIO3z1GAioxe7OIhLYJSvVDhPYcu2Ng/BUuBB4h0LPGYZ9/9rjycftLIX8RGDyIJ6wov2PbvBw3ZImxudHLbuaFz3S0znmzDoqfoROPsJeXUotopjZPs78agIQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB7044.eurprd04.prod.outlook.com (2603:10a6:208:191::20)
- by VI0PR04MB10757.eurprd04.prod.outlook.com (2603:10a6:800:26a::13) with
+ by DU2PR04MB8598.eurprd04.prod.outlook.com (2603:10a6:10:2d9::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.28; Tue, 12 Nov
- 2024 10:34:43 +0000
+ 2024 10:34:53 +0000
 Received: from AM0PR04MB7044.eurprd04.prod.outlook.com
  ([fe80::7be0:296:768c:e891]) by AM0PR04MB7044.eurprd04.prod.outlook.com
  ([fe80::7be0:296:768c:e891%6]) with mapi id 15.20.8137.027; Tue, 12 Nov 2024
- 10:34:43 +0000
+ 10:34:53 +0000
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: vkoul@kernel.org,
 	perex@perex.cz,
@@ -81,10 +81,9 @@ To: vkoul@kernel.org,
 	lgirdwood@gmail.com,
 	broonie@kernel.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RESEND PATCH v5 3/6] ASoC: fsl_easrc: define functions for memory to
- memory usage
-Date: Tue, 12 Nov 2024 18:34:01 +0800
-Message-Id: <20241112103404.3565675-4-shengjiu.wang@nxp.com>
+Subject: [RESEND PATCH v5 5/6] ASoC: fsl_asrc: register m2m platform device
+Date: Tue, 12 Nov 2024 18:34:03 +0800
+Message-Id: <20241112103404.3565675-6-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20241112103404.3565675-1-shengjiu.wang@nxp.com>
 References: <20241112103404.3565675-1-shengjiu.wang@nxp.com>
@@ -95,83 +94,83 @@ X-ClientProxiedBy: SI1PR02CA0008.apcprd02.prod.outlook.com
  (2603:10a6:208:191::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7044:EE_|VI0PR04MB10757:EE_
-X-MS-Office365-Filtering-Correlation-Id: 833dbfb7-8024-42cb-c483-08dd03059e87
+X-MS-TrafficTypeDiagnostic: AM0PR04MB7044:EE_|DU2PR04MB8598:EE_
+X-MS-Office365-Filtering-Correlation-Id: e29fb060-f81d-4f20-568d-08dd0305a474
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|366016|1800799024|7416014|52116014|376014|38350700014|921020;
+	BCL:0;ARA:13230040|376014|7416014|52116014|366016|1800799024|38350700014|921020;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?c75y06nanCWY0TsDXfROwN40jq8L52Snu6OnHk8O7N4bBOXEG9SM9KKIrSpQ?=
- =?us-ascii?Q?CGUpY20sa8gWR0XCyOpNhHHAj8TzTiw2zGzJsQ/7nRRsLge4fTYzlDs56JZe?=
- =?us-ascii?Q?/pLqiuudF/0n9LEr9gqNfI1rnozjnadFeVI7fZYXO5AYitTlR4CeQyibP5i9?=
- =?us-ascii?Q?8JReAH4z8V/6kyulHlPijZpWcIAursjkQjX7rloCJ6cJ39k+BVKrPq/RPeJC?=
- =?us-ascii?Q?rW//IZTZsurdmQnMx+5gl//kQBxdH8qLlpWXJuvbPGGyR/1JOTDlvh+AsJl5?=
- =?us-ascii?Q?LL6nUFz9HI5pum/P90SJeqLE43Y8yHJwa9GNRQTfHUhd86bk7yTQvqA523hl?=
- =?us-ascii?Q?4ghIf/l7ggxMPdDfc43b30K/ndLRSyLyddjz1zKcA+8tZhTCI4xmr08eniY3?=
- =?us-ascii?Q?NMs7cmXDYYpUKDQaUqGbqTXM0Di+sn6t8+f3UTM03LSF/dwF1U3cMPc+11Z3?=
- =?us-ascii?Q?TM+7W7VulnaVgSAHXxPcWS7vXi/f85PCYhmG2M31/TE+Sg+AIMQmH9GbPHzj?=
- =?us-ascii?Q?Jqh1ezueT1+i7g0WCeMkCxV1gzKWfisHzn+OcnuTjWUrZR7nmChnT+v5nGLZ?=
- =?us-ascii?Q?aFW29int5g+KHrD23jgdUB00PPvVnvBqRN48R5KRw+Bz8dKPYeoogkE4F5Lg?=
- =?us-ascii?Q?5u/ji0iu5QA590m6nzrxtDbaI2dbp9mKfGacRSPopVt3IkG3UJ+d8gcaZ9xP?=
- =?us-ascii?Q?02b05uH7qvfYa2RA1HEW7lvz/UELehy5KBvXJnj20JWqDcbQjn5wE4gKmCg8?=
- =?us-ascii?Q?FnpYGqKq5hn8wZzmj7cRAdmUky6SSaa1AdyEsRqkxQPG6xNdXinHfM9m+qbh?=
- =?us-ascii?Q?4G1epLvh/9lRq8xh9KTYN4xlNVhAL+k7/0gYkJ5iCF0jW3+oA2b2CmBpmluZ?=
- =?us-ascii?Q?UXjpZx+wC/tX1dO0QdPHr//7juTui+NJith79K1zr+qqtiwamxqJeJA2D1pa?=
- =?us-ascii?Q?0cAKkEmboUGz2zpw31pECLi1yWEgwds96UR43uEVxdu1tOut6BTgDtdktc8W?=
- =?us-ascii?Q?/P39yNxsZCnodAOoSm8ci8iTok1zUWpGaQ3/1av9A3IaEqfgWOZ69Uodk27b?=
- =?us-ascii?Q?RySC9F/zWvOdbVq8voAhHVYxzztYjRinOyKeYzYCpHY+xSeZaJ8eyOlEpeu0?=
- =?us-ascii?Q?qawtJoistqzLm66jgiUfhyAzAIXnqDq1ptshFk5uVDr+8HS3ikI6je3TkKJ9?=
- =?us-ascii?Q?m6YNWP2M9qLkwmiZ63NO9eSbWzWp3m/HBDzzIfi8z88nhI0m4O0rHBeJYPhm?=
- =?us-ascii?Q?z30oPYaHtY9pNzqgaCd7av5c+tqWFgGnEvWRMyI0jSxL8M+xmUZTSRQr8bEE?=
- =?us-ascii?Q?meemtQjkFOyj2wc9n/D/hXprQjcjcsks9yP1ti9KJ2sBZxufnNl5/Sv89syE?=
- =?us-ascii?Q?38urG0rH7OZw8xddIPyBz6Ev5oO9?=
+	=?us-ascii?Q?0uYVh9heItYkAemVsrYjYjEeSvzD4Sfv4UyoJzqmzhDcxA9pYdDN0O8KcOCC?=
+ =?us-ascii?Q?YGJv64ZcOsjcG8t8Gd7K5BL5i3JDJcxqZG+yVpgQnucKV0Tb2i3TDn7r72tv?=
+ =?us-ascii?Q?5b6Pf5C01BK6yga3iFWXUI3jtt3EED8x6FRFP+9UpD69vXu/ldZ6HTCw2wAF?=
+ =?us-ascii?Q?D5b7Uj5e/JXycEU8jHIIr6BKTVi/oqqSllSpCNmyJk4Y4Tg2nuwDuylnEjLU?=
+ =?us-ascii?Q?JU+SivodjSiXJ2ZpJD//pWPKZXjO6SLY6bz9xQ1rX9zJJ4dfU9ui33409g90?=
+ =?us-ascii?Q?hGedkQOYyAZXhWcEiJKliUtc7atgq80kDl36yj1sEJUpp3aZMlEG6pvhVLq/?=
+ =?us-ascii?Q?1w3smoqNFxW2+ZZkJNuAk4rnUNM71WKTyrskiMdRFszOOlpdw67/8hAV6e64?=
+ =?us-ascii?Q?RjgbQ7yP/2bwClWb6aUbRItk5gHYHTzLGxC3pPbd+oLcz9cUWItcfDDLMMvp?=
+ =?us-ascii?Q?PQgHBr1j0cblxcSww5QgELD1T5wYe2DVBOKGEYx/YQNSGHVMLgTEijBfutWp?=
+ =?us-ascii?Q?ZwLQFNbRTeSQjcL5vUzbCrOQGGjgR7KuSvrNizx+EeJg81Tl9eUZTOmgubod?=
+ =?us-ascii?Q?EyXGf8O12lRFqR+zwFD8Na2TWgmlvq8JketZJT/jcmvAA4goNz7q3wXgAzMu?=
+ =?us-ascii?Q?ceCX7IhmTXSHkEGJEdXAnAxM08IaQwdKh0EY/86w1n7H8umCHR2QhOKpjQ8E?=
+ =?us-ascii?Q?vfURzD/w2JsFBWTUWAQiyrmutIwgHiz7f3Fc/AJBzPymVg+2xGRmJjE3gHCR?=
+ =?us-ascii?Q?nKabXKy1mV1OAOu+UnkFdIqRfZ5FWSDsU1Y4S2fmvaF1nBE1s+1Wdx2xaqEp?=
+ =?us-ascii?Q?WOLb6qkdm9rmQ7+lnwYxoMGWZg6ags81SFHXe0CFxgxBjpM5mhMqFYVwKg7k?=
+ =?us-ascii?Q?Jo1iNCF3KTUcuJ1riHTPyKX3nSOOp4zjugY45jQAzDIj4ol+TH3m0EnIuSBS?=
+ =?us-ascii?Q?XS2rKc3jqUbL48jf1NhQEDYTRId3qii0y5YDmTXW2W84CFdetWI9FXBqKkZf?=
+ =?us-ascii?Q?cfPhrmaR/XFWvTTclFx6dQ1sS93eNj+HzTjJAnkp9nuv5s03g9mUioTwYdsY?=
+ =?us-ascii?Q?uRQjbS+YK2DpgXF7N4oPS7xtJFsQKlQsyMDUZGwjdSC1PkZ9o65x/SpT3Uw4?=
+ =?us-ascii?Q?Ckkr6DSAGQZlSiUqjnBprQ+qQz5lwi/u2lfiT/yzGNcVN5IdHnuDtEqYnCG3?=
+ =?us-ascii?Q?a9egSeHL/6BMztuJagnd2vSfcQsMjLp6XQIPVKrxEA6yCMSVw6FlZoF6uqf0?=
+ =?us-ascii?Q?ioghXTi8DHUAtNO4v1A/YMVfcWsZi1mL68w1L2aXkXkZObR/4jQ8rJc9nhT0?=
+ =?us-ascii?Q?ExPiExCwf+/ylOoDVAA+iyO1FDDZ+TXD4HULcYWICspzT9dRF+V3UGa4Y9q1?=
+ =?us-ascii?Q?z3Wy7IV9mmJxwi8BU3Bnf3HfwbAr?=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB7044.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(52116014)(376014)(38350700014)(921020);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB7044.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(52116014)(366016)(1800799024)(38350700014)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?ZpUWuvGfGBR5GOMLI/ozoLMGw0uTl7FLjUIfpvUR2LAbDVbNGaqdbj54q4u5?=
- =?us-ascii?Q?yJkZcxIO2btKSXiMjWJw7rOR5hPreWO9qVbNtFalxzgwasa2RO+FKjPWFknn?=
- =?us-ascii?Q?Jy8ehaGBTG25Chkp8OGzujINtFMLRXrja2qoma62GCmESpMLXfxPjBZw/8/G?=
- =?us-ascii?Q?WegHQwL+5Vbo3yP0KknIW7SAwLYFxSmh+qk03STkfNEksrvEZNTa3BaF88Zs?=
- =?us-ascii?Q?Mug9exQZp7oX10f1Mkkgho5c3xb+wxeUZEuTRXm/AtbIgTmKzGUuAc6vRuHj?=
- =?us-ascii?Q?DbnCDu72EGw2ZR1jyyNsQyoYEAHPyJ+G+FiC1ZsmKjodx30KKNLRlTBao8Nt?=
- =?us-ascii?Q?Z62IP7fhYxOgvPS+sgMV3MTVTNKifnkT1sGQVAyHayK6l/0ZoyZjT/Qo/MnV?=
- =?us-ascii?Q?rT4edUB4Mc8pvmiJVsGDLo1Pdw+EcaIl8sbPCeMFWBQTSPME4Yg2X0BpIbxJ?=
- =?us-ascii?Q?FhPx9IjIU4ymSD+qVYdIL2iy/fiNVzipQispnlwEk6G5LukUQ1NaKYiL2BYi?=
- =?us-ascii?Q?m2/0WLwTzdEWCCJpNg4rmM6+yf52QLhJvDZxfscrg8OxBdJA1aMKUSfdo82f?=
- =?us-ascii?Q?hr2WM+LIM+wVGDfbZU6r7W4AXDcb+KF2Sm1/+NWo1HOHtC+2hAQ+oeITKxFU?=
- =?us-ascii?Q?mryvTX2S3DgRQ2MjuUcW/W5aUrl6ivBULRTe13yM5VnydVrBCRt3BVDSRSaK?=
- =?us-ascii?Q?VYAI8UNaH/HYnTpaBmEveWJrkH0oNQ5eq0JWYsQSfQ0gFWh9BeU2EAdr+hcE?=
- =?us-ascii?Q?wcz8z9HOJu/xd3AHphbcnygqoXo/LUmANx0+TH5C4ZM9CvEuTjkgSdVNOkBX?=
- =?us-ascii?Q?gKIXV0AYlRKewyuDrdrrlNo2YRxzUfj2WupJ9y9gpiE7iC3mUMXe+/pZ13/y?=
- =?us-ascii?Q?jid81obgMBKaVS4JGeRcsR2UNPoLPGA0wAo0DbM8SRjPWGmAgfXfAdNlzqSE?=
- =?us-ascii?Q?KPJYnheBOrkXq91/tv7zNseBufQDjx4mjKpLz5aQ3+0FnQPNRUIhSJC6TtKJ?=
- =?us-ascii?Q?rZDVYA0loa3SK1AfX/OUTpLeFXe9jClqbUI60mItRnwHG3EwQXhoFnNResIc?=
- =?us-ascii?Q?l/93romDlZ2TxL0bXfpqF6bomDrTHXioc5qNU9E/NaRJAojx+PJemGfx3pS4?=
- =?us-ascii?Q?2BhVjYXtiBD/TMph9CcZ7C8Vtaq52STqhoCPqSiDqkIkgkY9znkTvF3GrfOE?=
- =?us-ascii?Q?O/LGNMMiypXwjQqlu4xsLvKMB1jPCngevKowO0J+kwzRG5kkQIS7DbJl6TBP?=
- =?us-ascii?Q?ThtuWVvpN/Z4FTDhcgM4RVoiUyZXXq6PhNVR5OrMQZIm/CdVT1UB27baV6Hm?=
- =?us-ascii?Q?P9u/bQrislrLqF6VHvpglzRJ4JpHRjZ3HeGbtZv42nViiNs7Wf9zBckCaRs6?=
- =?us-ascii?Q?ndSylt7tD661DZH+HtrK9MllrT5hMxk2jO9PZ8ayGiUfoeq0jZHFJZpuMyz1?=
- =?us-ascii?Q?SpTU8jF4EQvAi2n8L68cwHFJRVBlC5fSJVoqzrrEIpzFMe24UnN7DyUBcPHn?=
- =?us-ascii?Q?qjn2bRJGQUZcAG+uCKOlYXgE4rZnyCzW1T6l36WIzPXseuC1s33H1NJ16afu?=
- =?us-ascii?Q?BbkWs6J1BtrmN7PAkmP8nx8uS9k2meDp5b6D5CQ8?=
+	=?us-ascii?Q?GEdFvAp1D0FbIqX4nozbXavC2mYrYrYgz5FLKT6SQq5/vcMorshs2jbOeFKj?=
+ =?us-ascii?Q?IzfbUzeIb26FUjLjaqjdsxSUHujrH1GE/fzqcBXkDpvD1+JdyDFYwBwSGUq8?=
+ =?us-ascii?Q?iRyXONtGIYXFs3875qd+hXE5Ej+5HMr8OBmooRrCBkPlyU2g3MtQJvh6NHgT?=
+ =?us-ascii?Q?PJIdXmpFWMHp5gkuLL2agWgH1OAVmHn+XCoRkAb/Q15SVMNrxLjtNQl5uvem?=
+ =?us-ascii?Q?XHPdC6JtAUHvWPvFKaYpwSQ4aDgjXC9Pqc8TG9Wmp9PhR9EgV0CA4LKMbSi5?=
+ =?us-ascii?Q?6VeejLuhOKPxez4gvnxt0DXe5cAwaRBBuET19WKw5/6z1uB7SmCn6b3Zh7KR?=
+ =?us-ascii?Q?5YxhXjUWHC8ZID+0Vnkr7IvNo1ujomLfe8PjYf8FINJNhFh1zfZ4Y3Cw8cD6?=
+ =?us-ascii?Q?Uu6564MGOI6TCbjci5Sit4FILOvAXUCl2RfVW4O2azNdM9+Xwbqk8eZ+pe1X?=
+ =?us-ascii?Q?S3Ak2mt6sx9f3RYSBPTlQrgdCP6S1qGkv8HhJEKExPxEjZBJAJuMw6Y+n/6n?=
+ =?us-ascii?Q?wRCqKyLXMeiE6UUA8UuinUaCeWAWylHkhQQXmE25JKKiuGrCZODpKtKIATSE?=
+ =?us-ascii?Q?6DpKqj/IsA7qTIRcgjmLc1B2FqEpi/LVNqonvBs0+xx356dNWdkkPgW5kEOE?=
+ =?us-ascii?Q?VHrmQkO3A4CZsP0LlH5rghC1X+mtB749PB3ojGKgZPY3ie+S+RHMw2R50eHf?=
+ =?us-ascii?Q?yI9mEaMOeY4K/wSefGkwrYlCFLU9tYKN4X//p6bGzsJsPIeXVetS9SxQb0BN?=
+ =?us-ascii?Q?oONphn4s5q+p5ebeZeDrjhkxFEv5UBhnbYzzwVkbmeJjBAMJkM740TJtRAmy?=
+ =?us-ascii?Q?3z/q0f9nfpkkdTtVJhsdnY+WyHLzjtMV9ptZiDzz7Ea7oYoL/mMtfHQkhfkg?=
+ =?us-ascii?Q?GPfcLlTjKK7RB0TlnazDv0vC3Rp7BsiqF2kBAFHp7OaiTLbeByfx+j1USWo+?=
+ =?us-ascii?Q?RI//ASxmeYsFy1pumj9Kz2N2GRdPhMHnijEkwxTcsfj4CZI4ZQoEfrGs2pdX?=
+ =?us-ascii?Q?L9tuyQDb1ELKSBKJ6WwPjuTdPydA0VXSEPMc0luk924yrtc+aAjhx/kEMt5x?=
+ =?us-ascii?Q?rT9dT3FO4gS57uVVlTaSxz/uNaY530Lszc/cpd/qTDLJbYWxI2XzxjbId02c?=
+ =?us-ascii?Q?khSZD4aD7tcm9P0XPYjSJPnE4NzRII7jkRBRBJXQHb28cn7BaaiWT2NE3Y86?=
+ =?us-ascii?Q?1Gr5N6neG9YRyQ6dSJ3Y+g5/ANK330SGfyxnWysAqn8fj9ikgUjxjltiEz7x?=
+ =?us-ascii?Q?obboY++5dBOXZLjUpKGd2FmGNxUmG9u/gX2H0oEaqEMJqipJE5ND6DmynK3F?=
+ =?us-ascii?Q?XSrbjsSzZXsXZKRe2zUw2xKLubg8TlLqa0p0JX18EJcEAKrzuBevqxixs9jK?=
+ =?us-ascii?Q?Jtf4HA3HZTvxarpTIZ62sao+QxyJ3fuBnLB7oy9vvvz1CEaV/k0BEXZ5nx0g?=
+ =?us-ascii?Q?kP0XnZ4KWeZeLpLzrxxB+tzl2hyAw/poINnT9qhYBAhw3Ju/Wftc+QWQXVqy?=
+ =?us-ascii?Q?oGdwfa2b4irLKg0JgKba37YFQlSRBvFkuNrbYXduqFyqHERQvkHMRN31W367?=
+ =?us-ascii?Q?RP5En1pdIsgUh4CCmgoUIJPvH/t8fB6j7AiZnzAf?=
 X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 833dbfb7-8024-42cb-c483-08dd03059e87
+ e29fb060-f81d-4f20-568d-08dd0305a474
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB7044.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2024 10:34:42.9600
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2024 10:34:53.4174
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- It4piUhJiI2B9pCobzwMBB5Pt6PKJoKBHx1r8ok0wGbuEnIQ5sOfwJtSIiAsU4+UQHMk1qcvUib9KvTyDzJomg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR04MB10757
-Message-ID-Hash: VUAQXOI7D7IWFJAR6ZRA3XG4YD4PUSTB
-X-Message-ID-Hash: VUAQXOI7D7IWFJAR6ZRA3XG4YD4PUSTB
+ RNP8HkmVir7OFqHflmtd45c4u4rCGlioYn0ooLK7dqYTs3BwyC2I8IdNSx3YhvAhkcDdKJ+zB5QImt2hglC4EQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8598
+Message-ID-Hash: YGVLI2D264UY3YRIGPKYJAGYZL6TA2NC
+X-Message-ID-Hash: YGVLI2D264UY3YRIGPKYJAGYZL6TA2NC
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -184,7 +183,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VUAQXOI7D7IWFJAR6ZRA3XG4YD4PUSTB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YGVLI2D264UY3YRIGPKYJAGYZL6TA2NC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -193,284 +192,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ASRC can be used on memory to memory case, define several
-functions for m2m usage and export them as function pointer.
+Register m2m platform device, that user can
+use M2M feature.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Acked-by: Jaroslav Kysela <perex@perex.cz>
 ---
- sound/soc/fsl/fsl_easrc.c | 228 ++++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_easrc.h |   4 +
- 2 files changed, 232 insertions(+)
+ sound/soc/fsl/fsl_asrc.c | 37 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index d22f0621c465..f17a185a1910 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1861,6 +1861,224 @@ static int fsl_easrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
- 	return REG_EASRC_FIFO(dir, index);
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 471753276209..677529916dc0 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -1384,6 +1384,12 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 		goto err_pm_get_sync;
+ 	}
+ 
++	ret = fsl_asrc_m2m_init(asrc);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to init m2m device %d\n", ret);
++		return ret;
++	}
++
+ 	return 0;
+ 
+ err_pm_get_sync:
+@@ -1396,6 +1402,10 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 
+ static void fsl_asrc_remove(struct platform_device *pdev)
+ {
++	struct fsl_asrc *asrc = dev_get_drvdata(&pdev->dev);
++
++	fsl_asrc_m2m_exit(asrc);
++
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		fsl_asrc_runtime_suspend(&pdev->dev);
+@@ -1497,10 +1507,29 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
+ 	return 0;
  }
  
-+/* Get sample numbers in FIFO */
-+static unsigned int fsl_easrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
++static int fsl_asrc_suspend(struct device *dev)
 +{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	enum asrc_pair_index index = pair->index;
-+	u32 val;
-+
-+	regmap_read(asrc->regmap, REG_EASRC_SFS(index), &val);
-+	val &= EASRC_SFS_NSGO_MASK;
-+
-+	return val >> EASRC_SFS_NSGO_SHIFT;
-+}
-+
-+static int fsl_easrc_m2m_prepare(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct device *dev = &asrc->pdev->dev;
++	struct fsl_asrc *asrc = dev_get_drvdata(dev);
 +	int ret;
 +
-+	ctx_priv->in_params.sample_rate = pair->rate[IN];
-+	ctx_priv->in_params.sample_format = pair->sample_format[IN];
-+	ctx_priv->out_params.sample_rate = pair->rate[OUT];
-+	ctx_priv->out_params.sample_format = pair->sample_format[OUT];
-+
-+	ctx_priv->in_params.fifo_wtmk = FSL_EASRC_INPUTFIFO_WML;
-+	ctx_priv->out_params.fifo_wtmk = FSL_EASRC_OUTPUTFIFO_WML;
-+	/* Fill the right half of the re-sampler with zeros */
-+	ctx_priv->rs_init_mode = 0x2;
-+	/* Zero fill the right half of the prefilter */
-+	ctx_priv->pf_init_mode = 0x2;
-+
-+	ret = fsl_easrc_set_ctx_format(pair,
-+				       &ctx_priv->in_params.sample_format,
-+				       &ctx_priv->out_params.sample_format);
-+	if (ret) {
-+		dev_err(dev, "failed to set context format: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = fsl_easrc_config_context(asrc, pair->index);
-+	if (ret) {
-+		dev_err(dev, "failed to config context %d\n", ret);
-+		return ret;
-+	}
-+
-+	ctx_priv->in_params.iterations = 1;
-+	ctx_priv->in_params.group_len = pair->channels;
-+	ctx_priv->in_params.access_len = pair->channels;
-+	ctx_priv->out_params.iterations = 1;
-+	ctx_priv->out_params.group_len = pair->channels;
-+	ctx_priv->out_params.access_len = pair->channels;
-+
-+	ret = fsl_easrc_set_ctx_organziation(pair);
-+	if (ret) {
-+		dev_err(dev, "failed to set fifo organization\n");
-+		return ret;
-+	}
-+
-+	/* The context start flag */
-+	pair->first_convert = 1;
-+	return 0;
++	fsl_asrc_m2m_suspend(asrc);
++	ret = pm_runtime_force_suspend(dev);
++	return ret;
 +}
 +
-+static int fsl_easrc_m2m_start(struct fsl_asrc_pair *pair)
++static int fsl_asrc_resume(struct device *dev)
 +{
-+	/* start context once */
-+	if (pair->first_convert) {
-+		fsl_easrc_start_context(pair);
-+		pair->first_convert = 0;
-+	}
++	struct fsl_asrc *asrc = dev_get_drvdata(dev);
++	int ret;
 +
-+	return 0;
++	ret = pm_runtime_force_resume(dev);
++	fsl_asrc_m2m_resume(asrc);
++	return ret;
 +}
 +
-+static int fsl_easrc_m2m_stop(struct fsl_asrc_pair *pair)
-+{
-+	/* Stop pair/context */
-+	if (!pair->first_convert) {
-+		fsl_easrc_stop_context(pair);
-+		pair->first_convert = 1;
-+	}
-+
-+	return 0;
-+}
-+
-+/* calculate capture data length according to output data length and sample rate */
-+static int fsl_easrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
-+{
-+	struct fsl_asrc *easrc = pair->asrc;
-+	struct fsl_easrc_priv *easrc_priv = easrc->private;
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	unsigned int in_rate = ctx_priv->in_params.norm_rate;
-+	unsigned int out_rate = ctx_priv->out_params.norm_rate;
-+	unsigned int channels = pair->channels;
-+	unsigned int in_samples, out_samples;
-+	unsigned int in_width, out_width;
-+	unsigned int out_length;
-+	unsigned int frac_bits;
-+	u64 val1, val2;
-+
-+	switch (easrc_priv->rs_num_taps) {
-+	case EASRC_RS_32_TAPS:
-+		/* integer bits = 5; */
-+		frac_bits = 39;
-+		break;
-+	case EASRC_RS_64_TAPS:
-+		/* integer bits = 6; */
-+		frac_bits = 38;
-+		break;
-+	case EASRC_RS_128_TAPS:
-+		/* integer bits = 7; */
-+		frac_bits = 37;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	val1 = (u64)in_rate << frac_bits;
-+	do_div(val1, out_rate);
-+	val1 += (s64)ctx_priv->ratio_mod << (frac_bits - 31);
-+
-+	in_width = snd_pcm_format_physical_width(ctx_priv->in_params.sample_format) / 8;
-+	out_width = snd_pcm_format_physical_width(ctx_priv->out_params.sample_format) / 8;
-+
-+	ctx_priv->in_filled_len += input_buffer_length;
-+	if (ctx_priv->in_filled_len <= ctx_priv->in_filled_sample * in_width * channels) {
-+		out_length = 0;
-+	} else {
-+		in_samples = ctx_priv->in_filled_len / (in_width * channels) -
-+			     ctx_priv->in_filled_sample;
-+
-+		/* right shift 12 bit to make ratio in 32bit space */
-+		val2 = (u64)in_samples << (frac_bits - 12);
-+		val1 = val1 >> 12;
-+		do_div(val2, val1);
-+		out_samples = val2;
-+
-+		out_length = out_samples * out_width * channels;
-+		ctx_priv->in_filled_len = ctx_priv->in_filled_sample * in_width * channels;
-+	}
-+
-+	return out_length;
-+}
-+
-+static int fsl_easrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+
-+	if (dir == IN)
-+		return ctx_priv->in_params.fifo_wtmk * pair->channels;
-+	else
-+		return ctx_priv->out_params.fifo_wtmk * pair->channels;
-+}
-+
-+static int fsl_easrc_m2m_pair_suspend(struct fsl_asrc_pair *pair)
-+{
-+	fsl_easrc_stop_context(pair);
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+
-+	pair->first_convert = 1;
-+	ctx_priv->in_filled_len = 0;
-+
-+	return 0;
-+}
-+
-+/* val is Q31 */
-+static int fsl_easrc_m2m_set_ratio_mod(struct fsl_asrc_pair *pair, int val)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	struct fsl_asrc *easrc = pair->asrc;
-+	struct fsl_easrc_priv *easrc_priv = easrc->private;
-+	unsigned int frac_bits;
-+
-+	ctx_priv->ratio_mod += val;
-+
-+	switch (easrc_priv->rs_num_taps) {
-+	case EASRC_RS_32_TAPS:
-+		/* integer bits = 5; */
-+		frac_bits = 39;
-+		break;
-+	case EASRC_RS_64_TAPS:
-+		/* integer bits = 6; */
-+		frac_bits = 38;
-+		break;
-+	case EASRC_RS_128_TAPS:
-+		/* integer bits = 7; */
-+		frac_bits = 37;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	val <<= (frac_bits - 31);
-+	regmap_write(easrc->regmap, REG_EASRC_RUC(pair->index), EASRC_RSUC_RS_RM(val));
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_get_cap(struct fsl_asrc_m2m_cap *cap)
-+{
-+	cap->fmt_in = FSL_EASRC_FORMATS;
-+	cap->fmt_out = FSL_EASRC_FORMATS | SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
-+	cap->rate_in = easrc_rates;
-+	cap->rate_in_count = ARRAY_SIZE(easrc_rates);
-+	cap->rate_out = easrc_rates;
-+	cap->rate_out_count = ARRAY_SIZE(easrc_rates);
-+	cap->chan_min = 1;
-+	cap->chan_max = 32;
-+	return 0;
-+}
-+
- static const struct of_device_id fsl_easrc_dt_ids[] = {
- 	{ .compatible = "fsl,imx8mn-easrc",},
- 	{}
-@@ -1926,6 +2144,16 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 	easrc->release_pair = fsl_easrc_release_context;
- 	easrc->get_fifo_addr = fsl_easrc_get_fifo_addr;
- 	easrc->pair_priv_size = sizeof(struct fsl_easrc_ctx_priv);
-+	easrc->m2m_prepare = fsl_easrc_m2m_prepare;
-+	easrc->m2m_start = fsl_easrc_m2m_start;
-+	easrc->m2m_stop = fsl_easrc_m2m_stop;
-+	easrc->get_output_fifo_size = fsl_easrc_get_output_fifo_size;
-+	easrc->m2m_calc_out_len = fsl_easrc_m2m_calc_out_len;
-+	easrc->m2m_get_maxburst = fsl_easrc_m2m_get_maxburst;
-+	easrc->m2m_pair_suspend = fsl_easrc_m2m_pair_suspend;
-+	easrc->m2m_pair_resume = fsl_easrc_m2m_pair_resume;
-+	easrc->m2m_set_ratio_mod = fsl_easrc_m2m_set_ratio_mod;
-+	easrc->m2m_get_cap = fsl_easrc_m2m_get_cap;
- 
- 	easrc_priv->rs_num_taps = EASRC_RS_32_TAPS;
- 	easrc_priv->const_coeff = 0x3FF0000000000000;
-diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
-index 7c70dac52713..c9f770862662 100644
---- a/sound/soc/fsl/fsl_easrc.h
-+++ b/sound/soc/fsl/fsl_easrc.h
-@@ -601,6 +601,8 @@ struct fsl_easrc_slot {
-  * @out_missed_sample: sample missed in output
-  * @st1_addexp: exponent added for stage1
-  * @st2_addexp: exponent added for stage2
-+ * @ratio_mod: update ratio
-+ * @in_filled_len: input filled length
-  */
- struct fsl_easrc_ctx_priv {
- 	struct fsl_easrc_io_params in_params;
-@@ -618,6 +620,8 @@ struct fsl_easrc_ctx_priv {
- 	int out_missed_sample;
- 	int st1_addexp;
- 	int st2_addexp;
-+	int ratio_mod;
-+	unsigned int in_filled_len;
+ static const struct dev_pm_ops fsl_asrc_pm = {
+-	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
+-	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+-				pm_runtime_force_resume)
++	RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
++	SYSTEM_SLEEP_PM_OPS(fsl_asrc_suspend, fsl_asrc_resume)
  };
  
- /**
+ static const struct fsl_asrc_soc_data fsl_asrc_imx35_data = {
+@@ -1538,7 +1567,7 @@ static struct platform_driver fsl_asrc_driver = {
+ 	.driver = {
+ 		.name = "fsl-asrc",
+ 		.of_match_table = fsl_asrc_ids,
+-		.pm = &fsl_asrc_pm,
++		.pm = pm_ptr(&fsl_asrc_pm),
+ 	},
+ };
+ module_platform_driver(fsl_asrc_driver);
 -- 
 2.34.1
 
