@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8947DD6E2CE
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2024 08:21:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A372D6E2DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2024 08:42:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A255162E;
-	Wed, 20 Nov 2024 09:20:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A255162E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFC821931;
+	Wed, 20 Nov 2024 09:41:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFC821931
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1732090858;
-	bh=+FUHqLxxFIe7TkxHQW2uQ1xoPdZwVpBc69J+zw+IDr4=;
+	s=default; t=1732092120;
+	bh=1h5VrLXzHJTCIhEzRJWc5HBxMGPClMTJUb95GwlFRv8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=NDj01OY5LtaAMMm03L2SgidZz//xFLhpUM1WI3piz8U5s3gk66OqkpMuR/p4YMrXd
-	 6AnemkvSI6w98w62oO3XyzI07DeOxTdPIepoGE1rlng+mYBbr50LWPf4Pqc4vibBPd
-	 hWBpgg48p/e/Ftsi/hMrAbugWM1i2pyub9om6rNQ=
+	b=tGMqPAMVQIy3qeAHGZIJHpW3HGACi34C+6IFLdOPuG70PnMUHp+fwyFyL+t2NoKVz
+	 R9lVOGPCt1INhXCRrr2RecaL7j0WlnVffZJjM3cVjXXb8sN8Nle0GyV1P7acCYoSeL
+	 HhwMSeFrEMg9xJQA07qDM0TepBOR7IbF7mhjKSBQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C9BEAF805BE; Wed, 20 Nov 2024 09:20:26 +0100 (CET)
+	id 0DF37F805C6; Wed, 20 Nov 2024 09:41:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FDA4F805C0;
-	Wed, 20 Nov 2024 09:20:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A133F805C0;
+	Wed, 20 Nov 2024 09:41:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99DF5F8026D; Wed, 20 Nov 2024 09:20:20 +0100 (CET)
+	id 14047F8026D; Wed, 20 Nov 2024 09:41:25 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2F94F800D2
-	for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2024 09:20:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2F94F800D2
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B120F80124
+	for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2024 09:41:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B120F80124
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1732090818219266653-webhooks-bot@alsa-project.org>
-References: <1732090818219266653-webhooks-bot@alsa-project.org>
+In-Reply-To: <1732092083066355228-webhooks-bot@alsa-project.org>
+References: <1732092083066355228-webhooks-bot@alsa-project.org>
 Subject: alsactl: 90-alsa-restore.rules - fix AMD acp-pdm-mach link name
  acp-dmic-codec
-Message-Id: <20241120082020.99DF5F8026D@alsa1.perex.cz>
-Date: Wed, 20 Nov 2024 09:20:20 +0100 (CET)
-Message-ID-Hash: KHXNEPZFU5UCDBBCZEKXNKDQLB2QZSZB
-X-Message-ID-Hash: KHXNEPZFU5UCDBBCZEKXNKDQLB2QZSZB
+Message-Id: <20241120084125.14047F8026D@alsa1.perex.cz>
+Date: Wed, 20 Nov 2024 09:41:25 +0100 (CET)
+Message-ID-Hash: JOAGONPRFOHS6TT2M35HIMFXDCH3I6LJ
+X-Message-ID-Hash: JOAGONPRFOHS6TT2M35HIMFXDCH3I6LJ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHXNEPZFU5UCDBBCZEKXNKDQLB2QZSZB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JOAGONPRFOHS6TT2M35HIMFXDCH3I6LJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,13 +67,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #281 was opened from pma1:
+alsa-project/alsa-utils pull request #281 was edited from pma1:
 
 The link name of AMD ACP digital microphones driver acp-pdm-mach is acp-dmic-codec.
 fix it to make UCM initialize it again.
 
 Fixes: 8116639 ("alsactl: 90-alsa-restore.rules - add support for AMD ACP digital microphone")
 
+```
 # arecord -l
 **** List of CAPTURE Hardware Devices ****
 card 1: Generic_1 [HD-Audio Generic], device 0: ALC257 Analog [ALC257 Analog]
@@ -108,6 +109,7 @@ drwxr-xr-x 2 root root    0 Nov 20 15:50 power
 drwxr-xr-x 3 root root    0 Nov 20 15:50 sound
 lrwxrwxrwx 1 root root    0 Nov 20 15:47 subsystem -> ../../../../../../bus/platform
 -rw-r--r-- 1 root root 4096 Nov 20 15:50 uevent
+```
 
 After the change of link name acp-dmic-codec,
 the micmute led can work on ThinkPad T14s Gen 6.
