@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4502DE668AD
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2024 13:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66F69E668AD
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2024 13:09:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 867891F3;
-	Sun, 24 Nov 2024 14:04:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 867891F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E4D691;
+	Sun, 24 Nov 2024 14:09:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E4D691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1732453486;
-	bh=jwRdIxoyJMwRB9dV2GauN1tZ6AtXqrC5iKzIK3w32ig=;
+	s=default; t=1732453796;
+	bh=p2/1e2z0F8CnGprSKxZZcvNvM36bhonvfwh73WbPJ90=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=m2g6EwsY/QrBuns1CNhHFlH+mqHzFVdj3kyVbax/ZZVlmNWU922WzeWVFFL5bvN/L
-	 wkaZViW3Wro0ClVDK8GjA+bNDl6P+q+xv7+rEiMa5WUKheiBcdXyHXa36jd+LMgfbE
-	 msHyixkQr5QzjiHnuh6oFI71MyFz2Ida66lI9ksk=
+	b=mM/lVpuZxm2+FHm2WhJbF7aFFFpiMBB/Fr2ZcRmBfN1Nl1x+VfQCCkwM16NaJKgMG
+	 nk+14BR4wdFqJ1rwRu8WNZGTScoaipP8UlrE1GOB+NpPH7szrLGh+2eBQDgw5cPuaf
+	 HH5QtNwZNxirbEKPhSzCsf9tDysgEvsZl9uk6lA8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64556F805D3; Sun, 24 Nov 2024 14:04:22 +0100 (CET)
+	id 1F2ABF805B1; Sun, 24 Nov 2024 14:09:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E791F805D9;
-	Sun, 24 Nov 2024 14:04:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A164F805AF;
+	Sun, 24 Nov 2024 14:09:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDB1FF805B1; Sun, 24 Nov 2024 14:04:18 +0100 (CET)
+	id BA6F5F80496; Sun, 24 Nov 2024 14:09:16 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 276A0F800F0
-	for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2024 14:04:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 276A0F800F0
+	by alsa1.perex.cz (Postfix) with ESMTP id 132B0F80073
+	for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2024 14:09:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 132B0F80073
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1732453457142663479-webhooks-bot@alsa-project.org>
-References: <1732453457142663479-webhooks-bot@alsa-project.org>
-Subject: UCM2 Profile for Roland BridgeCastX
-Message-Id: <20241124130418.BDB1FF805B1@alsa1.perex.cz>
-Date: Sun, 24 Nov 2024 14:04:18 +0100 (CET)
-Message-ID-Hash: BIJ4BWEXLX5N2O3JJCSC6RRWP7XXXJQZ
-X-Message-ID-Hash: BIJ4BWEXLX5N2O3JJCSC6RRWP7XXXJQZ
+In-Reply-To: <1732453753013833523-webhooks-bot@alsa-project.org>
+References: <1732453753013833523-webhooks-bot@alsa-project.org>
+Subject: No sound and alsactl init errors after updating to 1.12.13
+Message-Id: <20241124130916.BA6F5F80496@alsa1.perex.cz>
+Date: Sun, 24 Nov 2024 14:09:16 +0100 (CET)
+Message-ID-Hash: OMEXXVOPEP46DSQFXHNVR7PNLYR4HWVN
+X-Message-ID-Hash: OMEXXVOPEP46DSQFXHNVR7PNLYR4HWVN
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BIJ4BWEXLX5N2O3JJCSC6RRWP7XXXJQZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OMEXXVOPEP46DSQFXHNVR7PNLYR4HWVN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,14 +66,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #469 was edited from Konna1337:
+alsa-project/alsa-utils issue #283 was opened from wastlnd:
 
-Added Configuration for the X version of Bridge Cast. Config is based on the non X version but it's wired differently and has two more Hardware Channels. It's for the 2.0 Firmware of the Device. The "Game" channel has a virtual 5.1 mode which doesn't work properly and isn't configured.  
+I think I have kind of a regression after updating to the latest version. I have this error at startup:
+```
+Found hardware: "acp" "" "" "" ""
+Hardware is initialized using a generic method
+```
+And I have no sound at all. I have tried to apply the latest commit fixing the udev rule, but it didn't work. Downgrading to 1.2.12 fixes the issue.
+I am running an Arch based distro on AMD Ryzen 7 5825U CPU with Radeon graphics. My soundcard is Realtek and I have an AMD microphone array.
 
-- Added condition to USB-Audio.conf
-- Added BridgeCastXV2.conf
-- Added BridgeCastXV2-Hifi.conf with configuration for channels
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/469
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/469.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/283
+Repository URL: https://github.com/alsa-project/alsa-utils
