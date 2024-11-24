@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 710B6E668B2
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2024 15:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B9ED10C10
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2024 16:36:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6A56845;
-	Sun, 24 Nov 2024 16:48:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6A56845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18854845;
+	Sun, 24 Nov 2024 17:36:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18854845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1732463336;
-	bh=CtXkswcD2fDAkR563DBE2EWoejvvB2nWPvXzam67nio=;
+	s=default; t=1732466172;
+	bh=Kn528wjMQ8vN189zIVbY74jhZUrg+Ke/OGp3dwyBDN8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=UnkNDW8JqRLQPcLjI+92pkUBTp6AgNUNkqTpBv8530NQVqHppXw2vbb/a2m9VV7Vc
-	 V1WO2qnfu0835oQ0Qdfa0IiIrDGHLFHnHYLt6I6tzE/qimL1qIeCcgcr5aPJLjUIhl
-	 jEAngiUeUMaHrM5zECCr1aKDEiDn0yFQkWMk2LBA=
+	b=bgv91tyMpykaqbXn0YIQRSXi36YYTOYmaS3dr5WESqBDYqTpqKV4tnyvzYyBQxCq8
+	 PEXUYtsFxmv9lEx1i1YahakmYAWtZmfiDXKqtojwtAdR4XcsrQafuC7mWMocybDYYJ
+	 oBspu82Wvw5YyaQZcUs9csXtfAiMIVsDk2JCaxT0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEC44F805B5; Sun, 24 Nov 2024 16:48:24 +0100 (CET)
+	id 61CB9F805B3; Sun, 24 Nov 2024 17:35:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 012F8F805C4;
-	Sun, 24 Nov 2024 16:48:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD4D0F8019B;
+	Sun, 24 Nov 2024 17:35:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5CF28F80496; Sun, 24 Nov 2024 16:48:19 +0100 (CET)
+	id 4117DF80496; Sun, 24 Nov 2024 17:35:35 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEE79F8019B
-	for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2024 16:48:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEE79F8019B
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BB91F80073
+	for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2024 17:35:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BB91F80073
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1732463297126228571-webhooks-bot@alsa-project.org>
-References: <1732463297126228571-webhooks-bot@alsa-project.org>
+In-Reply-To: <1732466132812812328-webhooks-bot@alsa-project.org>
+References: <1732466132812812328-webhooks-bot@alsa-project.org>
 Subject: No sound and alsactl init errors after updating to 1.2.13
-Message-Id: <20241124154819.5CF28F80496@alsa1.perex.cz>
-Date: Sun, 24 Nov 2024 16:48:19 +0100 (CET)
-Message-ID-Hash: NTRENIMKXPFKOSOGWJBR3U2TJ5BLZ6IO
-X-Message-ID-Hash: NTRENIMKXPFKOSOGWJBR3U2TJ5BLZ6IO
+Message-Id: <20241124163535.4117DF80496@alsa1.perex.cz>
+Date: Sun, 24 Nov 2024 17:35:35 +0100 (CET)
+Message-ID-Hash: NHM2N6SIYHN25DKMGPM4XO5VAQKGKHZG
+X-Message-ID-Hash: NHM2N6SIYHN25DKMGPM4XO5VAQKGKHZG
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NTRENIMKXPFKOSOGWJBR3U2TJ5BLZ6IO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NHM2N6SIYHN25DKMGPM4XO5VAQKGKHZG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 alsa-project/alsa-utils issue #283 was edited from wastlnd:
 
-I think I have kind of a regression after updating to the latest version. I have this error at startup:
+I think I have kind of a regression after updating to the latest version. Running alsactl restore as a runit service, I have this error at startup:
 ```
 Found hardware: "acp" "" "" "" ""
 Hardware is initialized using a generic method
