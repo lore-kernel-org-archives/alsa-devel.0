@@ -4,84 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04AAED729F0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2024 17:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E8F9D73601
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Nov 2024 12:29:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2006219E;
-	Fri, 29 Nov 2024 18:38:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2006219E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 888B421DD;
+	Sat, 30 Nov 2024 13:29:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 888B421DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1732901897;
-	bh=XBjn4iq9qEIBBjS9cwcxo35rReBV4Pbo9LbdyGTKtVc=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=VJbugC9hlasNOXsAw8w/GDhOW/1tazv5BPaJSbSe40Y43gF6GFeTLGkZt1xvRCDxn
-	 gVcs5lWLq7nCOu30gyvwjv9FmmMso5gptatFFT/QYIZ33WfuQGkgXnxlG+H2Umdva9
-	 WAH6TQnG7D32kREFji3ixwUKE5JxGcmzPiJ8ATCI=
+	s=default; t=1732969766;
+	bh=PNGlgbPzmWPCGyV7SFQDCxYutx5tVCarFD8e1njBrMk=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=aX9mYSmrBzwSIFTriVeNeyzEvWcxHviYt4uab+7nQ46XHhVF+xRmIqDMHg12iP+Us
+	 xij6il1I4HBC3lDZMj+6sNwzqam+jCNT+YfpEtr0ugKCr5D6gnhsm5SKt8jB+YFtDW
+	 N+c6Tx8Y1hCtw4lO4hQnXqlq6ECAkDAkZhQFMiCk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1D44F8019B; Fri, 29 Nov 2024 18:37:45 +0100 (CET)
+	id 3CF68F805AB; Sat, 30 Nov 2024 13:28:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60627F805C1;
-	Fri, 29 Nov 2024 18:37:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FFD7F805AB;
+	Sat, 30 Nov 2024 13:28:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 095AEF80236; Fri, 29 Nov 2024 18:37:41 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A567DF80116
-	for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2024 18:37:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A567DF80116
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=oC3B9wAX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1732901860; x=1764437860;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=XBjn4iq9qEIBBjS9cwcxo35rReBV4Pbo9LbdyGTKtVc=;
-  b=oC3B9wAXljAZ17Zlh/4F+RspveSCg0Ag49Id6i3QJywz+3QDNhNpuf73
-   EM9VWNQU2QnXPScg/6n8lWxP9IWvVKgOHw4rpbSd8epBJZcQxeSCYqYUf
-   tr9ZsZ/IcxwEm5KDv6nRxF61+lM9btH4ffgOs9dzMsXQofDGSKQbMO0d5
-   qZsS6E9Za2CS52AmUiQLdiNNVfDlxT9sKiwBrR1q2S8dwG8r2f3QN15Nx
-   2mPMw25s672gR6V8BLu/7cnv1FYNGCqTFgLsbhI10rBx10avJOD7E2TAL
-   X8gkHzPaqv5w58rlijKHr66MQ/ziKjszf5C9eeAC7sckJgAFSoQQKfXMp
-   A==;
-X-CSE-ConnectionGUID: 0n7o7NIDSsqA+4KnJOMp7w==
-X-CSE-MsgGUID: Xl/mNLTPQvOMS57ThjZMpg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11271"; a="50543727"
-X-IronPort-AV: E=Sophos;i="6.12,196,1728975600";
-   d="scan'208";a="50543727"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2024 09:37:34 -0800
-X-CSE-ConnectionGUID: LkpIP/StREikihE/rFeAZQ==
-X-CSE-MsgGUID: 3aLBKnz1R5S/inKoypU4CQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,196,1728975600";
-   d="scan'208";a="92855492"
-Received: from lkp-server01.sh.intel.com (HELO 5e2646291792) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 29 Nov 2024 09:37:33 -0800
-Received: from kbuild by 5e2646291792 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tH4vr-0000Zj-0p;
-	Fri, 29 Nov 2024 17:37:31 +0000
-Date: Sat, 30 Nov 2024 01:37:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org
-Subject: [tiwai-sound:for-next 6/10] sound/core/ump.c:1259:69: warning: '%s'
- directive output may be truncated writing up to 11 bytes into a region of
- size between 4 and 22
-Message-ID: <202411300103.FrGuTAYp-lkp@intel.com>
+	id 2FE6EF80236; Sat, 30 Nov 2024 13:28:48 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E143F80073
+	for <alsa-devel@alsa-project.org>; Sat, 30 Nov 2024 13:28:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E143F80073
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Message-ID-Hash: 5XJJCWHYJ2ULUNCM5BMSPTBYXCZBRHDL
-X-Message-ID-Hash: 5XJJCWHYJ2ULUNCM5BMSPTBYXCZBRHDL
-X-MailFrom: lkp@intel.com
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1732969725839164734-webhooks-bot@alsa-project.org>
+References: <1732969725839164734-webhooks-bot@alsa-project.org>
+Subject: Linux Mint Cinnamon 22 Soundblaster AE-9 no sound
+Message-Id: <20241130122848.2FE6EF80236@alsa1.perex.cz>
+Date: Sat, 30 Nov 2024 13:28:48 +0100 (CET)
+Message-ID-Hash: IXAQH5PN5CS5EYSVSOP2ILBINOKGPU5L
+X-Message-ID-Hash: IXAQH5PN5CS5EYSVSOP2ILBINOKGPU5L
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5XJJCWHYJ2ULUNCM5BMSPTBYXCZBRHDL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IXAQH5PN5CS5EYSVSOP2ILBINOKGPU5L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,55 +66,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-head:   9b5f8ee43e48c25fbe1a10163ec04343d750acd0
-commit: e29e504e7890b9ee438ca6370d0180d607c473f9 [6/10] ALSA: ump: Indicate the inactive group in legacy substream names
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20241130/202411300103.FrGuTAYp-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241130/202411300103.FrGuTAYp-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202411300103.FrGuTAYp-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   sound/core/ump.c: In function 'fill_substream_names':
->> sound/core/ump.c:1259:69: warning: '%s' directive output may be truncated writing up to 11 bytes into a region of size between 4 and 22 [-Wformat-truncation=]
-    1259 |                 snprintf(s->name, sizeof(s->name), "Group %d (%.16s)%s",
-         |                                                                     ^~
-   sound/core/ump.c:1259:17: note: 'snprintf' output between 11 and 40 bytes into a destination of size 32
-    1259 |                 snprintf(s->name, sizeof(s->name), "Group %d (%.16s)%s",
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    1260 |                          idx + 1, name,
-         |                          ~~~~~~~~~~~~~~
-    1261 |                          ump->groups[idx].active ? "" : " [Inactive]");
-         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +1259 sound/core/ump.c
-
-  1246	
-  1247	static void fill_substream_names(struct snd_ump_endpoint *ump,
-  1248					 struct snd_rawmidi *rmidi, int dir)
-  1249	{
-  1250		struct snd_rawmidi_substream *s;
-  1251		const char *name;
-  1252		int idx;
-  1253	
-  1254		list_for_each_entry(s, &rmidi->streams[dir].substreams, list) {
-  1255			idx = ump->legacy_mapping[s->number];
-  1256			name = ump->groups[idx].name;
-  1257			if (!*name)
-  1258				name = ump->info.name;
-> 1259			snprintf(s->name, sizeof(s->name), "Group %d (%.16s)%s",
-  1260				 idx + 1, name,
-  1261				 ump->groups[idx].active ? "" : " [Inactive]");
-  1262		}
-  1263	}
-  1264	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+YWxzYS1wcm9qZWN0L2Fsc2EtbGliIGlzc3VlICM0MjQgd2FzIG9wZW5lZCBmcm9tIFN0YXJmb3hm
+czoKCkhpLA0KDQppIGhhdmUgZnJlc2ggaW5zdGFsbGVkIExpbnV4IE1pbnQgQ2lubmFtb24gMjIg
+S2VybmVsIDYuOC4wLjQ5LWdlbmVyaWMNCg0KSSBjYW7CtHQgZ2V0IHRoZSBTb3VuZGJsYXN0ZXIg
+QUUtOSB0byB3b3JrLiBDcmVhdGl2ZSBMYWJzIGhhcyBubyBEcml2ZXJzIGZvciBMaW51eCBhbmQg
+cG9pbnRzIHRvIHRoZSBhbHNhIGNvbW11bml0eS4NCg0KSXMgdGhlcmUgYW55IGNoYW5nZSB0byBn
+ZXQgc3VwcG9ydCBmb3IgdGhlIFNvdW5kYmxhc3RlciBBRS05IGluIHRoZSBmdXR1cmUgPw0KDQpJ
+IHRoaW5rIHRoZSBiaWcgUHJvYmxlbSBpcyB0aGUgZXh0ZXJuYWwgREFDIGZvciBIZWFkcGhvbmVz
+IGZyb20gdGhlIFNvdW5kYmxhc3RlciBBRS05LiBJbiBXaW5kb3dzIHRoaXMgImNsaWNrcyIgb24g
+c3RhcnR1cCBhbmQgYWN0aXZhdGVzIHRoZSBEQUMsIGJ1dCBpbiBMaW51eCB0aGlzIGlzIGFsbCBk
+ZWFkLgoKSXNzdWUgVVJMICAgICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxz
+YS1saWIvaXNzdWVzLzQyNApSZXBvc2l0b3J5IFVSTDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2Et
+cHJvamVjdC9hbHNhLWxpYgo=
