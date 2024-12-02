@@ -4,83 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F94AD78322
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2024 13:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75DE2D7832F
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2024 15:50:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D126211C;
-	Mon,  2 Dec 2024 14:43:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D126211C
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE97820C1;
+	Mon,  2 Dec 2024 16:50:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE97820C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1733147013;
-	bh=H1LUXNWRosTJkWP3diqezDJ6tU1GRDyrtF9wY1v026I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qP9mOa87E4lsnsdEBrUI7E3fZb2iguFiWn/0Fc5FkgJMdS9whJJDphO5rK2w0Qnwg
-	 Y6xNmJfDPp568li/3GzAZxqVG+NG7qKAorgpDOSbDWzavTJbmW3OBsM5D75xB6C3jn
-	 InaSenxdmTzj/1BpEgZng24bbOmKsfsX66UsNlTc=
+	s=default; t=1733154630;
+	bh=0lm2xHQei0v8BAkN9+8VHtxMUqfdYKgpNCFV8e4LiOs=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=gpr0/rJznDMiZIN8sGG6mGN0UNdmzMcqT4mWb/WYN8zCOOG7ZEsIWJmDxnPFUsQdD
+	 gUZYOkWlTybjHAU0o6Nkk9nnOYPQOtSKJG7J7nfrdP+koVNKIU15kI9Hzsfkbeew93
+	 Oh6qUe1ij7c2Jd5QvTleA6nBPpHyGLGKRWolmvVI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1CDCFF805E0; Mon,  2 Dec 2024 14:43:00 +0100 (CET)
+	id 09361F805BF; Mon,  2 Dec 2024 16:49:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A80EBF805C7;
-	Mon,  2 Dec 2024 14:43:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CE46F805BF;
+	Mon,  2 Dec 2024 16:49:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC3A6F8032D; Mon,  2 Dec 2024 14:42:51 +0100 (CET)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C9001F80272
-	for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2024 14:42:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9001F80272
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VjSexpOZ
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 9B88EA40C3F;
-	Mon,  2 Dec 2024 13:28:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB14BC4CED1;
-	Mon,  2 Dec 2024 13:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733146223;
-	bh=H1LUXNWRosTJkWP3diqezDJ6tU1GRDyrtF9wY1v026I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=VjSexpOZzDEQA9coL4TLuOlB7IkGVBJYBGfWZDl2LLZdr1QMn/brioIujOXTzmy0L
-	 22fGMCAO/x6aB4t7ik2rqUBT8RqayGR22SEvIQh0BpB07jhNWsWy6qMFabcLfyfgCK
-	 uU7qNgf9sR/9f3YpsNEAB+VvX0TfmMbWF3rustoscPtXEmVJZYFRrEo/d++IIShR81
-	 JnonoMni+24YmKi959BweGyVGte61CtV3d4wwJWKC33a5pqgbOv4S4fIqlJvEDkClU
-	 +6e/tQ5cPaMQ0EaMPWx6rK/OYAiHHTvx2KWz8H5aZMWsHv//Py4Cz9yFmSRvkLXLJh
-	 KXxtXy23A1NHA==
-From: Mark Brown <broonie@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>,
- Marek Maslanka <mmaslanka@google.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-In-Reply-To: <20241128155926.1774625-1-mmaslanka@google.com>
-References: <20241128155926.1774625-1-mmaslanka@google.com>
-Subject: Re: [PATCH v3] ASoC: Intel: avs: da7219: Remove suspend_pre() and
- resume_post()
-Message-Id: <173314621946.54037.15998444871365504630.b4-ty@kernel.org>
-Date: Mon, 02 Dec 2024 13:30:19 +0000
+	id 75310F80272; Mon,  2 Dec 2024 16:49:54 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id DBADEF80073
+	for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2024 16:49:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBADEF80073
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-9b746
-Message-ID-Hash: 43Q5OOGEKRXLJFRPZ2LRDLXUVOAGNOXJ
-X-Message-ID-Hash: 43Q5OOGEKRXLJFRPZ2LRDLXUVOAGNOXJ
-X-MailFrom: broonie@kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1733154591433354855-webhooks-bot@alsa-project.org>
+References: <1733154591433354855-webhooks-bot@alsa-project.org>
+Subject: alsa-lib-1.2.13 prevents chromium-131.0.6778.85 from playing audio on
+ gentoo.
+Message-Id: <20241202154954.75310F80272@alsa1.perex.cz>
+Date: Mon,  2 Dec 2024 16:49:54 +0100 (CET)
+Message-ID-Hash: 6QWQOEI32DZPMT2Q4VKFIZSHXTIZT2NU
+X-Message-ID-Hash: 6QWQOEI32DZPMT2Q4VKFIZSHXTIZT2NU
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/43Q5OOGEKRXLJFRPZ2LRDLXUVOAGNOXJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6QWQOEI32DZPMT2Q4VKFIZSHXTIZT2NU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,41 +67,164 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 28 Nov 2024 15:59:20 +0000, Marek Maslanka wrote:
-> The presence of a plugged jack is not detected after resuming the device
-> if the jack was plugged before the device was suspended. This problem is
->  caused by calling the
->  sound/soc/codecs/da7219-aad.c:da7219_aad_jack_det() function on resume,
->  which forces the jack insertion state to be unplugged.
-> 
-> 
-> [...]
+alsa-project/alsa-lib issue #425 was opened from haoyi-codes:
 
-Applied to
+I have recently compiled chromium against alsa-lib-1.2.13 for two different systems, however I am unable to play audio. The terminal output shows:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+System 1:
 
-Thanks!
+```
+Failed to create secure directory (/run/user/1011//pulse): Permission denied
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/pcm/pcm_dmix.c:1000:(snd_pcm_dmix_open) unable to open slave
+[6429:6429:1130/194540.301739:ERROR:alsa_util.cc(204)] PcmOpen: default,No such file or directory
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/pcm/pcm_dmix.c:1000:(snd_pcm_dmix_open) unable to open slave
+[6429:6429:1130/194540.302803:ERROR:alsa_util.cc(204)] PcmOpen: plug:default,No such file or directory
+libpng warning: iCCP: known incorrect sRGB profile
+Warning: disabling flag --expose_wasm due to conflicting flags
+Warning: disabling flag --expose_wasm due to conflicting flags
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/pcm/pcm_dmix.c:1000:(snd_pcm_dmix_open) unable to open slave
+[6429:6429:1130/194614.580896:ERROR:alsa_util.cc(204)] PcmOpen: default,No such file or directory
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/pcm/pcm_dmix.c:1000:(snd_pcm_dmix_open) unable to open slave
+[6429:6429:1130/194614.582080:ERROR:alsa_util.cc(204)] PcmOpen: plug:default,No such file or directory
+libpng warning: iCCP: known incorrect sRGB profile
+```
 
-[1/1] ASoC: Intel: avs: da7219: Remove suspend_pre() and resume_post()
-      commit: 04c319e05d0b08cc789db7abccce0fcb13dbab16
+System 2:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+```
+socket(): Operation not permitted
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+[2516:2516:1129/230412.353283:ERROR:alsa_util.cc(204)] PcmOpen: default,No such file or directory
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+[2516:2516:1129/230412.353697:ERROR:alsa_util.cc(204)] PcmOpen: plug:default,No such file or directory
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+libpng warning: iCCP: known incorrect sRGB profile
+libpng warning: iCCP: known incorrect sRGB profile
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+[2516:2516:1129/230432.095492:ERROR:alsa_util.cc(204)] PcmOpen: default,No such file or directory
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4029:(snd_config_hooks_call) Cannot open shared library (null) (Error loading shared library /lib/libasound.so.2: Permission denied)
+ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.13/work/alsa-lib-1.2.13/src/conf.c:4650:(snd_config_update_r) hooks failed, removing configuration
+[2516:2516:1129/230432.095901:ERROR:alsa_util.cc(204)] PcmOpen: plug:default,No such file or directory
+libpng warning: iCCP: known incorrect sRGB profile
+```
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+After downgrading alsa-lib to 1.2.12 and recompiling chromium I was able to play audio just fine.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Further information can also be found at: https://bugs.gentoo.org/945749
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/425
+Repository URL: https://github.com/alsa-project/alsa-lib
