@@ -4,57 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8558D78322
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2024 13:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA6E2D78322
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2024 13:43:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9302920C4;
-	Mon,  2 Dec 2024 14:42:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9302920C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE5B421B3;
+	Mon,  2 Dec 2024 14:43:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5B421B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1733146975;
-	bh=S0mkapFbGnsfajKZm8QKkmSAc2boXpDst+yWh+urgno=;
+	s=default; t=1733146997;
+	bh=prWlyL7+S1iaFRc2HgQ/xlg4WwK3MVaxar+O2eGaNec=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FaSyM7DHtANW86DYSh4xz+DMWI5X97JPmgu2f09uGPi2vq27fbb092eLjSJntUOCP
-	 UcK5gx0nNtXnNYloM9uwgMqysgK29ZkY7aL2f9Fu0jHC1rw1k9s2K+xTb2ESJwunFS
-	 K54k6L4ZsQ7QLjREBH02VIR71Rgxm8fxBr8RM1tM=
+	b=FdH4S8h973Mwar48oTbBWBfTdom7Kep/LuAfz86ijHkL2MHKFQIN8/rntzmHTeYB+
+	 RAqP8vRADlck9+aj+FsUsGVelgZC/fBmMgWxtUiXTFxfjhkh2ntEdgfLUjGVl/n1i+
+	 KC/Jazbf4RPhzJlykJ3soHo6eXt49M5Mx8ouK7xo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 394CDF80533; Mon,  2 Dec 2024 14:42:23 +0100 (CET)
+	id 10D2BF805BE; Mon,  2 Dec 2024 14:42:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F4BBF80533;
-	Mon,  2 Dec 2024 14:42:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 775CAF805C1;
+	Mon,  2 Dec 2024 14:42:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07A5CF80272; Mon,  2 Dec 2024 14:42:17 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 9B5E7F80448; Mon,  2 Dec 2024 14:42:51 +0100 (CET)
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8AE76F800E9
-	for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2024 14:42:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AE76F800E9
+	by alsa1.perex.cz (Postfix) with ESMTPS id AD6AAF80073
+	for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2024 14:42:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD6AAF80073
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DA1MMO97
+ header.s=k20201202 header.b=r/DI1lsX
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8D1345C5218;
-	Mon,  2 Dec 2024 13:29:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55CF9C4CED2;
-	Mon,  2 Dec 2024 13:30:24 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 35D2CA40CDB;
+	Mon,  2 Dec 2024 13:28:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9506C4CED2;
+	Mon,  2 Dec 2024 13:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733146227;
-	bh=S0mkapFbGnsfajKZm8QKkmSAc2boXpDst+yWh+urgno=;
+	s=k20201202; t=1733146219;
+	bh=prWlyL7+S1iaFRc2HgQ/xlg4WwK3MVaxar+O2eGaNec=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=DA1MMO97ZAW0TqB2X765/8qDDZyXL+7zSRTijCgc9gGli1V3IPoDY32ItaSi38hI7
-	 Gkx9FNvX+Tw6QOHwYOhwTJijT1svCZnle1MyHt7wUfTvYtkUE+JQqbEPQSlE3kTBjZ
-	 CylXbVWznRurYEaWs2I9bTYvuAw/mXXGF4yougyIb+pt9dAAEwwt8ysnLPhDLdWmYX
-	 HDipFhf3dHNNvAJBCBnIM4OBeWy1YLeH7R5ahN6BzpLZD6WBHMIzOslhyqAyZoBGcT
-	 RXZERaIAsPMhVocohn0yQuksRfeLClE3rqAxxa6LBX8OwJcMDrWeHztm+sgeEb+/B8
-	 6bAdaRt0J6rJQ==
+	b=r/DI1lsXNjNz0WMRskDOyKfwAL5dRHhvqCscdErYbmgD5A0eLhFLbb6U9YUY9Nfmm
+	 xjlxmtxtfuSQTHCch8WHmQmAQcLdRWSYMttoa+FVQlNO/3zsgO1abTDd8FX5BL8KaC
+	 Z+/kvlqN69uIUTfzEWNJfjIIVV1flE61J0JHyJd+GyNjfoaYxraHgtCeebMueCfxcG
+	 nRSQg2f8W2uxe8sJuQK96/GGNBmnyYnxIOxAPbIhlIiLTnUsXvd823wcFTx9NJPlnS
+	 hWOIrLB5YxCepA05+nzz+Fq5dhTkoTz7309A4Fa7MRaJA1GHgr4+SEZhqsi5pFc4Io
+	 BSYWfwObPUYAw==
 From: Mark Brown <broonie@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>,
  Marek Maslanka <mmaslanka@google.com>
@@ -69,18 +68,19 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>,
  alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-In-Reply-To: <20241128205215.2435485-1-mmaslanka@google.com>
-References: <20241128205215.2435485-1-mmaslanka@google.com>
-Subject: Re: [PATCH v4] ASoC: Intel: avs: da7219: Remove suspend_pre() and
+In-Reply-To: <20241128151239.1666582-1-mmaslanka@google.com>
+References: <10062d09-34c8-4e53-b5d7-f96a5b19f6f8@intel.com>
+ <20241128151239.1666582-1-mmaslanka@google.com>
+Subject: Re: [PATCH v2] ASoC: Intel: avs: da7219: Remove suspend_pre() and
  resume_post()
-Message-Id: <173314622395.54037.14685523533292835181.b4-ty@kernel.org>
-Date: Mon, 02 Dec 2024 13:30:23 +0000
+Message-Id: <173314621641.54037.6152466859833367470.b4-ty@kernel.org>
+Date: Mon, 02 Dec 2024 13:30:16 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-9b746
-Message-ID-Hash: 2IQMU5B26HV4YCWTJO6723XN4XQEAZZE
-X-Message-ID-Hash: 2IQMU5B26HV4YCWTJO6723XN4XQEAZZE
+Message-ID-Hash: OENMAATVJVW43HCHSRPAOPJCLUJ7SMBS
+X-Message-ID-Hash: OENMAATVJVW43HCHSRPAOPJCLUJ7SMBS
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2IQMU5B26HV4YCWTJO6723XN4XQEAZZE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OENMAATVJVW43HCHSRPAOPJCLUJ7SMBS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,15 +102,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 28 Nov 2024 20:52:09 +0000, Marek Maslanka wrote:
-> The presence of a plugged jack is not detected after resuming the device
-> if the jack was plugged before the device was suspended. This problem is
-> caused by calling the
-> sound/soc/codecs/da7219-aad.c:da7219_aad_jack_det() function on resume,
-> which forces the jack insertion state to be unplugged.
+On Thu, 28 Nov 2024 15:12:32 +0000, Marek Maslanka wrote:
+> The presence of a plugged jack is not detected after resuming the device if the jack was plugged
+> before the device was suspended. This problem is caused by calling the
+> sound/soc/codecs/da7219-aad.c:da7219_aad_jack_det() function on resume, which forces the jack
+> insertion state to be unplugged.
 > 
 > 
-> [...]
 
 Applied to
 
