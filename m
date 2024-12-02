@@ -4,48 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E01CD7830E
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2024 11:46:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34409D7830E
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2024 12:01:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD3320C1;
-	Mon,  2 Dec 2024 12:46:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD3320C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40F0B1939;
+	Mon,  2 Dec 2024 13:01:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40F0B1939
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1733139971;
-	bh=pGoH07wTgCnmJDXdylY3NRHMp+RLbnO+sF8pLlAO0W4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=pKhLbB+y0wX6tSWFHHUPnRUQKdk8Zra03+76baz4nwsQ6Yaqvm5kiT+SOFjIDmYVr
-	 TLdfpNa7jCcaLZaUZ0FVSTf5QoiXlxsEgaeY+PYAxsZd6/hl3rIG5x0Sas/IXlW9vI
-	 8APLnI+SpBolgb4FphMlllaLlcDtyORX9M+79MGk=
+	s=default; t=1733140913;
+	bh=qN7zSp52L2v1SA9YKpv1TumbOqlVeIrH+RB98EjRP+o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=fSNFiYwlc7PyNKu26Ya+NyPIg/3+r0zyNoAJhQxLBIEdG2N3ms/DUX6B9KTaXRMV7
+	 pXTlM4s9wYJfJ1t+35nGhl8tFIG8Vt2g24IUW6Vd24a0PbLXU5oOxHu3S5G+6dSbA2
+	 VU0sg4k/pwrXdNo+b0oqUKKqAJE1ZF0pfHTjNmDA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DE65F805C3; Mon,  2 Dec 2024 12:45:39 +0100 (CET)
+	id 47EB8F80533; Mon,  2 Dec 2024 13:01:20 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDF9EF805C0;
-	Mon,  2 Dec 2024 12:45:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2860CF80533;
+	Mon,  2 Dec 2024 13:01:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED51CF80272; Mon,  2 Dec 2024 12:45:33 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29CEDF800E9
-	for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2024 12:45:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29CEDF800E9
+	id B1297F80272; Mon,  2 Dec 2024 13:01:14 +0100 (CET)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1B34F800E9
+	for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2024 13:01:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1B34F800E9
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 18A7A1C00A0; Mon,  2 Dec 2024 13:01:12 +0100 (CET)
+Date: Mon, 2 Dec 2024 13:01:11 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Luo Yifan <luoyifan@cmss.chinamobile.com>,
+	Mark Brown <broonie@kernel.org>, olivier.moysan@foss.st.com,
+	arnaud.pouliquen@foss.st.com, lgirdwood@gmail.com, perex@perex.cz,
+	tiwai@suse.com, mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.10 4/6] ASoC: stm: Prevent potential division
+ by zero in stm32_sai_mclk_round_rate()
+Message-ID: <Z02hh/K7okT4fvOc@duo.ucw.cz>
+References: <20241112103803.1654174-1-sashal@kernel.org>
+ <20241112103803.1654174-4-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1733139931280762672-webhooks-bot@alsa-project.org>
-References: <1733139931280762672-webhooks-bot@alsa-project.org>
-Subject: No microphone USB audio Behringer UMC204HD ALSA update
-Message-Id: <20241202114533.ED51CF80272@alsa1.perex.cz>
-Date: Mon,  2 Dec 2024 12:45:33 +0100 (CET)
-Message-ID-Hash: LDMSOZZGHUSF5EDWB5R7LT2DWK7XXXJG
-X-Message-ID-Hash: LDMSOZZGHUSF5EDWB5R7LT2DWK7XXXJG
-X-MailFrom: github@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3fawmNHJI3c1oRFq"
+Content-Disposition: inline
+In-Reply-To: <20241112103803.1654174-4-sashal@kernel.org>
+Message-ID-Hash: HAG3GPNNEHMSPB6OHFXMK57XAGMASWXA
+X-Message-ID-Hash: HAG3GPNNEHMSPB6OHFXMK57XAGMASWXA
+X-MailFrom: pavel@denx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LDMSOZZGHUSF5EDWB5R7LT2DWK7XXXJG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HAG3GPNNEHMSPB6OHFXMK57XAGMASWXA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,39 +83,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #479 was edited from emiltoacs:
 
-No input on my Behringer UMC204HD because of an update in the following packages on Arch Linux alsa-card-profiles,alsa-lib,alsa-ucm-conf,alsa-utils,lib32-alsa-lib
+--3fawmNHJI3c1oRFq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-alsa-card-profiles 1:1.2.6-1 -> 1:1.2.7-1
-alsa-lib 1.2.12-1 -> 1.2.13-1
-alsa-ucm-conf 1.2.12-1 -> 1.2.13-2
-alsa-utils 1.2.12-1 -> 1.2.13-2
-lib32-alsa-lib 1.2.12-1 -> 1.2.13-1
+Hi!
 
-The error messages related by pipewire :
+> [ Upstream commit 63c1c87993e0e5bb11bced3d8224446a2bc62338 ]
+>=20
+> This patch checks if div is less than or equal to zero (div <=3D 0). If
+> div is zero or negative, the function returns -EINVAL, ensuring the
+> division operation (*prate / div) is safe to perform.
 
-pw.node: (alsa_output.pci-0000_00_1f.3.stereo-fallback-57) graph xrun not-triggered (0 suppressed)
-pw.node: (alsa_output.pci-0000_00_1f.3.stereo-fallback-57) xrun state:0x7ba2cfaed008 pending:6/6 s:0 a:0 f:0 waiting:0 process:0 status:triggered
-pw.node: (alsa_output.pci-0000_00_1f.3.stereo-fallback-57) graph xrun not-triggered (4 suppressed)
-pw.node: (alsa_output.pci-0000_00_1f.3.stereo-fallback-57) xrun state:0x7ba2cfaed008 pending:1/1 s:2663559587040 a:2663559606728 f:2663559630434 waiting:19688 process:23706 status:triggered
-pw.node: (alsa_output.pci-0000_00_1f.3.stereo-fallback-57) graph xrun not-triggered (0 suppressed)
-pw.node: (alsa_output.pci-0000_00_1f.3.stereo-fallback-57) xrun state:0x7ba2cfaed008 pending:1/1 s:5553029600968 a:5553029610813 f:5553029623757 waiting:9845 process:12944 status:triggered
+Well, previous version propagated error code, now it is eaten. Is
+stm32_sai_get_clk_div returning 0?
 
-If I revert package the package to these version it works again :
+BR,
+								Pavel
 
-alsa-card-profiles-1:1.2.6-1-x86_64.pkg.tar.zst alsa-lib-1.2.12-1-x86_64.pkg.tar.zst lib32-alsa-lib-1.2.12-1-x86_64.pkg.tar.zst alsa-utils-1.2.12-1-x86_64.pkg.tar.zst alsa-ucm-conf-1.2.12-1-any.pkg.tar.zst 
+> Signed-off-by: Luo Yifan <luoyifan@cmss.chinamobile.com>
+> Link: https://patch.msgid.link/20241106014654.206860-1-luoyifan@cmss.chin=
+amobile.com
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  sound/soc/stm/stm32_sai_sub.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+> index 3aa1cf2624020..3a7f0102b4c5c 100644
+> --- a/sound/soc/stm/stm32_sai_sub.c
+> +++ b/sound/soc/stm/stm32_sai_sub.c
+> @@ -380,8 +380,8 @@ static long stm32_sai_mclk_round_rate(struct clk_hw *=
+hw, unsigned long rate,
+>  	int div;
+> =20
+>  	div =3D stm32_sai_get_clk_div(sai, *prate, rate);
+> -	if (div < 0)
+> -		return div;
+> +	if (div <=3D 0)
+> +		return -EINVAL;
+> =20
+>  	mclk->freq =3D *prate / div;
+> =20
 
-In the meantime I add
-: --ignore alsa-card-profiles,alsa-lib,alsa-ucm-conf,alsa-utils,lib32-alsa-lib
-to my pacman update.
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-**EDIT**
-only the alsa-ucm-conf package is faulty somewhere between these two version 
-alsa-ucm-conf 1.2.12-1 -> 1.2.13-2
+--3fawmNHJI3c1oRFq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Workaround:
-Downgrade to alsa-ucm-conf-1.2.12-1
+-----BEGIN PGP SIGNATURE-----
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/479
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZ02hhwAKCRAw5/Bqldv6
+8hAkAKC0b/Oh8ldKHa90Tlm10HU7ITeWowCgxMxATUX7/rKamYpZAx5Mk1HHjC8=
+=I7ba
+-----END PGP SIGNATURE-----
+
+--3fawmNHJI3c1oRFq--
