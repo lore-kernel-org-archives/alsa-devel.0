@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39217E77180
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2024 22:52:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 491B6E77182
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2024 22:53:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0753A1665;
-	Tue, 10 Dec 2024 23:52:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0753A1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25D9B1948;
+	Tue, 10 Dec 2024 23:52:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25D9B1948
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1733871174;
-	bh=UW5h1XStgrRU6YsQy/UsIAox8gwJWzpospv3WLKNH3g=;
+	s=default; t=1733871185;
+	bh=vOQZ+hRArK+7+2LfL9+F0yLhkn29I12pqL4H5D46RMw=;
 	h=In-Reply-To:References:Subject:From:Cc:To:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pr9RkrvjzP6RKY1vGQOiJX46fJsvanB8JoV/E6sJH7qRmbXsCoIo5lkHBzNJzn71S
-	 R+pkos8cBGyUNfc6VQwDkZdBT/Opq3gx+Pvcw6X/4hlT46Cdsr12hnv3SzTGU/hLGI
-	 c5ZX4U/0l6VYh6wgJs8wefQXT726HYex795XHlBc=
+	b=DEdGP/x8iFhtoxDGkR0fxljKQkR1cy0ocOd0CZ3pNwluJejEkZmzzNA3cwehv1NJv
+	 o5YgZjQnRJ9tionKJU70tQiETUao1CLBoQoQVPK62QCmvz6kryciIHRTMC9d5iINN3
+	 KYr9Tz7hxskxA8dmze+SErk6I5fVCdzpyPiaFk7k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 409D8F805C4; Tue, 10 Dec 2024 23:52:21 +0100 (CET)
+	id 982EEF805ED; Tue, 10 Dec 2024 23:52:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26858F805C3;
-	Tue, 10 Dec 2024 23:52:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 117B1F805EC;
+	Tue, 10 Dec 2024 23:52:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35533F80482; Tue, 10 Dec 2024 23:52:10 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id D0849F80482; Tue, 10 Dec 2024 23:52:17 +0100 (CET)
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 384A1F8032D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2024 23:52:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 384A1F8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 22866F8032D
+	for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2024 23:52:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22866F8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=f3/0Rc7g
+ header.s=k20201202 header.b=p64w2bPf
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 419605C62FF;
-	Tue, 10 Dec 2024 22:51:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7FF4C4CEF0;
-	Tue, 10 Dec 2024 22:52:01 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id EAB5AA41C0C;
+	Tue, 10 Dec 2024 22:50:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9C50C4CED6;
+	Tue, 10 Dec 2024 22:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733871122;
-	bh=UW5h1XStgrRU6YsQy/UsIAox8gwJWzpospv3WLKNH3g=;
+	s=k20201202; t=1733871133;
+	bh=vOQZ+hRArK+7+2LfL9+F0yLhkn29I12pqL4H5D46RMw=;
 	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=f3/0Rc7gaY6QuiNJNlfCdMM97zKiTGNULYd4fAhDMWOogM3HveIf7FBhSPTtYtZao
-	 1OPqG+AT0OQ2vK4vQmIaPkTILsD8QAsXnEyC5l4zInzE/CaE9TYK1F9mmwTjvpScl4
-	 Z6bYWftxU3eUGwTu2urxJEpza3wrB9cU2N6rER8L8LwZIea4TpH/IanzavrflITXeQ
-	 Y0JLZ56Wr4W34uUBDgdZB5lA7uDWnvLZQb0Bx6w24x07lkMpZe+N+E9Tj88sGfWVWu
-	 YEiicmEYz48WClP5zbtgGgFe7U61qp4n1NfcCPGrAkhnCQlI/C+lWXvGT1UIJFnvxG
-	 XM9bfHI8Jpy7w==
-Message-ID: <4190bb148fcba3903821db17b06f7ddd.sboyd@kernel.org>
+	b=p64w2bPfQ7oTtuiNKwmmAgT/9L6cNOKg8x4DfbrKXPb8iTOd4CFIGFQtS3LvLtL7L
+	 SydD40JGVlnh+Cg8WFdPHAJCbhq3iJDvRfeff6N/3wlo8gEfH4JXop42upI9abhFdC
+	 39kYMU1Im8OJvEJtMUKZqRiw8zEWmRz8bAmVCM0mbEF5HRrgzinXnlxCr2e12XuNVQ
+	 F1Bd0sdvhM2Ckd7TFQRPmFAAgGm5I38zBeFPm1sl2V7C4bmREiZUkIGYt2Zt3YoMxD
+	 UcjI7SJQJvF0r4J2dkkDHVv8og18X3hd5hEZ9SzfB7nURvJ7VKJ0HaJ6mVNl4R/zB7
+	 7dRE+vVESs5AQ==
+Message-ID: <861ecb11ea5984a25699b3055599545d.sboyd@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20241210170953.2936724-2-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20241210170953.2936724-3-claudiu.beznea.uj@bp.renesas.com>
 References: <20241210170953.2936724-1-claudiu.beznea.uj@bp.renesas.com>
- <20241210170953.2936724-2-claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH v4 01/24] clk: versaclock3: Prepare for the addition of
- 5L35023 device
+ <20241210170953.2936724-3-claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH v4 02/24] dt-bindings: clock: versaclock3: Document
+ 5L35023 Versa3 clock generator
 From: Stephen Boyd <sboyd@kernel.org>
 Cc: claudiu.beznea@tuxon.dev, linux-renesas-soc@vger.kernel.org,
  linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Claudiu <claudiu.beznea@tuxon.dev>, biju.das.jz@bp.renesas.com,
  broonie@kernel.org, geert+renesas@glider.be, lgirdwood@gmail.com,
  magnus.damm@gmail.com, mturquette@baylibre.com, p.zabel@pengutronix.de,
  perex@perex.cz, robh+dt@kernel.org, tiwai@suse.com
-Date: Tue, 10 Dec 2024 14:51:59 -0800
+Date: Tue, 10 Dec 2024 14:52:10 -0800
 User-Agent: alot/0.12.dev1+gaa8c22fdeedb
-Message-ID-Hash: Q2ZJ7N7LO545G2SAD746UZS7FT2XIVXP
-X-Message-ID-Hash: Q2ZJ7N7LO545G2SAD746UZS7FT2XIVXP
+Message-ID-Hash: NC646Q7KD24NQLPZ2NERTQDZYCPI3EVE
+X-Message-ID-Hash: NC646Q7KD24NQLPZ2NERTQDZYCPI3EVE
 X-MailFrom: sboyd@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q2ZJ7N7LO545G2SAD746UZS7FT2XIVXP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NC646Q7KD24NQLPZ2NERTQDZYCPI3EVE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,16 +99,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Quoting Claudiu (2024-12-10 09:09:30)
+Quoting Claudiu (2024-12-10 09:09:31)
 > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >=20
-> The 5P35023 and 5L35035 Versa 3 clock generator variants are different but
-> the versaclock3 driver could be used with small adjustments. The features
-> that are implemented in driver and differs b/w variants are the PLL2 Fvco
-> and clock sel bit for SE2 clock. Adjust the driver to prepare for the
-> addition of 5L35023 device.
+> There are some differences b/w 5L35023 and 5P35023 Versa3 clock
+> generator variants but the same driver could be used with minimal
+> adjustments. The identified differences are PLL2 Fvco, the clock sel
+> bit for SE2 clock and different default values for some registers.
 >=20
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > ---
 
