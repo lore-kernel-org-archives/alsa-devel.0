@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2BE1E77180
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2024 11:33:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9430E77182
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2024 11:34:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 389E62C08;
-	Wed, 11 Dec 2024 12:33:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 389E62C08
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA4A2BEF;
+	Wed, 11 Dec 2024 12:33:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA4A2BEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1733916824;
-	bh=8/PHs3hergaZwLujvAzPGvYQcQ9nR8hOIaSM9/vOn8M=;
+	s=default; t=1733916839;
+	bh=d78/cjRoA1rGuCezGVFS8ZJSQg5DxH7DXWKg06PRmuY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eiMYikQv49LemEtZqO7IhAr6022oXbN52YtRxA2g9KSIvRFjERKx8hIIV7pugsDCl
-	 0ZS9TMIiR1Tla+/rZJRAzQWLJ/ugWUX8+lM8k10VZQTlsTQ8NFRZkPfZvT8/ANgv2D
-	 dP4FIAyitsVz1hMcKAtB9TI7cGL1uVSep7KuRQB8=
+	b=kR6lFZZi/z9INBd01gsSWy1B5EUby8va1SiYCeOjlepqKkEF8T0MzD6y6YaKPcOBy
+	 rGtpWwSwffVcfoNiHaOPouQa6LLSCNzWYxlhg2tu3gE2+qr5FHaAGYCoz2VqAaY8YM
+	 MgbnLZDRid+mjDJl71NIR1XIIwkAGz+NANBK4+8M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A6B9F89732; Wed, 11 Dec 2024 12:28:16 +0100 (CET)
+	id CACA3F8974F; Wed, 11 Dec 2024 12:28:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26727F89737;
-	Wed, 11 Dec 2024 12:28:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3DABF8060A;
+	Wed, 11 Dec 2024 12:28:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4ABFF80482; Tue, 10 Dec 2024 18:11:53 +0100 (CET)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com
- [209.85.208.41])
+	id B00ACF80533; Tue, 10 Dec 2024 18:11:57 +0100 (CET)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com
+ [209.85.208.48])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 56E01F800E9
-	for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2024 18:11:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56E01F800E9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 09810F800E9
+	for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2024 18:11:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09810F800E9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256
- header.s=google header.b=E6/xNDlM
-Received: by mail-ed1-f41.google.com with SMTP id
- 4fb4d7f45d1cf-5d41848901bso2977714a12.0
+ header.s=google header.b=Kj09W6lA
+Received: by mail-ed1-f48.google.com with SMTP id
+ 4fb4d7f45d1cf-5d3dce16a3dso6043486a12.1
         for <alsa-devel@alsa-project.org>;
- Tue, 10 Dec 2024 09:11:52 -0800 (PST)
+ Tue, 10 Dec 2024 09:11:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1733850652; x=1734455452;
+        d=tuxon.dev; s=google; t=1733850655; x=1734455455;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zbnqkT50sIwhXb4LpARwC8AegnQU36VT8IZg+EnVYck=;
-        b=E6/xNDlMJ9pDVurNM0Xr9oss9jIBPt+5t9Cyfo117NJ533Bpnj82Ole3cCPbjjqLc1
-         4oSbkZhFgGXxs4a0ab1FwUvlhHYmhh2gSXiP0GQLmxgIsTxM0DVAtmjRVFTDKhc4MRai
-         LgQIOUhL8VEAD0lZ3c6UR6EpgslvTCvL1yQs82IM4Sapuy4D+r6gbY86hw061sKQUhn2
-         u5lNH+JG4iHimLoSO/YYNpc374BsoIj95QGELPmc2L0A+raQdLfUgmhiGBVyNdWBIWe2
-         2I9rrj2E+yqQc2cYfcDKTR5wGt/ggL3sjBWpN9irB2T/pbLIR9UW2Y759mA5iX7xZurm
-         RjyQ==
+        bh=XG8zYqRJnsZkhZfRr2g1CnvN6FDBTlyfj/tmdbveBiw=;
+        b=Kj09W6lAsGIzi45IuIBHJn49HlY+eQ+/Ve7WVLG+dCS9h+n/eonHa2lWk/WmyFkGuO
+         0kLHIY69LT7u9/lDlXL6xctZzYXtmf05wMOM1+UmQnkGpNePUvmLrQxDZzvMZjf4FnKb
+         HSLHR1eaMiHFMhCxl1zmZVZrOHkWW4Mykj5XYVm7SkJeNaJaBOtTduLkjf6Zt8/nwQUJ
+         YnhMVxzS18V+6mMOQFZRxTmXLdZ5zKbKYFgp0f6ncmwBRveabplaqPXfvvrgtAAQpMlZ
+         2R87d4S/UIDPV9ZGLX6/sd/7+rXfEgCJX61RY921WbICxn/H6Yxj7SJdhLm7IECvSxh8
+         or/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733850652; x=1734455452;
+        d=1e100.net; s=20230601; t=1733850655; x=1734455455;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zbnqkT50sIwhXb4LpARwC8AegnQU36VT8IZg+EnVYck=;
-        b=j2owkFpyNDD5ZTCW8mMV03xp6J8a6WUaNakMTyK1oiEupVSd1YojdlqoxGAmgWz3+B
-         3T7AvwJVETW0Y+M5Hml++rkbvBiUxgcXvzkwO+9urWsrXmsbgcx682j6zVKaigJ6EPcZ
-         XndojYq/wYNW6vHehDF3f2N2oZXHTZy94X85WLEC941m4jgFr/v9j5A/JZvuMtUx4r7A
-         CJi1yKvRu/EJmQOM+hb00KmOa1udnHXQt3AgJRbfj0teWk3vJHZUt4mf5cWKz8eYnoul
-         DA6Jvz57fn8oUh1d4ll9nGzA5H/um12IVa4UmW1cwHnaU/kIP6YXhyFYjdQcvKKX4lCN
-         AK5w==
+        bh=XG8zYqRJnsZkhZfRr2g1CnvN6FDBTlyfj/tmdbveBiw=;
+        b=Be7Ey4lnSqZ4N0wn3VMAiWq3x01LsqwEfjPEi6oBBtFBoXVCDTyB5NPil8scQeX22W
+         tO4wNCO51sHcuIzTZ3cglajlied9ZeIev4KmFgobzD9HijNLns/Is9tsTGaJ7JE49dXK
+         S8OapYJqySthFEtAZoHhgfeBHGeE6ESwqMg5jUhsEcYEBKiUEgmzOFOxOngnOFRAhp3F
+         A0gI0POYnxR1jIdvwWTTy9q54aRqhF2/H1rlVMBX2wtdlU+A5h1TI8gzQjqm75McdYoI
+         LY+xLctiHt0zOG9oBUcJwZkBrOY8vByvDxuBQUH1a0bmRoc5flyBnveO1jN0Y1+Td1VB
+         8PNQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCXVRUzdQcVHWccZQWsnS8shRLUHsYnTxCQMKTWx5CLztoG2zJTCL9y9thRLa6J1muUeJt0Jl1X/WkIu@alsa-project.org
-X-Gm-Message-State: AOJu0YwvWn+pBWl03GawJ35/Vj+ILgPvnxPiDpbOa7BF8+hW1GX+Xsnq
-	TulklKrA7KuIQN7HEpdLx05JfETg2JufaqprTImbjUA2MU++oxWwcYvrbR2Xv4c=
-X-Gm-Gg: ASbGnctIYS4rN6XbbY4tA4VUpWDfAq6sVKtAP1Noapc25MbR2vCzKMpo/1+ZflyW0sR
-	ZSR9tQ4000GwHVqQY4Gbwxn4EJRQUddBCd8ZliJLyLFNw2Hmwun20g7OVmsk5umDGteMIgizqnQ
-	XSGHG/BGY2ZihpUnUYytR1q1YafPwGBad+viX35tlSBZsFzBDN+MwgW62gFh7/b3nFWBi2uX+Ih
-	BDi+rf6rYMhPv2s62r2hwy4t69qd9uT8gqnwn/Zvxg6YRZiK8TF2OCkmP1dUII4iY384Xjyle7n
-	TGEiRtstBXc=
+ AJvYcCUz1GRculivBDJFGhziyNuJTsv9D6KsJ35VLMVloAlcRcyRcQD9MrRb/2HK44XGTa6zZemM2f7yzYrV@alsa-project.org
+X-Gm-Message-State: AOJu0YyQfnh3P+KgBM73v5cn4JTqsFHT21DhlwSur6m6BijALcNIKrB/
+	9Mc1OrOdT60e3Ltoy1gM/zA+hzUiMDuout6b1NawinQY97bJRzHGz8TXlnjCpTA=
+X-Gm-Gg: ASbGnct37v30hMaEgopsTN6/i63yzP3z7aanhdRouQs/qBQb9LOTQjEW1API6w9cccC
+	+WW6Q9FOVxPjB72SP27ywGxJbLo2P7JQscEDqSrNDaPG/OwJqp0KYknBCtBwhA764F1EmaWLxUq
+	KlavKSwyi6CICRuLLX/6sGAIbs8c1bno2gCYPojUoeQXhdhOeHV30JnK1APadLRPhQnjOZqX1aX
+	HpFI0TD0PbGOyvtsZbCKreCts7vYcigmpBei9jEr94LE9jd9r6JsnSoEkolloJNAl6UKnjSaKQd
+	YeHnqtpH
 X-Google-Smtp-Source: 
- AGHT+IGhOq0ISs6UITM0F+o/rYn/y64cloP1K9d/mnU2rOj31uCI1nueqLaUR3TcQZ6R+M3PsUDCEA==
-X-Received: by 2002:a05:6402:4308:b0:5d0:e9a8:4c96 with SMTP id
- 4fb4d7f45d1cf-5d41e2b4a25mr4157459a12.9.1733850651848;
-        Tue, 10 Dec 2024 09:10:51 -0800 (PST)
+ AGHT+IEgKnHNaC3IX1FEtNtvTz24/8StgSao5VAD6Ub2m7Bx+D6TJNFGkozP9JnrbZSvN4zlM3/+Ng==
+X-Received: by 2002:a05:6402:510a:b0:5d0:d208:4cad with SMTP id
+ 4fb4d7f45d1cf-5d41e16362amr4621139a12.2.1733850654831;
+        Tue, 10 Dec 2024 09:10:54 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.161])
         by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-5d3e7936581sm4853124a12.56.2024.12.10.09.10.49
+ 4fb4d7f45d1cf-5d3e7936581sm4853124a12.56.2024.12.10.09.10.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2024 09:10:51 -0800 (PST)
+        Tue, 10 Dec 2024 09:10:53 -0800 (PST)
 From: Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To: geert+renesas@glider.be,
@@ -109,9 +109,10 @@ Cc: claudiu.beznea@tuxon.dev,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v4 20/24] arm64: dts: renesas: r9a08g045: Add SSI nodes
-Date: Tue, 10 Dec 2024 19:09:49 +0200
-Message-Id: <20241210170953.2936724-21-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v4 21/24] arm64: dts: renesas: rzg3s-smarc-som: Add versa3
+ clock generator node
+Date: Tue, 10 Dec 2024 19:09:50 +0200
+Message-Id: <20241210170953.2936724-22-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20241210170953.2936724-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20241210170953.2936724-1-claudiu.beznea.uj@bp.renesas.com>
@@ -123,15 +124,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: AIZCSOBYPINJX5LZV63RDV74QYN2N57S
-X-Message-ID-Hash: AIZCSOBYPINJX5LZV63RDV74QYN2N57S
+Message-ID-Hash: DYDSG46G2OBWRDZCUINRR7SC7K3W45WK
+X-Message-ID-Hash: DYDSG46G2OBWRDZCUINRR7SC7K3W45WK
 X-Mailman-Approved-At: Wed, 11 Dec 2024 11:27:12 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AIZCSOBYPINJX5LZV63RDV74QYN2N57S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DYDSG46G2OBWRDZCUINRR7SC7K3W45WK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,18 +143,15 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Add DT nodes for the SSI IPs available on the Renesas RZ/G3S SoC. Along
-with it external audio clocks were added. Board device tree could use it
-and update the frequencies.
+Add versa3 clock generator node. It provides the clocks for the Ethernet
+PHY, PCIe, audio devices.
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
 
 Changes in v4:
-- s/audio-clk1/audio1-clk
-- s/audio-clk2/audio2-clk
-- dropped status for the audio clock nodes
 - collected tags
 
 Changes in v3:
@@ -162,121 +160,57 @@ Changes in v3:
 Changes in v2:
 - none
 
- arch/arm64/boot/dts/renesas/r9a08g045.dtsi | 94 ++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+ .../boot/dts/renesas/rzg3s-smarc-som.dtsi     | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-index be8a0a768c65..0e06a4b96c64 100644
---- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-@@ -14,6 +14,20 @@ / {
- 	#address-cells = <2>;
- 	#size-cells = <2>;
- 
-+	audio_clk1: audio1-clk {
+diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+index 2ed01d391554..6e58d47d85b0 100644
+--- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
++++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+@@ -92,6 +92,12 @@ vcc_sdhi2: regulator2 {
+ 		gpios = <&pinctrl RZG2L_GPIO(8, 1) GPIO_ACTIVE_HIGH>;
+ 		enable-active-high;
+ 	};
++
++	x3_clk: x3-clock {
 +		compatible = "fixed-clock";
 +		#clock-cells = <0>;
-+		/* This value must be overridden by boards that provide it. */
-+		clock-frequency = <0>;
++		clock-frequency = <24000000>;
 +	};
-+
-+	audio_clk2: audio2-clk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		/* This value must be overridden by boards that provide it. */
-+		clock-frequency = <0>;
-+	};
-+
- 	cpus {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-@@ -187,6 +201,86 @@ i2c3: i2c@10090c00 {
- 			status = "disabled";
- 		};
+ };
  
-+		ssi0: ssi@100a8000 {
-+			compatible = "renesas,r9a08g045-ssi",
-+				     "renesas,rz-ssi";
-+			reg = <0 0x100a8000 0 0x400>;
-+			interrupts = <GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 241 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 242 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "int_req", "dma_rx", "dma_tx";
-+			clocks = <&cpg CPG_MOD R9A08G045_SSI0_PCLK2>,
-+				 <&cpg CPG_MOD R9A08G045_SSI0_PCLK_SFR>,
-+				 <&audio_clk1>, <&audio_clk2>;
-+			clock-names = "ssi", "ssi_sfr", "audio_clk1", "audio_clk2";
-+			resets = <&cpg R9A08G045_SSI0_RST_M2_REG>;
-+			dmas = <&dmac 0x2665>, <&dmac 0x2666>;
-+			dma-names = "tx", "rx";
-+			power-domains = <&cpg>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
+ #if SW_CONFIG3 == SW_ON
+@@ -152,6 +158,30 @@ &extal_clk {
+ 
+ &i2c1 {
+ 	status = "okay";
 +
-+		ssi1: ssi@100a8400 {
-+			compatible = "renesas,r9a08g045-ssi",
-+				     "renesas,rz-ssi";
-+			reg = <0 0x100a8400 0 0x400>;
-+			interrupts = <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 244 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 245 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "int_req", "dma_rx", "dma_tx";
-+			clocks = <&cpg CPG_MOD R9A08G045_SSI1_PCLK2>,
-+				 <&cpg CPG_MOD R9A08G045_SSI1_PCLK_SFR>,
-+				 <&audio_clk1>, <&audio_clk2>;
-+			clock-names = "ssi", "ssi_sfr", "audio_clk1", "audio_clk2";
-+			resets = <&cpg R9A08G045_SSI1_RST_M2_REG>;
-+			dmas = <&dmac 0x2669>, <&dmac 0x266a>;
-+			dma-names = "tx", "rx";
-+			power-domains = <&cpg>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		ssi2: ssi@100a8800 {
-+			compatible = "renesas,r9a08g045-ssi",
-+				     "renesas,rz-ssi";
-+			reg = <0 0x100a8800 0 0x400>;
-+			interrupts = <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 247 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 248 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "int_req", "dma_rx", "dma_tx";
-+			clocks = <&cpg CPG_MOD R9A08G045_SSI2_PCLK2>,
-+				 <&cpg CPG_MOD R9A08G045_SSI2_PCLK_SFR>,
-+				 <&audio_clk1>, <&audio_clk2>;
-+			clock-names = "ssi", "ssi_sfr", "audio_clk1", "audio_clk2";
-+			resets = <&cpg R9A08G045_SSI2_RST_M2_REG>;
-+			dmas = <&dmac 0x266d>, <&dmac 0x266e>;
-+			dma-names = "tx", "rx";
-+			power-domains = <&cpg>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		ssi3: ssi@100a8c00 {
-+			compatible = "renesas,r9a08g045-ssi",
-+				     "renesas,rz-ssi";
-+			reg = <0 0x100a8c00 0 0x400>;
-+			interrupts = <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 250 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 251 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "int_req", "dma_rx", "dma_tx";
-+			clocks = <&cpg CPG_MOD R9A08G045_SSI3_PCLK2>,
-+				 <&cpg CPG_MOD R9A08G045_SSI3_PCLK_SFR>,
-+				 <&audio_clk1>, <&audio_clk2>;
-+			clock-names = "ssi", "ssi_sfr", "audio_clk1", "audio_clk2";
-+			resets = <&cpg R9A08G045_SSI3_RST_M2_REG>;
-+			dmas = <&dmac 0x2671>, <&dmac 0x2672>;
-+			dma-names = "tx", "rx";
-+			power-domains = <&cpg>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		cpg: clock-controller@11010000 {
- 			compatible = "renesas,r9a08g045-cpg";
- 			reg = <0 0x11010000 0 0x10000>;
++	versa3: clock-generator@68 {
++		compatible = "renesas,5l35023";
++		reg = <0x68>;
++		clocks = <&x3_clk>;
++		#clock-cells = <1>;
++		assigned-clocks = <&versa3 0>,
++				  <&versa3 1>,
++				  <&versa3 2>,
++				  <&versa3 3>,
++				  <&versa3 4>,
++				  <&versa3 5>;
++		assigned-clock-rates = <24000000>,
++				       <12288000>,
++				       <11289600>,
++				       <25000000>,
++				       <100000000>,
++				       <100000000>;
++		renesas,settings = [
++		  80 00 11 19 4c 42 dc 2f 06 7d 20 1a 5f 1e f2 27
++		  00 40 00 00 00 00 00 00 06 0c 19 02 3f f0 90 86
++		  a0 80 30 30 9c
++		];
++	};
+ };
+ 
+ #if SW_CONFIG2 == SW_ON
 -- 
 2.39.2
 
