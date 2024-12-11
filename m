@@ -4,79 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3BB3E77180
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2024 22:53:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0B6CE7717F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2024 02:50:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EC8820C6;
-	Tue, 10 Dec 2024 23:53:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EC8820C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15F43211B;
+	Wed, 11 Dec 2024 03:50:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15F43211B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1733871207;
-	bh=LssiNIj8oGW6nd7zlyMfCYyCX8QpiqI63Pa2tgrjihE=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=dybxrX9dLxE/ogf6q7MH6536l5fk6Qzrf/g6rDlx0+km3a3j5iFtvsvm30Fic7vvJ
-	 YX69InqRAaoVUAp942QQHgD/r9eNYmbQajDZ/oElSKRSr+KPG98dqjaVeL/Ecv3VPF
-	 jTi0e9iAvNmzzYgmOog3Ln0WOV5J0yb7X3a2BwBw=
+	s=default; t=1733885418;
+	bh=YpmR0lFnp7VXxFOVFtwxTav81hrFKy8tA3EFg2dKfYc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=SPmsQjQFdv24e8ArBOTwcJsMfMU2EGZpKMyAnDOtotzAgJ8wQeUDCN1QQnMyR+Vhp
+	 bKlF3kJV74OIhGfsV4heN/aevak4bWdqxTwc03nGgMLtqQfMQPqNpwwDttBpZehYjc
+	 2+ta+wW5Igw7ZP6isBJt6akEJ0TqFXudvXfaESko=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ECEFEF80606; Tue, 10 Dec 2024 23:52:33 +0100 (CET)
+	id 52A53F805C5; Wed, 11 Dec 2024 03:49:46 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 784A8F80606;
-	Tue, 10 Dec 2024 23:52:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8DF9F805AC;
+	Wed, 11 Dec 2024 03:49:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A688F805F3; Tue, 10 Dec 2024 23:52:29 +0100 (CET)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6D1C2F805E7
-	for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2024 23:52:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D1C2F805E7
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GQKAkUUc
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 1E853A41C0C;
-	Tue, 10 Dec 2024 22:50:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19637C4CED6;
-	Tue, 10 Dec 2024 22:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733871142;
-	bh=LssiNIj8oGW6nd7zlyMfCYyCX8QpiqI63Pa2tgrjihE=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=GQKAkUUcVf8Xq587TPnxbWz52ZlCgNv2GpEOSLzw4jnMQd52SdKI16QYvsS9VE9gN
-	 w/SWlMQ5ikPYdXw1CVNkJ1Yl3aGTu5G+b5XbMlZnwZJH3PyogpwRl/Ouyl1z/ThSYW
-	 DoTLxVtBAsl4nhDZPzYdC2Ps5zatUftUJF4gwZUWs/Au0XB8oWACf3SOoYT/heH/gR
-	 zU+zEj63ppXxxyNuBR2JQqRjPEjLjrlkkkKTpmfCfqRgONjy1Zb9rHUjuUf1wtGvBk
-	 P+MmF07VeGToYtl1EwJ8kjb1gprJHmO8Ug4XEUDQNVowA+hX69z9EbFPq0XoGKUsa5
-	 I752WE0y6rezA==
-Message-ID: <4b11a074b63c582981454d8d9d64ac0f.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	id 680D6F80482; Wed, 11 Dec 2024 03:49:42 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id B938EF80087
+	for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2024 03:49:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B938EF80087
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20241210170953.2936724-4-claudiu.beznea.uj@bp.renesas.com>
-References: <20241210170953.2936724-1-claudiu.beznea.uj@bp.renesas.com>
- <20241210170953.2936724-4-claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH v4 03/24] clk: versaclock3: Add support for the 5L35023
- variant
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: claudiu.beznea@tuxon.dev, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-To: Claudiu <claudiu.beznea@tuxon.dev>, biju.das.jz@bp.renesas.com,
- broonie@kernel.org, geert+renesas@glider.be, lgirdwood@gmail.com,
- magnus.damm@gmail.com, mturquette@baylibre.com, p.zabel@pengutronix.de,
- perex@perex.cz, robh+dt@kernel.org, tiwai@suse.com
-Date: Tue, 10 Dec 2024 14:52:20 -0800
-User-Agent: alot/0.12.dev1+gaa8c22fdeedb
-Message-ID-Hash: 2VKBJUCT2JPLJIFBBBZLO2BG3OTILLRG
-X-Message-ID-Hash: 2VKBJUCT2JPLJIFBBBZLO2BG3OTILLRG
-X-MailFrom: sboyd@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1733885379778549910-webhooks-bot@alsa-project.org>
+References: <1733885379778549910-webhooks-bot@alsa-project.org>
+Subject: rt722: add headset mic led control
+Message-Id: <20241211024942.680D6F80482@alsa1.perex.cz>
+Date: Wed, 11 Dec 2024 03:49:42 +0100 (CET)
+Message-ID-Hash: VMXEXNJJNC62S2GETPNVZJAMCRIXCGSE
+X-Message-ID-Hash: VMXEXNJJNC62S2GETPNVZJAMCRIXCGSE
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2VKBJUCT2JPLJIFBBBZLO2BG3OTILLRG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VMXEXNJJNC62S2GETPNVZJAMCRIXCGSE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,14 +66,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Quoting Claudiu (2024-12-10 09:09:32)
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->=20
-> Add support for the 5L35023 variant of the Versa 3 clock generator.
->=20
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
+alsa-project/alsa-ucm-conf pull request #487 was edited from shumingfan:
 
-Applied to clk-next
+rt722: add headset mic led control
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/487
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/487.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
