@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF0F6E7718B
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2024 09:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1EEEE7718D
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2024 09:13:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32212601AC;
-	Mon, 23 Dec 2024 10:12:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32212601AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDBDC601D5;
+	Mon, 23 Dec 2024 10:13:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDBDC601D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1734945179;
-	bh=istvPy2pFGaVu762bO58v7w7Hn58Yh7LMqpm7I69E7c=;
+	s=default; t=1734945194;
+	bh=h9YGRNmTt8k/JhSMq7DzlnJWXJOQxvg7m1qXhlH+PKQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cvFDu4ffzbenE8YRoKaDHrOm1/4w3NJxep3s8mUSYE/g9vhKwmeL09neL0u5YqFN0
-	 obLE/OZKlRrclrMvLDkvpe/2c8p4HHvU3bEx3ff3tm6/K/XXaLGvApV+nopLo1wsMm
-	 IMwv33+dxlBF8us7VaC1V/KecGPAt/kz7WTqeOhs=
+	b=SHWJ8HG/NoQV28Nh0C3OvVKLxlF5ciByrJzjietXoaAmqhA4INpReMt1HnWc91vO0
+	 RBbJCCpBCGZeODrGaO0Dq2cMXWeRowVKFpwtlKG/mB1YHsrkxeSapFStBDceQ7t2Rq
+	 D0/dWWplJnUrog4bOpXZcuO8f6BEwuuqSZWCv6+o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3AD7AF805B5; Mon, 23 Dec 2024 10:12:27 +0100 (CET)
+	id 50D1EF805EF; Mon, 23 Dec 2024 10:12:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1978BF805C5;
-	Mon, 23 Dec 2024 10:12:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 389DBF805EE;
+	Mon, 23 Dec 2024 10:12:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0FE44F80254; Mon, 23 Dec 2024 10:12:20 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id BB0E6F805CA; Mon, 23 Dec 2024 10:12:27 +0100 (CET)
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ECA83F8012B
-	for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2024 10:12:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECA83F8012B
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9A07F805BD
+	for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2024 10:12:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9A07F805BD
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=HhQmfnY/
+ header.s=k20201202 header.b=GhFZfv6m
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 861DC5C568C;
-	Mon, 23 Dec 2024 09:11:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 713BDC4CED3;
-	Mon, 23 Dec 2024 09:12:12 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id A7C94A40CAF;
+	Mon, 23 Dec 2024 09:10:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B7BC4CED4;
+	Mon, 23 Dec 2024 09:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734945135;
-	bh=istvPy2pFGaVu762bO58v7w7Hn58Yh7LMqpm7I69E7c=;
+	s=k20201202; t=1734945143;
+	bh=h9YGRNmTt8k/JhSMq7DzlnJWXJOQxvg7m1qXhlH+PKQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=HhQmfnY/NAeCFPzoHTBlLDUtjrk/a9QtbBc8YPRlsBKY1yg9vQD7/MLZ5jlB5cggf
-	 EpCCusij4ZDU7AcMn/9uXYTVo4G2DOI8rz+Yd6wsyoFKzefjzWDWAMuZ73AnP06+0a
-	 Cq7HxJbr+h42/fbxU5Vz1Ol/yaJmxglbgMpPAEmjC0GlMjX886k9EYaw/hdF0SE729
-	 2SRasm7qkmQZgOgWxrYNlsT5hLQsWqNOlVMEz6QmxtLTm/gxXsu9pqWdZvwYf+6tON
-	 F/Is8y9Vy9wpuRcp7mzaLksTo+mzDXrcZWVSafIhgRB9AM0azpppe7ygIkTni6CqqL
-	 ajIQPDm1gJ+XQ==
+	b=GhFZfv6m5JwspC6e/Wp0S13HBTWlgYHpfBTKo+bbTfKCjZ/1W5LwqtrtdEhnYqfB/
+	 nvRZh8WqgkJ1dtqOgLtAXYWUBRdkNW+gbIWSOMY+iDjBKTDG1CaI8Kr/+GRsNBS+v7
+	 Y+uOX6v/Vx4MjR6TzyfAlT+SjcUc8VzWk6Gv8k9o4I/L+Y/npAPWUKL0yHXlW9LebS
+	 UhKXxBCD+/cQ/b1acaVF3NzNmd2Y0iy5OdIoTFM5u6gT2i6iiU88J4c2wYGOUD1wC9
+	 mMCy93D/kua5d2B3ITwhL3KdZdW7bfmrMCq9Fqns0Ce9x85WAnhKIw5ouk2RSiuN0h
+	 nwyBu6q8jaW7A==
 From: Vinod Koul <vkoul@kernel.org>
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Cc: yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.dev,
- sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Basavaraj.Hiregoudar@amd.com,
+ sanyog.r.kale@intel.com, Basavaraj.Hiregoudar@amd.com,
  Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
- mario.limonciello@amd.com
-In-Reply-To: <20241112185138.3235375-1-Vijendar.Mukunda@amd.com>
-References: <20241112185138.3235375-1-Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH] soundwire: amd: clear wake enable register for power
- off mode
-Message-Id: <173494513209.830310.16014116903746147360.b4-ty@kernel.org>
-Date: Mon, 23 Dec 2024 14:42:12 +0530
+ Mario.Limonciello@amd.com, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20241203092144.4096986-1-Vijendar.Mukunda@amd.com>
+References: <20241203092144.4096986-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH RESEND] soundwire: amd: clear wake enable register for
+ power off mode
+Message-Id: <173494514030.830310.1951135316198778911.b4-ty@kernel.org>
+Date: Mon, 23 Dec 2024 14:42:20 +0530
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14.2
-Message-ID-Hash: GIEHCA6QUP7462CJA4ZB7MSTTR53XBWW
-X-Message-ID-Hash: GIEHCA6QUP7462CJA4ZB7MSTTR53XBWW
+Message-ID-Hash: KHK63MYHJBKA2TAICBWIYRVV37KKWAQ4
+X-Message-ID-Hash: KHK63MYHJBKA2TAICBWIYRVV37KKWAQ4
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GIEHCA6QUP7462CJA4ZB7MSTTR53XBWW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHK63MYHJBKA2TAICBWIYRVV37KKWAQ4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,7 +97,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Wed, 13 Nov 2024 00:21:38 +0530, Vijendar Mukunda wrote:
+On Tue, 03 Dec 2024 14:51:44 +0530, Vijendar Mukunda wrote:
 > As per design for power off mode, clear the wake enable register during
 > resume sequence.
 > 
