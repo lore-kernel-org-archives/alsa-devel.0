@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BE8DE7718B
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2025 00:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53B73E7718B
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2025 00:12:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3765460448;
-	Thu,  2 Jan 2025 01:01:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3765460448
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5324B60444;
+	Thu,  2 Jan 2025 01:12:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5324B60444
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1735776106;
-	bh=BrCbmw/iMJnQG8nAt2xXsrHFsdfek5CVYCvnI4RYxoo=;
+	s=default; t=1735776741;
+	bh=pkbxvB/QBaDUfihKljVt8qXOuOPJSkHbpbL6oNzeSfY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=JKQhWElnGg6ctpDCiWaI0PQqrgMk4MhpFipWJ/jpsjkLvd7sKaRrZK5kNqHQSczL+
-	 TXSS64DadBZqEs0YMGxzdqxD9CB0ipHKYhTHAL41/sz3mAvCSkAJ5HIR82IWeTk2mH
-	 SFfLL/EYMzFffTIEgzvMzNiRW4C4Rd6cQrw5KSEI=
+	b=Xo7CG1BCoOZKs9TvTUrPPq9y74Y51cJt4xrj59WNGUCRJCwthCqWZtWEe1m5uKKGb
+	 QxVhGCOslfK6wnecxutYxIwePDDV0Xyh6SVk3DfWSEwqLTgY4w+En8UrQB63t1Ph6f
+	 V0ZfJZPanAQlWmwX4Uih9pu5DImTTqNvXY9Z9V+Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85A21F805C0; Thu,  2 Jan 2025 01:01:11 +0100 (CET)
+	id 31259F805B4; Thu,  2 Jan 2025 01:11:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EED8AF805BE;
-	Thu,  2 Jan 2025 01:01:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D8D7F805B4;
+	Thu,  2 Jan 2025 01:11:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E176F80154; Thu,  2 Jan 2025 01:00:57 +0100 (CET)
+	id E793DF80154; Thu,  2 Jan 2025 01:11:33 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74A86F8001E
-	for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2025 01:00:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74A86F8001E
+	by alsa1.perex.cz (Postfix) with ESMTP id 53394F80104
+	for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2025 01:11:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53394F80104
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1735776055160344601-webhooks-bot@alsa-project.org>
-References: <1735776055160344601-webhooks-bot@alsa-project.org>
+In-Reply-To: <1735776690710883856-webhooks-bot@alsa-project.org>
+References: <1735776690710883856-webhooks-bot@alsa-project.org>
 Subject: Missunderstanding or a BUG in reported frequencies for audio cards
  present in system.
-Message-Id: <20250102000057.8E176F80154@alsa1.perex.cz>
-Date: Thu,  2 Jan 2025 01:00:57 +0100 (CET)
-Message-ID-Hash: Q3B4KNLE5JVU76OLIKFDC32VAQKK23BX
-X-Message-ID-Hash: Q3B4KNLE5JVU76OLIKFDC32VAQKK23BX
+Message-Id: <20250102001133.E793DF80154@alsa1.perex.cz>
+Date: Thu,  2 Jan 2025 01:11:33 +0100 (CET)
+Message-ID-Hash: S3A3HLSNLCJ2YP7T4KQBJBMT6FSM3V5W
+X-Message-ID-Hash: S3A3HLSNLCJ2YP7T4KQBJBMT6FSM3V5W
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q3B4KNLE5JVU76OLIKFDC32VAQKK23BX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S3A3HLSNLCJ2YP7T4KQBJBMT6FSM3V5W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,6 +151,8 @@ After connecting external monitor alsacap reports max 48000 for both cards. FFmp
 ```
 [alsa @ 0x586316542b00] sample rate 96000 not available, nearest is 48000
 ```
+
+I had this monitor connected before and alsacap reported "flipped" results - not like now that both cards are limited to 48000.
 
 What else can I do to discover the problem?
 
