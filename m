@@ -4,134 +4,148 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FF8AE77188
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2025 08:56:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD9DC02183
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2025 08:56:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D27176029A;
-	Tue, 14 Jan 2025 09:55:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D27176029A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF57960297;
+	Tue, 14 Jan 2025 09:56:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF57960297
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1736844963;
-	bh=VdYDiQKfYHXl9v3+EulRoFi1u5ObdVFOsa86/Um9fR8=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=WRlJCCTVH0lBwG7GvqKhkpH2PePRVAlV/jKmsFpbg+cmhX100zI6ExcitlnM18Q48
-	 6v+aK1VauNfFYQ6d7dbaGyvI8inM2cFqOx8L1cbDy7SOlAfjGKhH2s5wb9CL0+a1Ud
-	 ffmGGu0iJU+YFg2vL5i61SAdAPuYnkqm/kFXvH/w=
+	s=default; t=1736844981;
+	bh=E+uRXDsmWygqLuSW9gPpDf5RwefwpNNrlnftnG3GXAk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=R6QDYA6Ia0AP15A2VCNXL8mAZjLYHCydpSyhTq0UNz3sb3ggYdsdoAUm0MIJzwGtr
+	 na9WfMvvCdI2ZKYsni7ArVpPndL69nC+KEBEra46Ei17zqNL7teLkMLQPal7XgfDWL
+	 NjhZqQbTjogxxCSRp4yMwKAIuCvYlyrsOg5YqzBc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93A45F805C4; Tue, 14 Jan 2025 09:55:29 +0100 (CET)
+	id 13B32F805F3; Tue, 14 Jan 2025 09:55:32 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AD33F805C2;
-	Tue, 14 Jan 2025 09:55:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA6C0F805EA;
+	Tue, 14 Jan 2025 09:55:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE28FF80563; Tue, 14 Jan 2025 09:55:22 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+	id F2D3FF8055A; Tue, 14 Jan 2025 09:55:22 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A5D85F80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id EDE4EF80269
 	for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2025 09:55:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5D85F80169
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDE4EF80269
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=2MH7151y;
+ header.s=susede2_rsa header.b=FOKZbFI1;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=a6rAA4JW;
+ header.s=susede2_ed25519 header.b=nMHUMsTC;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=2MH7151y;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=FOKZbFI1;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=a6rAA4JW
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+ header.s=susede2_ed25519 header.b=nMHUMsTC
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 877681F38F;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ADA4D210FB;
 	Tue, 14 Jan 2025 08:55:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
 	t=1736844919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=OojZwKdWg3WYnuLYlIALBY0L6+nUhieIC8NNsR4LqXI=;
-	b=2MH7151y7PvTa51k7CO5ccshlaTS5vAhiVttVuNPeSnv3sYD8SWb4+TXwi2O8HWHpIJR1J
-	gN8Uvj4Iyqfx7FrM/cnP34wB1FmgdCFc8PEkz/Jqow0LTFZ5mWrp1EyVRkEZIXKZVsw5dS
-	IjWRUf16etbpJYI/KuH0HmwGopi/S3I=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xroNQA5wrAb1S8TigE8rff0GPjEbzdG+fQvr0bKe+zI=;
+	b=FOKZbFI1anIRRo8H8S8etXfkOqFuWTskj0y4WiKPS0bpxruDFpnSL/1/9vPrG2w7PremMl
+	HrhfxRjB87pEJx1xheDhqvolYtsacW9Zb+6HyGWdY48k/Lzxerj1OnCVQW9nTJVR3NN+Rq
+	UcJPb+4ao22EnGgdIRZUp8RjB2Rj4qc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1736844919;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=OojZwKdWg3WYnuLYlIALBY0L6+nUhieIC8NNsR4LqXI=;
-	b=a6rAA4JWedDglraT5dqLTbuXve6i8aMaK86hNwYGju9OEuAuYPzonhgm08AQKnZlTaWeIj
-	gsw1zX4O7/fdPhDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xroNQA5wrAb1S8TigE8rff0GPjEbzdG+fQvr0bKe+zI=;
+	b=nMHUMsTCN5ikDIsCLQ6pjCgzlMw2IguT7gUP56o098ALbbHYKM5R3Nk7loHS1+Fz8+Jcf9
+	dpv2j6dBkwU5GCBA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FOKZbFI1;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=nMHUMsTC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
 	t=1736844919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=OojZwKdWg3WYnuLYlIALBY0L6+nUhieIC8NNsR4LqXI=;
-	b=2MH7151y7PvTa51k7CO5ccshlaTS5vAhiVttVuNPeSnv3sYD8SWb4+TXwi2O8HWHpIJR1J
-	gN8Uvj4Iyqfx7FrM/cnP34wB1FmgdCFc8PEkz/Jqow0LTFZ5mWrp1EyVRkEZIXKZVsw5dS
-	IjWRUf16etbpJYI/KuH0HmwGopi/S3I=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xroNQA5wrAb1S8TigE8rff0GPjEbzdG+fQvr0bKe+zI=;
+	b=FOKZbFI1anIRRo8H8S8etXfkOqFuWTskj0y4WiKPS0bpxruDFpnSL/1/9vPrG2w7PremMl
+	HrhfxRjB87pEJx1xheDhqvolYtsacW9Zb+6HyGWdY48k/Lzxerj1OnCVQW9nTJVR3NN+Rq
+	UcJPb+4ao22EnGgdIRZUp8RjB2Rj4qc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1736844919;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=OojZwKdWg3WYnuLYlIALBY0L6+nUhieIC8NNsR4LqXI=;
-	b=a6rAA4JWedDglraT5dqLTbuXve6i8aMaK86hNwYGju9OEuAuYPzonhgm08AQKnZlTaWeIj
-	gsw1zX4O7/fdPhDw==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xroNQA5wrAb1S8TigE8rff0GPjEbzdG+fQvr0bKe+zI=;
+	b=nMHUMsTCN5ikDIsCLQ6pjCgzlMw2IguT7gUP56o098ALbbHYKM5R3Nk7loHS1+Fz8+Jcf9
+	dpv2j6dBkwU5GCBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F5A41384C;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8CA3F13A86;
 	Tue, 14 Jan 2025 08:55:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id H3LvFXcmhmcHbQAAD6G6ig
+	id iAkMIXcmhmcHbQAAD6G6ig
 	(envelope-from <tiwai@suse.de>); Tue, 14 Jan 2025 08:55:19 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 0/5] Updates for rawmidi / sequencer 
-Date: Tue, 14 Jan 2025 09:55:08 +0100
-Message-ID: <20250114085515.11880-1-tiwai@suse.de>
+Subject: [PATCH alsa-lib 1/5] Sync UAPI asound.h with 6.14 kernel
+Date: Tue, 14 Jan 2025 09:55:09 +0100
+Message-ID: <20250114085515.11880-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20250114085515.11880-1-tiwai@suse.de>
+References: <20250114085515.11880-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.30 / 50.00];
+X-Rspamd-Queue-Id: ADA4D210FB
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	SUBJECT_ENDS_SPACES(0.50)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MX_GOOD(-0.01)[];
 	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-Message-ID-Hash: RZSA6KUE5F2ZOICNC6IGLZN2H6OMNXC6
-X-Message-ID-Hash: RZSA6KUE5F2ZOICNC6IGLZN2H6OMNXC6
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:dkim,suse.de:mid];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+Message-ID-Hash: 2AFU7C3VEILMBR4YT7O7M7RBGBBZO4BW
+X-Message-ID-Hash: 2AFU7C3VEILMBR4YT7O7M7RBGBBZO4BW
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -144,7 +158,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RZSA6KUE5F2ZOICNC6IGLZN2H6OMNXC6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2AFU7C3VEILMBR4YT7O7M7RBGBBZO4BW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,29 +167,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The kernel 6.14 will receive a few small enhancements for rawmidi
-and sequencer APIs, and this patch set covers those.
+There is a small update of rawmidi API for supporting the UMP tied
+device info and inactive flag.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/uapi/asound.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Takashi
-
-===
-
-Takashi Iwai (5):
-  Sync UAPI asound.h with 6.14 kernel
-  Sync UAPI asequencer.h with 6.14 kernel
-  rawmidi: Extensions for tied device and substream inactive flag
-  rawmidi: Make rawmidi flag bits doxygen-style comments
-  seq: Define new events for UMP EP/FB change notifications
-
- include/local.h                 |  1 +
- include/rawmidi.h               |  4 +++-
- include/seq_event.h             | 12 ++++++++++++
- include/sound/uapi/asequencer.h | 12 +++++++++++-
- include/sound/uapi/asound.h     |  8 ++++++--
- src/rawmidi/rawmidi.c           | 22 +++++++++++++++++++++-
- 6 files changed, 54 insertions(+), 5 deletions(-)
-
+diff --git a/include/sound/uapi/asound.h b/include/sound/uapi/asound.h
+index 533b7e46cd17..d97433c9dc26 100644
+--- a/include/sound/uapi/asound.h
++++ b/include/sound/uapi/asound.h
+@@ -708,7 +708,7 @@ enum {
+  *  Raw MIDI section - /dev/snd/midi??
+  */
+ 
+-#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 4)
++#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 5)
+ 
+ enum {
+ 	SNDRV_RAWMIDI_STREAM_OUTPUT = 0,
+@@ -720,6 +720,9 @@ enum {
+ #define SNDRV_RAWMIDI_INFO_INPUT		0x00000002
+ #define SNDRV_RAWMIDI_INFO_DUPLEX		0x00000004
+ #define SNDRV_RAWMIDI_INFO_UMP			0x00000008
++#define SNDRV_RAWMIDI_INFO_STREAM_INACTIVE	0x00000010
++
++#define SNDRV_RAWMIDI_DEVICE_UNKNOWN		-1
+ 
+ struct snd_rawmidi_info {
+ 	unsigned int device;		/* RO/WR (control): device number */
+@@ -732,7 +735,8 @@ struct snd_rawmidi_info {
+ 	unsigned char subname[32];	/* name of active or selected subdevice */
+ 	unsigned int subdevices_count;
+ 	unsigned int subdevices_avail;
+-	unsigned char reserved[64];	/* reserved for future use */
++	int tied_device;		/* R: tied rawmidi device (UMP/legacy) */
++	unsigned char reserved[60];	/* reserved for future use */
+ };
+ 
+ #define SNDRV_RAWMIDI_MODE_FRAMING_MASK		(7<<0)
 -- 
 2.43.0
 
