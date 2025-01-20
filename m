@@ -4,75 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CC39C02181
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2025 18:55:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE231C02181
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2025 19:12:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7785D60266;
-	Mon, 20 Jan 2025 19:55:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7785D60266
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CB646029E;
+	Mon, 20 Jan 2025 20:12:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CB646029E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1737399328;
-	bh=n/PTqTBWrRPkcFT5rJxtrsPYriJaJRw9sYqDDFBiW2g=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1737400367;
+	bh=AyTcWmpx4xsw2k5nkqRxpQty+whC3MgttgNHjZtZQq0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QXbsqNx2HZs1olJOcPjK1uaW2qNko2enRQX9zTSBjh06YHYNgtphhakR4DgarCJTu
-	 hxqTc8/W/P9yOb+oP/HumNN+vshgPs2P0difOvX0aavMTVIbjIP++ImpTurXg62saN
-	 fIzOTARG3XOZ2rGf0tyYoB1XxMNySohmQaosu6YU=
+	b=PTGU22STQlA1xnxB7q5sRNDHosfMWZIfK0qrmaQ49J2xcp7eOSbSS0PjztCzPPf7p
+	 OLX0LSL8MjlxuAdRqL5eIuESoe1OjerLTjIoncTbRVgOQBD5+ujvn+oreobn6ZVEA8
+	 7AOwue8w9SFEsAxwj/NMxdDcUyX8uPxKv6cSgq1U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A259F805B0; Mon, 20 Jan 2025 19:54:57 +0100 (CET)
+	id C58EBF805C2; Mon, 20 Jan 2025 20:12:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B96FF805BF;
-	Mon, 20 Jan 2025 19:54:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4351F805B3;
+	Mon, 20 Jan 2025 20:12:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29DC3F80424; Mon, 20 Jan 2025 19:54:36 +0100 (CET)
-Received: from nyc.source.kernel.org (nyc.source.kernel.org
- [IPv6:2604:1380:45d1:ec00::3])
+	id C7BB6F80482; Mon, 20 Jan 2025 20:12:05 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C8F6F800E4
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2025 19:54:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C8F6F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 728DAF800E4
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2025 20:12:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 728DAF800E4
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=UosM6Nf2
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 1DE9FA4045B;
-	Mon, 20 Jan 2025 18:52:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EA10C4CEDD;
-	Mon, 20 Jan 2025 18:54:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737399267;
-	bh=n/PTqTBWrRPkcFT5rJxtrsPYriJaJRw9sYqDDFBiW2g=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=UosM6Nf2a98cRkjXCyAktwD/vwC1vRGpqv+saeGZ4LfW52oTRnBetcCAkHVbTBTeN
-	 LLtoILh4meqzoYVPcv9uBU3vCIlWwfSpktmAXc/KbsapYQawH10zjEO5Sbho3mv4/E
-	 75MT5vjMRlOa4S3ONZT5h6d6ABMoP7qruQ9n8MyjsES/f2jslTYTlqpDtIpUu+uBQY
-	 9+KalF2q/RIBL9jQ+QRENvyrS32ZttUlO+x0dtOTvHPCeoP2lz8WAT7CjMuQxGk7Aw
-	 szGfSamqzaqgHAZVBKfjvvA6h3cok4WSUb9WwNwuPNi3i1r5dP/iw7No8iw5zWO0Af
-	 xU0uZD+noT4CQ==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Zhang Yi <zhangyi@everest-semi.com>
-Cc: tiwai@suse.com, amadeuszx.slawinski@linux.intel.com,
- yangxiaohua@everest-semi.com, zhuning@everest-semi.com
-In-Reply-To: <20250120101758.13347-1-zhangyi@everest-semi.com>
-References: <20250120101758.13347-1-zhangyi@everest-semi.com>
-Subject: Re: [PATCH] ASoC: codecs: ES8326: Improved PSRR
-Message-Id: <173739926606.67578.17651499078267317949.b4-ty@kernel.org>
-Date: Mon, 20 Jan 2025 18:54:26 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-1b0d6
-Message-ID-Hash: 3NTD5O6WTHEHSP5KUQYIVJ64KZRHRK6T
-X-Message-ID-Hash: 3NTD5O6WTHEHSP5KUQYIVJ64KZRHRK6T
-X-MailFrom: broonie@kernel.org
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=jxh7pSUI;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=dwyN5uKI;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=jxh7pSUI;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=dwyN5uKI
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9B94B1F7C5;
+	Mon, 20 Jan 2025 19:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1737400319;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cm/Q1MQWxp8zu1pfHuIGXl0UIGknIUo/g1fkH4pq9hk=;
+	b=jxh7pSUI8SrWs0pwB1sroMU/4NrAzOVym5HP8JUDDeF7dCEYnGHtck7UmqSRm/Yq07eF5j
+	G6j8YXdNrLvxHsSudomAxnIt+cxGG5VLALMp+J34vOqKTRJ4VWqpVrTGmqlMzyO9IFbGeu
+	YnaWYL4Pgt1XfrVpNfb42k9ZwBmXGB0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1737400319;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cm/Q1MQWxp8zu1pfHuIGXl0UIGknIUo/g1fkH4pq9hk=;
+	b=dwyN5uKIQNUu91GXBiB/jw+M2D8lWLRNDQaIjQXb5SpPuiSXhB8Xxz6S+eNeNNlIdDA7P0
+	LVej/H8EuuSC4mDA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=jxh7pSUI;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=dwyN5uKI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1737400319;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cm/Q1MQWxp8zu1pfHuIGXl0UIGknIUo/g1fkH4pq9hk=;
+	b=jxh7pSUI8SrWs0pwB1sroMU/4NrAzOVym5HP8JUDDeF7dCEYnGHtck7UmqSRm/Yq07eF5j
+	G6j8YXdNrLvxHsSudomAxnIt+cxGG5VLALMp+J34vOqKTRJ4VWqpVrTGmqlMzyO9IFbGeu
+	YnaWYL4Pgt1XfrVpNfb42k9ZwBmXGB0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1737400319;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cm/Q1MQWxp8zu1pfHuIGXl0UIGknIUo/g1fkH4pq9hk=;
+	b=dwyN5uKIQNUu91GXBiB/jw+M2D8lWLRNDQaIjQXb5SpPuiSXhB8Xxz6S+eNeNNlIdDA7P0
+	LVej/H8EuuSC4mDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68AC7139CB;
+	Mon, 20 Jan 2025 19:11:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mBdcGP+fjmc1GQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 20 Jan 2025 19:11:59 +0000
+Date: Mon, 20 Jan 2025 20:11:58 +0100
+Message-ID: <87tt9t9u69.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sebastian Wiese-Wagner <seb@fastmail.to>
+Cc: tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable Mute LED on HP Laptop
+ 14s-fq1xxx
+In-Reply-To: <20250120181240.13106-1-seb@fastmail.to>
+References: <20250120181240.13106-1-seb@fastmail.to>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 9B94B1F7C5
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_TO(0.00)[fastmail.to];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[fastmail.to];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+Message-ID-Hash: M6QS42KTW3PPXDGUVJGW5DT5GAUZUGFD
+X-Message-ID-Hash: M6QS42KTW3PPXDGUVJGW5DT5GAUZUGFD
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +160,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3NTD5O6WTHEHSP5KUQYIVJ64KZRHRK6T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M6QS42KTW3PPXDGUVJGW5DT5GAUZUGFD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,36 +169,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 20 Jan 2025 18:17:58 +0800, Zhang Yi wrote:
-> Modified configuration to improve PSSR when ES8326 is working
+On Mon, 20 Jan 2025 19:12:40 +0100,
+Sebastian Wiese-Wagner wrote:
 > 
+> This HP Laptop uses ALC236 codec with COEF 0x07 controlling the mute LED. Enable existing quirk for this device.
 > 
+> Signed-off-by: Sebastian Wiese-Wagner <seb@fastmail.to>
 
-Applied to
+Thanks, applied now.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
-
-[1/1] ASoC: codecs: ES8326: Improved PSRR
-      commit: da8146ce615ad49ca4d873c1028b1b6fb0bba910
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Takashi
