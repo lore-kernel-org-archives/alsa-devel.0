@@ -4,81 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4584DC02187
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2025 14:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BB9EC02185
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2025 05:32:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1FF7603BB;
-	Sun, 19 Jan 2025 15:03:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1FF7603BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 354EF6021A;
+	Mon, 20 Jan 2025 06:31:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 354EF6021A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1737295435;
-	bh=i55omm5iP4fUtUyMk5jZw9ulVCcQxc2BINlnKhSoG1Y=;
-	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HW+o5uIQ8zZ1B3TQOzIYYSlMSmTqFxpZK/ImDhNL8PMbqoZbpg/NgrnLboAP1i6rr
-	 o4UXJEzF7S+5qUxUixMcGWmD2ghiFXEuLsx8r0UubKPe3p7yPMq5Oq4r0jO4PDD8Yq
-	 6G0smCCWzi9PB0LsC96Zli7AfXkIf0bC6H5sbAtM=
+	s=default; t=1737351125;
+	bh=zS/RfxoGfkQjga/2O34szcQXj5On074OjmX6t1ofdbw=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=cVEJKEIO9xdrSox2ANaDryeNjQccNI+ZcSEU4CKsu0oK1rWk7vWZ8KNIkaA3yxilZ
+	 F1fbTe9+yAPmZqbfBzSjoX2up7OZ/rKwIL3EtbPXhp1XV8yG/EVi47xDSd427tyUxr
+	 o4ShqDM3XNnlHVx8CHPOo3sRwp2tnMoOV5/W5Edk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34016F805B2; Sun, 19 Jan 2025 15:03:39 +0100 (CET)
+	id BD8EDF805AB; Mon, 20 Jan 2025 06:31:36 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE7B3F805B5;
-	Sun, 19 Jan 2025 15:03:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0153DF805C1;
+	Mon, 20 Jan 2025 06:31:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08C75F804F3; Sun, 19 Jan 2025 15:03:02 +0100 (CET)
-Received: from smtp.ivitera.com (smtp.ivitera.com [88.101.85.59])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B4634F80517; Mon, 20 Jan 2025 06:31:14 +0100 (CET)
+Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 19631F80071
-	for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2025 15:02:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19631F80071
+	by alsa1.perex.cz (Postfix) with ESMTPS id C482DF8016B
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2025 06:30:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C482DF8016B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=ivitera.com header.i=@ivitera.com header.a=rsa-sha256
- header.s=mail header.b=B/RFp3o1;
-	dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.a=rsa-sha256 header.s=mail header.b=B/RFp3o1
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.ivitera.com (Postfix) with ESMTP id 6A03B1B2123;
-	Sun, 19 Jan 2025 15:02:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
-	t=1737295368; bh=i55omm5iP4fUtUyMk5jZw9ulVCcQxc2BINlnKhSoG1Y=;
-	h=Date:From:To:Subject:From;
-	b=B/RFp3o1osRbAp0O2unLcn3qR0w5H4emf68pHbdetm5L4erUyNQ4WSAWVbWuSJPx9
-	 6EuV0UTDSHxs8KjGwlsU1dFWa194BRVpvwfZXMqdS96KhZBlhtgJiLknHK5Iro98ZB
-	 KZDqvao8tRz8w+0M4jNAP9ewsgH4ek8uLeuzba8o=
-Received: from smtp.ivitera.com ([127.0.0.1])
-	by localhost (localhost [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id N8FgArTRftlx; Sun, 19 Jan 2025 15:02:48 +0100 (CET)
-Received: from [192.168.105.22] (dustin.pilsfree.net [81.201.58.138])
-	(Authenticated sender: pavel)
-	by smtp.ivitera.com (Postfix) with ESMTPSA id E9C071B21C8;
-	Sun, 19 Jan 2025 15:02:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
-	t=1737295368; bh=i55omm5iP4fUtUyMk5jZw9ulVCcQxc2BINlnKhSoG1Y=;
-	h=Date:From:To:Subject:From;
-	b=B/RFp3o1osRbAp0O2unLcn3qR0w5H4emf68pHbdetm5L4erUyNQ4WSAWVbWuSJPx9
-	 6EuV0UTDSHxs8KjGwlsU1dFWa194BRVpvwfZXMqdS96KhZBlhtgJiLknHK5Iro98ZB
-	 KZDqvao8tRz8w+0M4jNAP9ewsgH4ek8uLeuzba8o=
-Message-ID: <d3607e2e-51ba-3c62-4232-c035eda98dbb@ivitera.com>
-Date: Sun, 19 Jan 2025 15:02:44 +0100
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=KEVf2bAu
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 50K5UY6e730633
+	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 19 Jan 2025 23:30:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1737351034;
+	bh=zC/n4lPGt9c4o50+MpQCqKqEPkOebZ1HI1fg/jWmihk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=KEVf2bAuFQa5rSilHgppESN0irqtO4tajGaFjW6tVqdXW2ikZrKM4VMkVYsjrnExm
+	 dfFRwM8ElqM2aB6NosKOkKO8g11YTF0CBX0pw/TshGo/I0MhZwlUxi4Vx5kG3mcPLk
+	 g+ZPrMCwfJDEJ+ovCWW+6Oj8SmnD18vGIozrL9f8=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 50K5UYdr027269
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 19 Jan 2025 23:30:34 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 19
+ Jan 2025 23:30:33 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 19 Jan 2025 23:30:34 -0600
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.124])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 50K5URNN130674;
+	Sun, 19 Jan 2025 23:30:31 -0600
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>
+CC: <andriy.shevchenko@linux.intel.com>, <13916275206@139.com>,
+        <alsa-devel@alsa-project.org>, <tiwai@suse.de>, <baojun.xu@ti.com>,
+        <Baojun.Xu@fpt.com>, Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v1 2/3] ASoC: tas2781: Support dsp firmware Alpha and Beta
+ seaies
+Date: Mon, 20 Jan 2025 13:30:22 +0800
+Message-ID: <20250120053023.715-2-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
+In-Reply-To: <20250120053023.715-1-shenghao-ding@ti.com>
+References: <20250120053023.715-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Jaroslav Kysela <perex@perex.cz>
-Subject: Is function delay of the pulse plugin correct?
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: MP2PAIUXTBNUUSP6RPNVTO3TXKW2ESHK
-X-Message-ID-Hash: MP2PAIUXTBNUUSP6RPNVTO3TXKW2ESHK
-X-MailFrom: pavel.hofman@ivitera.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Message-ID-Hash: Q6AZ6FZ7RW56EOSEUWNSPYRG7D5GRBBA
+X-Message-ID-Hash: Q6AZ6FZ7RW56EOSEUWNSPYRG7D5GRBBA
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -90,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MP2PAIUXTBNUUSP6RPNVTO3TXKW2ESHK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6AZ6FZ7RW56EOSEUWNSPYRG7D5GRBBA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,36 +104,258 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+For calibration, basic version does not contain any calibration addresses,
+it depends on calibration tool to convey the addresses to the driver.
+Since Alpha and Beta firmware, all the calibration addresses are saved
+into the firmware.
 
-Please correct me if I am wrong: "avail" means (buffer - buffer_fill),
-while "delay" means (buffer_fill + device/downstream delay/latency).
-Some drivers/devices do not track the device delay, and then delay =
-buffer_fill.
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-While troubleshooting some playback code, I hit that snd_pcm_delay on
-the plugin pulse (device pulse) was always returning 0 frames, while
-snd_pcm_avail was returning dynamic (correct) values.
+---
+v1:
+ - update the year from 2024 to 2025.
+ - release the memory to save calibration addresses in
+   tasdevice_dsp_remove().
+ - Add TASDEV_ALPHA and TASDEV_BETA firmware checking code.
+ - Add fct_param_address_parser for Alpha and Beta firmware.
+---
+ sound/soc/codecs/tas2781-comlib.c |   3 +-
+ sound/soc/codecs/tas2781-fmwlib.c | 149 ++++++++++++++++++++++++++++--
+ 2 files changed, 145 insertions(+), 7 deletions(-)
 
-IIUC while pulse_pcm.c uses generic code for avail, it overrides the
-generic snd_pcm_ioplug_delay
-https://github.com/alsa-project/alsa-lib/blob/35d2efefa95d28e0cd963a06e051f8125823f077/src/pcm/pcm_ioplug.c#L110
-with specific pulse_delay
-https://github.com/alsa-project/alsa-plugins/blob/52574cb5ccbb8b546df2759e4b341a20332269b6/pulse/pcm_pulse.c#L379
-. IIUC this method returns only delay obtained from Pulseaudio, i.e. no
-fill of the pulse plugin buffer is included. And IIUC in this specific
-case pulseaudio keeps returning zero for the pa_stream_get_latency call,
-making snd_pcm_delay return zero too. Therefore the equation (buffer
-size = avail + delay - driver/device delay) does not seem to hold for
-the pulse plugin.
+diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
+index 1e0b3aa95749..bba5abe4736f 100644
+--- a/sound/soc/codecs/tas2781-comlib.c
++++ b/sound/soc/codecs/tas2781-comlib.c
+@@ -2,7 +2,7 @@
+ //
+ // TAS2563/TAS2781 Common functions for HDA and ASoC Audio drivers
+ //
+-// Copyright 2023 - 2024 Texas Instruments, Inc.
++// Copyright 2023 - 2025 Texas Instruments, Inc.
+ //
+ // Author: Shenghao Ding <shenghao-ding@ti.com>
+ 
+@@ -429,6 +429,7 @@ void tasdevice_dsp_remove(void *context)
+ 	if (tas_fmw->configs)
+ 		tasdev_dsp_cfg_remove(tas_fmw->configs,
+ 			tas_fmw->nr_configurations);
++	kfree(tas_fmw->fct_par_addr.data);
+ 	kfree(tas_fmw);
+ 	tas_dev->fmw = NULL;
+ }
+diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
+index 61d9c220b6a4..2fae7be99454 100644
+--- a/sound/soc/codecs/tas2781-fmwlib.c
++++ b/sound/soc/codecs/tas2781-fmwlib.c
+@@ -2,7 +2,7 @@
+ //
+ // tas2781-fmwlib.c -- TASDEVICE firmware support
+ //
+-// Copyright 2023 - 2024 Texas Instruments, Inc.
++// Copyright 2023 - 2025 Texas Instruments, Inc.
+ //
+ // Author: Shenghao Ding <shenghao-ding@ti.com>
+ 
+@@ -389,10 +389,10 @@ static unsigned char map_dev_idx(struct tasdevice_fw *tas_fmw,
+ 	int i, n = ARRAY_SIZE(non_ppc3_mapping_table);
+ 	unsigned char dev_idx = 0;
+ 
+-	if (fw_fixed_hdr->ppcver >= PPC3_VERSION_TAS2781) {
++	if (fw_fixed_hdr->ppcver >= PPC3_VERSION_TAS2781_BASIC_MIN) {
+ 		p = (struct blktyp_devidx_map *)ppc3_tas2781_mapping_table;
+ 		n = ARRAY_SIZE(ppc3_tas2781_mapping_table);
+-	} else if (fw_fixed_hdr->ppcver >= PPC3_VERSION) {
++	} else if (fw_fixed_hdr->ppcver >= PPC3_VERSION_BASE) {
+ 		p = (struct blktyp_devidx_map *)ppc3_mapping_table;
+ 		n = ARRAY_SIZE(ppc3_mapping_table);
+ 	}
+@@ -559,6 +559,118 @@ static int fw_parse_configuration_data_kernel(
+ 	return offset;
+ }
+ 
++static void hex_parse_u8(unsigned char *item, const unsigned char *val,
++	int len)
++{
++	for (int i = 0; i < len; i++)
++		item[i] = val[i];
++}
++
++static void hex_parse_u24(unsigned int *item, const unsigned char *val)
++{
++	*item = TASDEVICE_REG(val[0], val[1], val[2]);
++}
++
++static void fct_param_address_parser(struct cali_reg *r,
++	struct tasdevice_fw *tas_fmw)
++{
++	struct fct_param_address *p = &(tas_fmw->fct_par_addr);
++	int i;
++
++	for (i = 0; i < 20; i++) {
++		const unsigned char *dat = &p->data[24 * i];
++
++		if (dat[23] != 1)
++			break;
++
++		if (strstr(dat, "umg_SsmKEGCye") != NULL) {
++			hex_parse_u24(&r->pow_reg, &dat[20]);
++			continue;
++		}
++		if (strstr(dat, "iks_E0") != NULL) {
++			hex_parse_u24(&r->r0_reg, &dat[20]);
++			continue;
++		}
++		if (strstr(dat, "yep_LsqM0") != NULL) {
++			hex_parse_u24(&r->invr0_reg, &dat[20]);
++			continue;
++		}
++		if (strstr(dat, "oyz_U0_ujx") != NULL) {
++			hex_parse_u24(&r->r0_low_reg, &dat[20]);
++			continue;
++		}
++		if (strstr(dat, "iks_GC_GMgq") != NULL) {
++			hex_parse_u24(&r->tlimit_reg, &dat[20]);
++			continue;
++		}
++		if (strstr(dat, "gou_Yao") != NULL) {
++			hex_parse_u8(p->thr, &dat[20], 3);
++			continue;
++		}
++		if (strstr(dat, "kgd_Wsc_Qsbp") != NULL) {
++			hex_parse_u8(p->plt_flg, &dat[20], 3);
++			continue;
++		}
++		if (strstr(dat, "yec_CqseSsqs") != NULL) {
++			hex_parse_u8(p->sin_gn, &dat[20], 3);
++			continue;
++		}
++		if (strstr(dat, "iks_SogkGgog2") != NULL) {
++			hex_parse_u8(p->sin_gn2, &dat[20], 3);
++			continue;
++		}
++		if (strstr(dat, "yec_Sae_Y") != NULL) {
++			hex_parse_u8(p->thr2, &dat[20], 3);
++			continue;
++		}
++		if (strstr(dat, "Re_Int") != NULL) {
++			hex_parse_u8(p->r0_reg, &dat[20], 3);
++			continue;
++		}
++		/* Check whether the spk connection is open */
++		if (strstr(dat, "SigFlag") != NULL) {
++			hex_parse_u8(p->tf_reg, &dat[20], 3);
++			continue;
++		}
++		if (strstr(dat, "a1_Int") != NULL) {
++			hex_parse_u8(p->a1_reg, &dat[20], 3);
++			continue;
++		}
++		if (strstr(dat, "a2_Int") != NULL) {
++			hex_parse_u8(p->a2_reg, &dat[20], 3);
++			continue;
++		}
++	}
++}
++
++static int fw_parse_fct_param_address(struct tasdevice_priv *tas_priv,
++	struct tasdevice_fw *tas_fmw, const struct firmware *fmw, int offset)
++{
++	struct fct_param_address *p = &(tas_fmw->fct_par_addr);
++	struct calidata *cali_data = &tas_priv->cali_data;
++	struct cali_reg *r = &cali_data->cali_reg_array;
++	const unsigned char *data = fmw->data;
++
++	if (offset + 520 > fmw->size) {
++		dev_err(tas_priv->dev, "%s: File Size error\n", __func__);
++		offset = -1;
++		goto out;
++	}
++
++	/* skip reserved part */
++	offset += 40;
++	p->size = 480;
++	p->data = kmemdup(&data[offset], 480, GFP_KERNEL);
++	if (!p->data) {
++		offset = -1;
++		goto out;
++	}
++	offset += 480;
++	fct_param_address_parser(r, tas_fmw);
++out:
++	return offset;
++}
++
+ static int fw_parse_variable_header_kernel(
+ 	struct tasdevice_priv *tas_priv, const struct firmware *fmw,
+ 	int offset)
+@@ -1686,13 +1798,29 @@ static int tasdevice_load_block(struct tasdevice_priv *tas_priv,
+ 	return rc;
+ }
+ 
++static void dspbin_type_check(struct tasdevice_priv *tas_priv,
++	unsigned int ppcver)
++{
++	if (ppcver >= PPC3_VERSION_TAS2781_ALPHA_MIN) {
++		if (ppcver >= PPC3_VERSION_TAS2781_BETA_MIN)
++			tas_priv->dspbin_typ = TASDEV_BETA;
++		else if (ppcver >= PPC3_VERSION_TAS2781_BASIC_MIN)
++			tas_priv->dspbin_typ = TASDEV_BASIC;
++		else
++			tas_priv->dspbin_typ = TASDEV_ALPHA;
++	}
++	if (tas_priv->dspbin_typ != TASDEV_BASIC)
++		tas_priv->fw_parse_fct_param_address =
++			fw_parse_fct_param_address;
++}
++
+ static int dspfw_default_callback(struct tasdevice_priv *tas_priv,
+ 	unsigned int drv_ver, unsigned int ppcver)
+ {
+ 	int rc = 0;
+ 
+ 	if (drv_ver == 0x100) {
+-		if (ppcver >= PPC3_VERSION) {
++		if (ppcver >= PPC3_VERSION_BASE) {
+ 			tas_priv->fw_parse_variable_header =
+ 				fw_parse_variable_header_kernel;
+ 			tas_priv->fw_parse_program_data =
+@@ -1701,6 +1829,7 @@ static int dspfw_default_callback(struct tasdevice_priv *tas_priv,
+ 				fw_parse_configuration_data_kernel;
+ 			tas_priv->tasdevice_load_block =
+ 				tasdevice_load_block_kernel;
++			dspbin_type_check(tas_priv, ppcver);
+ 		} else {
+ 			switch (ppcver) {
+ 			case 0x00:
+@@ -1716,7 +1845,7 @@ static int dspfw_default_callback(struct tasdevice_priv *tas_priv,
+ 			default:
+ 				dev_err(tas_priv->dev,
+ 					"%s: PPCVer must be 0x0 or 0x%02x",
+-					__func__, PPC3_VERSION);
++					__func__, PPC3_VERSION_BASE);
+ 				dev_err(tas_priv->dev, " Current:0x%02x\n",
+ 					ppcver);
+ 				rc = -EINVAL;
+@@ -2023,9 +2152,17 @@ static int tasdevice_dspfw_ready(const struct firmware *fmw,
+ 	}
+ 	offset = tas_priv->fw_parse_configuration_data(tas_priv,
+ 		tas_fmw, fmw, offset);
+-	if (offset < 0)
++	if (offset < 0) {
+ 		ret = offset;
++		goto out;
++	}
+ 
++	if (tas_priv->fw_parse_fct_param_address) {
++		offset = tas_priv->fw_parse_fct_param_address(tas_priv,
++			tas_fmw, fmw, offset);
++		if (offset < 0)
++			ret = offset;
++	}
+ out:
+ 	return ret;
+ }
+-- 
+2.34.1
 
-The new pipewire plugin does not seem to override the generic
-snd_pcm_ioplug_delay method
-https://github.com/PipeWire/pipewire-alsa/blob/master/alsa-plugins/pcm_pipewire.c#L691-L702
-.
-
-Please, is that behavior correct?
-
-With regards,
-
-Pavel.
