@@ -4,48 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9A1CC02182
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2025 12:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98E3DC02182
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2025 00:10:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0A1D602DD;
-	Thu, 23 Jan 2025 13:38:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0A1D602DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5E0E60280;
+	Fri, 24 Jan 2025 01:10:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E0E60280
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1737635934;
-	bh=+NZyFBX86N91jliQjAJsKSrKQC3XeYcSeA0KPqZdVKY=;
+	s=default; t=1737677452;
+	bh=YF0HSzxm87xlx201G/9YhM/qOHxQw+D4RrDPrCVXhTI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=KsGvynaUK8d3w4Qf4dS9VsdJea2rV+2+iqhvNbN+t9+h9D1PZphyOZjtdo+VB9PyU
-	 ZEuUzf/MV05wqyzRlib+/StzraqwNqckI+YF2q/dq07vqnCRehKVpfr8fTJJkGvctB
-	 JS+ktFC0QAMpetqdLR2S67dRxHFX+vMJI5pBEuuA=
+	b=he4KoT5IZzj32rvqGEZEX5Yz43oJeCbwN6mfU4jcKYbxyziK2VPRtTGQep4e7kjX7
+	 GG6o5T+sTdNB1gS2nBiYdEy1n6Zg2xWpg4QDelCmn3h4GuvExQ8HLK6U9mjKcdwDt/
+	 ylgNSyq8WGzysygSN/lZl9OSeqmIgNRRlOs6U55Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04DE3F805C0; Thu, 23 Jan 2025 13:38:18 +0100 (CET)
+	id 66366F805BA; Fri, 24 Jan 2025 01:10:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDF07F805BD;
-	Thu, 23 Jan 2025 13:38:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55F09F805C1;
+	Fri, 24 Jan 2025 01:10:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0CB4CF80217; Thu, 23 Jan 2025 13:37:47 +0100 (CET)
+	id 02E78F80185; Fri, 24 Jan 2025 01:10:00 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8618EF800FE
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2025 13:37:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8618EF800FE
+	by alsa1.perex.cz (Postfix) with ESMTP id E3CFAF800ED
+	for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2025 01:09:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3CFAF800ED
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1737635839619709730-webhooks-bot@alsa-project.org>
-References: <1737635839619709730-webhooks-bot@alsa-project.org>
-Subject: ucm2: Intel: avs: Add UCM files for HDA configuration
-Message-Id: <20250123123748.0CB4CF80217@alsa1.perex.cz>
-Date: Thu, 23 Jan 2025 13:37:47 +0100 (CET)
-Message-ID-Hash: QUVVRI7GRPUFSLQS2MHUPFB4JCWJCOAC
-X-Message-ID-Hash: QUVVRI7GRPUFSLQS2MHUPFB4JCWJCOAC
+In-Reply-To: <1737677397498765707-webhooks-bot@alsa-project.org>
+References: <1737677397498765707-webhooks-bot@alsa-project.org>
+Subject: No optical S/PDIF output on Debian 12 Gnome with ASUS ROG STRIX
+ X670E-A
+Message-Id: <20250124001001.02E78F80185@alsa1.perex.cz>
+Date: Fri, 24 Jan 2025 01:10:00 +0100 (CET)
+Message-ID-Hash: KDWHTZET577GEVXBRBHSIQ5LHHOFFZ6M
+X-Message-ID-Hash: KDWHTZET577GEVXBRBHSIQ5LHHOFFZ6M
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QUVVRI7GRPUFSLQS2MHUPFB4JCWJCOAC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KDWHTZET577GEVXBRBHSIQ5LHHOFFZ6M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,10 +68,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #499 was opened from amadeuszslawinski-intel:
+alsa-project/alsa-ucm-conf issue #500 was opened from BGnoinski:
 
-Add configs for devices using HDA codec.
+I am currently running into an issue with my Gnome desktop where audio from applications like Firefox is not working. I have run `alsa-info.sh` and the contents [have been uploaded here](http://alsa-project.org/db/?f=d18e76790182eaa8b63e03f435397660b5879b0e)
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/499
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/499.patch
+I know that debian is running an old version of the `alsa-ucm-conf` package (1.2.8) so I have updated the ucm and ucm2 confs with:
+
+```
+#!/bin/bash
+
+curl -L -o alsa-ucm-conf.tar.gz https://github.com/alsa-project/alsa-ucm-conf/archive/refs/heads/master.tar.gz
+tar xvzf alsa-ucm-conf.tar.gz -C /usr/share/alsa --strip-components=1 --wildcards "*/ucm" "*/ucm2"
+
+```
+
+I can see that my boards identifier(not sure if that's the correct terminology) exists in the ucm2 USB-Audio conf
+
+```
+grep -Hrn '0b05:1a52' /usr/share/alsa/
+/usr/share/alsa/ucm2/USB-Audio/USB-Audio.conf:58:		# 0b05:1a52 ASUS ROG Strix X670E-F & Z790-E Gaming Wifi
+```
+
+Even though the comment doesn't have my board specifically in it, looking at the uploaded package I see:
+
+```
+Bus 003 Device 003: ID 0b05:1a52 ASUSTek Computer, Inc. USB Audio
+```
+
+So my understanding is that should be fine. Even when I look at the [motherboard specs](https://rog.asus.com/us/motherboards/rog-strix/rog-strix-x670e-a-gaming-wifi-model/spec/) I see that it says it's `ROG SupremeFX 7.1 Surround Sound High Definition Audio CODEC ALC4080` so I don't know if this is different from the Realtek ALC4080 Maybe?
+
+And the odd part is if I run `aplay -D plughw:Audio,3 /usr/share/sounds/alsa/Front_Right.wav `
+
+I get the following output:
+```
+Playing WAVE '/usr/share/sounds/alsa/Front_Right.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+```
+
+And I do in fact hear audio coming from my speakers.
+
+Looking in the sound settings it appears as if I am able to select the correct output, and when audio _should_ be playing the little blue line does go up.
+
+![Image](https://github.com/user-attachments/assets/9e865f37-8153-4bdf-946d-3a428b561321)
+
+So it seems like I am just missing something obvious to tie all of the components together to get desktop applications working with the correct output.
+
+Any help would be greatly appreciated.
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/500
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
