@@ -4,61 +4,174 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABD71C02198
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Feb 2025 13:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0000C0219E
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2025 10:07:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49A296025A;
-	Sun, 16 Feb 2025 14:32:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49A296025A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0238760271;
+	Mon, 17 Feb 2025 11:06:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0238760271
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1739712780;
-	bh=rKxZsVjSYwxlXzzfFQgZH0zGv4t2iwe/RnvALYlEOJU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=qsHUC0zJSXSY5+MSbL0tAoXjn2WXGq28mk3V5x+nCyfpVTHErLK8XbPvVCUqRKPMa
-	 Zef2tohk9PccXItR05WaQSBsxdNasy3tJ/JNLU+C8qu+UvefTHkLyVoWNw8pchbUVi
-	 rYF80VubF4Pt4qyX498qSf2QwOkOZZCR4AwH4rFA=
+	s=default; t=1739786827;
+	bh=RjFj+btLOrA1I0c/0XDEPot6dd9rNyckywxmgkJzq3o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=TP8VDw5ZYG0P5MSiVqTHGj2Pkn5niJGsEze1kAm0caAuS4PTON2xPalSWRRlSz/4K
+	 YphQKIwlNBOGie0A89XxZ6Pw042/brYoFhtE+HX8AX3UKMpQhOv6N0OCro33wyxGnT
+	 +opEfdwD84y3UW3e4j6mIudazVRp70FaATs7ErHY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 401E3F805C5; Sun, 16 Feb 2025 14:32:25 +0100 (CET)
+	id BEC3EF80246; Mon, 17 Feb 2025 11:06:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10F80F805C3;
-	Sun, 16 Feb 2025 14:32:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C9F1F805C4;
+	Mon, 17 Feb 2025 11:06:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A914F801F5; Sun, 16 Feb 2025 14:32:21 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D7FCF800BD
-	for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2025 14:32:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D7FCF800BD
-Content-Type: text/plain; charset="utf-8"
+	id F3174F802DB; Mon, 27 Jan 2025 14:25:37 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 121D0F800E3
+	for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2025 14:25:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 121D0F800E3
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=ZKYB+kUr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1737984335; x=1769520335;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RjFj+btLOrA1I0c/0XDEPot6dd9rNyckywxmgkJzq3o=;
+  b=ZKYB+kUrH0p6/ErD9ZFwrU0/8Xsj0glFRvowOWqseD9gP5mnq2u+MIaF
+   gvcjPSle550L917ZznDh0v6rvdFZiIOqcFyxcMY3p93z2y/vaOF1Tj0g5
+   sMr5sii3hI+poZv58Fwtm51X/LGgmwg9FLqg4gx/3HxvGHulV0VYoDpN8
+   hGWOxUtWKBIRTlnHcj4VbNnzPvsUAaZgNFXrmSmCHCjBuEDsszn22oNDY
+   KJdMNo/FslU1tJr/CEtGiY0tv0vS/b/oOfd51BbyLjx+jqRLrtM8r7Ffk
+   iUG2tpWVH5EFKgOAhZCDlaSICs5QXYH8C2jVPtfBGwAleFs6JtuiJDi8a
+   A==;
+X-CSE-ConnectionGUID: ooegN3rGRg6Jm9QjFznMnA==
+X-CSE-MsgGUID: 1ypM+zCuTZyhao6v+RsE5g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11328"; a="42105372"
+X-IronPort-AV: E=Sophos;i="6.13,238,1732608000";
+   d="scan'208";a="42105372"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2025 05:25:22 -0800
+X-CSE-ConnectionGUID: oOw//HyuRH2sXbDiVD3/cA==
+X-CSE-MsgGUID: F7vXYkyrSx2N1gt4t3xT9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600";
+   d="scan'208";a="131730368"
+Received: from smile.fi.intel.com ([10.237.72.58])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2025 05:25:02 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1tcP6l-00000005jpm-3fIe;
+	Mon, 27 Jan 2025 15:24:55 +0200
+Date: Mon, 27 Jan 2025 15:24:55 +0200
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Damien Le Moal <dlemoal@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Corey Minyard <minyard@acm.org>, Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Tero Kristo <kristo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+	Ian Abbott <abbotti@mev.co.uk>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Len Brown <lenb@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	John Allen <john.allen@amd.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Vinod Koul <vkoul@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Moritz Fischer <mdf@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Peter Rosin <peda@axentia.se>, Lars-Peter Clausen <lars@metafoo.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Markuss Broks <markuss.broks@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Lee Jones <lee@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+	Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+	Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>, Kalle Valo <kvalo@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Vaibhav Hiremath <hvaibhav.linux@gmail.com>,
+	Alex Elder <elder@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+	Jacky Huang <ychuang3@nuvoton.com>, Helge Deller <deller@gmx.de>,
+	Christoph Hellwig <hch@lst.de>, Robin Murphy <robin.murphy@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>, linuxppc-dev@lists.ozlabs.org,
+	linux-ide@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+	linux-integrity@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-efi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-fpga@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-input@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-iio@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+	linux-leds@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-spi@vger.kernel.org, linux-amlogic@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, greybus-dev@lists.linaro.org,
+	linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	iommu@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
+	kasan-dev@googlegroups.com, linux-hardening@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 00/34] address all -Wunused-const warnings
+Message-ID: <Z5eJJ199QwL0HVJT@smile.fi.intel.com>
+References: <20240403080702.3509288-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1739712738902598858-webhooks-bot@alsa-project.org>
-References: <1739712738902598858-webhooks-bot@alsa-project.org>
-Subject: USB-Audio: Add support for RME Fireface UCX II
-Message-Id: <20250216133221.4A914F801F5@alsa1.perex.cz>
-Date: Sun, 16 Feb 2025 14:32:21 +0100 (CET)
-Message-ID-Hash: SDRRQIH6YDUBT43L6M3QZGR7TATPAH3D
-X-Message-ID-Hash: SDRRQIH6YDUBT43L6M3QZGR7TATPAH3D
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-MailFrom: andriy.shevchenko@intel.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: F3FO4R57FOYKNQI27EHI5FHNEPXI2OIX
+X-Message-ID-Hash: F3FO4R57FOYKNQI27EHI5FHNEPXI2OIX
+X-Mailman-Approved-At: Mon, 17 Feb 2025 10:06:21 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SDRRQIH6YDUBT43L6M3QZGR7TATPAH3D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F3FO4R57FOYKNQI27EHI5FHNEPXI2OIX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,57 +180,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgcHVsbCByZXF1ZXN0ICM1MDkgd2FzIGVkaXRlZCBm
-cm9tIGlsbGRlZmluZWQ6CgpUaGlzIGFkZHMgc3VwcG9ydCBmb3IgdGhlIFJNRSBGaXJlZmFjZSBV
-Q1ggSUkgaW50ZXJmYWNlLg0KDQpVc2VyIG1hbnVhbDogPGh0dHBzOi8vcm1lLWF1ZGlvLmRlL2Rv
-d25sb2Fkcy9mZmFjZV91Y3gyX2UucGRmPg0KDQojIyMgRGV2aWNlIGludGVyZmFjZQ0KDQpUaGUg
-aW50ZXJmYWNlIHByb3ZpZGVzIDIwIHBsYXliYWNrIGFuZCBjYXB0dXJlIGNoYW5uZWxzIGVhY2g6
-DQotIGNoYW5uZWxzICAwICB0byAgNyBhcmUgYW5hbG9nIGlucHV0cyBhbmQgb3V0cHV0cw0KLSBj
-aGFubmVscyAgOCBhbmQgIDkgYXJlIEFFUzMgKFMvUERJRikgdmlhIGNvYXgNCi0gY2hhbm5lbHMg
-MTAgYW5kIDExIGFyZSBBRVMzIChTL1BESUYpIHZpYSBYTFINCi0gY2hhbm5lbHMgMTIgIHRvIDE5
-IGFyZSBBREFUIE9wdGljYWwgSW50ZXJmYWNlICg4IGNoYW5uZWxzKSBvciBTL1BESUYgKG91dHB1
-dCBvbmx5LCAxMiBhbmQgMTMpIHZpYSBUT1NMSU5LDQoNClRoZSBpbnRlcmZhY2Ugc3VwcG9ydHMg
-dGhyZWUgX0NsYXNzIENvbXBsaWFudF8gcGxheWJhY2sgbW9kZXM6DQoNCi0gXzggQ2guICsgUGhv
-bmVzXzoNCiAgLSBjaGFubmVscyAwKzEgYXJlIG1pcnJvcmVkIHRvIDYrNyAoaGVhZHBob25lcyBM
-K1IpLCA4KzkgKFMvUERJRiBMK1IpIGFuZCAxMisxMyAoQURBVCAxLzIpDQogIC0gY2hhbm5lbHMg
-MiszIGFyZSBtaXJyb3JlZCB0byAxMCsxMSAoQUVTMyBMK1IpIGFuZCAxNCsxNSAoQURBVCAzLzQp
-DQogIC0gY2hhbm5lbHMgNCs1IGFyZSBtaXJyb3JlZCB0byAxNisxNyAoQURBVCA1LzYpDQogIC0g
-Y2hhbm5lbHMgNis3IGFyZSBtaXJyb3JlZCB0byAxOCsxOSAoQURBVCA3LzgpDQotIF84IENoLiBQ
-bGF5YmFja186DQogIC0gY2hhbm5lbHMgMCsxIGFyZSBtaXJyb3JlZCB0byA4KzkgKFMvUERJRiBM
-K1IpIGFuZCAxMisxMyAoQURBVCAxLzIpDQogIC0gY2hhbm5lbHMgMiszIGFyZSBtaXJyb3JlZCB0
-byAxMCsxMSAoQUVTMyBMK1IpIGFuZCAxNCsxNSAoQURBVCAzLzQpDQogIC0gY2hhbm5lbHMgNCs1
-IGFyZSBtaXJyb3JlZCB0byAxNisxNyAoQURBVCA1LzYpDQogIC0gY2hhbm5lbHMgNis3IGFyZSBt
-aXJyb3JlZCB0byAxOCsxOSAoQURBVCA3LzgpDQotIF8yMCBDaC4gUGxheWJhY2tfOiBubyBjaGFu
-bmVsIG1pcnJvcmluZw0KDQpUaGUgZGV2aWNlIGV4cG9zZXMgYWxsIDIwIGNoYW5uZWxzIGluIGFs
-bCB0aHJlZSBwbGF5YmFjayBtb2Rlcy4NCg0KTm8gbWl4ZXIgY29udHJvbHMgYXJlIGF2YWlsYWJs
-ZSB3aXRoIHRoZSBjdXJyZW50IGRyaXZlci4NCg0KIyMjIFBoeXNpY2FsIGNvbm5lY3RvciBsYXlv
-dXQNCg0KdG9wIHRvIGJvdHRvbSwgbGVmdCB0byByaWdodCwgdmlld2VkIGZyb20gZGV2aWNlIGZy
-b250DQoNCiMjIyMgRnJvbnQNCg0KLSBfMSBNSUMgLyBMSU5FXzogIFhMUiAvIFRSUyDCvCIgY29t
-Ym8sIGJhbGFuY2VkIG1vbm8gaW5wdXQsIDQ44oCvViBwaGFudG9tIHBvd2VyDQotIF8yIE1JQyAv
-IExJTkVfOiAgWExSIC8gVFJTIMK8IiBjb21ibywgYmFsYW5jZWQgbW9ubyBpbnB1dCwgNDjigK9W
-IHBoYW50b20gcG93ZXINCi0gXzMgTElORSAvIElOU1RSLl86IFRSUyDCvCIsIGJhbGFuY2VkIG1v
-bm8gaW5wdXQNCi0gXzQgTElORSAvIElOU1RSLl86IFRSUyDCvCIsIGJhbGFuY2VkIG1vbm8gaW5w
-dXQNCi0gX/CfjqfvuI5fIChoZWFkcGhvbmVzIHN5bWJvbCk6IFRSUyDCvCIsIHVuYmFsYW5jZWQg
-c3RlcmVvIG91dHB1dA0KDQojIyMjIEJhY2sNCg0KLSBfTElORSBJTlBVVFMgKEJBTEFOQ0VEKV8g
-IFtfNV8sIF82XzsgXzdfLCBfOF9dOiBUUlMgwrwiLCBiYWxhbmNlZCBtb25vIGlucHV0cw0KLSBf
-TElORSBPVVRQVVRTIChCQUxBTkNFRClfIFtfMV8sIF8yXzsgXzNfLCBfNF87IF81XywgXzZfXTog
-VFJTIMK8IiwgYmFsYW5jZWQgbW9ubyBvdXRwdXRzDQotIF9BREFUIElOXzogVE9TTElOSywgQURB
-VCBPcHRpY2FsIEludGVyZmFjZQ0KLSBfQURBVCBPVVRfOiBUT1NMSU5LLCBBREFUIE9wdGljYWwg
-SW50ZXJmYWNlIG9yICBvciBTL1BESUYNCi0gX0FFUy9FQlUgJiBTUERJRl86IDnigJBwaW4gRC1T
-dWIgd2l0aCBicmVha291dCBjYWJsZSAoMuKAr8OXIFJDQSBhbmQgMuKAr8OXIFhMUikNCiAgLSBS
-Q0EgaW46IEFFUzMgb3IgUy9QRElGIChhdXRvbWF0aWMgZGV0ZWN0aW9uKQ0KICAtIFJDQSBvdXQ6
-IGNvbmZpZ3VyYWJsZSBmb3IgQUVTMyAoX1Byb2Zlc3Npb25hbF8pIG9yIFMvUERJRiAoX0NvbnN1
-bWVyXykNCiAgLSBYTFIgaW46IEFFUzMgb3IgUy9QRElGIChhdXRvbWF0aWMgZGV0ZWN0aW9uKQ0K
-ICAtIFhMUiBvdXQ6IEFFUzMgb25seQ0KDQojIyMgQ2hhbm5lbCBjb25maWd1cmF0aW9ucw0KDQpU
-aGUgX0hpRmlfIHVzZSBjYXNlIG9ubHkgZXhwb3NlcyB0aGUgbW9zdCBjb21tb24gY2hhbm5lbCBj
-b25maWd1cmF0aW9ucyB0byBsaW1pdCBjb21iaW5hdG9yaWFsIGNvbXBsZXhpdHk6DQoNCi0gQW5h
-bG9nIGxpbmUgb3V0cHV0cyBpbiBzdGVyZW8gYXMgd2VsbCBhcyA0LjAgYW5kIDUuMSBzdXJyb3Vu
-ZCwNCi0gYW5hbG9nIG1pY3JvcGhvbmUgYW5kIGluc3RydW1lbnQgaW5wdXRzIGluIG1vbm8gb25s
-eSwNCi0gQURBVCBPcHRpY2FsIG91dHB1dHMgYW5kIGlucHV0cyBpbiBkaXJlY3QgOOKAkGNoYW5u
-ZWwgbWFwcGluZywgYW5kDQotIGFsbCBvdGhlciBvdXRwdXRzIGFuZCBpbnB1dHMgaW4gc3RlcmVv
-Lg0KDQpbYWxzYS1pbmZvLnR4dF0oaHR0cHM6Ly9naXRodWIuY29tL3VzZXItYXR0YWNobWVudHMv
-ZmlsZXMvMTg4MTQ4MTUvYWxzYS1pbmZvLnR4dCkKClJlcXVlc3QgVVJMICAgOiBodHRwczovL2dp
-dGh1Yi5jb20vYWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYvcHVsbC81MDkKUGF0Y2ggVVJMICAg
-ICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS11Y20tY29uZi9wdWxsLzUw
-OS5wYXRjaApSZXBvc2l0b3J5IFVSTDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9h
-bHNhLXVjbS1jb25mCg==
+On Wed, Apr 03, 2024 at 10:06:18AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Compilers traditionally warn for unused 'static' variables, but not
+> if they are constant. The reason here is a custom for C++ programmers
+> to define named constants as 'static const' variables in header files
+> instead of using macros or enums.
+> 
+> In W=1 builds, we get warnings only static const variables in C
+> files, but not in headers, which is a good compromise, but this still
+> produces warning output in at least 30 files. These warnings are
+> almost all harmless, but also trivial to fix, and there is no
+> good reason to warn only about the non-const variables being unused.
+> 
+> I've gone through all the files that I found using randconfig and
+> allmodconfig builds and created patches to avoid these warnings,
+> with the goal of retaining a clean build once the option is enabled
+> by default.
+> 
+> Unfortunately, there is one fairly large patch ("drivers: remove
+> incorrect of_match_ptr/ACPI_PTR annotations") that touches
+> 34 individual drivers that all need the same one-line change.
+> If necessary, I can split it up by driver or by subsystem,
+> but at least for reviewing I would keep it as one piece for
+> the moment.
+> 
+> Please merge the individual patches through subsystem trees.
+> I expect that some of these will have to go through multiple
+> revisions before they are picked up, so anything that gets
+> applied early saves me from resending.
+
+Arnd, can you refresh this one? It seems some misses still...
+I have got 3+ 0-day reports against one of the mux drivers.
+
+https://lore.kernel.org/all/?q=adg792a.c
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
