@@ -4,142 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 012E6C0219E
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2025 10:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25D9CC0219E
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2025 10:08:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9486160264;
-	Mon, 17 Feb 2025 11:08:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9486160264
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CF8B6029E;
+	Mon, 17 Feb 2025 11:08:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CF8B6029E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1739786910;
-	bh=1Ndbk2BaIajsSq6LVjOKCXHTVo6NfBh3Ifl5W7zU9q4=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=rdUDDybZzmkpmUBQ2xHZ95v+2lJqHz7rtfnEFlwbFKnPQ4/yc3qNmMTD6Vwb6LZXn
-	 588JpXGhLN3sCpQNVDHqGre31TNbbmLtz8BlKVLJtCPM/IGk0WgJKcdTuv0/zr6wox
-	 FNBndh6ZuWsXInnd92VdNl5bakgOpzhNn+CWsXJI=
+	s=default; t=1739786934;
+	bh=olXMtGIvvn9TPHslwVJS3u4q9v7cjx4B2v+mo2OSoVs=;
+	h=Date:Subject:References:To:From:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=h7k+Rd/Haf4uNU1gG5//HIFPtbjvZwGx0l2YjlxlWYYOIg2BSVkzuPPL+Dg49Gpx1
+	 qG0Mjo6ZYmxMZroxiVFyvFRPQT1dH+Ki12wNLRDaOI2VW1Oyv4K7qktfnilNKxLQ+1
+	 onkNRGc3kFx/+/ZT4q6/+hYmq0bgXcnC7oJH/WfM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1571F80605; Mon, 17 Feb 2025 11:07:36 +0100 (CET)
+	id E721DF8063B; Mon, 17 Feb 2025 11:07:39 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26F83F80623;
-	Mon, 17 Feb 2025 11:07:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52C4CF8065B;
+	Mon, 17 Feb 2025 11:07:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20A38F80525; Wed,  5 Feb 2025 00:19:50 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 57414F8049C; Sun,  2 Feb 2025 00:12:00 +0100 (CET)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com
+ [IPv6:2607:f8b0:4864:20::632])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4DD5BF801F5
-	for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2025 00:19:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DD5BF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 97ED9F8014B
+	for <alsa-devel@alsa-project.org>; Sun,  2 Feb 2025 00:11:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97ED9F8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=fXsSkeXF
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
- 514Klioc016339;
-	Tue, 4 Feb 2025 17:19:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	PODMain02222019; bh=4rk84s04nJmPDhNfVK0qQcCyoF1+d6Q1J1vzsSv4K4c=; b=
-	fXsSkeXFyA3zFwkflPotTk/AvJWBN7rwXu9+spJWWZf3DFgttkG+ZQ16iGddrTJ2
-	c9A5rzMb7mh9d6Fg3Bozyr6W4IZ46E1tIuVgmtNOjfTXKLmBCihoYq0xg77UhqrQ
-	cbL/8BZ0XOimg6VoGFExUUqYfuLjCpthTjksSa7T8+Lr4x39P2EsJlYVrZSDWe6C
-	qhKlBajk1ZgrRO4JBMx40u1aQ4dRhjWXnUQH8tXW6eUugXZL7hWvQqUjQk0+2pup
-	5/sz7ahhHNe5KvSyXrA02UCrgP2L6El8Tozj3SfdWuKg/dJolP+3a8y+RU8nhVTJ
-	7Mzx1Yk1lWKPXnnPRLAXzw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 44hgwm3spw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 04 Feb 2025 17:19:43 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 4 Feb
- 2025 23:19:41 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1544.14 via Frontend Transport; Tue, 4 Feb 2025 23:19:36 +0000
-Received: from ftrev.crystal.cirrus.com (ftrev.ad.cirrus.com [141.131.145.81])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 5020F820248;
-	Tue,  4 Feb 2025 23:19:32 +0000 (UTC)
-From: Fred Treven <ftreven@opensource.cirrus.com>
-To: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Simon
- Trimmer" <simont@opensource.cirrus.com>,
-        Charles Keepax
-	<ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        James Ogletree <jogletre@opensource.cirrus.com>,
-        Ben Bright
-	<ben.bright@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
-	<broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Jeff LaBundy
-	<jeff@labundy.com>, Heiko Stuebner <heiko@sntech.de>,
-        Karel Balej
-	<balejk@matfyz.cz>,
-        Igor Prusov <ivprusov@salutedevices.com>,
-        Jack Yu
-	<jack.yu@realtek.com>,
-        Weidong Wang <wangweidong.a@awinic.com>,
-        Binbin Zhou
-	<zhoubinbin@loongson.cn>,
-        Prasad Kumpatla <quic_pkumpatl@quicinc.com>,
-        "Paul
- Handrigan" <paulha@opensource.cirrus.com>,
-        Masahiro Yamada
-	<masahiroy@kernel.org>, Nuno Sa <nuno.sa@analog.com>,
-        Fred Treven
-	<ftreven@opensource.cirrus.com>
-CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-input@vger.kernel.org>, <linux-sound@vger.kernel.org>
-Subject: [PATCH RESEND 2/7] firmware: cs_dsp: Check for valid num_regs in
- cs_dsp_wseq_multi_write()
-Date: Tue, 4 Feb 2025 17:18:31 -0600
-Message-ID: <20250204231835.2000457-3-ftreven@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250204231835.2000457-1-ftreven@opensource.cirrus.com>
-References: <20250204231835.2000457-1-ftreven@opensource.cirrus.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=TrtiiJ/l
+Received: by mail-pl1-x632.google.com with SMTP id
+ d9443c01a7336-216728b1836so53442605ad.0
+        for <alsa-devel@alsa-project.org>;
+ Sat, 01 Feb 2025 15:11:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738451514; x=1739056314;
+ darn=alsa-project.org;
+        h=in-reply-to:from:to:references:content-language:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W9aoraTU5MC1EazB870bluwr2bm6kOCEcbME3ORLpq4=;
+        b=TrtiiJ/lXtlOV3EwlqnOxO0D6JhXbjhhKMvdVu4ZNDILyaEwX4Pz8wEn0l7kW99hdg
+         ikH8ThA4EORNnLDBmFjUXlkY4tudncdiXVbSl1lkW/FrSKegRJC876GeFhV+nFWG1LZC
+         sYFiFy5vO0N41EMGmg3n+NlNtEYVL/Myfz/ATUTGQig3tlQWnmTZU3pvA4RVpXkzyrgj
+         Z9bQcCibVv/RWmRzsOIuSviE3OLmTLPJcACYcDRL4Nibku00CLMO7lCF+4WttkBBtNc8
+         WR1ar9jsAzEdgoMqf7xXsGFaNgsimNLXqqBvVEfAeGnncjtgyVLrQp+wq8rkbt4akeOG
+         0bqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738451514; x=1739056314;
+        h=in-reply-to:from:to:references:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=W9aoraTU5MC1EazB870bluwr2bm6kOCEcbME3ORLpq4=;
+        b=hGAczoB+H4kagZnIZc7gVoK7GnmsbstiktRvc7eVtPWkW4/OpeMirWInPyAjtp9o8m
+         bYq+3tJ/9dgPrMFVDduRLrOfHEHI5w7vtILnddcyY9XQZRMOmMTPVOz2szhOxJxIRfUW
+         2v0q3uOnqwFL0uRpnsrs0HjyEgHcZafskskZmxnzScgTqz137SXJOxrqKU61DUvxJKZu
+         OhO+xqxqn3A05JDBjkGddJHK43uqZ4JNUV17gvXzTSYcJEZfaC09f/CLu+yfp5rqgTeG
+         XoSnCSk7RkkRucegN3aZFZQWLlxMrbRBYOp/2bGI+kSqyDEclUi9/0QDSP2nmL5Iv29e
+         uuuw==
+X-Gm-Message-State: AOJu0YwlqIlgM/wwd8R4A5oyk35SD5y4JK4OGRU/7GvlW96FZgEAZVzA
+	anSxB3j3hLkzIFRQ8YdDjvxJIqbXaWPTGWdDlIm7g9NHX2yRZ/w1LiQjP+Pz
+X-Gm-Gg: ASbGncuD9pNv6P1ikuTz5UPJ3jw+8OsTOyVBRGfQubahl8ZV0Mftznb7lUGvF/O08IQ
+	eG82oyas+sfH+H1+vxA+S6EZgRIpclsznWAu9bFT8eH0uvrAFw8wYwvdSileehZUepgTRFPhQau
+	gW7YOJ6hY41oaOXwZQCeAVdyzwMVknVSwasOpd37pGI3GnAv3WImwnzYj2GgIqpj54+Ar1j5HlO
+	0EoYms2x2LrsL8SwmT2+CcuiBnIFv4Iv+eoNx/pcmiLJ78VcV09KNEg6LXgp3I/LFu0+P4aeFb+
+	lpYAeiLwS2NjaQ==
+X-Google-Smtp-Source: 
+ AGHT+IHcTbViXL1GGvtwIouh+cKBdpSsTO1ljuWLAn9nwQY7JJUDRFIO91xQWR7REclQkg1q5DP35g==
+X-Received: by 2002:a05:6300:197:b0:1e5:c43f:f36d with SMTP id
+ adf61e73a8af0-1ed7a5f901emr29508036637.18.1738451513679;
+        Sat, 01 Feb 2025 15:11:53 -0800 (PST)
+Received: from [10.0.0.10] ([179.60.73.88])
+        by smtp.gmail.com with ESMTPSA id
+ 41be03b00d2f7-acebddbb0d4sm5236268a12.10.2025.02.01.15.11.52
+        for <alsa-devel@alsa-project.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 Feb 2025 15:11:53 -0800 (PST)
+Message-ID: <b77a2cd6-7b59-4eb0-a8db-22d507d3af5f@gmail.com>
+Date: Sat, 1 Feb 2025 20:11:51 -0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=EPv800ZC c=1 sm=1 tr=0 ts=67a2a08f cx=c_pps
- a=uGhh+3tQvKmCLpEUO+DX4w==:117 a=uGhh+3tQvKmCLpEUO+DX4w==:17
- a=T2h4t0Lz3GQA:10 a=w1d2syhTAAAA:8 a=pYzt1GAZzx6qoJfKPqoA:9 a=zZCYzV9kfG8A:10
- a=YXXWInSmI4Sqt1AkVdoW:22
-X-Proofpoint-ORIG-GUID: QwIhPN2wXpUWh2VjXVyow-eG4EN6tgsG
-X-Proofpoint-GUID: QwIhPN2wXpUWh2VjXVyow-eG4EN6tgsG
-X-Proofpoint-Spam-Reason: safe
-X-MailFrom: prvs=113024ff55=ftreven@opensource.cirrus.com
+User-Agent: Mozilla Thunderbird
+Subject: Possible bug with snd_seq_event_input_pending
+Content-Language: es-CL
+References: <cb5ca1c7-64a3-43df-b506-db07a2b5f790@gmail.com>
+To: alsa-devel@alsa-project.org
+From: Carlos <correocebe@gmail.com>
+In-Reply-To: <cb5ca1c7-64a3-43df-b506-db07a2b5f790@gmail.com>
+X-Forwarded-Message-Id: <cb5ca1c7-64a3-43df-b506-db07a2b5f790@gmail.com>
+X-MailFrom: correocebe@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZWDG4KGCMF2FIQNR6K65RPK3CJF6HDBQ
-X-Message-ID-Hash: ZWDG4KGCMF2FIQNR6K65RPK3CJF6HDBQ
-X-Mailman-Approved-At: Mon, 17 Feb 2025 10:07:23 +0000
+Message-ID-Hash: DIUDXZFATUMEV3JDE44J64ZCVWOP7GYP
+X-Message-ID-Hash: DIUDXZFATUMEV3JDE44J64ZCVWOP7GYP
+X-Mailman-Approved-At: Mon, 17 Feb 2025 10:07:31 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZWDG4KGCMF2FIQNR6K65RPK3CJF6HDBQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DIUDXZFATUMEV3JDE44J64ZCVWOP7GYP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -148,33 +126,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-If a value of 0 or below is passed into cs_dsp_wseq_multi_write()
-the function will never enter its for loop.
-
-Verify that num_regs passed into the function is valid
-and throw a user-visible error if not.
-
-Signed-off-by: Fred Treven <ftreven@opensource.cirrus.com>
----
- drivers/firmware/cirrus/cs_dsp.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index 56315b0b5583..aacf6960d1ea 100644
---- a/drivers/firmware/cirrus/cs_dsp.c
-+++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -3743,6 +3743,11 @@ int cs_dsp_wseq_multi_write(struct cs_dsp *dsp, struct cs_dsp_wseq *wseq,
- {
- 	int i, ret;
- 
-+	if (num_regs <= 0) {
-+		cs_dsp_err(dsp, "Invalid number of regs: %d\n", num_regs);
-+		return -EINVAL;
-+	}
-+
- 	for (i = 0; i < num_regs; i++) {
- 		ret = cs_dsp_wseq_write(dsp, wseq, reg_seq[i].reg,
- 					reg_seq[i].def, op_code, update);
--- 
-2.34.1
-
+SGksIEkgZG9uJ3Qga25vdyBpZiB0aGlzIGlzIGEgYnVnIG9yIG5vdCwgYnV0IEknbGwgcmVwb3J0
+IGl0IGluIGNhc2UgaXQgaXMuDQoNCklmIEkgY29uZmlndXJlIG15IGNsaWVudCBhcyBmb2xsb3dz
+Og0KDQpzbmRfc2VxX3NldF9jbGllbnRfbWlkaV92ZXJzaW9uKHNlcSwgU05EX1NFUV9DTElFTlRf
+TEVHQUNZX01JREkpOw0KDQpzbmRfc2VxX3NldF9jbGllbnRfdW1wX2NvbnZlcnNpb24oc2VxLCAw
+KTsvL0kgZGlzYWJsZSB1bXAgY29udmVyc2lvbg0KDQpBbmQgdGhlbiBJIHNlbmQgYSBtaWRpIGV2
+ZW50IGZyb20gYSBNSURJIDIuMCBkZXZpY2UsIHRoZSANCnNuZF9zZXFfZXZlbnRfaW5wdXRfcGVu
+ZGluZyhzZXEsIDEpIGZ1bmN0aW9uIHdpbGwgbm90IHJlc3BvbmQgdW50aWwgaXQgDQpyZWNlaXZl
+cyBhbnkgb3RoZXIgbGVnYWN5IGV2ZW50Lg0KDQpOb3cgSSBrbm93IHRoYXQgd2l0aMKgU05EX1NF
+UV9DTElFTlRfTEVHQUNZX01JREkgSSBzaG91bGRuJ3QgZGlzYWJsZSB1bXAgDQpjb252ZXJzaW9u
+LCBidXQgSSBleHBlY3RlZCBpdCB0byByZXR1cm4gMC4NCg0KVGhhbmsgeW91DQo=
