@@ -4,120 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25D9CC0219E
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2025 10:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71987C0219E
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2025 10:09:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CF8B6029E;
-	Mon, 17 Feb 2025 11:08:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CF8B6029E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E23F6029E;
+	Mon, 17 Feb 2025 11:09:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E23F6029E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1739786934;
-	bh=olXMtGIvvn9TPHslwVJS3u4q9v7cjx4B2v+mo2OSoVs=;
-	h=Date:Subject:References:To:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=h7k+Rd/Haf4uNU1gG5//HIFPtbjvZwGx0l2YjlxlWYYOIg2BSVkzuPPL+Dg49Gpx1
-	 qG0Mjo6ZYmxMZroxiVFyvFRPQT1dH+Ki12wNLRDaOI2VW1Oyv4K7qktfnilNKxLQ+1
-	 onkNRGc3kFx/+/ZT4q6/+hYmq0bgXcnC7oJH/WfM=
+	s=default; t=1739786951;
+	bh=ww5lwq80YlcASZ3YG6eNRBG2H6zs9+reQUjR4d3hVtM=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rV0B5xb0g7lq+a6966qFJmqahMR6dLCNr5SwC//ifklH6n4fZ3UgP83YRXF/qdV9d
+	 R46lQLrmkgaHxefzasBZn4fDGNzFDNAolcpxXcTQftj/4Cl1N092kd58B9y26mAcG9
+	 U4UnBFt1RFLn307xV8uJ1oOtMuN1g211unblVroM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E721DF8063B; Mon, 17 Feb 2025 11:07:39 +0100 (CET)
+	id 42825F8068C; Mon, 17 Feb 2025 11:07:45 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52C4CF8065B;
-	Mon, 17 Feb 2025 11:07:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA14FF8068A;
+	Mon, 17 Feb 2025 11:07:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57414F8049C; Sun,  2 Feb 2025 00:12:00 +0100 (CET)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com
- [IPv6:2607:f8b0:4864:20::632])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D2B8DF80525; Wed,  5 Feb 2025 00:19:58 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 97ED9F8014B
-	for <alsa-devel@alsa-project.org>; Sun,  2 Feb 2025 00:11:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97ED9F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 83325F801F5
+	for <alsa-devel@alsa-project.org>; Wed,  5 Feb 2025 00:19:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83325F801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=TrtiiJ/l
-Received: by mail-pl1-x632.google.com with SMTP id
- d9443c01a7336-216728b1836so53442605ad.0
-        for <alsa-devel@alsa-project.org>;
- Sat, 01 Feb 2025 15:11:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738451514; x=1739056314;
- darn=alsa-project.org;
-        h=in-reply-to:from:to:references:content-language:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W9aoraTU5MC1EazB870bluwr2bm6kOCEcbME3ORLpq4=;
-        b=TrtiiJ/lXtlOV3EwlqnOxO0D6JhXbjhhKMvdVu4ZNDILyaEwX4Pz8wEn0l7kW99hdg
-         ikH8ThA4EORNnLDBmFjUXlkY4tudncdiXVbSl1lkW/FrSKegRJC876GeFhV+nFWG1LZC
-         sYFiFy5vO0N41EMGmg3n+NlNtEYVL/Myfz/ATUTGQig3tlQWnmTZU3pvA4RVpXkzyrgj
-         Z9bQcCibVv/RWmRzsOIuSviE3OLmTLPJcACYcDRL4Nibku00CLMO7lCF+4WttkBBtNc8
-         WR1ar9jsAzEdgoMqf7xXsGFaNgsimNLXqqBvVEfAeGnncjtgyVLrQp+wq8rkbt4akeOG
-         0bqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738451514; x=1739056314;
-        h=in-reply-to:from:to:references:content-language:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W9aoraTU5MC1EazB870bluwr2bm6kOCEcbME3ORLpq4=;
-        b=hGAczoB+H4kagZnIZc7gVoK7GnmsbstiktRvc7eVtPWkW4/OpeMirWInPyAjtp9o8m
-         bYq+3tJ/9dgPrMFVDduRLrOfHEHI5w7vtILnddcyY9XQZRMOmMTPVOz2szhOxJxIRfUW
-         2v0q3uOnqwFL0uRpnsrs0HjyEgHcZafskskZmxnzScgTqz137SXJOxrqKU61DUvxJKZu
-         OhO+xqxqn3A05JDBjkGddJHK43uqZ4JNUV17gvXzTSYcJEZfaC09f/CLu+yfp5rqgTeG
-         XoSnCSk7RkkRucegN3aZFZQWLlxMrbRBYOp/2bGI+kSqyDEclUi9/0QDSP2nmL5Iv29e
-         uuuw==
-X-Gm-Message-State: AOJu0YwlqIlgM/wwd8R4A5oyk35SD5y4JK4OGRU/7GvlW96FZgEAZVzA
-	anSxB3j3hLkzIFRQ8YdDjvxJIqbXaWPTGWdDlIm7g9NHX2yRZ/w1LiQjP+Pz
-X-Gm-Gg: ASbGncuD9pNv6P1ikuTz5UPJ3jw+8OsTOyVBRGfQubahl8ZV0Mftznb7lUGvF/O08IQ
-	eG82oyas+sfH+H1+vxA+S6EZgRIpclsznWAu9bFT8eH0uvrAFw8wYwvdSileehZUepgTRFPhQau
-	gW7YOJ6hY41oaOXwZQCeAVdyzwMVknVSwasOpd37pGI3GnAv3WImwnzYj2GgIqpj54+Ar1j5HlO
-	0EoYms2x2LrsL8SwmT2+CcuiBnIFv4Iv+eoNx/pcmiLJ78VcV09KNEg6LXgp3I/LFu0+P4aeFb+
-	lpYAeiLwS2NjaQ==
-X-Google-Smtp-Source: 
- AGHT+IHcTbViXL1GGvtwIouh+cKBdpSsTO1ljuWLAn9nwQY7JJUDRFIO91xQWR7REclQkg1q5DP35g==
-X-Received: by 2002:a05:6300:197:b0:1e5:c43f:f36d with SMTP id
- adf61e73a8af0-1ed7a5f901emr29508036637.18.1738451513679;
-        Sat, 01 Feb 2025 15:11:53 -0800 (PST)
-Received: from [10.0.0.10] ([179.60.73.88])
-        by smtp.gmail.com with ESMTPSA id
- 41be03b00d2f7-acebddbb0d4sm5236268a12.10.2025.02.01.15.11.52
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 01 Feb 2025 15:11:53 -0800 (PST)
-Message-ID: <b77a2cd6-7b59-4eb0-a8db-22d507d3af5f@gmail.com>
-Date: Sat, 1 Feb 2025 20:11:51 -0300
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=U/Lbx5t5
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 514FmAYt022131;
+	Tue, 4 Feb 2025 17:19:53 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	PODMain02222019; bh=yTyJHpwhqETQXxe7Ynl0sgZnYO0w/sB7CjGflqNdOyw=; b=
+	U/Lbx5t5Tx/HlP7OXVyXJcfxtft5pkyuAMybAwYClkug1tXsvQgIU+//F9yNGxuq
+	hnsWvbLXwt1DYW2LfhkMCTH6vBBuqUAP9/XFHQQPDcpFcWFx3mY9xMBEL6LN2Nso
+	2/SCqQOmfsfWr+DAyFuWSgaICXS5x/ZkHbOMpS8HP8twNEPwBx1fqyfk2iyteOYF
+	cuNhrKIJ1JEUQKHVIb6cxrpa5jZ4wa9FJllsCCo58fX3NCAKF50E/xRxVH3VEBxv
+	uYcbDCSYblqo8NgKCiHEmxC85T8Df0CVMYew4JHZOy2SaXamj5U3NRLOG4k4tUKk
+	4a+n9K+JlfR5yibN0LT8yQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 44hgwm3sq1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 04 Feb 2025 17:19:52 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 4 Feb
+ 2025 23:19:51 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.14 via Frontend Transport; Tue, 4 Feb 2025 23:19:46 +0000
+Received: from ftrev.crystal.cirrus.com (ftrev.ad.cirrus.com [141.131.145.81])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id BA64D820270;
+	Tue,  4 Feb 2025 23:19:41 +0000 (UTC)
+From: Fred Treven <ftreven@opensource.cirrus.com>
+To: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Simon
+ Trimmer" <simont@opensource.cirrus.com>,
+        Charles Keepax
+	<ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        James Ogletree <jogletre@opensource.cirrus.com>,
+        Ben Bright
+	<ben.bright@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+	<broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+	<tiwai@suse.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Jeff LaBundy
+	<jeff@labundy.com>, Heiko Stuebner <heiko@sntech.de>,
+        Karel Balej
+	<balejk@matfyz.cz>,
+        Igor Prusov <ivprusov@salutedevices.com>,
+        Jack Yu
+	<jack.yu@realtek.com>,
+        Weidong Wang <wangweidong.a@awinic.com>,
+        Binbin Zhou
+	<zhoubinbin@loongson.cn>,
+        Prasad Kumpatla <quic_pkumpatl@quicinc.com>,
+        "Paul
+ Handrigan" <paulha@opensource.cirrus.com>,
+        Masahiro Yamada
+	<masahiroy@kernel.org>, Nuno Sa <nuno.sa@analog.com>,
+        Fred Treven
+	<ftreven@opensource.cirrus.com>
+CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-input@vger.kernel.org>, <linux-sound@vger.kernel.org>
+Subject: [PATCH RESEND 3/7] firmware: cs_dsp: Add ability to load multiple
+ coefficient files
+Date: Tue, 4 Feb 2025 17:18:32 -0600
+Message-ID: <20250204231835.2000457-4-ftreven@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250204231835.2000457-1-ftreven@opensource.cirrus.com>
+References: <20250204231835.2000457-1-ftreven@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Possible bug with snd_seq_event_input_pending
-Content-Language: es-CL
-References: <cb5ca1c7-64a3-43df-b506-db07a2b5f790@gmail.com>
-To: alsa-devel@alsa-project.org
-From: Carlos <correocebe@gmail.com>
-In-Reply-To: <cb5ca1c7-64a3-43df-b506-db07a2b5f790@gmail.com>
-X-Forwarded-Message-Id: <cb5ca1c7-64a3-43df-b506-db07a2b5f790@gmail.com>
-X-MailFrom: correocebe@gmail.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Authority-Analysis: v=2.4 cv=EPv800ZC c=1 sm=1 tr=0 ts=67a2a098 cx=c_pps
+ a=uGhh+3tQvKmCLpEUO+DX4w==:117 a=uGhh+3tQvKmCLpEUO+DX4w==:17
+ a=T2h4t0Lz3GQA:10 a=w1d2syhTAAAA:8 a=MbgxawBnhQrWfd7Trs8A:9
+ a=YXXWInSmI4Sqt1AkVdoW:22
+X-Proofpoint-ORIG-GUID: 9_dhfxmiASLxP9Y926m-CR9JRVBGU0yo
+X-Proofpoint-GUID: 9_dhfxmiASLxP9Y926m-CR9JRVBGU0yo
+X-Proofpoint-Spam-Reason: safe
+X-MailFrom: prvs=113024ff55=ftreven@opensource.cirrus.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DIUDXZFATUMEV3JDE44J64ZCVWOP7GYP
-X-Message-ID-Hash: DIUDXZFATUMEV3JDE44J64ZCVWOP7GYP
-X-Mailman-Approved-At: Mon, 17 Feb 2025 10:07:31 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: JCYTFOVM37EBJW5RZZ5TDNTEJ6VJEEB4
+X-Message-ID-Hash: JCYTFOVM37EBJW5RZZ5TDNTEJ6VJEEB4
+X-Mailman-Approved-At: Mon, 17 Feb 2025 10:07:39 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DIUDXZFATUMEV3JDE44J64ZCVWOP7GYP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JCYTFOVM37EBJW5RZZ5TDNTEJ6VJEEB4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,13 +148,151 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGksIEkgZG9uJ3Qga25vdyBpZiB0aGlzIGlzIGEgYnVnIG9yIG5vdCwgYnV0IEknbGwgcmVwb3J0
-IGl0IGluIGNhc2UgaXQgaXMuDQoNCklmIEkgY29uZmlndXJlIG15IGNsaWVudCBhcyBmb2xsb3dz
-Og0KDQpzbmRfc2VxX3NldF9jbGllbnRfbWlkaV92ZXJzaW9uKHNlcSwgU05EX1NFUV9DTElFTlRf
-TEVHQUNZX01JREkpOw0KDQpzbmRfc2VxX3NldF9jbGllbnRfdW1wX2NvbnZlcnNpb24oc2VxLCAw
-KTsvL0kgZGlzYWJsZSB1bXAgY29udmVyc2lvbg0KDQpBbmQgdGhlbiBJIHNlbmQgYSBtaWRpIGV2
-ZW50IGZyb20gYSBNSURJIDIuMCBkZXZpY2UsIHRoZSANCnNuZF9zZXFfZXZlbnRfaW5wdXRfcGVu
-ZGluZyhzZXEsIDEpIGZ1bmN0aW9uIHdpbGwgbm90IHJlc3BvbmQgdW50aWwgaXQgDQpyZWNlaXZl
-cyBhbnkgb3RoZXIgbGVnYWN5IGV2ZW50Lg0KDQpOb3cgSSBrbm93IHRoYXQgd2l0aMKgU05EX1NF
-UV9DTElFTlRfTEVHQUNZX01JREkgSSBzaG91bGRuJ3QgZGlzYWJsZSB1bXAgDQpjb252ZXJzaW9u
-LCBidXQgSSBleHBlY3RlZCBpdCB0byByZXR1cm4gMC4NCg0KVGhhbmsgeW91DQo=
+Add cs_dsp_power_up_multiple() which accepts an array of
+cs_dsp_coeff_desc firmware-filename pairs to load.
+
+This enables the user to load more than one tuning file
+along with the associated firmware.
+
+Change cs_dsp_power_up() to make use of the new function
+with a single coefficient file.
+
+Signed-off-by: Fred Treven <ftreven@opensource.cirrus.com>
+---
+ drivers/firmware/cirrus/cs_dsp.c       | 61 ++++++++++++++++++++------
+ include/linux/firmware/cirrus/cs_dsp.h | 14 ++++++
+ 2 files changed, 62 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index aacf6960d1ea..68563186637e 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -2695,28 +2695,29 @@ static void cs_dsp_halo_stop_watchdog(struct cs_dsp *dsp)
+ }
+ 
+ /**
+- * cs_dsp_power_up() - Downloads firmware to the DSP
+- * @dsp: pointer to DSP structure
++ * cs_dsp_power_up_multiple() - Downloads firmware and multiple coefficient files to the DSP
++ * @dsp: pointer to the DSP structure
+  * @wmfw_firmware: the firmware to be sent
+  * @wmfw_filename: file name of firmware to be sent
+- * @coeff_firmware: the coefficient data to be sent
+- * @coeff_filename: file name of coefficient to data be sent
++ * @coeffs: coefficient data and filename pairs to be sent
++ * @num_coeffs: number of coefficient files to be sent
+  * @fw_name: the user-friendly firmware name
+  *
+  * This function is used on ADSP2 and Halo DSP cores, it powers-up the DSP core
+  * and downloads the firmware but does not start the firmware running. The
+  * cs_dsp booted flag will be set once completed and if the core has a low-power
+  * memory retention mode it will be put into this state after the firmware is
+- * downloaded.
++ * downloaded. Differs from cs_dsp_power_up() in that it allows for multiple
++ * coefficient files to be downloaded.
+  *
+  * Return: Zero for success, a negative number on error.
+  */
+-int cs_dsp_power_up(struct cs_dsp *dsp,
+-		    const struct firmware *wmfw_firmware, const char *wmfw_filename,
+-		    const struct firmware *coeff_firmware, const char *coeff_filename,
+-		    const char *fw_name)
++int cs_dsp_power_up_multiple(struct cs_dsp *dsp,
++			     const struct firmware *wmfw_firmware, const char *wmfw_filename,
++			     struct cs_dsp_coeff_desc *coeffs, int num_coeffs,
++			     const char *fw_name)
+ {
+-	int ret;
++	int i, ret;
+ 
+ 	mutex_lock(&dsp->pwr_lock);
+ 
+@@ -2742,9 +2743,12 @@ int cs_dsp_power_up(struct cs_dsp *dsp,
+ 	if (ret != 0)
+ 		goto err_ena;
+ 
+-	ret = cs_dsp_load_coeff(dsp, coeff_firmware, coeff_filename);
+-	if (ret != 0)
+-		goto err_ena;
++	for (i = 0; i < num_coeffs; i++) {
++		ret = cs_dsp_load_coeff(dsp, coeffs[i].coeff_firmware,
++					coeffs[i].coeff_filename);
++		if (ret != 0)
++			goto err_ena;
++	}
+ 
+ 	/* Initialize caches for enabled and unset controls */
+ 	ret = cs_dsp_coeff_init_control_caches(dsp);
+@@ -2770,6 +2774,37 @@ int cs_dsp_power_up(struct cs_dsp *dsp,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_NS_GPL(cs_dsp_power_up_multiple, "FW_CS_DSP");
++
++/**
++ * cs_dsp_power_up() - Downloads firmware to the DSP
++ * @dsp: pointer to DSP structure
++ * @wmfw_firmware: the firmware to be sent
++ * @wmfw_filename: file name of firmware to be sent
++ * @coeff_firmware: the coefficient data to be sent
++ * @coeff_filename: file name of coefficient to data be sent
++ * @fw_name: the user-friendly firmware name
++ *
++ * This function is used on ADSP2 and Halo DSP cores, it powers-up the DSP core
++ * and downloads the firmware but does not start the firmware running. The
++ * cs_dsp booted flag will be set once completed and if the core has a low-power
++ * memory retention mode it will be put into this state after the firmware is
++ * downloaded.
++ *
++ * Return: Zero for success, a negative number on error.
++ */
++int cs_dsp_power_up(struct cs_dsp *dsp,
++		    const struct firmware *wmfw_firmware, const char *wmfw_filename,
++		    const struct firmware *coeff_firmware, const char *coeff_filename,
++		    const char *fw_name)
++{
++	struct cs_dsp_coeff_desc coeff_desc;
++
++	coeff_desc.coeff_firmware = coeff_firmware;
++	coeff_desc.coeff_filename = coeff_filename;
++
++	return cs_dsp_power_up_multiple(dsp, wmfw_firmware, wmfw_filename, &coeff_desc, 1, fw_name);
++}
+ EXPORT_SYMBOL_NS_GPL(cs_dsp_power_up, "FW_CS_DSP");
+ 
+ /**
+diff --git a/include/linux/firmware/cirrus/cs_dsp.h b/include/linux/firmware/cirrus/cs_dsp.h
+index 7cae703b3137..4c4e746be6fa 100644
+--- a/include/linux/firmware/cirrus/cs_dsp.h
++++ b/include/linux/firmware/cirrus/cs_dsp.h
+@@ -52,6 +52,16 @@
+ #define CS_DSP_WSEQ_UNLOCK	0xFD
+ #define CS_DSP_WSEQ_END		0xFF
+ 
++/**
++ * struct cs_dsp_coeff_desc - Describes a coeff. file + filename pair
++ * @coeff_firmware:	Firmware struct to populate with coeff. data
++ * @coeff_filename:	File from which coeff. data is loaded
++ */
++struct cs_dsp_coeff_desc {
++	const struct firmware *coeff_firmware;
++	const char *coeff_filename;
++};
++
+ /**
+  * struct cs_dsp_region - Describes a logical memory region in DSP address space
+  * @type:	Memory region type
+@@ -227,6 +237,10 @@ int cs_dsp_adsp1_power_up(struct cs_dsp *dsp,
+ 			  const struct firmware *coeff_firmware, const char *coeff_filename,
+ 			  const char *fw_name);
+ void cs_dsp_adsp1_power_down(struct cs_dsp *dsp);
++int cs_dsp_power_up_multiple(struct cs_dsp *dsp,
++			     const struct firmware *wmfw_firmware, const char *wmfw_filename,
++			     struct cs_dsp_coeff_desc *coeffs, int num_coeffs,
++			     const char *fw_name);
+ int cs_dsp_power_up(struct cs_dsp *dsp,
+ 		    const struct firmware *wmfw_firmware, const char *wmfw_filename,
+ 		    const struct firmware *coeff_firmware, const char *coeff_filename,
+-- 
+2.34.1
+
