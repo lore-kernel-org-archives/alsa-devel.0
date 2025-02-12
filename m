@@ -4,86 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66AA9C021A0
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2025 14:57:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3139C02198
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Feb 2025 15:11:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F1456027A;
-	Wed, 12 Feb 2025 15:57:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F1456027A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1926C60289;
+	Wed, 12 Feb 2025 16:11:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1926C60289
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1739372271;
-	bh=zS/RfxoGfkQjga/2O34szcQXj5On074OjmX6t1ofdbw=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1739373113;
+	bh=99arZH731iDZzfa8ZZPAfBQWn0acSMZBM8u1cuqUXuo=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AdzrFlJcYGfxgp4ePOs8rquX3PT8+309NZVuzy/XP9BsQ53qfSPBkDHWVhhoHVFRp
-	 3hv82vrxFEsLu1Xv4PBLytA1Bc/D5uwvG2CwJ+ifJGbUw6YJvZUr7xLOpOt1gZ69Pd
-	 99fG4ttGvsgshB0bSMlP0gWo/qLme308YSb/6sOo=
+	b=Nn8IDBQ0oj159d/MEmftIJL0PKxX8DRsqd9GjHtWMHiVzz3y+VDhfcAu7htfS+4Bt
+	 NhAEBDWjX1JS1rmpA9lfH1mUOJlTtdkLwaauy84s0di8vH5pUOtACzl/86Ltgwx2ge
+	 laMN6eSlrH0Dl2v/k1/FDlAII3nvr9DzqvoTVYec=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA8EAF805AD; Wed, 12 Feb 2025 15:57:32 +0100 (CET)
+	id 8515DF805C3; Wed, 12 Feb 2025 16:11:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F06CDF805B3;
-	Wed, 12 Feb 2025 15:57:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7F18F805C2;
+	Wed, 12 Feb 2025 16:11:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 569E3F8051F; Wed, 12 Feb 2025 15:56:29 +0100 (CET)
-Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
+	id 32B2CF8049C; Wed, 12 Feb 2025 16:11:07 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 802A5F800E4
-	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2025 15:56:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 802A5F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9546EF800E4
+	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2025 16:11:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9546EF800E4
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=pC9GlJO5
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 51CEuD6x545976
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 12 Feb 2025 08:56:13 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1739372173;
-	bh=zC/n4lPGt9c4o50+MpQCqKqEPkOebZ1HI1fg/jWmihk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=pC9GlJO56NoFjvDBm5I8IFR0rItqQfyQDrpKrNvyJOQZ/9DFlrIxs43AorYdPMC7+
-	 iGmzrMNvoT58zDqFJnfEeLbc/YU6G9+KFXZydGKfu2ElY65SJZwt1VemU96VJQ++80
-	 mwhT0DqmsxtRqO3QnofyQTMDtvqOsOQ3OT2seHhY=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 51CEuDv0056763
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 12 Feb 2025 08:56:13 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 12
- Feb 2025 08:56:12 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 12 Feb 2025 08:56:12 -0600
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.127])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 51CEu5DI069046;
-	Wed, 12 Feb 2025 08:56:09 -0600
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>
-CC: <andriy.shevchenko@linux.intel.com>, <13916275206@139.com>,
-        <13564923607@139.com>, <alsa-devel@alsa-project.org>, <tiwai@suse.de>,
-        <baojun.xu@ti.com>, Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v1 2/3] ASoC: tas2781: Support dsp firmware Alpha and Beta
- seaies
-Date: Wed, 12 Feb 2025 22:55:59 +0800
-Message-ID: <20250212145601.1279-2-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <20250212145601.1279-1-shenghao-ding@ti.com>
-References: <20250212145601.1279-1-shenghao-ding@ti.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=imuTfGHs
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 51C6u2Y2016943;
+	Wed, 12 Feb 2025 09:10:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	PODMain02222019; bh=gaOUuX7MQMuia9McaDE2MM2EVmIcLDAQ3K7abX1j5EI=; b=
+	imuTfGHsfbgtQ94PMHcxX8dKsZW+Oc0j6LC0gyMYNSvSxqzXnaTaNlWMlRasdXb8
+	Nvpn0HrIn7DtIobeHILQes4oMoaNlG73Y8wm7zusuXTIV6LoUIk3ST5faNQWzKj7
+	2XJD6A9hHaGH09OdY5nTy3QSOpzWbQYodSyX3CAwKuhjM2+KS9YZc3YNNmmV8m25
+	D9i01azVLWhpnnkJTPvSjBepXblKH+VJ8YY/c8ZMwcYO3NAnwIbcl3MiiiWby1mp
+	TT9kYkZsv9tR2sHEUE1gVttwJMs81xJPVCfBthzNAaJGreCY6mhx/w0flyThJr4r
+	+d2ehwWTAzHOVJUxjx+Tfw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 44rpsv8nss-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 12 Feb 2025 09:10:58 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 12 Feb
+ 2025 15:10:56 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.14 via Frontend Transport; Wed, 12 Feb 2025 15:10:51 +0000
+Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 1F10582025A;
+	Wed, 12 Feb 2025 15:10:51 +0000 (UTC)
+Message-ID: <c92f8f5b-e6f4-41bb-86c1-dc45b80cd49b@opensource.cirrus.com>
+Date: Wed, 12 Feb 2025 15:10:51 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND 5/7] mfd: cs40l26: Add support for CS40L26 core
+ driver
+To: Fred Treven <ftreven@opensource.cirrus.com>,
+        Krzysztof Kozlowski
+	<krzk@kernel.org>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Charles Keepax
+	<ckeepax@opensource.cirrus.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        James Ogletree <jogletre@opensource.cirrus.com>,
+        Ben Bright
+	<ben.bright@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+	<broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+	<tiwai@suse.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Jeff LaBundy
+	<jeff@labundy.com>, Heiko Stuebner <heiko@sntech.de>,
+        Karel Balej
+	<balejk@matfyz.cz>,
+        Igor Prusov <ivprusov@salutedevices.com>,
+        Jack Yu
+	<jack.yu@realtek.com>,
+        Weidong Wang <wangweidong.a@awinic.com>,
+        Binbin Zhou
+	<zhoubinbin@loongson.cn>,
+        Prasad Kumpatla <quic_pkumpatl@quicinc.com>,
+        "Paul
+ Handrigan" <paulha@opensource.cirrus.com>,
+        Masahiro Yamada
+	<masahiroy@kernel.org>, Nuno Sa <nuno.sa@analog.com>
+CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-input@vger.kernel.org>, <linux-sound@vger.kernel.org>
+References: <20250204231835.2000457-1-ftreven@opensource.cirrus.com>
+ <20250204231835.2000457-6-ftreven@opensource.cirrus.com>
+ <4e5f0194-22bc-4e17-85f4-6dbc145a936b@kernel.org>
+ <3bff0ff8-7397-414d-a701-011d5b5a41f4@opensource.cirrus.com>
+Content-Language: en-GB
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <3bff0ff8-7397-414d-a701-011d5b5a41f4@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Message-ID-Hash: OKY42TCR7CIDUL3VUOMKVYRKBBIKB5AP
-X-Message-ID-Hash: OKY42TCR7CIDUL3VUOMKVYRKBBIKB5AP
-X-MailFrom: shenghao-ding@ti.com
+X-Authority-Analysis: v=2.4 cv=O73DvA9W c=1 sm=1 tr=0 ts=67acba02 cx=c_pps
+ a=uGhh+3tQvKmCLpEUO+DX4w==:117 a=uGhh+3tQvKmCLpEUO+DX4w==:17
+ a=IkcTkHD0fZMA:10 a=T2h4t0Lz3GQA:10 a=_SCIqTSYrM5XDuVbtgUA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: dGfg_TWu3AP67jc1rHjLAyjt-XIXdm3d
+X-Proofpoint-GUID: dGfg_TWu3AP67jc1rHjLAyjt-XIXdm3d
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: WTT4JZX5TPJYE2N4DDWHXFOKQEI7DNZN
+X-Message-ID-Hash: WTT4JZX5TPJYE2N4DDWHXFOKQEI7DNZN
+X-MailFrom: prvs=11387f7191=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKY42TCR7CIDUL3VUOMKVYRKBBIKB5AP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WTT4JZX5TPJYE2N4DDWHXFOKQEI7DNZN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,258 +149,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-For calibration, basic version does not contain any calibration addresses,
-it depends on calibration tool to convey the addresses to the driver.
-Since Alpha and Beta firmware, all the calibration addresses are saved
-into the firmware.
+On 11/02/2025 9:16 pm, Fred Treven wrote:
+> On 2/5/25 04:34, Krzysztof Kozlowski wrote:
+>> On 05/02/2025 00:18, Fred Treven wrote:
+>>> Introduce support for Cirrus Logic Device CS40L26:
+>>> A boosted haptic driver with integrated DSP and
+>>> waveform memory with advanced closed loop algorithms
+>>> and LRA protection.
+>>>
 
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+<SNIP>
 
----
-v1:
- - update the year from 2024 to 2025.
- - release the memory to save calibration addresses in
-   tasdevice_dsp_remove().
- - Add TASDEV_ALPHA and TASDEV_BETA firmware checking code.
- - Add fct_param_address_parser for Alpha and Beta firmware.
----
- sound/soc/codecs/tas2781-comlib.c |   3 +-
- sound/soc/codecs/tas2781-fmwlib.c | 149 ++++++++++++++++++++++++++++--
- 2 files changed, 145 insertions(+), 7 deletions(-)
+>>> +static const struct spi_device_id cs40l26_id_spi[] = {
+>>> +    { "cs40l26a", 0 },
+>>> +    { "cs40l27b", 1 },
+>>
+>> What are these 0 and 1?
+> 
+> I will make it clear that these are enumerating the different possible
+> device variants.
+> 
+> 
+>>
+>>> +    {}
+>>> +};
+>>> +MODULE_DEVICE_TABLE(spi, cs40l26_id_spi);
+>>> +
+>>> +static const struct of_device_id cs40l26_of_match[] = {
+>>> +    { .compatible = "cirrus,cs40l26a" },
+>>> +    { .compatible = "cirrus,cs40l27b" },
+>>
+>> So devices are compatible? Or rather this is unsynced with other ID 
+>> table.
+> I'm not sure what you mean by this.
+> 
 
-diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
-index 1e0b3aa95749..bba5abe4736f 100644
---- a/sound/soc/codecs/tas2781-comlib.c
-+++ b/sound/soc/codecs/tas2781-comlib.c
-@@ -2,7 +2,7 @@
- //
- // TAS2563/TAS2781 Common functions for HDA and ASoC Audio drivers
- //
--// Copyright 2023 - 2024 Texas Instruments, Inc.
-+// Copyright 2023 - 2025 Texas Instruments, Inc.
- //
- // Author: Shenghao Ding <shenghao-ding@ti.com>
- 
-@@ -429,6 +429,7 @@ void tasdevice_dsp_remove(void *context)
- 	if (tas_fmw->configs)
- 		tasdev_dsp_cfg_remove(tas_fmw->configs,
- 			tas_fmw->nr_configurations);
-+	kfree(tas_fmw->fct_par_addr.data);
- 	kfree(tas_fmw);
- 	tas_dev->fmw = NULL;
- }
-diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
-index 61d9c220b6a4..2fae7be99454 100644
---- a/sound/soc/codecs/tas2781-fmwlib.c
-+++ b/sound/soc/codecs/tas2781-fmwlib.c
-@@ -2,7 +2,7 @@
- //
- // tas2781-fmwlib.c -- TASDEVICE firmware support
- //
--// Copyright 2023 - 2024 Texas Instruments, Inc.
-+// Copyright 2023 - 2025 Texas Instruments, Inc.
- //
- // Author: Shenghao Ding <shenghao-ding@ti.com>
- 
-@@ -389,10 +389,10 @@ static unsigned char map_dev_idx(struct tasdevice_fw *tas_fmw,
- 	int i, n = ARRAY_SIZE(non_ppc3_mapping_table);
- 	unsigned char dev_idx = 0;
- 
--	if (fw_fixed_hdr->ppcver >= PPC3_VERSION_TAS2781) {
-+	if (fw_fixed_hdr->ppcver >= PPC3_VERSION_TAS2781_BASIC_MIN) {
- 		p = (struct blktyp_devidx_map *)ppc3_tas2781_mapping_table;
- 		n = ARRAY_SIZE(ppc3_tas2781_mapping_table);
--	} else if (fw_fixed_hdr->ppcver >= PPC3_VERSION) {
-+	} else if (fw_fixed_hdr->ppcver >= PPC3_VERSION_BASE) {
- 		p = (struct blktyp_devidx_map *)ppc3_mapping_table;
- 		n = ARRAY_SIZE(ppc3_mapping_table);
- 	}
-@@ -559,6 +559,118 @@ static int fw_parse_configuration_data_kernel(
- 	return offset;
- }
- 
-+static void hex_parse_u8(unsigned char *item, const unsigned char *val,
-+	int len)
-+{
-+	for (int i = 0; i < len; i++)
-+		item[i] = val[i];
-+}
-+
-+static void hex_parse_u24(unsigned int *item, const unsigned char *val)
-+{
-+	*item = TASDEVICE_REG(val[0], val[1], val[2]);
-+}
-+
-+static void fct_param_address_parser(struct cali_reg *r,
-+	struct tasdevice_fw *tas_fmw)
-+{
-+	struct fct_param_address *p = &(tas_fmw->fct_par_addr);
-+	int i;
-+
-+	for (i = 0; i < 20; i++) {
-+		const unsigned char *dat = &p->data[24 * i];
-+
-+		if (dat[23] != 1)
-+			break;
-+
-+		if (strstr(dat, "umg_SsmKEGCye") != NULL) {
-+			hex_parse_u24(&r->pow_reg, &dat[20]);
-+			continue;
-+		}
-+		if (strstr(dat, "iks_E0") != NULL) {
-+			hex_parse_u24(&r->r0_reg, &dat[20]);
-+			continue;
-+		}
-+		if (strstr(dat, "yep_LsqM0") != NULL) {
-+			hex_parse_u24(&r->invr0_reg, &dat[20]);
-+			continue;
-+		}
-+		if (strstr(dat, "oyz_U0_ujx") != NULL) {
-+			hex_parse_u24(&r->r0_low_reg, &dat[20]);
-+			continue;
-+		}
-+		if (strstr(dat, "iks_GC_GMgq") != NULL) {
-+			hex_parse_u24(&r->tlimit_reg, &dat[20]);
-+			continue;
-+		}
-+		if (strstr(dat, "gou_Yao") != NULL) {
-+			hex_parse_u8(p->thr, &dat[20], 3);
-+			continue;
-+		}
-+		if (strstr(dat, "kgd_Wsc_Qsbp") != NULL) {
-+			hex_parse_u8(p->plt_flg, &dat[20], 3);
-+			continue;
-+		}
-+		if (strstr(dat, "yec_CqseSsqs") != NULL) {
-+			hex_parse_u8(p->sin_gn, &dat[20], 3);
-+			continue;
-+		}
-+		if (strstr(dat, "iks_SogkGgog2") != NULL) {
-+			hex_parse_u8(p->sin_gn2, &dat[20], 3);
-+			continue;
-+		}
-+		if (strstr(dat, "yec_Sae_Y") != NULL) {
-+			hex_parse_u8(p->thr2, &dat[20], 3);
-+			continue;
-+		}
-+		if (strstr(dat, "Re_Int") != NULL) {
-+			hex_parse_u8(p->r0_reg, &dat[20], 3);
-+			continue;
-+		}
-+		/* Check whether the spk connection is open */
-+		if (strstr(dat, "SigFlag") != NULL) {
-+			hex_parse_u8(p->tf_reg, &dat[20], 3);
-+			continue;
-+		}
-+		if (strstr(dat, "a1_Int") != NULL) {
-+			hex_parse_u8(p->a1_reg, &dat[20], 3);
-+			continue;
-+		}
-+		if (strstr(dat, "a2_Int") != NULL) {
-+			hex_parse_u8(p->a2_reg, &dat[20], 3);
-+			continue;
-+		}
-+	}
-+}
-+
-+static int fw_parse_fct_param_address(struct tasdevice_priv *tas_priv,
-+	struct tasdevice_fw *tas_fmw, const struct firmware *fmw, int offset)
-+{
-+	struct fct_param_address *p = &(tas_fmw->fct_par_addr);
-+	struct calidata *cali_data = &tas_priv->cali_data;
-+	struct cali_reg *r = &cali_data->cali_reg_array;
-+	const unsigned char *data = fmw->data;
-+
-+	if (offset + 520 > fmw->size) {
-+		dev_err(tas_priv->dev, "%s: File Size error\n", __func__);
-+		offset = -1;
-+		goto out;
-+	}
-+
-+	/* skip reserved part */
-+	offset += 40;
-+	p->size = 480;
-+	p->data = kmemdup(&data[offset], 480, GFP_KERNEL);
-+	if (!p->data) {
-+		offset = -1;
-+		goto out;
-+	}
-+	offset += 480;
-+	fct_param_address_parser(r, tas_fmw);
-+out:
-+	return offset;
-+}
-+
- static int fw_parse_variable_header_kernel(
- 	struct tasdevice_priv *tas_priv, const struct firmware *fmw,
- 	int offset)
-@@ -1686,13 +1798,29 @@ static int tasdevice_load_block(struct tasdevice_priv *tas_priv,
- 	return rc;
- }
- 
-+static void dspbin_type_check(struct tasdevice_priv *tas_priv,
-+	unsigned int ppcver)
-+{
-+	if (ppcver >= PPC3_VERSION_TAS2781_ALPHA_MIN) {
-+		if (ppcver >= PPC3_VERSION_TAS2781_BETA_MIN)
-+			tas_priv->dspbin_typ = TASDEV_BETA;
-+		else if (ppcver >= PPC3_VERSION_TAS2781_BASIC_MIN)
-+			tas_priv->dspbin_typ = TASDEV_BASIC;
-+		else
-+			tas_priv->dspbin_typ = TASDEV_ALPHA;
-+	}
-+	if (tas_priv->dspbin_typ != TASDEV_BASIC)
-+		tas_priv->fw_parse_fct_param_address =
-+			fw_parse_fct_param_address;
-+}
-+
- static int dspfw_default_callback(struct tasdevice_priv *tas_priv,
- 	unsigned int drv_ver, unsigned int ppcver)
- {
- 	int rc = 0;
- 
- 	if (drv_ver == 0x100) {
--		if (ppcver >= PPC3_VERSION) {
-+		if (ppcver >= PPC3_VERSION_BASE) {
- 			tas_priv->fw_parse_variable_header =
- 				fw_parse_variable_header_kernel;
- 			tas_priv->fw_parse_program_data =
-@@ -1701,6 +1829,7 @@ static int dspfw_default_callback(struct tasdevice_priv *tas_priv,
- 				fw_parse_configuration_data_kernel;
- 			tas_priv->tasdevice_load_block =
- 				tasdevice_load_block_kernel;
-+			dspbin_type_check(tas_priv, ppcver);
- 		} else {
- 			switch (ppcver) {
- 			case 0x00:
-@@ -1716,7 +1845,7 @@ static int dspfw_default_callback(struct tasdevice_priv *tas_priv,
- 			default:
- 				dev_err(tas_priv->dev,
- 					"%s: PPCVer must be 0x0 or 0x%02x",
--					__func__, PPC3_VERSION);
-+					__func__, PPC3_VERSION_BASE);
- 				dev_err(tas_priv->dev, " Current:0x%02x\n",
- 					ppcver);
- 				rc = -EINVAL;
-@@ -2023,9 +2152,17 @@ static int tasdevice_dspfw_ready(const struct firmware *fmw,
- 	}
- 	offset = tas_priv->fw_parse_configuration_data(tas_priv,
- 		tas_fmw, fmw, offset);
--	if (offset < 0)
-+	if (offset < 0) {
- 		ret = offset;
-+		goto out;
-+	}
- 
-+	if (tas_priv->fw_parse_fct_param_address) {
-+		offset = tas_priv->fw_parse_fct_param_address(tas_priv,
-+			tas_fmw, fmw, offset);
-+		if (offset < 0)
-+			ret = offset;
-+	}
- out:
- 	return ret;
- }
--- 
-2.34.1
+cs40l26_id_spi[] has the 0/1 cookie values to indicate which part
+variant is being instantiated. But cs40l26_of_match[] doesn't have
+these cookie values to indicate which part ID was matched.
+
 
