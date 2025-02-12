@@ -4,114 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0955C0219E
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2025 10:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27412C0219E
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Feb 2025 10:11:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EB2A602C1;
-	Mon, 17 Feb 2025 11:11:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EB2A602C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EC72602DA;
+	Mon, 17 Feb 2025 11:11:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EC72602DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1739787071;
-	bh=zt7iDenZyRr2ZhjXd9FrArhigiID8+lzpGKIMUUhPWs=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Wnq0jQ5OgcbjxkU/ZJ9k/0CFFBfpc60bw27pzUK2eXLdKXna8ZHVCE4dCvxlIHqtI
-	 VhWjUOLzY1cgHRrgzIf7+IY6PyOMln+mAXtiBC4RgJ6MWtzZc48efsSKhZOJOsa9fy
-	 8Y2mqSUSQe51ULXAcK4VcEFG+t4xFoIQlYZEUgLA=
+	s=default; t=1739787088;
+	bh=boClx4IF2tcO2bse+Jt947bNQRtnchIbxegz9HK1K7I=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=umjQyYk7//eSWYu8q4yBPycdOG56K/qKOD7XOnKD7SThXFo1YAtFKlO5TAbFOxDPF
+	 MX3QHN7Bxtl+5BWAXhpp4AE5ubmOfTZ2Ppa6VEc1gF7cO5WZE7F48OviV89bcBROKD
+	 wIUgxhN+Ub5qYehvMdzPk1BhLEAYxI2lXod1PSdU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57308F8062F; Mon, 17 Feb 2025 11:09:14 +0100 (CET)
+	id 23133F8065E; Mon, 17 Feb 2025 11:09:15 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46375F8061F;
+	by alsa1.perex.cz (Postfix) with ESMTP id E747CF8065C;
 	Mon, 17 Feb 2025 11:09:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 146CCF8051F; Wed, 12 Feb 2025 07:55:35 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 3CE57F8051F; Wed, 12 Feb 2025 20:05:44 +0100 (CET)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6B28DF800E4
-	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2025 07:55:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B28DF800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id E34EEF8020D
+	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2025 20:05:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E34EEF8020D
 Authentication-Results: alsa1.perex.cz;
-	dkim=temperror header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=FshMaKw/
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 51C6tKfjD1749646,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=realtek.com; s=dkim;
-	t=1739343320; bh=zt7iDenZyRr2ZhjXd9FrArhigiID8+lzpGKIMUUhPWs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version;
-	b=FshMaKw/xE+f6PjKWomiVpDW5XQ4S7wAcTRNk9kr1Aj4B3VA8F5u53dK7B/quPMoo
-	 SFZ6LQwUi5RaQ84W36A18sstzWc+5l/QulDei3vK2rN9ICYqSEH4VujK+qDMkKz4BU
-	 z8WDV/peIjbHx7c4ZDgCuMPX19inkSeECXDr6ZJumpeWrFnXk3nyG/pmPji2w3jXqD
-	 CnqXUiYefmI1juxb4poVUvaXVUmMQ8YH6CN/5b8dxa4iaiDMeF1vXFUAf8ZmF4Ohzl
-	 ecdGfu3Guq+u8LrE7fKVhEUfNp+mvghNwnJwlY9S2Tykhf0Ns0a5PMcBR7StzVZQN9
-	 WHhOBilMqNmmQ==
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/3.06/5.92) with ESMTPS id 51C6tKfjD1749646
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 12 Feb 2025 14:55:20 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 12 Feb 2025 14:55:20 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 12 Feb 2025 14:55:20 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::f5bd:6ac9:46d:9547]) by
- RTEXMBS01.realtek.com.tw ([fe80::f5bd:6ac9:46d:9547%5]) with mapi id
- 15.01.2507.035; Wed, 12 Feb 2025 14:55:20 +0800
-From: Kailang <kailang@realtek.com>
-To: "bugzilla-daemon@kernel.org" <bugzilla-daemon@kernel.org>,
-        "Takashi Iwai
- (tiwai@suse.de)" <tiwai@suse.de>
-CC: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-        "
- (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
-Subject: RE: [Bug 219743] [REGRESSION,
- BISECTED] ASUS GA402XY Headset mic stopped working after 6.12.2
-Thread-Topic: [Bug 219743] [REGRESSION, BISECTED] ASUS GA402XY Headset mic
- stopped working after 6.12.2
-Thread-Index: AQHbe5CALM4/NqKCy0ae6JW97tmZU7NDPn7Q
-Date: Wed, 12 Feb 2025 06:55:20 +0000
-Message-ID: <0474a095ab0044d0939ec4bf4362423d@realtek.com>
-References: <bug-219743-196757@https.bugzilla.kernel.org/>
- <bug-219743-196757-RLkOfxHF9E@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-219743-196757-RLkOfxHF9E@https.bugzilla.kernel.org/>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: yes
-x-originating-ip: [172.21.6.42]
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: multipart/mixed;
-	boundary="_002_0474a095ab0044d0939ec4bf4362423drealtekcom_"
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=E6ix6k15
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-ab7c07e8b9bso23252666b.1
+        for <alsa-devel@alsa-project.org>;
+ Wed, 12 Feb 2025 11:05:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739387114; x=1739991914;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FNC2Wi9jRZBfL5ul268VEZxfQqtvCEzpUWJGvGmpJE4=;
+        b=E6ix6k15mcwMn9EemJm2KlG2juS+UJZ6+HV9dz2f0ixYr/yuVVHvqeCLwnfxN1aHlb
+         L4NodQdLwrOgIZA5gzjToziiRYM+dFPgaWXRE+e7o5wpoVgTtWoVvE93M3iUpS28ENVI
+         zFe/Gk6TswgwRB2TFI4hPhn6ouI5iFb6dkLqX/W46YjXbVGzfQnTXypjMZ3HA7Znd0M4
+         ixkyjcAxMPC0aSCrWihW0JQ8jTKlVD8cFkTVoOxneS+nnxkfnC56dHqrAt5w4qLBXKhP
+         u0pMVlpXhWhfpHdwEk3D7bVFHspwnF/A9S3/uc5SEQZgNMh4zfA5F105aGy3EGN98Qns
+         ey4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739387114; x=1739991914;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FNC2Wi9jRZBfL5ul268VEZxfQqtvCEzpUWJGvGmpJE4=;
+        b=Jjh4Rsy5bSP57EXOKG9acikGgO1rK3jygXzAQKXlR9Vzj39foON3kbf8gix2hRAkoK
+         pG3w71qB1alflVA964Qls8s7UozZ2ip07GZDU1MNcU/qmW2CQHQJ/G6ueVTFi9/5kHPd
+         40gSvDExLeRhd0yZGdC9yxKbY2pSRGTqeNzZLwnPFQxHL4Z6PvUxswDC9NtPftNcFvar
+         lwis/MKiySzVPP3JlaU/0rM2NWVxUlTkRoBdodxeX3xLOGQguLmlUVkwvpp9GBmhfP2N
+         NOj1Al5VgUF4f6sytL0V+6CUaxnyCEtR8UpWjR9cpC4NpYP+ds5Ctj6HP7GG6iUUhqeL
+         loHA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXuRqWNq+ISkz4jEMiUY6Ct3znzbHR76S+YWBNmX/V7NBVZrUBikTkE68s01DlqRoPw4wfoQxCZQIWF@alsa-project.org
+X-Gm-Message-State: AOJu0Yy49L+tf/Dat2Zoyx2W6jksCcFKYCueKpx4yqaQIb/wi1oLfwpz
+	IS/BzKWiLWJOBFUud6WEW4HooOUDTM09aaG8Eov7TcqhFvVQz9qiPk/oj2EM88xJylfZuRoh8IO
+	R1KNXQUnApYMrCBlxn6yvplaPV84=
+X-Gm-Gg: ASbGncvDLA69sbq4+rWMAvtWQSDdpnfG2jznXUsLXuORYUKXvCk0mTDv1W5HWOKejKk
+	XUspSfdIQ302Tmc3+D4Kvi5RYweuoc9nIvrxy3fmjnZGnLyHN4F9kgi2rNLPB0JN9veUdx2/H/o
+	1vQJXJP+uR5uT7IGhBzGP7pHnVCun0
+X-Google-Smtp-Source: 
+ AGHT+IG/9AA6698yW/Bzw1PQxoSD53kHz7itT7ad5dl2PefX6H2P/O8DgTd6Q3CH8FC0+MjFqL/ELv6Ia5uSwl911d4=
+X-Received: by 2002:a17:907:9720:b0:ab7:ee22:391 with SMTP id
+ a640c23a62f3a-ab7f34af303mr457659266b.37.1739387114218; Wed, 12 Feb 2025
+ 11:05:14 -0800 (PST)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-MailFrom: kailang@realtek.com
-X-Mailman-Rule-Hits: implicit-dest
+From: Dennis Babcock <statoshinakomotod@gmail.com>
+Date: Wed, 12 Feb 2025 13:05:02 -0600
+X-Gm-Features: AWEUYZnF4KB2h3WwodXTRG3j7vNdNLfbH9YnGQtmEtf3oGrt8xwqTu7j0zfi9os
+Message-ID: 
+ <CAG6nTanKBXvpWNvi3uMDGphY=zgzFEyKVd-wTtguiEOcqBhuog@mail.gmail.com>
+Subject: Re: [PATCH v14 29/53] usb: host: xhci-plat: Set XHCI max interrupters
+ if property is present
+To: quic_wcheng@quicinc.com
+Cc: Thinh.Nguyen@synopsys.com, alsa-devel@alsa-project.org,
+	andersson@kernel.org, bgoswami@quicinc.com, broonie@kernel.org,
+	conor+dt@kernel.org, corbet@lwn.net, devicetree@vger.kernel.org,
+	gregkh@linuxfoundation.org, konrad.dybcio@linaro.org,
+	krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org, mathias.nyman@intel.com, perex@perex.cz,
+	robh+dt@kernel.org, srinivas.kandagatla@linaro.org, tiwai@suse.com
+X-MailFrom: statoshinakomotod@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-Message-ID-Hash: LALCB2N3Z3Q6RCKRSH3ROSPHRGZXGGOQ
-X-Message-ID-Hash: LALCB2N3Z3Q6RCKRSH3ROSPHRGZXGGOQ
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 6H7CCR6HZOON7B4WRF7XWRYNDCWF7HPF
+X-Message-ID-Hash: 6H7CCR6HZOON7B4WRF7XWRYNDCWF7HPF
 X-Mailman-Approved-At: Mon, 17 Feb 2025 10:09:05 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LALCB2N3Z3Q6RCKRSH3ROSPHRGZXGGOQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6H7CCR6HZOON7B4WRF7XWRYNDCWF7HPF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,34 +125,4 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---_002_0474a095ab0044d0939ec4bf4362423drealtekcom_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-
-Rml4dXAgaGVhZHNldCBNSUMgbm8gZnVuY3Rpb24uDQo=
-
---_002_0474a095ab0044d0939ec4bf4362423drealtekcom_
-Content-Type: application/octet-stream; name="0000-alc285-depop-fixup.patch"
-Content-Description: 0000-alc285-depop-fixup.patch
-Content-Disposition: attachment; filename="0000-alc285-depop-fixup.patch";
-	size=849; creation-date="Wed, 12 Feb 2025 06:42:20 GMT";
-	modification-date="Wed, 12 Feb 2025 06:52:54 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSA5MzI1ZTJkMzBlNTYzNmIxZWQ3ZDM4OGJjYjlmZWY1NTE1ZTAxMTNjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFdlZCwgMTIgRmViIDIwMjUgMTQ6NDA6NDYgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlazogRml4dXAgQUxDMjI1IGRlcG9wIHByb2NlZHVyZQoKSGVhZHNldCBNSUMg
-d2lsbCBubyBmdW5jdGlvbiB3aGVuIHBvd2VyX3NhdmU9MC4KCkZpeGVzOiAxZmQ1MDUwOWZlMTQg
-KCJBTFNBOiBoZGEvcmVhbHRlazogVXBkYXRlIEFMQzIyNSBkZXBvcCBwcm9jZWR1cmUiKQpTaWdu
-ZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZmIC0tZ2l0
-IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3Jl
-YWx0ZWsuYwppbmRleCBhZTBiZWI1MmU3YjAuLjIyNDYxNmZiZWM0ZiAxMDA2NDQKLS0tIGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
-dGVrLmMKQEAgLTM3ODgsNiArMzc4OCw3IEBAIHN0YXRpYyB2b2lkIGFsYzIyNV9pbml0KHN0cnVj
-dCBoZGFfY29kZWMgKmNvZGVjKQogCQkJCSAgICBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBB
-TVBfT1VUX1VOTVVURSk7CiAKIAkJbXNsZWVwKDc1KTsKKwkJYWxjX3VwZGF0ZV9jb2VmX2lkeChj
-b2RlYywgMHg0YSwgMyA8PCAxMCwgMCk7CiAJCWFsY191cGRhdGVfY29lZmV4X2lkeChjb2RlYywg
-MHg1NywgMHgwNCwgMHgwMDA3LCAweDQpOyAvKiBIaWdodCBwb3dlciAqLwogCX0KIH0K
-
---_002_0474a095ab0044d0939ec4bf4362423drealtekcom_--
+SGkNCkRlbm5pcyBMb3VpcyBCYWJjb2NrIGpyDQo=
