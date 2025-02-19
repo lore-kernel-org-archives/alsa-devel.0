@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE160C021B0
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2025 10:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5547C021B0
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2025 12:49:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4195B604D0;
-	Wed, 19 Feb 2025 11:34:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4195B604D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 687CF604C4;
+	Wed, 19 Feb 2025 13:49:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 687CF604C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1739961270;
-	bh=Jz8MfOF0RtsLyIdzhdeLeDnOVjjxlipcpYaetRS6Ew0=;
+	s=default; t=1739969379;
+	bh=jSW5r+UPjx/T2Ti/Y3+D4rPMvFP7JyX5oxWfdboWC1k=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=QdfAfz3mrzeQMzMgMKMkvFZnnPivyis5mW/4cZAFDXaFF4rwYErlOfS56sPam6a/U
-	 wMLTH63jnB9NesC9+ZUtfOU7k/Zxu3cOhsEZeIeGSs7+rHmZ36WKWzEgdBVeLFb4yR
-	 cqISpN064LockOc4GBOX8Ay++gmLF/NmgVmF5Dqc=
+	b=FCfDj8tJuEoDCJpNCdbaOo8gRxEcgCSt329u5RvNC+wAomKvpSi8+Vm/+ikjw7e6L
+	 5TkhsoUXe3WszXaCi9dfwXWir0b8FdNuQRzIb2/oQci3P3876b51BNHeM8wdG/TFg3
+	 IrnxoN5G2LMK5esFuwiUq4u7BYAj9b0YzFabn4IM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4BAACF805C5; Wed, 19 Feb 2025 11:33:58 +0100 (CET)
+	id 5FCDCF805BA; Wed, 19 Feb 2025 13:49:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 075D6F805AF;
-	Wed, 19 Feb 2025 11:33:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C4E9F805BB;
+	Wed, 19 Feb 2025 13:49:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47936F8013D; Wed, 19 Feb 2025 11:33:41 +0100 (CET)
+	id 68180F8013D; Wed, 19 Feb 2025 13:48:49 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A238F800ED
-	for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2025 11:33:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A238F800ED
+	by alsa1.perex.cz (Postfix) with ESMTP id 072ACF800EE
+	for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2025 13:48:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 072ACF800EE
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1739961218815779686-webhooks-bot@alsa-project.org>
-References: <1739961218815779686-webhooks-bot@alsa-project.org>
+In-Reply-To: <1739969324169883966-webhooks-bot@alsa-project.org>
+References: <1739969324169883966-webhooks-bot@alsa-project.org>
 Subject: Realtek driver assignes wrong pins on Omen 16 with B&O audio
-Message-Id: <20250219103341.47936F8013D@alsa1.perex.cz>
-Date: Wed, 19 Feb 2025 11:33:40 +0100 (CET)
-Message-ID-Hash: U3KZG2NO7JX4NYI2KRR5BD7P2GGB6Q2T
-X-Message-ID-Hash: U3KZG2NO7JX4NYI2KRR5BD7P2GGB6Q2T
+Message-Id: <20250219124849.68180F8013D@alsa1.perex.cz>
+Date: Wed, 19 Feb 2025 13:48:49 +0100 (CET)
+Message-ID-Hash: JQ3QKGE5BBM3FJMS4JCDDRYLCPMJUBU7
+X-Message-ID-Hash: JQ3QKGE5BBM3FJMS4JCDDRYLCPMJUBU7
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U3KZG2NO7JX4NYI2KRR5BD7P2GGB6Q2T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JQ3QKGE5BBM3FJMS4JCDDRYLCPMJUBU7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #511 was opened from johnfloe:
+alsa-project/alsa-ucm-conf issue #511 was edited from johnfloe:
 
 <!--
 
@@ -96,30 +96,19 @@ Thanks in advance!
 * package version(s): latest kernel, linux-firmware and sof-firmware installed
 * config and/or log files:
 Related dmesg output:
-
+`
 sudo dmesg | grep snd                                      
-
 [    5.052362] snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
-
 [    5.052469] snd_hda_intel 0000:01:00.1: enabling device (0000 -> 0002)
-
 [    5.052725] snd_hda_intel 0000:01:00.1: Disabling MSI
-
 [    5.052736] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio client
-
 [    5.388591] snd_hda_codec_realtek ehdaudio0D0: ALC245: picked fixup  for PCI SSID 103c:0000
-
 [    5.388944] snd_hda_codec_realtek ehdaudio0D0: autoconfig for ALC245: line_outs=1 (0x17/0x0/0x0/0x0/0x0) type:speaker
-
 [    5.388947] snd_hda_codec_realtek ehdaudio0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-
 [    5.388949] snd_hda_codec_realtek ehdaudio0D0:    hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
-
 [    5.388951] snd_hda_codec_realtek ehdaudio0D0:    mono: mono_out=0x0
-
 [    5.388953] snd_hda_codec_realtek ehdaudio0D0:    inputs:
-
-[    5.388954] snd_hda_codec_realtek ehdaudio0D0:      Mic=0x19
+[    5.388954] snd_hda_codec_realtek ehdaudio0D0:      Mic=0x19`
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/511
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
