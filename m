@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A521EC021AA
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2025 12:50:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D663C021B0
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Feb 2025 12:51:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8094A604CC;
-	Wed, 19 Feb 2025 13:50:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8094A604CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D649604D4;
+	Wed, 19 Feb 2025 13:51:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D649604D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1739969454;
-	bh=W1Bk7r9PRNw1Xqx5ESJShKZ0pA9HYtbGSmuh1njFJcs=;
+	s=default; t=1739969473;
+	bh=RFcvg9dzFrEDQMHt2AVq59fEkf07ltbrvnr7EgT1zTs=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=mIYdAGrhpjxByCeBxMltRwI5ioGWbxVZNjtumLrCyG/rafNfCIM94Li75aiF7dRxK
-	 NbxXDPkS4cdqZDmkqwTk9GgccKCdYV+CRCdQBd3gop+vlIqqQ2lI6CKzpgYdEqVXbY
-	 H+6LWAbhqCSjWAAFl84HddQ3V81P2zzWJxHdZ0/8=
+	b=qgYj3/Dv8wmadOmH1bb1ACjSnBbZCeC5xeHMxzWzvthPgm+X+6K3zZvai8uH2HEe1
+	 RD1h/8gtJS2grhqJSwN8r2bbszzsxXOPTmzsKxDQdw+ub2LG+YWicsdr1pN6wNRUEm
+	 PBcovmu3Ay86dZj2kHqnwhon78Z4uqPXV9XVFNCE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2C62F805EA; Wed, 19 Feb 2025 13:50:17 +0100 (CET)
+	id B9D73F805C7; Wed, 19 Feb 2025 13:50:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCCC2F805EE;
-	Wed, 19 Feb 2025 13:50:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1FE3F805C2;
+	Wed, 19 Feb 2025 13:50:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43710F805C9; Wed, 19 Feb 2025 13:50:14 +0100 (CET)
+	id 8BD4DF8014B; Wed, 19 Feb 2025 13:50:42 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2B13F805C6
-	for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2025 13:50:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2B13F805C6
+	by alsa1.perex.cz (Postfix) with ESMTP id 54BADF800E3
+	for <alsa-devel@alsa-project.org>; Wed, 19 Feb 2025 13:50:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54BADF800E3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1739969412222621679-webhooks-bot@alsa-project.org>
-References: <1739969412222621679-webhooks-bot@alsa-project.org>
+In-Reply-To: <1739969440275688648-webhooks-bot@alsa-project.org>
+References: <1739969440275688648-webhooks-bot@alsa-project.org>
 Subject: Realtek driver assignes wrong pins on Omen 16 with B&O audio
-Message-Id: <20250219125014.43710F805C9@alsa1.perex.cz>
-Date: Wed, 19 Feb 2025 13:50:14 +0100 (CET)
-Message-ID-Hash: ZJ37X34N5WAI5I7DCQ6YEMJYZOHP7KPB
-X-Message-ID-Hash: ZJ37X34N5WAI5I7DCQ6YEMJYZOHP7KPB
+Message-Id: <20250219125042.8BD4DF8014B@alsa1.perex.cz>
+Date: Wed, 19 Feb 2025 13:50:42 +0100 (CET)
+Message-ID-Hash: PEZMJ7MIX4ONRUY32EXPLUNYN6GQQVI7
+X-Message-ID-Hash: PEZMJ7MIX4ONRUY32EXPLUNYN6GQQVI7
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJ37X34N5WAI5I7DCQ6YEMJYZOHP7KPB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PEZMJ7MIX4ONRUY32EXPLUNYN6GQQVI7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,25 +97,18 @@ Thanks in advance!
 * config and/or log files:
 Related dmesg output:
 
-`sudo dmesg | grep snd
+sudo dmesg | grep snd
 [    5.052362] snd_hda_intel 0000:00:1f.3: Digital mics found on Skylake+ platform, using SOF driver
 [    5.052469] snd_hda_intel 0000:01:00.1: enabling device (0000 -> 0002)
 [    5.052725] snd_hda_intel 0000:01:00.1: Disabling MSI
 [    5.052736] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio client
-
 [    5.388591] snd_hda_codec_realtek ehdaudio0D0: ALC245: picked fixup  for PCI SSID 103c:0000
-
 [    5.388944] snd_hda_codec_realtek ehdaudio0D0: autoconfig for ALC245: line_outs=1 (0x17/0x0/0x0/0x0/0x0) type:speaker
-
 [    5.388947] snd_hda_codec_realtek ehdaudio0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-
 [    5.388949] snd_hda_codec_realtek ehdaudio0D0:    hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
-
 [    5.388951] snd_hda_codec_realtek ehdaudio0D0:    mono: mono_out=0x0
-
 [    5.388953] snd_hda_codec_realtek ehdaudio0D0:    inputs:
-
-[    5.388954] snd_hda_codec_realtek ehdaudio0D0:      Mic=0x19`
+[    5.388954] snd_hda_codec_realtek ehdaudio0D0:      Mic=0x19
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/511
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
