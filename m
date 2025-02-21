@@ -4,105 +4,153 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4879C19F32
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Mar 2025 09:23:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 509C9C19F32
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Mar 2025 09:28:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FFA560319;
-	Wed,  5 Mar 2025 10:22:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FFA560319
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25FE860342;
+	Wed,  5 Mar 2025 10:28:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25FE860342
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741166578;
-	bh=uk07UyqbzdHdjNBKglOEaqbiEWbQK9HSF+BWZCcsdpY=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=FdpaKu6yZ4U84jMayzQZo73cXaDGmLFRhMAfC/KfPjs/j+nkzfu10tibaPbsEIDSH
-	 BODsU8degtgQEoZ/KSyttFVzK8OLY/szhFRD/E0Vae2Q5Y+dbi/ct4vwU7vMmOUIqw
-	 vQgzHtU0LeOxc5Uf8+kwG/PwhBraAAOZmwfCru/4=
+	s=default; t=1741166917;
+	bh=OFBXomb1N0/pjuPBYIcIITUCnd3aFX/uyKN32TW2NOA=;
+	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=PlRPd6LeqqOdYcpfdQQRyFNoV8gl5qDFpjnUhxDDAie3w4Jm2+itggP/ldKdBioFl
+	 K2dMNneLnjtoTr5keYkE6826duDpk6A2vYHOW5CjiYwQAADm6XK486BYgrODOrx66y
+	 3C8RevBvjy5kNpw3aUf2aHUNo7jPxXN2Y4anIlww=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 615D4F805C6; Wed,  5 Mar 2025 10:22:32 +0100 (CET)
+	id 127DBF8023A; Wed,  5 Mar 2025 10:28:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68511F805BB;
-	Wed,  5 Mar 2025 10:22:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62016F805B3;
+	Wed,  5 Mar 2025 10:28:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF780F802BE; Wed,  5 Mar 2025 10:22:18 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D9D92F80424; Fri, 21 Feb 2025 22:31:14 +0100 (CET)
+Received: from smtp-out1-04.simnet.is (smtp-out1-04.simnet.is
+ [194.105.232.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 80221F8001D
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2025 10:22:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80221F8001D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 696C1F800D2
+	for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2025 22:31:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 696C1F800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=temperror header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=OA0qGRtf
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 5259M4Mx81243822,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=realtek.com; s=dkim;
-	t=1741166524; bh=uk07UyqbzdHdjNBKglOEaqbiEWbQK9HSF+BWZCcsdpY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:MIME-Version;
-	b=OA0qGRtf0ny9zGYxCD70qvDFhN2UtHjEv/p9yLh5h3iBcoV4+uiZ1q8WphMC85hl6
-	 PnLcnCH+qEkHuVPUY5UHJj/OHpDxo7hs3kkZe5eFp6oTjoyn6XKo3Zyky+BW5cnCcB
-	 eXa+XqJ5aPw8GQA9vcXRUBPcp77qbpeGAoCfb55X7EGvl9U+uaLIa+fCi3VxyvJdvv
-	 oLKn7o4wGg5vYPBvcJMjkT8NSrPMXZ6rOWQaakcISh63Q6V2SZBeBuwh0oe3/s64WY
-	 dA5pV/EmPXUNTCRWti9KYPS7w1/gQMG4AAOIMfezhh5uPArTZoikEq+Sf7tuOXUfI9
-	 9bj/pnzdulbNA==
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-	by rtits2.realtek.com.tw (8.15.2/3.06/5.92) with ESMTPS id 5259M4Mx81243822
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 5 Mar 2025 17:22:04 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 5 Mar 2025 17:22:04 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 5 Mar 2025 17:22:04 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::f5bd:6ac9:46d:9547]) by
- RTEXMBS01.realtek.com.tw ([fe80::f5bd:6ac9:46d:9547%5]) with mapi id
- 15.01.2507.035; Wed, 5 Mar 2025 17:22:04 +0800
-From: Kailang <kailang@realtek.com>
-To: Takashi Iwai <tiwai@suse.de>
-CC: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>,
-        "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject: RE: update ALC222 depop optimize
-Thread-Topic: update ALC222 depop optimize
-Thread-Index: 
- AduNl/Z/2i7zvjW2RduQNmX+QwAWAP//kWCA//95iZCAAIztgP//eTeQgACQHQD//3QI8A==
-Date: Wed, 5 Mar 2025 09:22:04 +0000
-Message-ID: <ec41e956050e4ea594daaf8042fd6d1c@realtek.com>
-References: <81c7f0ec4a2447219c06095e0de4d1d3@realtek.com>
-	<87zfhzud4s.wl-tiwai@suse.de>	<f7fba6fc8d9e4abfb0c89e487e1d5d89@realtek.com>
-	<87wmd3uc28.wl-tiwai@suse.de>	<494a665481e043a38b94d844654fa81f@realtek.com>
- <87tt87uail.wl-tiwai@suse.de>
-In-Reply-To: <87tt87uail.wl-tiwai@suse.de>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.6.42]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key,
+ unprotected) header.d=simnet.is header.i=@simnet.is header.a=rsa-sha256
+ header.s=sel1 header.b=MiPj5pRS
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=simnet.is; i=@simnet.is; q=dns/txt; s=sel1;
+  t=1740173471; x=1771709471;
+  h=date:from:to:subject:message-id:mime-version;
+  bh=PRuDhAq0eSet6tmKEh8i3UCqzEPAqbU3iEEdMUc5bPc=;
+  b=MiPj5pRSv9ctR78Ov1NNFRJlPJTWtXkpdvVo4Isuz7SAVvaTD5TIxWgb
+   FnoS+62vOilcCc0Nm9EGHA919IMzn1Vp4YwJCEMwoP9bR/tMBn9S1e/qw
+   YpIMbz1PK4igpjTJR705g64I616BWfpuL4EMOKtrJM/+rKKJtvK8cRGCm
+   kLFOA5U8cdBe8MZ1S+rFgAORDwFzjIOSWlwSxR3H1upD3gt24gHmIYMf9
+   msGADYCbpmS2FbxRvhrycjBxWnkp97PEzlE5DA34a4xe/gMcbIdJrq++9
+   cPvseEq9NdYnBqfnlDaoFo33XiadzA73fy3BR6rHAdtfKUcJXk9kwRKzV
+   w==;
+X-CSE-ConnectionGUID: uY2+uOtcQ4Cr7hHN8Emcig==
+X-CSE-MsgGUID: c92p5o6nRPyhsyxeQu8n4Q==
+Authentication-Results: smtp-out-04.simnet.is;
+ dkim=none (message not signed) header.i=none
+X-SBRS: 3.3
+X-IPAS-Result: =?us-ascii?q?A2FlCQAW67hnhVjoacJaHAECAgEHARQBBAQBQYFCBAEMA?=
+ =?us-ascii?q?YJDfYFkiCWOIYEWnkFGBwEBAQ81DwQBAQMBA4FQgzCLEig3Bg4BAgQBAQEBA?=
+ =?us-ascii?q?wIDAQEBAQEBAQEBAQELAQEGAQEBAQEBBgcCEAEBAQFADjuFNQwGNA2DaR5lC?=
+ =?us-ascii?q?TYBAQEBJwINgip8gykBgmSvMYE0gQGDHNsYgV4QgUgBhWuCYwGFa4R3PAaCD?=
+ =?us-ascii?q?YEVMgOBc0oHb4QrRIYYBIIYF4FAggKBaoclg3eLOiCQHEiBIQNZLAFVEw0KC?=
+ =?us-ascii?q?wcFgXEDNQwLLhUygRRDNzeCDmlJOgINAjWCHnyCK4JbgXuEQ4RHhVSCEYs3g?=
+ =?us-ascii?q?xYdNgoDCxgNSBEsNxQbRG4HoAE9gzcJcgEBMF0BgQNAAzAGDx0BlBIOj0qBR?=
+ =?us-ascii?q?KAigT6EJYZcgzGCC5VKMyKDYZNBDDqSS5h9o20NGTeEZoF9ggAsBxoIMDuCZ?=
+ =?us-ascii?q?wlJGQ+KC4N8JhaINTbDF3g8AgcLAQEDCZF5AQE?=
+IronPort-PHdr: A9a23:cxchgx0nktePHMMasmDPhFBlVkEcU9TcJQsJ8t8glq4LKvjl5JXnO
+ kHDo/R23xfFXoTevvRDjeee86XtQncJ7pvJtnceOIdNWBkIhYRenwEpDMOfT0yuKvnsYkQH
+IronPort-Data: A9a23:syC5Da64Ysw7P8XbIU3QrwxRtIrAchMFZxGqfqrLsTDasI4TYxWz/
+ BJMATLpZ67UfDe3OccnNM7n6BNY78nLxubXe3JkrXs0RC1H8ZPIDovDIh6oZn6YIJ3IHB1ss
+ 8lGNIKdfck6QCCC9k30PrS/83At3q+EF+rwU7DKZXsvGlQ5FHl44f4Pd5bVp6Yx6TTuK1nQ5
+ IqaT7TjEEC6xHh9NnkdrrqZrxFit+i0vykX1mDSHsunymIy7VFNSs13GJyME5eRrvG4dMazQ
+ /3KibC/8GSfr1EhC92r+lqQWhEDHeOJNATUg3ALCvKo3EUS/Xc7gvdmOqZCMBsIgjzZkoF8w
+ txA7ZXhQF95YfGck71DD0UIGix0Y6MYqeKbLCnXXaB/t6HjWyKEL6JGVR1qYOX0g9pfHn5Rs
+ /UcMzlIdgqEhe+93PS8UOYEuihYFyWdAW9lkikmklnkMMsarfkvO0mgzdBV2joqj8QIF+vRf
+ KL1AhI0MEvKak0UMVpHBZ4zlbn2jyTxLTdS+ArE9adm7jTdllN7j+jmPoWMI4PQH5oIwB6U+
+ zPI8juoXBxGbIDOxzHdmp7AapcjuAuiMG5FPOTprKQCbCSv+1Eu5D0quXqTq/Xh0h+1VtgEc
+ BYf8XIn/fVpqkelEImmVBfmqy/Z4EY1VosLGYXWyinUkfOMvFzx6kvo79JlQIZ73CPjbWVyj
+ jdlp/uwW3o39uXTES/BnluthWvaETAPKmMfbjMzQwIA4t3yyKk+lRunouxLScZZtfWrX2irq
+ 9y2hHJm3ehL15RSj//TEW3v2lpAmLCYH2bZ2S2PNo6VxlsRTJKoYYWu9W/a4Z5oRK6FTkOMt
+ WQzgMOX6uYDF/mlzERhl81UQdlFT97cWNHtqQYH86sJrlxByFb/FWxk2wySEW8yWioylZAFV
+ 2eI0e9ZzMc70HJH9sabaarpYygh5fCI+dgIypk4xzeBC3R8XFbvwc1gWaKf933cygsxtr00A
+ Muwa5msLVBKJKFszTXjEo/x0Zdzrsw/7X3SXoy+3RWiyaCZdG/QEe1DLlqVcqY498tooi2Mo
+ ooZbpPXjU8ECquuMkE78qZKRbwOBXI0LYv3rspaaqiCOWKKHUl6W6SLm+95JuSJmYxex73Qo
+ 3bjXHVg2VrklG3KEBjabCxaPeaHsZFX9i5rbHN9YT5EwUMLaIK05eITeoU6eZEu8PdqiOZuS
+ PsIcNnGBe5AIgkr4BwDbILh6Z5jcQyxghKfenL/JiY+ZIImRhehFsLYkhXH6RhUTTeQqcAH/
+ 5a6iQP7Z8ouQg9jA5ODAB6w9G+ZsX8YkeN0ekLHJNhPZUnhmLSGzQSs15fbxOlRcX3+Kium6
+ uqAPfsPjcj2y7LZHfHXhLuY6pWoFvNkGVpLWjGBq6i3LjWc/3HLLW58vASgI2m1uIDcofTKi
+ QBpIxfUa6RvcLFi6NMULlqT5fhij+YDXpcDpuieIF3Fbk6wFpRrKWSc0M9Eu8Vln+AF4VPpB
+ BnVpoUCZd1l3f8J9nZMf2LJiczejJkpdsX6t6RsSKkHzHYrp+TeDy2+wTHd03wCRFeKDG/V6
+ bx96J9JulDXZusCN9eCh2hU+Qyxwo8oDs0aWmUhKNaz0GIDkwgeCbSCUXWeyM/UNL1x3rwCe
+ WT8aFzq3O8EnhKqnrtaPSSl4Nexcrxf5kgalwdeewvhdxisrqZf4SC9OA8fFmx9piirGcoqU
+ oS3HyWZ/Zmzwgo=
+IronPort-HdrOrdr: A9a23:hljvG6Gu5sY5232QpLqE/ceALOsnbusQ8zAXPmRKOHpom62j5q
+ eTdZsgtCMc5AxwZJhCo6HlBEDjewK4yXcd2+B4Vt3OMGaJhILCFvAB0WKN+UyCJ8SHzJ8l6Z
+ td
+X-Talos-CUID: 9a23:LjEHVWHutkX+jgniqmJ6xRRXB+c5eUSB522PI2+eWUtsQ7yaHAo=
+X-Talos-MUID: 9a23:9yLFawaKpb5TT+BTvG62nGxlasFS27WuE1EdnKwb68/YDHkl
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.13,305,1732579200";
+   d="8'?diff'?bugs'?scan'208";a="38322405"
+Received: from vist-zimproxy-02.vist.is ([194.105.232.88])
+  by smtp-out-04.simnet.is with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Feb 2025 21:31:08 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by vist-zimproxy-02.vist.is (Postfix) with ESMTP id F186F444632B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2025 21:31:07 +0000 (GMT)
+Received: from vist-zimproxy-02.vist.is ([127.0.0.1])
+ by localhost (vist-zimproxy-02.vist.is [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id mFmNw6fgreXt for <alsa-devel@alsa-project.org>;
+ Fri, 21 Feb 2025 21:31:07 +0000 (GMT)
+Received: from localhost (localhost [127.0.0.1])
+	by vist-zimproxy-02.vist.is (Postfix) with ESMTP id 0636044464B0
+	for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2025 21:31:07 +0000 (GMT)
+Received: from vist-zimproxy-02.vist.is ([127.0.0.1])
+ by localhost (vist-zimproxy-02.vist.is [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id yOF6tjSMtkgl for <alsa-devel@alsa-project.org>;
+ Fri, 21 Feb 2025 21:31:06 +0000 (GMT)
+Received: from kassi.invalid.is (85-220-33-163.dsl.dynamic.simnet.is
+ [85.220.33.163])
+	by vist-zimproxy-02.vist.is (Postfix) with ESMTPS id E1039444632B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Feb 2025 21:31:06 +0000 (GMT)
+Received: from bg by kassi.invalid.is with local (Exim 4.98)
+	(envelope-from <bg@kassi.invalid.is>)
+	id 1tlaby-0000000017p-1H3R
+	for alsa-devel@alsa-project.org;
+	Fri, 21 Feb 2025 21:31:06 +0000
+Date: Fri, 21 Feb 2025 21:31:06 +0000
+From: Bjarni Ingi Gislason <bjarniig@simnet.is>
+To: alsa-devel@alsa-project.org
+Subject: alsa-info.8: Some remarks and a patch with editorial changes for
+ this man page
+Message-ID: <174017330409.4248.2998280625258055409.reportbug@kassi.invalid.is>
 MIME-Version: 1.0
-Message-ID-Hash: 5PSI2YY5SMXI2L7T25FBQUWLEKLDKT6Q
-X-Message-ID-Hash: 5PSI2YY5SMXI2L7T25FBQUWLEKLDKT6Q
-X-MailFrom: kailang@realtek.com
+Content-Type: multipart/mixed; boundary="77osvO/tr4EO5orA"
+Content-Disposition: inline
+X-Mailer: reportbug 13.0.3
+X-MailFrom: bg@simnet.is
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: WVBHUQTWZ5EXH7W7OVSYGLK5TFSGEHER
+X-Message-ID-Hash: WVBHUQTWZ5EXH7W7OVSYGLK5TFSGEHER
+X-Mailman-Approved-At: Wed, 05 Mar 2025 09:27:31 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5PSI2YY5SMXI2L7T25FBQUWLEKLDKT6Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WVBHUQTWZ5EXH7W7OVSYGLK5TFSGEHER/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,98 +160,310 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+--77osvO/tr4EO5orA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Wednesday, March 5, 2025 4:50 PM
-> To: Kailang <kailang@realtek.com>
-> Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>;
-> linux-sound@vger.kernel.org
-> Subject: Re: update ALC222 depop optimize
->=20
->=20
-> External mail : This email originated from outside the organization. Do n=
-ot
-> reply, click links, or open attachments unless you recognize the sender a=
-nd
-> know the content is safe.
->=20
->=20
->=20
-> On Wed, 05 Mar 2025 09:22:20 +0100,
-> Kailang wrote:
-> >
-> >
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Sent: Wednesday, March 5, 2025 4:17 PM
-> > > To: Kailang <kailang@realtek.com>
-> > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>;
-> > > linux-sound@vger.kernel.org
-> > > Subject: Re: update ALC222 depop optimize
-> > >
-> > >
-> > > External mail : This email originated from outside the organization.
-> > > Do not reply, click links, or open attachments unless you recognize
-> > > the sender and know the content is safe.
-> > >
-> > >
-> > >
-> > > On Wed, 05 Mar 2025 08:56:41 +0100,
-> > > Kailang wrote:
-> > > >
-> > > >
-> > > > > -----Original Message-----
-> > > > > From: Takashi Iwai <tiwai@suse.de>
-> > > > > Sent: Wednesday, March 5, 2025 3:54 PM
-> > > > > To: Kailang <kailang@realtek.com>
-> > > > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>;
-> > > > > linux-sound@vger.kernel.org
-> > > > > Subject: Re: update ALC222 depop optimize
-> > > > >
-> > > > >
-> > > > > External mail : This email originated from outside the organizati=
-on.
-> > > > > Do not reply, click links, or open attachments unless you
-> > > > > recognize the sender and know the content is safe.
-> > > > >
-> > > > >
-> > > > >
-> > > > > On Wed, 05 Mar 2025 07:32:00 +0100, Kailang wrote:
-> > > > > >
-> > > > > > Hi Takashi,
-> > > > > >
-> > > > > > Update ALC222 depop optimize as attach.
-> > > > >
-> > > > > Could you give a bit more background info why this change is need=
-ed?
-> > > > > Is it a mandatory change to fix something, or it improves somethi=
-ng?
-> > > > >
-> > > > This codec has two headphone design.
-> > > > The HP2 was nid 0x14.
-> > >
-> > > Sorry not clear enough: do you mean the patch is to fix the depop
-> > > problems on the models with two headphone pins with ALC222?
-> >
-> > Yes, the original depop was only supported one headphone.
->=20
-> OK, and then would it be a bit risky to blindly assume the second headpho=
-ne
-> pin 0x14?  Isn't it set up via pin config?
->=20
-It doesn't have risk to set this pin as headphone or line out.
-This pin (0x14) can be a line out or headphone. It has JD which driver will=
- get it.
-Line out and Headhpone were need to do depop procedure.
-If pin 0x14 set to speaker, it wouldn't have JD.
+Package: alsa-utils
+Version: 1.2.13-1
+Severity: minor
+Tags: patch
 
-hp2_pin_sense =3D snd_hda_jack_detect(codec, 0x14);
+   * What led up to the situation?
 
-This just got JD to do depop.
+     Checking for defects with a new version
 
->=20
-> thanks,
->=20
-> Takashi
+test-[g|n]roff -mandoc -t -K utf8 -rF0 -rHY=0 -rCHECKSTYLE=10 -ww -z < "man page"
+
+  [Use "groff -e ' $' -e '\\~$' <file>" to find obvious trailing spaces.]
+
+  ["test-groff" is a script in the repository for "groff"; is not shipped]
+(local copy and "troff" slightly changed by me).
+
+  [The fate of "test-nroff" was decided in groff bug #55941.]
+
+   * What was the outcome of this action?
+
+an.tmac:<stdin>:1: style: .TH missing fourth argument; consider package/project name and version (e.g., "groff 1.23.0")
+troff:<stdin>:59: warning: trailing space in the line
+
+   * What outcome did you expect instead?
+
+     No output (no warnings).
+
+-.-
+
+  General remarks and further material, if a diff-file exist, are in the
+attachments.
+
+
+-- System Information:
+Debian Release: trixie/sid
+  APT prefers testing
+  APT policy: (500, 'testing')
+Architecture: amd64 (x86_64)
+
+Kernel: Linux 6.12.12-amd64 (SMP w/2 CPU threads; PREEMPT)
+Locale: LANG=is_IS.iso88591, LC_CTYPE=is_IS.iso88591 (charmap=ISO-8859-1), LANGUAGE not set
+Shell: /bin/sh linked to /usr/bin/dash
+Init: sysvinit (via /sbin/init)
+
+Versions of packages alsa-utils depends on:
+ii  kmod              33+20240816-2
+ii  libasound2t64     1.2.13-1+b1
+ii  libatopology2t64  1.2.13-1+b1
+ii  libc6             2.40-6
+ii  libfftw3-single3  3.3.10-2+b1
+ii  libncursesw6      6.5+20250125-2
+ii  libsamplerate0    0.2.2-4+b2
+ii  libtinfo6         6.5+20250125-2
+
+alsa-utils recommends no packages.
+
+Versions of packages alsa-utils suggests:
+pn  dialog  <none>
+
+-- no debconf information
+
+--77osvO/tr4EO5orA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="chk_man.err.alsa-info.8"
+
+Input file is alsa-info.8
+
+Output from "mandoc -T lint  alsa-info.8": (shortened list)
+
+
+-.-.
+
+Output from "test-groff -mandoc -t -ww -z alsa-info.8": (shortened list)
+
+      1 trailing space in the line
+
+Remove trailing space with: sed -e 's/  *$//'
+
+-.-.
+
+Change a HYPHEN-MINUS (code 0x2D) to a minus(-dash) (\-),
+if it
+is in front of a name for an option,
+is a symbol for standard input,
+is a single character used to indicate an option,
+or is in the NAME section (man-pages(7)).
+N.B. - (0x2D), processed as a UTF-8 file, is changed to a hyphen
+(0x2010, groff \[u2010] or \[hy]) in the output.
+
+31:Includes output from \fIaplay -l\fP.
+
+-.-.
+
+Wrong distance between sentences in the input file.
+
+  Separate the sentences and subordinate clauses; each begins on a new
+line.  See man-pages(7) ("Conventions for source file layout") and
+"info groff" ("Input Conventions").
+
+  The best procedure is to always start a new sentence on a new line,
+at least, if you are typing on a computer.
+
+Remember coding: Only one command ("sentence") on each (logical) line.
+
+E-mail: Easier to quote exactly the relevant lines.
+
+Generally: Easier to edit the sentence.
+
+Patches: Less unaffected text.
+
+Search for two adjacent words is easier, when they belong to the same line,
+and the same phrase.
+
+  The amount of space between sentences in the output can then be
+controlled with the ".ss" request.
+
+Mark a final abbreviation point as such by suffixing it with "\&".
+
+Some sentences (etc.) do not begin on a new line.
+
+Split (sometimes) lines after a punctuation mark; before a conjunction.
+
+  Lines with only one (or two) space(s) between sentences are split,
+so latter sentences begin on a new line.
+
+10:about the ALSA subsystem. It is used mostly for debugging purposes.
+
+-.-.
+
+The name of a man page is typeset in bold and the section in roman
+(see man-pages(7)).
+
+56:aplay(1)
+57:amixer(1)
+58:alsactl(1)
+
+-.-.
+
+Put a parenthetical sentence, phrase on a separate line,
+if not part of a code.
+See man-pages(7), item "semantic newline".
+
+alsa-info.8:15:Upload contents to the server (www.alsa-project.org or pastebin.ca).
+
+-.-.
+
+Output from "test-groff  -mandoc -t -K utf8 -rF0 -rHY=0 -rCHECKSTYLE=10 -ww -z ":
+
+an.tmac:<stdin>:1: style: .TH missing fourth argument; consider package/project name and version (e.g., "groff 1.23.0")
+troff:<stdin>:59: warning: trailing space in the line
+
+-.-
+
+Additionally:
+
+Move a period (end of sentence) to the last string in the sentence.
+
+-.-
+
+Generally:
+
+Split (sometimes) lines after a punctuation mark; before a conjunction.
+
+--77osvO/tr4EO5orA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="alsa-info.8.diff"
+
+--- alsa-info.8	2025-02-21 21:08:20.656049605 +0000
++++ alsa-info.8.new	2025-02-21 21:21:03.879165232 +0000
+@@ -7,12 +7,14 @@ the ALSA subsystem
+ 
+ .SH DESCRIPTION
+ \fBalsa-info\fP is a command\-line utility gathering information
+-about the ALSA subsystem. It is used mostly for debugging purposes.
++about the ALSA subsystem.
++It is used mostly for debugging purposes.
+ 
+ .SH OPTIONS
+ .TP
+ \fI\-\-upload\fP
+-Upload contents to the server (www.alsa-project.org or pastebin.ca).
++Upload contents to the server
++(www.alsa-project.org or pastebin.ca).
+ .TP
+ \fI\-\-no-upload\fP
+ Do not upload contents to the remote server.
+@@ -24,11 +26,11 @@ Print information to standard output.
+ Specify file for output in no-upload mode.
+ .TP
+ \fI\-\-debug\fP
+-Run utility as normal, but will not delete file (usually
+-/tmp/alsa-info.txt).
++Run utility as normal, but will not delete file
++(usually /tmp/alsa-info.txt).
+ .TP
+ \fI\-\-with-aplay\fP
+-Includes output from \fIaplay -l\fP.
++Includes output from \fIaplay \-l\fP.
+ .TP
+ \fI\-\-with-amixer\fP
+ Includes output from \fIamixer\fP.
+@@ -52,11 +54,10 @@ Print information about authors.
+ Will gather all information and show the output file.
+ 
+ .SH SEE ALSO
+-\fB
+-aplay(1)
+-amixer(1)
+-alsactl(1)
+-\fP
++.BR \
++aplay "(1), " \
++amixer "(1), " \
++alsactl (1)
+ 
+ .SH AUTHOR
+-\fBalsa-info\fP was created by the ALSA team, see \fI\-\-about\fP .
++\fBalsa-info\fP was created by the ALSA team, see \fI\-\-about\fP.
+
+--77osvO/tr4EO5orA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="general.bugs"
+
+  Any program (person), that produces man pages, should check the output
+for defects by using (both groff and nroff)
+
+[gn]roff -mandoc -t -ww -b -z -K utf8 <man page>
+
+  The same goes for man pages that are used as an input.
+
+  For a style guide use
+
+  mandoc -T lint
+
+-.-
+
+  Any "autogenerator" should check its products with the above mentioned
+'groff', 'mandoc', and additionally with 'nroff ...'.
+
+  It should also check its input files for too long (> 80) lines.
+
+  This is just a simple quality control measure.
+
+  The "autogenerator" may have to be corrected to get a better man page,
+the source file may, and any additional file may.
+
+  Common defects:
+
+  Not removing trailing spaces (in in- and output).
+  The reason for these trailing spaces should be found and eliminated.
+
+  "git" has a "tool" to point out whitespace,
+see for example "git-apply(1)" and git-config(1)")
+
+  Not beginning each input sentence on a new line.
+Line length and patch size should thus be reduced.
+
+  The script "reportbug" uses 'quoted-printable' encoding when a line is
+longer than 1024 characters in an 'ascii' file.
+
+  See man-pages(7), item "semantic newline".
+
+-.-
+
+The difference between the formatted output of the original and patched file
+can be seen with:
+
+  nroff -mandoc <file1> > <out1>
+  nroff -mandoc <file2> > <out2>
+  diff -d -u <out1> <out2>
+
+and for groff, using
+
+\"printf '%s\n%s\n' '.kern 0' '.ss 12 0' | groff -mandoc -Z - \"
+
+instead of 'nroff -mandoc'
+
+  Add the option '-t', if the file contains a table.
+
+  Read the output from 'diff -d -u ...' with 'less -R' or similar.
+
+-.-.
+
+  If 'man' (man-db) is used to check the manual for warnings,
+the following must be set:
+
+  The option \"-warnings=w\"
+
+  The environmental variable:
+
+export MAN_KEEP_STDERR=yes (or any non-empty value)
+
+  or
+
+  (produce only warnings):
+
+export MANROFFOPT=\"-ww -b -z\"
+
+export MAN_KEEP_STDERR=yes (or any non-empty value)
+
+-.-
+
+--77osvO/tr4EO5orA--
