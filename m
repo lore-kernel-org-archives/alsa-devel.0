@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D8B1C021B8
-	for <alsa-devel@archiver.kernel.org>; Sat,  1 Mar 2025 14:58:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D9B2C19F32
+	for <alsa-devel@archiver.kernel.org>; Sun,  2 Mar 2025 08:15:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5858360214;
-	Sat,  1 Mar 2025 15:58:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5858360214
+	by alsa0.perex.cz (Postfix) with ESMTPS id D302B60214;
+	Sun,  2 Mar 2025 09:15:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D302B60214
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1740841115;
-	bh=qO63Dme/0RwgdJJfNf9EXZBkzG1pcTlRUcmtCLlDDsk=;
+	s=default; t=1740903328;
+	bh=V2M1/Af+GARsj/45jDdlcDN37rLZNKHISa9G8YoKZ+4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Ky49WvwPLPXgEtcQjxjTyEc+pAM01/0JxjsXKsYcS048lPdFyx+9NXJ/pIIJFrCr4
-	 LT/rCh7qbHUh7KTIlpN2eDo70Qed0RCLNYS0qJ4+aLuuHSH40LhaoRpSlXBF6IFYpb
-	 T4Qqq/c3wJe4Eg6TIn4FsPAi30KVakiIgSSCZSts=
+	b=k/l+va5m+co7gOrAPv+mvVQ/HAOzGc/yTuiH05jj2yCxUllktCD14RxSywiC4OEL1
+	 sqpqTXllH0UmktSx7jo5U0vRiM+AsXvnnIO/zaZb+2cQVxZOMEgCEsn/SY+9ZpYTle
+	 4T5PlBUAVdGMPpvqEZo5FLeu9YdzYPoLDB45WaW8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D42AF800C1; Sat,  1 Mar 2025 15:58:09 +0100 (CET)
+	id 44A9DF805C6; Sun,  2 Mar 2025 09:14:51 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7D5EF805BF;
-	Sat,  1 Mar 2025 15:58:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08B99F805BD;
+	Sun,  2 Mar 2025 09:14:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79E51F8014B; Sat,  1 Mar 2025 15:57:41 +0100 (CET)
+	id 05A0BF80301; Sun,  2 Mar 2025 09:14:25 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEAC3F80095
-	for <alsa-devel@alsa-project.org>; Sat,  1 Mar 2025 15:57:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEAC3F80095
+	by alsa1.perex.cz (Postfix) with ESMTP id 7679EF8014B
+	for <alsa-devel@alsa-project.org>; Sun,  2 Mar 2025 09:14:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7679EF8014B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1740841049385895014-webhooks-bot@alsa-project.org>
-References: <1740841049385895014-webhooks-bot@alsa-project.org>
-Subject: unclear example how to use remap plugin
-Message-Id: <20250301145742.79E51F8014B@alsa1.perex.cz>
-Date: Sat,  1 Mar 2025 15:57:41 +0100 (CET)
-Message-ID-Hash: 6YGYXI57KHYW3MH27OPPE4IMY6MJLSSY
-X-Message-ID-Hash: 6YGYXI57KHYW3MH27OPPE4IMY6MJLSSY
+In-Reply-To: <1740903260076287985-webhooks-bot@alsa-project.org>
+References: <1740903260076287985-webhooks-bot@alsa-project.org>
+Subject: Fine-grained control bar
+Message-Id: <20250302081425.05A0BF80301@alsa1.perex.cz>
+Date: Sun,  2 Mar 2025 09:14:25 +0100 (CET)
+Message-ID-Hash: VPDMEDSAOAWEKLRVW7IBMKBUQC5XHLMX
+X-Message-ID-Hash: VPDMEDSAOAWEKLRVW7IBMKBUQC5XHLMX
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6YGYXI57KHYW3MH27OPPE4IMY6MJLSSY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPDMEDSAOAWEKLRVW7IBMKBUQC5XHLMX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,69 +67,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #441 was opened from dibalavs:
+alsa-project/alsa-utils issue #295 was opened from egmontkob:
 
-Hello. 
+The control bars of `alsamixer` are quite coarse. They jump by whole character cells. Often a notable amount of increase or decrease (pressing the Up or Down arrow) isn't reflected visually.
 
-I combiled 3 sound cards into one vrurtual 5.1 card for PCM, and now trying to make volume control also to use single virtual device, to set up volume for all chanel of virtual 5.1 card.
+I'd like to ask for an opion for more fine-grained looking control bars.
 
- 
-I am trying to use remap control plugin mentioned at [source](https://github.com/alsa-project/alsa-lib/blob/master/src/control/control_remap.c#L1230)
+If the terminal's / locale's claimed charset, as reported by `nl_langinfo(CODESET)`, is "UTF-8" (as it should be pretty much everywhere nowadays), you could use the Unicode characters [U+2581 to U+2588](https://www.unicode.org/charts/PDF/U2580.pdf) for this purpose. They jump by eighths of a cell's hight.
 
-But I unable to understand what does it mean:
+Their foreground color would be the desired bar color (red/white/green) and their background would be the default (or black for `-B`). For consistency, this mode should probably replace the current checkerboard (ACS_CKBOARD) characters by the full block U+2588 and only set its foreground, but maybe this doesn't matter.
 
-```
-ctl.name {
-	type remap              # Remap controls
-	child STR               # Child name
-	# or
-	child {                 # Child definition
-		type STR
-		...
-	}
-	remap {
-		# the ID strings are parsed in the amixer style like 'name="Headphone Playback Switch",index=2'
-		SRC_ID1_STR DST_ID1_STR
-		SRC_ID2_STR DST_ID2_STR
-		...
-	}
-	map {
-		# join two stereo controls to one
-		CREATE_ID1_STR {
-			SRC_ID1_STR {
-				vindex.0 0	# source channel 0 to merged channel 0
-				vindex.1 1
-			}
-			SRC_ID2_STR {
-				vindex.2 0
-				vindex.3 1	# source channel 1 to merged channel 3
-			}
-		}
-		# split stereo to mono
-		CREATE_ID2_STR {
-			SRC_ID3_STR {
-				vindex.0 0	# stereo to mono (first channel)
-			}
-		}
-		CREATE_ID3_STR {
-			SRC_ID4_STR {
-				vindex.0 1	# stereo to mono (second channel)
-			}
-		}
-	}
-}
-```
+There are several terminal emulators out there (at least VTE-based ones such as GNOME Terminal and many others; Konsole; and presumably much more) that don't take these glyphs from the font but rather draw them manually to perfectly align them at cell boundaries. In these terminals the bar would look perfectly. In other terminals there might be some ugly gaps at cell boundaries (subject to the selected font), but some people might still prefer this tiny visual glitch over the current coarseness of the bar (again: this would be an option, not a forced new behavior).
 
+Thanks for considering this feature request!
 
-I do not understand what should I write as SRC and DST?:
-
-```
-# the ID strings are parsed in the amixer style like 'name="Headphone Playback Switch",index=2'
-SRC_ID1_STR DST_ID1_STR
-SRC_ID2_STR DST_ID2_STR
-```
-
-Can you give real example without placeholders like: "name", "SRC", "DST", "STR" ?
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/441
-Repository URL: https://github.com/alsa-project/alsa-lib
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/295
+Repository URL: https://github.com/alsa-project/alsa-utils
