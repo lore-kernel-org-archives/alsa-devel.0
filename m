@@ -4,77 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65694C19F32
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Mar 2025 09:43:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45E12C19F32
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Mar 2025 13:08:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A623560455;
-	Wed,  5 Mar 2025 10:43:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A623560455
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5879603DA;
+	Wed,  5 Mar 2025 14:07:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5879603DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741167802;
-	bh=Jn41vaoxuKDMTnwNiVoq+YRmti9bdY6rpCo90h3envs=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SH7WEnS3fzxVT3jZyOBR9moHXEOGwEPQXAl+vSfM5STlLTh4afBpx5mhw6z2i0SS9
-	 In/X1rxNT3U5pthtQb8T5oOCMKx9K/YNSmzXTOMmKkEreJBfIB383kN7KvgoIugD1J
-	 0YQbnqOzmOBVckJ+LWdUoqvkf2cj2mQSCOcgxaG4=
+	s=default; t=1741180078;
+	bh=rRLh86cLFLqmNG+T9Rd6VrXKmn/xHimWelzpVRHuNdI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=MBnrt7Rpv59gk9OcqxgCsii3dcqgKZz3FE8EwXA/0LPVF5YpvgBVpOD+fW18rH7em
+	 Ps9XBwejbvvER52Y74ZfQBGYbuQF9i1dGEaoVhOiHcyIdrAFNQiACpyzALl8FmdRL5
+	 oxTNNPOoV5tsNnqeDyS479tZa0js0eQapGnd4mYA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62EFFF896FB; Wed,  5 Mar 2025 10:38:22 +0100 (CET)
+	id D7CE1F805C5; Wed,  5 Mar 2025 14:07:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35BAEF896FD;
-	Wed,  5 Mar 2025 10:38:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E9B5F805BF;
+	Wed,  5 Mar 2025 14:07:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1317DF802BE; Wed,  5 Mar 2025 10:18:31 +0100 (CET)
-Received: from smtp134-87.sina.com.cn (smtp134-87.sina.com.cn
- [180.149.134.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id BB7B9F802BE; Wed,  5 Mar 2025 14:07:08 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF80AF8011B
-	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2025 10:18:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF80AF8011B
-Received: from unknown (HELO
- zy-virtual-machine.localdomain)([180.159.108.137])
-	by sina.net (10.185.250.30) with ESMTP
-	id 67C816D500001C4D; Wed, 5 Mar 2025 17:18:15 +0800 (CST)
-X-Sender: zhangyi@everest-semi.com
-X-Auth-ID: zhangyi@everest-semi.com
-Authentication-Results: sina.net;
-	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 240DE838EFAC402A9673847D6D4DD209
-X-SMAIL-UIID: 240DE838EFAC402A9673847D6D4DD209-20250305-171815
-From: Zhang Yi <zhangyi@everest-semi.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org,
-	devicetree@vger.kernel.org
-Cc: tiwai@suse.com,
-	amadeuszx.slawinski@linux.intel.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Subject: RE: [PATCH v4 1/2] ASoC: codecs: add support for ES8389
-Date: Wed,  5 Mar 2025 17:18:13 +0800
-Message-Id: <20250305091813.49568-1-zhangyi@everest-semi.com>
-X-Mailer: git-send-email 2.17.1
-X-MailFrom: zhangyi@everest-semi.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7FA52F8011B
+	for <alsa-devel@alsa-project.org>; Wed,  5 Mar 2025 14:07:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FA52F8011B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=FTexpU7l
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 006245C6904;
+	Wed,  5 Mar 2025 13:04:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A7CC4CEE7;
+	Wed,  5 Mar 2025 13:06:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741180021;
+	bh=rRLh86cLFLqmNG+T9Rd6VrXKmn/xHimWelzpVRHuNdI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FTexpU7l/PbhsIurlyD8VSoGVgjPlyNTy6nPpW1AnFmov0caF41Jf7gbOJ05x7bGz
+	 By4ZYuW9sShoEDy0o+h/bGouElGEmLrq7KbP1Wx+sM2QNqZ5U3vnNxN4vxclMISyEU
+	 PH2eGnimZFToswmg70C9j+2SoFsXGjY8t9XPvi8e2btt9y842Mho9dN6+EF8e3s6Z8
+	 0hEjToguGOWXwWdb2K0jRZXKmaAhx/GzZ+ZcjiZb84ZdhUPBDEAKZntWczcY4LJRiM
+	 IkVax+Orcq+PHlmzVwWSrS1yhAmtkMzjaRUzqdvNcsrBCTjeS4MAgUhePjQTuoh5eA
+	 uHPdE+3VFlFUQ==
+Date: Wed, 5 Mar 2025 13:06:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Zhang Yi <zhangyi@everest-semi.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, tiwai@suse.com,
+	amadeuszx.slawinski@linux.intel.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Subject: Re: [PATCH v4 1/2] ASoC: codecs: add support for ES8389
+Message-ID: <77f040bb-a1ff-4eca-831b-ab10bf79e6bc@sirena.org.uk>
+References: <20250305025610.58476-1-zhangyi@everest-semi.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="odRdCbb20AVtN+qv"
+Content-Disposition: inline
+In-Reply-To: <20250305025610.58476-1-zhangyi@everest-semi.com>
+X-Cookie: Everybody gets free BORSCHT!
+Message-ID-Hash: XBFDTZFO3WI55TJAKHJJCTWZHWOFJ7XF
+X-Message-ID-Hash: XBFDTZFO3WI55TJAKHJJCTWZHWOFJ7XF
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2SXFHFPIRKL2WSNIN6ODI4LI4J2WIWWL
-X-Message-ID-Hash: 2SXFHFPIRKL2WSNIN6ODI4LI4J2WIWWL
-X-Mailman-Approved-At: Wed, 05 Mar 2025 09:38:15 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2SXFHFPIRKL2WSNIN6ODI4LI4J2WIWWL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XBFDTZFO3WI55TJAKHJJCTWZHWOFJ7XF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,31 +95,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> > @@ -0,0 +1,961 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * es8389.c  --  ES8389/ES8390 ALSA SoC Audio Codec
-> > + *
-> > + * Copyright (C) 2025 Everest Semiconductor Co., Ltd
-> 
-> Please make the entire comment block a C++ one so things look more
-> consistent.
 
-I will fix it
+--odRdCbb20AVtN+qv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > +	if (es8389->dmic == true) {
-> > +		regmap_update_bits(es8389->regmap, ES8389_DMIC_EN, 0xC0, 0xC0);
-> > +		regmap_update_bits(es8389->regmap, ES8389_ADC_MODE, 0x03, 0x03);
-> > +	} else {
-> > +		regmap_update_bits(es8389->regmap, ES8389_DMIC_EN, 0xC0, 0x00);
-> > +		regmap_update_bits(es8389->regmap, ES8389_ADC_MODE, 0x03, 0x00);
-> > +	}
-> 
-> We also had the DMIC mux, is that useful as a runtime control when we
-> have firmware data telling us if there's a DMIC?  Can both a DMIC and
-> analog input be present in the same system?
-> 
-> It does still look like a lot of these settings might be things that
-> should be user controllable...
+On Wed, Mar 05, 2025 at 10:56:10AM +0800, Zhang Yi wrote:
 
-I'm going to remove es8389->dmic and everest,dmic-enabled and use only DMIC_MUX
+> > set_tdm_slot()
+
+> We will register multiple codecs inside a single dai_link and differentia=
+te these
+> codecs by of_node. And the adc_slot and the dac_slot may be different, th=
+ey can=20
+> be decided by the user.If we use set_tdm_slot,the adc_slot and the dac_sl=
+ot will
+> be same.
+
+No, the machine driver should be configuring different TDM slots for
+each device - that's the whole point of the API.
+
+> > > +		ret =3D clk_prepare_enable(es8389->mclk);
+> > > +		if (ret) {
+> > > +			dev_err(codec->dev, "%s, unable to enable mclk\n", __func__);
+> > > +			return ret;
+> > > +		}
+> > > +	}
+
+> > Making the use of a MCLK depend on the configuration of a TDM slot for
+> > the ADC seems *very* unusual, what's going on there?
+
+> Because we are associating multiple codecs under a single dai_link, we wi=
+ll be
+> executing probe and init many times during initialization.But MCLK only n=
+eeds
+> to be used once.So we decided making the use of a MCLK depend on the conf=
+iguration
+> of a TDM slot for the ADC=20
+
+No, each device should just get and enable the MCLK itself - the clock
+API does reference counting so there's no problem with this, it's normal
+for a clok to have multiple consumers.
+
+--odRdCbb20AVtN+qv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmfITHAACgkQJNaLcl1U
+h9DKdgf/dA3DFm9sVUPZw2kDFYD0y+gP8Zdn23GsRYrB8PFUCETklJpv8/5dVyqO
+IMfmmCdh7iNUgqPOnYSD3Xc9td9gAaiNN6Bn23fe2bMaLqfRw9Nu5evZsag/LM1I
+K+b4s2MvX7N0hR3AGPvyiqerfOMT1BQaC7PILBIPIVfVx6KlIqNYgc1F/c8qNhg4
+6TYrGVhzrGfQ8UCDKv06o7Kf4UI12yoT14700f5bii1mz7fSqnExlQbXo6sExsib
+aCkrak88ekZCVHdtP9wWZ3ZFtr8A9lE/cimo3C5KfYbLFssfUMvv7zLUBwbQF62x
+C9jHK18q3PotRcMDmoJJrr593qrHKQ==
+=U/iY
+-----END PGP SIGNATURE-----
+
+--odRdCbb20AVtN+qv--
