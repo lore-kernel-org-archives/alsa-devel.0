@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D26EC282D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 15:34:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA668C282D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 15:35:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63F8C6042A;
-	Thu,  6 Mar 2025 16:34:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63F8C6042A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EA236045A;
+	Thu,  6 Mar 2025 16:35:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EA236045A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741275256;
-	bh=OZKEJAF+cMjiu4fKSzkSUUZ+k0Q4k31RgsKO9pgE3eE=;
+	s=default; t=1741275332;
+	bh=AGRpAL85N9tM0QPw0PHVjsOM11KXxxqvOEylyyAsk/c=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=ADg9J9VaHxWoeodBQWSklo86UB3GdhHKlpn55K7F409bxuzOVzfkdxQYCid6ZizFV
-	 ZL0RnmPXkMXobwgjwfLKXbzfVp8YplD/etXGFnA5IJnXUIhzDANioYT080wKS23z3G
-	 xh/vT77fBJbGxdSn6C7eU7c6+AKfNF7jsI6E7tXE=
+	b=lDHSXBoH3mXQe0CJT86QueGfMeVSrPzaQ7rygaXTwXEpvtOK5asZ+wijDFmzk+xWf
+	 m1YxQkztFh9kKI28THRUHQwdodrluIDuiuKybMNCRYiz74S0gAOARfgAPqymbY5QWf
+	 rUwGemz1njfJL/evfhqupBuOFYmfnGMGAjbeEY8g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7342CF805BD; Thu,  6 Mar 2025 16:33:49 +0100 (CET)
+	id 189F5F805C0; Thu,  6 Mar 2025 16:34:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6219F805BF;
-	Thu,  6 Mar 2025 16:33:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10C2CF805C2;
+	Thu,  6 Mar 2025 16:34:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 712F4F80154; Thu,  6 Mar 2025 16:33:34 +0100 (CET)
+	id 984F9F804B0; Thu,  6 Mar 2025 16:34:55 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9BC2F80152
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 16:33:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9BC2F80152
+	by alsa1.perex.cz (Postfix) with ESMTP id 13CE9F80152
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 16:34:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13CE9F80152
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1741275212721260071-webhooks-bot@alsa-project.org>
-References: <1741275212721260071-webhooks-bot@alsa-project.org>
+In-Reply-To: <1741275294033925295-webhooks-bot@alsa-project.org>
+References: <1741275294033925295-webhooks-bot@alsa-project.org>
 Subject: HDSPconf missing setting...
-Message-Id: <20250306153334.712F4F80154@alsa1.perex.cz>
-Date: Thu,  6 Mar 2025 16:33:34 +0100 (CET)
-Message-ID-Hash: KHD74FPXDIPPI2E2TAP4TEYLGJG2I2BM
-X-Message-ID-Hash: KHD74FPXDIPPI2E2TAP4TEYLGJG2I2BM
+Message-Id: <20250306153455.984F9F804B0@alsa1.perex.cz>
+Date: Thu,  6 Mar 2025 16:34:55 +0100 (CET)
+Message-ID-Hash: YVWBPI7WBVQ4NBOXF4H77ZIL6IDUNEW7
+X-Message-ID-Hash: YVWBPI7WBVQ4NBOXF4H77ZIL6IDUNEW7
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHD74FPXDIPPI2E2TAP4TEYLGJG2I2BM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YVWBPI7WBVQ4NBOXF4H77ZIL6IDUNEW7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -69,7 +69,7 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 alsa-project/alsa-tools issue #26 was edited from juanpc2018:
 
-$ alsamixer 1.2.2.
+$ alsamixer v1.2.2
 ![Image](https://github.com/user-attachments/assets/6b2860d4-73a0-4526-9a97-13a7c5d6785a)
 ![Image](https://github.com/user-attachments/assets/ec8253d0-627a-4dda-a45e-1a2080d20563)
 
@@ -83,8 +83,8 @@ but it should be a slider similar to HDSPmixer
 ![Image](https://github.com/user-attachments/assets/3ac4ca5c-df61-4cb3-8e8d-2af8fc44019c)
 
 DDS "Sample Offsett",  is similar to a PLL with a more aggressive rejection of the external clock signal.
-IF the external clock coming from s/pdif is better, vs. RME DDS 200pico second jitter clock,  it worsens the clock.
-acts like a blend control:
+IF the external clock coming from s/pdif is better, vs. RME DDS 200pico second jitter clock,  worsens the clock.
+like a blend control:
 0% preference for internal DDS clock = 100% preference for external clock,
 100% preference for internal DDS clock = 0% preference for external clock.
 
