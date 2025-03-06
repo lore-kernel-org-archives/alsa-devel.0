@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3368C282D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 04:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F68CC282D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 05:06:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74EBD60439;
-	Thu,  6 Mar 2025 05:58:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74EBD60439
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C1696044A;
+	Thu,  6 Mar 2025 06:06:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C1696044A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741237127;
-	bh=D2a4d9yOh/oz/mhB+dFvt81iqWhY/Kp46jt2w8N8Cbw=;
+	s=default; t=1741237590;
+	bh=zRzqqi400Xf9h0njXIMSEOSvtZWkh8vIKypyoKQ+Hrs=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=AdkUUP8CzJayouZUOnUH6mt3l+mtb+LGdn1nVESj+wZEvcaxGgpNOKjvS3DpBeZl5
-	 6D08hsTEjv74Zoth8/jyw5f6gNiAFURTa0WFFFMiQsa9DcX1kYXyWk0obePc4gaHsE
-	 c5vquLxMvZEu/ZZXcPzOmKY4VPrD0QhXUl35HAPw=
+	b=a4gN0oGGwHE50zwr5vqx8gjluUfVOwAY28o9Zgl9F2Mt0w9uO5hFcXmhxloYy7Stx
+	 gO1e2aSm1m7cYT72mUOKXSSadKO4LmSC8F0h8ONVcKl9bIeM9c265WhGqsxOfRz2c1
+	 tDzlcvFWDU7Sbfk1LXbsSxy4cnEKh+WGSP/yZOXg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F530F805C4; Thu,  6 Mar 2025 05:58:17 +0100 (CET)
+	id 229CAF805BB; Thu,  6 Mar 2025 06:05:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64A4DF805BF;
-	Thu,  6 Mar 2025 05:58:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEE57F804B0;
+	Thu,  6 Mar 2025 06:05:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53E00F804B0; Thu,  6 Mar 2025 05:58:03 +0100 (CET)
+	id BF5D9F80154; Thu,  6 Mar 2025 06:05:49 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6405EF80134
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 05:58:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6405EF80134
+	by alsa1.perex.cz (Postfix) with ESMTP id C2211F80152
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 06:05:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2211F80152
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1741237081053898573-webhooks-bot@alsa-project.org>
-References: <1741237081053898573-webhooks-bot@alsa-project.org>
+In-Reply-To: <1741237545815485001-webhooks-bot@alsa-project.org>
+References: <1741237545815485001-webhooks-bot@alsa-project.org>
 Subject: regresion: snd_hdsp
-Message-Id: <20250306045803.53E00F804B0@alsa1.perex.cz>
-Date: Thu,  6 Mar 2025 05:58:03 +0100 (CET)
-Message-ID-Hash: H3K4VZZYPHUKVXK2DLNHSBUYX7MEZLXP
-X-Message-ID-Hash: H3K4VZZYPHUKVXK2DLNHSBUYX7MEZLXP
+Message-Id: <20250306050549.BF5D9F80154@alsa1.perex.cz>
+Date: Thu,  6 Mar 2025 06:05:49 +0100 (CET)
+Message-ID-Hash: T5XA7LYCRSCJBEBUDUX7U4BCQTZOBBHO
+X-Message-ID-Hash: T5XA7LYCRSCJBEBUDUX7U4BCQTZOBBHO
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H3K4VZZYPHUKVXK2DLNHSBUYX7MEZLXP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T5XA7LYCRSCJBEBUDUX7U4BCQTZOBBHO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,7 +83,7 @@ E: [alsa-sink-RME Hammerfall HDSP 9632] alsa-sink.c: We were woken up with POLLO
 
 when i play any video or sound file,
 most of the time PulseAudio takes between 7 to 15 seconds to fill the buffer in proper order,
-audio is played in wrong order, chopped, like stutter.
+audio is played in wrong order, chopped, like [stutter](https://www.youtube.com/watch?v=9ZaDn5wne8Y&t=609s)
 
 i have tested /etc/pulse/deamon.conf
 s24le to s24be
