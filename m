@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DF71C28B24
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 16:03:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D309C282D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 16:06:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 975356046F;
-	Thu,  6 Mar 2025 17:02:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 975356046F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30D496048D;
+	Thu,  6 Mar 2025 17:06:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30D496048D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741276989;
-	bh=VjbdNO+vXyGvxNhP322ORGp7/iRKT0s/0KpNrqGSB7o=;
+	s=default; t=1741277179;
+	bh=RdDiDjetp4Y8pTyAHP3DKHZDhsq4uzWuycFn29c5qdY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=didfAnqgB4jO453Q3XKtrgr+5T0p7XqACD8T5Q1p14oQ1YefcfhjsHaWg+ZZZpLgt
-	 rQd72GqSbKR/JYuSYHGbT3YR+oKIsrvlfr/4AE26VABYO8GkqOwpQnducuXN1ZYUBo
-	 7I6333RGH2+SbvS25DJTIbwJdr2SVpf0obbewPK4=
+	b=lkTZZbwQ3lZ9BXHlldAl/XZOhTXLQ+1/kg8mSb/Eo1mEvGCsu2oaoNAaxYKO3o5YR
+	 7h5iX627HWeV7XVDJri3UnRvGttGrSe5vzBwTehkr0pfu9YWbOmhbq8Grr6HyK1+g2
+	 aVRD6n9EyMf6qQ/N2tlZ90z6u9K+y3dzCcTSTAHM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80BB1F805BA; Thu,  6 Mar 2025 17:02:35 +0100 (CET)
+	id 0C3DFF805BD; Thu,  6 Mar 2025 17:05:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7127AF805C3;
-	Thu,  6 Mar 2025 17:02:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB0FBF805C2;
+	Thu,  6 Mar 2025 17:05:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7934F804B0; Thu,  6 Mar 2025 17:02:30 +0100 (CET)
+	id A3F6DF804B0; Thu,  6 Mar 2025 17:05:37 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33034F80152
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 17:02:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33034F80152
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AE6AF8011B
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 17:05:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AE6AF8011B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1741276948959667206-webhooks-bot@alsa-project.org>
-References: <1741276948959667206-webhooks-bot@alsa-project.org>
+In-Reply-To: <1741277135271626234-webhooks-bot@alsa-project.org>
+References: <1741277135271626234-webhooks-bot@alsa-project.org>
 Subject: HDSPconf missing setting...
-Message-Id: <20250306160230.D7934F804B0@alsa1.perex.cz>
-Date: Thu,  6 Mar 2025 17:02:30 +0100 (CET)
-Message-ID-Hash: EAQMFYYR4A4RG2V3PMBF76H7OH6S2WZY
-X-Message-ID-Hash: EAQMFYYR4A4RG2V3PMBF76H7OH6S2WZY
+Message-Id: <20250306160537.A3F6DF804B0@alsa1.perex.cz>
+Date: Thu,  6 Mar 2025 17:05:37 +0100 (CET)
+Message-ID-Hash: H66X4C6IY7LVKTSBLEE42EGBNGKVQN6N
+X-Message-ID-Hash: H66X4C6IY7LVKTSBLEE42EGBNGKVQN6N
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EAQMFYYR4A4RG2V3PMBF76H7OH6S2WZY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H66X4C6IY7LVKTSBLEE42EGBNGKVQN6N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -88,7 +88,7 @@ like a blend control:
 0% preference for internal DDS clock = 100% preference for external clock,
 100% preference for internal DDS clock = 0% preference for external clock.
 at:
-[100% DDS](https://www.youtube.com/watch?v=zJLw2SF_L-g&t=27s) DDS is the Truck, still follows ext.clock, as a recommendation, Not like an [Orchestra Director](https://www.youtube.com/watch?v=HqCIYWZ5b7k&t=0s)
+[100% DDS](https://www.youtube.com/watch?v=zJLw2SF_L-g&t=27s) DDS is the Truck, still follows ext.clock, as a recommendation, Not like an [Orchestra](https://www.youtube.com/watch?v=HqCIYWZ5b7k&t=0s)[Director](https://www.youtube.com/watch?v=VSWpVId72Jo&t=67s)
 0% DDS, ext.clock becomes like a Whip, internal like a Horse / Slave / [Circus Lion](https://www.youtube.com/watch?v=zJLw2SF_L-g&t=105s) DDS is the Lion.
 Clock [Jitter](https://www.youtube.com/watch?v=zJLw2SF_L-g&t=152s)
 
