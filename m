@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E520C282D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 16:19:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79147C282D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 16:36:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8BA4604AB;
-	Thu,  6 Mar 2025 17:19:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8BA4604AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E44F604BC;
+	Thu,  6 Mar 2025 17:35:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E44F604BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741277985;
-	bh=NPaI+OaJD0ZtE/FQEO4XcYgthVIQCB+3LGrisK5jkEA=;
+	s=default; t=1741278962;
+	bh=VvjWr9LcLAX7w+3/VkKlOfPlBf6oV02TjgeI6rYmjws=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Ect69YuCV3Ts3ipARSnw8ti7vJv5nOqGM3ck/ddhTCxr2dAc5aTCiBGWTqUYrjCr/
-	 mqAV14kMLWEn8bkBRQQWYGYywpg1tD0gsXrImY3wxOu6Y6vUPxG5rHIDY7WJ9DX8oZ
-	 lflK6HHAT7dwkHoEGed8RUX0uRKRPdDAquqlrvPM=
+	b=HwZw56D/B11Zn5OfInMzgPRsjqpLgo1CwTHLC0we1ngB9a34lvyGV+AO440Kx6zOY
+	 EKrkbU6DZF1thAnBcymUODa/DaHgsMpamMruS5bx5XdUmmvfNfgLsFb3UMOri4nNfb
+	 984nj3SAYOm6W56dCVTE4reuQcGzPDlZGRztBZH4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B175F8011B; Thu,  6 Mar 2025 17:19:23 +0100 (CET)
+	id D306CF805BD; Thu,  6 Mar 2025 17:35:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 302F3F8011B;
-	Thu,  6 Mar 2025 17:19:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC1FCF805C2;
+	Thu,  6 Mar 2025 17:35:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 329B5F80152; Thu,  6 Mar 2025 17:19:12 +0100 (CET)
+	id 34DD4F804B0; Thu,  6 Mar 2025 17:35:23 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5E4FF804B0
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 17:19:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5E4FF804B0
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F7DEF80134
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 17:35:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F7DEF80134
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1741277950374387264-webhooks-bot@alsa-project.org>
-References: <1741277950374387264-webhooks-bot@alsa-project.org>
+In-Reply-To: <1741278921119678974-webhooks-bot@alsa-project.org>
+References: <1741278921119678974-webhooks-bot@alsa-project.org>
 Subject: HDSPconf missing setting...
-Message-Id: <20250306161913.329B5F80152@alsa1.perex.cz>
-Date: Thu,  6 Mar 2025 17:19:12 +0100 (CET)
-Message-ID-Hash: GLS74AU46NMRERT44GR6JEFZMAG5WJIU
-X-Message-ID-Hash: GLS74AU46NMRERT44GR6JEFZMAG5WJIU
+Message-Id: <20250306163523.34DD4F804B0@alsa1.perex.cz>
+Date: Thu,  6 Mar 2025 17:35:23 +0100 (CET)
+Message-ID-Hash: AJ4KLC4XT5YTQYLVN7OEUO5GV4RHU7TZ
+X-Message-ID-Hash: AJ4KLC4XT5YTQYLVN7OEUO5GV4RHU7TZ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GLS74AU46NMRERT44GR6JEFZMAG5WJIU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AJ4KLC4XT5YTQYLVN7OEUO5GV4RHU7TZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -77,7 +77,7 @@ HDSPconf 1.4 from alsa-tools-gui
 ![Image](https://github.com/user-attachments/assets/d2d1dba5-8da6-43ae-a594-cfd89bdd7e1f)
 ![Image](https://github.com/user-attachments/assets/17d070d3-067e-4d1b-adf9-131f843a634c)
 
-i dont know why iis called DDS Sample Offset
+i dont know why is called DDS Sample Offset
 
 but it should be like HDSPmixer
 ![Image](https://github.com/user-attachments/assets/3ac4ca5c-df61-4cb3-8e8d-2af8fc44019c)
