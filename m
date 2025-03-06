@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9713C282D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 14:09:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95808C282D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 15:33:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AE296044C;
-	Thu,  6 Mar 2025 15:09:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AE296044C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0828960447;
+	Thu,  6 Mar 2025 16:33:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0828960447
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741270151;
-	bh=epMvAYU/UtwfnujXe+Mq+BOubbWU8OizsAnfZRrgc10=;
+	s=default; t=1741275194;
+	bh=qZDnpQ6Ba0jxeRxPWLcv4BRa098LbDQreFld5r3y9N0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=jUdXeKo9ZO8sW2X2v1SpwmS4AWpLV+t7N8b7ZIZF9nqnsfqV8gF/JOvHDVhk8ewsJ
-	 DdK0zTGvyFhsdvyWuOlvHMOVYqXBIRxFwFbPBIiO9gxrdJN2ZRah5/WNivUk/bXZH7
-	 IKIQ9MKt6eEEk1Fsyg2ZQi14bKFFzXPCpTwXDtPc=
+	b=FxAlKjXir2vXoyQnFAE4pyuv9RDaV6eXvswExGc36k6E+B6OkXxJ2oqYzYsDD4GGk
+	 2VFyFe2177VdWGnZVvJsVq1bYFWnGRcmW58IgS5mO9Em1fbXsMREw6wSbih3+FqIit
+	 4tYyc7WqBewqoMdjHXSj0+7Yyr0UNE10fsatqfJI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35C0DF805BF; Thu,  6 Mar 2025 15:08:39 +0100 (CET)
+	id 598A9F805C4; Thu,  6 Mar 2025 16:32:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9411F805C2;
-	Thu,  6 Mar 2025 15:08:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35DE6F805BA;
+	Thu,  6 Mar 2025 16:32:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F1421F804B0; Thu,  6 Mar 2025 15:08:21 +0100 (CET)
+	id 0F870F804B0; Thu,  6 Mar 2025 16:32:36 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33E7CF80152
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 15:08:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33E7CF80152
+	by alsa1.perex.cz (Postfix) with ESMTP id 52B55F8011B
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 16:32:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52B55F8011B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1741270089765899658-webhooks-bot@alsa-project.org>
-References: <1741270089765899658-webhooks-bot@alsa-project.org>
-Subject: Midi Ports are ambiguously named after some alsa update,
- should be distinct.
-Message-Id: <20250306140821.F1421F804B0@alsa1.perex.cz>
-Date: Thu,  6 Mar 2025 15:08:21 +0100 (CET)
-Message-ID-Hash: 5NRTR7W4XYGZX75WDNCIWP73Z65TGEF5
-X-Message-ID-Hash: 5NRTR7W4XYGZX75WDNCIWP73Z65TGEF5
+In-Reply-To: <1741275152916616440-webhooks-bot@alsa-project.org>
+References: <1741275152916616440-webhooks-bot@alsa-project.org>
+Subject: HDSPconf missing setting...
+Message-Id: <20250306153236.0F870F804B0@alsa1.perex.cz>
+Date: Thu,  6 Mar 2025 16:32:36 +0100 (CET)
+Message-ID-Hash: IBC5SNAFKABJQAMJ2SCWUXULZLNBKHOP
+X-Message-ID-Hash: IBC5SNAFKABJQAMJ2SCWUXULZLNBKHOP
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5NRTR7W4XYGZX75WDNCIWP73Z65TGEF5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IBC5SNAFKABJQAMJ2SCWUXULZLNBKHOP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,63 +67,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #442 was opened from Thrilled-Oaf:
+alsa-project/alsa-tools issue #26 was opened from juanpc2018:
 
-Greetings~.
+$ alsamixer 1.2.2.
+![Image](https://github.com/user-attachments/assets/6b2860d4-73a0-4526-9a97-13a7c5d6785a)
 
-I'm on Slackware, which is a pretty languid, laid back distro... so I have to admit that I don't know when this happened...
-But I recently updated it, cause I bought a new midi keyboard, a launchkey mk4, and it should have a 'DAW' port, both on its USB connection and the classic pinned midi cable thing.
+![Image](https://github.com/user-attachments/assets/ec8253d0-627a-4dda-a45e-1a2080d20563)
 
-But instead, aconnect -i and all that just gives me 
-```
-client 24: 'Launchkey MK4 61' [type=kernel,card=2]
-    0 'Launchkey MK4 61 Launchkey MK4 '
-    1 'Launchkey MK4 61 Launchkey MK4 '
-```
+HDSPconf 1.4 from alsa-tools-gui
 
-I actually use JACK audio on top of alsa but even without jack, this still occurs.
-I can sort of pretty print this for JACK but it would be best to have this working properly at the very base... cause if I disable all alsa seq/raw support from JACK, then DAWs like ardour won't even see any midi ports anymore.
+![Image](https://github.com/user-attachments/assets/d2d1dba5-8da6-43ae-a594-cfd89bdd7e1f)
 
-I also tried being 'clever' and loading `snd-seq-dummy`  and setting up some routing that way... didn't work.
-Then I actually edited the source file for the dummy device to specifically give me a properly named DAW port if the index of the dummy port was like, 3 or something. 
-And while the naming worked, it was ultimately ...not able to help out with this issue.
+![Image](https://github.com/user-attachments/assets/17d070d3-067e-4d1b-adf9-131f843a634c)
 
-What is basically assumed by many clients, including the configuration utility `components` for the keyboard is that it has a distinguishable second midi port with a DAW suffix, thus...this is what `aconnect -i` should ideally show.
+i dont know why iis called DDS Sample Offset
 
-```
-client 24: 'Launchkey MK4 61' [type=kernel,card=2]
-    0 'Launchkey MK4 61 Launchkey MK4 '
-    1 'Launchkey MK4 61 Launchkey MK4 DAW'
-```
 
-I think I read an email somewhere that alsa might be running into a name length limit, but ...perhaps there's a way to configure this? 
-If not through a configuration file, then maybe somewhere in the source itself...?
+should be a slider similar to HDSPmixer
+![Image](https://github.com/user-attachments/assets/3ac4ca5c-df61-4cb3-8e8d-2af8fc44019c)
 
-I am not shy about that but I would need directions...100% lol. 
+DDS "Sample Offsett",  is similar to a PLL with a more aggressive rejection of the external clock signal.
+IF the external clock coming from s/pdif is better, vs. RME DDS 200pico second jitter clock,  it worsens the clock.
+acts like a blend control:
+0% preference for internal DDS clock = 100% preference for external clock,
+100% preference for internal DDS clock = 0% preference for external clock.
 
-I also looked up other issues here and some talk about portaudio and mixxx and stuff but this is definitely a system wide issue for me.
-And so sad too, it's a text descriptor... a text label of all things... bringing the mighty ALSA to its knees.
-A measly, peasly, text label for a little bittle MIDI port... 
-
-I tried udev too but ...that was utterly fruitless due to my lack of knowledge/skill... but this all should signal that I'm willing to put in some work, too.
-I just don't know what to do anymore. maybe .asoundrc but all the examples are about PCM and my PCM cards work fine, it's just this MIDI ambiguity thing...
-
-Kernel:
-` 6.12.17 #1 SMP PREEMPT_DYNAMIC Thu Feb 27 15:22:43 CST 2025 x86_64 AMD Ryzen 7 2700 Eight-Core Processor AuthenticAMD GNU/Linux`
-
-All the alsa related packages on my system (many are third party but compiled by me)
-```
-alsa-lib-1.2.13-x86_64-2
-alsa-oss-1.1.8-x86_64-3
-alsa-plugin-jack-1.2.5-x86_64-1SBo-git
-alsa-plugins-1.2.12-x86_64-2
-alsa-plugins-compat32-1.2.12-x86_64-2compat32
-alsa-tools-1.0.28-x86_64-1ponce
-alsa-utils-1.2.13-x86_64-3
-alsamixergui-0.9.0rc2-x86_64-2_SBo
-bluez-alsa-3.1.0-x86_64-2ponce
-zita-alsa-pcmi-0.3.2-x86_64-1alien
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/442
-Repository URL: https://github.com/alsa-project/alsa-lib
+Issue URL     : https://github.com/alsa-project/alsa-tools/issues/26
+Repository URL: https://github.com/alsa-project/alsa-tools
