@@ -4,49 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80D73C282D1
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 05:36:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 909D2C282D1
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 12:55:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F148660437;
-	Thu,  6 Mar 2025 06:36:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F148660437
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CCEE603DC;
+	Thu,  6 Mar 2025 13:55:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CCEE603DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741239395;
-	bh=i6rcZGPHrQ5ZsDP++dkMcXr2L62FrSF3oiKa9FKtQ/o=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=CrkYVua618l+ny3eENn0w5ibVH9G5zIPSV021PBUG3WdHeH8EcvzsN9vS+NY8YKXZ
-	 /A/fLtla7h5Og97uWeQj5DDJcudcMsbHM+Bm8aJwWlff9R2V3QV+01uPR71ElF8nOy
-	 TNnFPqfMRjWGQwYoOTxzaotPaB1Nhm2j+OJy2k7E=
+	s=default; t=1741265713;
+	bh=bBcZ9ABLANw0m43KLoo+f6Pi3K1Mjs5DqMhw6S0nBPM=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=G3lxPNnW5UWHDGeyevUDGflLXHtgepw6+iHutQlBdoA5LbL1U/pYpIe9+zVlgPbjU
+	 i85Ev1RN+lH49YqaSgFaLeVsvTZrwtvwdufBfh32vljcbTxuFro22nYFnD0CZ9UcT9
+	 OMoXS5Qq9ZXINAnC/BkO6KEsYE2B8SX8So9r9G10=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D021F805BD; Thu,  6 Mar 2025 06:36:13 +0100 (CET)
+	id 236E2F80589; Thu,  6 Mar 2025 13:54:46 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36803F8056F;
-	Thu,  6 Mar 2025 06:36:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DBAFF80589;
+	Thu,  6 Mar 2025 13:54:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B34AAF804B0; Thu,  6 Mar 2025 06:35:54 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79D0CF80152
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 06:35:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79D0CF80152
+	id 5C00AF804B0; Thu,  6 Mar 2025 13:54:19 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 70F5EF8011B
+	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 13:54:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F5EF8011B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=SXLcQr+l
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 5264MlXx028765;
+	Thu, 6 Mar 2025 06:54:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=PODMain02222019; bh=DtoCK8jw6C/y9f59
+	b02KKkBHYUairlbU3HgbdnmjOjs=; b=SXLcQr+lEEt+T3QBeUrxy2CxglO7Hqjf
+	N0lUb6Q2N4aePbWq30UKEepfQexWapE2MwQiuUQqmNivVbFnOUAzXvuCjaQsUoaV
+	ULOQ0qwfS5XOrF24XHCSDHGBf+foMTBUYCasHZKobXulVo5bg6EGsmaZIH8+CrxC
+	Xvl7jZo/DJli9uYs7QkRLKmjSXzYb+4mGL5zXkfgt+YGtlrg3mosZhPFWsGBDNYd
+	ewkVweu8VyMJBptMv0IHIO4ZDR/9aHq2TEOgvoGBA/CFFcrP67/oRMzQ/1xeItJo
+	yGBYrVoVy7CtOLK4yj/e7PMNONr9rh8kbu8L2n35f/xr3mWTs+ZOtQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 4571nu1283-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Mar 2025 06:54:04 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 6 Mar
+ 2025 12:54:02 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.14 via Frontend Transport; Thu, 6 Mar 2025 12:54:02 +0000
+Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com
+ [198.90.208.14])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 9CD60820248;
+	Thu,  6 Mar 2025 12:54:02 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <perex@perex.cz>
+CC: <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>
+Subject: [PATCH alsa-ucm-conf] sof-soundwire: Split cs42l43 dmic
+ initialisation
+Date: Thu, 6 Mar 2025 12:54:02 +0000
+Message-ID: <20250306125402.1741562-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1741239352142091513-webhooks-bot@alsa-project.org>
-References: <1741239352142091513-webhooks-bot@alsa-project.org>
-Subject: regresion: snd_hdsp
-Message-Id: <20250306053554.B34AAF804B0@alsa1.perex.cz>
-Date: Thu,  6 Mar 2025 06:35:54 +0100 (CET)
-Message-ID-Hash: 5GU22ZGWI3HKZH62SJIOUIVT5ZV7PCYK
-X-Message-ID-Hash: 5GU22ZGWI3HKZH62SJIOUIVT5ZV7PCYK
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: y5LN-o2H50n6wH48bl5uzSghbNUAi4mR
+X-Authority-Analysis: v=2.4 cv=Lqxoymdc c=1 sm=1 tr=0 ts=67c99aec cx=c_pps
+ a=uGhh+3tQvKmCLpEUO+DX4w==:117 a=uGhh+3tQvKmCLpEUO+DX4w==:17
+ a=Vs1iUdzkB0EA:10 a=w1d2syhTAAAA:8 a=dpcNpdP63YbFYX7TTaEA:9
+ a=YXXWInSmI4Sqt1AkVdoW:22
+X-Proofpoint-GUID: y5LN-o2H50n6wH48bl5uzSghbNUAi4mR
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: LJU2L4KODC4WO7GS2K3CRRCNKLUJCO4L
+X-Message-ID-Hash: LJU2L4KODC4WO7GS2K3CRRCNKLUJCO4L
+X-MailFrom: prvs=216027eb45=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5GU22ZGWI3HKZH62SJIOUIVT5ZV7PCYK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LJU2L4KODC4WO7GS2K3CRRCNKLUJCO4L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,79 +108,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-firmware issue #11 was edited from juanpc2018:
+Split the initialisation of cs42l43 into a headset part and a dmic
+part. This will prevent the dmic mute controls getting attached to
+the mute LED when the codec dmics are not being used.
 
-![Image](https://github.com/user-attachments/assets/e57192a7-ad1c-44f9-b51d-7806efed9a32)
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ ucm2/codecs/cs42l43-dmic/init.conf    | 23 +++++++++++++++++++++++
+ ucm2/codecs/cs42l43/init.conf         | 11 +----------
+ ucm2/sof-soundwire/sof-soundwire.conf |  2 +-
+ 3 files changed, 25 insertions(+), 11 deletions(-)
+ create mode 100644 ucm2/codecs/cs42l43-dmic/init.conf
 
-```
-$ pulseaudio
-W: [pulseaudio] module.c: module-combine is deprecated: Please use module-combine-sink instead of module-combine!
-W: [pulseaudio] module-combine.c: We will now load module-combine-sink. Please make sure to remove module-combine from your configuration.
-E: [alsa-sink-RME Hammerfall HDSP 9632] alsa-sink.c: ALSA woke us up to write new data to the device, but there was actually nothing to write.
-E: [alsa-sink-RME Hammerfall HDSP 9632] alsa-sink.c: Most likely this is a bug in the ALSA driver 'snd_hdsp'. Please report this issue to the ALSA developers.
-E: [alsa-sink-RME Hammerfall HDSP 9632] alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another value < min_avail.
+diff --git a/ucm2/codecs/cs42l43-dmic/init.conf b/ucm2/codecs/cs42l43-dmic/init.conf
+new file mode 100644
+index 0000000..441d082
+--- /dev/null
++++ b/ucm2/codecs/cs42l43-dmic/init.conf
+@@ -0,0 +1,23 @@
++# cs42l43 specific control settings
++
++LibraryConfig.remap.Config {
++	ctl.default.map {
++		"name='cs42l43 Microphone Capture Switch'" {
++			"name='cs42l43 Decimator 3 Switch'".vindex.0 0
++			"name='cs42l43 Decimator 4 Switch'".vindex.1 0
++		}
++		"name='cs42l43 Microphone Capture Volume'" {
++			"name='cs42l43 Decimator 3 Volume'".vindex.0 0
++			"name='cs42l43 Decimator 4 Volume'".vindex.1 0
++		}
++	}
++}
++
++FixedBootSequence [
++	cset "name='cs42l43 Decimator 3 Switch' 0"
++	cset "name='cs42l43 Decimator 4 Switch' 0"
++	exec "-/sbin/modprobe snd_ctl_led"
++	sysw "-/class/sound/ctl-led/mic/card${CardNumber}/attach:cs42l43 Decimator 3 Switch"
++	sysw "-/class/sound/ctl-led/mic/card${CardNumber}/attach:cs42l43 Decimator 4 Switch"
++]
++
+diff --git a/ucm2/codecs/cs42l43/init.conf b/ucm2/codecs/cs42l43/init.conf
+index 0fbb517..8e41a0f 100644
+--- a/ucm2/codecs/cs42l43/init.conf
++++ b/ucm2/codecs/cs42l43/init.conf
+@@ -2,14 +2,6 @@
+ 
+ LibraryConfig.remap.Config {
+ 	ctl.default.map {
+-		"name='cs42l43 Microphone Capture Switch'" {
+-			"name='cs42l43 Decimator 3 Switch'".vindex.0 0
+-			"name='cs42l43 Decimator 4 Switch'".vindex.1 0
+-		}
+-		"name='cs42l43 Microphone Capture Volume'" {
+-			"name='cs42l43 Decimator 3 Volume'".vindex.0 0
+-			"name='cs42l43 Decimator 4 Volume'".vindex.1 0
+-		}
+ 		"name='cs42l43 Headset Microphone Capture Switch'" {
+ 			"name='cs42l43 Decimator 1 Switch'".vindex.0 0
+ 		}
+@@ -20,8 +12,7 @@ LibraryConfig.remap.Config {
+ }
+ 
+ FixedBootSequence [
++	cset "name='cs42l43 Decimator 1 Switch' 0"
+ 	exec "-/sbin/modprobe snd_ctl_led"
+ 	sysw "-/class/sound/ctl-led/mic/card${CardNumber}/attach:cs42l43 Decimator 1 Switch"
+-	sysw "-/class/sound/ctl-led/mic/card${CardNumber}/attach:cs42l43 Decimator 3 Switch"
+-	sysw "-/class/sound/ctl-led/mic/card${CardNumber}/attach:cs42l43 Decimator 4 Switch"
+ ]
+diff --git a/ucm2/sof-soundwire/sof-soundwire.conf b/ucm2/sof-soundwire/sof-soundwire.conf
+index 96d2966..57e5610 100644
+--- a/ucm2/sof-soundwire/sof-soundwire.conf
++++ b/ucm2/sof-soundwire/sof-soundwire.conf
+@@ -114,7 +114,7 @@ If.hs_init {
+ If.mic_init {
+ 	Condition {
+ 		Type RegexMatch
+-		Regex "(rt712-dmic|rt713-dmic|rt715(-sdca)?)"
++		Regex "(cs42l43-dmic|rt712-dmic|rt713-dmic|rt715(-sdca)?)"
+ 		String "${var:MicCodec1}"
+ 	}
+ 	True.Include.mic_init.File "/codecs/${var:MicCodec1}/init.conf"
+-- 
+2.39.5
 
-```
-
-when i play any video or sound file,
-most of the time PulseAudio takes between 7 to 15 seconds to fill the buffer in proper order,
-audio is played in wrong order, chopped, like [stutter](https://www.youtube.com/watch?v=9ZaDn5wne8Y&t=609s).[2](https://www.youtube.com/watch?v=oeSa9SyVd94&t=9s)
-
-i have tested /etc/pulse/deamon.conf
-s24le to s24be
-problem persists.
-
-forced sample rate to 48Khz,
-APIC ACPI Tables v2 & v3 in Bios,
-
-Audacity 3.6. ALSA hw:0 also Crash.
-but Jack Audio works ok.
-
-i remember hdsp9632 worked ok on U/Kubuntu 10.04 & 10.10
-Now 20.04.4 LTS has problems.
-
-im using Liquorix 6.3 Kernel.
-
-```
-$ sudo apt show alsa-firmware*
-Package: alsa-firmware-loaders
-Version: 1.1.7-1ubuntu1
-Priority: extra
-Section: multiverse/sound
-Source: alsa-tools
-Origin: Ubuntu
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Original-Maintainer: Debian ALSA Maintainers <pkg-alsa-devel@lists.alioth.debian.org>
-Bugs: https://bugs.launchpad.net/ubuntu/+filebug
-Installed-Size: 211 kB
-Depends: fxload, udev, libasound2 (>= 1.0.24.1), libc6 (>= 2.4)
-Homepage: https://www.alsa-project.org/
-Download-Size: 25,0 kB
-APT-Manual-Installed: yes
-APT-Sources: http://archive.ubuntu.com/ubuntu focal/multiverse amd64 Packages
-Description: ALSA software loaders for specific hardware
-
-
-$ sudo apt show alsa-tools-gui
-Package: alsa-tools-gui
-Version: 1.1.7-1ubuntu1
-Priority: extra
-Section: universe/sound
-Source: alsa-tools
-Origin: Ubuntu
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-Original-Maintainer: Debian ALSA Maintainers <pkg-alsa-devel@lists.alioth.debian.org>
-Bugs: https://bugs.launchpad.net/ubuntu/+filebug
-Installed-Size: 1.002 kB
-Depends: libasound2 (>= 1.0.24.1), libc6 (>= 2.29), libfltk1.1 (>= 1.1.6), libglib2.0-0 (>= 2.35.9), libgtk-3-0 (>= 3.0.0), libgtk2.0-0 (>= 2.8.0), libstdc++6 (>= 5.2)
-Homepage: https://www.alsa-project.org/
-Task: ubuntustudio-audio
-Download-Size: 220 kB
-APT-Manual-Installed: yes
-APT-Sources: http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages
-Description: GUI based ALSA utilities for specific hardware
-
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-firmware/issues/11
-Repository URL: https://github.com/alsa-project/alsa-firmware
