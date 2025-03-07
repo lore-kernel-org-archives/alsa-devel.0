@@ -4,77 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F50BC282DE
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Mar 2025 16:52:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47935C282D1
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Mar 2025 02:51:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C514D604B1;
-	Thu,  6 Mar 2025 17:52:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C514D604B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0C8D604C6;
+	Fri,  7 Mar 2025 03:51:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0C8D604C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741279955;
-	bh=wn6xJhbl/Pse1EyyU15U5P4N59HzRgpmak3FGuqgezc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Utth8H2OsozREWwL4RmzRYofbAhL5c7lYZi+QH6xiL8P5982CjHYfUp47PgqNIBW5
-	 ydBncaYlubfNPTazkgId4v67RNNryrdMeRLrzZLgcBcMVvPF8usjvVLatdVGxx/lpd
-	 hGwAZJM9NMxMki5K4fK3ugSvcomMtOBIjivffejQ=
+	s=default; t=1741315877;
+	bh=bcEdKhWtn/NV/79EfC/AjUQMwIpLHh4RAtNeSo//gZ0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=mZfi8SItXYkmI6WfKqeWt8qKm2JNjW396MaiB5EBTTr8YzNZ++XT3hKW39p6S7mmA
+	 ZQFjo3jD6cL0uyoND21WVwLjLvxfs1/HVppeWdxZosA6zYuUd8H3XbPFTov8rb+l8c
+	 3TsYg9jhIHrPKtHAdy8L4+GqiUycBNXfaTOJ6lZM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA65AF805C4; Thu,  6 Mar 2025 17:52:00 +0100 (CET)
+	id 7D571F805C0; Fri,  7 Mar 2025 03:50:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8CC6F805B1;
-	Thu,  6 Mar 2025 17:52:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7277CF805BF;
+	Fri,  7 Mar 2025 03:50:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 833F3F804B0; Thu,  6 Mar 2025 08:24:19 +0100 (CET)
-Received: from smtp134-102.sina.com.cn (smtp134-102.sina.com.cn
- [180.149.134.102])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18997F8011B
-	for <alsa-devel@alsa-project.org>; Thu,  6 Mar 2025 08:24:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18997F8011B
-Received: from unknown (HELO
- zy-virtual-machine.localdomain)([180.159.108.137])
-	by sina.net (10.185.250.32) with ESMTP
-	id 67C94D8B0000292F; Thu, 6 Mar 2025 15:23:57 +0800 (CST)
-X-Sender: zhangyi@everest-semi.com
-X-Auth-ID: zhangyi@everest-semi.com
-Authentication-Results: sina.net;
-	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 855E3EFC9669480CB4C67813C17AA883
-X-SMAIL-UIID: 855E3EFC9669480CB4C67813C17AA883-20250306-152357
-From: Zhang Yi <zhangyi@everest-semi.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org,
-	devicetree@vger.kernel.org
-Cc: tiwai@suse.com,
-	amadeuszx.slawinski@linux.intel.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Subject: RE: [PATCH v4 1/2] ASoC: codecs: add support for ES8389
-Date: Thu,  6 Mar 2025 15:23:54 +0800
-Message-Id: <20250306072354.19987-1-zhangyi@everest-semi.com>
-X-Mailer: git-send-email 2.17.1
-X-MailFrom: zhangyi@everest-semi.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	id 94019F80526; Fri,  7 Mar 2025 03:50:41 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id ED910F800ED
+	for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2025 03:50:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED910F800ED
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1741315839669042826-webhooks-bot@alsa-project.org>
+References: <1741315839669042826-webhooks-bot@alsa-project.org>
+Subject: regresion: snd_hdsp
+Message-Id: <20250307025041.94019F80526@alsa1.perex.cz>
+Date: Fri,  7 Mar 2025 03:50:41 +0100 (CET)
+Message-ID-Hash: 54TNQ4WAXQBLPF2MCLCYJBLRQUKDZB52
+X-Message-ID-Hash: 54TNQ4WAXQBLPF2MCLCYJBLRQUKDZB52
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: M5FCEW5NHZLZQ2KWCDSIHP45MTY233E6
-X-Message-ID-Hash: M5FCEW5NHZLZQ2KWCDSIHP45MTY233E6
-X-Mailman-Approved-At: Thu, 06 Mar 2025 16:51:57 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M5FCEW5NHZLZQ2KWCDSIHP45MTY233E6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/54TNQ4WAXQBLPF2MCLCYJBLRQUKDZB52/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,36 +67,88 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> > > set_tdm_slot()
-> 
-> > We will register multiple codecs inside a single dai_link and differentiate these
-> > codecs by of_node. And the adc_slot and the dac_slot may be different, they can 
-> > be decided by the user.If we use set_tdm_slot,the adc_slot and the dac_slot will
-> > be same.
-> 
-> No, the machine driver should be configuring different TDM slots for
-> each device - that's the whole point of the API.
+alsa-project/alsa-firmware issue #11 was edited from juanpc2018:
 
-We are using multiple codecs as a single device.So we can't use set_tdm_slot to configure
-different slots for multiple codecs under one device.
+![Image](https://github.com/user-attachments/assets/e57192a7-ad1c-44f9-b51d-7806efed9a32)
 
-> > > > +		ret = clk_prepare_enable(es8389->mclk);
-> > > > +		if (ret) {
-> > > > +			dev_err(codec->dev, "%s, unable to enable mclk\n", __func__);
-> > > > +			return ret;
-> > > > +		}
-> > > > +	}
-> 
-> > > Making the use of a MCLK depend on the configuration of a TDM slot for
-> > > the ADC seems *very* unusual, what's going on there?
-> 
-> > Because we are associating multiple codecs under a single dai_link, we will be
-> > executing probe and init many times during initialization.But MCLK only needs
-> > to be used once.So we decided making the use of a MCLK depend on the configuration
-> > of a TDM slot for the ADC 
-> 
-> No, each device should just get and enable the MCLK itself - the clock
-> API does reference counting so there's no problem with this, it's normal
-> for a clok to have multiple consumers.
+```
+$ pulseaudio
+W: [pulseaudio] module.c: module-combine is deprecated: Please use module-combine-sink instead of module-combine!
+W: [pulseaudio] module-combine.c: We will now load module-combine-sink. Please make sure to remove module-combine from your configuration.
+E: [alsa-sink-RME Hammerfall HDSP 9632] alsa-sink.c: ALSA woke us up to write new data to the device, but there was actually nothing to write.
+E: [alsa-sink-RME Hammerfall HDSP 9632] alsa-sink.c: Most likely this is a bug in the ALSA driver 'snd_hdsp'. Please report this issue to the ALSA developers.
+E: [alsa-sink-RME Hammerfall HDSP 9632] alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another value < min_avail.
 
-ok,I'll fix it
+```
+
+when i play any video or sound file,
+most of the time PulseAudio takes between 7 to 15 seconds to fill the buffer in proper order,
+audio is played in wrong order, chopped, like [stutter](https://www.youtube.com/watch?v=9ZaDn5wne8Y&t=609s).[2](https://www.youtube.com/watch?v=oeSa9SyVd94&t=9s)
+
+i have tested /etc/pulse/deamon.conf
+s24le to s24be
+problem persists.
+
+forced sample rate to 48Khz,
+APIC ACPI Tables v2 & v3 in Bios,
+
+Audacity 3.6. ALSA hw:0 also Crash.
+but Jack Audio works ok.
+
+i remember hdsp9632 worked ok on U/Kubuntu 10.04 & 10.10
+Now 20.04.4 LTS has problems.
+
+im using Liquorix 6.3 Kernel.
+
+```
+$ sudo apt show alsa-firmware*
+Package: alsa-firmware-loaders
+Version: 1.1.7-1ubuntu1
+Priority: extra
+Section: multiverse/sound
+Source: alsa-tools
+Origin: Ubuntu
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Debian ALSA Maintainers <pkg-alsa-devel@lists.alioth.debian.org>
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Installed-Size: 211 kB
+Depends: fxload, udev, libasound2 (>= 1.0.24.1), libc6 (>= 2.4)
+Homepage: https://www.alsa-project.org/
+Download-Size: 25,0 kB
+APT-Manual-Installed: yes
+APT-Sources: http://archive.ubuntu.com/ubuntu focal/multiverse amd64 Packages
+Description: ALSA software loaders for specific hardware
+
+
+$ sudo apt show alsa-tools-gui
+Package: alsa-tools-gui
+Version: 1.1.7-1ubuntu1
+Priority: extra
+Section: universe/sound
+Source: alsa-tools
+Origin: Ubuntu
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Debian ALSA Maintainers <pkg-alsa-devel@lists.alioth.debian.org>
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Installed-Size: 1.002 kB
+Depends: libasound2 (>= 1.0.24.1), libc6 (>= 2.29), libfltk1.1 (>= 1.1.6), libglib2.0-0 (>= 2.35.9), libgtk-3-0 (>= 3.0.0), libgtk2.0-0 (>= 2.8.0), libstdc++6 (>= 5.2)
+Homepage: https://www.alsa-project.org/
+Task: ubuntustudio-audio
+Download-Size: 220 kB
+APT-Manual-Installed: yes
+APT-Sources: http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages
+Description: GUI based ALSA utilities for specific hardware
+
+```
+
+----------------------------------
+
+found another way to trigger the bug....
+
+if i play a video on YT, the first 7 seconds are corrupted,
+but if in the middle of the video i pause,
+and wait 7 seconds, 
+and continue to play, the corrupted 7 seconds happen again.
+
+Issue URL     : https://github.com/alsa-project/alsa-firmware/issues/11
+Repository URL: https://github.com/alsa-project/alsa-firmware
