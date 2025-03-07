@@ -4,95 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44562C282DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Mar 2025 10:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B11E2C28B30
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Mar 2025 10:37:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B3ED605A0;
-	Mon, 10 Mar 2025 11:02:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B3ED605A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 500B4606CF;
+	Mon, 10 Mar 2025 11:37:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 500B4606CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741600986;
-	bh=cWxy0cI9IRBdtcF9hBtL064XIaLB5iQpj1puE0k2iHs=;
+	s=default; t=1741603071;
+	bh=Q/V0aaz3DDhHJ8YaaLre875x6yAlroDYRf9eHgIu6Jk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KBzgGvn3Fe0ReSrLJs5mU/newFhOF+0QSP66AW2WzQLrbJG4gZqDt8CXIxm1zKDg0
-	 f0GNOIc9a7z80qarJQyY8r7v5ksg3P9ac0YucjJBODDG/SrgqE25iSF6DBYXFXNaNR
-	 jIcbOOvVwpqZPeYWrt1YqW05SzFBwjAD+qsaIKaE=
+	b=vj8kxaSjlO35b17p0BhB5GAjHfjEz+taHYyb5eMjywFzjhEzWcNpMqQ9MoFhyWUIu
+	 OuQLKT7GzxoS4Sx3A0cVTK1L2ohowe7nQNK9ccON+LQrnG+Is/A4emIkQneUcY8AbO
+	 CXmE5o7UFyGfvRnWATEdUp71KVE1YaKqxgRjB/ig=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9B97F898E3; Mon, 10 Mar 2025 08:36:24 +0100 (CET)
+	id 6C90DF80642; Fri,  7 Mar 2025 14:12:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C88F7F898EB;
-	Mon, 10 Mar 2025 08:36:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BEE5F80641;
+	Fri,  7 Mar 2025 14:12:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8288F898D2; Mon, 10 Mar 2025 08:36:17 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id AFA5AF80621; Fri,  7 Mar 2025 14:12:50 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D34F9F898D2
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2025 08:36:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D34F9F898D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 42B4BF805B2
+	for <alsa-devel@alsa-project.org>; Fri,  7 Mar 2025 14:12:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42B4BF805B2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=IMBe0aZy
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-43935d1321aso4181715e9.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 10 Mar 2025 00:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1741592175; x=1742196975;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=xa4CNNhvKmxPqvqn82oXm7n4I9nALluv+zVQC8jnB2c=;
-        b=IMBe0aZyKVJw1DgVBBQJ8rbiT4T/a/W1EgtOm/26MpIh0GImmC+RkikUfo1eP6w6fu
-         LaTRM0BU9nS+Im5ijfyB3+KFH8VAT+1jeJ7gYceb4s35MoAyz9vQbqzgPCDGh5GnX++O
-         dXIX3EGmm7BpqzOI5rLEOv96xV/M6fqQGUMTzRM0nfa9IsWVU9UQOdyt3u058aae9Wbb
-         ZTq8tiFhFyhM8Ux3mIMC4B04uvFHW9+GevHGNrdG71M13ZzeWiqju1lklYs9rFwKCRCC
-         rrvmher4QG8XyzZ+WLtPEQ+PyvBJhQWDEqPlG10Z/gTuEMHT10sw8dloM7pXJBdDmnZE
-         84EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741592175; x=1742196975;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xa4CNNhvKmxPqvqn82oXm7n4I9nALluv+zVQC8jnB2c=;
-        b=K0jb/8um8VxaUCntcYvLrecyx6dW8I3W1QsGLQJi63hz/OJ7uvnfLQ+iB2IJjAYIat
-         d4Uyg/QwYurlq2XeyhL81Vsw/WFvlr4QuFrzhIwziDF8C79+7myFaPKX++reIFPD+NGN
-         fnTC7RveLX97n3CQVqAcb0Ngsj8qyBssWJ00/5xk/83A644pl2/BamZhQBtxYVFrGCcv
-         Vr55JFtr417aPrTJJM24+qVFU+TxEO4y6J4vwRvpsa4zqUnALB+cMVz7gAl50HrRTyys
-         93kHFGPbfc7hRdt4h0OquGNUB6EaT+b186xdmC1wGJqAvPCFhm6280BaPtaeHPOQ7qsD
-         UPXw==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWfkJWMjWLWWSMeZCObRnmYdVpvuK9RFuz2HlRz9xyXIXCWWXMp3gW389n0QQTANHui0lHOhjzcTi6u@alsa-project.org
-X-Gm-Message-State: AOJu0YwxEBLE3hGiA06tRwRF+YtXcy1SBCXVctMGBkbAf4BF/CUUKMzF
-	ak4k8bniW4pAcpm0+JfxHJXw/eOhSBMvhyS3YyqvD5AM3stB2ouaBmTRglTF+20=
-X-Gm-Gg: ASbGnctyjwDlQ7XwNtqKXT6oG1qBARMiZ53xcI9jJWu+qBNMMS1DpGHx9GN8OWhuFKI
-	G/ZElAchdCLcnNlqWxKqBmxDWjdWBznm+X4B0A/+BcKKvEZlQYJw8YUTGP6sN2DcYSGZbtcSOef
-	KcHOGrFQ6UghRSDaHynC1AR+FgiU2XSfRGgLbNvUdIsYIr1EQHCupldy4l37BvowpHaEu/+iVWc
-	3C6DdYnnWc4VBDoEtIhRWAloyApLjr3VO4GoBwBAQPA/ZlEbmJHPF4KHcMcfRVTXXgupDdod8EA
-	s9yZwaIrEg6NRG4PaeCMinDfrzlC3obzpehAXc3o6JLJsCIN0Ya3ba4bj9qc4ir8
-X-Google-Smtp-Source: 
- AGHT+IFVXFL64jZecsah6xQkhxZkKgRHp9R2l4F8ZTX3AzFLhyxktPPsVkwFvk588glmtmFgKAtL7Q==
-X-Received: by 2002:a05:6000:1a8b:b0:38d:b090:a0c4 with SMTP id
- ffacd0b85a97d-3913bbbae73mr1776799f8f.10.1741592174645;
-        Mon, 10 Mar 2025 00:36:14 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.206.225])
-        by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3912c0e34fasm14110350f8f.75.2025.03.10.00.36.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Mar 2025 00:36:14 -0700 (PDT)
-Message-ID: <056eb3c0-ed76-4b38-9d23-1ffb738ff864@linaro.org>
-Date: Mon, 10 Mar 2025 08:36:11 +0100
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=uBJk9oCJ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id EC10F5C5BCC;
+	Fri,  7 Mar 2025 13:10:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E76C4CED1;
+	Fri,  7 Mar 2025 13:12:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741353162;
+	bh=Q/V0aaz3DDhHJ8YaaLre875x6yAlroDYRf9eHgIu6Jk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=uBJk9oCJeKoxk9SwJu95LvZSswibFRbEpucMkm6WVIp5izsITfEooclEeQpgpBISK
+	 YOAmktj4/5yoYo6YuQlOuJfq1U9at6iSGcKR3AzxizALJ6oIJtQJi+Q2f2akBxQOIZ
+	 GoIp/vRdeTZYQ/gND4vPs8zq0N4fhLJLTjqUCYYDaEodt9fzhU3iS/LjqdL5zY0pa6
+	 khWo6mEPeJpITsK7dYSkg4qst++sSmOLKOxzYMXNO+ZdGBELgU1b3KDVv7hY6AS05t
+	 /6gojdOx0T9T2ejKkv7thLmeW8dwBIvMqmD8Vk6E1U2jDEhkoTYEOEltuZ/sUqL9iq
+	 X7idKhrigvnwQ==
+Message-ID: <ede60a70-f93f-42e7-aba5-2e5cfb4ac16a@kernel.org>
+Date: Fri, 7 Mar 2025 14:12:36 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v5 2/2] ASoC: dt-bindings: Add Everest ES8389 audio CODEC
@@ -102,9 +67,9 @@ Cc: tiwai@suse.com, amadeuszx.slawinski@linux.intel.com, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
 References: <20250307091916.100164-1-zhangyi@everest-semi.com>
  <20250307091916.100164-3-zhangyi@everest-semi.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
  JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
@@ -114,46 +79,45 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  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
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
+ 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 fv0=
 In-Reply-To: <20250307091916.100164-3-zhangyi@everest-semi.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DKOKIQM5NIA7JL2QKLTLXFP6RGCS7BXO
-X-Message-ID-Hash: DKOKIQM5NIA7JL2QKLTLXFP6RGCS7BXO
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Message-ID-Hash: JDRJ4NBLZYUU34X4YGVPAHCDCSRLFMSJ
+X-Message-ID-Hash: JDRJ4NBLZYUU34X4YGVPAHCDCSRLFMSJ
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -165,7 +129,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DKOKIQM5NIA7JL2QKLTLXFP6RGCS7BXO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JDRJ4NBLZYUU34X4YGVPAHCDCSRLFMSJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -180,29 +144,25 @@ On 07/03/2025 10:19, Zhang Yi wrote:
 > 
 > Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
 > ---
+>  .../bindings/sound/everest,es8389.yaml        | 50 +++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/everest,es8389.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/everest,es8389.yaml b/Documentation/devicetree/bindings/sound/everest,es8389.yaml
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
+You got feedback how to create CC list. Two times.
 
----
+You still create it incorrectly and Cc address which does not exist in
+the kernel and is a proof you work on wrong tree, which I asked to correct.
 
-<form letter>
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
+What's more, there is still no changelog and you never responded to
+review comments.
 
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new versions
-of patchset, under or above your Signed-off-by tag, unless patch changed
-significantly (e.g. new properties added to the DT bindings). Tag is
-"received", when provided in a message replied to you on the mailing
-list. Tools like b4 can help here. However, there's no need to repost
-patches *only* to add the tags. The upstream maintainer will do that for
-tags received on the version they apply.
-
-Full context and explanation:
-https://elixir.bootlin.com/linux/v6.12-rc3/source/Documentation/process/submitting-patches.rst#L577
-</form letter>
+Can you slow down with resubmits and rethink the received feedback? I
+expect that feedback to be responded to, so I am not wasting time here
+repeating the same every time.
 
 Best regards,
 Krzysztof
+
