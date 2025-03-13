@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CA6DC282DE
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Mar 2025 17:15:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 421DBC282DE
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Mar 2025 20:21:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E7C0603A7;
-	Thu, 13 Mar 2025 18:14:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E7C0603A7
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD193603B5;
+	Thu, 13 Mar 2025 21:20:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD193603B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741886098;
-	bh=7fejxIuGCM7767/hDyS8efuCVz5gALkh1KjWPS9VGvY=;
+	s=default; t=1741897267;
+	bh=/RFjwBFW6jim5j1BfY1tZCTys9K+ksVBfOhNKlluev4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=qcA4AnbWETIT3d2BUa9ICL1soc8EwOY5u4D0g2wDpAmP2u5u8vKnkunyRvPz2RSX5
-	 idI6brr5uC50UfvzPG4jU1xjzFpM71JD2Ysvm0Fz1yF8HgHDJd5Dn8vz2aooi0zBUK
-	 rmRJkiJGRfalEVgLAf7/m/jlr577iMbmX/oIRm9M=
+	b=dnYuWBcSAIe3QR6lueb2t1dzBKjpqP3pQobgwCjyBh9ParMvlgWu7aqnE2zu8OOY4
+	 NAxzV3+LxET2WMjuKUcPuIQzQl3upPyOLzrNTeW9U/wsyZ/0JMRWHZBnCSl2x0Jh6z
+	 HWaKLEKsRKegA2jmuM9W40HJ1dSnh1kLiuxRmmbI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7BD36F805B0; Thu, 13 Mar 2025 18:14:23 +0100 (CET)
+	id A1A2DF805BE; Thu, 13 Mar 2025 21:20:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52A69F805AF;
-	Thu, 13 Mar 2025 18:14:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87EFFF805B0;
+	Thu, 13 Mar 2025 21:20:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF425F8026D; Thu, 13 Mar 2025 18:14:18 +0100 (CET)
+	id 6749AF8026D; Thu, 13 Mar 2025 21:20:29 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13E65F8014B
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2025 18:14:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13E65F8014B
+	by alsa1.perex.cz (Postfix) with ESMTP id A992FF800D0
+	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2025 21:20:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A992FF800D0
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <182c6c23ba1bc300-webhooks-bot@alsa-project.org>
-In-Reply-To: <182c6c23b7987d00-webhooks-bot@alsa-project.org>
-References: <182c6c23b7987d00-webhooks-bot@alsa-project.org>
-Subject: Need to edit Steinberg configuration files
-Date: Thu, 13 Mar 2025 18:14:18 +0100 (CET)
-Message-ID-Hash: I4PQJO4BRAXSFFMDASMSC3FVSAR5Q42S
-X-Message-ID-Hash: I4PQJO4BRAXSFFMDASMSC3FVSAR5Q42S
+Message-Id: <182c764c99008100-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/520@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/520@alsa-project.org>
+Subject: Split the GoXLR configuration into Full Device and Mini
+Date: Thu, 13 Mar 2025 21:20:29 +0100 (CET)
+Message-ID-Hash: ZTKTJBGP33675F27JWSTW7HSOU3P35GJ
+X-Message-ID-Hash: ZTKTJBGP33675F27JWSTW7HSOU3P35GJ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I4PQJO4BRAXSFFMDASMSC3FVSAR5Q42S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZTKTJBGP33675F27JWSTW7HSOU3P35GJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,14 +67,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #519 was opened from AdrianusWest:
+alsa-project/alsa-ucm-conf pull request #520 was opened from FrostyCoolSlug:
 
-I faced a problem with disappearance of HiFi profile in Steinberg UR22C audio card settings.
+This commit splits the GoXLR and GoXLR Mini into separate configurations.
 
-Attempting to fix it myself did not lead to anything. I addressed the issue to pipewire developers, who pointed out that the existing configuration file needs to be corrected: "The problem here is that previously, the channel splitting was done with ALSA dshare plugin which as it turns out does not require the exact channel numbers to match. As this introduces additional latency, in 1.4.0 the splitting is now done on Pipewire side. But of course there was a nasty surprise (and affects multiple devices), so probably there will be 1.4.1 with a workaround for wrong channel numbers in profiles."
+The GoXLR Mini will always (at this point) have 21 channels defined, where as the full sized GoXLR will have either 23 or 25 depending on Firmware (23 is FAR more common at this point, as the firmware with 25 channels is still in beta).
 
-The link to the thread is attached:
-https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/4609
+Separating out the two devices should at least partially solve the recent issue with Pipewire.
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/519
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/520
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/520.patch
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
