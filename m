@@ -4,77 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10E2BC282EC
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Mar 2025 15:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEA9CC282EC
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Mar 2025 15:58:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15C3360424;
-	Fri, 14 Mar 2025 16:57:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15C3360424
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3978960401;
+	Fri, 14 Mar 2025 16:58:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3978960401
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741967882;
-	bh=ZZGNMIv+7ubq3C08ymB563OSRghoTPXhIKrm0DJAr0A=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jp12tvilOm6D2o3sq4s7adUiVz6+RrQcGO3J0qr4iWwkBmff164Ch0+8y2PLn2sGF
-	 vpdD01+h0aB6k9/+N6GoB97RDfbT763/GToAdluo8wRP2fV2M9OTquWbgx1GfIN5dH
-	 u+6XYfJUchcM9eKbE7WtdXO6yX9F7+L9JrJIGWas=
+	s=default; t=1741967896;
+	bh=hb1rNFcy7x4r+WKETC3Emi8l3CGYOAIQ2Vnq4dZVtkM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=ppda3+7fPQ5bEm6VrCDG7corQQIDRM8qoePXw8HWxXp36sIYaa2qNTS56vUlH/vE+
+	 2qB5xKBR5JIlRrLzjZ2qRmKoL420QKFtE17tDaSpfzbo1NOyvxSRin0GSeO8NJo/O+
+	 2x7EG3u7NvboAYuOVabTrCFRb5umFAaa+sOcHX0g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48436F8065B; Fri, 14 Mar 2025 16:56:28 +0100 (CET)
+	id C6C86F805B0; Fri, 14 Mar 2025 16:57:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35D55F8065C;
-	Fri, 14 Mar 2025 16:56:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C8B0F805B4;
+	Fri, 14 Mar 2025 16:57:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66B30F897DF; Sun,  9 Mar 2025 10:52:42 +0100 (CET)
-Received: from smtp134-91.sina.com.cn (smtp134-91.sina.com.cn
- [180.149.134.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2FF0CF80659
-	for <alsa-devel@alsa-project.org>; Sun,  9 Mar 2025 10:52:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FF0CF80659
-Received: from unknown (HELO
- zy-virtual-machine.localdomain)([180.159.108.137])
-	by sina.net (10.185.250.31) with ESMTP
-	id 67CD64DB00000524; Sun, 9 Mar 2025 17:52:29 +0800 (CST)
-X-Sender: zhangyi@everest-semi.com
-X-Auth-ID: zhangyi@everest-semi.com
-Authentication-Results: sina.net;
-	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: B1BE9EF4BC834BA2845525DC5EFD9A9D
-X-SMAIL-UIID: B1BE9EF4BC834BA2845525DC5EFD9A9D-20250309-175229
-From: Zhang Yi <zhangyi@everest-semi.com>
-To: krzysztof.kozlowski+dt@linaro.org
-Cc: tiwai@suse.com,
-	amadeuszx.slawinski@linux.intel.com,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org,
-	alsa-devel@alsa-project.org,
-	broonie@kernel.org,
-	devicetree@vger.kernel.org
-Subject: RE: [PATCH v5 2/2] ASoC: dt-bindings: Add Everest ES8389 audio CODEC
-Date: Sun,  9 Mar 2025 17:52:27 +0800
-Message-Id: <20250309095227.113183-1-zhangyi@everest-semi.com>
-X-Mailer: git-send-email 2.17.1
-X-MailFrom: zhangyi@everest-semi.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	id 575CAF80424; Fri, 14 Mar 2025 16:57:24 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id A2D6BF800FA
+	for <alsa-devel@alsa-project.org>; Fri, 14 Mar 2025 16:57:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2D6BF800FA
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <182cb685f3079a00-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/522@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/522@alsa-project.org>
+Subject: ucm2: Add support for Lenovo Yoga 7x and T14s
+Date: Fri, 14 Mar 2025 16:57:24 +0100 (CET)
+Message-ID-Hash: NB32PCEAGCSHRBXS2MXF57MAQNFWYLUE
+X-Message-ID-Hash: NB32PCEAGCSHRBXS2MXF57MAQNFWYLUE
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 6ZQXRJPDJFZFZHBW4WPADI7HMMM7422B
-X-Message-ID-Hash: 6ZQXRJPDJFZFZHBW4WPADI7HMMM7422B
-X-Mailman-Approved-At: Fri, 14 Mar 2025 15:56:22 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ZQXRJPDJFZFZHBW4WPADI7HMMM7422B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NB32PCEAGCSHRBXS2MXF57MAQNFWYLUE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,23 +67,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> >  1 file changed, 50 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/everest,es8389.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/everest,es8389.yaml b/Documentation/devicetree/bindings/sound/everest,es8389.yaml
-> 
-> 
-> You got feedback how to create CC list. Two times.
-> 
-> You still create it incorrectly and Cc address which does not exist in
-> the kernel and is a proof you work on wrong tree, which I asked to correct.
-> 
-> What's more, there is still no changelog and you never responded to
-> review comments.
-> 
-> Can you slow down with resubmits and rethink the received feedback? I
-> expect that feedback to be responded to, so I am not wasting time here
-> repeating the same every time.
+alsa-project/alsa-ucm-conf pull request #522 was opened from Srinivas-Kandagatla:
 
-I'm sorry for the trouble I've caused you.
-And I have responded to the comments at v3 and v4.
+This patch series adds support for Lenovo T14s and Yoga Slim 7x based on Qualcomm x1e80100 SoC.
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/522
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/522.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
