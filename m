@@ -4,117 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F102C282EC
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Mar 2025 15:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C01CC28B28
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Mar 2025 07:47:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 012EA603E2;
-	Fri, 14 Mar 2025 16:58:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012EA603E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5D796042F;
+	Sat, 15 Mar 2025 08:46:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5D796042F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1741967926;
-	bh=icfLkLqGKWW26hnb1AU463ZnXjWAaQN9Q84QjqE5RNI=;
-	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=hd+z+9b5vfjRcO5cnx5zwzxGitG+Ixmer7i1VkGF9gdtvhRdZd4lFYWiBgDzr6V1e
-	 ih6mhaQhZhUcd2OITOikV3ct/MqgGdMLalVOGyopQoKUn1C1uaoyxHsBsBMUeT4I6P
-	 pZ11oyMYxyJ5VaCv0sIiuqbtpms6XxUcLw0gOUa0=
+	s=default; t=1742024824;
+	bh=+trdX42qc7gCiNVcbR/OIDuxhBrAxRTkHhj0AhcAOx8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Xfieg3HVV8gaB/LUD2qX3QIJ3TSmyYnl0Om3NTId3C+khueT50Sg9KLVBi33bYiei
+	 lZJ+p9IhzcJiDC0teV5YpJaB5ff5MKORymrCHAyEU2FO1Kz+wUpsDIJzj653iRfO9v
+	 CUz98wsNIgmlKd47GpUk2ddMesg37LpFciTr70UU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04BCDF80600; Fri, 14 Mar 2025 16:57:53 +0100 (CET)
+	id E1950F805A8; Sat, 15 Mar 2025 08:46:31 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1E9CF80600;
-	Fri, 14 Mar 2025 16:57:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C087F805B2;
+	Sat, 15 Mar 2025 08:46:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 42048F8026D; Thu, 13 Mar 2025 23:50:39 +0100 (CET)
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com
- [IPv6:2607:f8b0:4864:20::231])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70B7CF8014B
-	for <alsa-devel@alsa-project.org>; Thu, 13 Mar 2025 23:50:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70B7CF8014B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=HDd+WtsX
-Received: by mail-oi1-x231.google.com with SMTP id
- 5614622812f47-3fbc00143d6so976975b6e.3
-        for <alsa-devel@alsa-project.org>;
- Thu, 13 Mar 2025 15:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741906234; x=1742511034;
- darn=alsa-project.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FsN7kJmROxLePPJbjero8U9prIqPw6PZhY9eXdga8OM=;
-        b=HDd+WtsX0K/YYVOgIQzCb4Pk3CWuaOtugHm3rEc+gFEdJqfvaaYAW6i/oZxFdpDBcK
-         8HkkI6DnIpQj+sRZMvGtww0xx6CcV7560rt8165c0ipogNyysmvyUUpXWyq4QKBjnsWQ
-         0dMoR/I6D92YPLQnxDp68jMMmrW2VNgDRgD7tXAq0s2L0XNv1rpurdezn4wSrUtaOHnL
-         RVgxLUuSAf+mgtUe4H9DQw9HI+3dHxT9M++CgkQ04yuzZMm/pMQASPi593SJAYxBHubB
-         cJvtZ3HNbh3XLkuUnFjLTg239XjjkQmZhe+VVGvCTxsfLPiWdHhUs2S3jm9VlZdM5ft/
-         wNAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741906234; x=1742511034;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FsN7kJmROxLePPJbjero8U9prIqPw6PZhY9eXdga8OM=;
-        b=h7xtL9Rid22H0hk4CC0x8dIbEChjqa1JqRCbnYY3SeXlbAsT/wOktJar0FW+B0Ei5/
-         UOGeQWN9rYNp3lZZN9drgWJN3R+tcoiod3TzBOI4zZJQR7wKsG2MusJa4Jukxiy8vEmI
-         MW71WvOXZs8sHrYnrZ8v/N4CjN08eNCCjSwpXY4QmjyipWbGXpzb2PGfJutu+S6yra8P
-         uaXbnSkz6yVlmYwyOtiFe72yF1dyaDShk4Xuze+sFlcDJ+eImWfZ2+pkClmUIFrtj08i
-         FCB6nDvns8gBqEqKrbVLxQJDuwlpAQ008DJSo41oTdL/U0UQnxqwRd86VyPyhdmSSivl
-         epqw==
-X-Gm-Message-State: AOJu0YxzZ8HJC+o5OdIQRkoEiPevXGzlthr1BT8jRUOuVXeM9gu9TO9O
-	/U7yBr362gUrh288vpWtC91aKZkrz2aTdHkn0cRx7fdVcr8dfMCY3Ko6Mg==
-X-Gm-Gg: ASbGncsIts2Vk1mIObXnahXmJovG954YWzjD5ZN1xcLaMiGwDVEh7n8mrh3UEJAl2cN
-	Y/HylxKoZcDcvpb5E5NrSR9WsOVYGLgsYceN7Zf0c4Me1OW3G1dz6Jcpu91alQCuhi7mtF+0caP
-	LkENfy5h387SbG/BiKW1298ctTBZSRUkXXQmfyElAVSMLsTvVAN7md2adRDBLBFN7HFrJZMR7OT
-	2BV9VYPy4sfmngwvlnhfxlpLVqp5kSEf4lyzp6wiA87UjwYMtgdDJM8v4+GTygFB5/xrnKvgpPK
-	/U0eDKqg4NQ4mVP8BKS4szo+Vt7shHMgEudWLOH3hyp5L/8IvSvWqkV29ZFAg/+eCQ8kqN7xiC2
-	D9ylK8MTW49feAJgwtdk=
-X-Google-Smtp-Source: 
- AGHT+IE3aLiLasEGBZIA/lBt2KkC13hIuXwR3MNaapB5nLeYidS0LxbqKNvBNuE0B06sRx18PQfThQ==
-X-Received: by 2002:a05:6808:3447:b0:3f6:abec:2b9a with SMTP id
- 5614622812f47-3fdeea286d2mr86026b6e.10.1741906234267;
-        Thu, 13 Mar 2025 15:50:34 -0700 (PDT)
-Received: from [192.168.2.101] (syn-071-010-188-141.res.spectrum.com.
- [71.10.188.141])
-        by smtp.gmail.com with ESMTPSA id
- 5614622812f47-3fcd403b6b2sm427930b6e.6.2025.03.13.15.50.31
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Mar 2025 15:50:32 -0700 (PDT)
-Message-ID: <f40ffd7f-c8c9-469d-8550-f7ae58e5e603@gmail.com>
-Date: Thu, 13 Mar 2025 17:50:28 -0500
+	id 42D01F8023A; Sat, 15 Mar 2025 08:46:26 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 8252DF80095
+	for <alsa-devel@alsa-project.org>; Sat, 15 Mar 2025 08:46:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8252DF80095
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-From: Nick <nicksebaysales@gmail.com>
-Subject: FFADO Save / Load for M-Audio
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-MailFrom: nicksebaysales@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <182cea4fbb510c00-webhooks-bot@alsa-project.org>
+In-Reply-To: <182cea4fbb3cbf00-webhooks-bot@alsa-project.org>
+References: <182cea4fbb3cbf00-webhooks-bot@alsa-project.org>
+Subject: pyalsa.alsamixer.Element.get_volume_dB returns error status instead
+ of actual value
+Date: Sat, 15 Mar 2025 08:46:26 +0100 (CET)
+Message-ID-Hash: X5ZFALJ6PGVPLPMM5NS2SPIKHQWPNLA6
+X-Message-ID-Hash: X5ZFALJ6PGVPLPMM5NS2SPIKHQWPNLA6
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: JTT65XME6MGYY3DQIET6U7YJH5MXFMTQ
-X-Message-ID-Hash: JTT65XME6MGYY3DQIET6U7YJH5MXFMTQ
-X-Mailman-Approved-At: Fri, 14 Mar 2025 15:57:47 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JTT65XME6MGYY3DQIET6U7YJH5MXFMTQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X5ZFALJ6PGVPLPMM5NS2SPIKHQWPNLA6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,12 +68,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello there,
+alsa-project/alsa-python issue #16 was opened from tespent:
 
-Is Save / Load implemented for FFADO - Mixer at this time? This is 
-pertaining to M-Audio ProFire (610 and 2626).
+I am writing a status collector for my PC, and I noticed that `pyalsa.alsamixer.Element.get_volume_dB` always returns 0 in my test, which lead to invalid result for the collected status.
 
-thank you!
+After digging into code I notice that the following code returns `res` instead of `val` as the result:
+https://github.com/alsa-project/alsa-python/blob/f8f9260282eb9c97f53e4689e04182dc87a4810e/pyalsa/alsamixer.c#L983
 
-Nick
+I am able to workaround this issue by using `elem.ask_volume_dB(elem.get_volume())` but this looks silly.
 
+Btw, I'm willing to contribute and subscribed to alsa-devel mailing list but I didn't figure out exactly how. Can someone tell me?
+
+Issue URL     : https://github.com/alsa-project/alsa-python/issues/16
+Repository URL: https://github.com/alsa-project/alsa-python
