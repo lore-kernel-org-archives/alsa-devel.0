@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 816ABC35FF3
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Mar 2025 13:16:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47A84C282EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Mar 2025 13:16:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A345360361;
-	Tue, 18 Mar 2025 14:16:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A345360361
+	by alsa0.perex.cz (Postfix) with ESMTPS id 141C0603C3;
+	Tue, 18 Mar 2025 14:16:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 141C0603C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1742303784;
-	bh=hIZWXYMKWTfTI4Ku8ZKFYn+onVLQdLgszEGMeUHIaNo=;
-	h=Date:To:From:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qqzNKal21ufpoAIuhpyQ3VFT8E7QRRjfyt3eoZempRzTNvUZHCii9Wmhe3DYJek0F
-	 5s+DS1RQOaeQvs0zLXej77OriqTwT3ZDRaFWCkmwCCvFcKCyC1k//Y1N76G6r3Ysem
-	 0ZlFb8599TlzlvO9hNBeqjHU40fLKiZk900L2tvI=
+	s=default; t=1742303804;
+	bh=M5U8yZkupMeJdPdceKmOgq2WYT0m/JGyRhiZdENwz7w=;
+	h=Date:To:From:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=oTW2s6jtKLGmk4+DvRhnMR1hWCnKPKGPLyKKoe9LAaXkaY0SdkWNR6PeUWAo0hbC8
+	 2asX+yg1+W2tNIgPi5ImZ6blwuVuPq51RhrWJb1fjPn1Ef4JHzxMOdcgGWrmK5Mjyt
+	 IXr8HhBuw8srj45rjSol7vjXLAlu3O0y7MdNr884=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07F44F805EF; Tue, 18 Mar 2025 14:15:21 +0100 (CET)
+	id 0692BF8062D; Tue, 18 Mar 2025 14:15:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E343AF805FF;
-	Tue, 18 Mar 2025 14:15:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF3CDF80620;
+	Tue, 18 Mar 2025 14:15:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A27ADF8055B; Mon, 17 Mar 2025 09:34:02 +0100 (CET)
-Received: from mail-40140.protonmail.ch (mail-40140.protonmail.ch
- [185.70.40.140])
+	id 72796F8055B; Mon, 17 Mar 2025 09:57:01 +0100 (CET)
+Received: from mail-10698.protonmail.ch (mail-10698.protonmail.ch
+ [79.135.106.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B84B8F80073
-	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2025 09:34:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B84B8F80073
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56C84F80073
+	for <alsa-devel@alsa-project.org>; Mon, 17 Mar 2025 09:56:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C84F80073
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=proton.me header.i=@proton.me header.a=rsa-sha256
- header.s=protonmail header.b=ObN1J4iZ
+ header.s=protonmail header.b=QfbizwVI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1742200439; x=1742459639;
-	bh=hIZWXYMKWTfTI4Ku8ZKFYn+onVLQdLgszEGMeUHIaNo=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
-	 List-Unsubscribe:List-Unsubscribe-Post;
-	b=ObN1J4iZjKY+SVVzINBq2bMZS53GY3ak8Xitew7BsJZMdYfyZkRz8J5eGWKWiRtHT
-	 ffp0GrA5sKzQfy8ivB63leTpL0zmot94xekDO6y4PzVf24MXZMuGQVGg/Btq/dYFLA
-	 GGyx9rbhNgl2kEO6Eb4EK4cz1a+FKJ7pI6pxR/eeK55Az+GguXu9D4EEwoCrJ1ATWE
-	 zMmKUfkgPFBIqbQsxd9IpuUNhpPY3Ul7rbQQrlO9lkaM5nQqfTyLYESvvL9bGDjQTF
-	 J1KPI9TVscKrmUWtLuIvR/XwWF9gAeMHppepb/1OY/apctpQAKwlJH28NGFzWZ7FfO
-	 +8CFRtdjlfU2g==
-Date: Mon, 17 Mar 2025 08:33:53 +0000
+	s=protonmail; t=1742201818; x=1742461018;
+	bh=M5U8yZkupMeJdPdceKmOgq2WYT0m/JGyRhiZdENwz7w=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=QfbizwVIcKZ/djyY5dCadCCdZREpY9rPouBlQPWaj6L77qp02dU9KUf/yrUyR39YU
+	 rGSJACajpYvF8zRW75VFeZFSguyALfwVpSPaLr54ZT8KRbRBKswY9OxEoIeHFNdJIq
+	 1PDAOjtOjvB6vhF10XBERHBwUPj3FPhCEL+4DzCN+6KlGWwVWfM0fZpHEb3k4Gsc1N
+	 NiLbIeehl/AbyptxxshPlIxhmpGEbTps3jqPAZuVVb+omc4/nsmJKSFss2uD+zHMfd
+	 o1/lXfNFi2q+VfjU76UvAiOmGKoEJp/riFnDOspxBYancvToeUlupaisp+xdDOyc4I
+	 trq0cepAzfSoA==
+Date: Mon, 17 Mar 2025 08:56:53 +0000
 To: tiwai@suse.com
 From: Dhruv Deshpande <dhrv.d@proton.me>
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org,
- Dhruv Deshpande <dhrv.d@proton.me>
+Cc: alsa-devel@alsa-project.org, Dhruv Deshpande <dhrv.d@proton.me>,
+ stable@vger.kernel.org
 Subject: [PATCH] ALSA: hda/realtek: Support mute LED on HP Laptop 15s-du3xxx
- The mute LED on this HP laptop uses ALC236 and requires a quirk to function.
- This patch enables the existing quirk for the device.
-Message-ID: <20250317083319.42195-1-dhrv.d@proton.me>
+Message-ID: <20250317085621.45056-1-dhrv.d@proton.me>
+In-Reply-To: <875xk8f3ue.wl-tiwai@suse.de>
+References: <20250317083319.42195-1-dhrv.d@proton.me>
+ <875xk8f3ue.wl-tiwai@suse.de>
 Feedback-ID: 76774272:user:proton
-X-Pm-Message-ID: 2d5d4fb9449516412bcce8dadefd406d8b054991
+X-Pm-Message-ID: 1612640222e7ed998a44cd39718ca1c7f14ef6b7
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -73,15 +75,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GGB4VMP5EUHGXF56CPZZCJGWYXBKSZ5W
-X-Message-ID-Hash: GGB4VMP5EUHGXF56CPZZCJGWYXBKSZ5W
+Message-ID-Hash: 3SOBRPKRIHUYQMF46WMM2PBCO3EVBE36
+X-Message-ID-Hash: 3SOBRPKRIHUYQMF46WMM2PBCO3EVBE36
 X-Mailman-Approved-At: Tue, 18 Mar 2025 13:15:09 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGB4VMP5EUHGXF56CPZZCJGWYXBKSZ5W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3SOBRPKRIHUYQMF46WMM2PBCO3EVBE36/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,6 +92,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The mute LED on this HP laptop uses ALC236 and requires a quirk to function=
+.
+This patch enables the existing quirk for the device.
+
+Tested on my laptop and the LED behaviour works as intended.
+
+Cc: stable@vger.kernel.org
 Signed-off-by: Dhruv Deshpande <dhrv.d@proton.me>
 ---
  sound/pci/hda/patch_realtek.c | 1 +
