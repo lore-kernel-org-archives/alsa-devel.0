@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45897C282EC
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Mar 2025 19:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CE3EC282EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Mar 2025 19:38:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71E3B602C5;
-	Tue, 18 Mar 2025 20:32:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71E3B602C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58BAC60282;
+	Tue, 18 Mar 2025 20:38:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58BAC60282
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1742326345;
-	bh=cMl2zONtbFQzMsJ9wJEiSpAUCjAtFmFfkjTqIGyl+4U=;
+	s=default; t=1742326697;
+	bh=eDZiqsJCnRAew2LohDDzhP9DQPs0FRleiVWZz3vV9Hk=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=cOg/xlrua/49eDb0UBjQMGhpAwvyMQENcPgrE7a5Io3LueyGzi+JFBR82+fFznHXE
-	 2QclTr1QPDl/HZCHDBD+8+7iRgeFyog4U6oT4ss93DOLCz8xg/5Xx0Ck7aTj7BpQSY
-	 xFLvKsW4AmvWZIsikfQfn5lw7RKXz0M9OpS9f1Mw=
+	b=VwFxNTvEe9+wwwbLawPJVD6hUIu6JU4zklLrXF5V4/txg1PpAgS0Pj+0501NSIR3d
+	 utBsN+esNHciG4j7ZBckS1soeuBzcb5dyhzi9IquqGcvaFN1NAA14wgRi9ciTJusPP
+	 Fx/+r5r740ZWvAnK+rCTjjWCvk0Rco0EB/jJ6gn4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B14BF805C2; Tue, 18 Mar 2025 20:31:50 +0100 (CET)
+	id A1682F805BB; Tue, 18 Mar 2025 20:37:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 558FCF805B6;
-	Tue, 18 Mar 2025 20:31:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AAA2F805BE;
+	Tue, 18 Mar 2025 20:37:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 429B4F80587; Tue, 18 Mar 2025 20:31:43 +0100 (CET)
+	id AF123F80587; Tue, 18 Mar 2025 20:37:38 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84EB0F80093
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2025 20:31:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84EB0F80093
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CBDAF80093
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2025 20:37:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CBDAF80093
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <182dfc8a3aaae200-webhooks-bot@alsa-project.org>
-In-Reply-To: <182dfc8a3aa2dd00-webhooks-bot@alsa-project.org>
-References: <182dfc8a3aa2dd00-webhooks-bot@alsa-project.org>
+Message-Id: <182dfcdcc690f900-webhooks-bot@alsa-project.org>
+In-Reply-To: <182dfcdcc6888800-webhooks-bot@alsa-project.org>
+References: <182dfcdcc6888800-webhooks-bot@alsa-project.org>
 Subject: No Micrphone detected on ALC4080 - Gigabyte B850I Aorus Pro (rev 1.0)
-Date: Tue, 18 Mar 2025 20:31:43 +0100 (CET)
-Message-ID-Hash: 3I53BNTXXBAQCJTX2D72FDK7KDF75A5B
-X-Message-ID-Hash: 3I53BNTXXBAQCJTX2D72FDK7KDF75A5B
+Date: Tue, 18 Mar 2025 20:37:38 +0100 (CET)
+Message-ID-Hash: 6722CJQWW3FTBAQPNRDAAQPYWMMZ5ZVN
+X-Message-ID-Hash: 6722CJQWW3FTBAQPNRDAAQPYWMMZ5ZVN
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3I53BNTXXBAQCJTX2D72FDK7KDF75A5B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6722CJQWW3FTBAQPNRDAAQPYWMMZ5ZVN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -170,6 +170,88 @@ node hw:2, #9 (0,0,0,Mic - Input Jack,1) VALUE
 node hw:2, #9 (0,0,0,Mic - Input Jack,1) VALUE
 ```
 
+`amixer -c events` (unplugging and plugging mic)
+```
+event value: numid=9,iface=CARD,name='Mic - Input Jack',index=1
+event value: numid=9,iface=CARD,name='Mic - Input Jack',index=1
+```
+
+`amixer -c 2 contents`
+```
+numid=8,iface=CARD,name='Clock Source 3 Validity'
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=on
+numid=12,iface=CARD,name='Clock Source 4 Validity'
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=on
+numid=15,iface=CARD,name='Clock Source 5 Validity'
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=on
+numid=19,iface=CARD,name='Clock Source 6 Validity'
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=on
+numid=20,iface=CARD,name='Headphone - Output Jack'
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=off
+numid=5,iface=CARD,name='Mic - Input Jack'
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=off
+numid=9,iface=CARD,name='Mic - Input Jack',index=1
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=on
+numid=16,iface=CARD,name='Speaker - Output Jack'
+  ; type=BOOLEAN,access=r-------,values=1
+  : values=off
+numid=13,iface=MIXER,name='PCM Playback Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
+numid=17,iface=MIXER,name='PCM Playback Switch',index=1
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
+numid=14,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=87,step=0
+  : values=62,62
+  | dBminmax-min=-65.25dB,max=0.00dB
+numid=18,iface=MIXER,name='PCM Playback Volume',index=1
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=87,step=0
+  : values=62,62
+  | dBminmax-min=-65.25dB,max=0.00dB
+numid=6,iface=MIXER,name='Mic Capture Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
+numid=10,iface=MIXER,name='Mic Capture Switch',index=1
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=on
+numid=7,iface=MIXER,name='Mic Capture Volume'
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=39,step=0
+  : values=39,39
+  | dBminmax-min=-17.25dB,max=12.00dB
+numid=11,iface=MIXER,name='Mic Capture Volume',index=1
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=39,step=0
+  : values=39,39
+  | dBminmax-min=-17.25dB,max=12.00dB
+numid=1,iface=PCM,name='Capture Channel Map'
+  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
+  : values=0,0
+  | container
+    | chmap-fixed=FL,FR
+numid=3,iface=PCM,name='Playback Channel Map'
+  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
+  : values=0,0
+  | container
+    | chmap-fixed=FL,FR
+numid=2,iface=PCM,name='Capture Channel Map',device=1
+  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
+  : values=0,0
+  | container
+    | chmap-fixed=FL,FR
+numid=4,iface=PCM,name='Playback Channel Map',device=1
+  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
+  : values=0,0
+  | container
+    | chmap-fixed=FL,FR
+```
+
 `arecord -l`
 ```
 **** List of CAPTURE Hardware Devices ****
@@ -180,6 +262,8 @@ card 2: Audio [USB Audio], device 1: USB Audio [USB Audio #1]
   Subdevices: 1/1
   Subdevice #0: subdevice #0
 ```
+
+
 
 `alsaucm -c hw:2 dump text`
 ```
