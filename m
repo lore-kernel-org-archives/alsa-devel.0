@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4985FC282EC
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Mar 2025 19:31:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45897C282EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Mar 2025 19:32:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA65760276;
-	Tue, 18 Mar 2025 20:30:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA65760276
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71E3B602C5;
+	Tue, 18 Mar 2025 20:32:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71E3B602C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1742326262;
-	bh=jfVLw0+sg4L4vCU1uey2F0pvT8uFRt6jamYc8rl6EUk=;
+	s=default; t=1742326345;
+	bh=cMl2zONtbFQzMsJ9wJEiSpAUCjAtFmFfkjTqIGyl+4U=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=hYW4xxrAUuNxhlQVx/iT5z9hUgnU6+Wp8+NVWjOucahKtF4uXHtpWtWtDam4Cn2Xr
-	 QZ1wVhnyGDi5wBu2Mj4xjCOJ9vmq9jX9lr92P88lM514THDB7YKsVJbY6mwhKxpH4R
-	 scBTo/kEhxCa0KQUp1jRu7EvkWp8rSXZ5rXZ0tB0=
+	b=cOg/xlrua/49eDb0UBjQMGhpAwvyMQENcPgrE7a5Io3LueyGzi+JFBR82+fFznHXE
+	 2QclTr1QPDl/HZCHDBD+8+7iRgeFyog4U6oT4ss93DOLCz8xg/5Xx0Ck7aTj7BpQSY
+	 xFLvKsW4AmvWZIsikfQfn5lw7RKXz0M9OpS9f1Mw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D06FF805A0; Tue, 18 Mar 2025 20:30:29 +0100 (CET)
+	id 7B14BF805C2; Tue, 18 Mar 2025 20:31:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74140F805B2;
-	Tue, 18 Mar 2025 20:30:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 558FCF805B6;
+	Tue, 18 Mar 2025 20:31:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5BE79F80587; Tue, 18 Mar 2025 20:30:17 +0100 (CET)
+	id 429B4F80587; Tue, 18 Mar 2025 20:31:43 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46D58F80093
-	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2025 20:30:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46D58F80093
+	by alsa1.perex.cz (Postfix) with ESMTP id 84EB0F80093
+	for <alsa-devel@alsa-project.org>; Tue, 18 Mar 2025 20:31:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84EB0F80093
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <182dfc760c94e200-webhooks-bot@alsa-project.org>
-In-Reply-To: <182dfc760b18d800-webhooks-bot@alsa-project.org>
-References: <182dfc760b18d800-webhooks-bot@alsa-project.org>
-Subject: No Micrphone detected on ALC4080
-Date: Tue, 18 Mar 2025 20:30:17 +0100 (CET)
-Message-ID-Hash: B4TQJ7XO3X4G6N35HAPBCPHJJCDMIJLK
-X-Message-ID-Hash: B4TQJ7XO3X4G6N35HAPBCPHJJCDMIJLK
+Message-Id: <182dfc8a3aaae200-webhooks-bot@alsa-project.org>
+In-Reply-To: <182dfc8a3aa2dd00-webhooks-bot@alsa-project.org>
+References: <182dfc8a3aa2dd00-webhooks-bot@alsa-project.org>
+Subject: No Micrphone detected on ALC4080 - Gigabyte B850I Aorus Pro (rev 1.0)
+Date: Tue, 18 Mar 2025 20:31:43 +0100 (CET)
+Message-ID-Hash: 3I53BNTXXBAQCJTX2D72FDK7KDF75A5B
+X-Message-ID-Hash: 3I53BNTXXBAQCJTX2D72FDK7KDF75A5B
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4TQJ7XO3X4G6N35HAPBCPHJJCDMIJLK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3I53BNTXXBAQCJTX2D72FDK7KDF75A5B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #528 was opened from chanster:
+alsa-project/alsa-ucm-conf issue #528 was edited from chanster:
 
 The Rear Microphone is not detected when I plug in my mic. I don't use the Front Audio connection as my case doesn't have I/O for it, I just used the 2 audio ports in the rear.
 
