@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9518BC35FFC
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Mar 2025 12:17:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 019A0C35FFC
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Mar 2025 14:57:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E94860283;
-	Sat, 22 Mar 2025 13:17:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E94860283
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63A666024F;
+	Sat, 22 Mar 2025 15:57:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63A666024F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1742645831;
-	bh=n0OJClXIKOU7nlJyWKrMXEt8xY2mpcTVOmZTHV5Vqdg=;
+	s=default; t=1742655437;
+	bh=50PHIp97lj2coxUPVf3NnvmCPZjfCP4mgRs6fZzyufE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=WOxt2didDzihL94cbI5hz+e2E5aTGpEnPhrVcVKO8oLYdTJRhnFDcvWzkgb/Y2r/9
-	 /TpfNSes8N1D4NpOlnY2riRUO8IX05VjcGomACYsFdW9hK2MhsnDszg9nzGo8fLL3j
-	 XQvMkeHhe9VZ7n/MEh3t+zW410b4WxJNnsaBjdps=
+	b=uu0WLSX0m3tTnRtUTfmFtaf0JZaCoaeQf78NkY4Qzbe8iGaQWHgSo6CQ6ypdMkdKJ
+	 jwN7p7xjuRyiRWFScw0NgDeM4kcfOb35n4Wc65sj64VmUeiNxUhmM54Xu+SOw9NjGB
+	 98SH9WXIs3S0FClbARLDVT2dIeWtLcJ0BhS7ZnXA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9C472F805C2; Sat, 22 Mar 2025 13:16:37 +0100 (CET)
+	id 829EFF805C8; Sat, 22 Mar 2025 15:56:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74337F805C1;
-	Sat, 22 Mar 2025 13:16:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F0B0F801F5;
+	Sat, 22 Mar 2025 15:56:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4434AF8025A; Sat, 22 Mar 2025 13:16:32 +0100 (CET)
+	id D54FEF8025A; Sat, 22 Mar 2025 15:56:40 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 882AAF800B5
-	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2025 13:16:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 882AAF800B5
+	by alsa1.perex.cz (Postfix) with ESMTP id 305B0F800BD
+	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2025 15:56:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 305B0F800BD
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <182f1f1cfff24100-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/525@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/525@alsa-project.org>
-Subject: sof-soundwire: rt1318: add playback control switch
-Date: Sat, 22 Mar 2025 13:16:32 +0100 (CET)
-Message-ID-Hash: OOOT3DK3MEP2T3UQQKXV4JKENT2OQ2S7
-X-Message-ID-Hash: OOOT3DK3MEP2T3UQQKXV4JKENT2OQ2S7
+Message-Id: <182f27da2d89b500-webhooks-bot@alsa-project.org>
+In-Reply-To: <182f27da2d827f00-webhooks-bot@alsa-project.org>
+References: <182f27da2d827f00-webhooks-bot@alsa-project.org>
+Subject: [Regression] v1.2.13 broke my laptop's headphone microphone
+Date: Sat, 22 Mar 2025 15:56:40 +0100 (CET)
+Message-ID-Hash: MASUQVU7ZDILGKDTH6I6JLQY2UHYTS3O
+X-Message-ID-Hash: MASUQVU7ZDILGKDTH6I6JLQY2UHYTS3O
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OOOT3DK3MEP2T3UQQKXV4JKENT2OQ2S7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MASUQVU7ZDILGKDTH6I6JLQY2UHYTS3O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,12 +67,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #525 was edited from shumingfan:
+alsa-project/alsa-ucm-conf issue #530 was opened from vixalien:
 
-rt1318: add playback control switch
+Hello everyone!
 
-[v2] This patch defines a remapped one 'rt1318 DAC Playback Switch' whether the cases are in one amp or two amps.
+I have a HP ProBook 440 G8 Notebook PC, and sound and microphones were working correctly on v1.2.12, but now the microphone is not working after upgrading to v1.2.13.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/525
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/525.patch
+Here's my system details:
+
+```
+OS: Alpine Linux edge x86_64
+Host: HP ProBook 440 G8 Notebook PC
+Kernel: Linux 6.13.7-0-edge
+```
+
+```
+$ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: sofhdadsp [sof-hda-dsp], device 0: HDA Analog (*) []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: sofhdadsp [sof-hda-dsp], device 6: DMIC (*) []
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: sofhdadsp [sof-hda-dsp], device 7: DMIC16kHz (*) []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+```
+
+The `arecord` commands only works when I set the device to 0,6 and 0,7
+
+```
+arecord --duration=5 --format=dat --device=hw:0,0 test-mic.wav # does not work, empty audio
+arecord --duration=5 --format=dat --device=hw:0,6 test-mic.wav # works
+arecord --duration=5 --format=dat --device=hw:0,7 test-mic.wav # works
+```
+
+On v1.2.12, pipewire is automatically configured to use `0,6`, but on v1.12.13, it seems like it's configured to use `0,0` which causes that audio does not work.
+
+I'm sorry this is my first issue report. I'm happy to provie more details if necessary.
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/530
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
