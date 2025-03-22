@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9893C36001
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Mar 2025 23:24:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9518BC35FFC
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Mar 2025 12:17:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E925760340;
-	Sat, 22 Mar 2025 00:24:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E925760340
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E94860283;
+	Sat, 22 Mar 2025 13:17:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E94860283
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1742599460;
-	bh=3qq7j+mHHRn0s1NB8PxpQqMJfgQF2cUWMk6oQKFpUlc=;
+	s=default; t=1742645831;
+	bh=n0OJClXIKOU7nlJyWKrMXEt8xY2mpcTVOmZTHV5Vqdg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=kqBSJTDIaiDxHXfRPKexp+ZV7mvfomsX5vq2YSdFnDDNN0aRP36iwUzu8THu1ahh7
-	 cG581fWTmAomEDW1wSu9FMIko8G/7pVkmB2UjvzC+epjZNk/FRmHGt+CJ7hCpQ4f8k
-	 Sff+syw+JXyMvG6630L822WaK57BX3SKt2qcFz44=
+	b=WOxt2didDzihL94cbI5hz+e2E5aTGpEnPhrVcVKO8oLYdTJRhnFDcvWzkgb/Y2r/9
+	 /TpfNSes8N1D4NpOlnY2riRUO8IX05VjcGomACYsFdW9hK2MhsnDszg9nzGo8fLL3j
+	 XQvMkeHhe9VZ7n/MEh3t+zW410b4WxJNnsaBjdps=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26032F805C5; Sat, 22 Mar 2025 00:23:46 +0100 (CET)
+	id 9C472F805C2; Sat, 22 Mar 2025 13:16:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 188FFF805C3;
-	Sat, 22 Mar 2025 00:23:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74337F805C1;
+	Sat, 22 Mar 2025 13:16:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE98CF8025A; Sat, 22 Mar 2025 00:23:42 +0100 (CET)
+	id 4434AF8025A; Sat, 22 Mar 2025 13:16:32 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1602CF800BD
-	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2025 00:23:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1602CF800BD
+	by alsa1.perex.cz (Postfix) with ESMTP id 882AAF800B5
+	for <alsa-devel@alsa-project.org>; Sat, 22 Mar 2025 13:16:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 882AAF800B5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <182ef4f0bd524500-webhooks-bot@alsa-project.org>
-In-Reply-To: <182ef4f0bc499e00-webhooks-bot@alsa-project.org>
-References: <182ef4f0bc499e00-webhooks-bot@alsa-project.org>
-Subject: arecord --max-file-time behavior
-Date: Sat, 22 Mar 2025 00:23:42 +0100 (CET)
-Message-ID-Hash: AW5I3X6JBHHCVH3GE7N57BAGH4TI2QQN
-X-Message-ID-Hash: AW5I3X6JBHHCVH3GE7N57BAGH4TI2QQN
+Message-Id: <182f1f1cfff24100-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/525@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/525@alsa-project.org>
+Subject: sof-soundwire: rt1318: add playback control switch
+Date: Sat, 22 Mar 2025 13:16:32 +0100 (CET)
+Message-ID-Hash: OOOT3DK3MEP2T3UQQKXV4JKENT2OQ2S7
+X-Message-ID-Hash: OOOT3DK3MEP2T3UQQKXV4JKENT2OQ2S7
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AW5I3X6JBHHCVH3GE7N57BAGH4TI2QQN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OOOT3DK3MEP2T3UQQKXV4JKENT2OQ2S7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,9 +67,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils issue #296 was opened from thk686:
+alsa-project/alsa-ucm-conf pull request #525 was edited from shumingfan:
 
-I do environmental sound recordings where arecord runs for months to years with --max-file-time set to something like 15 minutes. It is very nice to have this feature, yet there is one aspect that is problematic. It is not simple to know which file is currently being written. One can time stamp the file names and ignore the most recent, which is probably the simplest. Nonetheless, I wonder if it could be the case that the current write file could be named something else, such as the file name but preceded by a . or other indicator, and have it renamed to its intended name once it is closed and arecord has moved on to another file.
+rt1318: add playback control switch
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/296
-Repository URL: https://github.com/alsa-project/alsa-utils
+[v2] This patch defines a remapped one 'rt1318 DAC Playback Switch' whether the cases are in one amp or two amps.
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/525
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/525.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
