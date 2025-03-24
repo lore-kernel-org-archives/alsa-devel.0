@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 226F3C28B30
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Mar 2025 13:06:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52395C36008
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Mar 2025 06:56:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C0A6601F9;
-	Sun, 23 Mar 2025 14:06:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C0A6601F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9E97601D3;
+	Mon, 24 Mar 2025 07:56:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9E97601D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1742735170;
-	bh=A2+mtvwbT1q2s+E/Rp2lNi3N7D37Lw7sZ0A+v8mgnA0=;
+	s=default; t=1742799388;
+	bh=jUP2eGRUiVxET5v6nXTUaAKWL/IebHn+HrbPi2Vz8v0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=qJ/crzPL8UEKSSSwScO9nkEYIHQv4jdmo3qiXj16BIGT7CXj4Nb5v1gJ4I9ajmVBf
-	 tJ6vQ4m2+oVbpgkRml2Q7kY4S79spil7a/hnzY7glnwfb/y6RPt0WgqEjhoXe3CHSp
-	 tokwfFwoERIxARV1FbnkAI23o5FDH63g92oj51Hc=
+	b=cEaS97RY6c7GULd6VyyXEHYmrtzTSjSwUd7Ue/xvjpI9OPN9lN7+QbuPDa+/XHhGN
+	 xfZJHHruSVN1JdObt4qVHwOmJEL+330+SUkqbrHlhn5ovmjFQI5V7ZKwlxtd3zhJcc
+	 1V8d/fnTj3dCxb+HBXWazT7I6pjtDTF6RgChwdZY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5ED9F805C7; Sun, 23 Mar 2025 14:05:36 +0100 (CET)
+	id D8AAAF805BA; Mon, 24 Mar 2025 07:55:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86BB3F805B6;
-	Sun, 23 Mar 2025 14:05:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AE23F805C1;
+	Mon, 24 Mar 2025 07:55:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6078BF80301; Sun, 23 Mar 2025 14:05:30 +0100 (CET)
+	id 4C4D4F80424; Mon, 24 Mar 2025 07:53:38 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0D47F800B6
-	for <alsa-devel@alsa-project.org>; Sun, 23 Mar 2025 14:05:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0D47F800B6
+	by alsa1.perex.cz (Postfix) with ESMTP id 23C89F80075
+	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2025 07:53:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23C89F80075
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <182f705da964a500-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-tools/pr/29@alsa-project.org>
-References: <alsa-project/alsa-tools/pr/29@alsa-project.org>
-Subject: envy24control: simplify code by using gtk_widget_show_all
-Date: Sun, 23 Mar 2025 14:05:30 +0100 (CET)
-Message-ID-Hash: 3Q4MWVONNKTFK5H7PS5E556YBNZ56EEO
-X-Message-ID-Hash: 3Q4MWVONNKTFK5H7PS5E556YBNZ56EEO
+Message-Id: <182faaa62af2c900-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/525@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/525@alsa-project.org>
+Subject: sof-soundwire: rt1318: add playback control switch
+Date: Mon, 24 Mar 2025 07:53:38 +0100 (CET)
+Message-ID-Hash: VJJ2A4UVRKELGKLGE6FY6VSEEPRKXXBB
+X-Message-ID-Hash: VJJ2A4UVRKELGKLGE6FY6VSEEPRKXXBB
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3Q4MWVONNKTFK5H7PS5E556YBNZ56EEO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VJJ2A4UVRKELGKLGE6FY6VSEEPRKXXBB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,10 +67,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-tools pull request #29 was opened from andreas56:
+alsa-project/alsa-ucm-conf pull request #525 was edited from shumingfan:
 
-Remove all gtk_widget_show calls and replace it with just one gtk_widget_show_all. This makes the code shorter and it will also help a future port to GTK 4, where gtk_widget_show is gone.
+rt1318: add playback control switch
 
-Request URL   : https://github.com/alsa-project/alsa-tools/pull/29
-Patch URL     : https://github.com/alsa-project/alsa-tools/pull/29.patch
-Repository URL: https://github.com/alsa-project/alsa-tools
+[v2] This patch defines a remapped one 'rt1318 DAC Playback Switch' whether the cases are in one amp or two amps.
+[v3] This patch defines 'rt1318-1 DAC' as PlaybackMixerElem when equipped with only one amp
+and defines a remapped one 'rt1318 DAC Playback Switch' when using two amps.
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/525
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/525.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
