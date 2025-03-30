@@ -4,135 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0EF4C3601E
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Apr 2025 10:38:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 207ABC3601E
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Apr 2025 10:43:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F158E6A82F;
-	Thu, 10 Apr 2025 12:38:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F158E6A82F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D63C26A868;
+	Thu, 10 Apr 2025 12:43:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D63C26A868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1744281518;
-	bh=L1x+MEpRCSfrf2Z5t+ZWnBQnsCOKl8zGDEi/DBrESfI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=YC2/hS92o3gmjYlIcK4Qkv6ZAb0Z5OegxRwVgd7Xb6e04JXhLTcWqTTn4HniDTFbc
-	 Vznb+s9TkobTfTWqNB4QR1Go4uY/BE56PJjxMpQLrd04aY6IE0+dbNN8n03yMtgUF6
-	 9bZIs/jYii0JhVja4WAshpfI+H+IYIZUw3mKj+Ws=
+	s=default; t=1744281813;
+	bh=D3olxYLlBQ+nUTuxA65h4ayn7fzQD05m+AcZNVbUetg=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=UzOoeoHGrkT0de/1ChRy247ICpFEp6cxE4FHA0V70glxSX/pNF5M7dofuBk98zzMv
+	 piqoywc2YUD8SsOOu7+mlTOHrsGGc2zbx/AkL8cpwnuaYS8LUOyjlVG9amKpYoOij5
+	 NSi2B4x6CTmxP75FSc0mmSsOLsHedIaZuDPDofuA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3A27F8060B; Thu, 10 Apr 2025 12:37:31 +0200 (CEST)
+	id 91EC2F805CA; Thu, 10 Apr 2025 12:43:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4663F8060A;
-	Thu, 10 Apr 2025 12:37:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5FB82F805BF;
+	Thu, 10 Apr 2025 12:43:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C27D6F8014C; Thu, 10 Apr 2025 12:37:27 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+	id 95B30F802DB; Sun, 30 Mar 2025 15:09:23 +0200 (CEST)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com
+ [IPv6:2607:f8b0:4864:20::f2e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6E411F80124
-	for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2025 12:37:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E411F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8AED5F8001D
+	for <alsa-devel@alsa-project.org>; Sun, 30 Mar 2025 15:09:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AED5F8001D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=o8mlYTcd
-Received: by mail-wr1-x42d.google.com with SMTP id
- ffacd0b85a97d-39129fc51f8so459575f8f.0
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=ZfUS8kTW
+Received: by mail-qv1-xf2e.google.com with SMTP id
+ 6a1803df08f44-6ecfc7ed0c1so32874796d6.3
         for <alsa-devel@alsa-project.org>;
- Thu, 10 Apr 2025 03:37:26 -0700 (PDT)
+ Sun, 30 Mar 2025 06:09:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1744281445; x=1744886245;
+        d=gmail.com; s=20230601; t=1743340159; x=1743944959;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2aYtjGBXatHaseT3Phi2jIW+StTZyswtuqFhYnfH/gE=;
-        b=o8mlYTcd42EgxCrCex5G7dz4UfoxYo0Z13qLJEpDsz2Xl4n4qzp/jsBp49G7RYZYz8
-         bBMvaotA0bTjVeMgYHUcmYdYUQfXiq96uPKx77D86PHAtnR5cNvcm6jwizHKAJpimZeX
-         iEz2TCQctupM5B+2ojBm9Lsk2BLkLaZba7Nz7wIu7/39JRQmqVWG225wEsiIA1JNOKYE
-         yoYPWgnGfeqUR9IBj1tKyH2IERVlZ6nooW/blDFCXPdxFimJj4aHs83gbjNeoC5wSWb/
-         clFWu11NznjVgndaeXg7Y0H6Y6qfXb5QW7qa5k6WuWpQpcB1bHdhp5ra7IcGPIpTJnzo
-         ugqw==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+f8/d1LUJCYjyq/aaDtzvsA9nVkE0shHwGbrMegDUrU=;
+        b=ZfUS8kTWu7lpJu8KCmGeaO+bujOM9Wl1qBAoLYZ6Skze4Vx31Z74ORPmcAInKz28ar
+         PQC2LeljKIt+rkiMKf2B5L4ewKBqfBCNJfiAjqFpVYA/SvJfrvalM062gUJHQughVVJf
+         KywiFPr4RaTiuF6Z+D+70dq8+kqMgK6jTE4M8oYKF2Ic1bk5O6N7TJR92cgy/jE5FJrj
+         +pk3zpmQXw3B3Kc4B+8z1hXeVw5pss88RuCSU2gTs5/tuASdhvMtWBfFDqFvhGW0/lOV
+         L3FiOA9R9HHTeNjcVY2aKmmAWYW5rLXAm06SwHx55q0V4WU5U5KrrTe+M2MB5iTPHkXH
+         MTcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744281445; x=1744886245;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2aYtjGBXatHaseT3Phi2jIW+StTZyswtuqFhYnfH/gE=;
-        b=dH5smAiwc/EM3ZvtQB1TYsgb2A6lX67aw5fBl272G00oOBRSbg8pX1QSFanLRGig6Z
-         LDcKvrR4x9L4l1vZabzhKcA4+xddVt0coT9+FRONDqQNnFoFnsfGYD1nlH+G/HLyBZxy
-         QlEIk/bb4DjaYfnjeqn8EXDSfgkRr0EPZml95BP6nNRyOigiphvW7++eIsuz6nVsKtoR
-         Ttmf+vTSvtcVY1RUqXEzDACalWn6yp5dU4DJiyeCzxBx0J5p66/SVWRnxG9h18rCl7Fz
-         XMp5ZqJDk9J69WG9UVSpKuIBJGFkaxeVEW0svNyyflxc8CsXmelEAY9O7bf30haMOtPE
-         XyBA==
+        d=1e100.net; s=20230601; t=1743340159; x=1743944959;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+f8/d1LUJCYjyq/aaDtzvsA9nVkE0shHwGbrMegDUrU=;
+        b=iu3r5FLxl1G+98et5/u4KSnfXwYfpIlbfl+3PDsc1MIIMqLXtS+CVJ48g2q9Z/igz1
+         oUkTcjkT79nKq01ism9AtSNHjrLFv2kn03CRv/bWgoaLfh0CWqrE3As+aVoSbA6cteVZ
+         OkwiV1ta4mKwb4+7r/79xaUmFirWVm14GV32Ux3pZ4OnPXefm4EJrkDI6tE/ptWMOgVT
+         K2TMnhDF6yu/AXbt4V24AAvxysI6r0MmNyVS93Lts6+Zb5VLrrxTnggbGkOvx5PSsa6s
+         Y4U8cA50cb3obqbK3azfGEkNZDx0n6hvB/3+9S1xLFWp9suo4fo5kdKI/tmPmsPVVZPG
+         iI9Q==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVHtSqUsV3ZdrHZz6kwUlgY7n5+fGjHsSnP+Xstiiyb6TqBVG/gOdLuknP4tlKpTPgCFhq5BwxE30GA@alsa-project.org
-X-Gm-Message-State: AOJu0YzZ0bNjHgsi33KakGiR4LVeWrMqRQyVEIHw5wz8K7uYhMyCSrcq
-	VLa/Y8pt8OJxghySXu9acJdmZON0vdDtQTod6m7UNIk7lkEqv4BhFj/Ep5/aX4A=
-X-Gm-Gg: ASbGnct40bs2HkD2HxjBErYEPGVNX98q+nWj8bkinqaTsJ21mqAgja62MMOovpRqMUx
-	g57XS/mGlExX76RBvXKaHOw02du87Bo/sjogMcXxuVjG3+nm5gnXC2EwUklquaT2jUKoDyiVfkO
-	9nGQgtTnOqha3mZoi000RBVozuuwEX29WKrN8ilxwJDmpcQQX61UdmRl7IpKOsTWnjx4BSEbg/N
-	5d/ytgW+tQ3iZeXtHRBmrDj2eSVJUPvEqc8W/GqmrWLUOaSmTXLtv2+Z5iYuShwS6XadarsBRih
-	7q55HXw99cNfntaK3ggwMo3KFo7VZUHpIqjeIKU1Dt4xBzK9xG8wOA6CrVH07kaEMg==
+ AJvYcCU/6B8/80/Gnn8mrMivhaZg3nRVVyahIjWM4W1NQadX+dgLeFFjJD9XjKY7uy1OkziTqvPo+1Xmd/7D@alsa-project.org
+X-Gm-Message-State: AOJu0YysAwq/XcuAvBo9Nj4GOJStLiibJZNSQdEUMwf7gC4kN4gIvfJe
+	2VUE6XkO2/oU5Nd6cL6EurfBPNGWbIttkGPSk3D6UWv9XYyBlUpk
+X-Gm-Gg: ASbGncupeBIJaba92j5Sw71khczgfT/GBHokGyAFh4sBcdJN2O4Oqn8WJgpxt2u6nAB
+	198MF2JOa2qS8luNpS0yBPBtmxzmj7BpTadgpTu8EiMwoTkkrfh9jwIxUvXE1VmV6BwzeE+QMpp
+	ICPWi++p6rFdgJ+XumLX67uqSpkOZDyzX6Qk5wC3UEiE6GmyoBqYiAJbYgqIeNQH3EC01WA3x3M
+	s136lLqMgJSwjHR8rDDnhcCPNwr1KA9f/X0VsJqWJnyVRfjxNeu9gbIqW0Gt4xYBrONtuMk17N0
+	yHIlU4nNq1BkeU2J6YS0EwFribd+/Zmcyin98yte4uWGl7dGdxlU/cazqdzm8ouYc9zChCqAlA7
+	A74jykW9zvu6HxqyyEuU=
 X-Google-Smtp-Source: 
- AGHT+IGGCF1uYN0vSOy+9N6MTk1Sll7akKwdvJm3f6V81SnCFhS1Hq04fztkt0wX1t2RP9Kn4lRv9Q==
-X-Received: by 2002:a05:6000:2210:b0:38f:2413:2622 with SMTP id
- ffacd0b85a97d-39d8fddf94emr1702026f8f.47.1744281445152;
-        Thu, 10 Apr 2025 03:37:25 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
+ AGHT+IGeW8/4t87eo3BmiJ5DqyKAxUo+ucEX1aeMXgaM2kqMDezafr8XhvZLkCdxwkgarITLCh9R1g==
+X-Received: by 2002:a05:6214:1bc5:b0:6ed:df6:cdcd with SMTP id
+ 6a1803df08f44-6eed604410fmr77297666d6.21.1743340158836;
+        Sun, 30 Mar 2025 06:09:18 -0700 (PDT)
+Received: from localhost.localdomain (c-68-55-107-1.hsd1.mi.comcast.net.
+ [68.55.107.1])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-39d893612dbsm4309388f8f.1.2025.04.10.03.37.24
+ 6a1803df08f44-6eec9627b36sm34011146d6.6.2025.03.30.06.09.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Apr 2025 03:37:24 -0700 (PDT)
-From: srinivas.kandagatla@linaro.org
-To: broonie@kernel.org,
-	gregkh@linuxfoundation.org
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+        Sun, 30 Mar 2025 06:09:18 -0700 (PDT)
+From: Brady Norander <bradynorander@gmail.com>
+To: Mark Brown <broonie@kernel.org>,
 	alsa-devel@alsa-project.org,
-	srini@kernel.org,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/2] mailmap: Add entry for Srinivas Kandagatla
-Date: Thu, 10 Apr 2025 11:37:13 +0100
-Message-Id: <20250410103713.24875-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250410103713.24875-1-srinivas.kandagatla@linaro.org>
-References: <20250410103713.24875-1-srinivas.kandagatla@linaro.org>
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzk@kernel.org>,
+	Aleksandr Mishin <amishin@t-argos.ru>,
+	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Brady Norander <bradynorander@gmail.com>
+Subject: [PATCH v2] ASoC: amd: use new ACP dev names for DAI links
+Date: Sun, 30 Mar 2025 09:08:45 -0400
+Message-ID: <20250330130844.37870-2-bradynorander@gmail.com>
+X-Mailer: git-send-email 2.49.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1036;
- i=srinivas.kandagatla@linaro.org; h=from:subject;
- bh=ZhYHEoqrUkGkRgz46TiGnWcPMiKR/N1g2slVddB+DV0=;
- b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBn959Zm3y7kLG6HvBFTp7/7z9RyQCDI8Z0cZJte
- YmqqO7XWtWJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZ/efWQAKCRB6of1ZxzRV
- N8i4CAC1e4sdQHEe9sOx1teSQqtqYSkc9V8pStNn0lGq2HBACEukAa59Qb7+IxwFcdI/fvNVwoj
- IZ8PFTqOl2N+eMpABQqYZn11RiZECUCl+LNEF70jhrN8ZolLoeYLYuC+sp7lrPdRRvjTzXlu+Bk
- QAOcD5+btV+okFLbjsM3CVCFyxYGCSQVlI+hGTDY8A1+VxsUZABV13u8JuXFsPsmCSqTwHeFMCC
- 9/XJQjg6/D67SzfntnoC/FCsVMA/Z3HQbQJUsVLaVN2RVmdwcLCxDzEnNU5R7QD8dp+7NCAT2fa
- bG5/S05epDUFKboyGZpLCzqbQLUUVBJNFKO4xdKxG+KlGqpB
-X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp;
- fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Z33CB6RNG6HZ77DQMDOVYGKPIPDBDELL
-X-Message-ID-Hash: Z33CB6RNG6HZ77DQMDOVYGKPIPDBDELL
-X-MailFrom: srinivas.kandagatla@linaro.org
+X-MailFrom: bradynorander@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: R6WDBAO6ISZVTGTSD4452IUXODALYZHZ
+X-Message-ID-Hash: R6WDBAO6ISZVTGTSD4452IUXODALYZHZ
+X-Mailman-Approved-At: Thu, 10 Apr 2025 10:42:58 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z33CB6RNG6HZ77DQMDOVYGKPIPDBDELL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R6WDBAO6ISZVTGTSD4452IUXODALYZHZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,29 +129,100 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On AMD SoC platforms with an ACP2x gpu ip block (such as stoneyridge),
+the amdgpu driver will create several platform devices for the ACP ASoC
+driver to communicate with the ACP hardware block on the gpu. These
+platform devices include dma for audio and one or multiple i2s
+interfaces. The amdgpu driver has always created these platform devices
+with automatic ids. The ASoC machine drives hardcode the platform device
+name. This creates an issue where if the ACP platform devices are not
+the first to be created, the ids can be different to what the machine
+drivers expect, causing them to not find the ACP platform devices and
+failing to load. Switch to using static ids for these ACP platform
+devices so that the names never change.
 
-Add entries for the various addresses that I have been using over
-the years and remap all of them to kernel.org alias.
+Depends on patch: drm/amdgpu: use static ids for ACP platform devs [1]
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+[1] https://lore.kernel.org/all/20250325210517.2097188-1-bradynorander@gmail.com/
+
+Signed-off-by: Brady Norander <bradynorander@gmail.com>
 ---
- .mailmap | 2 ++
- 1 file changed, 2 insertions(+)
+v2: rewrite commit message to better describe the issue
+---
+ sound/soc/amd/acp-da7219-max98357a.c | 8 ++++----
+ sound/soc/amd/acp-es8336.c           | 4 ++--
+ sound/soc/amd/acp-rt5645.c           | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/.mailmap b/.mailmap
-index 4f7cd8e23177..0326d5e75012 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -685,6 +685,8 @@ Simon Wunderlich <sw@simonwunderlich.de> <simon.wunderlich@saxnet.de>
- Simon Wunderlich <sw@simonwunderlich.de> <simon@open-mesh.com>
- Simon Wunderlich <sw@simonwunderlich.de> <siwu@hrz.tu-chemnitz.de>
- Sricharan Ramabadhran <quic_srichara@quicinc.com> <sricharan@codeaurora.org>
-+Srinivas Kandagatla <srini@kernel.org> <srinivas.kandagatla@st.com>
-+Srinivas Kandagatla <srini@kernel.org> <srinivas.kandagatla@linaro.org>
- Srinivas Ramana <quic_sramana@quicinc.com> <sramana@codeaurora.org>
- Sriram R <quic_srirrama@quicinc.com> <srirrama@codeaurora.org>
- Sriram Yagnaraman <sriram.yagnaraman@ericsson.com> <sriram.yagnaraman@est.tech>
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index 02b04f355ca6..42aa009c4e13 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -517,11 +517,11 @@ static const struct snd_soc_ops cz_rt5682_dmic1_cap_ops = {
+ };
+ 
+ SND_SOC_DAILINK_DEF(designware1,
+-	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.1.auto")));
++	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.1")));
+ SND_SOC_DAILINK_DEF(designware2,
+-	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.2.auto")));
++	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.2")));
+ SND_SOC_DAILINK_DEF(designware3,
+-	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.3.auto")));
++	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.3")));
+ 
+ SND_SOC_DAILINK_DEF(dlgs,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-DLGS7219:00", "da7219-hifi")));
+@@ -533,7 +533,7 @@ SND_SOC_DAILINK_DEF(adau,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("ADAU7002:00", "adau7002-hifi")));
+ 
+ SND_SOC_DAILINK_DEF(platform,
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_audio_dma.0.auto")));
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_audio_dma.0")));
+ 
+ static struct snd_soc_dai_link cz_dai_7219_98357[] = {
+ 	{
+diff --git a/sound/soc/amd/acp-es8336.c b/sound/soc/amd/acp-es8336.c
+index 0193b3eae7a6..b16dde0e2987 100644
+--- a/sound/soc/amd/acp-es8336.c
++++ b/sound/soc/amd/acp-es8336.c
+@@ -137,11 +137,11 @@ static const struct snd_soc_ops st_es8336_ops = {
+ };
+ 
+ SND_SOC_DAILINK_DEF(designware1,
+-		    DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.2.auto")));
++		    DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.1")));
+ SND_SOC_DAILINK_DEF(codec,
+ 		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ESSX8336:00", "ES8316 HiFi")));
+ SND_SOC_DAILINK_DEF(platform,
+-		    DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_audio_dma.1.auto")));
++		    DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_audio_dma.0")));
+ 
+ static struct snd_soc_dai_link st_dai_es8336[] = {
+ 	{
+diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
+index 72ddad24dbda..11d373169380 100644
+--- a/sound/soc/amd/acp-rt5645.c
++++ b/sound/soc/amd/acp-rt5645.c
+@@ -108,15 +108,15 @@ static const struct snd_soc_ops cz_aif1_ops = {
+ };
+ 
+ SND_SOC_DAILINK_DEF(designware1,
+-	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.1.auto")));
++	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.1")));
+ SND_SOC_DAILINK_DEF(designware2,
+-	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.2.auto")));
++	DAILINK_COMP_ARRAY(COMP_CPU("designware-i2s.2")));
+ 
+ SND_SOC_DAILINK_DEF(codec,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5650:00", "rt5645-aif1")));
+ 
+ SND_SOC_DAILINK_DEF(platform,
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_audio_dma.0.auto")));
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("acp_audio_dma.0")));
+ 
+ static struct snd_soc_dai_link cz_dai_rt5650[] = {
+ 	{
 -- 
-2.25.1
+2.49.0
 
