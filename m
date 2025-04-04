@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 736A5C3601E
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Apr 2025 11:54:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DD58C36010
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Apr 2025 11:55:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21C7C60205;
-	Fri,  4 Apr 2025 13:53:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21C7C60205
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3C52601F9;
+	Fri,  4 Apr 2025 13:55:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3C52601F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1743767648;
-	bh=G8ZiqKEgoxfgqrNzIWzLT3IUAM+TReltGsPeMxhCW4U=;
+	s=default; t=1743767713;
+	bh=MVV2FTlMKmwfLixnsWV1MQZYESgnwRWL7szGSZiKndA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=k53CUBjn4SfzqR1QA84ZodOjpYom0ddnJf/xftQzXsuVUxwqAxQfxpLwoVtudpMZ5
-	 nl9lPvET6eg17h1Pv4DWSTzGP3Kj5Jr63oIhfI6wWRIb93TmK5GAg8wTlWZDpUNXBi
-	 ZvK/+HFEwkZ9CSyY1KHV4dVJiOwunmncZUiIcwJg=
+	b=H0rWAvSJcoWo9hhvuDMeBlcLh80Cx5PluP8iVRU1V7NIk1gcjJj4OX4VtdnMysHmG
+	 WiPR5FxeMYcWzGbTZuQlK3/A6a4JJ0sFKFqwhQCbkL8F5GJFS5ZKx1yWIRn6in3cBS
+	 O5xP0nia1/8cVwRu8iO91btTYSYMwVar2XyQ+6AA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A6FCF805B5; Fri,  4 Apr 2025 13:53:34 +0200 (CEST)
+	id 3F401F805C3; Fri,  4 Apr 2025 13:54:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 807E9F805C3;
-	Fri,  4 Apr 2025 13:53:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26D25F805BD;
+	Fri,  4 Apr 2025 13:54:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB273F8023A; Fri,  4 Apr 2025 13:53:27 +0200 (CEST)
+	id 6507DF8023A; Fri,  4 Apr 2025 13:54:35 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10CCEF80075
-	for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2025 13:53:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10CCEF80075
+	by alsa1.perex.cz (Postfix) with ESMTP id ECF7DF80073
+	for <alsa-devel@alsa-project.org>; Fri,  4 Apr 2025 13:54:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECF7DF80073
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18331b65f9fb5600-webhooks-bot@alsa-project.org>
-In-Reply-To: <18331b65f91e4900-webhooks-bot@alsa-project.org>
-References: <18331b65f91e4900-webhooks-bot@alsa-project.org>
+Message-Id: <18331b75e8380600-webhooks-bot@alsa-project.org>
+In-Reply-To: <18331b75e8312100-webhooks-bot@alsa-project.org>
+References: <18331b75e8312100-webhooks-bot@alsa-project.org>
 Subject: ALC4080 - general discussion (driver support)
-Date: Fri,  4 Apr 2025 13:53:27 +0200 (CEST)
-Message-ID-Hash: VPBM6GRP3JBWNAWSSH25DCNG75DBV67M
-X-Message-ID-Hash: VPBM6GRP3JBWNAWSSH25DCNG75DBV67M
+Date: Fri,  4 Apr 2025 13:54:35 +0200 (CEST)
+Message-ID-Hash: KJ7JNBCMO762LTJANKXSBH4P5BSXLKWB
+X-Message-ID-Hash: KJ7JNBCMO762LTJANKXSBH4P5BSXLKWB
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPBM6GRP3JBWNAWSSH25DCNG75DBV67M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KJ7JNBCMO762LTJANKXSBH4P5BSXLKWB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,7 +83,7 @@ This issue is for the kernel driver related problems. If the driver works and so
 
 **Further steps**
 
-Try to analyze the audio driver using direct ALSA API. See [DEBUG.md](https://github.com/alsa-project/alsa-ucm-conf/blob/master/ucm2/DEBUG.md). Very nice report is in #528. Please, use it as a reference what to do. Developers usually do not have exact hardware, so observations describing which ALSA PCM device, which ALSA Mixer control, which ALSA Jack control can be used for given playback/capture device is essential.
+Try to analyze the audio driver using direct ALSA API. See [DEBUG.md](https://github.com/alsa-project/alsa-ucm-conf/blob/master/ucm2/DEBUG.md). Very nice report is in #528. Please, use it as a reference what to do. Developers usually do not have exact hardware, so observations describing which ALSA PCM device, which ALSA Mixer control, which ALSA Jack control can be used for given playback/capture device are essential.
 
 Reverse engineering of the Windows driver. Capture USB communication and save it to a file which can be replayed by [wireshark](https://www.wireshark.org). Try to write an explanation including timing (what happened in given time slots).
 
