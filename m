@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C631AC36010
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Apr 2025 08:59:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEC7EC36002
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Apr 2025 14:07:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B74F61A54;
-	Sat,  5 Apr 2025 10:58:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B74F61A54
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C48D61FE0;
+	Sun,  6 Apr 2025 16:07:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C48D61FE0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1743843549;
-	bh=nITMVw97HvYEabY4uDqbKNBA6TAIrtRmqpZiucfgigc=;
+	s=default; t=1743948437;
+	bh=uE+lZZzEaoATyyLd/vZ/fxLTYg+yUfpFN2TLXmKDO5Y=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=fSRY/sfzoumx6pBpYcK1147VHMvXBs/GpaoVZMhD5PfmNi8HZO7QedOP8IK+xVbPs
-	 qSvEG7oUCHH1vSc1WvEnmswYPE0S0ekGQkI6cEjNIZngRT94BVBJiFdAHcV3krE4MA
-	 0cFu2nZLnE1J0q8+jL+2VF2R4EvCfwW+Vp2LaI8A=
+	b=oOE+Dh0ESOibkNwRFjVwTJ/ed6ZgYcqRnBzGB3tZMFlRBn1vpHE9gS/cmmTvxv3bq
+	 PM+mc4u4tZ2CTlzEuTvshUVFucqXMAW4d0d5MVYQz7+JXbWvDrmPIdnsTOOWz3ccjb
+	 M5kclSoHdqfMgrjhA/y+puH5y2XLkGQfNZukaRbk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9175F805C4; Sat,  5 Apr 2025 10:58:32 +0200 (CEST)
+	id 0FA0FF805BF; Sun,  6 Apr 2025 16:06:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87B83F805C0;
-	Sat,  5 Apr 2025 10:58:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC4C6F805C1;
+	Sun,  6 Apr 2025 16:06:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72836F80171; Sat,  5 Apr 2025 10:57:43 +0200 (CEST)
+	id EBCF5F80116; Sun,  6 Apr 2025 16:06:23 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D43AF800B6
-	for <alsa-devel@alsa-project.org>; Sat,  5 Apr 2025 10:57:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D43AF800B6
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E31DF80073
+	for <alsa-devel@alsa-project.org>; Sun,  6 Apr 2025 16:06:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E31DF80073
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18336062c9cc6200-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-tools/pr/35@alsa-project.org>
-References: <alsa-project/alsa-tools/pr/35@alsa-project.org>
-Subject: envy24control: port to GTK 3
-Date: Sat,  5 Apr 2025 10:57:43 +0200 (CEST)
-Message-ID-Hash: OV55JANTYRKUNWUTU7TPUROGDLV6IYCG
-X-Message-ID-Hash: OV55JANTYRKUNWUTU7TPUROGDLV6IYCG
+Message-Id: <1833bfd032a5f600-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-python/pr/17@alsa-project.org>
+References: <alsa-project/alsa-python/pr/17@alsa-project.org>
+Subject: alsaseq: Fix type check in set_time()
+Date: Sun,  6 Apr 2025 16:06:23 +0200 (CEST)
+Message-ID-Hash: PT7L3TDQPHCGPB27QOYEBFGCB4LO6OA5
+X-Message-ID-Hash: PT7L3TDQPHCGPB27QOYEBFGCB4LO6OA5
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OV55JANTYRKUNWUTU7TPUROGDLV6IYCG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PT7L3TDQPHCGPB27QOYEBFGCB4LO6OA5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,16 +67,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-tools pull request #35 was opened from andreas56:
+alsa-project/alsa-python pull request #17 was opened from ernestask:
 
-This is a port envy24control from GTK 2 to GTK 3.
+SeqEvent_set_time() has fallen victim to the inverted get_long1() return value here, erroring out when called with actual integers.
 
-Note: There is another very similar port in #27, but that one isn't quite finished. I did my port before noticing that there already was one, but I have compared them now to check that I didn't miss anything. My version has more changes, as I wanted to avoid using deprecated GTK functions. It also fixes the rendering of the level meters and optimizes it a bit so the CPU load isn't much higher than it was in GTK 2.
-
-Note 2: the fix from #31 is included in this pull request, as it is necessary for the spin buttons to work in GTK 3.
-
-Note 3: my other envy24control pull requests are not included here, as they are not related to GTK 3. #29 will probably cause merge conflicts with this one, but I will fix them if you decide to merge any of the pull requests.
-
-Request URL   : https://github.com/alsa-project/alsa-tools/pull/35
-Patch URL     : https://github.com/alsa-project/alsa-tools/pull/35.patch
-Repository URL: https://github.com/alsa-project/alsa-tools
+Request URL   : https://github.com/alsa-project/alsa-python/pull/17
+Patch URL     : https://github.com/alsa-project/alsa-python/pull/17.patch
+Repository URL: https://github.com/alsa-project/alsa-python
