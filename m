@@ -4,108 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 878BCC3601E
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Apr 2025 10:44:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDBDEC3601E
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Apr 2025 11:02:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A42FD6A8B5;
-	Thu, 10 Apr 2025 12:44:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A42FD6A8B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B32656945A;
+	Thu, 10 Apr 2025 13:02:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B32656945A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1744281893;
-	bh=NrhJ6SzzQ/PgGgxneFFyP6Ox/InK8EUy4fGdNgR1S88=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1744282934;
+	bh=3fNFTzKEnMrl6EIbiQ024aWC8YYry1ODrkwg4hR41EY=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=GQRN0cHtbG/jLjm078lw8KeFel3+lwBdYh/wgyi2+Pe+B09wqVgJwIoHeVWMjhVki
-	 b3QS/bzU7nbu12vmQ2hymGome7cKcSqinxRwbHvc+guic4DMJTcI5k7VV9HRItm5hb
-	 xXBSndoqVEGIJHkExOULD9ZGKVOieAcmkj98N54c=
+	b=lv5lmk8dqySYl7ABIlyGzPE2AM248bCHkO9X0uc0BjsDB+A8AsJMPA4Tqt0XUU/v8
+	 mIAlMb2fCj16WiMbqz9i1/hlLGul2Gd/JAjksT1LbAdGruaZnwuWRPWU5rkcoQYm7c
+	 Md1U3ZRolnJhHL18xYD+be44ih524pkxPAjtVsU0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A0FC0F805C0; Thu, 10 Apr 2025 12:44:10 +0200 (CEST)
+	id 88E0AF805C6; Thu, 10 Apr 2025 13:01:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93EAEF805C3;
-	Thu, 10 Apr 2025 12:44:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78276F805BE;
+	Thu, 10 Apr 2025 13:01:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F6C0F8055B; Tue,  8 Apr 2025 22:01:35 +0200 (CEST)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id AF841F8014C; Thu, 10 Apr 2025 13:01:29 +0200 (CEST)
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 716A1F8003C
-	for <alsa-devel@alsa-project.org>; Tue,  8 Apr 2025 22:01:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 716A1F8003C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0245DF800E5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Apr 2025 13:01:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0245DF800E5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=kziD4qtN
-Received: by mail-ej1-x632.google.com with SMTP id
- a640c23a62f3a-ac2963dc379so68919166b.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 08 Apr 2025 13:01:32 -0700 (PDT)
+ unprotected) header.d=tq-group.com header.i=@tq-group.com header.a=rsa-sha256
+ header.s=key1 header.b=KAgRg/W6;
+	dkim=temperror header.d=ew.tq-group.com header.i=@ew.tq-group.com
+ header.a=rsa-sha256 header.s=dkim header.b=dAfUQstN
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744142492; x=1744747292;
- darn=alsa-project.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bNchtQh6zPVwJtAvDDMxfjZjpLOdglQccQoL6yekagk=;
-        b=kziD4qtNH5JYGcyFPCE2wqCafFtCMbL15S6TmAQQ+6mh0nf2JupJgTAa0LqpaThEoG
-         OtWizmAJqWf0kCfFKRT7y8yjAr/ZQjmSVd8kx85ATGT3CUN7G4Kab+BSSvJepjqJ9Uzl
-         RjeOXKseDUGB3/LI/RUEbAsevJBG2Rkkhqk4GOyKP5b+D3BG7SHfv7HwwGBzKPCJd6Vz
-         d0nooCae8eiUzmt2FCsoDpiSHhvfdtxQDjTqflXMW2rPdPnBCq8UanDT6X3ogKawQUmW
-         CajEId1WfnPdF9+GdNUY1cbkjGcRV9Gf64t+u76Jy6xx2r/rPqlkYbBvqdEvj96/Mf0x
-         ZpLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744142492; x=1744747292;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bNchtQh6zPVwJtAvDDMxfjZjpLOdglQccQoL6yekagk=;
-        b=s2J6iZ7ihEuI8OslaThb49BgyXdw0O0S2QkvMZyDYUOlWmUF70af6TK7g9K4x4RUGc
-         LnbWUpJcOyTgj+6ptnO2nLoWEpiyN5Q8SL98TAfly2OnLoRE1+8Dd2Gozs9vghpiBEWo
-         By4Pgwq47JES14TWzz/aNqkBtImKAU7W5AjXfttGNihm1dgYzhWTGCgUws/sSSbPjWhE
-         tOIKjrkZUV2PTcPBUbVP/UiQGTQP9xF3TY04nWTQF2c0vwn+WzAfnXOSX8vZsGK5k269
-         zVNLU4Yymfyx35tLpVlMYN2/MYD56YAHryNT0rMAovl/CcyhBU7vaacBPw043UXS9oj8
-         Y+0w==
-X-Gm-Message-State: AOJu0YwWI/fEPydUcQZJGKT+Ry/E9hZclCOzAL9O663j7IOgED7ELfsb
-	pH9GJeW9ZRxPmO+kxvgbG9MhyQbR68n+g3gBwxYVUaw/yGUMFpOZM0FPAr9XV0yyl1hx9CsviH3
-	2yOZPyYeBGMQvOqt5XlqDW5dXnNO4HauKcSE=
-X-Gm-Gg: ASbGncveXuEcu2TG9jFBm0g6o8MGV3N6vpeLiwZuwuoaZAvVuvM3Faxpvz+1nR3D/P7
-	sPd1mqzkizurzZHP59HeMQgwx8mZlXdeulNbnu8874ux763UK0u5KypVhQqiXEqwYlU2nQ3k5Ix
-	G9dMPfh2mIP3JGIjr4gw8x/epYjA==
-X-Google-Smtp-Source: 
- AGHT+IGL8VZ4AdGnGrKFQU9e04t902pN4Hb50jzrnda/donO1pZNaCpQpmsNTyeeLn5K2jpBDtmKm02/Ultq1MaGWWU=
-X-Received: by 2002:a17:907:d1f:b0:ac3:a7bb:1c2f with SMTP id
- a640c23a62f3a-aca9d5dc8ebmr3869166b.7.1744142491494; Tue, 08 Apr 2025
- 13:01:31 -0700 (PDT)
-MIME-Version: 1.0
-From: Adam Larios <adamlarios@gmail.com>
-Date: Tue, 8 Apr 2025 15:01:20 -0500
-X-Gm-Features: ATxdqUF1dRrx0igJBzns3SHm_tVB9F1T_T-ZZ84JDGv_Wt_7LQhGZgoQl3SFOfM
-Message-ID: 
- <CADcFSmxu5BSB-S6rgLqX58JnnE1jaFssQ5p9SELjH3PRGm4R1A@mail.gmail.com>
-Subject: Dell Precision 3571: DMIC not detected by SOF driver, silent mic
- under Linux, works in Windows
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1744282889; x=1775818889;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5xJciRVkFermOZKNFd3YERxq92GGDRKO68lcS9PoC/c=;
+  b=KAgRg/W6dYTWFaD9Kw/xhT79h+XaM54jqB7adxxK1d/9rGUpmWRsuEBV
+   BFf+FZgJfqs4GxmKXhP4yrZLHbcWXZXeaYgR/8rX5FfbB+TlZRrCMeH7P
+   lyXmc+b6KGFATpWUXkhp1OAwBgj3we4qG4ZUDTQHg5b5tzREJO4cOkMD8
+   HCH2r8465sx3x943oIRqKKgnF9FMWSmIKzxHzNgCta1+0tXGBGPZ9Kw1f
+   DCvorOBE9indiaVHxg/1JJIIFD2ZK4vHvV9eR3/1dwWELT6sSoDwJr1gm
+   bBaSsIjIIRiacoLHhsXCMPGLs8WnIR5tD173uvcbt5ZBMiCaretx0GNKA
+   w==;
+X-CSE-ConnectionGUID: PrpyP09yRPueau0OhFGkNw==
+X-CSE-MsgGUID: 5ttYdd5cQke11LawDj4I2Q==
+X-IronPort-AV: E=Sophos;i="6.15,202,1739833200";
+   d="scan'208";a="43453752"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 10 Apr 2025 13:01:26 +0200
+X-CheckPoint: {67F7A506-35-F35B2447-E1635CDE}
+X-MAIL-CPID: 798A62CDA62BBCAFFD0DD6D8CFC408E5_1
+X-Control-Analysis: 
+ str=0001.0A006371.67F7A504.0002,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
+ with ESMTPSA id 3C6AD16473E;
+	Thu, 10 Apr 2025 13:01:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1744282882;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5xJciRVkFermOZKNFd3YERxq92GGDRKO68lcS9PoC/c=;
+	b=dAfUQstNJji17C4b5DROzX2BYLpLyePTNBRGOgd0MSKueQOGauPdsW3bd+PwQNAuuy5PAM
+	CKEEhCQa8kLUOM9y10rHCzjdeMl+1vCJuZrZEzY/d4z/ahqgOoCkRNXk15VrD7UQQipdKs
+	8UdXBqAktIjuPwQadOLT1GFsTPRA/50ZMyhmW1kMWkNZOTZdx2nn5D46zPbxJnzO3G/Qzf
+	lWst8B/CPpFc9Tv029JgvIP7+5exQXka1UoIJmoPZBbOEzKhePywIz26SNzvB2NxjtWRFN
+	Ic2EAG7BytgemjTZ2jKMo4CFtJJT1hgcyR795tCCYjKX/Mul4jdZqg0AXsiPzA==
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 To: alsa-devel@alsa-project.org
-X-MailFrom: adam.larios@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>
+Subject: [PATCH 1/1] bat: Fix buffer time configuration
+Date: Thu, 10 Apr 2025 13:01:19 +0200
+Message-ID: <20250410110120.1997264-1-alexander.stein@ew.tq-group.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
+Message-ID-Hash: WOFA7GSGTFCI4CG2VJ42WMCEP5TWBUWD
+X-Message-ID-Hash: WOFA7GSGTFCI4CG2VJ42WMCEP5TWBUWD
+X-MailFrom: alexander.stein@ew.tq-group.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7XBQW7MU3XT72ZVNS5I3S2SBK6NXYY6O
-X-Message-ID-Hash: 7XBQW7MU3XT72ZVNS5I3S2SBK6NXYY6O
-X-Mailman-Approved-At: Thu, 10 Apr 2025 10:44:07 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7XBQW7MU3XT72ZVNS5I3S2SBK6NXYY6O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOFA7GSGTFCI4CG2VJ42WMCEP5TWBUWD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,18 +112,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-KlN5c3RlbSo6DQpEZWxsIFByZWNpc2lvbiAzNTcxDQpSZWFsdGVrIEFMQzMyMDQgY29kZWMNCklu
-dGVsIEFsZGVyIExha2UgKFNPRiBwbGF0Zm9ybSkNCg0KKlN5bXB0b21zKjoNCkludGVybmFsIG1p
-YyBpcyBzaWxlbnQgb3IgbXVmZmxlZCBpbiBhbGwgTGludXggYXBwbGljYXRpb25zDQpXb3JrcyBw
-ZXJmZWN0bHkgaW4gV2luZG93cw0KU09GIGRyaXZlciBsb2FkcyBjb3JyZWN0bHkgd2l0aCBmaXJt
-d2FyZSBzb2YtYWRsLnJpIGFuZCB0b3BvbG9neQ0Kc29mLWhkYS1nZW5lcmljLnRwbGcNCkJ1dCBk
-bWVzZyBzaG93czoNCg0Kc29mLWF1ZGlvLXBjaS1pbnRlbC10Z2wgMDAwMDowMDoxZi4zOiBETUlD
-cyBkZXRlY3RlZCBpbiBOSExUIHRhYmxlczogMA0KDQoNCk5vIHdvcmtpbmcgYXVkaW8gaW5wdXQg
-bm9kZXMgZXhwb3NlZCBpbiBQaXBlV2lyZQ0KDQoqVGVzdGVkKjoNCg0KICAgLQ0KDQogICBVYnVu
-dHUgMjQuMDQgd2l0aCBrZXJuZWwgNi44LjAtNTctZ2VuZXJpYw0KICAgLQ0KDQogICBzbmQtaW50
-ZWwtZHNwY2ZnLmRzcF9kcml2ZXI9MyBzZXQNCiAgIC0NCg0KICAgUHVsc2VBdWRpbyBhbmQgUGlw
-ZVdpcmUgYmFja2VuZHMNCiAgIC0NCg0KICAgYWxzYS1iYXNlLmNvbmYgb3ZlcnJpZGVzIGZvciBt
-b2RlbCBvcHRpb25zDQogICAtDQoNCiAgIGhkYWphY2tyZXRhc2sgcGluIHJlbWFwcGluZw0KICAg
-LQ0KDQogICBTT0YgZmlybXdhcmUgYW5kIHRvcG9sb2d5IGNvbmZpcm1lZCBwcmVzZW50DQoNCipD
-b25jbHVzaW9uKjoNCkZpcm13YXJlL0FDUEkgbGlrZWx5IG1pc3NpbmcgRE1JQyBOSExUIGVudHJ5
-OyByZXF1ZXN0aW5nIGtlcm5lbCBxdWlyayBvcg0KZ3VpZGFuY2UNCg==
+By swapping time configuration some hardware constraints can be supported.
+Fixes the error: Set parameter to device error: buffer time: 500000
+hw:tqmtlv320aic32: Invalid argument(-22)
+
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+---
+Our common 'alsabat -Dhw:tqmtlv320aic32 -f S16_LE -c 2 -r 44100 -F 997:500'
+failed ona i.MX95 based platform, while it worked flawlessly on others,
+e.g. i.MX8M Plus. Upon searching I stumbled across [1], which this patch
+is inspired/based on.
+
+[1] https://github.com/arkq/bluez-alsa/pull/290/commits/da78b82ff77310093b4b4a914d31e69b8ebb49eb
+---
+ bat/alsa.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/bat/alsa.c b/bat/alsa.c
+index 67489c4..457e79a 100644
+--- a/bat/alsa.c
++++ b/bat/alsa.c
+@@ -221,23 +221,23 @@ static int set_snd_pcm_params(struct bat *bat, struct pcm_container *sndpcm)
+ 
+ 		period_time = buffer_time / DIV_BUFFERTIME;
+ 
+-		/* Set buffer time and period time */
+-		err = snd_pcm_hw_params_set_buffer_time_near(sndpcm->handle,
+-				params, &buffer_time, 0);
++		/* Set period time and buffer time */
++		err = snd_pcm_hw_params_set_period_time_near(sndpcm->handle,
++			params, &period_time, 0);
+ 		if (err < 0) {
+ 			fprintf(bat->err, _("Set parameter to device error: "));
+-			fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
+-					buffer_time,
++			fprintf(bat->err, _("period time: %d %s: %s(%d)\n"),
++					period_time,
+ 					device_name, snd_strerror(err), err);
+ 			return err;
+ 		}
+ 
+-		err = snd_pcm_hw_params_set_period_time_near(sndpcm->handle,
+-				params, &period_time, 0);
++		err = snd_pcm_hw_params_set_buffer_time_near(sndpcm->handle,
++				params, &buffer_time, 0);
+ 		if (err < 0) {
+ 			fprintf(bat->err, _("Set parameter to device error: "));
+-			fprintf(bat->err, _("period time: %d %s: %s(%d)\n"),
+-					period_time,
++			fprintf(bat->err, _("buffer time: %d %s: %s(%d)\n"),
++					buffer_time,
+ 					device_name, snd_strerror(err), err);
+ 			return err;
+ 		}
+-- 
+2.43.0
+
