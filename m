@@ -4,49 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 527B5C3601E
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Apr 2025 12:50:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8F41C369A2
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Apr 2025 15:44:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E06D66DE1;
-	Sun, 13 Apr 2025 14:50:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E06D66DE1
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE5BD68097;
+	Mon, 14 Apr 2025 17:44:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5BD68097
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1744548644;
-	bh=X1uHqD5/wkbCsfpwxxouOoSxvFU2eMHNdaWypDtxlf4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=u53Zg8Shi3vnhkjqeb9sj+CeIkZOprP42ss8dLKKnLsDqEbFTQPDFVAgP3RJv9A2/
-	 i4XdqiZLDdbJTPAMkBFLIAEfZhS6/eLpsAfXPJ6Ym/dm5jiaKlxrowA+gWurjIVryM
-	 QyfVlzEbP+lrxDRYWdDWA7UkTgmpZkziQcvfic3g=
+	s=default; t=1744645493;
+	bh=22cGG+mW3wW/wPuLfco+8COI0Tb+hgwDkk/+0fNG3nM=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=aMWf7mmEYAs4DSWNCv8Rnb7JaXazuquTGQx45eBYbAkSuzeIXpP3e+/nNnpXIQ6Xv
+	 1tgbFaeQSR/6yK9kenLv2jG5bR2iw5rLb7rid26Yh8feWRIzjaWYX9ojEEnpCicawi
+	 2/RMdYp9p+x9Q+/x/ErhLt91banui7Cbu+BHJt6Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 579C8F805B3; Sun, 13 Apr 2025 14:50:08 +0200 (CEST)
+	id ED703F805D9; Mon, 14 Apr 2025 17:44:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F628F805B6;
-	Sun, 13 Apr 2025 14:50:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2A6EF805C8;
+	Mon, 14 Apr 2025 17:44:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EE8B1F8016B; Sun, 13 Apr 2025 14:48:36 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 216EDF800D2
-	for <alsa-devel@alsa-project.org>; Sun, 13 Apr 2025 14:48:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 216EDF800D2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1835e1a0d2c45500-webhooks-bot@alsa-project.org>
-In-Reply-To: <1835e1a0d217ae00-webhooks-bot@alsa-project.org>
-References: <1835e1a0d217ae00-webhooks-bot@alsa-project.org>
-Subject: On output devices, `snd_pcm_open()` makes a bad loud tick.
-Date: Sun, 13 Apr 2025 14:48:36 +0200 (CEST)
-Message-ID-Hash: EP4Z6ZK5RMZ6ECJAWZ3J7NFRRQJSUJ7A
-X-Message-ID-Hash: EP4Z6ZK5RMZ6ECJAWZ3J7NFRRQJSUJ7A
-X-MailFrom: github@alsa-project.org
+	id 93A9AF805B3; Mon, 14 Apr 2025 17:44:10 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 70A0EF800B0
+	for <alsa-devel@alsa-project.org>; Mon, 14 Apr 2025 17:44:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70A0EF800B0
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=CIJ0aBNB;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=0CTN6d3l;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=CIJ0aBNB;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=0CTN6d3l
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E332E1F7A0;
+	Mon, 14 Apr 2025 15:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1744645446;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=/PBfYowfTHE3az6RzZjE9BMvNJ/q1p/MBXEu9T289RE=;
+	b=CIJ0aBNBx9Kj/6iBKk7UkOlbOTE+B+XFlMjUgtULDqNBcllp374qpzWC6fobIPm8dMrLkl
+	bGutJBJc0fTCoYeC6zSU8PJuNRTk+UZHXHMtApw60v/HpJPZ0Ql/bgKkoZVjeVVAE2HvFQ
+	bIk7+V+08nvAAjsbWxEtBkeC+8ZdtJ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1744645446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=/PBfYowfTHE3az6RzZjE9BMvNJ/q1p/MBXEu9T289RE=;
+	b=0CTN6d3lHYH70evUgsbNYY3Kh8/Bcj9uGdi2KEEZKPWa42bELgHFbIJF3vW1ZAO+t+7dtf
+	bwBRyG0HWcGCDqBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1744645446;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=/PBfYowfTHE3az6RzZjE9BMvNJ/q1p/MBXEu9T289RE=;
+	b=CIJ0aBNBx9Kj/6iBKk7UkOlbOTE+B+XFlMjUgtULDqNBcllp374qpzWC6fobIPm8dMrLkl
+	bGutJBJc0fTCoYeC6zSU8PJuNRTk+UZHXHMtApw60v/HpJPZ0Ql/bgKkoZVjeVVAE2HvFQ
+	bIk7+V+08nvAAjsbWxEtBkeC+8ZdtJ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1744645446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=/PBfYowfTHE3az6RzZjE9BMvNJ/q1p/MBXEu9T289RE=;
+	b=0CTN6d3lHYH70evUgsbNYY3Kh8/Bcj9uGdi2KEEZKPWa42bELgHFbIJF3vW1ZAO+t+7dtf
+	bwBRyG0HWcGCDqBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C7DEF136A7;
+	Mon, 14 Apr 2025 15:44:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id EBuEL0Yt/WfFKAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 14 Apr 2025 15:44:06 +0000
+Date: Mon, 14 Apr 2025 17:44:06 +0200
+Message-ID: <87friawxx5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: perex@perex.cz
+Cc: alsa-devel@alsa-project.org
+Subject: recent change in seqmid.c is broken?
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	SUBJECT_ENDS_QUESTION(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_NONE(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid]
+Message-ID-Hash: ABPNHLB5XQEISBPJROS5MI52SO5R64BS
+X-Message-ID-Hash: ABPNHLB5XQEISBPJROS5MI52SO5R64BS
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +142,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EP4Z6ZK5RMZ6ECJAWZ3J7NFRRQJSUJ7A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ABPNHLB5XQEISBPJROS5MI52SO5R64BS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,43 +151,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #451 was opened from ewtoombs:
+Hi Jaroslav,
 
-Minimal reproduction:
+I'm afraid that your recent fix for alsa-lib commit a4e47461eca1
+doesn't work as expected:
 
 ```
-#include <alsa/asoundlib.h>
-#include <stdbool.h>
-int main(int argc, const char **argv)
-{
-    snd_pcm_t *out;
-    assert(snd_pcm_open(&out,
-                "default",    // the name of the device being opened
-                SND_PCM_STREAM_PLAYBACK, // it is an output stream
-                false         // iff nonblocking stream
-                ) == 0);
-}
-```
-(Compile with `gcc -o test test.c -lasound`.)
-
-Relevant `lspci`:
-```
-00:1f.3 Audio device: Intel Corporation Sunrise Point-LP HD Audio (rev 21)
-```
-
-`uname`:
-```
-Linux robert 6.13.8-arch1-1 #1 SMP PREEMPT_DYNAMIC Sun, 23 Mar 2025 17:17:30 +0000 x86_64 GNU/Linux
+@@ -664,15 +663,11 @@ static void update_group_ports(snd_seq_t *seq, snd_ump_endpoint_info_t *ep)
+                                break;
+                        }
+ 
+-                       if (!*bp->name)
++                       if (bp->name[0] == '\0')
+                                continue;
+-                       len = strlen(blknames);
+-                       if (len)
+-                               snprintf(blknames + len, sizeof(blknames) - len,
+-                                        ", %s", bp->name);
+-                       else
+-                               snd_strlcpy(blknames, (const char *)bp->name,
+-                                           sizeof(blknames));
++                       if (blknames[0])
++                               snd_strlcpy(blknames, ", ", sizeof(blknames));
++                       snd_strlcpy(blknames, (const char *)bp->name, sizeof(blknames));
+                }
+ 
+                if (!*blknames)
 ```
 
-alsa-lib version: 1.2.13-1 (archlinux)
+The original code appended the new bp->name string with the prefix of
+", " if blknames is already present, but the new code looks as if it
+overwrites onto blknames with strlcpy() from scratch for each
+bp->name.
 
-I've heard similar artefacts on many different sound cards, though, across many different architectures, always on linux.
-One must wait about five minutes in between trials, or the artefact does not occur.
+FWIW, the code there used to be with strlcat(), but it was rewritten
+in the way above because strlcat() isn't always available in commit
+d9694398130c.
 
-This isn't a minor detail.
-The tick is very loud.
-It might even damage speakers in a worst case scenario.
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/451
-Repository URL: https://github.com/alsa-project/alsa-lib
+thanks,
+
+Takashi
