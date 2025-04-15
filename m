@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C69DCC369BD
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Apr 2025 21:49:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97BA4C369AB
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Apr 2025 21:55:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 707C46BCDE;
-	Tue, 15 Apr 2025 23:48:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707C46BCDE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D8046BD6B;
+	Tue, 15 Apr 2025 23:55:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D8046BD6B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1744753743;
-	bh=LKn9DIoR3We7LyjaBF6+X0S3BlBAgir1qQTS/pupaSM=;
+	s=default; t=1744754124;
+	bh=5ySA7NW4dJU6oElR2DtLk5XaHSYZ9MzzEAI6shNtC3U=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=XEj4haZ5Pu6HbW6+/MmFTcAk3ZWw0FDgEz3fI9fk0YlUxTI60rJDSlCoObyBjhbhL
-	 yvTlUGJRXRc58NfncWa6Rjd29F0NJYb4bBYBcTR/vM2MjZq8EwZSOJt7Z4OGfCZiw+
-	 s7LL/4XOS63KNn9HuKPTgWC0XsEucnYqfYPJVj+I=
+	b=RJKL8edPA2xx38XvDsGmv01QvkRy41vHi0o+Q7Y1BI8ck/Djt/9OolCmNxit1kIC6
+	 rSS8nnXXiXhoitKvrZIGLD65228A758dl1r29wG/YOo1ckGqJaahXuxJppuJY7GVbG
+	 sM2sUTb7KeUywpj1dWx6CRkpVZYtmfvnyuPpXMVo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92613F805D5; Tue, 15 Apr 2025 23:48:29 +0200 (CEST)
+	id 15796F805D7; Tue, 15 Apr 2025 23:54:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 808BBF80075;
-	Tue, 15 Apr 2025 23:48:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFC07F805D3;
+	Tue, 15 Apr 2025 23:54:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9583F8021D; Tue, 15 Apr 2025 23:48:25 +0200 (CEST)
+	id 585AEF8021D; Tue, 15 Apr 2025 23:54:46 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45C8CF80169
-	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2025 23:48:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45C8CF80169
+	by alsa1.perex.cz (Postfix) with ESMTP id AF352F80075
+	for <alsa-devel@alsa-project.org>; Tue, 15 Apr 2025 23:54:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF352F80075
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18369c3f8f272b00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18369c3f8f1ed500-webhooks-bot@alsa-project.org>
-References: <18369c3f8f1ed500-webhooks-bot@alsa-project.org>
+Message-Id: <18369c98733d8100-webhooks-bot@alsa-project.org>
+In-Reply-To: <18369c987334e500-webhooks-bot@alsa-project.org>
+References: <18369c987334e500-webhooks-bot@alsa-project.org>
 Subject: No audio on Lenovo Yoga Slim 7 14ILL1
-Date: Tue, 15 Apr 2025 23:48:25 +0200 (CEST)
-Message-ID-Hash: NUQ6MGMNXH24EJUAOFSKVZX2FUH6SLXP
-X-Message-ID-Hash: NUQ6MGMNXH24EJUAOFSKVZX2FUH6SLXP
+Date: Tue, 15 Apr 2025 23:54:46 +0200 (CEST)
+Message-ID-Hash: LED6ZSIXHJCH46GFNWJLZ3G3VEO3ETRS
+X-Message-ID-Hash: LED6ZSIXHJCH46GFNWJLZ3G3VEO3ETRS
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NUQ6MGMNXH24EJUAOFSKVZX2FUH6SLXP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LED6ZSIXHJCH46GFNWJLZ3G3VEO3ETRS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,11 +67,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #548 was opened from miguel1117:
+alsa-project/alsa-ucm-conf issue #548 was edited from miguel1117:
 
 Only "Dummy Output" is available as an output device on the Lenovo Yoga Slim 7 14ILL1. I'm not absolutely sure if this is the right place to report this so apologies if it's not.
 
-[ALSA information](https://alsa-project.org/db/?f=80c739775b022831be9c3aad038f8de0a817cf25)
+[ALSA information](https://alsa-project.org/db/?f=71342ec47d52681c81335d75d2947d89691f3c77)
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/548
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
