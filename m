@@ -4,174 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D38FFC3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:04:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75BC8C2D0CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:04:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D22FF62595;
-	Thu, 15 May 2025 09:54:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D22FF62595
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4399625D9;
+	Thu, 15 May 2025 09:56:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4399625D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747295700;
-	bh=FK8pEdCRQtG6bJlXiQWdi88Bu8Ab4nVxy28DqpeqP7s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1747295798;
+	bh=b8O4l3RSvg0fy+NWpm7X0oPQjhPePwQH1mA0z4k72Qw=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Triaw8MV+mIIVDxiaqjdJBfS4ehPC0nQhVopLPbo2E8HM4NZn15Zy6gZ99sRvhBUT
-	 j5EyBH9Zy1L5L2I01FpRTEQBdIWi0ySCUCYwjzhKZXbK9wEGT94qTmN58OBoxOqnuS
-	 caY/1SlnINC5oFA5ck9lGp4K1E3MIB8fHXqGZnhU=
+	b=viiYQPf8AZRcjE1fdNcHCxnoo8TWD1j9Sk61/DUvx6DCMIJtYYCW3f3LvmbIqbbXG
+	 mXsh0O8gEhjl1ratqoKEhx5QVZwiJU0PyH/qe0i+ZAn2tAINGQBAowwdKhe9397Nw2
+	 MxRc1WQfPqlcuP8dwTz5fZcdaM8CmCjFU2Q+hwPg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5116F899B5; Mon, 12 May 2025 08:08:28 +0200 (CEST)
+	id 0666AF896EF; Sun, 11 May 2025 16:32:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA281F899B3;
-	Mon, 12 May 2025 08:08:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAAE6F896DB;
+	Sun, 11 May 2025 16:32:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96D98F89995; Mon, 12 May 2025 08:08:25 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 99AB1F95BDC; Fri, 25 Apr 2025 10:07:39 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CA64EF80800
-	for <alsa-devel@alsa-project.org>; Mon, 12 May 2025 08:08:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA64EF80800
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7E849F8E231
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 10:07:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E849F8E231
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=P68ZAven;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=X4ag0s25;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=P68ZAven;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=X4ag0s25
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 64D4D211AD;
-	Mon, 12 May 2025 06:08:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1747030102;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=39IvRBcW+cJ8NVSVS1ljrzz9mXA6cTtMOoBmdCkC5GE=;
-	b=P68ZAvenefYZ4NDkzAWQDonwBFNXbXDZYtwdUfPOBWs8iBbR6DO+hrj5Vtu3tQBn+spiOY
-	q58yLInZAbDhIWmys5/OFX8u+6Ni7k73KhtjmMmPt5n5k3cDox5eBljtiIDEV+OcLlWAsX
-	torlOTa9h37E+iCwkWbtj5kDdFnw6Jc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1747030102;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=39IvRBcW+cJ8NVSVS1ljrzz9mXA6cTtMOoBmdCkC5GE=;
-	b=X4ag0s250XMgQ+nRAVL/unRTUX8pJeSCz4LYIb78m0QmkvgTes7RIDftLdnkXs45BtG4O0
-	+vaouCEWQtpR85Cg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=P68ZAven;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=X4ag0s25
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1747030102;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=39IvRBcW+cJ8NVSVS1ljrzz9mXA6cTtMOoBmdCkC5GE=;
-	b=P68ZAvenefYZ4NDkzAWQDonwBFNXbXDZYtwdUfPOBWs8iBbR6DO+hrj5Vtu3tQBn+spiOY
-	q58yLInZAbDhIWmys5/OFX8u+6Ni7k73KhtjmMmPt5n5k3cDox5eBljtiIDEV+OcLlWAsX
-	torlOTa9h37E+iCwkWbtj5kDdFnw6Jc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1747030102;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=39IvRBcW+cJ8NVSVS1ljrzz9mXA6cTtMOoBmdCkC5GE=;
-	b=X4ag0s250XMgQ+nRAVL/unRTUX8pJeSCz4LYIb78m0QmkvgTes7RIDftLdnkXs45BtG4O0
-	+vaouCEWQtpR85Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 210211397F;
-	Mon, 12 May 2025 06:08:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zdDjBlaQIWgYcgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 12 May 2025 06:08:22 +0000
-Date: Mon, 12 May 2025 08:08:21 +0200
-Message-ID: <878qn2xsx6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: <broonie@kernel.org>,
-	<andriy.shevchenko@linux.intel.com>,
-	<13564923607@139.com>,
-	<13916275206@139.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<baojun.xu@ti.com>,
-	<Baojun.Xu@fpt.com>,
-	<jesse-ji@ti.com>
-Subject: Re: [PATCH v1] ALSA: hda/tas2781: Fix the ld issue reported by kernel
- test robot
-In-Reply-To: <20250511221844.1123-1-shenghao-ding@ti.com>
-References: <20250511221844.1123-1-shenghao-ding@ti.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 64D4D211AD
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.981];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[139.com];
-	RCVD_TLS_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,139.com,alsa-project.org,vger.kernel.org,ti.com,fpt.com];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	REDIRECTOR_URL(0.00)[urldefense.com];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim]
-X-Rspamd-Action: no action
-Message-ID-Hash: 3YBF74AJJ4DFVJJQ5MZGDJYX6JTRUCBE
-X-Message-ID-Hash: 3YBF74AJJ4DFVJJQ5MZGDJYX6JTRUCBE
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=fairphone.com header.i=@fairphone.com
+ header.a=rsa-sha256 header.s=fair header.b=X22froPd
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4394a823036so18059625e9.0
+        for <alsa-devel@alsa-project.org>;
+ Fri, 25 Apr 2025 01:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1745568456; x=1746173256;
+ darn=alsa-project.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WC8RFGmD1RHEB436RAA/xlbqbziPuzDw03yfjSeC4YY=;
+        b=X22froPd5pG1olvCAsBXiQSWs9/ZNzUba076R+yTJtvEGA0YSxmgn32f0LDGWe0ZSM
+         Wk5xfK+PIeYw8EvXFoUIJNW2Za+01zUkKoofCRv+DPSIV8AV+aIL7qidSUfgWbpukVaM
+         W2SYSEMXp1WQ+pVzrizWP1YPLnLq5f2xezMyQ+idmKVLKvrTnnszv7bPtQMqtyiEre8o
+         S70JAbiDjuDcc6V8tGQRBOGmtF23gLfZfo9p/fhvGvkAvAdFRXi0bZYhau8tMOS1voBq
+         U0FUchgn1s9S2Uxoyt0iKGPTzsMIu4Xnb0aok2Lx+GhkFyQ7hz0RlFzm9WrKKeIYeyxr
+         bMOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745568456; x=1746173256;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WC8RFGmD1RHEB436RAA/xlbqbziPuzDw03yfjSeC4YY=;
+        b=RIth+65gARdf84xi7DPQTJ0ueFH1Qzzi3mZO2Fy7lTyomPUiLlIxMGXp9oFSIcK2xW
+         uFJzO4o/A77NC6Q3w3jiAwL2EbuCzRNgrGRtmS/hlJs+aAC7Rbdxl26KxSCa6+Ml5t4m
+         FptP47z8rkYn/AKZsybKPYEQ3f9QE12nsGzxv4LrN14BSYULbVKz3rwesCL/i5MCUjbr
+         pXT/9KeUftpeIjF87zX7or7p95ZNjoqeL81lyctvbH8D0oCN2T5oPY2kXqdH9rRkGwyJ
+         S/5G9PYEJRTlncipduE/LnE7usxalowsglt48j8xte3WBAWQ0IWIjJQ659js+02g/qCm
+         6U5A==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUx1t6iVt369hbvuuSRCEg09LvwzTA3au7UCYuCFSTwka7qBR8y0zrK4KwVOAr1Ao/JQ6NgTZBWokw7@alsa-project.org
+X-Gm-Message-State: AOJu0YxoDDa1A5JMBrKkh2GR/HQAwyQO0erofNFRztI6DcZZpbbyBAhw
+	zWL0u2rd+Nk1wYGZxfj2OhiA+x8zTlOvXU4teVVgelw9dUbi3kIHvCsFzPLgFPk=
+X-Gm-Gg: ASbGncsNHpP9hbREcjnJn8jVYXAJoyPj7Cgu1bZCH3d7aGrmEw6amr+XOhkf0kI+/8v
+	0t2BRy4r8n8HaRQ7bfHcyrLdu3Viq1Tqpa+ytbIOfQD9oZxJi+RfWMWirqqycdgrLT8MFpRb0Z6
+	C84wPl5mdOLDeH/60ogka6fH8aaNWUwMIDWpNAkAjFw1ifU/jsvTqxGTxrtNyUc55cEdIlC16hv
+	anAvsyWkFk4x8kyWWA82931MsO/a75O1KaEoD2x1FKy6PY63UMcjp5jMV2+2/wWWNjh3FFCz8Kp
+	Zkjxkv+PyFqh5l1IB57qHAs1nbbW0uPTVqvqX2Fs1MKX6eVVssth6HRngINucxFfULUgKEemcq9
+	CWxVTLQ5M3/Q/9FBbiMpwrs921WdaSS9rbIBYaVU2wJadSj5vtUBGc2ED
+X-Google-Smtp-Source: 
+ AGHT+IHnGU5E9kdTmOEv3J8nz+wIEIG5a+AbZeoA5daYiMBxcw7FiKXP7Z+blV7YWaSaCVLY5aXfcg==
+X-Received: by 2002:a05:600c:4e88:b0:43d:fa:1f9a with SMTP id
+ 5b1f17b1804b1-440a66ab7femr10627065e9.30.1745568456199;
+        Fri, 25 Apr 2025 01:07:36 -0700 (PDT)
+Received: from [100.64.0.4]
+ (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at.
+ [2a02:8388:6584:6400:d322:7350:96d2:429d])
+        by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3a073e461casm1593513f8f.74.2025.04.25.01.07.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Apr 2025 01:07:35 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Date: Fri, 25 Apr 2025 10:07:28 +0200
+Subject: [PATCH v3 4/5] ASoC: qcom: sm8250: Add Fairphone 5 soundcard
+ compatible
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250425-fp5-dp-sound-v3-4-7cb45180091b@fairphone.com>
+References: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
+In-Reply-To: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
+To: Srinivas Kandagatla <srini@kernel.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konradybcio@kernel.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.14.2
+X-MailFrom: luca.weiss@fairphone.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: LHGCVCLIKQ2OV7AWAJSIIOHVMANS64R2
+X-Message-ID-Hash: LHGCVCLIKQ2OV7AWAJSIIOHVMANS64R2
+X-Mailman-Approved-At: Sun, 11 May 2025 14:32:10 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3YBF74AJJ4DFVJJQ5MZGDJYX6JTRUCBE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LHGCVCLIKQ2OV7AWAJSIIOHVMANS64R2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -180,27 +140,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 12 May 2025 00:18:44 +0200,
-Shenghao Ding wrote:
-> 
-> Fix the ld issue reported by kernel test robot, moving the implementation
-> of tasdevice_remove from tas2781-comlib-i2c.c to tas2781-comlib.c.
-> 
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
-> 
-> ---
-> v1:
->  - | Reported-by: kernel test robot <lkp@intel.com>
->    | Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/__;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJD
+Add a compatible for the QCM6490-based Fairphone 5 which can use this
+machine driver.
 
-You must put this in the patch description around your Signed-off-by
-line (without quotes).
-Also, please put the Fixes tag to point out the commit that introduced
-the regression, too.
+As a note, QCM6490 RB3 board is using audioreach architecture while
+Fairphone 5 uses pre-audioreach.
 
-Care to resubmit?
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+ sound/soc/qcom/sm8250.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
+index a4bf6eff811ea3e2b005071cf3410e5a0410f5d8..43c93e24d77259f232062c7e4182a39151111c59 100644
+--- a/sound/soc/qcom/sm8250.c
++++ b/sound/soc/qcom/sm8250.c
+@@ -208,6 +208,7 @@ static int sm8250_platform_probe(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id snd_sm8250_dt_match[] = {
++	{ .compatible = "fairphone,fp5-sndcard", .data = "qcm6490" },
+ 	{ .compatible = "qcom,qrb4210-rb2-sndcard", .data = "sm8250" },
+ 	{ .compatible = "qcom,qrb5165-rb5-sndcard", .data = "sm8250" },
+ 	{ .compatible = "qcom,sm8250-sndcard", .data = "sm8250" },
 
-thanks,
+-- 
+2.49.0
 
-Takashi
