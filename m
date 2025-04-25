@@ -4,98 +4,138 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09030C54755
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADD7FC2D0CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:25:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEAE960263;
-	Thu, 15 May 2025 09:10:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEAE960263
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3852E61652;
+	Thu, 15 May 2025 09:23:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3852E61652
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747293037;
-	bh=qixPsvx68QpQdJN2+HaEShxgh1Pq8m7eQVfo4KQLOJ8=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=kokl4MbE9emoO3JKMhsdH+/gCNeyK7gtWvOb+vKbGw5N6N/axvK7Tym1Ec08H0pqk
-	 mjPPmXYYU0Fxv8OrxTUjwku4sC5u0ArhOXuxNDJNNwbivWkn0PIQkVeP9JImedN+0E
-	 ajR+GEu7AhSmtsIlp6tn11R02wKkRZIzwekh2JnQ=
+	s=default; t=1747293802;
+	bh=Ons6fbZ/ZBBSkZ0lCnRlE60mRw4vXN50ao9l15AnCic=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rQPU5wN1AQXDnlaPKRWeQXVl0bmOH4axjWfGJGYH2ubKT+FuzSxXYQ76RPxWCaOcr
+	 nq2JcezaizPUwNviEemBW0WcsBskA/cbbpe02sbHK5JdvwgLVdnhh0cBoueb2oGyMy
+	 XM2QE6mY2Zvxh1XvvpFON6Lfv5uSABZgWKCPMb9A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4650BF89AE0; Tue, 13 May 2025 11:00:09 +0200 (CEST)
+	id 98703F8977C; Sun, 11 May 2025 16:32:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34BC7F89AE2;
-	Tue, 13 May 2025 11:00:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E5F7F8976A;
+	Sun, 11 May 2025 16:32:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C717F89ACE; Tue, 13 May 2025 11:00:06 +0200 (CEST)
-Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1C9BAF96B3A; Fri, 25 Apr 2025 22:47:48 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18004F89A98
-	for <alsa-devel@alsa-project.org>; Tue, 13 May 2025 11:00:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18004F89A98
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE044F8ED40
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 22:47:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE044F8ED40
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=isIsk3Zx
-Received: from lelvem-sh01.itg.ti.com ([10.180.77.71])
-	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 54D8xurX3035121;
-	Tue, 13 May 2025 03:59:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1747126796;
-	bh=GoAfN8SkH9CD8o22DgIP7HQF9KZ68PufaMe/60HCH6I=;
-	h=From:To:CC:Subject:Date;
-	b=isIsk3ZxqUrYnjqtwR5aPGMjnVzxs8MXTNopUfNl+nrlyGY6t4DcuxzY6dNd/eZdG
-	 t2I4YA4B7/kuWAvFzK7NJjTxOElfJ4A6PFk3uYTdi+RyFrReP1Kzv58m7YfA34wQBv
-	 AtGavxXvAMfQFTbzPUd+/qP9LBPDISC8wEYyfdzE=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-	by lelvem-sh01.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 54D8xuig1614569
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Tue, 13 May 2025 03:59:56 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
- May 2025 03:59:55 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 13 May 2025 03:59:55 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.161.59])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 54D8xpZS121462;
-	Tue, 13 May 2025 03:59:52 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <13564923607@139.com>, <13916275206@139.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <baojun.xu@ti.com>, <Baojun.Xu@fpt.com>, <jesse-ji@ti.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        kernel test robot
-	<lkp@intel.com>
-Subject: [PATCH v4] ALSA: hda/tas2781: Fix the ld issue reported by kernel
- test robot
-Date: Tue, 13 May 2025 16:59:47 +0800
-Message-ID: <20250513085947.1121-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Message-ID-Hash: SLI6J3B5B3BMF7NVKB6E4KLI4QAR2OKT
-X-Message-ID-Hash: SLI6J3B5B3BMF7NVKB6E4KLI4QAR2OKT
-X-MailFrom: shenghao-ding@ti.com
+	dkim=pass (2048-bit key,
+ unprotected) header.d=fairphone.com header.i=@fairphone.com
+ header.a=rsa-sha256 header.s=fair header.b=VGPWYIxL
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-43cf034d4abso25655835e9.3
+        for <alsa-devel@alsa-project.org>;
+ Fri, 25 Apr 2025 13:47:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1745614064; x=1746218864;
+ darn=alsa-project.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ons6fbZ/ZBBSkZ0lCnRlE60mRw4vXN50ao9l15AnCic=;
+        b=VGPWYIxLk435unL5Ko5n9wznJTb8QpzWjQnbe5f+LWHVmNyMBQuUP7Bb+nxfe3mPQX
+         TsrXfj7e1SajnPiYyOqSfNbA6h6FvU5GaLqlxJXBLrzc2R6F3AnnXUScZvE4g1kwb+KG
+         5VQbwmK4BkN4M63cyNLoQv+mPFnoXMLble577SVRa4LsHgIv3fhkoz+JJgu8RYid97DH
+         m8mmRXG947JyM1dzJPgqxN/7J5w6E/OunxIiee/N1Eoqo8OedLYjW0a5SEv/xp5oyjHL
+         uLp+DUrjBKXGcrSs8yvmH59vH79NHx3n0kSlhYVobJorztey5yhMZXunHJb1eMnxbkor
+         iPtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745614064; x=1746218864;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Ons6fbZ/ZBBSkZ0lCnRlE60mRw4vXN50ao9l15AnCic=;
+        b=PSHfkwnsOAFteMrnlGHwpR3ZIJZ35wyKkPtL52eTAKRNUTsvQWaPdLZWO9UdP3PrMs
+         Ve1A4dauB4PiUVvYHC3eNwGpUQ1y+VyjuMyClOcWafkpn0ggRpfkx/VFGgD36B2AmuQO
+         A4Q/dGHqDTn5tfv5xWrHBXXuXqr+SQXCkXiQFENQyOFrkLfOsAXgfgqq4gfARHcYlhss
+         UhwVFbH46Wa/CTB6WDEZjRDwDaFgWgd8LixY4/pVaT07u8lLTEU1bzuayrGbi8dJve1G
+         qfwnuBlNp3qDNdDHZaYb03N7DsyIY9VS/ae+5FzBCvP/J1CeWFq70MKMBX3Y4g45Fzxh
+         CQXA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCURsGwPJwY7yLevy2K/dgIlP8QCXLr9L10FGAkiSz5umAtjUJ0O+38OLM4Fum2bFfTRalOpGuAJuksG@alsa-project.org
+X-Gm-Message-State: AOJu0YxwYqxZ2w86WflCLRvVyQtmR1IqefHROduBV0TnaUiGY8tDcq94
+	KbnmssWVdvt9QvNp08nWFZ1QTOr5eUWwIMHeK9J+cXiBzWkK2q3LOPl2qq6Kc6k=
+X-Gm-Gg: ASbGncsAuXmM9wNL7C12hWsCb3Je/1l/NfiNMJ0dDg4/aXua95zmtkwZi83FJrzvZMp
+	4qbFlvbiZ+HcbZ7y2/iTN56W/mK9hdCDinx2qYQrHfeGVan+bmsw55q+F2uYb+ci/466z4ssmjR
+	xVhFX/cCf1aDcEI4Q5sd0pKNp4+iui6Bc7ibiu3R2g4NdIa4kyaUKRelSASp69+022pzPcBvNvO
+	I12B6I8l9Eud+wCCmpTyYbuJ4sW2RNn9Rz/SqcdsWHNSEIcWLP3R2nRpkRTkIhn3JIIlcsPqk3B
+	V+mCqnOmD3y2z0VZwea/oMxw/nOh5NtJUFhFmIWSginHdPoVqeLaCAT8JLOO8VDx8iKPrhGts4n
+	CGPjOUELske8YCWjZALdTuww4bZFr1/YRq/EaBOyNX1LvoVZjj1DE
+X-Google-Smtp-Source: 
+ AGHT+IHc2IGV1cabuJnO+f6tRyRq8tFSNKSMn/0EAuS9gCgWsxP2W699M+Xi8my9zfWANmox2FyRWg==
+X-Received: by 2002:a05:6000:18a8:b0:39f:a553:3d98 with SMTP id
+ ffacd0b85a97d-3a074f89292mr3119425f8f.56.1745614064100;
+        Fri, 25 Apr 2025 13:47:44 -0700 (PDT)
+Received: from localhost
+ (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at.
+ [2a02:8388:6584:6400:d322:7350:96d2:429d])
+        by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3a073e5da0dsm3245891f8f.88.2025.04.25.13.47.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Apr 2025 13:47:43 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 25 Apr 2025 22:47:42 +0200
+Message-Id: <D9G0JHKZ0RXB.3LI5UGS7QTVQN@fairphone.com>
+Cc: "Srinivas Kandagatla" <srini@kernel.org>, "Banajit Goswami"
+ <bgoswami@quicinc.com>, "Liam Girdwood" <lgirdwood@gmail.com>, "Rob
+ Herring" <robh@kernel.org>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>,
+ "Conor Dooley" <conor+dt@kernel.org>, "Jaroslav Kysela" <perex@perex.cz>,
+ "Takashi Iwai" <tiwai@suse.com>, "Bjorn Andersson" <andersson@kernel.org>,
+ "Konrad Dybcio" <konradybcio@kernel.org>,
+ <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
+ <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
+ <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Dmitry Baryshkov"
+ <dmitry.baryshkov@oss.qualcomm.com>, "Neil Armstrong"
+ <neil.armstrong@linaro.org>
+Subject: Re: [PATCH v3 2/5] ASoC: qcom: sm8250: set card driver name from
+ match data
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Mark Brown" <broonie@kernel.org>
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a
+References: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
+ <20250425-fp5-dp-sound-v3-2-7cb45180091b@fairphone.com>
+ <36904d64-68e1-43b2-baed-50b5fddc2bcb@sirena.org.uk>
+ <D9FXE4TJ23QB.1CS3D6PU2FGMR@fairphone.com>
+ <ccca5e19-5a4e-423b-923e-ea0de6682752@sirena.org.uk>
+In-Reply-To: <ccca5e19-5a4e-423b-923e-ea0de6682752@sirena.org.uk>
+X-MailFrom: luca.weiss@fairphone.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 6NAJPKU26CILOAUKQYDPM5DEEGKPVS4Q
+X-Message-ID-Hash: 6NAJPKU26CILOAUKQYDPM5DEEGKPVS4Q
+X-Mailman-Approved-At: Sun, 11 May 2025 14:32:15 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SLI6J3B5B3BMF7NVKB6E4KLI4QAR2OKT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6NAJPKU26CILOAUKQYDPM5DEEGKPVS4Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,73 +144,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-After commit 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c
-and leverage SND_SOC_TAS2781_FMWLIB")created a separated lib for i2c,
-However, tasdevice_remove() used for not only for I2C but for SPI being
-still in that lib caused ld issue.
-All errors (new ones prefixed by >>):
->> ld.lld: error: undefined symbol: tasdevice_remove
-   >>> referenced by tas2781_hda.c:33 (sound/pci/hda/tas2781_hda.c:33)
-   >>>               vmlinux.o:(tas2781_hda_remove)
-To fix this issue, the implementation of tasdevice_remove was moved from
-tas2781-comlib-i2c.c to tas2781-comlib.c.
+On Fri Apr 25, 2025 at 9:03 PM CEST, Mark Brown wrote:
+> On Fri, Apr 25, 2025 at 08:19:39PM +0200, Luca Weiss wrote:
+>
+>> I've based this series on next-20250417 tag, so this is probably due to
+>> the changes from the USB sound offloading series that Greg has picked
+>> up.
+>
+>> So either Greg also picks up these changes when they're ready, or we
+>> wait until 6.17?
+>
+> Or base it on my tree and let things get sorted in the merge, I don't
+> know what the conflicts might be?
 
-Fixes: 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c and leverage SND_SOC_TAS2781_FMWLIB")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/__;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJD
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+For this patch here it might be okay but patch 3/5 from this series very
+much depends on the patch in Greg's tree, given it refactors/expands on
+the USB_RX if there. Resolving this through merge wouldn't be very
+pretty.
 
----
-v4:
- - Put report tag around Signed-off-by without quotes.
-v3:
- - Drop the report tag in the patch description.
-v2:
- - put the Fixes tag to point out the commit that introduced the regression
- - Add compiling error information reported by kernel test robot into patch
-   description.
-v1:
- - | Reported-by: kernel test robot <lkp@intel.com>
-   | Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/__;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJD
----
- sound/soc/codecs/tas2781-comlib-i2c.c | 6 ------
- sound/soc/codecs/tas2781-comlib.c     | 6 ++++++
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/tas2781-comlib-i2c.c b/sound/soc/codecs/tas2781-comlib-i2c.c
-index a75b812618ee..c078bb0a8437 100644
---- a/sound/soc/codecs/tas2781-comlib-i2c.c
-+++ b/sound/soc/codecs/tas2781-comlib-i2c.c
-@@ -364,12 +364,6 @@ int tascodec_init(struct tasdevice_priv *tas_priv, void *codec,
- }
- EXPORT_SYMBOL_GPL(tascodec_init);
- 
--void tasdevice_remove(struct tasdevice_priv *tas_priv)
--{
--	mutex_destroy(&tas_priv->codec_lock);
--}
--EXPORT_SYMBOL_GPL(tasdevice_remove);
--
- MODULE_DESCRIPTION("TAS2781 common library for I2C");
- MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
-index ad2f65359b15..076c1d955972 100644
---- a/sound/soc/codecs/tas2781-comlib.c
-+++ b/sound/soc/codecs/tas2781-comlib.c
-@@ -225,6 +225,12 @@ void tasdevice_dsp_remove(void *context)
- }
- EXPORT_SYMBOL_GPL(tasdevice_dsp_remove);
- 
-+void tasdevice_remove(struct tasdevice_priv *tas_priv)
-+{
-+	mutex_destroy(&tas_priv->codec_lock);
-+}
-+EXPORT_SYMBOL_GPL(tasdevice_remove);
-+
- MODULE_DESCRIPTION("TAS2781 common library");
- MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
- MODULE_LICENSE("GPL");
--- 
-2.43.0
-
+Regards
+Luca
