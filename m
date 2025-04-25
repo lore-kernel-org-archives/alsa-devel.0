@@ -4,131 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5526C3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:57:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF6A4C2D0CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:58:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A05DC61826;
-	Thu, 15 May 2025 09:26:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A05DC61826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3265D615D7;
+	Thu, 15 May 2025 09:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3265D615D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747293986;
-	bh=0Tu7c/55MLpVHgNQHr6rjQgjyskQ0bSBrdifeMj848A=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1747293797;
+	bh=IpSFoh4pYOY/HGqg1pleHeuH9QFifSvgR7QoQN+jals=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nkhBZAP5uto+u8zHXbDIyOKEAsDhFDhG+2McpTlFciAcDRFFXJvQL65Zc4ypqysuu
-	 UzkBZzE4rbHKmxjP7dXg1KRmxcK0CVcKnPjXUacjNkqQnlWL5EkBtqY01f0ZfuXoay
-	 hsKgrZk8x27G7Oi+wYYgaECOa5OfYJSLzq8T73mQ=
+	b=RBhsNlFj4zcFdab9y7mYT52l9lDBZ3O/nNl5YCxdvYNsja9WLU2psFYQVEN/YXgRF
+	 gaNoeQspbWJWpNWAGESnjeRlYyVf2dl/iZHF24C9fPP95dmtf0uzUa75UtddEtXZ/n
+	 UqNhGRbuMOkXj5T63qwiDuY+Kaju/If5SyhRyQ1w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74A54F89670; Sun, 11 May 2025 16:32:16 +0200 (CEST)
+	id 173E3F8975B; Sun, 11 May 2025 16:32:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F29EF89674;
-	Sun, 11 May 2025 16:32:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE37DF89750;
+	Sun, 11 May 2025 16:32:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07A09F95BDB; Fri, 25 Apr 2025 10:07:38 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+	id 59DC9F8F13C; Fri, 25 Apr 2025 20:19:57 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39AFDF8DDD7
-	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 10:07:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39AFDF8DDD7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3387DF8EB13
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 20:19:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3387DF8EB13
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=fairphone.com header.i=@fairphone.com
- header.a=rsa-sha256 header.s=fair header.b=w8TsO9zA
-Received: by mail-wr1-x42b.google.com with SMTP id
- ffacd0b85a97d-39129fc51f8so1505240f8f.0
+ header.a=rsa-sha256 header.s=fair header.b=CVVAuTQg
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-43edb40f357so18096955e9.0
         for <alsa-devel@alsa-project.org>;
- Fri, 25 Apr 2025 01:07:35 -0700 (PDT)
+ Fri, 25 Apr 2025 11:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1745568455; x=1746173255;
+        d=fairphone.com; s=fair; t=1745605193; x=1746209993;
  darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E/5LsCgffLwJC40iP8PJSPd6pyxub1HE/XdBIbu8y+o=;
-        b=w8TsO9zAiiR11CDzC/mqdbVEwI3RpmdLAHtOSSLlXdfMPTgaiTB5TElVBgrt8J0Dbt
-         Qs0RlCLRWky9241ubxcrtemvvpjviZLncI1unw8ioGhkVqiu5QUw8PcPqBLyiDJiDU3O
-         H8wbUVQah8OTg5sI5Hwb+pO+hLv2QFKM6438Kl85c+DHSKRT0sRU6lhU+4ZgnkY5O5kk
-         N1sH/KNwD8g5h2qXpY+tNBDg+MT4KO9l7tLzSl0VObLGhAUPiw66sXDnoaKCGYbnYU27
-         G3AwIDvrEg2qPJZp9mSr8ck5gRrjzQKGWE4wm9Pi3FKFhs9WjH14WbCvJSsR4SrScNsL
-         +drw==
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IpSFoh4pYOY/HGqg1pleHeuH9QFifSvgR7QoQN+jals=;
+        b=CVVAuTQgj7W8btRD/tYRWAIRMWzvlgt1f7QUIomllSI8INZWTEgcogqROaCpnH7fHP
+         euaXSDbpYz8hsBCUfYBXZ1Wmf0sV8VGVD80QCDdUTAWj8pMuDsb4v7tRFwJBJ6cgFMhX
+         3Xfdw3abGs+PoAk3Eqkf/K4jGry64d+npn9LPVNxFs4t24uJQv1HeN07YcSbN7YmHw6W
+         ahu5w9bzz//Ec2VWPHaT3MVzm43Vn1omyGVwp9YSq/3Nu9TvfKg03MrD9FZkUUOKeyve
+         YatMSK4tZa5xGNiGBpKcSpit8s5DeT5ekIPSEki0djp9XCxDoqmTu8QYHLcx7jPX+mpl
+         /QCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745568455; x=1746173255;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E/5LsCgffLwJC40iP8PJSPd6pyxub1HE/XdBIbu8y+o=;
-        b=TaNNeVQLxT0vOs80rDYwZoC1MO+V8B7AzkXumO6ne8gFOPtq3MvJ+u+dleojhlAztu
-         AbYG5DaZvYux7kqL26gwJ9pNuPqjbKuIEJZd28Ar8UJg882G+/fJo4oQbm+I8dR7HbHD
-         2MX99PaHBt9lTxDJ3AmTiYVmbjCLM0h5IA3BJW2n+KGFKgUJYn0x4UOaOKQCpjRUq45L
-         eSipj13U5/+/x3tWowbBVyN8rhOUYnW1KKq4RJ0Cg8mjVM1+LvDCGeEosd/u5iMd8cQV
-         fs2hHAWiME4EcurEQSU/t9C2QuBj6Jm+hnArQ80a+608K4bwVw5N/Rez22Ud7TkaR+fv
-         BUSg==
+        d=1e100.net; s=20230601; t=1745605193; x=1746209993;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IpSFoh4pYOY/HGqg1pleHeuH9QFifSvgR7QoQN+jals=;
+        b=wn1uujb5Z8zBdoEy2n+Rv+LiCRdD8jB0t4hmj07Bq+KBjOcg5RF107Nudo7ZT3ukjR
+         1cVEn5E2HTF9qhE85NKaWB8AnOLIMX7FteSyBraEBpTJlJp5phaYsWGzaMBccbgUhDBf
+         PXyK9vmR3cWttZeOSdf0XvqX7aKyjJ6qkOYG5b9mdEYBWotpwBeiqCL8Nux6em/VYPcL
+         cjVrT1dzRxdVjDEVvMFV8/qsd5AOVbV73wGQo8pbHH1Wj1klqHV5eqyy2rg0w4eIhYlz
+         dhSMA4YVobthY3hTS08BsO3ZPwtTHta72wlC8V8BuaITuxyQmVqq1GGSVD/TiUNJN9ZY
+         xsYg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVpnI/fAbR7+c6Yw/OqvFBIoL596x3+TMy6MJBUL/1i9iJnuH0jltgb+sP7ETz7L/sJsC+JniPmu0ur@alsa-project.org
-X-Gm-Message-State: AOJu0YxWsWpmSYLPz5bX0QhT/NQQ+TCPdbGfF1DIzgFx1e8XeSuGhpM7
-	hgARrD649rvikCQpB8ug0G3C+CUsEkIgvgMZNqXn/am8bHDObBpwXtX/DOiE51E=
-X-Gm-Gg: ASbGncs13EDkAa+GutJ4omc6X+vfbHNT5DOaaueAOuB2u3vWtBrIqykJRRKIjEhx0Zu
-	vwoT4lp8+CQ01gfJHd2J27VvjiUnZt7wFZoXG9K8TSTP8GN3vc/eiYCGnFFjGZi6p5TCU2EsPfi
-	VbmfBHgXHiGdBoq5go8yosIKaSc5B7iSs93+6ABYa0yBOF1BFCo7wBAOL2nBmqsgRhnljkicmuW
-	cOw/9diWx8Lo0ndcg0GSs6dZNzDaTrtAbx/YKGse38TrigjaMNIgRqoe4aQpOVKVzcDlFqIirco
-	JzGtWLij1JQnHT8CswBfH1ztWH7binN6C3CsteWG5aTBkUl++tGtmbWWQohvDwYLF6/gCbP3jms
-	3rXiyCdtn9/tHaEwHrX4whPDgrjwanTIHU5Cx6u4SX+3Iw/U9ksSlPCGu
+ AJvYcCVw6vrfphsmDq0rPJ/8cI65WhPNDyO3Go1Prv8xhqgWJ48ddy8pgmWJ5zbOkkRD+m2MIvwFdblfi/gC@alsa-project.org
+X-Gm-Message-State: AOJu0Yz+2Ibza6PK2gIzLiBG5cA9kSzJG2qBfPY5XPN8jLx+nfNLXtzU
+	WeYsEYgOL2k65aJAQjuOP6AaULvcG8eYQPoMjBp3A8pIJx5onP5eTPKF/5MvHlc=
+X-Gm-Gg: ASbGncuW5JghlaGqkMpqT2EiGuU9U+rwys+dgB1bhe6Wo5AeNwCF/b/PEUYabN3iiFE
+	CTAmbLWsVuNi0MmEQ44yUwuJ+MfH2N/MxPl+xb1VEOl/UlUvGTRo2JgAPFf/KAcRIFTwLce+nwq
+	vYfLIbKhGqHuuzQXeRTCbOd2hzTHx/PqxsIIvJzI1e5OOA+H8Jif0kYPqcSEemwDCAnkVvlK5Q2
+	Sp5FN60Uh1wJsYVQquCmmN9yHtjbdaLuC97ILIFk1p5NlK6wtLv+J0RdFnRWbMV0Hr1mNbEbXNz
+	XjG6S0LMdb28aJAvDHNLW+iUEptcvjFzOwjScihtPDtYzq+UqyHis1/c+3NBWlwB0bt5s74AtAt
+	fXhRf05/Af9wMfk9t3KZEv2dbNO1wFw1BV4UCs0+CNtrpOa0nhhFM
 X-Google-Smtp-Source: 
- AGHT+IGnsZ1b2dFNba8xAUTuBj3bQrZzqkheFyeShJZeV/m9/iuVWWISzbszqwiJOzfRZPRZ+u6F+w==
-X-Received: by 2002:a5d:5983:0:b0:39e:cbef:c071 with SMTP id
- ffacd0b85a97d-3a074e2f521mr936972f8f.22.1745568454883;
-        Fri, 25 Apr 2025 01:07:34 -0700 (PDT)
-Received: from [100.64.0.4]
+ AGHT+IFJByfdmWek2xSwsLT86f5MrKiJHwIbsxI4YxA+BfoGu8K395c02Fr79u8UPzgvjnNg9CP1eQ==
+X-Received: by 2002:a05:600c:1e03:b0:43d:24d:bbe2 with SMTP id
+ 5b1f17b1804b1-440a66b7b14mr25609255e9.28.1745605192764;
+        Fri, 25 Apr 2025 11:19:52 -0700 (PDT)
+Received: from localhost
  (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at.
  [2a02:8388:6584:6400:d322:7350:96d2:429d])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3a073e461casm1593513f8f.74.2025.04.25.01.07.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 01:07:34 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Fri, 25 Apr 2025 10:07:27 +0200
-Subject: [PATCH v3 3/5] ASoC: qcom: sm8250: add DisplayPort Jack support
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250425-fp5-dp-sound-v3-3-7cb45180091b@fairphone.com>
+ 5b1f17b1804b1-440a536a02csm32734525e9.27.2025.04.25.11.19.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Apr 2025 11:19:52 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 25 Apr 2025 20:19:39 +0200
+Message-Id: <D9FXE4TJ23QB.1CS3D6PU2FGMR@fairphone.com>
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Mark Brown" <broonie@kernel.org>
+Cc: "Srinivas Kandagatla" <srini@kernel.org>, "Banajit Goswami"
+ <bgoswami@quicinc.com>, "Liam Girdwood" <lgirdwood@gmail.com>, "Rob
+ Herring" <robh@kernel.org>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>,
+ "Conor Dooley" <conor+dt@kernel.org>, "Jaroslav Kysela" <perex@perex.cz>,
+ "Takashi Iwai" <tiwai@suse.com>, "Bjorn Andersson" <andersson@kernel.org>,
+ "Konrad Dybcio" <konradybcio@kernel.org>,
+ <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
+ <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
+ <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Dmitry Baryshkov"
+ <dmitry.baryshkov@oss.qualcomm.com>, "Neil Armstrong"
+ <neil.armstrong@linaro.org>
+Subject: Re: [PATCH v3 2/5] ASoC: qcom: sm8250: set card driver name from
+ match data
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a
 References: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
-In-Reply-To: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
-To: Srinivas Kandagatla <srini@kernel.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.14.2
+ <20250425-fp5-dp-sound-v3-2-7cb45180091b@fairphone.com>
+ <36904d64-68e1-43b2-baed-50b5fddc2bcb@sirena.org.uk>
+In-Reply-To: <36904d64-68e1-43b2-baed-50b5fddc2bcb@sirena.org.uk>
 X-MailFrom: luca.weiss@fairphone.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UX5F25ZZBGEVJZSYXNQR5LM2LZ2A4SBU
-X-Message-ID-Hash: UX5F25ZZBGEVJZSYXNQR5LM2LZ2A4SBU
+Message-ID-Hash: G3LPE5PXSAPVJU5ZQVTPYK7VEWUMHUA4
+X-Message-ID-Hash: G3LPE5PXSAPVJU5ZQVTPYK7VEWUMHUA4
 X-Mailman-Approved-At: Sun, 11 May 2025 14:32:10 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UX5F25ZZBGEVJZSYXNQR5LM2LZ2A4SBU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G3LPE5PXSAPVJU5ZQVTPYK7VEWUMHUA4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,51 +142,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add support for DisplayPort Jack events, so that user space can
-configure the audio routing correctly.
+Hi Mark,
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- sound/soc/qcom/sm8250.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+On Fri Apr 25, 2025 at 2:12 PM CEST, Mark Brown wrote:
+> On Fri, Apr 25, 2025 at 10:07:26AM +0200, Luca Weiss wrote:
+>> Sound machine drivers for Qualcomm SoCs can be reused across multiple
+>> SoCs. But user space ALSA UCM files depend on the card driver name which
+>> should be set per board/SoC.
+>
+> This doesn't apply against current code, please check and resend.
 
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index e920b413b762c803cfcc4049f35deba828275478..a4bf6eff811ea3e2b005071cf3410e5a0410f5d8 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -25,6 +25,7 @@ struct sm8250_snd_data {
- 	struct snd_soc_jack jack;
- 	struct snd_soc_jack usb_offload_jack;
- 	bool usb_offload_jack_setup;
-+	struct snd_soc_jack dp_jack;
- 	bool jack_setup;
- };
- 
-@@ -32,14 +33,16 @@ static int sm8250_snd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
--	int ret;
- 
--	if (cpu_dai->id == USB_RX)
--		ret = qcom_snd_usb_offload_jack_setup(rtd, &data->usb_offload_jack,
--						      &data->usb_offload_jack_setup);
--	else
--		ret = qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
--	return ret;
-+	switch (cpu_dai->id) {
-+	case DISPLAY_PORT_RX:
-+		return qcom_snd_dp_jack_setup(rtd, &data->dp_jack, 0);
-+	case USB_RX:
-+		return qcom_snd_usb_offload_jack_setup(rtd, &data->usb_offload_jack,
-+						       &data->usb_offload_jack_setup);
-+	default:
-+		return qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
-+	}
- }
- 
- static void sm8250_snd_exit(struct snd_soc_pcm_runtime *rtd)
+I've based this series on next-20250417 tag, so this is probably due to
+the changes from the USB sound offloading series that Greg has picked
+up.
 
--- 
-2.49.0
+So either Greg also picks up these changes when they're ready, or we
+wait until 6.17?
 
+Regards
+Luca
