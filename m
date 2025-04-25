@@ -4,103 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75BC8C2D0CD
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64986C3ABC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:04:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4399625D9;
-	Thu, 15 May 2025 09:56:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4399625D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47EEA625F6;
+	Thu, 15 May 2025 09:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47EEA625F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747295798;
-	bh=b8O4l3RSvg0fy+NWpm7X0oPQjhPePwQH1mA0z4k72Qw=;
+	s=default; t=1747295814;
+	bh=t2UqwPYP1B9XN/iC4TKLlBIAancDyLL4wrE626PGHow=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=viiYQPf8AZRcjE1fdNcHCxnoo8TWD1j9Sk61/DUvx6DCMIJtYYCW3f3LvmbIqbbXG
-	 mXsh0O8gEhjl1ratqoKEhx5QVZwiJU0PyH/qe0i+ZAn2tAINGQBAowwdKhe9397Nw2
-	 MxRc1WQfPqlcuP8dwTz5fZcdaM8CmCjFU2Q+hwPg=
+	b=UNJI/VYkxbWqFhSAju3yjHK4KsXydiPLNSgsfNheDuBSSTP+JkVWzIlSmb/ApTkD+
+	 A9dKBfrExzf3HMkDWZtZVboNDRqGOXfS4V3aip9vS7T6NNryn5otETvd9PCoJ88WUZ
+	 4jM9aa5d8XlGTgvb2s0uAwZMZOamcRQi8Cjyu+/E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0666AF896EF; Sun, 11 May 2025 16:32:17 +0200 (CEST)
+	id 3EE92F80C96; Sun, 11 May 2025 16:32:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAAE6F896DB;
-	Sun, 11 May 2025 16:32:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB616F80CBB;
+	Sun, 11 May 2025 16:32:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99AB1F95BDC; Fri, 25 Apr 2025 10:07:39 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+	id E6144F95BD7; Fri, 25 Apr 2025 10:07:36 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7E849F8E231
-	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 10:07:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E849F8E231
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3298F8DDD7
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 10:07:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3298F8DDD7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=fairphone.com header.i=@fairphone.com
- header.a=rsa-sha256 header.s=fair header.b=X22froPd
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-4394a823036so18059625e9.0
+ header.a=rsa-sha256 header.s=fair header.b=Sm9FsHps
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-39149bccb69so1716476f8f.2
         for <alsa-devel@alsa-project.org>;
- Fri, 25 Apr 2025 01:07:37 -0700 (PDT)
+ Fri, 25 Apr 2025 01:07:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1745568456; x=1746173256;
+        d=fairphone.com; s=fair; t=1745568454; x=1746173254;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WC8RFGmD1RHEB436RAA/xlbqbziPuzDw03yfjSeC4YY=;
-        b=X22froPd5pG1olvCAsBXiQSWs9/ZNzUba076R+yTJtvEGA0YSxmgn32f0LDGWe0ZSM
-         Wk5xfK+PIeYw8EvXFoUIJNW2Za+01zUkKoofCRv+DPSIV8AV+aIL7qidSUfgWbpukVaM
-         W2SYSEMXp1WQ+pVzrizWP1YPLnLq5f2xezMyQ+idmKVLKvrTnnszv7bPtQMqtyiEre8o
-         S70JAbiDjuDcc6V8tGQRBOGmtF23gLfZfo9p/fhvGvkAvAdFRXi0bZYhau8tMOS1voBq
-         U0FUchgn1s9S2Uxoyt0iKGPTzsMIu4Xnb0aok2Lx+GhkFyQ7hz0RlFzm9WrKKeIYeyxr
-         bMOQ==
+        bh=mF78VVS1a3vgPm4/yr7suBZclt6DuZ16jbZS8capHhc=;
+        b=Sm9FsHps495M4ZhPSV7yVok01oZgChEWfZTTeGprNOnRDYvcJ3vsK1Bu0+9rh1nmlq
+         14L4uNDSryFd98zpAPYfMEls+zh+vzC3QCqLJt4OOc+PLU6W9lcpJiPQb6g5W05nuYCa
+         rbYsad0sqwliAEOn+UPbPp9yt88/bugXUT8euus73NGX5Jyv2yoSb4v0C6EqB/X+BpRC
+         3kXkEOcSTuhw1KuoIVRvgpH3m3m5EYlHB4LrfKrgoSytmOofD8/4r3Xm+BzLhvr5KYiq
+         MzIisdxKKhYAnLVK30AmZkScWSrMoX/ykGc0myNkygitIKcWONBnb1OUnBA71mdVLPf4
+         3Hnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745568456; x=1746173256;
+        d=1e100.net; s=20230601; t=1745568454; x=1746173254;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WC8RFGmD1RHEB436RAA/xlbqbziPuzDw03yfjSeC4YY=;
-        b=RIth+65gARdf84xi7DPQTJ0ueFH1Qzzi3mZO2Fy7lTyomPUiLlIxMGXp9oFSIcK2xW
-         uFJzO4o/A77NC6Q3w3jiAwL2EbuCzRNgrGRtmS/hlJs+aAC7Rbdxl26KxSCa6+Ml5t4m
-         FptP47z8rkYn/AKZsybKPYEQ3f9QE12nsGzxv4LrN14BSYULbVKz3rwesCL/i5MCUjbr
-         pXT/9KeUftpeIjF87zX7or7p95ZNjoqeL81lyctvbH8D0oCN2T5oPY2kXqdH9rRkGwyJ
-         S/5G9PYEJRTlncipduE/LnE7usxalowsglt48j8xte3WBAWQ0IWIjJQ659js+02g/qCm
-         6U5A==
+        bh=mF78VVS1a3vgPm4/yr7suBZclt6DuZ16jbZS8capHhc=;
+        b=g6EJHfXiHQJUINVE6etHscTxEn91GGSOJw3Ta7EipXc/RPKkGI/KDdEIGIvHMRnDQ4
+         iohKKL3T7DnwZm+hN/2XmmzXssJ8ZKlhWfBr4QsLGv/8qOnL7A9he/Rjv0SOkfOKKI4Y
+         ullgpr7EOTAUF7/0xBIEKGtZKzSSGlJTswU+DqV9oE1KttqEn379Uj9KEX/qNCwChc1c
+         pzFvob0tZxI4EPGddMeMAgN52Uv77I9MvkrVC1uFRTPfF24M+1pitFbXU4kg4SpDQNgX
+         C6r1ZAQIG2RXzsvrp1O+3LYrpRGo8slrLcsLmaAL1i9VXr5Qikg/lURUUyD/sqNQqQwM
+         lyqg==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUx1t6iVt369hbvuuSRCEg09LvwzTA3au7UCYuCFSTwka7qBR8y0zrK4KwVOAr1Ao/JQ6NgTZBWokw7@alsa-project.org
-X-Gm-Message-State: AOJu0YxoDDa1A5JMBrKkh2GR/HQAwyQO0erofNFRztI6DcZZpbbyBAhw
-	zWL0u2rd+Nk1wYGZxfj2OhiA+x8zTlOvXU4teVVgelw9dUbi3kIHvCsFzPLgFPk=
-X-Gm-Gg: ASbGncsNHpP9hbREcjnJn8jVYXAJoyPj7Cgu1bZCH3d7aGrmEw6amr+XOhkf0kI+/8v
-	0t2BRy4r8n8HaRQ7bfHcyrLdu3Viq1Tqpa+ytbIOfQD9oZxJi+RfWMWirqqycdgrLT8MFpRb0Z6
-	C84wPl5mdOLDeH/60ogka6fH8aaNWUwMIDWpNAkAjFw1ifU/jsvTqxGTxrtNyUc55cEdIlC16hv
-	anAvsyWkFk4x8kyWWA82931MsO/a75O1KaEoD2x1FKy6PY63UMcjp5jMV2+2/wWWNjh3FFCz8Kp
-	Zkjxkv+PyFqh5l1IB57qHAs1nbbW0uPTVqvqX2Fs1MKX6eVVssth6HRngINucxFfULUgKEemcq9
-	CWxVTLQ5M3/Q/9FBbiMpwrs921WdaSS9rbIBYaVU2wJadSj5vtUBGc2ED
+ AJvYcCUKLy1MjXsEgNud71Y3PNTwuywiLjetmEDCfZ+NkrjGv7uEVKuh1M+/7ad3iQ5QQiRFyDA4HIMYOwC7@alsa-project.org
+X-Gm-Message-State: AOJu0YzbdDyWwpVIeKVdDJNJ8hZmJm+aaSkEOdaW04V76PX4yPoDseVW
+	esyZ1SS6a65KJfAXJumF/TfYpEslYCmUZWLpopXe+lYZfuRYcdxxKZtRxl+3rlI=
+X-Gm-Gg: ASbGnct6BqKy3UE69bBUx0wUFG4lrpf0fNN5qdZEInXSqARMoy3oh3Tak/iwQgLXFcA
+	hZ2vlIYtwUfYTeevryCyS2AS9XGeIIfwVnDoWembx4lK8ok88RrWLeKc4M7BrHNl4N705iYn4cT
+	TqA1u/E7ZhIA3vZuooAfC8GiSvBBErZEaYgcBMBfqJhzfphpqHp8Gssr33sDl6QeVSZHf6+pPqn
+	kvQpgnQVb+640jCVznOISIVAMLpNohqUNTXOvgTaFCsJbL+SfGwz5xffRSK4VTIZ/eJX9zbtazC
+	+mnAficM2w0fghy8WybiKq47ahw2y4909WpdnDlhGn+FCw/Gn2kUCzHYIRBveLV4Up+ApT2LX1F
+	nMyLuLUfzx05ww6bHgofnvzbthJMlB6du4VBBeKAyD03kLlpI2QTphrTZ
 X-Google-Smtp-Source: 
- AGHT+IHnGU5E9kdTmOEv3J8nz+wIEIG5a+AbZeoA5daYiMBxcw7FiKXP7Z+blV7YWaSaCVLY5aXfcg==
-X-Received: by 2002:a05:600c:4e88:b0:43d:fa:1f9a with SMTP id
- 5b1f17b1804b1-440a66ab7femr10627065e9.30.1745568456199;
-        Fri, 25 Apr 2025 01:07:36 -0700 (PDT)
+ AGHT+IFVDfaMfuOXmMfOCltuXID8xfqxstRaUVHZiIEzVJ71LDPZOd47+6G3giv9YW3kXwRnEPBUTA==
+X-Received: by 2002:a05:6000:1848:b0:39c:30c9:815 with SMTP id
+ ffacd0b85a97d-3a074e1e7b5mr964843f8f.21.1745568453788;
+        Fri, 25 Apr 2025 01:07:33 -0700 (PDT)
 Received: from [100.64.0.4]
  (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at.
  [2a02:8388:6584:6400:d322:7350:96d2:429d])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3a073e461casm1593513f8f.74.2025.04.25.01.07.35
+ ffacd0b85a97d-3a073e461casm1593513f8f.74.2025.04.25.01.07.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 01:07:35 -0700 (PDT)
+        Fri, 25 Apr 2025 01:07:33 -0700 (PDT)
 From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Fri, 25 Apr 2025 10:07:28 +0200
-Subject: [PATCH v3 4/5] ASoC: qcom: sm8250: Add Fairphone 5 soundcard
- compatible
+Date: Fri, 25 Apr 2025 10:07:26 +0200
+Subject: [PATCH v3 2/5] ASoC: qcom: sm8250: set card driver name from match
+ data
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250425-fp5-dp-sound-v3-4-7cb45180091b@fairphone.com>
+Message-Id: <20250425-fp5-dp-sound-v3-2-7cb45180091b@fairphone.com>
 References: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
 In-Reply-To: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
 To: Srinivas Kandagatla <srini@kernel.org>,
@@ -123,15 +123,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: LHGCVCLIKQ2OV7AWAJSIIOHVMANS64R2
-X-Message-ID-Hash: LHGCVCLIKQ2OV7AWAJSIIOHVMANS64R2
+Message-ID-Hash: FWSPZZAO5CICKVOPRLUGLIUECZ7NU5YH
+X-Message-ID-Hash: FWSPZZAO5CICKVOPRLUGLIUECZ7NU5YH
 X-Mailman-Approved-At: Sun, 11 May 2025 14:32:10 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LHGCVCLIKQ2OV7AWAJSIIOHVMANS64R2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FWSPZZAO5CICKVOPRLUGLIUECZ7NU5YH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,31 +140,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a compatible for the QCM6490-based Fairphone 5 which can use this
-machine driver.
+Sound machine drivers for Qualcomm SoCs can be reused across multiple
+SoCs. But user space ALSA UCM files depend on the card driver name which
+should be set per board/SoC.
 
-As a note, QCM6490 RB3 board is using audioreach architecture while
-Fairphone 5 uses pre-audioreach.
+Allow such customization by using driver match data as sound card driver
+name.
+
+Also while we're already touching these lines, sort the compatibles
+alphabetically.
 
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
- sound/soc/qcom/sm8250.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/qcom/sm8250.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index a4bf6eff811ea3e2b005071cf3410e5a0410f5d8..43c93e24d77259f232062c7e4182a39151111c59 100644
+index b70b2a5031dfbf69024666f8a1049c263efcde0a..e920b413b762c803cfcc4049f35deba828275478 100644
 --- a/sound/soc/qcom/sm8250.c
 +++ b/sound/soc/qcom/sm8250.c
-@@ -208,6 +208,7 @@ static int sm8250_platform_probe(struct platform_device *pdev)
+@@ -16,7 +16,6 @@
+ #include "usb_offload_utils.h"
+ #include "sdw.h"
+ 
+-#define DRIVER_NAME		"sm8250"
+ #define MI2S_BCLK_RATE		1536000
+ 
+ struct sm8250_snd_data {
+@@ -200,15 +199,15 @@ static int sm8250_platform_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	card->driver_name = DRIVER_NAME;
++	card->driver_name = of_device_get_match_data(dev);
+ 	sm8250_add_be_ops(card);
+ 	return devm_snd_soc_register_card(dev, card);
  }
  
  static const struct of_device_id snd_sm8250_dt_match[] = {
-+	{ .compatible = "fairphone,fp5-sndcard", .data = "qcm6490" },
- 	{ .compatible = "qcom,qrb4210-rb2-sndcard", .data = "sm8250" },
- 	{ .compatible = "qcom,qrb5165-rb5-sndcard", .data = "sm8250" },
- 	{ .compatible = "qcom,sm8250-sndcard", .data = "sm8250" },
+-	{.compatible = "qcom,sm8250-sndcard"},
+-	{.compatible = "qcom,qrb4210-rb2-sndcard"},
+-	{.compatible = "qcom,qrb5165-rb5-sndcard"},
++	{ .compatible = "qcom,qrb4210-rb2-sndcard", .data = "sm8250" },
++	{ .compatible = "qcom,qrb5165-rb5-sndcard", .data = "sm8250" },
++	{ .compatible = "qcom,sm8250-sndcard", .data = "sm8250" },
+ 	{}
+ };
+ 
 
 -- 
 2.49.0
