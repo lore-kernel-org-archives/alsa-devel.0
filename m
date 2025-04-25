@@ -4,95 +4,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E175EC3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D480C2D0CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:05:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33B3862692;
-	Thu, 15 May 2025 09:57:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33B3862692
+	by alsa0.perex.cz (Postfix) with ESMTPS id D40C26278E;
+	Thu, 15 May 2025 09:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D40C26278E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747295845;
-	bh=Itg065LhDRorZA0J2NZH60yb7a1hVcb/Bdr1CPrif8o=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:Reply-To:List-Id:
+	s=default; t=1747295848;
+	bh=DsjDnHtiCgBweWj2Z9rRF9NFYYy/5gSoExnp430J+Js=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YxMNn0SRP7/OkxoemtfkkS7u00ZFQixo7lzmMTpkxZ7FBFwb7WG3/UmK8io4J+kRK
-	 hdVPrU7X4lk6XVGyKQhWR3YzH+9gX2IDW5ORNVOrTBSvqHoBbQdIqbWMfPzOgPW76u
-	 zC/IVgEDX933oZbrXpDvY+T+c1nNifDiS1ghwRgQ=
+	b=rvRwz5a8e3qlAxZW6Muwjw9OSlFDNO0rn8FmZFT85vNF0KDcXgg2TluVc8uLVxHKW
+	 NxK5s3JdHaUDV5pkdbCdnP43/In/tVCG+0DU7Fi9sj+h/6A/wlczQOHxFQpAcCn+kR
+	 NAHMjp0RwgrfxVHd76YwhLt3vKY5F4lX03VIkXy8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3263DF897E5; Sun, 11 May 2025 16:32:53 +0200 (CEST)
+	id 3E49FF89728; Sun, 11 May 2025 16:32:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FBECF897E5;
-	Sun, 11 May 2025 16:32:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20B26F89724;
+	Sun, 11 May 2025 16:32:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49D90F8EBBE; Fri,  2 May 2025 00:17:09 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 787F3F8E917; Fri, 25 Apr 2025 11:08:05 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 035BEF8E9FB
-	for <alsa-devel@alsa-project.org>; Fri,  2 May 2025 00:17:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 035BEF8E9FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 13954F8E4EF
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 11:08:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13954F8E4EF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uVYY4Wq/
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6633D68474;
-	Thu,  1 May 2025 22:16:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF444C4CEE3;
-	Thu,  1 May 2025 22:17:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746137824;
-	bh=Itg065LhDRorZA0J2NZH60yb7a1hVcb/Bdr1CPrif8o=;
-	h=Subject:From:Reply-To:To:Cc:Date:In-Reply-To:References:From;
-	b=uVYY4Wq/Jpjp51lQc9DMyTjTYvlMlbqDuLsTWw/GRWDqn0ovLeyr6KypSDqiJopYo
-	 GT1r51Fpd604DW6Zs9CsY1Ix9pJ2PTIgfagSHTSaQCpVEvuN0gRuC11nANTPYp3IhG
-	 nHUIfr4iIhQXmFUW/3ilX9v7kXVdbSkjT9E3h6gakyJ9JOcMb7XzZfc5p69fVXETWi
-	 lwKqixu6BNSWUjqBiwe/7/7GqznWlPVjMkhvQ3LG/AnrSlCxo+jFUQ+TQXa/i0peAf
-	 35y/uMRs2J00kq7cIlKpMkR7Kvh2/J2QRUKyZyqUIzGJ++XQu3iR+F63g5f4OTOaA4
-	 tJyWxhStvmsdQ==
-Message-ID: <3ba81b7f7859de8ac64e4cf07cc5aa21c3850ae9.camel@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: amd: acp: Fix NULL pointer deref on acp
- resume path
-From: Niklas Schnelle <niks@kernel.org>
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-	broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-	Sunil-kumar.Dommati@amd.com, syed.sabakareem@amd.com,
- mario.limonciello@amd.com,  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav
- Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Uwe
- =?ISO-8859-1?Q?Kleine-K=F6nig?=	 <u.kleine-koenig@baylibre.com>, Greg KH
- <gregkh@linuxfoundation.org>, Peter Zijlstra <peterz@infradead.org>, "open
- list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."	
- <linux-sound@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Date: Fri, 02 May 2025 00:16:59 +0200
-In-Reply-To: <20250425060144.1773265-1-venkataprasad.potturu@amd.com>
-References: <20250425060144.1773265-1-venkataprasad.potturu@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.1 
+ unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=R37HHpOU
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id
+ 53P8TINr015915
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 09:08:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=qcppdkim1; bh=E7YGT9JoWm91VFNYG/u4ZzAL
+	7c7lgU5OKZbu1IKjJ28=; b=R37HHpOUIk4ozHJYiR/Vf6YEkpL6IJnwmqdF+5D/
+	Efzded7xua0q/u+CyTp9Zv6jKWBABfo7lgKiFApdm9UcbKC4jIf1amT0KxH3bbLZ
+	FLWfEcCHT3wCUpHOqxSJ7752t7yf0yAv6XvetfRfvEKikA3uUX1Yx5HM8+azt9hW
+	YQv78cpdaniUK/Bln8YCUxYmNVgQ0UJOsyyrXtNUb3FO/+vSAjCe90T2z5pPzFea
+	mU1OG55KJ7uNj0zotoSiZhxPf0x/2Mj4APd9uY+bzL8UGZlotVbymTdvZ8o4b9Db
+	zxKz2YpdNGirhCI/apCdUe3tRMWdP2hG2BDSbijWsWmAPg==
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 466jh3ge1b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 09:08:00 +0000 (GMT)
+Received: by mail-qk1-f197.google.com with SMTP id
+ af79cd13be357-7c54a6b0c70so200458785a.0
+        for <alsa-devel@alsa-project.org>;
+ Fri, 25 Apr 2025 02:07:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745572079; x=1746176879;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E7YGT9JoWm91VFNYG/u4ZzAL7c7lgU5OKZbu1IKjJ28=;
+        b=hdR4c9UHuT+8bO/XvfR6hc2E71dce1+BFiH9agjtYfF2/jzXlte7tFOnIWyUKkjwOZ
+         jQosXwiky/NXTvqFxwOMBl4dB+WejE+H9GtHXWkc+RVrrqS/TzOAtQzsPkTKuz+AJZeD
+         eTPa9rajhAbF8WQQaCHuB2baa428o8QOhph0dQyV7o0UeTILaFPEKOejn7dTGMb2bLwH
+         Jqm620ht9MBNi9qD6bl/Bhg1zHIWpXP9jzkawrx+adpIB3s6/RoJErPZF6plbKSGW6Cn
+         H/VF2koWLOH7T+rm3phdMHMPA7QrO+43ZJ4kZ+EmLni1UoWUmGutasg0unmJezMbyzeV
+         FCcQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWCo/2Aiiu/iPYdd8feKLB0q9R8I8pJoQ/s3iJu9H8i+gsbMWF/7A8L6RejymdA+vm1SU1a+F8P/Lc+@alsa-project.org
+X-Gm-Message-State: AOJu0YyyyXK8IjrqAJ/CsJMNTSLd9WzCIzkYQ9ncZKFoWzFv6FonbnKV
+	VQEl/QNy+Wf41PTNgVAXEz2hd7QK+r4I/kVnWDQK/VDhYCYgxNzKg+3fDOyxiyzerubD7hqlR4g
+	8XBQMRapFqVUADdvjjW3sg7hHCkj7FGqrQqnDBYefr2J/E7LFAJZSPycmEiIAwA==
+X-Gm-Gg: ASbGncv47c5l+lIFDLwrPxj/zUpu/rv12dIcvg76l25vETq+J+FyA8Ao90WZcXJ33Nz
+	GJrfjAO4P6FebCANtxiiZsJTihyOlvCTa9r3iwRWoLmFTc8rrBxe8d7V78Urp+09QPL59TBt+2f
+	ddtfRHxRrMS76SfgKPzVCJaZCYglWUrKIjeP3k1rOx+FJ19EBZMATFeXr/3TLhwGQGPmdPNfr/L
+	CqsiLbzBqll55r5EimL0zamqOwPWslHWJpsFly8eED+sdqZL2Z4ys/H4TN4/t0rAVoalY/5kbCT
+	1xC4dt7SatEmkf44gU8h6fqL780OibRF/aCGxBuFVwPr71sv7bJwJ60ktrf+jGRhh33dEfJXKCo
+	=
+X-Received: by 2002:a05:620a:1b99:b0:7c5:a463:397b with SMTP id
+ af79cd13be357-7c9606e0b7dmr246313885a.20.1745572078826;
+        Fri, 25 Apr 2025 02:07:58 -0700 (PDT)
+X-Google-Smtp-Source: 
+ AGHT+IFHpqKgmY/joCABcKakjj51b/bf9LSO5bp8KVEFf7NSYBd5yr5G0Dj8JO9ClMIekjeU5G8jvg==
+X-Received: by 2002:a05:620a:1b99:b0:7c5:a463:397b with SMTP id
+ af79cd13be357-7c9606e0b7dmr246308285a.20.1745572078331;
+        Fri, 25 Apr 2025 02:07:58 -0700 (PDT)
+Received: from eriador.lumag.spb.ru
+ (2001-14ba-a0c3-3a00--7a1.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::7a1])
+        by smtp.gmail.com with ESMTPSA id
+ 2adb3069b0e04-54e7ccb83dasm520591e87.249.2025.04.25.02.07.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Apr 2025 02:07:57 -0700 (PDT)
+Date: Fri, 25 Apr 2025 12:07:55 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Srinivas Kandagatla <srini@kernel.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] ASoC: qcom: sm8250: add DisplayPort Jack support
+Message-ID: <cgog34zs3e43n23mkt35swvu2ibuoaav4ccrhjoizg6b4kgc63@36blexv25aud>
+References: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
+ <20250425-fp5-dp-sound-v3-3-7cb45180091b@fairphone.com>
 MIME-Version: 1.0
-X-MailFrom: niks@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250425-fp5-dp-sound-v3-3-7cb45180091b@fairphone.com>
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNDI1MDA2NiBTYWx0ZWRfX2J1DhXgcUxOx
+ 9R14tE8mwZPyH/q+tsx1vgdGzwGj3uFmZJHP1yGLUTiCMnA86tj1OIPKB7dllPLj/1ociHm6+6C
+ b/CeM7ySJOmFJYWhA74MldE/MwHsslTr/KygfITGGRFGC6OTfaDBGn3hjGKf8SqtGxTvWHpl8WH
+ n9Nbh4NTDyIvwXbWsXRT9p+98Bej8PWCX+k0lLKCrGIw6pfSvbRzXDdlTqxefnmao0MPtMe0YkR
+ 3tbGGHpYkuRO/dS2ZW0WrbBsHg0dkeuOONnhggUMxoOuEph6F6JX+71Zhc0NPUq3lqqn7kCXZlU
+ SZQJy8WsFRUtaOEtiKTXzUo4xeECK8rrvEyWFIB3av4EM2m39dLvyaGkziMN6pmZLA/yLi1MbXQ
+ lxIk360/xmTsLk5msNGELnf6Bjl1qn+Dv6xdvsUxWv+tzcXFzdx5dmDHQh0oFcD9cFFuEAgn
+X-Authority-Analysis: v=2.4 cv=bs1MBFai c=1 sm=1 tr=0 ts=680b50f0 cx=c_pps
+ a=50t2pK5VMbmlHzFWWp8p/g==:117 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+ a=XR8D0OoHHMoA:10 a=6H0WHjuAAAAA:8 a=EUspDBNiAAAA:8 a=EBsx7UlYEkoSbB8InyQA:9
+ a=CjuIK1q_8ugA:10
+ a=IoWCM6iH3mJn3m4BftBB:22 a=Soq9LBFxuPC4vsCAQt-j:22
+X-Proofpoint-ORIG-GUID: 8Bpv-TAoRgDZb-H_PGRxNG-rIodMgvRg
+X-Proofpoint-GUID: 8Bpv-TAoRgDZb-H_PGRxNG-rIodMgvRg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-04-25_02,2025-04-24_02,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=908 mlxscore=0 phishscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0 malwarescore=0
+ clxscore=1015 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2504250066
+X-MailFrom: dmitry.baryshkov@oss.qualcomm.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CQDUEHMN7VVI4BZPNH4GBZAXB5QQB3RK
-X-Message-ID-Hash: CQDUEHMN7VVI4BZPNH4GBZAXB5QQB3RK
-X-Mailman-Approved-At: Sun, 11 May 2025 14:32:48 +0000
+Message-ID-Hash: 3GTO7DPSJHSK6PU7JY2USBYIPLISDDFH
+X-Message-ID-Hash: 3GTO7DPSJHSK6PU7JY2USBYIPLISDDFH
+X-Mailman-Approved-At: Sun, 11 May 2025 14:32:10 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
-Reply-To: niks@kernel.org
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQDUEHMN7VVI4BZPNH4GBZAXB5QQB3RK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3GTO7DPSJHSK6PU7JY2USBYIPLISDDFH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,75 +169,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 2025-04-25 at 11:31 +0530, Venkata Prasad Potturu wrote:
-> update chip data using dev_get_drvdata(dev->parent) instead of
-> dev_get_platdata(dev).
->=20
-> BUG: kernel NULL pointer dereference, address: 0000000000000010
-> Call Trace:
->  <TASK>
->  ? __pfx_platform_pm_resume+0x10/0x10
->  platform_pm_resume+0x28/0x60
->  dpm_run_callback+0x51/0x1a0
->  device_resume+0x1a6/0x2b0
->  dpm_resume+0x168/0x230
->=20
-> Fixes: e3933683b25e ("ASoC: amd: acp: Remove redundant acp_dev_data struc=
-ture")
->=20
-> Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-
-This is the first time I see an empty line between the Fixes and the
-Signed-off-by tags. I checked checkpatch.pl --strict and that doesn't
-complain, but I'm curious now, is that a subsystem thing since you have
-it in all 3 patches?
-
+On Fri, Apr 25, 2025 at 10:07:27AM +0200, Luca Weiss wrote:
+> Add support for DisplayPort Jack events, so that user space can
+> configure the audio routing correctly.
+> 
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 > ---
->  sound/soc/amd/acp/acp-rembrandt.c | 2 +-
->  sound/soc/amd/acp/acp-renoir.c    | 2 +-
->  sound/soc/amd/acp/acp63.c         | 2 +-
->  sound/soc/amd/acp/acp70.c         | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
->=20
---- snip ---
-> index 6d5f5ade075c..217b717e9beb 100644
-> --- a/sound/soc/amd/acp/acp70.c
-> +++ b/sound/soc/amd/acp/acp70.c
-> @@ -182,7 +182,7 @@ static void acp_acp70_audio_remove(struct platform_de=
-vice *pdev)
-> =20
->  static int acp70_pcm_resume(struct device *dev)
->  {
-> -	struct acp_chip_info *chip =3D dev_get_platdata(dev);
-> +	struct acp_chip_info *chip =3D dev_get_drvdata(dev->parent);
->  	struct acp_stream *stream;
->  	struct snd_pcm_substream *substream;
->  	snd_pcm_uframes_t buf_in_frames;
+>  sound/soc/qcom/sm8250.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+> 
 
-Hi Venkata,
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
 
-Yesterday I ran into what I believe is the issue fixed by this patch on
-my very recently acquired Framework 13 with a Ryzen AI 340. While I was
-still bisecting this I found a thread[0] of Jacek Luczak having
-bisected this and the revert at least solved the suspend issue for me
-too, though I was still getting a sound subsystem related crash[2] that
-looked related so was waiting for a proper fix. As a side note you
-might want to consider adding a Reported-by tag from Jacek.
-
-I had mentioned this on the Framework forums[1] where Mario Limonciello
-helpfully pointed me at this series. I just tried your series on top of
-v6.15-rc4 and suspend now works. I also haven't seen the other crash I
-was still getting with just the revert from the previous thread. And
-sound still works too. So feel free to add, or ignore, my:
-
-Tested-by: Niklas Schnelle <niks@kernel.org>
-
-Thanks,
-Niklas
-
-
-[0] https://lore.kernel.org/lkml/CADDYkjR0JG_JTQeQMAvUJvtb9RxFH6_LzV2Fr_1cn=
-qPTgV_Z8w@mail.gmail.com/
-[1] https://community.frame.work/t/regression-framework-13-ryzen-340-doesnt=
--wake-from-suspend-on-v6-15-rc4-works-fine-on-v6-14-4/68514
-[2] https://pastebin.com/pR54sve3
+-- 
+With best wishes
+Dmitry
