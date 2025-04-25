@@ -4,118 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ABFCC3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34FD4C2D0CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:01:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 182696209C;
-	Thu, 15 May 2025 09:47:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 182696209C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E811661A32;
+	Thu, 15 May 2025 09:50:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E811661A32
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747295272;
-	bh=1N5n4Ne/priTrec8JXqgsUH8AQ8N52bIA6M0x84onTM=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1747295419;
+	bh=9du/cqVmLABi3S4H7ZzYui0a7J0RxPnHiR8v0eg+GN0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gW8fSFR6GPoHK8//wPBHpqI2lanLQ92wpYTeRtxaesDgOU+6NG2QDU44L0Mk/lMFk
-	 WRm3wrajQXNWQOeUL4dsshtXPwyxomfHwjarV6MxKrQ8Uvm4hq7r3/0N3DrRTyk/Df
-	 HrqyaKWExolDT6bxl4ElmvHfKryrozLs3LoBGzVY=
+	b=LfQh6BEURCRndwB7N8PS+OxlHZQgqj8hIkyrIyc/rQQE+4KTHxUkp7Y1Ou0v+V3cJ
+	 GW2CkCcSKgO+j/p//4IUuo1KaqD7F9k24K1pkuMiBVLXqvi1jY9MTeLF3QwJvQcFYB
+	 ynCt3xVlEkez578BvxeEBvxRtCS2hMGKtQAwx4IQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB77BF89BF3; Wed, 14 May 2025 19:59:53 +0200 (CEST)
+	id C8682F89712; Sun, 11 May 2025 16:32:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A026DF89BEA;
-	Wed, 14 May 2025 19:59:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96644F8970C;
+	Sun, 11 May 2025 16:32:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90D72F806B5; Tue, 13 May 2025 12:25:35 +0200 (CEST)
-Received: from sonic315-8.consmr.mail.gq1.yahoo.com
- (sonic315-8.consmr.mail.gq1.yahoo.com [98.137.65.32])
+	id AAFFEF95BEC; Fri, 25 Apr 2025 10:07:42 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 744E8F806A4
-	for <alsa-devel@alsa-project.org>; Tue, 13 May 2025 12:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 744E8F806A4
+	by alsa1.perex.cz (Postfix) with ESMTPS id CFEDEF95BD9
+	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 10:07:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFEDEF95BD9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=yahoo.com header.i=@yahoo.com header.a=rsa-sha256
- header.s=s2048 header.b=qBH8Wi/Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1747131930; bh=1N5n4Ne/priTrec8JXqgsUH8AQ8N52bIA6M0x84onTM=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To;
- b=qBH8Wi/QC/xNNNmBQJgu82iVJP5AKAeQGAxazCulj2adq8sBJDsqqtKguagJIBQy0fod1dI5WRywyTDxd1/rX0VgCh/Y90tCLbSDWp0g+Mj9IoQUsdybpJjq7PFX6IHRYNPDyWL6FbH3bJk4msqpc+ro4awM9TiWZbeczUbOr6xJXME96UGnL5DutX6tCChKDbB/cby43DLnMw0gFjcXK6KlZkWsXIOTDaSCiuOy3SIMMmcl70cIWBW3L9vKrekIcN919fNMXWFsjABdXpNQTAJ/LMiJxd1DmLI+0drbJxltsJto8Q/Nx3JOy9Y8uL1c/wsYmco6qi3C4vuP7Yrfew==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1747131930; bh=v+QiIpoL41WG2hS/Z+RSmh1aMr5pXrXfeyKjrfTz+yE=;
- h=X-Sonic-MF:Date:From:To:Subject:From:Subject;
- b=N3awh0ua+3BL7cIb3AeXUqCMdXUzTVP7d38w2oaqnrMrLernIxhVl37ksnvl5n2DZ/0ARjpCuDM9sfe78BJSP/w68CKGZkGfPAQK9V1IEyREyndwSs6RFYZOFzZWPW8aH12e1+rM3MBR8f5PHaMNowjoPjAB4QkXma2KRGJ6jOw0OKmY+c96ZF4rDKINs3DEoMb1BzrY6zqwnM9wzrK6/cp890qnpPH9SaJGakCse52B+0k+zMJg2A+uWtg+56HxisWACUiTVCgA05Mms7k9ulOxWtqFUqeMTFxD+JvQwp+DLtRPG28KNgaYXQiFMeyD5jwFKYlHmm8xRNYwUf7O3w==
-X-YMail-OSG: q5.tnk8VM1kyBSzaahFqrI_taA.VpNe0QSLdUzeVcV9ZiHHshe_Ll4YhVctU7sd
- QIiHovHryjyi3xqRGZvZSQHA.ApuTiMQjzqO.E5tAn_oLSrbW.ZGUQEbDuyoQD_cyXJTY.OkHmKZ
- VENx04fIUY4j.PxN0xE4aWDN.wZ4rov0t4DPnZiaGTQvKXQNJa521D6umOL6WMnudVIViLPYNt3L
- N9zIVW_FGo6pEo3JVPhZXFp1jJmHncg2zOVxoBtwSziTzb5zdWO1tgNShDlEDXum5nS93WYNrarq
- v0kNs_5TcbFKZPtn_VIg8io4mL6Pez5fRjV_lq8RibNsd6qP6cTI0Ms7TBlN3pJo.GCyRfyWx9_d
- VwRsOZNbFbS1eVvXVpkqZVhJHU9aFei0.H9sU8G9j9tkdcrXOQdsd9sXj_fHGK9mbRo3P_DlEwJR
- ClRS0aB94ezQQ3CBa1QYaKt2gOSdaDyQoLJJx3Prv4I61fic5W62j64mPJVZL_9Oo2D4lc4n4wcq
- ACL_F11nG0zqne8S5CqlwyrV0niuKmpulQZgS5Zsozum3lF8Y9e79ABENl6BjaW678C7BiamuW71
- Y6ZSSHc.P0qLv5EeA8M9bFsnfFoZBvcyJRsg_NaMbJg2W6OufAuRWE8pNx5QNlzaQJYUlWs1JwVy
- SRqr60LIzauIFxXlL4w1kEdvpN1qTNnhz56jzeMw8M7PGZ_nF6n2mVeE2DqkWEiDNtj2JB1Egc1L
- RPOttSkuleYwybNReToGtapQGbZ7Kac2Hmg.ACMNFPLanZ.8X23bHI1WuOmV1WVUR2iCP74g1TGU
- 21F6IDLcMPR9tjs44e_oQaWen41244RxHS1gHRn.C4H.iqcZIjM0roR0LGyeIovOpvQ6m18TtnNL
- 8Uc68ZMN.IOFv8KV0pQVLe2i09FpvdkRiwTlb4G_aDraIeHE.yaLbVXEV1BxTWUIVodldJ3xuM1G
- zm8MQ5az3GF3O6qjMR7hIDlK2zWGfZN1Wwn9YpZmxBZWsskub_Fo0HdhWizlqiSnlKcdSPuc.aK7
- PaqEn2VZpgMdBT0eR4wgmRatUSbB0sAfGLl0uWSrO82TIT7uhMOcjh5FZQL94_W73eIHxloNG4PE
- hqSECHDp5k9Ylor9smBrTLYFQmSFjWU6t2_8waRG7ttFZIc3UXU6eMmP9oXMPQ3qG62tjG89F51.
- koc3dVCS7638MHKkjCwxesgMLFKn_GTt4THJMTUaJTBuX8qQm.5l.ZhIq9ApukeODqWnSw2RF8j8
- _CvG0aqK9vSxSKieVDiLHQldDU9RGS3BsC2Tx9CIjppfQ_Gar4O2DSU9gINr0wKqLCDIWSJxa67G
- uqzXlOraCIMx_KeHi6Ux2pzps0vQkOvwYlsHPjW0u88oqNxOw0LYSJ_fE3gYnz4slnGlu5PkeIjF
- SNjYM.Fp_eV7DDiUKhd7UtcS.PcMESYwJmmHYY8VvfWsqQLHv41RumTs_6uvY8AAdlf6mQn4oun_
- BvrM_OEhdVwR50TYAEDeuVgG814u0YaWHRer6yejNcMk5qcsJASodIRGO1ifPQUdAb6nFdL8sfw1
- IneUJH024PnsS2aCp.O6wxdXUPv569sFptyU.mPilRHg8uQuz3XZ29u_6nMjjRisuVUzi7rhOoi8
- hQQPQpFQ5i6RccHYIP5JP2fDxG2Ti7ui9kwkDWsy.bvcWi0YoRY9eqBahMCcVp82M1OAYHDirvrT
- PKKRvVra9TBCVAdgg0OvSypPy5f9.sVVVCB4Ma.QT2t64hyo7xZdOZZFnqfl.bsKw29yiAWT8fAm
- VGWRDEw8aIccJpp2jOSVtfSgGNHE1zRY4nGKMNNFruFqRkJ2UIeT.Vpa5MwBwxOtVGa2GZtZc8_W
- dblzuTfNxsBXQVY7v.J4zFD7qrYG1Tcfiu5o0my8dkhvgpUO.IDMn2DSYZOHN07bH0N65zZQphTB
- mrBX1coYDPCybjCTM98uyAYPCwuzawBzgCLAhFqo.1CdKKfUFrh1qCiE4C1TOX5OTHFfEfM6qRN3
- PHF6GxKJao7AnX8vp7cfL0Vkjiv8Y_qAMPrn8fnQyK4aBDlKrsSHoriQZeqE3rggdvnCF3feEHiV
- vqSWPuemTiRXn6JQBqZwYKTW0yR8piwKdo.EvkIaRpQffZxmdlapGb9eHF25pSpqE1lYrm.EA52B
- 1dlxENhtvfnfmSVxodlPqfrfPRM5aMJgO4EbJv82q4OrbHTCEkqqDOoJL8VhmH_ettlHnQHPbKzx
- .x2l8vyNPpzxIGxtV_U22B.Rm6zjjvMheGCuIpzy6E4FZAw--
-X-Sonic-MF: <nruslan_devel@yahoo.com>
-X-Sonic-ID: 98f42dff-1773-47bb-9c4f-da1ca83ff38f
-Received: from sonic.gate.mail.ne1.yahoo.com by
- sonic315.consmr.mail.gq1.yahoo.com with HTTP; Tue, 13 May 2025 10:25:30 +0000
-Date: Tue, 13 May 2025 10:25:28 +0000 (UTC)
-From: Ruslan Nikolaev <nruslan_devel@yahoo.com>
-To: "bugzilla-daemon@kernel.org" <bugzilla-daemon@kernel.org>
-Cc: "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-	kailang@realtek.com, tiwai@suse.com, alsa-devel@alsa-project.org,
-	sashal@kernel.org, "perex@perex.cz" <perex@perex.cz>
-Message-ID: <362743264.827582.1747131928735@mail.yahoo.com>
-In-Reply-To: <bug-220109-229339-9HzhKc5gL2@https.bugzilla.kernel.org/>
-References: <bug-220109-229339@https.bugzilla.kernel.org/>
- <bug-220109-229339-9HzhKc5gL2@https.bugzilla.kernel.org/>
-Subject: Re: [Bug 220109] Audio disappears on HP 15-fc000 after warm boot
- again (ALC256 code path)
+ unprotected) header.d=fairphone.com header.i=@fairphone.com
+ header.a=rsa-sha256 header.s=fair header.b=uDc0vcL5
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-43cf680d351so18058605e9.0
+        for <alsa-devel@alsa-project.org>;
+ Fri, 25 Apr 2025 01:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1745568458; x=1746173258;
+ darn=alsa-project.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1WF9R1PkrWxK/cwLXU/35vaxB2tRI8rlJl2KnNgRvug=;
+        b=uDc0vcL5Q72J4ED23iKUlz7PqFFRUWrKlCMTP5Sm0xcsfiZmr7s2hIDLzGZ8GAmeIO
+         lev1UXmDLQ8WzkqcfkbLs0T8YuaES15JlVeQ9NOsxy1u4ktYckLqR+59ESjB1GuAqNb8
+         aZDHBJfjrG1Skz/NBMrPIYtZIsLKwuPLWUzQtlwD9JYLGE6PtH124K0l7VC3gnc8FW0o
+         TzY6apV1ab6Khd7kAaWkiwjVrBanAc+CvkdXNiYp+fSHFN0HkckJiHTuqwPn4QqO5VjT
+         3Rqf6Upa3Kcie9Qni6POGS/AtN+P6wbWwk70GNLEAEk1/ZzzMnPuBxcjFph0kL6QPCoR
+         IM2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745568458; x=1746173258;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1WF9R1PkrWxK/cwLXU/35vaxB2tRI8rlJl2KnNgRvug=;
+        b=k0yk4Mewgk27V61UoPc+ivBIOsaR7wywEPZ3IUd02OCj8pvBMpl+dNzNk3R3d7bdI2
+         Vh7QM0tUIvcOyqZVHfQyRuhzBfQOy3BBndR6InGc8VLdffx5/9tyBCJbmpdiwZ9ksTPj
+         Ow0YhhM/9O+59koLnhN+m/GO2G9Y8jhrLy79ZoqB5z060Z+Zwc3538BIb9VT69Onw4bg
+         Y1xTZZkqqXtYBQ82XuGMV1JU9NWedts5wyU6DC9lAfWzrMf2CZaFqEM8zYqmS0aKgfy6
+         /TvOTXFnGNphFmDERZ+DJQAunOk84sB7k7BxuUCzAnScu8DSoBYGNnYL3Ftlk6XAhIQw
+         19Tg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWe7Yv97Kk2hnmey71pz5Ct2C5YSf54HWCmn7luga9P0d4YtMhSHKfECX9t8x1rRHk9M2dn7Ooauc2R@alsa-project.org
+X-Gm-Message-State: AOJu0YyH0TkQy2IMg4ZzzeTvxqwa5XyTHnN51+fSSj+IRnY9zdJxEfEe
+	1MfOeKqiUCWbPzRklFpL+gzxnMwl1Oe4DMTcbeE5RLe9dI81D7fcvnXlKUo67fY=
+X-Gm-Gg: ASbGncvXjyTHnBMiEGpRbbDPiiTcJwbTgFXndSbz5YO3WpwbLFiN36qRxASPsnDwhna
+	iSxINltQ1pvS/bDKmLMcR2+mAwL69PU42vJCR6hFIc4EvWll6i3lSJQ7eqPkbbx4iUKGgu4BCel
+	QkGwO4DQzymc4pjiiFGvTHvOCk4kcc3xi1cvLM/mdWNUJ9Cg6hxeOl/oXHn2x4lwk3rzQ7L4WDU
+	NinSWeh7NgXa9zq8WPFpKPZSF97jyFJCXgwWsDE1RTjw92TnDOzMOL3fJsEcgfwN9r3lrWOrDSc
+	We8WBdc9my8f5twIdI/TbIsq2da7VP3vgzpLYjFF1Nydx7xQmIWl+FfuecyrLG1cYlhEzHYBZ8X
+	hy0dmuu1cob+zaj3icUDP6wGr1BEyhQNr6eQNhF2OV9MyuJGB980g5Xf4
+X-Google-Smtp-Source: 
+ AGHT+IG/sz31Wny+TtyIaDzEEdUt0YMeO0mUdD924acJQ9OoByTsHsI0o1wsRu2TPR3UpEE0kePClQ==
+X-Received: by 2002:a05:600c:58d7:b0:43d:fa5f:7d04 with SMTP id
+ 5b1f17b1804b1-4409c52a44dmr43791425e9.16.1745568457579;
+        Fri, 25 Apr 2025 01:07:37 -0700 (PDT)
+Received: from [100.64.0.4]
+ (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at.
+ [2a02:8388:6584:6400:d322:7350:96d2:429d])
+        by smtp.gmail.com with ESMTPSA id
+ ffacd0b85a97d-3a073e461casm1593513f8f.74.2025.04.25.01.07.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Apr 2025 01:07:37 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Date: Fri, 25 Apr 2025 10:07:29 +0200
+Subject: [PATCH v3 5/5] arm64: dts: qcom: qcm6490-fairphone-fp5: Add
+ DisplayPort sound support
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: WebService/1.1.23772 YMailNovation
-X-MailFrom: nruslan_devel@yahoo.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250425-fp5-dp-sound-v3-5-7cb45180091b@fairphone.com>
+References: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
+In-Reply-To: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
+To: Srinivas Kandagatla <srini@kernel.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konradybcio@kernel.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+X-Mailer: b4 0.14.2
+X-MailFrom: luca.weiss@fairphone.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: KRRWPJVHRG6M7QBUHOBIFCMSUOLJAB3W
-X-Message-ID-Hash: KRRWPJVHRG6M7QBUHOBIFCMSUOLJAB3W
-X-Mailman-Approved-At: Wed, 14 May 2025 17:59:49 +0000
+Message-ID-Hash: RGOEL5IWLK3RVN7657TD4D7QFG2WVLR7
+X-Message-ID-Hash: RGOEL5IWLK3RVN7657TD4D7QFG2WVLR7
+X-Mailman-Approved-At: Sun, 11 May 2025 14:32:10 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRRWPJVHRG6M7QBUHOBIFCMSUOLJAB3W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGOEL5IWLK3RVN7657TD4D7QFG2WVLR7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,50 +139,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Kailiang,
+Add the required nodes for sound playback via a connected external
+display (DisplayPort over USB-C).
 
-I added alsa-info outputs to=C2=A0https://bugzilla.kernel.org/show_bug.cgi?=
-id=3D220109 (see attachments for both the regression and reverted changes) =
-by following your instructions.
-Please let me know if there is any other information you need.
+In user space just the following route needs to be set (e.g. using
+ALSA UCM):
 
+  amixer -c0 cset name='DISPLAY_PORT_RX Audio Mixer MultiMedia1' 1
 
-Thanks,
-Ruslan
+Afterwards one can play audio on the MultiMedia1 sound device, e.g.:
 
+  aplay -D plughw:0,0 test.wav
 
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 31 ++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-On Tuesday, May 13, 2025 at 02:30:17 AM EDT, <bugzilla-daemon@kernel.org> w=
-rote:=20
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+index 9e8f9fb57c4723a24704a8239a86c6081910916b..e115b6a52b299ef663ccfb614785f8f89091f39d 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+@@ -14,6 +14,8 @@
+ #include <dt-bindings/leds/common.h>
+ #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
++#include <dt-bindings/sound/qcom,q6asm.h>
++#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
+ #include "sc7280.dtsi"
+ #include "pm7250b.dtsi"
+ #include "pm7325.dtsi"
+@@ -1147,6 +1149,35 @@ &sdhc_2 {
+ 	status = "okay";
+ };
+ 
++&sound {
++	compatible = "fairphone,fp5-sndcard";
++	model = "Fairphone 5";
++
++	mm1-dai-link {
++		link-name = "MultiMedia1";
++
++		cpu {
++			sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
++		};
++	};
++
++	displayport-rx-dai-link {
++		link-name = "DisplayPort Playback";
++
++		codec {
++			sound-dai = <&mdss_dp>;
++		};
++
++		cpu {
++			sound-dai = <&q6afedai DISPLAY_PORT_RX>;
++		};
++
++		platform {
++			sound-dai = <&q6routing>;
++		};
++	};
++};
++
+ &spi13 {
+ 	status = "okay";
+ 
 
+-- 
+2.49.0
 
-
-
-
-https://bugzilla.kernel.org/show_bug.cgi?id=3D220109
-
-Kailiang Yang (kailang@realtek.com) changed:
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 What=C2=A0 =C2=A0 |Removed=C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |Added
----------------------------------------------------------------------------=
--
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 CC|=C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 |kailang@realtek.com
-
---- Comment #3 from Kailiang Yang (kailang@realtek.com) ---
-
-Could you run alsa-info.sh to dump codec info?
-
-Please do =3D=3D> echo 1=C2=A0 > /sys/module/snd_hda_codec/parameters/dump_=
-coef
-
-before do alsa-info.sh.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are on the CC list for the bug.
-You reported the bug.
