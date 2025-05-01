@@ -4,134 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64986C3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E175EC3ABC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:05:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47EEA625F6;
-	Thu, 15 May 2025 09:56:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47EEA625F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33B3862692;
+	Thu, 15 May 2025 09:57:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33B3862692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747295814;
-	bh=t2UqwPYP1B9XN/iC4TKLlBIAancDyLL4wrE626PGHow=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1747295845;
+	bh=Itg065LhDRorZA0J2NZH60yb7a1hVcb/Bdr1CPrif8o=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UNJI/VYkxbWqFhSAju3yjHK4KsXydiPLNSgsfNheDuBSSTP+JkVWzIlSmb/ApTkD+
-	 A9dKBfrExzf3HMkDWZtZVboNDRqGOXfS4V3aip9vS7T6NNryn5otETvd9PCoJ88WUZ
-	 4jM9aa5d8XlGTgvb2s0uAwZMZOamcRQi8Cjyu+/E=
+	b=YxMNn0SRP7/OkxoemtfkkS7u00ZFQixo7lzmMTpkxZ7FBFwb7WG3/UmK8io4J+kRK
+	 hdVPrU7X4lk6XVGyKQhWR3YzH+9gX2IDW5ORNVOrTBSvqHoBbQdIqbWMfPzOgPW76u
+	 zC/IVgEDX933oZbrXpDvY+T+c1nNifDiS1ghwRgQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3EE92F80C96; Sun, 11 May 2025 16:32:14 +0200 (CEST)
+	id 3263DF897E5; Sun, 11 May 2025 16:32:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB616F80CBB;
-	Sun, 11 May 2025 16:32:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FBECF897E5;
+	Sun, 11 May 2025 16:32:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6144F95BD7; Fri, 25 Apr 2025 10:07:36 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 49D90F8EBBE; Fri,  2 May 2025 00:17:09 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E3298F8DDD7
-	for <alsa-devel@alsa-project.org>; Fri, 25 Apr 2025 10:07:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3298F8DDD7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 035BEF8E9FB
+	for <alsa-devel@alsa-project.org>; Fri,  2 May 2025 00:17:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 035BEF8E9FB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=fairphone.com header.i=@fairphone.com
- header.a=rsa-sha256 header.s=fair header.b=Sm9FsHps
-Received: by mail-wr1-x42d.google.com with SMTP id
- ffacd0b85a97d-39149bccb69so1716476f8f.2
-        for <alsa-devel@alsa-project.org>;
- Fri, 25 Apr 2025 01:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1745568454; x=1746173254;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mF78VVS1a3vgPm4/yr7suBZclt6DuZ16jbZS8capHhc=;
-        b=Sm9FsHps495M4ZhPSV7yVok01oZgChEWfZTTeGprNOnRDYvcJ3vsK1Bu0+9rh1nmlq
-         14L4uNDSryFd98zpAPYfMEls+zh+vzC3QCqLJt4OOc+PLU6W9lcpJiPQb6g5W05nuYCa
-         rbYsad0sqwliAEOn+UPbPp9yt88/bugXUT8euus73NGX5Jyv2yoSb4v0C6EqB/X+BpRC
-         3kXkEOcSTuhw1KuoIVRvgpH3m3m5EYlHB4LrfKrgoSytmOofD8/4r3Xm+BzLhvr5KYiq
-         MzIisdxKKhYAnLVK30AmZkScWSrMoX/ykGc0myNkygitIKcWONBnb1OUnBA71mdVLPf4
-         3Hnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745568454; x=1746173254;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mF78VVS1a3vgPm4/yr7suBZclt6DuZ16jbZS8capHhc=;
-        b=g6EJHfXiHQJUINVE6etHscTxEn91GGSOJw3Ta7EipXc/RPKkGI/KDdEIGIvHMRnDQ4
-         iohKKL3T7DnwZm+hN/2XmmzXssJ8ZKlhWfBr4QsLGv/8qOnL7A9he/Rjv0SOkfOKKI4Y
-         ullgpr7EOTAUF7/0xBIEKGtZKzSSGlJTswU+DqV9oE1KttqEn379Uj9KEX/qNCwChc1c
-         pzFvob0tZxI4EPGddMeMAgN52Uv77I9MvkrVC1uFRTPfF24M+1pitFbXU4kg4SpDQNgX
-         C6r1ZAQIG2RXzsvrp1O+3LYrpRGo8slrLcsLmaAL1i9VXr5Qikg/lURUUyD/sqNQqQwM
-         lyqg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUKLy1MjXsEgNud71Y3PNTwuywiLjetmEDCfZ+NkrjGv7uEVKuh1M+/7ad3iQ5QQiRFyDA4HIMYOwC7@alsa-project.org
-X-Gm-Message-State: AOJu0YzbdDyWwpVIeKVdDJNJ8hZmJm+aaSkEOdaW04V76PX4yPoDseVW
-	esyZ1SS6a65KJfAXJumF/TfYpEslYCmUZWLpopXe+lYZfuRYcdxxKZtRxl+3rlI=
-X-Gm-Gg: ASbGnct6BqKy3UE69bBUx0wUFG4lrpf0fNN5qdZEInXSqARMoy3oh3Tak/iwQgLXFcA
-	hZ2vlIYtwUfYTeevryCyS2AS9XGeIIfwVnDoWembx4lK8ok88RrWLeKc4M7BrHNl4N705iYn4cT
-	TqA1u/E7ZhIA3vZuooAfC8GiSvBBErZEaYgcBMBfqJhzfphpqHp8Gssr33sDl6QeVSZHf6+pPqn
-	kvQpgnQVb+640jCVznOISIVAMLpNohqUNTXOvgTaFCsJbL+SfGwz5xffRSK4VTIZ/eJX9zbtazC
-	+mnAficM2w0fghy8WybiKq47ahw2y4909WpdnDlhGn+FCw/Gn2kUCzHYIRBveLV4Up+ApT2LX1F
-	nMyLuLUfzx05ww6bHgofnvzbthJMlB6du4VBBeKAyD03kLlpI2QTphrTZ
-X-Google-Smtp-Source: 
- AGHT+IFVDfaMfuOXmMfOCltuXID8xfqxstRaUVHZiIEzVJ71LDPZOd47+6G3giv9YW3kXwRnEPBUTA==
-X-Received: by 2002:a05:6000:1848:b0:39c:30c9:815 with SMTP id
- ffacd0b85a97d-3a074e1e7b5mr964843f8f.21.1745568453788;
-        Fri, 25 Apr 2025 01:07:33 -0700 (PDT)
-Received: from [100.64.0.4]
- (2a02-8388-6584-6400-d322-7350-96d2-429d.cable.dynamic.v6.surfer.at.
- [2a02:8388:6584:6400:d322:7350:96d2:429d])
-        by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-3a073e461casm1593513f8f.74.2025.04.25.01.07.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 01:07:33 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Fri, 25 Apr 2025 10:07:26 +0200
-Subject: [PATCH v3 2/5] ASoC: qcom: sm8250: set card driver name from match
- data
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=uVYY4Wq/
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 6633D68474;
+	Thu,  1 May 2025 22:16:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF444C4CEE3;
+	Thu,  1 May 2025 22:17:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746137824;
+	bh=Itg065LhDRorZA0J2NZH60yb7a1hVcb/Bdr1CPrif8o=;
+	h=Subject:From:Reply-To:To:Cc:Date:In-Reply-To:References:From;
+	b=uVYY4Wq/Jpjp51lQc9DMyTjTYvlMlbqDuLsTWw/GRWDqn0ovLeyr6KypSDqiJopYo
+	 GT1r51Fpd604DW6Zs9CsY1Ix9pJ2PTIgfagSHTSaQCpVEvuN0gRuC11nANTPYp3IhG
+	 nHUIfr4iIhQXmFUW/3ilX9v7kXVdbSkjT9E3h6gakyJ9JOcMb7XzZfc5p69fVXETWi
+	 lwKqixu6BNSWUjqBiwe/7/7GqznWlPVjMkhvQ3LG/AnrSlCxo+jFUQ+TQXa/i0peAf
+	 35y/uMRs2J00kq7cIlKpMkR7Kvh2/J2QRUKyZyqUIzGJ++XQu3iR+F63g5f4OTOaA4
+	 tJyWxhStvmsdQ==
+Message-ID: <3ba81b7f7859de8ac64e4cf07cc5aa21c3850ae9.camel@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: amd: acp: Fix NULL pointer deref on acp
+ resume path
+From: Niklas Schnelle <niks@kernel.org>
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+	Sunil-kumar.Dommati@amd.com, syed.sabakareem@amd.com,
+ mario.limonciello@amd.com,  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Uwe
+ =?ISO-8859-1?Q?Kleine-K=F6nig?=	 <u.kleine-koenig@baylibre.com>, Greg KH
+ <gregkh@linuxfoundation.org>, Peter Zijlstra <peterz@infradead.org>, "open
+ list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."	
+ <linux-sound@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Date: Fri, 02 May 2025 00:16:59 +0200
+In-Reply-To: <20250425060144.1773265-1-venkataprasad.potturu@amd.com>
+References: <20250425060144.1773265-1-venkataprasad.potturu@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250425-fp5-dp-sound-v3-2-7cb45180091b@fairphone.com>
-References: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
-In-Reply-To: <20250425-fp5-dp-sound-v3-0-7cb45180091b@fairphone.com>
-To: Srinivas Kandagatla <srini@kernel.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konradybcio@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>,
- Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>,
- Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.14.2
-X-MailFrom: luca.weiss@fairphone.com
+X-MailFrom: niks@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: FWSPZZAO5CICKVOPRLUGLIUECZ7NU5YH
-X-Message-ID-Hash: FWSPZZAO5CICKVOPRLUGLIUECZ7NU5YH
-X-Mailman-Approved-At: Sun, 11 May 2025 14:32:10 +0000
+Message-ID-Hash: CQDUEHMN7VVI4BZPNH4GBZAXB5QQB3RK
+X-Message-ID-Hash: CQDUEHMN7VVI4BZPNH4GBZAXB5QQB3RK
+X-Mailman-Approved-At: Sun, 11 May 2025 14:32:48 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
+Reply-To: niks@kernel.org
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FWSPZZAO5CICKVOPRLUGLIUECZ7NU5YH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQDUEHMN7VVI4BZPNH4GBZAXB5QQB3RK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,56 +101,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Sound machine drivers for Qualcomm SoCs can be reused across multiple
-SoCs. But user space ALSA UCM files depend on the card driver name which
-should be set per board/SoC.
+On Fri, 2025-04-25 at 11:31 +0530, Venkata Prasad Potturu wrote:
+> update chip data using dev_get_drvdata(dev->parent) instead of
+> dev_get_platdata(dev).
+>=20
+> BUG: kernel NULL pointer dereference, address: 0000000000000010
+> Call Trace:
+>  <TASK>
+>  ? __pfx_platform_pm_resume+0x10/0x10
+>  platform_pm_resume+0x28/0x60
+>  dpm_run_callback+0x51/0x1a0
+>  device_resume+0x1a6/0x2b0
+>  dpm_resume+0x168/0x230
+>=20
+> Fixes: e3933683b25e ("ASoC: amd: acp: Remove redundant acp_dev_data struc=
+ture")
+>=20
+> Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
 
-Allow such customization by using driver match data as sound card driver
-name.
+This is the first time I see an empty line between the Fixes and the
+Signed-off-by tags. I checked checkpatch.pl --strict and that doesn't
+complain, but I'm curious now, is that a subsystem thing since you have
+it in all 3 patches?
 
-Also while we're already touching these lines, sort the compatibles
-alphabetically.
+> ---
+>  sound/soc/amd/acp/acp-rembrandt.c | 2 +-
+>  sound/soc/amd/acp/acp-renoir.c    | 2 +-
+>  sound/soc/amd/acp/acp63.c         | 2 +-
+>  sound/soc/amd/acp/acp70.c         | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+>=20
+--- snip ---
+> index 6d5f5ade075c..217b717e9beb 100644
+> --- a/sound/soc/amd/acp/acp70.c
+> +++ b/sound/soc/amd/acp/acp70.c
+> @@ -182,7 +182,7 @@ static void acp_acp70_audio_remove(struct platform_de=
+vice *pdev)
+> =20
+>  static int acp70_pcm_resume(struct device *dev)
+>  {
+> -	struct acp_chip_info *chip =3D dev_get_platdata(dev);
+> +	struct acp_chip_info *chip =3D dev_get_drvdata(dev->parent);
+>  	struct acp_stream *stream;
+>  	struct snd_pcm_substream *substream;
+>  	snd_pcm_uframes_t buf_in_frames;
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- sound/soc/qcom/sm8250.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Hi Venkata,
 
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index b70b2a5031dfbf69024666f8a1049c263efcde0a..e920b413b762c803cfcc4049f35deba828275478 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -16,7 +16,6 @@
- #include "usb_offload_utils.h"
- #include "sdw.h"
- 
--#define DRIVER_NAME		"sm8250"
- #define MI2S_BCLK_RATE		1536000
- 
- struct sm8250_snd_data {
-@@ -200,15 +199,15 @@ static int sm8250_platform_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	card->driver_name = DRIVER_NAME;
-+	card->driver_name = of_device_get_match_data(dev);
- 	sm8250_add_be_ops(card);
- 	return devm_snd_soc_register_card(dev, card);
- }
- 
- static const struct of_device_id snd_sm8250_dt_match[] = {
--	{.compatible = "qcom,sm8250-sndcard"},
--	{.compatible = "qcom,qrb4210-rb2-sndcard"},
--	{.compatible = "qcom,qrb5165-rb5-sndcard"},
-+	{ .compatible = "qcom,qrb4210-rb2-sndcard", .data = "sm8250" },
-+	{ .compatible = "qcom,qrb5165-rb5-sndcard", .data = "sm8250" },
-+	{ .compatible = "qcom,sm8250-sndcard", .data = "sm8250" },
- 	{}
- };
- 
+Yesterday I ran into what I believe is the issue fixed by this patch on
+my very recently acquired Framework 13 with a Ryzen AI 340. While I was
+still bisecting this I found a thread[0] of Jacek Luczak having
+bisected this and the revert at least solved the suspend issue for me
+too, though I was still getting a sound subsystem related crash[2] that
+looked related so was waiting for a proper fix. As a side note you
+might want to consider adding a Reported-by tag from Jacek.
 
--- 
-2.49.0
+I had mentioned this on the Framework forums[1] where Mario Limonciello
+helpfully pointed me at this series. I just tried your series on top of
+v6.15-rc4 and suspend now works. I also haven't seen the other crash I
+was still getting with just the revert from the previous thread. And
+sound still works too. So feel free to add, or ignore, my:
 
+Tested-by: Niklas Schnelle <niks@kernel.org>
+
+Thanks,
+Niklas
+
+
+[0] https://lore.kernel.org/lkml/CADDYkjR0JG_JTQeQMAvUJvtb9RxFH6_LzV2Fr_1cn=
+qPTgV_Z8w@mail.gmail.com/
+[1] https://community.frame.work/t/regression-framework-13-ryzen-340-doesnt=
+-wake-from-suspend-on-v6-15-rc4-works-fine-on-v6-14-4/68514
+[2] https://pastebin.com/pR54sve3
