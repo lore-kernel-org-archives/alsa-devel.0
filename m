@@ -4,74 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32F85C2D0CD
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:38:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A607C54754
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:45:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AED20604D9;
-	Thu, 15 May 2025 09:13:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AED20604D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB3C161DA6;
+	Thu, 15 May 2025 09:40:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB3C161DA6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747293221;
-	bh=g6uAgBmdRVJ/MmwO0dYNS5uypb5EK9FZJwFt76vIoQc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hQSln+EidP/Iev3wZ593ziezKl1ewgk+3upw3bSuZnj1xq+hBImS8KYH05Sw2AOhY
-	 ssr5fgzos4prRGbwnIShX4nuIrFX/Fn3c8E3l28J+xX7ifDaveq+m3ScCtwC0mhClu
-	 2l5CmTRlRYV59RODqXSvhDDadm2rJcXBAwTFwmRQ=
+	s=default; t=1747294854;
+	bh=OXMUwTDxYWCpszkHpXHDfFgzEeXCN2NwNcbG5zoSqgk=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=QCAYuubxyGa6G3gtzcIsuo9HqCeLQnoicOc1bjnifVALIUmJ4VVpsuDa/r0J0YOsK
+	 a8f5DuZM2E9N2OQi4xyGbvxrAQAbmPaPbsCdBfnQoFmL3de7PkIkRXaR9zRyDmM43D
+	 E11DsRLkrU31+HJ0Lwnr6u8K10PoF4KYsAdN5DpY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FBE4F89B4A; Tue, 13 May 2025 18:34:58 +0200 (CEST)
+	id 3A6D7F8079B; Sun, 11 May 2025 11:53:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12E0DF89B4C;
-	Tue, 13 May 2025 18:34:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 299F5F80794;
+	Sun, 11 May 2025 11:53:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65ED8F80737; Tue, 13 May 2025 18:34:55 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7453AF8055A
-	for <alsa-devel@alsa-project.org>; Tue, 13 May 2025 18:34:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7453AF8055A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=A8xAZAx9
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 585405C6B03;
-	Tue, 13 May 2025 16:32:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09464C4CEED;
-	Tue, 13 May 2025 16:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747154090;
-	bh=g6uAgBmdRVJ/MmwO0dYNS5uypb5EK9FZJwFt76vIoQc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=A8xAZAx9JKl8AvNozmvyqowTBtujipU9DMjfnPjdd9rFMcOsMQNpR/du/X6dIl3Uz
-	 MZ9yB/n6jEvjBh+iMXbkVIi9yV0OlxzJwmMQkWW/Ust5PU3be6YDok8mQTRMeA9WX4
-	 QcEVkUKsnERfqti1xirG/YleYzlXVnJDDBnW+a3/pY6yQxoeQvFzzJ9I4WYjSc9WCJ
-	 kBAEo5WwOR3gDn/3zyo0eElh32X/dENgY7GL1I9T+yQWRSlXpKkAcDWro+H7j+vtp+
-	 yJVSXdNduMKMzbleIKgVHma95KYwuciSjE3nzANkGEPqZxTTFuHh2JWtv5ZzsMLOBu
-	 xXwQB8D1ajO2w==
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Liam Girdwood <lgirdwood@gmail.com>, Nishanth Menon <nm@ti.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20250512185739.2907466-1-nm@ti.com>
-References: <20250512185739.2907466-1-nm@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Use dev_err_probe
-Message-Id: <174715408662.98239.15738351990112374855.b4-ty@kernel.org>
-Date: Tue, 13 May 2025 18:34:46 +0200
-MIME-Version: 1.0
+	id 42869F80766; Sun, 11 May 2025 11:53:10 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 88806F805B2
+	for <alsa-devel@alsa-project.org>; Sun, 11 May 2025 11:53:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88806F805B2
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-c25d1
-Message-ID-Hash: RGRLXTIJYS4ZF6R3EIF4ZQDFSROWWZ46
-X-Message-ID-Hash: RGRLXTIJYS4ZF6R3EIF4ZQDFSROWWZ46
-X-MailFrom: broonie@kernel.org
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <183e704e760bb600-webhooks-bot@alsa-project.org>
+In-Reply-To: <183e704e7601a200-webhooks-bot@alsa-project.org>
+References: <183e704e7601a200-webhooks-bot@alsa-project.org>
+Subject: Internal Microphone Not Working on Lenovo Yoga Slim 7 Pro with Linux
+ Mint 22.1
+Date: Sun, 11 May 2025 11:53:10 +0200 (CEST)
+Message-ID-Hash: CPB4J7KERXVSUPRGXJU2SSURTAR72CMP
+X-Message-ID-Hash: CPB4J7KERXVSUPRGXJU2SSURTAR72CMP
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGRLXTIJYS4ZF6R3EIF4ZQDFSROWWZ46/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CPB4J7KERXVSUPRGXJU2SSURTAR72CMP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,37 +68,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 12 May 2025 13:57:39 -0500, Nishanth Menon wrote:
-> During probe the regulator supply drivers may not yet be available.
-> Use dev_err_probe to provide just the pertinent log.
-> 
-> 
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: tlv320aic3x: Use dev_err_probe
-      commit: 85f8c2d56caf56aa3379bbc5f1a19fef9aabd23e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzU2MCB3YXMgb3BlbmVkIGZyb20gYXBp
+cmtlbGFtOgoKSSBhbSBhIHBhc3Npb25hdGUgYW5kIGdyYXRlZnVsIG5ldyB1c2VyIG9mIExpbnV4
+IE1pbnQuIEkgcmVjZW50bHkgc3dpdGNoZWQgZnJvbSBXaW5kb3dzIGFuZCBoYXZlIGJlZW4gZW5q
+b3lpbmcgdGhlIHN5c3RlbSBzdGFiaWxpdHkgYW5kIHVzZXItZnJpZW5kbHkgZXhwZXJpZW5jZS4g
+QXMgYSBuZXdjb21lciB0byBMaW51eCwgSSBtYW5hZ2UgdG8gaGFuZGxlIG1hbnkgdGFza3Mgd2l0
+aCB0aGUgaGVscCBvZiB0aGUgdGVybWluYWwgYW5kIENoYXRHUFQuCgpIb3dldmVyLCBJIGFtIGZh
+Y2luZyBhIHBlcnNpc3RlbnQgaXNzdWUgdGhhdCBoYXMgc2lnbmlmaWNhbnRseSBhZmZlY3RlZCBt
+eSB3b3JrZmxvdzoKCk15IGludGVybmFsIG1pY3JvcGhvbmUgaXMgbm90IHdvcmtpbmcgb24gbXkg
+TGVub3ZvIFlvZ2EgU2xpbSA3IFBybyAoQU1EIFJ5emVuIDUgNjYwMEhTICsgUmVhbHRlayBBTEMy
+NTcgY29kZWMpLgoKSSBoYXZlIHRlc3RlZCBtdWx0aXBsZSBhcHByb2FjaGVzLCBpbmNsdWRpbmc6
+CgpTd2l0Y2hpbmcgYmV0d2VlbiBQdWxzZUF1ZGlvIGFuZCBQaXBlV2lyZQoKTW9kaWZ5aW5nIC9l
+dGMvbW9kcHJvYmUuZC9hbHNhLWJhc2UuY29uZiB3aXRoIHZhcmlvdXMgbW9kZWwgcGFyYW1ldGVy
+czoKCm1vZGVsPWxlbm92bwoKbW9kZWw9aWRlYXBhZAoKbW9kZWw9ZHVhbC1jb2RlY3MKCm1vZGVs
+PWF1dG8KClZlcmlmeWluZyB3aXRoIGFsc2FtaXhlciB0aGF0IE1pYyBBQ1AgTEVEIHJlbWFpbnMg
+b2ZmIChkaXNhYmxlZCkKClVzaW5nIHBhdnVjb250cm9sLCBidXQgdGhlIGlucHV0IGRldmljZSBz
+aG93cyBhcyAiTWljcm9waG9uZSAodW5wbHVnZ2VkKSIKClRoZSBtaWNyb3Bob25lIHdvcmtzIHBl
+cmZlY3RseSB1bmRlciBXaW5kb3dzLgoKRHVlIHRvIHRoaXMgbGltaXRhdGlvbiwgSSBhbSBmb3Jj
+ZWQgdG8gY2FycnkgYW5kIHVzZSBhbiBleHRlcm5hbCBVU0IgbWljcm9waG9uZSBkdXJpbmcgbXkg
+b25saW5lIG1lZXRpbmdzLiBXaGlsZSB0aGlzIHdvcmthcm91bmQgaGVscHMsIGl04oCZcyBpbmNv
+bnZlbmllbnQsIGFuZCBJIGhvcGUgdGhpcyBpc3N1ZSBjYW4gYmUgcmVzb2x2ZWQgYXQgdGhlIGRy
+aXZlci9maXJtd2FyZS9rZXJuZWwgbGV2ZWwgZm9yIEFNRCArIFJlYWx0ZWstYmFzZWQgbGFwdG9w
+cyBsaWtlIG1pbmUuCgpOb3RlOiBOb3QgbG9uZyBhZ28sIEkgd2FzIGFibGUgdG8gdXNlIHRoaXMg
+c2FtZSBpbnRlcm5hbCBtaWNyb3Bob25lIHVuZGVyIExpbnV4IE1pbnQgb24gdGhpcyB2ZXJ5IGxh
+cHRvcCwgaW5jbHVkaW5nIGluIFpvb20tbGlrZSBhcHBsaWNhdGlvbnMuIFRoaXMgc3VnZ2VzdHMg
+dGhhdCBlaXRoZXIgYSBrZXJuZWwsIGRyaXZlciwgb3IgUGlwZVdpcmUgdXBkYXRlIG1pZ2h0IGhh
+dmUgYnJva2VuIHN1cHBvcnQgcmVjZW50bHkuCgpTeXN0ZW0gRGV0YWlsczoKCkRpc3RybzogTGlu
+dXggTWludCAyMi4xIFhpYSAoYmFzZWQgb24gVWJ1bnR1IDI0LjA0IE5vYmxlKQoKS2VybmVsOiA2
+LjguMC01OS1nZW5lcmljCgpEZXNrdG9wOiBDaW5uYW1vbiA2LjQuOCAoTXVmZmluIDYuNC4xKQoK
+TGFwdG9wOiBMZW5vdm8gWW9nYSBTbGltIDcgUHJvIDE0QVJINwoKQ1BVOiBBTUQgUnl6ZW4gNSA2
+NjAwSFMgQ3JlYXRvciBFZGl0aW9uCgpBdWRpbyBDb2RlYzogUmVhbHRlayBBTEMyNTcgKHdpdGgg
+QUNQL0FDUDZ4IHN1cHBvcnQpCgpTb3VuZCBiYWNrZW5kcyB0ZXN0ZWQ6IFB1bHNlQXVkaW8sIFBp
+cGVXaXJlCgpBdWRpbyBkZXZpY2VzIGRldGVjdGVkOgoKQU1EIFJlbWJyYW5kdCBIRCBBdWRpbyAo
+c25kX2hkYV9pbnRlbCkKCkFNRCBBQ1AvQUNQNnggQXVkaW8gQ29wcm9jZXNzb3IgKHNuZF9wY2lf
+YWNwNngpCgpBTUQgRmFtaWx5IDE3aC8xOWggSEQgQXVkaW8gKHNuZF9oZGFfaW50ZWwpCgpDdXJy
+ZW50IHdvcmthcm91bmQ6IEJPWUEgTTEgdmlhIFVTQi1DIERBQyAocmVjb2duaXplZCBhcyBVU0Ig
+QXVkaW8pCgpQbGVhc2UgY29uc2lkZXIgaW1wcm92aW5nIHN1cHBvcnQgZm9yIHRoaXMgaGFyZHdh
+cmUgY29tYmluYXRpb24uIEkgcmVhbGx5IGxvdmUgTGludXggTWludCBhbmQgd2FudCB0byBzdGlj
+ayB3aXRoIGl0IGxvbmctdGVybS4KClRoYW5rIHlvdSBmb3IgeW91ciB3b3JrIQoKQmVzdCByZWdh
+cmRzLApBbGkgRnVhdAoKSXNzdWUgVVJMICAgICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXBy
+b2plY3QvYWxzYS11Y20tY29uZi9pc3N1ZXMvNTYwClJlcG9zaXRvcnkgVVJMOiBodHRwczovL2dp
+dGh1Yi5jb20vYWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYK
