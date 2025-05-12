@@ -4,166 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63451C3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:54:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C91CCC3ABC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:54:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 430C961E04;
-	Thu, 15 May 2025 09:42:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 430C961E04
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5407F62068;
+	Thu, 15 May 2025 09:47:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5407F62068
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747294935;
-	bh=HnEqXwiVw3bl51cWovfh2/KIAvoFgFb3RwzAijIzVyA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=DqEUZBD9aQu5MUTgLGvWT1QU1X0+tiguARBzCL3gA1LjGm2BGhPMhd7UgemfEVAoO
-	 jv1iiGkd4hGCslrIxKgIqeylDFRXS/BdAe+exv4xMCIc7JxIWQhU48Relyg22y9D3g
-	 XaF3vNK0jhmj5e78pN1qIY8qf7krDu1w1FETid2Y=
+	s=default; t=1747295272;
+	bh=TQf5RiXYKd+8VoWEbuCU3v0PnHXgP3Wuw8V1KFhUltc=;
+	h=Date:From:To:Cc:Subject:References:List-Id:List-Archive:List-Help:
+	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=nccT+67olV2KW87/4w/pS4MTCEW6VnmbAGZWclG+FCB5yE0t4z+nMeYKOM8Fhyc52
+	 RekMH1gSEoXfoZiWviV8FoOf9LhNKfFTAh0UW2SGbN/U8WD3pgRf8dRyoU44BkYgbs
+	 ezxvLJLgWq90urpgmdUOQm/tmzSlVBXw6pnlfiiM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE4C4F8085E; Sun, 11 May 2025 16:23:10 +0200 (CEST)
+	id B0265F89BB6; Wed, 14 May 2025 19:59:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9ACC4F8087B;
-	Sun, 11 May 2025 16:23:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82A76F89BB3;
+	Wed, 14 May 2025 19:59:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A841F80845; Sun, 11 May 2025 16:23:07 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id B3BE9F89A18; Mon, 12 May 2025 16:56:24 +0200 (CEST)
+Received: from sonic316-54.consmr.mail.gq1.yahoo.com
+ (sonic316-54.consmr.mail.gq1.yahoo.com [98.137.69.30])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 34430F802BE
-	for <alsa-devel@alsa-project.org>; Sun, 11 May 2025 16:23:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34430F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8F46F899B7
+	for <alsa-devel@alsa-project.org>; Mon, 12 May 2025 16:56:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8F46F899B7
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=kjb5Yoil;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=oI+5bl0y;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Q+hTH4pN;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ZNfc/3NB
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AA9191F390;
-	Sun, 11 May 2025 14:23:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1746973383;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vcjOBZCdKl4jR1EgfHphKYtc6Ep5lxvkfCxJXp2aS88=;
-	b=kjb5YoilNyUo1jYsW3qMobKNi1k6XIxM6GRiP3qg1wmIrjiLhib32e2VctoABtLoWOV+9X
-	gynqODYyiOOIlIrHbZOj/rtPb/o7ZaZfoHTdA3kBFvNCpY+2cMHuR39KP15dbSrRxVREPn
-	QYOQnM8RsAnx3Pf6cst3nBRPfceV2ko=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1746973383;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vcjOBZCdKl4jR1EgfHphKYtc6Ep5lxvkfCxJXp2aS88=;
-	b=oI+5bl0yWGVhwEDV4CRANFudmlgqzB7FSRhQICaWtbcwgK1L46Ay5KC5Vq+TVn4F/jSxsG
-	jBrKc7r7VSYHtpDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Q+hTH4pN;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="ZNfc/3NB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1746973382;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vcjOBZCdKl4jR1EgfHphKYtc6Ep5lxvkfCxJXp2aS88=;
-	b=Q+hTH4pNil5gI9bpjmpu5wtWFnq+cBx1SvJxgFKNaME4dF/h3Y0fg0wFW46yRu9wXMeJ80
-	9XoKn5CG0JpQuJ4PWUQsHvY85kkGP5aAmdqtJUH8f37EdMGPSsDJQmPLnV5ef9H62tvRUt
-	De/CB0Jm6k7YgQGHL+a+DbqixQb2Yro=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1746973382;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vcjOBZCdKl4jR1EgfHphKYtc6Ep5lxvkfCxJXp2aS88=;
-	b=ZNfc/3NBJjD//QNG7jZWDyGY6w7NCcJpRcmSkuQg9b+4JcN0Yw2tt7J/83J2yRI4wmuJ9z
-	6Pi+Ij9lHoNDAZAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 886B813690;
-	Sun, 11 May 2025 14:23:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iyi9H8ayIGjDcAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 11 May 2025 14:23:02 +0000
-Date: Sun, 11 May 2025 16:23:02 +0200
-Message-ID: <87ldr3xm49.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-2?Q?Franti=B9ek_Ku=E8era?= <konference@frantovo.cz>
-Cc: alsa-devel@alsa-project.org,	=?ISO-8859-2?Q?Franti=B9ek_Ku=E8era?=
- <franta-linux@frantovo.cz>
-Subject: Re: [PATCH] ALSA: usb-audio: Rename Pioneer mixer channel controls
-In-Reply-To: <87msbjxmew.wl-tiwai@suse.de>
-References: <20250508192223.4847-1-konference@frantovo.cz>
-	<87msbjxmew.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: AA9191F390
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:mid,suse.de:dkim];
-	DKIM_TRACE(0.00)[suse.de:+]
-Message-ID-Hash: PB3LMNDKTC2RIQXMCZUZAOWEFN4LVMQE
-X-Message-ID-Hash: PB3LMNDKTC2RIQXMCZUZAOWEFN4LVMQE
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=yahoo.com header.i=@yahoo.com header.a=rsa-sha256
+ header.s=s2048 header.b=iseRrAmR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
+ t=1747061779; bh=TQf5RiXYKd+8VoWEbuCU3v0PnHXgP3Wuw8V1KFhUltc=;
+ h=Date:From:To:Cc:Subject:References:From:Subject:Reply-To;
+ b=iseRrAmRw/fkNREOKKDI0NPiLZb+ct2VdlovLlt1fgLcCBDHybi/GQUeWzPF155+sTeCKuYHjXLN1OF2euhn9lt7KgZlD5YOhWDYs+nz3pp6twsmyrt6asKzGj6bODxBpXMoNua1d9uZzmMxAeJW6RMcf6BJXENohTKD54huLFkYCDbTbzycZGyZK9Im7oeHfVZrOdJUUmOSrDldGdOzx11829wK+H+InzZG1C6PXvqVwS23M3eSZZwX6ST2W0SHPmMKMbwMgl5sambqxLzQWZ8etRONW2VN/xSE9FnTSJ2P8Qh6EmbDhsh0LGI8tITIeu+9ScLFIW6fJdRAGXptlw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
+ t=1747061779; bh=lBnMndUIbc0AKFc4DiTXsv+edML5QjdE8RoLZzah4Rw=;
+ h=X-Sonic-MF:Date:From:To:Subject:From:Subject;
+ b=X953IwibabfuPSqpZnOS8SPxUyzppz328uOccDK3eJXBEJ98Q8rn71jPfuFdEK3+AdHAgQzvIZ3O7y5S3jyc9JHF6RO69tegN7JxNilXKKXfMuAAtNxs40QxRAlZvu11EMnUiSwuA0Xq7/23Ne5AcWihnHVboa/t4n+B4jpMixHo/wwLJ7NuAjVPPzakJcsdqrhCDAqo8k7mBc1Ulu08/J134pXHIVT2HWJajKOYaEWWVhnOhX5O4nDrsEaZJAN9uDKz+gsB1IwAGiwVyPzpNjwitdobAreVvrxbaYmbbUwFDRpvRbdiKym6bMJOATL5ZftT21i/In80cu6guDQxSQ==
+X-YMail-OSG: hfN8oUAVM1kjwip8lEbFPQL7ckZNRSDGmjx9auU3VGaadDRftLDfz8hV2.u29sF
+ z74lbLnI35b_TnCCIzTP.2NpdlMkN3VTw_dIKdYbC.F6GK7bMv.fRT.5clvuZN7r7ZUQL1dYRdv.
+ zvGQqAQEB7Is1d_f16ERv.II4ZYN88bieYImCx9ptM9Vk_lVHrJ8nQcg8LprODyUwjsTzT_tsFme
+ DtlQVOTb1GOqbhZ0LqNuSlCn.vxN8ZJzdy5xnRKBWWOScMH6jAi1ALnotWaeL7EvOmNoWk73k4bw
+ KnKaqHwGt8F8v6mCbzXjrqJnI7PbGJEUbtTMTRQiUHlV4dzRe.OmL5Tby8WAYxFhqCsO6o5aqBnB
+ EAaXdguDCad18qjXHz1ae2wNrGliIWNOUpNTDdL_OzbfX7hatZvtqdUYVkcyFXhqTN5QNRZv4nF3
+ mSltMA0.7QB.DUHsyfudeAnGuA.76HO0DDwIpmpo0BC.KJBsiqo4M2CH0NjlUBxeHFy1R5Qr6eV9
+ DmKqE5PvoW8hD0fqtVWlOp5v0i0BdbDj3N1x9a01pGhjY9o2hB.Hi7mD3RQuISl1Pv23xOn20l2A
+ c0IsLEfx2l_EdG36UeqxSJmVTHOmbAuEfGahGIIfFPZ6TT6tbwAXLVyQrnJFGPXfzupk.5YJNTd1
+ 8tCXGkRip5orP_XSOEuRV4Ij4oiax0bVmPwZI_zn7bw.dux5vLKchbW_vX9tzzSqZivUXOkYBvTg
+ 5.r28eAY.vjPwz6wjlKGW2kQZrB033kiA_IBCRpld4yGJNT_prPFZ.cwnWtc572X9uqabe7W5Dal
+ vBNX_MKuNq29VbvhEmwqemDFHAxpy0w_7B3Tzw6YIVPq8fFSGvNqXVlj9PQ_JDSBM1Acnx9NLkZf
+ xwQdSGuj0CrBykWDZ0qrlq5cE2BUHR2Dc6ot1essX4gQckaPt0AlO1jnRl.yygNowmLeVXhXThRo
+ yfP0lEOgmT1a5i92C0nf0q8_ipzHC5Seo.Fxst1ONaMlr3sON_yHcvAs91YuBI1e.aO3jRx3pinO
+ vxFZ3nxTATFRCIVHAXW6kT2cXWwyJwrV87Ub9u4VhAS.2ont_ZJ1fCsMAj9GoJVdxNHX.N1dfzmE
+ ErMjYWs9eZf0zsdjB.eRs11RkODhH_Eg1YDKuDG3xlORaYXwODBn619sJ.PPhGMUz2H9WVkvdMbi
+ xj8Nvd0UtqiFIwRUPBdzfHetK.2eWYhrKaF6C71Xu_ZqlbICqJV_l9BRizX9xTGI2hJuKYcV900h
+ ew7bR61NeXEfPZyYddGFH26hO.AnJvYZD74KUeC18znfPUdwGXykAMJgBL4vr_s8TnAmNoHyAVGn
+ uBMcIWyh00JHdFSF_mS0eISuozRDxNSOYKOmNa3BkjxVtHDjACB2ex9oHXkmx_cfsbPuz8VZV8GB
+ rkK86NBIHkW07k5Objqou02nFYgv4aYVIBmv_Y36d5NTnUgOBGdoyyOnOJcXJx1H_lBPFuVUSRpj
+ dArfFdA.nuxEv891xrLcamiXFFzoBsXlWLhxJToz5WceqVdjUQ0VFoaXmoS3zXBGv04gAF9x4KQg
+ gxZ6aV2w.N_GnoEE_TICP.KbeqoYYLvN62CnzcURBV_atPWw2f6G5_iTeNtVZSeap9cogc20cr9O
+ N.rL3jlAwZQZbYhshXerjXdeVUruJjRBRyVPISK0I3MfSJ0c6j_wIDFrGQ93KUdZVC0NMDScxfmX
+ tQwp5qH0L4QCzUEqyw6ei.4X4vXEFZo8896y._xMBeX_92jr1e_V57sPoZn7i7yyWw60bCH7rI1z
+ QE0guPiY4IC5yOoNcdD4iF7Q1WHQUbirtVaRKj5w22vRVn8XTZkIDza_8NHVqK0HN11uId7kyBst
+ vZaTAcGpWyQZ_pQcqG.5D_h20tqaO237HoBQYJMpFDvY9A4Fe.Vwpi0vsdMM5JVfIyZt1yuVAMRi
+ itF.qswO1NRVcV3yUPh_bCAmYzhXzi4XGO9bfgPYLpBQjiwv1zGkT_3.tjM2qhXUxl19aN0dS3vU
+ 3Dm6dI1BtQBROvpq3uKRoWH06azbXymBQtOzsJnTybNDz.OPujZbvE._6vE7ajc0Ix9ncQOUDsHW
+ 6miJyXLVo9crTlyNys22wfOdSTk9yeg97XAGVCTsEcri3H4WIbbAfdcIKqNTWuA6G_k6CsAD5VB8
+ .IIkCW_HjaKewzwCoViVclCQ_UeaniJcZne_7OOraAVpye9dcZMHSCtkdEk3ZUuamcBFKHK65igI
+ m56CzHmprR4wgmyqoBKg-
+X-Sonic-MF: <nruslan_devel@yahoo.com>
+X-Sonic-ID: abfb1eb2-8db1-4869-8252-f0ef297b5926
+Received: from sonic.gate.mail.ne1.yahoo.com by
+ sonic316.consmr.mail.gq1.yahoo.com with HTTP; Mon, 12 May 2025 14:56:19 +0000
+Date: Mon, 12 May 2025 14:56:17 +0000 (UTC)
+From: Ruslan Nikolaev <nruslan_devel@yahoo.com>
+To: "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc: "kailang@realtek.com" <kailang@realtek.com>,
+	"tiwai@suse.com" <tiwai@suse.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"sashal@kernel.org" <sashal@kernel.org>,
+	"perex@perex.cz" <perex@perex.cz>
+Message-ID: <1064773772.509063.1747061777318@mail.yahoo.com>
+Subject: Fwd: [Bug 220109] New: Audio disappears on HP 15-fc000 after warm
+ boot again (ALC256 code path)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1064773772.509063.1747061777318.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.23772 YMailNovation
+X-MailFrom: nruslan_devel@yahoo.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: QNXRTFUUJGC3PXLHN37NLJL4NNIP73SI
+X-Message-ID-Hash: QNXRTFUUJGC3PXLHN37NLJL4NNIP73SI
+X-Mailman-Approved-At: Wed, 14 May 2025 17:59:48 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PB3LMNDKTC2RIQXMCZUZAOWEFN4LVMQE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QNXRTFUUJGC3PXLHN37NLJL4NNIP73SI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -172,44 +123,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 11 May 2025 16:16:39 +0200,
-Takashi Iwai wrote:
-> 
-> On Thu, 08 May 2025 21:22:23 +0200,
-> Franti¹ek Kuèera wrote:
-> > 
-> > From: Franti¹ek Kuèera <franta-linux@frantovo.cz>
-> > 
-> > so alsamixer can show the controls in correct categories: capture/playback
-> > 
-> > Signed-off-by: Franti¹ek Kuèera <franta-linux@frantovo.cz>
-> 
-> Applied now.  Thanks.
+Hi,
 
-... on the second thought, I'm not sure whether the proposed new names
-are the best choice.  Now we see "Capture" and "Playback" twice for
-ChX switches (also for Master switch, too):
+Forwarding my regression bug report for HP 15-fc000 / ALC236 (ALC256 code path).
 
-+	SND_DJM_CTL("Master Capture Level Capture Switch", cap_level, 0, SND_DJM_WINDEX_CAPLVL),
-+	SND_DJM_CTL("Capture Ch1 Capture Switch",  250mk2_cap1, 2, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Capture Ch2 Capture Switch",  250mk2_cap2, 2, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Capture Ch3 Capture Switch",  250mk2_cap3, 0, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Playback Ch1 Playback Switch", 250mk2_pb1, 0, SND_DJM_WINDEX_PB),
-+	SND_DJM_CTL("Playback Ch2 Playback Switch", 250mk2_pb2, 1, SND_DJM_WINDEX_PB),
-....
+#regzbot introduced: v6.12.2
+https://bugzilla.kernel.org/show_bug.cgi?id=220109
 
-I guess your intention to make the differences clearer, but still it
-leaves me some itch feeling.
+Sincerely,
+Ruslan
 
-And now I noticed that you've submitted to a wrong list.  The kernel
-patches should be sent to linux-sound@vger.kernel.org, not alsa-devel.
-So I drop the patch for now.
+Forwarded Message (see logs in the bug report above):
 
-Let me know if you believe this is the best naming, or if you have any
-other proposals.  And for the next patch, please submit to linux-sound
-ML instead.
+There was a similar bug in the past (Bug 217440), which was fixed for this laptop. (I believe the code path is for ALC256, see below.) The same issue is occurring again as of kernel v.6.12.2. The symptoms are very similar - initially audio works but after a warm reboot, the audio completely disappears until the computer is powered off (there is no audio output at all).
 
-
-thanks,
-
-Takashi
+The issue is caused by a different change now. By bisecting different kernel versions, I found that reverting cc3d0b5dd989d3238d456f9fd385946379a9c13d in patch_realtek.c ( see https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/sound/pci/hda/patch_realtek.c?h=v6.12.2&id=4ed7f16070a8475c088ff423b2eb11ba15eb89b6 ) restores the sound and it works fine after the reboot.
