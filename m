@@ -4,50 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A45E6C54754
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F185C2D0CD
 	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:07:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F55461C71;
-	Thu, 15 May 2025 10:02:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F55461C71
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EBFD62B2D;
+	Thu, 15 May 2025 10:02:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EBFD62B2D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747296170;
-	bh=rn234ZM7sXQ05Sa+4BN7aL0VKP6jVOT0x5iNJqH84xg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=AuZZ3aQvTpoB+wBDHKDYLy6+xfPb5RYer3Ewt07VOGUhc9rm/qn+TFHIurFNfEvKH
-	 pFrI5RCVP//DbYvNcyRTVPs4d3K4lnHSEyV6qdRRIfTs7kbISN2U0HATtGYlgJXAF3
-	 u5574Fry2zlSdYshO0eP3i/Jp46AGJYKrg6JYMRU=
+	s=default; t=1747296168;
+	bh=j7ThaJ6DoNp4f6FP5Vx08GnRwirFs4dn5fHGZ/vDP80=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=pn/7llZLBijdBehTla5blDFq5s/SXoDjetxhDsNg5ccViyxbeZ6up1kx1hhen0Am0
+	 AKNeteYtuAOwvHxjYhl1TBbWmDK49Z9iIrBpR4BD+rT7wBtzYlmCiU6xZTjcuNTu6n
+	 XxWdiyi+bNKdOB+bQEpNeQ901faQtolt4JwOnZ/s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1DB18F8074D; Sun, 11 May 2025 11:19:52 +0200 (CEST)
+	id BADFEF89A9E; Tue, 13 May 2025 01:48:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1123DF8071D;
-	Sun, 11 May 2025 11:19:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 911DBF89AA8;
+	Tue, 13 May 2025 01:48:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C572F80683; Sun, 11 May 2025 11:19:48 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4386F8067E
-	for <alsa-devel@alsa-project.org>; Sun, 11 May 2025 11:19:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4386F8067E
+	id EC56DF89A90; Tue, 13 May 2025 01:48:53 +0200 (CEST)
+Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 78C91F898A7
+	for <alsa-devel@alsa-project.org>; Tue, 13 May 2025 01:48:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78C91F898A7
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=az/3o0Zq
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 54CNmft92906862
+	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 May 2025 18:48:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1747093721;
+	bh=PFrxyO8NYd8Cc14aEEJRvZuwU4+a4IQOvRHRkG3cqHA=;
+	h=From:To:CC:Subject:Date;
+	b=az/3o0ZqPQf6iYx2+sr6S0beipBqVm9hMymvyKLXP3qcPoe1H0beGVtQpyGdTs2gB
+	 LuQWXSfZOBru9tJ58fXjFoNiPNsxhJrqnnjxuLHqsq/8KUjV1kuE5kd4wJfdNzR+IX
+	 gTlu+K8Fi1+HPbyKp/SWJ6B2xgG0JhYVRcuK+zBA=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 54CNmfYT065211
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 12 May 2025 18:48:41 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
+ May 2025 18:48:40 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 12 May 2025 18:48:40 -0500
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.161.59])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 54CNmbHf114132;
+	Mon, 12 May 2025 18:48:37 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <tiwai@suse.de>
+CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <13564923607@139.com>, <13916275206@139.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <baojun.xu@ti.com>, <Baojun.Xu@fpt.com>, <jesse-ji@ti.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v3] ALSA: hda/tas2781: Fix the ld issue reported by kernel
+ test robot
+Date: Tue, 13 May 2025 07:48:33 +0800
+Message-ID: <20250512234833.772-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <183e6e7c5cd98000-webhooks-bot@alsa-project.org>
-In-Reply-To: <183e6e7c5cd01500-webhooks-bot@alsa-project.org>
-References: <183e6e7c5cd01500-webhooks-bot@alsa-project.org>
-Subject: ALSA UCM error for Scarlett 18i20 Gen2 with new profile introduced in
- 1.2.14
-Date: Sun, 11 May 2025 11:19:48 +0200 (CEST)
-Message-ID-Hash: UDPC74PSRA6KZULXUVNJNRH27MY5VOOO
-X-Message-ID-Hash: UDPC74PSRA6KZULXUVNJNRH27MY5VOOO
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Message-ID-Hash: PCJOX7RYHGCSPY6MMTZ3XXJASWXB4MTA
+X-Message-ID-Hash: PCJOX7RYHGCSPY6MMTZ3XXJASWXB4MTA
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -59,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UDPC74PSRA6KZULXUVNJNRH27MY5VOOO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PCJOX7RYHGCSPY6MMTZ3XXJASWXB4MTA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,13 +103,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #559 was opened from chw90:
+After commit 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c
+and leverage SND_SOC_TAS2781_FMWLIB")created a separated lib for i2c,
+However, tasdevice_remove() used for not only for I2C but for SPI being
+still in that lib caused ld issue.
+All errors (new ones prefixed by >>):
+>> ld.lld: error: undefined symbol: tasdevice_remove
+   >>> referenced by tas2781_hda.c:33 (sound/pci/hda/tas2781_hda.c:33)
+   >>>               vmlinux.o:(tas2781_hda_remove)
+To fix this issue, the implementation of tasdevice_remove was moved from
+tas2781-comlib-i2c.c to tas2781-comlib.c.
 
-I run the Focusrite 18i20 Gen2 on Arch Linux and the recent update of alsa-ucm-conf from 1.2.13-2 to 1.2.14-2 broke the audio output of my device.
+Fixes: 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c and leverage SND_SOC_TAS2781_FMWLIB")
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-`May 11 10:33:55 chw90 wireplumber[1636]: spa.alsa: Error in ALSA UCM profile for _ucm0009.hw:USB,0 (HiFi: Direct 2: source): CaptureChannels=20 > avail 18`
+---
+v3:
+ - Drop the report tag in the patch description.
+v2:
+ - put the Fixes tag to point out the commit that introduced the regression
+ - Add compiling error information reported by kernel test robot into patch
+   description.
+v1:
+ - | Reported-by: kernel test robot <lkp@intel.com>
+   | Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/__;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJD
+---
+ sound/soc/codecs/tas2781-comlib-i2c.c | 6 ------
+ sound/soc/codecs/tas2781-comlib.c     | 6 ++++++
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-Reverting to 1.2.13-2 fixes the problem.
+diff --git a/sound/soc/codecs/tas2781-comlib-i2c.c b/sound/soc/codecs/tas2781-comlib-i2c.c
+index a75b812618ee..c078bb0a8437 100644
+--- a/sound/soc/codecs/tas2781-comlib-i2c.c
++++ b/sound/soc/codecs/tas2781-comlib-i2c.c
+@@ -364,12 +364,6 @@ int tascodec_init(struct tasdevice_priv *tas_priv, void *codec,
+ }
+ EXPORT_SYMBOL_GPL(tascodec_init);
+ 
+-void tasdevice_remove(struct tasdevice_priv *tas_priv)
+-{
+-	mutex_destroy(&tas_priv->codec_lock);
+-}
+-EXPORT_SYMBOL_GPL(tasdevice_remove);
+-
+ MODULE_DESCRIPTION("TAS2781 common library for I2C");
+ MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
+index ad2f65359b15..076c1d955972 100644
+--- a/sound/soc/codecs/tas2781-comlib.c
++++ b/sound/soc/codecs/tas2781-comlib.c
+@@ -225,6 +225,12 @@ void tasdevice_dsp_remove(void *context)
+ }
+ EXPORT_SYMBOL_GPL(tasdevice_dsp_remove);
+ 
++void tasdevice_remove(struct tasdevice_priv *tas_priv)
++{
++	mutex_destroy(&tas_priv->codec_lock);
++}
++EXPORT_SYMBOL_GPL(tasdevice_remove);
++
+ MODULE_DESCRIPTION("TAS2781 common library");
+ MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
+ MODULE_LICENSE("GPL");
+-- 
+2.43.0
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/559
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
