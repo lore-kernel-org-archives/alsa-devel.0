@@ -4,120 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07C53C3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ABFCC3ABC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:59:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80E4061BB9;
-	Thu, 15 May 2025 09:34:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80E4061BB9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 182696209C;
+	Thu, 15 May 2025 09:47:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 182696209C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747294456;
-	bh=lPgD5AnRzTGKfThhJH2COIuyZWl5CnWWRUNEfOgaOys=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1747295272;
+	bh=1N5n4Ne/priTrec8JXqgsUH8AQ8N52bIA6M0x84onTM=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ekalfu22SXh8rjw/mEqZ1SCh8pfIBVUWnjMBFccHODMaA6BVQdH9alVnD7HQrI4oo
-	 6IxXGex/5u0rpZZFcD+HxfT4hzIPPe0kUCl7kcskSk8ols+cMLpbg9UjvToP+TZqok
-	 X39Kbi3eNXbkJZxxcJsQmwj6NzuljwuH0aVFTd4g=
+	b=gW8fSFR6GPoHK8//wPBHpqI2lanLQ92wpYTeRtxaesDgOU+6NG2QDU44L0Mk/lMFk
+	 WRm3wrajQXNWQOeUL4dsshtXPwyxomfHwjarV6MxKrQ8Uvm4hq7r3/0N3DrRTyk/Df
+	 HrqyaKWExolDT6bxl4ElmvHfKryrozLs3LoBGzVY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6DC20F89833; Sun, 11 May 2025 16:33:08 +0200 (CEST)
+	id BB77BF89BF3; Wed, 14 May 2025 19:59:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 587E9F89831;
-	Sun, 11 May 2025 16:33:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A026DF89BEA;
+	Wed, 14 May 2025 19:59:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0578EF8A1C3; Tue,  6 May 2025 12:11:43 +0200 (CEST)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
+	id 90D72F806B5; Tue, 13 May 2025 12:25:35 +0200 (CEST)
+Received: from sonic315-8.consmr.mail.gq1.yahoo.com
+ (sonic315-8.consmr.mail.gq1.yahoo.com [98.137.65.32])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E60ECF89F15
-	for <alsa-devel@alsa-project.org>; Tue,  6 May 2025 12:11:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E60ECF89F15
+	by alsa1.perex.cz (Postfix) with ESMTPS id 744E8F806A4
+	for <alsa-devel@alsa-project.org>; Tue, 13 May 2025 12:25:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 744E8F806A4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=uci.edu header.i=@uci.edu header.a=rsa-sha256
- header.s=google header.b=eXp66uQb
-Received: by mail-lj1-x234.google.com with SMTP id
- 38308e7fff4ca-30c416cdcc0so53566981fa.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 06 May 2025 03:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uci.edu; s=google; t=1746526298; x=1747131098;
- darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=maDj2dL9vOGF8Aklpv291L7Hh/17tOLUCSbcAt8E3ZA=;
-        b=eXp66uQbXW3c4smUEVbQ00nBSfRfbjFzKWyRqgAucTiqrYXUD6aR3orZaldKSqYtBm
-         uLn3VBdtDYdYMmpLtkNlYSa1BWxVQqYyBjgDnFAAvGWjzhbdC/+r8phUy7NoK3tYlHXN
-         406PlVJARnjpRFJkUS4jiMQqFNIcBQwj1u0bKeIyl/IHcpzNddf7bnLhclbag0b8YdVm
-         GYUPXEDHaUJJaHMptMGXTt5YFV3ZIcPgPQLJd9YJJuxPX7zzYkSBLXmKwBWqJDFkcAsV
-         cpp/GFbSr0rTZMIkDmQDIzHXAmhfxz4pQsx+fzU7N60iK5oKyh5ifI9yjK5+tS3WKcqn
-         p8RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746526298; x=1747131098;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=maDj2dL9vOGF8Aklpv291L7Hh/17tOLUCSbcAt8E3ZA=;
-        b=nJQg2PDl5sKOQlhL9+/XBmhWTJ93WUo9+Pfy8TdlYjaOf9M99EmfcSX3jEI0ai62NK
-         8eQZTqUL1PaVBythjlJgJCNS3HU0zxS+iHkRw2MsXMpSu7/7l/4Pok4xmlDnVRKPRFeh
-         u2R9uEwoFTPuhxI0UbI6smSCNNvbZfMt8MBUJmHTEuW7/2zv4kAiDy/xn/nQfXajcCsJ
-         Hgh7iO7hTZqzJJDJskHZ1RhJ5kJineYBBmgLr+zvIcd5bKOGZgF98JT9Id7TWXRf83me
-         DoLpUd/rBe4bx1Cn94G60j6G0zrA9tnrx0M0fM3bq7Y9TtyjX+xGrQAuv4Dqq6ML0nBn
-         XdFg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUa1kcCH5Mpo8mjY7PldICdHgqDSNpAtGN5n8RrKoKDQ8lepb9EZT4AE9vNt0mxee6TgEiOp7Oe2EMS@alsa-project.org
-X-Gm-Message-State: AOJu0YxMnWRC3wjObfW+GiwNo39C/0LUrilK6BxuqF/k6XIWWIZiMYo7
-	6kS2aPsVmLaGLxI9emF8fc8QRS5eu/2ezP4aXzXkkQHjWRjrddTFOGqTYf5a2oXUYIcGraA0VGo
-	y+ou8zJEv7TF/rtF9MhnNwOipciySP99DWWFVmg==
-X-Gm-Gg: ASbGncvkKO6uzD6cFky0/SXc+00dZIDQMF761Dc7ObLBWzFOZLw2lIggZ/U2NT6VnLJ
-	2b/DaBabTVRVjTmQEWO8zUzn5X1D6TQ1duP5J49VqAxDIGd9onobjoYCCdU4b2yhUiWADCg7dTs
-	1x9RASSKAPUtzgY8tnayp8yvHYM+3LuCF5DN4GMYzX2ntcx1STXAugvw1p
-X-Google-Smtp-Source: 
- AGHT+IGd5MBfB1oDqNMoMlwoQeK6baK1Kody2GKXe6l2b+NCGyA5VsVP+SgH7Dz+37jileLoPWWwN3kywGq/yY2vAPc=
-X-Received: by 2002:a05:651c:b12:b0:30b:efa5:69a2 with SMTP id
- 38308e7fff4ca-32349058cd7mr33542031fa.19.1746526298087; Tue, 06 May 2025
- 03:11:38 -0700 (PDT)
+ unprotected) header.d=yahoo.com header.i=@yahoo.com header.a=rsa-sha256
+ header.s=s2048 header.b=qBH8Wi/Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
+ t=1747131930; bh=1N5n4Ne/priTrec8JXqgsUH8AQ8N52bIA6M0x84onTM=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To;
+ b=qBH8Wi/QC/xNNNmBQJgu82iVJP5AKAeQGAxazCulj2adq8sBJDsqqtKguagJIBQy0fod1dI5WRywyTDxd1/rX0VgCh/Y90tCLbSDWp0g+Mj9IoQUsdybpJjq7PFX6IHRYNPDyWL6FbH3bJk4msqpc+ro4awM9TiWZbeczUbOr6xJXME96UGnL5DutX6tCChKDbB/cby43DLnMw0gFjcXK6KlZkWsXIOTDaSCiuOy3SIMMmcl70cIWBW3L9vKrekIcN919fNMXWFsjABdXpNQTAJ/LMiJxd1DmLI+0drbJxltsJto8Q/Nx3JOy9Y8uL1c/wsYmco6qi3C4vuP7Yrfew==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
+ t=1747131930; bh=v+QiIpoL41WG2hS/Z+RSmh1aMr5pXrXfeyKjrfTz+yE=;
+ h=X-Sonic-MF:Date:From:To:Subject:From:Subject;
+ b=N3awh0ua+3BL7cIb3AeXUqCMdXUzTVP7d38w2oaqnrMrLernIxhVl37ksnvl5n2DZ/0ARjpCuDM9sfe78BJSP/w68CKGZkGfPAQK9V1IEyREyndwSs6RFYZOFzZWPW8aH12e1+rM3MBR8f5PHaMNowjoPjAB4QkXma2KRGJ6jOw0OKmY+c96ZF4rDKINs3DEoMb1BzrY6zqwnM9wzrK6/cp890qnpPH9SaJGakCse52B+0k+zMJg2A+uWtg+56HxisWACUiTVCgA05Mms7k9ulOxWtqFUqeMTFxD+JvQwp+DLtRPG28KNgaYXQiFMeyD5jwFKYlHmm8xRNYwUf7O3w==
+X-YMail-OSG: q5.tnk8VM1kyBSzaahFqrI_taA.VpNe0QSLdUzeVcV9ZiHHshe_Ll4YhVctU7sd
+ QIiHovHryjyi3xqRGZvZSQHA.ApuTiMQjzqO.E5tAn_oLSrbW.ZGUQEbDuyoQD_cyXJTY.OkHmKZ
+ VENx04fIUY4j.PxN0xE4aWDN.wZ4rov0t4DPnZiaGTQvKXQNJa521D6umOL6WMnudVIViLPYNt3L
+ N9zIVW_FGo6pEo3JVPhZXFp1jJmHncg2zOVxoBtwSziTzb5zdWO1tgNShDlEDXum5nS93WYNrarq
+ v0kNs_5TcbFKZPtn_VIg8io4mL6Pez5fRjV_lq8RibNsd6qP6cTI0Ms7TBlN3pJo.GCyRfyWx9_d
+ VwRsOZNbFbS1eVvXVpkqZVhJHU9aFei0.H9sU8G9j9tkdcrXOQdsd9sXj_fHGK9mbRo3P_DlEwJR
+ ClRS0aB94ezQQ3CBa1QYaKt2gOSdaDyQoLJJx3Prv4I61fic5W62j64mPJVZL_9Oo2D4lc4n4wcq
+ ACL_F11nG0zqne8S5CqlwyrV0niuKmpulQZgS5Zsozum3lF8Y9e79ABENl6BjaW678C7BiamuW71
+ Y6ZSSHc.P0qLv5EeA8M9bFsnfFoZBvcyJRsg_NaMbJg2W6OufAuRWE8pNx5QNlzaQJYUlWs1JwVy
+ SRqr60LIzauIFxXlL4w1kEdvpN1qTNnhz56jzeMw8M7PGZ_nF6n2mVeE2DqkWEiDNtj2JB1Egc1L
+ RPOttSkuleYwybNReToGtapQGbZ7Kac2Hmg.ACMNFPLanZ.8X23bHI1WuOmV1WVUR2iCP74g1TGU
+ 21F6IDLcMPR9tjs44e_oQaWen41244RxHS1gHRn.C4H.iqcZIjM0roR0LGyeIovOpvQ6m18TtnNL
+ 8Uc68ZMN.IOFv8KV0pQVLe2i09FpvdkRiwTlb4G_aDraIeHE.yaLbVXEV1BxTWUIVodldJ3xuM1G
+ zm8MQ5az3GF3O6qjMR7hIDlK2zWGfZN1Wwn9YpZmxBZWsskub_Fo0HdhWizlqiSnlKcdSPuc.aK7
+ PaqEn2VZpgMdBT0eR4wgmRatUSbB0sAfGLl0uWSrO82TIT7uhMOcjh5FZQL94_W73eIHxloNG4PE
+ hqSECHDp5k9Ylor9smBrTLYFQmSFjWU6t2_8waRG7ttFZIc3UXU6eMmP9oXMPQ3qG62tjG89F51.
+ koc3dVCS7638MHKkjCwxesgMLFKn_GTt4THJMTUaJTBuX8qQm.5l.ZhIq9ApukeODqWnSw2RF8j8
+ _CvG0aqK9vSxSKieVDiLHQldDU9RGS3BsC2Tx9CIjppfQ_Gar4O2DSU9gINr0wKqLCDIWSJxa67G
+ uqzXlOraCIMx_KeHi6Ux2pzps0vQkOvwYlsHPjW0u88oqNxOw0LYSJ_fE3gYnz4slnGlu5PkeIjF
+ SNjYM.Fp_eV7DDiUKhd7UtcS.PcMESYwJmmHYY8VvfWsqQLHv41RumTs_6uvY8AAdlf6mQn4oun_
+ BvrM_OEhdVwR50TYAEDeuVgG814u0YaWHRer6yejNcMk5qcsJASodIRGO1ifPQUdAb6nFdL8sfw1
+ IneUJH024PnsS2aCp.O6wxdXUPv569sFptyU.mPilRHg8uQuz3XZ29u_6nMjjRisuVUzi7rhOoi8
+ hQQPQpFQ5i6RccHYIP5JP2fDxG2Ti7ui9kwkDWsy.bvcWi0YoRY9eqBahMCcVp82M1OAYHDirvrT
+ PKKRvVra9TBCVAdgg0OvSypPy5f9.sVVVCB4Ma.QT2t64hyo7xZdOZZFnqfl.bsKw29yiAWT8fAm
+ VGWRDEw8aIccJpp2jOSVtfSgGNHE1zRY4nGKMNNFruFqRkJ2UIeT.Vpa5MwBwxOtVGa2GZtZc8_W
+ dblzuTfNxsBXQVY7v.J4zFD7qrYG1Tcfiu5o0my8dkhvgpUO.IDMn2DSYZOHN07bH0N65zZQphTB
+ mrBX1coYDPCybjCTM98uyAYPCwuzawBzgCLAhFqo.1CdKKfUFrh1qCiE4C1TOX5OTHFfEfM6qRN3
+ PHF6GxKJao7AnX8vp7cfL0Vkjiv8Y_qAMPrn8fnQyK4aBDlKrsSHoriQZeqE3rggdvnCF3feEHiV
+ vqSWPuemTiRXn6JQBqZwYKTW0yR8piwKdo.EvkIaRpQffZxmdlapGb9eHF25pSpqE1lYrm.EA52B
+ 1dlxENhtvfnfmSVxodlPqfrfPRM5aMJgO4EbJv82q4OrbHTCEkqqDOoJL8VhmH_ettlHnQHPbKzx
+ .x2l8vyNPpzxIGxtV_U22B.Rm6zjjvMheGCuIpzy6E4FZAw--
+X-Sonic-MF: <nruslan_devel@yahoo.com>
+X-Sonic-ID: 98f42dff-1773-47bb-9c4f-da1ca83ff38f
+Received: from sonic.gate.mail.ne1.yahoo.com by
+ sonic315.consmr.mail.gq1.yahoo.com with HTTP; Tue, 13 May 2025 10:25:30 +0000
+Date: Tue, 13 May 2025 10:25:28 +0000 (UTC)
+From: Ruslan Nikolaev <nruslan_devel@yahoo.com>
+To: "bugzilla-daemon@kernel.org" <bugzilla-daemon@kernel.org>
+Cc: "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+	kailang@realtek.com, tiwai@suse.com, alsa-devel@alsa-project.org,
+	sashal@kernel.org, "perex@perex.cz" <perex@perex.cz>
+Message-ID: <362743264.827582.1747131928735@mail.yahoo.com>
+In-Reply-To: <bug-220109-229339-9HzhKc5gL2@https.bugzilla.kernel.org/>
+References: <bug-220109-229339@https.bugzilla.kernel.org/>
+ <bug-220109-229339-9HzhKc5gL2@https.bugzilla.kernel.org/>
+Subject: Re: [Bug 220109] Audio disappears on HP 15-fc000 after warm boot
+ again (ALC256 code path)
 MIME-Version: 1.0
-References: 
- <CAPXr0uxh0c_2b2-zJF=N8T6DfccfyvOQRX0X0VO24dS7YsxzzQ@mail.gmail.com>
- <aBHgOsqA4qfe7LbN@c757f733ca9e>
- <CAPXr0uxJg0kMu_N7Gxb14kVdhkFGXO_KbK5RxfAcY9dEA8vrEA@mail.gmail.com>
-In-Reply-To: 
- <CAPXr0uxJg0kMu_N7Gxb14kVdhkFGXO_KbK5RxfAcY9dEA8vrEA@mail.gmail.com>
-From: Ezra Khuzadi <ekhuzadi@uci.edu>
-Date: Tue, 6 May 2025 03:11:26 -0700
-X-Gm-Features: ATxdqUHtOY2jL6izi15S3RbFjorM8wSzzCLHmCaCtYiCPBVnPNu9VFxSdEI5P3Q
-Message-ID: 
- <CAPXr0uw7Dj9ckM_pLDkUaAH3vid9BmePrACOYZv-N549AUEHfw@mail.gmail.com>
-Subject: Re: sound/pci/hda: add quirk for HP Spectre x360 15-eb0xxx
-To: kernel test robot <lkp@intel.com>, sound-dev@vger.kernel.org
-Cc: stable@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
-	alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org, tiwai@suse.de, "perex@perex.cz" <perex@perex.cz>
-X-MailFrom: ekhuzadi@uci.edu
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.23772 YMailNovation
+X-MailFrom: nruslan_devel@yahoo.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PIOYC5N5Y7R55ZRP2RZ3KQDO7IU2QSLR
-X-Message-ID-Hash: PIOYC5N5Y7R55ZRP2RZ3KQDO7IU2QSLR
-X-Mailman-Approved-At: Sun, 11 May 2025 14:33:06 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: KRRWPJVHRG6M7QBUHOBIFCMSUOLJAB3W
+X-Message-ID-Hash: KRRWPJVHRG6M7QBUHOBIFCMSUOLJAB3W
+X-Mailman-Approved-At: Wed, 14 May 2025 17:59:49 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PIOYC5N5Y7R55ZRP2RZ3KQDO7IU2QSLR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRRWPJVHRG6M7QBUHOBIFCMSUOLJAB3W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,58 +124,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGkgVGFrYXNoaSwgSmFyb3NsYXYsIGFsbCBtYWludGFpbmVycywNCg0KQ291bGQgeW91IHBsZWFz
-ZSByZXZpZXcgaXQgb3IgbGV0IG1lIGtub3cgaWYgYW55IGNoYW5nZXMgYXJlIG5lZWRlZD8gVGhp
-cw0KaXMgbXkgZmlyc3Qga2VybmVsIHBhdGNoIGFzIGEgc3R1ZGVudCwgYW5kIEnigJlkIGFwcHJl
-Y2lhdGUgYW55IGZlZWRiYWNrLg0KDQpUaGFua3MsDQpFenJhIEtodXphZGkNCg0KDQpPbiBXZWQs
-IEFwciAzMCwgMjAyNSBhdCAxOjQz4oCvQU0gRXpyYSBLaHV6YWRpIDxla2h1emFkaUB1Y2kuZWR1
-PiB3cm90ZToNCg0KPiBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYzogYWRkIHF1aXJrIGZv
-ciBIUCBTcGVjdHJlIHgzNjAgMTUtZWIweHh4DQo+DQo+IEFkZCBzdWJzeXN0ZW0gSUQgMHg4NmU1
-IGZvciBIUCBTcGVjdHJlIHgzNjAgMTUtZWIweHh4IHNvIHRoYXQNCj4gQUxDMjg1X0ZJWFVQX0hQ
-X1NQRUNUUkVfWDM2MF9FQjEgKEdQSU8gYW1wLWVuYWJsZSwgbWljLW11dGUgTEVEIGFuZA0KPiBw
-aW5jb25maWdzKSBpcyBhcHBsaWVkLg0KPg0KPiBUZXN0ZWQgb24gSFAgU3BlY3RyZSB4MzYwIDE1
-LWViMDA0M2R4IChWZW5kb3IgMHgxMGVjMDI4NSwgU3Vic3lzDQo+IDB4MTAzYzg2ZTUpDQo+IHdp
-dGggbGVnYWN5IEhEQSBkcml2ZXIgYW5kIGhkYS12ZXJiIHRvZ2dsZXM6DQo+DQo+ICAgJCBjYXQg
-L3Byb2MvYXNvdW5kL2NhcmQwL2NvZGVjIzAgXA0KPiAgICAgICB8IHNlZCAtbiAtZSAnMSw1cDsv
-VmVuZG9yIElkOi9wOy9TdWJzeXN0ZW0gSWQ6L3AnDQo+ICAgQ29kZWM6IFJlYWx0ZWsgQUxDMjg1
-DQo+ICAgVmVuZG9yIElkOiAweDEwZWMwMjg1DQo+ICAgU3Vic3lzdGVtIElkOiAweDEwM2M4NmU1
-DQo+DQo+ICAgJCBkbWVzZyB8IGdyZXAgLWkgcmVhbHRlaw0KPiAgIFsgICAgNS44Mjg3MjhdIHNu
-ZF9oZGFfY29kZWNfcmVhbHRlayBlaGRhdWRpbzBEMDogQUxDMjg1OiBwaWNrZWQgZml4dXANCj4g
-ICAgICAgICBmb3IgUENJIFNTSUQgMTAzYzo4NmU1DQo+DQo+IFNpZ25lZC1vZmYtYnk6IEV6cmEg
-S2h1emFkaSA8ZWtodXphZGlAdWNpLmVkdT4NCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcN
-Cj4NCj4gLS0tDQo+ICBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8IDEgKw0KPiAgMSBm
-aWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+DQo+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kv
-aGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jDQo+IGlu
-ZGV4IDg3NzEzN2NiMDlhYy4uODJhZDEwNWU3ZmE5IDEwMDY0NA0KPiAtLS0gYS9zb3VuZC9wY2kv
-aGRhL3BhdGNoX3JlYWx0ZWsuYw0KPiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
-Yw0KPiBAQCAtMTA1NjMsNiArMTA1NjMsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9xdWly
-ayBhbGMyNjlfZml4dXBfdGJsW10gPQ0KPiB7DQo+ICAgIFNORF9QQ0lfUVVJUksoMHgxMDNjLCAw
-eDg2YzcsICJIUCBFbnZ5IEFpTyAzMiIsDQo+IEFMQzI3NF9GSVhVUF9IUF9FTlZZX0dQSU8pLA0K
-PiArICBTTkRfUENJX1FVSVJLKDB4MTAzYywgMHg4NmU1LCAiSFAgU3BlY3RyZSB4MzYwIDE1LWVi
-MHh4eCIsDQo+IEFMQzI4NV9GSVhVUF9IUF9TUEVDVFJFX1gzNjBfRUIxKSwNCj4gICAgU05EX1BD
-SV9RVUlSSygweDEwM2MsIDB4ODZlNywgIkhQIFNwZWN0cmUgeDM2MCAxNS1lYjB4eHgiLA0KPiBB
-TEMyODVfRklYVVBfSFBfU1BFQ1RSRV9YMzYwX0VCMSksDQo+ICAgIFNORF9QQ0lfUVVJUksoMHgx
-MDNjLCAweDg2ZTgsICJIUCBTcGVjdHJlIHgzNjAgMTUtZWIweHh4IiwNCj4gQUxDMjg1X0ZJWFVQ
-X0hQX1NQRUNUUkVfWDM2MF9FQjEpLA0KPiAgICBTTkRfUENJX1FVSVJLKDB4MTAzYywgMHg4NmY5
-LCAiSFAgU3BlY3RyZSB4MzYwIDEzLWF3MHh4eCIsDQo+IEFMQzI4NV9GSVhVUF9IUF9TUEVDVFJF
-X1gzNjBfTVVURV9MRUQpLA0KPg0KPiBPbiBXZWQsIEFwciAzMCwgMjAyNSBhdCAxOjMz4oCvQU0g
-a2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gSGksDQo+
-ID4NCj4gPiBUaGFua3MgZm9yIHlvdXIgcGF0Y2guDQo+ID4NCj4gPiBGWUk6IGtlcm5lbCB0ZXN0
-IHJvYm90IG5vdGljZXMgdGhlIHN0YWJsZSBrZXJuZWwgcnVsZSBpcyBub3Qgc2F0aXNmaWVkLg0K
-PiA+DQo+ID4gVGhlIGNoZWNrIGlzIGJhc2VkIG9uDQo+IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20v
-djMvX19odHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9odG1sL2xhdGVzdC9wcm9jZXNzL3N0YWJs
-ZS1rZXJuZWwtcnVsZXMuaHRtbCpvcHRpb24tMV9fO0l3ISFDekF1S0o0Mkd1cXVWVFRtVm1QVmlZ
-RXZTZyFQaUNtREpzYmtQNDhIWTZhZHkwcmJDMjFyR3VzdVktSWpKNjFKcVFucDk5R2RIc2JjNXVF
-UUR3Vi1ROVRlS0s3UjRUSEZWN2ZYUSQNCj4gPg0KPiA+IFJ1bGU6IGFkZCB0aGUgdGFnICJDYzog
-c3RhYmxlQHZnZXIua2VybmVsLm9yZyIgaW4gdGhlIHNpZ24tb2ZmIGFyZWEgdG8NCj4gaGF2ZSB0
-aGUgcGF0Y2ggYXV0b21hdGljYWxseSBpbmNsdWRlZCBpbiB0aGUgc3RhYmxlIHRyZWUuDQo+ID4g
-U3ViamVjdDogc291bmQvcGNpL2hkYTogYWRkIHF1aXJrIGZvciBIUCBTcGVjdHJlIHgzNjAgMTUt
-ZWIweHh4DQo+ID4gTGluazoNCj4gaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8v
-bG9yZS5rZXJuZWwub3JnL3N0YWJsZS9DQVBYcjB1eGgwY18yYjItekpGKjNETjhUNkRmY2NmeXZP
-UVJYMFgwVk8yNGRTN1lzeHp6USo0MG1haWwuZ21haWwuY29tX187SlNVISFDekF1S0o0Mkd1cXVW
-VFRtVm1QVmlZRXZTZyFQaUNtREpzYmtQNDhIWTZhZHkwcmJDMjFyR3VzdVktSWpKNjFKcVFucDk5
-R2RIc2JjNXVFUUR3Vi1ROVRlS0s3UjRTeVJMSWJlUSQNCj4gPg0KPiA+IC0tDQo+ID4gMC1EQVkg
-Q0kgS2VybmVsIFRlc3QgU2VydmljZQ0KPiA+DQo+IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMv
-X19odHRwczovL2dpdGh1Yi5jb20vaW50ZWwvbGtwLXRlc3RzL3dpa2lfXzshIUN6QXVLSjQyR3Vx
-dVZUVG1WbVBWaVlFdlNnIVBpQ21ESnNia1A0OEhZNmFkeTByYkMyMXJHdXN1WS1Jako2MUpxUW5w
-OTlHZEhzYmM1dUVRRHdWLVE5VGVLSzdSNFFkVFF5UG1nJA0KPiA+DQo+ID4NCj4gPg0KPg0K
+Kailiang,
+
+I added alsa-info outputs to=C2=A0https://bugzilla.kernel.org/show_bug.cgi?=
+id=3D220109 (see attachments for both the regression and reverted changes) =
+by following your instructions.
+Please let me know if there is any other information you need.
+
+
+Thanks,
+Ruslan
+
+
+
+On Tuesday, May 13, 2025 at 02:30:17 AM EDT, <bugzilla-daemon@kernel.org> w=
+rote:=20
+
+
+
+
+
+https://bugzilla.kernel.org/show_bug.cgi?id=3D220109
+
+Kailiang Yang (kailang@realtek.com) changed:
+
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 What=C2=A0 =C2=A0 |Removed=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |Added
+---------------------------------------------------------------------------=
+-
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 CC|=C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 |kailang@realtek.com
+
+--- Comment #3 from Kailiang Yang (kailang@realtek.com) ---
+
+Could you run alsa-info.sh to dump codec info?
+
+Please do =3D=3D> echo 1=C2=A0 > /sys/module/snd_hda_codec/parameters/dump_=
+coef
+
+before do alsa-info.sh.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are on the CC list for the bug.
+You reported the bug.
