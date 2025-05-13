@@ -4,77 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32109C369B2
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Apr 2025 12:32:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09030C54755
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 07:18:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12AB36E4C3;
-	Thu, 17 Apr 2025 14:32:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12AB36E4C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEAE960263;
+	Thu, 15 May 2025 09:10:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEAE960263
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1744893167;
-	bh=+ACAu8sUqeQ0dOQtBFJqpjw2Dj9hZnB3LjLW9OKfxKY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=runJW9sLN+561+rtQTZKRcUjByJCe1b0YJfSFkK7rVlNUr9oEFRw4Hp9ZCC0GxXsG
-	 FCRW7p5bed55QE5rcHwgAmMU2ywlYyJCpVGTWPtmtRlQzEdRqMe+16HmPY7NsEavxj
-	 +Puo+waHQfW3W+kRXuuhO90OKoBZDAA6A60SBGSQ=
+	s=default; t=1747293037;
+	bh=qixPsvx68QpQdJN2+HaEShxgh1Pq8m7eQVfo4KQLOJ8=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=kokl4MbE9emoO3JKMhsdH+/gCNeyK7gtWvOb+vKbGw5N6N/axvK7Tym1Ec08H0pqk
+	 mjPPmXYYU0Fxv8OrxTUjwku4sC5u0ArhOXuxNDJNNwbivWkn0PIQkVeP9JImedN+0E
+	 ajR+GEu7AhSmtsIlp6tn11R02wKkRZIzwekh2JnQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4457EF805D7; Thu, 17 Apr 2025 14:31:51 +0200 (CEST)
+	id 4650BF89AE0; Tue, 13 May 2025 11:00:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FF99F805D5;
-	Thu, 17 Apr 2025 14:31:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34BC7F89AE2;
+	Tue, 13 May 2025 11:00:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 989A4F8052D; Thu, 17 Apr 2025 14:31:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 3C717F89ACE; Tue, 13 May 2025 11:00:06 +0200 (CEST)
+Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9C0AF80027
-	for <alsa-devel@alsa-project.org>; Thu, 17 Apr 2025 14:31:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9C0AF80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 18004F89A98
+	for <alsa-devel@alsa-project.org>; Tue, 13 May 2025 11:00:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18004F89A98
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=lhfAj0yP
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id DB2055C4B23;
-	Thu, 17 Apr 2025 12:29:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33D12C4CEE4;
-	Thu, 17 Apr 2025 12:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744893102;
-	bh=+ACAu8sUqeQ0dOQtBFJqpjw2Dj9hZnB3LjLW9OKfxKY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lhfAj0yPiPKImagQj8vSxXei499mlwfvBAZ9pEgHMI37NXULpBvkMjzlow1HATsTa
-	 qKYz4wz5HrZx4UbLkS1abgZyVxq4C08gK58cLrH8vOL4Xdt/vvh0jLMhw8k/DPi2YD
-	 EFowWTT3dS9tGNYX0yAr0xW1OJvb/WnQrtn0GkEe96DoyT3RAugIa7k3D7nw06gXeC
-	 lhYyazgqh+jyc1gR/vgfI8YMnfNbHRcZrL9KV/5+WL06gIlwtoPQEMHFctAERfMNnH
-	 pVpigDdzcemWnfMrcO4xAUBd4r0qmiya4bMCqSjtNCRGZuHYElUKfeChMWvGZfldqI
-	 xr5Zifu8S/CMQ==
-Date: Thu, 17 Apr 2025 13:31:38 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: andriy.shevchenko@linux.intel.com, tiwai@suse.de, 13916275206@139.com,
-	13564923607@139.com, alsa-devel@alsa-project.org, baojun.xu@ti.com
-Subject: Re: [PATCH v1] ASoC: tas2781: Add "Acoustic Tuning" kcontrol for
- acoustic application
-Message-ID: <7bf02bdd-f4b9-4235-8d6e-e6e9acfc3273@sirena.org.uk>
-References: <20250417104753.1471-1-shenghao-ding@ti.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=isIsk3Zx
+Received: from lelvem-sh01.itg.ti.com ([10.180.77.71])
+	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 54D8xurX3035121;
+	Tue, 13 May 2025 03:59:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1747126796;
+	bh=GoAfN8SkH9CD8o22DgIP7HQF9KZ68PufaMe/60HCH6I=;
+	h=From:To:CC:Subject:Date;
+	b=isIsk3ZxqUrYnjqtwR5aPGMjnVzxs8MXTNopUfNl+nrlyGY6t4DcuxzY6dNd/eZdG
+	 t2I4YA4B7/kuWAvFzK7NJjTxOElfJ4A6PFk3uYTdi+RyFrReP1Kzv58m7YfA34wQBv
+	 AtGavxXvAMfQFTbzPUd+/qP9LBPDISC8wEYyfdzE=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by lelvem-sh01.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 54D8xuig1614569
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Tue, 13 May 2025 03:59:56 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 13
+ May 2025 03:59:55 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 13 May 2025 03:59:55 -0500
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.161.59])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 54D8xpZS121462;
+	Tue, 13 May 2025 03:59:52 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <tiwai@suse.de>
+CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <13564923607@139.com>, <13916275206@139.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <baojun.xu@ti.com>, <Baojun.Xu@fpt.com>, <jesse-ji@ti.com>,
+        Shenghao Ding <shenghao-ding@ti.com>,
+        kernel test robot
+	<lkp@intel.com>
+Subject: [PATCH v4] ALSA: hda/tas2781: Fix the ld issue reported by kernel
+ test robot
+Date: Tue, 13 May 2025 16:59:47 +0800
+Message-ID: <20250513085947.1121-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1B+WWLXiN5AT3cPq"
-Content-Disposition: inline
-In-Reply-To: <20250417104753.1471-1-shenghao-ding@ti.com>
-X-Cookie: "Elvis is my copilot."
-Message-ID-Hash: V4X54LR2PBPHYNAYJN3H4OGCRDW6DRUI
-X-Message-ID-Hash: V4X54LR2PBPHYNAYJN3H4OGCRDW6DRUI
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Message-ID-Hash: SLI6J3B5B3BMF7NVKB6E4KLI4QAR2OKT
+X-Message-ID-Hash: SLI6J3B5B3BMF7NVKB6E4KLI4QAR2OKT
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V4X54LR2PBPHYNAYJN3H4OGCRDW6DRUI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SLI6J3B5B3BMF7NVKB6E4KLI4QAR2OKT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,52 +104,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+After commit 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c
+and leverage SND_SOC_TAS2781_FMWLIB")created a separated lib for i2c,
+However, tasdevice_remove() used for not only for I2C but for SPI being
+still in that lib caused ld issue.
+All errors (new ones prefixed by >>):
+>> ld.lld: error: undefined symbol: tasdevice_remove
+   >>> referenced by tas2781_hda.c:33 (sound/pci/hda/tas2781_hda.c:33)
+   >>>               vmlinux.o:(tas2781_hda_remove)
+To fix this issue, the implementation of tasdevice_remove was moved from
+tas2781-comlib-i2c.c to tas2781-comlib.c.
 
---1B+WWLXiN5AT3cPq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c and leverage SND_SOC_TAS2781_FMWLIB")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/__;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJD
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-On Thu, Apr 17, 2025 at 06:47:53PM +0800, Shenghao Ding wrote:
-> "Acoustic Tuning" kcontrol is a bridge to the acoustic tuning application
-> tool which can tune the chips' acoustic effect.
+---
+v4:
+ - Put report tag around Signed-off-by without quotes.
+v3:
+ - Drop the report tag in the patch description.
+v2:
+ - put the Fixes tag to point out the commit that introduced the regression
+ - Add compiling error information reported by kernel test robot into patch
+   description.
+v1:
+ - | Reported-by: kernel test robot <lkp@intel.com>
+   | Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/__;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJD
+---
+ sound/soc/codecs/tas2781-comlib-i2c.c | 6 ------
+ sound/soc/codecs/tas2781-comlib.c     | 6 ++++++
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-> +	reg = TASDEVICE_REG(src[3], src[4], src[5]);
-> +
-> +	guard(mutex)(&priv->codec_lock);
-> +
-> +	if (src[1] == 'w') {
-> +		if (len > 1)
-> +			ret = tasdevice_dev_bulk_write(priv, chn, reg,
-> +				 &src[6], len);
-> +		else
-> +			ret = tasdevice_dev_write(priv, chn, reg, src[6]);
+diff --git a/sound/soc/codecs/tas2781-comlib-i2c.c b/sound/soc/codecs/tas2781-comlib-i2c.c
+index a75b812618ee..c078bb0a8437 100644
+--- a/sound/soc/codecs/tas2781-comlib-i2c.c
++++ b/sound/soc/codecs/tas2781-comlib-i2c.c
+@@ -364,12 +364,6 @@ int tascodec_init(struct tasdevice_priv *tas_priv, void *codec,
+ }
+ EXPORT_SYMBOL_GPL(tascodec_init);
+ 
+-void tasdevice_remove(struct tasdevice_priv *tas_priv)
+-{
+-	mutex_destroy(&tas_priv->codec_lock);
+-}
+-EXPORT_SYMBOL_GPL(tasdevice_remove);
+-
+ MODULE_DESCRIPTION("TAS2781 common library for I2C");
+ MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
+index ad2f65359b15..076c1d955972 100644
+--- a/sound/soc/codecs/tas2781-comlib.c
++++ b/sound/soc/codecs/tas2781-comlib.c
+@@ -225,6 +225,12 @@ void tasdevice_dsp_remove(void *context)
+ }
+ EXPORT_SYMBOL_GPL(tasdevice_dsp_remove);
+ 
++void tasdevice_remove(struct tasdevice_priv *tas_priv)
++{
++	mutex_destroy(&tas_priv->codec_lock);
++}
++EXPORT_SYMBOL_GPL(tasdevice_remove);
++
+ MODULE_DESCRIPTION("TAS2781 common library");
+ MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
+ MODULE_LICENSE("GPL");
+-- 
+2.43.0
 
-So, this is basically just unrestricted register I/O to the device.
-That's not a great interface - it just lets userspace do anything,
-including conflicting with things that the driver is managing itself.
-Usually a coefficient interface would just expose a specific set of
-registers with the coefficient data as a control.
-
-I know other CODEC vendors use the regmap debugfs interface for this, if
-you change the kernel to define REGMAP_ALLOW_WRITE_DEBUGFS then you can
-do both writes and reads for the tuning.  The tuning tool then produces
-a file with just the coefficients which is loaded at runtime, with
-anything that's normal routing or whatever being configured via the
-control API.
-
---1B+WWLXiN5AT3cPq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmgA9KkACgkQJNaLcl1U
-h9DMKgf9Hr7cju+VJmaH5JDYrkKe+z+R3GB9yMCGPiVoleR/BtxLBbPted1/1BWl
-9ILZZgmVtciAGJgNscVFQE55RKaJ25lOaZHGu8aVFLxl67HoJyLE92ICBmNdl/C7
-cKnvRRY/GskZr6r1fEGRliEoZvCgzBwgrocfxcl5xMF+PzhZy1YhggsRcpGdxitl
-l5sIaz+TmE84w9g2XLy91ruOMfewuDuOYyc1RfkKN82xFJe841WmcfvsDPf7518o
-WhW+LlAFX97dJkEViZGfjVTHk0f5AYSdCjRvxG1zKg2eiFMUpvm+yISv0pm/Qetf
-peSV6M7NIEUFrheYOMmGXKCGb8wJQg==
-=v2cF
------END PGP SIGNATURE-----
-
---1B+WWLXiN5AT3cPq--
