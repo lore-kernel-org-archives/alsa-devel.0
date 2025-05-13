@@ -4,97 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 966F9C2D0CD
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3997C3ABC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:02:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 816B162016;
-	Thu, 15 May 2025 09:47:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 816B162016
+	by alsa0.perex.cz (Postfix) with ESMTPS id B491762022;
+	Thu, 15 May 2025 09:47:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B491762022
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747295242;
-	bh=2jepknxWjE/0XKgZzfXVHNANqnmrBGpNCfDIqn35WIw=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=LAg064PZR8CGs7RtJW6f/hRdCUZqusIJrM/DECyPBlASM1S/QOWKSOw9cC7XPfZib
-	 +0iqkgIVjYU4bRSreCGvr5pg1yJgiXBnrXBwK+7ZqVWadbQduMOgJEgfSlRkXCwlBh
-	 V+V2N3fPV0Bj+EALsbhhXrvqIj2TO1oDxYFZiEDY=
+	s=default; t=1747295243;
+	bh=UTDc1wYpkWAfvifRTJF4VXiuszIW+r8dfq4jFbCbo4Q=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=VUxtFbnSaLm1uTino/EVYOTy5Pr0MiPKK7dViP9S3sDkwjYhJ8+x5+6x/f2YMseXx
+	 AqCO658HRKQ4lsvbichJoGSHiN44iHp7H/BP79LIckprkX5eRs16Oz9AidCVFy3Mcv
+	 8C4iex+cYBfKC3HDCBbQJi6NTalxwOlqbaM8Y73Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A0630F899DB; Mon, 12 May 2025 10:18:47 +0200 (CEST)
+	id 3D01BF89BD2; Wed, 14 May 2025 19:59:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94718F899D4;
-	Mon, 12 May 2025 10:18:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B8E4F89BCA;
+	Wed, 14 May 2025 19:59:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9D65F899C0; Mon, 12 May 2025 10:18:44 +0200 (CEST)
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9203FF806CA; Tue, 13 May 2025 06:36:49 +0200 (CEST)
+Received: from sonic318-21.consmr.mail.gq1.yahoo.com
+ (sonic318-21.consmr.mail.gq1.yahoo.com [98.137.70.147])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E10CFF899BC
-	for <alsa-devel@alsa-project.org>; Mon, 12 May 2025 10:18:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E10CFF899BC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8F056F806C8
+	for <alsa-devel@alsa-project.org>; Tue, 13 May 2025 06:36:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F056F806C8
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=ayaLAO/w
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 54C8IUXV1928408
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 May 2025 03:18:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1747037910;
-	bh=ge8Dl/TyFR3+BosL2y3ZH63GxgS1a+2mlep3avVb4D8=;
-	h=From:To:CC:Subject:Date;
-	b=ayaLAO/wtOTUI15x3sTy3JRN4CN7GWgM/ATYqfqv5Q4yO2Ods0rCwOJZvB8S2QSWy
-	 tRVSWA+MjquKKekduWwYyACHradaVr5EI4NWcQVopIPXsLjy18mu4fTpLYYOZc3Eux
-	 OJ/XlakOgV2tam64ncgN3FWEVot4nTrHBIti0KKc=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 54C8IUaY003426
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 12 May 2025 03:18:30 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
- May 2025 03:18:30 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 12 May 2025 03:18:30 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.161.59])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 54C8IQUV095806;
-	Mon, 12 May 2025 03:18:26 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <13564923607@139.com>, <13916275206@139.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <baojun.xu@ti.com>, <Baojun.Xu@fpt.com>, <jesse-ji@ti.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v2] ALSA: hda/tas2781: Fix the ld issue reported by kernel
- test robot
-Date: Mon, 12 May 2025 16:18:22 +0800
-Message-ID: <20250512081822.1513-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+	dkim=pass (2048-bit key,
+ unprotected) header.d=yahoo.com header.i=@yahoo.com header.a=rsa-sha256
+ header.s=s2048 header.b=ubasduZc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
+ t=1747111004; bh=UTDc1wYpkWAfvifRTJF4VXiuszIW+r8dfq4jFbCbo4Q=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To;
+ b=ubasduZcds3IHElA93qCvk7Sc/j9fP9BtGrv+W1W1emaAIkaJ9NNa8x8RxERXxK/ZdUoBxv9roKNUX1lvYwhAzjzMMmzXXY7wsDCuazIY97ZSdoboCR7z36X0BHm1tsHTZKryUmP1Pxq51yLQvaKE349bh8OxlL75GHnM+dQaSZM3Y31R7Nh00wV0mcKMiCGN1X7oGNXcdAk6j54/W5A/bBKMTl2DtCW4/7RXrVe4odeRD4Dx/RtWg6ddI5aVGs3X1dsu/71ozzwUFzHkLdzsooaQJPRowg4p9cRN6DEcbEM+VcDPyt1JpSuYT+/EP4w+yaXdfAqLkN+NhizgbvkKA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
+ t=1747111004; bh=NGnayLA1+NPEVSiFNTYy9ul6I4w+Nu/tcDIBCiBylNk=;
+ h=X-Sonic-MF:Date:From:To:Subject:From:Subject;
+ b=dGwD4qb4YAt9tRrG5MIitw0RY1bVL6QCCSra7lThB3D7NZuE+C2U0S3MedSXZsAooY/C5rGMld+080lgLtjNdytj/xRKcpQpXw78+9AguMnAEmHoBaNgTA7igCZ+XUYPtkFuOBXhp977Zom1gc4vap8K2flrHXbUNIZ6IS0h6dU3LsOANPEMcUwMt4AdQDfeneFqne8+Iz+LgQm3IUP04oDRADfsEqCfa9xkRXdtQqtbhlMwoB1Q7rcpzoiWz9KfiFsX30CPZGx516Mw5fUIUFTu4iNGqLwBZRYlodtCgE+hQjq8r8M0KusW7dz1S/2TJ/LiiNcN+W72cYIfEpzdHw==
+X-YMail-OSG: sgt22KUVM1mV_c3KD3Z9pM_fyklHybfS1nrMPuM_Epep_Sjthf4uwEg7QAAr.yQ
+ 7iSxxLanxR8doijrgyHsZnYEHkfMjJyfP1bkQ60c9km7rQXKbIHSo2ZCr6ABC2fa7upjeH2vtxRi
+ WDZmp.etBz_JCh_sdaQzAhpfVsUOb01wHH3iyN5xxgCsQH9J5oU7kx9i9qRGNf3eCB5F7OO3Y7FC
+ tJ.y5IBAna26cUsJRrftiE3Q51CllhMdFRzXPIF2uasswu4wna5v9jU7RekCAKMpzxKv7VeRGkVH
+ DHnmsSaURxBWQnFgDxcZFuBhISrvh1LiSZ9U3S4R7vUH0M0HL85tRe1YU4juDCT1f6q604sU96ZN
+ W2Xa.6MKrXQfkOzRsvxuS2o.kYcrjA92i25UkJdhUnByPm8qnVXAYpCZEcMYvUnR0JR0.VLKZcPZ
+ U47FNUF1NNA_3dy6Yezo1ULXKWyzD0ckpIAKzPAmLgJ_LNUzC0GIsOzYGC91_rnXHv3uYTZohZGB
+ XVttIsTIaISkHj4ynLwan4jiRpWnzEk8q1E7A8EIPfr884N1ZmlC4clcdtlBLx9f24LHRJUAPQhf
+ IwA9OAI6VafabtfxMIoKfSoN0.TifTeSKUqDwReCH_oQbbaROXu2_wx8Ybx96KG1KICCOT9n89XW
+ w4UkFsFRHHIQLlwi2fQfqvKVNwEfADmVrrGhj9hiA03o_A.rmc6fn0zV_hU7vOcRuQCJIQPBPdBb
+ B5rXDr6bshlnMuGJ47LEeWY8Z5f7VCaDXugnnc3FMPu4lzKU.DLUg0J8hC1cWeyGJa9YF_qjooMn
+ G3sT3j_H60rTV4c6k8oQHGSbFq0vdAYIVvJ4UWmx7I6Ej4Za8y3I_pqR3H1TFARCNPTD45ePnnMb
+ zMiWDyUNtjBP10ADj2kzvJ22n.t30Q9r0QGH1SkIQpllvLS0IulL35Tr1jHSU.L7IZudCmNvqSIO
+ vZaDAo_n.calG2IFv3.6cbAwDv73Ud1Q38DPMK7GgedlqQU8gOwbIjhQ8Vi5CeZHkENY0bpIUIKj
+ gg7sB7Np3YENaFNVKvzELAFbTDqNtj.iKb_LVNjfqfNXRMFMDFvRagzt8yiHzVHrdAOdRmNzStaG
+ Koz3liNWt9v5wMEzvGny_GlPBGU.jyW_IkXq1KqKFTo5lE6wrY7zKJVhv8FwYcGMvQocX857y9JU
+ 2i2p1vZJ_eCj1UHR2aKDSvgJt8NE8KFgnafwgP3TgZm.39ibwzLI3lTMrxNqu70HjOh13bjwKakr
+ YkvwKAhBIElRh5_exzh26Y2LAhB5Z_Bz2puQ.CImT0ToyJZWy5D3_TLzrNvHcHsrI94y6xA..zlI
+ j5.vPobQJYZ733.qhKMblLQGYJlHgKnbYWYBihbYxfgtH4EssCrJ6nWZOMGb_YoLMC.IVotY7hGu
+ lfEfH6US5XQImGslLkVEfRNdNhSxipdlT63O86lZL9WcfO_V0Os43czqhtJqDvMmjNkiuoji011u
+ _wxuD1_RMlS7iZTKehsxqZ3Cfdl.ROztzA7KM40AD73afX2x9GKw8JLI_PA9wHLfzxjAY2h1TSxr
+ ni1V3tFz6znmskaQIjvMIUV2qDAygOzKBjTwgrxoEo8oaORS8QPJzTCzSOTFqSssX53qLgmtuaGN
+ 7Mwqqzxqhw9KOiGKw72t6ZH9rOIuuevAcfKTGqp8yCmfMjzAdAjLO5d12mGhboG0s51fCAWpNIyW
+ JJ7laA1mFC52T7NrOmhsWtFQ02AJ1KCvHGoL8.w.5yf_3xI2qZjVKMVf_XD3dccL_PitVDuUBQAJ
+ 7f_WTbVf3rfKIfRbjya4rA49Fhtx3SBPzP45_WvItzwV8D_M8f_IHN.3cVKupSoq5DM0DgTniwjZ
+ hFmOjvWho358C_C3jqcUQJ8L1G7PU7yG0kG0a.kYzpi50C_8brsDLoPjjAodSQ3b2oypEDXTyPQl
+ eVsU.KFuilKutU0fzz0OdYxrwifuv1p7Rf0CjEepmEeanRx.jcHyrpD8Hor7zxd3yH0GnO31IBKS
+ soQaEgE46y1Ke2q6zAz.M8HaL0acQDfIgIpULvwQ.LJTQ4.6xyI4vm3EMlWaozR7vZ7MmoQQkduY
+ hLi7KMOdnRSdM2RUXgb1LLHYv6IgvVPDKlYKALuSaaT2jlPjn8EN04ZsrSCRtWnZ0mlScOICvh.A
+ m9Uwptd0U1YpYcp9tyZ9T5zGRkV5GVzngmsnQlL0oqSgA71AuPuUE_jYqivtIkjUk8.l89zoi8aZ
+ cfQsoP9dcHWpQ2Z0q5jTThuyh87R9O5cDOEk2mFsMLPUM0zCLjV_BQgq.bg--
+X-Sonic-MF: <nruslan_devel@yahoo.com>
+X-Sonic-ID: 6af3212a-1965-4ab4-8cb6-265fa604d21b
+Received: from sonic.gate.mail.ne1.yahoo.com by
+ sonic318.consmr.mail.gq1.yahoo.com with HTTP; Tue, 13 May 2025 04:36:44 +0000
+Date: Tue, 13 May 2025 04:36:40 +0000 (UTC)
+From: Ruslan Nikolaev <nruslan_devel@yahoo.com>
+To: "kailang@realtek.com" <kailang@realtek.com>,
+	Takashi Iwai <tiwai@suse.de>
+Cc: "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+	"tiwai@suse.com" <tiwai@suse.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"sashal@kernel.org" <sashal@kernel.org>,
+	"perex@perex.cz" <perex@perex.cz>
+Message-ID: <946767975.787038.1747111000631@mail.yahoo.com>
+In-Reply-To: <87o6vxuauk.wl-tiwai@suse.de>
+References: <1064773772.509063.1747061777318.ref@mail.yahoo.com>
+ <1064773772.509063.1747061777318@mail.yahoo.com>
+ <87o6vxuauk.wl-tiwai@suse.de>
+Subject: Re: [Bug 220109] New: Audio disappears on HP 15-fc000 after warm
+ boot again (ALC256 code path)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Message-ID-Hash: YQX5RB5JJZXZX4FGSP2XVDSRM63YHVMH
-X-Message-ID-Hash: YQX5RB5JJZXZX4FGSP2XVDSRM63YHVMH
-X-MailFrom: shenghao-ding@ti.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.23772 YMailNovation
+X-MailFrom: nruslan_devel@yahoo.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: XEC4ASBWAYYFZ35MBVT34N2MIGJIZYVO
+X-Message-ID-Hash: XEC4ASBWAYYFZ35MBVT34N2MIGJIZYVO
+X-Mailman-Approved-At: Wed, 14 May 2025 17:59:49 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YQX5RB5JJZXZX4FGSP2XVDSRM63YHVMH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XEC4ASBWAYYFZ35MBVT34N2MIGJIZYVO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,72 +128,102 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-After commit 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c
-and leverage SND_SOC_TAS2781_FMWLIB")created a separated lib for i2c,
-tasdevice_remove used for not only for I2C but for SPI being still in
-that lib caused ld issue.
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://urldefense.com/v3/__https://lore.kernel.org/
-|  oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/
-|  __;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJDVs7u17Z9-7Xa-
-|  0lnyE4S3m2qmLCcHVK4qH1bD1JuBdzg$
-All errors (new ones prefixed by >>):
->> ld.lld: error: undefined symbol: tasdevice_remove
-   >>> referenced by tas2781_hda.c:33 (sound/pci/hda/tas2781_hda.c:33)
-   >>>               vmlinux.o:(tas2781_hda_remove)
-To fix this issue, the implementation of tasdevice_remove was moved from
-tas2781-comlib-i2c.c to tas2781-comlib.c.
+Takashi and Kailang,
 
-Fixes: 9fa6a693ad8d ("ALSA: hda/tas2781: Remove tas2781_spi_fwlib.c and leverage SND_SOC_TAS2781_FMWLIB")
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+I did a few additional experiments. Here is what I found:
 
----
-v2:
- - put the Fixes tag to point out the commit that introduced the regression
- - Add compiling error information reported by kernel test robot into patch
-   description.
-v1:
- - | Reported-by: kernel test robot <lkp@intel.com>
-   | Closes: https://urldefense.com/v3/__https://lore.kernel.org/oe-kbuild-all/202505111855.FP2fScKA-lkp@intel.com/__;!!G3vK!U-wdsvrOG1iezggZ55RYi8ikBxMaJD
----
- sound/soc/codecs/tas2781-comlib-i2c.c | 6 ------
- sound/soc/codecs/tas2781-comlib.c     | 6 ++++++
- 2 files changed, 6 insertions(+), 6 deletions(-)
+1. If I connect headphones and ALWAYS keep them connected, then sound does =
+not disappear even after a warm reboot.
 
-diff --git a/sound/soc/codecs/tas2781-comlib-i2c.c b/sound/soc/codecs/tas2781-comlib-i2c.c
-index a75b812618ee..c078bb0a8437 100644
---- a/sound/soc/codecs/tas2781-comlib-i2c.c
-+++ b/sound/soc/codecs/tas2781-comlib-i2c.c
-@@ -364,12 +364,6 @@ int tascodec_init(struct tasdevice_priv *tas_priv, void *codec,
- }
- EXPORT_SYMBOL_GPL(tascodec_init);
- 
--void tasdevice_remove(struct tasdevice_priv *tas_priv)
--{
--	mutex_destroy(&tas_priv->codec_lock);
--}
--EXPORT_SYMBOL_GPL(tasdevice_remove);
--
- MODULE_DESCRIPTION("TAS2781 common library for I2C");
- MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
-index ad2f65359b15..076c1d955972 100644
---- a/sound/soc/codecs/tas2781-comlib.c
-+++ b/sound/soc/codecs/tas2781-comlib.c
-@@ -225,6 +225,12 @@ void tasdevice_dsp_remove(void *context)
- }
- EXPORT_SYMBOL_GPL(tasdevice_dsp_remove);
- 
-+void tasdevice_remove(struct tasdevice_priv *tas_priv)
-+{
-+	mutex_destroy(&tas_priv->codec_lock);
-+}
-+EXPORT_SYMBOL_GPL(tasdevice_remove);
-+
- MODULE_DESCRIPTION("TAS2781 common library");
- MODULE_AUTHOR("Shenghao Ding, TI, <shenghao-ding@ti.com>");
- MODULE_LICENSE("GPL");
--- 
-2.43.0
+2. The moment I disconnect headphones and do a warm reboot, sound is not go=
+ing to come back. At that point, connecting or disconnecting headphones, re=
+booting is not going to change anything (i.e., recover the sound) until I f=
+ully power off the computer.
 
+3. After reverting the commit, the above problems disappear for speakers, a=
+nd no additional issues with headphones are observed.
+
+4. Whether I revert or do not revert the above-mentioned commit, the headph=
+ones are sometime flaky if I already have an application running that uses =
+sound. I have to close that application, disconnect and connect headphones =
+again. Otherwise, the speaker does not get disconnected.
+The headphones seem to be even more flaky when NOT reverting the above comm=
+it - unless I booted the system with the headphones connected, the speaker =
+will never get disconnected.
+
+Sincerely,
+Ruslan
+
+
+
+
+
+
+
+
+On Monday, May 12, 2025 at 11:07:02 AM EDT, Takashi Iwai <tiwai@suse.de> wr=
+ote:=20
+
+
+
+
+
+On Mon, 12 May 2025 16:56:17 +0200,
+
+Ruslan Nikolaev wrote:
+>=20
+> Hi,
+>=20
+> Forwarding my regression bug report for HP 15-fc000 / ALC236 (ALC256 code=
+ path).
+>=20
+> #regzbot introduced: v6.12.2
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D220109
+>=20
+> Sincerely,
+> Ruslan
+>=20
+> Forwarded Message (see logs in the bug report above):
+>=20
+> There was a similar bug in the past (Bug 217440), which was fixed for thi=
+s laptop. (I believe the code path is for ALC256, see below.) The same issu=
+e is occurring again as of kernel v.6.12.2. The symptoms are very similar -=
+ initially audio works but after a warm reboot, the audio completely disapp=
+ears until the computer is powered off (there is no audio output at all).
+>=20
+> The issue is caused by a different change now. By bisecting different ker=
+nel versions, I found that reverting cc3d0b5dd989d3238d456f9fd385946379a9c1=
+3d in patch_realtek.c ( see https://git.kernel.org/pub/scm/linux/kernel/git=
+/stable/linux.git/commit/sound/pci/hda/patch_realtek.c?h=3Dv6.12.2&id=3D4ed=
+7f16070a8475c088ff423b2eb11ba15eb89b6 ) restores the sound and it works fin=
+e after the reboot.
+
+
+It's the commit cc3d0b5dd989d3238d456f9fd385946379a9c13d
+Author: Kailang Yang <kailang@realtek.com>
+Date:=C2=A0 Thu Nov 14 15:21:09 2024 +0800
+
+=C2=A0 =C2=A0 ALSA: hda/realtek: Update ALC256 depop procedure
+=C2=A0 =C2=A0=20
+=C2=A0 =C2=A0 Old procedure has a chance to meet Headphone no output.
+=C2=A0 =C2=A0=20
+=C2=A0 =C2=A0 Fixes: 4a219ef8f370 ("ALSA: hda/realtek - Add ALC256 HP depop=
+ function")
+=C2=A0 =C2=A0 Signed-off-by: Kailang Yang <kailang@realtek.com>
+=C2=A0 =C2=A0 Link: https://lore.kernel.org/463c5f93715d4714967041a0a8cec28=
+e@realtek.com
+=C2=A0 =C2=A0 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+and it modified alc256_init() sequence.
+
+Kailang, could you check this regression?
+
+
+And, Ruslan, it's the case without the headphone, right?
+Is the sound still lost when you connect the headphone and apply the
+same procedure?
+
+
+thanks,
+
+Takashi
