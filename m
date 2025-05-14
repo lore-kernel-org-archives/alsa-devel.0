@@ -4,84 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E866FC3ABC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:03:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 177BEC2D0CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 May 2025 08:04:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA9196242D;
-	Thu, 15 May 2025 09:54:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA9196242D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7ABC06248C;
+	Thu, 15 May 2025 09:54:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7ABC06248C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747295658;
-	bh=KFQjHqN1oAAjo1RJOok3ueSzjmFOYcaYRIZfi3T0bSo=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1747295672;
+	bh=XO2VW6yW6g1AO1YwoxZW55mAH6fKX8pXVdfog2134aA=;
+	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=CaXmuhe6XR9XNy5y3ydD6nQ3gDllMlhsU5OgbagxCF+L7bKvBz7OTL6JeTljT+TCI
-	 RWo5kupJgJrrjv/SK1SytmUwGf3+mkm8LwbXPNf+T8n32Ehv+/xQqJh1O9hPQTrxee
-	 sqJe/P/xkaGZPeXYYked20wVBnRXme10WVamsBEE=
+	b=UGUWAcSHOJhimlkjkKzgm91BbRu5TprlwznvJgRJRQWlcC9H+y5MHuaNPETVC7Jrx
+	 UAnpjtBleqw+fSQSAnDghte2po4tmDZ64Ud4MPUJguh4prZDJNPiC+zq36g4fb66Ls
+	 uUEztT23zzDl/h/CcAztRHQEvlrqVEFO05gmmRqk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 770F5F89A7E; Mon, 12 May 2025 20:57:52 +0200 (CEST)
+	id 260D4F80611; Wed, 14 May 2025 17:17:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37C9CF89A79;
-	Mon, 12 May 2025 20:57:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 138DEF8061E;
+	Wed, 14 May 2025 17:17:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1BCF2F89A65; Mon, 12 May 2025 20:57:49 +0200 (CEST)
-Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id F00D0F805F8; Wed, 14 May 2025 17:17:26 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4573BF89A15
-	for <alsa-devel@alsa-project.org>; Mon, 12 May 2025 20:57:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4573BF89A15
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C371F805F3
+	for <alsa-devel@alsa-project.org>; Wed, 14 May 2025 17:17:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C371F805F3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=aEPTGW77
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 54CIveRZ2645208
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 May 2025 13:57:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1747076260;
-	bh=Qb6JfIhSW1h4eYzfuOi/aq/Oo6JyXU+LA8+sA4fY1EM=;
-	h=From:To:CC:Subject:Date;
-	b=aEPTGW77Nm0yJMUYEB67Sfa18JFqrsYzbyXC2cCwZ737aMBr86iDu8Kb7orp/BnxK
-	 BoBR4tai6/H+i7fPcnQ72Kyo41/vyGOJqXoSCVgx488xN6av7Zvd1PWgu7wfS9ZalB
-	 cze6GTp4OnFctEjPWnLS5dl2SkpM2udmv45lHl8U=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 54CIveZE018109
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 12 May 2025 13:57:40 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 12
- May 2025 13:57:39 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 12 May 2025 13:57:39 -0500
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 54CIvddH072850;
-	Mon, 12 May 2025 13:57:39 -0500
-From: Nishanth Menon <nm@ti.com>
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        Mark
- Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        Nishanth
- Menon <nm@ti.com>
-Subject: [PATCH] ASoC: tlv320aic3x: Use dev_err_probe
-Date: Mon, 12 May 2025 13:57:39 -0500
-Message-ID: <20250512185739.2907466-1-nm@ti.com>
-X-Mailer: git-send-email 2.47.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Message-ID-Hash: ZTWSBHX4WMM5I57QLCZVHJW4LPMVDFUC
-X-Message-ID-Hash: ZTWSBHX4WMM5I57QLCZVHJW4LPMVDFUC
-X-MailFrom: nm@ti.com
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=sc/WXbtN;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Q55LZ4DM;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=sc/WXbtN;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Q55LZ4DM
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CE3DF21241
+	for <alsa-devel@alsa-project.org>; Wed, 14 May 2025 15:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1747235843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=2ULNUs3F/MULwFLjowrOXi2XqIE2Trzd+ssBpSXFsCk=;
+	b=sc/WXbtNI5dtPikH5yePsvpmql0J/pdFpQAkLhzJq3DeNTWG7exaYoB5wkbHVzsupbCTqj
+	HKNyfRgt0WNUSZSzHwlyIYU93lx6KC4z7CV2NdFvPbhcXV3PpKj+UCC+H1mtBFbZk7OYSH
+	0m2wMeIb43jTMocnXdzbMvvRN0pw9F8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1747235843;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=2ULNUs3F/MULwFLjowrOXi2XqIE2Trzd+ssBpSXFsCk=;
+	b=Q55LZ4DMQKNMXHlC09IUpWo1iOQU+yj8Kzb1tGakKzmUiI56mAKuRpMKNFoo/xvFY2SBt5
+	iNgTuD52H6sL5ADg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1747235843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=2ULNUs3F/MULwFLjowrOXi2XqIE2Trzd+ssBpSXFsCk=;
+	b=sc/WXbtNI5dtPikH5yePsvpmql0J/pdFpQAkLhzJq3DeNTWG7exaYoB5wkbHVzsupbCTqj
+	HKNyfRgt0WNUSZSzHwlyIYU93lx6KC4z7CV2NdFvPbhcXV3PpKj+UCC+H1mtBFbZk7OYSH
+	0m2wMeIb43jTMocnXdzbMvvRN0pw9F8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1747235843;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=2ULNUs3F/MULwFLjowrOXi2XqIE2Trzd+ssBpSXFsCk=;
+	b=Q55LZ4DMQKNMXHlC09IUpWo1iOQU+yj8Kzb1tGakKzmUiI56mAKuRpMKNFoo/xvFY2SBt5
+	iNgTuD52H6sL5ADg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA607137E8
+	for <alsa-devel@alsa-project.org>; Wed, 14 May 2025 15:17:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id I0xfLAO0JGgrJgAAD6G6ig
+	(envelope-from <tiwai@suse.de>)
+	for <alsa-devel@alsa-project.org>; Wed, 14 May 2025 15:17:23 +0000
+Date: Wed, 14 May 2025 17:17:23 +0200
+Message-ID: <87frh7te64.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: MIDI 2.0 Network UDP server/client programs for ALSA
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	PREVIOUSLY_DELIVERED(0.00)[alsa-devel@alsa-project.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
+Message-ID-Hash: LL4WNMS2JN5H7M2VTMD7UAV6KQFIYEXW
+X-Message-ID-Hash: LL4WNMS2JN5H7M2VTMD7UAV6KQFIYEXW
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZTWSBHX4WMM5I57QLCZVHJW4LPMVDFUC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LL4WNMS2JN5H7M2VTMD7UAV6KQFIYEXW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,34 +149,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-During probe the regulator supply drivers may not yet be available.
-Use dev_err_probe to provide just the pertinent log.
+Hi,
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
-Testing based on next-20250512 (includes additional patch) on AM62a7-sk
-Before: https://gist.github.com/nmenon/be94f21e83b4260ad3f89e1ae8f0d188#file-before-L851
-After: https://gist.github.com/nmenon/be94f21e83b4260ad3f89e1ae8f0d188#file-after-L806
- sound/soc/codecs/tlv320aic3x.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+I recently wrote a set of small programs for the new Network MIDI 2.0
+UDP transport with ALSA sequencer / rawmidi API, based on v1.0 spec.
+The current version (v0.3) is found at:
+  https://github.com/tiwai/amidi2net
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 56e795a00e22..f1649df19738 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1818,10 +1818,8 @@ int aic3x_probe(struct device *dev, struct regmap *regmap, kernel_ulong_t driver
- 
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(aic3x->supplies),
- 				      aic3x->supplies);
--	if (ret) {
--		dev_err(dev, "Failed to request supplies: %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to request supplies\n");
- 
- 	aic3x_configure_ocmv(dev, aic3x);
- 
--- 
-2.47.0
+A network server can be invoked simply via:
+  % amidi2net-server
+and this will create an ALSA sequencer client/port.  This ALSA
+sequencer port can be connected by any other ALSA sequencer programs
+or devices.
 
+The server opens a UDP port, so that it can be connected by a client
+on another machine on the net, e.g.:
+  % amidi2net-client -l amidi2net
+which creates an ALSA sequencer client/port similarly, and this can be
+connected by other apps, too.  After the network connection, server
+and client can pass the UMP data between them freely, so they work as
+a bridge or hub for applications on both machines.
+
+Some details are found in README and man pages.
+
+For the builds, you'll need openssl and avahi devel packages.
+(It allows to build without those, but basic functions will be
+missing.)
+
+As it's a quite initial version, there can be bugs and subject to
+change.  But the stuff seems working stably.
+
+Feel free to reach me if you find any issues.
+
+
+thanks,
+
+Takashi
