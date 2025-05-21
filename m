@@ -4,122 +4,176 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E93A9C54E65
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 May 2025 20:52:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F9D1C54E65
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 May 2025 21:37:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB3E660170;
-	Wed, 21 May 2025 22:52:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB3E660170
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E274601EC;
+	Wed, 21 May 2025 23:36:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E274601EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747860763;
-	bh=9iR8IRTU+6tBVXCfEjrdYiIimKV+d4fsyZWvwGgz+DY=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1747863419;
+	bh=g6+zsbOHPyUG91NuSDbzA80ZYUNh8XVdbb2MapM+onE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oq7Sw7vOrh1+xvYh3Xorul61epG+MI+lzPIRnjOyN5XFR/NL36hq858p6KyXETkp0
-	 cjnjYlk7dDxYhEO9hpgMNvOtRuot7C0XBRb7PX+d9qIAnxI/soFNwySaI9dlyewV4w
-	 jooAOgcLRRqOpzB8nv5P7+TDL+V9jXTm4DvhovY0=
+	b=J71gANLSxwzldWmwtWjLNs1hUD2zgKcV2e9BohHXAW4LWRm/NiOOg7GwEq89t6x/P
+	 TPeXuRLajQh9OzYvmEvwjM1lFMmYVYMwkPiea8NFs6/wxRVu3F2DwzpWYhXE2cXnA0
+	 eHNQI4X10/Fm4YoR70HJJKPwBEBLVrL/2fgbxxyg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 620FEF80579; Wed, 21 May 2025 22:52:07 +0200 (CEST)
+	id 6C6EAF805AC; Wed, 21 May 2025 23:36:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5596AF80588;
-	Wed, 21 May 2025 22:52:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56D24F805AC;
+	Wed, 21 May 2025 23:36:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7DBA1F80537; Tue, 20 May 2025 19:12:55 +0200 (CEST)
-Received: from sonic316-54.consmr.mail.gq1.yahoo.com
- (sonic316-54.consmr.mail.gq1.yahoo.com [98.137.69.30])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 254C8F80553; Wed, 21 May 2025 23:36:14 +0200 (CEST)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12on20624.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2417::624])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8325AF80269
-	for <alsa-devel@alsa-project.org>; Tue, 20 May 2025 19:12:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8325AF80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id 35F46F800C1
+	for <alsa-devel@alsa-project.org>; Wed, 21 May 2025 23:36:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35F46F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=yahoo.com header.i=@yahoo.com header.a=rsa-sha256
- header.s=s2048 header.b=DRIHhyS1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1747761170; bh=9iR8IRTU+6tBVXCfEjrdYiIimKV+d4fsyZWvwGgz+DY=;
- h=Date:From:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To;
- b=DRIHhyS1OR8xnx/V6hbfJhouMPh8IXYDhvHNrQiq3KZ3ESN5Fy3IlFlUbC0Iy0pd+pAzGvCDRs0CU+xPtnk6tv90EZMpInO0ptnJLgPqojp16EeUrvo3lYZ9ugd7+s88HIlgziX+hpIaHRHtbFH0Hx1JGm8KOHCfr/5+78qGyw4qD4Rk8XIWguzRjghnVoAbdkZva10EoEBUnSGZYErzj3teRwlMTJisrCcB36XUjDNjcQs/uTF3qfshBkTNEsFYtad2jOo5+ojbAsuxF2+yA3YkpZ+SOl+2HlypjBbu6Ji2WDmlEHIX+H/k4U1kJSC9Jz8XMeQ+C/IG6MWEAUh+jw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1747761170; bh=1kRFyAYEnBf4mOSgf4NKq2BzEJGE3kFfKKhoCHGhoJs=;
- h=X-Sonic-MF:Date:From:To:Subject:From:Subject;
- b=GMXt/gjoaGRbCn/hPc2PIDGlGpsdz1k0YNNE9XfDFjc0ycjOTA/4KRi4HiJBEqW5/vMa1vv81GCVcmm2bhMH29igKTuoa5V+hWSks1dg61MB0QATPUJdiWLCUj/8uxCMetJuPosdEH+2Y8t14cJeYKwRzJIlb4b5nX4NQV+xlhyQ2KOWdJ+FfVqH6upSW1u4W62UyswVwOZ5WQiifL00jfK927njCP71JMp82+Serj/APGv6wWqkF8uWJVe6lYc7kNjoLcFdsEdbzbyfkd6P3UxHZ8LxGXPApU8nqMcdqCa4wHkcRjLyroIxjFi4L1czVydhZxvZxAcqyeNv03E0Jw==
-X-YMail-OSG: ByX53hsVM1lPtJCy8zoa9TI0Gn5HdUlhOp6gX3nQL3XLKNNgvn6TyTXRgTPQgTh
- GvJJv6MOLCv0p4dNS4ydfswEmdO47yn_Yl2pfaSMYVxeYVxCkvC7vLDRONqufVsS8SDNqMKNOZyv
- 1qpZexw1UzG5YQF2Z1b9ZM0w1y6r7M6L3HKptKaJEbrpW3a3yki.k.Z66iIkAbBoAT0xMDavM4Eq
- i_1LhVogpHyHi72FL3ICoRudytJRCxTbEuDThO_ABnGUFiW_12fbHtdakAQS1fx2HJRYq4JBCO4f
- MKoZn.W0Mi3nIp2C9rL4PZeofAyjeKWFgBeMyqOagy76r3kZzfYO2iWWNLWSIRkVNw1j40mImibn
- u32KTbqAYZANvwUPjyBLA_Ewqvwhqb5ZgnL1QZHEerEtvboyarsIQdPQVN7Xgx4YlqB3D5FFML88
- ps_PcOXjRNWlaqTsFMsd__wWfaPDySSI39ztolIjEAmBDuLs6Pku_Ze0xElynA6nBvO7mDzxwU6y
- pUfNVxUj9jJi7M2MrWD_sOfYBQgieiCCvRgc_8lQQ3NY8LSKfzWewloeA50WY765Svn8vWPaR3qF
- qfqIgLb4o6EoH0C6bwmLsNB3a3DJAZEpzF7i7qCyterWnduU4cq__I9BHGvT50oa0mkgP9hmhM_U
- J6ph07EoJ1h9tFUFH0XfEHJsyYaW9RKRZm_F8MOx_om0I9bSnYXYTSuaH2tMeuUyTnRtD3Opp0t6
- gUEzkjWlToLcyxQQQbBvVP1bvZl.Ey0mGmsuZO3w3UMXDNMFulbVXSNeP2.QAHBy1I4fh5zUb5Nv
- MrTqJBtkEVKExNI.jQd1mfr1Gd8dxXtcQISx00qBAvWWTHrS97JWLgwIwO5ad5QIgst91qolrarh
- Xmj.WjUnIX2tT9NM1UgXbSL4CndBABlbwa1Tncof51ZVNi8nwpQxhQLuLUyibuv11OrioU_QuHAY
- 1cbrl.dv0bIYJUCQ.AXB60jlK.2GgtPKXOpAr_RKmLTl8tTpBRuwdep0rsbr1rAH2d3jU2Y6nApD
- WzzdurqqYK20_otgQZBvnIcxQZwJB6H5viH00bmmeszWuFHnJRBYVB_iQiCBkV9.KTtb.nQ6wQPC
- NAD44bdxA4EH5jTf6VLsecF_RahXhEl6TksV8aBmvQRtbEe3zsZrwbWVVhx0zw8DPc.EPy53.1To
- JtsccF4g7qkJ7OO9W_CClbELfqTR7zeoghkJUxcVMrJWW4fJYpN4r3XvFKm8uDI9vOq5GEsdClQm
- lpVkDuVTnniA_4XSUrw44.9mEUxQfE5ljjfQIKELqNzgv7YIVHROnk7x962uZHc2x77kc7sK6LX6
- 8bI7_RqyD6SRxiUP9qo8vUKdq.LYUg5Kn4t3RV5ln7N3YVmhQ8WXmlIOs93XI0PAz7rH_X8m3ZFX
- Pg1JpK96SDlojxORix8dzzfuc8Y_ZcZT_FOvlawX4EFv_bwIR_2sG2mJ08kFvujjwyClzoMr3RFo
- UXhM_8HeQo9Kv82w0uQZEYM38LgMJTIkUY0fgNLHq.69YZfun66DiEJo4Wlrs3e.7N3WMg0wIx81
- Xkwicy_zV.MyRhhHLKjJ62Nyp_zwWwiLOw5zZu9JlK3Q8ngIRIiXRev7X9rQofXO.LetDbCs1GZP
- 3TQP6x54Hzg7n4TDHworvyjHhiZyKi6H7jhDLCqF81W5dN9DVzLAZRiQ6xRlzulKlGX1w.YJxHRn
- CoO5DpVL1V5fqPw5oQByWx2iyWWVTSQX1KQo6ivX6LvvBG64PWaOoztAek.6Uw41HLZN5USmsiMd
- BV8OCq3.SQAIAoESWYBoeCy.9qkOe0G8soyavCi88Ww7px2Bq62Hrdhy4sLKVwsTqdWqojqEM._A
- j8PGhYJGKYKEIw05mf.qBoufznPrIAhRU9L96UPAPSDFRjF_Lb1hYcU7O2MWfSdjly7e2co9_3Fg
- bUKIo_K8OAnC_4Tw7nphtxlkEvd4SWqc0arEsrLsi4Jl6SFQlvV8VSpubX5GC6LSl7ushEIjTmV4
- lXEmuBN8fx_YbEpZ.gGusPKdDwtRGETALStLvZrZZwZPF9FioTGyaCsoNQq0Vl2eOPcYkqv0IJSr
- 7G0.ZXPGDGJ6viqXQgdTpzXEuUR6Rnz40kDK6w8dsowYiwP8Kr_ft0nxFfLTpAXgawBmC6QHYCpk
- oNyGV2IrSYWd4s0p2sbsPrpAsmqu.Al2LGILpXB8UupfuOZ_1wPTiqDdEFjX3z6ulAIvOIc7KcLF
- Jj_PycKXMM_MwAZos4eeTSMy_UhNT6GM4DTS.fFofRWsz7XedYSNGtS3YLwdQClhCZifTQtiC8jH
- GYw--
-X-Sonic-MF: <nruslan_devel@yahoo.com>
-X-Sonic-ID: ea7e4a78-4c94-4d9a-909b-b96f67d8b373
-Received: from sonic.gate.mail.ne1.yahoo.com by
- sonic316.consmr.mail.gq1.yahoo.com with HTTP; Tue, 20 May 2025 17:12:50 +0000
-Date: Tue, 20 May 2025 17:12:45 +0000 (UTC)
-From: Ruslan Nikolaev <nruslan_devel@yahoo.com>
-To: "kailang@realtek.com" <kailang@realtek.com>
-Cc: "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-	"tiwai@suse.com" <tiwai@suse.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"sashal@kernel.org" <sashal@kernel.org>,
-	"perex@perex.cz" <perex@perex.cz>
-Message-ID: <1337059899.270541.1747761165293@mail.yahoo.com>
-In-Reply-To: <362743264.827582.1747131928735@mail.yahoo.com>
-References: <bug-220109-229339@https.bugzilla.kernel.org/>
- <bug-220109-229339-9HzhKc5gL2@https.bugzilla.kernel.org/>
- <362743264.827582.1747131928735@mail.yahoo.com>
-Subject: Re: [Bug 220109] Audio disappears on HP 15-fc000 after warm boot
- again (ALC256 code path)
+ unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
+ header.s=selector2 header.b=pxem612e
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LAobFysQEWGbEzRAjswqcOoan4V9aiG4inKvrOPyncP6IMSm0cfAKlCkd71H+XTAGUoajILxUTTaCq8x87ztEyJjDxEVgXaCrvCO0vG9MNcSJgHMl2hu46RbP2epZTiskm8ElWvVljFXsatmFeReLUn7DgtzS1HVscyTBs7NkJnSVMk8sM2I/+Wbo7+gIh0iQA+zSkQo4WbfSlF6NUymM3HDLzTeO/RdmJ3MktdDB1pKqlxolhN7fmOsI+VESdFzOKZbJR8DT73HWTovqyziBo03Dw3l6K4592onKE/UB97dOulJIJfDqir6potcYNbRQh7xXyzZ+favbmBynHw/tA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=naQDv1linFnpGkcVGPeykM6qkIIzL6/9J+fRGuU6AcM=;
+ b=WMwLWh6plme2JBb8TqTmLcSHozz6pGSwxx06nCN9p1UPhkLGhAEz8dLs2JhK4YrDf4EJYxchCtG6lU40H4Ke8XAK71JSALNRL64OdS3zLJTozAcckqnHJ/gee1jIcHv5ELvPgnJ1WwF0BUS5vAKRHiM3doX+vXCqxMK33UiVzmlcfT9OojSPfN63kzK8zFmxXNlCqIpb/JEF20JWr2TbjQ3mwzbhaKSzrwCX43VnxxKNREJi+rkp6X02LEHka1ngVraXSun3B8QB6c8yrhQa7Ijh8neBbfKPcbvbbJv12R/fbZp0ZLL/XGkuv400hkTkDGePBRWRbQ/BoAuG+GhG1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=naQDv1linFnpGkcVGPeykM6qkIIzL6/9J+fRGuU6AcM=;
+ b=pxem612enEmRZem5PsQBksXwIV5mDNuX/Eb5yeZoewDFOmT7sX7KKweFliaDjiHtM25Y6HW4MutL2ed29Zw7sa6Ynn80fVwb6FTzmlzqWPyGTVSlaXXdQSRZNqFzh8VeaXxqQDV+uOe+KWcvsrmlLXCMfTFpBnWR9iOsQQlVz5PEmO16M1um1YMEEtd3R2ukM5/IlUDHV1F+aMXmBdQOJ6YXMzbKUp71lqt6XdMx4VU9U0rrmS6w9J2rZ7fs40X43VF3tRoxEWnJBIWoxv665OVPNPYaUkDtDVhtaSQEm6WDhNqMVIm7DETIjTicPlhOLaNMIBWPXb+uz67v1scXfw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA0PR12MB8422.namprd12.prod.outlook.com (2603:10b6:208:3de::8)
+ by CYYPR12MB8964.namprd12.prod.outlook.com (2603:10b6:930:bc::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Wed, 21 May
+ 2025 21:36:03 +0000
+Received: from IA0PR12MB8422.namprd12.prod.outlook.com
+ ([fe80::50d8:c62d:5338:5650]) by IA0PR12MB8422.namprd12.prod.outlook.com
+ ([fe80::50d8:c62d:5338:5650%4]) with mapi id 15.20.8746.030; Wed, 21 May 2025
+ 21:36:02 +0000
+Date: Wed, 21 May 2025 16:36:00 -0500
+From: Daniel Dadap <ddadap@nvidia.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
+Subject: Re: [PATCH] conf: aliases: add hda-acpi -> HDA-Intel alias
+Message-ID: <aC5HQAcun3NMnVMA@ddadap-lakeline.nvidia.com>
+References: <aCXs810qs_pvuOtx@ddadap-lakeline.nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aCXs810qs_pvuOtx@ddadap-lakeline.nvidia.com>
+X-ClientProxiedBy: DM6PR04CA0014.namprd04.prod.outlook.com
+ (2603:10b6:5:334::19) To IA0PR12MB8422.namprd12.prod.outlook.com
+ (2603:10b6:208:3de::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: WebService/1.1.23840 YMailNovation
-X-MailFrom: nruslan_devel@yahoo.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA0PR12MB8422:EE_|CYYPR12MB8964:EE_
+X-MS-Office365-Filtering-Correlation-Id: d408f066-642f-451f-fcb0-08dd98af7c2d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?eSONRXN54Id6WFN+KVf4uGodQQphbNdLmkxsQcFtf3cQ/2/HTHk+hTIpFR7B?=
+ =?us-ascii?Q?rmb1//WJoVUOxGiMYa44JDW4+WC1sIIrzFJY3QuUOtAuWm/qd2fOQKBS8x0p?=
+ =?us-ascii?Q?yNH5GkcU0oXM7wKvbRMNBq5WiPZbJwndykG4/0oIt5KzfVT6GCM3HOuNZk6w?=
+ =?us-ascii?Q?c2AHqdRwLgGknOsMCE+EYMH0XyKzajE1ZE4G0W3e52DA5shAhYT+d/2zNwsK?=
+ =?us-ascii?Q?KWOulbIztkHZyd/aQ5+1LHt6dUR9nBnV+4iVUKDslyRNmsGu7CpmkmmeKqWF?=
+ =?us-ascii?Q?nK3aYqDXrQ79Q2g3YDqI7B5fiRRD0In050qm6llSAoObda+3LNAdxqzdd6EJ?=
+ =?us-ascii?Q?TDaqY+4VAvMXbbTDEvtW3qqsR4LLaNo/xg28JvOhPVQl0RaBx/SjsCC+1bjl?=
+ =?us-ascii?Q?YMWAPU5QdTcBIu3qew8sel4FONnNEPTrpioVjiyvPL8ABCXhXJKpExBpDV5f?=
+ =?us-ascii?Q?wFxQedFF84rCUXQBBnEgApf3j0oZvUhJ//cSwUP41z9YYbZjIp4w8O/yk0Q7?=
+ =?us-ascii?Q?wZ7f+dk62ujsHYfe55Ivy7np2mhofyk/3fc3gwpPPMHbeCScVB3KAObB7FKH?=
+ =?us-ascii?Q?ixiUMC/cGMIK2uAfO6beJ+FSM5b3AFOFucasLG8csXdllleyJVUc8kpN9c92?=
+ =?us-ascii?Q?ydKXlYBmVNQOwk7KMOPp9PtzAGxYjEKmfZrKpsx219ocCVlkV5PCQyjtB82G?=
+ =?us-ascii?Q?mA5NQBAyyj5mPve6QCsK5yLt0KQZYN+L0lZKzakhxb6GVXjBddQZhRXHEBZo?=
+ =?us-ascii?Q?KCt2Y5wY5HikwfSAPvEFAKliowWBL490twBincAx/ehdRo2i6LEp4AnxEu9e?=
+ =?us-ascii?Q?YxK237W7/hc3rZYjE62BMiJ8DVnfAd+tnjLHxolF8yH43GY+kZS41nqxIz8N?=
+ =?us-ascii?Q?a3kMqQP67VShnBvVMFreczR8Ybv9tWYWNP5Jb+Rs6agH+kxhlulP/3DKAhNY?=
+ =?us-ascii?Q?W74q6yGFVrhTOb5wC20/80z2uqgLhjsL6sO0ptXISWMAfoq1nzaWevEwMouz?=
+ =?us-ascii?Q?pO4SRiw9kZWpH9XKVDIXeTwVOeSRDJHhdOgEwHtuqEo0HyRVkiE4/rvzASKd?=
+ =?us-ascii?Q?2mGQQzKMKNNrQLoyduYmUKZ0grPcynUWl6PQvG64AhU495GXfI97rctn3XXT?=
+ =?us-ascii?Q?NaTJaAaD1HbjO6qwDO6LICaf9g6lzXvNjjeFTlwQCa3hEBycQqSviCQrVJKi?=
+ =?us-ascii?Q?ku4n7bOGVAxv/XBOv31VVScff+fzSbqNyqpXF+W84pSluYjrIjOCYGur+xu2?=
+ =?us-ascii?Q?eUpfM7KL8x5QCUb7KOX+EZOL5XvsijH5Lwq1owOZBwJSlWLeEVHHwEVHfxQH?=
+ =?us-ascii?Q?/pX4VQTemMP12V267J5vAmion5+frxJzKRmGR+ulR4IBWQJ+Ihh+ICx+9Aij?=
+ =?us-ascii?Q?mIvh5wLsMvMxwVutHQGXpXqxlrA2ncIpAudoc25yAqQCsd10Vh4fxckiZ35j?=
+ =?us-ascii?Q?aVEKxLmalSQ=3D?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR12MB8422.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?9gMZ1HZ1HTpA7se57xnmf0lWBvBzpHx2DgHVj9vuit4rbY/rtRC5gO6zOrq0?=
+ =?us-ascii?Q?x84YqvevWezlcwqruWxRXET20zFXdmyAp7A9X86YiHwVgtZ2iL+XMvdFUcyh?=
+ =?us-ascii?Q?ShrHwbNjh6n0nat5Lt9YW5TCbe9B4tY3FPt6RfsfXy+APDXskc+QelJIKkuc?=
+ =?us-ascii?Q?fI+NKJT+2O4jAHcAd3zNcmmLLmUYu5Vxn+iwodZywaiRnTDj8nJha4pEuFM8?=
+ =?us-ascii?Q?rfuBoKtmOP/fPRO44fModI/2hxLRI8xKLJZom7dCgAMUv3fK4DNLc3hafF67?=
+ =?us-ascii?Q?xvgHtVfn5n0UiXM5gOD5BrXAOU1ipW4tCWJquB2dkFAyQeImCKz7ZZhfngXm?=
+ =?us-ascii?Q?CfYJCpMfBd7hjOygai2ZHcKDY0nuiEmPMiqr6d8KvZhcr4CpyeOad12rKX0T?=
+ =?us-ascii?Q?vFUEMmWW+jQTQNvVaCsQl/3zBtdQm4nAdOBkEDa9dB+C+YhxP//H/BPP/Fip?=
+ =?us-ascii?Q?Oq3CAbibQzitjWiHRRoV7+BsK/L2tKw2QgeVEN+yjpgEP648gEmFrVPj8mF3?=
+ =?us-ascii?Q?fkXjgYXO8aglVejJNtiXd+pOPRpmEZNe5pi0u+l60+QloX2OfoIMgVkKqGVj?=
+ =?us-ascii?Q?9s2oX8UFnRpX7z9i1+i8BXC1OXkgn6hlBuwZmz0Sdy8NZHt/6iroOBVC9wwO?=
+ =?us-ascii?Q?hT6VRlFF/YbMY9OsezoZ2JRoY/ThSSponINkLKVd1MkJQh8fhMDHYtOCXi+g?=
+ =?us-ascii?Q?N7ZaNpiB703GGqKMAO5h4/9syo83m75RK/VrSW9yFL88tMSuwvbxPDCbfc8o?=
+ =?us-ascii?Q?5VwiEWVJZRaqUaMjWgOeV8ftU07KobXe+oE2qFSL23GoSUiQtNI50hFzAYkX?=
+ =?us-ascii?Q?xYwZ7vLnMKMM1vt9lO4i6NEdKucakrE+RjsH7gmnnR0t/OODGBKBiFMH4iZz?=
+ =?us-ascii?Q?uP5cVu8wNTAALj4tWUV+ZC4C5TsJ/rhgYQGz4RUyjjn5vgteIPphmQGSuj+3?=
+ =?us-ascii?Q?RfB0O19QVtKllQc1cFOid5+NbxE4bhBHguayrAmEg1WSOU7bfOYh/8aaisr+?=
+ =?us-ascii?Q?wvz5vaC5Ibk3cWMKPFcajiQpBOFmAZirZYfVj2X0MRi8B35WTd+vh4Fvlan2?=
+ =?us-ascii?Q?7wb7jD/cS/b4aOBMTm5atUGK+xOmJCZCm4j6LTELYtulC299vdvZhCDWdqSU?=
+ =?us-ascii?Q?pk0A1UGfWVQZ7HqUNOAa7jN4oPljxU7TEbl2hUBXvmN450ZngbriXn36sD2K?=
+ =?us-ascii?Q?nKMAEGHjEf4cx94saeFAW2AnL0zSAaTnmMUI/bC4tLZaL4qBw9tK2zeqeETm?=
+ =?us-ascii?Q?93VeONTW4b0rD2glLxLnUETaoFtleyIQAFoP9Sf+OBqfehzWxnnDA55pYeF9?=
+ =?us-ascii?Q?boLsv1HCoqR1+jtfn09svadmowJEmAe+m0z8ajz0vOt1wG0Csu6jZ6TCSm4n?=
+ =?us-ascii?Q?/py5UA+b+mY78E30r6yylrfUqHKMYa5R/0VF6dDZDhYnhpSBN0Lfe3gVlxkf?=
+ =?us-ascii?Q?colbNq7JzFsmpYXcZ4LO0KKFyk7HPQ5ldar6dNA8z6/CO81uo8wsE7Eh8WAp?=
+ =?us-ascii?Q?iLlhthQZ5Oj4+VlgmZszjwl05P2plCnk+ZyrSJivdPKBtU3GWRWNkbXKuiUW?=
+ =?us-ascii?Q?k6jSFvmrjU2ETpOO726QOfYark23RTDdW6g3r6hb?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ d408f066-642f-451f-fcb0-08dd98af7c2d
+X-MS-Exchange-CrossTenant-AuthSource: IA0PR12MB8422.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2025 21:36:02.8180
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ uTb2Eaw/G1BkZ17EW5T7e6gbEwLgR/BykXEkBKv9fTwR2CrIOdx3Hg1inAttIojnWOb6r8HJGVjnvBc8v9lrOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8964
+Message-ID-Hash: IFL43RSSYFPKECQNYQ3E3SJC2YSNNJCX
+X-Message-ID-Hash: IFL43RSSYFPKECQNYQ3E3SJC2YSNNJCX
+X-MailFrom: ddadap@nvidia.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2NRYBPHKLO4QCZCD2R6UGTEUIUV5DQI2
-X-Message-ID-Hash: 2NRYBPHKLO4QCZCD2R6UGTEUIUV5DQI2
-X-Mailman-Approved-At: Wed, 21 May 2025 20:52:04 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2NRYBPHKLO4QCZCD2R6UGTEUIUV5DQI2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IFL43RSSYFPKECQNYQ3E3SJC2YSNNJCX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,65 +182,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Kailiang,
+Add Takashi to CC. This is for the hda_acpi driver which was just merged
+into the for-next branch in the tiwai/sound tree.
 
-Just want to follow up and ask if any other information is needed.
-
-Thanks,
-Ruslan
-
-
-On Tuesday, May 13, 2025 at 06:25:28 AM EDT, Ruslan Nikolaev <nruslan_devel=
-@yahoo.com> wrote:=20
-
-
-
-
-
-Kailiang,
-
-I added alsa-info outputs to=C2=A0https://bugzilla.kernel.org/show_bug.cgi?=
-id=3D220109 (see attachments for both the regression and reverted changes) =
-by following your instructions.
-Please let me know if there is any other information you need.
-
-
-Thanks,
-Ruslan
-
-
-
-On Tuesday, May 13, 2025 at 02:30:17 AM EDT, <bugzilla-daemon@kernel.org> w=
-rote:=20
-
-
-
-
-
-https://bugzilla.kernel.org/show_bug.cgi?id=3D220109
-
-Kailiang Yang (kailang@realtek.com) changed:
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 What=C2=A0 =C2=A0 |Removed=C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |Added
----------------------------------------------------------------------------=
--
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 CC|=C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 |kailang@realtek.com
-
---- Comment #3 from Kailiang Yang (kailang@realtek.com) ---
-
-Could you run alsa-info.sh to dump codec info?
-
-Please do =3D=3D> echo 1=C2=A0 > /sys/module/snd_hda_codec/parameters/dump_=
-coef
-
-before do alsa-info.sh.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are on the CC list for the bug.
-You reported the bug.
+On Thu, May 15, 2025 at 08:32:39AM -0500, Daniel Dadap wrote:
+> The new snd_hda_acpi driver in Linux exposes the existing Azalia
+> interface to non-PCI devices advertised over ACPI. Add an alias
+> to the existing HDA-Intel configuration file so that devices using
+> this driver can be discovered properly.
+> 
+> Signed-off-by: Daniel Dadap <ddadap@nvidia.com>
+> ---
+>  src/conf/cards/aliases.conf | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/src/conf/cards/aliases.conf b/src/conf/cards/aliases.conf
+> index a54824ae..e2d59aa7 100644
+> --- a/src/conf/cards/aliases.conf
+> +++ b/src/conf/cards/aliases.conf
+> @@ -57,6 +57,7 @@ CMI8786 cards.CMI8788
+>  CMI8787 cards.CMI8788
+>  pistachio cards.pistachio-card
+>  VC4-HDMI cards.vc4-hdmi
+> +hda-acpi cards.HDA-Intel
+>  
+>  <confdir:ctl/default.conf>
+>  <confdir:pcm/default.conf>
+> -- 
+> 2.39.5
+> 
