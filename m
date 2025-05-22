@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42F2BC54E65
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 May 2025 22:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A3CEC54EDA
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 May 2025 22:16:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C7F5601EC;
-	Fri, 23 May 2025 00:15:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C7F5601EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB002601FA;
+	Fri, 23 May 2025 00:15:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB002601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1747952149;
-	bh=8bhGxG+iDZ1/I3/AfXKSftmUYhkXx+ROd1bdIx6O94M=;
+	s=default; t=1747952165;
+	bh=e3eX9ex2GSQGxVP1GvPZi+JGNKv3/z38EY8DJy02Zfw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=KQeY5clSc1yuLjdEtMQZ3rHilxmDGFPYXB1mOCIlYmIMTRxIYXi6GAj4uae/mqnq6
-	 cAeYnKxOfeMEYUqE6tIIuUCEMky/SSSW4YUwLlIMy01id+M2paIcsG5E1gYA8jFlYS
-	 oDx7BQfScdeSOOvC8C6sXTPUrDOz+VNEj6QkWhsc=
+	b=nWU/grb+5AiNMqvgPkxL0FXs4x92Vd+Dw04JJxL9qYH/6NqzbO6oKMwM4UWo7JRrq
+	 m9Yv4eH0yD+NDGfPS3pIq4AOFT4XierdhvtdTgQCC3J7QNWTeb6J/PREeO9mPbfO4C
+	 FfLrpiIaTdjWKTADB1yo3PtaIm/UfVOaq09pt0n0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3731FF805C4; Fri, 23 May 2025 00:15:15 +0200 (CEST)
+	id 95200F805D7; Fri, 23 May 2025 00:15:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C4BFF805C0;
-	Fri, 23 May 2025 00:15:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8362EF805E5;
+	Fri, 23 May 2025 00:15:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE7F2F8057F; Fri, 23 May 2025 00:15:10 +0200 (CEST)
+	id 48C55F8059F; Fri, 23 May 2025 00:15:27 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68415F80568
-	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 00:15:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68415F80568
+	by alsa1.perex.cz (Postfix) with ESMTP id A82BFF80568
+	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 00:15:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A82BFF80568
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1841f92e5e28e200-webhooks-bot@alsa-project.org>
-In-Reply-To: <1841f92e5e224b00-webhooks-bot@alsa-project.org>
-References: <1841f92e5e224b00-webhooks-bot@alsa-project.org>
+Message-Id: <1841f9327d729e00-webhooks-bot@alsa-project.org>
+In-Reply-To: <1841f9327d705500-webhooks-bot@alsa-project.org>
+References: <1841f9327d705500-webhooks-bot@alsa-project.org>
 Subject: snd_config_imul always produces a zero result.
-Date: Fri, 23 May 2025 00:15:10 +0200 (CEST)
-Message-ID-Hash: NSPNNBVT6FM5MQXXLW7TX6YYMCJJ6XRC
-X-Message-ID-Hash: NSPNNBVT6FM5MQXXLW7TX6YYMCJJ6XRC
+Date: Fri, 23 May 2025 00:15:27 +0200 (CEST)
+Message-ID-Hash: 5WXIXQOXKM6IX3EQIGUL2RBKTP3XSR7K
+X-Message-ID-Hash: 5WXIXQOXKM6IX3EQIGUL2RBKTP3XSR7K
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NSPNNBVT6FM5MQXXLW7TX6YYMCJJ6XRC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WXIXQOXKM6IX3EQIGUL2RBKTP3XSR7K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #456 was opened from shanekirk:
+alsa-project/alsa-lib issue #456 was edited from shanekirk:
 
 The config function snd_config_imul always produces a zero result. This is because it delegates to snd_func_iops() to perform the iterative multiplication, which always initializes its result value to zero. Then it iteratively multiplies-assigns result against each integer in the params array, which _always_ produces zero.
 
@@ -78,7 +78,7 @@ This can be demonstrated using this snippet of configuration...
 ```
 test_fn
 {
-    @func imul
+    \@func imul
     integers [2 4 6]
 }
 
