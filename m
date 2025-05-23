@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB098C54ED0
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 May 2025 17:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ED41C54ED0
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 May 2025 17:25:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9D8260202;
-	Fri, 23 May 2025 19:24:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9D8260202
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2720601D3;
+	Fri, 23 May 2025 19:25:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2720601D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1748021058;
-	bh=PcZ7Axmyrs/kptR+ofGUeVUp4tb3vmXOzTRsAHfqorg=;
+	s=default; t=1748021132;
+	bh=ksUQiA5VHhFHuT4loNvGVeJjxBaezDi5EyWWNQPb3EQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=fxboB6tmCcR1S5fk5PtwaGBsXwMBNRzHOeSDkFIhswtEOTaG2cV4i0Px97RUIQmTx
-	 /7dvmx06A4PuDSchQ32BgTiDUA7fKIzETqR6rL7JXxSb99JCFZOLdrFXNbYId77SSi
-	 Y8S+7yDXv0XKtOAj3OsBjCiJj75UgG3+UxGZfmJg=
+	b=mx9wljlzXYxN2zz2WogdCBH78SqQo8rjcgs8I+LN6GmGfhulV0L6vIz8+Ge1wpL88
+	 S2APZ3G2OBJFw13DVfrX85rD67aKI/PFScadEbLzvqib1uE3sIMenl15/+5yU453TE
+	 EmA6LXfy/3JG2B9etywZWrfvnnov3fLD9xYUWABE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62861F805C0; Fri, 23 May 2025 19:23:42 +0200 (CEST)
+	id 082E8F805C2; Fri, 23 May 2025 19:24:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FB39F805B6;
-	Fri, 23 May 2025 19:23:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2EB1F805C1;
+	Fri, 23 May 2025 19:24:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 004ECF8057E; Fri, 23 May 2025 19:23:38 +0200 (CEST)
+	id C6B8DF80568; Fri, 23 May 2025 19:24:52 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36F28F800C1
-	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 19:23:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36F28F800C1
+	by alsa1.perex.cz (Postfix) with ESMTP id E8A51F800C1
+	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 19:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8A51F800C1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <184237da7cfbda00-webhooks-bot@alsa-project.org>
-In-Reply-To: <184237da7cf87300-webhooks-bot@alsa-project.org>
-References: <184237da7cf87300-webhooks-bot@alsa-project.org>
+Message-Id: <184237eb90ba9c00-webhooks-bot@alsa-project.org>
+In-Reply-To: <184237eb90b36a00-webhooks-bot@alsa-project.org>
+References: <184237eb90b36a00-webhooks-bot@alsa-project.org>
 Subject: Ubuntu Level 3 Log Error:
  /usr/lib/udev/rules.d/90-alsa-restore.rules:20 GOTO="alsa_restore_std" has no
  matching label, ignoring.
-Date: Fri, 23 May 2025 19:23:38 +0200 (CEST)
-Message-ID-Hash: 7DA35KBY5VWREOHHC65OVQEN5D54ROUR
-X-Message-ID-Hash: 7DA35KBY5VWREOHHC65OVQEN5D54ROUR
+Date: Fri, 23 May 2025 19:24:52 +0200 (CEST)
+Message-ID-Hash: RVWLIJB3OJA6W22W3URWE4O7H4LDWZKZ
+X-Message-ID-Hash: RVWLIJB3OJA6W22W3URWE4O7H4LDWZKZ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -60,7 +60,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7DA35KBY5VWREOHHC65OVQEN5D54ROUR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RVWLIJB3OJA6W22W3URWE4O7H4LDWZKZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -302,6 +302,10 @@ card 5: Device [OWC Thunderbolt 3 Audio Device], device 1: USB Audio [USB Audio 
   Subdevices: 1/1
   Subdevice #0: subdevice #0
 </pre>
+
+Output sound settings work here:
+
+![Image](https://github.com/user-attachments/assets/5162569b-9734-4088-897d-5b8c73632da1)
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/299
 Repository URL: https://github.com/alsa-project/alsa-utils
