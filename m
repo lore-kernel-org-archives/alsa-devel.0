@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B06B3C54EDA
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 May 2025 17:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DF1AC54ED1
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 May 2025 17:21:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E72E760189;
-	Fri, 23 May 2025 19:20:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E72E760189
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63B9660195;
+	Fri, 23 May 2025 19:21:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63B9660195
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1748020855;
-	bh=eVXQBdIRhPwVMR26Aqn4Dx5cYvnwbJDKW8nnk2bX4Zg=;
+	s=default; t=1748020874;
+	bh=+ohYNokqxPeUy2mjo4EKFwDRQfRmyYdHAMpzXuZ0LhI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=XOZ5v6v8AcGFcySoaKIE2+/hmc8xbDxjCQfR+yHV865LXJ7viaZatm+GNZ4YX38UC
-	 riyVc4RRgStgoccU6Rh42UziPprLpyJkTKtZZDFi//jauD6aLxvDHw+B//dvIHB4ZY
-	 YG4Kfubcfd38xmqtDZy8A+vz+TsvfPFmarRLSpg0=
+	b=sg8ljv7IPDpG2GiaLuF1qqy0xeah6KzHJgD6Hm3hCEfwCU1tuG5ljZ7h+FCgu6FLb
+	 JS2jaFko/vRBfMMwjShnquhvCTRfQZjDiQ1LS3XGft9s9evKs0S41i50/k7ZMIUZql
+	 l7xarX7dJaa3Tw3GJhTwEE/57p5sosWFpaHqQ3V8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7047FF805C7; Fri, 23 May 2025 19:20:33 +0200 (CEST)
+	id 0D896F805BB; Fri, 23 May 2025 19:20:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 652D7F805D3;
-	Fri, 23 May 2025 19:20:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE550F805B5;
+	Fri, 23 May 2025 19:20:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C81BF8057F; Fri, 23 May 2025 19:20:30 +0200 (CEST)
+	id 38901F8057E; Fri, 23 May 2025 19:20:51 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9577FF80568
-	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 19:20:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9577FF80568
+	by alsa1.perex.cz (Postfix) with ESMTP id 9559BF80508
+	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 19:20:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9559BF80508
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <184237aea4ad5b00-webhooks-bot@alsa-project.org>
-In-Reply-To: <184237aea4ab9300-webhooks-bot@alsa-project.org>
-References: <184237aea4ab9300-webhooks-bot@alsa-project.org>
+Message-Id: <184237b388a1a200-webhooks-bot@alsa-project.org>
+In-Reply-To: <184237b3889f6300-webhooks-bot@alsa-project.org>
+References: <184237b3889f6300-webhooks-bot@alsa-project.org>
 Subject: Ubuntu Level 3 Log Error:
  /usr/lib/udev/rules.d/90-alsa-restore.rules:20 GOTO="alsa_restore_std" has no
  matching label, ignoring.
-Date: Fri, 23 May 2025 19:20:30 +0200 (CEST)
-Message-ID-Hash: 7ZXPXA3FZG7SSXTHONCX2PPSVQUMSEY5
-X-Message-ID-Hash: 7ZXPXA3FZG7SSXTHONCX2PPSVQUMSEY5
+Date: Fri, 23 May 2025 19:20:51 +0200 (CEST)
+Message-ID-Hash: NKVVUSRSLXMPUIGNCRMKHZHC7ZSCPZJQ
+X-Message-ID-Hash: NKVVUSRSLXMPUIGNCRMKHZHC7ZSCPZJQ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -60,7 +60,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7ZXPXA3FZG7SSXTHONCX2PPSVQUMSEY5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NKVVUSRSLXMPUIGNCRMKHZHC7ZSCPZJQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,6 +109,7 @@ Similar issue to https://github.com/alsa-project/alsa-utils/issues/280
 </pre>
 
 Tried:
+```
 
 @@ -3,6 +3,8 @@
 
@@ -147,6 +148,7 @@ LABEL="alsa_restore_std"
 TEST!="@daemonswitch@", RUN+="@sbindir@/alsactl@args@ restore $env{ALSA_CARD_NUMBER}"
 
 TEST=="@daemonswitch@", RUN+="@sbindir@/alsactl@args@ nrestore $env{ALSA_CARD_NUMBER}"
+```
 
 but no cigar
 
