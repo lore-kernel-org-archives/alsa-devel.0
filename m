@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C661C54ED0
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 May 2025 17:23:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB098C54ED0
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 May 2025 17:24:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9E83601F1;
-	Fri, 23 May 2025 19:23:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9E83601F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9D8260202;
+	Fri, 23 May 2025 19:24:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9D8260202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1748021006;
-	bh=ry/zd1U9azdh81wSPbC7C49KFPuTwc2jHGTWAFPHoQg=;
+	s=default; t=1748021058;
+	bh=PcZ7Axmyrs/kptR+ofGUeVUp4tb3vmXOzTRsAHfqorg=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=ojTtdHoVGe4N3kTh2HfD2HiFWh2Y5OuoaKzBa0fCNHmryURunkexuurO6J7V62kyZ
-	 beq63+f00jVyA6ELiXnOE7O96K6d6PKysHEORoMQBktRPHuq4YQ2YaMUGfC63dNowL
-	 7LBkT0hZXbduNBytcLt/N0A30EBhJlxwlds43ZOE=
+	b=fxboB6tmCcR1S5fk5PtwaGBsXwMBNRzHOeSDkFIhswtEOTaG2cV4i0Px97RUIQmTx
+	 /7dvmx06A4PuDSchQ32BgTiDUA7fKIzETqR6rL7JXxSb99JCFZOLdrFXNbYId77SSi
+	 Y8S+7yDXv0XKtOAj3OsBjCiJj75UgG3+UxGZfmJg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CAAF7F805C2; Fri, 23 May 2025 19:22:47 +0200 (CEST)
+	id 62861F805C0; Fri, 23 May 2025 19:23:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1B86F805C0;
-	Fri, 23 May 2025 19:22:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FB39F805B6;
+	Fri, 23 May 2025 19:23:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DF3CF8057E; Fri, 23 May 2025 19:22:44 +0200 (CEST)
+	id 004ECF8057E; Fri, 23 May 2025 19:23:38 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA0F1F80508
-	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 19:22:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA0F1F80508
+	by alsa1.perex.cz (Postfix) with ESMTP id 36F28F800C1
+	for <alsa-devel@alsa-project.org>; Fri, 23 May 2025 19:23:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36F28F800C1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <184237cdda41b700-webhooks-bot@alsa-project.org>
-In-Reply-To: <184237cdda3c1800-webhooks-bot@alsa-project.org>
-References: <184237cdda3c1800-webhooks-bot@alsa-project.org>
+Message-Id: <184237da7cfbda00-webhooks-bot@alsa-project.org>
+In-Reply-To: <184237da7cf87300-webhooks-bot@alsa-project.org>
+References: <184237da7cf87300-webhooks-bot@alsa-project.org>
 Subject: Ubuntu Level 3 Log Error:
  /usr/lib/udev/rules.d/90-alsa-restore.rules:20 GOTO="alsa_restore_std" has no
  matching label, ignoring.
-Date: Fri, 23 May 2025 19:22:44 +0200 (CEST)
-Message-ID-Hash: 2BTOJ2JSBFSVFLXXMULC4UHVHRKS5BZE
-X-Message-ID-Hash: 2BTOJ2JSBFSVFLXXMULC4UHVHRKS5BZE
+Date: Fri, 23 May 2025 19:23:38 +0200 (CEST)
+Message-ID-Hash: 7DA35KBY5VWREOHHC65OVQEN5D54ROUR
+X-Message-ID-Hash: 7DA35KBY5VWREOHHC65OVQEN5D54ROUR
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -60,7 +60,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2BTOJ2JSBFSVFLXXMULC4UHVHRKS5BZE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7DA35KBY5VWREOHHC65OVQEN5D54ROUR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -244,6 +244,63 @@ iec958:<font color="#C01C28"><b>CARD</b></font>=Device,DEV=1
 dmix:<font color="#C01C28"><b>CARD</b></font>=Device,DEV=0
 dmix:<font color="#C01C28"><b>CARD</b></font>=Device,DEV=1
 usbstream:<font color="#C01C28"><b>CARD</b></font>=Device
+</pre>
+
+Continued:
+
+<pre>aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Audio [Apple T2 Audio], device 0: Speaker [Speaker]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Audio [Apple T2 Audio], device 2: Codec Output [Codec Output]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: HDMI_1 [HDA ATI HDMI], device 3: HDMI 0 [LG ULTRAGEAR+]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: HDMI_1 [HDA ATI HDMI], device 7: HDMI 1 [HDMI 1]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: HDMI_1 [HDA ATI HDMI], device 8: HDMI 2 [HDMI 2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: HDMI_1 [HDA ATI HDMI], device 9: HDMI 3 [HDMI 3]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: HDMI_1 [HDA ATI HDMI], device 10: HDMI 4 [HDMI 4]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: HDMI_1 [HDA ATI HDMI], device 11: HDMI 5 [HDMI 5]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: HDMI [HDA ATI HDMI], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: HDMI [HDA ATI HDMI], device 7: HDMI 1 [HDMI 1]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: HDMI [HDA ATI HDMI], device 8: HDMI 2 [HDMI 2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: HDMI [HDA ATI HDMI], device 9: HDMI 3 [HDMI 3]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: HDMI [HDA ATI HDMI], device 10: HDMI 4 [HDMI 4]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: HDMI [HDA ATI HDMI], device 11: HDMI 5 [HDMI 5]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 3: DAC [USB Audio DAC], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 5: Device [OWC Thunderbolt 3 Audio Device], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 5: Device [OWC Thunderbolt 3 Audio Device], device 1: USB Audio [USB Audio #1]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 </pre>
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/299
