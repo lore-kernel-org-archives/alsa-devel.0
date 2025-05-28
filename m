@@ -4,162 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F81BC5AE59
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jun 2025 07:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C24B6C5AE59
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jun 2025 07:43:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26F0A60200;
-	Thu,  5 Jun 2025 09:36:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26F0A60200
+	by alsa0.perex.cz (Postfix) with ESMTPS id A159860200;
+	Thu,  5 Jun 2025 09:43:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A159860200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1749109012;
-	bh=mBCiZStFEKfyItB2O9JaocMvKHymSBR3/G1LNuS43VA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=M4oPAz5P1BBQ1UUdN2PcQQ/tcv/o6Afa42ksVFRLf8Xlz9lCXioMdA9MCgWV3fdWi
-	 A+JSC1u5IPwBaq5JzN+syHXy+4EDwUcL36YMsFAAaO39MeipR9Ohr7zF8i458FjRrs
-	 IetB7rNYJBlRV/9DvM9f8/j8ETUcDU3pOo4Rt9wM=
+	s=default; t=1749109420;
+	bh=WcB9OLk3IbK3PrU7BwDLL38nq2o0Yny7n7fjpv0Em78=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=LHHFknX1oJrXzfTQpGQKrQ9AuZwrG8VXbbzEULr1CxJuhe6O58sq/mGRX6c3DE5Ck
+	 dRid0iDGkbAJCkCTrkFm6etth5D+vl6GquaWunyFY25KP6w67OhLkcaljqrXyvDy6X
+	 0wCQ1fJ80QGkWA+TRAQ/orQMINKFSZQDTNaVHf5Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 792CBF805B5; Thu,  5 Jun 2025 09:36:16 +0200 (CEST)
+	id 605C5F805C2; Thu,  5 Jun 2025 09:43:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44C0EF805B6;
-	Thu,  5 Jun 2025 09:36:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A6D2F805C2;
+	Thu,  5 Jun 2025 09:43:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E08CCF80154; Thu,  5 Jun 2025 09:36:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	id 2B6F2F80212; Wed, 28 May 2025 05:24:51 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C65CF800C1
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2025 09:36:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C65CF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5E62EF800D2
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2025 05:24:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E62EF800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=W9O71jxw;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=uSLzPHHl;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Km7ZHptm;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=mPfAfSBy
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E56EF5BE00;
-	Thu,  5 Jun 2025 07:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1749108970;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
-	b=W9O71jxwJxziD0jqeGaLu1bM/Fv9Rrvs03Obo8ZdattuRxchvmyZNpvO9hBlx3GtOrM7iI
-	ZkuYQdzkrK91+EgiFzwK2dM7oMfmFMqIRTbJ4yZGRBj55uLvgBc5GsMUHGdsgy3chq8KAT
-	5Us+g0zplI6/TC0IBP9aBLOHBOi/C6o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1749108970;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
-	b=uSLzPHHlAKd7HLPv/95ZEbvuTDldEiqvbWS+wd2fRjPYZCTgohQxVwGMTHqvX375F9/f0i
-	0L4gYGdRvGzDLFCw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Km7ZHptm;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=mPfAfSBy
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1749108969;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
-	b=Km7ZHptmSMw47X3xhY8orMnZLHklMb7C/XEGfh7KVueOt5UrKqbPNb4CXDJ+eNNsIbE2Tp
-	5gbzIWOugNL5AAAPl5/ADFbheicJdbJkuXgrSku1bRja2ZrQgAPPTp5WDyNoq1xFKFSEoU
-	t1FqnvND+eRE+cFkCw36SMOVYYL5tqA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1749108969;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
-	b=mPfAfSBySnCbKHjzkCVD0t7xLt5nniH75f/NmSxHux7TuwHZQBJA1ZNLsXHSIRgoCum/P+
-	9KY3mf/TtA6TQuBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0E5D1373E;
-	Thu,  5 Jun 2025 07:36:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id f+HsLelIQWhvLwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 05 Jun 2025 07:36:09 +0000
-Date: Thu, 05 Jun 2025 09:36:09 +0200
-Message-ID: <871pryprme.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v6.16-merge-window
-In-Reply-To: <b1d4ad0e144128a16f88faa924f41432.broonie@kernel.org>
-References: <b1d4ad0e144128a16f88faa924f41432.broonie@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: E56EF5BE00
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,alsa-project.org];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-Message-ID-Hash: R2FMGDWNFVLZRH43W5GKI45GIVWV5BNZ
-X-Message-ID-Hash: R2FMGDWNFVLZRH43W5GKI45GIVWV5BNZ
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmx.com header.i=meowmeowbeanz@gmx.com
+ header.a=rsa-sha256 header.s=s31663417 header.b=cjqsOMv7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1748402683; x=1749007483; i=meowmeowbeanz@gmx.com;
+	bh=ir3St0EToVdOtFoQuHxG0DRTDoertb0nXRrbxaaO0rE=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:Content-Type:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=cjqsOMv7+hCPXjOIFFdv+QhByVhXTx7waAcSZ4Aq40yTB1gR1g2kPIggK0MaGfOh
+	 5KFGI5wufh6vYPrxSi7sgUtwcITq5t0lwJyRCKDhVIb+8u0HachgDNecbJwtrDdk4
+	 tQ+a4SOc7SKbrYh0/uCryeIJb5YrN9LERRxCG6fyFBbtC2uX82pEWKScljtWu1+Pj
+	 jkW3j3jXmHGJ2czpniuNh9weK9d7qtpacQ+IvwWGh8mOPX9vt6hvKuXmnMiXW3Hr/
+	 OOiIiscyoudco9094XOWKYiu4X/uICR+ERYz/eKNAzNTTzpHWyOwkDc8TM7DsqrZV
+	 27+MclmWIwqSZrGwmQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from gemini.localnet ([24.205.220.130]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPXhK-1uWr603bik-00Xkck; Wed, 28
+ May 2025 05:24:43 +0200
+From: meowmeowbeanz <meowmeowbeanz@gmx.com>
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, mario.limonciello@amd.com
+Subject: [PATCH] ASoC: amd: yc: Add support for Lenovo Yoga 7 16ARP8
+Date: Tue, 27 May 2025 20:24:39 -0700
+Message-ID: <5015425.31r3eYUQgx@gemini>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Provags-ID: V03:K1:kjHiMNVefzq9VCPSasS2uJVff12Ov6aQShn39kCOKtBIb5iPwJ0
+ ahSKZRq1oTTNjwnxMQenBeOTludkiSi9szoYZLCItzmMx2fYLjj5IzQ0sKedEMlvWQl+IX2
+ hJ5Gu0nnX9o+ZrZ+mH9y7iIN3rJDIR0Jg34bIXQj0H5+78DR+j8oZBj+J7koydPrbNltnQc
+ uAhHD0TO2dxj0gAr2Z+Dg==
+UI-OutboundReport: notjunk:1;M01:P0:c4g6nNytRdk=;6BikSzjNd++dEdpsoAHgfZQWYwB
+ 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
+X-MailFrom: meowmeowbeanz@gmx.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: ZLTP6T2T5GNJSBNBWO7CE4WOKAYUJCHC
+X-Message-ID-Hash: ZLTP6T2T5GNJSBNBWO7CE4WOKAYUJCHC
+X-Mailman-Approved-At: Thu, 05 Jun 2025 07:43:03 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R2FMGDWNFVLZRH43W5GKI45GIVWV5BNZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZLTP6T2T5GNJSBNBWO7CE4WOKAYUJCHC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,28 +139,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 04 Jun 2025 13:31:09 +0200,
-Mark Brown wrote:
-> 
-> The following changes since commit 43a38a0ff8c63ee156d997cd13063c63cd55d812:
-> 
->   ASoC: codecs: add support for ES8375 (2025-05-23 16:52:28 +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.16-merge-window
-> 
-> for you to fetch changes up to b7188a1c0d2d7b04f4558e10293651d49fcb2398:
-> 
->   ASoC: Intel: avs: boards: Fix rt5663 front end name (2025-06-03 17:04:32 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.16
-> 
-> A bunch of fixes, including a big batch for the Intel AVS driver, and
-> one new device ID.  It's all device specific.
+=46rom e1bc7cbafcdefad60ac6a34fd834a734c64f3fd5 Mon Sep 17 00:00:00 2001
+From: meowmeowbeanz <meowmeowbeanz@gmx.com>
+Date: Tue, 27 May 2025 19:57:07 -0700
+Subject: [PATCH] ASoC: amd: yc: Add support for Lenovo Yoga 7 16ARP8
 
-Pulled now.  Thanks.
+Add DMI quirk entry for Lenovo Yoga 7 16ARP8 (83BS) to enable
+digital microphone support via ACP driver.
+
+Fixes microphone detection on this specific model which was
+previously falling back to non-functional generic audio paths.
+
+Tested-by: meowmeowbeanz <meowmeowbeanz@gmx.com>
+Signed-off-by: meowmeowbeanz <meowmeowbeanz@gmx.com>
+=2D--
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 3d9da93d22ee..7e62445e02c1 100644
+=2D-- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -311,6 +311,13 @@ static const struct dmi_system_id yc_acp_quirk_table[=
+] =3D=20
+{
+                        DMI_MATCH(DMI_PRODUCT_NAME, "83AS"),
+                }
+        },
++       {
++               .driver_data =3D &acp6x_card,
++               .matches =3D {
++                       DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++                       DMI_MATCH(DMI_PRODUCT_NAME, "83BS"),
++               }
++       },
+        {
+                .driver_data =3D &acp6x_card,
+                .matches =3D {
+=2D-=20
+2.49.0
 
 
-Takashi
+
+
+
