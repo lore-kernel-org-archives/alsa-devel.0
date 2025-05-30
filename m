@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2AE1C5B549
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 May 2025 12:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42FBCC5B549
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 May 2025 12:44:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18ED560259;
-	Fri, 30 May 2025 14:44:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18ED560259
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82FBE6024D;
+	Fri, 30 May 2025 14:44:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82FBE6024D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1748609068;
-	bh=uCxD+eksescoDfXConVH1/D8OmnsdjZjQ4VVXaywoPk=;
+	s=default; t=1748609083;
+	bh=NyGqBdD6xwUctXBAd3vz00K4hGSPGkygdFTRQ4DJpBk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vT0oID1toTsIDmueO7wNU0D1xlrSpXdnW6amAUA4fIl8MmfQRJLPmeAPXhm00XYUc
-	 vcFh9Vo2tzAeRq9/Ghz/PQePjJoYUw4tvAQRyw3cG+EFnkyUtpRvG4LGlyCNvkqzcO
-	 kisF9+XjZG8iIMX+/EvNXG6BIIncxApZada3Y3ac=
+	b=DagErk3XaQb8diYMkRJIwu/vso+noBRuCP4roXSEARryPqww9GzMHXveVxFP04FOm
+	 ZM98grO9WT+SkZW1h7Y5OrGLxrW2Nq91/XH//QvaF7Bglv4WpV9g0fy/ZOFod4haU8
+	 dQpwUSCJVo5Lk3iBV1ia2JSF7xaqhNdUvAkpiK8M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A289FF808C6; Fri, 30 May 2025 14:40:45 +0200 (CEST)
+	id 0338AF80678; Fri, 30 May 2025 14:40:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8691DF808C8;
-	Fri, 30 May 2025 14:40:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6926F80674;
+	Fri, 30 May 2025 14:40:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 339DBF8062F; Fri, 30 May 2025 14:40:42 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	id 1CC58F80649; Fri, 30 May 2025 14:40:55 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60A9FF80624
-	for <alsa-devel@alsa-project.org>; Fri, 30 May 2025 14:40:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60A9FF80624
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A93BF80637
+	for <alsa-devel@alsa-project.org>; Fri, 30 May 2025 14:40:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A93BF80637
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rW7xYIkS
+ header.s=k20201202 header.b=IwSZZTvD
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6964F629C7;
-	Fri, 30 May 2025 12:40:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFC3C4CEF0;
-	Fri, 30 May 2025 12:40:37 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id A5F1D5C10D9;
+	Fri, 30 May 2025 12:38:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 518E5C4AF0B;
+	Fri, 30 May 2025 12:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748608839;
-	bh=uCxD+eksescoDfXConVH1/D8OmnsdjZjQ4VVXaywoPk=;
+	s=k20201202; t=1748608851;
+	bh=NyGqBdD6xwUctXBAd3vz00K4hGSPGkygdFTRQ4DJpBk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rW7xYIkSxKmsujtyChLsCf8MDbDNrih4WdQ0Su5RMv5n8iU1J2TjcQShrP6CF8tRw
-	 Pk7UM0ciQSBYTws1tIvk07M5o//eDVfTxcoBy6GhDGAYPiTUDli9r0xBBSWUwJc3oz
-	 WnTIOxclLOGYguOnBR96IzfKcPi5OBryStrLLe/hLIETAh1nm+OavYbsR0f92XEwmf
-	 UcBOvb3U7OBpzl8y4LMt3thdVR4bgNytP5ZjPMmQ4Cc+viEMaYNqHMdiYYXV8XE0mf
-	 fyQ/mLrRI4H4JcaBqxGmXQRZVFtNPIJ2HcZ/76tzSlN4mMYVYcedngBuMiPVEEW0jo
-	 6+LscMAiGgHjg==
+	b=IwSZZTvDfF20mJq0hoXJyXqwICScqd+EvIPbu125LaIeqoQg0JIExJ75+Fg6aRoJ2
+	 WvcQKWSCcO3+o4foBJEmLrWyMdSES54no6JAQJTc92O1YElPlJ7nXP6g461Yn8Gkr+
+	 9fnc1EbUqNhEDEs4gdiJK874f0eEy3Al2lTC6NUUj0KsN6kdL8aj7M/aMn8wr67dji
+	 k9jmpOrNSN5RQfn8x6PePaH5lRYEMZ8Sksgea5dhyrr5mFe4vUlKJbnqy/QLjyDxeK
+	 zajj2RNT0kNwD5UYZ92EEhDqZ/GgYGPKPLsG5JxtnKT78Hmm9FSGp7m7zZGaUJeFej
+	 mYFRb+MesYkzg==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Yuanjun Gong <ruc_gongyuanjun@163.com>,
+Cc: Talhah Peerbhai <talhah.peerbhai@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	thierry.reding@gmail.com,
-	jonathanh@nvidia.com,
 	alsa-devel@alsa-project.org,
-	linux-tegra@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 20/26] ASoC: tegra210_ahub: Add check to
- of_device_get_match_data()
-Date: Fri, 30 May 2025 08:40:06 -0400
-Message-Id: <20250530124012.2575409-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 02/18] ASoC: amd: yc: Add quirk for Lenovo Yoga
+ Pro 7 14ASP9
+Date: Fri, 30 May 2025 08:40:31 -0400
+Message-Id: <20250530124047.2575954-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250530124012.2575409-1-sashal@kernel.org>
-References: <20250530124012.2575409-1-sashal@kernel.org>
+In-Reply-To: <20250530124047.2575954-1-sashal@kernel.org>
+References: <20250530124047.2575954-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.31
+X-stable-base: Linux 6.6.92
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: L7VHZKFR3PR2AW4YJXS7SD53S3AMVDOB
-X-Message-ID-Hash: L7VHZKFR3PR2AW4YJXS7SD53S3AMVDOB
+Message-ID-Hash: HD4LXTBEIPCMJHBR4ARTOUJSCLIYZ4AV
+X-Message-ID-Hash: HD4LXTBEIPCMJHBR4ARTOUJSCLIYZ4AV
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L7VHZKFR3PR2AW4YJXS7SD53S3AMVDOB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HD4LXTBEIPCMJHBR4ARTOUJSCLIYZ4AV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,78 +103,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Yuanjun Gong <ruc_gongyuanjun@163.com>
+From: Talhah Peerbhai <talhah.peerbhai@gmail.com>
 
-[ Upstream commit 04cb269c204398763a620d426cbee43064854000 ]
+[ Upstream commit a28206060dc5848a1a2a15b7f6ac6223d869084d ]
 
-In tegra_ahub_probe(), check the result of function
-of_device_get_match_data(), return an error code in case it fails.
+Similar to many other Lenovo models with AMD chips, the Lenovo
+Yoga Pro 7 14ASP9 (product name 83HN) requires a specific quirk
+to ensure internal mic detection. This patch adds a quirk fixing this.
 
-Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
-Link: https://patch.msgid.link/20250513123744.3041724-1-ruc_gongyuanjun@163.com
+Signed-off-by: Talhah Peerbhai <talhah.peerbhai@gmail.com>
+Link: https://patch.msgid.link/20250515222741.144616-1-talhah.peerbhai@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
-**YES** This commit should be backported to stable kernel trees.
-**Extensive Analysis:** **1. Nature of the Bug Fix:** This commit fixes
-a critical null pointer dereference vulnerability in the tegra210_ahub
-driver. The code calls `of_device_get_match_data(&pdev->dev)` but never
-validates the return value before using `ahub->soc_data`. Looking at the
-kernel tree, we can see that immediately after the assignment, the code
-accesses `ahub->soc_data->regmap_config` and later
-`ahub->soc_data->cmpnt_drv`, `ahub->soc_data->dai_drv`, and
-`ahub->soc_data->num_dais` without any null checking. **2. Severity and
-Impact:** - **High severity**: A null pointer dereference in the kernel
-probe function can cause kernel panic - **User impact**: Systems using
-Tegra210 audio hardware could crash during device initialization -
-**Subsystem criticality**: Audio subsystem failure affects multimedia
-functionality **3. Code Analysis:** The fix is minimal and surgical:
-```c ahub->soc_data = of_device_get_match_data(&pdev->dev); +if
-(!ahub->soc_data) + return -ENODEV; ``` This follows established kernel
-patterns and returns an appropriate error code (-ENODEV) when device
-match data cannot be found. **4. Consistency with Similar Fixes:**
-Examining the kernel tree reveals that other Tegra drivers have already
-been fixed with identical patterns: - `tegra30_ahub.c` already has this
-null check (returns -EINVAL) - `tegra30_i2s.c` already has this null
-check (returns -ENODEV) This indicates that tegra210_ahub was an
-oversight that should be corrected for consistency and safety. **5.
-Historical Reference Analysis:** While the provided historical commits
-all have "Backport Status: NO", they were primarily code cleanup and API
-migration commits (switching to `of_device_get_match_data`), not
-security/stability fixes. This commit is fundamentally different - it's
-a critical bug fix that prevents kernel crashes. **6. Stable Tree
-Criteria Compliance:** - ✅ **Important bugfix**: Prevents kernel panic -
-✅ **Minimal risk**: Two-line addition with well-established pattern - ✅
-**Small and contained**: No architectural changes - ✅ **Clear purpose**:
-Prevents null pointer dereference - ✅ **Subsystem confined**: Only
-affects tegra210_ahub driver **7. Risk Assessment:** - **Regression
-risk**: Extremely low - only adds a safety check - **Side effects**:
-None - failure case now returns clean error instead of crashing -
-**Testing impact**: Improves robustness without changing successful code
-paths **Conclusion:** This is a textbook example of a commit that should
-be backported to stable trees. It fixes a critical null pointer
-dereference that can cause kernel panics, uses minimal code changes
-following established patterns, and has virtually no risk of introducing
-regressions. The fix brings tegra210_ahub in line with other Tegra
-drivers that already have this protection.
+Based on my analysis of this commit, I can provide a comprehensive
+assessment for backporting. **YES** This commit should be backported to
+stable kernel trees for the following reasons: **1. Identical Pattern to
+Previously Backported Commits:** All five similar commits provided in
+the historical context (commits for Lenovo models 82UU, 82, 82YM, 83AS,
+and 21M1) have "Backport Status: YES" and follow the exact same pattern
+as this commit. This establishes a clear precedent for backporting such
+changes. **2. Hardware Enablement Bug Fix:** The commit fixes a clear
+user-affecting bug where the internal microphone on the Lenovo Yoga Pro
+7 14ASP9 (product name 83HN) is non-functional. This is a hardware
+compatibility issue that directly impacts users' ability to use their
+device's built-in microphone. **3. Minimal and Contained Change:** The
+code change is extremely small and safe: - Adds only a single 7-line
+quirk table entry to `sound/soc/amd/yc/acp6x-mach.c` - The change is
+purely additive - no existing code is modified - The quirk entry follows
+the exact same pattern as dozens of other entries in the same table -
+Zero risk of regression to existing functionality **4. Critical
+Subsystem with Safe Pattern:** While this touches audio (a critical
+subsystem), the change follows a well-established, safe pattern used
+extensively in this driver. The quirk table approach is designed
+specifically for adding device-specific compatibility without affecting
+other hardware. **5. Clear User Benefit:** Users with this specific
+Lenovo model will have their internal microphone functionality restored,
+which is essential for video calls, voice recording, and other audio
+input tasks. **6. Code Quality Improvement:** The commit also includes a
+minor whitespace fix (changing spaces to tab at line 350), improving
+code formatting consistency. **7. Follows Stable Tree Rules:** -
+Important bugfix: ✓ (enables hardware functionality) - Minimal risk: ✓
+(purely additive quirk entry) - Small and contained: ✓ (7 lines added) -
+No architectural changes: ✓ - Confined to subsystem: ✓ (AMD YC audio
+driver) The commit message clearly explains the issue and solution, and
+the change is identical in nature to numerous other successfully
+backported commits for similar Lenovo audio quirks. This represents a
+textbook example of a stable-appropriate hardware enablement fix.
 
- sound/soc/tegra/tegra210_ahub.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/amd/yc/acp6x-mach.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra210_ahub.c b/sound/soc/tegra/tegra210_ahub.c
-index 1920b996e9aad..51043e556b3e9 100644
---- a/sound/soc/tegra/tegra210_ahub.c
-+++ b/sound/soc/tegra/tegra210_ahub.c
-@@ -1359,6 +1359,8 @@ static int tegra_ahub_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	ahub->soc_data = of_device_get_match_data(&pdev->dev);
-+	if (!ahub->soc_data)
-+		return -ENODEV;
- 
- 	platform_set_drvdata(pdev, ahub);
- 
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 622df58a96942..9fdee74c28df2 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -311,6 +311,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "83AS"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "83HN"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+@@ -360,7 +367,7 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "M5402RA"),
+ 		}
+ 	},
+-        {
++	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
 -- 
 2.39.5
 
