@@ -4,73 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D214AC5AE59
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jun 2025 07:45:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42747C5B543
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jun 2025 14:48:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D80FC6022B;
-	Thu,  5 Jun 2025 09:45:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D80FC6022B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB9FB601FF;
+	Thu,  5 Jun 2025 16:48:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB9FB601FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1749109539;
-	bh=nQr3bO9OBWdEVVqDTLMp5megTGH2Oe3DWm+gJ6ZhLtw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UyUGviGmVgLhj6teVR5pSY+KrvNFymeU8FPwiYAS1AjFeQfPBlgMlN5AMtWABGXW/
-	 xngBFTx5qGKltItGDdP2WL9JczqCeK33FWYAYXuylJEJakVpWK+5R2PpRKqd6/uHmQ
-	 f3uG2jhhU6WtIzgzbmt3e9f7NzDVwHcBM6AHsCM0=
+	s=default; t=1749134908;
+	bh=D22kCPwWvy4vHdOTO85krtXl39Hn1SpFmJ0GQkA5iTY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=DF1qbnn//UExuTy4yTB6zk3hgpgcqB03oKZHbZoxux+cqPbgpnM6DnnB00anH4PLK
+	 DYT2a8uXsYkG15C5buaMu6MY29nz8r5auZif5tK2Uk9FTJXl1kVagS4zdj4iu0+rIB
+	 4FNurs5HwamEg83iWgos7qPMoc84krFyt+aLWM6Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B0B8F806A0; Thu,  5 Jun 2025 09:44:03 +0200 (CEST)
+	id 08680F805C7; Thu,  5 Jun 2025 16:47:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 268BAF8069D;
-	Thu,  5 Jun 2025 09:44:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF067F805BF;
+	Thu,  5 Jun 2025 16:47:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A27B9F80154; Thu,  5 Jun 2025 07:29:37 +0200 (CEST)
-Received: from mail78-50.sinamail.sina.com.cn (mail78-50.sinamail.sina.com.cn
- [219.142.78.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 459EAF800C1
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2025 07:29:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 459EAF800C1
-Received: from unknown (HELO zy-virtual-machine.localdomain)([58.38.107.7])
-	by sina.net (10.185.250.30) with ESMTP
-	id 68412B33000035D5; Thu, 5 Jun 2025 13:29:24 +0800 (CST)
-X-Sender: zhangyi@everest-semi.com
-X-Auth-ID: zhangyi@everest-semi.com
-Authentication-Results: sina.net;
-	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 45CBEE636B7A4BC393AC33E4F170938B
-X-SMAIL-UIID: 45CBEE636B7A4BC393AC33E4F170938B-20250605-132924
-From: Zhang Yi <zhangyi@everest-semi.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Cc: tiwai@suse.com,
-	amadeuszx.slawinski@linux.intel.com,
-	yangxiaohua@everest-semi.com
-Subject: RE: [PATCH] ASoC: codecs: ES8326: Modify initialization configuration
-Date: Thu,  5 Jun 2025 13:29:22 +0800
-Message-Id: <20250605052922.5634-1-zhangyi@everest-semi.com>
-X-Mailer: git-send-email 2.17.1
-X-MailFrom: zhangyi@everest-semi.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	id A06D4F80154; Thu,  5 Jun 2025 16:47:53 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id F103FF800E4
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2025 16:47:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F103FF800E4
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18462ce5eff6d900-webhooks-bot@alsa-project.org>
+In-Reply-To: <18462ce5eff12900-webhooks-bot@alsa-project.org>
+References: <18462ce5eff12900-webhooks-bot@alsa-project.org>
+Subject: alsaloop: link existing mixer controls
+Date: Thu,  5 Jun 2025 16:47:53 +0200 (CEST)
+Message-ID-Hash: 4VZ2E7APRJSH27GCR66UD53UBQWFEC7N
+X-Message-ID-Hash: 4VZ2E7APRJSH27GCR66UD53UBQWFEC7N
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PUTGPA7A3F5JPPABWKSB2HLWVQ6W4B47
-X-Message-ID-Hash: PUTGPA7A3F5JPPABWKSB2HLWVQ6W4B47
-X-Mailman-Approved-At: Thu, 05 Jun 2025 07:43:59 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PUTGPA7A3F5JPPABWKSB2HLWVQ6W4B47/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VZ2E7APRJSH27GCR66UD53UBQWFEC7N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -79,11 +67,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> > -	regmap_write(es8326->regmap, ES8326_SDINOUT1_IO,
-> > -		    (ES8326_IO_DMIC_CLK << ES8326_SDINOUT1_SHIFT));
-> > +	regmap_write(es8326->regmap, ES8326_SDINOUT1_IO, ES8326_IO_INPUT);
-> 
-> Why - will this impact existing users?
+alsa-project/alsa-utils issue #303 was opened from bravl:
 
-No, it will not impact existing users, Because I have set this register value
-to work in es8326_set_bias_level.
+Hi,
+
+I'm trying to link the volume controls of 2 soundcards together. We've got 2 souncards, an UAC2Gadget card and a custom soundcard. We use alsaloop to create the following setup:
+
+```
+UAC2Gadget record -> alsaloop -> Custom soundcard speaker out
+Custom soundcard mic in -> alsaloop -> UAC2Gadget soundcard playback
+```
+
+For this the alsaloop.conf looks like
+```
+-P hw:CARD=customsoundcard,DEV=0 -C hw:CARD=UAC2Gadget,DEV=0 -S 5 -T 1"                                                          
+-C hw:CARD=customsoundcard,DEV=1 -P hw:CARD=UAC2Gadget,DEV=0 -S 5 -T 2                                                                                                               
+```
+
+This setup works perfectly. But we would like to control the volume of the custom soundcard's speaker out via the UAC2Gadgets' PCM Record volume.
+
+The cards expose the following controls:
+```sh
+$ amixer -c1 controls #custom soundcard
+numid=1,iface=MIXER,name='Master Volume'
+numid=2,iface=MIXER,name='Speaker Volume'
+
+$ amixer -c2 controls #UAC2Gadget
+numid=3,iface=MIXER,name='PCM Playback Switch'
+numid=4,iface=MIXER,name='PCM Playback Volume'
+numid=6,iface=MIXER,name='PCM Capture Switch'
+numid=7,iface=MIXER,name='PCM Capture Volume'
+numid=1,iface=PCM,name='Capture Pitch 1000000'
+numid=8,iface=PCM,name='Capture Rate'
+numid=2,iface=PCM,name='Playback Pitch 1000000'
+numid=5,iface=PCM,name='Playback Rate'
+```
+
+Adding `-m "name=Speaker Volume"` creates a new linked control to the UAC2Gadget card called "Speaker Volume" as expected.
+Adding `-m "name=Speaker Volume"@name="PCM Capture Volume"` does not work. Resulting in:
+
+```
+Unable to create control '0,MIXER,0,0,PCM Capture Volume,0': Device or resource busy
+playback hw:CARD=customsoundcard,DEV=0/capture hw:CARD=UAC2Gadget,DEV=0: Unable to remove control '0,MIXER,0,0,PCM Capture Volume,0': Invalid argument
+```
+
+Looking at the alsaloop code, it seems that this is expected behaviour because it's trying to remove a control which was created by the UAC2Gadget driver.
+
+Is the above conclusion correct or is there a different way to allow alsaloop to sync 2 existing driver controls?
+
+Thanks
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/303
+Repository URL: https://github.com/alsa-project/alsa-utils
