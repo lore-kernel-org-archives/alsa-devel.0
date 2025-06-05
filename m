@@ -4,168 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E67FC5B543
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jun 2025 01:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F81BC5AE59
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jun 2025 07:36:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A344E601F8;
-	Thu,  5 Jun 2025 03:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A344E601F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26F0A60200;
+	Thu,  5 Jun 2025 09:36:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26F0A60200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1749086835;
-	bh=ijRvAHxNTIN2sf2x4f6zONReiBa91J/4XyAfuUcryDY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:List-Id:
+	s=default; t=1749109012;
+	bh=mBCiZStFEKfyItB2O9JaocMvKHymSBR3/G1LNuS43VA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RMpu5UP7fnKGYtvzMXe1ArUkoeAhjzQOJc1j7bIh5rTBxgNKH1h/aAh9VSrPHztn5
-	 MZ+QiDSpTKG4nb8bWt+Q0oK0W+q03251vmk0xWoTCgP3Cv55mF4HBFw3lZCPksegUH
-	 Diym445z4Xk5YvgDhUXDullfbptA5TdpkZe9aewo=
+	b=M4oPAz5P1BBQ1UUdN2PcQQ/tcv/o6Afa42ksVFRLf8Xlz9lCXioMdA9MCgWV3fdWi
+	 A+JSC1u5IPwBaq5JzN+syHXy+4EDwUcL36YMsFAAaO39MeipR9Ohr7zF8i458FjRrs
+	 IetB7rNYJBlRV/9DvM9f8/j8ETUcDU3pOo4Rt9wM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39CBBF805BF; Thu,  5 Jun 2025 03:26:42 +0200 (CEST)
+	id 792CBF805B5; Thu,  5 Jun 2025 09:36:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BFFDF805C3;
-	Thu,  5 Jun 2025 03:26:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44C0EF805B6;
+	Thu,  5 Jun 2025 09:36:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E00CF80154; Thu,  5 Jun 2025 03:26:38 +0200 (CEST)
-Received: from TYVP286CU001.outbound.protection.outlook.com
- (mail-japaneastazlp170110002.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:c405::2])
+	id E08CCF80154; Thu,  5 Jun 2025 09:36:13 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1E10F8011B
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2025 03:26:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1E10F8011B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2C65CF800C1
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2025 09:36:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C65CF800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=RXZba9BR
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rNKUBMWw664OA0R/6foFAPamSMFweVjJBPlkgRlzFAur/rJj5uGvMbGUytWCQLn0GVQkPOqtagjnAhxXUNfxJJ7xu1HM2z67l88AJuJ126iThPb867uMRieOCB9TFwb4vTPWTRzNs2k+FhOXwkSdYyDkSy97sJKTAmEwjpCn+v85P/HLq7Hec77/8K1qoX6eyUAva3YF9kiN7gZHKi6C6ucFy7ijeZ/BAU//CkRjXnzhwzgtfnBYcaxFaeIZ4KZkb+BRaIg3wPIEnDNFnn9JY0kznH3BIVc+FSZAK5r4WbBoVILxkBlSZ44IkgNZNyvAzdldDZRiF5913QZrDPjIgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RCRGw7uBvKe12sNjC3hAqU0pkSHIjBfnc2Y0DgzIx8g=;
- b=gGsm8m6sHPYJ1cjV0zEpT2EFBuGj/SP99By9AG1Nq02UHygnVVuawaF0q1tsdvJEmHypaG83vsZsYjqmsZ4oZo1IAU+oq5ZHzbYamjsfNsvZ0k8DMj9MscH2jr8cElX9zIxGHZwmF1kUmKhhU5j5QkVlOsem7lDHOMtLkQPXRm966BctvafzTYfaXCGevhi7A4y7xOSA/UOmYpZJ9Mo8zcQ5l4899z5KJ0+aUQcm1agIhqlcZtUQoxiHBR+5UxD9mnxLbUAiBjjCl4UjBSqt+yNpLOGAgYW661GoWVVsm25fC9w1ic2m/Mx3wY7sXhTm3XXIhrnqKJ2JA53S0gRMdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RCRGw7uBvKe12sNjC3hAqU0pkSHIjBfnc2Y0DgzIx8g=;
- b=RXZba9BRwRdYqndqCMnoRcSEGXD1bzCNd3ZlJ6BvgUYNThpLhXCDYYxHIreRydYLIZ7t8yyjK3+0+bUyoS58nzCJ/P5n7MbyHYJyjT6ecXzRGcTDtrVWo6Hqdx2ANEBEgrqTbz5U/1sAnEtJWlM9WDOQBo3XOlxUxFO2kjtIFSU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11) by TY3PR01MB11221.jpnprd01.prod.outlook.com
- (2603:1096:400:3d6::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8813.21; Thu, 5 Jun
- 2025 01:26:22 +0000
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::c568:1028:2fd1:6e11]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::c568:1028:2fd1:6e11%6]) with mapi id 15.20.8813.018; Thu, 5 Jun 2025
- 01:26:22 +0000
-Message-ID: <87sekfj7wi.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Giedrius =?ISO-8859-2?Q?Trainavi=E8ius?= <giedrius@blokas.io>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: snd_soc_dai_set_tdm_slot with slot=0 broken since 6.12.31 kernel
-In-Reply-To: 
- <CAMONXLtSL7iKyvH6w=CzPTxQdBECf++hn8RKL6Y4=M_ou2YHow@mail.gmail.com>
-References: 
- <CAMONXLtSL7iKyvH6w=CzPTxQdBECf++hn8RKL6Y4=M_ou2YHow@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 Emacs/29.3 Mule/6.0
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=W9O71jxw;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=uSLzPHHl;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Km7ZHptm;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=mPfAfSBy
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E56EF5BE00;
+	Thu,  5 Jun 2025 07:36:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1749108970;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
+	b=W9O71jxwJxziD0jqeGaLu1bM/Fv9Rrvs03Obo8ZdattuRxchvmyZNpvO9hBlx3GtOrM7iI
+	ZkuYQdzkrK91+EgiFzwK2dM7oMfmFMqIRTbJ4yZGRBj55uLvgBc5GsMUHGdsgy3chq8KAT
+	5Us+g0zplI6/TC0IBP9aBLOHBOi/C6o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1749108970;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
+	b=uSLzPHHlAKd7HLPv/95ZEbvuTDldEiqvbWS+wd2fRjPYZCTgohQxVwGMTHqvX375F9/f0i
+	0L4gYGdRvGzDLFCw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Km7ZHptm;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=mPfAfSBy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1749108969;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
+	b=Km7ZHptmSMw47X3xhY8orMnZLHklMb7C/XEGfh7KVueOt5UrKqbPNb4CXDJ+eNNsIbE2Tp
+	5gbzIWOugNL5AAAPl5/ADFbheicJdbJkuXgrSku1bRja2ZrQgAPPTp5WDyNoq1xFKFSEoU
+	t1FqnvND+eRE+cFkCw36SMOVYYL5tqA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1749108969;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jsmwj41+Xbk+lllWASIfDWcIZGRvT7ATPv1wiuHr0IA=;
+	b=mPfAfSBySnCbKHjzkCVD0t7xLt5nniH75f/NmSxHux7TuwHZQBJA1ZNLsXHSIRgoCum/P+
+	9KY3mf/TtA6TQuBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0E5D1373E;
+	Thu,  5 Jun 2025 07:36:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id f+HsLelIQWhvLwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 05 Jun 2025 07:36:09 +0000
+Date: Thu, 05 Jun 2025 09:36:09 +0200
+Message-ID: <871pryprme.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC fixes for v6.16-merge-window
+In-Reply-To: <b1d4ad0e144128a16f88faa924f41432.broonie@kernel.org>
+References: <b1d4ad0e144128a16f88faa924f41432.broonie@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Date: Thu, 5 Jun 2025 01:26:21 +0000
-X-ClientProxiedBy: TY2PR0101CA0003.apcprd01.prod.exchangelabs.com
- (2603:1096:404:92::15) To TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|TY3PR01MB11221:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7ee20e4a-31e6-4946-7ca1-08dda3cffaed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|366016|52116014|376014|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?PJhjFnDU5eH2XAxzGYxs0UgD0qppKoO/b7ZeOw0SugjM3nDNkw1BYo3XoN88?=
- =?us-ascii?Q?2JnIVm1gjvweo8r/B30rHFiu/cSCJLS3nN/AXYuYvlENvCu0l5Ff6MS3ctrj?=
- =?us-ascii?Q?0LjHd43z7AXwBnykbMlbF57WXVFLGS4vsYdFZTIAEugmrGuF1pCKn5NGdncp?=
- =?us-ascii?Q?870uyxB71UbhRYCml0XAHyVQmAerGkASC4OVM4nW27KoWXzVVH1H6UbrXKEN?=
- =?us-ascii?Q?zdTNcWMyAydefZlgqlb0zRzmLpmYxcq6qJiaRTLLLA88r4bqNR5XO4IUkjtG?=
- =?us-ascii?Q?sjpRaCit2XRXwROfMte4TCN02Cw12E2Ls+SHqgAlXaWJCoPPh1j/4Igx/Lpe?=
- =?us-ascii?Q?Jok03h2wW9iq8Hi5/EYZula3ur1dvO2fGN79sgsaDRxTmHN71TXAZ0U2QQHe?=
- =?us-ascii?Q?FS3X5hL95odG+bajB8KUVzG8njpjdw2gMCWRlmHCCXBUfhvXPPkqQRocWxWh?=
- =?us-ascii?Q?HgDpUjE4sSlb2olPqvlrnHCfz+gbbC8aWpjzfncPgZzkhr7brV0zyRP+q5gv?=
- =?us-ascii?Q?Ly8z20ZWVDLvW0Jy5zWqUdnWYJj4fNMcnLOKXqQBmd3Z1HfUePwZWu9KTzCY?=
- =?us-ascii?Q?ULS3NcNw0xF//m6E8Kyi3FBDxbjlT4UGodqL9LjwxDfOqUCzdGGsPZYaSdsT?=
- =?us-ascii?Q?Kt1dkLevtvde/mQLyS4U3SG2CJQU6dmAaek9TWDjOGa+WRRG3kD7N8UYRJzj?=
- =?us-ascii?Q?ZmLsodxmFYgX6BPciAbG1Dm60+v2O/VLR2GOO5IgHuJKKR+pA8SIzNLG68XR?=
- =?us-ascii?Q?mGpaUw+hoFwGkYTMLEcp8OaSzjyMV7XtG+8NyxLOUEZ72GJm9ZmcqyeXwnXr?=
- =?us-ascii?Q?Tj/32Ug/MKzV4xRIpesmnjYVjPtn9vy1IvtkfRVLODKoJ2+WWfCqkW70onRM?=
- =?us-ascii?Q?mhZW6HXx8EudXXmwoMQOmkixKt4MUVz1yyi7kUNGujYiGSdtMk/HLcaSTq8i?=
- =?us-ascii?Q?a9vKdig/PALn414DeLUJc/DMTjdh2s8vGWt01rFusmxCBW77z9hrZGzGxpCo?=
- =?us-ascii?Q?WYDsF77eR8Eu/1TzbIcfdrUU4qtAd2as/Rguuk1N9gyN+PJC9U9eKTtrdQbM?=
- =?us-ascii?Q?9kOZWSrN3Jrncz1GlscxEEy+KW1nuvVWmOEzMzlXxHWr/0fIasMftAq6K2d4?=
- =?us-ascii?Q?/MjuATs26sKyZ4yKXbGxsf8xSepv7UOFyzytk8utiBQRZxaboO09PGE7ywqo?=
- =?us-ascii?Q?8sgAalpGlKQhzN00mGtT1tiKhBIxhaKNlGS52ul7hIxAsavub9CkQUldzzUs?=
- =?us-ascii?Q?1UDv33ojs9NRuj5o/A4reIG7p1vBU2DKua7aOQtEbfroPRJG71Tb2keIcKoG?=
- =?us-ascii?Q?KP3/eWQBdTKGFq8PwonC37VR+zxPqqvN0q+/snqbQFczDfieMkdDLx2lRek+?=
- =?us-ascii?Q?ZPEA3Q0Ff0HHlmrNUWfQs0sS6BQ+XXfSoZAhi3vHAz0uKj2w94rZa2AI92dN?=
- =?us-ascii?Q?iSDXlc1PPi0=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(52116014)(376014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?k/6TaFlk6/A2LB0WXITNjAzvUzGHSH9o++p4GLmW2hiKTnB1veA06DYQMK57?=
- =?us-ascii?Q?kNeQjnKx1aI/Y9sbnpRC0dPv7W1N3ECzRUPuLSHYKlayzWr9Vywm2v/ZU2hk?=
- =?us-ascii?Q?7hmB39JYeWXu5eWbsSkyRWHBCh2ERENh6HNsNAccuhiuW74luhdgkUYUE6HO?=
- =?us-ascii?Q?4YKZbbfGMBEZBuBK/FUTJOnAO3uSOaHSATmCkbtnxnhDCsGt/M+ObgoK5WW/?=
- =?us-ascii?Q?gJJhpDYxMVlgFjlYVBl4MsNk1yTxKB33F1HTPp0VIGDJwjToUITWBEnVzhzF?=
- =?us-ascii?Q?jBvWn5Nfe6SIf8do9jBjRgDmQvy22emyww2CehSJ3mAXgTDA2/r5oIPO4+Vp?=
- =?us-ascii?Q?zOufZxQ6YEztFzT/S4nLDqKJkHC/BilmJ4Gw//8mPIlzFXF2oUgryPeiSBon?=
- =?us-ascii?Q?mqt782oDj7eIMMIijcB2XIhBYOvLcZkkClTI5mtUqfhdwmZSxV5oLTMDFNT+?=
- =?us-ascii?Q?pf/gVefI4n26IWeUyo51JElKxcPdnT0oWuMT8SaflTCGizBoixV9ln8dRrkR?=
- =?us-ascii?Q?7osA9yxrVimzE7KeN8FeYtsM//keLWRNhnSumgL4zPkSE3j5HgKcUWnTWSlk?=
- =?us-ascii?Q?hLP1I8fIW8cjAk87t10Yb06gGo1eJW5bI2ajQTYmguDLbE8hVflITYk96v0a?=
- =?us-ascii?Q?Q9TC4oX3ozpWBmRVKgq+zknbdqoQrc8QSne42VKNT8vK+hsTGkwULm7/xJfF?=
- =?us-ascii?Q?0cE8eag8fG/mGhuKruxK764ultIIlP02pmjSPbcxH0ohc8K/RkeFevE4dQrC?=
- =?us-ascii?Q?NjR4/uFIz1s0pTPi9YjmsX8u+R4eTRXY7yDlgLKkeseR+ePZEnpeRIcxMUSd?=
- =?us-ascii?Q?siJZ9ItxlYj2HEvEz7dFWR2nrIsczxRKKeZ6LtxevIGZTdlKBVKnjpj4m89A?=
- =?us-ascii?Q?mrLYcd2MGl7bDiSnKWQg04rBLR7to9Nk9fGuMWOCtiHhjszKwyHaGCAfrCWZ?=
- =?us-ascii?Q?4rdOpNp3TKw017P9OqRAsaGMcXy0C220XRWo1Bhrm1K2pyeN5uFvo6TveZc/?=
- =?us-ascii?Q?PgKhpdaVm5O5lOWoS3TuH7xfEUq2PqS4AoxZaoVtmjVp2+4AtdXBAr+NJLmp?=
- =?us-ascii?Q?RahjivlFNiN2T52kGUao3GwOnAtgbGZwD+z5NeRgeOU/eVOalBNgJvKAlxLF?=
- =?us-ascii?Q?KszesxOu1/2zUfEDo7DCkHNDvlSmHVfMNvarusM0RqyoevMHwK4ZVbxf5Ia1?=
- =?us-ascii?Q?M0D+Keq/a8kd4hbFA/rDCIbp0BSaDNQLdGFX/2Y/mLqVvflPTN/0THtrjWSB?=
- =?us-ascii?Q?C8xnbLoxta4c9ZFjZAMAj5sQvtWmdvvUXJXoPXsl1Gz5fjbFhv5Pdju1NhC6?=
- =?us-ascii?Q?DkH0eeoSZsVpiJqjFRwQo6MoxS5R3Rkzl9cgmlUK1WfLcvas7fpY1YowVMmE?=
- =?us-ascii?Q?smpMOKjBHxVRzH4BMfI3ZUfN0vBy/zdOoALwQJwIybo/F7M1+LAygzAg8G0h?=
- =?us-ascii?Q?z0WDGQAIkVDm3+DUYx7T97r9RZ/vGZfNG3EWYMVPx3K8zbxkuR2ZMJdF8kR9?=
- =?us-ascii?Q?uwSB1YnuXkneG9UtqFATdAzEHiGfGhbI+4T5GyndSVqHdYvNczT2yCqJWA18?=
- =?us-ascii?Q?J5Exl4yyLm3uXF4tVSughELFIYliHhjetPgn/NEo7KqKgjM4KT7p6dz7gw4g?=
- =?us-ascii?Q?Q5fjwpTAfz4XgPPRGwiKsV0=3D?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 7ee20e4a-31e6-4946-7ca1-08dda3cffaed
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2025 01:26:22.2539
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- CPVm+SZazDw4T7UzEAmU2AHfS/abeXKS2/tJKBHscFCWO3EMd2hfMLI3nA8VO9rq8guvCzMrQPozAFAQ1oxSqUwfhTHrwVJl95xuQOHM1cX8RQJYwAPKoT4o35/c8kcH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB11221
-Message-ID-Hash: TGQEZFFCS6LO356LFGK2623QIOBGUDAR
-X-Message-ID-Hash: TGQEZFFCS6LO356LFGK2623QIOBGUDAR
-X-MailFrom: kuninori.morimoto.gx@renesas.com
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: E56EF5BE00
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,alsa-project.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+]
+Message-ID-Hash: R2FMGDWNFVLZRH43W5GKI45GIVWV5BNZ
+X-Message-ID-Hash: R2FMGDWNFVLZRH43W5GKI45GIVWV5BNZ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -177,7 +159,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TGQEZFFCS6LO356LFGK2623QIOBGUDAR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R2FMGDWNFVLZRH43W5GKI45GIVWV5BNZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -186,35 +168,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Wed, 04 Jun 2025 13:31:09 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit 43a38a0ff8c63ee156d997cd13063c63cd55d812:
+> 
+>   ASoC: codecs: add support for ES8375 (2025-05-23 16:52:28 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.16-merge-window
+> 
+> for you to fetch changes up to b7188a1c0d2d7b04f4558e10293651d49fcb2398:
+> 
+>   ASoC: Intel: avs: boards: Fix rt5663 front end name (2025-06-03 17:04:32 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v6.16
+> 
+> A bunch of fixes, including a big batch for the Intel AVS driver, and
+> one new device ID.  It's all device specific.
 
-Hi Giedrius
+Pulled now.  Thanks.
 
-> Since Raspberry Pi's kernel version 6.12.31, I noticed
-> that snd_soc_dai_set_tdm_slot returns -EINVAL when slots=0 is provided to
-> the function, even though it's a documented legal use case:
-> 
->  * TDM mode can be disabled by passing 0 for @slots. In this case @tx_mask,
->  * @rx_mask and @slot_width will be ignored.
-> 
-> https://elixir.bootlin.com/linux/v6.12.31/source/sound/soc/soc-dai.c#L260
-> 
-> The issue was introduced by this commit:
-> 
-> https://lore.kernel.org/all/87o6z7yk61.wl-kuninori.morimoto.gx@renesas.com/#t
-> 
-> Which adds checking of snd_soc_xlate_tdm_slot_mask result which is -EINVAL
-> in case of slots=0, therefore stopping the snd_soc_dai_set_tdm_slot
-> execution.
-> 
-> The 6.12.30 was still fine:
-> https://elixir.bootlin.com/linux/v6.12.30/source/sound/soc/soc-dai.c#L281
-> 
-> I would suggest skipping the xlate call in case slots is 0 in
-> snd_soc_dai_set_tdm_slot.
 
-Thank you for your report.
-I will post fixup patch. I'm happy if you can test it.
-
-Best regards
----
-Kuninori Morimoto
+Takashi
