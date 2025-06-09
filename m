@@ -4,49 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21DA6C5B543
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Jun 2025 12:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CCC0C61CE7
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jun 2025 02:52:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E89FE601FE;
-	Sat,  7 Jun 2025 14:32:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E89FE601FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 602FC601F8;
+	Mon,  9 Jun 2025 04:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 602FC601F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1749299552;
-	bh=j6uTQBtOgf42Pn2As/vxfhmsj+XzmL7hf7u7ZYhrmrU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=u5ZGNWgq2e0Oeh8hp1SCEVRxlx7j0pHzDcq2ItVlNUMsn2ediffsmsIwnhYOxeqsD
-	 cwH3cTEIj9e0PwCT1y1Z6KZaxa04vJGtU1BsRjhOfPAyXdN7GVYzJPNV+zW78A+IeL
-	 Q4ArB5j1xZMp5SYIsHP9I8hv0+v7ESvvNIwpflxs=
+	s=default; t=1749437536;
+	bh=VYoT670TJsnVTvEQzUtCn0lO/9G1UORjQ8W6EV8wX/o=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=CuKZjs92US0DPQiNB14iJg1OEWyAMmztNF9B26JxbuvkuO/A0U9BlKt7rMybb+yjx
+	 6LvuEH0bJn42jY79PiHS78V1rLhDJv6mxUGTisiqzFdbnOVPrvw7HdflSIrUm22NKq
+	 F6sMMpw8qMZpcGTsQsLJtXZDxOpK6ocLWafrDMAc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72D24F805C1; Sat,  7 Jun 2025 14:31:57 +0200 (CEST)
+	id 0E97EF805BD; Mon,  9 Jun 2025 04:51:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B2EFF805BD;
-	Sat,  7 Jun 2025 14:31:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF815F805BA;
+	Mon,  9 Jun 2025 04:51:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5375F80212; Sat,  7 Jun 2025 14:31:53 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B701F800D2
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jun 2025 14:31:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B701F800D2
+	id 86BF0F8049C; Mon,  9 Jun 2025 04:51:37 +0200 (CEST)
+Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D0135F801F7
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2025 04:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0135F801F7
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=e40sBcvc
+Received: from lelvem-sh01.itg.ti.com ([10.180.77.71])
+	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 5592pRC9670443;
+	Sun, 8 Jun 2025 21:51:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1749437487;
+	bh=LkQkT+4I/VfRBh8xB9FA+9eo6P9+4MLSefFU2BeWUAE=;
+	h=From:To:CC:Subject:Date;
+	b=e40sBcvc+2kynMNSUuR+FObaBEbwIBwMk35xOJbWSZy7bHfNEpQv5iHzR+rQQ+55j
+	 Q3/i6Bkj1g9EZl+wlEUHnhZJvMarQ9qcrrwOxfg8j1xyd4ys9WmACUY2OcNn5fzsci
+	 BF9Z/TaRpYwiv5Sh/ZJPnvdS6e4+fhGAO7okpkaQ=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by lelvem-sh01.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 5592pRIv3935103
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Sun, 8 Jun 2025 21:51:27 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 8
+ Jun 2025 21:51:27 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 8 Jun 2025 21:51:26 -0500
+Received: from LT5CG31242FY.dhcp.ti.com (lt5cg31242fy.dhcp.ti.com
+ [10.85.14.55])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5592pNTk550549;
+	Sun, 8 Jun 2025 21:51:24 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>
+CC: <andriy.shevchenko@linux.intel.com>, <tiwai@suse.de>,
+        <13916275206@139.com>, <13564923607@139.com>,
+        <alsa-devel@alsa-project.org>, <baojun.xu@ti.com>, <jesse-ji@ti.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [RESEND PATCH v1] ASoC: tas2781: Drop the unnecessary symbol imply
+Date: Mon, 9 Jun 2025 10:51:20 +0800
+Message-ID: <20250609025120.782-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1846c2a337b82500-webhooks-bot@alsa-project.org>
-In-Reply-To: <1846c2a337a1e700-webhooks-bot@alsa-project.org>
-References: <1846c2a337a1e700-webhooks-bot@alsa-project.org>
-Subject: SSL BigSix support
-Date: Sat,  7 Jun 2025 14:31:53 +0200 (CEST)
-Message-ID-Hash: RGZL2IQP2XJA2P22FWPUK4UN3ICGQ4DH
-X-Message-ID-Hash: RGZL2IQP2XJA2P22FWPUK4UN3ICGQ4DH
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Message-ID-Hash: 7UUFQOUUISZEEW6XPDONGDDQPFKP5F5T
+X-Message-ID-Hash: 7UUFQOUUISZEEW6XPDONGDDQPFKP5F5T
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGZL2IQP2XJA2P22FWPUK4UN3ICGQ4DH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7UUFQOUUISZEEW6XPDONGDDQPFKP5F5T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,23 +101,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #575 was opened from melonexe:
+The unnecessary symbols for imply are SND_SOC_TAS2781_COMLIB,
+SND_SOC_TAS2781_COMLIB_I2C, and SND_SOC_TAS2781_FMWLIB. They all used for
+library compiling. All the symbols in the imply are used for codec driver
+compiling.
 
-The SSL BigSix doesn't seem to have a UCM as far as I can see, I've tried to follow the example set by the other devices but I can't seem to get the syntax right according to the output of: 
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+---
+ sound/soc/codecs/Kconfig | 3 ---
+ 1 file changed, 3 deletions(-)
 
- alsaucm -c hw:2 dump text
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 8fe795504dbb..0e70064bc90c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -262,9 +262,6 @@ config SND_SOC_ALL_CODECS
+ 	imply SND_SOC_TAS2764
+ 	imply SND_SOC_TAS2770
+ 	imply SND_SOC_TAS2780
+-	imply SND_SOC_TAS2781_COMLIB
+-	imply SND_SOC_TAS2781_COMLIB_I2C
+-	imply SND_SOC_TAS2781_FMWLIB
+ 	imply SND_SOC_TAS2781_I2C
+ 	imply SND_SOC_TAS5086
+ 	imply SND_SOC_TAS571X
+-- 
+2.43.0
 
-ALSA lib parser.c:2021:(parse_master_file) Incompatible syntax 6 in USB-Audio.conf
-ALSA lib main.c:1412:(snd_use_case_mgr_open) error: failed to import hw:2 use case configuration -22
-alsaucm: error failed to open sound card hw:2: Invalid argument
-
-I have included what I have done so far, if you could point me in the right direction to resolving the above error I would be extremely grateful. Thanks for your work on this project.
-
-The SSL Big six is a 16 in 16 out Class compliant audio interface https://solidstatelogic.com/products/big-six?tab=documentsanddownloads
-
-[GH comments.tar.gz](https://github.com/user-attachments/files/20638642/GH.comments.tar.gz)
-
-Thanks
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/575
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
