@@ -4,49 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4DDFC61CE8
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jun 2025 13:34:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 920AEC61CE8
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jun 2025 16:36:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32655601F3;
-	Thu, 12 Jun 2025 15:34:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32655601F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B4CC601F9;
+	Thu, 12 Jun 2025 18:36:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B4CC601F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1749735260;
-	bh=wgkpI8FP5rp5yO8B+4LXz0hdTlwGJzwrgSu2yTNLHSI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=N6dpOCHgyQq5UJ1dDV7BGPr9P+R0TUg0hcIilHjVSRVMPEQA2EFF1miSATTB/f59x
-	 IaV8CLIR8r4rX01jy6i0FMA+kX8wQlst2DLVIwyB/f4dpUu4hhNSj/e6+DHLOSwGGF
-	 nRl9rmqnzfZYKWYTzE4HKKQCedQvX64JEdGOsMvA=
+	s=default; t=1749746178;
+	bh=uwrwGgQNcdDFRoVagZA9ucg/PWa1ct8dD/273Ttz3G8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=iKOPVbChR2+0gQ6PXHF+ekJ+25icr4l4fEOZMSau54rFPyw/ye0+ivl1hdSiPU5l+
+	 woZMql5SNnEUP2V/wCwfXrCmCVH/FU/HvYdcCOecEtCXxTOuaQrhmt7vQZBsWDO7Uf
+	 by4CsHdio95a4/BYZUZjG/D+2lWZbbbgu+nswVv4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC876F80533; Thu, 12 Jun 2025 15:33:44 +0200 (CEST)
+	id C8B8AF805B6; Thu, 12 Jun 2025 18:35:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6637F805C7;
-	Thu, 12 Jun 2025 15:33:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A95E1F805BF;
+	Thu, 12 Jun 2025 18:35:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4F2EF804D6; Thu, 12 Jun 2025 15:33:42 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 118AFF8013D
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2025 15:33:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 118AFF8013D
+	id 78E3CF804D6; Thu, 12 Jun 2025 18:35:41 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7C9FF800BD
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2025 18:35:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7C9FF800BD
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=H8TFM9tU
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 69A925C674A;
+	Thu, 12 Jun 2025 16:33:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A92FC4CEF0;
+	Thu, 12 Jun 2025 16:35:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749746136;
+	bh=uwrwGgQNcdDFRoVagZA9ucg/PWa1ct8dD/273Ttz3G8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=H8TFM9tUYQxmbPMmZ6rfs9MAICURdZeqpO4FZ7QO/UxJD9uYRUDrLY0iAFyLrx92x
+	 4wazWsGg92hCdgreJ8/gX/ZnpEIIAb6x/Gb3PwOrnN5quiTrmwCMRZDs4pFhJ8KUc8
+	 vgifO1e5l82TDvVhNqnroFX8SakB/wPvCNGvOiKNzN3TzQlj7GdLJAHdJzjcDBLcAl
+	 1G3jdiRh1uZw0Muiyvi6mQ6FTh30zBfwIRqcX5utg349jhBX00BEDbAPYt5PZaMYmc
+	 LciWo728P7X5vLy04We8ScdQaKUIuD/mzTH23bwkf+xzvOC4k4xPd6Q0pci7OOhWf3
+	 R8vhusYCx+F7g==
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: andriy.shevchenko@linux.intel.com, tiwai@suse.de, 13916275206@139.com,
+ 13564923607@139.com, alsa-devel@alsa-project.org, baojun.xu@ti.com,
+ jesse-ji@ti.com
+In-Reply-To: <20250612044252.1025-1-shenghao-ding@ti.com>
+References: <20250612044252.1025-1-shenghao-ding@ti.com>
+Subject: Re: [PATCH v1] ASoC: tas2781: Move the "include linux/debugfs.h"
+ into tas2781.h
+Message-Id: <174974613496.91503.16994166821243155893.b4-ty@kernel.org>
+Date: Thu, 12 Jun 2025 17:35:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18484ee9a0c09200-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/579@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/579@alsa-project.org>
-Subject: UCM2: Intel: sof-hda-dsp: HiFi: Fix handling of mono DMICs
-Date: Thu, 12 Jun 2025 15:33:42 +0200 (CEST)
-Message-ID-Hash: ZQQJJ26EZ32KUHRZVPHXP3FC7I7VDBNE
-X-Message-ID-Hash: ZQQJJ26EZ32KUHRZVPHXP3FC7I7VDBNE
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.15-dev-c25d1
+Message-ID-Hash: QPQTOBME4ZBF3E7BWS6XZLJUBFWH2KMW
+X-Message-ID-Hash: QPQTOBME4ZBF3E7BWS6XZLJUBFWH2KMW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZQQJJ26EZ32KUHRZVPHXP3FC7I7VDBNE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QPQTOBME4ZBF3E7BWS6XZLJUBFWH2KMW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,10 +94,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #579 was opened from ujfalusi:
+On Thu, 12 Jun 2025 12:42:52 +0800, Shenghao Ding wrote:
+> Move the include linux/debugfs.h into tas2781.h for code clean.
+> 
+> 
 
-When a single DMIC is present in the system we need to set the CaptureChannels to 1 since the PCM device only supports mono, PA/PW will reject the profile since it cannot open the DMIC PCM device.
+Applied to
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/579
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/579.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: tas2781: Move the "include linux/debugfs.h" into tas2781.h
+      commit: 8a5a5cecb79058b608e5562d8998123a3adb313c
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
