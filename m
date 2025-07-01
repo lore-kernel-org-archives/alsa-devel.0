@@ -4,52 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 507F2C8302F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jul 2025 02:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66B5BC83038
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Jul 2025 14:03:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAFC260200;
-	Tue,  1 Jul 2025 04:39:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAFC260200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 294A3601D2;
+	Tue,  1 Jul 2025 16:03:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 294A3601D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1751337593;
-	bh=03nr4m0idUsL/Hig1Y6tjM8uHkSKtgqCRrm8PVelnyM=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
+	s=default; t=1751378597;
+	bh=dvZ8d4+DD8THM9oKGiIGU9lAdmmA5iVCSuZQ0DCD6G8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=acemQyIBfsSHjLO2g/zuIWbNIrejwhSpSO5XLydgvm1uo9pGlFksSn1w9Tl3BeKx6
-	 3gof0GfkR73f3BsGmngeB+mQPty+1JPHzoFa44N8cbtd+ckZnHlYkVxETRcFeWwUzb
-	 0L8oGpSu0GPzE7MZRqX5UxmlA7L9atumnZthi0ho=
+	b=D1J5K7XHSkq4p20DM8Z0ftBxNdQi3zpiZ94kFR0YLUcx4a4jfEzvypb6nHnOX9wKN
+	 4eWDBPmzOKmERFdqO9g6lByVCrDQFqFqzHPeoKhhp0fIou8t6yhw+kgjDPP8kssnYC
+	 Ej8XLlcrmQC/MV5Oooufsfx9ff1Gikj1+9IBz2Dc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D487F80269; Tue,  1 Jul 2025 04:39:19 +0200 (CEST)
+	id 3A3B2F805D2; Tue,  1 Jul 2025 16:02:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07899F805D2;
-	Tue,  1 Jul 2025 04:39:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2C3BF805CA;
+	Tue,  1 Jul 2025 16:02:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B77C1F800D2; Tue,  1 Jul 2025 04:39:15 +0200 (CEST)
-Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
- [10.254.200.11])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA448F800D2
-	for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2025 04:39:15 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
+	id 4F895F80269; Tue,  1 Jul 2025 16:02:38 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 8509DF800B0
+	for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2025 16:02:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8509DF800B0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: Request for help: Outputting audio as an I2S stream
-From: tixij91670@exitbit.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Date: Tue, 01 Jul 2025 02:39:15 -0000
-Message-ID: 
- <175133755567.22.13780534277180153752@mailman-web.alsa-project.org>
-In-Reply-To: 
- <IA1PR15MB60081D218357B06E8C33F01BB567A@IA1PR15MB6008.namprd15.prod.outlook.com>
-References: 
- <IA1PR15MB60081D218357B06E8C33F01BB567A@IA1PR15MB6008.namprd15.prod.outlook.com>
-User-Agent: HyperKitty on https://mailman.alsa-project.org/
-Message-ID-Hash: 2M4R22OY5QMADBUYW6DVWJVOYQS4G33G
-X-Message-ID-Hash: 2M4R22OY5QMADBUYW6DVWJVOYQS4G33G
-X-MailFrom: tixij91670@exitbit.com
+Message-Id: <184e2584836d7c00-webhooks-bot@alsa-project.org>
+In-Reply-To: <184e258483659300-webhooks-bot@alsa-project.org>
+References: <184e258483659300-webhooks-bot@alsa-project.org>
+Subject: New Card: ESI Juli@ eX
+Date: Tue,  1 Jul 2025 16:02:38 +0200 (CEST)
+Message-ID-Hash: HLIHLC52UO3WY3E6UKZ4EW5BTNTQHZHL
+X-Message-ID-Hash: HLIHLC52UO3WY3E6UKZ4EW5BTNTQHZHL
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -61,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7P25FXN4RSL7ICZFPJSV5SSV2JS3NOIM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HLIHLC52UO3WY3E6UKZ4EW5BTNTQHZHL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -70,4 +67,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-I totally get your frustration—deferred probes can be really cryptic to debug, especially with so little info to go on in the logs. The "deferred probe pending" message usually means a dependency for your simple-sound-card hasn't loaded yet (like a missing clock, regulator, or maybe the I2S controller driver itself).  https://googlebaseball.io
+alsa-project/alsa-lib issue #462 was opened from Carlisle96:
+
+I am not sure where to ask or how to report this:
+
+There was a new card released ESI-Audio Juli@ eX
+https://www.esi-audio.com/products/juliaex/ 
+
+I am wondering if this is supported or planned to be supported. 
+It is not yet listed here: https://www.alsa-project.org/wiki/Matrix:Vendor-ESI
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/462
+Repository URL: https://github.com/alsa-project/alsa-lib
