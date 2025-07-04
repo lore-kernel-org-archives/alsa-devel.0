@@ -4,96 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D5C0C83F03
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jul 2025 12:17:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03256C83F03
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Jul 2025 12:46:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92AD46021E;
-	Fri,  4 Jul 2025 14:17:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AD46021E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C797C6020B;
+	Fri,  4 Jul 2025 14:45:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C797C6020B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1751631439;
-	bh=xcaAV4fgHILHGbeXPuCYVyWzm4CjE9OTYgdu4iXec/w=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=agG9VsoejPXGWF/kYoGjR5RBrBQ+0r7sBDQLZR2OIAyloP56S/U0HoWTyVD+c+C57
-	 wSTMWUrAEzVPArvUBhgWY4rw7A9eaD2syY43Bb3CRpxQYt+87zCtoPydjReDP3cDlp
-	 Dr1uUg5aQ3LMgJEBQz6ihJEARxZXQOG/EkoO9abs=
+	s=default; t=1751633160;
+	bh=T/Byahh1o4r3cpagPlEaKBQxkWN2HuPXBdf6vHNHfa4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JcQryfjtzt4jejQc2cKJsxU6vW1f1iH+pgVhPGlOElxt4dOFBILzOFxro5VaqrsDI
+	 +VKcj5YKQc3NF3DcHrRL+YeHg/zLZoxqj4iFbVIIBqXNnmDvSrHOUUisKGsPAC8bER
+	 sR7FQtXScAITzP2fl8LPfQsqhoB35PLev0GOJiAE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3669DF805F1; Fri,  4 Jul 2025 14:16:51 +0200 (CEST)
+	id 3F2A0F805C6; Fri,  4 Jul 2025 14:45:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3B65F805EF;
-	Fri,  4 Jul 2025 14:16:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5155F805CB;
+	Fri,  4 Jul 2025 14:45:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9830FF80424; Thu,  3 Jul 2025 02:12:11 +0200 (CEST)
-Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id B540BF804E5; Fri,  4 Jul 2025 14:45:21 +0200 (CEST)
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com
+ [IPv6:2607:f8b0:4864:20::82a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4194FF80038
-	for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2025 02:12:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4194FF80038
+	by alsa1.perex.cz (Postfix) with ESMTPS id 09F41F800BF
+	for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2025 14:45:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09F41F800BF
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=ACBwzBDs
-Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
-	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 56306flX4061309;
-	Wed, 2 Jul 2025 19:06:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1751501201;
-	bh=zTShQvNmYJsUbdqrutBggdEFTR1g+rS+ikJtmUsfF60=;
-	h=From:To:CC:Subject:Date;
-	b=ACBwzBDsLK/nxNfHEcv2fQdi6OiJJjVzof6WNTafSjEVQbZZT+NrcM4HEgrE9dVoh
-	 +9qg0wgtKESB4XyZkGOM63Whp++YJtDaBKx6NYLHglvEENV8mqXtG70Yf4BOQRHqfu
-	 2w7ta5irKRaR0FCNQ5UiqM/NnFUdN6vEWmAln1FU=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 56306fCv1313797
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Wed, 2 Jul 2025 19:06:41 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Wed, 2
- Jul 2025 19:06:41 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Wed, 2 Jul 2025 19:06:41 -0500
-Received: from lelvem-mr06.itg.ti.com ([10.250.165.138])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 56306ZSx4057921;
-	Wed, 2 Jul 2025 19:06:36 -0500
-From: Baojun Xu <baojun.xu@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, <shenghao-ding@ti.com>,
- <navada@ti.com>,
-        <13916275206@139.com>, <v-hampiholi@ti.com>, <v-po@ti.com>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <baojun.xu@ti.com>
-Subject: [PATCH v1] ALSA: hda/tas2781: Add bus name in device name check
-Date: Thu, 3 Jul 2025 08:06:08 +0800
-Message-ID: <20250703000608.20815-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=Y9rsI2WI
+Received: by mail-qt1-x82a.google.com with SMTP id
+ d75a77b69052e-4a43972dcd7so10406381cf.3
+        for <alsa-devel@alsa-project.org>;
+ Fri, 04 Jul 2025 05:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751633118; x=1752237918;
+ darn=alsa-project.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3b7SpxZwFUKCyRYzUNdSxcHOzs6LHfckAaJ36W/yrJw=;
+        b=Y9rsI2WIL5LRg3rq0ZpnWRDlmzCkAP16110D6HeUyBmvM2jokWrlBlzsL3zeyU2rNJ
+         KG5tgr5UGs6VLFw0r1v5dsvoK+7uW3ofqbmKGVRmhXhw0KKIya/sb3EsGZ2hqA5It0Os
+         JC5U/ukXcyQcjt2Pb5MfkHQFibHU1jAVUJA8ndnU6DPmr3OltP5907a0ToISDW+gyOTz
+         l8lz0OdATfbq/wGl8NvggXusC/EVXuxbZNJ80OReKjRNZYjzZ6rHoMObUpUhlv624+OM
+         afmXfhP72/waYart9sgbOKQ9yxzO+w5odJxrFId76Z5QlTnXXwOmF+m/3QqTuz+UwwwZ
+         OnoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751633118; x=1752237918;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3b7SpxZwFUKCyRYzUNdSxcHOzs6LHfckAaJ36W/yrJw=;
+        b=boVwMrDfMNHk9yJRKDJi4/4g42Q1tt6M9716MsSUHdPSdbt1XeTM5sDyhjqr5WYLiN
+         YRXs3zXFk2LCINR3/44qnvKvNN4L3maAG8Rj47Yr37B9mvRJ7m8VgM++XzL/l7T3HvL7
+         Np02gnvVnbNtFufSTzr4r1jKIwMF3WBgl2XDmvUqBXpw9oVzrvNNyDdOpR4E7ETFYNBe
+         w9jhce7lFMoUK1ghIH9Doh+dDIQ8a7EXSBXkvaCMgFo5Qh+Nx1Nrw21/kKcVDM2JxJCG
+         Jge8UuVn0ldEWabTmtOjrfwFaEg9pzv4T3W64gjpHf15E3ahS6jR6kG1LSHOVs5O5F0e
+         qjtA==
+X-Gm-Message-State: AOJu0YxE4Bextp0IXqY4A89pUzj8aMFAp4t41yWnMC3PAKAl9mbjWdMi
+	YeFs3/cy7q+3KJGNwNoO4JiznideoF6+5lCw1fTULKXFyWpUx8UuWk/MuFeInA==
+X-Gm-Gg: ASbGnctiznHIhKYx9Qnd+97UDuq3bidDcWI7Oe3MuZHAT493C0afqrJ5/5GIZIRX6Dk
+	6Jcv6JpfBa9zt0uyh1unWjxuf/A+jdCeqNmK/2YbOe9+PbgBzRV6PwKpkGRYHUeGLDDQq0RApwS
+	LMaUs4cCkQEjGFtRFasGHo5w68V2B6vUhlsf6o0uOUQN4MPGmxq55NCoxFk+24Z0uBXxsVNeoBg
+	NsXobOyllHY0nr/35jnbJXfGpTWlQRu2m9vGWSnZclQSOi1ErScNSScCmZHd09xUHnlABsNI/Dr
+	0vt1krGhKvZbiaMrG/dfQ2cQFTWfAt44QsQpGcI=
+X-Google-Smtp-Source: 
+ AGHT+IHXnfEZbYp2cvuzUtQZfQb6/bKY65RrTzOwTDjirpGgx8kGl0BNf3ZGPI1yxs+j7jYvtJijhQ==
+X-Received: by 2002:a05:622a:189d:b0:4a3:4d46:c2a6 with SMTP id
+ d75a77b69052e-4a9985fa4b6mr21304081cf.7.1751633117778;
+        Fri, 04 Jul 2025 05:45:17 -0700 (PDT)
+Received: from geday ([2804:7f2:8082:5254::1])
+        by smtp.gmail.com with ESMTPSA id
+ d75a77b69052e-4a994a3093asm13390891cf.36.2025.07.04.05.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jul 2025 05:45:17 -0700 (PDT)
+Date: Fri, 4 Jul 2025 09:45:13 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Brian Knutsson <maps@knutsson.it>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [BUG] Mackie DLZ Creator =?utf-8?Q?XS_?= =?utf-8?B?4oCT?= USB
+ Audio: write error -77 after accepted hw_params
+Message-ID: <aGfM2dly9p0aMYS9@geday>
+References: 
+ <1751030777207.7.27394@webmail-backend-production-84fcdc845b-7rcsr>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-MailFrom: baojun.xu@ti.com
-X-Mailman-Rule-Hits: nonmember-moderation
+In-Reply-To: 
+ <1751030777207.7.27394@webmail-backend-production-84fcdc845b-7rcsr>
+Message-ID-Hash: SGVFDSQ5IEQUNM5ZMUGV5IRL7UWFOJC7
+X-Message-ID-Hash: SGVFDSQ5IEQUNM5ZMUGV5IRL7UWFOJC7
+X-MailFrom: geraldogabriel@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CSGGHMWNNPEBXD7BRNDKKVG7AYREKOGT
-X-Message-ID-Hash: CSGGHMWNNPEBXD7BRNDKKVG7AYREKOGT
-X-Mailman-Approved-At: Fri, 04 Jul 2025 12:16:47 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CSGGHMWNNPEBXD7BRNDKKVG7AYREKOGT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SGVFDSQ5IEQUNM5ZMUGV5IRL7UWFOJC7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,27 +126,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Device name start from bus name, as we use strstarts()
-to do compare, need add it for TXNW2781 device.
+On Fri, Jun 27, 2025 at 03:26:17PM +0200, Brian Knutsson wrote:
+> 
+> Hi ALSA devs,
+> 
+> I'm reporting an issue with the Mackie DLZ Creator XS USB audio device on Linux (tested on Ubuntu 24.04 and 25.05 with kernel 6.8+).
+> 
+> The device is detected correctly via ALSA (card 2: XS), but as soon as playback is initiated – whether via `aplay` or `speaker-test` – it disconnects with `write error: -77, File descriptor in bad state`.
+> 
+> Relevant kernel logs show:
+> usb 3-7: Product: DLZ Creator XS
+> usb 3-7: Manufacturer: LOUD Audio, LLC
+> usb 3-7: USB disconnect, device number X
+> 
+> This occurs with and without PipeWire/udev running.
+> 
+> I’ve created a full ALSA log with `alsa-info` and opened a Kernel Bugzilla entry: <https://bugzilla.kernel.org/show_bug.cgi?id=220143>
+> 
+> Is there any known quirk or patch needed for this hardware? Or a way to assist debugging further (usbmon trace etc.)?
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
----
- sound/pci/hda/tas2781_hda_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Brian, thank you for the report.
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index b9cdbca95..530c2266a 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -588,7 +588,7 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
- 		hda_priv->save_calibration = tas2781_save_calibration;
- 		tas_hda->priv->global_addr = TAS2781_GLOBAL_ADDR;
- 	} else if (strstarts(dev_name(&clt->dev),
--			     "TXNW2781:00-tas2781-hda.0")) {
-+			     "i2c-TXNW2781:00-tas2781-hda.0")) {
- 		device_name = "TXNW2781";
- 		hda_priv->save_calibration = tas2781_save_calibration;
- 		tas_hda->priv->global_addr = TAS2781_GLOBAL_ADDR;
--- 
-2.43.0
+Has this device worked before on previous kernels? If yes, you can try
+to find which kernel version was first affected and then run run `git
+bisect` between non-affected and affected versions to try to pinpoint
+offending commit.
 
+If the answer however is no, then you're pretty much on your own and
+it's up to you to compare working Windows usb traces with Linux ones.
+I suggest you try existing quirks first to see if one of them handles
+your bug, but if none does, then it's like I said, pretty much manual
+development.
+
+Thanks,
+Geraldo Nascimento
+
+> 
+> Thanks in advance,
+> Brian Knutsson
