@@ -4,49 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDA2FC83F17
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Jul 2025 18:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E52DEC83F1A
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Jul 2025 03:49:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABCEA601F8;
-	Thu, 10 Jul 2025 20:25:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABCEA601F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11572601F5;
+	Fri, 11 Jul 2025 05:49:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11572601F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1752171924;
-	bh=rJkn6UDvMpDnjeKfs+q8Opc7iHPgZAUeWNAEbk5hu4w=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=r3p9azcRNFEUQyIZS0oMLzji+Iyz9fjJRhlUv/0z168b1Po0WciKT9rGBkWnt8UMY
-	 eEXOfDAFwoYjv7n6vZIPjwsOLohCXoCbzlzSuxt0HnTPdCa7NymyjBO/2+PbHKPIaq
-	 kn71zmiF6Kbd9xzj76xTXQOFO86356IaRi2kGpB4=
+	s=default; t=1752205764;
+	bh=fZn1g+ihhpy2vlHflSPcOL1EA3Kp3JEsRyEMaaqHwxw=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=hn6cqQR9RXK19j427XpIt/xsDfK4EslS8YQPrcFYIO1i7ItPLWZGPW10Q1JRcerOE
+	 ZiD13f9y2VG6XSVrHV0uvLqbZZKLkj08tYIjqOirIjULGPDg/H//ydx8hL5OUzZc31
+	 GNX0U/Uw9UJ3p3HHgvmTT86I+E1k0Aa5evJtoSvg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A85EF805C8; Thu, 10 Jul 2025 20:24:49 +0200 (CEST)
+	id 85AD6F805C6; Fri, 11 Jul 2025 05:48:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A37EF805C8;
-	Thu, 10 Jul 2025 20:24:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A239F805C6;
+	Fri, 11 Jul 2025 05:48:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7BB3FF80526; Thu, 10 Jul 2025 20:24:40 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id E828FF800B5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2025 20:24:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E828FF800B5
+	id 6BFC4F8052D; Fri, 11 Jul 2025 05:48:37 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56699F8025F
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jul 2025 05:48:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56699F8025F
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
+ header.s=dkim header.b=FQFqzjdR
+X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 56B3mMUK1368711,
+ This message is accepted by code: ctloc85258
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
+	t=1752205702; bh=5QrPpkWZN5CcgFGnYsQKqUnVnC1YJGEeq3p/71oyRGM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type;
+	b=FQFqzjdRA07Dv+JfcKdbYrC/fsNNf9IWUQxFT8fjlJms2ZBJARrVgfr9oeOC0u469
+	 RmqrwL67/F2XZy9epPIUPW42kXwXttq+g/LGd5B3areF7cjstC8ESSulzTw7jumPEU
+	 6m0nQZc+/PYx23p6VoJ0QesnBCh0WYYwqmCpnpY8oC4XTVWLZU9pRT12YdaTtVKAdD
+	 EY2diiPUC5OD8KE7p6z+E9fa/YDo5B9qSHTjxKs9vh3zB0AK26wrjPC3LARG0Yq39v
+	 DrxlOgEhPm3eZup9ufxz3qRXjMCLy1tfohyBvh/695g4RxTU2K1pKNul/mUl8F7V08
+	 PzNZv/3aYKDXg==
+Received: from mail.realtek.com (rtkexhmbs04.realtek.com.tw[10.21.1.54])
+	by rtits2.realtek.com.tw (8.15.2/3.13/5.93) with ESMTPS id 56B3mMUK1368711
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 11 Jul 2025 11:48:22 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTKEXHMBS04.realtek.com.tw (10.21.1.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 11 Jul 2025 11:48:23 +0800
+Received: from sw-server.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 11 Jul 2025 11:48:22 +0800
+From: Oder Chiou <oder_chiou@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC: <alsa-devel@alsa-project.org>, <flove@realtek.com>,
+ <shumingf@realtek.com>,
+        <jack.yu@realtek.com>, <derek.fang@realtek.com>,
+        Oder
+ Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5660: Fix the dmic data source from GPIO2
+Date: Fri, 11 Jul 2025 11:48:13 +0800
+Message-ID: <20250711034813.3278989-1-oder_chiou@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1850f709ff42f600-webhooks-bot@alsa-project.org>
-In-Reply-To: <1850f709ff104700-webhooks-bot@alsa-project.org>
-References: <1850f709ff104700-webhooks-bot@alsa-project.org>
-Subject: Realtek ALC897 - no 5.1, 7.1 surround sound
-Date: Thu, 10 Jul 2025 20:24:40 +0200 (CEST)
-Message-ID-Hash: RR3QXNAFWX7HVGHTGFDQJQCEULJUGQK2
-X-Message-ID-Hash: RR3QXNAFWX7HVGHTGFDQJQCEULJUGQK2
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+Message-ID-Hash: JUPJCKVC23JDMKJJFUQSOH2QKJXJK2DZ
+X-Message-ID-Hash: JUPJCKVC23JDMKJJFUQSOH2QKJXJK2DZ
+X-MailFrom: oder_chiou@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RR3QXNAFWX7HVGHTGFDQJQCEULJUGQK2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JUPJCKVC23JDMKJJFUQSOH2QKJXJK2DZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,21 +108,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #590 was opened from tomaszdrozdz:
+The patch fixes an issue with the dmic data pin connected to GPIO2.
 
-Hello all.  
-  
-In nutshell:  
-- I can not set 5.1 sound on my Fedora.  
-- My sound card is Realtek ALC897.  
-  
-First I described it here: https://discussion.fedoraproject.org/t/5-1-7-1-sound-speakers/156932/4  
-Then here: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/4788  
-And so I got here.  
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5660.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-If you need more info or action to be taken from me please let me know.  
+diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
+index 82b92e83be4c..44c3a3b92f98 100644
+--- a/sound/soc/codecs/rt5660.c
++++ b/sound/soc/codecs/rt5660.c
+@@ -1315,14 +1315,17 @@ static int rt5660_i2c_probe(struct i2c_client *i2c)
+ 		regmap_update_bits(rt5660->regmap, RT5660_GPIO_CTRL1,
+ 			RT5660_GP1_PIN_MASK, RT5660_GP1_PIN_DMIC1_SCL);
+ 
+-		if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_GPIO2)
++		if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_GPIO2) {
+ 			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
+ 				RT5660_SEL_DMIC_DATA_MASK,
+ 				RT5660_SEL_DMIC_DATA_GPIO2);
+-		else if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_IN1P)
++			regmap_update_bits(rt5660->regmap, RT5660_GPIO_CTRL1,
++				RT5660_GP2_PIN_MASK, RT5660_GP2_PIN_DMIC1_SDA);
++		} else if (rt5660->pdata.dmic1_data_pin == RT5660_DMIC1_DATA_IN1P) {
+ 			regmap_update_bits(rt5660->regmap, RT5660_DMIC_CTRL1,
+ 				RT5660_SEL_DMIC_DATA_MASK,
+ 				RT5660_SEL_DMIC_DATA_IN1P);
++		}
+ 	}
+ 
+ 	return devm_snd_soc_register_component(&i2c->dev,
+-- 
+2.34.1
 
-Help, assist - Please.
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/590
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
