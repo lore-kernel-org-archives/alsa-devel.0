@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D6DCC83F17
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Jul 2025 22:24:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BAB2C83F1A
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Jul 2025 16:05:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D68860201;
-	Sat, 19 Jul 2025 00:24:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D68860201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10A7F601F4;
+	Sun, 20 Jul 2025 18:05:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10A7F601F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1752877461;
-	bh=TutYYNReeOU6/QbjEamP+uKg9RD4UVu4n+IbJXu96QU=;
+	s=default; t=1753027529;
+	bh=qQLDhwjNH2hGrFWnIM6NDC2uVisVCLXPFoqOAbY6Ld8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=g4um8mds4D4WWQIm96UIzHkdMeBJSpHszeUufSmW7CId1Z/R0tgvi1U3COvUjGFaV
-	 FWIJo8HFxPjqMfMn9JlF4pe7C9RgxZ6RjVWQy2GlyY7Kl+WfLGxfscs9lv15eGMobO
-	 W5GH4WNiJ56wIkkq7OmU3xhPzWkLLiuuxhJxObzs=
+	b=bIDZDeLZ8AoKxMbU4dOStwmR9b8rEz7vs+plG+Texoe/jfdjjYEmHdt+QoOky5IYY
+	 gkyq5XXq3Z07uGyFTDTN/pH3dRD/SAruV4X0rRe3EacfLZrhHAk36ds6ETdWfOvceX
+	 C5BDJ3YApnMT2dBF3FcdcQ9+FaalFRd2TA0MBx1k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 714DDF805C0; Sat, 19 Jul 2025 00:23:45 +0200 (CEST)
+	id 98CC7F805D7; Sun, 20 Jul 2025 18:04:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EA79F805C0;
-	Sat, 19 Jul 2025 00:23:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73196F805C8;
+	Sun, 20 Jul 2025 18:04:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06575F80254; Sat, 19 Jul 2025 00:23:28 +0200 (CEST)
+	id CD006F80185; Sun, 20 Jul 2025 18:04:44 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84F5AF80088
-	for <alsa-devel@alsa-project.org>; Sat, 19 Jul 2025 00:23:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84F5AF80088
+	by alsa1.perex.cz (Postfix) with ESMTP id 15650F80087
+	for <alsa-devel@alsa-project.org>; Sun, 20 Jul 2025 18:04:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15650F80087
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <185378b63613d100-webhooks-bot@alsa-project.org>
-In-Reply-To: <185378b635cae200-webhooks-bot@alsa-project.org>
-References: <185378b635cae200-webhooks-bot@alsa-project.org>
-Subject: Internal Microphone not working
-Date: Sat, 19 Jul 2025 00:23:28 +0200 (CEST)
-Message-ID-Hash: 7QEWRA63VKTZW7EZ7IYQW7KVGSIOR5GR
-X-Message-ID-Hash: 7QEWRA63VKTZW7EZ7IYQW7KVGSIOR5GR
+Message-Id: <18540135198af000-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/596@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/596@alsa-project.org>
+Subject: Rename qcs6490-rb3gen2 and qcs9075-iq-evk ucm2 conf
+Date: Sun, 20 Jul 2025 18:04:44 +0200 (CEST)
+Message-ID-Hash: MGRUC5LGUYGZWI3N5AJLQOJKIO7ZSVPQ
+X-Message-ID-Hash: MGRUC5LGUYGZWI3N5AJLQOJKIO7ZSVPQ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7QEWRA63VKTZW7EZ7IYQW7KVGSIOR5GR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MGRUC5LGUYGZWI3N5AJLQOJKIO7ZSVPQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,31 +67,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #464 was opened from crashthepose:
+alsa-project/alsa-ucm-conf pull request #596 was opened from mohsRafi:
 
-After updating my computer my internal microphone is not working. 
+Rename the ucm2 conf for Qualcomm qcs6490-rb3gen2 and qcs9075-iq-evk
 
+qcs6490-rb3gen2-snd-card.conf -> QCS6490-RB3Gen2.conf
+qcs9075-iq-evk-snd-card.conf -> QCS9075-IQ-EVK.conf
 
+Removed snd-card tags from conf files
 
-
-Originally when I went to my Audio settings it would say under Input "headset unplugged". I was able to go into the HDAjackretask interface and  override one of the pins where now the internal microphone is showing on the input list but now I only hear static noise. 
-
-
-Info on my computer:
-
-OS: Pop!_OS 22.04 LTS x86_64 
-Host: ASUSLaptop_Q530VJ 1.0
-Kernal: 6.12.10-76061203-generic 
-Desktop Environment: GNOME 42.9
- Terminal: gnome-terminal 
-CPU: 13th Gen Intel i7-13620H (16) @ 4.700GHz 
- GPU: Intel Device a7a8 
- GPU: NVIDIA 01:00.0 NVIDIA Corporation Device 25ac 
-Memory: 7828MiB / 15610MiB
-
-Here is my alsa info: http://alsa-project.org/db/?f=ed8089460c52b3b91175d52dfd51c4bad1f7388f
-
-I've never submitted a bug before so apologies if i'm not doing this the correct way.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/464
-Repository URL: https://github.com/alsa-project/alsa-lib
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/596
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/596.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
