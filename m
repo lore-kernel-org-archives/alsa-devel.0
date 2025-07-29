@@ -4,116 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9054EC87FC9
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jul 2025 11:51:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9328EC87FCB
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jul 2025 12:06:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F258260260;
-	Wed, 30 Jul 2025 13:51:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F258260260
+	by alsa0.perex.cz (Postfix) with ESMTPS id 101076024F;
+	Wed, 30 Jul 2025 14:06:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 101076024F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1753876289;
-	bh=gorbOLRxJT0JdIMGPDRSTq3Ywcr3uu/Euag8Tbd4C2k=;
+	s=default; t=1753877175;
+	bh=cphQ01oXi2gDkQyo0GXS1R2C6OmqmjfzGSY01/UYKQI=;
 	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dUW2UpAjzxU0/buckSg/6gcMfHlC9ekKLVEmKgWh/STaWA3BUicYXkBsEmU6DbpA1
-	 HVKrCgmtxE5HRmfuFA5v4MMmnX0+/7DaiqUm7c7jqSq7xQcW4EaY8aXUNlVjHMgGf3
-	 wTU7PMOV2s7yRR6v8s9nrYaCjnYQhSeVpF2pJpxs=
+	b=LXFKMDTkd8YBKYCmmTRWaAcZY+KHqiCzuU5RsCio/mg69PoqUuYXsBKvWdNi16XFy
+	 9JWqe+xe9/7NEGCAzP1ykxr+Eh/GdeuZr8i0o0rwpz6Xw5XtJlPOB1brgzpTB/LZqq
+	 Wi7NBLoxwpyXiPZSiWePbIlEOxios9VZLFDcvqOM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9D76F805DF; Wed, 30 Jul 2025 13:51:05 +0200 (CEST)
+	id D6650F805D7; Wed, 30 Jul 2025 14:05:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30F1DF805E0;
-	Wed, 30 Jul 2025 13:51:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A56A1F805D4;
+	Wed, 30 Jul 2025 14:05:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06F0AF8026A; Mon, 28 Jul 2025 12:22:35 +0200 (CEST)
+	id CC1F3F80254; Tue, 29 Jul 2025 15:00:30 +0200 (CEST)
 Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AFE7EF8011B
-	for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2025 12:22:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFE7EF8011B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1149AF80217
+	for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2025 15:00:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1149AF80217
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=G/Yk4QfI
+ header.s=ti-com-17Q1 header.b=X5wory8M
 Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
-	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 56SAML7s2707653;
-	Mon, 28 Jul 2025 05:22:21 -0500
+	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 56TD0LpF2967271;
+	Tue, 29 Jul 2025 08:00:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1753698141;
-	bh=gorbOLRxJT0JdIMGPDRSTq3Ywcr3uu/Euag8Tbd4C2k=;
+	s=ti-com-17Q1; t=1753794021;
+	bh=QqAobOTYQe6WECehT+kMwZtUBsShs9456vNKAow6d+s=;
 	h=From:To:CC:Subject:Date;
-	b=G/Yk4QfIpbL6qJO59zWLztuoM2PbManCyPA85XlE0u4XGWnGRDDPNc9krvZDUu9NI
-	 1e7RsW2XMfthLuiFVE1T0XDCj3Tn6oZSeVSaoieG9tb2b+0w6+HAQU+RhvFpFhwC1O
-	 tRK7mAsGpXpg1/z62BYChW+mDdu1+pDRdgkMNs7E=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 56SAMKvq1621296
+	b=X5wory8MKkZNlFH5Qz6P0+XNppoYf2fOx4mw5r+FuHwwKXUdgtMptafmZELaooWwY
+	 ZHfDLKjIto0L8UJI6JGjyZX2PRy2JFhdCUO1snsAmWkEJWEOjIMup8ShTJ/lFwXaFj
+	 VMQtLsB8apo2Lgdkso71YNC6ABhwP8K1joi7ctpE=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 56TD0KxX2461250
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Mon, 28 Jul 2025 05:22:20 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 28
- Jul 2025 05:22:19 -0500
-Received: from DLEE107.ent.ti.com ([fe80::1c91:43d:d71:d7b6]) by
- DLEE107.ent.ti.com ([fe80::1c91:43d:d71:d7b6%17]) with mapi id
- 15.01.2507.055; Mon, 28 Jul 2025 05:22:19 -0500
-From: "Holalu Yogendra, Niranjan" <niranjan.hy@ti.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-CC: "broonie@kernel.org" <broonie@kernel.org>,
-        "krzk+dt@kernel.org"
-	<krzk+dt@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "andriy.shevchenko@linux.intel.com"
- <andriy.shevchenko@linux.intel.com>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>,
-        "Xu, Baojun" <baojun.xu@ti.com>,
-        "Ding,
- Shenghao" <shenghao-ding@ti.com>,
-        "liam.r.girdwood@intel.com"
-	<liam.r.girdwood@intel.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "linux-sound@vger.kernel.org"
-	<linux-sound@vger.kernel.org>,
-        "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>,
-        "Navada Kanyana, Mukund" <navada@ti.com>,
-        "Hampiholi, Vallabha" <v-hampiholi@ti.com>
-Subject: Re: [PATCH v3 2/4] dt-bindings: sound: bindings for tac5x1x family of
- codecs
-Thread-Topic: [PATCH v3 2/4] dt-bindings: sound: bindings for tac5x1x family
- of codecs
-Thread-Index: Adv/pqCHhQ7Z5pboSlmxx2N4LsHPtw==
-Date: Mon, 28 Jul 2025 10:22:18 +0000
-Message-ID: <a5c23c7928da403fafe24c1de0fc6412@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.82.30.14]
-x-c2processedorg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	Tue, 29 Jul 2025 08:00:21 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Tue, 29
+ Jul 2025 08:00:20 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Tue, 29 Jul 2025 08:00:20 -0500
+Received: from lelvem-mr05.itg.ti.com ([10.250.165.138])
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 56TD0D7t3745895;
+	Tue, 29 Jul 2025 08:00:14 -0500
+From: Baojun Xu <baojun.xu@ti.com>
+To: <tiwai@suse.de>
+CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, <shenghao-ding@ti.com>,
+        <13916275206@139.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <baojun.xu@ti.com>
+Subject: [PATCH v1] ALSA: hda: Fix the wrong register was used for DVC of
+ TAS2770
+Date: Tue, 29 Jul 2025 20:59:38 +0800
+Message-ID: <20250729125938.54696-1-baojun.xu@ti.com>
+X-Mailer: git-send-email 2.43.0.windows.1
 MIME-Version: 1.0
-X-MailFrom: niranjan.hy@ti.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-MailFrom: baojun.xu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: C3RCTMXBZHUFXSQBSTHSB4RVBUJFGA37
-X-Message-ID-Hash: C3RCTMXBZHUFXSQBSTHSB4RVBUJFGA37
-X-Mailman-Approved-At: Wed, 30 Jul 2025 11:50:25 +0000
+Message-ID-Hash: XFE2LMLPIKYXA3VVCRG5OIOTI6GSETSY
+X-Message-ID-Hash: XFE2LMLPIKYXA3VVCRG5OIOTI6GSETSY
+X-Mailman-Approved-At: Wed, 30 Jul 2025 12:05:24 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C3RCTMXBZHUFXSQBSTHSB4RVBUJFGA37/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XFE2LMLPIKYXA3VVCRG5OIOTI6GSETSY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,40 +101,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGkgS3J6eXN6dG9mLA0KDQpUaGFua3MgZm9yIHRoZSBkZXRhaWxlZCByZXZpZXcgY29tbWVudHMu
-IA0KUmVxdWVzdCB5b3UgdG8gdGFrZSBhIGxvb2sgYXQgY29tbWVudHMgYmVsb3cuIA0KDQpPbiBG
-cmksIEp1biAyNywgMjAyNSBhdCAxOjE4IFBNICswNTMwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
-b3RlOg0KPiBPbiBUaHUsIEp1biAyNiwgMjAyNSBhdCAxMTo0MzozMVBNICswNTMwLCBOaXJhbmph
-biBIIFkgd3JvdGU6DQo+ID4gKyAgdGksdnJlZjoNCj4gPiArICAgIGRlc2NyaXB0aW9uOiBWUkVG
-IHJlcXVpcmVkIHZvbHRhZ2UuIElmIG5vZGUgaXMgb21pdHRlZCB0aGVuIFZSRUYgaXMNCj4gVm9s
-dGFnZSBpcyBpbiBtaWNyb3ZvbHQuIFVzZSBwcm9wZXIgc3VmZml4L3ZhbHVlcy4NCklzIHRoaXMg
-Y29udmVudGlvbiA/IElzIHRoZXJlIGFueSBkb2N1bWVudCBvbiB0aGVzZSBJIGNhbiByZWZlciA/
-DQo+IA0KPiA+ICsgICAgb25lT2Y6DQo+ID4gKyAgICAgIC0gY29uc3Q6IDANCj4gPiArICAgICAg
-ICBkZXNjcmlwdGlvbjogVlJFRiBvdXRwdXQgaXMgcG93ZXJlZCB0byAyLjc1Vi4NCj4gPiArICAg
-ICAgLSBjb25zdDogMQ0KPiA+ICsgICAgICAgIGRlc2NyaXB0aW9uOiBWUkVGIG91dHB1dCBpcyBw
-b3dlcmVkIHRvIDIuNVYuDQo+ID4gKyAgICAgIC0gY29uc3Q6IDINCj4gPiArICAgICAgICBkZXNj
-cmlwdGlvbjogVlJFRiBvdXRwdXQgaXMgcG93ZXJlZCB0byAxLjM3NVYuDQoNCj4gPiArICB0aSxn
-cGlvcy1mdW5jOg0KPiA+ICsgICAgZGVzY3JpcHRpb246IHwNCj4gPiArICAgICAgQXJyYXkgaW5k
-aWNhdGluZyB0aGUgR1BJTzEsIEdQSU8yLCBHUE8xIEZ1bmN0aW9uYWxpdHkgaW4gdGhlIHNhbWUg
-b3JkZXIuDQo+ID4gKyAgICAgIEVhY2ggaW50ZWdlciBlbGVtbmVudCBpbiB0aGUgYXJyYXkgcmVw
-cmVzZW50IHRoZSBmb2xsb3dpbmcNCj4gPiArICAgICAgLSAwICBUQUM1WDFYX0dQSU9fRElTQUJM
-RSAgICAgICAgLSBHUElPIGlzIERpc2FibGVkDQo+ID4gKyAgICAgIC0gMSAgVEFDNVgxWF9HUElP
-X0dQSSAgICAgICAgICAgIC0gR2VuZXJhbCBQdXJwb3NlIElucHV0DQo+ID4gKyAgICAgIC0gMiAg
-QURDM1hYWF9HUElPX0dQTyAgICAgICAgICAgIC0gR2VuZXJhbCBQdXJwb3NlIE91dHB1dA0KPiA+
-ICsgICAgICAtIDMgIFRBQzVYMVhfR1BJT19JUlEgICAgICAgICAgICAtIENoaXAgSW50ZXJydXB0
-DQo+ID4gKyAgICAgIC0gNCAgVEFDNVgxWF9HUElPX1BETUNMSyAgICAgICAgIC0gUERNIENMSyBP
-dXRwdXQNCj4gPiArICAgICAgLSA1ICBUQUM1WDFYX0dQSU9fUF9ET1VUICAgICAgICAgLSBQcmlt
-YXJ5IEFTSSBET1VUDQo+ID4gKyAgICAgIC0gNiAgVEFDNVgxWF9HUElPX1BfRE9VVDIgICAgICAg
-IC0gUHJpbWFyeSBBU0kgRE9VVDINCj4gPiArICAgICAgLSA3ICBUQUM1WDFYX0dQSU9fU19ET1VU
-ICAgICAgICAgLSBTZWNvbmRhcnkgQVNJIERPVVQNCj4gPiArICAgICAgLSA4ICBUQUM1WDFYX0dQ
-SU9fU19ET1VUMiAgICAgICAgLSBTZWNvbmRhcnkgQVNJIERPVVQyDQo+ID4gKyAgICAgIC0gOSAg
-VEFDNVgxWF9HUElPX1NfQkNMSyAgICAgICAgIC0gU2Vjb25kYXJ5IEJDTEsgT3V0cHV0DQo+ID4g
-KyAgICAgIC0gMTAgVEFDNVgxWF9HUElPX1NfRlNZTkMgICAgICAgLSBTZWNvbmRhcnkgRlNZTkMg
-T3V0cHV0DQo+ID4gKyAgICAgIC0gMTEgVEFDNVgxWF9HUElPX0NMS09VVCAgICAgICAgLSBHZW5l
-cmFsIFB1cnBvc2UgT3V0cHV0DQo+ID4gKyAgICAgIC0gMTIgVEFDNVgxWF9HUElPX0RPVVRfTVVY
-DQo+ID4gKyAgICAgIC0gMTMgVEFDNVgxWF9HUElPX0RBSVNZX09VVA0KPiA+ICsgICAgJHJlZjog
-L3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyLWFycmF5DQo+ID4gKyAgICBt
-aW5JdGVtczogMw0KPiA+ICsgICAgbWF4SXRlbXM6IDMNCj4gDQo+IERvbid0IGVuY29kZSBncGlv
-cyBhbmQgcGlucyBhcyBzb21lIGN1c3RvbSBwcm9wZXJ0aWVzLg0KQ291bGQgeW91IHBsZWFzZSBz
-dWdnZXN0IHdoYXQgaXMgdGhlIGFsdGVybmF0aXZlLg0KUGxlYXNlIHN1Z2dlc3Qgc29tZSBleGFt
-cGxlIHdoaWNoIEkgY2FuIHJlZmVyID8gDQoNClJlZ2FyZHMNCk5pcmFuamFuDQoNCg==
+The wrong register was used for digital volume control of TAS2770,
+The definition was changed, and usage was also updated.
+
+Fixes: ab29b3460c5c ("ALSA: hda: Add TAS2770 support")
+
+Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+---
+ include/sound/tas2770-tlv.h                    | 4 ++--
+ sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/sound/tas2770-tlv.h b/include/sound/tas2770-tlv.h
+index c0bd495b4a07..5518b34abdde 100644
+--- a/include/sound/tas2770-tlv.h
++++ b/include/sound/tas2770-tlv.h
+@@ -14,10 +14,10 @@
+ #ifndef __TAS2770_TLV_H__
+ #define __TAS2770_TLV_H__
+ 
+-#define TAS2770_DVC_LEVEL		TASDEVICE_REG(0x0, 0x0, 0x17)
++#define TAS2770_DVC_LEVEL		TASDEVICE_REG(0x0, 0x0, 0x05)
+ #define TAS2770_AMP_LEVEL		TASDEVICE_REG(0x0, 0x0, 0x03)
+ 
+-static const __maybe_unused DECLARE_TLV_DB_SCALE(tas2770_dvc_tlv, 1650, 50, 0);
++static const __maybe_unused DECLARE_TLV_DB_SCALE(tas2770_dvc_tlv, -1000, 50, 0);
+ static const __maybe_unused DECLARE_TLV_DB_SCALE(tas2770_amp_tlv, 1100, 50, 0);
+ 
+ #endif
+diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
+index a0b132681804..45ac5e41bd4f 100644
+--- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
++++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
+@@ -260,7 +260,7 @@ static const struct snd_kcontrol_new tas2770_snd_controls[] = {
+ 		0, 0, 20, 0, tas2781_amp_getvol,
+ 		tas2781_amp_putvol, tas2770_amp_tlv),
+ 	ACARD_SINGLE_RANGE_EXT_TLV("Speaker Digital Volume", TAS2770_DVC_LEVEL,
+-		0, 0, 31, 0, tas2781_amp_getvol,
++		0, 0, 200, 1, tas2781_amp_getvol,
+ 		tas2781_amp_putvol, tas2770_dvc_tlv),
+ };
+ 
+-- 
+2.43.0
+
