@@ -4,94 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEEF7C87FCB
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jul 2025 12:06:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 473D7C83F26
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Jul 2025 19:37:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4720960275;
-	Wed, 30 Jul 2025 14:06:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4720960275
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C8A56024C;
+	Wed, 30 Jul 2025 21:36:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C8A56024C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1753877209;
-	bh=FhJYgVdy7uv+pIWPhCaLWgy9qxucMXMybPT+uOiNyDQ=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=U3Uj2LFKuFVr0bWZ5o0CJdpPzpyJAjuCH81IF0G+rFNMe9Nu0ua0z380kztrwGZP5
-	 QALJMLB57RcjPe82pdcZ+tJARGnfYPw/d/l9CSu/MDPmc9YnGN9iWHwpJhalLzVjL9
-	 Ngw9UmKPskTU0cMcYcQMqbzlf2qAjzkRNvip2Jyo=
+	s=default; t=1753904226;
+	bh=t5Dy3MyaHy+G6GVBmMUwGtsH5U+/WaJ7Y89TShjN0S0=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=cRHJc+YPXA0RVEnNwbFg6lOh+/5pY8rFONfOXmliRW3/DOseB078oDXjr9pNAJx/t
+	 AfG4r7L5hf6gkC47rOOdWtbhtPXGGKXK5i/vcH7Lc920v/ciAxrdcW/n+r4NnPyldr
+	 YhqP5UBAKmb2J1GHnFIJJwNRe3guFbWpddMmmVds=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44B20F80614; Wed, 30 Jul 2025 14:05:50 +0200 (CEST)
+	id A94B6F805CA; Wed, 30 Jul 2025 21:36:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8691F80613;
-	Wed, 30 Jul 2025 14:05:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51813F805C9;
+	Wed, 30 Jul 2025 21:36:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1F242F80254; Wed, 30 Jul 2025 07:33:19 +0200 (CEST)
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id B78CAF80254; Wed, 30 Jul 2025 21:36:06 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 665ABF80152
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2025 07:33:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 665ABF80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5754AF80152
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2025 21:36:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5754AF80152
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=ohQY84eD
-Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 56U5X3892691312;
-	Wed, 30 Jul 2025 00:33:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1753853583;
-	bh=jqs9ri/KCcvlHLen5ccn4YkIZlSKH8zl84oJtQdNKqk=;
-	h=From:To:CC:Subject:Date;
-	b=ohQY84eD1DstEFx8OEonZc8AXlpvx94K8hhenMrrcGVDdHznp+Ve0hEH4M0KOhVyG
-	 +I8mIkeB5qulWmu44ZmaYzVhyfXeOgvx6JzSl3c5vL49RtSHjcL27aKYMc16Y1QjEN
-	 90m4SQtOqx6YL5rDdtmp/X/ZHldjodNFhTZYi/kg=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 56U5X2GI3265370
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Wed, 30 Jul 2025 00:33:02 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Wed, 30
- Jul 2025 00:33:02 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Wed, 30 Jul 2025 00:33:02 -0500
-Received: from lelvem-mr06.itg.ti.com ([10.250.165.138])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 56U5WwHI418872;
-	Wed, 30 Jul 2025 00:32:59 -0500
-From: Baojun Xu <baojun.xu@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, <shenghao-ding@ti.com>,
-        <13916275206@139.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <baojun.xu@ti.com>
-Subject: [PATCH v1] ASoC: tas2781: Normalize the volume kcontrol name
-Date: Wed, 30 Jul 2025 13:32:36 +0800
-Message-ID: <20250730053236.57643-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmx.de header.i=m.armsby@gmx.de header.a=rsa-sha256
+ header.s=s31663417 header.b=oHYfGctK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1753904161; x=1754508961; i=m.armsby@gmx.de;
+	bh=ZFQQNlmWc+lDPt/AlA9BPPBo17BS8a9ZqbM4ObQZRa4=;
+	h=X-UI-Sender-Class:Date:From:To:Subject:In-Reply-To:References:
+	 Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=oHYfGctKDNFrMDDw55RABgqY8rNB9DECsD1q0dCqGCZGi1XvSmgu9SCTysDBdZh2
+	 QsPr/Zu5OzSJIu1uD2gUBd8sDIqy98u96JQfaIkADW+zXQ9eW8QKT1GW8mF5NyfrX
+	 q3MJgF/AVuCRTAuDlguNkFbyUeg7ltqwOFj2WdyqbZQL3abSXbdDTerX0Kh+McKka
+	 hXhMmbuwv/N4J1BwO5rZm6oxOBTmtUMT6q6fNB98TmnbA4f+o27hN7wVqSPVtuAiz
+	 BfSJaH5QYwnxz7vav9aXoGjizyZmfoC6Mp9/VT8SYx3LYAgwxZs0fpwHfKDUeFXu2
+	 O14q/9aApP9ZTb6kZg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [127.0.0.1] ([77.20.253.70]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUowb-1v7m1A16Dh-00V1ec; Wed, 30
+ Jul 2025 21:36:01 +0200
+Date: Wed, 30 Jul 2025 21:36:00 +0200
+From: "M. Armsby" <m.armsby@gmx.de>
+To: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: ALSAfirewire broken / Pipewire 90ms delay
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20250724143813.GA23616@workstation.local>
+References: <224C5A41-DCED-4FA2-BE82-898F257DA2E9@gmx.de>
+ <20250724143813.GA23616@workstation.local>
+Message-ID: <FD6FDA7B-D958-47BB-B90C-1A82349F94E4@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-MailFrom: baojun.xu@ti.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:kDrKwqf7e9J/lK57rXzCys8bW+thdVeFO07yTDdDf2xbRGf7dfN
+ zxukyBz8GymNe/tQa+fU/3q9xhuGE+q+ZPpO1rauDqDT8+MEJK3SkgydVfCYSDv2s9gRDnT
+ nf92FSuE52xxkujlIBAdGmevhnTu4awRwr8k3176NmGU2sg1CRjYBC6blwwQGgEIbcyjiqB
+ juEnAYiRRV+h80p+7D81Q==
+UI-OutboundReport: notjunk:1;M01:P0:/BWP5z/A1YA=;58abedQBFgqKFBAp+iKyH4E5Tac
+ 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
+ 2Ur2pC4nk0Ad7qH5KYS6r6PwTZjartoQ=
+Message-ID-Hash: NKXC6FSW2GP7EUOEXUNSTN7LBYCQ4L4W
+X-Message-ID-Hash: NKXC6FSW2GP7EUOEXUNSTN7LBYCQ4L4W
+X-MailFrom: m.armsby@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: QCLF5JGOAMPHCPCXMV3M4TXST2YVEPB4
-X-Message-ID-Hash: QCLF5JGOAMPHCPCXMV3M4TXST2YVEPB4
-X-Mailman-Approved-At: Wed, 30 Jul 2025 12:05:26 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QCLF5JGOAMPHCPCXMV3M4TXST2YVEPB4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NKXC6FSW2GP7EUOEXUNSTN7LBYCQ4L4W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,87 +148,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As more devices become supported, add "tas2781" as a suffix before the
-TLV name, correct the DVC step, and normalize the volume kcontrol name.
+The new ALSAfirewire drivers are very good=2E Well done to everyone who wor=
+ked on them!=20
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
----
- include/sound/tas2781-tlv.h                    | 6 ++++--
- sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 4 ++--
- sound/hda/codecs/side-codecs/tas2781_hda_spi.c | 5 +++--
- sound/soc/codecs/tas2781-i2c.c                 | 8 ++++----
- 4 files changed, 13 insertions(+), 10 deletions(-)
+Today I tested brand new CachyOS with xfce desktop kernel 6=2E15=20
+Initial Pipewire test showed RTT 98ms at 64/44100 so I uninstalled all tra=
+ces of Pipewire and installed PulseAudio and Jack2 instead=2E
+I first tested ALSA direct from Reaper with Echo Audiofire4, Pianoteq and =
+the RTT was as expected around 8ms (no 90ms)
+Then Jack2 with ALSAfirewire=2E
+The result was very similar and around 2% less rtCPU usage but a few X-run=
+s on page refresh=2E
+I then set CPU to balanced and Jack failed with hundreds of X-runs whereas=
+ your wonderful ALSAfirewire alone continued with no X-runs  :)=20
 
-diff --git a/include/sound/tas2781-tlv.h b/include/sound/tas2781-tlv.h
-index d87263e43fdb..38b8f828a353 100644
---- a/include/sound/tas2781-tlv.h
-+++ b/include/sound/tas2781-tlv.h
-@@ -15,7 +15,9 @@
- #ifndef __TAS2781_TLV_H__
- #define __TAS2781_TLV_H__
- 
--static const __maybe_unused DECLARE_TLV_DB_SCALE(dvc_tlv, -10000, 100, 0);
--static const __maybe_unused DECLARE_TLV_DB_SCALE(amp_vol_tlv, 1100, 50, 0);
-+static const __maybe_unused DECLARE_TLV_DB_SCALE(tas2781_dvc_tlv,
-+	-10000, 50, 0);
-+static const __maybe_unused DECLARE_TLV_DB_SCALE(tas2781_amp_tlv,
-+	1100, 50, 0);
- 
- #endif
-diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-index a0b132681804..6ec93b27aa7f 100644
---- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-+++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-@@ -265,9 +265,9 @@ static const struct snd_kcontrol_new tas2770_snd_controls[] = {
- };
- 
- static const struct snd_kcontrol_new tas2781_snd_controls[] = {
--	ACARD_SINGLE_RANGE_EXT_TLV("Speaker Analog Gain", TAS2781_AMP_LEVEL,
-+	ACARD_SINGLE_RANGE_EXT_TLV("Speaker Analog Volume", TAS2781_AMP_LEVEL,
- 		1, 0, 20, 0, tas2781_amp_getvol,
--		tas2781_amp_putvol, amp_vol_tlv),
-+		tas2781_amp_putvol, tas2781_amp_tlv),
- 	ACARD_SINGLE_BOOL_EXT("Speaker Force Firmware Load", 0,
- 		tas2781_force_fwload_get, tas2781_force_fwload_put),
- };
-diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_spi.c b/sound/hda/codecs/side-codecs/tas2781_hda_spi.c
-index 09a5d0f131b2..b4664a696bad 100644
---- a/sound/hda/codecs/side-codecs/tas2781_hda_spi.c
-+++ b/sound/hda/codecs/side-codecs/tas2781_hda_spi.c
-@@ -494,9 +494,10 @@ static int tas2781_force_fwload_put(struct snd_kcontrol *kcontrol,
- 
- static struct snd_kcontrol_new tas2781_snd_ctls[] = {
- 	ACARD_SINGLE_RANGE_EXT_TLV(NULL, TAS2781_AMP_LEVEL, 1, 0, 20, 0,
--		tas2781_amp_getvol, tas2781_amp_putvol, amp_vol_tlv),
-+		tas2781_amp_getvol, tas2781_amp_putvol, tas2781_amp_tlv),
- 	ACARD_SINGLE_RANGE_EXT_TLV(NULL, TAS2781_DVC_LVL, 0, 0, 200, 1,
--		tas2781_digital_getvol, tas2781_digital_putvol, dvc_tlv),
-+		tas2781_digital_getvol, tas2781_digital_putvol,
-+		tas2781_dvc_tlv),
- 	ACARD_SINGLE_BOOL_EXT(NULL, 0, tas2781_force_fwload_get,
- 		tas2781_force_fwload_put),
- };
-diff --git a/sound/soc/codecs/tas2781-i2c.c b/sound/soc/codecs/tas2781-i2c.c
-index 9f4d965a1335..a51f20cd869a 100644
---- a/sound/soc/codecs/tas2781-i2c.c
-+++ b/sound/soc/codecs/tas2781-i2c.c
-@@ -908,12 +908,12 @@ static const struct snd_kcontrol_new tasdevice_cali_controls[] = {
- };
- 
- static const struct snd_kcontrol_new tas2781_snd_controls[] = {
--	SOC_SINGLE_RANGE_EXT_TLV("Speaker Analog Gain", TAS2781_AMP_LEVEL,
-+	SOC_SINGLE_RANGE_EXT_TLV("Speaker Analog Volume", TAS2781_AMP_LEVEL,
- 		1, 0, 20, 0, tas2781_amp_getvol,
--		tas2781_amp_putvol, amp_vol_tlv),
--	SOC_SINGLE_RANGE_EXT_TLV("Speaker Digital Gain", TAS2781_DVC_LVL,
-+		tas2781_amp_putvol, tas2781_amp_tlv),
-+	SOC_SINGLE_RANGE_EXT_TLV("Speaker Digital Volume", TAS2781_DVC_LVL,
- 		0, 0, 200, 1, tas2781_digital_getvol,
--		tas2781_digital_putvol, dvc_tlv),
-+		tas2781_digital_putvol, tas2781_dvc_tlv),
- };
- 
- static const struct snd_kcontrol_new tas2781_cali_controls[] = {
--- 
-2.43.0
 
+So you don't need to re-invent anything and there is nothing reasonable ab=
+out 90ms delay=2E=20
+ALSAfirewire is working fine as long Pipewire isn't involved=2E
+
+Please fix the Pipewire problem as now nearly all distros are issued with =
+it and everyone is blaming ALSAfirewire stack!
+This madness should be stopped don't you agree?=20
+
+Please=2E
+
+Thanks Martin Armsby=20
+
+
+-------- Original Message --------
+From: Takashi Sakamoto <o-takashi@sakamocchi=2Ejp>
+Sent: 24 July 2025 16:38:13 CEST
+To: m=2Earmsby@gmx=2Ede
+Cc: alsa-devel@alsa-project=2Eorg
+Subject: Re: ALSAfirewire broken
+
+
+
+The 90ms delay is reasonable=2E=2E=2E, depending on the PCM buffer
+configuration=2E
+
+At present, all of drivers in ALSA firewire stack works with such delay
+due to queued initial packet=2E Therefore PipeWire computes the delay
+as expected=2E We would need to reeinvent the packet streaming engine if
+reducing the delay=2E
+
+
+Thanks
+
+Takashi Sakamoto
+
+-- Martin Armsby
