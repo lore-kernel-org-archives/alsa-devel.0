@@ -4,173 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6E74C87FDA
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Aug 2025 07:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E286C87FDA
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Aug 2025 07:22:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55AF260283;
-	Mon,  4 Aug 2025 09:09:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55AF260283
+	by alsa0.perex.cz (Postfix) with ESMTPS id 680F460276;
+	Mon,  4 Aug 2025 09:21:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 680F460276
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754291385;
-	bh=IScqngVTy9Czx1qpiFUE70keR4EIO7qzyYAIBvVVdyk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=o1zEZQ8nSbQmy2FdZ0r5zr/F9/Z2AAfSp7MVvqDUBqR7uGZPsQfxntM89vVKs3fX9
-	 MuoXhY8DKx6XQwE27sSNULxqye2scLiBvNer5FC6VRQVL7ye5ECINxg6zjn0y6+XBF
-	 lMd8U9FGj26CmtSJg4wQQZqvu9d+PZybL/AsNsbE=
+	s=default; t=1754292119;
+	bh=oIzyWmAeFK6YgCfn98Wc23JYDRn4luDgLFkFv001LP8=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=gwJ/4p0Hs5BFxjP/6V7YAjOK72Ek5TcKlEGtk226QJkLe1cW2qf3XCefLL5mpXIoB
+	 +Wusutjm/iH/Dh7ZOxDLzLd9LFKjJIoYi6wIMp98kCWDuEO/zXLpmYGVLacaP+IYTR
+	 44w7CzNK9lM2LvvsvQN5jEv2bfL2s/xxaUflYP0Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4AC4F805CB; Mon,  4 Aug 2025 09:09:13 +0200 (CEST)
+	id 5CFB1F805D5; Mon,  4 Aug 2025 09:21:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8EECF805D3;
-	Mon,  4 Aug 2025 09:09:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1BF6F805D6;
+	Mon,  4 Aug 2025 09:21:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71D95F804CF; Mon,  4 Aug 2025 09:08:39 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	id A3733F80254; Wed, 30 Jul 2025 14:19:08 +0200 (CEST)
+Received: from mailproxy06.manitu.net (mailproxy06.manitu.net [217.11.48.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8172AF8003C
-	for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2025 09:08:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8172AF8003C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Alw7gtG4;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=D8zr59Qm;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Alw7gtG4;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=D8zr59Qm
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7D435219B0;
-	Mon,  4 Aug 2025 07:08:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1754291308;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qNyCLwv6wdprMW5agjROWU9E+a8cjf4zMSZR1jiML+Q=;
-	b=Alw7gtG45bp7/iY/JKNLWTjKV/cuICTe96LtT6F1PFgXzUqkmvCK0iEgej3zY8WNKF0tNB
-	vYmkQ1jiTUfeDOXwk5Yz1MyHE0/Es4V4fRWtCyBGzcBtOmaLKpfVqAWh9xMA5KVQm7UpRN
-	V+Eq6h7b1WglhFohqk+Ntk5+gyGKd98=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1754291308;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qNyCLwv6wdprMW5agjROWU9E+a8cjf4zMSZR1jiML+Q=;
-	b=D8zr59QmkH4gQIufePLOf3x/3ACz4+J23LVdsiChSKpKinKhzNS4lb70X5b4Hmpn7rLbid
-	wQN26qxceqp6yMDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Alw7gtG4;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=D8zr59Qm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1754291308;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qNyCLwv6wdprMW5agjROWU9E+a8cjf4zMSZR1jiML+Q=;
-	b=Alw7gtG45bp7/iY/JKNLWTjKV/cuICTe96LtT6F1PFgXzUqkmvCK0iEgej3zY8WNKF0tNB
-	vYmkQ1jiTUfeDOXwk5Yz1MyHE0/Es4V4fRWtCyBGzcBtOmaLKpfVqAWh9xMA5KVQm7UpRN
-	V+Eq6h7b1WglhFohqk+Ntk5+gyGKd98=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1754291308;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qNyCLwv6wdprMW5agjROWU9E+a8cjf4zMSZR1jiML+Q=;
-	b=D8zr59QmkH4gQIufePLOf3x/3ACz4+J23LVdsiChSKpKinKhzNS4lb70X5b4Hmpn7rLbid
-	wQN26qxceqp6yMDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D98213A7E;
-	Mon,  4 Aug 2025 07:08:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id K/a6DWxckGj1UwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 04 Aug 2025 07:08:28 +0000
-Date: Mon, 04 Aug 2025 09:08:27 +0200
-Message-ID: <87h5yn1s44.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: wangdich9700@163.com
-Cc: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-arm-kernel@lists.infradead.org,
-	wangdicheng <wangdicheng@kylinos.cn>
-Subject: Re: [PATCH 1/2] ALSA: hda/realtek: Accelerate the front MIC charging
- and discharging of the 897 codec
-In-Reply-To: <87jz3j1ug9.wl-tiwai@suse.de>
-References: <20250804030518.424229-1-wangdich9700@163.com>
-	<87jz3j1ug9.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[163.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[163.com,gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,perex.cz,suse.com,vger.kernel.org,alsa-project.org,lists.infradead.org,kylinos.cn];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Queue-Id: 7D435219B0
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-Message-ID-Hash: XTTZWJ4LLOPZGTN4ZWTNGVU7JHHVSEVH
-X-Message-ID-Hash: XTTZWJ4LLOPZGTN4ZWTNGVU7JHHVSEVH
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 809FCF80152
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2025 14:19:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 809FCF80152
+From: Jochen Sprickerhof <git@jochen.sprickerhof.de>
+To: alsa-devel@alsa-project.org
+Cc: Jochen Sprickerhof <git@jochen.sprickerhof.de>
+Subject: [PATCH] ucm: use close_range on _GNU_SOURCE
+Date: Wed, 30 Jul 2025 14:19:01 +0200
+Message-ID: <20250730121901.117101-1-git@jochen.sprickerhof.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: jochen@sprickerhof.de
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: QBFFSQRYDUWKSXQK6FRA5XZGEC7J4ESC
+X-Message-ID-Hash: QBFFSQRYDUWKSXQK6FRA5XZGEC7J4ESC
+X-Mailman-Approved-At: Mon, 04 Aug 2025 07:21:04 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XTTZWJ4LLOPZGTN4ZWTNGVU7JHHVSEVH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QBFFSQRYDUWKSXQK6FRA5XZGEC7J4ESC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -179,39 +67,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 04 Aug 2025 08:17:58 +0200,
-Takashi Iwai wrote:
-> 
-> On Mon, 04 Aug 2025 05:05:17 +0200,
-> wangdich9700@163.com wrote:
-> > 
-> > From: wangdicheng <wangdicheng@kylinos.cn>
-> > 
-> > The front MIC capacitance of the Inspur board is too large, resulting in a longer charging and discharging time required,
-> > which in turn prevents recording for 5 seconds before startup.
-> > Therefore, software is used to increase the delay by 2 seconds to avoid this issue.
-> 
-> First off, the HD-audio code was replaced in the latest Linus tree to
-> sound/hda/* directories, so please adapt the patches accordingly.
-> 
-> About the code change:
-> 
-> - The 2.5 seconds wait is way too long and inappropriate to be put in
->   the resume callback.  It has to be fixed differently.
-> 
-> - Does it apply really to all devices with 0x10ec1304?  It's Realtek's
->   vendor id, so this can match to many devices.
-> 
-> - Last but not least, it's not nice to have a code that depends on the
->   certain vendor id there.  Again, please implement in a different way
->   so that it can be handled in more device-specific code rather than
->   the common function.
+---
+ src/ucm/ucm_exec.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-One more thing: the mailing list for Linux kernel sound stuff is
-linux-sound@vger.kernel.org.  Please use this one instead of
-alsa-devel ML.
+diff --git a/src/ucm/ucm_exec.c b/src/ucm/ucm_exec.c
+index 276cf592..b79a84ae 100644
+--- a/src/ucm/ucm_exec.c
++++ b/src/ucm/ucm_exec.c
+@@ -254,8 +254,12 @@ int uc_mgr_exec(const char *prog)
+ 
+ 		close(f);
+ 
++#if defined(_GNU_SOURCE)
++		close_range(3, maxfd, 0);
++#else
+ 		for (f = 3; f < maxfd; f++)
+ 			close(f);
++#endif
+ 
+ 		/* install default handlers for the forked process */
+ 		signal(SIGINT, SIG_DFL);
+-- 
+2.50.0
 
-
-thanks,
-
-Takashi
