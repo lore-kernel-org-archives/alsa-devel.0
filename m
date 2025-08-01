@@ -4,109 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF81C87FDB
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Aug 2025 07:22:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53938C87FDA
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Aug 2025 07:22:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83BCC60298;
-	Mon,  4 Aug 2025 09:22:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83BCC60298
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2E246028E;
+	Mon,  4 Aug 2025 09:22:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2E246028E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754292134;
-	bh=93g1nlYpATWJWIeB0k2GUZJmgliu7an9w5WHDKRGqXY=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1754292153;
+	bh=Md2cpuXgZrKfMPSfIpHczNo6pyyNcUXjBUarsS6o3rM=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=uImbYpTVKPVsPdYFZmigYwRg4znAmGpG1+tCZIlGXSxTv7AkaaW8urEk0UoRxqMHM
-	 6ltgTRR+75MuI3ieV9++dwvV9VLS4egHkliBL5q+2s075nMU8IqcEQIYUq1Z17e5vw
-	 uHsGzgXsfB1Vb7yInQFUSO9UFgMAhpBCsMNe9Iro=
+	b=MRUmiSkjMvvT4OzjGPJ5j0hbMZ4p3E8RWhxYeDRa5gWO15H/lJhlmSvENNU2fx9pr
+	 6G5iPvL1gCd9wLcl/LrfGKJFqXkVe0cjrtkcM620TBuNqu3zdBhRlL26Okf2QIYyhH
+	 0eZz5rFon1+PjnvGLUpiyBAlhbZ2/Rjvfc3bsfxg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49768F805F1; Mon,  4 Aug 2025 09:21:34 +0200 (CEST)
+	id 8B565F8060F; Mon,  4 Aug 2025 09:21:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E19F2F805F7;
-	Mon,  4 Aug 2025 09:21:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F5D1F80612;
+	Mon,  4 Aug 2025 09:21:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F25E3F8025F; Thu, 31 Jul 2025 00:28:22 +0200 (CEST)
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com
- [209.85.128.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5B16FF80518; Fri,  1 Aug 2025 04:18:16 +0200 (CEST)
+Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D77ACF8016A
-	for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2025 00:28:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D77ACF8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6135FF800E4
+	for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2025 04:18:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6135FF800E4
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=AHMP17ge
-Received: by mail-wm1-f51.google.com with SMTP id
- 5b1f17b1804b1-455b00283a5so1425045e9.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 30 Jul 2025 15:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753914493; x=1754519293;
- darn=alsa-project.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SHOMIFnhpy+jY1D4Kj1kCmfp0SSqWPSweLb0vn/S084=;
-        b=AHMP17genAmRNjjUMm65+F5m6zg1KtDOsqi/rApxhcfb9Eg470ujHnbRpJ5KzOUu+P
-         leHpeyBQpM4rmeRg3vr28TZeeI8RNsT57kbJFvd0yaHO6g1vwZptUCantcL2DeIGCllP
-         wdBHXlaokknwOeyBu+tAdjt4qTPR6G/gsku5WvtlR+FyP2bYFYcdGpD6PhAZF1Jrn9Jm
-         PvSEMQ5IL7/WvEpimaJ8I7q+P/wv4FUZVdetHoCG3MzJNJuKxkEWpYltqmG6ljAhOPMH
-         nRokYZIiHgv/5/6/6LJAknocHrSugd/sVuxGWvumomkF+aWbMQq7aSfyE9pYGPPSDuAn
-         TFrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753914493; x=1754519293;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SHOMIFnhpy+jY1D4Kj1kCmfp0SSqWPSweLb0vn/S084=;
-        b=e57JpiOkt4/YoyxsoCTqhEfddI65K1FnDroX+3BvfC5XAu1sNT6sjXx6SCAWXymyTG
-         xZH+kSNus5g1npw+GVHV9Dah5jtVrxehCouzTUxuGdc7J36rQ2AOOsAXCINa/PCiAoTL
-         nIzYfS9LVnoJCswtFWA2kRKRIYXjAhGda9D0hwEfLCzQaFoJzlWRtA0nAjbcBUiCt/B5
-         uZKrPjvcP/bzKXeJmTxIHMsd18qBUuy84Ue4dB7wvINwgOywvW8RPKBEbHOh+hO/y/YK
-         984Xcfpa+QpKO/bC9SVfpuncD7PsvKUA/axp7gin9jUDeDUpDEM1F/TdWqwZjizSkqXF
-         OaXg==
-X-Gm-Message-State: AOJu0YzYvsuhCD+eK8VvTyR1w0qqchbBuIILwDMuEVCJ4czMaiy/L9OY
-	K/OcWDXx5RoAB6ZRI/3tOPKL09wAyVdcvZNhaLck6WVdnPrBkv08/rTMBlLdA+oUn3qK6c4rqua
-	z3gtEa7Mv5AfH5imWy51/jv8jweSkQ867xtLZIww=
-X-Gm-Gg: ASbGncvEicNTdPsnjhxUGxCfLqsu3J4W8tj91v5iV8dtcmWZCN5M+HKzqnVmouvWS8u
-	oyYhf2jsakaB7hVdfBRnAuNyl1vO8hurnQLbY8k6iDeBnVxl6RJwa0YNFm4mDD38sj1VCp0/BNY
-	5BvtPa8ESS7Ie+SQtckBYNMzqPjFDiiLg7WKuqiRT3FU/PHfDjqtE9+L25bTTmC00XapdkhkxIS
-	/7Wvy96dbdoeDCk1Se7sxqakEA5v2tk3nj4j8LrEg==
-X-Google-Smtp-Source: 
- AGHT+IGiXxrIzIMpvDZ7cRQ6lSBI7hjr0zONurmxBIkMKOMDoDDH5RG2XdJk3HOt60/cysOLg9E29H0CedVCyX5Rbjk=
-X-Received: by 2002:a05:600c:1da8:b0:456:1006:5415 with SMTP id
- 5b1f17b1804b1-45892b92eb2mr42220715e9.6.1753914492872; Wed, 30 Jul 2025
- 15:28:12 -0700 (PDT)
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=BLlEkbJP
+Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
+	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 5712GngA3167522;
+	Thu, 31 Jul 2025 21:16:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1754014609;
+	bh=NEf6+Wn7npPE6ubolcnCVOLm0CSG0zu38AOL8OQ/FiI=;
+	h=From:To:CC:Subject:Date;
+	b=BLlEkbJPqZUI7sQMqOAqciu1LyOSpGVaL8tKjdaefFgCMfsZvSMVgZa3bOBrOHTiT
+	 j1ulcX/nZGaFetgVFg2F2nzeennkW4jGbl6BLtuNBj7YMaQRunKKf5IjEd7IUW+sxY
+	 /4mKJV2vJZ+t0ASnpsDNoZZkjveN6O2J1ZcFIV3g=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 5712GniP204466
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Thu, 31 Jul 2025 21:16:49 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Thu, 31
+ Jul 2025 21:16:48 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Thu, 31 Jul 2025 21:16:48 -0500
+Received: from lelvem-mr06.itg.ti.com ([10.250.165.138])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5712Gi6b3551650;
+	Thu, 31 Jul 2025 21:16:45 -0500
+From: Baojun Xu <baojun.xu@ti.com>
+To: <broonie@kernel.org>
+CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <shenghao-ding@ti.com>, <baojun.xu@ti.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] ASoC: tas2781: Fix the wrong step for TLV on tas2781
+Date: Fri, 1 Aug 2025 10:16:18 +0800
+Message-ID: <20250801021618.64627-1-baojun.xu@ti.com>
+X-Mailer: git-send-email 2.43.0.windows.1
 MIME-Version: 1.0
-From: Pablo Scatizza <pscatizza@gmail.com>
-Date: Wed, 30 Jul 2025 19:31:33 -0300
-X-Gm-Features: Ac12FXwrt0UcWJk5YkxQlhA3nBLZhh0q0oMoVR3BNnUTak5T4DQHWqoPZ1PVxmo
-Message-ID: 
- <CAOJTC7bb=qHnhMhNUsSzg=0kCHjSoZmR7hc1n7LvWPuVq09GiA@mail.gmail.com>
-Subject: Regression: Microphone broken on Intel Ice Lake with alsa-ucm-conf
- 1.2.10-150600.3.5.1 (openSUSE Leap 15.6)
-To: alsa-devel@alsa-project.org
-X-MailFrom: pscatizza@gmail.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-MailFrom: baojun.xu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: P7ROHPFZNBVHAHL5E2I3HFCZOPPIRSG2
-X-Message-ID-Hash: P7ROHPFZNBVHAHL5E2I3HFCZOPPIRSG2
-X-Mailman-Approved-At: Mon, 04 Aug 2025 07:21:07 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: CGJRDQLRB6SBKFH5T6DCKE2BSK3A2MWV
+X-Message-ID-Hash: CGJRDQLRB6SBKFH5T6DCKE2BSK3A2MWV
+X-Mailman-Approved-At: Mon, 04 Aug 2025 07:21:08 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P7ROHPFZNBVHAHL5E2I3HFCZOPPIRSG2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CGJRDQLRB6SBKFH5T6DCKE2BSK3A2MWV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,26 +100,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-RGVhciBBTFNBIGRldmVsb3BlcnMsDQoNCkkgd291bGQgbGlrZSB0byByZXBvcnQgYSByZWdyZXNz
-aW9uIGFmZmVjdGluZyB0aGUgbWljcm9waG9uZSBvbiBteSBsYXB0b3ANCnVzaW5nIEludGVsJ3Mg
-SWNlIExha2UtTFAgYXVkaW8gY29udHJvbGxlciB3aXRoIHRoZSBgc29mLWhkYS1kc3BgIGRyaXZl
-ci4NCg0KQWZ0ZXIgdXBncmFkaW5nIGBhbHNhLXVjbS1jb25mYCB0byB2ZXJzaW9uIDEuMi4xMC0x
-NTA2MDAuMy41LjEgKGFzDQpkaXN0cmlidXRlZCBpbiBvcGVuU1VTRSBMZWFwIDE1LjYpLCB0aGUg
-aW50ZXJuYWwgbWljcm9waG9uZSBzdG9wcyB3b3JraW5nLg0KTm8gY2FwdHVyZSBpcyBwb3NzaWJs
-ZSB2aWEgYGFyZWNvcmRgIG9yIGFueSBhcHBsaWNhdGlvbi4gVGhlIGRldmljZSBzdGlsbA0Kc2hv
-d3MgdXAgaW4gYGFyZWNvcmQgLWxgLCBidXQgaXQgZG9lcyBub3QgcmVjZWl2ZSBhdWRpbyBpbnB1
-dC4NCg0KUm9sbGluZyBiYWNrIHRvIHRoZSBwcmV2aW91cyB2ZXJzaW9uICgxLjIuMTAtMTUwNjAw
-LjEuMikgdXNpbmc6DQpzdWRvIHp5cHBlciBpbnN0YWxsIC0tb2xkcGFja2FnZSBhbHNhLXVjbS1j
-b25mLTEuMi4xMC0xNTA2MDAuMS4yLm5vYXJjaA0KDQpyZXN0b3JlcyBmdWxsIG1pY3JvcGhvbmUg
-ZnVuY3Rpb25hbGl0eS4NCg0KKipTeXN0ZW0gaW5mb3JtYXRpb246KioNCi0gRGlzdHJpYnV0aW9u
-OiBvcGVuU1VTRSBMZWFwIDE1LjYNCi0gS2VybmVsOiA2LjQuMC0xNTA2MDAuMjMuNTMtZGVmYXVs
-dA0KLSBBdWRpbyBkZXZpY2U6IEludGVsIENvcnBvcmF0aW9uIEljZSBMYWtlLUxQIFNtYXJ0IFNv
-dW5kIFRlY2hub2xvZ3kgQXVkaW8NCkNvbnRyb2xsZXIgKHJldiAzMCkNCi0gQUxTQSBkcml2ZXI6
-IHNvZi1oZGEtZHNwDQoNCioqV29ya2luZyBgYXJlY29yZCAtbGAgb3V0cHV0IHdpdGggdGhlIG9s
-ZCB2ZXJzaW9uOioqDQpjYXJkIDA6IHNvZmhkYWRzcCBbc29mLWhkYS1kc3BdLCBkZXZpY2UgMDog
-SERBIEFuYWxvZyAoDQoqKSBbXSBjYXJkIDA6IHNvZmhkYWRzcCBbc29mLWhkYS1kc3BdLCBkZXZp
-Y2UgNjogRE1JQyAoKikgW10NCmNhcmQgMDogc29maGRhZHNwIFtzb2YtaGRhLWRzcF0sIGRldmlj
-ZSA3OiBETUlDMTZrSHogKCopIFtdDQoNCkxldCBtZSBrbm93IGlmIEkgY2FuIHByb3ZpZGUgbG9n
-cywgZGlmZnMgYmV0d2VlbiBVQ00gZmlsZXMsIG9yIGZ1cnRoZXINCnRlc3RpbmcuIEknZCBiZSBo
-YXBweSB0byBoZWxwLg0KDQpCZXN0IHJlZ2FyZHMsDQpQYWJsbyBTY2F0aXp6YQ0KTmV1cXXDqW4s
-IEFyZ2VudGluYQ0K
+The step for TLV on tas2781, should be 50 (-0.5dB).
+
+Fixes: 678f38eba1f2 ("ASoC: tas2781: Add Header file for tas2781 driver")
+Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+---
+ include/sound/tas2781-tlv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/sound/tas2781-tlv.h b/include/sound/tas2781-tlv.h
+index d87263e43fdb..ef9b9f19d212 100644
+--- a/include/sound/tas2781-tlv.h
++++ b/include/sound/tas2781-tlv.h
+@@ -15,7 +15,7 @@
+ #ifndef __TAS2781_TLV_H__
+ #define __TAS2781_TLV_H__
+ 
+-static const __maybe_unused DECLARE_TLV_DB_SCALE(dvc_tlv, -10000, 100, 0);
++static const __maybe_unused DECLARE_TLV_DB_SCALE(dvc_tlv, -10000, 50, 0);
+ static const __maybe_unused DECLARE_TLV_DB_SCALE(amp_vol_tlv, 1100, 50, 0);
+ 
+ #endif
+-- 
+2.43.0
+
