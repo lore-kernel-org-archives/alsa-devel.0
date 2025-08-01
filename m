@@ -4,164 +4,158 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 008FDC87FCB
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Aug 2025 06:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7B07C87FCA
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Aug 2025 08:52:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 711E56025E;
-	Fri,  1 Aug 2025 08:32:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 711E56025E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33E5C60279;
+	Fri,  1 Aug 2025 10:51:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E5C60279
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754029934;
-	bh=6d1GEPp29hj3kPkHpnG38QOFJHT5+Yrf2Dysk5q6xqE=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1754038316;
+	bh=7kFkcZ+uggSUszdMqMqGgSuSZPbh1bMMOwSvim53B2c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NHAsVM0cb/+E6oXsaYYN4lqnFlvMG/hJjZOwCCz/trv2ZxvoztlI2fsrme4u2tWS/
-	 vhFuRwjJ8ghMNd2MZoUxi028T3Zmai3a1ObDZbMPNVLONfKYmVBY8+F1QhOCtGDfv2
-	 0MwVLNxH+0+NbR3v/y4MAO8QJOrJfViU1/i5uOwM=
+	b=KJ0HCqlfjE4wY0E8MfIh/o+Ap3LPNQDpijfEKufj2GzY+2mq9I+ybCyrCcekCIeqw
+	 faRuaqXKPFNFYBFJVcPggyJ/btTjxpxQLLRBrm7/u15WjLJ+ZsRptLLFbY6UuiSX2d
+	 G4ISGoHJM6l9PJPVQDUva0GcvcXI3dQAUIUo9scY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C8BEF805BD; Fri,  1 Aug 2025 08:31:35 +0200 (CEST)
+	id 2227CF805D2; Fri,  1 Aug 2025 10:51:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6FC0F805EC;
-	Fri,  1 Aug 2025 08:31:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 690CDF8059F;
+	Fri,  1 Aug 2025 10:51:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6919CF80533; Fri,  1 Aug 2025 08:23:17 +0200 (CEST)
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam11on2063.outbound.protection.outlook.com [40.107.223.63])
+	id 4908EF80518; Fri,  1 Aug 2025 10:50:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7D00BF80086
-	for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2025 08:23:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D00BF80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id E8EB0F8012A
+	for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2025 10:50:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8EB0F8012A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=PIEDuh4i
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WQEc+uav5SzjxqzV7Yn3nHcaDKkLbDIQPAouipa3P5YiNapTvCyFxy9Buc1fnhOcC/j018m8hojFxwEM4XorFLS8maB74DuE+jqmpCIiMjZupI/vozvZnWMVoXgdVN3VIwAlf8zxX0qaOXrPqzSPy85hUEMeVD5s5lTG7dUQvHfoCT7XsZcyD0VOromwB5etz8XQzrpL9GkQwd6/Q3gQ/GxSCMgrqIkbYMxlj0VmiDrN+q1nLkLJi00hgc8fJcrLjEEZMU7LD7G4gaIOXfT8CNChNTPnSZ6zNs9QjeK+s6GSMH4puHyl6ioHrHPP1yEkq/1anZOwEEip6hnNNeLrlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ubTzMiMGm0cxJyahUTs5hMjcQLyN/yW87xQ6Auecr3I=;
- b=tPc1XAakf2lXC2AwamHpLWq4leO5KxS4m9fY356eryPZN/b9TR49Ebt0xSTsaC7enQaqwnmu1AARdeayva9IMGoK30aADSHrn3+Sc8XidsUzTMeGA2wzljSu0EpfQr5J3GgY7DZzf3WDDR+JcRxiVA8V70tkRrPsUzvO4hrAqgNrBudicC5kmmm58XklTHmioyLLmnI92uM+rgCu+Absd+WCN6lnpxTH47dkyF4NnOKyYJzbjIv8UE5dN4eqpXPvskwGwDj2xpVvcE+RXlT2AePSi8o0M31OjTe8rE3AXrRPAlPsw/bjTUaXSrgiBf0rV90Jctbg4mKzzrKdycAsVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ubTzMiMGm0cxJyahUTs5hMjcQLyN/yW87xQ6Auecr3I=;
- b=PIEDuh4ijZIa1HecrhJM/Hd1PlCRqlRL3wataAXYbyNKI5y7vGAKexn6q3JZQ0qkpX/NGEYshxe7r8PeUXf8xYJZ/G/5fzsJdUzdygk2uMh8Y73kZ2FVuDx2eC0IUAZ7YH2EVTa1MDepaZSuRketuaWBykWYRqEOQ396RLeBVys=
-Received: from BN9PR03CA0681.namprd03.prod.outlook.com (2603:10b6:408:10e::26)
- by PH7PR12MB8053.namprd12.prod.outlook.com (2603:10b6:510:279::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8989.12; Fri, 1 Aug
- 2025 06:22:42 +0000
-Received: from BL02EPF00021F6C.namprd02.prod.outlook.com
- (2603:10b6:408:10e:cafe::76) by BN9PR03CA0681.outlook.office365.com
- (2603:10b6:408:10e::26) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8989.14 via Frontend Transport; Fri,
- 1 Aug 2025 06:22:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL02EPF00021F6C.mail.protection.outlook.com (10.167.249.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.9009.8 via Frontend Transport; Fri, 1 Aug 2025 06:22:40 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 1 Aug
- 2025 01:22:38 -0500
-Received: from r9-mach.amd.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.39 via Frontend
- Transport; Fri, 1 Aug 2025 01:22:33 -0500
-From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC: <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-	<Sunil-kumar.Dommati@amd.com>, <syed.sabakareem@amd.com>, "Venkata Prasad
- Potturu" <venkataprasad.potturu@amd.com>, Liam Girdwood
-	<lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>, Bard Liao <yung-chuan.liao@linux.intel.com>, Ranjani
- Sridharan <ranjani.sridharan@linux.intel.com>, Pierre-Louis Bossart
-	<pierre-louis.bossart@linux.dev>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
-	<u.kleine-koenig@baylibre.com>, Peter Zijlstra <peterz@infradead.org>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>, "open list:SOUND - SOC LAYER
- / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/4] ASoC: amd: acp: Add SoundWire legacy machine driver
- support for acp7.2 platform
-Date: Fri, 1 Aug 2025 11:51:37 +0530
-Message-ID: <20250801062207.579388-4-venkataprasad.potturu@amd.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250801062207.579388-1-venkataprasad.potturu@amd.com>
-References: <20250801062207.579388-1-venkataprasad.potturu@amd.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB03.amd.com: venkataprasad.potturu@amd.com does not
- designate permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF00021F6C:EE_|PH7PR12MB8053:EE_
-X-MS-Office365-Filtering-Correlation-Id: 77b48c0a-4644-4b31-720c-08ddd0c3d165
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|376014|7416014;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?5m/JtHYp8CqeyZkcG2tDWxarOmHNppxTXqpKC/0cDK815FbMVYlKzDf1vctS?=
- =?us-ascii?Q?JgvVIulrvc7ATX77bnH5RkYZ2KhYSraUn2Mnp59LgC0taCu/mkBSCuuFgEd2?=
- =?us-ascii?Q?S7g9RQ9U8nF89wt4fLIVjZ7rBG8Vax6MlRDrLWB9DpDIuM9nAgiNvE/txaRN?=
- =?us-ascii?Q?MmeEw3DmbcfuGwlA6flDzPoTyxlnkmcJQzrfVNXB7OTPJsApyYa0Z+rEfpTK?=
- =?us-ascii?Q?ZqCephWvpxCpjEx4uIbs2rn8VRuGzDz4BhfTB4ERGYw2ocY6YTgCiDOan4KE?=
- =?us-ascii?Q?bvQxwK/wXwApygsg9pfou7lnqMnLDDQ1OGLnPbHK75cNcrxYA91vDg7St1Qj?=
- =?us-ascii?Q?TPRtarUeLj93E5UmbZzAmvG6ha7TcErFmnnKxjToF8/85bi9v3yUknldwLOm?=
- =?us-ascii?Q?2PDaj8LR7OJ589ApNBi38xXWy0vSnMsPTBwdO7iel/5E5vRLxPWk8KaC6n9f?=
- =?us-ascii?Q?ciOpsxHvL0XV5oQPDjuPOR9+PSEKWyl+3BH0boqQpK1MPNpVLJ2eUyUYQoq5?=
- =?us-ascii?Q?XjbihY7/2c5TLP/WlXHQfjLasjLc2lkESD+fE1Gx2XoPyJyuRCalulKWCf/T?=
- =?us-ascii?Q?NxxguWK7zn30vcnkmzJHYsj6vpic5e7dX5hCkcyqMYUu333ChkrvPJz94Dy6?=
- =?us-ascii?Q?9lxPWClSUARv0IgJoDU8dRSAgzKzqtOffYGpBXUrduiUBqA1EqoQiezGNBwT?=
- =?us-ascii?Q?tb5vNhVXx5BfSp1k4YCy5YyKPqBEhifauDMX1AbN0olgVY+zUNwDgrXHXMqf?=
- =?us-ascii?Q?9aQ1vQpUp8uvGHZyC3P0henEyFwPkksWVMAa+cBpK2rgIC1g0lV+MIrvb5NN?=
- =?us-ascii?Q?Fyp3QQWVaYxOCrPrrkW9urB1o4yJklBJtGk4qPk5ia2tNUS/ZpnQCU4Jl4r8?=
- =?us-ascii?Q?gOJ2UyoXWhqDptJeZE+wpPtRe+vA1Nunqs2Bn7uUhd6wiOIuTyid9itLRm5S?=
- =?us-ascii?Q?eKbnzK66gLssod4YwOBk0eyablh8wswvFHu2jllJGX4oOr/wJlsME3dIaCM5?=
- =?us-ascii?Q?YlgDXZnwtwsxHqGRx0lUTf8fScqjsvA7nOUPWigAucx3iZJ4gIyGorI01igb?=
- =?us-ascii?Q?A0rZDYHqPpmyyRDus+Yd7ZFZznvhhBjB+xJUP12UhP9HAKxi+1ZZntOWlSll?=
- =?us-ascii?Q?9aAjLewNmE8pJ8WAL7z1j4smd2haq8AMy7kZQuUGdPBsydIyyBkI/+2qLRqO?=
- =?us-ascii?Q?KZzBamdrFrrKFlh8fzNSWx9mSbigefAGVUmSVZNRbj/UAehv0meI970+jWNQ?=
- =?us-ascii?Q?u9OVP63kkae9c2jqUKfor6HyuauhQpnCtvBnOojmerkS5mgMi/DIGWivgF3d?=
- =?us-ascii?Q?qJe6T6r91QwOeJ7OExo3VE0/glvr71xDAavD4YHqrk5leu8ZBKGov1C6+Viw?=
- =?us-ascii?Q?5OjTzhFwH9aQ1bJ1gH1C3c5PWwoqyhY05eidOOBSVrIoSRipVeSnyOyxFsbY?=
- =?us-ascii?Q?Tj8drOVybcBtlhvI8/AcF9OJJJCz1tLbclw0oP/nQGVXZ6232r+ibIN+gubS?=
- =?us-ascii?Q?uEHbOA6ABJIMZjXQEv9DnQ3WbIR2IZgNG0rM?=
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(376014)(7416014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2025 06:22:40.6335
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 77b48c0a-4644-4b31-720c-08ddd0c3d165
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	BL02EPF00021F6C.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8053
-Message-ID-Hash: SXZ6JR3YTL7C5HW2W7EBR5W5I6UDSL37
-X-Message-ID-Hash: SXZ6JR3YTL7C5HW2W7EBR5W5I6UDSL37
-X-MailFrom: venkataprasad.potturu@amd.com
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=VOT+N03L;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=smzIWbB5;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=VOT+N03L;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=smzIWbB5
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0472C21B71;
+	Fri,  1 Aug 2025 08:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1754038211;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qTJ+vQafVYqPXHFeijA46kRDC7+L4XKsCmqEb3f6nYI=;
+	b=VOT+N03LE3CXDtS+jW1VkUR8h+nIk+9h8HaScUlouc6dWsmsVdRyNsiRFPMqyfoFOMwUpf
+	nU7HL0nKRx9s7DyESCnbl0nQIkZTRScbt1VZsHo2EUnT9tMme2y1eC9H399J9fx6CvQj8T
+	ZmbVW1j9EsXE6Nt56ahXEQp9lTePIUE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1754038211;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qTJ+vQafVYqPXHFeijA46kRDC7+L4XKsCmqEb3f6nYI=;
+	b=smzIWbB5wrfXn148CGbdGUCDBBzvQ+6DcdDSJt6n4BUfz8JuFQ3ZXX/vBRpvwpbgMOTpdP
+	HoRCHceiIrPznSCA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=VOT+N03L;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=smzIWbB5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1754038211;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qTJ+vQafVYqPXHFeijA46kRDC7+L4XKsCmqEb3f6nYI=;
+	b=VOT+N03LE3CXDtS+jW1VkUR8h+nIk+9h8HaScUlouc6dWsmsVdRyNsiRFPMqyfoFOMwUpf
+	nU7HL0nKRx9s7DyESCnbl0nQIkZTRScbt1VZsHo2EUnT9tMme2y1eC9H399J9fx6CvQj8T
+	ZmbVW1j9EsXE6Nt56ahXEQp9lTePIUE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1754038211;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qTJ+vQafVYqPXHFeijA46kRDC7+L4XKsCmqEb3f6nYI=;
+	b=smzIWbB5wrfXn148CGbdGUCDBBzvQ+6DcdDSJt6n4BUfz8JuFQ3ZXX/vBRpvwpbgMOTpdP
+	HoRCHceiIrPznSCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CF93D13876;
+	Fri,  1 Aug 2025 08:50:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id IsROMcJ/jGjDLgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 01 Aug 2025 08:50:10 +0000
+Date: Fri, 01 Aug 2025 10:50:10 +0200
+Message-ID: <878qk34e9p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sean Anderson <sean.anderson@seco.com>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: retire_capture_urb: Corrected urb data len
+In-Reply-To: <195fcbb0-37f6-4379-87c9-1ef75b07bf6f@seco.com>
+References: <68a97d61-21bf-b45e-f6ed-c0906dd4b197@seco.com>
+	<87ilmfj72j.wl-tiwai@suse.de>
+	<9d41eda1-1172-ea60-dd87-b3e38a529170@seco.com>
+	<87r110iz8w.wl-tiwai@suse.de>
+	<53306c0f-e5ef-44ee-b90c-a3ea61ca454c@seco.com>
+	<87v8q6wcf6.wl-tiwai@suse.de>
+	<195fcbb0-37f6-4379-87c9-1ef75b07bf6f@seco.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Queue-Id: 0472C21B71
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+Message-ID-Hash: TYEH3T43V7VC5F4ZV4EDEZBCCMYMT547
+X-Message-ID-Hash: TYEH3T43V7VC5F4ZV4EDEZBCCMYMT547
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -173,7 +167,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SXZ6JR3YTL7C5HW2W7EBR5W5I6UDSL37/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TYEH3T43V7VC5F4ZV4EDEZBCCMYMT547/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -182,55 +176,128 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add SoundWire legacy machine driver support for acp7.2 platform.
+On Thu, 31 Jul 2025 23:49:11 +0200,
+Sean Anderson wrote:
+> 
+> Hi,
+> 
+> On 9/2/22 01:52, Takashi Iwai wrote:
+> > On Thu, 01 Sep 2022 17:25:41 +0200,
+> > Sean Anderson wrote:
+> >> 
+> >> 
+> >> 
+> >> On 8/28/22 3:49 AM, Takashi Iwai wrote:
+> >> > On Fri, 26 Aug 2022 20:57:53 +0200,
+> >> > Sean Anderson wrote:
+> >> >> 
+> >> >> On 8/26/22 12:36 PM, Takashi Iwai wrote:
+> >> >> > On Fri, 26 Aug 2022 18:22:24 +0200,
+> >> >> > Sean Anderson wrote:
+> >> >> >> 
+> >> >> >> Hi all,
+> >> >> >> 
+> >> >> >> I have a "FiiO DigiHug USB Audio" sound card (1852:7022) [3]. I have had
+> >> >> >> no problems with the audio, but I did notice a large number of message
+> >> >> >> like 
+> >> >> >> 
+> >> >> >> retire_capture_urb: 4992 callbacks suppressed
+> >> >> >> 
+> >> >> >> in my dmesg [1]. This is caused by the "Corrected urb data len."
+> >> >> >> warning.
+> >> >> > 
+> >> >> > What exact values are shown there?
+> >> >> 
+> >> >> Unfortunately, as detailed below, I was unable to turn off ratelimiting.
+> >> >> 
+> >> >> > The problem is that your hardware
+> >> >> > (likely a buggy firmware) returns the unaligned size of bytes as the
+> >> >> > data.  Maybe it's worth to replace dev_warn_ratelimited() there with
+> >> >> > dev_warn() and take all warnings once.  Then we can see what kind of
+> >> >> > values are delivered from the hardware.
+> >> >> 
+> >> >> I'll have an attempt at that next week
+> >> >> 
+> >> >> >> The patch adding this warning [2] makes it seem like
+> >> >> >> this warning should be an uncommon occurance. However, based on the
+> >> >> >> number of suppressed callbacks, this seems to be happening at a rate of
+> >> >> >> around 500 Hz.
+> >> >> >> 
+> >> >> >> Is this buggy hardware? Or is this a bug in the driver? Does there need
+> >> >> >> to be a quirk? Or perhaps the warning above should be a debug instead?
+> >> >> > 
+> >> >> > There is no quirk for that.  As long as the device works with that
+> >> >> > workaround (except for messages), we can simply add a quirk to not
+> >> >> > warn but always apply the workaround silently for such devices.
+> >> >> 
+> >> >> OK. I wasn't sure what the correct resolution would be.
+> >> > 
+> >> > Actually I was wrong: the existing quirk QUIRK_FLAG_ALIGN_TRANSFER
+> >> > should cover that.
+> >> > 
+> >> > Could you try to pass quirk_flags=0x04 for the corresponding card slot
+> >> > (the option takes an array) to snd-usb-audio module?  Alternatively,
+> >> > try to pass quirk_alias=18557022:0e510408 to snd-usb-audio?
+> >> 
+> >> I tried both options, but neither worked.
+> > 
+> > I have no further idea.  You should try the latest kernel without
+> > modification before checking further.
+> > 
+> > And, looking at the code again, it's really strange that you get those
+> > messages.  Actually the transfer size *is* aligned to the audio frames
+> > as default *unless* QUIRK_FLAG_ALIGN_TRANSFER is passed.  And the
+> > check is done rather the audio sample size alignment -- which must fit
+> > within the audio frame alignment.
+> > 
+> > So, QUIRK_FLAG_ALIGN_TRANSFER is already set for your device by some
+> > reason incorrectly, or the code is doing wrong on your kernel.
+> > We need to check what values are shown there actually, then check
+> > whether the problem happens with the latest vanilla kernel.
+> 
+> Sorry for the very long hiatus. I have reproduced this issue on kernel
+> 6.15.8.
+> 
+> From closer inspection this message seems to be from the first print and
+> not the second one:
+> 
+> if (urb->iso_frame_desc[i].status && printk_ratelimit()) {
+> 	dev_dbg(&subs->dev->dev, "frame %d active: %d\n",
+> 		i, urb->iso_frame_desc[i].status);
+> 	// continue;
+> }
+> 
+> This probably be a dev_dbg_ratelimited. Indeed, that suppresses these
+> messages.
 
-Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
----
- sound/soc/amd/acp/acp-sdw-legacy-mach.c | 3 +++
- sound/soc/amd/acp/soc_amd_sdw_common.h  | 2 ++
- 2 files changed, 5 insertions(+)
+The use or printk_ratelimit() like the above is already discouraged,
+so it makes more sense to switch to dev_dbg_ratelimited() if it
+works.
 
-diff --git a/sound/soc/amd/acp/acp-sdw-legacy-mach.c b/sound/soc/amd/acp/acp-sdw-legacy-mach.c
-index 6c24f9d8694e..c2197b75a7dd 100644
---- a/sound/soc/amd/acp/acp-sdw-legacy-mach.c
-+++ b/sound/soc/amd/acp/acp-sdw-legacy-mach.c
-@@ -158,6 +158,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 			break;
- 		case ACP70_PCI_REV:
- 		case ACP71_PCI_REV:
-+		case ACP72_PCI_REV:
- 			ret = get_acp70_cpu_pin_id(ffs(soc_end->link_mask - 1),
- 						   *be_id, &cpu_pin_id, dev);
- 			if (ret)
-@@ -264,6 +265,7 @@ static int create_sdw_dailinks(struct snd_soc_card *card,
- 	case ACP63_PCI_REV:
- 	case ACP70_PCI_REV:
- 	case ACP71_PCI_REV:
-+	case ACP72_PCI_REV:
- 		sdw_platform_component->name = "amd_ps_sdw_dma.0";
- 		break;
- 	default:
-@@ -311,6 +313,7 @@ static int create_dmic_dailinks(struct snd_soc_card *card,
- 	case ACP63_PCI_REV:
- 	case ACP70_PCI_REV:
- 	case ACP71_PCI_REV:
-+	case ACP72_PCI_REV:
- 		pdm_cpu->name = "acp_ps_pdm_dma.0";
- 		pdm_platform->name = "acp_ps_pdm_dma.0";
- 		break;
-diff --git a/sound/soc/amd/acp/soc_amd_sdw_common.h b/sound/soc/amd/acp/soc_amd_sdw_common.h
-index 1f24e0e06487..3930cc46fa58 100644
---- a/sound/soc/amd/acp/soc_amd_sdw_common.h
-+++ b/sound/soc/amd/acp/soc_amd_sdw_common.h
-@@ -21,6 +21,8 @@
- #define ACP63_PCI_REV			0x63
- #define ACP70_PCI_REV			0x70
- #define ACP71_PCI_REV			0x71
-+#define ACP72_PCI_REV			0x72
-+
- #define SOC_JACK_JDSRC(quirk)		((quirk) & GENMASK(3, 0))
- #define ASOC_SDW_FOUR_SPK		BIT(4)
- #define ASOC_SDW_ACP_DMIC		BIT(5)
--- 
-2.43.0
+> The actual message that's being ratelimited is
+> 
+> usb 3-11.2: frame 0 active: -71
+> 
+> which is EPROTO. Looks like that comes from xhci_hcd. With debug enabled
+> I get a lot of
+> 
+> xhci_hcd 0000:80:14.0: Transfer error for slot 36 ep 4 on endpoint
+> 
+> The spec says this is 
+> 
+> | Asserted in the case where the host did not receive a valid response
+> | from the device (Timeout, CRC, Bad PID, unexpected NYET, etc.).
+> 
+> and I don't really know what to make of that. Should I send a patch to
+> convert that dev_dbg to dev_dbg_ratelimited? Or do you want to debug
+> this further?
 
+Usually EPROTO means something the USB controller doesn't like :)
+It's often a device firmware problem, but can be other means, too.
+You can try to connect to a different port or a machine, and see
+whether the problem is seen consistently.
+
+
+thanks,
+
+Takashi
