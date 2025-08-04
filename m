@@ -4,94 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53938C87FDA
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Aug 2025 07:22:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF3FC87FD3
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Aug 2025 07:22:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2E246028E;
-	Mon,  4 Aug 2025 09:22:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2E246028E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89755602A0;
+	Mon,  4 Aug 2025 09:22:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89755602A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754292153;
-	bh=Md2cpuXgZrKfMPSfIpHczNo6pyyNcUXjBUarsS6o3rM=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1754292169;
+	bh=XKr5AQLTpe/9o2Ut4mAq8cRpm/bxnnJLpr/to5+kjwI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=MRUmiSkjMvvT4OzjGPJ5j0hbMZ4p3E8RWhxYeDRa5gWO15H/lJhlmSvENNU2fx9pr
-	 6G5iPvL1gCd9wLcl/LrfGKJFqXkVe0cjrtkcM620TBuNqu3zdBhRlL26Okf2QIYyhH
-	 0eZz5rFon1+PjnvGLUpiyBAlhbZ2/Rjvfc3bsfxg=
+	b=O1Oz+e3f6nT88fC7Ar0kTKIIssr5gdG4nzjbbENzadqPKwFpcXoR5tLAuEDz9+6Q0
+	 MKrP2dCQJXJGTPJIyAmBXVf5lLIDbGP6apmX9c2q4WPWH3E6x6g/cF9cLCulJNuaI8
+	 T0EWaxjRohZ2CC4/4pIPidpOgvrdFE/qlEEnEGbc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B565F8060F; Mon,  4 Aug 2025 09:21:46 +0200 (CEST)
+	id 935ABF805E1; Mon,  4 Aug 2025 09:22:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F5D1F80612;
-	Mon,  4 Aug 2025 09:21:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 505B7F805CA;
+	Mon,  4 Aug 2025 09:22:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B16FF80518; Fri,  1 Aug 2025 04:18:16 +0200 (CEST)
-Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6135FF800E4
-	for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2025 04:18:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6135FF800E4
+	id 400AAF804FB; Mon,  4 Aug 2025 05:05:54 +0200 (CEST)
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by alsa1.perex.cz (Postfix) with ESMTP id 68C8EF800E4
+	for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2025 05:05:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68C8EF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=BLlEkbJP
-Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
-	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 5712GngA3167522;
-	Thu, 31 Jul 2025 21:16:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1754014609;
-	bh=NEf6+Wn7npPE6ubolcnCVOLm0CSG0zu38AOL8OQ/FiI=;
-	h=From:To:CC:Subject:Date;
-	b=BLlEkbJPqZUI7sQMqOAqciu1LyOSpGVaL8tKjdaefFgCMfsZvSMVgZa3bOBrOHTiT
-	 j1ulcX/nZGaFetgVFg2F2nzeennkW4jGbl6BLtuNBj7YMaQRunKKf5IjEd7IUW+sxY
-	 /4mKJV2vJZ+t0ASnpsDNoZZkjveN6O2J1ZcFIV3g=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 5712GniP204466
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Thu, 31 Jul 2025 21:16:49 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Thu, 31
- Jul 2025 21:16:48 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Thu, 31 Jul 2025 21:16:48 -0500
-Received: from lelvem-mr06.itg.ti.com ([10.250.165.138])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5712Gi6b3551650;
-	Thu, 31 Jul 2025 21:16:45 -0500
-From: Baojun Xu <baojun.xu@ti.com>
-To: <broonie@kernel.org>
-CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <shenghao-ding@ti.com>, <baojun.xu@ti.com>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1] ASoC: tas2781: Fix the wrong step for TLV on tas2781
-Date: Fri, 1 Aug 2025 10:16:18 +0800
-Message-ID: <20250801021618.64627-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+ unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
+ header.s=s110527 header.b=V7JUQ43v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=Ys
+	qQmWamYIYco22fUSPqUsEq0HJ6AU5htrVCYU+nqmE=; b=V7JUQ43v2It6MWY9oK
+	7cPQOitHNMn/Bmbm0xRNn4pPkgBgAR6rxWPWE0HaaOPt4jJZjCKFcKKV2WEmd0XS
+	Tl2Talb1JlOkjlM+0Mer0VDVSWCrVV1xEEs5gsMgVFRU4SlZE7GDRuFT8HdljgSh
+	Xst/KdJA+5ZnV0dJJ2vYmHjLs=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id
+ _____wBHOs5_I5BoPnvzJQ--.25158S2;
+	Mon, 04 Aug 2025 11:05:39 +0800 (CST)
+From: wangdich9700@163.com
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-arm-kernel@lists.infradead.org,
+	wangdicheng <wangdicheng@kylinos.cn>
+Subject: [PATCH 1/2] ALSA: hda/realtek: Accelerate the front MIC charging and
+ discharging of the 897 codec
+Date: Mon,  4 Aug 2025 11:05:17 +0800
+Message-Id: <20250804030518.424229-1-wangdich9700@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-MailFrom: baojun.xu@ti.com
+X-CM-TRANSID: _____wBHOs5_I5BoPnvzJQ--.25158S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF13Xry8XFW8uw1DWry8Xwb_yoW8JFWfpr
+	WrCFy3XFs3Xr4jyw48tr4fua4kGa45ZrW3C3yYk3W7XrsxuryktFyrG342v3W7KFWYkr1j
+	qr1Fy34kJ3y5Kr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UZ6pQUUUUU=
+X-Originating-IP: [116.128.244.169]
+X-CM-SenderInfo: pzdqwv5lfkmliqq6il2tof0z/1tbibgSfT2iQGr-xBwAAsR
+X-MailFrom: wangdich9700@163.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CGJRDQLRB6SBKFH5T6DCKE2BSK3A2MWV
-X-Message-ID-Hash: CGJRDQLRB6SBKFH5T6DCKE2BSK3A2MWV
-X-Mailman-Approved-At: Mon, 04 Aug 2025 07:21:08 +0000
+Message-ID-Hash: EPKAV5SSLKYENZG4XPSRKZNXHPSPQKAM
+X-Message-ID-Hash: EPKAV5SSLKYENZG4XPSRKZNXHPSPQKAM
+X-Mailman-Approved-At: Mon, 04 Aug 2025 07:21:39 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CGJRDQLRB6SBKFH5T6DCKE2BSK3A2MWV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EPKAV5SSLKYENZG4XPSRKZNXHPSPQKAM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,27 +92,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The step for TLV on tas2781, should be 50 (-0.5dB).
+From: wangdicheng <wangdicheng@kylinos.cn>
 
-Fixes: 678f38eba1f2 ("ASoC: tas2781: Add Header file for tas2781 driver")
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+The front MIC capacitance of the Inspur board is too large, resulting in a longer charging and discharging time required,
+which in turn prevents recording for 5 seconds before startup.
+Therefore, software is used to increase the delay by 2 seconds to avoid this issue.
+
+Signed-off-by: wangdicheng <wangdicheng@kylinos.cn>
 ---
- include/sound/tas2781-tlv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/sound/tas2781-tlv.h b/include/sound/tas2781-tlv.h
-index d87263e43fdb..ef9b9f19d212 100644
---- a/include/sound/tas2781-tlv.h
-+++ b/include/sound/tas2781-tlv.h
-@@ -15,7 +15,7 @@
- #ifndef __TAS2781_TLV_H__
- #define __TAS2781_TLV_H__
- 
--static const __maybe_unused DECLARE_TLV_DB_SCALE(dvc_tlv, -10000, 100, 0);
-+static const __maybe_unused DECLARE_TLV_DB_SCALE(dvc_tlv, -10000, 50, 0);
- static const __maybe_unused DECLARE_TLV_DB_SCALE(amp_vol_tlv, 1100, 50, 0);
- 
- #endif
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 877137cb09ac..88675eae9447 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1001,6 +1001,14 @@ static int alc_resume(struct hda_codec *codec)
+ 	if (!spec->no_depop_delay)
+ 		msleep(150); /* to avoid pop noise */
+ 	codec->patch_ops.init(codec);
++
++	if (codec->core.subsystem_id == 0x10ec1304) {
++		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x04);
++		msleep(50);
++		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x44);
++		msleep(2000);
++		snd_hda_codec_write(codec, 0x19, 0, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80);
++	}
+ 	snd_hda_regmap_sync(codec);
+ 	hda_call_check_power_status(codec, 0x01);
+ 	return 0;
 -- 
-2.43.0
+2.25.1
 
