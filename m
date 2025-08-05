@@ -4,62 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AB96C87FDA
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Aug 2025 19:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E0BDC87FCF
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Aug 2025 10:49:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21B3560277;
-	Fri,  8 Aug 2025 21:47:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21B3560277
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82F3B601FC;
+	Sun, 10 Aug 2025 12:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F3B601FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754682468;
-	bh=sysb+Iwf3IKaWutkaewIGZj70rt5R0CVj8TzFMJtSlc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=TVL6cuXDUkPDMyCarrxNFLX2sP+OryltND4yCmSlByYrR3sDC6xYBR5xleaEJh/BZ
-	 0ajYHZKP2GkiZ2YshtuoP0eVQ8M2jn7r27p8yVUPT414oesJOVJ1nfdXUScWOKvXHj
-	 fVP9UaaooOLJxel3z57a8Dd7M48c5SoadzZkjmQw=
+	s=default; t=1754822984;
+	bh=RiuVR+JOwMH5EVZEGQtiTP5S8pqPT/1nc2hCJgeRVVs=;
+	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=at68i0UntI1Vr+xdVy5gkVNPm1cODoTjAfSbiZ4mnjDduAg7kUyaBOmNKlAaVNCe1
+	 T0h7tEY+jpQEiKSNS0kJqIo4O1OKJpZLaNY2kgsU70eY1nlvoCcIeLOrMcozISjmoi
+	 5VYwgk2RXghZDtiNnXfqTdXgXFdftZnb3yF7Gy68=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C4D7F805C4; Fri,  8 Aug 2025 21:47:12 +0200 (CEST)
+	id 266C1F805CA; Sun, 10 Aug 2025 12:49:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DE05F805D3;
-	Fri,  8 Aug 2025 21:47:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C79FFF805C2;
+	Sun, 10 Aug 2025 12:49:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8F38F8024C; Fri,  8 Aug 2025 21:47:03 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3354CF800F8
-	for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2025 21:47:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3354CF800F8
+	id A5315F804B3; Tue,  5 Aug 2025 07:51:16 +0200 (CEST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1C4BF800DF
+	for <alsa-devel@alsa-project.org>; Tue,  5 Aug 2025 07:51:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1C4BF800DF
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmx.de header.i=thomas.vanhouten@gmx.de
+ header.a=rsa-sha256 header.s=s31663417 header.b=dzLERl1p
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1754373066; x=1754977866; i=thomas.vanhouten@gmx.de;
+	bh=7b534+O7Rl0lP5yVpFaiqgfJG5i+c/HKgZvUlm4cH2M=;
+	h=X-UI-Sender-Class:Content-Type:Message-ID:Date:MIME-Version:To:
+	 From:Subject:cc:content-transfer-encoding:content-type:date:from:
+	 message-id:mime-version:reply-to:subject:to;
+	b=dzLERl1pzWkENLOtPFpYoWgKEUZlkR3UDUi/Ek+AqOPdad9174S8vyK77CMkekM+
+	 w0BW9uAK6pQEr2bwsB6lKuzxaZfr5dkX7QAd8tYHbg/BAGyBoJIklJK+LCMwNiT7Y
+	 Z99GElj5AO1WcdlWdY5dLHZ+BOIZjfWMldDGzuELcGuYRr3QWSfvQh9EStvLwwgec
+	 KYiNFFJRoTwm222djUaVXI5HYWTZdD4pgri8G61FWbYSTO2TSLK8vuCFOSO8tieEH
+	 XV0hYnEsQUOrGx+CBbT3ZnoByy1NNUa7v6tObtapXm09gbFZFIfEUzpTMZBF4O6t5
+	 B2/+hE4mN5f2P9mCTw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.178.21] ([89.246.47.227]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MN5if-1v1fIa4C0r-00NMEc; Tue, 05
+ Aug 2025 07:51:06 +0200
+Message-ID: <28456399-b155-4993-a062-9297a3d3750b@gmx.de>
+Date: Tue, 5 Aug 2025 07:51:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1859e25d6dd84900-webhooks-bot@alsa-project.org>
-In-Reply-To: <1859e25d6d7e8300-webhooks-bot@alsa-project.org>
-References: <1859e25d6d7e8300-webhooks-bot@alsa-project.org>
-Subject: Problems with "snd_pcm_hw_params_set_rate_near" and
- "snd_pcm_hw_params_set_period_size_near" in x86_64 assembly.
-Date: Fri,  8 Aug 2025 21:47:03 +0200 (CEST)
-Message-ID-Hash: GJRNFGA2TQW7TWPYGVOEPLYT7YR34363
-X-Message-ID-Hash: GJRNFGA2TQW7TWPYGVOEPLYT7YR34363
-X-MailFrom: github@alsa-project.org
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US, de-DE
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+From: Thomas van Houten <thomas.vanhouten@gmx.de>
+Subject: Subject: [BUG] snd_hda_intel runtime power management unsupported on
+ MSI MPG Z390 GAMING PLUS with Realtek codec (kernel 6.8.0) causing excessive
+ audio power draw
+X-Provags-ID: V03:K1:vTaPYownMRjxIqMsX0yJ1UcMP/7AXE+z2SI9Hk8zWOp/xNSSaju
+ lpe/y60c7phuiznCi7ggo//aB8bSZo3pG5RbXn4UdZZZ9JHj5wUm7tT9q78Kyq89rwnqrF4
+ wztRvENjMARwnVHm1iRZVx3M58D/UGy7kgkRdPLxClSt5qrAExsfVG2+K7B8pob/DOHWLME
+ S/zSDYj6RfyC1auR2Wg0g==
+UI-OutboundReport: notjunk:1;M01:P0:JrrJzzx8Qt8=;/IJYAhrRL2d+Wi8qlasuB0dxUsq
+ mjRtATzmuk5u9Vtm8sg1/HL9RdRIK9KfZh1EuGr2V2vjy+Mu2TjshYrbzb6t5igBUeEQcn/sb
+ EGaF7NO7/pPsrCUQ/KELvlVjMbaieu/YMa0KzwDeBr0qQkFCawQeaHfrkSZIimNGvPdhHl5o/
+ XYeU0HKT7ZZIdNzng9lYNOtWHfhEGJa8RPgSVvBmchYo0dGKffz3qZoXp97MnFSRgVGtBuSQq
+ 1lqN/PqILszA36lVbop9fwmBpV/27ihNcStcD3T/uygLYAm8LORYnoKvhlotBfvHPGJtXLbgP
+ nCxf5dgS1zBWpIhLoXPiESYfEO98OypaBdyyY9nPuLiEhdmcG0QnB9rThOEBqBB9KpiT6xEp5
+ /fN4pyYqHYctAAtX5fchgDEQrNLXbKchrCCq8cznfMC+Jn9cVTgIU4OjxdEFlJV5iwWMyT8b+
+ UYzS/Fs2g1xNuvDk9sKeOGC01GeSII4nQKpfC4h2lEf03Jjrf7AAZvZ7W+ts2ztal52HMGmbF
+ Y7UDDAVLV/PSEFaEyw5OI2du8gXNLMAx8vPW91d52hx1yRK2YPWROQCKUFo0nfhhJt4WE1Ojw
+ zYlhHgYs1n1WMl1Dc9IVOS2Oy8Zp4+L5ZrtQA4gKOkueBuwQFS3Nx5F2ebbjX3TSpnuXyxweZ
+ 1n2YoLgrgiYqi7OdTZ5r43eIfBGvqlBE8LpTcY8S5alsszmwXeNhqLk0RMMg+8NyOJ8SS5tCF
+ eTx96TTX+wiScwO9G+3UjzYt+FVz5UoL/tkR4Z8X+59uoftFDUvFxpwIn8ypqJGbWjl79ZfE6
+ Y+OhB5nL6DJdLxn2Eiyb8M6nIPzgPCz/T7A/y8mPolIs06xbn2MaB8dirGJCHusHv82bWbomO
+ ogooy9tMtiicon0+wYkHg5JuS944J+aCAVg3KcWY9QMSC51oBHhPHq7uiDEwKjblCIA4gAw5R
+ ZMC/gTPCdmnQAZ0ESR1QbTVh0f2BRY2kau0S9Y90/l3HuNUKu2ALaj/8KJJBHQCKyT1zK2wbI
+ ikHdejzY7ffMKGq9ToDahX6ZhDsQCNLufh6NvQ3FHs4rKHsKKQlfNigVoULkPCkzG/LpeTWKP
+ meATLknNhfh301WGsmBsY27kNBLNxHlaWsoIWzBhg0k3Q6i6/bfK1uSwp8lbERJmVwIDwZ+fp
+ x+MafiX3OovK8wO7oIzjDgbvhzdtDlkLOq6P4g/uxmTiJ5CpB3d+zXq5HqCZNt3CeWM+IcHRP
+ 9NYfez/8kZ++rLVI37NxRJJWiJHWssa0cFY5BdX2dEjnWjlZotAxp7cTv3wT2rTUYWZn78yxH
+ dmORTuOYuXF0ieP05y9L7Xa4Di6zO6jHTfqXPeHq5yksrrL7vdk19ewcOx+uaD0QFZM8txbgC
+ L7PODL+XZ0p8SOa0S0YWE1yHqjkEw8FpW5AiBdpHBianp/XejvcRpDF16nGCUAMchTWPTBrPH
+ bPDk/gPoRKdpwwzMaEXGC42Byo2Pf6UTB076HefyWVr2YaXH0romCJcduteCK1i041SNsS2xq
+ bYIPlcGcMZyakT/LglGqCfQ8QLDeX5OdtN70OsRcB4VunTmcbuuA7kcKofosdOD3ZPtiPG9g6
+ 50loaKo0g+n3JRPM9rznKbR6Wx3IAF7e8IXtvv7ndzX3Gd0H7/ojhWgxLG8k6UcJLnFd/fmln
+ EXeoUxgj8dEKlTajlwEn2rvZudaYDEwkxIQ+3xJxUxzvQpP0Vc49dcJGoKgOk0NSWFttOK5SJ
+ zmtk5ZNzCWdkp8FH0Mfzyl+wjNzx/TeF3J1mSMjX+pRus9Vmyb47LuHbvWdqL/s6FSkx5i1hU
+ nKbjaRZpwDXHtKc4h/RqMw4nTAD3gzlc/4tTorr7GdntFJyIe7QDV8IsUH02etdbMf/SzXFii
+ SqzdDRZPELDZa1+hhueuQxZTaPxf+wgg3iz0gNn2Wn3udargEhjPYQnngpvWBUR8aebbouNqW
+ NKddFuC0INU2ev3Ju/Y4BI7L5+EPJ+L8X7PMghddVe6s6JG1vYW3do5JXHKWsDXtNw+LbBucd
+ MTkeOKoowb1tW67cvsGlXmGIf+Fn4g5Oi/dJsRk67ZD2b2Mhson6iuIbLokDENjsWHWR1tr5k
+ C9GodGAbewCIjzqtqGEgQP4I7h9067uFSzJ1RAFzycIUdOHk7xhUTOv7nU3jjESLUfdjfNiSo
+ T0bV3KPnimvxFsB7Rn+dIyV4b8qr15m+ecFHQ+innuh8K0WoZ64IiNlxvhcQhGMKWy/L7SLqg
+ GfVv5ZTMP4tJU+HXcPJy1gP78vTcPW94wIYJNQUQdUpEopjiSEM75O2l8eW+7WNpKjMGccORO
+ blDgwsHhl2RZD6UyG6JGUJfEhK4DV29mC2A1+SrbIymaDC8G19zDqGVs2k0HFeHaPlevSJx+J
+ 16I9jzJ9aJO+PXVPwt40sEoRxOO/PKIZXtR7I4EpICP8qh58RpinyTMKmy4jlrqKQn/7MWqwS
+ M91JkQKaA2Rcx1fByzxOANeMlKZNyQH0+n22HsTvVxZ2cM7Wa3jykBKT8jnP2QvGF1ZHcIxGg
+ 1xLOvox+8Ic5yfImuaMFvNiroMEr8wwq+p+SQbwZeJMmca/PsDZIqjzkmw7xxhbY/Prem4k7D
+ lCJMMTR1tEudDd3LvxFZhqr8yZP6mp0JDFjZGA3nnKJpXbl/40fQMCkhwN3LjNypxM0fTfa8C
+ IOHphODaTovmjlYnp/JzHgigz52O7+hvZ3eaxm+Te41f1CoGxgknZYRQIdnR0DYmwacvA0e0B
+ QxmIaxVS5XcURRcDyXEERLDO1CJIQHecRrCjbO3vkC/JWu8l12aOwuNYxdw8N4fzhN2En6Zlm
+ ItO6QObXVld7B/G/o4/LGMZxB6yxpWTXbZnYGMCJzXN8c4j6I3u2dhKpO+JWcRVugVJZEahF2
+ y0q3N4SNXc0TDcAXEfQnotZYG4K0jHdTx8eGBQYwDUXvbU18ouwzlR3z5oG0dEdM95yK6Zp7I
+ hyUftGY3zyvnVQP1Kg/NKCxFQbeEpB0yWJHbFjAAWN2Qdsyc2OpCT5HyjKhaXw7h8blgwIKfh
+ jRRg8it8Z/pKCdfvY+3MxMJfebECdyMAkGPd3SWVjCRW9lC1oX1EFgUb2SipOP4TOiEaU13xC
+ 3KmvcgEFhfpLQ/XyVYr+re5wV2nmCRO/uTr8d+U1CE3HZXMf4/l7LWAvsXWmRGRRbv0WAzC1M
+ Z4nZPRFPlTKGGPoLwHT3wQBjprSaglghHy4R53EGqyoBu4ACZ0l/BbmXIB+DhSPdo+RT81wlV
+ 6jylQ2xhJUT9U/GYTc5jdbfn9bopqcOypFI/H1a1fx0rpxiowuZmz5bwT2e+CqmVwmUJGWr/N
+ EQxv+pjaQ2Xol8QSOHbNLtlYifVr2YarVGdIElwQUx2J5bXBo4dLSuZAqui9ux6VO9ihJy9CT
+ i9IwJGeN+jRty+fqyf6n/mkZ0XL0FvW/In6PyM0BTBbqFkdnSrdBpsZk/C3bQlc3h4HruPcOY
+ sMvSqIFDhp79Z3nPiieb6o9q+rDIJyQsOl7bSvxeA4fQXdIDxxddW3o/eIzpegOcj0ndw3McJ
+ CkjxnW5aZnjWqdNCh6muFXGRL4q/TdD56gdSkqMXZdPaPXzbw3ozLBiGkFi/tloZ74YpKKDGU
+ t6d2aVxmnQKV9YC0pzbfP4c+o2l/GkjcM2GjVXQTTfecG/JBD/WBpTUOkiB0jBH2BLfvkODZI
+ gBCbCtbjMHLslS6ZLt0Cit377AuEyoYhfsliZ28Gk+ZJV7mLHlKnO271CnUA104u8nX43CshX
+ mj1o6b1bgeny432A0/nLdnXlm0jyrBa+W1cBAyehoFGeJUAiaQMWk/glluheQSHbicRMTuWPT
+ FTi99QXxxcO20QWDXTg/WcsLv7WkYag/+GhK5GytaYkTOvRSUpfr/zTkaq/b1hV1wMQNY26kO
+ rdoyzf+m3SSYmpQbISm0+ZMIjhmSe2xtE96UvDqbPBl92IRyASctGX7O2Y9O6Ir5hcxu1vC0N
+ W7O+e8Ome622eDmRCh4eG3vBPLTU/umdkRCb8Nf3AV15U4A0dYid+7
+X-MailFrom: thomas.vanhouten@gmx.de
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: E4KOVYZQB6EZBSLMPOAR2LBKEVBV3OCS
+X-Message-ID-Hash: E4KOVYZQB6EZBSLMPOAR2LBKEVBV3OCS
+X-Mailman-Approved-At: Sun, 10 Aug 2025 10:48:51 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GJRNFGA2TQW7TWPYGVOEPLYT7YR34363/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E4KOVYZQB6EZBSLMPOAR2LBKEVBV3OCS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,435 +153,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #471 was opened from sc1ntilla:
-
-### **PREAMBLE:**
-
-I have never worked with any sound system before, so I'm almost sure that it's just me doing something wrong, but I can't see what, so I'm asking for help.
-
-I'm doing this project for fun, and to learn a lot of stuff, so feel free to give your opinions / advice if you want to.
-
-### **WHAT HAPPENS:**
-
-When calling `snd_pcm_hw_params_set_rate_near` and `snd_pcm_hw_params_set_period_size_near` memory protection violation is issued.
-I find that strange, because `snd_pcm_hw_params_set_buffer_size_near` works perfectly fine, and it's similiar to these two.
-
-### **WHAT I TRIED:**
-- Making sure that stack after call is on address divisible by 96 (by adding 8 to stack pointer),
-- Making sure that `*val` argument is on address divisible by 96,
-- Misaligning stack by 8, 16, 24 and 32 before calling these functions (by subtracting from stack pointer),
-- Providing 0 to `*val` argument, to rule out that writing to output crashes,
-- Providing valid output address to `*dir` argument to rule out that 0 is causing crashes,
-- Calling these functions in different order,
-- Trying to call `snd_pcm_set_params` instead, but it says _"Channels count (0) not available for PLAYBACK: Invalid argument"_ however, I'm sure that I provided a valid number (2). I even hardcoded it.
-
-But to no avail. Is it my misunderstanding of how alsa-lib works? Very likely. Is my assembly code faulty? Quite possible. I just can't see where the problem lies. If you see error somewhere, please let me know.
-
-### **ADDITIONAL INFORMATION:**
-
-I have multiple audio outputs: monitors with built-in speakers, standalone speakers, and analog jack headphones. 
-I hardcoded `hw:2,0` as device name to open. Sometimes it results in `snd_pcm_open` returning _"File descriptor in bad state"_.
-When I tried using `sysdefault` it often returns _"ALSA lib /var/tmp/portage/media-libs/alsa-lib-1.2.14/work/alsa-lib-1.2.14/src/pcm/pcm_dmix.c:1000:(snd_pcm_dmix_open) unable to open slave"_
-
-
-
-Below is .data section in which globals are stored, and source of function that will be used to play audio buffers.
-
-.data section:
-
-```
-.section .data
-.align 32
-
-  test2: .8byte 0
-  test:  .8byte 0
-
-  SND_PCM_NONBLOCK:                .8byte 0x1
-  SND_PCM_ASYNC:                   .8byte 0x2
-  SND_PCM_STREAM_PLAYBACK:         .8byte 0
-
-  SND_PCM_FORMAT_U8:               .8byte 1
-  SND_PCM_FORMAT_U16_LE:           .8byte 4
-  SND_PCM_FORMAT_U24_LE:           .8byte 8
-  SND_PCM_FORMAT_U32_LE:           .8byte 12
-  SND_PCM_FORMAT_S8:               .8byte 0
-  SND_PCM_FORMAT_S16_LE:           .8byte 2
-  SND_PCM_FORMAT_S24_LE:           .8byte 6
-  SND_PCM_FORMAT_S32_LE:           .8byte 10
-
-  SND_PCM_ACCESS_MMAP_INTERLEAVED: .8byte 0
-  SND_PCM_STATE_PREPARED:          .8byte 2
-
-  AUDIO_BUFFER_STATE_IDLE:         .8byte 0
-  AUDIO_BUFFER_STATE_WRITING:      .8byte 1
-  AUDIO_BUFFER_STATE_PLAYING:      .8byte 2
-
-  t1: .8byte 0
-  t2: .8byte 0
-
-  alsa:
-    alsa.pcm_handle:   .8byte 0
-    alsa.hw_params:    .8byte 0
-    alsa.last_error:   .8byte 0
-    alsa.initialized:  .8byte 0
-    alsa.device_name:  .ascii "hw:2,0\0"
-
-  audio_buffers.count_max: .8byte 16
-
-  amd64_audio_last_error: .8byte 0
-```
-
-function: 
-
-```
-  amd64_audio_play:
-
-    /* rdi: (input) address to audio data:
-     *        (+0/2) audio format (1: PCM, 2: IEEE754)
-     *        (+2/2) amount of channels
-     *        (+4/4) rate in hertz
-     *        (+8/4) bytes per sec (frequency * bytes per block)
-     *        (+12/2) bytes per block (number of channels * bits per sample / 8)
-     *        (+14/2) bits per sample
-     *        (+16/8) total size of samples data
-     *        (+24/8) address to samples data
-    */
-
-
-    /* Align stack on 96byte boundary: */
-
-    push %r15
-    mov %rsp,  %r15
-    and $-32,  %rsp
-
-    mov %rsp, %rax
-    mov  $96, %r14
-    xor %rdx, %rdx
-    div %r14
-    sub %rdx, %rsp
-
-    sub $96, %rsp
-    mov %r15, (%rsp)
-
-
-    /* Store registers: */
-
-    sub $192, %rsp
-    call amd64_util_store_gpr_regs
-
-
-    /* Create stack space: */
-
-    sub $192, %rsp
-    mov %rdi, (%rsp)
-
-    /* stack layout:
-     *   (+0/8) rdi (address to audio data)
-     *   (+8/8) buffer size (altered by *buffer_size_near)
-     *   (+16/8) period size (set when setting period size)
-     *   (+24/8) rate in hertz
-     *   (+32/8) temp
-    */
-
-
-    xor %r15, %r15
-    mov 16(%rdi), %r15
-    mov %r15, 8(%rsp)
-
-    xor %r15, %r15
-    mov 4(%rdi), %r15d
-    mov %r15d, 24(%rsp)
-
-    movq $0, 32(%rsp)
-
-
-    /* Open pcm if needed: */
-
-    cmpq $0, (alsa.pcm_handle)
-    jne .amd64_audio_play.pcm_is_open
-
-      lea alsa.pcm_handle,  %rdi
-      mov %rdi, (%rdi)
-      lea alsa.device_name, %rsi
-      mov (SND_PCM_ACCESS_MMAP_INTERLEAVED), %rdx
-      mov (SND_PCM_NONBLOCK), %r10
-
-      call snd_pcm_open
-
-      cmp $0, %rax
-      jne .amd64_audio_play.error.snd_pcm_open
-
-    .amd64_audio_play.pcm_is_open:
-
-
-    /* Allocate hw params: */
-
-    cmpq $0, (alsa.hw_params)
-    jne .amd64_audio_play.hw_params_are_allocated
-
-      lea alsa.hw_params, %rdi
-      mov %rdi, (%rdi)
-
-      call snd_pcm_hw_params_malloc
-
-      cmp $0, %rax
-      jne .amd64_audio_play.error.snd_pcm_hw_params_malloc
-
-    .amd64_audio_play.hw_params_are_allocated:
-
-
-    /* Get all possible combinations into hw params: */
-
-    mov (alsa.pcm_handle), %rdi
-    mov (alsa.hw_params), %rsi
-
-    call snd_pcm_hw_params_any
-
-    cmp $0, %rax
-    jne .amd64_audio_play.error.snd_pcm_hw_params_any
-
-
-    /* Set access: */
-
-    mov (alsa.pcm_handle), %rdi
-    mov (alsa.hw_params), %rsi
-    mov (SND_PCM_ACCESS_MMAP_INTERLEAVED), %rdx
-
-    call snd_pcm_hw_params_set_access
-
-    cmp $0, %rax
-    jne .amd64_audio_play.error.snd_pcm_hw_params_set_access
-
-
-    /* Set format: */
-
-    xor %rdi, %rdi
-    mov (%rsp), %rdi
-    mov 14(%rdi), %r15w
-    mov (%rdi), %r14w
-
-    cmp $1, %r14w
-    jne .amd64_audio_play.error.format_unsupported
-
-    cmpw $32, %r15w
-    je .amd64_audio_play.format32
-    cmpw $24, %r15w
-    je .amd64_audio_play.format24
-    cmpw $16, %r15w
-    je .amd64_audio_play.format16
-    cmpw  $8, %r15w
-    je .amd64_audio_play.format8
-    jmp .amd64_audio_play.error.format_unsupported
-
-    .amd64_audio_play.format32:
-      mov (SND_PCM_FORMAT_S32_LE), %rdx
-      jmp .amd64_audio_play.format_end
-
-    .amd64_audio_play.format24:
-      mov (SND_PCM_FORMAT_S24_LE), %rdx
-      jmp .amd64_audio_play.format_end
-
-    .amd64_audio_play.format16:
-      mov (SND_PCM_FORMAT_S16_LE), %rdx
-      jmp .amd64_audio_play.format_end
-
-    .amd64_audio_play.format8:
-      mov (SND_PCM_FORMAT_S8), %rdx
-      jmp .amd64_audio_play.format_end
-
-    .amd64_audio_play.format_end:
-
-    mov (alsa.pcm_handle), %rdi
-    mov (alsa.hw_params), %rsi
-
-    call snd_pcm_hw_params_set_format
-
-    cmp $0, %rax
-    jne .amd64_audio_play.error.snd_pcm_hw_params_set_format
-
-
-    /* Set channels: */
-
-    xor %rdx, %rdx
-    mov (%rsp), %r15
-
-    mov (alsa.pcm_handle), %rdi
-    mov (alsa.hw_params), %rsi
-    mov 2(%r15), %dx
-
-    call snd_pcm_hw_params_set_channels
-
-    cmp $0, %rax
-    jne .amd64_audio_play.error.snd_pcm_hw_params_set_channels
-
-
-    /* Set buffer size near: */    /* Returns 0, meaning it succeeded. No crashes generated. */
-
-    mov (alsa.pcm_handle), %rdi
-    mov (alsa.hw_params), %rsi
-    mov %rsp, %rdx
-    add   $8, %rdx
-    mov   $0, %r10
-
-    call snd_pcm_hw_params_set_buffer_size_near
-
-    cmp $0, %rax
-    jne .amd64_audio_play.error.snd_pcm_hw_params_set_buffer_size_near
-
-
-    /* Set rate near: */   /* CRASHES */
-
-    mov (alsa.pcm_handle), %rdi
-    mov (alsa.hw_params), %rsi
-    mov %rsp, %rdx
-    add  $24, %rdx
-    mov   $0, %r10
-
-    call snd_pcm_hw_params_set_rate_near
-
-    cmp $0, %rax
-    jne .amd64_audio_play.error.snd_pcm_hw_params_set_rate_near
-
-
-    /* Set period size near: */  /* CRASHES */
-
-    mov 8(%rsp), %rax
-    mov $4, %r15
-    xor %rdx, %rdx
-    div %r15
-    mov %rax, 16(%rsp)
-
-    mov (alsa.pcm_handle), %rdi
-    mov (alsa.hw_params), %rsi
-    mov %rsp, %rdx
-    add  $16, %rdx
-    mov   $0, %r10
-
-    call snd_pcm_hw_params_set_period_size_near
-
-    cmp $0, %rax
-    jne .amd64_audio_play.error.snd_pcm_hw_params_set_period_size_near
-
-
-
-
-
-
-
-
-    /* Free hw params: */
-
-    cmpq $0, (alsa.hw_params)
-    je .amd64_audio_play.hw_params_not_allocated
-
-      mov (alsa.hw_params), %rdi
-
-      call snd_pcm_hw_params_free
-
-      movq $0, (alsa.hw_params)
-
-    .amd64_audio_play.hw_params_not_allocated:
-
-
-    /* Register errors: */
-
-    xor %rax, %rax
-    jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_open:
-      mov %rax, (amd64_audio_last_error)
-      mov $-1, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_malloc:
-      mov %rax, (amd64_audio_last_error)
-      mov $-2, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_any:
-      mov %rax, (amd64_audio_last_error)
-      mov $-3, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_set_access:
-      mov %rax, (amd64_audio_last_error)
-      mov $-4, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.format_unsupported:
-      mov $-5, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_set_format:
-      mov %rax, (amd64_audio_last_error)
-      mov $-6, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_set_channels:
-      mov %rax, (amd64_audio_last_error)
-      mov $-7, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_set_buffer_size_near:
-      mov %rax, (amd64_audio_last_error)
-      mov $-8, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_set_period_size_near:
-      mov %rax, (amd64_audio_last_error)
-      mov $-9, %rax
-      jmp .amd64_audio_play.exit
-
-    .amd64_audio_play.error.snd_pcm_hw_params_set_rate_near:
-      mov %rax, (amd64_audio_last_error)
-      mov $-10, %rax
-      jmp .amd64_audio_play.exit
-
-
-    /* Exit: */
-
-    .amd64_audio_play.exit:
-
-
-    /* Print error to stdout: */
-
-    mov %rax, %rdi
-    call amd64_util_print_dec
-    call amd64_util_print_newline
-
-    cmpq $0, (amd64_audio_last_error)
-    je .amd64_audio_play.no_error
-
-      mov (amd64_audio_last_error), %rdi
-      call snd_strerror
-
-      mov %rax, %rdi
-      call amd64_util_print2
-      call amd64_util_print_newline
-
-    .amd64_audio_play.no_error:
-
-
-    /* Restore stack: */
-
-    add $192, %rsp
-
-
-    /* Restore registers without rax: */
-
-    mov %rax, 128(%rsp)
-    call amd64_util_restore_gpr_regs
-    mov 128(%rsp), %rax
-    add $192, %rsp
-
-
-    /* Restore stack alignment: */
-
-    pop %rsp
-    pop %r15
-
-    ret
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/471
-Repository URL: https://github.com/alsa-project/alsa-lib
+RGVhciBMaW51eCBrZXJuZWwgYW5kIEFMU0EgZGV2ZWxvcGVycywNCg0KSSBhbSByZXBvcnRpbmcg
+YW4gaXNzdWUgcmVsYXRlZCB0byBydW50aW1lIHBvd2VyIG1hbmFnZW1lbnQgc3VwcG9ydCBmb3Ig
+DQp0aGUgb25ib2FyZCBSZWFsdGVrIGF1ZGlvIGNvZGVjIG9uIG15IGRlc2t0b3AgbW90aGVyYm9h
+cmQsIHdoaWNoIHJlc3VsdHMgDQppbiBjb250aW51b3VzbHkgaGlnaCBhdWRpbyBoYXJkd2FyZSBw
+b3dlciB1c2FnZSBhbmQgaW5jcmVhc2VkIGlkbGUgDQpzeXN0ZW0gcG93ZXIgZHJhdy4NCg0KKlN5
+c3RlbSBJbmZvcm1hdGlvbjoqDQoNCiAgKg0KDQogICAgS2VybmVsOiA2LjguMC02NC1nZW5lcmlj
+IHg4Nl82NA0KDQogICoNCg0KICAgIERpc3RyaWJ1dGlvbjogTGludXggTWludCAyMS4zIFZpcmdp
+bmlhDQoNCiAgKg0KDQogICAgTW90aGVyYm9hcmQ6IE1TSSBNUEcgWjM5MCBHQU1JTkcgUExVUyAo
+TVMtN0I1MSkNCg0KICAqDQoNCiAgICBDUFU6IEludGVsIENvcmUgaTUtOTQwMEYNCg0KICAqDQoN
+CiAgICBBdWRpbyBEcml2ZXI6IHNuZF9oZGFfaW50ZWwNCg0KICAqDQoNCiAgICBBdWRpbyBDb2Rl
+YzogUmVhbHRlayAobGlrZWx5IEFMQzEyMjAgb3Igc2ltaWxhcikNCg0KKklzc3VlIFN1bW1hcnk6
+Kg0KVGhlIG9uYm9hcmQgUmVhbHRlayBhdWRpbyBjb2RlYyBkb2VzIG5vdCBlbnRlciBydW50aW1l
+IHBvd2VyIG1hbmFnZW1lbnQgDQpsb3ctcG93ZXIgc3RhdGVzLCBjYXVzaW5nIGl0IHRvIHJlbWFp
+biBhdCAxMDAlIHBvd2VyIHVzYWdlIGV2ZW4gd2hlbiANCmlkbGUuIFRoaXMgc2lnbmlmaWNhbnRs
+eSBjb250cmlidXRlcyB0byBteSBzeXN0ZW0ncyBoaWdoIGlkbGUgcG93ZXIgDQpjb25zdW1wdGlv
+biAofjE2MFcgdG90YWwpLCBkZXNwaXRlIGxvdyBDUFUgYW5kIEdQVSBkcmF3Lg0KDQoqRGV0YWls
+ZWQgRGlhZ25vc3RpY3M6Kg0KDQogMS4NCg0KICAgICpQQ0kgQXVkaW8gRGV2aWNlczoqDQoNCnRl
+eHQNCnwwMDoxZi4zIEF1ZGlvIGRldmljZSBbMDQwM106IEludGVsIENvcnBvcmF0aW9uIENhbm5v
+biBMYWtlIFBDSCBjQVZTIA0KWzgwODY6YTM0OF0gKHJldiAxMCkgMDM6MDAuMSBBdWRpbyBkZXZp
+Y2UgWzA0MDNdOiBBZHZhbmNlZCBNaWNybyANCkRldmljZXMsIEluYy4gW0FNRC9BVEldIE5hdmkg
+MzEgSERNSS9EUCBBdWRpbyBbMTAwMjphYjMwXSAwNzowMC4xIEF1ZGlvIA0KZGV2aWNlIFswNDAz
+XTogQWR2YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLiBbQU1EL0FUSV0gTmF2aSAyMS8yMyBIRE1J
+L0RQIA0KQXVkaW8gQ29udHJvbGxlciBbMTAwMjphYjI4XSB8DQoNCiAyLg0KDQogICAgKktlcm5l
+bCBNZXNzYWdlcyByZWxhdGVkIHRvIHNuZF9oZGFfaW50ZWwgb3IgYXVkaW86Kg0KICAgIE5vIGxv
+Z3MgZm91bmQgdmlhfGRtZXNnIHwgZ3JlcCAtaSBzbmRfaGRhX2ludGVsfG9yfGRtZXNnIHwgZ3Jl
+cCAtaQ0KICAgIGF1ZGlvfC4NCg0KIDMuDQoNCiAgICAqUG93ZXIgbWFuYWdlbWVudCBzeXNmcyBz
+ZXR0aW5nczoqDQoNCnRleHQNCnxjYXQgL3N5cy9tb2R1bGUvc25kX2hkYV9pbnRlbC9wYXJhbWV0
+ZXJzL3Bvd2VyX3NhdmUgMTAgY2F0IA0KL3N5cy9jbGFzcy9zb3VuZC9od0MqL3Bvd2VyL3J1bnRp
+bWVfc3RhdHVzIHVuc3VwcG9ydGVkIHVuc3VwcG9ydGVkIA0KdW5zdXBwb3J0ZWQgY2F0IC9zeXMv
+Y2xhc3Mvc291bmQvaHdDKi9wb3dlci9jb250cm9sIGF1dG8gYXV0byBhdXRvIHwNCg0KVGhlfHJ1
+bnRpbWVfc3RhdHVzfHJlcG9ydHMgInVuc3VwcG9ydGVkIiwgaW5kaWNhdGluZyBubyBydW50aW1l
+IFBNIA0Kc3VwcG9ydCBpcyBhdmFpbGFibGUgZm9yIHRoZXNlIGF1ZGlvIGRldmljZXMuDQoNCiA0
+Lg0KDQogICAgKlB1bHNlQXVkaW8gYW5kIHVzZXItc3BhY2UgcHJvY2Vzc2VzIGluc3BlY3Rpb246
+Kg0KICAgIFN0b3BwZWQgUHVsc2VBdWRpbyBhbmQgYWxsIGF1ZGlvIGNsaWVudHMsIHdpdGggbm8g
+Y2hhbmdlIGluIHBvd2VyDQogICAgdXNhZ2Ugb3IgZGV2aWNlIG93bmVyc2hpcCBvZiBhdWRpbyBj
+b250cm9scywgY29uZmlybWluZyB0aGlzIGlzIG5vdA0KICAgIGNhdXNlZCBieSB1c2VyLXNwYWNl
+IGF1ZGlvIGFwcGxpY2F0aW9ucy4NCg0KIDUuDQoNCiAgICAqUG93ZXJ0b3AgUmVwb3J0czoqDQoN
+CnRleHQNCnwxMDAuMCUgRGV2aWNlIEF1ZGlvIGNvZGVjIGh3QzJEMDogUmVhbHRlayB8DQoNCkNv
+bnNpc3RlbnRseSAxMDAlIHVzYWdlIGZyb20gdGhlIFJlYWx0ZWsgYXVkaW8gY29kZWMsIGNvbmZp
+cm1lZCBieSBwb3dlcnRvcC4NCg0KIDYuDQoNCiAgICAqRHJpdmVyIHBhcmFtZXRlciBzZXQ6Kg0K
+ICAgIHxzbmRfaGRhX2ludGVsfG1vZHVsZXxwb3dlcl9zYXZlfHBhcmFtZXRlciBzdWNjZXNzZnVs
+bHkgc2V0IHRvIDEwDQogICAgc2Vjb25kcyAodmFsdWUgMTApLCBidXQgbm8gZWZmZWN0aXZlIHBv
+d2VyIHNhdmluZyBvYnNlcnZlZC4NCg0KKkltcGFjdDoqDQpUaGUgbGFjayBvZiBydW50aW1lIHBv
+d2VyIG1hbmFnZW1lbnQgc3VwcG9ydCBmb3IgdGhpcyBhdWRpbyBjb2RlYyBjYXVzZXMgDQpjb250
+aW51b3VzIGhpZ2ggcG93ZXIgZHJhdywgaW5jcmVhc2luZyBzeXN0ZW0gaWRsZSBwb3dlciBjb25z
+dW1wdGlvbiANCnNpZ25pZmljYW50bHksIHJlZHVjaW5nIGVuZXJneSBlZmZpY2llbmN5Lg0KDQoq
+UmVxdWVzdDoqDQpQbGVhc2UgaW52ZXN0aWdhdGUgd2hldGhlciB0aGlzIGlzIGEgZHJpdmVyIGxp
+bWl0YXRpb24sIG1pc3NpbmcgZmlybXdhcmUgDQpxdWlyaywgb3IgY29uZmlndXJhdGlvbiBpc3N1
+ZSB3aXRofHNuZF9oZGFfaW50ZWx8b24gdGhlIE1TSSBNUEcgWjM5MCANCkdBTUlORyBQTFVTIG1v
+dGhlcmJvYXJkJ3MgUmVhbHRlayBjb2RlYy4gR3VpZGFuY2UsIHdvcmthcm91bmRzLCBvciANCnBh
+dGNoZXMgdG8gZW5hYmxlIHJ1bnRpbWUgcG93ZXIgbWFuYWdlbWVudCB3b3VsZCBiZSBhcHByZWNp
+YXRlZC4NCg0KKkFkZGl0aW9uYWwgbm90ZXM6Kg0KDQogICoNCg0KICAgIFRlc3RlZCBwb3dlciBt
+YW5hZ2VtZW50IHNldHRpbmdzIGFjY29yZGluZyB0byBjdXJyZW50IGJlc3QgcHJhY3RpY2VzLg0K
+DQogICoNCg0KICAgIEJJT1MgaXMgdXAgdG8gZGF0ZSBhcyBvZiB0aGUgbGF0ZXN0IE1TSSByZWxl
+YXNlLg0KDQogICoNCg0KICAgIFN5c3RlbSBiZWhhdmlvciBjb25zaXN0ZW50IG9uIExpdmUgVVNC
+IG9mIHRoZSBzYW1lIExpbnV4IE1pbnQNCiAgICB2ZXJzaW9u4oCUcHJvYmxlbSBub3QgZHVlIHRv
+IGxvY2FsIGNvbmZpZ3VyYXRpb24uDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24gdG8g
+dGhpcyBtYXR0ZXIuIEnigJltIGhhcHB5IHRvIHByb3ZpZGUgDQphZGRpdGlvbmFsIGxvZ3Mgb3Ig
+YXNzaXN0IHdpdGggdGVzdGluZyBwYXRjaGVzLg0KDQoNCkJlc3QgcmVnYXJkcywNCg0KDQpUaG9t
+YXMgdmFuIEhvdXRlbg0K
