@@ -4,147 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E0BDC87FCF
-	for <alsa-devel@archiver.kernel.org>; Sun, 10 Aug 2025 10:49:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FE3EC87FCA
+	for <alsa-devel@archiver.kernel.org>; Sun, 10 Aug 2025 10:50:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82F3B601FC;
-	Sun, 10 Aug 2025 12:49:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F3B601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4151460219;
+	Sun, 10 Aug 2025 12:50:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4151460219
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754822984;
-	bh=RiuVR+JOwMH5EVZEGQtiTP5S8pqPT/1nc2hCJgeRVVs=;
-	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=at68i0UntI1Vr+xdVy5gkVNPm1cODoTjAfSbiZ4mnjDduAg7kUyaBOmNKlAaVNCe1
-	 T0h7tEY+jpQEiKSNS0kJqIo4O1OKJpZLaNY2kgsU70eY1nlvoCcIeLOrMcozISjmoi
-	 5VYwgk2RXghZDtiNnXfqTdXgXFdftZnb3yF7Gy68=
+	s=default; t=1754823039;
+	bh=qS8TpbhAP4WjL5cs5ytUd9H7Pe4HhPz8faFscYw61Lc=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=scG7mTvKI+ZEUlKbjcBT/EIBFC3JycSJ9hT4fWTzEV4gjgFhUraj4MoFjXEyozgRP
+	 FaQudUoZAlwXIk/hRVnR8uaHJ4Xm7FkL9NOltHTIrgGl/odx07yUR0pGosXZRYyzYR
+	 KSJ8Cj4s6540VqmyHDUIpA2HbiKF18umCRqaHyX4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 266C1F805CA; Sun, 10 Aug 2025 12:49:05 +0200 (CEST)
+	id 4EE0FF805C8; Sun, 10 Aug 2025 12:50:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C79FFF805C2;
-	Sun, 10 Aug 2025 12:49:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10E9AF805C8;
+	Sun, 10 Aug 2025 12:50:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5315F804B3; Tue,  5 Aug 2025 07:51:16 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id C1A7FF80154; Wed,  6 Aug 2025 12:01:55 +0200 (CEST)
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com
+ [209.85.221.182])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D1C4BF800DF
-	for <alsa-devel@alsa-project.org>; Tue,  5 Aug 2025 07:51:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1C4BF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6EE6CF80134
+	for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2025 12:01:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EE6CF80134
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmx.de header.i=thomas.vanhouten@gmx.de
- header.a=rsa-sha256 header.s=s31663417 header.b=dzLERl1p
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1754373066; x=1754977866; i=thomas.vanhouten@gmx.de;
-	bh=7b534+O7Rl0lP5yVpFaiqgfJG5i+c/HKgZvUlm4cH2M=;
-	h=X-UI-Sender-Class:Content-Type:Message-ID:Date:MIME-Version:To:
-	 From:Subject:cc:content-transfer-encoding:content-type:date:from:
-	 message-id:mime-version:reply-to:subject:to;
-	b=dzLERl1pzWkENLOtPFpYoWgKEUZlkR3UDUi/Ek+AqOPdad9174S8vyK77CMkekM+
-	 w0BW9uAK6pQEr2bwsB6lKuzxaZfr5dkX7QAd8tYHbg/BAGyBoJIklJK+LCMwNiT7Y
-	 Z99GElj5AO1WcdlWdY5dLHZ+BOIZjfWMldDGzuELcGuYRr3QWSfvQh9EStvLwwgec
-	 KYiNFFJRoTwm222djUaVXI5HYWTZdD4pgri8G61FWbYSTO2TSLK8vuCFOSO8tieEH
-	 XV0hYnEsQUOrGx+CBbT3ZnoByy1NNUa7v6tObtapXm09gbFZFIfEUzpTMZBF4O6t5
-	 B2/+hE4mN5f2P9mCTw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.21] ([89.246.47.227]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MN5if-1v1fIa4C0r-00NMEc; Tue, 05
- Aug 2025 07:51:06 +0200
-Message-ID: <28456399-b155-4993-a062-9297a3d3750b@gmx.de>
-Date: Tue, 5 Aug 2025 07:51:05 +0200
+ unprotected) header.d=riscv-rocks.de header.i=@riscv-rocks.de
+ header.a=rsa-sha256 header.s=google header.b=FrrRQz4y
+Received: by mail-vk1-f182.google.com with SMTP id
+ 71dfb90a1353d-5392bf8b590so3691945e0c.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 06 Aug 2025 03:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riscv-rocks.de; s=google; t=1754474503; x=1755079303;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R5dE86/gwg8v34qkAE2TEB8lhTTeYs/JThQrdrmyw5A=;
+        b=FrrRQz4yEBsDCHQb4q29/KTiO+N+Wb5vpaFjq2D5gwxOad8eQdGudEvLp5J12a23Zx
+         Kq72XaT5ltdv3z1w+ENtzK6WaW+ltNYGRU8sHGmIZiIBT/eEvI1II2H2E7nJMWddhw2R
+         v1+CJIbOGaRA63rFtXEWDZpN/Qhcqh9cPiBLlhbqNpRoTL5ZoDr1oBnP9gBC4F0Vh/4V
+         F7xJTrM11lZOdoKBvLMvxiY4pvNq4qG6aiXrGidkADvQ8P87/QVfaXSGVDMI+A+x0ww7
+         xcILdc6V7fDyTU4U0eDnA7LVmW1TOnqxvqlt+LmG9IkHf+YaySH3lNy1UPYM2D7to6QS
+         be9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754474503; x=1755079303;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R5dE86/gwg8v34qkAE2TEB8lhTTeYs/JThQrdrmyw5A=;
+        b=pfrVINAHe7tuQs+ctS8adLM+WJDfAn5tpgNsI7I8DvgCFVE1JVEo+L2go7FyCL6viZ
+         inJidzMMQXLlYAduW2puIJlKX22EJi6sXBASFEzhBxr9zRn6S9TS69hf63bo69lJGLlc
+         iTx67wshHYPKRrluEh78uEdPnNjembc4d+mEw48f1YxBawIVSlEYgsa08vaK9uAuN1YR
+         WeTyPW50x9uCbs6oBEzGu8kL35kwE1r4MqFHm3m3SSGa2I7t3hax4Wax5khuXr813o49
+         +lO3ePm0ZBfoUW7mYSj4ZT4P+kdBPfq46HRBHmYYYAlR/YCEGP8RmHcGVMz7hbBZwus6
+         S6XA==
+X-Gm-Message-State: AOJu0YxG5CkviKuaE7YFNBnWzcE1sQW66w/EsY369sZ2EAfKzu3tv1LQ
+	S+sUZUgKvfI291gIfi6sSvuYbWsWho/JLd7fOFwTJyEGV6jJBkyUX95qGTI023ivnUTnbxuRHxX
+	0HvnKSk5FCLztK58EZwxhkaDhmz0LmEHIfPpGhIEfJB+vHNinGlQwRbCDyhSH/r8=
+X-Gm-Gg: ASbGncvAgh4vvaDB2RDfyjYMwTexcQIsZIroJ3JTh0u+53FOWKn53lKbQN1SKjd2UVr
+	dtlNPGL2V723VFJJMeAihGctarhQafUxI1wUu6Gs62eaIc0W8MOPP/BkAi92rgIw3YXL7U68+0C
+	rdOIEJhXoSbqGzYpEp3UBJ310fFtIQ0XnTiRiObVX16kir29uvr9wXJik5PzHZq81J+MmvK0iFX
+	EcYNlILUp1OmD0pLGULmnyGy3ynksU9yNjgHg==
+X-Google-Smtp-Source: 
+ AGHT+IE6r1J6qlMWgviQ+yxewLA2Nrkn4/twZpiqvHYa1jicNDRPEMHTTOHmNrgYST9R5Gr4uGai7fT/DT6T5M0mo10=
+X-Received: by 2002:a05:6122:3094:b0:539:1a61:9058 with SMTP id
+ 71dfb90a1353d-539a03a49eemr862032e0c.3.1754474503195; Wed, 06 Aug 2025
+ 03:01:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US, de-DE
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-From: Thomas van Houten <thomas.vanhouten@gmx.de>
-Subject: Subject: [BUG] snd_hda_intel runtime power management unsupported on
- MSI MPG Z390 GAMING PLUS with Realtek codec (kernel 6.8.0) causing excessive
- audio power draw
-X-Provags-ID: V03:K1:vTaPYownMRjxIqMsX0yJ1UcMP/7AXE+z2SI9Hk8zWOp/xNSSaju
- lpe/y60c7phuiznCi7ggo//aB8bSZo3pG5RbXn4UdZZZ9JHj5wUm7tT9q78Kyq89rwnqrF4
- wztRvENjMARwnVHm1iRZVx3M58D/UGy7kgkRdPLxClSt5qrAExsfVG2+K7B8pob/DOHWLME
- S/zSDYj6RfyC1auR2Wg0g==
-UI-OutboundReport: notjunk:1;M01:P0:JrrJzzx8Qt8=;/IJYAhrRL2d+Wi8qlasuB0dxUsq
- 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
-X-MailFrom: thomas.vanhouten@gmx.de
+References: 
+ <CAL=B37=-_dBswNrQHc4dgfgZhoyjmaYQxE5dGZhQeB0ZGf0GtA@mail.gmail.com>
+In-Reply-To: 
+ <CAL=B37=-_dBswNrQHc4dgfgZhoyjmaYQxE5dGZhQeB0ZGf0GtA@mail.gmail.com>
+From: Damian Tometzki <damian@riscv-rocks.de>
+Date: Wed, 6 Aug 2025 12:01:31 +0200
+X-Gm-Features: Ac12FXywPlNq7SfgsHizNX3R18WSAMYHzCjLnsGZ3T5P7n0cymx8Xvg9OE8AgJY
+Message-ID: 
+ <CAL=B37kfXQ1kcVCYGCZrcP4PqYhU43km+NLtv3eP0XyspjEktg@mail.gmail.com>
+Subject: Re: ASoC HDMI errors with sof-hda-dsp on Intel platform (no PCM for
+ intel-hdmi-hifiX)
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: damian@tometzki.de
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: E4KOVYZQB6EZBSLMPOAR2LBKEVBV3OCS
-X-Message-ID-Hash: E4KOVYZQB6EZBSLMPOAR2LBKEVBV3OCS
-X-Mailman-Approved-At: Sun, 10 Aug 2025 10:48:51 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: RZWJBGFVHYJ6RBRGFILQEETDCHPGFSZ2
+X-Message-ID-Hash: RZWJBGFVHYJ6RBRGFILQEETDCHPGFSZ2
+X-Mailman-Approved-At: Sun, 10 Aug 2025 10:49:57 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E4KOVYZQB6EZBSLMPOAR2LBKEVBV3OCS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RZWJBGFVHYJ6RBRGFILQEETDCHPGFSZ2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,63 +121,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-RGVhciBMaW51eCBrZXJuZWwgYW5kIEFMU0EgZGV2ZWxvcGVycywNCg0KSSBhbSByZXBvcnRpbmcg
-YW4gaXNzdWUgcmVsYXRlZCB0byBydW50aW1lIHBvd2VyIG1hbmFnZW1lbnQgc3VwcG9ydCBmb3Ig
-DQp0aGUgb25ib2FyZCBSZWFsdGVrIGF1ZGlvIGNvZGVjIG9uIG15IGRlc2t0b3AgbW90aGVyYm9h
-cmQsIHdoaWNoIHJlc3VsdHMgDQppbiBjb250aW51b3VzbHkgaGlnaCBhdWRpbyBoYXJkd2FyZSBw
-b3dlciB1c2FnZSBhbmQgaW5jcmVhc2VkIGlkbGUgDQpzeXN0ZW0gcG93ZXIgZHJhdy4NCg0KKlN5
-c3RlbSBJbmZvcm1hdGlvbjoqDQoNCiAgKg0KDQogICAgS2VybmVsOiA2LjguMC02NC1nZW5lcmlj
-IHg4Nl82NA0KDQogICoNCg0KICAgIERpc3RyaWJ1dGlvbjogTGludXggTWludCAyMS4zIFZpcmdp
-bmlhDQoNCiAgKg0KDQogICAgTW90aGVyYm9hcmQ6IE1TSSBNUEcgWjM5MCBHQU1JTkcgUExVUyAo
-TVMtN0I1MSkNCg0KICAqDQoNCiAgICBDUFU6IEludGVsIENvcmUgaTUtOTQwMEYNCg0KICAqDQoN
-CiAgICBBdWRpbyBEcml2ZXI6IHNuZF9oZGFfaW50ZWwNCg0KICAqDQoNCiAgICBBdWRpbyBDb2Rl
-YzogUmVhbHRlayAobGlrZWx5IEFMQzEyMjAgb3Igc2ltaWxhcikNCg0KKklzc3VlIFN1bW1hcnk6
-Kg0KVGhlIG9uYm9hcmQgUmVhbHRlayBhdWRpbyBjb2RlYyBkb2VzIG5vdCBlbnRlciBydW50aW1l
-IHBvd2VyIG1hbmFnZW1lbnQgDQpsb3ctcG93ZXIgc3RhdGVzLCBjYXVzaW5nIGl0IHRvIHJlbWFp
-biBhdCAxMDAlIHBvd2VyIHVzYWdlIGV2ZW4gd2hlbiANCmlkbGUuIFRoaXMgc2lnbmlmaWNhbnRs
-eSBjb250cmlidXRlcyB0byBteSBzeXN0ZW0ncyBoaWdoIGlkbGUgcG93ZXIgDQpjb25zdW1wdGlv
-biAofjE2MFcgdG90YWwpLCBkZXNwaXRlIGxvdyBDUFUgYW5kIEdQVSBkcmF3Lg0KDQoqRGV0YWls
-ZWQgRGlhZ25vc3RpY3M6Kg0KDQogMS4NCg0KICAgICpQQ0kgQXVkaW8gRGV2aWNlczoqDQoNCnRl
-eHQNCnwwMDoxZi4zIEF1ZGlvIGRldmljZSBbMDQwM106IEludGVsIENvcnBvcmF0aW9uIENhbm5v
-biBMYWtlIFBDSCBjQVZTIA0KWzgwODY6YTM0OF0gKHJldiAxMCkgMDM6MDAuMSBBdWRpbyBkZXZp
-Y2UgWzA0MDNdOiBBZHZhbmNlZCBNaWNybyANCkRldmljZXMsIEluYy4gW0FNRC9BVEldIE5hdmkg
-MzEgSERNSS9EUCBBdWRpbyBbMTAwMjphYjMwXSAwNzowMC4xIEF1ZGlvIA0KZGV2aWNlIFswNDAz
-XTogQWR2YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLiBbQU1EL0FUSV0gTmF2aSAyMS8yMyBIRE1J
-L0RQIA0KQXVkaW8gQ29udHJvbGxlciBbMTAwMjphYjI4XSB8DQoNCiAyLg0KDQogICAgKktlcm5l
-bCBNZXNzYWdlcyByZWxhdGVkIHRvIHNuZF9oZGFfaW50ZWwgb3IgYXVkaW86Kg0KICAgIE5vIGxv
-Z3MgZm91bmQgdmlhfGRtZXNnIHwgZ3JlcCAtaSBzbmRfaGRhX2ludGVsfG9yfGRtZXNnIHwgZ3Jl
-cCAtaQ0KICAgIGF1ZGlvfC4NCg0KIDMuDQoNCiAgICAqUG93ZXIgbWFuYWdlbWVudCBzeXNmcyBz
-ZXR0aW5nczoqDQoNCnRleHQNCnxjYXQgL3N5cy9tb2R1bGUvc25kX2hkYV9pbnRlbC9wYXJhbWV0
-ZXJzL3Bvd2VyX3NhdmUgMTAgY2F0IA0KL3N5cy9jbGFzcy9zb3VuZC9od0MqL3Bvd2VyL3J1bnRp
-bWVfc3RhdHVzIHVuc3VwcG9ydGVkIHVuc3VwcG9ydGVkIA0KdW5zdXBwb3J0ZWQgY2F0IC9zeXMv
-Y2xhc3Mvc291bmQvaHdDKi9wb3dlci9jb250cm9sIGF1dG8gYXV0byBhdXRvIHwNCg0KVGhlfHJ1
-bnRpbWVfc3RhdHVzfHJlcG9ydHMgInVuc3VwcG9ydGVkIiwgaW5kaWNhdGluZyBubyBydW50aW1l
-IFBNIA0Kc3VwcG9ydCBpcyBhdmFpbGFibGUgZm9yIHRoZXNlIGF1ZGlvIGRldmljZXMuDQoNCiA0
-Lg0KDQogICAgKlB1bHNlQXVkaW8gYW5kIHVzZXItc3BhY2UgcHJvY2Vzc2VzIGluc3BlY3Rpb246
-Kg0KICAgIFN0b3BwZWQgUHVsc2VBdWRpbyBhbmQgYWxsIGF1ZGlvIGNsaWVudHMsIHdpdGggbm8g
-Y2hhbmdlIGluIHBvd2VyDQogICAgdXNhZ2Ugb3IgZGV2aWNlIG93bmVyc2hpcCBvZiBhdWRpbyBj
-b250cm9scywgY29uZmlybWluZyB0aGlzIGlzIG5vdA0KICAgIGNhdXNlZCBieSB1c2VyLXNwYWNl
-IGF1ZGlvIGFwcGxpY2F0aW9ucy4NCg0KIDUuDQoNCiAgICAqUG93ZXJ0b3AgUmVwb3J0czoqDQoN
-CnRleHQNCnwxMDAuMCUgRGV2aWNlIEF1ZGlvIGNvZGVjIGh3QzJEMDogUmVhbHRlayB8DQoNCkNv
-bnNpc3RlbnRseSAxMDAlIHVzYWdlIGZyb20gdGhlIFJlYWx0ZWsgYXVkaW8gY29kZWMsIGNvbmZp
-cm1lZCBieSBwb3dlcnRvcC4NCg0KIDYuDQoNCiAgICAqRHJpdmVyIHBhcmFtZXRlciBzZXQ6Kg0K
-ICAgIHxzbmRfaGRhX2ludGVsfG1vZHVsZXxwb3dlcl9zYXZlfHBhcmFtZXRlciBzdWNjZXNzZnVs
-bHkgc2V0IHRvIDEwDQogICAgc2Vjb25kcyAodmFsdWUgMTApLCBidXQgbm8gZWZmZWN0aXZlIHBv
-d2VyIHNhdmluZyBvYnNlcnZlZC4NCg0KKkltcGFjdDoqDQpUaGUgbGFjayBvZiBydW50aW1lIHBv
-d2VyIG1hbmFnZW1lbnQgc3VwcG9ydCBmb3IgdGhpcyBhdWRpbyBjb2RlYyBjYXVzZXMgDQpjb250
-aW51b3VzIGhpZ2ggcG93ZXIgZHJhdywgaW5jcmVhc2luZyBzeXN0ZW0gaWRsZSBwb3dlciBjb25z
-dW1wdGlvbiANCnNpZ25pZmljYW50bHksIHJlZHVjaW5nIGVuZXJneSBlZmZpY2llbmN5Lg0KDQoq
-UmVxdWVzdDoqDQpQbGVhc2UgaW52ZXN0aWdhdGUgd2hldGhlciB0aGlzIGlzIGEgZHJpdmVyIGxp
-bWl0YXRpb24sIG1pc3NpbmcgZmlybXdhcmUgDQpxdWlyaywgb3IgY29uZmlndXJhdGlvbiBpc3N1
-ZSB3aXRofHNuZF9oZGFfaW50ZWx8b24gdGhlIE1TSSBNUEcgWjM5MCANCkdBTUlORyBQTFVTIG1v
-dGhlcmJvYXJkJ3MgUmVhbHRlayBjb2RlYy4gR3VpZGFuY2UsIHdvcmthcm91bmRzLCBvciANCnBh
-dGNoZXMgdG8gZW5hYmxlIHJ1bnRpbWUgcG93ZXIgbWFuYWdlbWVudCB3b3VsZCBiZSBhcHByZWNp
-YXRlZC4NCg0KKkFkZGl0aW9uYWwgbm90ZXM6Kg0KDQogICoNCg0KICAgIFRlc3RlZCBwb3dlciBt
-YW5hZ2VtZW50IHNldHRpbmdzIGFjY29yZGluZyB0byBjdXJyZW50IGJlc3QgcHJhY3RpY2VzLg0K
-DQogICoNCg0KICAgIEJJT1MgaXMgdXAgdG8gZGF0ZSBhcyBvZiB0aGUgbGF0ZXN0IE1TSSByZWxl
-YXNlLg0KDQogICoNCg0KICAgIFN5c3RlbSBiZWhhdmlvciBjb25zaXN0ZW50IG9uIExpdmUgVVNC
-IG9mIHRoZSBzYW1lIExpbnV4IE1pbnQNCiAgICB2ZXJzaW9u4oCUcHJvYmxlbSBub3QgZHVlIHRv
-IGxvY2FsIGNvbmZpZ3VyYXRpb24uDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhdHRlbnRpb24gdG8g
-dGhpcyBtYXR0ZXIuIEnigJltIGhhcHB5IHRvIHByb3ZpZGUgDQphZGRpdGlvbmFsIGxvZ3Mgb3Ig
-YXNzaXN0IHdpdGggdGVzdGluZyBwYXRjaGVzLg0KDQoNCkJlc3QgcmVnYXJkcywNCg0KDQpUaG9t
-YXMgdmFuIEhvdXRlbg0K
+Hi all,
+
+I'm experiencing ASoC errors on an Intel-based system using the
+`sof-hda-dsp` driver. After boot, the kernel logs repeated errors
+related to HDMI outputs:
+
+[   90.933290] snd_hda_codec_generic ehdaudio0D2:
+snd_soc_find_pcm_from_dai: didn't find PCM for DAI intel-hdmi-hifi1
+[   90.933295] snd_hda_codec_generic ehdaudio0D2: ASoC error (-22): at
+snd_soc_dai_startup() on intel-hdmi-hifi1
+...
+[   91.016259] HDMI3: ASoC error (-22): at dpcm_fe_dai_startup() on HDMI3
+
+These errors are repeated for HDMI1, HDMI2, and HDMI3. It appears that
+`snd_soc_find_pcm_from_dai()` fails to resolve the DAI to a PCM, and
+this breaks HDMI audio initialization.
+
+**System info:**
+- Kernel: current Linus build 2938ae2fa7cd
+- Distro: Fedora 42
+- HDMI monitor with audio capability isn=C2=B4t connected
+
+Is there a known fix or workaround?
+Thanks in advance,
+Damian
+
+On Sat, Aug 2, 2025 at 12:46=E2=80=AFPM Damian Tometzki <damian@riscv-rocks=
+.de> wrote:
+>
+> Hi all,
+>
+> I'm experiencing ASoC errors on an Intel-based system using the
+> `sof-hda-dsp` driver. After boot, the kernel logs repeated errors
+> related to HDMI outputs:
+>
+> [   90.933290] snd_hda_codec_generic ehdaudio0D2:
+> snd_soc_find_pcm_from_dai: didn't find PCM for DAI intel-hdmi-hifi1
+> [   90.933295] snd_hda_codec_generic ehdaudio0D2: ASoC error (-22): at
+> snd_soc_dai_startup() on intel-hdmi-hifi1
+> ...
+> [   91.016259] HDMI3: ASoC error (-22): at dpcm_fe_dai_startup() on HDMI3
+>
+> These errors are repeated for HDMI1, HDMI2, and HDMI3. It appears that
+> `snd_soc_find_pcm_from_dai()` fails to resolve the DAI to a PCM, and
+> this breaks HDMI audio initialization.
+>
+> **System info:**
+> - Kernel: current Linus build 2938ae2fa7cd
+> - Distro: Fedora 42
+> - HDMI monitor with audio capability isn=C2=B4t connected
+>
+> Is there a known fix or workaround?
+> Thanks in advance,
+> Damian
