@@ -4,49 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C36CC87FD1
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Aug 2025 08:37:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2889C87FD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Aug 2025 12:37:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4133860291;
-	Wed,  6 Aug 2025 10:36:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4133860291
+	by alsa0.perex.cz (Postfix) with ESMTPS id B332E60274;
+	Wed,  6 Aug 2025 14:37:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B332E60274
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754469422;
-	bh=AU7f0/+Yw8xtvck2KANozaaC1B3QcbdUNGBXyFqvODo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=WdS3ujVbW9RfqNcpmkN4Hnjolp23qVTURSbN3ETLOY+1pBXSFl8XwoS24yBkSy3Xa
-	 q/cxNRH1GJPfRI0oXGHmLC291wnN/O7JaX4gRznAXxfrb+ScbhEsXu/DM2/g9YJ+32
-	 h4fHQ0JyvsIRMDtTSVXuCdQmDkTIgKdFEjJJpJDY=
+	s=default; t=1754483844;
+	bh=6SYLWigHb/uhY1qfbllUFwByFgGXUgdw9SpyK/xp9QE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=cQjPTGZ2N4dok/PvAipxR7WkMPFZiCv8PcXagWel1dNcIkFGWLabcAuq+2hUn8+L7
+	 6pAjtsGk7A+rG93y1vNPAWzVy0BVVl3M08hqbMr1ztlAHvi47k2rfNM+1pUerEYvRw
+	 WRhCCNreKFi73Nv5U/NysXscbEvVj5TwmGsbmGOk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4DF24F805C1; Wed,  6 Aug 2025 10:36:30 +0200 (CEST)
+	id C7CFAF805C8; Wed,  6 Aug 2025 14:36:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFE03F805D4;
-	Wed,  6 Aug 2025 10:36:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C95EF805C8;
+	Wed,  6 Aug 2025 14:36:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EDEF5F80423; Wed,  6 Aug 2025 10:35:53 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A43AF800F8
-	for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2025 10:35:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A43AF800F8
+	id D5176F80508; Wed,  6 Aug 2025 14:31:58 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA333F80016
+	for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2025 14:31:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA333F80016
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=K2Ox/f4I
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 3370144208;
+	Wed,  6 Aug 2025 12:31:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6419BC4CEEB;
+	Wed,  6 Aug 2025 12:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754483466;
+	bh=6SYLWigHb/uhY1qfbllUFwByFgGXUgdw9SpyK/xp9QE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=K2Ox/f4IuqXjL167WZbkptv+L2dD5f913hdOQ13553XhwXUpcapGFS5oCOWLx/Ngo
+	 2CdZW0UTNcZr7kON2Dx46Tiu1ruNunTMc/BzedWSmX/ImCTnizndC5YqD0MtVTGn5i
+	 aUdQGjK+crRvyK8FnmX70JWd01+dILVdCFNVuAyf0P1DCCWW/aILkRyUQXu4ZxUi5J
+	 BDs24FUSjDueW7wnHrcVxNknvxpHb2RBZUMt7fTD5OOH9RdebIBt+1X35N5vBhdlvJ
+	 h/ptzvKEwUsOi7q7NJ9MW+OdLeoxA3lL9WBeupj5NTNJnzZqKWpTV/b7yJ9N2H6FpK
+	 dUeQBOScJLcSw==
+From: Mark Brown <broonie@kernel.org>
+To: Baojun Xu <baojun.xu@ti.com>
+Cc: tiwai@suse.de, andriy.shevchenko@linux.intel.com, 13916275206@139.com,
+ alsa-devel@alsa-project.org, shenghao-ding@ti.com,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20250801021618.64627-1-baojun.xu@ti.com>
+References: <20250801021618.64627-1-baojun.xu@ti.com>
+Subject: Re: [PATCH v1] ASoC: tas2781: Fix the wrong step for TLV on
+ tas2781
+Message-Id: <175448346413.51650.7450659009173444382.b4-ty@kernel.org>
+Date: Wed, 06 Aug 2025 13:31:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <185920916744fb00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-utils/pr/306@alsa-project.org>
-References: <alsa-project/alsa-utils/pr/306@alsa-project.org>
-Subject: amixer: always use line buffering for (s)events
-Date: Wed,  6 Aug 2025 10:35:53 +0200 (CEST)
-Message-ID-Hash: SI6PTPQGPXJRCQPB27MENMUTHTCKI6EV
-X-Message-ID-Hash: SI6PTPQGPXJRCQPB27MENMUTHTCKI6EV
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.15-dev-cff91
+Message-ID-Hash: QQMKSH52TAVCEGT6X6TVV47PKGUWRKKS
+X-Message-ID-Hash: QQMKSH52TAVCEGT6X6TVV47PKGUWRKKS
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SI6PTPQGPXJRCQPB27MENMUTHTCKI6EV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QQMKSH52TAVCEGT6X6TVV47PKGUWRKKS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,12 +94,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #306 was opened from elenril:
+On Fri, 01 Aug 2025 10:16:18 +0800, Baojun Xu wrote:
+> The step for TLV on tas2781, should be 50 (-0.5dB).
+> 
+> 
 
-Line buffering is the obviously correct mode for (s)events, but block
-buffering would typically be used when piping its output to another
-program.
+Applied to
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/306
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/306.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: tas2781: Fix the wrong step for TLV on tas2781
+      commit: 9843cf7b6fd6f938c16fde51e86dd0e3ddbefb12
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
