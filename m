@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32EB0C87FDA
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Aug 2025 02:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B778EC87FCF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Aug 2025 02:25:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 410D36021F;
-	Mon, 11 Aug 2025 04:24:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 410D36021F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E478660248;
+	Mon, 11 Aug 2025 04:24:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E478660248
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1754879089;
+	s=default; t=1754879105;
 	bh=1uxyidhdfJ+bIsWil/noGUPH2CFS5GISLdngkglzveg=;
 	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=n7ClfUv8nfUs7YONs9T2U1RO2oCHc3pixbySm7E2mSxWVvraZWIwfLeuXLYSKNfl9
-	 xJfRCN29QhS/zXjPLldrw7pfbFyTDJYuAxecPm92LDRBjYFPvZFast8D/gDa1741Qi
-	 vUuqE+h3qEvUcjiyF33vVn0LEFyUYoHuREFI7uCM=
+	b=lZEUg8ltd04j/R7aQjNs0wPycWQr4giIB4dGrcZjwy3fZvFVJ3DxdBSCgbe3xvz1x
+	 eIBZg+hfCMNTIoaPCn1IzivktVQdfiRunRtmn8NW9Q4zGGIEztqnpMElhrWMl84p/S
+	 ooPh01OBEI408CAg+u0Wcp2JyJr4+C7zgnNyA1/8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1000F805D4; Mon, 11 Aug 2025 04:24:14 +0200 (CEST)
+	id C0CE7F805D7; Mon, 11 Aug 2025 04:24:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E723F805CB;
-	Mon, 11 Aug 2025 04:24:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E196F805DF;
+	Mon, 11 Aug 2025 04:24:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 926FBF80518; Mon, 11 Aug 2025 04:24:06 +0200 (CEST)
+	id BE692F80518; Mon, 11 Aug 2025 04:24:37 +0200 (CEST)
 Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
  [10.254.200.11])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FDE1F8010B
-	for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2025 04:24:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B461DF8010B
+	for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2025 04:24:37 +0200 (CEST)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,13 +41,13 @@ Subject: Re: [alsa-devel] Applied "ASoC: tlv320aic32x4: Model CODEC_CLKIN in
  the asoc tree
 From: rinfo4080@gmail.com
 To: alsa-devel@alsa-project.org
-Date: Mon, 11 Aug 2025 02:24:06 -0000
-Message-ID: <175487904645.22.8008274890369284321@mailman-web.alsa-project.org>
+Date: Mon, 11 Aug 2025 02:24:37 -0000
+Message-ID: <175487907773.20.610252790119139799@mailman-web.alsa-project.org>
 In-Reply-To: <20190325161140.A0E0111288F1@debutante.sirena.org.uk>
 References: <20190325161140.A0E0111288F1@debutante.sirena.org.uk>
 User-Agent: HyperKitty on https://mailman.alsa-project.org/
-Message-ID-Hash: GY2Z4RZKACVC4TZLLWNSHLLPOOQE33VC
-X-Message-ID-Hash: GY2Z4RZKACVC4TZLLWNSHLLPOOQE33VC
+Message-ID-Hash: KS6TV235UPU6RZVMLXECYED7ZX454Z3M
+X-Message-ID-Hash: KS6TV235UPU6RZVMLXECYED7ZX454Z3M
 X-MailFrom: rinfo4080@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -60,7 +60,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GY2Z4RZKACVC4TZLLWNSHLLPOOQE33VC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KS6TV235UPU6RZVMLXECYED7ZX454Z3M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
