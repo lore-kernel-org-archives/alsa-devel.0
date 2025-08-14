@@ -4,94 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF20ACA0EE3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Aug 2025 07:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3750CA0EE3
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Aug 2025 07:12:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB1486025E;
-	Thu, 14 Aug 2025 09:12:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB1486025E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0076260238;
+	Thu, 14 Aug 2025 09:12:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0076260238
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1755155538;
-	bh=ida2CXCr2fFRDvW1t1sPtcOWlT9NS9aCbl0kJ8wWOBg=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=M2MYCNxZzEc8NTlkBmELid+6zlF2O/KK3Tt2JWF1OZlaAiKUR/Gvn+adPYO5HzeM6
-	 27U7h7kr0l3FjBnvOGeydoUGFo9jD70mNaYT65m6TwpLmt2REMIHnLEfV2kJA+y0Qj
-	 ZcFBJz+t0lOk+n2Nj3STz0en1EAYpfOrrhZ4+/s4=
+	s=default; t=1755155564;
+	bh=mW15UHDn6wnzhPqCoXDGZKCsA6Pf/u7eGY8nwJzI24o=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=oj0PwceWbYRMEz8kTa86yePfXgD9REDtQUrHbqfETN4uaJK5z3Pei8pBghRhEA45v
+	 q87jT49ogyzK/mxVkYeeXh754DOWbCWur+3foR/0GOo+UuAhdsUAngX6KdTQyvHgni
+	 jzDmWRZV438n12LaQCnErQQNgLh5zwYCGuvlRFy8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38F0CF80607; Thu, 14 Aug 2025 09:11:37 +0200 (CEST)
+	id 93F9BF80637; Thu, 14 Aug 2025 09:11:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1ECCF80607;
-	Thu, 14 Aug 2025 09:11:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 268ECF80638;
+	Thu, 14 Aug 2025 09:11:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06175F8021D; Wed, 13 Aug 2025 12:09:54 +0200 (CEST)
-Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
+	id 96096F804CF; Thu, 14 Aug 2025 04:29:23 +0200 (CEST)
+Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1440F8012A
-	for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2025 12:09:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1440F8012A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5ECD5F800F3
+	for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2025 04:29:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ECD5F800F3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=oUHvL28J
-Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
-	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57DA9Cxw1676987;
-	Wed, 13 Aug 2025 05:09:12 -0500
+ header.s=ti-com-17Q1 header.b=ri3Lmuz+
+Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
+	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57E2TBSM2283045;
+	Wed, 13 Aug 2025 21:29:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1755079752;
-	bh=qwJfbD6uTwKoAGtFS7NyqUcPD5IlHQBF9hptV0GBnZE=;
-	h=From:To:CC:Subject:Date;
-	b=oUHvL28J65CnxAE0NfzPqsqcT3YK9Q2gzo8RaIOH608g84ORnD1SGoa1CQDVb6bW7
-	 ABTo6b8vFbfsxZ4f10eVK7JIzDZvbe/AAVhuzbrg7iOlybxPGTm0JUI+wckuWxfcX7
-	 alQ1ErEXmsiX2MGKtkZ0xvgF9Sd2y0M5HeP7T3BE=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57DA9C6q317487
+	s=ti-com-17Q1; t=1755138551;
+	bh=itwmlhg4+q60oicA+ZGoF7Spdlc+N8ObdJ05D9SACGU=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To;
+	b=ri3Lmuz+7XBAB7VgGiZO2yQfCs/56dEcXVLUFNkUgaD6IbvKeb0TXggumdmRucdgg
+	 ULYM3YK+6ZoPE6WWJJXsiljkA5kCGLx6cK4a/rTls2nqYtz0mFZf3LbxvB0+yhwUnx
+	 JD3jWeNmf5yGBM8aLyUlfugq38wmOSLrFgvVpNlE=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57E2TAT91399281
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Wed, 13 Aug 2025 05:09:12 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+	Wed, 13 Aug 2025 21:29:10 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Wed, 13
- Aug 2025 05:09:11 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Wed, 13 Aug 2025 05:09:11 -0500
-Received: from lelvem-mr05.itg.ti.com ([10.250.165.138])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57DA97ZN1839683;
-	Wed, 13 Aug 2025 05:09:08 -0500
-From: Baojun Xu <baojun.xu@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, <shenghao-ding@ti.com>,
-        <13916275206@139.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <baojun.xu@ti.com>
-Subject: [PATCH v1] ALSA: hda/tas2781: Normalize the volume kcontrol name
-Date: Wed, 13 Aug 2025 18:08:42 +0800
-Message-ID: <20250813100842.12224-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+ Aug 2025 21:29:10 -0500
+Received: from DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d]) by
+ DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d%17]) with mapi id
+ 15.01.2507.055; Wed, 13 Aug 2025 21:29:10 -0500
+From: "Xu, Baojun" <baojun.xu@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+CC: "broonie@kernel.org" <broonie@kernel.org>,
+        "andriy.shevchenko@linux.intel.com"
+ <andriy.shevchenko@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "Ding, Shenghao"
+	<shenghao-ding@ti.com>,
+        "13916275206@139.com" <13916275206@139.com>,
+        "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v1] ALSA: hda/tas2781: Normalize the volume
+ kcontrol name
+Thread-Topic: [EXTERNAL] Re: [PATCH v1] ALSA: hda/tas2781: Normalize the
+ volume kcontrol name
+Thread-Index: AQHcDDpRRAd6Fte3skKvVBN7u6KS07RhDa0AgABcAOg=
+Date: Thu, 14 Aug 2025 02:29:10 +0000
+Message-ID: <417f8e1c8a314ae4a77070f313d8af2c@ti.com>
+References: 
+ <20250813100842.12224-1-baojun.xu@ti.com>,<87ectfw7j5.wl-tiwai@suse.de>
+In-Reply-To: <87ectfw7j5.wl-tiwai@suse.de>
+Accept-Language: en-GB, zh-CN, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.250.165.138]
+x-c2processedorg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-MailFrom: baojun.xu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CB5HTTHOOTLGYHXMZCSEB4Y25IPWNQBF
-X-Message-ID-Hash: CB5HTTHOOTLGYHXMZCSEB4Y25IPWNQBF
+Message-ID-Hash: XBVH7PPBVBZXHTMDNQGCFICOID7D6CXW
+X-Message-ID-Hash: XBVH7PPBVBZXHTMDNQGCFICOID7D6CXW
 X-Mailman-Approved-At: Thu, 14 Aug 2025 07:11:27 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CB5HTTHOOTLGYHXMZCSEB4Y25IPWNQBF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XBVH7PPBVBZXHTMDNQGCFICOID7D6CXW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,26 +113,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Change the name of the kcontrol from "Gain" to "Volume".
+Hi,
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
----
- sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Answer in line.
 
-diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-index 92aae19cfc8f..e4bc3bc756b0 100644
---- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-+++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-@@ -256,7 +256,7 @@ static const struct snd_kcontrol_new tas2770_snd_controls[] = {
- };
- 
- static const struct snd_kcontrol_new tas2781_snd_controls[] = {
--	ACARD_SINGLE_RANGE_EXT_TLV("Speaker Analog Gain", TAS2781_AMP_LEVEL,
-+	ACARD_SINGLE_RANGE_EXT_TLV("Speaker Analog Volume", TAS2781_AMP_LEVEL,
- 		1, 0, 20, 0, tas2781_amp_getvol,
- 		tas2781_amp_putvol, amp_vol_tlv),
- 	ACARD_SINGLE_BOOL_EXT("Speaker Force Firmware Load", 0,
--- 
-2.43.0
+> ________________________________________
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: 13 August 2025 23:44
+> To: Xu, Baojun
+> Cc: broonie@kernel.org; andriy.shevchenko@linux.intel.com; alsa-devel@als=
+a-project.org; Ding, Shenghao; 13916275206@139.com; linux-sound@vger.kernel=
+.org; linux-kernel@vger.kernel.org
+> Subject: [EXTERNAL] Re: [PATCH v1] ALSA: hda/tas2781: Normalize the volum=
+e kcontrol name
+>=20
+> On Wed, 13 Aug 2025 12:08:42 +0200,
+> Baojun Xu wrote:
+> >
+> > Change the name of the kcontrol from "Gain" to "Volume".
+>=20
+> Could you describe "why this change is needed"?
+>=20
+This name is in kcontrol, which is open to users.
+Volume is more normalized and common.
+Gain is a more professional term in smart amplifiers.
 
+>=20
+> thanks,
+>=20
+> Takashi
+>=20
+> >
+> > Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+> > ---
+>>  sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda=
+/codecs/side-codecs/tas2781_hda_i2c.c
+> > index 92aae19cfc8f..e4bc3bc756b0 100644
+> > --- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
+> > +++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
+> > @@ -256,7 +256,7 @@ static const struct snd_kcontrol_new tas2770_snd_co=
+ntrols[] =3D {
+> >  };
+> >
+> >  static const struct snd_kcontrol_new tas2781_snd_controls[] =3D {
+> > -     ACARD_SINGLE_RANGE_EXT_TLV("Speaker Analog Gain", TAS2781_AMP_LEV=
+EL,
+> > +     ACARD_SINGLE_RANGE_EXT_TLV("Speaker Analog Volume", TAS2781_AMP_L=
+EVEL,
+> >               1, 0, 20, 0, tas2781_amp_getvol,
+>>               tas2781_amp_putvol, amp_vol_tlv),
+> >       ACARD_SINGLE_BOOL_EXT("Speaker Force Firmware Load", 0,
+> > --
+> > 2.43.0
+> >
+>=20
+>=20
+
+Best Regards
+Jim=
