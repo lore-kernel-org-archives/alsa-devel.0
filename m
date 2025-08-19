@@ -4,96 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E269CA0EDC
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Aug 2025 08:23:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A2DFCA0EF8
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Aug 2025 09:47:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8477D601FF;
-	Wed, 20 Aug 2025 10:22:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8477D601FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B772601DF;
+	Wed, 20 Aug 2025 11:47:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B772601DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1755678174;
-	bh=Pda3I2WFG024g6b4IPpFWGGG2uIsKDW6UG8gnWt9uxc=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1755683240;
+	bh=1KPpiQ8hagVxzaGyCUhCv9U4Ry9vUGyyrlz8+xXpZfc=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=GKtv1nWnjtdxgNFpBrbnE27yZDxwUgOcvFYPjHJuWMfaVoreoiQLDUCiRZTHXyYpc
-	 lBBG8DiNNn4ulpGaGDujMyelg410IGE+0JA8CeQlPKgtUUJVPiJN5WHwxZ2EVUHQiQ
-	 CyG9xU/kg/LhamcMCtHMWCy2JITtXTYhOlBm1Nuw=
+	b=MXktUIaiGlf6AYMXSu1eroEd9gwaw8/R1lpXv90M61NqNm9tekeJ5YspaYhRp0KsY
+	 5cLXE/U/IeRmEoaJug2ziPgoyaWEgS7YplAl9s6Ar1dOkBERsOoeYA0PnW/quyymEs
+	 w2aTrWvTfMl9lZfEcTJipU5otzyijbG4+BJ+9i2E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4A20F805D3; Wed, 20 Aug 2025 10:22:21 +0200 (CEST)
+	id D92C3F805CB; Wed, 20 Aug 2025 11:46:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE612F805CA;
-	Wed, 20 Aug 2025 10:22:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F9DBF805C6;
+	Wed, 20 Aug 2025 11:46:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 709B7F8027B; Wed, 20 Aug 2025 10:21:47 +0200 (CEST)
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9B340F80185; Tue, 19 Aug 2025 17:09:18 +0200 (CEST)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com
+ [209.85.221.54])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFDBAF800F8
-	for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2025 10:21:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFDBAF800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id C93B4F800F8
+	for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2025 17:09:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C93B4F800F8
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=YhS77aw6
-Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57K8LWkS3090726;
-	Wed, 20 Aug 2025 03:21:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1755678092;
-	bh=z7OYf1f4KzQ6v0/hwgALS/TWgw68w/GKTaIrmC8wS1Y=;
-	h=From:To:CC:Subject:Date;
-	b=YhS77aw6NltAUEZ55Fjney8A7GQZneXcRLflqsRwxD4LEglBs5OYJqtteUA18YdFT
-	 UzWo9WC9PZ/6EJPc1SDAr2KjG3WtRhgyNOOJS/XmkbWiLHRHMI+0sYyNc3ASK9K9cw
-	 Snr/XmfmZmpiBnWdSutKNOTqVvWTbGtmopny66oQ=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57K8LW9T1654525
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Wed, 20 Aug 2025 03:21:32 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Wed, 20
- Aug 2025 03:21:31 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Wed, 20 Aug 2025 03:21:31 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.64.117])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57K8LR8E213267;
-	Wed, 20 Aug 2025 03:21:28 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <13564923607@139.com>, <13916275206@139.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <baojun.xu@ti.com>, <Baojun.Xu@fpt.com>, <jesse-ji@ti.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v1] ALSA: hda/tas2781: Enable init_profile_id for device
- initialization
-Date: Wed, 20 Aug 2025 16:21:23 +0800
-Message-ID: <20250820082123.1125-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=rV6L6gj8
+Received: by mail-wr1-f54.google.com with SMTP id
+ ffacd0b85a97d-3b9a342e8ffso3792311f8f.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 19 Aug 2025 08:09:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1755616152; x=1756220952;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9b7UPGoC7p7M4ZyxE/iJKUZfCO9/xK4vTK1yfysENQ4=;
+        b=rV6L6gj8i1Mkmm5GekN3sqzdTp8/KxkaKTY18UxrcBX7Ru3FGLN6otkr+OMjNtdr/R
+         9H4bo0xl7pdsm15b/pi4DPWshgN6HXeitqG1EeuTmVy/4lBdio6srrbxDCnqmpiP5b6S
+         r0D18KvBrwo3dleoLB0SeEMHys1/0WXWey5P+NoQLqk9nFKIksXXYdAg9yk2dD/MUujZ
+         PC9JHSiCaRPEdY3Mc3BGlaSBxOROuv6Fgg8SvcbLKX/nu67veUFiTiQmzuc0Zx50Xln1
+         RnQZrhzl9xgBqBEUbkSO15Pq6ZaN684quwFvX+L+P7b7QfgpIGfSwAog9fDLHlN7bu9B
+         9QVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755616152; x=1756220952;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9b7UPGoC7p7M4ZyxE/iJKUZfCO9/xK4vTK1yfysENQ4=;
+        b=bam8v6lv4DJyLmPTWCeMt4oAaRBOE18oI4jcU298Jgozz0hS3QhjvvcEiQf+QN35Qi
+         BVpz2cdcegjoglvi9rVEPoJvD2w9wOkJgd5mS45Yo6LAdFdHDgs7aV3Bl0WMPHigVhpe
+         KLgsjxgLj1yepYc3DZfqDGLcKtmOFeppQcyjdfYrGkq20C/b4BGl/YDsLoYOmF3TyHnP
+         CdaIYjPRhUZsvLSYRFp8uDUeXAOnlEQZjOudgn9VuYbaJGwxa3J05gIOHexVLbGIJVzI
+         fput7BMiFRqrHUYkjPVII9+KZ2CfJ5GF3l9s3X1eKA9EGuD8L0ne+Gd8Tu/LnrWm1/oh
+         h9vQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVNxQw7mmqnla3zK7g0anRpgG/fggqxnb+od6rrcD8Vjuyva/1rz9ono3dNV1cgTHiYps4bGCMvJjI2@alsa-project.org
+X-Gm-Message-State: AOJu0Yw+6M4jEoIv0OJAh183ayKLoHdHoYi05RcS4UXjz/0p5sbc1jRr
+	0kRvkG9MpYdmZzTE9rGULpBVt77QBr2RFRKsMy3TD0BZ/y5/WVmeRXvF5fb0fslS+aE=
+X-Gm-Gg: ASbGncsUDNrrG5YFMrwhknd8odN0S/1cW/SjbJPUtr0KsgefuDqfaS9qVaguvkXgwnT
+	dOJsswV1PQOV3tbjD2VnteuElO/RBIANXqYpjF0k5S9NkqfwtIPOfV9NaiNe3itLcwlcysCTftM
+	VRhPTS9/MjjfTz/XRGZ8AFAyDwvHPZhF6N6eyqH2gpD6+FX5TLGZCsCVJERUEpakumEwAzTX6Hz
+	N7d4+P8ro/QUTbHnWiz3ZV+3Jma+eMDdMEtaT1ZZZzg4UA1ZJNDGAmy2D+rRaNxpgwf+fFZgemB
+	9a4vIKtSvRElvJHUAvJ7SrR4i3jqM30TjMaUDW9avI4PrIR5WlibNs5JWEg2PNBa6oQPWsydkLT
+	hGyypRRfzwcCGZD738aOK4YzdNNR3GmMPgVJUG5PMjKY=
+X-Google-Smtp-Source: 
+ AGHT+IE1viNjLGpD+HAtjEJG/zvJFF7kbam/xqYb7DdBJ1k+xCzcfb4DF0qP9aBktmah9XbwoOkVFQ==
+X-Received: by 2002:a05:6000:18a5:b0:3b8:d8d1:1e72 with SMTP id
+ ffacd0b85a97d-3c147fbe074mr2435307f8f.19.1755616152531;
+        Tue, 19 Aug 2025 08:09:12 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id
+ ffacd0b85a97d-3c074d43c77sm4218240f8f.23.2025.08.19.08.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Aug 2025 08:09:12 -0700 (PDT)
+Date: Tue, 19 Aug 2025 18:09:08 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev,
+	=?utf-8?B?xaBlcmlm?= Rami <ramiserifpersia@gmail.com>
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Subject: [tiwai-sound:for-next 17/18] sound/usb/usx2y/us144mkii_midi.c:65
+ tascam_midi_in_urb_complete() error: we previously assumed 'tascam' could be
+ null (see line 54)
+Message-ID: <202508192109.lcMrINK1-lkp@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Message-ID-Hash: 6KIRSQP23ZHLWBW2UQTT7M5TI55ZZDNB
-X-Message-ID-Hash: 6KIRSQP23ZHLWBW2UQTT7M5TI55ZZDNB
-X-MailFrom: shenghao-ding@ti.com
+X-MailFrom: dan.carpenter@linaro.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: GMRVVUGMP277XD6KWFORRJ7J5AFJFGJJ
+X-Message-ID-Hash: GMRVVUGMP277XD6KWFORRJ7J5AFJFGJJ
+X-Mailman-Approved-At: Wed, 20 Aug 2025 09:46:29 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6KIRSQP23ZHLWBW2UQTT7M5TI55ZZDNB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GMRVVUGMP277XD6KWFORRJ7J5AFJFGJJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,46 +127,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Optimize the time consumption of profile switching, init_profile saves
-the common settings of different profiles, such as the dsp coefficients,
-etc, which can greatly reduce the profile switching time comsumption and
-remove the repetitive settings.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+head:   d9f0633867711cff87c5604a4f90daa8ab986e4f
+commit: 0ec417aa85467c6fad0563621b74868be0faf00d [17/18] ALSA: usb-audio: Add infrastructure for TASCAM US-144MKII
+config: powerpc64-randconfig-r073-20250819 (https://download.01.org/0day-ci/archive/20250819/202508192109.lcMrINK1-lkp@intel.com/config)
+compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 93d24b6b7b148c47a2fa228a4ef31524fa1d9f3f)
 
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
----
- sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202508192109.lcMrINK1-lkp@intel.com/
 
-diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-index 318f8c58ae61..97c33fee9660 100644
---- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-+++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-@@ -477,6 +477,12 @@ static void tasdevice_dspfw_init(void *context)
- 	if (tas_priv->fmw->nr_configurations > 0)
- 		tas_priv->cur_conf = 0;
- 
-+	/* Init common setting for different audio profiles */
-+	if (tas_priv->rcabin.init_profile_id >= 0)
-+		tasdevice_select_cfg_blk(tas_priv,
-+			tas_priv->rcabin.init_profile_id,
-+			TASDEVICE_BIN_BLK_PRE_POWER_UP);
-+
- 	/* If calibrated data occurs error, dsp will still works with default
- 	 * calibrated data inside algo.
- 	 */
-@@ -779,6 +785,12 @@ static int tas2781_system_resume(struct device *dev)
- 	tasdevice_reset(tas_hda->priv);
- 	tasdevice_prmg_load(tas_hda->priv, tas_hda->priv->cur_prog);
- 
-+	/* Init common setting for different audio profiles */
-+	if (tas_hda->priv->rcabin.init_profile_id >= 0)
-+		tasdevice_select_cfg_blk(tas_hda->priv,
-+			tas_hda->priv->rcabin.init_profile_id,
-+			TASDEVICE_BIN_BLK_PRE_POWER_UP);
-+
- 	if (tas_hda->priv->playback_started)
- 		tasdevice_tuning_switch(tas_hda->priv, 0);
- 
+smatch warnings:
+sound/usb/usx2y/us144mkii_midi.c:65 tascam_midi_in_urb_complete() error: we previously assumed 'tascam' could be null (see line 54)
+
+vim +/tascam +65 sound/usb/usx2y/us144mkii_midi.c
+
+67afec157fe63d Šerif Rami 2025-08-14  38  
+67afec157fe63d Šerif Rami 2025-08-14  39  void tascam_midi_in_urb_complete(struct urb *urb)
+67afec157fe63d Šerif Rami 2025-08-14  40  {
+67afec157fe63d Šerif Rami 2025-08-14  41  	struct tascam_card *tascam = urb->context;
+67afec157fe63d Šerif Rami 2025-08-14  42  	int ret;
+67afec157fe63d Šerif Rami 2025-08-14  43  
+67afec157fe63d Šerif Rami 2025-08-14  44  	if (urb->status) {
+67afec157fe63d Šerif Rami 2025-08-14  45  		if (urb->status != -ENOENT && urb->status != -ECONNRESET &&
+67afec157fe63d Šerif Rami 2025-08-14  46  		    urb->status != -ESHUTDOWN && urb->status != -EPROTO) {
+67afec157fe63d Šerif Rami 2025-08-14  47  			dev_err_ratelimited(tascam->card->dev,
+                                                                                    ^^^^^^^^^^^^
+Unchecked dereference.
+
+67afec157fe63d Šerif Rami 2025-08-14  48  					    "MIDI IN URB failed: status %d\n",
+67afec157fe63d Šerif Rami 2025-08-14  49  					    urb->status);
+67afec157fe63d Šerif Rami 2025-08-14  50  		}
+67afec157fe63d Šerif Rami 2025-08-14  51  		goto out;
+67afec157fe63d Šerif Rami 2025-08-14  52  	}
+67afec157fe63d Šerif Rami 2025-08-14  53  
+67afec157fe63d Šerif Rami 2025-08-14 @54  	if (tascam && atomic_read(&tascam->midi_in_active) &&
+                                                    ^^^^^^
+Is this required?
+
+67afec157fe63d Šerif Rami 2025-08-14  55  	    urb->actual_length > 0) {
+67afec157fe63d Šerif Rami 2025-08-14  56  		kfifo_in_spinlocked(&tascam->midi_in_fifo, urb->transfer_buffer,
+67afec157fe63d Šerif Rami 2025-08-14  57  				    urb->actual_length, &tascam->midi_in_lock);
+67afec157fe63d Šerif Rami 2025-08-14  58  		schedule_work(&tascam->midi_in_work);
+67afec157fe63d Šerif Rami 2025-08-14  59  	}
+67afec157fe63d Šerif Rami 2025-08-14  60  
+67afec157fe63d Šerif Rami 2025-08-14  61  	usb_get_urb(urb);
+67afec157fe63d Šerif Rami 2025-08-14  62  	usb_anchor_urb(urb, &tascam->midi_in_anchor);
+                                                                     ^^^^^^^^
+Unchecked dereference.
+
+67afec157fe63d Šerif Rami 2025-08-14  63  	ret = usb_submit_urb(urb, GFP_ATOMIC);
+67afec157fe63d Šerif Rami 2025-08-14  64  	if (ret < 0) {
+67afec157fe63d Šerif Rami 2025-08-14 @65  		dev_err(tascam->card->dev,
+67afec157fe63d Šerif Rami 2025-08-14  66  			"Failed to resubmit MIDI IN URB: error %d\n", ret);
+67afec157fe63d Šerif Rami 2025-08-14  67  		usb_unanchor_urb(urb);
+67afec157fe63d Šerif Rami 2025-08-14  68  		usb_put_urb(urb);
+67afec157fe63d Šerif Rami 2025-08-14  69  	}
+67afec157fe63d Šerif Rami 2025-08-14  70  out:
+67afec157fe63d Šerif Rami 2025-08-14  71  	usb_put_urb(urb);
+67afec157fe63d Šerif Rami 2025-08-14  72  }
+
 -- 
-2.43.0
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
