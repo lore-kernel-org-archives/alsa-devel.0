@@ -4,121 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A2DFCA0EF8
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Aug 2025 09:47:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FB87CA0EED
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Aug 2025 09:47:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B772601DF;
-	Wed, 20 Aug 2025 11:47:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B772601DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BAC660217;
+	Wed, 20 Aug 2025 11:47:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BAC660217
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1755683240;
-	bh=1KPpiQ8hagVxzaGyCUhCv9U4Ry9vUGyyrlz8+xXpZfc=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=MXktUIaiGlf6AYMXSu1eroEd9gwaw8/R1lpXv90M61NqNm9tekeJ5YspaYhRp0KsY
-	 5cLXE/U/IeRmEoaJug2ziPgoyaWEgS7YplAl9s6Ar1dOkBERsOoeYA0PnW/quyymEs
-	 w2aTrWvTfMl9lZfEcTJipU5otzyijbG4+BJ+9i2E=
+	s=default; t=1755683256;
+	bh=lqQnDZ3r28IKLgBuza0AFNv8cKyvpuTP+0NE2//RlQY=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Q2JpXTdj5qT+/fdBz0/1PyfwGb7kNcqfNRmF8ywEPTvRJh+PveW63apvORxFqzNHj
+	 PzuGjMKTFiPJuaFrC4/nJ+TWqVA8VkhSYIHgxEYbiO3yR+NWfzITM1TdpoZWE9lSHU
+	 PEVmwz9D/X80Qh60EykGv89jjx4Y8arryAFcw7jM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D92C3F805CB; Wed, 20 Aug 2025 11:46:47 +0200 (CEST)
+	id 64EC9F805F7; Wed, 20 Aug 2025 11:46:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F9DBF805C6;
-	Wed, 20 Aug 2025 11:46:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7573DF805F0;
+	Wed, 20 Aug 2025 11:46:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B340F80185; Tue, 19 Aug 2025 17:09:18 +0200 (CEST)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com
- [209.85.221.54])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 22A87F8027B; Wed, 20 Aug 2025 04:59:26 +0200 (CEST)
+Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C93B4F800F8
-	for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2025 17:09:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C93B4F800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96477F8026D
+	for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2025 04:59:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96477F8026D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=rV6L6gj8
-Received: by mail-wr1-f54.google.com with SMTP id
- ffacd0b85a97d-3b9a342e8ffso3792311f8f.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 19 Aug 2025 08:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1755616152; x=1756220952;
- darn=alsa-project.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9b7UPGoC7p7M4ZyxE/iJKUZfCO9/xK4vTK1yfysENQ4=;
-        b=rV6L6gj8i1Mkmm5GekN3sqzdTp8/KxkaKTY18UxrcBX7Ru3FGLN6otkr+OMjNtdr/R
-         9H4bo0xl7pdsm15b/pi4DPWshgN6HXeitqG1EeuTmVy/4lBdio6srrbxDCnqmpiP5b6S
-         r0D18KvBrwo3dleoLB0SeEMHys1/0WXWey5P+NoQLqk9nFKIksXXYdAg9yk2dD/MUujZ
-         PC9JHSiCaRPEdY3Mc3BGlaSBxOROuv6Fgg8SvcbLKX/nu67veUFiTiQmzuc0Zx50Xln1
-         RnQZrhzl9xgBqBEUbkSO15Pq6ZaN684quwFvX+L+P7b7QfgpIGfSwAog9fDLHlN7bu9B
-         9QVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755616152; x=1756220952;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9b7UPGoC7p7M4ZyxE/iJKUZfCO9/xK4vTK1yfysENQ4=;
-        b=bam8v6lv4DJyLmPTWCeMt4oAaRBOE18oI4jcU298Jgozz0hS3QhjvvcEiQf+QN35Qi
-         BVpz2cdcegjoglvi9rVEPoJvD2w9wOkJgd5mS45Yo6LAdFdHDgs7aV3Bl0WMPHigVhpe
-         KLgsjxgLj1yepYc3DZfqDGLcKtmOFeppQcyjdfYrGkq20C/b4BGl/YDsLoYOmF3TyHnP
-         CdaIYjPRhUZsvLSYRFp8uDUeXAOnlEQZjOudgn9VuYbaJGwxa3J05gIOHexVLbGIJVzI
-         fput7BMiFRqrHUYkjPVII9+KZ2CfJ5GF3l9s3X1eKA9EGuD8L0ne+Gd8Tu/LnrWm1/oh
-         h9vQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCVNxQw7mmqnla3zK7g0anRpgG/fggqxnb+od6rrcD8Vjuyva/1rz9ono3dNV1cgTHiYps4bGCMvJjI2@alsa-project.org
-X-Gm-Message-State: AOJu0Yw+6M4jEoIv0OJAh183ayKLoHdHoYi05RcS4UXjz/0p5sbc1jRr
-	0kRvkG9MpYdmZzTE9rGULpBVt77QBr2RFRKsMy3TD0BZ/y5/WVmeRXvF5fb0fslS+aE=
-X-Gm-Gg: ASbGncsUDNrrG5YFMrwhknd8odN0S/1cW/SjbJPUtr0KsgefuDqfaS9qVaguvkXgwnT
-	dOJsswV1PQOV3tbjD2VnteuElO/RBIANXqYpjF0k5S9NkqfwtIPOfV9NaiNe3itLcwlcysCTftM
-	VRhPTS9/MjjfTz/XRGZ8AFAyDwvHPZhF6N6eyqH2gpD6+FX5TLGZCsCVJERUEpakumEwAzTX6Hz
-	N7d4+P8ro/QUTbHnWiz3ZV+3Jma+eMDdMEtaT1ZZZzg4UA1ZJNDGAmy2D+rRaNxpgwf+fFZgemB
-	9a4vIKtSvRElvJHUAvJ7SrR4i3jqM30TjMaUDW9avI4PrIR5WlibNs5JWEg2PNBa6oQPWsydkLT
-	hGyypRRfzwcCGZD738aOK4YzdNNR3GmMPgVJUG5PMjKY=
-X-Google-Smtp-Source: 
- AGHT+IE1viNjLGpD+HAtjEJG/zvJFF7kbam/xqYb7DdBJ1k+xCzcfb4DF0qP9aBktmah9XbwoOkVFQ==
-X-Received: by 2002:a05:6000:18a5:b0:3b8:d8d1:1e72 with SMTP id
- ffacd0b85a97d-3c147fbe074mr2435307f8f.19.1755616152531;
-        Tue, 19 Aug 2025 08:09:12 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id
- ffacd0b85a97d-3c074d43c77sm4218240f8f.23.2025.08.19.08.09.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Aug 2025 08:09:12 -0700 (PDT)
-Date: Tue, 19 Aug 2025 18:09:08 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev,
-	=?utf-8?B?xaBlcmlm?= Rami <ramiserifpersia@gmail.com>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: [tiwai-sound:for-next 17/18] sound/usb/usx2y/us144mkii_midi.c:65
- tascam_midi_in_urb_complete() error: we previously assumed 'tascam' could be
- null (see line 54)
-Message-ID: <202508192109.lcMrINK1-lkp@intel.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=LxCrpMFl
+Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
+	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57K2x4273096797;
+	Tue, 19 Aug 2025 21:59:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1755658744;
+	bh=4TEQ1Mdr01d1Jv8q7fpV3KX1BmxQ1Dk9ydlh/AW6kdg=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=LxCrpMFld9XLrxSXLwmpJt17qW5FXfCz+MsQFLugYCAcLgMawaBQZDO6JPB5AzBdS
+	 R7DlnsvZLRYds+UfMGLFJebwCpohEzIGlP4+EF/qJEsbFRnzwf+yQwoNcDvCzzyCmO
+	 IF+HyoCew0+pLCVU04cSx9SuSTcYrK4t229HKMoo=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57K2x3mq1738431
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Tue, 19 Aug 2025 21:59:04 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Tue, 19
+ Aug 2025 21:59:03 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Tue, 19 Aug 2025 21:59:03 -0500
+Received: from lelvem-mr05.itg.ti.com ([10.250.165.138])
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57K2wqs44008196;
+	Tue, 19 Aug 2025 21:58:58 -0500
+From: Baojun Xu <baojun.xu@ti.com>
+To: <broonie@kernel.org>
+CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <shenghao-ding@ti.com>, <baojun.xu@ti.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <k-y@ti.com>, <henry.lo@ti.com>, <robinchen@ti.com>,
+ <jesse-ji@ti.com>,
+        <will-wang@ti.com>
+Subject: [PATCH v1 2/2] ASoC: tas2781: Add tas2118, tas2x20, tas5825 support
+Date: Wed, 20 Aug 2025 10:58:24 +0800
+Message-ID: <20250820025824.24473-2-baojun.xu@ti.com>
+X-Mailer: git-send-email 2.43.0.windows.1
+In-Reply-To: <20250820025824.24473-1-baojun.xu@ti.com>
+References: <20250820025824.24473-1-baojun.xu@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-MailFrom: dan.carpenter@linaro.org
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-MailFrom: baojun.xu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GMRVVUGMP277XD6KWFORRJ7J5AFJFGJJ
-X-Message-ID-Hash: GMRVVUGMP277XD6KWFORRJ7J5AFJFGJJ
-X-Mailman-Approved-At: Wed, 20 Aug 2025 09:46:29 +0000
+Message-ID-Hash: VRPEKV7KBFLVGBK3T4N2A5RRGMQALOPG
+X-Message-ID-Hash: VRPEKV7KBFLVGBK3T4N2A5RRGMQALOPG
+X-Mailman-Approved-At: Wed, 20 Aug 2025 09:46:30 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GMRVVUGMP277XD6KWFORRJ7J5AFJFGJJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VRPEKV7KBFLVGBK3T4N2A5RRGMQALOPG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,69 +106,140 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-head:   d9f0633867711cff87c5604a4f90daa8ab986e4f
-commit: 0ec417aa85467c6fad0563621b74868be0faf00d [17/18] ALSA: usb-audio: Add infrastructure for TASCAM US-144MKII
-config: powerpc64-randconfig-r073-20250819 (https://download.01.org/0day-ci/archive/20250819/202508192109.lcMrINK1-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 93d24b6b7b148c47a2fa228a4ef31524fa1d9f3f)
+Update ti,tas2781.yaml for added tas2118, tas2x20, tas5825.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202508192109.lcMrINK1-lkp@intel.com/
+Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+---
+ .../devicetree/bindings/sound/ti,tas2781.yaml | 73 ++++++++++++++++++-
+ 1 file changed, 72 insertions(+), 1 deletion(-)
 
-smatch warnings:
-sound/usb/usx2y/us144mkii_midi.c:65 tascam_midi_in_urb_complete() error: we previously assumed 'tascam' could be null (see line 54)
-
-vim +/tascam +65 sound/usb/usx2y/us144mkii_midi.c
-
-67afec157fe63d Šerif Rami 2025-08-14  38  
-67afec157fe63d Šerif Rami 2025-08-14  39  void tascam_midi_in_urb_complete(struct urb *urb)
-67afec157fe63d Šerif Rami 2025-08-14  40  {
-67afec157fe63d Šerif Rami 2025-08-14  41  	struct tascam_card *tascam = urb->context;
-67afec157fe63d Šerif Rami 2025-08-14  42  	int ret;
-67afec157fe63d Šerif Rami 2025-08-14  43  
-67afec157fe63d Šerif Rami 2025-08-14  44  	if (urb->status) {
-67afec157fe63d Šerif Rami 2025-08-14  45  		if (urb->status != -ENOENT && urb->status != -ECONNRESET &&
-67afec157fe63d Šerif Rami 2025-08-14  46  		    urb->status != -ESHUTDOWN && urb->status != -EPROTO) {
-67afec157fe63d Šerif Rami 2025-08-14  47  			dev_err_ratelimited(tascam->card->dev,
-                                                                                    ^^^^^^^^^^^^
-Unchecked dereference.
-
-67afec157fe63d Šerif Rami 2025-08-14  48  					    "MIDI IN URB failed: status %d\n",
-67afec157fe63d Šerif Rami 2025-08-14  49  					    urb->status);
-67afec157fe63d Šerif Rami 2025-08-14  50  		}
-67afec157fe63d Šerif Rami 2025-08-14  51  		goto out;
-67afec157fe63d Šerif Rami 2025-08-14  52  	}
-67afec157fe63d Šerif Rami 2025-08-14  53  
-67afec157fe63d Šerif Rami 2025-08-14 @54  	if (tascam && atomic_read(&tascam->midi_in_active) &&
-                                                    ^^^^^^
-Is this required?
-
-67afec157fe63d Šerif Rami 2025-08-14  55  	    urb->actual_length > 0) {
-67afec157fe63d Šerif Rami 2025-08-14  56  		kfifo_in_spinlocked(&tascam->midi_in_fifo, urb->transfer_buffer,
-67afec157fe63d Šerif Rami 2025-08-14  57  				    urb->actual_length, &tascam->midi_in_lock);
-67afec157fe63d Šerif Rami 2025-08-14  58  		schedule_work(&tascam->midi_in_work);
-67afec157fe63d Šerif Rami 2025-08-14  59  	}
-67afec157fe63d Šerif Rami 2025-08-14  60  
-67afec157fe63d Šerif Rami 2025-08-14  61  	usb_get_urb(urb);
-67afec157fe63d Šerif Rami 2025-08-14  62  	usb_anchor_urb(urb, &tascam->midi_in_anchor);
-                                                                     ^^^^^^^^
-Unchecked dereference.
-
-67afec157fe63d Šerif Rami 2025-08-14  63  	ret = usb_submit_urb(urb, GFP_ATOMIC);
-67afec157fe63d Šerif Rami 2025-08-14  64  	if (ret < 0) {
-67afec157fe63d Šerif Rami 2025-08-14 @65  		dev_err(tascam->card->dev,
-67afec157fe63d Šerif Rami 2025-08-14  66  			"Failed to resubmit MIDI IN URB: error %d\n", ret);
-67afec157fe63d Šerif Rami 2025-08-14  67  		usb_unanchor_urb(urb);
-67afec157fe63d Šerif Rami 2025-08-14  68  		usb_put_urb(urb);
-67afec157fe63d Šerif Rami 2025-08-14  69  	}
-67afec157fe63d Šerif Rami 2025-08-14  70  out:
-67afec157fe63d Šerif Rami 2025-08-14  71  	usb_put_urb(urb);
-67afec157fe63d Šerif Rami 2025-08-14  72  }
-
+diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+index 5ea1cdc593b5..fb57b63a00a2 100644
+--- a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
++++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+-# Copyright (C) 2022 - 2023 Texas Instruments Incorporated
++# Copyright (C) 2022 - 2025 Texas Instruments Incorporated
+ %YAML 1.2
+ ---
+ $id: http://devicetree.org/schemas/sound/ti,tas2781.yaml#
+@@ -11,30 +11,62 @@ maintainers:
+   - Shenghao Ding <shenghao-ding@ti.com>
+ 
+ description: |
++  The TAS2118/TAS2X20 is mono, digital input Class-D audio amplifier
++  optimized for efficiently driving high peak power into small loudspeakers.
++  Integrated speaker voltage and current sense provides for
++  real time monitoring of loudspeaker behavior.
+   The TAS2563/TAS2781 is a mono, digital input Class-D audio
+   amplifier optimized for efficiently driving high peak power into
+   small loudspeakers. An integrated on-chip DSP supports Texas
+   Instruments Smart Amp speaker protection algorithm. The
+   integrated speaker voltage and current sense provides for real time
+   monitoring of loudspeaker behavior.
++  The TAS5825 is a stereo, digital input Class-D audio
++  amplifier optimized for efficiently driving high peak power into
++  small loudspeakers. An integrated on-chip DSP supports Texas
++  Instruments Smart Amp speaker protection algorithm. The
++  integrated speaker voltage and current sense provides for real time
++  monitoring of loudspeaker behavior.
+ 
+   Specifications about the audio amplifier can be found at:
++    https://www.ti.com/lit/gpn/tas2120
++    https://www.ti.com/lit/gpn/tas2320
+     https://www.ti.com/lit/gpn/tas2563
+     https://www.ti.com/lit/gpn/tas2781
++    https://www.ti.com/lit/gpn/tas5825m
+ 
+ properties:
+   compatible:
+     description: |
++      ti,tas2020: 3.2-W Mono Digital Input Class-D Speaker Amp with 5.5V PVDD
++      Support.
++
++      ti,tas2118: 5-W Mono Digital Input Class-D Speaker Amp with Integrated
++      8.4-V Class-H Boost.
++
++      ti,tas2120: 8.2-W Mono Digital Input Class-D Speaker Amp with
++      Integrated 14.75V Class-H Boost.
++
++      ti,tas2320: 15-W Mono Digital Input Class-D Speaker Amp with 15V Support.
++
+       ti,tas2563: 6.1-W Boosted Class-D Audio Amplifier With Integrated
+       DSP and IV Sense, 16/20/24/32bit stereo I2S or multichannel TDM.
+ 
+       ti,tas2781: 24-V Class-D Amplifier with Real Time Integrated Speaker
+       Protection and Audio Processing, 16/20/24/32bit stereo I2S or
+       multichannel TDM.
++
++      ti,tas5825: 38-W Stereo, Inductor-Less, Digital Input, Closed-Loop 4.5V
++      to 26.4V Class-D Audio Amplifier with 192-kHz Extended Audio Processing.
+     oneOf:
+       - items:
+           - enum:
++              - ti,tas2020
++              - ti,tas2118
++              - ti,tas2120
++              - ti,tas2320
+               - ti,tas2563
++              - ti,tas5825
+           - const: ti,tas2781
+       - enum:
+           - ti,tas2781
+@@ -61,6 +93,27 @@ required:
+ 
+ allOf:
+   - $ref: dai-common.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - ti,tas2020
++              - ti,tas2118
++              - ti,tas2120
++              - ti,tas2320
++    then:
++      properties:
++        reg:
++          description:
++            I2C address, in multiple-AMP case, all the i2c address
++            aggregate as one Audio Device to support multiple audio slots.
++          maxItems: 4
++          minItems: 1
++          items:
++            minimum: 0x48
++            maximum: 0x4b
++
+   - if:
+       properties:
+         compatible:
+@@ -97,6 +150,24 @@ allOf:
+             minimum: 0x38
+             maximum: 0x3f
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - ti,tas5825
++    then:
++      properties:
++        reg:
++          description:
++            I2C address, in multiple-AMP case, all the i2c address
++            aggregate as one Audio Device to support multiple audio slots.
++          maxItems: 4
++          minItems: 1
++          items:
++            minimum: 0x4c
++            maximum: 0x4f
++
+ additionalProperties: false
+ 
+ examples:
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
 
