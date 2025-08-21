@@ -4,180 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CD4DCA0FED
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 06:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3272CAC583
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:08:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0550601EF;
-	Tue,  9 Sep 2025 08:45:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0550601EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5E7960200;
+	Tue,  9 Sep 2025 14:07:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5E7960200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1757400313;
-	bh=RCW5GgCArVSwPic7glqYC7RlTKSqQK8WdmS+A/Xg6rk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=n3rBLjKnfh0+aTFDYmqALY9u+ZvmnQaNY4La1m00993RCb/dstu10TY5YzMDhqx3z
-	 Ye+1R5kMh53rst1rZ5/ij8pdjcoqjbJykgJViJbHfgc32bLu584l/QEwKYoOJ5OpU1
-	 sah3lny03zwPgpdVCL7IVRyIif1CT8IRy0tjNky4=
+	s=default; t=1757419687;
+	bh=FwlXjDOvoPhU3ws3aopxzlxmseKwaQiXbFytY4DUmJs=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=i5xxyRORmJxpnMpagN+l91GYFFKifijuR5E96EX5tu+2L2X5aoBeHXXaKT5+Z7J8t
+	 zf9rkK8ctB18/y1ybxxv5qFq3AAwuNly+BoHlZiNz7qLmM4CQ+LEPyAMTgFerJSJu3
+	 PZ+/KEBLStVBHZe2W/irkL0VFyvLLOTuTcYHwWIA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA564F805C5; Tue,  9 Sep 2025 08:44:38 +0200 (CEST)
+	id E03CCF805C8; Tue,  9 Sep 2025 14:07:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9259F805CB;
-	Tue,  9 Sep 2025 08:44:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68809F805D2;
+	Tue,  9 Sep 2025 14:07:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E2A21F8027B; Tue,  9 Sep 2025 08:43:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 93EF4F80518; Thu, 21 Aug 2025 03:47:45 +0200 (CEST)
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com
+ [209.85.166.182])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AACB4F801F7
-	for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2025 08:43:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AACB4F801F7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5F7E2F80152
+	for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2025 03:47:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F7E2F80152
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=cfo+f3oe;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=fOu2OQhD;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=zKJkMxhV;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=G9SrgBRr
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B636E20395;
-	Tue,  9 Sep 2025 06:43:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1757400222;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv9rmhdL0uNXK3cxzdO4tHRw+ROK7mOEB36x9Me9aq8=;
-	b=cfo+f3oecUouQ0KpQpEYlBA+qvvM+4RXBYZWKAMcl5dVBnthBqad3LiltENna7TfHyAi9t
-	23npTRN621x0COFSDVQYZ5d4Hvm2BFVgLtgXqHCJKBW8VNdcJn2SxpcNVAJXEiXlHRqr3I
-	nglpNrhZqbQR8OPVCsZfs7fVQ4HjFTY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1757400222;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv9rmhdL0uNXK3cxzdO4tHRw+ROK7mOEB36x9Me9aq8=;
-	b=fOu2OQhDBImqqKc3sWvwXYtWxuDYmQfFKBmwY1QQV+fKw9AwXatlCLMmC8c5iBl8+UUpYC
-	stnfGGTjixrm21Bg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1757400221;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv9rmhdL0uNXK3cxzdO4tHRw+ROK7mOEB36x9Me9aq8=;
-	b=zKJkMxhVPb/f5q4ETbALAoFXWY39YJkcaulAOOAGinGnNHonPCiGtr4+GGSAxiNvVNEZ9d
-	PcbraGBKU56lthg1FnAk8kqd8pAvpeF6nz5zVwTmZs2XPvGsOE/4R+UwQ/FEt1ghopn+8U
-	Mfg8Ut98YtGpmIl+tf19Wr0hldnS1Js=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1757400221;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv9rmhdL0uNXK3cxzdO4tHRw+ROK7mOEB36x9Me9aq8=;
-	b=G9SrgBRrpo48ggyq2wAOhnOLmwjJivBbHWSOnmmLOyEWMCfH/bDyeIWpvaoreRdSnHagZT
-	wFk+g/rPpGUiqPBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 304431388C;
-	Tue,  9 Sep 2025 06:43:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /nTWCZ3Mv2jjVQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 09 Sep 2025 06:43:41 +0000
-Date: Tue, 09 Sep 2025 08:43:40 +0200
-Message-ID: <87ecsgxh0j.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: "Xu, Baojun" <baojun.xu@ti.com>,
-	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
-	"13916275206@139.com" <13916275206@139.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"Ding, Shenghao" <shenghao-ding@ti.com>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-	"robh@kernel.org" <robh@kernel.org>,
-	"krzk+dt@kernel.org" <krzk+dt@kernel.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"Yi, Ken" <k-yi@ti.com>,
-	"Lo, Henry" <henry.lo@ti.com>,
-	"Chen, Robin" <robinchen@ti.com>,
-	"Ji, Jesse" <jesse-ji@ti.com>,
-	"Wang, Will" <will-wang@ti.com>,
-	"jim.shil@goertek.com" <jim.shil@goertek.com>,
-	"toastcheng@google.com" <toastcheng@google.com>,
-	"chinkaiting@google.com" <chinkaiting@google.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118,
- tas2x20, tas5825 support
-In-Reply-To: <071e0e04-e2cb-480d-8207-f6ba87cb56b5@sirena.org.uk>
-References: <20250830061459.24371-1-baojun.xu@ti.com>
-	<993d7fe7-5206-45a9-acb6-0d610a3a2136@sirena.org.uk>
-	<12aa63e694c94213aeb6b48959d02b45@ti.com>
-	<b70314db-357f-4c39-a9b4-088d8ebed2b0@sirena.org.uk>
-	<67fafc23d16d4790821321643a87385f@ti.com>
-	<071e0e04-e2cb-480d-8207-f6ba87cb56b5@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[139.com,gmail.com];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	TAGGED_RCPT(0.00)[dt];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[ti.com,linux.intel.com,139.com,alsa-project.org,vger.kernel.org,gmail.com,kernel.org,goertek.com,google.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: L7VAWV77H5ZSLWOAKA45Q5TFXHJQZITT
-X-Message-ID-Hash: L7VAWV77H5ZSLWOAKA45Q5TFXHJQZITT
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=e+Kk+5n8
+Received: by mail-il1-f182.google.com with SMTP id
+ e9e14a558f8ab-3e570042988so4287505ab.2
+        for <alsa-devel@alsa-project.org>;
+ Wed, 20 Aug 2025 18:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755740860; x=1756345660;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=epz/iAe61wK5d2iPWv/y8Ta3anyLI9CMIK3ZJbjFUR0=;
+        b=e+Kk+5n8oLQlgq5pvf2GF0kXIp1aeRvLOXVs6O6JJThPhzXJGGPd9hZLChULdNXDLC
+         JqzArMyEJ3W7BqrYB5SgnRPc/B1sg2mcn2+VgJm+Bc1y6yVKr+v0MrNzsTP9GqdOljTr
+         X7frfMJzC2IjvasfpdojVXwAWLWWYYbO7s1TMBzbttFU8yRBvbw6yx1ME2YSs2vO2JEV
+         c8/SD/A98XVmiKKDF0wpL+PTWFiE/5KSB+FB6V+f0w+diTFL9e2b4i3bYx/zDjm7pEtL
+         01yex+t29ee9mo5b+nivm32qUZWOynvkrRk2bFSmJSTPEBXrp99PaEo6BmyFyfo2Owjj
+         2UuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755740860; x=1756345660;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=epz/iAe61wK5d2iPWv/y8Ta3anyLI9CMIK3ZJbjFUR0=;
+        b=iN1F//oW2nGQ6a8WGCBZj68r54hMxiuliUmnkbqDLuE9UbrZyZJLcLWdQTYw0/ekAY
+         N6BIyjOX/o67Zha8oDau9W8uiCSTUEQiIBBQVcvnUgt/94zxKoW5bvKci8nlJp7Ou0qj
+         ari2oHu/W4tiPp7IXb+OYrSPV4eZuvnlLT9MXGrVARCC3Gd5qmugh9GHtV5KO2CdeHfO
+         +0SIoJU6MVK7cZ5yYeksDaiFntdu1OYf7cquUs83hAQRWLSNmmlkRUQ9J2tJKKtu9kut
+         TUJK4zzc62KGFCVZLWqVD0bE4QgDJdLuJrIbXBHRLe5clhb8Cd0B2C0xkfauES+WtkDw
+         agvw==
+X-Gm-Message-State: AOJu0Yw/ZtIgv6iLp/UG6YLxTW6T1VXo6bUcwi51NDF38Tdnc+0OUyQv
+	wmrSXHKedJ3k36DR0HW8u6zu8d43EislTxH0ERsN+Qf2wT5IpKqHW1j8GEJyH5s/3Po=
+X-Gm-Gg: ASbGncs7PZUin+Yb/o/OjeZtRnN8rx9YufaT2mumBJq/RfiJHzHk7cIgv/gUqsLkZLp
+	xX1g9uFsklB0TRxCU7dx0KC16BAK1URnG6dBehCsRXh24hW5AZUjNqUJQOfvO1ma0qZORQ4EKZS
+	/YSS7os8LjHCOp71z/613n/IBCOWrTpgpl74EdgZ9uFQv9lYbG8IRUyQHjk0F+o6CSpj4A/BSvX
+	W6NXKoyXEVZcEhZrpcTFFv7Py8pckz3KRta7TWH3d+rMG6rgOYkYrWUmCFAnqB72HD2nFNryOel
+	/FYGHQol/Yw1gH2+rNkZP4RnH9hv5EouunBRKOZ7RrtKAzlAQsH4yLKCG/BFrcMCTji+HS0qvkF
+	77m8u1DZpaRXMBTMqzlG+sNk=
+X-Google-Smtp-Source: 
+ AGHT+IHZYK/ax1hgY4iz6VhBp4wSokshN6ZQFy/MFAt46+tVGOtms3R7YW/2E72HwIFvuBCTIlaxiQ==
+X-Received: by 2002:a05:6e02:228b:b0:3e5:67a6:d417 with SMTP id
+ e9e14a558f8ab-3e6d444027bmr13182265ab.8.1755740860024;
+        Wed, 20 Aug 2025 18:47:40 -0700 (PDT)
+Received: from aperture.lan ([2601:40a:8000:28d9::f29])
+        by smtp.gmail.com with ESMTPSA id
+ e9e14a558f8ab-3e67e6abec0sm12430875ab.48.2025.08.20.18.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Aug 2025 18:47:39 -0700 (PDT)
+From: Brady Norander <bradynorander@gmail.com>
+To: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	amadeuszx.slawinski@linux.intel.com,
+	tiwai@suse.de,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	pierre-louis.bossart@linux.intel.com,
+	Brady Norander <bradynorander@gmail.com>
+Subject: [PATCH] ALSA: hda: intel-dsp-config: Select SOF driver on MTL
+ Chromebooks
+Date: Wed, 20 Aug 2025 21:47:30 -0400
+Message-ID: <20250821014730.8843-1-bradynorander@gmail.com>
+X-Mailer: git-send-email 2.50.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: bradynorander@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: H23PQYMXXPVEU5RRX45FMS3BHBLCUVQG
+X-Message-ID-Hash: H23PQYMXXPVEU5RRX45FMS3BHBLCUVQG
+X-Mailman-Approved-At: Tue, 09 Sep 2025 12:07:22 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L7VAWV77H5ZSLWOAKA45Q5TFXHJQZITT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H23PQYMXXPVEU5RRX45FMS3BHBLCUVQG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -186,28 +127,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 08 Sep 2025 19:10:28 +0200,
-Mark Brown wrote:
-> 
-> On Mon, Sep 08, 2025 at 06:22:51AM +0000, Xu, Baojun wrote:
-> 
-> > > > Or need to create patches on tree broonie/linux.git?
-> 
-> > >   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-6.18
-> 
-> > This patch is also relative (shares the same include/sound/tas5825-tlv.h)
-> > with another commit on next/linux-next.git:
-> > https://patch.msgid.link/20250810122358.1575-1-baojun.xu@ti.com (ALSA: hda: Add TAS5825 support)
-> > However, it was not merged into broonie/sound.git yet, should I wait for it?
-> 
-> OK, it's probably easiest to just apply these directly to Takashi's
-> tree:
-> 
-> Acked-by: Mark Brown <broonie@kernel.org>
+The SOF driver is required for functional audio on MTL Chromebooks
 
-OK, applied both patches now to for-next branch.
+Signed-off-by: Brady Norander <bradynorander@gmail.com>
+---
+ sound/hda/core/intel-dsp-config.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
+diff --git a/sound/hda/core/intel-dsp-config.c b/sound/hda/core/intel-dsp-config.c
+index 3cb1e7fc3b3b..00f184917623 100644
+--- a/sound/hda/core/intel-dsp-config.c
++++ b/sound/hda/core/intel-dsp-config.c
+@@ -167,9 +167,9 @@ static const struct config_entry config_table[] = {
+ 
+ /*
+  * CoffeeLake, CannonLake, CometLake, IceLake, TigerLake, AlderLake,
+- * RaptorLake use legacy HDAudio driver except for Google Chromebooks
+- * and when DMICs are present. Two cases are required since Coreboot
+- * does not expose NHLT tables.
++ * RaptorLake, MeteorLake use legacy HDAudio driver except for Google
++ * Chromebooks and when DMICs are present. Two cases are required since
++ * Coreboot does not expose NHLT tables.
+  *
+  * When the Chromebook quirk is not present, it's based on information
+  * that no such device exists. When the quirk is present, it could be
+@@ -516,6 +516,19 @@ static const struct config_entry config_table[] = {
+ /* Meteor Lake */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_METEORLAKE)
+ 	/* Meteorlake-P */
++	{
++		.flags = FLAG_SOF,
++		.device = PCI_DEVICE_ID_INTEL_HDA_MTL,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.ident = "Google Chromebooks",
++				.matches = {
++					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
++				}
++			},
++			{}
++		}
++	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = PCI_DEVICE_ID_INTEL_HDA_MTL,
+-- 
+2.50.1
 
-thanks,
-
-Takashi
