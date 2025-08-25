@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1236CAC583
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:08:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91EDECA0FED
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:10:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57A3A60224;
-	Tue,  9 Sep 2025 14:08:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57A3A60224
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3077601E6;
+	Tue,  9 Sep 2025 14:09:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3077601E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1757419737;
-	bh=0pvUU9Yvfg3/RHf9GsdFhIQJVQPgEBVljD9FFGnn+do=;
+	s=default; t=1757419804;
+	bh=7uJ/2NDDy65lOOT7TkdowGvj9PcjwIsNfKF5crcwAdo=;
 	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=nAnB+FgIlvHX2xLXO1nY5EfYWiIxaAihDfeefOpnEFN0eN4VX0fz6R/WDy97LNhxV
-	 oTrbep8hBitk01s6MBpc6irHmW78IgV7giIYD32rLw7RV475ys8N/xt+7im/wGEwX9
-	 KZ4/0VVigijx33oMWarYeFM952glYklivoLrJiOY=
+	b=hoPBIz7OP16cBAhv54V72+bCMeViLWvfduCIOAeOMbEYzt0rRIytUMVBXy58YSRLR
+	 vzUiCYoF8WCY817Eq3+zPFWmCfcBol8u31c7nzzJDWFp2rXjbq0fHEurAD3+54L9Gk
+	 W7SS2FNpivD81p12IT+9TqTiKbsL/ZYdfT6qsXPY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C01F3F80621; Tue,  9 Sep 2025 14:07:59 +0200 (CEST)
+	id ED711F805C3; Tue,  9 Sep 2025 14:09:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A78EEF80613;
-	Tue,  9 Sep 2025 14:07:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C17BF805D5;
+	Tue,  9 Sep 2025 14:09:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3A0CF804FF; Fri, 22 Aug 2025 07:15:37 +0200 (CEST)
-Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
+	id 61580F804B0; Mon, 25 Aug 2025 05:41:26 +0200 (CEST)
+Received: from lelvem-ot01.ext.ti.com (lelvem-ot01.ext.ti.com [198.47.23.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 35701F80093
-	for <alsa-devel@alsa-project.org>; Fri, 22 Aug 2025 07:15:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35701F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id D897CF800AE
+	for <alsa-devel@alsa-project.org>; Mon, 25 Aug 2025 05:41:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D897CF800AE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=S6NvlNeN
-Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
-	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57M5EjeU646684;
-	Fri, 22 Aug 2025 00:14:45 -0500
+ header.s=ti-com-17Q1 header.b=ktrHXHU5
+Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
+	by lelvem-ot01.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57P3fEqk722060;
+	Sun, 24 Aug 2025 22:41:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1755839685;
-	bh=Z2kx8DHf/pqF9Z4rbVHwp0HK8G2tJ+slaRSlSoy5ezA=;
+	s=ti-com-17Q1; t=1756093274;
+	bh=MDHojdOU6mpSQYrGqeiiCDc/0DmtbLRqsnZvrZKaqtw=;
 	h=From:To:CC:Subject:Date;
-	b=S6NvlNeNNPe8rYO8HGjt1unjiGHTnAQYus1Hv0QVNAbg5RRJixfRft9OUXR1frGLC
-	 9os8zrObjhDwk6F1Q0/nqZkLn8TVgOXmpk+AXzRbBFZvg8elVb8cQI40/Na2yoyel/
-	 W8EtWarCOLvholA6Q8Zg+xnm1aeU7FgGqzaLlsFA=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57M5EjQR3356126
+	b=ktrHXHU5iKwwZehIWjGGKT2N+y9+kIHVVCtyu6hprR5dbJN0crOU533OmAJCyw/eR
+	 Mjx/kRpIIXHuMt2N1TvjfijhKPDFEwq+uDlUNEc/uN8jbiV8/VmrDmPSgBO3E4/ySN
+	 zpkT1uUFchfPvyj4YEQTG3FXS+LT9AKueMuRWvbA=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57P3fEhF887002
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Fri, 22 Aug 2025 00:14:45 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Fri, 22
- Aug 2025 00:14:45 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+	Sun, 24 Aug 2025 22:41:14 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Sun, 24
+ Aug 2025 22:41:13 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Fri, 22 Aug 2025 00:14:44 -0500
+ Frontend Transport; Sun, 24 Aug 2025 22:41:13 -0500
 Received: from lelvem-mr05.itg.ti.com ([10.250.165.138])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57M5EYpr3296152;
-	Fri, 22 Aug 2025 00:14:35 -0500
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57P3f5UQ3241916;
+	Sun, 24 Aug 2025 22:41:06 -0500
 From: Baojun Xu <baojun.xu@ti.com>
 To: <broonie@kernel.org>
 CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
@@ -72,10 +72,11 @@ CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
         <lgirdwood@gmail.com>, <robh@kernel.org>, <krzk+dt@kernel.org>,
         <conor+dt@kernel.org>, <devicetree@vger.kernel.org>, <k-yi@ti.com>,
         <henry.lo@ti.com>, <robinchen@ti.com>, <jesse-ji@ti.com>,
-        <will-wang@ti.com>
-Subject: [PATCH v2 1/2] ASoC: tas2781: Add tas2118, tas2x20, tas5825 support
-Date: Fri, 22 Aug 2025 13:14:08 +0800
-Message-ID: <20250822051410.1732-1-baojun.xu@ti.com>
+        <will-wang@ti.com>, <jim.shil@goertek.com>, <toastcheng@google.com>,
+        <chinkaiting@google.com>
+Subject: [PATCH v3 1/2] ASoC: tas2781: Add tas2118, tas2x20, tas5825 support
+Date: Mon, 25 Aug 2025 11:40:38 +0800
+Message-ID: <20250825034039.9713-1-baojun.xu@ti.com>
 X-Mailer: git-send-email 2.43.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -87,15 +88,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2IWA7DWWRL76JTDOPEBKJKR4JGTBOGAX
-X-Message-ID-Hash: 2IWA7DWWRL76JTDOPEBKJKR4JGTBOGAX
-X-Mailman-Approved-At: Tue, 09 Sep 2025 12:07:43 +0000
+Message-ID-Hash: GEY47SWGU5SY6J3WG6ULA3S5M6PMITQN
+X-Message-ID-Hash: GEY47SWGU5SY6J3WG6ULA3S5M6PMITQN
+X-Mailman-Approved-At: Tue, 09 Sep 2025 12:09:16 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2IWA7DWWRL76JTDOPEBKJKR4JGTBOGAX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GEY47SWGU5SY6J3WG6ULA3S5M6PMITQN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,6 +112,8 @@ have no calibration required stereo smart amplifier.
 Signed-off-by: Baojun Xu <baojun.xu@ti.com>
 
 ---
+v3:
+ - No update.
 v2:
  - Update the mail list for maintainers of yaml file
 ---
