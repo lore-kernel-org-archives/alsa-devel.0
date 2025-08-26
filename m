@@ -4,96 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D49C8CA0EFA
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Aug 2025 09:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44516CA0FE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Aug 2025 09:31:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA2EB60213;
-	Tue, 26 Aug 2025 11:12:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA2EB60213
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FE9C60215;
+	Tue, 26 Aug 2025 11:31:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FE9C60215
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1756199568;
-	bh=eBOr2RpiZufw8xG5QulV/98+dCNxavPMBGdKmW1cQ6A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1756200684;
+	bh=OvUbIz95K4JXfdcPlfARC+AizRB3XJUiuZwikQ+/j1E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tnHf+lE9X4pEmAkCNaWU+qkHgR7sjXpkp7+dtaAXBxZtqly3PP8GfbS8PKgxCjtly
-	 f5q5yqm6faId1K2XNW+q5VdFWd5rsgq6cs1YG9Xg5zYpZ9ZxudULdLhZWEQkyIQ7wD
-	 wSbUggiVsZ9oR0bw6M+7AXJ8pcqLQgmOtoER+Kug=
+	b=hm0E+o27OJbJi+e7QnVSq7Nm1C+NzAZPZPmo5putdkNhq8GG6FbixiwzjG7cGSYW2
+	 MIt0SKYnNw0qs4QJDo708GcBrJy5oY54pWSnTYuvNkGGYV1/BMn0Cq0EpL8YCnQQ4K
+	 YE1tL67XfHBj/ZG1G/hr9YG8QbgY88PGLzZh2JW4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AD141F80579; Tue, 26 Aug 2025 11:12:07 +0200 (CEST)
+	id EAB8DF805CB; Tue, 26 Aug 2025 11:30:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3ADCF805CA;
-	Tue, 26 Aug 2025 11:12:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33407F805C9;
+	Tue, 26 Aug 2025 11:30:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35C60F8051F; Tue, 26 Aug 2025 11:11:33 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 2DCA4F8051F; Tue, 26 Aug 2025 11:30:28 +0200 (CEST)
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com
+ [209.85.219.54])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8ABDFF80154
-	for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2025 11:11:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ABDFF80154
+	by alsa1.perex.cz (Postfix) with ESMTPS id 76773F80153
+	for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2025 11:30:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76773F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nzSlXFyk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1756199492; x=1787735492;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=eBOr2RpiZufw8xG5QulV/98+dCNxavPMBGdKmW1cQ6A=;
-  b=nzSlXFyk8pQCShwOmUKtHYQNq+KNKqiLqOSxK56VwPpjacxCECdZzn+Y
-   V5PW2d/k6wJNosUxH7lybLjxtH4Eheiq22+sSGKAVpQaygaj3W9h0NmKZ
-   ByPjS5iqqb3CMkGESfsLZlzlYB4S0UJ72tUm83yz1zBucPYnEdGg15cUv
-   mOj3FDWcv+Dv4GPhT8Iq4WGFm+023cRI87KWMMieEyYr0WkpWPbO5ycrH
-   80haFUhAqb4+u1GQo1zz1cllRNQWuevG31Q57Np3iDu2wWXE8ifatrZAg
-   aZVzI/Nlr5xRRqtiz1j3gdx5fPGP/XF4lwi+reYYhGFTnEnP/NcCUP9JI
-   A==;
-X-CSE-ConnectionGUID: n0MnK1jaSDq++q+Zez+q/w==
-X-CSE-MsgGUID: Psaurk1vQYWJoqhvPe827g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="58346421"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400";
-   d="scan'208";a="58346421"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Aug 2025 02:11:28 -0700
-X-CSE-ConnectionGUID: yuzWgUc3SJyc4SsHyobBew==
-X-CSE-MsgGUID: RujYWHaCRXCZwW48rej0eQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,214,1751266800";
-   d="scan'208";a="174789996"
-Received: from carterle-desk.ger.corp.intel.com (HELO [10.245.246.74])
- ([10.245.246.74])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Aug 2025 02:11:24 -0700
-Message-ID: <431d4cbf-281a-4f93-bda4-767fa6b96c8c@linux.intel.com>
-Date: Tue, 26 Aug 2025 12:11:54 +0300
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20230601 header.b=gd0t2ESI
+Received: by mail-qv1-f54.google.com with SMTP id
+ 6a1803df08f44-70dbe6b8142so25744426d6.2
+        for <alsa-devel@alsa-project.org>;
+ Tue, 26 Aug 2025 02:30:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1756200623; x=1756805423;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OvUbIz95K4JXfdcPlfARC+AizRB3XJUiuZwikQ+/j1E=;
+        b=gd0t2ESIC912ML+ecWkNA+yqWdYKbTYN+ohcxNFSI3rMf/gstHS69+TPeloN0iqDgI
+         R29KThLmFa7sbWZPM9yLUZr5KcxpSBDx/tdyjud93tL0LdzfVglHzJg/o9HtNFFd+SQX
+         KBtH2fKBajvhzvjE//8ObnZ7K5oy78Ift8gmHNkG8Kts1UelSwHcZkddzVL6O4VMVz7r
+         dwPYGdOfTH1aCRBaxEi/txcrlYxi5yGNm0J+lpt7cBE4dS9Ll5j0EeJb3C836ZNfFGW5
+         dUBd7MYq8aQmooz/Pl9MeZjwupRL0J2TuBaUDK/uZwWhVqQXi59mwneqKFAg/rZUUO1D
+         +7cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756200623; x=1756805423;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OvUbIz95K4JXfdcPlfARC+AizRB3XJUiuZwikQ+/j1E=;
+        b=n6gSmuUo6ru9Xhr/Ub0ekmQK/ARBnzmHsKsOIHM7fFKYTk9unzfZ26jwjRPA+xfBPl
+         raefcLcvWgRWQNq+yoDiwFKNxDBdr8mYZIyaHwct4yl6ZNVkU7AZNeacGGr/NyC2VDG3
+         GmLY67CwvVIsxLg/bg5Dl1E7VlHrRJqOW8ANX3QfAjFSA2CHm9gYqRJAQQVvLnUCg5lg
+         SW37F1ngmbZgFMaXw8agtS7LWeSxupvpuL9hOe0hITzhtnF9gtjt2OrCABoCDNi3jBVQ
+         we/NwdeLByqw2jtXtiHyYYxn+do0cKmnPHJTtt5LKY4kf3+xwh4JODZQs3OPXXO3jfCU
+         v+IA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXFjzVDRiWnOjlK4l7+wsrUmSaUbTpVDQUZ7ys/D/uQhkrH1pIiRtR6UABoyTlIxdi+11SLd4zxbIkT@alsa-project.org
+X-Gm-Message-State: AOJu0YytqzvJycuMoA2d+YYBndd9Xk1fvt5baf3Z71gKoihCJrDySBf2
+	TT98MIVk8H8bvoNSU80tqQLbNs4Qft+S6c6Dh8c0X03opz0VxCUy1BATGGhUpS3DWyhh97MH6m4
+	WyENR27kVp8oJWqwnLzLFGDd65+KyPCS65kpWYEJz8g==
+X-Gm-Gg: ASbGncsIsXmcWico2z94UCU79Ha4qFd8xZGbuWHcu7ExUXEPPrmP+e+nj1DQypFjQmV
+	ZWWpNrBs4aRodY8CMSuJ+Y+L/kJFndH9QnctSfpGAiAavjkX0dFI2DJfeGGnCr71CY25sYuMjz0
+	feGxbcJZEC9+CPo9QZoG/IopSD/BtIlSCvZDqITPRJVpRf5qiJDDbJgpURkB8uN9jsahAu0Pzyu
+	X3tBxU=
+X-Google-Smtp-Source: 
+ AGHT+IGmb6aCsOOpnEHv9Gpndnk4Vjl+wnb5OY915aQJlI5lgdEYqe5G/1E/Dq637FnnVD91zJaENT6TRFh3PTA48B0=
+X-Received: by 2002:a05:6214:2526:b0:70d:b80b:70c0 with SMTP id
+ 6a1803df08f44-70db80b8896mr80009216d6.51.1756200623362; Tue, 26 Aug 2025
+ 02:30:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ASoC: SOF: Intel: WCL: Add the sdw_process_wakeen op
-To: Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- linux-kernel@vger.kernel.org
-Cc: linux-sound@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Jaroslav Kysela
- <perex@perex.cz>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Mac Chiang <mac.chiang@intel.com>,
- alsa-devel@alsa-project.org
 References: 
  <20250826090530.2409509-1-ajye_huang@compal.corp-partner.google.com>
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-Content-Language: en-US
-In-Reply-To: 
- <20250826090530.2409509-1-ajye_huang@compal.corp-partner.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FX3HAAGQ73OYQL6TNL2P6UFGTCNRYHHR
-X-Message-ID-Hash: FX3HAAGQ73OYQL6TNL2P6UFGTCNRYHHR
-X-MailFrom: peter.ujfalusi@linux.intel.com
+ <431d4cbf-281a-4f93-bda4-767fa6b96c8c@linux.intel.com>
+In-Reply-To: <431d4cbf-281a-4f93-bda4-767fa6b96c8c@linux.intel.com>
+From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date: Tue, 26 Aug 2025 17:30:12 +0800
+X-Gm-Features: Ac12FXxSXegTC0bZL7M87CxHLjg5Y4MEinlMDORv0H8fnA3ehnPv_o-ljoNpdTU
+Message-ID: 
+ <CALprXBaatmypSp=AUDjxYec87XRtnEE3vDc-VKsULPA2W5135w@mail.gmail.com>
+Subject: Re: [PATCH v1] ASoC: SOF: Intel: WCL: Add the sdw_process_wakeen op
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>,
+	Mac Chiang <mac.chiang@intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: B2TAH2AMYZOW4FYNWDPU75QSOYMALPFC
+X-Message-ID-Hash: B2TAH2AMYZOW4FYNWDPU75QSOYMALPFC
+X-MailFrom: ajye_huang@compal.corp-partner.google.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FX3HAAGQ73OYQL6TNL2P6UFGTCNRYHHR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B2TAH2AMYZOW4FYNWDPU75QSOYMALPFC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,37 +131,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, Aug 26, 2025 at 5:11=E2=80=AFPM P=C3=A9ter Ujfalusi
+<peter.ujfalusi@linux.intel.com> wrote:
 
-
-On 26/08/2025 12:05, Ajye Huang wrote:
-> Add the missing op in the device description to avoid issues with jack
-> detection.
-> 
-> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-
-Can you add these tags and send v2?
-Fixes: 6b04629ae97a ("ASoC: SOF: Intel: add initial support for WCL")
-Acked-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-
-Thank you!
-
-> ---
->  sound/soc/sof/intel/ptl.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/sof/intel/ptl.c b/sound/soc/sof/intel/ptl.c
-> index 1bc1f54c470d..4633cd01e7dd 100644
-> --- a/sound/soc/sof/intel/ptl.c
-> +++ b/sound/soc/sof/intel/ptl.c
-> @@ -143,6 +143,7 @@ const struct sof_intel_dsp_desc wcl_chip_info = {
->  	.read_sdw_lcount =  hda_sdw_check_lcount_ext,
->  	.check_sdw_irq = lnl_dsp_check_sdw_irq,
->  	.check_sdw_wakeen_irq = lnl_sdw_check_wakeen_irq,
-> +	.sdw_process_wakeen = hda_sdw_process_wakeen_common,
->  	.check_ipc_irq = mtl_dsp_check_ipc_irq,
->  	.cl_init = mtl_dsp_cl_init,
->  	.power_down_dsp = mtl_power_down_dsp,
-
--- 
-Péter
-
+> Can you add these tags and send v2?
+> Fixes: 6b04629ae97a ("ASoC: SOF: Intel: add initial support for WCL")
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+>
+> Thank you!
+>
+Sure, I will follow it. thank you
