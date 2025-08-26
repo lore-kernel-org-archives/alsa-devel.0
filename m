@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34692CA0FF2
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Aug 2025 18:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B6F5CA0FE7
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Aug 2025 18:32:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9DCA60298;
-	Tue, 26 Aug 2025 20:32:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9DCA60298
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AFF7602A1;
+	Tue, 26 Aug 2025 20:32:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AFF7602A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1756233130;
-	bh=7MTn4xEyjkhx6hCXxyz4S9wkw8qoVFEMC7KtNjnUcAM=;
+	s=default; t=1756233144;
+	bh=gBSOaDDbkdJl8GzXTzo4hGweN4hdOnhu5nJ1OQU/HyQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=pRRzGVBWtHLpTRPdq9AnjUBHedy+m3L7XYTAEZGwrUfkahSwlFcE73M9qgZsnZ4IY
-	 4XI5toXZa1hZJk7AH/ln3h82cxO7WatFhhUfqLNjJG7DOplHjjawV40LPZOenwOJLH
-	 /+4q8SmqXEPV7KASiVcfdzwHhmYYKyUjU9JKEwNg=
+	b=Tck87sbI1/ng9u4vOLEOwEdbUVOTfJbL7XeOVdTmg0rHq039y4wJ2ZkB+48Np0sQ/
+	 Zt5jqtCQXrYTUoY7JnqZemAjeCaNTJdNNXquFkYmqpRL7b5QAUHVw37TFTBXkMBPDh
+	 Liz4r58VVUXYKExzKjkhhkHt/mlQbEWI3Cw/LtHI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8496BF805C9; Tue, 26 Aug 2025 20:31:38 +0200 (CEST)
+	id 77BB8F805C3; Tue, 26 Aug 2025 20:32:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6270BF805C6;
-	Tue, 26 Aug 2025 20:31:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BFE6F805E6;
+	Tue, 26 Aug 2025 20:32:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EDC4F80538; Tue, 26 Aug 2025 20:31:28 +0200 (CEST)
+	id 6E4B1F805B5; Tue, 26 Aug 2025 20:31:51 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA227F80153
-	for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2025 20:31:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA227F80153
+	by alsa1.perex.cz (Postfix) with ESMTP id 898F3F80557
+	for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2025 20:31:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 898F3F80557
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <185f64afdd02b400-webhooks-bot@alsa-project.org>
-In-Reply-To: <185f64afdcfca600-webhooks-bot@alsa-project.org>
-References: <185f64afdcfca600-webhooks-bot@alsa-project.org>
+Message-Id: <185f64b54ae2ff00-webhooks-bot@alsa-project.org>
+In-Reply-To: <185f64b54adc5d00-webhooks-bot@alsa-project.org>
+References: <185f64b54adc5d00-webhooks-bot@alsa-project.org>
 Subject: Audio garbled when using Multi plugin to record from 2+ USB
  soundcards on Raspberry Pi
-Date: Tue, 26 Aug 2025 20:31:28 +0200 (CEST)
-Message-ID-Hash: KJPVCFXE4H76WLPUSTQKAW57D5F7H227
-X-Message-ID-Hash: KJPVCFXE4H76WLPUSTQKAW57D5F7H227
+Date: Tue, 26 Aug 2025 20:31:51 +0200 (CEST)
+Message-ID-Hash: VHURVGQM3GJVMYDIBTDS5KPB2AVSKAXO
+X-Message-ID-Hash: VHURVGQM3GJVMYDIBTDS5KPB2AVSKAXO
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KJPVCFXE4H76WLPUSTQKAW57D5F7H227/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VHURVGQM3GJVMYDIBTDS5KPB2AVSKAXO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,7 +92,8 @@ card 0: Device [USB PnP Sound Device], device 0: USB Audio [USB Audio]
   Subdevice #0: subdevice #0
 card 1: USB [Scarlett 2i2 USB], device 0: USB Audio [USB Audio]
   Subdevices: 1/1
-  Subdevice #0: subdevice #0```
+  Subdevice #0: subdevice #0
+```
 
 HOWEVER, if I try to add another `USB PnP Sound Device` to the multi setup, then the result is a garbled mess.  My conclusion is that the multi plugin works generally, but it does NOT work for two or more `USB PnP Sound Device`.  Something tells me that the plugin cannot differentiate the addresses of the audio frames held in two or more of these cheap USB microphones.
 
