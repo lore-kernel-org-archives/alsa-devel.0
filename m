@@ -4,64 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F34BCA0FED
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Aug 2025 01:35:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05001C8303F
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Aug 2025 04:35:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 325D460297;
-	Wed, 27 Aug 2025 03:35:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 325D460297
+	by alsa0.perex.cz (Postfix) with ESMTPS id 310BB60295;
+	Wed, 27 Aug 2025 06:35:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 310BB60295
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1756258518;
-	bh=EKvacJKZ+n/LI1Y2Vba84HtYOzBBJadJZPaJP6ikri4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=UhPmwIBWItQ6nP19agFNCVy+IwnyXOWDnoU4isX9wMOMGppU0+5JkFVGx73PXndX/
-	 i/IAwEmlvATQ/mDe9REiv25E+3wo+GWJtiTnKVb3YQWLfjJjuDvNTk6zsARccd5XhU
-	 wjedMQhJc8+mSg6diSC+nb+0H5xkqRI+qYAP7Zz8=
+	s=default; t=1756269353;
+	bh=aWTOvqQJqVhvq0kHlay3cBgBEi9sg0yCfPp/3mN63Z0=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=r45++uPhLjwLAwr0bKzHLAt2dHLxUTs14coFMLF8NOJPPYczepSKpp7za+m7TRP8/
+	 wgrdSDCV79UBw0Aicj30xoMcTnBKcWhF2lzD77Hi7NjnqPMGMFDCTFHiT19/vmB93i
+	 QtSnDldA2m/Xe6ijNehKabJxg5tv2S95iq6bY9Ws=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 445FCF805CA; Wed, 27 Aug 2025 03:34:39 +0200 (CEST)
+	id A6166F80153; Wed, 27 Aug 2025 06:35:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85E2CF8057F;
-	Wed, 27 Aug 2025 03:34:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D373EF805C7;
+	Wed, 27 Aug 2025 06:35:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC971F80495; Wed, 27 Aug 2025 03:34:24 +0200 (CEST)
-Received: from irl.hu (irl.hu [95.85.9.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 96A7DF80495; Wed, 27 Aug 2025 06:34:26 +0200 (CEST)
+Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id E25EAF80072
-	for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2025 03:34:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E25EAF80072
-Received: from [192.168.2.4] (51b68eac.dsl.pool.telekom.hu
- [::ffff:81.182.142.172])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000088D34.0000000068AE609C.00233DD6;
- Wed, 27 Aug 2025 03:34:20 +0200
-Message-ID: <8187d109eb70f6d459df63f3507a0be79efd9aa9.camel@irl.hu>
-Subject: Re: [PATCH v2] ALSA: hda/tas2781: Fix EFI name for calibration
- beginning with 1 instead of 0
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, tiwai@suse.de
-Cc: broonie@kernel.org, andriy.shevchenko@linux.intel.com,
-  13564923607@139.com, 13916275206@139.com,
-  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-  baojun.xu@ti.com, Baojun.Xu@fpt.com, jesse-ji@ti.com
-Date: Wed, 27 Aug 2025 03:34:19 +0200
-In-Reply-To: <20250826094105.1325-1-shenghao-ding@ti.com>
-References: <20250826094105.1325-1-shenghao-ding@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
+	by alsa1.perex.cz (Postfix) with ESMTPS id 35888F800DF
+	for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2025 06:34:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35888F800DF
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=ut96wx9A
+Received: from fllvem-sh03.itg.ti.com ([10.64.41.86])
+	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57R4YDq41200925;
+	Tue, 26 Aug 2025 23:34:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1756269253;
+	bh=onUPctksx9v/T9fvKGxi3HtsF9f2imEu14eR2p3XkFc=;
+	h=From:To:CC:Subject:Date;
+	b=ut96wx9A473TuRqqNBG65MitpI0YYiuShzfK6RlQxrdiURnOpdQLH4vjYI7DynHmO
+	 3eEQqMEI2oyPEH14Kk0/p69rnQ8vGTGiYILTEU03wPKXY2cNcJafglwii3lYIPJbtA
+	 UGmw0D64l2gTeO00jQGeht4y4130oSKOVG2RUPJs=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by fllvem-sh03.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57R4YCG72192944
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Tue, 26 Aug 2025 23:34:12 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Tue, 26
+ Aug 2025 23:34:11 -0500
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Tue, 26 Aug 2025 23:34:11 -0500
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.161.79])
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57R4Y8S92555052;
+	Tue, 26 Aug 2025 23:34:08 -0500
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <tiwai@suse.de>
+CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <13564923607@139.com>, <13916275206@139.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <baojun.xu@ti.com>, <Baojun.Xu@fpt.com>, <jesse-ji@ti.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v3] ALSA: hda/tas2781: Fix EFI name for calibration beginning
+ with 1 instead of 0
+Date: Wed, 27 Aug 2025 12:34:03 +0800
+Message-ID: <20250827043404.644-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-Message-ID-Hash: XOVS3G3JOFXXT67KW22NBGU7NYNWSOFL
-X-Message-ID-Hash: XOVS3G3JOFXXT67KW22NBGU7NYNWSOFL
-X-MailFrom: soyer@irl.hu
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Message-ID-Hash: 6RIDC3QAW6NUB2GL644R52O2723EH3U3
+X-Message-ID-Hash: 6RIDC3QAW6NUB2GL644R52O2723EH3U3
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -73,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XOVS3G3JOFXXT67KW22NBGU7NYNWSOFL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6RIDC3QAW6NUB2GL644R52O2723EH3U3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,64 +102,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Shenghao,
+A bug reported by one of my customers that EFI name beginning with 0
+instead of 1.
 
-On Tue, 2025-08-26 at 17:41 +0800, Shenghao Ding wrote:
-> A bug reported by one of my customers that EFI name beginning with 0
-> instead of 1.
->=20
-> Fixes: 4fe238513407 ("ALSA: hda/tas2781: Move and unified the calibrated-=
-data getting function for SPI and I2C into the tas2781_hda lib")
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
->=20
-> ---
-> v2:
->  - remove unrelated change
-> v1:
->  - Fix EFI name beginning with 1 instead of 0
->  - Add extra comments on EFI name for calibration
->  - Remove an extra space
-> ---
->  sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/c=
-odecs/side-codecs/tas2781_hda_i2c.c
-> index ed7771ab9475..635cbd8820ac 100644
-> --- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-> +++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-> @@ -340,7 +340,8 @@ static int tas2563_save_calibration(struct tas2781_hd=
-a *h)
->  		data[offset] =3D i;
->  		offset++;
->  		for (j =3D 0; j < TASDEV_CALIB_N; ++j) {
-> -			ret =3D snprintf(var8, sizeof(var8), vars[j], i);
-> +			/* EFI name for calibration started with 1, not 0 */
-> +			ret =3D snprintf(var8, sizeof(var8), vars[j], i + 1);
-> =20
->  			if (ret < 0 || ret >=3D sizeof(var8) - 1) {
->  				dev_err(p->dev, "%s: Read %s failed\n",
-> @@ -349,7 +350,7 @@ static int tas2563_save_calibration(struct tas2781_hd=
-a *h)
->  			}
->  			/*
->  			 * Our variable names are ASCII by construction, but
-> -			 * EFI names are wide chars.  Convert and zero-pad.
-> +			 * EFI names are wide chars. Convert and zero-pad.
->  			 */
->  			memset(efi_name, 0, sizeof(efi_name));
->  			for (k =3D 0; k < sizeof(var8) && var8[k]; k++)
+Fixes: 4fe238513407 ("ALSA: hda/tas2781: Move and unified the calibrated-data getting function for SPI and I2C into the tas2781_hda lib")
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-In the tas2563_save_calibration() function the variables are read in
-the following order: R0, InvR0, R0_Low, Power, TLim.
-They are also included in cali_data in this order.
+---
+v3:
+ - remove unrelated change
+v1:
+ - Fix EFI name beginning with 1 instead of 0
+ - Add extra comments on EFI name for calibration
+---
+ sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-But the tasdev_load_calibrated_data() function reads them from
-cali_data as R0, R0_Low, InvR0, Power, TLim.
+diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
+index ed7771ab9475..dbd71e173119 100644
+--- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
++++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
+@@ -340,8 +340,8 @@ static int tas2563_save_calibration(struct tas2781_hda *h)
+ 		data[offset] = i;
+ 		offset++;
+ 		for (j = 0; j < TASDEV_CALIB_N; ++j) {
+-			ret = snprintf(var8, sizeof(var8), vars[j], i);
+-
++			/* EFI name for calibration started with 1, not 0 */
++			ret = snprintf(var8, sizeof(var8), vars[j], i + 1);
+ 			if (ret < 0 || ret >= sizeof(var8) - 1) {
+ 				dev_err(p->dev, "%s: Read %s failed\n",
+ 					__func__, var8);
+-- 
+2.43.0
 
-And this may be true for tas2781 as well.
-
-Could you check this also?
-
-Thanks,
-Gergo
