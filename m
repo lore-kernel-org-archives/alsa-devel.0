@@ -4,82 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B931BC8303F
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Aug 2025 07:44:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66BD1CA0FF0
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Aug 2025 09:10:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 075E46029F;
-	Fri, 29 Aug 2025 09:44:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 075E46029F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23EE5602C1;
+	Fri, 29 Aug 2025 11:10:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23EE5602C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1756453491;
-	bh=UK2uW67ec5x+08v6vV2jlWqCPKcZr8vv4roBxG38sHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=rhCWgtNSzDtoCLL5S9EydYFEnRr7y5iJGr5ipVYFDSegtlXSDZLBA+aM8ew4NtJnh
-	 7NEbfFBAmQh63m/Q4ITLTS+G9E38XzcU9hjVQDrcwiL2L0VAsE3XIr79WjtX2wxzTu
-	 KFHw0eCG++lYAI6SaDmkTv8GdKlc/qWGgsp6QNyU=
+	s=default; t=1756458631;
+	bh=gp0NkXAwsaMNEVMt9E7wsKeDRKCegVjSnZ5p9RsWRWc=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=VWaN54IDco2GKTOs6WuSqNcqFY38Q/0QrGg2MkZK2gd1idpPcTI4q5sMhZdWwaoh4
+	 OqyUiCt7zVBGn6h2R+68Kya6Ep3+QBCdfwFRKm5+vI0LUfBDghQFdntYXbVYe4aJ6z
+	 JBb6QZTjsFEhCnDbSKNO/cjb2WnaGLN0b7eyQeRc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4CAE4F805C3; Fri, 29 Aug 2025 09:44:27 +0200 (CEST)
+	id F090EF80185; Fri, 29 Aug 2025 11:09:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B85B3F805CB;
-	Fri, 29 Aug 2025 09:44:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79352F805BE;
+	Fri, 29 Aug 2025 11:09:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DF37F80171; Fri, 29 Aug 2025 09:43:40 +0200 (CEST)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	id 9EB8CF80171; Fri, 29 Aug 2025 11:09:48 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81DADF80149
-	for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2025 09:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81DADF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 47FCCF80072
+	for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2025 11:09:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47FCCF80072
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=NvfiFxAY
+ header.s=k20201202 header.b=ftCtH7MH
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 578E944AFB;
-	Fri, 29 Aug 2025 07:43:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92DD7C4CEF0;
-	Fri, 29 Aug 2025 07:43:32 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id C9B4F60051;
+	Fri, 29 Aug 2025 09:09:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAC4DC4CEF0;
+	Fri, 29 Aug 2025 09:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756453413;
-	bh=UK2uW67ec5x+08v6vV2jlWqCPKcZr8vv4roBxG38sHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NvfiFxAYJ7gJJr1nu2uBXoz8U6xai4fMXhrg3dEmLBMVEOQoB6cW3wn5loGt4Qshd
-	 6bWokTKBP4rPg7MtN9FpXLwasYeTPN47LIhv8Fq6vxwCifTxj1/1SK1RvCUSArLq91
-	 0rxOHkKL4FG7FCqYwz0qbw+WG7zfePy3um0+POPsmbNMG7Yjzg6CyY7l3Fhwxpir8I
-	 fYPX18UOLiIPNwQKkVTHtY2jXaPsBQERnV8PZK3cDjvSwiDSuFGR3GCpCZUWdCZEM4
-	 5dvqQvwnV/Twy+m0AnrwwqGGB2URxnDt3dqBaNxVOyodeuGAv3/JbbsF5tEr32C/ec
-	 EWl0YbIXEoc9w==
-Date: Fri, 29 Aug 2025 09:43:30 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: broonie@kernel.org, tiwai@suse.de, andriy.shevchenko@linux.intel.com,
-	13916275206@139.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- lgirdwood@gmail.com,
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, k-yi@ti.com, henry.lo@ti.com, robinchen@ti.com,
- jesse-ji@ti.com,
-	will-wang@ti.com, jim.shil@goertek.com, toastcheng@google.com,
-	chinkaiting@google.com
-Subject: Re: [PATCH v3 2/2] ASoC: tas2781: Add tas2118, tas2x20, tas5825
- support
-Message-ID: <20250829-turquoise-jackdaw-of-joy-cc91fc@kuoka>
-References: <20250825034039.9713-1-baojun.xu@ti.com>
- <20250825034039.9713-2-baojun.xu@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250825034039.9713-2-baojun.xu@ti.com>
-Message-ID-Hash: HFMTKTT42OVSPDVH6TNL5QL2WPHEP65Q
-X-Message-ID-Hash: HFMTKTT42OVSPDVH6TNL5QL2WPHEP65Q
-X-MailFrom: krzk@kernel.org
+	s=k20201202; t=1756458583;
+	bh=gp0NkXAwsaMNEVMt9E7wsKeDRKCegVjSnZ5p9RsWRWc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ftCtH7MHq2jfFxHFtxnzWKrOjDwMCfRFzPFsfwgGoBF0JhaC8q2h41L/VD45tFEag
+	 hhIfFYnqUEgzHKvV8hxtxyN83SFFORxElC4PJGa1YAIfXMhaSBpbMTEwysXlP50W39
+	 eJm5SmgBwtqrbQeN7W0U5bogdShcvIaM8c3bzVToaI7ENj466o+0rEPJaT/8yvwvNt
+	 mJt7k/FItQcMEVmSCX/BkRszV0hlj1gbY50d3uSh090DfaarFXTqt0XUIcfzjwK6eT
+	 YaVAsXL5Mn36Z4kIe/31kucGRx7a/3uqdeFLdsuNB0igJl06cZUa//tn1uRim/CCbe
+	 4Z7DqwQ7CxhVw==
+Message-ID: <b8dbfe9e97c69e8307375219e714c823@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v6.17-rc3
+Date: Fri, 29 Aug 2025 11:09:33 +0200
+Message-ID-Hash: HWDMX7S6XXGYABH65VWFC7ZYAGO3EWDE
+X-Message-ID-Hash: HWDMX7S6XXGYABH65VWFC7ZYAGO3EWDE
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HFMTKTT42OVSPDVH6TNL5QL2WPHEP65Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HWDMX7S6XXGYABH65VWFC7ZYAGO3EWDE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,35 +85,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Aug 25, 2025 at 11:40:39AM +0800, Baojun Xu wrote:
->  allOf:
->    - $ref: dai-common.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,tas2020
-> +              - ti,tas2118
-> +              - ti,tas2120
-> +              - ti,tas2320
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address, in multiple-AMP case, all the i2c address
-> +            aggregate as one Audio Device to support multiple audio slots.
+The following changes since commit 1b237f190eb3d36f52dffe07a40b5eb210280e00:
 
-I don't think you resolved Rob's comment.
+  Linux 6.17-rc3 (2025-08-24 12:04:12 -0400)
 
-> +          maxItems: 4
-> +          items:
-> +            minimum: 0x48
-> +            maximum: 0x4b
+are available in the Git repository at:
 
-Also, fix finally order of patches so docs go before the user (see
-submitting patches in DT dir).
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.17-rc3
 
-Best regards,
-Krzysztof
+for you to fetch changes up to 3e7fd1febc3156d3d98fba229399a13b12d69707:
 
+  ASoC: SOF: Intel: WCL: Add the sdw_process_wakeen op (2025-08-28 21:15:49 +0200)
+
+----------------------------------------------------------------
+ASoC: Fixes for v6.17
+
+The main fixes here are for some of the cleanups done in the core in
+this release, we had broken component lookup in the case with a single
+bus and DMA controller.  Otherwise it's driver specific changes, the
+shortlogs for the Intel WCL and rsnd drivers look like minor cleanups
+but are actually bugfixes (adding an op needed for correct functionality
+and reverting an inappropriate helper usage).
+
+----------------------------------------------------------------
+Ajye Huang (1):
+      ASoC: SOF: Intel: WCL: Add the sdw_process_wakeen op
+
+Cryolitia PukNgae (1):
+      ASoC: codecs: idt821034: fix wrong log in idt821034_chip_direction_output()
+
+Kuninori Morimoto (3):
+      ASoC: soc-core: care NULL dirver name on snd_soc_lookup_component_nolocked()
+      ASoC: soc-core: tidyup snd_soc_lookup_component_nolocked()
+      ASoC: rsnd: tidyup direction name on rsnd_dai_connect()
+
+Mark Brown (1):
+      ASoC: fixup snd_soc_lookup_component_nolocked()
+
+ sound/soc/codecs/idt821034.c  |  2 +-
+ sound/soc/renesas/rcar/core.c |  2 +-
+ sound/soc/soc-core.c          | 25 +++++++++++++++----------
+ sound/soc/sof/intel/ptl.c     |  1 +
+ 4 files changed, 18 insertions(+), 12 deletions(-)
