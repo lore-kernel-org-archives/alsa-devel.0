@@ -4,65 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20D9BCA0FF9
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Aug 2025 16:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9105DCA0FFE
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Aug 2025 07:44:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D21B6602B3;
-	Fri, 29 Aug 2025 18:07:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D21B6602B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE1F1602D8;
+	Sat, 30 Aug 2025 09:43:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE1F1602D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1756483638;
-	bh=VmJBa+4m+0rUZPWAD3Gyee+a7V7U9qElmS6Q6lZRMq0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1756539839;
+	bh=h3XcFgrNF8Sgup5YIQEI/aLE9bPnfguKvj4TjQMUQac=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SBcFMmCQNHDUMS7vTe9riBiC++vB47BmvS+yXdg+zN5MZo1c6xrqt/Pl7v5DohHDb
-	 7GbbJiePLWakEI1o+Jm0VCkAIo57ludmAXZUVmxif0vHEBSvKihbLjeVvFIfGcHZMj
-	 DO897Fyc5fTJWet6kuz4c17xE1hQI2gl/rFEBNM4=
+	b=jtmbyRMrxK79370s3Td3mcIsaQXsU++4VwDXmEhT9DGF7cnyLxUXZKNEX9yxHk002
+	 233SB3WXSZhmKp4sGOfIZLMJsatkPBmz9i57DSzASbs3P4fq8yEjysxUOS2QysvwlG
+	 lxE3IptVt1GH7k/h64KUtThGCYN8z6PCVrwo9eIU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C46DDF805F1; Fri, 29 Aug 2025 18:06:39 +0200 (CEST)
+	id 7FF24F805D3; Sat, 30 Aug 2025 09:43:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F12FF805EF;
-	Fri, 29 Aug 2025 18:06:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 240DAF805CB;
+	Sat, 30 Aug 2025 09:43:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD1E0F80171; Fri, 29 Aug 2025 18:06:10 +0200 (CEST)
-Received: from irl.hu (irl.hu [95.85.9.111])
+	id 9F98AF8027B; Sat, 30 Aug 2025 09:42:10 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id E96FDF800B8
-	for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2025 18:06:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E96FDF800B8
-Received: from fedori.lan (51b694d5.dsl.pool.telekom.hu
- [::ffff:81.182.148.213])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000088D59.0000000068B1CFED.0023A914;
- Fri, 29 Aug 2025 18:06:04 +0200
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-  alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>,
-  stable@vger.kernel.org
-Subject: [PATCH 2/2] ALSA: hda: tas2781: reorder tas2563 calibration variables
-Date: Fri, 29 Aug 2025 18:04:50 +0200
-Message-ID: <20250829160450.66623-2-soyer@irl.hu>
-X-Mailer: git-send-email 2.51.0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 11629F80134
+	for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2025 09:42:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11629F80134
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Zt61LiXM;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=V/OZoirX;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Zt61LiXM;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=V/OZoirX
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8CA18336BE;
+	Sat, 30 Aug 2025 07:42:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1756539725;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oPJMcdjKXkKG89xb2emN+RVyypynR6wa9yGi5gvh1Fc=;
+	b=Zt61LiXMPjqbd743gCjs8wn2xudd2/dl+D+MzlNAY+bsHIRYaGOhb/cEF6diQudpLooZ4N
+	iRkZZLk5SJGRFtcuYIxanahqR9Zdqv2PNMhLU+yYXthfud3yGxtR0+bsA8EdLxwbK4MmrQ
+	5Stbm4h4K9oQU86vkpxnYiGocyByIlg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756539725;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oPJMcdjKXkKG89xb2emN+RVyypynR6wa9yGi5gvh1Fc=;
+	b=V/OZoirXzHPCISSwrbIwlQGloB3A4w0JPWOnKzX4JI7oYcE0b5hu7Jp+8wX3swlejyEFqZ
+	VaAjCbI66jE1Q0Bg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1756539725;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oPJMcdjKXkKG89xb2emN+RVyypynR6wa9yGi5gvh1Fc=;
+	b=Zt61LiXMPjqbd743gCjs8wn2xudd2/dl+D+MzlNAY+bsHIRYaGOhb/cEF6diQudpLooZ4N
+	iRkZZLk5SJGRFtcuYIxanahqR9Zdqv2PNMhLU+yYXthfud3yGxtR0+bsA8EdLxwbK4MmrQ
+	5Stbm4h4K9oQU86vkpxnYiGocyByIlg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756539725;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oPJMcdjKXkKG89xb2emN+RVyypynR6wa9yGi5gvh1Fc=;
+	b=V/OZoirXzHPCISSwrbIwlQGloB3A4w0JPWOnKzX4JI7oYcE0b5hu7Jp+8wX3swlejyEFqZ
+	VaAjCbI66jE1Q0Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 444A4139B1;
+	Sat, 30 Aug 2025 07:42:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wQgTD02rsmg4HQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 30 Aug 2025 07:42:05 +0000
+Date: Sat, 30 Aug 2025 09:42:04 +0200
+Message-ID: <87tt1pfe7n.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Gergo Koteles <soyer@irl.hu>
+Cc: Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] ALSA: hda: tas2781: fix tas2563 EFI data endianness
 In-Reply-To: <20250829160450.66623-1-soyer@irl.hu>
 References: <20250829160450.66623-1-soyer@irl.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: EBVMOEFLUQ5S4UDC5HOPU2IJ3NMR7ZVY
-X-Message-ID-Hash: EBVMOEFLUQ5S4UDC5HOPU2IJ3NMR7ZVY
-X-MailFrom: soyer@irl.hu
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid]
+Message-ID-Hash: EFK43HBHROLAEOD26CNYZUAO6E4DIJJE
+X-Message-ID-Hash: EFK43HBHROLAEOD26CNYZUAO6E4DIJJE
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -74,7 +155,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EBVMOEFLUQ5S4UDC5HOPU2IJ3NMR7ZVY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EFK43HBHROLAEOD26CNYZUAO6E4DIJJE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,33 +164,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The tasdev_load_calibrated_data() function expects the calibration data
-values in the cali_data buffer as R0, R0Low, InvR0, Power, TLim which
-is not the same as what tas2563_save_calibration() writes to the buffer.
+On Fri, 29 Aug 2025 18:04:49 +0200,
+Gergo Koteles wrote:
+> 
+> Before conversion to unify the calibration data management, the
+> tas2563_apply_calib() function performed the big endian conversion and
+> wrote the calibration data to the device. The writing is now done by the
+> common tasdev_load_calibrated_data() function, but without conversion.
+> 
+> Put the values into the calibration data buffer with the expected
+> endianness.
+> 
+> Fixes: 4fe238513407 ("ALSA: hda/tas2781: Move and unified the calibrated-data getting function for SPI and I2C into the tas2781_hda lib")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
 
-Reorder the EFI variables in the tas2563_save_calibration() function
-to put the values in the buffer in the correct order.
+Applied both patches now.
 
-Fixes: 4fe238513407 ("ALSA: hda/tas2781: Move and unified the calibrated-data getting function for SPI and I2C into the tas2781_hda lib")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-index 1eac751ab2a6..83eb19bb9bce 100644
---- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-+++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-@@ -300,7 +300,7 @@ static int tas2563_save_calibration(struct tas2781_hda *h)
- {
- 	efi_guid_t efi_guid = tasdev_fct_efi_guid[LENOVO];
- 	char *vars[TASDEV_CALIB_N] = {
--		"R0_%d", "InvR0_%d", "R0_Low_%d", "Power_%d", "TLim_%d"
-+		"R0_%d", "R0_Low_%d", "InvR0_%d", "Power_%d", "TLim_%d"
- 	};
- 	efi_char16_t efi_name[TAS2563_CAL_VAR_NAME_MAX];
- 	unsigned long max_size = TAS2563_CAL_DATA_SIZE;
--- 
-2.51.0
+thanks,
 
+Takashi
