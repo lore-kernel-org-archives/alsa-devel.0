@@ -4,84 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD1D7CA0FF2
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Aug 2025 12:44:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE896CA0FFD
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Sep 2025 06:19:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97EE160207;
-	Sun, 31 Aug 2025 14:44:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97EE160207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C346601E8;
+	Mon,  1 Sep 2025 08:18:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C346601E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1756644276;
-	bh=iIAKHof11fAVYhzQAKE53fSrCBZGSQf+qWtF0xf2WjE=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=FZ2EyfxRuetyv++nrC+fOt+Z7CsgLU/uDZ9F5+k4RlBSlFpxtjln0og+8V8llRDg+
-	 KmmjNq4FQx64rD4Qfz7renRhgXgB+NuoO13efZ2RdUDOW9H7ymyNpphJsb6Q/+dayF
-	 TTI77vk/46otXETuubSioA3hTxFf7dgjGWrGsDIs=
+	s=default; t=1756707542;
+	bh=EL5EUGq8LjnKRlfCJg4tsx/HSlRVDTMR+MzapSY6WBc=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Rik1VTAQxKWCGYJQwpypVbEE93Jmu0M4Y4FRMyj7gUf4O0MqTXDk5Vm2NIJ9Nmo2N
+	 vZnXuN4YgB57OkmbkCQkfQmI/tvnH74syOK0fnaa7HA7UqNdjoeOTg3u+dKwdMWiJu
+	 mJBzvNd3LljqOL6yoyPrUssYVqKXf3HRbzBzSbys=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85285F805BF; Sun, 31 Aug 2025 14:44:02 +0200 (CEST)
+	id 3C17DF805CA; Mon,  1 Sep 2025 08:18:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9667DF805CA;
-	Sun, 31 Aug 2025 14:44:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D0EAF805CB;
+	Mon,  1 Sep 2025 08:18:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9698FF8049C; Sun, 31 Aug 2025 14:43:36 +0200 (CEST)
-Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 73E04F804FF; Mon,  1 Sep 2025 08:18:11 +0200 (CEST)
+Received: from irl.hu (irl.hu [95.85.9.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4C7E8F802DB
-	for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2025 14:43:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C7E8F802DB
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=fsTmnzJN
-Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
-	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 57VChMbH2569465;
-	Sun, 31 Aug 2025 07:43:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1756644202;
-	bh=D8jZXZ3zxLtPtXA8pqoacFTvxgd1XyL1X0N76RV+LCA=;
-	h=From:To:CC:Subject:Date;
-	b=fsTmnzJNnenR/iZQaBIFL936KwNPO4e05Qkxb3q8XosSB8XxdNTxa9t3A3NqTSQUP
-	 uV5GUIm1lgMIypocI9JgJjHo7EgsqDwqPMvSHrYJW7tcoAINWuk4+pNR0qaQqhFqU4
-	 v98ruHKV/y7y41suQSNISfTDDcvX0vivBGemvSYE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 57VChMKG1388187
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Sun, 31 Aug 2025 07:43:22 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Sun, 31
- Aug 2025 07:43:21 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
- Frontend Transport; Sun, 31 Aug 2025 07:43:21 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.161.79])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 57VChHpU665680;
-	Sun, 31 Aug 2025 07:43:18 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <13564923607@139.com>, <13916275206@139.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <baojun.xu@ti.com>, <Baojun.Xu@fpt.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v1] ALSA: hda/tas2781: Fix the order of TAS2563
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id CD5CDF80027
+	for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2025 08:18:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD5CDF80027
+Received: from [192.168.2.4] (51b694d5.dsl.pool.telekom.hu
+ [::ffff:81.182.148.213])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000088D4E.0000000068B53A9F.002405C5;
+ Mon, 01 Sep 2025 08:18:07 +0200
+Message-ID: <3afb62060097eeafbf9faed33654f7f6612596f4.camel@irl.hu>
+Subject: Re: [PATCH v1] ALSA: hda/tas2781: Fix the order of TAS2563
  calibrated-data
-Date: Sun, 31 Aug 2025 20:43:13 +0800
-Message-ID: <20250831124313.438-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+From: Gergo Koteles <soyer@irl.hu>
+To: Shenghao Ding <shenghao-ding@ti.com>, tiwai@suse.de
+Cc: broonie@kernel.org, andriy.shevchenko@linux.intel.com,
+  13564923607@139.com, 13916275206@139.com,
+  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+  baojun.xu@ti.com, Baojun.Xu@fpt.com
+Date: Mon, 01 Sep 2025 08:18:06 +0200
+In-Reply-To: <20250831124313.438-1-shenghao-ding@ti.com>
+References: <20250831124313.438-1-shenghao-ding@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 (3.56.2-1.fc42) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Message-ID-Hash: WXXGBF7DVHPZ3NWGEXRDXN4XQ3BPHC6Q
-X-Message-ID-Hash: WXXGBF7DVHPZ3NWGEXRDXN4XQ3BPHC6Q
-X-MailFrom: shenghao-ding@ti.com
+Message-ID-Hash: 4GJAUWCSCS55HCIOG6RRQ2ZYFGKSG3MI
+X-Message-ID-Hash: 4GJAUWCSCS55HCIOG6RRQ2ZYFGKSG3MI
+X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +73,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WXXGBF7DVHPZ3NWGEXRDXN4XQ3BPHC6Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4GJAUWCSCS55HCIOG6RRQ2ZYFGKSG3MI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,29 +82,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A bug reported by one of my customers that the order of TAS2563
-calibrated-data is incorrect, the correct way is to move R0_Low_%d
-and insert it between R0_%d and InvR0_%d.
+Hi Shenghao,
 
-Fixes: 4fe238513407 ("ALSA: hda/tas2781: Move and unified the calibrated-data getting function for SPI and I2C into the tas2781_hda lib")
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
----
- sound/hda/codecs/side-codecs/tas2781_hda_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, 2025-08-31 at 20:43 +0800, Shenghao Ding wrote:
+> A bug reported by one of my customers that the order of TAS2563
+> calibrated-data is incorrect, the correct way is to move R0_Low_%d
+> and insert it between R0_%d and InvR0_%d.
+>=20
 
-diff --git a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-index dbd71e173119..853ff5d87966 100644
---- a/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-+++ b/sound/hda/codecs/side-codecs/tas2781_hda_i2c.c
-@@ -313,7 +313,7 @@ static int tas2563_save_calibration(struct tas2781_hda *h)
- {
- 	efi_guid_t efi_guid = tasdev_fct_efi_guid[LENOVO];
- 	char *vars[TASDEV_CALIB_N] = {
--		"R0_%d", "InvR0_%d", "R0_Low_%d", "Power_%d", "TLim_%d"
-+		"R0_%d", "R0_Low_%d", "InvR0_%d", "Power_%d", "TLim_%d"
- 	};
- 	efi_char16_t efi_name[TAS2563_CAL_VAR_NAME_MAX];
- 	unsigned long max_size = TAS2563_CAL_DATA_SIZE;
--- 
-2.43.0
+A similar fix is =E2=80=8B=E2=80=8Balready in Takashi's tree for tas2563.
+https://lore.kernel.org/all/20250829160450.66623-1-soyer@irl.hu/
 
+But I think, tas2781 also needs one for the order and one for the
+endianness.
+I left it out because it's easier for you with documentation.
+
+Gergo
