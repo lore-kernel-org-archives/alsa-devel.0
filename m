@@ -4,111 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B602CAC583
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAA24CA0FED
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:12:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25B9F60226;
-	Tue,  9 Sep 2025 14:11:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25B9F60226
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4908C60243;
+	Tue,  9 Sep 2025 14:11:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4908C60243
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1757419908;
-	bh=xDgRCiKniaebTiq7rNP8KOVfb8jibs9ht16PEIBWK3A=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=X24RPRMoHsYvgC2gaz7pZRTY+PyAs0xuVDlb0LtJOmhZNB4lumkDd7iJkpmsD261q
-	 SJdPykOEuiPtUjzAuAg69VNLRhVUpxSeqWyA/FpMFEz6mGuCOtdsGm9p105p8loXKa
-	 ji05c6UQ3Je6L7vzEdk+YP0cQLawB+q9N+nNTlGk=
+	s=default; t=1757419918;
+	bh=4YC1ZMMV6Lq5kzbNv13iGfvu2KvYB5U9Arr8CARbmbQ=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=fg1SR/w/LnsvzIiBPc9oZcYkhWn2DTUaN3cSPcSGkqmYaoZdaNsDeHbwUqpwdAiel
+	 5BrjFwSk7Gzmu1PzfA+Mb0kCBec4BK88YBh326OWKDuLFAnQDqok9+8egIU38S7HXP
+	 hhERyL02CI01kQ+ofzJFMZFlJPp1lY/iD2ulLbzg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 615BCF80613; Tue,  9 Sep 2025 14:10:41 +0200 (CEST)
+	id 08653F805D8; Tue,  9 Sep 2025 14:11:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4ECB4F80620;
-	Tue,  9 Sep 2025 14:10:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 739BBF805D6;
+	Tue,  9 Sep 2025 14:11:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DCEA3F8027B; Sat, 30 Aug 2025 09:01:54 +0200 (CEST)
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com
- [209.85.216.46])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 4439BF80518; Mon,  1 Sep 2025 07:12:14 +0200 (CEST)
+Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7438FF80134
-	for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2025 09:01:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7438FF80134
+	by alsa1.perex.cz (Postfix) with ESMTPS id 968BFF8042F
+	for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2025 07:12:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 968BFF8042F
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=cfGxz7mg
-Received: by mail-pj1-f46.google.com with SMTP id
- 98e67ed59e1d1-3280264a6e8so709168a91.3
-        for <alsa-devel@alsa-project.org>;
- Sat, 30 Aug 2025 00:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756537310; x=1757142110;
- darn=alsa-project.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DUEw253wvzPX1uxeJuCosw4/ZlysOTpWbyGZ+cXPuaU=;
-        b=cfGxz7mgEqOTUO4LM3k4YL8pGOLFLsNdffyl1dWvqCHmuinzGr0sppxd5YlYB8xYuU
-         AbvhaD/cjQldoUP/uXLqfjXN/6RDBIfia9T5grBFfnzW1XrvdG2gi3DPnKzWBrXgFQBM
-         kvQqwgda3FtPHDukvL1rJ2ssjROl5ivieAUxSGCSeynGNbTlhje0V4vLunM2GVx0km9i
-         M+/vkOK662QvFEGtMifdSXmSpD6lCcfNQo85rlg8klHLXl1+dC8UdvhNn/rDSK3QST0v
-         oeeEmIw6KVkBkISFjluOV38BhmjZ3kug6jXhEkuwFZCtytGIWfka/nsyip62ihYvr9Fk
-         q7HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756537310; x=1757142110;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DUEw253wvzPX1uxeJuCosw4/ZlysOTpWbyGZ+cXPuaU=;
-        b=snJUZnnhiNw0pZCGYO7fhGP21OfYN4LHR06iSC/IoGIkt4gaIEOhWxAXFx2lkyEo3I
-         H3TWyVQWpjglchCM/IOKuWC3j//XLYZl+V8yFZaJaradTppY7tQ+k+BJJdv6eQckJqHO
-         55nQSkz+CMOKHvSinC8SHP/1Di9DtfJnr5Qcaju/C1emFNOZybaGOoTPEkUlWEhHtsRd
-         ZY6A7ZS7sVfcRx2PIZcNL/p1Bn+83XJBaNIXcGuWtmnNqbcG+n6De0sIT2koyXctyIrZ
-         swKftlkXuKnx5r/E5FP89Pd47FCBwLGJaxsfRvh3K1DMdFVg1aa60n+2OosZXD5+XCVO
-         hvYg==
-X-Gm-Message-State: AOJu0YwqYR9HNgBbu+SOJNJAtEQO8xrmcpDaX0DTQ/0+SjXDTsK+MI+G
-	kB9WQpieg/DJFXeQ8fulUHPrHmnVyf1cspaqgKNxM8kOWGu3qda4rPwAbOgkiGpnT/Lv3Gcx0Oc
-	+DylpgeKjvSdIYljP7PRfSDjX30XxKgT6pj7Gpm1XcQ==
-X-Gm-Gg: ASbGncvxG8iVH9DOstWNrkOkEWgRg5zczBNpZK0oG34YoArp8KLJdY/S6bhHrrbuVcY
-	xN0XgR3nvy/gwEwkPVjRbhbNOAownIinKYfCZVTzKrjjscy0v8UPwRboPNnXSlMpeULDVIoEtDA
-	O459Vz2kvr2c5+JBmwu1d73ylsDZ0tPLkcecNT4+oZXXuWxBy0SDsz0t1uyXDsB9fw57FOAes8C
-	45ejQ==
-X-Google-Smtp-Source: 
- AGHT+IFUaUfMymi+z9MefJSuWIWIaETyvna8gbxVIm+CCtVJ60X3M+WhiKt63Ar8ng45dqUdtu0MyrZlzxJrh2maw/c=
-X-Received: by 2002:a17:90b:48c3:b0:327:f216:4360 with SMTP id
- 98e67ed59e1d1-3281541434dmr1827045a91.8.1756537309170; Sat, 30 Aug 2025
- 00:01:49 -0700 (PDT)
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=DEZ3mgEO
+Received: from lelvem-sh02.itg.ti.com ([10.180.78.226])
+	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTP id 5815C92V2730446;
+	Mon, 1 Sep 2025 00:12:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1756703529;
+	bh=hhq9HiK4sjO7H2AJb4GLBjxm+Rc9TTTtB+hKk8MyluY=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=DEZ3mgEO+t/8U1FW5Txn4ePxEx90nE3CMRDOkzKBLbYNat8rH1jYPv3+Seh/3aPqE
+	 D3aLq3Wjw87xocTWmfqLn/UJoODABmMyVRHWBfUBohPg0y3Ew5wNS9/ZL99Ri7PuNl
+	 HVghbOHdGd1C10YmsuZ9vWdzbWbzGJmuwo83PPrw=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by lelvem-sh02.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 5815C9Xf1868670
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
+	Mon, 1 Sep 2025 00:12:09 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 1
+ Sep 2025 00:12:08 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55 via
+ Frontend Transport; Mon, 1 Sep 2025 00:12:08 -0500
+Received: from LTPW0EX92E.dhcp.ti.com (ltpw0ex92e.dhcp.ti.com [10.82.30.14])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5815BvJA1628562;
+	Mon, 1 Sep 2025 00:12:04 -0500
+From: Niranjan H Y <niranjan.hy@ti.com>
+To: <alsa-devel@alsa-project.org>
+CC: <linux-sound@vger.kernel.org>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>,
+        <perex@perex.cz>, <tiwai@suse.com>, <yung-chuan.liao@linux.intel.com>,
+        <cezary.rojewski@intel.com>, <peter.ujfalusi@linux.intel.com>,
+        <ranjani.sridharan@linux.intel.com>, <kai.vehmanen@linux.intel.com>,
+        <pierre-louis.bossart@linux.dev>, <navada@ti.com>,
+        <shenghao-ding@ti.com>, <v-hampiholi@ti.com>, <baojun.xu@ti.com>,
+        Niranjan H Y <niranjan.hy@ti.com>
+Subject: [PATCH v2 2/4] ASoc: tas2783A: machine driver amp utility for TI
+ devices
+Date: Mon, 1 Sep 2025 10:41:41 +0530
+Message-ID: <20250901051144.1112-2-niranjan.hy@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
+In-Reply-To: <20250901051144.1112-1-niranjan.hy@ti.com>
+References: <20250901051144.1112-1-niranjan.hy@ti.com>
 MIME-Version: 1.0
-From: =?UTF-8?B?0JjQu9GM0Y8g0JrRg9C30L3QtdGG0L7Qsg==?=
- <zloy.technic@gmail.com>
-Date: Sat, 30 Aug 2025 12:01:37 +0500
-X-Gm-Features: Ac12FXzM802hjTT5zj5Co3zgURFLwswrxTbNGdbKTnB-cQuCfIcAd7URRROyXBQ
-Message-ID: 
- <CAAnsHS6ve4+Zx5s63vCBtwUPF=FTHhTxPSjJTBcj6PkC=oyLYQ@mail.gmail.com>
-Subject: 
- =?UTF-8?Q?=5BBUG=5D_ALSA_FireWire=3A_poll_timeout_causes_JACK_to_sto?=
-	=?UTF-8?Q?p_=286=2E10_=E2=80=93_6=2E17=2Drc2=29?=
-To: alsa-devel@alsa-project.org
-X-MailFrom: zloy.technic@gmail.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+X-MailFrom: niranjan.hy@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: LMGC6GI646TNXZGEQNE4WAFXROQALLZK
-X-Message-ID-Hash: LMGC6GI646TNXZGEQNE4WAFXROQALLZK
-X-Mailman-Approved-At: Tue, 09 Sep 2025 12:10:17 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: I3GA3QLIW57SQLMJDY7EO4LDFTRGO4TZ
+X-Message-ID-Hash: I3GA3QLIW57SQLMJDY7EO4LDFTRGO4TZ
+X-Mailman-Approved-At: Tue, 09 Sep 2025 12:11:19 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LMGC6GI646TNXZGEQNE4WAFXROQALLZK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I3GA3QLIW57SQLMJDY7EO4LDFTRGO4TZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,42 +108,147 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQoNCkhlbGxvIEFMU0EgZGV2ZWxvcGVycywN
-Cg0KSSB3b3VsZCBsaWtlIHRvIHJlcG9ydCBhIHJlcHJvZHVjaWJsZSBpc3N1ZSB3aXRoICpzbmQt
-ZmlyZWZhY2UqIG9uIExpbnV4DQprZXJuZWxzIDYuMTAgdGhyb3VnaCA2LjE3LXJjMi4NCi0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KU3lzdGVtIEluZm9ybWF0aW9uDQoNCiAgIC0NCg0K
-ICAgKktlcm5lbCB2ZXJzaW9ucyB0ZXN0ZWQ6KiA2LjEwIOKGkiA2LjE3LXJjMg0KICAgLQ0KDQog
-ICAqQXVkaW8gaW50ZXJmYWNlOiogUk1FIEZpcmVmYWNlIDgwMA0KICAgLQ0KDQogICAqRHJpdmVy
-IGluIHVzZToqIHNuZC1maXJlZmFjZQ0KICAgLQ0KDQogICAqQXVkaW8gc2VydmVyOiogSkFDSyAo
-dGVzdGVkIHdpdGggamFja2QgYW5kIFFKYWNrQ3RsKQ0KICAgLQ0KDQogICAqRGlzdHJpYnV0aW9u
-OiogRGViaWFuIDEyDQogICAtDQoNCiAgICpLZXJuZWwgY29uZmlnOiogQUxTQSBGaXJlV2lyZSBk
-cml2ZXJzIGVuYWJsZWQsIG5vIEZGQURPIGluIHVzZQ0KICAgLSAqQ2hpcCAxMzk0OiAqVGV4YXMg
-SW5zdHJ1bWV0cw0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NClN0ZXBzIHRvIFJl
-cHJvZHVjZQ0KDQogICAxLg0KDQogICBCb290IGtlcm5lbCA2LjEwIOKApiA2LjE3LXJjMiB3aXRo
-IHNuZC1maXJlZmFjZSBsb2FkZWQuDQogICAyLg0KDQogICBTdGFydCBKQUNLIHdpdGggQUxTQSBi
-YWNrZW5kLCBmb3IgZXhhbXBsZToNCg0KICAgamFja2QgLWQgYWxzYSAtZCBodzpGaXJlZmFjZSAt
-cCA2NCAtbiAzDQoNCiAgIDMuIFVzZSB0aGUgc3lzdGVtIG5vcm1hbGx5IOKAlCBkdXJpbmcgcGxh
-eWJhY2ssIHJlY29yZGluZywgb3IgZXZlbiB3aGVuDQogICBpZGxlLiBUaGUgaXNzdWUgbWF5IG9j
-Y3VyIGF0IGFueSB0aW1lIHdpdGhvdXQgYXBwYXJlbnQgZXh0ZXJuYWwgY2F1c2UuDQoNCiAgIEFj
-dHVhbCBCZWhhdmlvcg0KDQogICBBZnRlciBzb21lIGlkbGUgdGltZSwgQUxTQSBzdG9wcyByZXNw
-b25kaW5nIGFuZCBKQUNLIHByaW50czoNCg0KICAgRVJST1I6IEFMU0E6IHBvbGwgdGltZSBvdXQs
-IHBvbGxlZCBmb3IgLi4uIHVzZWNzDQogICBFUlJPUjogSmFja0F1ZGlvRHJpdmVyOjpQcm9jZXNz
-QXN5bmM6IHJlYWQgZXJyb3IsIHN0b3BwaW5nLi4uDQoNCiAgIEpBQ0sgaW1tZWRpYXRlbHkgdGVy
-bWluYXRlcy4gVGhlIEZpcmVmYWNlIDgwMCBkb2VzIG5vdCByZWNvdmVyIHVudGlsDQogICBKQUNL
-IGlzIHJlc3RhcnRlZC4NCiAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KICAgRXhw
-ZWN0ZWQgQmVoYXZpb3INCg0KICAgVGhlIEFMU0EgRmlyZVdpcmUgZHJpdmVyIHNob3VsZCBtYWlu
-dGFpbiB0aGUgc3RyZWFtIGFuZCBhbGxvdyBKQUNLIHRvDQogICBjb250aW51ZSBydW5uaW5nIHdp
-dGhvdXQgbWFudWFsIHJlc3RhcnQsIGV2ZW4gd2hlbiBpZGxlLg0KICAgLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tDQogICBOb3Rlcw0KICAgNC4NCg0KICAgV2l0aCAqRkZBRE8qIGJhY2tl
-bmQgKGphY2tkIC1kIGZpcmV3aXJlKSwgdGhlIHNhbWUgaGFyZHdhcmUgd29ya3MNCiAgIHJlbGlh
-Ymx5IGFuZCBkb2VzIG5vdCBleGhpYml0IHRoaXMgaXNzdWUuDQogICA1Lg0KDQogICBUaGlzIHN1
-Z2dlc3RzIHRoYXQgdGhlIHByb2JsZW0gbGllcyBpbiB0aGUgQUxTQSBGaXJlV2lyZSBzdHJlYW1p
-bmcNCiAgIGVuZ2luZSByYXRoZXIgdGhhbiB0aGUgaGFyZHdhcmUgaXRzZWxmLg0KICAgNi4NCg0K
-ICAgVGhlIHByb2JsZW0gaGFzIGJlZW4gcmVwcm9kdWNpYmxlIGFjcm9zcyBhbGwgdGVzdGVkIGtl
-cm5lbHMgKHZhbmlsYSwgcnQsDQogICBsaXF1b3JpeCkgZnJvbSAqNi4xMCB0aHJvdWdoIDYuMTct
-cmMyKi4NCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpSZXF1ZXN0DQoNCkNvdWxk
-IHlvdSBwbGVhc2UgY29uZmlybSBpZiB0aGlzIGlzc3VlIGlzIGtub3duPw0KSXMgdGhlcmUgYW55
-IG9uZ29pbmcgd29yayBvbiB0aGUgQUxTQSBGaXJlV2lyZSBzdHJlYW1pbmcgZW5naW5lICgNCnNu
-ZC1maXJlZmFjZSkgdG8gYWRkcmVzcyB0aGVzZSBwb2xsIHRpbWVvdXQgY29uZGl0aW9ucz8NCg0K
-SSBjYW4gcHJvdmlkZSBhZGRpdGlvbmFsIGxvZ3MgKGRtZXNnLCBqb3VybmFsY3RsKSBvciB0ZXN0
-IHBhdGNoZXMgaWYgbmVlZGVkLg0KDQpUaGFuayB5b3UsDQoNCklseWEgS3V6bmV0c292Lg0K
+  Machine driver amp utility file to initialize and support
+multiple tas2783a devices are added.
+
+Signed-off-by: Niranjan H Y <niranjan.hy@ti.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ include/sound/soc_sdw_utils.h        |  8 +++
+ sound/soc/sdw_utils/Makefile         |  3 +-
+ sound/soc/sdw_utils/soc_sdw_ti_amp.c | 93 ++++++++++++++++++++++++++++
+ 3 files changed, 103 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/sdw_utils/soc_sdw_ti_amp.c
+
+diff --git a/include/sound/soc_sdw_utils.h b/include/sound/soc_sdw_utils.h
+index 6049a5d0cfcd..3c5e9b2af7f1 100644
+--- a/include/sound/soc_sdw_utils.h
++++ b/include/sound/soc_sdw_utils.h
+@@ -248,5 +248,13 @@ int asoc_sdw_cs42l43_spk_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_so
+ int asoc_sdw_cs42l43_dmic_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *dai);
+ int asoc_sdw_cs_spk_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *dai);
+ int asoc_sdw_maxim_spk_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *dai);
++/* TI */
++int asoc_sdw_ti_amp_init(struct snd_soc_card *card,
++			 struct snd_soc_dai_link *dai_links,
++			 struct asoc_sdw_codec_info *info,
++			 bool playback);
++int asoc_sdw_ti_spk_rtd_init(struct snd_soc_pcm_runtime *rtd, struct snd_soc_dai *dai);
++int asoc_sdw_ti_amp_initial_settings(struct snd_soc_card *card,
++				     const char *name_prefix);
+ 
+ #endif
+diff --git a/sound/soc/sdw_utils/Makefile b/sound/soc/sdw_utils/Makefile
+index daf019113553..a87c53e1a2c1 100644
+--- a/sound/soc/sdw_utils/Makefile
++++ b/sound/soc/sdw_utils/Makefile
+@@ -6,5 +6,6 @@ snd-soc-sdw-utils-y := soc_sdw_utils.o soc_sdw_dmic.o soc_sdw_rt_dmic.o \
+ 		       soc_sdw_bridge_cs35l56.o 			\
+ 		       soc_sdw_cs42l42.o soc_sdw_cs42l43.o 		\
+ 		       soc_sdw_cs_amp.o					\
+-		       soc_sdw_maxim.o
++		       soc_sdw_maxim.o \
++		       soc_sdw_ti_amp.o
+ obj-$(CONFIG_SND_SOC_SDW_UTILS) += snd-soc-sdw-utils.o
+diff --git a/sound/soc/sdw_utils/soc_sdw_ti_amp.c b/sound/soc/sdw_utils/soc_sdw_ti_amp.c
+new file mode 100644
+index 000000000000..daa2311c064e
+--- /dev/null
++++ b/sound/soc/sdw_utils/soc_sdw_ti_amp.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: GPL-2.0-only
++// Copyright (c) 2025 Texas Instruments Inc.
++
++/*
++ *  soc_sdw_ti_amp - Helpers to handle TI's soundwire based codecs
++ */
++
++#include <linux/device.h>
++#include <linux/errno.h>
++#include <sound/soc.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-dai.h>
++#include <sound/soc_sdw_utils.h>
++
++#define TIAMP_SPK_VOLUME_0DB		200
++
++int asoc_sdw_ti_amp_initial_settings(struct snd_soc_card *card,
++				     const char *name_prefix)
++{
++	char *volume_ctl_name;
++	int ret;
++
++	volume_ctl_name = kasprintf(GFP_KERNEL, "%s Speaker Volume",
++				    name_prefix);
++	if (!volume_ctl_name)
++		return -ENOMEM;
++
++	ret = snd_soc_limit_volume(card, volume_ctl_name,
++				   TIAMP_SPK_VOLUME_0DB);
++	if (ret)
++		dev_err(card->dev,
++			"%s update failed %d\n",
++			volume_ctl_name, ret);
++
++	kfree(volume_ctl_name);
++	return 0;
++}
++EXPORT_SYMBOL_NS(asoc_sdw_ti_amp_initial_settings, "SND_SOC_SDW_UTILS");
++
++int asoc_sdw_ti_spk_rtd_init(struct snd_soc_pcm_runtime *rtd,
++			     struct snd_soc_dai *dai)
++{
++	struct snd_soc_card *card = rtd->card;
++	char widget_name[16];
++	char speaker[16];
++	struct snd_soc_dapm_route route = {speaker, NULL, widget_name};
++	struct snd_soc_dai *codec_dai;
++	const char *prefix;
++	int i, ret = 0;
++
++	for_each_rtd_codec_dais(rtd, i, codec_dai) {
++		if (!strstr(codec_dai->name, "tas2783"))
++			continue;
++
++		prefix = codec_dai->component->name_prefix;
++		if (!strncmp(prefix, "tas2783-1", strlen("tas2783-1"))) {
++			strscpy(speaker, "Left Spk", sizeof(speaker));
++		} else if (!strncmp(prefix, "tas2783-2", strlen("tas2783-2"))) {
++			strscpy(speaker, "Right Spk", sizeof(speaker));
++		} else {
++			ret = -EINVAL;
++			dev_err(card->dev, "unhandled prefix %s", prefix);
++			break;
++		}
++
++		snprintf(widget_name, sizeof(widget_name), "%s SPK", prefix);
++		ret = asoc_sdw_ti_amp_initial_settings(card, prefix);
++		if (ret)
++			return ret;
++
++		ret = snd_soc_dapm_add_routes(&card->dapm, &route, 1);
++		if (ret)
++			return ret;
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_NS(asoc_sdw_ti_spk_rtd_init, "SND_SOC_SDW_UTILS");
++
++int asoc_sdw_ti_amp_init(struct snd_soc_card *card,
++			 struct snd_soc_dai_link *dai_links,
++			 struct asoc_sdw_codec_info *info,
++			 bool playback)
++{
++	if (!playback)
++		return 0;
++
++	info->amp_num++;
++
++	return 0;
++}
++EXPORT_SYMBOL_NS(asoc_sdw_ti_amp_init, "SND_SOC_SDW_UTILS");
++
+-- 
+2.25.1
+
