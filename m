@@ -4,49 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC8C5CA100C
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Sep 2025 09:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1245CA1009
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Sep 2025 11:16:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3098360203;
-	Wed,  3 Sep 2025 11:38:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3098360203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95784601FF;
+	Wed,  3 Sep 2025 13:16:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95784601FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1756892347;
-	bh=2SyHIKAKlgvLukDHaDHIZpx3xJtxYTVpwlZJEkjVUYY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=sf8lexGfIlPb0Y4fxqD6+PhF1LAx0qzUv8qX1TlOO/SJ4eqSVRwP4n046Y34x/Qi3
-	 VfI+QBmPiFEE1WPNUzFJ5QCn7YSEk4W0JR8sg6J4w7h5V1NDn3Jf71u7rayICPhX6Q
-	 p/PLu89HHZFtqxufDrWOPC+cJ9ANlz3IvUUv7VBE=
+	s=default; t=1756898180;
+	bh=5RXxko3BLZ2FYyFGc2fF9EUvn/x9JmrePaMdpPca1ao=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hR+oh4RS+VOvk10UXeUGoJm+H+DZ2/Gn1wTv+vtQyNM2MSB8WYqIIxSlhRCpsyCoW
+	 4K83aORkcE06arSvQlIez3EppUsE4TylD/ePssCTNm7DjNUOlCzzMkwUD7solxXMbX
+	 ZWaFKNDe49O9DsIHxVtwxVIWaOCN3km6SDWUYPsk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A12BAF805D5; Wed,  3 Sep 2025 11:38:31 +0200 (CEST)
+	id B0BD9F805CB; Wed,  3 Sep 2025 13:15:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A84BF805D3;
-	Wed,  3 Sep 2025 11:38:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC749F805C2;
+	Wed,  3 Sep 2025 13:15:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C962F804D6; Wed,  3 Sep 2025 11:38:21 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8768F80075
-	for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2025 11:38:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8768F80075
+	id 841FBF804D6; Wed,  3 Sep 2025 13:15:29 +0200 (CEST)
+Received: from fhigh-a5-smtp.messagingengine.com
+ (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67A74F80075
+	for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2025 13:15:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67A74F80075
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.a=rsa-sha256 header.s=fm1 header.b=CGu1u0/U;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm1 header.b=LqV48bbv
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id BB9D114003EC;
+	Wed,  3 Sep 2025 07:15:23 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Wed, 03 Sep 2025 07:15:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1756898123; x=
+	1756984523; bh=NzxMzIf2hi9LK82pyIlV1z0VWomqEXtGGGFpKASzUW8=; b=C
+	Gu1u0/UDssXU/OT2EIO3UFnJoYbm0uuMzS+lWvDhUmCilJHCBjjYSJvAhPwBZWfU
+	uVuf1ZovXn5UwDuxoJNRx0JzWxR7AtlPiiKAxkOW/SikqbiXJCrLS/k6mpdpw6GL
+	kcWYsvJgr9S8HkwP9JZ6OZR4rJb6T+zxokeE7ltDH7en24FE/PdMbswXoZtvzlFW
+	xVsWJz6b5BT7WZFxTohN+uxuI09fp5bsFX6xWuhsZ4hqlW9PLoaSuyituk2/YS9Q
+	0+NmllFxeS+XPIVL5py3zSROGUkIKFQUU/5wOLYUVQrqGf9piKw0V1XrmPopwqYk
+	HgEESDfL+SYb/Ksjc0GPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1756898123; x=1756984523; bh=NzxMzIf2hi9LK82pyIlV1z0VWomqEXtGGGF
+	pKASzUW8=; b=LqV48bbvlYWv5avI5QD69aGYH3ovuGV5cR8Yuipe6alDihOgqDR
+	EZfQUJ46J4v3UsLlKFt9uZurZw+Ae6eDAr1ZrpHbXQJo/kfJCREsKZeC5Sr0B7rG
+	w3jLczKnUw67T2hVbhF0M4qLSR6PprAb23MZger6j36uZGTP+j6y5IsRbhHgIWW0
+	1RfyEwr7HiCBCwqifDidE3sxw3ek4hDaWzVhEMTbZy4Ss9MFtIj7RoDJcD+a6ona
+	0q1YYVfXbAlMYkg8CBS4wglMrG4UJ3GGd3cCLjQT/WlAq2gFh8qtUQu/x/nV1Liu
+	kCxAGe0TjCjWokVDUEEFjdRjwPe/x/ZW4aA==
+X-ME-Sender: <xms:SiO4aK2Uqh3rSXg8j--J5QlKlxkf81gHoqpPMa4rdVisetzqAYvSCw>
+    <xme:SiO4aH_Fg2bb6X3ho8lOl0Fh11dwwYihI3PMoV4DiwC42cqUMAinYnRs1kiQMb-D3
+    bfSZH3tvD2ys8551Pc>
+X-ME-Received: 
+ <xmr:SiO4aKvxzZ9gJjT1qkXPn9ClucU_vULnyDGbr2EzcjeeQrps-WBa50zl-iY2KrfUAgRlCIz8Ojmxiw3J94qDwMSBQutmHNb4HMk>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdeftddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhhihcu
+    ufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjpheqne
+    cuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeeiieetvdel
+    fedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjphdpnhgspghrtghp
+    thhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepphgvrhgvgiesphgvrh
+    gvgidrtgiipdhrtghpthhtohepmhdrrghrmhhssgihsehgmhigrdguvgdprhgtphhtthho
+    pegrlhhsrgdquggvvhgvlhesrghlshgrqdhprhhojhgvtghtrdhorhhgpdhrtghpthhtoh
+    epthgrkhgrshifihgvsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:SiO4aKCVXZMf7YonB_saEBpJDBuKyAbt3z_u08te79F878xb7WGszQ>
+    <xmx:SiO4aCWD5lv7EWLhl3hXSu1-f9ACvnmPZJp-PSScHREIrqHnKOQdjA>
+    <xmx:SiO4aIBKVuToGiMvygG0pk9GXkDBWPEArREmx8wmN_Suz1-u_z9lUw>
+    <xmx:SiO4aF8GQ7zzwFyTKdFxLSDv0-c8UQADQviB1P3kk-t9bSgO-QzRFg>
+    <xmx:SyO4aO37P_PZYfTaVq3tjis4uRjDyuf8zJP6kFGJGUMxE3VuKGT0fr78>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 3 Sep 2025 07:15:21 -0400 (EDT)
+Date: Wed, 3 Sep 2025 20:15:19 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: "M. Armsby" <m.armsby@gmx.de>, alsa-devel@alsa-project.org,
+	Takashi Sakamoto <takaswie@kernel.org>
+Subject: Re: ALSAfirewire broken / Pipewire 90ms delay
+Message-ID: <20250903111519.GA76122@workstation.local>
+Mail-Followup-To: Jaroslav Kysela <perex@perex.cz>,
+	"M. Armsby" <m.armsby@gmx.de>, alsa-devel@alsa-project.org,
+	Takashi Sakamoto <takaswie@kernel.org>
+References: <224C5A41-DCED-4FA2-BE82-898F257DA2E9@gmx.de>
+ <20250724143813.GA23616@workstation.local>
+ <FD6FDA7B-D958-47BB-B90C-1A82349F94E4@gmx.de>
+ <48A27ABA-5EF6-400D-A47A-103C1A4ABC6D@gmx.de>
+ <1B53DD0F-1D85-49EC-BA7F-970BE9AEF457@gmx.de>
+ <d21fb84e-d72e-4747-a9ff-92722b93f835@perex.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1861bc3cf6d55e00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/608@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/608@alsa-project.org>
-Subject: ucm2: Qualcomm: x1e80100: Add X1E80100-EVK configuration
-Date: Wed,  3 Sep 2025 11:38:21 +0200 (CEST)
-Message-ID-Hash: JPKEX7VBD232GC5XTTYEUBGJ5TNXG3EJ
-X-Message-ID-Hash: JPKEX7VBD232GC5XTTYEUBGJ5TNXG3EJ
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d21fb84e-d72e-4747-a9ff-92722b93f835@perex.cz>
+Message-ID-Hash: KMYAH57QJ5YHX7FSYVMRTW7RC3LBCVB6
+X-Message-ID-Hash: KMYAH57QJ5YHX7FSYVMRTW7RC3LBCVB6
+X-MailFrom: o-takashi@sakamocchi.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JPKEX7VBD232GC5XTTYEUBGJ5TNXG3EJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KMYAH57QJ5YHX7FSYVMRTW7RC3LBCVB6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,13 +142,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #608 was opened from ReaLcdcLeQi:
+Hi Jaroslav,
 
-The X1E80100-EVK needs basically the same configuration as the X1E80100-CRD.
-The dts upstream is already in progress.
-https://lore.kernel.org/all/20250828-hamoa_initial-v8-3-c9d173072a5c@oss.qualcomm.com/
-message id <20250828-hamoa_initial-v8-3-c9d173072a5c@oss.qualcomm.com>
+On Wed, Sep 03, 2025 at 10:47:32AM +0200, Jaroslav Kysela wrote:
+> For Takashi Sakamoto:
+> 
+> The hw_params constraints in the firewire driver should be improved based on
+> [1]. The drivers may also require the SNDRV_PCM_INFO_BATCH info flag.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/608
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/608.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+How it works in this case?
+
+
+Thanks
+
+Takashi Sakamoto
