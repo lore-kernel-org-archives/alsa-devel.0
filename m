@@ -4,128 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B726CA1012
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Sep 2025 20:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF1C0CA1013
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Sep 2025 10:42:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 851D2601F8;
-	Thu,  4 Sep 2025 22:45:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 851D2601F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3219E601F3;
+	Fri,  5 Sep 2025 12:42:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3219E601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1757018745;
-	bh=NsmwmA5tOa3vgabv5NsiZjX/EZg/TUGmR8Clzjc8hqQ=;
+	s=default; t=1757068948;
+	bh=0YT3gSVmaRAfERZsP5juwTay+cdaKDtqbsQUs+7eD3E=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PSPUNZ20UCtgUU2LcyXymRHXFdHjvoSLKT6a50XuuYzMdx+jDc4LL8oYSz51wiN/W
-	 XAaXXYpqfGDYkRmuG7XjZOMJHlEIn/U5MLd9+T3pBDpo9tjY94Otw182VBWhiXSADU
-	 6ViVeqZlO6pJcT7O0kywbJs6pSrfUuqdvEt+IxUs=
+	b=pRqJyJS6Kao5X2RIA+fvVlZ6IAuKtho6dXDs+nNZdaphtzaOJO+eOGN+/ecwqZMFb
+	 dA81NqtIXcMkN+rCpN/PItEcSw2PFuxYdWoFPzMriZFmpWWsIdp2R9sCgBj0pEQJ75
+	 e8+Lm4aZqeRA+mzYPkiYVzTFcwtCuZtpe/kGRhEY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDC1AF805C4; Thu,  4 Sep 2025 22:45:11 +0200 (CEST)
+	id 24773F805C2; Fri,  5 Sep 2025 12:41:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A794EF805C1;
-	Thu,  4 Sep 2025 22:45:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E88C0F805D2;
+	Fri,  5 Sep 2025 12:41:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60C0FF804B0; Thu,  4 Sep 2025 22:45:03 +0200 (CEST)
-Received: from fhigh-b4-smtp.messagingengine.com
- (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
+	id 909E9F80508; Fri,  5 Sep 2025 12:41:38 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B5372F80086
-	for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2025 22:44:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5372F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B69DF80086
+	for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2025 12:41:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B69DF80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm1 header.b=exIiaumB;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm1 header.b=bUNA2azQ
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 7810E7A05C3;
-	Thu,  4 Sep 2025 16:44:56 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Thu, 04 Sep 2025 16:44:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1757018696; x=
-	1757105096; bh=NsmwmA5tOa3vgabv5NsiZjX/EZg/TUGmR8Clzjc8hqQ=; b=e
-	xIiaumBvpXJ/U3R3V9IVKg9EqaRcHJ9K/VaOHwUUnamPa0vUEUVe3pGonX1qmXQt
-	TUbAVsTqtmon/Ac8T371kqYeAKShLzcpWn+6LiHaAdWDK2z6ywISGp3kxrmRjtoB
-	u56djA2N5FYnTwba5ukAk2IVYNsKd7t7fWVj/F6sbTNykuxsYb2BYcQNb/NeBf9R
-	4rowj1lbjfeCo9ids2L8hxSsUL/sVrsB1Do2Kc0vgRSUiZgo6NFK1Ov7T+dh/MpY
-	AM6saIV+EYLkiZxjr7mAtNLrtpbN0dxGKaAe6gv5vXUcX+uGOosKw/4CStCl/t5T
-	57+Xq1GAtXNHObfEsjy6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1757018696; x=1757105096; bh=NsmwmA5tOa3vgabv5NsiZjX/EZg/TUGmR8C
-	lzjc8hqQ=; b=bUNA2azQqj7VZMhEWMj1BqRE55CnXFhXjVQs9ecKfFpWh9uI7fH
-	sHl8RTgmC9gom6kumNr1OIN6ErCr5qWWB7XUjtj0yQoQdarlPOFkMqmot8UhN3hY
-	qVicbKjcNDksy/hX7dh8c4MRUaZULERn4yO5WeIQrvxzeXKdkEJ4oK6BhRues8jV
-	RKdFUEKgerfzNupz/1aER63iuoJz7/U7mlwUn8P353wGTGdyuPQsXQYpSpfeCIyR
-	obJVQcMUaEfjtTQEo8ylAHiQkgI9MQJ5pK7s3iVtpnw4Ea6glSzIXQJJYKjUroBi
-	WInGXXp81UuNyY82qRcilGwU9Bc1/UjfRBA==
-X-ME-Sender: <xms:R_q5aP_PlvXLW688xIW_auLmJjDiuEATI3Jtc7UOMZiMZ5Cl3BVT0Q>
-    <xme:R_q5aGmz_F5r8ItzzkBhRnPo84BYcSlqJQk01P29MZ4By8Rd24KgDuaJcd05dfwjG
-    W5Iwf7JRJCCJhrGOug>
-X-ME-Received: 
- <xmr:R_q5aE16w1BJbNIgdPOIwNGPWhex5lZn3Vh0uMwIIClDNCuSjONzjDXGZCXyovTke0Cn0gBpd0I95Io_K4g9ahZeugqogSEbtBc>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdejtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhhihcu
-    ufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjpheqne
-    cuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeeiieetvdel
-    fedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjphdpnhgspghrtghp
-    thhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepphgvrhgvgiesphgvrh
-    gvgidrtgiipdhrtghpthhtohepmhdrrghrmhhssgihsehgmhigrdguvgdprhgtphhtthho
-    pegrlhhsrgdquggvvhgvlhesrghlshgrqdhprhhojhgvtghtrdhorhhgpdhrtghpthhtoh
-    epthgrkhgrshifihgvsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:R_q5aJpOAvbof3pGeJthZcI1OOYhdGN7MIqU9pxALY7wyq9-QdAKUQ>
-    <xmx:R_q5aJfhsay3OUKuikddvMJc4OEOS_L-TXHN4v3NKvt4zJvcbkv-Vw>
-    <xmx:R_q5aArt3-5qOrDeortkJ2ahNZSJyNbDGeKn7VUgvSBLlB7iqS4SCA>
-    <xmx:R_q5aCE3HWTXI1hVDxsK-GbQxnX-aOG-u7sj0tmvfhPZXRiAdNLXAg>
-    <xmx:SPq5aI_2-zBDT-fwoTCSpuTqGyn3jpA0vMQ3jjLKuqhYtQjTsZeZbXsE>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Sep 2025 16:44:54 -0400 (EDT)
-Date: Fri, 5 Sep 2025 05:44:50 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "M. Armsby" <m.armsby@gmx.de>, alsa-devel@alsa-project.org,
-	Takashi Sakamoto <takaswie@kernel.org>
-Subject: Re: ALSAfirewire broken / Pipewire 90ms delay
-Message-ID: <20250904204450.GA221422@workstation.local>
-Mail-Followup-To: Jaroslav Kysela <perex@perex.cz>,
-	"M. Armsby" <m.armsby@gmx.de>, alsa-devel@alsa-project.org,
-	Takashi Sakamoto <takaswie@kernel.org>
-References: <224C5A41-DCED-4FA2-BE82-898F257DA2E9@gmx.de>
- <20250724143813.GA23616@workstation.local>
- <FD6FDA7B-D958-47BB-B90C-1A82349F94E4@gmx.de>
- <48A27ABA-5EF6-400D-A47A-103C1A4ABC6D@gmx.de>
- <1B53DD0F-1D85-49EC-BA7F-970BE9AEF457@gmx.de>
- <d21fb84e-d72e-4747-a9ff-92722b93f835@perex.cz>
- <20250903111519.GA76122@workstation.local>
- <3e07de0a-affa-4776-9172-83b2b071fbe8@perex.cz>
- <20250904131807.GA209723@workstation.local>
- <13e0868a-6528-42fa-ab9a-2b5e37e095f3@perex.cz>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=kjzmTBtw
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 7F4966027D;
+	Fri,  5 Sep 2025 10:41:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BABFC4CEFE;
+	Fri,  5 Sep 2025 10:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757068893;
+	bh=0YT3gSVmaRAfERZsP5juwTay+cdaKDtqbsQUs+7eD3E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kjzmTBtwHMLhywCZLnQFDomzZH7m1TsQMv1EkpTVegEsDO/Dr+j+V+AAoGzxyhbFQ
+	 Zq4TaV709BfJux6xejkxhabNoARA64dJeK1SivofU/vwK8EzB98+KPNLd2uuBTzBsT
+	 6UQ8PgjtmZcKB9opyRYmcwF0m/+A/S9X6sSV7tLEWyhMbVMd+8pHd+byw5G/1oiPA+
+	 eDTpDXwlIFB+SlewvXlPXeN+1tpTR6cc83qwvHwbiiAgql1vOrQ/4b6cwXgKCENmJ2
+	 Ntn47s86EbF876fkk2M0/m/2ymR2MBAZ9A31kJUw5+B5gqq+THnl8dcLoh//zmbjbi
+	 Gxd6DD2zf7XCg==
+Date: Fri, 5 Sep 2025 11:41:24 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Xu, Baojun" <baojun.xu@ti.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>,
+	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+	"13916275206@139.com" <13916275206@139.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"Ding, Shenghao" <shenghao-ding@ti.com>,
+	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+	"robh@kernel.org" <robh@kernel.org>,
+	"krzk+dt@kernel.org" <krzk+dt@kernel.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"Yi, Ken" <k-yi@ti.com>, "Lo, Henry" <henry.lo@ti.com>,
+	"Chen, Robin" <robinchen@ti.com>, "Ji, Jesse" <jesse-ji@ti.com>,
+	"Wang, Will" <will-wang@ti.com>,
+	"jim.shil@goertek.com" <jim.shil@goertek.com>,
+	"toastcheng@google.com" <toastcheng@google.com>,
+	"chinkaiting@google.com" <chinkaiting@google.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118,
+ tas2x20, tas5825 support
+Message-ID: <b70314db-357f-4c39-a9b4-088d8ebed2b0@sirena.org.uk>
+References: <20250830061459.24371-1-baojun.xu@ti.com>
+ <993d7fe7-5206-45a9-acb6-0d610a3a2136@sirena.org.uk>
+ <12aa63e694c94213aeb6b48959d02b45@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="W/8Zc+tPZVZu2YRi"
 Content-Disposition: inline
-In-Reply-To: <13e0868a-6528-42fa-ab9a-2b5e37e095f3@perex.cz>
-Message-ID-Hash: JLKWXKN4SXPZXNVB47HPOG3UNGKIQ7IK
-X-Message-ID-Hash: JLKWXKN4SXPZXNVB47HPOG3UNGKIQ7IK
-X-MailFrom: o-takashi@sakamocchi.jp
+In-Reply-To: <12aa63e694c94213aeb6b48959d02b45@ti.com>
+X-Cookie: He who laughs, lasts.
+Message-ID-Hash: 3RFBE4C3ABSG55XXFU2VFZSHOEHEW3J6
+X-Message-ID-Hash: 3RFBE4C3ABSG55XXFU2VFZSHOEHEW3J6
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -137,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JLKWXKN4SXPZXNVB47HPOG3UNGKIQ7IK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3RFBE4C3ABSG55XXFU2VFZSHOEHEW3J6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -146,18 +112,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Sep 04, 2025 at 03:32:52PM +0200, Jaroslav Kysela wrote:
-> It would be nice to check the buffer size / period size values using procfs
-> for the problematic 2048 setup (see the referred thread), if there's a
-> demand to fix this. Maybe there's a mismatch between GUI/sound server
-> settings and driver settings.
 
-Please suggest that all people involved in the discussion use strace(1)
-to determine whether the failure originates from SNDRV_PCM_IOCTL_HW_PARAMS
-or SNDRV_PCM_IOCTL_PREPARE, since the alsa-lib API, 'snd_pcm_hw_params()',
-involves both and can be misleading.
+--W/8Zc+tPZVZu2YRi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Sep 05, 2025 at 04:15:45AM +0000, Xu, Baojun wrote:
 
-Thanks
+> > This doesn't apply against current code, please check and resend.
 
-Takashi Sakamoto
+> Hi, do you mean I need a re-patch for the newest (next/linux-next.git) code?
+> Or need to create patches on tree broonie/linux.git?
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-6.18
+
+--W/8Zc+tPZVZu2YRi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmi6vlQACgkQJNaLcl1U
+h9DyYgf+JzOcCB2e4kN0lqPPMtGy3W9chZ/RtSZ7X58/3sxxM8IFEG4/LZR9KOlK
+I4tkBJu1o5TcaojTKjg7wJiw44Es1g5I5ZzgObWS1rjngU5k3aW9eH3x5dGTwhOC
+XozX6auMJbj8HjxzxIeDo0azbnyMGpUGNDDhMGa91uzxMcyHwyOzLr8p9DqHn+zp
+cL0NlkMQVQzfluQa3HN7xkEXwj2xqw1CRmZN4HmI6petXnNHh5DuGeEgrkErrZRf
+lFYXKinXgmw8485n9K2g54si/TKeS+d55xfNihEaHufwSu6aWY1/AhP/7Z4eE6Hm
+mM+7Uw+83YmCbmYsaxEW7tlKxO6G0g==
+=1xzx
+-----END PGP SIGNATURE-----
+
+--W/8Zc+tPZVZu2YRi--
