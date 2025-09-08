@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E9BACAC583
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:17:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CD53CA0FED
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:17:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 693556021D;
-	Tue,  9 Sep 2025 14:17:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 693556021D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFD7060251;
+	Tue,  9 Sep 2025 14:17:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFD7060251
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1757420234;
-	bh=ud7JbkiHOCmI6mqhWepWfvvmpT1R+N/RUvTs7iar6HY=;
+	s=default; t=1757420249;
+	bh=DzAfLw6ioEWpIKGDXdSWJiuIYg7unQ63sL0EFbUxunY=;
 	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PHkegCLXZ4BnIZbqdCqULitV6YMJnXYrk5hCKrRt1p02OU4RTfTkGKBCIepnNg1Tt
-	 qsSc6dGSpx8cMS/MuAsQk/EgULaUEHz5f4YQIDtZ/V8moPfxG3eNlM7LKvdDMEiUbJ
-	 ghH/ZM77JOigCnWqfqwaB/EygOgIK123tDtbCgPE=
+	b=CVRFKsZsRUi3poY0lb2Kv0/zn9K418QxwYRDwmZDk90rFtoB4BBa0pKNrjVkLsvzX
+	 NwiaCIR4sOzZE3czTUiuObIHICLOL4FCLP5RLsNbG/BMOh2yF+zgDMep1LX7q3/2Rt
+	 wXQN09mobSaImta31saQUg1zpBZ8OdCE92pwBGDc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14458F805BE; Tue,  9 Sep 2025 14:16:39 +0200 (CEST)
+	id BE0CFF805F0; Tue,  9 Sep 2025 14:16:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91029F805CB;
-	Tue,  9 Sep 2025 14:16:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B98DF805E0;
+	Tue,  9 Sep 2025 14:16:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 537FEF80508; Fri,  5 Sep 2025 06:16:01 +0200 (CEST)
-Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
+	id 675D6F80185; Mon,  8 Sep 2025 08:24:49 +0200 (CEST)
+Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3483FF800AE
-	for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2025 06:15:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3483FF800AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 85B64F8014C
+	for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2025 08:24:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85B64F8014C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=yvNHDBHe
+ header.s=ti-com-17Q1 header.b=Y17i16PE
 Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
-	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTP id 5854Flm43627524;
-	Thu, 4 Sep 2025 23:15:47 -0500
+	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 5886MqhL3729044;
+	Mon, 8 Sep 2025 01:22:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1757045747;
-	bh=ud7JbkiHOCmI6mqhWepWfvvmpT1R+N/RUvTs7iar6HY=;
+	s=ti-com-17Q1; t=1757312572;
+	bh=kiSruyZ6dIgTNsTur0Rl9zLXhun4FWHa+aZ/mS2ubQY=;
 	h=From:To:CC:Subject:Date:References:In-Reply-To;
-	b=yvNHDBHeQN8D64rb4EC6U2OgdKFZghuqRyPQSidhtzSBVvukbFUUHDl7EQ/GV8EA9
-	 UfcZLNxIn+6pOolcu8jjJu0W5f8JAksOp9CkgaqgwMHB2oTZNNREF7BPuFjM+HxO2I
-	 dZNkiIvfDuYanMGDiKvop1QAKmeQ1LM/o8J2sm9U=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 5854FkZ11367942
+	b=Y17i16PEiKMSFGlBGHVIGXfAUcoiMSfYcg099slOmq1wIxo1S7Ev/p/7MrKKOIMOx
+	 FG9XN1jkixRbuBdOjAMPf8FH508CE+QvUbuKwSR9DidpTsWS5xZpKGaWUc0UOWi/4F
+	 fSGm1rqgVXTk2C/dVQM436XZj/f1tNmqWjxSXR04=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 5886Mqe23563612
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Thu, 4 Sep 2025 23:15:46 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Thu, 4
- Sep 2025 23:15:45 -0500
+	Mon, 8 Sep 2025 01:22:52 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 8
+ Sep 2025 01:22:51 -0500
 Received: from DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d]) by
  DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d%17]) with mapi id
- 15.01.2507.055; Thu, 4 Sep 2025 23:15:45 -0500
+ 15.01.2507.055; Mon, 8 Sep 2025 01:22:51 -0500
 From: "Xu, Baojun" <baojun.xu@ti.com>
 To: Mark Brown <broonie@kernel.org>
 CC: "tiwai@suse.de" <tiwai@suse.de>,
@@ -92,17 +92,18 @@ Subject: Re: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118,
  tas2x20, tas5825 support
 Thread-Topic: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118,
  tas2x20, tas5825 support
-Thread-Index: AQHcGXV+g3xOktIe00qAtAz2a1355LSBruqAgAJSFIw=
-Date: Fri, 5 Sep 2025 04:15:45 +0000
-Message-ID: <12aa63e694c94213aeb6b48959d02b45@ti.com>
-References: 
- <20250830061459.24371-1-baojun.xu@ti.com>,<993d7fe7-5206-45a9-acb6-0d610a3a2136@sirena.org.uk>
-In-Reply-To: <993d7fe7-5206-45a9-acb6-0d610a3a2136@sirena.org.uk>
+Thread-Index: AQHcGXV+g3xOktIe00qAtAz2a1355LSBruqAgAJSFIyAAMMoAIAEAJrf
+Date: Mon, 8 Sep 2025 06:22:51 +0000
+Message-ID: <67fafc23d16d4790821321643a87385f@ti.com>
+References: <20250830061459.24371-1-baojun.xu@ti.com>
+ <993d7fe7-5206-45a9-acb6-0d610a3a2136@sirena.org.uk>
+ <12aa63e694c94213aeb6b48959d02b45@ti.com>,<b70314db-357f-4c39-a9b4-088d8ebed2b0@sirena.org.uk>
+In-Reply-To: <b70314db-357f-4c39-a9b4-088d8ebed2b0@sirena.org.uk>
 Accept-Language: en-GB, zh-CN, en-US
 Content-Language: en-GB
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.250.241.91]
+x-originating-ip: [10.250.165.138]
 x-c2processedorg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -113,15 +114,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 65WYT24YZA4MHNDHXOHMP2LREJP6Q73P
-X-Message-ID-Hash: 65WYT24YZA4MHNDHXOHMP2LREJP6Q73P
-X-Mailman-Approved-At: Tue, 09 Sep 2025 12:16:30 +0000
+Message-ID-Hash: S7K3WQ4KDXUMGUE2YY3TJBJMUGK4MKGT
+X-Message-ID-Hash: S7K3WQ4KDXUMGUE2YY3TJBJMUGK4MKGT
+X-Mailman-Approved-At: Tue, 09 Sep 2025 12:16:31 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/65WYT24YZA4MHNDHXOHMP2LREJP6Q73P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S7K3WQ4KDXUMGUE2YY3TJBJMUGK4MKGT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,10 +131,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
->=20
+Hi Broonie,
+
 > ________________________________________
 > From: Mark Brown <broonie@kernel.org>
-> Sent: 03 September 2025 19:36
+> Sent: 05 September 2025 18:41
 > To: Xu, Baojun
 > Cc: tiwai@suse.de; andriy.shevchenko@linux.intel.com; 13916275206@139.com=
 ; alsa-devel@alsa-project.org; Ding, Shenghao; linux-sound@vger.kernel.org;=
@@ -141,21 +143,26 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 t@kernel.org; conor+dt@kernel.org; devicetree@vger.kernel.org; Yi, Ken; Lo,=
  Henry; Chen, Robin; Ji, Jesse; Wang, Will; jim.shil@goertek.com; toastchen=
 g@google.com; chinkaiting@google.com
-> Subject: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118, tas2x2=
-0, tas5825 support
+> Subject: Re: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118, ta=
+s2x20, tas5825 support
 >=20
-> On Sat, Aug 30, 2025 at 02:14:58PM +0800, Baojun Xu wrote:
-> > Add tas2020, tas2118, tas2120, tas2320, tas2570, tas2572, tas5825
-> > tas5827 support in tas2781 driver.
-> > Tas2118, tas2x20, tas257x have no on-chip DSP, tas582x have on-chip
-> > DSP but have no calibration required stereo smart amplifier.
+> On Fri, Sep 05, 2025 at 04:15:45AM +0000, Xu, Baojun wrote:
 >=20
-> This doesn't apply against current code, please check and resend.
+> > > This doesn't apply against current code, please check and resend.
 >=20
-
-Hi, do you mean I need a re-patch for the newest (next/linux-next.git) code=
+> > Hi, do you mean I need a re-patch for the newest (next/linux-next.git) =
+code?
+> > Or need to create patches on tree broonie/linux.git?
+>=20
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-6=
+.18
+>=20
+This patch is also relative (shares the same include/sound/tas5825-tlv.h)
+with another commit on next/linux-next.git:
+https://patch.msgid.link/20250810122358.1575-1-baojun.xu@ti.com (ALSA: hda:=
+ Add TAS5825 support)
+However, it was not merged into broonie/sound.git yet, should I wait for it=
 ?
-Or need to create patches on tree broonie/linux.git?
 
 Best Regards
-Jim=
+Jim
