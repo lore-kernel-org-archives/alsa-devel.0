@@ -4,125 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CD53CA0FED
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 12:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BA5ACAC583
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Sep 2025 14:57:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFD7060251;
-	Tue,  9 Sep 2025 14:17:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFD7060251
+	by alsa0.perex.cz (Postfix) with ESMTPS id C76C460203;
+	Tue,  9 Sep 2025 16:57:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C76C460203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1757420249;
-	bh=DzAfLw6ioEWpIKGDXdSWJiuIYg7unQ63sL0EFbUxunY=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=CVRFKsZsRUi3poY0lb2Kv0/zn9K418QxwYRDwmZDk90rFtoB4BBa0pKNrjVkLsvzX
-	 NwiaCIR4sOzZE3czTUiuObIHICLOL4FCLP5RLsNbG/BMOh2yF+zgDMep1LX7q3/2Rt
-	 wXQN09mobSaImta31saQUg1zpBZ8OdCE92pwBGDc=
+	s=default; t=1757429832;
+	bh=w4gB1mLnwTW96nJfXudqHNe3hcEF+zW/paQjHHagFZk=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=GOER/QZn6+iy+rU0leGsolPbPq9ZYVE4a5OI/0E1IEO5aK5khzFCQ6zK1D3PSLOqk
+	 aRvLMOIq4Z6NvJLtMjnil3YcLB4YYEbjuQuN8NuvF6w4tq1eMPKAZOhW2PLtZev7P0
+	 tff82cPb+Nlrch5NnRlTk/p3ZtTEH7/laT8h/rdE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE0CFF805F0; Tue,  9 Sep 2025 14:16:46 +0200 (CEST)
+	id 9A49FF805D5; Tue,  9 Sep 2025 16:56:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B98DF805E0;
-	Tue,  9 Sep 2025 14:16:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43CBEF8027B;
+	Tue,  9 Sep 2025 16:56:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 675D6F80185; Mon,  8 Sep 2025 08:24:49 +0200 (CEST)
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85B64F8014C
-	for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2025 08:24:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85B64F8014C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=Y17i16PE
-Received: from fllvem-sh04.itg.ti.com ([10.64.41.54])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTP id 5886MqhL3729044;
-	Mon, 8 Sep 2025 01:22:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1757312572;
-	bh=kiSruyZ6dIgTNsTur0Rl9zLXhun4FWHa+aZ/mS2ubQY=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To;
-	b=Y17i16PEiKMSFGlBGHVIGXfAUcoiMSfYcg099slOmq1wIxo1S7Ev/p/7MrKKOIMOx
-	 FG9XN1jkixRbuBdOjAMPf8FH508CE+QvUbuKwSR9DidpTsWS5xZpKGaWUc0UOWi/4F
-	 fSGm1rqgVXTk2C/dVQM436XZj/f1tNmqWjxSXR04=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by fllvem-sh04.itg.ti.com (8.18.1/8.18.1) with ESMTPS id 5886Mqe23563612
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=FAIL);
-	Mon, 8 Sep 2025 01:22:52 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.55; Mon, 8
- Sep 2025 01:22:51 -0500
-Received: from DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d]) by
- DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d%17]) with mapi id
- 15.01.2507.055; Mon, 8 Sep 2025 01:22:51 -0500
-From: "Xu, Baojun" <baojun.xu@ti.com>
-To: Mark Brown <broonie@kernel.org>
-CC: "tiwai@suse.de" <tiwai@suse.de>,
-        "andriy.shevchenko@linux.intel.com"
-	<andriy.shevchenko@linux.intel.com>,
-        "13916275206@139.com"
-	<13916275206@139.com>,
-        "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>,
-        "Ding, Shenghao" <shenghao-ding@ti.com>,
-        "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh@kernel.org"
-	<robh@kernel.org>,
-        "krzk+dt@kernel.org" <krzk+dt@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>,
-        "Yi, Ken" <k-yi@ti.com>, "Lo, Henry"
-	<henry.lo@ti.com>,
-        "Chen, Robin" <robinchen@ti.com>, "Ji, Jesse"
-	<jesse-ji@ti.com>,
-        "Wang, Will" <will-wang@ti.com>,
-        "jim.shil@goertek.com"
-	<jim.shil@goertek.com>,
-        "toastcheng@google.com" <toastcheng@google.com>,
-        "chinkaiting@google.com" <chinkaiting@google.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118,
- tas2x20, tas5825 support
-Thread-Topic: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118,
- tas2x20, tas5825 support
-Thread-Index: AQHcGXV+g3xOktIe00qAtAz2a1355LSBruqAgAJSFIyAAMMoAIAEAJrf
-Date: Mon, 8 Sep 2025 06:22:51 +0000
-Message-ID: <67fafc23d16d4790821321643a87385f@ti.com>
-References: <20250830061459.24371-1-baojun.xu@ti.com>
- <993d7fe7-5206-45a9-acb6-0d610a3a2136@sirena.org.uk>
- <12aa63e694c94213aeb6b48959d02b45@ti.com>,<b70314db-357f-4c39-a9b4-088d8ebed2b0@sirena.org.uk>
-In-Reply-To: <b70314db-357f-4c39-a9b4-088d8ebed2b0@sirena.org.uk>
-Accept-Language: en-GB, zh-CN, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.250.165.138]
-x-c2processedorg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 6EFBFF8027B; Tue,  9 Sep 2025 16:56:27 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id DA756F800B8
+	for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2025 16:56:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA756F800B8
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MailFrom: baojun.xu@ti.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <1863a513c1b40600-webhooks-bot@alsa-project.org>
+In-Reply-To: <1863a513bff15c00-webhooks-bot@alsa-project.org>
+References: <1863a513bff15c00-webhooks-bot@alsa-project.org>
+Subject: Segfault in snd_config_delete due to incorrect node deletion in
+ parse_array_def / parse_def
+Date: Tue,  9 Sep 2025 16:56:27 +0200 (CEST)
+Message-ID-Hash: 32C2G3TPUSX7QIZQTEB6AF5SNDPCXXPP
+X-Message-ID-Hash: 32C2G3TPUSX7QIZQTEB6AF5SNDPCXXPP
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: S7K3WQ4KDXUMGUE2YY3TJBJMUGK4MKGT
-X-Message-ID-Hash: S7K3WQ4KDXUMGUE2YY3TJBJMUGK4MKGT
-X-Mailman-Approved-At: Tue, 09 Sep 2025 12:16:31 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S7K3WQ4KDXUMGUE2YY3TJBJMUGK4MKGT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/32C2G3TPUSX7QIZQTEB6AF5SNDPCXXPP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,38 +68,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Broonie,
-
-> ________________________________________
-> From: Mark Brown <broonie@kernel.org>
-> Sent: 05 September 2025 18:41
-> To: Xu, Baojun
-> Cc: tiwai@suse.de; andriy.shevchenko@linux.intel.com; 13916275206@139.com=
-; alsa-devel@alsa-project.org; Ding, Shenghao; linux-sound@vger.kernel.org;=
- linux-kernel@vger.kernel.org; lgirdwood@gmail.com; robh@kernel.org; krzk+d=
-t@kernel.org; conor+dt@kernel.org; devicetree@vger.kernel.org; Yi, Ken; Lo,=
- Henry; Chen, Robin; Ji, Jesse; Wang, Will; jim.shil@goertek.com; toastchen=
-g@google.com; chinkaiting@google.com
-> Subject: Re: [EXTERNAL] Re: [PATCH v4 1/2] ASoC: tas2781: Add tas2118, ta=
-s2x20, tas5825 support
->=20
-> On Fri, Sep 05, 2025 at 04:15:45AM +0000, Xu, Baojun wrote:
->=20
-> > > This doesn't apply against current code, please check and resend.
->=20
-> > Hi, do you mean I need a re-patch for the newest (next/linux-next.git) =
-code?
-> > Or need to create patches on tree broonie/linux.git?
->=20
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-6=
-.18
->=20
-This patch is also relative (shares the same include/sound/tas5825-tlv.h)
-with another commit on next/linux-next.git:
-https://patch.msgid.link/20250810122358.1575-1-baojun.xu@ti.com (ALSA: hda:=
- Add TAS5825 support)
-However, it was not merged into broonie/sound.git yet, should I wait for it=
-?
-
-Best Regards
-Jim
+YWxzYS1wcm9qZWN0L2Fsc2EtbGliIGlzc3VlICM0Nzcgd2FzIG9wZW5lZCBmcm9tIG1pZHppc2hp
+OgoKV2hpbGUgZnV6emluZyBzbmRfY29uZmlnX2xvYWQoKSBhIHJlcHJvZHVjaWJsZSBzZWdtZW50
+YXRpb24gZmF1bHQgaW5zaWRlIHNuZF9jb25maWdfZGVsZXRlKCkgd2FzIGRpc2NvdmVyZWQuCgpU
+aGUgcm9vdCBjYXVzZSBpcyBpbmNvcnJlY3QgY2xlYW51cCBsb2dpYyBpbiB0aGUgY29uZmlndXJh
+dGlvbiBwYXJzZXIgZnVuY3Rpb25zIChwYXJzZV9hcnJheV9kZWYoKSBhbmQgcGFyc2VfZGVmKCkp
+LgoKSW4gbXVsdGlwbGUgYnJhbmNoZXMsIGV4aXN0aW5nIGNvbmZpZ3VyYXRpb24gbm9kZXMgYXJl
+IHJlcGxhY2VkIGluY29ycmVjdGx5OgoKLSBUaGUgcGFyc2VyIHNvbWV0aW1lcyBjYWxscyBzbmRf
+Y29uZmlnX2RlbGV0ZShuKSB3aGVyZSBuIGlzIE5VTEwgb3IgYSBuZXdseSBhbGxvY2F0ZWQgbm9k
+ZSwgaW5zdGVhZCBvZiBkZWxldGluZyB0aGUgZXhpc3Rpbmcgbm9kZSByZXR1cm5lZCBieSBfc25k
+X2NvbmZpZ19zZWFyY2goKSAodmFyaWFibGUgZykuCi0gSW4gb3RoZXIgY2FzZXMsIGEgbmV3bHkg
+Y3JlYXRlZCBub2RlIGlzIGFkZGVkIHRvIHRoZSBwYXJlbnQgYmVmb3JlIGl0cyBjb250ZW50cyBh
+cmUgc3VjY2Vzc2Z1bGx5IHBhcnNlZC4gSWYgcGFyc2luZyBmYWlscywgdGhlIHJvbGxiYWNrIHBh
+dGggZGVsZXRlcyB0aGlzIG5vZGUgZXhwbGljaXRseSwgYW5kIGxhdGVyIHRoZSBwYXJlbnQgZGVs
+ZXRlcyBpdCBhZ2FpbiBkdXJpbmcgcmVjdXJzaXZlIGNsZWFudXAsIHNvIGl0IGNhdXNlcyBkb3Vi
+bGUtZnJlZSBvciBjb3JydXB0ZWQgbGlua2VkIGxpc3QuCgpUaGlzIHJlc3VsdHMgaW4gY29ycnVw
+dGVkIHBhcmVudOKAk2NoaWxkIHJlbGF0aW9uc2hpcHMgYW5kIGV2ZW50dWFsbHkgU0VHViB3aGVu
+IHNuZF9jb25maWdfZGVsZXRlKCkgdHJpZXMgdG8gcmVhZCBjb25maWctPnJlZmNvdW50IG9mIGFu
+IGFscmVhZHkgZnJlZWQgbm9kZS4KCkluIGJvdGggcGFyc2VfYXJyYXlfZGVmKCkgYW5kIHBhcnNl
+X2RlZigpLCBfc25kX2NvbmZpZ19tYWtlX2FkZCgpIGlzIGNhbGxlZCB0b28gZWFybHkgKGJlZm9y
+ZSBwYXJzaW5nIGNoaWxkIGNvbnRlbnRzKS4gT24gZXJyb3IsIHRoZSBwYXJzZXIgZGVsZXRlcyB0
+aGUgY2hpbGQgbWFudWFsbHksIGJ1dCB0aGUgcGFyZW50IHdpbGwgbGF0ZXIgZGVsZXRlIGl0IGFn
+YWluIGR1cmluZyByZWN1cnNpdmUgY2xlYW51cC4KClByb3Bvc2VkIGZpeDogCmBgYApkaWZmIC0t
+Z2l0IGEvc3JjL2NvbmYuYyBiL3NyYy9jb25mLmMKaW5kZXggOTA1YzhmNGQuLjdlNDAzMTkyIDEw
+MDY0NAotLS0gYS9zcmMvY29uZi5jCisrKyBiL3NyYy9jb25mLmMKQEAgLTEyNzQsNyArMTI3NCw4
+IEBAIHN0YXRpYyBpbnQgcGFyc2VfYXJyYXlfZGVmKHNuZF9jb25maWdfdCAqcGFyZW50LCBpbnB1
+dF90ICppbnB1dCwgaW50ICppZHgsIGludCBzCiAJCQlzbnByaW50ZihzdGF0aWNfaWQsIHNpemVv
+ZihzdGF0aWNfaWQpLCAiJWkiLCAqaWR4KTsKIAkJCWlmIChfc25kX2NvbmZpZ19zZWFyY2gocGFy
+ZW50LCBzdGF0aWNfaWQsIC0xLCAmZykgPT0gMCkgewogCQkJCWlmIChvdmVycmlkZSkgewotCQkJ
+CQlzbmRfY29uZmlnX2RlbGV0ZShuKTsKKwkJCQkJc25kX2NvbmZpZ19kZWxldGUoZyk7CisJCQkJ
+CWcgPSBOVUxMOwogCQkJCX0gZWxzZSB7CiAJCQkJCS8qIG1lcmdlICovCiAJCQkJCSgqaWR4KSsr
+OwpAQCAtMTMwNSw3ICsxMzA2LDcgQEAgc3RhdGljIGludCBwYXJzZV9hcnJheV9kZWYoc25kX2Nv
+bmZpZ190ICpwYXJlbnQsIGlucHV0X3QgKmlucHV0LCBpbnQgKmlkeCwgaW50IHMKIAkJCQkJZ290
+byBfX2VuZDsKIAkJCQl9CiAJCQl9IGVsc2UgewotCQkJCWVyciA9IF9zbmRfY29uZmlnX21ha2Vf
+YWRkKCZuLCAmaWQsIFNORF9DT05GSUdfVFlQRV9DT01QT1VORCwgcGFyZW50KTsKKwkJCQllcnIg
+PSBfc25kX2NvbmZpZ19tYWtlKCZuLCAmaWQsIFNORF9DT05GSUdfVFlQRV9DT01QT1VORCk7CiAJ
+CQkJaWYgKGVyciA8IDApCiAJCQkJCWdvdG8gX19lbmQ7CiAJCQl9CkBAIC0xMzI4LDYgKzEzMjks
+MTAgQEAgc3RhdGljIGludCBwYXJzZV9hcnJheV9kZWYoc25kX2NvbmZpZ190ICpwYXJlbnQsIGlu
+cHV0X3QgKmlucHV0LCBpbnQgKmlkeCwgaW50IHMKIAkJCWVyciA9IExPQ0FMX1VORVhQRUNURURf
+Q0hBUjsKIAkJCWdvdG8gX19lbmQ7CiAJCX0KKwkJaWYgKCFza2lwICYmIG4gJiYgIW4tPnBhcmVu
+dCkgeworCQkJZXJyID0gc25kX2NvbmZpZ19hZGQocGFyZW50LCBuKTsKKwkJCWlmIChlcnIgPCAw
+KSB7IHNuZF9jb25maWdfZGVsZXRlKG4pOyBnb3RvIF9fZW5kOyB9CisJCX0KIAkJYnJlYWs7CiAJ
+fQogCWRlZmF1bHQ6CkBAIC0xNDIyLDcgKzE0MjcsNyBAQCBzdGF0aWMgaW50IHBhcnNlX2RlZihz
+bmRfY29uZmlnX3QgKnBhcmVudCwgaW5wdXRfdCAqaW5wdXQsIGludCBza2lwLCBpbnQgb3ZlcnJp
+ZAogCQkJZXJyID0gLUVOT0VOVDsKIAkJCWdvdG8gX19lbmQ7CiAJCX0KLQkJZXJyID0gX3NuZF9j
+b25maWdfbWFrZV9hZGQoJm4sICZpZCwgU05EX0NPTkZJR19UWVBFX0NPTVBPVU5ELCBwYXJlbnQp
+OworCQllcnIgPSBfc25kX2NvbmZpZ19tYWtlKCZuLCAmaWQsIFNORF9DT05GSUdfVFlQRV9DT01Q
+T1VORCk7CiAJCWlmIChlcnIgPCAwKQogCQkJZ290byBfX2VuZDsKIAkJbi0+dS5jb21wb3VuZC5q
+b2luID0gdHJ1ZTsKQEAgLTE0NjQsNyArMTQ2OSw3IEBAIHN0YXRpYyBpbnQgcGFyc2VfZGVmKHNu
+ZF9jb25maWdfdCAqcGFyZW50LCBpbnB1dF90ICppbnB1dCwgaW50IHNraXAsIGludCBvdmVycmlk
+CiAJCQkJCWdvdG8gX19lbmQ7CiAJCQkJfQogCQkJfSBlbHNlIHsKLQkJCQllcnIgPSBfc25kX2Nv
+bmZpZ19tYWtlX2FkZCgmbiwgJmlkLCBTTkRfQ09ORklHX1RZUEVfQ09NUE9VTkQsIHBhcmVudCk7
+CisJCQkJZXJyID0gX3NuZF9jb25maWdfbWFrZSgmbiwgJmlkLCBTTkRfQ09ORklHX1RZUEVfQ09N
+UE9VTkQpOwogCQkJCWlmIChlcnIgPCAwKQogCQkJCQlnb3RvIF9fZW5kOwogCQkJfQpAQCAtMTQ4
+Myw2ICsxNDg4LDEwIEBAIHN0YXRpYyBpbnQgcGFyc2VfZGVmKHNuZF9jb25maWdfdCAqcGFyZW50
+LCBpbnB1dF90ICppbnB1dCwgaW50IHNraXAsIGludCBvdmVycmlkCiAJCQllcnIgPSBMT0NBTF9V
+TkVYUEVDVEVEX0NIQVI7CiAJCQlnb3RvIF9fZW5kOwogCQl9CisJCWlmICghc2tpcCAmJiBuICYm
+ICFuLT5wYXJlbnQpIHsKKwkJCWVyciA9IHNuZF9jb25maWdfYWRkKHBhcmVudCwgbik7CisJCQlp
+ZiAoZXJyIDwgMCkgeyBzbmRfY29uZmlnX2RlbGV0ZShuKTsgZ290byBfX2VuZDsgfQorCQl9CiAJ
+CWJyZWFrOwogCX0KIAlkZWZhdWx0OgoKYGBgCgpJc3N1ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRo
+dWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLWxpYi9pc3N1ZXMvNDc3ClJlcG9zaXRvcnkgVVJMOiBo
+dHRwczovL2dpdGh1Yi5jb20vYWxzYS1wcm9qZWN0L2Fsc2EtbGliCg==
