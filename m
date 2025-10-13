@@ -4,142 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BAEECCD184
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Oct 2025 11:59:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DA29CCD193
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Oct 2025 11:59:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 622206023D;
-	Sat, 18 Oct 2025 13:59:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 622206023D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D93E60255;
+	Sat, 18 Oct 2025 13:59:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D93E60255
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1760788754;
-	bh=r7V9iP+qICC9tlKBg73FN3NIr0qQ+HP+pQAEe8GVRpI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1760788770;
+	bh=cOe3G0BH5671j/qS/sTJORyXf/hboUMejotYwCwAQTk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=u4ergSV5a78fk2ZNxlwU4etHJ60hBLxHDQH+CIlc9MIGaz6TkQ/leQ6Asnso8egma
-	 5esIdLOXNlpU+wpymFTeC5kEYBMvWjNTgGGeWEGrifMDwxlG44JTAayz0oteV7oh7o
-	 iRWAf0QFryZas2DCB+WWydhUAq0c3D1NSClOmxTQ=
+	b=p2iF96X4VH4ef/ph8CeJY2Myz6EgvMN2t6M2u/FWMYbtNZGsdaMKd9RkEzrCQ9Snx
+	 fVC+fFSf15cvifyeiqBHqaQpkWxoHuFx0x8ydeuA9fcmDUAKEVKq/flL2r0xpRB8z6
+	 yB4Kqx25YKLaAIxMXMTO1qMQoVMMionuhlAOSWaI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3398DF806A1; Sat, 18 Oct 2025 13:57:19 +0200 (CEST)
+	id 43007F806C3; Sat, 18 Oct 2025 13:57:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C48BF8069F;
-	Sat, 18 Oct 2025 13:57:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E394F806C1;
+	Sat, 18 Oct 2025 13:57:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB514F80602; Thu, 16 Oct 2025 20:19:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	id D151AF805EF; Mon, 13 Oct 2025 13:32:17 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 03395F80272
-	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2025 20:19:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03395F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id AB567F80236
+	for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2025 13:32:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB567F80236
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=n4MxHswO;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=J+rKLfPX;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=n4MxHswO;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=J+rKLfPX
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2143F21DEC;
-	Thu, 16 Oct 2025 18:19:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1760638745;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0XQk2jtiUQF9M2Rh3SYURt/G9ZpH/KRHN004e7QFSMM=;
-	b=n4MxHswO5wewn3IDNMqCBhJR4LrLBFVZx5NKog/yQtmjPqgkDVHvPc3qHUqvMHgoY+4BcF
-	vdHNJOKSrlMNeuzEiqC0YKYeb3ZJ/9FfM7iFykwo7vtkdQV462vL0e3T0taU5gMQnBjI+C
-	d4K8lZluyTXVm6xhfAM93zU1ybaKyvQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1760638745;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0XQk2jtiUQF9M2Rh3SYURt/G9ZpH/KRHN004e7QFSMM=;
-	b=J+rKLfPXIkhnVxnJhuKXTmzKJQenAwhdmAkhfOncw3XWsCDWSUCsrUiQKPw3grYMjADq6s
-	BApgNUbtHXXdaEBQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1760638745;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0XQk2jtiUQF9M2Rh3SYURt/G9ZpH/KRHN004e7QFSMM=;
-	b=n4MxHswO5wewn3IDNMqCBhJR4LrLBFVZx5NKog/yQtmjPqgkDVHvPc3qHUqvMHgoY+4BcF
-	vdHNJOKSrlMNeuzEiqC0YKYeb3ZJ/9FfM7iFykwo7vtkdQV462vL0e3T0taU5gMQnBjI+C
-	d4K8lZluyTXVm6xhfAM93zU1ybaKyvQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1760638745;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0XQk2jtiUQF9M2Rh3SYURt/G9ZpH/KRHN004e7QFSMM=;
-	b=J+rKLfPXIkhnVxnJhuKXTmzKJQenAwhdmAkhfOncw3XWsCDWSUCsrUiQKPw3grYMjADq6s
-	BApgNUbtHXXdaEBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DF5CC1376E;
-	Thu, 16 Oct 2025 18:19:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0/c7NRg38WjlYAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 16 Oct 2025 18:19:04 +0000
-Date: Thu, 16 Oct 2025 20:19:04 +0200
-Message-ID: <874iry7lrb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v6.18-rc1
-In-Reply-To: <e26bc312636de276f8c7e46cba269b7f@kernel.org>
-References: <e26bc312636de276f8c7e46cba269b7f@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	URIBL_BLOCKED(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,alsa-project.org];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid]
-Message-ID-Hash: 4LUHQ75WROPRQ5E4QJXZXAQK352I5SMY
-X-Message-ID-Hash: 4LUHQ75WROPRQ5E4QJXZXAQK352I5SMY
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ZK3ngD7Y
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 726D44058F;
+	Mon, 13 Oct 2025 11:32:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C57FAC4CEE7;
+	Mon, 13 Oct 2025 11:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760355132;
+	bh=m96PGABlYdaOepyswTgRBnP+TrYhgaE0uamm4TF3lqk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZK3ngD7YgoydXPNquZipau9n/XLQUAAybdAZm4SdvmE5Tu4JxTlC77qLF74oC8XTq
+	 5Y8N7QmHz9GEuUT0o+M1mJf+r7Al8okw/bkJQqP6XA6lMS32G+jYE2VcjiPcLkyN1n
+	 UP9I2cZMgXkm5HrzJnzztGaSxjlCEhY1ax8vzAinbKKtuuCLKNqC6q53SERbdAPWg+
+	 X0tEOEyvm+JA8htxKrhYDBxxfJ+hgUgJUgBHEy7Ha3Q/sYwfzQYfyIKFrlswCE+DXj
+	 8L/G58RdD0F8Plk8I9U2QUS56aQhDbLwv2yX9ml0CBfrXsuJghhk/chq2Zv6X26o2O
+	 fIpC93j4xYzNw==
+Date: Mon, 13 Oct 2025 12:32:08 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, flove@realtek.com,
+	shumingf@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com
+Subject: Re: [PATCH v4 1/2] ASoC: rt5575: Add the codec driver for the ALC5575
+Message-ID: <ff70ca0c-a413-4bcc-8ded-f2d73ccf506a@sirena.org.uk>
+References: <20251013090805.2678409-1-oder_chiou@realtek.com>
+MIME-Version: 1.0
+In-Reply-To: <20251013090805.2678409-1-oder_chiou@realtek.com>
+X-Cookie: Ahead warp factor one, Mr. Sulu.
+Message-ID-Hash: YCNKQH6KDRBLTE5PYPUHDKB3N4CHDLL4
+X-Message-ID-Hash: YCNKQH6KDRBLTE5PYPUHDKB3N4CHDLL4
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -157,35 +87,85 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============5108999916654866175=="
+
+
+--===============5108999916654866175==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="il+/hSusFMA4pljx"
+Content-Disposition: inline
+
+
+--il+/hSusFMA4pljx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 13, 2025 at 05:08:04PM +0800, Oder Chiou wrote:
+
+> This codec driver is for the ALC5575 that has a built-in audio DSP. The
+> firmware can be loaded by the SPI from the SOC or the external flash.
+
+> +	regmap_update_bits(rt5575->regmap, RT5575_SW_INT, 1, 1);
+
+> +	ret = 1;
+> +	for (i = 0; i < 100 && ret; i++) {
+> +		regmap_read(rt5575->regmap, RT5575_SW_INT, &ret);
+> +		msleep(100);
+> +	}
+> +
+> +	return 0;
+
+Shouldn't there be an error reported if we get to the end of our 100
+loops and ret is still set?
+
+> +static int rt5575_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+> +{
+> +	return 0;
+> +}
+
+Just delete this if it's empty.
+
+> +static int rt5575_set_bias_level(struct snd_soc_component *component,
+> +			enum snd_soc_bias_level level)
+> +{
+> +	switch (level) {
+
+This also does nothing and could be removed.
+
+> +static irqreturn_t rt5575_irq(int irq, void *data)
+> +{
+> +	return IRQ_HANDLED;
+> +}
+
+This seems strange?  Why even register an interrupt handler if we're
+just going to ignore it?
+
+--il+/hSusFMA4pljx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmjs4zcACgkQJNaLcl1U
+h9A5XQf/dob1cVHl8XTpv+8MZSMNg2cb9Z5olL8Z38rg6j0sqW3FaPwgMWL4mYOz
+a3RSjUaRcuoVG3qd4mWbkO83ysx/mjqYoCdLNJVS4M5xqHw3cCvltTb4cHda7Hg0
+U21hPf9ZrkoYULf/f24bRzSJFU8zIikHtqKt5EjdkbFlAd3asXqQZpc25DIfIz1h
+XupUPCH4jN2atpkW8kouJPZDeoCoMOu7tuBVXB2VxfkbMzPK/ixzuuuO17wvhLhA
+FCBG0t1Hpm3B6SH927Xy8zGR2GbBUQOFsFHa/luWtM6CEH3v+3fVpwLZr4OA3Muc
+nL1O84HDeb0Pem7ts52DryufYKQDYg==
+=raqK
+-----END PGP SIGNATURE-----
+
+--il+/hSusFMA4pljx--
+
+--===============5108999916654866175==
 Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-On Thu, 16 Oct 2025 19:04:02 +0200,
-Mark Brown wrote:
-> 
-> The following changes since commit 3a8660878839faadb4f1a6dd72c3179c1df56787:
-> 
->   Linux 6.18-rc1 (2025-10-12 13:42:36 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.18-rc1
-> 
-> for you to fetch changes up to f1a450f9e17d341f69f8fb19f6d13ef9f1aa508b:
-> 
->   ASoC: nau8821: Fix IRQ handling and improve jack (2025-10-16 12:41:35 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.18
-> 
-> A moderately large collection of driver specific fixes, plus a few new
-> quirks and device IDs.  The NAU8821 changes are a little large but more
-> in mechanical ways than in ways that are complex.
-
-Pulled now.  Thanks.
-
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list -- alsa-devel@alsa-project.org
 To unsubscribe send an email to alsa-devel-leave@alsa-project.org
+
+--===============5108999916654866175==--
