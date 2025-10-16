@@ -4,87 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C593FCCD193
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Oct 2025 11:58:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70EA4CCD184
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Oct 2025 11:58:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F69F60232;
-	Sat, 18 Oct 2025 13:58:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F69F60232
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0A4E601F9;
+	Sat, 18 Oct 2025 13:58:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0A4E601F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1760788720;
-	bh=9jYpbn8PE6LsImNmKQekyCHKFI+mZ0iotXk2kgY83Zo=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=m5KF3oVrllHLSC54WZHxf6/ktezwZjwaa9YYjrUz48mvdADcUnOwx65cAfWlap21M
-	 u60a3/S7EiPPEmpftuoMJRi1Ob0kRESp4W8F1vG0CbxD3XD/CjxSRTRTG06v9M0UpT
-	 p57vb4kdzHnSNrlf6c31rtgEE6gF8UNH0e/dXcAc=
+	s=default; t=1760788736;
+	bh=l7P8vgL5pJ7GxVy8Nsi8UoZgOcV57M3R6XY5X0LFIb4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=kuIQEku9ElEXZ/lndxpxeKiAcfaRxuLwh7t7P+r8hSeXRqQfFGoRr9sJKyj1EewzI
+	 5Z9rndO4Vo+T04dMQYNpfEgKOLVh93ptkHjSE0qqk7hc1VJuEdhg6IPu208AW3GEtx
+	 EdekuKlOgTZj8ncI5KHzhpn1Pqsd8POm8up8CefE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9BE6F80635; Sat, 18 Oct 2025 13:57:16 +0200 (CEST)
+	id DD19AF80671; Sat, 18 Oct 2025 13:57:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4F6BF80635;
-	Sat, 18 Oct 2025 13:57:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6847F8067F;
+	Sat, 18 Oct 2025 13:57:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E343F805D4; Wed, 15 Oct 2025 12:35:06 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	id 0C08AF805FA; Thu, 16 Oct 2025 19:04:17 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CA9CFF800D2
-	for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2025 12:34:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA9CFF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0FC54F8016A
+	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2025 19:04:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FC54F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=We2aEycd
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 59FAYmkT6782519,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1760524488; bh=LRe5HHaJZ+PKbIf6PPoCgzmS5UQrHCwFuVDQ+Vg2ai8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding:Content-Type;
-	b=We2aEycd7/xhGYTvOlZHl/AgcFm2Mlqkz0OlRtcqhV2THGT+4I/qefx38wmr0MyAe
-	 OvtTBH6BJz3EM4tt78rwD+7W7HqgcI4vmOVOf/UA+t3IbwUIXgLlvqkVLNJgRWpUKD
-	 kbg9USJ/7anfbSobxHy+LhgRY9n7acWCxhc2D98DSHU/caFCjGr9enu8VgiOmeuq2b
-	 +2wjUiENYh5XSuREmpCIO49mWUF8xFtCHB0PRLDlZm8/EnMfOLn71gXzx2xrMb272l
-	 4zlKGNlLjcZ9KzN97Wh3Dd1amV3Gz/7XnlOdMsHgBmpZy+zdHKI63ryOgSf7vDc7jx
-	 Kgn7nLJyMZOQg==
-Received: from mail.realtek.com (rtkexhmbs02.realtek.com.tw[172.21.6.41])
-	by rtits2.realtek.com.tw (8.15.2/3.13/5.93) with ESMTPS id 59FAYmkT6782519
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 15 Oct 2025 18:34:48 +0800
-Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
- RTKEXHMBS02.realtek.com.tw (172.21.6.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.27; Wed, 15 Oct 2025 18:34:49 +0800
-Received: from sw-server.localdomain (172.24.54.4) by
- RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.27; Wed, 15 Oct 2025 18:34:49 +0800
-From: Oder Chiou <oder_chiou@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <flove@realtek.com>,
- <shumingf@realtek.com>,
-        <jack.yu@realtek.com>, <derek.fang@realtek.com>,
-        "Oder Chiou" <oder_chiou@realtek.com>
-Subject: [PATCH v5 2/2] ASoC: dt-bindings: realtek,rt5575: add bindings for
- ALC5575
-Date: Wed, 15 Oct 2025 18:34:04 +0800
-Message-ID: <20251015103404.3075684-2-oder_chiou@realtek.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251015103404.3075684-1-oder_chiou@realtek.com>
-References: <20251015103404.3075684-1-oder_chiou@realtek.com>
-MIME-Version: 1.0
-X-Originating-IP: [172.24.54.4]
-X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
- RTKEXHMBS06.realtek.com.tw (10.21.1.56)
-Message-ID-Hash: XBGGLYWJKGZZVWOP672OQPL7IFIB65IC
-X-Message-ID-Hash: XBGGLYWJKGZZVWOP672OQPL7IFIB65IC
-X-MailFrom: oder_chiou@realtek.com
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=JZK6rCOq
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 1FDCD4397E;
+	Thu, 16 Oct 2025 17:04:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 782DDC4CEFB;
+	Thu, 16 Oct 2025 17:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760634252;
+	bh=AZDRJ6u8NLAI0+WZkR6rDMpVycU/yadnAjlDLNNuHr0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JZK6rCOqkDBatvaz7ceUxcTjWF18bxZdN8TAriuKNVbfg788rDuv1iOZvcwMPww7w
+	 UnPCP7e32BSY9j7tAlbHDG4TD/nonc2cAZ3N63KvbA7i8e0FxsngOZUfthcD66PfUY
+	 6v+BQsBzAHjM1g0yeARelxGR6hP6j8q5rg55OEKFs4VVrw4fMGHxVwHwfFg0axqkp2
+	 yVOxLxPYr180NGnz8hWoaPAOO7y6q8zX1EXIwve1KF1Pb7nrFiWyJI99dYyPXu9uw+
+	 BOlqrg0aEZpsrTlrz5bvNwJa54LB/gDCRsX/Gp+LuZkAlMpQ/Lucy5iua7jMTqYZQe
+	 uRIdRODiFcAhA==
+Message-ID: <e26bc312636de276f8c7e46cba269b7f@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v6.18-rc1
+Date: Thu, 16 Oct 2025 18:04:02 +0100
+Message-ID-Hash: 23PB7E56FK2XRCE6CN57TC4OAQKLZBHN
+X-Message-ID-Hash: 23PB7E56FK2XRCE6CN57TC4OAQKLZBHN
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,67 +82,81 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-Realtek ALC5575 codec has a built-in DSP.
+The following changes since commit 3a8660878839faadb4f1a6dd72c3179c1df56787:
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- .../bindings/sound/realtek,rt5575.yaml        | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/realtek,rt5575.yaml
+  Linux 6.18-rc1 (2025-10-12 13:42:36 -0700)
 
-diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5575.yaml b/Documentation/devicetree/bindings/sound/realtek,rt5575.yaml
-new file mode 100644
-index 000000000000..8fbcb64ae1d3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/realtek,rt5575.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/realtek,rt5575.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ALC5575 audio CODEC
-+
-+maintainers:
-+  - Oder Chiou <oder_chiou@realtek.com>
-+
-+description: |
-+  This device supports both I2C and SPI.
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: realtek,rt5575
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        codec@57 {
-+            compatible = "realtek,rt5575";
-+            reg = <0x57>;
-+        };
-+    };
--- 
-2.34.1
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.18-rc1
+
+for you to fetch changes up to f1a450f9e17d341f69f8fb19f6d13ef9f1aa508b:
+
+  ASoC: nau8821: Fix IRQ handling and improve jack (2025-10-16 12:41:35 +0100)
+
+----------------------------------------------------------------
+ASoC: Fixes for v6.18
+
+A moderately large collection of driver specific fixes, plus a few new
+quirks and device IDs.  The NAU8821 changes are a little large but more
+in mechanical ways than in ways that are complex.
+
+----------------------------------------------------------------
+Baojun Xu (2):
+      ASoC: tas2781: Support more newly-released amplifiers tas58xx in the driver
+      ASoC: tas2781: Update ti,tas2781.yaml for adding tas58xx
+
+Christophe Leroy (1):
+      ASoC: codecs: Fix gain setting ranges for Renesas IDT821034 codec
+
+Cristian Ciocaltea (5):
+      ASoC: nau8821: Cancel jdet_work before handling jack ejection
+      ASoC: nau8821: Generalize helper to clear IRQ status
+      ASoC: nau8821: Consistently clear interrupts before unmasking
+      ASoC: nau8821: Add DMI quirk to bypass jack debounce circuit
+      ASoC: nau8821: Avoid unnecessary blocking in IRQ handler
+
+Frank Li (1):
+      ASoC: dt-bindings: Add compatible string fsl,imx-audio-tlv320
+
+Le Qi (2):
+      ASoC: dt-bindings: qcom,sm8250: Add QCS615 sound card
+      ASoC: qcom: sc8280xp: Add support for QCS615
+
+Li Qiang (1):
+      ASoC: amd/sdw_utils: avoid NULL deref when devm_kasprintf() fails
+
+Mark Brown (2):
+      ASoC: Add QCS615 sound card support
+      ASoC: nau8821: Fix IRQ handling and improve jack
+
+Sharique Mohammad (1):
+      ASoC: max98090/91: fixed max98091 ALSA widget powering up/down
+
+Shuming Fan (1):
+      ASoC: sdw_utils: add rt1321 part id to codec_info_list
+
+Srinivas Kandagatla (1):
+      ASoC: codecs: wcd938x-sdw: remove redundant runtime pm calls
+
+ .../devicetree/bindings/sound/fsl-asoc-card.yaml   |   1 +
+ .../devicetree/bindings/sound/qcom,sm8250.yaml     |   1 +
+ .../devicetree/bindings/sound/ti,tas2781.yaml      |  43 ++++++-
+ include/sound/tas2781.h                            |   3 +
+ sound/soc/amd/acp/acp-sdw-sof-mach.c               |   2 +-
+ sound/soc/codecs/idt821034.c                       |  12 +-
+ sound/soc/codecs/max98090.c                        |   6 +-
+ sound/soc/codecs/nau8821.c                         | 129 +++++++++++++--------
+ sound/soc/codecs/nau8821.h                         |   2 +-
+ sound/soc/codecs/tas2781-i2c.c                     |  21 +++-
+ sound/soc/codecs/wcd938x-sdw.c                     |  20 +---
+ sound/soc/qcom/sc8280xp.c                          |   1 +
+ sound/soc/sdw_utils/soc_sdw_utils.c                |  20 ++++
+ 13 files changed, 177 insertions(+), 84 deletions(-)
 _______________________________________________
 Alsa-devel mailing list -- alsa-devel@alsa-project.org
 To unsubscribe send an email to alsa-devel-leave@alsa-project.org
