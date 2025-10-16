@@ -4,78 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 906A5CCD184
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Oct 2025 11:58:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 625FFCCD193
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Oct 2025 11:58:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4DB460226;
-	Sat, 18 Oct 2025 13:57:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4DB460226
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB1FF60231;
+	Sat, 18 Oct 2025 13:58:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB1FF60231
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1760788684;
-	bh=cQ7DE6REN0yPTSH4eL7ZwkxyXRxlvtAzgRdsqKEfttw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=utK4PMfNo9waK/2ZDqPvPyc8Vw6XaYBlCvKbpI2lm8t9awxU6oAJglyzl4mmWOAVO
-	 5bAksDF0PG1RIhaVZ6awuvqJSwio3VFf+wdwQaK85OtFLWCaXGiVy3xcl2sEAyem76
-	 yKPPvO0FEWJauLw17bMt2B181Wmqq00bXxxYX8xk=
+	s=default; t=1760788712;
+	bh=tu1fnjsttpwtsk8UZ7lsq2GzgNhTOfsbHt77sJrjizs=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=KGaYF2wsFAmZ5GjNkvlMzcs2cmlPMl3P6ftZn/cfcaNts8nTEFz80tnYnt4Z37IPC
+	 2lLSoW0sIhEZ/rhvkvrfp/INwsEZtnVzf1nvYpRco82RynRQ5IeUtoB64+gZeKclzK
+	 jcLMQ/Glu/zhAY8EQOjUBSA+7SbtPbxT8NPt7U5s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4641F805C4; Sat, 18 Oct 2025 13:57:14 +0200 (CEST)
+	id E659BF8061E; Sat, 18 Oct 2025 13:57:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88EA4F805C9;
-	Sat, 18 Oct 2025 13:57:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9480F8060F;
+	Sat, 18 Oct 2025 13:57:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7DD7F805CA; Wed, 15 Oct 2025 11:49:56 +0200 (CEST)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF294F800F8
-	for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2025 11:49:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF294F800F8
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ECyxHhE2
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1DB4A4032E;
-	Wed, 15 Oct 2025 09:49:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C451C4CEF8;
-	Wed, 15 Oct 2025 09:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760521791;
-	bh=NJZvW+JYKZcvHAok/gYBcGxTybf9PkX3/50tqo3ey38=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ECyxHhE2CgnU38zjNUREyLuuvYEny0b2nr81cS0njxwtyESpV/L2UBdbpXrIZQc2U
-	 VRIfjrqMS2wcoXDRsM0Sjf9hXWxLGNpn265UNQYd3b/qVScb79TndN+3dJ8iD8ndjQ
-	 8m2HKsaKjAWy9wKmj9w6LndxIePCUkP68jAb/xVdnBRa74zhlsSTh50ccHuG5dHUDd
-	 4+0emSWU/aVqPQxP+0rBaKxys17Dwlljx9+/al9l8iBPCxEO3pWXfSjj2dU0KbSpAj
-	 +w+07O0iajTCTdtkCiGnmWLZ7K1yxVJv2OaWyI906gChGwuHeTKtxqiH4//FAcEpVL
-	 pLgoAS+1q3OZA==
-From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.de, Baojun Xu <baojun.xu@ti.com>
-Cc: andriy.shevchenko@linux.intel.com, 13916275206@139.com,
- alsa-devel@alsa-project.org, shenghao-ding@ti.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- lgirdwood@gmail.com, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, devicetree@vger.kernel.org, k-yi@ti.com,
- henry.lo@ti.com, robinchen@ti.com, jesse-ji@ti.com, will-wang@ti.com,
- jim.shil@goertek.com, toastcheng@google.com, chinkaiting@google.com
-In-Reply-To: <20251002072925.26242-1-baojun.xu@ti.com>
-References: <20251002072925.26242-1-baojun.xu@ti.com>
-Subject: Re: [PATCH v4 1/2] ASoC: tas2781: Support more newly-released
- amplifiers tas58xx in the driver
-Message-Id: <176052178677.20166.7273787337857943286.b4-ty@kernel.org>
-Date: Wed, 15 Oct 2025 10:49:46 +0100
+	id 8D24FF805D5; Thu, 16 Oct 2025 16:33:35 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id E90FEF800E3
+	for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2025 16:33:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E90FEF800E3
 MIME-Version: 1.0
-X-Mailer: b4 0.15-dev-96507
-Message-ID-Hash: HACVUQNDTXBGSG64LPIBSF3UDUWXOOQX
-X-Message-ID-Hash: HACVUQNDTXBGSG64LPIBSF3UDUWXOOQX
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <186eff4db4390200-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/625@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/625@alsa-project.org>
+Subject: ucm2: Add support for MT8196 Rauru Rev0 Chromebook with SOF
+Date: Thu, 16 Oct 2025 16:33:35 +0200 (CEST)
+Message-ID-Hash: HQ2PTDF2J362C3FZEQPQMY6P4KKLMASG
+X-Message-ID-Hash: HQ2PTDF2J362C3FZEQPQMY6P4KKLMASG
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,44 +63,15 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-On Thu, 02 Oct 2025 15:29:24 +0800, Baojun Xu wrote:
-> TAS5802/TAS5815/TAS5828 has on-chip DSP without current/voltage feedback.
-> 
-> 
+alsa-project/alsa-ucm-conf pull request #625 was opened from laura-nao:
 
-Applied to
+Add support for the Google Rauru Rev0 Chromebook, powered by MediaTek Kompanio Ultra (MT8196). This machine uses NAU8825 as headphone codec and NAU8318 as speaker codec.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: tas2781: Support more newly-released amplifiers tas58xx in the driver
-      commit: 53a3c6e222836a23e8e0693395584aefc456dca6
-[2/2] ASoC: tas2781: Update ti,tas2781.yaml for adding tas58xx
-      commit: 7e6cfa3e94cf8278ee3170dc0b81fc6db1287e28
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/625
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/625.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
 _______________________________________________
 Alsa-devel mailing list -- alsa-devel@alsa-project.org
 To unsubscribe send an email to alsa-devel-leave@alsa-project.org
