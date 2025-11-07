@@ -4,49 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DEF5CCF9E3
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Nov 2025 13:08:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46EEFCCF9F8
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Nov 2025 15:15:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6129A60210;
-	Fri,  7 Nov 2025 14:08:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6129A60210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02806601FF;
+	Fri,  7 Nov 2025 16:15:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02806601FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1762520895;
-	bh=mizHSBU+YmOT1shwR9tIFQ74bGubbCastYf1JyNdInY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=dIIn9QieKFJspQA1nKlePnytG8b/joTX1qK3bVopw9yPonbjKssvJmiEnhlrWh3as
-	 uuFtK82H0d99Niq3YlYaCUv0heN7W9fDc8cQJ2mCVRyGq78Br6B4+C1sTaA3M53rMs
-	 hgPCBU8Kxa9OTNYg5iaIgKmNKXAESPY3ud/Nhi+8=
+	s=default; t=1762528551;
+	bh=EbnfNKkSepBd/7qLPuAJsdb/5Ar1OyTON0O/zB8u33k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RhIj60cSNGExh3HUiY73+WPnttICxQWvA8wWGtkf2Hb9WI07sGqtIs7ABtIuF/koN
+	 MT89mAgs4B3TGuW140hnGPAiTqT0YP926EIisaz+1hjeAaznSWIobKGQ8gD/IOzXrT
+	 lx/tCjHsIl6u8/WtSffD2gEb6U/5igdVzHmJvp3Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 438B4F805F0; Fri,  7 Nov 2025 14:07:39 +0100 (CET)
+	id C76E9F805C9; Fri,  7 Nov 2025 16:15:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFE99F805E9;
-	Fri,  7 Nov 2025 14:07:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 653C7F805C5;
+	Fri,  7 Nov 2025 16:15:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0BD97F805D6; Fri,  7 Nov 2025 14:07:34 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8ED7F805C8
-	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2025 14:07:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8ED7F805C8
+	id 20668F8055B; Fri,  7 Nov 2025 16:14:51 +0100 (CET)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 476BDF80100
+	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2025 16:14:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 476BDF80100
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=gm/zFBIp
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 8244D41704;
+	Fri,  7 Nov 2025 15:14:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97DF3C4CEF5;
+	Fri,  7 Nov 2025 15:14:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762528484;
+	bh=EbnfNKkSepBd/7qLPuAJsdb/5Ar1OyTON0O/zB8u33k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=gm/zFBIpAC+oEM0mMOWDYFMkB4cyLYmu2pRfdxna/9jh3TU8UdmPLQ4QaYaxviaY1
+	 iBw1PiS/jk0tnaIMVwOh18TUOcl5Mwe9CJHwBfOj1w9PFR/xMzmmD04I39IBLKjkCn
+	 yMha62fbnnVznawIPKE5BQUgmklkbCX+xaOD9VLafFJEis3btz48auUtznHXvkGb7t
+	 JjxDa09aD3af/j8N6Dkx+iY9+al8b5gze8UT9/YUsWJ/fnrhGonJgYvFAZot9nQzqS
+	 jg3DMnwzzX0Kp7HvdLoCxxnIbxAWGk6s7T2K4suxsWJo50TL5MxPw8+ELw+FDGoz0r
+	 UNFRGpvpHgfpA==
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: andriy.shevchenko@linux.intel.com, tiwai@suse.de, 13916275206@139.com,
+ 13564923607@139.com, alsa-devel@alsa-project.org, baojun.xu@ti.com
+In-Reply-To: <20251107054959.950-1-shenghao-ding@ti.com>
+References: <20251107054959.950-1-shenghao-ding@ti.com>
+Subject: Re: [PATCH v1] ASoC: tas2781: fix getting the wrong device number
+Message-Id: <176252848127.2504843.9477294733658012266.b4-ty@kernel.org>
+Date: Fri, 07 Nov 2025 15:14:41 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1875bb60946d9600-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/638@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/638@alsa-project.org>
-Subject: ucm2: Qualcomm: add TUXEDO Elite 14 support
-Date: Fri,  7 Nov 2025 14:07:34 +0100 (CET)
-Message-ID-Hash: UKJB4HWS3F5CLOOINXGOKI6X2GVGZWED
-X-Message-ID-Hash: UKJB4HWS3F5CLOOINXGOKI6X2GVGZWED
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.15-dev-a6db3
+Message-ID-Hash: XYOWN2TTOHNHRPZW3HTFOUXQ6AOKM6FF
+X-Message-ID-Hash: XYOWN2TTOHNHRPZW3HTFOUXQ6AOKM6FF
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UKJB4HWS3F5CLOOINXGOKI6X2GVGZWED/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XYOWN2TTOHNHRPZW3HTFOUXQ6AOKM6FF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,19 +92,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #638 was edited from ektor5:
+On Fri, 07 Nov 2025 13:49:59 +0800, Shenghao Ding wrote:
+> The return value of device_property_read_u32_array used for getting the
+> property is the status instead of the number of the property.
+> 
+> 
 
-TUXEDO Elite 14 Gen1 (Snapdragon X Elite) supports:
--  4 speakers
--  2 dmics
--  Headset
--  DisplayPort (USB)
--  HDMI
+Applied to
 
-Adding support to all above with this patchset.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Signed-off-by: Ettore Chimenti <ettore.chimenti@linaro.org>
+Thanks!
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/638
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/638.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+[1/1] ASoC: tas2781: fix getting the wrong device number
+      commit: 29528c8e643bb0c54da01237a35010c6438423d2
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
