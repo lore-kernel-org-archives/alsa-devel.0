@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F057CCFA05
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Nov 2025 13:08:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DEF5CCF9E3
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Nov 2025 13:08:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 102AC60201;
-	Fri,  7 Nov 2025 14:07:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 102AC60201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6129A60210;
+	Fri,  7 Nov 2025 14:08:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6129A60210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1762520879;
-	bh=9hwMSx7hM/2ddUF3QhDgU4kJuHZKjLOnhcyvB9H5Bfs=;
+	s=default; t=1762520895;
+	bh=mizHSBU+YmOT1shwR9tIFQ74bGubbCastYf1JyNdInY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=T0/jjwx9v2z824aJ+vpwMa5ChXM6lCxt06jj41xvr6Vm1WFEXe7GMr/HZ+6T9lZtd
-	 NVJn/iIoA6mWEPofAm07JnWbmqyBckgnMryXqaaUnNU6CYRWrWYDWz8CZtuN5wBldi
-	 YdjH08e473ZUywUvlvopQIOk1NChZpRUUo1Dwznw=
+	b=dIIn9QieKFJspQA1nKlePnytG8b/joTX1qK3bVopw9yPonbjKssvJmiEnhlrWh3as
+	 uuFtK82H0d99Niq3YlYaCUv0heN7W9fDc8cQJ2mCVRyGq78Br6B4+C1sTaA3M53rMs
+	 hgPCBU8Kxa9OTNYg5iaIgKmNKXAESPY3ud/Nhi+8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A992F805D5; Fri,  7 Nov 2025 14:07:22 +0100 (CET)
+	id 438B4F805F0; Fri,  7 Nov 2025 14:07:39 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACDB2F805D2;
-	Fri,  7 Nov 2025 14:07:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFE99F805E9;
+	Fri,  7 Nov 2025 14:07:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B1E1F8055B; Fri,  7 Nov 2025 14:07:10 +0100 (CET)
+	id 0BD97F805D6; Fri,  7 Nov 2025 14:07:34 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5617FF80100
-	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2025 14:07:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5617FF80100
+	by alsa1.perex.cz (Postfix) with ESMTP id A8ED7F805C8
+	for <alsa-devel@alsa-project.org>; Fri,  7 Nov 2025 14:07:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8ED7F805C8
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1875bb5a04050c00-webhooks-bot@alsa-project.org>
+Message-Id: <1875bb60946d9600-webhooks-bot@alsa-project.org>
 In-Reply-To: <alsa-project/alsa-ucm-conf/pr/638@alsa-project.org>
 References: <alsa-project/alsa-ucm-conf/pr/638@alsa-project.org>
 Subject: ucm2: Qualcomm: add TUXEDO Elite 14 support
-Date: Fri,  7 Nov 2025 14:07:10 +0100 (CET)
-Message-ID-Hash: HEC6QCRC37YTZ2K52EZRJIHQR6AVULHA
-X-Message-ID-Hash: HEC6QCRC37YTZ2K52EZRJIHQR6AVULHA
+Date: Fri,  7 Nov 2025 14:07:34 +0100 (CET)
+Message-ID-Hash: UKJB4HWS3F5CLOOINXGOKI6X2GVGZWED
+X-Message-ID-Hash: UKJB4HWS3F5CLOOINXGOKI6X2GVGZWED
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HEC6QCRC37YTZ2K52EZRJIHQR6AVULHA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UKJB4HWS3F5CLOOINXGOKI6X2GVGZWED/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,14 +67,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #638 was opened from ektor5:
+alsa-project/alsa-ucm-conf pull request #638 was edited from ektor5:
 
 TUXEDO Elite 14 Gen1 (Snapdragon X Elite) supports:
-	- 4 speakers
-	- 2 dmics
-	- Headset
-	- DisplayPort (USB)
-	- HDMI
+-  4 speakers
+-  2 dmics
+-  Headset
+-  DisplayPort (USB)
+-  HDMI
 
 Adding support to all above with this patchset.
 
