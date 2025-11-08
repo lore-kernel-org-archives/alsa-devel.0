@@ -4,92 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51F9ECCFA13
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Nov 2025 14:51:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6056FCCF9E3
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Nov 2025 14:51:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84404603B4;
-	Mon, 10 Nov 2025 15:51:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84404603B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD97B603A4;
+	Mon, 10 Nov 2025 15:51:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD97B603A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1762786281;
-	bh=TQv944OsNJBy399bRPOXpN9cFgowfIvc7mJdW7mtYBc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1762786301;
+	bh=WXp+t1SQJvUEAyNT6d0/mfZe9itgiRZmO0Gc/OuI4AU=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DAJeLpC9GoEgmum5F1MdHdPszSRzmqkDd31pKBVEoxcS7O7yqJ6KeW7fGQpj3o3Bs
-	 ONBBH5Sif+ZkFF0/vH/9gHNYpSBxmfBuUgDy2s+21Sp24uBhOhcd0z1BuNAs1tVA/a
-	 oGLfb4uiOt68Qc/BInfsKHVyMQLJAlDa3fAOhw0A=
+	b=nrORjghiGQcTp2MJxXc5apl6osQ4RI1kHXlaKLtBL1Q5+DfbQDk/5J9rS4+NLIKFP
+	 arOWv2r3F67AknZ0h0kQT+4PxiWrrNddM5Y/EpUuw/MyUUG5BOfNGU/9sZGQdsTmWB
+	 zMVUPl75xwa8aASodtukmju27jAhadbGrLX4z67w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4FEA5F89886; Mon, 10 Nov 2025 15:42:52 +0100 (CET)
+	id CE61CF89891; Mon, 10 Nov 2025 15:43:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17176F89885;
-	Mon, 10 Nov 2025 15:42:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09EC3F8989C;
+	Mon, 10 Nov 2025 15:43:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7FDEEF80272; Thu,  6 Nov 2025 06:39:19 +0100 (CET)
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id BFFA6F804B2; Sat,  8 Nov 2025 10:17:42 +0100 (CET)
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com
+ [209.85.215.175])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D4C4AF80100
-	for <alsa-devel@alsa-project.org>; Thu,  6 Nov 2025 06:39:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C4AF80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4BA08F80100
+	for <alsa-devel@alsa-project.org>; Sat,  8 Nov 2025 10:17:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BA08F80100
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
- header.s=s110527 header.b=jUljfr+5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=C/
-	qSfn8XWm+oaCfY2V1Q0d+VxMXeZuMkTYlNsiNF8Y4=; b=jUljfr+5Q1323SHae5
-	MkgDS4zSYU/yb6jIRf28Q+fMXdaY/vsr0TvgEeOow7LsWDwswmm7hgq/NG7zcIqK
-	0TAk0UWJSwMnyzc60eMH5D8WWmwf2ZafVAU0hVJinzm+tV5NP7Itf3TNk+mojCv3
-	I7aXl7VMnDznavLUwlVvwA3Hs=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id
- _____wD3f5N4NAxpLAQPCA--.4683S2;
-	Thu, 06 Nov 2025 13:39:05 +0800 (CST)
-From: wangdich9700@163.com
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	cezary.rojewski@intel.com
-Cc: linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-arm-kernel@lists.infradead.org,
-	wangdicheng <wangdich9700@163.com>,
-	wangdicheng <wangdicheng@kylinos.cn>
-Subject: [PATCH] ALSA: hda/senary: Replace magic numbers with defined
- constants
-Date: Thu,  6 Nov 2025 13:39:02 +0800
-Message-Id: <20251106053902.98614-1-wangdich9700@163.com>
-X-Mailer: git-send-email 2.25.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=LbF5cQVI
+Received: by mail-pg1-f175.google.com with SMTP id
+ 41be03b00d2f7-b67684e2904so953272a12.2
+        for <alsa-devel@alsa-project.org>;
+ Sat, 08 Nov 2025 01:17:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762593454; x=1763198254;
+ darn=alsa-project.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BF1eFDBnyhFVH7OymT/t34FosRgtQVJAURpVDvc5CWE=;
+        b=LbF5cQVIh7DXR1QfKlCNF7tOFfcX2nMG6FQ8ayzEvzEDrCUNxRpbZvbGLxHX6HLwOQ
+         BnFMEwKDhGQU9aovFClhJ9SvjnyBUC/NpcysACIUmKqf+Hdu3LU9wuMlsi9vdX3pnC/Z
+         t2XYDWVVDS1z9juHD7S2+weBwO1AI3bJ+JBCsOGMBlkdXC4daMSgCWkMBMkQ2EEQeNPJ
+         ESWvC3KjfxbnzPRl/ggDYTaq2l92oagceZXD/sjT53PTajfOjN2GiV6vpnTZO/UAS/fT
+         lX/wVWBHMijdz3GtvMnF0M1LF8z6nIIxprkkrBOwWnc9nMoiHIKXLzDoYV6qBGfUx6Pu
+         IxzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762593454; x=1763198254;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BF1eFDBnyhFVH7OymT/t34FosRgtQVJAURpVDvc5CWE=;
+        b=Y0e6TgQEHz/iYokHI8sCKOl3KZGbeD7Cl6tvAxIe6i+7Uh/YFX9FdUlyPSLJyxbOkU
+         wV5ocLNpAyiRtYtSzxdkUqWEUL1i+BWgeLJAGzzKTYu0LsszOCDlH/ktjAuuCCujakzZ
+         zAutQiCUSPzoL5HyEGZCYi8vVBiRG+zvJgKSqzGut04aeyu+ljXLNrGNUb8ZMZs4aK2D
+         sHiPOQgLZNgsCil/eu3uFdwnetXDKJS8Kwn5QgMMqY52iOZC8Aj7mYQ+5stLKL6CALBO
+         5f0/M6oXGlmSGv/hKrxq1lQipxqTD8FfIQfPFaUhTVGYnvQFnnATigZrt39HucyxAV9d
+         8ZQg==
+X-Gm-Message-State: AOJu0YxMuFQHk8jFhGNQZTek12+NebissapvvwmmyTKOluGsI7huc8PH
+	s1PZ6E9sOxbOEJM5JGWa/YdP4HFvfxy21Y/GbYS4LO029bQy5qyfN/Kh9uZ8wlRkZTKiu36bwNh
+	hBdyczchIOXEvAy0k6h2noEpNW2qfEkSiP8wr
+X-Gm-Gg: ASbGncu707K6LBdzjZj/fdm6teX3Ds97vO0IJSP/jKCxZ4yMvb8yPtfIzy29InqmX0w
+	hUehGamD87w87+PquPlH2DCuYgwFbsR0TNDmFWFfbHGRJtEd0Y3YJFevS90qm3lNNk4Z9yDzETL
+	PBteJsfN9F1W9weTjXmepjTps91AgNt8A1ZoxpPFKB+Fke8Pl6LuZMmcj31A+cR9+RltaJRZ4fE
+	yGuO8AXHRf7YlylorS49svaxo8J/055BQQkn3EqXmvhzqYMcjRiAUwzSKI3YKsspSOeVjE=
+X-Google-Smtp-Source: 
+ AGHT+IGQYkfLNVfjv55WHX8RRIHyluAzPrAIC+XpZvzzjuG5atvev5X8pS1n1eRUZP0gTKB3ktMGRYGwEwkDAfURBNY=
+X-Received: by 2002:a17:90a:e710:b0:341:8bdd:5cf3 with SMTP id
+ 98e67ed59e1d1-3436cb739d3mr2632876a91.7.1762593453568; Sat, 08 Nov 2025
+ 01:17:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD3f5N4NAxpLAQPCA--.4683S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur47tryktFy5KFWfAF43ZFb_yoW8GF18pF
-	n0kFyrKrZ3Jr10yF18GayfZFyrGas8WF43K342g3WYvan2krykX3Wjqryaq3W3JF9rK3Wa
-	vryxZ34UCryqyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pis2-UUUUUU=
-X-Originating-IP: [116.128.244.169]
-X-CM-SenderInfo: pzdqwv5lfkmliqq6il2tof0z/1tbiRwL9T2kMMBRlBwAAsU
-X-MailFrom: wangdich9700@163.com
+From: =?UTF-8?Q?Marco_Aurelio_Osorio_De_Le=C3=B3n?= <osoriodeleon@gmail.com>
+Date: Sat, 8 Nov 2025 10:17:22 +0100
+X-Gm-Features: AWmQ_blvYBCqfyOCquYr4zeq1DlMWBUnpBU5N8hZNsVQr1NhnGxR0Hm07vb5fVg
+Message-ID: 
+ <CAEKXz6tLo5QnPCy+8JE_XA+_6dnLO2rHk89eUd=Dwf4vOb_VVw@mail.gmail.com>
+Subject: [REGRESSION?] No sound from internal speakers on Teclast T.BOLT with
+ Realtek ALC256
+To: alsa-devel@alsa-project.org
+X-MailFrom: osoriodeleon@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PT5G7FYTA3VGW6SFDVNDB5AKHNL7ADV3
-X-Message-ID-Hash: PT5G7FYTA3VGW6SFDVNDB5AKHNL7ADV3
-X-Mailman-Approved-At: Mon, 10 Nov 2025 14:42:06 +0000
+Message-ID-Hash: 6E2JFHXGE67QZTS4VC3T5YWLLKOGWF4X
+X-Message-ID-Hash: 6E2JFHXGE67QZTS4VC3T5YWLLKOGWF4X
+X-Mailman-Approved-At: Mon, 10 Nov 2025 14:42:55 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PT5G7FYTA3VGW6SFDVNDB5AKHNL7ADV3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6E2JFHXGE67QZTS4VC3T5YWLLKOGWF4X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,45 +115,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: wangdicheng <wangdich9700@163.com>
-
-Replace hardcoded GPIO node value with a defined constant for better
-code readability and maintainability.
-
-Signed-off-by: wangdicheng <wangdicheng@kylinos.cn>
----
- sound/hda/codecs/senarytech.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/sound/hda/codecs/senarytech.c b/sound/hda/codecs/senarytech.c
-index 99af8d5e51db..d61d57538bc9 100644
---- a/sound/hda/codecs/senarytech.c
-+++ b/sound/hda/codecs/senarytech.c
-@@ -19,6 +19,9 @@
- #include "hda_jack.h"
- #include "generic.h"
- 
-+/* GPIO node ID */
-+#define SENARY_GPIO_NODE		0x01
-+
- struct senary_spec {
- 	struct hda_gen_spec gen;
- 
-@@ -131,11 +134,11 @@ static void senary_init_gpio_led(struct hda_codec *codec)
- 	unsigned int mask = spec->gpio_mute_led_mask | spec->gpio_mic_led_mask;
- 
- 	if (mask) {
--		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_MASK,
-+		snd_hda_codec_write(codec, SENARY_GPIO_NODE, 0, AC_VERB_SET_GPIO_MASK,
- 				    mask);
--		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DIRECTION,
-+		snd_hda_codec_write(codec, SENARY_GPIO_NODE, 0, AC_VERB_SET_GPIO_DIRECTION,
- 				    mask);
--		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
-+		snd_hda_codec_write(codec, SENARY_GPIO_NODE, 0, AC_VERB_SET_GPIO_DATA,
- 				    spec->gpio_led);
- 	}
- }
--- 
-2.25.1
-
+U3ViamVjdDogW1JFR1JFU1NJT04/XSBObyBzb3VuZCBmcm9tIGludGVybmFsIHNwZWFrZXJzIG9u
+IFRlY2xhc3QgVC5CT0xUDQp3aXRoIFJlYWx0ZWsgQUxDMjU2DQoNCkhlbGxvIGV2ZXJ5b25lLA0K
+DQpJIGhhdmUgYSBUZWNsYXN0IFQuQk9MVCBsYXB0b3Agd2l0aCBhIFJlYWx0ZWsgQUxDMjU2IGF1
+ZGlvIGNvZGVjLg0KDQpUaGUgcHJvYmxlbSBpcyB0aGF0IHRoZSBzb3VuZCBmcm9tIHRoZSBpbnRl
+cm5hbCBzcGVha2VycyBpc24ndCB3b3JraW5nLiBUaGUNCmF1ZGlvIHdvcmtzIHBlcmZlY3RseSB0
+aHJvdWdoIGhlYWRwaG9uZXMsIGJ1dCB3aGVuIEkgZGlzY29ubmVjdCB0aGVtLA0KdGhlcmUncyBu
+byBzb3VuZCBmcm9tIHRoZSBzcGVha2Vycy4NCg0KSW4gdGhlIGdyYXBoaWNhbCBpbnRlcmZhY2Ug
+KFB1bHNlQXVkaW8vUGlwZVdpcmUpLCB0aGUgdm9sdW1lIGJhciBtb3ZlcyBhcw0KaWYgdGhlIHNv
+dW5kIHdlcmUgcGxheWluZyBjb3JyZWN0bHksIGJ1dCB0aGVyZSdzIG5vIHBoeXNpY2FsIGF1ZGlv
+IG91dHB1dC4NCg0KSSd2ZSB0cmllZCBudW1lcm91cyBzb2x1dGlvbnMgd2l0aG91dCBzdWNjZXNz
+Og0KDQotIEkgY2hlY2tlZCBgYWxzYW1peGVyYCB0byBlbnN1cmUgbm90aGluZyBpcyBtdXRlZCBh
+bmQgdGhhdCAiQXV0by1NdXRlIiBpcw0KZW5hYmxlZC4NCg0KLSAtIFRlc3RlZCBtdWx0aXBsZSBg
+bW9kZWxgIHBhcmFtZXRlcnMgZm9yIGBzbmQtaGRhLWludGVsYCBpbg0KYC9ldGMvbW9kcHJvYmUu
+ZC9hbHNhLWJhc2UuY29uZmAgYW5kIGFsc28gYXMgYSBrZXJuZWwgcGFyYW1ldGVyIGluIEdSVUIN
+CihkZWxsLXhwcy0xMy05MzYwLCBkZWxsLWhlYWRzZXQtbXVsdGksIGxlbm92by1sZWdpb24tMTVp
+bWhnMDUsDQphbGMyNTUtZGVsbDEsIGV0Yy4pLg0KDQotIFRyaWVkIHJlY29uZmlndXJpbmcgdGhl
+IHBpbnMgd2l0aCBgaGRhamFja3JldGFza2AsIGZvcmNpbmcgcGluIDB4MTQgdG8NCiJJbnRlcm5h
+bCBTcGVha2VyIChMRkUpIiBhbmQgdGVzdGluZyBkaWZmZXJlbnQgY29uZmlndXJhdGlvbnMgZm9y
+IHBpbiAweDIxLg0KDQotIEF0dGVtcHRlZCBzZXZlcmFsIGBoZGEtdmVyYmAgY29tbWFuZHMgdG8g
+Zm9yY2UgdGhlIGNvZGVjIHN0YXRlLCBib3RoIHdpdGgNCmBTRVRfQ09FRl9EQVRBYCBhbmQgYFNF
+VF9QSU5fV0lER0VUX0NPTlRST0xgLCBidXQgd2l0aG91dCBzdWNjZXNzLg0KDQpUaGUgaGFyZHdh
+cmUgaXMgd29ya2luZyBjb3JyZWN0bHksIGFzIHRoZSBzcGVha2VycyBmdW5jdGlvbiB3aXRob3V0
+DQpwcm9ibGVtcyBvbiBhIFdpbmRvd3MgMTEgaW5zdGFsbGF0aW9uIG9uIHRoZSBzYW1lIGxhcHRv
+cC4gVGhpcyBhcHBlYXJzIHRvDQpiZSBhIGNvbmZpZ3VyYXRpb24gaXNzdWUgd2l0aCB0aGUgZ2Vu
+ZXJpYyBMaW51eCBkcml2ZXIgZm9yIHRoaXMgc3BlY2lmaWMNCmhhcmR3YXJlLg0KDQpJJ3ZlIHN3
+aXRjaGVkIGZyb20gdGhlIHN0YW5kYXJkIFVidW50dSAyNS4xMCBrZXJuZWwgdG8gTGlxdW9yaXgs
+IGJ1dA0KdGhlcmUncyBubyBjaGFuZ2UuDQpMaW51eCBYWFhYWCA2LjE3LjctMS1saXF1b3JpeC1h
+bWQ2NCAjMSBaRU4gU01QIFBSRUVNUFRfRFlOQU1JQyBsaXF1b3JpeA0KNi4xNy03dWJ1bnR1MX5x
+dWVzdGluZyAoMjAyNSB4ODZfNjQgR05VL0xpbnV4KQ0KDQpJIGdlbmVyYXRlZCBhIGZ1bGwgcmVw
+b3J0IHVzaW5nIGBhbHNhLWluZm8uc2hgLiBUaGUgVVJMIGlzOg0KDQpodHRwczovL2Fsc2EtcHJv
+amVjdC5vcmcvZGIvP2Y9OTYxNzZhNWFiY2M5MDc4MGJiYmE0YTY3ZGFjOTQ2YmU2Yjc5M2MyYw0K
+DQpBbnkgaWRlYXMgb24gd2hhdCBlbHNlIEkgY291bGQgdHJ5LCBvciBpZiBpdCBtaWdodCBiZSBh
+IGJ1ZyB0aGF0IHJlcXVpcmVzIGENCnNwZWNpZmljIGZpeCBmb3IgdGhpcyBsYXB0b3A/DQoNClRo
+YW5rIHlvdSBmb3IgeW91ciB0aW1lIGFuZCBlZmZvcnQuDQoNClJlZ2FyZHMuDQo=
