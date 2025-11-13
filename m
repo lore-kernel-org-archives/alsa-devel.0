@@ -4,134 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2BF4CD8CA4
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Nov 2025 17:14:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7985DCD98D0
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Nov 2025 20:01:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64F046020E;
-	Thu, 13 Nov 2025 18:13:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64F046020E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC605601C8;
+	Thu, 13 Nov 2025 21:01:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC605601C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1763054049;
-	bh=ii7ANwh0M0cFyeL601GA58+SOGaDe5Ox+U/KwkgBhHA=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1763064093;
+	bh=DgxwAHRpzhGKnOM66CN/pWdJ+seG7F0kvnk02SRFFEs=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=riC0be6mbYZgKnZaJY/0lqQq3O9Ump4VxxAxNfw6TQTehcrlxqI2aENYspFop56km
-	 9655Vszy1LVx3k0CLYyAvubCrBD8qv2o2ZzgZFaH7lMRKYzmZRiGRDsPDCHED4u24t
-	 eyYqw3ZCGquO4YNxjAG9zQj29pDKquOB/Tjz/U9I=
+	b=PSWnXWLo2iX5gkZS+u6C3XCg/eiQbUDpwR411ZVARB3Dx8+B9R7++BWGXz1JpTm3w
+	 EYp00PDtXQEiY8R0AFzS5jFTDSYVEIHbC1oW3Xs9omwk69OBTetTjLY7QN/+VRbPqo
+	 tbQsW55PRbCT3+QyiSusf24QHYU58NjA+Rre11hc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 368FBF8057A; Thu, 13 Nov 2025 18:13:29 +0100 (CET)
+	id F2F1AF805C4; Thu, 13 Nov 2025 21:00:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E360CF805C9;
-	Thu, 13 Nov 2025 18:13:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEFEBF805D4;
+	Thu, 13 Nov 2025 21:00:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D944F80533; Thu, 13 Nov 2025 18:13:20 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	id 862B1F80533; Thu, 13 Nov 2025 21:00:15 +0100 (CET)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 704D3F80027
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2025 18:13:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 704D3F80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F089F80027
+	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2025 20:59:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F089F80027
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=AjkLSbi4;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vwldWsPj;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=AjkLSbi4;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vwldWsPj
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 634C61F46E;
-	Thu, 13 Nov 2025 17:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1763053988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=F/W3XuENEln8fO67GyPaBRATX8Kdj5JU8cCSuRzIJ2I=;
-	b=AjkLSbi4dPzLIgFkdxnXOShbzGhEFMNP/kIrvpJGZ551hPHB3By+r8TkJ6vAceHARlrQc4
-	+O2pC7CQZuOj5W9+dvGFcEznH/NoO2O2hIB1GtQaFbKRdLxe7MsqqIXpaw7s/PlNoRpHTA
-	mxSf96K6UcGLPMCOMaYvgMVJJncwDuE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1763053988;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=F/W3XuENEln8fO67GyPaBRATX8Kdj5JU8cCSuRzIJ2I=;
-	b=vwldWsPj7MkB+3SkxlfTi+HSznObOESZtDW7exgKIOwQW1DQAVJFZBl55lz4i5bOokkfWY
-	qNZUccU/hoS3E5Cw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1763053988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=F/W3XuENEln8fO67GyPaBRATX8Kdj5JU8cCSuRzIJ2I=;
-	b=AjkLSbi4dPzLIgFkdxnXOShbzGhEFMNP/kIrvpJGZ551hPHB3By+r8TkJ6vAceHARlrQc4
-	+O2pC7CQZuOj5W9+dvGFcEznH/NoO2O2hIB1GtQaFbKRdLxe7MsqqIXpaw7s/PlNoRpHTA
-	mxSf96K6UcGLPMCOMaYvgMVJJncwDuE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1763053988;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=F/W3XuENEln8fO67GyPaBRATX8Kdj5JU8cCSuRzIJ2I=;
-	b=vwldWsPj7MkB+3SkxlfTi+HSznObOESZtDW7exgKIOwQW1DQAVJFZBl55lz4i5bOokkfWY
-	qNZUccU/hoS3E5Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B4233EA61;
-	Thu, 13 Nov 2025 17:13:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7Ns+EaQRFmncRgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 13 Nov 2025 17:13:08 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-utils] amidi: Ignore inactive MIDI ports as default at
- listing
-Date: Thu, 13 Nov 2025 18:13:05 +0100
-Message-ID: <20251113171306.888404-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.51.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.de:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-Message-ID-Hash: 7IGKH7FMKYIWZ7WIPCQALDBRGMZ4T5RX
-X-Message-ID-Hash: 7IGKH7FMKYIWZ7WIPCQALDBRGMZ4T5RX
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=fSIEKYTV
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 0E01E60121;
+	Thu, 13 Nov 2025 19:59:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E49BC4CEFB;
+	Thu, 13 Nov 2025 19:59:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763063964;
+	bh=DgxwAHRpzhGKnOM66CN/pWdJ+seG7F0kvnk02SRFFEs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fSIEKYTVm2uY8XdWgVNLyUcl3hp6zcN8jm8B/BZokC28RCWq/4/mR90f+Vv8dSIWl
+	 UHoKSbKS1eqQgd/Q90e1DsjlF2U12ddYyhTQA/gn7qbpVEf5kyNRADeQyBxDLFcs16
+	 w4Y60hUqJ9Y2l+CcCaYFBlqu5JOl6m/wL6KbnNofNx/z+DgNCz4GN7eqQpDdiQyrbU
+	 ItnaA+r5cEKRIx1Elfzwy7hKaQ328EHr+u86yMJI0y2e0vtrPpSoPlDr4WXs8Q/OFS
+	 +xzOjo+813NyRVIsrbQ7qk2+gKiEsc63o3Ze7Lp8kOcat6EwP7SoiqmTgNlMdgXgaE
+	 i9UhO1AiBp1JA==
+Message-ID: <979d5936ff7b727be317ba6d8c3a5e36@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v6.18-rc5
+Date: Thu, 13 Nov 2025 19:59:09 +0000
+Message-ID-Hash: JAGJUZWVNP4UPRJVBT22D2K6ER636UPS
+X-Message-ID-Hash: JAGJUZWVNP4UPRJVBT22D2K6ER636UPS
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -143,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7IGKH7FMKYIWZ7WIPCQALDBRGMZ4T5RX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JAGJUZWVNP4UPRJVBT22D2K6ER636UPS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,90 +85,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When listing the devices, currently we show all MIDI ports including
-inactive ones.  But those inactive ports are rarely useful, and it'd
-be more convenient to filter them out.
+The following changes since commit 6146a0f1dfae5d37442a9ddcba012add260bceb0:
 
-This patch introduces the filtering of inactive ports at listing
-devices via amidi -l option.  When user needs to scan all MIDI ports
-including inactive ports, pass the new option -x in addition.
+  Linux 6.18-rc4 (2025-11-02 11:28:02 -0800)
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- amidi/amidi.1 |  5 +++++
- amidi/amidi.c | 11 ++++++++++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+are available in the Git repository at:
 
-diff --git a/amidi/amidi.1 b/amidi/amidi.1
-index 5bc24ba3ad54..d3d321f16558 100644
---- a/amidi/amidi.1
-+++ b/amidi/amidi.1
-@@ -52,6 +52,11 @@ Prints the current version.
- .I \-l, \-\-list\-devices
- Prints a list of all hardware MIDI ports.
- 
-+.TP
-+.I \-x, \-\-list\-inactive
-+Use together with \fI\-l\fP option.
-+Print all MIDI ports including inactive ports.
-+
- .TP
- .I \-L, \-\-list\-rawmidis
- Prints all RawMIDI definitions.
-diff --git a/amidi/amidi.c b/amidi/amidi.c
-index 75fb8c0a42a3..9a2aaf7205f0 100644
---- a/amidi/amidi.c
-+++ b/amidi/amidi.c
-@@ -57,6 +57,7 @@ static int stop;
- static int sysex_interval;
- static snd_rawmidi_t *input, **inputp;
- static snd_rawmidi_t *output, **outputp;
-+static int list_all;
- 
- static void error(const char *format, ...)
- {
-@@ -76,6 +77,7 @@ static void usage(void)
- 		"-h, --help                      this help\n"
- 		"-V, --version                   print current version\n"
- 		"-l, --list-devices              list all hardware ports\n"
-+		"-x, --list-inactive             list inactive ports, too\n"
- 		"-L, --list-rawmidis             list all RawMIDI definitions\n"
- 		"-p, --port=name                 select port by name\n"
- 		"-s, --send=file                 send the contents of a (.syx) file\n"
-@@ -151,6 +153,9 @@ static void list_device(snd_ctl_t *ctl, int card, int device)
- 			      card, device, sub, snd_strerror(err));
- 			return;
- 		}
-+		if (!list_all &&
-+		    (snd_rawmidi_info_get_flags(info) & SNDRV_RAWMIDI_INFO_STREAM_INACTIVE))
-+			continue;
- 		name = snd_rawmidi_info_get_name(info);
- 		sub_name = snd_rawmidi_info_get_subdevice_name(info);
- 		if (sub == 0 && sub_name[0] == '\0') {
-@@ -471,11 +476,12 @@ static void add_send_hex_data(const char *str)
- 
- int main(int argc, char *argv[])
- {
--	static const char short_options[] = "hVlLp:s:r:S::dt:aci:T:";
-+	static const char short_options[] = "hVlxLp:s:r:S::dt:aci:T:";
- 	static const struct option long_options[] = {
- 		{"help", 0, NULL, 'h'},
- 		{"version", 0, NULL, 'V'},
- 		{"list-devices", 0, NULL, 'l'},
-+		{"list-inactive", 0, NULL, 'x'},
- 		{"list-rawmidis", 0, NULL, 'L'},
- 		{"port", 1, NULL, 'p'},
- 		{"send", 1, NULL, 's'},
-@@ -508,6 +514,9 @@ int main(int argc, char *argv[])
- 		case 'l':
- 			do_device_list = 1;
- 			break;
-+		case 'x':
-+			list_all = 1;
-+			break;
- 		case 'L':
- 			do_rawmidi_list = 1;
- 			break;
--- 
-2.51.1
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.18-rc5
 
+for you to fetch changes up to 360b3730f8eab6c4467c6cca4cb0e30902174a63:
+
+  ASoC: rsnd: fix OF node reference leak in rsnd_ssiu_probe() (2025-11-13 00:36:01 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v6.18
+
+A small collection of fixes, all driver specific and none especially
+remarkable unless you have the hardware (many not even then).
+
+----------------------------------------------------------------
+Claudiu Beznea (1):
+      ASoC: da7213: Use component driver suspend/resume
+
+Haotian Zhang (3):
+      ASoC: cs4271: Fix regulator leak on probe failure
+      ASoC: codecs: va-macro: fix resource leak in probe error path
+      ASoC: rsnd: fix OF node reference leak in rsnd_ssiu_probe()
+
+Miaoqian Lin (1):
+      ASoC: sdw_utils: fix device reference leak in is_sdca_endpoint_present()
+
+Niranjan H Y (2):
+      ASoC: tas2783A: Fix issues in firmware parsing
+      ASoC: SDCA: bug fix while parsing mipi-sdca-control-cn-list
+
+Richard Fitzgerald (1):
+      ASoC: doc: cs35l56: Update firmware filename description for B0 silicon
+
+Shenghao Ding (1):
+      ASoC: tas2781: fix getting the wrong device number
+
+ Documentation/sound/codecs/cs35l56.rst |  9 ++---
+ sound/soc/codecs/cs4271.c              | 10 +++--
+ sound/soc/codecs/da7213.c              | 69 ++++++++++++++++++++++------------
+ sound/soc/codecs/da7213.h              |  1 +
+ sound/soc/codecs/lpass-va-macro.c      |  2 +-
+ sound/soc/codecs/tas2781-i2c.c         |  9 ++++-
+ sound/soc/codecs/tas2783-sdw.c         | 20 +++++++++-
+ sound/soc/renesas/rcar/ssiu.c          |  3 +-
+ sound/soc/sdca/sdca_functions.c        |  3 +-
+ sound/soc/sdw_utils/soc_sdw_utils.c    | 20 +++++++---
+ 10 files changed, 99 insertions(+), 47 deletions(-)
