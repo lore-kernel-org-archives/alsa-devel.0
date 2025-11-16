@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5D36CCD19A
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Nov 2025 23:48:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36475CCD19A
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Nov 2025 23:53:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD67760206;
-	Mon, 17 Nov 2025 00:47:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD67760206
+	by alsa0.perex.cz (Postfix) with ESMTPS id B263160204;
+	Mon, 17 Nov 2025 00:53:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B263160204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1763336878;
-	bh=2Qp39G1QcH+SwdbbIRzx8agtJVYh04BzJUD+CnvWZc8=;
+	s=default; t=1763337218;
+	bh=sz6wIcuXYCeCu0lbqAFtvNvHFXkGteS4Mg8CtBkxh+M=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=hxfwA47yyAVuVItzFc2uX68Ml0+alg3N1Typ57Gkvx58OALQGxpKPLXoptK3Ustag
-	 mF+vaIieXgJCFd2wsXHo3RA/Yl7WIxLKlAe7U79AgH0jzN8Yofz8BuTDbPQZ5/j1tN
-	 TasUVwsEaBfNQ2yxLyu+3wHxEwKJLI8+x0MOxXCE=
+	b=YSqxZrUMGZ/SDv+TMpFaW0emVGkynPK9IqR6M01bGjP9RWRN6Gn60TtNRRnW9c0ej
+	 07+8iq8VuWAvl/x2D2t+6s3PmCtB/JQtPWHvyOK7T4zs0Fa+i4DjbcvG+X44eIISZa
+	 3sC/4AE8qD9iV6+WspEmoL+3GOnyoT3sJrAz0ewE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F081F805BD; Mon, 17 Nov 2025 00:47:24 +0100 (CET)
+	id C5621F805D7; Mon, 17 Nov 2025 00:53:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEDA2F805CB;
-	Mon, 17 Nov 2025 00:47:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84EDBF805BD;
+	Mon, 17 Nov 2025 00:53:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9E3FF80551; Mon, 17 Nov 2025 00:43:40 +0100 (CET)
+	id 0C08CF80551; Mon, 17 Nov 2025 00:51:53 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A80CF8012B
-	for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2025 00:43:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A80CF8012B
+	by alsa1.perex.cz (Postfix) with ESMTP id 2795EF8012B
+	for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2025 00:51:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2795EF8012B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1878a14f7bef0900-webhooks-bot@alsa-project.org>
-In-Reply-To: <1878a14f7bdd3e00-webhooks-bot@alsa-project.org>
-References: <1878a14f7bdd3e00-webhooks-bot@alsa-project.org>
+Message-Id: <1878a1c25db8d600-webhooks-bot@alsa-project.org>
+In-Reply-To: <1878a1c25d983300-webhooks-bot@alsa-project.org>
+References: <1878a1c25d983300-webhooks-bot@alsa-project.org>
 Subject: snd-loopback does not work
-Date: Mon, 17 Nov 2025 00:43:40 +0100 (CET)
-Message-ID-Hash: 6LNN3MQ5TVQQXHO4ETHVDGP2MVCOYH6I
-X-Message-ID-Hash: 6LNN3MQ5TVQQXHO4ETHVDGP2MVCOYH6I
+Date: Mon, 17 Nov 2025 00:51:53 +0100 (CET)
+Message-ID-Hash: HS7SYIBFQF4YUWYZIGWLQVONGAPFNDO2
+X-Message-ID-Hash: HS7SYIBFQF4YUWYZIGWLQVONGAPFNDO2
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6LNN3MQ5TVQQXHO4ETHVDGP2MVCOYH6I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HS7SYIBFQF4YUWYZIGWLQVONGAPFNDO2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,6 +132,19 @@ card 3: Loopback [Loopback], device 1: Loopback PCM [Loopback PCM]
   Subdevice #5: subdevice #5
   Subdevice #6: subdevice #6
   Subdevice #7: subdevice #7
+```
+
+```
+$pacman -Q | grep  alsa
+alsa-card-profiles 1:1.4.9-1
+alsa-lib 1.2.14-2
+alsa-plugins 1:1.2.12-5
+alsa-topology-conf 1.2.5.1-4
+alsa-ucm-conf 1.2.14-2
+alsa-utils 1.2.14-1
+lib32-alsa-lib 1.2.14-2
+lib32-alsa-plugins 1.2.12-1
+vlc-plugin-alsa 3.0.21-31
 ```
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/482
