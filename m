@@ -4,109 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB51CCF887B
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Nov 2025 16:46:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36B69CF9C46
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Nov 2025 16:50:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB8DD60215;
-	Thu, 20 Nov 2025 17:46:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB8DD60215
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E61B60211;
+	Thu, 20 Nov 2025 17:50:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E61B60211
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1763657179;
-	bh=trWFku7IEMyE6QXugMH17HG0kv+gRoRUQRGAQNXwZYc=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1763657444;
+	bh=8jKSmHS95dTjMHcoA/Eb57z/ZXmfWP4rEHKQBz7NL/4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=GIAhaeuDEQIdVHx2kc2BQ7Vk/5hnQ6VRzTEDhY1Sh8SN5UDlMSbtgW4aoW/AWkKFL
-	 DZFzE4Ee1fqKlW1pEelXKTy56N73quYaLFhBOwvuux24omB8x1isF3Lshfi8IUwXPN
-	 008w/2QyEDJcDTMcKCZTnQnJJzNZtPSgX9QYK9Q4=
+	b=SmZTUX9VUt//btPzc94m/JdxZyqXMXcfY9v+8A3XiiXbH5IAFA44+BAdJ+ayleOJS
+	 lLcGZZgJ56dBy5Oj5KMLDe1gMuGS8CyifUWMooVrHqG6QmFRTM7BGp+WFTe/1mMKWV
+	 plYoZwr4KSx8EkDCnbr8J3wx0BnmhwjA9ZyET/M4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E88DF805D6; Thu, 20 Nov 2025 17:45:43 +0100 (CET)
+	id 163AFF805C0; Thu, 20 Nov 2025 17:50:10 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CD80F805C9;
-	Thu, 20 Nov 2025 17:45:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E001EF805C6;
+	Thu, 20 Nov 2025 17:50:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A90D5F80533; Thu, 13 Nov 2025 17:56:16 +0100 (CET)
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com
- [209.85.219.41])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id D331AF80551; Mon, 17 Nov 2025 13:13:24 +0100 (CET)
+Received: from mail-gw02.astralinux.ru (mail-gw02.astralinux.ru
+ [93.188.205.243])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0A4FEF8012A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Nov 2025 17:56:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A4FEF8012A
+	by alsa1.perex.cz (Postfix) with ESMTPS id F178BF8012B;
+	Mon, 17 Nov 2025 13:13:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F178BF8012B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=OlNBl1do
-Received: by mail-qv1-f41.google.com with SMTP id
- 6a1803df08f44-88043139c35so11182626d6.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 13 Nov 2025 08:56:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763052962; x=1763657762;
- darn=alsa-project.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EH0XQ4yggO9jsgYpE1PsUGa43+hLdJ6IA6lwMPPXe5A=;
-        b=OlNBl1doVQOzGX50kgsjLi3AUPOjSD2On1K/ukk4cT5++zG4uCnpq+B4W/KLzU1kPV
-         jRZUmYTqkyTsZqGcXmBR4y8KYemtaBpgTXKxugfluNtCbc9AYdRxYgcvsYliw3J9rC4X
-         2ymJJkOA5lXJu9LDqDZntmf1un9ViM6qG70eX5rOPM1GUU9RvdGc2pbX9es5lG+Hs6dM
-         NPQvhdfjvNEd7CpI1G6IS198sTVhJTcKzPpmhcESt3i+GqRuNo0j+jSLpNeOxSL3YtHJ
-         o13xzEcTkg8nh+kq8eHyiqADBbm9xZ6ehtp1ROvAIAmOJ17+ti7QaysamMFGXKUrbldE
-         5Q6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763052962; x=1763657762;
-        h=to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EH0XQ4yggO9jsgYpE1PsUGa43+hLdJ6IA6lwMPPXe5A=;
-        b=JmfCODoh3DHJi/cdPg+hS4vGFlfTPArOw9e/UEgK7BN5Zn9WjfCexuM4Ompi1qnS+/
-         pTtPTAPJRrhLoM6yQy1AlHrFAX7mkRBHtnRikjq/SO66j36hHDxKMV1Em3xNpWqbqdaV
-         XdJDpyZ8wdgLgtC+R0iIUWY/S8SYl6Qz7Vz0TEclMspZE0fsrAeNbAEWqHiLDaCNS3RR
-         tRPO4/uS32iuWujnobN/jNeM5zTu8cj4UaxqOijUONqe/ZZ4E59BGaIH1YlgZoTempWd
-         5DbI9Q2mTo0hSXeJZ1S6KEMDQHBzMe6oQNPCnbazL4FXCclgNskGO6HQji29+zFShA1Q
-         g7fQ==
-X-Gm-Message-State: AOJu0YwvAm9RBLiI5uje4nPtOBhd0ARMJLdhMfRWypTXwdwMvXQJmwv6
-	ye6YyupV02DY09ZC8edZNU+x2Sur3tTea+yTq6hhtEwE3pbhpaaELebqDFnycjiMH97PWGKBxiJ
-	baW6Cm+ouaYdCLCRV06DdpIfGn2ELgI6J4HY69lw=
-X-Gm-Gg: ASbGnctjTxThtbkmDqWavMVERfqPdiUJKwF4IR3LmPD28XCbeW7nMS+Ew+eMju09ZFt
-	T8spqEAmcfLizQfIySPk2pTgoivC6hhNuIlEz+HYRcahHWwy/OY/7AZTPCDW/u8nirLXaoSylcc
-	N5IaE75E+cEbVWtjbSc9ffsegm4GHe18AH/EInx5npNaQDWTw+h14k8KTY9S8cZ8c/yByP10HIC
-	nxRIs6Bom51GZfVsy4lC2WLUJ2/qgohTDI+nJVFV5lzNvXv6N6uO5BrzfdAZYY=
-X-Google-Smtp-Source: 
- AGHT+IG9ORIregv5fDJyYnItIBf0pbVBO/DxiMaUycijOhWZwiXgCvSeCp7DSIdj1+X4J/9tfE5QYyAmMILSGQVdW18=
-X-Received: by 2002:a05:6214:4003:b0:87c:27c2:2c0e with SMTP id
- 6a1803df08f44-88271a40735mr113925526d6.59.1763052962081; Thu, 13 Nov 2025
- 08:56:02 -0800 (PST)
+ unprotected) header.d=astralinux.ru header.i=@astralinux.ru
+ header.a=rsa-sha256 header.s=mail header.b=qfaA63eN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=astralinux.ru;
+	s=mail; t=1763381597;
+	bh=8jKSmHS95dTjMHcoA/Eb57z/ZXmfWP4rEHKQBz7NL/4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qfaA63eNAJYYM9xQs3iOT6xtmtSWOvaSsWL/+GqRlXj3eUhRJZ1hVtjSiIYJm/sAQ
+	 EDaviV/fLJ3bXVjUFpXAtxiqVOm5GWrfAktw3xDImb6Re420uPOyET3ntPWx361Onj
+	 TfcgiFDi0xCV6q+5mlEpwlClL4zJSfYKM5Hm4wTgBlVjOMbOMH8APhTCXvjBcz/a/9
+	 eAPqb8q8Rzk9tMkfNao/PCFa08hLuR9W6pHPoxsI3bMgHZfOXg4YNFGJo0zUnj3S+s
+	 TflmoxGOesK4aU24Nkdv1VWnNWmcwV311kKs7PAyUfI7QPRafVMoXY7qTzj2+foHxe
+	 JLmYgqfjkCiuA==
+Received: from gca-msk-a-srv-ksmg01 (localhost [127.0.0.1])
+	by mail-gw02.astralinux.ru (Postfix) with ESMTP id D9C3C1FA5B;
+	Mon, 17 Nov 2025 15:13:17 +0300 (MSK)
+Received: from new-mail.astralinux.ru (unknown [10.205.207.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mail-gw02.astralinux.ru (Postfix) with ESMTPS;
+	Mon, 17 Nov 2025 15:13:13 +0300 (MSK)
+Received: from rbta-msk-lt-302690.astralinux.ru.astracloud.ru
+ (rbta-msk-lt-302690.astralinux.ru [10.198.51.247])
+	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4d967q3y9JzSgqV;
+	Mon, 17 Nov 2025 15:12:38 +0300 (MSK)
+From: Alexandra Diupina <adiupina@astralinux.ru>
+To: stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alexandra Diupina <adiupina@astralinux.ru>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Jaska Uimonen <jaska.uimonen@intel.com>,
+	sound-open-firmware@alsa-project.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10] ASoC: SOF: Intel: hda: Fix potential buffer overflow by
+ snprintf()
+Date: Mon, 17 Nov 2025 15:12:03 +0300
+Message-Id: <20251117121203.9811-1-adiupina@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-From: Pape Samba Mbodj Sarr <papesambambodjsarr3@gmail.com>
-Date: Thu, 13 Nov 2025 16:55:50 +0000
-X-Gm-Features: AWmQ_bmEDq2F6yUNCMa2wbR8SqPueumVEJOfZ4Miv03f_B0IDHIcK_LOELgcIzs
-Message-ID: 
- <CAEsrb=A=4Rdh_yu9Uvh+pvdS08z-=pNMtMrZa2ED=YELVaZLYA@mail.gmail.com>
-Subject: [BUG] Realtek ALC236 Internal Mic not working on HP 255 G10
- (Subsystem ID 103c:8b2f)
-To: alsa-devel@alsa-project.org
-X-MailFrom: papesambambodjsarr3@gmail.com
+Content-Transfer-Encoding: 8bit
+X-KSMG-AntiPhishing: NotDetected, bases: 2025/11/17 11:46:00
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Envelope-From: adiupina@astralinux.ru
+X-KSMG-AntiSpam-Info: LuaCore: 76 0.3.76
+ 6aad6e32ec76b30ee13ccddeafeaa4d1732eef15, {Tracking_uf_ne_domains},
+ {Tracking_from_domain_doesnt_match_to},
+ new-mail.astralinux.ru:7.1.1;lore.kernel.org:7.1.1;127.0.0.199:7.1.2;astralinux.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1,
+ FromAlignment: s
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiSpam-Lua-Profiles: 198143 [Nov 17 2025]
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Version: 6.1.1.11
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.1.0.7854,
+ bases: 2025/11/17 08:57:00 #27937168
+X-KSMG-AntiVirus-Status: NotDetected, skipped
+X-KSMG-LinksScanning: NotDetected, bases: 2025/11/17 11:47:00
+X-KSMG-Message-Action: skipped
+X-KSMG-Rule-ID: 1
+X-MailFrom: adiupina@astralinux.ru
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: S5SQAQKV6UVQWP4VT5BILKAWA7KBW4G5
-X-Message-ID-Hash: S5SQAQKV6UVQWP4VT5BILKAWA7KBW4G5
-X-Mailman-Approved-At: Thu, 20 Nov 2025 16:45:35 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: T2IVXPBWU732ATA3E52AOPBACQLZ263E
+X-Message-ID-Hash: T2IVXPBWU732ATA3E52AOPBACQLZ263E
+X-Mailman-Approved-At: Thu, 20 Nov 2025 16:50:03 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5SQAQKV6UVQWP4VT5BILKAWA7KBW4G5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T2IVXPBWU732ATA3E52AOPBACQLZ263E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,22 +133,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Qm9uam91ciwNCg0KSidhaSB1biBwcm9ibMOobWUgYXZlYyBsZSBtaWNyb3Bob25lIGludGVybmUg
-KGludMOpZ3LDqSkgcXVpIG4nZXN0IHBhcw0KZMOpdGVjdMOpIHBhciBsZSBzeXN0w6htZSAoYWZm
-aWNow6kgY29tbWUgIm5vbiBicmFuY2jDqSIgLyAibm90IGF2YWlsYWJsZSIpDQpzdXIgbW9uIG9y
-ZGluYXRldXIgcG9ydGFibGUgSFAuIEonYWkgw6lwdWlzw6kgdG91dGVzIGxlcyBvcHRpb25zIGRl
-DQpjb25maWd1cmF0aW9uIHV0aWxpc2F0ZXVyIChtb2TDqGxlIEFMU0EsIHBhdGNocyBtYW51ZWxz
-KS4NCg0KQ2VjaSBzZW1ibGUgw6p0cmUgdW4gInF1aXJrIiAoY29ycmVjdGlmKSBtYW5xdWFudCBw
-b3VyIGxlIHBpbG90ZS4NCg0KKipJbmZvcm1hdGlvbnMgZHUgc3lzdMOobWUgOioqDQoqICoqT3Jk
-aW5hdGV1ciA6KiogSFAgMjU1IDE1LjYgaW5jaCBHMTAgTm90ZWJvb2sgUEMNCiogKipDb2RlYyBB
-dWRpbyA6KiogUmVhbHRlayBBTEMyMzYNCiogKipTdWJzeXN0ZW0gSUQgOioqIDEwM2M6OGIyZiAo
-SGV3bGV0dC1QYWNrYXJkIENvbXBhbnkpDQoqICoqTm95YXUgTGludXggOioqIDYuMTQuMC0zNS1n
-ZW5lcmljIChWZXJzaW9uIHRyw6hzIHLDqWNlbnRlKQ0KDQoqKlVSTCBkdSByYXBwb3J0IGFsc2Et
-aW5mby5zaCAoQ29kZWMgRHVtcCkNCjoqKmh0dHA6Ly9hbHNhLXByb2plY3Qub3JnL2RiLz9mPTU1
-ZGE0NGY2MGY1ZGViNjA3M2M5ZWRmZTJmNDljM2IxY2IwM2I1M2UNCg0KTCdlbnRyw6llIG1pY3Jv
-cGhvbmUgKGFuYWxvZy1pbnB1dC1taWMpIGVzdCBtYXJxdcOpZSBjb21tZSAibm90DQphdmFpbGFi
-bGUiIChub24gZGlzcG9uaWJsZSkgZGFucyBwYWN0bC4gSmUgc291cMOnb25uZSBxdWUgbGUgcGls
-b3RlIG5lDQpwYXJ2aWVudCBwYXMgw6AgaW5pdGlhbGlzZXIgbGUgbWljcm9waG9uZSBudW3DqXJp
-cXVlIChETUlDKSBvdSBjb25mb25kDQpsJ2VudHLDqWUgaW50ZXJuZSBhdmVjIGxlIGphY2sgZXh0
-ZXJuZS4NCg0KTWVyY2kgZCdhdmFuY2UgZGUgdm90cmUgYWlkZSBwb3VyIGwnaW50w6lncmF0aW9u
-IGRlIGNlIGNvcnJlY3RpZi4NCg0KQ29yZGlhbGVtZW50LA0KDQpTQVJSIE1ib2RqDQo=
+From: Takashi Iwai <tiwai@suse.de>
+
+commit 94c1ceb043c1a002de9649bb630c8e8347645982 upstream.
+
+snprintf() returns the would-be-filled size when the string overflows
+the given buffer size, hence using this value may result in the buffer
+overflow (although it's unrealistic).
+
+This patch replaces with a safer version, scnprintf() for papering
+over such a potential issue.
+
+Fixes: 29c8e4398f02 ("ASoC: SOF: Intel: hda: add extended rom status dump to error log")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20220801165420.25978-4-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+---
+Backport fix for CVE-2022-50050
+ sound/soc/sof/intel/hda.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index b4cc72483137..1d879c2b81e1 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -437,7 +437,7 @@ static void hda_dsp_dump_ext_rom_status(struct snd_sof_dev *sdev)
+ 
+ 	for (i = 0; i < HDA_EXT_ROM_STATUS_SIZE; i++) {
+ 		value = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_SRAM_REG_ROM_STATUS + i * 0x4);
+-		len += snprintf(msg + len, sizeof(msg) - len, " 0x%x", value);
++		len += scnprintf(msg + len, sizeof(msg) - len, " 0x%x", value);
+ 	}
+ 
+ 	sof_dev_dbg_or_err(sdev->dev, hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS,
+-- 
+2.30.2
+
