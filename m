@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3345CEACEF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Nov 2025 22:40:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 279DCCE8D6B
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Nov 2025 22:40:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FB7A601CC;
-	Mon, 17 Nov 2025 23:40:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FB7A601CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 012A66020C;
+	Mon, 17 Nov 2025 23:40:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012A66020C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1763419229;
-	bh=B5i8T9cWxhjLOGnAuLoUSlJ+o5aUhz3xtP84I2O3q6k=;
+	s=default; t=1763419241;
+	bh=skwwXH7dby3EGx5q+aB/ukjwLZbxIqbDGTkfZ2aJLEc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=KoJ4xKEI5BeG0gQXxYnFtAJ2eTL5q8rUsmI7qYXAXEWDaHLs0/zz/0kgozmhAhAeE
-	 JOcS1zWzcxbWDLdoK8gShHJ5ZsCwbL6czEcvq3XRXQdKHj1X9g/AJ/3SohFodFE1gg
-	 5s+v7jIeL7ALGav0oN6+sVV50YBi8aNIcQaHq+QU=
+	b=QtUxmr6d2S0wOtev/Wc7vwt8nhzndB5iAHhKWyxCN3DGJiCjuPsA+TcAm2PqRn5Og
+	 uRQWEh+FXWPP2B9f4bLIfCE7bXQa/gyfxYOKFdm1QSr+zAMIvFnmqoBXsC8fBJE01m
+	 EPKciQYYzoo95Szuc7ypD4KIBFrAQRZHQWGL0QnE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE85CF805D7; Mon, 17 Nov 2025 23:39:54 +0100 (CET)
+	id AD12EF805F0; Mon, 17 Nov 2025 23:40:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87D4AF805D3;
-	Mon, 17 Nov 2025 23:39:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F6A9F805E9;
+	Mon, 17 Nov 2025 23:40:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B82CF80551; Mon, 17 Nov 2025 23:39:50 +0100 (CET)
+	id E30F6F805D9; Mon, 17 Nov 2025 23:39:59 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1B32F80152
-	for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2025 23:39:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1B32F80152
+	by alsa1.perex.cz (Postfix) with ESMTP id 81601F805D5
+	for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2025 23:39:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81601F805D5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1878ec6738e23f00-webhooks-bot@alsa-project.org>
-In-Reply-To: <1878ec6738db3f00-webhooks-bot@alsa-project.org>
-References: <1878ec6738db3f00-webhooks-bot@alsa-project.org>
+Message-Id: <1878ec6a76636d00-webhooks-bot@alsa-project.org>
+In-Reply-To: <1878ec6a765f9b00-webhooks-bot@alsa-project.org>
+References: <1878ec6a765f9b00-webhooks-bot@alsa-project.org>
 Subject: Lenovo Yoga Pro 14 built-in speakers volume not controlled by
  GNOME/PipeWire
-Date: Mon, 17 Nov 2025 23:39:50 +0100 (CET)
-Message-ID-Hash: EPDSAU2EPMHNJWPSAXHLT5LBLLUCQ2ZQ
-X-Message-ID-Hash: EPDSAU2EPMHNJWPSAXHLT5LBLLUCQ2ZQ
+Date: Mon, 17 Nov 2025 23:39:59 +0100 (CET)
+Message-ID-Hash: F3XPQUHXDSGOOQXZZ6AGXSYV3ARJG3PU
+X-Message-ID-Hash: F3XPQUHXDSGOOQXZZ6AGXSYV3ARJG3PU
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EPDSAU2EPMHNJWPSAXHLT5LBLLUCQ2ZQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F3XPQUHXDSGOOQXZZ6AGXSYV3ARJG3PU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,7 +76,7 @@ Problem: ALSA Post-Mixer / Pre-Mixer controls work via alsamixer, but GNOME volu
 
 Steps to reproduce:
 1. Boot any Linux distribution.
-2. Attempt to change volume via GNOME slider or `pactl` / PipeWire controls.
+2. Attempt to change volume via GNOME/KDE slider or `pactl` / PipeWire controls.
 3. Observe that output volume of laptop speakers does not change.
 4. Testing with headphones (AirPods, Beats) or external speakers works correctly.
 
