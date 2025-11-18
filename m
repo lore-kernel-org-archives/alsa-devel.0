@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 279DCCE8D6B
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Nov 2025 22:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E105CED63B
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Nov 2025 13:20:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 012A66020C;
-	Mon, 17 Nov 2025 23:40:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012A66020C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A121660192;
+	Tue, 18 Nov 2025 14:20:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A121660192
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1763419241;
+	s=default; t=1763472016;
 	bh=skwwXH7dby3EGx5q+aB/ukjwLZbxIqbDGTkfZ2aJLEc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=QtUxmr6d2S0wOtev/Wc7vwt8nhzndB5iAHhKWyxCN3DGJiCjuPsA+TcAm2PqRn5Og
-	 uRQWEh+FXWPP2B9f4bLIfCE7bXQa/gyfxYOKFdm1QSr+zAMIvFnmqoBXsC8fBJE01m
-	 EPKciQYYzoo95Szuc7ypD4KIBFrAQRZHQWGL0QnE=
+	b=bYsxVD0ZZoX0UM226ojwRLESX5szzPEnAmhwfAYv43qQGJ8vtc3HyAGZCc/4hx/Nx
+	 jBw/qOAsLHhbjgl8mmLC/5PzJrNrOs/5R/l382f5212LNgUefL6NWJF79v7gfOI4ZD
+	 GtM0FvVHZx4XEwKb1/hnka6EV9bbLQR/riNWSUQ4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AD12EF805F0; Mon, 17 Nov 2025 23:40:08 +0100 (CET)
+	id CDE38F805CB; Tue, 18 Nov 2025 14:19:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F6A9F805E9;
-	Mon, 17 Nov 2025 23:40:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A319CF805C9;
+	Tue, 18 Nov 2025 14:19:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E30F6F805D9; Mon, 17 Nov 2025 23:39:59 +0100 (CET)
+	id 88739F804B2; Tue, 18 Nov 2025 14:19:32 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81601F805D5
-	for <alsa-devel@alsa-project.org>; Mon, 17 Nov 2025 23:39:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81601F805D5
+	by alsa1.perex.cz (Postfix) with ESMTP id 22F22F80152
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2025 14:19:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22F22F80152
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1878ec6a76636d00-webhooks-bot@alsa-project.org>
-In-Reply-To: <1878ec6a765f9b00-webhooks-bot@alsa-project.org>
-References: <1878ec6a765f9b00-webhooks-bot@alsa-project.org>
-Subject: Lenovo Yoga Pro 14 built-in speakers volume not controlled by
+Message-Id: <18791c6950aa8500-webhooks-bot@alsa-project.org>
+In-Reply-To: <18791c694fca9900-webhooks-bot@alsa-project.org>
+References: <18791c694fca9900-webhooks-bot@alsa-project.org>
+Subject: Lenovo Yoga Pro 7 built-in speakers volume not controlled by
  GNOME/PipeWire
-Date: Mon, 17 Nov 2025 23:39:59 +0100 (CET)
-Message-ID-Hash: F3XPQUHXDSGOOQXZZ6AGXSYV3ARJG3PU
-X-Message-ID-Hash: F3XPQUHXDSGOOQXZZ6AGXSYV3ARJG3PU
+Date: Tue, 18 Nov 2025 14:19:32 +0100 (CET)
+Message-ID-Hash: SNALCCJ57OZ3DRZCUB2KTBP5GBV7VZHW
+X-Message-ID-Hash: SNALCCJ57OZ3DRZCUB2KTBP5GBV7VZHW
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F3XPQUHXDSGOOQXZZ6AGXSYV3ARJG3PU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SNALCCJ57OZ3DRZCUB2KTBP5GBV7VZHW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
