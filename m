@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E105CED63B
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Nov 2025 13:20:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0EBCCED63B
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Nov 2025 13:20:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A121660192;
-	Tue, 18 Nov 2025 14:20:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A121660192
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA64860211;
+	Tue, 18 Nov 2025 14:20:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA64860211
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1763472016;
-	bh=skwwXH7dby3EGx5q+aB/ukjwLZbxIqbDGTkfZ2aJLEc=;
+	s=default; t=1763472036;
+	bh=l/QUBDqHQ4d6H6UwP74RFPLqt8+G5RUC63q7xOHWHso=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=bYsxVD0ZZoX0UM226ojwRLESX5szzPEnAmhwfAYv43qQGJ8vtc3HyAGZCc/4hx/Nx
-	 jBw/qOAsLHhbjgl8mmLC/5PzJrNrOs/5R/l382f5212LNgUefL6NWJF79v7gfOI4ZD
-	 GtM0FvVHZx4XEwKb1/hnka6EV9bbLQR/riNWSUQ4=
+	b=kBkQyKHxFI6UEi0K7Z5vPGlA17zqSeSXlpvIeKejXjm09rurAFErvt8fydiKWSHJ9
+	 z3Ba/lcZvo09Kn0XIJN4GfY3iY6XA0Qso7/DyIwfEJ8Y3SJs8II5dZ2cKI5iMK4po3
+	 TmPESP6YtSoVJ2ZxSKxT5htJvciulEzC+ZixJT1s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CDE38F805CB; Tue, 18 Nov 2025 14:19:42 +0100 (CET)
+	id C6D58F805F7; Tue, 18 Nov 2025 14:19:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A319CF805C9;
-	Tue, 18 Nov 2025 14:19:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 974B7F805F9;
+	Tue, 18 Nov 2025 14:19:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88739F804B2; Tue, 18 Nov 2025 14:19:32 +0100 (CET)
+	id CDF7EF805DA; Tue, 18 Nov 2025 14:19:45 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22F22F80152
-	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2025 14:19:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22F22F80152
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C73AF805D8
+	for <alsa-devel@alsa-project.org>; Tue, 18 Nov 2025 14:19:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C73AF805D8
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18791c6950aa8500-webhooks-bot@alsa-project.org>
-In-Reply-To: <18791c694fca9900-webhooks-bot@alsa-project.org>
-References: <18791c694fca9900-webhooks-bot@alsa-project.org>
+Message-Id: <18791c6d2f582300-webhooks-bot@alsa-project.org>
+In-Reply-To: <18791c6d2f53b800-webhooks-bot@alsa-project.org>
+References: <18791c6d2f53b800-webhooks-bot@alsa-project.org>
 Subject: Lenovo Yoga Pro 7 built-in speakers volume not controlled by
  GNOME/PipeWire
-Date: Tue, 18 Nov 2025 14:19:32 +0100 (CET)
-Message-ID-Hash: SNALCCJ57OZ3DRZCUB2KTBP5GBV7VZHW
-X-Message-ID-Hash: SNALCCJ57OZ3DRZCUB2KTBP5GBV7VZHW
+Date: Tue, 18 Nov 2025 14:19:45 +0100 (CET)
+Message-ID-Hash: ORXIGQSZ77Y5O3X374D6YRRRBY63SHTC
+X-Message-ID-Hash: ORXIGQSZ77Y5O3X374D6YRRRBY63SHTC
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SNALCCJ57OZ3DRZCUB2KTBP5GBV7VZHW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ORXIGQSZ77Y5O3X374D6YRRRBY63SHTC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 alsa-project/alsa-ucm-conf issue #642 was edited from 2O77:
 
-Device: Lenovo Yoga Pro 14 14IMH9
+Device: Lenovo Yoga Pro 7 14IRH8
 Sound card: sof-hda-dsp
 Problem: ALSA Post-Mixer / Pre-Mixer controls work via alsamixer, but GNOME volume slider or PipeWire sink volume does not affect hardware output. Likely an issue in the UCM profile for this device.
 
