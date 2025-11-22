@@ -4,173 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3E6AD10F4F
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Nov 2025 14:12:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35E7CD10F4F
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Nov 2025 14:12:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A4EE601CF;
-	Wed, 26 Nov 2025 15:12:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A4EE601CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EC5A601B3;
+	Wed, 26 Nov 2025 15:12:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EC5A601B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1764166344;
-	bh=t3rs52AfqpkRFqp7yAdq5q+m/K6itp/5XHeqaX4Nd1o=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1764166364;
+	bh=hvEW2ZG1nTSnL9pUjWrWo1koAXlbB4Ck51qBQLzgnks=;
+	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ElKFiYa/1cU6EVM58mz5/Dz3zlGHpKIlesEf9rIFjupXqpIvlhm6Ka9j58Br2ihwO
-	 X9BPInr1rqwyfe5a5zktkO+y6oFP+lm7KkdUpKTwAoNi4bYU4CIO00vpvoA2KkNVDt
-	 vDihqPFu1AEQyEt3PJOeSGNJqK7EZXO9DWjD3tvU=
+	b=tWB+TmPtKsPI14jJsbaSWWPRjj822JIoXg8s32zTJiELtxtGWol8YWKSX9lZG7T/A
+	 YLRvODmL36wpSWtBrgBhEUrOaS52Yy+PlkxUcRtB3VCAXROuc2Qbddnkda+k/I2ma1
+	 Ixag1f0NfPk7qmg6Y3WbsZ76d/JixPgpwDwN7P2w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AE68F805EA; Wed, 26 Nov 2025 15:11:56 +0100 (CET)
+	id 7796DF805FE; Wed, 26 Nov 2025 15:11:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5140EF805E5;
-	Wed, 26 Nov 2025 15:11:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A6A3F80605;
+	Wed, 26 Nov 2025 15:11:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2059F80254; Sat, 22 Nov 2025 10:59:51 +0100 (CET)
-Received: from PH0PR06CU001.outbound.protection.outlook.com
- (mail-westus3azon11011062.outbound.protection.outlook.com [40.107.208.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id ED065F80254; Sat, 22 Nov 2025 22:27:48 +0100 (CET)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com
+ [209.85.167.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 93237F8007E
-	for <alsa-devel@alsa-project.org>; Sat, 22 Nov 2025 10:59:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93237F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A7D1F801F7
+	for <alsa-devel@alsa-project.org>; Sat, 22 Nov 2025 22:27:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A7D1F801F7
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=fb756wfB
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=wfxbRY87frTSfxHy99uRMYbeIYM8jiiIbLzXxcyI11hU70nYH9flWHBXpiEetelPY0EOZ5JB5++oRKGwoWOTdzsMRmQu2XZ4JqWTs2YzYsxC5EeOd0ZeQo2FkTJl1l+vVB29BWo+12HkvYgaVdOQ3rTDnucim4NI85gnOoGmOd70xUjzvUCf0ClqjiL8WmhfGGug/DkvTRr7PTOfhuas3hY6+7x1SRuBXamAaP9ZjSPZuhoDtr95+oq5iJRC2H6wSU5KeiVOwumfT2ekH52O+SGZqo30+wIQV/3+PCrVwDEWXTitxT8F/FB7CHtAp5t2mfeoYzLyP23KrQBm7uYiug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Lzn05fNcC9cmjPSxam2UWL8l9Sc8Gu/cJVUblGhYUbQ=;
- b=hWQ5oIAVZ/cUiGNwGR5tqjnfTBWWBwRxgavoypPwV/YGb9uKKdzj03hmbIQdPo9KRAGDifq+o/VaYukbTa+6lYsHz8JEHN8lyC5RcNxoAVHPuIkj12tzlWG0e7gkzOn1DUwhOj7y8Sko4D+Ar2gh1dOJUAUhqfOKJiB/pFjPp+Bwsy25K2RXHTwV2bFgvckK5tZfnAlK7dqGgZLd8t5EOyw9F68gErUMXE72Z1eEP4qKvPl2kDgm/UntnahGij3gbi9MOXJi4pIA1StBYheewImDhF3ZYjE78c0ncHEbpbD5T/pQCttMWDG0qPhB3WuE1+QCctwY44atSSwUqqmzEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.195) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lzn05fNcC9cmjPSxam2UWL8l9Sc8Gu/cJVUblGhYUbQ=;
- b=fb756wfB6mSr9s2pIjunTT6Tp5ICs7dZekXf3TmD/rF2HOklaQWPGWTR7AvQ12VnuYMVV+MlFsl/vf+XyoaXFf6Wv8BTkWS4AU63BJhdL76fBLvKCJFc8KMD//4lqTC1EpjP+fSQd9En+TnEgJe9uokz23DiQmyT3CF06jyWDVk=
-Received: from CH2PR03CA0024.namprd03.prod.outlook.com (2603:10b6:610:59::34)
- by MW5PR10MB5761.namprd10.prod.outlook.com (2603:10b6:303:19a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.10; Sat, 22 Nov
- 2025 09:59:45 +0000
-Received: from CH1PEPF0000AD7F.namprd04.prod.outlook.com
- (2603:10b6:610:59:cafe::28) by CH2PR03CA0024.outlook.office365.com
- (2603:10b6:610:59::34) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9343.14 via Frontend Transport; Sat,
- 22 Nov 2025 09:59:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
-Received: from flwvzet201.ext.ti.com (198.47.21.195) by
- CH1PEPF0000AD7F.mail.protection.outlook.com (10.167.244.88) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9366.7 via Frontend Transport; Sat, 22 Nov 2025 09:59:43 +0000
-Received: from DFLE208.ent.ti.com (10.64.6.66) by flwvzet201.ext.ti.com
- (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sat, 22 Nov
- 2025 03:59:33 -0600
-Received: from DFLE215.ent.ti.com (10.64.6.73) by DFLE208.ent.ti.com
- (10.64.6.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sat, 22 Nov
- 2025 03:59:33 -0600
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE215.ent.ti.com
- (10.64.6.73) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Sat, 22 Nov 2025 03:59:33 -0600
-Received: from lelvem-mr06.itg.ti.com ([10.250.165.138])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5AM9xTW52934710;
-	Sat, 22 Nov 2025 03:59:30 -0600
-From: Baojun Xu <baojun.xu@ti.com>
-To: <tiwai@suse.de>
-CC: <broonie@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-	<alsa-devel@alsa-project.org>, <shenghao-ding@ti.com>, <13916275206@139.com>,
-	<linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<baojun.xu@ti.com>
-Subject: [PATCH v1] ALSA: hda/tas2781: Ignore irq for I2C device
-Date: Sat, 22 Nov 2025 17:59:03 +0800
-Message-ID: <20251122095903.2239-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.43.0.windows.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=m+Jn8tRr
+Received: by mail-lf1-f51.google.com with SMTP id
+ 2adb3069b0e04-59583505988so4474396e87.1
+        for <alsa-devel@alsa-project.org>;
+ Sat, 22 Nov 2025 13:27:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763846864; x=1764451664;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aD9EpE7+6t+CWi5EshJE+eNyIAPVxCRTV2BCkgTCScY=;
+        b=m+Jn8tRrXptYCkNpf14YJgyI24DyuF4KWvD5GRx/xrrBrPbsi8Ye8yptiLMlZSQgTw
+         /EWQyvSDO2qjz+T+QL1qRJFLFOUxkZOdsI60T7pAC0JWyeAUD6YBH54jXmQX7OSHEMqf
+         FK7LebvBH6CFVaenNaarXiO5zTCnLYNJ8Ho+Xup0kAtWldD7gpM7Occi3EHsRmPFifiv
+         ZEvhdJbgo6Ha3Lf8uuxg0jy/whYnqnIQ/IR7Av4Iki8VM/sO070xRkkbrvzLpnUiaTux
+         8SWRgLa8UzQv4w7kHtLL/YvyAN/lHWcUlPnS8WJvx9AjykiTuUOWPC2jS5+a/RoLgZHt
+         JQ8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763846864; x=1764451664;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aD9EpE7+6t+CWi5EshJE+eNyIAPVxCRTV2BCkgTCScY=;
+        b=vd/E4K9mbeSpx1h4VkY9A91E5RzErq89bB0tWkMtYuSgPWz5Z6ib8g5QtgjgWrOiDO
+         9bSmFYDA+CA3YeWhYp/yP6d+rt8qfp0QhJRK5hkUcE9EgJxckRJ7BoRWMBXn+gv3G20f
+         6ZsDxLxhadMV31VnZWhxd1p5ep6pffk3DLvtSpxamw9VX+vFHHiMb21XcTUDn5GfoBzr
+         MBRZraShA5Io2zjQQJJdhf5U54mU+sQbGVAXXRFhxlfxcrLw8B7FgC+GPxiKFeFW5sYL
+         PY41A87iyWvyQu9qyjdy7Qz+erBR6mQUsrYOaUmknJ9JI+yScD/lmMUApvsvxXYnRsbl
+         3csA==
+X-Gm-Message-State: AOJu0YwctJwb4og5T/zh49R6k1sIArYqb3FlOYoU7uZNd9TCJ2YLyfs8
+	1xWyaZ1Pl60zA6BuZEd0N7DHdwXlt0B6FPRhhKYSWrD2LaFyhsanqtEPnwH+b7od
+X-Gm-Gg: ASbGncu3W9jqQLgruISXbv9FUljcxWvhz+Lo1scliBr0kdQXT5mVcnfvzaGYmA4RTpv
+	NmiE2HL9j4nYIXEOQBuwm7wt4gT7q7+JGeJpKiUwx5lODJfIbYTCk/Szz3Iz0BwblHnSt1Scxqe
+	ew9G3kuDWh43G1IcWDl6rrQ5qzcQ4BlSGS9r5qScI5TQLymvrkKauhoG0myi67sjRI4SrdB772J
+	7Mp+qj34+ofv7v2gfhutyU4IRQNg1JBXqqagdERmRjI/j4GEO5YxoPISbH8ZLulnJZvYW7f2V7l
+	uVNKT7U5oiJBzFTikEPy+FzDJ46X8PFFkqxgshL/liypoqBM6QOgX9an3/0mms4QRopa9VVWRoa
+	Qwp3wyedjIKk8kso08W2nIbRg/9iS2o0SXfVQcsBzMfICmvaICDnDqo5f/vR7ax0v1TPL933mGk
+	EzILMKOcccS2HB7xRrbievzClT72R85OIb95r8VlC+RVo=
+X-Google-Smtp-Source: 
+ AGHT+IHX353G6E1yy/X2dkRis3PEt7aj1kHnDmPnLMMpYggVR4b2e4gDY78P7h1E1CMWnI8sGk3muQ==
+X-Received: by 2002:a05:6512:b93:b0:595:2085:dc3e with SMTP id
+ 2adb3069b0e04-5969ea22833mr3936889e87.17.1763846863592;
+        Sat, 22 Nov 2025 13:27:43 -0800 (PST)
+Received: from [192.168.0.109] ([176.98.12.166])
+        by smtp.gmail.com with ESMTPSA id
+ 2adb3069b0e04-5969db7478esm2670481e87.6.2025.11.22.13.27.42
+        for <alsa-devel@alsa-project.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 22 Nov 2025 13:27:42 -0800 (PST)
+Message-ID: <ab3fd381-da64-4971-9500-1f250ddfa6ac@gmail.com>
+Date: Sat, 22 Nov 2025 23:27:41 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: alsa-devel@alsa-project.org
+From: "Sergii O. Uriupin" <urupin@gmail.com>
+Subject: BUGREP No hardware speaker volume control on ALC287 (Lenovo Yoga,
+ Ubuntu 25.10): master/sink volume has no effect
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7F:EE_|MW5PR10MB5761:EE_
-X-MS-Office365-Filtering-Correlation-Id: 159890a0-bad3-4f87-e72c-08de29addc22
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|36860700013;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?Bkzk2Bzxg+1Y5QU6+v3xz3UypcEXzZ6oPh1I8IjmZEDQWGBbliuT7T6Ec/aB?=
- =?us-ascii?Q?tcq4aiihpD3qyhSUbOoYBTh82i4VnjPZhKIgIHVr6ASDHRuLlHaZFlulL6o+?=
- =?us-ascii?Q?0QNosE1FZRRhn2x7MWeim1ZLMwrt96VAoNJYOa93kL6tBEmK4RycnziMyjm4?=
- =?us-ascii?Q?/rB2q95fS2sw9nNTV9QBIc+h0H9N5efX/663MmKiLIqolvN6igtISnSiLhtl?=
- =?us-ascii?Q?L/fkFY292BZKsWBg71b2xn1vTQYhZB5bN25K8cAtDxdb9O4jsvpTNrurHvrR?=
- =?us-ascii?Q?keCkP560Fb7se0dHVh36Rn1NkcpWNqTFkLxGL7t5+hJvNszPMqNyYyqlgPat?=
- =?us-ascii?Q?eOr8sZxucKtKTUbsBtah1+dgfuyrhaAo6KjqBkINIBhU91g+bbz/jMqLDDUp?=
- =?us-ascii?Q?JOOkixeUyGGu5dKpRN5wTPu7KeDR+iVbxvy5GumuLoxdL+5DeCVvtcbqVQXU?=
- =?us-ascii?Q?PNf2MQJPGaRUqCtbn+PuI9tDJc1H9Icql/mNBU/6LLQAVrw1gmgdoLe9LEuf?=
- =?us-ascii?Q?BzuxW1t2278v1UGRT+CgDlyimjq1LGQBJEICKecbYrdeB+PcuYqATXjk0isD?=
- =?us-ascii?Q?cOYqSS4oRyf8B4Huv7t7C2zUEFxgHb+OyezOIAoxZTXe8OcIAXseqfZIpm7x?=
- =?us-ascii?Q?0wOfsEF2pVOwzUU1OjR0ccQ1yFBFfXfz4bhe6G7nKdj5PmkWKmJ8Y97yZB9z?=
- =?us-ascii?Q?jOvmO300S813kxGKipUU7cwGOsgRtJcOrPORMRzcGvhirtwajR3Nx5eZ0/NI?=
- =?us-ascii?Q?r0HMq46ydpxT1bKVunXzsnqUClslnqJKIna9LydnpRq6aGkFzW6wXTv2QSKd?=
- =?us-ascii?Q?LtirlxGdOy7NIRmt7YfZXQ3QqSV4HHIL4aYTOa1NkZAPpu2C29KFqGJssKMk?=
- =?us-ascii?Q?l6iRAnQSMI3sRuqxFczN+uvBKLJXF4F9vXI+PwsjYjIvggB+bcDyHvB41Xgn?=
- =?us-ascii?Q?6qCdMIOKqCM0EKLQZnYKIN/il3o0Hcwf/jpQQ8BuunH00jr4H8YxYjPrRXI0?=
- =?us-ascii?Q?/klq9iH/2HwAAeYTD2h4WrFJF+ngOuXSfXs26mme2G7HkyLWHAPvwctAr7Qu?=
- =?us-ascii?Q?n3cSC5TpxqXpUveR9g/jCe2qROFJSGpTrfipJuLt3YC65b3/cpVkWMAEYKSG?=
- =?us-ascii?Q?PBaOEfMMJaPByC06xEZkD75lYRgC5v3C1yyj0PMHFZkHq/Ei72nF34wdC5Lo?=
- =?us-ascii?Q?MoAj3sZgk0Okxz1koCijjF9BREPB25sjM3JnEMI3H0caSjPO6i0txENZWAiG?=
- =?us-ascii?Q?kUJl8B2eHVRyZT6ipv7dsPeeiULsdne7XlWeFtgaVz2qs/Dv17fEw7qAGbYe?=
- =?us-ascii?Q?3mAvsALK4HU4d8EYrBWX01yI5w2g64rxGpN55hilHXZbKBoH2GAXr8ZqWMm0?=
- =?us-ascii?Q?C+nYzoQ93g6a383WNohRUi58NCUf6rqq9aP8XQuT2DDk8LkLe39ngstVriMI?=
- =?us-ascii?Q?XqXIldFrGFSzKSNF2QU8W/9NPtoiKYynxi1uoOrltlmvoAPXE7JF6RlM7tC/?=
- =?us-ascii?Q?m8H/8j0l0ZxptL3MbXI10NCTCDJi4Z386++WhuD4WxvLp90Fq7qXWDfmVPDw?=
- =?us-ascii?Q?tBd6H+Ht2PZFpg0d8ag=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(36860700013);DIR:OUT;SFP:1101;
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2025 09:59:43.1620
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 159890a0-bad3-4f87-e72c-08de29addc22
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	CH1PEPF0000AD7F.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR10MB5761
-X-MailFrom: baojun.xu@ti.com
+X-MailFrom: urupin@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ESV277GAT4F2NJAPC3URDYHF4CEOH64C
-X-Message-ID-Hash: ESV277GAT4F2NJAPC3URDYHF4CEOH64C
-X-Mailman-Approved-At: Wed, 26 Nov 2025 14:11:49 +0000
+Message-ID-Hash: DXSW3XKGPL7W4H4XQPG4C2PVGXL4S2BU
+X-Message-ID-Hash: DXSW3XKGPL7W4H4XQPG4C2PVGXL4S2BU
+X-Mailman-Approved-At: Wed, 26 Nov 2025 14:11:50 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ESV277GAT4F2NJAPC3URDYHF4CEOH64C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DXSW3XKGPL7W4H4XQPG4C2PVGXL4S2BU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -179,27 +124,164 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In some projects (HP Lampass), no GPIO was assigned for irq,
-it would be better to ignore it.
+Hardware:
+- Laptop: Lenovo Yoga (AMD APU with ALC287)
+- Audio: Family 17h/19h/1ah HD Audio Controller, codec Realtek ALC287
+- OS: Ubuntu 25.10 (kernel 6.17.0-6-generic)
+- Audio stack: PulseAudio 17.0 (PipeWire audio removed)
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
----
- drivers/platform/x86/serial-multi-instantiate.c | 2 --
- 1 file changed, 2 deletions(-)
+Problem:
+- System master/sink volume (1–100%) does not change actual speaker 
+loudness.
+- Only slight change >100% (as if a high-frequency path kicks in).
+- Actual audible volume changes only when per-stream volume is adjusted 
+(e.g., `pactl set-sink-input-volume <id> ...`).
+- In ALSA controls there is no usable “Speaker Playback Volume”, only 
+switches; so PA/desktop slider has no effect on internal speakers.
+- Reproducible after clean boot, with PulseAudio as the active server 
+(pipewire-audio removed).
 
-diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-index db030b0f176a..86cecf3ed916 100644
---- a/drivers/platform/x86/serial-multi-instantiate.c
-+++ b/drivers/platform/x86/serial-multi-instantiate.c
-@@ -214,8 +214,6 @@ static int smi_i2c_probe(struct platform_device *pdev, struct smi *smi,
- 		board_info.dev_name = name;
- 
- 		ret = smi_get_irq(pdev, adev, &inst_array[i]);
--		if (ret < 0)
--			goto error;
- 		board_info.irq = ret;
- 
- 		smi->i2c_devs[i] = i2c_acpi_new_device(dev, i, &board_info);
--- 
-2.25.1
+Data:
+- ALSA info: <ALSA_INFO_URL>
+- `amixer -c1 controls`: <paste output>
+- `amixer -c1 contents`: <paste output>
+- `pactl info`: <paste output>
+- `pactl list sinks short`: <paste output>
+- `pactl list sink-inputs short`: <paste output>
+
+Expected:
+- Master/sink volume should control speaker loudness.
+
+Actual:
+- Master/sink volume does nothing; only per-stream volume changes affect 
+sound.
+
+Notes:
+- UCM profile (HDA/HiFi) points speaker to non-existent “Speaker 
+Playback Volume”; mapping to Bass Speaker volume locally (user UCM 
+override) still yields minimal effect. Needs correct UCM/driver mapping 
+for ALC287 on this platform.
+
+
+s@ubunt:~/soft/Lenovo$ sudo apt install alsa-utils
+
+# Full ALSA dump (will upload and give a URL)
+alsa-info.sh --upload
+
+# Mixer controls
+amixer -c1 controls
+amixer -c1 contents
+
+# PulseAudio state
+pactl info
+pactl list sinks short
+pactl list sink-inputs short
+[sudo: authenticate] Password:
+Уже установлен пакет alsa-utils самой новой версии (1.2.14-1ubuntu1).
+alsa-utils помечен как установленный вручную.
+Сводка:
+   Обновление: 0, Установка: 0, Удаление: 0, Пропуск обновления: 4
+alsa-info.sh: команда не найдена
+numid=15,iface=CARD,name='Headphone Jack'
+numid=12,iface=CARD,name='Mic Jack'
+numid=13,iface=CARD,name='Speaker Front Phantom Jack'
+numid=14,iface=CARD,name='Speaker Surround Phantom Jack'
+numid=11,iface=MIXER,name='Master Playback Switch'
+numid=10,iface=MIXER,name='Master Playback Volume'
+numid=5,iface=MIXER,name='Headphone Playback Switch'
+numid=4,iface=MIXER,name='Headphone Playback Volume'
+numid=19,iface=MIXER,name='Mic ACP LED Capture Switch'
+numid=9,iface=MIXER,name='Mic Boost Volume'
+numid=8,iface=MIXER,name='Capture Switch'
+numid=7,iface=MIXER,name='Capture Volume'
+numid=6,iface=MIXER,name='Auto-Mute Mode'
+numid=3,iface=MIXER,name='Bass Speaker Playback Switch'
+numid=2,iface=MIXER,name='Bass Speaker Playback Volume'
+numid=1,iface=MIXER,name='Speaker Playback Switch'
+numid=17,iface=PCM,name='Capture Channel Map'
+numid=16,iface=PCM,name='Playback Channel Map'
+numid=15,iface=CARD,name='Headphone Jack'
+   ; type=BOOLEAN,access=r-------,values=1
+   : values=off
+numid=12,iface=CARD,name='Mic Jack'
+   ; type=BOOLEAN,access=r-------,values=1
+   : values=off
+numid=13,iface=CARD,name='Speaker Front Phantom Jack'
+   ; type=BOOLEAN,access=r-------,values=1
+   : values=on
+numid=14,iface=CARD,name='Speaker Surround Phantom Jack'
+   ; type=BOOLEAN,access=r-------,values=1
+   : values=on
+numid=11,iface=MIXER,name='Master Playback Switch'
+   ; type=BOOLEAN,access=rw------,values=1
+   : values=on
+numid=10,iface=MIXER,name='Master Playback Volume'
+   ; type=INTEGER,access=rw------,values=1,min=0,max=87,step=0
+   : values=87
+numid=5,iface=MIXER,name='Headphone Playback Switch'
+   ; type=BOOLEAN,access=rw------,values=2
+   : values=off,off
+numid=4,iface=MIXER,name='Headphone Playback Volume'
+   ; type=INTEGER,access=rw---R--,values=2,min=0,max=87,step=0
+   : values=52,52
+   | dBscale-min=-65.25dB,step=0.75dB,mute=0
+numid=19,iface=MIXER,name='Mic ACP LED Capture Switch'
+   ; type=BOOLEAN,access=rw----W-,values=1
+   : values=off
+numid=9,iface=MIXER,name='Mic Boost Volume'
+   ; type=INTEGER,access=rw---R--,values=2,min=0,max=3,step=0
+   : values=0,0
+   | dBscale-min=0.00dB,step=10.00dB,mute=0
+numid=8,iface=MIXER,name='Capture Switch'
+   ; type=BOOLEAN,access=rw------,values=2
+   : values=on,on
+numid=7,iface=MIXER,name='Capture Volume'
+   ; type=INTEGER,access=rw---R--,values=2,min=0,max=63,step=0
+   : values=38,38
+   | dBscale-min=-17.25dB,step=0.75dB,mute=0
+numid=6,iface=MIXER,name='Auto-Mute Mode'
+   ; type=ENUMERATED,access=rw------,values=1,items=2
+   ; Item #0 'Disabled'
+   ; Item #1 'Enabled'
+   : values=0
+numid=3,iface=MIXER,name='Bass Speaker Playback Switch'
+   ; type=BOOLEAN,access=rw------,values=2
+   : values=on,on
+numid=2,iface=MIXER,name='Bass Speaker Playback Volume'
+   ; type=INTEGER,access=rw---R--,values=2,min=0,max=87,step=0
+   : values=87,87
+   | dBscale-min=-65.25dB,step=0.75dB,mute=0
+numid=1,iface=MIXER,name='Speaker Playback Switch'
+   ; type=BOOLEAN,access=rw------,values=2
+   : values=on,on
+numid=17,iface=PCM,name='Capture Channel Map'
+   ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
+   : values=0,0
+   | container
+     | chmap-fixed=FL,FR
+numid=16,iface=PCM,name='Playback Channel Map'
+   ; type=INTEGER,access=r--v-R--,values=4,min=0,max=36,step=0
+   : values=3,4,0,0
+   | container
+     | chmap-fixed=FL,FR
+     | chmap-fixed=FL,FR,LFE,LFE
+Строка сервера: /run/user/1000/pulse/native
+Версия протокола библиотеки: 35
+Версия протокола сервера: 35
+Выполняется локально: да
+Номер клиента: 20
+Размер блока памяти: 65472
+Имя пользователя: s
+Имя хоста: ubunt
+Имя сервера: pulseaudio
+Версия сервера: 17.0
+Спецификация отсчётов по умолчанию: s16le 2-канальный 4410
+Схема каналов по умолчанию: front-left,front-right
+Аудиоприёмник по умолчанию: alsa_output.pci-0000_04_00.6.HiFi__Speaker__sink
+Источник по умолчанию: alsa_input.pci-0000_04_00.6.HiFi__Mic1__source
+Cookie: 8342:bbd4
+0       alsa_output.pci-0000_04_00.6.HiFi__Speaker__sink 
+module-alsa-card.c      s16le 2-канальный 4800 RUNNING
+7       0       17      protocol-native.c       float32le 2-канальный
+s@ubunt:~/soft/Lenovo$
 
