@@ -4,92 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0ED2D10F58
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Nov 2025 14:20:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC3B1D1118B
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Nov 2025 17:48:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ED6D60207;
-	Wed, 26 Nov 2025 15:20:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ED6D60207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77309601CF;
+	Wed, 26 Nov 2025 18:48:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77309601CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1764166858;
-	bh=Ob6QmmWDh4oiB6gP8J9QjMFjK/AEovlZGaBM6iIehtY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1764179303;
+	bh=CREXnS7WogomLb2RYobjD6Y/Z7X01LZZcskfhg30vMY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=I/v9ZIded729PURC6xeNfcfvq5Nc27IxKppfnr9Uj/2lpPwGKl5j2Q9V/0mY7Jorj
-	 AvjYWdJm1szlzauO3P99eZ9iUdj0D9v7fSo09Y5jZhN01hvEr+X+FjJvbGtVxZyq0J
-	 0Fj8K7TW5s8Ie9Qw4VBpcBYIOCiABn72R3jnA2zE=
+	b=be/73JAzhFmpw627helYELAdLguLVq4AFSu4ZU5M0/RMEm6aKyZ/m8nTVCiZ9F7rV
+	 6dXFF47P103lJGQMp6KDUZH9U3Zr+QEHsHQlDwGx5TxKNwLo6QjWjqvuFqhOghPsLe
+	 ihumK7OC13lYeaZY4lqQ2FUS0umlf6vtsi/dtJLo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F15DFF80680; Wed, 26 Nov 2025 15:19:24 +0100 (CET)
+	id 65EA9F805C6; Wed, 26 Nov 2025 18:47:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92809F80683;
-	Wed, 26 Nov 2025 15:19:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DFCFF805C2;
+	Wed, 26 Nov 2025 18:47:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45CD8F8047D; Wed, 26 Nov 2025 13:29:04 +0100 (CET)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B2894F8047D; Wed, 26 Nov 2025 18:47:40 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0059BF800AE
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2025 13:29:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0059BF800AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8CBEFF80087
+	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2025 18:47:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CBEFF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=r/HYW43V
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id C57B96001D;
-	Wed, 26 Nov 2025 12:28:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23B93C113D0;
-	Wed, 26 Nov 2025 12:28:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764160139;
-	bh=Ob6QmmWDh4oiB6gP8J9QjMFjK/AEovlZGaBM6iIehtY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=r/HYW43V7mF+I82OwalGBXKAAsnW64//dqGt/1BpzVWUFDfgO+7pBsv8eCPQwA2zQ
-	 o/u7y7tOv8l29xvXkz/+locaLv4m/7I4/AL++JDuSGiHPJyazLJUBqTqQ5CN/xb3gr
-	 J+iSVztuF2t+I5m8i77tLnazWKpqsg/lsxKVqyXQfLaV6827TyPpI8Exz5/riOflo6
-	 D26hKzwJtSy9xhapQ5sHF8/9ICfdO2a8oLvNCbw6lF75v+qZbwnCE5cXBruJWxUD7t
-	 2mZrC7gUK2AYiq569njVzvzEi1DF74jmgkVJRJsYUXuRecj58NVTNVcYhFD7QgbPaP
-	 JYiArrFV/E2cw==
-Message-ID: <9b2dca55-1207-48a3-94b0-3efad1462d0f@kernel.org>
-Date: Wed, 26 Nov 2025 13:28:55 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/1] platform/x86: serial-multi-instantiate: Add
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=XEqOf409
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764179257; x=1795715257;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CREXnS7WogomLb2RYobjD6Y/Z7X01LZZcskfhg30vMY=;
+  b=XEqOf409Cd6epCweg+bEEvFyZMT0Q4OXwTGh57GniGBNJcHkp1DHSSmh
+   8Am/VHKiRSQZkMw4zZTSWzSaxo7TRn0ZuH8FxrV4Ur0wUwrO8fwal3/br
+   YaKO2mkK74qOa7iq0AnZ/vNG5SfkSwHSF4SLpyM6rEaHWfVcQJMOc/VWP
+   dERVHTId0UyYg6+TW+JWBYWpi3ANxNbDs0mYEmr72LOd7wCHzaLSys2nl
+   W1y6E1OoCv1z+NcXHz5JtrnNLK942PNo+B0jQbOLSN+Hz70HT4Fm7fZX5
+   6bKAa3PsjyL4aDX4RP3ll/IqSYxVAXz35ZZONl9IBpnfng6tw5YRzIi6R
+   Q==;
+X-CSE-ConnectionGUID: 8I47nx5AQxqf7Nw8/j9vEQ==
+X-CSE-MsgGUID: OOStrsokRGuFFS6hOkY4OQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11625"; a="66114366"
+X-IronPort-AV: E=Sophos;i="6.20,229,1758610800";
+   d="scan'208";a="66114366"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Nov 2025 09:47:32 -0800
+X-CSE-ConnectionGUID: 3namkLD0QZCVEqJ9Nxrqfw==
+X-CSE-MsgGUID: Qitg+UGHRs6gUU8YfEERcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,228,1758610800";
+   d="scan'208";a="192885691"
+Received: from rvuia-mobl.ger.corp.intel.com (HELO localhost)
+ ([10.245.245.89])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Nov 2025 09:47:29 -0800
+Date: Wed, 26 Nov 2025 19:47:27 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Baojun Xu <baojun.xu@ti.com>
+Cc: tiwai@suse.de, hansg@kernel.org, ilpo.jarvinen@linux.intel.com,
+	broonie@kernel.org, alsa-devel@alsa-project.org,
+	shenghao-ding@ti.com, 13916275206@139.com,
+	platform-driver-x86@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, letitia.tsai@hp.com
+Subject: Re: [PATCH v5] platform/x86: serial-multi-instantiate: Add
  IRQ_RESOURCE_OPT for IRQ missing projects
-To: Baojun Xu <baojun.xu@ti.com>, tiwai@suse.de
-Cc: ilpo.jarvinen@linux.intel.com, broonie@kernel.org,
- andriy.shevchenko@linux.intel.com, alsa-devel@alsa-project.org,
- shenghao-ding@ti.com, 13916275206@139.com,
- platform-driver-x86@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, letitia.tsai@hp.com
-References: <20251126121911.10980-1-baojun.xu@ti.com>
- <20251126121911.10980-2-baojun.xu@ti.com>
-From: Hans de Goede <hansg@kernel.org>
-Content-Language: en-US, nl
-In-Reply-To: <20251126121911.10980-2-baojun.xu@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-MailFrom: hansg@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+Message-ID: <aSc9L6KXG6oQubwF@smile.fi.intel.com>
+References: <20251126141434.11110-1-baojun.xu@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251126141434.11110-1-baojun.xu@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
+Message-ID-Hash: H5BVLVQI3A7D6PWCBCJ2L7HUOBQKXKVW
+X-Message-ID-Hash: H5BVLVQI3A7D6PWCBCJ2L7HUOBQKXKVW
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: C7VDLYLDAHUH3QUFJAR4HJWG2WWMMASN
-X-Message-ID-Hash: C7VDLYLDAHUH3QUFJAR4HJWG2WWMMASN
-X-Mailman-Approved-At: Wed, 26 Nov 2025 14:13:10 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C7VDLYLDAHUH3QUFJAR4HJWG2WWMMASN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5BVLVQI3A7D6PWCBCJ2L7HUOBQKXKVW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,82 +110,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-On 26-Nov-25 1:19 PM, Baojun Xu wrote:
-> The tas2781-hda supports multi-projects. In some projects,
-> GpioInt() was dropped due to no IRQ connection.
-
-> See the example code in the cover letter.
-
-Please don't do this, the example code is not that big, people
-should not need to go and hunt down the example code, please just
-add it to the commit message.
-
-Also please use longer lines (wrap at 75 chars) for the commit msg
-and please use empty lines between paragraphs to clearly separate
-the paragraphs.
-
-Regards,
-
-Hans
-
-
-
-> But in smi_i2c_probe(), smi_spi_probe() (serial-multi-instantiate.c),
-> if looking for IRQ by smi_get_irq() fails, it will return an error,
-> will not add new device, and cause smi_probe() to fail.
-> So, we need to add an exception case for these situations.
-> BTW, this patch will take effect on both I2C and SPI devices.
+On Wed, Nov 26, 2025 at 10:14:33PM +0800, Baojun Xu wrote:
+> The tas2781-hda supports multi-projects. In some projects, GpioInt() was
+> dropped due to no IRQ connection. See the example code below:
 > 
-> Signed-off-by: Baojun Xu <baojun.xu@ti.com>
-> ---
-> v4:
->  - Change the description for this patch.
-> v3:
->  - Add IRQ_RESOURCE_OPT for IRQ missing cases.
-> v2:
->  - Remove error ignore, change to AUTO compatible with NONE.
-> ---
->  drivers/platform/x86/serial-multi-instantiate.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+> Device (SPKR)
+> {
+>     Name (_ADR, One)
+>     Name (_HID, "TXNW2781")
+>     Method (_CRS, 0, NotSerialized)
+>     {
+>         Name (RBUF, ResourceTemplate ()
+>         {
+>             I2cSerialBusV2 (0x0038, ...)
+>             I2cSerialBusV2 (0x0039, ...)
+>             // GpioInt (Edge, ...) { 0x0000 }
+>             //"GpioInt (...) {}" was commented out due to no IRQ connection.
+>         })
+>         Return (RBUF)
+>     }
+> }
 > 
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-> index db030b0f176a..1a369334f9cb 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -22,6 +22,7 @@
->  #define IRQ_RESOURCE_GPIO	1
->  #define IRQ_RESOURCE_APIC	2
->  #define IRQ_RESOURCE_AUTO   3
-> +#define IRQ_RESOURCE_OPT	BIT(2)
->  
->  enum smi_bus_type {
->  	SMI_I2C,
-> @@ -64,6 +65,10 @@ static int smi_get_irq(struct platform_device *pdev, struct acpi_device *adev,
->  			dev_dbg(&pdev->dev, "Using platform irq\n");
->  			break;
->  		}
-> +		if (inst->flags & IRQ_RESOURCE_OPT) {
-> +			dev_dbg(&pdev->dev, "No irq\n");
-> +			return 0;
-> +		}
->  		break;
->  	case IRQ_RESOURCE_GPIO:
->  		ret = acpi_dev_gpio_irq_get(adev, inst->irq_idx);
-> @@ -386,10 +391,10 @@ static const struct smi_node cs35l57_hda = {
->  
->  static const struct smi_node tas2781_hda = {
->  	.instances = {
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
->  		{}
->  	},
->  	.bus_type = SMI_AUTO_DETECT,
+> But in smi_i2c_probe(), smi_spi_probe() (serial-multi-instantiate.c), if
+> looking for IRQ by smi_get_irq() fails, it will return an error, will not add
+> new device, and cause smi_probe() to fail:
+> 
+> [    2.356546] Serial bus multi instantiate pseudo device driver TXNW2781:00:
+> error -ENXIO: IRQ index 0 not found
+> [    2.356561] Serial bus multi instantiate pseudo device driver TXNW2781:00:
+> error -ENXIO: Error requesting irq at index 0
+> 
+> So, we need to add an exception case for these situations. BTW, this patch
+> will take effect on both I2C and SPI devices.
+
+Thanks, excellent!
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
