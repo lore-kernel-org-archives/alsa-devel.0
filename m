@@ -4,91 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 232A5D1CDC6
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Dec 2025 13:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 335E1D3B7EA
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Dec 2025 13:30:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D3BA60211;
-	Tue,  9 Dec 2025 14:29:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D3BA60211
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC9D96020A;
+	Tue,  9 Dec 2025 14:29:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC9D96020A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765286990;
-	bh=MlT02GQ7CMP/AT621MdmGurXzngpl0+HfAiTojvD0xU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=gI+pyNcWLsfhkZ3J4ZWp3ZUUhzLJR+HlC0LdnGPG9tqHO89ooNeRJFvF0quHN9jNF
-	 p/vqYVYFG85a+VosZk61x39bVMk4Rrt6pxwV7MC+R6ylQjEyMU1h8urmZx6mQF1q54
-	 UokFdKE0xfuuRjOIRFDw5JjkSLiBcUM+5kIdcT4k=
+	s=default; t=1765287004;
+	bh=NuF5IlJSliv7dduKXxzuAMnmr2O5+kS9hhU6jsMo2mw=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=D8Cz1gh+/IVapakQ9mGCD63JEHkFVJBOTFanLNrbdwcZBTLuJ1uZFjByqEvRrOXvL
+	 G6HlC/NkZztTRjzD3ENoi4g1FogcpHBifJV216DL1/rsdRp5HyVBZgOrWyJUkw6Jnc
+	 FWeN7SLZvwFazluQQf2ITd8YwZGTEXmUTNIg1z0E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58D12F805F3; Tue,  9 Dec 2025 14:29:11 +0100 (CET)
+	id 25234F80615; Tue,  9 Dec 2025 14:29:15 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00028F805F6;
-	Tue,  9 Dec 2025 14:29:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5BFBF8061C;
+	Tue,  9 Dec 2025 14:29:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB4F9F80087; Wed, 26 Nov 2025 18:20:00 +0100 (CET)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 2EE32F80087; Thu, 27 Nov 2025 08:10:09 +0100 (CET)
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com
+ [209.85.219.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD57FF80087
-	for <alsa-devel@alsa-project.org>; Wed, 26 Nov 2025 18:19:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD57FF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id A058AF80087
+	for <alsa-devel@alsa-project.org>; Thu, 27 Nov 2025 08:09:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A058AF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=JAd/IPow
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 005F5407C7;
-	Wed, 26 Nov 2025 17:19:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70E43C4CEF7;
-	Wed, 26 Nov 2025 17:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764177591;
-	bh=MlT02GQ7CMP/AT621MdmGurXzngpl0+HfAiTojvD0xU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JAd/IPow1Fd0Vgk7KF9I3UzSzT0YyvuNv9p3wHuS38yi0HfAlIObXhSiZ+Ud8Bn/e
-	 9VZlnnRHaRgVQcUDiGHKr4Twk0ofqV5UDUqqmS4bEnv+ozAFT7cqclsskJypZUH7d4
-	 KkQdkLUJBOZytPr3gbP3YQ6/VUblazCzMnUbU9orciz3fxK2J6pEAYpJU3qBKc/28b
-	 CW1H8Hv1oa70zt/BK6evRR9yfZaul8Q5UOVuAjUVD5TWzuXaFdTFR9LGBDhIgBpnHf
-	 N8fNxwqzKNx4VHEPUbBJo4/pUdz2jkbtEyKTY4S8h3cDsj3IkEpE0hD91/Bl6KvUFQ
-	 LxdgaIMIHLqVA==
-Message-ID: <ce56da25-e8cb-4438-b75b-1dd32df10d89@kernel.org>
-Date: Wed, 26 Nov 2025 18:19:47 +0100
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=TOEKd9KM
+Received: by mail-qv1-f49.google.com with SMTP id
+ 6a1803df08f44-8823d5127daso5601086d6.0
+        for <alsa-devel@alsa-project.org>;
+ Wed, 26 Nov 2025 23:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764227393; x=1764832193;
+ darn=alsa-project.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7qDpw//a4R5VvRtm7uZbHX0/pcASypZrERLxOL91hD8=;
+        b=TOEKd9KMFPKGA6GfegFeKrGVr++5Y07tzpqvEUuLl0fYdRosFq/AL3aXacaAAnlKgM
+         ZbHGnb46sYuywiMRLw9LJt6Mi3JngTTzDiJtLs9J4+mQ0BleW2LHHNAjHBvAEuUhoTsO
+         lw6FESNoBxU+QiL3uZUM8smDFn/UghjQP2agrZORxxv1klRVp6zexUw42QHmyxC55nos
+         oMHLl+DgdmC3VoSbgQLvvWHy3WqHGacl4+pJ0gstd+56NvIAb9LD9ZYBooycn4kJUBMJ
+         dbx6u7/TWytOpsziDTSkAEZ1j33R/IlYzrusXhQO5rMyMin6r7qXfwPGBFMKEuEARS2C
+         J1ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764227393; x=1764832193;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qDpw//a4R5VvRtm7uZbHX0/pcASypZrERLxOL91hD8=;
+        b=Bh5Q4Vx9MyT4Y7IC2Ll9oMeNF/cef2WXGZplcxyYvuwMCfXT3WDSPGIDnqxtDETGS9
+         V6zG1fO/fjQdb2Ve7TFC+xMu9qXc3FxdtGf/uQ5x7wSfkwKh856TIOHRRg7mSxuFRbPo
+         eLZNik4oeTBFwcVOLBVuHGqeTpjsV6grDpwgncbR7pMm3c+k7+Vz2nWz6lBbkeRmDL6W
+         6+tCa6LHk/lqEe0kwriSeZso8VoCsRlYOTo5yAgbWv5rzK+IFdMe2wzAnqKH+Nb+bIUM
+         cjtiX1yURBiS9O4vZ6bwSKTekOxfYBHeLeJTghTqvInLqZYG+y+rPXOmHZq/53HMu+RJ
+         0vBA==
+X-Gm-Message-State: AOJu0YyzL9WSf94zjq6CTIJm/6KjHpSoCssXwuLPxYxEJJ9iJtpgkNRA
+	JcwZZ4OsfJg7ZNnFnpUsmuXo3p/m/TbJg7UAn/kHrvIg7Mh5McHZfYQToQwC3udl2+khwU5IFRZ
+	S6Zx3bWJ2SsMVyPByNA3Ilwa0Rl6tNDLRnDxu+Lk=
+X-Gm-Gg: ASbGncvC6FrcMXOoq+21M0ah7cVlwkMuX9S1Ko2mLw/6ruiNW9OikEoVoZd6zAC3RK9
+	flOWJi42wmXvCxZndJ2DgdNnadQ/mr0U4XsW2SZNJMVJrl5/zn312YCDhmccY03/WlP+LxA9BwC
+	p72/9SBAMv2bT1nLafikPmyL1713zeXbqRPJNQZOXIAzh/Ke1XPyrfeqMilEr+YGWIARPtnuVDy
+	uTk6HXOPjW3VKTbWjzDIgw3u6vJgSKNyCti/gIj7ICPK6hwyvKxZyCESMmAa1r8Nt2lB9h0
+X-Google-Smtp-Source: 
+ AGHT+IEhqIP+q5xk5I9MdjOIjKBy0VTH73Hs6EnLoHJyIFqLWWha+9r7OY9vyw6msnuS7adtao2b2x3/ijTSjd+ccJM=
+X-Received: by 2002:a05:6214:194b:b0:882:401c:e391 with SMTP id
+ 6a1803df08f44-8847c5794c7mr348563396d6.57.1764227391499; Wed, 26 Nov 2025
+ 23:09:51 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] platform/x86: serial-multi-instantiate: Add
- IRQ_RESOURCE_OPT for IRQ missing projects
-To: Baojun Xu <baojun.xu@ti.com>, tiwai@suse.de
-Cc: ilpo.jarvinen@linux.intel.com, broonie@kernel.org,
- andriy.shevchenko@linux.intel.com, alsa-devel@alsa-project.org,
- shenghao-ding@ti.com, 13916275206@139.com,
- platform-driver-x86@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, letitia.tsai@hp.com
-References: <20251126141434.11110-1-baojun.xu@ti.com>
-From: Hans de Goede <hansg@kernel.org>
-Content-Language: en-US, nl
-In-Reply-To: <20251126141434.11110-1-baojun.xu@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-MailFrom: hansg@kernel.org
+From: Titas Valantinas <novatitas366@gmail.com>
+Date: Thu, 27 Nov 2025 09:09:40 +0200
+X-Gm-Features: AWmQ_bnCxt4LFa8ThhvXB3cX0wsBjbXXE8Rqrpcx8U9ltGEesrE41Zh-BGqQWnI
+Message-ID: 
+ <CAAS2jrV2FdSVb7L7fcVAYAPKU9iZs2RKG=qx-6RpC3cx-W2GrA@mail.gmail.com>
+Subject: =?UTF-8?Q?Lenovo_Yoga_7_2=2Din=2D1_16AKP10=2C_Realtek_ALC287_codec_?=
+	=?UTF-8?Q?=E2=80=93_Bottom_speakers_not_responding_to_volume_control_in_linu?=
+	=?UTF-8?Q?x?=
+To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="000000000000f945ce06448e325b"
+X-MailFrom: novatitas366@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YAGDA6XDMB6AHG3JMQKSGUVJAYB4D6MW
-X-Message-ID-Hash: YAGDA6XDMB6AHG3JMQKSGUVJAYB4D6MW
-X-Mailman-Approved-At: Tue, 09 Dec 2025 13:28:48 +0000
+Message-ID-Hash: VOIS37TVHZTGE4GZT6INTZQGPKRABE6O
+X-Message-ID-Hash: VOIS37TVHZTGE4GZT6INTZQGPKRABE6O
+X-Mailman-Approved-At: Tue, 09 Dec 2025 13:28:50 +0000
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YAGDA6XDMB6AHG3JMQKSGUVJAYB4D6MW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VOIS37TVHZTGE4GZT6INTZQGPKRABE6O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,103 +115,126 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+--000000000000f945ce06448e325b
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26-Nov-25 3:14 PM, Baojun Xu wrote:
-> The tas2781-hda supports multi-projects. In some projects, GpioInt() was
-> dropped due to no IRQ connection. See the example code below:
-> 
-> Device (SPKR)
-> {
->     Name (_ADR, One)
->     Name (_HID, "TXNW2781")
->     Method (_CRS, 0, NotSerialized)
->     {
->         Name (RBUF, ResourceTemplate ()
->         {
->             I2cSerialBusV2 (0x0038, ...)
->             I2cSerialBusV2 (0x0039, ...)
->             // GpioInt (Edge, ...) { 0x0000 }
->             //"GpioInt (...) {}" was commented out due to no IRQ connection.
->         })
->         Return (RBUF)
->     }
-> }
-> 
-> But in smi_i2c_probe(), smi_spi_probe() (serial-multi-instantiate.c), if
-> looking for IRQ by smi_get_irq() fails, it will return an error, will not add
-> new device, and cause smi_probe() to fail:
-> 
-> [    2.356546] Serial bus multi instantiate pseudo device driver TXNW2781:00:
-> error -ENXIO: IRQ index 0 not found
-> [    2.356561] Serial bus multi instantiate pseudo device driver TXNW2781:00:
-> error -ENXIO: Error requesting irq at index 0
-> 
-> So, we need to add an exception case for these situations. BTW, this patch
-> will take effect on both I2C and SPI devices.
-> 
-> Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+different outputs of aplay, arecord, codec, dmesg, lspci commands.
 
-Thanks, patch looks good to me:
+Hardware:
+- Laptop: Lenovo Yoga 7 2-in-1 16AKP10
+- Audio: Intel HDA (Realtek ALC287 codec, quad speaker setup: 2 top + 2 bot=
+tom)
 
-Reviewed-by: Hans de Goede <johannes.goede@oss.qualcomm.com>
+Software:
+- Distribution: [CachyOS]
+- Kernel: [6.17.0-rc5-2-cachyos-rc and 6.16.6-3 (same result in both
+kernel versions)]
+- ALSA version: [Advanced Linux Sound Architecture Driver Version
+k6.17.0-rc5-2-cachyos-rc. (got with command cat /proc/asound/version)]
+- Desktop environment: [KDE Wayland]
 
-Regards,
+Problem:
+When adjusting system volume, only the top speakers change their volume
+The bottom speakers keep playing at full volume regardless of system
+settings. (expect when volume goes to 0 or mutes then all speakers
+mute)
 
-Hans
+Steps tried:
+- Tested with PipeWire
+- Checked `alsamixer`: only one speaker group responds to volume changes.
+- In Windows 11, all four speakers respond correctly =E2=86=92 confirms har=
+dware works.
+- Updated BIOS, firmware, and kernel =E2=86=92 issue persists.
+
+Expected result:
+- All four speakers (top + bottom) should respond to system volume control.
+
+Actual result:
+- Only the top speakers change volume. Bottom speakers remain loud at all t=
+imes.
+
+alsa-info.sh result:
+http://alsa-project.org/db/?f=3D1e9f3782e184d05a0ef932305d6ac04bacbd51ad
 
 
+sudo dmidecode -s system-product-name
+sudo dmidecode -s system-version
+sudo dmidecode -s system-manufacturer
+
+results:
+83JU
+Yoga 7 2-in-1 16AKP10
+LENOVO
 
 
-> ---
-> v5:
->  - Change the description for this patch, remove cover letter.
-> v4:
->  - Change the description for this patch.
-> v3:
->  - Add IRQ_RESOURCE_OPT for IRQ missing cases.
-> v2:
->  - Remove error ignore, change to AUTO compatible with NONE.
-> ---
->  drivers/platform/x86/serial-multi-instantiate.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-> index db030b0f176a..1a369334f9cb 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -22,6 +22,7 @@
->  #define IRQ_RESOURCE_GPIO	1
->  #define IRQ_RESOURCE_APIC	2
->  #define IRQ_RESOURCE_AUTO   3
-> +#define IRQ_RESOURCE_OPT	BIT(2)
->  
->  enum smi_bus_type {
->  	SMI_I2C,
-> @@ -64,6 +65,10 @@ static int smi_get_irq(struct platform_device *pdev, struct acpi_device *adev,
->  			dev_dbg(&pdev->dev, "Using platform irq\n");
->  			break;
->  		}
-> +		if (inst->flags & IRQ_RESOURCE_OPT) {
-> +			dev_dbg(&pdev->dev, "No irq\n");
-> +			return 0;
-> +		}
->  		break;
->  	case IRQ_RESOURCE_GPIO:
->  		ret = acpi_dev_gpio_irq_get(adev, inst->irq_idx);
-> @@ -386,10 +391,10 @@ static const struct smi_node cs35l57_hda = {
->  
->  static const struct smi_node tas2781_hda = {
->  	.instances = {
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> -		{ "tas2781-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
-> +		{ "tas2781-hda", IRQ_RESOURCE_AUTO | IRQ_RESOURCE_OPT, 0 },
->  		{}
->  	},
->  	.bus_type = SMI_AUTO_DETECT,
+dmesg | grep -iE 'snd|hda' result:
+[    0.199062] ACPI: \_SB_.PCI0.GPPA.HDAU.PWRS: New power resource
+[    5.701995] snd_acp_pci 0000:04:00.5: enabling device (0000 -> 0002)
+[    5.704462] snd_hda_intel 0000:04:00.1: enabling device (0000 -> 0002)
+[    5.704483] snd_hda_intel 0000:04:00.1: Handle vga_switcheroo audio clie=
+nt
+[    5.704544] snd_hda_intel 0000:04:00.6: enabling device (0000 -> 0002)
+[    5.722776] snd_hda_intel 0000:04:00.1: bound 0000:04:00.0 (ops
+amdgpu_dm_audio_component_bind_ops [amdgpu])
+[    5.743110] snd_hda_codec_alc269 hdaudioC1D0: ALC287: picked fixup
+for PCI SSID 17aa:38b5
+[    5.743523] snd_hda_codec_alc269 hdaudioC1D0: autoconfig for
+ALC287: line_outs=3D2 (0x17/0x14/0x0/0x0/0x0) type:speaker
+[    5.743526] snd_hda_codec_alc269 hdaudioC1D0:    speaker_outs=3D0
+(0x0/0x0/0x0/0x0/0x0)
+[    5.743527] snd_hda_codec_alc269 hdaudioC1D0:    hp_outs=3D1
+(0x21/0x0/0x0/0x0/0x0)
+[    5.743528] snd_hda_codec_alc269 hdaudioC1D0:    mono: mono_out=3D0x0
+[    5.743528] snd_hda_codec_alc269 hdaudioC1D0:    inputs:
+[    5.743529] snd_hda_codec_alc269 hdaudioC1D0:      Mic=3D0x19
 
+If you need more logs, I can provide them.
+
+Thank you in advance for the help.
+
+--000000000000f945ce06448e325b
+Content-Type: application/gzip;
+	name="aplay-arecord-codec-dmesg-lspci-outputs.tar.gz"
+Content-Disposition: attachment;
+	filename="aplay-arecord-codec-dmesg-lspci-outputs.tar.gz"
+Content-Transfer-Encoding: base64
+Content-ID: <f_mih37dxd0>
+X-Attachment-Id: f_mih37dxd0
+
+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
+--000000000000f945ce06448e325b--
