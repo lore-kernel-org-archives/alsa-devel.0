@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ED29D116F3
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Dec 2025 20:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1509BD116F1
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Dec 2025 20:33:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0C556020F;
-	Mon,  1 Dec 2025 21:33:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0C556020F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7D6D6021E;
+	Mon,  1 Dec 2025 21:33:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7D6D6021E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1764621201;
-	bh=yN9Bf9qkAjBTW3pnGYfnMOrNp8qMbLUKPiPCXdiTSog=;
+	s=default; t=1764621212;
+	bh=tPlz2WwWGnV/fGIBJ0vHVGRjrMmAqh20UhNdsZ3VA6I=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=tAfx0+h0Kow/8RwpYeZu6L6zQfUP2AYpYe+wXvaNItnpFxMnoeIJ+y7lVNegGfpOI
-	 Sp3b+/2/qNDNhOtbTXTDekgXKUOApRb/1z2ifOYsqoUFOyaZtcaxF4CMNbxKZGG+4/
-	 +zkQ7g73Iri//HN7QBi2FC3RD60kx0qJcNxxr458=
+	b=GtLWtJkMvY7F3eFuy4BoilfnR2BRmzlpS4kRcGnGYkfl1nJyaWcsv+pmJPCKyvO+e
+	 hE1+5XtntzD2BEynKOMSQnC/Y+okE1GiYRDUbPt7AodLWm8gIGoL3V6LUEWbA5p7ss
+	 lDYPNhvQ+W57gCsKO69NQBiiUnEAwPCYUwmVphe4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B76DFF805E0; Mon,  1 Dec 2025 21:32:48 +0100 (CET)
+	id 49B88F805F9; Mon,  1 Dec 2025 21:32:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B54FDF805D5;
-	Mon,  1 Dec 2025 21:32:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7A0FF805F9;
+	Mon,  1 Dec 2025 21:32:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33925F8049C; Mon,  1 Dec 2025 21:32:22 +0100 (CET)
+	id E3FF0F8049C; Mon,  1 Dec 2025 21:32:33 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95767F8014B
-	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2025 21:32:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95767F8014B
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EF63F800F3
+	for <alsa-devel@alsa-project.org>; Mon,  1 Dec 2025 21:32:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EF63F800F3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <187d319332420700-webhooks-bot@alsa-project.org>
+Message-Id: <187d3196b7542500-webhooks-bot@alsa-project.org>
 In-Reply-To: <alsa-project/alsa-tools/pr/42@alsa-project.org>
 References: <alsa-project/alsa-tools/pr/42@alsa-project.org>
 Subject: hdspmixer: fix null pointer dereference in HDSPMixerWindow:handler_cb
-Date: Mon,  1 Dec 2025 21:32:22 +0100 (CET)
-Message-ID-Hash: AEGCRNXH5QO7373WKP46PQTCQPKYPFTB
-X-Message-ID-Hash: AEGCRNXH5QO7373WKP46PQTCQPKYPFTB
+Date: Mon,  1 Dec 2025 21:32:33 +0100 (CET)
+Message-ID-Hash: 77NYN52YN42VEPL5RCUUNHNNSHMV7C4A
+X-Message-ID-Hash: 77NYN52YN42VEPL5RCUUNHNNSHMV7C4A
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AEGCRNXH5QO7373WKP46PQTCQPKYPFTB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/77NYN52YN42VEPL5RCUUNHNNSHMV7C4A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -73,7 +73,7 @@ Fixes following error:
 
 ```
 Program received signal SIGSEGV, Segmentation fault.
-handler_cb () at /home/kenoby/dev/alsa-tools/hdspmixer/src/HDSPMixerWindow.cxx:278
+handler_cb () at /home/snaut/dev/alsa-tools/hdspmixer/src/HDSPMixerWindow.cxx:278
 278             if (fl_win->label()) {
 (gdb) 
 ```
