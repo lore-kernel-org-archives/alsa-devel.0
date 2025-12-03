@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DF87D3B7EA
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Dec 2025 13:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECB31D3B7EA
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Dec 2025 13:31:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 193D660216;
-	Tue,  9 Dec 2025 14:31:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 193D660216
+	by alsa0.perex.cz (Postfix) with ESMTPS id B88B060172;
+	Tue,  9 Dec 2025 14:31:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B88B060172
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765287080;
-	bh=2woq6sYaAyVBsYRQJy8h720HN2n+4Kj6rGcsFUW/4wY=;
+	s=default; t=1765287098;
+	bh=GhcFzO+bnRmBZOPK9vYKQI9r0ordZE8RS6Rcn27L3nQ=;
 	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=T5auNdwDC0xjeg2UrSSo/a0nj6b6wTO04RpYIT0vP2nwQ2AV9sc4BZiGiwH+NDPPl
-	 0QmngVlEd7AysaZ53D3kW+faDCaeDiL/V8m+vJS0G65J9kc05LOxyKA5w6lPKuCh22
-	 VDD8BSTalM3UHxASb7uHSudwYnWaU1d9P5ha+pEk=
+	b=exTHHsGptciEiphgiMNJEtjF06kgljv+qHKWUuwH7RLaHLfP7/awfMiJp0iQ6Ut3n
+	 Cerh4cYoHkcvmEn6193CmI4BV4iC1HLZk1DcA2bOvls2gtDBonvTwzb/gX8cE16FNX
+	 aQSPN7Jtx0yOwNRppkiI6xiA1b3/6m/YhLsHZOyo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0124CF80671; Tue,  9 Dec 2025 14:30:11 +0100 (CET)
+	id 61C34F8061C; Tue,  9 Dec 2025 14:30:15 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BE95F80674;
-	Tue,  9 Dec 2025 14:30:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68BA1F80693;
+	Tue,  9 Dec 2025 14:30:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D64EF8051D; Wed,  3 Dec 2025 07:47:11 +0100 (CET)
-Received: from CH5PR02CU005.outbound.protection.outlook.com
- (mail-northcentralusazon11012006.outbound.protection.outlook.com
- [40.107.200.6])
+	id D2371F8051D; Wed,  3 Dec 2025 13:01:57 +0100 (CET)
+Received: from BL0PR03CU003.outbound.protection.outlook.com
+ (mail-eastusazon11012060.outbound.protection.outlook.com [52.101.53.60])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF1ECF800BA
-	for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2025 07:47:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF1ECF800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 011D1F800BA
+	for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2025 13:01:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 011D1F800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=E0qVHS3z
+ header.s=selector1 header.b=f6O3UIEm
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ibvo6lRQwBOwUiip4a02iEinCjS5/yoZIGVSMyhuRsEpRXx4qkmi5Cu7rKxMzeGiQuaPk2KHnRAcC19mD1IoD3xYeR5fXYtLIb9YEm6Ty3pSYpzJA/jcF/xQOp3eXRpuWhSlKgGnod3TOcjwjTjscrGTA5gZkib8fSM67hVQB9mfwL3eBK/NMEKmqnAfPtGeOeZ166QvdzM0fEABoCraPymK0pRcf5eSUEYwydPeGDMFCd4RRtI87lFiiMYjYelTtRTrBT5fsZTORYg30u5IK4gz0Kju7EcyEzPnVWGLz154mXklSYGGgxWvgYzf763+MceF6+2nHEKvHITR628yCg==
+ b=AGw2Pdwf2NWdaaZQHjbVD+s1df2RvBX2xOU/kr4H91dRtv6xRxplvHeYa1jPN86DoYT0SdJYX+I0l6LLp+qDOCLFqWEbzPhBX8heLOxcLlxWXdE9l4S0ejGmo7MEJ0PUDKH6k1duHIKVR/Aj7uRJsY3uWX6NIjiu4jzGU8wO0wJPSWi2Drl2CIuPUBbllR0T8SxnqEJ4wz0XerLiW2+VyC4LyesHzIdOlid3RjaKmtJkMDxLpck0dOyg+9j08wCm+SOn9iRb3nEhaGXJ+uPkSb3rc/iWZRC17+MstPEcXSSQgOiNHppZZH/lCwx4ywmxNoo5ZV8g/Tb72oRHRX+diA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZPcFtkW1J0OsPs3G9sfrXaQn/tWjQvqZTRHPlZaJYxI=;
- b=iO7OjQM09T81WwL6VIikCPIiOlgjzamkTeCQR4gDCUou/4/0B3Y1SVYCslc/gDyhVvD+bisRGChujaezIczygBQRN8Tn8h+qbpIiGXrss+gKvjpb7paHcHctIseur0gTnzQQzkAxONX6YYtJl/710CcoPzjxzfj0boNXeFbDHGYZu6+o86hj7+dEP/toAQkJpv6tAOSfEOb/6wH0lCCwFpQoUvdjPMv1bGid8LCxjxvnc0Pq8BXuScEbvXMCFPfYue8RLsfBGZQfYTdwPcAop5gmGSvUg3WXK/4fvaHmrtBD4NjrPRjpIO8JAFuGnKy3ltOKUg5YDS7EuX1Oj4ONdw==
+ bh=Q6JkdwLYjIoHpeBPT42A/mBrSylGtQbpQBzypBhOe+k=;
+ b=jTXKNys7Y536W+RvSmrYmAxZerCJos08vnvykOXH0scQKBdutmZYSxosiOyr/Ij43vhNbVdGhsaps+dDMdr0e6URzcLpZ7QymGj3DacTPbVf6+Nvy5Hx+VoXDFQ0nP0z2e9JYlwt4Ktv3Hs+Tm3B91zyqVoymUdTWdw0UsJ0f3DVmy5Hnm68UvI8fcD4+7GiIm4e7vXdmn0ZOwlz4bbdSR3vdw0hYPoVEtgaaaEgL6StSAJhFgFYLgnn8vAvpjzzdPoH5N657I94yuQxvyT4FdgUwIlQMS75zrT1pQyMRPJxPJusaaKWkabcCwmgoKz3GYOPT1je3JxjtzBKfL6k9w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZPcFtkW1J0OsPs3G9sfrXaQn/tWjQvqZTRHPlZaJYxI=;
- b=E0qVHS3zwxmRFaqmZp2qa3Ce8RHmTDtxM7xey+I3/A/DKm9eAWkHZ5hl3f+mOwLkx6pzowcq5vnVHETmszHS6JJZde9VyKIqFMpH1Env1FkVpKELY5jHu0mZ/T6hF9OmTGRxqyNasCWfWRa6jyiyPMdnxDwtAYXKXwsb8Lf2Pss=
-Received: from SA0PR11CA0026.namprd11.prod.outlook.com (2603:10b6:806:d3::31)
- by MW3PR12MB4346.namprd12.prod.outlook.com (2603:10b6:303:58::20) with
+ bh=Q6JkdwLYjIoHpeBPT42A/mBrSylGtQbpQBzypBhOe+k=;
+ b=f6O3UIEmwq/HkduQFcobJqtu0pOQa7bgI/vdancNKxftlBv58ONvlxSC1/kdPLG4SoB7dpca+qWapGRG71Ae+sYVAaKz0X+u8TN23iuIUtDvaJG+pkI15SvGzP6EdYfN+LCbKP8qYXbaclaE3LGe4VrJ2bF8ZP4ev8UEuZHfjWs=
+Received: from BN9PR03CA0361.namprd03.prod.outlook.com (2603:10b6:408:f7::6)
+ by SJ1PR12MB6027.namprd12.prod.outlook.com (2603:10b6:a03:48a::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9366.17; Wed, 3 Dec
- 2025 06:46:55 +0000
-Received: from SN1PEPF000397B0.namprd05.prod.outlook.com
- (2603:10b6:806:d3:cafe::ad) by SA0PR11CA0026.outlook.office365.com
- (2603:10b6:806:d3::31) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9388.9; Wed, 3 Dec
+ 2025 12:01:42 +0000
+Received: from BN2PEPF000055DA.namprd21.prod.outlook.com
+ (2603:10b6:408:f7:cafe::7c) by BN9PR03CA0361.outlook.office365.com
+ (2603:10b6:408:f7::6) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9366.17 via Frontend Transport; Wed,
- 3 Dec 2025 06:46:55 +0000
+ 3 Dec 2025 12:01:41 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -74,16 +73,20 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
 Received: from satlexmb07.amd.com (165.204.84.17) by
- SN1PEPF000397B0.mail.protection.outlook.com (10.167.248.54) with Microsoft
+ BN2PEPF000055DA.mail.protection.outlook.com (10.167.245.4) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9388.8 via Frontend Transport; Wed, 3 Dec 2025 06:46:55 +0000
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
+ 15.20.9412.0 via Frontend Transport; Wed, 3 Dec 2025 12:01:41 +0000
+Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 3 Dec
- 2025 00:46:54 -0600
-Received: from drvdevbldsrv2.amd.com (10.180.168.240) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Tue, 2 Dec 2025 22:46:51 -0800
+ 2025 06:01:40 -0600
+Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb09.amd.com
+ (10.181.42.218) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 3 Dec
+ 2025 04:01:40 -0800
+Received: from drvdevbldsrv2.amd.com (10.180.168.240) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
+ Transport; Wed, 3 Dec 2025 04:01:36 -0800
 From: Raghavendra Prasad Mallela <raghavendraprasad.mallela@amd.com>
 To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
 CC: <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
@@ -91,82 +94,82 @@ CC: <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
 	<hemalatha.pinnamreddy2@amd.com>, Raghavendra Prasad Mallela
 	<raghavendraprasad.mallela@amd.com>, Liam Girdwood <lgirdwood@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Venkata
- Prasad Potturu" <venkataprasad.potturu@amd.com>, Mario Limonciello
-	<mario.limonciello@amd.com>, "open list:SOUND - SOC LAYER / DYNAMIC AUDIO
- POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] ASoC: amd: acp: Audio is not resuming after s0ix
-Date: Wed, 3 Dec 2025 12:16:48 +0530
-Message-ID: <20251203064650.2554625-1-raghavendraprasad.mallela@amd.com>
+ Prasad Potturu" <venkataprasad.potturu@amd.com>, Daniel Baluta
+	<daniel.baluta@nxp.com>, Bard Liao <yung-chuan.liao@linux.intel.com>, "open
+ list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+	<linux-sound@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] ASoC: amd: acp: update tdm channels for specific DAI
+Date: Wed, 3 Dec 2025 17:31:34 +0530
+Message-ID: <20251203120136.2591395-1-raghavendraprasad.mallela@amd.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000397B0:EE_|MW3PR12MB4346:EE_
-X-MS-Office365-Filtering-Correlation-Id: cc7787e1-7e05-4cfa-045d-08de3237bf99
+X-MS-TrafficTypeDiagnostic: BN2PEPF000055DA:EE_|SJ1PR12MB6027:EE_
+X-MS-Office365-Filtering-Correlation-Id: 563f8a31-c34f-4b06-0540-08de3263b88f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|36860700013|82310400026|376014;
+	BCL:0;ARA:13230040|376014|1800799024|36860700013|82310400026;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?/4oNijRp9FbHRHU9eLvsNeE3DA8+g6Lih5TTjsT8d4D2azCswGnYYsKj9taq?=
- =?us-ascii?Q?OSaXH8oN1TypS/MDs9CI+mM3wu6VMUp0UkhqYytkuM+N7DxeU2a6LM4oD2W0?=
- =?us-ascii?Q?8WoC8GGTKa9A2bkNcxPv7e2QNu9iC8wQqq6+4gyjogLFqXIjkzGS3lPdHeHc?=
- =?us-ascii?Q?6crB3n0ZPG8kM8p/UnPGgBq1yG/xv16q8oyCd62T+kOBUql9t07rZK+OGNaF?=
- =?us-ascii?Q?SxBPorory5vGDoeuEeqbLF13fDWT6Tklj9kjvPZUG9gp/Y7DCc5VAYK7XMbE?=
- =?us-ascii?Q?icIow47D1vBmGY8XuIf1Zew69i70g6ooH4his0th/PftnY8ArnHknqxPkwzF?=
- =?us-ascii?Q?1N7BG+okZ+xeJ1AFMwSImBpBFvpUR4pu5h3egH3rjgo6cb72G43Id9tAKrU3?=
- =?us-ascii?Q?Nb7D/rI83CMZJyYC78iuX+2eFENT5C8l133GL4krqaQfZbIibEKSD64eu/uH?=
- =?us-ascii?Q?52AasoRZSAPpZSatoV/SZZbLlGPpeaYKeW8Ohb/2M3+mK43zcw41CTusBVmS?=
- =?us-ascii?Q?pSrOCarQTzomp91ZAfQvw4IMrxgQs8XmYLfw+8i+cWTb+11oefvG0BCGGMLe?=
- =?us-ascii?Q?hChGiFSXGBQcxM5QYUxo8xRNMEvLd8jhxslqOxKkPusRBRBEGJd/H/rpCiaj?=
- =?us-ascii?Q?WVyrKGkXBoGOV2B2ZLnjOoR7sQ6wJVvhNl1hl/u2LeiyjxzhU0rLw1YQAtrF?=
- =?us-ascii?Q?Neyjc5o3tijLr5XfPthdfO/JEgkjPoZvEoiU72EmKQeBLyBztj+PCMfs+new?=
- =?us-ascii?Q?xM69dOGmtSdnMk87LYRawETJTh5GUGisuhQv3Ubs/S6xMlzylw4rAOXE6u6z?=
- =?us-ascii?Q?Z+GcSUpsTA3RePuRy1sp02QRlFHd7yrokVhQYeIjNHMW6sCE1tUuHj61xyQx?=
- =?us-ascii?Q?36WBzPKLB8sIA1n2Y3mU3aN3rJoALj6iv0GNfqJqzOyznSVXLStYHEIldWbD?=
- =?us-ascii?Q?MJoP5s1awEmGDgxTJuNzn779FGi6H5NkMkdczCNv4HqtfrJALJ7/ylVIBH+K?=
- =?us-ascii?Q?FDsN/TuRGlrQqnk9Ikxt8B1rVc6pvyQf3wqiJLtm9e5gsPCFToGEmN1NBiqS?=
- =?us-ascii?Q?xDrh65jftCaVWQwWgt7/4PVgjD1N33uvDMw7fv7Krk+CrSYgpRLdh7h8rqKj?=
- =?us-ascii?Q?O2IWUv/9YdS68/m++UkJLXufgXtLfvDgfCSJj7rczERidTEofDvLvK2R6Tdy?=
- =?us-ascii?Q?3QcnR5/2ey7Zp/b2QLnNDMeVMawcQQ8RYJSqkGZwuXdg1Jcxc7ZpRuS2ZKOL?=
- =?us-ascii?Q?JrLtuOBHe9rSq8RBrb5cZjldd+yoKpcQKcFIaF7P1e+UW/YNiyi8h1huj2MH?=
- =?us-ascii?Q?hcdkwzdLttu5akGuRUSAOWFYg5qHHKCwWcDh2mM5RZAeHSfhXJb+x6YbkTFt?=
- =?us-ascii?Q?yB27D3MQRYi+NG07po1QTjo0qeOt9KjBHFa4q+Bio80YlbQYaRV0Ik8kweXk?=
- =?us-ascii?Q?odmVLKgXLsAeAfOb8rTxnOTZsILiETUkG8XuiPjXyHQ9Z/9X8FhUvGHjp9JU?=
- =?us-ascii?Q?jWAsgcejJddmgUcCIzEmSjBkSNPTVlz5eJ3ulLHeSTuLk+3WnYQlOuwsF46b?=
- =?us-ascii?Q?iaPhTh2xXdEmg4BRPPE=3D?=
+	=?us-ascii?Q?lZ7XkATnIRX+7nsCn1+GAXenUcF//Q1qo09LZdpud+L5MjpT74vhsIz8cJ3B?=
+ =?us-ascii?Q?lFOxa2U2Ib6Ma780jS0u6nfNOeTTyAFvnYr0cSEx7C0wWskptQmmHZaTMGUb?=
+ =?us-ascii?Q?kWcYJrGEbETd9ytUMDW1dQ2AeOsJD6jy35PMlDFd7s+mU9v/rrqEtJvI+Al0?=
+ =?us-ascii?Q?ph58TDPAagdjRm/kTcphqZK72lvK3GXzC9nA2efTUWFZFZqMG+7SNyAIfsyv?=
+ =?us-ascii?Q?04aK1yw0QFFsu5OE4xGODKSIYEz6p+54hmNCjUnDvO/0G/3RH+SmHCuuaJ8R?=
+ =?us-ascii?Q?9PWJHxTf5CkTnls9cRErFqSwoGEcAi1Ta9Fr68q0rxHwR6E9+f5qrCrMcvz9?=
+ =?us-ascii?Q?kDCKCNZNUfdYl6gSpFGmzk8RY5/qEVGv8xlDA8GwhHYnziUYCdL3rkXsX732?=
+ =?us-ascii?Q?TSxCwQasYSV1wnJF6cBtsDQdREPNlNdCPgsNBE1g8kSpJOQQqRic8YhfJo5j?=
+ =?us-ascii?Q?sXxHQTw+5THLaRw2K606/el2QRKAWU9F04KkMPJ9BzFrbV8U1cArhdBAgV7M?=
+ =?us-ascii?Q?FLETFht7ZRg9juSxN7mSwm9QZPGjq67Z6LcPSbsVHTpPtHr9RNqp8Nw7jM9T?=
+ =?us-ascii?Q?AN4hC9m528g/N2G+ZR4mJUPq/UzVBAzEJRcDZW9Ge0f7rrKX1euMzrvTOofX?=
+ =?us-ascii?Q?jWtZYnxCBC6bLb3nkxBmZq4bbP6wNZUM8I1Rk6lQRdt12gU1/1SWSmCsFxQ2?=
+ =?us-ascii?Q?nWylBCJjLcXewOpmMZMLYLljhkn7jUur1+Ed2Mwo0WDeg46TATxl9NDzVYnZ?=
+ =?us-ascii?Q?YxR1NQ5v6zGtpSAZCn72DHNoOrl8rCTwiiT+rT7uyCA5mSEJcCwRn4Mt2ZHe?=
+ =?us-ascii?Q?21HtRZ3rjPQ3yYkbtro5weayBGe7ydyqf7bntQppAZ1qnrHRwNZLNjLX5sax?=
+ =?us-ascii?Q?OvIzIsPP0F4FsrUKI3EEhH6Djmma62IbPhU1TLPh603VsKVewxwoc1sUS9r7?=
+ =?us-ascii?Q?fumJGL5N0NXhOFyhRJzXxZu8W5MXZOVu2jGkTOFCtYQndJM+nVjAJtXd/r4C?=
+ =?us-ascii?Q?bUm2XevhGPRyM/FqlIC91BvoJJLVESdV6H04N9ofD/v596q2s1mBFAkEliyL?=
+ =?us-ascii?Q?ks8SVWu2Eagsm/iB2kJFDwbFgyb+C/ndCWtbSlp9cqG4C7FJYpQGiAd2YwFY?=
+ =?us-ascii?Q?N+ov7jSqa8Z9ejQL/aFWU6GDOrbU6MeSWTKdDT3XtCojHH+5L4zvEErcokp3?=
+ =?us-ascii?Q?X9mKXXCiC/W/aOLLcteGZNBxsw4AMgcKWCuAjPLF3jiNmaS4iR/+WfZtSHoQ?=
+ =?us-ascii?Q?pjvzu1J1TnWMN2fOORGTvyo0Q2jZMps5xOwLPZAbDjsYCZklLT01cR6KORNl?=
+ =?us-ascii?Q?AcMiT9h3qvGXcvQJ8M+jO6MtkGr485dwgaJZ/EkdImuuw+FTcfYChOMqOUKP?=
+ =?us-ascii?Q?A5s6QJP0QYg+7qJwEXrRo0JXNEamoQmPx5UpnOAdZUSJnDGHcF+KAfp697qE?=
+ =?us-ascii?Q?3wi6WPhAiq0lblfXXTwXVsCm+Y2TBse6WjuJ5fgNM11GuhQylj+HgFLY5l54?=
+ =?us-ascii?Q?JG1Z+uRE/1m+441yvkTd2X58vZ1Sk/DA8B4o3hYjSpxJcvWjMupozYb/Fxnd?=
+ =?us-ascii?Q?nfXoRKUZPCnLOwfi0z4=3D?=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(82310400026)(376014);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(1800799024)(36860700013)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 06:46:55.1626
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 12:01:41.2333
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- cc7787e1-7e05-4cfa-045d-08de3237bf99
+ 563f8a31-c34f-4b06-0540-08de3263b88f
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	SN1PEPF000397B0.namprd05.prod.outlook.com
+	BN2PEPF000055DA.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4346
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6027
 X-MailFrom: RaghavendraPrasad.Mallela@amd.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RIWBWYIIESW43W5S2SHVXTXLOLFLQR6B
-X-Message-ID-Hash: RIWBWYIIESW43W5S2SHVXTXLOLFLQR6B
+Message-ID-Hash: Q524PLFKYJATK6JNVIEEHXRS5A2JSCPO
+X-Message-ID-Hash: Q524PLFKYJATK6JNVIEEHXRS5A2JSCPO
 X-Mailman-Approved-At: Tue, 09 Dec 2025 13:29:52 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RIWBWYIIESW43W5S2SHVXTXLOLFLQR6B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q524PLFKYJATK6JNVIEEHXRS5A2JSCPO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -177,99 +180,32 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Hemalatha Pinnamreddy <hemalatha.pinnamreddy2@amd.com>
 
-Audio fails to resume after system exits suspend mode
-due to accessing incorrect ring buffer address during
-resume. This patch resolves issue by selecting correct
-address based on the ACP version.
+TDM channel updates were applied to all DAIs, causing configurations
+to overwrite for unrelated streams. The logic is modified to update
+channels only for targeted DAI. This prevents corruption of other DAI
+settings and resolves audio issues observed during system suspend and
+resume cycles.
 
-Fixes: f6f7d25b11033 ("ASoC: amd: acp: Add pte configuration for ACP7.0 platform")
+Fixes: 12229b7e50cf ("ASoC: amd: acp: Add TDM support for acp i2s stream")
 Signed-off-by: Hemalatha Pinnamreddy <hemalatha.pinnamreddy2@amd.com>
 Signed-off-by: Raghavendra Prasad Mallela <raghavendraprasad.mallela@amd.com>
 ---
+ sound/soc/amd/acp/acp-i2s.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes since v1:
-	- Include Fixes commit
-	- drop unnecessary variable initialization
-	
- sound/soc/amd/acp/acp-legacy-common.c | 30 +++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/amd/acp/acp-legacy-common.c b/sound/soc/amd/acp/acp-legacy-common.c
-index 3078f459e005..4e477c48d4bd 100644
---- a/sound/soc/amd/acp/acp-legacy-common.c
-+++ b/sound/soc/amd/acp/acp-legacy-common.c
-@@ -219,7 +219,10 @@ static int set_acp_i2s_dma_fifo(struct snd_pcm_substream *substream,
- 					SP_PB_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = ACP_I2S_TX_FIFOADDR(chip);
- 			reg_fifo_size = ACP_I2S_TX_FIFOSIZE(chip);
--			phy_addr = I2S_SP_TX_MEM_WINDOW_START + stream->reg_offset;
-+			if (chip->acp_rev >= ACP70_PCI_ID)
-+				phy_addr = ACP7x_I2S_SP_TX_MEM_WINDOW_START;
-+			else
-+				phy_addr = I2S_SP_TX_MEM_WINDOW_START + stream->reg_offset;
- 			writel(phy_addr, chip->base + ACP_I2S_TX_RINGBUFADDR(chip));
- 		} else {
- 			reg_dma_size = ACP_I2S_RX_DMA_SIZE(chip);
-@@ -227,7 +230,10 @@ static int set_acp_i2s_dma_fifo(struct snd_pcm_substream *substream,
- 					SP_CAPT_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = ACP_I2S_RX_FIFOADDR(chip);
- 			reg_fifo_size = ACP_I2S_RX_FIFOSIZE(chip);
--			phy_addr = I2S_SP_RX_MEM_WINDOW_START + stream->reg_offset;
-+			if (chip->acp_rev >= ACP70_PCI_ID)
-+				phy_addr = ACP7x_I2S_SP_RX_MEM_WINDOW_START;
-+			else
-+				phy_addr = I2S_SP_RX_MEM_WINDOW_START + stream->reg_offset;
- 			writel(phy_addr, chip->base + ACP_I2S_RX_RINGBUFADDR(chip));
- 		}
- 		break;
-@@ -238,7 +244,10 @@ static int set_acp_i2s_dma_fifo(struct snd_pcm_substream *substream,
- 					BT_PB_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = ACP_BT_TX_FIFOADDR(chip);
- 			reg_fifo_size = ACP_BT_TX_FIFOSIZE(chip);
--			phy_addr = I2S_BT_TX_MEM_WINDOW_START + stream->reg_offset;
-+			if (chip->acp_rev >= ACP70_PCI_ID)
-+				phy_addr = ACP7x_I2S_BT_TX_MEM_WINDOW_START;
-+			else
-+				phy_addr = I2S_BT_TX_MEM_WINDOW_START + stream->reg_offset;
- 			writel(phy_addr, chip->base + ACP_BT_TX_RINGBUFADDR(chip));
- 		} else {
- 			reg_dma_size = ACP_BT_RX_DMA_SIZE(chip);
-@@ -246,7 +255,10 @@ static int set_acp_i2s_dma_fifo(struct snd_pcm_substream *substream,
- 					BT_CAPT_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = ACP_BT_RX_FIFOADDR(chip);
- 			reg_fifo_size = ACP_BT_RX_FIFOSIZE(chip);
--			phy_addr = I2S_BT_TX_MEM_WINDOW_START + stream->reg_offset;
-+			if (chip->acp_rev >= ACP70_PCI_ID)
-+				phy_addr = ACP7x_I2S_BT_RX_MEM_WINDOW_START;
-+			else
-+				phy_addr = I2S_BT_RX_MEM_WINDOW_START + stream->reg_offset;
- 			writel(phy_addr, chip->base + ACP_BT_RX_RINGBUFADDR(chip));
- 		}
- 		break;
-@@ -257,7 +269,10 @@ static int set_acp_i2s_dma_fifo(struct snd_pcm_substream *substream,
- 					HS_PB_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = ACP_HS_TX_FIFOADDR;
- 			reg_fifo_size = ACP_HS_TX_FIFOSIZE;
--			phy_addr = I2S_HS_TX_MEM_WINDOW_START + stream->reg_offset;
-+			if (chip->acp_rev >= ACP70_PCI_ID)
-+				phy_addr = ACP7x_I2S_HS_TX_MEM_WINDOW_START;
-+			else
-+				phy_addr = I2S_HS_TX_MEM_WINDOW_START + stream->reg_offset;
- 			writel(phy_addr, chip->base + ACP_HS_TX_RINGBUFADDR);
- 		} else {
- 			reg_dma_size = ACP_HS_RX_DMA_SIZE;
-@@ -265,7 +280,10 @@ static int set_acp_i2s_dma_fifo(struct snd_pcm_substream *substream,
- 					HS_CAPT_FIFO_ADDR_OFFSET;
- 			reg_fifo_addr = ACP_HS_RX_FIFOADDR;
- 			reg_fifo_size = ACP_HS_RX_FIFOSIZE;
--			phy_addr = I2S_HS_RX_MEM_WINDOW_START + stream->reg_offset;
-+			if (chip->acp_rev >= ACP70_PCI_ID)
-+				phy_addr = ACP7x_I2S_HS_RX_MEM_WINDOW_START;
-+			else
-+				phy_addr = I2S_HS_RX_MEM_WINDOW_START + stream->reg_offset;
- 			writel(phy_addr, chip->base + ACP_HS_RX_RINGBUFADDR);
- 		}
- 		break;
+diff --git a/sound/soc/amd/acp/acp-i2s.c b/sound/soc/amd/acp/acp-i2s.c
+index 4ba0a66981ea..283a674c7e2c 100644
+--- a/sound/soc/amd/acp/acp-i2s.c
++++ b/sound/soc/amd/acp/acp-i2s.c
+@@ -157,6 +157,8 @@ static int acp_i2s_set_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask, u32 rx_mas
+ 
+ 	spin_lock_irq(&chip->acp_lock);
+ 	list_for_each_entry(stream, &chip->stream_list, list) {
++		if (dai->id != stream->dai_id)
++			continue;
+ 		switch (chip->acp_rev) {
+ 		case ACP_RN_PCI_ID:
+ 		case ACP_RMB_PCI_ID:
 -- 
 2.17.1
 
