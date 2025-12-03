@@ -4,111 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 777C3D116F3
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Dec 2025 07:50:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37D6DD12D73
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Dec 2025 14:56:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EFF5601C5;
-	Wed,  3 Dec 2025 08:50:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EFF5601C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C3606016E;
+	Wed,  3 Dec 2025 15:56:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C3606016E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1764748233;
-	bh=45nB/VtrMnTs9gqPYuHhkWwgQ6Hb2niaCMMdc/G5GcQ=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=BRoZwg0x3hv+hDS+3ahOqsvtVbRnEcbep9pvbVs0wxaafT5XomCAZebxebk42ErZu
-	 aSqP+dqM/c+fHsYAu3Ygvifmy00NuKBbtVT/K3m9htwGV6jomQ/yo7YgxetypTbl41
-	 GGqRctQPcmCiUbOJqyxsCjAFsrw6bdLTFkTz/1+U=
+	s=default; t=1764773799;
+	bh=heEwWGYaT6SNGxBWgFrYIuACgmsZuCCbIJrxQibpcqA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=iNoC9PXIQZcsZvggriWnitc7fI3szVmRrOQgCA8MrBceIyfM22Pufe9CWuu5g/Wf/
+	 nzKPB6Smpejf994AobsT2ZShSuE0ziDZnec0YiEmDY61wQC0O5kB5TiMXy/OigplFh
+	 +iPKtA9Ev+lCuOVEEZlBLLv9mQnbLods2oXNHLSs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B580EF805C7; Wed,  3 Dec 2025 08:49:56 +0100 (CET)
+	id C2D48F805CA; Wed,  3 Dec 2025 15:56:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DA76F80518;
-	Wed,  3 Dec 2025 08:49:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 943E3F8058C;
+	Wed,  3 Dec 2025 15:56:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D571AF8051D; Wed,  3 Dec 2025 08:49:50 +0100 (CET)
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com
- [209.85.160.48])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 7B59FF8051F; Wed,  3 Dec 2025 15:54:21 +0100 (CET)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 403D5F80269
-	for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2025 08:49:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 403D5F80269
+	by alsa1.perex.cz (Postfix) with ESMTPS id B80C1F80269
+	for <alsa-devel@alsa-project.org>; Wed,  3 Dec 2025 15:54:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B80C1F80269
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=TE/a0VH/
-Received: by mail-oa1-f48.google.com with SMTP id
- 586e51a60fabf-3e8317b1262so7094942fac.3
-        for <alsa-devel@alsa-project.org>;
- Tue, 02 Dec 2025 23:49:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764748187; x=1765352987;
- darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nKXOhQhqbZr57auUOCOEGt3Y1vL6G6LnYd6Jv1DpYK8=;
-        b=TE/a0VH/EAjQ/diwlzBZLn7DdocoSPUhqy1HjpbfxFkTVBcBYuowTnhyOegkino/KT
-         LP2PbRKCF2aFOydtSZStKr/j6ET8MKTN9pJkOoiaKCgqGsUBYViYl9XeMuPsQ5gbst+N
-         hl3rIf3Tx68gGzJe4tT7cDO+Qf8IwqWn9ge6VfM/9OP+m9OqDgk7++3bcX5EtR2u9UZ5
-         ivLf9g7qI2UeK7jWNyYiNHmxnsx42ouRvxMqVe6DGOLCH66CF+vmg53agqfo2kPuLxsr
-         OLCKbfAWdL0BHy80Q/xWMeJTblPqlX9SHcwWwPNvVWDwaRJmyQrB+9yU+lNak04nE8Qa
-         MMog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764748187; x=1765352987;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nKXOhQhqbZr57auUOCOEGt3Y1vL6G6LnYd6Jv1DpYK8=;
-        b=MEfNNb0PPGjg2taMx7OoOfqno4mF4ft2yPQtkCLay5sj6JHbD6BSvOp8uoMZyCOCdN
-         uqcQcokkQMazrfw8kXFAiLW4yL/n+hZGRS6yP2t5PrLAQ0plGP7mqY5D+NQS59K8j+En
-         xzh6VVMiRec4tSnrLAvZoTCIHdqjxPU/PdJyqviOvFNVmv7Fmh4xk5H4j1nEVIo/YYfy
-         6kdSo2exmOuq75bjN2LxXju+zobM7dSIRrVG9RgM99FWE46FYH4zjdSU9iMLCPfuvsRs
-         mwEOtGEwx/y7iJ5jzuZ+p3usZMm7Rw5qkVb7nj7VpLI8epz9is0tzScTG6N0ukQRbYQ8
-         ecnA==
-X-Gm-Message-State: AOJu0YySqa9IkawgeKpuBFSN+V91qZExSXvJm+jQ89nRm02cJtu30TgR
-	QQ4jIq1WeTF5vnJ1N9z/Uo/xgiQKA8IGt2mV+VY8Ull1ugCQmBwvjGWeQaB/k80LgUQcMnM3N4V
-	0ddDazbkwSgFle2AIaX8VgP1i9fh74yw=
-X-Gm-Gg: ASbGncs3pWcRjxNzPNhJO1QbDS+iwrkDL+5NMCQDDQGyn7F12qmf6dhuo/S7cxKms0T
-	qw/cRBEjCnmEO2FdUKkiGzvIcpg/0T/R1wgsQTGbx5Lktu5oAQgfBCBiFCicN05s1hoo2usp8Qy
-	VBh2clqVTZJaBu9OO6jbVzM1eqs9HTbJNwFDu5xMuuTXAZgwJCYwsnIjcErt1vRevgdEmLdZ+l6
-	R5LorhLqT8IgxSRAP3/RNFExMMME7OugS2099AyJD6TU/uBBgDZnbEHDkQEwPzC5hov70A=
-X-Google-Smtp-Source: 
- AGHT+IHmRoH03wuNGHK42SrKOVwAFek6HvwrVDWNdPFkZTbupxPUCusJRXx30gzpkiT/MEjy96is/4HoxOEK3s+bHww=
-X-Received: by 2002:a05:6808:2184:b0:44d:a6a8:1b5f with SMTP id
- 5614622812f47-4536e40d711mr712394b6e.24.1764748187127; Tue, 02 Dec 2025
- 23:49:47 -0800 (PST)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=t9pLrSHt
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id CB8A3441CD;
+	Wed,  3 Dec 2025 14:54:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFD3C4CEF5;
+	Wed,  3 Dec 2025 14:54:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764773653;
+	bh=heEwWGYaT6SNGxBWgFrYIuACgmsZuCCbIJrxQibpcqA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=t9pLrSHtmoNs3ktOHnroaQ5XFE56xllTUiICQVgbqdkJipVDLRhrM5J4AwbfIuWNq
+	 eTHob3DuktZAGL1q9KCbN4ROG4Jyh4VVzucHP9V750CWfuRCMmPjgMywxLCNwQc4Sm
+	 wEhmbqQzL1CCrvuNLuiUFYWfrNCfTQdKtXfUB+fJi6UetLw1MpzGHdJwfv3jwwYhBU
+	 Et6WWfaHGtNe8w2e6Co+xmUO4BtCzHvdmv3l9ngsuCgtm0Qg9BUy0qnd0VPgqnV9c0
+	 S8hyUrMaFatr/wVrEoB//OcPE6hxE6tbbAmJ6t+zj5IOoOuakz5sjhemLaY6J9zdfh
+	 I4ipQSI22eFZg==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Raghavendra Prasad Mallela <raghavendraprasad.mallela@amd.com>
+Cc: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com,
+ Hemalatha Pinnamreddy <hemalatha.pinnamreddy2@amd.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <linux-sound@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20251202175616.2213054-1-raghavendraprasad.mallela@amd.com>
+References: <20251202175616.2213054-1-raghavendraprasad.mallela@amd.com>
+Subject: Re: [PATCH v1] ASoC: amd: acp: Audio is not resuming after s0ix
+Message-Id: <176477365049.48347.16119915786526806162.b4-ty@kernel.org>
+Date: Wed, 03 Dec 2025 14:54:10 +0000
 MIME-Version: 1.0
-From: Andres Rosa <andyrosa@gmail.com>
-Date: Wed, 3 Dec 2025 01:49:12 -0600
-X-Gm-Features: AWmQ_bnNcR5HFWgyATPMZHi0ekR37fXVSHe0JENlDXofVE7k1QUwil2AcXqUAk8
-Message-ID: 
- <CAPDTTkh5YgiugcGN2-WS3d02UmvgknV7U9B9tsUo64qVhDJuTA@mail.gmail.com>
-Subject: [PATCH] ALSA: uapi: Fix typo in
- [asound.h](http://_vscodecontentref_/0)
- comment
-To: linux-sound@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Message-ID-Hash: XYC5IZEHIVJ7MMAGMXZMNZPWSPIRAZ3V
-X-Message-ID-Hash: XYC5IZEHIVJ7MMAGMXZMNZPWSPIRAZ3V
-X-MailFrom: andyrosa@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-88d78
+Message-ID-Hash: 3AZ5SVPIBUNBWURBP4XNXYEVULHKW34U
+X-Message-ID-Hash: 3AZ5SVPIBUNBWURBP4XNXYEVULHKW34U
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XYC5IZEHIVJ7MMAGMXZMNZPWSPIRAZ3V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3AZ5SVPIBUNBWURBP4XNXYEVULHKW34U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,19 +102,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Rml4ICdsZXZlbC1zaGl0JyB0byAnbGV2ZWwtc2hpZnQnIGluIHN0cnVjdCBzbmRfY2VhXzg2MV9h
-dWRfaWYgY29tbWVudC4NCg0KU2lnbmVkLW9mZi1ieTogQW5keSBSb3NhIDxhbmR5cm9zYUBnbWFp
-bC5jb20+DQotLS0NCiBpbmNsdWRlL3VhcGkvc291bmQvYXNvdW5kLmggfCAyICstDQogMSBmaWxl
-IGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9p
-bmNsdWRlL3VhcGkvc291bmQvYXNvdW5kLmggYi9pbmNsdWRlL3VhcGkvc291bmQvYXNvdW5kLmgN
-CmluZGV4IDVhMDQ5ZWVhZS4uZDNjZTc1YmE5IDEwMDY0NA0KLS0tIGEvaW5jbHVkZS91YXBpL3Nv
-dW5kL2Fzb3VuZC5oDQorKysgYi9pbmNsdWRlL3VhcGkvc291bmQvYXNvdW5kLmgNCkBAIC02MCw3
-ICs2MCw3IEBAIHN0cnVjdCBzbmRfY2VhXzg2MV9hdWRfaWYgew0KICAgICAgICB1bnNpZ25lZCBj
-aGFyIGRiMl9zZl9zczsgLyogc2FtcGxlIGZyZXF1ZW5jeSBhbmQgc2l6ZSAqLw0KICAgICAgICB1
-bnNpZ25lZCBjaGFyIGRiMzsgLyogbm90IHVzZWQsIGFsbCB6ZXJvcyAqLw0KICAgICAgICB1bnNp
-Z25lZCBjaGFyIGRiNF9jYTsgLyogY2hhbm5lbCBhbGxvY2F0aW9uIGNvZGUgKi8NCi0gICAgICAg
-dW5zaWduZWQgY2hhciBkYjVfZG1pbmhfbHN2OyAvKiBkb3dubWl4IGluaGliaXQgJiBsZXZlbC1z
-aGl0IHZhbHVlcw0KKi8NCisgICAgICAgdW5zaWduZWQgY2hhciBkYjVfZG1pbmhfbHN2OyAvKiBk
-b3dubWl4IGluaGliaXQgJiBsZXZlbC1zaGlmdA0KdmFsdWVzICovDQogfTsNCg0KIC8qKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqDQotLSANCjIuNTIuMC53aW5kb3dzLjENCg==
+On Tue, 02 Dec 2025 23:26:14 +0530, Raghavendra Prasad Mallela wrote:
+> Audio fails to resume after system exits suspend mode
+> due to accessing incorrect ring buffer address during
+> resume. This patch resolves issue by selecting correct
+> address based on the ACP version.
+> 
+> 
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: amd: acp: Audio is not resuming after s0ix
+      commit: 3ee257aba1d56c3f0f1028669a8ad0f1a477f05b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
