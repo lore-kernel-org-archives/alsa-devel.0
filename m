@@ -4,50 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 099FFD2168E
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Dec 2025 15:30:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F1BBD2E031
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Dec 2025 07:57:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B88B60217;
-	Thu,  4 Dec 2025 16:29:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B88B60217
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E2A760209;
+	Fri,  5 Dec 2025 08:56:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E2A760209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1764862202;
-	bh=ECfzbFzfISJDuTRIPfxgVusUXKWys9UcLTECyh+NdCo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=mdFI/iGY3ngABmNfBpYIEcNrXaeuRnrOZV7IgZzRT7BXymqDdGu5bZR4yYL+1wk8j
-	 lerYM6fRo7TtG8GzEbKCrEXygKqRO5++I+ds7p4chyskbJ0FSKwPG6IAjaTMC2nh6N
-	 cO0A37jT5kwTp1iTTE0ehsm8rEGbhp8SMPPrJSIE=
+	s=default; t=1764921417;
+	bh=QDXwwtNHwJneSouqyvMRKYYE7azhksgrMs/hFZTBtFY=;
+	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=SaeGbsLR35dg/I3tX+d/8RV6ZZb/ZftwSuJH9yA3o0RFCZfPTJ+n916C/j0Bw/F7S
+	 MYckL8mLWWTgsmvNc9fihglrF1v2s2PTCnijpuc0QFLEDu2ZVyAK9S5wJ5QRlm8xzZ
+	 IrCV6he5MiqEufEq/D/dTz04IMLbsPop2Y4oragQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D426F805D4; Thu,  4 Dec 2025 16:29:26 +0100 (CET)
+	id EF51FF805C8; Fri,  5 Dec 2025 08:56:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F145AF805D2;
-	Thu,  4 Dec 2025 16:29:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81CACF805C2;
+	Fri,  5 Dec 2025 08:56:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF59CF80542; Thu,  4 Dec 2025 16:29:16 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B818F8016E
-	for <alsa-devel@alsa-project.org>; Thu,  4 Dec 2025 16:29:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B818F8016E
+	id 1AAD6F8016E; Fri,  5 Dec 2025 08:56:08 +0100 (CET)
+Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
+ [10.254.200.11])
+	by alsa1.perex.cz (Postfix) with ESMTP id F305BF80107
+	for <alsa-devel@alsa-project.org>; Fri,  5 Dec 2025 08:56:07 +0100 (CET)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+Content-Transfer-Encoding: 8bit
+Subject: FreeCine APK TV
+From: FatmanVincent@hotmail.com
 To: alsa-devel@alsa-project.org
-Message-Id: <187e0cc6ff9ba700-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/654@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/654@alsa-project.org>
-Subject: DRAFT [for alsa-lib 1.2.15] USB-Audio: add support for conf.d
- configurations
-Date: Thu,  4 Dec 2025 16:29:16 +0100 (CET)
-Message-ID-Hash: CQM72THT67CAPAUL3VIZLO4RUSAJBMVF
-X-Message-ID-Hash: CQM72THT67CAPAUL3VIZLO4RUSAJBMVF
-X-MailFrom: github@alsa-project.org
+Date: Fri, 05 Dec 2025 07:56:07 -0000
+Message-ID: <176492136793.20.1438040489693201658@mailman-web.alsa-project.org>
+User-Agent: HyperKitty on https://mailman.alsa-project.org/
+Message-ID-Hash: 3PM72WWULHM7LT42S74ZK5GF6JCM74YB
+X-Message-ID-Hash: 3PM72WWULHM7LT42S74ZK5GF6JCM74YB
+X-MailFrom: FatmanVincent@hotmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -59,7 +55,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQM72THT67CAPAUL3VIZLO4RUSAJBMVF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3PM72WWULHM7LT42S74ZK5GF6JCM74YB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,12 +64,4 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #654 was opened from perexg:
-
-It may be useful to add new or override specific hardware configurations until they are merged to the main USB-Audio.conf file.
-
-BugLink: https://github.com/alsa-project/alsa-ucm-conf/issues/609
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/654
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/654.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+FreeCine APK tornou se uma das aplicações de streaming click : https://freecine.com.br/ mais procuradas graças ao seu conjunto de funcionalidades que oferecem aos utilizadores uma forma simples e rápida de aceder aos seus filmes e séries favoritos. O grande destaque da aplicação está na forma como combina praticidade qualidade de imagem e uma navegação fluida criando uma experiência de entretenimento completa para qualquer dispositivo Android
