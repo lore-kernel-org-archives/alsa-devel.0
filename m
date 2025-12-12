@@ -4,155 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 256B3D64093
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Dec 2025 09:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30779D64093
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Dec 2025 09:10:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC2EC6022B;
-	Wed, 17 Dec 2025 10:08:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC2EC6022B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 819BE6022F;
+	Wed, 17 Dec 2025 10:10:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 819BE6022F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765962510;
-	bh=kEd4vr5Zfnix+8NBJtgdcMwgX2jJ8X2s4E1aH880Blw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=C08GzEIwO/TN3zGnKHDR6efSavFzq+4uFWcEUQ3ThkVqHhdEW18W3CLUru98j0JZX
-	 j7slYANcZSRMAl4YGCRDqcV2JQYdJe/iTbyzcG8ku1A6yNFyPazxaQsA3ZLLynXCQQ
-	 kjAQl5WgT3ew0ydhjsSX0tZwJflJja55ZEGBNSlg=
+	s=default; t=1765962634;
+	bh=WcIew6kzeXyxQAwNVyAWKZrs7nmEpFdwrxLCeSR6q5E=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=gGZQzVonG+x7F9xhAr/eTuqgYbIySC6wjl3ubzFBuORzsAiWfnjTltvmg9TAuTX5L
+	 rh1YKcW5YkJvwl/IxFb7INi1QLQoEnOsir7qbci64WJanw0mwBRAWcbpgSzDOwcTmL
+	 Tx5k+vE5JylsV3u9DmMogtaJonKZtho7thOicPpU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0772F805D3; Wed, 17 Dec 2025 10:07:54 +0100 (CET)
+	id 97E89F805E1; Wed, 17 Dec 2025 10:10:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D19BEF805E1;
-	Wed, 17 Dec 2025 10:07:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F813F805D7;
+	Wed, 17 Dec 2025 10:10:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2115EF805A8; Wed, 17 Dec 2025 10:07:32 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 3FB35F8014B; Fri, 12 Dec 2025 21:33:50 +0100 (CET)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com
+ [209.85.218.54])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 349E2F8007E
-	for <alsa-devel@alsa-project.org>; Wed, 17 Dec 2025 10:07:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 349E2F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8993CF80093
+	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2025 21:33:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8993CF80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=biRnbKjh;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=l156j0Sh;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=2WywiZdj;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=M4nz7YkV
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 071B0336C2;
-	Wed, 17 Dec 2025 09:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1765962449;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O+zLJgzkxEngLDZCT/mMUBbySSeiiGhJg+8VBTFCVpY=;
-	b=biRnbKjhs6eHD9VhZF5yE6VfTZ6xRh6jdsoHXXton6qXmcFtB9DlGm6KMSd2sQiifL6PvG
-	fsbacqBO6GpBTx+uYum0dxN68JA+/LC3ZKcW+mjjuP/o3kPEDo1xJykinLVATIHDN550eD
-	hf12tmmJwjRa+vX2PRKEDfuApOjGgAs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1765962449;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O+zLJgzkxEngLDZCT/mMUBbySSeiiGhJg+8VBTFCVpY=;
-	b=l156j0ShIVG9mxeUd42/MwP40SWwb+Sq/aOmwjcU4R7fU6LJgkB5Egfg98SRJqUJelBVJC
-	g0sDVBWhupt3N+DA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1765962448;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O+zLJgzkxEngLDZCT/mMUBbySSeiiGhJg+8VBTFCVpY=;
-	b=2WywiZdjugDjDa186z9zmzDN3cNZtvvOROn+6cyx5zSJRNSaTtS4kLGPPIhkZedAaUY5k8
-	yj/B69an7uq9O+xPgC416YyJUuwOw+b5i9mJaRKvmPjBEA719z8X1kFciHo41nz698bJz8
-	3D7mX0STFmyOINPVmkP3CZyFjGWVhVE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1765962448;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O+zLJgzkxEngLDZCT/mMUBbySSeiiGhJg+8VBTFCVpY=;
-	b=M4nz7YkVyGcuOh0wZwM9ajlGzOkMjpch1+nHbyyRDE/YV4Vg54YWl2QvxYh5juc0GJ5v+O
-	atILlpv54jeOy9DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA3D93EA65;
-	Wed, 17 Dec 2025 09:07:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id A42bK89yQmn1UAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 17 Dec 2025 09:07:27 +0000
-Date: Wed, 17 Dec 2025 10:07:27 +0100
-Message-ID: <87y0n1cw8g.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Shipei Qu <qu@darknavy.com>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	vr@darknavy.com
-Subject: Re: [PATCH v3] ALSA: usb-mixer: us16x08: validate meter packet
- indices
-In-Reply-To: <20251217024630.59576-1-qu@darknavy.com>
-References: <878qf2g0tm.wl-tiwai@suse.de>
-	<20251217024630.59576-1-qu@darknavy.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.1 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.26 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.16)[-0.781];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-Message-ID-Hash: NEZTDQO6DLKKZR5HGSDUED6OH6EJ2LTM
-X-Message-ID-Hash: NEZTDQO6DLKKZR5HGSDUED6OH6EJ2LTM
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=Vlsm4tpY
+Received: by mail-ej1-f54.google.com with SMTP id
+ a640c23a62f3a-b72b495aa81so299051666b.2
+        for <alsa-devel@alsa-project.org>;
+ Fri, 12 Dec 2025 12:33:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765571625; x=1766176425;
+ darn=alsa-project.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+AjDa10YJK9Zw+PRpk/+pGvNDcnlool8LjVYCZ20DXI=;
+        b=Vlsm4tpYNFv0/AoVl7LYWK1Wj9WhUifRjDM3OaLYmju5i08acJ4WvHl1L+E37KjefP
+         VfZJ553joyfxkUDAVQpKu4REtTk8QYZWFILsZ5HZwYP3pT027WQcFYmqgqLrs+y334zL
+         EBlOPfBWwx1EyJ3LTFCrtWiH1gU+MCU2Dnvnqy4S5Roipnm5CGgTz9dQ6pQh8XqDiJO8
+         3rSwySbQ8LtsuckPkghyoT9SkNPp7G6CtRtyDJVkXgyS1sHsTDXis+RkQTPv2yol4v0v
+         whQ/roPLnS8L1nn+z4oB3g0JF9rozOfgCH8WOab/QKUQi14KaErWi1k6DFL1ORUEEbpI
+         WS1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765571625; x=1766176425;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+AjDa10YJK9Zw+PRpk/+pGvNDcnlool8LjVYCZ20DXI=;
+        b=BAcyT435TMuiPhtGSlzD24rWDQmMxvmvafPP+UwyUcGDtLY1sgPzsVj03c2OjcIMBu
+         0fK9FeTL8LururwcYEHJmXYQXTf9GHROB3j6SrcVNvKWVR6zYga0StwLbU0bMUiHiDhc
+         CRySt2QX3+gZ3rfb5kduN2j+s7VO9N0HYjyNizKMjnEc4BYhZSsXAtri/LYx2h3Y7UVw
+         SR2s+BWvMOodg3f/x/8yDgd62bGlvV9kD+DtoHSL7Q40HQL2dx/NJAwJxyj5q0pAmGXF
+         3VLQdIaXKFaxbVaQAFOp2EgRx3wig9gR4SAoW0jajRYX1XM3fgc/whFjDawCCcsNP7x+
+         yGCA==
+X-Gm-Message-State: AOJu0YwS64zM9S/bnY/yu7FYLkeTFrmulT35uHC6SZYwzNSW1q6NnH26
+	X/f2RXfEmurRL+iI5UG3aHYhNDGDNDQqiHjrKMGnyDyH9yRvLLxwABw7ak3VmpG/pTxWLMlCjWU
+	moned6AxqFqsq7Y/a9k+oZf5UJo0tu6zBos0H
+X-Gm-Gg: AY/fxX4dsxNnxtk4Am882d6II2vOCBs7r1NCbHMJ/mGzKkdshInvsuq4chsFvnbCObk
+	qnMHaoBPCO826lv+jD+e4GplrWlsjKvArLMgK4EvojnxZFM92fPwhQs0CKa1o5XeE3jWtnZbIUl
+	nF0LZyfZgDeGTZ+mE9lNP5bIbPKgAIfetlLeqvhGUvP5vbz5bQ58Wf9HD8jmmIBe6e15QaP7RhG
+	mnJMTLcpoZw9IstbyR/l7+z++b6BF6/l+0/eIZlKUMN5I+/4lalEHOqCGygNiMc01oOai0PfC/a
+	8bM=
+X-Google-Smtp-Source: 
+ AGHT+IF6cOHSMc/MyrGo5IQ6YxyBou5vr0siwf9UBq+iAGDoZpf3Xl7Hl/qea1dJG1rW1c7iT8ERO/XGeyx8ik6c3pE=
+X-Received: by 2002:a17:907:6eac:b0:b76:f57f:a2c3 with SMTP id
+ a640c23a62f3a-b7d236f781cmr374558166b.12.1765571625158; Fri, 12 Dec 2025
+ 12:33:45 -0800 (PST)
+MIME-Version: 1.0
+From: shahab ghodsi <shahab16774@gmail.com>
+Date: Sat, 13 Dec 2025 00:03:34 +0330
+X-Gm-Features: AQt7F2pQk79VR3UK5iuRu8BEHVNRXRiF6nBSuK0baocCcULSl7YWEvH835q_dzw
+Message-ID: 
+ <CAAoudtxWroZYjo0rJks72e-3ri36rEWEJo4CfPG0_sGf4E3zUQ@mail.gmail.com>
+Subject: [BUG] Asus Expertbook B3402FV (1043:1e03) ALC256 - Headphone Low
+ Vol/Noise & Internal Mic Broken
+To: alsa-devel@alsa-project.org, linux-sound-intel@vger.kernel.org
+X-MailFrom: shahab16774@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: WG2IDAADWJUYKLBHZS4TXL3EMQQ4QSHU
+X-Message-ID-Hash: WG2IDAADWJUYKLBHZS4TXL3EMQQ4QSHU
+X-Mailman-Approved-At: Wed, 17 Dec 2025 09:09:55 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NEZTDQO6DLKKZR5HGSDUED6OH6EJ2LTM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WG2IDAADWJUYKLBHZS4TXL3EMQQ4QSHU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -161,28 +116,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 17 Dec 2025 03:46:30 +0100,
-Shipei Qu wrote:
-> 
-> get_meter_levels_from_urb() parses the 64-byte meter packets sent by
-> the device and fills the per-channel arrays meter_level[],
-> comp_level[] and master_level[] in struct snd_us16x08_meter_store.
-> 
-> Currently the function derives the channel index directly from the
-> meter packet (MUB2(meter_urb, s) - 1) and uses it to index those
-> arrays without validating the range. If the packet contains a
-> negative or out-of-range channel number, the driver may write past
-> the end of these arrays.
-> 
-> Introduce a local channel variable and validate it before updating the
-> arrays. We reject negative indices, limit meter_level[] and
-> comp_level[] to SND_US16X08_MAX_CHANNELS, and guard master_level[]
-> updates with ARRAY_SIZE(master_level).
-> 
-> Reported-by: DARKNAVY (@DarkNavyOrg) <vr@darknavy.com>
-> Signed-off-by: Shipei Qu <qu@darknavy.com>
-
-Applied now.  Thanks.
-
-
-Takashi
+RGVhciBBTFNBIGFuZCBJbnRlbCBIRCBBdWRpbyBEZXZlbG9wZXJzLA0KDQpJIGFtIHJlcG9ydGlu
+ZyBhbiBhdWRpbyBpc3N1ZSBhZmZlY3RpbmcgdGhlIGhlYWRwaG9uZSBvdXRwdXQgYW5kIGludGVy
+bmFsDQptaWNyb3Bob25lIG9uIG15IG5ldyBBc3VzIEV4cGVydGJvb2sgQjM0MDJGViBydW5uaW5n
+IEZlZG9yYSA0MyAoS2VybmVsDQo2LjE3LjkpLg0KDQoqSGFyZHdhcmUgU3VtbWFyeToqDQotIExh
+cHRvcCBNb2RlbDogQXN1cyBFeHBlcnRib29rIEIzNDAyRlYNCi0gU3Vic3lzdGVtIElEOiAxMDQz
+OjFlMDMNCi0gQ29udHJvbGxlcjogSW50ZWwgUmFwdG9yIExha2UtUC9VL0ggY0FWUyBbODA4Njo1
+MWNhXQ0KLSBDb2RlYzogUmVhbHRlayBBTEMyNTYNCi0gS2VybmVsOiA2LjE3LjktMzAwLmZjNDMu
+eDg2XzY0DQoNCipQcm9ibGVtIERldGFpbHM6Kg0KMS4gSGVhZHBob25lIE91dHB1dCAoMy41bW0g
+SmFjayk6IFRoZSBvdXRwdXQgaXMgZXh0cmVtZWx5IGxvdyB2b2x1bWUgYW5kDQpoZWF2aWx5IGRp
+c3RvcnRlZCB3aXRoIG5vaXNlLCBldmVuIGF0IDEwMCUuIE9ubHkgdGhlIGxvdWRlc3QgcGFydHMg
+b2YgdGhlDQphdWRpbyB0cmFjayBhcmUgYXVkaWJsZS4gVGhpcyBzdHJvbmdseSBzdWdnZXN0cyB0
+aGUgc2lnbmFsIGlzIGJ5cGFzc2luZyB0aGUNCmhlYWRwaG9uZSBhbXBsaWZpZXIuDQoyLiBIYW5k
+cy1mcmVlICgzLjVtbSBqYWNrKSBtaWNyb3Bob25lOiBXT1JLUyBjb3JyZWN0bHkuDQozLiBJbnRl
+cm5hbCBNaWNyb3Bob25lIChCdWlsdC1pbik6IFRoZSBpbnRlcm5hbCBtaWNyb3Bob25lIGRvZXMg
+Tk9UIHdvcmsgYXQNCmFsbC4NCjMuIEludGVybmFsIFNwZWFrZXJzOiBXb3JrIGNvcnJlY3RseS4N
+Cg0KKlRyb3VibGVzaG9vdGluZyBBdHRlbXB0ZWQgKEFsbCBmYWlsZWQgdG8gcmVzb2x2ZSB0aGUg
+aXNzdWUpOioNCi0gRm9yY2luZyBsZWdhY3kgZHJpdmVyOiBgb3B0aW9ucyBzbmQtaW50ZWwtZHNw
+Y2ZnIGRzcF9kcml2ZXI9MWANCi0gVHJ5aW5nIGtub3duIEFMQzI1NiBtb2RlbCBxdWlya3M6IGBt
+b2RlbD1hbGMyNTYtYXN1cy1taWNgLA0KYG1vZGVsPWRlbGwtaGVhZHNldC1tdWx0aWAsIGBtb2Rl
+bD1hbGMyNTYtYXN1cy1oZWFkc2V0IGZvcmNlX21vZGVsPTFgDQotIE1hbnVhbCBwaW4gcmV0YXNr
+aW5nIHZpYSBgaGRhamFja3JldGFza2AuDQotIE1hbnVhbCBnYWluIGFkanVzdG1lbnRzIHVzaW5n
+IGBoZGEtdmVyYmAuDQoNClRoZSBpc3N1ZSBhcHBlYXJzIHRvIGJlIGEgbWlzc2luZyBvciBpbmNv
+cnJlY3QgaW5pdGlhbGl6YXRpb24gcXVpcmsgZm9yIHRoZQ0Kc3BlY2lmaWMgU3Vic3lzdGVtIElE
+IDEwNDM6MWUwMyB0aGF0IGlzIHJlcXVpcmVkIHRvIGNvcnJlY3RseSBtYXAgdGhlIERBQw0KdG8g
+dGhlIGhlYWRwaG9uZSBhbXBsaWZpZXIgYW5kIGVuYWJsZSB0aGUgaW50ZXJuYWwgbWljIGFycmF5
+Lg0KDQpUaGUgZnVsbCBkaWFnbm9zdGljIHJlcG9ydCBpcyBhdmFpbGFibGUgaGVyZToNCmh0dHA6
+Ly9hbHNhLXByb2plY3Qub3JnL2RiLz9mPTM4NDdmOTJiMzMwMjQwNTVhNGNlN2Q3OTAxNmFmZjE3
+MTVmM2E0ZjkNCg0KVGhhbmsgeW91IGZvciB5b3VyIHRpbWUgYW5kIGFzc2lzdGFuY2UgaW4gbG9v
+a2luZyBpbnRvIHRoaXMgc3BlY2lmaWMNCmhhcmR3YXJlIGNvbmZpZ3VyYXRpb24uDQoNCkJlc3Qg
+cmVnYXJkcywNCg0KU2hhaGFiIEdob2RzaQ0K
