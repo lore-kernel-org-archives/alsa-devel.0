@@ -4,117 +4,167 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD309D59D79
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Dec 2025 16:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4109D59F7A
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Dec 2025 09:32:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4889160227;
-	Fri, 12 Dec 2025 17:53:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4889160227
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C9AE60212;
+	Sat, 13 Dec 2025 10:32:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C9AE60212
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765558437;
-	bh=dBE55fGA9SPoyrAsDB/+SxZFjDCYia4gGJVfSXMYpl4=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=A0Sxvr+5znXTYdjDCz/ED0buvGMf/1sBnjO5ITEaVxrPwCUA1kLKSlvi7vIEaLkYX
-	 J8VAKlSjd9+xLWrqOsNY3JNEcu3CdzhV0i9miWJClwhIG3hXUQ32i2by0AVu/mxoLl
-	 QVgmsMliS9VMHxU8piJxTmiZFxF4AGzwSdrD+JVY=
+	s=default; t=1765618353;
+	bh=IUSpiZRdHQ6bZ/ES4iHZhDi5o+qu/v7IpQkB+kR2YNU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=VifbLmM5ScK+zVryq83A2M59WoeXeFGhXD5RiOxv0WBsuQWQ08+rup0yOaFwSsCVr
+	 NSMxFL25ATdiisc4oN4ryuuEql2YGvAiUxUz0FA3UJJuqWRikS+mRY/0yAdqlzeZQb
+	 u8VYdPNbwZUEaDuv2L0mCzh8aIrAh6PhfDhhaZfo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C15F1F8060D; Fri, 12 Dec 2025 17:53:13 +0100 (CET)
+	id D11C9F805D2; Sat, 13 Dec 2025 10:32:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C615F80614;
-	Fri, 12 Dec 2025 17:53:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85015F805E0;
+	Sat, 13 Dec 2025 10:32:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12F22F8014B; Fri, 12 Dec 2025 07:54:55 +0100 (CET)
-Received: from smtpbgjp3.qq.com (smtpbgjp3.qq.com [54.92.39.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 0E509F80518; Sat, 13 Dec 2025 10:31:47 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE086F800F3
-	for <alsa-devel@alsa-project.org>; Fri, 12 Dec 2025 07:54:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE086F800F3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19BECF80095
+	for <alsa-devel@alsa-project.org>; Sat, 13 Dec 2025 10:31:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19BECF80095
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=darknavy.com header.i=@darknavy.com header.a=rsa-sha256
- header.s=litx2311 header.b=aIjY2TXo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=darknavy.com;
-	s=litx2311; t=1765522485;
-	bh=6kGyaOyesep/N+pAYTcr3tnMaD23YxbFkguVuDmysGI=;
-	h=From:To:Subject:Mime-Version:Date:Message-ID;
-	b=aIjY2TXoQ6aP+rxw/PdEmbJIqepXVdHstaZ7/hhbQEV2qNgClZT9hZNNGw9YL81Ar
-	 pygXnFuuz8tblf02o23azytofCNYfShfD4eERHY/Qksr/oGSUA4S7IsTCPcenpUV7c
-	 ylewVQAuujWUk97gnXQl3ZysIhq+/KRAORtglJu0=
-EX-QQ-RecipientCnt: 5
-X-QQ-GoodBg: 2
-X-BAN-DOWNLOAD: 1
-X-BAN-SHARE: 1
-X-QQ-SSF: 00400020000000F0
-X-QQ-FEAT: ySJ3WsVYOxuKF6HqgRRcc9GSngRkNJuJ7tiPvtBAyhA=
-X-QQ-BUSINESS-ORIGIN: 2
-X-QQ-Originating-IP: 2NkoBsp7g/FY6vq7kJPAmQbFiI8wL7RlYYVENe2etV8=
-X-Originating-IP: 58.38.96.44
-X-QQ-STYLE: 
-X-QQ-mid: lv3sz3b-7t1765522478t88686f9d
-From: "=?utf-8?B?VnVsbmVyYWJpbGl0eSBSZXBvcnQ=?=" <vr@darknavy.com>
-To: "=?utf-8?B?SmFyb3NsYXYgS3lzZWxh?=" <perex@perex.cz>,
- "=?utf-8?B?VGFrYXNoaSBJd2Fp?=" <tiwai@suse.com>
-Cc: "=?utf-8?B?YWxzYS1kZXZlbA==?=" <alsa-devel@alsa-project.org>,
- "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ALSA: usb-mixer: us16x08: validate meter packet indices
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8Bit
-Date: Fri, 12 Dec 2025 14:54:37 +0800
-X-Priority: 3
-Message-ID: <tencent_21C112743C44C1A2517FF219@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-X-BIZMAIL-ID: 3424617670848202761
-X-Address-Ticket: 
- version=;type=;ticket_id=;id_list=;display_name=;session_id=;
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-	by smtp.qq.com (ESMTP) with SMTP
-	id ; Fri, 12 Dec 2025 14:54:39 +0800 (CST)
-Feedback-ID: lv:darknavy.com:qybglogicsvrgz:qybglogicsvrgz5b-0
-X-QQ-XMAILINFO: ONjL9v3+DhWkm1QCVxj68urVeHXmzb9OHdrbtWw4Et1CQvBufnAc4AK6
-	rTKLSXmi3TI+gvGVJ1LjjRi52PHimXY5kUI2W1PGUBCEYnx27JUx8E2XI9+au76UjYxR29U
-	YswlzOvaB1IAPsHvby04Yk3FAIm5yEJzEMXE9A+OAYWiV7S35vTUrYhGJ++VQbmGRo+lMqk
-	Ycjf2C3G3ac1o3piBo+E1zRJ3IeSNjAqZyFlQ1lHhyL3g11bKdp2EBGcBowPqyWuvYFKjhi
-	y3zjITV8IBgdYXkp7ULbFEPDefK0/ZXDxz0ulKUoK4JDC0WTrHxe5Ng/xdrg0fuMZTFNJXq
-	Plpyfs7Q35o2Ac/59mBZxr6162PoRB/6lX7sBoAUfmtkdVCTnkMe4JGXXJ/StZZtKz3KJD2
-	C/7bE36y0yaJ6u0DHNiCMwO7o3i2iCTMC+5pcDhYjg8JQtXPTDfmODs1ezLR7xwIGmqvmF+
-	lXO6ncb8mwf2UkIhWSrHhhLI5bjp9NpKilmXVQF5VhIeDq4ZZluoP7bKTja4HrJ4G5yYPsT
-	iEj5kSQNsrFL7Ut2f5kSIspiWsij26oRnDh52oHvvnYM0lgPgSYa/xkNXok//TaKDfK9q9i
-	mm1dOPV1l+3hvCKyrGVOZOf2ArRmN9zslMKwI9aC3eSIdn8RNjcK6oKOlsZ4D1hkikFv4pd
-	C19pV+rEgLLe2Au3GYpnMrrvEGtfd/6JpBknUl/LBrou/VhyQd3Q0i1xA3tg5DPtMgFcL8I
-	3c9IGXd5wwN/mfbZY1Boff2CTebCzfmzZHQ7zIkS/l/qld03kJO2a2WAKRIOPKFVBsKqWfp
-	RqhKADXi7/kumLz+HuQqhDU1NawcVfgryqmwLoH6QmtbEasgkTsRpk0C3J3eQCxVC5aquyQ
-	XdcwBfMOHJUX0791EAfdWrEH88TJb4lUw43MWMTHTyJ8AbevpU5hfH/JI8S67Iyn4M+4Z+T
-	59I1d2xhPDjDw3IhsCUnhF6yYoHukM7OGkvihhPglh0+toJ8FXvI2HNuZ50qrz9ZsOy24CX
-	a6w0x6avK0l+l/xf66h6TMdDJMMQpJxSA1gJ/NaFX1vmkiWL0mevKCm3k0024IGPZCZD1tG
-	q8belVj/rPw
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-X-QQ-RECHKSPAM: 0
-X-MailFrom: vr@darknavy.com
-X-Mailman-Rule-Hits: nonmember-moderation
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=SvCWCgz3;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=OFO8ecJC;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Ezp74cpS;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=vbIlXA3/
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1A81A5BD78;
+	Sat, 13 Dec 2025 09:31:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1765618296;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0hfBK4522N0m3l8F69t8GN8XzcfS69I3xRTZwS+KL40=;
+	b=SvCWCgz3wKL8Af+B3Hklfa9KEFrbq1EgXFfFHOdVtqTNE30Wm6YW0l4qnHTH8UyJZs8Vyc
+	hFwXv+Cj+g3vn6hjFE42QH3BeyGYeq5VZkgMRH7MNwbZxh4T4qMBtnFEAsLS6VOWtPlmbg
+	YTjAfT8Ks/esmSOnjU69Yw/w1afL11k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1765618296;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0hfBK4522N0m3l8F69t8GN8XzcfS69I3xRTZwS+KL40=;
+	b=OFO8ecJCxzDw0ysvZkm/1DEyCqxxaWpsMbZRLyFcm++TwqdyJKTtf/j2kKzHqvyBox9yJT
+	mlGXXYQEo6O3YQCg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Ezp74cpS;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="vbIlXA3/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1765618295;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0hfBK4522N0m3l8F69t8GN8XzcfS69I3xRTZwS+KL40=;
+	b=Ezp74cpSWH0DNukJtcclxB3gU/594ZkMm+76vjxmHDgxr5DlJEZI39slfzXZ8+lPK/OtjV
+	sLtQAEQaDZ+Fbx/qBVEFiRIPV7I7/SJAzE/Znk+sxUGcUTZRvC95AnULqVgH7lP4XaryXR
+	AVt/d7p4MXnfdln+8H4kaV2/ls+2P2U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1765618295;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0hfBK4522N0m3l8F69t8GN8XzcfS69I3xRTZwS+KL40=;
+	b=vbIlXA3/n1ya8GmBkf//b0+ctxmtiML1N3CmfKhk6kARslIq/99j6ZCxRmqvHq0iOqmw4E
+	mZDZT7usDfaxmJAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA2343EA63;
+	Sat, 13 Dec 2025 09:31:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iNylM3YyPWmHJwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 13 Dec 2025 09:31:34 +0000
+Date: Sat, 13 Dec 2025 10:31:34 +0100
+Message-ID: <87tsxu918p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Vulnerability Report" <vr@darknavy.com>
+Cc: "Jaroslav Kysela" <perex@perex.cz>,
+	"Takashi Iwai" <tiwai@suse.com>,
+	"alsa-devel" <alsa-devel@alsa-project.org>,
+	"linux-kernel" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: usb-mixer: us16x08: validate meter packet indices
+In-Reply-To: <tencent_21C112743C44C1A2517FF219@qq.com>
+References: <tencent_21C112743C44C1A2517FF219@qq.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.1 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid];
+	TO_DN_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 1A81A5BD78
+Message-ID-Hash: M5UYTC7G2B7FFPR4SI76UUSQ7U3E24K4
+X-Message-ID-Hash: M5UYTC7G2B7FFPR4SI76UUSQ7U3E24K4
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UTCLQWOSUP3L2WEGWNQUYL4L37HGRVHE
-X-Message-ID-Hash: UTCLQWOSUP3L2WEGWNQUYL4L37HGRVHE
-X-Mailman-Approved-At: Fri, 12 Dec 2025 16:52:28 +0000
-Content-Type: text/plain;
-	charset="utf-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UTCLQWOSUP3L2WEGWNQUYL4L37HGRVHE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M5UYTC7G2B7FFPR4SI76UUSQ7U3E24K4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,84 +173,97 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+On Fri, 12 Dec 2025 07:54:37 +0100,
+Vulnerability Report wrote:
+> 
+> Hi,
+> 
+> while fuzzing a USB gadget that emulates a Tascam US-16x08 we found that
+> get_meter_levels_from_urb() in mixer_us16x08.c uses a channel index
+> taken directly from the 64-byte meter packet to index meter_level[],
+> comp_level[] and master_level[] without any bounds checking. A malformed
+> packet can therefore cause out-of-bounds writes in the
+> snd_us16x08_meter_store.
+> 
+> 
+> A malicious USB audio device (or USB gadget implementation) that
+> pretends to be a US-16x08-compatible interface can trigger this by
+> sending crafted meter packets. We have a small USB gadget-based PoC for
+> this behaviour and can share it if that would be helpful.
+> 
+> 
+> This driver is used by common distributions (e.g. Ubuntu) when a
+> US-16x08 or compatible USB audio device is present. The same pattern is
+> present in current mainline kernels.
+> 
+> 
+> This issue was first reported via security@kernel.org. The kernel
+> security team explained that, in the upstream threat model, USB
+> endpoints are expected to be trusted (i.e. only trusted devices should
+> be bound to drivers), so they consider this a normal bug rather than a
+> security vulnerability, and asked us to send a fix to the development
+> lists. The patch below adds simple range checks before updating these
+> arrays.
+> 
+> 
+> Suggested patch:
+> 
+> 
+> ---
+> &nbsp;sound/usb/mixer_us16x08.c | 15 +++++++++++++--
+> &nbsp;1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> 
+> diff --git a/sound/usb/mixer_us16x08.c b/sound/usb/mixer_us16x08.c
+> index XXXXXXXX..YYYYYYYY 100644
+> --- a/sound/usb/mixer_us16x08.c
+> +++ b/sound/usb/mixer_us16x08.c
+> @@ -647,15 +647,26 @@ static int snd_get_meter_comp_index(struct snd_us16x08_meter_store *store)
+> &nbsp;/* retrieve the meter level values from URB message */
+> &nbsp;static void get_meter_levels_from_urb(int s,
+> &nbsp;     struct snd_us16x08_meter_store *store,
+> &nbsp;     u8 *meter_urb)
+> &nbsp;{
+> &nbsp;     int val = MUC2(meter_urb, s) + (MUC3(meter_urb, s) << 8);
+> +     int ch = MUB2(meter_urb, s) - 1;
+> +
+> +     if (ch < 0)
+> +           return;
+> &nbsp;
+> &nbsp;     if (MUA0(meter_urb, s) == 0x61 &amp;&amp; MUA1(meter_urb, s) == 0x02 &amp;&amp;
+> -           MUA2(meter_urb, s) == 0x04 &amp;&amp; MUB0(meter_urb, s) == 0x62) {
+> -           if (MUC0(meter_urb, s) == 0x72)
+> -                 store-&gt;meter_level[MUB2(meter_urb, s) - 1] = val;
+> -           if (MUC0(meter_urb, s) == 0xb2)
+> -                 store-&gt;comp_level[MUB2(meter_urb, s) - 1] = val;
+> -     }
+> +           MUA2(meter_urb, s) == 0x04 &amp;&amp; MUB0(meter_urb, s) == 0x62) {
+> +           if (ch < SND_US16X08_MAX_CHANNELS) {
+> +                 if (MUC0(meter_urb, s) == 0x72)
+> +                       store-&gt;meter_level[ch] = val;
+> +                 if (MUC0(meter_urb, s) == 0xb2)
+> +                       store-&gt;comp_level[ch] = val;
+> +           }
+> +     }
+> &nbsp;     if (MUA0(meter_urb, s) == 0x61 &amp;&amp; MUA1(meter_urb, s) == 0x02 &amp;&amp;
+> -           MUA2(meter_urb, s) == 0x02 &amp;&amp; MUB0(meter_urb, s) == 0x62)
+> -           store-&gt;master_level[MUB2(meter_urb, s) - 1] = val;
+> +           MUA2(meter_urb, s) == 0x02 &amp;&amp; MUB0(meter_urb, s) == 0x62) {
+> +           if (ch < ARRAY_SIZE(store-&gt;master_level))
+> +                 store-&gt;master_level[ch] = val;
+> +     }
+> &nbsp;}
+> 
+> 
+> Reported-by: DARKNAVY (@DarkNavyOrg) <vr@darknavy.com&gt;
+> Signed-off-by: DARKNAVY (@DarkNavyOrg) <vr@darknavy.com&gt;
 
-while fuzzing a USB gadget that emulates a Tascam US-16x08 we found that
-get_meter_levels_from_urb() in mixer_us16x08.c uses a channel index
-taken directly from the 64-byte meter packet to index meter_level[],
-comp_level[] and master_level[] without any bounds checking. A malformed
-packet can therefore cause out-of-bounds writes in the
-snd_us16x08_meter_store.
+The while mail and the patch are malformed due to your mailer and
+can't be applied.  Could you try to resubmit with a proper patch
+description?  Also, Signed-off-by must be with a real name or a known
+identity, no anonymous name, due to a legal requirement.
 
 
-A malicious USB audio device (or USB gadget implementation) that
-pretends to be a US-16x08-compatible interface can trigger this by
-sending crafted meter packets. We have a small USB gadget-based PoC for
-this behaviour and can share it if that would be helpful.
+thanks,
 
-
-This driver is used by common distributions (e.g. Ubuntu) when a
-US-16x08 or compatible USB audio device is present. The same pattern is
-present in current mainline kernels.
-
-
-This issue was first reported via security@kernel.org. The kernel
-security team explained that, in the upstream threat model, USB
-endpoints are expected to be trusted (i.e. only trusted devices should
-be bound to drivers), so they consider this a normal bug rather than a
-security vulnerability, and asked us to send a fix to the development
-lists. The patch below adds simple range checks before updating these
-arrays.
-
-
-Suggested patch:
-
-
----
-&nbsp;sound/usb/mixer_us16x08.c | 15 +++++++++++++--
-&nbsp;1 file changed, 13 insertions(+), 2 deletions(-)
-
-
-diff --git a/sound/usb/mixer_us16x08.c b/sound/usb/mixer_us16x08.c
-index XXXXXXXX..YYYYYYYY 100644
---- a/sound/usb/mixer_us16x08.c
-+++ b/sound/usb/mixer_us16x08.c
-@@ -647,15 +647,26 @@ static int snd_get_meter_comp_index(struct snd_us16x08_meter_store *store)
-&nbsp;/* retrieve the meter level values from URB message */
-&nbsp;static void get_meter_levels_from_urb(int s,
-&nbsp;     struct snd_us16x08_meter_store *store,
-&nbsp;     u8 *meter_urb)
-&nbsp;{
-&nbsp;     int val = MUC2(meter_urb, s) + (MUC3(meter_urb, s) << 8);
-+     int ch = MUB2(meter_urb, s) - 1;
-+
-+     if (ch < 0)
-+           return;
-&nbsp;
-&nbsp;     if (MUA0(meter_urb, s) == 0x61 &amp;&amp; MUA1(meter_urb, s) == 0x02 &amp;&amp;
--           MUA2(meter_urb, s) == 0x04 &amp;&amp; MUB0(meter_urb, s) == 0x62) {
--           if (MUC0(meter_urb, s) == 0x72)
--                 store-&gt;meter_level[MUB2(meter_urb, s) - 1] = val;
--           if (MUC0(meter_urb, s) == 0xb2)
--                 store-&gt;comp_level[MUB2(meter_urb, s) - 1] = val;
--     }
-+           MUA2(meter_urb, s) == 0x04 &amp;&amp; MUB0(meter_urb, s) == 0x62) {
-+           if (ch < SND_US16X08_MAX_CHANNELS) {
-+                 if (MUC0(meter_urb, s) == 0x72)
-+                       store-&gt;meter_level[ch] = val;
-+                 if (MUC0(meter_urb, s) == 0xb2)
-+                       store-&gt;comp_level[ch] = val;
-+           }
-+     }
-&nbsp;     if (MUA0(meter_urb, s) == 0x61 &amp;&amp; MUA1(meter_urb, s) == 0x02 &amp;&amp;
--           MUA2(meter_urb, s) == 0x02 &amp;&amp; MUB0(meter_urb, s) == 0x62)
--           store-&gt;master_level[MUB2(meter_urb, s) - 1] = val;
-+           MUA2(meter_urb, s) == 0x02 &amp;&amp; MUB0(meter_urb, s) == 0x62) {
-+           if (ch < ARRAY_SIZE(store-&gt;master_level))
-+                 store-&gt;master_level[ch] = val;
-+     }
-&nbsp;}
-
-
-Reported-by: DARKNAVY (@DarkNavyOrg) <vr@darknavy.com&gt;
-Signed-off-by: DARKNAVY (@DarkNavyOrg) <vr@darknavy.com&gt;
+Takashi
