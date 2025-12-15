@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13F37D64093
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Dec 2025 09:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCCD6D64095
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Dec 2025 09:12:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A021C6025D;
-	Wed, 17 Dec 2025 10:11:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A021C6025D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C64A60262;
+	Wed, 17 Dec 2025 10:12:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C64A60262
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765962719;
-	bh=ZHMfImcMkoQ3qw9pks/IWM4uZUMW69szKXc2nql1Asc=;
+	s=default; t=1765962738;
+	bh=dwZlQ7OU8buLjWLfvuRuAhulHPIYc62DL2IuwEnIAR0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JsiGJsjrwLNe/6aO1qMQH4vIneZJxZs8wo4V3PyFrxGhU7DJ6ymcmzDRXiD0ZNP50
-	 H9VK6uKyNX3OBprf8gZ6VrzqvIiGIv88UnqxtYJmcgQN73p+1pS2mLBV5WXjsFQLdn
-	 BRB8ZQXZcGVHIKIfV55wUBHddSiDy0qwp5TTPv7U=
+	b=SN8aGKeshqcXYUfAEO3LQPP2rGaD2LXv/Dp4cMKpqVQT9DQfu5NNHwmVZw3WvjSnV
+	 wjjj2I7t5ffB6qSLz8lgnsj4R5+STkD+DWT2YO8NrjBLMLBAxSoTWuGCTC9J4EY6JC
+	 jIM8GisazhMjjujN+MpwQQyVFD10EB3dzaQeASfE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BC16F806AE; Wed, 17 Dec 2025 10:10:19 +0100 (CET)
+	id B22C0F805CA; Wed, 17 Dec 2025 10:10:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 741C5F806AA;
-	Wed, 17 Dec 2025 10:10:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C85EAF806D1;
+	Wed, 17 Dec 2025 10:10:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99A89F800BA; Mon, 15 Dec 2025 16:33:12 +0100 (CET)
-Received: from CY3PR05CU001.outbound.protection.outlook.com
- (mail-westcentralusazon11013009.outbound.protection.outlook.com
- [40.93.201.9])
+	id 42E30F80169; Mon, 15 Dec 2025 16:33:25 +0100 (CET)
+Received: from SN4PR0501CU005.outbound.protection.outlook.com
+ (mail-southcentralusazon11011031.outbound.protection.outlook.com
+ [40.93.194.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7F1BF800BA
-	for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2025 16:33:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7F1BF800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 79AE6F800DF
+	for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2025 16:33:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79AE6F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=nGTUbOOL
+ header.s=selector1 header.b=Nr6tLIdP
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=n7w/fDpqTXqAd7qLz7tHqzDd9/GmdfCWfXgtF1hk80GBGofKDCQrv1Y/nOaAzoHcB48JL2S/MANL/2FB4yoKUmtJ9tfBYuNZZg5RLCo0QyM3eE17+VauXc7XC7hloVE3MQrBQg7LoiPyRcW/AVhGhNwZYuV+klcdvGSzdiSGJPaVH1updqYnZhwPN17jGHACaGEQ2TeSAgISHGO5psNf6MUSE2Q2jKbowZFuXGehCnEAbZqhbBAqQPFO4zlxvDuxphN53BWpFMuIzXOjvsPPj7Ue+9LOzSoZzaRGlEwEi61kAPmWWCmE3+8SpANayOUUqJs67r5cqRTcUojZUueMIA==
+ b=SgfPxcY7QyAKKk8lrc+qYdLcH+7xxbkSgrqhXJOJIoGPhX5pbBUaDMoLmjkU8eOMAxMiWsJXM5cVj+0v1zFyO1C+kDqEvC6C1zVu7PDH/ONBGgQ31j3tZy9DDW2y11qAaxZVVRMTI1I79QG1siUaOtrH7+RdAR/0C8GW1fgJU22QeNGYG+Hvhj22SKe4657hetoWG95kihfk7WEwS5y8Jnj6cqqgNYR0+YmJxLc46IHbZLOwvLXzmyE7NWz2WX+d/uwZhNQLJlqa0sONdFtFznqTnI7U+fIMEgD0ufE/I3L7IAP416QpACUZYYHchWfatNQs+owikYJ8czvKQnQaIg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mzy/NEOIRu9EYeXvSjar+iFIYO+AfDCKmksy7eMfgCQ=;
- b=mOf/fKLhOQ3ZjyhHArbuu9XT9+PI8/P//GEzu+afeYbLxEPZkQDHAF47MUoK9k79RXvrf3pIfsz5s4rG138C9FBRHoeVsWKUOhnKxnpEh8fH6BbHF1RSZLoGtjAD5mzx5lF2J1ssvmpngLPFMlv0yjdjgys8pDWuNs5ECjJcZrIx4OedHKKgWhSLKPNRVlSH7u4cC+aeKbeRr62YYQUAEkvNvDRgvAahOjb+zV8GdBtoNBvklb5ve7L5sCTpfwE0yZxftiSrtbeXTN5i+ut+sPPjLaVFGP0BTUb4xASgH0g8u7glpeeQvsx/9MPcmyVUSI2L2TQgB0h0fwSHCGqb3Q==
+ bh=8mH6Dbg6SH/wU8ndjgSAPtXY8Qxf3/QojKL1aCwXqzQ=;
+ b=XSvXapY13TuKbMoCovtKyQ+HcCmmnalhadFC+C+b/aL2Mc5LyPw+dT0qAq5Ds2CwyrMXX9p97S8MG84V9m98f6o5b40gElX4/ykh7TX/QW2jDWHoPuUG+n9wht8kt3hl4fwM+NDlwDZ3MSHVJ7sCogcdmX/34QX1vtHoTUjP47HQhPCjaJ7e3SKZv1s4JhUVJYgHzwEzdMnsk3k5J8EViBh46y6R+zL9WIE34PzuyCqTtoADWgEfHDr/9ppwahdtciiSWJmTMhifKSyaH9w0ATj3wrTK6/z5z5Wn8wYrx2ETAPFIwdgNa7dQRMc9A2g/5f8UfyvdJ2tn1yv9HzeEMg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.195) smtp.rcpttodomain=linaro.org smtp.mailfrom=ti.com; dmarc=pass
+ 198.47.23.195) smtp.rcpttodomain=linaro.org smtp.mailfrom=ti.com; dmarc=pass
  (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
  (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mzy/NEOIRu9EYeXvSjar+iFIYO+AfDCKmksy7eMfgCQ=;
- b=nGTUbOOL29HMQ3tnwSzC4en/5Jv+bA8L/0o4pDw2fl57rC6DiXLrOvl0fJPu+lGjboxDuR3graDYvSXleVJX0j3avWUXEzfoYxsAEg9inmUGYkj2o3eedJ2uHagGdFkZG1twOkrfQSWbVKwL/n3FsH2hFrHFUtlgyUP7R53cCSA=
-Received: from BN0PR04CA0095.namprd04.prod.outlook.com (2603:10b6:408:ec::10)
- by IA4PR10MB8755.namprd10.prod.outlook.com (2603:10b6:208:566::13) with
+ bh=8mH6Dbg6SH/wU8ndjgSAPtXY8Qxf3/QojKL1aCwXqzQ=;
+ b=Nr6tLIdPqjORI5tJXzxQhbgrBc6svpsBmAXlfOfm44mHpRNuR00GYxy/4EVzOiI3k7L+SbIIyALd8yp8HeLRghDUYU3mNkl9tfQnQHWGbZRuRt5mPzuU0YOzT4for7LQrgldoY1MHyrzkChO3XqE+xpy02gNwxrj29kHQXiAYz0=
+Received: from SJ0PR03CA0254.namprd03.prod.outlook.com (2603:10b6:a03:3a0::19)
+ by DS0PR10MB6919.namprd10.prod.outlook.com (2603:10b6:8:11c::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.13; Mon, 15 Dec
- 2025 15:33:06 +0000
-Received: from BN1PEPF00005FFE.namprd05.prod.outlook.com
- (2603:10b6:408:ec:cafe::3b) by BN0PR04CA0095.outlook.office365.com
- (2603:10b6:408:ec::10) with Microsoft SMTP Server (version=TLS1_3,
+ 2025 15:33:17 +0000
+Received: from MWH0EPF000989E7.namprd02.prod.outlook.com
+ (2603:10b6:a03:3a0:cafe::a0) by SJ0PR03CA0254.outlook.office365.com
+ (2603:10b6:a03:3a0::19) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9412.13 via Frontend Transport; Mon,
- 15 Dec 2025 15:33:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
+ 15 Dec 2025 15:33:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.195)
  smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
  action=none header.from=ti.com;
 Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
-Received: from flwvzet201.ext.ti.com (198.47.21.195) by
- BN1PEPF00005FFE.mail.protection.outlook.com (10.167.243.230) with Microsoft
+ 198.47.23.195 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.23.195; helo=lewvzet201.ext.ti.com; pr=C
+Received: from lewvzet201.ext.ti.com (198.47.23.195) by
+ MWH0EPF000989E7.mail.protection.outlook.com (10.167.241.134) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9434.6 via Frontend Transport; Mon, 15 Dec 2025 15:33:04 +0000
-Received: from DFLE215.ent.ti.com (10.64.6.73) by flwvzet201.ext.ti.com
- (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9434.6 via Frontend Transport; Mon, 15 Dec 2025 15:33:16 +0000
+Received: from DLEE203.ent.ti.com (157.170.170.78) by lewvzet201.ext.ti.com
+ (10.4.14.104) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 15 Dec
- 2025 09:32:54 -0600
-Received: from DFLE208.ent.ti.com (10.64.6.66) by DFLE215.ent.ti.com
- (10.64.6.73) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 09:33:12 -0600
+Received: from DLEE212.ent.ti.com (157.170.170.114) by DLEE203.ent.ti.com
+ (157.170.170.78) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 15 Dec
- 2025 09:32:54 -0600
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE208.ent.ti.com
- (10.64.6.66) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 09:33:12 -0600
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE212.ent.ti.com
+ (157.170.170.114) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Mon, 15 Dec 2025 09:32:54 -0600
+ Transport; Mon, 15 Dec 2025 09:33:12 -0600
 Received: from LTPW0EX92E.dhcp.ti.com (ltpw0ex92e.dhcp.ti.com [10.82.30.14])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5BFFWTtX2639809;
-	Mon, 15 Dec 2025 09:32:49 -0600
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5BFFWTta2639809;
+	Mon, 15 Dec 2025 09:33:07 -0600
 From: Niranjan H Y <niranjan.hy@ti.com>
 To: <alsa-devel@alsa-project.org>
 CC: <linux-sound@vger.kernel.org>, <broonie@kernel.org>,
@@ -103,9 +103,9 @@ CC: <linux-sound@vger.kernel.org>, <broonie@kernel.org>,
 	<pierre-louis.bossart@linux.dev>, <shenghao-ding@ti.com>,
 	<v-hampiholi@ti.com>, <baojun.xu@ti.com>, <dan.carpenter@linaro.org>,
 	<sandeepk@ti.com>, Niranjan H Y <niranjan.hy@ti.com>
-Subject: [PATCH v2 4/8] ASoC: tas2783A: fix error log for calibration data
-Date: Mon, 15 Dec 2025 21:02:15 +0530
-Message-ID: <20251215153219.810-4-niranjan.hy@ti.com>
+Subject: [PATCH v2 7/8] ASoC: tas2783A: use acpi initialisation table
+Date: Mon, 15 Dec 2025 21:02:18 +0530
+Message-ID: <20251215153219.810-7-niranjan.hy@ti.com>
 X-Mailer: git-send-email 2.33.0.windows.2
 In-Reply-To: <20251215153219.810-1-niranjan.hy@ti.com>
 References: <20251215153219.810-1-niranjan.hy@ti.com>
@@ -115,70 +115,70 @@ Content-Type: text/plain
 X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00005FFE:EE_|IA4PR10MB8755:EE_
-X-MS-Office365-Filtering-Correlation-Id: 457d7e0c-fde9-4319-1128-08de3bef3da7
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989E7:EE_|DS0PR10MB6919:EE_
+X-MS-Office365-Filtering-Correlation-Id: 892e4472-8e84-4c7a-9182-08de3bef44c1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
 	BCL:0;ARA:13230040|36860700013|7416014|376014|1800799024|82310400026;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?jmLNqTcLW1MadD5+Nr8252j1skG5KpIjBYC30c9aoPp07PSdY1+H47X3afW4?=
- =?us-ascii?Q?nSk0/HGpXW2QzlmOrs5Hq1BUunhaHBFn7tUL4a7kU13uF3hpzXxw8uDm6DQl?=
- =?us-ascii?Q?XQff3JN3q+fZonXlgUPOxYTSrAYE3qVxm5OTw0BX56oB/PSKtpO1LfmgnNGf?=
- =?us-ascii?Q?oJCibXDHKsBVXq4u98QPWHIx0YypkqF/skFUnRhc3LSTL56oIwNiqTTcV9Hl?=
- =?us-ascii?Q?jM4lInw/q9Fx5qitI9B8f3Tqprkzd5CUOjPCWwmczFGKZn6UbCTn3RYnyG2X?=
- =?us-ascii?Q?daw8WBKRNaXjmkKTP8YeMzmXKxE1a19WhY4HulOEjENGN8qKztNZTliESNSS?=
- =?us-ascii?Q?jdjOWJzrq8spvLoqsJtX4pLPsThdy+0U0WAfUrOoyeXO5Q6NFphkua36fu1e?=
- =?us-ascii?Q?QJjhXSk0vzRu4z8OG3VgSe0tf9PdNmourBkxQQDY7IF58IHn9h1KpZJV4z3B?=
- =?us-ascii?Q?HroD+K0EDpZkc9wxEYRo5ob+2ZVqJGyJ/X3l0Qvs66Hvqrwuh7Gs2ndZa/Qd?=
- =?us-ascii?Q?ApQ9VFi73gb97GwOAjDk4ocOmEah8Paw8yRdgApCqJuyc9+DmIcfXy/SF4DX?=
- =?us-ascii?Q?lm5LErQaUe9rXkn5RdDttcZoUaIZml4Ejx7LhcU0PBSTssAvY/8uwoVfMEeo?=
- =?us-ascii?Q?rP/Q+Mdaw1Fj+zkK9dD2DiZhYz3tG+T/q2mmH9MIv/QLt57HpGpbJ1ReZGDC?=
- =?us-ascii?Q?JO5x90qpPHVViJJ0CnSeNsDhn4xXSaMVTG6yU1JM6xJCbg3HwPp0wwae/ms8?=
- =?us-ascii?Q?fhMfSAjKFYBsEcpiTWv4AiqtmHAbRLLmZYaVp+GHFRibTvKjLdeAXAcgDg8S?=
- =?us-ascii?Q?vZMoespQNEEKygLExWVnLXKXSLEwuNLh4m27rnl1INzK00yGDOSelXOButq/?=
- =?us-ascii?Q?XmZfKXck6KTTch6R5XKrKquhzDvjjXCdvuaaUlAeBsZfy9Z9Pl0qmqAyqhsn?=
- =?us-ascii?Q?nBvzsHv498NWx8owGCeB/QuZWYx7lPMtlY2GtvzHKE57UFX7+f82q6ojN6g+?=
- =?us-ascii?Q?dmI0SnQQR5rUyOG+ppjxsVTIBemCQ6wSdBWaVwny/827lT/DKzaKZSrIMTum?=
- =?us-ascii?Q?AT+AZEHCDVL1JHXr/9/s7V/OKN0xFK8zveSoFARNJAPunVDsHmWsXhHkPChK?=
- =?us-ascii?Q?1JJJJYEItp7DsLlYLrjJfhqjY7YsNFrIrUfy8YzsH/L0UJjuzdZgWTksVUeH?=
- =?us-ascii?Q?XxgBEK5MJJ4TUbLO9QpW+xSwZLCf1fqT0RLWL8stsjRT4qENZpoTwHK2EUPE?=
- =?us-ascii?Q?5l2g4229xA0iHRd5ExjAR5RVALEjn+4x5/WAlVZx9Kmym76/TXgp7Wf0CRTV?=
- =?us-ascii?Q?2t9i4HG5139pl4DqipIK0PMb9HgNjbdan9ZgwL4JlmYIuTn6UhUYuYpKPyyh?=
- =?us-ascii?Q?Y3dgK+8exAZ6q9wvv603n0/o9l3rIEu/g+qvwuo7maTs3It53jssgqYxvqWF?=
- =?us-ascii?Q?X9OfZy42quqsc9gUc1Ec2ZyIyqyMX6bbD8g24JzzNRW7x5qJdHq4qe6orr9m?=
- =?us-ascii?Q?jEPodzFtAmOAi1Y0gUYUjKtbrbIBOZ8AodmGzNH6XAn0nn7EFo7dyHArf4LD?=
- =?us-ascii?Q?aICw/8eFACsivUXsHY8=3D?=
+	=?us-ascii?Q?oHUkNnm+bpc0VkKFy9iaTGLuHYA6/aBzhVZjeVQEly48JiijdNlpqgVWj2BT?=
+ =?us-ascii?Q?1G0REaG0p+su12QT0BNDOlmIVQT4vsuQyAomJilSKLJjoXeCMwV489W9IEhu?=
+ =?us-ascii?Q?RcYNUL998WqOqOlrMql5ONj0Ckhd8jlP9KzmiLE3pwC4plDcGiu63uSIaYQN?=
+ =?us-ascii?Q?eeD4IxZYcglrX2vSndMXCPjpcOJwiUDf+Qh2KTL1zjFPaP1gNaNKICgQTtVP?=
+ =?us-ascii?Q?X1guwQeDDPMx9ymqsOvsFmQWMiHrL7rHQ2YrhHj7CcRA9eqsAaPv8EGw0rD+?=
+ =?us-ascii?Q?iSAShU9gLEzQbCi0FwBa3+ewKtF+0L+2vC/0o8p97+yOubCaK56oE/2ATcD8?=
+ =?us-ascii?Q?Gj7vUef70RgNXU4KeY+GP+G5+q/GNoC6FnrN8DBZReP0iNo3kAmk5XpAPJ3n?=
+ =?us-ascii?Q?neD2VG6kGQQCi6oue5Gr4GKiPpR1yY50rWiStC0iZf8M6ImMx1QXay0jFV+v?=
+ =?us-ascii?Q?gyjVwBN3dtTI073dWZ4WPREk8p18aB5njuPm4xz407TKhRP4cyerf2QjGS+X?=
+ =?us-ascii?Q?k66zwsoFUfuDB3D3mvBqP67uLkSLvLm3y7A7VzmO8/oXk5Wb5TCDTpr2b1Hy?=
+ =?us-ascii?Q?VPjQY22B4eM6phAIZrkd+m8BFXt9+NF4W/tufhRJYZ790QHqgheN70WOKMVj?=
+ =?us-ascii?Q?YiThnhmi2BPCWtENqX86f6m2Mt+OdHBMcbnyBk9NvHktLGywSvEm+60LklAu?=
+ =?us-ascii?Q?GkIMksUXlUIXjjUd8ARrtlnyfr4nJQzJCkcD2ximOBTwguupvZKo3I15TYQb?=
+ =?us-ascii?Q?6rs4SWdx5D49PIRdGrpsaT6Ju6AaaC719QhBGV6ah93FbwNqlcyrwJWJ+JLQ?=
+ =?us-ascii?Q?B3a8IUV8VCrAIscDyY1uK4q7ssJqhB9Xf8dQlPimJqD5Btn3ukcEduF9hig3?=
+ =?us-ascii?Q?fZ3npQWWiG/j4OepPUod8wnAo+EsWMqNyuyWvH4xdLFVKRSc2/n57TeJaAjh?=
+ =?us-ascii?Q?0Xr2FCaQ8i9BZRZe5FS8SCRJ3/cL6AzNYC2wGpnyRczx8PYT+2QpqjuArSTa?=
+ =?us-ascii?Q?ojFisbUYLfXWqi5u4evAYEVPXh+QshuM+E9+0JdeG8nkPS/pc+GzDZw6WjWV?=
+ =?us-ascii?Q?A7mtiavzEB+sQub3CzQcDHR3NnYgryo3pH5OAEBi7mVGFZCkXJ31nXpi+Brh?=
+ =?us-ascii?Q?FmwBDP/WS2cmPVp1DvCc8O4oQGT05rA4ZACgLExPn/NUWARfk4t9A2PGSEoi?=
+ =?us-ascii?Q?/bzHGtcDxfwyB0cHmgExktOxt3xfosvcKZddU0R5F7i7/kASDnnX5FVzs6XJ?=
+ =?us-ascii?Q?Rf+1BQC1vEdjEUUcwF8a30E5xzlbup4kk+zXq0QsDy+kEQkyDocwPpxOc6D7?=
+ =?us-ascii?Q?1WMrDM/E/ezK7rD0ZwCqHrluL1i6BdIhcLIA3LofcSujNY2V+6IrUWiPlPty?=
+ =?us-ascii?Q?djA4/RZoonfMfwFLrjf487RSDYIbepc5xPL4JtKJ7ggF7JWtpmu+im8hvcz3?=
+ =?us-ascii?Q?3VMOs2U9Nwxt7VjcaDIn3XB+zaGyDWOjUpjg6hOXBxUHhUcdtBM460884KPk?=
+ =?us-ascii?Q?k0k0Ex4oE6woIaI2/O45syfh/D2AyMkunSWkuPOyLn9y3dZkZgVP13CcuH/f?=
+ =?us-ascii?Q?f/5N+syIQrExrR547UU=3D?=
 X-Forefront-Antispam-Report: 
-	CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(36860700013)(7416014)(376014)(1800799024)(82310400026);DIR:OUT;SFP:1101;
+	CIP:198.47.23.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet201.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(7416014)(376014)(1800799024)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2025 15:33:04.9509
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2025 15:33:16.8934
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 457d7e0c-fde9-4319-1128-08de3bef3da7
+ 892e4472-8e84-4c7a-9182-08de3bef44c1
 X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
+ TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.195];Helo=[lewvzet201.ext.ti.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	BN1PEPF00005FFE.namprd05.prod.outlook.com
+	MWH0EPF000989E7.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA4PR10MB8755
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6919
 X-MailFrom: niranjan.hy@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: FFDHWXHNB53YIE6LCR5QBUDV6D3SSPUV
-X-Message-ID-Hash: FFDHWXHNB53YIE6LCR5QBUDV6D3SSPUV
+Message-ID-Hash: NZFEBOLXI25C4V3VIZD2SFVZ5HQLRHNV
+X-Message-ID-Hash: NZFEBOLXI25C4V3VIZD2SFVZ5HQLRHNV
 X-Mailman-Approved-At: Wed, 17 Dec 2025 09:09:57 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FFDHWXHNB53YIE6LCR5QBUDV6D3SSPUV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NZFEBOLXI25C4V3VIZD2SFVZ5HQLRHNV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -187,32 +187,132 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently when the calibration is not found, it is wrongly
-logged as device is not found. Fix this error message to
-indicate that calibration data is not valid instead.
+This patch adds support for parsing the initilisation
+data from ACPI table. This table is required to configure
+each device correctly so that correct channel's data is
+selected during playback.
 
 Signed-off-by: Niranjan H Y <niranjan.hy@ti.com>
 ---
 v2:
-- fix a typo in the commit message
+* use API sdca_regmap_write_init for updating the slave device
+  with init table
 ---
- sound/soc/codecs/tas2783-sdw.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/Kconfig       |  1 +
+ sound/soc/codecs/tas2783-sdw.c | 54 ++++++++++++++++++++++++++++++++--
+ 2 files changed, 52 insertions(+), 3 deletions(-)
 
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 061791e61..93a266a12 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -2146,6 +2146,7 @@ config SND_SOC_TAS2781_I2C
+ config SND_SOC_TAS2783_SDW
+ 	tristate "Texas Instruments TAS2783 speaker amplifier (sdw)"
+ 	depends on SOUNDWIRE
++	depends on SND_SOC_SDCA
+ 	depends on EFI
+ 	select REGMAP_SOUNDWIRE
+ 	select REGMAP_SOUNDWIRE_MBQ
 diff --git a/sound/soc/codecs/tas2783-sdw.c b/sound/soc/codecs/tas2783-sdw.c
-index bfa925dd6..397442cd6 100644
+index adfbccedb..679fb5cb1 100644
 --- a/sound/soc/codecs/tas2783-sdw.c
 +++ b/sound/soc/codecs/tas2783-sdw.c
-@@ -635,7 +635,8 @@ static void tas2783_set_calib_params_to_device(struct tas2783_prv *tas_dev, u32
+@@ -32,6 +32,8 @@
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
+ #include <sound/tas2781-tlv.h>
++#include <sound/sdca_function.h>
++#include <sound/sdca_regmap.h>
+ 
+ #include "tas2783.h"
+ 
+@@ -78,6 +80,7 @@ struct tas2783_prv {
+ 	struct snd_soc_component *component;
+ 	struct calibration_data cali_data;
+ 	struct sdw_slave *sdw_peripheral;
++	struct sdca_function_data *sa_func_data;
+ 	enum sdw_slave_status status;
+ 	/* calibration */
+ 	struct mutex calib_lock;
+@@ -1223,9 +1226,18 @@ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
+ 		dev_err(tas_dev->dev, "fw request, wait_event timeout\n");
+ 		ret = -EAGAIN;
+ 	} else {
+-		ret = regmap_multi_reg_write(tas_dev->regmap, tas2783_init_seq,
+-					     ARRAY_SIZE(tas2783_init_seq));
+-		tas_dev->hw_init = true;
++		if (tas_dev->sa_func_data)
++			ret = sdca_regmap_write_init(dev, tas_dev->regmap,
++						     tas_dev->sa_func_data);
++		else
++			ret = regmap_multi_reg_write(tas_dev->regmap, tas2783_init_seq,
++						     ARRAY_SIZE(tas2783_init_seq));
++
++		if (ret)
++			dev_err(tas_dev->dev,
++				"init writes failed, err=%d", ret);
++		else
++			tas_dev->hw_init = true;
  	}
  
- 	if (device_num == dev_count)
--		dev_err(tas_dev->dev, "device not found\n");
-+		dev_err(tas_dev->dev,
-+			"unique id not found in the calib data\n");
- 	else
- 		dev_dbg(tas_dev->dev, "calib data update done\n");
- }
+ 	return ret;
+@@ -1275,12 +1287,47 @@ static s32 tas_sdw_probe(struct sdw_slave *peripheral,
+ 	struct regmap *regmap;
+ 	struct device *dev = &peripheral->dev;
+ 	struct tas2783_prv *tas_dev;
++	struct sdca_function_data *function_data = NULL;
++	int ret, i;
+ 
+ 	tas_dev = devm_kzalloc(dev, sizeof(*tas_dev), GFP_KERNEL);
+ 	if (!tas_dev)
+ 		return dev_err_probe(dev, -ENOMEM,
+ 				     "Failed devm_kzalloc");
+ 
++	i = -1;
++	/* check if we have any SDCA function data available */
++	if (peripheral->sdca_data.num_functions > 0) {
++		dev_dbg(dev, "SDCA functions found: %d", peripheral->sdca_data.num_functions);
++
++		/* Look for Smart Amp function type */
++		for (i = 0; i < peripheral->sdca_data.num_functions; i++) {
++			if (peripheral->sdca_data.function[i].type ==
++			    SDCA_FUNCTION_TYPE_SMART_AMP) {
++				dev_info(dev, "Found Smart Amp function at index %d", i);
++				break;
++			}
++		}
++	}
++
++	if (i >= 0 && i < peripheral->sdca_data.num_functions) {
++		/* Allocate memory for function data */
++		function_data = devm_kzalloc(dev, sizeof(*function_data),
++					     GFP_KERNEL);
++		if (!function_data)
++			return dev_err_probe(dev, -ENOMEM,
++					     "failed to parse sdca functions");
++
++		/* Parse the function */
++		ret = sdca_parse_function(dev, peripheral,
++					  &peripheral->sdca_data.function[i],
++					  function_data);
++		if (!ret)
++			tas_dev->sa_func_data = function_data;
++		else
++			dev_warn(dev, "smartamp function parse failed:err%d, using defaults", ret);
++	}
++
+ 	tas_dev->dev = dev;
+ 	tas_dev->sdw_peripheral = peripheral;
+ 	tas_dev->hw_init = false;
+@@ -1335,6 +1382,7 @@ static struct sdw_driver tas_sdw_driver = {
+ };
+ module_sdw_driver(tas_sdw_driver);
+ 
++MODULE_IMPORT_NS("SND_SOC_SDCA");
+ MODULE_AUTHOR("Texas Instruments Inc.");
+ MODULE_DESCRIPTION("ASoC TAS2783 SoundWire Driver");
+ MODULE_LICENSE("GPL");
 -- 
 2.43.0
 
