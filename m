@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4492BD64093
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Dec 2025 09:11:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E31B3D64093
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Dec 2025 09:11:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 984C060227;
-	Wed, 17 Dec 2025 10:11:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 984C060227
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50384601B2;
+	Wed, 17 Dec 2025 10:11:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50384601B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765962687;
-	bh=V2ZU2BCaaAOsV6ugSXEjN+pF9KMAuxyKRo+PToOXas0=;
+	s=default; t=1765962702;
+	bh=HEa7dQfd3QzYfM0XggL6DRYS60BZUYYSSPhEQFzhYME=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=de1zNzPruQSj2exCNX231qwep0Fvu8iWa0HNerKkZ+sVbPp6GjrrpUYLgIztlaUkq
-	 xddDGiRvpcVHJ/z3sSglEnS0jebp+lElbt4Y8Go2pDhHmUw9XKrjgyEShZ40niPdGE
-	 Z/t+IFbC+4F+O8h0Am0lRd4oTzxyhFNs1bzW1gsc=
+	b=jsE7nuURFAMMRGA1HxIN3jHAaTNxu59zcoP1DFBNIYs7s9P7/yKMHFs9qNVFNMOyM
+	 TznH0PF/6Z0I/AIrZ3QhbYZm3ssQAKpbnBNdE/C1fAfEldG+sP8SsfCsrZDTmz6l2p
+	 mOwkN1aGC+s256l4zXqx5pNMyvGNqWqZop+36Nj4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C402F80637; Wed, 17 Dec 2025 10:10:14 +0100 (CET)
+	id 46E12F8068F; Wed, 17 Dec 2025 10:10:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E11F5F80642;
-	Wed, 17 Dec 2025 10:10:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2320F80681;
+	Wed, 17 Dec 2025 10:10:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C443BF80169; Mon, 15 Dec 2025 16:32:55 +0100 (CET)
-Received: from MW6PR02CU001.outbound.protection.outlook.com
- (mail-westus2azon11012046.outbound.protection.outlook.com [52.101.48.46])
+	id 8BC34F80169; Mon, 15 Dec 2025 16:33:09 +0100 (CET)
+Received: from PH8PR06CU001.outbound.protection.outlook.com
+ (mail-westus3azon11012036.outbound.protection.outlook.com [40.107.209.36])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 89B95F80107
-	for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2025 16:32:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89B95F80107
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9256F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2025 16:33:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9256F800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=na55RkzU
+ header.s=selector1 header.b=C/UhFy6B
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UHi5YftGeX5sar0wFApfwkGxLKWKDIc2xP3dYIgXhyqXph01gQmMVDPIPLO0vBjt06u5w5K/kHAKVGNzGBd5hUROlYdfaqw1yblxmoGJMo4gSWz1lFDFDznQGdWWFox2z0n0Twmw8MTcfMCtWmEWawiLwJcaIWLqoMgPUcFzC3XtR6GyXN+ISIvlX0w1JsoXPyK3eLIc/7rQPnj9xk/FxQsGRoz8cQTT8xwR3oP6fFzt6LQlBxXAyJ8IIqHDOkrxx+uTNxcYgP/jPoKC1m61x7kdwwwuNoPIHjKu21bK8tvMmB9YYgSGIkeuQqjgkHzGwiXR4EQoTa9mT5ue+FCiMw==
+ b=I4tZV9jg0fVR++UGn0/Xja8w9mAnIvrmy10V73uEcrA9ZFwDbTr6yRPK2GfT59jpwaoyBwvOTWSexcB7+MOn+S5F6YUzpaIl+oHI9msujx3CNRPh8pSnD/mGw4pfrQgkBj+kwIsnpxqA0bMi2kYS0Upw6i6wAGx0QCr+kQRWvlUdJqay1EeV0y9tptchxRY4w7gAaOOi9dEV7yy0UAzis7rVVbMpl3YLAXVBdXYXJYhsGA7fBZf+RU1Ei3Ygcnad7Pl9vB6OW+mYsvQdzVYLLA3Mtv1vIy/aZm5tlh4eCSM3XqYsVoPNyMev2M6voWWSath34WaK756bNHDDoEAz7w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LlFPl8qVACDoBLx7rSOovMX2GKKtsLvnJChExcSFcEA=;
- b=bAuDWeh+VgKYVqguL10hsSHmIFdD8vyFZOJ9Nm0p/Ktk0j8ftVEu6jUhpR/In5kWExr5vdBDZJVOv0EX/GnorUFDZwlF8+ByRUBhFtcdBYBL9HqVxgOcL6ovdf4AFWYeAQjFZ3We18bnhS9VpNxYjRxfa/1+JzoM88v1zzWCSdKbmmbCVGop2PaySNN13fS5DEki9+YjP0ULEn8qScEsHeig3z//QZy8Q+HwRAnKuoR7Hq5mShBm5WBwA6GIaXSuOnvOBqt7z6ooZ9EHOhAH/zli+AKGpa1ac+8G03ATdh75SwSMEWYu9TNPPHj/1xgnrxZZPfTfbEnqkt1c8O2GBA==
+ bh=PX0se+K2gD6NCPWyKk+dho6hXZNCI+779Ge6hgv5D9Q=;
+ b=jMQ5xTtfpRG0a4DfDW7wl5DJGbmAhkY+gBPj9QbTicZC3T+sXwoFxPMc4MjoP8XgKWLckbOJ+HYD9ay38B7HTHEW5Nbg8bxCZSFiuTOdDYaY3wkDIvr3fNrnUZ5KaTh72fXUxgeLpj7kVpBQIy36flitO0Vfp9GTc03rQ4GEryOxe8l9MJlBsmLKNVyR0z2cFg5wxLr8vCIisPIAVB3op2f/rvrCgXw2vNbxy6OSi/lSpDPX0khEB8tczE3I+KPuSFnr0P7bPp29F2qcpzv+fMtPuRnGJKK1mU35TUIegblybbtDzt36yTr8BD4Q+3v0CoSeD9mh5YKxn1x0vZy1ng==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  198.47.23.194) smtp.rcpttodomain=linaro.org smtp.mailfrom=ti.com; dmarc=pass
  (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
  (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LlFPl8qVACDoBLx7rSOovMX2GKKtsLvnJChExcSFcEA=;
- b=na55RkzUYwQHOMj+n62gCS4GpKnOsXUUR+qsgNprE1lXGSQ83YvBoaB9Zs96yR4pOZcS7plQSkSBA6CpVJ6aLZn2oBr79lsilaqMINZz7y2z31M3Pq2r2Kqzdm4Jv7qT6MfOsoE3XLXeVgxbR03fzlubNmxskbdFf/cX5z5VZf8=
-Received: from CH2PR20CA0004.namprd20.prod.outlook.com (2603:10b6:610:58::14)
- by PH3PPFF0D9ABED1.namprd10.prod.outlook.com (2603:10b6:518:1::7d8) with
+ bh=PX0se+K2gD6NCPWyKk+dho6hXZNCI+779Ge6hgv5D9Q=;
+ b=C/UhFy6BntgjqGE7C2/J+zqf5rSAPGSV/nljh55pgD3bsXrU+NonaMq6ol03d4pULyWuhaO1k7O4ITJScoy0YBWe2a2hCwTm/nzRft9j9YuWHB3sQ3pe0+9G3UMv623bIlmPyViJXWwh1s4WNi6gpiWC5t3MMYkykiiwKgvZITY=
+Received: from CH0PR03CA0021.namprd03.prod.outlook.com (2603:10b6:610:b0::26)
+ by BY5PR10MB4115.namprd10.prod.outlook.com (2603:10b6:a03:213::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.13; Mon, 15 Dec
- 2025 15:32:49 +0000
-Received: from CH1PEPF0000AD7C.namprd04.prod.outlook.com
- (2603:10b6:610:58:cafe::c) by CH2PR20CA0004.outlook.office365.com
- (2603:10b6:610:58::14) with Microsoft SMTP Server (version=TLS1_3,
+ 2025 15:33:03 +0000
+Received: from CH1PEPF0000AD7F.namprd04.prod.outlook.com
+ (2603:10b6:610:b0:cafe::67) by CH0PR03CA0021.outlook.office365.com
+ (2603:10b6:610:b0::26) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9412.13 via Frontend Transport; Mon,
- 15 Dec 2025 15:32:48 +0000
+ 15 Dec 2025 15:33:02 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.194)
  smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
  action=none header.from=ti.com;
@@ -74,24 +74,24 @@ Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
  198.47.23.194 as permitted sender) receiver=protection.outlook.com;
  client-ip=198.47.23.194; helo=lewvzet200.ext.ti.com; pr=C
 Received: from lewvzet200.ext.ti.com (198.47.23.194) by
- CH1PEPF0000AD7C.mail.protection.outlook.com (10.167.244.84) with Microsoft
+ CH1PEPF0000AD7F.mail.protection.outlook.com (10.167.244.88) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9434.6 via Frontend Transport; Mon, 15 Dec 2025 15:32:48 +0000
-Received: from DLEE206.ent.ti.com (157.170.170.90) by lewvzet200.ext.ti.com
+ 15.20.9434.6 via Frontend Transport; Mon, 15 Dec 2025 15:33:02 +0000
+Received: from DLEE209.ent.ti.com (157.170.170.98) by lewvzet200.ext.ti.com
  (10.4.14.103) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 15 Dec
- 2025 09:32:48 -0600
-Received: from DLEE202.ent.ti.com (157.170.170.77) by DLEE206.ent.ti.com
- (157.170.170.90) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 09:33:00 -0600
+Received: from DLEE209.ent.ti.com (157.170.170.98) by DLEE209.ent.ti.com
+ (157.170.170.98) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 15 Dec
- 2025 09:32:47 -0600
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE202.ent.ti.com
- (157.170.170.77) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 09:33:00 -0600
+Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DLEE209.ent.ti.com
+ (157.170.170.98) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20 via Frontend
- Transport; Mon, 15 Dec 2025 09:32:47 -0600
+ Transport; Mon, 15 Dec 2025 09:33:00 -0600
 Received: from LTPW0EX92E.dhcp.ti.com (ltpw0ex92e.dhcp.ti.com [10.82.30.14])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5BFFWTtW2639809;
-	Mon, 15 Dec 2025 09:32:43 -0600
+	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 5BFFWTtY2639809;
+	Mon, 15 Dec 2025 09:32:55 -0600
 From: Niranjan H Y <niranjan.hy@ti.com>
 To: <alsa-devel@alsa-project.org>
 CC: <linux-sound@vger.kernel.org>, <broonie@kernel.org>,
@@ -102,9 +102,9 @@ CC: <linux-sound@vger.kernel.org>, <broonie@kernel.org>,
 	<pierre-louis.bossart@linux.dev>, <shenghao-ding@ti.com>,
 	<v-hampiholi@ti.com>, <baojun.xu@ti.com>, <dan.carpenter@linaro.org>,
 	<sandeepk@ti.com>, Niranjan H Y <niranjan.hy@ti.com>
-Subject: [PATCH v2 3/8] ASoC: tas2783A: update default init writes
-Date: Mon, 15 Dec 2025 21:02:14 +0530
-Message-ID: <20251215153219.810-3-niranjan.hy@ti.com>
+Subject: [PATCH v2 5/8] ASoc: tas2783A: fw name based on system details
+Date: Mon, 15 Dec 2025 21:02:16 +0530
+Message-ID: <20251215153219.810-5-niranjan.hy@ti.com>
 X-Mailer: git-send-email 2.33.0.windows.2
 In-Reply-To: <20251215153219.810-1-niranjan.hy@ti.com>
 References: <20251215153219.810-1-niranjan.hy@ti.com>
@@ -114,70 +114,70 @@ Content-Type: text/plain
 X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7C:EE_|PH3PPFF0D9ABED1:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4fedd1dd-88ec-4f03-3610-08de3bef33fd
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7F:EE_|BY5PR10MB4115:EE_
+X-MS-Office365-Filtering-Correlation-Id: bdad573f-7ecc-4b02-b02e-08de3bef3c43
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|7416014|376014|1800799024|36860700013|82310400026;
+	BCL:0;ARA:13230040|36860700013|7416014|376014|1800799024|82310400026;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?wct2BKCJf9T34/gGOdd3EqO3sNH7v7wA+oS8yBxktDfeOwUHhU4T+q6Rv6be?=
- =?us-ascii?Q?MAVvp87AjL3Aah3Eg2w5QthO85EPC9V8tf9NOKguoXwpOdtoVyW44p23XQxV?=
- =?us-ascii?Q?msqmuEApN7qHM0KTiqeCMC+7hmacGNVPDn3vstRonYed3tpeCZIAJsa6cNmL?=
- =?us-ascii?Q?cSVEVfA7Q14PsYYjSWaTEMfVyBQAqrn2blU9bTitL3gAjkcOLls8TMi5E9Mk?=
- =?us-ascii?Q?x4HJJOmLsgwjUwaYEGMBpCAOEMWbuw/V7jnBaFc4eguilelCob30p4Hy/AYi?=
- =?us-ascii?Q?nWpaggbS9owGenHifIjwsuhoaedzLqegLOg034UEf1jPSwEZ6MYNdHjRp6XN?=
- =?us-ascii?Q?y5n+7mguH9vfIYlaLVa+92qUiwl6oJwyDlnTW5jVe+LKXOLVoTZF1ndjyEuW?=
- =?us-ascii?Q?DTLjMhYbX2dQWGndgGXbUAdJXXa1F8Ze/0iwWVEh2LF1C9716/SnP7G6S8s7?=
- =?us-ascii?Q?hLEj2s7uDM3ee8JWzhVdLioegKRzS7NixXIcK3QLJRvLui4sXHGvYFeufDfu?=
- =?us-ascii?Q?guI5NRIR46D22MdCyNyh7yVU51BC2E2SdYPTx9lk8MgmQwlM9PSjFH18fnp4?=
- =?us-ascii?Q?t6TjATI5vtqamaO26i4Un82Li/H077+8PHIlYOMhIk/1rK0vyCNm5eh11KaP?=
- =?us-ascii?Q?hZvKLx2b5FF5EmFv6uXz2YfMq5NBmiVv6Na6KmA2xpghwABgIBZprDB3heXl?=
- =?us-ascii?Q?GFc7kCfJXCDMQcf0+FL64ymtnRJGUY+0WMCqsV2bbA/zukE11ebp7LhoCHVK?=
- =?us-ascii?Q?bH/3p/7NgziOF2gxjSoh/XBgJu7jNf4lyMK4cgSe3leXtJG9PcnMMbj6QpYQ?=
- =?us-ascii?Q?53pSw8nMIASnwrBStF3zvOCBybXGiZV7V05e2/p+x/12UMRaOqcbCZAmQoQG?=
- =?us-ascii?Q?fd/addGeeQJwNMxZxFGGdGM33yI4jGc9/NU/StK83V1oLYEuMGlxLL2717+x?=
- =?us-ascii?Q?JtwcU8s84B8IJIAA8HTALjaNboI+0GW9vqsp7ST39lR9moyJ8Ys1v1c9klcL?=
- =?us-ascii?Q?a1YQAH1W0Di4OJwusXyoXHD2p3kuKD4jhZLoU6etl8o8y1adYy6lNF8S1xB9?=
- =?us-ascii?Q?QGG3UT0Ls53pmqRuHe8WCYYrp02xJyTkMeZrn0JRxiDwLuo9NMik64Js+m8g?=
- =?us-ascii?Q?X38cSsk+5Pq/WKtffcm2yPHt8333MFOG9TaidiBgIumxiCncoA7/Di7oTUYa?=
- =?us-ascii?Q?YBvU41hwPhY6oklCMAASKXgpiTeweRhhPZMRAfBNt3iTOJi9IEXZFBtaTn9H?=
- =?us-ascii?Q?dG0K0e5LYNwpb1qk/QrcJakOo/l+6n6OueNMTmPCIsT6g8MRffkDYrVwN5Ci?=
- =?us-ascii?Q?OU1LODXHs9xOOUvMD68ibKqiNgzytqskzateuFT1niXB+2QwU4BQ3rREpIQk?=
- =?us-ascii?Q?afPKM1XW033oq6yJu9dIfdY6tCCKAxIHCk4A9/wux2I5yFQeAPRKrZOqYyN2?=
- =?us-ascii?Q?7lxQrpvnMySRGU1OaUbPqS8SvRa8RXgdRbO68vEGDgrkocNxP5V0lK12MD8X?=
- =?us-ascii?Q?YwPve1WeTOahbFw9oVPE2LmeqPbGm9F4jzZ5SFLd20sbLcAYtd+laqjtk8Xb?=
- =?us-ascii?Q?3tKTurGmEAxyCZNzCdw=3D?=
+	=?us-ascii?Q?KN2Fyjcb6I+7ObAhxtwLrYdIviENXQtbQ9GN6Nty8J8UwBs0DV68gPBW1LI4?=
+ =?us-ascii?Q?HpLeEuAknasQpPRd+VTdnEvexfnbIsJ+QjLKrAC3DGYt7SNWzm/8Ke4JC6dW?=
+ =?us-ascii?Q?DtipVExCcLSxWJTUAoAeAscUcsPwAMRbck/FT7CXa9HutfQAgTPTFG+Bk2ds?=
+ =?us-ascii?Q?vb+a5KYb75LHm2zWKlokFk4zR7hty2yU8ChKI0H8VkY0jNX5fj0Z3BQ16sTV?=
+ =?us-ascii?Q?oJOiyJAirNnVTb13f1Lsp5xxSqJJpMsUNF6i3JJrJriQ2cmQT4zGD9dvJ4Yi?=
+ =?us-ascii?Q?Z/1z0LjizX4e237dCIELtzgZUrphIzJDdwnlqu2qRNWl3mgbP4sonIksweEY?=
+ =?us-ascii?Q?jmjYLeSmGZC7RLCHMnjui6Ad1XCokVmp8ib+fFwJmUjOj4uDmPdPs62jvKkU?=
+ =?us-ascii?Q?t8F2A27oFepabvehzRdIjnTyqnAq/pdtDMQSphfxfKUewtZQ4cVe//sYeSjT?=
+ =?us-ascii?Q?5KNIiNU/iKQk3qkTCjPOQP5CiF7sy0/QqhqYzKxjJD7iohH/700uxDNkx32I?=
+ =?us-ascii?Q?8iCSKhp5pw/eILuC3D1lVHk6YOgt9dh91nV/RKgPC8+eRyvEC99pXY8m7p3W?=
+ =?us-ascii?Q?OTHCc8vbIDj4PuqNjrGx1MTuc4+bFI99VfZRAnxX/qQod7bcmqPlRrKkiJVd?=
+ =?us-ascii?Q?qJ8abqy2SnLEux6+eNxK4zbuJIECh8xub/ysgT/O1EQCzAjIewjpbwgfh2X/?=
+ =?us-ascii?Q?smy6f8wpWnuT4+sKT0onQQbx+ivlz07eHeTcI0PIOtzD7xEd4wGtfop1b3kq?=
+ =?us-ascii?Q?YmH4igpVu3nPfNjRQ25fl+xiC7EE9XeNWOgl2c3K06xixeu+ui0JDAoxehQh?=
+ =?us-ascii?Q?fUrFVGc8OS6pN3NqwVHs3hF2hcvUk9GGUgR9srf65ybT2VjuDO/axqU6OfQY?=
+ =?us-ascii?Q?1IpQswHOdeOvGtyBND57go1AjvfI/xIGlJ0nhNS+a+SGO/R0W3RKoqXU5xbc?=
+ =?us-ascii?Q?Cg2+1PKmdnrhrTmu7RUT/Xb5h1Gr17qpzPFMYFr6E+o54NG9wLyxBWPkc/aW?=
+ =?us-ascii?Q?e89oaypjAvRZbrkSR6jx2x5vXv/UjaXozSIynVEDJ4vQaGHf654eidVfoHPb?=
+ =?us-ascii?Q?6I96gOWWAyOx5k8zl4jH/sK3JHAeaK+xbhojudBX6ky+BQXh3ZS4c79FNE77?=
+ =?us-ascii?Q?qdufRRfWpj4q8s/AQkbmvDvxuiwoQLQWDlgaRb4nWTjl2JYSQeXVkIQSsKC2?=
+ =?us-ascii?Q?22vQbGTdkIebG1Vp1HgwwezgqfTcEZZ/Xr6fQL7Fc995JCOt9yK5Uy7EahO+?=
+ =?us-ascii?Q?cwiPGUW0QYBzbfyBuuh1vXdZjUH+7r9Zs8fGv+L+lt3sN4L1yhGdxacs0iTd?=
+ =?us-ascii?Q?QPE5G4rLDZPBbMXa0R7mPf3EH9CBWm6g7liL86UhBcnP6Th/e4Eh4i+Pc9fO?=
+ =?us-ascii?Q?Y1jkr9sxV9sLdizT3JMhB9ODS2zFCUyj2Ff21eq52jeoXjs1RN5h0ON9qHXg?=
+ =?us-ascii?Q?vqvNOqVZz/m2apCbGSaAy6M45H+io8C9SMtvwpbHTD+fBy5gR8WmGYYaVuoT?=
+ =?us-ascii?Q?8PB16ZGwRuo32xj6FsfL2NVmmUfO+XUHoD1DCQt4hdvZI4SGZK7d8UlYjxsp?=
+ =?us-ascii?Q?yuyUBQyYva/MYYDqa7k=3D?=
 X-Forefront-Antispam-Report: 
-	CIP:198.47.23.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet200.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(36860700013)(82310400026);DIR:OUT;SFP:1101;
+	CIP:198.47.23.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet200.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(7416014)(376014)(1800799024)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2025 15:32:48.8085
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2025 15:33:02.6811
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 4fedd1dd-88ec-4f03-3610-08de3bef33fd
+ bdad573f-7ecc-4b02-b02e-08de3bef3c43
 X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.194];Helo=[lewvzet200.ext.ti.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	CH1PEPF0000AD7C.namprd04.prod.outlook.com
+	CH1PEPF0000AD7F.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH3PPFF0D9ABED1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4115
 X-MailFrom: niranjan.hy@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: AEGY422QUE3D7ZBGBDR46FBQ2NS52P74
-X-Message-ID-Hash: AEGY422QUE3D7ZBGBDR46FBQ2NS52P74
+Message-ID-Hash: 7VNJYBRUC3XUGVOZKWJBS3RNYNBHUBGD
+X-Message-ID-Hash: 7VNJYBRUC3XUGVOZKWJBS3RNYNBHUBGD
 X-Mailman-Approved-At: Wed, 17 Dec 2025 09:09:57 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AEGY422QUE3D7ZBGBDR46FBQ2NS52P74/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7VNJYBRUC3XUGVOZKWJBS3RNYNBHUBGD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -186,110 +186,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-  Remove unwanted initialistaion writes to the
-device which will now be part of the either firmware
-or acpi table.
+  The firmware file for tas2783A contains the device
+and algorithm settings. So the firmware files are unique
+for a system and driver should have the ability to
+distinctly identify and pick the right firmware.
+
+This commit adds the method to uniquely identify the
+firmware for a system based on the below format.
+ <Subsystem>-<Link>-<Unique>.bin
+
+* Subsystem is the PCI device subsystem-id
+* Link is the SoundWire link id on which the device recides.
+* Unique is the SoundWire slave unique id in the system.
 
 Signed-off-by: Niranjan H Y <niranjan.hy@ti.com>
 ---
 v2:
 - no change
 ---
- sound/soc/codecs/tas2783-sdw.c | 54 +---------------------------------
- 1 file changed, 1 insertion(+), 53 deletions(-)
+ sound/soc/codecs/tas2783-sdw.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tas2783-sdw.c b/sound/soc/codecs/tas2783-sdw.c
-index 6a0644670..bfa925dd6 100644
+index 397442cd6..adfbccedb 100644
 --- a/sound/soc/codecs/tas2783-sdw.c
 +++ b/sound/soc/codecs/tas2783-sdw.c
-@@ -297,7 +297,7 @@ static const struct reg_default tas2783_reg_default[] = {
+@@ -27,6 +27,7 @@
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw_type.h>
++#include <linux/pci.h>
+ #include <sound/sdw.h>
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
+@@ -1162,8 +1163,21 @@ static const struct dev_pm_ops tas2783_sdca_pm = {
+ 	RUNTIME_PM_OPS(tas2783_sdca_dev_suspend, tas2783_sdca_dev_resume, NULL)
  };
  
- static const struct reg_sequence tas2783_init_seq[] = {
--	REG_SEQ0(SDW_SDCA_CTL(1, TAS2783_SDCA_ENT_PPU21, 0x10, 0x00), 0x04),
-+	REG_SEQ0(SDW_SDCA_CTL(1, TAS2783_SDCA_ENT_PPU21, 0x10, 0x00), 0x01),
- 	REG_SEQ0(0x00800418, 0x00),
- 	REG_SEQ0(0x00800419, 0x00),
- 	REG_SEQ0(0x0080041a, 0x00),
-@@ -307,60 +307,19 @@ static const struct reg_sequence tas2783_init_seq[] = {
- 	REG_SEQ0(0x0080042a, 0x00),
- 	REG_SEQ0(0x0080042b, 0x00),
- 	REG_SEQ0(SDW_SDCA_CTL(1, TAS2783_SDCA_ENT_FU23, 0x1, 0x00), 0x00),
--	REG_SEQ0(0x0080005c, 0xD9),
--	REG_SEQ0(0x00800082, 0x20),
--	REG_SEQ0(0x008000a1, 0x00),
--	REG_SEQ0(0x00800097, 0xc8),
--	REG_SEQ0(0x00800099, 0x20),
--	REG_SEQ0(0x008000c7, 0xaa),
--	REG_SEQ0(0x008000b5, 0x74),
--	REG_SEQ0(0x00800082, 0x20),
--	REG_SEQ0(0x00807e8d, 0x0d),
--	REG_SEQ0(0x00807eb9, 0x53),
--	REG_SEQ0(0x00807ebe, 0x42),
--	REG_SEQ0(0x00807ec5, 0x37),
--	REG_SEQ0(0x00800066, 0x92),
--	REG_SEQ0(0x00800003, 0x28),
- 	REG_SEQ0(0x00800004, 0x21),
- 	REG_SEQ0(0x00800005, 0x41),
- 	REG_SEQ0(0x00800006, 0x00),
- 	REG_SEQ0(0x00800007, 0x20),
--	REG_SEQ0(0x0080000c, 0x10),
--	REG_SEQ0(0x00800013, 0x08),
- 	REG_SEQ0(0x00800015, 0x00),
--	REG_SEQ0(0x00800017, 0x80),
--	REG_SEQ0(0x0080001a, 0x00),
--	REG_SEQ0(0x0080001b, 0x22),
--	REG_SEQ0(0x0080001c, 0x36),
--	REG_SEQ0(0x0080001d, 0x01),
--	REG_SEQ0(0x0080001f, 0x00),
--	REG_SEQ0(0x00800020, 0x2e),
--	REG_SEQ0(0x00800034, 0x06),
--	REG_SEQ0(0x00800035, 0xb9),
- 	REG_SEQ0(0x00800036, 0xad),
- 	REG_SEQ0(0x00800037, 0xa8),
--	REG_SEQ0(0x00800038, 0x00),
--	REG_SEQ0(0x0080003b, 0xfc),
--	REG_SEQ0(0x0080003d, 0xdd),
--	REG_SEQ0(0x00800040, 0xf6),
--	REG_SEQ0(0x00800041, 0x14),
--	REG_SEQ0(0x0080005c, 0x19),
--	REG_SEQ0(0x0080005d, 0x80),
--	REG_SEQ0(0x00800063, 0x48),
--	REG_SEQ0(0x00800065, 0x08),
--	REG_SEQ0(0x00800067, 0x00),
--	REG_SEQ0(0x0080006a, 0x12),
- 	REG_SEQ0(0x0080006b, 0x7b),
- 	REG_SEQ0(0x0080006c, 0x00),
- 	REG_SEQ0(0x0080006d, 0x00),
- 	REG_SEQ0(0x0080006e, 0x1a),
- 	REG_SEQ0(0x0080006f, 0x00),
--	REG_SEQ0(0x00800070, 0x96),
- 	REG_SEQ0(0x00800071, 0x02),
--	REG_SEQ0(0x00800073, 0x08),
--	REG_SEQ0(0x00800075, 0xe0),
--	REG_SEQ0(0x0080007a, 0x60),
--	REG_SEQ0(0x008000bd, 0x00),
- 	REG_SEQ0(0x008000be, 0x00),
- 	REG_SEQ0(0x008000bf, 0x00),
- 	REG_SEQ0(0x008000c0, 0x00),
-@@ -368,17 +327,6 @@ static const struct reg_sequence tas2783_init_seq[] = {
- 	REG_SEQ0(0x008000c2, 0x00),
- 	REG_SEQ0(0x008000c3, 0x00),
- 	REG_SEQ0(0x008000c4, 0x00),
--	REG_SEQ0(0x008000c5, 0x00),
--	REG_SEQ0(0x00800008, 0x49),
--	REG_SEQ0(0x00800009, 0x02),
--	REG_SEQ0(0x0080000a, 0x1a),
--	REG_SEQ0(0x0080000d, 0x93),
--	REG_SEQ0(0x0080000e, 0x82),
--	REG_SEQ0(0x0080000f, 0x42),
--	REG_SEQ0(0x00800010, 0x84),
--	REG_SEQ0(0x00800014, 0x0a),
--	REG_SEQ0(0x00800016, 0x00),
--	REG_SEQ0(0x00800060, 0x21),
- };
++static struct pci_dev *tas_get_pci_dev(struct sdw_slave *peripheral)
++{
++	struct device *dev = &peripheral->dev;
++
++	for (; dev; dev = dev->parent)
++		if (dev->bus == &pci_bus_type)
++			return to_pci_dev(dev);
++
++	return NULL;
++}
++
+ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
+ {
++	struct pci_dev *pci;
++	struct sdw_bus *bus;
+ 	struct tas2783_prv *tas_dev = dev_get_drvdata(dev);
+ 	s32 ret;
+ 	u8 unique_id = tas_dev->sdw_peripheral->id.unique_id;
+@@ -1171,6 +1185,13 @@ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
+ 	if (tas_dev->hw_init)
+ 		return 0;
  
- static int tas2783_sdca_mbq_size(struct device *dev, u32 reg)
++	pci = tas_get_pci_dev(slave);
++	if (!pci) {
++		dev_err(dev, "pci device id can't be read");
++		return -EINVAL;
++	}
++
++	bus = slave->bus;
+ 	tas_dev->fw_dl_task_done = false;
+ 	tas_dev->fw_dl_success = false;
+ 
+@@ -1181,8 +1202,10 @@ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
+ 	}
+ 	usleep_range(2000, 2200);
+ 
++	/* subsystem_id-link_id-unique_id */
+ 	scnprintf(tas_dev->rca_binaryname, sizeof(tas_dev->rca_binaryname),
+-		  "tas2783-%01x.bin", unique_id);
++		  "%04X-%1X-%1X.bin", pci->subsystem_device, bus->link_id,
++		  unique_id);
+ 
+ 	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
+ 				      tas_dev->rca_binaryname, tas_dev->dev,
 -- 
 2.43.0
 
