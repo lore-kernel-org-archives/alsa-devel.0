@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB963D5B87C
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Dec 2025 07:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8CE5D5B87C
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Dec 2025 07:22:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDCD560237;
-	Tue, 16 Dec 2025 08:20:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDCD560237
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0732F60222;
+	Tue, 16 Dec 2025 08:22:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0732F60222
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765869614;
-	bh=XQy4TWjfNmtoZZIcqLmXVjX+tRvz4vSkRQZ+aofJ8Ro=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ISvWIz4VlvI79F7LaAVtznGseZkEZkHpJNKQ2Mt0/PM0TPnKkVii0d75tdkmQSmaG
-	 WwQ58pHFq02YznyOIKPxCygCLzHE8BC0umk/feb+poC8Pl5XachcFMO6ANJpTRNEJ0
-	 /8hIfzgFiJV46GaUC8wqpZ5o3DJ3FOKYdRpLOI44=
+	s=default; t=1765869753;
+	bh=I/a2fvl5cM973mSNSEqBU8ga1TYoVjNL+XdtwVAdlyk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=iAHLbUQMz+Z+IgnZgtlIRuIfrfNpGvk0NHYB0zNkI/fgkFh5W+p96L6t8UuvYhFzA
+	 rFdOEkv8h3koJC62ZcbwhvZMM37lT0xKFcPyBdE6MSM4z6/VxTjKGzkKocDxtqw9Jz
+	 T3IcTy9G3Uft3kHkTwWM8xgTPBIXEVXVZOLitczE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03B9AF804FB; Tue, 16 Dec 2025 08:19:48 +0100 (CET)
+	id 487A3F805DF; Tue, 16 Dec 2025 08:21:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C831F805EB;
-	Tue, 16 Dec 2025 08:19:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD36AF805E0;
+	Tue, 16 Dec 2025 08:21:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11D6BF80087; Tue, 16 Dec 2025 08:17:41 +0100 (CET)
+	id 9933AF8016E; Tue, 16 Dec 2025 08:17:42 +0100 (CET)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4A833F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6C3C2F80217
 	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2025 08:17:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A833F80087
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C3C2F80217
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=hsEMRXEd
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 5BG7HLFR03480193,
+ header.s=dkim header.b=RpLAtZ/t
+X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 5BG7HNiwC3480197,
  This message is accepted by code: ctloc85258
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1765869441; bh=COjTHkGOHQwpngrKIj3D+ebT53bbr8374fx3+LVak/o=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type;
-	b=hsEMRXEdCvxZcZlxJbU8WYFzyAkoBRWrNs+rLtB5jOiDQttcWQV3J7r+Lhx6Zagt2
-	 cfbLL+pY/Qwy/XCTzNgsAMwoJJUv4mw+97fHRyufl+7YhmGAa4GG7pHJAhGAiECLNW
-	 B/yzGZe+v1X3t5qiQfsSOT/ELaDSaRvDCoGieG8m18c+HYUDeLTu7vl54c5tU8Rww2
-	 rw1h2N494kSDof+3Maqeo6gUSNTvhF9U4VTAqGUS82Ev+kCBO96MBjGIoSJvSbo3m5
-	 ebB740E1pmgQbavJ/BkV1u6jdLyNrL5GZhFRjRAw7ZobBW1KijPHc9y1z9y2npUnj4
-	 a3HHUHKID+1oA==
+	t=1765869443; bh=O9P1ZmwkNILnvEnOhiWwKahZCFj/t+KyiynfI1j6KqQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding:Content-Type;
+	b=RpLAtZ/tZSFNkspgJjkVha7X/DloMdTbskKkDtlabRQ2K4XmESkF64smMGfu8U8Kn
+	 cqXQsFTZPIF3447ZgGN2xeOp67uMbHN/NQW9RjJTmOnmV8Kmw/XLptUDfJ3t2mSSoW
+	 TIhIZb+ocyIPq5QLTvGml4mVV2XQdoljzZrgfgvwhEEsBbBrI+u+ZJMnQLafAo0QJK
+	 UsXpS5Bt6BAkVQ7wfj+A8kpIrrXbj1RGvLUcocwMmpaoJRn6+h+AeY2yV4sJOH10ix
+	 0dd0PzoOoak57fwZXBiQEdUsJgY6awJbP37DlExe+QH/TjEzzeJ5wavBk2SlhUHVuY
+	 SrfDcRI2SP2ow==
 Received: from mail.realtek.com (rtkexhmbs03.realtek.com.tw[10.21.1.53])
-	by rtits2.realtek.com.tw (8.15.2/3.21/5.94) with ESMTPS id 5BG7HLFR03480193
+	by rtits2.realtek.com.tw (8.15.2/3.21/5.94) with ESMTPS id 5BG7HNiwC3480197
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Dec 2025 15:17:21 +0800
-Received: from RTKEXHMBS01.realtek.com.tw (172.21.6.40) by
+	Tue, 16 Dec 2025 15:17:23 +0800
+Received: from RTKEXHMBS03.realtek.com.tw (10.21.1.53) by
  RTKEXHMBS03.realtek.com.tw (10.21.1.53) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1748.10; Tue, 16 Dec 2025 15:17:22 +0800
-Received: from RTKEXHMBS03.realtek.com.tw (10.21.1.53) by
- RTKEXHMBS01.realtek.com.tw (172.21.6.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.10; Tue, 16 Dec 2025 15:17:21 +0800
 Received: from sw-server.localdomain (172.24.54.4) by
  RTKEXHMBS03.realtek.com.tw (10.21.1.53) with Microsoft SMTP Server id
- 15.2.1748.10 via Frontend Transport; Tue, 16 Dec 2025 15:17:21 +0800
+ 15.2.1748.10 via Frontend Transport; Tue, 16 Dec 2025 15:17:22 +0800
 From: Oder Chiou <oder_chiou@realtek.com>
 To: <cezary.rojewski@intel.com>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
         <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>
@@ -76,15 +73,18 @@ CC: <linux-spi@vger.kernel.org>, <perex@perex.cz>,
         <shumingf@realtek.com>, <jack.yu@realtek.com>,
         <derek.fang@realtek.com>, Oder Chiou
 	<oder_chiou@realtek.com>
-Subject: [PATCH v10 0/3] ASoC: rt5575: Add the codec driver for the ALC5575
-Date: Tue, 16 Dec 2025 15:18:50 +0800
-Message-ID: <20251216071853.3929135-1-oder_chiou@realtek.com>
+Subject: [PATCH v10 2/3] ASoC: dt-bindings: realtek,rt5575: add support for
+ ALC5575
+Date: Tue, 16 Dec 2025 15:18:52 +0800
+Message-ID: <20251216071853.3929135-3-oder_chiou@realtek.com>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20251216071853.3929135-1-oder_chiou@realtek.com>
+References: <20251216071853.3929135-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Message-ID-Hash: IHOTSQPCKT4XOBWZJFDOIF5KEUR3VV5A
-X-Message-ID-Hash: IHOTSQPCKT4XOBWZJFDOIF5KEUR3VV5A
+Message-ID-Hash: UAIELPC57RWFVSAS33QATM3G2YJVZHIM
+X-Message-ID-Hash: UAIELPC57RWFVSAS33QATM3G2YJVZHIM
 X-MailFrom: oder_chiou@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IHOTSQPCKT4XOBWZJFDOIF5KEUR3VV5A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UAIELPC57RWFVSAS33QATM3G2YJVZHIM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,96 +106,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi all,
+Audio codec with I2S, I2C and SPI.
 
-This patch series adds support for the Realtek ALC5575 audio codec.
-
-Changes in v10:
-- Patch 1/3:
-  - export of_find_spi_controller_by_node()
-- Patch 2/3:
-  - remove realtek,rt5575-use-spi
-  - add spi-parent for firmware-loading
-- Patch 3/3:
-  - use of_find_spi_controller_by_node() to get the SPI controller and add
-    the spi device for firmware-loading
-
-Changes in v9:
-- Patch 1/2:
-  - modify the comment
-  - change the compatible name to "realtek,rt5575-use-spi"
-- Patch 2/2:
-  - remove the standalone rt5575_spi_driver module and integrate its
-    functionality into the I2C driver
-  - move the SPI firmware-loading function to rt5575-spi.c
-  - use the match data to distinguish between w/wo flash
-  - minor fixes
-- Link to v9: https://lore.kernel.org/all/20251211110130.2925541-1-oder_chiou@realtek.com/
-
-Changes in v8:
-- Patch 1/2:
-  - remove the variable rt5575_spi_ready
-  - use the multiple compatible names to distinguish between w/wo flash
-- Patch 2/2:
-  - add compatible enum "realtek,rt5575-with-spi"
-- Link to v8: https://lore.kernel.org/all/20251201105926.1714341-1-oder_chiou@realtek.com/
-
-Changes in v7:
-- Patch 1/2:
-  - add a caption for the tristates
-  - remove the redundant enum of the SPI command
-  - add the error log in the request firmware failure
-  - change the function name rt5575_spi_fw_loaded to rt5575_fw_load_by_spi
-  - minor fixes
-- Patch 2/2:
-  - modify commit message
-- Link to v7: https://lore.kernel.org/all/20251121084112.743518-1-oder_chiou@realtek.com/
-
-Changes in v6:
-- Patch 1/2:
-  - modify commit message
-  - add select SND_SOC_RT5575 to config SND_SOC_RT5575_SPI in the Kconfig
-  - revise the boiler plate in the head of the file
-  - sort the include files
-  - use a structure to transfer the spi data
-  - use the poll() related function instead the for-loop
-  - revise the UUID to the private ID
-  - minor fixes
-- Patch 2/2:
-  - modify description
-- Link to v6: https://lore.kernel.org/all/20251031073245.3629060-1-oder_chiou@realtek.com/
-
-Changes in v2 to v5:
-- Patch 1/2:
-  - move the firmware to the subdirectory
-  - remove the empty functions
-  - remove the cache_type in the regmap_config
-  - add the error log in the run firmware failure
-- Patch 2/2:
-  - nothing
-- Link to v5: https://lore.kernel.org/all/20251015103404.3075684-1-oder_chiou@realtek.com/
-
-Oder Chiou (3):
-  spi: export of_find_spi_controller_by_node()
-  ASoC: dt-bindings: realtek,rt5575: add support for ALC5575
-  ASoC: rt5575: Add the codec driver for the ALC5575
-
- .../bindings/sound/realtek,rt5575.yaml        |  61 +++
- drivers/spi/spi.c                             |   3 +-
- include/linux/spi/spi.h                       |  11 +
- sound/soc/codecs/Kconfig                      |  10 +
- sound/soc/codecs/Makefile                     |   3 +
- sound/soc/codecs/rt5575-spi.c                 | 119 ++++++
- sound/soc/codecs/rt5575-spi.h                 |  26 ++
- sound/soc/codecs/rt5575.c                     | 359 ++++++++++++++++++
- sound/soc/codecs/rt5575.h                     |  54 +++
- 9 files changed, 645 insertions(+), 1 deletion(-)
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ .../bindings/sound/realtek,rt5575.yaml        | 61 +++++++++++++++++++
+ 1 file changed, 61 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/realtek,rt5575.yaml
- create mode 100644 sound/soc/codecs/rt5575-spi.c
- create mode 100644 sound/soc/codecs/rt5575-spi.h
- create mode 100644 sound/soc/codecs/rt5575.c
- create mode 100644 sound/soc/codecs/rt5575.h
 
+diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5575.yaml b/Documentation/devicetree/bindings/sound/realtek,rt5575.yaml
+new file mode 100644
+index 000000000000..981ebc39b195
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/realtek,rt5575.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/realtek,rt5575.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ALC5575 audio CODEC
++
++maintainers:
++  - Oder Chiou <oder_chiou@realtek.com>
++
++description:
++  The device supports both I2C and SPI. I2C is mandatory, while SPI is
++  optional depending on the hardware configuration. SPI is used for
++  firmware loading if present.
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: realtek,rt5575
++
++  reg:
++    maxItems: 1
++
++  spi-parent:
++    description:
++      Optional phandle reference to the SPI controller used for firmware
++      loading. The argument specifies the chip select.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  # I2C-only node
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        codec@57 {
++            compatible = "realtek,rt5575";
++            reg = <0x57>;
++        };
++    };
++
++  # I2C + optional SPI node
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        codec@57 {
++            compatible = "realtek,rt5575";
++            reg = <0x57>;
++            spi-parent = <&spi0 0>; /* chip-select 0 */
++        };
++    };
 -- 
 2.52.0
 
