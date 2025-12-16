@@ -4,200 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79BF9D5B843
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Dec 2025 15:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E1CED5B87C
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Dec 2025 07:20:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56B776022A;
-	Mon, 15 Dec 2025 16:48:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56B776022A
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0C346022C;
+	Tue, 16 Dec 2025 08:19:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0C346022C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1765813721;
-	bh=Y2mlRswSCVEqgBwlcRccDAeretBAXJkucMZN41HKaGU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1765869600;
+	bh=+nOCJtKm6LqEC57WeGgYv6jRNGhDOLF+UTQE1MdkbQo=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=i/+ukKLIoaeQ1RZfafVU+T6+w4f2WSBmnr3M6tUS9XbNWfNwJUmrr7GYAoqvonqW8
-	 jlapwwsDt6YRPhA355tGfxo4yz/Cth+0qbnKjTKJeUN7qMEdHVmn4nApSE+VW7n7MG
-	 2cw4byOiDI9B8p1IV6dFhr8S+GACsZQLF1+Jx/ck=
+	b=Qf8xcLTjmC0LBzznmDBJ+da2fes70fa3xJhCIlsVsw0qPdt30bPqYOXpo35DwOhEu
+	 2z1jTgNztKMY7JV5jW6w8dH4hpA83hJiz7KDo27rutBaBmJeNalao06YMoG0wEv7Y2
+	 EwgInVSmwuVmrQtF6pwINfvRAk+pfzpS+ZIb7gXw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF3D5F805C2; Mon, 15 Dec 2025 16:48:05 +0100 (CET)
+	id EC39CF805E3; Tue, 16 Dec 2025 08:19:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DB6CF805E0;
-	Mon, 15 Dec 2025 16:48:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39F49F80217;
+	Tue, 16 Dec 2025 08:19:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69E35F80169; Mon, 15 Dec 2025 16:47:57 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 07466F80571; Tue, 16 Dec 2025 08:17:41 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9457BF80087
-	for <alsa-devel@alsa-project.org>; Mon, 15 Dec 2025 16:47:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9457BF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5EFA1F8016E
+	for <alsa-devel@alsa-project.org>; Tue, 16 Dec 2025 08:17:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EFA1F8016E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=QxWO3lCE;
-	dkim=pass (1024-bit key,
- unprotected) header.d=cirrus4.onmicrosoft.com header.i=@cirrus4.onmicrosoft.com
- header.a=rsa-sha256 header.s=selector2-cirrus4-onmicrosoft-com
- header.b=Ko6iGSga
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 5BFErqSX3055475;
-	Mon, 15 Dec 2025 09:47:53 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=PODMain02222019; bh=EB9cVPLDCVlD++DynF
-	hxP5wa7MgTWXbz802mOn7lcKU=; b=QxWO3lCEyXtaYJnti/zFRkOYLZEhXREJTK
-	pwYitkkB6NChMmtDn6pu7ATTsZCoXmlj22V0Y6ColMnHbxcbqoBgTotmSFh50tfR
-	XczH05RD/K+LNgUb5Hya0gDyEBemAKrfasvh7b5LqfhRMA5/JpNvlTcbjAgyqEgp
-	xU7ptK2UAbm4BGUioXKr9yerSgjKgGLi6YoyaxXbHAtlxKbEpWwj9225W334T5ll
-	HO5QwWcbVyB/khZb7pOF/RY8+JGzk+hHOddI0K7s6hS5GgxmgCjs7Tyocla1a/Qo
-	3bIEcMlp7sXrUnjc+ZR7XeT6mSJliwI7QNWUfjvu4SIho+p4v9TQ==
-Received: from dm5pr21cu001.outbound.protection.outlook.com
- (mail-centralusazon11021112.outbound.protection.outlook.com [52.101.62.112])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 4b15eja45d-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Mon, 15 Dec 2025 09:47:53 -0600 (CST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=itPjrvGqcfD/N0rLe5PUqwPHdk8CBauJslSsJWgEVzNspmR+lj7WwEOUmuYmHzTJ8789mGm9pzqgboK1KPs340Nk892cjUEv9j/hsIBjtLE7F3RbirX5FKmCv1y8jgKlTG3kYRh2LYYNnHdadk9gcqJi/vaJ2F+La28Bayd85x1ArkQdH5N4K0fN5Dvl1UbzefnvJx0YfH0b5jOwUeBDXCzto1eZkBDXQ8JO4Om5HQoRsOy54NPG/1qRgwjWoDAvIjDsj0JBXi3cfd+RT1I4jOSleENeGmgV4ba0gEg1K99Flapgi9UXYxiVGU0Z3QcWSuwItcWGVuH7qoGFUfkdQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EB9cVPLDCVlD++DynFhxP5wa7MgTWXbz802mOn7lcKU=;
- b=KTqso9qLCBhKUOZynrS+A35iXeEGuLgHvv0TAn/0iHRhkN0tDMXt8cs4cGBQn0TmVRotFEzZR4K0TydshWT3O+Flut3+wE3WYxYZB4Q5WJ72kfgwVDjhm+xawBVn9JNu8YapAQP7Pt7M1KShew/Exbj16YQtgdiZ7/Y37hLF3XnZ2fwpXZ9+/V7ieijZamNCVZ+LITSGKgyJn+8tEx3vDTOGMAyd/SQcvBAjZV/XM2QyPPDzgM5Z5W9HyxOpy80W8vSWP4onUARLswW+nHa0Kvs6Cr8JqKx7/O/pkahRjQyEAFcyIbnBnsD9qPmGxWQxJf3aVMT+nD67MrAIhikkPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 84.19.233.75) smtp.rcpttodomain=alsa-project.org
- smtp.mailfrom=opensource.cirrus.com; dmarc=fail (p=reject sp=reject pct=100)
- action=oreject header.from=opensource.cirrus.com; dkim=none (message not
- signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cirrus4.onmicrosoft.com; s=selector2-cirrus4-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EB9cVPLDCVlD++DynFhxP5wa7MgTWXbz802mOn7lcKU=;
- b=Ko6iGSgac86jVI+c50dCutn/vyeGL4DVzdWagZ9EutWr1Taq+aCi6dENwBNdH0kNFcAF8RsnxsGkPj5hwHT+CjMN3QZrNlZKI4gB/THhxKADLKnZQrh4mR74RK8DK37bRDi1njanpYjnCOf3S+PHyP8ozGqfFD96jESX6dCzcgg=
-Received: from CY5PR22CA0057.namprd22.prod.outlook.com (2603:10b6:930:1d::31)
- by EA3PR19MB9665.namprd19.prod.outlook.com (2603:10b6:303:2b4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.13; Mon, 15 Dec
- 2025 15:47:48 +0000
-Received: from CY4PEPF0000FCC2.namprd03.prod.outlook.com
- (2603:10b6:930:1d:cafe::25) by CY5PR22CA0057.outlook.office365.com
- (2603:10b6:930:1d::31) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9412.13 via Frontend Transport; Mon,
- 15 Dec 2025 15:47:15 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 84.19.233.75)
- smtp.mailfrom=opensource.cirrus.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=oreject header.from=opensource.cirrus.com;
-Received-SPF: Fail (protection.outlook.com: domain of opensource.cirrus.com
- does not designate 84.19.233.75 as permitted sender)
- receiver=protection.outlook.com; client-ip=84.19.233.75;
- helo=edirelay1.ad.cirrus.com;
-Received: from edirelay1.ad.cirrus.com (84.19.233.75) by
- CY4PEPF0000FCC2.mail.protection.outlook.com (10.167.242.104) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.9434.6
- via Frontend Transport; Mon, 15 Dec 2025 15:47:46 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com
- [198.61.86.93])
-	by edirelay1.ad.cirrus.com (Postfix) with ESMTPS id B11BB406540;
-	Mon, 15 Dec 2025 15:47:45 +0000 (UTC)
-Received: from opensource.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPSA id 9AA2C820247;
-	Mon, 15 Dec 2025 15:47:45 +0000 (UTC)
-Date: Mon, 15 Dec 2025 15:47:44 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Niranjan H Y <niranjan.hy@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        broonie@kernel.org, lgirdwood@gmail.com,
-        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        perex@perex.cz, tiwai@suse.com, cezary.rojewski@intel.com,
-        peter.ujfalusi@linux.intel.com, kai.vehmanen@linux.intel.com,
-        pierre-louis.bossart@linux.dev, shenghao-ding@ti.com,
-        v-hampiholi@ti.com, baojun.xu@ti.com, dan.carpenter@linaro.org,
-        sandeepk@ti.com
-Subject: Re: [PATCH v2 7/8] ASoC: tas2783A: use acpi initialisation table
-Message-ID: <aUAtoLV7ovBiAzBL@opensource.cirrus.com>
-References: <20251215153219.810-1-niranjan.hy@ti.com>
- <20251215153219.810-7-niranjan.hy@ti.com>
+ unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
+ header.s=dkim header.b=g2jkpNeN
+X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 5BG7HLn243480195,
+ This message is accepted by code: ctloc85258
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
+	t=1765869441; bh=fjuHIIyTDdtwtVvJNBPuw1E2RWlC5vK7HA/qU8tD4S4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding:Content-Type;
+	b=g2jkpNeNJ5Wy8hiEPkavsJ8YzxPONb7aXNOpVRWdgGaPaWoIhnTvd+G1qdcCYFGc8
+	 dyPGpt5fSy+tgwjdXBV/M7WvqUD586W1N36ImpHiF7vSOVP3/ykg5xcdhRCLY/Rv3f
+	 77aoNm9bkdUfwJGNXQ7Ep1xlckG2LtIvIMJR3ua+MPOJQAhPzNFf2E5qwgewBW2EId
+	 gU1LAcpDROBr+cIMC5yIdmrddYrLifEs1wtkuuTE+IwgcI56P4Kwqa4J86qd/S/bvY
+	 KyZvFbIG0d7g+co1bR9uCRlFWfpGlEm1l/PpcZw9bPR8zJXfYXJUtYuQaBJR7zlnti
+	 ew/l0JHWK1V5g==
+Received: from mail.realtek.com (rtkexhmbs02.realtek.com.tw[172.21.6.41])
+	by rtits2.realtek.com.tw (8.15.2/3.21/5.94) with ESMTPS id 5BG7HLn243480195
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Dec 2025 15:17:21 +0800
+Received: from RTKEXHMBS01.realtek.com.tw (172.21.6.40) by
+ RTKEXHMBS02.realtek.com.tw (172.21.6.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.10; Tue, 16 Dec 2025 15:17:22 +0800
+Received: from RTKEXHMBS03.realtek.com.tw (10.21.1.53) by
+ RTKEXHMBS01.realtek.com.tw (172.21.6.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.10; Tue, 16 Dec 2025 15:17:21 +0800
+Received: from sw-server.localdomain (172.24.54.4) by
+ RTKEXHMBS03.realtek.com.tw (10.21.1.53) with Microsoft SMTP Server id
+ 15.2.1748.10 via Frontend Transport; Tue, 16 Dec 2025 15:17:21 +0800
+From: Oder Chiou <oder_chiou@realtek.com>
+To: <cezary.rojewski@intel.com>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>
+CC: <linux-spi@vger.kernel.org>, <perex@perex.cz>,
+        <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <flove@realtek.com>,
+        <shumingf@realtek.com>, <jack.yu@realtek.com>,
+        <derek.fang@realtek.com>, Oder Chiou
+	<oder_chiou@realtek.com>
+Subject: [PATCH v10 1/3] spi: export of_find_spi_controller_by_node()
+Date: Tue, 16 Dec 2025 15:18:51 +0800
+Message-ID: <20251216071853.3929135-2-oder_chiou@realtek.com>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20251216071853.3929135-1-oder_chiou@realtek.com>
+References: <20251216071853.3929135-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251215153219.810-7-niranjan.hy@ti.com>
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCC2:EE_|EA3PR19MB9665:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0fbf71cc-a63c-43bf-c978-08de3bf14b7d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|7416014|376014|36860700013|82310400026|61400799027;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?PhyNPmJUPBliZsxoqrWa4iHvIclZuczTbCrza/f3ZS+y8RyC6Uxxo6v8hPIn?=
- =?us-ascii?Q?Hf/yoig82Z1sxZeIGnGxW37r+Cd55YpT38Idw5D6fGrdu3laiIrkp6ykUEAU?=
- =?us-ascii?Q?aEDJ6Zq6WIKXaQsHh9o94wHtV6cS5un6E2oCczxR3Ax5P4GGoy/9DG7sds1C?=
- =?us-ascii?Q?W0HQndh06jDYHXlCxP8LZE23iNwjcLEwYrIGYCChOBA07r2IHpdcP0JX0By3?=
- =?us-ascii?Q?3e89ky2KmBMXM9w6D2NKKV3Ay/hos+Y/lCeXu9SZv570O+yMK8QyE9bzzf5E?=
- =?us-ascii?Q?WJiYjGaJlCw05z+d6BifDdvzj01q5vlAO8VbAXIavz7GyEGQDimxhZ9+0AfV?=
- =?us-ascii?Q?1L0iS9fERVYiHD+2G6oKlUEBZwZUAoLg7B59yMsHLDW9Mo4A9H2JcMwBFP/J?=
- =?us-ascii?Q?AhXNWbO/rJFrFCDWQlIfFgfzSQesl8V8FlZn5WaCcj0BnPaVE1ByNI4gGBcb?=
- =?us-ascii?Q?i1QXz6IRyGK2dnu6F0nB4wfB0unAHbMQ1dyOZ0FJ93WEHzLKMMHSox8C3zRD?=
- =?us-ascii?Q?nAdH4/L/KsMTLHZCXZkmDBKInFpAnax/Pvk6uUzS+q5RkE4FK2t4FRU8KvFT?=
- =?us-ascii?Q?JnCu2HL2wJAC23u3G3lu+Hi543CsyqgALFuPDQlX7HetNL6/ez6BNfEmoG9e?=
- =?us-ascii?Q?sI466NHfFdXVV7mEIYdkoYWI+cUjwFNdwQ5DRhn8EgHAo2KFwlgpFw6C7gw7?=
- =?us-ascii?Q?9KGybyK+vmiHssN85+/Sxmz2oOgWwmy+lbivIXLCaAdbjDgqdGVpwD21T7U7?=
- =?us-ascii?Q?ZGub5hqWcHlkqqEEpXVe4Lcypl9jD2Me0xicPuh0EQKdXCRy4WAS417/2dZo?=
- =?us-ascii?Q?VWYSRwIcXtXgksKYqTo+komqHqXMBGDvEJfayYZk8VQAHtUL0a5WG8pBTVps?=
- =?us-ascii?Q?iDZCBQbG3xMzWknye9cQasLejd4UD7vUjlIfo7c2gL4b+PVt3XrTyA1YWspp?=
- =?us-ascii?Q?LhQInufa/lXRTcs7rkJHM86XhXzQZBl3ZKakQrhXGFeMcVrUjOOxyh3l35Nf?=
- =?us-ascii?Q?nVDOYbtB94+GzO/rU/YVMjQ0a4jpHPblpaxP2WSLQmEzZ2mHF1L56CC9CXQ3?=
- =?us-ascii?Q?D/QqjSTHu0cI9Gf1CQscf2uDG85aNFewUnkhJdDlfiOL3hZWBxdSjHcPC4IR?=
- =?us-ascii?Q?LgCKfc7w6PQEjTCDgyjHyDMCWhsoqsFgOu9kbNGUcmzp+n+raOtzYjMjguu3?=
- =?us-ascii?Q?+UkQmynkmJNii+ogMYoUJoh7UrWwA4b+7ldDxmw1wFjCjtbibCO1ZUyJMW86?=
- =?us-ascii?Q?Ee1TM3GGjj+PSmBf2XeIIWbKHw+l+BwfKdOpDpsYEM65nhjbobzWzZR44xQi?=
- =?us-ascii?Q?qCUXFM9FMukKwNYvHPKRdFslw/eLAV6z7E+u4/nkaFmFXzkkO/WnzjBdphBY?=
- =?us-ascii?Q?ML0SJaCwPabkN2AupP+YTCFRMOYrX0nFWhrhVuu9os4h1Q83JisHfW75khA1?=
- =?us-ascii?Q?tEwUOTqZeeodlm9avLnCxb8amR3E70xS7v0xeshFXp8Kuq5geRfIulNVA/0d?=
- =?us-ascii?Q?dFB/1Uj4N2bkNzi5DvuxGt4j+21L08umUnDVeikvgkBrLEpzPSwx0RGdxwJ0?=
- =?us-ascii?Q?4YRe4NKG4R+wy+nAgWc=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:84.19.233.75;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:edirelay1.ad.cirrus.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700013)(82310400026)(61400799027);DIR:OUT;SFP:1102;
-X-OriginatorOrg: opensource.cirrus.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2025 15:47:46.9875
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 0fbf71cc-a63c-43bf-c978-08de3bf14b7d
-X-MS-Exchange-CrossTenant-Id: bec09025-e5bc-40d1-a355-8e955c307de8
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=bec09025-e5bc-40d1-a355-8e955c307de8;Ip=[84.19.233.75];Helo=[edirelay1.ad.cirrus.com]
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: 
- TreatMessagesAsInternal-CY4PEPF0000FCC2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: EA3PR19MB9665
-X-Authority-Analysis: v=2.4 cv=ZZUQ98VA c=1 sm=1 tr=0 ts=69402da9 cx=c_pps
- a=D81verZRVWLMjAELYjey2g==:117 a=h1hSm8JtM9GN1ddwPAif2w==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=kj9zAlcOel0A:10 a=wP3pNCr1ah4A:10 a=s63m1ICgrNkA:10 a=RWc_ulEos4gA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=sozttTNsAAAA:8 a=w1d2syhTAAAA:8
- a=UBQNiA3gMxgeTljxoUgA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjE1MDEzNyBTYWx0ZWRfX1WDzp5g5b8Y9
- z7Yq3XsoyohaU1Xu4dXoRHfhKKotqKz+6EG2DA4G8wcsWnOvhfMQxNGSvgJaGtBjGiLph7DMze7
- MbMbzjBV9fkYBsA2aRUUGcLRgnpTiIXhoU0JryorVARoxrN28qc1iKL2pnWf/Pq2UIe4e4jQsNq
- /lRTayKHeX+uUgmTQFr+QOsfIcOXnF/3oSG2hbQMuPeM9Rr0k+tR4A48Y1B67kty/xioctSrT37
- eVRsUnGbVyybmwQKolJnerxN+k4n7kJaI5uXWqJwOmutdlB0tT/3XRXfAuriijq5HMdUMOZszy+
- UKbfSQcyMtFpkHn0Dv06bPblPwivlQJxPUm1eSDTevOUHyXJeKSDoOKIvul+hcyAghfYsqYqsCz
- 776jWS5AyKnkMqnw7wio/tQQ4x7pyg==
-X-Proofpoint-ORIG-GUID: Y55avY5wLmfbgzF6wF33j8UDz0AfEH5O
-X-Proofpoint-GUID: Y55avY5wLmfbgzF6wF33j8UDz0AfEH5O
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: IBQMNTE25IYB7W7M6WFZZD7NI5ARWVVG
-X-Message-ID-Hash: IBQMNTE25IYB7W7M6WFZZD7NI5ARWVVG
-X-MailFrom: prvs=1444ced3a5=ckeepax@opensource.cirrus.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Message-ID-Hash: T7YSG3TXHNV6MR4WSPOPD7HZ6SPZLH3Q
+X-Message-ID-Hash: T7YSG3TXHNV6MR4WSPOPD7HZ6SPZLH3Q
+X-MailFrom: oder_chiou@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -209,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IBQMNTE25IYB7W7M6WFZZD7NI5ARWVVG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T7YSG3TXHNV6MR4WSPOPD7HZ6SPZLH3Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -218,16 +109,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Dec 15, 2025 at 09:02:18PM +0530, Niranjan H Y wrote:
-> This patch adds support for parsing the initilisation
-> data from ACPI table. This table is required to configure
-> each device correctly so that correct channel's data is
-> selected during playback.
-> 
-> Signed-off-by: Niranjan H Y <niranjan.hy@ti.com>
-> ---
+Some devices are primarily described on another bus (e.g. I2C) but also
+have an additional SPI connection that serves as a transport for
+firmware loading. Export of_find_spi_controller_by_node() so drivers can
+obtain the SPI controller referenced by a DT phandle.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ drivers/spi/spi.c       |  3 ++-
+ include/linux/spi/spi.h | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-Thanks,
-Charles
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index e25df9990f82..ecb5281b04a2 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -4771,7 +4771,7 @@ static struct spi_device *of_find_spi_device_by_node(struct device_node *node)
+ }
+ 
+ /* The spi controllers are not using spi_bus, so we find it with another way */
+-static struct spi_controller *of_find_spi_controller_by_node(struct device_node *node)
++struct spi_controller *of_find_spi_controller_by_node(struct device_node *node)
+ {
+ 	struct device *dev;
+ 
+@@ -4784,6 +4784,7 @@ static struct spi_controller *of_find_spi_controller_by_node(struct device_node
+ 	/* Reference got in class_find_device */
+ 	return container_of(dev, struct spi_controller, dev);
+ }
++EXPORT_SYMBOL_GPL(of_find_spi_controller_by_node);
+ 
+ static int of_spi_notify(struct notifier_block *nb, unsigned long action,
+ 			 void *arg)
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index cb2c2df31089..1eb04a96cc1c 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -882,6 +882,17 @@ extern int devm_spi_register_controller(struct device *dev,
+ 					struct spi_controller *ctlr);
+ extern void spi_unregister_controller(struct spi_controller *ctlr);
+ 
++#if IS_ENABLED(CONFIG_OF_DYNAMIC)
++extern struct spi_controller *of_find_spi_controller_by_node(
++	struct device_node *node);
++#else
++static inline struct spi_controller *of_find_spi_controller_by_node(
++	struct device_node *node)
++{
++	return NULL;
++}
++#endif
++
+ #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SPI_MASTER)
+ extern struct spi_controller *acpi_spi_find_controller_by_adev(struct acpi_device *adev);
+ extern struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
+-- 
+2.52.0
+
