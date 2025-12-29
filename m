@@ -4,46 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58A02E6B279
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 Dec 2025 03:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D37F4D3B7E5
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Dec 2025 10:04:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C44F601F1;
-	Sat, 27 Dec 2025 04:35:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C44F601F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71C6C601FA;
+	Mon, 29 Dec 2025 11:04:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71C6C601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1766806532;
-	bh=gM+gn4lR5eakc3pcORQ6H7RRGNNpOeT7KI87WC/tDnc=;
-	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=NY9zc7o+XeyZRupqXitPceRCMsJzcJ2MkGK+ROCQhNn9vP7eHez6oClNhsn8zp2Hb
-	 /BknKSUZ+90OVY7HYY5uwpCzeDcGRauSi13Gfanj+el6o073AiOWolnz7fLaXxsaSc
-	 tVsl6J750L9VsEkCtUSt7JWCcVNCtdyD8GvCNSGs=
+	s=default; t=1767002690;
+	bh=TOivJ4vV1ivSp7XR4v/C2gNW5f1N2RT82h/XRsYfGIw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Fx1tWeqt28T5B8FnSfaxu27BdCgKN/1wh62uolHycf3rQTwogXRJVOR/V7G9VubQm
+	 3wrrvD2SiqU7GvaC2SdCEZqHFRI+qOPsvKcFvxcoWwbAfkyt2b1Sd7u/WAl8pHpLY2
+	 z4mJYdIBTUm/NuJQxwageK1E2eOHHvUvdFxVds/s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92EEEF805E0; Sat, 27 Dec 2025 04:35:11 +0100 (CET)
+	id 1E122F805D6; Mon, 29 Dec 2025 11:04:15 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67736F805EF;
-	Sat, 27 Dec 2025 04:35:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1D82F805DF;
+	Mon, 29 Dec 2025 11:04:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A8A3F805A0; Sat, 27 Dec 2025 04:35:05 +0100 (CET)
-Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
- [10.254.200.11])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1917BF800BA
-	for <alsa-devel@alsa-project.org>; Sat, 27 Dec 2025 04:35:05 +0100 (CET)
-Content-Type: text/plain; charset="utf-8"
+	id 0D029F80533; Mon, 29 Dec 2025 11:03:35 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 334DAF80166
+	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2025 11:03:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 334DAF80166
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Experience the Thrills of FNAF: A Guide to Playing
-From: reluctant.lobster.knax@protectsmail.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Date: Sat, 27 Dec 2025 03:35:05 -0000
-Message-ID: <176680650508.22.8948635401718573142@mailman-web.alsa-project.org>
-User-Agent: HyperKitty on https://mailman.alsa-project.org/
-Message-ID-Hash: AMV4X473CVLGXO3VMHBMBCKASJTORA2T
-X-Message-ID-Hash: AMV4X473CVLGXO3VMHBMBCKASJTORA2T
-X-MailFrom: reluctant.lobster.knax@protectsmail.net
+Message-Id: <1885a783a6fde000-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/668@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/668@alsa-project.org>
+Subject: Asus vivobook 16 x126100
+Date: Mon, 29 Dec 2025 11:03:35 +0100 (CET)
+Message-ID-Hash: PC6CYP4FKVZ665XMZV2SSPWLMOJR5ZTH
+X-Message-ID-Hash: PC6CYP4FKVZ665XMZV2SSPWLMOJR5ZTH
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -55,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AMV4X473CVLGXO3VMHBMBCKASJTORA2T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PC6CYP4FKVZ665XMZV2SSPWLMOJR5ZTH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -64,17 +67,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The world of horror games has spawned countless titles, but few have left a mark as significant as Fnaf Short for Five Nights at Freddy’s, this game invites players into a chilling atmosphere filled with suspense, strategy, and the occasional scare. If you’re looking to experience this unique blend of gameplay and story, you're in the right place! Let’s dive into how to play FNAF and get the most out of your experience.
-Gameplay: Surviving Five Nights  https://fnafgamefree.com
-At its core, FNAF is a survival horror game where you take on the role of a nighttime security guard at Freddy Fazbear’s Pizza, a seemingly innocent family restaurant. As you settle in for your shift, the animatronic characters take on a life of their own. Your goal is to survive five nights without being caught by these eerie machines.
-The gameplay revolves around monitoring security cameras to track the movements of the animatronics. You'll be seated in a dimly lit office where you can control the cameras and manage limited resources like power. The key to winning is not only keeping an eye on the animatronics but also making strategic decisions about when to close doors and conserve power. If your power runs out, you’ll be left vulnerable, making it critical to maintain your resources wisely.
-As the nights progress, things get more intense. The animatronics become quicker and more unpredictable, and you’ll need to master the art of resource management and timing to survive until 6 AM. The tension builds day by day, and just when you think you’ve got a handle on things, the game introduces new surprises.
-Tips for a Successful Experience
-1.	Monitor Camera Feeds Wisely: Spend some time familiarizing yourself with the layout of the restaurant and the movements of the animatronics. Some will stay in specific locations longer, while others will be more unpredictable.
-2.	Use Your Resources: Conserve your power! Constantly shutting doors or using cameras drains your battery faster. It’s a balancing act of vigilance and resource management.
-3.	Listen Carefully: Audio cues are vital to your survival. Sounds can indicate the whereabouts of various animatronics, helping you decide the best course of action.
-4.	Practice Patience: Each night can feel like a marathon. Take your time to assess the situation; sometimes, waiting and watching is the best strategy.
-5.	Learn from Mistakes: Every time you get caught, use it as a learning opportunity. Each failure provides insights into the timing and strategies that will help you succeed in future attempts.
-Conclusion: Embrace the Fear
-Playing FNAF is not just about surviving; it’s an experience rich with tension and excitement that keeps players coming back for more. Each night presents new challenges, and the thrill of anticipation makes it a captivating choice for horror enthusiasts and gamers alike.
-Whether you’re a seasoned gamer or a newcomer to the horror genre, FNAF offers a unique experience that blends strategy with fear. So dim the lights, put on your headphones, and prepare to immerse yourself in the eerie world of animatronics and suspense. You can discover all aspects of the game and even play it for free at Fnaf. Enjoy the thrill, and remember to keep an eye on those cameras!
+alsa-project/alsa-ucm-conf pull request #668 was opened from kellermanrivero:
+
+Add support for Asus Vivobook 16 (F1607QA) with Snapdragon X1 SoC. This device topology is nearly identical to Lenovo Thinkpad T14s or Asus Vivobook S15.
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/668
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/668.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
