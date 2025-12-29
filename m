@@ -4,88 +4,174 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A7E0EF8FF4
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2026 15:26:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F1C7EF8FF4
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2026 15:58:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A36FE6023E;
-	Wed,  4 Mar 2026 16:26:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A36FE6023E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C9B960292;
+	Wed,  4 Mar 2026 16:58:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C9B960292
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1772638009;
-	bh=2VD19bgJI0x1UihI0HQnWOMNn1lZUKuSVwf2lYt80Jc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MUt5OiOJWhmA9QyQI8c/HeZeZh6qZtCB1p1IdbNMtRG3sZIyKKnZRRd9KOGO3PTCF
-	 4krWDj68GxEKtbqnYqHITzqIq/Os75QwXxW50L9371EWZmksMb/ATn1N5FgHA6jJHe
-	 MowRUrvAo06wyA1KLRMHy1NnrjWG/FVv2PeudXlA=
+	s=default; t=1772639922;
+	bh=3il4T2JwneCdTugRjzFQ/4dypsNUfF8vhPUzD1leOj0=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=H3EN3MEutDPxfhu3wgTmcyr9+X8V7s3gvsYYKsaPgOqtljaia4KDXRTI6gcgPVbYh
+	 lJv9fOGMroxf+7g7Ezl2m6B54XRatJe5f5wH//3g19ounWqQiyLa/3bqGfz0c+l04D
+	 5Ssxq15Tqw3imV3mDELf7uPX8X3QJS8ucCtar9Cg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22D66F8060E; Wed,  4 Mar 2026 16:25:59 +0100 (CET)
+	id C9D9BF805F5; Wed,  4 Mar 2026 16:58:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3C94F8060E;
-	Wed,  4 Mar 2026 16:25:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9946BF805F3;
+	Wed,  4 Mar 2026 16:58:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43F1CF80254; Thu,  8 Jan 2026 11:20:15 +0100 (CET)
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com
- [95.215.58.187])
+	id DDFCBF80533; Mon, 29 Dec 2025 01:20:18 +0100 (CET)
+Received: from CWXP265CU009.outbound.protection.outlook.com
+ (mail-ukwestazolkn19011024.outbound.protection.outlook.com [52.103.38.24])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7C49FF80075
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jan 2026 11:20:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C49FF80075
+	by alsa1.perex.cz (Postfix) with ESMTPS id AFDC6F8007E
+	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2025 01:20:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFDC6F8007E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256
- header.s=key1 header.b=SOuU5chI
-Message-ID: <d748ba7c-165d-420a-bd33-a860acf2f01d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767867610;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZWP8qNiTUYkgDHDv2lHzz407A0e6GIIDf4QiSGW83mk=;
-	b=SOuU5chIxERZv0IG+kefqFLuMnTPZFyNcZQ26ld9sOig12FzmlhV0YbBA2t8ndCNMFl8+C
-	WxBZnUd7Wx70MFDN7dw1UenXFJfaAEEiugAyyn+95yGfOGDUxkacIEoho/P8vfjVZIlzcV
-	5cTTL2pKK/49x70BcBiI8XFgWpG54qw=
-Date: Thu, 8 Jan 2026 11:10:13 +0100
+	dkim=pass (2048-bit key,
+ unprotected) header.d=hotmail.com header.i=@hotmail.com header.a=rsa-sha256
+ header.s=selector1 header.b=LzosEkAM
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Yv1Z80gS8bTdjiw6DqcR/+e6aDDat1UcLIKm6cM7Cw3jIXaAj/LC3oxYY0LCPbKO2A/MvQp27pnCmxLZajcJ0+OcSpnP5ay5/3TS25ScLfsVcPydDNrWLvYrJHCiEyM1xivQxygNnLtCfs+fmqEak9zdjQI+JjY+RyOtd++hnt1w32pE4eSrcM3E2Cdwopywi96Syco6Rdu2vUPwj3gpn/t8z92yubHeWmh2fEvwYk2D/ih73Yos21BuBD2a+2nWdqRKOkpUssT39dyPD71uxwOVssNaEweCXXjpPxfL5LyE/lAIhSXJlq3ZTsn2iuEQIBECBe35zEi1lpRXJcD4Hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=89x7pzueKCLSHfQbs+fPIwh+rtOh1NhjK++VIcKPq5k=;
+ b=oovDz6ZPwwsAmvWi8Lie2iewVTLqy7ZeCYCwRe/oSMyrMcmm2x1z7OB3ZDSg/ADAziKKzMy0bwiBS5maijwWEiLU0mlUPeiPNRRUoQd//qd6dkimu1lht23PXqzNz1/6vj3Z44BoD78KRYX+eaRKrNAc4dPAJqha4l3a1XW4Gtjrf0M1csyPqgSNglxUGrLjLqijWzpmP21O+bku9oQEoAY86KI0yxTTBp2GVfnz5li7p5eTZqRtnilx1ZDYV0RLIqo8lfxye+wZkYNCfvk3kWnW3/z4N+dipRMeybY4b5iKiLHFXTIZSMwvCqTEetaBNLWJDmhZ+x+GxwdAntg+wQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=89x7pzueKCLSHfQbs+fPIwh+rtOh1NhjK++VIcKPq5k=;
+ b=LzosEkAMJjYG2UEC9ujK9L3kCKpbY7usvHNJa2c1KApAv2e4Dprd3McKoKld+cTFOrZTmH8wJhmljLUgwzd0P2Uur5tQw1PV8dY5dnT46sNwo/cAkci3si0Wvjcfve4ZAX/1K6QOJIP3mMHjGE7oa2CfDdSc9FzMRZ2zzVevAkVbOiYv5X3Rk652zNjJ5xSDhHtnHdueAIckSOd6N6UFZTkxPoxh39ORqMKzSYxHcpgfGnZAwnego87Rg/TRUZ3viDRRTD79NB9bGm0LC5iE69YTTqL6SeRxv6oBGi1cRTUOZriI2JoJIUmy1W2wDT8I8DQUcdugXhS/l8Knct0RCw==
+Received: from LOBP302MB2325.GBRP302.PROD.OUTLOOK.COM (2603:10a6:600:442::13)
+ by LO9P302MB1628.GBRP302.PROD.OUTLOOK.COM (2603:10a6:600:3f9::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.14; Mon, 29 Dec
+ 2025 00:20:07 +0000
+Received: from LOBP302MB2325.GBRP302.PROD.OUTLOOK.COM
+ ([fe80::effe:2765:164a:28c8]) by LOBP302MB2325.GBRP302.PROD.OUTLOOK.COM
+ ([fe80::effe:2765:164a:28c8%6]) with mapi id 15.20.9456.013; Mon, 29 Dec 2025
+ 00:20:07 +0000
+From: NA NA <realgamehacker@hotmail.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"takashi@kernel.org" <takashi@kernel.org>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>
+Subject: Add Linux (mainline kernel/ALSA) support for Creative Sound Blaster
+ AE-9
+Thread-Topic: Add Linux (mainline kernel/ALSA) support for Creative Sound
+ Blaster AE-9
+Thread-Index: AQHceFdbEr3o0pVc7U6XvDyMIrAjwg==
+Date: Mon, 29 Dec 2025 00:20:07 +0000
+Message-ID: 
+ <LOBP302MB2325D63D0065F06DDF50E89CCDBFA@LOBP302MB2325.GBRP302.PROD.OUTLOOK.COM>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LOBP302MB2325:EE_|LO9P302MB1628:EE_
+x-ms-office365-filtering-correlation-id: 4a351b1f-265b-4aa0-d4de-08de46700575
+x-microsoft-antispam: 
+ BCL:0;ARA:14566002|39105399006|19110799012|15080799012|8062599012|8060799015|55001999003|31061999003|15030799006|461199028|20031999003|3412199025|440099028|40105399003|102099032;
+x-microsoft-antispam-message-info: 
+ =?iso-8859-1?Q?Qg5wMSlDCFpIeApszCQpTm30jI1+VBDPjQoE5xinL5ah75LrUsLKNGp5YB?=
+ =?iso-8859-1?Q?SJLJVn7h6G/u+uzJDIQBCfyXIsx2fOkMMYM/AtDl+8KFZQf3/y/qaa4Wd1?=
+ =?iso-8859-1?Q?R49BeaOZId4jQHqc36+ZAoGlDKRVsjC7F/GQJXHDGHa8vzgXHjMWnbdsVS?=
+ =?iso-8859-1?Q?7mJ3s0bKHvKyzMDfZk/sGifuCHNsfXj/tUNpms2ODJdMNy2JgTm2w261Mx?=
+ =?iso-8859-1?Q?ABp2XA69yn5atwwkZWuP4dGWEfOya/MkyKscTR30w78plJz9k/dldZE0i9?=
+ =?iso-8859-1?Q?IxsIIJaNejBtRpUp5s7ISSMbq/HGPB828gTibHMCu57K6CqozpKn9Xd5b2?=
+ =?iso-8859-1?Q?WKzxY8rhVsc2CUCjZZbx19kHAtR7R4ce4KMKKbSSxqVpvJU2W9oTItflmY?=
+ =?iso-8859-1?Q?lpR/GYU01GGdGM4j6BtfUU3DUJ2fE3L0N3o3fIEMMXQmUgdZZrj3Xmnze6?=
+ =?iso-8859-1?Q?pinwkuLUijR2aPrg3hINLSwy7RBqY/D6zVsjqyl7rNZzQQ2ChQxXbeYndo?=
+ =?iso-8859-1?Q?lD+KKLwOFVnU5sQCaYSGgLEVAws6yyKswArf1n1oAEa4HgrRW4rUzFXFTi?=
+ =?iso-8859-1?Q?HyQPVQ4Epa3oyBRZ2cJpbYrDWck35pMMwra56uGUOVmqIWUDHXigJr1b+4?=
+ =?iso-8859-1?Q?vFA4dydeFfxVHOfg8CNS0YHZR2qKbS1/2hg/YTICY/Iml0bkymvtVQqPEH?=
+ =?iso-8859-1?Q?2zTmAYdN6VWxsyuiilUnSwax5XjDG0o2ZvvRu7PPnAbkMTHTQ0QO/gKlRf?=
+ =?iso-8859-1?Q?1fDbTzRGVKurfWHILsYno/JwG452B21Wm3z3O+upoP80+F7FpSLF0FHuAg?=
+ =?iso-8859-1?Q?MbJyZWDtNOEhgUebYWq2tK2fRuuOcW17/xgW2BM+eA4BL2lisb47i1jE04?=
+ =?iso-8859-1?Q?Y0o7y+up6+3rcBXDw1WsMxYm5iwJpvsYEyrIA75Rl9LC4ficijNB1QVi5g?=
+ =?iso-8859-1?Q?N/+NzyjHDO+ybL0ecbadj+HSV3Xi198oRRhKF/2xTxtbEdqwS7I3CR+KCe?=
+ =?iso-8859-1?Q?EiFdxInoj/dEiOY+rF9Kv3K7Mby4Mcp+mE5Wo1tkRY2jeLOn63EruDPM8b?=
+ =?iso-8859-1?Q?0zxBH+4GYRsHFqNLo05p0Ef28xiepKN3/sTRLN9doih90IcjjcuBD190Ry?=
+ =?iso-8859-1?Q?eSQCbfFtPIrV2dQLO5bheijS/SruDoS4NXd3oi1ytMq46ciHlRTCp2cFh/?=
+ =?iso-8859-1?Q?2qSbdQnjzbqCkJ4CubPUZGvv+Y8a8nYuHzWR1TKMdO/vwogBNVCTfe1DR2?=
+ =?iso-8859-1?Q?pMRAfVOLEPV6h0QmQ8B5EVvH93oDkTRhL2kntDPnTWwE1j1dMRwJ5sLbUx?=
+ =?iso-8859-1?Q?CtlvEz1N/mxzY6virIaL1+R6Pg=3D=3D?=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?iso-8859-1?Q?nIqg9YryVaQ0VdcnJS4QINOTzTfh2H4d1mdMtMKRV1qfojXr49HMwIp4XZ?=
+ =?iso-8859-1?Q?lpexwVaskE7HolExSU0WgDfkiHZy4/pqpVWVfc/0u4vTMqt5T6ez9krysG?=
+ =?iso-8859-1?Q?MwMOFoF7p0wArNsJuCwsXgb5W4hgxD4Tm2ShNu7q+6I66NKIAjQECubgOF?=
+ =?iso-8859-1?Q?uq2SYp4kT3J5uqhG1NewkEyD6HVVSc/4oJg/wI6MHaqkNJ5FGIpPcffj6E?=
+ =?iso-8859-1?Q?6xrl1s1RHxrV7quVxo11rqYFg+ylciLNBwjCaxC94eV00+KSxvmTFYfYCL?=
+ =?iso-8859-1?Q?DdYxVga30EuxHuVYnc2a2qHPBgCtZTMQd6xE7O2ol3OV86SbMI4mnnV5eu?=
+ =?iso-8859-1?Q?WUsaAyuNCSzeTBg1W75ySmSWwUV2tr2EaR4Q497zMUdKMCNXoR6XSuxIBj?=
+ =?iso-8859-1?Q?I6nwD3wWzJHLlSE8DaFhEeIQvp5qlsiXMwdC3QqK9xMXa/sJVNtV2sEmFG?=
+ =?iso-8859-1?Q?jtGEXLe5+n2ov0Vlemd/seI+vrsjYcAxYU1VmkYQN4N/mcPQZ5UaGNx9lo?=
+ =?iso-8859-1?Q?BZDnZYtK2UIhql2cFor0Q3CWL5OiTGyEU1atgyVhdzj+FqPJFcTn7oBfSI?=
+ =?iso-8859-1?Q?0rgXdFcXPUu0WUxDQrMlb7JmtcJx4XTlr2g5fHX2GGzQBujQ0GCjfJEWhW?=
+ =?iso-8859-1?Q?jcFUupbB2qA1JwZsU4NRiBl0JMRee1nzZTUGQj+vcV9RocwO252I7yKMol?=
+ =?iso-8859-1?Q?3EHIxmdTzvKclBLmcSzm9dKH0h7aTDQECeugUV9+SCzAVBQq5kKcrFlElL?=
+ =?iso-8859-1?Q?MnfDUwPPkqU0KyOfTv3KFqDEFbSF0ws/J2DivpW9NCokAZ1KeL5UYy8p6m?=
+ =?iso-8859-1?Q?DxTxLV5iNuFjqnpc4EaJ4Tben5yjLaE/uShVo8mSMiRenDj+VBFQRyla2Z?=
+ =?iso-8859-1?Q?EV6QsxS7WqNhMAt4Jqhk79xrNjRscJhyUUr+1OhhyTj7z3V9Z1Nd5KfAYE?=
+ =?iso-8859-1?Q?tLPxcI04D0CSAwShNPus8B0j1e5DHFV/vZ2BxoCk1smgll4pNNqiFTm8pV?=
+ =?iso-8859-1?Q?L2z1cZiKW+5TMhBRyErhvcjVangdSFsSRtDRRuODNVr9vBQ0J+DAliPgo1?=
+ =?iso-8859-1?Q?e8or0q5pcogdityZ8WTRs3+mR4vvTua9vct7xYndnjLuHxtnKL3pcwTiyP?=
+ =?iso-8859-1?Q?GJ50xARkldY8AR+V/YhjiLheL+ZRNED86Vz0qskfuDPYZyrexSzcGQXfYd?=
+ =?iso-8859-1?Q?wl6oCW9sM1YGvSPm5Ozaa/CnCFlLMLnYq1JOH5oX+deh4sbR83T9oDx3kY?=
+ =?iso-8859-1?Q?aHaGOcc0QVNFlC0gW8HbYt64xi8gPdTOInjIX95kmM64nv2OLizpNrPffG?=
+ =?iso-8859-1?Q?ocnxW90Z9SYv/R6GMRiAuTkW/hJbnKwbVvSJ3UXl8pWHRB+5IiXolr4O8K?=
+ =?iso-8859-1?Q?schXfGdroptII+IgBBvp533c7XcyNyNwTYTT8B6vUS0wPh96KIpFMkQBYP?=
+ =?iso-8859-1?Q?GgDjk6WCZ3gDbfDE?=
 MIME-Version: 1.0
-Subject: Re: [BUG] Samsung Galaxy Book 4 Ultra - MAX98390 speakers not
- supported on MTL platform
-To: =?UTF-8?Q?Jos=C3=A9_Augusto_de_Almeida_Neto?= <jaalneto@hotmail.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-References: 
- <PH3PPF0A8D5CDB5873FA91A7F768F4E2F10D984A@PH3PPF0A8D5CDB5.namprd10.prod.outlook.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>
-In-Reply-To: 
- <PH3PPF0A8D5CDB5873FA91A7F768F4E2F10D984A@PH3PPF0A8D5CDB5.namprd10.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-MailFrom: pierre-louis.bossart@linux.dev
+X-OriginatorOrg: sct-15-20-9412-4-msonline-outlook-e5553.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LOBP302MB2325.GBRP302.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 
+ 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 4a351b1f-265b-4aa0-d4de-08de46700575
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2025 00:20:07.4539
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 
+ 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO9P302MB1628
+X-MailFrom: realgamehacker@hotmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7IVNP5VUYWTSOGKRBYONXBOB6DYZDKWO
-X-Message-ID-Hash: 7IVNP5VUYWTSOGKRBYONXBOB6DYZDKWO
-X-Mailman-Approved-At: Wed, 04 Mar 2026 15:25:49 +0000
+Message-ID-Hash: NEZFVOY7ZW3LR2TMLAVVEWZB4PUDWIYY
+X-Message-ID-Hash: NEZFVOY7ZW3LR2TMLAVVEWZB4PUDWIYY
+X-Mailman-Approved-At: Wed, 04 Mar 2026 15:58:00 +0000
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7IVNP5VUYWTSOGKRBYONXBOB6DYZDKWO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3RMFEWKMHBVHIEDSSCR3BNU2OO3TUKOT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,47 +180,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 1/7/26 23:26, José Augusto de Almeida Neto wrote:
-> Hi ALSA developers,
-> 
-> I'm reporting a hardware support issue with the Samsung Galaxy Book 4 Ultra
-> (NP960XGL-XG1BR) running on Intel Meteor Lake (MTL) platform.
-> 
-> SUMMARY:
-> The laptop has MAX98390 smart speaker amplifiers that are not supported in
-> the current Linux kernel. Headphones work (ALC298 HDA codec) but speakers
-> are completely non-functional.
-> 
-> HARDWARE:
-> - System: Samsung Galaxy Book 4 Ultra (NP960XGL-XG1BR)
-> - CPU: Intel Meteor Lake-P
-> - Audio Controller: Intel MTL HD Audio (8086:7728)
-> - HDA Codec: Realtek ALC298 (working for headphones)
-> - Speaker Amps: 4x Maxim MAX98390 on I2C bus 2 (addresses 0x38, 0x39, 0x3C, 0x3D)
-> - Kernel: 6.17.9 (also tested on 6.8.0 mainline)
-> 
-> ROOT CAUSE:
-> 1. No machine driver match in soc-acpi-intel-mtl-match.c for Samsung + MAX98390
-> 2. No SOF topology file for MTL + HDA + MAX98390 combination
-> 3. NHLT only shows SSP2 (Bluetooth), no SSP configured for speakers
-> 4. SOF falls back to generic skl_hda_dsp_generic (2-channel HDA only)
-> 
-> VERIFICATION:
-> - MAX98390 chips respond on I2C (revision 0x42 confirmed on all 4 chips)
-> - ACPI device MAX98390:00 present (status 15 - enabled)
-> - ALC298 speaker DAC receives audio but no output from physical speakers
-> - No I2S/TDM connection to MAX98390 amplifiers
-> 
-> I have collected detailed technical information including:
-> - DSDT and NHLT ACPI tables
-> - Full HDA codec dump
-> - I2C bus scans and MAX98390 register reads
-> - dmesg logs showing current SOF behavior
-> 
-> Full detailed report: BUG_REPORT.md attached
-> 
-> QUESTION:
-> Is there ongoing work to support MAX98390 on Meteor Lake platforms?
+Hello ALSA/Linux sound maintainers,
+Please add support for the Creative Sound Blaster AE-9 to mainline Linux (k=
+ernel/ALSA).
+I've been looking to switch to Linux for years but the lack of support for =
+Creative Sound Blaster cards have always stopped me, But with all previous =
+sound cards I've had over the years, I was at least able to boot up a Linux=
+ Distro and test it out a bit.
+But this year when I really wanted to make the move away from Windows 10 I =
+discovered that no Linux distro at all can boot, each one I tried POP, Mint=
+, Arch, Manjaro, Zoran, Fadora (Names could be messed up because I tried so=
+me I never heard of before) before I discovered it was because of the lack =
+of support for my Sound Card, So I tested removing it from the system, and =
+then Linux would boot.
 
-This has nothing to do with SOF, the main issue is that the amplifier needs to be configured by HDAudio verbs which are translated by the HDaudio codec in I2C commands. The problem is to reverse-engineer what those verbs might be, usually with a Windows setup. There was a Wiki for this sort of things, see https://thesofproject.github.io/latest/getting_started/intel_debug/suggestions.html#reverse-engineer-the-windows-audio-driver
-
+Thank you for your time and for maintaining the Linux sound stack, Please g=
+et support added so I can finely move to Linux
