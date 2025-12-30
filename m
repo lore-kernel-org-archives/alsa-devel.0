@@ -4,49 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F605E92FD7
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Dec 2025 21:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0E93EE4994
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Dec 2025 17:55:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17F6C601F6;
-	Mon, 29 Dec 2025 22:38:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17F6C601F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16C43601FA;
+	Tue, 30 Dec 2025 18:55:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16C43601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1767044293;
-	bh=Zq1poA4gipmK4NLDLN6jUUYuLp4RlmcQZTmvPaV4Em4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=WqfMLK1+gDAW90Zg+FS2MjXUYnbYLFlL3S16sAf3zDcSz8ghENKvJyiklLcdENqgM
-	 iCg8agc6QV+LPfEtUrKj/wV/hHn/+9MXrKToNKkR2EMkq4e6dvO3vBW0G6mHm8mBqU
-	 4qQemF6m2RxxNpBcYJqPAxKUdNDMTbTiHHbph3TM=
+	s=default; t=1767117320;
+	bh=+N/IjSIDB5ejHj2ePTrKIdz05Jvs6mJBEoU2jFHEjFg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=HUvZmO/PnGKV0dvy9F0x8Vuq4S6zxCmcfgTpM690uOiWCIjzsv9ZJ5L4ai5KQKFJo
+	 8rNqn2dKf+Es47vJ402lcv7WVp/wR+gCU+kUrfmv2B6sfKeXHFfOQ3+xVxwE5DQCXQ
+	 13S5i3OIotoG+dgBo5MsHpqfgyuI2cE0LgNhKiJ8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D349FF805DF; Mon, 29 Dec 2025 22:37:39 +0100 (CET)
+	id 2DFFFF805E3; Tue, 30 Dec 2025 18:54:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92DF8F805B0;
-	Mon, 29 Dec 2025 22:37:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69CAEF805E4;
+	Tue, 30 Dec 2025 18:54:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3369F80533; Mon, 29 Dec 2025 22:37:32 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B03CEF80166
-	for <alsa-devel@alsa-project.org>; Mon, 29 Dec 2025 22:37:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B03CEF80166
+	id C426AF804D6; Tue, 30 Dec 2025 18:53:42 +0100 (CET)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2BFDF80212
+	for <alsa-devel@alsa-project.org>; Tue, 30 Dec 2025 18:53:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2BFDF80212
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=OrVh/PY7
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 021AD43E40;
+	Tue, 30 Dec 2025 17:53:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0471C4CEFB;
+	Tue, 30 Dec 2025 17:53:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767117214;
+	bh=+N/IjSIDB5ejHj2ePTrKIdz05Jvs6mJBEoU2jFHEjFg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OrVh/PY7ejRXIMFdmu2fzHvatsSUKUI6jkfdZmwmXvRjXZMQlAG24v/vT+mwuSTZj
+	 JvmMJJYhnl992wkNpqBzMjPezPbMsO9FISnGe0hAlbI9hI0C4A7oviodt7GO6c8Cl8
+	 +F5JSqAv13sE4R+P3XXvCLFhqTYsCksIBycUsoRxVBRVckwgurscva4Or644cEqPMn
+	 aYTaOc8htK7Udk0AfJm2k9yhVQZWYW6X0tZbjEOWIatXuw7VBxtYZknApSVSQh9azG
+	 /lka5watD/jPIJkh8/om06MS25djB+LdyJFmr5SrUaDm0blE2yc7TJCYTkzv7jiMIu
+	 2Z7Z4pxNN9jzA==
+Date: Tue, 30 Dec 2025 11:53:33 -0600
+From: Rob Herring <robh@kernel.org>
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: cezary.rojewski@intel.com, broonie@kernel.org, lgirdwood@gmail.com,
+	krzk+dt@kernel.org, conor+dt@kernel.org, perex@perex.cz,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	alsa-devel@alsa-project.org, flove@realtek.com,
+	shumingf@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com
+Subject: Re: [PATCH v11 3/4] ASoC: dt-bindings: realtek,rt5575: add support
+ for ALC5575
+Message-ID: <20251230175333.GA854335-robh@kernel.org>
+References: <20251226083914.1052653-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1885cd6223fb7400-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/668@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/668@alsa-project.org>
-Subject: ucm2: Qualcomm: add Asus vivobook 16 support
-Date: Mon, 29 Dec 2025 22:37:32 +0100 (CET)
-Message-ID-Hash: QNJ7XIARBF3Q6LCSI7SE2VF6UQPKH7KD
-X-Message-ID-Hash: QNJ7XIARBF3Q6LCSI7SE2VF6UQPKH7KD
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251226083914.1052653-1-oder_chiou@realtek.com>
+Message-ID-Hash: 4ZMLWWC7NCCQ4ZOD5WMN46VRYI4JEXUP
+X-Message-ID-Hash: 4ZMLWWC7NCCQ4ZOD5WMN46VRYI4JEXUP
+X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QNJ7XIARBF3Q6LCSI7SE2VF6UQPKH7KD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4ZMLWWC7NCCQ4ZOD5WMN46VRYI4JEXUP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,10 +95,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #668 was edited from kellermanrivero:
+On Fri, Dec 26, 2025 at 04:39:14PM +0800, Oder Chiou wrote:
+> Audio codec with I2S, I2C and SPI.
+> 
+> Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+> ---
+>  .../bindings/sound/realtek,rt5575.yaml        | 61 +++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/realtek,rt5575.yaml
 
-Add support for Asus Vivobook 16 (F1607QA) with Snapdragon X1 SoC. This device topology is nearly identical to Lenovo Thinkpad T14s or Asus Vivobook S15.
+Where's the rest of the series? You are missing an In-Reply-To header 
+and that breaks the tools (b4).
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/668
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/668.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Rob
