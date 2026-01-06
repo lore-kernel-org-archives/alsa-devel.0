@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA9B8CEFCFE
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jan 2026 19:44:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A7A2CEFCFE
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jan 2026 19:44:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5F0E601EF;
-	Tue,  6 Jan 2026 20:43:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5F0E601EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id D87AA601C4;
+	Tue,  6 Jan 2026 20:44:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D87AA601C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1767728639;
-	bh=h/iVNzg+UertnrcOWwRay3g2wdZm2ZoZsVbti84bcB8=;
+	s=default; t=1767728656;
+	bh=4+qi1T6iHYnj38tCsTiRRCMQUeU6Q+qfiEL8Q+Wtls4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BW4lqyXE1i0tUMZV8LCzxK+dz2WFKfmLefLwFu+J58NK17tMmDVgkG+TMFl3t/xl2
-	 V1eq4gSQ/YrrkfuWN4Z16kIdD0aUdZkyMkuQFSGJflvnvlMKBlE+xEMTMRRP3Nk8gV
-	 9x51t0CQy2YZJhkZwKa0h1TDf47CWFQGcxS8F7KA=
+	b=CR7i9VfRs4GCsF7QgXMUpAKK471BKlLeHiiqLVziBz9OV3y8w8HNbxDHRDKYc1HWh
+	 3Nm8U/KB2xV+1K7cNOJFKfXHK7brZehE6+bsoajD3u71QMLf2NkIKYMs/YH2uPHVcs
+	 iyE4xN+qtwRsKLDD0EJjeiXPiZZ8+LYKFP01ksgM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D53B0F805DF; Tue,  6 Jan 2026 20:43:23 +0100 (CET)
+	id A2C81F804FB; Tue,  6 Jan 2026 20:43:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3651F805E0;
-	Tue,  6 Jan 2026 20:43:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0453BF804FB;
+	Tue,  6 Jan 2026 20:43:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 520E1F804F3; Tue,  6 Jan 2026 20:42:31 +0100 (CET)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	id 7291CF804F3; Tue,  6 Jan 2026 20:42:32 +0100 (CET)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 57A12F80154
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2026 20:42:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57A12F80154
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9C3D1F802DB
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2026 20:42:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C3D1F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qk+B007B
+ header.s=k20201202 header.b=XSYG3Pzd
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 55EE640474;
+	by tor.source.kernel.org (Postfix) with ESMTP id 3A06060007;
+	Tue,  6 Jan 2026 19:42:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A82E0C19422;
 	Tue,  6 Jan 2026 19:42:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E796DC116C6;
-	Tue,  6 Jan 2026 19:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767728545;
-	bh=h/iVNzg+UertnrcOWwRay3g2wdZm2ZoZsVbti84bcB8=;
+	s=k20201202; t=1767728547;
+	bh=4+qi1T6iHYnj38tCsTiRRCMQUeU6Q+qfiEL8Q+Wtls4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qk+B007BlP5m01I4pFUO59rjP0y+PaLQLVqlWEJRehsR4N5jRi3eoi1lkCYj3mjDS
-	 tMzpHwL+oHkhiFWvXEbNt+rVhzxS0dBOcrLUbHjdR98lu1Q6sinDSYor44mM5QO8yF
-	 PRBYpFqCPUmjx+viu3MjolNbBT8x+jagqHnmBq3oeE23DVGUDgReaCa+6tFTEZ+Sos
-	 V57JpfPsl5Wuig5ynrLfclnTeESuB5WtTOqTy4gWKOyFKEUgY5QdrYIEoqTPsahf5U
-	 o7MSjK6Cm/b8gW7+FV4uOhHobfW5ppB6m5MrXa+Ra0PnvGduA030Ebuud/a+O44faL
-	 CwNUhGkm8M/PA==
+	b=XSYG3PzdJVxpVm5EAGXUF/MyPbRpaC7LSFpbN7LNPeo/1Sdg61rBG4AT0SV2nNRIt
+	 sHVjuh3YUsqmZfVgUPHtkwkISFlUQRsPR1E1zbHpS3zqk1+UDHaVM9qOF4AxpO42Iu
+	 Jx/M9XUTVGpnjKWYuM9mrN0wVIkgv7I7MlU1OZnUHt49K+lTlJ8FlcO6KURMIuI3DR
+	 fEp3FLEM6Pgr0r2yTmCmODMWc/D3TbKWsw61iX4Cpl8byCYsioPkPO0uy0qJq8Tc6h
+	 JN50OzFClbsUnhGtJSYeh0mntcVUOhT+Q8iADOl2Ikgw+jqIc1iIKuZl08hUW1j5iq
+	 R2grLe1WsFzEQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, flove@realtek.com, shumingf@realtek.com,
+To: lgirdwood@gmail.com, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, Oder Chiou <oder_chiou@realtek.com>
+Cc: perex@perex.cz, linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, flove@realtek.com, shumingf@realtek.com,
  jack.yu@realtek.com, derek.fang@realtek.com
-In-Reply-To: <20251015103404.3075684-1-oder_chiou@realtek.com>
-References: <20251015103404.3075684-1-oder_chiou@realtek.com>
-Subject: Re: [PATCH v5 1/2] ASoC: rt5575: Add the codec driver for the
+In-Reply-To: <20251121084112.743518-1-oder_chiou@realtek.com>
+References: <20251121084112.743518-1-oder_chiou@realtek.com>
+Subject: Re: [PATCH v7 1/2] ASoC: rt5575: Add the codec driver for the
  ALC5575
-Message-Id: <176772854368.328192.15212175237614413656.b4-ty@kernel.org>
-Date: Tue, 06 Jan 2026 19:42:23 +0000
+Message-Id: <176772854544.328192.17132767077968717258.b4-ty@kernel.org>
+Date: Tue, 06 Jan 2026 19:42:25 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-47773
-Message-ID-Hash: D2VXNM2LZPQEU57NOXRSHIJPHLABKLGB
-X-Message-ID-Hash: D2VXNM2LZPQEU57NOXRSHIJPHLABKLGB
+Message-ID-Hash: Z2KE762OVT25UMXB3NOTQRAKTPQ3A5CG
+X-Message-ID-Hash: Z2KE762OVT25UMXB3NOTQRAKTPQ3A5CG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D2VXNM2LZPQEU57NOXRSHIJPHLABKLGB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z2KE762OVT25UMXB3NOTQRAKTPQ3A5CG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,11 +95,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 15 Oct 2025 18:34:03 +0800, Oder Chiou wrote:
-> This codec driver is for the ALC5575 that has a built-in audio DSP. The
-> firmware can be loaded by the SPI from the SOC or the external flash.
+On Fri, 21 Nov 2025 16:41:11 +0800, Oder Chiou wrote:
+> The ALC5575 integrates an audio DSP that typically loads its firmware
+> from an external flash via its own SPI host interface. In certain
+> hardware configurations, the firmware can alternatively be loaded
+> through the SPI client interface. The driver provides basic mute and
+> volume control functions. When the SPI client interface is enabled,
+> firmware loading is handled by the SPI driver.
 > 
-> 
+> [...]
 
 Applied to
 
