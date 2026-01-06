@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D10A0CEFCE2
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jan 2026 18:23:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0EE6CEFCE2
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jan 2026 18:24:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91037601F9;
-	Tue,  6 Jan 2026 19:23:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91037601F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23DF0601C0;
+	Tue,  6 Jan 2026 19:24:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23DF0601C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1767723831;
-	bh=fCx3/W5B6Rfg8l80grpONf9L2fW8Rd8ZlazuzbUtFko=;
+	s=default; t=1767723850;
+	bh=46RVhpX2+QDOGmBBVIlTQ9UEVap8m3R2QZm71+nWzE8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=S++8qz5krVnvI3UWoMqRRbCgD5jUpGk4pfyyncfjtauhoBJP7SEpT8X64OjOyl8ve
-	 eXS2g1F1mcB3YX8MHr0nqXNjJ8/fc1INu8Lm/bC6BxLF3HyQ029LTnNMSaJRc1c2P0
-	 XF+GvPAUV8/waWoKSqUZrTHYAgrz0RyyaZt9D21g=
+	b=U/n9TcGSlvlB+NjbF/N7eWCRIw0DAu59PDenfQV/o0NGT2q/QUdgaoemGYwhtOsIm
+	 P3HFOxGcKMlN8QOpnJ3aauLIgCfkrX17GHyT1IBCG/UFWiHNxfF9vSIFbjTBKPEzgZ
+	 aw7Ux5uXJO4gHWpYWc4j+7jQuzBvMxqduYGz+Ym8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63497F805E2; Tue,  6 Jan 2026 19:23:17 +0100 (CET)
+	id 86DDAF80606; Tue,  6 Jan 2026 19:23:19 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF7FAF805E4;
-	Tue,  6 Jan 2026 19:23:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 235E7F805F5;
+	Tue,  6 Jan 2026 19:23:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34CBDF804F3; Tue,  6 Jan 2026 19:23:04 +0100 (CET)
+	id A4A27F804F3; Tue,  6 Jan 2026 19:23:10 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 395F1F80088
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2026 19:22:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 395F1F80088
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C51EF802DB
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jan 2026 19:23:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C51EF802DB
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18883768f532d700-webhooks-bot@alsa-project.org>
+Message-Id: <1888376b9cff7000-webhooks-bot@alsa-project.org>
 In-Reply-To: <alsa-project/alsa-ucm-conf/pr/681@alsa-project.org>
 References: <alsa-project/alsa-ucm-conf/pr/681@alsa-project.org>
-Subject: USB-Audio: Add support for the SSL 2 MK II
-Date: Tue,  6 Jan 2026 19:23:04 +0100 (CET)
-Message-ID-Hash: LTB5SBR2NWUMEUOC46IZOM2PCQZYGA6D
-X-Message-ID-Hash: LTB5SBR2NWUMEUOC46IZOM2PCQZYGA6D
+Subject: USB-Audio: Add support for the SSL 2 MK II and SSL2+ MK II
+Date: Tue,  6 Jan 2026 19:23:10 +0100 (CET)
+Message-ID-Hash: LBXOIVWV2ROWVHPFOAYYHF54MMGY4NHZ
+X-Message-ID-Hash: LBXOIVWV2ROWVHPFOAYYHF54MMGY4NHZ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LTB5SBR2NWUMEUOC46IZOM2PCQZYGA6D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LBXOIVWV2ROWVHPFOAYYHF54MMGY4NHZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #681 was opened from MTRNord:
+alsa-project/alsa-ucm-conf pull request #681 was edited from MTRNord:
 
 This adds support for https://solidstatelogic.com/products/ssl-2-mkii and the https://solidstatelogic.com/products/ssl-2-plus-mkii and solves #555 
 
