@@ -4,49 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70C39D2502E
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jan 2026 20:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8FF4D2502D
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jan 2026 21:04:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9312F60202;
-	Sun, 11 Jan 2026 21:38:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9312F60202
+	by alsa0.perex.cz (Postfix) with ESMTPS id 972F56020D;
+	Sun, 11 Jan 2026 22:04:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 972F56020D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1768163896;
-	bh=W/prNO9uW9eUHGlndPvrd4AADkrCkoyltmzLsSdyS5E=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=VhUAZPjQ3XyMoJneD1Qgh7nm5a3dACmg5NWA7SZjHluMGKUL+aRFihrgDhRvxoaEn
-	 b5ckw/34N1g4qE2fYGqbVxh7Kw9w369fS85WgGsJsLHz/wSDWkSHqXhpmY8XHMQSbY
-	 tpDviGemkhcFVUiTSCUCNKy+9Ptz3bDrAUQEdD7o=
+	s=default; t=1768165458;
+	bh=DSY1mTqUEZ7JQV2JLvjTiepAnK8fTY97HZ8es7cSW9s=;
+	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=NEPYgv5TUYlCCT0m284bHUs7Z99CayL3jsVdopwZPyiqK4dYiy/cHfgCrF8Jb1zLG
+	 IapmGZ+AKt+3j7t3RgFmAmFRxEERLLdrl4utKp8QmrNQ1KgA+12zYMY9NdlZfRMyk2
+	 DmA7Nh9sVa1y5Lb9moeBG+bEQ2/ehL8aGO7EKX6Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29D1AF805EA; Sun, 11 Jan 2026 21:37:42 +0100 (CET)
+	id C28D6F805E5; Sun, 11 Jan 2026 22:03:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB8AEF805EA;
-	Sun, 11 Jan 2026 21:37:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD444F805E5;
+	Sun, 11 Jan 2026 22:03:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94F5DF80149; Sun, 11 Jan 2026 21:36:29 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id C47FDF80038
-	for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2026 21:36:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C47FDF80038
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-From: GitHub issues - opened <github@alsa-project.org>
+	id C8634F80149; Sun, 11 Jan 2026 22:01:04 +0100 (CET)
+Received: from disco.pogo.org.uk (disco.pogo.org.uk [93.93.128.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6967AF800E4
+	for <alsa-devel@alsa-project.org>; Sun, 11 Jan 2026 22:00:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6967AF800E4
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=xwax.org header.i=@xwax.org header.a=rsa-sha256
+ header.s=swing header.b=VKUTjW5W
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xwax.org;
+	s=swing; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Cc:
+	Reply-To:In-Reply-To:References:Content-Transfer-Encoding:Content-ID:
+	Content-Description; bh=nqQGUDuqQOoYhXJ6W+fcwDKJ0+0hEC6XAXNynTqxRBM=; b=VKUTj
+	W5WYFyUQcT2QJEDGNNQgoFs5vzlJ5HWX3vEwDfuYgOui7MYyyaUnSwNfo0RHzcGmiLdJLuBBlZF7N
+	AWLNOSrq5a7tLwPSWU9K4N96vJOfE0IXVXh9Ow7FAJPPAM4Y4gJ4G557mYUZx7A8VGGHn7YcoW7J3
+	SNby/nD2F3d0=;
+Received: from [2a00:23c7:36ed:c201::fd4] (helo=tamla)
+	by disco.pogo.org.uk with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.2 (FreeBSD))
+	(envelope-from <mark@xwax.org>)
+	id 1vf2YR-00000000DL4-0Exa
+	for alsa-devel@alsa-project.org;
+	Sun, 11 Jan 2026 21:00:55 +0000
+Received: from localhost (tamla.pogo.org.uk [local])
+	by tamla.pogo.org.uk (OpenSMTPD) with ESMTPA id 4e310caa
+	for <alsa-devel@alsa-project.org>;
+	Sun, 11 Jan 2026 21:00:50 +0000 (GMT)
+Date: Sun, 11 Jan 2026 21:00:50 +0000 (GMT)
+From: Mark Hills <mark@xwax.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1889c797070a9000-webhooks-bot@alsa-project.org>
-In-Reply-To: <1889c797054d9c00-webhooks-bot@alsa-project.org>
-References: <1889c797054d9c00-webhooks-bot@alsa-project.org>
-Subject: Laptop built-in speakers not detected after c8b5541
-Date: Sun, 11 Jan 2026 21:36:29 +0100 (CET)
-Message-ID-Hash: PX5T7MSR2YGLSCFP5OGFYCQJ3DXRFGPO
-X-Message-ID-Hash: PX5T7MSR2YGLSCFP5OGFYCQJ3DXRFGPO
-X-MailFrom: github@alsa-project.org
+Subject: Can't resample into ALSA plugin
+Message-ID: <b7b70838-2452-8481-e9ae-f9001ddaf74e@xwax.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-ID-Hash: 5SROZKCD2QVZNHPJZWIDYSC26AVJUWID
+X-Message-ID-Hash: 5SROZKCD2QVZNHPJZWIDYSC26AVJUWID
+X-MailFrom: mark@xwax.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +79,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PX5T7MSR2YGLSCFP5OGFYCQJ3DXRFGPO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5SROZKCD2QVZNHPJZWIDYSC26AVJUWID/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,52 +88,100 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzY4NSB3YXMgb3BlbmVkIGZyb20gWGVs
-dGFsbGl2OgoKVXBkYXRpbmcgZnJvbSB2MS4yLjE1LjEgdG8gdjEuMi4xNS4yIGJyb2tlIHNvdW5k
-IG9uIEFTVVMgWmVuYm9vayAxNCBVTTQyNVVBIGxhcHRvcC4gSXQgaGFzIG5vIGV4dGVybmFsIGhl
-YWRwaG9uZSBqYWNrcy4KSSBuYXJyb3dlZCBpdCBkb3duIHRoZSBjYXVzZSB0byB0aGUgY29tbWl0
-IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS11Y20tY29uZi9jb21taXQvYzhi
-NTU0MThmZjM2MDM2ZmM5NjA3MzExOTFhZTA5MjJiZjZmMWRhZQpXaXRoIHYxLjIuMTUuMSBgd3Bj
-dGwgc3RhdHVzYCBzaG93czoKYGBgCkF1ZGlvCiDilJzilIAgRGV2aWNlczoKIOKUgiAgICAgIDQ4
-LiBSZW5vaXIvQ2V6YW5uZSBIRE1JL0RQIEF1ZGlvIENvbnRyb2xsZXIgW2Fsc2FdCiDilIIgICAg
-ICA0OS4gUnl6ZW4gSEQgQXVkaW8gQ29udHJvbGxlciAgICAgICAgICAgW2Fsc2FdCiDilIIKIOKU
-nOKUgCBTaW5rczoKIOKUgiAgKiAgIDU2LiBSeXplbiBIRCBBdWRpbyBDb250cm9sbGVyIEhlYWRw
-aG9uZXMgW3ZvbDogMC40MF0KIOKUggog4pSc4pSAIFNvdXJjZXM6CiDilIIgICogICA1Ny4gUnl6
-ZW4gSEQgQXVkaW8gQ29udHJvbGxlciBTdGVyZW8gTWljcm9waG9uZSBbdm9sOiAxLjAwXQog4pSC
-ICAgICAgNTguIFJ5emVuIEhEIEF1ZGlvIENvbnRyb2xsZXIgRGlnaXRhbCBNaWNyb3Bob25lIFt2
-b2w6IDEuMDBdCiDilIIKIOKUnOKUgCBGaWx0ZXJzOgog4pSCCiDilJTilIAgU3RyZWFtczoKYGBg
-CldpdGggdjEuMi4xNS4yIGB3cGN0bCBzdGF0dXNgIHNob3dzOgpgYGAKQXVkaW8KIOKUnOKUgCBE
-ZXZpY2VzOgog4pSCICAgICAgNDguIFJlbm9pci9DZXphbm5lIEhETUkvRFAgQXVkaW8gQ29udHJv
-bGxlciBbYWxzYV0KIOKUgiAgICAgIDQ5LiBSeXplbiBIRCBBdWRpbyBDb250cm9sbGVyICAgICAg
-ICAgICBbYWxzYV0KIOKUggog4pSc4pSAIFNpbmtzOgog4pSCICAqICAgMzQuIER1bW15IE91dHB1
-dCAgICAgICAgIFt2b2w6IDEuMDBdCiDilIIKIOKUnOKUgCBTb3VyY2VzOgog4pSCICAqICAgNTYu
-IFJ5emVuIEhEIEF1ZGlvIENvbnRyb2xsZXIgRGlnaXRhbCBNaWNyb3Bob25lIFt2b2w6IDAuOTdd
-CiDilIIKIOKUnOKUgCBGaWx0ZXJzOgog4pSCCiDilJTilIAgU3RyZWFtczoKYGBgCk5vdCBzdXJl
-IGlmIGFueSBvZiB0aGUgZm9sbG93aW5nIGhlbHBzOgpJbiBib3RoIGNhc2VzIGBkbWVzZyB8IGdy
-ZXAgLWlFICdzbmR8YWxzYXxwaXBld2lyZSdgIHNob3dzOgpgYGAKWyAgICA4LjIzNTc2NF0gc25k
-X3JuX3BjaV9hY3AzeCAwMDAwOjA0OjAwLjU6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAy
-KQpbICAgIDguMzgzMzkzXSBzbmRfaGRhX2ludGVsIDAwMDA6MDQ6MDAuMTogSGFuZGxlIHZnYV9z
-d2l0Y2hlcm9vIGF1ZGlvIGNsaWVudApbICAgIDguNDA0Mjg2XSBzbmRfaGRhX2ludGVsIDAwMDA6
-MDQ6MDAuMTogYm91bmQgMDAwMDowNDowMC4wIChvcHMgYW1kZ3B1X2RtX2F1ZGlvX2NvbXBvbmVu
-dF9iaW5kX29wcyBbYW1kZ3B1XSkKWyAgICA4LjQzNDI3MF0gc25kX2hkYV9jb2RlY19hbGMyNjkg
-aGRhdWRpb0MxRDA6IGF1dG9jb25maWcgZm9yIEFMQzI5NDogbGluZV9vdXRzPTEgKDB4MTcvMHgw
-LzB4MC8weDAvMHgwKSB0eXBlOnNwZWFrZXIKWyAgICA4LjQzNDI4MF0gc25kX2hkYV9jb2RlY19h
-bGMyNjkgaGRhdWRpb0MxRDA6ICAgIHNwZWFrZXJfb3V0cz0wICgweDAvMHgwLzB4MC8weDAvMHgw
-KQpbICAgIDguNDM0Mjg0XSBzbmRfaGRhX2NvZGVjX2FsYzI2OSBoZGF1ZGlvQzFEMDogICAgaHBf
-b3V0cz0wICgweDAvMHgwLzB4MC8weDAvMHgwKQpbICAgIDguNDM0Mjg4XSBzbmRfaGRhX2NvZGVj
-X2FsYzI2OSBoZGF1ZGlvQzFEMDogICAgbW9ubzogbW9ub19vdXQ9MHgwClsgICAgOC40MzQyOTBd
-IHNuZF9oZGFfY29kZWNfYWxjMjY5IGhkYXVkaW9DMUQwOiAgICBpbnB1dHM6CmBgYApgYXBsYXkg
-LWxgIHNob3dzOgpgYGAKKioqKiBMaXN0IG9mIFBMQVlCQUNLIEhhcmR3YXJlIERldmljZXMgKioq
-KgpjYXJkIDA6IEdlbmVyaWMgW0hELUF1ZGlvIEdlbmVyaWNdLCBkZXZpY2UgMzogSERNSSAwIFtI
-RE1JIDBdCiAgU3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKY2Fy
-ZCAwOiBHZW5lcmljIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2aWNlIDc6IEhETUkgMSBbSERNSSAx
-XQogIFN1YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgMDog
-R2VuZXJpYyBbSEQtQXVkaW8gR2VuZXJpY10sIGRldmljZSA4OiBIRE1JIDIgW0hETUkgMl0KICBT
-dWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDE6IEdlbmVy
-aWNfMSBbSEQtQXVkaW8gR2VuZXJpY10sIGRldmljZSAwOiBBTEMyOTQgQW5hbG9nIFtBTEMyOTQg
-QW5hbG9nXQogIFN1YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmBg
-YApgYW1peGVyIC1jIDEgc2NvbnRyb2xzYCBzaG93czoKYGBgClNpbXBsZSBtaXhlciBjb250cm9s
-ICdNYXN0ZXInLDAKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01pYyBBQ1AgTEVEJywwCmBgYAoKSXNz
-dWUgVVJMICAgICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS11Y20tY29u
-Zi9pc3N1ZXMvNjg1ClJlcG9zaXRvcnkgVVJMOiBodHRwczovL2dpdGh1Yi5jb20vYWxzYS1wcm9q
-ZWN0L2Fsc2EtdWNtLWNvbmYK
+I've written an ALSA plugin (ioplug) of the form below.
+
+My plugin offers only S16, 48000Hz.
+
+I expected a "plug" device would take the application's request and 
+resample to 48000Hz, but instead it fails:
+
+  $ aplay -D plug:mytest cd-audio.wav
+  Playing WAVE 'cd-audio.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+  aplay: set_params:1456: Unable to install hw params:
+  ACCESS:  RW_INTERLEAVED
+  FORMAT:  S16_LE
+  SUBFORMAT:  STD
+  SAMPLE_BITS: 16
+  FRAME_BITS: 32
+  CHANNELS: 2
+  RATE: 44100
+  PERIOD_TIME: 125000
+  PERIOD_SIZE: (5512 5513)
+  PERIOD_BYTES: (22048 22052)
+  PERIODS: (3 5)
+  BUFFER_TIME: 500000
+  BUFFER_SIZE: 22050
+  BUFFER_BYTES: 88200
+  TICK_TIME: 0
+
+It doesn't call .hw_params, so the negotiation has failed based on 
+snd_pcm_ioplug_set_param_*.
+
+Without the plug:
+
+  $ aplay -D mytest cd-audio.wav
+  Playing WAVE 'cd-audio.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+  Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
+           please, try the plug plugin (-Dplug:mytest)
+  hw_params: format=S16_LE channels=2 rate=48000 period_size=6000 buffer_size=2400
+
+Modify the plugin 48000Hz to be 44100Hz and negotiation passes, so it 
+suggests the rate is the problem (not some other parameter like period 
+size)
+
+I tried a variety of things including directing aplay to use specific 
+period and buffer size.
+
+Thanks
+
+---
+
+/*
+ * Code extracts, error checks removed for brevity
+ */
+
+static snd_pcm_ioplug_callback_t callback = {
+	.close = _close,
+	.hw_params = hw_params,  /* prints them */
+	.start = start,
+	.stop = stop,
+	.pointer = pointer,
+	.transfer = transfer,
+	.delay = delay,
+	.pause = _pause,
+	.resume = resume,
+	.prepare = prepare,
+};
+
+static snd_pcm_ioplug_t initialise = {
+	.version = SND_PCM_IOPLUG_VERSION,
+	.name = "My test",
+	.callback = &callback,
+};
+
+SND_PCM_PLUGIN_DEFINE_FUNC(mytest)
+{
+	struct state *s;
+	snd_pcm_ioplug_t *io;
+	unsigned access = SND_PCM_ACCESS_RW_INTERLEAVED;
+	unsigned format = SND_PCM_FORMAT_S16;
+	unsigned rate = 48000;
+
+	s = malloc(sizeof(*s));
+	...
+
+	s->io = initialise;
+	s->io.private_data = s;
+	io = &s->io;
+
+	snd_pcm_ioplug_create(io, name, stream, mode);
+	snd_pcm_ioplug_set_param_list(io, SND_PCM_IOPLUG_HW_ACCESS, 1, &access);
+	snd_pcm_ioplug_set_param_list(io, SND_PCM_IOPLUG_HW_FORMAT, 1, &format);
+	snd_pcm_ioplug_set_param_list(io, SND_PCM_IOPLUG_HW_RATE, 1, &rate);
+
+	*pcmp = io->pcm;
+	return 0;
+}
+
+-- 
+Mark
