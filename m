@@ -4,74 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06483ECD980
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Feb 2026 15:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4797DECD998
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Feb 2026 19:18:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 878F6601F1;
-	Thu,  5 Feb 2026 16:35:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 878F6601F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1008601EF;
+	Thu,  5 Feb 2026 20:18:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1008601EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1770305751;
-	bh=dRc+JLQGih210Q0+nbXjpV+4Pn1T9oY6M4gWBoCnGm8=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:List-Archive:
+	s=default; t=1770319127;
+	bh=SdeJsJ64qEtImlo/LajP4EZcZkCFjmZ22EeeERkTQOg=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Pr9qPAc0ubpk14TBQNY/DR3pmWqI4bJvL0kg6xCDZSEjdF2D+SbP2DJMhmPK3HOJE
-	 Gvedh4tM5R1u0QsF+wzG2fx7fWHGD3fEUXjReySrJ44xXzJ3rE86SnOTG9O3bTRAvP
-	 2JgK7NCmMnO1laPFfLC9ZfNeY9JhBd6nLdGHp2C8=
+	b=Ka/wu9zexcfbdf/6UYmIxwGi8Yllj4BVq7bhecipwIOC4YVoonq0XAlNmohOhvBHj
+	 gore7Zyaveo+O9/EvXcJxvFDrXgrRaog1uZUIOJdLV7gz3UOkA86XSwVzlTrnmkNSw
+	 o7Z58e5eM4ynmn7cUL2lhf+pJiOwHgFmnu6TV9dg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5221EF805F2; Thu,  5 Feb 2026 16:35:25 +0100 (CET)
+	id 9E36BF805F3; Thu,  5 Feb 2026 20:18:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E308F805F6;
-	Thu,  5 Feb 2026 16:35:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AC2CF805E9;
+	Thu,  5 Feb 2026 20:18:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84237F8051E; Thu,  5 Feb 2026 16:34:31 +0100 (CET)
-Received: from disco.pogo.org.uk (disco.pogo.org.uk [93.93.128.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C207F8016E
-	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2026 16:34:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C207F8016E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=xwax.org header.i=@xwax.org header.a=rsa-sha256
- header.s=swing header.b=kaCGKDEf
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xwax.org;
-	s=swing; h=Content-Type:MIME-Version:References:Message-ID:In-Reply-To:
-	Subject:To:From:Date:Cc:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description; bh=Dw+c2RJZ8mrYjNeYPuJsnMqGbfA1432i+UK694t+3jQ=; b=kaCGK
-	DEfbCtT9ju2jxWTGGPv8LWF6UjumErWdPTYeLuiLn0m4alxIN3tIk4bnkYskN0tRyq3rGbvCUmgCp
-	TyMgZ4dtJ13JNEICuI/6ANujroxXuFGQUN/eog54sLPD50Ln35y8j2tCGheSSHrS4KUzlxX5C50jG
-	vMnVNsIK633c=;
-Received: from cpc93786-hari17-2-0-cust786.20-2.cable.virginm.net
- ([82.36.99.19] helo=stax)
-	by disco.pogo.org.uk with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.2 (FreeBSD))
-	(envelope-from <mark@xwax.org>)
-	id 1vo1N0-00000000Eyx-3mEJ
-	for alsa-devel@alsa-project.org;
-	Thu, 05 Feb 2026 15:34:14 +0000
-Received: from localhost (stax.localdomain [local])
-	by stax.localdomain (OpenSMTPD) with ESMTPA id 940d7208
-	for <alsa-devel@alsa-project.org>;
-	Thu, 5 Feb 2026 15:34:14 +0000 (UTC)
-Date: Thu, 5 Feb 2026 15:34:14 +0000 (GMT)
-From: Mark Hills <mark@xwax.org>
-To: alsa-devel@alsa-project.org
-Subject: Re: Can't resample into ALSA plugin
-In-Reply-To: <b7b70838-2452-8481-e9ae-f9001ddaf74e@xwax.org>
-Message-ID: <3ef6ee0a-ed02-0283-0e0e-d38eb02fcb63@xwax.org>
-References: <b7b70838-2452-8481-e9ae-f9001ddaf74e@xwax.org>
+	id 183A5F8051E; Thu,  5 Feb 2026 20:17:21 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 54A93F8010B
+	for <alsa-devel@alsa-project.org>; Thu,  5 Feb 2026 20:16:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54A93F8010B
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID-Hash: H4BLYCTT7GHTFWWHMR6HIV7MY7JWKW2W
-X-Message-ID-Hash: H4BLYCTT7GHTFWWHMR6HIV7MY7JWKW2W
-X-MailFrom: mark@xwax.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18916fc357b46f00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18916fc35551b900-webhooks-bot@alsa-project.org>
+References: <18916fc35551b900-webhooks-bot@alsa-project.org>
+Subject: MOTU M6 reports [ALSA UCM error] but seems to be working fine.
+Date: Thu,  5 Feb 2026 20:17:21 +0100 (CET)
+Message-ID-Hash: HRKNQA5HTTAYMEAUEFZFOD3IWCGFGQRS
+X-Message-ID-Hash: HRKNQA5HTTAYMEAUEFZFOD3IWCGFGQRS
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H4BLYCTT7GHTFWWHMR6HIV7MY7JWKW2W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HRKNQA5HTTAYMEAUEFZFOD3IWCGFGQRS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,49 +67,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 11 Jan 2026, Mark Hills wrote:
+alsa-project/alsa-ucm-conf issue #700 was opened from damex:
 
-> I've written an ALSA plugin (ioplug) of the form below.
->
-> My plugin offers only S16, 48000Hz.
->
-> I expected a "plug" device would take the application's request and
-> resample to 48000Hz, but instead it fails:
->
->   $ aplay -D plug:mytest cd-audio.wav
->   Playing WAVE 'cd-audio.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
->   aplay: set_params:1456: Unable to install hw params:
->   ACCESS:  RW_INTERLEAVED
->   FORMAT:  S16_LE
->   SUBFORMAT:  STD
-[...]
->
-> Modify the plugin 48000Hz to be 44100Hz and negotiation passes, so it
-> suggests the rate is the problem (not some other parameter like period
-> size)
+hi,
+  i did fresh fedora 43 install and noticed that my MOTU m6 reports ALSA UCM error on all inputs and outputs but those inputs and outputs work just fine.
 
-Following up my own mail to help the others looking at these archives:
+<img width="659" height="381" alt="Image" src="https://github.com/user-attachments/assets/cdce7782-7581-4c05-b501-2e22d5920446" />
 
-The root cause seems to be my plugin not offering 
-SND_PCM_ACCESS_MMAP_INTERLEAVED, which I assume is required by the "plug" 
-to do rate resampling and feed into it.
+<img width="819" height="206" alt="Image" src="https://github.com/user-attachments/assets/2290dd4b-f0af-4f75-a58b-6b5a056ee933" />
 
-I couldn't find this in any documentation, searching or AI chat, and the 
-ALSA code for negotiating the plug is non-trivial so perhaps someone has 
-an explanation or rationale if it could fall into this for some other 
-reason.
+  in some software it is difficult to choose correct input due to presence of this error in device name.
+  i did find https://github.com/alsa-project/alsa-ucm-conf/issues/552 this report to be similar to mine. attaching full alsa info output here (it was requested in that report)
 
-Here's the culprit code:
+  
+[alsa-info.txt](https://github.com/user-attachments/files/25109878/alsa-info.txt)
 
-> SND_PCM_PLUGIN_DEFINE_FUNC(mytest)
-> {
->       struct state *s;
->       snd_pcm_ioplug_t *io;
->       unsigned access = SND_PCM_ACCESS_RW_INTERLEAVED;
-[...]
->       snd_pcm_ioplug_set_param_list(io, SND_PCM_IOPLUG_HW_ACCESS, 1, &access);
+please let me know if i you need any more information from me.
 
-Many thanks,
-
--- 
-Mark
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/700
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
