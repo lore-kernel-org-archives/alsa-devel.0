@@ -4,84 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B52B9EA3F14
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Feb 2026 07:44:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A820EB26E9
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Feb 2026 17:03:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5687F60216;
-	Tue, 10 Feb 2026 08:44:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5687F60216
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E79B60218;
+	Tue, 10 Feb 2026 18:03:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E79B60218
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1770709475;
-	bh=VTeyvXtIr0ei7nbiJ0E5uYCjbmgKy8bz3CVeqNS0HRI=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HwItDtFdlqDciKUL2K3++BCiyP7kA2JvKWKqj/I8Vf2ivdENKBl0pCVAUM+weiqOu
-	 L3uVlcvgcJrmxwKkP6pAwTGzGJMu8s24gnk1l4eBUqBQJnhJ8VGAx6j8BNnNbj/kHN
-	 RPKc9qgWeTtAHQh2R6AABeztvUkrRvOt1PZONiX0=
+	s=default; t=1770742995;
+	bh=GKxMsvF8513dldSNQ4piHGgHfcbGjskmI0BUIrYWREA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=WVe+y2R0mOCLZ2i1+YEUsDrmcN0elJQEbjPbGxiqtkknKK5qYnrCAYIQDjgL2fHca
+	 77gWHbpNK2F82fKq//2tf1415zC69hiTl67dAbY+l2kmOjeoawhuK+bbyxcLycaFC9
+	 eORCx1y6NfNM+hiNB6vg40VFCjNIfqFt6ahNOPbI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D7D6F805F2; Tue, 10 Feb 2026 08:44:07 +0100 (CET)
+	id BA1F5F805F3; Tue, 10 Feb 2026 18:02:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A452DF805EE;
-	Tue, 10 Feb 2026 08:44:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDC2FF805F0;
+	Tue, 10 Feb 2026 18:02:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31C00F801F7; Tue, 10 Feb 2026 08:43:58 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	id A6327F801F7; Tue, 10 Feb 2026 18:01:27 +0100 (CET)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 730E0F80087
-	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2026 08:43:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 730E0F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 142C2F800BD
+	for <alsa-devel@alsa-project.org>; Tue, 10 Feb 2026 18:01:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 142C2F800BD
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=YCDz49D9
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 61A7hdKR33295320,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1770709419; bh=qIGkj9YdG7HxXAYAUuLKy1zy3WCVSP+8nAg6IGn9sTc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type;
-	b=YCDz49D9OAbL44j6VQfGn5FjcyO64wsZZNJ5kFM30nBRukUfdQLcEONIPJIQCyEi8
-	 PJyL1zscc3I860YpSoNm4PWtbCP21JUjW/JpGUWAR8bhvwEX3hZ17VEFWjjU1Swnxy
-	 /8JmehQhGhgvUz6sVcTlAX6ksXD6om4CCE9dH0rG75M80IfvBZofAyW2UKdrrWyb9q
-	 O0WhaIb7yvc0ivrsWWSOGha2oMC3psTZ6RyJAFspzKlG0mCWsqRZ/EI6Zz43VlvWgY
-	 cux96OsVCSgRx4jgD+NdA3KpJN6qgy8lJtETvrqSdhLGHSIiqSBY6FIIC7cxqgsLj1
-	 Yyp9pyvEqSvjQ==
-Received: from mail.realtek.com (rtkexhmbs03.realtek.com.tw[10.21.1.53])
-	by rtits2.realtek.com.tw (8.15.2/3.21/5.94) with ESMTPS id 61A7hdKR33295320
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 10 Feb 2026 15:43:39 +0800
-Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
- RTKEXHMBS03.realtek.com.tw (10.21.1.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.10; Tue, 10 Feb 2026 15:43:38 +0800
-Received: from RTKEXHMBS04.realtek.com.tw (10.21.1.54) by
- RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.10; Tue, 10 Feb 2026 15:43:38 +0800
-Received: from sw-server.localdomain (172.24.54.4) by
- RTKEXHMBS04.realtek.com.tw (10.21.1.54) with Microsoft SMTP Server id
- 15.2.1748.10 via Frontend Transport; Tue, 10 Feb 2026 15:43:38 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
-        <oder_chiou@realtek.com>, <shumingf@realtek.com>,
-        <derek.fang@realtek.com>, Jack Yu <jack.yu@realtek.com>
-Subject: [PATCH] ASoC: rt721-sdca: Fix issue of fail to detect OMTP jack type
-Date: Tue, 10 Feb 2026 15:43:35 +0800
-Message-ID: <20260210074335.2337830-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.52.0
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=YyiwPKiQ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 2EB3B443D7;
+	Tue, 10 Feb 2026 17:01:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FFF6C116C6;
+	Tue, 10 Feb 2026 17:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770742870;
+	bh=GKxMsvF8513dldSNQ4piHGgHfcbGjskmI0BUIrYWREA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=YyiwPKiQ0qKyweuyY9xgnBf1hKbeDkIau4SqiZsjSXoLRpuVS3XmIwKutR3JVpPG4
+	 6IF1iQOLh+eBf/Iu7zMMTIsUGyrT4ibiBZrCDwn8zXtLSDuu8HDt3qcZZDLffO4I0G
+	 7QZ0WFt3dKec1XYKPP9ygWE1ILfnssQsGYXYkBRA4zT5EgHMCSUGL5/qdffD/EuWVK
+	 0vMY5nFqjoZMUEmPhJ5Pp4CRdfH0eerZKolqEYM/Lmvti2wQdN4eEtonEFIKZiJ+O4
+	 2RBLC9EyKT0S0MUPYT/3135oU+DLr2IQQcUo6MiOAhznePs97+gM3GLD/HMmz7f+U7
+	 RfvoB6SWUMEiA==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, jack.yu@realtek.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
+ oder_chiou@realtek.com, shumingf@realtek.com, derek.fang@realtek.com
+In-Reply-To: <20260210074335.2337830-1-jack.yu@realtek.com>
+References: <20260210074335.2337830-1-jack.yu@realtek.com>
+Subject: Re: [PATCH] ASoC: rt721-sdca: Fix issue of fail to detect OMTP
+ jack type
+Message-Id: <177074286825.290644.270301711122471622.b4-ty@kernel.org>
+Date: Tue, 10 Feb 2026 17:01:08 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Message-ID-Hash: GBLTV63L63B2CCSMZIV2BGZH47CVI22E
-X-Message-ID-Hash: GBLTV63L63B2CCSMZIV2BGZH47CVI22E
-X-MailFrom: jack.yu@realtek.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-47773
+Message-ID-Hash: 2FR7SAENVONTGUEC3EW4OWSYYWWWMPFF
+X-Message-ID-Hash: 2FR7SAENVONTGUEC3EW4OWSYYWWWMPFF
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GBLTV63L63B2CCSMZIV2BGZH47CVI22E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2FR7SAENVONTGUEC3EW4OWSYYWWWMPFF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,35 +93,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
+On Tue, 10 Feb 2026 15:43:35 +0800, jack.yu@realtek.com wrote:
+> Add related HP-JD settings to fix issue of fail to detect
+> OMTP jack type.
+> 
+> 
 
-Add related HP-JD settings to fix issue of fail to detect
-OMTP jack type.
+Applied to
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- sound/soc/codecs/rt721-sdca.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/soc/codecs/rt721-sdca.c b/sound/soc/codecs/rt721-sdca.c
-index 8233532a1752..35960c225224 100644
---- a/sound/soc/codecs/rt721-sdca.c
-+++ b/sound/soc/codecs/rt721-sdca.c
-@@ -245,12 +245,12 @@ static void rt721_sdca_jack_preset(struct rt721_sdca_priv *rt721)
- 	regmap_write(rt721->mbq_regmap, 0x5b10007, 0x2000);
- 	regmap_write(rt721->mbq_regmap, 0x5B10017, 0x1b0f);
- 	rt_sdca_index_write(rt721->mbq_regmap, RT721_CBJ_CTRL,
--		RT721_CBJ_A0_GAT_CTRL1, 0x2a02);
-+		RT721_CBJ_A0_GAT_CTRL1, 0x2205);
- 	rt_sdca_index_write(rt721->mbq_regmap, RT721_CAP_PORT_CTRL,
- 		RT721_HP_AMP_2CH_CAL4, 0xa105);
- 	rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
- 		RT721_UAJ_TOP_TCON14, 0x3b33);
--	regmap_write(rt721->mbq_regmap, 0x310400, 0x3023);
-+	regmap_write(rt721->mbq_regmap, 0x310400, 0x3043);
- 	rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
- 		RT721_UAJ_TOP_TCON14, 0x3f33);
- 	rt_sdca_index_write(rt721->mbq_regmap, RT721_VENDOR_ANA_CTL,
--- 
-2.52.0
+Thanks!
+
+[1/1] ASoC: rt721-sdca: Fix issue of fail to detect OMTP jack type
+      commit: 5578da7d957fbaf91f6c39ba2363c2d2e4273183
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
