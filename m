@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AC8DEEA84E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Feb 2026 17:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AED9EDF17E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Feb 2026 17:41:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCB5360219;
-	Fri, 13 Feb 2026 18:14:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCB5360219
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46BE660218;
+	Fri, 13 Feb 2026 18:41:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46BE660218
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1771002876;
-	bh=/++fAOaVUqz8qfb1IBXyNcTmfcl+brFFHveX8RkPWmg=;
+	s=default; t=1771004487;
+	bh=CDpFdcG2JlGiilwq9OrTxomnpUDybg7pYjrt8++i0EI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=U7gc64fDbqJi9zpXNnIXdFWujbv3vyGG+LNEe+WWzB6vrb4L1ytikgQU2ICnY3js6
-	 E0xxPYHDBbvpAGT4SxxtPE18O4LyQ1yjUmmJweUj9gl+2q+bQC8MDXJl017xHO01SA
-	 Grscg8XNcVsDxp5AEzGBx0/lSVepACgFMFLfHsnA=
+	b=cfzxtZi/y83JN0ikgCXyBEj5AW3/F2Ud7f3HGvFH7C68LQ2fFQ09Ib5rnx3CJJ9fz
+	 lUtwY98D1n2s8GUnx0T2QoFBa28vSLI4QPpOa5AZs34w769ijz3Cb4Spu0czvVjnJ0
+	 uR202BYmYXlu9Jah2b67bSF5DvFKh4IFOpFkk+UA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BB23F805EC; Fri, 13 Feb 2026 18:14:08 +0100 (CET)
+	id D7825F805E0; Fri, 13 Feb 2026 18:41:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B733DF805BE;
-	Fri, 13 Feb 2026 18:14:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7420FF805E0;
+	Fri, 13 Feb 2026 18:41:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A205EF8025A; Fri, 13 Feb 2026 18:11:31 +0100 (CET)
+	id 5D590F8025A; Fri, 13 Feb 2026 18:40:15 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBE2CF8001F
-	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2026 18:11:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBE2CF8001F
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D55FF8014E
+	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2026 18:39:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D55FF8014E
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1893dd8a94972d00-webhooks-bot@alsa-project.org>
-In-Reply-To: <1893dd8a933b3400-webhooks-bot@alsa-project.org>
-References: <1893dd8a933b3400-webhooks-bot@alsa-project.org>
+Message-Id: <1893df1d34d4fd00-webhooks-bot@alsa-project.org>
+In-Reply-To: <1893df1d331d3200-webhooks-bot@alsa-project.org>
+References: <1893df1d331d3200-webhooks-bot@alsa-project.org>
 Subject: ASUS X870-F STRIX - no front panel/headphones audio
-Date: Fri, 13 Feb 2026 18:11:31 +0100 (CET)
-Message-ID-Hash: H6MBZ6Z5Q7STIAGGYQ3CO3L7RQAPMEF3
-X-Message-ID-Hash: H6MBZ6Z5Q7STIAGGYQ3CO3L7RQAPMEF3
+Date: Fri, 13 Feb 2026 18:40:15 +0100 (CET)
+Message-ID-Hash: LBLENXZVK3W4BAFXCCAHG3NDRK3AFAP7
+X-Message-ID-Hash: LBLENXZVK3W4BAFXCCAHG3NDRK3AFAP7
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H6MBZ6Z5Q7STIAGGYQ3CO3L7RQAPMEF3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LBLENXZVK3W4BAFXCCAHG3NDRK3AFAP7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #705 was opened from dosiek:
+alsa-project/alsa-ucm-conf issue #705 was edited from dosiek:
 
 Hello, I have an issue where I can't get my headphones/front panel jack to work - it is being detected upon connecting the headphones but no audio is being transmitted.
 
@@ -84,7 +84,7 @@ ALSA lib main.c:1554:(snd_use_case_mgr_open) error: failed to import hw:0 use ca
 ALSA lib parser.c:2978:(uc_mgr_scan_master_configs) Unable to open '-hw:0': Invalid argument
 alsaucm: error failed to get card list: Invalid argument`
 
-My alsaucm version is 1.2.14, and I am attaching the alsa-info.sh output.
+My alsaucm version is 1.2.14 (upgrading it to 1.2.15 does not fix it), and I am attaching the alsa-info.sh output.
 
 [alsa-info.txt](https://github.com/user-attachments/files/25296874/alsa-info.txt)
 
