@@ -4,116 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3174EEF8FFC
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2026 16:26:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FD5DEF8FFC
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Mar 2026 16:26:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7482C602B4;
-	Wed,  4 Mar 2026 17:26:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7482C602B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B67560277;
+	Wed,  4 Mar 2026 17:26:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B67560277
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1772641596;
-	bh=Ufx2LQuVsPemONElURIztMjbQMMbf+4gtqztqAWWexA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=odvhy93S0MYtXImUzY727PYgrFU33vyPN5/vdVoVdjmHfJ0m7dSk/RsPUVJfB+HLy
-	 8xj5e9iPrrwys0BgydPD74wS2CfSJ7tDKfXYFo+lmZibll4XTAU4pCB/VFTx75usog
-	 17oJXwTeshSkkcqOPuUpgYjy+LAgzwr7IEAPuRD8=
+	s=default; t=1772641614;
+	bh=a0m4d/7E0GIkRTEulw3VanhiSAJL6BZRU0LyoE8g72E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qkvwzULyYgJtuCLMYwjD+m6FYGh2C8GViChhEf6ZBOf9BkIWvCBaW10UBEZ0wPOk8
+	 MyCmRFKZNcFahjTSFtAiKaOcLBX52NKZM/a1bipnXtzprayUnZlG3GPjTxM/Cul62C
+	 c4bLrPo5Krkoj7y/BlqH6Imk887bce83/yrgX3Js=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 449C8F80699; Wed,  4 Mar 2026 17:25:14 +0100 (CET)
+	id C076EF805E3; Wed,  4 Mar 2026 17:25:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD741F80693;
-	Wed,  4 Mar 2026 17:25:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B189F806B1;
+	Wed,  4 Mar 2026 17:25:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7010F80224; Fri, 13 Feb 2026 15:13:19 +0100 (CET)
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com
- [209.85.214.174])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 44E07F80535; Sat, 14 Feb 2026 09:50:50 +0100 (CET)
+Received: from mail.unwrap.rs (mail.unwrap.rs [172.232.15.166])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+ SHA512)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E9598F800D0
-	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2026 15:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9598F800D0
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=RhGz/iT/
-Received: by mail-pl1-f174.google.com with SMTP id
- d9443c01a7336-2a929245b6aso10395905ad.0
-        for <alsa-devel@alsa-project.org>;
- Fri, 13 Feb 2026 06:13:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770991994; x=1771596794;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BUN5m9KdWt5VPnYVJOX/YZHFeP0Re4SEll9bpIlXeb0=;
-        b=RhGz/iT/la563anebBcAImwxh0MN8UT3rqt9TwH+K3zG9OBSfvOT/mw7kaFKDF3U0V
-         Ce4pjaSpbn0jX787XBoLayEDfb5119uF2WAkLy5R9BFUE/o6OGKJ8bflhLGHTAvVc5W8
-         ltBcEiva+0Evk+dj3Z2zNW/kUWU3ql+yLqVKoJbdhDsKwDcTlezQ4BJ/8O//W9POdb7A
-         3roSOxUOvhsxHNTaGNUl9oFUQUjaqxWKSBzG/dY+/NSClqujA6si4AYSADYFHwMlfqbT
-         IewT0XmH+6RU0jnCE33du/SwiZeQKn3IMclJ/RUPJdD+IuOF6LmYgL6zBTOdKfFtKai5
-         wm2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770991994; x=1771596794;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BUN5m9KdWt5VPnYVJOX/YZHFeP0Re4SEll9bpIlXeb0=;
-        b=X1k5KOCqMgc2O1ViVxy50zWViMlk8Sm0zlk5KlZp5IaEgJoEzBnat3+LXmz14JziSS
-         X/cqzm4x+utbjxcOqX6eyJX/vRPVHKz5MVDadCklrybm8HZbBTE64sj6C/i5XOw4pMFW
-         FTQWXCI1la02tbaQiu634bKehQz48PNVMijLDDzzvJwIDtTSI92eThEZXpdNk2N+jc4w
-         ZxymV10yoKCk0uA5YX1Dy7nfOymhnBfO1cmKvEC0YvsM+AS25XSTtY9j9g/jSk46vU/v
-         8JAqtqT9WNgwXNs3R/4OpQcK3cMZMkI5ddk2kMK9aYhwEYTYLOOZpZd6mv04zgkGlbVf
-         NHQg==
-X-Gm-Message-State: AOJu0Yx9fh7HE/aNY9CR83GxHYwt3otzVCVFTqkiQbv5p1PFek8c6XKi
-	GYXwmCu7bpdPC7Flbb+dCrNReODjnEZGHZ4q8jwb7Ky8PeenMQUGDN4irurRzCCQ
-X-Gm-Gg: AZuq6aKEdxpgy25qIFo49VuXhcmjCb4kFnA5vOL2cifIvwn4ACatT1807urGk5OgInx
-	ZFRTEsM7X59YueaWxOUcYpnK8pJRRdQOQ2ZdcIxn8pt/oVXvgHA1pvKYpm0PTtSBvz0XIpJ/8/p
-	VnwCfBI4U2rgT7o2ABx26L5PGQYAV2o4lWw2vZ7YQNZYTs/JBEgHctfDOfiMhEyVG4ReJyfJrWs
-	AiBgkYAavkEEzmsTmrPWIblTrU6rCmoN6Lh7g9SkKIMzlOuND+Z2zxmGzUKWVZpqsV5OqKrSV38
-	Aw8mmM8T16wzJ6xicyL5QVEZgSO+ZbkCFXSc7swWu7TzMcRI3nY2aTvOcSa0fnZQcHhkDz8Knb8
-	95llaeHSLwn6cB1mGmIpOKS122yqtPwDenQqfZS/u1a5ZbSlrL+CbUktvVcEAhJMZTEV2CcIIoZ
-	f8jMfowhGkPwBVHEIzZVhsbIahXdlKoeTQekyTpPuAbB+bKOmEJycKFKx+hi8peaFDaL7aBxU5C
-	G4QYuzjoZd2yhfoHdIlfItHx23CSb0cpoDA8EI=
-X-Received: by 2002:a17:902:d48d:b0:2a7:9592:210a with SMTP id
- d9443c01a7336-2ab505b1c60mr18630785ad.33.1770991994090;
-        Fri, 13 Feb 2026 06:13:14 -0800 (PST)
-Received: from localhost.localdomain
- (wnpgmb016qw-ds01-160-103-199.dynamic.bellmts.net. [142.160.103.199])
-        by smtp.gmail.com with ESMTPSA id
- d9443c01a7336-2ab29998b2esm85046215ad.83.2026.02.13.06.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Feb 2026 06:13:13 -0800 (PST)
-From: Rob Hermann <supgeek@gmail.com>
-To: alsa-devel@alsa-project.org
+	by alsa1.perex.cz (Postfix) with ESMTPS id B38F1F80495;
+	Sat, 14 Feb 2026 09:50:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B38F1F80495
+From: Cole Leavitt <cole@unwrap.rs>
+To: perex@perex.cz
 Cc: tiwai@suse.de,
-	kailang@realtek.com,
-	supgeek@gmail.com
-Subject: [PATCH] ALSA: hda/realtek: Fix speaker output on ASUS ROG Strix G512
-Date: Fri, 13 Feb 2026 08:13:11 -0600
-Message-ID: <20260213141311.29199-1-supgeek@gmail.com>
-X-Mailer: git-send-email 2.48.1
+	broonie@kernel.org,
+	pierre-louis.bossart@linux.dev,
+	liam.r.girdwood@linux.intel.com,
+	peter.ujfalusi@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	sound-open-firmware@alsa-project.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Cole Leavitt <cole@unwrap.rs>
+Subject: [PATCH 2/2] ASoC: SOF: Add platform ops callback for DAI link
+ hardware readiness
+Date: Sat, 14 Feb 2026 01:48:50 -0700
+Message-ID: <20260214084850.7594-2-cole@unwrap.rs>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260214084850.7594-1-cole@unwrap.rs>
+References: <20260214084850.7594-1-cole@unwrap.rs>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: supgeek@gmail.com
+X-MailFrom: cole@unwrap.rs
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XHRGDBUSZ6TOWXUFBJ3KTMS4UIS7HXXH
-X-Message-ID-Hash: XHRGDBUSZ6TOWXUFBJ3KTMS4UIS7HXXH
+Message-ID-Hash: AH7LDO34PJUP6FTW23FVZGQ6YPC5DCK2
+X-Message-ID-Hash: AH7LDO34PJUP6FTW23FVZGQ6YPC5DCK2
 X-Mailman-Approved-At: Wed, 04 Mar 2026 16:24:48 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XHRGDBUSZ6TOWXUFBJ3KTMS4UIS7HXXH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AH7LDO34PJUP6FTW23FVZGQ6YPC5DCK2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,69 +82,165 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The ASUS ROG Strix G512LW (subsystem ID 0x10431f21) with ALC294 codec
-has no speaker output on Linux. The internal speaker amplifier requires
-specific codec coefficient writes that differ from the existing
-ALC294_FIXUP_ASUS_SPK quirk values.
+After suspend/resume (D3->D0), the SOF firmware is reloaded fresh and
+pipelines are recreated lazily when userspace opens a PCM. However,
+SoundWire slave re-enumeration runs asynchronously via a 100ms delayed
+work item (SDW_INTEL_DELAYED_ENUMERATION_MS). If userspace attempts to
+play audio before SoundWire slaves finish re-enumerating, the firmware
+returns error 9 (resource not found) when creating ALH copier modules,
+leaving the DSP in an unrecoverable wedged state requiring reboot.
 
-The required coefficients were identified by comparing codec register
-dumps with and without working speaker output:
-  - Coefficient index 0x0f needs value 0x7778 (vs 0x7774 in existing quirk)
-  - Coefficient index 0x40 needs value 0x0800 (vs 0x8800 in existing quirk)
+Add a new optional dai_link_hw_ready callback to struct snd_sof_dsp_ops
+that allows platform-specific code to wait for DAI link hardware to
+become ready before pipeline setup. The generic ipc4-topology.c calls
+this callback (when set) in sof_ipc4_prepare_copier_module() before
+configuring DAI copiers, maintaining SOF's platform abstraction.
 
-Without this patch, speakers are completely silent. Headphones and HDMI
-audio work correctly.
+The Intel HDA implementation (hda_sdw_dai_hw_ready) waits for all
+attached SoundWire slaves to complete initialization using
+wait_for_completion_interruptible_timeout() with a 2-second timeout.
+This is safe for multiple waiters since the SoundWire subsystem uses
+complete_all() for initialization_complete. Unattached slaves (declared
+in ACPI but not physically present) are skipped to avoid false timeouts.
 
-This affects at least the following models:
-  - ASUS ROG Strix G512LW (i7-10750H, RTX 2070)
-  - ASUS ROG Strix G512LV (reported on Fedora forums)
+The function returns -ETIMEDOUT on timeout (instead of warn-and-continue)
+to prevent the DSP from entering a wedged state. On non-resume paths the
+completions are already done, so the wait returns immediately.
 
-Link: https://discussion.fedoraproject.org/t/asus-rog-strix-g512lv-speakers-do-not-work-headset-works-fine/74918
-Link: https://forum.endeavouros.com/t/asus-rog-strix-g15-g512lw-no-audio-through-the-speakers-alc294/72857
-Signed-off-by: Rob Hermann <supgeek@gmail.com>
+Link: https://github.com/thesofproject/sof/issues/8662
+Link: https://github.com/thesofproject/sof/issues/9308
+Signed-off-by: Cole Leavitt <cole@unwrap.rs>
 ---
- sound/pci/hda/patch_realtek.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/sof/intel/hda-common-ops.c |  1 +
+ sound/soc/sof/intel/hda.c            | 44 ++++++++++++++++++++++++++++
+ sound/soc/sof/intel/hda.h            |  6 ++++
+ sound/soc/sof/ipc4-topology.c        |  8 +++++
+ sound/soc/sof/sof-priv.h             |  3 ++
+ 5 files changed, 62 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index XXXXXXX..XXXXXXX 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7859,6 +7859,7 @@ enum {
- 	ALC294_FIXUP_ASUS_MIC,
- 	ALC294_FIXUP_ASUS_HEADSET_MIC,
- 	ALC294_FIXUP_ASUS_SPK,
-+	ALC294_FIXUP_ASUS_G512_SPK,
- 	ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE,
- 	ALC285_FIXUP_LENOVO_PC_BEEP_IN_NOISE,
- 	ALC255_FIXUP_ACER_HEADSET_MIC,
-@@ -9166,6 +9167,19 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
- 	},
-+	[ALC294_FIXUP_ASUS_G512_SPK] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			/* Enable speaker amp on ASUS ROG Strix G512 */
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x0f },
-+			{ 0x20, AC_VERB_SET_PROC_COEF, 0x7778 },
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x40 },
-+			{ 0x20, AC_VERB_SET_PROC_COEF, 0x0800 },
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
-+	},
- 	[ALC295_FIXUP_CHROME_BOOK] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc295_fixup_chromebook,
-@@ -10977,6 +10991,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x1f1f, "ASUS H7604JI/JV/J3D", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x1043, 0x1f21, "ASUS ROG Strix G512", ALC294_FIXUP_ASUS_G512_SPK),
- 	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1f92, "ASUS ROG Flow X16", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
---
-2.47.0
+diff --git a/sound/soc/sof/intel/hda-common-ops.c b/sound/soc/sof/intel/hda-common-ops.c
+index 746b426b1329..315cb61426da 100644
+--- a/sound/soc/sof/intel/hda-common-ops.c
++++ b/sound/soc/sof/intel/hda-common-ops.c
+@@ -84,6 +84,7 @@ const struct snd_sof_dsp_ops sof_hda_common_ops = {
+ 	.unregister_ipc_clients = hda_unregister_clients,
+ 
+ 	/* DAI drivers */
++	.dai_link_hw_ready = hda_sdw_dai_hw_ready,
+ 	.drv		= skl_dai,
+ 	.num_drv	= SOF_SKL_NUM_DAIS,
+ 	.is_chain_dma_supported	= hda_is_chain_dma_supported,
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 686ecc040867..956106dc0e02 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -378,6 +378,50 @@ static void hda_dsp_sdw_process_mic_privacy(struct snd_sof_dev *sdev)
+ 		chip->process_mic_privacy(sdev, true, AZX_REG_ML_LEPTR_ID_SDW);
+ }
+ 
++int hda_sdw_dai_hw_ready(struct snd_sof_dev *sdev, int dai_type)
++{
++	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
++	struct sdw_peripherals *sdw_p;
++	long ret;
++	int idx;
++
++	if (dai_type != SOF_DAI_INTEL_ALH)
++		return 0;
++
++	if (!hdev || !hdev->sdw || !hdev->sdw->peripherals)
++		return 0;
++
++	sdw_p = hdev->sdw->peripherals;
++
++	for (idx = 0; idx < sdw_p->num_peripherals; idx++) {
++		struct sdw_slave *slave = sdw_p->array[idx];
++
++		if (!slave)
++			continue;
++
++		if (slave->status != SDW_SLAVE_ATTACHED)
++			continue;
++
++		ret = wait_for_completion_interruptible_timeout(
++				&slave->initialization_complete,
++				msecs_to_jiffies(2000));
++		if (ret == 0) {
++			dev_err(sdev->dev,
++				"timeout waiting for SoundWire slave %s initialization\n",
++				dev_name(&slave->dev));
++			return -ETIMEDOUT;
++		}
++		if (ret < 0) {
++			dev_dbg(sdev->dev,
++				"interrupted waiting for SoundWire slave %s initialization: %ld\n",
++				dev_name(&slave->dev), ret);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
+ #else /* IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE) */
+ static inline int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
+ {
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index ac9f76a5ef97..9bd8fe82ae9e 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -830,6 +830,7 @@ bool hda_sdw_check_wakeen_irq_common(struct snd_sof_dev *sdev);
+ void hda_sdw_process_wakeen_common(struct snd_sof_dev *sdev);
+ void hda_sdw_process_wakeen(struct snd_sof_dev *sdev);
+ bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev);
++int hda_sdw_dai_hw_ready(struct snd_sof_dev *sdev, int dai_type);
+ 
+ #else
+ 
+@@ -879,6 +880,11 @@ static inline bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev)
+ 	return false;
+ }
+ 
++static inline int hda_sdw_dai_hw_ready(struct snd_sof_dev *sdev, int dai_type)
++{
++	return 0;
++}
++
+ #endif
+ 
+ int sdw_hda_dai_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index d621e7914a73..a8b107d7e786 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -2256,6 +2256,14 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 	case snd_soc_dapm_dai_in:
+ 	case snd_soc_dapm_dai_out:
+ 	{
++		/* Wait for DAI link hardware (e.g. SoundWire slaves) to be ready */
++		if (sdev->pdata->desc->ops->dai_link_hw_ready) {
++			ret = sdev->pdata->desc->ops->dai_link_hw_ready(
++					sdev, ipc4_copier->dai_type);
++			if (ret)
++				return ret;
++		}
++
+ 		/*
+ 		 * Only SOF_DAI_INTEL_ALH needs copier_data to set blob.
+ 		 * That's why only ALH dai's blob is set after sof_ipc4_init_input_audio_fmt
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 0f624d8cde20..346b5c34c6c8 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -346,6 +346,9 @@ struct snd_sof_dsp_ops {
+ 	int (*register_ipc_clients)(struct snd_sof_dev *sdev); /* optional */
+ 	void (*unregister_ipc_clients)(struct snd_sof_dev *sdev); /* optional */
+ 
++	/* optional: wait for DAI link hardware readiness (e.g. SoundWire slave init) */
++	int (*dai_link_hw_ready)(struct snd_sof_dev *sdev, int dai_type); /* optional */
++
+ 	/* DAI ops */
+ 	struct snd_soc_dai_driver *drv;
+ 	int num_drv;
+-- 
+2.52.0
