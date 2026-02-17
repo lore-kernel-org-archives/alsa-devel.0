@@ -4,49 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AED9EDF17E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Feb 2026 17:41:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06268E68172
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Feb 2026 11:39:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46BE660218;
-	Fri, 13 Feb 2026 18:41:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46BE660218
+	by alsa0.perex.cz (Postfix) with ESMTPS id 834FB60215;
+	Tue, 17 Feb 2026 12:39:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 834FB60215
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1771004487;
-	bh=CDpFdcG2JlGiilwq9OrTxomnpUDybg7pYjrt8++i0EI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=cfzxtZi/y83JN0ikgCXyBEj5AW3/F2Ud7f3HGvFH7C68LQ2fFQ09Ib5rnx3CJJ9fz
-	 lUtwY98D1n2s8GUnx0T2QoFBa28vSLI4QPpOa5AZs34w769ijz3Cb4Spu0czvVjnJ0
-	 uR202BYmYXlu9Jah2b67bSF5DvFKh4IFOpFkk+UA=
+	s=default; t=1771328395;
+	bh=XZ1cEoh7ErNrbtOPqCCaVg9prMl/jUVXBKDSLHi3voc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=taVCLDIAb6KUmLpSPVXcuRpLlzH6qo14hsbszxSgLOomjXy8TB8VRCa3sM90i/oVb
+	 v5e5F89ROpylc1BWx11RaLUKZ5TZ5PYVwiKLLLohmaaZ0EYF+sXrBP3RILwyI27WQ0
+	 xv4Lu0DQH2hfIB/mo6TPiprxwpBI3fbBLWhiLIQA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7825F805E0; Fri, 13 Feb 2026 18:41:00 +0100 (CET)
+	id 766C5F805ED; Tue, 17 Feb 2026 12:39:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7420FF805E0;
-	Fri, 13 Feb 2026 18:41:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75C8EF805E9;
+	Tue, 17 Feb 2026 12:39:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5D590F8025A; Fri, 13 Feb 2026 18:40:15 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D55FF8014E
-	for <alsa-devel@alsa-project.org>; Fri, 13 Feb 2026 18:39:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D55FF8014E
+	id 28A2DF80548; Tue, 17 Feb 2026 12:35:55 +0100 (CET)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98F07F8016E
+	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2026 12:35:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98F07F8016E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=W9Kw5/XZ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 483C24391D;
+	Tue, 17 Feb 2026 11:35:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC353C4CEF7;
+	Tue, 17 Feb 2026 11:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771328146;
+	bh=XZ1cEoh7ErNrbtOPqCCaVg9prMl/jUVXBKDSLHi3voc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=W9Kw5/XZgeG7ZtHy2GAmxF4VUxw6f3aObmKBFc+TCn8f6qdUpOq4662fvASycSjWB
+	 M5f4IBhhXuE2NmirgkmY6KVKUXP4Nux0bV4wVCdUADmq1JG04sLSDH0MqZuM6x9/KQ
+	 wh/HVFE33n7nMWe40IHiGjAU1kni2TGCQ3BVjEMII6inusQdc+v3ZHAM+BJAXuksJL
+	 QwVP1iglszGKI+0//6CbK7t3kXUIEwVV65/NKC+K8pX7vdmRpYEkJB/bv8bQfIrroV
+	 v3yQ19E/LJXiGK57AktQ2AmEo8xA3yyI3Gb0MK/3nmyJ5nQz2FqONge0cDVVyCyerQ
+	 InT6aw+sedeBA==
+From: Mark Brown <broonie@kernel.org>
+To: Gustavo Salvini <guspatagonico@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ mario.limonciello@amd.com, Vijendar.Mukunda@amd.com, tiwai@suse.com,
+ stable@vger.kernel.org
+In-Reply-To: <20260210155156.29079-1-guspatagonico@gmail.com>
+References: <20260210155156.29079-1-guspatagonico@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: yc: Add DMI quirk for ASUS Vivobook Pro 15X
+ M6501RR
+Message-Id: <177132814457.11429.8947566827430514927.b4-ty@kernel.org>
+Date: Tue, 17 Feb 2026 11:35:44 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <1893df1d34d4fd00-webhooks-bot@alsa-project.org>
-In-Reply-To: <1893df1d331d3200-webhooks-bot@alsa-project.org>
-References: <1893df1d331d3200-webhooks-bot@alsa-project.org>
-Subject: ASUS X870-F STRIX - no front panel/headphones audio
-Date: Fri, 13 Feb 2026 18:40:15 +0100 (CET)
-Message-ID-Hash: LBLENXZVK3W4BAFXCCAHG3NDRK3AFAP7
-X-Message-ID-Hash: LBLENXZVK3W4BAFXCCAHG3NDRK3AFAP7
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.15-dev-47773
+Message-ID-Hash: HETSXTTBUTAC6BUAANNUCERWKFBPTWQN
+X-Message-ID-Hash: HETSXTTBUTAC6BUAANNUCERWKFBPTWQN
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LBLENXZVK3W4BAFXCCAHG3NDRK3AFAP7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HETSXTTBUTAC6BUAANNUCERWKFBPTWQN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,28 +94,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #705 was edited from dosiek:
+On Tue, 10 Feb 2026 12:51:56 -0300, Gustavo Salvini wrote:
+> The ASUS Vivobook Pro 15X (M6501RR) with AMD Ryzen 9 6900HX has an
+> internal DMIC that is not detected without a DMI quirk entry, as the
+> BIOS does not set the AcpDmicConnected ACPI _DSD property.
+> 
+> Adding the DMI entry enables the ACP6x DMIC machine driver to probe
+> successfully.
+> 
+> [...]
 
-Hello, I have an issue where I can't get my headphones/front panel jack to work - it is being detected upon connecting the headphones but no audio is being transmitted.
+Applied to
 
-My motherboard is ASUS ROG STRIX X870-F GAMING WIFI, using the ALC4080. `Bus 001 Device 007: ID 0b05:1b9b ASUSTek Computer, Inc. USB Audio`
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I am using Fedora 43 KDE and I have tried a lot of different fixes (such as disabling drivers, modifying the ALC4080 and ALC4080-HiFi files and way more) and nothing has worked out.
-The motherboard is already in the UCM conf list for the ALC4080 (addressed as X870E-E but it's the same ID), but the front panel audio still does not work.
+Thanks!
 
-I am at the state where I freshly installed the system, and updated the alsa-ucm-conf using the commands provided (even though the default version already had the ID), and getting this error in alsaucm -i
+[1/1] ASoC: amd: yc: Add DMI quirk for ASUS Vivobook Pro 15X M6501RR
+      commit: ff9cadd1a2c0b2665b7377ac79540d66f212e7e3
 
-`alsaucm>> listcards
-ALSA lib parser.c:270:(parse_syntax_field) Incompatible syntax 8 in USB-Audio.conf
-ALSA lib main.c:1554:(snd_use_case_mgr_open) error: failed to import hw:0 use case configuration -22
-ALSA lib parser.c:2978:(uc_mgr_scan_master_configs) Unable to open '-hw:0': Invalid argument
-alsaucm: error failed to get card list: Invalid argument`
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-My alsaucm version is 1.2.14 (upgrading it to 1.2.15 does not fix it), and I am attaching the alsa-info.sh output.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-[alsa-info.txt](https://github.com/user-attachments/files/25296874/alsa-info.txt)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Thank you.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/705
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Thanks,
+Mark
+
