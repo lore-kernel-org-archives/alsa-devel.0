@@ -4,79 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE043E9A031
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Feb 2026 19:28:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FC34E9A03B
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Feb 2026 09:44:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF93F60219;
-	Tue, 17 Feb 2026 20:28:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF93F60219
+	by alsa0.perex.cz (Postfix) with ESMTPS id 881FD60213;
+	Wed, 18 Feb 2026 10:44:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 881FD60213
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1771356488;
-	bh=wIjh6yOyK9DvQrfMqC6CYjP8Xq2hI3p/QomBiTZqeDQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=O90GKrWG2VSak4MmJRB9idy1TBp8OJueSxcFbKlh+2xAUGm5IJ4RTLG0BMSFYPgZQ
-	 G5CAhuKUxrGQpRk+PQWVfgPKMbG9S8Xwlu40rze4wuT2jLu4bKPx15deMMVWIcogE/
-	 G3mL1F5Kp43AcddP+TwHlQBjC6+CHHwJ+0k9/lkY=
+	s=default; t=1771407886;
+	bh=XnFGj5rTZuCKK0GTg6vhcrHuMwWMYr2gqja0bDJGtSc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=fVOv2ghnfFRfpfjwjcpTLfu/LKpV7rUR8pFH+n0ISHiN6XDdnhctZiGa80mQD1A5g
+	 CXnFidanMMU2YylcBxn9SAEe+4DhWVIvzzX1Av9fHeYeJ1/nTgWpDQ++ekNs+rzovg
+	 iohHXAR+bzr0Jvnz6UY5t+eTtshHmwpaUIj7lgnQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD916F805E7; Tue, 17 Feb 2026 20:27:41 +0100 (CET)
+	id 72055F805F0; Wed, 18 Feb 2026 10:44:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6DE9F805E5;
-	Tue, 17 Feb 2026 20:27:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7535F805E3;
+	Wed, 18 Feb 2026 10:44:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DD1CF8016E; Tue, 17 Feb 2026 20:24:46 +0100 (CET)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B47D1F8016E
-	for <alsa-devel@alsa-project.org>; Tue, 17 Feb 2026 20:24:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B47D1F8016E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ZXS0WWk/
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id DA0CB60053;
-	Tue, 17 Feb 2026 19:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FD78C4CEF7;
-	Tue, 17 Feb 2026 19:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771356278;
-	bh=wIjh6yOyK9DvQrfMqC6CYjP8Xq2hI3p/QomBiTZqeDQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ZXS0WWk/SEhYE2UgtiVxYfMprA0V3mTvmuBWGpsGrYButsFgpVf2A8rBlKF0ggnML
-	 MFpd75tjsw3oH7r7ZBFVT/NEc5Tg/kwkMuzG6mQJ+ZKdYFM0S9UPcHueNiHHVZswbK
-	 jmdQakIX/xUrxjHawla6ShbxtVSo9A5CYlW52dRP4QTO9h/Z16zeiSfUBSoULY0kOq
-	 iDt3kgTYa+ovYWyjEAsFaWpNNlv4O/wgutEl+Fy01RyaMM8YX9PWykdJk9LgdEVIIy
-	 L2mjK9qMWWSRJDz0Jkv+k4Xw4tOfDUye8v1EyVPZrv3zkEd+lygji7+IOYzCTcCMtU
-	 okz22Y36QRCUA==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Niranjan H Y <niranjan.hy@ti.com>
-Cc: linux-sound@vger.kernel.org, ckeepax@opensource.cirrus.com,
- lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, perex@perex.cz, tiwai@suse.com,
- cezary.rojewski@intel.com, peter.ujfalusi@linux.intel.com,
- kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.dev,
- shenghao-ding@ti.com, v-hampiholi@ti.com, baojun.xu@ti.com,
- dan.carpenter@linaro.org, sandeepk@ti.com
-In-Reply-To: <20260214104710.632-1-niranjan.hy@ti.com>
-References: <20260214104710.632-1-niranjan.hy@ti.com>
-Subject: Re: [PATCH v1] ASoC: tas2783A: add explicit port prepare handling
-Message-Id: <177135627519.310944.4176958928133427758.b4-ty@kernel.org>
-Date: Tue, 17 Feb 2026 19:24:35 +0000
+	id 84415F804F2; Wed, 18 Feb 2026 10:41:29 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 7295EF80153
+	for <alsa-devel@alsa-project.org>; Wed, 18 Feb 2026 10:41:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7295EF80153
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-47773
-Message-ID-Hash: YRFFX5G4JRNMD5TZJIRK6I2M4CZOIU7B
-X-Message-ID-Hash: YRFFX5G4JRNMD5TZJIRK6I2M4CZOIU7B
-X-MailFrom: broonie@kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18954de4339f7b00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18954de432c0f200-webhooks-bot@alsa-project.org>
+References: <18954de432c0f200-webhooks-bot@alsa-project.org>
+Subject: MSI Z690 has the same problem. Can't get the SPDIF working,
+ front panel doesn't work with micorphone.
+Date: Wed, 18 Feb 2026 10:41:29 +0100 (CET)
+Message-ID-Hash: JAPSZ5E3AZOQMBAL4WGJO5WAPXOTG5NI
+X-Message-ID-Hash: JAPSZ5E3AZOQMBAL4WGJO5WAPXOTG5NI
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YRFFX5G4JRNMD5TZJIRK6I2M4CZOIU7B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JAPSZ5E3AZOQMBAL4WGJO5WAPXOTG5NI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,43 +68,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 14 Feb 2026 16:17:10 +0530, Niranjan H Y wrote:
->  TAS2783a required port prepare bits to be set during playback
-> even when it is using simplified CP_SM.
-> 
->  Normally, SoundWire core handles prepare sequencing automatically
-> depending on the type of the device available. For simplified CP_SM
-> there is no need to set the prepare bits. However, due to a hardware
-> limitation in TAS2783A, the port must still be explicitly prepared and
-> de-prepared by the driver to ensure reliable playback.
-> 
-> [...]
+alsa-project/alsa-ucm-conf issue #706 was opened from Ralfpf:
 
-Applied to
+Hope you could help me too, for i saw, that you helped another user with a MSI Z790 and a ALC4080. 
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Her is the thread I read
 
-Thanks!
+ _Originally posted by @perexg in [#664](https://github.com/alsa-project/alsa-ucm-conf/issues/664#issuecomment-3779380548)_
 
-[1/1] ASoC: tas2783A: add explicit port prepare handling
-      commit: 0d68ad088e334088b031423e59886ae118c11202
+This I posted already on another thread:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> I am very new to this subject. I recently switched from Win10 to Linux, so please be patient with my lack of knowledge. I am using a MS690 Unify. Despite the fact, that I can find one in the USB-Audio.conf on line 83 "# 0db0:82c7 MSI MEG Z690I Unify", I still can't get my optical SPDIF working. If i choose digital out, the digital signal is routed to the analog output, which is very ugly to listen to. Also my microphone isn't working. It seems, as if the mic in is configured as sink for monitor out of any other source.
+sudo dmidecode -t 2 answers
+dmidecode 3.6
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Getting SMBIOS data from sysfs.
+SMBIOS 3.6.0 present.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Handle 0x0002, DMI type 2, 15 bytes
+Base Board Information
+Manufacturer: Micro-Star International Co., Ltd.
+Product Name: MEG Z690 UNIFY (MS-7D28)
+Version: 1.0
+Serial Number: 07D2810_N81E356737
+Asset Tag: Default string
+Features:
+Board is a hosting board
+Board is replaceable
+Location In Chassis: Default string
+Chassis Handle: 0x0003
+Type: Motherboard
+Contained Object Handles: 0
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Hope this is usefull. Please let me know, if you need more information. Of course I have an ALC4080 built in, but it's also recognised as USB-Audio.
 
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/706
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
