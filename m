@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F900C6369E
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Feb 2026 01:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C3A6EA4FA4
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Feb 2026 10:59:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71F2D601E5;
-	Mon, 23 Feb 2026 02:25:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71F2D601E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECC44601FE;
+	Mon, 23 Feb 2026 11:59:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECC44601FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1771809955;
-	bh=pOAth07o7Kzbl8+ALfb4hU7jcN/3NeDQ17fafLPT3vI=;
+	s=default; t=1771844376;
+	bh=KtY5BDzAiuFYy5HgZkfQmiz/4zZIIOhwXKNTN6e3iqs=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=annvCoJypN4l+9L88Kqh9fqm4WzdahwTTIacQ9CFtH/hO/RfCsKVa1/oDBEJgyJ++
-	 UmUo02dyY1QU8cvOZ5d5owXnv9tDJAY1ORrt7qa0ccqUAVXddz30ZfUMpPmIa9slZK
-	 gvkP7YVLfiQsLMqhgwUHbGJCrjVcc5fGgZCjIeWM=
+	b=nGpb1Wy6qLM0aBwTY3+A07FOh/AzUXurZxbJbMihMycUoWmgVveAe9nQ9ZDaKItlx
+	 pAs5a7btIarGmv6s7YwmyJCwI2L0riZj3wA+3nFKcAT/qds89bMQufYJhVtmT00kUd
+	 9HhlndY8lShrqJxIWQnClpQDmq4pU2Sm9YXkVRU4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D63FF805E5; Mon, 23 Feb 2026 02:25:29 +0100 (CET)
+	id 24708F805EC; Mon, 23 Feb 2026 11:59:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21C39F800D2;
-	Mon, 23 Feb 2026 02:25:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98A00F805EC;
+	Mon, 23 Feb 2026 11:59:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0899DF8025A; Mon, 23 Feb 2026 02:23:44 +0100 (CET)
+	id 0CF22F8025A; Mon, 23 Feb 2026 11:55:34 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4EA2F800D2
-	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2026 02:23:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4EA2F800D2
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C8DDF8014E
+	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2026 11:55:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C8DDF8014E
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
+From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <1896bba54b9e9100-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/708@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/708@alsa-project.org>
-Subject: USB-Audio: Add Audient EVO4
-Date: Mon, 23 Feb 2026 02:23:44 +0100 (CET)
-Message-ID-Hash: CRLSYK3RAUJXYMJIGA3EQODYH55LHJKI
-X-Message-ID-Hash: CRLSYK3RAUJXYMJIGA3EQODYH55LHJKI
+Message-Id: <1896dad8703a3200-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/709@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/709@alsa-project.org>
+Subject: ucm2: sof-soundwire: Add support for Cirrus Logic CS47L47
+Date: Mon, 23 Feb 2026 11:55:34 +0100 (CET)
+Message-ID-Hash: JFV4IV4MZVX7JH7ZHSZGKXGVBTW633X7
+X-Message-ID-Hash: JFV4IV4MZVX7JH7ZHSZGKXGVBTW633X7
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CRLSYK3RAUJXYMJIGA3EQODYH55LHJKI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JFV4IV4MZVX7JH7ZHSZGKXGVBTW633X7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,18 +67,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #708 was edited from motolav:
+alsa-project/alsa-ucm-conf pull request #709 was opened from rfvirgil:
 
-This is a 4in/4out device with 1 analog stereo out and 2 analog mono in. 
-The hardware mixed loopback interface takes up the remaining 4 channels. 
-Without this UCM the device is configured as 4.0 surround for in and out. 
+Add the sof-soundwire and codec files for the CS47L47.
 
-I copied the way Windows configures the device except for the stereo mic mix as I couldn't get it to work somehow(might have been a wiremix issue).
+This is a SDCA codec with headphone/headset and digital mic. The configuration is based on the CS42L45 files.
 
-The loopback interface requires software to configure what channels are mixed into its recording interface that's only available on Windows and macOS but there is an incomplete script to control the device's hardware registers at github.com/vijay-prema/audient-evo-linux-tools.
-
-Closes: #303
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/708
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/708.patch
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/709
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/709.patch
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
