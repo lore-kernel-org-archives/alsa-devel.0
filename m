@@ -4,154 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B547EFCE064
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Feb 2026 12:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9827FFD0055
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Mar 2026 07:08:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC2AD601DD;
-	Thu, 26 Feb 2026 13:24:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC2AD601DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 108426022A;
+	Sun,  1 Mar 2026 08:08:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 108426022A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1772108675;
-	bh=TZdsfRxKpEJINsy8idthSp790IozmKnfcbSo0smK0bI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ntID1hyH24ZMdada6OsICI4NpBoGeVlUJvlLS+hM9WOr6NDZJBWN1x5fMyXndBxxK
-	 fx1HaXtuSfWOF6Rt1nO/3wCC1GBwKXLvO7XM9G5HzL+XYCSDJsAvOxJ8KUBKwlpFP1
-	 JKySOWilR/8n/7LH5za8CBY/4Q8XpFU2rXcwFnyw=
+	s=default; t=1772348925;
+	bh=2LIGwtGGnl9kapoXGiN2OVxsaWNvU4TNW2CmJGytLvU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=fZgzapVP/+4UgQ4UF+UDF80kI4s3zY8v8anDdi4ZupZwC/RpUo6vJBtdHrollrCA2
+	 vE4Ds4ot9gaFzTy9kbvfWQj5kaZMrP0M5p71HRMaMmmWi++L/dq2LixVhFCmgIm6cL
+	 Epm0kRFsu6fEi/hPnAiWmKCWW+HO7t7kBHE3/O7k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45749F805EC; Thu, 26 Feb 2026 13:24:06 +0100 (CET)
+	id 8AF51F805ED; Sun,  1 Mar 2026 08:08:16 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3E73F8053D;
-	Thu, 26 Feb 2026 13:24:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 370A6F805F0;
+	Sun,  1 Mar 2026 08:08:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8290FF8051E; Thu, 26 Feb 2026 13:21:36 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E296AF802DB
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2026 13:21:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E296AF802DB
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=MWiKGJE8;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Ry8ji8HY;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=WXoZ0o9D;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=z+sVtZAF
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CB7AE1FA8A;
-	Thu, 26 Feb 2026 12:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1772108489;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm01u35oqWyz99ZtKeAU9bbK+aymaWt8edjCklFAGJA=;
-	b=MWiKGJE8cyM+yulcRZhmzRwOwkN3j1uRdWn/5bYAOCaf+B8w/dyZpMigOu/r7zHuBdnFxC
-	Vudop/NjHYf10biotOdNUUhT9z+RIstI6WiYy0QndHl9OBjt8lLYnD7WnZU44rm48t0gYs
-	0B/sWW3tN3OH55pWaQM8WlDFwE7JjJI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1772108489;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm01u35oqWyz99ZtKeAU9bbK+aymaWt8edjCklFAGJA=;
-	b=Ry8ji8HYNAqUHELqPvrIXxHQTdX9aGmISdlzOdp9DPRZyEksVw2GHbEthQmxtn0/9Fs7fO
-	9SXFGc+27FLja5Ag==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=WXoZ0o9D;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=z+sVtZAF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1772108488;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm01u35oqWyz99ZtKeAU9bbK+aymaWt8edjCklFAGJA=;
-	b=WXoZ0o9DEzIje7xh1ElUGh5TiMawjU2l/RJlHSgKo68tZV0Gm7dtuMBDezpUZqBpwuqRs6
-	5zcq+TVbcweAlbF1xuRXCRDukpjaOYVwxAIXoTS+cMMTes4ASmn0V4AkPQkCQURRaQKUJr
-	QIz0ZaQRpfD5+6HRkc4LI5RcgCodjAg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1772108488;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hm01u35oqWyz99ZtKeAU9bbK+aymaWt8edjCklFAGJA=;
-	b=z+sVtZAFDWf+BVc/Y9qSf17MVVy+iMM2WdpDk/HY0EOXMjNIhMl1kxNEEwVuKrZeVsi9TO
-	bGqL1sc67LyOFgAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A115F3EA62;
-	Thu, 26 Feb 2026 12:21:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2R/iJcg6oGntEQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 26 Feb 2026 12:21:28 +0000
-Date: Thu, 26 Feb 2026 13:21:28 +0100
-Message-ID: <87tsv3bsqf.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v7.0-rc1
-In-Reply-To: <de64faa8c22aa935fb62b898f33f7f58@kernel.org>
-References: <de64faa8c22aa935fb62b898f33f7f58@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,alsa-project.org];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:mid]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: CB7AE1FA8A
-Message-ID-Hash: C5UFH5EOLRDC5A76V3BJA45YMPFQ6YTE
-X-Message-ID-Hash: C5UFH5EOLRDC5A76V3BJA45YMPFQ6YTE
-X-MailFrom: tiwai@suse.de
+	id EB299F80524; Sun,  1 Mar 2026 08:04:57 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id A208EF8045D
+	for <alsa-devel@alsa-project.org>; Sun,  1 Mar 2026 08:04:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A208EF8045D
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <1898a5bd497fa300-webhooks-bot@alsa-project.org>
+In-Reply-To: <1898a5bd48340300-webhooks-bot@alsa-project.org>
+References: <1898a5bd48340300-webhooks-bot@alsa-project.org>
+Subject: ~/.config
+Date: Sun,  1 Mar 2026 08:04:57 +0100 (CET)
+Message-ID-Hash: RIPQWCY2HFWKQPMJMGAQBW3DNYEJHSO4
+X-Message-ID-Hash: RIPQWCY2HFWKQPMJMGAQBW3DNYEJHSO4
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -163,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C5UFH5EOLRDC5A76V3BJA45YMPFQ6YTE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RIPQWCY2HFWKQPMJMGAQBW3DNYEJHSO4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -172,27 +67,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 26 Feb 2026 13:13:35 +0100,
-Mark Brown wrote:
-> 
-> The following changes since commit 6de23f81a5e08be8fbf5e8d7e9febc72a5b5f27f:
-> 
->   Linux 7.0-rc1 (2026-02-22 13:18:59 -0800)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.0-rc1
-> 
-> for you to fetch changes up to 32fc4168fa56f6301d858c778a3d712774e9657e:
-> 
->   ASoC: amd: yc: Add ASUS EXPERTBOOK BM1503CDA to quirk table (2026-02-23 14:52:11 +0000)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v7.0
-> 
-> One quirk and a fix for handling of exotic peripherals on cs42l43.
+alsa-project/alsa-ucm-conf issue #710 was opened from beatboxa:
 
-Thanks, pulled now.
+Alsa has a long history, and I think as a result, there may be some approaches that may predate some of today's standards.
 
+For example, I don't believe there are any configs stored in ~/.config/ like most other modern applications use.  Even alsa's overall standard user config is ~/.asoundrc 
 
-Takashi
+This may make sense as alsa is a lower-level hardware driver; however with ucm it approaches the user space and has some overlap with systems like pipewire or pulseaudio.
+
+Therefore, I'd like to recommend considering allowing ucm channel mappings to be stored in ~/.config/, which would override systemwide ucm mappings.  Perhaps it could be hierarchical, where the system looks for configs in:
+
+- first looks at system directories (eg. /usr/share/alsa or /etc/alsa)
+- then ~/.asoundrc   (for legacy compatibility)
+- then ~/.config/alsa
+
+Such that ~/.config/alsa is the override for the others.  Particularly for ucm2 (eg. ~/.config/alsa/ucm2/), since this is designed for the user/application layer.
+
+One major benefit would be in surviving system or alsa package upgrades.  One challenge might be in order of operations, as downstream systems like pipewire/wireplumber or pulseaudio or jack often rely on alsa; however I believe these would still end up picking up user configs.
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/710
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
