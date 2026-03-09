@@ -4,85 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B30E2EFCD6D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 09:34:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA9A4EFCD71
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 09:45:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE4386024F;
-	Mon,  9 Mar 2026 10:34:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE4386024F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 009F76024B;
+	Mon,  9 Mar 2026 10:45:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 009F76024B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773048873;
-	bh=msN3ZiJEnwDLoCFL3ktp3bf7S5AjPmhNHN71nh2kZjg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ggGpntb000endy9TUU/X022j4qzMC5z6W6OQuFH537g09EXt6l5ZhzQPWIVapMDwG
-	 eIvtoKOmeiziLVYDOJ5jeG6XsO/MKVh+AFaiJvv38jjFqtuX8tzQDj9e+S2CR4Vzp2
-	 p0Oqhxv0ck+gOVBAngBwk3A1CZJCGQ31ObjgZ8YQ=
+	s=default; t=1773049521;
+	bh=7iO1MD8Lwj7iWDSnGaBcuxkuFXDdx6f+1FdKOjCsvPc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rLwnMScIXWCk9X7sYjc58wBvX1mDHZamaoyt/7d2tBdACKAHhooIOH2qlC/x2sbiP
+	 Zti8VaZ8e+bmt7w+vpYambyOPp146rQfeu3f2KpneeaI3EhP8ZtQltxiDVhjVQaKBx
+	 lx7HwdfosOR/N/cpG3FijIkjV4AJFnTUvfeI+dkg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7C5DF80624; Mon,  9 Mar 2026 10:33:31 +0100 (CET)
+	id E21B8F805EC; Mon,  9 Mar 2026 10:44:48 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D0F0F80622;
-	Mon,  9 Mar 2026 10:33:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E791F805F0;
+	Mon,  9 Mar 2026 10:44:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F4DCF80571; Mon,  9 Mar 2026 08:22:02 +0100 (CET)
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	id EB692F80571; Mon,  9 Mar 2026 10:44:41 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 452CFF8001E
-	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 08:21:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 452CFF8001E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
- header.s=s110527 header.b=FipDDQ/5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=ST
-	Qwf4PoSneb90M0vtP5ikDTJD5DzHGA/Ui7t+WaGNw=; b=FipDDQ/5Hfe1297mbd
-	2cShBsiOGj2SnIdBRKQCJNbQ7MA1dLjmI4zzQmJHYgj7HL5831r6ph8ICjboaU/A
-	rMmQAhmDv0S/l8WzqkeDU9XQC/PVNdlghOLIBAgAdamqkLo2ZglfOHvAh3TFbccj
-	wzjETc+4PsybJeEg0+8EFWWhg=
-Received: from pek-lpg-core5.wrs.com (unknown [])
-	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id
- _____wA3bfoPda5p73LiOg--.36932S2;
-	Mon, 09 Mar 2026 15:21:52 +0800 (CST)
-From: Robert Garcia <rob_garcia@163.com>
-To: stable@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>
-Cc: Robert Garcia <rob_garcia@163.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 5.15.y] ALSA: control: Avoid WARN() for symlink errors
-Date: Mon,  9 Mar 2026 15:21:51 +0800
-Message-Id: <20260309072151.2462506-1-rob_garcia@163.com>
-X-Mailer: git-send-email 2.34.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 809CBF8001E
+	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 10:44:35 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 54CD43CCE;
+	Mon,  9 Mar 2026 10:44:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 54CD43CCE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1773049473; bh=XQbeSDgqbgjivbjoV8xuUHgrTJUEzvSe7Vcty2z0uj0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=pvRHXWM+kXAiPpRIIJ7sQVaaD64nqr/0zHNw45hZNfi9Nqg/WNkusavPiKIXJVwTo
+	 pps6WwxdhVWYw/zBmt9MGv2CHsIbmDUPhW5Bm0jBtPrB0SZ7JdI4Oa8DHGYQNrdZa4
+	 pW77mtEFhUOGxw2T6jvtuPIrB+AY4zbnh/KecWh4=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Mon,  9 Mar 2026 10:44:26 +0100 (CET)
+Message-ID: <a587fb9b-207f-4a24-a1b7-5c71601281d3@perex.cz>
+Date: Mon, 9 Mar 2026 10:44:25 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] ALSA: control: add ioctl to retrieve full card
+ components
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ linux-sound@vger.kernel.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org
+References: <20260303145815.9930-1-mstrozek@opensource.cirrus.com>
+ <20260303145815.9930-2-mstrozek@opensource.cirrus.com>
+ <87seagx6c4.wl-tiwai@suse.de>
+ <c4392a10442c436484d9758c54622888b07a3a74.camel@opensource.cirrus.com>
+ <87v7fay4l1.wl-tiwai@suse.de>
+ <cf59b85f5bfa3607b7ef799714df56bf42daa67a.camel@opensource.cirrus.com>
+ <87pl5iy3z6.wl-tiwai@suse.de> <3174b8c9-8801-4d09-8e30-450899b40ca2@perex.cz>
+ <87zf4lutju.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Content-Language: en-US
+Autocrypt: addr=perex@perex.cz; keydata=
+ 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
+In-Reply-To: <87zf4lutju.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wA3bfoPda5p73LiOg--.36932S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CFy7Kr45CF4UJF47Gw4xXrb_yoW8tFy5pF
-	4jganrt3Zrtr9rJa9rur17Wry3Xan7X3W7Z395KrykArWfAryrurykKrnYqFy3AFZ3JFyU
-	Xr45JF1v934akrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zR_wIhUUUUU=
-X-Originating-IP: [60.247.85.88]
-X-CM-SenderInfo: 5uresw5dufxti6rwjhhfrp/xtbC5RFn0mmudRFzgAAA3R
-X-MailFrom: rob_garcia@163.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Message-ID-Hash: 43IJ5KEGIHP7GJ5X3FMFEV7KWEOHPMSU
+X-Message-ID-Hash: 43IJ5KEGIHP7GJ5X3FMFEV7KWEOHPMSU
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: H3VMT3YIHT5ALMXAS656UBNFUEKFQJBO
-X-Message-ID-Hash: H3VMT3YIHT5ALMXAS656UBNFUEKFQJBO
-X-Mailman-Approved-At: Mon, 09 Mar 2026 09:33:24 +0000
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H3VMT3YIHT5ALMXAS656UBNFUEKFQJBO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/43IJ5KEGIHP7GJ5X3FMFEV7KWEOHPMSU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,56 +143,115 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+On 3/6/26 11:43, Takashi Iwai wrote:
+> On Fri, 06 Mar 2026 10:39:46 +0100,
+> Jaroslav Kysela wrote:
+>>
+>> On 3/5/26 11:18, Takashi Iwai wrote:
+>>> On Thu, 05 Mar 2026 11:11:40 +0100,
+>>> Maciej Strozek wrote:
+>>>>
+>>>> W dniu czw, 05.03.2026 o godzinie 11∶04 +0100, użytkownik Takashi Iwai
+>>>> napisał:
+>>>>> On Thu, 05 Mar 2026 10:54:35 +0100,
+>>>>> Maciej Strozek wrote:
+>>>>>>
+>>>>>> W dniu wto, 03.03.2026 o godzinie 16∶47 +0100, użytkownik Takashi
+>>>>>> Iwai
+>>>>>> napisał:
+>>>>>>>>
+>>>>>>>> + */
+>>>>>>>> +struct snd_ctl_card_components {
+>>>>>>>> + int card;
+>>>>>>>> + unsigned int length;
+>>>>>>>> + unsigned char *components;
+>>>>>>>> +};
+>>>>>>>
+>>>>>>> And the ioctl can serve for two purposes:
+>>>>>>>
+>>>>>>> - When length=0 is set, the kernel stores the current number of
+>>>>>>> bytes
+>>>>>>>     and returns without copying.  User-space can use this mode for
+>>>>>>>     allocating the buffer.
+>>>>>>>
+>>>>>> In alsa-lib all data must be allocated beforehand, so this
+>>>>>> length==0
+>>>>>> query is not very useful there, it will just go into a [512] array
+>>>>>> anyway. Are there any other users that may benefit from this?
+>>>>>
+>>>>> My suggested API can work even with the fixed size 512, too, if 512
+>>>>> is
+>>>>> hight enough.  It's just more flexible.  And there is no restriction
+>>>>> about alsa-lib data allocation; the function can query the size then
+>>>>> allocate, too.
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>>
+>>>> OK, will prepare v4 with this, thanks
+>>>
+>>> Well, let's see how others think, too.  The API design needs more
+>>> considerations because we can't change it any longer once after
+>>> defined.
+>>
+>> I think that the indirect pointer in ioctl structure is the best at
+>> the moment unless we decide to use the fixed char array.
+> 
+> OK, it might be indeed better if the user-space API is something like:
+> 
+> int snd_ctl_card_components(snd_ctl_t *ctl, unsigned char *buf, size_t len);
+> 
+> Then it's simpler to pass the pointer as is without copying.
+> 
+>> But (for
+>> discussion) we may try to be a bit clever and define universal bytes
+>> ioctl which may carry also other things in future like:
+>>
+>> enum {
+>> 	SND_CTL_CARD_BTYPE_COMPONENTS = 1
+>> };
+> 
+> So this is for future extensions?
+> 
+>> struct snd_ctl_card_bytes {
+>> 	unsigned int card;		// this is duplication with info ioctl
+>> 					// to be removed?
+> 
+> Right, it sounds like superfluous.  I thought we were to allow
+> extracting a card info for a different card number, but it doesn't
+> look so.
+> 
+>> 	unsigned int type;		// e.g. SND_CTL_CARD_BTYPE_COMPONENTS
+>> 	unsigned int data_allocated;	// overall size of data
+>> 	unsigned int data_len;		// actual data len
+>> 	unsigned char *data;		// pointer to data array
+>> };
+>>
+>> Scenarios:
+>>
+>> data_allocated = 0 or data == NULL -> driver just returns data_len
+>> data_allocated < data_len -> driver returns -ENOMEM
+>> data_allocated >= data_len -> driver will copy data
+>>
+>> Note that data_len will be zero from the user space for read
+>> operations (driver knows it). But we can eventually use this ioctl to
+>> set some data in future, so data_len/data will be used for the write
+>> operation.
+> 
+> In all cases, data_len is filled with the expected data size in
+> return, right?
 
-[ Upstream commit b2e538a9827dd04ab5273bf4be8eb2edb84357b0 ]
+I would return data_len only when data_allocated == 0 or when the user space 
+array can hold complete data. When ioctl returns an error code (e.g. ENOMEM), 
+the structure should not be modified IMHO.
 
-Using WARN() for showing the error of symlink creations don't give
-more information than telling that something goes wrong, since the
-usual code path is a lregister callback from each control element
-creation.  More badly, the use of WARN() rather confuses fuzzer as if
-it were serious issues.
+Eventually, we can extend the structure to be even more universal and add 
+'data_offset' and 'data_overall_len' to support fully partial transfers. In 
+this case, data_len would mean filled/used chunk size and the "overflow" error 
+won't exist.
 
-This patch downgrades the warning messages to use the normal dev_err()
-instead of WARN().  For making it clearer, add the function name to
-the prefix, too.
+						Jaroslav
 
-Fixes: a135dfb5de15 ("ALSA: led control - add sysfs kcontrol LED marking layer")
-Reported-by: syzbot+4e7919b09c67ffd198ae@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/675664c7.050a0220.a30f1.018c.GAE@google.com
-Link: https://patch.msgid.link/20241209095614.4273-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-[ Use card->ctl_dev.kobj to keep struct consistent. ]
-Signed-off-by: Robert Garcia <rob_garcia@163.com>
----
- sound/core/control_led.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index 3eb1c5af82ad..df836ff550f8 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -693,10 +693,16 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
- 			goto cerr;
- 		led->cards[card->number] = led_card;
- 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
--		WARN(sysfs_create_link(&card->ctl_dev.kobj, &led_card->dev.kobj, link_name),
--			"can't create symlink to controlC%i device\n", card->number);
--		WARN(sysfs_create_link(&led_card->dev.kobj, &card->card_dev.kobj, "card"),
--			"can't create symlink to card%i\n", card->number);
-+		if (sysfs_create_link(&card->ctl_dev.kobj, &led_card->dev.kobj,
-+				      link_name))
-+			dev_err(card->dev,
-+				"%s: can't create symlink to controlC%i device\n",
-+				 __func__, card->number);
-+		if (sysfs_create_link(&led_card->dev.kobj, &card->card_dev.kobj,
-+				      "card"))
-+			dev_err(card->dev,
-+				"%s: can't create symlink to card%i\n",
-+				__func__, card->number);
- 
- 		continue;
- cerr:
 -- 
-2.34.1
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
