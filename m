@@ -4,158 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46B78EFCD79
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 10:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB215EF3717
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 11:58:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 261D46026B;
-	Mon,  9 Mar 2026 11:02:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 261D46026B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D69E360280;
+	Mon,  9 Mar 2026 12:57:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D69E360280
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773050588;
-	bh=aYHFuKYft/P8LUDEZLqIyXlMy1190wXMvq96SiysrBQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=UBlK9I3xuiig23iE9cig0tDQPKoTXweofRdrRqbYyDXLrT7N3DJ65dRS2r0vPoqJl
-	 5HqlbkEJCQiLf6DhliiNuN9VyRvP4K9aXipeVhdVUGBm4suUO/yFuchhcSpzJu6c9w
-	 KVlkd4t7GDeykUmkS/wAJVf2ByjYz1IbAt54z2hE=
+	s=default; t=1773057488;
+	bh=KTN9zqsPBZXmLFVvSEJKqCxK4eB5dr8m1pPbm/GE6Ys=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=aClyhVNfFNC+nxka5fip7b9h9Di9Zw/rN5RJpMdmXo8H1oAW5wuvYOjCH7boDQxDf
+	 aM7ew8m+kQsplRFQwO809OJQlKE+GjibyprSw4wUvOvtX0nM8T5Tl8yNwG+3L55h8Y
+	 hb4wgu4nQBIHedCdpEhfgw5ZbmgVgcUvlDUatupI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 831C2F805EC; Mon,  9 Mar 2026 11:02:32 +0100 (CET)
+	id E6368F805F3; Mon,  9 Mar 2026 12:57:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46726F805F4;
-	Mon,  9 Mar 2026 11:02:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCBF0F805F3;
+	Mon,  9 Mar 2026 12:57:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2731BF80571; Mon,  9 Mar 2026 11:02:24 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CEE96F8001E
-	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 11:02:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEE96F8001E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=GSqckg+l;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=LcOuS3eA;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=GSqckg+l;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=LcOuS3eA
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D25B45BE24;
-	Mon,  9 Mar 2026 10:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1773050537;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
-	b=GSqckg+lQdlGi8w/t3dLuSVfaWGVzzZNQZGGZDPizW94a7ahwec5RtcvMjBtwUdsuV1c3r
-	g66Mt2J4MM96nTLnT0td5Nb+zuZu1Chlzy5Db9YBTlX/rtlFnaQf0M/Uc9MXcZOQIOYPLv
-	P6V86rOggyGn2okq/+eOvxJBnB9PBEo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1773050537;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
-	b=LcOuS3eAVS4plAUDh1TnpiA8kK/37acDN+z6qszC4TyjtUX3A6+o81oJfSbXM0/gs8FsUr
-	Hf8rcdY9UtfbuuBA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1773050537;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
-	b=GSqckg+lQdlGi8w/t3dLuSVfaWGVzzZNQZGGZDPizW94a7ahwec5RtcvMjBtwUdsuV1c3r
-	g66Mt2J4MM96nTLnT0td5Nb+zuZu1Chlzy5Db9YBTlX/rtlFnaQf0M/Uc9MXcZOQIOYPLv
-	P6V86rOggyGn2okq/+eOvxJBnB9PBEo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1773050537;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
-	b=LcOuS3eAVS4plAUDh1TnpiA8kK/37acDN+z6qszC4TyjtUX3A6+o81oJfSbXM0/gs8FsUr
-	Hf8rcdY9UtfbuuBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AD323EE3B;
-	Mon,  9 Mar 2026 10:02:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jU1BJKmarmmnFQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 09 Mar 2026 10:02:17 +0000
-Date: Mon, 09 Mar 2026 11:02:17 +0100
-Message-ID: <87ikb5nwwm.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	patches@opensource.cirrus.com,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 2/2] ALSA: control: add ioctl to retrieve full card
- components
-In-Reply-To: <a587fb9b-207f-4a24-a1b7-5c71601281d3@perex.cz>
-References: <20260303145815.9930-1-mstrozek@opensource.cirrus.com>
-	<20260303145815.9930-2-mstrozek@opensource.cirrus.com>
-	<87seagx6c4.wl-tiwai@suse.de>
-	<c4392a10442c436484d9758c54622888b07a3a74.camel@opensource.cirrus.com>
-	<87v7fay4l1.wl-tiwai@suse.de>
-	<cf59b85f5bfa3607b7ef799714df56bf42daa67a.camel@opensource.cirrus.com>
-	<87pl5iy3z6.wl-tiwai@suse.de>
-	<3174b8c9-8801-4d09-8e30-450899b40ca2@perex.cz>
-	<87zf4lutju.wl-tiwai@suse.de>
-	<a587fb9b-207f-4a24-a1b7-5c71601281d3@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
-Message-ID-Hash: HCAJPSI57GOXMPMJEDNVZGZEZCD4MI2W
-X-Message-ID-Hash: HCAJPSI57GOXMPMJEDNVZGZEZCD4MI2W
-X-MailFrom: tiwai@suse.de
+	id E58E7F80571; Mon,  9 Mar 2026 12:57:25 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id A0605F80071
+	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 12:57:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0605F80071
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <189b2a59ae270000-webhooks-bot@alsa-project.org>
+In-Reply-To: <189b2a59ae008400-webhooks-bot@alsa-project.org>
+References: <189b2a59ae008400-webhooks-bot@alsa-project.org>
+Subject: Add UCM2 profile for Lenovo Legion Pro 7 16IAX10H (ALC287,
+ Subsystem ID 0x17aa3907)
+Date: Mon,  9 Mar 2026 12:57:25 +0100 (CET)
+Message-ID-Hash: YZMQMBALXQYBDNYQP2OZ7GCKGEKHJQIB
+X-Message-ID-Hash: YZMQMBALXQYBDNYQP2OZ7GCKGEKHJQIB
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -166,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HCAJPSI57GOXMPMJEDNVZGZEZCD4MI2W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZMQMBALXQYBDNYQP2OZ7GCKGEKHJQIB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -175,124 +67,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 09 Mar 2026 10:44:25 +0100,
-Jaroslav Kysela wrote:
-> 
-> On 3/6/26 11:43, Takashi Iwai wrote:
-> > On Fri, 06 Mar 2026 10:39:46 +0100,
-> > Jaroslav Kysela wrote:
-> >> 
-> >> On 3/5/26 11:18, Takashi Iwai wrote:
-> >>> On Thu, 05 Mar 2026 11:11:40 +0100,
-> >>> Maciej Strozek wrote:
-> >>>> 
-> >>>> W dniu czw, 05.03.2026 o godzinie 11∶04 +0100, użytkownik Takashi Iwai
-> >>>> napisał:
-> >>>>> On Thu, 05 Mar 2026 10:54:35 +0100,
-> >>>>> Maciej Strozek wrote:
-> >>>>>> 
-> >>>>>> W dniu wto, 03.03.2026 o godzinie 16∶47 +0100, użytkownik Takashi
-> >>>>>> Iwai
-> >>>>>> napisał:
-> >>>>>>>> 
-> >>>>>>>> + */
-> >>>>>>>> +struct snd_ctl_card_components {
-> >>>>>>>> + int card;
-> >>>>>>>> + unsigned int length;
-> >>>>>>>> + unsigned char *components;
-> >>>>>>>> +};
-> >>>>>>> 
-> >>>>>>> And the ioctl can serve for two purposes:
-> >>>>>>> 
-> >>>>>>> - When length=0 is set, the kernel stores the current number of
-> >>>>>>> bytes
-> >>>>>>>     and returns without copying.  User-space can use this mode for
-> >>>>>>>     allocating the buffer.
-> >>>>>>> 
-> >>>>>> In alsa-lib all data must be allocated beforehand, so this
-> >>>>>> length==0
-> >>>>>> query is not very useful there, it will just go into a [512] array
-> >>>>>> anyway. Are there any other users that may benefit from this?
-> >>>>> 
-> >>>>> My suggested API can work even with the fixed size 512, too, if 512
-> >>>>> is
-> >>>>> hight enough.  It's just more flexible.  And there is no restriction
-> >>>>> about alsa-lib data allocation; the function can query the size then
-> >>>>> allocate, too.
-> >>>>> 
-> >>>>> 
-> >>>>> Takashi
-> >>>> 
-> >>>> OK, will prepare v4 with this, thanks
-> >>> 
-> >>> Well, let's see how others think, too.  The API design needs more
-> >>> considerations because we can't change it any longer once after
-> >>> defined.
-> >> 
-> >> I think that the indirect pointer in ioctl structure is the best at
-> >> the moment unless we decide to use the fixed char array.
-> > 
-> > OK, it might be indeed better if the user-space API is something like:
-> > 
-> > int snd_ctl_card_components(snd_ctl_t *ctl, unsigned char *buf, size_t len);
-> > 
-> > Then it's simpler to pass the pointer as is without copying.
-> > 
-> >> But (for
-> >> discussion) we may try to be a bit clever and define universal bytes
-> >> ioctl which may carry also other things in future like:
-> >> 
-> >> enum {
-> >> 	SND_CTL_CARD_BTYPE_COMPONENTS = 1
-> >> };
-> > 
-> > So this is for future extensions?
-> > 
-> >> struct snd_ctl_card_bytes {
-> >> 	unsigned int card;		// this is duplication with info ioctl
-> >> 					// to be removed?
-> > 
-> > Right, it sounds like superfluous.  I thought we were to allow
-> > extracting a card info for a different card number, but it doesn't
-> > look so.
-> > 
-> >> 	unsigned int type;		// e.g. SND_CTL_CARD_BTYPE_COMPONENTS
-> >> 	unsigned int data_allocated;	// overall size of data
-> >> 	unsigned int data_len;		// actual data len
-> >> 	unsigned char *data;		// pointer to data array
-> >> };
-> >> 
-> >> Scenarios:
-> >> 
-> >> data_allocated = 0 or data == NULL -> driver just returns data_len
-> >> data_allocated < data_len -> driver returns -ENOMEM
-> >> data_allocated >= data_len -> driver will copy data
-> >> 
-> >> Note that data_len will be zero from the user space for read
-> >> operations (driver knows it). But we can eventually use this ioctl to
-> >> set some data in future, so data_len/data will be used for the write
-> >> operation.
-> > 
-> > In all cases, data_len is filled with the expected data size in
-> > return, right?
-> 
-> I would return data_len only when data_allocated == 0 or when the user
-> space array can hold complete data. When ioctl returns an error code
-> (e.g. ENOMEM), the structure should not be modified IMHO.
+alsa-project/alsa-ucm-conf issue #717 was opened from someoneKeith:
 
-I find it OK, otherwise you'd need one more ioctl, but it's a kind of
-bike-shedding topic, and I don't mind much whether it should be so or
-not.
+Hardware
+- Machine: Lenovo Legion Pro 7 16IAX10H
+- CPU: Intel Core Ultra 9 275HX (Meteor Lake)
+- Kernel: 6.17.0-14-generic
+- OS: Ubuntu 24.04
 
-> Eventually, we can extend the structure to be even more universal and
-> add 'data_offset' and 'data_overall_len' to support fully partial
-> transfers. In this case, data_len would mean filled/used chunk size
-> and the "overflow" error won't exist.
+Audio codec
+- Codec: Realtek ALC287
+- Vendor ID: 0x10ec0287
+- Subsystem ID: 0x17aa3907
+- Card ID: PCH
 
-Yeah, we can, and I had that in mind, too.  But it makes things
-complex, so let's not step into it yet.
+Problem
+Internal microphone not detected at all.
+No UCM2 profile exists for this subsystem ID.
+`pactl list sources short` shows no internal microphone source.
+Only USB audio and monitor sources are listed.
 
+Pins detected (via hdajackretask)
+- Pin 0x12: Internal Mic
+- Pin 0x14: Internal Speaker
+- Pin 0x17: Internal Speaker  
+- Pin 0x19: Black Mic, Left side (jack)
+- Pin 0x21: Black Headphone, Left side
 
-thanks,
+Request
+Please add a UCM2 profile for Subsystem ID 0x17aa3907
+to enable the internal microphone on this Lenovo Legion model.
 
-Takashi
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/717
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
