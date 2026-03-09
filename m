@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7FBAF41805
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 15:08:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AB11F41807
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 15:08:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDF3960275;
-	Mon,  9 Mar 2026 16:08:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF3960275
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6ABAE6028A;
+	Mon,  9 Mar 2026 16:08:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ABAE6028A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773068895;
-	bh=vTM3++sXPBpYz2RNimtNs25WRlHzkgb3V2ZLZ+TjBA8=;
+	s=default; t=1773068937;
+	bh=Abgan1EJzbpcQ7XHnjDddIkKtUS044SlK/G3/N/xQw8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Z/Y1Dm1SEVmhxIN53VcmiWxfpqZnoJkGAgm/9azJZwcNWfiLFJcbnr72WGeGkyqpZ
-	 3PTR0gWdlsQ1l7YNTxAJE8FZjH/sR+sgDmY8OC7bk7SKad5NngpkHgcM25lK6kF2FV
-	 wY3pOPogMHcPysY05VNr221odMCbq2LpaQwEffAE=
+	b=t8oQe6JbsYyrfelgmSdmQhNwoDaofDRXKfUSstqnPoIqjIaF+hHXkNnkqmkT7/Asv
+	 dxVpJLwD9pL+YF9DmOvKrL1CsL3wq211I3ql5VBIwvxqxsCaYdwJqpc9C6QYPEfpy1
+	 krL0ZSdOQw+i5G/LWalAeJheytukv4rtuPzSwGZs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B440FF805F4; Mon,  9 Mar 2026 16:07:40 +0100 (CET)
+	id CD179F805EC; Mon,  9 Mar 2026 16:08:20 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EC39F805E4;
-	Mon,  9 Mar 2026 16:07:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1EF5F805EC;
+	Mon,  9 Mar 2026 16:08:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2DE7BF80571; Mon,  9 Mar 2026 16:07:31 +0100 (CET)
+	id A0032F80571; Mon,  9 Mar 2026 16:08:14 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6346F80071
-	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 16:07:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6346F80071
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A264F8052D
+	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 16:08:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A264F8052D
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <189b34b7c5f43100-webhooks-bot@alsa-project.org>
-In-Reply-To: <189b34b7c5d22800-webhooks-bot@alsa-project.org>
-References: <189b34b7c5d22800-webhooks-bot@alsa-project.org>
+Message-Id: <189b34c336779300-webhooks-bot@alsa-project.org>
+In-Reply-To: <189b34c33673d400-webhooks-bot@alsa-project.org>
+References: <189b34c33673d400-webhooks-bot@alsa-project.org>
 Subject: Asus ROG STRIX X870E-E Gaming Wifi (ACL4082) - No audio from rear
  microphone
-Date: Mon,  9 Mar 2026 16:07:31 +0100 (CET)
-Message-ID-Hash: MTKIPAFBX7OONDP5FUOK7ND6SRD63FGV
-X-Message-ID-Hash: MTKIPAFBX7OONDP5FUOK7ND6SRD63FGV
+Date: Mon,  9 Mar 2026 16:08:14 +0100 (CET)
+Message-ID-Hash: 4KZIJLVF2AEW27C7UVIXJUWDYOGWT6Y2
+X-Message-ID-Hash: 4KZIJLVF2AEW27C7UVIXJUWDYOGWT6Y2
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MTKIPAFBX7OONDP5FUOK7ND6SRD63FGV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4KZIJLVF2AEW27C7UVIXJUWDYOGWT6Y2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #718 was opened from cristian-tamblay:
+alsa-project/alsa-ucm-conf issue #718 was edited from cristian-tamblay:
 
 The Rear Microphone is detected as Line In when I plug in my mic. There is no sound from the microphone. 
 Motherboard: Asus ROG STRIX X870E-E GAMING WIFI
@@ -95,7 +95,7 @@ I added `1b9b` in two places.
 node hw:3, #23 (0,0,0,Speaker - Output Jack,0) VALUE
 node hw:3, #23 (0,0,0,Speaker - Output Jack,0) VALUE
 ```
-`amixer -c 2 contents`
+`amixer -c 3 contents`
 ```
 numid=8,iface=CARD,name='Analog In - Input Jack'
   ; type=BOOLEAN,access=r-------,values=1
