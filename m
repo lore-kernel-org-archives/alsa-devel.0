@@ -4,126 +4,158 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA9A4EFCD71
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 09:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46B78EFCD79
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Mar 2026 10:03:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 009F76024B;
-	Mon,  9 Mar 2026 10:45:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 009F76024B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 261D46026B;
+	Mon,  9 Mar 2026 11:02:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 261D46026B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773049521;
-	bh=7iO1MD8Lwj7iWDSnGaBcuxkuFXDdx6f+1FdKOjCsvPc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1773050588;
+	bh=aYHFuKYft/P8LUDEZLqIyXlMy1190wXMvq96SiysrBQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rLwnMScIXWCk9X7sYjc58wBvX1mDHZamaoyt/7d2tBdACKAHhooIOH2qlC/x2sbiP
-	 Zti8VaZ8e+bmt7w+vpYambyOPp146rQfeu3f2KpneeaI3EhP8ZtQltxiDVhjVQaKBx
-	 lx7HwdfosOR/N/cpG3FijIkjV4AJFnTUvfeI+dkg=
+	b=UBlK9I3xuiig23iE9cig0tDQPKoTXweofRdrRqbYyDXLrT7N3DJ65dRS2r0vPoqJl
+	 5HqlbkEJCQiLf6DhliiNuN9VyRvP4K9aXipeVhdVUGBm4suUO/yFuchhcSpzJu6c9w
+	 KVlkd4t7GDeykUmkS/wAJVf2ByjYz1IbAt54z2hE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E21B8F805EC; Mon,  9 Mar 2026 10:44:48 +0100 (CET)
+	id 831C2F805EC; Mon,  9 Mar 2026 11:02:32 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E791F805F0;
-	Mon,  9 Mar 2026 10:44:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46726F805F4;
+	Mon,  9 Mar 2026 11:02:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB692F80571; Mon,  9 Mar 2026 10:44:41 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	id 2731BF80571; Mon,  9 Mar 2026 11:02:24 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 809CBF8001E
-	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 10:44:35 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 54CD43CCE;
-	Mon,  9 Mar 2026 10:44:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 54CD43CCE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1773049473; bh=XQbeSDgqbgjivbjoV8xuUHgrTJUEzvSe7Vcty2z0uj0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pvRHXWM+kXAiPpRIIJ7sQVaaD64nqr/0zHNw45hZNfi9Nqg/WNkusavPiKIXJVwTo
-	 pps6WwxdhVWYw/zBmt9MGv2CHsIbmDUPhW5Bm0jBtPrB0SZ7JdI4Oa8DHGYQNrdZa4
-	 pW77mtEFhUOGxw2T6jvtuPIrB+AY4zbnh/KecWh4=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	by alsa1.perex.cz (Postfix) with ESMTPS id CEE96F8001E
+	for <alsa-devel@alsa-project.org>; Mon,  9 Mar 2026 11:02:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEE96F8001E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=GSqckg+l;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=LcOuS3eA;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=GSqckg+l;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=LcOuS3eA
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Mon,  9 Mar 2026 10:44:26 +0100 (CET)
-Message-ID: <a587fb9b-207f-4a24-a1b7-5c71601281d3@perex.cz>
-Date: Mon, 9 Mar 2026 10:44:25 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D25B45BE24;
+	Mon,  9 Mar 2026 10:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1773050537;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
+	b=GSqckg+lQdlGi8w/t3dLuSVfaWGVzzZNQZGGZDPizW94a7ahwec5RtcvMjBtwUdsuV1c3r
+	g66Mt2J4MM96nTLnT0td5Nb+zuZu1Chlzy5Db9YBTlX/rtlFnaQf0M/Uc9MXcZOQIOYPLv
+	P6V86rOggyGn2okq/+eOvxJBnB9PBEo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773050537;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
+	b=LcOuS3eAVS4plAUDh1TnpiA8kK/37acDN+z6qszC4TyjtUX3A6+o81oJfSbXM0/gs8FsUr
+	Hf8rcdY9UtfbuuBA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1773050537;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
+	b=GSqckg+lQdlGi8w/t3dLuSVfaWGVzzZNQZGGZDPizW94a7ahwec5RtcvMjBtwUdsuV1c3r
+	g66Mt2J4MM96nTLnT0td5Nb+zuZu1Chlzy5Db9YBTlX/rtlFnaQf0M/Uc9MXcZOQIOYPLv
+	P6V86rOggyGn2okq/+eOvxJBnB9PBEo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773050537;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bDJ1vFHK3HRa7YfLIk+B/yNORAMEFpRTQRFM5ciBjao=;
+	b=LcOuS3eAVS4plAUDh1TnpiA8kK/37acDN+z6qszC4TyjtUX3A6+o81oJfSbXM0/gs8FsUr
+	Hf8rcdY9UtfbuuBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AD323EE3B;
+	Mon,  9 Mar 2026 10:02:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jU1BJKmarmmnFQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 09 Mar 2026 10:02:17 +0000
+Date: Mon, 09 Mar 2026 11:02:17 +0100
+Message-ID: <87ikb5nwwm.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	patches@opensource.cirrus.com,
+	alsa-devel@alsa-project.org
 Subject: Re: [PATCH v3 2/2] ALSA: control: add ioctl to retrieve full card
  components
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- linux-sound@vger.kernel.org, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org
+In-Reply-To: <a587fb9b-207f-4a24-a1b7-5c71601281d3@perex.cz>
 References: <20260303145815.9930-1-mstrozek@opensource.cirrus.com>
- <20260303145815.9930-2-mstrozek@opensource.cirrus.com>
- <87seagx6c4.wl-tiwai@suse.de>
- <c4392a10442c436484d9758c54622888b07a3a74.camel@opensource.cirrus.com>
- <87v7fay4l1.wl-tiwai@suse.de>
- <cf59b85f5bfa3607b7ef799714df56bf42daa67a.camel@opensource.cirrus.com>
- <87pl5iy3z6.wl-tiwai@suse.de> <3174b8c9-8801-4d09-8e30-450899b40ca2@perex.cz>
- <87zf4lutju.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Content-Language: en-US
-Autocrypt: addr=perex@perex.cz; keydata=
- xsFNBFvNeCsBEACUu2ZgwoGXmVFGukNPWjA68/7eMWI7AvNHpekSGv3z42Iy4DGZabs2Jtvk
- ZeWulJmMOh9ktP9rVWYKL9H54gH5LSdxjYYTQpSCPzM37nisJaksC8XCwD4yTDR+VFCtB5z/
- E7U0qujGhU5jDTne3dZpVv1QnYHlVHk4noKxLjvEQIdJWzsF6e2EMp4SLG/OXhdC9ZeNt5IU
- HQpcKgyIOUdq+44B4VCzAMniaNLKNAZkTQ6Hc0sz0jXdq+8ZpaoPEgLlt7IlztT/MUcH3ABD
- LwcFvCsuPLLmiczk6/38iIjqMtrN7/gP8nvZuvCValLyzlArtbHFH8v7qO8o/5KXX62acCZ4
- aHXaUHk7ahr15VbOsaqUIFfNxpthxYFuWDu9u0lhvEef5tDWb/FX+TOa8iSLjNoe69vMCj1F
- srZ9x2gjbqS2NgGfpQPwwoBxG0YRf6ierZK3I6A15N0RY5/KSFCQvJOX0aW8TztisbmJvX54
- GNGzWurrztj690XLp/clewmfIUS3CYFqKLErT4761BpiK5XWUB4oxYVwc+L8btk1GOCOBVsp
- 4xAVD2m7M+9YKitNiYM4RtFiXwqfLk1uUTEvsaFkC1vu3C9aVDn3KQrZ9M8MBh/f2c8VcKbN
- njxs6x6tOdF5IhUc2E+janDLPZIfWDjYJ6syHadicPiATruKvwARAQABzSBKYXJvc2xhdiBL
- eXNlbGEgPHBlcmV4QHBlcmV4LmN6PsLBjgQTAQgAOBYhBF7f7LZepM3UTvmsRTCsxHw/elMJ
- BQJbzXgrAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEDCsxHw/elMJDGAP/ReIRiRw
- lSzijpsGF/AslLEljncG5tvb/xHwCxK5JawIpViwwyJss06/IAvdY5vn5AdfUfCl2J+OakaR
- VM/hdHjCYNu4bdBYZQBmEiKsPccZG2YFDRudEmiaoaJ1e8ZsiA3rSf4SiWWsbcBOYHr/unTf
- 4KQsdUHzPUt8Ffi9HrAFzI2wjjiyV5yUGp3x58ZypAIMcKFtA1aDwhA6YmQ6lb8/bC0LTC6l
- cAAS1tj7YF5nFfXsodCOKK5rKf5/QOF0OCD2Gy+mGLNQnq6S+kD+ujQfOLaUHeyfcNBEBxda
- nZID7gzd65bHUMAeWttZr3m5ESrlt2SaNBddbN7NVpVa/292cuwDCLw2j+fAZbiVOYyqMSY4
- LaNqmfa0wJAv30BMKeRAovozJy62j0AnntqrvtDqqvuXgYirj2BEDxx0OhZVqlI8o5qB6rA5
- Pfp2xKRE8Fw3mASYRDNad08JDhJgsR/N5JDGbh4+6sznOA5J63TJ+vCFGM37M5WXInrZJBM3
- ABicmpClXn42zX3Gdf/GMM3SQBrIriBtB9iEHQcRG/F+kkGOY4QDi4BZxo45KraANGmCkDk0
- +xLZVfWh8YOBep+x2Sf83up5IMmIZAtYnxr77VlMYHDWjnpFnfuja+fcnkuzvvy7AHJZUO1A
- aKexwcBjfTxtlX4BiNoK+MgrjYywzsFNBFvNeCsBEACb8FXFMOw1g+IGVicWVB+9AvOLOhqI
- FMhUuDWmlsnT8B/aLxcRVUTXoNgJpt0y0SpWD3eEJOkqjHuvHfk+VhKWDsg6vlNUmF1Ttvob
- 18rce0UH1s+wlE8YX8zFgODbtRx8h/BpykwnuWNTiotu9itlE83yOUbv/kHOPUz4Ul1+LoCf
- V2xXssYSEnNr+uUG6/xPnaTvKj+pC7YCl38Jd5PgxsP3omW2Pi9T3rDO6cztu6VvR9/vlQ8Z
- t0p+eeiGqQV3I+7k+S0J6TxMEHI8xmfYFcaVDlKeA5asxkqu5PDZm3Dzgb0XmFbVeakI0be8
- +mS6s0Y4ATtn/D84PQo4bvYqTsqAAJkApEbHEIHPwRyaXjI7fq5BTXfUO+++UXlBCkiH8Sle
- 2a8IGI1aBzuL7G9suORQUlBCxy+0H7ugr2uku1e0S/3LhdfAQRUAQm+K7NfSljtGuL8RjXWQ
- f3B6Vs7vo+17jOU7tzviahgeRTcYBss3e264RkL62zdZyyArbVbK7uIU6utvv0eYqG9cni+o
- z7CAe7vMbb5KfNOAJ16+znlOFTieKGyFQBtByHkhh86BQNQn77aESJRQdXvo5YCGX3BuRUaQ
- zydmrgwauQTSnIhgLZPv5pphuKOmkzvlCDX+tmaCrNdNc+0geSAXNe4CqYQlSnJv6odbrQlD
- Qotm9QARAQABwsF2BBgBCAAgFiEEXt/stl6kzdRO+axFMKzEfD96UwkFAlvNeCsCGwwACgkQ
- MKzEfD96Uwlkjg/+MZVS4M/vBbIkH3byGId/MWPy13QdDzBvV0WBqfnr6n99lf7tKKp85bpB
- y7KRAPtXu+9WBzbbIe42sxmWJtDFIeT0HJxPn64l9a1btPnaILblE1mrfZYAxIOMk3UZA3PH
- uFdyhQDJbDGi3LklDhsJFTAhBZI5xMSnqhaMmWCL99OWwfyJn2omp8R+lBfAJZR31vW6wzsj
- ssOvKIbgBpV/o3oGyAofIXPYzhY+jhWgOYtiPw9bknu748K+kK3fk0OeEG6doO4leB7LuWig
- dmLZkcLlJzSE6UhEwHZ8WREOMIGJnMF51WcF0A3JUeKpYYEvSJNDEm7dRtpb0x/Y5HIfrg5/
- qAKutAYPY7ClQLu5RHv5uqshiwyfGPaiE8Coyphvd5YbOlMm3mC/DbEstHG7zA89fN9gAzsJ
- 0TFL5lNz1s/fo+//ktlG9H28EHD8WOwkpibsngpvY+FKUGfJgIxpmdXVOkiORWQpndWyRIqw
- k8vz1gDNeG7HOIh46GnKIrQiUXVzAuUvM5vI9YaW3YRNTcn3pguQRt+Tl9Y6G+j+yvuLL173
- m4zRUU6DOygmpQAVYSOJvKAJ07AhQGaWAAi5msM6BcTU4YGcpW7FHr6+xaFDlRHzf1lkvavX
- WoxP1IA1DFuBMeYMzfyi4qDWjXc+C51ZaQd39EulYMh+JVaWRoY=
-In-Reply-To: <87zf4lutju.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+	<20260303145815.9930-2-mstrozek@opensource.cirrus.com>
+	<87seagx6c4.wl-tiwai@suse.de>
+	<c4392a10442c436484d9758c54622888b07a3a74.camel@opensource.cirrus.com>
+	<87v7fay4l1.wl-tiwai@suse.de>
+	<cf59b85f5bfa3607b7ef799714df56bf42daa67a.camel@opensource.cirrus.com>
+	<87pl5iy3z6.wl-tiwai@suse.de>
+	<3174b8c9-8801-4d09-8e30-450899b40ca2@perex.cz>
+	<87zf4lutju.wl-tiwai@suse.de>
+	<a587fb9b-207f-4a24-a1b7-5c71601281d3@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 43IJ5KEGIHP7GJ5X3FMFEV7KWEOHPMSU
-X-Message-ID-Hash: 43IJ5KEGIHP7GJ5X3FMFEV7KWEOHPMSU
-X-MailFrom: perex@perex.cz
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
+Message-ID-Hash: HCAJPSI57GOXMPMJEDNVZGZEZCD4MI2W
+X-Message-ID-Hash: HCAJPSI57GOXMPMJEDNVZGZEZCD4MI2W
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -134,7 +166,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/43IJ5KEGIHP7GJ5X3FMFEV7KWEOHPMSU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HCAJPSI57GOXMPMJEDNVZGZEZCD4MI2W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -143,115 +175,124 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 3/6/26 11:43, Takashi Iwai wrote:
-> On Fri, 06 Mar 2026 10:39:46 +0100,
-> Jaroslav Kysela wrote:
->>
->> On 3/5/26 11:18, Takashi Iwai wrote:
->>> On Thu, 05 Mar 2026 11:11:40 +0100,
->>> Maciej Strozek wrote:
->>>>
->>>> W dniu czw, 05.03.2026 o godzinie 11∶04 +0100, użytkownik Takashi Iwai
->>>> napisał:
->>>>> On Thu, 05 Mar 2026 10:54:35 +0100,
->>>>> Maciej Strozek wrote:
->>>>>>
->>>>>> W dniu wto, 03.03.2026 o godzinie 16∶47 +0100, użytkownik Takashi
->>>>>> Iwai
->>>>>> napisał:
->>>>>>>>
->>>>>>>> + */
->>>>>>>> +struct snd_ctl_card_components {
->>>>>>>> + int card;
->>>>>>>> + unsigned int length;
->>>>>>>> + unsigned char *components;
->>>>>>>> +};
->>>>>>>
->>>>>>> And the ioctl can serve for two purposes:
->>>>>>>
->>>>>>> - When length=0 is set, the kernel stores the current number of
->>>>>>> bytes
->>>>>>>     and returns without copying.  User-space can use this mode for
->>>>>>>     allocating the buffer.
->>>>>>>
->>>>>> In alsa-lib all data must be allocated beforehand, so this
->>>>>> length==0
->>>>>> query is not very useful there, it will just go into a [512] array
->>>>>> anyway. Are there any other users that may benefit from this?
->>>>>
->>>>> My suggested API can work even with the fixed size 512, too, if 512
->>>>> is
->>>>> hight enough.  It's just more flexible.  And there is no restriction
->>>>> about alsa-lib data allocation; the function can query the size then
->>>>> allocate, too.
->>>>>
->>>>>
->>>>> Takashi
->>>>
->>>> OK, will prepare v4 with this, thanks
->>>
->>> Well, let's see how others think, too.  The API design needs more
->>> considerations because we can't change it any longer once after
->>> defined.
->>
->> I think that the indirect pointer in ioctl structure is the best at
->> the moment unless we decide to use the fixed char array.
+On Mon, 09 Mar 2026 10:44:25 +0100,
+Jaroslav Kysela wrote:
 > 
-> OK, it might be indeed better if the user-space API is something like:
+> On 3/6/26 11:43, Takashi Iwai wrote:
+> > On Fri, 06 Mar 2026 10:39:46 +0100,
+> > Jaroslav Kysela wrote:
+> >> 
+> >> On 3/5/26 11:18, Takashi Iwai wrote:
+> >>> On Thu, 05 Mar 2026 11:11:40 +0100,
+> >>> Maciej Strozek wrote:
+> >>>> 
+> >>>> W dniu czw, 05.03.2026 o godzinie 11∶04 +0100, użytkownik Takashi Iwai
+> >>>> napisał:
+> >>>>> On Thu, 05 Mar 2026 10:54:35 +0100,
+> >>>>> Maciej Strozek wrote:
+> >>>>>> 
+> >>>>>> W dniu wto, 03.03.2026 o godzinie 16∶47 +0100, użytkownik Takashi
+> >>>>>> Iwai
+> >>>>>> napisał:
+> >>>>>>>> 
+> >>>>>>>> + */
+> >>>>>>>> +struct snd_ctl_card_components {
+> >>>>>>>> + int card;
+> >>>>>>>> + unsigned int length;
+> >>>>>>>> + unsigned char *components;
+> >>>>>>>> +};
+> >>>>>>> 
+> >>>>>>> And the ioctl can serve for two purposes:
+> >>>>>>> 
+> >>>>>>> - When length=0 is set, the kernel stores the current number of
+> >>>>>>> bytes
+> >>>>>>>     and returns without copying.  User-space can use this mode for
+> >>>>>>>     allocating the buffer.
+> >>>>>>> 
+> >>>>>> In alsa-lib all data must be allocated beforehand, so this
+> >>>>>> length==0
+> >>>>>> query is not very useful there, it will just go into a [512] array
+> >>>>>> anyway. Are there any other users that may benefit from this?
+> >>>>> 
+> >>>>> My suggested API can work even with the fixed size 512, too, if 512
+> >>>>> is
+> >>>>> hight enough.  It's just more flexible.  And there is no restriction
+> >>>>> about alsa-lib data allocation; the function can query the size then
+> >>>>> allocate, too.
+> >>>>> 
+> >>>>> 
+> >>>>> Takashi
+> >>>> 
+> >>>> OK, will prepare v4 with this, thanks
+> >>> 
+> >>> Well, let's see how others think, too.  The API design needs more
+> >>> considerations because we can't change it any longer once after
+> >>> defined.
+> >> 
+> >> I think that the indirect pointer in ioctl structure is the best at
+> >> the moment unless we decide to use the fixed char array.
+> > 
+> > OK, it might be indeed better if the user-space API is something like:
+> > 
+> > int snd_ctl_card_components(snd_ctl_t *ctl, unsigned char *buf, size_t len);
+> > 
+> > Then it's simpler to pass the pointer as is without copying.
+> > 
+> >> But (for
+> >> discussion) we may try to be a bit clever and define universal bytes
+> >> ioctl which may carry also other things in future like:
+> >> 
+> >> enum {
+> >> 	SND_CTL_CARD_BTYPE_COMPONENTS = 1
+> >> };
+> > 
+> > So this is for future extensions?
+> > 
+> >> struct snd_ctl_card_bytes {
+> >> 	unsigned int card;		// this is duplication with info ioctl
+> >> 					// to be removed?
+> > 
+> > Right, it sounds like superfluous.  I thought we were to allow
+> > extracting a card info for a different card number, but it doesn't
+> > look so.
+> > 
+> >> 	unsigned int type;		// e.g. SND_CTL_CARD_BTYPE_COMPONENTS
+> >> 	unsigned int data_allocated;	// overall size of data
+> >> 	unsigned int data_len;		// actual data len
+> >> 	unsigned char *data;		// pointer to data array
+> >> };
+> >> 
+> >> Scenarios:
+> >> 
+> >> data_allocated = 0 or data == NULL -> driver just returns data_len
+> >> data_allocated < data_len -> driver returns -ENOMEM
+> >> data_allocated >= data_len -> driver will copy data
+> >> 
+> >> Note that data_len will be zero from the user space for read
+> >> operations (driver knows it). But we can eventually use this ioctl to
+> >> set some data in future, so data_len/data will be used for the write
+> >> operation.
+> > 
+> > In all cases, data_len is filled with the expected data size in
+> > return, right?
 > 
-> int snd_ctl_card_components(snd_ctl_t *ctl, unsigned char *buf, size_t len);
-> 
-> Then it's simpler to pass the pointer as is without copying.
-> 
->> But (for
->> discussion) we may try to be a bit clever and define universal bytes
->> ioctl which may carry also other things in future like:
->>
->> enum {
->> 	SND_CTL_CARD_BTYPE_COMPONENTS = 1
->> };
-> 
-> So this is for future extensions?
-> 
->> struct snd_ctl_card_bytes {
->> 	unsigned int card;		// this is duplication with info ioctl
->> 					// to be removed?
-> 
-> Right, it sounds like superfluous.  I thought we were to allow
-> extracting a card info for a different card number, but it doesn't
-> look so.
-> 
->> 	unsigned int type;		// e.g. SND_CTL_CARD_BTYPE_COMPONENTS
->> 	unsigned int data_allocated;	// overall size of data
->> 	unsigned int data_len;		// actual data len
->> 	unsigned char *data;		// pointer to data array
->> };
->>
->> Scenarios:
->>
->> data_allocated = 0 or data == NULL -> driver just returns data_len
->> data_allocated < data_len -> driver returns -ENOMEM
->> data_allocated >= data_len -> driver will copy data
->>
->> Note that data_len will be zero from the user space for read
->> operations (driver knows it). But we can eventually use this ioctl to
->> set some data in future, so data_len/data will be used for the write
->> operation.
-> 
-> In all cases, data_len is filled with the expected data size in
-> return, right?
+> I would return data_len only when data_allocated == 0 or when the user
+> space array can hold complete data. When ioctl returns an error code
+> (e.g. ENOMEM), the structure should not be modified IMHO.
 
-I would return data_len only when data_allocated == 0 or when the user space 
-array can hold complete data. When ioctl returns an error code (e.g. ENOMEM), 
-the structure should not be modified IMHO.
+I find it OK, otherwise you'd need one more ioctl, but it's a kind of
+bike-shedding topic, and I don't mind much whether it should be so or
+not.
 
-Eventually, we can extend the structure to be even more universal and add 
-'data_offset' and 'data_overall_len' to support fully partial transfers. In 
-this case, data_len would mean filled/used chunk size and the "overflow" error 
-won't exist.
+> Eventually, we can extend the structure to be even more universal and
+> add 'data_offset' and 'data_overall_len' to support fully partial
+> transfers. In this case, data_len would mean filled/used chunk size
+> and the "overflow" error won't exist.
 
-						Jaroslav
+Yeah, we can, and I had that in mind, too.  But it makes things
+complex, so let's not step into it yet.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+
+thanks,
+
+Takashi
