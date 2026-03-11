@@ -4,141 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F56F106703C
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2026 15:24:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E39F1067044
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2026 15:25:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB0DD601FE;
-	Thu, 12 Mar 2026 16:24:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB0DD601FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD2C60230;
+	Thu, 12 Mar 2026 16:24:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD2C60230
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773329084;
-	bh=42EEnIo48m+E4ZUcaEDasfHmBleywoOljOZE8Z+sEMA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=NLXzEbxnSnV73NyrZZtGyHDIi8N36MZeu2luEhVZqEjsou3WffjB8P+XfTps+fpho
-	 V7rDew6QoFyKvRksax/vfZ1KCOqOF827DlaiL36WbSqxOiW+hg/XyZCgJzeEXzrg+r
-	 eHqI3p+jb/pfuwE9u554QTUNVqqZv/M/m5W+Zy6A=
+	s=default; t=1773329107;
+	bh=TPU0qOuESeoqzMsH1iHrGqR8ckYTZCC1B7j+ZgUkJw8=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Mw4Xs65Fc8UaqYlW6u9JNkYga5YRK7RhAwfhnxVi9Bd94z5CO1G0gqEI1jbK8YJR+
+	 YrDFWY9hig0Nli6dsdV2e59QhNg9t5LUPgeTif6wCASYl0czl91+bSsM5Yi0NnGtCS
+	 VC9c+izbr02mBbxxv40LEiHMNHCVzVL+UjuoTYxg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4A22F80634; Thu, 12 Mar 2026 16:23:45 +0100 (CET)
+	id 412FDF805E2; Thu, 12 Mar 2026 16:23:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54CB5F8063B;
-	Thu, 12 Mar 2026 16:23:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0B90F8026D;
+	Thu, 12 Mar 2026 16:23:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67B5BF8053B; Tue, 10 Mar 2026 10:41:13 +0100 (CET)
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com
- [209.85.210.173])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 22BCAF80552; Wed, 11 Mar 2026 09:25:02 +0100 (CET)
+Received: from mail.internetuniverse.org (mail.internetuniverse.org
+ [66.235.173.197])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+ SHA512)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 45AD6F8047D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2026 10:41:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45AD6F8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id E49FCF80171
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2026 09:24:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E49FCF80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=iaowWhLW
-Received: by mail-pf1-f173.google.com with SMTP id
- d2e1a72fcca58-829781b2b01so3894498b3a.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 10 Mar 2026 02:41:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773135669; cv=none;
-        d=google.com; s=arc-20240605;
-        b=JdYR08rTJ7TTEzumDP90YRt29ittoaRZqJn8ETWVTJxnPl+vYJszgKWEKCVloNU3jR
-         s22tP94wsU9mBHqwnKO+PNIEl59oKo4HTslNvVXduShia6bU6VrQqDnKJ/7xZSeSLZNO
-         ud/zMOcMPpkhkjTUY4ziuNcjGbckZsdyNQPsZlQDz5GEQV4ZmfpMHW/nryne0d8CU3ct
-         CTtC7ZtOgR/2rJQk3srNIcDwYphw+Pxpd2zdM2NSFPGkvn+F33UukXMyYgm1Sb85YqpH
-         H+KiiqZdKEBdRRex4xnrhN+8YombCIHhXmP+LBgx+RQ60F4Ctl+BYIN09mpJhxb5gKwh
-         F08A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Too0WbBvqqA2xsVan1ZK/sbxWcWO3tAja3epVtAoaes=;
-        fh=tOix8eBuiz6sGVYpwwP+0+pTDNJh5CSGal5ElMLXDEE=;
-        b=kbY2hU9c7kbWuKT1VBtHgNrp+luKDtEHinW6OBKp71wckngTr0ZzvNVK1mi4E+l9W9
-         2ElyeJmxfgEziJn+mbHEKQ9x83bh1Z8KwrSP5xYuv074SeWHRU20aHOvjD3NhaXR4+D9
-         e1o0hDhGQgACopa60Yk6+sWivV0HU/aKHcX6gmk+2esWj0cj3t5nAHl8dsbAJzCXCpH3
-         u7rDJoTtbXtj8sKszIdjsljz8djY1CTbty0Fy1FYM25T+SzQHE9V5Ux3nJ/JlOC6GHzR
-         qE9B6DWVP23N512AevTMqenAOjoYfX0AIfmjKagnqWP5lmkwXceuwvf1Nq3r+ti4xPSB
-         A+9Q==;
-        darn=alsa-project.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773135669; x=1773740469;
- darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Too0WbBvqqA2xsVan1ZK/sbxWcWO3tAja3epVtAoaes=;
-        b=iaowWhLWPV6NoLkDwiruZY1URhbDXrgp4fh71YSK/Clkd2L6IM1fbca5O+NOBR8CeX
-         eT7tO1itLNvNSJCaIOQv44C1hH2FnPEZAG7i4Srd+RSmEMQ/C7QDu1fPeMsF0+VG3WIe
-         Nfl4KUIdY62VG6spuxCcvMM5Y7oEJOrITKlSDOH6Zf+9535+/AKhHt198SBHe/q1El8Q
-         +eTbb2Znjgh6bVIaig21PBkj0jWYTYTUk6O1uqQ5oOJFro8wZuZ7LfUB8NypmZhddMxy
-         ZE2rORV2kMUMeLSjzOfMYGcEQME5ZBsz2BMvnyjlfwmJwDgFSbTou1VakmHfMnehUgvd
-         bYjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773135669; x=1773740469;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Too0WbBvqqA2xsVan1ZK/sbxWcWO3tAja3epVtAoaes=;
-        b=uBJld9ENCE8PP4QDTKgPQThBhqjS4ASHbJVrOURoz2AIqeXgZEZUJVIc0v3klUZGtQ
-         Dqnf6yOLFxabvVe9DAQ1MdeaKBQcARzKM4QAwkh0Lqu+QeIq3iPrOsV8Ei3RZTkGgY2e
-         BS6o5A8mz7m0Uc7eLdF+WG8x4x3t0DyG2r7ABKe5Sdy6uIyKwB+EMXiMNc9CtsolOv9F
-         B4GVJCSuf680UmukWBIf/jKZiGpNQVcalnFLjXE08hXlw0f/vP+J2Bd5NkQ03wmmU35C
-         CuTtasG61Imie90aNz/1wSVOgJHF8XeWeDuNNimm2JZCYlAZR3iFdsqGUv6/8UbGsY3M
-         QwHQ==
-X-Forwarded-Encrypted: i=1;
- AJvYcCUOKxpPmR1mvjEIciMn9wX8IcOpdaeKolRDDcOvAn3IjxD/MNEFb9teepCdmkD3bBVdSjPbFmNamwn7@alsa-project.org
-X-Gm-Message-State: AOJu0YyUxGHzE0lC33pAx1PjTHcEP0EO3YsvSf9IzTy9UngIPgzFja/u
-	anGD/XPBk23w2b9l4Jw3WxQe5wsKuc71X9h+F6SEH/3G0DQZmdV8fwd11X330Ec9/ZcaimLlwFM
-	9cJzYVGeBTOnc7maGeGeX0vsqx9R4DCg=
-X-Gm-Gg: ATEYQzz6H8iZSF0i+O4v7v/YCvO4QPNEQn+37Dgr2aHS86NW16ozXEFkhK9qSwttZmk
-	pDhDpP/Voo4S5HxYPiPZbRwvQTv4rl7TOqOMUyoLwYZlcWzlqDf3D+c0yeuyGyRYL4io5hpc9V+
-	aOb0GXtkcJJEaqndPXic2d9/zj2kT1h4UGXnjmgYCQgT1MqCG4wa29wTJJnVsT64KLuf6RnRMvT
-	aYP7IrpjA4hRI/4TpTgs9XE68jvGFAFvW3h5L75bnZj/SobLVgo1VXnDNHCK4VxaIGEF1TV1zF+
-	hRkgxSfYfqDYtRSz8aLePcbkp5isFc+9ljwBiROuPLwnor+qTg==
-X-Received: by 2002:a05:6a00:2789:b0:823:9e5:855e with SMTP id
- d2e1a72fcca58-829a2b460c1mr12731502b3a.0.1773135668517; Tue, 10 Mar 2026
- 02:41:08 -0700 (PDT)
+ unprotected) header.d=internetuniverse.org header.i=@internetuniverse.org
+ header.a=rsa-sha256 header.s=202512r header.b=Aus2oboP
+DKIM-Signature: v=1; a=rsa-sha256; s=202512r; d=internetuniverse.org;
+ c=relaxed/relaxed;
+	h=To:Subject:Message-ID:From:Date; t=1773217487; bh=3bQAepcTrpOY4ruE8H5+uc2
+	oqHfyUtnU1u3kZunssvU=; b=Aus2oboPbVxUvDPzat6EGra61ynNQwgDV8yhxmpZSMT3lmXxuk
+	//qaMoeE0Ptk2RdLW8b101eB/dPKY9isLPM6YsqEbpgY2n0fFYZaxrjPb9Xm6rdSc55uQqP01Hr
+	X5OIaFmFInZkYSuxkxsMJ8vcw2oYpK2mQuuQHKCM0BZMARwfOn/8UVkV6BA5Ckvr9UdtvQzmlRz
+	jYB2IClK9r+9CgGrG8ptYzE01TM9EY/jIjHSsTSDvAg2X7wltTji22jZGHtFkTMDg2FXUdnhBiE
+	U3ZaIkbkVlG9ZAVu6g3xwz7PBEes2JKz066KzvSR6/Ec+3Fp+8zgUOh6aL1TUn/yKAA==;
 MIME-Version: 1.0
-References: 
- <CAC88DfsHrhyhy0Pn1O-z9egBvMYu=6NYgcvcC6KCgwh_-Ldkxg@mail.gmail.com>
- <87a4wgrxil.wl-tiwai@suse.de>
- <CAC88DfvjQvZvdvGdZ00woMymE2tUWk=2Dbqi3EzuzSHxGjEnzw@mail.gmail.com>
- <871phsrsnf.wl-tiwai@suse.de>
-In-Reply-To: <871phsrsnf.wl-tiwai@suse.de>
-From: =?UTF-8?B?SsOpcsOpbXkgQmV0aG1vbnQ=?= <jeremy.bethmont@gmail.com>
-Date: Tue, 10 Mar 2026 16:40:56 +0700
-X-Gm-Features: AaiRm53XcUwyb-5gh4G-OUgUJCFpiE_MjC72GceFp0Xp0OciyYPxLtNoIGmtRic
-Message-ID: 
- <CAC88Dfv9S+BVJAZeZ+rfyRQHB4C05mSNSHyLh+DTvUAyGOCX=g@mail.gmail.com>
-Subject: Re: [REGRESSION] Audio popping on ThinkPad X1 Carbon Gen 12 (ALC287)
- after commit d2e01e0c5e94
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org,
-	regressions@lists.linux.dev, regressions@leemhuis.info
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: jeremy.bethmont@gmail.com
+Date: Wed, 11 Mar 2026 08:24:47 +0000
+Content-Type: multipart/mixed;
+ boundary="81463dbb-a229-400f-b5af-782f002c83b6-1"
+From: "Zack Fitch" <zack@internetuniverse.org>
+Message-ID: <98643a1eb0aba1a7dbc0742fc831317e35581c5c@internetuniverse.org>
+TLS-Required: No
+Subject: [PATCH] ALSA: hda/realtek: enable dual-DAC on Gigabyte X570S/X870E
+ ALC1220
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
+X-MailFrom: zack@internetuniverse.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: FQSSQXTY7ZD7JEAU4K5ZHOOGUM3TPROO
-X-Message-ID-Hash: FQSSQXTY7ZD7JEAU4K5ZHOOGUM3TPROO
+Message-ID-Hash: 2UVMQCBIWUDHU4DEIF2GZALH3JRT43QC
+X-Message-ID-Hash: 2UVMQCBIWUDHU4DEIF2GZALH3JRT43QC
 X-Mailman-Approved-At: Thu, 12 Mar 2026 15:23:29 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FQSSQXTY7ZD7JEAU4K5ZHOOGUM3TPROO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2UVMQCBIWUDHU4DEIF2GZALH3JRT43QC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,118 +82,104 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Takashi,
+--81463dbb-a229-400f-b5af-782f002c83b6-1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-To answer your question: no, if I disable runtime PM (or prevent the
-audio server from suspending the sink), the pop noise does not appear
-at all.
+Hi,
 
-The pop is completely eliminated as long as the device remains awake.
-It strictly occurs at the exact moment the audio stream closes and the
-device drops into a suspended state.
+  Please consider the attached patch for the Gigabyte X570S/X870E Aorus
+  ALC1220 audio codec.
 
-Best regards,
-Jeremy
+  Thanks,
+  Zack
+--81463dbb-a229-400f-b5af-782f002c83b6-1
+Content-Type: text/x-diff;
+ name="0001-ALSA-hda-realtek-enable-dual-DAC-on-Gigabyte-X570S-X.patch"
+Content-Disposition: attachment;
+ filename="0001-ALSA-hda-realtek-enable-dual-DAC-on-Gigabyte-X570S-X.patch"
+Content-Transfer-Encoding: base64
 
-On Tue, 10 Mar 2026 at 15:32, Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Tue, 10 Mar 2026 09:24:38 +0100,
-> J=C3=A9r=C3=A9my Bethmont wrote:
-> >
-> > Hi Takashi,
-> >
-> > Thank you for looking into this so quickly.
-> >
-> > As requested, I have attached the output of `alsa-info.sh --no-upload`
-> > from my machine.
-> >
-> > Please let me know if you have a proposed patch you would like me to
-> > test. I am happy to build it and verify if it resolves the popping on
-> > my hardware.
->
-> I guess dropping the alc_process_coef_fw(codec, en_coefs) call at
-> closing would fix your problem while keeping the one at open.
-> But I'm not sure about any side-effect by that.
-> Kailang, could you check this?
->
-> BTW, when you disable runtime PM, does the pop noise still appears?
->
->
-> thanks,
->
-> Takashi
->
-> >
-> > Best regards,
-> > Jeremy
-> >
-> > On Tue, 10 Mar 2026 at 13:47, Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Tue, 10 Mar 2026 01:01:11 +0100,
-> > > J=C3=A9r=C3=A9my Bethmont wrote:
-> > > >
-> > > > Hi Takashi, Kailang,
-> > > >
-> > > > I am reporting an audio regression introduced in kernel 6.18.13 on =
-the
-> > > > Lenovo ThinkPad X1 Carbon Gen 12 (Meteor Lake, Realtek ALC287 codec=
-,
-> > > > SSID: 0x17aa231e).
-> > > >
-> > > > Since this update, the laptop emits a short, noticeable hardware
-> > > > pop/blip from the speakers exactly when an audio stream closes and =
-the
-> > > > PCM state suspends. It happens consistently a few seconds after
-> > > > playback finishes (e.g., after a system notification or terminal
-> > > > bell).
-> > > >
-> > > > I have tracked the regression down to the following commit:
-> > > > d2e01e0c5e947da0b5005ca89efa82baeb232adc ("ALSA: hda/realtek - fixe=
-d
-> > > > speaker no sound")
-> > > >
-> > > > #regzbot introduced: d2e01e0c5e947da0b5005ca89efa82baeb232adc
-> > > >
-> > > > Root cause analysis:
-> > > > The commit modifies the `alc287_alc1318_playback_pcm_hook` function=
-,
-> > > > adding raw COEF writes to disable/enable AMP silence detection on
-> > > > HDA_GEN_PCM_ACT_OPEN and HDA_GEN_PCM_ACT_CLOSE.
-> > > >
-> > > > Because `alc287_alc1318_playback_pcm_hook` is a shared hook used by
-> > > > multiple Lenovo ALC287/ALC1318 devices, these unconditional
-> > > > `WRITE_COEF` instructions are being sent to hardware that does not
-> > > > need the silence detection fix. On the X1 Carbon Gen 12, executing
-> > > > `alc_process_coef_fw(codec, en_coefs)` upon stream close triggers a=
-n
-> > > > immediate electrical pop. Monitoring with `pw-mon` confirms the
-> > > > hardware pop coincides perfectly with the monitor_FR / monitor_FL
-> > > > ports going idle/suspended.
-> > > >
-> > > > Proposed solution:
-> > > > Could we revert this commit, or alternatively, wrap these specific
-> > > > silence-detection COEF writes in a targeted `ALC287_FIXUP` quirk
-> > > > matched via SSID/DMI, rather than executing them globally in the
-> > > > shared playback hook?
-> > >
-> > > Could you give alsa-info.sh output?  Run the script with --no-upload
-> > > option and attach the output.
-> > >
-> > > I guess the bug might not be specific to your device but happening in
-> > > general with all matching ones.  As a workaround for such a pop noise=
-,
-> > > we often need to reorder verbs or put some delay between verbs.
-> > >
-> > >
-> > > Takashi
-> >
-> >
-> >
-> > --
-> > J=C3=A9r=C3=A9my Bethmont
-> >
-
-
-
---=20
-J=C3=A9r=C3=A9my Bethmont
+RnJvbSAwNmRlZWUxODVlMjllZTM1MmVkZTkwZWE2M2ZkYjA0NDhkYTI0MmFjIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBaYWNrIEZpdGNoIDx6YWNrQGludGVybmV0dW5pdmVy
+c2Uub3JnPgpEYXRlOiBXZWQsIDExIE1hciAyMDI2IDAxOjIyOjM5IC0wNzAwClN1YmplY3Q6
+IFtQQVRDSF0gQUxTQTogaGRhL3JlYWx0ZWs6IGVuYWJsZSBkdWFsLURBQyBvbiBHaWdhYnl0
+ZSBYNTcwUy9YODcwRQogQUxDMTIyMAoKVGhlIEFMQzEyMjAgY29kZWMgb24gR2lnYWJ5dGUg
+WDU3MFMgQW9ydXMgTWFzdGVyIGFuZCBYODcwRSBBT1JVUwpYVFJFTUUgQUkgVE9QIGJvYXJk
+cyAoc3Vic3lzdGVtIDB4MTQ1ODoweGEwZDUpIGhhcyB0d28gdXNhYmxlIG91dHB1dApwYXRo
+czoKCiAgLSBQaW4gMHgxNCAoZnJvbnQgSFApOiBoYXJkd2lyZWQgdG8gbWl4ZXIgMHgwYyAt
+PiBEQUMgMHgwMgogIC0gUGluIDB4MWIgKHJlYXIgbGluZS1vdXQpOiA1IGNvbm5lY3Rpb25z
+ICgweDBjIDB4MGQgMHgwZSAweDBmIDB4MjYpCgpUaGUgZXhpc3RpbmcgQUxDMTIyMF9GSVhV
+UF9HQl9YNTcwIHF1aXJrIG92ZXJyaWRlcyAweDFiJ3MgY29ubmVjdGlvbgpsaXN0IHRvIHsw
+eDBjfSBvbmx5LCBmb3JjaW5nIGJvdGggb3V0cHV0cyBvbnRvIERBQyAweDAyLiBJdCBhbHNv
+IGRvZXMKbm90IHN1cHByZXNzIGF1dG8tbXV0ZSwgc28gaW5zZXJ0aW5nIGhlYWRwaG9uZXMg
+c2lsZW5jZXMgdGhlIHJlYXIKbGluZS1vdXQuCgpEZXNrdG9wIHVzZXJzIG5lZWQgYm90aCBv
+dXRwdXRzIGFjdGl2ZSBzaW11bHRhbmVvdXNseSB3aXRoIGluZGVwZW5kZW50CkRBQyByb3V0
+aW5nIGZvciBwZXItYXBwbGljYXRpb24gYXVkaW8gKGUuZy4sIERpc2NvcmQgdG8gaGVhZHBo
+b25lcywKbXVzaWMgdG8gc3BlYWtlcnMpLgoKQWRkIEFMQzEyMjBfRklYVVBfR0JfQU9SVVNf
+Tk9fQVVUT01VVEUgd2hpY2g6CiAgLSBEb2VzIE5PVCByZXN0cmljdCAweDFiJ3MgY29ubmVj
+dGlvbiBsaXN0LCBhbGxvd2luZyB0aGUgZ2VuZXJpYyBIREEKICAgIHBhcnNlciB0byBhc3Np
+Z24gREFDIDB4MDMgKHZpYSBtaXhlciAweDBkKSBhcyBhbiBpbmRlcGVuZGVudCBvdXRwdXQK
+ICAtIFNldHMgc3VwcHJlc3NfYXV0b19tdXRlIHNvIGZyb250IEhQIGluc2VydGlvbiBkb2Vz
+IG5vdCBtdXRlIHJlYXIKClRoZSBjb2VmZmljaWVudCB3cml0ZXMgZnJvbSBnYl94NTcwIGFy
+ZSBub3QgcmVxdWlyZWQgZm9yIGF1ZGlvIG91dHB1dApvbiB0aGVzZSBib2FyZHMsIGFzIGNv
+bmZpcm1lZCBieSB0ZXN0aW5nIHdpdGggbW9kZWw9Z2VuZXJpYyBhbmQgYnkKcmV2ZXJzZS1l
+bmdpbmVlcmluZyB0aGUgV2luZG93cyBSZWFsdGVrIGRyaXZlciB3aGljaCBhcHBsaWVzIG5v
+CmJvYXJkLXNwZWNpZmljIGhhbmRsaW5nIGZvciB0aGlzIHN1YnN5c3RlbSBJRC4KClRlc3Rl
+ZCBvbjogR2lnYWJ5dGUgWDg3MEUgQU9SVVMgWFRSRU1FIEFJIFRPUAogIEFMQzEyMjAgY29k
+ZWMsIHN1YnN5c3RlbSAweDE0NTg6MHhhMGQ1CiAgQU1EIFJ5emVuIEhEIEF1ZGlvIENvbnRy
+b2xsZXIgWzEwMjI6MTVlM10KICBLZXJuZWwgNi4xOC4xMy1hcmNoMS0xCgpTaWduZWQtb2Zm
+LWJ5OiBaYWNrIEZpdGNoIDx6YWNrQGludGVybmV0dW5pdmVyc2Uub3JnPgotLS0KIHNvdW5k
+L2hkYS9jb2RlY3MvcmVhbHRlay9hbGM4ODIuYyB8IDIyICsrKysrKysrKysrKysrKysrKysr
+Ky0KIDEgZmlsZSBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpk
+aWZmIC0tZ2l0IGEvc291bmQvaGRhL2NvZGVjcy9yZWFsdGVrL2FsYzg4Mi5jIGIvc291bmQv
+aGRhL2NvZGVjcy9yZWFsdGVrL2FsYzg4Mi5jCmluZGV4IDUyOWZlY2Q1YmEuLjZiNjE3MTli
+OTYgMTAwNjQ0Ci0tLSBhL3NvdW5kL2hkYS9jb2RlY3MvcmVhbHRlay9hbGM4ODIuYworKysg
+Yi9zb3VuZC9oZGEvY29kZWNzL3JlYWx0ZWsvYWxjODgyLmMKQEAgLTU0LDYgKzU0LDcgQEAg
+ZW51bSB7CiAJQUxDODg3X0ZJWFVQX0JBU1NfQ0hNQVAsCiAJQUxDMTIyMF9GSVhVUF9HQl9E
+VUFMX0NPREVDUywKIAlBTEMxMjIwX0ZJWFVQX0dCX1g1NzAsCisJQUxDMTIyMF9GSVhVUF9H
+Ql9BT1JVU19OT19BVVRPTVVURSwKIAlBTEMxMjIwX0ZJWFVQX0NMRVZPX1A5NTAsCiAJQUxD
+MTIyMF9GSVhVUF9DTEVWT19QQjUxRUQsCiAJQUxDMTIyMF9GSVhVUF9DTEVWT19QQjUxRURf
+UElOUywKQEAgLTIxMSw2ICsyMTIsMjAgQEAgc3RhdGljIHZvaWQgYWxjMTIyMF9maXh1cF9n
+Yl94NTcwKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAogCX0KIH0KIAorLyogR2lnYWJ5dGUg
+WDU3MFMvWDg3MEUgQW9ydXMgYm9hcmRzOiBlbmFibGUgaW5kZXBlbmRlbnQgREFDIHJvdXRp
+bmcKKyAqIGJ5IG5vdCByZXN0cmljdGluZyBwaW4gMHgxYidzIGNvbm5lY3Rpb24gbGlzdCwg
+YW5kIHN1cHByZXNzIGF1dG8tbXV0ZQorICogc28gZnJvbnQgaGVhZHBob25lIGluc2VydGlv
+biBkb2VzIG5vdCBzaWxlbmNlIHJlYXIgbGluZS1vdXQuCisgKi8KK3N0YXRpYyB2b2lkIGFs
+YzEyMjBfZml4dXBfZ2JfYW9ydXNfbm9fYXV0b211dGUoc3RydWN0IGhkYV9jb2RlYyAqY29k
+ZWMsCisJCQkJCSAgICAgICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsCisJCQkJCSAg
+ICAgICBpbnQgYWN0aW9uKQoreworCXN0cnVjdCBhbGNfc3BlYyAqc3BlYyA9IGNvZGVjLT5z
+cGVjOworCisJaWYgKGFjdGlvbiA9PSBIREFfRklYVVBfQUNUX1BSRV9QUk9CRSkKKwkJc3Bl
+Yy0+Z2VuLnN1cHByZXNzX2F1dG9fbXV0ZSA9IDE7Cit9CisKIHN0YXRpYyB2b2lkIGFsYzEy
+MjBfZml4dXBfY2xldm9fcDk1MChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKIAkJCQkgICAg
+IGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgKmZpeCwKIAkJCQkgICAgIGludCBhY3Rpb24pCkBA
+IC01MTQsNiArNTI5LDEwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwIGFsYzg4
+Ml9maXh1cHNbXSA9IHsKIAkJLnR5cGUgPSBIREFfRklYVVBfRlVOQywKIAkJLnYuZnVuYyA9
+IGFsYzEyMjBfZml4dXBfZ2JfeDU3MCwKIAl9LAorCVtBTEMxMjIwX0ZJWFVQX0dCX0FPUlVT
+X05PX0FVVE9NVVRFXSA9IHsKKwkJLnR5cGUgPSBIREFfRklYVVBfRlVOQywKKwkJLnYuZnVu
+YyA9IGFsYzEyMjBfZml4dXBfZ2JfYW9ydXNfbm9fYXV0b211dGUsCisJfSwKIAlbQUxDMTIy
+MF9GSVhVUF9DTEVWT19QOTUwXSA9IHsKIAkJLnR5cGUgPSBIREFfRklYVVBfRlVOQywKIAkJ
+LnYuZnVuYyA9IGFsYzEyMjBfZml4dXBfY2xldm9fcDk1MCwKQEAgLTYzNSw3ICs2NTQsNyBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9xdWlyayBhbGM4ODJfZml4dXBfdGJsW10gPSB7
+CiAJU05EX1BDSV9RVUlSSygweDE0NTgsIDB4YTBiOCwgIkdpZ2FieXRlIEFaMzcwLUdhbWlu
+ZyIsIEFMQzEyMjBfRklYVVBfR0JfRFVBTF9DT0RFQ1MpLAogCVNORF9QQ0lfUVVJUksoMHgx
+NDU4LCAweGEwY2QsICJHaWdhYnl0ZSBYNTcwIEFvcnVzIE1hc3RlciIsIEFMQzEyMjBfRklY
+VVBfR0JfWDU3MCksCiAJU05EX1BDSV9RVUlSSygweDE0NTgsIDB4YTBjZSwgIkdpZ2FieXRl
+IFg1NzAgQW9ydXMgWHRyZW1lIiwgQUxDMTIyMF9GSVhVUF9HQl9YNTcwKSwKLQlTTkRfUENJ
+X1FVSVJLKDB4MTQ1OCwgMHhhMGQ1LCAiR2lnYWJ5dGUgWDU3MFMgQW9ydXMgTWFzdGVyIiwg
+QUxDMTIyMF9GSVhVUF9HQl9YNTcwKSwKKwlTTkRfUENJX1FVSVJLKDB4MTQ1OCwgMHhhMGQ1
+LCAiR2lnYWJ5dGUgWDU3MFMvWDg3MEUgQW9ydXMiLCBBTEMxMjIwX0ZJWFVQX0dCX0FPUlVT
+X05PX0FVVE9NVVRFKSwKIAlTTkRfUENJX1FVSVJLKDB4MTQ2MiwgMHgxMWY3LCAiTVNJLUdF
+NjMiLCBBTEMxMjIwX0ZJWFVQX0NMRVZPX1A5NTApLAogCVNORF9QQ0lfUVVJUksoMHgxNDYy
+LCAweDEyMjgsICJNU0ktR1A2MyIsIEFMQzEyMjBfRklYVVBfQ0xFVk9fUDk1MCksCiAJU05E
+X1BDSV9RVUlSSygweDE0NjIsIDB4MTIyOSwgIk1TSS1HUDczIiwgQUxDMTIyMF9GSVhVUF9D
+TEVWT19QOTUwKSwKQEAgLTcxOCw2ICs3MzcsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGhk
+YV9tb2RlbF9maXh1cCBhbGM4ODJfZml4dXBfbW9kZWxzW10gPSB7CiAJey5pZCA9IEFMQzg4
+N19GSVhVUF9BU1VTX0JBU1MsIC5uYW1lID0gImFzdXMtYmFzcyJ9LAogCXsuaWQgPSBBTEMx
+MjIwX0ZJWFVQX0dCX0RVQUxfQ09ERUNTLCAubmFtZSA9ICJkdWFsLWNvZGVjcyJ9LAogCXsu
+aWQgPSBBTEMxMjIwX0ZJWFVQX0dCX1g1NzAsIC5uYW1lID0gImdiLXg1NzAifSwKKwl7Lmlk
+ID0gQUxDMTIyMF9GSVhVUF9HQl9BT1JVU19OT19BVVRPTVVURSwgLm5hbWUgPSAiZ2ItYW9y
+dXMtbm8tYXV0b211dGUifSwKIAl7LmlkID0gQUxDMTIyMF9GSVhVUF9DTEVWT19QOTUwLCAu
+bmFtZSA9ICJjbGV2by1wOTUwIn0sCiAJe30KIH07CgpiYXNlLWNvbW1pdDogZmQ3ZGY5MzAx
+M2M1MTE4ODEyZTYzYTUyNjM1ZGM2YzNhODA1YTFkZQotLSAKMi41My4wCgo=
+--81463dbb-a229-400f-b5af-782f002c83b6-1--
