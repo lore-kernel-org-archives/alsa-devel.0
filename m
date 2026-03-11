@@ -4,50 +4,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA84EFD4F03
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Mar 2026 16:12:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF38E104950D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Mar 2026 09:10:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94A8160176;
-	Tue, 10 Mar 2026 17:11:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94A8160176
+	by alsa0.perex.cz (Postfix) with ESMTPS id 846C7601E8;
+	Wed, 11 Mar 2026 10:10:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 846C7601E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773159120;
-	bh=TtqrA+8zwV+tZ2Yw9zyNRm8tm4KznlheQJkn6dD3sic=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=ptx4hiiID8MAffuOOCQpIxrdrJefX1zQJYC9lutcbDhbimiTSJB57LsBquA752Jm2
-	 LnxNTN7lrA4rDUlKZ2cFlw7CF+GQiZN138Iw13qDBRHO474815x9EciPnpIUk2SVSK
-	 o4+hA/pyXdPKxxPV5qb/kO3Gvd2NbJxl3vS+2fNQ=
+	s=default; t=1773220229;
+	bh=LbTDSICWPX1EgjInlR71HslV68EN/XMbgr3M/cJo5hw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=SuK9naSgqnteG6sV6+YGiKQxToq7UfijogO8qI/pqoMYXkQzABkcQX/sEl9noms1J
+	 GyFGneVm1QKwgqaQjdXvSf5GMAVz0T9U9tfsQeduyPIN1g5ZUrUvj8JeF+NfN2cezR
+	 Iq5HIibZSnzp3u8WxnkCEi8ojtS2ZzKpUTkRZJ6k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1151F805E6; Tue, 10 Mar 2026 17:11:23 +0100 (CET)
+	id 3F219F80588; Wed, 11 Mar 2026 10:09:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29CEAF805F4;
-	Tue, 10 Mar 2026 17:11:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CF27F805F4;
+	Wed, 11 Mar 2026 10:09:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B437AF8053B; Tue, 10 Mar 2026 17:11:16 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3AA1F802DB
-	for <alsa-devel@alsa-project.org>; Tue, 10 Mar 2026 17:11:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3AA1F802DB
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <189b86c6eec32300-webhooks-bot@alsa-project.org>
-In-Reply-To: <189b86c6eeb71400-webhooks-bot@alsa-project.org>
-References: <189b86c6eeb71400-webhooks-bot@alsa-project.org>
-Subject: Asus ROG STRIX X870E-E Gaming Wifi (ACL4082) - No audio from rear
- microphone
-Date: Tue, 10 Mar 2026 17:11:16 +0100 (CET)
-Message-ID-Hash: DBCWVLJRO3W2T2B7D5JFARJFUXAK7LNH
-X-Message-ID-Hash: DBCWVLJRO3W2T2B7D5JFARJFUXAK7LNH
-X-MailFrom: github@alsa-project.org
+	id E6283F80552; Wed, 11 Mar 2026 10:09:42 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3C0DCF80171
+	for <alsa-devel@alsa-project.org>; Wed, 11 Mar 2026 10:09:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C0DCF80171
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=rzpka58l;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=d1HIxUZF;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=rzpka58l;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=d1HIxUZF
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0578B4D237;
+	Wed, 11 Mar 2026 09:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1773220179;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NdFE0ZLCKh3iiTmfvlFo+vtjAzWhW3QI6pSFFVTQj2g=;
+	b=rzpka58lTa+iLfK7QsNu/FCRVCRDQf2zWmimotHjg967Tj0Ui5MwgLJJzEphyW+TrN7uwz
+	E9IRD6pPpB6EaqUProzhCLCF8qiobawUgVcGOlf4SGhwv7SoDwMcygwAzPN6MZNmXJXRwn
+	EdZUI3sUT4So/wW95bUrOBK+nw2anF8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773220179;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NdFE0ZLCKh3iiTmfvlFo+vtjAzWhW3QI6pSFFVTQj2g=;
+	b=d1HIxUZF4Nl9qSgNd+zt+EQfpH4rZEAIVzPT1v1243W4eU6il/frzVMNYqU63HGUjH1a6/
+	ctzzKrHvYf4QkFBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1773220179;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NdFE0ZLCKh3iiTmfvlFo+vtjAzWhW3QI6pSFFVTQj2g=;
+	b=rzpka58lTa+iLfK7QsNu/FCRVCRDQf2zWmimotHjg967Tj0Ui5MwgLJJzEphyW+TrN7uwz
+	E9IRD6pPpB6EaqUProzhCLCF8qiobawUgVcGOlf4SGhwv7SoDwMcygwAzPN6MZNmXJXRwn
+	EdZUI3sUT4So/wW95bUrOBK+nw2anF8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773220179;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NdFE0ZLCKh3iiTmfvlFo+vtjAzWhW3QI6pSFFVTQj2g=;
+	b=d1HIxUZF4Nl9qSgNd+zt+EQfpH4rZEAIVzPT1v1243W4eU6il/frzVMNYqU63HGUjH1a6/
+	ctzzKrHvYf4QkFBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D43313F934;
+	Wed, 11 Mar 2026 09:09:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YjtmMlIxsWlUQAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 11 Mar 2026 09:09:38 +0000
+Date: Wed, 11 Mar 2026 10:09:38 +0100
+Message-ID: <87eclq4trh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Zack Fitch" <zack@internetuniverse.org>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda/realtek: enable dual-DAC on Gigabyte
+ X570S/X870E ALC1220
+In-Reply-To: <98643a1eb0aba1a7dbc0742fc831317e35581c5c@internetuniverse.org>
+References: <98643a1eb0aba1a7dbc0742fc831317e35581c5c@internetuniverse.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
+Message-ID-Hash: 6UHNQSHASSERGAF7IERLHYDR3EXZGU3T
+X-Message-ID-Hash: 6UHNQSHASSERGAF7IERLHYDR3EXZGU3T
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -58,7 +147,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBCWVLJRO3W2T2B7D5JFARJFUXAK7LNH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6UHNQSHASSERGAF7IERLHYDR3EXZGU3T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,390 +156,139 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #718 was edited from cristian-tamblay:
+On Wed, 11 Mar 2026 09:24:47 +0100,
+Zack Fitch wrote:
+> 
+> Hi,
+> 
+>   Please consider the attached patch for the Gigabyte X570S/X870E Aorus
+>   ALC1220 audio codec.
+> 
+>   Thanks,
+>   Zack
+> From 06deee185e29ee352ede90ea63fdb0448da242ac Mon Sep 17 00:00:00 2001
+> From: Zack Fitch <zack@internetuniverse.org>
+> Date: Wed, 11 Mar 2026 01:22:39 -0700
+> Subject: [PATCH] ALSA: hda/realtek: enable dual-DAC on Gigabyte X570S/X870E
+>  ALC1220
+> 
+> The ALC1220 codec on Gigabyte X570S Aorus Master and X870E AORUS
+> XTREME AI TOP boards (subsystem 0x1458:0xa0d5) has two usable output
+> paths:
+> 
+>   - Pin 0x14 (front HP): hardwired to mixer 0x0c -> DAC 0x02
+>   - Pin 0x1b (rear line-out): 5 connections (0x0c 0x0d 0x0e 0x0f 0x26)
+> 
+> The existing ALC1220_FIXUP_GB_X570 quirk overrides 0x1b's connection
+> list to {0x0c} only, forcing both outputs onto DAC 0x02. It also does
+> not suppress auto-mute, so inserting headphones silences the rear
+> line-out.
+> 
+> Desktop users need both outputs active simultaneously with independent
+> DAC routing for per-application audio (e.g., Discord to headphones,
+> music to speakers).
+> 
+> Add ALC1220_FIXUP_GB_AORUS_NO_AUTOMUTE which:
+>   - Does NOT restrict 0x1b's connection list, allowing the generic HDA
+>     parser to assign DAC 0x03 (via mixer 0x0d) as an independent output
+>   - Sets suppress_auto_mute so front HP insertion does not mute rear
+> 
+> The coefficient writes from gb_x570 are not required for audio output
+> on these boards, as confirmed by testing with model=generic and by
+> reverse-engineering the Windows Realtek driver which applies no
+> board-specific handling for this subsystem ID.
+> 
+> Tested on: Gigabyte X870E AORUS XTREME AI TOP
+>   ALC1220 codec, subsystem 0x1458:0xa0d5
+>   AMD Ryzen HD Audio Controller [1022:15e3]
+>   Kernel 6.18.13-arch1-1
+> 
+> Signed-off-by: Zack Fitch <zack@internetuniverse.org>
 
-The Rear Microphone is detected as Line In when I plug in my mic. There is no sound from the microphone. 
-Motherboard: Asus ROG STRIX X870E-E GAMING WIFI
-Audio Device: ALC4082
-USB ID: 0b05:1b9b  
-Distro: Ubuntu 24.04
-Window Manager: Gnome-Shell
+So this model doesn't need any former x570-specific COEFs after all?
 
-Before patching UCM locally, Linux exposed only generic USB audio profiles and the rear jack behaved like line input.
-After adding USB ID `0b05:1b9b` to the UCM matching rules, the device now loads proper `HiFi` profiles and exposes `Microphone`, `Front Microphone`, and `Line Input` sources, but the rear microphone still does not record actual voice audio.
+Also, what's the reason to suppress the auto-mute inevitably?  By
+plugging the headphone, all speaker outputs should be suppressed --
+that's the default designed behavior.  If user wants to use the
+speaker outputs, they can simply turn the mixer swith "Auto-Mute Mode"
+to "disabled" on the fly.
 
-Recording now produces at most a small click/pop when capture starts, but no usable microphone signal.
+Last but not least, you don't need to add extra model string just for
+a single use case.  If user wants to apply the same for another model,
+they can pick it up by passing the SSID alias.
 
-I added `1b9b` in two places.
 
-1) `/usr/share/alsa/ucm2/USB-Audio/USB-Audio.conf`
-2) `/usr/share/alsa/ucm2/USB-Audio/Realtek/ALC4080-HiFi.conf`
+thanks,
 
-`lsusb | grep -i audio`
-`Bus 003 Device 004: ID 0b05:1b9b ASUSTek Computer, Inc. USB Audio`
+Takashi
 
-`alsactl monitor`  (unplugging and plugging mic)
-
-```
-node hw:3, #12 (0,0,0,Line - Input Jack,0) VALUE
-node hw:3, #12 (0,0,0,Line - Input Jack,0) VALUE
-```
-`amixer -c 3 contents`
-```
-numid=8,iface=CARD,name='Analog In - Input Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=11,iface=CARD,name='Clock Source 1 Validity'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=15,iface=CARD,name='Clock Source 3 Validity'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=19,iface=CARD,name='Clock Source 4 Validity'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=22,iface=CARD,name='Clock Source 5 Validity'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=26,iface=CARD,name='Clock Source 6 Validity'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=29,iface=CARD,name='Clock Source 8 Validity'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=27,iface=CARD,name='Headphone - Output Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=off
-numid=12,iface=CARD,name='Line - Input Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=16,iface=CARD,name='Mic - Input Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=off
-numid=23,iface=CARD,name='Speaker - Output Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=20,iface=MIXER,name='PCM Playback Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-numid=24,iface=MIXER,name='PCM Playback Switch',index=1
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-numid=28,iface=MIXER,name='PCM Playback Switch',index=2
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-numid=21,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---R--,values=8,min=0,max=87,step=0
-  : values=87,87,87,87,87,87,87,87
-  | dBminmax-min=-65.25dB,max=0.00dB
-numid=25,iface=MIXER,name='PCM Playback Volume',index=1
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=87,step=0
-  : values=60,60
-  | dBminmax-min=-65.25dB,max=0.00dB
-numid=13,iface=MIXER,name='Line Capture Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-numid=14,iface=MIXER,name='Line Capture Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=39,step=0
-  : values=39,39
-  | dBminmax-min=-17.25dB,max=12.00dB
-numid=17,iface=MIXER,name='Mic Capture Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-numid=18,iface=MIXER,name='Mic Capture Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=39,step=0
-  : values=39,39
-  | dBminmax-min=-17.25dB,max=12.00dB
-numid=9,iface=MIXER,name='Analog In Capture Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-numid=10,iface=MIXER,name='Analog In Capture Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=39,step=0
-  : values=39,39
-  | dBminmax-min=-17.25dB,max=12.00dB
-numid=1,iface=PCM,name='Capture Channel Map'
-  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
-  : values=0,0
-  | container
-    | chmap-fixed=FL,FR
-numid=4,iface=PCM,name='Playback Channel Map'
-  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
-  : values=0,0
-  | container
-    | chmap-fixed=FL,FR
-    | chmap-fixed=FL,FR,RL,RR
-    | chmap-fixed=FL,FR,FC,LFE,RL,RR
-    | chmap-fixed=FL,FR,FC,LFE,RL,RR,SL,SR
-numid=2,iface=PCM,name='Capture Channel Map',device=1
-  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
-  : values=0,0
-  | container
-    | chmap-fixed=FL,FR
-numid=5,iface=PCM,name='Playback Channel Map',device=1
-  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
-  : values=0,0
-  | container
-    | chmap-fixed=FL,FR
-numid=3,iface=PCM,name='Capture Channel Map',device=2
-  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
-  : values=0,0
-  | container
-    | chmap-fixed=FL,FR
-numid=6,iface=PCM,name='Playback Channel Map',device=2
-  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
-  : values=0,0
-  | container
-    | chmap-fixed=FL,FR
-numid=7,iface=PCM,name='Playback Channel Map',device=3
-  ; type=INTEGER,access=r--v-R--,values=2,min=0,max=36,step=0
-  : values=0,0
-  | container
-    | chmap-fixed=FL,FR
-```
-
-`arecord -l`
-```
-**** List of CAPTURE Hardware Devices ****
-card 3: Audio [USB Audio], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 3: Audio [USB Audio], device 1: USB Audio [USB Audio #1]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 3: Audio [USB Audio], device 2: USB Audio [USB Audio #2]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-```
-`alsaucm -c hw:3 dump text`
-```
-Verb.HiFi {
-	Comment "HiFi 2.0 channels"
-	Device.Speaker {
-		Comment Speakers
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			JackControl "Speaker - Output Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackChannels 2
-			PlaybackMixerElem PCM,0
-			PlaybackPCM "_ucm0001.hw:Audio"
-			PlaybackPriority 200
-			TQ HiFi
-		}
-	}
-	Device.Headphones {
-		Comment "Front Headphones"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			JackControl "Headphone - Output Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackMixerElem PCM,1
-			PlaybackPCM "_ucm0001.hw:Audio,1"
-			PlaybackPriority 300
-			TQ HiFi
-		}
-	}
-	Device.SPDIF {
-		Comment "S/PDIF Output"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackMixerElem PCM,2
-			PlaybackPCM "_ucm0001.hw:Audio,3"
-			PlaybackPriority 100
-			TQ HiFi
-		}
-	}
-	Device.Line1 {
-		Comment "Line Input"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Line,0
-			CapturePCM "_ucm0001.hw:Audio,1"
-			CapturePriority 100
-			JackControl "Line - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-	Device.Mic1 {
-		Comment "Front Microphone"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Mic,0
-			CapturePCM "_ucm0001.hw:Audio,2"
-			CapturePriority 300
-			JackControl "Mic - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-	Device.Mic2 {
-		Comment Microphone
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem "Analog In,0"
-			CapturePCM "_ucm0001.hw:Audio"
-			CapturePriority 400
-			JackControl "Analog In - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-}
-Verb."HiFi 5+1" {
-	Comment "HiFi 5.1 channels"
-	Device.Speaker {
-		Comment Speakers
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			JackControl "Speaker - Output Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackChannels 6
-			PlaybackMixerElem PCM,0
-			PlaybackPCM "_ucm0001.hw:Audio"
-			PlaybackPriority 200
-			TQ HiFi
-		}
-	}
-	Device.Headphones {
-		Comment "Front Headphones"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			JackControl "Headphone - Output Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackMixerElem PCM,1
-			PlaybackPCM "_ucm0001.hw:Audio,1"
-			PlaybackPriority 300
-			TQ HiFi
-		}
-	}
-	Device.SPDIF {
-		Comment "S/PDIF Output"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackMixerElem PCM,2
-			PlaybackPCM "_ucm0001.hw:Audio,3"
-			PlaybackPriority 100
-			TQ HiFi
-		}
-	}
-	Device.Line1 {
-		Comment "Line Input"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Line,0
-			CapturePCM "_ucm0001.hw:Audio,1"
-			CapturePriority 100
-			JackControl "Line - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-	Device.Mic1 {
-		Comment "Front Microphone"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Mic,0
-			CapturePCM "_ucm0001.hw:Audio,2"
-			CapturePriority 300
-			JackControl "Mic - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-	Device.Mic2 {
-		Comment Microphone
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem "Analog In,0"
-			CapturePCM "_ucm0001.hw:Audio"
-			CapturePriority 400
-			JackControl "Analog In - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-}
-Verb."HiFi 7+1" {
-	Comment "HiFi 7.1 channels"
-	Device.Speaker {
-		Comment Speakers
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			JackControl "Speaker - Output Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackChannels 8
-			PlaybackMixerElem PCM,0
-			PlaybackPCM "_ucm0001.hw:Audio"
-			PlaybackPriority 200
-			TQ HiFi
-		}
-	}
-	Device.Headphones {
-		Comment "Front Headphones"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			JackControl "Headphone - Output Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackMixerElem PCM,1
-			PlaybackPCM "_ucm0001.hw:Audio,1"
-			PlaybackPriority 300
-			TQ HiFi
-		}
-	}
-	Device.SPDIF {
-		Comment "S/PDIF Output"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackMixerElem PCM,2
-			PlaybackPCM "_ucm0001.hw:Audio,3"
-			PlaybackPriority 100
-			TQ HiFi
-		}
-	}
-	Device.Line1 {
-		Comment "Line Input"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Line,0
-			CapturePCM "_ucm0001.hw:Audio,1"
-			CapturePriority 100
-			JackControl "Line - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-	Device.Mic1 {
-		Comment "Front Microphone"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Mic,0
-			CapturePCM "_ucm0001.hw:Audio,2"
-			CapturePriority 300
-			JackControl "Mic - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-	Device.Mic2 {
-		Comment Microphone
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem "Analog In,0"
-			CapturePCM "_ucm0001.hw:Audio"
-			CapturePriority 400
-			JackControl "Analog In - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			TQ HiFi
-		}
-	}
-}
-```
-
-[alsa-info.txt](https://github.com/user-attachments/files/25845950/alsa-info.txt)
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/718
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+> ---
+>  sound/hda/codecs/realtek/alc882.c | 22 +++++++++++++++++++++-
+>  1 file changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/hda/codecs/realtek/alc882.c b/sound/hda/codecs/realtek/alc882.c
+> index 529fecd5ba..6b61719b96 100644
+> --- a/sound/hda/codecs/realtek/alc882.c
+> +++ b/sound/hda/codecs/realtek/alc882.c
+> @@ -54,6 +54,7 @@ enum {
+>  	ALC887_FIXUP_BASS_CHMAP,
+>  	ALC1220_FIXUP_GB_DUAL_CODECS,
+>  	ALC1220_FIXUP_GB_X570,
+> +	ALC1220_FIXUP_GB_AORUS_NO_AUTOMUTE,
+>  	ALC1220_FIXUP_CLEVO_P950,
+>  	ALC1220_FIXUP_CLEVO_PB51ED,
+>  	ALC1220_FIXUP_CLEVO_PB51ED_PINS,
+> @@ -211,6 +212,20 @@ static void alc1220_fixup_gb_x570(struct hda_codec *codec,
+>  	}
+>  }
+>  
+> +/* Gigabyte X570S/X870E Aorus boards: enable independent DAC routing
+> + * by not restricting pin 0x1b's connection list, and suppress auto-mute
+> + * so front headphone insertion does not silence rear line-out.
+> + */
+> +static void alc1220_fixup_gb_aorus_no_automute(struct hda_codec *codec,
+> +					       const struct hda_fixup *fix,
+> +					       int action)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +
+> +	if (action == HDA_FIXUP_ACT_PRE_PROBE)
+> +		spec->gen.suppress_auto_mute = 1;
+> +}
+> +
+>  static void alc1220_fixup_clevo_p950(struct hda_codec *codec,
+>  				     const struct hda_fixup *fix,
+>  				     int action)
+> @@ -514,6 +529,10 @@ static const struct hda_fixup alc882_fixups[] = {
+>  		.type = HDA_FIXUP_FUNC,
+>  		.v.func = alc1220_fixup_gb_x570,
+>  	},
+> +	[ALC1220_FIXUP_GB_AORUS_NO_AUTOMUTE] = {
+> +		.type = HDA_FIXUP_FUNC,
+> +		.v.func = alc1220_fixup_gb_aorus_no_automute,
+> +	},
+>  	[ALC1220_FIXUP_CLEVO_P950] = {
+>  		.type = HDA_FIXUP_FUNC,
+>  		.v.func = alc1220_fixup_clevo_p950,
+> @@ -635,7 +654,7 @@ static const struct hda_quirk alc882_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+>  	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_GB_X570),
+>  	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_GB_X570),
+> -	SND_PCI_QUIRK(0x1458, 0xa0d5, "Gigabyte X570S Aorus Master", ALC1220_FIXUP_GB_X570),
+> +	SND_PCI_QUIRK(0x1458, 0xa0d5, "Gigabyte X570S/X870E Aorus", ALC1220_FIXUP_GB_AORUS_NO_AUTOMUTE),
+>  	SND_PCI_QUIRK(0x1462, 0x11f7, "MSI-GE63", ALC1220_FIXUP_CLEVO_P950),
+>  	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
+>  	SND_PCI_QUIRK(0x1462, 0x1229, "MSI-GP73", ALC1220_FIXUP_CLEVO_P950),
+> @@ -718,6 +737,7 @@ static const struct hda_model_fixup alc882_fixup_models[] = {
+>  	{.id = ALC887_FIXUP_ASUS_BASS, .name = "asus-bass"},
+>  	{.id = ALC1220_FIXUP_GB_DUAL_CODECS, .name = "dual-codecs"},
+>  	{.id = ALC1220_FIXUP_GB_X570, .name = "gb-x570"},
+> +	{.id = ALC1220_FIXUP_GB_AORUS_NO_AUTOMUTE, .name = "gb-aorus-no-automute"},
+>  	{.id = ALC1220_FIXUP_CLEVO_P950, .name = "clevo-p950"},
+>  	{}
+>  };
+> 
+> base-commit: fd7df93013c5118812e63a52635dc6c3a805a1de
+> -- 
+> 2.53.0
+> 
