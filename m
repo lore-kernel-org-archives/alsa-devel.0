@@ -4,47 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90D57FED2C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2026 04:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF6B9FED2F1
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Mar 2026 08:47:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E873C601F5;
-	Thu, 12 Mar 2026 05:30:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E873C601F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8046601FC;
+	Thu, 12 Mar 2026 09:47:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8046601FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773289863;
-	bh=bhGuqgtD7hEmFEQ38zdHgeukej4A5kOVoCBCdmawvn0=;
-	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ci/Dim5fWy2U4CCq6wSpQgfcBwe/BS14lpLU/aT1H0pCEmAbhwxJ6hjCbRoadsdH3
-	 HPHnoA5Yagh4LBRCnaDP/EVLZlSXtn4konHfpOthpHKJA6IvR2wcu54EvZM6JWKRe6
-	 7ElzIvNom2Y2mX49YaSU/zt2hpjDCGve1IPeuLqU=
+	s=default; t=1773305232;
+	bh=B6QGOWbKIsRGa2OpRW4/48bZ6dpVnRmESN8MAfa3uns=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=S/v4VWVDvcAxA8CKQ9kDKUwfDmCuatrxCXSQKOOH7fNQCv2M7Up04nPqY94CtMH5K
+	 ORHN6iqvhpERXi6iTJD7LCLHXrs8DC5TNehnJCfSBtlaMzOoIVK7pkEKZjNi/WmDTF
+	 OwQ8Dzqltp9UF+0puecF7/1WuH+8351Q2rNyaMRc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EDAE5F805F4; Thu, 12 Mar 2026 05:30:28 +0100 (CET)
+	id 748B3F805E2; Thu, 12 Mar 2026 09:46:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51F8DF805F5;
-	Thu, 12 Mar 2026 05:30:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FF6AF805EF;
+	Thu, 12 Mar 2026 09:46:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73B02F8045D; Thu, 12 Mar 2026 05:30:20 +0100 (CET)
-Received: from mailman (unknown [10.254.200.5])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14965F8016E
-	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2026 05:30:19 +0100 (CET)
+	id 0DB55F8045D; Thu, 12 Mar 2026 09:46:28 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 80129F801F7
+	for <alsa-devel@alsa-project.org>; Thu, 12 Mar 2026 09:46:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80129F801F7
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: 
- =?utf-8?q?Swish!_A_Casual_Gamer=E2=80=99s_Guide_to_Hitting_the_Hardwood_With?=
- =?utf-8?q?out_Breaking_a_Sweat?=
-From: massive.puffin.zewg@hidingmail.com
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Date: Thu, 12 Mar 2026 04:30:19 -0000
-Message-ID: <177328981994.20.3647207209183085987@mailman>
-User-Agent: HyperKitty on http://mailman.alsa-project.org/
-Message-ID-Hash: IKTK5LQN6W5QPZ2XPWQUXWAI2VRRBSI4
-X-Message-ID-Hash: IKTK5LQN6W5QPZ2XPWQUXWAI2VRRBSI4
-X-MailFrom: massive.puffin.zewg@hidingmail.com
+Message-Id: <189c0bab8b136600-webhooks-bot@alsa-project.org>
+In-Reply-To: <189c0bab89f95100-webhooks-bot@alsa-project.org>
+References: <189c0bab89f95100-webhooks-bot@alsa-project.org>
+Subject: 
+ =?utf-8?q?sof-hda-dsp=3A_HP_OmniBook_X_Flip_14_=E2=80=94_Speaker_sink_removed_when_HDMI_connected_=28profile_switches_to_Headphones=29?=
+Date: Thu, 12 Mar 2026 09:46:28 +0100 (CET)
+Message-ID-Hash: GXZ44LBTBFDHLSFP3PPRLIFY7BGRBCNN
+X-Message-ID-Hash: GXZ44LBTBFDHLSFP3PPRLIFY7BGRBCNN
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -55,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IKTK5LQN6W5QPZ2XPWQUXWAI2VRRBSI4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GXZ44LBTBFDHLSFP3PPRLIFY7BGRBCNN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -64,26 +67,136 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-https://basketballstarsfree.io/
-There is something universally satisfying about the sound of a basketball sinking perfectly through the net. Whether you are a lifelong fan of the sport or someone who only tunes in during the playoffs, the thrill of a buzzer-beating shot is undeniable. However, let us be completely honest with ourselves: we do not always have the time, the energy, or the sunny weather required to head down to the local court and shoot some actual hoops. Sometimes, all you want is a quick dose of competitive fun during a lunch break or a lazy Sunday afternoon indoors. That is exactly where the magic of browser-based sports games comes into play.
-Today, I want to take you through the delightful experience of diving into one of the most entertaining and accessible online sports titles available right now. We are going to use Basketball Stars as our main example. This game perfectly captures the essence of what makes quick-play sports games so incredibly engaging. It strips away the overly complex mechanics of massive console simulators and replaces them with pure, unadulterated, fast-paced fun. If you have been looking for a way to experience the thrill of the court without needing to memorize a sixty-page manual on controller mapping, grab a seat, stretch those typing fingers, and let’s hit the virtual hardwood.
-The Gameplay: Fast, Funny, and Surprisingly Deep
-When you first load up the game, the very first thing you will notice is the art style. Rather than going for hyper-realistic graphics that require a supercomputer to run, the game embraces a charming, exaggerated cartoon aesthetic. The players are designed as caricatures of famous real-world athletes, complete with massive heads and tiny bodies. This design choice is not just for laughs—though it certainly provides plenty of those—it actually serves a mechanical purpose. The oversized heads make it very easy to track your character’s movements across the screen, even when the action gets incredibly chaotic.
-The core gameplay loop is beautifully straightforward but offers enough variety to keep things interesting match after match. You can choose to play solo against the computer in a tournament mode, face off in a random match, or, arguably the most fun option, play against a friend on the same keyboard in local multiplayer. The matches are delightfully brief, usually lasting only a minute or two, which means you are always just a few seconds away from your next game.
-You can engage in traditional 1v1 matchups, or you can mix things up with 2v2 modes. In the 2v2 mode, you control one primary player while the AI takes over your teammate, or you and a friend can team up to take down the computer. The controls are intuitive. You use your standard arrow keys or WASD to move, jump, and dash. You have a dedicated button to shoot the ball when you are on offense, which magically transforms into a steal or block button when you are on defense.
-What really elevates the gameplay experience, however, is the physics engine and the inclusion of special abilities. The ball bounces and reacts with just enough realism to feel satisfying, but the players themselves can leap halfway up the screen to execute gravity-defying dunks. Furthermore, as you play, a special meter fills up at the top of the screen. Once it is fully charged, you can unleash a devastating, unblockable super shot—ranging from a fiery comet-like three-pointer to an earth-shattering mega dunk that practically sets the net ablaze.
-Tips for Dominating the Court
-While the game is incredibly easy to pick up and play, mastering it requires a little bit of finesse. If you want to stop getting dunked on by the computer or want to secure bragging rights against your friends, here are a few friendly tips to elevate your game.
-1. Master the Art of the Dash
-One of the most underutilized moves by new players is the dash. It is not just a tool for getting from one side of the court to the other; it is your best friend on both offense and defense. On offense, a quick dash can help you break your opponent's ankles, creating the perfect window of space to pull up for an uncontested jump shot. On defense, dashing backward can save you when your opponent tries to blow past you for an easy layup. Get comfortable tapping that dash button instinctively.
-2. Timing is Everything on Defense
-It is incredibly tempting to just spam the jump button the moment your opponent gets the ball, hoping for a spectacular block. Resist this urge. If you jump too early, a smart opponent will simply wait for you to land and then take a completely open shot. Instead, play grounded defense. Stay close to your opponent, wait for their feet to leave the floor, and then jump to contest the shot. Patience on defense truly wins championships in this game.
-3. Learn the Pump Fake
-Just as patience works on defense, trickery works on offense. If you have an aggressive opponent who loves to jump at every shadow, use that to your advantage. Tap the shoot button quickly to perform a pump fake. Watch them fly into the air helplessly, and once they are on their way down, take your time and sink a beautiful, stress-free shot. It is immensely satisfying to outsmart someone this way.
-4. Save Your Super Shot for Key Moments
-Your special ability meter is a game-changer, but it takes time to fill up. Do not just waste it the moment it becomes available. Save it for a critical turning point in the match. If you are down by one point with ten seconds left on the clock, that guaranteed super shot is your lifeline. Alternatively, use it to break a tie right before the buzzer. Treat your super shot like an ace up your sleeve.
-5. Manage Your Court Positioning
-Never let yourself get backed completely into the corner of the screen. If you are pinned against the edge, your movement options are severely limited, making it incredibly easy for your opponent to steal the ball or block your shot. Always try to maintain some breathing room and keep the action near the center of the court where you have the freedom to maneuver left, right, or go for a sudden jump.
-Conclusion: It’s All About Having Fun
-At the end of the day, the true beauty of experiencing a quick sports game like this lies in its low-stakes, high-reward nature. You do not need to invest dozens of hours to feel a sense of progression or accomplishment. You can just open a browser tab, play three or four matches, laugh at the ridiculous, exaggerated animations, and then go right back to whatever you were doing with a slightly better mood.
-It reminds us that gaming does not always have to be a massive, cinematic, story-driven commitment. Sometimes, a game is just a game—a playful, competitive distraction designed to bring a smile to your face. So, the next time you find yourself staring at your screen needing a mental break, do not hesitate to step onto the virtual court. Try out a few trick shots, practice your pump fakes, and see if you can hit that perfect buzzer-beater. Happy playing, and may your shots always find nothing but the bottom of the net!
+YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzcyMCB3YXMgb3BlbmVkIGZyb20gem9t
+bXV0ZXI6CgooYXNzaXN0ZWQgYnkgQ2xhdWRlIE9wdXMgNC42IHdoaWNoIGFsc28gcHJlcGFyZWQg
+YSBwdWxsIHJlcXVlc3QpCgojIyBFbnZpcm9ubWVudAoKLSAqKkRldmljZToqKiBIUCBPbW5pQm9v
+ayBYIEZsaXAgTGFwdG9wIDE0IChJbnRlbCBDb3JlIFVsdHJhIDcgMjU4ViwgTHVuYXIgTGFrZSkK
+LSAqKk9TOioqIE1hbmphcm8gTGludXgsIGtlcm5lbCA2LjE4LjEyLTEtTUFOSkFSTwotICoqUGFj
+a2FnZXM6KioKICAtIGFsc2EtdWNtLWNvbmYgMS4yLjE1LjMtMQogIC0gc29mLWZpcm13YXJlIDIw
+MjUuMTIuMi0xCiAgLSBQaXBlV2lyZSAxLjQuMTAKICAtIFdpcmVQbHVtYmVyIDAuNS4xMwotICoq
+QXVkaW8gY29udHJvbGxlcjoqKiBJbnRlbCBMdW5hciBMYWtlLU0gSEQgQXVkaW8gQ29udHJvbGxl
+ciAoMDA6MWYuMykKLSAqKkNvZGVjOioqIFJlYWx0ZWsgQUxDMjQ1IChzdWJzeXN0ZW0gMTAzYzo4
+ZDlmKQotICoqQ2FyZDoqKiBzb2YtaGRhLWRzcCAvIHNrbF9oZGFfZHNwX2dlbmVyaWMKLSAqKkNh
+cmQgbG9uZ25hbWU6KiogYEhQLUhQT21uaUJvb2tYRmxpcExhcHRvcDE0X2ZtMHh4eC1UeXBlMVBy
+b2R1Y3RDb25maWdJZC04RDlGYAoKIyMgUHJvYmxlbQoKV2hlbiBhbiBIRE1JIG1vbml0b3IgaXMg
+Y29ubmVjdGVkLCB0aGUgU3BlYWtlciBzaW5rIGNvbXBsZXRlbHkgZGlzYXBwZWFycy4gVGhlIGNh
+cmQgaGFzIHR3byBtdXR1YWxseSBleGNsdXNpdmUgSGlGaSBwcm9maWxlcyAoU3BlYWtlciBhbmQg
+SGVhZHBob25lcyBzaGFyZSB0aGUgc2FtZSBQQ00gYGh3OnNvZmhkYWRzcGApOgoKYGBgCkhpRmkg
+KEhETUkxLCBIRE1JMiwgSERNSTMsIEhlYWRwaG9uZXMsIE1pYzEsIE1pYzIpOiBwcmlvcml0eSAx
+MDMwMCwgYXZhaWxhYmxlOiB5ZXMKSGlGaSAoSERNSTEsIEhETUkyLCBIRE1JMywgTWljMSwgTWlj
+MiwgU3BlYWtlcik6ICAgIHByaW9yaXR5IDEwMjAwLCBhdmFpbGFibGU6IHllcwpgYGAKCldoZW4g
+SERNSSBpcyBjb25uZWN0ZWQsIGJvdGggcHJvZmlsZXMgYmVjb21lIGBhdmFpbGFibGU6IHllc2Ag
+KGJlY2F1c2UgSERNSTEgaXMgYXZhaWxhYmxlIGluIGJvdGgpLiBXaXJlUGx1bWJlciBzZWxlY3Rz
+IHRoZSBoaWdoZXItcHJpb3JpdHkgSGVhZHBob25lcyBwcm9maWxlICgxMDMwMCkg4oCUIGV2ZW4g
+dGhvdWdoIHRoZSBIZWFkcGhvbmUgSmFjayByZXBvcnRzIGBvZmZgIGFuZCBubyBoZWFkcGhvbmVz
+IGFyZSBwbHVnZ2VkIGluLiBUaGlzIHJlbW92ZXMgdGhlIFNwZWFrZXIgc2luayBlbnRpcmVseS4K
+CldpdGhvdXQgSERNSSBjb25uZWN0ZWQsIHRoZSBIZWFkcGhvbmVzIHByb2ZpbGUgaXMgY29ycmVj
+dGx5IGBhdmFpbGFibGU6IG5vYCAobm8gcG9ydHMgd2l0aCBhdmFpbGFiaWxpdHkgZ3JvdXBzIHJl
+cG9ydCBhcyBhdmFpbGFibGUpLCBzbyB0aGUgU3BlYWtlciBwcm9maWxlIGlzIHNlbGVjdGVkLgoK
+IyMgRXhwZWN0ZWQgYmVoYXZpb3IKClRoZSBTcGVha2VyIHNpbmsgc2hvdWxkIHJlbWFpbiBhdmFp
+bGFibGUgcmVnYXJkbGVzcyBvZiBIRE1JIGNvbm5lY3Rpb24gc3RhdGUuIFdoZW4gbm8gaGVhZHBo
+b25lcyBhcmUgcGx1Z2dlZCBpbiwgdGhlIFNwZWFrZXIgcHJvZmlsZSBzaG91bGQgYmUgcHJlZmVy
+cmVkLgoKIyMgU3RlcHMgdG8gcmVwcm9kdWNlCgoxLiBDbGVhciBXaXJlUGx1bWJlciBzYXZlZCBz
+dGF0ZTogYHNlZCAtaSAnL2Fsc2FfY2FyZC5wY2kuKnNrbF9oZGFfZHNwL2QnIH4vLmxvY2FsL3N0
+YXRlL3dpcmVwbHVtYmVyL2RlZmF1bHQtcHJvZmlsZWAKMi4gQm9vdCBvciByZXN0YXJ0IFdpcmVQ
+bHVtYmVyIHdpdGggbm8gSERNSSBjb25uZWN0ZWQKMy4gVmVyaWZ5IFNwZWFrZXIgc2luayBpcyBw
+cmVzZW50OiBgcGFjdGwgbGlzdCBzaG9ydCBzaW5rc2Ag4oCUIFNwZWFrZXIgc2luayBleGlzdHMK
+NC4gQ29ubmVjdCBhbiBIRE1JIG1vbml0b3IKNS4gYHBhY3RsIGxpc3Qgc2hvcnQgc2lua3NgIOKA
+lCBTcGVha2VyIHNpbmsgaXMgZ29uZSwgcmVwbGFjZWQgYnkgSGVhZHBob25lcwoKTm90ZTogV2ly
+ZVBsdW1iZXIgcGVyc2lzdHMgcHJvZmlsZSBzZWxlY3Rpb24gaW4gYH4vLmxvY2FsL3N0YXRlL3dp
+cmVwbHVtYmVyL2RlZmF1bHQtcHJvZmlsZWAuIElmIHRoZSBTcGVha2VyIHByb2ZpbGUgd2FzIHBy
+ZXZpb3VzbHkgbWFudWFsbHkgc2VsZWN0ZWQsIHRoZSBidWcgd29uJ3QgcmVwcm9kdWNlIHVudGls
+IHRoaXMgc2F2ZWQgc3RhdGUgaXMgY2xlYXJlZC4KCiMjIERpYWdub3N0aWMgZGF0YQoKRnVsbCBg
+YWxzYS1pbmZvLnNoYCBvdXRwdXQgY2FuIGJlIHVwbG9hZGVkIGlmIG5lZWRlZC4KCiMjIyBKYWNr
+IHN0YXR1cyAoSERNSSBjb25uZWN0ZWQsIG5vIGhlYWRwaG9uZXMgcGx1Z2dlZCBpbikKCmBgYApI
+RE1JL0RQLHBjbT0zIEphY2s6IHZhbHVlcz1vbiAgICAobW9uaXRvciBjb25uZWN0ZWQpCkhETUkv
+RFAscGNtPTQgSmFjazogdmFsdWVzPW9mZgpIRE1JL0RQLHBjbT01IEphY2s6IHZhbHVlcz1vZmYK
+SGVhZHBob25lIEphY2s6ICAgICB2YWx1ZXM9b2ZmICAgIChub3RoaW5nIHBsdWdnZWQgaW4pCk1p
+YyBKYWNrOiAgICAgICAgICAgdmFsdWVzPW9mZgpTcGVha2VyIFBoYW50b20gSmFjazogdmFsdWVz
+PW9uICAgKGFsd2F5cyBvbikKYGBgCgojIyMgUHJvZmlsZSBhbmQgcG9ydCBsaXN0aW5nIChIRE1J
+IGNvbm5lY3RlZCDigJQgYnJva2VuIHN0YXRlKQoKYGBgClByb2ZpbGVzOgogIG9mZjogKHByaW9y
+aXR5OiAwLCBhdmFpbGFibGU6IHllcykKICBIaUZpIChIRE1JMSwgSERNSTIsIEhETUkzLCBIZWFk
+cGhvbmVzLCBNaWMxLCBNaWMyKTogKHByaW9yaXR5OiAxMDMwMCwgYXZhaWxhYmxlOiB5ZXMpCiAg
+SGlGaSAoSERNSTEsIEhETUkyLCBIRE1JMywgTWljMSwgTWljMiwgU3BlYWtlcik6ICAgIChwcmlv
+cml0eTogMTAyMDAsIGF2YWlsYWJsZTogeWVzKQogIHByby1hdWRpbzogKHByaW9yaXR5OiAxLCBh
+dmFpbGFibGU6IHllcykKCkFjdGl2ZSBQcm9maWxlOiBIaUZpIChIRE1JMSwgSERNSTIsIEhETUkz
+LCBIZWFkcGhvbmVzLCBNaWMxLCBNaWMyKSAgIOKGkCBXUk9ORwoKUG9ydHM6CiAgW091dF0gSERN
+STM6ICAgICAgcHJpb3JpdHkgNzAwLCBub3QgYXZhaWxhYmxlCiAgW091dF0gSERNSTI6ICAgICAg
+cHJpb3JpdHkgNjAwLCBub3QgYXZhaWxhYmxlCiAgW091dF0gSERNSTE6ICAgICAgcHJpb3JpdHkg
+NTAwLCBhdmFpbGFibGUgICAgICAgICAobW9uaXRvciBjb25uZWN0ZWQpCiAgW091dF0gU3BlYWtl
+cjogICAgcHJpb3JpdHkgMTAwLCBhdmFpbGFiaWxpdHkgdW5rbm93bgogIFtJbl0gIE1pYzI6ICAg
+ICAgIHByaW9yaXR5IDIwMCwgbm90IGF2YWlsYWJsZQogIFtJbl0gIE1pYzE6ICAgICAgIHByaW9y
+aXR5IDEwMCwgYXZhaWxhYmlsaXR5IHVua25vd24KICBbT3V0XSBIZWFkcGhvbmVzOiBwcmlvcml0
+eSAyMDAsIG5vdCBhdmFpbGFibGUgICAgICDihpAgamFjayBpcyBvZmYsIG5vdGhpbmcgcGx1Z2dl
+ZCBpbgpgYGAKCiMjIyBQcm9maWxlIGFuZCBwb3J0IGxpc3RpbmcgKG5vIEhETUkg4oCUIHdvcmtp
+bmcgc3RhdGUpCgpgYGAKUHJvZmlsZXM6CiAgSGlGaSAoSERNSTEsIEhETUkyLCBIRE1JMywgSGVh
+ZHBob25lcywgTWljMSwgTWljMik6IChwcmlvcml0eTogMTAzMDAsIGF2YWlsYWJsZTogbm8pICAg
+4oaQIGNvcnJlY3RseSB1bmF2YWlsYWJsZQogIEhpRmkgKEhETUkxLCBIRE1JMiwgSERNSTMsIE1p
+YzEsIE1pYzIsIFNwZWFrZXIpOiAgICAocHJpb3JpdHk6IDEwMjAwLCBhdmFpbGFibGU6IHllcykK
+CkFjdGl2ZSBQcm9maWxlOiBIaUZpIChIRE1JMSwgSERNSTIsIEhETUkzLCBNaWMxLCBNaWMyLCBT
+cGVha2VyKSAgIOKGkCBDT1JSRUNUCmBgYAoKIyMjIFVDTSBkZXZpY2UgZHVtcAoKYGBgClZlcmIu
+SGlGaSB7CiAgRGV2aWNlLkhlYWRwaG9uZXMgewogICAgUGxheWJhY2tQcmlvcml0eSAyMDAKICAg
+IFBsYXliYWNrUENNICJodzpzb2ZoZGFkc3AiCiAgICBKYWNrQ29udHJvbCAiSGVhZHBob25lIEph
+Y2siCiAgfQogIERldmljZS5TcGVha2VyIHsKICAgIFBsYXliYWNrUHJpb3JpdHkgMTAwCiAgICBQ
+bGF5YmFja1BDTSAiaHc6c29maGRhZHNwIgogICAgIyBObyBKYWNrQ29udHJvbCDigJQgdXNlcyBT
+cGVha2VyIFBoYW50b20gSmFjayAoYWx3YXlzIG9uKQogIH0KfQpgYGAKCiMjIyB3cGN0bCBzdGF0
+dXMgKGJyb2tlbiBzdGF0ZSwgSERNSSBjb25uZWN0ZWQpCgpgYGAKQXVkaW8KIOKUnOKUgCBTaW5r
+czoKIOKUgiAgICAgIEhETUkgLyBEaXNwbGF5UG9ydCAyIE91dHB1dCBbdm9sOiAxLjAwXQog4pSC
+ICAqICAgSERNSSAvIERpc3BsYXlQb3J0IDEgT3V0cHV0IFt2b2w6IDEuMDBdCiDilIIgICAgICBI
+ZWFkcGhvbmVzIFt2b2w6IDEuMDBdICAgICAgICAgICAgICAgICAgICDihpAgcHJlc2VudCBkZXNw
+aXRlIG5vdGhpbmcgcGx1Z2dlZCBpbgog4pSCICAgICAgSERNSSAvIERpc3BsYXlQb3J0IDMgT3V0
+cHV0IFt2b2w6IDEuMDBdCiDilIIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAg4oaQIFNwZWFrZXIgaXMgTUlTU0lORwpgYGAKCiMjIFJvb3QgY2F1c2UgYW5h
+bHlzaXMKClNwZWFrZXIgYW5kIEhlYWRwaG9uZXMgc2hhcmUgdGhlIHNhbWUgUENNIGRldmljZSAo
+YGh3OnNvZmhkYWRzcGApLCBzbyBQaXBlV2lyZS9BQ1AgY29ycmVjdGx5IGdlbmVyYXRlcyBzZXBh
+cmF0ZSBtdXR1YWxseSBleGNsdXNpdmUgcHJvZmlsZXMuIFRoZSBVQ00gY29uZmlnIGluIGB1Y20y
+L0hEQS9IaUZpLWFuYWxvZy5jb25mYCBhc3NpZ25zOgoKLSAqKkhlYWRwaG9uZXMqKjogYFBsYXli
+YWNrUHJpb3JpdHkgMjAwYAotICoqU3BlYWtlcioqOiBgUGxheWJhY2tQcmlvcml0eSAxMDBgCgpU
+aGlzIHJlc3VsdHMgaW4gcHJvZmlsZSBwcmlvcml0aWVzIG9mIDEwMzAwIChIZWFkcGhvbmVzKSB2
+cyAxMDIwMCAoU3BlYWtlcikuIFRoZSBwcm9maWxlIGF2YWlsYWJpbGl0eSBsb2dpYyB3b3JrcyBh
+cyBmb2xsb3dzOgoKMS4gKipXaXRob3V0IEhETUkqKjogQWxsIEhETUkgcG9ydHMgYXJlIGBub3Qg
+YXZhaWxhYmxlYCwgSGVhZHBob25lcyBwb3J0IGlzIGBub3QgYXZhaWxhYmxlYC4gVGhlIEhlYWRw
+aG9uZXMgcHJvZmlsZSBoYXMgbm8gYXZhaWxhYmxlIHBvcnRzIChwb3J0cyB3aXRoIGBhdmFpbGFi
+aWxpdHkgdW5rbm93bmAgbGlrZSBNaWMxIGRvbid0IG1ha2UgdGhlIHByb2ZpbGUgYXZhaWxhYmxl
+KSwgc28gdGhlIHByb2ZpbGUgaXMgYGF2YWlsYWJsZTogbm9gLiBTcGVha2VyIHByb2ZpbGUgaXMg
+c2VsZWN0ZWQgY29ycmVjdGx5LgoKMi4gKipXaXRoIEhETUkqKjogSERNSTEgYmVjb21lcyBgYXZh
+aWxhYmxlYC4gU2luY2UgSERNSTEgaXMgc2hhcmVkIGJ5IGJvdGggcHJvZmlsZXMsIGJvdGggYmVj
+b21lIGBhdmFpbGFibGU6IHllc2AuIFdpcmVQbHVtYmVyIHRoZW4gc2VsZWN0cyBwdXJlbHkgYnkg
+cHJpb3JpdHk6IEhlYWRwaG9uZXMgKDEwMzAwKSB3aW5zIG92ZXIgU3BlYWtlciAoMTAyMDApLCAq
+Kmlnbm9yaW5nIHRoYXQgdGhlIEhlYWRwaG9uZXMgcG9ydCBpdHNlbGYgaXMgYG5vdCBhdmFpbGFi
+bGVgKiouCgpUaGVyZSBhcmUgbm8gYENvbmZsaWN0aW5nRGV2aWNlc2AgZGVjbGFyYXRpb25zIGlu
+IHRoZSBVQ00gY29uZmlnIOKAlCB0aGUgcHJvZmlsZSBzcGxpdCBpcyBlbnRpcmVseSBkdWUgdG8g
+dGhlIHNoYXJlZCBQQ00uCgojIyBTdWdnZXN0ZWQgZml4CgoqKlN3YXAgYFBsYXliYWNrUHJpb3Jp
+dHlgIHZhbHVlcyoqIGluIGB1Y20yL0hEQS9IaUZpLWFuYWxvZy5jb25mYCBzbyBTcGVha2VyICgy
+MDApID4gSGVhZHBob25lcyAoMTAwKS4gVGhpcyBtYWtlcyB0aGUgU3BlYWtlciBwcm9maWxlIHRo
+ZSBkZWZhdWx0IChwcmlvcml0eSAxMDIwMCDihpIgMTAzMDApLCB3aGlsZSB0aGUgSGVhZHBob25l
+cyBwcm9maWxlIHdvdWxkIG9ubHkgYmUgcHJlZmVycmVkIHdoZW4gdGhlIEhlYWRwaG9uZSBKYWNr
+IHJlcG9ydHMgYXMgcGx1Z2dlZCAoV2lyZVBsdW1iZXIgYm9vc3RzIHByaW9yaXR5IGZvciBwcm9m
+aWxlcyB3aXRoIGF2YWlsYWJsZSBwb3J0cykuCgpUaGlzIHNlZW1zIGNvcnJlY3QgYXMgYSBnZW5l
+cmFsIGRlZmF1bHQ6IGJ1aWx0LWluIHNwZWFrZXJzIHNob3VsZCBiZSB0aGUgZGVmYXVsdCBvdXRw
+dXQsIHdpdGggaGVhZHBob25lcyB0YWtpbmcgb3ZlciBvbmx5IHdoZW4gZGV0ZWN0ZWQgdmlhIGph
+Y2suIFdoZW4gaGVhZHBob25lcyBhcmUgcGx1Z2dlZCBpbiwgdGhlIEhlYWRwaG9uZSBKYWNrIGJl
+Y29tZXMgYGF2YWlsYWJsZWAsIHdoaWNoIHNob3VsZCBjYXVzZSBXaXJlUGx1bWJlciB0byByZS1l
+dmFsdWF0ZSBhbmQgc3dpdGNoIHRvIHRoZSBIZWFkcGhvbmVzIHByb2ZpbGUgYmFzZWQgb24gcG9y
+dCBhdmFpbGFiaWxpdHkg4oCUIHJlZ2FyZGxlc3Mgb2YgdGhlIGxvd2VyIGJhc2UgcHJpb3JpdHku
+CgpOb3RlOiBoZWFkcGhvbmUgamFjayBzd2l0Y2hpbmcgYmVoYXZpb3IgaGFzIG5vdCBiZWVuIHRl
+c3RlZCBvbiB0aGlzIGhhcmR3YXJlIChubyAzLjVtbSBjYWJsZSBhdmFpbGFibGUpLiBGZWVkYmFj
+ayBmcm9tIG90aGVycyB3aXRoIHNpbWlsYXIgaGFyZHdhcmUgd2VsY29tZS4KCkFsdGVybmF0aXZl
+bHksIHRoaXMgY291bGQgYmUgYWRkcmVzc2VkIGluIFdpcmVQbHVtYmVyJ3MgcHJvZmlsZSBzZWxl
+Y3Rpb24gbG9naWMgYnkgd2VpZ2h0aW5nIHBvcnQgYXZhaWxhYmlsaXR5IG1vcmUgaGVhdmlseSDi
+gJQgYnV0IHRoZSBVQ00gcHJpb3JpdHkgc3dhcCBpcyB0aGUgc2ltcGxlciBhbmQgbW9yZSB0YXJn
+ZXRlZCBmaXguCgojIyBXb3JrYXJvdW5kCgpGb3JjZSB0aGUgU3BlYWtlciBwcm9maWxlIHZpYSBX
+aXJlUGx1bWJlcjoKCmBgYGx1YQotLSB+Ly5jb25maWcvd2lyZXBsdW1iZXIvd2lyZXBsdW1iZXIu
+Y29uZi5kLzUxLWZvcmNlLXNwZWFrZXIuY29uZgptb25pdG9yLmFsc2EucnVsZXMgPSBbCiAgewog
+ICAgbWF0Y2hlcyA9IFsKICAgICAgeyBkZXZpY2UubmFtZSA9ICJ+YWxzYV9jYXJkLnBjaSpza2xf
+aGRhX2RzcCoiIH0KICAgIF0KICAgIGFjdGlvbnMgPSB7CiAgICAgIHVwZGF0ZS1wcm9wcyA9IHsK
+ICAgICAgICBkZXZpY2UucHJvZmlsZSA9ICJIaUZpIChIRE1JMSwgSERNSTIsIEhETUkzLCBNaWMx
+LCBNaWMyLCBTcGVha2VyKSIKICAgICAgfQogICAgfQogIH0KXQpgYGAKCk9yIG1hbnVhbGx5OiBg
+cGFjdGwgc2V0LWNhcmQtcHJvZmlsZSBhbHNhX2NhcmQucGNpLTAwMDBfMDBfMWYuMy1wbGF0Zm9y
+bS1za2xfaGRhX2RzcF9nZW5lcmljICJIaUZpIChIRE1JMSwgSERNSTIsIEhETUkzLCBNaWMxLCBN
+aWMyLCBTcGVha2VyKSJgCgpOb3RlOiBIZWFkcGhvbmUgYmVoYXZpb3Igd2hlbiBhY3R1YWxseSBw
+bHVnZ2luZyBpbiBoZWFkcGhvbmVzIGhhcyBub3QgYmVlbiB0ZXN0ZWQgd2l0aCB0aGlzIHdvcmth
+cm91bmQgKG5vIDMuNW1tIGNhYmxlIGF2YWlsYWJsZSBhdCB0aW1lIG9mIHJlcG9ydCkuCgpJc3N1
+ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLXVjbS1jb25m
+L2lzc3Vlcy83MjAKUmVwb3NpdG9yeSBVUkw6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2pl
+Y3QvYWxzYS11Y20tY29uZgo=
