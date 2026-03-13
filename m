@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 377EF106FD9B
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2026 08:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52E6D106FD9D
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Mar 2026 08:31:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB9F36022E;
-	Fri, 13 Mar 2026 09:26:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB9F36022E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5725060234;
+	Fri, 13 Mar 2026 09:30:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5725060234
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773390385;
-	bh=d4RX02u9rU/Q8i+JqXio9QYpL1WI/RSgTNN5xw0I26s=;
+	s=default; t=1773390660;
+	bh=1WFfgpfacaL7f/hwthcPXbwrvnFUB2CHxTtjNXhz4/k=;
 	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=jgGqsv1EdqllY/UcD2Xy0QUpe98TOgixAGEWxxiPIkAFzB2yQyVmsX/J5V/wyrbC+
-	 tNPtV9drIYhIkXekqWgYuaIYCLg9aKWAbwaVGcAhlluhMrSlHcs4OdgQcte/A0hPMf
-	 XI72n7V2bvsSJTZPYvHk/OtRayoDOeUOgio5eCg0=
+	b=QMot7Si0E6/tXGL3y+dS22trqSnaXeWLywz8xYsxwCjg1bdbOJTr5It7w8eHxGBfw
+	 FTYpTEmiCkhKbtgRIri8o4rh892dQEJDc+gvViUtWwd9yTm9e6mAqvo7bPYTF7oq/N
+	 wMWq/5KLFCeKzayEgVLhq5I/10keGxE4vMMb12Vg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78DBDF805EC; Fri, 13 Mar 2026 09:25:48 +0100 (CET)
+	id 6E356F805F6; Fri, 13 Mar 2026 09:30:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B71DBF805F3;
-	Fri, 13 Mar 2026 09:25:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3B17F805EE;
+	Fri, 13 Mar 2026 09:30:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE534F804B4; Fri, 13 Mar 2026 09:25:41 +0100 (CET)
+	id 886DFF804B4; Fri, 13 Mar 2026 09:30:14 +0100 (CET)
 Received: from mailman (unknown [10.254.200.5])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F4C9F8015B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2026 09:25:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CDDAF8016E
+	for <alsa-devel@alsa-project.org>; Fri, 13 Mar 2026 09:30:14 +0100 (CET)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Subject: Re: [alsa-devel] MOTU Midi Express XT
 From: budikage88@gmail.com
 To: alsa-devel@alsa-project.org
-Date: Fri, 13 Mar 2026 08:25:41 -0000
-Message-ID: <177339034156.20.17336373431282220021@mailman>
-In-Reply-To: <177338923288.20.9012243160735085919@mailman>
-References: <177338923288.20.9012243160735085919@mailman>
+Date: Fri, 13 Mar 2026 08:30:14 -0000
+Message-ID: <177339061440.20.7700072723601517976@mailman>
+In-Reply-To: <177338971162.20.397849772745667339@mailman>
+References: <177338971162.20.397849772745667339@mailman>
 User-Agent: HyperKitty on http://mailman.alsa-project.org/
-Message-ID-Hash: GTZHMW6JJJFEZ4VA24J5C5LBUKEZZMYR
-X-Message-ID-Hash: GTZHMW6JJJFEZ4VA24J5C5LBUKEZZMYR
+Message-ID-Hash: 6BJD5U3VYQL73LUUYMMHIIVA6EO7XF2J
+X-Message-ID-Hash: 6BJD5U3VYQL73LUUYMMHIIVA6EO7XF2J
 X-MailFrom: budikage88@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -56,7 +56,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GTZHMW6JJJFEZ4VA24J5C5LBUKEZZMYR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6BJD5U3VYQL73LUUYMMHIIVA6EO7XF2J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -65,9 +65,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-https://www.salsfamilyrestaurant.com/dinners/
-https://de.newsoft.eu.com/
-https://cycle-evolution.com/about/
-https://www.freddiessportsbarandgrill.com/menu
-https://www.calumetautos.com/contact-us/
-SESETOTO adalah situs terpercaya untuk togel dan toto macau
+https://blog.kahvay.com
+https://sanjosemexicankitchen.com/our-menu/
+https://www.sharperimagebarbershop.com/about-us
+https://drcharlesprocter.com/about-dr-procter/
+AMAVI5D adalah situs togel keluaran angka & prediksi jitu terbaik di indonesia
