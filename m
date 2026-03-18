@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3395B10775FC
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2026 17:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4B5E1077608
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Mar 2026 18:50:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 619C9601F3;
-	Wed, 18 Mar 2026 18:48:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 619C9601F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B1E6601F3;
+	Wed, 18 Mar 2026 19:50:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B1E6601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773856131;
-	bh=9gSqWvv/RCWcLjFC+UR53MzuWOp9LLhbWi9DWyIech0=;
+	s=default; t=1773859857;
+	bh=VxN8vujHDqiHmDdCCdau7e9TpxICWhj3sSa5ryx+fpM=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=C7plyw3Z/OsBLe9cTVaFlYDUVpJ1NPUEB4fgRa650ybxqnemcaFqt5iHBjhtaGeqL
-	 II+d6gh8pOAVhQrP4e8TndFdk6mWxDK+Q9vZHyMREQP1xX5Xo2WOvq2b1J8dxkI5Wm
-	 nknqPn7opkHO9I5Ef4zfLHFsQu9Kva6s47aS8R4E=
+	b=TOJqpW2Jr7NUBy+8L2XcXojbnDulnuiwE8Ix20juE2iPPFOeOC79UTraaOVcIzWuF
+	 LcrXQED2e+h9vVgZOK1En7BGoD3ORQuilTW8SU27EVN0uiuWJtlj2/TW0GwhvVWsOb
+	 ML+Mv02610T1ycADOm/S40dHxPh6xNUAZEOasj7k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8406F805F7; Wed, 18 Mar 2026 18:48:13 +0100 (CET)
+	id 08B08F805E8; Wed, 18 Mar 2026 19:50:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB706F805F4;
-	Wed, 18 Mar 2026 18:48:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B174F805F4;
+	Wed, 18 Mar 2026 19:50:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1740F80553; Wed, 18 Mar 2026 18:48:06 +0100 (CET)
+	id A4866F80553; Wed, 18 Mar 2026 19:50:17 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 583FAF8024C
-	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2026 18:48:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 583FAF8024C
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FBE7F800BA
+	for <alsa-devel@alsa-project.org>; Wed, 18 Mar 2026 19:50:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FBE7F800BA
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <189e00b50bd42900-webhooks-bot@alsa-project.org>
-In-Reply-To: <189e00b50baf5900-webhooks-bot@alsa-project.org>
-References: <189e00b50baf5900-webhooks-bot@alsa-project.org>
-Subject: Lenovo T14s G7 AMD audio issues
-Date: Wed, 18 Mar 2026 18:48:06 +0100 (CET)
-Message-ID-Hash: HZ2YZNA2PVSXVM5DFCUHZ5AKUEA6CPZX
-X-Message-ID-Hash: HZ2YZNA2PVSXVM5DFCUHZ5AKUEA6CPZX
+Message-Id: <189e0419be451500-webhooks-bot@alsa-project.org>
+In-Reply-To: <189e0419be3e3600-webhooks-bot@alsa-project.org>
+References: <189e0419be3e3600-webhooks-bot@alsa-project.org>
+Subject: Found the quirk for Yamaha CD-S3000
+Date: Wed, 18 Mar 2026 19:50:17 +0100 (CET)
+Message-ID-Hash: S2LOMPOLTBIEA6OEKUFVCNN2SFLYMKWO
+X-Message-ID-Hash: S2LOMPOLTBIEA6OEKUFVCNN2SFLYMKWO
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HZ2YZNA2PVSXVM5DFCUHZ5AKUEA6CPZX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S2LOMPOLTBIEA6OEKUFVCNN2SFLYMKWO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,18 +66,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #726 was opened from mrhpearson:
+alsa-project/alsa-lib issue #498 was edited from JLColaco:
 
-We're working on Linux enablement for the Lenovo T14s G7 AMD and having issues with getting the microphone working.
+Hi,
+I own a Yamaha CD player CD-S3000 with numerical inputs.
+I tried to used it with ALSA and with the default setings and quirks, it works but produces regularly (every 10s to 1mn) a clic.
+Since there was no specific quirk for it I tried to map it to an existing quirk for another Yamaha device using the quirk_alias option and it worked! (A suggestion from Kimmo who develops the Daphile music server, https://daphile.com/)
+Now I would like to have this quirk integrating the quirks_table.h file.
+The alias am using it the following: quirk_alias=0499150d:04991509
+it would be great to have it in a further release of the driver.
 
-AMD engineers recommended having a ticket upstream for better collaboration - there are some issues with ACP PDM controller and volume support capabilities that need discussion.
+I am ready to help to achieve this goal.
 
-alsa-info content:  http://alsa-project.org/db/?f=9082b76bc281046ae2b719cf89123fc174862864
+Many thanks for your work.
 
-I'll let the AMD folk know this has been created so they can explain the technical details of the issue more effectively
+Jean-Louis
 
-Thanks
-Mark
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/726
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/498
+Repository URL: https://github.com/alsa-project/alsa-lib
