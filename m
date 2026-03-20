@@ -4,194 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 360A4108B8E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2026 09:41:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D43211098782
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Mar 2026 12:58:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2E2F601F1;
-	Fri, 20 Mar 2026 10:41:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2E2F601F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8FA7601EC;
+	Fri, 20 Mar 2026 13:58:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8FA7601EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1773999690;
-	bh=iAxN5nJOf4rLOsr4ypLNee2i9XQLwir2wo9ImzH7TEI=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qWxqmdSUYXxIxnHYSU2YbYZNtNjlLUb8DfZNlKS3BeDnlWE0P+zfYJFNucxXdbzI8
-	 5trzBrRgR1nHTqjJbN0YNmSu05cP/hjrTZQGkrrDbLKpN0QS42uO0zbQ5Su7qmezZz
-	 iqmdjMeqJZbZKWky+rAtm+X3xXLYIwCwpeV+6Vug=
+	s=default; t=1774011527;
+	bh=RZdA7nfI1/qktR72TOcTRJbvMIXUDfGAmhGT9qSAH9M=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=UJlACDfpSgzS53c/7NUxvQHF8vyVJ1BaNE7OH1TSgQo6BhdvDLC/Mb1pYpuSAGcO4
+	 KZ1sqhbFMD7dnkiCWeE/35+pYuL+H6LAhaxNFDAoqWani/XxcDjRKKPfmDrV3t7Ykx
+	 bjO4z/kZf0KZ/c/xkz+zOxyRjaKGkmQqmemivpmA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1E27F805F4; Fri, 20 Mar 2026 10:40:56 +0100 (CET)
+	id 29CC5F805E9; Fri, 20 Mar 2026 13:58:15 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4396F805E0;
-	Fri, 20 Mar 2026 10:40:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F6AEF805E9;
+	Fri, 20 Mar 2026 13:58:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CCB07F8053B; Fri, 20 Mar 2026 10:40:45 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E7249F80087
-	for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2026 10:40:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7249F80087
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=MsAEMw9D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1773999633; x=1805535633;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=iAxN5nJOf4rLOsr4ypLNee2i9XQLwir2wo9ImzH7TEI=;
-  b=MsAEMw9DzrgXbTbKhzU6YI7mj5oetmf67nASbJCgcD/UC+DeFw2S1apV
-   prkp4Z/uPbE5QoVORI4Gqj8cbVZAxk0+C5Gq75H4pFXvQ92JZJToOnVhk
-   0sNX1FgqMCIr26ZKfWgo17qg2gskNMRm2yjpZ9AzgKSTVb713A4myCOO0
-   m8Yhcv3fV8kJTv8QtU/MPo2KPunFZpPkRK3gPMYA0NmM4RJs8VUxMf4qb
-   yAvDRxEoOQSpujLV+eyTgxETfbdUQ+kaesPHzkbE8ZUuk4jKvs8NqV3FJ
-   LDlijg3NpfHnaNRp+mAWqhg1mQEaqJYsR3kjnzj3+KmtgbUFvuK/+VcZx
-   Q==;
-X-CSE-ConnectionGUID: KZ3NCq22RTWl1rYumsJjUg==
-X-CSE-MsgGUID: 7szsAp5WRgWmru9jH4tKww==
-X-IronPort-AV: E=McAfee;i="6800,10657,11734"; a="86444886"
-X-IronPort-AV: E=Sophos;i="6.23,130,1770624000";
-   d="scan'208";a="86444886"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2026 02:40:27 -0700
-X-CSE-ConnectionGUID: AFyLaGcJQ029rpAV661T3Q==
-X-CSE-MsgGUID: hcvXHjjtQFK7kLZ9FS/L4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,130,1770624000";
-   d="scan'208";a="246262966"
-Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2026 02:40:27 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Fri, 20 Mar 2026 02:40:26 -0700
-Received: from ORSEDG901.ED.cps.intel.com (10.7.248.11) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Fri, 20 Mar 2026 02:40:26 -0700
-Received: from BL2PR02CU003.outbound.protection.outlook.com (52.101.52.47) by
- edgegateway.intel.com (134.134.137.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Fri, 20 Mar 2026 02:40:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=lbmZUc6tslpM5gz+gtllucK4aN9ttfdJeQDQi21iUC/j4FlICronR2XetvjMdhqmWA5V6CRYcJmuijasuZfMp+vkrok860wCaaqGevNfMGcQqtSNlpCIHN4lNtU7HK6JJEeItQE12cStNRk6/c67i2Ej1sGP8hXg/eIFvd29wsdf/EXmiuUErKHW8+XwzdelU5HGbmT1adCnlPedcuTLkBWuSEM0FC9Ar6631DmjB5wwilDemmlZc14JRWkZ0GZKvbUCI6bGKHuP1lqVzckH0DcmyLEt/TTMnl2lO1RTdZ5cmXGLXUxEgwNvHtvJ1SKK2SSWVUf7ypcCXd2iDJ/NaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SZgy19GNfqF9vZBA3BYUM0M67a+e4HvX8wUVq2fT+DE=;
- b=VmZfYkD01vUPjJzzJjdfdoqHOfZ2OH2BOuSyixlCNp+/VbxWpxbfbsZNThWYBoUPkXM6emvjBFTwrr6qDBNBP37RIDEYogHC5rhXQLZ0OZowZaCt45KjGlXqH1pGd9IIlk7Naq2npEbGtqCbUwI6gtO+wxIwixu9uq7w7AjG2cn5x9o74fmBaLJnlK/gq73PYKm/YRMPU4CWzW2zXTnPwSqwcqj2sGx2bJlSWDZg9tY47ItouBNjn6WrFLdDboDGEvh0tabRVXRAx4C4WNBnBX4esZtn3dQ9r08BoiJQQymOuam9Chxw63tNdS3xlA6xDzAbSY/LodGwvG6Qvyw2CA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB8283.namprd11.prod.outlook.com (2603:10b6:806:26c::16)
- by PH8PR11MB6563.namprd11.prod.outlook.com (2603:10b6:510:1c2::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9745.9; Fri, 20 Mar
- 2026 09:40:18 +0000
-Received: from SN7PR11MB8283.namprd11.prod.outlook.com
- ([fe80::d18f:6b38:584a:214]) by SN7PR11MB8283.namprd11.prod.outlook.com
- ([fe80::d18f:6b38:584a:214%6]) with mapi id 15.20.9745.012; Fri, 20 Mar 2026
- 09:40:18 +0000
-Message-ID: <d6e33ff2-bff0-4361-b0f1-3a46ef64d887@intel.com>
-Date: Fri, 20 Mar 2026 10:40:13 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] Dell Inspiron 3501 (Tiger Lake) - No analog audio output,
- only HDMI detected
-To: Enrique Orozco <kikeoropad@gmail.com>
-CC: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-References: 
- <CA+Q1o_9CgNNmRiF044ZPSVGnbDUHh-VhTKtc5pBDLYXJGw2GHA@mail.gmail.com>
-Content-Language: en-US
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: 
- <CA+Q1o_9CgNNmRiF044ZPSVGnbDUHh-VhTKtc5pBDLYXJGw2GHA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VIYP296CA0008.AUTP296.PROD.OUTLOOK.COM
- (2603:10a6:800:29d::10) To SN7PR11MB8283.namprd11.prod.outlook.com
- (2603:10b6:806:26c::16)
+	id 24F41F8053B; Fri, 20 Mar 2026 13:58:03 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BA6DF8047D
+	for <alsa-devel@alsa-project.org>; Fri, 20 Mar 2026 13:57:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BA6DF8047D
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB8283:EE_|PH8PR11MB6563:EE_
-X-MS-Office365-Filtering-Correlation-Id: 65566305-1b81-4e3f-84a2-08de8664b249
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
- BCL:0;ARA:13230040|1800799024|366016|376014|18002099003|56012099003|22082099003;
-X-Microsoft-Antispam-Message-Info: 
- 33bONMBHpB7hpGxjNOJUHq1/W27ofuFRbbEoItP1ulPyJaimQXpY52NDJc+YvDh7i40Hc7FgRMDAkJI3p2DfvB7B+7I87Y2XN/YJHQqWKiymK/cMDmtWZrX+IXn6wEUxiozORsfAUzbMC2nYtZaQuTWp4E8VnNC+hmFJ/trzCu2zDJ5krwEj+hNVaMtCKcI8jCkKgOhUdyQzJ79LU+ZFhTdDEUZIuwN/PNN3hA+v6/rqquz2Tt/hHtHk/V31C2WwpCZlH90Zj617avQMRktbVItbS2+b9HG8WS2bFg471+ML5KUrW8wcPO26dBwqv97ooc4QZ6JduItloVNuzTZyAQnF687Qw6hlazgzCCYg+I79BbFFsImn+88PlrPAkepZXeLaSxp/E0+ymeG/wK2g//YHjMvDo+mC2/coz2htkuWLvjTH/HYBixLN8G/KiDUxX6nXkORle4xsTmeWp/uD3tJQudEpOWhroR4VdFjQzJRftZfpX+sgj6NC1SVa3KqcaL0t0SRinBV7DFP30NQwpQ4/9Dm3Prc2aV5xaRo25BfWptVTydg8mxl4XP+MdQPNN7cYbNe8tQEf6pN1q3kqEGh6tpSUQHhMEEQueyaYqVRYXX8r5qAQmd3eAKUssnLdUX8W+BtNEUyPb1+s2f25zY6coOpaofWseOIrvrp9pHPYVwiny3K/UDF0ETXLf+hQZvqd0VYm+2P8CBtQ247gyYBpUjfJ7WlLEJqV+b7O75s=
-X-Forefront-Antispam-Report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB8283.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
- =?utf-8?B?bWRTTm1tcEVYRHpLRHhnMS9QY1haanBrQ05rUW15Q1B6cWlWaVdBRUZZdG01?=
- =?utf-8?B?TjJXeC9iL1RISmkrdDhZdkJsSmM1SHVEYVVNeWd4TUNCa0ZtZEFERk5BNHc2?=
- =?utf-8?B?K2ZQTHhLRWc0WWVVZXlOaUFMV1hTa1lqNU5GdlNCYTRzcUY1VkJscjR1dWRT?=
- =?utf-8?B?OTFoVFlxcUdmbXVEN0JrU09iclRQamlLdUdiTzJyVG9LaFQvb3dmNTdYdmtZ?=
- =?utf-8?B?YTJ2Z21NU2RNdDNsQ3NGc1dBQ3NoSzNMZ3RETTdjeDhCQk1ocG44enBVYnZx?=
- =?utf-8?B?VEN3aDU3UFNkQjNJRXhNc3dvbWtIc1pHL09rcWRWSytKWVRDRU1aM29xeXov?=
- =?utf-8?B?UndkaW1vKzlmOHBJOFJua3dTVzZ0Q2tDQnVFc3BhSzF1dGZkUkFpTTA1WlRY?=
- =?utf-8?B?bGZuRnlhLy9IRnZrcmNvQjJWWTdrVVdMRW9FM1A4TFh0ajZWN04yT0FPYUpl?=
- =?utf-8?B?N0pmVVR0ZEdKYzY0Y0Yra2FWN091SmNua0V0Wk9xQmVFZjhvVlJhUER5YzVV?=
- =?utf-8?B?NDR5RjloTHpWMVlOWFNoNnVCcWJHSWlMUktHVm5KRWNZVW5YN1dTNHZvNTJX?=
- =?utf-8?B?ajJrcVBYKzBIeEw2am5oSlpEcVFQNHFqLzViaTRJTUVwdjFVbUlSK1RZaGhJ?=
- =?utf-8?B?TUxNTGNFMjdkNjNzaGtIMnJnNVRuSldtZjIyWitOTU1zUFlKeXVqdEJMdXpG?=
- =?utf-8?B?dDQ3bXNHbTdaVC8wbmxqOTJ4enBOcnAzZkk1T1BkTW9iUGhGd3p5cW5FRndC?=
- =?utf-8?B?K0dMeFQvY1YxSGh4bitpb2FOK3ZqaGdkWHJxUUpGZzAwdm9FUFhHT3NseTBE?=
- =?utf-8?B?RkNHY0REMUt3TU1IV01YUGkxN1hGWVAza25PUWY2UDdIYkN1V25BM2ovVlQ0?=
- =?utf-8?B?bTBDdjhIQnlIYjNjaVBZQ3pHZE1mR29JaFI2UEFXTmRoTk9MNGZUcUhtMjRE?=
- =?utf-8?B?Ujd4NFhpUzdpWUJVVThzSHNRaURkZGJkYklNOUNpY0FDR2lhUGhwR1J1dkVV?=
- =?utf-8?B?dXlNNkFGRmVxYldFR1RzS0JqcHMwK3lCMVNFRjBmNEliNERRanhvOGpQWWJh?=
- =?utf-8?B?bDZBOHBETzd2L2dtdFNydlpMb0g1aDMvWnhEQkEyUWhEdlVxR00wdHh6NWdU?=
- =?utf-8?B?R09wSXVJL0JEUzJ1emU3Tk16QVlwS28wOG12anV1cVVEKzFyRXdDVWlTVlVa?=
- =?utf-8?B?MDEyaEljdEV6NnpYV0lXbzMxZSsxVkRpZ3BuaXhyK1NIaFdiYjVydStaRE1H?=
- =?utf-8?B?VU9lOURkK2RCdkErVEVpL1c4VVNEMXhiV21xK29Ja2ZobUxJVGdFcjM5YWlw?=
- =?utf-8?B?WkhBdVZXNVd3VjBleTltekRwSEtPMUY4akdGaG56OWtjeURFa0U1OGYwTnll?=
- =?utf-8?B?K3VPSFRadkU5WVZBRmxlR0dyZG1KalVMdWd0ZGN1eUZDSW54Lyt4Rkx2ai9F?=
- =?utf-8?B?WjFWajVHMnJkdUlibGViWk5XNTNsREt6ekgzdzFXQlE2STIzeEFPMG9WaXdJ?=
- =?utf-8?B?N285R25rRFlnbDhiUmNRL1k3ZTJyTmhlQUtxL1EyNWxiQ0xrQm10SzBYeXhn?=
- =?utf-8?B?N2M5c0t2dlRnZUM2bTd0Tm5PdmF2Q2M3OW1FTG1IZjlicllER1IwVEE5blpL?=
- =?utf-8?B?NUtDQVJ6VU5vbk92NElhUGkxUFU4K25maGdKbkZnSUZaSlpoZDEySnppVDlz?=
- =?utf-8?B?S1Y4a0FPSW1uUy9GS2FGNDljTkhYa0pybllGcHNPbVhMZE5CRW1paUo1QmQ4?=
- =?utf-8?B?SzVzR1dwc2pZeERocFF6Y1dtSTZBRVhwL0NhOHptdUFmbHNZTFByNEN6cXdo?=
- =?utf-8?B?K0N4Ujl0MU1ONFpzSGFEQnNMOHVoU1ZhOFRMN3JFQ0x4NEtsWnZ5aERnbUhD?=
- =?utf-8?B?cTFwTGdGenZwMjRXU0lMOHA5QjdnL1pFUkJEN3JLWldiV0VpMndINzNMOXc3?=
- =?utf-8?B?VGJ3NUtQa01TbVA2clZMeFlyQTFQZCtFL3lkUmg1MS9DNk0xdWo5T0J6YStK?=
- =?utf-8?B?UVJObCtYak00a2RhK0FTdU12OE1OaCtjbUtGUEhJU1JLbytRZmNFclcwZVBT?=
- =?utf-8?B?VGVCYllKR2pDclBBcC9pZXdsWkdLZ2tvKy9QL0R2UjRJbElWVGgySklrUyt6?=
- =?utf-8?B?cGwyaHF4SWNYTExuWHE5bmN3ZWJHWEJreEc4bkRCL3NMRFRtMllBbGdyd3Np?=
- =?utf-8?B?QTFwOUQvb0JOdWhnS2MrSkxQd2FSQ3MycTIwMGhPU1Z5dEM0UGpKa2xXcnR6?=
- =?utf-8?B?d2ZKektLWEhJVWhrSDYvTnVTaVR6NWFkb1EyTGVUMGhMRmlJdXIrUnBKUmZr?=
- =?utf-8?B?TTErOWhsQlo2OGFLK0dYWnJURmxFQ1k4V1NMK0k3YW5INnRXUXpRSzZsWmJF?=
- =?utf-8?Q?Mtu5rleTZe5pWfgQ=3D?=
-X-Exchange-RoutingPolicyChecked: 
- DMaYg5plfOUR2IsmO2zOPSzAN3Rug9gqk+N4V1w/N8PTWKFKk00qz0TfOoQDqyisrjLzqfDOX1Zc69/+1DHRzS6CRpqMNcRMyA+IUoMfhU6WAyCY60uP5qY3KGMuU3BcDkjMQkSwI7vmmUTP3fyh5w1oO9Y1TbvP3sVAnxI6HZb+XUcCJomyrYhGk1xBgAMqT/Qy7e9N32Sbc0A302+MvUVsgkXjElnrQevYOTWaTZS3W64ROQ6wOQNrS8awmwrvWTlNkqKeXgBajivwZEJRhZPvHyjRp4q7s+Ll4oAEBOz0ERBgYQQnjtsXT6rqW3r4Wsi6AaywYxgRZfa5qFvisQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 65566305-1b81-4e3f-84a2-08de8664b249
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB8283.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2026 09:40:18.1443
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- 1fFBHM/CRGPOB4D4FtE6WnPwNCjWhuvXuuevKrYY/QwWuYQgIHaInM5E/d2zzIm0ubmlghnnRtW9swx9/Jn2PNdZMQ6/PWDe0gdDJSF7wDo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6563
-X-OriginatorOrg: intel.com
-Message-ID-Hash: ZW2ZAISN6IT2XRZSKA27K5XWI5KSFFDZ
-X-Message-ID-Hash: ZW2ZAISN6IT2XRZSKA27K5XWI5KSFFDZ
-X-MailFrom: cezary.rojewski@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <189e8e09be18e300-webhooks-bot@alsa-project.org>
+In-Reply-To: <189e8e09bc1c1d00-webhooks-bot@alsa-project.org>
+References: <189e8e09bc1c1d00-webhooks-bot@alsa-project.org>
+Subject: No Headset Microphone on Acer Nitro 16 (AN16-41) - Realtek ALC245
+ [1025:1679]
+Date: Fri, 20 Mar 2026 13:58:03 +0100 (CET)
+Message-ID-Hash: JGO3JL3NDFHVQCSYMTTSERX6Y3PSJ4RL
+X-Message-ID-Hash: JGO3JL3NDFHVQCSYMTTSERX6Y3PSJ4RL
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -202,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZW2ZAISN6IT2XRZSKA27K5XWI5KSFFDZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JGO3JL3NDFHVQCSYMTTSERX6Y3PSJ4RL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -211,83 +67,590 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2026-03-20 2:31 AM, Enrique Orozco wrote:
-> Dear sound/ALSA maintainers,
-> 
-> I am reporting an issue with audio on a Dell Inspiron 3501 laptop. The
-> system detects the Intel HDA controller but only HDMI outputs appear;
-> the internal speakers and headphone jack are not detected at all.
-> 
-> System Information:
-> - Laptop: Dell Inspiron 3501
-> - Audio Controller: Intel Corporation Tiger Lake-LP Smart Sound Technology
->    Audio Controller [8086:a0c8] (rev 20)
-> - Subsystem: Dell Device [1028:0a25]
-> - Kernel: 6.18.12-1-MANJARO (also tested with 6.18.12)
-> - Distribution: Manjaro (Arch-based)
-> 
-> Problem Description:
-> After boot, only HDMI audio outputs are available. The internal speakers
-> and headphone jack do not appear in ALSA or PulseAudio/PipeWire. The
-> kernel detects the audio hardware but fails to initialize the analog
-> codec.
-> 
-> Observations:
-> 1. `aplay -l` shows only HDMI devices (devices 3,7,8,9)
-> 2. No analog output device (device 0) appears
-> 3. The codec detected is only "Intel Tigerlake HDMI" - no analog codec
-> 4. The following error appears in dmesg:
->     `snd_soc_avs 0000:00:1f.3: core_mask 1 power off failed: -110`
-> 5. Attempted various snd_hda_intel model parameters (dell-headset-multi,
->     dell-headset-dock, generic) with no success
-> 6. Forcing legacy driver with `snd-intel-dspcfg dsp_driver=1` also
->     didn't help
-> 
-> Reproduction Steps:
-> 1. Boot any recent Linux kernel (tested with 5.15.x and 6.18.x)
-> 2. Check audio outputs with `aplay -l`
-> 3. Observe only HDMI outputs are present
-> 4. No sound from internal speakers or headphone jack
-> 
-> Expected Behavior:
-> The system should detect and provide both analog output (internal
-> speakers/headphone) and HDMI output.
-> 
-> Additional Information:
-> - ALSA diagnostics:
-> http://alsa-project.org/db/?f=8eb23206a6d8aa76d24136f224b1ad93dab53651
+alsa-project/alsa-ucm-conf issue #727 was opened from Yenilmez99:
 
+Hello,
+I am experiencing an issue with the combo jack on my Acer Nitro 16 (AN16-41) laptop. The internal speakers and headphone output work correctly, but the headset microphone is completely unrecognized.
+Instead of the headset microphone, the system constantly shows a secondary microphone (likely the AMD ACP/Family 17h/19h device) which remains active regardless of whether a headset is plugged into the combo jack or not. It does not pick up any sound from the headset.
+Hardware & System Details:
+Laptop Model: Acer Nitro 16 (AN16-41)
+Audio Codec: Realtek ALC245  
+Subsystem ID: 1025:1679  
+Kernel Version: 6.19.6-1-cachyos  
+Diagnostic Data:
+ALSA-Info Link: http://alsa-project.org/db/?f=49bd06adf9e4d4ef71882065f01f95970956f343  
+What I have tried so far:
+I tested multiple snd-hda-intel model quirks via modprobe: dell-headset-multi, alc255-acer, alc255-dell1, headset-mic, headset-mode, and dell-headset3. None of them enabled the headset microphone.  
+I inspected the pins using hdajackretask. Only Node 0x14 (Internal Speaker) and 0x21 (Headphone) are exposed by default. All other potential input pins (like 0x19, 0x1a, 0x1b) are listed as "Not connected". I tried using "Advanced Override" to force these pins as microphones, but it did not yield any results.
+It seems this specific Acer Nitro 16 model requires a custom quirk in the kernel to properly route the headset microphone pin.
+Please let me know if you need me to test any specific patches or by compiling a custom kernel. Thank you for your time and help! Hopely this text is clearly because English is not my main language.
 
-Hi Enrique,
+Codec dump:
+Codec: Nvidia GPU a6 HDMI/DP
+Address: 0
+AFG Function Id: 0x1 (unsol 1)
+Vendor Id: 0x10de00a6
+Subsystem Id: 0x10251679
+Revision Id: 0x100100
+No Modem Function Group found
+Default PCM:
+    rates [0x0]:
+    bits [0x0]:
+    formats [0x0]:
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+State of AFG node 0x01:
+  Power states:  D0 D1 D2 D3 CLKSTOP EPSS
+  Power: setting=D0, actual=D0
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x04 [Pin Complex] wcaps 0x407381: 8-Channels Digital CP
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x185600f0: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=01, enabled=1
+  Devices: 4
+     Dev 00: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 01: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 02: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+    *Dev 03: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+  Connection: 4
+     0x08* 0x09 0x0a 0x0b
+Node 0x05 [Pin Complex] wcaps 0x407381: 8-Channels Digital CP
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Devices: 4
+    *Dev 00: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 01: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 02: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 03: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+  Connection: 4
+     0x08* 0x09 0x0a 0x0b
+Node 0x06 [Pin Complex] wcaps 0x407381: 8-Channels Digital CP
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x185600f0: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=05, enabled=1
+  Devices: 4
+     Dev 00: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 01: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 02: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+    *Dev 03: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+  Connection: 4
+     0x08* 0x09 0x0a 0x0b
+Node 0x07 [Pin Complex] wcaps 0x407381: 8-Channels Digital CP
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Devices: 4
+    *Dev 00: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 01: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 02: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+     Dev 03: PD = 0, ELDV = 0, IA = 0, Connections [ 0x08* 0x09 0x0a 0x0b ]
+  Connection: 4
+     0x08* 0x09 0x0a 0x0b
+Node 0x08 [Audio Output] wcaps 0x62b1: 8-Channels Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Unsolicited: tag=00, enabled=0
+Node 0x09 [Audio Output] wcaps 0x62b1: 8-Channels Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Unsolicited: tag=00, enabled=0
+Node 0x0a [Audio Output] wcaps 0x62b1: 8-Channels Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Unsolicited: tag=00, enabled=0
+Node 0x0b [Audio Output] wcaps 0x62b1: 8-Channels Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Unsolicited: tag=00, enabled=0
+Codec: ATI R6xx HDMI
+Address: 0
+AFG Function Id: 0x1 (unsol 0)
+Vendor Id: 0x1002aa01
+Subsystem Id: 0x00aa0100
+Revision Id: 0x100800
+No Modem Function Group found
+Default PCM:
+    rates [0x70]: 32000 44100 48000
+    bits [0x2]: 16
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+State of AFG node 0x01:
+  Power states:  D0 D3 CLKSTOP EPSS
+  Power: setting=D0, actual=D0, Clock-stop-OK
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x221: Stereo Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
+  Pincap 0x00000094: OUT Detect HDMI
+  Pin Default 0x185600f0: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x02
+Node 0x04 [Audio Output] wcaps 0x221: Stereo Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+Node 0x05 [Pin Complex] wcaps 0x400381: Stereo Digital
+  Pincap 0x00000094: OUT Detect HDMI
+  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x04
+Node 0x06 [Audio Output] wcaps 0x221: Stereo Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+Node 0x07 [Pin Complex] wcaps 0x400381: Stereo Digital
+  Pincap 0x00000094: OUT Detect HDMI
+  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x06
+Node 0x08 [Audio Output] wcaps 0x221: Stereo Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+Node 0x09 [Pin Complex] wcaps 0x400381: Stereo Digital
+  Pincap 0x00000094: OUT Detect HDMI
+  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x08
+Node 0x0a [Audio Output] wcaps 0x221: Stereo Digital Stripe
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+Node 0x0b [Pin Complex] wcaps 0x400381: Stereo Digital
+  Pincap 0x00000094: OUT Detect HDMI
+  Pin Default 0x585600f0: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x0a
+Codec: Realtek ALC245
+Address: 0
+AFG Function Id: 0x1 (unsol 1)
+Vendor Id: 0x10ec0245
+Subsystem Id: 0x10251679
+Revision Id: 0x100001
+No Modem Function Group found
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+State of AFG node 0x01:
+  Power states:  D0 D1 D2 D3 D3cold CLKSTOP EPSS
+  Power: setting=D0, actual=D0
+GPIO: io=3, o=0, i=0, unsolicited=1, wake=0
+  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+Node 0x02 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Control: name="Speaker Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
+  Amp-Out vals:  [0x38 0x38]
+  Converter: stream=5, channel=0
+  PCM:
+    rates [0x40]: 48000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x03 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Control: name="Headphone Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Device: name="ALC245 Analog", type="Audio", device=0
+  Amp-Out caps: ofs=0x57, nsteps=0x57, stepsize=0x02, mute=0
+  Amp-Out vals:  [0x38 0x38]
+  Converter: stream=5, channel=0
+  PCM:
+    rates [0x40]: 48000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x06 [Audio Output] wcaps 0x411: Stereo
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x40]: 48000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x07 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Device: name="ALC245 Analog", type="Audio", device=0
+  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
+  Amp-In vals:  [0x97 0x97]
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x40]: 48000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x24
+Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Device: name="ALC245 Alt Analog", type="Audio", device=2
+  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
+  Amp-In vals:  [0x97 0x97]
+  Converter: stream=1, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x23
+Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
+  Amp-In vals:  [0x97 0x97]
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x22
+Node 0x0a [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x3f, stepsize=0x02, mute=1
+  Amp-In vals:  [0x97 0x97]
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x40]: 48000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x25
+Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0e [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Pincap 0x00000020: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x13 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Pincap 0x00000020: IN
+  Pin Default 0x40000000: [N/A] Line Out at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0x0, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Control: name="Speaker Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x00010014: OUT EAPD Detect
+  EAPD 0x2: EAPD
+  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x02
+Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x17 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0000001c: OUT HP Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 4
+     0x02* 0x03 0x06 0x08
+Node 0x18 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Pincap 0x00000024: IN Detect
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x19 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Pincap 0x00003724: IN Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x1a [Pin Complex] wcaps 0x40048b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Pincap 0x00003724: IN Detect
+    Vref caps: HIZ 50 GRD 80 100
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00: VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x00013734: IN OUT EAPD Detect
+    Vref caps: HIZ 50 GRD 80 100
+  EAPD 0x2: EAPD
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00: VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x02* 0x03
+Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1d [Pin Complex] wcaps 0x400400: Mono
+  Pincap 0x00000020: IN
+  Pin Default 0x40600001: [N/A] Modem Line at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0x0, Sequence = 0x1
+  Pin-ctls: 0x20: IN
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x1e [Pin Complex] wcaps 0x400501: Stereo
+  Pincap 0x00000010: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x06
+Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+  Processing caps: benign=0, ncoeff=142
+Node 0x21 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Control: name="Headphone Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0001001c: OUT HP EAPD Detect
+  EAPD 0x2: EAPD
+  Pin Default 0x03211020: [Jack] HP Out at Ext Left
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x2, Sequence = 0x0
+  Pin-ctls: 0xc0: OUT HP
+  Unsolicited: tag=01, enabled=1
+  Power states:  D0 D1 D2 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x02 0x03*
+Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 5
+     0x19 0x1a 0x1b 0x1d 0x13
+Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 5
+     0x19 0x1a 0x1b 0x1d 0x12
+Node 0x24 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x12* 0x13 0x18
+Node 0x25 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x12* 0x13
 
-Sorry to hear about the problems.  Your diagnostics seem to be devoid of 
-dmesg, it would be vital to provide it.  You could also open a bugzilla 
-and attach the logs there.
+Lpsci audio:
+01:00.1 Audio device [0403]: NVIDIA Corporation AD106M High Definition Audio Controller [10de:22bd] (rev a1)
+	Subsystem: Acer Incorporated [ALI] Device [1025:1679]
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
+--
+65:00.1 Audio device [0403]: Advanced Micro Devices, Inc. [AMD/ATI] Radeon High Definition Audio Controller [1002:1640]
+	Subsystem: Acer Incorporated [ALI] Device [1025:1679]
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
+--
+65:00.5 Multimedia controller [0480]: Advanced Micro Devices, Inc. [AMD] Audio Coprocessor [1022:15e2] (rev 63)
+	Subsystem: Acer Incorporated [ALI] Device [1025:1679]
+	Kernel driver in use: snd_pci_ps
+	Kernel modules: snd_pci_acp3x, snd_rn_pci_acp3x, snd_pci_acp5x, snd_pci_acp6x, snd_acp_pci, snd_rpl_pci_acp6x, snd_pci_ps, snd_sof_amd_renoir, snd_sof_amd_rembrandt, snd_sof_amd_vangogh, snd_sof_amd_acp63, snd_sof_amd_acp70
+65:00.6 Audio device [0403]: Advanced Micro Devices, Inc. [AMD] Ryzen HD Audio Controller [1022:15e3]
+	Subsystem: Acer Incorporated [ALI] Device [1025:1679]
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
 
-Now, this report seems a bit all over the place, mentioning all the 
-sound drivers at once.  Let's start with context - their purpose:
+Some infos:
+// uname -r
+6.19.6-1-cachyos
 
-- snd_hda_intel driver default for all general, non-DSP cases
-- for TGL, snd_sof_xxx driver should probe by default for all DSP cases
-- snd_soc_avs is utilized on designs older than TGL for all DSP cases
+// sudo alsa-info.sh
+ALSA Information Script v 0.5.3
+--------------------------------
 
-Your TGL of device ID=a0c8 points to PCI_DEVICE_ID_INTEL_HDA_TGL_LP 
-(include/linux/pci_ids.h).  This means snd_sof_xxx should have probed 
-first.  Frankly, there should be no attempts for snd_soc_avs unless a 
-user forced the enumeration.  Such enumeration is destined to fail - not 
-because of the driver, but because there is no firmware binary paired 
-with it available on linux-firmware..
+This script visits the following commands/files to collect diagnostic
+information about your ALSA installation and sound related hardware.
 
-..unless one copies a binary from a Windows device.
+  dmesg
+  lspci
+  aplay
+  amixer
+  alsactl
+  rpm, dpkg
+  /proc/asound/
+  /sys/class/sound/
+  ~/.asoundrc (etc.)
 
-Last but not least:
-	`snd_soc_avs 0000:00:1f.3: core_mask 1 power off failed: -110`
+See '/usr/bin/alsa-info.sh --help' for command line options.
 
-While without the dmesg I cannot say for certain, failing such "basic" 
-operation as power-off MASTER_CORE (mask 1) usually means that the 
-laptop, despite being -LP, has AudioDSP functionality disabled in BIOS. 
-Forced enumeration won't workaround that either.
+cat: /tmp/alsa-info.3MjMZlzFi8/sdwstatus.tmp: No such file or directory
+cat: '/sys/module/snd_soc_ps_mach/parameters/*': No such file or directory
+/usr/bin/alsa-info.sh: line 679: tree: command not found
+/usr/bin/alsa-info.sh: line 679: tree: command not found
+/usr/bin/alsa-info.sh: line 679: tree: command not found
+/usr/bin/alsa-info.sh: line 679: tree: command not found
+Automatically upload ALSA information to www.alsa-project.org? [y/N] : y
+Uploading information to www.alsa-project.org ... Done!
 
+Your ALSA information is located at http://alsa-project.org/db/?f=49bd06adf9e4d4ef71882065f01f95970956f343
+Please inform the person helping you.
 
-Kind regards,
-Czarek
+// sudo dmesg | grep -iE 'snd|audio|hda|sof'
+[liveuser@CachyOS ~]$ sudo dmesg | grep -iE 'snd|audio|hda|sof'
+[    0.029923] software IO TLB: area num 16.
+[    1.304156] ACPI: \_SB_.PCI0.GP17.HDAU.PWRS: New power resource
+[    1.405966] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+[    1.405968] software IO TLB: mapped [mem 0x000000004cc7c000-0x0000000050c7c000] (64MB)
+[    1.564506] integrity: Loaded X.509 cert 'Microsoft Windows Production PCA 2011: a92902398e16c49778cd90f99e4f9ae17c55af53'
+[    1.564529] integrity: Loaded X.509 cert 'Microsoft Corporation UEFI CA 2011: 13adbf4309bd82709c8cd54f316ed522988a1bd4'
+[    4.302584] ISO 9660 Extensions: Microsoft Joliet Level 3
+[  121.075519] snd_hda_intel 0000:01:00.1: enabling device (0000 -> 0002)
+[  121.075626] snd_hda_intel 0000:01:00.1: Disabling MSI
+[  121.075632] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio client
+[  121.075892] snd_hda_intel 0000:65:00.1: enabling device (0000 -> 0002)
+[  121.076031] snd_hda_intel 0000:65:00.6: enabling device (0000 -> 0002)
+[  121.133807] input: HD-Audio Generic HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:08.1/0000:65:00.1/sound/card1/input18
+[  121.141174] input: HDA NVidia HDMI/DP,pcm=3 as /devices/pci0000:00/0000:00:01.1/0000:01:00.1/sound/card0/input19
+[  121.141234] input: HDA NVidia HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:01.1/0000:01:00.1/sound/card0/input20
+[  121.141269] input: HDA NVidia HDMI/DP,pcm=8 as /devices/pci0000:00/0000:00:01.1/0000:01:00.1/sound/card0/input21
+[  121.141306] input: HDA NVidia HDMI/DP,pcm=9 as /devices/pci0000:00/0000:00:01.1/0000:01:00.1/sound/card0/input22
+[  121.233270] snd_hda_codec_alc269 hdaudioC2D0: ALC245: picked fixup  for PCI SSID 1025:0000
+[  121.233476] snd_hda_codec_alc269 hdaudioC2D0: autoconfig for ALC245: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:speaker
+[  121.233483] snd_hda_codec_alc269 hdaudioC2D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+[  121.233486] snd_hda_codec_alc269 hdaudioC2D0:    hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
+[  121.233489] snd_hda_codec_alc269 hdaudioC2D0:    mono: mono_out=0x0
+[  121.233492] snd_hda_codec_alc269 hdaudioC2D0:    inputs:
+[  121.269662] input: HD-Audio Generic Headphone as /devices/pci0000:00/0000:00:08.1/0000:65:00.6/sound/card2/input23
+[  121.337664] snd_pci_ps 0000:65:00.5: enabling device (0000 -> 0002)
+[  121.847983] snd_hda_intel 0000:65:00.1: bound 0000:65:00.0 (ops amdgpu_dm_audio_component_bind_ops [amdgpu])
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/727
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
