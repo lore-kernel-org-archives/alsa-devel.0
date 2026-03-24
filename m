@@ -4,123 +4,196 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD479F532FA
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2026 08:59:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E67CE9A74E
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2026 09:38:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72C72601FC;
-	Tue, 24 Mar 2026 09:58:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72C72601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id DBE1760199;
+	Tue, 24 Mar 2026 10:38:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBE1760199
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774342742;
-	bh=8DD0C1iEpAxR03TJ6Gvm9I2CloORz1reWYNs1fSsagw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1774345127;
+	bh=QzG8cd2z7Sx8G8yHDfyAys1sJCVohYRQkfPgYdNmuAA=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CXgCjlzJtesmIL4jNtYtb0hAeDZEs5Ot2y3fuAHwM2Ie9fgjsloUOUKTuxCK0uc5O
-	 iEMLbrPgOjvjOZA2pTeudTo7Fl82P21+gQtqj9VCSqxK1rskDemZct9I7TiKSgoi+f
-	 YY/bvBA4I8zQYQLhi+iIb1uIJLKBUSBLA6O+bh5Y=
+	b=dm4AcGXdNt5Qzc8zRsUJPsBScQMCmOA8A+j8H7V/lr3Mp/oxasqXeuBsPWBVuBtH6
+	 LMAqIL7mCp4BAKy45HwF4ldgnckVD+VHv1aQIz6iMO2dwSPL/0+hUFvlG0amwtkFwW
+	 No4zQXrY6WjfFP7ZAUq3YGvM2yHv6W3Wo4qIpgc8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2CFBF805E7; Tue, 24 Mar 2026 09:58:28 +0100 (CET)
+	id B6CF2F805F7; Tue, 24 Mar 2026 10:38:11 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BDEFF805E9;
-	Tue, 24 Mar 2026 09:58:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DA66F805EF;
+	Tue, 24 Mar 2026 10:38:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10E6BF805BA; Tue, 24 Mar 2026 09:58:19 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2BCCCF805BA; Tue, 24 Mar 2026 10:38:03 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 07C69F800E2
-	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2026 09:58:16 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id ADF32374A8;
-	Tue, 24 Mar 2026 09:58:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz ADF32374A8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1774342695; bh=a7r7L4h3IWQCtmL6QyHo5jEo69NHvqtPmH/VdOsHMIY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bUWukw6xzjf3EbrUNWbdrwd+u9UiadqEw272fWsBecbfNg+DB2eNzKmOqwuBg3T0Q
-	 jFw/GsOZggASbIMCn7C4Yf9Jg+pU5P9Gh1PMwfcdXxicpzPlgiVtl9GLtMNCgWJht4
-	 gDmY2r0CoNpv6h+tzG5cOSkdvgGfVhMVEG+6DKsU=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Tue, 24 Mar 2026 09:58:06 +0100 (CET)
-Message-ID: <813612ea-f942-432f-9bf1-7b1ccfe59046@perex.cz>
-Date: Tue, 24 Mar 2026 09:58:05 +0100
-MIME-Version: 1.0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0AE74F800E2
+	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2026 10:37:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AE74F800E2
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=DbrXFX+8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774345082; x=1805881082;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=QzG8cd2z7Sx8G8yHDfyAys1sJCVohYRQkfPgYdNmuAA=;
+  b=DbrXFX+8ma1QMlRomnSxEiM1UY3ikg97Wjsr4OkVnKSCDpLIUfmVsmGK
+   uTiXaAIONS+Ng2rEbpFeI2m7TG5p+Ei+pIIGUoKeb80sHP4MoOP+svB/P
+   Jc5j3p5h7Gp50KPQSANQrA3ksR4P/PovpUwlXFVeBKmWny2HT8J0u149/
+   ztkDWJvmqc0RuREkez9CM61kER5vw0jjWTKnengBin3r6E0NfEI/NY9CT
+   fUA250g8iiNBjqU8iecR8KqA6j0xvdk1XDIQEzB2t2NWok0uqrv06UBAu
+   HDXX0wqoM4tTPrmXcOb0dYPc2fhbghmpbqD1169nKMUbjc9WA4EaTfROm
+   Q==;
+X-CSE-ConnectionGUID: 0OBBvv+aRPqjYxhUF0ddcQ==
+X-CSE-MsgGUID: BRRTP1MsS6uLs1hxuaE9vA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11738"; a="85664772"
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
+   d="scan'208";a="85664772"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2026 02:37:56 -0700
+X-CSE-ConnectionGUID: 1g/PIKJvRzONMqWlGJRD7A==
+X-CSE-MsgGUID: 4CD9MfNWRuiXJ71G9YjDFQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
+   d="scan'208";a="262222515"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2026 02:37:55 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Tue, 24 Mar 2026 02:37:54 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37 via Frontend Transport; Tue, 24 Mar 2026 02:37:54 -0700
+Received: from BL2PR02CU003.outbound.protection.outlook.com (52.101.52.11) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Tue, 24 Mar 2026 02:37:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D1r0HPAcTN/ZZHbnqGVhuznJwDJKZ/C8SCRI9xVQtsKvCTqPulr6cn5UeYJ9CEk1tVgOlj0+GySHBKPrWs6QVq3/1pc0SRZPiu3I2z9gjdxpYkJPUI5ZTf1p0reoRQyX+iRjytFO0ZZoyYbpladKeIfWWszIOWg4grLwLAGvOCKi2p0zozDUY7sqGUsZDy2I8POKfCKwn0PAluEe5vh3/z6MgIe1ZWEbCN5sCFgYsfa//5Rkyr3loS+y2IQumApmWRPpHsi/JUBTp+YYNOiny+Fn8SlsTEWBNYfGMrDQFZzZxXgb7vZk5GVkc2xglAnJGWGxvt9ZoRVWrTjFQs12ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gCzFssUux/qzAPpk6tFU8/Sy3D/w2ZgaIlKBdFQ9jFo=;
+ b=dLuGGyzOmlCqf2XmpBU1HI9pSKLBcdXFBiu67JbWhPPYEustCEQxXxNYFaKwe0li6u+Y7uV921+JndiQWlRwoDwpahtFw/3AHU2Y2cnKXUOYeMmcZh0iOpVJYZncqaxuwqtXGZGw+fcgj+1hBGjOcVf3u1TLMNdgHmCKlUHgvJfBv4Ev0hNCH8B4WBeHFOs9oKdr5l7n/lubHaFQwvDKvSE5v+gCXePYt+3bTaFFxUf+wzd9dkSX1IAuZFbiBDqjTbcPT76UT0Fvjr2b3mdU+pW2IEtH4rxQX+4jRP/lQlqNGbmCia5HFhvD9m89XJurC7ld5f/eA2a6uFwPu37GEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN7PR11MB8283.namprd11.prod.outlook.com (2603:10b6:806:26c::16)
+ by CH3PR11MB8240.namprd11.prod.outlook.com (2603:10b6:610:139::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9745.20; Tue, 24 Mar
+ 2026 09:37:52 +0000
+Received: from SN7PR11MB8283.namprd11.prod.outlook.com
+ ([fe80::d18f:6b38:584a:214]) by SN7PR11MB8283.namprd11.prod.outlook.com
+ ([fe80::d18f:6b38:584a:214%6]) with mapi id 15.20.9745.019; Tue, 24 Mar 2026
+ 09:37:51 +0000
+Message-ID: <40777346-28d4-456c-af4e-cb868d8b8ac5@intel.com>
+Date: Tue, 24 Mar 2026 10:37:47 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
- 'jumpy DMA'
-To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, arun@asymptotic.io,
- wim.taymans@gmail.com
-References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
- <c521e0d9-4d69-4fd4-9c29-bb9b62c93310@perex.cz>
- <8fe7f61b-dae4-4ae6-aa96-7e604a37e624@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
+Subject: =?UTF-8?B?UmU6IFJlZ3Jlc3Npb24gNi444oaSNi4xNzogc25kX3NvY19hdnMgY2xh?=
+ =?UTF-8?Q?ims_HDA_device_instead_of_snd=5Fhda=5Fintel=2C_fails_on_missing_t?=
+ =?UTF-8?Q?opology_firmware?=
+To: Robert Viren <robviren@gmail.com>
+CC: <amadeuszx.slawinski@linux.intel.com>,
+	<pierre-louis.bossart@linux.intel.com>, <tiwai@suse.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: 
+ <CAC5iJJZCHm8a_jP+7nQpp4aqn_EE7JmMdPJBbu83QSBjgqZ49g@mail.gmail.com>
 Content-Language: en-US
-Autocrypt: addr=perex@perex.cz; keydata=
- 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
-In-Reply-To: <8fe7f61b-dae4-4ae6-aa96-7e604a37e624@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: O6FO56QKH5KNFOS4UILOHCIJZYUWMSA7
-X-Message-ID-Hash: O6FO56QKH5KNFOS4UILOHCIJZYUWMSA7
-X-MailFrom: perex@perex.cz
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+In-Reply-To: 
+ <CAC5iJJZCHm8a_jP+7nQpp4aqn_EE7JmMdPJBbu83QSBjgqZ49g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1P190CA0043.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:800:1bb::6) To SN7PR11MB8283.namprd11.prod.outlook.com
+ (2603:10b6:806:26c::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR11MB8283:EE_|CH3PR11MB8240:EE_
+X-MS-Office365-Filtering-Correlation-Id: 346855bf-968f-4d1b-7742-08de898904b0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+ BCL:0;ARA:13230040|376014|366016|1800799024|56012099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info: 
+ cAqNO0OR7V+5RFFQK9sQ2MayK0yLjSCjF3cvaa9u2EeVrSNeHFuZSaxwo7Y9/80+v6iuX2jee/rH+sKgirFy29Up6KOjCfZ0pRb6eIZCZj2OiaqPwdqwR18ZMu3zeUkGjfHTtyOH6bVjroXHYb6vc8aFUbVTUtouZylEEX6q7XHnkUwUlrACj8ergD5f0YV+TRO02dvbEwBq2TQq/0N/LI4050B63SITo98c0uC+W3F0kh+6rdoQmHR74j2SwIdSW3YzvSj6+h5kh/vmHFlvsrDwmrrBeZh0n73kJ3J4Ru9AgPZHYixXlNsW/eZIvY/hDbpjAThulboRM7P/GUy9BnmJ+RxJjK/fOV6mnFcvMHJ/tm/vo7gWjnL+sl2bIafpyo0+Wour9M5vJ4RNrKXbk6oDBf6vl0Rur4MjM8//A6/u7HdUvfgsJbdWXjuTpLJ67xzv3k0yILbxEtsJs4lNuQumqAiBZkDKF8u7fKgtkjT6AzoY/QNC7Ckww29mWBJXNhbI17HJ5mxhLYWZZI7N30GlVNLctWS6aCRncxr/h49GNDcSeRorGWAZIDbb0O8+OKAE+T79+K4zmNhX2fDfoWlySaV61L4MJ4iMPODOO5OWsANjYwaDkCN1vyifL3JVdRcSwa9NqiHoIR9pUFe3lXGOCjqK8zm99tK3C9qxByJj1wOE4OU/2U7LIa4ron11lEjTljY8W6M6MsdhOfim0agH5hOfRt/uJPA1e1u9HkE=
+X-Forefront-Antispam-Report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB8283.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(56012099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+ =?utf-8?B?T2l6bkpkRGZOR0FoNGZBRzlOWW5zMGlxYitsMzB5NGZPelMxWlRHUmdtbHVG?=
+ =?utf-8?B?S2Ruem9Mc1V2NUljc0d1UldUV1Z6eDVPNkdHa0xZa2VPZXlIWTVubXNFU3Zz?=
+ =?utf-8?B?TjhrRkhqNk1Va1lOMlNObWp6S1VpdUFVOUN5d2xwWGg4b24vbnptOVQ1YThj?=
+ =?utf-8?B?OVArTStCM1pocm5RR2NLdDZrbmN0SXFEdW1hbmpyYlVuSVBHNHZDRnlRcmJJ?=
+ =?utf-8?B?RlJDMlhwTzRBM3R0SzZzYTdiQ2dUOU43UjNGYWovYnlTdXFyTmVrTDVQNHV2?=
+ =?utf-8?B?anVzeUUyT0lSU1FVUFpIcmRDTmZOQllXL3ZsVWJkTUZ6SG1NZncvblhYeWc0?=
+ =?utf-8?B?bHV5cERET1g3d1FuRnpXSFFGNlo0WFVseWVpL2VvU21zemdJNzIxSEZUSURk?=
+ =?utf-8?B?VThrc2tQaG1sSExDaXFUbnRtTVlDSkVHZFNTZHhqYlVJUnVLRFJJanZoZDZ0?=
+ =?utf-8?B?NnREUUEyVUtDRDJmZHRndkdtZmhwVGhyQjZ1cXlTTk1yelBKOG1RdUQxWExR?=
+ =?utf-8?B?dWx1aFJWSHJ0cGZ0MFhvOHdQMVhLbllXNlVNRzErQ3ZmVVFmZUxTcjB5SDFH?=
+ =?utf-8?B?d29GZkNzRzVoWVpVQTdIVXpJVm8xWVJJTGM5WUNBUDdsd2lqZkdpcS9JWm5S?=
+ =?utf-8?B?N2srNUVTTGM4TXdpODBKZnB2L0RvU1djMERHM04rUENRY2N6TDZGMHFCbk9S?=
+ =?utf-8?B?ZUJCZjlnT2JUeFZ1TmZKYXluZjJxMW5UT0R2UTRTclZGR050ajdnRWRQeDdi?=
+ =?utf-8?B?K3VYeEw3NmF2RUlydW9ZK1BPL25zeWF0QVRkNmk4aEZxM3lhdU56Q3dVdVBv?=
+ =?utf-8?B?cFZlQkNHY0g0S1lMQ2Z3cWFRVnlsNFJTb0piVkNtcVR5dEdLWTR3aDRGeXUz?=
+ =?utf-8?B?NFdOYUIyNjBvYjFVd0I0ZzZkVTN6SW9NRnE1WnNxQkdyMFhkczU5eHBUcjYv?=
+ =?utf-8?B?LzJiNnU0RnhGdGNuRVg1dVZ5Y25SOTlTZ2NEbTFja01KLzRtZkFjaWZtUnFa?=
+ =?utf-8?B?WnF2emo1SlhTQmk1MDlFRjFJcWoxajZCbnlndEZNTU9EWGxMMk9aU282bisx?=
+ =?utf-8?B?Lzd5N2hQRENKS0xjVXRXSmpycFI3c3dkcUdubnBScXBJTHUwUmhyRGg3MDdy?=
+ =?utf-8?B?TzlvMGtnMVlwa1FQWGxwRnd5ay95NkNWM3ZKMklWWG5TV2hncFk1YkFvU2RU?=
+ =?utf-8?B?TlYrMHdna09vQjBBVkJQVTVnRk8xNCtEckhWMW5pMkpzampMVnFOelFFOStP?=
+ =?utf-8?B?TWg5bVJyOERiZFhKQk54cW1ET3RabXBOZ3FHeVZzTjA4Vmd6TEtUam5DZ1Vq?=
+ =?utf-8?B?Q0NWZUtFTmVEVG5VUHpDdm1OQ0F0QVpPcnpvWGR0VWtsTlNveEs2STB3VWx2?=
+ =?utf-8?B?M2tIR29SRWR6TUxIZ3M2MFVYSGpIR1AvVXpsdTVla1lNNVM2UnNJbENHb0Nx?=
+ =?utf-8?B?UFBCWGdPMjUwK1ExN3dTZ0pNQWJKSTVrVVE5UGtXa25aY2paUU5PQjEvTEc4?=
+ =?utf-8?B?TmoxN1NWMkE1dW9uajFJWUFncDFxcXFXNHJsc0QxTjloaXk1SlRZU1BmSm9u?=
+ =?utf-8?B?ZzNUQU1ZQzNKcTJCbEZEd3NsZFQrcWpHOHk5Nmp0ditvZGlTSXc2MVNQOWli?=
+ =?utf-8?B?MGNmYUQ4U0lTdStEU1A4WTAxQ1AvZlV4ZmVtWk4xOEdYMHpiS0dYTmRzWklU?=
+ =?utf-8?B?SDNPeC9aR1lSNEdZMWU5Tld0WGRGcVE4OXRtUHp5eWJxQzB4R3NGR0tTWUVx?=
+ =?utf-8?B?MnZVNGlNY0daUGNBUkhQZ245ZTFrV3RhdGNGQzRpOUtFT0wzYUxxRklWZCtp?=
+ =?utf-8?B?dUp4b0dNMml6dU5pSWNoY3I1MUxhazl0emVkTHdud052Rk02TTYyN3NJeE5a?=
+ =?utf-8?B?OGQ2NnMvbk1xRVc5ckdyaFIwYjg4QjRUa2VkMWY0d1ZweEp4ektMTXZWMTQ4?=
+ =?utf-8?B?UXhZRWNyRVZMOEwyKzBYSzh2d2lrN1kvMXJvcTFrbTlYVytrZ28zRlRpang4?=
+ =?utf-8?B?bEw1WW5zcHBnU25ITklJKy9rMW5sZVZDVFFwQVQyMjQwc3FBY1l5cXhiWU1i?=
+ =?utf-8?B?UnVuYkJZQUUzWWdPcEJRUTJmN3k2aVRNOGVPYUlTVm5zOFpxVVdpZW9IVGNZ?=
+ =?utf-8?B?SmxiK2w3MkRDTU8wSkFuZjM3a3lFQU9XYVU5RU9YRnI5bDNvUDhYVnVyYktx?=
+ =?utf-8?B?Y3R5N2FXOTdJVm1tVWptS2cvSkxMMWE1MFl4Qm1ENUJFN3hkczFORDIxYm94?=
+ =?utf-8?B?QnlVcXdqeUg4dEMwVy9CamRJWDlBWi8yVjZFZERnYVd4QTZacUFzcEpXVS9O?=
+ =?utf-8?B?UFVkOTVPYTI4dzRienlZSGh2dkV0QmFvZGltQUdJN0VtQXN3dHQ4WGgyZ2V1?=
+ =?utf-8?Q?Yp0hvchy4EXg05vs=3D?=
+X-Exchange-RoutingPolicyChecked: 
+ ky3aK45n/48TQdvw+DpX2GMOLQXWr+0v7KzKEvLDvOczXR/2pFJgubZoML+zUL2OslWV8fBZOxt0jy82PSoK9dGt5QbiNQC3ZrdUDxpDEqcbABW716TShfkDJIT/vCbLwhw+p1ihAEYxEUty7I0ANqqLONVeZ7g45wDHH5XkGtBOuzyHHVtoPVNEAy+6Jp8mlBQ/nAOsiGVjD1nYuvkdpswdquIRhHJus8NOvjQuHxQrK1/spDKm2u6qwbTcpZoQUiPm0ggtGUvXwZGhFvsfC5FD7SAT4oDdBqE/RLVavy3QIKRcy4YgLefaHDflrUorhpvim8HIf1PuD35KoDobNQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 346855bf-968f-4d1b-7742-08de898904b0
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB8283.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2026 09:37:51.7879
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ qEcIF31l7ioam3hUumS5ZdpJeLmkbbLi2+/57xwxgTDrcu0cGEWy2AUhZD95d/3NpVsl0yEiIExOd19nO/FsfpZwkjsenjlg6la2/o9C2d4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8240
+X-OriginatorOrg: intel.com
+Message-ID-Hash: FWPVVHU4BLR64EXF7BM2I67WHUKTFHPP
+X-Message-ID-Hash: FWPVVHU4BLR64EXF7BM2I67WHUKTFHPP
+X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -131,7 +204,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O6FO56QKH5KNFOS4UILOHCIJZYUWMSA7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FWPVVHU4BLR64EXF7BM2I67WHUKTFHPP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,48 +213,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 3/23/26 17:16, Péter Ujfalusi wrote:
+On 2026-03-24 2:48 AM, Robert Viren wrote:
+> Hardware: HP laptop (Bang & Olufsen), Conexant CX20724, Intel PCH HDA
+> (0000:00:1f.3), 13th gen Intel, linux-firmware 20240318
 > 
-> 
-> On 23/03/2026 16:54, Jaroslav Kysela wrote:
->>> Or should we add a new member (carved out from the reserved section of
->>> hw_params struct) specifically for this purpose, like dma_burst_size,
->>> which likely going to be equal to fifo_size if both is filled by the
->>> driver.
->>
->> I would not change the fifo_size definition at this moment. It's not
->> directly related to the sample transfers. This value just describes the
->> additional latency for streaming.
-> 
-> Aren't we have the delay reported for this reason, which is actually in
-> use by user space?
+> Audio works fine with 6.8 kernel. 6.17 with the same modules loading
+> and identical firmware my audio fails. Result is dummy output and an
+> audible whine which drives me nuts. See logs below.
 
-Yes, this field was defined before the final delay reporting. It describes the 
-static FIFOs in hardware. But it was not defined to be related to the hw_ptr 
-granularity (transfers). SOF may set this value to indicate fixed latencies 
-caused by double buffering, too.
+Hi Robert,
 
->> The new member seems like a good way to go with more universal name like
->> 'chunk_size' (in frames) defining the transfer granularity information
->> for the PCM buffer I/O.
-> 
-> right, but (I think these are the main issues that blocked any progress
-> on this) this is not really about the chunk_size, it is telling user
-> space what is the safe distance from hw_ptr to modify samples without
-> the DMA jumping over the area.
+Typically Conexant codecs on Intel configurations aren't paired with 
+interfaces which do require DSP-capable driver to function e.g.: DMIC. 
+The default for configurations with no devices requiring DSP-capability 
+is snd_hda_intel driver.
 
-It depends on the view and definition. From the hardware view, the 
-'chunk_size' may be defined as the maximal block transfer from (or to) the 
-audio buffer (describing the hw_ptr granularity). So applications will be 
-notified, that filling buffer lower than 'chunk_size' may introduce underruns. 
-It covers also the initial transfer (when hw_ptr moves immediately to 
-'chunk_size').
+Looks to me like an unintended consequence of some recent 
+HDA-driver-selection changes. Before we move to the code though, first 
+let's check the value of 'dsp_driver' provided to the selector module.
 
-But if we agree on other name like 'burst_size' or 'batch_size', I'll be fine 
-with it, too.
+	cat /sys/module/snd_intel_dspcfg/parameters/dsp_driver
 
-					Jaroslav
+Please paste the result here. Then, let's see what you have in ACPI:
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+	ls /sys/firmware/acpi/tables/ | grep NHLT
+	/* if non-empty */
+	sudo su
+	cat /sys/firmware/acpi/tables/NHLT > ~/NHLT.dat
+
+I'd suggest to open a bugzilla and attach the NHLT table there.
+
+
+Kind regards,
+Czarek
