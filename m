@@ -4,80 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F531F54AB0
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2026 13:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA58FF54ACF
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2026 15:49:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FE4A601F3;
-	Tue, 24 Mar 2026 14:26:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FE4A601F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB758601FC;
+	Tue, 24 Mar 2026 16:48:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB758601FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774358790;
-	bh=Y9i2D2cIw/y2BtdExkwbdsEZNmugJ2kDBJHl7/zF1F0=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:List-Id:
+	s=default; t=1774367339;
+	bh=1ooK0SF8d2YsiJ8+92ieaA5DetZptrCqwjohvyyhecE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=r9rbm9fTOSRP5doncXlLPPx7CpoP6M9EOQpf2HtKsKDCrY8D+NzD4dbgqyWo1knD+
-	 zISva4gfXBXjLQ7aps6rQKTZ6LavWXNiSzsYHiuQ9Co/RSnyFOV0otyAVvbHHuEF+C
-	 0vlIiI2bx8xv60lmeBhPw6SR2iT7aYAk6AREoVBc=
+	b=k4+FhsH6Ql/I+qKJJRd7ofMP4ucIfXwihkd7nQHL8mNTG37HfS9W/T4CRHYLCIF/d
+	 Ot+ifUbQn0eQQZo1+QSlv4HmyGKx8etbUwiVUDd79Be3X/5I4a0PvDSluQsHMVDgI1
+	 NSUV2PQfPadBf5fKhveTIPP9FUWl5iaNJoO3BQK8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8BC0AF805F1; Tue, 24 Mar 2026 14:25:56 +0100 (CET)
+	id 568B3F805E3; Tue, 24 Mar 2026 16:48:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 217FFF805E8;
-	Tue, 24 Mar 2026 14:25:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71BC1F805F3;
+	Tue, 24 Mar 2026 16:48:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC523F805BA; Tue, 24 Mar 2026 14:25:47 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E4C24F805BA; Tue, 24 Mar 2026 16:48:17 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32145F800E2
-	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2026 14:25:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32145F800E2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=SJajZZe6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774358746; x=1805894746;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=Y9i2D2cIw/y2BtdExkwbdsEZNmugJ2kDBJHl7/zF1F0=;
-  b=SJajZZe6a3aj0mv0B2Nq9DmZqoUmP60brcsrqN8roPvREbPVXU9m7xOB
-   qMkO3n8CTYzosnxwk0B4aTYl973CnSGZvGlph6wGRCF8xdJUX1oKKTczJ
-   oVrujnKucWmIrQ0hpDIvB3h+85+hJi8w0dMWzti2KzBz+odm7E9LCTDlJ
-   AzwVKxhVYHeutzvftIomerJTc3653Z3VG7WBzQcEE7U/cmGzE2bkqZ1Gm
-   cJMy5dgTmRfSXljvuJcxztUBwHoKLXEH5FhAMDwic6qO9EAhNq+S7gmi+
-   YnATPX0VZTzq1JsI6BtZA0kl7Lz6CpdYI+GY5vcGCSbwCZ8NLowE6jYdl
-   Q==;
-X-CSE-ConnectionGUID: Km2BHIyDSdiL1YepQpFzqg==
-X-CSE-MsgGUID: AhVkayomT2qdcMXYWI+gZw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="78969069"
-X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
-   d="scan'208";a="78969069"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2026 06:25:41 -0700
-X-CSE-ConnectionGUID: Yq78sIntSxCzxP9bx/jjdQ==
-X-CSE-MsgGUID: LKilQjOcTZqgh9UCtUx/Pg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
-   d="scan'208";a="262285658"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO [10.245.244.138])
- ([10.245.244.138])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2026 06:25:39 -0700
-Message-ID: <fa31bed8-7446-4b83-b234-81f3cbfe3450@linux.intel.com>
-Date: Tue, 24 Mar 2026 15:25:55 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3CC5CF800E2
+	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2026 16:48:15 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 31EDCBAD;
+	Tue, 24 Mar 2026 16:48:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 31EDCBAD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1774367294; bh=5VQEo609kVLLjbaGl4ijBGmY8MV/hSDGuCsEEYkpJ+o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=sgg/EQjv342/sJkUbqPfPoLQ01qaRTFi35xj2OMrai+OO8eO/6UIwXLQ5VedBOtYQ
+	 kdIcgVeWe9dvzAQBcpWWo+tyH7r7uSKDgGvSsPdG+twjvJxaTTLUIFq4ffCI0CiUsg
+	 vHpnJ3mzqnsFKpd2NC16RlAokSFGXHsK/f9F7HbA=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Tue, 24 Mar 2026 16:48:04 +0100 (CET)
+Message-ID: <a3eaedae-f23b-46ac-9e8f-a6167df7ef41@perex.cz>
+Date: Tue, 24 Mar 2026 16:48:03 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
  'jumpy DMA'
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>,
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
@@ -88,13 +72,57 @@ References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
  <8fe7f61b-dae4-4ae6-aa96-7e604a37e624@linux.intel.com>
  <813612ea-f942-432f-9bf1-7b1ccfe59046@perex.cz>
  <6b129498-f130-44a0-a679-6fa1c639046e@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Content-Language: en-US
+Autocrypt: addr=perex@perex.cz; keydata=
+ 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
 In-Reply-To: <6b129498-f130-44a0-a679-6fa1c639046e@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IVPM23AKPLNY3LDLCLWV5FBJJZ4MUDAL
-X-Message-ID-Hash: IVPM23AKPLNY3LDLCLWV5FBJJZ4MUDAL
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Message-ID-Hash: NMOSHVTYKAKSKAD4AHYDPJFQATSEIRX6
+X-Message-ID-Hash: NMOSHVTYKAKSKAD4AHYDPJFQATSEIRX6
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -105,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IVPM23AKPLNY3LDLCLWV5FBJJZ4MUDAL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NMOSHVTYKAKSKAD4AHYDPJFQATSEIRX6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,14 +142,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 3/24/26 11:51, Péter Ujfalusi wrote:
 
-
-On 24/03/2026 12:51, Péter Ujfalusi wrote:
-> The question is: is it enough to only have single value exposed or do we
-> need/want add all small variations of this to be exposed?
-> I would think that a single dma_fifo_size should be OK and apps should
-> prepare for the crawling DMA case.
-> 
 >> But if we agree on other name like 'burst_size' or 'batch_size', I'll be
 >> fine with it, too.
 > 
@@ -130,62 +152,27 @@ On 24/03/2026 12:51, Péter Ujfalusi wrote:
 > be filled.
 > max_hw_ptr_burst_size or max_dma_burst_size or max_burst_size - in frames?
 
-something like this in kernel and then we need alsa-lib update and then we can introduce the use in pipewire?
+I missed the 100ms + 1ms case (it was a bit hidden in the examples). Looking 
+to this again, I think that the terminology should be more abstracted. The DMA 
+word is not appropriate in this contents. Even the burst word is not so good. 
+Also, applications do not work with hw_ptr, but with the avail / delay values 
+(calculated from the head [hw_ptr] /tail [appl_ptr] - playback).
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index d3ce75ba938a..3a1872b3e701 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -421,7 +421,8 @@ struct snd_pcm_hw_params {
- 	unsigned int rate_den;		/* R: rate denominator */
- 	snd_pcm_uframes_t fifo_size;	/* R: chip FIFO size in frames */
- 	unsigned char sync[16];		/* R: synchronization ID (perfect sync - one clock source) */
--	unsigned char reserved[48];	/* reserved for future */
-+	snd_pcm_uframes_t max_dma_burst_size;	/* R: maximum DMA burst size in frames */
-+	unsigned char reserved[48 - sizeof(snd_pcm_uframes_t)];	/* reserved for future */
- };
- 
- enum {
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index e71f393d3b01..462588f3527b 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -64,7 +64,9 @@ struct snd_pcm_hw_params32 {
- 	u32 rate_num;
- 	u32 rate_den;
- 	u32 fifo_size;
--	unsigned char reserved[64];
-+	unsigned char sync[16];
-+	u32 max_dma_burst_size;
-+	unsigned char reserved[44];
- };
- 
- struct snd_pcm_sw_params32 {
-@@ -247,9 +249,11 @@ static int snd_pcm_ioctl_hw_params_compat(struct snd_pcm_substream *substream,
- 	if (!data)
- 		return -ENOMEM;
- 
--	/* only fifo_size (RO from userspace) is different, so just copy all */
-+	/* copy common members and fix up 32-bit uframe fields explicitly */
- 	if (copy_from_user(data, data32, sizeof(*data32)))
- 		return -EFAULT;
-+	data->fifo_size = data32->fifo_size;
-+	data->max_dma_burst_size = data32->max_dma_burst_size;
- 
- 	if (refine) {
- 		err = snd_pcm_hw_refine(substream, data);
-@@ -262,7 +266,8 @@ static int snd_pcm_ioctl_hw_params_compat(struct snd_pcm_substream *substream,
- 	if (err < 0)
- 		return err;
- 	if (copy_to_user(data32, data, sizeof(*data32)) ||
--	    put_user(data->fifo_size, &data32->fifo_size))
-+	    put_user(data->fifo_size, &data32->fifo_size) ||
-+	    put_user(data->max_dma_burst_size, &data32->max_dma_burst_size))
- 		return -EFAULT;
- 
- 	if (! refine) {
+I think that we both mean similar thing, but the question is how to define the 
+right API for it.
 
+Basically, for playback this value should be the "minimal fill" recommendation 
+to avoid underruns. So for your examples, it should be 101ms or 196ms (but in 
+samples) right ?
+
+If we look to other direction (capture), it may describe the "maximal sample 
+block" which will be put to the audio buffer (hw_ptr change).
+
+So, perhaps, the xfer_latency name may be used (value should be in samples)? 
+Applications should not go bellow this value.
+
+					Jaroslav
 
 -- 
-Péter
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
