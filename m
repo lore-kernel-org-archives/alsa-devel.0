@@ -4,125 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA58FF54ACF
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2026 15:49:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A0CEF54AD9
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2026 16:38:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB758601FC;
-	Tue, 24 Mar 2026 16:48:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB758601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 418EB601F3;
+	Tue, 24 Mar 2026 17:38:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 418EB601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774367339;
-	bh=1ooK0SF8d2YsiJ8+92ieaA5DetZptrCqwjohvyyhecE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=k4+FhsH6Ql/I+qKJJRd7ofMP4ucIfXwihkd7nQHL8mNTG37HfS9W/T4CRHYLCIF/d
-	 Ot+ifUbQn0eQQZo1+QSlv4HmyGKx8etbUwiVUDd79Be3X/5I4a0PvDSluQsHMVDgI1
-	 NSUV2PQfPadBf5fKhveTIPP9FUWl5iaNJoO3BQK8=
+	s=default; t=1774370303;
+	bh=yi4Fvg7FkqCtqvd+hXTce1vKAWL/DOSxHSGVeeD7pIo=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=otuomT1ZWBRX1HlWLcg4vaERvWtg4sBNZUy/8i+bboAoUncumeaqkWt6xmJHG+mgG
+	 BsGcNib4gZCI97fqv38iEHcsNreQPWnyY2Gcwhp+2uvr8/POzJoqFMsV7hospZiRpa
+	 gUOJKxKrzb7ob1LfcFBiIreyoRaAi+wHd41+oWI0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 568B3F805E3; Tue, 24 Mar 2026 16:48:25 +0100 (CET)
+	id 08C6DF805F1; Tue, 24 Mar 2026 17:37:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71BC1F805F3;
-	Tue, 24 Mar 2026 16:48:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CE23F805F4;
+	Tue, 24 Mar 2026 17:37:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4C24F805BA; Tue, 24 Mar 2026 16:48:17 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A11DCF805BA; Tue, 24 Mar 2026 17:37:43 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3CC5CF800E2
-	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2026 16:48:15 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 31EDCBAD;
-	Tue, 24 Mar 2026 16:48:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 31EDCBAD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1774367294; bh=5VQEo609kVLLjbaGl4ijBGmY8MV/hSDGuCsEEYkpJ+o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=sgg/EQjv342/sJkUbqPfPoLQ01qaRTFi35xj2OMrai+OO8eO/6UIwXLQ5VedBOtYQ
-	 kdIcgVeWe9dvzAQBcpWWo+tyH7r7uSKDgGvSsPdG+twjvJxaTTLUIFq4ffCI0CiUsg
-	 vHpnJ3mzqnsFKpd2NC16RlAokSFGXHsK/f9F7HbA=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Tue, 24 Mar 2026 16:48:04 +0100 (CET)
-Message-ID: <a3eaedae-f23b-46ac-9e8f-a6167df7ef41@perex.cz>
-Date: Tue, 24 Mar 2026 16:48:03 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1FB73F8011B
+	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2026 17:37:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB73F8011B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=SzX4blyn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774370259; x=1805906259;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yi4Fvg7FkqCtqvd+hXTce1vKAWL/DOSxHSGVeeD7pIo=;
+  b=SzX4blynZi9QYFAStLn74WppmIsCHfq2FSzL5dncM6gq0+g+Lm2M3Aa5
+   oWjDskAaMo5hjOXDsn6pXlnRS8nJdA4Tcue5uWrHcriSXHOq0p8dlpcKo
+   lb1OvcKJ/j1krJZ47XkWU5T5IGZQTK5mpB2Mb7mVVp7J4/ZzAOl4ajSg4
+   QV/RsaDicv+71r64AYSviufns4LYhtruyzjFyladtStU0G18KWqVJSHM2
+   UvNj1SNx+n49wDya/D2pRcNqD+kFEcHisxSNibrJjhNapphtKG6jC3VbV
+   6dRJG3IhL/RvBol0HX41h3ynKUd88k1kff+RyxNA1aTo2Fx9TLaaGC5on
+   Q==;
+X-CSE-ConnectionGUID: 0ZOFytpRRpGZz22tUle8zA==
+X-CSE-MsgGUID: W2PfV8P3TQi6OavSU0U56w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="62945783"
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
+   d="scan'208";a="62945783"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2026 09:37:33 -0700
+X-CSE-ConnectionGUID: +tI5957mRkWd/rySzSs9HQ==
+X-CSE-MsgGUID: QLPb9+6hTMqV4BuZjTrICA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
+   d="scan'208";a="229322971"
+Received: from jpp-desktop.igk.intel.com ([10.91.221.24])
+  by orviesa005.jf.intel.com with ESMTP; 24 Mar 2026 09:37:32 -0700
+From: Sachin Mokashi <sachin.mokashi@intel.com>
+To: broonie@kernel.org
+Cc: linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	tiwai@suse.com,
+	pierre-louis.bossart@linux.dev,
+	Sachin Mokashi <sachin.mokashi@intel.com>
+Subject: [PATCH] ASoC: Intel: ehl_rt5660: remove unused macro definitions
+Date: Tue, 24 Mar 2026 12:34:00 -0400
+Message-Id: <20260324163400.1276247-1-sachin.mokashi@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
- 'jumpy DMA'
-To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, arun@asymptotic.io,
- wim.taymans@gmail.com
-References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
- <c521e0d9-4d69-4fd4-9c29-bb9b62c93310@perex.cz>
- <8fe7f61b-dae4-4ae6-aa96-7e604a37e624@linux.intel.com>
- <813612ea-f942-432f-9bf1-7b1ccfe59046@perex.cz>
- <6b129498-f130-44a0-a679-6fa1c639046e@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Content-Language: en-US
-Autocrypt: addr=perex@perex.cz; keydata=
- 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
-In-Reply-To: <6b129498-f130-44a0-a679-6fa1c639046e@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NMOSHVTYKAKSKAD4AHYDPJFQATSEIRX6
-X-Message-ID-Hash: NMOSHVTYKAKSKAD4AHYDPJFQATSEIRX6
-X-MailFrom: perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 5TXGHWX666NDFLU4J2QODTI37XBCD6CX
+X-Message-ID-Hash: 5TXGHWX666NDFLU4J2QODTI37XBCD6CX
+X-MailFrom: sachin.mokashi@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -133,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NMOSHVTYKAKSKAD4AHYDPJFQATSEIRX6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5TXGHWX666NDFLU4J2QODTI37XBCD6CX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,37 +102,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 3/24/26 11:51, Péter Ujfalusi wrote:
+DUAL_CHANNEL and NAME_SIZE macros are not being used (anymore) but the
+macros are still defined. Remove them to clean up dead code.
 
->> But if we agree on other name like 'burst_size' or 'batch_size', I'll be
->> fine with it, too.
-> 
-> I think neither of these are right, unless we substitute them with a
-> variable which tells the size of the FIFO in hardware that is going to
-> be filled.
-> max_hw_ptr_burst_size or max_dma_burst_size or max_burst_size - in frames?
+Signed-off-by: Sachin Mokashi <sachin.mokashi@intel.com>
+---
+ sound/soc/intel/boards/ehl_rt5660.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-I missed the 100ms + 1ms case (it was a bit hidden in the examples). Looking 
-to this again, I think that the terminology should be more abstracted. The DMA 
-word is not appropriate in this contents. Even the burst word is not so good. 
-Also, applications do not work with hw_ptr, but with the avail / delay values 
-(calculated from the head [hw_ptr] /tail [appl_ptr] - playback).
-
-I think that we both mean similar thing, but the question is how to define the 
-right API for it.
-
-Basically, for playback this value should be the "minimal fill" recommendation 
-to avoid underruns. So for your examples, it should be 101ms or 196ms (but in 
-samples) right ?
-
-If we look to other direction (capture), it may describe the "maximal sample 
-block" which will be put to the audio buffer (hw_ptr change).
-
-So, perhaps, the xfer_latency name may be used (value should be in samples)? 
-Applications should not go bellow this value.
-
-					Jaroslav
-
+diff --git a/sound/soc/intel/boards/ehl_rt5660.c b/sound/soc/intel/boards/ehl_rt5660.c
+index 5c7b218f22b7..ec4825064436 100644
+--- a/sound/soc/intel/boards/ehl_rt5660.c
++++ b/sound/soc/intel/boards/ehl_rt5660.c
+@@ -23,10 +23,8 @@
+ #include "hda_dsp_common.h"
+ #include "../../codecs/rt5660.h"
+ 
+-#define DUAL_CHANNEL 2
+ #define HDMI_LINK_START 3
+ #define HDMI_LINE_END 6
+-#define NAME_SIZE	32
+ #define IDISP_CODEC_MASK	0x4
+ 
+ struct sof_card_private {
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.34.1
+
+Intel Deutschland GmbH
+Registered Address: Dornacher Strasse 1, 85622 Feldkirchen, Germany
+Tel: +49 89 991 430, www.intel.de
+Managing Directors: Harry Demas, Jeffrey Schneiderman, Yin Chong Sorrell
+Chairperson of the Supervisory Board: Nicole Lau
+Registered Seat: Munich
+Commercial Register: Amtsgericht Muenchen HRB 186928
+
