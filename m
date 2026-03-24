@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0D37F483C6
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Mar 2026 16:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EE57F532E8
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Mar 2026 07:13:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F3CB601FC;
-	Mon, 23 Mar 2026 17:17:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F3CB601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88C41601F6;
+	Tue, 24 Mar 2026 08:13:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88C41601F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774282647;
-	bh=3hwIS+zPCLF5vniCygeT0FvF1Fbn5HwfJaoUULVHv8w=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1774336391;
+	bh=XRacGBV8OYXae8LlOvhWtDtbl1mY0BWLksV3lr+az5s=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Qk247pOC/hs9/pRK8XCyldYHnnm5eOmMYRCmdZG9YaXWxaNfXAoOEXSW+XgF6N9TP
-	 q9XpNEhdRVZYmjZ1GAA6Ngll4zYkiF+vbqnqW074d8EdFwCC0fbDSKWjf/v6H1pbpc
-	 R0T1akDY8PlZZmfdLJh2AGJQHs1cFxOspzPT4jC4=
+	b=otT8LOTZ8LVGe06NCsaeQ9BVPgC221i3swGPgmpRWvQ9s6pNmNXNRjUx+J8B2V/Zy
+	 D7B3Jo1/wXgGzbeAn31DLrSo1lfUaZy8TYJRM2G4eYuFF1+7VWlDEryeENH/7t4lkj
+	 6eppqUaa99I8cWkf1eDWRgW7JiRs2C7YeT8z3Y5Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 688D6F805BE; Mon, 23 Mar 2026 17:16:52 +0100 (CET)
+	id 87ADEF805E6; Tue, 24 Mar 2026 08:12:33 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1355F805BE;
-	Mon, 23 Mar 2026 17:16:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4197F805F2;
+	Tue, 24 Mar 2026 08:12:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1ECD4F80496; Mon, 23 Mar 2026 17:16:44 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	id D009FF805BA; Tue, 24 Mar 2026 08:12:23 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 53812F800C1
-	for <alsa-devel@alsa-project.org>; Mon, 23 Mar 2026 17:16:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53812F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id D06E7F8011B
+	for <alsa-devel@alsa-project.org>; Tue, 24 Mar 2026 08:12:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D06E7F8011B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=HJXfc3sM
+ header.s=Intel header.b=BZ4G703i
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774282602; x=1805818602;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3hwIS+zPCLF5vniCygeT0FvF1Fbn5HwfJaoUULVHv8w=;
-  b=HJXfc3sMm3hZU2h19NzxKh0n4x4gyq55kzF9p0V8Apx5qwpv+QnctjOk
-   C/bFboCDEh8x8dbbiUqUEH+vqab/o3rny8LbUZzFT1heTE/ymXz0rEJ95
-   lxjB6hlgxOxbX3SEDk3QsUqUFnnMstP2U6wRi+DZNuuo8XZIh5gF7UyYS
-   4ZIh/1Y2jiTfzP26phJIVagwjXpYVq6itTtkf7lKYiJIdBZemk9P7SSgz
-   nISjGmriJCys1bR8aVFF3Gkx/Shr0UdWDuGYcBWrReR7elwz8ntsKHsG2
-   fKY3gcIrc7Squyg/E8fM7X865TNmRnisEd85GOTAzCk1nYN3IcUZLjXnt
-   g==;
-X-CSE-ConnectionGUID: GiEux511RmW7I8XVHsvcxA==
-X-CSE-MsgGUID: AwwBfJi1TdukNyausQl0Yw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11738"; a="78881710"
-X-IronPort-AV: E=Sophos;i="6.23,137,1770624000";
-   d="scan'208";a="78881710"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2026 09:16:37 -0700
-X-CSE-ConnectionGUID: g/nGMyQVSX6hNJiwE2B0zQ==
-X-CSE-MsgGUID: PiHb+PFGQyu+4CeuaRI2JA==
+  t=1774336339; x=1805872339;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=XRacGBV8OYXae8LlOvhWtDtbl1mY0BWLksV3lr+az5s=;
+  b=BZ4G703i3BeiuYb6jTOKNnbU/D7nn77vRtg6Y/lMdu/9t2uGYOwdFMOR
+   f+KQ2Exc6t7dJj1bA2J1NELepVkhxe5o1gQc9oEva7W+5nrrIuuspo3WL
+   T+QNGG6k7iSp4jjICPlFgRBtOBODkFbxFQA3XqUjd+o/VWwRBVhPvLGWL
+   +AkxMM5sws54XVK7SzgKFhiu1hf8KNZ9qzW/LZd5wC+ivEO44upwicvNS
+   GaH3+g/GOrsdHVdsvHfpaxTomj/p9oV3CEznDRWs7aVtj/OsvMP+n4asb
+   BffoPpJC9n4TSFyUaS0fmIo5TFO18RGEutIp0YUKsegCBpQfD5ZPQ1PaH
+   w==;
+X-CSE-ConnectionGUID: vh6yHHaKQceEkFm3CZxVvQ==
+X-CSE-MsgGUID: wk8DRAXKQYO0XqkJRk+jPg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11738"; a="97964247"
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
+   d="scan'208";a="97964247"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2026 00:12:12 -0700
+X-CSE-ConnectionGUID: dlnejzdxQj6eDFbAvv9fGQ==
+X-CSE-MsgGUID: 5TsicKkjSVWtiKBj6cZpnA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,137,1770624000";
-   d="scan'208";a="219228521"
-Received: from fpallare-mobl4.ger.corp.intel.com (HELO [10.245.244.12])
- ([10.245.244.12])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2026 09:16:35 -0700
-Message-ID: <8fe7f61b-dae4-4ae6-aa96-7e604a37e624@linux.intel.com>
-Date: Mon, 23 Mar 2026 18:16:52 +0200
+X-IronPort-AV: E=Sophos;i="6.23,138,1770624000";
+   d="scan'208";a="254753048"
+Received: from pgcooper-mobl3.ger.corp.intel.com (HELO [10.245.244.138])
+ ([10.245.244.138])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2026 00:12:11 -0700
+Message-ID: <c3867377-28bd-41c9-9a03-f646bea60704@linux.intel.com>
+Date: Tue, 24 Mar 2026 09:12:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
  'jumpy DMA'
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Mark Brown <broonie@kernel.org>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
@@ -83,14 +84,12 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, arun@asymptotic.io,
  wim.taymans@gmail.com
 References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
- <c521e0d9-4d69-4fd4-9c29-bb9b62c93310@perex.cz>
 Content-Language: en-US
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <c521e0d9-4d69-4fd4-9c29-bb9b62c93310@perex.cz>
+In-Reply-To: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GCFP5SZNCHXKSTZUU7IYC6MYNYHDLM75
-X-Message-ID-Hash: GCFP5SZNCHXKSTZUU7IYC6MYNYHDLM75
+Message-ID-Hash: 6VRUI7UMK6QHTVYGYQZXUENGYLRDAT5B
+X-Message-ID-Hash: 6VRUI7UMK6QHTVYGYQZXUENGYLRDAT5B
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GCFP5SZNCHXKSTZUU7IYC6MYNYHDLM75/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VRUI7UMK6QHTVYGYQZXUENGYLRDAT5B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,93 +112,70 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 23/03/2026 16:54, Jaroslav Kysela wrote:
->> Or should we add a new member (carved out from the reserved section of
->> hw_params struct) specifically for this purpose, like dma_burst_size,
->> which likely going to be equal to fifo_size if both is filled by the
->> driver.
+On 23/03/2026 15:34, Péter Ujfalusi wrote:
+> Hi,
 > 
-> I would not change the fifo_size definition at this moment. It's not
-> directly related to the sample transfers. This value just describes the
-> additional latency for streaming.
+> for years the discussion around jumpy, bursty DMA have been popping up
+> and we always concluded that we are missing a good definition and agreed
+> way between kernel and user space to handle this.
+> 
+> In ALSA it is expected that the DMA (hw_ptr) moves in steady small
+> steps. There is a BATCH mode which tells that the DMA cannot report sub
+> period size position, progression.
+> The DMA bursting fits neither of this, it moves in bigger jumps (bursts)
+> and it can as well can report position in byte level.
 
-Aren't we have the delay reported for this reason, which is actually in
-use by user space?
+I think it worth explaining why this came up again...
+In SOF we have a concept of DeepBuffer PCM devices for which in topology
+one can specify the size of the host DMA buffer size (this is in the
+DSP), this is where the host DMA transfers data from ALSA buffer.
 
-> The new member seems like a good way to go with more universal name like
-> 'chunk_size' (in frames) defining the transfer granularity information
-> for the PCM buffer I/O.
+side note: The DeepBuffer PCMs are not used in Linux (pipewire for
+example), so no immediate need
 
-right, but (I think these are the main issues that blocked any progress
-on this) this is not really about the chunk_size, it is telling user
-space what is the safe distance from hw_ptr to modify samples without
-the DMA jumping over the area.
+I'm changing how it is working in a fundamental way with
+https://github.com/thesofproject/linux/pull/5673
+from static to dynamic allocation.
 
-I know how SOF and tlv320dac33 does this, they have one overlapping and
-one-one different modes
+The current, static mode is really simple: in topology the DB is set to
+let's say 100ms and the this is how it will be configured.
+For applications I place a constraint on the minimum period size to be
+100ms.
+Since Pipewire does not care about period size, but it needs to provide
+at least DB size of data ahead of hw_ptr we have a temporary way to use
+the minimum period size as headroom:
+https://gitlab.freedesktop.org/pipewire/pipewire/-/merge_requests/2548
+This avoids xruns in PW and most ALSA applications also work fine.
 
-A. nSample mode (SOF with bigger than 8ms host buffer or dac33 MODE1)
-initially fill the FIFO, then when only threshold amount of data remain
-in FIFO, read N number of samples then wait for the threshold to be reached.
+But the change to dynamic mode will render the PW 'guessing' broken:
+In dynamic mode the DB size will be configured based on the ALSA period
+size, but caped at the DB value from topology. If DB was set to 100ms in
+topology then this will be the maximum size of the DB, no matter how big
+the ALSA period size is (see PR5673 for some numbers on how this looks),
+but something like this:
+ALSA period:    8 -> dma buffer:   4 ms
+ALSA period:   10 -> dma buffer:   6 ms
+ALSA period:   16 -> dma buffer:  12 ms
+ALSA period:   19 -> dma buffer:  15 ms
+ALSA period:   20 -> dma buffer:  20 ms
+ALSA period:   50 -> dma buffer:  50 ms
+ALSA period:  100 -> dma buffer: 100 ms
+ALSA period:  150 -> dma buffer: 100 ms
+ALSA period: 2000 -> dma buffer: 100 ms
 
-B. keep full (SOF with less than 8ms host buffer)
-initially fill the FIFO, then whenever 1ms is free, read 1ms
+Legacy applications should be fine with this, but PW still needs to
+figure out the headroom andthe min period size will no longer aid that.
 
-C. two threshold mode (dac33 MODE7)
-initially fill the FIFO up to upper threshold, then if the low threshold
-is reached start reading data until the high threshold is hit, then wait
-again for the low threshold to burst again.
+If we want to enable at some point the DeepBuffer PCMs for Linux via
+pipewire, we need to have a way to communicate the DMA behavior.
 
-The initial burst for A and B is equal, it is the size of the FIFO, in
-case of C it is somewhere above the upper threshold as while filling the
-FIFO there are samples played out, so it is a moving target, sort of.
-
-But consequent DMA activity is different:
-A: it is nSample, which is smaller than the fifo size
-B: it is 1ms
-C: something about the diff between the two thresholds
-
-There could be different FIFO and burst setups out there, but in all
-cases the fifo_size is something which is a hard safety limit that
-applications must be aware of.
-
-Fwiw, ASoC collects the delay from CPU driver, codec driver and also
-from platform (DMA) driver, while the fifo_size never been configured,
-afaik.
-
-And the fun comes when we give numbers to these! Let's say the FIFO is
-100ms long and we have the low threshold at 4ms (start DMA when only 4ms
-left in FIFO).
-A
-start: read 100ms, wait
-after 96ms read 96ms, wait
-after 96ms, read 96ms, wait
-The hw_ptr after 20ms after the start will be at 100ms
-The hw_ptr after 70ms after the start will be at 100ms
-The hw_ptr after 100ms after the start will be at 196ms
-
-B (theoretical as SOF only uses this in 'small' FIFO case)
-start: read 100ms, wait
-after 1m, read 1ms, wait
-after 1m, read 1ms, wait
-The hw_ptr after 20ms after the start will be at 120ms
-The hw_ptr after 70ms after the start will be at 170ms
-The hw_ptr after 100ms after the start will be at 200ms
-
-C
-More like A, with reduced fifo_size, but that is a variable size.
-
-Application must keep 2x fifo_size distance initially, if you plan to
-check back in fifo_size time, B will be at one fifo_size ahead already
-for examplem, but with A if you check at fifo_size time again, you risk
-to race with the coming bursts, so you should not poke too close either..
-
-My idea is to tell user space to keep fifo_size of data as minimum, but
-initially this should be 2x fifo_size. How to document and do this is
-still not clear, but the only thing the driver can tell: this is my
-fifo_size, I burst based on this number.
-
-And I'm really bad at naming things ;)
+I'm not keen on staying on the static DB as I see it as a limiting
+factor. If we want a PCM with 200ms buffer (for audio playback) and we
+want shallower one with 40ms for calls then you would need to have
+separate PCMs and the period size would be constrained, so it is sort of
+a headache for user space, while with dynamic DB you would have freedom
+to use these as you wish and also benefit the power saving of the bigger
+period sizes.
 
 -- 
 Péter
