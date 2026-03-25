@@ -4,98 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A26D10ED675
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 13:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 515CF10F284C
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 16:06:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1171F601F0;
-	Fri, 27 Mar 2026 14:19:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1171F601F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A4F2601F6;
+	Fri, 27 Mar 2026 17:06:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A4F2601F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774617552;
-	bh=lIcEeJUAxHlLV+3EoJu2rdgzUpTAIhxvKJOwKa/Fqvg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1774627574;
+	bh=F9V/eMp4M8BziA52Mpx4HG3b+LtSlVb0qprLtUzCKYA=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=cdUVFfWYSusenR0LSR4hCYQ6AsCK/1EPJWyjZFoT1DCDI6W6exxKumdwlV/SJqC5R
-	 vJM/1sjPzuK2y1RqrQw8AO7ZwqAV7KfbMP4Tnc/bYN051A/rTMutS142v48gE1s9A9
-	 Ev7n/Vaj1ehpLe35YE+mJqEBkZbpzRxfBBQ3Wd7k=
+	b=ldLIn9o3qoJgnl/5a6BW5z+xCFQCs1DD5BkuhpQR+syxQbF0hfHeEuj+f4TPcrjui
+	 oyxXtPC5IGMNEQQSJqkX6krnRLwKM009lB+jWuxf8+DnkpFxNT+icqcszTyqg6qwe2
+	 aE6tbxf3Vj6otZUqW9Do5eIFzG12yjj9Ox30wanQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6B023F805F6; Fri, 27 Mar 2026 14:18:39 +0100 (CET)
+	id 56692F805E8; Fri, 27 Mar 2026 17:05:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13646F805F5;
-	Fri, 27 Mar 2026 14:18:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41193F805E8;
+	Fri, 27 Mar 2026 17:05:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5E6A5F804F3; Fri, 27 Mar 2026 14:18:31 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 59496F8059F; Wed, 25 Mar 2026 13:27:09 +0100 (CET)
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com
+ [209.85.161.42])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0571AF80212
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 14:18:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0571AF80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id A933FF800E2
+	for <alsa-devel@alsa-project.org>; Wed, 25 Mar 2026 13:27:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A933FF800E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=gZXgl7Tk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774617510; x=1806153510;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=lIcEeJUAxHlLV+3EoJu2rdgzUpTAIhxvKJOwKa/Fqvg=;
-  b=gZXgl7TkPrq1WVmkiq6XM6PRcMc1hGVTi+/ai+7ijFNeqTRBPrlga+S7
-   tznFviR6Pq0VNpkVuCcVttzwKiWcktNl/Y9kMipzGiXWVRy0AZqx3KMBJ
-   bT5o6bq6I5xyiEQXQi7fu2nnxJhqeu2BRZswPCWhr20NtVUJwDWdxX+jj
-   H4HfM+v8rJI5AeAv3mpJFb5kJ/qmEXXTYPtasHLIvMzrnLY+7Cr2nTlI5
-   g43XQDtmato+B513MDjcv3yo0FkVJebFYX6hXuykfq+tH4Pf1H9UjsuuV
-   aBe21v7Ghm2A1RHxQyqaetg97IkaXzf4qQ2b+0HHAY3JcEybn0LNH9Gr+
-   g==;
-X-CSE-ConnectionGUID: iS7aJVPEQnCPiReHHbqmWg==
-X-CSE-MsgGUID: YQUdJRhtSya3pDvfO1a4kw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11741"; a="75571283"
-X-IronPort-AV: E=Sophos;i="6.23,144,1770624000";
-   d="scan'208";a="75571283"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2026 06:18:25 -0700
-X-CSE-ConnectionGUID: DVjpZ390Rn2/FpCszCsiXQ==
-X-CSE-MsgGUID: /2HYjI6gTIyOGNylFRiIZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,144,1770624000";
-   d="scan'208";a="248354538"
-Received: from jpp-desktop.igk.intel.com ([10.91.221.24])
-  by fmviesa002.fm.intel.com with ESMTP; 27 Mar 2026 06:18:23 -0700
-From: Sachin Mokashi <sachin.mokashi@intel.com>
-To: broonie@kernel.org
-Cc: linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	tiwai@suse.com,
-	pierre-louis.bossart@linux.dev,
-	cezary.rojewski@intel.com,
-	Sachin Mokashi <sachin.mokashi@intel.com>
-Subject: [PATCH] ASoC: Intel: ehl_rt5660: Use the correct rtd->dev device in
- hw_params
-Date: Fri, 27 Mar 2026 09:14:39 -0400
-Message-Id: <20260327131439.1330373-1-sachin.mokashi@intel.com>
-X-Mailer: git-send-email 2.34.1
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=iSuDoEat
+Received: by mail-oo1-f42.google.com with SMTP id
+ 006d021491bc7-66f3e7d9eccso1410871eaf.1
+        for <alsa-devel@alsa-project.org>;
+ Wed, 25 Mar 2026 05:27:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774441625; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Xifm/7lU6eTcCmBVjAu8lFJUMiUOMx+nrs7gHD5qBqXbCb1OFDOoZFUXwkA4ETK1NU
+         6IjR8s+Hi/cD+SLlXqz2P5ldXcOxSZsJXWhLyaexuIprZcObZGKQPfUE9uIcYmTBKMrY
+         Q04AhpNwes/SX200rt1EafktNVgR0qaeSitYsrcwReJyeQK/ayRHVfpXzrK22qEtZwhE
+         qZnNCKbVdujBt9C08bqOVufADVZO6o8sl8Ct6p3MqqoNLVvvKAE8JVjQk/N9T03WEsZz
+         Nc4Zw+EyjvIcKFJC58uzmVs96n+tno6YmRZA2Do0pG6ZWn5TY109Kw0KenbYSslLZwv4
+         UsCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=HFvoVvwvCpoSrZvfDIYva3ZmHvLmFaGJxwwa8F0Vrpk=;
+        fh=tZHr7/D0TldToTXCjYTt3t0FeLwUO/++2yJWvjcnx/g=;
+        b=ITtiHHbpeapZIQdR0RZEv79qDjBxRadsrpADNR0OqyWmcJz3BJVlFiXMfkgkuBPhZA
+         KB1InAvIn1+nfMY6eNhYLgDasnH44owVd5hWHEUKWpwjaq8OfAROcFktg8t7dUXBj3vP
+         Rn22qc9IOLiecSBp24ggpXDCVa+83udOsbQFbl9nzejffnqKFbY6XOrmWkXucxW2BjQS
+         Dp/bGV5JbgLMk/nn5jEuGvU4jShhN644TgxOh0bOk5KBBCLMEfXtbqo97EJeMItdlHr3
+         /6xw6Q8Lh5PJwOruYCY4yIoQ5KawQX0l/oQngeJZ9qNYzKrnue7t9NXpVjm7CVHLcEMs
+         FoFw==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1774441625; x=1775046425;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HFvoVvwvCpoSrZvfDIYva3ZmHvLmFaGJxwwa8F0Vrpk=;
+        b=iSuDoEatudgL/+fbRTSRbDQGn6i13bfcTrso87Hk5VlowmvswQS7Zhi4zP8qPaAN/6
+         pVTr1L1haCHMJMJT78HTIUUBSwjKQM5rpCOASQHjtJBXr4rlHB6hU4Ko3hZr9+zmzUzM
+         QS8Hl+sS04IFRzlsnBBJux/WDczSQ14AFWEyEuRAxEleILPRS8zWDGgJc+dNUqLCjlMS
+         kNSY6Lm9KuCjvrNqg6lsZ9jmMc06jTQIu2uDjV2A2T2VIStwZn3zMpf1ZilMZFLMYFU7
+         qAXSYtM6cV1Z+lP0ampsxrFJzSNyHpThoZO/X61X2TpXk6lZlj2o9NysvdNcnGvnheZ5
+         eOlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774441625; x=1775046425;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HFvoVvwvCpoSrZvfDIYva3ZmHvLmFaGJxwwa8F0Vrpk=;
+        b=askwA5k2l2UkLHSI2A8znkNWi7/rWXoLPcSLMA/xH0+OulxQwQlI1USLm0VMq1Kd/i
+         pv5NnyosyQGyKk1yDJrhfQAvQarnGBumgEzLEizQf3dMAnauMRMRf8dtvZa1OLK47nxG
+         GTjUmts78coLygwOJwbP4TDiCGG1tsLN/0iXpZwuhkbRKmPOLlZ7iDCTA9bV+9vLHdB0
+         OUMFExVaaA5jxgOlBS+MoguPeYzwz4Qa3gbwxBEga5DsClQNqT7QgsmGeVJfGPIstB5m
+         a8j2kkTijbCwmnkMGUHdFPFSjKJfzWCVPoDH9DOcp6V6pv+bDQBNusK4GvZ+hRnlDw0i
+         SobQ==
+X-Gm-Message-State: AOJu0Yw7J6VgSQQV+JRnuBmDrOATSyRe6rKKrYFKQEY9uLSfT0A1qrow
+	/EXCGnhoqDbGI8z0r4zH5GdxELiP5klFBz1EkdZmCeqZH6tUunUP1k36BW2SHuYyS6GUmDW2EmT
+	oLi+z5psF6dZEaer3d9VwQHDO4HiuVaBL51k7
+X-Gm-Gg: ATEYQzyLFWyKb3xn4e0BU/0h4YUeQ4wUjs4gGGAMIfMwX+hoCt2lS4WMfxE33nNC4sQ
+	yoDKFu4CtrZIuJ0bckP64Op5geSjtwPgx2bLc+lAvK7uuNk2Ft2a9kPX0NPPp5PweGwTR8Fqwbi
+	707ihN1V95dGYWoehFUoz2feSz9hk3+cyXKziGYxg1JXB5Nmb2+OU9FESeKODwS0GHCZosE6szW
+	0kD/xJ1UEmLVjSt8rgIErFXSHesN0/z7/foEdZuYlcBp+AKupYK/VP5yQCtEQFTzWL42Iox2tA/
+	ORBCtKxyruRkTbKnBw==
+X-Received: by 2002:a05:6820:61a:b0:67d:f465:77d2 with SMTP id
+ 006d021491bc7-67dff54b558mr1876414eaf.65.1774441625496; Wed, 25 Mar 2026
+ 05:27:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: RXXTR6IDWSFIVSIW5U6HNDHJIA2BRMDI
-X-Message-ID-Hash: RXXTR6IDWSFIVSIW5U6HNDHJIA2BRMDI
-X-MailFrom: sachin.mokashi@intel.com
+From: Rocket Raccoon <rakketje1@gmail.com>
+Date: Wed, 25 Mar 2026 13:26:54 +0100
+X-Gm-Features: AQROBzDZV83c5Fx9TiPkJ3gyuFfpbuJmfa9paqaY2BZjAw6BS0Vq6i6bxEVX8Cw
+Message-ID: 
+ <CAL76xbU81CKcbAD436djDbJ8P+xsj0r24i7phFG1YcSVr2n2JQ@mail.gmail.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo Yoga 7 2-in-1 14AKP10
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.com, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: rakketje1@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: 7MQYOYMU47PX3MQXY3X6F46CD7XDLSRO
+X-Message-ID-Hash: 7MQYOYMU47PX3MQXY3X6F46CD7XDLSRO
+X-Mailman-Approved-At: Fri, 27 Mar 2026 16:05:29 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RXXTR6IDWSFIVSIW5U6HNDHJIA2BRMDI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7MQYOYMU47PX3MQXY3X6F46CD7XDLSRO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,51 +132,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In rt5660_hw_params(), the error path for snd_soc_dai_set_sysclk()
-correctly uses rtd->dev as the logging device, but the error path for
-snd_soc_dai_set_pll() uses codec_dai->dev instead.
+The Lenovo Yoga 7 2-in-1 14AKP10 (PCI subsystem ID 0x17aa:0x391c) uses
+an ALC287 HDA codec paired with a TAS2781 amplifier connected via I2C.
+Without this quirk the amplifier is not initialised and internal speaker
+output lacks amplification.
 
-These two devices are distinct:
-- rtd->dev is the platform device of the PCM runtime (the Intel HDA/SSP
-  controller, e.g. 0000:00:1f.3), which owns the machine driver callback.
-- codec_dai->dev is the I2C device of the rt5660 codec itself
-  (i2c-10EC5660:00).
-
-Since hw_params is a machine driver operation and both calls are made
-within the same function from the machine driver's context, all error
-messages should be attributed to rtd->dev. Using codec_dai->dev for one
-of them would suggest the error originates inside the codec driver,
-which is misleading.
-
-Align the PLL error log with the sysclk one to use rtd->dev, matching
-the convention used by all other Intel board drivers in this directory.
-
-Signed-off-by: Sachin Mokashi <sachin.mokashi@intel.com>
+Signed-off-by: Lucas <rakketje1@gmail.com>
 ---
- sound/soc/intel/boards/ehl_rt5660.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/ehl_rt5660.c b/sound/soc/intel/boards/ehl_rt5660.c
-index 5c7b218f22b7..c40cd9fb1a26 100644
---- a/sound/soc/intel/boards/ehl_rt5660.c
-+++ b/sound/soc/intel/boards/ehl_rt5660.c
-@@ -127,7 +127,7 @@ static int rt5660_hw_params(struct snd_pcm_substream *substream,
- 				  params_rate(params) * 50,
- 				  params_rate(params) * 512);
- 	if (ret < 0)
--		dev_err(codec_dai->dev, "can't set codec pll: %d\n", ret);
-+		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
- 
- 	return ret;
- }
--- 
-2.34.1
-
-Intel Deutschland GmbH
-Registered Address: Dornacher Strasse 1, 85622 Feldkirchen, Germany
-Tel: +49 89 991 430, www.intel.de
-Managing Directors: Harry Demas, Jeffrey Schneiderman, Yin Chong Sorrell
-Chairperson of the Supervisory Board: Nicole Lau
-Registered Seat: Munich
-Commercial Register: Amtsgericht Muenchen HRB 186928
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index XXXXXXX..XXXXXXX 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -XXXXX,6 +XXXXX,7 @@ static const struct snd_pci_quirk alc287_fixup_tbl[] = {
+  SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo Yoga Pro 9 14IRP8",
+ALC287_FIXUP_TAS2781_I2C),
++ SND_PCI_QUIRK(0x17aa, 0x391c, "Lenovo Yoga 7 2-in-1 14AKP10",
+ALC287_FIXUP_TAS2781_I2C),
+  SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL",
+ALC287_FIXUP_13S_GEN2_SPEAKERS),
