@@ -4,75 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12A1C10F2862
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 18:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A611410F2867
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 20:41:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61ECB601FE;
-	Fri, 27 Mar 2026 19:53:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61ECB601FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6A8D601F0;
+	Fri, 27 Mar 2026 21:41:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6A8D601F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774637597;
-	bh=KgZQltZ3T51qJL40Die9qTtnRHJcoDyfzv7d2Ug+AT8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1774644097;
+	bh=20FKg2jN5AOEKZDjLShJANH9cTTEOSbofFssfjZdmio=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o7G2CWQWNSUuXgGdmCHmpmpHRQdJd03V8LepiTVHYGmSTPDAK/q7vojaQxneoWZRh
-	 VdhnAQSdZf/prF0t309k5MAoMdPXrc01kks88mN5ne4pcFp5zY3QcDPnXS91Nhvc56
-	 cG6904lY9WfVIrembJ5yxJ8dm3/v2RKc61X1/6SE=
+	b=nQdnu8ptCfuQAp57CC2T+GNubyl1O7cHlhGcxtYzBrGA13sAjnhS+kpjh1gpOLd1G
+	 o47lBHgMUS9GiTrlOTrqV9IVOlTLTRAp9UDggHMzcuUogbFlQLfTiuMpWHhCURAEOW
+	 W62oZrHDUoMG8iVTLiEsETlr1Zn5XsSSsbdIH+UU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1EB9F805F7; Fri, 27 Mar 2026 19:52:44 +0100 (CET)
+	id 90604F805E9; Fri, 27 Mar 2026 21:41:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 769F6F805F4;
-	Fri, 27 Mar 2026 19:52:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 208FFF805E9;
+	Fri, 27 Mar 2026 21:41:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B7C0F804F3; Fri, 27 Mar 2026 19:52:38 +0100 (CET)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	id 5A947F804F3; Fri, 27 Mar 2026 21:40:55 +0100 (CET)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1CCCBF8016D
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 19:52:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CCCBF8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id EEAA9F8025A
+	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 21:40:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEAA9F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=m4HzLF+f
+ header.s=k20201202 header.b=DATdsHbN
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id ED2176013E;
-	Fri, 27 Mar 2026 18:52:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72E51C19424;
-	Fri, 27 Mar 2026 18:52:35 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id AB89C43759;
+	Fri, 27 Mar 2026 20:40:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83E37C19423;
+	Fri, 27 Mar 2026 20:40:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774637555;
-	bh=KgZQltZ3T51qJL40Die9qTtnRHJcoDyfzv7d2Ug+AT8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m4HzLF+furtQLvnj8zvX+evCnt1S61aYWdNDjNzdLKgNYDh7CxgedRx1XcyzrrG/T
-	 JrQXrE9ClbzvangclhJYNVymnWR8ELz8jF/C7dR750TrUNQmZRrvbhY5Q/1dnGwUj/
-	 M9uYdloFKlDKkx8I7iz2J+AXKU+hl5QrOewJomXxkkEJaQeOFwnbmMUK7DfxhBOZuz
-	 moP33TvIu1hHRnpVV4UsXzBb0KCDsv07qxvLf4QEQQX4FfkjdjoEmVargQ1nPdioZk
-	 5VGKpacpeNhuyZDNHW+xo+uxdhRXHxN0a9Cy//CGKvaDzEzZl3rJ2SUFbs665Hag/w
-	 tDV/t2ldGpfjw==
-Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
-	id 34B971AC5847; Fri, 27 Mar 2026 18:52:33 +0000 (GMT)
-Date: Fri, 27 Mar 2026 18:52:33 +0000
+	s=k20201202; t=1774644048;
+	bh=20FKg2jN5AOEKZDjLShJANH9cTTEOSbofFssfjZdmio=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=DATdsHbN+gs0R98kZIYEaN1sLOH+l+KcK6Whsu/6Gy00N1Dg3ZxkPMWvOkkCJ00+y
+	 5bGUxmdXdCSSNg557VvZkgrTWaGRrGs9cHNASFNTEs+9g6e9EHehziWEe1bfvHjgZK
+	 0azXtr3P/cnmqSiGq4RWIaoWV5XkhRkknQ7aPA/fmDVWLzABKN+ibEglgoe51XS/8r
+	 bLnQzkTEsepLi8qAUTsqCC0XS8I5hC0mvf1ZDz26XPXVLases9gDfO0V1jbHV47lLZ
+	 AYDAlu/wzx+GjE26tnfu34CBO6AB/8eqkuJ9LabIiVHlzo/8gA1h430l/RieVLbaBR
+	 GEw+ipqx46cQQ==
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v7.0-rc5
-Message-ID: <acbR8X6DbMaAhVj-@sirena.co.uk>
-References: <20260327184954.2E1221AC5847@finisterre.sirena.org.uk>
+To: Sachin Mokashi <sachin.mokashi@intel.com>
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+ tiwai@suse.com, pierre-louis.bossart@linux.dev
+In-Reply-To: <20260324163400.1276247-1-sachin.mokashi@intel.com>
+References: <20260324163400.1276247-1-sachin.mokashi@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: ehl_rt5660: remove unused macro
+ definitions
+Message-Id: <177463884254.777262.10318442447476766465.b4-ty@b4>
+Date: Fri, 27 Mar 2026 19:14:02 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zNivFVgAgFZfE+1Q"
-Content-Disposition: inline
-In-Reply-To: <20260327184954.2E1221AC5847@finisterre.sirena.org.uk>
-X-Cookie: Identify your visitor.
-Message-ID-Hash: HRYWLJU43BJBK2TYGR5DDBBVEL347KCH
-X-Message-ID-Hash: HRYWLJU43BJBK2TYGR5DDBBVEL347KCH
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.16-dev-ad80c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1132; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=20FKg2jN5AOEKZDjLShJANH9cTTEOSbofFssfjZdmio=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBpxutOVn+k1MLTReJTcijj3282dhCIQj7VWqUQV
+ OMCgLFEpa6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCacbrTgAKCRAk1otyXVSH
+ 0MzOB/9VxpAnWkgR1umkP29REQABPYZvge/15LwISZvRDut4uDcxqTqSgx/+gsjt2qTQKOcFnDC
+ H3+3o6VZlbZo4E1in6JKEbargBUaDsINIOfrk8sEqv5bs3b21dQSfUPw1HyyUzrig7JJMoeUy0p
+ S2gCv58Q8/fRgy2MZ8HFYaqiKHDwALnXonGMQqLcTeVPNcbhceea5OUYdHs/qpU8oSab5mDHG3h
+ PdyCjwvCdSjoD9hAYOlrW+cANfG+get49W/kjACaEqtjSnHRAAWRvuQhuq8nkCeU4B0nLfRdCoP
+ Ruy5aXXGcE5Jycf/jb8IvZN+RxWVdiCLLI/JnRD5+cbSbgf3
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: UHVCWY64U6SM5B6EFE2P6SXBVLHKEPLS
+X-Message-ID-Hash: UHVCWY64U6SM5B6EFE2P6SXBVLHKEPLS
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HRYWLJU43BJBK2TYGR5DDBBVEL347KCH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UHVCWY64U6SM5B6EFE2P6SXBVLHKEPLS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,38 +103,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, 24 Mar 2026 12:34:00 -0400, Sachin Mokashi wrote:
+> ASoC: Intel: ehl_rt5660: remove unused macro definitions
 
---zNivFVgAgFZfE+1Q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Fri, Mar 27, 2026 at 06:49:53PM +0000, Mark Brown wrote:
-> The following changes since commit c369299895a591d96745d6492d4888259b004a=
-9e:
->=20
->   Linux 7.0-rc5 (2026-03-22 14:42:17 -0700)
->=20
-> are available in the Git repository at:
->=20
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/=
-asoc-fix-v7.0-rc5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.1
 
-Sorry, my script got confused by me moving between machines.
+Thanks!
 
---zNivFVgAgFZfE+1Q
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: Intel: ehl_rt5660: remove unused macro definitions
+      https://git.kernel.org/broonie/sound/c/ebbe5d957efa
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmnG0fAACgkQJNaLcl1U
-h9AbWAf/bDsTR5ZOame1cPhGOGkfR4S9GYPBBAnxk7VhKG6PTi4tWX06nn8CC5km
-+IHz01nqvaNqHDEQ3QDGGBCyTRZ41etzHSQFyixlyFPaiNRG3OqWU4kC2EIvzVjM
-eB7fRhkC5ksbl0opxxrvcHILhrRUjjPfqvL3cO1recchhjt2qzEektw+Gcc3PwhV
-Fp1bJCLQsGVBPhREBP1T4zOwLQiRhsL3W8G89iJpPSvmIQHGrkKt/p82orRJ/9T8
-KT84fBxTJ/Q4Zm9STYnCzWIZbSWOVui7e6WRbcxMhK0wLxhfeXBm4XoHZNXTJxMv
-eGp5B1sqrtoLPrG+tBpzho5/q3teTw==
-=OzLz
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---zNivFVgAgFZfE+1Q--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
