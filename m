@@ -4,118 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0AD510ED645
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 09:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAE3510ED659
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 11:51:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FF16601FF;
-	Fri, 27 Mar 2026 10:53:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FF16601FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5D6B601F9;
+	Fri, 27 Mar 2026 12:51:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5D6B601F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774605206;
-	bh=SMr6u8uFq71snlbn8ZV6qWIuiyRiKSwhGR0fZtmmtBQ=;
+	s=default; t=1774612312;
+	bh=kzjAEUvkMjvpv78hcFUxbGThvB95gNAb/RkeSOko4es=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B8vyaozlT9l/aq02bPOS3sk6a6qZCbe3WOi0cVVw6v4w4T609mNzG9ujhHn2J7bBe
-	 /GuccpMHT9O+GvPX2ocp18JLZ7APQhftaV2eGBST4JpcEONvoSFYA53/WnA0j0TOqo
-	 BMs80+tmYeRBHCx0pS6hUL3ZTtJC+5AGA0nS5eaw=
+	b=R0zjAIrkqRaRj6ysCAGH9X/kxpYoLrch8evLlxJ/e23nfupyz37R6zpyftFwVmjBx
+	 ZpQzzJ3EziUL5gH5yugrFkcPrvpJ2C2YIdm9YA9RljrkDwgSTYwS25TSdB4hHedSId
+	 omNyAp0HhJ0Urv2ErJgpB+8yeBd16PMQ/eACG6oA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51E1BF805F4; Fri, 27 Mar 2026 10:52:52 +0100 (CET)
+	id 5BDD3F805E9; Fri, 27 Mar 2026 12:51:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6ED6EF805E7;
-	Fri, 27 Mar 2026 10:52:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82796F804F3;
+	Fri, 27 Mar 2026 12:51:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB510F804F3; Fri, 27 Mar 2026 10:52:43 +0100 (CET)
+	id 3E211F804F3; Fri, 27 Mar 2026 12:51:09 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0B518F80212
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 10:52:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B518F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id B8939F80212
+	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 12:51:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8939F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=GmBv1Bbj;
+ header.s=susede2_rsa header.b=isBTN6SS;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ubTnVFoE;
+ header.s=susede2_ed25519 header.b=dkEIjbP6;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=GmBv1Bbj;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=isBTN6SS;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ubTnVFoE
+ header.s=susede2_ed25519 header.b=dkEIjbP6
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 907D55BCF9;
-	Fri, 27 Mar 2026 09:52:41 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D23DD5BDD3;
+	Fri, 27 Mar 2026 11:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1774605161;
+	t=1774612262;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zs7UhIkhdLQakbVrNX2HSsCN8BCm0GXrMbthi0vSTdQ=;
-	b=GmBv1BbjWx20O7InL/xAu2u4yp7Ldg02ADRgjaE2+Z+JtPMRW6s+It/YOZCdA/rQBe905Z
-	6AjbHnhB0rDDmDAt7UyNHaOPxwFn8ePn6qJNfJWZs8gFkbBAV4R8LiWIYNY3lB4Fj1K1x6
-	GIWr1tY3hE1A5jV5qJDFDHT5qN4FAnc=
+	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
+	b=isBTN6SSyKSLAF+ADQQW6ngtSIJQDqM890zXZSc+ZsnxsnWh2f+7oG63znSQ7iN4X+QxJU
+	zlyjToiWTN1208k40euCUbrkXUwfHLOLIIxrbGToPIs7H9cWFr3Q7UTIB96+IIyWAZWrL8
+	MYSVL3iihmGB26bMUenaSJdSrs4++o8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1774605161;
+	s=susede2_ed25519; t=1774612262;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zs7UhIkhdLQakbVrNX2HSsCN8BCm0GXrMbthi0vSTdQ=;
-	b=ubTnVFoEx3X2hZnRwMUntudrp5W92nb8KtGXOeoHPQMf+bkaG6dC8jDJ4uuIYjo+ACYOO6
-	RTB5UX/T9I37mxCA==
+	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
+	b=dkEIjbP6sALffG7SjUX2XcpLObOBT9MjM6qjKBXWQM3XeaxliExzM2AIVK9LWE5q/QiehJ
+	iiX51TIW220TLxBw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1774605161;
+	t=1774612262;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zs7UhIkhdLQakbVrNX2HSsCN8BCm0GXrMbthi0vSTdQ=;
-	b=GmBv1BbjWx20O7InL/xAu2u4yp7Ldg02ADRgjaE2+Z+JtPMRW6s+It/YOZCdA/rQBe905Z
-	6AjbHnhB0rDDmDAt7UyNHaOPxwFn8ePn6qJNfJWZs8gFkbBAV4R8LiWIYNY3lB4Fj1K1x6
-	GIWr1tY3hE1A5jV5qJDFDHT5qN4FAnc=
+	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
+	b=isBTN6SSyKSLAF+ADQQW6ngtSIJQDqM890zXZSc+ZsnxsnWh2f+7oG63znSQ7iN4X+QxJU
+	zlyjToiWTN1208k40euCUbrkXUwfHLOLIIxrbGToPIs7H9cWFr3Q7UTIB96+IIyWAZWrL8
+	MYSVL3iihmGB26bMUenaSJdSrs4++o8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1774605161;
+	s=susede2_ed25519; t=1774612262;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zs7UhIkhdLQakbVrNX2HSsCN8BCm0GXrMbthi0vSTdQ=;
-	b=ubTnVFoEx3X2hZnRwMUntudrp5W92nb8KtGXOeoHPQMf+bkaG6dC8jDJ4uuIYjo+ACYOO6
-	RTB5UX/T9I37mxCA==
+	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
+	b=dkEIjbP6sALffG7SjUX2XcpLObOBT9MjM6qjKBXWQM3XeaxliExzM2AIVK9LWE5q/QiehJ
+	iiX51TIW220TLxBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68E624A0A2;
-	Fri, 27 Mar 2026 09:52:41 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9DB754A0A2;
+	Fri, 27 Mar 2026 11:51:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FlAvGGlTxmkONwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 27 Mar 2026 09:52:41 +0000
-Date: Fri, 27 Mar 2026 10:52:41 +0100
-Message-ID: <878qbdsiom.wl-tiwai@suse.de>
+	id ivM0JSZvxmlYMAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 27 Mar 2026 11:51:02 +0000
+Date: Fri, 27 Mar 2026 12:51:02 +0100
+Message-ID: <87mrztqymx.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Rocket Raccoon <rakketje1@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo Yoga 7 2-in-1
- 14AKP10
-In-Reply-To: 
- <CAL76xbU81CKcbAD436djDbJ8P+xsj0r24i7phFG1YcSVr2n2JQ@mail.gmail.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Robert Viren <robviren@gmail.com>,
+	<amadeuszx.slawinski@linux.intel.com>,
+	<pierre-louis.bossart@linux.intel.com>,
+	<tiwai@suse.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: Regression =?ISO-2022-JP?B?Ni44GyRCIiobKEI2LjE3Og==?=
+ snd_soc_avs claims HDA device instead of snd_hda_intel, fails on missing
+ topology firmware
+In-Reply-To: <f082905a-614e-4096-8408-4dc459260047@intel.com>
 References: 
- <CAL76xbU81CKcbAD436djDbJ8P+xsj0r24i7phFG1YcSVr2n2JQ@mail.gmail.com>
+ <CAC5iJJZCHm8a_jP+7nQpp4aqn_EE7JmMdPJBbu83QSBjgqZ49g@mail.gmail.com>
+	<40777346-28d4-456c-af4e-cb868d8b8ac5@intel.com>
+	<CAC5iJJbaG4boDEO6V5wOuJYiFdZauEdS47PSg-g0Gc1CrxnC4Q@mail.gmail.com>
+	<f082905a-614e-4096-8408-4dc459260047@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -125,22 +130,24 @@ X-Spamd-Result: default: False [-3.30 / 50.00];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	TO_DN_SOME(0.00)[];
 	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[gmail.com,linux.intel.com,suse.com,alsa-project.org];
+	RCPT_COUNT_FIVE(0.00)[6];
 	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
-Message-ID-Hash: 3PKJFXXOYDWPASXONPZKLWHNGRATPX5U
-X-Message-ID-Hash: 3PKJFXXOYDWPASXONPZKLWHNGRATPX5U
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+Message-ID-Hash: NCPLGSX7VHGY4YBZ435CHJXEO46MU6IC
+X-Message-ID-Hash: NCPLGSX7VHGY4YBZ435CHJXEO46MU6IC
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -152,7 +159,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3PKJFXXOYDWPASXONPZKLWHNGRATPX5U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NCPLGSX7VHGY4YBZ435CHJXEO46MU6IC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -161,37 +168,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 25 Mar 2026 13:26:54 +0100,
-Rocket Raccoon wrote:
+On Tue, 24 Mar 2026 12:38:10 +0100,
+Cezary Rojewski wrote:
 > 
-> The Lenovo Yoga 7 2-in-1 14AKP10 (PCI subsystem ID 0x17aa:0x391c) uses
-> an ALC287 HDA codec paired with a TAS2781 amplifier connected via I2C.
-> Without this quirk the amplifier is not initialised and internal speaker
-> output lacks amplification.
+> On 2026-03-24 12:25 PM, Robert Viren wrote:
+> > Found a workaround. Blacklisting snd_soc_avs restores correct
+> > behaviour. Command outputs and bugzilla below.
+> > 
+> > cat /sys/module/snd_intel_dspcfg/parameters/dsp_driver
+> > 0
+> > 
+> >   ls /sys/firmware/acpi/tables/ | grep NHLT
+> > NHLT
+> > 
+> > sudo cat /sys/firmware/acpi/tables/NHLT > ~/NHLT.dat (I attached it to
+> > the bugzilla. 45 bytes)
+> > https://bugzilla.kernel.org/show_bug.cgi?id=221277
 > 
-> Signed-off-by: Lucas <rakketje1@gmail.com>
+> Thank you for opening the ticket. I've replied there. Things looks
+> clearer though - looks to me like a regression caused by some recent
+> changes in intel-dspcfg area. For non-DSP configurations, the first
+> choice should be snd_hda_intel.
 
-The Signed-off-by line must be a real name or a known identity as it's
-a legal requirement.  (Also it's better aligned with From line.)
+I guess it's fixed in the more recent version of kernel via the commit
+161a0c617ab1 ("ALSA: hda: intel-dsp-config: Prefer legacy driver as
+fallback")?
 
-> ---
->  sound/pci/hda/patch_realtek.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index XXXXXXX..XXXXXXX 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -XXXXX,6 +XXXXX,7 @@ static const struct snd_pci_quirk alc287_fixup_tbl[] = {
->   SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo Yoga Pro 9 14IRP8",
-> ALC287_FIXUP_TAS2781_I2C),
-> + SND_PCI_QUIRK(0x17aa, 0x391c, "Lenovo Yoga 7 2-in-1 14AKP10",
-> ALC287_FIXUP_TAS2781_I2C),
->   SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL",
-> ALC287_FIXUP_13S_GEN2_SPEAKERS),
-
-... and the patch seems not applicable cleanly.  Please fix your
-mailer setup, too.
+IIUC, this sort of problem surfaced because of the recent HD-audio
+code restructuring.  The commit above clarifies which driver is used
+for fallback, and it casually "worked" in the past.
 
 
 thanks,
