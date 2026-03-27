@@ -4,151 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAE3510ED659
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 11:51:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A26D10ED675
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 13:19:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5D6B601F9;
-	Fri, 27 Mar 2026 12:51:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5D6B601F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1171F601F0;
+	Fri, 27 Mar 2026 14:19:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1171F601F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774612312;
-	bh=kzjAEUvkMjvpv78hcFUxbGThvB95gNAb/RkeSOko4es=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=R0zjAIrkqRaRj6ysCAGH9X/kxpYoLrch8evLlxJ/e23nfupyz37R6zpyftFwVmjBx
-	 ZpQzzJ3EziUL5gH5yugrFkcPrvpJ2C2YIdm9YA9RljrkDwgSTYwS25TSdB4hHedSId
-	 omNyAp0HhJ0Urv2ErJgpB+8yeBd16PMQ/eACG6oA=
+	s=default; t=1774617552;
+	bh=lIcEeJUAxHlLV+3EoJu2rdgzUpTAIhxvKJOwKa/Fqvg=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=cdUVFfWYSusenR0LSR4hCYQ6AsCK/1EPJWyjZFoT1DCDI6W6exxKumdwlV/SJqC5R
+	 vJM/1sjPzuK2y1RqrQw8AO7ZwqAV7KfbMP4Tnc/bYN051A/rTMutS142v48gE1s9A9
+	 Ev7n/Vaj1ehpLe35YE+mJqEBkZbpzRxfBBQ3Wd7k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5BDD3F805E9; Fri, 27 Mar 2026 12:51:17 +0100 (CET)
+	id 6B023F805F6; Fri, 27 Mar 2026 14:18:39 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82796F804F3;
-	Fri, 27 Mar 2026 12:51:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13646F805F5;
+	Fri, 27 Mar 2026 14:18:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E211F804F3; Fri, 27 Mar 2026 12:51:09 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5E6A5F804F3; Fri, 27 Mar 2026 14:18:31 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B8939F80212
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 12:51:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8939F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0571AF80212
+	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 14:18:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0571AF80212
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=isBTN6SS;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=dkEIjbP6;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=isBTN6SS;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=dkEIjbP6
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D23DD5BDD3;
-	Fri, 27 Mar 2026 11:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1774612262;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
-	b=isBTN6SSyKSLAF+ADQQW6ngtSIJQDqM890zXZSc+ZsnxsnWh2f+7oG63znSQ7iN4X+QxJU
-	zlyjToiWTN1208k40euCUbrkXUwfHLOLIIxrbGToPIs7H9cWFr3Q7UTIB96+IIyWAZWrL8
-	MYSVL3iihmGB26bMUenaSJdSrs4++o8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1774612262;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
-	b=dkEIjbP6sALffG7SjUX2XcpLObOBT9MjM6qjKBXWQM3XeaxliExzM2AIVK9LWE5q/QiehJ
-	iiX51TIW220TLxBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1774612262;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
-	b=isBTN6SSyKSLAF+ADQQW6ngtSIJQDqM890zXZSc+ZsnxsnWh2f+7oG63znSQ7iN4X+QxJU
-	zlyjToiWTN1208k40euCUbrkXUwfHLOLIIxrbGToPIs7H9cWFr3Q7UTIB96+IIyWAZWrL8
-	MYSVL3iihmGB26bMUenaSJdSrs4++o8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1774612262;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pu8ZrwCQBsR/S4n0BmOH3L0vRXe/z5yr9yLEn2NKKPQ=;
-	b=dkEIjbP6sALffG7SjUX2XcpLObOBT9MjM6qjKBXWQM3XeaxliExzM2AIVK9LWE5q/QiehJ
-	iiX51TIW220TLxBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9DB754A0A2;
-	Fri, 27 Mar 2026 11:51:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ivM0JSZvxmlYMAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 27 Mar 2026 11:51:02 +0000
-Date: Fri, 27 Mar 2026 12:51:02 +0100
-Message-ID: <87mrztqymx.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Robert Viren <robviren@gmail.com>,
-	<amadeuszx.slawinski@linux.intel.com>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<tiwai@suse.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: Re: Regression =?ISO-2022-JP?B?Ni44GyRCIiobKEI2LjE3Og==?=
- snd_soc_avs claims HDA device instead of snd_hda_intel, fails on missing
- topology firmware
-In-Reply-To: <f082905a-614e-4096-8408-4dc459260047@intel.com>
-References: 
- <CAC5iJJZCHm8a_jP+7nQpp4aqn_EE7JmMdPJBbu83QSBjgqZ49g@mail.gmail.com>
-	<40777346-28d4-456c-af4e-cb868d8b8ac5@intel.com>
-	<CAC5iJJbaG4boDEO6V5wOuJYiFdZauEdS47PSg-g0Gc1CrxnC4Q@mail.gmail.com>
-	<f082905a-614e-4096-8408-4dc459260047@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,linux.intel.com,suse.com,alsa-project.org];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: NCPLGSX7VHGY4YBZ435CHJXEO46MU6IC
-X-Message-ID-Hash: NCPLGSX7VHGY4YBZ435CHJXEO46MU6IC
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=gZXgl7Tk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774617510; x=1806153510;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lIcEeJUAxHlLV+3EoJu2rdgzUpTAIhxvKJOwKa/Fqvg=;
+  b=gZXgl7TkPrq1WVmkiq6XM6PRcMc1hGVTi+/ai+7ijFNeqTRBPrlga+S7
+   tznFviR6Pq0VNpkVuCcVttzwKiWcktNl/Y9kMipzGiXWVRy0AZqx3KMBJ
+   bT5o6bq6I5xyiEQXQi7fu2nnxJhqeu2BRZswPCWhr20NtVUJwDWdxX+jj
+   H4HfM+v8rJI5AeAv3mpJFb5kJ/qmEXXTYPtasHLIvMzrnLY+7Cr2nTlI5
+   g43XQDtmato+B513MDjcv3yo0FkVJebFYX6hXuykfq+tH4Pf1H9UjsuuV
+   aBe21v7Ghm2A1RHxQyqaetg97IkaXzf4qQ2b+0HHAY3JcEybn0LNH9Gr+
+   g==;
+X-CSE-ConnectionGUID: iS7aJVPEQnCPiReHHbqmWg==
+X-CSE-MsgGUID: YQUdJRhtSya3pDvfO1a4kw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11741"; a="75571283"
+X-IronPort-AV: E=Sophos;i="6.23,144,1770624000";
+   d="scan'208";a="75571283"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Mar 2026 06:18:25 -0700
+X-CSE-ConnectionGUID: DVjpZ390Rn2/FpCszCsiXQ==
+X-CSE-MsgGUID: /2HYjI6gTIyOGNylFRiIZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,144,1770624000";
+   d="scan'208";a="248354538"
+Received: from jpp-desktop.igk.intel.com ([10.91.221.24])
+  by fmviesa002.fm.intel.com with ESMTP; 27 Mar 2026 06:18:23 -0700
+From: Sachin Mokashi <sachin.mokashi@intel.com>
+To: broonie@kernel.org
+Cc: linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	tiwai@suse.com,
+	pierre-louis.bossart@linux.dev,
+	cezary.rojewski@intel.com,
+	Sachin Mokashi <sachin.mokashi@intel.com>
+Subject: [PATCH] ASoC: Intel: ehl_rt5660: Use the correct rtd->dev device in
+ hw_params
+Date: Fri, 27 Mar 2026 09:14:39 -0400
+Message-Id: <20260327131439.1330373-1-sachin.mokashi@intel.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: RXXTR6IDWSFIVSIW5U6HNDHJIA2BRMDI
+X-Message-ID-Hash: RXXTR6IDWSFIVSIW5U6HNDHJIA2BRMDI
+X-MailFrom: sachin.mokashi@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -159,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NCPLGSX7VHGY4YBZ435CHJXEO46MU6IC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RXXTR6IDWSFIVSIW5U6HNDHJIA2BRMDI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,37 +104,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 24 Mar 2026 12:38:10 +0100,
-Cezary Rojewski wrote:
-> 
-> On 2026-03-24 12:25 PM, Robert Viren wrote:
-> > Found a workaround. Blacklisting snd_soc_avs restores correct
-> > behaviour. Command outputs and bugzilla below.
-> > 
-> > cat /sys/module/snd_intel_dspcfg/parameters/dsp_driver
-> > 0
-> > 
-> >   ls /sys/firmware/acpi/tables/ | grep NHLT
-> > NHLT
-> > 
-> > sudo cat /sys/firmware/acpi/tables/NHLT > ~/NHLT.dat (I attached it to
-> > the bugzilla. 45 bytes)
-> > https://bugzilla.kernel.org/show_bug.cgi?id=221277
-> 
-> Thank you for opening the ticket. I've replied there. Things looks
-> clearer though - looks to me like a regression caused by some recent
-> changes in intel-dspcfg area. For non-DSP configurations, the first
-> choice should be snd_hda_intel.
+In rt5660_hw_params(), the error path for snd_soc_dai_set_sysclk()
+correctly uses rtd->dev as the logging device, but the error path for
+snd_soc_dai_set_pll() uses codec_dai->dev instead.
 
-I guess it's fixed in the more recent version of kernel via the commit
-161a0c617ab1 ("ALSA: hda: intel-dsp-config: Prefer legacy driver as
-fallback")?
+These two devices are distinct:
+- rtd->dev is the platform device of the PCM runtime (the Intel HDA/SSP
+  controller, e.g. 0000:00:1f.3), which owns the machine driver callback.
+- codec_dai->dev is the I2C device of the rt5660 codec itself
+  (i2c-10EC5660:00).
 
-IIUC, this sort of problem surfaced because of the recent HD-audio
-code restructuring.  The commit above clarifies which driver is used
-for fallback, and it casually "worked" in the past.
+Since hw_params is a machine driver operation and both calls are made
+within the same function from the machine driver's context, all error
+messages should be attributed to rtd->dev. Using codec_dai->dev for one
+of them would suggest the error originates inside the codec driver,
+which is misleading.
 
+Align the PLL error log with the sysclk one to use rtd->dev, matching
+the convention used by all other Intel board drivers in this directory.
 
-thanks,
+Signed-off-by: Sachin Mokashi <sachin.mokashi@intel.com>
+---
+ sound/soc/intel/boards/ehl_rt5660.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Takashi
+diff --git a/sound/soc/intel/boards/ehl_rt5660.c b/sound/soc/intel/boards/ehl_rt5660.c
+index 5c7b218f22b7..c40cd9fb1a26 100644
+--- a/sound/soc/intel/boards/ehl_rt5660.c
++++ b/sound/soc/intel/boards/ehl_rt5660.c
+@@ -127,7 +127,7 @@ static int rt5660_hw_params(struct snd_pcm_substream *substream,
+ 				  params_rate(params) * 50,
+ 				  params_rate(params) * 512);
+ 	if (ret < 0)
+-		dev_err(codec_dai->dev, "can't set codec pll: %d\n", ret);
++		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+ 
+ 	return ret;
+ }
+-- 
+2.34.1
+
+Intel Deutschland GmbH
+Registered Address: Dornacher Strasse 1, 85622 Feldkirchen, Germany
+Tel: +49 89 991 430, www.intel.de
+Managing Directors: Harry Demas, Jeffrey Schneiderman, Yin Chong Sorrell
+Chairperson of the Supervisory Board: Nicole Lau
+Registered Seat: Munich
+Commercial Register: Amtsgericht Muenchen HRB 186928
+
