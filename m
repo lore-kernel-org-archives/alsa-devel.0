@@ -4,68 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E39110F2869
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 18:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12A1C10F2862
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Mar 2026 18:53:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8089601F5;
-	Fri, 27 Mar 2026 19:50:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8089601F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61ECB601FE;
+	Fri, 27 Mar 2026 19:53:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61ECB601FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774637444;
-	bh=K3Pd2wZkhD65L8VyfD4iqOk4NHmtEZ5e2hdzs3gqMyU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=JetKCYdbby0B/KFgt1JZsAR4wx3vo7nXENpowVmk85DxDyk9FJv3bfiwh+gB7QvO3
-	 dp3D+3jakvcA3T7b9sD/GZOgXXA6Wvpqy7AhHZK69nvy90nv6NQURsuBfPRJbpNewf
-	 cmcRZX0nBHolrAeHwf5GIZkjfhQ/o7R2mtjyQ8FE=
+	s=default; t=1774637597;
+	bh=KgZQltZ3T51qJL40Die9qTtnRHJcoDyfzv7d2Ug+AT8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=o7G2CWQWNSUuXgGdmCHmpmpHRQdJd03V8LepiTVHYGmSTPDAK/q7vojaQxneoWZRh
+	 VdhnAQSdZf/prF0t309k5MAoMdPXrc01kks88mN5ne4pcFp5zY3QcDPnXS91Nhvc56
+	 cG6904lY9WfVIrembJ5yxJ8dm3/v2RKc61X1/6SE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84D94F805EF; Fri, 27 Mar 2026 19:50:10 +0100 (CET)
+	id D1EB9F805F7; Fri, 27 Mar 2026 19:52:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C10A6F805F4;
-	Fri, 27 Mar 2026 19:50:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 769F6F805F4;
+	Fri, 27 Mar 2026 19:52:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83EBAF804F3; Fri, 27 Mar 2026 19:50:01 +0100 (CET)
+	id 8B7C0F804F3; Fri, 27 Mar 2026 19:52:38 +0100 (CET)
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 600E4F80212
-	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 19:49:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 600E4F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1CCCBF8016D
+	for <alsa-devel@alsa-project.org>; Fri, 27 Mar 2026 19:52:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CCCBF8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fCzJt3E6
+ header.s=k20201202 header.b=m4HzLF+f
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id F1A9160127;
-	Fri, 27 Mar 2026 18:49:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C9EC19424;
-	Fri, 27 Mar 2026 18:49:56 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id ED2176013E;
+	Fri, 27 Mar 2026 18:52:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72E51C19424;
+	Fri, 27 Mar 2026 18:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774637396;
-	bh=K3Pd2wZkhD65L8VyfD4iqOk4NHmtEZ5e2hdzs3gqMyU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=fCzJt3E6rjya+XivMYZbfikDQX2dy2fMvdIITxzpvIfE17riXfUfyaeKEZVy/oqmm
-	 CiEO2IckyGtD7xKZzM/9DVWtZndyGExY5lRj15hyGCmfFBi91PZyWiJ1cEn5dF/lRp
-	 kRUFOC8Im2PgLPU6qq/xByqR1GJqknMJtFeCbQtzVR1wocw5MuB7iWXlKeCn6IrG0t
-	 X4hnxFPKEiw8IjYToF7Dj629Hhcrv14jRD50/+ddgQ4kTYdOGXfWOS52CQr380dw86
-	 jjtSUmGLzkssAzaWw9ragig1/71weVSDv3ysQuQh3zw1q8/cuxb0x8kHn+L/7nexE+
-	 ZJJwEdtqe8KAg==
+	s=k20201202; t=1774637555;
+	bh=KgZQltZ3T51qJL40Die9qTtnRHJcoDyfzv7d2Ug+AT8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m4HzLF+furtQLvnj8zvX+evCnt1S61aYWdNDjNzdLKgNYDh7CxgedRx1XcyzrrG/T
+	 JrQXrE9ClbzvangclhJYNVymnWR8ELz8jF/C7dR750TrUNQmZRrvbhY5Q/1dnGwUj/
+	 M9uYdloFKlDKkx8I7iz2J+AXKU+hl5QrOewJomXxkkEJaQeOFwnbmMUK7DfxhBOZuz
+	 moP33TvIu1hHRnpVV4UsXzBb0KCDsv07qxvLf4QEQQX4FfkjdjoEmVargQ1nPdioZk
+	 5VGKpacpeNhuyZDNHW+xo+uxdhRXHxN0a9Cy//CGKvaDzEzZl3rJ2SUFbs665Hag/w
+	 tDV/t2ldGpfjw==
 Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
-	id 2E1221AC5847; Fri, 27 Mar 2026 18:49:54 +0000 (GMT)
+	id 34B971AC5847; Fri, 27 Mar 2026 18:52:33 +0000 (GMT)
+Date: Fri, 27 Mar 2026 18:52:33 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v7.0-rc5
-Date: Fri, 27 Mar 2026 18:49:53 +0000
-Message-Id: <20260327184954.2E1221AC5847@finisterre.sirena.org.uk>
-Message-ID-Hash: D56RY7XJUV66TUIFLAG6447UD4LSSA7O
-X-Message-ID-Hash: D56RY7XJUV66TUIFLAG6447UD4LSSA7O
+	alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC fixes for v7.0-rc5
+Message-ID: <acbR8X6DbMaAhVj-@sirena.co.uk>
+References: <20260327184954.2E1221AC5847@finisterre.sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zNivFVgAgFZfE+1Q"
+Content-Disposition: inline
+In-Reply-To: <20260327184954.2E1221AC5847@finisterre.sirena.org.uk>
+X-Cookie: Identify your visitor.
+Message-ID-Hash: HRYWLJU43BJBK2TYGR5DDBBVEL347KCH
+X-Message-ID-Hash: HRYWLJU43BJBK2TYGR5DDBBVEL347KCH
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -77,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D56RY7XJUV66TUIFLAG6447UD4LSSA7O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HRYWLJU43BJBK2TYGR5DDBBVEL347KCH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,91 +93,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit c369299895a591d96745d6492d4888259b004a9e:
 
-  Linux 7.0-rc5 (2026-03-22 14:42:17 -0700)
+--zNivFVgAgFZfE+1Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the Git repository at:
+On Fri, Mar 27, 2026 at 06:49:53PM +0000, Mark Brown wrote:
+> The following changes since commit c369299895a591d96745d6492d4888259b004a=
+9e:
+>=20
+>   Linux 7.0-rc5 (2026-03-22 14:42:17 -0700)
+>=20
+> are available in the Git repository at:
+>=20
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/=
+asoc-fix-v7.0-rc5
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.0-rc5
+Sorry, my script got confused by me moving between machines.
 
-for you to fetch changes up to d40a198e2b7821197c5c77b89d0130cc90f400f5:
+--zNivFVgAgFZfE+1Q
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  ASoC: SOF: ipc4-topology: Allow bytes controls without initial payload (2026-03-26 11:16:03 +0000)
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-ASoC: Fixes for v7.0
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmnG0fAACgkQJNaLcl1U
+h9AbWAf/bDsTR5ZOame1cPhGOGkfR4S9GYPBBAnxk7VhKG6PTi4tWX06nn8CC5km
++IHz01nqvaNqHDEQ3QDGGBCyTRZ41etzHSQFyixlyFPaiNRG3OqWU4kC2EIvzVjM
+eB7fRhkC5ksbl0opxxrvcHILhrRUjjPfqvL3cO1recchhjt2qzEektw+Gcc3PwhV
+Fp1bJCLQsGVBPhREBP1T4zOwLQiRhsL3W8G89iJpPSvmIQHGrkKt/p82orRJ/9T8
+KT84fBxTJ/Q4Zm9STYnCzWIZbSWOVui7e6WRbcxMhK0wLxhfeXBm4XoHZNXTJxMv
+eGp5B1sqrtoLPrG+tBpzho5/q3teTw==
+=OzLz
+-----END PGP SIGNATURE-----
 
-This is two week's worth of fixes and quirks so it's a bit larger than
-you might expect, there's nothing too exciting individually and nothing
-in core code.
-
-----------------------------------------------------------------
-Baojun Xu (1):
-      ASoC: tas2781: Add null check for calibration data
-
-Cezary Rojewski (1):
-      ASoC: Intel: catpt: Fix the device initialization
-
-Cássio Gabriel (1):
-      ASoC: SOF: topology: reject invalid vendor array size in token parser
-
-Guangshuo Li (1):
-      ASoC: sma1307: fix double free of devm_kzalloc() memory
-
-Hasun Park (3):
-      ASoC: amd: acp: add DMI override for ACP70 flag
-      ASoC: amd: acp: add PX13 SoundWire machine link for rt721+tas2783x2
-      ASoC: amd: acp: add ASUS HN7306EA quirk for legacy SDW machine
-
-Jihed Chaibi (3):
-      ASoC: dt-bindings: stm32: Fix incorrect compatible string in stm32h7-sai match
-      ASoC: adau1372: Fix unchecked clk_prepare_enable() return value
-      ASoC: adau1372: Fix clock leak on PLL lock failure
-
-Mark Brown (2):
-      ASoC: fix usage of playback_only and capture_only
-      ASoC: adau1372: Fix error handling in adau1372_set_power()
-
-Peter Ujfalusi (1):
-      ASoC: SOF: ipc4-topology: Allow bytes controls without initial payload
-
-Sebastian Reichel (1):
-      ASoC: dt-bindings: rockchip: Add compatible for RK3576 SPDIF
-
-Shengjiu Wang (2):
-      ASoC: simple-card-utils: Check value of is_playback_only and is_capture_only
-      ASoC: fsl: imx-card: initialize playback_only and capture_only
-
-Shuming Fan (2):
-      ASoC: SDCA: remove the max count of initialization table
-      ASoC: SDCA: fix finding wrong entity
-
-Srinivas Kandagatla (1):
-      ASoC: codecs: wcd934x: fix typo in dt parsing
-
-Vee Satayamas (1):
-      ASoC: amd: yc: Add DMI quirk for ASUS EXPERTBOOK BM1403CDA
-
-Zhang Heng (1):
-      ASoC: amd: yc: Add DMI quirk for Thin A15 B7VF
-
- .../devicetree/bindings/sound/rockchip-spdif.yaml  |  1 +
- .../devicetree/bindings/sound/st,stm32-sai.yaml    |  2 +-
- include/sound/sdca_function.h                      |  5 --
- sound/soc/amd/acp-config.c                         | 15 +++++-
- sound/soc/amd/acp/acp-sdw-legacy-mach.c            |  8 +++
- sound/soc/amd/acp/amd-acp70-acpi-match.c           | 61 ++++++++++++++++++++++
- sound/soc/amd/yc/acp6x-mach.c                      | 14 +++++
- sound/soc/codecs/adau1372.c                        | 34 ++++++++----
- sound/soc/codecs/sma1307.c                         |  6 ++-
- sound/soc/codecs/tas2781-fmwlib.c                  |  3 ++
- sound/soc/codecs/wcd934x.c                         |  2 +-
- sound/soc/fsl/imx-card.c                           |  2 +
- sound/soc/generic/simple-card-utils.c              |  4 +-
- sound/soc/intel/catpt/device.c                     | 10 +++-
- sound/soc/intel/catpt/dsp.c                        |  3 --
- sound/soc/sdca/sdca_functions.c                    | 14 +++--
- sound/soc/sof/ipc4-topology.c                      |  2 +-
- sound/soc/sof/topology.c                           |  2 +-
- 18 files changed, 156 insertions(+), 32 deletions(-)
+--zNivFVgAgFZfE+1Q--
