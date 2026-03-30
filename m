@@ -4,162 +4,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 595DE10F3DCD
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2026 14:16:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23ACF1061B00
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2026 14:28:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A7C1601F4;
-	Mon, 30 Mar 2026 16:16:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A7C1601F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6FBB601F2;
+	Mon, 30 Mar 2026 16:28:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6FBB601F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774880212;
-	bh=mbtNLqBkGZnt22Si64GjS5cDJG8KiifRLpGt/pOBlI4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1774880925;
+	bh=3Qv5nmjoSmZ0pp0dE0J1c+PXbYOXg5kKCWvdELQIZR4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GeoJ/CUbJDFHpN1Oh8gEP/PgJiq+3hYE0I1V2KdPDY/0ERooeNpB3dI5p+ygKkKDG
-	 UAJSEVNCmPbsciZxxCX4+Ex5iqgZoIBIUSXyagpTdBS8oH5v8reiBYeoQnoydgBmxZ
-	 1SkiaLPq+GsRbXIcIjqUAlcldz+XspCCHPxGkUXA=
+	b=QXrVEQFzkz/rWFA1zTYq3rY/lNpc8K/WqnNqxbIkO31+KOI9/0SJm46Q+M0bu0HLp
+	 krpWXUmve09gRfC6Wok8uxr0lEOGhqCCiBKwDE8d5rblIJXhQy502s+C1QQM7fDOqA
+	 itjnIOoiPd0SYIxlCmsDpHltI2ACWugsb9+kWqNA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0078F805ED; Mon, 30 Mar 2026 16:16:17 +0200 (CEST)
+	id 82892F805F5; Mon, 30 Mar 2026 16:28:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 309B6F805F5;
-	Mon, 30 Mar 2026 16:16:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C87A9F805F2;
+	Mon, 30 Mar 2026 16:28:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E84DF8052D; Mon, 30 Mar 2026 16:16:07 +0200 (CEST)
-Received: from BYAPR05CU005.outbound.protection.outlook.com
- (mail-westusazon11010062.outbound.protection.outlook.com [52.101.85.62])
+	id E653DF8052D; Mon, 30 Mar 2026 16:28:02 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C434DF8027B
-	for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2026 16:16:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C434DF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8C0F2F80087
+	for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2026 16:27:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C0F2F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=tQYQimbe
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Fp9pxAnA+FIsMklsbSlZzyUiay7shsV9P1+F+xeJVfL1OaIfqNg0MQThazrAdvATg4Wc+rfkvKAZGybE1oAdrcL/m4IobKSQeZmlzA6aFRNrEbCRgc+M0t3Tm19kj+sB3LKH0UeBDHu1yfvBxeUrEUAQuDJFR5Rr65dl2bFQ21MOKvxtVzpsR6qzWw68jxj+lf/Az13oyPJ5Fv2g7wxiDTcQSabd2jmYxVgOXnIVFAh4876ANUsShM3o8Uy9jD/NpCk0LRkciwqNod4m64sS8rDkVe9Oe/uB0K3BWLgttwerCNk4EzAJ8ggkAbe4bFdOZFKjvX8APX8wbtQMSlRZAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IlPuViGNSITmNFOQ6bzEHDpeOZxqGoA+Yxv3a4113Jw=;
- b=VLfAspWgAXtUBOOwOdRTZ3iaEZn+Op8d10Zx8ByW3+h77JmTy4TZepmcYQR4pYQEfnq2CqRgrvFKYXZn8aA3aJGrIJjTBTwqT/JRt++t2cPbIKEJQqgVhLltMuBvEGk/PpFQoQUTmkqGRTbhy8QBXdDpf2xbWtTIVFtaOgaxrj/m2Pm0fFkHUQDtZ4H8ZOsPg0Zu3faG8xMQNe6ylzRZBiHN4+fxfBGQeQT3GDRY14HyG2VqtvJGDsDNRtb28gYbbzWBd1N1KZ4DWtr1lMqNQk46gugJB+6uT/vDWoGinzlH/nfR5Ie+ONHQ51RNxTRkcSn8ck+GoFocV49qrTKKww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IlPuViGNSITmNFOQ6bzEHDpeOZxqGoA+Yxv3a4113Jw=;
- b=tQYQimbeuKviT3UA06tX0JumAlxQmJHrYu02t+hKZVpi5ieYM8BQbSDWkK1tYaxJDYDAONXCiSLIAKeHg//oykdshliEPH08YTt8QJdcaJmg/9h7/yG+fyyTWdt/UiPJEDuDpuG7p7Q0BOxAqNtbW+oFkISBArsWBch6uj/BRLQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10)
- by IA0PR12MB8747.namprd12.prod.outlook.com (2603:10b6:208:48b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.15; Mon, 30 Mar
- 2026 14:15:57 +0000
-Received: from SA0PR12MB4557.namprd12.prod.outlook.com
- ([fe80::885a:79b3:8288:287]) by SA0PR12MB4557.namprd12.prod.outlook.com
- ([fe80::885a:79b3:8288:287%5]) with mapi id 15.20.9769.014; Mon, 30 Mar 2026
- 14:15:56 +0000
-Message-ID: <510b78db-d04d-4283-9ad7-42c0420e1db3@amd.com>
-Date: Mon, 30 Mar 2026 09:15:53 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: amd: ps: fix the pcm device numbering for acp pdm
- dmic
-To: Syed Saba Kareem <syed.sabakareem@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-Cc: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Kees Cook <kees@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- "open list:AMD ASoC DRIVERS" <linux-sound@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20260330094642.3088923-1-syed.sabakareem@amd.com>
-Content-Language: en-US
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20260330094642.3088923-1-syed.sabakareem@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH5PR04CA0001.namprd04.prod.outlook.com
- (2603:10b6:610:1f4::6) To SA0PR12MB4557.namprd12.prod.outlook.com
- (2603:10b6:806:9d::10)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4557:EE_|IA0PR12MB8747:EE_
-X-MS-Office365-Filtering-Correlation-Id: 667060a7-59e8-4a39-fd2e-08de8e66dbf9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|376014|366016|18002099003|22082099003|56012099003;
-X-Microsoft-Antispam-Message-Info: 
-	CXhqrrDmeNCMAGzguYPKfbW4bASJD3uxepVbNHD5cAVRrLYN1EwWyJmX7U2EtFD8pkYMJvoSsXOorgN/atJZieWEBEdXQNcwfw6TzvCgI0LojKMJeWv1q9EyUamPF95sffTvuP7rAcxbHt3OtLx78NJsAGokzGSnIkf2G+oAiTilB/U7PcpjwPqJcS9L2Ir7CshM/TGiqZsVqHOim0mEQfPjvo0mHVIKo236PmoHlgXd2/r7rrLACe44UDStpouHFmiKEp99CDb0+PSqVZQSxszIMwDIL12QoMa9tue8CTWnriVtqayCN94SJEl4Azzcp/l8ZKlq3HlCyPvq1FRR3fYOrbY3ZN/hMtQs9XTOAeKXTkosaHPys/Xnlb+inN3PkpX5fNBZ1L+pawQiZbj3PW3LRUyS98EUAxHyLDCnHuLyyPmgedghT8MUFuLpK6g168JwLmGMwGaq5x4WE3pJLSD40vcFqZ5iSR8s5ZSzB9Ax9nqRy+zxc+yM9lt9hanW7R2MBvpi+ydrkz4brwi+D1pmaPoW0/wGuzNIMIgkrbkOivu/fsMkZZxVzcMBYdc1a7i5XaylHRklj5qAFtZYcBYKzI4bkNWBpc68KuveeiLSWtmKgMDMOdJL1DA9USjMZEk+vXgx0tTUuRVFZwr/LP6GV+ySH9JgWmb77Gihe4wsuLfsSYDPKFimI0RZIrGnNvGjo2d3HEj4GtUON+yrguoc3wjwNpw3X3i13VG9VvM=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?QTJoUC8yTVdIZktiK1NrNjF3VmJqNWhJTXFGM0FXbGxtbEN2YmtHcXNXUEhM?=
- =?utf-8?B?QmNVTno3YTk2NHpRSUlEeWQyYk12clk4MU1FRGw2a2poblVWa2tOaWNJZkFj?=
- =?utf-8?B?V3JrYi9IQlQvQXN2aThhK04zUnpmN2liZ1EveUlTcnhqcnZOMUVQRlkxbWNU?=
- =?utf-8?B?Mkw3TDFaTGlGL0F2MFcydGx5TDEzOGJwdzNEb3FnSHk3d1dybHczeUlyRnh6?=
- =?utf-8?B?WTdmZlpQeVhTeEtoTGFBYmFoZDUvV09LZVRLUWRuZVBnNmRxYzRWT3p4Wm5M?=
- =?utf-8?B?d0I5SHRRWkh2Q0FoWmcvS3hmWG1UN2RlRTV3N0FLY3ZGbTVYbXRQMEZzRStk?=
- =?utf-8?B?YlpONndPNjFlQVM3bkgyVmJMako5aVVjTWsxc0NtUkhvSmZmcUViK0s5ZFZz?=
- =?utf-8?B?Wjc5RGZkVm5tWncrZ0pSUUhXdnowdFl4bUpRcnZ1VGpMQjVuRHhFMUhyUkFX?=
- =?utf-8?B?OURvZzI4VXdkSU1xV2lzZ21HQkNSYi9TY21kSlJoUUZPN2pSWGF4OURVWUlB?=
- =?utf-8?B?L2x6ZGt0WGplQndqbGVUNnJ5K3NiTFRzWUNZRWRVQWNSWTVNbFhWVHNCN01n?=
- =?utf-8?B?KzlGZEZPeDJkd3cwWUJveVpoY2pqWlI2RWxoMU4ydVRnalVlNVRqVmI5bHVj?=
- =?utf-8?B?T3B6a1pHTkdZNDJtWnR0amhNSHNLemxhOHhEbWpPN2RjU3B2aEtJdWszMjN0?=
- =?utf-8?B?N0N2RmhXUmwwdEdqcjdLZU1UeTlucnhseC8ySHhDWVpWNEJxd09BKzljMlE4?=
- =?utf-8?B?SFVtWFdjWFdrV25BR0d2MUdSR095RTlWNnVCREpFMUV5MkFRdmFJTnJRUGFD?=
- =?utf-8?B?TGNGZTI0QXdKazVRaTMzR3BXZXVQVlljano5TENtY2JsSmM2T0twa3VzSnlq?=
- =?utf-8?B?THN5aGlueG1wYU4rTnNTRVhkM0M3V0o2RmJnUlhkdjNBQTRzSXRGN2U4eG43?=
- =?utf-8?B?bWVwTmJqV1dEVWJUZ2ozcUlhZzRCWHJ1alErT2lDUkNKTldwbjRxUTVwbWFu?=
- =?utf-8?B?UVJuUmFDV1pPekl4MFZQTENNdkU1ZEV1aS93LzU0dVAvaW9kclA5dDMvc0Qv?=
- =?utf-8?B?QmhGN0lYTmZLYnJaZTZ6N1dIUDRxRjN2MkdLQkZQamxvczl5MTg0TEMwWVQz?=
- =?utf-8?B?bDh6TWFwb2xjTXZXY2pmd2pXUmlRVS92NCtVd0hDMVRjVTlEcGR6NnRZZlB4?=
- =?utf-8?B?dS95TGJFbm9ZREpjT2lFdDBTaGpHcGdhNFlRTWNNMjIwd3Bldk9yVkFLOWRj?=
- =?utf-8?B?YTJTSVliZUxDUXpZZURIYWxKcjlIWVVLUFVEcmxDa0NZZHZLRHl3K1RjalpB?=
- =?utf-8?B?elFOU05YT1drZ2xBNEVubTIranlkVXZMU0IrY1FJVzdtS0xLbDYzeGtnczBq?=
- =?utf-8?B?NVcyTnlPS1prV1pOb3p5Rms5MXFGYkozYTNZWmtEcTVTcmk2TE82dTJLWFNr?=
- =?utf-8?B?Nk9HckJiUlNjZk5YK0Y3NVFBcUlQLzRydjVKck5DaUNpYmh4UUZ0YzRwbjU1?=
- =?utf-8?B?Q3dvVkpqRjk5VHVtMWl6RDhCc1NRbGh1UXQ3bmhOcEYxUHNOOUNQV0wva2ox?=
- =?utf-8?B?MUFQL21pTHBybHJTOWQxWkh1dE1GcWdCSVFtWC9PVUhDQWI1MGFQYURmTWdx?=
- =?utf-8?B?U3dnUXM0MVJaYktyUGhoQXZrbzhENEJFM3d0Rkg5UGNTWHhPQnRkdlIra3NE?=
- =?utf-8?B?TDYxOWlyK2tueVM0dXZTN0pOVTZhRWl1dkVLZnd1TUtpS1lPVWhPTGZRSWNF?=
- =?utf-8?B?OVBvZm5haVU2NG83d1NOM05uRUU5QWwyRDIzZDV0TjY4WTRrNU9WaU4vT0hw?=
- =?utf-8?B?WVd3cXB6cm1sVGd5eE9wejZ2azF3ZVlGdWZWV0lLaHhpQmFhL2Q2emNNaWw5?=
- =?utf-8?B?TGtSelM2SnVoeDZkZTVONkRaL05NbVhKNldZODF5RFNzQWlOak5qaDhWT1c2?=
- =?utf-8?B?OVBVQlhEbEswVGNlRjdCNTRFOXJPTE9CenRpbDZVVjlWTGFqcERUb1Z3QlN4?=
- =?utf-8?B?bjIwVUVidENPYzRBOVpOS0E4OGdaamlXS1YwdEdLczhVRy9RM1MyWUtBeEEr?=
- =?utf-8?B?Nml3dmZMSitPQTR6cStJMnBLMW9rOTl0bTIvQzdLWkRyWWRkTUZxL09KTUNk?=
- =?utf-8?B?WkNpWWU4citOSHM1WGJMT2xPcnJCeG96c0VhWllSRTBKeVUvanBaQ0drL1JH?=
- =?utf-8?B?YVMxM1BxNERuSmZXM3M3elV0dWQrNDZaUzNiSWw0aGxNNkY0M1dqelVLUFZU?=
- =?utf-8?B?VjFvUWI1SEFEbHlUNVZXU0Y2RS9uUXRPRnBSYzc3RHVlM2FjQWppRTAycHpV?=
- =?utf-8?Q?XcCszDgm35t4jfmGsH?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 667060a7-59e8-4a39-fd2e-08de8e66dbf9
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2026 14:15:56.8909
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- mKn09/JBoyoTXcTKC+0hWRGVtYWSYj/3eTax2xl7nHaT4nZ7emQWi7rakK40zmtJ5766LORa7dfH85ue6i6CHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8747
-Message-ID-Hash: NKMN46IT5RGJMYR2KFM7ZZ2SNAS72CXQ
-X-Message-ID-Hash: NKMN46IT5RGJMYR2KFM7ZZ2SNAS72CXQ
-X-MailFrom: Mario.Limonciello@amd.com
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=KJj5/2ZS;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=gp4BPisH;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=KJj5/2ZS;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=gp4BPisH
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 384FA4D21A;
+	Mon, 30 Mar 2026 14:27:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1774880876;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kFNaZ8U6ldqxbl+/RxTw/4opCLZ+TIRBM2lsFmFUkEQ=;
+	b=KJj5/2ZSlyuMBELJ4J0CzrBcSqNcmZv5tVRhULupEoJAkP62J0vMXy1cMGba6tTOyy7WtW
+	gTt/Q8Jzpxuau4zloVJfrai0k2il5fHbQ9aHMZZr0mNZ9UPyyCBw8U1Ca4m4RzeYPYyBPV
+	R5WGY5VhpFz1U7Wa7HC4CeszM4YGLUA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1774880876;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kFNaZ8U6ldqxbl+/RxTw/4opCLZ+TIRBM2lsFmFUkEQ=;
+	b=gp4BPisHLUurSGFdU94vebFNbHHxJPVonCdYI1alBX0HzYAeTIK7j01Lcw5ApkaZ5DWNDt
+	B3nes9A29rYuRRAg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="KJj5/2ZS";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=gp4BPisH
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1774880876;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kFNaZ8U6ldqxbl+/RxTw/4opCLZ+TIRBM2lsFmFUkEQ=;
+	b=KJj5/2ZSlyuMBELJ4J0CzrBcSqNcmZv5tVRhULupEoJAkP62J0vMXy1cMGba6tTOyy7WtW
+	gTt/Q8Jzpxuau4zloVJfrai0k2il5fHbQ9aHMZZr0mNZ9UPyyCBw8U1Ca4m4RzeYPYyBPV
+	R5WGY5VhpFz1U7Wa7HC4CeszM4YGLUA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1774880876;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kFNaZ8U6ldqxbl+/RxTw/4opCLZ+TIRBM2lsFmFUkEQ=;
+	b=gp4BPisHLUurSGFdU94vebFNbHHxJPVonCdYI1alBX0HzYAeTIK7j01Lcw5ApkaZ5DWNDt
+	B3nes9A29rYuRRAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB9AC4A0A2;
+	Mon, 30 Mar 2026 14:27:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id r1hhMGuIymmWWQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 30 Mar 2026 14:27:55 +0000
+Date: Mon, 30 Mar 2026 16:27:55 +0200
+Message-ID: <87se9htms4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Linux-ALSA <alsa-devel@alsa-project.org>,
+	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	arun@asymptotic.io,
+	wim.taymans@gmail.com
+Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
+ 'jumpy DMA'
+In-Reply-To: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
+References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[suse.com,perex.cz,kernel.org,linux.intel.com,alsa-project.org,vger.kernel.org,asymptotic.io,gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 384FA4D21A
+Message-ID-Hash: VPAOEAWYEEQCZK6UHIDFJ7ZVSSFKOWDA
+X-Message-ID-Hash: VPAOEAWYEEQCZK6UHIDFJ7ZVSSFKOWDA
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -170,7 +173,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NKMN46IT5RGJMYR2KFM7ZZ2SNAS72CXQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPAOEAWYEEQCZK6UHIDFJ7ZVSSFKOWDA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -179,33 +182,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 3/30/26 04:46, Syed Saba Kareem wrote:
-> Fixed PCM device numbering is required for acp pdm dmic pcm device
-> to have a common UCM changes.
-> Set the 'use_dai_pcm_id' flag true in acp pdm dma driver for acp 6.3
-> platform. To fix the pcm device numbering based on dai_link->id.
+On Mon, 23 Mar 2026 14:34:16 +0100,
+Péter Ujfalusi wrote:
 > 
-> Signed-off-by: Syed Saba Kareem <syed.sabakareem@amd.com>
-
-I suspect we want a stable tag on this too.  Maybe Mark can add when 
-committing.
-
-> ---
->   sound/soc/amd/ps/ps-pdm-dma.c | 1 +
->   1 file changed, 1 insertion(+)
+> Hi,
 > 
-> diff --git a/sound/soc/amd/ps/ps-pdm-dma.c b/sound/soc/amd/ps/ps-pdm-dma.c
-> index c6cd844d458c..04c014349347 100644
-> --- a/sound/soc/amd/ps/ps-pdm-dma.c
-> +++ b/sound/soc/amd/ps/ps-pdm-dma.c
-> @@ -352,6 +352,7 @@ static const struct snd_soc_component_driver acp63_pdm_component = {
->   	.hw_params	= acp63_pdm_dma_hw_params,
->   	.pointer	= acp63_pdm_dma_pointer,
->   	.pcm_new	= acp63_pdm_dma_new,
-> +	.use_dai_pcm_id = true,
->   };
->   
->   static int acp63_pdm_audio_probe(struct platform_device *pdev)
+> for years the discussion around jumpy, bursty DMA have been popping up
+> and we always concluded that we are missing a good definition and agreed
+> way between kernel and user space to handle this.
+> 
+> In ALSA it is expected that the DMA (hw_ptr) moves in steady small
+> steps. There is a BATCH mode which tells that the DMA cannot report sub
+> period size position, progression.
+> The DMA bursting fits neither of this, it moves in bigger jumps (bursts)
+> and it can as well can report position in byte level.
+> 
+> Typically these systems have DSP which can consumes data in various
+> chunks, making the hw_ptr to jump. Over time the hw_ptr do move at the
+> sampling rate, but when zooming in we can see:
+> initial jump of X frames, hw_ptr stays static for about ~X frame worth
+> of time then the hw_ptr jumps again ahead of X frames, and again, hw_ptr
+> stops, ...
+> 
+> This can be a problem for user space which wants to write samples as
+> close to hw_ptr as possible since if it is not aware of the bursty-DMA
+> than it is possible that a burst will jump over the sw_ptr, causing xrun.
+> 
+> I was looking at what, how and where we should add this information in
+> kernel and to take it in use by user space when I stumbled across the
+> 'fifo_size' of hw_params struct.
+> 
+> It is only set by a few drivers:
+> sound/arm/aaci.c
+> sound/arm/pxa2xx-pcm-lib.c
+> sound/soc/renesas/dma-sh7760.c
+> sound/soc/starfive/jh7110_tdm.c
+> sound/soc/tegra/tegra_pcm.c
+> sound/soc/xtensa/xtfpga-i2s.c
+> sound/usb/misc/ua101.c
+> sound/x86/intel_hdmi_audio.c
+> 
+> It's definition is awkwardly a bit different in kernel and alsa-lib:
+> in kernel it can be in bytes or frames, but in user space it is always
+> in frames (snd_pcm_hw_params_get_fifo_size).
+> 
+> So far I could not find evidence that this is in active use by user
+> space. Not used in alsa-utils, pipewire, pulseaudio at least and web
+> search came back empty handed as well.
+> 
+> My proposal thus is to re-use, re-define extend the fifo_size as and
+> indication that the hw_ptr _can_ jump at least fifo_size number of
+> frames so applications must take this into account when doing direct
+> update in ALSA buffer for low latency.
+> 
+> Or should we add a new member (carved out from the reserved section of
+> hw_params struct) specifically for this purpose, like dma_burst_size,
+> which likely going to be equal to fifo_size if both is filled by the driver.
+> 
+> Or a new flag (SNDRV_PCM_INFO_) that PCM devices can use to indicate
+> that the DMA is bursting and in that case the fifo_size holds the number
+> of frames that it is expected to jump.
+> But we are slowly running out of bits and I'm not sure if it is a good
+> idea to dual use in kernel internal bits for user ABI
+> (SNDRV_PCM_INFO_DRAIN_TRIGGER, SNDRV_PCM_INFO_FIFO_IN_FRAMES)
+> 
+> https://github.com/thesofproject/linux/issues/5313
+> https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/4489
 
+Sorry to be late in the game as I was off in the last weeks, and
+slowly catching up.  So, I'm reading this thread from the beginning,
+and wondering what is needed from user-space API POV.
+
+First off, we do already have a way to report a fine-grained playback
+pointer as "delay" even in jumpy hw_ptr updates as long as the driver
+supports it; e.g. a few drivers for hardware with packet-based
+transfers like USB-audio support that mode.  Doesn't it suffice for
+your need?
+
+And, if a more different parameter is required and defined, how an
+application can use it?  An application can read/write PCM parameters,
+write PCM data (either via mmap or write/ioctl), and sleep/wakeup via
+poll() -- basically that's all.  Would the new parameter influence on
+the poll wakeup behavior?  Or who controls in which way?
+
+
+thanks,
+
+Takashi
