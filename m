@@ -4,136 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6F31FB3CEB
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2026 09:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36F60FF495E
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Mar 2026 13:44:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 829CD601F1;
-	Mon, 30 Mar 2026 11:47:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 829CD601F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD658601F0;
+	Mon, 30 Mar 2026 15:44:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD658601F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774864066;
-	bh=ToKFkjvJBnKIcbFLUMUai1X7jaLxGlPnWPdBdTKGxxU=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=X2Jfq+3fxrzwd1gTHE4LZ3w8W3Tic55/ud1zS8kAX1CJPBBlB5+s06XP0bwo44TjS
-	 WgcELP6PPjdBoDTR+iubRJc0bU+OWJlmWHJN0jMwQSIvghwSXOrbUzExIzIaYXI427
-	 jpIFOhCXFW7mbFidjshfxLYZ1MHELSFgd8KmCkpQ=
+	s=default; t=1774878289;
+	bh=e/lfGg3pPoXB1XOHi7NUqmDi2GKRyGRTPgz9ddjcYHs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=OL11nSFJfKp+BO8s7NwpMn7LWBSUXUvmGM0/fiRDkj9zTfSMHvXAbxjx9WKs4mlLQ
+	 ihB6ro8/S8KG8aeugeWsD7EjhiaTHUtX9etrO7KLoKcPjjDIJPJcYer9yW3SMbhJUx
+	 Etgfz+v4rKMEjtBTzWvjYckEPzaCJMjzckylFEfk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B5A5F805EC; Mon, 30 Mar 2026 11:47:13 +0200 (CEST)
+	id 54B6AF805ED; Mon, 30 Mar 2026 15:44:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37C41F805F4;
-	Mon, 30 Mar 2026 11:47:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 208F7F805E4;
+	Mon, 30 Mar 2026 15:44:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9779BF8052D; Mon, 30 Mar 2026 11:47:03 +0200 (CEST)
-Received: from BL2PR02CU003.outbound.protection.outlook.com
- (mail-eastusazon11011066.outbound.protection.outlook.com [52.101.52.66])
+	id 8158CF8052D; Mon, 30 Mar 2026 15:44:06 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3830FF80087
-	for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2026 11:46:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3830FF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7AEEF8027B
+	for <alsa-devel@alsa-project.org>; Mon, 30 Mar 2026 15:44:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7AEEF8027B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=vayxJhQt
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=RGdsHwqyKRvsDMEyLSbn9a0n/GAb7NWZfIXooQjkFQuPxUfwuX7SOgq72zvMKIoLS8XzDRiYm8nCQRgQcJJqb/EFL41viVOTtuRZCXBk7LKPhO02HKtrLagw3dEPbD92x9kxLWHcoRlHYmupur+CkPk9eUHJ/0KfQikpddQTTJuDGorkDC0lgzfb0mK4UkCmbMC41lX20aXZSuxm0AyWGDbHs9HK2kfeVAPemHGxWqfm6F0DCq4q58niU8uyLsjlr4r/acEXKF2SL6dHi1bv7WJlJtK3rAZVioT2ACAKABmoD9svm542vkq9edSjeOWi1LRhT1N7rzaigZO1nHHWcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gZju8pLmNg3j5wbD9JEWuZeQzFlezyas4fEeYTM92zs=;
- b=OWfwva/EJ8uTlBqaqgL8AjWVN1Z/4WZ7Il9glbpKbHSJ9LFVIezppCdM0h5ugNYuM3tmmTD1mf9MDdIsfIEGofzya5rOwtPeJH+QpajX7Ex0mTsOoHqdkSYlyMvgpT2TKh7dTRYuOyUu74mxB/fDmXs3PbF2PDTxkbNplJCcQ+Fbf6BbEPONXqaxlZwsqOlszJOQ4ZbbkTjv+uOsJYEV0TqmrsKAEAd5JHk0nNW4Gcaybo/8SBb0zvDvn9cER2miOIhPwSwCdrcmMj0gfCMxBFKQcxkI+Yl7R5RvbXasBdQP4ldeQfQ5UKd284U+G5VBph96fQeFCc1U7U8oxxXwDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gZju8pLmNg3j5wbD9JEWuZeQzFlezyas4fEeYTM92zs=;
- b=vayxJhQtb8MeBhuqChLaBOMQEfU0kvE9D20uitjRp45Ae5LhMjkbvtiysyyQKxgLIhW3D5blyiwiShEpNP8tOdV0V8b0pS/tWnGtb7Do9hsgGPNG4LyRCO/rNN/dSxQ9UdakDpZZz/ceIovvBZ4XM9bnW9LF3TO4x7y8nsyLZwo=
-Received: from DM5PR07CA0071.namprd07.prod.outlook.com (2603:10b6:4:ad::36) by
- SA0PR12MB4365.namprd12.prod.outlook.com (2603:10b6:806:96::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9769.15; Mon, 30 Mar 2026 09:46:47 +0000
-Received: from DM2PEPF00003FC3.namprd04.prod.outlook.com
- (2603:10b6:4:ad:cafe::61) by DM5PR07CA0071.outlook.office365.com
- (2603:10b6:4:ad::36) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9745.28 via Frontend Transport; Mon,
- 30 Mar 2026 09:46:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- DM2PEPF00003FC3.mail.protection.outlook.com (10.167.23.21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9745.21 via Frontend Transport; Mon, 30 Mar 2026 09:46:47 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Mon, 30 Mar
- 2026 04:46:47 -0500
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb10.amd.com
- (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Mon, 30 Mar
- 2026 04:46:46 -0500
-Received: from amd-B550M-DS3H.amd.com (10.180.168.240) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Mon, 30 Mar 2026 04:46:43 -0500
-From: Syed Saba Kareem <syed.sabakareem@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC: <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-	<Sunil-kumar.Dommati@amd.com>, <mario.limonciello@amd.com>, Syed Saba Kareem
-	<syed.sabakareem@amd.com>, Venkata Prasad Potturu
-	<venkataprasad.potturu@amd.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kees Cook
-	<kees@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	"open list:AMD ASoC DRIVERS" <linux-sound@vger.kernel.org>, open list
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: ps: fix the pcm device numbering for acp pdm dmic
-Date: Mon, 30 Mar 2026 15:16:25 +0530
-Message-ID: <20260330094642.3088923-1-syed.sabakareem@amd.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=pjuyCHlu
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 97B1243B46;
+	Mon, 30 Mar 2026 13:44:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47C34C4CEF7;
+	Mon, 30 Mar 2026 13:43:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774878241;
+	bh=e/lfGg3pPoXB1XOHi7NUqmDi2GKRyGRTPgz9ddjcYHs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pjuyCHluZPe8wbzLraaUAD91gw8cavqkQwKE8UpZsG3ce+EFtn/4TM5lhhPlqs3n4
+	 J4h60dNemcBI+hefSGPMRw0+L3Nnfx9lQyLvJfOiLtOzqA3ZxI/jFTNYS/ymbRcHmv
+	 UQ9+yA3g9SwtmV+nQoxnkj3Xht4md50neXtfaaWEa+XAi00uCOQn3XVICeciPEr9f5
+	 slJM1RJf9NsGM4uontjlCIJsrhFZGjtSe4iDIfs0SLgR5t5+6J+lCwUimsxW7DP9/o
+	 QMMYEtqSblGY2WpltIXe/SdMlLvxekaqWQSJGt2qyFRLh1xWiOAWUjZ4BdANdzrZIM
+	 1UgWKTjc4OBBQ==
+Date: Mon, 30 Mar 2026 14:43:56 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+	lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+	superm1@kernel.org, Sunil-kumar.Dommati@amd.com,
+	venkataprasad.potturu@amd.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ASoC: amd: acp: update dmic_num logic for acp pdm
+ dmic
+Message-ID: <03a53820-a076-42ed-9ab2-3877396f99f9@sirena.org.uk>
+References: <20260330072431.3512358-1-Vijendar.Mukunda@amd.com>
+ <20260330072431.3512358-2-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM2PEPF00003FC3:EE_|SA0PR12MB4365:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7cfb52a9-024b-4f6f-fa7c-08de8e4142c8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|36860700016|376014|1800799024|82310400026|18002099003|56012099003;
-X-Microsoft-Antispam-Message-Info: 
-	UJj6BdmVSsBZrOXs4oPRIiJUQnhRBpjxuNW4f6GH2OP38GA4FSl9YV7ss4DlnhGW5b6KGiaIOFpmnvksUasA58cns869noiqEHkzzRP4TqxOHo1kLbOIrfMzlqu3InUXRDW0R5FLlsqiCg8uGCwVjjZmq9RlYa6BgkVhAdwyxICj1MS9Zv/lrncDEBLHY77oBgrCeSbqRzSG7L/dyw8AdPxpxBqMBqp9nYr/WPfFNQh9lV1TX2nGl2Z+RLuQbH7U0Py3ysd+tSFvzbJ+GiQVEEQgUnVMyHh2pIDwrRxrcVKL+g/yPakdYjVlpdaYqmpMMDDmrEAzO2vVtlJrdROyboT/nECWHCgcxkEsDQKQqy5XDqTUHtGamxti37ZZ91pOFkdw70PQIgcSM5FzNUngjsMC7iyEQ0Iw6UZEOoQrS+T19e3WFXodVtFfTIB6O90idsKuCQAWO2NXgicci/N70f5oKV2CAQgMJ/jm2noo6wzzM5DRXIeYApykLWShdVif1pBEGob2KszRo8pc3KeSXsWITdT30wDWxESp0SP+gTkaZNgzxcwgVPhnc7imj8uGmrXbC9z919f0CzJ8o46nLjzom4/M70guRempk4thofIgXGepv0nAkGAbVc4iC7H/fziH/S2mwFSgFMrE8UIqnVCr6jziAveGV30Wy0uak54jwx1B0OD4Z5RXm7eKUcKUsTycrQbLOQUUKCdwNefmfyKNSsiQsFZVFQYZgRD1+35v16dEmThDHLJzpQFtBxAHMjlNimnqQfydm8n1waKVew==
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(376014)(1800799024)(82310400026)(18002099003)(56012099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	CtTec7znip1PQfvBD0i6WiIt4M7jZe6E9NFyHECfhUTzAzKOfInrfIyG8RcvelxtGYUSBs9y/go0C2M/wHAyv3w3J9m6Qm1gXsoUa/oea4n1sTLWBtBbck0NEwzRq2w52riFUBekwa2tBeW1lmvX9PrRUv1pUzpDdO+UrrhebOUof3GBPsXYIq5OQKd+ZSJGfdc7Bul/+lvAe5tFRMXPNdMwDeJjC3w3PM3vjpQzzkfR5Pj7YKaVwrkrN0dN/uAXW4bOcsar6gImoBa6KFroAiKgiOy2retyK/tO/I9e2ZtEfvgqEaRwuR4AMfDlZ/tYYDDez3R5Vr3kPoLj+PWzA4D/8xcqhfx/Xednfo9vRkA4c5g4bjGZPTbEoZJ2OOXtcJ3cAUYhV6JkC9GZz+Zz5SV4jf4Lle9jeXycr7FFNE84PsAIvw+ax9bNwQXE1VCg
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2026 09:46:47.6876
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 7cfb52a9-024b-4f6f-fa7c-08de8e4142c8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	DM2PEPF00003FC3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4365
-Message-ID-Hash: QCZAVKZDO3C5BXTAARJ5PI3DPHGDPX3Y
-X-Message-ID-Hash: QCZAVKZDO3C5BXTAARJ5PI3DPHGDPX3Y
-X-MailFrom: Syed.SabaKareem@amd.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dI3HTm/r/Y3gRSFj"
+Content-Disposition: inline
+In-Reply-To: <20260330072431.3512358-2-Vijendar.Mukunda@amd.com>
+X-Cookie: HUGH BEAUMONT died in 1982!!
+Message-ID-Hash: IYQIA2OR7LW6PV6Q3WI62BUDRHPMK7IM
+X-Message-ID-Hash: IYQIA2OR7LW6PV6Q3WI62BUDRHPMK7IM
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -144,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QCZAVKZDO3C5BXTAARJ5PI3DPHGDPX3Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IYQIA2OR7LW6PV6Q3WI62BUDRHPMK7IM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,28 +97,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fixed PCM device numbering is required for acp pdm dmic pcm device
-to have a common UCM changes.
-Set the 'use_dai_pcm_id' flag true in acp pdm dma driver for acp 6.3
-platform. To fix the pcm device numbering based on dai_link->id.
 
-Signed-off-by: Syed Saba Kareem <syed.sabakareem@amd.com>
----
- sound/soc/amd/ps/ps-pdm-dma.c | 1 +
- 1 file changed, 1 insertion(+)
+--dI3HTm/r/Y3gRSFj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/amd/ps/ps-pdm-dma.c b/sound/soc/amd/ps/ps-pdm-dma.c
-index c6cd844d458c..04c014349347 100644
---- a/sound/soc/amd/ps/ps-pdm-dma.c
-+++ b/sound/soc/amd/ps/ps-pdm-dma.c
-@@ -352,6 +352,7 @@ static const struct snd_soc_component_driver acp63_pdm_component = {
- 	.hw_params	= acp63_pdm_dma_hw_params,
- 	.pointer	= acp63_pdm_dma_pointer,
- 	.pcm_new	= acp63_pdm_dma_new,
-+	.use_dai_pcm_id = true,
- };
- 
- static int acp63_pdm_audio_probe(struct platform_device *pdev)
--- 
-2.43.0
+On Mon, Mar 30, 2026 at 12:50:27PM +0530, Vijendar Mukunda wrote:
 
+> +++ b/sound/soc/amd/acp/acp-sdw-legacy-mach.c
+> @@ -535,11 +535,11 @@ static int mc_probe(struct platform_device *pdev)
+>  					  " cfg-amp:%d", amp_num);
+>  	if (!card->components)
+>  		return -ENOMEM;
+> -	if (mach->mach_params.dmic_num) {
+> +	if (soc_sdw_quirk & ASOC_SDW_ACP_DMIC) {
+
+soc_card_dai_links_create() (which could perhaps use better namespacing)
+checks both dmic_num and the quirk.  This doesn't seem properly joined
+up (and perhaps the code shouldn't be as spread out as it is)?
+
+--dI3HTm/r/Y3gRSFj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmnKfhsACgkQJNaLcl1U
+h9DXcQf/Req/nIvPby0oETVo+xflG1uDXBGro/Em5r7Rw1fbh2SHDKC8vSHW3aXf
+QMTfSXUkKv57R5N3hqqE2deHwFcnePQq1VvcJAUV841z1GaQ1CfC0yegldOdnI4h
+/jgH19Shd+sjf0/d5bpTlBJaA2KTlXtzNHr3jUFmiJDgKvyRRcjaYIzKf+EjxAnV
+NSWHr8UJgQxeS0gZid17tUYceYWVDXz3EBLG//LKoN/f7UYa5t0OFnQESITrp6oH
+f7FGFGnXcENX0xZJgIBED/k6csChtrVRmpqygrTFD6DW3ByDrsV/jLxhKi9vnwJA
+s4U/2PqYUMEgshUtvJJ7Z13i3L+/Rw==
+=12eD
+-----END PGP SIGNATURE-----
+
+--dI3HTm/r/Y3gRSFj--
