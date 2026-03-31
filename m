@@ -4,100 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1609109B46F
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 14:10:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51643109B475
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 14:22:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 762EE601F4;
-	Tue, 31 Mar 2026 16:10:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 762EE601F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A1C2601F3;
+	Tue, 31 Mar 2026 16:22:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A1C2601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774966215;
-	bh=2w0ngJrbmXF6tUy0LlRP0HjJJny1NVtHmHBUcUFcOZA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1774966962;
+	bh=K/xpecWapzKDEvEJbg95c+TbC5WJjc/1RGLgQrg0pdU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dqLGAFZ+7yCocWKUFT7/oKM3B0YnxYFJ9X3YwiCuolBuNh8EAtN17fKVvwZW2Zwkd
-	 d+gs+X7bxsaspe8Rz/FvvvHVh8vgQ2o2/KdRFUlbh4VM9HyUH3qBMIHa9aw/Ic5wr/
-	 rR0WF+pctfmfxmguS/VTbYvzSBuJnZqTVEZL8BQw=
+	b=RX3EhrnotoY9cO1El3TOEefO8Rc24v8XlG3vLvyiOOtw6EFOcoAKzOt1LoT5UjJ0W
+	 SCTOBsrlKjJ4BIwu/e3XafazF4sRgqIaBZAyaEPTp74aDUey5ELQvOA8njxg3UpMHG
+	 omJbod6jeCF3tDpMu2cKAI047/AZ+1rBgejVxqLU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2066BF805F6; Tue, 31 Mar 2026 16:09:42 +0200 (CEST)
+	id 4EFF0F805E1; Tue, 31 Mar 2026 16:22:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80F86F805F2;
-	Tue, 31 Mar 2026 16:09:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB255F805E5;
+	Tue, 31 Mar 2026 16:22:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73E05F80549; Tue, 31 Mar 2026 16:09:33 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id BCE6CF80549; Tue, 31 Mar 2026 16:22:00 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 682FEF804CC
-	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 16:09:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 682FEF804CC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74792F804CC
+	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 16:21:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74792F804CC
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=kyh2mWmo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774966168; x=1806502168;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2w0ngJrbmXF6tUy0LlRP0HjJJny1NVtHmHBUcUFcOZA=;
-  b=kyh2mWmonFQ9rZNdNbKj/pE5h5y6Fb1WajlksEh5Bq3ybXphWLbe1/j8
-   HRt6XyAecPwGUykOv30TtqjWu8L5p7cFpmPN7BOZVy3Viat0c6VUhTggR
-   ePHmIJSi5+e0oyJoZfe0b/gdqFcqS55f+mDCL7G/pZ17QwvVJIaBKbK2K
-   Cpy4Cocawrmj/XNuqRdpDf1WOq6XfSTZ9XzBXCPdEjorN9p0SeiMD2553
-   do+IZZ/QkbF+pOoff4QNdQKnj/0VU8FivEcv6zxJBhEKmZax8sSaNMajY
-   jeFQELV6+9VnRB0+jydQ8Owh3nCyNcx5/8WYTwP82UliTVvU8od4Chrud
-   w==;
-X-CSE-ConnectionGUID: TqW9OkWtSlCQ4QZd5OF5gA==
-X-CSE-MsgGUID: jZV5TOwlT6epzXbg9JgD3g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11745"; a="76092913"
-X-IronPort-AV: E=Sophos;i="6.23,152,1770624000";
-   d="scan'208";a="76092913"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2026 07:09:10 -0700
-X-CSE-ConnectionGUID: xomyWnABScGrwXl+ZBG1Aw==
-X-CSE-MsgGUID: XE3EYAwDQ+2uCIEQhuHOxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,152,1770624000";
-   d="scan'208";a="219725950"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO [10.245.245.218])
- ([10.245.245.218])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2026 07:09:08 -0700
-Message-ID: <4c73e4cb-298a-411a-97ed-f0eff1b06ac9@linux.intel.com>
-Date: Tue, 31 Mar 2026 17:09:24 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
- 'jumpy DMA'
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, arun@asymptotic.io,
- wim.taymans@gmail.com
-References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
- <87se9htms4.wl-tiwai@suse.de>
- <67b9f48b-1cc7-4dac-8f6a-c0cba6a84b36@linux.intel.com>
- <87ikadtgpe.wl-tiwai@suse.de>
- <dadef18b-1c2e-4c0d-8ae8-2e4b8ad75d04@linux.intel.com>
- <878qb8tsib.wl-tiwai@suse.de> <88979231-caef-4eaa-b89d-22e6973c92f9@perex.cz>
- <cfb84df3-c2bf-4173-bc45-7df29b6a94a3@linux.intel.com>
- <a1b6b2ed-2e26-48ff-afab-60f90ecc4360@perex.cz>
-Content-Language: en-US
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <a1b6b2ed-2e26-48ff-afab-60f90ecc4360@perex.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: G6XSJXLULXO73TZNWLYYFIIJQJLT2VSZ
-X-Message-ID-Hash: G6XSJXLULXO73TZNWLYYFIIJQJLT2VSZ
-X-MailFrom: peter.ujfalusi@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=BIbLZANY;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=xVI1Q0Pc;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=BIbLZANY;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=xVI1Q0Pc
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B81C84D27A;
+	Tue, 31 Mar 2026 14:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1774966914;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8T52YgKF5svVVGrf60J6QzIkopA/0uigCBjh2rdWn3E=;
+	b=BIbLZANYISmSZG1Ry++YSqcDeXLVlA+4WZdKlpLrEJ+GV7X+NIfLCVkyzqZleTQDQ1Spqp
+	0wn1CRCy3khrucZY9XGH9AGQoLziZhIo3tc52kmosLMWejceGdCbX7Fi1xUeyBBiD3gdz6
+	l0cBh14ce6oCv0VQXTKLqTGpUlVyVsA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1774966914;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8T52YgKF5svVVGrf60J6QzIkopA/0uigCBjh2rdWn3E=;
+	b=xVI1Q0PcsscvkePJEnCEJ5CT54552tx2a3JZW2JD0bBMG73NEey64tAzkNxPmcDZPVEjoN
+	8BbaEG4v0hLFb8BA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1774966914;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8T52YgKF5svVVGrf60J6QzIkopA/0uigCBjh2rdWn3E=;
+	b=BIbLZANYISmSZG1Ry++YSqcDeXLVlA+4WZdKlpLrEJ+GV7X+NIfLCVkyzqZleTQDQ1Spqp
+	0wn1CRCy3khrucZY9XGH9AGQoLziZhIo3tc52kmosLMWejceGdCbX7Fi1xUeyBBiD3gdz6
+	l0cBh14ce6oCv0VQXTKLqTGpUlVyVsA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1774966914;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8T52YgKF5svVVGrf60J6QzIkopA/0uigCBjh2rdWn3E=;
+	b=xVI1Q0PcsscvkePJEnCEJ5CT54552tx2a3JZW2JD0bBMG73NEey64tAzkNxPmcDZPVEjoN
+	8BbaEG4v0hLFb8BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A5C634A0A2;
+	Tue, 31 Mar 2026 14:21:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 1V/UJ4LYy2mUEwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 31 Mar 2026 14:21:54 +0000
+Date: Tue, 31 Mar 2026 16:21:50 +0200
+Message-ID: <87bjg4rse9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Alexander Savenko <alex.sav4387@gmail.com>
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo Yoga Pro 7 14IMH9
+In-Reply-To: <20260331082929.44890-1-alex.sav4387@gmail.com>
+References: <20260331082929.44890-1-alex.sav4387@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TAGGED_RCPT(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+Message-ID-Hash: VTCFKB5LXJ4JET4QEQNUUZ247STMQQLB
+X-Message-ID-Hash: VTCFKB5LXJ4JET4QEQNUUZ247STMQQLB
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -108,7 +150,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G6XSJXLULXO73TZNWLYYFIIJQJLT2VSZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VTCFKB5LXJ4JET4QEQNUUZ247STMQQLB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,104 +159,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 31/03/2026 15:00, Jaroslav Kysela wrote:
-> On 3/31/26 12:56, Péter Ujfalusi wrote:
+On Tue, 31 Mar 2026 10:29:28 +0200,
+Alexander Savenko wrote:
 > 
->> Pipewire uses the minimum period size internally for headroom
->> calculation:
->> https://gitlab.freedesktop.org/pipewire/pipewire/-/
->> commit/9c42c06af00818038be494fd41632cb2d50a0df5
->>
->> This works more or less, but things started to get out of control soon.
+> The Lenovo Yoga Pro 7 14IMH9 (DMI: 83E2) shares PCI SSID 17aa:3847
+> with the Legion 7 16ACHG6, but has a different codec subsystem ID
+> (17aa:38cf). The existing SND_PCI_QUIRK for 17aa:3847 applies
+> ALC287_FIXUP_LEGION_16ACHG6, which attempts to initialize an external
+> I2C amplifier (CLSA0100) that is not present on the Yoga Pro 7 14IMH9.
 > 
-> It's conditional, so it's not a general rule. Pipewire just tries to
-> push the drivers to limits with hard-coded assumptions.
+> As a result, pin 0x17 (bass speakers) is connected to DAC 0x06 which
+> has no volume control, making hardware volume adjustment completely
+> non-functional. Audio is either silent or at maximum volume regardless
+> of the slider position.
 > 
->> To get the most power saving benefit, you would want quite big
->> DeepBuffer, let's say 100ms but for video/voice calls you don't want
->> this big buffer, around 40ms should be OK, some other use case might
->> need something in between.
->> If you run tinyplay on the DeepBuffer PCM w/o  specifying period size,
->> it will fail to find the minimum and outright fails unless we lower the
->> DB to around 20ms.
->> With 20ms you don't have much power savings in case of audio playback.
->> So, you spam out several PCM devices with different DeepBuffer to
->> accommodate use cases, this is really not something that makes sense.
->>
->> This is the reason why I have reversed the rules and adjusted the
->> DeepBuffer size based on the period size.
->> In this case we still need to limit how large the DB can be, so it is
->> not true that the DeepBuffer equals to the period size, it is caped.
+> Add a HDA_CODEC_QUIRK entry using the codec subsystem ID (17aa:38cf)
+> to correctly identify the Yoga Pro 7 14IMH9 and apply
+> ALC287_FIXUP_YOGA9_14IMH9_BASS_SPK_PIN, which redirects pin 0x17 to
+> DAC 0x02 and restores proper volume control. The existing Legion entry
+> is preserved unchanged.
 > 
-> It seems that the discussion somewhere else:
+> This follows the same pattern used for 17aa:386e, where Legion Y9000X
+> and Yoga Pro 7 14ARP8 share a PCI SSID but are distinguished via
+> HDA_CODEC_QUIRK.
 > 
-> 1) applications don't know what they are want, thus driver will enforce
-> a configuration (e.g. a forced deep buffer)
-> 
-> 2) ALSA PCM period mapping to the hardware which allows "deep buffering"
+> Link: https://github.com/nomad4tech/lenovo-yoga-pro-7-linux
+> Tested-by: Alexander Savenko <alex.sav4387@gmail.com>
+> Signed-off-by: Alexander Savenko <alex.sav4387@gmail.com>
 
-With SOF we don't advertise the use of the DeepBuffer enabled PCM, it is only used on consumer devices where the audio HAL knows how to use it.
-The static-DB and the dynamic-DB both works fine with applications, like mplayer, mpv, vlc, the only issue is with pipewire (which is not aware of it).
-What I want is to achieve at the end is to advertise this via UCM's low-power-hifi, but due to the bursts, Pipewire can get xrun.
+Applied now.  Thanks.
 
-> At the moment, nothing prevents ALSA applications to use the bigger
-> period sizes when there are known beforehand like "play background
-> music". In other words - power efficiency can be controlled from the
-> app.
 
-But with a static-DB and locking t he period size to the DB size would prevent bigger period size use and even with bigger period size, if the DB size is 'small' then the power efficiency is out of the window.
-But, if we increase the static-DB size then we limit the minimum period size to scale down.
-
-> The applications can also update PCM buffer at any time, so new
-> data (we are speaking about playback) can be feed at any time to make
-> the time window for the underrun occurrence shorter when the driver
-> transfers data to the hardware.
-
-Yes, pipewire does this, it does not care about the period size while media players do. I guess most application which uses NO_PERIOD_WAKEUP does this, they don't care about period boundaries.
-They look at avail (hw_ptr, sw_ptr, delay) and work on manage the data in buffer as close to hw_ptr as possible.
-
-> 
-> We may have those configurations (* = future when driver tells the
-> initial count of queued periods):
-> 
-
->  period | period count | init_periods  | minimal data latency |
-> --------+--------------+---------------+----------------------+---------
->  4ms    | 4            | unsettled (1) | 4ms                  | realtime
-> *4ms    | 200          | 25            | 100ms                | semi-realtime
->  1000ms | 2            | 1             | 1000ms               | pwr efficient
-
-SOF specific, but we limit the period size to be min 8ms to unbrake pipewire to avoid xzrun on start and xrun handling and to hint application what is safe.
-Also: we cannot scale the DeepBuffer infinitely, it is carved out from the DSP's SRAM, so it is limited.
-period size=1000ms with DeepBuffer=100ms is perfectly valid configuration, as well period size=50ms with DeepBuffer=50ms, as well period size=1000ms with 4ms non-deepbuffer.
- 
->> Strictly locking the DeepBuffer with period size creates another
->> obstacle for audio applications, audio servers like PW don't care about
->> periods, they work on the buffer with timer based updates and rewriting
->> samples in buffer ahead of the hw_ptr.
-> 
-> IMHO, the period size describes the expected minimal latency and
-> applications can put more samples to the PCM buffer. So the whole
-> question is to give suggestions which data threshold is safe for the
-> standard operation.
-
-Yes, it is and not. PW allocates big period sizes and manages really low latencies when it comes to audio.
-And yes, the question is the 'headroom' that is safe to use by applications when dealing with something which is jumpy
-
-> The timer based queuing should just help to feed data more frequently,
-> but it does not mean that applications should not set the period size
-> based on the requirements. Ideally, everything should be coordinated -
-> period sizes with proper sample feed timing from the application side.
-
-Right, but, but, in normal PCM of SOF, the ShallowBuffer is 4ms, we cannot set constraint for the period size to be min and max 4ms, that would xrun right away.
-And this would just bring in the issue of the static DB that we have, if it is big, then applications would break if they want smaller periods.
-
-BTW, should we still keep the dynamic DeepBuffer as a way from the kernel to do things automatically? It will allow unaware ALSA applications to gain this for free, but it needs information to be given to clever ones (like PW) on how to deal with the jumps.
-
-Again: the deep buffer is not in use by user space, we just think that it is a great feature to have and would benefit laptop users if they listen to music with the screen blanked.
-
--- 
-Péter
-
+Takashi
