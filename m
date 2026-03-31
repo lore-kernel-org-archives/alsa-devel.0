@@ -4,161 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0795FFF60CE
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 06:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94A1DFF60F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 09:30:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E541160197;
-	Tue, 31 Mar 2026 08:37:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E541160197
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE559601F6;
+	Tue, 31 Mar 2026 11:30:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE559601F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774939048;
-	bh=kJ3Bk6M2MTNQgL1/ZGB8PoT58cFcVJQUR5MirL31AQc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1774949450;
+	bh=R4+lCmJoBQIA60ywwKeGuJ5oHfuTZxshM//3M/jep2U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Rl+z/f+wezdI7GcZEA0+xtDHL1bzPUONAuLiKrmDRUChACnitNwzvN9N2p7Gj6IgE
-	 ymglzQ+1Pgg3ndhGBlJjXapBIfyKgIHKFZk5n+bqtEi2owZtN2SJZQjZNHOyeYjvnV
-	 ZP+wkRypnx3UNKYLOv/iAg32h/iwnXJjmbaW/XPw=
+	b=OH1ATPo9tkh7Uni4MJE7l86A/v9tcmr1LXGIZ9nfDKM+0LlZAk946Tgz99RbORANd
+	 GwQGzUwZHyuOff+ffCKWeJKMduQ9xaBL2o3gdYjQql99ygFO3mPLdWJLZj7bH5Q8ZU
+	 OlENsMkQkb4VZgkfGpAqDZDYuL5BG4FK+sz3BozY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5236AF805B3; Tue, 31 Mar 2026 08:36:54 +0200 (CEST)
+	id B6F66F805F7; Tue, 31 Mar 2026 11:30:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D90EF805E7;
-	Tue, 31 Mar 2026 08:36:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D04CF805A1;
+	Tue, 31 Mar 2026 11:30:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A4BAF80549; Tue, 31 Mar 2026 08:36:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	id CA7BAF80549; Tue, 31 Mar 2026 11:30:02 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A3611F804CC
-	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 08:36:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3611F804CC
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=dTBJfDJZ;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gpbmHWIz;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=dTBJfDJZ;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gpbmHWIz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 58B79F804CC
+	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 11:29:55 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 197AF3A216;
+	Tue, 31 Mar 2026 11:29:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 197AF3A216
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1774949394; bh=vPUd703Zl3mbK75RKg48xRQejbuOSOF3Pvw8oFgaFvg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eUWtTPwE3dM8evzwlcvR4MK22nvzwvaD/lb39HQGS8wSwMNXqKMUkmPR1va1vlAbZ
+	 Xuqvd2AZ85NFstRmYHtY/W5DHE+++nh1NeCD4IeVb3UP0iu1zjAlhnQJdlWduRwVs/
+	 bAJmDSGMHIBf15GaMVe5qipSjwv4VzEfmfXoocEI=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8382C4D541;
-	Tue, 31 Mar 2026 06:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1774938989;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2woUnOnzHe2oo5TWd+W+6ys8rxmRo3CGNSJi1h73a6o=;
-	b=dTBJfDJZ15L+FeLm7QHXmJ0wjz3V1S5QPJt9lxjYN904KBW4I1W9g6tv5JRYn9mMIzTIbU
-	NtDHDKarVEv1fmlU79W+OaRroaa70t4r8L6Tj4/kEtSd68FW/8kksOvqZa/1KWxPK8YWA5
-	M79CrDushBOywiyk/xC9BcrLs3MGbb4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1774938989;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2woUnOnzHe2oo5TWd+W+6ys8rxmRo3CGNSJi1h73a6o=;
-	b=gpbmHWIzpddcDxanFd+HA9y6kn61DS4P6o8FtwutrWsbNKzvFc8kpbL4KwQjlmIvsIiQRr
-	2kArs1D9yPed5zBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1774938989;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2woUnOnzHe2oo5TWd+W+6ys8rxmRo3CGNSJi1h73a6o=;
-	b=dTBJfDJZ15L+FeLm7QHXmJ0wjz3V1S5QPJt9lxjYN904KBW4I1W9g6tv5JRYn9mMIzTIbU
-	NtDHDKarVEv1fmlU79W+OaRroaa70t4r8L6Tj4/kEtSd68FW/8kksOvqZa/1KWxPK8YWA5
-	M79CrDushBOywiyk/xC9BcrLs3MGbb4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1774938989;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2woUnOnzHe2oo5TWd+W+6ys8rxmRo3CGNSJi1h73a6o=;
-	b=gpbmHWIzpddcDxanFd+HA9y6kn61DS4P6o8FtwutrWsbNKzvFc8kpbL4KwQjlmIvsIiQRr
-	2kArs1D9yPed5zBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3BD384A0A2;
-	Tue, 31 Mar 2026 06:36:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id DuJJDW1ry2k1IwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 31 Mar 2026 06:36:29 +0000
-Date: Tue, 31 Mar 2026 08:36:28 +0200
-Message-ID: <878qb8tsib.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Linux-ALSA <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	arun@asymptotic.io,
-	wim.taymans@gmail.com
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Tue, 31 Mar 2026 11:29:44 +0200 (CEST)
+Message-ID: <88979231-caef-4eaa-b89d-22e6973c92f9@perex.cz>
+Date: Tue, 31 Mar 2026 11:29:43 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
  'jumpy DMA'
-In-Reply-To: <dadef18b-1c2e-4c0d-8ae8-2e4b8ad75d04@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>,
+ =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, arun@asymptotic.io,
+ wim.taymans@gmail.com
 References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
-	<87se9htms4.wl-tiwai@suse.de>
-	<67b9f48b-1cc7-4dac-8f6a-c0cba6a84b36@linux.intel.com>
-	<87ikadtgpe.wl-tiwai@suse.de>
-	<dadef18b-1c2e-4c0d-8ae8-2e4b8ad75d04@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.com,perex.cz,kernel.org,linux.intel.com,alsa-project.org,vger.kernel.org,asymptotic.io,gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: 7O73HEOYHMF33COCVUN6MSBQHELKCDVU
-X-Message-ID-Hash: 7O73HEOYHMF33COCVUN6MSBQHELKCDVU
-X-MailFrom: tiwai@suse.de
+ <87se9htms4.wl-tiwai@suse.de>
+ <67b9f48b-1cc7-4dac-8f6a-c0cba6a84b36@linux.intel.com>
+ <87ikadtgpe.wl-tiwai@suse.de>
+ <dadef18b-1c2e-4c0d-8ae8-2e4b8ad75d04@linux.intel.com>
+ <878qb8tsib.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Content-Language: en-US
+Autocrypt: addr=perex@perex.cz; keydata=
+ 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
+In-Reply-To: <878qb8tsib.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: CCII5NHILQRZWIQDLEH7PJ544ODNLX6Z
+X-Message-ID-Hash: CCII5NHILQRZWIQDLEH7PJ544ODNLX6Z
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -169,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7O73HEOYHMF33COCVUN6MSBQHELKCDVU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CCII5NHILQRZWIQDLEH7PJ544ODNLX6Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,93 +144,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 31 Mar 2026 08:00:56 +0200,
-Péter Ujfalusi wrote:
+On 3/31/26 08:36, Takashi Iwai wrote:
+
+>>> if a device allows a different queue size, it should be configurable
+>>> via hw_params.
+>>
+>> I'm not sure if I follow this statement. the fifo_size is a driver to
+>> user space information, driver fills it and user space ignores it ;) - I
+>> cannot find any evidence of it's use.
 > 
+> If a chip has a similar constraint but the init and step sizes are
+> adjustable, they should be configurable via hw_params procedure --
+> that's my point.
 > 
+>> The init_chunk, step_chunk would be similar, the driver sets it and user
+>> space would use it.
+>>
+>> In SOF this will be dynamic and it will depend on the period size:
+>> https://github.com/thesofproject/linux/pull/5673/commits/18f3ba5e42212d77019d79ec09b7057a7703d361
 > 
-> On 30/03/2026 19:39, Takashi Iwai wrote:
-> > OK, then I'd say that the existing fifo_size doesn't fit fully for
-> > this kind of stuff.  e.g.
-> 
-> We came to the same conclusion with Jaroslav, and the plan is to
-> introduce two new parameter in hw_params:
-> init_chunk and step_chunk, both in frames.
-> init_chunk - is the size of the hw_ptr jump right when the start happens
-> step_chunk - is the runtime jump size which happens every step_chunk time.
-> 
-> for example:
-> init_chunk = 100ms
-> step_chunk = 1ms
-> hw_ptr moves 100ms on start (pointing to 101ms), after 1ms of time the
-> hw_ptr will move 1ms ahead to 102ms, in another 1ms it again moves 1ms
-> to 103ms...
-> 
-> init_chunk = 100ms
-> step_chunk = 96ms
-> hw_ptr moves 100ms on start (pointing to 101ms), after 96ms of time the
-> hw_ptr will move 96ms ahead to 197ms, in another 96ms it again moves 1ms
-> to 293ms...
+> Well, so even in your case, the driver can implement the hw_constraint
+> for coupling those numbers, too.  Then application may choose the
+> init_chunk or step_chunk, which restricts the period size
+> automatically.  If application doesn't choose those, the hw_params
+> engine will choose depending on the period size, and application can
+> see the values after hw_params call.
 
-In the second example, where does 1ms offset comes from?
-  hw_ptr moves 100ms on start (pointing to 101ms)
+I was more thinking about this problem and it seems that the root of this 
+cause is that application (pipewire) is trying to bypass the period based 
+mechanism for which we already have the handshake. It's no issue to ask for 
+smaller periods from the app side to maintain the expected latency. It is also 
+understandable that we need to fill at least two periods at start and keep 
+this buffer timing (also with counting the system scheduling latencies).
 
-I thought that this 1ms is the step_chunk size in the first example...
+So, perhaps, the only flag may be added notifying that the (first) minimal 
+period is processed immediately after start. It's also common situation for 
+other drivers with double buffering in the driver like USB, maybe FireWire, 
+right ? Note that this flag won't be the BATCH flag. Or we can just add a 
+field notifying how many minimal periods are queued at start to be more 
+universal (apparently SOF requires this, because the initial chunk of queued 
+samples is bigger then the later chunks - so the first transfer will go over 
+more periods).
 
-> Note, the first is theoretical, with SOF 1ms step is used only with
-> 'small' DSP side buffer:
-> 
-> init_chunk = 4ms
-> step_chunk = 1ms
-> hw_ptr moves 4ms on start (pointing to 5ms), after 1ms of time the
-> hw_ptr will move 1ms ahead to 6ms, in another 1ms it again moves 1ms to
-> 7ms...
+We may discuss if small periods are efficient. We have already mechanism to 
+disable period events (SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP) and drivers don't 
+do usually deep buffering, so they program DMA transfers with smaller (or 
+equal) chunks than period size.
 
-So, init_chunk is the size to be filled up at the start, something
-similar like sw_params.start_threshold, but it's rather a hardware
-requirement.
+It seems to me that we are trying to design another layer on top of the 
+current just to satisfy the improper current PCM API use.
 
-And step_chunk is essentially the hw_ptr granularity?
+And saying this, it appears that the kernel drivers (yes SOF) are trying the 
+bypass the period constraints make it freely customized [1] instead to apply 
+constraints based on the hardware limits including the internal maintenance 
+(CPU <-> DSP buffering). So the issue is on both sides and the things are 
+failing because the standard period handshake is not honored.
 
-> I'm not sure if we want these to be snd_pcm_uframes_t types in
-> snd_pcm_hw_params or should be u32 simplify the shrinking of reserved..
-> 
-> -       unsigned char reserved[48];
-> +       snd_pcm_uframes_t init_chunk;	/* in frames */
-> +       snd_pcm_uframes_t step_chunk;	/* in frames */
-> +       unsigned char reserved[48 - 2 * sizeof(snd_pcm_uframes_t)];
-> 
-> with u32 we can simply change the reserved size to 40, which is anyways
-> going to be the case for the snd_pcm_hw_params32{}
+					Jaroslav
 
-In my idea, it may be configurable, hence it belongs to interval, so
-it's two in ires[9] for the reserved intervals.
+[1] 
+https://github.com/thesofproject/linux/pull/5673/changes#diff-d8bbc05d879b6eee2041d6fc0ee06f050be097ac05b12cfec9b35d89f66d3a84R79-R89
 
-> > if a device allows a different queue size, it should be configurable
-> > via hw_params.
-> 
-> I'm not sure if I follow this statement. the fifo_size is a driver to
-> user space information, driver fills it and user space ignores it ;) - I
-> cannot find any evidence of it's use.
+/*
+  * When the host DMA buffer size is larger than 8ms, the firmware switches from		
+  * a constant fill mode to burst mode, keeping a 4ms threshold to trigger 		
+  * transfer of approximately host DMA buffer size - 4ms after the initial burst		
+  * to fill the entire buffer.		
+  * To simplify the logic, above 20ms ALSA period size use the same size for 
+host		
+  * DMA buffer, while if the ALSA period size is smaller than 20ms, then use a		
+  * headroom between host DMA buffer and ALSA period size.		
+  */
 
-If a chip has a similar constraint but the init and step sizes are
-adjustable, they should be configurable via hw_params procedure --
-that's my point.
-
-> The init_chunk, step_chunk would be similar, the driver sets it and user
-> space would use it.
-> 
-> In SOF this will be dynamic and it will depend on the period size:
-> https://github.com/thesofproject/linux/pull/5673/commits/18f3ba5e42212d77019d79ec09b7057a7703d361
-
-Well, so even in your case, the driver can implement the hw_constraint
-for coupling those numbers, too.  Then application may choose the
-init_chunk or step_chunk, which restricts the period size
-automatically.  If application doesn't choose those, the hw_params
-engine will choose depending on the period size, and application can
-see the values after hw_params call.
-
-
-thanks,
-
-Takashi
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
