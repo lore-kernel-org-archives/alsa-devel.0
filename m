@@ -4,80 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E7B91061B2E
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 11:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7241E1061B39
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 12:01:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DF5B601F0;
-	Tue, 31 Mar 2026 13:19:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DF5B601F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04AB9601F3;
+	Tue, 31 Mar 2026 14:00:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04AB9601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774956005;
-	bh=7e2DKN5T+Ldsotlah2+jYvMITCK15tyepExrQBaoVYA=;
+	s=default; t=1774958463;
+	bh=YhkviEvpahXA7HNVJLTAHTmUd2hIxcNri6UZpjZI50k=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cJZoi0O13vMT0DBLGX+c7cSycVFD5umN91x7o+iSlCgwtoUkTi8Ete+Vc9F6hj7md
-	 wRGq/ScFGd+nVMsHsYMkIjFuFwlyexaKqlmaxQ8JKvyM1t9b5QlcDlaJX3sHd+R6pr
-	 g0IYab8zEmQqfHirOUjEoYBW6SfbluHv4eEHUn00=
+	b=SlCs5yDHGZcD1sPqykd5J+VbgC+eRcjZaHmmusMoEuM3B0NhL9EJN7CswWmdFjHAy
+	 6U1EtwWxcFgfNyLIJ3wIp8nCG+DCeGXRVFcUsrt0g/H8Dbf0SuCMpW705clPb41w5q
+	 C7+JNvsvsfuxC61LrSeWbCAcibpT/kKab0id4Qt4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CCDC5F805EA; Tue, 31 Mar 2026 13:19:40 +0200 (CEST)
+	id 30D47F805E1; Tue, 31 Mar 2026 14:00:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51B0DF805F2;
-	Tue, 31 Mar 2026 13:19:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 499F9F805E1;
+	Tue, 31 Mar 2026 14:00:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72FA6F80549; Tue, 31 Mar 2026 13:19:29 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 08E8DF80549; Tue, 31 Mar 2026 14:00:18 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5B9E4F80087
-	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 13:19:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B9E4F80087
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=iEDfNCH0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774955965; x=1806491965;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=7e2DKN5T+Ldsotlah2+jYvMITCK15tyepExrQBaoVYA=;
-  b=iEDfNCH04UeqsDBnTfn3fVAtiyS6UgC/Tsw8nadlA1graJKdce/JIKCn
-   1r9SdZOE6GLNZzUBD1aS54rsoLH1XrioZZbpkGuboS+sCNtYyMuIBlQ2Z
-   wbmWcILJhxbx2F5TeMNFv5kzJ0dP4w4BslcpTxKZ1dDd0e6Yxg6nPDNVM
-   pr2thsFQBGniamdx1FJv+qfcP+1FVt/nATMu4kPJ+SmhrcIkbwBUQfIWL
-   yDVvDqR0TImX0tSoaMbNgiGcwDc5SKreVMARDbtdTGXklyo5YEXcZt4Qs
-   ICVxgEfsw7HNBwe/Vmnf9xLaicQMsspxMxsZeqzMAiNVBH1PDV6suPGXO
-   w==;
-X-CSE-ConnectionGUID: Wb/oCkh4RyWyGQ3BYGluYQ==
-X-CSE-MsgGUID: E2OyAmflQlKmtqZLGT+Ybg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11744"; a="93353465"
-X-IronPort-AV: E=Sophos;i="6.23,151,1770624000";
-   d="scan'208";a="93353465"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2026 04:19:18 -0700
-X-CSE-ConnectionGUID: 5JkvFg8fSXyjjaBvRbewIQ==
-X-CSE-MsgGUID: 9UDH8d7tQtC6DSmDX5vN5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,151,1770624000";
-   d="scan'208";a="227950075"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO [10.245.245.218])
- ([10.245.245.218])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Mar 2026 04:19:15 -0700
-Message-ID: <edd8f698-145f-406a-ab70-988fd63ee7bd@linux.intel.com>
-Date: Tue, 31 Mar 2026 14:19:32 +0300
+	by alsa1.perex.cz (Postfix) with ESMTPS id 47D3AF80087
+	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 14:00:15 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8A3783A216;
+	Tue, 31 Mar 2026 14:00:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8A3783A216
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1774958414; bh=giY6AUzp+vmExW807WX53n8W0Nu0pfpOfEiELlaVfAI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=pUD0THL7Sru72mJue4o1VOB82pZ3met0xvybEuZebBNqEeq8J2R4aXqyR9iCDHZzk
+	 1k78g1YCgIoo2wRk7kA4937pGpf43ZtAbcvXWF1neFayJH2XAn0SRIGbmNTyTsueOT
+	 WzTLIvZ2DkKutpq0UiPr5hH0TwHiG4gTKGN9thik=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Tue, 31 Mar 2026 14:00:04 +0200 (CEST)
+Message-ID: <a1b6b2ed-2e26-48ff-afab-60f90ecc4360@perex.cz>
+Date: Tue, 31 Mar 2026 14:00:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
  'jumpy DMA'
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Mark Brown <broonie@kernel.org>,
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Linux-ALSA <alsa-devel@alsa-project.org>,
  "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
@@ -88,15 +73,59 @@ References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
  <67b9f48b-1cc7-4dac-8f6a-c0cba6a84b36@linux.intel.com>
  <87ikadtgpe.wl-tiwai@suse.de>
  <dadef18b-1c2e-4c0d-8ae8-2e4b8ad75d04@linux.intel.com>
- <878qb8tsib.wl-tiwai@suse.de>
+ <878qb8tsib.wl-tiwai@suse.de> <88979231-caef-4eaa-b89d-22e6973c92f9@perex.cz>
+ <cfb84df3-c2bf-4173-bc45-7df29b6a94a3@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Content-Language: en-US
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <878qb8tsib.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8
+Autocrypt: addr=perex@perex.cz; keydata=
+ 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
+In-Reply-To: <cfb84df3-c2bf-4173-bc45-7df29b6a94a3@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JRERT26XMWK5HVENXWGHIGOO2KEWRC6E
-X-Message-ID-Hash: JRERT26XMWK5HVENXWGHIGOO2KEWRC6E
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Message-ID-Hash: AFP2HSTYFDM6XMTR55DY2BVQM3HRUEDG
+X-Message-ID-Hash: AFP2HSTYFDM6XMTR55DY2BVQM3HRUEDG
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -107,7 +136,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JRERT26XMWK5HVENXWGHIGOO2KEWRC6E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AFP2HSTYFDM6XMTR55DY2BVQM3HRUEDG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,134 +145,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 3/31/26 12:56, Péter Ujfalusi wrote:
 
-
-On 31/03/2026 09:36, Takashi Iwai wrote:
->> We came to the same conclusion with Jaroslav, and the plan is to
->> introduce two new parameter in hw_params:
->> init_chunk and step_chunk, both in frames.
->> init_chunk - is the size of the hw_ptr jump right when the start happens
->> step_chunk - is the runtime jump size which happens every step_chunk time.
->>
->> for example:
->> init_chunk = 100ms
->> step_chunk = 1ms
->> hw_ptr moves 100ms on start (pointing to 101ms), after 1ms of time the
->> hw_ptr will move 1ms ahead to 102ms, in another 1ms it again moves 1ms
->> to 103ms...
->>
->> init_chunk = 100ms
->> step_chunk = 96ms
->> hw_ptr moves 100ms on start (pointing to 101ms), after 96ms of time the
->> hw_ptr will move 96ms ahead to 197ms, in another 96ms it again moves 1ms
->> to 293ms...
+> Pipewire uses the minimum period size internally for headroom calculation:
+> https://gitlab.freedesktop.org/pipewire/pipewire/-/commit/9c42c06af00818038be494fd41632cb2d50a0df5
 > 
-> In the second example, where does 1ms offset comes from?
->   hw_ptr moves 100ms on start (pointing to 101ms)
+> This works more or less, but things started to get out of control soon.
 
-The DMA moved 100ms, so the hw_ptr is now pointing to the data after it,
-which is the start of the 101th ms.
+It's conditional, so it's not a general rule. Pipewire just tries to push the 
+drivers to limits with hard-coded assumptions.
 
-> I thought that this 1ms is the step_chunk size in the first example...
+> To get the most power saving benefit, you would want quite big
+> DeepBuffer, let's say 100ms but for video/voice calls you don't want
+> this big buffer, around 40ms should be OK, some other use case might
+> need something in between.
+> If you run tinyplay on the DeepBuffer PCM w/o  specifying period size,
+> it will fail to find the minimum and outright fails unless we lower the
+> DB to around 20ms.
+> With 20ms you don't have much power savings in case of audio playback.
+> So, you spam out several PCM devices with different DeepBuffer to
+> accommodate use cases, this is really not something that makes sense.
 > 
->> Note, the first is theoretical, with SOF 1ms step is used only with
->> 'small' DSP side buffer:
->>
->> init_chunk = 4ms
->> step_chunk = 1ms
->> hw_ptr moves 4ms on start (pointing to 5ms), after 1ms of time the
->> hw_ptr will move 1ms ahead to 6ms, in another 1ms it again moves 1ms to
->> 7ms...
-> 
-> So, init_chunk is the size to be filled up at the start, something
-> similar like sw_params.start_threshold, but it's rather a hardware
-> requirement.
+> This is the reason why I have reversed the rules and adjusted the
+> DeepBuffer size based on the period size.
+> In this case we still need to limit how large the DB can be, so it is
+> not true that the DeepBuffer equals to the period size, it is caped.
 
-Yes and no,
-yes since there must be init_chunk amount be in the buffer to avoid
-immediate xrun.
-no, because if even if init_chunk amount is prepared, the application
-must provide step_chunk data within step_chunk time, failure to do so
-will also result xrun.
-init_chunk=100ms
-application needs ~5ms to produce new data after start
-step_chunk=1ms
-in 5ms the when the application is able to produce new data, the hw_ptr
-will be 106ms, so it must have provided at least this amount on start.
+It seems that the discussion somewhere else:
 
-step_chunk=1ms
-in 5ms the when the application is able to produce new data, the hw_ptr
-will be 101ms, application can safely rewrite t he data at that
-location, it is safe to provide only 100ms of data for start.
+1) applications don't know what they are want, thus driver will enforce a 
+configuration (e.g. a forced deep buffer)
 
-> And step_chunk is essentially the hw_ptr granularity?
+2) ALSA PCM period mapping to the hardware which allows "deep buffering"
 
-In essence yes, we can report sub step_chunk position, but in practice
-the DMA burst is fast.
+At the moment, nothing prevents ALSA applications to use the bigger period 
+sizes when there are known beforehand like "play background music". In other 
+words - power efficiency can be controlled from the app. The applications can 
+also update PCM buffer at any time, so new data (we are speaking about 
+playback) can be feed at any time to make the time window for the underrun 
+occurrence shorter when the driver transfers data to the hardware.
 
->> I'm not sure if we want these to be snd_pcm_uframes_t types in
->> snd_pcm_hw_params or should be u32 simplify the shrinking of reserved..
->>
->> -       unsigned char reserved[48];
->> +       snd_pcm_uframes_t init_chunk;	/* in frames */
->> +       snd_pcm_uframes_t step_chunk;	/* in frames */
->> +       unsigned char reserved[48 - 2 * sizeof(snd_pcm_uframes_t)];
->>
->> with u32 we can simply change the reserved size to 40, which is anyways
->> going to be the case for the snd_pcm_hw_params32{}
-> 
-> In my idea, it may be configurable, hence it belongs to interval, so
-> it's two in ires[9] for the reserved intervals.
+We may have those configurations (* = future when driver tells the initial 
+count of queued periods):
 
-I see.
+  period | period count | init_periods  | minimal data latency |
+--------+--------------+---------------+----------------------+---------
+  4ms    | 4            | unsettled (1) | 4ms                  | realtime
+*4ms    | 200          | 25            | 100ms                | semi-realtime
+  1000ms | 2            | 1             | 1000ms               | pwr efficient
 
->>> if a device allows a different queue size, it should be configurable
->>> via hw_params.
->>
->> I'm not sure if I follow this statement. the fifo_size is a driver to
->> user space information, driver fills it and user space ignores it ;) - I
->> cannot find any evidence of it's use.
-> 
-> If a chip has a similar constraint but the init and step sizes are
-> adjustable, they should be configurable via hw_params procedure --
-> that's my point.
+> Strictly locking the DeepBuffer with period size creates another
+> obstacle for audio applications, audio servers like PW don't care about
+> periods, they work on the buffer with timer based updates and rewriting
+> samples in buffer ahead of the hw_ptr.
 
-The fifo_size is driver to application information, it is set by the driver.
+IMHO, the period size describes the expected minimal latency and applications 
+can put more samples to the PCM buffer. So the whole question is to give 
+suggestions which data threshold is safe for the standard operation.
 
->> The init_chunk, step_chunk would be similar, the driver sets it and user
->> space would use it.
->>
->> In SOF this will be dynamic and it will depend on the period size:
->> https://github.com/thesofproject/linux/pull/5673/commits/18f3ba5e42212d77019d79ec09b7057a7703d361
-> 
-> Well, so even in your case, the driver can implement the hw_constraint
-> for coupling those numbers, too.  Then application may choose the
-> init_chunk or step_chunk, which restricts the period size
-> automatically.
+The timer based queuing should just help to feed data more frequently, but it 
+does not mean that applications should not set the period size based on the 
+requirements. Ideally, everything should be coordinated - period sizes with 
+proper sample feed timing from the application side.
 
-We would also need a capability flag to say that this is supported on
-the PCM device, right?
-But, I see, the kernel places min/max or even step constraint on the
-init_chunk and step_chunk, but the step_chunk must be also constrained
-and refined in core in correlation with the init_chunk.
-Limiting the period size is something I'm not sure about, probably the
-minimum size can be limited, but how to calculate it?
-The upper constraint is problematic when for example you want some
-buffering (~40ms) but still want to have bigger period sizes because you
-want bigger buffer and the number of periods are limited already by
-hardware.
-
-> If application doesn't choose those, the hw_params
-> engine will choose depending on the period size, and application can
-> see the values after hw_params call.
-
-Hm, I cannot constrain the period size in open when I don't know if the
-user will set the init/step_chunk and if they set it then somehow I need
-to use that, but if not set then use the dynamic DB size calculation and
-set the interval accordingly?
-
-I guess some of this work must be done by the core, some by the driver..
+					Jaroslav
 
 -- 
-Péter
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
