@@ -4,84 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A641061B2B
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 02:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72FC3FF60C8
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Mar 2026 06:01:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D19046019A;
-	Tue, 31 Mar 2026 04:44:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D19046019A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00E7F601FA;
+	Tue, 31 Mar 2026 08:01:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00E7F601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1774925081;
-	bh=07kFi1rcUia3PDIS7c7iVAucdxafIj/xaipoTfzXOY4=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=M+YQjEskdjk9j5/rT64fyak0eflEyKiwM3Czk2SMHWfuBTCryVwTB6wRmE38GUWIp
-	 8mVJk5u5lxqokkOhVjjBj3epLwa/3xVZTjzMfl9nho1m3Mthxm8edSX04IoNG01LGg
-	 EM1f3J/Hw/3NomY0ujmD0CEEzQcWWN9J0sjD+VCw=
+	s=default; t=1774936894;
+	bh=fkXxvhiVBFqKqKw3s3He36S3sohTgtdnqNJ9mwd5fL0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=vu1g8LKQ1SluNLHC7ViSdbgt3/TJhOE/FSxNC52DwXVh8sibrc87XENeI2TWFdaKu
+	 eI9npMxDXrrovw9chTm9nqEtwCLfq5Jy63XENPiFguqYBFOu++cQZdFCcMt4diSZ9o
+	 IyWGKkGQhD5oUJW3GF4jfKGyvbK8mQGIOkvrSqKQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED3E6F805F1; Tue, 31 Mar 2026 04:44:07 +0200 (CEST)
+	id DC270F805F3; Tue, 31 Mar 2026 08:00:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B8E8F805B6;
-	Tue, 31 Mar 2026 04:44:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F22BDF805EC;
+	Tue, 31 Mar 2026 08:00:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16131F80549; Tue, 31 Mar 2026 04:43:57 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2E3D4F80549; Tue, 31 Mar 2026 08:00:49 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F160CF804CC
-	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 04:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F160CF804CC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D8BEF80087
+	for <alsa-devel@alsa-project.org>; Tue, 31 Mar 2026 08:00:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D8BEF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=gk04rblk
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 62V2hgUJ32362665,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1774925022; bh=JsyoiUEKMWdwJCns8TeCq6s5EkNF7n5xjNM1oTU7gU8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type;
-	b=gk04rblkzMo43nfwQ+NGFy0DL1bRahWBqHmB3P9FYqzym/OUGzL7F1LRdTkNRXzAc
-	 WtLbHDtNo1IIVngz/OTE9Lk/jsYfSLY90K2/55cJG30tH4ukIotqUIWcihmJkRfShL
-	 qY9XNkQNaPUOCbVz2bZIvbUh1iuob7uIDn+LscXa6/BxU/h+ZFN08xGiN195oOp+eC
-	 gCAC5y+r7liow6MBqtZKCQIAdhpmbwDjdAl3EZtFlYaRrVXvxKh9jTnarasIEgTJuU
-	 vkLxQYelMKfAP313jHZk4Hyx/1uQojRLH/5TllFi7Myg62ClpCk/oX0gKqS3HhFV4w
-	 eMcZPjOSnxsEQ==
-Received: from mail.realtek.com (rtkexhmbs02.realtek.com.tw[172.21.6.41])
-	by rtits2.realtek.com.tw (8.15.2/3.26/5.94) with ESMTPS id 62V2hgUJ32362665
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 31 Mar 2026 10:43:42 +0800
-Received: from RTKEXHMBS06.realtek.com.tw (10.21.1.56) by
- RTKEXHMBS02.realtek.com.tw (172.21.6.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.10; Tue, 31 Mar 2026 10:43:42 +0800
-Received: from RTKEXHMBS03.realtek.com.tw (10.21.1.53) by
- RTKEXHMBS06.realtek.com.tw (10.21.1.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.10; Tue, 31 Mar 2026 10:43:32 +0800
-Received: from sw-server.localdomain (172.24.54.4) by
- RTKEXHMBS03.realtek.com.tw (10.21.1.53) with Microsoft SMTP Server id
- 15.2.1748.10 via Frontend Transport; Tue, 31 Mar 2026 10:43:32 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
-        <oder_chiou@realtek.com>, <shumingf@realtek.com>,
-        <derek.fang@realtek.com>, Jack Yu <jack.yu@realtek.com>
-Subject: [PATCH] ASoC: rt1320-sdw: remove brown out settings in blind_write
-Date: Tue, 31 Mar 2026 10:43:29 +0800
-Message-ID: <20260331024329.3833572-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.53.0
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=F9Uo7p7j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774936847; x=1806472847;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=fkXxvhiVBFqKqKw3s3He36S3sohTgtdnqNJ9mwd5fL0=;
+  b=F9Uo7p7jIK/PpHJJ6zGS3lPp65MEmcxW/0rv2srwtSisK9kaSJCvTQoH
+   tCrtkSoH1h3NhoswVwXum+nzU0a2D+XvawZsLTBorJvXDPQGIcmHrnao+
+   ucH4wMm6bxFkQr8HW9Tu2bLcIlKygPpcR9sY6iEVb5gKhNSsPEFh35R6E
+   +dG1Gn4GZmzqWGgHHZPaUSqLWLfjS1GhS4wIcddmcA1DiqQhF+VNJDe6t
+   JKl2eQHU9qeW+CZ7/JouJn8nu0NL/9jEuI3+nnKgYsTL9k3TcYDE+xbvH
+   8NDtqBaHD9cMPihd6Eqpd7Not/xLIu+NdLOMKmyY2oQ73/6ZddESGw9XW
+   A==;
+X-CSE-ConnectionGUID: ICYoXoseTf69I3CJTWRQ/Q==
+X-CSE-MsgGUID: zHo2xYX8Ryi69m/UAvam/A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11744"; a="79837286"
+X-IronPort-AV: E=Sophos;i="6.23,151,1770624000";
+   d="scan'208";a="79837286"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Mar 2026 23:00:42 -0700
+X-CSE-ConnectionGUID: JRRtkffGTEyet5gCMMNYhg==
+X-CSE-MsgGUID: eGN7wwo9Q1GCp+icGXYCSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,151,1770624000";
+   d="scan'208";a="231198697"
+Received: from pgcooper-mobl3.ger.corp.intel.com (HELO [10.245.245.218])
+ ([10.245.245.218])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Mar 2026 23:00:40 -0700
+Message-ID: <dadef18b-1c2e-4c0d-8ae8-2e4b8ad75d04@linux.intel.com>
+Date: Tue, 31 Mar 2026 09:00:56 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
+ 'jumpy DMA'
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, arun@asymptotic.io,
+ wim.taymans@gmail.com
+References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
+ <87se9htms4.wl-tiwai@suse.de>
+ <67b9f48b-1cc7-4dac-8f6a-c0cba6a84b36@linux.intel.com>
+ <87ikadtgpe.wl-tiwai@suse.de>
+Content-Language: en-US
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <87ikadtgpe.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Message-ID-Hash: VVH545ESDBCWTDXVVIHN67AGRGR7AQ33
-X-Message-ID-Hash: VVH545ESDBCWTDXVVIHN67AGRGR7AQ33
-X-MailFrom: jack.yu@realtek.com
+Message-ID-Hash: YWNDV3X3TEOOGU3OX7JZXKG5OLBP25RW
+X-Message-ID-Hash: YWNDV3X3TEOOGU3OX7JZXKG5OLBP25RW
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -92,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VVH545ESDBCWTDXVVIHN67AGRGR7AQ33/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YWNDV3X3TEOOGU3OX7JZXKG5OLBP25RW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,33 +114,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
 
-Remove brown out settings as these settings are for customized cases,
-not for general cases.
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- sound/soc/codecs/rt1320-sdw.c | 6 ------
- 1 file changed, 6 deletions(-)
+On 30/03/2026 19:39, Takashi Iwai wrote:
+> OK, then I'd say that the existing fifo_size doesn't fit fully for
+> this kind of stuff.  e.g.
 
-diff --git a/sound/soc/codecs/rt1320-sdw.c b/sound/soc/codecs/rt1320-sdw.c
-index 8bb7e8497c72..35797a13cc7e 100644
---- a/sound/soc/codecs/rt1320-sdw.c
-+++ b/sound/soc/codecs/rt1320-sdw.c
-@@ -169,12 +169,6 @@ static const struct reg_sequence rt1320_vc_blind_write[] = {
- 	{ 0xd487, 0x3b },
- 	{ 0xd486, 0xc3 },
- 	{ 0xc598, 0x04 },
--	{ 0xdb03, 0xf0 },
--	{ 0xdb09, 0x00 },
--	{ 0xdb08, 0x7a },
--	{ 0xdb19, 0x02 },
--	{ 0xdb07, 0x5a },
--	{ 0xdb05, 0x45 },
- 	{ 0xd500, 0x00 },
- 	{ 0xd500, 0x17 },
- 	{ 0xd600, 0x01 },
+We came to the same conclusion with Jaroslav, and the plan is to
+introduce two new parameter in hw_params:
+init_chunk and step_chunk, both in frames.
+init_chunk - is the size of the hw_ptr jump right when the start happens
+step_chunk - is the runtime jump size which happens every step_chunk time.
+
+for example:
+init_chunk = 100ms
+step_chunk = 1ms
+hw_ptr moves 100ms on start (pointing to 101ms), after 1ms of time the
+hw_ptr will move 1ms ahead to 102ms, in another 1ms it again moves 1ms
+to 103ms...
+
+init_chunk = 100ms
+step_chunk = 96ms
+hw_ptr moves 100ms on start (pointing to 101ms), after 96ms of time the
+hw_ptr will move 96ms ahead to 197ms, in another 96ms it again moves 1ms
+to 293ms...
+
+Note, the first is theoretical, with SOF 1ms step is used only with
+'small' DSP side buffer:
+
+init_chunk = 4ms
+step_chunk = 1ms
+hw_ptr moves 4ms on start (pointing to 5ms), after 1ms of time the
+hw_ptr will move 1ms ahead to 6ms, in another 1ms it again moves 1ms to
+7ms...
+
+I'm not sure if we want these to be snd_pcm_uframes_t types in
+snd_pcm_hw_params or should be u32 simplify the shrinking of reserved..
+
+-       unsigned char reserved[48];
++       snd_pcm_uframes_t init_chunk;	/* in frames */
++       snd_pcm_uframes_t step_chunk;	/* in frames */
++       unsigned char reserved[48 - 2 * sizeof(snd_pcm_uframes_t)];
+
+with u32 we can simply change the reserved size to 40, which is anyways
+going to be the case for the snd_pcm_hw_params32{}
+
+> if a device allows a different queue size, it should be configurable
+> via hw_params.
+
+I'm not sure if I follow this statement. the fifo_size is a driver to
+user space information, driver fills it and user space ignores it ;) - I
+cannot find any evidence of it's use.
+
+The init_chunk, step_chunk would be similar, the driver sets it and user
+space would use it.
+
+In SOF this will be dynamic and it will depend on the period size:
+https://github.com/thesofproject/linux/pull/5673/commits/18f3ba5e42212d77019d79ec09b7057a7703d361
+
 -- 
-2.53.0
+Péter
 
