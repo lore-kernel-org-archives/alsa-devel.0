@@ -4,81 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7C6DCC6B00
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2026 06:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 847CFCC6B03
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Apr 2026 07:19:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DC756020B;
-	Thu,  2 Apr 2026 08:47:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DC756020B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32E2A601B6;
+	Thu,  2 Apr 2026 09:19:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32E2A601B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1775112438;
-	bh=x0D0CB/hDBU5zUUlcpmiUTdAXX2QeIl3eurBUo6XjNg=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jwM22TEa3ttfwZQ0HCBcXHxwjFGZ0N4VDKQ4b0x+Oe5x9YQO7a9HUheBpXSRZcNMz
-	 qr9GFuoEId+Vz09Uxr6pJDmMKK0rDILNMrBgwfyA688tPLpjkOI4q4t8MwbGCAws//
-	 RCRSJ/VyzLP8Mox6PAFQjGNJPLwgEDNNm+ADvgss=
+	s=default; t=1775114381;
+	bh=uLlkYedEbTs0yI4v5XAelQqvZg1zucx4gL/A6ZjSWy8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=KebpuKG2WxCDsbCPMaDLpD+jSpOfVpVgPfGREMtANNzVQ6yti6099sDLTzsjssfrt
+	 CsWH2qvY1mzjmkk0qULilTztFfuIUa5qNeD8a9ggb+91opUBA7kbo+rk66AKGtif3S
+	 Dc72Mu6s5bM0syD3v854HSKbIaax+g5b1HicSjaU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25A35F8060F; Thu,  2 Apr 2026 08:46:33 +0200 (CEST)
+	id EB519F805ED; Thu,  2 Apr 2026 09:19:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEA32F80601;
-	Thu,  2 Apr 2026 08:46:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FFD0F805E6;
+	Thu,  2 Apr 2026 09:19:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF25DF80496; Thu,  2 Apr 2026 08:46:20 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	id 60145F80496; Thu,  2 Apr 2026 09:18:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1EBAF8015B
-	for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2026 08:46:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1EBAF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 694A3F8015B
+	for <alsa-devel@alsa-project.org>; Thu,  2 Apr 2026 09:18:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 694A3F8015B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=realtek.com header.i=@realtek.com header.a=rsa-sha256
- header.s=dkim header.b=uOq/KQGg
-X-SpamFilter-By: ArmorX SpamTrap 5.80 with qID 6326k4ZE12623308,
- This message is accepted by code: ctloc85258
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=realtek.com; s=dkim;
-	t=1775112364; bh=9AATBQoZEwYw7ldQ2TrtW1lz1GmMP161409QeTGaU5w=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type;
-	b=uOq/KQGgLVX3Ica82FgvwD+qCBOddlsGjZCe2qQj7h+6ZAbx0jfxN6wHM5mhmFr7l
-	 FRLYYY8O1YBb6Jim4YtigYq+0w/RPgYUkUuOVAmn/k+f30Xq0p6VZ5QNV7HcJwWR3Q
-	 nO3PYSrIFvpim7SHnEedD9rtKd/Asikr90GStnQfA17fm5UE6WMACSj8v1PbDBbXVx
-	 DeoceCPsfILuIFjVAlQSBEBaf5T6eB4FyemQ98rmCm/P9oGG8RPo/Bad6mv0WHSM1Z
-	 AiOMM8lLCdyIQUx2M17FfTIl9OKRECRET6ban79l/m/MOg8I3R2514dqiWnYgVp/Fl
-	 wigD7d5USmgsw==
-Received: from mail.realtek.com (rtkexhmbs04.realtek.com.tw[10.21.1.54])
-	by rtits2.realtek.com.tw (8.15.2/3.26/5.94) with ESMTPS id 6326k4ZE12623308
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 2 Apr 2026 14:46:04 +0800
-Received: from RTKEXHMBS05.realtek.com.tw (10.21.1.55) by
- RTKEXHMBS04.realtek.com.tw (10.21.1.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.10; Thu, 2 Apr 2026 14:46:04 +0800
-Received: from sw-server.localdomain (172.24.54.4) by
- RTKEXHMBS05.realtek.com.tw (10.21.1.55) with Microsoft SMTP Server id
- 15.2.1748.10 via Frontend Transport; Thu, 2 Apr 2026 14:46:04 +0800
-From: <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
-        <oder_chiou@realtek.com>, <shumingf@realtek.com>,
-        <derek.fang@realtek.com>, Jack Yu <jack.yu@realtek.com>
-Subject: [PATCH v2 1/2] ASoC: rt1320-sdw: kcontrol for brown-out feature
- update
-Date: Thu, 2 Apr 2026 14:46:00 +0800
-Message-ID: <20260402064601.1799013-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.53.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Message-ID-Hash: ONI6AOA6J73NBBYK3NQJM4VCBD223MPR
-X-Message-ID-Hash: ONI6AOA6J73NBBYK3NQJM4VCBD223MPR
-X-MailFrom: jack.yu@realtek.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=ae5KY6M9;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZsNRja8g;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=BBgY/lUT;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=o3PSPb4+
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0B0455BD36;
+	Thu,  2 Apr 2026 07:18:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1775114333;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iBD0QMd4C2rTXRwwaObQxnFMaT347UkCxyObmJCrWtY=;
+	b=ae5KY6M9+L7BY/Owo0dbURWVuqGF10X9Z9h81KUU5y+8+hf5xDo87Kyz+NkL0StI9OfvK3
+	ycPCk1duE2GkHlPXdLB4jFBRsnDhkZFlaJMnx+/tHEhfCWqX5mE6xoYAcLGaUto0O2Hu27
+	v5deF8VljnbkLTjkHeXa0/Do08kOuvg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1775114333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iBD0QMd4C2rTXRwwaObQxnFMaT347UkCxyObmJCrWtY=;
+	b=ZsNRja8gLsZn8uYsGhRsXZsqkH+QjqHuRZoWXJMe4K4ImXYeslFQ7DLcX85q0tXHRUMcjQ
+	PVW9Dchsy32iePCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1775114332;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iBD0QMd4C2rTXRwwaObQxnFMaT347UkCxyObmJCrWtY=;
+	b=BBgY/lUTK0zWrQTMliz9yftm2fPSP77ZWKqhsVn3OkZOnK3OuXhZ4yZqDLdPA7k8zmodse
+	Moh/ixvSgkFufGJ64Yfw9bnfMHfwTDohSqHxgfNDbcDF8X7YYZBLpZa7ujhg/TKhDI6elA
+	VELCF6u7IkJUyaYebMCgOMfy/q0fYyY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1775114332;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iBD0QMd4C2rTXRwwaObQxnFMaT347UkCxyObmJCrWtY=;
+	b=o3PSPb4+4XvXSiHAFYxKVcfVDzcy/6JhuL5DJiwIGzSqdKvrfdAk06XV59Rbs3GQ6RA2Td
+	3vXegMxXepYrguCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D9BBD4A0B0;
+	Thu,  2 Apr 2026 07:18:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qKWZM1sYzmkfZAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 02 Apr 2026 07:18:51 +0000
+Date: Thu, 02 Apr 2026 09:18:51 +0200
+Message-ID: <87wlypq17o.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC fixes for v7.0-rc6
+In-Reply-To: <c736ee7c35c9676f3c71335e74d1d157@kernel.org>
+References: <c736ee7c35c9676f3c71335e74d1d157@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,alsa-project.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
+Message-ID-Hash: ZYPH7CXOCBWKHM4W2GNRGDX73DBJLQLU
+X-Message-ID-Hash: ZYPH7CXOCBWKHM4W2GNRGDX73DBJLQLU
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -89,7 +150,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ONI6AOA6J73NBBYK3NQJM4VCBD223MPR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZYPH7CXOCBWKHM4W2GNRGDX73DBJLQLU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,102 +159,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Jack Yu <jack.yu@realtek.com>
+On Wed, 01 Apr 2026 19:24:06 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit 7aaa8047eafd0bd628065b15757d9b48c5f9c07d:
+> 
+>   Linux 7.0-rc6 (2026-03-29 15:40:00 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.0-rc6
+> 
+> for you to fetch changes up to e74c38ef6f170179c0029b5744d6a14dfd543108:
+> 
+>   ASoC: amd: ps: Fix missing leading zeros in subsystem_device SSID log (2026-04-01 13:08:47 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v7.0
+> 
+> Another smallish batch of fixes and quirks, these days it's AMD that is
+> getting all the DMI entries added.  We've got one core fix for a missing
+> list initialisation with auxiliary devices, otherwise it's all fairly
+> small things.
 
-Create a kcontrol to enable or disable brown-out dynamically.
+Pulled now.  Thanks.
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- sound/soc/codecs/rt1320-sdw.c | 42 +++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt1320-sdw.h |  1 +
- 2 files changed, 43 insertions(+)
 
-diff --git a/sound/soc/codecs/rt1320-sdw.c b/sound/soc/codecs/rt1320-sdw.c
-index 8bb7e8497c72..a76d3212d741 100644
---- a/sound/soc/codecs/rt1320-sdw.c
-+++ b/sound/soc/codecs/rt1320-sdw.c
-@@ -577,6 +577,7 @@ static bool rt1320_volatile_register(struct device *dev, unsigned int reg)
- 	case 0xd530:
- 	case 0xd540 ... 0xd541:
- 	case 0xd543:
-+	case 0xdb00 ... 0xdb03:
- 	case 0xdb58 ... 0xdb5f:
- 	case 0xdb60 ... 0xdb63:
- 	case 0xdb68 ... 0xdb69:
-@@ -2486,6 +2487,44 @@ static int rt1320_rae_update_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static int rt1320_brown_out_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt1320_sdw_priv *rt1320 = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	if (!rt1320->hw_init)
-+		return 0;
-+
-+	ret = pm_runtime_resume(component->dev);
-+	if (ret < 0 && ret != -EACCES)
-+		return ret;
-+
-+	rt1320->brown_out = ucontrol->value.integer.value[0];
-+	regcache_cache_bypass(rt1320->regmap, true);
-+
-+	if (rt1320->brown_out == 0)
-+		regmap_write(rt1320->regmap, 0xdb03, 0x00);
-+	else
-+		regmap_write(rt1320->regmap, 0xdb03, 0xf0);
-+
-+	regcache_cache_bypass(rt1320->regmap, false);
-+
-+	return 0;
-+}
-+
-+static int rt1320_brown_out_get(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt1320_sdw_priv *rt1320 = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = rt1320->brown_out;
-+
-+	return 0;
-+}
-+
- static int rt1320_r0_temperature_get(struct snd_kcontrol *kcontrol,
- 				     struct snd_ctl_elem_value *ucontrol)
- {
-@@ -2545,6 +2584,8 @@ static const struct snd_kcontrol_new rt1320_snd_controls[] = {
- 		rt1320_r0_temperature_get, rt1320_r0_temperature_put),
- 	SOC_SINGLE_EXT("RAE Update", SND_SOC_NOPM, 0, 1, 0,
- 		rt1320_rae_update_get, rt1320_rae_update_put),
-+	SOC_SINGLE_EXT("Brown Out Update", SND_SOC_NOPM, 0, 1, 0,
-+		rt1320_brown_out_get, rt1320_brown_out_put),
- };
- 
- static const struct snd_kcontrol_new rt1320_spk_l_dac =
-@@ -2904,6 +2945,7 @@ static int rt1320_sdw_init(struct device *dev, struct regmap *regmap,
- 	rt1320->fu_dapm_mute = true;
- 	rt1320->fu_mixer_mute[0] = rt1320->fu_mixer_mute[1] =
- 		rt1320->fu_mixer_mute[2] = rt1320->fu_mixer_mute[3] = true;
-+	rt1320->brown_out = 1;
- 
- 	INIT_WORK(&rt1320->load_dspfw_work, rt1320_load_dspfw_work);
- 
-diff --git a/sound/soc/codecs/rt1320-sdw.h b/sound/soc/codecs/rt1320-sdw.h
-index 5a9f496dd848..4a1d3fc4c8ee 100644
---- a/sound/soc/codecs/rt1320-sdw.h
-+++ b/sound/soc/codecs/rt1320-sdw.h
-@@ -159,6 +159,7 @@ struct rt1320_sdw_priv {
- 	bool hw_init;
- 	bool first_hw_init;
- 	int version_id;
-+	int brown_out;
- 	unsigned int dev_id;
- 	bool fu_dapm_mute;
- 	bool fu_mixer_mute[4];
--- 
-2.53.0
-
+Takashi
