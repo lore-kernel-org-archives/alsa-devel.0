@@ -4,168 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 371BAE7E37F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2026 12:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9D8EE8536F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2026 14:05:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03FB2601FC;
-	Fri,  3 Apr 2026 14:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03FB2601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37AEB601B5;
+	Fri,  3 Apr 2026 16:05:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37AEB601B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1775218379;
-	bh=EUDHkExOpWqZLMCVAeoxLr/+YU5eJxT5gYMKrJjhQSQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1775225149;
+	bh=WnsRcbM/sreWZdYlzzdKsB6ZuMxjAHje8UZ/F/ACPgo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vF75TIp3wHBplUmpEAEl1fzTL+37hIT84jMbIpt6yE//rtC/wjrx/miV0ceQEp/wB
-	 LDoMIdplqrG9Tq+b2cOAyLI2YvcWCyytyg3K1sqbGmyvagEX7fhwf78pF4RfN+ia/d
-	 O4Hyw+cC2akY5wq5DthuWg+HWd/d9fB17+8TPiX4=
+	b=H9H04ztnzKQQjTsxe3NiJ4I+7CaeqSvrrACn5IVzDqpxmE0KNMK12n1K4M2JqDmFT
+	 oj5EJgonzarHiJuS8pVfk937rkurqGReBxqovJO9ud2J/1PWEZaNHus1PhoJHpNsK1
+	 AKhuJYHB3ZhdrdKi9dU67SnKepDMVyfdilnjs49k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 232C8F805F3; Fri,  3 Apr 2026 14:12:22 +0200 (CEST)
+	id A1272F805F4; Fri,  3 Apr 2026 16:05:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70465F805E8;
-	Fri,  3 Apr 2026 14:12:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66DCFF805EE;
+	Fri,  3 Apr 2026 16:05:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37188F8055B; Fri,  3 Apr 2026 14:12:14 +0200 (CEST)
-Received: from CO1PR03CU002.outbound.protection.outlook.com
- (mail-westus2azon11010046.outbound.protection.outlook.com [52.101.46.46])
+	id 6E21AF8055B; Fri,  3 Apr 2026 16:05:05 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 31A11F800EE
-	for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2026 14:12:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31A11F800EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8318CF8003C
+	for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2026 16:05:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8318CF8003C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=WKbqYFTA
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=fBl6g5DqjmxBXbovz29KD7MTIuywK+ctI19DVTny/f05/qkez7LFO3Bmrdl+1f+EJRz46IIbcwZjgPEUcBErhCJgEgg+1PjQHbDLKV/hh4bdMzaSteeH892gPSBc/A0hl4RZLPaAOG7RaEYD/MNHfJcaOkrBUXq1HFFoW70NZ2WZDYpiah8nfanf/LL0MQdqXu1VasQLI/lRtQ0bFAgtIhkws8dchQ3Up6iE6cLJmqT5xo0NmuNh0cTGrwBWK/iiGYivr6xmxtRwEwK/pJpBjYBuhsi1P/Ipp+fF12M3Dglo6Z8c8C8ZOQ71s8mzyP+eLujo7F05wcCfePtQR5JXdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EUDHkExOpWqZLMCVAeoxLr/+YU5eJxT5gYMKrJjhQSQ=;
- b=rZVOItwIdAgebrzYNJN+Qfk0k++ZeeAlAAiXemv5EjtX6UGOOpah+n1PvOcFiMdgEji2CD5MjONBwBWRh838k1G+k5EP+RO6X7zLksLWGheFLcudUgD/CVR1KRX+t8+tTaKWqXqeYfTdmjnt2rgeexBTAL6f6/ITzHTUjYf3YSK5pdE2yHcBOOIPZAzM2Xhn2wMtIT3V64mZMrUs6VrYezN3+okssn8iPdqUquK//vMzGQj8noJgwVjp2b9AVOU4PpA9ikVNG88slDKGoxIRPUEQ/lfNpEWvYx+w41bemkYDt0ZUR0r2LTddqFbrDk3nQTRUnwmXB8iN4GTcGCzA3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EUDHkExOpWqZLMCVAeoxLr/+YU5eJxT5gYMKrJjhQSQ=;
- b=WKbqYFTAL6PGnUiECOETTDrnYYFK4UleDADaSSYj/cuUqy7fK+NNHqBgnTLoPXqRi0xYyUjAxiSVdk/DkQ4oKcblWIYFdS/z7XkGjVtqSyhnmbLOcsoSH7rMkxrihrR2CC8QK43GNneiYFJvRR5Qe9o8Ikkz5FQGcpDC0iWW1tw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS2PR12MB9567.namprd12.prod.outlook.com (2603:10b6:8:27c::8) by
- SA1PR12MB7270.namprd12.prod.outlook.com (2603:10b6:806:2b9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9769.18; Fri, 3 Apr
- 2026 12:12:05 +0000
-Received: from DS2PR12MB9567.namprd12.prod.outlook.com
- ([fe80::636:1b52:24ca:d7e5]) by DS2PR12MB9567.namprd12.prod.outlook.com
- ([fe80::636:1b52:24ca:d7e5%3]) with mapi id 15.20.9769.017; Fri, 3 Apr 2026
- 12:12:05 +0000
-Message-ID: <f4869b83-664f-438d-b8fb-a0e96da415c7@amd.com>
-Date: Fri, 3 Apr 2026 17:41:55 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ASoC : amd: acp: Update Quirk for Lenovo Platforms
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>,
- Syed Saba Kareem <syed.sabakareem@amd.com>
-Cc: alsa-devel@alsa-project.org,
- Sunil-kumar Dommati <Sunil-kumar.Dommati@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Mark Pearson <mpearson-lenovo@squebb.ca>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Charles Keepax
- <ckeepax@opensource.cirrus.com>, "Mario Limonciello (AMD)"
- <superm1@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
- Hasun Park <hasunpark@gmail.com>,
- Simon Trimmer <simont@opensource.cirrus.com>, Kees Cook <kees@kernel.org>,
- "open list:AMD ASoC DRIVERS" <linux-sound@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20260403100948.678548-1-syed.sabakareem@amd.com>
- <fc7cd530-2199-4c12-af75-6ea17997777c@sirena.org.uk>
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-In-Reply-To: <fc7cd530-2199-4c12-af75-6ea17997777c@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN4P287CA0061.INDP287.PROD.OUTLOOK.COM
- (2603:1096:c01:267::10) To DS2PR12MB9567.namprd12.prod.outlook.com
- (2603:10b6:8:27c::8)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=MlCSWYQY
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id DC4C160121;
+	Fri,  3 Apr 2026 14:04:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DA5FC4CEF7;
+	Fri,  3 Apr 2026 14:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775225099;
+	bh=WnsRcbM/sreWZdYlzzdKsB6ZuMxjAHje8UZ/F/ACPgo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MlCSWYQYY9QIR0b0fCP6xMdJJfu5/VdTH7g2UP5iBanLt5fwna02v7DwwmLE+KlJB
+	 OoYeDFcomg0jwbDBiDMA7U0WdJQ9ST/aYGrsC71aEGTA0S/lnlr324nbSj2o4bGEXp
+	 UHPx8QlHZxydRWON2o6W+0mJLUbh7pzFL9Uf5YBeiWDHuvNkc6GKfSCBSpqAiKvvvv
+	 mSj/Lg0xHi917vtbHdClpdOfILHYNDUfRaypOWN2u53cYgt1CTdD9EviNJxn5F4CU8
+	 TszUrcxftrPZsXw9+gXxYzvWZ9Zr8cjXxYebcoEt1sRmNiXbcrlYx4joW1mV7DpTug
+	 wVlaojl5FtqdA==
+Date: Fri, 3 Apr 2026 15:04:55 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: andriy.shevchenko@linux.intel.com, tiwai@suse.de, 13916275206@139.com,
+	krzk@kernel.org, alsa-devel@alsa-project.org, baojun.xu@ti.com
+Subject: Re: [PATCH v1] ASoC: tas2781: Explicit association of Device, Device
+ Name, and Device ID
+Message-ID: <1ba70e84-49fb-4344-8280-9bf9899e46d7@sirena.org.uk>
+References: <20260403054449.177-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PR12MB9567:EE_|SA1PR12MB7270:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b626616-7dad-4717-b678-08de917a382b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|366016|7416014|376014|1800799024|18002099003|56012099003|22082099003;
-X-Microsoft-Antispam-Message-Info: 
-	xxDIy92yLYpcT4GhrTxRPqsLn+WPYo2HMk42bavH2GouhaJtqXUqSogaoK3SfAopnXzv6TYCmvOvSDo8mccKQmzGSpnVUKzwUHCvKGsVxd350aJAQcQxJkFJztaES355CYOsBmIq7osDXnxjMZsNgBqTLcQXCEuHKRj2mSieOgFVv7uupnC8hxUbAdMkpJl04ElVbSdyk91qiFtlMiAdcZO6EkwC5CGIBfUsVcvPVIOp6K2C5jAaQDWrou+rt2PiC2xWaFi70cjCFesVJnGwUpUcILL1NlbHZAGU1Nzz4nWN2RBNBb/epbG/hFkCaHGZOXw27xAFXKAHlt95nIPtchR13oqLxhhqdCT6lrcUpTuLi2m7yyQ5Syo2NKzdJXWCfLMnustsldUfXgfWKREL/ZTJZ4f9Dj2ltkgkOgolqiOPuO/aokk7GlUfVHuOM13eo/Rs0yh7HbLBbOZ+YCfqcKoCHZ4yKL6NYxoPd2zltvkunIK4XOzkvv2gGfsL3u/9b1Fvvm/xfzvVJY7yFsEGg0XttdUShl9WzOTDpXMri/leHP0mutlXFZfBGT4kGaKV6y5k2vcwiHyMUJ+Pcdc8mk3RsdeBWSv12m/+UHFKRO0KtkXdrW0JCoVP6bqJnrwJsX7GxyU/HjdaEXsGkEiIxq43qFEFFQUt+oIfwip+4ZNaTzhAkNfuE/ia8ownQjJYTwkoE16HCRjB6A1YK1gwyqYWD4gu9KmXelRLPptZGi8=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS2PR12MB9567.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(18002099003)(56012099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?MWNBK0ZRVmVnQ2c4SUdmcENCWFRqeUJDR3M0WFowcVZqM0JDUStTL0pqYXJB?=
- =?utf-8?B?NzQ2RlZ4ZmRDVFlYUWFGYVVqQ3pra05TSHU4YytOeDZwSWswUjBpWlpVeVZj?=
- =?utf-8?B?WlVCNHpQaS9JbzNxUkdNcHRqSGdDemJNLzNtUTdtb05wZkphNnRFWkFjcmY1?=
- =?utf-8?B?cXdTbHNNb3dmWGE1RlU3dUpEMUlkN3NFWFN2bWNBcXNQemxhVzlsMFIwbGFa?=
- =?utf-8?B?MFdoUE92aDdxTW52WVhhaU1rYkUwaEhBcTUyQWkwRFRRSDc0WndNR0hiTEJ5?=
- =?utf-8?B?N0RlZDc4eEhEUVIreHBoYlUyTm9HZXpScWYyWWwvbXFJaldNYVhtMGFMU2JF?=
- =?utf-8?B?eDV2TUduOVk0UVV2YThubVJZVTB6MUdxazZaOFFUNmY4NTVaM3pxU0V3Ty9N?=
- =?utf-8?B?L1dsaExnbEttcXo2ckpNYVVxR3l4bnF2aHRxS0xEMGt1S1FZcUViVUJCVC9n?=
- =?utf-8?B?OFZHTUQxOUZiN2xNTzNOYW9sMWFNWDVIRU9lRjhTemxHYVRxVFcrYmRKOXhM?=
- =?utf-8?B?ZnRJc1ErRmFMUkpSQlhXOUNWWFU3NmJPV1hMeHRMYXNIUys0TDBOSTR4cVlW?=
- =?utf-8?B?OStaMFZqLyttUGpPYVo2WW1TY3UwMGxleWFudzZVZ00yUXhndjhHRWpkNGxu?=
- =?utf-8?B?VjlHSVZZejBEaU5oRnZPaGpUM0hod1Z4d2xKZ2duM2tXbW9XYm9QdjFEUFlS?=
- =?utf-8?B?bzZ3OXJmY3dPQ05xWDlZZk1jVjhmK3V1TmM4SnV1b2J3ZnRQSFZRT2hDNHFn?=
- =?utf-8?B?N2FwdDFjenpUYzhmaHkvSVJpK2pWNTBYemVuUmJYazVDS2NMalUyalEvK2o5?=
- =?utf-8?B?R0JjbHEvbkxVckFRTytTZ3o3TWNOK1h1VStMV0RNa1p4dm1PQWRyL0VaY0pL?=
- =?utf-8?B?dE1hTVROb3NLWnhKazdvcGxzTWxyQXg4MllaNmJTT2Y0RE1nSlFSeDV6eHgx?=
- =?utf-8?B?Si8zeDN2UXJiaFh2MVRnOWZwd1RmVVFJck9UQ2dlUGxrUTUvcXBMYTZxQXpo?=
- =?utf-8?B?THRXQTBDUmtIdzkybW9uT2VxUGRkaEg4ZldQa3RrTGpiNkdDbjgwOStvV0sy?=
- =?utf-8?B?NE9McGFrNWU1dnB4ZzdmTnYxeTNYYXZnTDkrU2liUzJ3RlR3dEszUDhvdjFz?=
- =?utf-8?B?VjBWcVptT09hSVJLY1NLR2tYRld5bzdJSEpoMHkvWTI0R0w5UHI2SkdhUTda?=
- =?utf-8?B?YXVOZXlVNnI3eEk0MkhUUGFuQm9iRDU5K0ZWR0V5MDhKQkZURmgrTXY3WVlh?=
- =?utf-8?B?VmtkZTVTUm9UQ2xwM213UzNwbERuSlY2QkVxd2hJMDhuenFCTnA5VllQVElO?=
- =?utf-8?B?Zlc5OEd3NlJvTElXVXZtZEJmWWpKTjRXQzYvRzRGUnlsWldGZmFLbncwOEZs?=
- =?utf-8?B?ZkdZcnU1K1p3S3dxcEtUUWlmYWErazJNcmM2S3UySk1wb1RnYlZGWnExaW1H?=
- =?utf-8?B?dk9IOWhLYVhZYmM2REdBRE96enJaYVNXWlJWZktkbU0wdVlhQ2JiWllqOGxG?=
- =?utf-8?B?RUNjekFIU2laMDhqcmk0OEp1SGVTdWZTYlF4dUdXZkFpVnNhODEyUUJmK1Jv?=
- =?utf-8?B?RmlJNmx1bVpISDVsTkszUjdueHVZbnJkcERZWDhKNXRoRDNSYk9hdjNaSkJG?=
- =?utf-8?B?dzNIaG9vKzNwTCs2YzRhWFdaWG4wY1RTSW5udERYZ2xvQXRRak9kckV0SHVw?=
- =?utf-8?B?WUpqek9jdy83cEJXSXRsQ2pHVGlmMUtyanRTUmh3TkRieTIzVHFHRnhkK1NI?=
- =?utf-8?B?RGJEK2kxTlBUVWp4dFp2d2tnSGVHem5NbUt6WVFucmhJQVFHRDVxTDRqQXFQ?=
- =?utf-8?B?MFdwM1drak5TZ1FyTWJTeFFBU1ZGNlVQZGllU0tUOGtpaTFDUjhUVHMwUVhM?=
- =?utf-8?B?azJpZUxKeGlxYUJzR2dSbmh5MFJ3RUJNRzFXenNjcFd2V081RThJWE5DSkkr?=
- =?utf-8?B?bEdZTE5HaEQzSk9sV0ZrRFNWeEJ1R2E5Rno0Ukd6R0xGaFYzZUdVdUdsZzhE?=
- =?utf-8?B?VVFhaHhmcEI5L3JzYlkzWTM5M291S0I4NDJ3djl0NElsMDZHaEZYdUZqT3Rw?=
- =?utf-8?B?QmxuUzJWYUUxNlNLU2R5NHo0SjlqS29zVWNkTVl4VTNhc1IrQVdRWEdhK0hr?=
- =?utf-8?B?dW1FYithbzk5bUlaUlJkbVJ2eFR0ZVBzK1NRaUJmcG9PZmRRVDNsWjY2VDZD?=
- =?utf-8?B?MHRkcFk5RmtFQnlBTEZDWHZacCtKVGMwMlN2RzNSdW5naEtwV0wwUSt5M0Iv?=
- =?utf-8?B?MUI3S0QvMDR6RnROTkJ0NTNhdjc1cGMrK3NvRmJSUlJIY1p1SkRRdTA5Nzhn?=
- =?utf-8?B?SkRiNmR6azFiamhJRm5hS1FWbVpMY1ZCcWd5VHl1ZC9FNjJRcG4rdz09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 4b626616-7dad-4717-b678-08de917a382b
-X-MS-Exchange-CrossTenant-AuthSource: DS2PR12MB9567.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2026 12:12:04.9526
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- xmRJjOEjXIJYShFddO3SMuI2nD7kjePCQD2jTqhyHgQ9mxhvuSEr5ToHLHEy8kYGGf551NmC6ANdo5iVO7/uGw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7270
-Message-ID-Hash: 2ONQEKU35D2ZQA4S7ZMORI6TNBXR6TIL
-X-Message-ID-Hash: 2ONQEKU35D2ZQA4S7ZMORI6TNBXR6TIL
-X-MailFrom: Vijendar.Mukunda@amd.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bYrSaA0RwwDf3lrE"
+Content-Disposition: inline
+In-Reply-To: <20260403054449.177-1-shenghao-ding@ti.com>
+X-Cookie: The Korean War must have been fun.
+Message-ID-Hash: SC2XHSKKKSFLU7AYLYT6IRMOQFLIYQAF
+X-Message-ID-Hash: SC2XHSKKKSFLU7AYLYT6IRMOQFLIYQAF
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -176,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2ONQEKU35D2ZQA4S7ZMORI6TNBXR6TIL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SC2XHSKKKSFLU7AYLYT6IRMOQFLIYQAF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -185,11 +93,184 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 03/04/26 17:25, Mark Brown wrote:
-> On Fri, Apr 03, 2026 at 03:39:38PM +0530, Syed Saba Kareem wrote:
->> Use DMI_MATCH instead of DMI_EXACT_MATCH for the Lenovo SKU,
->> So the quirk is applied to all variants of this model.
-> I only have patch 1 here, what's the story with the rest of the thread?
-Kareem supposed to send single patch only. By mistake, he mentioned
-PATCH 1/2
 
+--bYrSaA0RwwDf3lrE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 03, 2026 at 01:44:49PM +0800, Shenghao Ding wrote:
+> By correlating devices with their names and IDs, the driver becomes more
+> discoverable.
+
+This breaks an x86_64 allmodconfig build:
+
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2088:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2088 |         { "TXNW2020", &tasdevice_id[TAS2020] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2088:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[0].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2089:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2089 |         { "TXNW2118", &tasdevice_id[TAS2118] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2089:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[1].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2090:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2090 |         { "TXNW2120", &tasdevice_id[TAS2120] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2090:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[2].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2091:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2091 |         { "TXNW2320", &tasdevice_id[TAS2320] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2091:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[3].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2092:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2092 |         { "TXNW2563", &tasdevice_id[TAS2563] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2092:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[4].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2093:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2093 |         { "TXNW2568", &tasdevice_id[TAS2568] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2093:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[5].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2094:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2094 |         { "TXNW2570", &tasdevice_id[TAS2570] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2094:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[6].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2095:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2095 |         { "TXNW2572", &tasdevice_id[TAS2572] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2095:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[7].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2096:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2096 |         { "TXNW2574", &tasdevice_id[TAS2574] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2096:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[8].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2097:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2097 |         { "TXNW2781", &tasdevice_id[TAS2781] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2097:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[9].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2098:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2098 |         { "TXNW5802", &tasdevice_id[TAS5802] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2098:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[10].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2099:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2099 |         { "TXNW806M", &tasdevice_id[TAS5806M] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2099:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[11].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2100:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2100 |         { "TXNW806D", &tasdevice_id[TAS5806MD] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2100:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[12].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2101:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2101 |         { "TXNW5815", &tasdevice_id[TAS5815] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2101:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[13].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2102:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2102 |         { "TXNW5822", &tasdevice_id[TAS5822] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2102:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[14].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2103:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2103 |         { "TXNW5825", &tasdevice_id[TAS5825] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2103:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[15].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2104:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2104 |         { "TXNW5827", &tasdevice_id[TAS5827] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2104:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[16].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2105:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2105 |         { "TXNW5828", &tasdevice_id[TAS5828] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2105:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[17].driver_data=E2=80=99)
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2106:23: error: initializ=
+ation of =E2=80=98long unsigned int=E2=80=99 from =E2=80=98const struct i2c=
+_device_id *=E2=80=99 makes integer from pointer without a cast [-Wint-conv=
+ersion]
+ 2106 |         { "TXNW5830", &tasdevice_id[TAS5830] },
+      |                       ^
+/build/stage/linux/sound/soc/codecs/tas2781-i2c.c:2106:23: note: (near init=
+ialization for =E2=80=98tasdevice_acpi_match[18].driver_data=E2=80=99)
+
+--bYrSaA0RwwDf3lrE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmnPyQYACgkQJNaLcl1U
+h9A+Zwf+Il2meUwPFKhNpiH2pJeaZ2OFqlVUsGBdu202vnVfiDGzAm8ypyo+OpPM
+vHKliGz932UzwYr5a30Tqr2mh8upVvf8RUD1g7l56vLMRloS8Q+8JxA1iZb3KZi6
+FKIemCwpxVm2iqXggpNQf+uhNBS80h3k+UYDMIiiizy4Wl2fqGG/WxFbMDJDhcYG
+I1zrlVSoK8KK1WQFr4i/FB7r1nr68scyGDthALe8D2RRgaq9G+ZiqjBVftKvmrn5
+94wPniCKMKVVr8dvNf4EyiinMGO/rweV/wu/0oHYXFCv1wfeh/g6JMgPPHBX7+ZE
+i7zSMUGACbPMrYvrzApg54hu2u4o4w==
+=Nyyb
+-----END PGP SIGNATURE-----
+
+--bYrSaA0RwwDf3lrE--
