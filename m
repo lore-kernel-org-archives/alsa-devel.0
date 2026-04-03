@@ -4,85 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 101CCE85381
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2026 16:54:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A07E85368
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Apr 2026 20:08:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D47B6020D;
-	Fri,  3 Apr 2026 18:54:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D47B6020D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE804601F8;
+	Fri,  3 Apr 2026 22:08:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE804601F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1775235259;
-	bh=RQc3P5T8cbMkD2rpTxlnEB7bvYhglR3HFw8zfjwCBZ0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=jO/NkzDcqIl36icxcsHZALFNRUu+p/VNqsXITOglfRIPrEPmSCnatKKxOQm1IS7Ak
-	 h4oG881I9EFpvYQ+/aExzq6cLmYHKlFSsVdAI1SSdQEotQdtEQjTwuzjt1FzYc95Jr
-	 ldgv5agw9zMECv5MIGQOokwtRWMlRiMAO/vBSoYA=
+	s=default; t=1775246912;
+	bh=ehgci3nVxAkBJd45BL0t2Os4O056afqgyzLA1A/sNx8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=uyl69E20eUsjfLej7B+YvsmVYQlCZ0zSYN17OvjARPGq07ml6Y+RcUaNotG9tZJrs
+	 xPU/wxMPCN0ybKswnDQCgCj6phBz47fo6w6/3uFcfmq6LQq6S0gLBODzh+jVCkDU0t
+	 5mGUWceNXQhZlbCNsQrkfIlavTfYq257Y2dd4XrQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E94EF80600; Fri,  3 Apr 2026 18:53:35 +0200 (CEST)
+	id 9B3A1F805EA; Fri,  3 Apr 2026 22:07:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 118E9F80610;
-	Fri,  3 Apr 2026 18:53:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E255F805E3;
+	Fri,  3 Apr 2026 22:07:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D738F8055B; Fri,  3 Apr 2026 18:53:26 +0200 (CEST)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F01ACF800EE
-	for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2026 18:53:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F01ACF800EE
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rzH0Mi+F
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id BFC42433AB;
-	Fri,  3 Apr 2026 16:53:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4691DC2BCB1;
-	Fri,  3 Apr 2026 16:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775235202;
-	bh=RQc3P5T8cbMkD2rpTxlnEB7bvYhglR3HFw8zfjwCBZ0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=rzH0Mi+FbDS+5XAPc/d4hehMhAypPZOAmFokbgrvueZbwuJSdYxtBaZX2fGw6Cc1i
-	 9sLr3qzwTbhzHlfYbDhZgljvaR52cN2t7NMHGItCoFX5aP0RdhnGl5O6uZu5T7bak3
-	 2rXlbs8V8DlOGkODwRBKktvYj/zRUpaPruhikCEZOnTHrO8vIihsQ8W0lhspQpYYTp
-	 da7z1M8B0Y9Eyx2rgxofu79HMAfm0xR5JZvpFXfRSqmi4wEsQVBVNCkvURjO/83zlO
-	 UEANrni/Z5K4ft9FaKnM104ci/t+xG/SVH/6SHPnxpu1wveE8O0fZKisEhlKDRH5IF
-	 dZZVJ+sg90raQ==
-From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>
-Cc: andriy.shevchenko@linux.intel.com, tiwai@suse.de, 13916275206@139.com,
- krzk@kernel.org, alsa-devel@alsa-project.org, baojun.xu@ti.com
-In-Reply-To: <20260403054449.177-1-shenghao-ding@ti.com>
-References: <20260403054449.177-1-shenghao-ding@ti.com>
-Subject: Re: [PATCH v1] ASoC: tas2781: Explicit association of Device,
- Device Name, and Device ID
-Message-Id: <177522045575.52946.11290216468644376814.b4-ty@b4>
-Date: Fri, 03 Apr 2026 13:47:35 +0100
+	id D202DF8055B; Fri,  3 Apr 2026 22:07:47 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B47AF8003C
+	for <alsa-devel@alsa-project.org>; Fri,  3 Apr 2026 22:07:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B47AF8003C
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.16-dev-67696
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1165; i=broonie@kernel.org;
- h=from:subject:message-id; bh=RQc3P5T8cbMkD2rpTxlnEB7bvYhglR3HFw8zfjwCBZ0=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBpz/CAjQV4XjACumE64bwPTtO678UQ22eB9uwkB
- inH6QknW5CJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCac/wgAAKCRAk1otyXVSH
- 0DkLB/9T6nCmK12WNjNBfCXX+dcid9UtVTmG83FiCALDe3jk16ltaO6VLIRfJfZ/ora7O5kGaKr
- 5ar4j3dkk7bZmk4zUX6t+88u1h1plvMtATVjEDGRn/0dsUMiMvWZwhfJgR5JQSfesws/isGixb/
- XgdYIpXMtFlv1qEjId2Nz2BrKAgaWTROd7EVL3tiz6CcG2MqV6AuIoA0Y8ysOebqvk/yrk042E1
- bSZQLuATAXz3E8Eqjkp2Mp+CGqzMlTYbV9szxkW4PakQQmywpTyps4Emo3TTbM+1LRgeS+dW1on
- qkto3BUFQ5anqvpHhnptDjuKI1n15fMLSvM9N+uUKeUUlRLV
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: EFCKDFR7C7OT2YKMEA2OPF6FACYQV2B5
-X-Message-ID-Hash: EFCKDFR7C7OT2YKMEA2OPF6FACYQV2B5
-X-MailFrom: broonie@kernel.org
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18a2f19e23921b00-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/737@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/737@alsa-project.org>
+Subject: ucm2 USB-Audio: add RME Fireface 802 (CC+USB mode) and UFX III,
+ fix typos in existing UCX/UCX-II
+Date: Fri,  3 Apr 2026 22:07:47 +0200 (CEST)
+Message-ID-Hash: WHID2XMZ3P7HFB5G6SDXCIUI3CE3QVAU
+X-Message-ID-Hash: WHID2XMZ3P7HFB5G6SDXCIUI3CE3QVAU
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -93,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EFCKDFR7C7OT2YKMEA2OPF6FACYQV2B5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WHID2XMZ3P7HFB5G6SDXCIUI3CE3QVAU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,34 +67,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 03 Apr 2026 13:44:49 +0800, Shenghao Ding wrote:
-> ASoC: tas2781: Explicit association of Device, Device Name, and Device ID
+alsa-project/alsa-ucm-conf pull request #737 was opened from huddx01:
 
-Applied to
+Adds UCM profiles for RME Fireface 802 and UFX III devices and fixes a pre-existing bug in the existing UCX/UCX-II profiles.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.1
+New devices:
+- Fireface 802 CC mode (0424:3fdd, 22ch) - tested on Debian Trixie
+- Fireface 802 USB/driver mode (2a39:3fcd, 30ch) - tested, but my driver/module not yet stable enough for upstream submission
+- Fireface UFX III CC mode (2a39:3fde, 94ch) - tested on Debian Trixie
 
-Thanks!
+Additional Bug fixes - I noticed while looking at the RME dir:
+- Fireface-UCX-HiFi.conf: 9 occurrences of PlackbackPriority -> PlaybackPriority
+- Fireface-UCX-II-HiFi.conf: 10 occurrences of PlackbackPriority -> PlaybackPriority,
+  typo "AES3 XLR Ouptut" -> "AES3 XLR Output" (transposed letters)
 
-[1/1] ASoC: tas2781: Explicit association of Device, Device Name, and Device ID
-      https://git.kernel.org/broonie/sound/c/78c59297280b
+Channel layout sources:
+- CC mode channel count verified via /proc/asound/card*/stream0
+- USB mode channel layout derived from Wireshark USB captures, see:
+  https://github.com/huddx01/oscmix/wiki/Fireface-802
+  https://github.com/huddx01/oscmix/wiki/Fireface-UFX-III
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+alsa-info output for Fireface 802 CC mode attached below.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+[alsa-info.txt](https://github.com/user-attachments/files/26470990/alsa-info.txt)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/737
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/737.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
