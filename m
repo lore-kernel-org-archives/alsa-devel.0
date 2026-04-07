@@ -4,127 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0281F46C69
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Apr 2026 18:14:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97118FB5188
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Apr 2026 03:50:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 930FD601F4;
-	Mon,  6 Apr 2026 20:14:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 930FD601F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54A67601F3;
+	Tue,  7 Apr 2026 05:50:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54A67601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1775499279;
-	bh=Q1SXMtCjU3iBl5tv70DL7BY1NnM6cZpDZtmE+SIaxdo=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Om6vxJhJUn/lZmAGN3FfnNDDw/jms5/8ZtpQV5be7YOpLr9rre3hNJvgPxIBGctxj
-	 37JUstysW0RPm7PQ1LG3eMGlJTdu9HtKPJAqXNhfnJjIzvBEqAZHy0906LefqPt44K
-	 n5iH/mighGQpvrNEUzOJCwik0GzH7UJvNF4jzbJM=
+	s=default; t=1775533819;
+	bh=+5HZ7TMl4EDAq605473bjPsWC0R84LH6CxKoqbebHUY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RwjKn/inroRRz26OqnT7mFUONV78K7857fAme1w190i2y+Eww0fBcXnHEf/xmFBHj
+	 pSxyx//7tjlSsgDSc1AV1eQVi2dpfy0585SbugZSFl38Sv23Fgx1BlP+lK4yEdWLsW
+	 jRt23IHHu1pWK59/+RKnn8W+sb4iiB+AbJEawpfE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60238F805F2; Mon,  6 Apr 2026 20:14:07 +0200 (CEST)
+	id 223E5F805F4; Tue,  7 Apr 2026 05:49:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06358F805EB;
-	Mon,  6 Apr 2026 20:14:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6498F805F3;
+	Tue,  7 Apr 2026 05:49:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1CE2CF8049C; Mon,  6 Apr 2026 20:13:57 +0200 (CEST)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com
- [209.85.208.173])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9CE6BF80548; Tue,  7 Apr 2026 05:49:32 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4C634F80212
-	for <alsa-devel@alsa-project.org>; Mon,  6 Apr 2026 20:13:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C634F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 02A6BF80154
+	for <alsa-devel@alsa-project.org>; Tue,  7 Apr 2026 05:49:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02A6BF80154
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=CHhqOpEM
-Received: by mail-lj1-f173.google.com with SMTP id
- 38308e7fff4ca-38ded5277e5so13635141fa.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 06 Apr 2026 11:13:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1775499234; cv=none;
-        d=google.com; s=arc-20240605;
-        b=U14h3UMas1U5AwHe24AC4Q/JHa/ECpx2Awt+4jOM61rmC/DtbfqAly7jlsSuJXGbDJ
-         7Kt43N0r1gazCbzeViByR6pHareSZC+OfC4JSbZxVt5N70RdqjV67YRyrBcYXfmlekat
-         ienrO3NodULv4F1hrA6CovsWKsIRTLGiPKLaRte0j9YTnOKixtXet4yjgjebtJdcSSmb
-         0COjLr8y89bBijucARMhM1TlLShrgxQokaardaiKKlKNqoPYXR4m/NPCfXU8FOEQ967+
-         wPcaM/b1gxGJth2qWJr8aSzlw2iWkk+2vB66eNznC1WdbOEklFWnzoeVfNQ6nMEXhhJJ
-         35NA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=CoRq9FoVhv5ztwxa/B4XF+4Lu8o1r/U1vo1GnUcamHU=;
-        fh=s1h8N4U4ASgl2diPi2yKjEmsLSTuwbZjYBDYrAXLUvw=;
-        b=eySiSfL1ZXlVHpECxKhKRRulACrOKjjN/MDt5JjMxnjJ+UxLn4P7hGGwa2Pzm4SjUO
-         BAhC+kVhnikC7vUoEhplk5B1D4/IG4DsvMdSMvIvtKMvc/vwKM+KvOF7pRzBEVbvr6kH
-         LVa81Sk2hTH8lsvebNX9KTQ+FSiiOegiW8WKngmJQSgceKcN2u1C7vUD8MRrPFXilrly
-         GF72Q5y1kBAU+41PjwSttVDgaQKEFoSu/wZlfRii7ZK+MYfnjc6qRptL7n4Ty18kk5ac
-         Ubk23++O/Tf5sYT3OBuRX81MIynbIevQz5ff8wc7rCbPG1wNQm6SiQqHBUNgxNFXtuna
-         /a+Q==;
-        darn=alsa-project.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775499234; x=1776104034;
- darn=alsa-project.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CoRq9FoVhv5ztwxa/B4XF+4Lu8o1r/U1vo1GnUcamHU=;
-        b=CHhqOpEMuar9kWGtoEO06sDHNSGLOF30RFE0cKlmQAFbQcKkwW7MsBGQgVXHd5Hu3s
-         xLb4nkHCFXhO40VTL+qb/yKXCq8rGHuZtecMrjF3tMd7jDSe5VwgfKMEgb3xwNIW7g4m
-         m0SvVrZl/0IXn0Xcz3fGe7+fHzHclLQxPdQVWoW0xBUtABW/rudiaHjAA+7MUUySBw5f
-         Z6LpTSOecnJ1DSd7qr1rGqRcAYlxtcYwDNrHsz6IIOtZIeQOxWLvkBRGsgTCd7VtC55C
-         w5ISk32Nb63Fym9c5XsNvvFD7OrVPd3CB6mBUgpug+PZGgjzz/Z0H2gKAawqNMjhJP3S
-         wDvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775499234; x=1776104034;
-        h=to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CoRq9FoVhv5ztwxa/B4XF+4Lu8o1r/U1vo1GnUcamHU=;
-        b=jJuBSu+ZgDnwEZAge6xrYrP3gehJ2DIq31uxhu0Rzn5ndz1ZvhkpYd3Al62sW1iqnm
-         rkUkjRb3HOqJZdv7DQAa1YhiRRn6MPV1jLtXBggIUe17uRZrmIsXd3BGP1Gtwaqbbvfh
-         3sBKgtV8Wr5SIBh4EI3y9Axhg+MoaqIQO+BT+wAsaMB92HrSmFBqlK8zQccdA898q+vV
-         n24niCqXBnvyR/K2ln1L69wifhSvMi564+v3620uyRYPZfTnFo5WeLbbZWfSh0agl5C0
-         34GDhJDxijae7oY1lonxdrXeXzC1eJxOND02omYBjLDOSEcXQfEQVkDuhkOxfwuvjo2a
-         kx8g==
-X-Gm-Message-State: AOJu0Yy7a3STmCGC4CiV58nWe6v1rIYE7eamfo4PVol4C/LHVixiQ9Xv
-	3mJQvma+lmZaARy8X9Lk+D0nJd/3fNz5EQXMMoxB2OhQilFgkUgA8lwagj/Tn7uvufoiURyvW2g
-	FHER9k08DwTJ4motYwHVNXa1NjscMKliR9Z/m/0w=
-X-Gm-Gg: AeBDietUchdBzIC9saH+HLlS5geOSQvomNvLuk3uXanc+LTnOsKyv9V5HmWKX85lTP/
-	zzRzBx3+Mykzn+GJdnFEArY35G3/HXNDaPHWtgO1nYrwEknLYnEbLAQjU5f8hmipCbCwowbcsXY
-	EyOpoO4AqGmK0k++vYCYNgzuowCrqwVIIfMhM1tQMm1bKcmdvTMQk3PxA4h7pKrsLHz1q52nzCI
-	7Khy2MzznSg+WCBSiHN1u2vUUhlhnK/8aw+WbA0Eq1DuveTWoYHpSxoz+i/kpmvpvYo0UBN/PMq
-	uwVNuJlEpA==
-X-Received: by 2002:a05:651c:f17:b0:38a:5f1e:5a27 with SMTP id
- 38308e7fff4ca-38d8d1d8622mr40553021fa.0.1775499233658; Mon, 06 Apr 2026
- 11:13:53 -0700 (PDT)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=H5UFzMRK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1775533769; x=1807069769;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+5HZ7TMl4EDAq605473bjPsWC0R84LH6CxKoqbebHUY=;
+  b=H5UFzMRK+tOkAueoPjPzr6UmtTf43jNjrT1l2AgDd+siv0pkMOtTCCUo
+   pn+VpqP21iVSmh/hqSN1592IaBiIaJYjFYKnLbunMGOnJBD4XoccChWE7
+   /2tOWdWWke/2deFECfYFnJ8Bh/XLJAN863fh2Cg7w4QWUhcyQkyeGmABK
+   PrdTlidBfPugAsW8pDe8NIyvLEi5MSyfIXwKJN50OYx6CZk71TzkuKCBs
+   a7Z/wjyfY/gMrDO4kS+OMlmvPC6n0Ln2ScMJ/PDV73RRR3PvgxPYeVjiC
+   AMJ9EaMdjL/a2Hazyd6Qwd69myMFa8S8xf+Zm4HOpY2zZFLSndafcU5Jj
+   Q==;
+X-CSE-ConnectionGUID: iRW3GIKsTt26mPXHzYzmxg==
+X-CSE-MsgGUID: 4FM1QyGQQqOR/KDIgg4wXA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11751"; a="76385885"
+X-IronPort-AV: E=Sophos;i="6.23,164,1770624000";
+   d="scan'208";a="76385885"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Apr 2026 20:49:23 -0700
+X-CSE-ConnectionGUID: 4YU8LARNSZWr6aZDrz6klA==
+X-CSE-MsgGUID: KgbdcOD2TJa96Sgiur4ZhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,164,1770624000";
+   d="scan'208";a="251191872"
+Received: from lkp-server01.sh.intel.com (HELO d00eb8a6782a) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 06 Apr 2026 20:49:20 -0700
+Received: from kbuild by d00eb8a6782a with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1w9xRG-0000000001D-0Rux;
+	Tue, 07 Apr 2026 03:49:18 +0000
+Date: Tue, 7 Apr 2026 11:48:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: jack.yu@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org,
+	lars@metafoo.de, flove@realtek.com, oder_chiou@realtek.com,
+	shumingf@realtek.com, derek.fang@realtek.com,
+	Jack Yu <jack.yu@realtek.com>
+Subject: Re: [PATCH] ASoC: rt1320-sdw: kcontrol for brown-out feature switch
+Message-ID: <202604032240.PeKldNcG-lkp@intel.com>
+References: <20260401093107.632673-1-jack.yu@realtek.com>
 MIME-Version: 1.0
-From: Kumar S <nishantsingh2jan1998@gmail.com>
-Date: Mon, 6 Apr 2026 23:43:40 +0530
-X-Gm-Features: AQROBzAgZxjUfFxPxUc6coXB7TEIstybl_hJSQyKWv1_OQSeGwe2StNj4dOQtw8
-Message-ID: 
- <CAPPx52yV5mpXZp88FRw=P_V6eiejFvYJohyJ-RUqFSRzKen8dw@mail.gmail.com>
-Subject: [PATCH] aplay: use snprintf instead of sprintf in device_list()
-To: alsa-devel@alsa-project.org
-Message-ID-Hash: OIK4ATAS52GTRZPT7LL24BOHWC5D4FL5
-X-Message-ID-Hash: OIK4ATAS52GTRZPT7LL24BOHWC5D4FL5
-X-MailFrom: nishantsingh2jan1998@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260401093107.632673-1-jack.yu@realtek.com>
+Message-ID-Hash: W3IGJYB4KVYMZRKVG5NBBSZUWUV5MD6G
+X-Message-ID-Hash: W3IGJYB4KVYMZRKVG5NBBSZUWUV5MD6G
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
  nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
  news-moderation; no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OIK4ATAS52GTRZPT7LL24BOHWC5D4FL5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W3IGJYB4KVYMZRKVG5NBBSZUWUV5MD6G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,29 +107,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGVsbG8sDQoNClRoaXMgcGF0Y2ggcmVwbGFjZXMgc3ByaW50ZigpIHdpdGggc25wcmludGYoKSB3
-aGVuIGNvbnN0cnVjdGluZyB0aGUgQUxTQQ0KY29udHJvbCBkZXZpY2UgbmFtZSBzdHJpbmcgdG8g
-cHJldmVudCBwb3RlbnRpYWwgYnVmZmVyIG92ZXJmbG93LiBVc2luZw0Kc2l6ZW9mKG5hbWUpIGVu
-c3VyZXMgdGhlIHdyaXRlIHN0YXlzIHdpdGhpbiBib3VuZHMuDQoNClNpZ25lZC1vZmYtYnk6IE5p
-c2hhbnQgS3VtYXIgU2luZ2ggPG5pc2hhbnRzaW5naDJqYW4xOTk4QGdtYWlsLmNvbT4NCg0KRnJv
-bSA0ZWU3NTU1YzYyNjBjZjliOTY2YTA0MTM0ZWZkZmNjNjdiOTlmZTY0IE1vbiBTZXAgMTcgMDA6
-MDA6MDAgMjAwMQ0KRnJvbTogTmlzaGFudCBLdW1hciBTaW5naCA8bmlzaGFudHNpbmdoMmphbjE5
-OThAZ21haWwuY29tPg0KRGF0ZTogRnJpLCAyNyBNYXIgMjAyNiAwMzo1NjoxMCArMDAwMA0KU3Vi
-amVjdDogW1BBVENIXSBhcGxheTogdXNlIHNucHJpbnRmIGluc3RlYWQgb2Ygc3ByaW50ZiBpbiBk
-ZXZpY2VfbGlzdCgpDQoNCnNwcmludGYoKSBkb2VzIG5vdCBwZXJmb3JtIGJvdW5kcyBjaGVja2lu
-ZyB3aGVuIHdyaXRpbmcgdG8gdGhlIG5hbWUNCmJ1ZmZlci4gUmVwbGFjZSBpdCB3aXRoIHNucHJp
-bnRmKCkgdXNpbmcgc2l6ZW9mKG5hbWUpIHRvIGVuc3VyZSB0aGUNCndyaXRlIHN0YXlzIHdpdGhp
-biB0aGUgYWxsb2NhdGVkIGJ1ZmZlciBhbmQgcHJldmVudCBhIHBvdGVudGlhbCBidWZmZXINCm92
-ZXJmbG93Lg0KDQpTaWduZWQtb2ZmLWJ5OiBOaXNoYW50IEt1bWFyIFNpbmdoIDxuaXNoYW50c2lu
-Z2gyamFuMTk5OEBnbWFpbC5jb20+DQotLS0NCiBhcGxheS9hcGxheS5jIHwgMiArLQ0KIDEgZmls
-ZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEv
-YXBsYXkvYXBsYXkuYyBiL2FwbGF5L2FwbGF5LmMNCmluZGV4IDAwNTAwMzIuLjc0ZWM5NDcgMTAw
-NjQ0DQotLS0gYS9hcGxheS9hcGxheS5jDQorKysgYi9hcGxheS9hcGxheS5jDQpAQCAtMjgzLDcg
-KzI4Myw3IEBAIHN0YXRpYyB2b2lkIGRldmljZV9saXN0KHZvaWQpDQogICAgICAgICAgICAgICBz
-bmRfcGNtX3N0cmVhbV9uYW1lKHN0cmVhbSkpOw0KICAgICAgIHdoaWxlIChjYXJkID49IDApIHsN
-CiAgICAgICAgICAgICAgIGNoYXIgbmFtZVszMl07DQotICAgICAgICAgICAgICBzcHJpbnRmKG5h
-bWUsICJodzolZCIsIGNhcmQpOw0KKyAgICAgICAgICAgICAgc25wcmludGYobmFtZSwgc2l6ZW9m
-KG5hbWUpLCAiaHc6JWQiLCBjYXJkKTsNCiAgICAgICAgICAgICAgIGlmICgoZXJyID0gc25kX2N0
-bF9vcGVuKCZoYW5kbGUsIG5hbWUsIDApKSA8IDApIHsNCiAgICAgICAgICAgICAgICAgICAgICAg
-ZXJyb3IoImNvbnRyb2wgb3BlbiAoJWkpOiAlcyIsIGNhcmQsDQpzbmRfc3RyZXJyb3IoZXJyKSk7
-DQogICAgICAgICAgICAgICAgICAgICAgIGdvdG8gbmV4dF9jYXJkOw0KLS0NCjIuNDMuMA0K
+Hi,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on linus/master v7.0-rc6 next-20260402]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/jack-yu-realtek-com/ASoC-rt1320-sdw-kcontrol-for-brown-out-feature-switch/20260403-160437
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20260401093107.632673-1-jack.yu%40realtek.com
+patch subject: [PATCH] ASoC: rt1320-sdw: kcontrol for brown-out feature switch
+config: arc-randconfig-001-20260403 (https://download.01.org/0day-ci/archive/20260403/202604032240.PeKldNcG-lkp@intel.com/config)
+compiler: arc-linux-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260403/202604032240.PeKldNcG-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202604032240.PeKldNcG-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   sound/soc/codecs/rt1320-sdw.c: In function 'rt1320_brown_out_put':
+>> sound/soc/codecs/rt1320-sdw.c:2504:11: warning: unused variable 'tmp' [-Wunused-variable]
+     int ret, tmp;
+              ^~~
+>> sound/soc/codecs/rt1320-sdw.c:2503:17: warning: unused variable 'dev' [-Wunused-variable]
+     struct device *dev = &rt1320->sdw_slave->dev;
+                    ^~~
+
+
+vim +/tmp +2504 sound/soc/codecs/rt1320-sdw.c
+
+  2497	
+  2498	static int rt1320_brown_out_put(struct snd_kcontrol *kcontrol,
+  2499					 struct snd_ctl_elem_value *ucontrol)
+  2500	{
+  2501		struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+  2502		struct rt1320_sdw_priv *rt1320 = snd_soc_component_get_drvdata(component);
+> 2503		struct device *dev = &rt1320->sdw_slave->dev;
+> 2504		int ret, tmp;
+  2505	
+  2506		ret = pm_runtime_resume(component->dev);
+  2507		if (ret < 0 && ret != -EACCES)
+  2508			return ret;
+  2509	
+  2510		rt1320->brown_out = ucontrol->value.integer.value[0];
+  2511		regcache_cache_bypass(rt1320->regmap, true);
+  2512	
+  2513		if (rt1320->brown_out == 1)
+  2514			regmap_write(rt1320->regmap, 0xdb03, 0x00);
+  2515		else
+  2516			regmap_write(rt1320->regmap, 0xdb03, 0xf0);
+  2517	
+  2518		regcache_cache_bypass(rt1320->regmap, false);
+  2519	
+  2520		return 0;
+  2521	}
+  2522	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
