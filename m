@@ -4,61 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64B7DF45A08
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Apr 2026 17:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F72AF3ED53
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Apr 2026 20:25:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10E4760209;
-	Fri, 10 Apr 2026 19:21:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10E4760209
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBA0C6020E;
+	Sat, 11 Apr 2026 22:25:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBA0C6020E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1775841686;
-	bh=BWPj1NXwRmAE2CZaOuET0Fsyq/fOekyU3Jloyc1SN+8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=DdlHXUDUof/sgRm1eBiefSwuObtG98Mbca2+gr3WvRTRDqZie+EeqnDaGa1nUpR2G
-	 7D/C1qihAlWXrDjQSH74xEmnBktDkchlgg1favPVZnTirTr673PqzcUIhKVNJV1rDI
-	 cYbpEvyHu6IWsS5+e1pgd8Vx9KNg6UGnMq3ZYVFM=
+	s=default; t=1775939141;
+	bh=e3eixAChUF7G2BhgzMzYctyPjnC+cERIhvt3IsKY2IU=;
+	h=Date:To:From:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=R68Qmf7b8SIsND2lsQLn4VBO5UEy7zAbFNLq63lkwHkAjYljxzBKw2qgjtnDPsa/B
+	 xM44uzGSwtLugLkstNROPKArtVgG/04HYkpzs+h0Hp3ixI7yj0OWJIS9XY3f12rj6t
+	 GAiblJzOLfelfmosucBHVsA/o7ABrSazE9v6bDgg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 027DCF805F2; Fri, 10 Apr 2026 19:20:52 +0200 (CEST)
+	id 6B2A2F805EE; Sat, 11 Apr 2026 22:25:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD6F0F805F2;
-	Fri, 10 Apr 2026 19:20:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17B2FF805E8;
+	Sat, 11 Apr 2026 22:25:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75A41F8052D; Fri, 10 Apr 2026 19:20:41 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56579F8027B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2026 19:20:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56579F8027B
-Content-Type: text/plain; charset="utf-8"
+	id 940FEF8052D; Fri, 10 Apr 2026 00:32:22 +0200 (CEST)
+Received: from mail-106103.protonmail.ch (mail-106103.protonmail.ch
+ [79.135.106.103])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D94F4F8021D
+	for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2026 00:32:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D94F4F8021D
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=proton.me header.i=@proton.me header.a=rsa-sha256
+ header.s=protonmail header.b=bk529zKn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1775773938; x=1776033138;
+	bh=e3eixAChUF7G2BhgzMzYctyPjnC+cERIhvt3IsKY2IU=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=bk529zKn5VMZ3zGJvHmnGV68cKOq/yhvwY1BNdS6eYRvjys+v5+Nux5ZSDHzuTvYD
+	 0i1dFTe9G4ETn/tTGLcs7uQSAzhzlXKDe5xaLXjlzUIv7pzBcavl+xjVF8CVhA5whS
+	 6PS1FUa2s7lOPhftI+srC2udcFIFBjPKmcHWKe1hYoF2J5Vp3EHRFEuK5TrsPDyJ5T
+	 SppqqvjN7q9rdgjAws8EgbzvU63raiE0TB8MeVPxJmqhX/Z/C/P/9CWWss5D55fJxN
+	 KmgRmm6NCtWUtlGZf+NodjS4Z8myrHGH7bzplE1SKMUzJqBllg9OT8+mA3korx5zEI
+	 /Zj39QnfUNjgw==
+Date: Thu, 09 Apr 2026 22:32:16 +0000
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: "marco.mco" <marco.mco@proton.me>
+Cc: "7rebel@proton.me" <7rebel@proton.me>
+Subject: Re: ALC287: Missing fixup for Lenovo IdeaPad Pro 5 14AKP10
+Message-ID: 
+ <8LbtTPDB95dWV2XV10ydcO2VWxeCEjDzJFogw2IsJz7fEWJjn-hWYkL1RNf3NpXvufOi843pkUR2DWIPYg3pQXVWvNCmz-dQTxSZB1Y2x8A=@proton.me>
+Feedback-ID: 191679111:user:proton
+X-Pm-Message-ID: 494297cd6bc5a880af07036bc5b0655cf63ba252
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18a50e8fc101a900-webhooks-bot@alsa-project.org>
-In-Reply-To: <18a50e8fc0bf6c00-webhooks-bot@alsa-project.org>
-References: <18a50e8fc0bf6c00-webhooks-bot@alsa-project.org>
-Subject: 
- =?utf-8?q?Missing_UCM_profile_for_AMD_ACP_7=2E0_=28Strix_Halo=29_=E2=80=94_Internal_DMIC_not_functional?=
-Date: Fri, 10 Apr 2026 19:20:41 +0200 (CEST)
-Message-ID-Hash: MHTGQYBU4ISDFHOBUGHB2OLWQ6GYTLOJ
-X-Message-ID-Hash: MHTGQYBU4ISDFHOBUGHB2OLWQ6GYTLOJ
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: marco.mco@proton.me
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: 5VZTBYBINWB3JGBNRMDGMQW4TOG3EYJP
+X-Message-ID-Hash: 5VZTBYBINWB3JGBNRMDGMQW4TOG3EYJP
+X-Mailman-Approved-At: Sat, 11 Apr 2026 20:24:58 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MHTGQYBU4ISDFHOBUGHB2OLWQ6GYTLOJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5VZTBYBINWB3JGBNRMDGMQW4TOG3EYJP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,72 +86,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzc0NSB3YXMgb3BlbmVkIGZyb20gYnJ5
-YXhpczoKCkhlbGxvLCAKSSBoYXZlIGFuIGlzc3VlIGdldHRpbmcgdGhlIGludGVybmFsIG1pY3Jv
-cGhvbmUgb2YgbXkgTVNJIFJhaWRlciBBMTggSFggQTlXIHdvcmtpbmcgb24gZWl0aGVyIExpbnV4
-IE1pbnQgb3IgQ2FjaHkgT1MsIEkgdHJpZWQgdG8gZGVidWcgdXNpbmcgYm90aCBHZW1pbmkgYW5k
-IENsYXVkZSwgdG8gbm8gYXZhaWwsIGhlcmUgaXMgYSBzdW1tYXJ5IHdyaXR0ZW4gYnkgQ2xhdWRl
-IHdoaWNoIEkgaG9wZSBtYXkgaGVscCBzb2x2ZSB0aGUgaXNzdWUgKEkgYW0gbm8gZGV2ZWxvcHBl
-cikKClRoYW5rcyBmb3IgbG9va2luZyBpbnRvIGl0ICEKCiMjIE1pc3NpbmcgVUNNIHByb2ZpbGUg
-Zm9yIEFNRCBBQ1AgNy4wIChTdHJpeCBIYWxvKSDigJQgSW50ZXJuYWwgRE1JQyBub3QgZnVuY3Rp
-b25hbAoKIyMjIFN1bW1hcnkKClRoZSBpbnRlcm5hbCBtaWNyb3Bob25lIChETUlDKSBvZiB0aGUg
-TVNJIFJhaWRlciBBMTggSFggQTlXIGxhcHRvcCBpcyBub24tZnVuY3Rpb25hbCB1bmRlciBMaW51
-eC4gVGhlIGF1ZGlvIGNvbnRyb2xsZXIgKEFNRCBBQ1AgNy4wLCBkcml2ZXIgYHNuZF9wY2lfcHNg
-KSBpbml0aWFsaXplcyBjb3JyZWN0bHkgYW5kIGV4cG9zZXMgdGhlIGFuYWxvZyBqYWNrIChBTEMy
-NzQsIGNhcmQgMikgdmlhIEhEQSwgYnV0IG5vIFBDTSBjYXB0dXJlIGRldmljZSBpcyBjcmVhdGVk
-IGZvciB0aGUgaW50ZXJuYWwgRE1JQy4gSW52ZXN0aWdhdGlvbiBjb25maXJtcyB0aGUgcm9vdCBj
-YXVzZSBpcyB0aGUgYWJzZW5jZSBvZiBhbnkgVUNNIHByb2ZpbGUgZm9yIEFDUCA3LjAgaW4gYm90
-aCB0aGUgcGFja2FnZWQgYGFsc2EtdWNtLWNvbmZgIGFuZCB0aGUgdXBzdHJlYW0gZ2l0IHJlcG9z
-aXRvcnkuCgotLS0KCiMjIyBIYXJkd2FyZQoKfCBGaWVsZCB8IFZhbHVlIHwKfC0tLXwtLS18Cnwg
-TGFwdG9wIHwgTVNJIFJhaWRlciBBMTggSFggQTlXIHwKfCBDUFUgfCBBTUQgUnl6ZW4gQUkgSFgg
-MzAgKFN0cml4IEhhbG8sIEFDUCA3LjApIHwKfCBBQ1BJIE9FTSBJRCB8IE1TSV9OQiBNRUdBQk9P
-SyAwMTA3MjAwOSB8CnwgQUNQSSBEU0RUIGNvbXBpbGVyIHwgSU5UTCAyMDIzMDYyOCB8CnwgQXVk
-aW8gY29udHJvbGxlciB8IEFNRCBBQ1AgNy4wIOKAlCBkcml2ZXIgYHNuZF9wY2lfcHNgIHwKfCBB
-bmFsb2cgY29kZWMgfCBSZWFsdGVrIEFMQzI3NCAoSERBLCBqYWNrIGluL291dCBmdW5jdGlvbmFs
-KSB8CnwgSW50ZXJuYWwgbWljIHwgUERNL0RNSUMgKHBhdGggdW5rbm93biDigJQgU291bmRXaXJl
-IG9yIFBETSBETUEpIHwKCi0tLQoKIyMjIFNvZnR3YXJlCgp8IENvbXBvbmVudCB8IFZlcnNpb24g
-fAp8LS0tfC0tLXwKfCBPUyB8IENhY2h5T1MgKEFyY2gtYmFzZWQpIHwKfCBLZXJuZWwgfCA2LjE5
-LjExLTEtY2FjaHlvcyB8CnwgYWxzYS11Y20tY29uZiB8IGxhdGVzdCBwYWNrYWdlZCB8Cnwgc29m
-LWZpcm13YXJlIHwgMjAyNS4xMi4yLTEgKEludGVsIG9ubHkg4oCUIG5vIEFNRCBmaWxlcyBwcmVz
-ZW50KSB8CnwgUGlwZVdpcmUgfCAxLjYuMyB8CnwgV2lyZVBsdW1iZXIgfCAxLjYuMyB8CgotLS0K
-CiMjIyBPYnNlcnZlZCBiZWhhdmlvcgoKYGFyZWNvcmQgLWxgIGV4cG9zZXMgb25seSBvbmUgY2Fw
-dHVyZSBkZXZpY2U6CgpgYGAKKioqKiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAq
-KioqCmNhcmQgMjogR2VuZXJpY18xIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2aWNlIDA6IEFMQzI3
-NCBBbmFsb2cgW0FMQzI3NCBBbmFsb2ddCiAgU3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMw
-OiBzdWJkZXZpY2UgIzAKYGBgCgpObyBETUlDIG9yIFBETSBjYXB0dXJlIGRldmljZSBpcyBjcmVh
-dGVkLiBgd3BjdGwgc3RhdHVzYCBjb25maXJtcyBQaXBlV2lyZSBzZWVzIG5vIG1pY3JvcGhvbmUg
-c291cmNlIGJleW9uZCB0aGUgQUxDMjc0IGFuYWxvZyBpbnB1dC4KCi0tLQoKIyMjIExvYWRlZCBh
-dWRpbyBrZXJuZWwgbW9kdWxlcwoKYGBgCnNuZF9zb2ZfYW1kX2FjcDcwICAgICAgMTYzODQgIDAK
-c25kX3BjaV9wcyAgICAgICAgICAgICAobG9hZGVkLCAyIHVzZXJzIOKAlCBoYW5kbGVzIEFDUCA3
-LjApCnNuZF9hY3A2eF9wZG1fZG1hICAgICAgMTYzODQgIDAgICDihpAgbG9hZGVkIGJ1dCAwIHVz
-ZXJzCnNvdW5kd2lyZV9hbWQgICAgICAgICAgNDkxNTIgIDIKc25kX2FtZF9zZHdfYWNwaSAgICAg
-ICAxNjM4NCAgMgpgYGAKCk5vdGFibHksIGBzbmRfYWNwNnhfcGRtX2RtYWAgaXMgbG9hZGVkIGJ1
-dCBoYXMgbm8gdXNlcnMsIGFuZCBubyBTb3VuZFdpcmUgZGV2aWNlcyBhcHBlYXIgdW5kZXIgYC9z
-eXMvYnVzL3NvdW5kd2lyZS9kZXZpY2VzL2AuCgotLS0KCiMjIyBVQ00gcHJvZmlsZSBpbnZlc3Rp
-Z2F0aW9uCgpUaGUgZm9sbG93aW5nIEFNRCBVQ00gcHJvZmlsZXMgYXJlIHByZXNlbnQgaW4gdGhl
-IHBhY2thZ2VkIGBhbHNhLXVjbS1jb25mYDoKCmBgYAovdXNyL3NoYXJlL2Fsc2EvdWNtMi9BTUQv
-YWNwLWRhNzIxOS1ydDU2ODItbWF4OTgzNTcKL3Vzci9zaGFyZS9hbHNhL3VjbTIvQU1EL2FjcDN4
-LWFsYzU2ODItYWxjMTAxNQovdXNyL3NoYXJlL2Fsc2EvdWNtMi9BTUQvYWNwM3gtYWxjNTY4Mi1t
-YXg5ODM1NwovdXNyL3NoYXJlL2Fsc2EvdWNtMi9BTUQvYWNwM3gtZXM4M3h4Ci91c3Ivc2hhcmUv
-YWxzYS91Y20yL0FNRC9hY3A1eApgYGAKClRoZSB1cHN0cmVhbSBnaXQgcmVwb3NpdG9yeSAoYGFs
-c2EtcHJvamVjdC9hbHNhLXVjbS1jb25mYCkgd2FzIGFsc28gY2hlY2tlZCB2aWEgdGhlIEdpdEh1
-YiBBUEkgYW5kIGNvbmZpcm1zICoqbm8gYGFjcDd4YCBvciBgYWNwNzBgIGRpcmVjdG9yeSBleGlz
-dHMqKi4KCi0tLQoKIyMjIEV4cGVjdGVkIGJlaGF2aW9yCgpBIFVDTSBwcm9maWxlIGZvciBBTUQg
-QUNQIDcuMCBzaG91bGQgYmUgY3JlYXRlZCB1bmRlciBgL3Vzci9zaGFyZS9hbHNhL3VjbTIvQU1E
-L2FjcDd4L2AgKG9yIGVxdWl2YWxlbnQpLCBlbmFibGluZyB0aGUgaW50ZXJuYWwgRE1JQyB0byBi
-ZSBleHBvc2VkIGFzIGEgUENNIGNhcHR1cmUgZGV2aWNlIGJ5IHRoZSBgc25kX3BjaV9wc2AgZHJp
-dmVyLgoKLS0tCgojIyMgQWRkaXRpb25hbCBBQ1BJIGNvbnRleHQKClRoZSBBQ1BJIHRhYmxlcyBy
-ZXBvcnQgdGhlIGZvbGxvd2luZyByZWxldmFudCBTU0RUIGVudHJpZXM6Ci0gYEFNRCBWb3J0ZXhg
-IChhdWRpbyB0b3BvbG9neSkKLSBgQU1EIERJU0NVU0I0YCwgYEFNRCBDUE1DTU5gLCBgQU1EIEdQ
-UF9QTUVfYAoKVGhlIEFDUEkgT0VNIHN0cmluZyBgTVNJX05CIE1FR0FCT09LIDAxMDcyMDA5YCBt
-YXkgYmUgdXNlZnVsIGZvciBtYXRjaGluZyBVQ00gcHJvZmlsZXMgdG8gdGhpcyBwbGF0Zm9ybS4K
-Ci0tLQoKIyMjIFJlZmVyZW5jZXMKCi0gRHJpdmVyIGBzbmRfcGNpX3BzYCAoUGluayBTYXJkaW5l
-IC8gQUNQIDcuMCk6IGludHJvZHVjZWQgaW4ga2VybmVsIDYueCBmb3IgU3RyaXggSGFsbyBwbGF0
-Zm9ybQotIFJlbGF0ZWQgbW9kdWxlOiBgc25kX2FjcDZ4X3BkbV9kbWFgIOKAlCBwb3RlbnRpYWxs
-eSB0aGUgY29ycmVjdCBQRE0gcGF0aCBmb3IgdGhpcyBETUlDCi0gTm8gb3BlbiBpc3N1ZSBmb3Vu
-ZCBvbiB0aGlzIHJlcG9zaXRvcnkgZm9yIEFDUCA3LjAgLyBTdHJpeCBIYWxvIGF0IHRpbWUgb2Yg
-ZmlsaW5nCgotLS0KCiMjIyBXb3JrYXJvdW5kCgpOb25lIGN1cnJlbnRseSBhdmFpbGFibGUgYmV5
-b25kIHVzaW5nIGFuIGV4dGVybmFsIFVTQiBvciAzLjVtbSBqYWNrIG1pY3JvcGhvbmUuCgpJc3N1
-ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLXVjbS1jb25m
-L2lzc3Vlcy83NDUKUmVwb3NpdG9yeSBVUkw6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2pl
-Y3QvYWxzYS11Y20tY29uZgo=
+Hello,
+
+I am writing to confirm that I am experiencing the exact same issue on my L=
+enovo IdeaPad Pro 5 14AKP10 (model 83JL) with Ryzen AI 300 series.
+
+Like the original reporter, my system suffers from severe electrical noise =
+(buzzing and hissing) from both speakers and the 3.5mm jack. The noise only=
+ stops when the output is muted.
+
+On Windows 11, the audio works perfectly with the following identifiers:
+- Hardware ID: HDAUDIO\FUNC_01&VEN_10EC&DEV_0287&SUBSYS_17AA3912
+- Windows Driver: 6.0.9879.1 (oem22.inf)
+
+On Fedora 43 (Kernel 6.19.11), the kernel incorrectly identifies the PCI SS=
+ID as 17aa:0000.=20
+In my alsa-info, the PCI Subsystem ID is listed as 17aa:38b2, while the Cod=
+ec Subsystem ID is 17aa:3912. It seems the kernel fails to map these correc=
+tly on this AMD platform.
+
+Here is my alsa-info report confirming the mismatch:
+http://alsa-project.org/db/?f=3D93821cc4108e0ef63356dc343b73a5709bf44f57
+
+In the dmesg section of the report, it is clearly visible:
+"snd_hda_codec_alc269 hdaudioC1D0: ALC287: picked fixup for PCI SSID 17aa:0=
+000"
+
+I am available to test any patches or provide further information.
+
+Best regards,
+Marco
