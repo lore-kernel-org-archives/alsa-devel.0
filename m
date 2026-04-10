@@ -4,86 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B1C3F459F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Apr 2026 16:29:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64B7DF45A08
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Apr 2026 17:21:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2F4A6020A;
-	Fri, 10 Apr 2026 18:29:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2F4A6020A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10E4760209;
+	Fri, 10 Apr 2026 19:21:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10E4760209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1775838588;
-	bh=/+YZ1Sp45lo5nkZ6tGYiSc6awNAtCrSibl+Vl+PRmUk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=dWcKgQewvngaJLzrjSn7Zxzwm2W3jkAgCZcV7Pm8SaQ/wwUPe+L8zm9Ww6/2t8kbR
-	 YG3SFRg5qe8vSkI4hC2UT/dbfJlqkWOFtvzvgTm5WT+fgtMeCK//8qlqGdqhtdi6q6
-	 HsK6QZIC7EzIRwzy8GhNfOOzBW36dYuezNiUYvcs=
+	s=default; t=1775841686;
+	bh=BWPj1NXwRmAE2CZaOuET0Fsyq/fOekyU3Jloyc1SN+8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=DdlHXUDUof/sgRm1eBiefSwuObtG98Mbca2+gr3WvRTRDqZie+EeqnDaGa1nUpR2G
+	 7D/C1qihAlWXrDjQSH74xEmnBktDkchlgg1favPVZnTirTr673PqzcUIhKVNJV1rDI
+	 cYbpEvyHu6IWsS5+e1pgd8Vx9KNg6UGnMq3ZYVFM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22EEBF805F2; Fri, 10 Apr 2026 18:29:12 +0200 (CEST)
+	id 027DCF805F2; Fri, 10 Apr 2026 19:20:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 926D0F805EC;
-	Fri, 10 Apr 2026 18:29:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD6F0F805F2;
+	Fri, 10 Apr 2026 19:20:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3447F8052D; Fri, 10 Apr 2026 18:29:03 +0200 (CEST)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87945F8021D
-	for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2026 18:29:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87945F8021D
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=UarNXJUS
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4A51543A66;
-	Fri, 10 Apr 2026 16:28:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BAE3C19421;
-	Fri, 10 Apr 2026 16:28:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775838537;
-	bh=/+YZ1Sp45lo5nkZ6tGYiSc6awNAtCrSibl+Vl+PRmUk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=UarNXJUSQcQsAOB0ob/lxarf+7nUEcxg/bT89jtlf1R7W5n3nNNKjlKGeTOBlvbXa
-	 5ufTv1uSI35JOs773pBaqtLiXGr86dO9c6qaaMhnhKyxblafl00FwlwdIsDFeEbGhp
-	 kMVm7TQNaD+38hgvZxmK/KPpyXL9WOeTh/Q2tqgKMvZ70SetFtpUWULU4zbwnNd10O
-	 QJWv1Rrm0zhI01f+aNqKushhvNRCHy7OI8QkaVHP569mU3KzZv7NAu3mBrapGdCdV9
-	 ZBMHtQ42h3pQh1GxpIqVX4QrgHgITZmfl4j8ptfhAy4MxePJiYWjRWEzVJhjgJnCd9
-	 zukZY2Rb/Hgfg==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, jack.yu@realtek.com
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
- oder_chiou@realtek.com, shumingf@realtek.com, derek.fang@realtek.com
-In-Reply-To: <20260410064225.662656-1-jack.yu@realtek.com>
-References: <20260410064225.662656-1-jack.yu@realtek.com>
-Subject: Re: [PATCH v5] ASoC: rt1320-sdw: Add an approach to get new
- hardware advance gain
-Message-Id: <177582126721.1165659.10335640489522439077.b4-ty@b4>
-Date: Fri, 10 Apr 2026 12:41:07 +0100
-MIME-Version: 1.0
+	id 75A41F8052D; Fri, 10 Apr 2026 19:20:41 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 56579F8027B
+	for <alsa-devel@alsa-project.org>; Fri, 10 Apr 2026 19:20:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56579F8027B
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.16-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1157; i=broonie@kernel.org;
- h=from:subject:message-id; bh=/+YZ1Sp45lo5nkZ6tGYiSc6awNAtCrSibl+Vl+PRmUk=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBp2SVGPqRz1ZzDJeTGSTCiJOBkRYTyrE7YxSWxs
- /PY7PofkD+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCadklRgAKCRAk1otyXVSH
- 0OvOCACDJhXNF9q3neiA+ELPOqtY8p6dGIS7CaTCEgmi0WCGZwYt6mRAYBdi4AoeGJR2yoMVXu+
- im3nNhFLosJB27TSrkY9LdAF0YGSXWSJbd9fUeTxs28L4Rgvznns2U9L8/wS1FawyZPZ59KN/on
- pmsgO8scA8b5TbqQBIo5zRizo1eP9ah2Axjor4dBvIrIMGtTF5GOOjeP27AL1EPIdhMAH5YM9+E
- emTHzHlv50X5uubkn73HqgRGMSesT2d/GA1sh2if2bhgFUpgsPaIWkO0mI5LcI+npQYp5168SgV
- 5Y71iAlHL3V33w9CCOStouc7yR9sU6iNbQym45mq4NjcCCnx
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: MEOK4VKBET7HDVPG46N4SL2WLNXVL23Z
-X-Message-ID-Hash: MEOK4VKBET7HDVPG46N4SL2WLNXVL23Z
-X-MailFrom: broonie@kernel.org
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18a50e8fc101a900-webhooks-bot@alsa-project.org>
+In-Reply-To: <18a50e8fc0bf6c00-webhooks-bot@alsa-project.org>
+References: <18a50e8fc0bf6c00-webhooks-bot@alsa-project.org>
+Subject: 
+ =?utf-8?q?Missing_UCM_profile_for_AMD_ACP_7=2E0_=28Strix_Halo=29_=E2=80=94_Internal_DMIC_not_functional?=
+Date: Fri, 10 Apr 2026 19:20:41 +0200 (CEST)
+Message-ID-Hash: MHTGQYBU4ISDFHOBUGHB2OLWQ6GYTLOJ
+X-Message-ID-Hash: MHTGQYBU4ISDFHOBUGHB2OLWQ6GYTLOJ
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -94,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MEOK4VKBET7HDVPG46N4SL2WLNXVL23Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MHTGQYBU4ISDFHOBUGHB2OLWQ6GYTLOJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,34 +67,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 10 Apr 2026 14:42:25 +0800, jack.yu@realtek.com wrote:
-> ASoC: rt1320-sdw: Add an approach to get new hardware advance gain
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.1
-
-Thanks!
-
-[1/1] ASoC: rt1320-sdw: Add an approach to get new hardware advance gain
-      https://git.kernel.org/broonie/sound/c/2603ea46ce5c
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzc0NSB3YXMgb3BlbmVkIGZyb20gYnJ5
+YXhpczoKCkhlbGxvLCAKSSBoYXZlIGFuIGlzc3VlIGdldHRpbmcgdGhlIGludGVybmFsIG1pY3Jv
+cGhvbmUgb2YgbXkgTVNJIFJhaWRlciBBMTggSFggQTlXIHdvcmtpbmcgb24gZWl0aGVyIExpbnV4
+IE1pbnQgb3IgQ2FjaHkgT1MsIEkgdHJpZWQgdG8gZGVidWcgdXNpbmcgYm90aCBHZW1pbmkgYW5k
+IENsYXVkZSwgdG8gbm8gYXZhaWwsIGhlcmUgaXMgYSBzdW1tYXJ5IHdyaXR0ZW4gYnkgQ2xhdWRl
+IHdoaWNoIEkgaG9wZSBtYXkgaGVscCBzb2x2ZSB0aGUgaXNzdWUgKEkgYW0gbm8gZGV2ZWxvcHBl
+cikKClRoYW5rcyBmb3IgbG9va2luZyBpbnRvIGl0ICEKCiMjIE1pc3NpbmcgVUNNIHByb2ZpbGUg
+Zm9yIEFNRCBBQ1AgNy4wIChTdHJpeCBIYWxvKSDigJQgSW50ZXJuYWwgRE1JQyBub3QgZnVuY3Rp
+b25hbAoKIyMjIFN1bW1hcnkKClRoZSBpbnRlcm5hbCBtaWNyb3Bob25lIChETUlDKSBvZiB0aGUg
+TVNJIFJhaWRlciBBMTggSFggQTlXIGxhcHRvcCBpcyBub24tZnVuY3Rpb25hbCB1bmRlciBMaW51
+eC4gVGhlIGF1ZGlvIGNvbnRyb2xsZXIgKEFNRCBBQ1AgNy4wLCBkcml2ZXIgYHNuZF9wY2lfcHNg
+KSBpbml0aWFsaXplcyBjb3JyZWN0bHkgYW5kIGV4cG9zZXMgdGhlIGFuYWxvZyBqYWNrIChBTEMy
+NzQsIGNhcmQgMikgdmlhIEhEQSwgYnV0IG5vIFBDTSBjYXB0dXJlIGRldmljZSBpcyBjcmVhdGVk
+IGZvciB0aGUgaW50ZXJuYWwgRE1JQy4gSW52ZXN0aWdhdGlvbiBjb25maXJtcyB0aGUgcm9vdCBj
+YXVzZSBpcyB0aGUgYWJzZW5jZSBvZiBhbnkgVUNNIHByb2ZpbGUgZm9yIEFDUCA3LjAgaW4gYm90
+aCB0aGUgcGFja2FnZWQgYGFsc2EtdWNtLWNvbmZgIGFuZCB0aGUgdXBzdHJlYW0gZ2l0IHJlcG9z
+aXRvcnkuCgotLS0KCiMjIyBIYXJkd2FyZQoKfCBGaWVsZCB8IFZhbHVlIHwKfC0tLXwtLS18Cnwg
+TGFwdG9wIHwgTVNJIFJhaWRlciBBMTggSFggQTlXIHwKfCBDUFUgfCBBTUQgUnl6ZW4gQUkgSFgg
+MzAgKFN0cml4IEhhbG8sIEFDUCA3LjApIHwKfCBBQ1BJIE9FTSBJRCB8IE1TSV9OQiBNRUdBQk9P
+SyAwMTA3MjAwOSB8CnwgQUNQSSBEU0RUIGNvbXBpbGVyIHwgSU5UTCAyMDIzMDYyOCB8CnwgQXVk
+aW8gY29udHJvbGxlciB8IEFNRCBBQ1AgNy4wIOKAlCBkcml2ZXIgYHNuZF9wY2lfcHNgIHwKfCBB
+bmFsb2cgY29kZWMgfCBSZWFsdGVrIEFMQzI3NCAoSERBLCBqYWNrIGluL291dCBmdW5jdGlvbmFs
+KSB8CnwgSW50ZXJuYWwgbWljIHwgUERNL0RNSUMgKHBhdGggdW5rbm93biDigJQgU291bmRXaXJl
+IG9yIFBETSBETUEpIHwKCi0tLQoKIyMjIFNvZnR3YXJlCgp8IENvbXBvbmVudCB8IFZlcnNpb24g
+fAp8LS0tfC0tLXwKfCBPUyB8IENhY2h5T1MgKEFyY2gtYmFzZWQpIHwKfCBLZXJuZWwgfCA2LjE5
+LjExLTEtY2FjaHlvcyB8CnwgYWxzYS11Y20tY29uZiB8IGxhdGVzdCBwYWNrYWdlZCB8Cnwgc29m
+LWZpcm13YXJlIHwgMjAyNS4xMi4yLTEgKEludGVsIG9ubHkg4oCUIG5vIEFNRCBmaWxlcyBwcmVz
+ZW50KSB8CnwgUGlwZVdpcmUgfCAxLjYuMyB8CnwgV2lyZVBsdW1iZXIgfCAxLjYuMyB8CgotLS0K
+CiMjIyBPYnNlcnZlZCBiZWhhdmlvcgoKYGFyZWNvcmQgLWxgIGV4cG9zZXMgb25seSBvbmUgY2Fw
+dHVyZSBkZXZpY2U6CgpgYGAKKioqKiBMaXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAq
+KioqCmNhcmQgMjogR2VuZXJpY18xIFtIRC1BdWRpbyBHZW5lcmljXSwgZGV2aWNlIDA6IEFMQzI3
+NCBBbmFsb2cgW0FMQzI3NCBBbmFsb2ddCiAgU3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMw
+OiBzdWJkZXZpY2UgIzAKYGBgCgpObyBETUlDIG9yIFBETSBjYXB0dXJlIGRldmljZSBpcyBjcmVh
+dGVkLiBgd3BjdGwgc3RhdHVzYCBjb25maXJtcyBQaXBlV2lyZSBzZWVzIG5vIG1pY3JvcGhvbmUg
+c291cmNlIGJleW9uZCB0aGUgQUxDMjc0IGFuYWxvZyBpbnB1dC4KCi0tLQoKIyMjIExvYWRlZCBh
+dWRpbyBrZXJuZWwgbW9kdWxlcwoKYGBgCnNuZF9zb2ZfYW1kX2FjcDcwICAgICAgMTYzODQgIDAK
+c25kX3BjaV9wcyAgICAgICAgICAgICAobG9hZGVkLCAyIHVzZXJzIOKAlCBoYW5kbGVzIEFDUCA3
+LjApCnNuZF9hY3A2eF9wZG1fZG1hICAgICAgMTYzODQgIDAgICDihpAgbG9hZGVkIGJ1dCAwIHVz
+ZXJzCnNvdW5kd2lyZV9hbWQgICAgICAgICAgNDkxNTIgIDIKc25kX2FtZF9zZHdfYWNwaSAgICAg
+ICAxNjM4NCAgMgpgYGAKCk5vdGFibHksIGBzbmRfYWNwNnhfcGRtX2RtYWAgaXMgbG9hZGVkIGJ1
+dCBoYXMgbm8gdXNlcnMsIGFuZCBubyBTb3VuZFdpcmUgZGV2aWNlcyBhcHBlYXIgdW5kZXIgYC9z
+eXMvYnVzL3NvdW5kd2lyZS9kZXZpY2VzL2AuCgotLS0KCiMjIyBVQ00gcHJvZmlsZSBpbnZlc3Rp
+Z2F0aW9uCgpUaGUgZm9sbG93aW5nIEFNRCBVQ00gcHJvZmlsZXMgYXJlIHByZXNlbnQgaW4gdGhl
+IHBhY2thZ2VkIGBhbHNhLXVjbS1jb25mYDoKCmBgYAovdXNyL3NoYXJlL2Fsc2EvdWNtMi9BTUQv
+YWNwLWRhNzIxOS1ydDU2ODItbWF4OTgzNTcKL3Vzci9zaGFyZS9hbHNhL3VjbTIvQU1EL2FjcDN4
+LWFsYzU2ODItYWxjMTAxNQovdXNyL3NoYXJlL2Fsc2EvdWNtMi9BTUQvYWNwM3gtYWxjNTY4Mi1t
+YXg5ODM1NwovdXNyL3NoYXJlL2Fsc2EvdWNtMi9BTUQvYWNwM3gtZXM4M3h4Ci91c3Ivc2hhcmUv
+YWxzYS91Y20yL0FNRC9hY3A1eApgYGAKClRoZSB1cHN0cmVhbSBnaXQgcmVwb3NpdG9yeSAoYGFs
+c2EtcHJvamVjdC9hbHNhLXVjbS1jb25mYCkgd2FzIGFsc28gY2hlY2tlZCB2aWEgdGhlIEdpdEh1
+YiBBUEkgYW5kIGNvbmZpcm1zICoqbm8gYGFjcDd4YCBvciBgYWNwNzBgIGRpcmVjdG9yeSBleGlz
+dHMqKi4KCi0tLQoKIyMjIEV4cGVjdGVkIGJlaGF2aW9yCgpBIFVDTSBwcm9maWxlIGZvciBBTUQg
+QUNQIDcuMCBzaG91bGQgYmUgY3JlYXRlZCB1bmRlciBgL3Vzci9zaGFyZS9hbHNhL3VjbTIvQU1E
+L2FjcDd4L2AgKG9yIGVxdWl2YWxlbnQpLCBlbmFibGluZyB0aGUgaW50ZXJuYWwgRE1JQyB0byBi
+ZSBleHBvc2VkIGFzIGEgUENNIGNhcHR1cmUgZGV2aWNlIGJ5IHRoZSBgc25kX3BjaV9wc2AgZHJp
+dmVyLgoKLS0tCgojIyMgQWRkaXRpb25hbCBBQ1BJIGNvbnRleHQKClRoZSBBQ1BJIHRhYmxlcyBy
+ZXBvcnQgdGhlIGZvbGxvd2luZyByZWxldmFudCBTU0RUIGVudHJpZXM6Ci0gYEFNRCBWb3J0ZXhg
+IChhdWRpbyB0b3BvbG9neSkKLSBgQU1EIERJU0NVU0I0YCwgYEFNRCBDUE1DTU5gLCBgQU1EIEdQ
+UF9QTUVfYAoKVGhlIEFDUEkgT0VNIHN0cmluZyBgTVNJX05CIE1FR0FCT09LIDAxMDcyMDA5YCBt
+YXkgYmUgdXNlZnVsIGZvciBtYXRjaGluZyBVQ00gcHJvZmlsZXMgdG8gdGhpcyBwbGF0Zm9ybS4K
+Ci0tLQoKIyMjIFJlZmVyZW5jZXMKCi0gRHJpdmVyIGBzbmRfcGNpX3BzYCAoUGluayBTYXJkaW5l
+IC8gQUNQIDcuMCk6IGludHJvZHVjZWQgaW4ga2VybmVsIDYueCBmb3IgU3RyaXggSGFsbyBwbGF0
+Zm9ybQotIFJlbGF0ZWQgbW9kdWxlOiBgc25kX2FjcDZ4X3BkbV9kbWFgIOKAlCBwb3RlbnRpYWxs
+eSB0aGUgY29ycmVjdCBQRE0gcGF0aCBmb3IgdGhpcyBETUlDCi0gTm8gb3BlbiBpc3N1ZSBmb3Vu
+ZCBvbiB0aGlzIHJlcG9zaXRvcnkgZm9yIEFDUCA3LjAgLyBTdHJpeCBIYWxvIGF0IHRpbWUgb2Yg
+ZmlsaW5nCgotLS0KCiMjIyBXb3JrYXJvdW5kCgpOb25lIGN1cnJlbnRseSBhdmFpbGFibGUgYmV5
+b25kIHVzaW5nIGFuIGV4dGVybmFsIFVTQiBvciAzLjVtbSBqYWNrIG1pY3JvcGhvbmUuCgpJc3N1
+ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRodWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLXVjbS1jb25m
+L2lzc3Vlcy83NDUKUmVwb3NpdG9yeSBVUkw6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2pl
+Y3QvYWxzYS11Y20tY29uZgo=
