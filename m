@@ -4,168 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DC8FED7B82
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2026 08:14:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A40E1ED7BBA
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Apr 2026 10:45:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A18560205;
-	Tue, 14 Apr 2026 10:14:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A18560205
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5000960209;
+	Tue, 14 Apr 2026 12:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5000960209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1776154492;
-	bh=xvxGk9uh0+SYaR79IYrMDUiZnd+4g/OXtzUcSjCUHkU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1776163502;
+	bh=MXOxvUuL4jFE6NUJNlnJnpEV0LNo/7Ya+DRf7Uib6uA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VpamcQd9fE6ZidlgrPENCP2Xy5849f+sB5A7xlLX9I4S/WNqxRu2ybS9alYv/+jp+
-	 WLU5G9v/0EBPJyi0JL/3vXgiEX4t9vM4NMZpgNY6LT8eDkmqlhMssIuUcaJoRZJ+kC
-	 PhHyFd5ScHZEZJUc20od4aWgKtqT2K+Okwus5lzY=
+	b=a1O46lQD8m7bfENlih6NTiQeOmC7KUdwqCmVvZjcTQ/2BM/WZbJ8iiiKci6qLKVbA
+	 pL1Qb+8vEINGZWmRdIwcldSwvqcpgeYCoMEZjvkGFQL8kegZOViS3TqzDSpd6+7pB1
+	 D09QwXnEOG8UkCMGI4VtyI4wG2UuRHwrSmy0DzAI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36350F805F2; Tue, 14 Apr 2026 10:14:17 +0200 (CEST)
+	id D3D26F805F1; Tue, 14 Apr 2026 12:44:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56ED1F805BA;
-	Tue, 14 Apr 2026 10:14:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 418CBF805EE;
+	Tue, 14 Apr 2026 12:44:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 593EFF80510; Tue, 14 Apr 2026 10:14:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 6302EF80510; Tue, 14 Apr 2026 12:44:19 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 99B3BF800C1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2026 10:14:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99B3BF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id A16F0F8003C
+	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2026 12:44:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A16F0F8003C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=XcImGSi8;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=m5IrsRiB;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=FSUZJE4s;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=yWkkAlpX
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D83046A99F;
-	Tue, 14 Apr 2026 08:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1776154447;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MpXDuTtlu9LQfLVP2POAAUdFL5T96rxRZdlEAhYEkG4=;
-	b=XcImGSi8mMx0L73aWFBf7sX+hCVpmjZ0BJfhCgJjXG0R/fRtYmy3WfmBhYyCfQ2jCl5Ajm
-	JFD4r5vbbFxJ7romruRjY4lpRGLhb8LA8EeTIQwAyJx+1HL5jdqwU1HsJHCBVg/LuZaKFI
-	0ogMtntKQHk7UNfXkO5g+UQEPLllJtk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1776154447;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MpXDuTtlu9LQfLVP2POAAUdFL5T96rxRZdlEAhYEkG4=;
-	b=m5IrsRiBPlDe2A7TleprdIFW/qFlOJXz6P0bMOoacarWIVN660dnpDBAQhbELamPJUnqfD
-	QRU5H8BYbQ8qczDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FSUZJE4s;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=yWkkAlpX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1776154446;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MpXDuTtlu9LQfLVP2POAAUdFL5T96rxRZdlEAhYEkG4=;
-	b=FSUZJE4sK4ixrm7ebSoDUVSd0i7TwxpU5vROyAhvl7102TnsnOlA2RXs3QRyt2IsJWoGy5
-	0Eh4YZWA4oGjrwraseSXx6ae45moP4xKocqmeN+Pmx3UL9EBBptLmFqTEwYtRfdeQ7mJwT
-	HFtdISih0SQtudOXoi1ytSn27ukNEjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1776154446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MpXDuTtlu9LQfLVP2POAAUdFL5T96rxRZdlEAhYEkG4=;
-	b=yWkkAlpXBsQZcT6HVEJpvBjaCCvB784A8bTsu2bYY2dQTplUA/IRFvI+kuHvLd3riPYvSK
-	ngDUH0sNBfvIAZBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A23254B344;
-	Tue, 14 Apr 2026 08:14:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id i3tOJk733WkKBAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 14 Apr 2026 08:14:06 +0000
-Date: Tue, 14 Apr 2026 10:14:06 +0200
-Message-ID: <87wlyarmb5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-Cc: =?ISO-8859-1?Q?J=E9r=E9my?= Bethmont <jeremy.bethmont@gmail.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-	"regressions@leemhuis.info" <regressions@leemhuis.info>
-Subject: Re: [REGRESSION] Audio popping on ThinkPad X1 Carbon Gen 12 (ALC287)
- after commit d2e01e0c5e94
-In-Reply-To: <c0c7f6edb6e7417a9b51fc2308ec31e4@realtek.com>
-References: 
- <CAC88DfsHrhyhy0Pn1O-z9egBvMYu=6NYgcvcC6KCgwh_-Ldkxg@mail.gmail.com>
-	<87a4wgrxil.wl-tiwai@suse.de>
-	<CAC88DfvjQvZvdvGdZ00woMymE2tUWk=2Dbqi3EzuzSHxGjEnzw@mail.gmail.com>
-	<871phsrsnf.wl-tiwai@suse.de>
-	<f59a70ca796b4d09822f514e7f25ac5c@realtek.com>
-	<CAC88DftEBEEEvODGUZzkry+kgAm=SfH=PAsxwu+SABMBMRMs=Q@mail.gmail.com>
-	<658f53ada52f4de9a0c852dd56554a2a@realtek.com>
-	<CAC88DfvyuWeD99hhKKsHum+wpjjQrOKsdWvKVZMefjhcx3sKBw@mail.gmail.com>
-	<871pgit2hk.wl-tiwai@suse.de>
-	<c0c7f6edb6e7417a9b51fc2308ec31e4@realtek.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-2.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	URIBL_BLOCKED(0.00)[suse.de:dkim,suse.de:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,alsa-project.org,lists.linux.dev,leemhuis.info];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: D83046A99F
-Message-ID-Hash: FJO7FFKWIRYVCR3HVGP2A6V2VBDPKERZ
-X-Message-ID-Hash: FJO7FFKWIRYVCR3HVGP2A6V2VBDPKERZ
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=K4Joo1Ei
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1776163457; x=1807699457;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MXOxvUuL4jFE6NUJNlnJnpEV0LNo/7Ya+DRf7Uib6uA=;
+  b=K4Joo1EikzYtQWjDNL62WRbAsOINnYeTomHSV+ueyUoV2cHmOAc0ERSe
+   sogQhiyjTbu72kakM2WWenrj6uHnRBQwNwv3nZ7/KqRJdByfMm/geCel4
+   FTROp/7ULczio9xFHc8rLbRbxkK86LlvoZY4nuK+eVBcXHBTVZrVIqG9b
+   jpBMIzJV2XFms5P9BWlB1dexfcfzV0QOgWyU4+Wivef6KR0T1/tIfrmHb
+   zvXhC60gEiPtITm8n6dhfHi9loCW8yhjr7uVR2LtNu6jTVos3j62IrH4K
+   g6wEwJ0jFE3RMH6x59HsuZyTO/KXocJL8UKCuIF9s8Z4fE9uBgCOTf0nN
+   A==;
+X-CSE-ConnectionGUID: jn7InAEaTTihiUkOR+H92Q==
+X-CSE-MsgGUID: luNwwfE9TzuIK2/2aKgAzg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11758"; a="102572856"
+X-IronPort-AV: E=Sophos;i="6.23,179,1770624000";
+   d="scan'208";a="102572856"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Apr 2026 03:44:11 -0700
+X-CSE-ConnectionGUID: ErDDo80IRHeU5G8ctGTckg==
+X-CSE-MsgGUID: MQqlDED7Rouha3WZTmVl5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,179,1770624000";
+   d="scan'208";a="230285140"
+Received: from klitkey1-mobl1.ger.corp.intel.com (HELO [10.245.245.121])
+ ([10.245.245.121])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Apr 2026 03:44:09 -0700
+Message-ID: <542a9743-2a47-477a-b457-ae32c3f8dc49@linux.intel.com>
+Date: Tue, 14 Apr 2026 13:44:34 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: (re)use and (re)definition of snd_pcm_hw_params->fifo_size for
+ 'jumpy DMA'
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, arun@asymptotic.io,
+ wim.taymans@gmail.com
+References: <a03350b3-5828-4ffe-ade7-b94bb6ec7d64@linux.intel.com>
+ <87se9htms4.wl-tiwai@suse.de>
+ <67b9f48b-1cc7-4dac-8f6a-c0cba6a84b36@linux.intel.com>
+ <87ikadtgpe.wl-tiwai@suse.de>
+ <dadef18b-1c2e-4c0d-8ae8-2e4b8ad75d04@linux.intel.com>
+ <878qb8tsib.wl-tiwai@suse.de> <88979231-caef-4eaa-b89d-22e6973c92f9@perex.cz>
+ <cfb84df3-c2bf-4173-bc45-7df29b6a94a3@linux.intel.com>
+ <a1b6b2ed-2e26-48ff-afab-60f90ecc4360@perex.cz>
+ <4c73e4cb-298a-411a-97ed-f0eff1b06ac9@linux.intel.com>
+ <978bdc67-b91e-437a-bb8a-b609a4fef6d1@perex.cz>
+ <b97ae6b9-ef72-4dbf-bf29-9092ec3919d8@linux.intel.com>
+ <82d870b3-4ec1-440a-ae8b-87edbf665b99@perex.cz>
+Content-Language: en-US
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <82d870b3-4ec1-440a-ae8b-87edbf665b99@perex.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: UT2D3NFV3WNSIQJQHULV4XOV54TGNVXM
+X-Message-ID-Hash: UT2D3NFV3WNSIQJQHULV4XOV54TGNVXM
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -176,7 +112,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FJO7FFKWIRYVCR3HVGP2A6V2VBDPKERZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UT2D3NFV3WNSIQJQHULV4XOV54TGNVXM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -185,15 +121,150 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 14 Apr 2026 09:57:00 +0200,
-Kailang wrote:
-> 
-> OK.
-> Attached.
-> 
-> Thanks.
+On 07/04/2026 16:50, Jaroslav Kysela wrote:
+>>> The minimal requirement for the playback data at start would be:
+>>>
+>>>      'init_chunk + (2 * step_chunk)'
+>>>
+>>> Note that init_chunk may be zero (legacy PCI HW).
+>>
+>> and step_chunk as well.
+>
+> step_chunk should start from one sample. But there are chunks (bursts)
+> even for PCI devices, although very small.
 
-Applied now.  Thanks.
+What I meant is that drivers might report 0 for both when they don't
+have this quirk in operation - and existing drivers.
 
+>>> In my proposal, step_chunk == period_size and init_chunk will be
+>>> provided using additional value in hw_params (as count of initial
+>>> periods).
+>>
+>> I don't think this would work without breaking user space. Locking the
+>> period size to be the size of a step_chunk?
+>> In SOF the default PCM device have 1ms step_chunk and it can have
+>> maximum of 256 periods (HDA BDLE constraint).
+>
+> The drivers can use period size in multiples of base transfer (step)
+chunk.
 
-Takashi
+They could if we lock the chunk_step as static, but if it is adapting to
+the period size then we cannot.
+the hardware have practical limit of 100ms maximum FIFO size.
+"low latency' user will request 5ms period size and get 5ms FIFO size
+period size 50ms will result 50ms FIFO size
+period size 100ms will result 100ms FIFO size
+period size 150ms will result 100ms FIFO size (practical limit of HW)
+period size 300ms will result 100ms FIFO size (practical limit of HW)
+
+User space asks for a period size and the driver reports back the chunk
+init and size that the period size will translate to.
+
+>> You cannot set a constraint after the hw_params has been set, that is
+>> reverse of how things work, no?
+>
+> I expect to design new constraint describing the "base step chunk" and
+> "initial chunk" in samples. Thus the refine mechanism will allow to
+> settle period size based on this.
+
+Some hardware have fixed setup, they can tell what the chunk init/size
+is, it is constant, some (what I try to do for SOF) can adapt the chunk
+configuration based on how userspace asks for the period_size.
+
+On the other hand: there might be a use case when application wants
+certain chunk size - jumpiness - while using 'detached' period size,
+like 40ms chunks and 100ms periods (or 120ms if we want chunk multiple).
+This is another type of config, but I would leave it for later and have
+either the fixed chunk hardware and the adaptive supported.
+
+>> Also the original issue that initiated the thread was that we had a
+>> fixed 96ms hw transfer with 100ms FIFO coming as a fixed preset.
+>> This caught application wanting to have 10/20/30/40/50ms of period size
+>> on guard...
+>
+> 100ms init = 25 periods / 96ms step = 24 periods with period size 4ms.
+> This means that we need
+>
+> 1) add step fill (in periods) like for init fill returned from driver
+to app
+
+but this will break existing applications, they don't know that they
+need to provide 24 periods data.
+
+> 2) or the driver (if possible) should prefer that init chunk is in
+> multiple of step chunk - it's hw related restriction or just buffer size
+> judgement from the developer POV for SOF?
+
+I think this can be doable for SOF, if the FIFO / init_chunk is 'small'
+we can make it about double of the step_chunk.
+However these are not written in stone, the step_chunk for example might
+fluctuate depending on system latencies for DSP wakeup.
+
+>> The issue is different from hardware/kernel and user space pow.
+>> - hardware
+>> [A] it has no buffering or really minimal (few frames to keep the bus
+>> fed)
+>> [B] have fixed size FIFO with fixed sized bursting equal to the FIFO
+>> size - relatively large FIFO
+>> [C] have fixed size FIFO with different initial and runtime bursts
+>> [D] have configurable FIFO and the the relation between initial and
+>> runtime burst can fall into [B] or [C] depending on FIFO size, the FIFO
+>> is scaling with the period size (to some limit in most cases)
+>>
+>> - applications
+>> [1] uses ALSA period as processing unit
+>> [2] uses NO_PERIOD_WAKEUP and ignores period size as processing unit.
+>
+> I'm also trying to resolve the deep buffer issue. And we should not use
+> NO_PERIOD_WAKEUP as hint that applications don't do better transfer
+> granularity IMHO.
+
+I agree, on the other hand the NO_PERIOD_WAKEUP is added precisely for
+this purpose, to detach applications from ALSA period based scheduling.
+
+> The interface should be universal. This flag is just
+> to not inform user space that the period was processed. Dot.
+
+Sure, applications can leave out this flag and still just NOP on period
+elapsed.
+
+>> I think the two new parameter for init_chunk and step_chunk within
+>> hw_params returned from driver to user space  should cover this well.
+>
+> My idea was just to reuse the current mechanism to settle transfer
+> chunks, so applications can give advice, how the PCM buffer will be used
+> (based on the period size and the granularity flag). See my proposal.
+
+Some hardware cannot negotiate the size of FIFO, thus the init and step
+chunk, some might be able to do so.
+These ask for different solution.
+If it is fixed then what drivers are already doing is fine, they set
+constraint on period size to force applications, but applications still
+have no way of knowing that the DMA is jumpy. This only works with no
+frills applications, sound servers are not in this category.
+
+> How you would like to handle this in an universal way?
+
+I think both could be handled by driver provided init_chunk and
+step_chunk value:
+1. in open the fixed FIFO hardware sets constraint for period size, the
+dynamic one can set for the minimum size as well.
+2. application asks for buffer configuration, refining narrows it down
+and settles.
+3. driver fills in the init and step chunk info - fixed uses the fixed
+numbers, dynamic uses the calculated one based on period size or
+something else.
+4a. application checks the init and step chunk and decides on strategy
+4b. legacy applications will work as they work atm
+
+Then we can figure out if there is a need for detaching the chunk
+configuration from period size with a new value where applications can
+ask for specific chunk setup with unmatched period size (small chunks
+with bigger period sizes, big chunks with smaller period sizes).
+
+It would be great to hear from PW guys on this as they would be the
+primary users at first...
+
+-- 
+Péter
+
