@@ -4,145 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E05BF8A145
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2026 09:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DABF8A145
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Apr 2026 09:21:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 519F560216;
-	Thu, 16 Apr 2026 11:21:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 519F560216
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2088A6020E;
+	Thu, 16 Apr 2026 11:21:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2088A6020E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1776331296;
-	bh=cyILk8t7InVIOJNZ3XmJnPZ58qdD6YBPdOMJgkFAPVo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kbmWCZd3vBy+7cixqzRWNAfNFAoOQnx35Donv497sS4DbaUJZ0V6Vom4eax8h0QWP
-	 0b8PGE8LPVj/o6hjW+QGEAolnsuNAbO0unbQX+89BMBYqZoXJ6AjW78RLlQMogNtPV
-	 /GGnjx+IGHHNrA+Drn0IV8ajwK72XRSPpz0BeG/s=
+	s=default; t=1776331310;
+	bh=sL/EABiL7zER4psHRtu/XypIsfVBZZLv89K5wrgu+0k=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=QEgMUTKV7/ve+KL+9IXhF0gg2VEoD1qixlvc8kVTDcgogZj9ezN6n2s/ooj6plepO
+	 nZ4R+8jJ6y8kbX9Z/yC72ckY7faPJ9XjJfL6dKYyAU7hcZe3ExqFiPf8uO3BK+gMLO
+	 oRLl4MnzRifmfAyz5EbzYXdc4BqfMepDUvbLe6Iw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF668F80601; Thu, 16 Apr 2026 11:20:40 +0200 (CEST)
+	id 849BBF80624; Thu, 16 Apr 2026 11:21:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A216F80612;
-	Thu, 16 Apr 2026 11:20:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22F89F8061A;
+	Thu, 16 Apr 2026 11:21:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0708DF80510; Tue, 14 Apr 2026 09:23:53 +0200 (CEST)
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com
- [209.85.215.176])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 09214F8049C; Thu, 16 Apr 2026 11:07:40 +0200 (CEST)
+Received: from SN4PR0501CU005.outbound.protection.outlook.com
+ (mail-southcentralusazon11011071.outbound.protection.outlook.com
+ [40.93.194.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EA1BF800C1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Apr 2026 09:23:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EA1BF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 72A32F80212
+	for <alsa-devel@alsa-project.org>; Thu, 16 Apr 2026 11:07:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72A32F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=svaxeNTQ
-Received: by mail-pg1-f176.google.com with SMTP id
- 41be03b00d2f7-c74244dc0b3so3280281a12.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 14 Apr 2026 00:23:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776151425; cv=none;
-        d=google.com; s=arc-20240605;
-        b=EMG47ueL2pN4q/aaPvodH9O3WR49wqwyf2KGhBc2EyoFZBKWTg1IDFsTt4ZBGWlXx4
-         JYdpcB8Q/VgPTVtulBwWAuleObZkxDcRecw1ksjeGBPVfgYP0CA3wAs/VAUbGY1o4555
-         4V0TUDBXXgIKLMJo2PAOCeWEy/ZGaX+zsypP3g4bXNPem8tbbdXPPxtcRhFv1iPd3/dJ
-         HdYRrzH8IU8LdJM76DsVvHzaw+9Duf7KuUOjHSxn5wsgUF/agOcXs6L5lh8KwcShZiB/
-         hQQ9C34IDWLBWPsWZaDT0/3IdopfY19LYwINABPSQXQPQbKXjmda1EDzhqT+U4vRWZij
-         wx7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=PNMQ3xS5M00U6S5Ye1ZFAEQmJL8P2236+qc+vTRch98=;
-        fh=vZU44/W+ndmu7MuCvE0I3UfNCjvJKAS2iXYggcj5oLM=;
-        b=E+6ri2lU9o+/W9y6h/CthNf+TcaH8JDBnb4p9cKT+RNO9MaCFiGwVREUbPmrRp5Sj7
-         GM1i2IYK9qm83sErwuZQ4kVs1E7nfsFh6INuHsG+SktEMYTjCW1XXezlHnyEIK1qPdWI
-         p0qYsSAZudE4lT/YBf7h4gqbWs/F2w/ZOZmIGPmHStrqdmKHoeshsepLKpidqInn6N1p
-         5nPLmAtqmYuxcM93Im0pbAx7qXcJoDUAfav1RzbypIblDBXYZ71Vn8TbJWBCXI4nUURF
-         6J5+WU6VDY4KijOs3S2crO2Ve36ThVPb6FOgOx80otleNTQXZcmCFzOTIR6iv/Fqfo2M
-         tbFg==;
-        darn=alsa-project.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776151425; x=1776756225;
- darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PNMQ3xS5M00U6S5Ye1ZFAEQmJL8P2236+qc+vTRch98=;
-        b=svaxeNTQ40YmmhpHvSKPxnOaV+dhhugCcwtE1XmcOoWANaD8chLcyRketW1Nkztrp1
-         lX0qKOWn/bFcp2AythyfwuGg0xxZLgFTEshxCQwSvGJ0Y73URfqCZ/FAaF2sRR/VGlao
-         geF4l8/KSm/OFkQLDXocJbiuTGdY8PqGK5mn7ErRy5kemG2XG1x/f6gyLbwDX/HX7hI/
-         gbO18YRem3DabtOVh8o4Tfdda1+ClHI7h1NyHl8qrFD1frmNwgpd7SKtlk+K/2O2bb34
-         Q9c6NzvX3i2LnRkfe0MVGrBXNAYpTuy8hrA5BhUCyZjVCC4TNN2XW90MCKLRDVhfY5Pg
-         rWxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776151425; x=1776756225;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=PNMQ3xS5M00U6S5Ye1ZFAEQmJL8P2236+qc+vTRch98=;
-        b=K1adi/XhfhV5fNkWnaEeiSmE6SxQOYFkUXs0KN/wxbVsy5dsBfLsMPL+Ncuuoi0ucS
-         FTG6Oi8XxNYQwn/Qjrlq0LjIiFlQ9XKNHNwRGapXfFWioKCb0jZmhWXUu59ei8KWtSLa
-         PZcEv5Bs8CQk10NlgKCh/INpKvFUDdsv+GCzqmtHx0EpSQyMi3lHiJ3ybFAeRBDpEsXQ
-         YDLCCb39TintCu5E3s2oToklY11XCc20Ao7qOS4lbATdi+8JDa9MH8Lsx3cw3Ksx7lrN
-         gYLddSxeT7ogAm77SjtbvFupBS6dV7R5/oKOotLfDn5kAFaUdPoNmDBZmDJcFazLWtxu
-         y5pQ==
-X-Forwarded-Encrypted: i=1;
- AFNElJ/APWHwBv2XjEDEpqEEhdqko4Ml14RiUfiCFKG9IRvN0kJs3Gxz4kLMDEI/iQop6y0yOqFpNdeKeKMt@alsa-project.org
-X-Gm-Message-State: AOJu0YxrItE5a5IrVNe0LEqrOQo+jV7nVCu+JTcqdz6pD23maCEqM/VI
-	e2f7s5W0ypivE/kOjOrkJWWqz0/MS2H8nFIVH8LkZe8bmMmutVRuevYSOojKFTN9J+1txILCo1J
-	V3wqNKhb1w93PDSDdwj8NYm+uZIJQgvM=
-X-Gm-Gg: AeBDiesoQ1wYGY1xoVEBtCwpT+2jl6LYPV8YUw1br4JPGhXfFZ9w8jXFnBs+dk6FjBx
-	cAuOi/tvqpjdeNiSccb1dx+r0JJxjCK44iMtQz/D4J5jdVwHH+mAXSIIHhbfz6upbmYZtvKPnYi
-	RPrQeTK087UXnw0OQT1KMFjYzQI3UBUgczJu0HdU2gCxzeHDLAWUZ1zWj1gvveKBKOfNXzHfcyU
-	cP0mhxHIUmP2z/4snXilQw0hMzg9k5T74Q9oYnBBIJxLKvYjPJPoBvYfneelunZBJ3zL8as5cNO
-	0bDLLTsao4V/BRJKEabvXeQYWj8g2PcOdOrQbpe27sJXNwj8
-X-Received: by 2002:a17:902:fe8b:b0:2b2:5840:80c5 with SMTP id
- d9443c01a7336-2b2d5a8a99cmr110805135ad.37.1776151425306; Tue, 14 Apr 2026
- 00:23:45 -0700 (PDT)
+ unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
+ header.s=selector2 header.b=AybhCGMe
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=qseyvCwbGL95wJAyiwWiN2djguOZA8yGcNc/MGv44KDOnfqeu27Gp4BaNAIKfnz/pA1Y+HMBRkQFHyE6pmxkJBND8qeGsmRyv1uZKr9vJYeUtaCKmT4FIj9gOPT5C3reSREvKqtplSj8QIHnloAJHhKGMXKOVtvGxnw9In+ZNedff1vK/tZTQRkc06uaZQkc83dEe/RiPxG5VRmVtcuFbm8BFVJr5xCy7XCJ7oiyv7K+xd8Thg1GLm0+BAbAgsydyrwE0rVO+5clpD6Pw0I9bfEtrIX2v5vu1RUK1cPdqdReTfE+uKglIiTqsU1UOSu4u+ego+GGJT8Bs6UhN9GOIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O3QGFNO/TyCapwLc+Sva9ZPJYq2TuJgcmDQPS21Edqg=;
+ b=AucHMmOUzhndgNEtQaLr/5PCz4SQcALMrss6tuRXyDYV0PLAWphb1lGWPQdWOuugQnwcTM266oU/xwCmgXF6XjKqw9/VuGDQ0RVU6/jxr/V0RrimZxfv1Ap+1Prj8vlAvPUsVR2CWOYr17oueGPPPAhg3u95u1zehlLPzMbP1uyX6nRZZVxe9tH3OlUIb8frLoxq6ez7s6hd560YNM6rY2vwCloOQEM4HLe3JCtSBMmpzQiTkC8+rKwx6XRFMzlEanQ/kgGYWgvKxucQKoocWmYA2zp/cIU68IfSLA+CNDChPjitbcC0xCHtGNhjOFEZmuUdOAyY9/aoVm8b0nr4sA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O3QGFNO/TyCapwLc+Sva9ZPJYq2TuJgcmDQPS21Edqg=;
+ b=AybhCGMeNgOlll55u7tso0FW7cw9imUnoxNaxrFq6x/qjvAMxRWUozJnA1zBce7u+Lv7hefvaBhHvcNzJFdr+XlQO/TLKnCr7GRiFrrNmm5PwzhVDLLpexjhgkwWwrAaik/9rDdAOB3L1Hu78X+3+PFC9OXYjv0+RblSuWpau85t0DwwBJkCphRbFfv8C2u3xfffQkMElz/TlwJ+rWOnhC7Gvf2F5fGq0P0pVcalSb5Ntxp753k9dTvH1t2sIX0FzJy94HmFy5R9UYKTonGGq3tkEOMNPuiN3dYoO22a476rTuxFwkK7oC1xOpvGr0owzAs5li9UGS0ZzJBkA2FtSA==
+Received: from BY3PR03CA0017.namprd03.prod.outlook.com (2603:10b6:a03:39a::22)
+ by MN0PR12MB5956.namprd12.prod.outlook.com (2603:10b6:208:37f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9818.21; Thu, 16 Apr
+ 2026 09:07:31 +0000
+Received: from SJ5PEPF000001CB.namprd05.prod.outlook.com
+ (2603:10b6:a03:39a:cafe::ec) by BY3PR03CA0017.outlook.office365.com
+ (2603:10b6:a03:39a::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9769.51 via Frontend Transport; Thu,
+ 16 Apr 2026 09:07:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SJ5PEPF000001CB.mail.protection.outlook.com (10.167.242.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9769.17 via Frontend Transport; Thu, 16 Apr 2026 09:07:29 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 16 Apr
+ 2026 02:07:13 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Thu, 16 Apr 2026 02:07:13 -0700
+Received: from build-sheetal-bionic-20251202.nvidia.com (10.127.8.14) by
+ mail.nvidia.com (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20
+ via Frontend Transport; Thu, 16 Apr 2026 02:07:13 -0700
+From: Sheetal <sheetal@nvidia.com>
+To: <alsa-devel@alsa-project.org>, <perex@perex.cz>
+CC: <jonathanh@nvidia.com>, <thierry.reding@kernel.org>, <mkumard@nvidia.com>,
+	<spujar@nvidia.com>, Sheetal <sheetal@nvidia.com>
+Subject: [PATCH] tegra-hda: Add HDMI/DP outputs 2-4 for Tegra186+
+Date: Thu, 16 Apr 2026 09:06:00 +0000
+Message-ID: <20260416090600.2237882-1-sheetal@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: 
- <CAC88DfsHrhyhy0Pn1O-z9egBvMYu=6NYgcvcC6KCgwh_-Ldkxg@mail.gmail.com>
- <87a4wgrxil.wl-tiwai@suse.de>
- <CAC88DfvjQvZvdvGdZ00woMymE2tUWk=2Dbqi3EzuzSHxGjEnzw@mail.gmail.com>
- <871phsrsnf.wl-tiwai@suse.de> <f59a70ca796b4d09822f514e7f25ac5c@realtek.com>
- <CAC88DftEBEEEvODGUZzkry+kgAm=SfH=PAsxwu+SABMBMRMs=Q@mail.gmail.com>
- <658f53ada52f4de9a0c852dd56554a2a@realtek.com>
-In-Reply-To: <658f53ada52f4de9a0c852dd56554a2a@realtek.com>
-From: =?UTF-8?B?SsOpcsOpbXkgQmV0aG1vbnQ=?= <jeremy.bethmont@gmail.com>
-Date: Tue, 14 Apr 2026 14:23:31 +0700
-X-Gm-Features: AQROBzDuOKQ-Sqh7dOPc0fOQ_0mD5HzIWXtRaG_1ih6Nu4he2z_S0UIbTfvgGRw
-Message-ID: 
- <CAC88DfvyuWeD99hhKKsHum+wpjjQrOKsdWvKVZMefjhcx3sKBw@mail.gmail.com>
-Subject: Re: [REGRESSION] Audio popping on ThinkPad X1 Carbon Gen 12 (ALC287)
- after commit d2e01e0c5e94
-To: Kailang <kailang@realtek.com>
-Cc: Takashi Iwai <tiwai@suse.de>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"regressions@lists.linux.dev" <regressions@lists.linux.dev>,
-	"regressions@leemhuis.info" <regressions@leemhuis.info>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: jeremy.bethmont@gmail.com
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CB:EE_|MN0PR12MB5956:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73bf8616-3879-4b89-c0a6-08de9b97962c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|82310400026|376014|1800799024|36860700016|18002099003|56012099003;
+X-Microsoft-Antispam-Message-Info: 
+	Ii5cdNbJFEutiZaSjjZb4hOiZhtjR7DQHP0F63sda2W+lSLemETEiwuOUMggiX96tySO1YemrYtAG9W52YTq5KjTaQoHdetVDjs0EH6sUk7uV/t3w90HQFrF7lt6T/1uMjt+1jkpfwQkitHhjSn1jKRkWuuhJux/pMUlWTq2U0vnd12x3Kwg8GTOkD9l5UP9QhNs0vld3lKXOPDc++/b04tOuR6qU9Ql9du/iHjliEwtH6Ylsp7SpT+6GSdTvi4fGaoI+iwKyyiAF4+Ax5vhrtA9B5cx5lrnyuVSXsKDV/djgpLeKkWdBRXJbK8wXWaZZebD5NYsE95Prk2UHSWxEbkD07lLCPcL4Zhia+Fp0V8PcZ6GYGX3RV6O1+7YF5wSDKtwhFuIz4fF4IedlFRxTmpp3/NBRcB5Rc81ofor0Yu9hRbqPiX+qM+eVZdYYXD7gVi4SyODjaCichNcNxLWq0FuIzmDd1/dVp8P8XcShzl0ajePCjmw5wD274hf0QVYoKi0cVJrU4eJ2nKmLKRRk91RIIjUHFQPU7Y2pL7vyEWlAEgHb1dLhgjbkno5Lr7EN3vVxmbrDfmdFpU+P4cQzJD5CdLHe5pGhGvVuKwnca1V6jvPtmrH/dVS1LHezucGkZX0D52HSJ4MG0GaE0HcYC90LuJwb/6YOEiGxHBhMNYT2TEoDV6FpTHdeTJ3PHcO7g5gg0ydKz38uRglcj+wSC8zhivLJwieMf599m2mS4B3W3S8DZcOTN78c65CzLOrGfOmMhzQFfMBS+KRp+FRfw==
+X-Forefront-Antispam-Report: 
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(1800799024)(36860700016)(18002099003)(56012099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	r6A4tkpF7qlVSYcdG0KgSU5l+KCWfvJauyzWJ9igZQPvjBiOib/omlScj990pb0AHopPF+rtIp36qp+jjentpUehQ3gvgAPjguyfqe8GXs6dylQRAHmf60LlFO3uYJXplYrn7+UkFnswUbnPuMjLPc+4k5LLNtqsF+d5hkcLY48ikZ7i1bt1A95JexOM2I8hZ+wHF3Mwghff4C9lIznOW51B81KtDSktNnQSxDsH+OdP+Moj1CInzrACbnXftjp3hmH5lYUrrlX5sS+M5XICztUrfiBlQAtokyCr+uh0IEplc0hYg+tSfObIEb3+mYTLsofWwv5kbZ4rSgbilckQXwuKMPdhqTIGJlACzvCtomSeQwM7L6Iu+z8rh1gbonm4gsVjJrh4XMTV4/ntnkEy6jKikhBkJYun+YBJpOQTbKeeXAQjfILfnqBEGM5ntqzh
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2026 09:07:29.4870
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 73bf8616-3879-4b89-c0a6-08de9b97962c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	SJ5PEPF000001CB.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5956
+X-MailFrom: sheetal@nvidia.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: DC2ZP3NUCBPPBN4BS5P7U667XP454YMO
-X-Message-ID-Hash: DC2ZP3NUCBPPBN4BS5P7U667XP454YMO
-X-Mailman-Approved-At: Thu, 16 Apr 2026 09:20:27 +0000
+Message-ID-Hash: 3NB4PE4JOUZV2JF62HXQAK76GRZ3CA5G
+X-Message-ID-Hash: 3NB4PE4JOUZV2JF62HXQAK76GRZ3CA5G
+X-Mailman-Approved-At: Thu, 16 Apr 2026 09:20:58 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DC2ZP3NUCBPPBN4BS5P7U667XP454YMO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3NB4PE4JOUZV2JF62HXQAK76GRZ3CA5G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,178 +150,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Kailang, Takashi,
+Declare the maximum four HDMI/DisplayPort outputs (PCM devices 3, 7,
+8 and 9) so PipeWire can see every available port. The HDMI macro's
+built-in ControlExists check ensures devices are only created when the
+corresponding jack control exists, so SoCs with fewer outputs are
+unaffected.
 
-I can confirm that applying this patch completely resolves the issue!
+Signed-off-by: Sheetal <sheetal@nvidia.com>
+---
+ ucm2/Tegra/tegra-hda/tegra-hda-HiFi.conf | 28 ++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
 
-I compiled and tested it on my ThinkPad X1 Carbon Gen 12 (ALC287)
-running kernel 6.19.11. The hardware popping noise upon PCM suspend is
-entirely gone.
+diff --git a/ucm2/Tegra/tegra-hda/tegra-hda-HiFi.conf b/ucm2/Tegra/tegra-hda/tegra-hda-HiFi.conf
+index 3277f6d..f26941b 100644
+--- a/ucm2/Tegra/tegra-hda/tegra-hda-HiFi.conf
++++ b/ucm2/Tegra/tegra-hda/tegra-hda-HiFi.conf
+@@ -1,10 +1,34 @@
+ Include.hdmi.File "/codecs/hda/hdmi.conf"
+ 
+-If.hdmi {
++If.hdmi1 {
+ 	Condition { Type AlwaysTrue }
+-	True.Macro.hdmi.HDMI {
++	True.Macro.hdmi1.HDMI {
+ 		Number 1
+ 		Device 3
+ 		Priority 1100
+ 	}
+ }
++If.hdmi2 {
++	Condition { Type AlwaysTrue }
++	True.Macro.hdmi2.HDMI {
++		Number 2
++		Device 7
++		Priority 1200
++	}
++}
++If.hdmi3 {
++	Condition { Type AlwaysTrue }
++	True.Macro.hdmi3.HDMI {
++		Number 3
++		Device 8
++		Priority 1300
++	}
++}
++If.hdmi4 {
++	Condition { Type AlwaysTrue }
++	True.Macro.hdmi4.HDMI {
++		Number 4
++		Device 9
++		Priority 1400
++	}
++}
+-- 
+2.17.1
 
-Thank you both for your incredible work on this. You can add my
-Tested-by tag when this gets merged upstream:
-
-Tested-by: Jeremy Bethmont <jeremy.bethmont@gmail.com>
-
-Best regards,
-Jeremy
-
-On Tue, 14 Apr 2026 at 13:44, Kailang <kailang@realtek.com> wrote:
->
-> Sorry!! Attached wrong file.
-> Attached again.
->
-> -----Original Message-----
-> From: J=C3=A9r=C3=A9my Bethmont <jeremy.bethmont@gmail.com>
-> Sent: Tuesday, April 14, 2026 2:37 PM
-> To: Kailang <kailang@realtek.com>
-> Cc: Takashi Iwai <tiwai@suse.de>; alsa-devel@alsa-project.org; regression=
-s@lists.linux.dev; regressions@leemhuis.info
-> Subject: Re: [REGRESSION] Audio popping on ThinkPad X1 Carbon Gen 12 (ALC=
-287) after commit d2e01e0c5e94
->
->
-> External mail : This email originated from outside the organization. Do n=
-ot reply, click links, or open attachments unless you recognize the sender =
-and know the content is safe.
->
->
->
-> Hi Kailang,
->
-> Thank you for the patch. However, I believe you may have attached the wro=
-ng file by mistake.
->
-> The attached patch ("0000-x1-gen12-speaker.patch") is dated November 12, =
-2024. Its commit message mentions fixing an issue with older BIOS versions.
->
-> Could you please double-check?
->
-> Best regards,
-> Jeremy
->
-> On Mon, 13 Apr 2026 at 16:16, Kailang <kailang@realtek.com> wrote:
-> >
-> > Hi Jeremy,
-> >
-> > You can test attach patch.
-> >
-> > BR,
-> > Kailang
-> >
-> > -----Original Message-----
-> > From: Takashi Iwai <tiwai@suse.de>
-> > Sent: Tuesday, March 10, 2026 4:33 PM
-> > To: J=C3=A9r=C3=A9my Bethmont <jeremy.bethmont@gmail.com>
-> > Cc: Kailang <kailang@realtek.com>; alsa-devel@alsa-project.org;
-> > regressions@lists.linux.dev; regressions@leemhuis.info
-> > Subject: Re: [REGRESSION] Audio popping on ThinkPad X1 Carbon Gen 12
-> > (ALC287) after commit d2e01e0c5e94
-> >
-> >
-> > External mail : This email originated from outside the organization. Do=
- not reply, click links, or open attachments unless you recognize the sende=
-r and know the content is safe.
-> >
-> >
-> >
-> > On Tue, 10 Mar 2026 09:24:38 +0100,
-> > J=C3=A9r=C3=A9my Bethmont wrote:
-> > >
-> > > Hi Takashi,
-> > >
-> > > Thank you for looking into this so quickly.
-> > >
-> > > As requested, I have attached the output of `alsa-info.sh
-> > > --no-upload` from my machine.
-> > >
-> > > Please let me know if you have a proposed patch you would like me to
-> > > test. I am happy to build it and verify if it resolves the popping
-> > > on my hardware.
-> >
-> > I guess dropping the alc_process_coef_fw(codec, en_coefs) call at closi=
-ng would fix your problem while keeping the one at open.
-> > But I'm not sure about any side-effect by that.
-> > Kailang, could you check this?
-> >
-> > BTW, when you disable runtime PM, does the pop noise still appears?
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> >
-> > >
-> > > Best regards,
-> > > Jeremy
-> > >
-> > > On Tue, 10 Mar 2026 at 13:47, Takashi Iwai <tiwai@suse.de> wrote:
-> > > >
-> > > > On Tue, 10 Mar 2026 01:01:11 +0100, J=C3=A9r=C3=A9my Bethmont wrote=
-:
-> > > > >
-> > > > > Hi Takashi, Kailang,
-> > > > >
-> > > > > I am reporting an audio regression introduced in kernel 6.18.13
-> > > > > on the Lenovo ThinkPad X1 Carbon Gen 12 (Meteor Lake, Realtek
-> > > > > ALC287 codec,
-> > > > > SSID: 0x17aa231e).
-> > > > >
-> > > > > Since this update, the laptop emits a short, noticeable hardware
-> > > > > pop/blip from the speakers exactly when an audio stream closes
-> > > > > and the PCM state suspends. It happens consistently a few
-> > > > > seconds after playback finishes (e.g., after a system
-> > > > > notification or terminal bell).
-> > > > >
-> > > > > I have tracked the regression down to the following commit:
-> > > > > d2e01e0c5e947da0b5005ca89efa82baeb232adc ("ALSA: hda/realtek -
-> > > > > fixed speaker no sound")
-> > > > >
-> > > > > #regzbot introduced: d2e01e0c5e947da0b5005ca89efa82baeb232adc
-> > > > >
-> > > > > Root cause analysis:
-> > > > > The commit modifies the `alc287_alc1318_playback_pcm_hook`
-> > > > > function, adding raw COEF writes to disable/enable AMP silence
-> > > > > detection on HDA_GEN_PCM_ACT_OPEN and HDA_GEN_PCM_ACT_CLOSE.
-> > > > >
-> > > > > Because `alc287_alc1318_playback_pcm_hook` is a shared hook used
-> > > > > by multiple Lenovo ALC287/ALC1318 devices, these unconditional
-> > > > > `WRITE_COEF` instructions are being sent to hardware that does
-> > > > > not need the silence detection fix. On the X1 Carbon Gen 12,
-> > > > > executing `alc_process_coef_fw(codec, en_coefs)` upon stream
-> > > > > close triggers an immediate electrical pop. Monitoring with
-> > > > > `pw-mon` confirms the hardware pop coincides perfectly with the
-> > > > > monitor_FR / monitor_FL ports going idle/suspended.
-> > > > >
-> > > > > Proposed solution:
-> > > > > Could we revert this commit, or alternatively, wrap these
-> > > > > specific silence-detection COEF writes in a targeted
-> > > > > `ALC287_FIXUP` quirk matched via SSID/DMI, rather than executing
-> > > > > them globally in the shared playback hook?
-> > > >
-> > > > Could you give alsa-info.sh output?  Run the script with
-> > > > --no-upload option and attach the output.
-> > > >
-> > > > I guess the bug might not be specific to your device but happening
-> > > > in general with all matching ones.  As a workaround for such a pop
-> > > > noise, we often need to reorder verbs or put some delay between ver=
-bs.
-> > > >
-> > > >
-> > > > Takashi
-> > >
-> > >
-> > >
-> > > --
-> > > J=C3=A9r=C3=A9my Bethmont
-> > >
->
->
->
-> --
-> J=C3=A9r=C3=A9my Bethmont
-
-
-
---=20
-J=C3=A9r=C3=A9my Bethmont
