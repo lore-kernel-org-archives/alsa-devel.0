@@ -4,127 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4ACEF99C90
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2026 19:59:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8993AF99C90
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Apr 2026 19:59:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E480B60215;
-	Sat, 18 Apr 2026 21:59:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E480B60215
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92C1F601E2;
+	Sat, 18 Apr 2026 21:59:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92C1F601E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1776542372;
-	bh=rN0rCz67QdG2jhAVzl3/13MZcZfoqt8FbqTTiRbeLbk=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1776542391;
+	bh=V/0JnFuPflrCkTih5poHefbpwzvGWy3ECFZ+xKx5ijA=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=EHvTsDB0ZMIe2AeQy6sk0+Wykrwq7xHIUFEdyZk7NLie+YBHbPQzm/M1xCwyDHxJw
-	 wcr3IVQ0SwQLcSSDh4JfAXtUNMHIe9VU9yW5bdi91y/O55rWcAOO/WidahFxKLzR75
-	 YXNFu2hgN2QCKn2KyzW2SMa57eP24lHGm6nJCcpM=
+	b=Jw/VZpLGyc40VmYi3tLR8vnvHc/LZ8VJYWjecULSBu5PsEdmWgLVMutmV5RktNZsW
+	 ta6WygWR+4K9Pan/aIKjrpAZQ5X7YQRRqv28KJqzS90+e+06nRdIMTUKG3UIlaLAyw
+	 f+5LRfEjI0MM70oENVN9Qgpuo7NgqiW9CGldl/dw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF547F805EF; Sat, 18 Apr 2026 21:58:57 +0200 (CEST)
+	id 8740FF8061B; Sat, 18 Apr 2026 21:59:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E1F6F805E7;
-	Sat, 18 Apr 2026 21:58:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5519EF80613;
+	Sat, 18 Apr 2026 21:59:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C8F2F804CF; Sat, 18 Apr 2026 12:57:11 +0200 (CEST)
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com
- [209.85.222.176])
+	id AB0AFF804CF; Sat, 18 Apr 2026 16:31:29 +0200 (CEST)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com
+ [209.85.128.180])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 558EFF8024C
-	for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2026 12:57:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 558EFF8024C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9F811F8001F
+	for <alsa-devel@alsa-project.org>; Sat, 18 Apr 2026 16:31:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F811F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=IlAZWTgp
-Received: by mail-qk1-f176.google.com with SMTP id
- af79cd13be357-8d68f702851so196876385a.0
+ header.s=20251104 header.b=R0erK8mD
+Received: by mail-yw1-f180.google.com with SMTP id
+ 00721157ae682-79a74765703so14657547b3.3
         for <alsa-devel@alsa-project.org>;
- Sat, 18 Apr 2026 03:57:08 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776509827; cv=none;
+ Sat, 18 Apr 2026 07:31:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776522685; cv=none;
         d=google.com; s=arc-20240605;
-        b=BzScwe/Julsoj1fN3xLlIAI+41iPYdzRy0Mn4dtQhLu+qPzAFqAkTTqJQ5dvtmNuQX
-         UAdVniW66f9e22XEutKXsbqX2ER1KnWLzypiSbVBx/hUdjA7eZvRjxlLuuELBNr8m7He
-         pN+m7FeqezWH/WMzTTeADwAJKLHQhMZtYtmJN3Qa8aVyg4JLu/wT4avae+GToz5SWPG8
-         X3yPvouZvmM+O6rhyJ8IF4eEnUol+ff0GU7cMDdxpc3R8fHUBjy5HZp/fWQGMEOAtIbm
-         v5ojXIc9zdK7YyacGympVb6x2aV4bcqXDyoTI4+XE0CSY4RrPzLGGs8iEGdWaUCLw/bb
-         6pCQ==
+        b=UDObIxJGtQOO+YUMih+lZcQQ5XvOT3ejNdsLxQlHQ3fx3Ghq8tw/WKkVkXvrW4NPUB
+         m2Oc8ifiQZ6j+EFt/dmPD4G+uUAPxvmelpy0cS8mck37CUM2YMak74TQjLSlQFk2bMfT
+         H/tvkmpkZTigczi+K3KRwDhzqpednpbNT0VjVYywCpwq26RQ115n43BuneHdbakaFFcv
+         +jiXmEzJYtiHxGyx6i8IHZ+cvbjsYreVeTcjAhL7e+5r/UXk5hWuF739rwcBvP8lzohq
+         Lu1BYBLxRNTtsZ9joYKT2UANwGq6tg1rf+du18ZUXuWq1ev4zgHFBfvXV+x2YHd0AkGB
+         v2IQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
  s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=jIwYJqa08VJEV3K596gVFxVWx4Ul9UaRbzeJJTtC9Ns=;
-        fh=IU7OLltWMHrWih3TQesDjxbAKgN6R6ysHYXT2Tj3Ang=;
-        b=YrhJRUtwCzCOJgnLIgpppYlS+nBOcAYa9DtNsMYNZ94zmQeKUtlVfsx/ZK2WFA7jwC
-         AiyMozsgu1jVKRH78TSwGbn/P1CEZWQxPtif2vA9XXmlRDuKMux00k7c+eBtpre08p2d
-         RlaFtAPtEqI9451HBe8DWgJaVRkSRDhURaGFyU9crtW+9KwcofAWmEnp5hkO8dJUn0BQ
-         +AxN9+t4U+hGJ8SbrM/uqEIiAMREUyaP0MPXJ4/dKZjVFclQBXnhdwGa89PoLxFRPwn7
-         aWVMB/T+ozptCuLdKPAtm4v5zfelMpQh9YQmTASS2ekGoi/vkQzkFd1wN0Utp5AdN9cl
-         bXAA==;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=nWfjr2ggjsuARLXezBsHO1WwhoKgm+kp+dxCH+t+kA4=;
+        fh=s1h8N4U4ASgl2diPi2yKjEmsLSTuwbZjYBDYrAXLUvw=;
+        b=adQP0Osy2gDXtBbqRq7Qk3Q2HiNtRfg62DHQgmUUDOL9EAYyAzV6Zdt18HVHJtyQrB
+         2E8xY7/YGt+WprDwX180upXidR4dyCfY8dTktqkgSFfIuEmm0NUdrwUru/+SjsLGsJhp
+         7afWGi9R293nE9rlIvhB1qE1L2vfb5aXu8D14zlNCH1Fz3bEIUHKMvKDDcmqvp+SRcUI
+         Y1P0hFHrCoFqpXf9FCxLB/35tzbs6lTylLLjZx4mDYOM1qJktH5fcmO/EmMoz+XAZef8
+         ZHEN04xP3bYqJKlo89w/z2fsgLxFoBiSScoCPVyjaJVJUruZxmPGupd9Nn5HtGSJifIn
+         LtiA==;
         darn=alsa-project.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776509827; x=1777114627;
+        d=gmail.com; s=20251104; t=1776522685; x=1777127485;
  darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=jIwYJqa08VJEV3K596gVFxVWx4Ul9UaRbzeJJTtC9Ns=;
-        b=IlAZWTgpeb3Mj1ZpHqo2f8netmIAILwVLU/zrGN8ismx1spPZY0I6+m5vrtgLgcxIc
-         DCgKU8/UfxPX6y9QsHQBHX2aH10EmK2YOPzFD1btCesHGRnHDl+KVR5bynrdMG/rxgDW
-         tgA//xvlIeIbAAFMoX4Dmd4PEOPiO4vh8Ere9v3LCNKthtp+rrHP7esOhvUTrBDAM0C8
-         fJWw1lHuNB9PptuJsaBq3vn+86D0yteQrdu9ju2VVklSlzKRGMrupqevOZV6Es71LyLz
-         g/TFIdx/ZQJIHmAd39J2XFUqxjvtfhfNrKqwgUP8FgGmwALIu2WxPgubH61J3zRz2ZrR
-         vM9w==
+        bh=nWfjr2ggjsuARLXezBsHO1WwhoKgm+kp+dxCH+t+kA4=;
+        b=R0erK8mDoHx/wWVdYFvF0hNsOpWKERlhbmu2Y8/Og54ThsoB/LX3O27VVEQxpFhqgc
+         YE5/ndIeEGcLp+1hxLjQVISBsjAFyFxS2T7/0r41P6eivoaFZNXZY8SRBLtMJUWPUjXc
+         dkw2cUhZuWLdHPFJZO4XdIxc/gvQpMVjmcQmBkAoeFk/g7jjJzucgG3gtzmeU3IXoHIX
+         /Ps1tuux2/Ivs2TW42e5uavnbfbOWIE8bCqh59fwav33SLcQsX75GsKryRtfL2vfWT/0
+         NGNFWpreJHvemIn3a61O25dwCZIF0e5dnsusltYqVhB/mljHYKH6nHLYM67QDDyqUKY7
+         9FHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776509827; x=1777114627;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
+        d=1e100.net; s=20251104; t=1776522685; x=1777127485;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jIwYJqa08VJEV3K596gVFxVWx4Ul9UaRbzeJJTtC9Ns=;
-        b=Ut9a+SCBuZdgsiZsqVi8QqUu4xceqK3lobJDp4MTevEzNsJsM7bvOhC4EheQa7CL5A
-         1LQmn8dLA2wTbfPBFv3mF73xTwF0K/ylJgMwm0YwoALsKFtL9r4/b1QT6q1II2Uhm+HJ
-         GYCsOxBRWlol2pxjWfD3hyiDdpDoNOpkgtSHcLhY161Rz8/R44Lj7HpA3xhZ4vC6soit
-         YQ94+LrrWDQU1AkczI+wcPPu48+HI0l+deaiUdvFjl1qUj2TzDwQfV7HzxCeTG5Fq6Jm
-         wcEqCDAaPNNQcmRMLdOjVpTNQuJycruGEV7pFGYN4q37pcpFYzjky+dOe3Lp5EmgfuEC
-         ZI3g==
-X-Gm-Message-State: AOJu0YzWn7V1ASnE76g8vDngzFDBJkZ6DzXeoVTpYRa6GBtIhZbu8T7P
-	cHQ0WNUtTpJ+7ybdwNjeV2MJ58mgspskQ1Ty2e0vY6qiCit8E1IDD08ga1EDVcb0LgJIKRdHLvF
-	AqkyjGI/IiLUxwbkyF28gx0Ytx2c80aPVqnof
-X-Gm-Gg: AeBDiesRqASkoar9vpbY05K/hu8y4nF9k8v7TqN1eY/CEWKP1VL5RgllK/9TB1iZyZ6
-	V/nY2JNycwxaymheCYiFd4eKbR87Vc/ZgNtv8vN/6bMeT3MLYPiFUiV+QnxHkbr3j+kjwAPyPXP
-	UzAkINv9lz3apY9GSLz++Nedcrzrne3BItiMc+Tsy1WFIoOCT88E2masG6ORwqSbtufIaCXDLnW
-	+AI5cN5B8Zq5d6s5/scj5NzIMTaMc+rsAAqTtxKYzVoRrGAkymtKmsKH86+kuoHvN6VPhFPEgG1
-	x4BPxfaL8/8Xz6qyucjjg+TL4xHus8DqOV6LQELFL0myDfI=
-X-Received: by 2002:a05:620a:29c3:b0:8cd:942e:82dc with SMTP id
- af79cd13be357-8e7916b2195mr833919085a.41.1776509827296; Sat, 18 Apr 2026
- 03:57:07 -0700 (PDT)
+        bh=nWfjr2ggjsuARLXezBsHO1WwhoKgm+kp+dxCH+t+kA4=;
+        b=I7ZPadAK9x20D4I2/aij8lxCQMLszVSOOC/9PvhDjNTvD6HugXUYcnhW6VF4s3cFY9
+         2kQy/gmuA71cW28hYbukgbjvCEdc7NM9u4E4/cj9Wfj/Uk52WhsvqJh+3alwHUHJ2bl1
+         4rMOVxeKDUr2T0oeGtAUEqBdBaGMZ8Q7+W7aAS9/z4YGb/XmfnbDGKqOoqG5SOo7lkRn
+         1PoxeCpqJZA2gdf8QhHKc69Js7joVqzHmteQrL7hSPt6TuHxmiMvlWAuJN5ZMXZCnuYs
+         z0KNWDm1MtiHUdMa2UMlgySe9G+QuiOBb4QtYB1SGWvOlSbDo9Eaw9Y+3NpQRDC2pUMW
+         hsaQ==
+X-Gm-Message-State: AOJu0YwBRs0tk1s4k51OeEVtYU+0nngJnB+7AmYqaqvx+IExEbeQh10E
+	+Hl0E/m26oU76KeoxGNRkePIrNWaRtO79AF6Y2zzZO1AVLQ3A7lrtm7GNZzWiCpYRT1Q9cAQWTd
+	KuKtd9tln7NOGrf5K7OUnj6wDdcGJcB2CgTuL
+X-Gm-Gg: AeBDievHYKxpvVHPAD95T+/qdIFDBmKzvPY/clSDK0h4ZR42vhkskPE6QfLwp+tbcqB
+	335LqqzejVSrjo0HQUc4ALDiRxUgQ5YspGuITgBnfHlmpEp84C6m0+df2ZtlUVmVw1eqDSdmVd1
+	qgI1LnH8npBYg/kXWVOK0njhedHsBHCoYkJuIXTM7NljBSKCR3P1j1sFJxO+J1RTrgKehlPHonQ
+	jCvWkD8olCsWEgMrUkqAmMorHN/cY2qOrO5WwhoP1Rmaj95xqriCznmRO2CJUEziGEARnZcCWkp
+	Y0P1LqluW8+6dYKEjXo=
+X-Received: by 2002:a05:690c:4805:b0:79a:c98d:2b99 with SMTP id
+ 00721157ae682-7b9ed06ac49mr74065037b3.50.1776522684633; Sat, 18 Apr 2026
+ 07:31:24 -0700 (PDT)
 MIME-Version: 1.0
-From: Paul Cleghorn <cleghornp@gmail.com>
-Date: Sat, 18 Apr 2026 11:56:56 +0100
-X-Gm-Features: AQROBzC7pJ4SdmmrrSIijEXTG4_3Z3NUbKQp0Klz5Gz1HmJZ9A17P584VRuCz8g
+From: =?UTF-8?B?QXlkxLFuIFQuIEJha8Sxcg==?= <aydintb@gmail.com>
+Date: Sat, 18 Apr 2026 17:30:48 +0300
+X-Gm-Features: AQROBzBL2Be5p1kTGOmCH7TdA9dnshb6ICeYWUTDQo2-ZdvrRhCd9_wTwOHcSsw
 Message-ID: 
- <CAAa+JJf8cR4oMWjzZo6qmRDtTq1cU8O7VmWNmMeLz0qEO6t9AQ@mail.gmail.com>
-Subject: ALC287 Lenovo Yoga 9 14IRP8 (SSID 0x17aa3895): missing speaker quirk,
- only 2/4 speakers driven, generic SOF topology loaded
+ <CAE+AOV9O5zaUdbNEd7FcoaVwQVWZWn2xGk4=_VPs9rsTb7iqjQ@mail.gmail.com>
+Subject: 
+ =?UTF-8?Q?=5BBUG=5D_TAS2781_=28TXNW2781=29_Firmware_is_NULL_=2F_IRQ_inde?=
+	=?UTF-8?Q?x_0_not_found_on_ASUS_ROG_Strix_SCAR_18_G835LX_=E2=80=94_regressio?=
+	=?UTF-8?Q?n_in_6=2E19=2B?=
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.com, kailang@realtek.com, perex@perex.cz
-Content-Type: text/plain; charset="UTF-8"
-X-MailFrom: cleghornp@gmail.com
+X-MailFrom: aydintb@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: C7FE737F4572L3Z5HFYZNLOSBEWIYFUC
-X-Message-ID-Hash: C7FE737F4572L3Z5HFYZNLOSBEWIYFUC
-X-Mailman-Approved-At: Sat, 18 Apr 2026 19:58:51 +0000
+Message-ID-Hash: EYIMYV7S2HL3FV2PFLEX7NHFNSVE5ZVW
+X-Message-ID-Hash: EYIMYV7S2HL3FV2PFLEX7NHFNSVE5ZVW
+X-Mailman-Approved-At: Sat, 18 Apr 2026 19:59:00 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C7FE737F4572L3Z5HFYZNLOSBEWIYFUC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EYIMYV7S2HL3FV2PFLEX7NHFNSVE5ZVW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,88 +136,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-On a Lenovo Yoga 9 14IRP8 (machine type 83B1), the built-in speakers
-produce very thin / tinny audio under Linux. Only the front-facing
-speaker pair appears to be driven; the rotating-soundbar woofers/tweeters
-that Windows uses produce no sound, and no smart-amp DSP/tuning is
-applied. The ALC287 quirk table picks an empty fixup name for the PCI
-SSID and the SOF driver falls back to the generic 2-channel HDA topology.
-
-alsa-info:
-  http://alsa-project.org/db/?f=90a062f3fa1c64544a893a35fe9c75a1728fbf17
-
-Hardware
---------
-  Laptop                : Lenovo Yoga 9 14IRP8 (convertible)
-  DMI product name      : 83B1
-  DMI product version   : Yoga 9 14IRP8
-  CPU                   : 13th Gen Intel Core i7-1360P (Raptor Lake-P)
-  PCI audio             : 00:1f.3 Intel Raptor Lake-P/U/H cAVS (rev 01)
-  PCI subsystem ID      : 17aa:3801
-  HDA codec             : Realtek ALC287 (10ec:0287)
-  HDA codec subsystem ID: 0x17aa3895
-  BIOS                  : current per fwupdmgr (no updates available)
-
-No Cirrus CSC3541 / CLSA01xx ACPI devices are present.
-/sys/bus/soundwire/devices/ is empty. The only SPI devices are spi-nor
-flash. So either this model uses different amps from the predecessor
-14IAP7 (which used CS35L41), or amps are present but not enumerated via
-ACPI. cs35l41 / scodec-cs35l41 modules and /lib/firmware/cirrus/cs35l41/
-firmware are both present on disk but no consumer binds.
-
-Software
---------
-  Distro                : Fedora 43 Workstation
-  Kernel                : 6.19.12-200.fc43.x86_64
-  SOF firmware          : 2:2:0-57864 (ABI 3:22:1)
-  Topology loaded       : intel/sof-tplg/sof-hda-generic-2ch.tplg (fallback)
-  Userspace             : PipeWire 1.4.11
-
-Relevant kernel messages
-------------------------
-sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-sof-audio-pci-intel-tgl 0000:00:1f.3: loading topology:
-intel/sof-tplg/sof-hda-generic-2ch.tplg
-snd_hda_codec_alc269 ehdaudio0D0: ALC287: picked fixup  for PCI SSID 17aa:3801
-snd_hda_codec_alc269 ehdaudio0D0: autoconfig for ALC287: line_outs=2
-(0x14/0x17/0x0/0x0/0x0) type:speaker
-snd_hda_codec_alc269 ehdaudio0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-
-Note the empty fixup name after "picked fixup" -- there appears to be a
-quirk entry for this SSID but with no identifiable fixup id.
-
-Codec pin configuration
------------------------
-Only one internal speaker pin is enabled in BIOS pin defaults:
-  Node 0x14  Pin Default 0x90170120  [Fixed] Speaker at Int N/A
-All other speaker-type pins use 0x411111f0 (not connected). Node 0x17 is
-the second speaker-out pin complex in hardware but BIOS-configured as
-unconnected. Headphone pin (Node 0x21) and internal mic (Node 0x19)
-behave normally.
-
-Expected vs actual
-------------------
-- Windows: full 4-speaker output through the Bowers & Wilkins rotating
-  soundbar, with DSP tuning, meaningful bass.
-- Linux on this kernel: front pair only, no DSP, noticeably tinny,
-  quieter than expected. Headphones work fine.
-
-What this looks like
---------------------
-A missing or incomplete entry in sound/pci/hda/patch_realtek.c for SSID
-0x17aa3895 (and/or PCI SSID 17aa:3801) -- probably needing one or more
-of:
-
-  - a proper ALC287 fixup wiring Node 0x17 as a second internal speaker
-    pin (0x90170121 / 0x90170131-style pin override),
-  - an external smart-amp hookup (e.g. CS35L41 via I2S) plus
-  - a matching SOF topology (4-ch or Yoga-specific) instead of
-    sof-hda-generic-2ch.tplg.
-
-I'm happy to test patches on this hardware -- please send anything you'd
-like me to try and I'll report dmesg/alsa-info back.
-
-Thanks,
-Paul
+KlRpdGxlOiogVEFTMjc4MSBzbWFydCBhbXBsaWZpZXI6IHRhc2RldmljZV9wcm1nX2xvYWQ6IEZp
+cm13YXJlIGlzIE5VTEwgb24NCkFTVVMgUk9HIFN0cml4IFNDQVIgMTggRzgzNUxYIOKAlCByZWdy
+ZXNzaW9uIGludHJvZHVjZWQgYmV0d2VlbiBrZXJuZWwgNi4xOA0KYW5kIDYuMTkNCg0KKkhhcmR3
+YXJlOioNCg0KICAgLSBMYXB0b3A6IEFTVVMgUk9HIFN0cml4IFNDQVIgMTggRzgzNUxYLVMtQTE1
+Mw0KICAgLSBDUFU6IEludGVsIENvcmUgVWx0cmEgOSAyNzVIWA0KICAgLSBBdWRpbyBjb2RlYzog
+UmVhbHRlayBBTEMyODUgKFN1YnN5c3RlbSBJRDogMHgxMDQzM2YxMCkNCiAgIC0gU21hcnQgYW1w
+bGlmaWVyczogM3ggVGV4YXMgSW5zdHJ1bWVudHMgVEFTMjc4MSAodmlhIEkyQywgZGV2aWNlDQog
+ICBUWE5XMjc4MTowMCkNCiAgIC0gT1M6IENhY2h5T1MgKEFyY2gtYmFzZWQpDQogICAtIFdvcmtp
+bmcga2VybmVsOiA2LjE4LjIyLTEtY2FjaHlvcy1sdHMNCiAgIC0gQnJva2VuIGtlcm5lbHM6IDYu
+MTkuMTItMS1jYWNoeW9zLCA3LjAuMC0xLWNhY2h5b3MNCiAgIC0gQWxzbyBicm9rZW4gb24gQ2Fj
+aHlPUyBsaXZlIFVTQiAob2xkZXIga2VybmVsLCBleGFjdCB2ZXJzaW9uIHVua25vd24pDQoNCipQ
+cm9ibGVtIGRlc2NyaXB0aW9uOiogQnVpbHQtaW4gc3BlYWtlcnMgcHJvZHVjZSBleHRyZW1lbHkg
+bG93IHZvbHVtZSB3aXRoDQpoZWF2eSBkaXN0b3J0aW9uL25vaXNlLiBIZWFkcGhvbmUgamFjayB3
+b3JrcyBjb3JyZWN0bHkuIFRoZSBBU1VTIGJvb3QgY2hpbWUNCihwbGF5ZWQgYXQgZmlybXdhcmUg
+bGV2ZWwpIGFsc28gd29ya3MgY29ycmVjdGx5IHRocm91Z2ggc3BlYWtlcnMsDQpjb25maXJtaW5n
+IHRoZSBzcGVha2VycyBhcmUgcGh5c2ljYWxseSBmdW5jdGlvbmFsLg0KDQpUaGUgcHJvYmxlbSBp
+cyBub3QgcHJlc2VudCBvbiBrZXJuZWwgNi4xOC4yMi1MVFMgYW5kIHJlYXBwZWFycyBvbiA2LjE5
+Ky4NCg0KKlJlbGV2YW50IGRtZXNnIG91dHB1dDoqDQpTZXJpYWwgYnVzIG11bHRpIGluc3RhbnRp
+YXRlIHBzZXVkbyBkZXZpY2UgZHJpdmVyIFRYTlcyNzgxOjAwOiBlcnJvcg0KLUVOWElPOiBJUlEg
+aW5kZXggMCBub3QgZm91bmQNClNlcmlhbCBidXMgbXVsdGkgaW5zdGFudGlhdGUgcHNldWRvIGRl
+dmljZSBkcml2ZXIgVFhOVzI3ODE6MDA6IGVycm9yDQotRU5YSU86IElSUSBpbmRleCAwIG5vdCBm
+b3VuZA0KU2VyaWFsIGJ1cyBtdWx0aSBpbnN0YW50aWF0ZSBwc2V1ZG8gZGV2aWNlIGRyaXZlciBU
+WE5XMjc4MTowMDogZXJyb3INCi1FTlhJTzogSVJRIGluZGV4IDAgbm90IGZvdW5kDQpTZXJpYWwg
+YnVzIG11bHRpIGluc3RhbnRpYXRlIHBzZXVkbyBkZXZpY2UgZHJpdmVyIFRYTlcyNzgxOjAwOiBJ
+bnN0YW50aWF0ZWQNCjMgSTJDIGRldmljZXMuDQp0YXMyNzgxLWhkYSBpMmMtVFhOVzI3ODE6MDAt
+dGFzMjc4MS1oZGEuMDogdGFzZGV2aWNlX3BybWdfbG9hZDogRmlybXdhcmUgaXMNCk5VTEwNCg0K
+U2VyaWFsIGJ1cyBtdWx0aSBpbnN0YW50aWF0ZSBwc2V1ZG8gZGV2aWNlIGRyaXZlciBUWE5XMjc4
+MTowMDogZXJyb3INCi1FTlhJTzogSVJRIGluZGV4IDAgbm90IGZvdW5kU2VyaWFsIGJ1cyBtdWx0
+aSBpbnN0YW50aWF0ZSBwc2V1ZG8NCmRldmljZSBkcml2ZXIgVFhOVzI3ODE6MDA6IGVycm9yIC1F
+TlhJTzogSVJRIGluZGV4IDAgbm90IGZvdW5kU2VyaWFsDQpidXMgbXVsdGkgaW5zdGFudGlhdGUg
+cHNldWRvIGRldmljZSBkcml2ZXIgVFhOVzI3ODE6MDA6IGVycm9yIC1FTlhJTzoNCklSUSBpbmRl
+eCAwIG5vdCBmb3VuZFNlcmlhbCBidXMgbXVsdGkgaW5zdGFudGlhdGUgcHNldWRvIGRldmljZSBk
+cml2ZXINClRYTlcyNzgxOjAwOiBJbnN0YW50aWF0ZWQgMyBJMkMgZGV2aWNlcy50YXMyNzgxLWhk
+YQ0KaTJjLVRYTlcyNzgxOjAwLXRhczI3ODEtaGRhLjA6IHRhc2RldmljZV9wcm1nX2xvYWQ6IEZp
+cm13YXJlIGlzIE5VTEwNCg0KKkFuYWx5c2lzOioNCg0KICAgLSBBbGwgMyBUQVMyNzgxIGFtcGxp
+ZmllciBjaGlwcyBhcmUgZGV0ZWN0ZWQgb24gdGhlIEkyQyBidXMgKA0KICAgL3N5cy9idXMvaTJj
+L2RldmljZXMvIHNob3dzIGFsbCAzKQ0KICAgLSBUaGUgZHJpdmVyIChzbmRfaGRhX3Njb2RlY190
+YXMyNzgxX2kyYykgbG9hZHMgYnV0IGZhaWxzIHdpdGggLUVOWElPOg0KICAgSVJRIGluZGV4IDAg
+bm90IGZvdW5kIGZvciBhbGwgMyBjaGlwcyBkdXJpbmcgaW5pdGlhbGl6YXRpb24NCiAgIC0gRGVz
+cGl0ZSBJUlEgZmFpbHVyZSwgZGV2aWNlcyBhcmUgaW5zdGFudGlhdGVkIOKAlCBidXQgdGhlIGRy
+aXZlciB0aGVuDQogICBmYWlscyB0byBsb2FkIGZpcm13YXJlIChGaXJtd2FyZSBpcyBOVUxMKQ0K
+ICAgLSBGaXJtd2FyZSBmaWxlcyBhcmUgcHJlc2VudCBhbmQgdmFsaWQ6DQogICAvdXNyL2xpYi9m
+aXJtd2FyZS90aS9hdWRpby90YXMyNzgxL1RBUzJYWFgzRjEwMC5iaW4uenN0IGFuZA0KICAgVEFT
+MlhYWDNGMTAxLmJpbi56c3QgKDcuM0tCIGVhY2gsIG5vdCBicm9rZW4gc3ltbGlua3MpDQogICAt
+IFdpdGhvdXQgcHJvcGVyIGFtcGxpZmllciBpbml0aWFsaXphdGlvbiwgYXVkaW8gYnlwYXNzZXMg
+dGhlDQogICBEU1AvYW1wbGlmaWVyIGVudGlyZWx5LCByZXN1bHRpbmcgaW4gdGhlIGRpc3RvcnRl
+ZCBsb3ctdm9sdW1lIG91dHB1dA0KICAgLSBUaGUgSVJRIGZhaWx1cmUgc3VnZ2VzdHMgbWlzc2lu
+ZyBvciBpbmNvbXBsZXRlIEFDUEkgX0RTRCBwcm9wZXJ0aWVzDQogICBmb3IgdGhlIFRBUzI3ODEg
+ZGV2aWNlcyDigJQgc2ltaWxhciB0byBrbm93biBpc3N1ZXMgd2l0aCBDUzM1TDQxIG9uIG90aGVy
+DQogICBBU1VTIFJPRyBsYXB0b3BzIOKAlCBidXQgdGhpcyB3b3JrZWQgb24ga2VybmVsIDYuMTgs
+IHN1Z2dlc3RpbmcgYSByZWdyZXNzaW9uDQogICBpbiBob3cgdGhlIGRyaXZlciBoYW5kbGVzIG1p
+c3NpbmcgSVJRIHJlc291cmNlcyBpbiA2LjE5Kw0KDQoqV2hhdCB3b3JrczoqDQoNCiAgIC0gSGVh
+ZHBob25lIGphY2sgKGFuYWxvZyBvdXRwdXQgdmlhIEFMQzI4NSwgYnlwYXNzZXMgVEFTMjc4MSkN
+CiAgIC0gU3BlYWtlcnMgb24ga2VybmVsIDYuMTguMjItTFRTDQogICAtIEFTVVMgYm9vdCBjaGlt
+ZSB0aHJvdWdoIHNwZWFrZXJzIChmaXJtd2FyZS1sZXZlbCwgYnlwYXNzZXMgT1MgYXVkaW8NCiAg
+IHN0YWNrKQ0KDQoqV2hhdCBkb2Vzbid0IHdvcms6Kg0KDQogICAtIFNwZWFrZXIgb3V0cHV0IG9u
+IGtlcm5lbCA2LjE5LnggYW5kIDcuMC54DQoNCipNb2R1bGVzIGludm9sdmVkOioNCg0KICAgLSBz
+bmRfaGRhX3Njb2RlY190YXMyNzgxX2kyYw0KICAgLSBzbmRfaGRhX3Njb2RlY190YXMyNzgxX3Nw
+aQ0KICAgLSBzbmRfaGRhX3Njb2RlY190YXMyNzgxDQogICAtIHNuZF9zb2NfdGFzMjc4MV9mbXds
+aWINCg0KKlN1Z2dlc3RlZCBiaXNlY3QgcmFuZ2U6KiBCZXR3ZWVuIGtlcm5lbCA2LjE4IGFuZCA2
+LjE5LCBzcGVjaWZpY2FsbHkNCmNoYW5nZXMgdG8gc25kX2hkYV9zY29kZWNfdGFzMjc4MSBvciB0
+aGUgc2VyaWFsIGJ1cyBtdWx0aS1pbnN0YW50aWF0ZQ0KZHJpdmVyIChkcml2ZXJzL3BsYXRmb3Jt
+L3g4Ni9zZXJpYWwtbXVsdGktaW5zdGFudGlhdGUuYykgcmVsYXRlZCB0byBJUlENCmhhbmRsaW5n
+Lg0K
