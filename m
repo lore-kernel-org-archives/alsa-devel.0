@@ -4,49 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75C19F5580B
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2026 10:57:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 701EAF588C2
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2026 13:16:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2CC060202;
-	Mon, 20 Apr 2026 12:56:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2CC060202
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BE1660204;
+	Mon, 20 Apr 2026 15:16:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BE1660204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1776682617;
-	bh=F5F0hk4unMY9f9SWNkFGdVNf9cc7Nmd+IrFh6J/M7h0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=iXb18Tfc42iQ8eOGVsVrm2JnAkNWtpHYj2TOxzTjGVpFDEeq/uYJ+OH86etcQBmAt
-	 SgpBr501vSyUN21EenrfP4E+Kn0WjW0kT8kJvMVhe0vNQD/VdPVtOgEBIJNlw1WV2T
-	 WmmK/mC1cqRmMu3h/bsYQ7ddJu5kvK8zIyMCR/Mw=
+	s=default; t=1776690990;
+	bh=IJRaeUrOT4uxjtqct0t5ecqTdc2mzEjDLrfsy60+b04=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=mwET5uFss+foxbv+aX1w98q5sC7xnmrBOZYuwLiYL33evncJ6+tFG3ToNxjw0uAiH
+	 AiQUkdIhi3yg/uli04+ZfPSYFFhBmeNNgcsN0dLMzc7drTUK6CVHDpwW1Cw+mGH5mt
+	 P+5hwShrt8+m1ZlaRBmYMC4etPgIp8ABs1o51j/0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E89FCF805F1; Mon, 20 Apr 2026 12:56:24 +0200 (CEST)
+	id 514CAF805E6; Mon, 20 Apr 2026 15:15:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF43CF805E3;
-	Mon, 20 Apr 2026 12:56:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0AEBEF80524;
+	Mon, 20 Apr 2026 15:15:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D07BDF80524; Mon, 20 Apr 2026 12:56:15 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id A10AEF8001F
-	for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2026 12:56:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A10AEF8001F
+	id 30A7CF80524; Mon, 20 Apr 2026 15:15:46 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8B41CF800AE
+	for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2026 15:15:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B41CF800AE
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=A66MNC5u
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 3456D6012B;
+	Mon, 20 Apr 2026 13:15:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00F1EC19425;
+	Mon, 20 Apr 2026 13:15:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776690941;
+	bh=IJRaeUrOT4uxjtqct0t5ecqTdc2mzEjDLrfsy60+b04=;
+	h=From:To:Cc:Subject:Date:From;
+	b=A66MNC5uAmJo3ESN/UeRL5KYSrrJpUPBO/M+Op3676M/ng2lvo8t2qFXCla795G2D
+	 8HgKXSnWg3CGDnvkb70/8J4XloUsFNTNyFeTuFuTTp8wYKtT7tW2c20O/rngGiqaj+
+	 JC91iMAwm9PDGSkytJkyke6ZcEmK74VeUKcY1/PMFWWgH9vvk/5ztztz1WmBMUl3/Z
+	 E16Tx3c7epPg1edgsp2CbYrdVSj2+MeUUgYf2oNCuIo+J0NzmjmHxEahGAO/57z8PR
+	 ftgmv52tjYom+x2DuiWV2IGQuZbK7vHk8R4Iz/RKYG3JaMyPKs5W8BNWd+OqyYcDEd
+	 HUVoDdBgyrUmw==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Zhang Heng <zhangheng@kylinos.cn>,
+	Takashi Iwai <tiwai@suse.de>,
+	Sasha Levin <sashal@kernel.org>,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.18] ALSA: hda/realtek: add quirk for Lenovo Yoga 7
+ 2-in-1 16AKP10
+Date: Mon, 20 Apr 2026 09:07:47 -0400
+Message-ID: <20260420131539.986432-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18a80b630d6a2400-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/750@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/750@alsa-project.org>
-Subject: Enable headset mic on kanaapali and sm8750
-Date: Mon, 20 Apr 2026 12:56:15 +0200 (CEST)
-Message-ID-Hash: N6PJQMIK3WM3HOG7MWXGYQ2HFLIUDKKN
-X-Message-ID-Hash: N6PJQMIK3WM3HOG7MWXGYQ2HFLIUDKKN
-X-MailFrom: github@alsa-project.org
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.18.23
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: IKFGPR6OY26EQH5UY2PUTSNQTU3P4JBJ
+X-Message-ID-Hash: IKFGPR6OY26EQH5UY2PUTSNQTU3P4JBJ
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -57,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N6PJQMIK3WM3HOG7MWXGYQ2HFLIUDKKN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IKFGPR6OY26EQH5UY2PUTSNQTU3P4JBJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,10 +97,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #750 was opened from mohsRafi:
+From: Zhang Heng <zhangheng@kylinos.cn>
 
-Enable missing Headset Microphone support on sm8750 and kaanapali mtp boards.
+[ Upstream commit 7bae956cac0433c4d41aac9f1d04e42694e0b706 ]
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/750
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/750.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+This machine is equipped with ALC287 and requires the quirk
+ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN to fix the issue
+where the bass speakers are not configured and the speaker
+volume cannot be controlled.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=221210
+Signed-off-by: Zhang Heng <zhangheng@kylinos.cn>
+Link: https://patch.msgid.link/20260313080624.1395362-1-zhangheng@kylinos.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+
+LLM Generated explanations, may be completely bogus:
+
+Error: Failed to generate final synthesis
+
+ sound/hda/codecs/realtek/alc269.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
+index 1b64292220ac8..4b06cb48252e2 100644
+--- a/sound/hda/codecs/realtek/alc269.c
++++ b/sound/hda/codecs/realtek/alc269.c
+@@ -7429,6 +7429,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x38ab, "Thinkbook 16P", ALC287_FIXUP_MG_RTKC_CSAMP_CS35L41_I2C_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x38b4, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
+ 	HDA_CODEC_QUIRK(0x17aa, 0x391c, "Lenovo Yoga 7 2-in-1 14AKP10", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
++	HDA_CODEC_QUIRK(0x17aa, 0x391d, "Lenovo Yoga 7 2-in-1 16AKP10", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x38b5, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x38b6, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x38b7, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
+-- 
+2.53.0
+
