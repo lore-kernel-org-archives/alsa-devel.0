@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFEAFF588C3
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2026 13:18:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB17EF588C3
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2026 13:18:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69FD660203;
-	Mon, 20 Apr 2026 15:17:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69FD660203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13FFA60224;
+	Mon, 20 Apr 2026 15:18:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13FFA60224
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1776691080;
-	bh=qBmqtkmHqbZzDNTj21yCDiXoWYOvs1iFtBsfOu+6220=;
+	s=default; t=1776691096;
+	bh=vkzzGTOHKrKoWmi+13q+XryH3dbacgI5j5+9eSrxdeM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QG2xlsWGRYDI9cQnSzMqCE7UrCAjnh5nsyka+me4Tq3IJrb8w4XbAMLO1fKvp0qSj
-	 DX1oBNbcl9qBEGDZGD6qD7AiIejLWYoOO7KU1IiAetmRBR7GYL1Tnq8iW6/Ca3nQtb
-	 wVmkPV2P28QpnthG7xb50v1/JLjGTXBrN/nNTEcQ=
+	b=AJi/sUAP/+qX5pyFrTL0yPjUk5vUbniIB23ZKFLseQrNLQ0v7jO+b3R1SQNybt51s
+	 ha4ecUCbpjHxkoMXnGvwHdDV6jxPNcc0uqVSLAgfI2JcseMB3bedowFAfmD8ir2q7p
+	 eDFCpvVXTYFb2J9VTi+o7zCl02WMap0kVXHF6Z8M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B699F8069D; Mon, 20 Apr 2026 15:16:41 +0200 (CEST)
+	id 29D75F806A9; Mon, 20 Apr 2026 15:16:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A368DF80696;
-	Mon, 20 Apr 2026 15:16:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF33BF806AD;
+	Mon, 20 Apr 2026 15:16:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9C664F805E3; Mon, 20 Apr 2026 15:16:29 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	id 889B8F805EA; Mon, 20 Apr 2026 15:16:33 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9F6BCF80542
-	for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2026 15:16:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F6BCF80542
+	by alsa1.perex.cz (Postfix) with ESMTPS id E36FDF8027B
+	for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2026 15:16:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E36FDF8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=oBVg96PX
+ header.s=k20201202 header.b=Mfus0JA9
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9A72C60180;
-	Mon, 20 Apr 2026 13:16:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C94AC19425;
-	Mon, 20 Apr 2026 13:16:21 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 1BD1E43F34;
+	Mon, 20 Apr 2026 13:16:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E33C2BCF5;
+	Mon, 20 Apr 2026 13:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776690982;
-	bh=qBmqtkmHqbZzDNTj21yCDiXoWYOvs1iFtBsfOu+6220=;
+	s=k20201202; t=1776690989;
+	bh=vkzzGTOHKrKoWmi+13q+XryH3dbacgI5j5+9eSrxdeM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oBVg96PXTN6wyVz0oxBjRQ3JNsHIUyqoSWNnZOkrV/HQqUL6n85rVnfu78AcI/4HT
-	 2hseJDZroow+qprgqKN5Jfc2YAtczmcF1L/4C3FkY1XMyLg9FU/0Ugy7GL7rOuQU3P
-	 UaibBf/kfriOD71S7VFeVFazKTfaOTnTqfgQ0MyMgKPX4iiSnenKXvd97soOFYWObm
-	 tPq1sQlx7PLP2DqTtyzkwUux+YB5HPMxhCQa4vTCU5DvE46+GMZRDpvXugmQ5NKLEg
-	 ye1OJiPeDB7tKVba2LsLeuWO11eUynRrYb2yTN2R44Hhlf0CTj5YmnPda8fNszMOWn
-	 AJMvv8iUIxLEw==
+	b=Mfus0JA9DddmFVgQSXSzAz5Ai1oY8kzEo2ObQ1tDlUgRyrGkoJ/7JOzzHKMV9ZLxO
+	 VNe5Jgj6GdnMemShZNlfl5XCwmT/KrxoDSaZ3dVnXY1CBabMt5pbbQ2mS94XuNin8E
+	 CqMqffQBQohbrr3syCVjHEWHNKwuHplysiNcjRFNnzk/KS+VTn4BQWJt0RJ+bSCD4s
+	 jjR8aOtMGlbt4Iy9d1COp98gBz1G97CI+ZA0l6PPvefd09nRD7Hin71Mev0wqqvI3j
+	 6U6FS3lrIUeRI9SqPQLXsXLnZA4/zA7thmgO3njWDFdtdoVQhnNH8L6h/lHa+1QB3u
+	 KWukfP0xsc+vw==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: =?UTF-8?q?Gilson=20Marquato=20J=C3=BAnior?= <gilsonmandalogo@hotmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.18] ALSA: hda/realtek: Add support for ASUS 2026
- Commercial laptops using CS35L41 HDA
-Date: Mon, 20 Apr 2026 09:08:11 -0400
-Message-ID: <20260420131539.986432-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.18] ASoC: amd: yc: Add DMI entry for HP Laptop
+ 15-fc0xxx
+Date: Mon, 20 Apr 2026 09:08:15 -0400
+Message-ID: <20260420131539.986432-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260420131539.986432-1-sashal@kernel.org>
 References: <20260420131539.986432-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 7.0
+X-stable-base: Linux 6.18.23
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: N3JAQSSWHO6I6UK42Z4BH6QQKFJ2XLKU
-X-Message-ID-Hash: N3JAQSSWHO6I6UK42Z4BH6QQKFJ2XLKU
+Message-ID-Hash: CCY4YCBPK2LROZJSGCATEZR3F6QTD6GK
+X-Message-ID-Hash: CCY4YCBPK2LROZJSGCATEZR3F6QTD6GK
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -90,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N3JAQSSWHO6I6UK42Z4BH6QQKFJ2XLKU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CCY4YCBPK2LROZJSGCATEZR3F6QTD6GK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,277 +101,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+From: Gilson Marquato Júnior <gilsonmandalogo@hotmail.com>
 
-[ Upstream commit 66a6333ba5087b00b7d6cb9ff671f4e2739383b3 ]
+[ Upstream commit 8ec017cf31299c4b6287ebe27afe81c986aeef88 ]
 
-Add support for laptops:
-- ASUS PM5406CGA
-- ASUS PM5606CGA
-- ASUS P5406CCA
-- ASUS P5606CCA
+The HP Laptop 15-fc0xxx (subsystem ID 0x103c8dc9) has an internal
+DMIC connected to the AMD ACP6x audio coprocessor. Add a DMI quirk
+entry so the internal microphone is properly detected on this model.
 
-Laptops use 2 CS35L41 Amps with HDA, using Internal boost, with I2C or
-SPI.
+Tested on HP Laptop 15-fc0237ns with Fedora 43 (kernel 6.19.9).
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Link: https://patch.msgid.link/20260330134651.443439-3-sbinding@opensource.cirrus.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Gilson Marquato Júnior <gilsonmandalogo@hotmail.com>
+Link: https://patch.msgid.link/20260330-hp-15-fc0xxx-dmic-v2-v1-1-6dd6f53a1917@hotmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-The insertion point is clear: the 4 new entries (0x3601, 0x3611, 0x3701,
-0x3711) go between the existing 0x3391 entry (line 7367) and the 0x3a20
-entry (line 7368). The context lines from the diff match perfectly.
+Error: Failed to generate final synthesis
 
-Now I have all the information I need for a thorough analysis. Let me
-compile my findings.
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
----
-
-## PHASE 1: COMMIT MESSAGE FORENSICS
-
-**Step 1.1: Subject Line**
-- Subsystem: `ALSA: hda/realtek`
-- Action verb: "Add support"
-- Summary: Adding SND_PCI_QUIRK entries for 4 new ASUS commercial laptop
-  models to enable CS35L41 HDA audio.
-- Record: [ALSA/hda/realtek] [Add] [Hardware quirk entries for 4 ASUS
-  laptop models]
-
-**Step 1.2: Tags**
-- `Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>` -
-  author (Cirrus Logic employee, works on CS35L41 amplifier support)
-- `Link: https://patch.msgid.link/20260330134651.443439-3-
-  sbinding@opensource.cirrus.com` - patch 3 in a series
-- `Signed-off-by: Takashi Iwai <tiwai@suse.de>` - ALSA subsystem
-  maintainer accepted it
-- No Fixes: tag (expected for new device quirk additions)
-- No Reported-by: tag (typical for hardware enablement)
-- No Cc: stable tag (expected, hence this review)
-
-**Step 1.3: Commit Body**
-- Lists 4 specific ASUS laptop models: PM5406CGA, PM5606CGA, P5406CCA,
-  P5606CCA
-- Hardware uses 2 CS35L41 amplifiers with HDA, internal boost, via I2C
-  or SPI
-- No bug description - pure hardware enablement via existing quirk
-  infrastructure
-
-**Step 1.4: Hidden Bug Fix Detection**
-- This is NOT a hidden bug fix. It is explicitly a hardware quirk
-  addition to enable audio on new laptop models. Without these entries,
-  audio amplifiers on these 4 laptops would not be properly initialized,
-  meaning users get no sound or degraded sound.
-
-## PHASE 2: DIFF ANALYSIS
-
-**Step 2.1: Inventory**
-- 1 file changed: `sound/hda/codecs/realtek/alc269.c`
-- 4 lines added, 0 lines removed
-- Changes are within the `alc269_fixup_tbl[]` quirk table
-
-**Step 2.2: Code Flow Change**
-- Before: The 4 ASUS SSID values (0x3601, 0x3611, 0x3701, 0x3711) have
-  no matching quirk entry, so the CS35L41 amplifiers are not configured
-- After: Each SSID maps to its appropriate fixup function
-  (`ALC287_FIXUP_CS35L41_I2C_2` for I2C models,
-  `ALC245_FIXUP_CS35L41_SPI_2` for SPI models)
-
-**Step 2.3: Bug Mechanism**
-- Category (h): Hardware workarounds - Device-specific quirk table
-  entries
-- These are `SND_PCI_QUIRK()` entries in the HDA codec's quirk table,
-  the standard mechanism for enabling amplifier support on specific
-  laptops
-
-**Step 2.4: Fix Quality**
-- Obviously correct: follows identical pattern to dozens of existing
-  entries for the same vendor (0x1043 = ASUS) using the same fixup IDs
-- Minimal: exactly 4 lines, each a self-contained quirk table entry
-- Zero regression risk: only affects devices with these specific SSID
-  values
-- Author is a Cirrus Logic engineer who maintains the CS35L41 driver
-
-## PHASE 3: GIT HISTORY INVESTIGATION
-
-**Step 3.1: Blame**
-- The quirk table area is from commit aeeb85f26c3bbe (Takashi Iwai,
-  2025-07-09) which was a large refactoring/move of the file
-- The `ALC287_FIXUP_CS35L41_I2C_2` fixup has been present since at least
-  6.x era, well-established
-
-**Step 3.2: Fixes tag** - N/A (no Fixes: tag, expected for quirk
-additions)
-
-**Step 3.3: File History**
-- The file has very frequent quirk additions (verified: recent commits
-  are almost all "Add quirk for X" style)
-- Stefan Binding has multiple prior identical commits (e.g.,
-  0156c22fb0ca8 adding ASUS PM3406CKA and PM3606CKA)
-
-**Step 3.4: Author**
-- Stefan Binding works at Cirrus Logic (sbinding@opensource.cirrus.com),
-  the company that makes the CS35L41 amplifier
-- He is the primary contributor for CS35L41 HDA quirk additions
-- The patch was accepted by Takashi Iwai, the ALSA maintainer
-
-**Step 3.5: Dependencies**
-- Both fixup types (`ALC287_FIXUP_CS35L41_I2C_2` at line 6248 and
-  `ALC245_FIXUP_CS35L41_SPI_2` at line 6262) exist in the 7.0 tree
-- The context lines match the current tree (0x3391 PM3606CKA followed by
-  0x3a20)
-- This is fully standalone - no other patches needed
-
-## PHASE 4: MAILING LIST RESEARCH
-
-**Step 4.1:** The Link tag indicates this is patch 3 of a series
-(443439-3). Lore is blocked by anti-bot measures. However, the identical
-pattern of prior commits from the same author (e.g., 0156c22fb0ca8) was
-a v1 single patch that was simply adding quirk entries - no controversy
-expected.
-
-**Step 4.2:** Accepted by Takashi Iwai (ALSA maintainer) directly.
-Stefan Binding is the recognized CS35L41 maintainer at Cirrus Logic.
-
-**Step 4.3-4.5:** No bug report - this is hardware enablement. No
-stable-specific discussion expected for quirk additions.
-
-## PHASE 5: CODE SEMANTIC ANALYSIS
-
-**Step 5.1:** No functions modified - only data table entries added.
-
-**Step 5.2-5.4:** The `SND_PCI_QUIRK` macro adds an entry to a static
-lookup table. When a matching PCI subsystem ID is found, the
-corresponding fixup function is called during codec initialization. The
-fixup functions (`cs35l41_fixup_i2c_two`, `cs35l41_fixup_spi_two`) are
-well-established and used by 100+ other entries.
-
-**Step 5.5:** Over 100 identical entries exist for ASUS laptops in this
-same table using these same fixup IDs.
-
-## PHASE 6: STABLE TREE ANALYSIS
-
-**Step 6.1:** The quirk table and both fixup types exist in all active
-stable trees (they've been present since at least 6.1). The new SSID
-values are for new hardware that doesn't have entries yet.
-
-**Step 6.2:** The patch should apply cleanly - it's inserting lines at a
-well-defined sorted position in a table. Minor context-line offset
-adjustments may be needed depending on how many entries are already in
-each stable tree.
-
-**Step 6.3:** No related fixes needed - these are new device IDs.
-
-## PHASE 7: SUBSYSTEM AND MAINTAINER CONTEXT
-
-**Step 7.1:** ALSA/HDA - audio subsystem. IMPORTANT criticality - audio
-is essential for laptop users.
-
-**Step 7.2:** Very actively developed - constant quirk additions for new
-hardware.
-
-## PHASE 8: IMPACT AND RISK ASSESSMENT
-
-**Step 8.1:** Users of these 4 specific ASUS commercial laptop models
-(PM5406CGA, PM5606CGA, P5406CCA, P5606CCA).
-
-**Step 8.2:** Trigger: boot with this hardware. Without the quirk,
-CS35L41 amplifiers are not configured, meaning no sound or broken sound.
-
-**Step 8.3:** Without quirk: non-functional or degraded audio on these
-laptops. Severity: MEDIUM-HIGH (audio completely broken on specific
-hardware).
-
-**Step 8.4:**
-- Benefit: HIGH - enables audio on 4 new laptop models for stable tree
-  users
-- Risk: VERY LOW - 4 lines of data-only additions to a lookup table,
-  using existing fixup functions, affecting only devices with matching
-  SSIDs
-- Ratio: Excellent benefit-to-risk
-
-## PHASE 9: FINAL SYNTHESIS
-
-**Step 9.1: Evidence FOR backporting:**
-- Pure hardware quirk addition (exception category: YES automatically)
-- 4 lines, data-only, zero code logic change
-- Uses well-established fixup types with 100+ existing users
-- Author is the Cirrus Logic CS35L41 maintainer
-- Accepted by ALSA subsystem maintainer Takashi Iwai
-- Enables audio on commercial laptops that stable users would use
-- Identical pattern to many prior commits that have gone to stable
-
-**Evidence AGAINST:**
-- None identified
-
-**Step 9.2: Stable Rules Checklist:**
-1. Obviously correct? YES - identical pattern to 100+ existing entries
-2. Fixes real bug? YES - enables broken audio hardware
-3. Important issue? YES - no audio on affected laptops
-4. Small and contained? YES - 4 lines in 1 file
-5. No new features? Correct - uses existing fixup infrastructure
-6. Can apply to stable? YES - all dependencies exist in stable trees
-
-**Step 9.3: Exception Category:**
-This is a **hardware quirk/workaround** addition - one of the explicitly
-allowed exception categories that is automatically YES for stable.
-
-## Verification
-
-- [Phase 1] Parsed tags: Link shows patch 3 of series, SOBs from author
-  (Cirrus Logic) and Takashi Iwai (ALSA maintainer)
-- [Phase 2] Diff analysis: 4 lines added to SND_PCI_QUIRK table in
-  `alc269_fixup_tbl[]`, purely data additions
-- [Phase 2] Verified both fixup types exist:
-  `ALC287_FIXUP_CS35L41_I2C_2` at line 6248,
-  `ALC245_FIXUP_CS35L41_SPI_2` at line 6262
-- [Phase 3] git blame: insertion area is stable, context lines (0x3391
-  at line 7367, 0x3a20 at line 7368) match the diff
-- [Phase 3] Verified identical prior commit 0156c22fb0ca8 by same author
-  adding ASUS PM3406CKA/PM3606CKA
-- [Phase 3] Author Stefan Binding has 10+ commits for CS35L41 quirk
-  additions in this file
-- [Phase 5] Both fixup functions (`cs35l41_fixup_i2c_two`,
-  `cs35l41_fixup_spi_two`) are defined and used by 100+ entries
-- [Phase 6] Fixup infrastructure exists in stable tree (verified in 7.0
-  tree)
-- [Phase 8] Risk assessment: 4 data-only lines, VERY LOW regression risk
-- UNVERIFIED: Could not access lore.kernel.org for mailing list
-  discussion (anti-bot protection); however, this has no bearing on the
-  decision since the commit type (hardware quirk addition) is
-  automatically a YES category.
-
-This is a textbook hardware quirk addition: 4 `SND_PCI_QUIRK` entries
-adding PCI subsystem IDs for new ASUS laptops to enable existing CS35L41
-amplifier support. It is data-only, uses well-established fixup
-infrastructure, was authored by the Cirrus Logic CS35L41 maintainer, and
-accepted by the ALSA subsystem maintainer. It falls squarely into the
-"hardware quirk" exception category that is always appropriate for
-stable.
-
-**YES**
-
- sound/hda/codecs/realtek/alc269.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
-index 45f9d64873885..d86781e976ac0 100644
---- a/sound/hda/codecs/realtek/alc269.c
-+++ b/sound/hda/codecs/realtek/alc269.c
-@@ -7365,6 +7365,10 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x31e1, "ASUS B5605CCA", ALC294_FIXUP_ASUS_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x31f1, "ASUS B3605CCA", ALC294_FIXUP_ASUS_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x3391, "ASUS PM3606CKA", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1043, 0x3601, "ASUS PM5406CGA", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1043, 0x3611, "ASUS PM5606CGA", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1043, 0x3701, "ASUS P5406CCA", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x1043, 0x3711, "ASUS P5606CCA", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x3a20, "ASUS G614JZR", ALC285_FIXUP_ASUS_SPI_REAR_SPEAKERS),
- 	SND_PCI_QUIRK(0x1043, 0x3a30, "ASUS G814JVR/JIR", ALC285_FIXUP_ASUS_SPI_REAR_SPEAKERS),
- 	SND_PCI_QUIRK(0x1043, 0x3a40, "ASUS G814JZR", ALC285_FIXUP_ASUS_SPI_REAR_SPEAKERS),
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 6f1c105ca77e3..4c0acdad13ea1 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -45,6 +45,13 @@ static struct snd_soc_card acp6x_card = {
+ };
+ 
+ static const struct dmi_system_id yc_acp_quirk_table[] = {
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "HP Laptop 15-fc0xxx"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.53.0
 
