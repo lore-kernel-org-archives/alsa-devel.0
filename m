@@ -4,75 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D126CF588C2
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Apr 2026 13:22:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0205F8FA6E
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Apr 2026 12:25:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4861C60216;
-	Mon, 20 Apr 2026 15:21:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4861C60216
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A67E601F2;
+	Tue, 21 Apr 2026 14:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A67E601F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1776691324;
-	bh=fHiAqfG6BLI6sL2Pft1JhS0A8dnJa9d+5OvZKcRFlmg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=FOoiU24QHpX34GG38IJ4lDL+5FO3Of2mEsJVkun+Lrzo/xhHfbOqNVn3ahu6XAOcg
-	 SDBXDUC4WHY1ppc0CXzgLnMPY8KJSGzkL9pYEePTtKYDGbQhnnlDeVa0Y9IL8TmoUe
-	 qnFRx9gDUsYT9hL6WEsjwo0hwrldztHduYYjk5Q0=
+	s=default; t=1776774300;
+	bh=xgZclkK45jtwLF/kJz1I9yckL+AQZsEiFRimJXjEz3c=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=puNIT2pk3GPfZ7oaW3tsf8ftWLOcnLM2qeHugVRIjD4wk6amyk9EZkk1Hw2/wVcaR
+	 uNfPIzGD/RgCSlY9Q5LPTtgmledyS7ShYwqBddCNcNST6Gt+r+m5HDM5K1JjknYA70
+	 bdoW98CT9244AMihzu8dMC8CPNCAYKhBNXUVDIUA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6EAADF805EE; Mon, 20 Apr 2026 15:21:30 +0200 (CEST)
+	id EAF9CF805EC; Tue, 21 Apr 2026 14:24:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E5DEF805F1;
-	Mon, 20 Apr 2026 15:21:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECDF5F805EB;
+	Tue, 21 Apr 2026 14:24:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06F10F80524; Mon, 20 Apr 2026 15:21:25 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 76318F8001F
-	for <alsa-devel@alsa-project.org>; Mon, 20 Apr 2026 15:21:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76318F8001F
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=e0Hwmycs
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 600C460142;
-	Mon, 20 Apr 2026 13:21:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79A38C19425;
-	Mon, 20 Apr 2026 13:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776691282;
-	bh=fHiAqfG6BLI6sL2Pft1JhS0A8dnJa9d+5OvZKcRFlmg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e0HwmycsjbRiU8EuD4BWKxFK11kr8AFRy2g7hkrwtCL9i176yWvfZmWutwFS0JrB7
-	 Jn6kcDXDJUQqf1R/pA0uRY0RqRh3OTdkkxeAx5/Ee6xpTKomVnJvRGhjLZBS+AdSDp
-	 DWAw+1mWBT+USliMfEPMlZOo/ZHdZdZQ04wK8SOYH9WLNpbgoQ+Y4PCfyxkNc3Hd0l
-	 bZ60tRfQQ79QZvBOXdSl6w0XJq2ZLFK81OXa3rtwt8OTGTQdd30PpTPCPi+h8Xensz
-	 QJpO4e4NyG8PHN23EgxAkF4AKUbpm/8nM7A7mr0YhgwJfnH4QxDRRHvKxKvqJ/9i+N
-	 E7GouStDi2Wiw==
-From: Sasha Levin <sashal@kernel.org>
-To: Wenshan Lan <jetlan9@163.com>
-Cc: Sasha Levin <sashal@kernel.org>,
-	stable@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 6.1.y] ALSA: usb-audio: fix race condition to UAF in
- snd_usbmidi_free
-Date: Mon, 20 Apr 2026 09:21:02 -0400
-Message-ID: <20260420-stable-reply-alsa-usb-audio-6-1@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260417084516.464-1-jetlan9@163.com>
-References: <20260417084516.464-1-jetlan9@163.com>
+	id BEA6BF8055A; Tue, 21 Apr 2026 14:24:16 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id BC887F800AE
+	for <alsa-devel@alsa-project.org>; Tue, 21 Apr 2026 14:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC887F800AE
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ALIOC2KFS2NZ6NHYIL4K3J5IMIBLESBC
-X-Message-ID-Hash: ALIOC2KFS2NZ6NHYIL4K3J5IMIBLESBC
-X-MailFrom: sashal@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18a85ec533685200-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/751@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/751@alsa-project.org>
+Subject: ucm2: add Arduino VENTUNO support
+Date: Tue, 21 Apr 2026 14:24:16 +0200 (CEST)
+Message-ID-Hash: PYFIFU6Y4TMFSRRKKVCY5DYUKUMG6HXT
+X-Message-ID-Hash: PYFIFU6Y4TMFSRRKKVCY5DYUKUMG6HXT
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -83,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ALIOC2KFS2NZ6NHYIL4K3J5IMIBLESBC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PYFIFU6Y4TMFSRRKKVCY5DYUKUMG6HXT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,12 +66,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Apr 17, 2026, Wenshan Lan wrote:
-> Backport of 9f2c0ac1423d ("ALSA: usb-audio: fix race condition to UAF
-> in snd_usbmidi_free") to 6.1.y.
+alsa-project/alsa-ucm-conf pull request #751 was opened from Srinivas-Kandagatla:
 
-Queued for 6.1, thanks.
+Arduino VENTUNO has 1xHDMI, 1xDP, Headset(Mic and speakers), LineOut and EarOut connectors.
 
---
-Thanks,
-Sasha
+Add support for everything except DP, as it is not fully enabled yet.
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/751
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/751.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
