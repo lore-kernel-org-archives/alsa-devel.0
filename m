@@ -4,83 +4,197 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BDDFFF8868
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 10:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A88EFF8870
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 12:55:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8098601FA;
-	Tue, 28 Apr 2026 12:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8098601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C405601F8;
+	Tue, 28 Apr 2026 14:55:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C405601F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777373042;
-	bh=pnXTzg5KhppOl3PsXPt6ZfgfCnMW4wHGwL8Vj2F8zqQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1777380917;
+	bh=c8uaCJnrjxSPsn2T5u5pByrMIqaifjEEfO0xH9zMwXI=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O0U8sWcYGlFBrk3jRokMMUSiPAO5+vAlGMI5m4Nvu8pNRQKiYoKVVY5qp9hx46qlZ
-	 dMVe0oOLikVpfO/kK3r6neWme6QrKN+iLdA9uUKu9GCwx78D+Td97vlICIQ9f+kADK
-	 oqf8HOY2OZTVVd1x8ai5CKk1KCLssKJW4uSiQUbU=
+	b=Yntq6mOqQ2i3hW2ohdzGDvkCmHTOmaRi+BEYeYAX6GOBYwN5Jjvy0PkwstYyklizP
+	 PxAvn5ia+eHU/LyWOOwsDq/M4dH5pP9kBZGONr8jSZGOVrcowKsT18Tt+VYk1h/wym
+	 SltyT71MCWIA6vw80pc2aIP6pkLJKM5OIdpkqbdY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 866B8F805F7; Tue, 28 Apr 2026 12:43:24 +0200 (CEST)
+	id 212E0F805F2; Tue, 28 Apr 2026 14:54:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BAB4F805E9;
-	Tue, 28 Apr 2026 12:43:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6B37F805F3;
+	Tue, 28 Apr 2026 14:54:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C4BAF804CF; Tue, 28 Apr 2026 12:43:17 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 98AEAF804CF; Tue, 28 Apr 2026 14:54:33 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6A8F6F80169
-	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 12:43:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A8F6F80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id C918AF80169
+	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 14:54:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C918AF80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WHpcTL6e
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 3B8CD6057A;
-	Tue, 28 Apr 2026 10:43:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC95C2BCB8;
-	Tue, 28 Apr 2026 10:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777372991;
-	bh=pnXTzg5KhppOl3PsXPt6ZfgfCnMW4wHGwL8Vj2F8zqQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WHpcTL6eMd7182h9/diwSZ2iv/CfAzQfVuddvnXHS+EmM1KWD/R+uUtlwWz9fMgCn
-	 riwWXz7jDoSyVKIgYoiihc4+6v2H6fS34nxWwxUrRh/AW2eZyMGafDTDseXWnYng7L
-	 9ynWX49AQ2Y5uoaqrlGTmDDe/ysFJwOlnEI8yGCmgx04bWzx04KW3ETzufYbYd4cvj
-	 72GGJClor3k4vtcPlwtcZjdPdg6ykOSv5vxoLkcdKkDKgUlRAqxoCpfMxd3Jgb6I9A
-	 kiq1WyvBfttRHMlSpJhiweyKgQ60OvtycWzZpJDAqxgmOtymL0IVcX/0TCkCSY6Kiw
-	 oy1iz2AaYQ2vg==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Johnathan Penberthy <johnathan.penberthy@gmail.com>,
-	Takashi Iwai <tiwai@suse.de>,
-	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.18] ALSA: usb-audio: Add quirk entries for
- NexiGo N930W webcam
-Date: Tue, 28 Apr 2026 06:41:19 -0400
-Message-ID: <20260428104133.2858589-68-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260428104133.2858589-1-sashal@kernel.org>
-References: <20260428104133.2858589-1-sashal@kernel.org>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=ivzdMB2J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1777380869; x=1808916869;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:mime-version:content-transfer-encoding;
+  bh=c8uaCJnrjxSPsn2T5u5pByrMIqaifjEEfO0xH9zMwXI=;
+  b=ivzdMB2JRWnPEMfIzk2va/IqCt/iSD+ieZ0Vkl8NV367QzgO1ts+ttBe
+   SYJAO0P/crRHzvh2Leuef+Ns22a2fvDaBDCz8bqP/MSL3ZRMymN39On1y
+   8kJDZ3eoqLxzMv5BIsGiTNSgljFF6rpLiVZ71ZGuqReDHTQ5YFBqqK8u+
+   V3eCaLpsYOM/hkeUTpcVUqLI292OBII7P2jCz8ofSVdGlRQvUiNbG9IlH
+   LqZi4KJEvH5sn/15Sz9uoq8DAmW4HQkCi/qee/v2h7lO8kbfoKxtMgNuQ
+   JCzbd9xr95g8KcCE6l4bAXIc3BUr8I+/1RxHHzJ7KbL+Ek64Xtn4Uxi0z
+   Q==;
+X-CSE-ConnectionGUID: peNnGlqnRsmAIPGnFvSX3w==
+X-CSE-MsgGUID: Lntg8VCDR0GJD3t6cHksEw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11769"; a="78203186"
+X-IronPort-AV: E=Sophos;i="6.23,204,1770624000";
+   d="scan'208";a="78203186"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Apr 2026 05:54:23 -0700
+X-CSE-ConnectionGUID: XTOqharPSJ6dENPbe57CJw==
+X-CSE-MsgGUID: CKt+7LiBQvi/lpTHTWyD6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,204,1770624000";
+   d="scan'208";a="234244368"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Apr 2026 05:54:23 -0700
+Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Tue, 28 Apr 2026 05:54:22 -0700
+Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37 via Frontend Transport; Tue, 28 Apr 2026 05:54:22 -0700
+Received: from BN8PR05CU002.outbound.protection.outlook.com (52.101.57.51) by
+ edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.37; Tue, 28 Apr 2026 05:54:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=NlqWW+P2IglqpSWFsgQ4by//OhLOcLd+cEQXMgU2MaRuPfhTkwIJ1UOG8dNX/iS8XO5rsuIMBHWETpTYGWv/lYgS7rI7MxqvzrFuHpM268nUQX4OERRfFyhZIJ0CcmV7NXGGHO9cYl6hKRmPcvBpsnHDVLpaSsR/wyktXNtrQ5luKrzrBIj0bUG4tfC+R0lMV6jrZW/kqgzMHPpYylc/oXldlc3Qte0NY9/1sbxwe6bf5Nx8vuV81yS49H99sCiOn6TXwLb/h2TaiOgyVdOkTYGEJVho5YygsCmS1kqoPI8lCww5K1YjC4yXfQeJ8uenu2GHyuvHXTDb92FxUrNj1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lvrL17ZApOqnp19Ft0C5sQpLD9XMSv6yd+vYc0C4ipE=;
+ b=S8ALbDgDDr1QpCLjD3iqbzpBOlGF/dF4axZYOBlWH3T6gDb8u1OzCjW/UTaTyDpHqNqdeEwzqrk1PIC0YX4xHnI4fmX8uzoTocZOwV9opG2hMrIOVjC1m+Wv2UesgiaPScMc/mcwC/GlKqn92MAvoZvghISrX7brhr8ymz4yk9lxS79yBFgfYSI4tCv/knVpl2Oo+Qw4AoRZ+qLOi2GbtGAkSnlaCze/PA0Q1Y696SYkKFxE4vQHvQhpNORrNiev6YnBDIAb7gSa3Nu7ez5pUpqYW6iCC6ch5k37qFxwkn6Nd0cCRCU2J6Z2uZzOvwGqo8dJ/cMadYLUYFqzIQj9JQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5985.namprd11.prod.outlook.com (2603:10b6:208:370::8)
+ by SA1PR11MB9828.namprd11.prod.outlook.com (2603:10b6:806:4d9::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9870.16; Tue, 28 Apr
+ 2026 12:54:18 +0000
+Received: from MN0PR11MB5985.namprd11.prod.outlook.com
+ ([fe80::5e66:8219:629b:df9e]) by MN0PR11MB5985.namprd11.prod.outlook.com
+ ([fe80::5e66:8219:629b:df9e%6]) with mapi id 15.20.9870.016; Tue, 28 Apr 2026
+ 12:54:18 +0000
+From: "Mokashi, Sachin" <sachin.mokashi@intel.com>
+To: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+CC: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.com"
+	<tiwai@suse.com>, "pierre-louis.bossart@linux.dev"
+	<pierre-louis.bossart@linux.dev>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: cht_bsw_rt5672: Simplify probe() with local
+ 'dev' pointer
+Thread-Topic: [PATCH] ASoC: Intel: cht_bsw_rt5672: Simplify probe() with local
+ 'dev' pointer
+Thread-Index: AQHc1lU4u9cKLuCO9kSMZq/lUIPfKbXzBeuAgAFoTGA=
+Date: Tue, 28 Apr 2026 12:54:18 +0000
+Message-ID: 
+ <MN0PR11MB598543C064766C8C390F97A785372@MN0PR11MB5985.namprd11.prod.outlook.com>
+References: <20260427144619.1739971-1-sachin.mokashi@intel.com>
+ <4d5f3abb-bab9-468e-b1be-74bfa728b255@intel.com>
+In-Reply-To: <4d5f3abb-bab9-468e-b1be-74bfa728b255@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5985:EE_|SA1PR11MB9828:EE_
+x-ms-office365-filtering-correlation-id: 5737e54b-3f53-40b0-51c1-08dea52542b4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|376014|366016|1800799024|38070700021|22082099003|18002099003|56012099003;
+x-microsoft-antispam-message-info: 
+ g1rWmFzUzgT7ttDFT5YRV/34R5r5D8SzVVxGW0iB8wzlAVGPCrIS5GaWnTYpKBQ1EJgi0ipYc4v+lTGliQ+g6r0e3idSozL0tADYf31QMz9xe0AmmcUjm3JzYwd8BW9y9esjuxWQQ46PJMWVUO2c3RJLVx4T2Qaw2YpMy5juasdU8/nkH8ramW3ek+e1+QdMIItqR9Bz8IctG8RwqqvfuN2Y8x1ugnrXgSPEOvDrWHfFL+t18eF0VrLyI6KUJ7+uZwaBc7t40RLb7qmZ14rg9QRdrcfr7i375Fr45EvRP/uv6nPgY4kq+V/itEGLykR5Wyrrj3ibxNOwjqMIRV9xFOtiB44ZVXfOt1VeK7FsKK7uabanzSvw67GbakCxWvkfmpKVnjFlumx1wP1/JieuOuQXFisycT4A8CgGhTjZ7Y9CX9ExATQA69mNioEsY1toxQAI1LvaWchTLGXSMlba1cOpdbR6xo8U16rkh+e8NO/dFYWPpjIWjMNeT8pJIfFPuRsvYl5pkZps8qO1iJVDaR5jPYmyiAZ/t9sqd2E/T6/j4yroxTJBgTUxJzoagSd5tuVJ2BC6a0zZI2fZMeQzuhVDoTJ9p4y2nQPrFoRQfI/g0LOMvcZQuyVCnvMF/AZW86AurGcJGIdWWo3VMEc05dZFrOwMGZY4Oy8A0LrxJrh8Jzu9/E7i59f5KDp04/lML+GbBdyAFainRUrrWakd71r+dpJclxkPdW0hJPs0FtAoM/3B6JWQDvTHUSG/JxfNKvS4mk+RXs8WOfk4npPC0V37k2UzeZ8MtakUgrrhnHY=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5985.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700021)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?dXdsR1JqZjdWRnRlY3pyVlZvUVRYVXNmNE5ja0xENEs5SS9yZzllbGswVDZh?=
+ =?utf-8?B?RmtUTE13WWlOM05xM1gvcXFUYnhlRU1MMitIWnpIWDEvYW12T3N3NEtwUHN1?=
+ =?utf-8?B?MUR2VkZKYXBZeDFFZUNXeFhZZDFHcWZlQXJ5UllkTUNIbVg1eExiVVVPK0hV?=
+ =?utf-8?B?UGlwR2poczBCYlZjaHcyN1Y3azFuUVlFb2diZkY1bVhEYXcxVmtrOWhOY3ZE?=
+ =?utf-8?B?Sk55WjRqYUpUMEQ1UkI0YUlYN0RZWGVtUDUreFhNU1FLOUJKcUcyeXVwZ3U5?=
+ =?utf-8?B?REljN2wrSjFISFZteUJ5QWV4ZitvbElaWTJNWHZlU2NPVDFkSXo4aVdoYS80?=
+ =?utf-8?B?YzFuT1ZqTzgvd3MvSVI4cVhNY3hWK0tQd3RFcmtKZzc4d2l0WEdyZXU1ZnBD?=
+ =?utf-8?B?eWZCMzJMNjYyQ1ljMlFQQU0ybXFaNFNZbDlORzFFNjJCRXRqaTN5SVB6aldI?=
+ =?utf-8?B?MEc4YzFWS0U5MFRrRnVOWlpxdXZONVNsaXl2blV6Uzl3bjV6ckdwcWVKREx4?=
+ =?utf-8?B?OGltUjdKQTVwZGNQbUJPUUxRSXF6cnMxVEJuNHVJVksvaFhHdkxWQWNUTnV2?=
+ =?utf-8?B?bUR5amtsY1dhcy9VMm43dzhuc2huM2VCbTdZMkJTVGtSVkhKQmZNcXpFeWpT?=
+ =?utf-8?B?N0ZGOUpLRHg3ajAxUTUrLzFnS0NJM3RsVmJpUll0WkFTTmJXV2pHMXUvTll6?=
+ =?utf-8?B?TWh3OE1FZ3JFWUN6aDduUTkvZldNMG1pVHFLcW1lYzAxK3RneUU1TjloRUFN?=
+ =?utf-8?B?U244K1pIUng5T3oyY0xiQ1B5UGtMTkltVGJ3V0dLVEh1S29HY2RUM3FlYy9m?=
+ =?utf-8?B?RkF5WHFmWllKWnd0TW9lTEJPL0hpZ0h1Z21BM21tT0pKM0pvbVlIVEVjZ3Nr?=
+ =?utf-8?B?UXkrRi8yOTdQMGJmTkVFbGxlYkxTMzF6YjRySEVTcy9xQWFLWHg2ZDNyY3Uw?=
+ =?utf-8?B?cGtCS3ExZmtzSndyZDkwTDhZZmUvZlVmRHI5YXZUWU9CUU1hYkJBUUlBUmov?=
+ =?utf-8?B?Y25NUEZoVC82V0pmVEZ2SW9VdHoxeS8vMXh0RGtiQjFOMytvd2VIQlZzTUYw?=
+ =?utf-8?B?dmJVYWxTcThySTFTQXFvWDVnSlFxekxwR2xZU1gvU0JHUnRIZFVDVVVmK1BQ?=
+ =?utf-8?B?ZGNuNkd2dmdUdVpnTHlaRDlTaDNaU2NlOXpqWExqcFovQUVjZ2VUc0RFQkVx?=
+ =?utf-8?B?Y0MyQ3FvTDkyUlZuWkplTGx2bXNnSTJPUlZxTVduQitOVS96anFnSFNkSlhw?=
+ =?utf-8?B?MUk0WUhxUmU1M2RJWmt6blBZZ25VbE50cHY2cFVLYk5CT0N3aFhGL1JSN1p2?=
+ =?utf-8?B?dUJJWHkwWmNGTWNocGhXaXRHSWsvN3d5M1g0ckkvcjhDbnN0bXZpY0FWTzBM?=
+ =?utf-8?B?a1FVS0ovcnpOY1pvdEpPSjJQS0ZYeVNZRzZxc09adkhYbjNNM2dldDcraEJt?=
+ =?utf-8?B?bElGL2lIRzYreDJuZzVhTE43OGNNcExwRlZYTjFNQU9tZHlZSVFiajdxQk9C?=
+ =?utf-8?B?bFJpZVJvV2F6R1Mxakp0ckF6aUJkUEIwOVZHTmJyR09LNFNBeFhJbllYcERq?=
+ =?utf-8?B?NDhqVis1UTdqdmJmdVY4VERYYWo2MmtTL2xRUjVXZnBya3JKcTZyT0kwcWJF?=
+ =?utf-8?B?WTFBaTNyUDJhT2diUU5CMWNXdXNrelZyb2wyNXJoMEVOU3RhYXBnL1VYN2l4?=
+ =?utf-8?B?cDk0RkJKTFd0K2ZoVVpQRVkxSWt5cXBDYU1UVDVuTjRMUE0rSDRtaHVhemtp?=
+ =?utf-8?B?cXhtdUNFYTR6MWhFREFnS3R3bGQ1NmovRzNGbVFxclQyZ3lmR2FwM0JTNFJi?=
+ =?utf-8?B?U3d3a2VkTHdCcHFoV3BSWHBHRlZiWHZFMU4wRVpUMjQvZHZXODNSSUdtaWxF?=
+ =?utf-8?B?ZnRVdFQ1TFlzOVNpNGttOWFMTVBET043UkJLa2c1UGVRUHFzU0huV1dmVERR?=
+ =?utf-8?B?dVBiTW5UbzRHM2gvUW94LzZkQjF4WVpxaWk3MXR2a0wycXFtSGEwK2psK0lx?=
+ =?utf-8?B?OXlJcDBmVUJMUmxzOURweUQyTkN2enFndUhPd29telIxTEVpcVhoendUckdT?=
+ =?utf-8?B?bkFiZHF6RWd1ZTdLYUJhd1ByRjVVMnNYRzNoYUNMVUphcDZSVGpGRGIvRDRq?=
+ =?utf-8?B?Vm5YTy9yS0ZQaTRUaGpLd05NeWV3Smo0bkNTbE9xVkwydm43RUNNMWE0d3Yx?=
+ =?utf-8?B?V05ROW9xazQ1akpVeXk0cTdXS3FVKzBVUVcxNmlqd0VxelRsb2RLeWtmV0Nt?=
+ =?utf-8?B?bmpzSURaQ3k5bk9CQ1F0Q2haZXp6eFFXL0xlNjVlR3RodEtmdm1NYUJLSUpN?=
+ =?utf-8?B?bkIwcDJMV2hyTnpYdCtZMC9IN0h3ZWE2TnFiMEJuTmgwQXRoWUVaQT09?=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 7.0.2
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JF2K6BNS4D3RGNYLRPKCIAVCMK3XXPCM
-X-Message-ID-Hash: JF2K6BNS4D3RGNYLRPKCIAVCMK3XXPCM
-X-MailFrom: sashal@kernel.org
+X-Exchange-RoutingPolicyChecked: 
+ mfzw/TucgTICFiXaNCwNA3tkWmOXSr98BRrPeX7a37+URyChV9b9S1dcqLDjx8/e0VUgtgLJ4Dh+TuDnVgX8dts4oidgrDtRaUUB8XBN3hbjq2Q0ShHzsu/CNxNiKQwt/hbxv4l4BDGt7gFvobIm9O/rW3SHgnWajfpgSas1nrJauQMlEoIFpmlaAiX5NwRctDFrE+MSiKcBWFqAye+mnOHdYHw7ItdPzr9fZWHC/4p3IKPN57JWrgTdO7GynSjM5Vyzss7mqVEAlkkMZm07GFy5wV8SlnYKIzh+dcOWjtEA4024bxM8TfYvmhOtjPIWufp1s6g9zRzVRADFbS7I9A==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5985.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 5737e54b-3f53-40b0-51c1-08dea52542b4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2026 12:54:18.3501
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ OrjvetBJGtBefOzpl34K6secpJfkaifcb8b6sZZxdfHe1YJFZn+dKjrgjFRzbM4pk6coX/pDoeYqKo2/QJIjyWby20P4BF0btStb7f8dZgU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB9828
+X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: base64
+Message-ID-Hash: 3BGQYTI7SUKW5K363HYRKE2NEQ35EGUA
+X-Message-ID-Hash: 3BGQYTI7SUKW5K363HYRKE2NEQ35EGUA
+X-MailFrom: sachin.mokashi@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -91,7 +205,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JF2K6BNS4D3RGNYLRPKCIAVCMK3XXPCM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3BGQYTI7SUKW5K363HYRKE2NEQ35EGUA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,388 +214,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Johnathan Penberthy <johnathan.penberthy@gmail.com>
-
-[ Upstream commit 17bc5dd49214b50c9eb6df0fad1d1aea287dd078 ]
-
-The NexiGo N930W 60fps webcam (USB ID 3443:930d) hits the same
-'cannot get freq at ep 0x84' error in snd-usb-audio as its sibling
-N930AF (1bcf:2283). Without QUIRK_FLAG_GET_SAMPLE_RATE the ADC clock
-is never configured and the microphone streams only zero samples.
-
-Testing on Linux 6.17 with QUIRK_FLAG_GET_SAMPLE_RATE |
-QUIRK_FLAG_MIC_RES_16 (via quirk_alias=3443930d:1bcf2283) confirmed
-the microphone captures real audio after a cold USB re-enumeration.
-Adding a native quirk_flags_table entry avoids the alias workaround.
-
-Signed-off-by: Johnathan Penberthy <johnathan.penberthy@gmail.com>
-Link: https://patch.msgid.link/20260417010123.3080904-1-johnathan.penberthy@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-Based on my investigation, I have all the information needed to make a
-decision. Let me provide the complete analysis.
-
----
-
-## PHASE 1: COMMIT MESSAGE FORENSICS
-
-**Step 1.1 — Subject line parse**
-- Subsystem prefix: `ALSA: usb-audio:`
-- Action verb: "Add" (quirk entries)
-- Record: ALSA USB audio subsystem; adds device-specific quirk for
-  NexiGo N930W webcam (USB ID 3443:930d) to fix non-functional
-  microphone.
-
-**Step 1.2 — Tags inventory**
-- `Signed-off-by: Johnathan Penberthy <johnathan.penberthy@gmail.com>`
-  (author)
-- `Link: https://patch.msgid.link/20260417010123.3080904-1-
-  johnathan.penberthy@gmail.com`
-- `Signed-off-by: Takashi Iwai <tiwai@suse.de>` (subsystem maintainer
-  who applied it)
-- No Fixes:, no Cc: stable (expected), no Reported-by/Tested-
-  by/Reviewed-by tags
-- Record: Single-author patch applied directly by ALSA maintainer; no
-  syzbot involvement, but submitter explicitly tested on real hardware
-  (Linux 6.17).
-
-**Step 1.3 — Body analysis**
-- Bug: webcam reports `cannot get freq at ep 0x84`; ADC clock never
-  configured; mic streams **only zero samples** (i.e., silent
-  microphone).
-- Author tested with `quirk_alias=3443930d:1bcf2283` (mapping to
-  existing N930AF entry), confirmed mic captures real audio after re-
-  enumeration.
-- Author explicitly identifies this as the same firmware bug class as
-  sibling N930AF (1bcf:2283).
-- Record: Concrete user-visible failure (broken microphone),
-  reproducible trigger (every device use), confirmed fix on real
-  hardware.
-
-**Step 1.4 — Hidden bug fix detection**
-- Subject says "Add", but this is a **hardware workaround**: it fixes a
-  real broken firmware behavior in a specific webcam model.
-- Record: Falls squarely into the "hardware quirk/workaround" exception
-  category that is YES for stable.
-
-## PHASE 2: DIFF ANALYSIS
-
-**Step 2.1 — Inventory**
-- Files: 1 (`sound/usb/quirks.c`)
-- Lines: +2, -0
-- Function modified: `quirk_flags_table[]` (static const table) — single
-  new `DEVICE_FLG()` entry
-- Record: Surgical, single-file, two-line addition to a static const
-  data table.
-
-**Step 2.2 — Code flow change**
-- Before: USB device 3443:930d had no entry; falls through to default
-  handling, fails `GET_SAMPLE_RATE`, mic capture volume resolution wrong
-  → silent mic.
-- After: matches new entry, sets `chip->quirk_flags |=
-  QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16` during
-  `snd_usb_init_quirk_flags()`.
-- Record: Pure additive entry; affects only this exact VID:PID.
-
-**Step 2.3 — Bug mechanism**
-- Category: **Hardware workaround** (quirk table entry).
-- Mechanism: `QUIRK_FLAG_GET_SAMPLE_RATE` makes
-  `snd_usb_get_sample_rate()` short-circuit (return 0) so the ADC clock
-  setup proceeds; `QUIRK_FLAG_MIC_RES_16` overrides the mic capture
-  volume control resolution to 16 (verified at `sound/usb/mixer.c:1085`
-  and `sound/usb/clock.c:490`).
-- Record: Standard quirk pattern, identical to the existing sibling
-  `DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo N930AF FHD Webcam */, ...)`.
-
-**Step 2.4 — Fix quality**
-- Obviously correct: only matches by exact VID:PID; both flags are pre-
-  existing and battle-tested for this exact hardware family.
-- Regression risk: essentially zero — only that one specific device is
-  affected; cannot impact any other hardware.
-- Record: Fix is minimal, surgical, zero collateral risk.
-
-## PHASE 3: GIT HISTORY INVESTIGATION
-
-**Step 3.1 — Blame on the changed area**
-- Adjacent line `0x339b, 0x3a07 /* Synaptics HONOR USB-C HEADSET */` was
-  introduced in commit `2cbe4ac193ed7` ("ALSA: usb-audio: Add mute TLV
-  for playback volumes on more devices"), present from v6.17-rc5.
-- Record: The exact textual context of the new line appears only in
-  v6.17+, but the table itself exists since v5.15.
-
-**Step 3.2 — Fixes: tag**
-- No Fixes: tag (expected; this is hardware enablement, not a regression
-  of a kernel commit).
-- The bug is **firmware-side**: the webcam itself is misbehaving.
-- Record: N/A.
-
-**Step 3.3 — File history**
-- Recent quirks.c changes are all the same kind (per-device quirk
-  additions, e.g., `bc5b4e5ae1a67`, `ee6c551a7d84f`, `5182e5ec4355d`,
-  etc.). This is a routine, well-understood change pattern.
-- Record: Standalone fix, no series, no prerequisites.
-
-**Step 3.4 — Author**
-- Johnathan Penberthy: not a regular contributor, but the patch came
-  from a real user with the broken webcam, was reviewed and applied
-  directly by maintainer Takashi Iwai.
-- Record: User-driven hardware enablement; the maintainer (who is the
-  SOC/ALSA-USB lead) signed off.
-
-**Step 3.5 — Dependencies**
-- `QUIRK_FLAG_GET_SAMPLE_RATE`: introduced in `4d4dee0aefec3` ("ALSA:
-  usb-audio: Introduce quirk_flags field"), present since **v5.15**.
-- `QUIRK_FLAG_MIC_RES_16`: introduced in `d6e6b9218ced5` ("ALSA: usb-
-  audio: Make mic volume workarounds globally applicable"), present
-  since **v6.13** (verified via `git describe --contains`).
-- Record: Both flags are pre-existing infrastructure. **Patch can apply
-  to v6.13+ stable trees only** because of `QUIRK_FLAG_MIC_RES_16`.
-  Earlier trees would need a partial backport (only
-  `QUIRK_FLAG_GET_SAMPLE_RATE`) — but stable trees < 6.13 are
-  increasingly fewer, and the pattern is well-precedented.
-
-## PHASE 4: MAILING LIST AND EXTERNAL RESEARCH
-
-**Step 4.1 — Original patch discussion**
-- Fetched mbox via `b4 mbox` for message-id
-  `20260417010123.3080904-1-johnathan.penberthy@gmail.com`.
-- Thread = 2 messages: the patch itself, then maintainer reply.
-- Maintainer Takashi Iwai response: **"Applied now. Thanks."** — applied
-  with zero requested changes.
-- Record: Single revision (no v2/v3), no NAKs, no concerns raised,
-  applied by the most senior subsystem maintainer immediately.
-
-**Step 4.2 — Reviewers**
-- To: Takashi Iwai (subsystem maintainer)
-- Cc: Jaroslav Kysela (ALSA co-maintainer), linux-sound, linux-kernel
-- Record: Sent to all the right people; the maintainer himself applied
-  it.
-
-**Step 4.3 — Bug report**
-- No external bug report URL; the commit message itself contains the
-  diagnostic info (kernel error message, test methodology).
-- Record: User-driven report directly in the commit message.
-
-**Step 4.4 — Related patches**
-- Standalone single-patch submission (no series).
-- Record: No dependencies.
-
-**Step 4.5 — Stable list history**
-- Not applicable; this is a brand-new patch (Apr 17, 2026) submitted to
-  and applied by the ALSA maintainer.
-- Record: N/A.
-
-## PHASE 5: CODE SEMANTIC ANALYSIS
-
-**Step 5.1 — Key functions**
-- Modified data: `quirk_flags_table[]` array.
-- The flag consumer functions: `snd_usb_get_sample_rate()` in
-  `sound/usb/clock.c` and `volume_control_quirks()` in
-  `sound/usb/mixer.c`.
-
-**Step 5.2 — Callers**
-- `snd_usb_get_sample_rate()` is called during USB audio probe/setup for
-  every USB audio device that exposes a clock source — i.e., universal
-  call path.
-- The quirk table is consumed by `snd_usb_init_quirk_flags()` during
-  `usb_audio_probe()`.
-- Record: Reachable via USB device hotplug for any USB-audio device
-  matching the VID:PID.
-
-**Step 5.3 — Callees**
-- Quirk lookup is a simple linear table match keyed by VID:PID.
-- Effects of flags are localized to two well-understood code paths.
-
-**Step 5.4 — Reachability**
-- Trigger: plugging in a NexiGo N930W webcam — any user can do this.
-- Record: 100% reachable for affected hardware owners; entirely inert
-  for everyone else.
-
-**Step 5.5 — Similar patterns**
-- The very similar sibling entry `DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo
-  N930AF FHD Webcam */, QUIRK_FLAG_GET_SAMPLE_RATE |
-  QUIRK_FLAG_MIC_RES_16)` exists at line 2346/2347 (per Grep). The
-  earlier `4a63e68a29518` ("ALSA: usb-audio: Fix microphone sound on
-  Nexigo webcam.") established the precedent and was itself a stable-
-  style hardware fix.
-- Record: Same fix pattern used for sibling NexiGo model — strong
-  precedent.
-
-## PHASE 6: CROSS-REFERENCING AND STABLE TREE ANALYSIS
-
-**Step 6.1 — Buggy code in stable**
-- The "code" here is the absence of a table entry; the framework that
-  would honor the quirk has been present since v5.15
-  (`QUIRK_FLAG_GET_SAMPLE_RATE`) and v6.13 (`QUIRK_FLAG_MIC_RES_16`).
-- The webcam's broken firmware affects users on **all** stable trees
-  that have the framework.
-- Record: Applicable to v6.13.y, v6.16.y (LTS), and whatever later
-  stable trees are active.
-
-**Step 6.2 — Backport complications**
-- Mainline context: new entry inserted between `0x339b, 0x3a07` and
-  `0x413c, 0xa506`. The `0x339b` entry only exists in v6.17+. For
-  v6.13.y/v6.16.y, the entry would land at the same logical sorted
-  position (between `0x3255` and `0x413c`) but with slightly different
-  surrounding context — trivial 3-way-merge fix-up.
-- Record: Minor textual conflict possible on older stable; trivial to
-  resolve. The semantics are identical.
-
-**Step 6.3 — Related fixes already in stable**
-- The sibling N930AF quirk (1bcf:2283) is in stable already; this is the
-  cousin device.
-- Record: Consistent with existing stable entries.
-
-## PHASE 7: SUBSYSTEM AND MAINTAINER CONTEXT
-
-**Step 7.1 — Subsystem**
-- `sound/usb/` — USB audio driver. Criticality: **PERIPHERAL** in scope
-  (specific device class), but the change is exactly the kind of thing
-  routinely backported.
-
-**Step 7.2 — Activity**
-- `sound/usb/quirks.c` is actively maintained; quirk additions are
-  routine and regularly land in stable.
-
-## PHASE 8: IMPACT AND RISK ASSESSMENT
-
-**Step 8.1 — Affected users**
-- Specifically: owners of the NexiGo N930W 60fps webcam.
-- The N930-series is a popular consumer webcam line; this is real-world
-  hardware enablement.
-
-**Step 8.2 — Trigger**
-- Every plug-in / every microphone-use attempt.
-- Unprivileged users hit it (just plugging in the device).
-
-**Step 8.3 — Failure mode severity**
-- Microphone effectively non-functional — only zero samples captured.
-  Video works, audio does not.
-- Severity: **HIGH for affected users** (mic completely silent). For
-  everyone else: zero impact.
-
-**Step 8.4 — Risk-benefit ratio**
-- Benefit: enables a piece of consumer hardware that is otherwise broken
-  on Linux.
-- Risk: 2-line table entry, exact-match VID:PID, cannot affect any other
-  hardware. Effectively zero regression risk.
-- Record: Strongly favorable.
-
-## PHASE 9: FINAL SYNTHESIS
-
-**Step 9.1 — Evidence compilation**
-FOR backport:
-- Two-line, surgical hardware quirk addition.
-- Falls into the explicit "HARDWARE QUIRKS / DEVICE IDs" exception
-  category that is canonical YES for stable.
-- Identical flags as already-in-stable sibling N930AF entry.
-- Real-world user-visible bug (silent microphone) reproduced and fixed
-  by submitter.
-- Applied immediately by ALSA subsystem maintainer with no changes.
-- Zero regression risk for unrelated devices.
-- Quirk infrastructure exists in v6.13+ stable trees (LTS v6.16, soon
-  v6.17.y, etc.).
-
-AGAINST backport:
-- Patch context may need a small adjustment on older stable trees
-  (Synaptics line above is only v6.17+) — but easily handled.
-- Cannot apply to pre-v6.13 trees because `QUIRK_FLAG_MIC_RES_16`
-  doesn't exist there — those would need either a partial backport or
-  skip.
-
-UNRESOLVED:
-- None material to the decision.
-
-**Step 9.2 — Stable rules checklist**
-1. Obviously correct/tested: **YES** (author tested via quirk_alias
-   before submission; same flags work for the sibling device).
-2. Fixes a real bug: **YES** (silent microphone on real hardware).
-3. Important: **YES** (hardware completely non-functional for audio).
-4. Small/contained: **YES** (2 lines, single file).
-5. No new features/APIs: **YES** (uses existing flags).
-6. Applies to stable: **YES** for v6.13+; minor context adjustment may
-   be needed.
-
-**Step 9.3 — Exception category**
-- **Hardware quirk / device ID addition** — always YES for stable.
-
-**Step 9.4 — Decision: YES**
-
----
-
-## Verification
-
-- [Phase 1] Parsed tags: confirmed only Author SOB, Link, Maintainer
-  SOB; no Fixes/CC stable/Reported-by tags (expected).
-- [Phase 1] Body identifies concrete failure (`cannot get freq at ep
-  0x84`, mic streams zeros) and confirms successful test via
-  `quirk_alias=3443930d:1bcf2283` mapping.
-- [Phase 2] Diff inventory: 1 file (`sound/usb/quirks.c`), +2/-0 lines,
-  single `DEVICE_FLG()` entry verified by reading the patch.
-- [Phase 2] Verified the new entry uses pre-existing flags
-  `QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16` — not new
-  infrastructure.
-- [Phase 3] `git log -S "QUIRK_FLAG_MIC_RES_16" -- sound/usb/usbaudio.h`
-  -> introduced in commit `d6e6b9218ced5`; `git describe --contains
-  d6e6b9218ced5` -> `v6.13-rc1~123^2~14`. Confirmed available in v6.13+.
-- [Phase 3] `git log -S "QUIRK_FLAG_GET_SAMPLE_RATE" --
-  sound/usb/usbaudio.h` -> commit `4d4dee0aefec3`; `git describe
-  --contains` -> `v5.15-rc1~150^2~95`. Confirmed v5.15+.
-- [Phase 3] `git log -S "0x339b, 0x3a07"` -> commit `2cbe4ac193ed7`;
-  `git describe --contains` -> `v6.17-rc5~26^2~7`. Confirms only the
-  surrounding context (Synaptics line above) is v6.17-only — this only
-  affects diff-context, not semantics.
-- [Phase 3] Verified sibling entry `DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo
-  N930AF */, QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16)` exists
-  at quirks.c:2346-2347; matches pattern exactly.
-- [Phase 4] `b4 mbox` retrieved 2-message thread; verified maintainer
-  Takashi Iwai responded "Applied now. Thanks." with no requested
-  revisions.
-- [Phase 4] Confirmed `b4 am` produces single-revision patch (no v2/v3
-  evolution).
-- [Phase 5] Verified `QUIRK_FLAG_GET_SAMPLE_RATE` used in
-  `sound/usb/clock.c:490` to short-circuit `snd_usb_get_sample_rate()`.
-- [Phase 5] Verified `QUIRK_FLAG_MIC_RES_16` used in
-  `sound/usb/mixer.c:1085` to set `cval->res = 16` for "Mic Capture
-  Volume".
-- [Phase 6] Quirk infrastructure confirmed present in v6.13+ stable
-  trees; backport viable.
-- [Phase 8] Failure mode confirmed: silent microphone (zero samples
-  only). Severity HIGH for users with this webcam, NIL for others.
-- UNVERIFIED: I did not directly test the patch against the actual
-  v6.13.y/v6.16.y stable trees for context-merge cleanliness — minor
-  textual adjustment may be needed but the entry's semantics will work
-  in any tree with both flags defined.
-
-This is a textbook hardware-quirk addition: a 2-line table entry that
-enables a specific consumer webcam's microphone to actually work, using
-already-deployed quirk infrastructure, applied directly by the subsystem
-maintainer with no review concerns. It precisely matches the "device ID
-/ hardware workaround" exception that is canonically backported to
-stable.
-
-**YES**
-
- sound/usb/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 4cfa24c06fcdf..e9290920aea0e 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -2415,6 +2415,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
- 	DEVICE_FLG(0x339b, 0x3a07, /* Synaptics HONOR USB-C HEADSET */
- 		   QUIRK_FLAG_MIXER_PLAYBACK_MIN_MUTE),
-+	DEVICE_FLG(0x3443, 0x930d, /* NexiGo N930W 60fps Webcam */
-+		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16),
- 	DEVICE_FLG(0x413c, 0xa506, /* Dell AE515 sound bar */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 	DEVICE_FLG(0x534d, 0x0021, /* MacroSilicon MS2100/MS2106 */
--- 
-2.53.0
+DQo+T24gMjAyNi0wNC0yNyA0OjQ2IFBNLCBTYWNoaW4gTW9rYXNoaSB3cm90ZToNCj4+IEluIHNu
+ZF9jaHRfbWNfcHJvYmUoKSwgJnBkZXYtPmRldiBpcyBkZXJlZmVyZW5jZWQgcmVwZWF0ZWRseQ0K
+Pj4gdGhyb3VnaG91dCB0aGUgZnVuY3Rpb24uIEludHJvZHVjZSBhIGxvY2FsIGRldiBwb2ludGVy
+IGVhcmx5IGluIHRoZQ0KPj4gZnVuY3Rpb24gYW5kIHVzZSBpdCBjb25zaXN0ZW50bHkgaW4gcGxh
+Y2Ugb2YgYWxsIG9wZW4tY29kZWQgJnBkZXYtPmRldg0KPj4gcmVmZXJlbmNlcy4NCj4+DQo+PiBJ
+dCByZWR1Y2VzIHJlcGV0aXRpb24sIGltcHJvdmVzIHJlYWRhYmlsaXR5LCBhbmQgYWxpZ25zIHdp
+dGggdGhlDQo+PiBjb21tb24ga2VybmVsIGRyaXZlciBwYXR0ZXJuIG9mIGNhY2hpbmcgdGhlIGRl
+dmljZSBwb2ludGVyIGF0IGZ1bmN0aW9uIGVudHJ5Lg0KPg0KPk9uZSBuaXQgYmVsb3cgYnV0IGl0
+J3Mgbm90IGEgc3Ryb25nIGZvciB2Mi4gIEZvciB0aGUgcGF0Y2g6DQo+DQo+UmV2aWV3ZWQtYnk6
+IENlemFyeSBSb2pld3NraSA8Y2V6YXJ5LnJvamV3c2tpQGludGVsLmNvbT4NCj4NCj4NCj4+IEBA
+IC00NTAsMTIgKzQ1MCwxMyBAQCBzdGF0aWMgaW50IHNuZF9jaHRfbWNfcHJvYmUoc3RydWN0IHBs
+YXRmb3JtX2RldmljZQ0KPipwZGV2KQ0KPj4gICAJc3RydWN0IGNodF9tY19wcml2YXRlICpkcnY7
+DQo+PiAgIAlzdHJ1Y3Qgc25kX3NvY19hY3BpX21hY2ggKm1hY2ggPSBwZGV2LT5kZXYucGxhdGZv
+cm1fZGF0YTsNCj4+ICAgCWNvbnN0IGNoYXIgKnBsYXRmb3JtX25hbWU7DQo+PiArCXN0cnVjdCBk
+ZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7DQo+DQo+V2VpcmQgbG9jYXRpb24gZm9yIHRoaXMgZGVj
+bGFyYXRpb24uIFdoeSBpbiB0aGUgbWlkZGxlIG9mIG5vd2hlcmU/DQoNCkFncmVlZCwgd2lsbCB0
+YWtlIGNhcmUgb2YgaXQgZnJvbSB0aGUgbmV4dCB0aW1lLg0KDQo+DQo+PiAgIAlzdHJ1Y3QgYWNw
+aV9kZXZpY2UgKmFkZXY7DQo+PiAgIAlib29sIHNvZl9wYXJlbnQ7DQo+PiAgIAlpbnQgZGFpX2lu
+ZGV4ID0gMDsNCj4+ICAgCWludCBpOw0KSW50ZWwgRGV1dHNjaGxhbmQgR21iSA0KUmVnaXN0ZXJl
+ZCBBZGRyZXNzOiBEb3JuYWNoZXIgU3RyYXNzZSAxLCA4NTYyMiBGZWxka2lyY2hlbiwgR2VybWFu
+eQ0KVGVsOiArNDkgODkgOTkxIDQzMCwgd3d3LmludGVsLmRlDQpNYW5hZ2luZyBEaXJlY3RvcnM6
+IEhhcnJ5IERlbWFzLCBKZWZmcmV5IFNjaG5laWRlcm1hbiwgWWluIENob25nIFNvcnJlbGwNCkNo
+YWlycGVyc29uIG9mIHRoZSBTdXBlcnZpc29yeSBCb2FyZDogTmljb2xlIExhdQ0KUmVnaXN0ZXJl
+ZCBTZWF0OiBNdW5pY2gNCkNvbW1lcmNpYWwgUmVnaXN0ZXI6IEFtdHNnZXJpY2h0IE11ZW5jaGVu
+IEhSQiAxODY5MjgK
 
