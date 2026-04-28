@@ -4,79 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF10FF8868
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 10:42:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D536FF8875
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 10:42:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA87C601FA;
-	Tue, 28 Apr 2026 12:42:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA87C601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66241601ED;
+	Tue, 28 Apr 2026 12:42:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66241601ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777372950;
-	bh=0TvWbBh4U/QB9F2vsPBTvPWiuHyPhPtd5/8TwgA8YEg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ujfMRTStXOlJJmoqtaEMT+zn/3h3hmnJ5HqyeAnXtMZ/BVMx7SQI3tY6W8XQzJowN
-	 ZxReddk/KW3fPeaInSenGJM9JUW8/PCo1PctFvjUFFL2LM8O200npICVLYk5N7q8td
-	 s2rf8BnzEbHrqNYq4tub7tAsfx+IEb8y7Jm5nhvY=
+	s=default; t=1777372975;
+	bh=moRSq+QQ7JkPCG0pb4KT6HXASdeC7kq/Qu88/fsVK8E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=d/uL+/p0KQswVoJwy1EWmpm53cI0AgbqXTZesZnjb8oRk6nSqQrisTE9DmFy63fQ3
+	 Q0bFoE82+NTb+2maN+WFy2XdnHX+aqzmAR2qR1Zm4Bej3MHuodhz8WnAE4wH90fk6M
+	 yKUZFSs3/No+SiCm55nS48mrhII4FjNecPQ/RTzs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B4B8F805EF; Tue, 28 Apr 2026 12:41:54 +0200 (CEST)
+	id 5A635F80609; Tue, 28 Apr 2026 12:42:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE22BF805E8;
-	Tue, 28 Apr 2026 12:41:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A759F80615;
+	Tue, 28 Apr 2026 12:42:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4FD06F802BE; Tue, 28 Apr 2026 12:41:45 +0200 (CEST)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	id 7F2F3F8053B; Tue, 28 Apr 2026 12:42:08 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 43859F80169
-	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 12:41:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43859F80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id F31AEF805FB
+	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 12:42:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F31AEF805FB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qJb/NE1w
+ header.s=k20201202 header.b=K9JyWyTb
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5E28940557;
-	Tue, 28 Apr 2026 10:41:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 535A1C2BCAF;
-	Tue, 28 Apr 2026 10:41:35 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 00BB26057A;
+	Tue, 28 Apr 2026 10:42:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69157C2BCB9;
+	Tue, 28 Apr 2026 10:41:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777372896;
-	bh=0TvWbBh4U/QB9F2vsPBTvPWiuHyPhPtd5/8TwgA8YEg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=qJb/NE1wnyYMhoh1DLllF8ecDlSdwQ1lEnGwAAgsTfT3pG7dOVhr7jZJJev4vEYPI
-	 t3MvdiUT+JDh9kAurv89KX9roXZeJh9rYw8I4R4Lm2rPhTwGS44YN6utpHthN4lDM8
-	 Dcrqph94rLN2VvwXBYGzfwkfbM3th3wX38ckqIKqc/jB6DvTccx7c5PLPS3m3mJXdI
-	 fKaYnBTn+qZkbV6AHVheshdx/vlmfDShCKJaT5SKZkQjcNmA43JbfZATYs3jsJ6nRd
-	 RH3yIEDkSNGL6VkdE/AnROB+mCN8xnEbieboj/BiZO1drFNqF6RHQLzILpTgOT0dng
-	 Dixbx8LqTclmg==
+	s=k20201202; t=1777372920;
+	bh=moRSq+QQ7JkPCG0pb4KT6HXASdeC7kq/Qu88/fsVK8E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=K9JyWyTb81FiFRlaKs9kxhJeRM85YQWeGMDXrGPJHTj69OQtnP3AiFGSVhbNCL+7i
+	 kkVSXSAEV10PDyIAFq+LVYgujbtuYLKHOegEhDVGZyKLQanZWaTRaUJCDW4d5mP46c
+	 Rvjxa2yK+dG/2AcCcC2ClOQzfWt284h+rc3UZAtw8eVliqHTQN02lFkxa5f47WGzgW
+	 HCMdt/oKP/7DjftJqsHy7Ni3ALlU3LKY3ur+U3sQKk48wL1vLyamjopkZFXPmAg9oR
+	 0Lik7yaV+plMqCFISTwbYbxWSR+4NI4ca3WIiFt0cWARpdLhQXHnD82buoukDg9bDx
+	 ubrUCOl+UfCbg==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Timofey Tarasenko <timka.tarasen@gmail.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Tobias Heider <tobias.heider@canonical.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	srinivas.kandagatla@linaro.org,
+	bgoswami@quicinc.com,
+	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0] ALSA: hda/realtek: add quirk for HONOR MRB-XXX
- M1020
-Date: Tue, 28 Apr 2026 06:40:12 -0400
-Message-ID: <20260428104133.2858589-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 7.0-6.12] ASoC: qcom: x1e80100: limit speaker volumes
+Date: Tue, 28 Apr 2026 06:40:30 -0400
+Message-ID: <20260428104133.2858589-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260428104133.2858589-1-sashal@kernel.org>
+References: <20260428104133.2858589-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 7.0.2
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QA6RBGCXGY4S7TKJGHB2N7P5MU6XJBLB
-X-Message-ID-Hash: QA6RBGCXGY4S7TKJGHB2N7P5MU6XJBLB
+Message-ID-Hash: GMAOI6KKC6Q3SX2TLGNZZG2BXIBHSLZI
+X-Message-ID-Hash: GMAOI6KKC6Q3SX2TLGNZZG2BXIBHSLZI
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QA6RBGCXGY4S7TKJGHB2N7P5MU6XJBLB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GMAOI6KKC6Q3SX2TLGNZZG2BXIBHSLZI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,379 +104,415 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Timofey Tarasenko <timka.tarasen@gmail.com>
+From: Tobias Heider <tobias.heider@canonical.com>
 
-[ Upstream commit d9448dca423543c6c0a9890d3ff53a5d51895318 ]
+[ Upstream commit 0a5ee0e520eff98ee2b4568194562870877b050f ]
 
-Adds pin fixups to enable subwoofer and JACK functionality
-on Honor Magicbook Art 14 2025 (HONOR MRB-XXX M1020)
+Limit the digital gain and PA volumes to a combined -3 dB in the machine
+driver to reduce the risk of speaker damage until we have active speaker
+protection in place (or higher safe levels have been established).
 
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=221147
-Signed-off-by: Timofey Tarasenko <timka.tarasen@gmail.com>
-Link: https://patch.msgid.link/20260415074657.1217862-1-timka.tarasen@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Based on commit c481016bb4f8 ("ASoC: qcom: sc8280xp: limit speaker
+volumes") which addressed the same issue on the sc8280x SoC with some
+minor changes as explained below.
+
+The Digital Volume behaves almost identical to sc8280x since both use
+the same lpass-wsa-macro, but x1e80100 has two sets of controls prefixed
+with WSA and WSA2.
+For PA x1e80100 machines use wsa884x amplifiers which expose a linear
+scale from -9 dB to 9 dB with a 1.5 dB step size giving us
+0 dB = -9 dB + 6 * 1.5 dB.
+
+On x1e80100 there are two different speaker topologies we need to handle:
+  2-Speakers: SpkrLeft, Spkr Right
+  4-Speakers: WooferLeft, WooferRight, TweeterLeft, TweeterRight
+
+Signed-off-by: Tobias Heider <tobias.heider@canonical.com>
+Tested-by: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
+Link: https://patch.msgid.link/20260422-x1e80100-audio-limit-v2-1-333258b97697@canonical.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-Now I have enough information to make a thorough analysis.
+Based on my comprehensive analysis, I now have enough information to
+provide my decision.
 
-## Phase 1: COMMIT MESSAGE FORENSICS
+## Analysis Summary
+
+### PHASE 1: COMMIT MESSAGE FORENSICS
 
 **Step 1.1: Subject line parsing**
-- Subsystem: `ALSA: hda/realtek:`
-- Action verb: "add quirk"
-- Summary: Add audio quirk for HONOR Magicbook Art 14 2025 (HONOR MRB-
-  XXX M1020)
-- Record: `[ALSA: hda/realtek] [add quirk] [enable subwoofer and JACK on
-  Honor Magicbook Art 14 2025]`
+- Subsystem: `ASoC: qcom: x1e80100`
+- Action verb: "limit"
+- Record: ASoC machine driver for Qualcomm X1E80100 SoC sets volume caps
+  to prevent speaker damage.
 
-**Step 1.2: Commit tags**
-- `Closes: https://bugzilla.kernel.org/show_bug.cgi?id=221147` - real
-  user bug report
-- `Signed-off-by: Timofey Tarasenko` (author)
-- `Link: https://patch.msgid.link/...` - mailing list submission link
-- `Signed-off-by: Takashi Iwai` (maintainer) - the ALSA HDA maintainer
-- No `Fixes:` tag (expected - this is hardware enablement, not a
-  regression fix)
-- No `Cc: stable` (expected for review pipeline - per problem statement,
-  absence isn't negative)
-- Record: `[Bugzilla closed by patch] [Signed off by ALSA maintainer
-  Takashi Iwai]`
+**Step 1.2: Tags**
+- `Signed-off-by: Tobias Heider <tobias.heider@canonical.com>` (author)
+- `Tested-by: Srinivas Kandagatla
+  <srinivas.kandagatla@oss.qualcomm.com>` (subsystem maintainer)
+- `Reviewed-by: Srinivas Kandagatla
+  <srinivas.kandagatla@oss.qualcomm.com>` (subsystem maintainer)
+- `Link: https://patch.msgid.link/20260422-x1e80100-audio-
+  limit-v2-1-333258b97697@canonical.com`
+- `Signed-off-by: Mark Brown <broonie@kernel.org>` (subsystem tree
+  maintainer)
+- Record: NO `Cc: stable` tag, NO `Fixes:` tag. Tested AND Reviewed by
+  the subsystem maintainer.
 
 **Step 1.3: Commit body analysis**
-- Bug: subwoofer and JACK functionality don't work out-of-the-box on
-  HONOR Magicbook Art 14 2025
-- Symptom: hardware features non-functional without correct pin
-  configuration
-- Mechanism: HDA codec auto-config does not produce correct pin
-  defaults; explicit pin config needed
-- Record: `[Subwoofer + headset jack non-functional] [Failure mode:
-  missing audio output and jack detection] [Root cause: BIOS pin
-  defaults inadequate, override needed]`
+- Bug: Default audio volumes can drive speakers to dangerous
+  (potentially damaging) levels.
+- Author quote (cover letter): "trivial to crank up the volume to a
+  point where the T14s will hit what I believe is a hardware protection
+  that shuts down the speakers entirely until the next reboot. I am
+  worried that this means there is also a risk cause permanent hardware
+  damage."
+- Based on a precedent commit `c481016bb4f8` ("ASoC: qcom: sc8280xp:
+  limit speaker volumes") that DID have `Cc: <stable@vger.kernel.org> #
+  6.5`.
+- Record: Hardware safety patch; symptoms range from "speakers shut off
+  until reboot" to potential permanent damage.
 
-**Step 1.4: Hidden bug fix detection**
-- This is overtly hardware enablement via quirk, not disguised as a fix
-- Without it the laptop's audio hardware is partially non-functional
-- Record: `[Not disguised cleanup - it is an explicit hardware-enabling
-  quirk]`
+**Step 1.4: Hidden bug detection**
+- "Limit" wording sounds non-fix-like but the commit IS a hardware
+  safety fix (similar to a quirk).
+- Record: Treats default volume as a hardware-damage risk; falls under
+  "hardware quirks/workarounds".
 
-## Phase 2: DIFF ANALYSIS
+### PHASE 2: DIFF ANALYSIS
 
 **Step 2.1: Inventory**
-- 1 file: `sound/hda/codecs/realtek/alc269.c` (+13/-0 net)
-- 4 small additions: enum entry, fixup definition, SND_PCI_QUIRK entry,
-  model name entry
-- Scope: Single-file, additive-only, surgical
-- Record: `[1 file, ~13 lines added, 0 removed] [Functions touched: none
-  - data tables only] [Scope: surgical, additive only]`
+- Files changed: 1 (`sound/soc/qcom/x1e80100.c`)
+- Lines: +19, -0
+- Function modified: `x1e80100_snd_init()`
+- Record: Single-file, single-function, surgical change.
 
 **Step 2.2: Code flow change**
-- Before: PCI ID 0x1ee7:0x2081 (HONOR MRB-XXX M1020) hits the alc269
-  driver but no specific fixup applies, leaving BIOS-default pin
-  configuration
-- After: The driver's quirk table matches this PCI ID and applies pin
-  overrides for nodes 0x14 (speaker, 0x90170111), 0x19 (mic-in headset
-  jack, 0x03a1113c), 0x1a (subwoofer, 0x22a190a0), 0x1b (speaker,
-  0x90170110)
-- Record: `[Before: BIOS pin defaults wrong -> sub/jack don't work] ->
-  [After: explicit pin config applied at probe -> hardware fully works]`
+- Before: `x1e80100_snd_init()` only handled DisplayPort cases; WSA
+  cases fell through to default jack setup with no volume restrictions.
+- After: Adds explicit WSA RX cases that call `snd_soc_limit_volume()`
+  for digital and PA volumes, then breaks (skipping jack setup, which is
+  correct since WSA is for speakers, not headphones).
+- Record: Adds a new switch case branch that caps speaker volumes at
+  safe levels.
 
 **Step 2.3: Bug mechanism**
-- Category: Hardware workaround / quirk (item h in the bug categories)
-- Mechanism: BIOS/firmware reports incorrect pin defaults; the patch
-  overrides them via the standard HDA_FIXUP_PINS mechanism, which is the
-  canonical method for these problems
-- Record: `[Bug category: hardware quirk for incorrect BIOS pin
-  defaults] [Mechanism: pintbl override of 4 widget pin configurations]`
+- Category: Hardware safety / quirk
+- Mechanism: Caps "WSA WSA_RX0 Digital Volume" / "WSA2 ..." to 81 (-3
+  dB) and PA volumes to 6 (= 0 dB on wsa884x's -9..+9 dB scale)
+- Record: Hardware-protection limit; matches the pattern of the sc8280xp
+  limit which was Cc'd to stable.
 
 **Step 2.4: Fix quality**
-- Identical pattern to dozens of existing quirks in the same file (e.g.,
-  line 7755 `HONOR BRB-X M1010`, the touchpad quirk for the same laptop
-  family in HID)
-- The pin values follow standard Realtek pin defaults format (0x90170110
-  = internal speaker, 0x03a1113c = headset jack, 0x22a190a0 = subwoofer-
-  style internal speaker)
-- Cannot regress: applies only to the specific PCI ID 0x1ee7:0x2081
-- Record: `[Fix quality: high, follows established patterns] [Regression
-  risk: zero for users without this exact device]`
+- `snd_soc_limit_volume()` silently returns `-EINVAL` if a control name
+  isn't found, so missing controls (e.g., 4-speaker names on a 2-speaker
+  board) cause no harm.
+- WSA case path properly `break`s before jack setup.
+- v1 of the patch had wrong control names (missing "WSA "/"WSA2 "
+  prefixes); maintainer Mark Brown caught it; v2 has correct prefixed
+  names verified via `amixer`.
+- Record: Minimal, contained, verified by author with `amixer cget`
+  after the fix.
 
-## Phase 3: GIT HISTORY INVESTIGATION
+### PHASE 3: GIT HISTORY
 
-**Step 3.1: blame the changed lines**
-- The neighbouring entries (HONOR BRB-X M1010 at line 7755) were added
-  by `b26e2afb3834d` ("ALSA: hda/realtek: Fix headset mic on HONOR
-  BRB-X" - Aug 11 2025)
-- The enum scaffolding has existed since the file was created
-- Record: `[The quirk infrastructure has been stable for years; HONOR-
-  style quirks are an established pattern]`
+**Step 3.1/3.2: Origin**
+- No `Fixes:` tag. The "bug" is an absence of safe defaults rather than
+  a regressive commit.
+- The x1e80100 driver was added by `6b9dc2da66578` (ASoC: qcom: Add
+  x1e80100 sound machine driver), first appearing in v6.8.
+- Record: Driver and the unsafe default have existed since v6.8 (Dec
+  2023).
 
-**Step 3.2: Fixes: tag**
-- Not applicable: hardware enablement, not a regression fix
-- Record: `[No Fixes: tag - hardware never worked correctly without this
-  quirk]`
+**Step 3.3: Related changes**
+- `159098859bf6d` ("ASoC: qcom: x1e80100: Support boards with two
+  speakers") added 2-speaker support in v6.13.
+- The 4-speaker prefixes (WooferLeft/TweeterLeft/etc.) come from per-
+  board DT, not from the machine driver. WSA/WSA2 component prefixes
+  have been in `arch/arm64/boot/dts/qcom/x1e80100.dtsi` (now
+  `hamoa.dtsi`) since v6.10.
+- Record: Patch is standalone; no functional dependency on other source-
+  code commits.
 
-**Step 3.3: File history of related changes**
-- The HONOR BRB-X M1010 quirk (`b26e2afb3834d`) was explicitly tagged
-  `Cc: <stable@vger.kernel.org>` and went to stable
-- Similar recent quirks: `dd9b99b822684` (Acer Swift SFG14-73 - Cc:
-  stable), `1fbf85dbf02c9` (HP Victus - Cc: stable), `0bdf27abaf894`
-  (ASUS Strix G16 - Cc: stable)
-- Record: `[Pattern established: similar HONOR quirk b26e2afb3834d was
-  Cc:stable; multiple recent peer quirks Cc:stable]`
-
-**Step 3.4: Author's other commits**
-- Author Timofey Tarasenko has no other commits in this tree (first-time
-  contributor closing a bugzilla)
-- The patch was reviewed and signed-off by Takashi Iwai, the actual ALSA
-  HDA maintainer
-- Record: `[Author: bug reporter / first-time contributor] [Vetted by
-  maintainer Takashi Iwai]`
+**Step 3.4: Author/maintainer context**
+- Author Tobias Heider (Canonical) – relevant as users are Linux distro
+  users.
+- Reviewer/Tester Srinivas Kandagatla is the qcom ASoC maintainer.
+- Maintainer Mark Brown applied it.
+- Record: Properly vetted by appropriate maintainers.
 
 **Step 3.5: Dependencies**
-- The fixup uses only HDA_FIXUP_PINS infrastructure that has existed for
-  over a decade
-- No prerequisite commits required
-- Record: `[Standalone] [Zero prerequisites - HDA_FIXUP_PINS is core
-  infrastructure]`
+- `snd_soc_limit_volume(card, ...)` API has the same signature since
+  v4.4 — present in every relevant stable tree.
+- Sister patch `sc8280xp.c` already shipped to stable confirms the
+  API/pattern works in 6.5+.
+- Record: No prerequisite kernel changes needed.
 
-## Phase 4: MAILING LIST RESEARCH
+### PHASE 4: MAILING LIST
 
-**Step 4.1-4.5:**
-- Direct fetches to lore.kernel.org and bugzilla.kernel.org are blocked
-  by Anubis anti-bot challenge from this environment
-- The commit message itself contains the Bugzilla and lore links
-- The commit was applied with the maintainer's Signed-off-by, indicating
-  maintainer approval after review
-- The HONOR MagicBook Art 14 family already has companion quirks merged
-  elsewhere (HID touchpad, HONOR BRB-X audio)
-- Record: `[lore/bugzilla unreachable from this environment due to
-  Anubis] [Maintainer SOB present] [Companion HONOR-family quirks
-  already accepted to stable]`
+**Step 4.1: Original submission**
+- `b4 dig -c 0a5ee0e520eff` →
+  https://lore.kernel.org/all/20260422-x1e80100-audio-
+  limit-v2-1-333258b97697@canonical.com/
+- Record: Found via b4 dig.
 
-## Phase 5: CODE SEMANTIC ANALYSIS
+**Step 4.1b: Revisions**
+- `b4 dig -a` showed v1 (2026-04-21) and v2 (2026-04-22). v2 (the
+  applied version) fixed the WSA prefix bug. Author confirmed via amixer
+  that v2 correctly limits the controls.
+- Record: Applied version is the corrected one.
 
-**Step 5.1: Key functions**
-- No function changes - data table additions only
-- Affected logic: `snd_hda_pick_fixup()` matching at codec probe time
+**Step 4.2: Reviewers**
+- Subsystem maintainer Srinivas Kandagatla tested on T14s and Dell
+  Latitude 7455.
+- Mark Brown applied to `for-7.1`.
+- Johan Hovold (author of the original sc8280xp patch) was Cc'd.
+- Record: Strong maintainer review.
 
-**Step 5.2-5.4: Reachability**
-- The quirk table is consulted during `alc269_fixup_tbl` lookup at HDA
-  codec probe (boot/resume/module-load)
-- Triggered exclusively when the HDA controller exposes subsystem ID
-  0x1ee7:0x2081
-- For all other systems, the new entries are inert (the SND_PCI_QUIRK
-  arrays are matched by SSID, the fixup is referenced only by enum
-  index)
-- Record: `[Reachability: only when matching SSID 0x1ee7:0x2081 is
-  present] [No impact on any other system]`
+**Step 4.3: Bug reports**
+- No syzbot, no bugzilla. The driving evidence is the author's hands-on
+  report of speaker shutdown on Lenovo T14s and the precedent of speaker
+  damage concerns on sc8280xp.
+- Record: User-reported style (cover letter); not a fuzzer bug.
+
+**Step 4.4: Discussion**
+- v1 review by Mark Brown found that "WSA_RX0 Digital Volume" wouldn't
+  match because the controls are prefixed. The author confirmed via
+  amixer that v1 was a no-op. v2 fixes this.
+- Reviewer comment from Srinivas: "Thanks Tobias for doing this, this
+  has been long pending." — indicates the issue was known.
+- Record: Maintainer explicitly says the safety limit "has been long
+  pending"; thread does NOT mention stable nomination.
+
+**Step 4.5: Stable list**
+- Did not find a stable-list discussion of this specific patch (it's
+  very new, applied 2026-04-22).
+- The precedent commit (`c481016bb4f8` for sc8280xp) explicitly carried
+  `Cc: <stable@vger.kernel.org> # 6.5`.
+- Record: No explicit stable nomination in this thread; precedent
+  supports stable suitability.
+
+### PHASE 5: SEMANTIC ANALYSIS
+
+**Step 5.1-5.4: Function context**
+- Modified function: `x1e80100_snd_init()` (machine driver init
+  callback).
+- Caller: `snd_soc_link_init()` ASoC core, invoked once per DAI link
+  during sound card registration on x1e80100/glymur/Hamoa-class devices.
+- Calls into: `snd_soc_limit_volume()` (caps platform_max), then
+  `qcom_snd_dp_jack_setup()`/`qcom_snd_wcd_jack_setup()`.
+- Record: Reachable on every probe of the x1e80100 sound card; not in
+  hot path (one-time init), but every user of the SoC executes it.
 
 **Step 5.5: Similar patterns**
-- The same line block contains hundreds of analogous SND_PCI_QUIRK
-  entries; the immediate predecessor is the HONOR BRB-X entry (line
-  7755) which was Cc: stable
-- Record: `[Identical pattern repeated across the entire
-  alc269_fixup_tbl - this is the canonical way to add device-specific
-  audio quirks]`
+- `sound/soc/qcom/sc8280xp.c` already has the identical pattern (limits
+  81 / 17 due to wsa881x amplifier scale) and is in stable since v6.8 —
+  proof that the pattern works in older trees.
+- Record: Direct precedent.
 
-## Phase 6: STABLE TREE ANALYSIS
+### PHASE 6: STABLE TREE ANALYSIS
 
-**Step 6.1: Code in stable trees?**
-- ALC269/ALC256 driver and `alc269_fixup_tbl` exist in every active
-  stable tree (5.4+)
-- The HDA_FIXUP_PINS framework is decade+ old
-- Record: `[Driver and quirk table present in all active stable trees:
-  5.4, 5.10, 5.15, 6.1, 6.6, 6.12]`
+**Step 6.1: Code presence in stable**
+- `sound/soc/qcom/x1e80100.c` exists since v6.8.
+- WSA/WSA2 sound-name-prefix in DT exists since v6.10.
+- 2-speaker board support (SpkrLeft/Right path used here as well as
+  4-speaker) added in v6.13.
+- Record: Patch is meaningful for stable trees v6.13+ (where both 2-spk
+  and 4-spk paths exist). On v6.8–v6.12 the limit on 4-speaker controls
+  would be a no-op (silent), but the digital volume limits would still
+  apply. No harm to apply.
 
 **Step 6.2: Backport complications**
-- File path differs between stable trees: in 6.17+ the file is
-  `sound/hda/codecs/realtek/alc269.c` (after splits `aeeb85f26c3bb` and
-  `6014e9021b28e` in July 2025); in 6.16 and earlier it is
-  `sound/pci/hda/patch_realtek.c`
-- The four hunks add new enum entries / new struct entries / a new
-  SND_PCI_QUIRK row / a new model name; they apply cleanly with only
-  path adjustment because no surrounding code was modified
-- Record: `[Backport difficulty: trivial - same content, only path
-  differs for stable < 6.17]`
+- Patch adds new lines to a switch statement and a local `card` pointer.
+  Should apply cleanly to any stable tree with x1e80100.c.
+- The `snd_soc_limit_volume(card, ...)` API signature is unchanged
+  across all relevant stable trees.
+- Record: Clean apply expected.
 
-**Step 6.3: Already in stable?**
-- Not yet present in stable trees; the new SSID 0x1ee7:0x2081 has no
-  entry
-- Record: `[Not in stable; nothing already addresses this device]`
+**Step 6.3: Already-applied checks**
+- No prior fix for this issue in x1e80100.c. The sc8280xp limit is in
+  stable but it doesn't cover x1e80100.
+- Record: This is the only fix.
 
-## Phase 7: SUBSYSTEM CONTEXT
+### PHASE 7: SUBSYSTEM CONTEXT
 
-**Step 7.1: Subsystem criticality**
-- ALSA HDA realtek driver - widely-used audio codec driver shipped with
-  most x86 laptops
-- Criticality classification: PERIPHERAL (specific hardware) but with
-  high user count
-- Record: `[Subsystem: sound/hda] [Criticality: peripheral but
-  ubiquitous - applies only to one specific laptop SKU]`
+**Step 7.1: Subsystem**
+- ASoC machine driver for Qualcomm X1E80100 (used on Snapdragon X Elite
+  laptops: Lenovo T14s Gen 6, Dell XPS 13 9345/Latitude 7455, HP
+  EliteBook Ultra G1q, ASUS Vivobook S15, etc.)
+- Criticality: PERIPHERAL (driver-specific) — but the affected user
+  population is sizable: this is the audio for an entire popular laptop
+  class.
+- Record: Driver-specific, but affects a popular consumer hardware
+  platform.
 
-**Step 7.2: Subsystem activity**
-- High activity - dozens of similar quirks added per release
-- Record: `[High activity, well-maintained, quirk additions are
-  routine]`
+**Step 7.2: Activity**
+- Active subsystem; multiple recent commits to qcom ASoC and x1e80100
+  family.
+- Record: Active.
 
-## Phase 8: IMPACT AND RISK
+### PHASE 8: IMPACT/RISK
 
 **Step 8.1: Affected users**
-- Owners of HONOR Magicbook Art 14 2025 laptops (HONOR MRB-XXX M1020)
-- Quirk is keyed off SSID 0x1ee7:0x2081, so only this exact device is
-  affected
-- Record: `[Affected: HONOR Magicbook Art 14 2025 owners only; zero
-  impact on others]`
+- Linux users running stable kernels on Snapdragon X Elite laptops who
+  use built-in speakers.
+- Record: Driver-specific but real user base growing rapidly.
 
-**Step 8.2: Trigger conditions**
-- Triggered every probe (boot/resume/module reload) on the matching
-  laptop
-- Record: `[Trigger: 100% of boots on the affected device, no impact
-  otherwise]`
+**Step 8.2: Trigger**
+- Trigger: any user moving the volume slider above the safe threshold.
+  Easy to hit in normal use.
+- Unprivileged: yes (any user with audio access).
+- Record: Routinely triggerable in normal desktop usage.
 
-**Step 8.3: Failure mode without fix**
-- Subwoofer not driven, headset jack mic input/detection broken on the
-  laptop
-- Severity: MEDIUM - functional regression for the user but not a
-  crash/security issue
-- Record: `[Failure mode: missing audio output (subwoofer) and broken
-  headset functionality] [Severity: MEDIUM - usability/functionality]`
+**Step 8.3: Failure mode severity**
+- Reproduced effect: speakers shutoff requiring reboot (acknowledged by
+  author on T14s).
+- Suspected effect: potential permanent hardware damage.
+- Severity: HIGH — physical hardware damage risk for end users with no
+  current mitigation.
+- Record: Hardware safety, HIGH severity.
 
 **Step 8.4: Risk-benefit**
-- Benefit: real hardware works on stable kernels for affected users
-- Risk: virtually zero - additive change, gated by exact SSID
-- Record: `[Benefit: medium (per-device, but real)] [Risk: minimal]
-  [Ratio: strongly favors backport]`
+- Benefit: prevents a user-triggerable speaker damage / lockout on a
+  popular laptop class.
+- Risk: very low. 19-line, single-file, contained change.
+  `snd_soc_limit_volume()` is best-effort; missing controls produce no
+  error. Tested by the maintainer on real hardware. Backport precedent
+  (sc8280xp) has been in stable for ~2 years without issue.
+- The only "downside" is users who currently operate above 0 dB lose
+  that headroom — but that's exactly the point (it was unsafe).
+- Record: High benefit, very low risk.
 
-## Phase 9: SYNTHESIS
+### PHASE 9: SYNTHESIS
 
-**Step 9.1: Evidence**
-- FOR: Real user bug (Bugzilla 221147), maintainer SOB by Takashi Iwai,
-  identical pattern to peer HONOR quirk that went to stable, additive-
-  only, gated by exact SSID, fits the "AUDIO CODEC QUIRKS" exception
-  explicitly listed as stable-eligible
-- AGAINST: Path differs between mainline and stable (cosmetic backport
-  hurdle only)
-- Unresolved: Cannot directly fetch lore for the original review thread
-  (Anubis challenge)
+**Evidence FOR backport:**
+- Hardware safety; "trivial to trigger" speaker shutdown / potential
+  permanent damage.
+- Direct precedent (`c481016bb4f8`) was explicitly Cc'd to stable for
+  the same class of issue on a sister SoC.
+- Small (19 lines), surgical, single function.
+- Tested AND Reviewed by the qcom ASoC maintainer; v1->v2 review caught
+  the silent-failure bug.
+- API used has been stable for many years; applies cleanly to v6.8+
+  stable trees.
+- Falls under the "hardware quirk/workaround" exception listed in stable
+  rules.
 
-**Step 9.2: Stable rules**
-1. Obviously correct? Yes - data table additions, no logic
-2. Real bug? Yes - bugzilla user report
-3. Important? Functional hardware enablement (audio HW partly broken
-   without it)
-4. Small? Yes - ~13 lines, 1 file
-5. No new features/APIs? Correct - reuses existing HDA fixup framework
-6. Applies to stable? Yes with trivial path change for trees <6.17
+**Evidence AGAINST backport:**
+- No explicit `Cc: stable` tag (per the prompt, this is NOT a negative
+  signal — it's why we're reviewing).
+- Behavior change: caps user-facing maximum volume.
+- Not a code-level bug per se (it's a missing safety default).
 
-**Step 9.3: Exception category**
-- Falls into "AUDIO CODEC QUIRKS (sound/pci/hda/patch_realtek.c)" - the
-  policy explicitly states "These are all YES for stable - they fix real
-  hardware for real users."
+**Stable rules check:**
+1. Obviously correct and tested? YES (Tested-by maintainer, amixer-
+   verified).
+2. Fixes a real issue affecting users? YES (speaker damage / lockup on
+   popular laptops).
+3. Important issue? YES (hardware damage risk).
+4. Small and contained? YES (19 lines, one file, one function).
+5. No new features/APIs? YES (uses existing API; not a new feature).
+6. Applies to stable? YES (clean apply expected; precedent exists).
 
-**Step 9.4: Decision**
-- Strong YES - textbook stable-worthy hardware quirk
+**Exception category:** Falls under "hardware quirks/workarounds for
+broken/limited devices" - explicitly called out as automatically YES in
+stable rules.
 
-## Verification
+### Verification
 
-- [Phase 1] Parsed the commit message: confirmed Closes: bugzilla,
-  maintainer SOB by Takashi Iwai, no Fixes: or Cc:stable (expected)
-- [Phase 2] Read `sound/hda/codecs/realtek/alc269.c` lines 4090-6669 and
-  7740-7755: verified the diff inserts cleanly into existing tables; pin
-  values match standard Realtek pintbl format (verified via existing
-  entries 0x90170110 in many other fixups)
-- [Phase 3] `git log --oneline --grep=HONOR -- sound/`: found
-  `b26e2afb3834d` peer quirk; `git show b26e2afb3834d`: confirmed Cc:
-  stable in similar HONOR BRB-X quirk
-- [Phase 3] `git show` on 7 recent peer quirks (`dd9b99b822684`,
-  `720460722310c`, `1fbf85dbf02c9`, `bac1e57adf08c`, `0bdf27abaf894`,
-  `7bae956cac043`, `0d3429f12133c`): three explicit Cc:stable, others
-  not - confirms maintainer treats device quirks as stable-eligible on a
-  per-device basis
-- [Phase 3] `git log --oneline --grep="quirk for HONOR"`: found
-  `7a5ab80711143` HID quirk for same HONOR MagicBook Art 14 family -
-  confirms real product family with multiple needed quirks
-- [Phase 4] WebFetch lore.kernel.org and bugzilla.kernel.org: BLOCKED by
-  Anubis anti-bot, marked UNVERIFIED for direct review thread content;
-  commit message links are recorded though
-- [Phase 5] Grep for `0x1ee7` in current tree: confirmed only one
-  existing entry (HONOR BRB-X M1010) - the new SSID 0x2081 is not yet
-  present
-- [Phase 6] `git log --diff-filter=A --
-  sound/hda/codecs/realtek/alc269.c` and `git show aeeb85f26c3bb` and
-  `git show 6014e9021b28e`: confirmed the file was created via
-  split+move in July 2025 (mainline 6.17), so older stable trees use
-  `sound/pci/hda/patch_realtek.c`
-- [Phase 8] Reachability: pin fixup applies only when subsystem ID
-  0x1ee7:0x2081 matches at codec probe - confirmed via `SND_PCI_QUIRK`
-  macro semantics in the same file
-- UNVERIFIED: Direct read of lore.kernel.org thread (b4 dig fallback not
-  run due to environment limits, but the patch is already applied with
-  maintainer SOB so review presumably occurred)
-- UNVERIFIED: Exact stable trees the maintainer would target - but the
-  policy in the prompt explicitly classifies audio codec quirks as YES
+- [Phase 1] Parsed tags: confirmed Tested-by + Reviewed-by Srinivas
+  Kandagatla, no `Cc: stable`, no `Fixes:`.
+- [Phase 2] Diff inventory: 19 lines added, 0 removed; only
+  `x1e80100_snd_init()` modified; verified by reading the diff.
+- [Phase 2] Verified `snd_soc_limit_volume()` silently returns `-EINVAL`
+  for unknown controls (read `sound/soc/soc-ops.c:488-510`).
+- [Phase 3] `git log -- sound/soc/qcom/x1e80100.c`: identified
+  6b9dc2da66578 introducing the file in v6.8.
+- [Phase 3] `git tag --contains 6b9dc2da66578 | grep -E
+  "^v[0-9]\.[0-9]+$"`: first stable v6.8.
+- [Phase 3] `git tag --contains c481016bb4f8a | grep -E
+  "^v[0-9]\.[0-9]+$"`: precedent landed in v6.8 (and was Cc'd to 6.5+).
+- [Phase 3] `git show c481016bb4f8a`: confirmed precedent has explicit
+  `Cc: <stable@vger.kernel.org> # 6.5`.
+- [Phase 4] `b4 dig -c 0a5ee0e520eff`: confirmed lore URL
+  https://lore.kernel.org/all/20260422-x1e80100-audio-
+  limit-v2-1-333258b97697@canonical.com/.
+- [Phase 4] `b4 dig -c 0a5ee0e520eff -a`: identified v1 (2026-04-21) and
+  v2 (2026-04-22) — applied version is v2.
+- [Phase 4] Read mbox of v1 and v2 threads: confirmed Mark Brown caught
+  the missing prefix in v1; author confirmed via amixer that v1 was a
+  no-op; v2 has correct names and was Tested+Reviewed by maintainer.
+- [Phase 5] Confirmed `snd_soc_limit_volume()` API exists since v4.4
+  (`git tag --contains 26d9ca3462df8`).
+- [Phase 5] Confirmed `sound/soc/qcom/sc8280xp.c` uses the same pattern
+  with 81 / 17 limits (read file).
+- [Phase 6] Confirmed WSA/WSA2 sound-name-prefix has been in DT since
+  v6.10 (commit c6d6df1703d47, `git tag --contains`).
+- [Phase 6] 2-speaker support added in v6.13 (`159098859bf6d`);
+  4-speaker existed earlier.
+- [Phase 8] Severity HIGH justified by author's reproduced symptom (T14s
+  speakers shut off until reboot) and risk of permanent hardware damage
+  stated in cover letter.
+- UNVERIFIED: Could not verify whether stable maintainers will need a
+  separate maintainer request (no stable@ thread for this commit yet).
+  Did not let this drive the decision.
+- UNVERIFIED: Did not directly test the patch on a stable tree — applies
+  cleanly per visual inspection.
 
-## Decision
+### Decision
 
-This is a textbook hardware quirk addition - small, surgical, gated by a
-unique SSID, fixing real hardware (subwoofer + headset jack) for real
-users on a shipping laptop with a Bugzilla report. It matches the
-explicit "AUDIO CODEC QUIRKS" exception that the stable rules allow,
-follows the same pattern as the peer `HONOR BRB-X M1010` quirk that was
-Cc: stable, and is signed off by the ALSA HDA maintainer. Backport
-requires only a trivial path change for stable trees older than 6.17.
+This is a small, well-tested hardware-safety patch that closely mirrors
+a precedent (`c481016bb4f8`) which was explicitly nominated for stable.
+It prevents a real, user-triggerable hazard (speaker hardware damage /
+lockup) on a popular laptop class. It uses an existing, stable API and
+falls under the "hardware quirks/workarounds" exception. The behavior
+change (capping volume) is the entire point of the safety fix. Risk of
+regression is very low because `snd_soc_limit_volume()` silently no-ops
+on unknown control names.
 
 **YES**
 
- sound/hda/codecs/realtek/alc269.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/qcom/x1e80100.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
-index 45f9d64873885..d35932b46267f 100644
---- a/sound/hda/codecs/realtek/alc269.c
-+++ b/sound/hda/codecs/realtek/alc269.c
-@@ -4124,6 +4124,7 @@ enum {
- 	ALC245_FIXUP_ACER_MICMUTE_LED,
- 	ALC245_FIXUP_CS35L41_I2C_2_MUTE_LED,
- 	ALC236_FIXUP_HP_DMIC,
-+	ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO,
- };
+diff --git a/sound/soc/qcom/x1e80100.c b/sound/soc/qcom/x1e80100.c
+index a3f4785c4bbe6..c81df41ace883 100644
+--- a/sound/soc/qcom/x1e80100.c
++++ b/sound/soc/qcom/x1e80100.c
+@@ -27,10 +27,29 @@ static int x1e80100_snd_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct x1e80100_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_card *card = rtd->card;
+ 	struct snd_soc_jack *dp_jack = NULL;
+ 	int dp_pcm_id = 0;
  
- /* A special fixup for Lenovo C940 and Yoga Duet 7;
-@@ -6666,6 +6667,16 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{ 0x12, 0x90a60160 }, /* use as internal mic */
- 			{ }
- 		},
-+	},
-+	[ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x14, 0x90170111 },
-+			{ 0x19, 0x03a1113c },
-+			{ 0x1a, 0x22a190a0 },
-+			{ 0x1b, 0x90170110 },
-+			{ }
-+		}
- 	}
- };
- 
-@@ -7753,6 +7764,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1e39, 0xca14, "MEDION NM14LNL", ALC233_FIXUP_MEDION_MTL_SPK),
- 	SND_PCI_QUIRK(0x1ee7, 0x2078, "HONOR BRB-X M1010", ALC2XX_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1ee7, 0x2081, "HONOR MRB-XXX M1020", ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO),
- 	SND_PCI_QUIRK(0x1f4c, 0xe001, "Minisforum V3 (SE)", ALC245_FIXUP_BASS_HP_DAC),
- 	SND_PCI_QUIRK(0x1f66, 0x0105, "Ayaneo Portable Game Player", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x2014, 0x800a, "Positivo ARN50", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-@@ -7973,6 +7985,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC236_FIXUP_LENOVO_INV_DMIC, .name = "alc236-fixup-lenovo-inv-mic"},
- 	{.id = ALC2XX_FIXUP_HEADSET_MIC, .name = "alc2xx-fixup-headset-mic"},
- 	{.id = ALC245_FIXUP_BASS_HP_DAC, .name = "alc245-fixup-bass-hp-dac"},
-+	{.id = ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO, .name = "alc256-honor-mrb-xxx-m1020-audio"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
+ 	switch (cpu_dai->id) {
++	case WSA_CODEC_DMA_RX_0:
++	case WSA_CODEC_DMA_RX_1:
++		/*
++		 * Set limit of -3 dB on Digital Volume and 0 dB on PA Volume
++		 * to reduce the risk of speaker damage until we have active
++		 * speaker protection in place.
++		 */
++		snd_soc_limit_volume(card, "WSA WSA_RX0 Digital Volume", 81);
++		snd_soc_limit_volume(card, "WSA WSA_RX1 Digital Volume", 81);
++		snd_soc_limit_volume(card, "WSA2 WSA_RX0 Digital Volume", 81);
++		snd_soc_limit_volume(card, "WSA2 WSA_RX1 Digital Volume", 81);
++		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 6);
++		snd_soc_limit_volume(card, "SpkrRight PA Volume", 6);
++		snd_soc_limit_volume(card, "WooferLeft PA Volume", 6);
++		snd_soc_limit_volume(card, "TweeterLeft PA Volume", 6);
++		snd_soc_limit_volume(card, "WooferRight PA Volume", 6);
++		snd_soc_limit_volume(card, "TweeterRight PA Volume", 6);
++		break;
+ 	case DISPLAY_PORT_RX_0:
+ 		dp_pcm_id = 0;
+ 		dp_jack = &data->dp_jack[dp_pcm_id];
 -- 
 2.53.0
 
