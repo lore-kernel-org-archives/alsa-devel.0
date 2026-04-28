@@ -4,86 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1184FF8867
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 03:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF10FF8868
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 10:42:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99F10601A0;
-	Tue, 28 Apr 2026 05:38:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99F10601A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA87C601FA;
+	Tue, 28 Apr 2026 12:42:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA87C601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777347494;
-	bh=v+k0mxR7uS4QEobk6K87ilUPY+SsHJk1YDnSyP1LnG4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Xt4nNOw4BJr4PEk51LkWsdIYKbWv4zZobeT77ujFKQwhkNK5fegkkJAt/S/qWIZqT
-	 RGQpzjaesTZI8Sz9Se7qChrldaBUzytjlj2GN/Z9pWJE3N3HgtkvvYuWLBidrRU7oq
-	 a41tygdHGux+vc7GtDnUXo8Vyp9kLROHijzrjcqk=
+	s=default; t=1777372950;
+	bh=0TvWbBh4U/QB9F2vsPBTvPWiuHyPhPtd5/8TwgA8YEg=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ujfMRTStXOlJJmoqtaEMT+zn/3h3hmnJ5HqyeAnXtMZ/BVMx7SQI3tY6W8XQzJowN
+	 ZxReddk/KW3fPeaInSenGJM9JUW8/PCo1PctFvjUFFL2LM8O200npICVLYk5N7q8td
+	 s2rf8BnzEbHrqNYq4tub7tAsfx+IEb8y7Jm5nhvY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C38D2F802BE; Tue, 28 Apr 2026 05:37:40 +0200 (CEST)
+	id 3B4B8F805EF; Tue, 28 Apr 2026 12:41:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA0B8F805C4;
-	Tue, 28 Apr 2026 05:37:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE22BF805E8;
+	Tue, 28 Apr 2026 12:41:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46B1CF804CF; Tue, 28 Apr 2026 05:37:34 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	id 4FD06F802BE; Tue, 28 Apr 2026 12:41:45 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC39CF80169
-	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 05:37:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC39CF80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id 43859F80169
+	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 12:41:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43859F80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fFGXpHhl
+ header.s=k20201202 header.b=qJb/NE1w
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5799D60128;
-	Tue, 28 Apr 2026 03:37:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06F49C2BCAF;
-	Tue, 28 Apr 2026 03:37:28 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 5E28940557;
+	Tue, 28 Apr 2026 10:41:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 535A1C2BCAF;
+	Tue, 28 Apr 2026 10:41:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777347450;
-	bh=v+k0mxR7uS4QEobk6K87ilUPY+SsHJk1YDnSyP1LnG4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fFGXpHhl2G8N8StPnAWQ5Yg37pyImayNq8lCo8KbQl+pS9roJlPl9NAEIxjIiC+qv
-	 uL8f9JH5sfgiLoyGzsgCrjm+cSdRM8UAdCGKIshSL5hovhK2+mt65RkgjfTIm2h/80
-	 8Antrzm3sZvzBfNNFXwPVpGMhdoWeCVY9wipsSq1rLsJ+zOEJwzfeshqG19i35AURy
-	 puw1aNs/kk+2yxI4/P4DSO/QRZLdF753iFLsccAjzC1Wpde4zuv3B3WgXJp8FvMPj3
-	 in0emcyOrKo4iLe97izNHHfReTbbeOdiHfcUqfsrawe6IPzq3BLtM9GwCok7VFJxTt
-	 X81ErnopVVCZQ==
-From: Mark Brown <broonie@kernel.org>
-To: Sachin Mokashi <sachin.mokashi@intel.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- tiwai@suse.com, pierre-louis.bossart@linux.dev, cezary.rojewski@intel.com
-In-Reply-To: <20260427144619.1739971-1-sachin.mokashi@intel.com>
-References: <20260427144619.1739971-1-sachin.mokashi@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: cht_bsw_rt5672: Simplify probe() with
- local 'dev' pointer
-Message-Id: <177732988081.324244.9990584552671602789.b4-ty@b4>
-Date: Tue, 28 Apr 2026 07:44:40 +0900
+	s=k20201202; t=1777372896;
+	bh=0TvWbBh4U/QB9F2vsPBTvPWiuHyPhPtd5/8TwgA8YEg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qJb/NE1wnyYMhoh1DLllF8ecDlSdwQ1lEnGwAAgsTfT3pG7dOVhr7jZJJev4vEYPI
+	 t3MvdiUT+JDh9kAurv89KX9roXZeJh9rYw8I4R4Lm2rPhTwGS44YN6utpHthN4lDM8
+	 Dcrqph94rLN2VvwXBYGzfwkfbM3th3wX38ckqIKqc/jB6DvTccx7c5PLPS3m3mJXdI
+	 fKaYnBTn+qZkbV6AHVheshdx/vlmfDShCKJaT5SKZkQjcNmA43JbfZATYs3jsJ6nRd
+	 RH3yIEDkSNGL6VkdE/AnROB+mCN8xnEbieboj/BiZO1drFNqF6RHQLzILpTgOT0dng
+	 Dixbx8LqTclmg==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Timofey Tarasenko <timka.tarasen@gmail.com>,
+	Takashi Iwai <tiwai@suse.de>,
+	Sasha Levin <sashal@kernel.org>,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 7.0] ALSA: hda/realtek: add quirk for HONOR MRB-XXX
+ M1020
+Date: Tue, 28 Apr 2026 06:40:12 -0400
+Message-ID: <20260428104133.2858589-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.16-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1160; i=broonie@kernel.org;
- h=from:subject:message-id; bh=v+k0mxR7uS4QEobk6K87ilUPY+SsHJk1YDnSyP1LnG4=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBp8Ct3tTi0lTyXbNyTrU2X7fsHYas5WeO6GvHeV
- puE40ct75OJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCafArdwAKCRAk1otyXVSH
- 0GZXB/9Kl9rYQ63LnO0JguojjfdizNTWW+iEIH7IN+Hfw0nkBoYvRGk9psfgs7WJG6+Nyym6Hpu
- i/yyusKfoXNas0uLfOz9j3nm9Mayj+T9JDhhiXN5vWXR4HgQgipVX0GoHHOY5TYELExQScuiCvO
- N0p6Cz7v+wReeqeNp3U9vBk3x6s6mGHlaDLwJ7MCU1cWO2ceQHKXzdYhy9MoUblpR17New5Zr6G
- lpw+RWCYo3H7GDG1tE82QeDJZGZOsQaOvqejtXvKVYcBb09K2qOEbOvJeusXUipFD8T+trMXuvH
- EoV5qf11IZ543L29MR/YohueE2CjSET+a4/kvuh3gHvoyJJX
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: RDGVPIKYIUZUT77CNRR5466LQ5VAVH5M
-X-Message-ID-Hash: RDGVPIKYIUZUT77CNRR5466LQ5VAVH5M
-X-MailFrom: broonie@kernel.org
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 7.0.2
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: QA6RBGCXGY4S7TKJGHB2N7P5MU6XJBLB
+X-Message-ID-Hash: QA6RBGCXGY4S7TKJGHB2N7P5MU6XJBLB
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -94,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RDGVPIKYIUZUT77CNRR5466LQ5VAVH5M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QA6RBGCXGY4S7TKJGHB2N7P5MU6XJBLB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,34 +97,379 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 27 Apr 2026 10:46:19 -0400, Sachin Mokashi wrote:
-> ASoC: Intel: cht_bsw_rt5672: Simplify probe() with local 'dev' pointer
+From: Timofey Tarasenko <timka.tarasen@gmail.com>
 
-Applied to
+[ Upstream commit d9448dca423543c6c0a9890d3ff53a5d51895318 ]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.2
+Adds pin fixups to enable subwoofer and JACK functionality
+on Honor Magicbook Art 14 2025 (HONOR MRB-XXX M1020)
 
-Thanks!
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=221147
+Signed-off-by: Timofey Tarasenko <timka.tarasen@gmail.com>
+Link: https://patch.msgid.link/20260415074657.1217862-1-timka.tarasen@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
 
-[1/1] ASoC: Intel: cht_bsw_rt5672: Simplify probe() with local 'dev' pointer
-      https://git.kernel.org/broonie/sound/c/cda1cf0526f1
+LLM Generated explanations, may be completely bogus:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Now I have enough information to make a thorough analysis.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+## Phase 1: COMMIT MESSAGE FORENSICS
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+**Step 1.1: Subject line parsing**
+- Subsystem: `ALSA: hda/realtek:`
+- Action verb: "add quirk"
+- Summary: Add audio quirk for HONOR Magicbook Art 14 2025 (HONOR MRB-
+  XXX M1020)
+- Record: `[ALSA: hda/realtek] [add quirk] [enable subwoofer and JACK on
+  Honor Magicbook Art 14 2025]`
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+**Step 1.2: Commit tags**
+- `Closes: https://bugzilla.kernel.org/show_bug.cgi?id=221147` - real
+  user bug report
+- `Signed-off-by: Timofey Tarasenko` (author)
+- `Link: https://patch.msgid.link/...` - mailing list submission link
+- `Signed-off-by: Takashi Iwai` (maintainer) - the ALSA HDA maintainer
+- No `Fixes:` tag (expected - this is hardware enablement, not a
+  regression fix)
+- No `Cc: stable` (expected for review pipeline - per problem statement,
+  absence isn't negative)
+- Record: `[Bugzilla closed by patch] [Signed off by ALSA maintainer
+  Takashi Iwai]`
 
-Thanks,
-Mark
+**Step 1.3: Commit body analysis**
+- Bug: subwoofer and JACK functionality don't work out-of-the-box on
+  HONOR Magicbook Art 14 2025
+- Symptom: hardware features non-functional without correct pin
+  configuration
+- Mechanism: HDA codec auto-config does not produce correct pin
+  defaults; explicit pin config needed
+- Record: `[Subwoofer + headset jack non-functional] [Failure mode:
+  missing audio output and jack detection] [Root cause: BIOS pin
+  defaults inadequate, override needed]`
+
+**Step 1.4: Hidden bug fix detection**
+- This is overtly hardware enablement via quirk, not disguised as a fix
+- Without it the laptop's audio hardware is partially non-functional
+- Record: `[Not disguised cleanup - it is an explicit hardware-enabling
+  quirk]`
+
+## Phase 2: DIFF ANALYSIS
+
+**Step 2.1: Inventory**
+- 1 file: `sound/hda/codecs/realtek/alc269.c` (+13/-0 net)
+- 4 small additions: enum entry, fixup definition, SND_PCI_QUIRK entry,
+  model name entry
+- Scope: Single-file, additive-only, surgical
+- Record: `[1 file, ~13 lines added, 0 removed] [Functions touched: none
+  - data tables only] [Scope: surgical, additive only]`
+
+**Step 2.2: Code flow change**
+- Before: PCI ID 0x1ee7:0x2081 (HONOR MRB-XXX M1020) hits the alc269
+  driver but no specific fixup applies, leaving BIOS-default pin
+  configuration
+- After: The driver's quirk table matches this PCI ID and applies pin
+  overrides for nodes 0x14 (speaker, 0x90170111), 0x19 (mic-in headset
+  jack, 0x03a1113c), 0x1a (subwoofer, 0x22a190a0), 0x1b (speaker,
+  0x90170110)
+- Record: `[Before: BIOS pin defaults wrong -> sub/jack don't work] ->
+  [After: explicit pin config applied at probe -> hardware fully works]`
+
+**Step 2.3: Bug mechanism**
+- Category: Hardware workaround / quirk (item h in the bug categories)
+- Mechanism: BIOS/firmware reports incorrect pin defaults; the patch
+  overrides them via the standard HDA_FIXUP_PINS mechanism, which is the
+  canonical method for these problems
+- Record: `[Bug category: hardware quirk for incorrect BIOS pin
+  defaults] [Mechanism: pintbl override of 4 widget pin configurations]`
+
+**Step 2.4: Fix quality**
+- Identical pattern to dozens of existing quirks in the same file (e.g.,
+  line 7755 `HONOR BRB-X M1010`, the touchpad quirk for the same laptop
+  family in HID)
+- The pin values follow standard Realtek pin defaults format (0x90170110
+  = internal speaker, 0x03a1113c = headset jack, 0x22a190a0 = subwoofer-
+  style internal speaker)
+- Cannot regress: applies only to the specific PCI ID 0x1ee7:0x2081
+- Record: `[Fix quality: high, follows established patterns] [Regression
+  risk: zero for users without this exact device]`
+
+## Phase 3: GIT HISTORY INVESTIGATION
+
+**Step 3.1: blame the changed lines**
+- The neighbouring entries (HONOR BRB-X M1010 at line 7755) were added
+  by `b26e2afb3834d` ("ALSA: hda/realtek: Fix headset mic on HONOR
+  BRB-X" - Aug 11 2025)
+- The enum scaffolding has existed since the file was created
+- Record: `[The quirk infrastructure has been stable for years; HONOR-
+  style quirks are an established pattern]`
+
+**Step 3.2: Fixes: tag**
+- Not applicable: hardware enablement, not a regression fix
+- Record: `[No Fixes: tag - hardware never worked correctly without this
+  quirk]`
+
+**Step 3.3: File history of related changes**
+- The HONOR BRB-X M1010 quirk (`b26e2afb3834d`) was explicitly tagged
+  `Cc: <stable@vger.kernel.org>` and went to stable
+- Similar recent quirks: `dd9b99b822684` (Acer Swift SFG14-73 - Cc:
+  stable), `1fbf85dbf02c9` (HP Victus - Cc: stable), `0bdf27abaf894`
+  (ASUS Strix G16 - Cc: stable)
+- Record: `[Pattern established: similar HONOR quirk b26e2afb3834d was
+  Cc:stable; multiple recent peer quirks Cc:stable]`
+
+**Step 3.4: Author's other commits**
+- Author Timofey Tarasenko has no other commits in this tree (first-time
+  contributor closing a bugzilla)
+- The patch was reviewed and signed-off by Takashi Iwai, the actual ALSA
+  HDA maintainer
+- Record: `[Author: bug reporter / first-time contributor] [Vetted by
+  maintainer Takashi Iwai]`
+
+**Step 3.5: Dependencies**
+- The fixup uses only HDA_FIXUP_PINS infrastructure that has existed for
+  over a decade
+- No prerequisite commits required
+- Record: `[Standalone] [Zero prerequisites - HDA_FIXUP_PINS is core
+  infrastructure]`
+
+## Phase 4: MAILING LIST RESEARCH
+
+**Step 4.1-4.5:**
+- Direct fetches to lore.kernel.org and bugzilla.kernel.org are blocked
+  by Anubis anti-bot challenge from this environment
+- The commit message itself contains the Bugzilla and lore links
+- The commit was applied with the maintainer's Signed-off-by, indicating
+  maintainer approval after review
+- The HONOR MagicBook Art 14 family already has companion quirks merged
+  elsewhere (HID touchpad, HONOR BRB-X audio)
+- Record: `[lore/bugzilla unreachable from this environment due to
+  Anubis] [Maintainer SOB present] [Companion HONOR-family quirks
+  already accepted to stable]`
+
+## Phase 5: CODE SEMANTIC ANALYSIS
+
+**Step 5.1: Key functions**
+- No function changes - data table additions only
+- Affected logic: `snd_hda_pick_fixup()` matching at codec probe time
+
+**Step 5.2-5.4: Reachability**
+- The quirk table is consulted during `alc269_fixup_tbl` lookup at HDA
+  codec probe (boot/resume/module-load)
+- Triggered exclusively when the HDA controller exposes subsystem ID
+  0x1ee7:0x2081
+- For all other systems, the new entries are inert (the SND_PCI_QUIRK
+  arrays are matched by SSID, the fixup is referenced only by enum
+  index)
+- Record: `[Reachability: only when matching SSID 0x1ee7:0x2081 is
+  present] [No impact on any other system]`
+
+**Step 5.5: Similar patterns**
+- The same line block contains hundreds of analogous SND_PCI_QUIRK
+  entries; the immediate predecessor is the HONOR BRB-X entry (line
+  7755) which was Cc: stable
+- Record: `[Identical pattern repeated across the entire
+  alc269_fixup_tbl - this is the canonical way to add device-specific
+  audio quirks]`
+
+## Phase 6: STABLE TREE ANALYSIS
+
+**Step 6.1: Code in stable trees?**
+- ALC269/ALC256 driver and `alc269_fixup_tbl` exist in every active
+  stable tree (5.4+)
+- The HDA_FIXUP_PINS framework is decade+ old
+- Record: `[Driver and quirk table present in all active stable trees:
+  5.4, 5.10, 5.15, 6.1, 6.6, 6.12]`
+
+**Step 6.2: Backport complications**
+- File path differs between stable trees: in 6.17+ the file is
+  `sound/hda/codecs/realtek/alc269.c` (after splits `aeeb85f26c3bb` and
+  `6014e9021b28e` in July 2025); in 6.16 and earlier it is
+  `sound/pci/hda/patch_realtek.c`
+- The four hunks add new enum entries / new struct entries / a new
+  SND_PCI_QUIRK row / a new model name; they apply cleanly with only
+  path adjustment because no surrounding code was modified
+- Record: `[Backport difficulty: trivial - same content, only path
+  differs for stable < 6.17]`
+
+**Step 6.3: Already in stable?**
+- Not yet present in stable trees; the new SSID 0x1ee7:0x2081 has no
+  entry
+- Record: `[Not in stable; nothing already addresses this device]`
+
+## Phase 7: SUBSYSTEM CONTEXT
+
+**Step 7.1: Subsystem criticality**
+- ALSA HDA realtek driver - widely-used audio codec driver shipped with
+  most x86 laptops
+- Criticality classification: PERIPHERAL (specific hardware) but with
+  high user count
+- Record: `[Subsystem: sound/hda] [Criticality: peripheral but
+  ubiquitous - applies only to one specific laptop SKU]`
+
+**Step 7.2: Subsystem activity**
+- High activity - dozens of similar quirks added per release
+- Record: `[High activity, well-maintained, quirk additions are
+  routine]`
+
+## Phase 8: IMPACT AND RISK
+
+**Step 8.1: Affected users**
+- Owners of HONOR Magicbook Art 14 2025 laptops (HONOR MRB-XXX M1020)
+- Quirk is keyed off SSID 0x1ee7:0x2081, so only this exact device is
+  affected
+- Record: `[Affected: HONOR Magicbook Art 14 2025 owners only; zero
+  impact on others]`
+
+**Step 8.2: Trigger conditions**
+- Triggered every probe (boot/resume/module reload) on the matching
+  laptop
+- Record: `[Trigger: 100% of boots on the affected device, no impact
+  otherwise]`
+
+**Step 8.3: Failure mode without fix**
+- Subwoofer not driven, headset jack mic input/detection broken on the
+  laptop
+- Severity: MEDIUM - functional regression for the user but not a
+  crash/security issue
+- Record: `[Failure mode: missing audio output (subwoofer) and broken
+  headset functionality] [Severity: MEDIUM - usability/functionality]`
+
+**Step 8.4: Risk-benefit**
+- Benefit: real hardware works on stable kernels for affected users
+- Risk: virtually zero - additive change, gated by exact SSID
+- Record: `[Benefit: medium (per-device, but real)] [Risk: minimal]
+  [Ratio: strongly favors backport]`
+
+## Phase 9: SYNTHESIS
+
+**Step 9.1: Evidence**
+- FOR: Real user bug (Bugzilla 221147), maintainer SOB by Takashi Iwai,
+  identical pattern to peer HONOR quirk that went to stable, additive-
+  only, gated by exact SSID, fits the "AUDIO CODEC QUIRKS" exception
+  explicitly listed as stable-eligible
+- AGAINST: Path differs between mainline and stable (cosmetic backport
+  hurdle only)
+- Unresolved: Cannot directly fetch lore for the original review thread
+  (Anubis challenge)
+
+**Step 9.2: Stable rules**
+1. Obviously correct? Yes - data table additions, no logic
+2. Real bug? Yes - bugzilla user report
+3. Important? Functional hardware enablement (audio HW partly broken
+   without it)
+4. Small? Yes - ~13 lines, 1 file
+5. No new features/APIs? Correct - reuses existing HDA fixup framework
+6. Applies to stable? Yes with trivial path change for trees <6.17
+
+**Step 9.3: Exception category**
+- Falls into "AUDIO CODEC QUIRKS (sound/pci/hda/patch_realtek.c)" - the
+  policy explicitly states "These are all YES for stable - they fix real
+  hardware for real users."
+
+**Step 9.4: Decision**
+- Strong YES - textbook stable-worthy hardware quirk
+
+## Verification
+
+- [Phase 1] Parsed the commit message: confirmed Closes: bugzilla,
+  maintainer SOB by Takashi Iwai, no Fixes: or Cc:stable (expected)
+- [Phase 2] Read `sound/hda/codecs/realtek/alc269.c` lines 4090-6669 and
+  7740-7755: verified the diff inserts cleanly into existing tables; pin
+  values match standard Realtek pintbl format (verified via existing
+  entries 0x90170110 in many other fixups)
+- [Phase 3] `git log --oneline --grep=HONOR -- sound/`: found
+  `b26e2afb3834d` peer quirk; `git show b26e2afb3834d`: confirmed Cc:
+  stable in similar HONOR BRB-X quirk
+- [Phase 3] `git show` on 7 recent peer quirks (`dd9b99b822684`,
+  `720460722310c`, `1fbf85dbf02c9`, `bac1e57adf08c`, `0bdf27abaf894`,
+  `7bae956cac043`, `0d3429f12133c`): three explicit Cc:stable, others
+  not - confirms maintainer treats device quirks as stable-eligible on a
+  per-device basis
+- [Phase 3] `git log --oneline --grep="quirk for HONOR"`: found
+  `7a5ab80711143` HID quirk for same HONOR MagicBook Art 14 family -
+  confirms real product family with multiple needed quirks
+- [Phase 4] WebFetch lore.kernel.org and bugzilla.kernel.org: BLOCKED by
+  Anubis anti-bot, marked UNVERIFIED for direct review thread content;
+  commit message links are recorded though
+- [Phase 5] Grep for `0x1ee7` in current tree: confirmed only one
+  existing entry (HONOR BRB-X M1010) - the new SSID 0x2081 is not yet
+  present
+- [Phase 6] `git log --diff-filter=A --
+  sound/hda/codecs/realtek/alc269.c` and `git show aeeb85f26c3bb` and
+  `git show 6014e9021b28e`: confirmed the file was created via
+  split+move in July 2025 (mainline 6.17), so older stable trees use
+  `sound/pci/hda/patch_realtek.c`
+- [Phase 8] Reachability: pin fixup applies only when subsystem ID
+  0x1ee7:0x2081 matches at codec probe - confirmed via `SND_PCI_QUIRK`
+  macro semantics in the same file
+- UNVERIFIED: Direct read of lore.kernel.org thread (b4 dig fallback not
+  run due to environment limits, but the patch is already applied with
+  maintainer SOB so review presumably occurred)
+- UNVERIFIED: Exact stable trees the maintainer would target - but the
+  policy in the prompt explicitly classifies audio codec quirks as YES
+
+## Decision
+
+This is a textbook hardware quirk addition - small, surgical, gated by a
+unique SSID, fixing real hardware (subwoofer + headset jack) for real
+users on a shipping laptop with a Bugzilla report. It matches the
+explicit "AUDIO CODEC QUIRKS" exception that the stable rules allow,
+follows the same pattern as the peer `HONOR BRB-X M1010` quirk that was
+Cc: stable, and is signed off by the ALSA HDA maintainer. Backport
+requires only a trivial path change for stable trees older than 6.17.
+
+**YES**
+
+ sound/hda/codecs/realtek/alc269.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
+index 45f9d64873885..d35932b46267f 100644
+--- a/sound/hda/codecs/realtek/alc269.c
++++ b/sound/hda/codecs/realtek/alc269.c
+@@ -4124,6 +4124,7 @@ enum {
+ 	ALC245_FIXUP_ACER_MICMUTE_LED,
+ 	ALC245_FIXUP_CS35L41_I2C_2_MUTE_LED,
+ 	ALC236_FIXUP_HP_DMIC,
++	ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO,
+ };
+ 
+ /* A special fixup for Lenovo C940 and Yoga Duet 7;
+@@ -6666,6 +6667,16 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ 0x12, 0x90a60160 }, /* use as internal mic */
+ 			{ }
+ 		},
++	},
++	[ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x14, 0x90170111 },
++			{ 0x19, 0x03a1113c },
++			{ 0x1a, 0x22a190a0 },
++			{ 0x1b, 0x90170110 },
++			{ }
++		}
+ 	}
+ };
+ 
+@@ -7753,6 +7764,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1e39, 0xca14, "MEDION NM14LNL", ALC233_FIXUP_MEDION_MTL_SPK),
+ 	SND_PCI_QUIRK(0x1ee7, 0x2078, "HONOR BRB-X M1010", ALC2XX_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1ee7, 0x2081, "HONOR MRB-XXX M1020", ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO),
+ 	SND_PCI_QUIRK(0x1f4c, 0xe001, "Minisforum V3 (SE)", ALC245_FIXUP_BASS_HP_DAC),
+ 	SND_PCI_QUIRK(0x1f66, 0x0105, "Ayaneo Portable Game Player", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x2014, 0x800a, "Positivo ARN50", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+@@ -7973,6 +7985,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC236_FIXUP_LENOVO_INV_DMIC, .name = "alc236-fixup-lenovo-inv-mic"},
+ 	{.id = ALC2XX_FIXUP_HEADSET_MIC, .name = "alc2xx-fixup-headset-mic"},
+ 	{.id = ALC245_FIXUP_BASS_HP_DAC, .name = "alc245-fixup-bass-hp-dac"},
++	{.id = ALC256_FIXUP_HONOR_MRB_XXX_M1020_AUDIO, .name = "alc256-honor-mrb-xxx-m1020-audio"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
+-- 
+2.53.0
 
