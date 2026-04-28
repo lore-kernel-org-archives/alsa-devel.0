@@ -4,75 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D536FF8875
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 10:42:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BDDFFF8868
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Apr 2026 10:44:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66241601ED;
-	Tue, 28 Apr 2026 12:42:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66241601ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8098601FA;
+	Tue, 28 Apr 2026 12:43:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8098601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777372975;
-	bh=moRSq+QQ7JkPCG0pb4KT6HXASdeC7kq/Qu88/fsVK8E=;
+	s=default; t=1777373042;
+	bh=pnXTzg5KhppOl3PsXPt6ZfgfCnMW4wHGwL8Vj2F8zqQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=d/uL+/p0KQswVoJwy1EWmpm53cI0AgbqXTZesZnjb8oRk6nSqQrisTE9DmFy63fQ3
-	 Q0bFoE82+NTb+2maN+WFy2XdnHX+aqzmAR2qR1Zm4Bej3MHuodhz8WnAE4wH90fk6M
-	 yKUZFSs3/No+SiCm55nS48mrhII4FjNecPQ/RTzs=
+	b=O0U8sWcYGlFBrk3jRokMMUSiPAO5+vAlGMI5m4Nvu8pNRQKiYoKVVY5qp9hx46qlZ
+	 dMVe0oOLikVpfO/kK3r6neWme6QrKN+iLdA9uUKu9GCwx78D+Td97vlICIQ9f+kADK
+	 oqf8HOY2OZTVVd1x8ai5CKk1KCLssKJW4uSiQUbU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A635F80609; Tue, 28 Apr 2026 12:42:16 +0200 (CEST)
+	id 866B8F805F7; Tue, 28 Apr 2026 12:43:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A759F80615;
-	Tue, 28 Apr 2026 12:42:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BAB4F805E9;
+	Tue, 28 Apr 2026 12:43:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F2F3F8053B; Tue, 28 Apr 2026 12:42:08 +0200 (CEST)
+	id 3C4BAF804CF; Tue, 28 Apr 2026 12:43:17 +0200 (CEST)
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F31AEF805FB
-	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 12:42:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F31AEF805FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A8F6F80169
+	for <alsa-devel@alsa-project.org>; Tue, 28 Apr 2026 12:43:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A8F6F80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=K9JyWyTb
+ header.s=k20201202 header.b=WHpcTL6e
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 00BB26057A;
-	Tue, 28 Apr 2026 10:42:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69157C2BCB9;
-	Tue, 28 Apr 2026 10:41:59 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 3B8CD6057A;
+	Tue, 28 Apr 2026 10:43:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC95C2BCB8;
+	Tue, 28 Apr 2026 10:43:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777372920;
-	bh=moRSq+QQ7JkPCG0pb4KT6HXASdeC7kq/Qu88/fsVK8E=;
+	s=k20201202; t=1777372991;
+	bh=pnXTzg5KhppOl3PsXPt6ZfgfCnMW4wHGwL8Vj2F8zqQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K9JyWyTb81FiFRlaKs9kxhJeRM85YQWeGMDXrGPJHTj69OQtnP3AiFGSVhbNCL+7i
-	 kkVSXSAEV10PDyIAFq+LVYgujbtuYLKHOegEhDVGZyKLQanZWaTRaUJCDW4d5mP46c
-	 Rvjxa2yK+dG/2AcCcC2ClOQzfWt284h+rc3UZAtw8eVliqHTQN02lFkxa5f47WGzgW
-	 HCMdt/oKP/7DjftJqsHy7Ni3ALlU3LKY3ur+U3sQKk48wL1vLyamjopkZFXPmAg9oR
-	 0Lik7yaV+plMqCFISTwbYbxWSR+4NI4ca3WIiFt0cWARpdLhQXHnD82buoukDg9bDx
-	 ubrUCOl+UfCbg==
+	b=WHpcTL6eMd7182h9/diwSZ2iv/CfAzQfVuddvnXHS+EmM1KWD/R+uUtlwWz9fMgCn
+	 riwWXz7jDoSyVKIgYoiihc4+6v2H6fS34nxWwxUrRh/AW2eZyMGafDTDseXWnYng7L
+	 9ynWX49AQ2Y5uoaqrlGTmDDe/ysFJwOlnEI8yGCmgx04bWzx04KW3ETzufYbYd4cvj
+	 72GGJClor3k4vtcPlwtcZjdPdg6ykOSv5vxoLkcdKkDKgUlRAqxoCpfMxd3Jgb6I9A
+	 kiq1WyvBfttRHMlSpJhiweyKgQ60OvtycWzZpJDAqxgmOtymL0IVcX/0TCkCSY6Kiw
+	 oy1iz2AaYQ2vg==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Tobias Heider <tobias.heider@canonical.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Johnathan Penberthy <johnathan.penberthy@gmail.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	srinivas.kandagatla@linaro.org,
-	bgoswami@quicinc.com,
-	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.12] ASoC: qcom: x1e80100: limit speaker volumes
-Date: Tue, 28 Apr 2026 06:40:30 -0400
-Message-ID: <20260428104133.2858589-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 7.0-6.18] ALSA: usb-audio: Add quirk entries for
+ NexiGo N930W webcam
+Date: Tue, 28 Apr 2026 06:41:19 -0400
+Message-ID: <20260428104133.2858589-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260428104133.2858589-1-sashal@kernel.org>
 References: <20260428104133.2858589-1-sashal@kernel.org>
@@ -82,8 +78,8 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 7.0.2
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GMAOI6KKC6Q3SX2TLGNZZG2BXIBHSLZI
-X-Message-ID-Hash: GMAOI6KKC6Q3SX2TLGNZZG2BXIBHSLZI
+Message-ID-Hash: JF2K6BNS4D3RGNYLRPKCIAVCMK3XXPCM
+X-Message-ID-Hash: JF2K6BNS4D3RGNYLRPKCIAVCMK3XXPCM
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GMAOI6KKC6Q3SX2TLGNZZG2BXIBHSLZI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JF2K6BNS4D3RGNYLRPKCIAVCMK3XXPCM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,415 +100,388 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Tobias Heider <tobias.heider@canonical.com>
+From: Johnathan Penberthy <johnathan.penberthy@gmail.com>
 
-[ Upstream commit 0a5ee0e520eff98ee2b4568194562870877b050f ]
+[ Upstream commit 17bc5dd49214b50c9eb6df0fad1d1aea287dd078 ]
 
-Limit the digital gain and PA volumes to a combined -3 dB in the machine
-driver to reduce the risk of speaker damage until we have active speaker
-protection in place (or higher safe levels have been established).
+The NexiGo N930W 60fps webcam (USB ID 3443:930d) hits the same
+'cannot get freq at ep 0x84' error in snd-usb-audio as its sibling
+N930AF (1bcf:2283). Without QUIRK_FLAG_GET_SAMPLE_RATE the ADC clock
+is never configured and the microphone streams only zero samples.
 
-Based on commit c481016bb4f8 ("ASoC: qcom: sc8280xp: limit speaker
-volumes") which addressed the same issue on the sc8280x SoC with some
-minor changes as explained below.
+Testing on Linux 6.17 with QUIRK_FLAG_GET_SAMPLE_RATE |
+QUIRK_FLAG_MIC_RES_16 (via quirk_alias=3443930d:1bcf2283) confirmed
+the microphone captures real audio after a cold USB re-enumeration.
+Adding a native quirk_flags_table entry avoids the alias workaround.
 
-The Digital Volume behaves almost identical to sc8280x since both use
-the same lpass-wsa-macro, but x1e80100 has two sets of controls prefixed
-with WSA and WSA2.
-For PA x1e80100 machines use wsa884x amplifiers which expose a linear
-scale from -9 dB to 9 dB with a 1.5 dB step size giving us
-0 dB = -9 dB + 6 * 1.5 dB.
-
-On x1e80100 there are two different speaker topologies we need to handle:
-  2-Speakers: SpkrLeft, Spkr Right
-  4-Speakers: WooferLeft, WooferRight, TweeterLeft, TweeterRight
-
-Signed-off-by: Tobias Heider <tobias.heider@canonical.com>
-Tested-by: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@oss.qualcomm.com>
-Link: https://patch.msgid.link/20260422-x1e80100-audio-limit-v2-1-333258b97697@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Johnathan Penberthy <johnathan.penberthy@gmail.com>
+Link: https://patch.msgid.link/20260417010123.3080904-1-johnathan.penberthy@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-Based on my comprehensive analysis, I now have enough information to
-provide my decision.
+Based on my investigation, I have all the information needed to make a
+decision. Let me provide the complete analysis.
 
-## Analysis Summary
+---
 
-### PHASE 1: COMMIT MESSAGE FORENSICS
+## PHASE 1: COMMIT MESSAGE FORENSICS
 
-**Step 1.1: Subject line parsing**
-- Subsystem: `ASoC: qcom: x1e80100`
-- Action verb: "limit"
-- Record: ASoC machine driver for Qualcomm X1E80100 SoC sets volume caps
-  to prevent speaker damage.
+**Step 1.1 — Subject line parse**
+- Subsystem prefix: `ALSA: usb-audio:`
+- Action verb: "Add" (quirk entries)
+- Record: ALSA USB audio subsystem; adds device-specific quirk for
+  NexiGo N930W webcam (USB ID 3443:930d) to fix non-functional
+  microphone.
 
-**Step 1.2: Tags**
-- `Signed-off-by: Tobias Heider <tobias.heider@canonical.com>` (author)
-- `Tested-by: Srinivas Kandagatla
-  <srinivas.kandagatla@oss.qualcomm.com>` (subsystem maintainer)
-- `Reviewed-by: Srinivas Kandagatla
-  <srinivas.kandagatla@oss.qualcomm.com>` (subsystem maintainer)
-- `Link: https://patch.msgid.link/20260422-x1e80100-audio-
-  limit-v2-1-333258b97697@canonical.com`
-- `Signed-off-by: Mark Brown <broonie@kernel.org>` (subsystem tree
-  maintainer)
-- Record: NO `Cc: stable` tag, NO `Fixes:` tag. Tested AND Reviewed by
-  the subsystem maintainer.
+**Step 1.2 — Tags inventory**
+- `Signed-off-by: Johnathan Penberthy <johnathan.penberthy@gmail.com>`
+  (author)
+- `Link: https://patch.msgid.link/20260417010123.3080904-1-
+  johnathan.penberthy@gmail.com`
+- `Signed-off-by: Takashi Iwai <tiwai@suse.de>` (subsystem maintainer
+  who applied it)
+- No Fixes:, no Cc: stable (expected), no Reported-by/Tested-
+  by/Reviewed-by tags
+- Record: Single-author patch applied directly by ALSA maintainer; no
+  syzbot involvement, but submitter explicitly tested on real hardware
+  (Linux 6.17).
 
-**Step 1.3: Commit body analysis**
-- Bug: Default audio volumes can drive speakers to dangerous
-  (potentially damaging) levels.
-- Author quote (cover letter): "trivial to crank up the volume to a
-  point where the T14s will hit what I believe is a hardware protection
-  that shuts down the speakers entirely until the next reboot. I am
-  worried that this means there is also a risk cause permanent hardware
-  damage."
-- Based on a precedent commit `c481016bb4f8` ("ASoC: qcom: sc8280xp:
-  limit speaker volumes") that DID have `Cc: <stable@vger.kernel.org> #
-  6.5`.
-- Record: Hardware safety patch; symptoms range from "speakers shut off
-  until reboot" to potential permanent damage.
+**Step 1.3 — Body analysis**
+- Bug: webcam reports `cannot get freq at ep 0x84`; ADC clock never
+  configured; mic streams **only zero samples** (i.e., silent
+  microphone).
+- Author tested with `quirk_alias=3443930d:1bcf2283` (mapping to
+  existing N930AF entry), confirmed mic captures real audio after re-
+  enumeration.
+- Author explicitly identifies this as the same firmware bug class as
+  sibling N930AF (1bcf:2283).
+- Record: Concrete user-visible failure (broken microphone),
+  reproducible trigger (every device use), confirmed fix on real
+  hardware.
 
-**Step 1.4: Hidden bug detection**
-- "Limit" wording sounds non-fix-like but the commit IS a hardware
-  safety fix (similar to a quirk).
-- Record: Treats default volume as a hardware-damage risk; falls under
-  "hardware quirks/workarounds".
+**Step 1.4 — Hidden bug fix detection**
+- Subject says "Add", but this is a **hardware workaround**: it fixes a
+  real broken firmware behavior in a specific webcam model.
+- Record: Falls squarely into the "hardware quirk/workaround" exception
+  category that is YES for stable.
 
-### PHASE 2: DIFF ANALYSIS
+## PHASE 2: DIFF ANALYSIS
 
-**Step 2.1: Inventory**
-- Files changed: 1 (`sound/soc/qcom/x1e80100.c`)
-- Lines: +19, -0
-- Function modified: `x1e80100_snd_init()`
-- Record: Single-file, single-function, surgical change.
+**Step 2.1 — Inventory**
+- Files: 1 (`sound/usb/quirks.c`)
+- Lines: +2, -0
+- Function modified: `quirk_flags_table[]` (static const table) — single
+  new `DEVICE_FLG()` entry
+- Record: Surgical, single-file, two-line addition to a static const
+  data table.
 
-**Step 2.2: Code flow change**
-- Before: `x1e80100_snd_init()` only handled DisplayPort cases; WSA
-  cases fell through to default jack setup with no volume restrictions.
-- After: Adds explicit WSA RX cases that call `snd_soc_limit_volume()`
-  for digital and PA volumes, then breaks (skipping jack setup, which is
-  correct since WSA is for speakers, not headphones).
-- Record: Adds a new switch case branch that caps speaker volumes at
-  safe levels.
+**Step 2.2 — Code flow change**
+- Before: USB device 3443:930d had no entry; falls through to default
+  handling, fails `GET_SAMPLE_RATE`, mic capture volume resolution wrong
+  → silent mic.
+- After: matches new entry, sets `chip->quirk_flags |=
+  QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16` during
+  `snd_usb_init_quirk_flags()`.
+- Record: Pure additive entry; affects only this exact VID:PID.
 
-**Step 2.3: Bug mechanism**
-- Category: Hardware safety / quirk
-- Mechanism: Caps "WSA WSA_RX0 Digital Volume" / "WSA2 ..." to 81 (-3
-  dB) and PA volumes to 6 (= 0 dB on wsa884x's -9..+9 dB scale)
-- Record: Hardware-protection limit; matches the pattern of the sc8280xp
-  limit which was Cc'd to stable.
+**Step 2.3 — Bug mechanism**
+- Category: **Hardware workaround** (quirk table entry).
+- Mechanism: `QUIRK_FLAG_GET_SAMPLE_RATE` makes
+  `snd_usb_get_sample_rate()` short-circuit (return 0) so the ADC clock
+  setup proceeds; `QUIRK_FLAG_MIC_RES_16` overrides the mic capture
+  volume control resolution to 16 (verified at `sound/usb/mixer.c:1085`
+  and `sound/usb/clock.c:490`).
+- Record: Standard quirk pattern, identical to the existing sibling
+  `DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo N930AF FHD Webcam */, ...)`.
 
-**Step 2.4: Fix quality**
-- `snd_soc_limit_volume()` silently returns `-EINVAL` if a control name
-  isn't found, so missing controls (e.g., 4-speaker names on a 2-speaker
-  board) cause no harm.
-- WSA case path properly `break`s before jack setup.
-- v1 of the patch had wrong control names (missing "WSA "/"WSA2 "
-  prefixes); maintainer Mark Brown caught it; v2 has correct prefixed
-  names verified via `amixer`.
-- Record: Minimal, contained, verified by author with `amixer cget`
-  after the fix.
+**Step 2.4 — Fix quality**
+- Obviously correct: only matches by exact VID:PID; both flags are pre-
+  existing and battle-tested for this exact hardware family.
+- Regression risk: essentially zero — only that one specific device is
+  affected; cannot impact any other hardware.
+- Record: Fix is minimal, surgical, zero collateral risk.
 
-### PHASE 3: GIT HISTORY
+## PHASE 3: GIT HISTORY INVESTIGATION
 
-**Step 3.1/3.2: Origin**
-- No `Fixes:` tag. The "bug" is an absence of safe defaults rather than
-  a regressive commit.
-- The x1e80100 driver was added by `6b9dc2da66578` (ASoC: qcom: Add
-  x1e80100 sound machine driver), first appearing in v6.8.
-- Record: Driver and the unsafe default have existed since v6.8 (Dec
-  2023).
+**Step 3.1 — Blame on the changed area**
+- Adjacent line `0x339b, 0x3a07 /* Synaptics HONOR USB-C HEADSET */` was
+  introduced in commit `2cbe4ac193ed7` ("ALSA: usb-audio: Add mute TLV
+  for playback volumes on more devices"), present from v6.17-rc5.
+- Record: The exact textual context of the new line appears only in
+  v6.17+, but the table itself exists since v5.15.
 
-**Step 3.3: Related changes**
-- `159098859bf6d` ("ASoC: qcom: x1e80100: Support boards with two
-  speakers") added 2-speaker support in v6.13.
-- The 4-speaker prefixes (WooferLeft/TweeterLeft/etc.) come from per-
-  board DT, not from the machine driver. WSA/WSA2 component prefixes
-  have been in `arch/arm64/boot/dts/qcom/x1e80100.dtsi` (now
-  `hamoa.dtsi`) since v6.10.
-- Record: Patch is standalone; no functional dependency on other source-
-  code commits.
+**Step 3.2 — Fixes: tag**
+- No Fixes: tag (expected; this is hardware enablement, not a regression
+  of a kernel commit).
+- The bug is **firmware-side**: the webcam itself is misbehaving.
+- Record: N/A.
 
-**Step 3.4: Author/maintainer context**
-- Author Tobias Heider (Canonical) – relevant as users are Linux distro
-  users.
-- Reviewer/Tester Srinivas Kandagatla is the qcom ASoC maintainer.
-- Maintainer Mark Brown applied it.
-- Record: Properly vetted by appropriate maintainers.
+**Step 3.3 — File history**
+- Recent quirks.c changes are all the same kind (per-device quirk
+  additions, e.g., `bc5b4e5ae1a67`, `ee6c551a7d84f`, `5182e5ec4355d`,
+  etc.). This is a routine, well-understood change pattern.
+- Record: Standalone fix, no series, no prerequisites.
 
-**Step 3.5: Dependencies**
-- `snd_soc_limit_volume(card, ...)` API has the same signature since
-  v4.4 — present in every relevant stable tree.
-- Sister patch `sc8280xp.c` already shipped to stable confirms the
-  API/pattern works in 6.5+.
-- Record: No prerequisite kernel changes needed.
+**Step 3.4 — Author**
+- Johnathan Penberthy: not a regular contributor, but the patch came
+  from a real user with the broken webcam, was reviewed and applied
+  directly by maintainer Takashi Iwai.
+- Record: User-driven hardware enablement; the maintainer (who is the
+  SOC/ALSA-USB lead) signed off.
 
-### PHASE 4: MAILING LIST
+**Step 3.5 — Dependencies**
+- `QUIRK_FLAG_GET_SAMPLE_RATE`: introduced in `4d4dee0aefec3` ("ALSA:
+  usb-audio: Introduce quirk_flags field"), present since **v5.15**.
+- `QUIRK_FLAG_MIC_RES_16`: introduced in `d6e6b9218ced5` ("ALSA: usb-
+  audio: Make mic volume workarounds globally applicable"), present
+  since **v6.13** (verified via `git describe --contains`).
+- Record: Both flags are pre-existing infrastructure. **Patch can apply
+  to v6.13+ stable trees only** because of `QUIRK_FLAG_MIC_RES_16`.
+  Earlier trees would need a partial backport (only
+  `QUIRK_FLAG_GET_SAMPLE_RATE`) — but stable trees < 6.13 are
+  increasingly fewer, and the pattern is well-precedented.
 
-**Step 4.1: Original submission**
-- `b4 dig -c 0a5ee0e520eff` →
-  https://lore.kernel.org/all/20260422-x1e80100-audio-
-  limit-v2-1-333258b97697@canonical.com/
-- Record: Found via b4 dig.
+## PHASE 4: MAILING LIST AND EXTERNAL RESEARCH
 
-**Step 4.1b: Revisions**
-- `b4 dig -a` showed v1 (2026-04-21) and v2 (2026-04-22). v2 (the
-  applied version) fixed the WSA prefix bug. Author confirmed via amixer
-  that v2 correctly limits the controls.
-- Record: Applied version is the corrected one.
+**Step 4.1 — Original patch discussion**
+- Fetched mbox via `b4 mbox` for message-id
+  `20260417010123.3080904-1-johnathan.penberthy@gmail.com`.
+- Thread = 2 messages: the patch itself, then maintainer reply.
+- Maintainer Takashi Iwai response: **"Applied now. Thanks."** — applied
+  with zero requested changes.
+- Record: Single revision (no v2/v3), no NAKs, no concerns raised,
+  applied by the most senior subsystem maintainer immediately.
 
-**Step 4.2: Reviewers**
-- Subsystem maintainer Srinivas Kandagatla tested on T14s and Dell
-  Latitude 7455.
-- Mark Brown applied to `for-7.1`.
-- Johan Hovold (author of the original sc8280xp patch) was Cc'd.
-- Record: Strong maintainer review.
+**Step 4.2 — Reviewers**
+- To: Takashi Iwai (subsystem maintainer)
+- Cc: Jaroslav Kysela (ALSA co-maintainer), linux-sound, linux-kernel
+- Record: Sent to all the right people; the maintainer himself applied
+  it.
 
-**Step 4.3: Bug reports**
-- No syzbot, no bugzilla. The driving evidence is the author's hands-on
-  report of speaker shutdown on Lenovo T14s and the precedent of speaker
-  damage concerns on sc8280xp.
-- Record: User-reported style (cover letter); not a fuzzer bug.
+**Step 4.3 — Bug report**
+- No external bug report URL; the commit message itself contains the
+  diagnostic info (kernel error message, test methodology).
+- Record: User-driven report directly in the commit message.
 
-**Step 4.4: Discussion**
-- v1 review by Mark Brown found that "WSA_RX0 Digital Volume" wouldn't
-  match because the controls are prefixed. The author confirmed via
-  amixer that v1 was a no-op. v2 fixes this.
-- Reviewer comment from Srinivas: "Thanks Tobias for doing this, this
-  has been long pending." — indicates the issue was known.
-- Record: Maintainer explicitly says the safety limit "has been long
-  pending"; thread does NOT mention stable nomination.
+**Step 4.4 — Related patches**
+- Standalone single-patch submission (no series).
+- Record: No dependencies.
 
-**Step 4.5: Stable list**
-- Did not find a stable-list discussion of this specific patch (it's
-  very new, applied 2026-04-22).
-- The precedent commit (`c481016bb4f8` for sc8280xp) explicitly carried
-  `Cc: <stable@vger.kernel.org> # 6.5`.
-- Record: No explicit stable nomination in this thread; precedent
-  supports stable suitability.
+**Step 4.5 — Stable list history**
+- Not applicable; this is a brand-new patch (Apr 17, 2026) submitted to
+  and applied by the ALSA maintainer.
+- Record: N/A.
 
-### PHASE 5: SEMANTIC ANALYSIS
+## PHASE 5: CODE SEMANTIC ANALYSIS
 
-**Step 5.1-5.4: Function context**
-- Modified function: `x1e80100_snd_init()` (machine driver init
-  callback).
-- Caller: `snd_soc_link_init()` ASoC core, invoked once per DAI link
-  during sound card registration on x1e80100/glymur/Hamoa-class devices.
-- Calls into: `snd_soc_limit_volume()` (caps platform_max), then
-  `qcom_snd_dp_jack_setup()`/`qcom_snd_wcd_jack_setup()`.
-- Record: Reachable on every probe of the x1e80100 sound card; not in
-  hot path (one-time init), but every user of the SoC executes it.
+**Step 5.1 — Key functions**
+- Modified data: `quirk_flags_table[]` array.
+- The flag consumer functions: `snd_usb_get_sample_rate()` in
+  `sound/usb/clock.c` and `volume_control_quirks()` in
+  `sound/usb/mixer.c`.
 
-**Step 5.5: Similar patterns**
-- `sound/soc/qcom/sc8280xp.c` already has the identical pattern (limits
-  81 / 17 due to wsa881x amplifier scale) and is in stable since v6.8 —
-  proof that the pattern works in older trees.
-- Record: Direct precedent.
+**Step 5.2 — Callers**
+- `snd_usb_get_sample_rate()` is called during USB audio probe/setup for
+  every USB audio device that exposes a clock source — i.e., universal
+  call path.
+- The quirk table is consumed by `snd_usb_init_quirk_flags()` during
+  `usb_audio_probe()`.
+- Record: Reachable via USB device hotplug for any USB-audio device
+  matching the VID:PID.
 
-### PHASE 6: STABLE TREE ANALYSIS
+**Step 5.3 — Callees**
+- Quirk lookup is a simple linear table match keyed by VID:PID.
+- Effects of flags are localized to two well-understood code paths.
 
-**Step 6.1: Code presence in stable**
-- `sound/soc/qcom/x1e80100.c` exists since v6.8.
-- WSA/WSA2 sound-name-prefix in DT exists since v6.10.
-- 2-speaker board support (SpkrLeft/Right path used here as well as
-  4-speaker) added in v6.13.
-- Record: Patch is meaningful for stable trees v6.13+ (where both 2-spk
-  and 4-spk paths exist). On v6.8–v6.12 the limit on 4-speaker controls
-  would be a no-op (silent), but the digital volume limits would still
-  apply. No harm to apply.
+**Step 5.4 — Reachability**
+- Trigger: plugging in a NexiGo N930W webcam — any user can do this.
+- Record: 100% reachable for affected hardware owners; entirely inert
+  for everyone else.
 
-**Step 6.2: Backport complications**
-- Patch adds new lines to a switch statement and a local `card` pointer.
-  Should apply cleanly to any stable tree with x1e80100.c.
-- The `snd_soc_limit_volume(card, ...)` API signature is unchanged
-  across all relevant stable trees.
-- Record: Clean apply expected.
+**Step 5.5 — Similar patterns**
+- The very similar sibling entry `DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo
+  N930AF FHD Webcam */, QUIRK_FLAG_GET_SAMPLE_RATE |
+  QUIRK_FLAG_MIC_RES_16)` exists at line 2346/2347 (per Grep). The
+  earlier `4a63e68a29518` ("ALSA: usb-audio: Fix microphone sound on
+  Nexigo webcam.") established the precedent and was itself a stable-
+  style hardware fix.
+- Record: Same fix pattern used for sibling NexiGo model — strong
+  precedent.
 
-**Step 6.3: Already-applied checks**
-- No prior fix for this issue in x1e80100.c. The sc8280xp limit is in
-  stable but it doesn't cover x1e80100.
-- Record: This is the only fix.
+## PHASE 6: CROSS-REFERENCING AND STABLE TREE ANALYSIS
 
-### PHASE 7: SUBSYSTEM CONTEXT
+**Step 6.1 — Buggy code in stable**
+- The "code" here is the absence of a table entry; the framework that
+  would honor the quirk has been present since v5.15
+  (`QUIRK_FLAG_GET_SAMPLE_RATE`) and v6.13 (`QUIRK_FLAG_MIC_RES_16`).
+- The webcam's broken firmware affects users on **all** stable trees
+  that have the framework.
+- Record: Applicable to v6.13.y, v6.16.y (LTS), and whatever later
+  stable trees are active.
 
-**Step 7.1: Subsystem**
-- ASoC machine driver for Qualcomm X1E80100 (used on Snapdragon X Elite
-  laptops: Lenovo T14s Gen 6, Dell XPS 13 9345/Latitude 7455, HP
-  EliteBook Ultra G1q, ASUS Vivobook S15, etc.)
-- Criticality: PERIPHERAL (driver-specific) — but the affected user
-  population is sizable: this is the audio for an entire popular laptop
-  class.
-- Record: Driver-specific, but affects a popular consumer hardware
-  platform.
+**Step 6.2 — Backport complications**
+- Mainline context: new entry inserted between `0x339b, 0x3a07` and
+  `0x413c, 0xa506`. The `0x339b` entry only exists in v6.17+. For
+  v6.13.y/v6.16.y, the entry would land at the same logical sorted
+  position (between `0x3255` and `0x413c`) but with slightly different
+  surrounding context — trivial 3-way-merge fix-up.
+- Record: Minor textual conflict possible on older stable; trivial to
+  resolve. The semantics are identical.
 
-**Step 7.2: Activity**
-- Active subsystem; multiple recent commits to qcom ASoC and x1e80100
-  family.
-- Record: Active.
+**Step 6.3 — Related fixes already in stable**
+- The sibling N930AF quirk (1bcf:2283) is in stable already; this is the
+  cousin device.
+- Record: Consistent with existing stable entries.
 
-### PHASE 8: IMPACT/RISK
+## PHASE 7: SUBSYSTEM AND MAINTAINER CONTEXT
 
-**Step 8.1: Affected users**
-- Linux users running stable kernels on Snapdragon X Elite laptops who
-  use built-in speakers.
-- Record: Driver-specific but real user base growing rapidly.
+**Step 7.1 — Subsystem**
+- `sound/usb/` — USB audio driver. Criticality: **PERIPHERAL** in scope
+  (specific device class), but the change is exactly the kind of thing
+  routinely backported.
 
-**Step 8.2: Trigger**
-- Trigger: any user moving the volume slider above the safe threshold.
-  Easy to hit in normal use.
-- Unprivileged: yes (any user with audio access).
-- Record: Routinely triggerable in normal desktop usage.
+**Step 7.2 — Activity**
+- `sound/usb/quirks.c` is actively maintained; quirk additions are
+  routine and regularly land in stable.
 
-**Step 8.3: Failure mode severity**
-- Reproduced effect: speakers shutoff requiring reboot (acknowledged by
-  author on T14s).
-- Suspected effect: potential permanent hardware damage.
-- Severity: HIGH — physical hardware damage risk for end users with no
-  current mitigation.
-- Record: Hardware safety, HIGH severity.
+## PHASE 8: IMPACT AND RISK ASSESSMENT
 
-**Step 8.4: Risk-benefit**
-- Benefit: prevents a user-triggerable speaker damage / lockout on a
-  popular laptop class.
-- Risk: very low. 19-line, single-file, contained change.
-  `snd_soc_limit_volume()` is best-effort; missing controls produce no
-  error. Tested by the maintainer on real hardware. Backport precedent
-  (sc8280xp) has been in stable for ~2 years without issue.
-- The only "downside" is users who currently operate above 0 dB lose
-  that headroom — but that's exactly the point (it was unsafe).
-- Record: High benefit, very low risk.
+**Step 8.1 — Affected users**
+- Specifically: owners of the NexiGo N930W 60fps webcam.
+- The N930-series is a popular consumer webcam line; this is real-world
+  hardware enablement.
 
-### PHASE 9: SYNTHESIS
+**Step 8.2 — Trigger**
+- Every plug-in / every microphone-use attempt.
+- Unprivileged users hit it (just plugging in the device).
 
-**Evidence FOR backport:**
-- Hardware safety; "trivial to trigger" speaker shutdown / potential
-  permanent damage.
-- Direct precedent (`c481016bb4f8`) was explicitly Cc'd to stable for
-  the same class of issue on a sister SoC.
-- Small (19 lines), surgical, single function.
-- Tested AND Reviewed by the qcom ASoC maintainer; v1->v2 review caught
-  the silent-failure bug.
-- API used has been stable for many years; applies cleanly to v6.8+
-  stable trees.
-- Falls under the "hardware quirk/workaround" exception listed in stable
-  rules.
+**Step 8.3 — Failure mode severity**
+- Microphone effectively non-functional — only zero samples captured.
+  Video works, audio does not.
+- Severity: **HIGH for affected users** (mic completely silent). For
+  everyone else: zero impact.
 
-**Evidence AGAINST backport:**
-- No explicit `Cc: stable` tag (per the prompt, this is NOT a negative
-  signal — it's why we're reviewing).
-- Behavior change: caps user-facing maximum volume.
-- Not a code-level bug per se (it's a missing safety default).
+**Step 8.4 — Risk-benefit ratio**
+- Benefit: enables a piece of consumer hardware that is otherwise broken
+  on Linux.
+- Risk: 2-line table entry, exact-match VID:PID, cannot affect any other
+  hardware. Effectively zero regression risk.
+- Record: Strongly favorable.
 
-**Stable rules check:**
-1. Obviously correct and tested? YES (Tested-by maintainer, amixer-
-   verified).
-2. Fixes a real issue affecting users? YES (speaker damage / lockup on
-   popular laptops).
-3. Important issue? YES (hardware damage risk).
-4. Small and contained? YES (19 lines, one file, one function).
-5. No new features/APIs? YES (uses existing API; not a new feature).
-6. Applies to stable? YES (clean apply expected; precedent exists).
+## PHASE 9: FINAL SYNTHESIS
 
-**Exception category:** Falls under "hardware quirks/workarounds for
-broken/limited devices" - explicitly called out as automatically YES in
-stable rules.
+**Step 9.1 — Evidence compilation**
+FOR backport:
+- Two-line, surgical hardware quirk addition.
+- Falls into the explicit "HARDWARE QUIRKS / DEVICE IDs" exception
+  category that is canonical YES for stable.
+- Identical flags as already-in-stable sibling N930AF entry.
+- Real-world user-visible bug (silent microphone) reproduced and fixed
+  by submitter.
+- Applied immediately by ALSA subsystem maintainer with no changes.
+- Zero regression risk for unrelated devices.
+- Quirk infrastructure exists in v6.13+ stable trees (LTS v6.16, soon
+  v6.17.y, etc.).
 
-### Verification
+AGAINST backport:
+- Patch context may need a small adjustment on older stable trees
+  (Synaptics line above is only v6.17+) — but easily handled.
+- Cannot apply to pre-v6.13 trees because `QUIRK_FLAG_MIC_RES_16`
+  doesn't exist there — those would need either a partial backport or
+  skip.
 
-- [Phase 1] Parsed tags: confirmed Tested-by + Reviewed-by Srinivas
-  Kandagatla, no `Cc: stable`, no `Fixes:`.
-- [Phase 2] Diff inventory: 19 lines added, 0 removed; only
-  `x1e80100_snd_init()` modified; verified by reading the diff.
-- [Phase 2] Verified `snd_soc_limit_volume()` silently returns `-EINVAL`
-  for unknown controls (read `sound/soc/soc-ops.c:488-510`).
-- [Phase 3] `git log -- sound/soc/qcom/x1e80100.c`: identified
-  6b9dc2da66578 introducing the file in v6.8.
-- [Phase 3] `git tag --contains 6b9dc2da66578 | grep -E
-  "^v[0-9]\.[0-9]+$"`: first stable v6.8.
-- [Phase 3] `git tag --contains c481016bb4f8a | grep -E
-  "^v[0-9]\.[0-9]+$"`: precedent landed in v6.8 (and was Cc'd to 6.5+).
-- [Phase 3] `git show c481016bb4f8a`: confirmed precedent has explicit
-  `Cc: <stable@vger.kernel.org> # 6.5`.
-- [Phase 4] `b4 dig -c 0a5ee0e520eff`: confirmed lore URL
-  https://lore.kernel.org/all/20260422-x1e80100-audio-
-  limit-v2-1-333258b97697@canonical.com/.
-- [Phase 4] `b4 dig -c 0a5ee0e520eff -a`: identified v1 (2026-04-21) and
-  v2 (2026-04-22) — applied version is v2.
-- [Phase 4] Read mbox of v1 and v2 threads: confirmed Mark Brown caught
-  the missing prefix in v1; author confirmed via amixer that v1 was a
-  no-op; v2 has correct names and was Tested+Reviewed by maintainer.
-- [Phase 5] Confirmed `snd_soc_limit_volume()` API exists since v4.4
-  (`git tag --contains 26d9ca3462df8`).
-- [Phase 5] Confirmed `sound/soc/qcom/sc8280xp.c` uses the same pattern
-  with 81 / 17 limits (read file).
-- [Phase 6] Confirmed WSA/WSA2 sound-name-prefix has been in DT since
-  v6.10 (commit c6d6df1703d47, `git tag --contains`).
-- [Phase 6] 2-speaker support added in v6.13 (`159098859bf6d`);
-  4-speaker existed earlier.
-- [Phase 8] Severity HIGH justified by author's reproduced symptom (T14s
-  speakers shut off until reboot) and risk of permanent hardware damage
-  stated in cover letter.
-- UNVERIFIED: Could not verify whether stable maintainers will need a
-  separate maintainer request (no stable@ thread for this commit yet).
-  Did not let this drive the decision.
-- UNVERIFIED: Did not directly test the patch on a stable tree — applies
-  cleanly per visual inspection.
+UNRESOLVED:
+- None material to the decision.
 
-### Decision
+**Step 9.2 — Stable rules checklist**
+1. Obviously correct/tested: **YES** (author tested via quirk_alias
+   before submission; same flags work for the sibling device).
+2. Fixes a real bug: **YES** (silent microphone on real hardware).
+3. Important: **YES** (hardware completely non-functional for audio).
+4. Small/contained: **YES** (2 lines, single file).
+5. No new features/APIs: **YES** (uses existing flags).
+6. Applies to stable: **YES** for v6.13+; minor context adjustment may
+   be needed.
 
-This is a small, well-tested hardware-safety patch that closely mirrors
-a precedent (`c481016bb4f8`) which was explicitly nominated for stable.
-It prevents a real, user-triggerable hazard (speaker hardware damage /
-lockup) on a popular laptop class. It uses an existing, stable API and
-falls under the "hardware quirks/workarounds" exception. The behavior
-change (capping volume) is the entire point of the safety fix. Risk of
-regression is very low because `snd_soc_limit_volume()` silently no-ops
-on unknown control names.
+**Step 9.3 — Exception category**
+- **Hardware quirk / device ID addition** — always YES for stable.
+
+**Step 9.4 — Decision: YES**
+
+---
+
+## Verification
+
+- [Phase 1] Parsed tags: confirmed only Author SOB, Link, Maintainer
+  SOB; no Fixes/CC stable/Reported-by tags (expected).
+- [Phase 1] Body identifies concrete failure (`cannot get freq at ep
+  0x84`, mic streams zeros) and confirms successful test via
+  `quirk_alias=3443930d:1bcf2283` mapping.
+- [Phase 2] Diff inventory: 1 file (`sound/usb/quirks.c`), +2/-0 lines,
+  single `DEVICE_FLG()` entry verified by reading the patch.
+- [Phase 2] Verified the new entry uses pre-existing flags
+  `QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16` — not new
+  infrastructure.
+- [Phase 3] `git log -S "QUIRK_FLAG_MIC_RES_16" -- sound/usb/usbaudio.h`
+  -> introduced in commit `d6e6b9218ced5`; `git describe --contains
+  d6e6b9218ced5` -> `v6.13-rc1~123^2~14`. Confirmed available in v6.13+.
+- [Phase 3] `git log -S "QUIRK_FLAG_GET_SAMPLE_RATE" --
+  sound/usb/usbaudio.h` -> commit `4d4dee0aefec3`; `git describe
+  --contains` -> `v5.15-rc1~150^2~95`. Confirmed v5.15+.
+- [Phase 3] `git log -S "0x339b, 0x3a07"` -> commit `2cbe4ac193ed7`;
+  `git describe --contains` -> `v6.17-rc5~26^2~7`. Confirms only the
+  surrounding context (Synaptics line above) is v6.17-only — this only
+  affects diff-context, not semantics.
+- [Phase 3] Verified sibling entry `DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo
+  N930AF */, QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16)` exists
+  at quirks.c:2346-2347; matches pattern exactly.
+- [Phase 4] `b4 mbox` retrieved 2-message thread; verified maintainer
+  Takashi Iwai responded "Applied now. Thanks." with no requested
+  revisions.
+- [Phase 4] Confirmed `b4 am` produces single-revision patch (no v2/v3
+  evolution).
+- [Phase 5] Verified `QUIRK_FLAG_GET_SAMPLE_RATE` used in
+  `sound/usb/clock.c:490` to short-circuit `snd_usb_get_sample_rate()`.
+- [Phase 5] Verified `QUIRK_FLAG_MIC_RES_16` used in
+  `sound/usb/mixer.c:1085` to set `cval->res = 16` for "Mic Capture
+  Volume".
+- [Phase 6] Quirk infrastructure confirmed present in v6.13+ stable
+  trees; backport viable.
+- [Phase 8] Failure mode confirmed: silent microphone (zero samples
+  only). Severity HIGH for users with this webcam, NIL for others.
+- UNVERIFIED: I did not directly test the patch against the actual
+  v6.13.y/v6.16.y stable trees for context-merge cleanliness — minor
+  textual adjustment may be needed but the entry's semantics will work
+  in any tree with both flags defined.
+
+This is a textbook hardware-quirk addition: a 2-line table entry that
+enables a specific consumer webcam's microphone to actually work, using
+already-deployed quirk infrastructure, applied directly by the subsystem
+maintainer with no review concerns. It precisely matches the "device ID
+/ hardware workaround" exception that is canonically backported to
+stable.
 
 **YES**
 
- sound/soc/qcom/x1e80100.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/usb/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/qcom/x1e80100.c b/sound/soc/qcom/x1e80100.c
-index a3f4785c4bbe6..c81df41ace883 100644
---- a/sound/soc/qcom/x1e80100.c
-+++ b/sound/soc/qcom/x1e80100.c
-@@ -27,10 +27,29 @@ static int x1e80100_snd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct x1e80100_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_card *card = rtd->card;
- 	struct snd_soc_jack *dp_jack = NULL;
- 	int dp_pcm_id = 0;
- 
- 	switch (cpu_dai->id) {
-+	case WSA_CODEC_DMA_RX_0:
-+	case WSA_CODEC_DMA_RX_1:
-+		/*
-+		 * Set limit of -3 dB on Digital Volume and 0 dB on PA Volume
-+		 * to reduce the risk of speaker damage until we have active
-+		 * speaker protection in place.
-+		 */
-+		snd_soc_limit_volume(card, "WSA WSA_RX0 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "WSA WSA_RX1 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "WSA2 WSA_RX0 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "WSA2 WSA_RX1 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 6);
-+		snd_soc_limit_volume(card, "SpkrRight PA Volume", 6);
-+		snd_soc_limit_volume(card, "WooferLeft PA Volume", 6);
-+		snd_soc_limit_volume(card, "TweeterLeft PA Volume", 6);
-+		snd_soc_limit_volume(card, "WooferRight PA Volume", 6);
-+		snd_soc_limit_volume(card, "TweeterRight PA Volume", 6);
-+		break;
- 	case DISPLAY_PORT_RX_0:
- 		dp_pcm_id = 0;
- 		dp_jack = &data->dp_jack[dp_pcm_id];
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 4cfa24c06fcdf..e9290920aea0e 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -2415,6 +2415,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
+ 	DEVICE_FLG(0x339b, 0x3a07, /* Synaptics HONOR USB-C HEADSET */
+ 		   QUIRK_FLAG_MIXER_PLAYBACK_MIN_MUTE),
++	DEVICE_FLG(0x3443, 0x930d, /* NexiGo N930W 60fps Webcam */
++		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_MIC_RES_16),
+ 	DEVICE_FLG(0x413c, 0xa506, /* Dell AE515 sound bar */
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 	DEVICE_FLG(0x534d, 0x0021, /* MacroSilicon MS2100/MS2106 */
 -- 
 2.53.0
 
