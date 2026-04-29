@@ -4,69 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 668FCFF8867
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2026 05:43:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5F76FF8864
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Apr 2026 05:50:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3088601EF;
-	Wed, 29 Apr 2026 07:43:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3088601EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 086E2601F2;
+	Wed, 29 Apr 2026 07:50:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 086E2601F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777441408;
-	bh=iy+pKVRIEhGd/OGXEiMAk1gH/Bc+GjNZpgxmXTv4kt0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=aGQCDD5B84cPQU0YGJpkDibtnwEZa1P+YqtnoD6kynWXjQL+Q5JuZ6c5ujLdT4zYg
-	 tJImmXhkBYIT8AkG/FFcysZwCdlseTmc1Ks5iPqCRaKzUkx+e+zKKQSpu0xcTC3i2r
-	 Z4RMZQe7w76vdNfcmG0H0oiFwHclte5JklvQcCcE=
+	s=default; t=1777441849;
+	bh=pnqOEoZTlx6DK3stz6Q7dP21S8AzimFJgn8M5ImAoCA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=J2qVzEkK4QMwhzk3EE9eJsSqlpfHtlXS+n0C1B7wAcv8CHFxc72d7K1elbgkjcz/i
+	 64HOdE2pUtEo2RajmHt7EFlUjIiJl8TyKR0SVHPFAL4qV5DaHO7SckqMgQO9YT4eWS
+	 cbhcvNmokjj4GbKioGcmtx6nVEnEnMWrllSifXlU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2CCAFF805EE; Wed, 29 Apr 2026 07:42:53 +0200 (CEST)
+	id 74208F805F8; Wed, 29 Apr 2026 07:50:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B418F805EE;
-	Wed, 29 Apr 2026 07:42:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38018F805F3;
+	Wed, 29 Apr 2026 07:50:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26AA1F80544; Wed, 29 Apr 2026 07:42:43 +0200 (CEST)
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	id B3898F80544; Wed, 29 Apr 2026 07:50:08 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2A1B2F80073
-	for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2026 07:42:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A1B2F80073
+	by alsa1.perex.cz (Postfix) with ESMTPS id 261E3F80073
+	for <alsa-devel@alsa-project.org>; Wed, 29 Apr 2026 07:50:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 261E3F80073
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Q+5I21zZ
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id C916760018;
-	Wed, 29 Apr 2026 05:42:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6413CC19425;
-	Wed, 29 Apr 2026 05:42:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777441357;
-	bh=iy+pKVRIEhGd/OGXEiMAk1gH/Bc+GjNZpgxmXTv4kt0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Q+5I21zZnlwfr68+545EGi/hOsK1NgRuZI+fBjcAtJXsY4E30SZRY4DtFOM750MDY
-	 1fpCRIpZuwuKUliBs2ieQ8DwOpFYFy90Ba+NVWF8ue18mGOYW/il6XiT2mkLTAz3Xg
-	 uH6vF7bhPTVSVerCf8AYxV7KwEqSvY3slg68weCTkPT2oBh3mGLmPBz1JyrMqk5EJV
-	 N1Txe8IBX02KLV8Vkq0UxnwRexlS8sFWkMG8Lvw/rWUcbBzEsngzx+4o89flTiAIE2
-	 ly/0taduPDMurWK6mTJr2sJwOUgemOD6w1EWxHUeULIF27g4OxZHrqS5CYQA7ktieB
-	 MdDvLlk3Ayo1g==
-Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
-	id CBC321AC5855; Wed, 29 Apr 2026 06:42:34 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v7.1-rc1
-Date: Wed, 29 Apr 2026 14:42:28 +0900
-Message-Id: <20260429054234.CBC321AC5855@finisterre.sirena.org.uk>
-Message-ID-Hash: NFKU45UBNXBMDW7LJ23CYLW5JTMHGIAJ
-X-Message-ID-Hash: NFKU45UBNXBMDW7LJ23CYLW5JTMHGIAJ
-X-MailFrom: broonie@kernel.org
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=sO9e3T+a;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZdLD0zfX;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=qABY3sTR;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=+D7d8LFu
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BAEF25BCD5;
+	Wed, 29 Apr 2026 05:50:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1777441802;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dnMnxg7U3xfdjdggDzKUTjO5QVf9ef4HLtJNuTdwsLY=;
+	b=sO9e3T+a3fL8s1Tu6C9vnwLHiS9kwBJUTQ3ii5dhsvwOUdP/vkTcN4YM1akM0sEY1UIEuZ
+	qBj/AjMmJGBYykMZNMJ9wyuldt9eG183HRA+nMLkUuvfnZK3BIREgFcF5j5snxC8gOTiIg
+	i2jP4E0CXdUMK+GIEd2hXueRPCFp3tc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1777441802;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dnMnxg7U3xfdjdggDzKUTjO5QVf9ef4HLtJNuTdwsLY=;
+	b=ZdLD0zfXMig0CoDnf80fWrd0qywBEfdocLN0CLNUgxGp0eB0mbS5YF0yfW/WA18Y2mXmJB
+	0If6RzssacxhSwCg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=qABY3sTR;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=+D7d8LFu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1777441801;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dnMnxg7U3xfdjdggDzKUTjO5QVf9ef4HLtJNuTdwsLY=;
+	b=qABY3sTRBYNqMgZcw1Iyk4MOJVxBVk+TWNORZwjIZ1lyeQL7eiNs8MOgue3+Yirk6lyDJB
+	/xLLAFajv93iHkdMEwgNuccjUTrYVqgnBRuQJDnwFr80bWig4uA43yBZtmdDdZzOjZTl+Z
+	TjjyrDjVvTAw3Pw9EVyym9hF+9ubvUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1777441801;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dnMnxg7U3xfdjdggDzKUTjO5QVf9ef4HLtJNuTdwsLY=;
+	b=+D7d8LFuQntYUgGzIsRvTsDtosBLR4CklJX4/TNGn5ybx0x7Nvh2USO65mlTPPCmXLZG2x
+	Ui9icSm6X/bly1DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8239E593B0;
+	Wed, 29 Apr 2026 05:50:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id gPd6Hgmc8WnQLgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 29 Apr 2026 05:50:01 +0000
+Date: Wed, 29 Apr 2026 07:50:01 +0200
+Message-ID: <877bpqqprq.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: wangdich9700@163.com
+Cc: tiwai@suse.com,
+	bo.liu@senarytech.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	wangdicheng <wangdicheng@kylinos.cn>
+Subject: Re: [PATCH v2] ALSA: hda/conexant: Fix missing error check for jack
+ detection
+In-Reply-To: <20260428080450.108801-1-wangdich9700@163.com>
+References: <20260428080450.108801-1-wangdich9700@163.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[163.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	FREEMAIL_ENVRCPT(0.00)[163.com];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,kylinos.cn:email,suse.de:dkim,suse.de:mid];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BAEF25BCD5
+Message-ID-Hash: HSTMDYCZD2RGGOLMCJNCR5CT3PEALXGU
+X-Message-ID-Hash: HSTMDYCZD2RGGOLMCJNCR5CT3PEALXGU
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -77,7 +164,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NFKU45UBNXBMDW7LJ23CYLW5JTMHGIAJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HSTMDYCZD2RGGOLMCJNCR5CT3PEALXGU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,73 +173,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit 254f49634ee16a731174d2ae34bc50bd5f45e731:
+On Tue, 28 Apr 2026 10:04:50 +0200,
+wangdich9700@163.com wrote:
+> 
+> From: wangdicheng <wangdicheng@kylinos.cn>
+> 
+> In cx_probe(), the return value of snd_hda_jack_detect_enable_callback()
+> is ignored. This function returns a pointer, and if it fails (e.g., due
+> to memory allocation failure), it returns an error pointer which must
+> be checked using IS_ERR().
+> 
+> If the registration fails, the driver continues to probe, but the jack
+> detection callback will not be registered. This can lead to a kernel
+> crash later when the driver attempts to handle jack events or accesses
+> the uninitialized structure.
+> 
+> Check the return value using IS_ERR() and propagate the error via
+> PTR_ERR() to the probe caller.
+> 
+> Fixes: 7aeb25908648 ("ALSA: hda/conexant: Fix headset auto detect fail in cx8070 and SN6140")
+> Signed-off-by: wangdicheng <wangdicheng@kylinos.cn>
 
-  Linux 7.1-rc1 (2026-04-26 14:19:00 -0700)
+Applied now.  Thanks.
 
-are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.1-rc1
-
-for you to fetch changes up to 03dcb5b68a96b51157ec2d17042fa2f0106828ae:
-
-  ASoC: spacemit: adjust FIFO trigger threshold to half FIFO size (2026-04-29 11:41:32 +0900)
-
-----------------------------------------------------------------
-ASoC: Fixes for v7.1
-
-We've had quite a lot of fixes come in this past week, all driver stuff
-rather than any broad systematic issue.  All quite routine stuff.
-
-----------------------------------------------------------------
-Ajay Kumar Nandam (1):
-      ASoC: codecs: wcd937x: fix AUX PA sequencing and mixer controls
-
-Bard Liao (1):
-      ASoC: SOF: Intel: add an empty adr_link
-
-Christian A. Ehrhardt (1):
-      ASoC: codecs: ab8500: Fix casting of private data
-
-Cássio Gabriel (1):
-      ASoC: Intel: bytcr_wm5102: Fix MCLK leak on platform_clock_control error
-
-Guilherme G. Piccoli (1):
-      ASoC: amd: acp: Add DMI quirk for Valve Steam Deck OLED
-
-James Calligeros (2):
-      ASoC: tas2764: Mark die temp register as volatile
-      ASoC: tas2770: Fix order of operations for temperature calculation
-
-Li Jian (1):
-      ASoC: ES8389: convert to devm_clk_get_optional() to get clock
-
-Richard Fitzgerald (1):
-      ASoC: cs35l56: Fix illegal writes to OTP_MEM registers
-
-Sasha Levin (1):
-      ASoC: tegra: Remove stale snd-soc-tegra-utils composite module definition
-
-Troy Mitchell (2):
-      ASoC: spacemit: move hw constraints from hw_params to startup
-      ASoC: spacemit: adjust FIFO trigger threshold to half FIFO size
-
-wangdicheng (1):
-      ASoC: aw88395: Fix kernel panic caused by invalid GPIO error pointer
-
- sound/soc/amd/acp/acp-legacy-mach.c   |  2 +-
- sound/soc/amd/acp/acp-mach-common.c   | 22 +++++++++++++---
- sound/soc/amd/acp/acp-mach.h          |  4 +++
- sound/soc/amd/acp/acp-sof-mach.c      |  2 +-
- sound/soc/codecs/ab8500-codec.c       |  6 ++---
- sound/soc/codecs/aw88395/aw88395.c    |  9 +++----
- sound/soc/codecs/cs35l56-shared.c     |  7 +++--
- sound/soc/codecs/es8389.c             |  2 +-
- sound/soc/codecs/tas2764.c            |  1 +
- sound/soc/codecs/tas2770.c            |  4 +--
- sound/soc/codecs/wcd937x.c            | 26 ++++++++++++++++++-
- sound/soc/intel/boards/bytcr_wm5102.c |  1 +
- sound/soc/sof/intel/hda.c             |  3 ++-
- sound/soc/spacemit/k1_i2s.c           | 49 ++++++++++++++++++++++++-----------
- sound/soc/tegra/Makefile              |  1 -
- 15 files changed, 101 insertions(+), 38 deletions(-)
+Takashi
