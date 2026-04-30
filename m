@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 568A4CD13DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2026 19:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CFDECD13DF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2026 19:43:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23666601FD;
-	Thu, 30 Apr 2026 21:40:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23666601FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E253360203;
+	Thu, 30 Apr 2026 21:42:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E253360203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777578054;
-	bh=+kb1nW1Okac7pHQCCVw85xsSM5jzMZ9dly/bbD1Dp0k=;
+	s=default; t=1777578185;
+	bh=h8NgbfVVxrj8tWJHbmV3wumyZif4ikAb2Z6iVV/ORRs=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=jMp9B2sZKkILcDT/Dnn6HK2o5i0qu6fuO7/W9MhG5YrCp4+xOi2u1aTmqEY0DFVJp
-	 Ke0Xymacw7+G1bXM6bwUWIWHjc/MUxZdCr4HDNEhBdaTj/rFtuJV45ghYjhspNnhtX
-	 6tmQrOOWT+Nkk4SpRIoqQ9N1+s7PHJp3encmdmgc=
+	b=r+voYCYZf5/jx8K6HOppUJhkaT+MhRBDpaxUd/qtdFhwN/4NEmFVGw0f9aZJdjXgo
+	 L3gy3NmwHvWgnKMxQvR3itEgtG9oifj4K6wbb/5M622Shu3Xp8Rl1BN5AQ+Y3d1szw
+	 QuoIu+M1SDRESQ2f/gXIgc8lXikRBEqFawfpgFOU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8BABF805F0; Thu, 30 Apr 2026 21:40:18 +0200 (CEST)
+	id 8B9F3F805F0; Thu, 30 Apr 2026 21:42:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11E93F805F1;
-	Thu, 30 Apr 2026 21:40:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECE63F805F2;
+	Thu, 30 Apr 2026 21:42:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6EB0DF802BE; Thu, 30 Apr 2026 21:40:10 +0200 (CEST)
+	id 88650F802BE; Thu, 30 Apr 2026 21:42:24 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AB6EF80154
-	for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2026 21:40:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AB6EF80154
+	by alsa1.perex.cz (Postfix) with ESMTP id 8958BF8016D
+	for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2026 21:42:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8958BF8016D
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18ab39c6e0795300-webhooks-bot@alsa-project.org>
-In-Reply-To: <18ab39c6e04da900-webhooks-bot@alsa-project.org>
-References: <18ab39c6e04da900-webhooks-bot@alsa-project.org>
+Message-Id: <18ab39e4b8267f00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18ab39e4b820a500-webhooks-bot@alsa-project.org>
+References: <18ab39e4b820a500-webhooks-bot@alsa-project.org>
 Subject: snd_mixer_selem_ask_playback_vol_dB calculates wrong volume with
  SND_CTL_TLVT_DB_MINMAX_MUTE
-Date: Thu, 30 Apr 2026 21:40:10 +0200 (CEST)
-Message-ID-Hash: H2JF53QNWXASNIPUKLDE5EOHVKL5OVZI
-X-Message-ID-Hash: H2JF53QNWXASNIPUKLDE5EOHVKL5OVZI
+Date: Thu, 30 Apr 2026 21:42:24 +0200 (CEST)
+Message-ID-Hash: QZP6JYFCIKT35QHU3TSNHFDCLS26FCQG
+X-Message-ID-Hash: QZP6JYFCIKT35QHU3TSNHFDCLS26FCQG
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H2JF53QNWXASNIPUKLDE5EOHVKL5OVZI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QZP6JYFCIKT35QHU3TSNHFDCLS26FCQG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,7 +67,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #504 was opened from pv:
+alsa-project/alsa-lib issue #504 was edited from pv:
 
 snd_mixer_selem_ask_playback_dB_vol() and snd_mixer_selem_ask_playback_vol_dB() are inconsistent between each other when SND_CTL_TLVT_DB_MINMAX_MUTE  is enabled. Similarly for `snd_mixer_selem_get_playback_dB` after setting volume dB_vol returned.
 
@@ -104,7 +104,7 @@ $73 = -6
 ```
 The `*db_gain = (maxdb - mindb) * (volume - rangemin) / (rangemax - rangemin) + mindb`  results to `*db_gain == mindb` and the function returns with SND_CTL_TLV_DB_GAIN_MUTE which is wrong.
 
-Reverging https://github.com/alsa-project/alsa-lib/commit/41039b49ad3e20506134864028c77aeaba4c0d51 appears to fix it for me (get `dB ==  -2837`).
+Reverting https://github.com/alsa-project/alsa-lib/commit/41039b49ad3e20506134864028c77aeaba4c0d51 appears to fix it for me (get `dB ==  -2837`).  Alternatively one could change snd_tlv_convert_from_dB to match so the rounding is right.
 
 I don't understand the new logic, doesn't SND_CTL_TLVT_DB_MINMAX_MUTE mean that the lowest hardware volume value is muted? (Also, the ALSA 1/100 dB values round to zero earlier than the USB 1/256 dB ones.)
 
