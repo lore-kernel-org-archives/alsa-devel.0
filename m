@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CFDECD13DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2026 19:43:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82749CD13D3
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2026 19:46:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E253360203;
-	Thu, 30 Apr 2026 21:42:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E253360203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D4C160203;
+	Thu, 30 Apr 2026 21:46:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D4C160203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777578185;
-	bh=h8NgbfVVxrj8tWJHbmV3wumyZif4ikAb2Z6iVV/ORRs=;
+	s=default; t=1777578391;
+	bh=Z65HuvkSduOCrkCG8UyMp5Za7OzOF51Vd2dzXugqkrI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=r+voYCYZf5/jx8K6HOppUJhkaT+MhRBDpaxUd/qtdFhwN/4NEmFVGw0f9aZJdjXgo
-	 L3gy3NmwHvWgnKMxQvR3itEgtG9oifj4K6wbb/5M622Shu3Xp8Rl1BN5AQ+Y3d1szw
-	 QuoIu+M1SDRESQ2f/gXIgc8lXikRBEqFawfpgFOU=
+	b=AT5T5R1GV7CaGQtqOyBnao7OhQYC53DA8Drm4rfAHVh7auG97vuLW1arMUceIy1t9
+	 N3szq+gzGki2oNajmzWY+9RRDeePP3jbQUL+3Gj9Im7CzHWHh5HvrF5y7qnuWaLWsc
+	 Ao7wEVMi26UmFmCOhvRthzxFSu0BPlGKmm58vz8Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B9F3F805F0; Thu, 30 Apr 2026 21:42:31 +0200 (CEST)
+	id D69BBF805EC; Thu, 30 Apr 2026 21:45:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECE63F805F2;
-	Thu, 30 Apr 2026 21:42:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A60B3F805F2;
+	Thu, 30 Apr 2026 21:45:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88650F802BE; Thu, 30 Apr 2026 21:42:24 +0200 (CEST)
+	id 80BB1F802BE; Thu, 30 Apr 2026 21:45:52 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8958BF8016D
-	for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2026 21:42:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8958BF8016D
+	by alsa1.perex.cz (Postfix) with ESMTP id 0733AF80154
+	for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2026 21:45:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0733AF80154
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18ab39e4b8267f00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18ab39e4b820a500-webhooks-bot@alsa-project.org>
-References: <18ab39e4b820a500-webhooks-bot@alsa-project.org>
+Message-Id: <18ab3a173416f000-webhooks-bot@alsa-project.org>
+In-Reply-To: <18ab3a173409b400-webhooks-bot@alsa-project.org>
+References: <18ab3a173409b400-webhooks-bot@alsa-project.org>
 Subject: snd_mixer_selem_ask_playback_vol_dB calculates wrong volume with
  SND_CTL_TLVT_DB_MINMAX_MUTE
-Date: Thu, 30 Apr 2026 21:42:24 +0200 (CEST)
-Message-ID-Hash: QZP6JYFCIKT35QHU3TSNHFDCLS26FCQG
-X-Message-ID-Hash: QZP6JYFCIKT35QHU3TSNHFDCLS26FCQG
+Date: Thu, 30 Apr 2026 21:45:52 +0200 (CEST)
+Message-ID-Hash: YZONBPHYEBVWVN7AQDO6QRBPZMBUUEV5
+X-Message-ID-Hash: YZONBPHYEBVWVN7AQDO6QRBPZMBUUEV5
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QZP6JYFCIKT35QHU3TSNHFDCLS26FCQG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZONBPHYEBVWVN7AQDO6QRBPZMBUUEV5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,7 +87,7 @@ $55 = 1
 (gdb) p	dB
 $56 = -9999999
 ```
-The `val = 1` is correct (the device is muted only at HW volume 0), but dB from snd_mixer_selem_ask_playback_vol_dB is wrong. (Results to Pipewire volume control being broken at low volume.)
+The `val = 1` is correct (the device is muted only at HW volume 0), but dB from snd_mixer_selem_ask_playback_vol_dB is wrong, the device is not muted at volume 1. (The inconsistency results to Pipewire volume control being broken at low volume.)
 
 The device in question is "1532:055e Razer USA, Ltd Razer Nommo V2 X" -- it is muted at lowest ALSA hw volume 0, and anything > 0 is not muted (so it needs the mixer_playback_min_mute quirk).
 
