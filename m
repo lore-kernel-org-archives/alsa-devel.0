@@ -4,50 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82749CD13D3
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Apr 2026 19:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A58F3CCFA13
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 May 2026 13:02:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D4C160203;
-	Thu, 30 Apr 2026 21:46:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D4C160203
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2A3460202;
+	Fri,  1 May 2026 15:02:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2A3460202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777578391;
-	bh=Z65HuvkSduOCrkCG8UyMp5Za7OzOF51Vd2dzXugqkrI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=AT5T5R1GV7CaGQtqOyBnao7OhQYC53DA8Drm4rfAHVh7auG97vuLW1arMUceIy1t9
-	 N3szq+gzGki2oNajmzWY+9RRDeePP3jbQUL+3Gj9Im7CzHWHh5HvrF5y7qnuWaLWsc
-	 Ao7wEVMi26UmFmCOhvRthzxFSu0BPlGKmm58vz8Y=
+	s=default; t=1777640531;
+	bh=0B2rD8qQnfTeBK5hCS8zMZjhccTPWs11XzIC+Mvm/xg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=huWzeBXvqSD2Io+xJxFhvHE2onMs3Jnvm5fZXc7+l/ETLahzH0N1zdUuFf+KBy+2q
+	 8m9n8p7tF3IhTtD9Y9n45xtx9isX2fFEo9E9BKwwGfij53d0f+YazsTyqLaOIilUOM
+	 8rzDOrWtjqM77MP53kdKZ18QB1gXnAZqOX822+L8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D69BBF805EC; Thu, 30 Apr 2026 21:45:58 +0200 (CEST)
+	id A03AEF805F4; Fri,  1 May 2026 15:01:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A60B3F805F2;
-	Thu, 30 Apr 2026 21:45:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EF7CF805F0;
+	Fri,  1 May 2026 15:01:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80BB1F802BE; Thu, 30 Apr 2026 21:45:52 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0733AF80154
-	for <alsa-devel@alsa-project.org>; Thu, 30 Apr 2026 21:45:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0733AF80154
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18ab3a173416f000-webhooks-bot@alsa-project.org>
-In-Reply-To: <18ab3a173409b400-webhooks-bot@alsa-project.org>
-References: <18ab3a173409b400-webhooks-bot@alsa-project.org>
-Subject: snd_mixer_selem_ask_playback_vol_dB calculates wrong volume with
- SND_CTL_TLVT_DB_MINMAX_MUTE
-Date: Thu, 30 Apr 2026 21:45:52 +0200 (CEST)
-Message-ID-Hash: YZONBPHYEBVWVN7AQDO6QRBPZMBUUEV5
-X-Message-ID-Hash: YZONBPHYEBVWVN7AQDO6QRBPZMBUUEV5
-X-MailFrom: github@alsa-project.org
+	id ED8B7F8055A; Fri,  1 May 2026 15:01:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id AEBB7F80100
+	for <alsa-devel@alsa-project.org>; Fri,  1 May 2026 15:01:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEBB7F80100
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=CQcFay0E;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Crm/fq5E;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=oK7ZFVLN;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=LSl3sIJB
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 816326A8B9;
+	Fri,  1 May 2026 13:01:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1777640484;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=inGTKwuzhyO4ML1LJhMUfD/JGYcc4pf/wbUk0xZ/Dn8=;
+	b=CQcFay0EOtlH56t+bCV/qsdHUXPX73ypOLRvE/TPqjnrKPqZOsozEiDFAtq8AJQ/vfpJic
+	T3sfPOPjuBWPvtFXkEOwBwVq//Ao3XfgGk8rmOjUn0y5XkJCWeVK2r4f22xX7dA7tnwIq8
+	sKXxg6PTg1sS/5etWpYiHXc9WkN8e4k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1777640484;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=inGTKwuzhyO4ML1LJhMUfD/JGYcc4pf/wbUk0xZ/Dn8=;
+	b=Crm/fq5EqQ+UvGo1MEiBnOB3ngbjI1UfQ7TCVNJ/f3gccbUCN8XGziQTTMzlHUBtHzIZAn
+	KZZYtisNXHYIP/CQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=oK7ZFVLN;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=LSl3sIJB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1777640483;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=inGTKwuzhyO4ML1LJhMUfD/JGYcc4pf/wbUk0xZ/Dn8=;
+	b=oK7ZFVLNONGKDAA0LFUN1Y8t9zKXZSvPQ+H55JFI2oPCCDLe60Aw+FC6eAZInHD04wAXHQ
+	nLGouazSknNsF5BrrXTOex5MZJbeXAfdvjDdOsy4MS79Rpr4ryiWVM104vXc5zlY6WHy+3
+	DHXNn8HiUzD63QIskvqtSUzWAAgWc4Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1777640483;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=inGTKwuzhyO4ML1LJhMUfD/JGYcc4pf/wbUk0xZ/Dn8=;
+	b=LSl3sIJB+0k2Rbx+CKkMN4Ql+1nwB0E7C3YB5TzhtSWv+D6DMVt563xHWqpDFSFGfZSO+3
+	z62RNNHcb/T9a7DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5CB01593B0;
+	Fri,  1 May 2026 13:01:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 2v+IFSOk9Gk3dwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 01 May 2026 13:01:23 +0000
+Date: Fri, 01 May 2026 15:01:23 +0200
+Message-ID: <87fr4bl1wc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?ISO-8859-1?Q?R=E1mon?= van Raaij <ramon@vanraaij.eu>
+Cc: linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Add codec SSID quirk for Lenovo Yoga
+ Pro 9 16IMH9
+In-Reply-To: <20260430191224.patch1-ramon@vanraaij.eu>
+References: <20260430191224.patch1-ramon@vanraaij.eu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_THREE(0.00)[3];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,vanraaij.eu:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Queue-Id: 816326A8B9
+Message-ID-Hash: EDLNXE3QVFVWTEKRHZOKMMU27B6SPLP2
+X-Message-ID-Hash: EDLNXE3QVFVWTEKRHZOKMMU27B6SPLP2
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -58,7 +163,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZONBPHYEBVWVN7AQDO6QRBPZMBUUEV5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EDLNXE3QVFVWTEKRHZOKMMU27B6SPLP2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,48 +172,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #504 was edited from pv:
+On Thu, 30 Apr 2026 21:12:24 +0200,
+Rámon van Raaij wrote:
+> 
+> The Yoga Pro 9 16IMH9 (codec SSID 17aa:38d6) shares PCI audio device
+> subsystem ID 17aa:3811 with the Legion S7 15IMH05. The existing
+> SND_PCI_QUIRK entry for the Legion routes both machines to
+> ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS, which does not bind the TAS2781
+> smart amplifiers, resulting in near-silent built-in speakers.
+> 
+> Add an HDA_CODEC_QUIRK entry immediately before the conflicting PCI quirk
+> that matches the Yoga Pro 9's unique codec SSID and routes it to
+> ALC287_FIXUP_TAS2781_I2C. Codec quirks are evaluated after PCI quirks and
+> take precedence, leaving the Legion S7 15IMH05 entry unaffected.
+> 
+> This follows the same pattern used to disambiguate PCI SSID 17aa:3847
+> (shared between Yoga Pro 7 14IMH9 and Legion 7 16ACHG6), where a
+> HDA_CODEC_QUIRK for codec SSID 17aa:38cf resolves the conflict.
+> 
+> Signed-off-by: Rámon van Raaij <ramon@vanraaij.eu>
 
-snd_mixer_selem_ask_playback_dB_vol() and snd_mixer_selem_ask_playback_vol_dB() are inconsistent between each other when SND_CTL_TLVT_DB_MINMAX_MUTE  is enabled. Similarly for `snd_mixer_selem_get_playback_dB` after setting volume dB_vol returned.
+Applied now.  Thanks.
 
-Version: alsa-lib-1.2.15.3-3.fc44.x86_64
 
-In Pipewire, we have
-```
-if ((r = snd_mixer_selem_ask_playback_dB_vol(me, value_dB, rounding, &val)) < 0)
-    return r;
-if ((r = snd_mixer_selem_ask_playback_vol_dB(me, val, &dB)) < 0)
-    return r;
-```
-In the problem case `value_dB = -3259` and `rounding = +1` but I'm seeing
-```
-(gdb) p	val
-$55 = 1
-(gdb) p	dB
-$56 = -9999999
-```
-The `val = 1` is correct (the device is muted only at HW volume 0), but dB from snd_mixer_selem_ask_playback_vol_dB is wrong, the device is not muted at volume 1. (The inconsistency results to Pipewire volume control being broken at low volume.)
-
-The device in question is "1532:055e Razer USA, Ltd Razer Nommo V2 X" -- it is muted at lowest ALSA hw volume 0, and anything > 0 is not muted (so it needs the mixer_playback_min_mute quirk).
-
-In snd_tlv_convert_to_dB:
-```
-snd_tlv_convert_to_dB (tlv=0x7b460cd21610, rangemin=0, rangemax=7248, volume=1, db_gain=0x7b260b455e40) at control/tlv.c:212
-254                     if (*db_gain < mindb)
-(gdb) p	type
-$80 = 5
-(gdb) p	mindb
-$72 = -2837
-(gdb) p	maxdb
-$73 = -6
-```
-The `*db_gain = (maxdb - mindb) * (volume - rangemin) / (rangemax - rangemin) + mindb`  results to `*db_gain == mindb` and the function returns with SND_CTL_TLV_DB_GAIN_MUTE which is wrong.
-
-Reverting https://github.com/alsa-project/alsa-lib/commit/41039b49ad3e20506134864028c77aeaba4c0d51 appears to fix it for me (get `dB ==  -2837`).  Alternatively one could change snd_tlv_convert_from_dB to match so the rounding is right.
-
-I don't understand the new logic, doesn't SND_CTL_TLVT_DB_MINMAX_MUTE mean that the lowest hardware volume value is muted? (Also, the ALSA 1/100 dB values round to zero earlier than the USB 1/256 dB ones.)
-
-Link: https://gitlab.freedesktop.org/pipewire/pipewire/-/work_items/5235 (I also have access to similar device locally)
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/504
-Repository URL: https://github.com/alsa-project/alsa-lib
+Takashi
