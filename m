@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15850CD342C
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2026 11:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27B93CD342C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 May 2026 11:35:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58DCE60213;
-	Mon,  4 May 2026 13:35:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58DCE60213
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B516601C5;
+	Mon,  4 May 2026 13:35:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B516601C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1777894528;
-	bh=QWBXXwbuDrwOrSYq7WJWVSKkBCHPaQ9kqB9p6dp8hZE=;
+	s=default; t=1777894552;
+	bh=AJSiv4rlM1Y72yTCDwIkevBY2jyeOE4AJNNWaG9HSkA=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DnG/EDaOltzTARAbVu5I6I5XyH/Yo6OvYIqk/QG64CLZ9hja7/VSUx1tJ8ckV8ja3
-	 XRAN8lkdN2uq9qtm4wbU+ltbvDNMV0M0cdq310VbWrxqdri5tYLc0UBcjsH2P93yq0
-	 TFUTpazMGTxUH2eK7Px9BTmRk5Yr96U4sNjctPDE=
+	b=jyNdju1X79MjstyADEII9KaNqldRl8UkdnyyHSoTLeJVahC5JxZtT/x8XnSTsTFK3
+	 qgjq4AKEGxEkRV4di560SzM5O4FdbrWyckhN5Q73cGRxYufqDwKay1+Eg60tlhU3MI
+	 Mv2vo+Yl5vIqrFMGA6M9yoa7Cyjyr0ZKNKCgK3UI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B87F8F80615; Mon,  4 May 2026 13:34:43 +0200 (CEST)
+	id 4F660F80636; Mon,  4 May 2026 13:34:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38E00F80617;
-	Mon,  4 May 2026 13:34:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16A97F8062D;
+	Mon,  4 May 2026 13:34:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 738B4F8055A; Fri,  1 May 2026 19:56:50 +0200 (CEST)
+	id 29825F804F2; Sun,  3 May 2026 01:31:07 +0200 (CEST)
 Received: from mx.brightberry.eu (mx.brightberry.eu [185.229.55.106])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 57F8FF80100
-	for <alsa-devel@alsa-project.org>; Fri,  1 May 2026 19:56:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57F8FF80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id A02C3F8021D
+	for <alsa-devel@alsa-project.org>; Sun,  3 May 2026 01:31:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A02C3F8021D
 Received: from mx.brightberry.eu (localhost [127.0.0.1])
-	by mx.brightberry.eu (Proxmox) with ESMTP id 01DBC594A;
-	Fri, 01 May 2026 19:56:47 +0200 (CEST)
-Received: from bug-report.eml (YST00841.fritz.box [192.168.178.64])
-	by mx.brightberry.eu (Proxmox) with ESMTP id D5A3712D1;
-	Fri, 01 May 2026 19:56:46 +0200 (CEST)
+	by mx.brightberry.eu (Proxmox) with ESMTP id 601232A01;
+	Sun, 03 May 2026 01:31:03 +0200 (CEST)
+Received: from d3cold-bug-report.eml (YST00841.fritz.box [192.168.178.64])
+	by mx.brightberry.eu (Proxmox) with ESMTP id 40E62100F;
+	Sun, 03 May 2026 01:31:03 +0200 (CEST)
 From: =?UTF-8?q?R=C3=A1mon_van_Raaij?= <ramon@vanraaij.eu>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
  Shenghao Ding <shenghao-ding@ti.com>
-Subject: [BUG] ALSA: hda: snd_hda_scodec_tas2781_i2c: DSP firmware silently
- fails to load at cold boot (Lenovo Yoga Pro 9 16IMH9)
-Date: Fri, 01 May 2026 19:56:33 +0200
-Message-Id: <20260501175633.bug1-ramon@vanraaij.eu>
+Subject: [BUG] snd_hda_scodec_tas2781_i2c: parent I2C controller enters D3cold
+ during idle, erasing amp register state
+Date: Sun, 03 May 2026 01:30:50 +0200
+Message-Id: <20260502230243.bug2-ramon@vanraaij.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -58,15 +58,15 @@ X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: KLZ4C5X3FYVQAW6BXMEO7GMV55KMEFXT
-X-Message-ID-Hash: KLZ4C5X3FYVQAW6BXMEO7GMV55KMEFXT
-X-Mailman-Approved-At: Mon, 04 May 2026 11:34:39 +0000
+Message-ID-Hash: IKWE275BFSZRGPYDGLYW37YXITRXLXY6
+X-Message-ID-Hash: IKWE275BFSZRGPYDGLYW37YXITRXLXY6
+X-Mailman-Approved-At: Mon, 04 May 2026 11:34:51 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KLZ4C5X3FYVQAW6BXMEO7GMV55KMEFXT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IKWE275BFSZRGPYDGLYW37YXITRXLXY6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,90 +75,82 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Machine:  Lenovo Yoga Pro 9 16IMH9 (board SSID 83DN)
+Machine:  Lenovo Yoga Pro 9 16IMH9 (board name 83DN)
 Kernel:   7.0.3-zen1-1-zen (linux-zen)
-Codec:    Realtek ALC287, subsystem ID 17aa:38d6
-Amps:     4x TI TAS2781, ACPI HID TIAS2781, I2C bus i2c-4
-          (I2C controller: PCI 0000:00:15.2, Intel Designware)
-Fixup:    ALC287_FIXUP_TAS2781_I2C (applied correctly via HDA_CODEC_QUIRK 17aa:38d6)
+Amps:     2x TI TAS2781, ACPI HID TIAS2781, I2C bus i2c-4
+          (I2C controller: PCI 0000:00:15.2, Intel DesignWare / Meteor Lake)
+Related:  <20260501175633.bug1-ramon@vanraaij.eu>
+          (DSP firmware fails at cold boot - separate issue, same hardware)
 
 PROBLEM
 -------
-At cold boot the built-in speakers produce ~10-15% of normal volume.
-The TAS2781 amplifiers are powered and the HDA component bind succeeds:
-
-  snd_hda_codec_alc269 ehdaudio0D0: bound i2c-TIAS2781:00
-      (ops tas2781_hda_comp_ops [snd_hda_scodec_tas2781_i2c])
-
-However, the DSP firmware (TAS2XXX38D6.bin) is not loaded. The ALSA
-control "Speaker Force Firmware Load" -- which is only registered after
-a successful firmware load inside tas2781_hda_comp_bind() -- is absent:
-
-  $ amixer -c sofhdadsp cget name="Speaker Force Firmware Load"
-  amixer: Cannot find the given element from control sysdefault:0
-
-No error is logged to dmesg. The driver continues without DSP calibration
-data, leaving the amplifiers at uncalibrated default gain.
-
-The issue does NOT occur after S3 suspend/resume. After resume, a
-modprobe -r / modprobe cycle restores full speaker volume.
+After approximately 5 minutes of audio inactivity the built-in speakers
+drop to ~10-15% of normal volume. No dmesg message is emitted and no
+driver error is reported. Audio continues to function at the low volume;
+the issue is not a complete failure. The drop is not tied to display
+power-off; it occurs during I2C bus inactivity regardless of display state.
 
 ROOT CAUSE
 ----------
-The BIOS initialises the TAS2781 amps during POST and leaves them in a
-hardware state incompatible with the kernel firmware load sequence. The
-request_firmware_nowait() call in the bind path silently fails when called
-against hardware in this BIOS-initialised state.
+The TAS2781 amplifiers sit on a Synopsys DesignWare I2C bus whose parent
+PCI device (0000:00:15.2) defaults to power/control=auto. During deep
+idle the kernel runtime-suspends this controller. When the controller
+enters D3cold (which ACPI can gate the power rail for), the entire I2C
+bus loses power and all TAS2781 register state is erased.
 
-Critical observation: a PCI-level power cycle of the I2C controller
-(0000:00:15.2) reliably resolves the issue:
+This is distinct from the TAS2781 I2C device's own runtime-PM: pinning
+the I2C device to power/control=on does not help because the power loss
+comes from the parent PCI controller, not from the I2C device itself.
 
-  echo 1 > /sys/bus/pci/devices/0000:00:15.2/remove
-  sleep 2
-  echo 1 > /sys/bus/pci/rescan
+Confirmed by checking power state before and after idle:
 
-After this sequence ACPI gates the I2C controller power rail (D3cold),
-resetting the TAS2781 amps to factory state. On rescan, i2c_designware
-and snd_hda_scodec_tas2781_i2c re-probe, DSP firmware loads, and
-"Speaker Force Firmware Load" appears in amixer.
+  # Before idle (volume normal):
+  $ cat /sys/bus/pci/devices/0000:00:15.2/power/runtime_status
+  active
+  $ cat /sys/bus/pci/devices/0000:00:15.2/power/control
+  auto
 
-A plain modprobe -r / modprobe cycle WITHOUT the PCI power cycle does
-NOT fix the issue, confirming this is a hardware state problem, not a
-module loading or firmware subsystem timing race.
+  # After ~5 min audio inactivity (volume dropped to ~10-15%):
+  $ cat /sys/bus/pci/devices/0000:00:15.2/power/runtime_status
+  suspended
+
+The timing (~5 min) corresponds to the system entering a deep idle
+state during I2C bus inactivity, which allows the PCI controller to
+runtime-suspend.
 
 WORKAROUND
 ----------
-The following systemd service (After=sound.target,
-Before=display-manager.service) reliably restores correct volume on
-every boot. It must run before PipeWire opens the device; hot-removing
-the PCI device while WirePlumber has an active ALSA handle causes a
-SIGSEGV in snd_hctl_elem_get_interface (libasound).
+Pinning the PCI controller to always-on prevents the volume drop:
 
-  [Service]
-  Type=oneshot
-  ExecStartPre=/bin/sleep 2
-  ExecStart=/bin/bash -c 'echo 1 > /sys/bus/pci/devices/0000:00:15.2/remove'
-  ExecStart=/bin/sleep 2
-  ExecStart=/bin/bash -c 'echo 1 > /sys/bus/pci/rescan'
-  ExecStart=/bin/bash -c 'modprobe snd_hda_scodec_tas2781_i2c || true'
-  ExecStart=/bin/sleep 5
-  RemainAfterExit=yes
+  echo on > /sys/bus/pci/devices/0000:00:15.2/power/control
+
+Persistent via udev (ACTION=="add" alone is insufficient: i2c_designware
+resets power/control back to auto after driver binding, so ACTION=="bind"
+is also required):
+
+  ACTION=="add|bind", SUBSYSTEM=="pci", ENV{PCI_SLOT_NAME}=="0000:00:15.2", \
+      ATTR{power/control}="on"
+
+This is a blunt workaround that prevents any runtime PM on the entire I2C
+controller, which affects all devices on that bus.
 
 SUGGESTED FIX
 -------------
-The driver should detect a failed firmware load in tas2781_hda_comp_bind()
-and either:
+snd_hda_scodec_tas2781_i2c should hold a PM runtime reference on the
+parent PCI device of its I2C controller during probe, preventing D3cold
+for as long as the driver is bound. Something along the lines of:
 
-  a) Perform a hardware reset sequence on the TAS2781 amps (e.g. via an
-     ACPI power state transition on the I2C controller) before retrying, or
+  /* In probe: */
+  pci_dev = to_pci_dev(client->adapter->dev.parent->parent);
+  pm_runtime_get_sync(&pci_dev->dev);
 
-  b) Schedule a deferred retry after the firmware subsystem has fully
-     settled, with a fallback hardware reset if the retry also fails.
+  /* In remove: */
+  pm_runtime_put(&pci_dev->dev);
 
-The fix should live in tas2781_hda_comp_bind() or the
-request_firmware_nowait() completion callback in
-snd_hda_scodec_tas2781_i2c.
+Alternatively a PCI quirk could set ACPI_COMPANION power flags to prevent
+D3cold for PCI 8086:7e7a (the Meteor Lake DesignWare controller) on
+platforms where TAS2781 amps are present.
 
-Signed-off-by: Rámon van Raaij <ramon@vanraaij.eu>
+Signed-off-by: Ramon van Raaij <ramon@vanraaij.eu>
 
 
