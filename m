@@ -4,155 +4,157 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D75CCD3442
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2026 19:34:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E115ECD343F
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 May 2026 19:35:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1298360220;
-	Thu,  7 May 2026 21:34:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1298360220
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86E9C6020E;
+	Thu,  7 May 2026 21:35:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86E9C6020E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778182479;
-	bh=l3Ab7XyBHgYgdVUYvnIxOK1iLTlvrFfToU8aQQgN/KE=;
+	s=default; t=1778182545;
+	bh=M3KABthd5maur8hbMRdtLClP0jQmmBM34vEK3bvldks=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hTVSV8L6dfIvkSKRR1yM8WSW8wTGITfBwBck8X/P6lhlYbV5GufInYKAw45FXahcf
-	 z641ONHfEkHbGCxhnQAk83pamMkcPC5aqA5hu/mNHPRHK1TPQM+uHX9SdIUZbcHEbS
-	 xVX4CqvRHBPPpdSCDGyoSw8zGlLyoa9Gr3lBRuiA=
+	b=bRfYvJYTiiiwHEYgTS6pM4yjyPoDEYI3XgxazdyuZU3X0ADrKOs/6NtNxC2xhYw62
+	 gl1rXDwijDxytVa9GXyQeM63MSbsXLxS1mCWLL6vRz2aU7Hcseo5ijzX9EAHHx11Dm
+	 1LTts7kx1GF3vAG8t5oUzkmyC0oHXp+3pEruofTs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EDD3AF805F6; Thu,  7 May 2026 21:34:05 +0200 (CEST)
+	id 6F373F805E3; Thu,  7 May 2026 21:35:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D6BAF805E6;
-	Thu,  7 May 2026 21:34:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A4ECF805F2;
+	Thu,  7 May 2026 21:35:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C963FF80518; Thu,  7 May 2026 21:33:59 +0200 (CEST)
-Received: from PH8PR06CU001.outbound.protection.outlook.com
- (mail-westus3azon11012062.outbound.protection.outlook.com [40.107.209.62])
+	id E0C28F80518; Thu,  7 May 2026 21:35:05 +0200 (CEST)
+Received: from SN4PR2101CU001.outbound.protection.outlook.com
+ (mail-southcentralusazon11012053.outbound.protection.outlook.com
+ [40.93.195.53])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 954CEF8007E
-	for <alsa-devel@alsa-project.org>; Thu,  7 May 2026 21:33:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 954CEF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id D5120F800BA
+	for <alsa-devel@alsa-project.org>; Thu,  7 May 2026 21:35:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5120F800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=QAUvULD2
+ header.s=selector1 header.b=uCDDTUhY
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Nn2IuTjL8jvdML2svC2Y/uw8o4JNrU7to2XEI9DDm9ZpLM2BzJhwFXZDWr+yHny9AkTK7iP9cj1bB8M++kV0qZwa9pIPrWyfemroVzJpeBfVzU7MVu6TtnDDrLFptWTG7IqQOP2A2tmialHvI0E6rG9S262yWDhRuCiuBG3pvetfvoPP6P4M2l38soIP6SJgqz5U14JIZsm3Qq396SBEkTdJkOSJlYN9Q8byZhGRfN4XcEybKq+n4Lau6ad7+DtY6vq97DhxLtJsgT3L/oWBi+vVfRbWKtLSTt0bTPie0uLMsg4WNg7CRd2h7nQ2WAnP9lshQp9IhSh4TMIlFcKD1w==
+ b=Uf+t2zgwlKfW8GUjQxn9X9JmkrG9l+eVj96ipezl9UwfibYb7gd2el1B4ZrDCll8b5ilxaEG7QkWgW94ayEw8/zQzjO2//RtvGExyB6X1Pnh7f5VrezBTd5anlZ28luxIQ6azsU/HW92VAJlVymcZacGZpj43RN1LzNT/I4FGnetULSE3gYIJ2NrUqxv6OlFM0ApttGctB6F6q2vEukNaSXRaPFysmSyNF6xozZXBznB51NPhAmKH6Dms097ia7rBkKCnKtOJMVDGLIBBCREsv++t+sLUDxVfxqVttsGmB3S/BlvuxjXvM8ViIMP6TqE1BOlU/l3ihahE/iF7LX/fA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uBnK3LOegx/g/JFrClnK88/roawC96Y8Z/Nty9vJdTM=;
- b=r+Zf4aETuMF2nId69g3gyri56HKBOf0nUEsIBB0lXXwzv2P+MXbZVqrAVJ6e6kQQ8jkxZktm5pDhuMe0H4CoAJn0/S0A1FvJUU+fUbH2rRn7FcJUzfhm4TumAo1Mtp4lIxlh8+O2WTnrNslDaRH4WzKGA5+1TT4Hfi4pdiKLGR4Z27alEmm3GnBWRsafB+rBU1/WogZPSz8V+APHgnOoelm0DzL+rwIbTjGIAw5AyMH9JIEWAfFx2nEaMi3rSJOnF4Xg68z0F74Fsb4PAa4KqbuK+fMa4BAqlts0GwWrVbsZKirvctIKJblvjTo1D8Wgma/vlsl6AgLvuK9cYzm6sQ==
+ bh=WZVU5WaJmm7/bI3oK4VVfREsdu84doyOZWBd8Gwmj/I=;
+ b=hiLlg8XA7VpapxZZc1cehoshWucJaS+pJsmdsQSzNDNDSZKz58cZCVSAE76atSjTKK/LFT5SxVBX2Tkgmlrz70nJecOnR9ihCfIcB+SBy0Ud7nqB2DO/jVv2XM3pOBwzw+M12CzFGgOP370E9oGUetR+mFbHG9Tx8dBrrtc1vz5QGh03xjSZQuUMjsE0rYDRk3pp0aiu2SsKhTUmFTDBHX4L7oQnPh57R8VipqFGQD1ZMivsZgrB0dZ2q9QSYC36IJ9B2DlD6JRHUWVFxA/GH6xz3T9PqOxtpKFGR5+ZpKU1xQcpTpWMEaKxZwUax094cQ7VHY7fpcD4c4gmjSaalA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uBnK3LOegx/g/JFrClnK88/roawC96Y8Z/Nty9vJdTM=;
- b=QAUvULD2xeKJhyPPh9PuCEmvVsXJKAAyrwY3gbTAB8h02DLNBHNFyzf4PKtRYnu+fNcWFzb5iM7KUjuM2p9JrWjMBIMcq8OlqunjlQ53TmbRTcEi9zS8wp9Z7abyebw3IzW1dClxKQD9QJSoKbYcOAsorc2tJiZ2odt0HPg7mVY=
+ bh=WZVU5WaJmm7/bI3oK4VVfREsdu84doyOZWBd8Gwmj/I=;
+ b=uCDDTUhYq5W96tWrRPjxhh9cs8tnGIM4T2e3e9EMxGvjSWY0DT4Cgf9T73sYh0oZvQ6AcQdePrAsxmlBEL+G6u6GoeBwGYK6GAA7jKVXf6WZ9LSyK1/HcOEXB42jzFoiH6A9/bR1RyG3Zd3BURT6fDK0FdPq6R+WOQxol0jcfrE=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10)
  by PH7PR12MB6540.namprd12.prod.outlook.com (2603:10b6:510:213::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.15; Thu, 7 May
- 2026 19:33:51 +0000
+ 2026 19:34:55 +0000
 Received: from SA0PR12MB4557.namprd12.prod.outlook.com
  ([fe80::885a:79b3:8288:287]) by SA0PR12MB4557.namprd12.prod.outlook.com
  ([fe80::885a:79b3:8288:287%5]) with mapi id 15.20.9891.017; Thu, 7 May 2026
- 19:33:51 +0000
-Message-ID: <905bfeff-ab78-4299-a2a4-45fb8f05e716@amd.com>
-Date: Thu, 7 May 2026 14:33:47 -0500
+ 19:34:55 +0000
+Message-ID: <0708f896-18e4-4e89-bbd2-fe62b6974b08@amd.com>
+Date: Thu, 7 May 2026 14:34:52 -0500
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] ASoC: amd: acp7x: add system and runtime PM ops
+Subject: Re: [PATCH 1/5] include: sound: add register header file for acp7.x
+ series
 Content-Language: en-US
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
  tiwai@suse.com, Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20260507181251.20594-1-Vijendar.Mukunda@amd.com>
- <20260507181251.20594-6-Vijendar.Mukunda@amd.com>
+ <20260507181251.20594-2-Vijendar.Mukunda@amd.com>
 From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20260507181251.20594-6-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20260507181251.20594-2-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH2PR20CA0013.namprd20.prod.outlook.com
- (2603:10b6:610:58::23) To SA0PR12MB4557.namprd12.prod.outlook.com
+X-ClientProxiedBy: CH2PR20CA0017.namprd20.prod.outlook.com
+ (2603:10b6:610:58::27) To SA0PR12MB4557.namprd12.prod.outlook.com
  (2603:10b6:806:9d::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SA0PR12MB4557:EE_|PH7PR12MB6540:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8505c16e-6402-4ce3-0787-08deac6f913a
+X-MS-Office365-Filtering-Correlation-Id: a5d68609-ca45-479f-cdf1-08deac6fb74c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|366016|376014|1800799024|18002099003|22082099003|56012099003;
+	BCL:0;ARA:13230040|366016|376014|1800799024|3023799003|18002099003|22082099003|56012099003;
 X-Microsoft-Antispam-Message-Info: 
-	WqEQleZfblum0glpVXTKQyge9ppfZtQlcGt8Sb/Mqy3Jwpfvg8+24A0bC4zkyonKxuvcFdPS70wBEiibOacP7KKYwgtAZcvLwVDCnwohAxOuUX+5WjKJeB/yiSsY2wn9LJJExwMar4Ou6Brw/wRqMJ8h+2IPg21bvNI7kk/zCwezIt6Wg2OL26B5DpZlkLi8CLFeq1ks3QtRJybsOW4V8/QezOpSv+qPEY8c/ZpQJfkB67P9GJcr3EZkmUwmZYkqGYvEkKc7nE81anJH/ROJkSJ66OD5tqtJE3RTKsDs0fSB5+GmJaT1MxOpMs38PwBsraQmvgapXrFWKwXRjHRdtUZf6+72CAGprN9TcaWD4xJ+B4byvHGj2jzBkIoid1tWVnGqef7ZpzXHogwzTKVk4/MfkV+7G16lf8LaN/NB1oGFkpGyZTLlD5SsqBjH0OKfTTrJUNOBI01shI8DbO99iKVWKW1AfpfS9cjTnjpJ0A9OKpA1D9fTrEeoIDhovHsyVos4zPAaOtX+D0rZauzDXfDVIEvLqWQMlvh6wqXh8tFH2BXO0e8KlGDBGaYpJpYQLioNHkl9ZmZg8f9BVuIkiUAPGXOtGoaZEhZp51U8wUKvaR0fsBZoGzOfyeZB7xadCvqeHRf+qxG0Hj3WorUn4Ha4BOKgd1ED7KEdxzCAZw9vXE6iyfsRtpRaMA0I3tl6
+	h3ZJssz8C9Bno61Waa587sS3tEu7s8MGR4p4tCVHvoPbYI086SLKCuNH5+Tvzc+faG+9TtihygQcXEMyT2v3ydHc9QZ26Fl7Bux5Qls4O9Mv3DsXD9yCv4MqcHdRCncM+lnzd9y/jxtkuwZKo2jC6SUjJhTNfWXPybQcvbaCf/G79YR6G62kIWKFIY4Wke0He6GOPXP6Qx97lwf51A+gaRwD+aVYEnts1gm6Eezi2B76ayvHeOuBqMSAM8+IBl4gbLjmTfxmyjV7GH8RR00xV/1sa9XEW2IwpWFV2KoG1IBzErRP3XUQbZBO6J+UaqdUAYF0huNAm9Noz7fzJEQ8ztVVfn7siRkuALvApJm1wa7ZVPg09dnoi0WaZvKI1dFMlamVs8bKt9QwEMh/tpyP6RvRXPrqB1XRok22aj6SMP2AIl65JeATuPsCyeL3mUGYlUeX+rc/Il4PcYGoayD90pFHMVKZFZdx/FFSXfrw4Pm+iGbBmF875lYkDPsk2JPWKIY9indHmqvwArbfqyOJhuCdxLVGN1hhLmYr6hpg4KzaW/pNh2zaEwTcY3YePBOdz5n7S3f9BHbjP6mqgMnyUTHJslX6coVlHNsHrxK6DmCX+l8v3BtoopkPwoGa/WBzXau9mdgJFucaD3Hbbt8Jns8BR1aqfkmXG4p+Kk7P4ooiEI+R0bL8cWrrK+V/4RqN
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(3023799003)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?OXVMSWFSVGt1NFRzSzRib3Z1bTUva3ExL3cyeHhrbnZEWFJkUi9FVlBtemxE?=
- =?utf-8?B?T2VjcUVZZnpFcHZvdXN3UFZUZ0YzZTc3b0dTbUwvQ3R6UFp1eUd0YVNIb3hO?=
- =?utf-8?B?THFPVkR1QUJKTTdITUN6djZ5cDlUTTRTeTgzWThoTzVmNWppdVIzV2JzRk1x?=
- =?utf-8?B?YStXSFdsY0hnUXBMQWgvZHpZVitmRU0zdzVvNFRVL29lNHZoQmwwRnlpVnVk?=
- =?utf-8?B?VVFiUERnS29tT0ZmSWNkV3pObDlLbk1ZaFJ1UnZMa2htcjR3VFRLR0VuNWRl?=
- =?utf-8?B?THFGU0YwZTIyaEN1WTdpczFyRnVWaG01eldSV21nRXNzc1ZQUktDZ2dVc0dT?=
- =?utf-8?B?YU44MVkreXVwNHRDYk03NThqUDZaaUpaN2IyL01qNnNDWEZYcmNoNXl5cmxj?=
- =?utf-8?B?bzZBVWRwQit3dU14TzdqN2tRRGVRNzhpS3hhamVSQm9VOXJ6K1RScmgrekJE?=
- =?utf-8?B?ZWpJWER1TTd5TWNDWFZicWtjYmpCMEhQL0I5aE84UzBFSkNwMDJnZzBPNjNF?=
- =?utf-8?B?UXdjaDFWTjU4dlZ6d2tHODdFcUpQZXo2NEJrY0lObjBHWEhhOXZXZU9hWUti?=
- =?utf-8?B?T0NNaXJ5U2Jjd0lJRE8xY2lHYUg3THJmTWROQjhLcTcrbzlLZnJBb1VZM1lS?=
- =?utf-8?B?SkJZREJ6am5vZGFWVFl5K0Ntc3J6SE41dUY1QVM0RHlsOHI2RHZaNWdtRThs?=
- =?utf-8?B?YTRFbExFZkxTbGF1cGlyK25uSzAybHc4aXU3anE4NmFoWW1BN0lNb3paTjlv?=
- =?utf-8?B?Q2diVExvc2pwUEY3cTM3M3JaUWhQYW40MFpCZU9OYWlpQ1dmQkNzaVY4U0ZV?=
- =?utf-8?B?czlGcDg5RUhaQ0NWeld3TVZSQ3drRjR6YjJhMDhmUmJsQ1QwblV1MmRHVWtn?=
- =?utf-8?B?Y2ZuUHA5bVZJYkNxY3d2NUdSdmlvS1pVaVY3MWlyKzdiamF3ZjE4bXRBUjdl?=
- =?utf-8?B?SU5NOWlsYU5wN3hNYTFzdFo2eU5vT0xZVm01QVZYdjNhQmMzK2JSdHcrc0pt?=
- =?utf-8?B?aExSTjRTMWg5dGw0SU1WaHIxMUtxOEM4ek1WMlVqKzB6cDJGcWZuWGtEMDEr?=
- =?utf-8?B?QVdpOTVaT1E3a3h3cHduWDRaQW1uaDdOTXlyZ3hCSU1mVkdUTmdDcE1ZOWVa?=
- =?utf-8?B?elZjK1dZeWRzZHFMMzF1QXdKeUtINHZENkVQNHlZRmFDSURwT0FlWDJFMU9O?=
- =?utf-8?B?cVlFaUN4akgxYlZscTBXQkNxTTZCYmdrcG5OMllZUTdpVUhwR0RJSXhveUlZ?=
- =?utf-8?B?dUZUc2phTVVpeXM5eVZ3SEhOM0RkZUt4dmlXMW9qUmhUZUZYTnduYitEak5i?=
- =?utf-8?B?WkpBVFI5eVJLY1FqWm1CeVgwN3VGSndrbnYzV1BMOTdoazdaL2FkY3dreUEv?=
- =?utf-8?B?bHg1YVExZWJrcmxNWXhWUEEydlRYZkUxd1RFaHM5UUtEWDRFNGNrYlZCbG9R?=
- =?utf-8?B?cTZNaS95cG9PdEk5SVowdkxRTHB5cGZzeWtjNFdzRkFzcHRsaGtWQlk0UVIw?=
- =?utf-8?B?aDdvbmNYa3lKYkllam45Ny8raU1zd2dpK1hSNENVSnJmY1F3dVp3VEQ2aTRS?=
- =?utf-8?B?RzNMZFlxQkNDMTJGTmNNSTdUT2xWZEs4L1RRbWdQRm04UE5YamFHaHgwUEs3?=
- =?utf-8?B?aXBqblV6ZC80WmtiQmlBZVRZNjFDNkhmZlQ4ZlhLSW5YSDNRRmZJTVE3QjI0?=
- =?utf-8?B?QW9aRC9tblR5SWJKMVBDZnAyYmdFcG0wU29HUjUyZ1prazUwZFV4c29NVGU2?=
- =?utf-8?B?VXpwUXJ3Z2V1RHIxNjgwMW1UcE1lNlBKVk1pSisxd2M5eGpjS09TZzNFQnk5?=
- =?utf-8?B?aWFzZlFqdjVpZWVmVGF5c09heitvSTZFZ1RKWmYzWWlKL0YzWlF2RGY4R3Y2?=
- =?utf-8?B?T081NS95TVkzMGM3TDBHb1hoVjRoZ0tCbXU0bEpuRWlWZVR1SXVoSWkwMUkw?=
- =?utf-8?B?SmF1N3FiTXo4UGhQeWpyc24zcjNLcG5iRGN6TmhuSjVRV2gvdkY1OWFIMVBC?=
- =?utf-8?B?bm9MZ3NqMDk0Rk5uNDVCNEJkV2hBR2twdnFtOVZtQlN5MGc0RzFyamN0TGlz?=
- =?utf-8?B?cDV0bkw3MnliOEdWU1lTUkJwVytNYzBXV0VvUWgwcVpLTDIyM1p6U1BpQzVr?=
- =?utf-8?B?MUZaekZNSkhFdTlldFl2dUVnck5uZk94MXA1VHBPcmU3bFFxdUZtcjJYcWdU?=
- =?utf-8?B?U2RDbzVtN2JrZzZwZ1ZzT3NDbkZRVkZ4Z01NWlZmMDlKbzBONU5uck11T0pa?=
- =?utf-8?B?TEtYKytESTlIc1YxelZxTVR0bUhoNElCYysyY2Z3bFBicmxkUGVxc0pTdWd2?=
- =?utf-8?Q?SN4RcSrs5dyfJ3s8St?=
+	=?utf-8?B?WkFwY3V3aHdiZ0JVbmoxZVh6dnErbFBRUHMxSmRaZFM0UlE5UWY5UkFnTHpH?=
+ =?utf-8?B?RlhVc0lzWlhrSS9MNFhHSGVQWkFsUnd5ZUgyZTZnWm5XSmIzaWxVTTdDbzhy?=
+ =?utf-8?B?Y0VOMnlMU0NOeVRHR013RDVWemg5UHJMMjhXUzExMXBmK3RKV1IzeWF2dDd0?=
+ =?utf-8?B?TVJSL0hsMG05UEZqR1Z0NE1KT1VSODdLL0ozenhSWm1ycXU4VlYveHRGTS9I?=
+ =?utf-8?B?MnpaVDJMY3hieHpBZHlvc1RuLzhPSWpnRUpCeHg3eEdhQ3phV1RRY204ZE4r?=
+ =?utf-8?B?Qy9pNDBaQ1BRZkdYMnJKNGNsVjZOZGl3Tjl5U0xQOFA3c2t2TG50b1V5dHVK?=
+ =?utf-8?B?QmtKbnhmVXFJZy9jOG9TdTR0U3FQQTUzOW9NL1hRV1V0Q3p4TmVLWEtRZVRs?=
+ =?utf-8?B?S05ubitDSHlIMmlqMm1FNGE3UzlXYVZZZzlFOGdnaTdVcXdVWldybmcreTEx?=
+ =?utf-8?B?VmNiRERkSlhJSjNwVUxIUVRZdEo5eGpCQm9zbS9lV25UVyt6VTFOY0RGNTV4?=
+ =?utf-8?B?NURXb0ZxMFp2N2tLeDVBRlpmckc2N1JWZlREbW82d2psbkpkenRXZG1INEEx?=
+ =?utf-8?B?eitzQy9jMHZETUVteURGOXZ3TW4veGxTK3RNV01naFBWUUthNjExN1BvRUVr?=
+ =?utf-8?B?MW45Vnp6cXdtUHRXZjZwUi9JQ1hNU3dERjcxRmY2SHJoQkJROGorRFQ5SldY?=
+ =?utf-8?B?MUE0eTVaeUVlUWxMS2gxc2w4OTJQdjZ4MHUwSm1Mb3owOEhXQnpNRGJVR1Z2?=
+ =?utf-8?B?M2Y1NmlibnN6ZlNiUHVJbDNyZjRLS2JrUWFVbGNMS3NuS0czYU9jcERlSzQz?=
+ =?utf-8?B?TFNuc0ZwWFM2dnNRQ2VSWnJwVnpxaEYzTHp4N3Zaa2hqSWMzLzBxaDdEaUJX?=
+ =?utf-8?B?Zyt6TVhBWFloK0JmNXhoQnp4akRvTVJLWEF1eHJXRzJzTWhjcVZNcUJaNHZl?=
+ =?utf-8?B?VzJFVng3a3M0bVJ0QXlGTXZMbSs3eUd4K3pKL0EyeDl4Q1pOc1IxV1dpWlFv?=
+ =?utf-8?B?MEpCZ0RDdjdsQ2NtUjJIRFZVU0xMTGFzcXh6MjVYVnRhVXp6RFllSmViVk5M?=
+ =?utf-8?B?VnhPVzRmSW5HYU1mdXRhNXpZRlcvd3A0QmR6UE9qVDNLZE4xT2NteFNGakE3?=
+ =?utf-8?B?b0VPOGlsTU1yWHRQZ3VYazhYK3VacXVsQXlsaWZheXRmNzRIZHhMbkNJWVFP?=
+ =?utf-8?B?T3psQmV2VlJ6UmM0ZFlQaGwzbFNmRTcvOTg1UjRmQVcxeDVmdVRGTjZQNW1F?=
+ =?utf-8?B?WmxXenRjYUsyVi9vVm96UzhaeDdRVTFadnBGWnFBRWtYM2V1TUh5MEdDUWRQ?=
+ =?utf-8?B?VzVYdnRuRjgzbHVQYkZsUkpSTXU5ZUNFUk1ZVzZVSTlGeHhsWVJjb1FMVi9T?=
+ =?utf-8?B?SlltQVQ0NFoybTZ1Wkh2bFhubCtUWUVtaGVEejZSd1lIUGpSdThUZnp1MG9P?=
+ =?utf-8?B?MHpsSlo2MTI3WmRKd0tpS3NTcjB2cmVKQTRmaUp6ME0ydWFLWWVTVHJYOTBU?=
+ =?utf-8?B?Q2Z1d2FvUjNzbk81YU15Q2N1Wm8rbHBwRFZYamVGNjVWQVZMT3JpN2Zndjhv?=
+ =?utf-8?B?WW94UWd5bHRrejNPallkam82S0REMUx4OGpLUGZJd25xY3JEbDFaTVdjM1cv?=
+ =?utf-8?B?bUx1blp4MEVwUlk1bVhQMFpmeEJyVFcwYVFJOGVPYWx3TGtoTnZXcXBSTXkw?=
+ =?utf-8?B?ZHV1dmMrQnRVTnZKdDA2WFNXcS8yNUp5a202d0F2b0hySjlJVWh0ajRaM2hB?=
+ =?utf-8?B?WDZoT2RBRE1LamJQT1FZV2djVHI4a29HWGNVaVRCMXNzQ0NlVWZzZGNEWUY2?=
+ =?utf-8?B?bUlTY1ZWNER2eHRTOTVmL1pMb1Y2aE05aEVyMzVoZ3lYNUY3WTZwcjlHU21O?=
+ =?utf-8?B?dVdJK0REdlRvWGNhUk5KN1ZyeEZTM2VOZEJiRFhIMjB3VDNZME1pZHZOZVo1?=
+ =?utf-8?B?d0N0QktqVzc0YVkvOVBBOS94VW9SOFVPcy93OGV1N2tCejZGYWZ5TEpZTHpW?=
+ =?utf-8?B?dWh4R0FTU01TaGFkYUMxRVdMM0gzRS82RDVQTnB2SHJLTnRVT2QraTUwai9v?=
+ =?utf-8?B?MWNLUTRBci85M0JERGtEY3N5UEE1OWhRaStWcTdvNHBzcmtyci83clNRSXdT?=
+ =?utf-8?B?eTBJYzU3U3V6U09lMEtuS0VBZDBLdUZOQnBiOXE5bnVneHFvV0xJeTJFWEFn?=
+ =?utf-8?B?WHlCM21UVHVNckE3RGtlZ0lOcmhUR1B6ZDhJWC8wTkZEVXM4R25qUkNpMXoz?=
+ =?utf-8?B?SHZOdWlNMnVPT1lmcGRKekhYVDEwemN6VmZEckdFRWxTNlpHaFRhTk93TkFu?=
+ =?utf-8?B?QXljb2R4bzRPVVVPUXFFc09RTC9uNGZxTTVjTUhEbERucVJrTnpXZz09?=
 X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 8505c16e-6402-4ce3-0787-08deac6f913a
+ a5d68609-ca45-479f-cdf1-08deac6fb74c
 X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4557.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2026 19:33:51.4549
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2026 19:34:55.2487
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- Zz6BLMshFQBhSSSBSadBHPqeWNKFd/BALhWQYhZjiDIFdAvqYV6k0F8mrS+BqpJ4qWFMV4KCrUOSCCBcO1jBcQ==
+ 2r7IEcEWgxfADi4Db19n32514TL3cyz768H27hfIuk8gPKyh6gPKQTSTGqPdv6mBPMdqJDWbl2SbvxDwUrQF/Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6540
-Message-ID-Hash: SZBOFBSZ22ADDJRVQIKFDGOIDXKA2DGL
-X-Message-ID-Hash: SZBOFBSZ22ADDJRVQIKFDGOIDXKA2DGL
+Message-ID-Hash: YXB3ZL3V7O4Y4WJUJW4BO7PUM554M6Y2
+X-Message-ID-Hash: YXB3ZL3V7O4Y4WJUJW4BO7PUM554M6Y2
 X-MailFrom: Mario.Limonciello@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -164,7 +166,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SZBOFBSZ22ADDJRVQIKFDGOIDXKA2DGL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YXB3ZL3V7O4Y4WJUJW4BO7PUM554M6Y2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -176,163 +178,2538 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 On 5/7/26 13:11, Vijendar Mukunda wrote:
-> Add ACP7.x PM callbacks and hook up system sleep and runtime PM ops for
-> the PCI driver.
+> Add acp register header file for ACP7.x(7.D/7.E/7.F) variants.
 > 
 > Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Reviewed-by: Mario Limonciello (AMD) <superm1@kernel.org>
 > ---
->   sound/soc/amd/acp7x/acp7x-common.c | 43 ++++++++++++++++++++++++++++++
->   sound/soc/amd/acp7x/acp7x.h        |  3 +++
->   sound/soc/amd/acp7x/pci-acp7x.c    | 31 +++++++++++++++++++++
->   3 files changed, 77 insertions(+)
+>   include/sound/acp7x_chip_offset_byte.h | 2519 ++++++++++++++++++++++++
+>   1 file changed, 2519 insertions(+)
+>   create mode 100644 include/sound/acp7x_chip_offset_byte.h
 > 
-> diff --git a/sound/soc/amd/acp7x/acp7x-common.c b/sound/soc/amd/acp7x/acp7x-common.c
-> index 68f9b47766c4..df94864a1693 100644
-> --- a/sound/soc/amd/acp7x/acp7x-common.c
-> +++ b/sound/soc/amd/acp7x/acp7x-common.c
-> @@ -75,8 +75,51 @@ static int acp7x_deinit(void __iomem *acp_base, struct device *dev)
->   	return 0;
->   }
->   
-> +static int __maybe_unused snd_acp7x_suspend(struct device *dev)
-> +{
-> +	struct acp7x_dev_data *adata;
-> +	int ret;
+> diff --git a/include/sound/acp7x_chip_offset_byte.h b/include/sound/acp7x_chip_offset_byte.h
+> new file mode 100644
+> index 000000000000..772c3d38cb8d
+> --- /dev/null
+> +++ b/include/sound/acp7x_chip_offset_byte.h
+> @@ -0,0 +1,2519 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +/*
+> + * AMD ACP 7.x Register Documentation
+> + *
+> + * Copyright 2026 Advanced Micro Devices, Inc.
+> + */
 > +
-> +	adata = dev_get_drvdata(dev);
-> +	ret = acp_hw_deinit(adata, dev);
-> +	if (ret)
-> +		dev_err(dev, "ACP de-init failed\n");
-> +	return ret;
-> +}
+> +#ifndef _acp_ip_7x_chip_OFFSET_BYTE_H
+> +#define _acp_ip_7x_chip_OFFSET_BYTE_H
 > +
-> +static int __maybe_unused snd_acp7x_runtime_resume(struct device *dev)
-> +{
-> +	struct acp7x_dev_data *adata;
-> +	int ret;
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1			0x000C00
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_1			0x000C04
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_2			0x000C08
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_2			0x000C0C
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_3			0x000C10
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_3			0x000C14
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_4			0x000C18
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_4			0x000C1C
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_5			0x000C20
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_5			0x000C24
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_6			0x000C28
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_6			0x000C2C
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_7			0x000C30
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_7			0x000C34
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_8			0x000C38
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_8			0x000C3C
+> +#define ACPAXI2AXI_ATU_CTRL				0x000C40
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_9			0x000C44
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_9			0x000C48
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_10			0x000C4C
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_10			0x000C50
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_11			0x000C54
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_11			0x000C58
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_12			0x000C5C
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_12			0x000C60
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_13			0x000C64
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_13			0x000C68
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_14			0x000C6C
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_14			0x000C70
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_15			0x000C74
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_15			0x000C78
+> +#define ACPAXI2AXI_ATU_PAGE_SIZE_GRP_16			0x000C7C
+> +#define ACPAXI2AXI_ATU_BASE_ADDR_GRP_16			0x000C80
 > +
-> +	adata = dev_get_drvdata(dev);
-> +	ret = acp_hw_init(adata, dev);
-> +	if (ret) {
-> +		dev_err(dev, "ACP init failed\n");
-> +		return ret;
-> +	}
-> +	return 0;
-> +}
+> +#define ACP_SOFT_RESET					0x001000
+> +#define ACP_CONTROL					0x001004
+> +#define ACP_STATUS					0x001008
+> +#define ACP_DYNAMIC_CG_MASTER_CONTROL			0x001010
+> +#define ACP_ZSC_DSP_CTRL				0x001014
+> +#define ACP_ZSC_STS					0x001018
+> +#define ACP_PGFSM_CONTROL				0x001024
+> +#define ACP_PGFSM_STATUS				0x001028
+> +#define ACP_CLKMUX_SEL					0x00102C
+> +#define ACP_SW_48MHz_CLK_SEL				0x001030
+> +#define ACP_AUDIO_CLK_SEL				0x001038
+> +#define ACP_PDM_CORE_CLK_SEL				0x00103C
 > +
-> +static int __maybe_unused snd_acp7x_resume(struct device *dev)
-> +{
-> +	struct acp7x_dev_data *adata;
-> +	int ret;
+> +#define ACP_PME_EN					0x001400
+> +#define ACP_DEVICE_STATE				0x001404
+> +#define SW_DEVICE_STATE					0x001430
+> +#define ACP_PIN_CONFIG					0x001440
+> +#define ACP_PAD_PULLUP_CTRL				0x001444
+> +#define ACP_PAD_PULLDOWN_CTRL				0x001448
+> +#define ACP_PAD_DRIVE_STRENGTH_CTRL			0x00144C
+> +#define ACP_PAD_SCHMEN_CTRL				0x001450
+> +#define ACP_SW_PAD_KEEPER_EN				0x001454
+> +#define ACP_SW_WAKE_EN					0x001458
+> +#define ACP_I2S_WAKE_EN					0x00145C
+> +#define ACP_ACLK_AUDIOCLK_CTRL				0x001464
+> +#define ACP_PAD_DISABLE_OE_CTRL				0x001468
+> +#define ACP_SW0_PME_STS					0x001474
+> +#define ACP_SW1_PME_STS					0x001478
+> +#define ACP_SW2_PME_STS					0x00147C
+> +#define ACP_SW3_PME_STS					0x001480
+> +#define ACP_I2S_PME_STS					0x001484
+> +#define ACP_TDM_LOOPBACK_EN				0x001488
 > +
-> +	adata = dev_get_drvdata(dev);
-> +	ret = acp_hw_init(adata, dev);
-> +	if (ret)
-> +		dev_err(dev, "ACP init failed\n");
+> +#define ACP_FUTURE_REG_ACLK_0				0x0018E0
+> +#define ACP_FUTURE_REG_ACLK_1				0x0018E4
+> +#define ACP_FUTURE_REG_ACLK_2				0x0018E8
+> +#define ACP_FUTURE_REG_ACLK_3				0x0018EC
+> +#define ACP_FUTURE_REG_ACLK_4				0x0018F0
+> +#define ACP_AXI2DAGB_SEM_0				0x0018F4
 > +
-> +	return ret;
-> +}
-
-Both of snd_acp7x_runtime_resume and snd_acp7x_resume look identical. 
-Will there be later code (when machine driver and IO enablement come) 
-that makes them different?
-
-If not; then I think you can drop snd_acp7x_runtime_resume().
-
-If so; this makes sense to keep separately.
-
+> +#define ACP_EXTERNAL_INTR_ENB				0x001A00
+> +#define ACP_EXTERNAL_INTR_CNTL				0x001A04
+> +#define ACP_EXTERNAL_INTR_CNTL1				0x001A08
+> +#define ACP_EXTERNAL_SW0_INTR_CNTL			0x001A0C
+> +#define ACP_EXTERNAL_SW1_INTR_CNTL			0x001A10
+> +#define ACP_EXTERNAL_SW2_INTR_CNTL			0x001A14
+> +#define ACP_EXTERNAL_SW3_INTR_CNTL			0x001A18
+> +#define ACP_EXTERNAL_INTR_STAT				0x001A1C
+> +#define ACP_EXTERNAL_INTR_STAT1				0x001A20
+> +#define ACP_EXTERNAL_SW0_INTR_STAT			0x001A24
+> +#define ACP_EXTERNAL_SW1_INTR_STAT			0x001A28
+> +#define ACP_EXTERNAL_SW2_INTR_STAT			0x001A2C
+> +#define ACP_EXTERNAL_SW3_INTR_STAT			0x001A30
+> +#define ACP_ERROR_STATUS				0x001A88
+> +#define ACP_ERROR_INTR_CTRL1				0x001AA4
+> +#define ACP_P1_FUTURE_REG_ACLK_0			0x001AB4
+> +#define ACP_P1_FUTURE_REG_ACLK_1			0x001AB8
 > +
->   void acp7x_hw_init_ops(struct acp_hw_ops *hw_ops)
->   {
->   	hw_ops->acp_init = acp7x_init;
->   	hw_ops->acp_deinit = acp7x_deinit;
-> +	hw_ops->acp_suspend = snd_acp7x_suspend;
-> +	hw_ops->acp_resume = snd_acp7x_resume;
-> +	hw_ops->acp_suspend_runtime = snd_acp7x_suspend;
-> +	hw_ops->acp_resume_runtime = snd_acp7x_runtime_resume;
->   }
-> diff --git a/sound/soc/amd/acp7x/acp7x.h b/sound/soc/amd/acp7x/acp7x.h
-> index d3a57705385a..ddb5eabf6828 100644
-> --- a/sound/soc/amd/acp7x/acp7x.h
-> +++ b/sound/soc/amd/acp7x/acp7x.h
-> @@ -33,6 +33,9 @@
->   #define ACP7X_PGFSM_CNTL_POWER_ON_MASK		7
->   #define ACP7X_PGFSM_STATUS_MASK			0x3F
->   
-> +/* time in ms for runtime suspend delay */
-> +#define ACP_SUSPEND_DELAY_MS			2000
+> +#define ACP_I2S_TDM0_RX_RINGBUFADDR			0x002000
+> +#define ACP_I2S_TDM0_RX_RINGBUFSIZE			0x002004
+> +#define ACP_I2S_TDM0_RX_LINKPOSITIONCNTR		0x002008
+> +#define ACP_I2S_TDM0_RX_FIFOADDR			0x00200C
+> +#define ACP_I2S_TDM0_RX_FIFOSIZE			0x002010
+> +#define ACP_I2S_TDM0_RX_DMA_SIZE			0x002014
+> +#define ACP_I2S_TDM0_RX_LINEARPOSITIONCNTR_HIGH		0x002018
+> +#define ACP_I2S_TDM0_RX_LINEARPOSITIONCNTR_LOW		0x00201C
+> +#define ACP_I2S_TDM0_RX_INTR_WATERMARK_SIZE		0x002020
+> +#define ACP_I2S_TDM0_TX_RINGBUFADDR			0x002024
+> +#define ACP_I2S_TDM0_TX_RINGBUFSIZE			0x002028
+> +#define ACP_I2S_TDM0_TX_LINKPOSITIONCNTR		0x00202C
+> +#define ACP_I2S_TDM0_TX_FIFOADDR			0x002030
+> +#define ACP_I2S_TDM0_TX_FIFOSIZE			0x002034
+> +#define ACP_I2S_TDM0_TX_DMA_SIZE			0x002038
+> +#define ACP_I2S_TDM0_TX_LINEARPOSITIONCNTR_HIGH		0x00203C
+> +#define ACP_I2S_TDM0_TX_LINEARPOSITIONCNTR_LOW		0x002040
+> +#define ACP_I2S_TDM0_TX_INTR_WATERMARK_SIZE		0x002044
+> +#define ACP_I2S_TDM0_POS_TRACK_TX_CTRL			0x002048
+> +#define ACP_I2S_TDM0_TX_DMA_POS				0x00204C
+> +#define ACP_I2S_TDM0_POS_TRACK_I2S_RX_CTRL		0x002050
+> +#define ACP_I2S_TDM0_RX_DMA_POS				0x002054
+> +#define ACP_I2S_TDM0_ERROR_STATUS			0x002058
+> +#define ACP_I2S_TDM0_ERROR_MASK				0x00205C
+> +#define ACP_I2S_TDM0_IER				0x002100
+> +#define ACP_I2S_TDM0_IRER				0x002104
+> +#define ACP_I2S_TDM0_RXFRMT				0x002108
+> +#define ACP_I2S_TDM0_ITER				0x00210C
+> +#define ACP_I2S_TDM0_TXFRMT				0x002110
+> +#define ACP_I2S_TDM0_MSTRCLKGEN				0x002114
+> +#define ACP_I2S_TDM0_OUTPUT_SPLIT_EN			0x002118
+> +#define ACP_I2S_TDM0_WALLCLK_MISC			0x00211C
+> +#define ACP_I2S_TDM0_WALL_CLK_COUNTER			0x002120
+> +#define ACP_I2S_TDM_REFCLKGEN				0x002124
+> +#define ACP_TDM_SYNCEN					0x002128
+> +#define ACP_TDM_LRCLK_START				0x00212C
+> +#define ACP_I2S_TDM0_WALLCLK_INTR_CNTL			0x002130
 > +
->   struct acp_hw_ops {
->   	int (*acp_init)(void __iomem *acp_base, struct device *dev);
->   	int (*acp_deinit)(void __iomem *acp_base, struct device *dev);
-> diff --git a/sound/soc/amd/acp7x/pci-acp7x.c b/sound/soc/amd/acp7x/pci-acp7x.c
-> index 237eb06e3cad..d29a149cf175 100644
-> --- a/sound/soc/amd/acp7x/pci-acp7x.c
-> +++ b/sound/soc/amd/acp7x/pci-acp7x.c
-> @@ -11,6 +11,7 @@
->   #include <linux/io.h>
->   #include <linux/module.h>
->   #include <linux/pci.h>
-> +#include <linux/pm_runtime.h>
->   #include <linux/slab.h>
->   #include <linux/types.h>
->   
-> @@ -92,6 +93,11 @@ static int snd_acp7x_probe(struct pci_dev *pci,
->   	ret = acp_hw_init(adata, &pci->dev);
->   	if (ret)
->   		goto release_regions;
+> +#define ACP_I2S_TDM1_RX_RINGBUFADDR			0x002200
+> +#define ACP_I2S_TDM1_RX_RINGBUFSIZE			0x002204
+> +#define ACP_I2S_TDM1_RX_LINKPOSITIONCNTR		0x002208
+> +#define ACP_I2S_TDM1_RX_FIFOADDR			0x00220C
+> +#define ACP_I2S_TDM1_RX_FIFOSIZE			0x002210
+> +#define ACP_I2S_TDM1_RX_DMA_SIZE			0x002214
+> +#define ACP_I2S_TDM1_RX_LINEARPOSITIONCNTR_HIGH		0x002218
+> +#define ACP_I2S_TDM1_RX_LINEARPOSITIONCNTR_LOW		0x00221C
+> +#define ACP_I2S_TDM1_RX_INTR_WATERMARK_SIZE		0x002220
+> +#define ACP_I2S_TDM1_TX_RINGBUFADDR			0x002224
+> +#define ACP_I2S_TDM1_TX_RINGBUFSIZE			0x002228
+> +#define ACP_I2S_TDM1_TX_LINKPOSITIONCNTR		0x00222C
+> +#define ACP_I2S_TDM1_TX_FIFOADDR			0x002230
+> +#define ACP_I2S_TDM1_TX_FIFOSIZE			0x002234
+> +#define ACP_I2S_TDM1_TX_DMA_SIZE			0x002238
+> +#define ACP_I2S_TDM1_TX_LINEARPOSITIONCNTR_HIGH		0x00223C
+> +#define ACP_I2S_TDM1_TX_LINEARPOSITIONCNTR_LOW		0x002240
+> +#define ACP_I2S_TDM1_TX_INTR_WATERMARK_SIZE		0x002244
+> +#define ACP_I2S_TDM1_POS_TRACK_TX_CTRL			0x002248
+> +#define ACP_I2S_TDM1_TX_DMA_POS				0x00224C
+> +#define ACP_I2S_TDM1_POS_TRACK_I2S_RX_CTRL		0x002250
+> +#define ACP_I2S_TDM1_RX_DMA_POS				0x002254
+> +#define ACP_I2S_TDM1_ERROR_STATUS			0x002258
+> +#define ACP_I2S_TDM1_ERROR_MASK				0x00225C
+> +#define ACP_I2S_TDM1_IER				0x002300
+> +#define ACP_I2S_TDM1_IRER				0x002304
+> +#define ACP_I2S_TDM1_RXFRMT				0x002308
+> +#define ACP_I2S_TDM1_ITER				0x00230C
+> +#define ACP_I2S_TDM1_TXFRMT				0x002310
+> +#define ACP_I2S_TDM1_MSTRCLKGEN				0x002314
+> +#define ACP_I2S_TDM1_OUTPUT_SPLIT_EN			0x002318
+> +#define ACP_I2S_TDM1_WALLCLK_MISC			0x00231C
+> +#define ACP_I2S_TDM1_WALL_CLK_COUNTER			0x002320
+> +#define ACP_I2S_TDM1_WALLCLK_INTR_CNTL			0x002330
 > +
-> +	pm_runtime_set_autosuspend_delay(&pci->dev, ACP_SUSPEND_DELAY_MS);
-> +	pm_runtime_use_autosuspend(&pci->dev);
-> +	pm_runtime_put_noidle(&pci->dev);
-> +	pm_runtime_allow(&pci->dev);
->   	return 0;
->   
->   release_regions:
-> @@ -102,6 +108,26 @@ static int snd_acp7x_probe(struct pci_dev *pci,
->   	return ret;
->   }
->   
-> +static int __maybe_unused snd_acp_suspend(struct device *dev)
-> +{
-> +	return acp_hw_suspend(dev);
-> +}
+> +#define ACP_I2S_TDM2_RX_RINGBUFADDR			0x002400
+> +#define ACP_I2S_TDM2_RX_RINGBUFSIZE			0x002404
+> +#define ACP_I2S_TDM2_RX_LINKPOSITIONCNTR		0x002408
+> +#define ACP_I2S_TDM2_RX_FIFOADDR			0x00240C
+> +#define ACP_I2S_TDM2_RX_FIFOSIZE			0x002410
+> +#define ACP_I2S_TDM2_RX_DMA_SIZE			0x002414
+> +#define ACP_I2S_TDM2_RX_LINEARPOSITIONCNTR_HIGH		0x002418
+> +#define ACP_I2S_TDM2_RX_LINEARPOSITIONCNTR_LOW		0x00241C
+> +#define ACP_I2S_TDM2_RX_INTR_WATERMARK_SIZE		0x002420
+> +#define ACP_I2S_TDM2_TX_RINGBUFADDR			0x002424
+> +#define ACP_I2S_TDM2_TX_RINGBUFSIZE			0x002428
+> +#define ACP_I2S_TDM2_TX_LINKPOSITIONCNTR		0x00242C
+> +#define ACP_I2S_TDM2_TX_FIFOADDR			0x002430
+> +#define ACP_I2S_TDM2_TX_FIFOSIZE			0x002434
+> +#define ACP_I2S_TDM2_TX_DMA_SIZE			0x002438
+> +#define ACP_I2S_TDM2_TX_LINEARPOSITIONCNTR_HIGH		0x00243C
+> +#define ACP_I2S_TDM2_TX_LINEARPOSITIONCNTR_LOW		0x002440
+> +#define ACP_I2S_TDM2_TX_INTR_WATERMARK_SIZE		0x002444
+> +#define ACP_I2S_TDM2_POS_TRACK_TX_CTRL			0x002448
+> +#define ACP_I2S_TDM2_TX_DMA_POS				0x00244C
+> +#define ACP_I2S_TDM2_POS_TRACK_I2S_RX_CTRL		0x002450
+> +#define ACP_I2S_TDM2_RX_DMA_POS				0x002454
+> +#define ACP_I2S_TDM2_ERROR_STATUS			0x002458
+> +#define ACP_I2S_TDM2_ERROR_MASK				0x00245C
+> +#define ACP_I2S_TDM2_IER				0x002500
+> +#define ACP_I2S_TDM2_IRER				0x002504
+> +#define ACP_I2S_TDM2_RXFRMT				0x002508
+> +#define ACP_I2S_TDM2_ITER				0x00250C
+> +#define ACP_I2S_TDM2_TXFRMT				0x002510
+> +#define ACP_I2S_TDM2_MSTRCLKGEN				0x002514
+> +#define ACP_I2S_TDM2_OUTPUT_SPLIT_EN			0x002518
+> +#define ACP_I2S_TDM2_WALLCLK_MISC			0x00251C
+> +#define ACP_I2S_TDM2_WALL_CLK_COUNTER			0x002520
+> +#define ACP_I2S_TDM2_WALLCLK_INTR_CNTL			0x002530
 > +
-> +static int __maybe_unused snd_acp_runtime_resume(struct device *dev)
-> +{
-> +	return acp_hw_runtime_resume(dev);
-> +}
+> +#define ACP_SW_CTRL_COUNT				0x004D00
+> +#define ACP_SW_GSYNC_EN					0x004D04
+> +#define ACP_SW_GSYNC_EN_PRE_SELECT			0x004D08
+> +#define ACP_SW_GSYNC_DP_EN				0x004D0C
 > +
-> +static int __maybe_unused snd_acp_resume(struct device *dev)
-> +{
-> +	return acp_hw_resume(dev);
-> +}
+> +#define ACP_SW0_GLOBAL_CAPABILITIES			0x004E00
+> +#define ACP_SW0_RX_DMA0_RINGBUFADDR			0x004E04
+> +#define ACP_SW0_RX_DMA0_RINGBUFSIZE			0x004E08
+> +#define ACP_SW0_RX_DMA0_FIFOADDR			0x004E0C
+> +#define ACP_SW0_RX_DMA0_FIFOSIZE			0x004E10
+> +#define ACP_SW0_RX_DMA0_BURST_SIZE			0x004E14
+> +#define ACP_SW0_RX_DMA0_LINKPOSITIONCNTR		0x004E18
+> +#define ACP_SW0_RX_DMA0_LINEARPOSITIONCNTR_HIGH		0x004E1C
+> +#define ACP_SW0_RX_DMA0_LINEARPOSITIONCNTR_LOW		0x004E20
+> +#define ACP_SW0_RX_DMA0_INTR_WATERMARK_SIZE		0x004E24
+> +#define ACP_SW0_RX_DMA1_RINGBUFADDR			0x004E28
+> +#define ACP_SW0_RX_DMA1_RINGBUFSIZE			0x004E2C
+> +#define ACP_SW0_RX_DMA1_FIFOADDR			0x004E30
+> +#define ACP_SW0_RX_DMA1_FIFOSIZE			0x004E34
+> +#define ACP_SW0_RX_DMA1_BURST_SIZE			0x004E38
+> +#define ACP_SW0_RX_DMA1_LINKPOSITIONCNTR		0x004E3C
+> +#define ACP_SW0_RX_DMA1_LINEARPOSITIONCNTR_HIGH		0x004E40
+> +#define ACP_SW0_RX_DMA1_LINEARPOSITIONCNTR_LOW		0x004E44
+> +#define ACP_SW0_RX_DMA1_INTR_WATERMARK_SIZE		0x004E48
+> +#define ACP_SW0_RX_DMA2_RINGBUFADDR			0x004E4C
+> +#define ACP_SW0_RX_DMA2_RINGBUFSIZE			0x004E50
+> +#define ACP_SW0_RX_DMA2_FIFOADDR			0x004E54
+> +#define ACP_SW0_RX_DMA2_FIFOSIZE			0x004E58
+> +#define ACP_SW0_RX_DMA2_BURST_SIZE			0x004E5C
+> +#define ACP_SW0_RX_DMA2_LINKPOSITIONCNTR		0x004E60
+> +#define ACP_SW0_RX_DMA2_LINEARPOSITIONCNTR_HIGH		0x004E64
+> +#define ACP_SW0_RX_DMA2_LINEARPOSITIONCNTR_LOW		0x004E68
+> +#define ACP_SW0_RX_DMA2_INTR_WATERMARK_SIZE		0x004E6C
+> +#define ACP_SW0_RX_DMA3_RINGBUFADDR			0x004E70
+> +#define ACP_SW0_RX_DMA3_RINGBUFSIZE			0x004E74
+> +#define ACP_SW0_RX_DMA3_FIFOADDR			0x004E78
+> +#define ACP_SW0_RX_DMA3_FIFOSIZE			0x004E7C
+> +#define ACP_SW0_RX_DMA3_BURST_SIZE			0x004E80
+> +#define ACP_SW0_RX_DMA3_LINKPOSITIONCNTR		0x004E84
+> +#define ACP_SW0_RX_DMA3_LINEARPOSITIONCNTR_HIGH		0x004E88
+> +#define ACP_SW0_RX_DMA3_LINEARPOSITIONCNTR_LOW		0x004E8C
+> +#define ACP_SW0_RX_DMA3_INTR_WATERMARK_SIZE		0x004E90
+> +#define ACP_SW0_RX_DMA4_RINGBUFADDR			0x004E94
+> +#define ACP_SW0_RX_DMA4_RINGBUFSIZE			0x004E98
+> +#define ACP_SW0_RX_DMA4_FIFOADDR			0x004E9C
+> +#define ACP_SW0_RX_DMA4_FIFOSIZE			0x004EA0
+> +#define ACP_SW0_RX_DMA4_BURST_SIZE			0x004EA4
+> +#define ACP_SW0_RX_DMA4_LINKPOSITIONCNTR		0x004EA8
+> +#define ACP_SW0_RX_DMA4_LINEARPOSITIONCNTR_HIGH		0x004EAC
+> +#define ACP_SW0_RX_DMA4_LINEARPOSITIONCNTR_LOW		0x004EB0
+> +#define ACP_SW0_RX_DMA4_INTR_WATERMARK_SIZE		0x004EB4
+> +#define ACP_SW0_RX_DMA5_RINGBUFADDR			0x004EB8
+> +#define ACP_SW0_RX_DMA5_RINGBUFSIZE			0x004EBC
+> +#define ACP_SW0_RX_DMA5_FIFOADDR			0x004EC0
+> +#define ACP_SW0_RX_DMA5_FIFOSIZE			0x004EC4
+> +#define ACP_SW0_RX_DMA5_BURST_SIZE			0x004EC8
+> +#define ACP_SW0_RX_DMA5_LINKPOSITIONCNTR		0x004ECC
+> +#define ACP_SW0_RX_DMA5_LINEARPOSITIONCNTR_HIGH		0x004ED0
+> +#define ACP_SW0_RX_DMA5_LINEARPOSITIONCNTR_LOW		0x004ED4
+> +#define ACP_SW0_RX_DMA5_INTR_WATERMARK_SIZE		0x004ED8
+> +#define ACP_SW0_RX_DMA6_RINGBUFADDR			0x004EDC
+> +#define ACP_SW0_RX_DMA6_RINGBUFSIZE			0x004EE0
+> +#define ACP_SW0_RX_DMA6_FIFOADDR			0x004EE4
+> +#define ACP_SW0_RX_DMA6_FIFOSIZE			0x004EE8
+> +#define ACP_SW0_RX_DMA6_BURST_SIZE			0x004EEC
+> +#define ACP_SW0_RX_DMA6_LINKPOSITIONCNTR		0x004EF0
+> +#define ACP_SW0_RX_DMA6_LINEARPOSITIONCNTR_HIGH		0x004EF4
+> +#define ACP_SW0_RX_DMA6_LINEARPOSITIONCNTR_LOW		0x004EF8
+> +#define ACP_SW0_RX_DMA6_INTR_WATERMARK_SIZE		0x004EFC
+> +#define ACP_SW0_RX_DMA7_RINGBUFADDR			0x004F00
+> +#define ACP_SW0_RX_DMA7_RINGBUFSIZE			0x004F04
+> +#define ACP_SW0_RX_DMA7_FIFOADDR			0x004F08
+> +#define ACP_SW0_RX_DMA7_FIFOSIZE			0x004F0C
+> +#define ACP_SW0_RX_DMA7_BURST_SIZE			0x004F10
+> +#define ACP_SW0_RX_DMA7_LINKPOSITIONCNTR		0x004F14
+> +#define ACP_SW0_RX_DMA7_LINEARPOSITIONCNTR_HIGH		0x004F18
+> +#define ACP_SW0_RX_DMA7_LINEARPOSITIONCNTR_LOW		0x004F1C
+> +#define ACP_SW0_RX_DMA7_INTR_WATERMARK_SIZE		0x004F20
+> +#define ACP_SW0_TX_DMA0_RINGBUFADDR			0x004F24
+> +#define ACP_SW0_TX_DMA0_RINGBUFSIZE			0x004F28
+> +#define ACP_SW0_TX_DMA0_FIFOADDR			0x004F2C
+> +#define ACP_SW0_TX_DMA0_FIFOSIZE			0x004F30
+> +#define ACP_SW0_TX_DMA0_BURST_SIZE			0x004F34
+> +#define ACP_SW0_TX_DMA0_LINKPOSITIONCNTR		0x004F38
+> +#define ACP_SW0_TX_DMA0_LINEARPOSITIONCNTR_HIGH		0x004F3C
+> +#define ACP_SW0_TX_DMA0_LINEARPOSITIONCNTR_LOW		0x004F40
+> +#define ACP_SW0_TX_DMA0_INTR_WATERMARK_SIZE		0x004F44
+> +#define ACP_SW0_TX_DMA1_RINGBUFADDR			0x004F48
+> +#define ACP_SW0_TX_DMA1_RINGBUFSIZE			0x004F4C
+> +#define ACP_SW0_TX_DMA1_FIFOADDR			0x004F50
+> +#define ACP_SW0_TX_DMA1_FIFOSIZE			0x004F54
+> +#define ACP_SW0_TX_DMA1_BURST_SIZE			0x004F58
+> +#define ACP_SW0_TX_DMA1_LINKPOSITIONCNTR		0x004F5C
+> +#define ACP_SW0_TX_DMA1_LINEARPOSITIONCNTR_HIGH		0x004F60
+> +#define ACP_SW0_TX_DMA1_LINEARPOSITIONCNTR_LOW		0x004F64
+> +#define ACP_SW0_TX_DMA1_INTR_WATERMARK_SIZE		0x004F68
+> +#define ACP_SW0_TX_DMA2_RINGBUFADDR			0x004F6C
+> +#define ACP_SW0_TX_DMA2_RINGBUFSIZE			0x004F70
+> +#define ACP_SW0_TX_DMA2_FIFOADDR			0x004F74
+> +#define ACP_SW0_TX_DMA2_FIFOSIZE			0x004F78
+> +#define ACP_SW0_TX_DMA2_BURST_SIZE			0x004F7C
+> +#define ACP_SW0_TX_DMA2_LINKPOSITIONCNTR		0x004F80
+> +#define ACP_SW0_TX_DMA2_LINEARPOSITIONCNTR_HIGH		0x004F84
+> +#define ACP_SW0_TX_DMA2_LINEARPOSITIONCNTR_LOW		0x004F88
+> +#define ACP_SW0_TX_DMA2_INTR_WATERMARK_SIZE		0x004F8C
+> +#define ACP_SW0_TX_DMA3_RINGBUFADDR			0x004F90
+> +#define ACP_SW0_TX_DMA3_RINGBUFSIZE			0x004F94
+> +#define ACP_SW0_TX_DMA3_FIFOADDR			0x004F98
+> +#define ACP_SW0_TX_DMA3_FIFOSIZE			0x004F9C
+> +#define ACP_SW0_TX_DMA3_BURST_SIZE			0x004FA0
+> +#define ACP_SW0_TX_DMA3_LINKPOSITIONCNTR		0x004FA4
+> +#define ACP_SW0_TX_DMA3_LINEARPOSITIONCNTR_HIGH		0x004FA8
+> +#define ACP_SW0_TX_DMA3_LINEARPOSITIONCNTR_LOW		0x004FAC
+> +#define ACP_SW0_TX_DMA3_INTR_WATERMARK_SIZE		0x004FB0
+> +#define ACP_SW0_TX_DMA4_RINGBUFADDR			0x004FB4
+> +#define ACP_SW0_TX_DMA4_RINGBUFSIZE			0x004FB8
+> +#define ACP_SW0_TX_DMA4_FIFOADDR			0x004FBC
+> +#define ACP_SW0_TX_DMA4_FIFOSIZE			0x004FC0
+> +#define ACP_SW0_TX_DMA4_BURST_SIZE			0x004FC4
+> +#define ACP_SW0_TX_DMA4_LINKPOSITIONCNTR		0x004FC8
+> +#define ACP_SW0_TX_DMA4_LINEARPOSITIONCNTR_HIGH		0x004FCC
+> +#define ACP_SW0_TX_DMA4_LINEARPOSITIONCNTR_LOW		0x004FD0
+> +#define ACP_SW0_TX_DMA4_INTR_WATERMARK_SIZE		0x004FD4
+> +#define ACP_SW0_TX_DMA5_RINGBUFADDR			0x004FD8
+> +#define ACP_SW0_TX_DMA5_RINGBUFSIZE			0x004FDC
+> +#define ACP_SW0_TX_DMA5_FIFOADDR			0x004FE0
+> +#define ACP_SW0_TX_DMA5_FIFOSIZE			0x004FE4
+> +#define ACP_SW0_TX_DMA5_BURST_SIZE			0x004FE8
+> +#define ACP_SW0_TX_DMA5_LINKPOSITIONCNTR		0x004FEC
+> +#define ACP_SW0_TX_DMA5_LINEARPOSITIONCNTR_HIGH		0x004FF0
+> +#define ACP_SW0_TX_DMA5_LINEARPOSITIONCNTR_LOW		0x004FF4
+> +#define ACP_SW0_TX_DMA5_INTR_WATERMARK_SIZE		0x004FF8
+> +#define ACP_SW0_TX_DMA6_RINGBUFADDR			0x004FFC
+> +#define ACP_SW0_TX_DMA6_RINGBUFSIZE			0x005000
+> +#define ACP_SW0_TX_DMA6_FIFOADDR			0x005004
+> +#define ACP_SW0_TX_DMA6_FIFOSIZE			0x005008
+> +#define ACP_SW0_TX_DMA6_BURST_SIZE			0x00500C
+> +#define ACP_SW0_TX_DMA6_LINKPOSITIONCNTR		0x005010
+> +#define ACP_SW0_TX_DMA6_LINEARPOSITIONCNTR_HIGH		0x005014
+> +#define ACP_SW0_TX_DMA6_LINEARPOSITIONCNTR_LOW		0x005018
+> +#define ACP_SW0_TX_DMA6_INTR_WATERMARK_SIZE		0x00501C
+> +#define ACP_SW0_TX_DMA7_RINGBUFADDR			0x005020
+> +#define ACP_SW0_TX_DMA7_RINGBUFSIZE			0x005024
+> +#define ACP_SW0_TX_DMA7_FIFOADDR			0x005028
+> +#define ACP_SW0_TX_DMA7_FIFOSIZE			0x00502C
+> +#define ACP_SW0_TX_DMA7_BURST_SIZE			0x005030
+> +#define ACP_SW0_TX_DMA7_LINKPOSITIONCNTR		0x005034
+> +#define ACP_SW0_TX_DMA7_LINEARPOSITIONCNTR_HIGH		0x005038
+> +#define ACP_SW0_TX_DMA7_LINEARPOSITIONCNTR_LOW		0x00503C
+> +#define ACP_SW0_TX_DMA7_INTR_WATERMARK_SIZE		0x005040
+> +#define ACP_SW0_RX_DMA0_POS_TRACK			0x005044
+> +#define ACP_SW0_RX_DMA0_POS				0x005048
+> +#define ACP_SW0_RX_DMA1_POS_TRACK			0x00504C
+> +#define ACP_SW0_RX_DMA1_POS				0x005050
+> +#define ACP_SW0_RX_DMA2_POS_TRACK			0x005054
+> +#define ACP_SW0_RX_DMA2_POS				0x005058
+> +#define ACP_SW0_RX_DMA3_POS_TRACK			0x00505C
+> +#define ACP_SW0_RX_DMA3_POS				0x005060
+> +#define ACP_SW0_RX_DMA4_POS_TRACK			0x005064
+> +#define ACP_SW0_RX_DMA4_POS				0x005068
+> +#define ACP_SW0_RX_DMA5_POS_TRACK			0x00506C
+> +#define ACP_SW0_RX_DMA5_POS				0x005070
+> +#define ACP_SW0_RX_DMA6_POS_TRACK			0x005074
+> +#define ACP_SW0_RX_DMA6_POS				0x005078
+> +#define ACP_SW0_RX_DMA7_POS_TRACK			0x00507C
+> +#define ACP_SW0_RX_DMA7_POS				0x005080
+> +#define ACP_SW0_TX_DMA0_POS_TRACK			0x005084
+> +#define ACP_SW0_TX_DMA0_POS				0x005088
+> +#define ACP_SW0_TX_DMA1_POS_TRACK			0x00508C
+> +#define ACP_SW0_TX_DMA1_POS				0x005090
+> +#define ACP_SW0_TX_DMA2_POS_TRACK			0x005094
+> +#define ACP_SW0_TX_DMA2_POS				0x005098
+> +#define ACP_SW0_TX_DMA3_POS_TRACK			0x00509C
+> +#define ACP_SW0_TX_DMA3_POS				0x0050A0
+> +#define ACP_SW0_TX_DMA4_POS_TRACK			0x0050A4
+> +#define ACP_SW0_TX_DMA4_POS				0x0050A8
+> +#define ACP_SW0_TX_DMA5_POS_TRACK			0x0050AC
+> +#define ACP_SW0_TX_DMA5_POS				0x0050B0
+> +#define ACP_SW0_TX_DMA6_POS_TRACK			0x0050B4
+> +#define ACP_SW0_TX_DMA6_POS				0x0050B8
+> +#define ACP_SW0_TX_DMA7_POS_TRACK			0x0050BC
+> +#define ACP_SW0_TX_DMA7_POS				0x0050C0
+> +#define ACP_SW0_FIFO_ERROR_REASON			0x0050C4
+> +#define ACP_SW0_FIFO_ERROR_INTR_MASK			0x0050C8
+> +#define ACP_SW0_ERROR_REASON1				0x0050CC
+> +#define ACP_SW0_ERROR_INTR_MASK1			0x0050D0
+> +#define ACP_SW0_ERROR_REASON2				0x0050D4
+> +#define ACP_SW0_ERROR_INTR_MASK2			0x0050D8
 > +
-> +static const struct dev_pm_ops acp7x_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(snd_acp_suspend, snd_acp_runtime_resume, NULL)
-> +	SET_SYSTEM_SLEEP_PM_OPS(snd_acp_suspend, snd_acp_resume)
-> +};
+> +#define ACP_SW0_CORB_BASE_ADDRESS			0x005100
+> +#define ACP_SW0_CORB_WRITE_POINTER			0x005104
+> +#define ACP_SW0_CORB_READ_POINTER			0x005108
+> +#define ACP_SW0_CORB_CONTROL				0x00510C
+> +#define ACP_SW0_CORB_SIZE				0x005114
+> +#define ACP_SW0_RIRB_BASE_ADDRESS			0x005118
+> +#define ACP_SW0_RIRB_WRITE_POINTER			0x00511C
+> +#define ACP_SW0_RIRB_RESPONSE_INTERRUPT_COUNT		0x005120
+> +#define ACP_SW0_RIRB_CONTROL				0x005124
+> +#define ACP_SW0_RIRB_SIZE				0x005128
+> +#define ACP_SW0_RIRB_FIFO_MIN_THDL			0x00512C
+> +#define ACP_SW0_IMM_CMD_UPPER_WORD			0x005130
+> +#define ACP_SW0_IMM_CMD_LOWER_QWORD			0x005134
+> +#define ACP_SW0_IMM_RESP_UPPER_WORD			0x005138
+> +#define ACP_SW0_IMM_RESP_LOWER_QWORD			0x00513C
+> +#define ACP_SW0_IMM_CMD_STS				0x005140
+> +#define ACP_SW0_BRA_BASE_ADDRESS			0x005144
+> +#define ACP_SW0_BRA_TRANSFER_SIZE			0x005148
+> +#define ACP_SW0_BRA_DMA_BUSY				0x00514C
+> +#define ACP_SW0_BRA_RESP				0x005150
+> +#define ACP_SW0_BRA_RESP_FRAME_ADDR			0x005154
+> +#define ACP_SW0_BRA_CURRENT_TRANSFER_SIZE		0x005158
+> +#define ACP_SW0_STATE_CHANGE_STATUS_0TO7		0x00515C
+> +#define ACP_SW0_STATE_CHANGE_STATUS_8TO11		0x005160
+> +#define ACP_SW0_STATE_CHANGE_STATUS_MASK_0TO7		0x005164
+> +#define ACP_SW0_STATE_CHANGE_STATUS_MASK_8TO11		0x005168
+> +#define ACP_SW0_CLK_FREQUENCY_CTRL_BANK0		0x00516C
+> +#define ACP_SW0_CLK_FREQUENCY_CTRL_BANK1		0x005170
+> +#define ACP_SW0_ERROR_INTR_MASK				0x005174
+> +#define ACP_SW0_PHY_TEST_MODE_DATA_OFF			0x005178
+> +#define ACP_SW0_DATA_TO_PDM_EN				0x00517C
 > +
->   static void snd_acp7x_remove(struct pci_dev *pci)
->   {
->   	struct acp7x_dev_data *adata;
-> @@ -111,6 +137,8 @@ static void snd_acp7x_remove(struct pci_dev *pci)
->   	ret = acp_hw_deinit(adata, &pci->dev);
->   	if (ret)
->   		dev_err(&pci->dev, "ACP de-init failed\n");
-> +	pm_runtime_forbid(&pci->dev);
-> +	pm_runtime_get_noresume(&pci->dev);
->   	pci_release_regions(pci);
->   	pci_disable_device(pci);
->   }
-> @@ -128,6 +156,9 @@ static struct pci_driver acp7x_pci_driver  = {
->   	.id_table = snd_acp7x_ids,
->   	.probe = snd_acp7x_probe,
->   	.remove = snd_acp7x_remove,
-> +	.driver = {
-> +		.pm = &acp7x_pm_ops,
-> +	}
->   };
->   
->   module_pci_driver(acp7x_pci_driver);
+> +#define ACP_SW0_EN					0x005200
+> +#define ACP_SW0_EN_STATUS				0x005204
+> +#define ACP_SW0_FRAMESIZE_BANK0				0x005208
+> +#define ACP_SW0_FRAMESIZE_BANK1				0x00520C
+> +#define ACP_SW0_SSP_COUNTER				0x005210
+> +#define ACP_SW0_TX_STREAM0_EN				0x005214
+> +#define ACP_SW0_TX_STREAM1_EN				0x005218
+> +#define ACP_SW0_TX_STREAM2_EN				0x00521C
+> +#define ACP_SW0_TX_STREAM3_EN				0x005220
+> +#define ACP_SW0_TX_STREAM4_EN				0x005224
+> +#define ACP_SW0_TX_STREAM5_EN				0x005228
+> +#define ACP_SW0_TX_STREAM6_EN				0x00522C
+> +#define ACP_SW0_TX_STREAM7_EN				0x005230
+> +#define ACP_SW0_TX_STREAM0_EN_STATUS			0x005234
+> +#define ACP_SW0_TX_STREAM1_EN_STATUS			0x005238
+> +#define ACP_SW0_TX_STREAM2_EN_STATUS			0x00523C
+> +#define ACP_SW0_TX_STREAM3_EN_STATUS			0x005240
+> +#define ACP_SW0_TX_STREAM4_EN_STATUS			0x005244
+> +#define ACP_SW0_TX_STREAM5_EN_STATUS			0x005248
+> +#define ACP_SW0_TX_STREAM6_EN_STATUS			0x00524C
+> +#define ACP_SW0_TX_STREAM7_EN_STATUS			0x005250
+> +#define ACP_SW0_TX_DP0_FRAME_FORMAT			0x005254
+> +#define ACP_SW0_TX_DP1_FRAME_FORMAT			0x005258
+> +#define ACP_SW0_TX_DP2_FRAME_FORMAT			0x00525C
+> +#define ACP_SW0_TX_DP3_FRAME_FORMAT			0x005260
+> +#define ACP_SW0_TX_DP4_FRAME_FORMAT			0x005264
+> +#define ACP_SW0_TX_DP5_FRAME_FORMAT			0x005268
+> +#define ACP_SW0_TX_DP6_FRAME_FORMAT			0x00526C
+> +#define ACP_SW0_TX_DP7_FRAME_FORMAT			0x005270
+> +#define ACP_SW0_TX_DP0_0_SAMPLEINTERVAL_BANK0		0x005280
+> +#define ACP_SW0_TX_DP0_0_HCTRL_BANK0			0x005284
+> +#define ACP_SW0_TX_DP0_0_HCTRL_OFFSET_BANK0		0x005288
+> +#define ACP_SW0_TX_DP0_0_LANE_CTRL_BANK0		0x00528C
+> +#define ACP_SW0_TX_DP0_0_CHANNEL_ENABLE_BANK0		0x005290
+> +#define ACP_SW0_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005294
+> +#define ACP_SW0_TX_DP0_0_SAMPLEINTERVAL_BANK1		0x005298
+> +#define ACP_SW0_TX_DP0_0_HCTRL_BANK1			0x00529C
+> +#define ACP_SW0_TX_DP0_0_HCTRL_OFFSET_BANK1		0x0052A0
+> +#define ACP_SW0_TX_DP0_0_LANE_CTRL_BANK1		0x0052A4
+> +#define ACP_SW0_TX_DP0_0_CHANNEL_ENABLE_BANK1		0x0052A8
+> +#define ACP_SW0_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0052AC
+> +#define ACP_SW0_TX_DP0_1_SAMPLEINTERVAL_BANK0		0x0052B0
+> +#define ACP_SW0_TX_DP0_1_HCTRL_BANK0			0x0052B4
+> +#define ACP_SW0_TX_DP0_1_HCTRL_OFFSET_BANK0		0x0052B8
+> +#define ACP_SW0_TX_DP0_1_LANE_CTRL_BANK0		0x0052BC
+> +#define ACP_SW0_TX_DP0_1_CHANNEL_ENABLE_BANK0		0x0052C0
+> +#define ACP_SW0_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0052C4
+> +#define ACP_SW0_TX_DP0_1_SAMPLEINTERVAL_BANK1		0x0052C8
+> +#define ACP_SW0_TX_DP0_1_HCTRL_BANK1			0x0052CC
+> +#define ACP_SW0_TX_DP0_1_HCTRL_OFFSET_BANK1		0x0052D0
+> +#define ACP_SW0_TX_DP0_1_LANE_CTRL_BANK1		0x0052D4
+> +#define ACP_SW0_TX_DP0_1_CHANNEL_ENABLE_BANK1		0x0052D8
+> +#define ACP_SW0_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0052DC
+> +#define ACP_SW0_TX_DP0_2_SAMPLEINTERVAL_BANK0		0x0052E0
+> +#define ACP_SW0_TX_DP0_2_HCTRL_BANK0			0x0052E4
+> +#define ACP_SW0_TX_DP0_2_HCTRL_OFFSET_BANK0		0x0052E8
+> +#define ACP_SW0_TX_DP0_2_LANE_CTRL_BANK0		0x0052EC
+> +#define ACP_SW0_TX_DP0_2_CHANNEL_ENABLE_BANK0		0x0052F0
+> +#define ACP_SW0_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0052F4
+> +#define ACP_SW0_TX_DP0_2_SAMPLEINTERVAL_BANK1		0x0052F8
+> +#define ACP_SW0_TX_DP0_2_HCTRL_BANK1			0x0052FC
+> +#define ACP_SW0_TX_DP0_2_HCTRL_OFFSET_BANK1		0x005300
+> +#define ACP_SW0_TX_DP0_2_LANE_CTRL_BANK1		0x005304
+> +#define ACP_SW0_TX_DP0_2_CHANNEL_ENABLE_BANK1		0x005308
+> +#define ACP_SW0_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00530C
+> +#define ACP_SW0_TX_DP0_3_SAMPLEINTERVAL_BANK0		0x005310
+> +#define ACP_SW0_TX_DP0_3_HCTRL_BANK0			0x005314
+> +#define ACP_SW0_TX_DP0_3_HCTRL_OFFSET_BANK0		0x005318
+> +#define ACP_SW0_TX_DP0_3_LANE_CTRL_BANK0		0x00531C
+> +#define ACP_SW0_TX_DP0_3_CHANNEL_ENABLE_BANK0		0x005320
+> +#define ACP_SW0_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005324
+> +#define ACP_SW0_TX_DP0_3_SAMPLEINTERVAL_BANK1		0x005328
+> +#define ACP_SW0_TX_DP0_3_HCTRL_BANK1			0x00532C
+> +#define ACP_SW0_TX_DP0_3_HCTRL_OFFSET_BANK1		0x005330
+> +#define ACP_SW0_TX_DP0_3_LANE_CTRL_BANK1		0x005334
+> +#define ACP_SW0_TX_DP0_3_CHANNEL_ENABLE_BANK1		0x005338
+> +#define ACP_SW0_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00533C
+> +#define ACP_SW0_TX_DP1_SAMPLEINTERVAL_BANK0		0x005370
+> +#define ACP_SW0_TX_DP1_HCTRL_BANK0			0x005374
+> +#define ACP_SW0_TX_DP1_HCTRL_OFFSET_BANK0		0x005378
+> +#define ACP_SW0_TX_DP1_LANE_CTRL_BANK0			0x00537C
+> +#define ACP_SW0_TX_DP1_CHANNEL_ENABLE_BANK0		0x005380
+> +#define ACP_SW0_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005384
+> +#define ACP_SW0_TX_DP1_SAMPLEINTERVAL_BANK1		0x005388
+> +#define ACP_SW0_TX_DP1_HCTRL_BANK1			0x00538C
+> +#define ACP_SW0_TX_DP1_HCTRL_OFFSET_BANK1		0x005390
+> +#define ACP_SW0_TX_DP1_LANE_CTRL_BANK1			0x005394
+> +#define ACP_SW0_TX_DP1_CHANNEL_ENABLE_BANK1		0x005398
+> +#define ACP_SW0_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00539C
+> +#define ACP_SW0_TX_DP2_SAMPLEINTERVAL_BANK0		0x0053A0
+> +#define ACP_SW0_TX_DP2_HCTRL_BANK0			0x0053A4
+> +#define ACP_SW0_TX_DP2_HCTRL_OFFSET_BANK0		0x0053A8
+> +#define ACP_SW0_TX_DP2_LANE_CTRL_BANK0			0x0053AC
+> +#define ACP_SW0_TX_DP2_CHANNEL_ENABLE_BANK0		0x0053B0
+> +#define ACP_SW0_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0053B4
+> +#define ACP_SW0_TX_DP2_SAMPLEINTERVAL_BANK1		0x0053B8
+> +#define ACP_SW0_TX_DP2_HCTRL_BANK1			0x0053BC
+> +#define ACP_SW0_TX_DP2_HCTRL_OFFSET_BANK1		0x0053C0
+> +#define ACP_SW0_TX_DP2_LANE_CTRL_BANK1			0x0053C4
+> +#define ACP_SW0_TX_DP2_CHANNEL_ENABLE_BANK1		0x0053C8
+> +#define ACP_SW0_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0053CC
+> +#define ACP_SW0_TX_DP3_SAMPLEINTERVAL_BANK0		0x0053D0
+> +#define ACP_SW0_TX_DP3_HCTRL_BANK0			0x0053D4
+> +#define ACP_SW0_TX_DP3_HCTRL_OFFSET_BANK0		0x0053D8
+> +#define ACP_SW0_TX_DP3_LANE_CTRL_BANK0			0x0053DC
+> +#define ACP_SW0_TX_DP3_CHANNEL_ENABLE_BANK0		0x0053E0
+> +#define ACP_SW0_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0053E4
+> +#define ACP_SW0_TX_DP3_SAMPLEINTERVAL_BANK1		0x0053E8
+> +#define ACP_SW0_TX_DP3_HCTRL_BANK1			0x0053EC
+> +#define ACP_SW0_TX_DP3_HCTRL_OFFSET_BANK1		0x0053F0
+> +#define ACP_SW0_TX_DP3_LANE_CTRL_BANK1			0x0053F4
+> +#define ACP_SW0_TX_DP3_CHANNEL_ENABLE_BANK1		0x0053F8
+> +#define ACP_SW0_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0053FC
+> +#define ACP_SW0_TX_DP4_SAMPLEINTERVAL_BANK0		0x005400
+> +#define ACP_SW0_TX_DP4_HCTRL_BANK0			0x005404
+> +#define ACP_SW0_TX_DP4_HCTRL_OFFSET_BANK0		0x005408
+> +#define ACP_SW0_TX_DP4_LANE_CTRL_BANK0			0x00540C
+> +#define ACP_SW0_TX_DP4_CHANNEL_ENABLE_BANK0		0x005410
+> +#define ACP_SW0_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005414
+> +#define ACP_SW0_TX_DP4_SAMPLEINTERVAL_BANK1		0x005418
+> +#define ACP_SW0_TX_DP4_HCTRL_BANK1			0x00541C
+> +#define ACP_SW0_TX_DP4_HCTRL_OFFSET_BANK1		0x005420
+> +#define ACP_SW0_TX_DP4_LANE_CTRL_BANK1			0x005424
+> +#define ACP_SW0_TX_DP4_CHANNEL_ENABLE_BANK1		0x005428
+> +#define ACP_SW0_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00542C
+> +#define ACP_SW0_TX_DP5_SAMPLEINTERVAL_BANK0		0x005430
+> +#define ACP_SW0_TX_DP5_HCTRL_BANK0			0x005434
+> +#define ACP_SW0_TX_DP5_HCTRL_OFFSET_BANK0		0x005438
+> +#define ACP_SW0_TX_DP5_LANE_CTRL_BANK0			0x00543C
+> +#define ACP_SW0_TX_DP5_CHANNEL_ENABLE_BANK0		0x005440
+> +#define ACP_SW0_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005444
+> +#define ACP_SW0_TX_DP5_SAMPLEINTERVAL_BANK1		0x005448
+> +#define ACP_SW0_TX_DP5_HCTRL_BANK1			0x00544C
+> +#define ACP_SW0_TX_DP5_HCTRL_OFFSET_BANK1		0x005450
+> +#define ACP_SW0_TX_DP5_LANE_CTRL_BANK1			0x005454
+> +#define ACP_SW0_TX_DP5_CHANNEL_ENABLE_BANK1		0x005458
+> +#define ACP_SW0_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00545C
+> +#define ACP_SW0_TX_DP6_SAMPLEINTERVAL_BANK0		0x005460
+> +#define ACP_SW0_TX_DP6_HCTRL_BANK0			0x005464
+> +#define ACP_SW0_TX_DP6_HCTRL_OFFSET_BANK0		0x005468
+> +#define ACP_SW0_TX_DP6_LANE_CTRL_BANK0			0x00546C
+> +#define ACP_SW0_TX_DP6_CHANNEL_ENABLE_BANK0		0x005470
+> +#define ACP_SW0_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005474
+> +#define ACP_SW0_TX_DP6_SAMPLEINTERVAL_BANK1		0x005478
+> +#define ACP_SW0_TX_DP6_HCTRL_BANK1			0x00547C
+> +#define ACP_SW0_TX_DP6_HCTRL_OFFSET_BANK1		0x005480
+> +#define ACP_SW0_TX_DP6_LANE_CTRL_BANK1			0x005484
+> +#define ACP_SW0_TX_DP6_CHANNEL_ENABLE_BANK1		0x005488
+> +#define ACP_SW0_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00548C
+> +#define ACP_SW0_TX_DP7_SAMPLEINTERVAL_BANK0		0x005490
+> +#define ACP_SW0_TX_DP7_HCTRL_BANK0			0x005494
+> +#define ACP_SW0_TX_DP7_HCTRL_OFFSET_BANK0		0x005498
+> +#define ACP_SW0_TX_DP7_LANE_CTRL_BANK0			0x00549C
+> +#define ACP_SW0_TX_DP7_CHANNEL_ENABLE_BANK0		0x0054A0
+> +#define ACP_SW0_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0054A4
+> +#define ACP_SW0_TX_DP7_SAMPLEINTERVAL_BANK1		0x0054A8
+> +#define ACP_SW0_TX_DP7_HCTRL_BANK1			0x0054AC
+> +#define ACP_SW0_TX_DP7_HCTRL_OFFSET_BANK1		0x0054B0
+> +#define ACP_SW0_TX_DP7_LANE_CTRL_BANK1			0x0054B4
+> +#define ACP_SW0_TX_DP7_CHANNEL_ENABLE_BANK1		0x0054B8
+> +#define ACP_SW0_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0054BC
+> +#define ACP_SW0_RX_STREAM0_EN				0x005514
+> +#define ACP_SW0_RX_STREAM1_EN				0x005518
+> +#define ACP_SW0_RX_STREAM2_EN				0x00551C
+> +#define ACP_SW0_RX_STREAM3_EN				0x005520
+> +#define ACP_SW0_RX_STREAM4_EN				0x005524
+> +#define ACP_SW0_RX_STREAM5_EN				0x005528
+> +#define ACP_SW0_RX_STREAM6_EN				0x00552C
+> +#define ACP_SW0_RX_STREAM7_EN				0x005530
+> +#define ACP_SW0_RX_STREAM0_EN_STATUS			0x005534
+> +#define ACP_SW0_RX_STREAM1_EN_STATUS			0x005538
+> +#define ACP_SW0_RX_STREAM2_EN_STATUS			0x00553C
+> +#define ACP_SW0_RX_STREAM3_EN_STATUS			0x005540
+> +#define ACP_SW0_RX_STREAM4_EN_STATUS			0x005544
+> +#define ACP_SW0_RX_STREAM5_EN_STATUS			0x005548
+> +#define ACP_SW0_RX_STREAM6_EN_STATUS			0x00554C
+> +#define ACP_SW0_RX_STREAM7_EN_STATUS			0x005550
+> +#define ACP_SW0_RX_DP0_FRAME_FORMAT			0x005554
+> +#define ACP_SW0_RX_DP1_FRAME_FORMAT			0x005558
+> +#define ACP_SW0_RX_DP2_FRAME_FORMAT			0x00555C
+> +#define ACP_SW0_RX_DP3_FRAME_FORMAT			0x005560
+> +#define ACP_SW0_RX_DP4_FRAME_FORMAT			0x005564
+> +#define ACP_SW0_RX_DP5_FRAME_FORMAT			0x005568
+> +#define ACP_SW0_RX_DP6_FRAME_FORMAT			0x00556C
+> +#define ACP_SW0_RX_DP7_FRAME_FORMAT			0x005570
+> +#define ACP_SW0_RX_DP0_0_SAMPLEINTERVAL_BANK0		0x005580
+> +#define ACP_SW0_RX_DP0_0_HCTRL_BANK0			0x005584
+> +#define ACP_SW0_RX_DP0_0_HCTRL_OFFSET_BANK0		0x005588
+> +#define ACP_SW0_RX_DP0_0_LANE_CTRL_BANK0		0x00558C
+> +#define ACP_SW0_RX_DP0_0_CHANNEL_ENABLE_BANK0		0x005590
+> +#define ACP_SW0_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005594
+> +#define ACP_SW0_RX_DP0_0_SAMPLEINTERVAL_BANK1		0x005598
+> +#define ACP_SW0_RX_DP0_0_HCTRL_BANK1			0x00559C
+> +#define ACP_SW0_RX_DP0_0_HCTRL_OFFSET_BANK1		0x0055A0
+> +#define ACP_SW0_RX_DP0_0_LANE_CTRL_BANK1		0x0055A4
+> +#define ACP_SW0_RX_DP0_0_CHANNEL_ENABLE_BANK1		0x0055A8
+> +#define ACP_SW0_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0055AC
+> +#define ACP_SW0_RX_DP0_1_SAMPLEINTERVAL_BANK0		0x0055B0
+> +#define ACP_SW0_RX_DP0_1_HCTRL_BANK0			0x0055B4
+> +#define ACP_SW0_RX_DP0_1_HCTRL_OFFSET_BANK0		0x0055B8
+> +#define ACP_SW0_RX_DP0_1_LANE_CTRL_BANK0		0x0055BC
+> +#define ACP_SW0_RX_DP0_1_CHANNEL_ENABLE_BANK0		0x0055C0
+> +#define ACP_SW0_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0055C4
+> +#define ACP_SW0_RX_DP0_1_SAMPLEINTERVAL_BANK1		0x0055C8
+> +#define ACP_SW0_RX_DP0_1_HCTRL_BANK1			0x0055CC
+> +#define ACP_SW0_RX_DP0_1_HCTRL_OFFSET_BANK1		0x0055D0
+> +#define ACP_SW0_RX_DP0_1_LANE_CTRL_BANK1		0x0055D4
+> +#define ACP_SW0_RX_DP0_1_CHANNEL_ENABLE_BANK1		0x0055D8
+> +#define ACP_SW0_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0055DC
+> +#define ACP_SW0_RX_DP0_2_SAMPLEINTERVAL_BANK0		0x0055E0
+> +#define ACP_SW0_RX_DP0_2_HCTRL_BANK0			0x0055E4
+> +#define ACP_SW0_RX_DP0_2_HCTRL_OFFSET_BANK0		0x0055E8
+> +#define ACP_SW0_RX_DP0_2_LANE_CTRL_BANK0		0x0055EC
+> +#define ACP_SW0_RX_DP0_2_CHANNEL_ENABLE_BANK0		0x0055F0
+> +#define ACP_SW0_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0055F4
+> +#define ACP_SW0_RX_DP0_2_SAMPLEINTERVAL_BANK1		0x0055F8
+> +#define ACP_SW0_RX_DP0_2_HCTRL_BANK1			0x0055FC
+> +#define ACP_SW0_RX_DP0_2_HCTRL_OFFSET_BANK1		0x005600
+> +#define ACP_SW0_RX_DP0_2_LANE_CTRL_BANK1		0x005604
+> +#define ACP_SW0_RX_DP0_2_CHANNEL_ENABLE_BANK1		0x005608
+> +#define ACP_SW0_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00560C
+> +#define ACP_SW0_RX_DP0_3_SAMPLEINTERVAL_BANK0		0x005610
+> +#define ACP_SW0_RX_DP0_3_HCTRL_BANK0			0x005614
+> +#define ACP_SW0_RX_DP0_3_HCTRL_OFFSET_BANK0		0x005618
+> +#define ACP_SW0_RX_DP0_3_LANE_CTRL_BANK0		0x00561C
+> +#define ACP_SW0_RX_DP0_3_CHANNEL_ENABLE_BANK0		0x005620
+> +#define ACP_SW0_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005624
+> +#define ACP_SW0_RX_DP0_3_SAMPLEINTERVAL_BANK1		0x005628
+> +#define ACP_SW0_RX_DP0_3_HCTRL_BANK1			0x00562C
+> +#define ACP_SW0_RX_DP0_3_HCTRL_OFFSET_BANK1		0x005630
+> +#define ACP_SW0_RX_DP0_3_LANE_CTRL_BANK1		0x005634
+> +#define ACP_SW0_RX_DP0_3_CHANNEL_ENABLE_BANK1		0x005638
+> +#define ACP_SW0_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00563C
+> +#define ACP_SW0_RX_DP1_SAMPLEINTERVAL_BANK0		0x005670
+> +#define ACP_SW0_RX_DP1_HCTRL_BANK0			0x005674
+> +#define ACP_SW0_RX_DP1_HCTRL_OFFSET_BANK0		0x005678
+> +#define ACP_SW0_RX_DP1_LANE_CTRL_BANK0			0x00567C
+> +#define ACP_SW0_RX_DP1_CHANNEL_ENABLE_BANK0		0x005680
+> +#define ACP_SW0_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005684
+> +#define ACP_SW0_RX_DP1_SAMPLEINTERVAL_BANK1		0x005688
+> +#define ACP_SW0_RX_DP1_HCTRL_BANK1			0x00568C
+> +#define ACP_SW0_RX_DP1_HCTRL_OFFSET_BANK1		0x005690
+> +#define ACP_SW0_RX_DP1_LANE_CTRL_BANK1			0x005694
+> +#define ACP_SW0_RX_DP1_CHANNEL_ENABLE_BANK1		0x005698
+> +#define ACP_SW0_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00569C
+> +#define ACP_SW0_RX_DP2_SAMPLEINTERVAL_BANK0		0x0056A0
+> +#define ACP_SW0_RX_DP2_HCTRL_BANK0			0x0056A4
+> +#define ACP_SW0_RX_DP2_HCTRL_OFFSET_BANK0		0x0056A8
+> +#define ACP_SW0_RX_DP2_LANE_CTRL_BANK0			0x0056AC
+> +#define ACP_SW0_RX_DP2_CHANNEL_ENABLE_BANK0		0x0056B0
+> +#define ACP_SW0_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0056B4
+> +#define ACP_SW0_RX_DP2_SAMPLEINTERVAL_BANK1		0x0056B8
+> +#define ACP_SW0_RX_DP2_HCTRL_BANK1			0x0056BC
+> +#define ACP_SW0_RX_DP2_HCTRL_OFFSET_BANK1		0x0056C0
+> +#define ACP_SW0_RX_DP2_LANE_CTRL_BANK1			0x0056C4
+> +#define ACP_SW0_RX_DP2_CHANNEL_ENABLE_BANK1		0x0056C8
+> +#define ACP_SW0_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0056CC
+> +#define ACP_SW0_RX_DP3_SAMPLEINTERVAL_BANK0		0x0056D0
+> +#define ACP_SW0_RX_DP3_HCTRL_BANK0			0x0056D4
+> +#define ACP_SW0_RX_DP3_HCTRL_OFFSET_BANK0		0x0056D8
+> +#define ACP_SW0_RX_DP3_LANE_CTRL_BANK0			0x0056DC
+> +#define ACP_SW0_RX_DP3_CHANNEL_ENABLE_BANK0		0x0056E0
+> +#define ACP_SW0_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0056E4
+> +#define ACP_SW0_RX_DP3_SAMPLEINTERVAL_BANK1		0x0056E8
+> +#define ACP_SW0_RX_DP3_HCTRL_BANK1			0x0056EC
+> +#define ACP_SW0_RX_DP3_HCTRL_OFFSET_BANK1		0x0056F0
+> +#define ACP_SW0_RX_DP3_LANE_CTRL_BANK1			0x0056F4
+> +#define ACP_SW0_RX_DP3_CHANNEL_ENABLE_BANK1		0x0056F8
+> +#define ACP_SW0_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0056FC
+> +#define ACP_SW0_RX_DP4_SAMPLEINTERVAL_BANK0		0x005700
+> +#define ACP_SW0_RX_DP4_HCTRL_BANK0			0x005704
+> +#define ACP_SW0_RX_DP4_HCTRL_OFFSET_BANK0		0x005708
+> +#define ACP_SW0_RX_DP4_LANE_CTRL_BANK0			0x00570C
+> +#define ACP_SW0_RX_DP4_CHANNEL_ENABLE_BANK0		0x005710
+> +#define ACP_SW0_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005714
+> +#define ACP_SW0_RX_DP4_SAMPLEINTERVAL_BANK1		0x005718
+> +#define ACP_SW0_RX_DP4_HCTRL_BANK1			0x00571C
+> +#define ACP_SW0_RX_DP4_HCTRL_OFFSET_BANK1		0x005720
+> +#define ACP_SW0_RX_DP4_LANE_CTRL_BANK1			0x005724
+> +#define ACP_SW0_RX_DP4_CHANNEL_ENABLE_BANK1		0x005728
+> +#define ACP_SW0_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00572C
+> +#define ACP_SW0_RX_DP5_SAMPLEINTERVAL_BANK0		0x005730
+> +#define ACP_SW0_RX_DP5_HCTRL_BANK0			0x005734
+> +#define ACP_SW0_RX_DP5_HCTRL_OFFSET_BANK0		0x005738
+> +#define ACP_SW0_RX_DP5_LANE_CTRL_BANK0			0x00573C
+> +#define ACP_SW0_RX_DP5_CHANNEL_ENABLE_BANK0		0x005740
+> +#define ACP_SW0_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005744
+> +#define ACP_SW0_RX_DP5_SAMPLEINTERVAL_BANK1		0x005748
+> +#define ACP_SW0_RX_DP5_HCTRL_BANK1			0x00574C
+> +#define ACP_SW0_RX_DP5_HCTRL_OFFSET_BANK1		0x005750
+> +#define ACP_SW0_RX_DP5_LANE_CTRL_BANK1			0x005754
+> +#define ACP_SW0_RX_DP5_CHANNEL_ENABLE_BANK1		0x005758
+> +#define ACP_SW0_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00575C
+> +#define ACP_SW0_RX_DP6_SAMPLEINTERVAL_BANK0		0x005760
+> +#define ACP_SW0_RX_DP6_HCTRL_BANK0			0x005764
+> +#define ACP_SW0_RX_DP6_HCTRL_OFFSET_BANK0		0x005768
+> +#define ACP_SW0_RX_DP6_LANE_CTRL_BANK0			0x00576C
+> +#define ACP_SW0_RX_DP6_CHANNEL_ENABLE_BANK0		0x005770
+> +#define ACP_SW0_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x005774
+> +#define ACP_SW0_RX_DP6_SAMPLEINTERVAL_BANK1		0x005778
+> +#define ACP_SW0_RX_DP6_HCTRL_BANK1			0x00577C
+> +#define ACP_SW0_RX_DP6_HCTRL_OFFSET_BANK1		0x005780
+> +#define ACP_SW0_RX_DP6_LANE_CTRL_BANK1			0x005784
+> +#define ACP_SW0_RX_DP6_CHANNEL_ENABLE_BANK1		0x005788
+> +#define ACP_SW0_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00578C
+> +#define ACP_SW0_RX_DP7_SAMPLEINTERVAL_BANK0		0x005790
+> +#define ACP_SW0_RX_DP7_HCTRL_BANK0			0x005794
+> +#define ACP_SW0_RX_DP7_HCTRL_OFFSET_BANK0		0x005798
+> +#define ACP_SW0_RX_DP7_LANE_CTRL_BANK0			0x00579C
+> +#define ACP_SW0_RX_DP7_CHANNEL_ENABLE_BANK0		0x0057A0
+> +#define ACP_SW0_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0057A4
+> +#define ACP_SW0_RX_DP7_SAMPLEINTERVAL_BANK1		0x0057A8
+> +#define ACP_SW0_RX_DP7_HCTRL_BANK1			0x0057AC
+> +#define ACP_SW0_RX_DP7_HCTRL_OFFSET_BANK1		0x0057B0
+> +#define ACP_SW0_RX_DP7_LANE_CTRL_BANK1			0x0057B4
+> +#define ACP_SW0_RX_DP7_CHANNEL_ENABLE_BANK1		0x0057B8
+> +#define ACP_SW0_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0057BC
+> +#define ACP_SW0_BPT_PORT_EN				0x0057C0
+> +#define ACP_SW0_BPT_PORT_EN_STATUS			0x0057C4
+> +#define ACP_SW0_BPT_PORT_FRAME_FORMAT			0x0057C8
+> +#define ACP_SW0_BPT_PORT_SAMPLEINTERVAL_BANK0		0x0057CC
+> +#define ACP_SW0_BPT_PORT_HCTRL_BANK0			0x0057D0
+> +#define ACP_SW0_BPT_PORT_OFFSET_BANK0			0x0057D4
+> +#define ACP_SW0_BPT_PORT_LANE_SELECT_BANK0		0x0057D8
+> +#define ACP_SW0_BPT_PORT_CHANNEL_ENABLE_BANK0		0x0057DC
+> +#define ACP_SW0_BPT_PORT_SAMPLEINTERVAL_BANK1		0x0057E0
+> +#define ACP_SW0_BPT_PORT_HCTRL_BANK1			0x0057E4
+> +#define ACP_SW0_BPT_PORT_OFFSET_BANK1			0x0057E8
+> +#define ACP_SW0_BPT_PORT_LANE_SELECT_BANK1		0x0057EC
+> +#define ACP_SW0_BPT_PORT_CHANNEL_ENABLE_BANK1		0x0057F0
+> +#define ACP_SW0_BPT_PORT_FIRST_BYTE_ADDR		0x0057F4
+> +#define ACP_SW0_CLK_RESUME_CTRL				0x0057F8
+> +#define ACP_SW0_CLK_RESUME_DELAY_CNTR			0x0057FC
+> +#define ACP_SW0_BUS_RESET_CTRL				0x005800
+> +#define ACP_SW0_PRBS_ERR_STATUS				0x005804
+> +#define ACP_SW0_WALLCLK_MISC				0x005808
+> +#define ACP_SW0_WALL_CLK_COUNTER			0x00580C
+> +#define ACP_SW0_PING_STATUS_REGISTER_LOW		0x005810
+> +#define ACP_SW0_PING_STATUS_REGISTER_HIGH		0x005814
+> +#define ACP_SW0_PING_STATUS_CURRENT_BANK_SEL		0x005818
+> +#define ACP_SW0_TZD_CHANGE				0x00581C
+> +#define ACP_SW0_WALLCLK_INTR_CNTL			0x005820
+> +
+> +#define ACP_SW1_GLOBAL_CAPABILITIES			0x006E00
+> +#define ACP_SW1_RX_DMA0_RINGBUFADDR			0x006E04
+> +#define ACP_SW1_RX_DMA0_RINGBUFSIZE			0x006E08
+> +#define ACP_SW1_RX_DMA0_FIFOADDR			0x006E0C
+> +#define ACP_SW1_RX_DMA0_FIFOSIZE			0x006E10
+> +#define ACP_SW1_RX_DMA0_BURST_SIZE			0x006E14
+> +#define ACP_SW1_RX_DMA0_LINKPOSITIONCNTR		0x006E18
+> +#define ACP_SW1_RX_DMA0_LINEARPOSITIONCNTR_HIGH		0x006E1C
+> +#define ACP_SW1_RX_DMA0_LINEARPOSITIONCNTR_LOW		0x006E20
+> +#define ACP_SW1_RX_DMA0_INTR_WATERMARK_SIZE		0x006E24
+> +#define ACP_SW1_RX_DMA1_RINGBUFADDR			0x006E28
+> +#define ACP_SW1_RX_DMA1_RINGBUFSIZE			0x006E2C
+> +#define ACP_SW1_RX_DMA1_FIFOADDR			0x006E30
+> +#define ACP_SW1_RX_DMA1_FIFOSIZE			0x006E34
+> +#define ACP_SW1_RX_DMA1_BURST_SIZE			0x006E38
+> +#define ACP_SW1_RX_DMA1_LINKPOSITIONCNTR		0x006E3C
+> +#define ACP_SW1_RX_DMA1_LINEARPOSITIONCNTR_HIGH		0x006E40
+> +#define ACP_SW1_RX_DMA1_LINEARPOSITIONCNTR_LOW		0x006E44
+> +#define ACP_SW1_RX_DMA1_INTR_WATERMARK_SIZE		0x006E48
+> +#define ACP_SW1_RX_DMA2_RINGBUFADDR			0x006E4C
+> +#define ACP_SW1_RX_DMA2_RINGBUFSIZE			0x006E50
+> +#define ACP_SW1_RX_DMA2_FIFOADDR			0x006E54
+> +#define ACP_SW1_RX_DMA2_FIFOSIZE			0x006E58
+> +#define ACP_SW1_RX_DMA2_BURST_SIZE			0x006E5C
+> +#define ACP_SW1_RX_DMA2_LINKPOSITIONCNTR		0x006E60
+> +#define ACP_SW1_RX_DMA2_LINEARPOSITIONCNTR_HIGH		0x006E64
+> +#define ACP_SW1_RX_DMA2_LINEARPOSITIONCNTR_LOW		0x006E68
+> +#define ACP_SW1_RX_DMA2_INTR_WATERMARK_SIZE		0x006E6C
+> +#define ACP_SW1_RX_DMA3_RINGBUFADDR			0x006E70
+> +#define ACP_SW1_RX_DMA3_RINGBUFSIZE			0x006E74
+> +#define ACP_SW1_RX_DMA3_FIFOADDR			0x006E78
+> +#define ACP_SW1_RX_DMA3_FIFOSIZE			0x006E7C
+> +#define ACP_SW1_RX_DMA3_BURST_SIZE			0x006E80
+> +#define ACP_SW1_RX_DMA3_LINKPOSITIONCNTR		0x006E84
+> +#define ACP_SW1_RX_DMA3_LINEARPOSITIONCNTR_HIGH		0x006E88
+> +#define ACP_SW1_RX_DMA3_LINEARPOSITIONCNTR_LOW		0x006E8C
+> +#define ACP_SW1_RX_DMA3_INTR_WATERMARK_SIZE		0x006E90
+> +#define ACP_SW1_RX_DMA4_RINGBUFADDR			0x006E94
+> +#define ACP_SW1_RX_DMA4_RINGBUFSIZE			0x006E98
+> +#define ACP_SW1_RX_DMA4_FIFOADDR			0x006E9C
+> +#define ACP_SW1_RX_DMA4_FIFOSIZE			0x006EA0
+> +#define ACP_SW1_RX_DMA4_BURST_SIZE			0x006EA4
+> +#define ACP_SW1_RX_DMA4_LINKPOSITIONCNTR		0x006EA8
+> +#define ACP_SW1_RX_DMA4_LINEARPOSITIONCNTR_HIGH		0x006EAC
+> +#define ACP_SW1_RX_DMA4_LINEARPOSITIONCNTR_LOW		0x006EB0
+> +#define ACP_SW1_RX_DMA4_INTR_WATERMARK_SIZE		0x006EB4
+> +#define ACP_SW1_RX_DMA5_RINGBUFADDR			0x006EB8
+> +#define ACP_SW1_RX_DMA5_RINGBUFSIZE			0x006EBC
+> +#define ACP_SW1_RX_DMA5_FIFOADDR			0x006EC0
+> +#define ACP_SW1_RX_DMA5_FIFOSIZE			0x006EC4
+> +#define ACP_SW1_RX_DMA5_BURST_SIZE			0x006EC8
+> +#define ACP_SW1_RX_DMA5_LINKPOSITIONCNTR		0x006ECC
+> +#define ACP_SW1_RX_DMA5_LINEARPOSITIONCNTR_HIGH		0x006ED0
+> +#define ACP_SW1_RX_DMA5_LINEARPOSITIONCNTR_LOW		0x006ED4
+> +#define ACP_SW1_RX_DMA5_INTR_WATERMARK_SIZE		0x006ED8
+> +#define ACP_SW1_RX_DMA6_RINGBUFADDR			0x006EDC
+> +#define ACP_SW1_RX_DMA6_RINGBUFSIZE			0x006EE0
+> +#define ACP_SW1_RX_DMA6_FIFOADDR			0x006EE4
+> +#define ACP_SW1_RX_DMA6_FIFOSIZE			0x006EE8
+> +#define ACP_SW1_RX_DMA6_BURST_SIZE			0x006EEC
+> +#define ACP_SW1_RX_DMA6_LINKPOSITIONCNTR		0x006EF0
+> +#define ACP_SW1_RX_DMA6_LINEARPOSITIONCNTR_HIGH		0x006EF4
+> +#define ACP_SW1_RX_DMA6_LINEARPOSITIONCNTR_LOW		0x006EF8
+> +#define ACP_SW1_RX_DMA6_INTR_WATERMARK_SIZE		0x006EFC
+> +#define ACP_SW1_RX_DMA7_RINGBUFADDR			0x006F00
+> +#define ACP_SW1_RX_DMA7_RINGBUFSIZE			0x006F04
+> +#define ACP_SW1_RX_DMA7_FIFOADDR			0x006F08
+> +#define ACP_SW1_RX_DMA7_FIFOSIZE			0x006F0C
+> +#define ACP_SW1_RX_DMA7_BURST_SIZE			0x006F10
+> +#define ACP_SW1_RX_DMA7_LINKPOSITIONCNTR		0x006F14
+> +#define ACP_SW1_RX_DMA7_LINEARPOSITIONCNTR_HIGH		0x006F18
+> +#define ACP_SW1_RX_DMA7_LINEARPOSITIONCNTR_LOW		0x006F1C
+> +#define ACP_SW1_RX_DMA7_INTR_WATERMARK_SIZE		0x006F20
+> +#define ACP_SW1_TX_DMA0_RINGBUFADDR			0x006F24
+> +#define ACP_SW1_TX_DMA0_RINGBUFSIZE			0x006F28
+> +#define ACP_SW1_TX_DMA0_FIFOADDR			0x006F2C
+> +#define ACP_SW1_TX_DMA0_FIFOSIZE			0x006F30
+> +#define ACP_SW1_TX_DMA0_BURST_SIZE			0x006F34
+> +#define ACP_SW1_TX_DMA0_LINKPOSITIONCNTR		0x006F38
+> +#define ACP_SW1_TX_DMA0_LINEARPOSITIONCNTR_HIGH		0x006F3C
+> +#define ACP_SW1_TX_DMA0_LINEARPOSITIONCNTR_LOW		0x006F40
+> +#define ACP_SW1_TX_DMA0_INTR_WATERMARK_SIZE		0x006F44
+> +#define ACP_SW1_TX_DMA1_RINGBUFADDR			0x006F48
+> +#define ACP_SW1_TX_DMA1_RINGBUFSIZE			0x006F4C
+> +#define ACP_SW1_TX_DMA1_FIFOADDR			0x006F50
+> +#define ACP_SW1_TX_DMA1_FIFOSIZE			0x006F54
+> +#define ACP_SW1_TX_DMA1_BURST_SIZE			0x006F58
+> +#define ACP_SW1_TX_DMA1_LINKPOSITIONCNTR		0x006F5C
+> +#define ACP_SW1_TX_DMA1_LINEARPOSITIONCNTR_HIGH		0x006F60
+> +#define ACP_SW1_TX_DMA1_LINEARPOSITIONCNTR_LOW		0x006F64
+> +#define ACP_SW1_TX_DMA1_INTR_WATERMARK_SIZE		0x006F68
+> +#define ACP_SW1_TX_DMA2_RINGBUFADDR			0x006F6C
+> +#define ACP_SW1_TX_DMA2_RINGBUFSIZE			0x006F70
+> +#define ACP_SW1_TX_DMA2_FIFOADDR			0x006F74
+> +#define ACP_SW1_TX_DMA2_FIFOSIZE			0x006F78
+> +#define ACP_SW1_TX_DMA2_BURST_SIZE			0x006F7C
+> +#define ACP_SW1_TX_DMA2_LINKPOSITIONCNTR		0x006F80
+> +#define ACP_SW1_TX_DMA2_LINEARPOSITIONCNTR_HIGH		0x006F84
+> +#define ACP_SW1_TX_DMA2_LINEARPOSITIONCNTR_LOW		0x006F88
+> +#define ACP_SW1_TX_DMA2_INTR_WATERMARK_SIZE		0x006F8C
+> +#define ACP_SW1_TX_DMA3_RINGBUFADDR			0x006F90
+> +#define ACP_SW1_TX_DMA3_RINGBUFSIZE			0x006F94
+> +#define ACP_SW1_TX_DMA3_FIFOADDR			0x006F98
+> +#define ACP_SW1_TX_DMA3_FIFOSIZE			0x006F9C
+> +#define ACP_SW1_TX_DMA3_BURST_SIZE			0x006FA0
+> +#define ACP_SW1_TX_DMA3_LINKPOSITIONCNTR		0x006FA4
+> +#define ACP_SW1_TX_DMA3_LINEARPOSITIONCNTR_HIGH		0x006FA8
+> +#define ACP_SW1_TX_DMA3_LINEARPOSITIONCNTR_LOW		0x006FAC
+> +#define ACP_SW1_TX_DMA3_INTR_WATERMARK_SIZE		0x006FB0
+> +#define ACP_SW1_TX_DMA4_RINGBUFADDR			0x006FB4
+> +#define ACP_SW1_TX_DMA4_RINGBUFSIZE			0x006FB8
+> +#define ACP_SW1_TX_DMA4_FIFOADDR			0x006FBC
+> +#define ACP_SW1_TX_DMA4_FIFOSIZE			0x006FC0
+> +#define ACP_SW1_TX_DMA4_BURST_SIZE			0x006FC4
+> +#define ACP_SW1_TX_DMA4_LINKPOSITIONCNTR		0x006FC8
+> +#define ACP_SW1_TX_DMA4_LINEARPOSITIONCNTR_HIGH		0x006FCC
+> +#define ACP_SW1_TX_DMA4_LINEARPOSITIONCNTR_LOW		0x006FD0
+> +#define ACP_SW1_TX_DMA4_INTR_WATERMARK_SIZE		0x006FD4
+> +#define ACP_SW1_TX_DMA5_RINGBUFADDR			0x006FD8
+> +#define ACP_SW1_TX_DMA5_RINGBUFSIZE			0x006FDC
+> +#define ACP_SW1_TX_DMA5_FIFOADDR			0x006FE0
+> +#define ACP_SW1_TX_DMA5_FIFOSIZE			0x006FE4
+> +#define ACP_SW1_TX_DMA5_BURST_SIZE			0x006FE8
+> +#define ACP_SW1_TX_DMA5_LINKPOSITIONCNTR		0x006FEC
+> +#define ACP_SW1_TX_DMA5_LINEARPOSITIONCNTR_HIGH		0x006FF0
+> +#define ACP_SW1_TX_DMA5_LINEARPOSITIONCNTR_LOW		0x006FF4
+> +#define ACP_SW1_TX_DMA5_INTR_WATERMARK_SIZE		0x006FF8
+> +#define ACP_SW1_TX_DMA6_RINGBUFADDR			0x006FFC
+> +#define ACP_SW1_TX_DMA6_RINGBUFSIZE			0x007000
+> +#define ACP_SW1_TX_DMA6_FIFOADDR			0x007004
+> +#define ACP_SW1_TX_DMA6_FIFOSIZE			0x007008
+> +#define ACP_SW1_TX_DMA6_BURST_SIZE			0x00700C
+> +#define ACP_SW1_TX_DMA6_LINKPOSITIONCNTR		0x007010
+> +#define ACP_SW1_TX_DMA6_LINEARPOSITIONCNTR_HIGH		0x007014
+> +#define ACP_SW1_TX_DMA6_LINEARPOSITIONCNTR_LOW		0x007018
+> +#define ACP_SW1_TX_DMA6_INTR_WATERMARK_SIZE		0x00701C
+> +#define ACP_SW1_TX_DMA7_RINGBUFADDR			0x007020
+> +#define ACP_SW1_TX_DMA7_RINGBUFSIZE			0x007024
+> +#define ACP_SW1_TX_DMA7_FIFOADDR			0x007028
+> +#define ACP_SW1_TX_DMA7_FIFOSIZE			0x00702C
+> +#define ACP_SW1_TX_DMA7_BURST_SIZE			0x007030
+> +#define ACP_SW1_TX_DMA7_LINKPOSITIONCNTR		0x007034
+> +#define ACP_SW1_TX_DMA7_LINEARPOSITIONCNTR_HIGH		0x007038
+> +#define ACP_SW1_TX_DMA7_LINEARPOSITIONCNTR_LOW		0x00703C
+> +#define ACP_SW1_TX_DMA7_INTR_WATERMARK_SIZE		0x007040
+> +#define ACP_SW1_RX_DMA0_POS_TRACK			0x007044
+> +#define ACP_SW1_RX_DMA0_POS				0x007048
+> +#define ACP_SW1_RX_DMA1_POS_TRACK			0x00704C
+> +#define ACP_SW1_RX_DMA1_POS				0x007050
+> +#define ACP_SW1_RX_DMA2_POS_TRACK			0x007054
+> +#define ACP_SW1_RX_DMA2_POS				0x007058
+> +#define ACP_SW1_RX_DMA3_POS_TRACK			0x00705C
+> +#define ACP_SW1_RX_DMA3_POS				0x007060
+> +#define ACP_SW1_RX_DMA4_POS_TRACK			0x007064
+> +#define ACP_SW1_RX_DMA4_POS				0x007068
+> +#define ACP_SW1_RX_DMA5_POS_TRACK			0x00706C
+> +#define ACP_SW1_RX_DMA5_POS				0x007070
+> +#define ACP_SW1_RX_DMA6_POS_TRACK			0x007074
+> +#define ACP_SW1_RX_DMA6_POS				0x007078
+> +#define ACP_SW1_RX_DMA7_POS_TRACK			0x00707C
+> +#define ACP_SW1_RX_DMA7_POS				0x007080
+> +#define ACP_SW1_TX_DMA0_POS_TRACK			0x007084
+> +#define ACP_SW1_TX_DMA0_POS				0x007088
+> +#define ACP_SW1_TX_DMA1_POS_TRACK			0x00708C
+> +#define ACP_SW1_TX_DMA1_POS				0x007090
+> +#define ACP_SW1_TX_DMA2_POS_TRACK			0x007094
+> +#define ACP_SW1_TX_DMA2_POS				0x007098
+> +#define ACP_SW1_TX_DMA3_POS_TRACK			0x00709C
+> +#define ACP_SW1_TX_DMA3_POS				0x0070A0
+> +#define ACP_SW1_TX_DMA4_POS_TRACK			0x0070A4
+> +#define ACP_SW1_TX_DMA4_POS				0x0070A8
+> +#define ACP_SW1_TX_DMA5_POS_TRACK			0x0070AC
+> +#define ACP_SW1_TX_DMA5_POS				0x0070B0
+> +#define ACP_SW1_TX_DMA6_POS_TRACK			0x0070B4
+> +#define ACP_SW1_TX_DMA6_POS				0x0070B8
+> +#define ACP_SW1_TX_DMA7_POS_TRACK			0x0070BC
+> +#define ACP_SW1_TX_DMA7_POS				0x0070C0
+> +#define ACP_SW1_FIFO_ERROR_REASON			0x0070C4
+> +#define ACP_SW1_FIFO_ERROR_INTR_MASK			0x0070C8
+> +#define ACP_SW1_ERROR_REASON1				0x0070CC
+> +#define ACP_SW1_ERROR_INTR_MASK1			0x0070D0
+> +#define ACP_SW1_ERROR_REASON2				0x0070D4
+> +#define ACP_SW1_ERROR_INTR_MASK2			0x0070D8
+> +
+> +#define ACP_SW1_CORB_BASE_ADDRESS			0x007100
+> +#define ACP_SW1_CORB_WRITE_POINTER			0x007104
+> +#define ACP_SW1_CORB_READ_POINTER			0x007108
+> +#define ACP_SW1_CORB_CONTROL				0x00710C
+> +#define ACP_SW1_CORB_SIZE				0x007114
+> +#define ACP_SW1_RIRB_BASE_ADDRESS			0x007118
+> +#define ACP_SW1_RIRB_WRITE_POINTER			0x00711C
+> +#define ACP_SW1_RIRB_RESPONSE_INTERRUPT_COUNT		0x007120
+> +#define ACP_SW1_RIRB_CONTROL				0x007124
+> +#define ACP_SW1_RIRB_SIZE				0x007128
+> +#define ACP_SW1_RIRB_FIFO_MIN_THDL			0x00712C
+> +#define ACP_SW1_IMM_CMD_UPPER_WORD			0x007130
+> +#define ACP_SW1_IMM_CMD_LOWER_QWORD			0x007134
+> +#define ACP_SW1_IMM_RESP_UPPER_WORD			0x007138
+> +#define ACP_SW1_IMM_RESP_LOWER_QWORD			0x00713C
+> +#define ACP_SW1_IMM_CMD_STS				0x007140
+> +#define ACP_SW1_BRA_BASE_ADDRESS			0x007144
+> +#define ACP_SW1_BRA_TRANSFER_SIZE			0x007148
+> +#define ACP_SW1_BRA_DMA_BUSY				0x00714C
+> +#define ACP_SW1_BRA_RESP				0x007150
+> +#define ACP_SW1_BRA_RESP_FRAME_ADDR			0x007154
+> +#define ACP_SW1_BRA_CURRENT_TRANSFER_SIZE		0x007158
+> +#define ACP_SW1_STATE_CHANGE_STATUS_0TO7		0x00715C
+> +#define ACP_SW1_STATE_CHANGE_STATUS_8TO11		0x007160
+> +#define ACP_SW1_STATE_CHANGE_STATUS_MASK_0TO7		0x007164
+> +#define ACP_SW1_STATE_CHANGE_STATUS_MASK_8TO11		0x007168
+> +#define ACP_SW1_CLK_FREQUENCY_CTRL_BANK0		0x00716C
+> +#define ACP_SW1_CLK_FREQUENCY_CTRL_BANK1		0x007170
+> +#define ACP_SW1_ERROR_INTR_MASK				0x007174
+> +#define ACP_SW1_PHY_TEST_MODE_DATA_OFF			0x007178
+> +#define ACP_SW1_DATA_TO_PDM_EN				0x00717C
+> +
+> +#define ACP_SW1_EN					0x007200
+> +#define ACP_SW1_EN_STATUS				0x007204
+> +#define ACP_SW1_FRAMESIZE_BANK0				0x007208
+> +#define ACP_SW1_FRAMESIZE_BANK1				0x00720C
+> +#define ACP_SW1_SSP_COUNTER				0x007210
+> +#define ACP_SW1_TX_STREAM0_EN				0x007214
+> +#define ACP_SW1_TX_STREAM1_EN				0x007218
+> +#define ACP_SW1_TX_STREAM2_EN				0x00721C
+> +#define ACP_SW1_TX_STREAM3_EN				0x007220
+> +#define ACP_SW1_TX_STREAM4_EN				0x007224
+> +#define ACP_SW1_TX_STREAM5_EN				0x007228
+> +#define ACP_SW1_TX_STREAM6_EN				0x00722C
+> +#define ACP_SW1_TX_STREAM7_EN				0x007230
+> +#define ACP_SW1_TX_STREAM0_EN_STATUS			0x007234
+> +#define ACP_SW1_TX_STREAM1_EN_STATUS			0x007238
+> +#define ACP_SW1_TX_STREAM2_EN_STATUS			0x00723C
+> +#define ACP_SW1_TX_STREAM3_EN_STATUS			0x007240
+> +#define ACP_SW1_TX_STREAM4_EN_STATUS			0x007244
+> +#define ACP_SW1_TX_STREAM5_EN_STATUS			0x007248
+> +#define ACP_SW1_TX_STREAM6_EN_STATUS			0x00724C
+> +#define ACP_SW1_TX_STREAM7_EN_STATUS			0x007250
+> +#define ACP_SW1_TX_DP0_FRAME_FORMAT			0x007254
+> +#define ACP_SW1_TX_DP1_FRAME_FORMAT			0x007258
+> +#define ACP_SW1_TX_DP2_FRAME_FORMAT			0x00725C
+> +#define ACP_SW1_TX_DP3_FRAME_FORMAT			0x007260
+> +#define ACP_SW1_TX_DP4_FRAME_FORMAT			0x007264
+> +#define ACP_SW1_TX_DP5_FRAME_FORMAT			0x007268
+> +#define ACP_SW1_TX_DP6_FRAME_FORMAT			0x00726C
+> +#define ACP_SW1_TX_DP7_FRAME_FORMAT			0x007270
+> +#define ACP_SW1_TX_DP0_0_SAMPLEINTERVAL_BANK0		0x007280
+> +#define ACP_SW1_TX_DP0_0_HCTRL_BANK0			0x007284
+> +#define ACP_SW1_TX_DP0_0_HCTRL_OFFSET_BANK0		0x007288
+> +#define ACP_SW1_TX_DP0_0_LANE_CTRL_BANK0		0x00728C
+> +#define ACP_SW1_TX_DP0_0_CHANNEL_ENABLE_BANK0		0x007290
+> +#define ACP_SW1_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007294
+> +#define ACP_SW1_TX_DP0_0_SAMPLEINTERVAL_BANK1		0x007298
+> +#define ACP_SW1_TX_DP0_0_HCTRL_BANK1			0x00729C
+> +#define ACP_SW1_TX_DP0_0_HCTRL_OFFSET_BANK1		0x0072A0
+> +#define ACP_SW1_TX_DP0_0_LANE_CTRL_BANK1		0x0072A4
+> +#define ACP_SW1_TX_DP0_0_CHANNEL_ENABLE_BANK1		0x0072A8
+> +#define ACP_SW1_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0072AC
+> +#define ACP_SW1_TX_DP0_1_SAMPLEINTERVAL_BANK0		0x0072B0
+> +#define ACP_SW1_TX_DP0_1_HCTRL_BANK0			0x0072B4
+> +#define ACP_SW1_TX_DP0_1_HCTRL_OFFSET_BANK0		0x0072B8
+> +#define ACP_SW1_TX_DP0_1_LANE_CTRL_BANK0		0x0072BC
+> +#define ACP_SW1_TX_DP0_1_CHANNEL_ENABLE_BANK0		0x0072C0
+> +#define ACP_SW1_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0072C4
+> +#define ACP_SW1_TX_DP0_1_SAMPLEINTERVAL_BANK1		0x0072C8
+> +#define ACP_SW1_TX_DP0_1_HCTRL_BANK1			0x0072CC
+> +#define ACP_SW1_TX_DP0_1_HCTRL_OFFSET_BANK1		0x0072D0
+> +#define ACP_SW1_TX_DP0_1_LANE_CTRL_BANK1		0x0072D4
+> +#define ACP_SW1_TX_DP0_1_CHANNEL_ENABLE_BANK1		0x0072D8
+> +#define ACP_SW1_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0072DC
+> +#define ACP_SW1_TX_DP0_2_SAMPLEINTERVAL_BANK0		0x0072E0
+> +#define ACP_SW1_TX_DP0_2_HCTRL_BANK0			0x0072E4
+> +#define ACP_SW1_TX_DP0_2_HCTRL_OFFSET_BANK0		0x0072E8
+> +#define ACP_SW1_TX_DP0_2_LANE_CTRL_BANK0		0x0072EC
+> +#define ACP_SW1_TX_DP0_2_CHANNEL_ENABLE_BANK0		0x0072F0
+> +#define ACP_SW1_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0072F4
+> +#define ACP_SW1_TX_DP0_2_SAMPLEINTERVAL_BANK1		0x0072F8
+> +#define ACP_SW1_TX_DP0_2_HCTRL_BANK1			0x0072FC
+> +#define ACP_SW1_TX_DP0_2_HCTRL_OFFSET_BANK1		0x007300
+> +#define ACP_SW1_TX_DP0_2_LANE_CTRL_BANK1		0x007304
+> +#define ACP_SW1_TX_DP0_2_CHANNEL_ENABLE_BANK1		0x007308
+> +#define ACP_SW1_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00730C
+> +#define ACP_SW1_TX_DP0_3_SAMPLEINTERVAL_BANK0		0x007310
+> +#define ACP_SW1_TX_DP0_3_HCTRL_BANK0			0x007314
+> +#define ACP_SW1_TX_DP0_3_HCTRL_OFFSET_BANK0		0x007318
+> +#define ACP_SW1_TX_DP0_3_LANE_CTRL_BANK0		0x00731C
+> +#define ACP_SW1_TX_DP0_3_CHANNEL_ENABLE_BANK0		0x007320
+> +#define ACP_SW1_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007324
+> +#define ACP_SW1_TX_DP0_3_SAMPLEINTERVAL_BANK1		0x007328
+> +#define ACP_SW1_TX_DP0_3_HCTRL_BANK1			0x00732C
+> +#define ACP_SW1_TX_DP0_3_HCTRL_OFFSET_BANK1		0x007330
+> +#define ACP_SW1_TX_DP0_3_LANE_CTRL_BANK1		0x007334
+> +#define ACP_SW1_TX_DP0_3_CHANNEL_ENABLE_BANK1		0x007338
+> +#define ACP_SW1_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00733C
+> +#define ACP_SW1_TX_DP1_SAMPLEINTERVAL_BANK0		0x007370
+> +#define ACP_SW1_TX_DP1_HCTRL_BANK0			0x007374
+> +#define ACP_SW1_TX_DP1_HCTRL_OFFSET_BANK0		0x007378
+> +#define ACP_SW1_TX_DP1_LANE_CTRL_BANK0			0x00737C
+> +#define ACP_SW1_TX_DP1_CHANNEL_ENABLE_BANK0		0x007380
+> +#define ACP_SW1_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007384
+> +#define ACP_SW1_TX_DP1_SAMPLEINTERVAL_BANK1		0x007388
+> +#define ACP_SW1_TX_DP1_HCTRL_BANK1			0x00738C
+> +#define ACP_SW1_TX_DP1_HCTRL_OFFSET_BANK1		0x007390
+> +#define ACP_SW1_TX_DP1_LANE_CTRL_BANK1			0x007394
+> +#define ACP_SW1_TX_DP1_CHANNEL_ENABLE_BANK1		0x007398
+> +#define ACP_SW1_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00739C
+> +#define ACP_SW1_TX_DP2_SAMPLEINTERVAL_BANK0		0x0073A0
+> +#define ACP_SW1_TX_DP2_HCTRL_BANK0			0x0073A4
+> +#define ACP_SW1_TX_DP2_HCTRL_OFFSET_BANK0		0x0073A8
+> +#define ACP_SW1_TX_DP2_LANE_CTRL_BANK0			0x0073AC
+> +#define ACP_SW1_TX_DP2_CHANNEL_ENABLE_BANK0		0x0073B0
+> +#define ACP_SW1_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0073B4
+> +#define ACP_SW1_TX_DP2_SAMPLEINTERVAL_BANK1		0x0073B8
+> +#define ACP_SW1_TX_DP2_HCTRL_BANK1			0x0073BC
+> +#define ACP_SW1_TX_DP2_HCTRL_OFFSET_BANK1		0x0073C0
+> +#define ACP_SW1_TX_DP2_LANE_CTRL_BANK1			0x0073C4
+> +#define ACP_SW1_TX_DP2_CHANNEL_ENABLE_BANK1		0x0073C8
+> +#define ACP_SW1_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0073CC
+> +#define ACP_SW1_TX_DP3_SAMPLEINTERVAL_BANK0		0x0073D0
+> +#define ACP_SW1_TX_DP3_HCTRL_BANK0			0x0073D4
+> +#define ACP_SW1_TX_DP3_HCTRL_OFFSET_BANK0		0x0073D8
+> +#define ACP_SW1_TX_DP3_LANE_CTRL_BANK0			0x0073DC
+> +#define ACP_SW1_TX_DP3_CHANNEL_ENABLE_BANK0		0x0073E0
+> +#define ACP_SW1_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0073E4
+> +#define ACP_SW1_TX_DP3_SAMPLEINTERVAL_BANK1		0x0073E8
+> +#define ACP_SW1_TX_DP3_HCTRL_BANK1			0x0073EC
+> +#define ACP_SW1_TX_DP3_HCTRL_OFFSET_BANK1		0x0073F0
+> +#define ACP_SW1_TX_DP3_LANE_CTRL_BANK1			0x0073F4
+> +#define ACP_SW1_TX_DP3_CHANNEL_ENABLE_BANK1		0x0073F8
+> +#define ACP_SW1_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0073FC
+> +#define ACP_SW1_TX_DP4_SAMPLEINTERVAL_BANK0		0x007400
+> +#define ACP_SW1_TX_DP4_HCTRL_BANK0			0x007404
+> +#define ACP_SW1_TX_DP4_HCTRL_OFFSET_BANK0		0x007408
+> +#define ACP_SW1_TX_DP4_LANE_CTRL_BANK0			0x00740C
+> +#define ACP_SW1_TX_DP4_CHANNEL_ENABLE_BANK0		0x007410
+> +#define ACP_SW1_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007414
+> +#define ACP_SW1_TX_DP4_SAMPLEINTERVAL_BANK1		0x007418
+> +#define ACP_SW1_TX_DP4_HCTRL_BANK1			0x00741C
+> +#define ACP_SW1_TX_DP4_HCTRL_OFFSET_BANK1		0x007420
+> +#define ACP_SW1_TX_DP4_LANE_CTRL_BANK1			0x007424
+> +#define ACP_SW1_TX_DP4_CHANNEL_ENABLE_BANK1		0x007428
+> +#define ACP_SW1_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00742C
+> +#define ACP_SW1_TX_DP5_SAMPLEINTERVAL_BANK0		0x007430
+> +#define ACP_SW1_TX_DP5_HCTRL_BANK0			0x007434
+> +#define ACP_SW1_TX_DP5_HCTRL_OFFSET_BANK0		0x007438
+> +#define ACP_SW1_TX_DP5_LANE_CTRL_BANK0			0x00743C
+> +#define ACP_SW1_TX_DP5_CHANNEL_ENABLE_BANK0		0x007440
+> +#define ACP_SW1_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007444
+> +#define ACP_SW1_TX_DP5_SAMPLEINTERVAL_BANK1		0x007448
+> +#define ACP_SW1_TX_DP5_HCTRL_BANK1			0x00744C
+> +#define ACP_SW1_TX_DP5_HCTRL_OFFSET_BANK1		0x007450
+> +#define ACP_SW1_TX_DP5_LANE_CTRL_BANK1			0x007454
+> +#define ACP_SW1_TX_DP5_CHANNEL_ENABLE_BANK1		0x007458
+> +#define ACP_SW1_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00745C
+> +#define ACP_SW1_TX_DP6_SAMPLEINTERVAL_BANK0		0x007460
+> +#define ACP_SW1_TX_DP6_HCTRL_BANK0			0x007464
+> +#define ACP_SW1_TX_DP6_HCTRL_OFFSET_BANK0		0x007468
+> +#define ACP_SW1_TX_DP6_LANE_CTRL_BANK0			0x00746C
+> +#define ACP_SW1_TX_DP6_CHANNEL_ENABLE_BANK0		0x007470
+> +#define ACP_SW1_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007474
+> +#define ACP_SW1_TX_DP6_SAMPLEINTERVAL_BANK1		0x007478
+> +#define ACP_SW1_TX_DP6_HCTRL_BANK1			0x00747C
+> +#define ACP_SW1_TX_DP6_HCTRL_OFFSET_BANK1		0x007480
+> +#define ACP_SW1_TX_DP6_LANE_CTRL_BANK1			0x007484
+> +#define ACP_SW1_TX_DP6_CHANNEL_ENABLE_BANK1		0x007488
+> +#define ACP_SW1_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00748C
+> +#define ACP_SW1_TX_DP7_SAMPLEINTERVAL_BANK0		0x007490
+> +#define ACP_SW1_TX_DP7_HCTRL_BANK0			0x007494
+> +#define ACP_SW1_TX_DP7_HCTRL_OFFSET_BANK0		0x007498
+> +#define ACP_SW1_TX_DP7_LANE_CTRL_BANK0			0x00749C
+> +#define ACP_SW1_TX_DP7_CHANNEL_ENABLE_BANK0		0x0074A0
+> +#define ACP_SW1_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0074A4
+> +#define ACP_SW1_TX_DP7_SAMPLEINTERVAL_BANK1		0x0074A8
+> +#define ACP_SW1_TX_DP7_HCTRL_BANK1			0x0074AC
+> +#define ACP_SW1_TX_DP7_HCTRL_OFFSET_BANK1		0x0074B0
+> +#define ACP_SW1_TX_DP7_LANE_CTRL_BANK1			0x0074B4
+> +#define ACP_SW1_TX_DP7_CHANNEL_ENABLE_BANK1		0x0074B8
+> +#define ACP_SW1_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0074BC
+> +#define ACP_SW1_RX_STREAM0_EN				0x007514
+> +#define ACP_SW1_RX_STREAM1_EN				0x007518
+> +#define ACP_SW1_RX_STREAM2_EN				0x00751C
+> +#define ACP_SW1_RX_STREAM3_EN				0x007520
+> +#define ACP_SW1_RX_STREAM4_EN				0x007524
+> +#define ACP_SW1_RX_STREAM5_EN				0x007528
+> +#define ACP_SW1_RX_STREAM6_EN				0x00752C
+> +#define ACP_SW1_RX_STREAM7_EN				0x007530
+> +#define ACP_SW1_RX_STREAM0_EN_STATUS			0x007534
+> +#define ACP_SW1_RX_STREAM1_EN_STATUS			0x007538
+> +#define ACP_SW1_RX_STREAM2_EN_STATUS			0x00753C
+> +#define ACP_SW1_RX_STREAM3_EN_STATUS			0x007540
+> +#define ACP_SW1_RX_STREAM4_EN_STATUS			0x007544
+> +#define ACP_SW1_RX_STREAM5_EN_STATUS			0x007548
+> +#define ACP_SW1_RX_STREAM6_EN_STATUS			0x00754C
+> +#define ACP_SW1_RX_STREAM7_EN_STATUS			0x007550
+> +#define ACP_SW1_RX_DP0_FRAME_FORMAT			0x007554
+> +#define ACP_SW1_RX_DP1_FRAME_FORMAT			0x007558
+> +#define ACP_SW1_RX_DP2_FRAME_FORMAT			0x00755C
+> +#define ACP_SW1_RX_DP3_FRAME_FORMAT			0x007560
+> +#define ACP_SW1_RX_DP4_FRAME_FORMAT			0x007564
+> +#define ACP_SW1_RX_DP5_FRAME_FORMAT			0x007568
+> +#define ACP_SW1_RX_DP6_FRAME_FORMAT			0x00756C
+> +#define ACP_SW1_RX_DP7_FRAME_FORMAT			0x007570
+> +#define ACP_SW1_RX_DP0_0_SAMPLEINTERVAL_BANK0		0x007580
+> +#define ACP_SW1_RX_DP0_0_HCTRL_BANK0			0x007584
+> +#define ACP_SW1_RX_DP0_0_HCTRL_OFFSET_BANK0		0x007588
+> +#define ACP_SW1_RX_DP0_0_LANE_CTRL_BANK0		0x00758C
+> +#define ACP_SW1_RX_DP0_0_CHANNEL_ENABLE_BANK0		0x007590
+> +#define ACP_SW1_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007594
+> +#define ACP_SW1_RX_DP0_0_SAMPLEINTERVAL_BANK1		0x007598
+> +#define ACP_SW1_RX_DP0_0_HCTRL_BANK1			0x00759C
+> +#define ACP_SW1_RX_DP0_0_HCTRL_OFFSET_BANK1		0x0075A0
+> +#define ACP_SW1_RX_DP0_0_LANE_CTRL_BANK1		0x0075A4
+> +#define ACP_SW1_RX_DP0_0_CHANNEL_ENABLE_BANK1		0x0075A8
+> +#define ACP_SW1_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0075AC
+> +#define ACP_SW1_RX_DP0_1_SAMPLEINTERVAL_BANK0		0x0075B0
+> +#define ACP_SW1_RX_DP0_1_HCTRL_BANK0			0x0075B4
+> +#define ACP_SW1_RX_DP0_1_HCTRL_OFFSET_BANK0		0x0075B8
+> +#define ACP_SW1_RX_DP0_1_LANE_CTRL_BANK0		0x0075BC
+> +#define ACP_SW1_RX_DP0_1_CHANNEL_ENABLE_BANK0		0x0075C0
+> +#define ACP_SW1_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0075C4
+> +#define ACP_SW1_RX_DP0_1_SAMPLEINTERVAL_BANK1		0x0075C8
+> +#define ACP_SW1_RX_DP0_1_HCTRL_BANK1			0x0075CC
+> +#define ACP_SW1_RX_DP0_1_HCTRL_OFFSET_BANK1		0x0075D0
+> +#define ACP_SW1_RX_DP0_1_LANE_CTRL_BANK1		0x0075D4
+> +#define ACP_SW1_RX_DP0_1_CHANNEL_ENABLE_BANK1		0x0075D8
+> +#define ACP_SW1_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0075DC
+> +#define ACP_SW1_RX_DP0_2_SAMPLEINTERVAL_BANK0		0x0075E0
+> +#define ACP_SW1_RX_DP0_2_HCTRL_BANK0			0x0075E4
+> +#define ACP_SW1_RX_DP0_2_HCTRL_OFFSET_BANK0		0x0075E8
+> +#define ACP_SW1_RX_DP0_2_LANE_CTRL_BANK0		0x0075EC
+> +#define ACP_SW1_RX_DP0_2_CHANNEL_ENABLE_BANK0		0x0075F0
+> +#define ACP_SW1_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0075F4
+> +#define ACP_SW1_RX_DP0_2_SAMPLEINTERVAL_BANK1		0x0075F8
+> +#define ACP_SW1_RX_DP0_2_HCTRL_BANK1			0x0075FC
+> +#define ACP_SW1_RX_DP0_2_HCTRL_OFFSET_BANK1		0x007600
+> +#define ACP_SW1_RX_DP0_2_LANE_CTRL_BANK1		0x007604
+> +#define ACP_SW1_RX_DP0_2_CHANNEL_ENABLE_BANK1		0x007608
+> +#define ACP_SW1_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00760C
+> +#define ACP_SW1_RX_DP0_3_SAMPLEINTERVAL_BANK0		0x007610
+> +#define ACP_SW1_RX_DP0_3_HCTRL_BANK0			0x007614
+> +#define ACP_SW1_RX_DP0_3_HCTRL_OFFSET_BANK0		0x007618
+> +#define ACP_SW1_RX_DP0_3_LANE_CTRL_BANK0		0x00761C
+> +#define ACP_SW1_RX_DP0_3_CHANNEL_ENABLE_BANK0		0x007620
+> +#define ACP_SW1_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007624
+> +#define ACP_SW1_RX_DP0_3_SAMPLEINTERVAL_BANK1		0x007628
+> +#define ACP_SW1_RX_DP0_3_HCTRL_BANK1			0x00762C
+> +#define ACP_SW1_RX_DP0_3_HCTRL_OFFSET_BANK1		0x007630
+> +#define ACP_SW1_RX_DP0_3_LANE_CTRL_BANK1		0x007634
+> +#define ACP_SW1_RX_DP0_3_CHANNEL_ENABLE_BANK1		0x007638
+> +#define ACP_SW1_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00763C
+> +#define ACP_SW1_RX_DP1_SAMPLEINTERVAL_BANK0		0x007670
+> +#define ACP_SW1_RX_DP1_HCTRL_BANK0			0x007674
+> +#define ACP_SW1_RX_DP1_HCTRL_OFFSET_BANK0		0x007678
+> +#define ACP_SW1_RX_DP1_LANE_CTRL_BANK0			0x00767C
+> +#define ACP_SW1_RX_DP1_CHANNEL_ENABLE_BANK0		0x007680
+> +#define ACP_SW1_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007684
+> +#define ACP_SW1_RX_DP1_SAMPLEINTERVAL_BANK1		0x007688
+> +#define ACP_SW1_RX_DP1_HCTRL_BANK1			0x00768C
+> +#define ACP_SW1_RX_DP1_HCTRL_OFFSET_BANK1		0x007690
+> +#define ACP_SW1_RX_DP1_LANE_CTRL_BANK1			0x007694
+> +#define ACP_SW1_RX_DP1_CHANNEL_ENABLE_BANK1		0x007698
+> +#define ACP_SW1_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00769C
+> +#define ACP_SW1_RX_DP2_SAMPLEINTERVAL_BANK0		0x0076A0
+> +#define ACP_SW1_RX_DP2_HCTRL_BANK0			0x0076A4
+> +#define ACP_SW1_RX_DP2_HCTRL_OFFSET_BANK0		0x0076A8
+> +#define ACP_SW1_RX_DP2_LANE_CTRL_BANK0			0x0076AC
+> +#define ACP_SW1_RX_DP2_CHANNEL_ENABLE_BANK0		0x0076B0
+> +#define ACP_SW1_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0076B4
+> +#define ACP_SW1_RX_DP2_SAMPLEINTERVAL_BANK1		0x0076B8
+> +#define ACP_SW1_RX_DP2_HCTRL_BANK1			0x0076BC
+> +#define ACP_SW1_RX_DP2_HCTRL_OFFSET_BANK1		0x0076C0
+> +#define ACP_SW1_RX_DP2_LANE_CTRL_BANK1			0x0076C4
+> +#define ACP_SW1_RX_DP2_CHANNEL_ENABLE_BANK1		0x0076C8
+> +#define ACP_SW1_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0076CC
+> +#define ACP_SW1_RX_DP3_SAMPLEINTERVAL_BANK0		0x0076D0
+> +#define ACP_SW1_RX_DP3_HCTRL_BANK0			0x0076D4
+> +#define ACP_SW1_RX_DP3_HCTRL_OFFSET_BANK0		0x0076D8
+> +#define ACP_SW1_RX_DP3_LANE_CTRL_BANK0			0x0076DC
+> +#define ACP_SW1_RX_DP3_CHANNEL_ENABLE_BANK0		0x0076E0
+> +#define ACP_SW1_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0076E4
+> +#define ACP_SW1_RX_DP3_SAMPLEINTERVAL_BANK1		0x0076E8
+> +#define ACP_SW1_RX_DP3_HCTRL_BANK1			0x0076EC
+> +#define ACP_SW1_RX_DP3_HCTRL_OFFSET_BANK1		0x0076F0
+> +#define ACP_SW1_RX_DP3_LANE_CTRL_BANK1			0x0076F4
+> +#define ACP_SW1_RX_DP3_CHANNEL_ENABLE_BANK1		0x0076F8
+> +#define ACP_SW1_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0076FC
+> +#define ACP_SW1_RX_DP4_SAMPLEINTERVAL_BANK0		0x007700
+> +#define ACP_SW1_RX_DP4_HCTRL_BANK0			0x007704
+> +#define ACP_SW1_RX_DP4_HCTRL_OFFSET_BANK0		0x007708
+> +#define ACP_SW1_RX_DP4_LANE_CTRL_BANK0			0x00770C
+> +#define ACP_SW1_RX_DP4_CHANNEL_ENABLE_BANK0		0x007710
+> +#define ACP_SW1_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007714
+> +#define ACP_SW1_RX_DP4_SAMPLEINTERVAL_BANK1		0x007718
+> +#define ACP_SW1_RX_DP4_HCTRL_BANK1			0x00771C
+> +#define ACP_SW1_RX_DP4_HCTRL_OFFSET_BANK1		0x007720
+> +#define ACP_SW1_RX_DP4_LANE_CTRL_BANK1			0x007724
+> +#define ACP_SW1_RX_DP4_CHANNEL_ENABLE_BANK1		0x007728
+> +#define ACP_SW1_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00772C
+> +#define ACP_SW1_RX_DP5_SAMPLEINTERVAL_BANK0		0x007730
+> +#define ACP_SW1_RX_DP5_HCTRL_BANK0			0x007734
+> +#define ACP_SW1_RX_DP5_HCTRL_OFFSET_BANK0		0x007738
+> +#define ACP_SW1_RX_DP5_LANE_CTRL_BANK0			0x00773C
+> +#define ACP_SW1_RX_DP5_CHANNEL_ENABLE_BANK0		0x007740
+> +#define ACP_SW1_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007744
+> +#define ACP_SW1_RX_DP5_SAMPLEINTERVAL_BANK1		0x007748
+> +#define ACP_SW1_RX_DP5_HCTRL_BANK1			0x00774C
+> +#define ACP_SW1_RX_DP5_HCTRL_OFFSET_BANK1		0x007750
+> +#define ACP_SW1_RX_DP5_LANE_CTRL_BANK1			0x007754
+> +#define ACP_SW1_RX_DP5_CHANNEL_ENABLE_BANK1		0x007758
+> +#define ACP_SW1_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00775C
+> +#define ACP_SW1_RX_DP6_SAMPLEINTERVAL_BANK0		0x007760
+> +#define ACP_SW1_RX_DP6_HCTRL_BANK0			0x007764
+> +#define ACP_SW1_RX_DP6_HCTRL_OFFSET_BANK0		0x007768
+> +#define ACP_SW1_RX_DP6_LANE_CTRL_BANK0			0x00776C
+> +#define ACP_SW1_RX_DP6_CHANNEL_ENABLE_BANK0		0x007770
+> +#define ACP_SW1_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x007774
+> +#define ACP_SW1_RX_DP6_SAMPLEINTERVAL_BANK1		0x007778
+> +#define ACP_SW1_RX_DP6_HCTRL_BANK1			0x00777C
+> +#define ACP_SW1_RX_DP6_HCTRL_OFFSET_BANK1		0x007780
+> +#define ACP_SW1_RX_DP6_LANE_CTRL_BANK1			0x007784
+> +#define ACP_SW1_RX_DP6_CHANNEL_ENABLE_BANK1		0x007788
+> +#define ACP_SW1_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00778C
+> +#define ACP_SW1_RX_DP7_SAMPLEINTERVAL_BANK0		0x007790
+> +#define ACP_SW1_RX_DP7_HCTRL_BANK0			0x007794
+> +#define ACP_SW1_RX_DP7_HCTRL_OFFSET_BANK0		0x007798
+> +#define ACP_SW1_RX_DP7_LANE_CTRL_BANK0			0x00779C
+> +#define ACP_SW1_RX_DP7_CHANNEL_ENABLE_BANK0		0x0077A0
+> +#define ACP_SW1_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0077A4
+> +#define ACP_SW1_RX_DP7_SAMPLEINTERVAL_BANK1		0x0077A8
+> +#define ACP_SW1_RX_DP7_HCTRL_BANK1			0x0077AC
+> +#define ACP_SW1_RX_DP7_HCTRL_OFFSET_BANK1		0x0077B0
+> +#define ACP_SW1_RX_DP7_LANE_CTRL_BANK1			0x0077B4
+> +#define ACP_SW1_RX_DP7_CHANNEL_ENABLE_BANK1		0x0077B8
+> +#define ACP_SW1_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0077BC
+> +#define ACP_SW1_BPT_PORT_EN				0x0077C0
+> +#define ACP_SW1_BPT_PORT_EN_STATUS			0x0077C4
+> +#define ACP_SW1_BPT_PORT_FRAME_FORMAT			0x0077C8
+> +#define ACP_SW1_BPT_PORT_SAMPLEINTERVAL_BANK0		0x0077CC
+> +#define ACP_SW1_BPT_PORT_HCTRL_BANK0			0x0077D0
+> +#define ACP_SW1_BPT_PORT_OFFSET_BANK0			0x0077D4
+> +#define ACP_SW1_BPT_PORT_LANE_SELECT_BANK0		0x0077D8
+> +#define ACP_SW1_BPT_PORT_CHANNEL_ENABLE_BANK0		0x0077DC
+> +#define ACP_SW1_BPT_PORT_SAMPLEINTERVAL_BANK1		0x0077E0
+> +#define ACP_SW1_BPT_PORT_HCTRL_BANK1			0x0077E4
+> +#define ACP_SW1_BPT_PORT_OFFSET_BANK1			0x0077E8
+> +#define ACP_SW1_BPT_PORT_LANE_SELECT_BANK1		0x0077EC
+> +#define ACP_SW1_BPT_PORT_CHANNEL_ENABLE_BANK1		0x0077F0
+> +#define ACP_SW1_BPT_PORT_FIRST_BYTE_ADDR		0x0077F4
+> +#define ACP_SW1_CLK_RESUME_CTRL				0x0077F8
+> +#define ACP_SW1_CLK_RESUME_DELAY_CNTR			0x0077FC
+> +#define ACP_SW1_BUS_RESET_CTRL				0x007800
+> +#define ACP_SW1_PRBS_ERR_STATUS				0x007804
+> +#define ACP_SW1_WALLCLK_MISC				0x007808
+> +#define ACP_SW1_WALL_CLK_COUNTER			0x00780C
+> +#define ACP_SW1_PING_STATUS_REGISTER_LOW		0x007810
+> +#define ACP_SW1_PING_STATUS_REGISTER_HIGH		0x007814
+> +#define ACP_SW1_PING_STATUS_CURRENT_BANK_SEL		0x007818
+> +#define ACP_SW1_TZD_CHANGE				0x00781C
+> +#define ACP_SW1_WALLCLK_INTR_CNTL			0x007820
+> +
+> +#define ACP_SW2_GLOBAL_CAPABILITIES			0x008E00
+> +#define ACP_SW2_RX_DMA0_RINGBUFADDR			0x008E04
+> +#define ACP_SW2_RX_DMA0_RINGBUFSIZE			0x008E08
+> +#define ACP_SW2_RX_DMA0_FIFOADDR			0x008E0C
+> +#define ACP_SW2_RX_DMA0_FIFOSIZE			0x008E10
+> +#define ACP_SW2_RX_DMA0_BURST_SIZE			0x008E14
+> +#define ACP_SW2_RX_DMA0_LINKPOSITIONCNTR		0x008E18
+> +#define ACP_SW2_RX_DMA0_LINEARPOSITIONCNTR_HIGH		0x008E1C
+> +#define ACP_SW2_RX_DMA0_LINEARPOSITIONCNTR_LOW		0x008E20
+> +#define ACP_SW2_RX_DMA0_INTR_WATERMARK_SIZE		0x008E24
+> +#define ACP_SW2_RX_DMA1_RINGBUFADDR			0x008E28
+> +#define ACP_SW2_RX_DMA1_RINGBUFSIZE			0x008E2C
+> +#define ACP_SW2_RX_DMA1_FIFOADDR			0x008E30
+> +#define ACP_SW2_RX_DMA1_FIFOSIZE			0x008E34
+> +#define ACP_SW2_RX_DMA1_BURST_SIZE			0x008E38
+> +#define ACP_SW2_RX_DMA1_LINKPOSITIONCNTR		0x008E3C
+> +#define ACP_SW2_RX_DMA1_LINEARPOSITIONCNTR_HIGH		0x008E40
+> +#define ACP_SW2_RX_DMA1_LINEARPOSITIONCNTR_LOW		0x008E44
+> +#define ACP_SW2_RX_DMA1_INTR_WATERMARK_SIZE		0x008E48
+> +#define ACP_SW2_RX_DMA2_RINGBUFADDR			0x008E4C
+> +#define ACP_SW2_RX_DMA2_RINGBUFSIZE			0x008E50
+> +#define ACP_SW2_RX_DMA2_FIFOADDR			0x008E54
+> +#define ACP_SW2_RX_DMA2_FIFOSIZE			0x008E58
+> +#define ACP_SW2_RX_DMA2_BURST_SIZE			0x008E5C
+> +#define ACP_SW2_RX_DMA2_LINKPOSITIONCNTR		0x008E60
+> +#define ACP_SW2_RX_DMA2_LINEARPOSITIONCNTR_HIGH		0x008E64
+> +#define ACP_SW2_RX_DMA2_LINEARPOSITIONCNTR_LOW		0x008E68
+> +#define ACP_SW2_RX_DMA2_INTR_WATERMARK_SIZE		0x008E6C
+> +#define ACP_SW2_RX_DMA3_RINGBUFADDR			0x008E70
+> +#define ACP_SW2_RX_DMA3_RINGBUFSIZE			0x008E74
+> +#define ACP_SW2_RX_DMA3_FIFOADDR			0x008E78
+> +#define ACP_SW2_RX_DMA3_FIFOSIZE			0x008E7C
+> +#define ACP_SW2_RX_DMA3_BURST_SIZE			0x008E80
+> +#define ACP_SW2_RX_DMA3_LINKPOSITIONCNTR		0x008E84
+> +#define ACP_SW2_RX_DMA3_LINEARPOSITIONCNTR_HIGH		0x008E88
+> +#define ACP_SW2_RX_DMA3_LINEARPOSITIONCNTR_LOW		0x008E8C
+> +#define ACP_SW2_RX_DMA3_INTR_WATERMARK_SIZE		0x008E90
+> +#define ACP_SW2_RX_DMA4_RINGBUFADDR			0x008E94
+> +#define ACP_SW2_RX_DMA4_RINGBUFSIZE			0x008E98
+> +#define ACP_SW2_RX_DMA4_FIFOADDR			0x008E9C
+> +#define ACP_SW2_RX_DMA4_FIFOSIZE			0x008EA0
+> +#define ACP_SW2_RX_DMA4_BURST_SIZE			0x008EA4
+> +#define ACP_SW2_RX_DMA4_LINKPOSITIONCNTR		0x008EA8
+> +#define ACP_SW2_RX_DMA4_LINEARPOSITIONCNTR_HIGH		0x008EAC
+> +#define ACP_SW2_RX_DMA4_LINEARPOSITIONCNTR_LOW		0x008EB0
+> +#define ACP_SW2_RX_DMA4_INTR_WATERMARK_SIZE		0x008EB4
+> +#define ACP_SW2_RX_DMA5_RINGBUFADDR			0x008EB8
+> +#define ACP_SW2_RX_DMA5_RINGBUFSIZE			0x008EBC
+> +#define ACP_SW2_RX_DMA5_FIFOADDR			0x008EC0
+> +#define ACP_SW2_RX_DMA5_FIFOSIZE			0x008EC4
+> +#define ACP_SW2_RX_DMA5_BURST_SIZE			0x008EC8
+> +#define ACP_SW2_RX_DMA5_LINKPOSITIONCNTR		0x008ECC
+> +#define ACP_SW2_RX_DMA5_LINEARPOSITIONCNTR_HIGH		0x008ED0
+> +#define ACP_SW2_RX_DMA5_LINEARPOSITIONCNTR_LOW		0x008ED4
+> +#define ACP_SW2_RX_DMA5_INTR_WATERMARK_SIZE		0x008ED8
+> +#define ACP_SW2_RX_DMA6_RINGBUFADDR			0x008EDC
+> +#define ACP_SW2_RX_DMA6_RINGBUFSIZE			0x008EE0
+> +#define ACP_SW2_RX_DMA6_FIFOADDR			0x008EE4
+> +#define ACP_SW2_RX_DMA6_FIFOSIZE			0x008EE8
+> +#define ACP_SW2_RX_DMA6_BURST_SIZE			0x008EEC
+> +#define ACP_SW2_RX_DMA6_LINKPOSITIONCNTR		0x008EF0
+> +#define ACP_SW2_RX_DMA6_LINEARPOSITIONCNTR_HIGH		0x008EF4
+> +#define ACP_SW2_RX_DMA6_LINEARPOSITIONCNTR_LOW		0x008EF8
+> +#define ACP_SW2_RX_DMA6_INTR_WATERMARK_SIZE		0x008EFC
+> +#define ACP_SW2_RX_DMA7_RINGBUFADDR			0x008F00
+> +#define ACP_SW2_RX_DMA7_RINGBUFSIZE			0x008F04
+> +#define ACP_SW2_RX_DMA7_FIFOADDR			0x008F08
+> +#define ACP_SW2_RX_DMA7_FIFOSIZE			0x008F0C
+> +#define ACP_SW2_RX_DMA7_BURST_SIZE			0x008F10
+> +#define ACP_SW2_RX_DMA7_LINKPOSITIONCNTR		0x008F14
+> +#define ACP_SW2_RX_DMA7_LINEARPOSITIONCNTR_HIGH		0x008F18
+> +#define ACP_SW2_RX_DMA7_LINEARPOSITIONCNTR_LOW		0x008F1C
+> +#define ACP_SW2_RX_DMA7_INTR_WATERMARK_SIZE		0x008F20
+> +#define ACP_SW2_TX_DMA0_RINGBUFADDR			0x008F24
+> +#define ACP_SW2_TX_DMA0_RINGBUFSIZE			0x008F28
+> +#define ACP_SW2_TX_DMA0_FIFOADDR			0x008F2C
+> +#define ACP_SW2_TX_DMA0_FIFOSIZE			0x008F30
+> +#define ACP_SW2_TX_DMA0_BURST_SIZE			0x008F34
+> +#define ACP_SW2_TX_DMA0_LINKPOSITIONCNTR		0x008F38
+> +#define ACP_SW2_TX_DMA0_LINEARPOSITIONCNTR_HIGH		0x008F3C
+> +#define ACP_SW2_TX_DMA0_LINEARPOSITIONCNTR_LOW		0x008F40
+> +#define ACP_SW2_TX_DMA0_INTR_WATERMARK_SIZE		0x008F44
+> +#define ACP_SW2_TX_DMA1_RINGBUFADDR			0x008F48
+> +#define ACP_SW2_TX_DMA1_RINGBUFSIZE			0x008F4C
+> +#define ACP_SW2_TX_DMA1_FIFOADDR			0x008F50
+> +#define ACP_SW2_TX_DMA1_FIFOSIZE			0x008F54
+> +#define ACP_SW2_TX_DMA1_BURST_SIZE			0x008F58
+> +#define ACP_SW2_TX_DMA1_LINKPOSITIONCNTR		0x008F5C
+> +#define ACP_SW2_TX_DMA1_LINEARPOSITIONCNTR_HIGH		0x008F60
+> +#define ACP_SW2_TX_DMA1_LINEARPOSITIONCNTR_LOW		0x008F64
+> +#define ACP_SW2_TX_DMA1_INTR_WATERMARK_SIZE		0x008F68
+> +#define ACP_SW2_TX_DMA2_RINGBUFADDR			0x008F6C
+> +#define ACP_SW2_TX_DMA2_RINGBUFSIZE			0x008F70
+> +#define ACP_SW2_TX_DMA2_FIFOADDR			0x008F74
+> +#define ACP_SW2_TX_DMA2_FIFOSIZE			0x008F78
+> +#define ACP_SW2_TX_DMA2_BURST_SIZE			0x008F7C
+> +#define ACP_SW2_TX_DMA2_LINKPOSITIONCNTR		0x008F80
+> +#define ACP_SW2_TX_DMA2_LINEARPOSITIONCNTR_HIGH		0x008F84
+> +#define ACP_SW2_TX_DMA2_LINEARPOSITIONCNTR_LOW		0x008F88
+> +#define ACP_SW2_TX_DMA2_INTR_WATERMARK_SIZE		0x008F8C
+> +#define ACP_SW2_TX_DMA3_RINGBUFADDR			0x008F90
+> +#define ACP_SW2_TX_DMA3_RINGBUFSIZE			0x008F94
+> +#define ACP_SW2_TX_DMA3_FIFOADDR			0x008F98
+> +#define ACP_SW2_TX_DMA3_FIFOSIZE			0x008F9C
+> +#define ACP_SW2_TX_DMA3_BURST_SIZE			0x008FA0
+> +#define ACP_SW2_TX_DMA3_LINKPOSITIONCNTR		0x008FA4
+> +#define ACP_SW2_TX_DMA3_LINEARPOSITIONCNTR_HIGH		0x008FA8
+> +#define ACP_SW2_TX_DMA3_LINEARPOSITIONCNTR_LOW		0x008FAC
+> +#define ACP_SW2_TX_DMA3_INTR_WATERMARK_SIZE		0x008FB0
+> +#define ACP_SW2_TX_DMA4_RINGBUFADDR			0x008FB4
+> +#define ACP_SW2_TX_DMA4_RINGBUFSIZE			0x008FB8
+> +#define ACP_SW2_TX_DMA4_FIFOADDR			0x008FBC
+> +#define ACP_SW2_TX_DMA4_FIFOSIZE			0x008FC0
+> +#define ACP_SW2_TX_DMA4_BURST_SIZE			0x008FC4
+> +#define ACP_SW2_TX_DMA4_LINKPOSITIONCNTR		0x008FC8
+> +#define ACP_SW2_TX_DMA4_LINEARPOSITIONCNTR_HIGH		0x008FCC
+> +#define ACP_SW2_TX_DMA4_LINEARPOSITIONCNTR_LOW		0x008FD0
+> +#define ACP_SW2_TX_DMA4_INTR_WATERMARK_SIZE		0x008FD4
+> +#define ACP_SW2_TX_DMA5_RINGBUFADDR			0x008FD8
+> +#define ACP_SW2_TX_DMA5_RINGBUFSIZE			0x008FDC
+> +#define ACP_SW2_TX_DMA5_FIFOADDR			0x008FE0
+> +#define ACP_SW2_TX_DMA5_FIFOSIZE			0x008FE4
+> +#define ACP_SW2_TX_DMA5_BURST_SIZE			0x008FE8
+> +#define ACP_SW2_TX_DMA5_LINKPOSITIONCNTR		0x008FEC
+> +#define ACP_SW2_TX_DMA5_LINEARPOSITIONCNTR_HIGH		0x008FF0
+> +#define ACP_SW2_TX_DMA5_LINEARPOSITIONCNTR_LOW		0x008FF4
+> +#define ACP_SW2_TX_DMA5_INTR_WATERMARK_SIZE		0x008FF8
+> +#define ACP_SW2_TX_DMA6_RINGBUFADDR			0x008FFC
+> +#define ACP_SW2_TX_DMA6_RINGBUFSIZE			0x009000
+> +#define ACP_SW2_TX_DMA6_FIFOADDR			0x009004
+> +#define ACP_SW2_TX_DMA6_FIFOSIZE			0x009008
+> +#define ACP_SW2_TX_DMA6_BURST_SIZE			0x00900C
+> +#define ACP_SW2_TX_DMA6_LINKPOSITIONCNTR		0x009010
+> +#define ACP_SW2_TX_DMA6_LINEARPOSITIONCNTR_HIGH		0x009014
+> +#define ACP_SW2_TX_DMA6_LINEARPOSITIONCNTR_LOW		0x009018
+> +#define ACP_SW2_TX_DMA6_INTR_WATERMARK_SIZE		0x00901C
+> +#define ACP_SW2_TX_DMA7_RINGBUFADDR			0x009020
+> +#define ACP_SW2_TX_DMA7_RINGBUFSIZE			0x009024
+> +#define ACP_SW2_TX_DMA7_FIFOADDR			0x009028
+> +#define ACP_SW2_TX_DMA7_FIFOSIZE			0x00902C
+> +#define ACP_SW2_TX_DMA7_BURST_SIZE			0x009030
+> +#define ACP_SW2_TX_DMA7_LINKPOSITIONCNTR		0x009034
+> +#define ACP_SW2_TX_DMA7_LINEARPOSITIONCNTR_HIGH		0x009038
+> +#define ACP_SW2_TX_DMA7_LINEARPOSITIONCNTR_LOW		0x00903C
+> +#define ACP_SW2_TX_DMA7_INTR_WATERMARK_SIZE		0x009040
+> +#define ACP_SW2_RX_DMA0_POS_TRACK			0x009044
+> +#define ACP_SW2_RX_DMA0_POS				0x009048
+> +#define ACP_SW2_RX_DMA1_POS_TRACK			0x00904C
+> +#define ACP_SW2_RX_DMA1_POS				0x009050
+> +#define ACP_SW2_RX_DMA2_POS_TRACK			0x009054
+> +#define ACP_SW2_RX_DMA2_POS				0x009058
+> +#define ACP_SW2_RX_DMA3_POS_TRACK			0x00905C
+> +#define ACP_SW2_RX_DMA3_POS				0x009060
+> +#define ACP_SW2_RX_DMA4_POS_TRACK			0x009064
+> +#define ACP_SW2_RX_DMA4_POS				0x009068
+> +#define ACP_SW2_RX_DMA5_POS_TRACK			0x00906C
+> +#define ACP_SW2_RX_DMA5_POS				0x009070
+> +#define ACP_SW2_RX_DMA6_POS_TRACK			0x009074
+> +#define ACP_SW2_RX_DMA6_POS				0x009078
+> +#define ACP_SW2_RX_DMA7_POS_TRACK			0x00907C
+> +#define ACP_SW2_RX_DMA7_POS				0x009080
+> +#define ACP_SW2_TX_DMA0_POS_TRACK			0x009084
+> +#define ACP_SW2_TX_DMA0_POS				0x009088
+> +#define ACP_SW2_TX_DMA1_POS_TRACK			0x00908C
+> +#define ACP_SW2_TX_DMA1_POS				0x009090
+> +#define ACP_SW2_TX_DMA2_POS_TRACK			0x009094
+> +#define ACP_SW2_TX_DMA2_POS				0x009098
+> +#define ACP_SW2_TX_DMA3_POS_TRACK			0x00909C
+> +#define ACP_SW2_TX_DMA3_POS				0x0090A0
+> +#define ACP_SW2_TX_DMA4_POS_TRACK			0x0090A4
+> +#define ACP_SW2_TX_DMA4_POS				0x0090A8
+> +#define ACP_SW2_TX_DMA5_POS_TRACK			0x0090AC
+> +#define ACP_SW2_TX_DMA5_POS				0x0090B0
+> +#define ACP_SW2_TX_DMA6_POS_TRACK			0x0090B4
+> +#define ACP_SW2_TX_DMA6_POS				0x0090B8
+> +#define ACP_SW2_TX_DMA7_POS_TRACK			0x0090BC
+> +#define ACP_SW2_TX_DMA7_POS				0x0090C0
+> +#define ACP_SW2_FIFO_ERROR_REASON			0x0090C4
+> +#define ACP_SW2_FIFO_ERROR_INTR_MASK			0x0090C8
+> +#define ACP_SW2_ERROR_REASON1				0x0090CC
+> +#define ACP_SW2_ERROR_INTR_MASK1			0x0090D0
+> +#define ACP_SW2_ERROR_REASON2				0x0090D4
+> +#define ACP_SW2_ERROR_INTR_MASK2			0x0090D8
+> +
+> +#define ACP_SW2_CORB_BASE_ADDRESS			0x009100
+> +#define ACP_SW2_CORB_WRITE_POINTER			0x009104
+> +#define ACP_SW2_CORB_READ_POINTER			0x009108
+> +#define ACP_SW2_CORB_CONTROL				0x00910C
+> +#define ACP_SW2_CORB_SIZE				0x009114
+> +#define ACP_SW2_RIRB_BASE_ADDRESS			0x009118
+> +#define ACP_SW2_RIRB_WRITE_POINTER			0x00911C
+> +#define ACP_SW2_RIRB_RESPONSE_INTERRUPT_COUNT		0x009120
+> +#define ACP_SW2_RIRB_CONTROL				0x009124
+> +#define ACP_SW2_RIRB_SIZE				0x009128
+> +#define ACP_SW2_RIRB_FIFO_MIN_THDL			0x00912C
+> +#define ACP_SW2_IMM_CMD_UPPER_WORD			0x009130
+> +#define ACP_SW2_IMM_CMD_LOWER_QWORD			0x009134
+> +#define ACP_SW2_IMM_RESP_UPPER_WORD			0x009138
+> +#define ACP_SW2_IMM_RESP_LOWER_QWORD			0x00913C
+> +#define ACP_SW2_IMM_CMD_STS				0x009140
+> +#define ACP_SW2_BRA_BASE_ADDRESS			0x009144
+> +#define ACP_SW2_BRA_TRANSFER_SIZE			0x009148
+> +#define ACP_SW2_BRA_DMA_BUSY				0x00914C
+> +#define ACP_SW2_BRA_RESP				0x009150
+> +#define ACP_SW2_BRA_RESP_FRAME_ADDR			0x009154
+> +#define ACP_SW2_BRA_CURRENT_TRANSFER_SIZE		0x009158
+> +#define ACP_SW2_STATE_CHANGE_STATUS_0TO7		0x00915C
+> +#define ACP_SW2_STATE_CHANGE_STATUS_8TO11		0x009160
+> +#define ACP_SW2_STATE_CHANGE_STATUS_MASK_0TO7		0x009164
+> +#define ACP_SW2_STATE_CHANGE_STATUS_MASK_8TO11		0x009168
+> +#define ACP_SW2_CLK_FREQUENCY_CTRL_BANK0		0x00916C
+> +#define ACP_SW2_CLK_FREQUENCY_CTRL_BANK1		0x009170
+> +#define ACP_SW2_ERROR_INTR_MASK				0x009174
+> +#define ACP_SW2_PHY_TEST_MODE_DATA_OFF			0x009178
+> +#define ACP_SW2_DATA_TO_PDM_EN				0x00917C
+> +
+> +#define ACP_SW2_EN					0x009200
+> +#define ACP_SW2_EN_STATUS				0x009204
+> +#define ACP_SW2_FRAMESIZE_BANK0				0x009208
+> +#define ACP_SW2_FRAMESIZE_BANK1				0x00920C
+> +#define ACP_SW2_SSP_COUNTER				0x009210
+> +#define ACP_SW2_TX_STREAM0_EN				0x009214
+> +#define ACP_SW2_TX_STREAM1_EN				0x009218
+> +#define ACP_SW2_TX_STREAM2_EN				0x00921C
+> +#define ACP_SW2_TX_STREAM3_EN				0x009220
+> +#define ACP_SW2_TX_STREAM4_EN				0x009224
+> +#define ACP_SW2_TX_STREAM5_EN				0x009228
+> +#define ACP_SW2_TX_STREAM6_EN				0x00922C
+> +#define ACP_SW2_TX_STREAM7_EN				0x009230
+> +#define ACP_SW2_TX_STREAM0_EN_STATUS			0x009234
+> +#define ACP_SW2_TX_STREAM1_EN_STATUS			0x009238
+> +#define ACP_SW2_TX_STREAM2_EN_STATUS			0x00923C
+> +#define ACP_SW2_TX_STREAM3_EN_STATUS			0x009240
+> +#define ACP_SW2_TX_STREAM4_EN_STATUS			0x009244
+> +#define ACP_SW2_TX_STREAM5_EN_STATUS			0x009248
+> +#define ACP_SW2_TX_STREAM6_EN_STATUS			0x00924C
+> +#define ACP_SW2_TX_STREAM7_EN_STATUS			0x009250
+> +#define ACP_SW2_TX_DP0_FRAME_FORMAT			0x009254
+> +#define ACP_SW2_TX_DP1_FRAME_FORMAT			0x009258
+> +#define ACP_SW2_TX_DP2_FRAME_FORMAT			0x00925C
+> +#define ACP_SW2_TX_DP3_FRAME_FORMAT			0x009260
+> +#define ACP_SW2_TX_DP4_FRAME_FORMAT			0x009264
+> +#define ACP_SW2_TX_DP5_FRAME_FORMAT			0x009268
+> +#define ACP_SW2_TX_DP6_FRAME_FORMAT			0x00926C
+> +#define ACP_SW2_TX_DP7_FRAME_FORMAT			0x009270
+> +#define ACP_SW2_TX_DP0_0_SAMPLEINTERVAL_BANK0		0x009280
+> +#define ACP_SW2_TX_DP0_0_HCTRL_BANK0			0x009284
+> +#define ACP_SW2_TX_DP0_0_HCTRL_OFFSET_BANK0		0x009288
+> +#define ACP_SW2_TX_DP0_0_LANE_CTRL_BANK0		0x00928C
+> +#define ACP_SW2_TX_DP0_0_CHANNEL_ENABLE_BANK0		0x009290
+> +#define ACP_SW2_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009294
+> +#define ACP_SW2_TX_DP0_0_SAMPLEINTERVAL_BANK1		0x009298
+> +#define ACP_SW2_TX_DP0_0_HCTRL_BANK1			0x00929C
+> +#define ACP_SW2_TX_DP0_0_HCTRL_OFFSET_BANK1		0x0092A0
+> +#define ACP_SW2_TX_DP0_0_LANE_CTRL_BANK1		0x0092A4
+> +#define ACP_SW2_TX_DP0_0_CHANNEL_ENABLE_BANK1		0x0092A8
+> +#define ACP_SW2_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0092AC
+> +#define ACP_SW2_TX_DP0_1_SAMPLEINTERVAL_BANK0		0x0092B0
+> +#define ACP_SW2_TX_DP0_1_HCTRL_BANK0			0x0092B4
+> +#define ACP_SW2_TX_DP0_1_HCTRL_OFFSET_BANK0		0x0092B8
+> +#define ACP_SW2_TX_DP0_1_LANE_CTRL_BANK0		0x0092BC
+> +#define ACP_SW2_TX_DP0_1_CHANNEL_ENABLE_BANK0		0x0092C0
+> +#define ACP_SW2_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0092C4
+> +#define ACP_SW2_TX_DP0_1_SAMPLEINTERVAL_BANK1		0x0092C8
+> +#define ACP_SW2_TX_DP0_1_HCTRL_BANK1			0x0092CC
+> +#define ACP_SW2_TX_DP0_1_HCTRL_OFFSET_BANK1		0x0092D0
+> +#define ACP_SW2_TX_DP0_1_LANE_CTRL_BANK1		0x0092D4
+> +#define ACP_SW2_TX_DP0_1_CHANNEL_ENABLE_BANK1		0x0092D8
+> +#define ACP_SW2_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0092DC
+> +#define ACP_SW2_TX_DP0_2_SAMPLEINTERVAL_BANK0		0x0092E0
+> +#define ACP_SW2_TX_DP0_2_HCTRL_BANK0			0x0092E4
+> +#define ACP_SW2_TX_DP0_2_HCTRL_OFFSET_BANK0		0x0092E8
+> +#define ACP_SW2_TX_DP0_2_LANE_CTRL_BANK0		0x0092EC
+> +#define ACP_SW2_TX_DP0_2_CHANNEL_ENABLE_BANK0		0x0092F0
+> +#define ACP_SW2_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0092F4
+> +#define ACP_SW2_TX_DP0_2_SAMPLEINTERVAL_BANK1		0x0092F8
+> +#define ACP_SW2_TX_DP0_2_HCTRL_BANK1			0x0092FC
+> +#define ACP_SW2_TX_DP0_2_HCTRL_OFFSET_BANK1		0x009300
+> +#define ACP_SW2_TX_DP0_2_LANE_CTRL_BANK1		0x009304
+> +#define ACP_SW2_TX_DP0_2_CHANNEL_ENABLE_BANK1		0x009308
+> +#define ACP_SW2_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00930C
+> +#define ACP_SW2_TX_DP0_3_SAMPLEINTERVAL_BANK0		0x009310
+> +#define ACP_SW2_TX_DP0_3_HCTRL_BANK0			0x009314
+> +#define ACP_SW2_TX_DP0_3_HCTRL_OFFSET_BANK0		0x009318
+> +#define ACP_SW2_TX_DP0_3_LANE_CTRL_BANK0		0x00931C
+> +#define ACP_SW2_TX_DP0_3_CHANNEL_ENABLE_BANK0		0x009320
+> +#define ACP_SW2_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009324
+> +#define ACP_SW2_TX_DP0_3_SAMPLEINTERVAL_BANK1		0x009328
+> +#define ACP_SW2_TX_DP0_3_HCTRL_BANK1			0x00932C
+> +#define ACP_SW2_TX_DP0_3_HCTRL_OFFSET_BANK1		0x009330
+> +#define ACP_SW2_TX_DP0_3_LANE_CTRL_BANK1		0x009334
+> +#define ACP_SW2_TX_DP0_3_CHANNEL_ENABLE_BANK1		0x009338
+> +#define ACP_SW2_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00933C
+> +#define ACP_SW2_TX_DP1_SAMPLEINTERVAL_BANK0		0x009370
+> +#define ACP_SW2_TX_DP1_HCTRL_BANK0			0x009374
+> +#define ACP_SW2_TX_DP1_HCTRL_OFFSET_BANK0		0x009378
+> +#define ACP_SW2_TX_DP1_LANE_CTRL_BANK0			0x00937C
+> +#define ACP_SW2_TX_DP1_CHANNEL_ENABLE_BANK0		0x009380
+> +#define ACP_SW2_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009384
+> +#define ACP_SW2_TX_DP1_SAMPLEINTERVAL_BANK1		0x009388
+> +#define ACP_SW2_TX_DP1_HCTRL_BANK1			0x00938C
+> +#define ACP_SW2_TX_DP1_HCTRL_OFFSET_BANK1		0x009390
+> +#define ACP_SW2_TX_DP1_LANE_CTRL_BANK1			0x009394
+> +#define ACP_SW2_TX_DP1_CHANNEL_ENABLE_BANK1		0x009398
+> +#define ACP_SW2_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00939C
+> +#define ACP_SW2_TX_DP2_SAMPLEINTERVAL_BANK0		0x0093A0
+> +#define ACP_SW2_TX_DP2_HCTRL_BANK0			0x0093A4
+> +#define ACP_SW2_TX_DP2_HCTRL_OFFSET_BANK0		0x0093A8
+> +#define ACP_SW2_TX_DP2_LANE_CTRL_BANK0			0x0093AC
+> +#define ACP_SW2_TX_DP2_CHANNEL_ENABLE_BANK0		0x0093B0
+> +#define ACP_SW2_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0093B4
+> +#define ACP_SW2_TX_DP2_SAMPLEINTERVAL_BANK1		0x0093B8
+> +#define ACP_SW2_TX_DP2_HCTRL_BANK1			0x0093BC
+> +#define ACP_SW2_TX_DP2_HCTRL_OFFSET_BANK1		0x0093C0
+> +#define ACP_SW2_TX_DP2_LANE_CTRL_BANK1			0x0093C4
+> +#define ACP_SW2_TX_DP2_CHANNEL_ENABLE_BANK1		0x0093C8
+> +#define ACP_SW2_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0093CC
+> +#define ACP_SW2_TX_DP3_SAMPLEINTERVAL_BANK0		0x0093D0
+> +#define ACP_SW2_TX_DP3_HCTRL_BANK0			0x0093D4
+> +#define ACP_SW2_TX_DP3_HCTRL_OFFSET_BANK0		0x0093D8
+> +#define ACP_SW2_TX_DP3_LANE_CTRL_BANK0			0x0093DC
+> +#define ACP_SW2_TX_DP3_CHANNEL_ENABLE_BANK0		0x0093E0
+> +#define ACP_SW2_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0093E4
+> +#define ACP_SW2_TX_DP3_SAMPLEINTERVAL_BANK1		0x0093E8
+> +#define ACP_SW2_TX_DP3_HCTRL_BANK1			0x0093EC
+> +#define ACP_SW2_TX_DP3_HCTRL_OFFSET_BANK1		0x0093F0
+> +#define ACP_SW2_TX_DP3_LANE_CTRL_BANK1			0x0093F4
+> +#define ACP_SW2_TX_DP3_CHANNEL_ENABLE_BANK1		0x0093F8
+> +#define ACP_SW2_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0093FC
+> +#define ACP_SW2_TX_DP4_SAMPLEINTERVAL_BANK0		0x009400
+> +#define ACP_SW2_TX_DP4_HCTRL_BANK0			0x009404
+> +#define ACP_SW2_TX_DP4_HCTRL_OFFSET_BANK0		0x009408
+> +#define ACP_SW2_TX_DP4_LANE_CTRL_BANK0			0x00940C
+> +#define ACP_SW2_TX_DP4_CHANNEL_ENABLE_BANK0		0x009410
+> +#define ACP_SW2_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009414
+> +#define ACP_SW2_TX_DP4_SAMPLEINTERVAL_BANK1		0x009418
+> +#define ACP_SW2_TX_DP4_HCTRL_BANK1			0x00941C
+> +#define ACP_SW2_TX_DP4_HCTRL_OFFSET_BANK1		0x009420
+> +#define ACP_SW2_TX_DP4_LANE_CTRL_BANK1			0x009424
+> +#define ACP_SW2_TX_DP4_CHANNEL_ENABLE_BANK1		0x009428
+> +#define ACP_SW2_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00942C
+> +#define ACP_SW2_TX_DP5_SAMPLEINTERVAL_BANK0		0x009430
+> +#define ACP_SW2_TX_DP5_HCTRL_BANK0			0x009434
+> +#define ACP_SW2_TX_DP5_HCTRL_OFFSET_BANK0		0x009438
+> +#define ACP_SW2_TX_DP5_LANE_CTRL_BANK0			0x00943C
+> +#define ACP_SW2_TX_DP5_CHANNEL_ENABLE_BANK0		0x009440
+> +#define ACP_SW2_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009444
+> +#define ACP_SW2_TX_DP5_SAMPLEINTERVAL_BANK1		0x009448
+> +#define ACP_SW2_TX_DP5_HCTRL_BANK1			0x00944C
+> +#define ACP_SW2_TX_DP5_HCTRL_OFFSET_BANK1		0x009450
+> +#define ACP_SW2_TX_DP5_LANE_CTRL_BANK1			0x009454
+> +#define ACP_SW2_TX_DP5_CHANNEL_ENABLE_BANK1		0x009458
+> +#define ACP_SW2_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00945C
+> +#define ACP_SW2_TX_DP6_SAMPLEINTERVAL_BANK0		0x009460
+> +#define ACP_SW2_TX_DP6_HCTRL_BANK0			0x009464
+> +#define ACP_SW2_TX_DP6_HCTRL_OFFSET_BANK0		0x009468
+> +#define ACP_SW2_TX_DP6_LANE_CTRL_BANK0			0x00946C
+> +#define ACP_SW2_TX_DP6_CHANNEL_ENABLE_BANK0		0x009470
+> +#define ACP_SW2_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009474
+> +#define ACP_SW2_TX_DP6_SAMPLEINTERVAL_BANK1		0x009478
+> +#define ACP_SW2_TX_DP6_HCTRL_BANK1			0x00947C
+> +#define ACP_SW2_TX_DP6_HCTRL_OFFSET_BANK1		0x009480
+> +#define ACP_SW2_TX_DP6_LANE_CTRL_BANK1			0x009484
+> +#define ACP_SW2_TX_DP6_CHANNEL_ENABLE_BANK1		0x009488
+> +#define ACP_SW2_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00948C
+> +#define ACP_SW2_TX_DP7_SAMPLEINTERVAL_BANK0		0x009490
+> +#define ACP_SW2_TX_DP7_HCTRL_BANK0			0x009494
+> +#define ACP_SW2_TX_DP7_HCTRL_OFFSET_BANK0		0x009498
+> +#define ACP_SW2_TX_DP7_LANE_CTRL_BANK0			0x00949C
+> +#define ACP_SW2_TX_DP7_CHANNEL_ENABLE_BANK0		0x0094A0
+> +#define ACP_SW2_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0094A4
+> +#define ACP_SW2_TX_DP7_SAMPLEINTERVAL_BANK1		0x0094A8
+> +#define ACP_SW2_TX_DP7_HCTRL_BANK1			0x0094AC
+> +#define ACP_SW2_TX_DP7_HCTRL_OFFSET_BANK1		0x0094B0
+> +#define ACP_SW2_TX_DP7_LANE_CTRL_BANK1			0x0094B4
+> +#define ACP_SW2_TX_DP7_CHANNEL_ENABLE_BANK1		0x0094B8
+> +#define ACP_SW2_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0094BC
+> +#define ACP_SW2_RX_STREAM0_EN				0x009514
+> +#define ACP_SW2_RX_STREAM1_EN				0x009518
+> +#define ACP_SW2_RX_STREAM2_EN				0x00951C
+> +#define ACP_SW2_RX_STREAM3_EN				0x009520
+> +#define ACP_SW2_RX_STREAM4_EN				0x009524
+> +#define ACP_SW2_RX_STREAM5_EN				0x009528
+> +#define ACP_SW2_RX_STREAM6_EN				0x00952C
+> +#define ACP_SW2_RX_STREAM7_EN				0x009530
+> +#define ACP_SW2_RX_STREAM0_EN_STATUS			0x009534
+> +#define ACP_SW2_RX_STREAM1_EN_STATUS			0x009538
+> +#define ACP_SW2_RX_STREAM2_EN_STATUS			0x00953C
+> +#define ACP_SW2_RX_STREAM3_EN_STATUS			0x009540
+> +#define ACP_SW2_RX_STREAM4_EN_STATUS			0x009544
+> +#define ACP_SW2_RX_STREAM5_EN_STATUS			0x009548
+> +#define ACP_SW2_RX_STREAM6_EN_STATUS			0x00954C
+> +#define ACP_SW2_RX_STREAM7_EN_STATUS			0x009550
+> +#define ACP_SW2_RX_DP0_FRAME_FORMAT			0x009554
+> +#define ACP_SW2_RX_DP1_FRAME_FORMAT			0x009558
+> +#define ACP_SW2_RX_DP2_FRAME_FORMAT			0x00955C
+> +#define ACP_SW2_RX_DP3_FRAME_FORMAT			0x009560
+> +#define ACP_SW2_RX_DP4_FRAME_FORMAT			0x009564
+> +#define ACP_SW2_RX_DP5_FRAME_FORMAT			0x009568
+> +#define ACP_SW2_RX_DP6_FRAME_FORMAT			0x00956C
+> +#define ACP_SW2_RX_DP7_FRAME_FORMAT			0x009570
+> +#define ACP_SW2_RX_DP0_0_SAMPLEINTERVAL_BANK0		0x009580
+> +#define ACP_SW2_RX_DP0_0_HCTRL_BANK0			0x009584
+> +#define ACP_SW2_RX_DP0_0_HCTRL_OFFSET_BANK0		0x009588
+> +#define ACP_SW2_RX_DP0_0_LANE_CTRL_BANK0		0x00958C
+> +#define ACP_SW2_RX_DP0_0_CHANNEL_ENABLE_BANK0		0x009590
+> +#define ACP_SW2_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009594
+> +#define ACP_SW2_RX_DP0_0_SAMPLEINTERVAL_BANK1		0x009598
+> +#define ACP_SW2_RX_DP0_0_HCTRL_BANK1			0x00959C
+> +#define ACP_SW2_RX_DP0_0_HCTRL_OFFSET_BANK1		0x0095A0
+> +#define ACP_SW2_RX_DP0_0_LANE_CTRL_BANK1		0x0095A4
+> +#define ACP_SW2_RX_DP0_0_CHANNEL_ENABLE_BANK1		0x0095A8
+> +#define ACP_SW2_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0095AC
+> +#define ACP_SW2_RX_DP0_1_SAMPLEINTERVAL_BANK0		0x0095B0
+> +#define ACP_SW2_RX_DP0_1_HCTRL_BANK0			0x0095B4
+> +#define ACP_SW2_RX_DP0_1_HCTRL_OFFSET_BANK0		0x0095B8
+> +#define ACP_SW2_RX_DP0_1_LANE_CTRL_BANK0		0x0095BC
+> +#define ACP_SW2_RX_DP0_1_CHANNEL_ENABLE_BANK0		0x0095C0
+> +#define ACP_SW2_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0095C4
+> +#define ACP_SW2_RX_DP0_1_SAMPLEINTERVAL_BANK1		0x0095C8
+> +#define ACP_SW2_RX_DP0_1_HCTRL_BANK1			0x0095CC
+> +#define ACP_SW2_RX_DP0_1_HCTRL_OFFSET_BANK1		0x0095D0
+> +#define ACP_SW2_RX_DP0_1_LANE_CTRL_BANK1		0x0095D4
+> +#define ACP_SW2_RX_DP0_1_CHANNEL_ENABLE_BANK1		0x0095D8
+> +#define ACP_SW2_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0095DC
+> +#define ACP_SW2_RX_DP0_2_SAMPLEINTERVAL_BANK0		0x0095E0
+> +#define ACP_SW2_RX_DP0_2_HCTRL_BANK0			0x0095E4
+> +#define ACP_SW2_RX_DP0_2_HCTRL_OFFSET_BANK0		0x0095E8
+> +#define ACP_SW2_RX_DP0_2_LANE_CTRL_BANK0		0x0095EC
+> +#define ACP_SW2_RX_DP0_2_CHANNEL_ENABLE_BANK0		0x0095F0
+> +#define ACP_SW2_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0095F4
+> +#define ACP_SW2_RX_DP0_2_SAMPLEINTERVAL_BANK1		0x0095F8
+> +#define ACP_SW2_RX_DP0_2_HCTRL_BANK1			0x0095FC
+> +#define ACP_SW2_RX_DP0_2_HCTRL_OFFSET_BANK1		0x009600
+> +#define ACP_SW2_RX_DP0_2_LANE_CTRL_BANK1		0x009604
+> +#define ACP_SW2_RX_DP0_2_CHANNEL_ENABLE_BANK1		0x009608
+> +#define ACP_SW2_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00960C
+> +#define ACP_SW2_RX_DP0_3_SAMPLEINTERVAL_BANK0		0x009610
+> +#define ACP_SW2_RX_DP0_3_HCTRL_BANK0			0x009614
+> +#define ACP_SW2_RX_DP0_3_HCTRL_OFFSET_BANK0		0x009618
+> +#define ACP_SW2_RX_DP0_3_LANE_CTRL_BANK0		0x00961C
+> +#define ACP_SW2_RX_DP0_3_CHANNEL_ENABLE_BANK0		0x009620
+> +#define ACP_SW2_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009624
+> +#define ACP_SW2_RX_DP0_3_SAMPLEINTERVAL_BANK1		0x009628
+> +#define ACP_SW2_RX_DP0_3_HCTRL_BANK1			0x00962C
+> +#define ACP_SW2_RX_DP0_3_HCTRL_OFFSET_BANK1		0x009630
+> +#define ACP_SW2_RX_DP0_3_LANE_CTRL_BANK1		0x009634
+> +#define ACP_SW2_RX_DP0_3_CHANNEL_ENABLE_BANK1		0x009638
+> +#define ACP_SW2_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00963C
+> +#define ACP_SW2_RX_DP1_SAMPLEINTERVAL_BANK0		0x009670
+> +#define ACP_SW2_RX_DP1_HCTRL_BANK0			0x009674
+> +#define ACP_SW2_RX_DP1_HCTRL_OFFSET_BANK0		0x009678
+> +#define ACP_SW2_RX_DP1_LANE_CTRL_BANK0			0x00967C
+> +#define ACP_SW2_RX_DP1_CHANNEL_ENABLE_BANK0		0x009680
+> +#define ACP_SW2_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009684
+> +#define ACP_SW2_RX_DP1_SAMPLEINTERVAL_BANK1		0x009688
+> +#define ACP_SW2_RX_DP1_HCTRL_BANK1			0x00968C
+> +#define ACP_SW2_RX_DP1_HCTRL_OFFSET_BANK1		0x009690
+> +#define ACP_SW2_RX_DP1_LANE_CTRL_BANK1			0x009694
+> +#define ACP_SW2_RX_DP1_CHANNEL_ENABLE_BANK1		0x009698
+> +#define ACP_SW2_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00969C
+> +#define ACP_SW2_RX_DP2_SAMPLEINTERVAL_BANK0		0x0096A0
+> +#define ACP_SW2_RX_DP2_HCTRL_BANK0			0x0096A4
+> +#define ACP_SW2_RX_DP2_HCTRL_OFFSET_BANK0		0x0096A8
+> +#define ACP_SW2_RX_DP2_LANE_CTRL_BANK0			0x0096AC
+> +#define ACP_SW2_RX_DP2_CHANNEL_ENABLE_BANK0		0x0096B0
+> +#define ACP_SW2_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0096B4
+> +#define ACP_SW2_RX_DP2_SAMPLEINTERVAL_BANK1		0x0096B8
+> +#define ACP_SW2_RX_DP2_HCTRL_BANK1			0x0096BC
+> +#define ACP_SW2_RX_DP2_HCTRL_OFFSET_BANK1		0x0096C0
+> +#define ACP_SW2_RX_DP2_LANE_CTRL_BANK1			0x0096C4
+> +#define ACP_SW2_RX_DP2_CHANNEL_ENABLE_BANK1		0x0096C8
+> +#define ACP_SW2_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0096CC
+> +#define ACP_SW2_RX_DP3_SAMPLEINTERVAL_BANK0		0x0096D0
+> +#define ACP_SW2_RX_DP3_HCTRL_BANK0			0x0096D4
+> +#define ACP_SW2_RX_DP3_HCTRL_OFFSET_BANK0		0x0096D8
+> +#define ACP_SW2_RX_DP3_LANE_CTRL_BANK0			0x0096DC
+> +#define ACP_SW2_RX_DP3_CHANNEL_ENABLE_BANK0		0x0096E0
+> +#define ACP_SW2_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0096E4
+> +#define ACP_SW2_RX_DP3_SAMPLEINTERVAL_BANK1		0x0096E8
+> +#define ACP_SW2_RX_DP3_HCTRL_BANK1			0x0096EC
+> +#define ACP_SW2_RX_DP3_HCTRL_OFFSET_BANK1		0x0096F0
+> +#define ACP_SW2_RX_DP3_LANE_CTRL_BANK1			0x0096F4
+> +#define ACP_SW2_RX_DP3_CHANNEL_ENABLE_BANK1		0x0096F8
+> +#define ACP_SW2_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0096FC
+> +#define ACP_SW2_RX_DP4_SAMPLEINTERVAL_BANK0		0x009700
+> +#define ACP_SW2_RX_DP4_HCTRL_BANK0			0x009704
+> +#define ACP_SW2_RX_DP4_HCTRL_OFFSET_BANK0		0x009708
+> +#define ACP_SW2_RX_DP4_LANE_CTRL_BANK0			0x00970C
+> +#define ACP_SW2_RX_DP4_CHANNEL_ENABLE_BANK0		0x009710
+> +#define ACP_SW2_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009714
+> +#define ACP_SW2_RX_DP4_SAMPLEINTERVAL_BANK1		0x009718
+> +#define ACP_SW2_RX_DP4_HCTRL_BANK1			0x00971C
+> +#define ACP_SW2_RX_DP4_HCTRL_OFFSET_BANK1		0x009720
+> +#define ACP_SW2_RX_DP4_LANE_CTRL_BANK1			0x009724
+> +#define ACP_SW2_RX_DP4_CHANNEL_ENABLE_BANK1		0x009728
+> +#define ACP_SW2_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00972C
+> +#define ACP_SW2_RX_DP5_SAMPLEINTERVAL_BANK0		0x009730
+> +#define ACP_SW2_RX_DP5_HCTRL_BANK0			0x009734
+> +#define ACP_SW2_RX_DP5_HCTRL_OFFSET_BANK0		0x009738
+> +#define ACP_SW2_RX_DP5_LANE_CTRL_BANK0			0x00973C
+> +#define ACP_SW2_RX_DP5_CHANNEL_ENABLE_BANK0		0x009740
+> +#define ACP_SW2_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009744
+> +#define ACP_SW2_RX_DP5_SAMPLEINTERVAL_BANK1		0x009748
+> +#define ACP_SW2_RX_DP5_HCTRL_BANK1			0x00974C
+> +#define ACP_SW2_RX_DP5_HCTRL_OFFSET_BANK1		0x009750
+> +#define ACP_SW2_RX_DP5_LANE_CTRL_BANK1			0x009754
+> +#define ACP_SW2_RX_DP5_CHANNEL_ENABLE_BANK1		0x009758
+> +#define ACP_SW2_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00975C
+> +#define ACP_SW2_RX_DP6_SAMPLEINTERVAL_BANK0		0x009760
+> +#define ACP_SW2_RX_DP6_HCTRL_BANK0			0x009764
+> +#define ACP_SW2_RX_DP6_HCTRL_OFFSET_BANK0		0x009768
+> +#define ACP_SW2_RX_DP6_LANE_CTRL_BANK0			0x00976C
+> +#define ACP_SW2_RX_DP6_CHANNEL_ENABLE_BANK0		0x009770
+> +#define ACP_SW2_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x009774
+> +#define ACP_SW2_RX_DP6_SAMPLEINTERVAL_BANK1		0x009778
+> +#define ACP_SW2_RX_DP6_HCTRL_BANK1			0x00977C
+> +#define ACP_SW2_RX_DP6_HCTRL_OFFSET_BANK1		0x009780
+> +#define ACP_SW2_RX_DP6_LANE_CTRL_BANK1			0x009784
+> +#define ACP_SW2_RX_DP6_CHANNEL_ENABLE_BANK1		0x009788
+> +#define ACP_SW2_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00978C
+> +#define ACP_SW2_RX_DP7_SAMPLEINTERVAL_BANK0		0x009790
+> +#define ACP_SW2_RX_DP7_HCTRL_BANK0			0x009794
+> +#define ACP_SW2_RX_DP7_HCTRL_OFFSET_BANK0		0x009798
+> +#define ACP_SW2_RX_DP7_LANE_CTRL_BANK0			0x00979C
+> +#define ACP_SW2_RX_DP7_CHANNEL_ENABLE_BANK0		0x0097A0
+> +#define ACP_SW2_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x0097A4
+> +#define ACP_SW2_RX_DP7_SAMPLEINTERVAL_BANK1		0x0097A8
+> +#define ACP_SW2_RX_DP7_HCTRL_BANK1			0x0097AC
+> +#define ACP_SW2_RX_DP7_HCTRL_OFFSET_BANK1		0x0097B0
+> +#define ACP_SW2_RX_DP7_LANE_CTRL_BANK1			0x0097B4
+> +#define ACP_SW2_RX_DP7_CHANNEL_ENABLE_BANK1		0x0097B8
+> +#define ACP_SW2_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x0097BC
+> +#define ACP_SW2_BPT_PORT_EN				0x0097C0
+> +#define ACP_SW2_BPT_PORT_EN_STATUS			0x0097C4
+> +#define ACP_SW2_BPT_PORT_FRAME_FORMAT			0x0097C8
+> +#define ACP_SW2_BPT_PORT_SAMPLEINTERVAL_BANK0		0x0097CC
+> +#define ACP_SW2_BPT_PORT_HCTRL_BANK0			0x0097D0
+> +#define ACP_SW2_BPT_PORT_OFFSET_BANK0			0x0097D4
+> +#define ACP_SW2_BPT_PORT_LANE_SELECT_BANK0		0x0097D8
+> +#define ACP_SW2_BPT_PORT_CHANNEL_ENABLE_BANK0		0x0097DC
+> +#define ACP_SW2_BPT_PORT_SAMPLEINTERVAL_BANK1		0x0097E0
+> +#define ACP_SW2_BPT_PORT_HCTRL_BANK1			0x0097E4
+> +#define ACP_SW2_BPT_PORT_OFFSET_BANK1			0x0097E8
+> +#define ACP_SW2_BPT_PORT_LANE_SELECT_BANK1		0x0097EC
+> +#define ACP_SW2_BPT_PORT_CHANNEL_ENABLE_BANK1		0x0097F0
+> +#define ACP_SW2_BPT_PORT_FIRST_BYTE_ADDR		0x0097F4
+> +#define ACP_SW2_CLK_RESUME_CTRL				0x0097F8
+> +#define ACP_SW2_CLK_RESUME_DELAY_CNTR			0x0097FC
+> +#define ACP_SW2_BUS_RESET_CTRL				0x009800
+> +#define ACP_SW2_PRBS_ERR_STATUS				0x009804
+> +#define ACP_SW2_WALLCLK_MISC				0x009808
+> +#define ACP_SW2_WALL_CLK_COUNTER			0x00980C
+> +#define ACP_SW2_PING_STATUS_REGISTER_LOW		0x009810
+> +#define ACP_SW2_PING_STATUS_REGISTER_HIGH		0x009814
+> +#define ACP_SW2_PING_STATUS_CURRENT_BANK_SEL		0x009818
+> +#define ACP_SW2_TZD_CHANGE				0x00981C
+> +#define ACP_SW2_WALLCLK_INTR_CNTL			0x009820
+> +
+> +#define ACP_SW3_GLOBAL_CAPABILITIES			0x00AE00
+> +#define ACP_SW3_RX_DMA0_RINGBUFADDR			0x00AE04
+> +#define ACP_SW3_RX_DMA0_RINGBUFSIZE			0x00AE08
+> +#define ACP_SW3_RX_DMA0_FIFOADDR			0x00AE0C
+> +#define ACP_SW3_RX_DMA0_FIFOSIZE			0x00AE10
+> +#define ACP_SW3_RX_DMA0_BURST_SIZE			0x00AE14
+> +#define ACP_SW3_RX_DMA0_LINKPOSITIONCNTR		0x00AE18
+> +#define ACP_SW3_RX_DMA0_LINEARPOSITIONCNTR_HIGH		0x00AE1C
+> +#define ACP_SW3_RX_DMA0_LINEARPOSITIONCNTR_LOW		0x00AE20
+> +#define ACP_SW3_RX_DMA0_INTR_WATERMARK_SIZE		0x00AE24
+> +#define ACP_SW3_RX_DMA1_RINGBUFADDR			0x00AE28
+> +#define ACP_SW3_RX_DMA1_RINGBUFSIZE			0x00AE2C
+> +#define ACP_SW3_RX_DMA1_FIFOADDR			0x00AE30
+> +#define ACP_SW3_RX_DMA1_FIFOSIZE			0x00AE34
+> +#define ACP_SW3_RX_DMA1_BURST_SIZE			0x00AE38
+> +#define ACP_SW3_RX_DMA1_LINKPOSITIONCNTR		0x00AE3C
+> +#define ACP_SW3_RX_DMA1_LINEARPOSITIONCNTR_HIGH		0x00AE40
+> +#define ACP_SW3_RX_DMA1_LINEARPOSITIONCNTR_LOW		0x00AE44
+> +#define ACP_SW3_RX_DMA1_INTR_WATERMARK_SIZE		0x00AE48
+> +#define ACP_SW3_RX_DMA2_RINGBUFADDR			0x00AE4C
+> +#define ACP_SW3_RX_DMA2_RINGBUFSIZE			0x00AE50
+> +#define ACP_SW3_RX_DMA2_FIFOADDR			0x00AE54
+> +#define ACP_SW3_RX_DMA2_FIFOSIZE			0x00AE58
+> +#define ACP_SW3_RX_DMA2_BURST_SIZE			0x00AE5C
+> +#define ACP_SW3_RX_DMA2_LINKPOSITIONCNTR		0x00AE60
+> +#define ACP_SW3_RX_DMA2_LINEARPOSITIONCNTR_HIGH		0x00AE64
+> +#define ACP_SW3_RX_DMA2_LINEARPOSITIONCNTR_LOW		0x00AE68
+> +#define ACP_SW3_RX_DMA2_INTR_WATERMARK_SIZE		0x00AE6C
+> +#define ACP_SW3_RX_DMA3_RINGBUFADDR			0x00AE70
+> +#define ACP_SW3_RX_DMA3_RINGBUFSIZE			0x00AE74
+> +#define ACP_SW3_RX_DMA3_FIFOADDR			0x00AE78
+> +#define ACP_SW3_RX_DMA3_FIFOSIZE			0x00AE7C
+> +#define ACP_SW3_RX_DMA3_BURST_SIZE			0x00AE80
+> +#define ACP_SW3_RX_DMA3_LINKPOSITIONCNTR		0x00AE84
+> +#define ACP_SW3_RX_DMA3_LINEARPOSITIONCNTR_HIGH		0x00AE88
+> +#define ACP_SW3_RX_DMA3_LINEARPOSITIONCNTR_LOW		0x00AE8C
+> +#define ACP_SW3_RX_DMA3_INTR_WATERMARK_SIZE		0x00AE90
+> +#define ACP_SW3_RX_DMA4_RINGBUFADDR			0x00AE94
+> +#define ACP_SW3_RX_DMA4_RINGBUFSIZE			0x00AE98
+> +#define ACP_SW3_RX_DMA4_FIFOADDR			0x00AE9C
+> +#define ACP_SW3_RX_DMA4_FIFOSIZE			0x00AEA0
+> +#define ACP_SW3_RX_DMA4_BURST_SIZE			0x00AEA4
+> +#define ACP_SW3_RX_DMA4_LINKPOSITIONCNTR		0x00AEA8
+> +#define ACP_SW3_RX_DMA4_LINEARPOSITIONCNTR_HIGH		0x00AEAC
+> +#define ACP_SW3_RX_DMA4_LINEARPOSITIONCNTR_LOW		0x00AEB0
+> +#define ACP_SW3_RX_DMA4_INTR_WATERMARK_SIZE		0x00AEB4
+> +#define ACP_SW3_RX_DMA5_RINGBUFADDR			0x00AEB8
+> +#define ACP_SW3_RX_DMA5_RINGBUFSIZE			0x00AEBC
+> +#define ACP_SW3_RX_DMA5_FIFOADDR			0x00AEC0
+> +#define ACP_SW3_RX_DMA5_FIFOSIZE			0x00AEC4
+> +#define ACP_SW3_RX_DMA5_BURST_SIZE			0x00AEC8
+> +#define ACP_SW3_RX_DMA5_LINKPOSITIONCNTR		0x00AECC
+> +#define ACP_SW3_RX_DMA5_LINEARPOSITIONCNTR_HIGH		0x00AED0
+> +#define ACP_SW3_RX_DMA5_LINEARPOSITIONCNTR_LOW		0x00AED4
+> +#define ACP_SW3_RX_DMA5_INTR_WATERMARK_SIZE		0x00AED8
+> +#define ACP_SW3_RX_DMA6_RINGBUFADDR			0x00AEDC
+> +#define ACP_SW3_RX_DMA6_RINGBUFSIZE			0x00AEE0
+> +#define ACP_SW3_RX_DMA6_FIFOADDR			0x00AEE4
+> +#define ACP_SW3_RX_DMA6_FIFOSIZE			0x00AEE8
+> +#define ACP_SW3_RX_DMA6_BURST_SIZE			0x00AEEC
+> +#define ACP_SW3_RX_DMA6_LINKPOSITIONCNTR		0x00AEF0
+> +#define ACP_SW3_RX_DMA6_LINEARPOSITIONCNTR_HIGH		0x00AEF4
+> +#define ACP_SW3_RX_DMA6_LINEARPOSITIONCNTR_LOW		0x00AEF8
+> +#define ACP_SW3_RX_DMA6_INTR_WATERMARK_SIZE		0x00AEFC
+> +#define ACP_SW3_RX_DMA7_RINGBUFADDR			0x00AF00
+> +#define ACP_SW3_RX_DMA7_RINGBUFSIZE			0x00AF04
+> +#define ACP_SW3_RX_DMA7_FIFOADDR			0x00AF08
+> +#define ACP_SW3_RX_DMA7_FIFOSIZE			0x00AF0C
+> +#define ACP_SW3_RX_DMA7_BURST_SIZE			0x00AF10
+> +#define ACP_SW3_RX_DMA7_LINKPOSITIONCNTR		0x00AF14
+> +#define ACP_SW3_RX_DMA7_LINEARPOSITIONCNTR_HIGH		0x00AF18
+> +#define ACP_SW3_RX_DMA7_LINEARPOSITIONCNTR_LOW		0x00AF1C
+> +#define ACP_SW3_RX_DMA7_INTR_WATERMARK_SIZE		0x00AF20
+> +#define ACP_SW3_TX_DMA0_RINGBUFADDR			0x00AF24
+> +#define ACP_SW3_TX_DMA0_RINGBUFSIZE			0x00AF28
+> +#define ACP_SW3_TX_DMA0_FIFOADDR			0x00AF2C
+> +#define ACP_SW3_TX_DMA0_FIFOSIZE			0x00AF30
+> +#define ACP_SW3_TX_DMA0_BURST_SIZE			0x00AF34
+> +#define ACP_SW3_TX_DMA0_LINKPOSITIONCNTR		0x00AF38
+> +#define ACP_SW3_TX_DMA0_LINEARPOSITIONCNTR_HIGH		0x00AF3C
+> +#define ACP_SW3_TX_DMA0_LINEARPOSITIONCNTR_LOW		0x00AF40
+> +#define ACP_SW3_TX_DMA0_INTR_WATERMARK_SIZE		0x00AF44
+> +#define ACP_SW3_TX_DMA1_RINGBUFADDR			0x00AF48
+> +#define ACP_SW3_TX_DMA1_RINGBUFSIZE			0x00AF4C
+> +#define ACP_SW3_TX_DMA1_FIFOADDR			0x00AF50
+> +#define ACP_SW3_TX_DMA1_FIFOSIZE			0x00AF54
+> +#define ACP_SW3_TX_DMA1_BURST_SIZE			0x00AF58
+> +#define ACP_SW3_TX_DMA1_LINKPOSITIONCNTR		0x00AF5C
+> +#define ACP_SW3_TX_DMA1_LINEARPOSITIONCNTR_HIGH		0x00AF60
+> +#define ACP_SW3_TX_DMA1_LINEARPOSITIONCNTR_LOW		0x00AF64
+> +#define ACP_SW3_TX_DMA1_INTR_WATERMARK_SIZE		0x00AF68
+> +#define ACP_SW3_TX_DMA2_RINGBUFADDR			0x00AF6C
+> +#define ACP_SW3_TX_DMA2_RINGBUFSIZE			0x00AF70
+> +#define ACP_SW3_TX_DMA2_FIFOADDR			0x00AF74
+> +#define ACP_SW3_TX_DMA2_FIFOSIZE			0x00AF78
+> +#define ACP_SW3_TX_DMA2_BURST_SIZE			0x00AF7C
+> +#define ACP_SW3_TX_DMA2_LINKPOSITIONCNTR		0x00AF80
+> +#define ACP_SW3_TX_DMA2_LINEARPOSITIONCNTR_HIGH		0x00AF84
+> +#define ACP_SW3_TX_DMA2_LINEARPOSITIONCNTR_LOW		0x00AF88
+> +#define ACP_SW3_TX_DMA2_INTR_WATERMARK_SIZE		0x00AF8C
+> +#define ACP_SW3_TX_DMA3_RINGBUFADDR			0x00AF90
+> +#define ACP_SW3_TX_DMA3_RINGBUFSIZE			0x00AF94
+> +#define ACP_SW3_TX_DMA3_FIFOADDR			0x00AF98
+> +#define ACP_SW3_TX_DMA3_FIFOSIZE			0x00AF9C
+> +#define ACP_SW3_TX_DMA3_BURST_SIZE			0x00AFA0
+> +#define ACP_SW3_TX_DMA3_LINKPOSITIONCNTR		0x00AFA4
+> +#define ACP_SW3_TX_DMA3_LINEARPOSITIONCNTR_HIGH		0x00AFA8
+> +#define ACP_SW3_TX_DMA3_LINEARPOSITIONCNTR_LOW		0x00AFAC
+> +#define ACP_SW3_TX_DMA3_INTR_WATERMARK_SIZE		0x00AFB0
+> +#define ACP_SW3_TX_DMA4_RINGBUFADDR			0x00AFB4
+> +#define ACP_SW3_TX_DMA4_RINGBUFSIZE			0x00AFB8
+> +#define ACP_SW3_TX_DMA4_FIFOADDR			0x00AFBC
+> +#define ACP_SW3_TX_DMA4_FIFOSIZE			0x00AFC0
+> +#define ACP_SW3_TX_DMA4_BURST_SIZE			0x00AFC4
+> +#define ACP_SW3_TX_DMA4_LINKPOSITIONCNTR		0x00AFC8
+> +#define ACP_SW3_TX_DMA4_LINEARPOSITIONCNTR_HIGH		0x00AFCC
+> +#define ACP_SW3_TX_DMA4_LINEARPOSITIONCNTR_LOW		0x00AFD0
+> +#define ACP_SW3_TX_DMA4_INTR_WATERMARK_SIZE		0x00AFD4
+> +#define ACP_SW3_TX_DMA5_RINGBUFADDR			0x00AFD8
+> +#define ACP_SW3_TX_DMA5_RINGBUFSIZE			0x00AFDC
+> +#define ACP_SW3_TX_DMA5_FIFOADDR			0x00AFE0
+> +#define ACP_SW3_TX_DMA5_FIFOSIZE			0x00AFE4
+> +#define ACP_SW3_TX_DMA5_BURST_SIZE			0x00AFE8
+> +#define ACP_SW3_TX_DMA5_LINKPOSITIONCNTR		0x00AFEC
+> +#define ACP_SW3_TX_DMA5_LINEARPOSITIONCNTR_HIGH		0x00AFF0
+> +#define ACP_SW3_TX_DMA5_LINEARPOSITIONCNTR_LOW		0x00AFF4
+> +#define ACP_SW3_TX_DMA5_INTR_WATERMARK_SIZE		0x00AFF8
+> +#define ACP_SW3_TX_DMA6_RINGBUFADDR			0x00AFFC
+> +#define ACP_SW3_TX_DMA6_RINGBUFSIZE			0x00B000
+> +#define ACP_SW3_TX_DMA6_FIFOADDR			0x00B004
+> +#define ACP_SW3_TX_DMA6_FIFOSIZE			0x00B008
+> +#define ACP_SW3_TX_DMA6_BURST_SIZE			0x00B00C
+> +#define ACP_SW3_TX_DMA6_LINKPOSITIONCNTR		0x00B010
+> +#define ACP_SW3_TX_DMA6_LINEARPOSITIONCNTR_HIGH		0x00B014
+> +#define ACP_SW3_TX_DMA6_LINEARPOSITIONCNTR_LOW		0x00B018
+> +#define ACP_SW3_TX_DMA6_INTR_WATERMARK_SIZE		0x00B01C
+> +#define ACP_SW3_TX_DMA7_RINGBUFADDR			0x00B020
+> +#define ACP_SW3_TX_DMA7_RINGBUFSIZE			0x00B024
+> +#define ACP_SW3_TX_DMA7_FIFOADDR			0x00B028
+> +#define ACP_SW3_TX_DMA7_FIFOSIZE			0x00B02C
+> +#define ACP_SW3_TX_DMA7_BURST_SIZE			0x00B030
+> +#define ACP_SW3_TX_DMA7_LINKPOSITIONCNTR		0x00B034
+> +#define ACP_SW3_TX_DMA7_LINEARPOSITIONCNTR_HIGH		0x00B038
+> +#define ACP_SW3_TX_DMA7_LINEARPOSITIONCNTR_LOW		0x00B03C
+> +#define ACP_SW3_TX_DMA7_INTR_WATERMARK_SIZE		0x00B040
+> +#define ACP_SW3_RX_DMA0_POS_TRACK			0x00B044
+> +#define ACP_SW3_RX_DMA0_POS				0x00B048
+> +#define ACP_SW3_RX_DMA1_POS_TRACK			0x00B04C
+> +#define ACP_SW3_RX_DMA1_POS				0x00B050
+> +#define ACP_SW3_RX_DMA2_POS_TRACK			0x00B054
+> +#define ACP_SW3_RX_DMA2_POS				0x00B058
+> +#define ACP_SW3_RX_DMA3_POS_TRACK			0x00B05C
+> +#define ACP_SW3_RX_DMA3_POS				0x00B060
+> +#define ACP_SW3_RX_DMA4_POS_TRACK			0x00B064
+> +#define ACP_SW3_RX_DMA4_POS				0x00B068
+> +#define ACP_SW3_RX_DMA5_POS_TRACK			0x00B06C
+> +#define ACP_SW3_RX_DMA5_POS				0x00B070
+> +#define ACP_SW3_RX_DMA6_POS_TRACK			0x00B074
+> +#define ACP_SW3_RX_DMA6_POS				0x00B078
+> +#define ACP_SW3_RX_DMA7_POS_TRACK			0x00B07C
+> +#define ACP_SW3_RX_DMA7_POS				0x00B080
+> +#define ACP_SW3_TX_DMA0_POS_TRACK			0x00B084
+> +#define ACP_SW3_TX_DMA0_POS				0x00B088
+> +#define ACP_SW3_TX_DMA1_POS_TRACK			0x00B08C
+> +#define ACP_SW3_TX_DMA1_POS				0x00B090
+> +#define ACP_SW3_TX_DMA2_POS_TRACK			0x00B094
+> +#define ACP_SW3_TX_DMA2_POS				0x00B098
+> +#define ACP_SW3_TX_DMA3_POS_TRACK			0x00B09C
+> +#define ACP_SW3_TX_DMA3_POS				0x00B0A0
+> +#define ACP_SW3_TX_DMA4_POS_TRACK			0x00B0A4
+> +#define ACP_SW3_TX_DMA4_POS				0x00B0A8
+> +#define ACP_SW3_TX_DMA5_POS_TRACK			0x00B0AC
+> +#define ACP_SW3_TX_DMA5_POS				0x00B0B0
+> +#define ACP_SW3_TX_DMA6_POS_TRACK			0x00B0B4
+> +#define ACP_SW3_TX_DMA6_POS				0x00B0B8
+> +#define ACP_SW3_TX_DMA7_POS_TRACK			0x00B0BC
+> +#define ACP_SW3_TX_DMA7_POS				0x00B0C0
+> +#define ACP_SW3_FIFO_ERROR_REASON			0x00B0C4
+> +#define ACP_SW3_FIFO_ERROR_INTR_MASK			0x00B0C8
+> +#define ACP_SW3_ERROR_REASON1				0x00B0CC
+> +#define ACP_SW3_ERROR_INTR_MASK1			0x00B0D0
+> +#define ACP_SW3_ERROR_REASON2				0x00B0D4
+> +#define ACP_SW3_ERROR_INTR_MASK2			0x00B0D8
+> +
+> +#define ACP_SW3_CORB_BASE_ADDRESS			0x00B100
+> +#define ACP_SW3_CORB_WRITE_POINTER			0x00B104
+> +#define ACP_SW3_CORB_READ_POINTER			0x00B108
+> +#define ACP_SW3_CORB_CONTROL				0x00B10C
+> +#define ACP_SW3_CORB_SIZE				0x00B114
+> +#define ACP_SW3_RIRB_BASE_ADDRESS			0x00B118
+> +#define ACP_SW3_RIRB_WRITE_POINTER			0x00B11C
+> +#define ACP_SW3_RIRB_RESPONSE_INTERRUPT_COUNT		0x00B120
+> +#define ACP_SW3_RIRB_CONTROL				0x00B124
+> +#define ACP_SW3_RIRB_SIZE				0x00B128
+> +#define ACP_SW3_RIRB_FIFO_MIN_THDL			0x00B12C
+> +#define ACP_SW3_IMM_CMD_UPPER_WORD			0x00B130
+> +#define ACP_SW3_IMM_CMD_LOWER_QWORD			0x00B134
+> +#define ACP_SW3_IMM_RESP_UPPER_WORD			0x00B138
+> +#define ACP_SW3_IMM_RESP_LOWER_QWORD			0x00B13C
+> +#define ACP_SW3_IMM_CMD_STS				0x00B140
+> +#define ACP_SW3_BRA_BASE_ADDRESS			0x00B144
+> +#define ACP_SW3_BRA_TRANSFER_SIZE			0x00B148
+> +#define ACP_SW3_BRA_DMA_BUSY				0x00B14C
+> +#define ACP_SW3_BRA_RESP				0x00B150
+> +#define ACP_SW3_BRA_RESP_FRAME_ADDR			0x00B154
+> +#define ACP_SW3_BRA_CURRENT_TRANSFER_SIZE		0x00B158
+> +#define ACP_SW3_STATE_CHANGE_STATUS_0TO7		0x00B15C
+> +#define ACP_SW3_STATE_CHANGE_STATUS_8TO11		0x00B160
+> +#define ACP_SW3_STATE_CHANGE_STATUS_MASK_0TO7		0x00B164
+> +#define ACP_SW3_STATE_CHANGE_STATUS_MASK_8TO11		0x00B168
+> +#define ACP_SW3_CLK_FREQUENCY_CTRL_BANK0		0x00B16C
+> +#define ACP_SW3_CLK_FREQUENCY_CTRL_BANK1		0x00B170
+> +#define ACP_SW3_ERROR_INTR_MASK				0x00B174
+> +#define ACP_SW3_PHY_TEST_MODE_DATA_OFF			0x00B178
+> +#define ACP_SW3_DATA_TO_PDM_EN				0x00B17C
+> +
+> +#define ACP_SW3_EN					0x00B200
+> +#define ACP_SW3_EN_STATUS				0x00B204
+> +#define ACP_SW3_FRAMESIZE_BANK0				0x00B208
+> +#define ACP_SW3_FRAMESIZE_BANK1				0x00B20C
+> +#define ACP_SW3_SSP_COUNTER				0x00B210
+> +#define ACP_SW3_TX_STREAM0_EN				0x00B214
+> +#define ACP_SW3_TX_STREAM1_EN				0x00B218
+> +#define ACP_SW3_TX_STREAM2_EN				0x00B21C
+> +#define ACP_SW3_TX_STREAM3_EN				0x00B220
+> +#define ACP_SW3_TX_STREAM4_EN				0x00B224
+> +#define ACP_SW3_TX_STREAM5_EN				0x00B228
+> +#define ACP_SW3_TX_STREAM6_EN				0x00B22C
+> +#define ACP_SW3_TX_STREAM7_EN				0x00B230
+> +#define ACP_SW3_TX_STREAM0_EN_STATUS			0x00B234
+> +#define ACP_SW3_TX_STREAM1_EN_STATUS			0x00B238
+> +#define ACP_SW3_TX_STREAM2_EN_STATUS			0x00B23C
+> +#define ACP_SW3_TX_STREAM3_EN_STATUS			0x00B240
+> +#define ACP_SW3_TX_STREAM4_EN_STATUS			0x00B244
+> +#define ACP_SW3_TX_STREAM5_EN_STATUS			0x00B248
+> +#define ACP_SW3_TX_STREAM6_EN_STATUS			0x00B24C
+> +#define ACP_SW3_TX_STREAM7_EN_STATUS			0x00B250
+> +#define ACP_SW3_TX_DP0_FRAME_FORMAT			0x00B254
+> +#define ACP_SW3_TX_DP1_FRAME_FORMAT			0x00B258
+> +#define ACP_SW3_TX_DP2_FRAME_FORMAT			0x00B25C
+> +#define ACP_SW3_TX_DP3_FRAME_FORMAT			0x00B260
+> +#define ACP_SW3_TX_DP4_FRAME_FORMAT			0x00B264
+> +#define ACP_SW3_TX_DP5_FRAME_FORMAT			0x00B268
+> +#define ACP_SW3_TX_DP6_FRAME_FORMAT			0x00B26C
+> +#define ACP_SW3_TX_DP7_FRAME_FORMAT			0x00B270
+> +#define ACP_SW3_TX_DP0_0_SAMPLEINTERVAL_BANK0		0x00B280
+> +#define ACP_SW3_TX_DP0_0_HCTRL_BANK0			0x00B284
+> +#define ACP_SW3_TX_DP0_0_HCTRL_OFFSET_BANK0		0x00B288
+> +#define ACP_SW3_TX_DP0_0_LANE_CTRL_BANK0		0x00B28C
+> +#define ACP_SW3_TX_DP0_0_CHANNEL_ENABLE_BANK0		0x00B290
+> +#define ACP_SW3_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B294
+> +#define ACP_SW3_TX_DP0_0_SAMPLEINTERVAL_BANK1		0x00B298
+> +#define ACP_SW3_TX_DP0_0_HCTRL_BANK1			0x00B29C
+> +#define ACP_SW3_TX_DP0_0_HCTRL_OFFSET_BANK1		0x00B2A0
+> +#define ACP_SW3_TX_DP0_0_LANE_CTRL_BANK1		0x00B2A4
+> +#define ACP_SW3_TX_DP0_0_CHANNEL_ENABLE_BANK1		0x00B2A8
+> +#define ACP_SW3_TX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B2AC
+> +#define ACP_SW3_TX_DP0_1_SAMPLEINTERVAL_BANK0		0x00B2B0
+> +#define ACP_SW3_TX_DP0_1_HCTRL_BANK0			0x00B2B4
+> +#define ACP_SW3_TX_DP0_1_HCTRL_OFFSET_BANK0		0x00B2B8
+> +#define ACP_SW3_TX_DP0_1_LANE_CTRL_BANK0		0x00B2BC
+> +#define ACP_SW3_TX_DP0_1_CHANNEL_ENABLE_BANK0		0x00B2C0
+> +#define ACP_SW3_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B2C4
+> +#define ACP_SW3_TX_DP0_1_SAMPLEINTERVAL_BANK1		0x00B2C8
+> +#define ACP_SW3_TX_DP0_1_HCTRL_BANK1			0x00B2CC
+> +#define ACP_SW3_TX_DP0_1_HCTRL_OFFSET_BANK1		0x00B2D0
+> +#define ACP_SW3_TX_DP0_1_LANE_CTRL_BANK1		0x00B2D4
+> +#define ACP_SW3_TX_DP0_1_CHANNEL_ENABLE_BANK1		0x00B2D8
+> +#define ACP_SW3_TX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B2DC
+> +#define ACP_SW3_TX_DP0_2_SAMPLEINTERVAL_BANK0		0x00B2E0
+> +#define ACP_SW3_TX_DP0_2_HCTRL_BANK0			0x00B2E4
+> +#define ACP_SW3_TX_DP0_2_HCTRL_OFFSET_BANK0		0x00B2E8
+> +#define ACP_SW3_TX_DP0_2_LANE_CTRL_BANK0		0x00B2EC
+> +#define ACP_SW3_TX_DP0_2_CHANNEL_ENABLE_BANK0		0x00B2F0
+> +#define ACP_SW3_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B2F4
+> +#define ACP_SW3_TX_DP0_2_SAMPLEINTERVAL_BANK1		0x00B2F8
+> +#define ACP_SW3_TX_DP0_2_HCTRL_BANK1			0x00B2FC
+> +#define ACP_SW3_TX_DP0_2_HCTRL_OFFSET_BANK1		0x00B300
+> +#define ACP_SW3_TX_DP0_2_LANE_CTRL_BANK1		0x00B304
+> +#define ACP_SW3_TX_DP0_2_CHANNEL_ENABLE_BANK1		0x00B308
+> +#define ACP_SW3_TX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B30C
+> +#define ACP_SW3_TX_DP0_3_SAMPLEINTERVAL_BANK0		0x00B310
+> +#define ACP_SW3_TX_DP0_3_HCTRL_BANK0			0x00B314
+> +#define ACP_SW3_TX_DP0_3_HCTRL_OFFSET_BANK0		0x00B318
+> +#define ACP_SW3_TX_DP0_3_LANE_CTRL_BANK0		0x00B31C
+> +#define ACP_SW3_TX_DP0_3_CHANNEL_ENABLE_BANK0		0x00B320
+> +#define ACP_SW3_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B324
+> +#define ACP_SW3_TX_DP0_3_SAMPLEINTERVAL_BANK1		0x00B328
+> +#define ACP_SW3_TX_DP0_3_HCTRL_BANK1			0x00B32C
+> +#define ACP_SW3_TX_DP0_3_HCTRL_OFFSET_BANK1		0x00B330
+> +#define ACP_SW3_TX_DP0_3_LANE_CTRL_BANK1		0x00B334
+> +#define ACP_SW3_TX_DP0_3_CHANNEL_ENABLE_BANK1		0x00B338
+> +#define ACP_SW3_TX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B33C
+> +#define ACP_SW3_TX_DP1_SAMPLEINTERVAL_BANK0		0x00B370
+> +#define ACP_SW3_TX_DP1_HCTRL_BANK0			0x00B374
+> +#define ACP_SW3_TX_DP1_HCTRL_OFFSET_BANK0		0x00B378
+> +#define ACP_SW3_TX_DP1_LANE_CTRL_BANK0			0x00B37C
+> +#define ACP_SW3_TX_DP1_CHANNEL_ENABLE_BANK0		0x00B380
+> +#define ACP_SW3_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B384
+> +#define ACP_SW3_TX_DP1_SAMPLEINTERVAL_BANK1		0x00B388
+> +#define ACP_SW3_TX_DP1_HCTRL_BANK1			0x00B38C
+> +#define ACP_SW3_TX_DP1_HCTRL_OFFSET_BANK1		0x00B390
+> +#define ACP_SW3_TX_DP1_LANE_CTRL_BANK1			0x00B394
+> +#define ACP_SW3_TX_DP1_CHANNEL_ENABLE_BANK1		0x00B398
+> +#define ACP_SW3_TX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B39C
+> +#define ACP_SW3_TX_DP2_SAMPLEINTERVAL_BANK0		0x00B3A0
+> +#define ACP_SW3_TX_DP2_HCTRL_BANK0			0x00B3A4
+> +#define ACP_SW3_TX_DP2_HCTRL_OFFSET_BANK0		0x00B3A8
+> +#define ACP_SW3_TX_DP2_LANE_CTRL_BANK0			0x00B3AC
+> +#define ACP_SW3_TX_DP2_CHANNEL_ENABLE_BANK0		0x00B3B0
+> +#define ACP_SW3_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B3B4
+> +#define ACP_SW3_TX_DP2_SAMPLEINTERVAL_BANK1		0x00B3B8
+> +#define ACP_SW3_TX_DP2_HCTRL_BANK1			0x00B3BC
+> +#define ACP_SW3_TX_DP2_HCTRL_OFFSET_BANK1		0x00B3C0
+> +#define ACP_SW3_TX_DP2_LANE_CTRL_BANK1			0x00B3C4
+> +#define ACP_SW3_TX_DP2_CHANNEL_ENABLE_BANK1		0x00B3C8
+> +#define ACP_SW3_TX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B3CC
+> +#define ACP_SW3_TX_DP3_SAMPLEINTERVAL_BANK0		0x00B3D0
+> +#define ACP_SW3_TX_DP3_HCTRL_BANK0			0x00B3D4
+> +#define ACP_SW3_TX_DP3_HCTRL_OFFSET_BANK0		0x00B3D8
+> +#define ACP_SW3_TX_DP3_LANE_CTRL_BANK0			0x00B3DC
+> +#define ACP_SW3_TX_DP3_CHANNEL_ENABLE_BANK0		0x00B3E0
+> +#define ACP_SW3_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B3E4
+> +#define ACP_SW3_TX_DP3_SAMPLEINTERVAL_BANK1		0x00B3E8
+> +#define ACP_SW3_TX_DP3_HCTRL_BANK1			0x00B3EC
+> +#define ACP_SW3_TX_DP3_HCTRL_OFFSET_BANK1		0x00B3F0
+> +#define ACP_SW3_TX_DP3_LANE_CTRL_BANK1			0x00B3F4
+> +#define ACP_SW3_TX_DP3_CHANNEL_ENABLE_BANK1		0x00B3F8
+> +#define ACP_SW3_TX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B3FC
+> +#define ACP_SW3_TX_DP4_SAMPLEINTERVAL_BANK0		0x00B400
+> +#define ACP_SW3_TX_DP4_HCTRL_BANK0			0x00B404
+> +#define ACP_SW3_TX_DP4_HCTRL_OFFSET_BANK0		0x00B408
+> +#define ACP_SW3_TX_DP4_LANE_CTRL_BANK0			0x00B40C
+> +#define ACP_SW3_TX_DP4_CHANNEL_ENABLE_BANK0		0x00B410
+> +#define ACP_SW3_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B414
+> +#define ACP_SW3_TX_DP4_SAMPLEINTERVAL_BANK1		0x00B418
+> +#define ACP_SW3_TX_DP4_HCTRL_BANK1			0x00B41C
+> +#define ACP_SW3_TX_DP4_HCTRL_OFFSET_BANK1		0x00B420
+> +#define ACP_SW3_TX_DP4_LANE_CTRL_BANK1			0x00B424
+> +#define ACP_SW3_TX_DP4_CHANNEL_ENABLE_BANK1		0x00B428
+> +#define ACP_SW3_TX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B42C
+> +#define ACP_SW3_TX_DP5_SAMPLEINTERVAL_BANK0		0x00B430
+> +#define ACP_SW3_TX_DP5_HCTRL_BANK0			0x00B434
+> +#define ACP_SW3_TX_DP5_HCTRL_OFFSET_BANK0		0x00B438
+> +#define ACP_SW3_TX_DP5_LANE_CTRL_BANK0			0x00B43C
+> +#define ACP_SW3_TX_DP5_CHANNEL_ENABLE_BANK0		0x00B440
+> +#define ACP_SW3_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B444
+> +#define ACP_SW3_TX_DP5_SAMPLEINTERVAL_BANK1		0x00B448
+> +#define ACP_SW3_TX_DP5_HCTRL_BANK1			0x00B44C
+> +#define ACP_SW3_TX_DP5_HCTRL_OFFSET_BANK1		0x00B450
+> +#define ACP_SW3_TX_DP5_LANE_CTRL_BANK1			0x00B454
+> +#define ACP_SW3_TX_DP5_CHANNEL_ENABLE_BANK1		0x00B458
+> +#define ACP_SW3_TX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B45C
+> +#define ACP_SW3_TX_DP6_SAMPLEINTERVAL_BANK0		0x00B460
+> +#define ACP_SW3_TX_DP6_HCTRL_BANK0			0x00B464
+> +#define ACP_SW3_TX_DP6_HCTRL_OFFSET_BANK0		0x00B468
+> +#define ACP_SW3_TX_DP6_LANE_CTRL_BANK0			0x00B46C
+> +#define ACP_SW3_TX_DP6_CHANNEL_ENABLE_BANK0		0x00B470
+> +#define ACP_SW3_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B474
+> +#define ACP_SW3_TX_DP6_SAMPLEINTERVAL_BANK1		0x00B478
+> +#define ACP_SW3_TX_DP6_HCTRL_BANK1			0x00B47C
+> +#define ACP_SW3_TX_DP6_HCTRL_OFFSET_BANK1		0x00B480
+> +#define ACP_SW3_TX_DP6_LANE_CTRL_BANK1			0x00B484
+> +#define ACP_SW3_TX_DP6_CHANNEL_ENABLE_BANK1		0x00B488
+> +#define ACP_SW3_TX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B48C
+> +#define ACP_SW3_TX_DP7_SAMPLEINTERVAL_BANK0		0x00B490
+> +#define ACP_SW3_TX_DP7_HCTRL_BANK0			0x00B494
+> +#define ACP_SW3_TX_DP7_HCTRL_OFFSET_BANK0		0x00B498
+> +#define ACP_SW3_TX_DP7_LANE_CTRL_BANK0			0x00B49C
+> +#define ACP_SW3_TX_DP7_CHANNEL_ENABLE_BANK0		0x00B4A0
+> +#define ACP_SW3_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B4A4
+> +#define ACP_SW3_TX_DP7_SAMPLEINTERVAL_BANK1		0x00B4A8
+> +#define ACP_SW3_TX_DP7_HCTRL_BANK1			0x00B4AC
+> +#define ACP_SW3_TX_DP7_HCTRL_OFFSET_BANK1		0x00B4B0
+> +#define ACP_SW3_TX_DP7_LANE_CTRL_BANK1			0x00B4B4
+> +#define ACP_SW3_TX_DP7_CHANNEL_ENABLE_BANK1		0x00B4B8
+> +#define ACP_SW3_TX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B4BC
+> +#define ACP_SW3_RX_STREAM0_EN				0x00B514
+> +#define ACP_SW3_RX_STREAM1_EN				0x00B518
+> +#define ACP_SW3_RX_STREAM2_EN				0x00B51C
+> +#define ACP_SW3_RX_STREAM3_EN				0x00B520
+> +#define ACP_SW3_RX_STREAM4_EN				0x00B524
+> +#define ACP_SW3_RX_STREAM5_EN				0x00B528
+> +#define ACP_SW3_RX_STREAM6_EN				0x00B52C
+> +#define ACP_SW3_RX_STREAM7_EN				0x00B530
+> +#define ACP_SW3_RX_STREAM0_EN_STATUS			0x00B534
+> +#define ACP_SW3_RX_STREAM1_EN_STATUS			0x00B538
+> +#define ACP_SW3_RX_STREAM2_EN_STATUS			0x00B53C
+> +#define ACP_SW3_RX_STREAM3_EN_STATUS			0x00B540
+> +#define ACP_SW3_RX_STREAM4_EN_STATUS			0x00B544
+> +#define ACP_SW3_RX_STREAM5_EN_STATUS			0x00B548
+> +#define ACP_SW3_RX_STREAM6_EN_STATUS			0x00B54C
+> +#define ACP_SW3_RX_STREAM7_EN_STATUS			0x00B550
+> +#define ACP_SW3_RX_DP0_FRAME_FORMAT			0x00B554
+> +#define ACP_SW3_RX_DP1_FRAME_FORMAT			0x00B558
+> +#define ACP_SW3_RX_DP2_FRAME_FORMAT			0x00B55C
+> +#define ACP_SW3_RX_DP3_FRAME_FORMAT			0x00B560
+> +#define ACP_SW3_RX_DP4_FRAME_FORMAT			0x00B564
+> +#define ACP_SW3_RX_DP5_FRAME_FORMAT			0x00B568
+> +#define ACP_SW3_RX_DP6_FRAME_FORMAT			0x00B56C
+> +#define ACP_SW3_RX_DP7_FRAME_FORMAT			0x00B570
+> +#define ACP_SW3_RX_DP0_0_SAMPLEINTERVAL_BANK0		0x00B580
+> +#define ACP_SW3_RX_DP0_0_HCTRL_BANK0			0x00B584
+> +#define ACP_SW3_RX_DP0_0_HCTRL_OFFSET_BANK0		0x00B588
+> +#define ACP_SW3_RX_DP0_0_LANE_CTRL_BANK0		0x00B58C
+> +#define ACP_SW3_RX_DP0_0_CHANNEL_ENABLE_BANK0		0x00B590
+> +#define ACP_SW3_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B594
+> +#define ACP_SW3_RX_DP0_0_SAMPLEINTERVAL_BANK1		0x00B598
+> +#define ACP_SW3_RX_DP0_0_HCTRL_BANK1			0x00B59C
+> +#define ACP_SW3_RX_DP0_0_HCTRL_OFFSET_BANK1		0x00B5A0
+> +#define ACP_SW3_RX_DP0_0_LANE_CTRL_BANK1		0x00B5A4
+> +#define ACP_SW3_RX_DP0_0_CHANNEL_ENABLE_BANK1		0x00B5A8
+> +#define ACP_SW3_RX_DP0_0_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B5AC
+> +#define ACP_SW3_RX_DP0_1_SAMPLEINTERVAL_BANK0		0x00B5B0
+> +#define ACP_SW3_RX_DP0_1_HCTRL_BANK0			0x00B5B4
+> +#define ACP_SW3_RX_DP0_1_HCTRL_OFFSET_BANK0		0x00B5B8
+> +#define ACP_SW3_RX_DP0_1_LANE_CTRL_BANK0		0x00B5BC
+> +#define ACP_SW3_RX_DP0_1_CHANNEL_ENABLE_BANK0		0x00B5C0
+> +#define ACP_SW3_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B5C4
+> +#define ACP_SW3_RX_DP0_1_SAMPLEINTERVAL_BANK1		0x00B5C8
+> +#define ACP_SW3_RX_DP0_1_HCTRL_BANK1			0x00B5CC
+> +#define ACP_SW3_RX_DP0_1_HCTRL_OFFSET_BANK1		0x00B5D0
+> +#define ACP_SW3_RX_DP0_1_LANE_CTRL_BANK1		0x00B5D4
+> +#define ACP_SW3_RX_DP0_1_CHANNEL_ENABLE_BANK1		0x00B5D8
+> +#define ACP_SW3_RX_DP0_1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B5DC
+> +#define ACP_SW3_RX_DP0_2_SAMPLEINTERVAL_BANK0		0x00B5E0
+> +#define ACP_SW3_RX_DP0_2_HCTRL_BANK0			0x00B5E4
+> +#define ACP_SW3_RX_DP0_2_HCTRL_OFFSET_BANK0		0x00B5E8
+> +#define ACP_SW3_RX_DP0_2_LANE_CTRL_BANK0		0x00B5EC
+> +#define ACP_SW3_RX_DP0_2_CHANNEL_ENABLE_BANK0		0x00B5F0
+> +#define ACP_SW3_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B5F4
+> +#define ACP_SW3_RX_DP0_2_SAMPLEINTERVAL_BANK1		0x00B5F8
+> +#define ACP_SW3_RX_DP0_2_HCTRL_BANK1			0x00B5FC
+> +#define ACP_SW3_RX_DP0_2_HCTRL_OFFSET_BANK1		0x00B600
+> +#define ACP_SW3_RX_DP0_2_LANE_CTRL_BANK1		0x00B604
+> +#define ACP_SW3_RX_DP0_2_CHANNEL_ENABLE_BANK1		0x00B608
+> +#define ACP_SW3_RX_DP0_2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B60C
+> +#define ACP_SW3_RX_DP0_3_SAMPLEINTERVAL_BANK0		0x00B610
+> +#define ACP_SW3_RX_DP0_3_HCTRL_BANK0			0x00B614
+> +#define ACP_SW3_RX_DP0_3_HCTRL_OFFSET_BANK0		0x00B618
+> +#define ACP_SW3_RX_DP0_3_LANE_CTRL_BANK0		0x00B61C
+> +#define ACP_SW3_RX_DP0_3_CHANNEL_ENABLE_BANK0		0x00B620
+> +#define ACP_SW3_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B624
+> +#define ACP_SW3_RX_DP0_3_SAMPLEINTERVAL_BANK1		0x00B628
+> +#define ACP_SW3_RX_DP0_3_HCTRL_BANK1			0x00B62C
+> +#define ACP_SW3_RX_DP0_3_HCTRL_OFFSET_BANK1		0x00B630
+> +#define ACP_SW3_RX_DP0_3_LANE_CTRL_BANK1		0x00B634
+> +#define ACP_SW3_RX_DP0_3_CHANNEL_ENABLE_BANK1		0x00B638
+> +#define ACP_SW3_RX_DP0_3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B63C
+> +#define ACP_SW3_RX_DP1_SAMPLEINTERVAL_BANK0		0x00B670
+> +#define ACP_SW3_RX_DP1_HCTRL_BANK0			0x00B674
+> +#define ACP_SW3_RX_DP1_HCTRL_OFFSET_BANK0		0x00B678
+> +#define ACP_SW3_RX_DP1_LANE_CTRL_BANK0			0x00B67C
+> +#define ACP_SW3_RX_DP1_CHANNEL_ENABLE_BANK0		0x00B680
+> +#define ACP_SW3_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B684
+> +#define ACP_SW3_RX_DP1_SAMPLEINTERVAL_BANK1		0x00B688
+> +#define ACP_SW3_RX_DP1_HCTRL_BANK1			0x00B68C
+> +#define ACP_SW3_RX_DP1_HCTRL_OFFSET_BANK1		0x00B690
+> +#define ACP_SW3_RX_DP1_LANE_CTRL_BANK1			0x00B694
+> +#define ACP_SW3_RX_DP1_CHANNEL_ENABLE_BANK1		0x00B698
+> +#define ACP_SW3_RX_DP1_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B69C
+> +#define ACP_SW3_RX_DP2_SAMPLEINTERVAL_BANK0		0x00B6A0
+> +#define ACP_SW3_RX_DP2_HCTRL_BANK0			0x00B6A4
+> +#define ACP_SW3_RX_DP2_HCTRL_OFFSET_BANK0		0x00B6A8
+> +#define ACP_SW3_RX_DP2_LANE_CTRL_BANK0			0x00B6AC
+> +#define ACP_SW3_RX_DP2_CHANNEL_ENABLE_BANK0		0x00B6B0
+> +#define ACP_SW3_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B6B4
+> +#define ACP_SW3_RX_DP2_SAMPLEINTERVAL_BANK1		0x00B6B8
+> +#define ACP_SW3_RX_DP2_HCTRL_BANK1			0x00B6BC
+> +#define ACP_SW3_RX_DP2_HCTRL_OFFSET_BANK1		0x00B6C0
+> +#define ACP_SW3_RX_DP2_LANE_CTRL_BANK1			0x00B6C4
+> +#define ACP_SW3_RX_DP2_CHANNEL_ENABLE_BANK1		0x00B6C8
+> +#define ACP_SW3_RX_DP2_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B6CC
+> +#define ACP_SW3_RX_DP3_SAMPLEINTERVAL_BANK0		0x00B6D0
+> +#define ACP_SW3_RX_DP3_HCTRL_BANK0			0x00B6D4
+> +#define ACP_SW3_RX_DP3_HCTRL_OFFSET_BANK0		0x00B6D8
+> +#define ACP_SW3_RX_DP3_LANE_CTRL_BANK0			0x00B6DC
+> +#define ACP_SW3_RX_DP3_CHANNEL_ENABLE_BANK0		0x00B6E0
+> +#define ACP_SW3_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B6E4
+> +#define ACP_SW3_RX_DP3_SAMPLEINTERVAL_BANK1		0x00B6E8
+> +#define ACP_SW3_RX_DP3_HCTRL_BANK1			0x00B6EC
+> +#define ACP_SW3_RX_DP3_HCTRL_OFFSET_BANK1		0x00B6F0
+> +#define ACP_SW3_RX_DP3_LANE_CTRL_BANK1			0x00B6F4
+> +#define ACP_SW3_RX_DP3_CHANNEL_ENABLE_BANK1		0x00B6F8
+> +#define ACP_SW3_RX_DP3_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B6FC
+> +#define ACP_SW3_RX_DP4_SAMPLEINTERVAL_BANK0		0x00B700
+> +#define ACP_SW3_RX_DP4_HCTRL_BANK0			0x00B704
+> +#define ACP_SW3_RX_DP4_HCTRL_OFFSET_BANK0		0x00B708
+> +#define ACP_SW3_RX_DP4_LANE_CTRL_BANK0			0x00B70C
+> +#define ACP_SW3_RX_DP4_CHANNEL_ENABLE_BANK0		0x00B710
+> +#define ACP_SW3_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B714
+> +#define ACP_SW3_RX_DP4_SAMPLEINTERVAL_BANK1		0x00B718
+> +#define ACP_SW3_RX_DP4_HCTRL_BANK1			0x00B71C
+> +#define ACP_SW3_RX_DP4_HCTRL_OFFSET_BANK1		0x00B720
+> +#define ACP_SW3_RX_DP4_LANE_CTRL_BANK1			0x00B724
+> +#define ACP_SW3_RX_DP4_CHANNEL_ENABLE_BANK1		0x00B728
+> +#define ACP_SW3_RX_DP4_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B72C
+> +#define ACP_SW3_RX_DP5_SAMPLEINTERVAL_BANK0		0x00B730
+> +#define ACP_SW3_RX_DP5_HCTRL_BANK0			0x00B734
+> +#define ACP_SW3_RX_DP5_HCTRL_OFFSET_BANK0		0x00B738
+> +#define ACP_SW3_RX_DP5_LANE_CTRL_BANK0			0x00B73C
+> +#define ACP_SW3_RX_DP5_CHANNEL_ENABLE_BANK0		0x00B740
+> +#define ACP_SW3_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B744
+> +#define ACP_SW3_RX_DP5_SAMPLEINTERVAL_BANK1		0x00B748
+> +#define ACP_SW3_RX_DP5_HCTRL_BANK1			0x00B74C
+> +#define ACP_SW3_RX_DP5_HCTRL_OFFSET_BANK1		0x00B750
+> +#define ACP_SW3_RX_DP5_LANE_CTRL_BANK1			0x00B754
+> +#define ACP_SW3_RX_DP5_CHANNEL_ENABLE_BANK1		0x00B758
+> +#define ACP_SW3_RX_DP5_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B75C
+> +#define ACP_SW3_RX_DP6_SAMPLEINTERVAL_BANK0		0x00B760
+> +#define ACP_SW3_RX_DP6_HCTRL_BANK0			0x00B764
+> +#define ACP_SW3_RX_DP6_HCTRL_OFFSET_BANK0		0x00B768
+> +#define ACP_SW3_RX_DP6_LANE_CTRL_BANK0			0x00B76C
+> +#define ACP_SW3_RX_DP6_CHANNEL_ENABLE_BANK0		0x00B770
+> +#define ACP_SW3_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B774
+> +#define ACP_SW3_RX_DP6_SAMPLEINTERVAL_BANK1		0x00B778
+> +#define ACP_SW3_RX_DP6_HCTRL_BANK1			0x00B77C
+> +#define ACP_SW3_RX_DP6_HCTRL_OFFSET_BANK1		0x00B780
+> +#define ACP_SW3_RX_DP6_LANE_CTRL_BANK1			0x00B784
+> +#define ACP_SW3_RX_DP6_CHANNEL_ENABLE_BANK1		0x00B788
+> +#define ACP_SW3_RX_DP6_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B78C
+> +#define ACP_SW3_RX_DP7_SAMPLEINTERVAL_BANK0		0x00B790
+> +#define ACP_SW3_RX_DP7_HCTRL_BANK0			0x00B794
+> +#define ACP_SW3_RX_DP7_HCTRL_OFFSET_BANK0		0x00B798
+> +#define ACP_SW3_RX_DP7_LANE_CTRL_BANK0			0x00B79C
+> +#define ACP_SW3_RX_DP7_CHANNEL_ENABLE_BANK0		0x00B7A0
+> +#define ACP_SW3_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK0	0x00B7A4
+> +#define ACP_SW3_RX_DP7_SAMPLEINTERVAL_BANK1		0x00B7A8
+> +#define ACP_SW3_RX_DP7_HCTRL_BANK1			0x00B7AC
+> +#define ACP_SW3_RX_DP7_HCTRL_OFFSET_BANK1		0x00B7B0
+> +#define ACP_SW3_RX_DP7_LANE_CTRL_BANK1			0x00B7B4
+> +#define ACP_SW3_RX_DP7_CHANNEL_ENABLE_BANK1		0x00B7B8
+> +#define ACP_SW3_RX_DP7_BLOCK_PKGMODE_GRPCTRL_BANK1	0x00B7BC
+> +#define ACP_SW3_BPT_PORT_EN				0x00B7C0
+> +#define ACP_SW3_BPT_PORT_EN_STATUS			0x00B7C4
+> +#define ACP_SW3_BPT_PORT_FRAME_FORMAT			0x00B7C8
+> +#define ACP_SW3_BPT_PORT_SAMPLEINTERVAL_BANK0		0x00B7CC
+> +#define ACP_SW3_BPT_PORT_HCTRL_BANK0			0x00B7D0
+> +#define ACP_SW3_BPT_PORT_OFFSET_BANK0			0x00B7D4
+> +#define ACP_SW3_BPT_PORT_LANE_SELECT_BANK0		0x00B7D8
+> +#define ACP_SW3_BPT_PORT_CHANNEL_ENABLE_BANK0		0x00B7DC
+> +#define ACP_SW3_BPT_PORT_SAMPLEINTERVAL_BANK1		0x00B7E0
+> +#define ACP_SW3_BPT_PORT_HCTRL_BANK1			0x00B7E4
+> +#define ACP_SW3_BPT_PORT_OFFSET_BANK1			0x00B7E8
+> +#define ACP_SW3_BPT_PORT_LANE_SELECT_BANK1		0x00B7EC
+> +#define ACP_SW3_BPT_PORT_CHANNEL_ENABLE_BANK1		0x00B7F0
+> +#define ACP_SW3_BPT_PORT_FIRST_BYTE_ADDR		0x00B7F4
+> +#define ACP_SW3_CLK_RESUME_CTRL				0x00B7F8
+> +#define ACP_SW3_CLK_RESUME_DELAY_CNTR			0x00B7FC
+> +#define ACP_SW3_BUS_RESET_CTRL				0x00B800
+> +#define ACP_SW3_PRBS_ERR_STATUS				0x00B804
+> +#define ACP_SW3_WALLCLK_MISC				0x00B808
+> +#define ACP_SW3_WALL_CLK_COUNTER			0x00B80C
+> +#define ACP_SW3_PING_STATUS_REGISTER_LOW		0x00B810
+> +#define ACP_SW3_PING_STATUS_REGISTER_HIGH		0x00B814
+> +#define ACP_SW3_PING_STATUS_CURRENT_BANK_SEL		0x00B818
+> +#define ACP_SW3_TZD_CHANGE				0x00B81C
+> +#define ACP_SW3_WALLCLK_INTR_CNTL			0x00B820
+> +
+> +#define ACP_PDM_ENABLE					0x002C04
+> +#define ACP_PDM_DMA_ENABLE				0x002C08
+> +#define ACP_PDM_RX_RINGBUFADDR				0x002C0C
+> +#define ACP_PDM_RX_RINGBUFSIZE				0x002C10
+> +#define ACP_PDM_RX_LINKPOSITIONCNTR			0x002C14
+> +#define ACP_PDM_RX_LINEARPOSITIONCNTR_HIGH		0x002C18
+> +#define ACP_PDM_RX_LINEARPOSITIONCNTR_LOW		0x002C1C
+> +#define ACP_PDM_RX_INTR_WATERMARK_SIZE			0x002C20
+> +#define ACP_PDM_FIFO_FLUSH				0x002C24
+> +#define ACP_PDM_NO_OF_CHANNELS				0x002C28
+> +#define ACP_PDM_DECIMATION_FACTOR			0x002C2C
+> +#define ACP_PDM_VAD_CTRL				0x002C30
+> +#define ACP_PDM_WAKE					0x002C54
+> +#define ACP_PDM_BUFFER_STATUS				0x002C58
+> +#define ACP_PDM_MISC_CTRL				0x002C5C
+> +#define ACP_PDM_CLK_CTRL				0x002C60
+> +#define ACP_PDM_VAD_DYNAMIC_CLK_GATING_EN		0x002C64
+> +#define ACP_PDM_ERROR_STATUS_REGISTER			0x002C68
+> +#define ACP_PDM_CLKDIV					0x002C6C
+> +#define ACP_PDM_WALLCLK_MISC				0x002C70
+> +#define ACP_PDM_WALL_CLK_COUNTER			0x002C74
+> +#define ACP_PDM_SW_ENABLE_REG				0x002CC4
+> +#define ACP_PDM_SW_CTRLREG				0x002CC8
+> +#define ACP_PDM_WALLCLK_INTR_CNTL			0x002CCC
+> +
+> +#define ACP_PDM_2_ENABLE				0x002D04
+> +#define ACP_PDM_2_DMA_ENABLE				0x002D08
+> +#define ACP_PDM_2_RX_RINGBUFADDR_96K			0x002D0C
+> +#define ACP_PDM_2_RX_RINGBUFADDR_48K			0x002D10
+> +#define ACP_PDM_2_RX_RINGBUFADDR_16K			0x002D14
+> +#define ACP_PDM_2_RX_RINGBUFSIZE_96K			0x002D18
+> +#define ACP_PDM_2_RX_RINGBUFSIZE_48K			0x002D1C
+> +#define ACP_PDM_2_RX_RINGBUFSIZE_16K			0x002D20
+> +#define ACP_PDM_2_RX_LINKPOSITIONCNTR_96K		0x002D24
+> +#define ACP_PDM_2_RX_LINKPOSITIONCNTR_48K		0x002D28
+> +#define ACP_PDM_2_RX_LINKPOSITIONCNTR_16K		0x002D2C
+> +#define ACP_PDM_2_RX_LINEARPOSITIONCNTR_HIGH_96K	0x002D30
+> +#define ACP_PDM_2_RX_LINEARPOSITIONCNTR_LOW_96K		0x002D34
+> +#define ACP_PDM_2_RX_LINEARPOSITIONCNTR_HIGH_48K	0x002D38
+> +#define ACP_PDM_2_RX_LINEARPOSITIONCNTR_LOW_48K		0x002D3C
+> +#define ACP_PDM_2_RX_LINEARPOSITIONCNTR_HIGH_16K	0x002D40
+> +#define ACP_PDM_2_RX_LINEARPOSITIONCNTR_LOW_16K		0x002D44
+> +#define ACP_PDM_2_RX_INTR_WATERMARK_SIZE_96K		0x002D48
+> +#define ACP_PDM_2_RX_INTR_WATERMARK_SIZE_48K		0x002D4C
+> +#define ACP_PDM_2_RX_INTR_WATERMARK_SIZE_16K		0x002D50
+> +#define ACP_PDM_2_FIFO_FLUSH_96K			0x002D54
+> +#define ACP_PDM_2_FIFO_FLUSH_48K			0x002D58
+> +#define ACP_PDM_2_FIFO_FLUSH_16K			0x002D5C
+> +#define ACP_PDM_2_NO_OF_CHANNELS			0x002D60
+> +#define ACP_PDM_2_DECIMATION_FACTOR			0x002D64
+> +#define ACP_PDM_2_VAD_CTRL				0x002D68
+> +#define ACP_PDM_2_WAKE					0x002D6C
+> +#define ACP_PDM_2_BUFFER_STATUS_96K			0x002D70
+> +#define ACP_PDM_2_BUFFER_STATUS_48K			0x002D74
+> +#define ACP_PDM_2_BUFFER_STATUS_16K			0x002D78
+> +#define ACP_PDM_2_MISC_CTRL				0x002D7C
+> +#define ACP_PDM_2_CLK_CTRL				0x002D80
+> +#define ACP_PDM_2_VAD_DYNAMIC_CLK_GATING_EN		0x002D84
+> +#define ACP_PDM_2_ERROR_STATUS_REGISTER			0x002D8C
+> +#define ACP_PDM_2_CLKDIV				0x002D90
+> +#define ACP_PDM_2_WALLCLK_MISC				0x002D94
+> +#define ACP_PDM_2_WALL_CLK_COUNTER			0x002D98
+> +#define ACP_PDM_2_SW_ENABLE_REG				0x002D9C
+> +#define ACP_PDM_2_SW_CTRLREG				0x002DA0
+> +#define ACP_PDM_2_WALLCLK_INTR_CNTL			0x002DA4
+> +
+> +#define ACP_SCRATCH_REG_0				0x0010000
+> +#endif
 
