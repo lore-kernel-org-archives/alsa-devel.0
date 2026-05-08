@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C89CFCD3447
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2026 12:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38374CD3436
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2026 12:21:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9E48601FA;
-	Fri,  8 May 2026 14:14:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9E48601FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88CD660220;
+	Fri,  8 May 2026 14:21:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88CD660220
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778242451;
-	bh=4nkHb+lXIxeiQsuH7fn494/Bp8bY13Cy26NG/ZeBMX8=;
+	s=default; t=1778242872;
+	bh=hARVm+U0plk1Cz6TOsv2dvarQ9Bo42v1KktKp6ZSqAQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=TV+4dY/kfCjPm+k4IAv+N781r/DE4Km4kXm66kyPVjQHunrgSNfqqG3QFmZv6npaR
-	 ZUSo1ejXDE13CthvOc+iEZk7xLFZG2ZBb/7dN6RlHj/hoOe3IjKXBqmxsRlAL+wBSZ
-	 cvFgs0qUZ36takbs4+mJhhlbqnwjW5uOqCleCmY4=
+	b=YK4aM1XyK7WiyhMZTkXn+hdpP4/s/IViIQEw0KIS1A5qBh4A6rbQP/sq/wc1hvGWr
+	 p54XBD4U0YZxCGeTbezKTc52HPe/4MvjdKv93dRAXrTM5Xi+H+1uFwMhCufuZgawY6
+	 lGnselg0ROBh3efW8qgxCx5dm4X1OAFYIkx1+Sf8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98F71F805E7; Fri,  8 May 2026 14:13:31 +0200 (CEST)
+	id EA402F805E9; Fri,  8 May 2026 14:20:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B8F6F80169;
-	Fri,  8 May 2026 14:13:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7816F805E9;
+	Fri,  8 May 2026 14:20:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEE11F80537; Fri,  8 May 2026 14:13:25 +0200 (CEST)
+	id 1CB24F804F3; Fri,  8 May 2026 14:20:31 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 625EBF80169
-	for <alsa-devel@alsa-project.org>; Fri,  8 May 2026 14:13:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 625EBF80169
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A9CCF80075
+	for <alsa-devel@alsa-project.org>; Fri,  8 May 2026 14:20:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A9CCF80075
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18ad960b815ac200-webhooks-bot@alsa-project.org>
-In-Reply-To: <18ad960b8155cf00-webhooks-bot@alsa-project.org>
-References: <18ad960b8155cf00-webhooks-bot@alsa-project.org>
+Message-Id: <18ad966e63d4ac00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18ad966e63c9f700-webhooks-bot@alsa-project.org>
+References: <18ad966e63c9f700-webhooks-bot@alsa-project.org>
 Subject: 
  =?utf-8?q?HP_OmniBook_Ultra_Flip_=28Lunar_Lake=2C_103C=3A8CDE=29_=E2=80=94_ALSA_headphone_jack_state_changes_but_audio_does_not_route_to_headphones?=
-Date: Fri,  8 May 2026 14:13:25 +0200 (CEST)
-Message-ID-Hash: 4KFUKWO7NEVRDMAVZHVUQMRBTCJOK4UP
-X-Message-ID-Hash: 4KFUKWO7NEVRDMAVZHVUQMRBTCJOK4UP
+Date: Fri,  8 May 2026 14:20:31 +0200 (CEST)
+Message-ID-Hash: ORNYTZYTPRY7Z6AGEU2E3H7HOOPPKI3L
+X-Message-ID-Hash: ORNYTZYTPRY7Z6AGEU2E3H7HOOPPKI3L
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4KFUKWO7NEVRDMAVZHVUQMRBTCJOK4UP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ORNYTZYTPRY7Z6AGEU2E3H7HOOPPKI3L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,6 +101,7 @@ The control `numid=19,iface=CARD,name='Headphone Jack'` changes state correctly:
   1. `amixer -c0 set 'Headphone' on`
   2. `amixer -c0 set 'Speaker' off`
   3. `amixer -c0 set 'Auto-Mute Mode' Enabled`
+  4. wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
 
 ### Technical Details (from alsa-info)
 - **Headphone node:** `Node 0x21 [Pin Complex]`
