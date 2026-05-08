@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F77CD3447
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2026 12:09:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7071ACD3436
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 May 2026 12:12:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5D806021B;
-	Fri,  8 May 2026 14:09:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5D806021B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDA7260222;
+	Fri,  8 May 2026 14:12:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDA7260222
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778242176;
-	bh=85CGetbtBxJDxvH8bqQ2KqbhdX7PKRyCwBvmhk4FXnE=;
+	s=default; t=1778242351;
+	bh=dlkDfSY8SkuIh1W/Kb9xx3HQZ2W04m6cZvVikxX0/M4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=V7bLD90T8VL+zZnX8v2HDMVF16O2lZ51OAxj6HeREbJ4i2Zw1Ynruzx05EgwqPo+O
-	 XaFSbTQ/D0TssNT3ukHxQZOqRuc/gf20prIXf3NiaSyJmwmsBlg67ChDA37+M8aQWi
-	 mC+2c4stvlCgbF0fNV1EWZbiMJ7HG/KqxqLhHV3E=
+	b=nEm6jfi6F2CSD0TVmq+u79Uldr8GU2a+zI9SZAiLPgMdOo4oYI2TfswJnlK5WvJtO
+	 5GKPa4AHZlAZxrnjRZsZmFCoVudnfqr0cWBD/7UieFxLJkjCT+PsmFBc5hmtCfjDCK
+	 dEqyO3G+XN8QxfXLcjUTgvqTUMQ8L30seeqkOyS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32E14F805F4; Fri,  8 May 2026 14:09:00 +0200 (CEST)
+	id 75714F805EC; Fri,  8 May 2026 14:11:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2E63F805F0;
-	Fri,  8 May 2026 14:08:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D724F805EC;
+	Fri,  8 May 2026 14:11:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09614F804F3; Fri,  8 May 2026 14:08:54 +0200 (CEST)
+	id 823FAF804F3; Fri,  8 May 2026 14:11:52 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E13FF80169
-	for <alsa-devel@alsa-project.org>; Fri,  8 May 2026 14:08:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E13FF80169
+	by alsa1.perex.cz (Postfix) with ESMTP id 048AEF800FE
+	for <alsa-devel@alsa-project.org>; Fri,  8 May 2026 14:11:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 048AEF800FE
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18ad95cc2539be00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18ad95cc252ef900-webhooks-bot@alsa-project.org>
-References: <18ad95cc252ef900-webhooks-bot@alsa-project.org>
+Message-Id: <18ad95f5bf441700-webhooks-bot@alsa-project.org>
+In-Reply-To: <18ad95f5bf40dc00-webhooks-bot@alsa-project.org>
+References: <18ad95f5bf40dc00-webhooks-bot@alsa-project.org>
 Subject: 
  =?utf-8?q?HP_OmniBook_Ultra_Flip_=28Lunar_Lake=2C_103C=3A8CDE=29_=E2=80=94_ALSA_headphone_jack_state_changes_but_audio_does_not_route_to_headphones?=
-Date: Fri,  8 May 2026 14:08:54 +0200 (CEST)
-Message-ID-Hash: WRHV6JVZKF3EC6DAEIPMNJGO3QOUNTKC
-X-Message-ID-Hash: WRHV6JVZKF3EC6DAEIPMNJGO3QOUNTKC
+Date: Fri,  8 May 2026 14:11:52 +0200 (CEST)
+Message-ID-Hash: GDBSWVNEZVEN53P2HGPFVDAKCCAS4UL2
+X-Message-ID-Hash: GDBSWVNEZVEN53P2HGPFVDAKCCAS4UL2
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WRHV6JVZKF3EC6DAEIPMNJGO3QOUNTKC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GDBSWVNEZVEN53P2HGPFVDAKCCAS4UL2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,9 +107,6 @@ The control `numid=19,iface=CARD,name='Headphone Jack'` changes state correctly:
 - **Headphone node:** `Node 0x21 [Pin Complex]`
 - **Pin default:** `0x03211020: [Jack] HP Out at Ext Left`
 - **Topology:** `intel/sof-ipc4-tplg/sof-hda-generic-2ch.tplg`
-
-### Request
-Could you check whether this hardware requires a dedicated UCM configuration or specific JackControl/mapping for PCI SSID `103C:8CDE` to allow PipeWire to manage the switching without relying on the hardware Auto-Mute control?
 
 ---
 **Note to Maintainers:** I have attached the full `alsa-info.txt` to this issue. This hardware was previously discussed in the SOF project (issue #5757) where it was confirmed that HDA jack detection is functional at the driver level.
