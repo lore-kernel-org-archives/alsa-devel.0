@@ -4,129 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB265CD37AC
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 14:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2976FCD37BE
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 14:45:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E22796020D;
-	Mon, 11 May 2026 16:44:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E22796020D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DC83601D1;
+	Mon, 11 May 2026 16:45:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DC83601D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778510706;
-	bh=fAViBQjsAF6s8EqK1QlhWi6JaXkw2k3KM5LgAwBSRVY=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1778510727;
+	bh=gFQd6lYVjklfunaumPmnBPTs6Io1cQDOV9pFeFhIIeo=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=tSsg3xTCYJiCMrN5WPGENRR5ooxeap6cD7oTdRoprjD9RgCne96PNV2GGswsaRnU4
-	 o1lO1JcY8sQfmMxEGxhUYtfVas7Y0eoEFJl2Ggg0F55Y8yT8X7ENcA+fbn4vLi9rbc
-	 ly0OYCCQDkbX3K6DV93fqGkdBPNtx5Y5d/ZJBIDg=
+	b=QbjnmkYdgir6nYx2DsgatIPD+31AP8Pbtx4OKAkfE3+z6XQM0OdIrHDIlc98zZdy7
+	 44aMfiAO0jtpGjcXYsLLKmMIADP9Mwf83Wz6BK+0z3fH5wrCdx92SyWcE2SIMCKADj
+	 y47lB7Xls7vK0QNTMQ2s9C3/z95IHBIn9SVAUiC0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08F1EF805FA; Mon, 11 May 2026 16:44:21 +0200 (CEST)
+	id 99E99F80630; Mon, 11 May 2026 16:44:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC136F80610;
-	Mon, 11 May 2026 16:44:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 613BCF80630;
+	Mon, 11 May 2026 16:44:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 344D5F80518; Thu,  7 May 2026 21:01:09 +0200 (CEST)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com
- [209.85.218.49])
+	id 3A883F80544; Sat,  9 May 2026 09:39:14 +0200 (CEST)
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com
+ [209.85.222.176])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8D9B9F800FE
-	for <alsa-devel@alsa-project.org>; Thu,  7 May 2026 21:01:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D9B9F800FE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7BE43F800E2
+	for <alsa-devel@alsa-project.org>; Sat,  9 May 2026 09:39:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BE43F800E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=IOyIfDWD
-Received: by mail-ej1-f49.google.com with SMTP id
- a640c23a62f3a-ba7a1cc0380so209785466b.2
+ header.s=20251104 header.b=jDVjgJRh
+Received: by mail-qk1-f176.google.com with SMTP id
+ af79cd13be357-8c70b5594f4so310915685a.1
         for <alsa-devel@alsa-project.org>;
- Thu, 07 May 2026 12:01:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778180466; cv=none;
+ Sat, 09 May 2026 00:39:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778312350; cv=none;
         d=google.com; s=arc-20240605;
-        b=cqA2jRsfRmV9Fl2whjONp1WoGaMCCCwXLTV7yfKDLw4vlnbXPgr6jkB7rWEqg2LCOn
-         ZehR7VskOmL/vB3YnKnPHuhxYHljjkRBtkSe6nQnozWiDTHH04H2Z6nWfRFgvGfl5CdQ
-         Ji/NEkoDIDMtDPcpV8sc3YLPNOPWzuAvWqeJEZ9cNlHx54NSMLcbLTEON7cTTxbIHcq6
-         Wn2ZjqaOTlUnTOQIYCYdn8RjFx3PzAyDTAzdImYkIkicg4Q1CU15Uft46WfUpoHWIprt
-         9F8ZKEDzuS0l4LDYCGD2wKkMcEjcVM64h4Kh+K3wRzyFwjA1TufJwpUrdorXpF+sgyU/
-         06QQ==
+        b=eTFqcsQuDD5tOWcn8OfNay+JM2D0e1HBaLnQzoNb0y6Bt7bwzMY3xEh00nc/GP4rsl
+         yjGb3+tvTkhsHgroGhbp6G2ErIFDZupBC3mMhDtVhdmcLPYthRIU0rY3k4+Zt1H0LMDz
+         /clrlqYSnmudBVwXfql0v06L7rbOiAGczJRCGQAoN9JYPx4GBIqzW2B9eK5gaFaHXd9V
+         Uri1cwyYvv5dBLavvp63kZBR0XVdM8s5muZWwjrqIb6WiHR2nkc5DLr762bBQjCGj009
+         McC8eKB/r44eWzXVWE1GYEmPyWQxqRtZF5CUEJgEzLqiLKPJzSqTM3q++DLAnTQpFSLE
+         gHnA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
  s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:dkim-signature;
-        bh=zBGirz++9FADiX5FR84GXnXFfcpzt2AnUmu/EMIPfZI=;
-        fh=Ew/FczzB7o7aRfej3b0OqrTSMw6fQi9VXUH7aRGOf/4=;
-        b=CQoz0gzpywR8rUDa0Tl90MJPIU+ARdnEsmvMCdBiURFH503AQpwcz7tGaDdHE84B76
-         x6Vkhh9QDEm1C6AEgLMhgRN2UFDXsQ7LLucq+Tze507psbbjysuruUIImISJz75HFvcB
-         86oJlabqh2mnXcnYve90zLiE/+a9ZoCKc1TPRImh7TNi1m934lm61gCIObTk6SIjbKdq
-         Zw+2+F68KXbuIfx7GE++FBclhSUzP4VJCJ56bIAIzZuGtMdUdasW5ugKpswhtDls1/gZ
-         uXtcwKSmJvqoVsujzNAZyk3PjSY9LeOxyZHOuaTZaMl7HaYGE8wn0rXXFbaLI9F/yqsE
-         bOJw==;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=RRv0eM1+ipVT242+NGff+AG63iml+vlaTodvGGo/VQ4=;
+        fh=s1h8N4U4ASgl2diPi2yKjEmsLSTuwbZjYBDYrAXLUvw=;
+        b=X0mKzDvnYD9OEIi5ToGh8nSFB2Jcx3NLLY83AhZBHOM3iig7L3B8VQTrDwSSegF2vc
+         ZJS5N3BX2pHogNq0zEqPLlHbE+BNEDO4hrbBnLHkMD8c/DHYce+fgJzq/buwh7S5mbuu
+         TO5FSUgYAj+b5dzDDB8d3WUhlWvA7RMa3+ohqT3tGMLdAUC3CpcS9zteuMEMLdFXvrx6
+         k9po5W537WssY6xlt6JM4Ho52TqcHdGY6/KJLBk9GKtWP5mMs08+bEU7lD69Jx5GJ62t
+         pBUWItLkLjMjyalNG5L6mEYb+r3DqVzmCeIKIpXmYPVUChgC4gF3SjwpYVBT8K/q1F5Q
+         degA==;
         darn=alsa-project.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778180466; x=1778785266;
+        d=gmail.com; s=20251104; t=1778312350; x=1778917150;
  darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zBGirz++9FADiX5FR84GXnXFfcpzt2AnUmu/EMIPfZI=;
-        b=IOyIfDWDds3wMQ8IFNBSBT9PDqFO578WSgA2bNJsxNLIrMyhfCc4YD6ATyGu6I7Xmw
-         bj7GvXoA+igHtmOS92Rnkm7I31MuDYamjwHpQp+Gs/M3gana1I/mtvFf7gfXw4s0aMqs
-         2H93RN5SNz2ABIgmEBy+kp9i3Q5WoGedzJGvr3wdVo7joRYtPeIgpiUyc8heui/V9Mj7
-         9d+yg14VHcH3ubf/8gMFsJLFT9ilYqhWo5RVAOl2dGomOV3Lk/TSNhv7y2EN7TWIw+pd
-         7/k0bYnT6LwJJiRGG4pCfzvS8K3kHRLV2K1VzGRQR6EB/PIXGYZmu5zoNhvP+AObLZBt
-         h6JA==
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RRv0eM1+ipVT242+NGff+AG63iml+vlaTodvGGo/VQ4=;
+        b=jDVjgJRhIjuVRQm6oB/ikIdQziXKh6yg8FdvhhwR9lgJNITCgqvr1airZ64Ceh7j1R
+         ZbhLuAgjTJeiWRjoX22yfwWXCaGRmPYImcRSF9kqyH/JAO4Pd0nbsYvVVU3Z93lcLQB4
+         YmOHrHCpkzvuvBrSsugs1Ga6VPdS8R2COlV5NRQX0DgsIXLOI6ds+VgJ1Yy8uwxmiH16
+         /nwWxXyd2JSf58DoF1QL73qPN6DJlHb6KNpXe2Lf65pYvvWRFhjL4kwhHOSCZ3y+5rTY
+         65Abf7K3FKmGyh8QB7+/GtRG24iwo1rE35nSZK7RQGtc9yTuxZEfIpt/06RfAvZ1mK5h
+         oDyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778180466; x=1778785266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zBGirz++9FADiX5FR84GXnXFfcpzt2AnUmu/EMIPfZI=;
-        b=E1+rFkAepO60krFNipRKl664hO/BwReI+Olcy+FjJgX6DW/rPFB0LDmnrFgc1OWn0x
-         UEyJ4ufgl6ytcWjSE+E6MOYctmSE4eqpy2tcYx0PtsV07gT8DtWvE4e27/UBZTjLAANs
-         3vOwaei8u4D1n7tjg2DJNHa3Df+AdYzb509r9ooVojw6G4PPsJfys8ZgGkkEPQK6A+qC
-         2yvO015g7CzcD4yfRYjkrV73y1hCdYhkq9xzSBjlOgqIwwaxokHZLe1hei+FjGfJavBV
-         NnuH7W5pXNCyhFwoB6G33IxZLapr4TVzFYRW6o6dTcWqmcLEHiQpPrpY630obBF7lidG
-         SKJQ==
-X-Gm-Message-State: AOJu0Yy17bXK+YgXaBzzsI3WzY6NKSEdBPhAXUKg5lS/XTPYt9QGmTHo
-	SYV/i+ElHPJCqhDyirE+FdsubKO9MIK+KuAPhSPJsnMG3A62Y7aANtOkF50U1NcKcYoAjBAGRRR
-	JLwB2VdOvWmHIB4y4YAyhz3o1dXx1WmCc1qvCUiY=
-X-Gm-Gg: AeBDiesVarzaxroMazTv3k1g8+1zGpCawYrFfcwnAu33yjOqNnwnlfNemfoPvsJPz6H
-	5v8B/OnkJmShJ9fXWDaAdbLz6fkXN0wz+PtE2gd4I69s96fePH1OlBiLDAkeciNzFklrtkdLi6A
-	JoGMvRmQ5f7vtiHILROpPUbMGDfHeqCubtCUsTJEwuuuciew+1L0T0jmKaxoEM+0MeSb1vqggQU
-	z8JyA7RjMzQlpETYzOJM91Vl1CVPtGrm1F9qbRQLq//NsIZ27KbmsSeTtTX5XeukSteOT/Zy9e0
-	Zqq9Hkw=
-X-Received: by 2002:a17:906:4fc8:b0:bc6:502e:6d68 with SMTP id
- a640c23a62f3a-bc6502e7514mr379197666b.40.1778180465652; Thu, 07 May 2026
- 12:01:05 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1778312350; x=1778917150;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RRv0eM1+ipVT242+NGff+AG63iml+vlaTodvGGo/VQ4=;
+        b=J8SqGWahhsWP4ddyNwlHVWwsMp00wYLwC9LrPUWod0q4Vs/Y/ZfiCojBYodLEg0U4I
+         c5Oyc49Cb4bbeE6ohd5xWfd5/etxrXQCF3B0OIRjWFEvMWzOb88FGk03RjcZBMYGGULW
+         FGpBY5GOWDrgs6b+sW1qvsqf2AkhI7HqGnvYs16bdF4FY2SsNtYU4P08DayJszQPKG4L
+         94uavuUfm6U5jVhYIeEsf9pBUmvucvphRpWfzLpnAbqX+8A+99yrWQKRMRf1bq64JMOE
+         Bk+pph82gHuX2g6pp3almG5Ezjtj786aOMD22B/EpN7y+ZwNhQcMh58unXc/R901sa1N
+         0FKw==
+X-Gm-Message-State: AOJu0YxeX62f6d8ncTwaD2M/PWkQNV+rWMSbQpd8njfxvZZ6xG4e2sSk
+	//rQtFzlN1XqEif/gLpm9EOncX3ftenQy+IuJEUyMwdENoUbahXRs7Y580rm71cRpPe7jBocYdU
+	NKEtUMfK0LdQLT6U7P/LIi8d4FMirAyab6GXw
+X-Gm-Gg: AeBDiesAU03e+htLCRzwbnDm3meJ5/dgPE21ABBZ+Iq9Q3FCTHOEXrhL0RP5UKv8Vvr
+	0Ag8ASGCxQezGM+1GpNkBrYGBdKEIO+liJqFvml5Pu8C2GlXMe/vqXAlWbaHEIgNOuychcknk9T
+	iCt1kJhJL7Up+nTOosINk/0Sncwwh9/v+M+3Vk7gNYkLAPc+f8fQ0wkon7oURFmZZgz0OunbX+c
+	AJzCkW3rjgrGTx9oj9XL4wM/ov7ElBT478iNc2pSwjXgzI/mo8g8lO1O2l1Xs+DEKaDpqQyuhWC
+	C3wcGKEHwK9ojsCN4aooNAhhIZwLUneN4jIqQInWe5VME6YjqCHMDJ8Lx4VJ1BhZPs0lNSgcwg=
+	=
+X-Received: by 2002:a05:620a:29c2:b0:905:ebde:ffa4 with SMTP id
+ af79cd13be357-9065353f41cmr1376460185a.23.1778312350027; Sat, 09 May 2026
+ 00:39:10 -0700 (PDT)
 MIME-Version: 1.0
-From: =?UTF-8?Q?Bojan_Janjatovi=C4=87?= <bojan.janjatovic@gmail.com>
-Date: Thu, 7 May 2026 21:00:53 +0200
-X-Gm-Features: AVHnY4LEUSQJqQKidz6ahMh6fUVQmxRiyZiAsjZIx1wWpuqxSMWxAQFryP2-mEs
+From: Matthaeus Muniz <matthaeusmuniz@gmail.com>
+Date: Sat, 9 May 2026 00:38:58 -0700
+X-Gm-Features: AVHnY4IMhwoNk0_JvuZ3cVs1SEp8v1qrPwh5B6_QHcKFN3h644Bp0u6es-qurkM
 Message-ID: 
- <CAA-EO1cvs+qy=k7uEC2DQ+PURK5+9V8fL5jxE8jfEM4ShvXWcQ@mail.gmail.com>
-Subject: [PATCH] amixer: handle simple mixer event errors
+ <CANZdgkko7C6gXbpdsu6rRxULRSyTtenCeN0jmODODbT8yi-b9A@mail.gmail.com>
+Subject: ALSA: hda/realtek - ALC257 SSID 17aa:22b1 missing quirk (ThinkPad T14
+ Gen 1)
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, perex@perex.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: bojan.janjatovic@gmail.com
+X-MailFrom: matthaeusmuniz@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: KYHFWHVXUQDGJLZ5C5IYSQ6LHW647QGE
-X-Message-ID-Hash: KYHFWHVXUQDGJLZ5C5IYSQ6LHW647QGE
-X-Mailman-Approved-At: Mon, 11 May 2026 14:44:17 +0000
+Message-ID-Hash: FWD4WZ247WURH33AUJIJ7B4CROPN7GUE
+X-Message-ID-Hash: FWD4WZ247WURH33AUJIJ7B4CROPN7GUE
+X-Mailman-Approved-At: Mon, 11 May 2026 14:44:28 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KYHFWHVXUQDGJLZ5C5IYSQ6LHW647QGE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FWD4WZ247WURH33AUJIJ7B4CROPN7GUE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,45 +135,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-nd_mixer_handle_events() can return negative runtime errors while
-amixer sevents is monitoring simple mixer events. This was reproduced
-during early PipeWire startup, where the handler returned -ENOENT after
-snd_mixer_wait() reported a ready event.
-
-The raw control event monitor already reports analogous
-snd_hctl_handle_events() errors instead of aborting. Handle simple mixer
-event errors the same way so sevents reports the error and keeps
-listening instead of hitting an assertion failure.
-
-Fixes: https://github.com/alsa-project/alsa-utils/issues/327
-
-Signed-off-by: Bojan Janjatovi=C4=87 <bojan.janjatovic@gmail.com>
----
- amixer/amixer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/amixer/amixer.c b/amixer/amixer.c
-index 07e9819..cf3db8e 100644
---- a/amixer/amixer.c
-+++ b/amixer/amixer.c
-@@ -27,7 +27,6 @@
- #include <ctype.h>
- #include <math.h>
- #include <errno.h>
--#include <assert.h>
- #include <alsa/asoundlib.h>
- #include <poll.h>
- #include <stdint.h>
-@@ -1703,7 +1702,8 @@ static int sevents(int argc ATTRIBUTE_UNUSED,
-char *argv[] ATTRIBUTE_UNUSED)
-  if (res >=3D 0) {
-  printf("Poll ok: %i\n", res);
-  res =3D snd_mixer_handle_events(handle);
-- assert(res >=3D 0);
-+ if (res < 0)
-+ printf("ERR: %s (%d)\n", snd_strerror(res), res);
-  }
-  }
-  snd_mixer_close(handle);
---=20
-2.54.0
+SGFyZHdhcmU6IExlbm92byBUaGlua1BhZCBUMTQgR2VuIDEgKDIwUzEwMDJUQlIpDQpDb2RlYzog
+UmVhbHRlayBBTEMyNTcgKDEwZWM6MDI1NykNClBDSSBTU0lEOiAxN2FhOjIyYjENCktlcm5lbDog
+Ni4xNy4wLTIzLWdlbmVyaWMNCg0KUHJvYmxlbToNCkRyaXZlciByZWFkcyBTU0lEIGFzIDE3YWE6
+MDAwMCBhZnRlciBJbnRlbCBNRSBmaXJtd2FyZSB1cGRhdGUNCigyMjUuNzUuMjQyMCDihpIgMjI1
+Ljc3LjI0OTcpLCBmYWxsaW5nIGJhY2sgdG8gZW1wdHkgZml4dXAuDQpJbnRlcm5hbCBtaWNyb3Bo
+b25lIChETUlDKSBzdG9wcGVkIHdvcmtpbmcuDQoNCi9zeXMvYnVzL2hkYXVkaW8vZGV2aWNlcy9o
+ZGF1ZGlvQzBEMC9zdWJzeXN0ZW1faWQgPSAweDE3YWEyMmIxDQovc3lzL2J1cy9wY2kvZGV2aWNl
+cy8wMDAwOjAwOjFmLjMvc3Vic3lzdGVtX2RldmljZSA9IDB4MjJiMQ0KDQpkbWVzZyBzaG93czoN
+CnNuZF9oZGFfY29kZWNfYWxjMjY5OiBBTEMyNTc6IHBpY2tlZCBmaXh1cCBmb3IgUENJIFNTSUQg
+MTdhYTowMDAwDQoNClN1Z2dlc3RlZCBmaXg6IGFkZCBxdWlyayBlbnRyeSBmb3IgMTdhYToyMmIx
+IGluIHBhdGNoX3JlYWx0ZWsuYw0K
