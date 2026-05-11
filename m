@@ -4,79 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4E84CD484E
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4278FCD484E
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:20:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9C7B601CA;
-	Tue, 12 May 2026 00:20:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9C7B601CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90C22601B8;
+	Tue, 12 May 2026 00:20:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90C22601B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778538021;
-	bh=v3FKuA5Z3gNVdXGKkVpFozfT5lnuMlMV+Rq5LvGtlrg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=EXS0tkeEzat0/HIQaNdh+avVsUjj+vRIkDKpEZFDYsX7Q0EfmHM0EkNa2jRJ5X+91
-	 /Y75TxVigWP7e8+ocPnkl3GBgmYKWF/RT71lWMYca+17zvpjLTMClAbhRT4kNw1h91
-	 cUrDQtVXibL7Sm1SwutODsG5KRBlXeIKVi8Oz3mI=
+	s=default; t=1778538041;
+	bh=GJYylXcn2nsU8fJDFYpyDxNo2CMymQnw6UwK2SAQfhs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rw3Tn2AimrKBMxdCZxs3NapzyUm232GYxQGOZW/Q8KTKrexPn/k0C7aywC4mJr0HA
+	 Ffz0XJMuClzV8UHrI2lxGSq2W3ljPhBn1lTFhImyS60XNQoZIScizFfXDXn1xg2THO
+	 0n6R4fPPnp1DMpb07xAM39Q/5wGIbNnP49qvGmyM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F426F804CC; Tue, 12 May 2026 00:19:46 +0200 (CEST)
+	id 3DD33F8060A; Tue, 12 May 2026 00:20:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAC2EF805EC;
-	Tue, 12 May 2026 00:19:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00F51F8060C;
+	Tue, 12 May 2026 00:20:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D30BF804CC; Tue, 12 May 2026 00:19:41 +0200 (CEST)
+	id 07544F805F8; Tue, 12 May 2026 00:19:55 +0200 (CEST)
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E56D1F8001F
-	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:19:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E56D1F8001F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 97E19F805EC
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97E19F805EC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=go9Jnchv
+ header.s=k20201202 header.b=oKRcEzYR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id BE4596001A;
-	Mon, 11 May 2026 22:19:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80A75C2BCB0;
-	Mon, 11 May 2026 22:19:32 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 824AA60128;
+	Mon, 11 May 2026 22:19:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E25BC2BCB0;
+	Mon, 11 May 2026 22:19:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778537973;
-	bh=v3FKuA5Z3gNVdXGKkVpFozfT5lnuMlMV+Rq5LvGtlrg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=go9JnchvRHdqcdetNfBwvSEKxPrAc9y2OO83cH6gAa8tKD5v1wqOjnJk4I87MY0sw
-	 nvhxjux6aYSumEaEgKYfFQNWeAc7GUdP0uLIylir8SW/Zxmf0CLA0clIthorVdmbvw
-	 jtj7RUlQ9wm2la7g0i3GykG4qdpqbuDGfhi604MKatxpKPYTjzqQaRbX6NJAbp+ccQ
-	 eTZRwjcmmOrduZmobVhUzqMUhbKWKKWy+Lc9Fn1veW1Nwa4qBaVPsBICTJxW4qNMgW
-	 xcN7mr4+daM3mLRzA7RWa9JmPrBezJP0p8X805KZ7g/zqadZR5ZKzNkJITpOof7KUF
-	 u810uFvCA9j5w==
+	s=k20201202; t=1778537988;
+	bh=GJYylXcn2nsU8fJDFYpyDxNo2CMymQnw6UwK2SAQfhs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=oKRcEzYRVI1a02tyzGOeYlM2h1zfNafDPfo+yC/NTk0P+NygZiRI6N1jxpDk+E9Zm
+	 CHVAFisZcq57O0VuAA+y/9RG43Ou6auGwX/VnazI7bsJQrYUTgizjyIEK8ntuOfAkw
+	 HHE3mIjjJQK5U2cuL+oDIAFYFTqUmJnu47vUkdrYSoyCeVukOU70XB6ONqYylJ+o1T
+	 FL4NC1z71i1aHb6n5PXGAGPEpFq1aR9Lsek2FxLhP8mUhPTUqtnNrCAHtQ8RbP+OS5
+	 Cfpl9yp+pjKpdW1gt4O8GVZOZ1IhgSDZJ259bgekj23F8rRZYDuEiD0iuzjV2lEmv/
+	 GcoP6H371oNJA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Rosen Penev <rosenp@gmail.com>,
+Cc: Pauli Virtanen <pav@iki.fi>,
 	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-5.10] ALSA: sparc/dbri: add missing fallthrough
-Date: Mon, 11 May 2026 18:19:00 -0400
-Message-ID: <20260511221931.2370053-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 7.0-6.18] ALSA: usb-audio: add min_mute quirk for
+ Razer Nommo V2 X
+Date: Mon, 11 May 2026 18:19:10 -0400
+Message-ID: <20260511221931.2370053-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260511221931.2370053-1-sashal@kernel.org>
+References: <20260511221931.2370053-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 7.0.6
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: J4HGMYYADCURP6E26PXWSX4Z6RJK62HH
-X-Message-ID-Hash: J4HGMYYADCURP6E26PXWSX4Z6RJK62HH
+Message-ID-Hash: PRF4AGT7GPJ7R6VM36ZJW2DDPTGMJNDQ
+X-Message-ID-Hash: PRF4AGT7GPJ7R6VM36ZJW2DDPTGMJNDQ
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J4HGMYYADCURP6E26PXWSX4Z6RJK62HH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PRF4AGT7GPJ7R6VM36ZJW2DDPTGMJNDQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,22 +100,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Rosen Penev <rosenp@gmail.com>
+From: Pauli Virtanen <pav@iki.fi>
 
-[ Upstream commit 2bcbb163162789d3488562073dbb99d9bd71a762 ]
+[ Upstream commit ad39a189bfebb3de580f390bc000f9e121c6aca3 ]
 
-Fixes compiler error with probably newer compilers:
+ID 1532:055e Razer USA, Ltd Razer Nommo V2 X
+is tested to have muted min playback volume. Apply quirk for that.
 
-sound/sparc/dbri.c:595:2: error: unannotated fall-through between switch labels [-Werror,-Wimplicit-fallthrough]
-  595 |         case 1:
-      |         ^
-sound/sparc/dbri.c:595:2: note: insert 'break;' to avoid fall-through
-  595 |         case 1:
-      |         ^
-      |         break;
-
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
-Link: https://patch.msgid.link/20260506031854.780411-1-rosenp@gmail.com
+Link: https://gitlab.freedesktop.org/pipewire/pipewire/-/work_items/5235
+Signed-off-by: Pauli Virtanen <pav@iki.fi>
+Link: https://patch.msgid.link/94449577332d14d7974864903825f27e5824ddbc.1777579951.git.pav@iki.fi
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -120,242 +117,204 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
 LLM Generated explanations, may be completely bogus:
 
 ## Phase 1: Commit Message Forensics
+Step 1.1 Record: subsystem `ALSA: usb-audio`; action verb `add`; intent:
+add a playback-minimum-is-mute quirk for USB ID `1532:055e`, Razer Nommo
+V2 X.
 
-Step 1.1 Record: Subsystem `ALSA: sparc/dbri`; action verb `add`; intent
-is to add a missing `fallthrough` annotation in `reverse_bytes()`.
+Step 1.2 Record: tags in supplied message: `Link` to PipeWire work item,
+`Signed-off-by: Pauli Virtanen`, `Link` to patch msgid, `Signed-off-by:
+Takashi Iwai`. No `Fixes`, `Reported-by`, `Tested-by`, `Reviewed-by`,
+`Acked-by`, or `Cc: stable`. The lore patch mbox verifies the Pauli SOB
+and PipeWire link; Takashi replied “Applied now.”
 
-Step 1.2 Record: Tags present: `Signed-off-by: Rosen Penev
-<rosenp@gmail.com>`, `Link:
-https://patch.msgid.link/20260506031854.780411-1-rosenp@gmail.com`,
-`Signed-off-by: Takashi Iwai <tiwai@suse.de>`. No `Fixes:`, `Reported-
-by:`, `Tested-by:`, `Reviewed-by:`, `Acked-by:`, or `Cc: stable`.
+Step 1.3 Record: bug description is device-specific: Razer Nommo V2 X
+has muted minimum playback volume. Symptom: userspace may expose the
+minimum playback volume as a normal low audible volume even though
+hardware treats it as mute. Version info: none in commit message. Root
+cause: device has nonstandard mixer semantics.
 
-Step 1.3 Record: The commit body reports a concrete compiler error:
-`-Werror,-Wimplicit-fallthrough` in `sound/sparc/dbri.c` at the
-fallthrough from `case 2` to `case 1`. Symptom is a build failure for
-this driver/config with a compiler that diagnoses this unannotated
-fallthrough as an error. No kernel version is named. Root cause is an
-intentional fallthrough lacking the kernel `fallthrough;` marker.
-
-Step 1.4 Record: This is not a hidden runtime bug fix; it is an explicit
-build fix. Build fixes are stable-acceptable when they repair
-compilation of existing code.
+Step 1.4 Record: yes, hidden bug/hardware workaround. It is a quirk for
+incorrect USB-audio volume semantics on real hardware.
 
 ## Phase 2: Diff Analysis
+Step 2.1 Record: `sound/usb/quirks.c`, `+2/-0`, in
+`quirk_flags_table[]`. Scope: single-file surgical hardware quirk.
 
-Step 2.1 Record: One file changed: `sound/sparc/dbri.c`, `+1/-0`. One
-function modified: `reverse_bytes()`. Scope is a single-file, one-line
-surgical build fix.
+Step 2.2 Record: before, USB ID `1532:055e` had no built-in quirk flag.
+After, matching that device sets `QUIRK_FLAG_MIXER_PLAYBACK_MIN_MUTE`.
+Affected path is USB-audio device initialization and mixer control
+construction.
 
-Step 2.2 Record: Before, `case 2` performed the final bit swap and
-implicitly fell into `case 1`/`case 0`, which then `break`s. After, the
-same fallthrough is explicitly annotated with `fallthrough;`. Runtime
-control flow is unchanged.
+Step 2.3 Record: bug category is hardware workaround / quirk table
+entry. Mechanism: `snd_usb_init_quirk_flags_table()` ORs the flag into
+`chip->quirk_flags`; `snd_usb_mixer_fu_apply_quirk()` sees that flag on
+Playback controls and sets `cval->min_mute = 1`;
+`snd_usb_mixer_vol_tlv()` then reports `SNDRV_CTL_TLVT_DB_MINMAX_MUTE`.
 
-Step 2.3 Record: Bug category is build fix / compiler diagnostic fix.
-Specific mechanism: the kernel already annotates earlier intentional
-fallthroughs in the same switch, but the `case 2` to `case 1`
-fallthrough lacked the annotation, triggering `-Wimplicit-fallthrough`
-as an error.
-
-Step 2.4 Record: Fix quality is high: it is one line, uses the existing
-kernel `fallthrough` pseudo-keyword, matches nearby code style in
-current branches, and does not change APIs or runtime behavior.
-Regression risk is very low.
+Step 2.4 Record: fix is obviously correct for kernels with this quirk
+infrastructure: one ID-specific table entry, no public API, no locking
+or lifetime changes. Regression risk is very low and limited to this
+VID:PID.
 
 ## Phase 3: Git History Investigation
+Step 3.1 Record: blame around the insertion area shows the surrounding
+quirk table is longstanding, with the nearby `NeuralDSP Quad Cortex`
+exception from `bc5b4e5ae1a67` and Denon entries from older Takashi Iwai
+commits. The common min-mute quirk infrastructure comes from
+`2c3ca8cc55a3` and follow-ups.
 
-Step 3.1 Record: `git blame` on `2bcbb16316278^` attributes this code to
-`c3c9a75ede23f`, but the repository is shallow/grafted there, so that is
-not a reliable true introduction point. I verified the same missing
-annotation exists in local stable-related branches `pending-5.4`,
-`pending-5.10`, `pending-5.15`, `pending-6.1`, `pending-6.6`,
-`pending-6.12`, `pending-6.19`, and `pending-7.0`.
+Step 3.2 Record: no `Fixes:` tag, so no introducing commit to follow.
 
-Step 3.2 Record: No `Fixes:` tag is present, so there is no introducing
-commit to follow from the message.
+Step 3.3 Record: recent `sound/usb/quirks.c` history contains many
+similar device-specific quirk fixes. Related min-mute commits include
+`2b929b6eec0c7` Logitech H390, `9af61fc91486c` MS LifeChat, and
+`b98b69c38512c` SteelSeries Arctis.
 
-Step 3.3 Record: Recent `sound/sparc/dbri.c` history on `linux-
-next/master` shows this commit, then `ALSA: sparc/dbri: Use guard() for
-spin locks`, then the shallow boundary. The guard refactor is not a
-semantic prerequisite for adding this annotation, although older stable
-branches may have slightly different context.
+Step 3.4 Record: Pauli Virtanen has prior USB-audio quirk commits in
+this exact area, including Logitech H390, MS LifeChat, and SteelSeries
+Arctis min-mute quirks.
 
-Step 3.4 Record: Author Rosen Penev has this recent `sound/sparc` commit
-in the checked history. The commit was applied by Takashi Iwai, and
-`MAINTAINERS` lists Takashi Iwai and Jaroslav Kysela as SOUND
-maintainers.
-
-Step 3.5 Record: No dependent `reverse_bytes` commits were found by
-subject search. The change can be applied standalone as an annotation.
-For `pending-5.4`, context differs because earlier fallthroughs are
-comments rather than `fallthrough;`, so that tree may need a trivial
-backport adjustment.
+Step 3.5 Record: dependency is the min-mute quirk infrastructure.
+Present in current `7.0.y`; present in `v6.18` with
+`QUIRK_FLAG_MIXER_PLAYBACK_MIN_MUTE`; `v6.17` has older
+`QUIRK_FLAG_MIXER_MIN_MUTE`; `v6.16`/`v6.12` did not show the generic
+flag.
 
 ## Phase 4: Mailing List And External Research
+Step 4.1 Record: no local commit hash was found, so `b4 dig -c` could
+not be used successfully. `b4 am` and `b4 mbox` by message-id found a
+single-patch thread at the supplied msgid. Thread has patch plus Takashi
+Iwai reply: “Applied now.” No NAKs or concerns found in fetched thread.
 
-Step 4.1 Record: `b4 dig -c 2bcbb16316278` found the original submission
-at the provided lore/patch URL. `b4 dig -a` found only v1; no later
-revision. The saved mbox contains Takashi Iwai’s reply: “Applied now.
-Thanks.” No NAKs or concerns were present in the fetched thread.
+Step 4.2 Record: original patch To/Cc from mbox: `linux-
+sound@vger.kernel.org`, Pauli Virtanen, Jaroslav Kysela, Takashi Iwai,
+`linux-kernel@vger.kernel.org`. Appropriate sound maintainers/lists were
+included.
 
-Step 4.2 Record: `b4 dig -w` shows recipients: Rosen Penev, `linux-
-sound@vger.kernel.org`, Jaroslav Kysela, Takashi Iwai, and `linux-
-kernel@vger.kernel.org`.
+Step 4.3 Record: PipeWire link was blocked by Anubis via WebFetch, so
+details could not be verified. GitHub OpenRazer issue independently
+verifies device name and VID:PID `1532:055E`, but it is not the PipeWire
+volume bug report.
 
-Step 4.3 Record: No separate bug report or `Reported-by` tag. The
-reported failure is the compiler diagnostic included in the patch email
-and commit message.
+Step 4.4 Record: thread is a standalone one-patch submission. Similar
+prior min-mute quirk patches exist, but this patch does not depend on a
+same-series patch.
 
-Step 4.4 Record: `b4 dig -a` shows this is a single-patch series, not
-part of a multi-patch dependency chain.
-
-Step 4.5 Record: WebFetch to lore/stable search was blocked by Anubis.
-Local stable branch log searches did not find this exact fix or a
-related `unannotated fall-through` fix already present in the checked
-stable branches.
+Step 4.5 Record: lore stable search via WebFetch was blocked by Anubis;
+local stable branch searches found no existing Razer Nommo V2 X commit.
 
 ## Phase 5: Code Semantic Analysis
+Step 5.1 Record: modified data object is `quirk_flags_table[]`; affected
+functions are `snd_usb_init_quirk_flags_table()`,
+`snd_usb_init_quirk_flags()`, `snd_usb_audio_create()`,
+`snd_usb_mixer_fu_apply_quirk()`, and `snd_usb_mixer_vol_tlv()`.
 
-Step 5.1 Record: Modified function: `reverse_bytes()`.
+Step 5.2 Record: `snd_usb_audio_create()` calls
+`snd_usb_init_quirk_flags()` during USB audio card creation; that calls
+`snd_usb_init_quirk_flags_table()`. `build_feature_ctl()` calls
+`snd_usb_mixer_fu_apply_quirk()` while building mixer controls.
 
-Step 5.2 Record: Callers found in `sound/sparc/dbri.c`: `xmit_fixed()`
-calls `reverse_bytes()` for MSB fixed-pipe transmit data;
-`dbri_process_one_interrupt()` calls it for fixed-data receive
-interrupts.
+Step 5.3 Record: key callees/side effects are table lookup, setting
+`chip->quirk_flags`, setting `cval->min_mute`, and TLV reporting through
+`copy_to_user()`.
 
-Step 5.3 Record: `reverse_bytes()` only performs bit manipulation and
-may print an error for unsupported lengths; it does not allocate memory,
-take locks, or call into external subsystems.
+Step 5.4 Record: reachable when the specific USB audio device is
+connected and its mixer controls are created. This is device-specific,
+not universal.
 
-Step 5.4 Record: Runtime paths are reachable through DBRI/CS4215
-initialization/control and interrupt handling on supported SPARC SBus
-DBRI hardware. For this patch, runtime reachability is not the main
-issue because the fix targets compilation and preserves runtime flow.
-
-Step 5.5 Record: Nearby switch cases already had intentional fallthrough
-annotations; this patch fills the only missing annotation in that chain.
+Step 5.5 Record: many existing `QUIRK_FLAG_MIXER_PLAYBACK_MIN_MUTE`
+entries exist for similar USB audio devices, confirming this is an
+established local pattern.
 
 ## Phase 6: Stable Tree Analysis
+Step 6.1 Record: current `7.0.y` lacks the Razer entry and contains the
+necessary infrastructure. `v6.18`/`v6.19` contain the named playback
+min-mute flag. `v6.17` has the older generic
+`QUIRK_FLAG_MIXER_MIN_MUTE`; `v6.16`/`v6.12` did not show the generic
+flag.
 
-Step 6.1 Record: The missing annotation exists in checked stable-related
-branches from `pending-5.4` through `pending-7.0`. Therefore the
-affected source is present in active stable-era trees available locally.
+Step 6.2 Record: `git apply --check` succeeds on current `7.0.y`. Older
+trees may need minor contextual adjustment; `v6.17` would need the older
+flag name. Older LTS trees without the common quirk infrastructure would
+need a nontrivial backport or prerequisite series.
 
-Step 6.2 Record: Expected backport difficulty is clean or trivial for
-most branches. `pending-5.4` has older comment-style fallthrough context
-before `case 2`, so it may require a small context adjustment, but the
-same one-line semantic change applies.
+Step 6.3 Record: no related Razer Nommo V2 X fix found in local
+`stable/linux-7.0.y`.
 
-Step 6.3 Record: No related fix with this subject or `unannotated fall-
-through` in `sound/sparc/dbri.c` was found in the checked stable-related
-branches.
+## Phase 7: Subsystem Context
+Step 7.1 Record: subsystem is ALSA USB audio driver under `sound/usb`;
+criticality is driver-specific/peripheral, but real hardware user-
+visible behavior.
 
-## Phase 7: Subsystem And Maintainer Context
+Step 7.2 Record: USB-audio quirks are active, with recent commits
+adding/fixing device-specific quirks and min-mute behavior.
 
-Step 7.1 Record: Subsystem is ALSA SPARC sound driver, specifically Sun
-DBRI. Criticality is peripheral/platform-specific, not core kernel-wide.
+## Phase 8: Impact And Risk
+Step 8.1 Record: affected population is users of Razer Nommo V2 X using
+USB audio.
 
-Step 7.2 Record: Recent `sound/sparc` history is sparse and mostly
-maintenance/refactoring/build-style changes, indicating a mature low-
-churn driver area.
+Step 8.2 Record: trigger is normal volume-control use on that device.
+Unprivileged audio clients can read/use ALSA mixer metadata, but no
+security impact was verified.
 
-## Phase 8: Impact And Risk Assessment
+Step 8.3 Record: failure mode is functional audio control
+misrepresentation: minimum playback volume is mute. Severity: medium for
+affected hardware, not crash/corruption.
 
-Step 8.1 Record: Affected users are config/platform-specific: SPARC/SBus
-builds with `SND_SUN_DBRI`.
-
-Step 8.2 Record: Trigger is building this driver with a
-compiler/configuration that treats the unannotated fallthrough warning
-as an error. I did not independently reproduce the compiler failure
-locally.
-
-Step 8.3 Record: Failure mode is build failure, not runtime crash or
-data corruption. Severity is high for affected builders because the
-kernel/module cannot be built successfully under that toolchain/config.
-
-Step 8.4 Record: Benefit is meaningful for affected stable users because
-it restores buildability of an existing driver. Risk is very low: one
-annotation line, no feature, no API change, no runtime logic change.
-Risk-benefit ratio favors backporting.
+Step 8.4 Record: benefit is high for affected device users and low
+system-wide; risk is very low because the change is a two-line VID:PID-
+scoped quirk.
 
 ## Phase 9: Final Synthesis
+Step 9.1 Record: evidence for backporting: real tested hardware quirk,
+established USB-audio pattern, two-line scoped change, maintainer
+applied, clean on `7.0.y`, no global behavior change. Evidence against:
+not a crash/security/data-corruption fix; older stable trees may need
+adjustment or prerequisites. Unresolved: PipeWire bug details
+unavailable due Anubis; no upstream commit hash found locally for `b4
+dig`.
 
-Step 9.1 Record: Evidence for backporting: concrete compiler error,
-existing driver code in stable branches, one-line obviously-correct fix,
-maintainer-applied patch, no runtime behavior change, and build fixes
-are valid stable material. Evidence against: platform-specific impact
-and no independent local build reproduction. Unresolved: exact true
-historical introduction predates the shallow boundary; lore stable
-search via WebFetch was blocked.
+Step 9.2 Record: stable rules: obviously correct: yes for trees with
+infrastructure; fixes real user-visible hardware bug: yes; important
+enough: yes under hardware-quirk exception; small/contained: yes, 2
+lines; no new APIs/features: yes; applies to stable: clean on current
+`7.0.y`, minor/unknown adjustments for older trees.
 
-Step 9.2 Record: Stable rules checklist:
-1. Obviously correct and tested: yes for correctness by inspection;
-   maintainer applied it. No local build test performed.
-2. Fixes a real bug: yes, reported compiler error in existing code.
-3. Important issue: yes for affected stable builds, because it can stop
-   compilation.
-4. Small and contained: yes, one line in one function.
-5. No new features/APIs: yes.
-6. Can apply to stable trees: yes with at most trivial context
-   adjustment, especially for older comment-style fallthrough branches.
+Step 9.3 Record: exception category applies: hardware quirk/workaround
+for an existing driver and existing quirk mechanism.
 
-Step 9.3 Record: Exception category applies: build fix.
+Step 9.4 Record: decision is to backport to stable trees that contain
+the min-mute quirk infrastructure, especially `7.0.y`/`6.19.y`/`6.18.y`;
+older trees should only take it with the appropriate small backport
+adjustment or prerequisites.
 
-Step 9.4 Record: Decision is to backport. This is exactly the kind of
-low-risk build fix stable trees should carry.
-
-## Verification
-
-- [Phase 1] Parsed `git show --format=fuller --stat --patch
-  2bcbb16316278`: confirmed subject, tags, compiler-error body, and one-
-  line patch.
-- [Phase 2] Read `sound/sparc/dbri.c`: confirmed `reverse_bytes()` has
-  annotated fallthroughs except the candidate-added `case 2` annotation.
-- [Phase 3] Ran `git blame 2bcbb16316278^ -L 578,598 --
-  sound/sparc/dbri.c`: confirmed changed area, with shallow/grafted
-  limitation.
-- [Phase 3] Ran branch snippet checks on `pending-5.4` through
-  `pending-7.0`: confirmed the missing annotation exists in all checked
-  stable-related branches.
-- [Phase 3] Ran recent file history and author history checks: found
-  only related maintenance/refactor commits, no dependency series.
-- [Phase 4] Ran `b4 dig -c`, `-a`, `-w`, and saved the mbox: confirmed
-  single v1 patch, proper ALSA recipients, and maintainer “Applied now”
-  reply.
-- [Phase 5] Searched `reverse_bytes(` call sites: confirmed callers are
-  `xmit_fixed()` and `dbri_process_one_interrupt()`.
-- [Phase 6] Searched stable branch logs: no existing backport or
-  duplicate fix found locally.
-- [Phase 7] Checked `MAINTAINERS`: confirmed SOUND maintainers include
-  Jaroslav Kysela and Takashi Iwai.
-- [Phase 8] Checked `include/linux/compiler_attributes.h`: confirmed
-  `fallthrough` is the intended kernel pseudo-keyword and is available
-  in checked stable branches.
-- UNVERIFIED: I did not reproduce the compiler error with a local
-  SPARC/SBus DBRI build.
-- UNVERIFIED: The exact original introduction before the repository’s
-  shallow/grafted boundary could not be determined.
-- UNVERIFIED: WebFetch could not read lore/stable search results because
-  Anubis blocked the page.
+Verification: performed semantic search; inspected current HEAD and
+branch state; read `sound/usb/quirks.c`, `usbaudio.h`, `mixer_quirks.c`,
+`mixer.c`, and `card.c`; used `rg` for quirk usage/callers; used `git
+blame`, `git log`, `git show`, `git merge-base`, and `git apply
+--check`; fetched lore thread with `b4 am`/`b4 mbox`; attempted `b4 dig`
+but no commit hash/local commit match was available; attempted WebFetch
+for PipeWire/lore search but Anubis blocked; verified device VID:PID via
+OpenRazer/WebSearch.
 
 **YES**
 
- sound/sparc/dbri.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
-index 75f82a92ff44f..2f5f62079fa4a 100644
---- a/sound/sparc/dbri.c
-+++ b/sound/sparc/dbri.c
-@@ -592,6 +592,7 @@ static __u32 reverse_bytes(__u32 b, int len)
- 		fallthrough;
- 	case 2:
- 		b = ((b & 0xaaaaaaaa) >> 1) | ((b & 0x55555555) << 1);
-+		fallthrough;
- 	case 1:
- 	case 0:
- 		break;
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 4cfa24c06fcdf..148bf7e4e4d72 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -2307,6 +2307,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 		   QUIRK_FLAG_IGNORE_CTL_ERROR),
+ 	DEVICE_FLG(0x152a, 0x880a, /* NeuralDSP Quad Cortex */
+ 		   0), /* Doesn't have the vendor quirk which would otherwise apply */
++	DEVICE_FLG(0x1532, 0x055e, /* Razer Nommo V2 X */
++		   QUIRK_FLAG_MIXER_PLAYBACK_MIN_MUTE),
+ 	DEVICE_FLG(0x154e, 0x1002, /* Denon DCD-1500RE */
+ 		   QUIRK_FLAG_ITF_USB_DSD_DAC | QUIRK_FLAG_CTL_MSG_DELAY),
+ 	DEVICE_FLG(0x154e, 0x1003, /* Denon DA-300USB */
 -- 
 2.53.0
 
