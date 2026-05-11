@@ -4,145 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D1C3CD484E
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:15:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4E84CD484E
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:20:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 865AF601A3;
-	Tue, 12 May 2026 00:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 865AF601A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9C7B601CA;
+	Tue, 12 May 2026 00:20:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9C7B601CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778537712;
-	bh=GUyHyIJrbaU1INDAaJL7XDBJ8+iDjqw4CoywJY5a1cU=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1778538021;
+	bh=v3FKuA5Z3gNVdXGKkVpFozfT5lnuMlMV+Rq5LvGtlrg=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RNhOiJA43CpJoN654xQq+A4aO1dDUBFERBBLB6N0xDcIp4rI46UyWDxNf3ZzzVwCj
-	 l7B8cl9A2hE2mCazZPS1Lcr7W+GuXli/+j2zsVt1FyyuLJHaQlDz7E3srnoUp4Vl+1
-	 d6hPPVUMwVjb9qb6q3hOdb5Q72uFdt6f6yYvavXo=
+	b=EXS0tkeEzat0/HIQaNdh+avVsUjj+vRIkDKpEZFDYsX7Q0EfmHM0EkNa2jRJ5X+91
+	 /Y75TxVigWP7e8+ocPnkl3GBgmYKWF/RT71lWMYca+17zvpjLTMClAbhRT4kNw1h91
+	 cUrDQtVXibL7Sm1SwutODsG5KRBlXeIKVi8Oz3mI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2144BF805A1; Tue, 12 May 2026 00:14:38 +0200 (CEST)
+	id 2F426F804CC; Tue, 12 May 2026 00:19:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E52CF805F2;
-	Tue, 12 May 2026 00:14:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAC2EF805EC;
+	Tue, 12 May 2026 00:19:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEA77F804CC; Tue, 12 May 2026 00:14:31 +0200 (CEST)
-Received: from cross.elm.relay.mailchannels.net
- (cross.elm.relay.mailchannels.net [23.83.212.46])
+	id 4D30BF804CC; Tue, 12 May 2026 00:19:41 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DDF9FF8001F
-	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:14:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDF9FF8001F
+	by alsa1.perex.cz (Postfix) with ESMTPS id E56D1F8001F
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:19:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E56D1F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=mungewell.org header.i=@mungewell.org
- header.a=rsa-sha256 header.s=default header.b=jh/dBTVo
-X-Sender-Id: idigitalinternetinc|x-authuser|simon@mungewell.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 6C870461579
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2026 22:14:22 +0000 (UTC)
-Received: from barmail5.idig.net (trex-green-4.trex.outbound.svc.cluster.local
- [100.98.10.134])
-	(Authenticated sender: idigitalinternetinc)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 279784614FB
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2026 22:14:22 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1778537662;
-	b=tFjrdWOQhyYKo9swVbM477O3uRN7gqswRFA1vKQ8W9zPbGAri7+E1sm8CYrt76SANG4wib
-	a6VKBBphf/aMpi62PN35jE2O/jL9fmYdXIIQEVOtpAFZ1kYHUb64XkxJSpCxqzIflLti05
-	J5JS0kaYYDscf1m6rDMO5ELLSKuY7iWQ+wAZJiszqoTbFxIFohw5pHlXuHkjxRvkzlkLwc
-	ANH6kYP+5novjCscAC31rZuNAIHyROJSVmT5QzftAw+5kbErOWVWHxpe7IrHd77pgPJott
-	78z4oNuLD5Kc7zJOgkVHPeuKB7823PJdwqBVNNrisvsTYyiKK5gC4Iezbyhnjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1778537662;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 dkim-signature; bh=39ZaNMbV/PS7bykzuCrNeJFj+3lGqOFqmgcQ0ckZPtM=;
-	b=CsBdfPSqBcpcBLoUVxQiN/fXgPULesNzaAB509UzkxUk6KQ6HJSBZ4/chpYG4LPH5FluCA
-	S5anv5dDIXNLYgvNdAJ7MVIpUNpNg4Xd6gncFjexkpSvUk6i3PXemo7+KpPO61QsQa4adw
-	OZhZEYH6dkNQ8H0dOCiAqqh+jlZ426xKHH1m/CMkukwd/u+7EAB1ykG4b2eCstkBdZu8a2
-	nEGMMwa5GAUek63gyLDctYcrTgXLCInGAjWOXY3uGxyRfsqF7OBSxT9GBpYSXK+BbPLi+M
-	ZyDbpWRv6ZMfV3SFSUGL2Wx9o4nuvGtEr1fMSUI4GYjPFi8yss5Y+RDr6Kx4JA==
-ARC-Authentication-Results: i=1;
-	rspamd-5c5444c55f-rpcwz;
-	auth=pass smtp.auth=idigitalinternetinc smtp.mailfrom=simon@mungewell.org
-X-Sender-Id: idigitalinternetinc|x-authuser|simon@mungewell.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: idigitalinternetinc|x-authuser|simon@mungewell.org
-X-MailChannels-Auth-Id: idigitalinternetinc
-X-Reign-Name: 7f406e1d01c145d3_1778537662354_1567400613
-X-MC-Loop-Signature: 1778537662354:1766443213
-X-MC-Ingress-Time: 1778537662353
-Received: from barmail5.idig.net (barmail5.idig.net [104.36.151.219])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.98.10.134 (trex/7.1.5);
-	Mon, 11 May 2026 22:14:22 +0000
-Received: from cwh28.canadianwebhosting.com (cwh28.canadianwebhosting.com
- [66.85.29.119]) by barmail5.idig.net with ESMTP id LRLDYDUnFskLmoBJ
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
- Mon, 11 May 2026 15:14:21 -0700 (PDT)
-X-Barracuda-Envelope-From: simon@mungewell.org
-X-Barracuda-Effective-Source-IP: cwh28.canadianwebhosting.com[66.85.29.119]
-X-Barracuda-Apparent-Source-IP: 66.85.29.119
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=mungewell.org; s=default; h=Content-Type:Message-ID:Subject:Cc:To:From:Date
-	:MIME-Version:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=39ZaNMbV/PS7bykzuCrNeJFj+3lGqOFqmgcQ0ckZPtM=; b=jh/dBTVoeslIY8ESrawEIc/mUT
-	XMreqmjVnokhiYT16ThhzPVbEyuJqiVic7pGUPl+im4/LjzenQPHVZcDnF/iSepxj1wuAwG9Vd5sJ
-	WVaW1/qQJTI95NDtoeVVPgNwKEQskQeWkLMKjfMAdCPMlpfzz46UTkKmYZlqECUDdAaddKeoHmUm8
-	xoEnsqElyftqZ4YiBqOZpU/6H7GOzQxlqAzRIgDpiQTkfQiu8/fcN7z7nXtlUFBldS34IKjGlObbC
-	me3DT7x16O471kWM2OMqr3oZvaJDo3JjYtEeKD8POYQoPgJ5Uz2nMLif2Hj9gz8kXt+GAAYPPuMqo
-	KhldualQ==;
-Received: from [::1] (port=35524 helo=cwh28.canadianwebhosting.com)
-	by cwh28.canadianwebhosting.com with esmtpa (Exim 4.99.2)
-	(envelope-from <simon@mungewell.org>)
-	id 1wMYtJ-0000000F2ZU-1XWs;
-	Mon, 11 May 2026 18:14:20 -0400
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=go9Jnchv
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id BE4596001A;
+	Mon, 11 May 2026 22:19:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80A75C2BCB0;
+	Mon, 11 May 2026 22:19:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778537973;
+	bh=v3FKuA5Z3gNVdXGKkVpFozfT5lnuMlMV+Rq5LvGtlrg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=go9JnchvRHdqcdetNfBwvSEKxPrAc9y2OO83cH6gAa8tKD5v1wqOjnJk4I87MY0sw
+	 nvhxjux6aYSumEaEgKYfFQNWeAc7GUdP0uLIylir8SW/Zxmf0CLA0clIthorVdmbvw
+	 jtj7RUlQ9wm2la7g0i3GykG4qdpqbuDGfhi604MKatxpKPYTjzqQaRbX6NJAbp+ccQ
+	 eTZRwjcmmOrduZmobVhUzqMUhbKWKKWy+Lc9Fn1veW1Nwa4qBaVPsBICTJxW4qNMgW
+	 xcN7mr4+daM3mLRzA7RWa9JmPrBezJP0p8X805KZ7g/zqadZR5ZKzNkJITpOof7KUF
+	 u810uFvCA9j5w==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Rosen Penev <rosenp@gmail.com>,
+	Takashi Iwai <tiwai@suse.de>,
+	Sasha Levin <sashal@kernel.org>,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 7.0-5.10] ALSA: sparc/dbri: add missing fallthrough
+Date: Mon, 11 May 2026 18:19:00 -0400
+Message-ID: <20260511221931.2370053-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.53.0
 MIME-Version: 1.0
-Date: Mon, 11 May 2026 18:14:19 -0400
-From: simon@mungewell.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
-Subject: snd-firewire-ctl-services: Digidesign Digi-002R - missing control for
- 'Optical mode'
-User-Agent: Roundcube Webmail/1.6.15
-X-ASG-Orig-Subj: snd-firewire-ctl-services: Digidesign Digi-002R - missing
- control for
- 'Optical mode'
-Message-ID: <f33030cd26a3f65960481e437788a125@mungewell.org>
-X-Sender: simon@mungewell.org
-Content-Type: multipart/mixed;
- boundary="=_c6d04e9cac18143d47848fa05b7960a5"
-X-AuthUser: simon@mungewell.org
-X-Barracuda-Connect: cwh28.canadianwebhosting.com[66.85.29.119]
-X-Barracuda-Start-Time: 1778537661
-X-Barracuda-Encrypted: TLS_AES_256_GCM_SHA384
-X-Barracuda-URL: https://104.36.151.219:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at idig.net
-X-Barracuda-Scan-Msg-Size: 588
-X-Barracuda-BRTS-Status: 0
-X-ASG-Debug-ID: 1778537661-13d5ac29ecd2320001-UKjUFf
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No,
- SCORE=0.00 using global scores of TAG_LEVEL=3.5 QUARANTINE_LEVEL=8.0
- KILL_LEVEL=4.0 test= 
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.125474
-	Rule breakdown below
-	  pts rule name              description
-	 ---- ----------------------
- --------------------------------------------------
-	 0.00 NO_REAL_NAME           From: does not include a real name
-Message-ID-Hash: PEZSXH6AVRJMGUIAA57AE34IG3OTGDKO
-X-Message-ID-Hash: PEZSXH6AVRJMGUIAA57AE34IG3OTGDKO
-X-MailFrom: simon@mungewell.org
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 7.0.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: J4HGMYYADCURP6E26PXWSX4Z6RJK62HH
+X-Message-ID-Hash: J4HGMYYADCURP6E26PXWSX4Z6RJK62HH
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -153,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PEZSXH6AVRJMGUIAA57AE34IG3OTGDKO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J4HGMYYADCURP6E26PXWSX4Z6RJK62HH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -162,52 +97,265 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---=_c6d04e9cac18143d47848fa05b7960a5
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+From: Rosen Penev <rosenp@gmail.com>
 
-I have noticed that 'snd-firewire-ctl-services' does not provide a 
-control for switching the mode of the Optical connections, which can be 
-either ADAT or S/PDIF. The Windows/Mac drivers let the user select the 
-mode.
+[ Upstream commit 2bcbb163162789d3488562073dbb99d9bd71a762 ]
 
-It is mentioned in the kernel source, but seemingly not exposed to the 
-user:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/firewire/digi00x/digi00x-proc.c?h=v7.1-rc3#n34
+Fixes compiler error with probably newer compilers:
 
-Note, when 'Optical S/PDIF' is selected, the 'RCA S/PDIF' connectors are 
-disabled.
+sound/sparc/dbri.c:595:2: error: unannotated fall-through between switch labels [-Werror,-Wimplicit-fallthrough]
+  595 |         case 1:
+      |         ^
+sound/sparc/dbri.c:595:2: note: insert 'break;' to avoid fall-through
+  595 |         case 1:
+      |         ^
+      |         break;
 
-I have the 002-Rack interface, and can assist with testing,
-Simon.
---=_c6d04e9cac18143d47848fa05b7960a5
-Content-Transfer-Encoding: base64
-Content-Type: text/plain;
- name=digi_002r_contents.txt
-Content-Disposition: attachment;
- filename=digi_002r_contents.txt;
- size=1160
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+Link: https://patch.msgid.link/20260506031854.780411-1-rosenp@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
 
-bnVtaWQ9MSxpZmFjZT1NSVhFUixuYW1lPSdjbG9jay1zb3VyY2UnCiAgOyB0eXBlPUVOVU1FUkFU
-RUQsYWNjZXNzPXJ3LS0tLS0tLHZhbHVlcz0xLGl0ZW1zPTMKICA7IEl0ZW0gIzAgJ0ludGVybmFs
-JwogIDsgSXRlbSAjMSAnUy9QRElGJwogIDsgSXRlbSAjMiAnQURBVCcKICA6IHZhbHVlcz0wCm51
-bWlkPTMsaWZhY2U9TUlYRVIsbmFtZT0nZXh0ZXJuYWwtY2xvY2stcmF0ZScKICA7IHR5cGU9RU5V
-TUVSQVRFRCxhY2Nlc3M9cnctLWwtLS0sdmFsdWVzPTEsaXRlbXM9NQogIDsgSXRlbSAjMCAnTi9B
-JwogIDsgSXRlbSAjMSAnNDQxMDAnCiAgOyBJdGVtICMyICc0ODAwMCcKICA7IEl0ZW0gIzMgJzg4
-MjAwJwogIDsgSXRlbSAjNCAnOTYwMDAnCiAgOiB2YWx1ZXM9MApudW1pZD0yLGlmYWNlPU1JWEVS
-LG5hbWU9J2xvY2FsLWNsb2NrLXJhdGUnCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0t
-LS0tLHZhbHVlcz0xLGl0ZW1zPTQKICA7IEl0ZW0gIzAgJzQ0MTAwJwogIDsgSXRlbSAjMSAnNDgw
-MDAnCiAgOyBJdGVtICMyICc4ODIwMCcKICA7IEl0ZW0gIzMgJzk2MDAwJwogIDogdmFsdWVzPTEK
-bnVtaWQ9NyxpZmFjZT1NSVhFUixuYW1lPSdtZXRlcmluZycKICA7IHR5cGU9Qk9PTEVBTixhY2Nl
-c3M9cnctLS0tLS0sdmFsdWVzPTEKICA6IHZhbHVlcz1vZmYKbnVtaWQ9NCxpZmFjZT1NSVhFUixu
-YW1lPSdtb25pdG9yLWVuYWJsZScKICA7IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFs
-dWVzPTEKICA6IHZhbHVlcz1vZmYKbnVtaWQ9NSxpZmFjZT1NSVhFUixuYW1lPSdtb25pdG9yLXNv
-dXJjZS1nYWluJwogIDsgdHlwZT1JTlRFR0VSLGFjY2Vzcz1ydy0tLVJXLSx2YWx1ZXM9MTgsbWlu
-PTAsbWF4PTEyOCxzdGVwPTEKICA6IHZhbHVlcz0wLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAs
-MCwwLDAsMAogIHwgZEJtaW5tYXgtbWluPS00OC4wMGRCLG1heD0wLjAwZEIKbnVtaWQ9NixpZmFj
-ZT1NSVhFUixuYW1lPSdtb25pdG9yLXNvdXJjZS1nYWluJyxpbmRleD0xCiAgOyB0eXBlPUlOVEVH
-RVIsYWNjZXNzPXJ3LS0tUlctLHZhbHVlcz0xOCxtaW49MCxtYXg9MTI4LHN0ZXA9MQogIDogdmFs
-dWVzPTAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwCiAgfCBkQm1pbm1heC1taW49
-LTQ4LjAwZEIsbWF4PTAuMDBkQgo=
---=_c6d04e9cac18143d47848fa05b7960a5--
+LLM Generated explanations, may be completely bogus:
+
+## Phase 1: Commit Message Forensics
+
+Step 1.1 Record: Subsystem `ALSA: sparc/dbri`; action verb `add`; intent
+is to add a missing `fallthrough` annotation in `reverse_bytes()`.
+
+Step 1.2 Record: Tags present: `Signed-off-by: Rosen Penev
+<rosenp@gmail.com>`, `Link:
+https://patch.msgid.link/20260506031854.780411-1-rosenp@gmail.com`,
+`Signed-off-by: Takashi Iwai <tiwai@suse.de>`. No `Fixes:`, `Reported-
+by:`, `Tested-by:`, `Reviewed-by:`, `Acked-by:`, or `Cc: stable`.
+
+Step 1.3 Record: The commit body reports a concrete compiler error:
+`-Werror,-Wimplicit-fallthrough` in `sound/sparc/dbri.c` at the
+fallthrough from `case 2` to `case 1`. Symptom is a build failure for
+this driver/config with a compiler that diagnoses this unannotated
+fallthrough as an error. No kernel version is named. Root cause is an
+intentional fallthrough lacking the kernel `fallthrough;` marker.
+
+Step 1.4 Record: This is not a hidden runtime bug fix; it is an explicit
+build fix. Build fixes are stable-acceptable when they repair
+compilation of existing code.
+
+## Phase 2: Diff Analysis
+
+Step 2.1 Record: One file changed: `sound/sparc/dbri.c`, `+1/-0`. One
+function modified: `reverse_bytes()`. Scope is a single-file, one-line
+surgical build fix.
+
+Step 2.2 Record: Before, `case 2` performed the final bit swap and
+implicitly fell into `case 1`/`case 0`, which then `break`s. After, the
+same fallthrough is explicitly annotated with `fallthrough;`. Runtime
+control flow is unchanged.
+
+Step 2.3 Record: Bug category is build fix / compiler diagnostic fix.
+Specific mechanism: the kernel already annotates earlier intentional
+fallthroughs in the same switch, but the `case 2` to `case 1`
+fallthrough lacked the annotation, triggering `-Wimplicit-fallthrough`
+as an error.
+
+Step 2.4 Record: Fix quality is high: it is one line, uses the existing
+kernel `fallthrough` pseudo-keyword, matches nearby code style in
+current branches, and does not change APIs or runtime behavior.
+Regression risk is very low.
+
+## Phase 3: Git History Investigation
+
+Step 3.1 Record: `git blame` on `2bcbb16316278^` attributes this code to
+`c3c9a75ede23f`, but the repository is shallow/grafted there, so that is
+not a reliable true introduction point. I verified the same missing
+annotation exists in local stable-related branches `pending-5.4`,
+`pending-5.10`, `pending-5.15`, `pending-6.1`, `pending-6.6`,
+`pending-6.12`, `pending-6.19`, and `pending-7.0`.
+
+Step 3.2 Record: No `Fixes:` tag is present, so there is no introducing
+commit to follow from the message.
+
+Step 3.3 Record: Recent `sound/sparc/dbri.c` history on `linux-
+next/master` shows this commit, then `ALSA: sparc/dbri: Use guard() for
+spin locks`, then the shallow boundary. The guard refactor is not a
+semantic prerequisite for adding this annotation, although older stable
+branches may have slightly different context.
+
+Step 3.4 Record: Author Rosen Penev has this recent `sound/sparc` commit
+in the checked history. The commit was applied by Takashi Iwai, and
+`MAINTAINERS` lists Takashi Iwai and Jaroslav Kysela as SOUND
+maintainers.
+
+Step 3.5 Record: No dependent `reverse_bytes` commits were found by
+subject search. The change can be applied standalone as an annotation.
+For `pending-5.4`, context differs because earlier fallthroughs are
+comments rather than `fallthrough;`, so that tree may need a trivial
+backport adjustment.
+
+## Phase 4: Mailing List And External Research
+
+Step 4.1 Record: `b4 dig -c 2bcbb16316278` found the original submission
+at the provided lore/patch URL. `b4 dig -a` found only v1; no later
+revision. The saved mbox contains Takashi Iwai’s reply: “Applied now.
+Thanks.” No NAKs or concerns were present in the fetched thread.
+
+Step 4.2 Record: `b4 dig -w` shows recipients: Rosen Penev, `linux-
+sound@vger.kernel.org`, Jaroslav Kysela, Takashi Iwai, and `linux-
+kernel@vger.kernel.org`.
+
+Step 4.3 Record: No separate bug report or `Reported-by` tag. The
+reported failure is the compiler diagnostic included in the patch email
+and commit message.
+
+Step 4.4 Record: `b4 dig -a` shows this is a single-patch series, not
+part of a multi-patch dependency chain.
+
+Step 4.5 Record: WebFetch to lore/stable search was blocked by Anubis.
+Local stable branch log searches did not find this exact fix or a
+related `unannotated fall-through` fix already present in the checked
+stable branches.
+
+## Phase 5: Code Semantic Analysis
+
+Step 5.1 Record: Modified function: `reverse_bytes()`.
+
+Step 5.2 Record: Callers found in `sound/sparc/dbri.c`: `xmit_fixed()`
+calls `reverse_bytes()` for MSB fixed-pipe transmit data;
+`dbri_process_one_interrupt()` calls it for fixed-data receive
+interrupts.
+
+Step 5.3 Record: `reverse_bytes()` only performs bit manipulation and
+may print an error for unsupported lengths; it does not allocate memory,
+take locks, or call into external subsystems.
+
+Step 5.4 Record: Runtime paths are reachable through DBRI/CS4215
+initialization/control and interrupt handling on supported SPARC SBus
+DBRI hardware. For this patch, runtime reachability is not the main
+issue because the fix targets compilation and preserves runtime flow.
+
+Step 5.5 Record: Nearby switch cases already had intentional fallthrough
+annotations; this patch fills the only missing annotation in that chain.
+
+## Phase 6: Stable Tree Analysis
+
+Step 6.1 Record: The missing annotation exists in checked stable-related
+branches from `pending-5.4` through `pending-7.0`. Therefore the
+affected source is present in active stable-era trees available locally.
+
+Step 6.2 Record: Expected backport difficulty is clean or trivial for
+most branches. `pending-5.4` has older comment-style fallthrough context
+before `case 2`, so it may require a small context adjustment, but the
+same one-line semantic change applies.
+
+Step 6.3 Record: No related fix with this subject or `unannotated fall-
+through` in `sound/sparc/dbri.c` was found in the checked stable-related
+branches.
+
+## Phase 7: Subsystem And Maintainer Context
+
+Step 7.1 Record: Subsystem is ALSA SPARC sound driver, specifically Sun
+DBRI. Criticality is peripheral/platform-specific, not core kernel-wide.
+
+Step 7.2 Record: Recent `sound/sparc` history is sparse and mostly
+maintenance/refactoring/build-style changes, indicating a mature low-
+churn driver area.
+
+## Phase 8: Impact And Risk Assessment
+
+Step 8.1 Record: Affected users are config/platform-specific: SPARC/SBus
+builds with `SND_SUN_DBRI`.
+
+Step 8.2 Record: Trigger is building this driver with a
+compiler/configuration that treats the unannotated fallthrough warning
+as an error. I did not independently reproduce the compiler failure
+locally.
+
+Step 8.3 Record: Failure mode is build failure, not runtime crash or
+data corruption. Severity is high for affected builders because the
+kernel/module cannot be built successfully under that toolchain/config.
+
+Step 8.4 Record: Benefit is meaningful for affected stable users because
+it restores buildability of an existing driver. Risk is very low: one
+annotation line, no feature, no API change, no runtime logic change.
+Risk-benefit ratio favors backporting.
+
+## Phase 9: Final Synthesis
+
+Step 9.1 Record: Evidence for backporting: concrete compiler error,
+existing driver code in stable branches, one-line obviously-correct fix,
+maintainer-applied patch, no runtime behavior change, and build fixes
+are valid stable material. Evidence against: platform-specific impact
+and no independent local build reproduction. Unresolved: exact true
+historical introduction predates the shallow boundary; lore stable
+search via WebFetch was blocked.
+
+Step 9.2 Record: Stable rules checklist:
+1. Obviously correct and tested: yes for correctness by inspection;
+   maintainer applied it. No local build test performed.
+2. Fixes a real bug: yes, reported compiler error in existing code.
+3. Important issue: yes for affected stable builds, because it can stop
+   compilation.
+4. Small and contained: yes, one line in one function.
+5. No new features/APIs: yes.
+6. Can apply to stable trees: yes with at most trivial context
+   adjustment, especially for older comment-style fallthrough branches.
+
+Step 9.3 Record: Exception category applies: build fix.
+
+Step 9.4 Record: Decision is to backport. This is exactly the kind of
+low-risk build fix stable trees should carry.
+
+## Verification
+
+- [Phase 1] Parsed `git show --format=fuller --stat --patch
+  2bcbb16316278`: confirmed subject, tags, compiler-error body, and one-
+  line patch.
+- [Phase 2] Read `sound/sparc/dbri.c`: confirmed `reverse_bytes()` has
+  annotated fallthroughs except the candidate-added `case 2` annotation.
+- [Phase 3] Ran `git blame 2bcbb16316278^ -L 578,598 --
+  sound/sparc/dbri.c`: confirmed changed area, with shallow/grafted
+  limitation.
+- [Phase 3] Ran branch snippet checks on `pending-5.4` through
+  `pending-7.0`: confirmed the missing annotation exists in all checked
+  stable-related branches.
+- [Phase 3] Ran recent file history and author history checks: found
+  only related maintenance/refactor commits, no dependency series.
+- [Phase 4] Ran `b4 dig -c`, `-a`, `-w`, and saved the mbox: confirmed
+  single v1 patch, proper ALSA recipients, and maintainer “Applied now”
+  reply.
+- [Phase 5] Searched `reverse_bytes(` call sites: confirmed callers are
+  `xmit_fixed()` and `dbri_process_one_interrupt()`.
+- [Phase 6] Searched stable branch logs: no existing backport or
+  duplicate fix found locally.
+- [Phase 7] Checked `MAINTAINERS`: confirmed SOUND maintainers include
+  Jaroslav Kysela and Takashi Iwai.
+- [Phase 8] Checked `include/linux/compiler_attributes.h`: confirmed
+  `fallthrough` is the intended kernel pseudo-keyword and is available
+  in checked stable branches.
+- UNVERIFIED: I did not reproduce the compiler error with a local
+  SPARC/SBus DBRI build.
+- UNVERIFIED: The exact original introduction before the repository’s
+  shallow/grafted boundary could not be determined.
+- UNVERIFIED: WebFetch could not read lore/stable search results because
+  Anubis blocked the page.
+
+**YES**
+
+ sound/sparc/dbri.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index 75f82a92ff44f..2f5f62079fa4a 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -592,6 +592,7 @@ static __u32 reverse_bytes(__u32 b, int len)
+ 		fallthrough;
+ 	case 2:
+ 		b = ((b & 0xaaaaaaaa) >> 1) | ((b & 0x55555555) << 1);
++		fallthrough;
+ 	case 1:
+ 	case 0:
+ 		break;
+-- 
+2.53.0
+
