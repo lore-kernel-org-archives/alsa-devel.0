@@ -4,146 +4,157 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB4CACD37BE
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 21:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A851ECD484E
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 21:29:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17E5C601CA;
-	Mon, 11 May 2026 23:26:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17E5C601CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DAB7601F3;
+	Mon, 11 May 2026 23:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DAB7601F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778534786;
-	bh=+4XU+4vbgbs4z1rWJ942uCcsb/xJBS52FXcbV22pp9o=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ecNtZSks+zO7qCdvlOQP+KsRJeFwvBYiRnVq0SqFq5XYhU4O3zocwORPSpypfwxBN
-	 YIwKyADEDptkVqaykM28phpN9RVBoDbVxImxj5B+KivgIt85Tre30TdVM/jND+dxWu
-	 r63hATYBNuRngS5MZJ9gGQh1lVpHREIrWbxCA/6c=
+	s=default; t=1778534994;
+	bh=+Wo9ql/lRv7mmxCuzOHfauqleq/lmST0RrA2rFtPm38=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=VOv/AEM1Rc7PmZ316Qnua7UtziXditrT5YsaQTqrz6qiTvyhx92OM/diIml3n1yq/
+	 vQORysJSRGNoC6pam+NIKU3CFLLPEznslhJVON0UurPRth1o0Oi40Pe9Pk2giVyRvV
+	 n1oSYQDY+0pYKQYvjfRhJCwKf4Xq4M/amPcTRFmY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 779F0F805E1; Mon, 11 May 2026 23:25:53 +0200 (CEST)
+	id 449D9F805EA; Mon, 11 May 2026 23:29:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EBB0F805E9;
-	Mon, 11 May 2026 23:25:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A475BF805EB;
+	Mon, 11 May 2026 23:29:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9306F80535; Mon, 11 May 2026 23:25:46 +0200 (CEST)
-Received: from cheetah.ash.relay.mailchannels.net
- (cheetah.ash.relay.mailchannels.net [23.83.222.34])
+	id 70353F80535; Mon, 11 May 2026 23:29:15 +0200 (CEST)
+Received: from BYAPR05CU005.outbound.protection.outlook.com
+ (mail-westusazon11010057.outbound.protection.outlook.com [52.101.85.57])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8204FF80171
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2026 23:25:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8204FF80171
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7DF64F80154
+	for <alsa-devel@alsa-project.org>; Mon, 11 May 2026 23:29:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DF64F80154
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=mungewell.org header.i=@mungewell.org
- header.a=rsa-sha256 header.s=default header.b=oZA+xF+M
-X-Sender-Id: idigitalinternetinc|x-authuser|simon@mungewell.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 007EF402311
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2026 21:25:17 +0000 (UTC)
-Received: from barmail5.idig.net (trex-green-8.trex.outbound.svc.cluster.local
- [100.98.1.152])
-	(Authenticated sender: idigitalinternetinc)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 6A25A4016BC
-	for <alsa-devel@alsa-project.org>; Mon, 11 May 2026 21:25:16 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1778534716;
-	b=ZOQ8Yc1r7wknSZNaoQYUBuldhFC3kiKXHGcZTyA6roL7pBIc7S3UEHcfz/Oi9UhpFA+CP2
-	oWF0XgOrbep/IuehnuWzoHNwlZbYpZtVXDRH+7eY1yPOfs9PmmHwaBCU0g75t9lIwNnKZU
-	dLsL3Yb+a0uEcbDGsM9B/3roC8w+rzpvXAGWCKvcWqVaFx28BczBr7sfgePXnK0Y/dXI+O
-	cOakOACKyu+y1NQnFhLq+x/lt7E4rcDsAvU0yCpS/jwFh+JMcYsIoEMrBbu3tNtVk4RAr6
-	NESGyCqynGdHKDrifCFUqeP9HFJq2GgLgMlEhpQPX+rH/qSa6MSAuY75sO8bMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1778534716;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:dkim-signature;
-	bh=gO/l+PrpBQIE81oCGZS84ryjmN5q7PHpeH4KZzgS+sk=;
-	b=accujj1CLoJOllbFtTzQeEfoxDlmlXrKACuXE3BUtzBFw69lTac4xRSunAiHZCUqmJVgIU
-	nLXIClFLDqv8pOi0KOG7ZK5TvmbwQQ6k9IBnCWt0Bq7Dn/qG3xPPCTIsVRI99/HgbNiTUq
-	Bc1TmhyPuMOtuo8L7R7toraB/Oo7WaVXgkZS5n4lpMk96WaXEFZsu1NX9TpRU0QW1Q30Aj
-	AW56bfqCwstJn2oADbP989lIpi5Yw6hicUKigRJ5bwhEXiQoB0yydisUm2FQE7Je6ZJCwQ
-	mBDPFy1A+oeS3ioFGMLonNW3aMoAfYu7kloLY07Is84q4rafh8mnCemikwUPjQ==
-ARC-Authentication-Results: i=1;
-	rspamd-5c5444c55f-8gxc9;
-	auth=pass smtp.auth=idigitalinternetinc smtp.mailfrom=simon@mungewell.org
-X-Sender-Id: idigitalinternetinc|x-authuser|simon@mungewell.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: idigitalinternetinc|x-authuser|simon@mungewell.org
-X-MailChannels-Auth-Id: idigitalinternetinc
-X-Soft-Exultant: 23bdeccd0a67f07e_1778534716660_1247719021
-X-MC-Loop-Signature: 1778534716660:2335567305
-X-MC-Ingress-Time: 1778534716660
-Received: from barmail5.idig.net (barmail5.idig.net [104.36.151.219])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.98.1.152 (trex/7.1.5);
-	Mon, 11 May 2026 21:25:16 +0000
-Received: from cwh28.canadianwebhosting.com (cwh28.canadianwebhosting.com
- [66.85.29.119]) by barmail5.idig.net with ESMTP id rb5PYwDNo7QxBGqT
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
- Mon, 11 May 2026 14:25:15 -0700 (PDT)
-X-Barracuda-Envelope-From: simon@mungewell.org
-X-Barracuda-Effective-Source-IP: cwh28.canadianwebhosting.com[66.85.29.119]
-X-Barracuda-Apparent-Source-IP: 66.85.29.119
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=mungewell.org; s=default; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=gO/l+PrpBQIE81oCGZS84ryjmN5q7PHpeH4KZzgS+sk=; b=oZA+xF+M7UVf5OYZGF6JE/uZT8
-	ez/JNzOZBx00/oiYkoPf4igsODVmKUs+r8Otu3/JIekx3x6PRscpb26JtAyABgRtPjHU0mVrtaRGK
-	t7W1FprQI501PAjIatRMr59b5zszwS8z23T0IUUhl5Zv6H693EhDz3aukTju527N5tSeYlQHul1Hy
-	g/yFDF/2RA1eSaQ4D11idVJpNNMrp5TrZ/byDvQ3Tt+iXhqwyZXflfc9f6gOsJQyefIQA+fIN7NeC
-	VqWSVwsI/znkaC1rpFOY4u4zD4PxO3zAp+dzDgcE494Ca144aILMJicEqWIOAMwTUiMpqImwt2TnF
-	MzbFhhWQ==;
-Received: from [129.222.141.190] (port=59574 helo=localhost.localdomain)
-	by cwh28.canadianwebhosting.com with esmtpsa  (TLS1.3) tls
- TLS_AES_256_GCM_SHA384
-	(Exim 4.99.2)
-	(envelope-from <simon@mungewell.org>)
-	id 1wMY7n-0000000EsHX-10ZB;
-	Mon, 11 May 2026 17:25:14 -0400
-From: Simon Wood <simon@mungewell.org>
-To: perex@perex.cz,
-	tiwai@suse.com
-Cc: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	Simon Wood <simon@mungewell.org>
-Subject: [PATCH] ALSA: M-Audio C600 disable Output Gain Knob
-Date: Mon, 11 May 2026 15:24:58 -0600
-X-ASG-Orig-Subj: [PATCH] ALSA: M-Audio C600 disable Output Gain Knob
-Message-ID: <20260511212458.44142-1-simon@mungewell.org>
-X-Mailer: git-send-email 2.43.0
-MIME-Version: 1.0
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=OxV7ZYyr
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=F/7num6dM6wGBR2N2wFGPPrs5f+jnb8t/40e4bZYlhkvzXPs5T+bTHyXt8IoAxnIST+Uac+TfMMpGPmTv1kfLAjPuXA5+0GfeHEGDWlPTrCGKfW+FwURaCE2jdLRZCO+MLHYQvCGtjdRTXJoFOZPvLzNwwwhQiS5zT7AMgLMYqgtjKoUVfqiaMd2X/vjcK/aWUhxjW7RrP2N849MXZYTkR3/HmzNSU6xAvwNS33sO7wLreS9oA+34czqNORa8PFSBa5Yq2s/MXBdOdHZkDAtjPYAXOfD5L6PLVrPeJXNeDqEnrem7IbZ/FSTvtwQYJFBoqFQ6kvL8TVnLAtbrQzr7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tZWapCQQjnYtp4+f4ZudqVZJjPW2GR/MROzak4Bxnhs=;
+ b=OZlrkHJLEz1hp1BGz173Zm0JW3uNUh+KDQt0lEpphIzE+u7gQQ/3FePJ4UhRcaSzXE3E1fNFNhK1XhtSUA45uy9o4Kaon1FiBoyAw6WMJPX7ybM8nSs0LZGBuuIXI/H4mISFb/DhlX7gTXoIbDSS341p9DbBTXGgKlRphRHrmahyX7Clhd9FBHeSfuMD+49J24MhNPay29Zw7PYDpWQlmS9595qvWt3dXucPUYC40qbZcaO49aSOO3cVS7wADJR/SnOGEW8J7/rTEae7FPpQsbwB7vqxmFNfAkRKY4dl5+SrunUadefO1hZPk5/w1CzbNFbulbfH5ngaoXr8jv7BwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tZWapCQQjnYtp4+f4ZudqVZJjPW2GR/MROzak4Bxnhs=;
+ b=OxV7ZYyrG+LUGdDcreXg/qUCaK+BbQKOjlSWT+FbF9T0K38LIJ4EDejIE4cwLNBz70K/dgXdO/qSG5vt3LYfufJ37bkASFqu5n+mjQcEI5TJ8ax1BM5FJnLppV1B09BiDVBKUd70O89r7tB7vMveC1XxWc7BM+4fg7Azxvc322A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10)
+ by SJ2PR12MB9244.namprd12.prod.outlook.com (2603:10b6:a03:574::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.22; Mon, 11 May
+ 2026 21:29:07 +0000
+Received: from SA0PR12MB4557.namprd12.prod.outlook.com
+ ([fe80::885a:79b3:8288:287]) by SA0PR12MB4557.namprd12.prod.outlook.com
+ ([fe80::885a:79b3:8288:287%5]) with mapi id 15.20.9891.021; Mon, 11 May 2026
+ 21:29:07 +0000
+Message-ID: <2dd667af-308a-4b72-af97-707b0a493f3e@amd.com>
+Date: Mon, 11 May 2026 16:29:06 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] ASoC: amd: yc: HP Notebook 255R G10 (board 8D22) missing
+ from quirk table
+Content-Language: en-US
+To: =?UTF-8?Q?Alen_Ti=C5=A1ljar?= <alen.tisljar@gmail.com>,
+ alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, Vijendar.Mukunda@amd.com
+References: 
+ <CAKxS5A_OhoDGvVXZUnvUtv=j0zQ5Txq8g9_ScCPw12ZKfrmxOw@mail.gmail.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: 
+ <CAKxS5A_OhoDGvVXZUnvUtv=j0zQ5Txq8g9_ScCPw12ZKfrmxOw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AuthUser: simon@mungewell.org
-X-Barracuda-Connect: cwh28.canadianwebhosting.com[66.85.29.119]
-X-Barracuda-Start-Time: 1778534715
-X-Barracuda-Encrypted: TLS_AES_256_GCM_SHA384
-X-Barracuda-URL: https://104.36.151.219:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at idig.net
-X-Barracuda-Scan-Msg-Size: 3400
-X-Barracuda-BRTS-Status: 0
-X-ASG-Debug-ID: 1778534715-13d5ac29ecd05b0001-UKjUFf
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No,
- SCORE=0.00 using global scores of TAG_LEVEL=3.5 QUARANTINE_LEVEL=8.0
- KILL_LEVEL=4.0 test= 
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.125474
-	Rule breakdown below
-	  pts rule name              description
-	 ---- ----------------------
- --------------------------------------------------	
-Message-ID-Hash: GOX3X4L5IJMN5QMEFDET7A43QYAO56UT
-X-Message-ID-Hash: GOX3X4L5IJMN5QMEFDET7A43QYAO56UT
-X-MailFrom: simon@mungewell.org
+X-ClientProxiedBy: SN6PR2101CA0015.namprd21.prod.outlook.com
+ (2603:10b6:805:106::25) To SA0PR12MB4557.namprd12.prod.outlook.com
+ (2603:10b6:806:9d::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4557:EE_|SJ2PR12MB9244:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ab7d936-1874-4adb-3d7d-08deafa45539
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|1800799024|366016|376014|3023799003|56012099003|18002099003|22082099003|11063799003;
+X-Microsoft-Antispam-Message-Info: 
+	nTEs18gXbH8Uqs6qWqJkaIM4PaWOaQhsGZ4grCBfrksvGyM6/3DCjoB0KtS7+HYl0zstVABKuQ6NZJqUFboBSyquQ+89A8sdEgzwZ9K9yfziNR8pkb7YTmk8c60O3fug9OdPZYlKlqUVXxUxRkGNtbR0HODT+49n5a3etWZ5RUm41QbM+j5+/SrDhk1b90Kju9RkqTv37xFWkW3Ak5rmqYxoEz7HhNnfyegfx28ytq5gIvIcm/UUp8TyHfG2bHh0D5dK4rH/aMT70lXw5fCLG7YGOoeGmafB8W/Dl9t+L0YFDGp9GTJvLnXsp/FbNChiKvSGbctBk0oeDgwhW8PHLKqOY47dtbK0fcbfxvcq02ys8+hqjxmMM6fpWBabgDNmu9h5563rWRx01kLBAJr/WgHxUs7M96AuaPHSW6a2EMqvKDGia94LHGwvxdMd9HEs0mFtY1FJIdxaKBFXUc4GAjTTVcEtHHJt3tQllJd8A0/7IJvSpcj8YXPDEMSBJa0oD97zu5J28ABiPRX+4+P/2xI/mXUfHekZu1jrGP/VC6yu441KbdA1ZHsG0ulke4lPnGn8xFGqGgbXPGImktv3pXAw34fx/EyUaX6EcVmWRq3sCK24+oG5WbeMVNNtZijcXarrk700kVY0GMKZBW7LXMUKbfOmH50Hbq/bnw8r/mFblM0uib+/F4wV3/eBC/m2
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(3023799003)(56012099003)(18002099003)(22082099003)(11063799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MmFVM0ZVUWVNclhaSkgvUlFMUm41bzFPWDI4YzdrMHdraGlaRlFxUXVJZWdn?=
+ =?utf-8?B?cDNQQzVEZTliYVNKTWxxL2dPM1JsMXQ3NjIrRW1kd1VxMW5kbnk1SmpUMk05?=
+ =?utf-8?B?empuTDZLVWxSSHpRNnUyL1Vuekk0MG9CVmFFMlBWTjZDQjRLWkdLditBa3hn?=
+ =?utf-8?B?MWlDeVBCczVxSjd4dklScnBCS3hLemc1OVQ4VVVsZlk2SlVzbWsxRzF2ZHpx?=
+ =?utf-8?B?R2Q4dXMvaWFyNExCNVM3dHcwNGMzTU9UR2Y3RGhaM251Sm5rM2tyOHgwZ0hr?=
+ =?utf-8?B?MGRNbW0rVnozWms2QTNNRGVSSVdUeFVMQ3lwWS92aUVUdTFIQWprVzhrVTBu?=
+ =?utf-8?B?SW1nb0Fhbjh4L1JnU25ZYlNFSWFENms4aUk0WUVaUlBET1lNNElqWnhuZ0pj?=
+ =?utf-8?B?MFNPY1p3eVlNM2RYdFZpOElWcHdoMmtLRlRqWHA2SmloMmJFSTNETkpXQmYw?=
+ =?utf-8?B?eHdZUGlQMC9VekxEQXlhNkdDS3RLVGhmeDc5Tyt2ZGFCcVlpQkJ4dUJGVTVo?=
+ =?utf-8?B?TVlWRTlXNSszbDhLRVZBa2ErUWZSdjJ6T1ZWbHJUREhHTG9SOUlWNmhRSGlt?=
+ =?utf-8?B?WFZ1enhpS1o1RHI1amNDOHM3azZhMzNLR3lmY1B2c2tyR3JPU2sySzNzYWlO?=
+ =?utf-8?B?VGIyOG82Y2lsbHVYUG8rbGZxd3FBL2NJTC9JOHdzNU9pR2RUUkZkYzFQOTM3?=
+ =?utf-8?B?U051TlVBNGN4TU8yVUx6Uk1XQ1F5aGpjVFZ3QU9lTlYxL0krdGVzckgrakpr?=
+ =?utf-8?B?L3BKd2p4K2VDWWFON0lRQXFZMFRNcUVxUFZuV3JneE1EWjZFUW1DT2hsd1NW?=
+ =?utf-8?B?RTc2ZFBCbkdyUHRiR2xZMEVWay96QVNleW9tVkk3Ujhoa21CdERpMDNqaGcz?=
+ =?utf-8?B?cFpVeWJZTng2WEgxZDlQZGVGSXlGa29uYm94dlA5YjhoQ042RzBzTWhtRGZw?=
+ =?utf-8?B?blFzKzFRd1FqbUp5VnIzN0hhQ1E3ck9sbEcxdDIvTGdpa0M0aThaOE16UGtS?=
+ =?utf-8?B?dTg4TUw2TE1VRTdVSEk1T0dKSS9Mc0JrbnJLNG1OV2dBVkgyTCtqQkIraUsx?=
+ =?utf-8?B?bnBRTzBJUElZWHR3azJOdEtRNVZIVzY3bndPMTlwWCs1MGJlL2QxYVhRd2Vq?=
+ =?utf-8?B?NWtkaXBXMmpidGt1OSs4WC82VCtjWXFyTVBGUUNTSElmN0dFQndOV25XYkRs?=
+ =?utf-8?B?ZHFlbHF2dHEvRmpKNmZLNmtNQ0MwdkRhMFgvUXh5bGRCdUhVcW4vRVQyRExI?=
+ =?utf-8?B?eC96ZmRlM0RIRkJyWG0rblVkMmxjMFZ2OVFTTFpvY1JXZmFOK09QUkRSYW5z?=
+ =?utf-8?B?MWhtcmRKejNDTzRQUTFkdHFLdzNiOTlnelFjc2hZalg5amNSZXJNdklmLytN?=
+ =?utf-8?B?b0hNUzUwUVVnM2Z6VjlzY0k5K3hCNjZwak1vdHVyZ3F5K2R5Z1RnaWdXRkhM?=
+ =?utf-8?B?WUJ6T3k5cU9Pa2RhV1BDY3lrbGxGNkI1Ny9NM0U4SnBzb0FQdm1KRnNqVSt1?=
+ =?utf-8?B?R20xd3BUYmxpeTJKbXlaa0hoRys5STFSYm5HdEVJMGdVWHE0S3lteEdPaVNM?=
+ =?utf-8?B?bWVJbFN3Z2h2c09BREt2UElCUWlaWVE4TzRkaDZiTlRLT281b1hPSU92NnpR?=
+ =?utf-8?B?QUo0NjVxNlRWbjhSSHJsQ1ZSamxSQWhYWERpdlRHbzR3RHNxZGw4d2dGeDZD?=
+ =?utf-8?B?WmxRQzdlanViNm1yYitOZndXSWVaT3VGcnU5cVl1Y09ETnpkd1g5MVQzSk5j?=
+ =?utf-8?B?SXdiUlJBQ0ZxOHBqcERXOHVPTFJybmdTWnVROVpSVmdTRTFieDM2RmxtY3cv?=
+ =?utf-8?B?V2kvQWdiSlVwdTVLMUZuaUZWOURjU2ZndTRKdytRNGRmSzhlOHNCSk92MnRF?=
+ =?utf-8?B?TVRmVEtjMERQdFRVL0FrOTJ3ODlJZGRVbnhyZFNLRVdtWnVMY2pzMDZTN3ov?=
+ =?utf-8?B?OGtScVhxcGk3SWtpOWlIbU1zWGxBWUx6c1VaNkxnL0JNcW9DaVhEZXdMbHFU?=
+ =?utf-8?B?U3hXd0VBQnh6QWxxM3ZhWVpzQWo1K1JOamxaVWVkTE5FVFZ5U3B0aDFZWFJV?=
+ =?utf-8?B?REp2VUY4a0hMNytUN1NhKzBPYnQ0d2dDdTZMMEQvTlBucjJ1WXdpNS93UmV3?=
+ =?utf-8?B?eWZhcDdlYWZZcXV5MDllekxwZWY0U1RRa1hSR2tONHcrK0xBU1RBS3E5amJo?=
+ =?utf-8?B?b2JlbktxTHB4cGgvNm1EcElxLzJnZkluOVN3WXRSUWNUZUdBSnZGc1dRdHZr?=
+ =?utf-8?B?cG1iYW1naGl5dko0STZET3Q2ZnNNbHJIaXRuUnRtUUNTcFhhU0I5YnJVVDNY?=
+ =?utf-8?B?WDJVbzZYUkVtYUpJY1I1UEVBVzdacGZibk9oQ1p1NDJkNWJ1ZHk4dz09?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 1ab7d936-1874-4adb-3d7d-08deafa45539
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2026 21:29:07.5762
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ 9FPzzttRZXxSgtoamki8dkh9CbhRpiLAIIHBg4sfbfmf26mRA2J6LRM2ch/udRMhVv/IUzN2z3wQKKNI08lv3w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9244
+Message-ID-Hash: Q2S3UC3B2AYMUPE7OGUHOZZLJLEJB4SP
+X-Message-ID-Hash: Q2S3UC3B2AYMUPE7OGUHOZZLJLEJB4SP
+X-MailFrom: Mario.Limonciello@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -154,7 +165,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GOX3X4L5IJMN5QMEFDET7A43QYAO56UT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q2S3UC3B2AYMUPE7OGUHOZZLJLEJB4SP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -163,102 +174,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The C400/C600 interfaces have a large output gain knob which attenuates
-the outputs as stereo pairs (1/2, 3/4 and 5/6). The Windows driver/app
-provides a control to disable this knob/behaviour on any/all outputs,
-forcing maximum gain on each.
 
-The 'disable behaviour' is desirable if any outputs are being used for
-aux/effects sends, or if interface is being used as a live/matrix mixer.
 
-This patch adds a control to select which output pairs are affected by
-the Output Gain Knob. Default behaviour is to select all outputs.
+On 5/11/26 15:49, Alen Tišljar wrote:
+> Hello,
+> 
+> The internal microphone on the HP Notebook 255R G10 does not work on
+> Linux because the board is missing from the ACP6x DMI quirk table in
+> sound/soc/amd/yc/acp6x-mach.c.
+> 
+> Hardware:
+> 
+> Laptop: HP Notebook 255R G10
+> Board name: 8D22 (HP)
+> Audio coprocessor: AMD ACP/ACP3X/ACP6x
+> Analog codec: Realtek ALC236 (working fine for speakers/headphones)
+> 
+> Symptoms:
+> 
+> Internal microphone is not captured.
+> No acp6x DMIC device appears in arecord -l — only the ALC236 analog
+> inputs are listed.
+> In dmesg, the ACP6x PCI device is enabled.
+> 
+> Tested on:
+> 
+> Ubuntu 24.04 LTS (board 8D22 is not present in the mainline
+> acp6x-mach.c as of today)
+> 
+> Relevant dmesg output:
+> 
+>      snd_pci_acp6x 0000:03:00.5: enabling device (0000 -> 0002)
+> 
+> no further ACP6x/DMIC messages follow
+> 
+> arecord -l:
+> 
+> **** List of CAPTURE Hardware Devices ****
+> card 1: Generic_1 [HD-Audio Generic], device 0: ALC236 Analog [ALC236 Analog]
+> card 1: Generic_1 [HD-Audio Generic], device 2: ALC236 Alt Analog
+> [ALC236 Alt Analog]
+> 
+> Suggested fix:
+> 
+> Add the following entry to yc_acp_quirk_table[] in
+> sound/soc/amd/yc/acp6x-mach.c, analogous to commit 0c6498a59fbb
+> ("ASoC: amd: yc: Add HP 255 G10 into quirk table") which handled the
+> closely related HP 255 G10 (board 8B2F):
+> 
+> {
+>      .driver_data = &acp6x_card,
+>      .matches = {
+>          DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
+>          DMI_MATCH(DMI_BOARD_NAME, "8D22"),
+>      }
+> },
+> 
+> I'm happy to test any proposed patch on this hardware. I'm not
+> currently set up to submit a formal patch via git send-email, but if
+> no one is able to pick this up, I'm willing to submit one myself.
+> 
+> Thank you,
+> 
+> Alen Tišljar
 
-Tested on the C600, likely also works for the C400.
-
-Signed-off-by: Simon Wood <simon@mungewell.org>
----
- sound/usb/mixer_quirks.c | 46 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 2 deletions(-)
-
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 11e205da7964..16d8eb111d01 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1282,7 +1282,7 @@ static int snd_ftu_eff_switch_init(struct usb_mixer_interface *mixer,
- 
- 	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC_GET_CUR,
- 			      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
--			      pval & 0xff00,
-+			      (pval & 0xff00) | ((pval & 0xff0000) >> 16),
- 			      snd_usb_ctrl_intf(mixer->hostif) | ((pval & 0xff) << 8),
- 			      value, 2);
- 	if (err < 0)
-@@ -1315,7 +1315,7 @@ static int snd_ftu_eff_switch_update(struct usb_mixer_elem_list *list)
- 			       usb_sndctrlpipe(chip->dev, 0),
- 			       UAC_SET_CUR,
- 			       USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
--			       pval & 0xff00,
-+			       (pval & 0xff00) | ((pval & 0xff0000) >> 16),
- 			       snd_usb_ctrl_intf(list->mixer->hostif) | ((pval & 0xff) << 8),
- 			       value, 2);
- }
-@@ -1728,6 +1728,44 @@ static int snd_c400_create_effect_ret_vol_ctls(struct usb_mixer_interface *mixer
- 	return 0;
- }
- 
-+/* output gain knob selectively adjusts outputs as stereo pairs */
-+/* reuses functions from FTU effect switch */
-+static int snd_c400_knob_switch_info(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const texts[8] = {
-+		"None", "1/2", "3/4", "1/2 3/4",
-+		"5/6", "1/2 5/6", "3/4 5/6", "1/2 3/4 5/6"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(texts), texts);
-+}
-+
-+static int snd_c400_create_knob_switch(struct usb_mixer_interface *mixer,
-+	int validx, int bUnitID)
-+{
-+	static struct snd_kcontrol_new template = {
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Output Gain Knob",
-+		.index = 0,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info = snd_c400_knob_switch_info,
-+		.get = snd_ftu_eff_switch_get,
-+		.put = snd_ftu_eff_switch_put
-+	};
-+	struct usb_mixer_elem_list *list;
-+	int err;
-+
-+	err = add_single_ctl_with_resume(mixer, bUnitID,
-+					 snd_ftu_eff_switch_update,
-+					 &template, &list);
-+	if (err < 0)
-+		return err;
-+	list->kctl->private_value = (validx << 8) | bUnitID;
-+	snd_ftu_eff_switch_init(mixer, list->kctl);
-+	return 0;
-+}
-+
- static int snd_c400_create_mixer(struct usb_mixer_interface *mixer)
- {
- 	int err;
-@@ -1760,6 +1798,10 @@ static int snd_c400_create_mixer(struct usb_mixer_interface *mixer)
- 	if (err < 0)
- 		return err;
- 
-+	err = snd_c400_create_knob_switch(mixer, 0x0900, 0x20);
-+	if (err < 0)
-+		return err;
-+
- 	return 0;
- }
- 
--- 
-2.43.0
+Can you test the patch that you proposed above and see if it actually works?
 
