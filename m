@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BCBCCD37BE
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:21:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EF33CD37BE
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:22:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92CA760226;
-	Tue, 12 May 2026 00:21:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92CA760226
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D8F5601E4;
+	Tue, 12 May 2026 00:21:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D8F5601E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778538106;
-	bh=kFgmMNGmlIo0zSBNgHG9+naS/KZNXllqUo/TClMYRb0=;
+	s=default; t=1778538124;
+	bh=NGPS82dFju4rpw26IMrBXC1852ms9DsElWuvBCBev1Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bUgDXtDVUf4wDjejk2QD0PVRVAg48Sy0BjeWdI/zpIALfkeGdheVOdne60LllNW/u
-	 meSbpUFk9TeTU12nwxeZ7H2ajrxdaR/LZsUGebc9Rj2unQItEneZVualKYlE4H2f/h
-	 Mt/NiqmQ7bayswqmPCEOnPvWrfkmT2i18SVqGxXg=
+	b=Py7QXkJnQU2KgDuhPkJ3CRCOr6Lh5w59RqfOTNv/3F0J5FkffFeGqvy2IZPlZoAjb
+	 m4u6t+YVNgLkjxFO8jy90+Mc7M0o+SiHNrvIXEe9Q6W99kqKb2z247YbjILKxV7xyU
+	 uGPkJbc/o6LQsxI47w28ojnpe3YBFbSPunyANq18=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57778F805E8; Tue, 12 May 2026 00:20:23 +0200 (CEST)
+	id 0A58FF806BC; Tue, 12 May 2026 00:20:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10376F806A9;
-	Tue, 12 May 2026 00:20:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82F9CF806C3;
+	Tue, 12 May 2026 00:20:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 790C6F805C4; Tue, 12 May 2026 00:20:10 +0200 (CEST)
+	id 2AEFDF80676; Tue, 12 May 2026 00:20:18 +0200 (CEST)
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AD607F80611
-	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:20:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD607F80611
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F099F8063A
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:20:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F099F8063A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jphv9JB6
+ header.s=k20201202 header.b=o35BiZuV
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id D936043DA9;
-	Mon, 11 May 2026 22:20:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4AA9C2BCFA;
-	Mon, 11 May 2026 22:20:00 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3EE4B40053;
+	Mon, 11 May 2026 22:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33C6EC2BCF7;
+	Mon, 11 May 2026 22:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778538001;
-	bh=kFgmMNGmlIo0zSBNgHG9+naS/KZNXllqUo/TClMYRb0=;
+	s=k20201202; t=1778538013;
+	bh=NGPS82dFju4rpw26IMrBXC1852ms9DsElWuvBCBev1Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jphv9JB6lkrAt8R8oILbYOO1l8UmL2rh1bmE9Oafg7RFMwLsdkphrR1qHoqS6N/11
-	 BZr0kPpwK6v53wSxxr+7rvFK2s6xRCOsZvoasFmxNalcEhJ/lwm0oaYIMItCyTx7HP
-	 SuEvqL0/R38JtXMMc1v+LQF1ScVKmvFjnJoJS39Ao/uM/m8Shvz7dDe18438Nn6CBd
-	 SZaCkt/UjvaXcmcov26ZMxpjUz+SSYgkafN956lR+DNrjcrqTcXUnNt1BtjaNVOrNU
-	 8NuNCH0IbklzqZbWOFZtaLR6EzTglcSWEUFVXmUeas3FPPzccT2d7lGyrVLxg+9OrD
-	 sTWSAxPcxrnhQ==
+	b=o35BiZuVftIteICAtc8+s9nIZhd6P2prx/leGeSjzbGxDWqx8u7i4ScE0hJZGI53z
+	 psHBVHyspCT8av2U7yzUjjw/hhglBipuXKH3kE/Aq0NPSn7Tle26q/QeLbPPmeZnGN
+	 cCGkfiItx0oVdQIITBuKpACmMCVyHgjhrRhOJLgpcQCvSgN/diuqeVL1Q+cD10t5AP
+	 X6iPXwiAw7LEGODjGzEWE4yZbOYMzw6y93NBrOKtzSH0zI6gqKBkkyKUbgxOH9HYPf
+	 dOAuiGblE0sGrB9FM114IqIL801T2+O/tTnAtXWH0H2HG2Y9vCApuU2F5hiNUvWv09
+	 yUfPcBuh6vXtQ==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?R=C3=A1mon=20van=20Raaij?= <ramon@vanraaij.eu>,
+Cc: Nicola Lunghi <nick83ola@gmail.com>,
 	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.18] ALSA: hda/realtek: Add codec SSID quirk for
- Lenovo Yoga Pro 9 16IMH9
-Date: Mon, 11 May 2026 18:19:19 -0400
-Message-ID: <20260511221931.2370053-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 7.0-5.10] ALSA: usb-audio: add clock quirk for Motu
+ 1248
+Date: Mon, 11 May 2026 18:19:27 -0400
+Message-ID: <20260511221931.2370053-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260511221931.2370053-1-sashal@kernel.org>
 References: <20260511221931.2370053-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 7.0.6
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AKNEZLV5LX2UNBAC2KAFFT5PQEYHD22V
-X-Message-ID-Hash: AKNEZLV5LX2UNBAC2KAFFT5PQEYHD22V
+Message-ID-Hash: FGISATOYESWDSSRLXZOVN4PL4S3ZNC4U
+X-Message-ID-Hash: FGISATOYESWDSSRLXZOVN4PL4S3ZNC4U
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AKNEZLV5LX2UNBAC2KAFFT5PQEYHD22V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FGISATOYESWDSSRLXZOVN4PL4S3ZNC4U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,27 +100,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Rámon van Raaij <ramon@vanraaij.eu>
+From: Nicola Lunghi <nick83ola@gmail.com>
 
-[ Upstream commit 56722cfbb78d7eb41756cd78dc5192d08bd14f3d ]
+[ Upstream commit 320e55722ca466a7d40dd69e1aea982cb6189006 ]
 
-The Yoga Pro 9 16IMH9 (codec SSID 17aa:38d6) shares PCI audio device
-subsystem ID 17aa:3811 with the Legion S7 15IMH05. The existing
-SND_PCI_QUIRK entry for the Legion routes both machines to
-ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS, which does not bind the TAS2781
-smart amplifiers, resulting in near-silent built-in speakers.
+The Motu 1248 (and probably other older Motu AVB interfaces) take more
+than 2 seconds to switch clock. During the clock switching process the
+device return that the clock is not valid. This is similar to what
+already implemented for the Microbook II interface. Add the Motu
+1248 usb id to the existing Motu quirk.
 
-Add an HDA_CODEC_QUIRK entry immediately before the conflicting PCI quirk
-that matches the Yoga Pro 9's unique codec SSID and routes it to
-ALC287_FIXUP_TAS2781_I2C. Codec quirks are evaluated after PCI quirks and
-take precedence, leaving the Legion S7 15IMH05 entry unaffected.
-
-This follows the same pattern used to disambiguate PCI SSID 17aa:3847
-(shared between Yoga Pro 7 14IMH9 and Legion 7 16ACHG6), where a
-HDA_CODEC_QUIRK for codec SSID 17aa:38cf resolves the conflict.
-
-Signed-off-by: Rámon van Raaij <ramon@vanraaij.eu>
-Link: https://patch.msgid.link/20260430191224.patch1-ramon@vanraaij.eu
+Signed-off-by: Nicola Lunghi <nick83ola@gmail.com>
+Link: https://patch.msgid.link/20260504144520.699522-2-nick83ola@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -128,233 +119,183 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
 LLM Generated explanations, may be completely bogus:
 
 ## Phase Walkthrough
-### Phase 1: Commit Message Forensics
-Step 1.1 Record: Subsystem is `ALSA: hda/realtek`; action is `Add`;
-claimed intent is adding a codec-SSID quirk so Lenovo Yoga Pro 9 16IMH9
-uses the TAS2781 fixup instead of the Legion S7 PCI-SSID fixup.
 
-Step 1.2 Record: Tags present are `Signed-off-by: Rámon van Raaij
-<ramon@vanraaij.eu>`, `Link:
-https://patch.msgid.link/20260430191224.patch1-ramon@vanraaij.eu`, and
-`Signed-off-by: Takashi Iwai <tiwai@suse.de>`. No `Fixes:`, `Reported-
-by:`, `Tested-by:`, `Reviewed-by:`, `Acked-by:`, or `Cc:
-stable@vger.kernel.org` tag is present.
+Phase 1:
+- Record 1.1: Subsystem `ALSA: usb-audio`; action verb `add`; intent is
+  to add Motu 1248 USB ID `07fd:0005` to an existing clock-validity
+  delay quirk.
+- Record 1.2: Tags: `Signed-off-by: Nicola Lunghi`, `Link:
+  https://patch.msgid.link/20260504144520.699522-2-nick83ola@gmail.com`,
+  `Signed-off-by: Takashi Iwai`. No `Fixes:`, `Reported-by:`, `Tested-
+  by:`, `Reviewed-by:`, or `Cc: stable`.
+- Record 1.3: Commit body describes Motu 1248 returning clock-invalid
+  for more than 2 seconds while switching clock, causing the existing
+  ALSA clock validation to fail too early. No kernel-version range
+  given.
+- Record 1.4: This is a hardware quirk fix, not a hidden
+  memory/synchronization bug.
 
-Step 1.3 Record: The commit describes a real hardware misidentification:
-Yoga Pro 9 16IMH9 has codec SSID `17aa:38d6` but shares PCI audio SSID
-`17aa:3811` with Legion S7 15IMH05, causing
-`ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS` to be selected. The stated
-symptom is near-silent built-in speakers because TAS2781 smart
-amplifiers are not bound.
+Phase 2:
+- Record 2.1: One file changed: `sound/usb/clock.c`, `+11/-4`. Modified
+  function: `uac_clock_source_is_valid_quirk()`. Single-file surgical
+  hardware quirk.
+- Record 2.2: Before: the 5-second retry loop applied only to
+  `USB_ID(0x07fd, 0x0004)`. After: the same loop also applies to
+  `USB_ID(0x07fd, 0x0005)`, with comments expanded.
+- Record 2.3: Bug category is hardware workaround/device quirk.
+  Mechanism: ALSA rechecks clock validity up to 50 times with
+  `msleep(100)` instead of failing on the initial transient invalid
+  response.
+- Record 2.4: Fix quality is high: it reuses existing code and only
+  widens the device match. Regression risk is very low and limited to
+  MOTU product ID `0x0005`.
 
-Step 1.4 Record: This is a bug fix disguised as an “add quirk” change.
-It is a hardware-specific workaround for wrong quirk selection, one of
-the standard stable exception categories.
+Phase 3:
+- Record 3.1: `git blame` shows the existing MOTU retry quirk was
+  introduced by `2edb84e3047b9` in 2020. Later nearby changes came from
+  clock refactoring and multi-control-interface support, but the retry
+  logic remains the same.
+- Record 3.2: No `Fixes:` tag, so no introducing commit to follow.
+- Record 3.3: Recent `sound/usb/clock.c` history shows related clock
+  fixes/refactors, but this patch is standalone and only changes the
+  device match.
+- Record 3.4: Author has prior usb-audio quirk commits in local history;
+  Takashi Iwai applied the patch and is the ALSA maintainer/committer
+  for this area.
+- Record 3.5: No functional dependencies found. The patch applies
+  cleanly to checked pending stable branches.
 
-### Phase 2: Diff Analysis
-Step 2.1 Record: One file changed: `sound/hda/codecs/realtek/alc269.c`,
-4 insertions, 0 deletions. No function body is changed; the modified
-object is `alc269_fixup_tbl`. Scope is single-file, table-only,
-surgical.
+Phase 4:
+- Record 4.1: `b4 dig -c 320e55722ca46` found the original submission at
+  the patch.msgid.link URL. `b4 dig -a` showed only `v1`; no newer
+  revision found.
+- Record 4.2: `b4 dig -w` showed Nicola Lunghi, Jaroslav Kysela, Takashi
+  Iwai, `linux-sound`, `linux-kernel`, and `linux-usb` were included.
+- Record 4.3: `b4 mbox` showed Takashi replied “Applied now. Thanks.” No
+  objections or review concerns appeared in the two-message thread.
+  WebFetch of lore was blocked by Anubis.
+- Record 4.4: No multi-patch series or related required patches found.
+- Record 4.5: Stable-list web search was blocked by Anubis; no stable-
+  specific discussion was found through the available local/b4 data.
 
-Step 2.2 Record: Before, a Yoga Pro 9 16IMH9 with PCI SSID `17aa:3811`
-would hit the existing Legion S7 `SND_PCI_QUIRK` and get
-`ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS`. After, the earlier
-`HDA_CODEC_QUIRK(0x17aa, 0x38d6, ..., ALC287_FIXUP_TAS2781_I2C)` matches
-by codec SSID first due table order and routes that machine to the
-TAS2781 I2C fixup.
+Phase 5:
+- Record 5.1: Key function: `uac_clock_source_is_valid_quirk()`.
+- Record 5.2: Call path verified: `uac_clock_source_is_valid()` calls
+  the quirk when the device reports invalid clock;
+  `__uac_clock_find_source()` and `set_sample_rate_v2v3()` call clock
+  validation; setup is reached from format parsing, stream setup,
+  endpoint preparation, and sample-rate initialization.
+- Record 5.3: Key callees are `snd_usb_ctl_msg()`,
+  `snd_usb_find_ctrl_interface()`, `snd_usb_find_clock_source()`, and
+  `msleep(100)`.
+- Record 5.4: Reachability is real for users of affected USB audio
+  devices during sample-rate/clock setup and PCM endpoint preparation.
+- Record 5.5: Similar existing pattern is the MicroBook IIc quirk for
+  the same vendor and same delayed clock-validity behavior.
 
-Step 2.3 Record: Bug category is hardware workaround / logic
-correctness. The broken mechanism is ambiguous PCI SSID reuse; the fix
-uses the more specific codec SSID.
+Phase 6:
+- Record 6.1: The existing quirk code exists in checked pending stable
+  branches `pending-5.4`, `pending-5.10`, `pending-5.15`, `pending-6.1`,
+  `pending-6.6`, `pending-6.12`, and `pending-7.0`.
+- Record 6.2: Backport difficulty is clean: `git apply --check`
+  succeeded on all those pending branches.
+- Record 6.3: No alternative Motu 1248 fix was found in local
+  stable/current history.
 
-Step 2.4 Record: Fix quality is high. It is a 4-line exact-match quirk,
-no API change, no broad behavior change. Regression risk is very low and
-limited to devices reporting codec SSID `17aa:38d6`.
+Phase 7:
+- Record 7.1: Subsystem is ALSA USB audio driver. Criticality: IMPORTANT
+  for users of affected MOTU hardware, not core-wide.
+- Record 7.2: Subsystem is active; recent history contains multiple usb-
+  audio fixes and quirks.
 
-### Phase 3: Git History
-Step 3.1 Record: `git blame` shows the conflicting
-`SND_PCI_QUIRK(0x17aa, 0x3811, "Legion S7 15IMH05", ...)` came from
-`67f4c61a73e9b` by Eric Naim. `git describe --contains 67f4c61a73e9b`
-reports `v7.1-rc1~166^2~6`; candidate `56722cfbb78d` is contained by
-`v7.1-rc3~27^2~13`.
+Phase 8:
+- Record 8.1: Affected users are driver/hardware-specific: Motu 1248 and
+  likely related older MOTU AVB/hybrid devices with product ID `0x0005`.
+- Record 8.2: Trigger is changing sample rate or clock source, or
+  validation during device/audio setup. Unprivileged trigger depends on
+  local audio-device permissions; I did not verify distro policy.
+- Record 8.3: Failure mode is ALSA failing clock validation early,
+  returning errors such as `-ENXIO` from the code path and preventing
+  successful audio setup. Severity: MEDIUM for the kernel generally,
+  HIGH for affected hardware usability.
+- Record 8.4: Benefit is high for affected hardware; risk is very low
+  because this only enables an existing quirk for one USB product ID.
 
-Step 3.2 Record: No `Fixes:` tag is present, so there is no tagged
-introducer to follow. Manual blame identifies the relevant prior Legion
-quirk.
-
-Step 3.3 Record: Recent file history is mostly audio quirk additions.
-Related commit `217d5bc9f9627` adds the same codec-SSID disambiguation
-pattern for Yoga Pro 7 14IMH9 versus Legion 7 16ACHG6.
-
-Step 3.4 Record: `git log --author='Rámon van Raaij' ... master --
-sound/hda/codecs/realtek/alc269.c` returned no earlier matching commits
-in this local history. Maintainer Takashi Iwai committed the patch.
-
-Step 3.5 Record: Dependencies are the existing `HDA_CODEC_QUIRK`
-infrastructure, `ALC287_FIXUP_TAS2781_I2C`, and the conflicting Legion
-`17aa:3811` entry. All exist in the checked 7.0 tree; `git apply
---check` of the candidate diff against current `HEAD` succeeded.
-
-### Phase 4: Mailing List / External Research
-Step 4.1 Record: `b4 dig -c 56722cfbb78d -a` found one revision, v1, at
-`https://patch.msgid.link/20260430191224.patch1-ramon@vanraaij.eu`. No
-newer revision for this exact patch was found.
-
-Step 4.2 Record: `b4 dig -c 56722cfbb78d -w` shows recipients were Rámon
-van Raaij, `linux-sound@vger.kernel.org`, `alsa-devel@alsa-project.org`,
-and Takashi Iwai. The maintainer replied “Applied now. Thanks.”
-
-Step 4.3 Record: No separate bug report link or `Reported-by` tag is in
-the candidate. Web search found public Yoga Pro 9i/TIAS2781/ALC287 audio
-issue reports, but I did not use those as primary evidence for the exact
-`17aa:38d6` SSID.
-
-Step 4.4 Record: `b4 mbox -c` showed a later related patch for codec
-SSID `17aa:38d5`, referencing this candidate commit and the same
-hardware class. It is related context, not a prerequisite.
-
-Step 4.5 Record: Web search for stable-specific discussion of
-`56722cfbb78d` did not find a stable-thread result. Lore `WebFetch` was
-blocked by anti-bot HTML, but `b4` access succeeded.
-
-### Phase 5: Semantic Code Analysis
-Step 5.1 Record: No function is modified. Key affected symbols are
-`alc269_fixup_tbl`, `snd_hda_pick_fixup`, `HDA_CODEC_QUIRK`,
-`ALC287_FIXUP_TAS2781_I2C`, and `ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS`.
-
-Step 5.2 Record: `alc269_probe()` calls `snd_hda_pick_fixup(codec,
-alc269_fixup_models, alc269_fixup_tbl, alc269_fixups)`.
-`hda_codec_driver_probe()` calls the codec driver probe op, so this is
-reached during HDA codec binding/probe.
-
-Step 5.3 Record: `HDA_CODEC_QUIRK` sets `.match_codec_ssid = true`.
-`snd_hda_pick_fixup()` checks such entries against
-`codec->core.subsystem_id`; the TAS2781 fixup calls
-`comp_generic_fixup(..., "i2c", "TIAS2781", ...)`. The Legion fixup is
-HDA verb/coefficient based and does not call the TAS2781 component
-binding helper.
-
-Step 5.4 Record: Reachability is hardware probe path: HDA controller
-probes codecs, Realtek codec driver probes, `alc269_probe()` picks the
-fixup. The bug is not syscall/security-triggered; it affects audio
-functionality on matching hardware.
-
-Step 5.5 Record: Similar patterns exist in the same table, especially
-`HDA_CODEC_QUIRK(0x17aa, 0x38cf, "Lenovo Yoga Pro 7 14IMH9", ...)`
-immediately before a conflicting Legion PCI SSID entry.
-
-### Phase 6: Stable Tree Analysis
-Step 6.1 Record: In checked local refs, `HEAD` and `pending-6.18`
-contain the conflicting `17aa:3811` Legion quirk and do not contain the
-candidate `HDA_CODEC_QUIRK(0x17aa, 0x38d6, ...)`. Older checked pending
-refs did not show the conflicting line in the `git grep` run.
-
-Step 6.2 Record: Backport difficulty is clean for current `HEAD`: `git
-apply --check` succeeded. For older trees without `HDA_CODEC_QUIRK` or
-without the Legion `17aa:3811` quirk, this patch is either not
-applicable or would need prerequisites.
-
-Step 6.3 Record: No equivalent `17aa:38d6` codec quirk was found in
-checked stable refs. Existing `SND_PCI_QUIRK(0x17aa, 0x38d6, ...)`
-entries are PCI-SSID entries and do not fix the reported Yoga Pro 9 case
-where the PCI SSID is `17aa:3811`.
-
-### Phase 7: Subsystem Context
-Step 7.1 Record: Subsystem is ALSA HDA Realtek codec support under
-`sound/hda/codecs/realtek`. Criticality is driver-specific/important for
-affected laptop users, not core-kernel-wide.
-
-Step 7.2 Record: The subsystem is actively maintained; recent history
-shows many Realtek laptop quirk additions and related fixes. Takashi
-Iwai applied the patch.
-
-### Phase 8: Impact / Risk
-Step 8.1 Record: Affected population is Lenovo Yoga Pro 9 16IMH9 units
-with codec SSID `17aa:38d6` on stable trees containing the Legion
-`17aa:3811` quirk.
-
-Step 8.2 Record: Trigger is normal boot/device probe and use of built-in
-speakers. It is hardware/config specific, not unprivileged exploitation.
-
-Step 8.3 Record: Failure mode is broken built-in speaker output,
-described as near-silent speakers. Severity is high for affected
-hardware functionality, though not crash/data-corruption/security
-severity.
-
-Step 8.4 Record: Benefit is high for affected laptops and also prevents
-a regression caused by the shared PCI SSID quirk. Risk is very low: 4
-lines, exact match, no new API, no shared logic changes.
-
-### Phase 9: Synthesis
-Step 9.1 Record: Evidence for backporting: real user-visible hardware
-breakage, standard stable hardware-quirk category, tiny table-only
-patch, maintainer-applied, exact existing pattern, clean apply to
-current checked stable tree. Evidence against: no `Tested-by`, no `Cc:
-stable`, no separate bug-report link in the commit, and not applicable
-to trees lacking the prerequisite Legion quirk or `HDA_CODEC_QUIRK`
-infrastructure. Unresolved: I did not independently verify the physical
-uniqueness of codec SSID `17aa:38d6` beyond the submitted patch and
-maintainer acceptance.
-
-Step 9.2 Record: Stable rules: already upstream/mainline yes; obviously
-correct yes by code inspection and `checkpatch`; fixes a real bug yes,
-wrong quirk causing near-silent speakers; important enough yes as a
-hardware quirk / broken device functionality; small and contained yes, 4
-insertions; no new feature/API yes; applies cleanly to current checked
-stable `HEAD`, with older-tree applicability depending on prerequisites.
-
-Step 9.3 Record: Exception category applies: hardware quirk/workaround
-for a specific laptop audio configuration.
-
-Step 9.4 Record: Decision is YES for stable trees that contain the
-conflicting Legion S7 `17aa:3811` quirk and the
-`HDA_CODEC_QUIRK`/TAS2781 infrastructure. It should not be forced into
-older trees where the buggy conflicting quirk is absent.
+Phase 9:
+- Record 9.1: Evidence for backporting: real hardware quirk, existing
+  stable-accepted mechanism, small single-file change, maintainer-
+  applied, cleanly applies to stable branches, external CCRMA
+  documentation corroborates MOTU 1248 Linux sample-rate failures that
+  succeed after waiting. Evidence against: no crash/security/data-
+  corruption, no explicit stable tag, and no direct reporter/tested-by
+  tag.
+- Record 9.2: Stable rules: obviously correct yes; fixes real user-
+  visible hardware failure yes; important enough under hardware-quirk
+  exception yes; small/contained yes; no new API/features yes; applies
+  cleanly yes.
+- Record 9.3: Exception category: hardware quirk/workaround for broken
+  device timing behavior.
+- Record 9.4: Decision: backport. This is exactly the kind of low-risk
+  device-specific quirk stable trees routinely take.
 
 ## Verification
-- [Phase 1] Parsed commit `56722cfbb78d7eb41756cd78dc5192d08bd14f3d`
-  with `git show`; confirmed tags and message.
-- [Phase 2] Inspected diff: `sound/hda/codecs/realtek/alc269.c`, 4
-  insertions.
-- [Phase 3] Ran `git blame` around the conflicting quirk; confirmed
-  `67f4c61a73e9b` introduced `17aa:3811`.
-- [Phase 3] Ran `git show 67f4c61a73e9b`; confirmed it adds the Legion
-  S7 quirk.
-- [Phase 4] Ran `b4 dig -c 56722cfbb78d -a` and `-w`; found v1
-  submission, recipients, and maintainer application.
-- [Phase 5] Read `snd_hda_pick_fixup()`, `HDA_CODEC_QUIRK`,
-  `alc269_probe()`, TAS2781 fixup, and Legion fixup paths.
-- [Phase 6] Ran `git grep` across checked stable refs; found conflict in
-  `HEAD` and `pending-6.18`, and no candidate codec quirk there.
-- [Phase 6] Ran `git apply --check`; candidate applies to current
-  checked `HEAD`.
-- [Phase 8] Ran `scripts/checkpatch.pl --no-tree`; 0 errors, 0 warnings.
-- UNVERIFIED: No runtime test on Lenovo Yoga Pro 9 16IMH9 hardware; no
-  full build performed; exact affected stable branch set beyond checked
-  local refs not exhaustively proven because broad branch containment
-  checks were too slow and stopped.
+
+- Phase 1: Parsed commit `320e55722ca46` with `git show
+  --format=fuller`; verified tags and message.
+- Phase 2: Verified diff with `git show --find-renames` and `--numstat`:
+  `sound/usb/clock.c`, `+11/-4`.
+- Phase 3: Ran `git blame -L 179,240 -- sound/usb/clock.c`; identified
+  existing quirk origin `2edb84e3047b9`.
+- Phase 3: Checked recent file history with `git log --oneline -20 --
+  sound/usb/clock.c`.
+- Phase 4: Ran `b4 dig -c 320e55722ca46`, `-a`, and `-w`; confirmed v1
+  patch, recipients, and lore URL.
+- Phase 4: Ran `b4 mbox`; confirmed Takashi’s “Applied now” reply and no
+  objections in the fetched thread.
+- Phase 5: Used `rg` and file reads to trace callers through `clock.c`,
+  `format.c`, `endpoint.c`, `stream.c`, and `quirks.c`.
+- Phase 6: Checked quirk presence in pending stable branches and
+  verified `git apply --check` cleanly on `pending-5.4`, `pending-5.10`,
+  `pending-5.15`, `pending-6.1`, `pending-6.6`, `pending-6.12`, and
+  `pending-7.0`.
+- Phase 8: Used WebFetch of CCRMA MOTU 1248 documentation; it reports
+  Linux output/sample-rate attempts may fail initially and succeed after
+  5-10 seconds.
+- UNVERIFIED: Exact USB ID mapping for every model listed in the new
+  comment beyond the commit’s own statement.
 
 **YES**
 
- sound/hda/codecs/realtek/alc269.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/usb/clock.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
-index 3c02f50626ed4..29dafa3f1d15a 100644
---- a/sound/hda/codecs/realtek/alc269.c
-+++ b/sound/hda/codecs/realtek/alc269.c
-@@ -7606,6 +7606,10 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3801, "Lenovo Yoga9 14IAP7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
- 	HDA_CODEC_QUIRK(0x17aa, 0x3802, "DuetITL 2021", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo Yoga Pro 9 14IRP8", ALC287_FIXUP_TAS2781_I2C),
-+	/* Yoga Pro 9 16IMH9 shares PCI SSID 17aa:3811 with Legion S7 15IMH05;
-+	 * use codec SSID to distinguish them
-+	 */
-+	HDA_CODEC_QUIRK(0x17aa, 0x38d6, "Lenovo Yoga Pro 9 16IMH9", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x3811, "Legion S7 15IMH05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3813, "Legion 7i 15IMHG05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940 / Yoga Duet 7", ALC298_FIXUP_LENOVO_C940_DUET7),
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 842ba5b801eae..2e0c18e352812 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -208,11 +208,18 @@ static bool uac_clock_source_is_valid_quirk(struct snd_usb_audio *chip,
+ 	}
+ 
+ 	/*
+-	 * MOTU MicroBook IIc
+-	 * Sample rate changes takes more than 2 seconds for this device. Clock
+-	 * validity request returns false during that period.
++	 * Quirk for older MOTU AVB / hybrid interfaces
++	 *
++	 * These devices take more than 2 seconds to switch sample rate or
++	 * clock source. During this period the clock validity request
++	 * returns false, causing ALSA to fail prematurely.
++	 *
++	 * Affected models (all use vendor 0x07fd):
++	 *   - MicroBook IIc          → 0x0004
++	 *   - 1248, 624, 8A, UltraLite AVB, 8M, 16A, ... → 0x0005
+ 	 */
+-	if (chip->usb_id == USB_ID(0x07fd, 0x0004)) {
++	if (chip->usb_id == USB_ID(0x07fd, 0x0004) ||  /* MicroBook IIc */
++	    chip->usb_id == USB_ID(0x07fd, 0x0005)) {  /* 1248 / 624 / 8A / UltraLite AVB / ... */
+ 		count = 0;
+ 
+ 		while ((!ret) && (count < 50)) {
 -- 
 2.53.0
 
