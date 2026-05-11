@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1C61CD484E
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BCBCCD37BE
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 May 2026 22:21:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71FAA601CF;
-	Tue, 12 May 2026 00:21:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71FAA601CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92CA760226;
+	Tue, 12 May 2026 00:21:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92CA760226
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778538092;
-	bh=3tI/Il7zP6ZV6ZLY5Ki9gNwt2fCqDBpCXbzjazhDU3I=;
+	s=default; t=1778538106;
+	bh=kFgmMNGmlIo0zSBNgHG9+naS/KZNXllqUo/TClMYRb0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Po39rwcV/Yjxwxgm0b5rbDZ0XWM1DnEl1xTormFeAMKPjyT8k2Jx6kvZzA9b3+qMD
-	 IfKBCPCJjXVGhcvkr/v38GjQ2wNq7rsRcF79X8VgbVPhI8iMHazt8Rp91r1crOk+0a
-	 n/ZW+ZmqDQl4GUPtdbukG28Am0jCddQNlGDgfRSc=
+	b=bUgDXtDVUf4wDjejk2QD0PVRVAg48Sy0BjeWdI/zpIALfkeGdheVOdne60LllNW/u
+	 meSbpUFk9TeTU12nwxeZ7H2ajrxdaR/LZsUGebc9Rj2unQItEneZVualKYlE4H2f/h
+	 Mt/NiqmQ7bayswqmPCEOnPvWrfkmT2i18SVqGxXg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01298F8067F; Tue, 12 May 2026 00:20:19 +0200 (CEST)
+	id 57778F805E8; Tue, 12 May 2026 00:20:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 667A6F80682;
-	Tue, 12 May 2026 00:20:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10376F806A9;
+	Tue, 12 May 2026 00:20:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19F11F80615; Tue, 12 May 2026 00:20:09 +0200 (CEST)
+	id 790C6F805C4; Tue, 12 May 2026 00:20:10 +0200 (CEST)
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 17D1BF8060B
-	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:20:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17D1BF8060B
+	by alsa1.perex.cz (Postfix) with ESMTPS id AD607F80611
+	for <alsa-devel@alsa-project.org>; Tue, 12 May 2026 00:20:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD607F80611
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bWEtTaVF
+ header.s=k20201202 header.b=jphv9JB6
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id C495944020;
-	Mon, 11 May 2026 22:20:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC8EC2BCB0;
-	Mon, 11 May 2026 22:20:03 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id D936043DA9;
+	Mon, 11 May 2026 22:20:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4AA9C2BCFA;
+	Mon, 11 May 2026 22:20:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778538004;
-	bh=3tI/Il7zP6ZV6ZLY5Ki9gNwt2fCqDBpCXbzjazhDU3I=;
+	s=k20201202; t=1778538001;
+	bh=kFgmMNGmlIo0zSBNgHG9+naS/KZNXllqUo/TClMYRb0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bWEtTaVF+nxLc4WqK5pHzzJPuMu+jmarOvdpycgCKiJcKmY/p3SDJ5MTgFwRLWbEe
-	 wEgrVp9brsn861hASJy+vlRkBxmIEo9CP1zYk7CDUDNc6X71LabjbYFo8mr0Ehlb2R
-	 FcajN/ykCjJdBobv31yoQpOcp1GEoG5rELqk25vnkMBelaEOryESt0M0EvupJ/P3rU
-	 G6AtcrHhOzGmBrcxxWKJSb4zisV4zpmtxYnhuvBUst9Ybdsa9eK13XQMDylIo18sj9
-	 qQI/KronYgO1mXxlhRfabhNhkrOrQDfCPu2pPzE41Kr0amA8aVqNqrFAjIvHiK+kQn
-	 zJ/hkOkCWT+qQ==
+	b=jphv9JB6lkrAt8R8oILbYOO1l8UmL2rh1bmE9Oafg7RFMwLsdkphrR1qHoqS6N/11
+	 BZr0kPpwK6v53wSxxr+7rvFK2s6xRCOsZvoasFmxNalcEhJ/lwm0oaYIMItCyTx7HP
+	 SuEvqL0/R38JtXMMc1v+LQF1ScVKmvFjnJoJS39Ao/uM/m8Shvz7dDe18438Nn6CBd
+	 SZaCkt/UjvaXcmcov26ZMxpjUz+SSYgkafN956lR+DNrjcrqTcXUnNt1BtjaNVOrNU
+	 8NuNCH0IbklzqZbWOFZtaLR6EzTglcSWEUFVXmUeas3FPPzccT2d7lGyrVLxg+9OrD
+	 sTWSAxPcxrnhQ==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Bob Song <songxiebing@kylinos.cn>,
-	gannovera <gannovera@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: =?UTF-8?q?R=C3=A1mon=20van=20Raaij?= <ramon@vanraaij.eu>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.6] ASoC: amd: yc: Add DMI quirk for MSI Bravo 15
- C7VE
-Date: Mon, 11 May 2026 18:19:21 -0400
-Message-ID: <20260511221931.2370053-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 7.0-6.18] ALSA: hda/realtek: Add codec SSID quirk for
+ Lenovo Yoga Pro 9 16IMH9
+Date: Mon, 11 May 2026 18:19:19 -0400
+Message-ID: <20260511221931.2370053-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260511221931.2370053-1-sashal@kernel.org>
 References: <20260511221931.2370053-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 7.0.6
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: G6BN5XL6V4H3D64SUTARTAHXZ622OWOH
-X-Message-ID-Hash: G6BN5XL6V4H3D64SUTARTAHXZ622OWOH
+Message-ID-Hash: AKNEZLV5LX2UNBAC2KAFFT5PQEYHD22V
+X-Message-ID-Hash: AKNEZLV5LX2UNBAC2KAFFT5PQEYHD22V
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G6BN5XL6V4H3D64SUTARTAHXZ622OWOH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AKNEZLV5LX2UNBAC2KAFFT5PQEYHD22V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,240 +100,261 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bob Song <songxiebing@kylinos.cn>
+From: Rámon van Raaij <ramon@vanraaij.eu>
 
-[ Upstream commit 0e60d96616640ffcf51b81a87c71e30d92385a93 ]
+[ Upstream commit 56722cfbb78d7eb41756cd78dc5192d08bd14f3d ]
 
-The laptop requires a quirk ID to enable its internal microphone. Add
-it to the DMI quirk table.
+The Yoga Pro 9 16IMH9 (codec SSID 17aa:38d6) shares PCI audio device
+subsystem ID 17aa:3811 with the Legion S7 15IMH05. The existing
+SND_PCI_QUIRK entry for the Legion routes both machines to
+ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS, which does not bind the TAS2781
+smart amplifiers, resulting in near-silent built-in speakers.
 
-Reported-by: gannovera <gannovera@gmail.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218402
-Signed-off-by: Bob Song <songxiebing@kylinos.cn>
-Link: https://patch.msgid.link/20260430014920.141276-1-songxiebing@kylinos.cn
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Add an HDA_CODEC_QUIRK entry immediately before the conflicting PCI quirk
+that matches the Yoga Pro 9's unique codec SSID and routes it to
+ALC287_FIXUP_TAS2781_I2C. Codec quirks are evaluated after PCI quirks and
+take precedence, leaving the Legion S7 15IMH05 entry unaffected.
+
+This follows the same pattern used to disambiguate PCI SSID 17aa:3847
+(shared between Yoga Pro 7 14IMH9 and Legion 7 16ACHG6), where a
+HDA_CODEC_QUIRK for codec SSID 17aa:38cf resolves the conflict.
+
+Signed-off-by: Rámon van Raaij <ramon@vanraaij.eu>
+Link: https://patch.msgid.link/20260430191224.patch1-ramon@vanraaij.eu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-## Stable Backport Review
-
+## Phase Walkthrough
 ### Phase 1: Commit Message Forensics
-Record 1.1: Subsystem is `ASoC: amd: yc`; action verb is `Add`; claimed
-intent is adding a DMI quirk for MSI Bravo 15 C7VE internal microphone
-enablement.
+Step 1.1 Record: Subsystem is `ALSA: hda/realtek`; action is `Add`;
+claimed intent is adding a codec-SSID quirk so Lenovo Yoga Pro 9 16IMH9
+uses the TAS2781 fixup instead of the Legion S7 PCI-SSID fixup.
 
-Record 1.2: Tags found: `Reported-by: gannovera <gannovera@gmail.com>`,
-`Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218402`, `Signed-
-off-by: Bob Song <songxiebing@kylinos.cn>`, `Link: https://patch.msgid.l
-ink/20260430014920.141276-1-songxiebing@kylinos.cn`, `Signed-off-by:
-Mark Brown <broonie@kernel.org>`. No `Fixes:` tag and no explicit `Cc:
-stable`.
+Step 1.2 Record: Tags present are `Signed-off-by: Rámon van Raaij
+<ramon@vanraaij.eu>`, `Link:
+https://patch.msgid.link/20260430191224.patch1-ramon@vanraaij.eu`, and
+`Signed-off-by: Takashi Iwai <tiwai@suse.de>`. No `Fixes:`, `Reported-
+by:`, `Tested-by:`, `Reviewed-by:`, `Acked-by:`, or `Cc:
+stable@vger.kernel.org` tag is present.
 
-Record 1.3: The message states the laptop requires a quirk ID to enable
-its internal microphone. Symptom is missing internal microphone support
-on MSI Bravo 15 C7VE. Version info is not stated. Root cause described
-is absence from `yc_acp_quirk_table`.
+Step 1.3 Record: The commit describes a real hardware misidentification:
+Yoga Pro 9 16IMH9 has codec SSID `17aa:38d6` but shares PCI audio SSID
+`17aa:3811` with Legion S7 15IMH05, causing
+`ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS` to be selected. The stated
+symptom is near-silent built-in speakers because TAS2781 smart
+amplifiers are not bound.
 
-Record 1.4: This is a hardware quirk fix, not a hidden cleanup bug. It
-fits the stable exception category for DMI quirks/workarounds.
+Step 1.4 Record: This is a bug fix disguised as an “add quirk” change.
+It is a hardware-specific workaround for wrong quirk selection, one of
+the standard stable exception categories.
 
 ### Phase 2: Diff Analysis
-Record 2.1: One file changed: `sound/soc/amd/yc/acp6x-mach.c`, 7
-insertions, 0 deletions. Modified object is the static
-`yc_acp_quirk_table[]`. Scope is a single-file surgical quirk addition.
+Step 2.1 Record: One file changed: `sound/hda/codecs/realtek/alc269.c`,
+4 insertions, 0 deletions. No function body is changed; the modified
+object is `alc269_fixup_tbl`. Scope is single-file, table-only,
+surgical.
 
-Record 2.2: Before: the DMI table matched nearby MSI models such as
-`Bravo 15 B7ED` and `Bravo 15 C7VF`, but not `Bravo 15 C7VE`. After:
-exact vendor/product match for `Micro-Star International Co., Ltd.` and
-`Bravo 15 C7VE` maps to `&acp6x_card`. Affected path is platform probe
-hardware matching.
+Step 2.2 Record: Before, a Yoga Pro 9 16IMH9 with PCI SSID `17aa:3811`
+would hit the existing Legion S7 `SND_PCI_QUIRK` and get
+`ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS`. After, the earlier
+`HDA_CODEC_QUIRK(0x17aa, 0x38d6, ..., ALC287_FIXUP_TAS2781_I2C)` matches
+by codec SSID first due table order and routes that machine to the
+TAS2781 I2C fixup.
 
-Record 2.3: Bug category is hardware workaround / DMI quirk. Mechanism:
-`acp6x_probe()` calls `dmi_first_match(yc_acp_quirk_table)` and, on
-match, sets platform driver data to `acp6x_card`; without a match, the
-driver can return `-ENODEV` if ACPI did not already enable the card.
+Step 2.3 Record: Bug category is hardware workaround / logic
+correctness. The broken mechanism is ambiguous PCI SSID reuse; the fix
+uses the more specific codec SSID.
 
-Record 2.4: Fix quality is high: it adds only one exact DMI table entry
-using an existing pattern and no new logic. Regression risk is very low
-and limited to machines reporting that exact DMI product/vendor pair.
+Step 2.4 Record: Fix quality is high. It is a 4-line exact-match quirk,
+no API change, no broad behavior change. Regression risk is very low and
+limited to devices reporting codec SSID `17aa:38d6`.
 
-### Phase 3: Git History Investigation
-Record 3.1: `git blame` around adjacent MSI entries in the checked-out
-7.0 tree traced those lines to the local merge base, not a useful
-original introducer. The “bug” is absence of this model entry, not a bad
-line introduced by a known commit. Verified file absent in `v5.15` and
-present in `v5.16`, `v6.1`, `v6.6`, and `v6.12`.
+### Phase 3: Git History
+Step 3.1 Record: `git blame` shows the conflicting
+`SND_PCI_QUIRK(0x17aa, 0x3811, "Legion S7 15IMH05", ...)` came from
+`67f4c61a73e9b` by Eric Naim. `git describe --contains 67f4c61a73e9b`
+reports `v7.1-rc1~166^2~6`; candidate `56722cfbb78d` is contained by
+`v7.1-rc3~27^2~13`.
 
-Record 3.2: No `Fixes:` tag, so no introducing commit to follow.
+Step 3.2 Record: No `Fixes:` tag is present, so there is no tagged
+introducer to follow. Manual blame identifies the relevant prior Legion
+quirk.
 
-Record 3.3: Recent history of `sound/soc/amd/yc/acp6x-mach.c` contains
-many similar DMI quirk additions, including HP, ASUS, MSI Thin/Vector
-entries. No prerequisite refactor was identified for this specific
-7-line addition.
+Step 3.3 Record: Recent file history is mostly audio quirk additions.
+Related commit `217d5bc9f9627` adds the same codec-SSID disambiguation
+pattern for Yoga Pro 7 14IMH9 versus Legion 7 16ACHG6.
 
-Record 3.4: Author history in the fetched maintainer branch showed Bob
-Song’s related commits for this path consist of this patch. The patch
-was committed by Mark Brown, the ASoC maintainer.
+Step 3.4 Record: `git log --author='Rámon van Raaij' ... master --
+sound/hda/codecs/realtek/alc269.c` returned no earlier matching commits
+in this local history. Maintainer Takashi Iwai committed the patch.
 
-Record 3.5: Dependency check found the needed symbols and structure
-already exist in stable-relevant trees: `yc_acp_quirk_table`,
-`acp6x_card`, and `dmi_first_match()` are present in `v6.1`;
-`SND_SOC_AMD_YC_MACH` exists in `v6.1` and `v6.6`. The exact submitted
-hunk applies cleanly to the current 7.0 tree; older trees such as `v6.1`
-lack the nearby MSI `Bravo 15 B7ED` anchor and would need a simple
-context adjustment.
+Step 3.5 Record: Dependencies are the existing `HDA_CODEC_QUIRK`
+infrastructure, `ALC287_FIXUP_TAS2781_I2C`, and the conflicting Legion
+`17aa:3811` entry. All exist in the checked 7.0 tree; `git apply
+--check` of the candidate diff against current `HEAD` succeeded.
 
-### Phase 4: Mailing List And External Research
-Record 4.1: `b4 dig -c 0e60d96616640ffcf51b81a87c71e30d92385a93` found
-the lore thread at `https://patch.msgid.link/20260430014920.141276-1-
-songxiebing@kylinos.cn`. `b4 dig -a` found two same-subject submissions
-dated 2026-04-22 and 2026-04-30; the April 30 version is the applied
-one.
+### Phase 4: Mailing List / External Research
+Step 4.1 Record: `b4 dig -c 56722cfbb78d -a` found one revision, v1, at
+`https://patch.msgid.link/20260430191224.patch1-ramon@vanraaij.eu`. No
+newer revision for this exact patch was found.
 
-Record 4.2: `b4 dig -w` showed the April 30 submission included Takashi
-Iwai, Jaroslav Kysela, Liam Girdwood, Mark Brown, Vijendar Mukunda,
-`linux-sound`, `linux-kernel`, and the reporter.
+Step 4.2 Record: `b4 dig -c 56722cfbb78d -w` shows recipients were Rámon
+van Raaij, `linux-sound@vger.kernel.org`, `alsa-devel@alsa-project.org`,
+and Takashi Iwai. The maintainer replied “Applied now. Thanks.”
 
-Record 4.3: Direct `WebFetch` of Bugzilla was blocked by Anubis. Search
-results and the lore thread corroborate that Bugzilla #218402 is tied to
-this MSI Bravo 15 C7VE microphone issue.
+Step 4.3 Record: No separate bug report link or `Reported-by` tag is in
+the candidate. Web search found public Yoga Pro 9i/TIAS2781/ALC287 audio
+issue reports, but I did not use those as primary evidence for the exact
+`17aa:38d6` SSID.
 
-Record 4.4: Related pattern found: a similar MSI Bravo 17 C7VE quirk
-thread describes the same ACP6x DMIC not-enabled problem on a related
-MSI model. No dependency between that patch and this one was found.
+Step 4.4 Record: `b4 mbox -c` showed a later related patch for codec
+SSID `17aa:38d5`, referencing this candidate commit and the same
+hardware class. It is related context, not a prerequisite.
 
-Record 4.5: Stable-list search found no stable-specific discussion for
-`Bravo 15 C7VE`.
+Step 4.5 Record: Web search for stable-specific discussion of
+`56722cfbb78d` did not find a stable-thread result. Lore `WebFetch` was
+blocked by anti-bot HTML, but `b4` access succeeded.
 
-### Phase 5: Code Semantic Analysis
-Record 5.1: Modified object is `yc_acp_quirk_table[]`; key consuming
-function is `acp6x_probe()`.
+### Phase 5: Semantic Code Analysis
+Step 5.1 Record: No function is modified. Key affected symbols are
+`alc269_fixup_tbl`, `snd_hda_pick_fixup`, `HDA_CODEC_QUIRK`,
+`ALC287_FIXUP_TAS2781_I2C`, and `ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS`.
 
-Record 5.2: `acp6x_probe()` is the `.probe` callback of platform driver
-`acp6x_mach_driver`. The platform device named `acp_yc_mach` is
-registered by `snd_acp6x_probe()` in `pci-acp6x.c` when ACP6x PDM mode
-is set.
+Step 5.2 Record: `alc269_probe()` calls `snd_hda_pick_fixup(codec,
+alc269_fixup_models, alc269_fixup_tbl, alc269_fixups)`.
+`hda_codec_driver_probe()` calls the codec driver probe op, so this is
+reached during HDA codec binding/probe.
 
-Record 5.3: Key callees in `acp6x_probe()` are ACPI property checks,
-`_WOV` evaluation, `dmi_first_match()`, `platform_set_drvdata()`,
-`platform_get_drvdata()`, and `devm_snd_soc_register_card()`.
+Step 5.3 Record: `HDA_CODEC_QUIRK` sets `.match_codec_ssid = true`.
+`snd_hda_pick_fixup()` checks such entries against
+`codec->core.subsystem_id`; the TAS2781 fixup calls
+`comp_generic_fixup(..., "i2c", "TIAS2781", ...)`. The Legion fixup is
+HDA verb/coefficient based and does not call the TAS2781 component
+binding helper.
 
-Record 5.4: Reachability is hardware enumeration/probe on AMD Yellow
-Carp ACP systems, not a syscall-triggered path. For the affected laptop,
-the issue is encountered at boot/device probe when the internal DMIC
-card is not registered.
+Step 5.4 Record: Reachability is hardware probe path: HDA controller
+probes codecs, Realtek codec driver probes, `alc269_probe()` picks the
+fixup. The bug is not syscall/security-triggered; it affects audio
+functionality on matching hardware.
 
-Record 5.5: Similar pattern is widespread in the same table: many
-laptop-specific entries all set `.driver_data = &acp6x_card`.
+Step 5.5 Record: Similar patterns exist in the same table, especially
+`HDA_CODEC_QUIRK(0x17aa, 0x38cf, "Lenovo Yoga Pro 7 14IMH9", ...)`
+immediately before a conflicting Legion PCI SSID entry.
 
 ### Phase 6: Stable Tree Analysis
-Record 6.1: `v5.15` lacks `sound/soc/amd/yc/acp6x-mach.c`; `v5.16`,
-`v6.1`, `v6.6`, and `v6.12` contain it. This is relevant to stable trees
-with the AMD YC machine driver, especially `v6.1+`.
+Step 6.1 Record: In checked local refs, `HEAD` and `pending-6.18`
+contain the conflicting `17aa:3811` Legion quirk and do not contain the
+candidate `HDA_CODEC_QUIRK(0x17aa, 0x38d6, ...)`. Older checked pending
+refs did not show the conflicting line in the `git grep` run.
 
-Record 6.2: Current 7.0 tree accepts the patch cleanly via `git apply
---check`. `v6.6`, `v6.12`, `v6.18`, `v6.19`, and HEAD have nearby MSI
-entries; `v6.1` has the quirk machinery but not the same adjacent MSI
-context, so it needs minor manual placement.
+Step 6.2 Record: Backport difficulty is clean for current `HEAD`: `git
+apply --check` succeeded. For older trees without `HDA_CODEC_QUIRK` or
+without the Legion `17aa:3811` quirk, this patch is either not
+applicable or would need prerequisites.
 
-Record 6.3: Searches found no existing `Bravo 15 C7VE` entry in current
-HEAD, `v6.6`, `v6.12`, `v6.18`, or `v6.19`.
+Step 6.3 Record: No equivalent `17aa:38d6` codec quirk was found in
+checked stable refs. Existing `SND_PCI_QUIRK(0x17aa, 0x38d6, ...)`
+entries are PCI-SSID entries and do not fix the reported Yoga Pro 9 case
+where the PCI SSID is `17aa:3811`.
 
 ### Phase 7: Subsystem Context
-Record 7.1: Subsystem is ALSA SoC / AMD YC machine driver under
-`sound/`. Criticality is peripheral but user-visible: it affects audio
-capture on a specific laptop model.
+Step 7.1 Record: Subsystem is ALSA HDA Realtek codec support under
+`sound/hda/codecs/realtek`. Criticality is driver-specific/important for
+affected laptop users, not core-kernel-wide.
 
-Record 7.2: The subsystem/file is actively receiving DMI quirk
-additions, verified by recent history listing multiple ASoC AMD YC quirk
-commits.
+Step 7.2 Record: The subsystem is actively maintained; recent history
+shows many Realtek laptop quirk additions and related fixes. Takashi
+Iwai applied the patch.
 
-### Phase 8: Impact And Risk
-Record 8.1: Affected users are MSI Bravo 15 C7VE owners using kernels
-with `CONFIG_SND_SOC_AMD_YC_MACH`.
+### Phase 8: Impact / Risk
+Step 8.1 Record: Affected population is Lenovo Yoga Pro 9 16IMH9 units
+with codec SSID `17aa:38d6` on stable trees containing the Legion
+`17aa:3811` quirk.
 
-Record 8.2: Trigger condition is device probing on that hardware when
-firmware/ACPI does not otherwise enable the DMIC path. It is not an
-unprivileged-user-triggered security issue.
+Step 8.2 Record: Trigger is normal boot/device probe and use of built-in
+speakers. It is hardware/config specific, not unprivileged exploitation.
 
-Record 8.3: Failure mode is loss of internal microphone functionality,
-not crash, data corruption, or security impact. Severity is medium for
-affected users.
+Step 8.3 Record: Failure mode is broken built-in speaker output,
+described as near-silent speakers. Severity is high for affected
+hardware functionality, though not crash/data-corruption/security
+severity.
 
-Record 8.4: Benefit is high for affected hardware because it restores
-the internal microphone. Risk is very low because the patch is seven
-lines, exact-DMI-scoped, and uses existing driver data.
+Step 8.4 Record: Benefit is high for affected laptops and also prevents
+a regression caused by the shared PCI SSID quirk. Risk is very low: 4
+lines, exact match, no new API, no shared logic changes.
 
-### Phase 9: Final Synthesis
-Record 9.1: Evidence for backporting: real user report, Bugzilla closure
-tag, accepted by ASoC maintainer, exact hardware quirk, tiny scope, no
-API/behavior change outside the matching laptop, and stable rules
-explicitly allow hardware quirks. Evidence against: no explicit `Cc:
-stable`, no `Tested-by`, Bugzilla direct fetch blocked, and `v6.1` needs
-trivial context adjustment. None of these outweigh the quirk benefit.
+### Phase 9: Synthesis
+Step 9.1 Record: Evidence for backporting: real user-visible hardware
+breakage, standard stable hardware-quirk category, tiny table-only
+patch, maintainer-applied, exact existing pattern, clean apply to
+current checked stable tree. Evidence against: no `Tested-by`, no `Cc:
+stable`, no separate bug-report link in the commit, and not applicable
+to trees lacking the prerequisite Legion quirk or `HDA_CODEC_QUIRK`
+infrastructure. Unresolved: I did not independently verify the physical
+uniqueness of codec SSID `17aa:38d6` beyond the submitted patch and
+maintainer acceptance.
 
-Record 9.2: Stable rules: obviously correct yes; fixes a real user-
-visible hardware bug yes; important enough for affected users yes,
-though not crash-level; small and contained yes; no new APIs/features
-yes; applies cleanly to current 7.0 and should be straightforward for
-stable trees containing the driver.
+Step 9.2 Record: Stable rules: already upstream/mainline yes; obviously
+correct yes by code inspection and `checkpatch`; fixes a real bug yes,
+wrong quirk causing near-silent speakers; important enough yes as a
+hardware quirk / broken device functionality; small and contained yes, 4
+insertions; no new feature/API yes; applies cleanly to current checked
+stable `HEAD`, with older-tree applicability depending on prerequisites.
 
-Record 9.3: Exception category applies: hardware-specific DMI
-quirk/workaround in an existing driver.
+Step 9.3 Record: Exception category applies: hardware quirk/workaround
+for a specific laptop audio configuration.
 
-Record 9.4: Decision is to backport to stable trees that contain the AMD
-YC machine driver, with minor context adjustment where needed.
+Step 9.4 Record: Decision is YES for stable trees that contain the
+conflicting Legion S7 `17aa:3811` quirk and the
+`HDA_CODEC_QUIRK`/TAS2781 infrastructure. It should not be forced into
+older trees where the buggy conflicting quirk is absent.
 
 ## Verification
-- [Phase 1] Parsed fetched commit
-  `0e60d96616640ffcf51b81a87c71e30d92385a93`: confirmed subject, tags,
-  author, committer, and 7-line stat.
-- [Phase 2] Read `sound/soc/amd/yc/acp6x-mach.c`: confirmed
-  `yc_acp_quirk_table[]` and `acp6x_probe()` DMI behavior.
-- [Phase 3] Ran local history/blame checks: nearby blame was not useful
-  for original introduction; verified file absent in `v5.15` and present
-  in `v5.16+`.
-- [Phase 4] Ran `b4 dig -c`, `-a`, `-w`, and saved/read mbox: confirmed
-  lore thread, two submissions, maintainer recipients, and Mark Brown
-  application to `for-7.1`.
-- [Phase 5] Read `pci-acp6x.c`: confirmed PCI probe registers
-  `acp_yc_mach`, which invokes the machine driver probe.
-- [Phase 6] Checked stable tags and entries: no `Bravo 15 C7VE` in
-  checked stable/current trees; patch applies cleanly to current 7.0
-  tree.
-- [Phase 7] Checked Kconfig/Makefile: confirmed `SND_SOC_AMD_YC_MACH` is
-  the relevant config and exists in `v6.1`/`v6.6`.
-- [Phase 8] Impact assessment is based on verified probe flow plus the
-  commit’s reported Bugzilla/user report.
-- UNVERIFIED: Direct Bugzilla contents could not be fetched due Anubis.
-  Exact original file introduction commit was not determined from local
-  history, but tag presence verifies stable relevance.
+- [Phase 1] Parsed commit `56722cfbb78d7eb41756cd78dc5192d08bd14f3d`
+  with `git show`; confirmed tags and message.
+- [Phase 2] Inspected diff: `sound/hda/codecs/realtek/alc269.c`, 4
+  insertions.
+- [Phase 3] Ran `git blame` around the conflicting quirk; confirmed
+  `67f4c61a73e9b` introduced `17aa:3811`.
+- [Phase 3] Ran `git show 67f4c61a73e9b`; confirmed it adds the Legion
+  S7 quirk.
+- [Phase 4] Ran `b4 dig -c 56722cfbb78d -a` and `-w`; found v1
+  submission, recipients, and maintainer application.
+- [Phase 5] Read `snd_hda_pick_fixup()`, `HDA_CODEC_QUIRK`,
+  `alc269_probe()`, TAS2781 fixup, and Legion fixup paths.
+- [Phase 6] Ran `git grep` across checked stable refs; found conflict in
+  `HEAD` and `pending-6.18`, and no candidate codec quirk there.
+- [Phase 6] Ran `git apply --check`; candidate applies to current
+  checked `HEAD`.
+- [Phase 8] Ran `scripts/checkpatch.pl --no-tree`; 0 errors, 0 warnings.
+- UNVERIFIED: No runtime test on Lenovo Yoga Pro 9 16IMH9 hardware; no
+  full build performed; exact affected stable branch set beyond checked
+  local refs not exhaustively proven because broad branch containment
+  checks were too slow and stopped.
 
 **YES**
 
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/hda/codecs/realtek/alc269.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index aa62009331825..0fa2f694f3d30 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -472,6 +472,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Bravo 15 B7ED"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "Micro-Star International Co., Ltd."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Bravo 15 C7VE"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
+diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
+index 3c02f50626ed4..29dafa3f1d15a 100644
+--- a/sound/hda/codecs/realtek/alc269.c
++++ b/sound/hda/codecs/realtek/alc269.c
+@@ -7606,6 +7606,10 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3801, "Lenovo Yoga9 14IAP7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
+ 	HDA_CODEC_QUIRK(0x17aa, 0x3802, "DuetITL 2021", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo Yoga Pro 9 14IRP8", ALC287_FIXUP_TAS2781_I2C),
++	/* Yoga Pro 9 16IMH9 shares PCI SSID 17aa:3811 with Legion S7 15IMH05;
++	 * use codec SSID to distinguish them
++	 */
++	HDA_CODEC_QUIRK(0x17aa, 0x38d6, "Lenovo Yoga Pro 9 16IMH9", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3811, "Legion S7 15IMH05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3813, "Legion 7i 15IMHG05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940 / Yoga Duet 7", ALC298_FIXUP_LENOVO_C940_DUET7),
 -- 
 2.53.0
 
