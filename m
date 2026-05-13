@@ -4,172 +4,128 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AA5CCD343F
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2026 12:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2F98CD343F
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2026 13:50:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DF0D601EB;
-	Fri, 15 May 2026 14:55:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DF0D601EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B19160216;
+	Fri, 15 May 2026 15:50:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B19160216
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778849762;
-	bh=jr841fFO7Rl84q/39MPhnatZExKbfPaiIEgefnhTO5A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=f6eaPJbhVs02M7q3WH0/yvqFpS+EFe18kZHDu3in/thfzz4ATWCGsBe+BW29PJdYk
-	 YKpTe+kQbt2s6vHlTRczbNhzPAU1qYFqGVDPbQ2Z/LnIrjZKGo23zDf+Zg3PCaDomH
-	 4gXxD5fv7+qZOw9o7ET+jzdnqOqI8iGu1gdhoL5M=
+	s=default; t=1778853043;
+	bh=ifnh13XLEELsF7Dz7bEQK1VwB//sffYN6yKfk422a8c=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Sq/Gwlj+OIDrzx8q+hwbcqJcWjcAnp84GrWvMUqrQSdcL0PyziShghn7ei6qjci9P
+	 EmGkzwYrtDHyFNT+oW5tOF7DZ/IVkpy21gBY840YYN6YGWDaKifTuTEvlLO1CdqRac
+	 bUZXHEm0Eo/ncjebYhnLlxRkeKo0uJKuTjiBnSHE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C120F805ED; Fri, 15 May 2026 14:55:28 +0200 (CEST)
+	id 4D5D9F805F3; Fri, 15 May 2026 15:50:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FDBAF805EA;
-	Fri, 15 May 2026 14:55:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEB0DF805E0;
+	Fri, 15 May 2026 15:50:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B3260F80557; Fri, 15 May 2026 14:55:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 8A550F8049C; Wed, 13 May 2026 18:29:52 +0200 (CEST)
+Received: from mail-yx1-f41.google.com (mail-yx1-f41.google.com
+ [74.125.224.41])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5641BF800BD
-	for <alsa-devel@alsa-project.org>; Fri, 15 May 2026 14:55:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5641BF800BD
+	by alsa1.perex.cz (Postfix) with ESMTPS id 342A8F80100
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2026 18:29:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 342A8F80100
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=gXHm9udT;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Ql+Nrce5;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=I/Hs4aur;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gbZ2vMWv
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 69FCD63136;
-	Fri, 15 May 2026 12:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1778849714;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gOh34rapuSm8hb4WUj6Q4YlI+891WbtK1vwjkswkEos=;
-	b=gXHm9udTUZEGoxtlIV7/y5RS+VhZz3SF+dys0AEW1lkHvfsZrtIP+uNdK3Sb+66zMQ39nS
-	lKdwUev81YmLua4FCnPqDmxgrPrAujEHLgrBDCtEggSzb7iycnT10CgFvkUiJGB70Fy9MB
-	wQbTMfPX4x5pxqJwYd8qYGcwDXKjEvM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1778849714;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gOh34rapuSm8hb4WUj6Q4YlI+891WbtK1vwjkswkEos=;
-	b=Ql+Nrce5CMc2McHFuYaabi0+h1yWHBl8htpBkJatNvP/Ba0ivD2gWugvRet3I1c7kvwwNh
-	cRr2+C3iRinSaAAg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="I/Hs4aur";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=gbZ2vMWv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1778849713;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gOh34rapuSm8hb4WUj6Q4YlI+891WbtK1vwjkswkEos=;
-	b=I/Hs4aurV4I65NRq1pA2KRJ8UICy5Ogzi4PUeGs8xIoEVF7NZhVrw7xu0cuMOhfPaLAT5b
-	B7LoQpksQFuHIzNGYodPbRJj84IFfdPwIsRpRchCmHwmgcDewZgV123+CB03DuUJzM96af
-	OmO2+UvOBNSVR2wcGeHrj19X5ZJ6s9Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1778849713;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gOh34rapuSm8hb4WUj6Q4YlI+891WbtK1vwjkswkEos=;
-	b=gbZ2vMWvji/1cJ4RFvxDMAB/iEMgkuYj9mwVZmWMaVWx4Yds7MDJHSbxX0Nvpuytpc+DjO
-	1fzauOhr8/s3umAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 35FD1593A9;
-	Fri, 15 May 2026 12:55:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6rFmC7EXB2rASAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 15 May 2026 12:55:13 +0000
-Date: Fri, 15 May 2026 14:55:12 +0200
-Message-ID: <87se7ssuhb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Eric Naim <dnaim@cachyos.org>
-Cc: Rob Blake <rob@losource.net>,
-	alsa-devel@alsa-project.org,
-	kailang@realtek.com,
-	baojun.xu@ti.com
-Subject: Re: equest to upstream: ALC287_FIXUP_TXNW2781_I2C quirk for ASUS
- Strix Gxx5 family (CachyOS commit 20313d76)
-In-Reply-To: <66390566-61ce-4d9f-9f7f-b5a66c8468ab@cachyos.org>
-References: <59fd4aa4-76b9-4984-8db9-a60e55ec6e80@losource.net>
-	<7650fdea-6b8a-4116-9560-ac6b2f6c54b1@cachyos.org>
-	<87o6iht559.wl-tiwai@suse.de>
-	<7e8c59c5-8459-4c74-9d32-d3b3b66210fc@cachyos.org>
-	<66390566-61ce-4d9f-9f7f-b5a66c8468ab@cachyos.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,cachyos.org:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 69FCD63136
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-Message-ID-Hash: XCIFQMSJJWW2EC3NSYOMM65DN6FNUUAB
-X-Message-ID-Hash: XCIFQMSJJWW2EC3NSYOMM65DN6FNUUAB
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=rQAQnlzk
+Received: by mail-yx1-f41.google.com with SMTP id
+ 956f58d0204a3-65890a6ca20so7454727d50.0
+        for <alsa-devel@alsa-project.org>;
+ Wed, 13 May 2026 09:29:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778689785; cv=none;
+        d=google.com; s=arc-20240605;
+        b=dNEqsuE9bbycPXt1H6cFwkpUWbvCXelXFQ8g2+2nNTMT5H01VMhnDm9S78gh1Wzn/A
+         CK/CDhakAq9Cbl0Hqe+Xbp/DrRZlm8DVswNDcUSkXbnobtFw4sTgLiD2TD80bFj1WM4P
+         DGYWcetNvWFf7eK0Y4Cx0RkG2AiZfxZv5proXcvno9ILjIiPgfsNYs5nsqTzmEYQuyc9
+         DGYllirA+PwH3vnjrnvSFUx330soh1gGZAGVGzmP8TFRKzZWwhh38JjlXVzPOz+HFikm
+         bNfwi4M8iDux090URgWc5Sg/xtEenVgJBTidVzpW6gXeBqHjIx981wGVhyKCtA9F81mb
+         qXDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=K5DDEtXuGE7ee+SNx61dPE+qWcQIiM2DzVVel3WOnOU=;
+        fh=s1h8N4U4ASgl2diPi2yKjEmsLSTuwbZjYBDYrAXLUvw=;
+        b=GU30RtX0+YaSAVef9Nlh7WfHX+yMJV+vOHntf8noLMt/Wuws5qXGDskF4ttKBUlFvz
+         9XNO7FRLNN3k83W3xxtCzRM8f0uAkXVHfKh2JXbEsv+LsKIB9yspJz3XUo8k037/p610
+         yeoth8XS7KjfQNusvglADiQFnkha9X4V7SST4r3Wm/qywzoY0+A6NRG9rUiHA0TQknG7
+         p1/gX1HeoUZYGRZxGS/5K/54Xxj1EO5TEUGwH16N0TkliQIPeHF2eBJNDUtL0/LVFozY
+         6AGM/iP5VLHySuMJTf60fK4m//AISxM8ei/gkZQPNJ3PweU6ZgnL+8Zn12Gr5iLB8sQ0
+         +7mw==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778689785; x=1779294585;
+ darn=alsa-project.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=K5DDEtXuGE7ee+SNx61dPE+qWcQIiM2DzVVel3WOnOU=;
+        b=rQAQnlzkfb7tR4cuzH4cefTyib68/nwcwg/opF8eiLfFOfkKxoMIYVLrOlCNy8+cmH
+         4OLuVWQYpQpxJVnqheEwmbRH9e3zdnW3F6RlJrOEq7Tw1lGVZRNdA2dKzTcCu1MNyLsH
+         bHTkBgI68QTQc0QBugrH0gVPelsy5L8W9iFTksCqxulDy1c7dtNMIwOhFw2mktKsSXxT
+         gZ0eUKDSLFMewOi8mjpptw1o/pxqkDDTFu+eV9GXtYjoG13WZMzYKqZ5tqHqarAuVztZ
+         Y+mI5mGfrF/y8oPri27G3dK6OvhVBd9SPPApRjNK0o6xYW/fBKgEmfNqRZGgymt12qSJ
+         Q/qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778689785; x=1779294585;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K5DDEtXuGE7ee+SNx61dPE+qWcQIiM2DzVVel3WOnOU=;
+        b=cb5TxKcNJ5D/jYzo1W0ncWVszC/Xm5tVLJz+vnIEn32r4n3wPLkjeQMv/PCkjRZ+K1
+         WAiSJA2pDI1YNYhq4+Ni7Cekf8Zs4ky4imnQZ2Tsyb+O9HZY+Kj73uXv7hvI6wgL+GkA
+         qvk/a8A4TzGfjtZ9YL0TI3+t7Q4HLAd9LBLiHmWGjneDqnW5YyLCBy67BGP7EAI3rLi1
+         PKm/OmBpqcbmBpXHThp9bp/ZX9F9dhxXAyRIcOyHU5mTxZa1Sxtk00Lqw4IFw6lndyWO
+         40mhgQYWdzXEyls/25AwCDXirh2gtPWS/4FoXDIXKkk8qRDehAbnVebzWoKubQrdd+Gw
+         23oQ==
+X-Gm-Message-State: AOJu0Ywaf4eZ6JkJVbbdPAVVpZ9k5xcPWVUusFoQTlW6PRNC84A2A8Qy
+	kI9UIll47kOt5uNZTSXviebaHaHz2haxiM4WoNPvfmfGAQvQjVKltnmerW7zsGoSgy0eWBwJWcX
+	ST0UdaVZJzxOTm/d9T82gCcBO58cA5F3qRc6cHWs=
+X-Gm-Gg: Acq92OHhme8j66dHTEV0n3FUu+6AVhC9SJWxQI3DPBqA69XvVfVsRMcmH8kAM/r+919
+	IHpaux0RW7ZTGNTdcT7Bjcoud3lRI8M18yI0wzoH5ppP2dPWCDrs3v44b9r3LzJ/qP4NvT0hu+n
+	Ivv0VKHT3Sbj0LlOyQ2kKJO7sxlqby3wDgDb7Js8d6pwBA+6gqYWqTICSb8bpoTkGbWf7CQ7jEt
+	LhuRhqjrWS0tBiT5eWR38SvhdpQVIkS1SrwReDAwbBaa64RzAruTHZZNTbSL+g6bsdtkGLAcz4y
+	s3MXuvMB
+X-Received: by 2002:a05:690e:134a:b0:651:bb21:e7fd with SMTP id
+ 956f58d0204a3-65df82da822mr3258561d50.42.1778689784947; Wed, 13 May 2026
+ 09:29:44 -0700 (PDT)
+MIME-Version: 1.0
+From: Vadym <fwrexan@gmail.com>
+Date: Wed, 13 May 2026 19:29:33 +0300
+X-Gm-Features: AVHnY4ImD76msvIlg-j8RteiDk4VuYIXkIvj_DZw9Cb5qPt8DaTP07a5DL3Uy6A
+Message-ID: 
+ <CAO8kHO0eS2AoJvLEE0i_Yt5aorh4zY8t+awQ7c4d-ZSs7Saf7A@mail.gmail.com>
+Subject: ALC257 wrong fixup applied for Lenovo LOQ 15APH8 (17aa:3bfa) -
+ headset mic not working
+To: alsa-devel@alsa-project.org
+X-MailFrom: fwrexan@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: XDHKRDMQJJA6ESDHW4DGO3V3XVSXUKAN
+X-Message-ID-Hash: XDHKRDMQJJA6ESDHW4DGO3V3XVSXUKAN
+X-Mailman-Approved-At: Fri, 15 May 2026 13:50:01 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XCIFQMSJJWW2EC3NSYOMM65DN6FNUUAB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XDHKRDMQJJA6ESDHW4DGO3V3XVSXUKAN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,106 +134,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 15 May 2026 14:52:00 +0200,
-Eric Naim wrote:
-> 
-> On 5/15/26 8:40 PM, Eric Naim wrote:
-> > On 5/15/26 5:04 PM, Takashi Iwai wrote:
-> >> On Wed, 13 May 2026 11:24:00 +0200,
-> >> Eric Naim wrote:
-> >>>
-> >>> On 5/12/26 9:50 PM, Rob Blake wrote:
-> >>>> Hi all,
-> >>>>
-> >>>> I'm writing to ask whether the small fixup-table change below can be picked up
-> >>>> for mainline. It's already in CachyOS's downstream tree since 2026-03-06 and
-> >>>> is reported to restore speaker audio on an
-> >>>> entire family of recent ASUS ROG Strix laptops, including mine.
-> >>>>
-> >>>> The relevant commit is by Eric Naim <dnaim@cachyos.org>:
-> >>>>
-> >>>>   CachyOS commit 20313d767be2e5abdb88295b7c724634e1937a4f
-> >>>>   "ALSA: hda/realtek: Use ALC287_FIXUP_TXNW2781_I2C for ASUS Strix Gxx5"
-> >>>> https://github.com/CachyOS/linux/commit/20313d767be2e5abdb88295b7c724634e1937a4f
-> >>>>
-> >>>> The change is a six-line edit to sound/hda/codecs/realtek/alc269.c: the
-> >>>> affected SSIDs are currently mapped to ALC287_FIXUP_TAS2781_I2C but actually
-> >>>> need ALC287_FIXUP_TXNW2781_I2C. The wrong quirk leaves the I²C interrupt
-> >>>> config inconsistent with the ACPI TXNW2781 entry, so serial-multi-instantiate
-> >>>> fails to resolve IRQ index 0 for each of the three amp channels, and only the
-> >>>> first channel binds.
-> >>>>
-> >>>> SSIDs affected (per Eric's patch):
-> >>>>   0x1043 0x3ee0  ASUS Strix G815_JHR_JMR_JPR
-> >>>>   0x1043 0x3ef0  ASUS Strix G635LR_LW_LX
-> >>>>   0x1043 0x3f00  ASUS Strix G815LH_LM_LP
-> >>>>   0x1043 0x3f10  ASUS Strix G835LR_LW_LX
-> >>>>   0x1043 0x3f20  ASUS Strix G615LR_LW   <-- my machine
-> >>>>   0x1043 0x3f30  ASUS Strix G815LR_LW
-> >>>>
-> >>>> On my G615LW (SSID 1043:3f20) running kernel 6.19.14-101.fc44, the
-> >>>> broken state matches Eric's commit log exactly:
-> >>>>
-> >>>>   Serial bus multi instantiate pseudo device driver TXNW2781:00: error -ENXIO:
-> >>>> IRQ index 0 not found
-> >>>>   Serial bus multi instantiate pseudo device driver TXNW2781:00: error -ENXIO:
-> >>>> IRQ index 0 not found
-> >>>>   Serial bus multi instantiate pseudo device driver TXNW2781:00: error -ENXIO:
-> >>>> IRQ index 0 not found
-> >>>>   Serial bus multi instantiate pseudo device driver TXNW2781:00: Instantiated
-> >>>> 3 I2C devices.
-> >>>>
-> >>>> with .0 binding to tas2781-hda and .1/.2 staying at driver=NONE.
-> >>>> Speakers are silent. Headphones work (they're on a separate codec pin and
-> >>>> don't involve TAS2781).
-> >>>>
-> >>>> I've ruled out asusd as the cause — I rebooted with asusd masked and the
-> >>>> failure is identical, so this is purely codec-quirk-table business.
-> >>>>
-> >>>> Original upstream report:
-> >>>> https://lore.kernel.org/
-> >>>> CACB9z7kjs8rhLstEc8fV29BCTb5dd881JwGozoKdO5cwCb=YwQ@mail.gmail.com
-> >>>>
-> >>>> CachyOS issue with discussion:
-> >>>>   https://github.com/CachyOS/linux-cachyos/issues/752
-> >>>>
-> >>>> I'm not a kernel developer and don't feel qualified to submit Eric's patch on
-> >>>> his behalf. Could one of you (or Eric, if you're on this list) take a look and
-> >>>> consider sending it for inclusion? It's a self-contained six-line change that
-> >>>> fixes audio for a sizeable family of shipping laptops, and the patch is
-> >>>> already authored and signed-off.
-> >>>>
-> >>>> Happy to test patches against my G615LW.
-> >>>>
-> >>>> Thanks,
-> >>>>
-> >>>> Rob
-> >>>>
-> >>>
-> >>> Hi Rob,
-> >>>
-> >>> I've sent this patch 2 months ago [1]. I never got a reply from Baojun so I
-> >>> myself am unsure as to how to proceed, cc'ing them here to hopefully get a reply.
-> >>>
-> >>> [1] https://lore.kernel.org/linux-sound/20260315160939.191265-1-dnaim@cachyos.org/
-> >>
-> >> Indeed.  If no further followup appears, I'm going to pick up Eric's
-> >> v2 patch in the next week.
-> >>
-> >>
-> > 
-> > Glad to hear that! I haven't sent any v2, but I will do so in the next few
-> > days. I assume here the v2 will only cover the 2 confirmed misbehaving devices
-> > instead of the full 6 in the first iteration, yes?
-> 
-> As luck would have it, I just got a report from another distro maintainer that
-> PID 0x3f30 also needs the fix, in addition to the confirmed 0x3f20 and 0x3ef0.
-> 
-> This makes me think that the original patch should be kept as-is. Thoughts?
-
-Whatever you prefer.  Just send the latest versions to be picked up.
-
-
-thanks,
-
-Takashi
+U3ViamVjdDogQUxDMjU3IHdyb25nIGZpeHVwIGFwcGxpZWQgZm9yIExlbm92byBMT1EgMTVBUEg4
+ICgxN2FhOjNiZmEpIC0NCmhlYWRzZXQgbWljIG5vdCB3b3JraW5nDQoNCj09IEhhcmR3YXJlID09
+DQpNYWNoaW5lOiBMZW5vdm8gTE9RIDE1QVBIOCAoODJYVCkNCkNQVTogQU1EIFJ5emVuIDUgNzY0
+MEhTDQpBdWRpbyBjb2RlYzogUmVhbHRlayBBTEMyNTcNClBDSSBjb250cm9sbGVyIHN1YnN5c3Rl
+bSBJRDogMTdhYTozODcwDQpBTFNBIGluZm86DQpodHRwOi8vYWxzYS1wcm9qZWN0Lm9yZy9kYi8/
+Zj0yMjM5OTc4OThjMzdiNmUyNTMxMGVmMGYxMGZmNmI4NTdlNzMyY2IzDQoNCj09IFByb2JsZW0g
+PT0NClRoZSBoZWFkc2V0IG1pY3JvcGhvbmUgKDMuNW1tIGNvbWJvIGphY2spIGRvZXMgbm90IHdv
+cmsgb24gTGludXguDQpUaGUgaW50ZXJuYWwgbWljcm9waG9uZSB3b3JrcyBjb3JyZWN0bHkuDQoN
+Cj09IFJvb3QgY2F1c2UgPT0NClRoZSBrZXJuZWwgYXBwbGllcyB0aGUgd3JvbmcgZml4dXAgZm9y
+IHRoaXMgbWFjaGluZToNCg0KICBzbmRfaGRhX2NvZGVjX2FsYzI2OTogQUxDMjU3OiBwaWNrZWQg
+Zml4dXAgZm9yIFBDSSBTU0lEIDE3YWE6Mzg3MA0KDQpUaGUgUENJIGNvbnRyb2xsZXIgc3Vic3lz
+dGVtIElEIDE3YWE6Mzg3MCBtYXRjaGVzICJMZW5vdm8gWW9nYSA3IDE0QVJCNyINCihBTEMyODdf
+RklYVVBfWU9HQTdfMTRBUkI3X0kyQykgd2hpY2ggaXMgYSBjb21wbGV0ZWx5IGRpZmZlcmVudCBt
+YWNoaW5lLg0KVGhpcyBmaXh1cCBjb25maWd1cmVzIHRoZSBjb2RlYyBpbmNvcnJlY3RseSBmb3Ig
+TE9RIDE1QVBIOC4NCg0KQXMgYSByZXN1bHQsIHBpbiAweDFhICh3aGljaCBjYXJyaWVzIHRoZSBo
+ZWFkc2V0IG1pY3JvcGhvbmUgc2lnbmFsIG9uIHRoaXMNCm1hY2hpbmUpIGlzIGluaXRpYWxpemVk
+IGFzIFtOL0FdIHdpdGggUGluLWN0bHM6IDB4MDAgVlJFRl9ISVosIG1ha2luZyBpdA0KaW52aXNp
+YmxlIHRvIHVzZXJzcGFjZSBhdWRpbyBzZXJ2ZXJzIChQaXBlV2lyZS9XaXJlUGx1bWJlcikuDQoN
+Cj09IEV4cGVjdGVkIGJlaGF2aW9yID09DQpQaW4gMHgxYSBzaG91bGQgYmUgZXhwb3NlZCBhcyBh
+IG1pY3JvcGhvbmUgaW5wdXQgKExpbmUgSW4gLyBIZWFkc2V0IE1pYykuDQpPbiBVYnVudHUgMjQu
+MDQgLyAyNS4xMCB3aXRoIG9sZGVyIGtlcm5lbHMgdGhpcyBwaW4gd2FzIGFjY2Vzc2libGUgYXMN
+CiJMaW5lIEluIiBhbmQgdGhlIGhlYWRzZXQgbWljcm9waG9uZSB3b3JrZWQgY29ycmVjdGx5IHdo
+ZW4gc2VsZWN0ZWQNCm1hbnVhbGx5Lg0KDQo9PSBDb2RlYyBwaW4gZGV0YWlscyA9PQ0KTm9kZSAw
+eDE5IFtQaW4gQ29tcGxleF06IE1pYyBhdCBFeHQgUmlnaHQgKEphY2ssIEJsYWNrLCAxLzgiKQ0K
+ICBQaW4tY3RsczogMHgyNCBJTiBWUkVGXzgwDQogIOKGkiBjb3JyZWN0bHkgaW5pdGlhbGl6ZWQs
+IGJ1dCBjYXB0dXJlcyBvbmx5IG5vaXNlIChubyBzaWduYWwpDQoNCk5vZGUgMHgxYSBbUGluIENv
+bXBsZXhdOiBtYXJrZWQgYXMgW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcg0KICBQaW4gRGVmYXVs
+dCAweDQxMTExMWYwIOKAlCBrZXJuZWwgdHJlYXRzIGFzIE4vQQ0KICBQaW4tY3RsczogMHgwMCBW
+UkVGX0hJWiAg4oaQIHNob3VsZCBiZSBhY3RpdmUgaW5wdXQNCiAg4oaSIHRoaXMgcGluIGFjdHVh
+bGx5IGNhcnJpZXMgaGVhZHNldCBtaWMgc2lnbmFsIG9uIHRoaXMgaGFyZHdhcmUNCg0KPT0gUmVx
+dWVzdGVkIGZpeCA9PQ0KQWRkIGEgcXVpcmsgZm9yIHRoaXMgbWFjaGluZSB3aXRoIHRoZSBjb3Jy
+ZWN0IHN1YnN5c3RlbSBJRDoNCg0KICBTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgzYmZhLCAiTGVu
+b3ZvIExPUSAxNUFQSDgiLA0KQUxDMjU3X0ZJWFVQX0hFQURTRVRfTUlDKSwNCg0Kb3IgZXF1aXZh
+bGVudCBmaXh1cCB0aGF0IGVuYWJsZXMgcGluIDB4MWEgYXMgaGVhZHNldCBtaWNyb3Bob25lIGlu
+cHV0DQphbmQgYXBwbGllcyBBTEMyNjlfRklYVVBfSEVBRFNFVF9NT0RFX05PX0hQX01JQyBvciBz
+aW1pbGFyLg0KDQo9PSBLZXJuZWwgdmVyc2lvbnMgdGVzdGVkID09DQotIExpbnV4IDcuMC40LTIw
+MC5mYzQ0Lng4Nl82NCAoRmVkb3JhIDQ0KSDigJQgYnJva2VuDQotIExpbnV4IDYueCAoS3VidW50
+dSAyNi4wNCkg4oCUIGJyb2tlbg0KLSBVYnVudHUgMjQuMDQgLyAyNS4xMCAob2xkZXIga2VybmVs
+cykg4oCUIHdvcmtlZA0KDQo9PSBDb250YWN0ID09DQpQbGVhc2UgcmVwbHkgdG8gdGhpcyBidWcg
+cmVwb3J0IHdpdGggYW55IGFkZGl0aW9uYWwgaW5mb3JtYXRpb24gbmVlZGVkLg0KDQpXaXRoIHJl
+Z2FyZHMNClZhZHltDQo=
