@@ -4,128 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 420E6CD4851
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2026 11:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 844E5CD4851
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2026 12:11:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DF30601E0;
-	Wed, 13 May 2026 13:50:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DF30601E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9093D601D1;
+	Wed, 13 May 2026 14:10:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9093D601D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778673020;
-	bh=L+WNyyPimEuejnEt9e4ymClyQTw33Z6SfA3YJT7VkmI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1778674269;
+	bh=mOjnQDyupUNttC0GciczTWIVDiuHDlwilqo2CxDzhsE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=URrTmMUVtF2WLWu3B31DuxhSzkFN+AgIJrG189QvfMX681+iy4KGpFF8yIs/4GSNG
-	 1odQ40SdX3cTp+PJTFjD8DEuaeOoBb3G/d82koTWenEcXzwOEIBpMZ5PC+UpAbhAdN
-	 tOFcJSI1aTRXJJ4CyWRLyocwlCskHaDVU2ZEI9z4=
+	b=SKMOEAkvYKAXXXrJBqRNwGXL2UFwKtorkrCoEI3oMf+14aNcP9EyD7fHpOHDD6bZU
+	 PbNYoF7uJC31Luk1ung6jB9bhm1rzy6gR1dh7ESqKqpESzQD9KHpddbK0DfnS2A6vP
+	 AZpvzvD9+AH2gJiGavbM9gVUERXwPgpu6a6Q7jtQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8585EF805EC; Wed, 13 May 2026 13:49:46 +0200 (CEST)
+	id 66E22F805EA; Wed, 13 May 2026 14:10:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EFA3F805E7;
-	Wed, 13 May 2026 13:49:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEF01F805E6;
+	Wed, 13 May 2026 14:10:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29CDBF8049C; Wed, 13 May 2026 13:49:40 +0200 (CEST)
-Received: from fhigh-b2-smtp.messagingengine.com
- (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+	id 6C481F8049C; Wed, 13 May 2026 11:24:23 +0200 (CEST)
+Received: from mail.ptr1337.dev (mail.ptr1337.dev [202.61.224.105])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 31B98F80100
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2026 13:49:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31B98F80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2CE59F80100
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2026 11:24:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CE59F80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm3 header.b=DPH7sSyR;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=HWCdPH2V
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 519E97A0187;
-	Wed, 13 May 2026 07:49:36 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Wed, 13 May 2026 07:49:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1778672976; x=
-	1778759376; bh=Ktbz3P96yXKRdsRD19ZZyzv1VKvzX9WEgiegms4WkXQ=; b=D
-	PH7sSyRjnTKfKuMhQLtA+0JrwiD15/na/xtJTqOaOTqqCgBZtLFWzZZYU+y5jL7t
-	B/h4AfZ1sZsLg5iPgOpa3teTMVc6+h3z2CIndg7Oal4U8N3/3PpcU/BBnORCSk08
-	r/LUftE3OjROQ1i83N/WqlVMleAcu7CNyiFF/EjioU2EQC3EeWx8CVmwTUXNjehi
-	UtizrbVvqaT20qp2t45v0dbNBcws5yG+cSXESxE908VKwjPJ5Y8nYgd4UQBpGR18
-	MGPvguzK9vLRfbnpJyWpSKXDt3JwfUMxEnHFTG4qZcQxsEwLkpyxfRYZm+oiH8uW
-	hS7HbrZfbeA8CryzX1AZg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1778672976; x=1778759376; bh=Ktbz3P96yXKRdsRD19ZZyzv1VKvzX9WEgie
-	gms4WkXQ=; b=HWCdPH2VVCxnhW6jUpIYkgpK46aQ//n51baO5Gwk64DWgQPbfwV
-	SeqGaYCujpYqp9JcaNtBUuGZwqxT+1kYFAU+PI84iStx2G/ptHDGJJklNGfBARQg
-	5ECmB4i+9f4/P9gEY/e5oAyDpgZO75HU7n0CySq2K/4QI/3rctQGQV6YXQG1NdNl
-	d483usVCpJMIpJBN1CW3L5B6hh9bx82zPVHxv9xt2rZ3aDp5YB5E3N6mGvM+KLny
-	NIQaTUW0lJ/VISXqZWwFlkpyFC1iOQCf5MmtN2Udq8ys5ZVEPfvfkI5lVRGMqkzk
-	u7BDsBmubmW9uJE8b/4Vn0r9gLyBCc/lpHg==
-X-ME-Sender: <xms:UGUEahhjlT5yQMR-ZHlAtJU3-i1T6dTRfAkNcWMcfATXihRCWTBCcA>
-    <xme:UGUEaiWubcim8AkgjbsD28oXLVXhPIGev9r98gHe4fO2UZFt2QzZ_aYCybS1wXrg8
-    zib2ed3oR_5oYM3akXoXn5Oybryw_8zuu3uq5dcOJt1c_7eZRpEbgY1>
-X-ME-Received: 
- <xmr:UGUEaj1tQ5BSKJPoGYI6YBj59YRrpkv-0nPLGFv1gkF7iDjvxAsJYpKFRF44g4r2gobryp3kzFUoMPSCGxZczhMcORn26A>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdduvdegheekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevieelhfduke
-    ffheekffduudevvdefudelleefgeeileejheejuedvgefhteevvdenucffohhmrghinhep
-    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjphdpnhgspghr
-    tghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepshhimhhonhesmh
-    hunhhgvgifvghllhdrohhrghdprhgtphhtthhopegrlhhsrgdquggvvhgvlhesrghlshgr
-    qdhprhhojhgvtghtrdhorhhg
-X-ME-Proxy: <xmx:UGUEaoHwqXMVNpojePuaiugL48Q6dMPpAWXV_lkctDGGLKv3vdaY5w>
-    <xmx:UGUEahhDpLbGPqVxIJ9_8rgZg61c7cFZn8Kd5DxupN9HrPyzMoW-Mw>
-    <xmx:UGUEaj9qMiqf6M02H1zl8jg1JdA7Ri23RGeMRVLseql8_p6jGtBWpw>
-    <xmx:UGUEaopUxsBcCydZZIVJRSgNBkZVoFiJWeNCI2WuFX3UuP97Cf6ESw>
-    <xmx:UGUEaohuKiunfqX20_NXRbyylgfFsp7HP1S12iz9CClRpkZ1geuo4YWC>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 May 2026 07:49:35 -0400 (EDT)
-Date: Wed, 13 May 2026 20:49:33 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: simon@mungewell.org
-Cc: alsa-devel@alsa-project.org
-Subject: Re: snd-firewire-ctl-services: Digidesign Digi-002R - missing
- control for 'Optical mode'
-Message-ID: <20260513114933.GB352970@sakamocchi.jp>
-Mail-Followup-To: simon@mungewell.org, alsa-devel@alsa-project.org
-References: <f33030cd26a3f65960481e437788a125@mungewell.org>
- <20260512021958.GA187077@sakamocchi.jp>
- <5703b1e2ef177e9efb204e53efd4a030@mungewell.org>
+ unprotected) header.d=cachyos.org header.i=@cachyos.org header.a=rsa-sha256
+ header.s=dkim header.b=Ne4BALmZ
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
+ with ESMTPSA id 40A9C28173E;
+	Wed, 13 May 2026 11:24:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cachyos.org; s=dkim;
+	t=1778664260; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=gZm1vFT9O4N61DVeXoQyvSNZS/LJ/IaFvtJ5++omHoc=;
+	b=Ne4BALmZ5UEgdInizIIw1gFgVEjuweKowXCTmTOP38X8P3trWyJPXaLsKHqmupsQ0CcVL3
+	CFWTN8aIWYQd1SHrY7oByu/X0YZKBbINpc0Sz+dIEySksa/ihyIoR2afreCTj9wL7BKako
+	jLhvwTLfdyE6rHPWdGcTc0yfJzlF7jq5rP8vBcbwDrz+NjS464AbMuJ6G7j0fXUP/UcGA+
+	qcbQfLRUhccF9wnh/kQOo2E4y/rgtklpN2ycp9XP4dqsQjvdf5bUKAKPgZeFSp+EUk7HFy
+	RjjI58D/6XKFhma9nM8OLxjiG9LDsBD4X588tXTsKv/iBDoML9n5LZzBAXD8/g==
+Message-ID: <7650fdea-6b8a-4116-9560-ac6b2f6c54b1@cachyos.org>
+Date: Wed, 13 May 2026 09:24:00 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5703b1e2ef177e9efb204e53efd4a030@mungewell.org>
-Message-ID-Hash: O6UIRXHRDBNU633H5O3ZFBEGIBHPZCWQ
-X-Message-ID-Hash: O6UIRXHRDBNU633H5O3ZFBEGIBHPZCWQ
-X-MailFrom: o-takashi@sakamocchi.jp
+Subject: Re: equest to upstream: ALC287_FIXUP_TXNW2781_I2C quirk for ASUS
+ Strix Gxx5 family (CachyOS commit 20313d76)
+To: Rob Blake <rob@losource.net>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, kailang@realtek.com, baojun.xu@ti.com
+References: <59fd4aa4-76b9-4984-8db9-a60e55ec6e80@losource.net>
+From: Eric Naim <dnaim@cachyos.org>
+In-Reply-To: <59fd4aa4-76b9-4984-8db9-a60e55ec6e80@losource.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
+X-MailFrom: dnaim@cachyos.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: OCUCWAZ2WV7Q27IMVQLKWYEGPUL47GSN
+X-Message-ID-Hash: OCUCWAZ2WV7Q27IMVQLKWYEGPUL47GSN
+X-Mailman-Approved-At: Wed, 13 May 2026 12:10:30 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O6UIRXHRDBNU633H5O3ZFBEGIBHPZCWQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OCUCWAZ2WV7Q27IMVQLKWYEGPUL47GSN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,50 +88,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, May 12, 2026 at 12:28:19AM -0400, simon@mungewell.org wrote:
-> On 2026-05-11 22:19, Takashi Sakamoto wrote:
+On 5/12/26 9:50 PM, Rob Blake wrote:
+> Hi all,
 > 
-> > In my understanding, when the Digi 002 detects S/PDIF signals at the
-> > optical input port, it automatically uses those signals for the packet
-> > and ignores the S/PDIF signals in the coaxial input port. In contrast,
-> > the Digi 003 allows the system software to select either the optical or
-> > coaxial input as the source of S/PDIF signals when both are available.
-> > 
-> > However, I may have misunderstood the hardware behavior. Please let me
-> > know if you observe any behavior that differs from my understanding
-> > above.
+> I'm writing to ask whether the small fixup-table change below can be picked up
+> for mainline. It's already in CachyOS's downstream tree since 2026-03-06 and
+> is reported to restore speaker audio on an
+> entire family of recent ASUS ROG Strix laptops, including mine.
 > 
-> Thank you for a prompt response.
+> The relevant commit is by Eric Naim <dnaim@cachyos.org>:
 > 
-> I had based my understanding from a 'fuzzy' picture in the manual for the
-> Digi-002R. The screenshot appears to show a radial that the user can select,
-> to either send ADAT or S/PDIF data via the optical port(s).
+>   CachyOS commit 20313d767be2e5abdb88295b7c724634e1937a4f
+>   "ALSA: hda/realtek: Use ALC287_FIXUP_TXNW2781_I2C for ASUS Strix Gxx5"
+> https://github.com/CachyOS/linux/commit/20313d767be2e5abdb88295b7c724634e1937a4f
 > 
-> I was able to install the DigiDesign driver onto a Windows 7 machine, but I
-> don't have Pro-Tools and the driver does not install a 'setup application'.
-> Windows itself offers a 'properties' dialog, which lets me select between
-> 2/8 channels and 16/24bit operation.
- 
-I don't have that either, so I never try it directly with the bundled
-software...
-
-> I have use 'bus hound' to record the coms to the device when the properties
-> dialog is opened (with previously set different values). There are some
-> slight changes in the data, maybe this makes sense to someone. I can attempt
-> to record more, given some guidance on what is useful...
+> The change is a six-line edit to sound/hda/codecs/realtek/alc269.c: the
+> affected SSIDs are currently mapped to ALC287_FIXUP_TAS2781_I2C but actually
+> need ALC287_FIXUP_TXNW2781_I2C. The wrong quirk leaves the I²C interrupt
+> config inconsistent with the ACPI TXNW2781 entry, so serial-multi-instantiate
+> fails to resolve IRQ index 0 for each of the three amp channels, and only the
+> first channel binds.
 > 
-> Yours,
-> Simon.
+> SSIDs affected (per Eric's patch):
+>   0x1043 0x3ee0  ASUS Strix G815_JHR_JMR_JPR
+>   0x1043 0x3ef0  ASUS Strix G635LR_LW_LX
+>   0x1043 0x3f00  ASUS Strix G815LH_LM_LP
+>   0x1043 0x3f10  ASUS Strix G835LR_LW_LX
+>   0x1043 0x3f20  ASUS Strix G615LR_LW   <-- my machine
+>   0x1043 0x3f30  ASUS Strix G815LR_LW
+> 
+> On my G615LW (SSID 1043:3f20) running kernel 6.19.14-101.fc44, the
+> broken state matches Eric's commit log exactly:
+> 
+>   Serial bus multi instantiate pseudo device driver TXNW2781:00: error -ENXIO:
+> IRQ index 0 not found
+>   Serial bus multi instantiate pseudo device driver TXNW2781:00: error -ENXIO:
+> IRQ index 0 not found
+>   Serial bus multi instantiate pseudo device driver TXNW2781:00: error -ENXIO:
+> IRQ index 0 not found
+>   Serial bus multi instantiate pseudo device driver TXNW2781:00: Instantiated
+> 3 I2C devices.
+> 
+> with .0 binding to tas2781-hda and .1/.2 staying at driver=NONE.
+> Speakers are silent. Headphones work (they're on a separate codec pin and
+> don't involve TAS2781).
+> 
+> I've ruled out asusd as the cause — I rebooted with asusd masked and the
+> failure is identical, so this is purely codec-quirk-table business.
+> 
+> Original upstream report:
+> https://lore.kernel.org/
+> CACB9z7kjs8rhLstEc8fV29BCTb5dd881JwGozoKdO5cwCb=YwQ@mail.gmail.com
+> 
+> CachyOS issue with discussion:
+>   https://github.com/CachyOS/linux-cachyos/issues/752
+> 
+> I'm not a kernel developer and don't feel qualified to submit Eric's patch on
+> his behalf. Could one of you (or Eric, if you're on this list) take a look and
+> consider sending it for inclusion? It's a self-contained six-line change that
+> fixes audio for a sizeable family of shipping laptops, and the patch is
+> already authored and signed-off.
+> 
+> Happy to test patches against my G615LW.
+> 
+> Thanks,
+> 
+> Rob
+> 
 
-Thanks for your effort to capturing packets. As a quick glance, they are
-for the isochronous communication in IEEE 1394 bus. While, the
-asynchronous transaction would be used to change the mode of optical
-interface. The destination address would be 0x'ffff'e000'011c. There are
-more offset addresses whose effects haven't been cleared yet[1].
+Hi Rob,
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/sound/firewire/digi00x/digi00x.h?h=v7.0#n63
+I've sent this patch 2 months ago [1]. I never got a reply from Baojun so I
+myself am unsure as to how to proceed, cc'ing them here to hopefully get a reply.
 
+[1] https://lore.kernel.org/linux-sound/20260315160939.191265-1-dnaim@cachyos.org/
 
-Regards
-
-Takashi Sakamoto
+-- 
+Regards,
+  Eric
