@@ -4,117 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D30FCD4F24
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2026 11:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 420E6CD4851
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2026 11:50:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AD26601E4;
-	Wed, 13 May 2026 13:42:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AD26601E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DF30601E0;
+	Wed, 13 May 2026 13:50:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DF30601E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778672578;
-	bh=0TumWsLZAQaHZLl2KuP1b58CkJOLFENnaAgU0ENBmr4=;
+	s=default; t=1778673020;
+	bh=L+WNyyPimEuejnEt9e4ymClyQTw33Z6SfA3YJT7VkmI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=P4fvGm+Bh95/DOZdiV0FQohz4orPBc6quKcgwYj+GpkrvQv07njM50TR3WF5X1I+X
-	 ziqh/K0VT0+XG4aiHCaPfb1dLThF3ltEB17Zo0qKArqpMSE/gfoH9j4HwSib/SJv7y
-	 gUedoeFIFnXOfJxnTynGwexUN6UZtQKZIQUXPcL8=
+	b=URrTmMUVtF2WLWu3B31DuxhSzkFN+AgIJrG189QvfMX681+iy4KGpFF8yIs/4GSNG
+	 1odQ40SdX3cTp+PJTFjD8DEuaeOoBb3G/d82koTWenEcXzwOEIBpMZ5PC+UpAbhAdN
+	 tOFcJSI1aTRXJJ4CyWRLyocwlCskHaDVU2ZEI9z4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87E2FF805F4; Wed, 13 May 2026 13:42:25 +0200 (CEST)
+	id 8585EF805EC; Wed, 13 May 2026 13:49:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 071D8F805B0;
-	Wed, 13 May 2026 13:42:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EFA3F805E7;
+	Wed, 13 May 2026 13:49:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6073F8049C; Wed, 13 May 2026 13:42:18 +0200 (CEST)
+	id 29CDBF8049C; Wed, 13 May 2026 13:49:40 +0200 (CEST)
 Received: from fhigh-b2-smtp.messagingengine.com
  (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 79C07F80100
-	for <alsa-devel@alsa-project.org>; Wed, 13 May 2026 13:42:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79C07F80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 31B98F80100
+	for <alsa-devel@alsa-project.org>; Wed, 13 May 2026 13:49:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31B98F80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm3 header.b=YvRcLEZG;
+ header.a=rsa-sha256 header.s=fm3 header.b=DPH7sSyR;
 	dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=jQQ/cPb5
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 403657A00C1;
-	Wed, 13 May 2026 07:42:13 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Wed, 13 May 2026 07:42:13 -0400
+ header.a=rsa-sha256 header.s=fm3 header.b=HWCdPH2V
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 519E97A0187;
+	Wed, 13 May 2026 07:49:36 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Wed, 13 May 2026 07:49:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
 	 h=cc:cc:content-type:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1778672533; x=
-	1778758933; bh=ZmsxX4jWDXZR/pEq/ylGL4TRnL7wvtZrr/GHVbjRvpo=; b=Y
-	vRcLEZGSEhrG0e87g5DMzuOZp0PV/hnA4aA7krnBSTDcuQI2jK1L831yf06b3jSA
-	yT10QK5IaiSdjbIMl/X8FITiOfUiDSaGZ7pb4bhUSr0JlxjjrFNRnimZBuX9NR76
-	hRavtsMzq82b+U2HSY637lis8Bh7ncO6PsQi6HNVccJa4OyhCIR0D/yEhmut1CB9
-	pugSbzR+hcK5AujnS8lS8k14fOVH0Gd8JGsbLku8rUnSV+jIUq3UBliV5kuD8mlh
-	GHxgthpUvb06sjk7TIjBl3CXylkUixwdTAcapBtaaaPB/E6cvfQQT4HSaiD+vuTM
-	aBCHBJ3n+AVfDIibqk87w==
+	:reply-to:subject:subject:to:to; s=fm3; t=1778672976; x=
+	1778759376; bh=Ktbz3P96yXKRdsRD19ZZyzv1VKvzX9WEgiegms4WkXQ=; b=D
+	PH7sSyRjnTKfKuMhQLtA+0JrwiD15/na/xtJTqOaOTqqCgBZtLFWzZZYU+y5jL7t
+	B/h4AfZ1sZsLg5iPgOpa3teTMVc6+h3z2CIndg7Oal4U8N3/3PpcU/BBnORCSk08
+	r/LUftE3OjROQ1i83N/WqlVMleAcu7CNyiFF/EjioU2EQC3EeWx8CVmwTUXNjehi
+	UtizrbVvqaT20qp2t45v0dbNBcws5yG+cSXESxE908VKwjPJ5Y8nYgd4UQBpGR18
+	MGPvguzK9vLRfbnpJyWpSKXDt3JwfUMxEnHFTG4qZcQxsEwLkpyxfRYZm+oiH8uW
+	hS7HbrZfbeA8CryzX1AZg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1778672533; x=1778758933; bh=ZmsxX4jWDXZR/pEq/ylGL4TRnL7wvtZrr/G
-	HVbjRvpo=; b=jQQ/cPb55wg21h2PkppPhsSf5dATrTut0TtyZGW53SmQ4RhuSzU
-	o0D+/JjVWkYrJKmfT7LvQ3vdUel8RqUdvf0mG5lkohB5pIKOqqQbe3KXwETrFKSe
-	ewleMAu3KgsHS2PpeLBTvpYILNahqs6mzTUWrBKMeRvhN0MgkV50/S+MCYNTpUxe
-	J5UgQ+hE65cJm/tDdw7TlDSexUErGq4TqiIbvFVbZAJSUZM2QpjYFMB88OHIt/4X
-	7HfZse8ceRWwlWHqFWrP+9zKTNwUoOaLtw478O76ZsubOEvDNf0oD6Cfy32p8RTD
-	xeYlcBexWVauz/QQXWen6V8Qt2W5rnW5+5A==
-X-ME-Sender: <xms:lGMEavQIuzUqVZ3NLd2uK21GxbBu0f7L6uo7CT1t9AP9L7aLkz0Pnw>
-    <xme:lGMEatH0SIUghZSKij850p8Btvi_HIG8UZ0v_8KaWQ-m2WcEoQHH6EL9ErJOTY546
-    GK163eIv5h6ZaLA2leVMgqdFDvfKMTa_hEgjqRTkVz12Vbbjcv-HRU>
+	1778672976; x=1778759376; bh=Ktbz3P96yXKRdsRD19ZZyzv1VKvzX9WEgie
+	gms4WkXQ=; b=HWCdPH2VVCxnhW6jUpIYkgpK46aQ//n51baO5Gwk64DWgQPbfwV
+	SeqGaYCujpYqp9JcaNtBUuGZwqxT+1kYFAU+PI84iStx2G/ptHDGJJklNGfBARQg
+	5ECmB4i+9f4/P9gEY/e5oAyDpgZO75HU7n0CySq2K/4QI/3rctQGQV6YXQG1NdNl
+	d483usVCpJMIpJBN1CW3L5B6hh9bx82zPVHxv9xt2rZ3aDp5YB5E3N6mGvM+KLny
+	NIQaTUW0lJ/VISXqZWwFlkpyFC1iOQCf5MmtN2Udq8ys5ZVEPfvfkI5lVRGMqkzk
+	u7BDsBmubmW9uJE8b/4Vn0r9gLyBCc/lpHg==
+X-ME-Sender: <xms:UGUEahhjlT5yQMR-ZHlAtJU3-i1T6dTRfAkNcWMcfATXihRCWTBCcA>
+    <xme:UGUEaiWubcim8AkgjbsD28oXLVXhPIGev9r98gHe4fO2UZFt2QzZ_aYCybS1wXrg8
+    zib2ed3oR_5oYM3akXoXn5Oybryw_8zuu3uq5dcOJt1c_7eZRpEbgY1>
 X-ME-Received: 
- <xmr:lGMEankMr0llvAFtprSDzA6qv80SYQYSS--CMl1Q9Z7SJb4vf7YtYvO0qY33ZFh21c5z_o6dpCP2KRDUFy3AOU8mb3Emkw>
+ <xmr:UGUEaj1tQ5BSKJPoGYI6YBj59YRrpkv-0nPLGFv1gkF7iDjvxAsJYpKFRF44g4r2gobryp3kzFUoMPSCGxZczhMcORn26A>
 X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdduvdegheejucetufdoteggodetrf
+ gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdduvdegheekucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
     dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeduheegueevte
-    euvdekkedvgfffleeiiedvlefhteettdevteetgfffgeejfeelkeenucffohhmrghinhep
-    ghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeevieelhfduke
+    ffheekffduudevvdefudelleefgeeileejheejuedvgefhteevvdenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
     hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjphdpnhgspghr
     tghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepshhimhhonhesmh
     hunhhgvgifvghllhdrohhrghdprhgtphhtthhopegrlhhsrgdquggvvhgvlhesrghlshgr
     qdhprhhojhgvtghtrdhorhhg
-X-ME-Proxy: <xmx:lGMEag2l3OrjSUbnXJV4JmKa_Cn3dxsoS4TEHdhVJsYCvv8a87e5yg>
-    <xmx:lGMEarTqgN4B12P1-zHpN_57pfjEI6dkPlxToBkVacpNeHU-aBZFVQ>
-    <xmx:lGMEaqvviy3QE5KBhzrdx4ofXUICwbPf1R3CNvkOyxI4qMERiybZWQ>
-    <xmx:lGMEaoYrU0Nk4U22Ksl2pZtmDhmejvYq55vJ2IQgmpGfvWUu9_uHkQ>
-    <xmx:lWMEaqTszwUVKd2JP4zp_CkvvNwM51sxNvNbWgh0tvGMxJ7487QjHYQs>
+X-ME-Proxy: <xmx:UGUEaoHwqXMVNpojePuaiugL48Q6dMPpAWXV_lkctDGGLKv3vdaY5w>
+    <xmx:UGUEahhDpLbGPqVxIJ9_8rgZg61c7cFZn8Kd5DxupN9HrPyzMoW-Mw>
+    <xmx:UGUEaj9qMiqf6M02H1zl8jg1JdA7Ri23RGeMRVLseql8_p6jGtBWpw>
+    <xmx:UGUEaopUxsBcCydZZIVJRSgNBkZVoFiJWeNCI2WuFX3UuP97Cf6ESw>
+    <xmx:UGUEaohuKiunfqX20_NXRbyylgfFsp7HP1S12iz9CClRpkZ1geuo4YWC>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 May 2026 07:42:11 -0400 (EDT)
-Date: Wed, 13 May 2026 20:42:09 +0900
+ 13 May 2026 07:49:35 -0400 (EDT)
+Date: Wed, 13 May 2026 20:49:33 +0900
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: simon@mungewell.org
 Cc: alsa-devel@alsa-project.org
 Subject: Re: snd-firewire-ctl-services: Digidesign Digi-002R - missing
  control for 'Optical mode'
-Message-ID: <20260513114209.GA352970@sakamocchi.jp>
+Message-ID: <20260513114933.GB352970@sakamocchi.jp>
 Mail-Followup-To: simon@mungewell.org, alsa-devel@alsa-project.org
 References: <f33030cd26a3f65960481e437788a125@mungewell.org>
  <20260512021958.GA187077@sakamocchi.jp>
- <d10bfa55e085e76f2846c53a550c4d0f@mungewell.org>
+ <5703b1e2ef177e9efb204e53efd4a030@mungewell.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d10bfa55e085e76f2846c53a550c4d0f@mungewell.org>
-Message-ID-Hash: IPBELL7ARVGX6FY3M7OLE4XGUDVI677J
-X-Message-ID-Hash: IPBELL7ARVGX6FY3M7OLE4XGUDVI677J
+In-Reply-To: <5703b1e2ef177e9efb204e53efd4a030@mungewell.org>
+Message-ID-Hash: O6UIRXHRDBNU633H5O3ZFBEGIBHPZCWQ
+X-Message-ID-Hash: O6UIRXHRDBNU633H5O3ZFBEGIBHPZCWQ
 X-MailFrom: o-takashi@sakamocchi.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -126,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IPBELL7ARVGX6FY3M7OLE4XGUDVI677J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O6UIRXHRDBNU633H5O3ZFBEGIBHPZCWQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,61 +134,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-On Tue, May 12, 2026 at 03:08:18PM -0400, simon@mungewell.org wrote:
+On Tue, May 12, 2026 at 12:28:19AM -0400, simon@mungewell.org wrote:
 > On 2026-05-11 22:19, Takashi Sakamoto wrote:
 > 
-> > Yes. The service program provides no ALSA control element set
-> > for this purpose, because Digi 002 differs from Digi 003 in how it
-> > selects the source of S/PDIF signals for audio data in IEEE 1394
-> > isochronous packets sent to the host system.
+> > In my understanding, when the Digi 002 detects S/PDIF signals at the
+> > optical input port, it automatically uses those signals for the packet
+> > and ignores the S/PDIF signals in the coaxial input port. In contrast,
+> > the Digi 003 allows the system software to select either the optical or
+> > coaxial input as the source of S/PDIF signals when both are available.
 > > 
+> > However, I may have misunderstood the hardware behavior. Please let me
+> > know if you observe any behavior that differs from my understanding
+> > above.
 > 
-> I experimented some more, and was able to muddle through the Rust code to
-> 'move' the control (from 003 protocol) to act on the 002. This showed that
-> the 002R does actually support this function.
+> Thank you for a prompt response.
 > 
-> I found a couple of things:
-> 1). Parameter is not saved unless the Jack server is stopped before making
-> the change. I think that this is expected.
-> --
-> simon@EliteBook:~/snd-firewire-ctl-services.github$ amixer -c 2 cset numid=8
-> 'S/PDIF'
-> numid=8,iface=MIXER,name='optical-interface'
->   ; type=ENUMERATED,access=rw------,values=1,items=2
->   ; Item #0 'ADAT'
->   ; Item #1 'S/PDIF'
->   : values=1
-> simon@EliteBook:~/snd-firewire-ctl-services.github$ amixer -c 2 cget numid=8
-> numid=8,iface=MIXER,name='optical-interface'
->   ; type=ENUMERATED,access=rw------,values=1,items=2
->   ; Item #0 'ADAT'
->   ; Item #1 'S/PDIF'
->   : values=1
-> --
+> I had based my understanding from a 'fuzzy' picture in the manual for the
+> Digi-002R. The screenshot appears to show a radial that the user can select,
+> to either send ADAT or S/PDIF data via the optical port(s).
+> 
+> I was able to install the DigiDesign driver onto a Windows 7 machine, but I
+> don't have Pro-Tools and the driver does not install a 'setup application'.
+> Windows itself offers a 'properties' dialog, which lets me select between
+> 2/8 channels and 16/24bit operation.
+ 
+I don't have that either, so I never try it directly with the bundled
+software...
 
-It is likely that the mode change is just activated when the host system
-stops packet streaming. Then these devices shift to 'standby mode', and
-you can see the transition in the status indicator if using any console
-models.
-
-> 2). With 'loop backs' on the RCA and Optical ports I got all channels in
-> 'normal/ADAT' mode, but in the 'S/PDIF' mode the path was re-assigned. I got
-> nothing through channels 11..18 (normally ADAT/optical), instead only
-> channels 9..10 passed audio - HOWEVER these are going over the optical fibre
-> (not co-ax cable), unplug the fibre and this loop-back stops.
+> I have use 'bus hound' to record the coms to the device when the properties
+> dialog is opened (with previously set different values). There are some
+> slight changes in the data, maybe this makes sense to someone. I can attempt
+> to record more, given some guidance on what is useful...
 > 
-> So in summary I think the existing code can be re-jigged to cover both 002
-> and 003.
+> Yours,
 > Simon.
 
-I filed A MR for the required changes. Please test with it:
+Thanks for your effort to capturing packets. As a quick glance, they are
+for the isochronous communication in IEEE 1394 bus. While, the
+asynchronous transaction would be used to change the mode of optical
+interface. The destination address would be 0x'ffff'e000'011c. There are
+more offset addresses whose effects haven't been cleared yet[1].
 
-digi00x: support optical interface mode operation for digi 002 as well as digi 003#214
-https://github.com/alsa-project/snd-firewire-ctl-services/pull/214
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/sound/firewire/digi00x/digi00x.h?h=v7.0#n63
 
 
-Thanks
+Regards
 
 Takashi Sakamoto
