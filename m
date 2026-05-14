@@ -4,48 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02ECCCD4F39
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 13:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1330ACD4F25
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 15:40:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65731601F8;
-	Thu, 14 May 2026 15:39:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65731601F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E2726019D;
+	Thu, 14 May 2026 17:40:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E2726019D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778765981;
-	bh=ZNdw6NdIJeJXeR+RT9p/Yd5j8Rhaonea5rOWBYpXPZQ=;
+	s=default; t=1778773243;
+	bh=pWeRQVsqJfH7E4J921ygqhQ6YxPaDjztI/FCFSZcGMc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=h09P3rtd6+Bc+7cHUJ8szPcWXAN/C8SjeZ008NHLVhwbaGFCJ/kJgUR2vxjAY66/G
-	 VWLGFXYYzINTptWpSqd3OxHFtE2EvVbogEYWrTtgi+1q2TTIMIut5I9Y2+MH7J907J
-	 LK/+704mi/iXLCkyrwzf2YgtW9y3I1JP109OUBC8=
+	b=gSNRfZsHyX0quo7o+8KHSJ0KcQD+/TS+74I9qs6krEqOO0Gx4bzxPirmvNWLpIkji
+	 hCxcv1Lf0ENUvThl/UxrmI8rxaOn26sfbFmlbvYOhRvBwrTOkeGaDue/whOqSOeKl8
+	 jntqPeajpmdD6mltuhayo+YWkRBM8nL9cd4cyc4I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34564F805F3; Thu, 14 May 2026 15:39:08 +0200 (CEST)
+	id 3C9C2F805E3; Thu, 14 May 2026 17:40:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D99C5F805F1;
-	Thu, 14 May 2026 15:39:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3E23F80071;
+	Thu, 14 May 2026 17:40:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 307FAF8021D; Thu, 14 May 2026 15:38:59 +0200 (CEST)
+	id 4C854F8021D; Thu, 14 May 2026 17:40:04 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3E41F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 15:38:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3E41F800D2
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B982F800D2
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 17:40:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B982F800D2
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18af7231e6aacf00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18af7231e680fa00-webhooks-bot@alsa-project.org>
-References: <18af7231e680fa00-webhooks-bot@alsa-project.org>
-Subject: ALSA PCM playing stops randomly, write buffer fills up
-Date: Thu, 14 May 2026 15:38:59 +0200 (CEST)
-Message-ID-Hash: ERBNGORMNCBU4ABTVCZH46AWQ6UBNRJR
-X-Message-ID-Hash: ERBNGORMNCBU4ABTVCZH46AWQ6UBNRJR
+Message-Id: <18af78cd46db6000-webhooks-bot@alsa-project.org>
+In-Reply-To: <18af78cd46d0be00-webhooks-bot@alsa-project.org>
+References: <18af78cd46d0be00-webhooks-bot@alsa-project.org>
+Subject: [ALSA/usb-audio] Weltrend/XiiSound Headset (040b:0897) splits
+ channels into independent 'PCM'/'PCM 1' mixer elements and suffers from
+ severe dB volume curve mismatch
+Date: Thu, 14 May 2026 17:40:04 +0200 (CEST)
+Message-ID-Hash: H22Y3PGVANJ7DA426CIE6F4ALB47QWK4
+X-Message-ID-Hash: H22Y3PGVANJ7DA426CIE6F4ALB47QWK4
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ERBNGORMNCBU4ABTVCZH46AWQ6UBNRJR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H22Y3PGVANJ7DA426CIE6F4ALB47QWK4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,96 +68,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #506 was edited from brucemack:
+alsa-project/alsa-ucm-conf issue #760 was opened from skye6034:
 
-Hi:
+### Description of the Bug
+The Weltrend Semiconductor / XiiSound wireless headset dongle (USB ID 040b:0897) is incorrectly handled by the `snd-usb-audio` driver. Instead of presenting a single unified stereo hardware volume control interface, the driver registers two completely separate hardware playback controls simultaneously:
+1. `PCM` (Controls overall initial gain / Left physical channel)
+2. `PCM 1` (Controls the hardware amplification exclusively for the physical Right ear channel)
 
-I have simple ASLA application that exhibits a strange behavior. I would welcome any advice for improved debug techniques.
+Because of this firmware descriptor misinterpretation, standard desktop environments (like GNOME/KDE) parse the device into separate, conflicting "Analog Output" and "Digital Output (S/PDIF)" hardware profiles simultaneously. 
 
-My program is non-blocking with a single playback handle.
-My program is a loop that plays a tone that lasts for 2 seconds, with a 1 second gap.
-While the tone is active my program writes a 20ms block of audio (960 PCM samples x 2 channels at 48k) every 20ms. 
-My buffer time is set to 320ms (plenty of space).
-My start threshold is set to 1200 frames.
-The audio hardware is a USB-connected device using a CM108B chip.
+When a user adjusts the system volume slider, the audio engine modulates the primary `PCM` element but leaves `PCM 1` un-synchronized at 0%. This instantly kills the physical Left audio channel entirely, leaving sound playing exclusively out of the Right side.
 
-My program runs very nicely with good audio quality for several minutes.  The delay/available pointers move around exactly the way I'd expect and the delay never goes above 2000 frames when the tone is playing. Production and consumption of audio are perfectly matched in a smooth stream.
+Furthermore, the hardware volume scaling curve is completely non-linear and broken. Small adjustments to the user-space volume slider result in massive, disproportionate drops in the hardware mixer levels. For example, lowering the desktop system volume slider slightly from 100% down to 98% causes the ALSA hardware `PCM` channel level to violently plummet down to approximately 33%.
 
-The state also looks good - it moves from XRUN to prepared to running and back to XRUN as the tone starts and stops.
+The hardware functions perfectly as a standard, unified single stereo device on Windows and macOS.
 
-After several minutes, the delay suddenly starts to rise (and the available space falls) to the point where snd_pcm_writei() won't accept any more data. It gets stuck like this forever.
+### Steps to Reproduce
+1. Connect the wireless USB dongle.
+2. See two "Analog Output" and "Digital Output (S/PDIF)" profiles on the desktop (GNOME/KDE)
+3. Audio won't play until you set "Analog" to 100%, and then, it would only play on the Right Channel
+4. Open `alsamixer` and select the `H878 Wireless headset` sound card.
+5. Observe two independent, unlinked channel elements: `PCM` and `PCM 1`.
+6. Set `PCM 1` to 100. The physical left speaker starts outputting audio.
+7. Attempting to lower system volume via desktop controls drops the main `PCM` element while leaving the channels permanently split and mismatched.
+8. Drop the system volume slider slightly from 100% to 98% and observe the hardware `PCM` slider collapse immediately to ~33% gain.### 
 
-Strangely, when I kill the program and restart it everything is fine until this repeats several minutes later.
+Current User Workaround:
+To achieve functional stereo, a user must manually force both `PCM` and `PCM 1` to exactly 100% in `alsamixer` to force open both physical speaker channels, and then instruct their user-space audio server (PipeWire/PulseAudio) to utilize software-side attenuation rather than mapping to the hardware mixer paths.
 
->From my diagnostic prints (see below) it seems like the play buffer just suddenly stops getting consumed, even though the state is still running (3).
+### Hardware Details (`lsusb -v`):
+Bus 005 Device 003: ID 040b:0897 Weltrend Semiconductor H878 Wireless headset
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            0 [unknown]
+  bDeviceSubClass         0 [unknown]
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0x040b Weltrend Semiconductor
+  idProduct          0x0897 H878 Wireless headset
+  bcdDevice            0.31
+  iManufacturer           1 XiiSound Technology Corporation
+  iProduct                2 H878 Wireless headset
+  bNumConfigurations      1
 
-I would be grateful if someone could suggest an idea for diagnosing this problem.
+### Alsamixer Controls Detected:
+- Card: H878 Wireless headset
+- Chip: USB Mixer
+- Item: PCM [dB gain: 0.39, 0.39] -> Controls Left channel pathing
+- Item: PCM 1 [Volume: 0] -> Hard-muted by default, controls Right hardware amp pathing
 
-arduino@Q1:~/amp-server/build$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version k6.16.7-g0dd6551ae96b.
+### Suggested Fix / Quirk Needed
+This chip requires a custom driver mapping entry added to the Linux kernel (`sound/usb/quirks.c` or `sound/usb/mixer.c`). The driver needs a mixer quirk targeting USB ID `040b:0897` to:
+1. Alias or hard-link `PCM 1` to the master `PCM` control for unified, locked stereo tracking.
+2. Implement a custom volume map (`dB_map`) to override the broken firmware descriptors, preventing the hardware volume level from collapsing to 33% when a minor user-space attenuation (98%) is requested.
 
-I: 05-14 00:52:00.780 Turning off tone
-I: 05-14 00:52:00.800 Playback state change (2801) 3 -> 4 [1536, 14400]
-I: 05-14 00:52:00.820 Playback state change (2802) 4 -> 2 [0, 15360]
-I: 05-14 00:52:00.820 Delay/avail 0 / 15360 frames
-I: 05-14 00:52:01.780 Turning on tone
-I: 05-14 00:52:01.800 Delay/avail 960 / 14400 frames
-I: 05-14 00:52:01.820 Playback state change (2852) 2 -> 3 [1536, 14400]
-I: 05-14 00:52:01.820 Delay/avail 1536 / 14400 frames
-I: 05-14 00:52:03.780 Turning off tone
-I: 05-14 00:52:03.800 Playback state change (2951) 3 -> 4 [1536, 14400]
-I: 05-14 00:52:03.820 Playback state change (2952) 4 -> 2 [0, 15360]
-I: 05-14 00:52:03.820 Delay/avail 0 / 15360 frames
-I: 05-14 00:52:04.780 Turning on tone
-I: 05-14 00:52:04.800 Delay/avail 960 / 14400 frames
-I: 05-14 00:52:04.820 Playback state change (3002) 2 -> 3 [1536, 14400]
-I: 05-14 00:52:04.820 Delay/avail 1536 / 14400 frames
-I: 05-14 00:52:06.780 Turning off tone
-I: 05-14 00:52:06.800 Playback state change (3101) 3 -> 4 [1536, 14400]
-I: 05-14 00:52:06.820 Playback state change (3102) 4 -> 2 [0, 15360]
-I: 05-14 00:52:06.820 Delay/avail 0 / 15360 frames
-I: 05-14 00:52:07.780 Turning on tone
-I: 05-14 00:52:07.800 Delay/avail 960 / 14400 frames
-I: 05-14 00:52:07.820 Playback state change (3152) 2 -> 3 [1536, 14400]
-I: 05-14 00:52:07.820 Delay/avail 1536 / 14400 frames
-I: 05-14 00:52:09.780 Turning off tone
-I: 05-14 00:52:09.800 Playback state change (3251) 3 -> 4 [1536, 14400]
-I: 05-14 00:52:09.820 Playback state change (3252) 4 -> 2 [0, 15360]
-I: 05-14 00:52:09.820 Delay/avail 0 / 15360 frames
-I: 05-14 00:52:10.780 Turning on tone
-I: 05-14 00:52:10.800 Delay/avail 960 / 14400 frames
-I: 05-14 00:52:10.820 Playback state change (3302) 2 -> 3 [1920, 13440]
-
-**PROBLEM STARTS HERE**
-
-I: 05-14 00:52:10.820 Delay/avail 1920 / 13440 frames
-I: 05-14 00:52:10.840 Delay/avail 2880 / 12480 frames
-I: 05-14 00:52:10.860 Delay/avail 3840 / 11520 frames
-I: 05-14 00:52:10.880 Delay/avail 4800 / 10560 frames
-I: 05-14 00:52:10.900 Delay/avail 5760 / 9600 frames
-I: 05-14 00:52:10.920 Delay/avail 6720 / 8640 frames
-I: 05-14 00:52:10.940 Delay/avail 7680 / 7680 frames
-I: 05-14 00:52:10.960 Delay/avail 8640 / 6720 frames
-I: 05-14 00:52:10.980 Delay/avail 9600 / 5760 frames
-I: 05-14 00:52:10.000 Delay/avail 10560 / 4800 frames
-E: 05-14 00:52:10.000 Delay is growing
-I: 05-14 00:52:11.220 Delay/avail 11520 / 3840 frames
-E: 05-14 00:52:11.220 Delay is growing
-I: 05-14 00:52:11.440 Delay/avail 12480 / 2880 frames
-E: 05-14 00:52:11.440 Delay is growing
-I: 05-14 00:52:11.660 Delay/avail 13440 / 1920 frames
-E: 05-14 00:52:11.660 Delay is growing
-I: 05-14 00:52:11.880 Delay/avail 14400 / 960 frames
-E: 05-14 00:52:11.880 Delay is growing
-I: 05-14 00:52:12.100 Delay/avail 15360 / 0 frames
-E: 05-14 00:52:12.100 Delay is growing
-E: 05-14 00:52:12.300 USB BUFFER FULL, state 3 15360 0
-I: 05-14 00:52:12.780 Turning off tone
-I: 05-14 00:52:13.781 Turning on tone
-E: 05-14 00:52:14.300 USB BUFFER FULL, state 3 15360 0
-I: 05-14 00:52:15.780 Turning off tone
-I: 05-14 00:52:16.780 Turning on tone
-E: 05-14 00:52:16.781 USB BUFFER FULL, state 3 15360 0
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/506
-Repository URL: https://github.com/alsa-project/alsa-lib
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/760
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
