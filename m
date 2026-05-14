@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03EE3CD4F25
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 15:41:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DDB6CD4F25
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 15:41:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B85860216;
-	Thu, 14 May 2026 17:40:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B85860216
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D2C960210;
+	Thu, 14 May 2026 17:41:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D2C960210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778773260;
-	bh=a5RFHDovFzqbVWerZswQoMRvgOXxkLPfFxXH9vaqZ4I=;
+	s=default; t=1778773280;
+	bh=MMRC9EvTiD0U8YW4GXeS/gqLAeXzJTOWl+JhNIdwBqA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=sTAM0idqKMwRK0ABEvQkmvCb+lqCY44l17iJuK1eBsEgxXicBlfKEtEa/f+MUj/te
-	 KEIZvYwVXs43E+5VAqPvQ2mFTf/ZuS45FexdkahA/kRXBWiERIuuqtMlCJ9T+vlGMU
-	 qEVUQCXCDShXpI1PjKMhw+iBNQoOl1xeQG1v/904=
+	b=VIbDj/Bphzl9QIThMdrk/ThQ+Iv7/D2Ix8H0mP+mdDTYO4y9wXx5Qx8XGOmZjIQFb
+	 zaE1qtJ4RtKEcG+ETi6IzvNr8hQQaLYuoE+JC0ODw9Bk5alZ78VRtiO2J3tJoRA5OI
+	 S81QyLrYL42dVLRd2X/zesOxqWN6Z2JQSWxSWzTU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88313F80603; Thu, 14 May 2026 17:40:34 +0200 (CEST)
+	id 4EF6CF805F9; Thu, 14 May 2026 17:40:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD357F805EA;
-	Thu, 14 May 2026 17:40:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFC57F80606;
+	Thu, 14 May 2026 17:40:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CDAE5F805BF; Thu, 14 May 2026 17:40:29 +0200 (CEST)
+	id 44256F805EC; Thu, 14 May 2026 17:40:46 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BEC1F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 17:40:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BEC1F800D2
+	by alsa1.perex.cz (Postfix) with ESMTP id 73A8FF800D2
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 17:40:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73A8FF800D2
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18af78d394905300-webhooks-bot@alsa-project.org>
-In-Reply-To: <18af78d3948a4100-webhooks-bot@alsa-project.org>
-References: <18af78d3948a4100-webhooks-bot@alsa-project.org>
+Message-Id: <18af78d74ecc9300-webhooks-bot@alsa-project.org>
+In-Reply-To: <18af78d74ec85800-webhooks-bot@alsa-project.org>
+References: <18af78d74ec85800-webhooks-bot@alsa-project.org>
 Subject: [ALSA/usb-audio] Weltrend/XiiSound Headset (040b:0897) splits
  channels into independent 'PCM'/'PCM 1' mixer elements and suffers from
  severe dB volume curve mismatch
-Date: Thu, 14 May 2026 17:40:29 +0200 (CEST)
-Message-ID-Hash: ENJTW56W3BZDJUDCX2GUNBBNQF36AURE
-X-Message-ID-Hash: ENJTW56W3BZDJUDCX2GUNBBNQF36AURE
+Date: Thu, 14 May 2026 17:40:46 +0200 (CEST)
+Message-ID-Hash: ZGOL3BBCR4AWVJE4U3CO42YJCDXLM7LN
+X-Message-ID-Hash: ZGOL3BBCR4AWVJE4U3CO42YJCDXLM7LN
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -59,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ENJTW56W3BZDJUDCX2GUNBBNQF36AURE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZGOL3BBCR4AWVJE4U3CO42YJCDXLM7LN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -69,9 +69,6 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 alsa-project/alsa-ucm-conf issue #760 was edited from skye6034:
-
-<img width="717" height="298" alt="Image" src="https://github.com/user-attachments/assets/3f81ef7d-5973-493c-a2c1-b2046bb958c1" />
-<img width="958" height="529" alt="Image" src="https://github.com/user-attachments/assets/b49f830a-255a-4283-a561-0aa957a86b68" />
 
 ### Description of the Bug
 The Weltrend Semiconductor / XiiSound wireless headset dongle (USB ID 040b:0897) is incorrectly handled by the `snd-usb-audio` driver. Instead of presenting a single unified stereo hardware volume control interface, the driver registers two completely separate hardware playback controls simultaneously:
@@ -126,6 +123,9 @@ Device Descriptor:
 This chip requires a custom driver mapping entry added to the Linux kernel (`sound/usb/quirks.c` or `sound/usb/mixer.c`). The driver needs a mixer quirk targeting USB ID `040b:0897` to:
 1. Alias or hard-link `PCM 1` to the master `PCM` control for unified, locked stereo tracking.
 2. Implement a custom volume map (`dB_map`) to override the broken firmware descriptors, preventing the hardware volume level from collapsing to 33% when a minor user-space attenuation (98%) is requested.
+
+<img width="717" height="298" alt="Image" src="https://github.com/user-attachments/assets/3f81ef7d-5973-493c-a2c1-b2046bb958c1" />
+<img width="958" height="529" alt="Image" src="https://github.com/user-attachments/assets/b49f830a-255a-4283-a561-0aa957a86b68" />
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/760
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
