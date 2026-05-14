@@ -4,84 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79983CD37AC
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 May 2026 22:30:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D319CD4F21
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 01:15:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A210601F3;
-	Thu, 14 May 2026 00:30:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A210601F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA10B60203;
+	Thu, 14 May 2026 03:15:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA10B60203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778711429;
-	bh=XPYG8f6X3agucnqnQH9p8A70G2UfOpiLftTI2X/gs7A=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Vhrx0meWF7yYS9s6Llt42HoOxVxkHvN45RU3PbWV2LwyDE05Bi9W5RVpcaHh6KCxx
-	 LG9K71sdD3Y7MsQ4e3dkvycQk00abbqLZIibfquC6U09hahD7qqyRpH03tN5R6Hb8G
-	 kZmMPRHqux+eUUINiEkgqil0dYV9Pv4ARxzKK8EY=
+	s=default; t=1778721311;
+	bh=qgRK5hwxshm/WHZkPzGqyOYtaWjnnptZmMVAL7Sp0BU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=nXd38HF+KZMeJbLpG0JOb3dmq1nypZJoYsxGGRoSSAAwe9AYDmpRjpQ/n3s63X76a
+	 meDDu/7oIhG+W7paoKpYaopRg1u44mZ+rGaLCY91CvEDyDRmOskYhEpBRmGO6YrPEI
+	 2tF4Q18aO2CvJCcYB9qBywkbPqvh0zslM0YkyuCU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E150F805EA; Thu, 14 May 2026 00:29:55 +0200 (CEST)
+	id 798BFF805EF; Thu, 14 May 2026 03:14:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A889F805EB;
-	Thu, 14 May 2026 00:29:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F187EF805F2;
+	Thu, 14 May 2026 03:14:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE329F8021D; Thu, 14 May 2026 00:29:49 +0200 (CEST)
-Received: from sender4-of-o50.zoho.com (sender4-of-o50.zoho.com
- [136.143.188.50])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C12F5F800C1
-	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 00:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C12F5F800C1
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=markus-kramer.de header.i=linux@markus-kramer.de
- header.a=rsa-sha256 header.s=zoho header.b=Y7QpTBWv
-ARC-Seal: i=1; a=rsa-sha256; t=1778711378; cv=none;
-	d=zohomail.com; s=zohoarc;
-	b=ecbotbO6Y9626ui30ovfCeA9ExzdZ0yBWNmtsNAkgN5S31dEtu9HHMXk5pGM+1LzMrMczxgNaEpadSrxkS7DH/j3TD4BcA4EKqoxY/shGwD2e5yGQmSnMZxxhi8T+Ix4jWpUuMqo8X9A/SlOA1msLbxRjZM6HucdYf7HAF5GnAc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com;
- s=zohoarc;
-	t=1778711378;
- h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To;
-	bh=Uuz/iCbKUjHtl+HMQAc9fDLbvMD3X4bXHgkahE169Uk=;
-	b=JOENk2NXp9jdtMegqDhVCmZXWpDxLbyt9E/9LzMhn2qzVspatiBPcBJwuB4Rm7lWcUDBSTrRo8HgaqONz/2yqaMMq5JfC38kPhVi+Eu6Xucg40/nOj5VRHQHjakVNswlx5GRd6sHprUNgq+tqAkNdL51mymZj8/hdPCYnZLSv70=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=markus-kramer.de;
-	spf=pass  smtp.mailfrom=linux@markus-kramer.de;
-	dmarc=pass header.from=<linux@markus-kramer.de>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1778711378;
-	s=zoho; d=markus-kramer.de; i=linux@markus-kramer.de;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=Uuz/iCbKUjHtl+HMQAc9fDLbvMD3X4bXHgkahE169Uk=;
-	b=Y7QpTBWvDVxzUJquAIDwzek1Fm8fI4vqxXIACzpumDH8RhQTelJ9xrFwHaJOR8bv
-	e74JVL/xf97A+5fJfPJSe6IyUoqBgXTL9sx68eiJc2BY6LOVJSUNn6IiNYBZnRlphmc
-	JOiF6a6hEKvA1S/TRRMXC6Gq139uhnoZl19IlawY=
-Received: by mx.zohomail.com with SMTPS id 17787113764091020.441744321745;
-	Wed, 13 May 2026 15:29:36 -0700 (PDT)
-From: Markus Kramer <linux@markus-kramer.de>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Markus Kramer <linux@markus-kramer.de>,
-	stable@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Samsung Galaxy Book5 360
- headphone
-Date: Thu, 14 May 2026 00:28:18 +0200
-Message-ID: <20260513222818.14351-1-linux@markus-kramer.de>
-X-Mailer: git-send-email 2.51.2
+	id BE66EF8021D; Thu, 14 May 2026 03:14:28 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id D0D9FF800C1
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 03:14:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D9FF800C1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-Message-ID-Hash: DWBHYSNY44AT6ADAKI7RSGEXG7GR3NBZ
-X-Message-ID-Hash: DWBHYSNY44AT6ADAKI7RSGEXG7GR3NBZ
-X-MailFrom: linux@markus-kramer.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18af499151bd6500-webhooks-bot@alsa-project.org>
+In-Reply-To: <18af499151927d00-webhooks-bot@alsa-project.org>
+References: <18af499151927d00-webhooks-bot@alsa-project.org>
+Subject: ALSA PCM playing stops randomly, write buffer fills up
+Date: Thu, 14 May 2026 03:14:28 +0200 (CEST)
+Message-ID-Hash: WOTOCSPTGPEIC6JWQ2S3YS7LJCL57OLR
+X-Message-ID-Hash: WOTOCSPTGPEIC6JWQ2S3YS7LJCL57OLR
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -92,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DWBHYSNY44AT6ADAKI7RSGEXG7GR3NBZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOTOCSPTGPEIC6JWQ2S3YS7LJCL57OLR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,31 +66,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Samsung Galaxy Book5 360 (NP750QHA, PCI subsystem ID 0x144d:0xc902)
-has severe audio distortion on the 3.5mm headphone jack. Applying
-ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET corrects the output path
-configuration, consistent with fixes already applied to other Samsung
-Galaxy Book models using the same ALC256 codec.
+alsa-project/alsa-lib issue #506 was opened from brucemack:
 
-Cc: stable@vger.kernel.org
-Link: https://github.com/thesofproject/linux/issues/5648
-Signed-off-by: Markus Kramer <linux@markus-kramer.de>
----
- sound/hda/codecs/realtek/alc269.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi:
 
-diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
-index 55bb98e2e..4c610842c 100644
---- a/sound/hda/codecs/realtek/alc269.c
-+++ b/sound/hda/codecs/realtek/alc269.c
-@@ -7504,6 +7504,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x144d, 0xc870, "Samsung Galaxy Book2 Pro (NP950XED)", ALC298_FIXUP_SAMSUNG_AMP_V2_2_AMPS),
- 	SND_PCI_QUIRK(0x144d, 0xc872, "Samsung Galaxy Book2 Pro (NP950XEE)", ALC298_FIXUP_SAMSUNG_AMP_V2_2_AMPS),
- 	SND_PCI_QUIRK(0x144d, 0xc886, "Samsung Galaxy Book3 Pro (NP964XFG)", ALC298_FIXUP_SAMSUNG_AMP_V2_4_AMPS),
-+	SND_PCI_QUIRK(0x144d, 0xc902, "Samsung Galaxy Book5 360 (NP750QHA)", ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc1ca, "Samsung Galaxy Book3 Pro 360 (NP960QFG)", ALC298_FIXUP_SAMSUNG_AMP_V2_4_AMPS),
- 	SND_PCI_QUIRK(0x144d, 0xc1cb, "Samsung Galaxy Book3 Pro 360 (NP965QFG)", ALC298_FIXUP_SAMSUNG_AMP_V2_4_AMPS),
- 	SND_PCI_QUIRK(0x144d, 0xc1cc, "Samsung Galaxy Book3 Ultra (NT960XFH)", ALC298_FIXUP_SAMSUNG_AMP_V2_4_AMPS),
--- 
-2.51.2
+I have simple ASLA application that exhibits a strange behavior. I would welcome any advice for improved debug techniques.
 
+My program is non-blocking with a single playback handle.
+My program is a loop that plays a tone that lasts for 2 seconds, with a 1 second gap.
+While the tone is active my program writes a 20ms block of audio (960 PCM samples x 2 channels at 48k) every 20ms. 
+My buffer time is set to 320ms (plenty of space).
+My start threshold is set to 1200 frames.
+The audio hardware is a USB-connected device using a CM108B chip.
+
+My program runs very nicely with good audio quality for several minutes.  The delay/available pointers move around exactly the way I'd expect and the delay never goes above 2000 frames when the tone is playing. Production and consumption of audio are perfectly matched in a smooth stream.
+
+The state also looks good - it moves from XRUN to prepared to running and back to XRUN as the tone starts and stops.
+
+After several minutes, the delay suddenly start to rise (and the available space falls) to the point where snd_pcm_writei() won't accept any more data. It gets stuck like this forever.
+
+Strangely, when I kill the program and restart it everything is fine until this repeats several minutes later.
+
+>From my diagnostic prints (see below) it seems like the play buffer just suddenly stops getting consumed, even though the state is still running (3).
+
+I would be grateful if someone could suggest an idea for diagnosing this problem.
+
+I: 05-14 00:52:00.780 Turning off tone
+I: 05-14 00:52:00.800 Playback state change (2801) 3 -> 4 [1536, 14400]
+I: 05-14 00:52:00.820 Playback state change (2802) 4 -> 2 [0, 15360]
+I: 05-14 00:52:00.820 Delay/avail 0 / 15360 frames
+I: 05-14 00:52:01.780 Turning on tone
+I: 05-14 00:52:01.800 Delay/avail 960 / 14400 frames
+I: 05-14 00:52:01.820 Playback state change (2852) 2 -> 3 [1536, 14400]
+I: 05-14 00:52:01.820 Delay/avail 1536 / 14400 frames
+I: 05-14 00:52:03.780 Turning off tone
+I: 05-14 00:52:03.800 Playback state change (2951) 3 -> 4 [1536, 14400]
+I: 05-14 00:52:03.820 Playback state change (2952) 4 -> 2 [0, 15360]
+I: 05-14 00:52:03.820 Delay/avail 0 / 15360 frames
+I: 05-14 00:52:04.780 Turning on tone
+I: 05-14 00:52:04.800 Delay/avail 960 / 14400 frames
+I: 05-14 00:52:04.820 Playback state change (3002) 2 -> 3 [1536, 14400]
+I: 05-14 00:52:04.820 Delay/avail 1536 / 14400 frames
+I: 05-14 00:52:06.780 Turning off tone
+I: 05-14 00:52:06.800 Playback state change (3101) 3 -> 4 [1536, 14400]
+I: 05-14 00:52:06.820 Playback state change (3102) 4 -> 2 [0, 15360]
+I: 05-14 00:52:06.820 Delay/avail 0 / 15360 frames
+I: 05-14 00:52:07.780 Turning on tone
+I: 05-14 00:52:07.800 Delay/avail 960 / 14400 frames
+I: 05-14 00:52:07.820 Playback state change (3152) 2 -> 3 [1536, 14400]
+I: 05-14 00:52:07.820 Delay/avail 1536 / 14400 frames
+I: 05-14 00:52:09.780 Turning off tone
+I: 05-14 00:52:09.800 Playback state change (3251) 3 -> 4 [1536, 14400]
+I: 05-14 00:52:09.820 Playback state change (3252) 4 -> 2 [0, 15360]
+I: 05-14 00:52:09.820 Delay/avail 0 / 15360 frames
+I: 05-14 00:52:10.780 Turning on tone
+I: 05-14 00:52:10.800 Delay/avail 960 / 14400 frames
+I: 05-14 00:52:10.820 Playback state change (3302) 2 -> 3 [1920, 13440]
+
+**PROBLEM STARTS HERE**
+
+I: 05-14 00:52:10.820 Delay/avail 1920 / 13440 frames
+I: 05-14 00:52:10.840 Delay/avail 2880 / 12480 frames
+I: 05-14 00:52:10.860 Delay/avail 3840 / 11520 frames
+I: 05-14 00:52:10.880 Delay/avail 4800 / 10560 frames
+I: 05-14 00:52:10.900 Delay/avail 5760 / 9600 frames
+I: 05-14 00:52:10.920 Delay/avail 6720 / 8640 frames
+I: 05-14 00:52:10.940 Delay/avail 7680 / 7680 frames
+I: 05-14 00:52:10.960 Delay/avail 8640 / 6720 frames
+I: 05-14 00:52:10.980 Delay/avail 9600 / 5760 frames
+I: 05-14 00:52:10.000 Delay/avail 10560 / 4800 frames
+E: 05-14 00:52:10.000 Delay is growing
+I: 05-14 00:52:11.220 Delay/avail 11520 / 3840 frames
+E: 05-14 00:52:11.220 Delay is growing
+I: 05-14 00:52:11.440 Delay/avail 12480 / 2880 frames
+E: 05-14 00:52:11.440 Delay is growing
+I: 05-14 00:52:11.660 Delay/avail 13440 / 1920 frames
+E: 05-14 00:52:11.660 Delay is growing
+I: 05-14 00:52:11.880 Delay/avail 14400 / 960 frames
+E: 05-14 00:52:11.880 Delay is growing
+I: 05-14 00:52:12.100 Delay/avail 15360 / 0 frames
+E: 05-14 00:52:12.100 Delay is growing
+E: 05-14 00:52:12.300 USB BUFFER FULL, state 3 15360 0
+I: 05-14 00:52:12.780 Turning off tone
+I: 05-14 00:52:13.781 Turning on tone
+E: 05-14 00:52:14.300 USB BUFFER FULL, state 3 15360 0
+I: 05-14 00:52:15.780 Turning off tone
+I: 05-14 00:52:16.780 Turning on tone
+E: 05-14 00:52:16.781 USB BUFFER FULL, state 3 15360 0
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/506
+Repository URL: https://github.com/alsa-project/alsa-lib
