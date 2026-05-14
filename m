@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0933CD4F21
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 01:17:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02ECCCD4F39
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 13:39:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41D5060202;
-	Thu, 14 May 2026 03:16:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41D5060202
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65731601F8;
+	Thu, 14 May 2026 15:39:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65731601F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778721424;
-	bh=mqKxRVR6tuDpqaKfaZlRoW6cE8q93H68Vp37l9wU2Dw=;
+	s=default; t=1778765981;
+	bh=ZNdw6NdIJeJXeR+RT9p/Yd5j8Rhaonea5rOWBYpXPZQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=thGt0O0zAKbyYYeE/k7z/YBoQhjbqH/RATgPU4JjXuCXtuYjE0ObeotCrsp6pOiEj
-	 B3kkClcE66mXcyfxvHujinxdbuxCBsCSOebzALw7XmatFn00CTfgGITdL/5OIOt7LE
-	 pHCzHZDrkHaU2IWoQe8Vqp2haODE9gEjnJHlvrco=
+	b=h09P3rtd6+Bc+7cHUJ8szPcWXAN/C8SjeZ008NHLVhwbaGFCJ/kJgUR2vxjAY66/G
+	 VWLGFXYYzINTptWpSqd3OxHFtE2EvVbogEYWrTtgi+1q2TTIMIut5I9Y2+MH7J907J
+	 LK/+704mi/iXLCkyrwzf2YgtW9y3I1JP109OUBC8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 915F1F805F1; Thu, 14 May 2026 03:16:26 +0200 (CEST)
+	id 34564F805F3; Thu, 14 May 2026 15:39:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08201F805F2;
-	Thu, 14 May 2026 03:16:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D99C5F805F1;
+	Thu, 14 May 2026 15:39:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22B05F8021D; Thu, 14 May 2026 03:16:22 +0200 (CEST)
+	id 307FAF8021D; Thu, 14 May 2026 15:38:59 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E204F800C1
-	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 03:16:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E204F800C1
+	by alsa1.perex.cz (Postfix) with ESMTP id F3E41F800D2
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 15:38:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3E41F800D2
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18af49aba6c66b00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18af49aba6bce900-webhooks-bot@alsa-project.org>
-References: <18af49aba6bce900-webhooks-bot@alsa-project.org>
+Message-Id: <18af7231e6aacf00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18af7231e680fa00-webhooks-bot@alsa-project.org>
+References: <18af7231e680fa00-webhooks-bot@alsa-project.org>
 Subject: ALSA PCM playing stops randomly, write buffer fills up
-Date: Thu, 14 May 2026 03:16:22 +0200 (CEST)
-Message-ID-Hash: 7GDWL3ZHKNZ7US2RUGSTDORJ43YF4HPL
-X-Message-ID-Hash: 7GDWL3ZHKNZ7US2RUGSTDORJ43YF4HPL
+Date: Thu, 14 May 2026 15:38:59 +0200 (CEST)
+Message-ID-Hash: ERBNGORMNCBU4ABTVCZH46AWQ6UBNRJR
+X-Message-ID-Hash: ERBNGORMNCBU4ABTVCZH46AWQ6UBNRJR
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7GDWL3ZHKNZ7US2RUGSTDORJ43YF4HPL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ERBNGORMNCBU4ABTVCZH46AWQ6UBNRJR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,7 +83,7 @@ My program runs very nicely with good audio quality for several minutes.  The de
 
 The state also looks good - it moves from XRUN to prepared to running and back to XRUN as the tone starts and stops.
 
-After several minutes, the delay suddenly start to rise (and the available space falls) to the point where snd_pcm_writei() won't accept any more data. It gets stuck like this forever.
+After several minutes, the delay suddenly starts to rise (and the available space falls) to the point where snd_pcm_writei() won't accept any more data. It gets stuck like this forever.
 
 Strangely, when I kill the program and restart it everything is fine until this repeats several minutes later.
 
