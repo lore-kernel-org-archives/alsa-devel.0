@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D319CD4F21
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 01:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0933CD4F21
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 01:17:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA10B60203;
-	Thu, 14 May 2026 03:15:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA10B60203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41D5060202;
+	Thu, 14 May 2026 03:16:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41D5060202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778721311;
-	bh=qgRK5hwxshm/WHZkPzGqyOYtaWjnnptZmMVAL7Sp0BU=;
+	s=default; t=1778721424;
+	bh=mqKxRVR6tuDpqaKfaZlRoW6cE8q93H68Vp37l9wU2Dw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=nXd38HF+KZMeJbLpG0JOb3dmq1nypZJoYsxGGRoSSAAwe9AYDmpRjpQ/n3s63X76a
-	 meDDu/7oIhG+W7paoKpYaopRg1u44mZ+rGaLCY91CvEDyDRmOskYhEpBRmGO6YrPEI
-	 2tF4Q18aO2CvJCcYB9qBywkbPqvh0zslM0YkyuCU=
+	b=thGt0O0zAKbyYYeE/k7z/YBoQhjbqH/RATgPU4JjXuCXtuYjE0ObeotCrsp6pOiEj
+	 B3kkClcE66mXcyfxvHujinxdbuxCBsCSOebzALw7XmatFn00CTfgGITdL/5OIOt7LE
+	 pHCzHZDrkHaU2IWoQe8Vqp2haODE9gEjnJHlvrco=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 798BFF805EF; Thu, 14 May 2026 03:14:35 +0200 (CEST)
+	id 915F1F805F1; Thu, 14 May 2026 03:16:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F187EF805F2;
-	Thu, 14 May 2026 03:14:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08201F805F2;
+	Thu, 14 May 2026 03:16:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE66EF8021D; Thu, 14 May 2026 03:14:28 +0200 (CEST)
+	id 22B05F8021D; Thu, 14 May 2026 03:16:22 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0D9FF800C1
-	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 03:14:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D9FF800C1
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E204F800C1
+	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 03:16:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E204F800C1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18af499151bd6500-webhooks-bot@alsa-project.org>
-In-Reply-To: <18af499151927d00-webhooks-bot@alsa-project.org>
-References: <18af499151927d00-webhooks-bot@alsa-project.org>
+Message-Id: <18af49aba6c66b00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18af49aba6bce900-webhooks-bot@alsa-project.org>
+References: <18af49aba6bce900-webhooks-bot@alsa-project.org>
 Subject: ALSA PCM playing stops randomly, write buffer fills up
-Date: Thu, 14 May 2026 03:14:28 +0200 (CEST)
-Message-ID-Hash: WOTOCSPTGPEIC6JWQ2S3YS7LJCL57OLR
-X-Message-ID-Hash: WOTOCSPTGPEIC6JWQ2S3YS7LJCL57OLR
+Date: Thu, 14 May 2026 03:16:22 +0200 (CEST)
+Message-ID-Hash: 7GDWL3ZHKNZ7US2RUGSTDORJ43YF4HPL
+X-Message-ID-Hash: 7GDWL3ZHKNZ7US2RUGSTDORJ43YF4HPL
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOTOCSPTGPEIC6JWQ2S3YS7LJCL57OLR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7GDWL3ZHKNZ7US2RUGSTDORJ43YF4HPL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,7 +66,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #506 was opened from brucemack:
+alsa-project/alsa-lib issue #506 was edited from brucemack:
 
 Hi:
 
@@ -90,6 +90,9 @@ Strangely, when I kill the program and restart it everything is fine until this 
 >From my diagnostic prints (see below) it seems like the play buffer just suddenly stops getting consumed, even though the state is still running (3).
 
 I would be grateful if someone could suggest an idea for diagnosing this problem.
+
+arduino@Q1:~/amp-server/build$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version k6.16.7-g0dd6551ae96b.
 
 I: 05-14 00:52:00.780 Turning off tone
 I: 05-14 00:52:00.800 Playback state change (2801) 3 -> 4 [1536, 14400]
