@@ -4,51 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DDB6CD4F25
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 May 2026 15:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 208D5CD4F46
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 May 2026 06:56:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D2C960210;
-	Thu, 14 May 2026 17:41:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D2C960210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72995601F8;
+	Fri, 15 May 2026 08:56:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72995601F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1778773280;
-	bh=MMRC9EvTiD0U8YW4GXeS/gqLAeXzJTOWl+JhNIdwBqA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=VIbDj/Bphzl9QIThMdrk/ThQ+Iv7/D2Ix8H0mP+mdDTYO4y9wXx5Qx8XGOmZjIQFb
-	 zaE1qtJ4RtKEcG+ETi6IzvNr8hQQaLYuoE+JC0ODw9Bk5alZ78VRtiO2J3tJoRA5OI
-	 S81QyLrYL42dVLRd2X/zesOxqWN6Z2JQSWxSWzTU=
+	s=default; t=1778828182;
+	bh=V8/7dcG4YKKRtQY1emSNwarj3tvseTNdxJgaYPuQ3Bk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=dFSOIjHwEJGEMPfFxdrVfLO5PM4sCksxhJjBJfPOK0t1jGFKUETbsj/ovh06DzZRC
+	 7lhlI6pVokALErPe7eBnE/gnx1HS/cg3Jsk+oSiLBHnRyV0aqPhsrRpuvCHa7sx1Jy
+	 n0LaSWGadlF11KtQQv1/D6WxEsyhKqjRLOAYzgNY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4EF6CF805F9; Thu, 14 May 2026 17:40:51 +0200 (CEST)
+	id B8E26F805EC; Fri, 15 May 2026 08:55:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFC57F80606;
-	Thu, 14 May 2026 17:40:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59499F805F2;
+	Fri, 15 May 2026 08:55:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44256F805EC; Thu, 14 May 2026 17:40:46 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73A8FF800D2
-	for <alsa-devel@alsa-project.org>; Thu, 14 May 2026 17:40:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73A8FF800D2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18af78d74ecc9300-webhooks-bot@alsa-project.org>
-In-Reply-To: <18af78d74ec85800-webhooks-bot@alsa-project.org>
-References: <18af78d74ec85800-webhooks-bot@alsa-project.org>
-Subject: [ALSA/usb-audio] Weltrend/XiiSound Headset (040b:0897) splits
- channels into independent 'PCM'/'PCM 1' mixer elements and suffers from
- severe dB volume curve mismatch
-Date: Thu, 14 May 2026 17:40:46 +0200 (CEST)
-Message-ID-Hash: ZGOL3BBCR4AWVJE4U3CO42YJCDXLM7LN
-X-Message-ID-Hash: ZGOL3BBCR4AWVJE4U3CO42YJCDXLM7LN
-X-MailFrom: github@alsa-project.org
+	id 35019F80557; Fri, 15 May 2026 08:55:39 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 90241F800C1
+	for <alsa-devel@alsa-project.org>; Fri, 15 May 2026 08:55:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90241F800C1
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Sm/1uNxI;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=8qbqkFa7;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Sm/1uNxI;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=8qbqkFa7
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 271D76B2A1;
+	Fri, 15 May 2026 06:55:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1778828136;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xYmIenVMH+yqhwyJrvCMit6NPjZhq1+okGy0dyLLbq8=;
+	b=Sm/1uNxIAsqVUyDdMFamc9QC8Yh1QWK2zk5r+VkudT+R+x19Xc/uEEKULOluFp7NCicYRi
+	GH20Ziy3knVcOTvRlaBWWyX5g3iNIYZ3HAD2FI59FY0lqyOOpiC+ZPb0IEiXfvOXKpJpni
+	SvpAdvOrGB/Zm87o0zk/FNhw/+awaWo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1778828136;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xYmIenVMH+yqhwyJrvCMit6NPjZhq1+okGy0dyLLbq8=;
+	b=8qbqkFa7H+0HWrnjM7qWmIHDW20DOL0/DKl5jSy4cD3qc2abh64dTJxqls1BNPwBDDzkyU
+	SugFaiyP+7UbaMBA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="Sm/1uNxI";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=8qbqkFa7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1778828136;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xYmIenVMH+yqhwyJrvCMit6NPjZhq1+okGy0dyLLbq8=;
+	b=Sm/1uNxIAsqVUyDdMFamc9QC8Yh1QWK2zk5r+VkudT+R+x19Xc/uEEKULOluFp7NCicYRi
+	GH20Ziy3knVcOTvRlaBWWyX5g3iNIYZ3HAD2FI59FY0lqyOOpiC+ZPb0IEiXfvOXKpJpni
+	SvpAdvOrGB/Zm87o0zk/FNhw/+awaWo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1778828136;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xYmIenVMH+yqhwyJrvCMit6NPjZhq1+okGy0dyLLbq8=;
+	b=8qbqkFa7H+0HWrnjM7qWmIHDW20DOL0/DKl5jSy4cD3qc2abh64dTJxqls1BNPwBDDzkyU
+	SugFaiyP+7UbaMBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1AAB593A9;
+	Fri, 15 May 2026 06:55:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HxGMNWfDBmrrUgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 15 May 2026 06:55:35 +0000
+Date: Fri, 15 May 2026 08:55:35 +0200
+Message-ID: <878q9lupp4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Simon Wood <simon@mungewell.org>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH] ALSA: M-Audio C600 disable Output Gain Knob
+In-Reply-To: <20260511212458.44142-1-simon@mungewell.org>
+References: <20260511212458.44142-1-simon@mungewell.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mungewell.org:email,suse.de:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim,mungewell.org:email];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 271D76B2A1
+Message-ID-Hash: W3YRPOZBXDU2M2FHECFCJTLRLTI4BZ4S
+X-Message-ID-Hash: W3YRPOZBXDU2M2FHECFCJTLRLTI4BZ4S
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -59,7 +160,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZGOL3BBCR4AWVJE4U3CO42YJCDXLM7LN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W3YRPOZBXDU2M2FHECFCJTLRLTI4BZ4S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,64 +169,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #760 was edited from skye6034:
+On Mon, 11 May 2026 23:24:58 +0200,
+Simon Wood wrote:
+> 
+> The C400/C600 interfaces have a large output gain knob which attenuates
+> the outputs as stereo pairs (1/2, 3/4 and 5/6). The Windows driver/app
+> provides a control to disable this knob/behaviour on any/all outputs,
+> forcing maximum gain on each.
+> 
+> The 'disable behaviour' is desirable if any outputs are being used for
+> aux/effects sends, or if interface is being used as a live/matrix mixer.
+> 
+> This patch adds a control to select which output pairs are affected by
+> the Output Gain Knob. Default behaviour is to select all outputs.
+> 
+> Tested on the C600, likely also works for the C400.
+> 
+> Signed-off-by: Simon Wood <simon@mungewell.org>
 
-### Description of the Bug
-The Weltrend Semiconductor / XiiSound wireless headset dongle (USB ID 040b:0897) is incorrectly handled by the `snd-usb-audio` driver. Instead of presenting a single unified stereo hardware volume control interface, the driver registers two completely separate hardware playback controls simultaneously:
-1. `PCM` (Controls overall initial gain / Left physical channel)
-2. `PCM 1` (Controls the hardware amplification exclusively for the physical Right ear channel)
+Applied to for-next branch.  Thanks.
 
-Because of this firmware descriptor misinterpretation, standard desktop environments (like GNOME/KDE) parse the device into separate, conflicting "Analog Output" and "Digital Output (S/PDIF)" hardware profiles simultaneously. 
 
-When a user adjusts the system volume slider, the audio engine modulates the primary `PCM` element but leaves `PCM 1` un-synchronized at 0%. This instantly kills the physical Left audio channel entirely, leaving sound playing exclusively out of the Right side.
-
-Furthermore, the hardware volume scaling curve is completely non-linear and broken. Small adjustments to the user-space volume slider result in massive, disproportionate drops in the hardware mixer levels. For example, lowering the desktop system volume slider slightly from 100% down to 98% causes the ALSA hardware `PCM` channel level to violently plummet down to approximately 33%.
-
-The hardware functions perfectly as a standard, unified single stereo device on Windows and macOS.
-
-### Steps to Reproduce
-1. Connect the wireless USB dongle.
-2. See two "Analog Output" and "Digital Output (S/PDIF)" profiles on the desktop (GNOME/KDE)
-3. Audio won't play until you set "Analog" to 100%, and then, it would only play on the Right Channel
-4. Open `alsamixer` and select the `H878 Wireless headset` sound card.
-5. Observe two independent, unlinked channel elements: `PCM` and `PCM 1`.
-6. Set `PCM 1` to 100. The physical left speaker starts outputting audio.
-7. Attempting to lower system volume via desktop controls drops the main `PCM` element while leaving the channels permanently split and mismatched.
-8. Drop the system volume slider slightly from 100% to 98% and observe the hardware `PCM` slider collapse immediately to ~33% gain.### 
-
-Current User Workaround:
-To achieve functional stereo, a user must manually force both `PCM` and `PCM 1` to exactly 100% in `alsamixer` to force open both physical speaker channels, and then instruct their user-space audio server (PipeWire/PulseAudio) to utilize software-side attenuation rather than mapping to the hardware mixer paths.
-
-### Hardware Details (`lsusb -v`):
-Bus 005 Device 003: ID 040b:0897 Weltrend Semiconductor H878 Wireless headset
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.10
-  bDeviceClass            0 [unknown]
-  bDeviceSubClass         0 [unknown]
-  bDeviceProtocol         0 
-  bMaxPacketSize0        64
-  idVendor           0x040b Weltrend Semiconductor
-  idProduct          0x0897 H878 Wireless headset
-  bcdDevice            0.31
-  iManufacturer           1 XiiSound Technology Corporation
-  iProduct                2 H878 Wireless headset
-  bNumConfigurations      1
-
-### Alsamixer Controls Detected:
-- Card: H878 Wireless headset
-- Chip: USB Mixer
-- Item: PCM [dB gain: 0.39, 0.39] -> Controls Left channel pathing
-- Item: PCM 1 [Volume: 0] -> Hard-muted by default, controls Right hardware amp pathing
-
-### Suggested Fix / Quirk Needed
-This chip requires a custom driver mapping entry added to the Linux kernel (`sound/usb/quirks.c` or `sound/usb/mixer.c`). The driver needs a mixer quirk targeting USB ID `040b:0897` to:
-1. Alias or hard-link `PCM 1` to the master `PCM` control for unified, locked stereo tracking.
-2. Implement a custom volume map (`dB_map`) to override the broken firmware descriptors, preventing the hardware volume level from collapsing to 33% when a minor user-space attenuation (98%) is requested.
-
-<img width="717" height="298" alt="Image" src="https://github.com/user-attachments/assets/3f81ef7d-5973-493c-a2c1-b2046bb958c1" />
-<img width="958" height="529" alt="Image" src="https://github.com/user-attachments/assets/b49f830a-255a-4283-a561-0aa957a86b68" />
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/760
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Takashi
