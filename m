@@ -4,123 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41A52CD4F3D
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 May 2026 20:50:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54F43CD4F3C
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 May 2026 02:48:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EE7F601F7;
-	Sun, 17 May 2026 22:49:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EE7F601F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CA7C60208;
+	Mon, 18 May 2026 04:48:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CA7C60208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779051007;
-	bh=EmM6HSaL7MtlsZzHGdKLKG9OE/EYn2728i8JBIR5OtA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=at0mcT2LwDdA62qYjGjdK75FQy6CEOftFO36aNaUhTlK0hQWZPBpYhCFIotyf8TEW
-	 YwzqvN8/D/27eKCRbkPJHeoLYhJDe/CmyB0Ckm9BSaMbPK/tQYn/pzZGvuhKs7ud80
-	 nvo+0NSBbODStZ5j+aNSvV6T43TaX5QAx/7o3P0A=
+	s=default; t=1779072497;
+	bh=d5yGhPnLvVidyilPRk2XwyeECp78GE0H7MqweQF7q9E=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=cBchc5QTRGcBi0ulivfN45/r+OBpsdsaexr6UQiOguOrJOwIkK9X+YOc+1vH1vGdZ
+	 K24/csKhY6vHcVB9XFQQRecVDqukx2ZO4Cip5w4994zJgSNj+hlMjHLiPvb7BKnNzY
+	 nAiV/qyrLk0FmexVo3/VM9S/wbLFM6OcTzQlyllA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0576F805EE; Sun, 17 May 2026 22:49:34 +0200 (CEST)
+	id 30ED0F805F3; Mon, 18 May 2026 04:47:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 800B4F805F2;
-	Sun, 17 May 2026 22:49:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E578F805F1;
+	Mon, 18 May 2026 04:47:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 176D8F804FF; Sun, 17 May 2026 18:29:57 +0200 (CEST)
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com
- [209.85.128.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 6EC84F804F3; Mon, 18 May 2026 04:47:30 +0200 (CEST)
+Received: from TYPPR03CU001.outbound.protection.outlook.com
+ (mail-japaneastazon11012005.outbound.protection.outlook.com [52.101.126.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A6536F8014E
-	for <alsa-devel@alsa-project.org>; Sun, 17 May 2026 18:29:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6536F8014E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A898F80088
+	for <alsa-devel@alsa-project.org>; Mon, 18 May 2026 04:47:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A898F80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=GvTMeU8e
-Received: by mail-wm1-f51.google.com with SMTP id
- 5b1f17b1804b1-4890d945eb4so12984245e9.0
-        for <alsa-devel@alsa-project.org>;
- Sun, 17 May 2026 09:29:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779035394; x=1779640194;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hHonvBVve/NNvr6Ulmu+t2ONftc5b9ycNLCCNIoOHK0=;
-        b=GvTMeU8eykAcY91e6oE2bWYWICjp986RPjhcABjdYjVp7JlunBjdcwliMIh/pisMJX
-         enI8UgT83PBM8BKHvNvMIcSuTW28ukcBNIL4tjKvKp7T9yeqtJQGsgqZ+px23GEiil8i
-         +H2l4NaHWkotfIxIxrnJRkgdosDdY8wkUQJqSQQNPtzjLSkeQauIHlJkz48pHmTQG3KM
-         06xr8qoNRGTM5GEsXkmsSzwNW7dJFxXnfil/d4DLzJcpgI537qQ3TlkxMYqf85YQf2/V
-         FO6KydSzkCJDxT7pV0U8RGMeZJSrJIceQaqCiAtYNRT9+/SL2/fdemtHnvWvRRuPXxwa
-         K1ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779035394; x=1779640194;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hHonvBVve/NNvr6Ulmu+t2ONftc5b9ycNLCCNIoOHK0=;
-        b=cXcYU34a+06+oui3qw1n8/mwWIq9ZwwqsfHPKZX6mni10Y13SpZp/tvdAgwaEKjDZ7
-         gcJ91llQtaVv0ZT9gjUhl3N3V7mmXmb45wpwAgoDMFoh7zrBA4mBjIGfrdX1wJTSvjAT
-         3c1ctkAF9OzdxlVgVLhWUIdz0hpdRott2hp8CP0t7mh7ipPeXsJ/4fO5rMC5cKSjHyrB
-         7UxGmbPgPG+rZaEhVHcMr/lgtgnRgpQikOYi3RNcZFLezWL/aX7kEBtKnFN8HnM6pWy9
-         vdOj1CO6wfEbYXDzCguQxDCZHZrV1Y5SmA5QuwlBln1xn1RVzgP9XHUKVoGCW8q9mYh/
-         pgFg==
-X-Forwarded-Encrypted: i=1;
- AFNElJ+j8zb71FRf2kNiYJtvP6zMNXMLqw+fmuvM97nyvG/2zSBLU7kh/RGVYx6wdxy0B4ZeC8uoKXEEOBxz@alsa-project.org
-X-Gm-Message-State: AOJu0YzR8kKcg7oPXr+mrLX0vXgW65OP/DoCTP/ArPQb+DUcPyVI6Wfm
-	VQXAlqfgdQT3JuSkYJSBBvyiTgzDtWUZ4dixAPFqP3xC5iPCvfETk/gp
-X-Gm-Gg: Acq92OEn+dBWWZIILb9pLNKIiYuMJ8Aj7bPBhUuwCrVb+TJwIt7xHyiJUjWy58mysUX
-	9qSBOA7X/0ddz348L51fdub3xXx9U6SV20lwxbEPKNfSocn9galUgKEarakH3/e29b9uppBzPTy
-	cphkDZ7rHvmTU9Xj6Lj0KZVykSBCpxkHhwNxHVJzOGg13IvfCBGmDe0y1HDFVrsGJ/ERwrfLn/k
-	yCpFgT/NTHydIOVl2HnrRCxj2jdBGVT3qXOsfHaUaQxCGRl6SQWkY9FoSd82P6+qLQsjNV5UhiL
-	TsC/5LhwUNglTlCYUGgn/2SCfGEQtyHxcJtRS015tR93hnyAQqgbaaTwICHBXf33lSdQM/LdstY
-	GmE4dE9X3tHoA9tkE7S/lmROcYEBWLkMXZ3ypqBtxCxAIItrvpAQM8q/ZLqAMmBXOlhRaDbgZNT
-	0UebD5IGsatxnZRPmYMQrU0Soyr5onp9zMpQ==
-X-Received: by 2002:a05:600c:46d0:b0:489:1abb:5559 with SMTP id
- 5b1f17b1804b1-48fe4dad784mr156141785e9.5.1779035393286;
-        Sun, 17 May 2026 09:29:53 -0700 (PDT)
-Received: from [192.168.0.5] ([151.67.112.59])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-48feaa2c96csm64633195e9.2.2026.05.17.09.29.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 May 2026 09:29:52 -0700 (PDT)
-Message-ID: <2f45fd6e-0a5b-4f47-9f2b-75d8b323ced8@gmail.com>
-Date: Sun, 17 May 2026 18:29:51 +0200
+ unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
+ header.s=selector1 header.b=oOW6+Ml8
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DTu6a8yTQKebyhi+BRgtuRy9fQDptx8P7HbbVCt0jZzJU6FRRvgUGVZpC5TLNFWYDjWW7VWb+3tsTCm2Ffs4vImBkJuXDH1zPwMBNdJNHgU8CtkVTdFADTBnVp07WZBc4P2A0NgpRZ/r0mu4vj9861QyhzxxEITbwcnNTXH7b/oCRO/4Xn8RMajtGai/DEVLzLCzysjIPPIpiw0Lc8XHJd4J2Fg0q4BUk7ImfvHnth+L//80K554fIqkuZ5LBIkT3DAlBpzOi1qm+LCZkeIGfE/7cTf5Wtaa9ygCHkwbfrR4MSDNLdUd28dzcqy5NNWO67DbOeIDFlaC8mjV+w+4rw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dYiEkg6Hqid8AjshCKGM1nBEI6HCekW52k20ISwnC10=;
+ b=CRKAgqEZLSaTTFovJvGki/kJFtwWJND6gO3SDni2rYPQoc0xcSBS2fxItY02q56f8bQPnBBu1JF06s9xF+cB3+Vs669pAmBx+BgfwCxC7PGXrgSEDxgAuDG7tjVgtgoWtItjABPftEr5M63sinCXPhJHM8lJwcB1JOT32wC6dM3UIs6ZNJdr09Ik/YgbSHzfkOtFzQRtacNQ5P6BOqqKgH7VBeTjh674V6EBivBzrWg/HS+AlfSERUwN8YvNuuVtTDimICDA+bYy5hTIk754pOjqjnODDV0AFcotYU0cG8sGeWLFjQjP+yi2bYqQ/kDxinaQ+UiOKm/w400HPpohkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 175.98.123.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dYiEkg6Hqid8AjshCKGM1nBEI6HCekW52k20ISwnC10=;
+ b=oOW6+Ml8YlWrbyOgI5oziSN0VfwpGrp4CjLkkiOniJM19GbWlZar4WsAvxMWJjQyh89l5dz7v7eQuBmrQHyMhWHL8LPIy6ElXs7FrPF82b0iCPQ/0PdDWCKG60AmcsKggSTydAp3d30MujkKJoXDMnJbavHcVhwKrg4BI/QfPLlUC6kVxG/4/f/ds+XK5E2bNbsj80KeYm4Fhaq8pO5rESNGkPVfAz/6zH7imp4Jv4cqrtyXQXczkrxjZ/oe18OOQoqxxyMfDiECV2u2GXqUMyt0/pB5+xtWwz9Z7lGg2DxWsKLNlOCRABGIZwU/NsYB4YSJW+VgSMzRx6SuFVqA3Q==
+Received: from SG2P153CA0003.APCP153.PROD.OUTLOOK.COM (2603:1096::13) by
+ OSQPR03MB9372.apcprd03.prod.outlook.com (2603:1096:604:427::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.13; Mon, 18 May
+ 2026 02:47:13 +0000
+Received: from SG2PEPF000B66D0.apcprd03.prod.outlook.com
+ (2603:1096::cafe:0:0:89) by SG2P153CA0003.outlook.office365.com
+ (2603:1096::13) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.71.2 via Frontend Transport; Mon, 18
+ May 2026 02:47:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=175.98.123.7; helo=NTHCCAS02.nuvoton.com; pr=C
+Received: from NTHCCAS02.nuvoton.com (175.98.123.7) by
+ SG2PEPF000B66D0.mail.protection.outlook.com (10.167.240.26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.48.11 via Frontend Transport; Mon, 18 May 2026 02:47:13 +0000
+Received: from NTHCML01B.nuvoton.com (10.1.8.178) by NTHCCAS02.nuvoton.com
+ (10.1.9.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Mon, 18 May
+ 2026 10:47:12 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01B.nuvoton.com
+ (10.1.8.178) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Mon, 18 May
+ 2026 10:47:11 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2507.61 via Frontend
+ Transport; Mon, 18 May 2026 10:47:11 +0800
+From: Neo Chang <YLCHANG2@nuvoton.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
+	<robh@kernel.org>, <krzk+dt@kernel.org>, <linux-sound@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+	<neo.chang70@gmail.com>, <kchsu0@nuvoton.com>, <sjlin0@nuvoton.com>, "Neo
+ Chang" <YLCHANG2@nuvoton.com>
+Subject: [PATCH v2 0/2] ASoC: codecs: Add Nuvoton NAU83G60 audio codec driver
+Date: Mon, 18 May 2026 10:47:02 +0800
+Message-ID: <20260518024704.118613-1-YLCHANG2@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH] ALSA: hda/ca0132: add QUIRK_GENERIC path for Gigabyte,
- GA-Z170X-Gaming G1
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela ` <perex@perex.cz>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org
-References: <a1dd5dfd-8678-4dd9-b6af-68a1e078168a@gmail.com>
- <87tss7xyj5.wl-tiwai@suse.de>
-Content-Language: en-US
-From: "eziogale@gmail.com" <eziogale@gmail.com>
-In-Reply-To: <87tss7xyj5.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-MailFrom: eziogale@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66D0:EE_|OSQPR03MB9372:EE_
+X-MS-Office365-Filtering-Correlation-Id: b55d82a9-3d5a-4b84-2dc0-08deb487c3e6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|82310400026|1800799024|7416014|376014|36860700016|18002099003|56012099003|11063799003;
+X-Microsoft-Antispam-Message-Info: 
+	L8VoHMy3nvUQc5cQPacG+8i6699mUUKTSMfs1iitPnl4meAxcqGR+d+tQwW/97LVrHDzNlDmz1fIZZMYqZzCYkw+NuFw6YilwcyfzK8bQGP7T4m4KROVIdayiS2M5ifp/hctMjbJEA8ncy6GvIps8xy+Dkech7juXa2TtT11LSU7Hmf4l2NJi1PHcV9X4jNS6lnnNoHWyqgiwrOUiVHu5RgpU7XKaC/uv7NVB+/B4/K4WsQ1FWux4cgdUqOhw+xRPWH/1gsQjKQ+FUMXsocIdvAQ/DnCZtHxa6EL3VJzqdQWBia440fPJL/khUHPueRmO7IZ92VYvdj0YAatsd2yhcMdtbjJK/nyRaoQW7DKthBpfC1MTSssYDN/UrdVI0r1A+MHY+ZbtPnCNOYmMOdXv+3u8+4jsiFiKD4HB23TisC0QqfDGn5loMuyfBkMYbMyZP3m3lKrFsolbX1hG0P1T6ojrF70WYO3lM7MVt5N6L2f2VIt6Ebp5Ud61LgDc4YLHxtrllkRHH03aC6o8OMeEn8kcu8O6bE8wUanWD7+JGXhotzOhVi6BLhOlPH74HvXU8XR/YwqUzsp2qCU1zwPx9viy7nImRvdpS76h9u4o4eIebX3HgKLVcv31o34btB3vbFTgQU5b5SuxvWzQJ67iQ9xxni9FyhW/LHbkEiBmjOYBfbUggK74lXgxsSMpv+azOpJvqz3YQ4AGU4DMMLCUaKEUUCUBQTlIkFPpUV8sRI=
+X-Forefront-Antispam-Report: 
+	CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS02.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(7416014)(376014)(36860700016)(18002099003)(56012099003)(11063799003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	IpQAg/7vN8086ugOO6LxAadXVAHwhRca6Z6BB4z4jqWVuAygc8Rrsas3gSynuIdcv4grzS44UV1uqK5NlKZkkbo3a4el9WsiU85v6M21zvg9pOHWtitD2SyHpn3hxiGQfwjQnKx7LG4vBXJSRYyglKcMgwc+PwJsLbUFZQyUix6gAAC9d/BL+yYZr7gT6NcmUaBV0/RM+c5y5fvrzoOw5uwkq+Ykz+QSpOIQpNHtiqWJgO4hSauWs9YVrpBDCGC2mkLqUyv8mHCx0tb8eQD8TLoMAsq1KAEB7KHUS15BG5BxEpmhH/OThICIADg/oiklbKOuTlfiCNxHUfwmVSPffCMFOcTyEccGzJkJwlUH/2yqGyq3pHXRDk/3CW/vZGN8g09ZMa2yhKzssFX4/II6ezNarUM+zDXAHPAwbxXHKJNy8oOB/Tczioyo2gmauQZb
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2026 02:47:13.2252
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ b55d82a9-3d5a-4b84-2dc0-08deb487c3e6
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS02.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	SG2PEPF000B66D0.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSQPR03MB9372
+Message-ID-Hash: AOLYUU7STTBSEB265HCMC64RN5X2W5ES
+X-Message-ID-Hash: AOLYUU7STTBSEB265HCMC64RN5X2W5ES
+X-MailFrom: YLCHANG2@nuvoton.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: 4RC2OOVESYIIMINN4WFZSAXIB5EUFLJ4
-X-Message-ID-Hash: 4RC2OOVESYIIMINN4WFZSAXIB5EUFLJ4
-X-Mailman-Approved-At: Sun, 17 May 2026 20:49:28 +0000
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
+ nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4RC2OOVESYIIMINN4WFZSAXIB5EUFLJ4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AOLYUU7STTBSEB265HCMC64RN5X2W5ES/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,251 +153,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some CA0132 implementations (e.g. Gigabyte GA-Z170X-Gaming G1) produce 
-white noise when using the DSP firmware path.
+This patch series adds support for the Nuvoton NAU83G60 audio codec.
 
-Add a QUIRK_GENERIC path that uses the standard HDA generic parser 
-instead, with custom pin configs.
+The NAU83G60 is a stereo Class-D amplifier with an integrated DSP and
+I/V-sense capabilities. The driver supports I2C register access through
+regmap, DAPM widgets and routes, TDM interface configuration, and DSP
+firmware loading.
 
-This patch applies against v6.18.24.
----
-  sound/hda/codecs/Kconfig  |   1 +
-  sound/hda/codecs/ca0132.c | 111 +++++++++++++++++++++++++++++++++-----
-  2 files changed, 99 insertions(+), 13 deletions(-)
+The series is structured as follows:
+- Patch 1: Adds the YAML device tree bindings documentation.
+- Patch 2: Adds the ASoC codec driver implementation.
 
-diff --git a/sound/hda/codecs/Kconfig b/sound/hda/codecs/Kconfig
-index addbc94..dcf340e 100644
---- a/sound/hda/codecs/Kconfig
-+++ b/sound/hda/codecs/Kconfig
-@@ -69,6 +69,7 @@ comment "Set to Y if you want auto-loading the codec 
-driver"
+Changes in v2:
 
-  config SND_HDA_CODEC_CA0132
-      tristate "Build Creative CA0132 codec support"
-+    select SND_HDA_GENERIC
-      help
-        Say Y or M here to include Creative CA0132 codec support in
-        snd-hda-intel driver.
-diff --git a/sound/hda/codecs/ca0132.c b/sound/hda/codecs/ca0132.c
-index dd054ae..92fc93f 100644
---- a/sound/hda/codecs/ca0132.c
-+++ b/sound/hda/codecs/ca0132.c
-@@ -24,6 +24,7 @@
-  #include "hda_local.h"
-  #include "hda_auto_parser.h"
-  #include "hda_jack.h"
-+#include "generic.h"
+[dt-bindings]
+- Dropped the word "driver" from the description.
+- Removed runtime/software configuration properties:
+  nuvoton,low-latency, nuvoton,anc-enable, nuvoton,aec-enable,
+  nuvoton,vbat-microvolt, and nuvoton,tdm-channel-length.
+- Added missing "nuvoton,dac-cur-enable" property for static speaker
+  impedance matching.
+- Removed unnecessary '|' formatting from single-line descriptions.
+- Fixed typo in firmware-name property.
 
-  #include "ca0132_regs.h"
+[codec driver]
+- Fixed nau8360_peq_coeff_put() to return 1 on value change.
+- Refactored TDM slot routing to use ALSA kcontrols instead of
+  custom masks in set_tdm_slot().
+- Switched regmap cache type to REGCACHE_MAPLE.
+- Dropped hardcoded DAC gain initialization to retain chip defaults.
+- Used devm_snd_soc_register_component() for safe unregistration.
+- Separated TDM TX/RX logic in shutdown() to safely support
+  full-duplex operation.
+- Refactored TDM enable/disable logic: moved RX enable from
+  startup to hw_params,
+  TX enable from startup to set_tdm_slot, and handled disable logic
+  in shutdown.
+- Moved software/runtime configurations from DT properties
+  to ALSA kcontrols (e.g., DSP bypass, low latency).
+- Corrected supported PDM data length from 24 to 32 bits per
+  datasheet specifications.
+- Updated firmware DT property parsing to use standard firmware-name.
+- Removed redundant VBAT bounds check in nau8360_sawtooth_params()
+  as it is already validated by the caller.
+- Read VBAT level dynamically via register instead of relying on
+  a DT property.
+- Cleaned up magic numbers by introducing PEQ band enumerations.
+- Set dsp_fws_num to 0 to use default firmware paths if
+  "firmware-name" is missing.
 
-@@ -1060,6 +1061,8 @@ enum dsp_download_state {
-   */
+Neo Chang (2):
+  ASoC: dt-bindings: nuvoton,nau8360: Add NAU83G60
+  ASoC: codecs: nau8360: Add support for NAU83G60 amplifier
 
-  struct ca0132_spec {
-+    struct hda_gen_spec gen;
-+
-      const struct snd_kcontrol_new *mixers[5];
-      unsigned int num_mixers;
-      const struct hda_verb *base_init_verbs;
-@@ -1174,6 +1177,7 @@ enum {
-      QUIRK_R3D,
-      QUIRK_AE5,
-      QUIRK_AE7,
-+    QUIRK_GENERIC,
-      QUIRK_NONE = HDA_FIXUP_ID_NOT_SET,
-  };
+ .../bindings/sound/nuvoton,nau8360.yaml       |   86 +
+ sound/soc/codecs/nau8360-dsp.c                |  704 +++++
+ sound/soc/codecs/nau8360-dsp.h                |  117 +
+ sound/soc/codecs/nau8360.c                    | 2334 +++++++++++++++++
+ sound/soc/codecs/nau8360.h                    |  904 +++++++
+ 5 files changed, 4145 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8360.yaml
+ create mode 100644 sound/soc/codecs/nau8360-dsp.c
+ create mode 100644 sound/soc/codecs/nau8360-dsp.h
+ create mode 100644 sound/soc/codecs/nau8360.c
+ create mode 100644 sound/soc/codecs/nau8360.h
 
-@@ -1292,6 +1296,20 @@ static const struct hda_pintbl ae7_pincfgs[] = {
-      {}
-  };
-
-+static const struct hda_pintbl ca0132_generic_pincfgs[] = {
-+    { 0x0b, 0x41014111 },
-+    { 0x0c, 0x414520f0 }, /* SPDIF out */
-+    { 0x0d, 0x01014010 }, /* lineout */
-+    { 0x0e, 0x41c501f0 },
-+    { 0x0f, 0x411111f0 }, /* disabled */
-+    { 0x10, 0x411111f0 }, /* disabled */
-+    { 0x11, 0x41012014 },
-+    { 0x12, 0x37a790f0 }, /* mic */
-+    { 0x13, 0x77a701f0 },
-+    { 0x18, 0x500000f0 },
-+    {}
-+};
-+
-  static const struct hda_quirk ca0132_quirks[] = {
-      SND_PCI_QUIRK(0x1028, 0x057b, "Alienware M17x R4", 
-QUIRK_ALIENWARE_M17XR4),
-      SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
-@@ -1304,6 +1322,7 @@ static const struct hda_quirk ca0132_quirks[] = {
-      SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
-      SND_PCI_QUIRK(0x1458, 0xA026, "Gigabyte G1.Sniper Z97", QUIRK_R3DI),
-      SND_PCI_QUIRK(0x1458, 0xA036, "Gigabyte GA-Z170X-Gaming 7", 
-QUIRK_R3DI),
-+    SND_PCI_QUIRK(0x1458, 0xA046, "Gigabyte GA-Z170X-Gaming G1", 
-QUIRK_GENERIC),
-      SND_PCI_QUIRK(0x3842, 0x1038, "EVGA X99 Classified", QUIRK_R3DI),
-      SND_PCI_QUIRK(0x3842, 0x104b, "EVGA X299 Dark", QUIRK_R3DI),
-      SND_PCI_QUIRK(0x3842, 0x1055, "EVGA Z390 DARK", QUIRK_R3DI),
-@@ -1325,6 +1344,7 @@ static const struct hda_model_fixup 
-ca0132_quirk_models[] = {
-      { .id = QUIRK_R3D, .name = "r3d" },
-      { .id = QUIRK_AE5, .name = "ae5" },
-      { .id = QUIRK_AE7, .name = "ae7" },
-+    { .id = QUIRK_GENERIC, .name = "generic" },
-      {}
-  };
-
-@@ -9882,14 +9902,57 @@ static void sbz_detect_quirk(struct hda_codec 
-*codec)
-      }
-  }
-
-+static void ca0132_generic_init_hook(struct hda_codec *codec)
-+{
-+    struct ca0132_spec *spec = codec->spec;
-+
-+    snd_hda_sequence_write(codec, spec->spec_init_verbs);
-+}
-+
-+static int ca0132_generic_probe(struct hda_codec *codec)
-+{
-+    struct ca0132_spec *spec = codec->spec;
-+    struct auto_pin_cfg *cfg = &spec->gen.autocfg;
-+    int err;
-+
-+    snd_hda_gen_spec_init(&spec->gen);
-+
-+    snd_hda_apply_pincfgs(codec, ca0132_generic_pincfgs);
-+
-+    ca0132_init_chip(codec);
-+
-+    err = ca0132_prepare_verbs(codec);
-+    if (err < 0)
-+        return err;
-+
-+    err = snd_hda_parse_pin_def_config(codec, cfg, NULL);
-+    if (err < 0)
-+        return err;
-+    err = snd_hda_gen_parse_auto_config(codec, cfg);
-+    if (err < 0)
-+        return err;
-+
-+    spec->gen.init_hook = ca0132_generic_init_hook;
-+    spec->gen.automute_speaker = 0;
-+    spec->gen.automute_lo = 0;
-+
-+    snd_hda_sequence_write(codec, spec->spec_init_verbs);
-+    return 0;
-+}
-+
-  static void ca0132_codec_remove(struct hda_codec *codec)
-  {
-      struct ca0132_spec *spec = codec->spec;
-
--    if (ca0132_quirk(spec) == QUIRK_ZXR_DBPRO)
-+    switch (ca0132_quirk(spec)) {
-+    case QUIRK_GENERIC:
-+        snd_hda_gen_remove(codec);
-+        return;
-+    case QUIRK_ZXR_DBPRO:
-          return dbpro_free(codec);
--    else
-+    default:
-          return ca0132_free(codec);
-+    }
-  }
-
-  static int ca0132_codec_probe(struct hda_codec *codec,
-@@ -9906,14 +9969,21 @@ static int ca0132_codec_probe(struct hda_codec 
-*codec,
-      codec->spec = spec;
-      spec->codec = codec;
-
--    /* Detect codec quirk */
--    snd_hda_pick_fixup(codec, ca0132_quirk_models, ca0132_quirks, NULL);
--    if (ca0132_quirk(spec) == QUIRK_SBZ)
--        sbz_detect_quirk(codec);
--
-+    /* These must be set before any path is taken */
-      codec->pcm_format_first = 1;
-      codec->no_sticky_stream = 1;
-
-+    /* Detect codec quirk */
-+    snd_hda_pick_fixup(codec, ca0132_quirk_models, ca0132_quirks, NULL);
-+    switch (ca0132_quirk(spec)) {
-+    case QUIRK_SBZ:
-+        sbz_detect_quirk(codec);
-+        break;
-+    case QUIRK_GENERIC:
-+        return ca0132_generic_probe(codec);
-+    default:
-+        break;
-+    }
-
-      spec->dsp_state = DSP_DOWNLOAD_INIT;
-      spec->num_mixers = 1;
-@@ -10014,36 +10084,51 @@ static int ca0132_codec_build_controls(struct 
-hda_codec *codec)
-  {
-      struct ca0132_spec *spec = codec->spec;
-
--    if (ca0132_quirk(spec) == QUIRK_ZXR_DBPRO)
-+    switch (ca0132_quirk(spec)) {
-+    case QUIRK_GENERIC:
-+        return snd_hda_gen_build_controls(codec);
-+    case QUIRK_ZXR_DBPRO:
-          return dbpro_build_controls(codec);
--    else
-+    default:
-          return ca0132_build_controls(codec);
-+    }
-  }
-
-  static int ca0132_codec_build_pcms(struct hda_codec *codec)
-  {
-      struct ca0132_spec *spec = codec->spec;
-
--    if (ca0132_quirk(spec) == QUIRK_ZXR_DBPRO)
-+    switch (ca0132_quirk(spec)) {
-+    case QUIRK_GENERIC:
-+        return snd_hda_gen_build_pcms(codec);
-+    case QUIRK_ZXR_DBPRO:
-          return dbpro_build_pcms(codec);
--    else
-+    default:
-          return ca0132_build_pcms(codec);
-+    }
-  }
-
-  static int ca0132_codec_init(struct hda_codec *codec)
-  {
-      struct ca0132_spec *spec = codec->spec;
-
--    if (ca0132_quirk(spec) == QUIRK_ZXR_DBPRO)
-+    switch (ca0132_quirk(spec)) {
-+    case QUIRK_GENERIC:
-+        return snd_hda_gen_init(codec);
-+    case QUIRK_ZXR_DBPRO:
-          return dbpro_init(codec);
--    else
-+    default:
-          return ca0132_init(codec);
-+    }
-  }
-
-  static int ca0132_codec_suspend(struct hda_codec *codec)
-  {
-      struct ca0132_spec *spec = codec->spec;
-
-+    if (ca0132_quirk(spec) == QUIRK_GENERIC)
-+        return 0;
-+
-      cancel_delayed_work_sync(&spec->unsol_hp_work);
-      return 0;
-  }
 -- 
-2.54.0
-
-Signed-off-by: Ezio Galeazzi <eziogale@gmail.com>
+2.25.1
 
