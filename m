@@ -4,75 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EC2BCD5BCF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 08:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1A65CD5BCF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 08:28:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B98C60228;
-	Mon, 25 May 2026 10:23:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B98C60228
+	by alsa0.perex.cz (Postfix) with ESMTPS id D46E160208;
+	Mon, 25 May 2026 10:28:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D46E160208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779697427;
-	bh=0DUsU/YkT/6p7ixjcRhDi0Xoebn0Ckyg6HAwTiAqg6g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1779697729;
+	bh=7YTj92kNqvTxGEe1cNNLW3RP34iYfpF+DoJGWlj3xwM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qaOcbjoIh/KKNvpUmskhdLJrbS6vIHvPXbBORailgRkkc9crfopdLAbWNVn6jlpKn
-	 WJDM4ukFiL2jfzrNo/omMdR0D/UOIk7eVELgeMA5612yFfPatUVIL3fy8PT4NzVluH
-	 3W28qWgGzNLDIzrYx/gNRF+i/KLggdctW7Eu2EyQ=
+	b=Tw2KDyK2WRFfbSCEdym69yubeCu5RWV5/o//m1U30+khGcLfrEhXOa27Ulxw48Hyo
+	 coJ9B8BjYGCmEbWIDRcNyf+tTqAQEN+AqFS0ShKdxN6Bm2P90Fp8cqRF1JLdKYWsRI
+	 VXGyOAOuHcUPIFYKbLVHNPhatLrJo6Sx+bBCbgO4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E954CF805F8; Mon, 25 May 2026 10:23:13 +0200 (CEST)
+	id 976ABF805F7; Mon, 25 May 2026 10:28:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7865F805E2;
-	Mon, 25 May 2026 10:23:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5D70F80557;
+	Mon, 25 May 2026 10:28:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C36EEF80557; Mon, 25 May 2026 10:23:07 +0200 (CEST)
+	id CB07DF80557; Mon, 25 May 2026 10:28:07 +0200 (CEST)
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4873DF8047D
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 10:23:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4873DF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00E37F8001F
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 10:28:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00E37F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=S/DrYgVN
+ header.s=k20260515 header.b=kYux4OQi
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6B37E443F9;
-	Wed, 20 May 2026 11:33:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5F8A1F000E9;
-	Wed, 20 May 2026 11:33:30 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 1656640BF8;
+	Fri, 22 May 2026 10:21:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22A7A1F00A3E;
+	Fri, 22 May 2026 10:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779276812;
-	bh=Y2HnzgfNxgDnJw595gPPk2OLeG8jwrkxR7AEQAb9CD0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=S/DrYgVNJ7/fcp5hURWOoqeJ96Sfi1bY+TaU2nDWWB8X/jSufqAUIdSsdsQ5xazJ+
-	 7BDq39a6gBWYiiau0adUWf1J1MZ1agWndOr6ce9Ki6SjxwQEx6hmQBWCY/vipzHxJW
-	 7HvpQ60vQh1xBQbAgNfiET/Db5+1uauzsX02i40MNcsBS6gPrUzXD/ty6mFZsegIdG
-	 JAuDp0tN5FUUEyta1andhivNdjyaT0ix/GxqgwV9BM5nU3mj5zG0S+Nv8W87XWpBjq
-	 xjPFIbS90BSVs7MFHtA5dY4JU0XvenPXYT84MTmWyP9fOv8+vK/P6DpPSxN/1TUK0V
-	 UhoXYCpze8Y+g==
-Date: Wed, 20 May 2026 12:33:27 +0100
+	s=k20260515; t=1779445299;
+	bh=7gK2VR5gTI+UcAjSIhHUDW5Ykd1zlLoCN9jWLoSHkKU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=kYux4OQix/CpCPxP9dEwfqnQNKXaifyZl0h50jWsUy1ysSEkJeSh3SPepKhOB9zGc
+	 r0P4TYvILY6aT2MPkNHwlwTCes7dl7Xl6HnoIuoVlcfWpZOTOlRQsI53BAYh5xJgP1
+	 5MUrc3VDUIFYsiDxXDDv1RtKObhh3HT6NgzQjBZkGZX4nVEQeo1NwOQB3ZwytCRC+S
+	 bGy8H/YUU6VqtMZPs796782c5RBm8bPiBIoh+kGvI6bP2MrZD69fBUSQnMz7cL21ct
+	 QF0mT0ScagCvZF3mhfS0zI/qNvnWrTP1mhU3WcVNUFx0rvg7UESqyid6hWWDPxz+t+
+	 1NofCVM88rxtg==
 From: Mark Brown <broonie@kernel.org>
-To: jack.yu@realtek.com
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, lars@metafoo.de,
-	flove@realtek.com, oder_chiou@realtek.com, shumingf@realtek.com,
-	derek.fang@realtek.com
-Subject: Re: [PATCH v4] ASoC: rt722-sdca: Add a control to support CAE
- firmware update
-Message-ID: <7f0c280d-7a42-4933-a1b6-c627314c9b75@sirena.org.uk>
-References: <20260520053243.3645180-1-jack.yu@realtek.com>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+ tiwai@suse.com, Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
+ mario.limonciello@amd.com, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20260507181251.20594-1-Vijendar.Mukunda@amd.com>
+References: <20260507181251.20594-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH 0/5] ASoC: AMD: ACP7.x initial PCI driver bring-up
+Message-Id: <177940532272.58022.17604355383917647171.b4-ty@b4>
+Date: Fri, 22 May 2026 00:15:22 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XFaHUiZ1QpPFXarv"
-Content-Disposition: inline
-In-Reply-To: <20260520053243.3645180-1-jack.yu@realtek.com>
-X-Cookie: Natural laws have no pity.
-Message-ID-Hash: BJAPWIK4AQ6MQRDG7ZELQG235MOQ34IV
-X-Message-ID-Hash: BJAPWIK4AQ6MQRDG7ZELQG235MOQ34IV
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.16-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2080; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=7YTj92kNqvTxGEe1cNNLW3RP34iYfpF+DoJGWlj3xwM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqEC4wMmoGSf2XUHjqPOumZ4DBeXxztDrvpEhDN
+ lJKGEQtE8eJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCahAuMAAKCRAk1otyXVSH
+ 0KIfB/98mpoWQjqPO8MFh0MMVef4sPG35/sZJwa+V6AATwLOP7N12NZGz3i7OMFwYRg1RWt/d+w
+ 07401ZoTslhaTd+8fx0it2DZezQyY3RjGmXjquCX8M4/YWiAmXpDCBPo7Q2mEq4i4yrNuY7ghJ3
+ t4/ra5QpVQEBw7QEe1cHrR8pJ5tNjeHCGl3kRTh8jJafJQcXM7uqT0+lzWTtdNQ41SSAPOZeoiB
+ DYtyjP77/Bdzg6KZNuff6dlZ41GAr/sgvj7C3exv3Gpsv5xk/V/t3x0oH9An0kEdRvOP4qq7oy9
+ RcKtAHARQVPz3+r5Hfc+IOqTBqtucmVMINUv568qfZFEuY48
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: XHWEX2NCMZLXRQ2OPCU25AP6OTGGGGP3
+X-Message-ID-Hash: XHWEX2NCMZLXRQ2OPCU25AP6OTGGGGP3
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BJAPWIK4AQ6MQRDG7ZELQG235MOQ34IV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XHWEX2NCMZLXRQ2OPCU25AP6OTGGGGP3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,41 +103,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, 07 May 2026 23:41:28 +0530, Vijendar Mukunda wrote:
+> ASoC: AMD: ACP7.x initial PCI driver bring-up
+> 
+> This series adds initial AMD ACP 7.x support for ACP7.D / 7.E / 7.F
+> platforms.
+> 
+> Compared to earlier ACP generations, ACP7.x includes substantial design
+> changes, including an updated register set/layout. For that reason,
+> the ACP7.x implementation is placed under a separate sound/soc/amd/acp7x/
+> directory instead of extending older-generation code paths,
+> keeping ACP7.x-specific logic and register definitions cleanly separated
+> and easier to maintain.
+> 
+> [...]
 
---XFaHUiZ1QpPFXarv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, May 20, 2026 at 01:32:43PM +0800, jack.yu@realtek.com wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.2
 
-> Realtek CAE requires specific tuning parameters based on
-> the system vendor and SKU.
-> This patch adds a kcontrol to trigger the firmware loading process.
+Thanks!
 
-> +		if (strcmp(tag, xu_tag) == 0) {
-> +			dev_dbg(dev, "%s: This is a XU tag", __func__);
-> +			memcpy(&addr, (fw_data + 4), 4);
-> +			memcpy(&size, (fw_data + 8), 4);
+[1/5] include: sound: add register header file for acp7.x series
+      https://git.kernel.org/broonie/sound/c/44d16948af55
+[2/5] ASoC: amd: acp7x: add ACP PCI driver probe/remove sequence
+      https://git.kernel.org/broonie/sound/c/1da6f798eda8
+[3/5] ASoC: amd: acp7x: add helper functions and hw ops
+      https://git.kernel.org/broonie/sound/c/b5a2fdc5e7d2
+[4/5] ASoC: amd: enable acp7.x drivers build
+      https://git.kernel.org/broonie/sound/c/533308171bf2
+[5/5] ASoC: amd: acp7x: add system and runtime PM ops
+      https://git.kernel.org/broonie/sound/c/07d56a83ba70
 
-Sorry, should've thought of this before but the memcpy() will have
-endianness issues - these should get washed through appropriate
-conversion functions so the driver will work on non-x86 systems.  I'll
-apply the patch since everything else looks good, but you might want to
-follow up fixing the endianness.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
---XFaHUiZ1QpPFXarv
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmoNnAcACgkQJNaLcl1U
-h9DA+Af/ZQtQ3U7PYDFcn54Wdzj/zLBdghP1mCkbZpHCrXp3Ud29fBdgVZPeGz2O
-wmXGKrkwKu/eow90etDdShqJ8xzsAtqx81lMp+2n/ELUHO6h4Rv4wQYxOuF6VKQ6
-0U6+30Y6QbGg5R+4vHcgPcOEXBYmhIkcio4uztlHVDdjfaeXqPC3wVX8iR57PIrS
-aEg4zzolrcz5M+xP+JgPpweCcs8Lf89ELEE1+AAtJ4DJy/yKsS+m/NztvBO8fY0N
-Tq1Gr4Q8FmfOUuxO4o0KyAvYPL/KWPfBQ1OwKNdltlPX/q/A/hkS3PNKYzUC0Rh2
-Zka28Jc/k9Na8i8argjLAqXcFaM49A==
-=qHwu
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---XFaHUiZ1QpPFXarv--
+Thanks,
+Mark
+
