@@ -4,141 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C855ACD5BBF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 07:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BE23CD5BBF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 07:52:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0861A60218;
-	Mon, 25 May 2026 09:45:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0861A60218
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3915F60219;
+	Mon, 25 May 2026 09:52:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3915F60219
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779695145;
-	bh=OKFhFiWUPttNZ/hpn8HTcj75G6qa5/cUWPI0mhEvbNY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1779695575;
+	bh=tYouBRlDDxoBacqg61uRAmC24F+aU8P/+/zOo+fJ4/k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=knxxnVZeA0uRPuGLa5ESLC9Xogz5Ds6S7wx3KGrn4Vdc54IqKPfPCImuH1pIurNXV
-	 l0V4IKJDvTWXfbV4y65VBAjDzT/ljbfs0+euMPQi9wQOt0y7khdoUeFoPsXjvTs547
-	 vq35aUDqHVW4YCyP63GwP9VXHkk4T2GPBQZ8ghC0=
+	b=RF//YZVJNGxKRh8HcdWcRtqNws4CaJ/o4dBicUgYnKOiazPwZdAYQtIy4XNsjuq/a
+	 t4sGKmukhk9MgjYEVe/UUnpJ1X5tQt1T6iYtI2L4xEN6Hf7HgTkFO45pSsi9tck60O
+	 DY2urwtItuBcaxE2tnY8KhHDTsnkINgdBMKd/TjI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63CFDF805F6; Mon, 25 May 2026 09:45:10 +0200 (CEST)
+	id 5593BF8047D; Mon, 25 May 2026 09:52:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF0AAF800B6;
-	Mon, 25 May 2026 09:45:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EC89F8047D;
+	Mon, 25 May 2026 09:52:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD838F80588; Mon, 25 May 2026 09:45:05 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	id 68CD4F80557; Mon, 25 May 2026 09:52:13 +0200 (CEST)
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 910EEF8047D
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 09:45:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 910EEF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8334BF8001F
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 09:52:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8334BF8001F
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=jNl4s4O7;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=UMRoQTNt;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=jNl4s4O7;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=UMRoQTNt
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9EB0E6C50F;
-	Mon, 25 May 2026 07:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1779693701;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+gF3Bv0s8CIvcKl4ZslYm90Eb8ChVK/ny0grorrH7hI=;
-	b=jNl4s4O7kaqlAatPIF5eQmAOmmASTwRDWJZXZziINv5Zr08yrUAROQKjkn9JCBlQeXebHT
-	6Mls4YQWFL53yig7wOEaHvG1BT1t9KkItUiW9Hh6jfCmZwatx4L+mlxvliWsNBt0pPS5Q+
-	W3o/csH46XeQFR7k7th5BdTIXDitTS4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1779693701;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+gF3Bv0s8CIvcKl4ZslYm90Eb8ChVK/ny0grorrH7hI=;
-	b=UMRoQTNt4WAfe1hmGTjoAZEqp+KWTtsiKnjja+aNundJ50eJ3Wng61J6D8sBQszD5ctbC8
-	V6goKDJhFSvgBYAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1779693701;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+gF3Bv0s8CIvcKl4ZslYm90Eb8ChVK/ny0grorrH7hI=;
-	b=jNl4s4O7kaqlAatPIF5eQmAOmmASTwRDWJZXZziINv5Zr08yrUAROQKjkn9JCBlQeXebHT
-	6Mls4YQWFL53yig7wOEaHvG1BT1t9KkItUiW9Hh6jfCmZwatx4L+mlxvliWsNBt0pPS5Q+
-	W3o/csH46XeQFR7k7th5BdTIXDitTS4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1779693701;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+gF3Bv0s8CIvcKl4ZslYm90Eb8ChVK/ny0grorrH7hI=;
-	b=UMRoQTNt4WAfe1hmGTjoAZEqp+KWTtsiKnjja+aNundJ50eJ3Wng61J6D8sBQszD5ctbC8
-	V6goKDJhFSvgBYAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8052859B04;
-	Mon, 25 May 2026 07:21:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8AAOHoX4E2p7EQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 25 May 2026 07:21:41 +0000
-Date: Mon, 25 May 2026 09:21:41 +0200
-Message-ID: <87fr3ggdiy.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kris Kater <kris@kater.nu>
-Cc: Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: hda/realtek: Add HDA_CODEC_QUIRK for Lenovo Yoga
- Slim 7 14AGP11
-In-Reply-To: <20260522060902.9423-1-kris@kater.nu>
-References: <20260522060902.9423-1-kris@kater.nu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	internal_greylist_whitelist(0.00)[10.150.64.97];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
-Message-ID-Hash: DCFMHMGUJGQGEP3KRVPXNGZHHQ3PHLF5
-X-Message-ID-Hash: DCFMHMGUJGQGEP3KRVPXNGZHHQ3PHLF5
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=aZPylxQ3
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 8703C6021E;
+	Thu, 21 May 2026 11:34:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 401661F000E9;
+	Thu, 21 May 2026 11:34:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779363266;
+	bh=u4L0vkFGR060ckdfUCAcTgtv+O7QylwEkQhg2saZvEw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=aZPylxQ3dPMAM3kKQPotMm4S2tnZpRpDN1hLXToDDyuVssYyCx0rv95yUAZGMFxv4
+	 I5o3XT+yBCuGNSXNU2cDLqL3Bb247k7JPI3X38630LmLTMevwaNhMGTnktwHcJ9/3q
+	 47smZ/93Sn8v5RLjPyc7ljJyeb2k6HEg36Xd6mh+ez+6Z9CVwYuXJZMiiA2PiJj1Gj
+	 ZQ1MkV0Egb6x2AGhQzyx4of23UOqySUEBMDoUvkFMizq4uLpeZUz+id26ATL0fvgT1
+	 dEGXNWydq/lhZE+Z3gjXwvwLPPHVjD1DNukehZUYEJYV25IFY1Lix+2ae88hwGIHbz
+	 KpS8Mea8XJV5A==
+Date: Thu, 21 May 2026 12:34:21 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+	alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+	tiwai@suse.com, Sunil-kumar.Dommati@amd.com,
+	venkataprasad.potturu@amd.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] ASoC: amd: acp7x: add system and runtime PM ops
+Message-ID: <346949dc-d4f9-420b-b208-65a02c4657a1@sirena.org.uk>
+References: <20260507181251.20594-1-Vijendar.Mukunda@amd.com>
+ <20260507181251.20594-6-Vijendar.Mukunda@amd.com>
+ <905bfeff-ab78-4299-a2a4-45fb8f05e716@amd.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="etEcZ4fPKLR4ZqCJ"
+Content-Disposition: inline
+In-Reply-To: <905bfeff-ab78-4299-a2a4-45fb8f05e716@amd.com>
+X-Cookie: Words are the voice of the heart.
+Message-ID-Hash: P63GXXB2ES6B6KA4HWN2QRNUIU7JWJQY
+X-Message-ID-Hash: P63GXXB2ES6B6KA4HWN2QRNUIU7JWJQY
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -149,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DCFMHMGUJGQGEP3KRVPXNGZHHQ3PHLF5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P63GXXB2ES6B6KA4HWN2QRNUIU7JWJQY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -158,39 +97,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 22 May 2026 08:09:02 +0200,
-Kris Kater wrote:
-> 
-> The BIOS on the Lenovo Yoga Slim 7 14AGP11 (AMD Ryzen AI / Kraken
-> Point chassis; board LNVNB161216, product 83QS) programs the PCI
-> subsystem ID of the HDA function as 17aa:0000. As a result no entry
-> in alc269_fixup_tbl[] matches via SND_PCI_QUIRK, the fixup falls back
-> to the generic auto-routing path, and the bass speaker pin is left
-> mis-routed. Laptop speakers sound noticeably thin.
-> 
-> The codec's own internal subsystem ID register reports 0x17aa394c
-> correctly, so an HDA_CODEC_QUIRK entry (which matches on the codec
-> SSID rather than on the PCI SSID) binds the chassis to the existing
-> ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN fixup. This mirrors the same
-> workaround already in place for the closely-related Yoga 7 2-in-1
-> 14AKP10 and 16AKP10 entries earlier in the table.
-> 
-> With this change the kernel log goes from
-> 
->   ALC287: picked fixup  for PCI SSID 17aa:0000
-> 
-> to
-> 
->   ALC287: picked fixup alc287-yoga9-bass-spk-pin
-> 
-> and speaker routing matches what the firmware intended. Verified by
-> the reporter against the equivalent modprobe override
-> (model=,alc287-yoga9-bass-spk-pin).
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=221438
-> Signed-off-by: Kris Kater <kris@kater.nu>
 
-Applied now.  Thanks.
+--etEcZ4fPKLR4ZqCJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, May 07, 2026 at 02:33:47PM -0500, Mario Limonciello wrote:
+> On 5/7/26 13:11, Vijendar Mukunda wrote:
 
-Takashi
+> > +static int __maybe_unused snd_acp7x_resume(struct device *dev)
+> > +{
+> > +	struct acp7x_dev_data *adata;
+> > +	int ret;
+> > +
+> > +	adata = dev_get_drvdata(dev);
+> > +	ret = acp_hw_init(adata, dev);
+> > +	if (ret)
+> > +		dev_err(dev, "ACP init failed\n");
+> > +
+> > +	return ret;
+> > +}
+
+> Both of snd_acp7x_runtime_resume and snd_acp7x_resume look identical. Will
+> there be later code (when machine driver and IO enablement come) that makes
+> them different?
+
+> If not; then I think you can drop snd_acp7x_runtime_resume().
+
+> If so; this makes sense to keep separately.
+
+Not seeing any response to this question from Mario?
+
+--etEcZ4fPKLR4ZqCJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmoO7bwACgkQJNaLcl1U
+h9BJFwf/TgWuvQ/NFuu19UEQCRcFImz0ttnm4CtFkgiEfYTwIuwp+BnZ/yPUW5Vk
+ZSOnwFeKQ6X8AITokenw8Au7xhfYuz+2tsK0RDEO8qOgqEeaSCuIBB2B9frAkU1c
+VLasKfi2O4/IGjCsXosWwaIhtLG4ciZNb5xYWn/6pxw5Bvz58AXKs+asR+yoNOdG
++zO0BebJy+BwIbifbcSBPl0Uue52eq1/us328JjNxEdqctTw2hYz3XjnpH5GMnxX
+eeo7odR4KyEETTXfUB0Mvv3kQ/NjJI2h5lBmX50BTAEAzBKRKqFGJp/ZG8kc7K8S
+uCdfJebvBsPeyei/Uln49JKc6m3etg==
+=/UjV
+-----END PGP SIGNATURE-----
+
+--etEcZ4fPKLR4ZqCJ--
