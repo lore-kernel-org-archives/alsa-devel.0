@@ -4,65 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5010ACD5BBF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 08:02:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CE69CD5BCF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 08:22:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F80460212;
-	Mon, 25 May 2026 10:02:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F80460212
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2C206021E;
+	Mon, 25 May 2026 10:22:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2C206021E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779696173;
-	bh=YqwSO/MQDWyaoQkaHdID6NQLU0sTUDpnPtqk3XxXZfc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Iv+Z4Wq3nXvO5fAoo9GLilvZskNthVtif00YT7PVM8/TUx+6eVW+SEMPg+OP5Zaw7
-	 th46+VTxFrCy5AqBCQdJp/qnfSKYafiS6VJrirwaJZ72VmWV0v6R9jfzakx1f/TVMd
-	 84SwCMT15qV57AsB89IRsI0WtOsCN9yaGLBthkRM=
+	s=default; t=1779697377;
+	bh=oImRwjI+XSNpas5HABW8j0NwP849AjVk4QzoZ8axO3M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=D0NlBttkj1q42xPVbZXiHU26vldIBDYdlvd8kXxfnSiDrOukdCkzjGZTLylnjP1Z7
+	 vsNM0HO0YWK9kuPzMpZGvqstABbl0dq3GgzGwPX5z3GAaPAIFDKPHjQ7LPHCGGudl8
+	 TqxJALm6OHNdiSJ2253ONMnVvektpdCjQBL+OmmI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BFB16F805F7; Mon, 25 May 2026 10:02:18 +0200 (CEST)
+	id 0C3FAF805F7; Mon, 25 May 2026 10:22:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 594A8F805EE;
-	Mon, 25 May 2026 10:02:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61E54F805E9;
+	Mon, 25 May 2026 10:22:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 076E4F80557; Mon, 25 May 2026 10:02:13 +0200 (CEST)
+	id 6342AF80557; Mon, 25 May 2026 10:22:13 +0200 (CEST)
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 1E6EBF8047D
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 10:02:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E6EBF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id D94B7F8001F
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 10:22:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D94B7F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=bk4dCSb8
+ header.s=k20260515 header.b=WgIOVQ24
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with UTF8SMTP id 13A15600FF;
-	Thu, 21 May 2026 23:22:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 3A5531F000E9;
-	Thu, 21 May 2026 23:22:19 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 35551600C3;
+	Thu, 21 May 2026 15:35:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEB1D1F000E9;
+	Thu, 21 May 2026 15:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779405739;
-	bh=v3hcNsL54Fo5jmpIUL+/cFjwHOgQS2YcPjVL3GyRvXI=;
-	h=From:To:Cc:Subject:Date;
-	b=bk4dCSb8l0r3/9UX7qeFo7+XtbotiG0CwWCnk0eadOmcm1wlJfCtZrtwMwjrhQzGY
-	 49u43ni3wYOtDSjAzK/DbtmLJTRhB2EGne5dRGZ+rBOtARHUZfCB2u/6eAN6kt6OIv
-	 w3ZfihVl6qxdhl7OVo43N5gvX0+dbb3WF3NjoR0hQCZvwzcsnrjhCaX4Sbui1901lF
-	 tRSGXRoRu9QM/+nDa7V2fW9IESMaysP4OfR5Zsx318lCQlEi5eZKA3If7kWi0iGsfV
-	 ntweIGoIOzVx2vdMWHJc2fQGFg/buRlyuQD69xabRilctcdL2irzQ0MNmjnR60RzC8
-	 OKVOm/qO2dXQw==
-Message-ID: <330b62a00eb5358e06742f419308fa7e@kernel.org>
+	s=k20260515; t=1779377743;
+	bh=TQwSrXVYnpbCfJdtfPjLSghRrh3omoKn1DB2+rGBNjE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=WgIOVQ24fSOQxyG4iGiLd0T3oOMQsbj1BC/sFOR9UkwhioDe7MhOPISoGe7bQweJ1
+	 E4IzCvBrBQmsxwuyT87jWxYliddNtjMx6Zi7iUgHkXoWXLwPRm2snsiTWNSvkM38Lf
+	 FBxiOdrm2SVUxF2l2KsRygGAmu7mNxlgwV6N9rgnbLAbjiY749XK/HmuChFRFfEc/4
+	 jJkvGrMQSD5HgBEcQUYrRwBamaJOSWdeGFM/u7LtU+ZSoRNi6VQIoEe1CwCFgkIESV
+	 9FsHq3NjbHUiXO7DM5sTA3mKiBno3JbQeCMt8Ei03tGAkHinbeBqRmepmXaq5Uaqs0
+	 ziTJdrplekOwg==
+Date: Thu, 21 May 2026 16:35:39 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v7.1-rc4
-Date: Fri, 22 May 2026 00:22:11 +0100
-Message-ID-Hash: F2LY4VK74NTWIHHV7XSR7WYKOIXODA7P
-X-Message-ID-Hash: F2LY4VK74NTWIHHV7XSR7WYKOIXODA7P
+To: YLCHANG2 <neo.chang70@gmail.com>
+Cc: Neo Chang <YLCHANG2@nuvoton.com>, lgirdwood@gmail.com, perex@perex.cz,
+	robh@kernel.org, krzk+dt@kernel.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+	kchsu0@nuvoton.com, sjlin0@nuvoton.com
+Subject: Re: [PATCH v2 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
+ amplifier
+Message-ID: <934509a9-1347-4b02-a341-0db0d1db42e7@sirena.org.uk>
+References: <20260518024704.118613-1-YLCHANG2@nuvoton.com>
+ <20260518024704.118613-3-YLCHANG2@nuvoton.com>
+ <ce8d5ba7-22aa-47ac-90ab-026ed1ee3928@sirena.org.uk>
+ <ddacfe50-072d-66fd-c760-c898bdab52f4@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="UVs/AC80Z1SYC8M2"
+Content-Disposition: inline
+In-Reply-To: <ddacfe50-072d-66fd-c760-c898bdab52f4@gmail.com>
+X-Cookie: No shirt, no shoes, no service.
+Message-ID-Hash: 5RGX2QEGXIZCNABWCDAZYG3WG6ETHVXY
+X-Message-ID-Hash: 5RGX2QEGXIZCNABWCDAZYG3WG6ETHVXY
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -74,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F2LY4VK74NTWIHHV7XSR7WYKOIXODA7P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5RGX2QEGXIZCNABWCDAZYG3WG6ETHVXY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,125 +97,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit 5200f5f493f79f14bbdc349e402a40dfb32f23c8:
 
-  Linux 7.1-rc4 (2026-05-17 13:59:58 -0700)
+--UVs/AC80Z1SYC8M2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-are available in the Git repository at:
+On Wed, May 20, 2026 at 11:01:53AM +0800, YLCHANG2 wrote:
+> On 5/18/26 19:35, Mark Brown wrote:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.1-rc4
+> > > +static bool nau8360_volatile_reg(struct device *dev, unsigned int reg)
+> > > +{
+> > > +	switch (reg) {
+> > > +	case NAU8360_R00_SOFTWARE_RST ... NAU8360_R02_I2C_ADDR:
+> > > +	case NAU8360_R06_INT_CLR_STATUS:
+> > > +	case NAU8360_R21_VBAT_READOUT ... NAU8360_R22_TEMP_READOUT:
+> > > +	case NAU8360_R41_CLK_CTL2:
+> > > +	case NAU8360_R46_I2C_DEVICE_ID:
 
-for you to fetch changes up to 09e8f9a9aa19aa8c1b0cc7a0ebc68f6ecf86a660:
+> > Are the I2C addresss and device ID volatile or do they just not have
+> > defaults?
 
-  ASoC: codecs: pcm512x: fix null-ptr dereference in pcm512x_overclock_xxx_put() (2026-05-21 19:28:24 +0100)
+> For NAU8360_R02_I2C_ADDR, it requires a write operation to latch the I2C
+> device address.
+> For NAU8360_R46_I2C_DEVICE_ID, although it is read-only, its value is
+> determined by the hardware configuration
+> of the GPIO1 and GPIO2 pins at boot (e.g., 0x1a, 0x1b, 0x4a, or 0x4b).
 
-----------------------------------------------------------------
-ASoC: Fixes for v7.1
+In that case they shouldn't be marked as volatile, just omitted from the
+defaults - they can be cached on first use.
 
-A bigger batch of fixes than usual due to -next not happeing last week,
-this is mostly stuff for laptops - a lot of quirks and small fixes,
-mainly for x86 and SoundWire.  Nothing too big or exciting individually,
-just two week's worth.
+--UVs/AC80Z1SYC8M2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-----------------------------------------------------------------
-Alexander A. Klimov (1):
-      ASoC: codecs: fs210x: fix possible buffer overflow
+-----BEGIN PGP SIGNATURE-----
 
-Andy Shevchenko (1):
-      ASoC: cs35l56: Drop malformed default N from Kconfig
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmoPJkoACgkQJNaLcl1U
+h9D6Dgf+MTFdSAqe+sVth1MJROGJFObulkedu9OA8uG35UgzyoNnZLCBJkQpVIZ4
+1px0piveEdCEof5YO8E36u8e6DnBz+J+muskMv1lTEoM0vi6PsNtkLUg8WzCHXdK
+uZyxdPv+/442PssImFrXj15dZgIVv4TU5yE5ILxY3HVWmYsIRu7SSTzKzNZxUfJM
+TBptlzzjjHTqfOO12fmq4m7JC9D2/HBGpGZ8MKSp3MwJogC5/a54Pb+R7Z5CxVez
+x914kR1dNsvlpgRFTLCC2CGXLZMXIaXSAQMaDsWAkpyhl5aVky111iJRQhmHsdYd
+aL9m3xbjCglFXQmN+Am3B+kL4DQ5+g==
+=ySQG
+-----END PGP SIGNATURE-----
 
-Balamurugan C (1):
-      ASoC: Intel: soc-acpi: Add entry for sof_es8336 in NVL match table.
-
-Charles Keepax (2):
-      ASoC: soc-acpi-intel-ptl-match: Make Chrome matches conditional
-      ASoC: Intel: soc-acpi-intel-ptl-match: Remove unnecessary cs42l43 match
-
-Cássio Gabriel (2):
-      ASoC: sdw_utils: Check speaker component string allocation
-      ASoC: amd: acp-sdw-legacy: check CPU DAI name before logging
-
-Gary C Wang (1):
-      ASoC: soc-acpi-intel-arl-match: add rt712_l0_rt1320_l3 support
-
-Ingyu Jang (1):
-      ASoC: ti: omap-dmic: Fix IS_ERR() vs NULL check bug in omap_dmic_select_fclk()
-
-Jairaj Arava (1):
-      ASoC: Intel: sof_sdw: Add support for nvlrvp in NVL platform
-
-Jang Pyohwan (1):
-      ASoC: Intel: soc-acpi: add LG Gram 16Z90U RT713 + single RT1320 quirk
-
-Jasper Smet (1):
-      ASoC: amd: acp: Add DMI quirk for ASUS Zenbook S16 UM5606GA
-
-Jeongjun Park (1):
-      ASoC: codecs: pcm512x: fix null-ptr dereference in pcm512x_overclock_xxx_put()
-
-Krishnamoorthi M (1):
-      spi: amd: Set correct bus number in ACPI probe path
-
-Mac Chiang (3):
-      ASoC: Intel: soc-acpi-intel-arl-match: Reorder ACPI machine tables
-      ASoC: sdw_utils: Add quirk to ignore RT712 CODEC_MIC
-      ASoC: sdw_utils: Add quirk to ignore RT721 CODEC_MIC
-
-Mario Limonciello (1):
-      ASoC: SOF: amd: Fix error code handling in psp_send_cmd()
-
-Mark Brown (3):
-      ASoC: soc-acpi-intel-arl-match: add rt712_l0_rt1320_l3 support
-      ASoC: sdw_utils: make RT712/RT721 CODEC_MIC be optional
-      ASoC: cs-amp-lib: Some bug and typo fixes
-
-Peter Ujfalusi (2):
-      MAINTAINERS: ASoC/ti: Remove myself and add Sen Wang as maintainer
-      MAINTAINERS: ASoC: Intel/SOF: Remove Ranjani Sridharan as maintainer
-
-Richard Fitzgerald (5):
-      ASoC: cs35l56: Check for successful runtime-resume in cs35l56_dsp_work()
-      ASoC: cs35l56: Fix flushing of IRQ work in cs35l56_sdw_remove()
-      ASoC: cs-amp-lib: Fix wrong sizeof() in _cs_amp_set_efi_calibration_data()
-      ASoC: cs-amp-lib: Fix missing dput() after debugfs_lookup()
-      ASoC: cs-amp-lib: Fix typo in error message: write -> read
-
-Rob Herring (Arm) (1):
-      ASoC; dt-bindings: mediatek,mt8173-rt5650-rt5514: Fix mediatek,audio-codec constraints
-
-Robertus Diawan Chris (1):
-      ASoC: soc-utils: Add missing va_end in snd_soc_ret()
-
-Shengjiu Wang (1):
-      ASoC: fsl_sai: Eliminate possible interrupt storm during probe
-
-Simon Trimmer (1):
-      ASoC: cs35l56: Log SoundWire status updates only on changes
-
-Srinivas Kandagatla (1):
-      ASoC: qcom: q6apm-dai: Allocate an extra page for PCM buffers
-
- .../sound/mediatek,mt8173-rt5650-rt5514.yaml       |   2 +
- MAINTAINERS                                        |  11 +-
- drivers/spi/spi-amd.c                              |   2 +-
- sound/soc/amd/acp-config.c                         |   7 ++
- sound/soc/amd/acp/acp-sdw-legacy-mach.c            |   2 +-
- sound/soc/codecs/Kconfig                           |   3 -
- sound/soc/codecs/cs-amp-lib.c                      |  17 ++-
- sound/soc/codecs/cs35l56-sdw.c                     |   8 +-
- sound/soc/codecs/cs35l56.c                         |  13 +-
- sound/soc/codecs/fs210x.c                          |   2 +-
- sound/soc/codecs/pcm512x.c                         |   6 +-
- sound/soc/fsl/fsl_sai.c                            |  43 +++++--
- sound/soc/intel/boards/sof_sdw.c                   |   8 ++
- sound/soc/intel/common/soc-acpi-intel-arl-match.c  |  71 ++++++++---
- sound/soc/intel/common/soc-acpi-intel-nvl-match.c  |  13 ++
- sound/soc/intel/common/soc-acpi-intel-ptl-match.c  | 134 +++------------------
- .../soc/intel/common/soc-acpi-intel-sdca-quirks.c  |  16 +++
- .../soc/intel/common/soc-acpi-intel-sdca-quirks.h  |   1 +
- sound/soc/qcom/qdsp6/q6apm-dai.c                   |   7 +-
- sound/soc/sdw_utils/soc_sdw_utils.c                |  14 ++-
- sound/soc/soc-utils.c                              |   1 +
- sound/soc/sof/amd/acp.c                            |   2 +-
- sound/soc/ti/omap-dmic.c                           |   2 +-
- 23 files changed, 209 insertions(+), 176 deletions(-)
+--UVs/AC80Z1SYC8M2--
