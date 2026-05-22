@@ -4,169 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D870ACD5BC8
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 13:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECE1ACD5BD0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 15:08:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DF376021E;
-	Tue, 26 May 2026 15:30:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DF376021E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8753660225;
+	Tue, 26 May 2026 17:07:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8753660225
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779802214;
-	bh=4eGbhLeU8JSfjeWpIIrmLsd/VlqXg6U0FDeFz2urm2A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kkTvxAte7a32fu3rP048VPfr+/ZBP8dmzGxcIwzVyhmPyHTI898YsGlWYhjVH8zBn
-	 e4sZ94KwvdC5ElEqVDUZY82MlcL4R21OZRQtfZluru+pbkZsjB9dUfLxJSjJHbb/Nv
-	 irKIZ4yvB7vXW7dZHUQLtq1dn1YqrPnNxkKRUrm8=
+	s=default; t=1779808083;
+	bh=TldYYOaoDFlVYsGRXRs3XNGNNjTWti+O8T4sDCkNehw=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=kSDOBhJraIp7c06VSG0ey9qeA7Tw+UDLdw+A+mQ/nWg+Jh7468QTKDfefZdMDaOTo
+	 wdO530AeRwpNYTK8kLqo2UyOFS2dxqdCR+hy/AJ+OwDk+Y3f52LjGVZNU8bN9aPKxM
+	 BdV8e5uHWLzS+lwj5pw+QUVHrtJIEveIwu0BD5es=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CEE0EF805F4; Tue, 26 May 2026 15:29:39 +0200 (CEST)
+	id 8C325F805E8; Tue, 26 May 2026 17:07:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95B38F805F3;
-	Tue, 26 May 2026 15:29:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D057F805E8;
+	Tue, 26 May 2026 17:07:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3736AF80217; Tue, 26 May 2026 15:29:33 +0200 (CEST)
-Received: from CO1PR03CU002.outbound.protection.outlook.com
- (mail-westus2azon11010060.outbound.protection.outlook.com [52.101.46.60])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 7BDCBF80557; Mon, 25 May 2026 10:13:43 +0200 (CEST)
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com
+ [209.85.222.177])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD3AFF8001F
-	for <alsa-devel@alsa-project.org>; Tue, 26 May 2026 15:29:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD3AFF8001F
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5928F8001F
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 10:13:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5928F8001F
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=mH42Xz84
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WUA87Is6uMhPwiVA6qlqqYI2znRSaJvz/YCz61LJyUDXEpfhAlE1cn1DXbQ3vAMs00UP08HSAhoq1XdAVgSUcdcKY7a9/YVbO7+SF7AziV/IDeGIACwnCkiEHoxdC1jhfbiznyT6SOfiNF2VlbfV11HqhzeAxHtC9RikPMOpoSfFTCeNEnZyfiWdWA1KsNukM1IEJrYMu9U/bWe0LwbvV0es0TO+/DstE2LwwIUCE45c4CHEYS5UWdk1NO8rbfVEAU2e64EZ7EBycvuGG4UAzv/Od/v6AV8ljmCaH6QY8DGBP6ms3MtElXu4MzsPmOHkHa/9uxXUbQ3eD3w6o1lHDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gS13dIYDpRIiNolVy07lMk7OwrCH4NdtAOrPKYUajr0=;
- b=msDMlObEUJZmIOOcYJMV5kOHf9CC8kHAmizckcONgGitqlPOC1yBH02GGwfiWm/qU9vFJNhq9KTqOJE7s7QaifImsw+6EB7qWWetqDwt4PZ9Rh+OV1f5OB5rXCNqeBM6Sm3Kbyhq/Of1m2VYJxhDZfm7rOYkPQQ8Zhei4iqDR7Ye0fBgpeGqXuUEmFaW1pzXLf9NUw32anvgvfAhUsiZ8Jz1dPTGcWNkMi9vDhSQ1E9XTMKZBJgjryDI3hWcpwNUEuBuFf9+biEjE5ocpG3qPDXbaa7cadj7EyStU0cb4SxSCSDo5aRRElOkL3Y/L6yZVd6l9PEJRfXfOYprIvo/Tg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gS13dIYDpRIiNolVy07lMk7OwrCH4NdtAOrPKYUajr0=;
- b=mH42Xz84oNRFNBT8xVP0VzyVOOnLYLvAncsZeCojoEKzdjzgpQVy/BOCCUyMLOy+PSSyRWl7ttOU3DtiyIAkDPxOXAp/VRq7jaHcmV3wzEQUNEPwhdjdqc5fsalrQF6wljlJkArq4b0w9OzT0EYigrZTVcZbnvxIQivU8tXHB78=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5356.namprd12.prod.outlook.com (2603:10b6:408:105::23)
- by CYYPR12MB8964.namprd12.prod.outlook.com (2603:10b6:930:bc::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.12; Tue, 26 May
- 2026 13:29:15 +0000
-Received: from BN9PR12MB5356.namprd12.prod.outlook.com
- ([fe80::8e9c:2f3d:9679:942e]) by BN9PR12MB5356.namprd12.prod.outlook.com
- ([fe80::8e9c:2f3d:9679:942e%6]) with mapi id 15.21.0071.010; Tue, 26 May 2026
- 13:29:15 +0000
-Message-ID: <b2b4c830-6f94-4fb7-b5ab-71a6889dd96d@amd.com>
-Date: Tue, 26 May 2026 18:59:09 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: ASoC: Build regression for
- snd_soc_acpi_amd_sdca_is_device_rt712_vb
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-References: <21a54840-a7b4-4802-9b40-2c92893e862a@app.fastmail.com>
-Content-Language: en-US
-From: Syed Saba Kareem <syed.sabakareem@amd.com>
-In-Reply-To: <21a54840-a7b4-4802-9b40-2c92893e862a@app.fastmail.com>
-X-ClientProxiedBy: PN0PR01CA0016.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:4f::21) To BN9PR12MB5356.namprd12.prod.outlook.com
- (2603:10b6:408:105::23)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=fGhiA0Tf
+Received: by mail-qk1-f177.google.com with SMTP id
+ af79cd13be357-90ca6f20872so1211970285a.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 25 May 2026 01:13:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779696819; cv=none;
+        d=google.com; s=arc-20240605;
+        b=VkpzqItYDjEvezWVJ51O2jx0J3uPotgT6zhDrHbSGKeqaaoeeY49Mh/k+giTsUq0sb
+         Yo3kvT43a78I6Sh5FemFPOOcCgRPZJlIe4KMBNnZckR5SNyEZ2oLD0yI05Ykk+2znlq0
+         y9xWgnFkrLZqDMT0I7UjGPE1flZnF43i0LfsqikboAZITtlfOv72xy0M53Dwt9Qp8Q2O
+         FqR7vAp8oYf/+LZYZJQRgYIonLI0Cj0y7BI5kcLJyIx08AiJLCcwsNGl9XGf8RirrK8s
+         RCba6hsdWX3yHgGf9sM9xkwPOQa6Tw6ylJtNyNBGArGO14VuMSJ0u9lpAoCqlhn2qfdI
+         zplA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=f++9SzwfzKmCuf4mhwq6YSVfhlmUNWVwkvB+SLu5S+8=;
+        fh=Wh53t5T7A6ynUYrBgCFa1yJCgnP5nKygwtt89q1T+04=;
+        b=Z2tKWvZswuDg6redVaedp4SXDbK2O6x40kjlwRFTYmpqScQllGv5syjrYgUWe4fWnH
+         EVI0TGHOdX0ix8rZCD+FUsKZeuaxt8G+/DrW7vGVimzlvMJ2Nyao2WPMBQNkOPfFwQqV
+         a437IS3VYaHWznjs74Y5iD4EBiUDpdfsdU/NzOnCUKhu2iUq2Zq9qegJGJwxHo0bu0DQ
+         VTZIPvYy3yfNJW0jErakVC8DuYgTxQTDWXvFg7jnWUlXHHx0+HV/ujmhVRh55uUTNSi+
+         FzK0BmjohojVy3m92NoAj5KoMHXx/W9WoTpA3z9zQpW8UCt0ey2Xa9b9eJGzqM3SORpL
+         3vgg==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779696819; x=1780301619;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=f++9SzwfzKmCuf4mhwq6YSVfhlmUNWVwkvB+SLu5S+8=;
+        b=fGhiA0TfwTRYZLUhui+8aNQ4/uxJP+j+NVoyW3I8YExbMjoCiScD8Mbq0F/jtyPDHa
+         8kmesPUax+5jza3GsMjwi+7/w3ZL8IT4LQ0cmu6hUndVxL1K2E9S5oLXtBGM6nvApKvB
+         hB4bnZJHjhHZBeRYCOmUe2aAXGVdm9imdVED0mvzj0V5ASVoRTKEmFLOIuN8knxHlwXH
+         RHOYKdFtG9phfZsGbhJG/heXPDDlsfKwKFy5kbSCSZQ5DW704k+Fi4bn3F8e4FZ6hybp
+         9iNC++JKxpAkbD5af43aNf5CCiBaI0t458D2zRF5tPgZy2SF7wqXg8tqwhGbAnojbGC3
+         J7QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779696819; x=1780301619;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f++9SzwfzKmCuf4mhwq6YSVfhlmUNWVwkvB+SLu5S+8=;
+        b=Rcl089wcaZcfdVE98PKgrSA454M4JXYSljYM6e9gdjsesu9k7xyMBt4jJD/xu/LLSr
+         70p1Eo0wZ5BMoQoX17x6tUbG4c5p21dPkE/ucSH8yBkblCs4XjhcnR5gK5TfHvric7AC
+         ySFCGThW71QE6L2PzWKF0n18MVbxt+8gwMBvxedSzrBuI5GvvtoUoApADzUoAfIoKx5l
+         cf0UrAC364OIxsg3BRvmXDOWnCQKYKHnRbRz8On0snXOIZudPhagO2Yo6VL5+o7g7MJ4
+         1b98QKQ04XCBXqZvpPqZV4jxrjf3wFIW9Rxh80EuZuWLhRlLPF/Zyhrjis3OD49upVRN
+         48Sg==
+X-Gm-Message-State: AOJu0YxYYdEekOpMcbkg4sT+Sf1JRdXX2ITcOHxg06fh5UPE5dneXseJ
+	+bjNwNsZT07QuZCa5erxyWO0MAeIvAkU3IJRq2vbX8BzJCjnDuNKntgPaJQHuJXWwUg8FXe36jI
+	EVzjZg/gAIWYbCgmquD51k/1ZDiHhnsadW4DuO2Ouh/TW
+X-Gm-Gg: Acq92OGEh+csGwCBO+vuw+hyQYlVmLFJdPEtnbvmr1TyZiZAMhO6Hhl2cW40CunHqsl
+	VIQXYdgYxeY6oocaUHBSkC01arjAfU5H4gs/akvZ7vmGm0FGhwHGiM6xBr8ySY0w2c1zz9F6B9L
+	x4bjVCIr1HwBB8fULEF3Jl7x2aoLfxt7tFWD9Hf3Vi0Daq5DDnbFhBYenuLKdGiioOG8XdUjX2B
+	GkYkX2dG5SlaA20EyIjJ5vCiJcTbqokiQNcSwWcsoel26u2Cr/41pb75Yao/4HfhCoEpb7o49Em
+	H1wbdKgV
+X-Received: by 2002:a05:690c:a95:b0:7b2:9347:7ba7 with SMTP id
+ 00721157ae682-7d35801edefmr39683637b3.22.1779478019542; Fri, 22 May 2026
+ 12:26:59 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5356:EE_|CYYPR12MB8964:EE_
-X-MS-Office365-Filtering-Correlation-Id: 91d3defe-98bc-4dac-115b-08debb2ac7e7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|366016|1800799024|376014|8096899003|11063799006|22082099003|18002099003|56012099003;
-X-Microsoft-Antispam-Message-Info: 
-	WAKXNpbqiJdtk9qIZz60qpoGceDlK5yZFpoqfTs32A5mBXI5Z6EySXDUzXg8AWWKWVJhKDWN1fWvHQjkQBARKsjH30vPadeXYaMmmVRk0bRoH4BblH2qoGXfN4UjSdFRwAmp4nCJltYRrnXJ9mNwzxcF9BgVjV8lIZlD45mZY97TYmu6qi8p+wU3nWdSZPw9wraRrsyFtqUtglgLyZRwyZHxwgKwRfCUbB2371HIeLp1icQ5mOAHe3pq4LfPRr8xVvWTQeb5ztYXI1TfbiRrjLq/3aqsZyF8JTEIj9ssjEfU5+PvFcNxSp9pDAinTXvX68uBtCwSU6IwhlIJFhSrtYDSQMXvgubthFOtTqFb40a1BXf+AR/UU5sduPZEKnCMQdlCJ8YKTbw7V1ZK3aJjfZaqzQHrA15Pn9bjw680QDDwsnMoPc5tTme00C7YIWpc9HDG8/O38GjrBQrUOHtnKd5CWmF0fwumQwUnNVQ1Qtculb2e0bEv8810Hx8sa3Jmm06Dz0o06Yd9aUh6e9YJQ1sxcM+sKzTFj+s6C4QtTFNxmKOROyAiJBts0S1YWEKF1juUCB4XBYeittphzqGbLDBuhkshiu6Spzh2IQOWEJMdVvqqeBsryY/qJyixX6Wh70TLxTj3G62SyanH8dMMP5ToU2oUN8iAixjt/yRN9htmDFJrGaekZ9cvIe/3rG61
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5356.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(8096899003)(11063799006)(22082099003)(18002099003)(56012099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?TmhLeDFNWFk5WW5BRlBlN2R4c0EwVVJzbmVQQXlkZGVTdThWbWZhOU16TTZv?=
- =?utf-8?B?M29oZE0rb2xhaWFLQTlLMlYyRzR5anhHUTV2NjA1T1FlajVHRWhYS1ZPaXRt?=
- =?utf-8?B?bzFNVkZXaGV4NGwrdnZ2R0Z6NSsrMVhPdlpKMFFmNGJVREYrSTFpMzFBeXVS?=
- =?utf-8?B?c3hFUlY0NXRnQ1FkOWFTOWF3TEF6ZUlDVlprQzRLcTFodVNORWZyTjNnNmRl?=
- =?utf-8?B?Nlp0WUhUS3dBaEFHK0plYnduMk9BZU1DK1dqc2pjTDhzUEM4djhlL05DcDFu?=
- =?utf-8?B?RGVyd3l1d1c2K0VkQnZFTGNNdGVTZzJqNFVVZXd4c09WMVFlNURBVWpHbDFr?=
- =?utf-8?B?UjY4ZHh5T3gxc3VSK2tWNEVUbWlydVZ1eXRobHcrK3EyaFFvZng0MG8zV1FK?=
- =?utf-8?B?MElJaGdtd2RHMktJVitGa3FDcXRqa2FHL255RndNRmtKckU3Njh3cHJVVDZK?=
- =?utf-8?B?QVo3OXNNMkUyeUN5a0NrdXlZbUM0U1dIY3R3YXV4cHJjbkZrY3dRbUxHTGNH?=
- =?utf-8?B?RzMzSUtrWnBsQ1doYyt5dlhidHU1OVd0YVUwY2VrZXUxcUtreSsrLzVHTjZ1?=
- =?utf-8?B?azNsUjVPSzhiTE5SOGQ2MlVHNHlSRnBrMEE0ODBFcGRwT2E5WlNSb1d1VTJ4?=
- =?utf-8?B?U3Y0Q3hZVVJKVEY5RXJySWVmRVhWdWNjSm1YR2dncXp3OStyM3JCdERqbVlM?=
- =?utf-8?B?V3piZmpIOElrYktlTGlROEc0L1lnWXZYaEhsS2dZbDlWY3R5K29OOEVTMUtw?=
- =?utf-8?B?T2hteFVETTIxSzhqSHhob0ZCeFNnUloydm1oOE9LTStWUWFKL2FvRFdSV3Ax?=
- =?utf-8?B?MHJOS3N5MG5ucHdIaWRQTUJGWHdOdS82VXYwanNGTUZjVFUwbzNFSVFXTVAy?=
- =?utf-8?B?Y3RDaGVRaUVxYUQxOFlxSGVJcWJhUWl3MkVWVGNWcExpdUc2UWN6QUd1ZGU1?=
- =?utf-8?B?M3BaTDRNbnR1Mm0rMW5oNWk1QUZaNFVvbjVyS0t4Vk1KaFRnMGRnVmhXdFpr?=
- =?utf-8?B?bnBHa0gzSXUyQkdoUHpaVFNBa2Uwd2Q5cFJZUzYxb3N6QUV1eCs5T0Jpd0FY?=
- =?utf-8?B?R3BjcEdhbklhMzhSc2lQTFRTQXhhcUtxYkN4SU82eE5Vc1VaRDdFVlV5YVc2?=
- =?utf-8?B?eUFkL3hXaklmSEVIUkozTkdUWEFtZXUvOVhiZmZNc01nbnZnTzFpaFgxY2xr?=
- =?utf-8?B?b2c5YjdkWkthVDF6RzMvRGVTc1NaZlNQOXNmZlBUUEpIQTJpOGxaengwQ2NN?=
- =?utf-8?B?dTkrUURLR0t3QnNxMlRxR0FMMjRPM3h5NDFMRjl6SVNnRkN0WWgwSnlPOEgv?=
- =?utf-8?B?d210emVXeTAwV3NsR2tBUmw0bTB3STFwbUQ1WEl5Nm5OcytkeGhyVG5NYXB4?=
- =?utf-8?B?cE9nR09nVUlNd0hkcjdtaDhYZkpzY2pvZEc2d0FWMUxXQy82MUhnS2x2ZHkr?=
- =?utf-8?B?QU9peUxrM3R0NG1LYVRkdnNHcitzS1ZkODl0eDcvV05CNHZBcDFjbU83WlBl?=
- =?utf-8?B?RlpFVm84THh4dlo4WHlnK1lsUStVbWo1VldIY01HaFV2UG9sYVhOWlRzYVpU?=
- =?utf-8?B?b2JNVEJZQ1hZSHZYa1JGR3JRbjF5ZTZyckUzem5uOEdQMU9hK2QraXpGUms3?=
- =?utf-8?B?UTdNRGEvOEdkNU9VT0o1cCt0ZEE2K1ZKVU11eXRIKzZES0dBd1pUcWRjTGdN?=
- =?utf-8?B?MldLMTJzRVhLQU1iRVJJVzd5ai9QL1R6czBKSHFKVk5QUENCODYzUTRwckI5?=
- =?utf-8?B?eXVCeGhZQjBjdzVSRVltRnA0NlVSS3NET3BtYnRxRkF2U3drTXU1clJZWTRJ?=
- =?utf-8?B?SHZSY3BpdUJra2FObTF3VXIvZEFTS3ExdUY1MWpmY285NTErTnlSTzFiMEM0?=
- =?utf-8?B?WUYvVlRNM01ERGEyQ0FMT3p4V2lXM2dSRkdub1lHNFZtbVd6WmpGNFBIQnVl?=
- =?utf-8?B?RnN0VW5QbVlrU25tOTRwQTlkb1J2eUtCdVkyazRXdUx0aE5jMjAzSDNwQ1hp?=
- =?utf-8?B?VlgwaTlSNGJqS09MMnE1eFErWUtaaUJ2SC9sZW1LZFpoa1ZSWVNIUTBXMjR4?=
- =?utf-8?B?cXphdDBqRjIrLzJNd2xEZ3NZbFBhUUpTRW5XT0FlcG1yUmNYYm9iZUduYmx1?=
- =?utf-8?B?Y2hQVCs4dG5kWHBJbzIzR3VOTG9KOHFQcGcyMG5zV1JOOTlhMXAvalFtWFpv?=
- =?utf-8?B?Zm11SUIrQk51cFNMQUd1SG5WUm96aDBCOVlBaVhHTitJajZXbGdrVWxmSGpP?=
- =?utf-8?B?RUJlU3UxT2Fqa2hxVmV3Nys4SXVMM200NnNtUjVrQnY5T08wYU5SYTFHaUVy?=
- =?utf-8?B?eXZrSzE3RzlMZUJma2tUNVhjbkdCRDVSdzhubnpsNy9WMVlYeVQwUT09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 91d3defe-98bc-4dac-115b-08debb2ac7e7
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5356.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2026 13:29:15.5984
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- 7o/jG99YEqty5o7hPNFFbvqbsV8bllS2PddvPQiwR7LK3o8Oz10aw7yBUqS6c6dfrdXzP1LY7Yl5oqKBkm9Jtw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8964
-Message-ID-Hash: S5FYZISA7LJ3OQYQQN2F4HTBHBHMB5JE
-X-Message-ID-Hash: S5FYZISA7LJ3OQYQQN2F4HTBHBHMB5JE
-X-MailFrom: Syed.SabaKareem@amd.com
+From: Gordon Chen <chengordon326@gmail.com>
+Date: Sat, 23 May 2026 03:26:46 +0800
+X-Gm-Features: AVHnY4JEoZxwKSY0KEcXWHF_YMHlFhtE2L7576pd7Qdl4SyjlKCk4TI5KycBzgE
+Message-ID: 
+ <CAJxk+sBq4QaqgQF5KjwbLgiSDs0ab8PBrBrErOz7TDX9rWOasQ@mail.gmail.com>
+Subject: [BUG] snd-usb-audio: Behringer Flow 8 (1397:050c)
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="0000000000003de08f06526d03cd"
+X-MailFrom: chengordon326@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: 3WK4XV44UDLWTCNJSTIRWQ5IVDGOR4B2
+X-Message-ID-Hash: 3WK4XV44UDLWTCNJSTIRWQ5IVDGOR4B2
+X-Mailman-Approved-At: Tue, 26 May 2026 15:07:25 +0000
 X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5FYZISA7LJ3OQYQQN2F4HTBHBHMB5JE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3WK4XV44UDLWTCNJSTIRWQ5IVDGOR4B2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -175,16 +133,225 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DQpPbiA1LzI2LzI2IDE4OjM3LCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0KPiBJIHJhbiBpbnRvIGEg
-YnVpbGQgZmFpbHVyZSBvbiBsaW51eC1uZXh0Og0KPg0KPiBDT05GSUdfU05EX1NPQ19BTURfQUNQ
-PW0NCj4gQ09ORklHX1NORF9TT0NfQU1EX0FDUF9DT01NT049bQ0KPiBDT05GSUdfU05EX1NPQ19B
-TURfQUNQNXg9eQ0KPiBDT05GSUdfU05EX1NPQ19BTURfQUNQNng9eQ0KPiBDT05GSUdfU05EX0FN
-RF9BQ1BfQ09ORklHPXkNCj4gQ09ORklHX1NORF9TT0NfQUNQSV9BTURfTUFUQ0g9eQ0KPiBDT05G
-SUdfU05EX1NPQ19BQ1BJX0FNRF9TRENBX1FVSVJLUz1tDQo+DQo+IHg4Nl82NC1saW51eC1sZDog
-c291bmQvc29jL2FtZC9hY3AvYW1kLWFjcDcwLWFjcGktbWF0Y2gubzooLmRhdGErMHhmMDApOiB1
-bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBzbmRfc29jX2FjcGlfYW1kX3NkY2FfaXNfZGV2aWNlX3J0
-NzEyX3ZiJw0KPg0KPiBJIHVzdWFsbHkgdHJ5IHRvIHNlbmQgYSB3b3JrYXJvdW5kIHBhdGNoIHdo
-ZW4gSSBlbmNvdW50ZXINCj4gdGhlc2UsIGJ1dCBJIGNvdWxkIG5vdCBjb21lIHVwIHdpdGggYSBn
-b29kIHNvbHV0aW9uLg0KPg0KPiBQbGVhc2UgaGF2ZSBhIGxvb2suDQo+DQo+ICAgICAgIEFybmQN
-Cj4NCkNvdWxkIHlvdSBwbGVhc2Ugc2hhcmUgdGhlIC5jb25maWcgZmlsZT8gd2lsbCB0cnkgdG8g
-cmVwcm9kdWNlIHRoZSBpc3N1ZS4NCg==
+--0000000000003de08f06526d03cd
+Content-Type: text/plain; charset="UTF-8"
+
+implicit-feedback playback EP starves permanently after capture packet
+errors
+
+Hi Takashi,
+
+I would like to report what looks like a long-standing silent-stall path
+in sound/usb/endpoint.c that triggers reliably on the Behringer Flow 8
+USB mixer (idVendor=0x1397 idProduct=0x050c, UAC 2.0, high-speed).
+
+Symptom
+=======
+After 5-35 minutes of continuous playback at 48 kHz, the playback PCM
+hw_ptr stops advancing while substream state remains
+SNDRV_PCM_STATE_RUNNING. No XRUN reported, no recovery; only a full USB
+device-level unbind/bind clears it (jackd / pipewire restart alone is
+not sufficient).
+
+The Flow 8 declares an OUT EP 0x01 with implicit feedback from capture
+EP 0x81 (Sync EP Interface=2 Altset=1, Implicit Feedback Mode: Yes per
+/proc/asound/F8/stream0). The chip currently has no quirk_flags entry in
+sound/usb/quirks.c. Tried setting
+
+  - QUIRK_FLAG_SKIP_IMPLICIT_FB    (no effect; the UAC2 endpoint
+                                    companion descriptor explicitly
+                                    references the sync EP, so IFB is
+                                    wired up by the standard parser
+                                    regardless of the quirk)
+  - QUIRK_FLAG_PLAYBACK_FIRST | QUIRK_FLAG_GENERIC_IMPLICIT_FB
+                                   (same as UMC202/204/404HD; no effect)
+  - QUIRK_FLAG_FORCE_IFACE_RESET   (no effect)
+
+None of them addresses the stall.
+
+Evidence (three independent ftrace captures with func_stack_trace)
+==================================================================
+Each capture covers ~70 ms ending at a STALL_MARKER timestamp written
+once a userspace watchdog noticed hw_ptr frozen. In all three captures:
+
+  - 60-70 capture URB completion cycles in the 70 ms window
+  - 0 retire_playback_urb / prepare_outbound_urb /
+    snd_usb_queue_pending_output_urbs /
+    snd_usb_endpoint_implicit_feedback_sink calls
+  - every usb_submit_urb in the window comes from
+    snd_complete_urb+0x64e (the capture self-resubmit at line 594);
+    none from snd_usb_queue_pending_output_urbs
+
+Concurrent dmesg shows recurring (rate-limited) lines from pcm.c
+around iso frame status reporting:
+
+    usb 3-1: frame N active: -18      (iso_frame_desc[N].status = -EXDEV)
+
+In some cases two consecutive frames within a single URB hit -EXDEV in
+the same millisecond. dev_dbg_ratelimited hides the true rate, but
+ftrace confirms the IFB sink is never being called.
+
+Suspected root cause
+====================
+In snd_usb_handle_sync_urb(), sound/usb/endpoint.c around line 1784:
+
+    for (i = 0; i < in_ctx->packets; i++)
+        if (urb->iso_frame_desc[i].status == 0)
+            bytes += urb->iso_frame_desc[i].actual_length;
+
+    /*
+     * skip empty packets. At least M-Audio's Fast Track Ultra stops
+     * streaming once it received a 0-byte OUT URB
+     */
+    if (bytes == 0)
+        return;
+
+When Flow 8 returns a capture URB whose every packet has a non-zero
+status (recurrent -EXDEV episodes), bytes stays 0 and we return without
+calling snd_usb_queue_pending_output_urbs(). The OUT ring loses its
+sole IFB-driven feeder and starves forever, while the IN ring keeps
+self-resubmitting through snd_complete_urb()'s pipein branch.
+
+So the "skip empty" path that protects M-Audio Fast Track Ultra is, for
+Flow 8 -class devices, an unconditional kill switch.
+
+Proposed fix
+============
+Add an opt-in quirk QUIRK_FLAG_IFB_SILENCE_ON_EMPTY that, when set,
+skips the early return and falls through to the existing
+next_packet_fifo_enqueue path. The loop already maps each
+iso_frame_desc[i].status != 0 to packet_size[i] = 0, so falling through
+naturally produces a silence packet, prepare_outbound_urb keeps the OUT
+ring alive, and the device rides through the glitch.
+
+Default behaviour is preserved for every existing device including
+M-Audio Fast Track Ultra (no quirk -> early return as today). Only
+Flow 8 opts in.
+
+Patch attached (0001-...patch).
+
+Tested
+======
+On CachyOS kernel 7.0.9-1-cachyos (mainline 6.10-derived). The patched
+driver has been running on the Flow 8 for [N] hours of continuous
+playback. Will report longer soak results once available.
+
+Anything else useful I can provide:
+  - full lsusb -v 1397:050c
+  - the three raw ftrace files (~140 KB each around STALL_MARKER)
+  - usbmon pcap during a stall episode (200 MB segment, can trim)
+  - /proc/asound/F8/stream0, pcm0p, pcm0c snapshots
+
+Happy to spin the patch differently if you'd prefer a different name,
+or default-on with M-Audio opting out, or something else.
+
+Thanks for taking a look.
+
+Best,
+Gordon
+
+--0000000000003de08f06526d03cd
+Content-Type: text/x-patch; charset="US-ASCII";
+	name="0001-snd-usb-audio-add-IFB-silence-on-empty-quirk-for-Beh.patch"
+Content-Disposition: attachment;
+	filename="0001-snd-usb-audio-add-IFB-silence-on-empty-quirk-for-Beh.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_mphb9b6i0>
+X-Attachment-Id: f_mphb9b6i0
+
+RnJvbTogR29yZG9uIDxjaGVuZ29yZG9uMzI2QGdtYWlsLmNvbT4KRGF0ZTogU2F0LCAyMyBNYXkg
+MjAyNiAwMzoxMDowMCArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6IHVzYi1hdWRpbzogYWRk
+IElGQl9TSUxFTkNFX09OX0VNUFRZIHF1aXJrIGZvciBCZWhyaW5nZXIKIEZsb3cgOAoKVGhlIEJl
+aHJpbmdlciBGbG93IDggKDEzOTc6MDUwYykgaXMgYW4gOC1jaGFubmVsIFVTQiBtaXhlciB0aGF0
+CmRlY2xhcmVzIE9VVCBFUCAweDAxIHdpdGggaW1wbGljaXQgZmVlZGJhY2sgZnJvbSBjYXB0dXJl
+IEVQIDB4ODEgdmlhCml0cyBVQUMyIGVuZHBvaW50IGNvbXBhbmlvbiBkZXNjcmlwdG9yLiBBZnRl
+ciA1LTM1IG1pbnV0ZXMgb2YKY29udGludW91cyBwbGF5YmFjaywgdGhlIGRldmljZSBvY2Nhc2lv
+bmFsbHkgcmV0dXJucyBhIGNhcHR1cmUgVVJCIGluCndoaWNoIGV2ZXJ5IGlzb19mcmFtZV9kZXNj
+IGhhcyBhIG5vbi16ZXJvIHN0YXR1cyAoLUVYREVWIGJ1cnN0cywKdmlzaWJsZSBhcyByYXRlLWxp
+bWl0ZWQgImZyYW1lIE4gYWN0aXZlOiAtMTgiIGxpbmVzIGluIGRtZXNnIGZyb20KcGNtLmMpLgoK
+SW4gdGhhdCBjYXNlIHNuZF91c2JfaGFuZGxlX3N5bmNfdXJiKCkgYXQgZW5kcG9pbnQuYyBjb3Vu
+dHMgYnl0ZXM9PTAKYW5kIGZhbGxzIGludG8gdGhlIGVhcmx5ICJza2lwIGVtcHR5IHBhY2tldHMi
+IHJldHVybiBvcmlnaW5hbGx5IGFkZGVkCmZvciBNLUF1ZGlvIEZhc3QgVHJhY2sgVWx0cmEuIEFz
+IGEgcmVzdWx0IHRoZSBwbGF5YmFjayBFUCBsb3NlcyBpdHMKc29sZSBJRkItZHJpdmVuIGZlZWRl
+ciBhbmQgdGhlIE9VVCByaW5nIHN0YXJ2ZXMgcGVybWFuZW50bHk6IGh3X3B0cgpzdG9wcyBhZHZh
+bmNpbmcgd2hpbGUgc3Vic3RyZWFtIHN0YXRlIHJlbWFpbnMgUlVOTklORy4gT25seSBVU0IKcmUt
+ZW51bWVyYXRpb24gcmVjb3ZlcnMuCgpUaHJlZSBpbmRlcGVuZGVudCBmdHJhY2UgY2FwdHVyZXMg
+KHRha2VuIGF0IHRoZSBtb21lbnQgb2Ygc3RhbGwgdmlhIGEKdXNlcnNwYWNlIHdhdGNoZG9nKSBj
+b25zaXN0ZW50bHkgc2hvdzoKCiAgLSA2MC03MCBjYXB0dXJlIFVSQiBjb21wbGV0aW9ucyBpbiB0
+aGUgNzBtcyB3aW5kb3cgYmVmb3JlIHRoZSBtYXJrZXIKICAtIDAgcmV0aXJlX3BsYXliYWNrX3Vy
+YiAvIHF1ZXVlX3BlbmRpbmdfb3V0cHV0X3VyYnMgLwogICAgc25kX3VzYl9lbmRwb2ludF9pbXBs
+aWNpdF9mZWVkYmFja19zaW5rIGNhbGxzCiAgLSBldmVyeSB1c2Jfc3VibWl0X3VyYiBpbiB0aGUg
+d2luZG93IGNvbWVzIGZyb20KICAgIHNuZF9jb21wbGV0ZV91cmIrMHg2NGUgKGNhcHR1cmUgc2Vs
+Zi1yZXN1Ym1pdCksIG5vbmUgZnJvbSB0aGUKICAgIHF1ZXVlX3BlbmRpbmdfb3V0cHV0X3VyYnMg
+cGF0aAoKQWRkIGEgbmV3IG9wdC1pbiBxdWlyayBRVUlSS19GTEFHX0lGQl9TSUxFTkNFX09OX0VN
+UFRZOiB3aGVuIHNldCwgdGhlCmVhcmx5IHJldHVybiBpcyBza2lwcGVkIGFuZCB3ZSBmYWxsIHRo
+cm91Z2ggdG8gZW5xdWV1ZSBhIHBhY2tldF9pbmZvCndob3NlIHBhY2tldF9zaXplW2ldIGFyZSBh
+bGwgMCAodGhlIGV4aXN0aW5nIGxvb3AgYWxyZWFkeSBtYXBzCnN0YXR1cyE9MCBwYWNrZXRzIHRv
+IHNpemUgMCkuIHByZXBhcmVfb3V0Ym91bmRfdXJiIHRoZW4gZW1pdHMgYQpzaWxlbmNlIHBhY2tl
+dCwgdGhlIE9VVCByaW5nIGtlZXBzIG1vdmluZywgYW5kIHRoZSBkZXZpY2UgcmlkZXMKdGhyb3Vn
+aCB0aGUgZ2xpdGNoLgoKVGhlIGRlZmF1bHQgYmVoYXZpb3VyIChlYXJseSByZXR1cm4pIGlzIHBy
+ZXNlcnZlZCBmb3IgYWxsIGV4aXN0aW5nCmRldmljZXMgaW5jbHVkaW5nIE0tQXVkaW8gRmFzdCBU
+cmFjayBVbHRyYS4gT25seSBGbG93IDggb3B0cyBpbiBoZXJlLgoKU2lnbmVkLW9mZi1ieTogR29y
+ZG9uIDxjaGVuZ29yZG9uMzI2QGdtYWlsLmNvbT4KLS0tCiBzb3VuZC91c2IvZW5kcG9pbnQuYyB8
+IDEyICsrKysrKysrKystLQogc291bmQvdXNiL3F1aXJrcy5jICAgfCAgMyArKysKIHNvdW5kL3Vz
+Yi91c2JhdWRpby5oIHwgIDkgKysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDIyIGluc2VydGlv
+bnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL2VuZHBvaW50LmMg
+Yi9zb3VuZC91c2IvZW5kcG9pbnQuYwppbmRleCBYWFhYWFhYLi5YWFhYWFhYIDEwMDY0NAotLS0g
+YS9zb3VuZC91c2IvZW5kcG9pbnQuYworKysgYi9zb3VuZC91c2IvZW5kcG9pbnQuYwpAQCAtMTc4
+MSw4ICsxNzgxLDE2IEBAIHN0YXRpYyB2b2lkIHNuZF91c2JfaGFuZGxlX3N5bmNfdXJiKHN0cnVj
+dCBzbmRfdXNiX2VuZHBvaW50ICplcCwKIAkJLyoKIAkJICogc2tpcCBlbXB0eSBwYWNrZXRzLiBB
+dCBsZWFzdCBNLUF1ZGlvJ3MgRmFzdCBUcmFjayBVbHRyYSBzdG9wcwogCQkgKiBzdHJlYW1pbmcg
+b25jZSBpdCByZWNlaXZlZCBhIDAtYnl0ZSBPVVQgVVJCCisJCSAqCisJCSAqIEhvd2V2ZXIsIG9u
+IGRldmljZXMgd2hlcmUgYnl0ZXM9PTAgbWVhbnMgZXZlcnkgc3luYy1zb3VyY2UKKwkJICogcGFj
+a2V0IGVycm9yZWQgKGUuZy4gQmVocmluZ2VyIEZsb3cgOCByZXR1cm5pbmcgLUVYREVWIGJ1cnN0
+cworCQkgKiBmb3IgZW50aXJlIGNhcHR1cmUgVVJCcyksIGFuIHVuY29uZGl0aW9uYWwgcmV0dXJu
+IHN0YXJ2ZXMgdGhlCisJCSAqIElGQi1mZWQgT1VUIHJpbmcgcGVybWFuZW50bHkuIFN1Y2ggZGV2
+aWNlcyBzZXQKKwkJICogUVVJUktfRkxBR19JRkJfU0lMRU5DRV9PTl9FTVBUWSB0byBmYWxsIHRo
+cm91Z2ggYW5kIGVucXVldWUgYQorCQkgKiBwYWNrZXRfaW5mbyB3aXRoIHNpemUgMCBwYWNrZXRz
+LCBzbyBwbGF5YmFjayBlbWl0cyBzaWxlbmNlCisJCSAqIGFuZCB0aGUgT1VUIHJpbmcga2VlcHMg
+bW92aW5nLgogCQkgKi8KLQkJaWYgKGJ5dGVzID09IDApCisJCWlmIChieXRlcyA9PSAwICYmICEo
+ZXAtPmNoaXAtPnF1aXJrX2ZsYWdzICYgUVVJUktfRkxBR19JRkJfU0lMRU5DRV9PTl9FTVBUWSkp
+CiAJCQlyZXR1cm47CgogCQlzcGluX2xvY2tfaXJxc2F2ZSgmZXAtPmxvY2ssIGZsYWdzKTsKZGlm
+ZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWlya3MuYwppbmRleCBY
+WFhYWFhYLi5YWFhYWFhYIDEwMDY0NAotLS0gYS9zb3VuZC91c2IvcXVpcmtzLmMKKysrIGIvc291
+bmQvdXNiL3F1aXJrcy5jCkBAIC0yMTI3LDYgKzIxMjcsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
+IHVzYl9hdWRpb19xdWlya19mbGFnc190YWJsZSBxdWlya19mbGFnc190YWJsZVtdID0gewogCQkg
+ICBRVUlSS19GTEFHX1BMQVlCQUNLX0ZJUlNUIHwgUVVJUktfRkxBR19HRU5FUklDX0lNUExJQ0lU
+X0ZCKSwKIAlERVZJQ0VfRkxHKDB4MTM5NywgMHgwNTA5LCAvKiBCZWhyaW5nZXIgVU1DNDA0SEQg
+Ki8KIAkJICAgUVVJUktfRkxBR19QTEFZQkFDS19GSVJTVCB8IFFVSVJLX0ZMQUdfR0VORVJJQ19J
+TVBMSUNJVF9GQiksCisJREVWSUNFX0ZMRygweDEzOTcsIDB4MDUwYywgLyogQmVocmluZ2VyIEZs
+b3cgOCAqLworCQkgICBRVUlSS19GTEFHX0lGQl9TSUxFTkNFX09OX0VNUFRZKSwKIAlERVZJQ0Vf
+RkxHKDB4MTNlNSwgMHgwMDAxLCAvKiBTZXJhdG8gUGhvbm8gKi8KIAkJICAgUVVJUktfRkxBR19J
+R05PUkVfQ1RMX0VSUk9SKSwKCkBAIC0yMjgwLDYgKzIyODIsNyBAQCBzdGF0aWMgY29uc3QgY2hh
+ciAqY29uc3Qgc25kX3VzYl9hdWRpb19xdWlya19mbGFnX25hbWVzW10gPSB7CiAJUVVJUktfU1RS
+SU5HX0VOVFJZKFNLSVBfSUZBQ0VfU0VUVVApLAogCVFVSVJLX1NUUklOR19FTlRSWShNSVhFUl9Q
+TEFZQkFDS19MSU5FQVJfVk9MKSwKIAlRVUlSS19TVFJJTkdfRU5UUlkoTUlYRVJfQ0FQVFVSRV9M
+SU5FQVJfVk9MKSwKKwlRVUlSS19TVFJJTkdfRU5UUlkoSUZCX1NJTEVOQ0VfT05fRU1QVFkpLAog
+CU5VTEwKIH07CgpkaWZmIC0tZ2l0IGEvc291bmQvdXNiL3VzYmF1ZGlvLmggYi9zb3VuZC91c2Iv
+dXNiYXVkaW8uaAppbmRleCBYWFhYWFhYLi5YWFhYWFhYIDEwMDY0NAotLS0gYS9zb3VuZC91c2Iv
+dXNiYXVkaW8uaAorKysgYi9zb3VuZC91c2IvdXNiYXVkaW8uaApAQCAtMTk1LDYgKzE5NSwxMiBA
+QCBleHRlcm4gYm9vbCBzbmRfdXNiX3NraXBfdmFsaWRhdGlvbjsKICAqICBTZXQgbGluZWFyIHZv
+bHVtZSBtYXBwaW5nIGZvciBkZXZpY2VzIHdoZXJlIHRoZSBwbGF5YmFjayB2b2x1bWUgY29udHJv
+bAogICogIHJhbmdlIGFuZCB2YWx1ZSBhcmUgcmVwb3J0ZWQgaW4gbGluZWFyIGFtcGxpdHVkZSBz
+Y2FsZSBpbnN0ZWFkIG9mIGRCLgogICogIE92ZXJyaWRlcyBRVUlSS19GTEFHX01JWEVSX1BMQVlC
+QUNLX01JTl9NVVRFCisgKiBRVUlSS19GTEFHX0lGQl9TSUxFTkNFX09OX0VNUFRZCisgKiAgSW4g
+aW1wbGljaXQgZmVlZGJhY2sgbW9kZSwgd2hlbiBhbiBlbnRpcmUgY2FwdHVyZSBVUkIgcmV0dXJu
+cyB3aXRoCisgKiAgYWxsIGlzb19mcmFtZV9kZXNjW2ldLnN0YXR1cyAhPSAwIChieXRlcz09MCks
+IGRvIG5vdCBzaWxlbnRseSByZXR1cm4KKyAqICBmcm9tIHNuZF91c2JfaGFuZGxlX3N5bmNfdXJi
+LiBJbnN0ZWFkIGZhbGwgdGhyb3VnaCBhbmQgZW5xdWV1ZSBhCisgKiAgcGFja2V0X2luZm8gY29u
+dGFpbmluZyBvbmx5IHNpemUtMCBwYWNrZXRzLCBzbyB0aGUgT1VUIHJpbmcga2VlcHMKKyAqICBt
+b3ZpbmcgKGVtaXRzIHNpbGVuY2UpLiBOZWVkZWQgYnkgQmVocmluZ2VyIEZsb3cgOCAoMTM5Nzow
+NTBjKS4KICAqLwoKIGVudW0gewpAQCAtMjI3LDYgKzIzMyw4IEBAIGVudW0gewogCVFVSVJLX1RZ
+UEVfU0tJUF9JRkFDRV9TRVRVUAkJPSAyNiwKIAlRVUlSS19UWVBFX01JWEVSX1BMQVlCQUNLX0xJ
+TkVBUl9WT0wJPSAyNywKIAlRVUlSS19UWVBFX01JWEVSX0NBUFRVUkVfTElORUFSX1ZPTAk9IDI4
+LAorCVFVSVJLX1RZUEVfSUZCX1NJTEVOQ0VfT05fRU1QVFkJCT0gMjksCisvKiBQbGVhc2UgYWxz
+byBlZGl0IHNuZF91c2JfYXVkaW9fcXVpcmtfZmxhZ19uYW1lcyAqLwogfTsKCiAjZGVmaW5lIFFV
+SVJLX0ZMQUcoeCkJQklUX1UzMihRVUlSS19UWVBFXyAjIyB4KQpAQCAtMjU5LDUgKzI2Nyw2IEBA
+IGVudW0gewogI2RlZmluZSBRVUlSS19GTEFHX1NLSVBfSUZBQ0VfU0VUVVAJCVFVSVJLX0ZMQUco
+U0tJUF9JRkFDRV9TRVRVUCkKICNkZWZpbmUgUVVJUktfRkxBR19NSVhFUl9QTEFZQkFDS19MSU5F
+QVJfVk9MCVFVSVJLX0ZMQUcoTUlYRVJfUExBWUJBQ0tfTElORUFSX1ZPTCkKICNkZWZpbmUgUVVJ
+UktfRkxBR19NSVhFUl9DQVBUVVJFX0xJTkVBUl9WT0wJUVVJUktfRkxBRyhNSVhFUl9DQVBUVVJF
+X0xJTkVBUl9WT0wpCisjZGVmaW5lIFFVSVJLX0ZMQUdfSUZCX1NJTEVOQ0VfT05fRU1QVFkJCVFV
+SVJLX0ZMQUcoSUZCX1NJTEVOQ0VfT05fRU1QVFkpCgogI2VuZGlmIC8qIF9fVVNCQVVESU9fSCAq
+LwotLQoyLjQ1LjAK
+--0000000000003de08f06526d03cd--
