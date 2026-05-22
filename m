@@ -4,89 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E467CCD5BB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 15:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B526CD5BC8
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 15:13:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23D126020D;
-	Tue, 26 May 2026 17:13:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23D126020D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1967160251;
+	Tue, 26 May 2026 17:13:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1967160251
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779808399;
-	bh=OKfkpQ0NnBSMoIX3yZjPs7WX/VwicQJLrijB1e7OyJk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ZFXHe2d4+KgIfq+t5FNoIqmwbBtc4pSWb51dbnVV2D9QNVEOcAumhEVjOwUvS4Nld
-	 SbwXKmGOSKnvdqiZQMA2FB5x/5kTgiNHwxkM6ZZz5opv7xreVCG6/08QxoYKXWwJbL
-	 P173+qeteub3x4v/JTmyX+/4JKDY8fur87xtQk0c=
+	s=default; t=1779808410;
+	bh=R9M2QSXfPzAy9TLslT6I1ER4Rl08I+dWPfnMU1/VokM=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=LEZdSwhxiS/t7AVzeDaKJtD6MMHN0G9tN74nTmCRvWtGeVTxOfIH/kTIelL6PCrxC
+	 PNcZm8Gwx07KZYRazvugW/T7sOV3fpkJO98WQSoLPTT9NQ+RV2QyA9rxAIVicEmUhz
+	 9GronO70tGtDXzCr2CYjK8OPzMRbAJTlwd1JmXDg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4C5AF805F2; Tue, 26 May 2026 17:12:44 +0200 (CEST)
+	id 69826F8060D; Tue, 26 May 2026 17:12:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 242B7F805F0;
-	Tue, 26 May 2026 17:12:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 052C1F80613;
+	Tue, 26 May 2026 17:12:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F3EFFF80557; Mon, 25 May 2026 10:03:08 +0200 (CEST)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 3D7F1F80557; Mon, 25 May 2026 11:09:57 +0200 (CEST)
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com
+ [209.85.128.53])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73D77F8047D
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 10:03:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73D77F8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id E8515F800C1
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 11:09:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8515F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=E+yuIoNz
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 48EB443477;
-	Thu, 21 May 2026 11:43:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A9021F000E9;
-	Thu, 21 May 2026 11:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779363791;
-	bh=6exLDUNMJShJVw6ZjJRpJgvDUskVpNhcpmEurhYGDKI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=E+yuIoNzVnIUyez445DTnTp9HI9tsQ8Z1hfPvkMh88OvgOmooLJpUe9cZwU/yMKa0
-	 DaWOLJMsObARGQfiKWcu6RJodcSv58/t7FTL8TIQC9QKjhxkaas4A4ba+MRGIeKANN
-	 9GslTqdxFyDG/XjSjicNz1K06BZdufuBIYHokQlKe6lNPq29O8+4W6uyvLGBYQvCth
-	 D89OUxyP8h+wajNhyJoDybnyOvu9KehEPMeQnBVMhScHSawLvQHk/qVFcQUPEX9s7u
-	 lGdS9P0Q/fFP0FRH1kOmyspu95kHxrWfXxuWSIsY7eebvcrgGpIz7aJbBBDGlLvqJv
-	 FXri71qWhShCA==
-Message-ID: <2feeb837-ba7a-497b-be94-67756019b5cf@kernel.org>
-Date: Thu, 21 May 2026 06:43:09 -0500
+ unprotected) header.d=helsingborgslabbet.com header.i=@helsingborgslabbet.com
+ header.a=rsa-sha256 header.s=google header.b=B2MIjeik
+Received: by mail-wm1-f53.google.com with SMTP id
+ 5b1f17b1804b1-4904c1ce4c1so27130355e9.3
+        for <alsa-devel@alsa-project.org>;
+ Mon, 25 May 2026 02:09:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779700191; cv=none;
+        d=google.com; s=arc-20240605;
+        b=I4kFVmtsjrxT0CMywItf7iEke8jpYIMjFZIaxgoumbBCI40EYBqV7Dzmy4Uoy8LejD
+         rWCldv7aX3t0z/ay9BBDDUobn3+3Lof+Dz1jTpaZO4s+JPE8hCGF1yiXwQNPdyK4KNnP
+         6ktHWpLAy7DGLWjK/mEMx1XIa8WopB+06Bf439DzT4y5XnWWHqxcGVleETJ8MIznG+F7
+         qOPrdHHyRoB10xzkqMVNK8kTQpUMe2SMa3wyh5Z9Y4SziQ7hfgoBkoAN3dDq7enPEYjo
+         NTwACSDx2nfAVpo7afSEIWJ7eXE9GhJGYsz3zlIe4OGb5p1dtGq9lcdaJsbSDH9lcsI/
+         NAcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:dkim-signature;
+        bh=8OHfeC8Ku6s5hDeh3i7MxfIPhgNHUXCN9RJJIb8LW1w=;
+        fh=mtR6cuj0NexQ7uU1aPTXcSgI50hpK73d69m3eLj2Gfc=;
+        b=kKwFs1ZL3JZ+yR8VUYVHD6N4rL7vxEjLzrP9qtFRVWcPd+6F+D2yzchbiSu6i/F9HN
+         ZjKJnId3/LzHDtTeWqRwHA75B/NNBRpgVWF6CGJMYoWWmlNvjW/nra6XN97lceQ1jaz/
+         EQ9U6c05+cE4hm/mT2txxgaBbfNr7BfckfkyFY8SaT2tfWtF7KyO9Yi3yvvw+Yd5hr/S
+         6qnIjsTRjBLlKsx2/0jEKU5tpLPU4BTomIaGBruNU1qlUzRQxhVJro6nkBWDIJ6ALZ6V
+         BNLS00VlpW01vTtdp7SF5SFswV48yT6cEbDICofG+D2IHcaAOARPstTXyajSulDxucM2
+         lDBQ==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=helsingborgslabbet.com; s=google; t=1779700191; x=1780304991;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8OHfeC8Ku6s5hDeh3i7MxfIPhgNHUXCN9RJJIb8LW1w=;
+        b=B2MIjeikoE/jh3haCHG4Ss1/3B/ACsXJqkHDwDFSornTWl+/AXA0nJghJL2ETKOEtM
+         MxPmIzEifnzjlg6CUZp7uGaIxySl1addRmQ4kEbt6VDyweTqYGYZBtTy6qTEpbscsA8Q
+         RVrGc/FE5bTLGsbJ2adDKsuaf5oqNYuYNmpnOv01zBYfzk15CUfUsYGXOjSp3EI2RIiT
+         1/94oeigAr/Ejne+VYQSOkbMiOyBDh8ebW0CzTNEK0cqeZRT2G3wUZIa1f27TKXm8g7g
+         yP/EvMocBVu6UGTSpbYphRGd4HjzunBiyhb423Ti338gVqY/bH3l55p7fl5wUmAb1cXd
+         iCxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779700191; x=1780304991;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8OHfeC8Ku6s5hDeh3i7MxfIPhgNHUXCN9RJJIb8LW1w=;
+        b=XZLVZmDdSTcYl3NoyuIB4TYTV7qjJAUrabT8zYJx5j5O1FNjfPCss4Dq7foohnjqeu
+         hvpojjNuUwsHPT5r4lKly7gVJIoSD9ImzDCdVea6KuwfpouEG0CpFLUCJ4fGNR/pAwMs
+         tdUpL63zbuxxNL9zCO6x83DX3ctBoiLtpiNGp5bWooza7B6rFMrQgkWBARILn0oFLvtj
+         pL9hvcLHgMtIV31j5pRqIKlZI0uAkyRPXE5I3x2+oZR6IRNz/6HHXPHL9VANelm8oHlU
+         mZTXjeCgqx4AVWuK1jtZcrXfmOQ990zmX3iG6IpkT/awwpxENEv6lMbpgchPDOsX1/BV
+         rDtQ==
+X-Gm-Message-State: AOJu0Yzosdr0hgzc9S0r0/q8WSWX0V8goMOXuhppbxxSR33pBhPOaLXH
+	82wyJ+F8Ufb19GJniCT5ixvZHTeylbP3Mf4YN/mLZhTRbf2UzhlZ7nWMLMINaBs851lQcigHvfm
+	zTF4BG5SEtCs2escazqbA7x1x7i5QNFoPXpahzUqPQ7g1I/Zv2KAxfPOS
+X-Gm-Gg: Acq92OHz09QQlBuELeoob9XgHJrp+WtgWlog8XsbjhFUorBstLRXKa6GJaBE0+CV+QW
+	y2St+l5fUjtP0qxjPWxaLvDsiRYq4s/xWwXNJ6S1aZlxRQI2gk68CWz8jbNskO4BayF9O/5X9QJ
+	MiBphlDxjCv7p1rvvevO2NpJAajobj6IJH/DEXQlGPYdCtT7g+abqAAnjh8/drmjM/1rXQvL6Ja
+	bnV2/BqlReq+CGmxsSLM6zF/HETfTDzo0qNdMK4BhtRmReQW9Baxijj4wbuoXPXjD7XZnQswnL/
+	k9TFMq8=
+X-Received: by 2002:a17:907:7f93:b0:bd8:d0e4:dabe with SMTP id
+ a640c23a62f3a-bdd267cb7c4mr126142766b.39.1779432116595; Thu, 21 May 2026
+ 23:41:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] ASoC: amd: acp7x: add system and runtime PM ops
-Content-Language: en-US
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
- tiwai@suse.com, Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260507181251.20594-1-Vijendar.Mukunda@amd.com>
- <20260507181251.20594-6-Vijendar.Mukunda@amd.com>
- <905bfeff-ab78-4299-a2a4-45fb8f05e716@amd.com>
- <fe98d961-c02c-4794-868e-7911991f7321@amd.com>
-From: Mario Limonciello <superm1@kernel.org>
-In-Reply-To: <fe98d961-c02c-4794-868e-7911991f7321@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-MailFrom: superm1@kernel.org
+From: Joakim Andersson Lee <joakim@helsingborgslabbet.com>
+Date: Fri, 22 May 2026 08:41:46 +0200
+X-Gm-Features: AVHnY4JthxHaG4x9n4h3Op8T6GIzeeSaz0nmmrHOMXjSjgo0ypc54hcraKq6B-Q
+Message-ID: 
+ <CAHab4-0EBRkKVVv0zvKVHqCbSCsjvr1aE1m8bdi-cAvSareHig@mail.gmail.com>
+Subject: 
+ =?UTF-8?Q?ASUS_TUF_Gaming_A14_=28FA401EA=29_=E2=80=94_could_you_help_add?=
+	=?UTF-8?Q?_an_ACP70_SoundWire_quirk=3F?=
+To: hasunpark@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: joakim@helsingborgslabbet.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: CO3ZTCIDLHSGYKWHRTVWM7MAT4ASV3IS
-X-Message-ID-Hash: CO3ZTCIDLHSGYKWHRTVWM7MAT4ASV3IS
-X-Mailman-Approved-At: Tue, 26 May 2026 15:12:39 +0000
+Message-ID-Hash: DO2AILOXLAPHPOAVHFFDMF53NPOL4HFK
+X-Message-ID-Hash: DO2AILOXLAPHPOAVHFFDMF53NPOL4HFK
+X-Mailman-Approved-At: Tue, 26 May 2026 15:12:44 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CO3ZTCIDLHSGYKWHRTVWM7MAT4ASV3IS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DO2AILOXLAPHPOAVHFFDMF53NPOL4HFK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,80 +137,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi,
 
+I hope you don't mind me reaching out directly =E2=80=94 I was wondering if=
+ you might
+be able to help me with something.
 
-On 5/21/26 06:41, Mukunda,Vijendar wrote:
-> On 08/05/26 01:03, Mario Limonciello wrote:
->>
->>
->> On 5/7/26 13:11, Vijendar Mukunda wrote:
->>> Add ACP7.x PM callbacks and hook up system sleep and runtime PM ops for
->>> the PCI driver.
->>>
->>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->>> ---
->>>    sound/soc/amd/acp7x/acp7x-common.c | 43 ++++++++++++++++++++++++++++++
->>>    sound/soc/amd/acp7x/acp7x.h        |  3 +++
->>>    sound/soc/amd/acp7x/pci-acp7x.c    | 31 +++++++++++++++++++++
->>>    3 files changed, 77 insertions(+)
->>>
->>> diff --git a/sound/soc/amd/acp7x/acp7x-common.c
->>> b/sound/soc/amd/acp7x/acp7x-common.c
->>> index 68f9b47766c4..df94864a1693 100644
->>> --- a/sound/soc/amd/acp7x/acp7x-common.c
->>> +++ b/sound/soc/amd/acp7x/acp7x-common.c
->>> @@ -75,8 +75,51 @@ static int acp7x_deinit(void __iomem *acp_base, struct
->>> device *dev)
->>>        return 0;
->>>    }
->>>    +static int __maybe_unused snd_acp7x_suspend(struct device *dev)
->>> +{
->>> +    struct acp7x_dev_data *adata;
->>> +    int ret;
->>> +
->>> +    adata = dev_get_drvdata(dev);
->>> +    ret = acp_hw_deinit(adata, dev);
->>> +    if (ret)
->>> +        dev_err(dev, "ACP de-init failed\n");
->>> +    return ret;
->>> +}
->>> +
->>> +static int __maybe_unused snd_acp7x_runtime_resume(struct device *dev)
->>> +{
->>> +    struct acp7x_dev_data *adata;
->>> +    int ret;
->>> +
->>> +    adata = dev_get_drvdata(dev);
->>> +    ret = acp_hw_init(adata, dev);
->>> +    if (ret) {
->>> +        dev_err(dev, "ACP init failed\n");
->>> +        return ret;
->>> +    }
->>> +    return 0;
->>> +}
->>> +
->>> +static int __maybe_unused snd_acp7x_resume(struct device *dev)
->>> +{
->>> +    struct acp7x_dev_data *adata;
->>> +    int ret;
->>> +
->>> +    adata = dev_get_drvdata(dev);
->>> +    ret = acp_hw_init(adata, dev);
->>> +    if (ret)
->>> +        dev_err(dev, "ACP init failed\n");
->>> +
->>> +    return ret;
->>> +}
->>
->> Both of snd_acp7x_runtime_resume and snd_acp7x_resume look identical. Will
->> there be later code (when machine driver and IO enablement come) that makes
->> them different?
-> 
-> Yes, when IO enablement code is updated, both the functions are going to be
-> different.
-> We need to keep it separately.
-> 
+I have an ASUS TUF Gaming A14 (2026, FA401EA) with the Ryzen AI Max+ 392
+(Strix Halo), and I've been trying to get the internal speakers working on
+Linux. First off, thank you for the AMD ACP70 SoundWire work =E2=80=94 the =
+ProArt PX13
+(HN7306EA) quirk that landed in 7.0 looks very close to what my machine nee=
+ds.
 
-Thanks, no concerns with the series then.
+On a stock Fedora 44 kernel (7.0.9) the internal speakers stay silent:
 
-Reviewed-by: Mario Limonciello (AMD) <superm1@kernel.org>
+    platform acp_asoc_acp70.0: warning: No matching ASoC machine driver fou=
+nd
+
+(PipeWire shows only a Dummy Output; aplay -l shows only the HDMI card.)
+
+My laptop seems to use the same ACP70 + TAS2783 setup. Its DMI is:
+
+    board_vendor =3D "ASUSTeK COMPUTER INC."
+    product_name =3D "TUF Gaming A14 FA401EA"
+    board_name   =3D "FA401EA"
+
+>From what I can tell, it might just need an entry in soc_sdw_quirk_table[]
+(sound/soc/amd/acp/acp-sdw-legacy-mach.c), mirroring the HN7306EA one:
+
+    {
+        .callback =3D soc_sdw_quirk_cb,
+        .matches =3D {
+            DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
+            DMI_MATCH(DMI_PRODUCT_NAME, "FA401EA"),
+        },
+        .driver_data =3D (void *)(ASOC_SDW_ACP_DMIC),
+    },
+
+For what it's worth, the speakers do work out of the box on SteamOS on this
+exact laptop (only HDMI-out is broken there), so the hardware seems fine =
+=E2=80=94 it
+just looks like mainline is missing the FA401EA entry.
+
+I'd be really glad to help however I can =E2=80=94 I'm very happy to test p=
+atches and
+send over dmesg, the SoundWire enumeration, or anything else useful from th=
+e
+actual hardware. Just let me know what would be most helpful.
+
+Thank you so much for all the work you put into this.
+
+Best regards,
+Joakim
