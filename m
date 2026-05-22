@@ -4,168 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E9D0CD5BC8
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 15:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CBA0CD5BB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 15:14:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D39760252;
-	Tue, 26 May 2026 17:13:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D39760252
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0841360237;
+	Tue, 26 May 2026 17:14:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0841360237
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779808444;
-	bh=yDh31zvaqbtfk5n1otOYA4jDqDUEAA1FZdL/xDq19z8=;
+	s=default; t=1779808467;
+	bh=L4Bc+D7xvI8qn/QAzbHgmVMCeUDVLiHVFMZoPI+zcuQ=;
 	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qRtU5TNCOJ1OEw0KUzii9dAubTNbE8UppJnBkASrlXeUsfRqYq/GLUvPERxgcbfXK
-	 60/xF0z+fyM6YW4T2zdRQWvKlUyWkepkA+X3lFafKYXLEGYbqXGTbI5/5y/hij6PuB
-	 EHC4JNxvaFd9VyHg/xRXGA+kcvufRn+wSD7NH110=
+	b=JP5QhfQPZXV83le8YK+OZp2dUA6i+pqFfFOneuV7fLZf9rtrbJD/Pc3MhT0J3dcJf
+	 BQumitpFdKi0/NJcNrLe4CynYizyzzmtc1/WCrhSrEU9MFe78fbXQjJhVtlUfK4ipC
+	 ncAZnKzp7G4KSta5LHuKzmGS+LposSm23tr/oQ9c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21159F8065E; Tue, 26 May 2026 17:13:04 +0200 (CEST)
+	id 46AF1F80185; Tue, 26 May 2026 17:13:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3AAFF8065C;
-	Tue, 26 May 2026 17:13:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F0D7F805F0;
+	Tue, 26 May 2026 17:13:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24C10F80557; Mon, 25 May 2026 12:01:32 +0200 (CEST)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id D9363F80557; Mon, 25 May 2026 16:20:46 +0200 (CEST)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com
+ [209.85.218.52])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F4EEF8047D
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 12:01:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F4EEF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id D6B36F8047D
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 16:20:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6B36F8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmx.at header.i=t.malzer@gmx.at header.a=rsa-sha256
- header.s=s31663417 header.b=PCwQs2G+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.at;
-	s=s31663417; t=1779703289; x=1780308089; i=t.malzer@gmx.at;
-	bh=yDh31zvaqbtfk5n1otOYA4jDqDUEAA1FZdL/xDq19z8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
-	 Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=PCwQs2G+FV1zvLtAtj5QFAUiUWyV+PoM1/aWirA1u6KXB8EWp2WfGUb+GDeiCbCO
-	 Rxh03WzThjUQV37Cphpbe96i9kMVvDOGVK2EgC323gGzYInV0coeDiBn0Ootp5RTO
-	 3vCt66p+lm8HNOUROSbX0ojBq9fQ+RA46oIbXu0WLjDEGspBlsG56pblFJ8BitDk0
-	 rOAue9+KR9WAYW2nf8BAz1l7lVJxoresOXL3Uxr7Xq6uhXhp/6RfgkvOEoJyOl/Qn
-	 mifoTnqFfSMWilDn1mQCiIkp6d5XybetJm5m1BOHPPMnLvtVZlXt93IlQwHWSIbVn
-	 a9m80Y/WaOJ8TgK0LQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from client.hidden.invalid by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N49lJ-1xPg9t2JRR-00saq8; Thu, 21
- May 2026 10:32:52 +0200
-Message-ID: <7f3b61bb-e03b-4724-8fd2-c184003a51f0@gmx.at>
-Date: Thu, 21 May 2026 10:32:51 +0200
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=O0eP3+a+
+Received: by mail-ej1-f52.google.com with SMTP id
+ a640c23a62f3a-bda62f13d90so877144766b.2
+        for <alsa-devel@alsa-project.org>;
+ Mon, 25 May 2026 07:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779718844; x=1780323644;
+ darn=alsa-project.org;
+        h=subject:from:to:content-language:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=+52G9fjYMDqJheiDRzj6p8cUopKDG9s7RCAmc5BUOJU=;
+        b=O0eP3+a+ah6G3GE+A36vORoM1cPqzJ+wqoo9Yt4QnTeKgv35Ql7ErmEdbJyNE4pK2J
+         PO0DF4Wf4CbMjYrIQolJltUuavyouzC3BogQcarb4WfoDHa7BlECbLmOIU2pqU/D4dSz
+         VbARojMeNanaxQUr6UXGw4rMaRFsvPpxpbo8u0wxUGLzHs0pmFlUaSeHfagaPzX8t2lz
+         evWT1RqV02Qf2IrbIzL+H1fXt+s8qgZlrql+NCJma+CmTPXcje43He/1hKCuPKxeI8uE
+         cpe3OrDR7CbzvtGa81jKiDrTHgew9os+xrxA7Gr0zcwDmCM91x7LBZYZLBXknVV5Lkpe
+         /GNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779718844; x=1780323644;
+        h=subject:from:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+52G9fjYMDqJheiDRzj6p8cUopKDG9s7RCAmc5BUOJU=;
+        b=aZc/WBLbMo/xaXEx8w/AMZd3VQ2CC8SL9HSUlH3OJq2jvW8SOpZkmpKt21p39JQt7p
+         E/4JCBC2m0f7jhje64afQtitUXPxNrJ7HeV9RPZh5aatsI/kslw+NeG+T0UiXiCwHjKP
+         JNRmYxVdrbXRMjsYJyFeKGDzAXv+oKD9db7r3Gm+FF+kw8KhrTwEHAR8BJ+M+ryg8577
+         2EgxqhhMJ1bFVcfkem8x09fXaFJjhx2JnrLmYPwOdp35p+XhMuIax2LtgeTqRwG3CS6B
+         i+eW560x0MjEOW1LkBABDhPg1feAlkUgfppYYMSsj+tuDqWHqR0SG3QaM4X80Wj0t0l3
+         C2Bw==
+X-Gm-Message-State: AOJu0YwCsS8dd0nGyNOzNwCevE/snFjH+iODn8LNCVkvI6Uxif2Dt9K5
+	LdwNo+stV9P0Hi3bcW2YRi4rGZjx8ZCrGeBtDgDmdirIhpxUM5qO6wqBHFdByRnQ
+X-Gm-Gg: Acq92OEV1uvRCyfNpc151VKfI0iyNvlh5kkXShmmpdPDu2/YxcOC90cJ2ejHwCG6rnD
+	y807Jke4i/YkE2B1VE1WEydxnzkQp+3sEPAjvy8gszT5xqSXo/6wqmybOunD6ZPEvP1f89qRFpt
+	Q5kfFVHl6JFqDkU6ysIermiDHX3brf42piCDsmIVT2awpNUvLseyvV8WeW43yBdeoGFUrlzaIH0
+	CBX3QLM+rF6fuAmoSgF9R0pga02YoohFA1xgkBN/KN4/9nSpxYaZLBFVpVTdcvtwmd11fT58Dvf
+	fFQGkuOdy4ElLXueEOIdTfwNRVN7awzvKXJPzBAAUzfpWGqoJNSZCel0Suo818smEjr01geORL+
+	qVBO8Qrk5qXCle6vU27+xbz8pQlmkEtEV3KtKqjdcpG5CI0bmU1ac12jetrejRE+KkRu8hTG4D7
+	EjN4seUYwCJ242mUKv1/lkUWW3PT5Iougdd7ZDzSWCaRk=
+X-Received: by 2002:a17:906:f5a3:b0:b9d:872f:f5b9 with SMTP id
+ a640c23a62f3a-bdd25de3aa1mr182071866b.23.1779443712285;
+        Fri, 22 May 2026 02:55:12 -0700 (PDT)
+Received: from [10.150.151.103] ([176.123.27.233])
+        by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-bddc62d9520sm36645666b.50.2026.05.22.02.55.11
+        for <alsa-devel@alsa-project.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 May 2026 02:55:11 -0700 (PDT)
+Message-ID: <0ae0d735-cc02-428e-a775-fca5c364455b@gmail.com>
+Date: Fri, 22 May 2026 12:55:09 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-To: alsa-devel@alsa-project.org, t.malzer@gmx.at
-From: Thomas Malzer <t.malzer@gmx.at>
-Subject: Bug report: snd_hda_codec_conexant: CX20585 Speaker Pin (Node 0x1f)
- enters D3 power state during playback
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xkdz631na9Bq/cIXbdJQcnFJhXekzv0B+HZYOaR1zqQ5IuuN87V
- cSoLDGPoBLEBPQpr3WXi0KgZtj++Ssr/wMU7yEG+DAJabQjUh1RqA1Ga6gK7cqJ344eV8wa
- EjBUhZS5oY1HRU56UIGtkYejPzpZ1t0RwyQUrKeWWnyKxY91mmiILlMIXMnjr93KHZ1RYW/
- vr99PFWqgdm3xAMAhkH8A==
-UI-OutboundReport: notjunk:1;M01:P0:sI6GmPoF2zI=;QPX0BNLDXmZwrvyWjnoabk2eCFr
- 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
- Gg7QRMl6xKpa+22pQw=
-X-MailFrom: t.malzer@gmx.at
+To: alsa-devel@alsa-project.org
+From: Ala Al-Sanea <ala0alsanea@gmail.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo Legion 7 16ITHg6
+ (17aa:3811)
+X-MailFrom: ala0alsanea@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: QMNZASGAA6GVGJXNCYY2PQO2KO5UN5D4
-X-Message-ID-Hash: QMNZASGAA6GVGJXNCYY2PQO2KO5UN5D4
-X-Mailman-Approved-At: Tue, 26 May 2026 15:12:59 +0000
+Message-ID-Hash: PK6B7BNVK3YCAJQQIUNOEGAQQOJPJJM5
+X-Message-ID-Hash: PK6B7BNVK3YCAJQQIUNOEGAQQOJPJJM5
+X-Mailman-Approved-At: Tue, 26 May 2026 15:13:46 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QMNZASGAA6GVGJXNCYY2PQO2KO5UN5D4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PK6B7BNVK3YCAJQQIUNOEGAQQOJPJJM5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -174,46 +121,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello,
-
-I would like to report an audio bug affecting the Conexant CX20585 chip.
-
-Hardware: Medion Akoya E7220 (MD98740)
-Audio chip: Conexant CX20585
-Vendor Id: 0x14f15069
-Subsystem Id: 0x1b0a20af
-Driver: snd_hda_codec_conexant
-Kernel: 7.0.0-15-generic
-OS: Xubuntu 26.04
-
-Problem:
-Internal speaker audio cuts out after approximately 12 seconds of=20
-playback. The issue also occurred under Windows 10, suggesting a=20
-firmware/hardware bug in the CX20585.
-
-Root cause identified:
-Node 0x1f (Speaker Pin Complex) transitions from D0 to D3 during active=20
-playback:
-
- =C2=A0 Node 0x1f [Pin Complex] wcaps 0x400501: Stereo
- =C2=A0 =C2=A0 Pin Default 0x90170110: [Fixed] Speaker at Int N/A
- =C2=A0 =C2=A0 Misc =3D NO_PRESENCE
- =C2=A0 =C2=A0 Power: setting=3DD3, actual=3DD3
-
-The following command immediately restores audio:
- =C2=A0 hda-verb /dev/snd/hwC0D0 0x1f SET_POWER_STATE 0
-
-Note: setting power_save=3D0 for snd_hda_intel does not prevent the issue.=
-=20
-The pin returns to D3 regardless.
-
-Workaround: Manual execution of hda-verb after each audio cutout.
-
-Request: Please consider adding a quirk to keep Node 0x1f in D0 for the=20
-CX20585 (Subsystem Id: 0x1b0a20af).
-
-Thank you for your time.
-
-Best regards,
-Thomas
-
+KlN1bW1hcnkqOiBBTFNBOiBoZGEvcmVhbHRlazogQWRkIHF1aXJrIGZvciBMZW5vdm8gTGVnaW9u
+IDcgMTZJVEhnNiAoUENJIA0KU1NJRCAxN2FhOjM4MTEpIOKAlCBpbnRlcm5hbCBzcGVha2VycyBz
+aWxlbnQNCg0KKkhhcmR3YXJlKjoNCg0KICAqIE1hY2hpbmU6IExlbm92byBMZWdpb24gNyAxNklU
+SGc2ICg4Mks2KQ0KICAqIENQVTogSW50ZWwgQ29yZSBpOS0xMTk4MEhLDQogICogQXVkaW8gY29k
+ZWM6IFJlYWx0ZWsgQUxDMjg3ICh2ZW5kb3IgMHgxMGVjMDI4Nywgc3Vic3lzdGVtIDB4MTdhYTM4
+NTUpDQogICogU3BlYWtlciBhbXA6IENpcnJ1cyBMb2dpYyBDUzM1TDQxIHgyIChpMmMtQ0xTQTAx
+MDE6MDAsIFJldmlzaW9uIEIyKQ0KDQoqS2VybmVsKjogNi4xMisgLyA3LjAuOS1hcmNoMS0xDQoq
+T1MqOiBFbmRlYXZvdXJPUyAoQXJjaC1iYXNlZCkNCg0KKlByb2JsZW0qOg0KSW50ZXJuYWwgc3Bl
+YWtlcnMgcHJvZHVjZSBubyBzb3VuZC4gfGRtZXNnfCBzaG93cyB8c3BlYWtlcl9vdXRzPTB8IOKA
+lCB0aGUgDQpBTEMyODcgZ2V0cyBhIGdlbmVyaWMgZml4dXAgYmVjYXVzZSBQQ0kgU1NJRCB8MTdh
+YTozODExfCBoYXMgbm8gZW50cnkgaW4gDQp8YWxjMjY5X2ZpeHVwX3RibHwgaW4gfHBhdGNoX3Jl
+YWx0ZWsuY3wuIFRoZSB0d28gQ1MzNUw0MSBhbXBzIGFyZSANCmRldGVjdGVkIGFuZCBpbml0aWFs
+aXplZCAofGNzMzVsNDEtaGRhfCBkcml2ZXIgbG9hZHMsIGZpcm13YXJlIA0KfGNzMzVsNDEtZHNw
+MS1zcGstcHJvdC0xN2FhMzg1NXwgaXMgcHJlc2VudCkgYnV0IG5ldmVyIGFjdGl2YXRlZCBiZWNh
+dXNlIA0KdGhlIEhEQSBjb2RlYyBmaXh1cCBjaGFpbiBpcyBuZXZlciB0cmlnZ2VyZWQuDQoNCipF
+eHBlY3RlZCo6DQp8QUxDMjg3X0ZJWFVQX0NTMzVMNDFfSTJDXzJ8IGFwcGxpZWQgZm9yIHRoaXMg
+U1NJRCwgc2FtZSBhcyBuZWlnaGJvcmluZyANCkxlZ2lvbi9Zb2dhIG1vZGVscy4NCg0KKldvcmth
+cm91bmQqOg0KDQp8b3B0aW9ucyBzbmQtaGRhLWludGVsIG1vZGVsPSwxN2FhOjM4NTV8DQoNCmlu
+IHwvZXRjL21vZHByb2JlLmQvYWxzYS1maXguY29uZnwg4oCUIHJlc3RvcmVzIHNwZWFrZXIgb3V0
+cHV0Lg0KDQoqUHJvcG9zZWQgZml4KiBpbiB8c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmN8
+Og0KDQp8U05EX1BDSV9RVUlSSygweDE3YWEsMHgzODExLCJMZW5vdm8gTGVnaW9uIDcgDQoxNklU
+SGc2IixBTEMyODdfRklYVVBfQ1MzNUw0MV9JMkNfMiksfA0KDQoqQUxTQSBpbmZvKjogDQpodHRw
+Oi8vYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj1lMzI4NmNiNWE3OTU0MzYzMDZhYTU5MTY5NjgwOGE0
+MzM5ZDIxMzY4IA0KPGh0dHA6Ly9hbHNhLXByb2plY3Qub3JnL2RiLz9mPWUzMjg2Y2I1YTc5NTQz
+NjMwNmFhNTkxNjk2ODA4YTQzMzlkMjEzNjg+DQoNCg==
