@@ -4,115 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CBA0CD5BB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 15:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE6FACD5BB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 May 2026 15:14:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0841360237;
-	Tue, 26 May 2026 17:14:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0841360237
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43A7960264;
+	Tue, 26 May 2026 17:14:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43A7960264
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779808467;
-	bh=L4Bc+D7xvI8qn/QAzbHgmVMCeUDVLiHVFMZoPI+zcuQ=;
-	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1779808484;
+	bh=okkyOXF4a8RjgOUA8PQCQ2GiBj+BIMC42Zv76UjtEcQ=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=JP5QhfQPZXV83le8YK+OZp2dUA6i+pqFfFOneuV7fLZf9rtrbJD/Pc3MhT0J3dcJf
-	 BQumitpFdKi0/NJcNrLe4CynYizyzzmtc1/WCrhSrEU9MFe78fbXQjJhVtlUfK4ipC
-	 ncAZnKzp7G4KSta5LHuKzmGS+LposSm23tr/oQ9c=
+	b=jzjgEl/iz6aVu7OppOFUTCN95T4IdFyMziJGI7aBNuYth4sdPO3gokEy8pql6ADUh
+	 VTBYpSYrkuyqZKCnEyneRwohi3aPGMm4I3rGWJu7UKUqsNxM0sfip7z/OMv45X4anI
+	 esn6IMbMCR1A4q+n38uIM7obRalzIEhbXXtkLooM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46AF1F80185; Tue, 26 May 2026 17:13:51 +0200 (CEST)
+	id 99A65F8060E; Tue, 26 May 2026 17:14:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F0D7F805F0;
-	Tue, 26 May 2026 17:13:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D40DF80602;
+	Tue, 26 May 2026 17:14:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9363F80557; Mon, 25 May 2026 16:20:46 +0200 (CEST)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com
- [209.85.218.52])
+	id DDBEFF80557; Mon, 25 May 2026 12:21:03 +0200 (CEST)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com
+ [209.85.221.53])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D6B36F8047D
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 16:20:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6B36F8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F926F8001F
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 12:21:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F926F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=O0eP3+a+
-Received: by mail-ej1-f52.google.com with SMTP id
- a640c23a62f3a-bda62f13d90so877144766b.2
+ header.s=20251104 header.b=JVaU/w2V
+Received: by mail-wr1-f53.google.com with SMTP id
+ ffacd0b85a97d-45ebafde87cso1554803f8f.3
         for <alsa-devel@alsa-project.org>;
- Mon, 25 May 2026 07:20:44 -0700 (PDT)
+ Mon, 25 May 2026 03:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779718844; x=1780323644;
+        d=gmail.com; s=20251104; t=1779704461; x=1780309261;
  darn=alsa-project.org;
-        h=subject:from:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+52G9fjYMDqJheiDRzj6p8cUopKDG9s7RCAmc5BUOJU=;
-        b=O0eP3+a+ah6G3GE+A36vORoM1cPqzJ+wqoo9Yt4QnTeKgv35Ql7ErmEdbJyNE4pK2J
-         PO0DF4Wf4CbMjYrIQolJltUuavyouzC3BogQcarb4WfoDHa7BlECbLmOIU2pqU/D4dSz
-         VbARojMeNanaxQUr6UXGw4rMaRFsvPpxpbo8u0wxUGLzHs0pmFlUaSeHfagaPzX8t2lz
-         evWT1RqV02Qf2IrbIzL+H1fXt+s8qgZlrql+NCJma+CmTPXcje43He/1hKCuPKxeI8uE
-         cpe3OrDR7CbzvtGa81jKiDrTHgew9os+xrxA7Gr0zcwDmCM91x7LBZYZLBXknVV5Lkpe
-         /GNg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8I0wfEgf6M9ALaEduDiT9+DQW6EsZnPU3ZXbwt+Sm00=;
+        b=JVaU/w2VklhhCmI6IMHBiLs0i2f7tOzz6F84VY4KnPzXkT5Rl57+3aoaYZFY5BMwRm
+         bBp/3yKMixlKnME1RnnYt2W/VjL/QKALaPiFt4ZdF/2ZQABGxtaqreTDOMNhhw6YFsW5
+         b0OQruqZkrUDlsAopZfWWetlISNmuBw1WC1oNjjnB376WuCDqbrSr4BSy7uF9OEgyoTy
+         Exj1iope2GmhasQ830gpdU5RCzVRi5ZZI8pMSjASZ/hfvqyOA29eY4zNfq4WDKgqwBYQ
+         DnFgV3w5cSuuRedr7cb9svG1N+GAwfOGLmTmXBZOLx9p5Rjm2UB2vyeS0Qnaxch2dvO/
+         n6BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779718844; x=1780323644;
-        h=subject:from:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20251104; t=1779704461; x=1780309261;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+52G9fjYMDqJheiDRzj6p8cUopKDG9s7RCAmc5BUOJU=;
-        b=aZc/WBLbMo/xaXEx8w/AMZd3VQ2CC8SL9HSUlH3OJq2jvW8SOpZkmpKt21p39JQt7p
-         E/4JCBC2m0f7jhje64afQtitUXPxNrJ7HeV9RPZh5aatsI/kslw+NeG+T0UiXiCwHjKP
-         JNRmYxVdrbXRMjsYJyFeKGDzAXv+oKD9db7r3Gm+FF+kw8KhrTwEHAR8BJ+M+ryg8577
-         2EgxqhhMJ1bFVcfkem8x09fXaFJjhx2JnrLmYPwOdp35p+XhMuIax2LtgeTqRwG3CS6B
-         i+eW560x0MjEOW1LkBABDhPg1feAlkUgfppYYMSsj+tuDqWHqR0SG3QaM4X80Wj0t0l3
-         C2Bw==
-X-Gm-Message-State: AOJu0YwCsS8dd0nGyNOzNwCevE/snFjH+iODn8LNCVkvI6Uxif2Dt9K5
-	LdwNo+stV9P0Hi3bcW2YRi4rGZjx8ZCrGeBtDgDmdirIhpxUM5qO6wqBHFdByRnQ
-X-Gm-Gg: Acq92OEV1uvRCyfNpc151VKfI0iyNvlh5kkXShmmpdPDu2/YxcOC90cJ2ejHwCG6rnD
-	y807Jke4i/YkE2B1VE1WEydxnzkQp+3sEPAjvy8gszT5xqSXo/6wqmybOunD6ZPEvP1f89qRFpt
-	Q5kfFVHl6JFqDkU6ysIermiDHX3brf42piCDsmIVT2awpNUvLseyvV8WeW43yBdeoGFUrlzaIH0
-	CBX3QLM+rF6fuAmoSgF9R0pga02YoohFA1xgkBN/KN4/9nSpxYaZLBFVpVTdcvtwmd11fT58Dvf
-	fFQGkuOdy4ElLXueEOIdTfwNRVN7awzvKXJPzBAAUzfpWGqoJNSZCel0Suo818smEjr01geORL+
-	qVBO8Qrk5qXCle6vU27+xbz8pQlmkEtEV3KtKqjdcpG5CI0bmU1ac12jetrejRE+KkRu8hTG4D7
-	EjN4seUYwCJ242mUKv1/lkUWW3PT5Iougdd7ZDzSWCaRk=
-X-Received: by 2002:a17:906:f5a3:b0:b9d:872f:f5b9 with SMTP id
- a640c23a62f3a-bdd25de3aa1mr182071866b.23.1779443712285;
-        Fri, 22 May 2026 02:55:12 -0700 (PDT)
-Received: from [10.150.151.103] ([176.123.27.233])
+        bh=8I0wfEgf6M9ALaEduDiT9+DQW6EsZnPU3ZXbwt+Sm00=;
+        b=OpiKCUitpwnoThyrybndIklZGSIari167gBwlJGTGvN578CPiUiqeZGlInOzAfgiNC
+         Z01MBTdT5GY8ZIsigkt/ykVAUlKkr3m7SkJSl3ikE5CEhs0t8BppSRXDcgVrovIcrl+a
+         wQHV6yIDhTIkt7FpK1W0KO4fokAwF/mUG8IefU26WT4IylqnHiL5XTyR66nd7uRIRUCp
+         qiggn4TZFXWPoahWPCegpE3/bQaAgWkp0EdKTgI6sVXcZqFvD7Bc+Q6ay2VfbLJRbvH8
+         QlCuHuOWZbFErZHhHKrNMU+qVVJJ77eaVqPRS3OFmDJC0BO0Wyr9j3Z3A5QEEKMmvghP
+         D+NA==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ/IU3qrCYEGlRVxWzFkEkH+EpnH/RllvZpr/zJvwavfWLmzSzOMiyxVB5jQ6Hx2vpTYP3FEBRh3Usuv@alsa-project.org
+X-Gm-Message-State: AOJu0Yz3VbhdFWkWcFLygbiz0KE58jKmHHn7bh3uYgZpMcyoW74I5AHd
+	hujfIaYw5KG8h9i7PmzhNikG+1dLOfcBOYRB3Lx5G9bIoj+tYEpv87Mpd0lOoYTGZLk=
+X-Gm-Gg: Acq92OHoom9yji+dt5pqz+P1zH5gVMd1lub6v2eZrCk3daxrfqjnH2jx0kYNcjr/QL+
+	4gpsE4IT3tUDli1nRRsx3EBLyv2fPHJU9Iy4xkhHHBLtZDI5yE5vNeUGkU4o3hd0T6DJath/ISA
+	OSnIeOxr4f5bBZEYID8PzmHsvP8Q33cS+EB2V7Lv3FJQ9+7A5YheOWwV95Fph7jNqT4BNHEbcNh
+	w8xVlSPDUMTbL9KIr0Ode4lDXYfgB5tWXY3LvWAeyHAMQUiqpFInZA0EOMxkygi5B30679eyJtk
+	giROJPD8l4jupqLIJHQ3kYV+cLUz3WCB6LwHkyuyTD7x2au0xsV2hA8mxRfU25R2BsaXViCMqNs
+	hSI62X5N3jBQnBIbmMnQSZgnUXJWz3y6lbGkMEqipdyNHLM6hkJNlipkDRy+OIxMDXb3j+NY8Rg
+	atG+4JFmkbnikoY8l/jh1Ujz+CtboEteGyunf/zj2zfdw21EPZUSQd2azgzorn
+X-Received: by 2002:a05:600c:35cf:b0:48a:5c23:cab with SMTP id
+ 5b1f17b1804b1-490426bc737mr141865515e9.19.1779554222778;
+        Sat, 23 May 2026 09:37:02 -0700 (PDT)
+Received: from joaom-cachyos ([2a01:b340:67:ff46:c6ec:ada0:af4a:a7a5])
         by smtp.gmail.com with ESMTPSA id
- a640c23a62f3a-bddc62d9520sm36645666b.50.2026.05.22.02.55.11
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 May 2026 02:55:11 -0700 (PDT)
-Message-ID: <0ae0d735-cc02-428e-a775-fca5c364455b@gmail.com>
-Date: Fri, 22 May 2026 12:55:09 +0300
+ 5b1f17b1804b1-490454a0b9asm121826695e9.11.2026.05.23.09.37.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 May 2026 09:37:02 -0700 (PDT)
+From: =?UTF-8?q?Jo=C3=A3o=20Miguel?= <jmiguel.ghp@gmail.com>
+To: Vijendar.Mukunda@amd.com
+Cc: linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	=?UTF-8?q?Jo=C3=A3o=20Miguel?= <joaomiguel.sapientia@gmail.com>
+Subject: [PATCH] ASoC: amd: yc: Enable internal mic on MSI Bravo 17 C7VF
+Date: Sat, 23 May 2026 17:36:52 +0100
+Message-ID: <20260523163652.18499-1-jmiguel.ghp@gmail.com>
+X-Mailer: git-send-email 2.54.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-From: Ala Al-Sanea <ala0alsanea@gmail.com>
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo Legion 7 16ITHg6
- (17aa:3811)
-X-MailFrom: ala0alsanea@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MailFrom: jmiguel.ghp@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: PK6B7BNVK3YCAJQQIUNOEGAQQOJPJJM5
-X-Message-ID-Hash: PK6B7BNVK3YCAJQQIUNOEGAQQOJPJJM5
-X-Mailman-Approved-At: Tue, 26 May 2026 15:13:46 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
+Message-ID-Hash: STJZCFQ6LBZOFWBZ4JI4ME6ZVLBNTGUZ
+X-Message-ID-Hash: STJZCFQ6LBZOFWBZ4JI4ME6ZVLBNTGUZ
+X-Mailman-Approved-At: Tue, 26 May 2026 15:14:01 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PK6B7BNVK3YCAJQQIUNOEGAQQOJPJJM5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/STJZCFQ6LBZOFWBZ4JI4ME6ZVLBNTGUZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,28 +122,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-KlN1bW1hcnkqOiBBTFNBOiBoZGEvcmVhbHRlazogQWRkIHF1aXJrIGZvciBMZW5vdm8gTGVnaW9u
-IDcgMTZJVEhnNiAoUENJIA0KU1NJRCAxN2FhOjM4MTEpIOKAlCBpbnRlcm5hbCBzcGVha2VycyBz
-aWxlbnQNCg0KKkhhcmR3YXJlKjoNCg0KICAqIE1hY2hpbmU6IExlbm92byBMZWdpb24gNyAxNklU
-SGc2ICg4Mks2KQ0KICAqIENQVTogSW50ZWwgQ29yZSBpOS0xMTk4MEhLDQogICogQXVkaW8gY29k
-ZWM6IFJlYWx0ZWsgQUxDMjg3ICh2ZW5kb3IgMHgxMGVjMDI4Nywgc3Vic3lzdGVtIDB4MTdhYTM4
-NTUpDQogICogU3BlYWtlciBhbXA6IENpcnJ1cyBMb2dpYyBDUzM1TDQxIHgyIChpMmMtQ0xTQTAx
-MDE6MDAsIFJldmlzaW9uIEIyKQ0KDQoqS2VybmVsKjogNi4xMisgLyA3LjAuOS1hcmNoMS0xDQoq
-T1MqOiBFbmRlYXZvdXJPUyAoQXJjaC1iYXNlZCkNCg0KKlByb2JsZW0qOg0KSW50ZXJuYWwgc3Bl
-YWtlcnMgcHJvZHVjZSBubyBzb3VuZC4gfGRtZXNnfCBzaG93cyB8c3BlYWtlcl9vdXRzPTB8IOKA
-lCB0aGUgDQpBTEMyODcgZ2V0cyBhIGdlbmVyaWMgZml4dXAgYmVjYXVzZSBQQ0kgU1NJRCB8MTdh
-YTozODExfCBoYXMgbm8gZW50cnkgaW4gDQp8YWxjMjY5X2ZpeHVwX3RibHwgaW4gfHBhdGNoX3Jl
-YWx0ZWsuY3wuIFRoZSB0d28gQ1MzNUw0MSBhbXBzIGFyZSANCmRldGVjdGVkIGFuZCBpbml0aWFs
-aXplZCAofGNzMzVsNDEtaGRhfCBkcml2ZXIgbG9hZHMsIGZpcm13YXJlIA0KfGNzMzVsNDEtZHNw
-MS1zcGstcHJvdC0xN2FhMzg1NXwgaXMgcHJlc2VudCkgYnV0IG5ldmVyIGFjdGl2YXRlZCBiZWNh
-dXNlIA0KdGhlIEhEQSBjb2RlYyBmaXh1cCBjaGFpbiBpcyBuZXZlciB0cmlnZ2VyZWQuDQoNCipF
-eHBlY3RlZCo6DQp8QUxDMjg3X0ZJWFVQX0NTMzVMNDFfSTJDXzJ8IGFwcGxpZWQgZm9yIHRoaXMg
-U1NJRCwgc2FtZSBhcyBuZWlnaGJvcmluZyANCkxlZ2lvbi9Zb2dhIG1vZGVscy4NCg0KKldvcmth
-cm91bmQqOg0KDQp8b3B0aW9ucyBzbmQtaGRhLWludGVsIG1vZGVsPSwxN2FhOjM4NTV8DQoNCmlu
-IHwvZXRjL21vZHByb2JlLmQvYWxzYS1maXguY29uZnwg4oCUIHJlc3RvcmVzIHNwZWFrZXIgb3V0
-cHV0Lg0KDQoqUHJvcG9zZWQgZml4KiBpbiB8c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmN8
-Og0KDQp8U05EX1BDSV9RVUlSSygweDE3YWEsMHgzODExLCJMZW5vdm8gTGVnaW9uIDcgDQoxNklU
-SGc2IixBTEMyODdfRklYVVBfQ1MzNUw0MV9JMkNfMiksfA0KDQoqQUxTQSBpbmZvKjogDQpodHRw
-Oi8vYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj1lMzI4NmNiNWE3OTU0MzYzMDZhYTU5MTY5NjgwOGE0
-MzM5ZDIxMzY4IA0KPGh0dHA6Ly9hbHNhLXByb2plY3Qub3JnL2RiLz9mPWUzMjg2Y2I1YTc5NTQz
-NjMwNmFhNTkxNjk2ODA4YTQzMzlkMjEzNjg+DQoNCg==
+From: João Miguel <joaomiguel.sapientia@gmail.com>
+
+the board's internal DMIC is on the ACP6x and isn't detected without a DMI quirk entry; this adds it.
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 7a637d6b5..a93a7fd48 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -794,6 +794,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "M7601RM"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Micro-Star International Co., Ltd."),
++			DMI_MATCH(DMI_BOARD_NAME, "MS-17LN"),
++		}
++	},
+ 	{}
+ };
+ 
+-- 
+2.54.0
+
