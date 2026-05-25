@@ -4,125 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9667ECD5BC9
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 15:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B18FCD5BB1
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 May 2026 17:13:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE96D6018E;
-	Mon, 25 May 2026 17:42:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE96D6018E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B68D601E2;
+	Mon, 25 May 2026 19:12:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B68D601E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779723789;
-	bh=Vz4FGFzasD1ntJ+q7rrUON9RuNwWFA0Yk5uHdTpu/EI=;
-	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=agDyT0d4UzoZXrfuOv9HSmT1HSuh3ysVA52VT181RZJMhh13JauQE15gq0kz/NnpX
-	 XbeRYmeiRvxQmC2xmGWTJJWmrYwSU6sKbkWjO5pj4tfiyml1/Fr2a/zBJTKcuyFMcK
-	 l+6BW1F7TD9widYE/R352VeoXB1nd/PKeJoE6Vbg=
+	s=default; t=1779729182;
+	bh=3Sq8Pty5tudeUnfmLcJe+N7lKphjTgVS2tvtrAzJzMc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=KvkI6CCk4Ema6i39WMPb00mTyAjhEkkNNov2CU6MfFcZVfPtKxyuxxCihefCTGy6G
+	 dKloHUYyAE4zZglzh6E0CwnSZA3vzEbgG3qYSGdjkEwNVsLwQxh0rKa8FskzXoXXj0
+	 xHI2ahrF5p2dLOSSFAbKpIY13dOUOQilvjbi6T2I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53DF0F805F4; Mon, 25 May 2026 17:42:36 +0200 (CEST)
+	id BD53CF805AA; Mon, 25 May 2026 19:12:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DE9CF805F3;
-	Mon, 25 May 2026 17:42:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84D43F805F6;
+	Mon, 25 May 2026 19:12:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5714EF80557; Mon, 25 May 2026 17:42:30 +0200 (CEST)
-Received: from seashell.cherry.relay.mailchannels.net
- (seashell.cherry.relay.mailchannels.net [23.83.223.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3719EF800C1
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 17:42:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3719EF800C1
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=mungewell.org header.i=@mungewell.org
- header.a=rsa-sha256 header.s=default header.b=PKGqKBh4
-X-Sender-Id: idigitalinternetinc|x-authuser|simon@mungewell.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id A26ED4C1EA1
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 15:42:20 +0000 (UTC)
-Received: from barmail5.idig.net
- (100-101-154-23.trex-nlb.outbound.svc.cluster.local [100.101.154.23])
-	(Authenticated sender: idigitalinternetinc)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 2B78C4C24C2
-	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 15:42:20 +0000 (UTC)
-X-Sender-Id: idigitalinternetinc|x-authuser|simon@mungewell.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: idigitalinternetinc|x-authuser|simon@mungewell.org
-X-MailChannels-Auth-Id: idigitalinternetinc
-X-Plucky-Shrill: 0070fc00429b9ad6_1779723740377_1968930350
-X-MC-Loop-Signature: 1779723740377:272878986
-X-MC-Ingress-Time: 1779723740377
-Received: from barmail5.idig.net (barmail5.idig.net [104.36.151.219])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.101.154.23 (trex/7.1.5);
-	Mon, 25 May 2026 15:42:20 +0000
-Received: from cwh28.canadianwebhosting.com (cwh28.canadianwebhosting.com
- [66.85.29.119]) by barmail5.idig.net with ESMTP id nAAK5wGh6dsBOh8n
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO) for
- <alsa-devel@alsa-project.org>; Mon, 25 May 2026 08:42:19 -0700 (PDT)
-X-Barracuda-Envelope-From: simon@mungewell.org
-X-Barracuda-Effective-Source-IP: cwh28.canadianwebhosting.com[66.85.29.119]
-X-Barracuda-Apparent-Source-IP: 66.85.29.119
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=mungewell.org; s=default; h=Content-Transfer-Encoding:Content-Type:
-	Message-ID:Subject:To:From:Date:MIME-Version:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Se0YQa8SN6IxYjb8WnnXYlNF7Byq19Bc7GK8IbF3CYI=; b=PKGqKBh4eaptO5IYgrUi93pl37
-	7ii+Aix+9tWjJ6rJwLTS6llByMFyxwda+WR4+vWRDL8ivV8Q87uSwW7c+CG5I5/298fD5J/7lKH/5
-	E6YjPlh95VYj0zoXMuF9uPHmNBIqtVXWnP1Du94eeHuwVVn0lOglIJFw9a+5M5YkzS1yWjIrl16Ir
-	8oFzXYZd7kQ/kaMcI+4Pk1kNvsvUmXsc3H6Crs3Xj3CHV3VaHrDFr+KG1KXqnRzdov6G5uFzH6RSD
-	h2buoPIk8JKF/ddl7XSrlUzfX4pg0cS7Zlqlz0jlrc01DEjMg0wi3WqxM5PRrFkZycjl1sNCTzuwQ
-	y8krVlTA==;
-Received: from [::1] (port=33490 helo=cwh28.canadianwebhosting.com)
-	by cwh28.canadianwebhosting.com with esmtpa (Exim 4.99.2)
-	(envelope-from <simon@mungewell.org>)
-	id 1wRXRb-00000005y24-0nRx
-	for alsa-devel@alsa-project.org;
-	Mon, 25 May 2026 11:42:19 -0400
+	id 0B5F5F80557; Mon, 25 May 2026 19:12:23 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 78D8CF8047D
+	for <alsa-devel@alsa-project.org>; Mon, 25 May 2026 19:12:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78D8CF8047D
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Date: Mon, 25 May 2026 11:42:18 -0400
-From: simon@mungewell.org
-To: Alsa Devel <alsa-devel@alsa-project.org>
-Subject: MOTU Firewire driver - Measuring used (or available) Isochronous
- Bandwidth
-User-Agent: Roundcube Webmail/1.6.15
-X-ASG-Orig-Subj: MOTU Firewire driver - Measuring used (or available)
- Isochronous
- Bandwidth
-Message-ID: <3d06586868283fb927ae0905accaa25d@mungewell.org>
-X-Sender: simon@mungewell.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-AuthUser: simon@mungewell.org
-X-Barracuda-Connect: cwh28.canadianwebhosting.com[66.85.29.119]
-X-Barracuda-Start-Time: 1779723739
-X-Barracuda-Encrypted: TLS_AES_256_GCM_SHA384
-X-Barracuda-URL: https://104.36.151.219:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at idig.net
-X-Barracuda-Scan-Msg-Size: 547
-X-Barracuda-BRTS-Status: 0
-X-ASG-Debug-ID: 1779723739-13d5ac78de10adc0001-UKjUFf
-X-Barracuda-Spam-Score: 0.00
-X-Barracuda-Spam-Status: No,
- SCORE=0.00 using global scores of TAG_LEVEL=3.5 QUARANTINE_LEVEL=8.0
- KILL_LEVEL=4.0 test= 
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.125474
-	Rule breakdown below
-	  pts rule name              description
-	 ---- ----------------------
- --------------------------------------------------
-	 0.00 NO_REAL_NAME           From: does not include a real name
-Message-ID-Hash: D5O2735YZCIPAC42D56MBEBD6HOGOA3C
-X-Message-ID-Hash: D5O2735YZCIPAC42D56MBEBD6HOGOA3C
-X-MailFrom: simon@mungewell.org
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18b2de396de93300-webhooks-bot@alsa-project.org>
+In-Reply-To: <18b2de396db34900-webhooks-bot@alsa-project.org>
+References: <18b2de396db34900-webhooks-bot@alsa-project.org>
+Subject: 
+ =?utf-8?q?Headphone_jack_=283=2E5mm=29_silent_on_Alienware_18_with_sof-arl-rt722_=E2=80=94_speakers_work?=
+Date: Mon, 25 May 2026 19:12:23 +0200 (CEST)
+Message-ID-Hash: CHCTSWBYFXCXSA3CTW66NQHFOYVOX3X5
+X-Message-ID-Hash: CHCTSWBYFXCXSA3CTW66NQHFOYVOX3X5
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -133,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D5O2735YZCIPAC42D56MBEBD6HOGOA3C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CHCTSWBYFXCXSA3CTW66NQHFOYVOX3X5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,20 +67,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-I am looking at improving the Linux driver for an old MOTU interface 
-(896 mk1), as the Windows driver supports disabling the ADAT 
-input/output for the purpose of saving bandwidth. I think I have found 
-the appropriate controls, but would like to confirm that these do 
-in-fact save bandwidth.
-
-Q. how can I measure the used (or alternatively available) bandwidth 
-under Linux?
-
-I believe that the different connections should have a peak bandwidth 
-of:
-
-4/6 pin - 400Mbps half duplex
-9 pin - 800Mbps full duplex
-
-Cheers,
-Simon.
+YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzc2NiB3YXMgb3BlbmVkIGZyb20gZDBt
+bTM5MjoKCkhhcmR3YXJlOgoKQWxpZW53YXJlIDE4IChBcmVhXzUxTSBBQTE4MjUwLTBNNjZSRikK
+QXVkaW86IEludGVsIFNPRiArIHJ0NzIyIChoZWFkcGhvbmUvbWljKSArIHJ0MTMyMCAoc3BlYWtl
+cikgdmlhIFNvdW5kV2lyZQpLZXJuZWw6IDcuMC4xIC8gNy4wLjUgLyA3LjAuOSBub2JhcmEuZmM0
+MyAoYWxsIHNhbWUgYmVoYXZpb3IpCmFsc2Etc29mLWZpcm13YXJlOiAyMDI1LjEyLjItMS5mYzQz
+CgpQcm9ibGVtOgozLjVtbSBoZWFkcGhvbmUgamFjayBwcm9kdWNlcyBubyBhdWRpby4gTGFwdG9w
+IHNwZWFrZXJzIHdvcmsgZmluZS4KRmluZGluZ3M6CgpKYWNrIGRldGVjdGlvbiB3b3JrcyBjb3Jy
+ZWN0bHkg4oCUIGV2dGVzdCAvZGV2L2lucHV0L2V2ZW50MjYgY29uZmlybXMgU1dfSEVBRFBIT05F
+X0lOU0VSVCBldmVudHMgZmlyZSBvbiBwbHVnL3VucGx1ZwpQaXBlV2lyZSByb3V0ZXMgdG8gSGVh
+ZHBob25lc19fc2luayAoc3RhdHVzOiBSVU5OSU5HKSwgYWxsIG1peGVyIGNvbnRyb2xzIGF0IDEw
+MCUsIG5vdGhpbmcgbXV0ZWQKVG9wb2xvZ3kgQUJJIG1pc21hdGNoIGF0IGJvb3Q6IFRvcG9sb2d5
+IEFCSSAzOjI5OjEgdnMgS2VybmVsIEFCSSAzOjIzOjEKVUNNIHByb2ZpbGUgYnVncyBpbiAvdXNy
+L3NoYXJlL2Fsc2EvdWNtMi9zb2Ytc291bmR3aXJlL3J0NzIyLmNvbmY6CgpFbmFibGVTZXF1ZW5j
+ZSByZWZlcmVuY2VzICdIZWFkcGhvbmUgU3dpdGNoJyDigJQgY29udHJvbCBkb2Vzbid0IGV4aXN0
+IChhY3R1YWw6ICdIZWFkcGhvbmUnKQpKYWNrQ29udHJvbCAiSGVhZHBob25lIEphY2siIOKAlCBk
+b2Vzbid0IGV4aXN0IChrZXJuZWwgcmVnaXN0ZXJzIGl0IGFzICJIZWFkc2V0IEphY2siKQoKClRl
+c3RlZDogbW9kdWxlIHJlbG9hZCwgYWxzYWN0bCBpbml0LCBVQ00gcGF0Y2gg4oCUIG5vIGNoYW5n
+ZQoKZG1lc2c6CnNvZi1hdWRpby1wY2ktaW50ZWwtbXRsOiBsb2FkaW5nIHRvcG9sb2d5OiBzb2Yt
+YXJsLXJ0NzIyLWwwX3J0MTMyMC1sMi50cGxnClRvcG9sb2d5OiBBQkkgMzoyOToxIEtlcm5lbCBB
+QkkgMzoyMzoxCnNvZl9zZHc6IEFTb0M6IFBhcmVudCBjYXJkIG5vdCB5ZXQgYXZhaWxhYmxlLCB3
+aWRnZXQgY2FyZCBiaW5kaW5nIGRlZmVycmVkCgpJc3N1ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRo
+dWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLXVjbS1jb25mL2lzc3Vlcy83NjYKUmVwb3NpdG9yeSBV
+Ukw6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS11Y20tY29uZgo=
