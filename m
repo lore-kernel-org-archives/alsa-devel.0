@@ -4,79 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 149D3CD5BD5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2026 13:44:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 143BECD5BD5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 May 2026 14:07:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D659760273;
-	Wed, 27 May 2026 15:44:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D659760273
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92B1760276;
+	Wed, 27 May 2026 16:06:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92B1760276
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1779889488;
-	bh=B9uKDCmuE+HIELsxBmZ3MrYYA+QztaM8DICspZlqOKE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1779890819;
+	bh=XJPwr4ZFy97xrih3wKlZA7216jbHSnL5igC7/2KkltU=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=I0eB3aYzx4/XEKbAxHvCK6v9CgZj2X62+KrW23kxhHdIQtq9v6TmYMlVw1QD8Zijn
-	 +my7eJxgZzj3EDml2ivNHzfT4prIh/d9YrkixkTskJ4aP9iQeg8zHOUFwN/wumJ6SF
-	 Q3HDAE+AtmWKPNCeTW6rSejHNL3Pj+Gvs5TZCeW0=
+	b=qi/oy6RArFnP0jB/RS0K9np73q6rxrGq0L2rq0oNKdHiuzdYVYlvry/19mDbXRLxx
+	 ARRLIFUtSaX9pHeJF+JJq2X16QmLFVQnIejFHWhMQJSJIuXq+7y9mqnqztJTV3p/si
+	 nRf4jVrNfuJUmi1vX7KxFstSkU1zzcirU3IDA/tI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC954F805E7; Wed, 27 May 2026 15:44:12 +0200 (CEST)
+	id 8B613F805F0; Wed, 27 May 2026 16:06:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 625B0F80549;
-	Wed, 27 May 2026 15:44:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32A8AF805F0;
+	Wed, 27 May 2026 16:06:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBAE5F804FF; Wed, 27 May 2026 15:44:07 +0200 (CEST)
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	id BF5C5F804FF; Wed, 27 May 2026 16:06:18 +0200 (CEST)
+Received: from fhigh-a3-smtp.messagingengine.com
+ (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 61F10F80087
-	for <alsa-devel@alsa-project.org>; Wed, 27 May 2026 15:44:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61F10F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id A02B7F80087
+	for <alsa-devel@alsa-project.org>; Wed, 27 May 2026 16:06:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A02B7F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=Ys+Ks2OR
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8AA3E401D6;
-	Wed, 27 May 2026 13:43:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E34E1F000E9;
-	Wed, 27 May 2026 13:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779889438;
-	bh=ManTLR8cnSqPRzXSHvGGL9dszH+Gg40OZ2hHPnTSUFw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=Ys+Ks2OREIDkyVb/ydbR35kFybCJlsdSwM5yTaq8bGwg26wBLGRsnay09YHYNqcVs
-	 trcDxvICwyrtJ36NdlKlfZls3xBp0Dcxo8h4TkD32zQbSI4b0v8tLEtc9Bdx6WAUEn
-	 PrMFymT9kF+3D5rtPw/4oOKZ05YvaSV6UtDahcs+nhllzC9I7fijiENsfC5Vkd2JKi
-	 If0ghTVjA9gvk61zq2ghhxZpgtr+7QXh5FELs0SyvQJ075rhK0j5EPr3qibRS8Zknl
-	 j+3Rv+hZeYqJVMzFc70wa3QiaOFapfAxC8TUdEAJ3M1f7z68ZvAC/i651bxg8ElIuW
-	 9EgPq5K9OQvJw==
-Date: Wed, 27 May 2026 14:43:53 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Neo Chang <YLCHANG2@nuvoton.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
-	krzk+dt@kernel.org, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-	neo.chang70@gmail.com, kchsu0@nuvoton.com, sjlin0@nuvoton.com
-Subject: Re: [PATCH v3 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
- amplifier
-Message-ID: <d4cf4ad9-82fb-4beb-be5b-b3687f822fcf@sirena.org.uk>
-References: <20260526015826.440769-1-YLCHANG2@nuvoton.com>
- <20260526015826.440769-3-YLCHANG2@nuvoton.com>
+ unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256
+ header.s=fm3 header.b=W3NtJ390;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm3 header.b=Kl+W3ETU
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 51121140014F;
+	Wed, 27 May 2026 10:06:10 -0400 (EDT)
+Received: from phl-imap-05 ([10.202.2.95])
+  by phl-compute-04.internal (MEProxy); Wed, 27 May 2026 10:06:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1779890770;
+	 x=1779977170; bh=cOUAXa1+vlptGEpsXEvGCoEKNRYtmdXqwNLpAo6IPlc=; b=
+	W3NtJ390FrnARDfK9yM5JD0uNZxliiZT5+304LqPyoP9EWN/eGafNe680XLOLwM6
+	SLba7YQgDoo3LX+bRVn95ItyGd057ZTCQ+UAqnHmIR5Riq9Bbm1t9AaJSxBrU3MM
+	n638NmAMMvaEC5rm42Iqd6hBDjx3rfDitpB4XRot6fQJ5RsGq0tGtFqMMg3Qa/vN
+	R9ybz61Q4yQweZHil5crwccz2Snr5fPcqhr30BkRsiD9NQnQpouZaxhfT7az0+Xa
+	+8tmpko+XIuiyEobdhPRZdM9kKHZe8x+2Apj2aU5H/I9a4cYbCncoOtjBFWKnY0t
+	5XYlke6QATNtoTzllbNzOQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1779890770; x=
+	1779977170; bh=cOUAXa1+vlptGEpsXEvGCoEKNRYtmdXqwNLpAo6IPlc=; b=K
+	l+W3ETUZjyC17Bufw4bFbyrRPvOnUIIn9mamgMLkU2gi97bHplI6FUSFqKpgH/np
+	Iku5SjWt9vdFpi/vOB7+XgGsjCNvESohxK952UGybBe7KoG/laGT/JOJZfDlSqwP
+	lVEMtRyhDkui2lmKiD/vgY8FT6u2JwTwtsqCbrpFehHB7eBQikjwy4h5qnfqQQ2w
+	C+VrqJViNAJX9DcJ+u2QvivBsFU6AsmgquX4LdFINNt6bL9asBG56PRB63xnwe9m
+	EUl0V5QboNC8kk5tzEE8x0JxKTopOPGzsdlhzMrwdhA9/A/WDib1lXmlG+ecyWJP
+	zin5YVe8Xu0UDU+eTysMw==
+X-ME-Sender: <xms:UfoWauc8tzqsiI1nAyWBMfUVDn7GTQKholMI0r5mctmNRzLbQf_UPw>
+    <xme:UfoWajBMP_PL_HrqCwZakBERa0wI5BLTVTuUP9wEtt8QOm0SGtPRzPlvHPOEURX4T
+    6PUd8mJ05YjDZINxazIZlyg-DwJ1uiS-n7UoRNUbz0aHQntbUZdmiA>
+X-ME-Proxy-Cause: 
+ dmFkZTFg/ntQhuNYlt688Yrf9CAmF7YkzSCYqVw6r+eWzspt8zjO7gCuWEC5T6I4clBcKj
+    EATjbDLHpc4tOWMmOsGqWxgYAjVCR4vNGnfdvdtCV3O3ERZZ69aDK0CXmvGcIcQ6S4FB4K
+    IA3FFs8BnGUw2brmtI4XEC9bqJKTLTqvyaKkgJ77psK1xhuoKMPQ785+ThTDCN328KYBhT
+    P5aI3UScMn0iAfOQfsFPJ37JPdLJyPdPh5+mTL+XX5EZUSBkK6OYb/KKYsWTIgiY9NEc7D
+    PNyDWsMcW3xNScQOdKSLGCY/SbtVR+tkEyXQIjTYGd/JrBP7AB0arM2x6WCDqgw+/NIDFq
+    WG36Iv+u7kcndWruHcFhMziZUZiGjL8J7KIAwImLx+Dv34ZAwtlLJMDZ27sLPl2yRUeLRB
+    W1Dmk893zu1fQjsmMmvbzzee6L6xwGQjXWt25nd/CeePasOdkS+o07Q0uUEIQt0eUQZcZk
+    NSuBsTw1paiaOcyjWLU3dlEILb4N0svUHwQzkzFk6x9oj7Qh89kenooZT0HfTkCCkcYecB
+    Ik9SpLRRzTzt3stGzvl9ZsKL4UznfG1Y/ffGSufIFHEz8hTujsOraYu5ygCBEkz3Q1d+CD
+    iqW9kFh0GCMjt6t00n0InFlLpCzxRMIyaRlDJQY4BudNCUynannQEB/8hGtA
+X-ME-Proxy: <xmx:UfoWah_p97FHgkuIrzrQPP8JPcxlN78U4wmC5bkaySvI9g5wMsbmLA>
+    <xmx:UfoWatITZv7yqUnC9Emt0igYvpfRvyXDhvXbT8YBP-rnPOFG9JK75Q>
+    <xmx:UfoWasYkW53wdKg7SFf81EAZAnrrS6Y4dN_3skIGFkn8iJfPGBXSwA>
+    <xmx:UfoWavIPK2YH1oE8LNvoY3CGhGv-T8uIvxQvT0V34qUOlxfhuznOjA>
+    <xmx:UvoWagJDUYYS1SsGniDPALW3PbtV5tZ0vq6LX9TKi8Xt_5596T42BbMu>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id D6A61182007A; Wed, 27 May 2026 10:06:09 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="VqmZj1l8twwgh5fH"
-Content-Disposition: inline
-In-Reply-To: <20260526015826.440769-3-YLCHANG2@nuvoton.com>
-X-Cookie: You are fairminded, just and loving.
-Message-ID-Hash: YWUAN2QP2LKJSMAMXOF5IN7B7CUHDDGY
-X-Message-ID-Hash: YWUAN2QP2LKJSMAMXOF5IN7B7CUHDDGY
-X-MailFrom: broonie@kernel.org
+X-ThreadId: AUoS8tHvkyh3
+Date: Wed, 27 May 2026 16:05:37 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Syed Saba Kareem" <syed.sabakareem@amd.com>
+Cc: "Mark Brown" <broonie@kernel.org>, alsa-devel@alsa-project.org
+Message-Id: <6d055b0b-ece3-4cd0-88a3-5466246a3151@app.fastmail.com>
+In-Reply-To: <e7dafc83-c3f1-40fc-8419-96e2332a1ad0@amd.com>
+References: <21a54840-a7b4-4802-9b40-2c92893e862a@app.fastmail.com>
+ <b2b4c830-6f94-4fb7-b5ab-71a6889dd96d@amd.com>
+ <e7dafc83-c3f1-40fc-8419-96e2332a1ad0@amd.com>
+Subject: Re: ASoC: Build regression for
+ snd_soc_acpi_amd_sdca_is_device_rt712_vb
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: INPPQLE6HU6NZITETCQUNHNNG7EW63IB
+X-Message-ID-Hash: INPPQLE6HU6NZITETCQUNHNNG7EW63IB
+X-MailFrom: arnd@arndb.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -87,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YWUAN2QP2LKJSMAMXOF5IN7B7CUHDDGY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/INPPQLE6HU6NZITETCQUNHNNG7EW63IB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,90 +134,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Wed, May 27, 2026, at 15:56, Syed Saba Kareem wrote:
+> On 5/26/26 18:59, Syed Saba Kareem wrote:
+>> 
+> I have sent the fix for above reported issue 
+> https://lore.kernel.org/alsa-devel/20260527133208.3074614-1-syed.sabakareem@amd.com/T/#u
+> My apologies i missed the reported by tag as it is asking closing tag 
+> also.
+> Should i send a v2 version please let me know.
 
---VqmZj1l8twwgh5fH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry, but that is not a correct fix, you just replace the
+link error with a silent runtime failure, which is worse.
 
-On Tue, May 26, 2026 at 09:58:26AM +0800, Neo Chang wrote:
-> Add support for the Nuvoton NAU83G60 audio codec. The NAU83G60 is a
-> stereo 30W+30W smart amplifier with an integrated low-latency
-> Advanced Audio DSP.
+Please have another look at fixing the issue properly and
+send a better fix.
 
-A few things below, you also have a bunch of what look like legitimate
-issues picked up by sashiko (some of which overlap with what I've got
-below):
-
-   https://sashiko.dev/#/patchset/20260526015826.440769-1-YLCHANG2%40nuvoto=
-n.com
-
-> +static int nau8360_peq_coeff_get(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-
-=2E..
-
-> +	snd_soc_component_update_bits(cp, NAU8360_R9D_PEQ_CTL, NAU8360_HW1_MEM_=
-TEST,
-> +		NAU8360_HW1_MEM_TEST);
-> +	for (i =3D 0; i < params->max / sizeof(u16); i++) {
-> +		value =3D snd_soc_component_read(cp, reg + i);
-> +		*(val + i) =3D cpu_to_be16(value);
-> +	}
-> +	snd_soc_component_update_bits(cp, NAU8360_R9D_PEQ_CTL, NAU8360_HW1_MEM_=
-TEST, 0);
-> +
-> +	return 0;
-> +}
-
-
-> +static int nau8360_peq_coeff_put(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-
-> +	snd_soc_component_update_bits(cp, NAU8360_R9D_PEQ_CTL, NAU8360_HW1_MEM_=
-TEST,
-> +		NAU8360_HW1_MEM_TEST);
-
-=2E..
-
-> +	snd_soc_component_update_bits(cp, NAU8360_R9D_PEQ_CTL, NAU8360_HW1_MEM_=
-TEST, 0);
-
-We use an rwsem to protect the controls from userspace so we could get
-more than one caller in these, you need some driver local locking.
-
-> +static int nau8360_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx=
-_mask,
-> +	unsigned int rx_mask, int slots, int slot_width)
-> +{
-> +	struct snd_soc_component *cp =3D dai->component;
-> +	struct nau8360 *nau8360 =3D snd_soc_component_get_drvdata(cp);
-> +	unsigned int tx_slot_used =3D 0, rx_slot_used =3D 0;
-> +	int ret =3D 0;
-> +
-> +	if (slot_width !=3D 16 && slot_width !=3D 24 && slot_width !=3D 32) {
-> +		dev_err(cp->dev, "Invalid TDM channel length: %d", slot_width);
-> +		return -EINVAL;
-> +	}
-
-This stops the support for disabling TDM from working, a slot_width is
-required here. =20
-
---VqmZj1l8twwgh5fH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmoW9RkACgkQJNaLcl1U
-h9AOAwf/XCpGenqAsg5VdLiNBYcT/3lty5A1czozWimgLpuXdu6a8xLeqFCYlOfQ
-ECzRk/arz8HxuonhicRhMQ45lzA3O56D67Y1X1ajLIQLkaiqlmSILTesbQ9xFRyQ
-y3LSIqCcZA15FWDEHjFI9y9OpkIiht5PSSzoxEl27991Do8FkGrcizSgU/DTlfiD
-Y5D7Wp5Zbx4BIxwWsxtkG54n207YmMUBETfsaLbmn6rijv9OISrfXFAAdP4YNMmM
-aCF3r7e+lpamW5PAaiUdQp8cKntSu36zHGeY0SmkhAhMU/ClR6TB0ZdnI6YT+DPT
-2axvsMhw+oCPaBVr3+Pb4eQFgzyX+w==
-=IE9q
------END PGP SIGNATURE-----
-
---VqmZj1l8twwgh5fH--
+       Arnd
