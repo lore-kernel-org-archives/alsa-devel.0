@@ -4,159 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8689CD6E5D
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2026 11:39:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62E8BCD6E60
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2026 12:08:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB89160223;
-	Tue,  2 Jun 2026 13:39:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB89160223
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFA6A601C7;
+	Tue,  2 Jun 2026 14:08:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFA6A601C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1780400379;
-	bh=a5LLOI7oYEeyjOTU1OTequ6L48Ggtu0ql9GStnMeVB8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1780402122;
+	bh=NqhPjva4plXrBGv1+P3BU1wj4ibyGN5tmsGjjoYnrZE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UG0cL9XXiDWVFtUUU4BA11nXP8WiqZ77xKwjPqzVMoFlkx8BGv3r0vxP0Musgnw02
-	 Ej6YMcSNcl4gfLN6aJeDgxY6GQIMxnLPudsEiMgM///L+pDXqYqCis8o37i6GQFnYC
-	 KJQKKWNm/SpbmaM+2GAyf/y4J9ondlqhffXRkKHg=
+	b=qjV29h0lsyRKL74QO+ZWKZ6tfV987/6iK9SlUFwRU6r1lK6zYNvHxhPdCYTN92uyL
+	 p2zlvfZfaPYHYo5GI+CDcgaxWnVze74LzkqmXu4ToOIspKdt+/VgFBFtsT0J65KFkx
+	 gufK810CU+Dp9JYjWho7k2MSsjwIL/m03aXLyTZc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D600F805F6; Tue,  2 Jun 2026 13:39:07 +0200 (CEST)
+	id 8D1DAF805F7; Tue,  2 Jun 2026 14:08:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56F96F805FA;
-	Tue,  2 Jun 2026 13:39:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42FF3F8026D;
+	Tue,  2 Jun 2026 14:08:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF399F804F2; Tue,  2 Jun 2026 13:39:01 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	id 8979DF804F2; Tue,  2 Jun 2026 14:08:04 +0200 (CEST)
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B3638F8016E
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2026 13:38:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3638F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id D3A1DF8024C
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2026 14:08:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A1DF8024C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=vOrC7/pU;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ank+4RDr;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=vOrC7/pU;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ank+4RDr
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C78C26BDF2;
-	Tue,  2 Jun 2026 11:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1780400335;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gm5GfGl1A9A8L5yITPe+3jwD/lBiLB14WVuVwrziEhk=;
-	b=vOrC7/pUz7Pe3A5gNrUhQfHl7rQzlley3AXoC3wCvj4gHkwMtRIx2k9iEgvaptN3Y82vP3
-	Rfl4zUlg2Fh6Ga/0RYWW+/iNO87QyCB2izSFpJt/vFMrHoC6J4U7HoRuc4IkPeu+52ofK3
-	zCYpBEnopfxwXKqvLR0kUKC0IchujUA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1780400335;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gm5GfGl1A9A8L5yITPe+3jwD/lBiLB14WVuVwrziEhk=;
-	b=ank+4RDrV1nL2iYF+8BH/DYokk96sC82dhX4Onv428j8ecI3lB48D17CQX3P04arz8Tl7r
-	KjMj7Im70ijBviCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="vOrC7/pU";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ank+4RDr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1780400335;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gm5GfGl1A9A8L5yITPe+3jwD/lBiLB14WVuVwrziEhk=;
-	b=vOrC7/pUz7Pe3A5gNrUhQfHl7rQzlley3AXoC3wCvj4gHkwMtRIx2k9iEgvaptN3Y82vP3
-	Rfl4zUlg2Fh6Ga/0RYWW+/iNO87QyCB2izSFpJt/vFMrHoC6J4U7HoRuc4IkPeu+52ofK3
-	zCYpBEnopfxwXKqvLR0kUKC0IchujUA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1780400335;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gm5GfGl1A9A8L5yITPe+3jwD/lBiLB14WVuVwrziEhk=;
-	b=ank+4RDrV1nL2iYF+8BH/DYokk96sC82dhX4Onv428j8ecI3lB48D17CQX3P04arz8Tl7r
-	KjMj7Im70ijBviCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B387D779A7;
-	Tue,  2 Jun 2026 11:38:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id P8otK8/AHmrnTQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 02 Jun 2026 11:38:55 +0000
-Date: Tue, 02 Jun 2026 13:38:47 +0200
-Message-ID: <87a4tdyxx4.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cliff Brady <brady725@gmail.com>
-Cc: linux@hohmatik.de,
-	alsa-devel@alsa-project.org
-Subject: Re: Creative X-Fi hw20k2 (SB0880) that appeared in kernel 6.12.85
-In-Reply-To: 
- <CAFGAnONFP+=y3p2VQ_ciZzX_d=wjKP0jZf-JfVK1p1_EAz2ZXA@mail.gmail.com>
-References: 
- <CAFGAnONFP+=y3p2VQ_ciZzX_d=wjKP0jZf-JfVK1p1_EAz2ZXA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=O+ThXPpw
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id D61324015D;
+	Tue,  2 Jun 2026 12:07:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB1F1F00893;
+	Tue,  2 Jun 2026 12:07:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780402078;
+	bh=P0lFbFU0XWdzpU4GbFxl6xiHqPxwRpsjqXICjIpUkwM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=O+ThXPpwfekc7vXd6ULUMTll/x/DeanBofLBBPNZltrzXdJZALjbAbfXvMZvfbzV2
+	 D2hhRIW1OCgHdyrADW0OpyxLUwwFU4X4UVatqp28dbwRAo8SiafX9NNtbdySxLdvP4
+	 juKPRhB0V2NnpwI4YwGbP8IYOuVrVe9M3luSdDrf0qkcF7pYlAHID1B2Z7Zz1z/ir3
+	 qiE5oX1M3AgkOHjqfNCLyB+eIHjHDuaaJ4R3BFz9IOnFtBJe9LZ+0GQYc1UVY62GFB
+	 GvdZhSbMI7136v1A1rMbXMwD0fl9yHZDBnTevumsPOyvwH+0Gd0+Rnpar8B8c0PZTY
+	 LXs8a3WQGpmFA==
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar.Mukunda@amd.com,
+ =?utf-8?q?Jo=C3=A3o_Miguel?= <jmiguel.ghp@gmail.com>
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20260523213548.5219-1-jmiguel.ghp@gmail.com>
+References: <20260523213548.5219-1-jmiguel.ghp@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: yc: Enable internal mic on MSI Bravo 17
+ C7VF
+Message-Id: <178033080073.44654.3969618499083899102.b4-ty@b4>
+Date: Mon, 01 Jun 2026 17:20:00 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: C78C26BDF2
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-Message-ID-Hash: XUL3XVJEJDAHRC3B57PSNLQCBZCSZFPN
-X-Message-ID-Hash: XUL3XVJEJDAHRC3B57PSNLQCBZCSZFPN
-X-MailFrom: tiwai@suse.de
+X-Mailer: b4 0.16-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1128; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=NqhPjva4plXrBGv1+P3BU1wj4ibyGN5tmsGjjoYnrZE=;
+ b=owEBbAGT/pANAwAKASTWi3JdVIfQAcsmYgBqHsec//r0EDhDdW64XuWwUZvWeaF6OYM7O2UOh
+ Nzl1XpzhICJATIEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCah7HnAAKCRAk1otyXVSH
+ 0NjoB/i9G60w3RyedNYzhegFAEy/BanEEaVrWY+HuVMF8uPrOZZGgdfDK4LkOXu6lDhaFcaWyjj
+ w8zVwYkqV7ICTLj70MJ7iPF2VgzX8CA2xqXsNvsBH/1j0yrIkRFa+Ll3LiW9ncNCxpxjFtoxZBf
+ DlcsQZ1Kr1EkPbLAAChCsSsMgMHsafPAShHjBMhi/MFgxm5wmoel1G61gIFMgyaDOSE5JQCGXY0
+ X2enOLZmNRBG9N2a330HYU77rt78D1i1jkfZvFDbLO4IeTNWvnelJY5GiBMKC9bBRe8pB+mW7ug
+ u0oOq0BOC3h451tgrKPYMywXPD1jb7NKIFua9g7iue3FVjY=
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: MPXALISKEE6YLVTW2Y5VSOKLIWWHSSZR
+X-Message-ID-Hash: MPXALISKEE6YLVTW2Y5VSOKLIWWHSSZR
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -167,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XUL3XVJEJDAHRC3B57PSNLQCBZCSZFPN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPXALISKEE6YLVTW2Y5VSOKLIWWHSSZR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -176,56 +103,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 02 Jun 2026 13:32:42 +0200,
-Cliff Brady wrote:
-> 
-> 
-> Hi Takashi,
-> 
-> I'm writing to report a regression on the Creative X-Fi hw20k2 (SB0880) that
-> appeared in kernel 6.12.85, and which I believe is related to commit
-> b045ab3dff97 ("ALSA: ctxfi: Fix missing SPDIFI1 index handling").
-> 
-> Hardware:
->   Card: Creative X-Fi 20K2, model SB0880 (PCI ID 1102:000b)
->   Driver: snd_ctxfi
->   Kernel: 6.12.85 (Home Assistant OS 17.3, generic x86-64)
-> 
-> Symptom:
-> After upgrading from HAOS 17.2 (kernel 6.12.77) to HAOS 17.3 (kernel 6.12.85),
-> the X-Fi analog outputs produce no audio when accessed via PulseAudio.  HAOS
-> 17.1 (kernel 6.12.67) X-Fi analog outputs also  successfully produced audio
-> when accessed via PulseAudio  The PA sink reports RUNNING and all ALSA mixer
-> controls are at full volume and unmuted, but no audio is heard from any analog
-> output channel (front, rear, side, center/LFE).
-> 
-> Diagnosis:
-> PA opens the device with device.access_mode = "mmap+timer". Direct ALSA access
-> via speaker-test bypassing PA produces audio correctly on all channels.
-> Forcing PA to close and reopen the PCM device via pactl suspend-sink /
-> resume-sink restores audio, suggesting the mmap buffer handshake between PA
-> and the ctxfi driver is failing silently on device open.
-> 
-> The issue is reproducible every time PA opens the device fresh (e.g. after pa
-> restart or sink resume from suspended state following idle timeout). The
-> suspend/resume workaround reliably restores audio each time.
-> 
-> Hypothesis:
-> The out-of-bounds array access fixed by commit b045ab3dff97 in
-> daio_device_index() for hw20k2 may have been inadvertently masking a
-> pre-existing deficiency in the ctxfi mmap implementation. With the fix in
-> place, mmap+timer mode is negotiated successfully at the PA/kernel interface
-> but audio transfers silently fail. A possible fix would be to set
-> SNDRV_PCM_INFO_NO_MMAP in the hw20k2 PCM capabilities, forcing PA to fall back
-> to read/write mode which works correctly.
-> 
-> Kernel was working: 6.12.77
-> Kernel regression introduced: 6.12.85
-> 
-> I am happy to test any patch or provide further diagnostics.
+On Sat, 23 May 2026 22:35:48 +0100, JoÃ£o Miguel wrote:
+> ASoC: amd: yc: Enable internal mic on MSI Bravo 17 C7VF
 
-Could you check the latest 7.0.x kernel?  There are a few more fixes
-for ctxfi recently.
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.1
 
-Takashi
+Thanks!
+
+[1/1] ASoC: amd: yc: Enable internal mic on MSI Bravo 17 C7VF
+      https://git.kernel.org/broonie/sound/c/c9c64820a48d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
