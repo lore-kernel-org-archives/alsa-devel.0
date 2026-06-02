@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D10C6CD6E5D
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2026 18:29:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48A09CD6E57
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jun 2026 18:30:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 967D460236;
-	Tue,  2 Jun 2026 20:29:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 967D460236
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4056F60237;
+	Tue,  2 Jun 2026 20:30:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4056F60237
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1780424953;
-	bh=VT6truZP2Sf5oGJ4nJL2aZ/aWHb3QzWvaI6Wbjk0pR4=;
+	s=default; t=1780425055;
+	bh=DzxRcWHgtGDrdGOCCDCWouXhvpGeaCfrTAkqu4ANKUU=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=UBKAMJ9EE7m+YVF9wFETFzyza5nR3G/3dd4FUH1nLBxBaEr8ZZyIAzODlSlBMlF+J
-	 rUTdFvo4c66Kp+fuZn5OIm6hWRs/ZqragigyaqHmm5aPm5G1YvQ6a4VhDwHKt4IDWV
-	 K+i4WEpFPPoiCzwP50tvMtFxtlAZ7dHNNmnPkVWw=
+	b=GsIQ+xdA4+txixpoHPQ7Hxi5HgkE5KHDWE7ovfF3+UOn+KWDdSiChJOQydtRFI1Rq
+	 I4fvC7iQNLT5lSqkHY0AWSzWBYeT5oCZNRIIT/hVY9OuYLZXCFhSB2i7Wda9kFpYGg
+	 8NLFq9qOgu1u47IWNXWwZYR64U+R/viMcey3xjE8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E7CBF805F8; Tue,  2 Jun 2026 20:28:38 +0200 (CEST)
+	id 9C8C0F805F9; Tue,  2 Jun 2026 20:30:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF708F805FE;
-	Tue,  2 Jun 2026 20:28:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29A29F80510;
+	Tue,  2 Jun 2026 20:30:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 598FAF80553; Tue,  2 Jun 2026 20:28:32 +0200 (CEST)
+	id CE4A7F80553; Tue,  2 Jun 2026 20:30:10 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8304F8016E
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2026 20:28:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8304F8016E
-Content-Type: text/plain; charset="utf-8"
+	by alsa1.perex.cz (Postfix) with ESMTP id 40225F800B0
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jun 2026 20:30:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40225F800B0
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18b55705d213f600-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/tinycompress/pr/37@alsa-project.org>
-References: <alsa-project/tinycompress/pr/37@alsa-project.org>
-Subject: utils: sofprobeclient: fix musl build
-Date: Tue,  2 Jun 2026 20:28:32 +0200 (CEST)
-Message-ID-Hash: JFFGJQGS6XHDZ56ZMNEUMJSUVV6BOXAQ
-X-Message-ID-Hash: JFFGJQGS6XHDZ56ZMNEUMJSUVV6BOXAQ
+Message-Id: <18b5571ccaa1c600-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/tinycompress/pr/38@alsa-project.org>
+References: <alsa-project/tinycompress/pr/38@alsa-project.org>
+Subject: wave: add <time.h> missing header inclusion
+Date: Tue,  2 Jun 2026 20:30:10 +0200 (CEST)
+Message-ID-Hash: LVG2QX73HSUNXKXTXQB6AFFQEQN6PADK
+X-Message-ID-Hash: LVG2QX73HSUNXKXTXQB6AFFQEQN6PADK
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JFFGJQGS6XHDZ56ZMNEUMJSUVV6BOXAQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LVG2QX73HSUNXKXTXQB6AFFQEQN6PADK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,17 +66,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L3Rpbnljb21wcmVzcyBwdWxsIHJlcXVlc3QgIzM3IHdhcyBvcGVuZWQgZnJv
-bSBia3VobHM6CgpXaXRoIG11c2wgQyBsaWJyYXJ5LCB3ZSBzZWUgZm9sbG93aW5nIGJ1aWxkIGZh
-aWx1cmU6DQpgYGANCnByb2Jlc19kZW11eC5jOiBJbiBmdW5jdGlvbiDigJhwYXJzZXJfcGFyc2Vf
-ZGF0YeKAmToNCnByb2Jlc19kZW11eC5jOjMyMTo5OiBlcnJvcjogdW5rbm93biB0eXBlIG5hbWUg
-4oCYdWludOKAmTsgZGlkIHlvdSBtZWFuIOKAmGludOKAmT8NCiAgMzIxIHwgICAgICAgICB1aW50
-IGkgPSAwOw0KDQpwcm9iZXNfZGVtdXguYzozODY6MjU6IGVycm9yOiB1bmtub3duIHR5cGUgbmFt
-ZSDigJh1aW504oCZOyBkaWQgeW91IG1lYW4g4oCYaW504oCZPw0KICAzODYgfCAgICAgICAgICAg
-ICAgICAgICAgICAgICB1aW50IGRhdGFfdG9fY29weTsNCmBgYA0KdWludCBpcyBkZWZpbmVkIGlu
-IDxzeXMvdHlwZXMuaD4gaGVhZGVyLiBJdCBpcyB1c3VhbGx5IGluY2x1ZGVkIGJ5IDxzdGRsaWIu
-aD4gYnV0IGluIG11c2wgc3RkbGliLmggZG9lc24ndCBpbmNsdWRlIGl0LgoKUmVxdWVzdCBVUkwg
-ICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvdGlueWNvbXByZXNzL3B1bGwvMzcK
-UGF0Y2ggVVJMICAgICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvdGlueWNvbXBy
-ZXNzL3B1bGwvMzcucGF0Y2gKUmVwb3NpdG9yeSBVUkw6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNh
-LXByb2plY3QvdGlueWNvbXByZXNzCg==
+alsa-project/tinycompress pull request #38 was opened from bkuhls:
+
+When compiling tinycompress with some libc other than glibc (e.g. musl libc), compilation fails with the following error:
+```
+    In file included from wave.c:11:0:
+    /path/to/gcc/sysroot/usr/include/sound/asound.h:404:18: error: field 'trigger_tstamp' has incomplete type
+      struct timespec trigger_tstamp; /* time when stream was started/stopped/paused */
+    [...]
+```
+According to POSIX, "struct timespec" is defined in <time.h>. See: https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/time.h.html
+
+This patch fixes this build failure by including <time.h> prior <sound/asound.h>.
+
+Request URL   : https://github.com/alsa-project/tinycompress/pull/38
+Patch URL     : https://github.com/alsa-project/tinycompress/pull/38.patch
+Repository URL: https://github.com/alsa-project/tinycompress
