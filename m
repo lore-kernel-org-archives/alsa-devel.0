@@ -4,180 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48567CD6E4A
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2026 08:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57CB3CD6E4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2026 12:35:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39E61601D8;
-	Thu,  4 Jun 2026 10:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39E61601D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6B306023B;
+	Thu,  4 Jun 2026 14:35:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6B306023B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1780560779;
-	bh=4sc9V4ueEtLCxS4NcXrTbUYeps/CN3ywa3SD0lzri2I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=UrVpj5BfIh4/QiSxiEsX6d3UIcavHWGfEiqn1wpo704XIvw2m36zcU4om2pq77gEk
-	 utZuN+nXc2/h7D/8ignQVVpVXLHzjXnF+gBp5YH9nXvYvXfI3Ai7PN/9x4tAI/s+P+
-	 QB5lH9xvGFnTUKiq6B28GMB0REXDYg63VDt/KZpg=
+	s=default; t=1780576531;
+	bh=MxRhG7ndRAPdiBIE8f6KBnROFiHZalUU84CxLiDcSvo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Hhx9/HGooO/sMTQe/lxNci/3SSpbO8DCdfm3PrgQIP+LHwMoQ6Ndke+WcPXOrCtL6
+	 IO9PAk/oqxp6frf18wSNA87d9esq8PrDcnEGstQ/hbhRdBmwTOY5+6klPEfcWJfnh4
+	 TnQps9AmT8iNrx6lP57rSctMAR5wRewgxJ4F5rcE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29D52F805FC; Thu,  4 Jun 2026 10:12:25 +0200 (CEST)
+	id 1E27CF805F1; Thu,  4 Jun 2026 14:34:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D10FF805F4;
-	Thu,  4 Jun 2026 10:12:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB1B5F805FE;
+	Thu,  4 Jun 2026 14:34:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49C17F804CC; Thu,  4 Jun 2026 10:12:19 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780560734;
-	b=eZTFPfLg3j++NhmUTmgSEhEXRSrlNjB++g5Hr3g/TouA6gjn3EUueOgFEFnKp6Yh0WT1
-	 6rZHesT23s3Xb0fQ0EHrFTE8oTq16SZkYBLEnCe+ihhTQK5Ltc6rhVnB4zNJNaLz/p4Ag
-	 uynUWVUDpQgW6fFnkygbGZMJo9iDQRMhE4eldp09UQ1lAsDTRgf4YtLIXc747XrlPuE0u
-	 izJg8PTEyDXkYxOCKF8Ur18KmMBAnBbElZIA93KxFpmXz/+qnQmspreIlqG+VovqmdrUq
-	 xHb49W3CkVZ4hoh7g8c70HIP92ieUPHjylmDlwsq5Qsfur77sBt9EHYqc1P7VHiAJmQ==
+	id 6B77EF804CC; Thu,  4 Jun 2026 14:34:52 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780576491;
+	b=aRoaothpx71138ehp8nlsNKvlG+UaNmvA8tIyIw04wusIT7rjZoBxvjwRBNigNkKqNp8
+	 kVWdJEqmU7MEgBRVNIGqhxqGpPcJtpUvQqKZIWyo5EdVWNUleBAANTLeEcD6j2Hi0VyDQ
+	 qTihZW+E6swE3NkVdwXYFnnrlzSwIX2Hdll1HtvtzHDi6CLEmrXFS7iw4SK181rtkYcgL
+	 I2u3r+YXycXv2DBT8+cQVXxB8i8MYkI7gfhu0ZPEgZH7ZHHLgFFGNCTFOmV34n2GtxUAm
+	 lY/6ibe+ZhazfMN7eSUNVkEfWkWrnL5VFbfBxyp9LOf7mZHZSl4tSXBnmvSijJLOlJw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1780560734;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=4sc9V4ueEtLCxS4NcXrTbUYeps/CN3ywa3SD0lzri2I=;
-	b=CbUmfInbLL4+MWzcyLkCry7C1I+qzGUNKqjdtOUYTJ59ON3G0ksCHymeroGif771quM0
-	 26crXnfowuWeX7C8kT8WlRJaM93sa3P1S5nkhO/rTd64pYdJlBviAZPMYdgUpQlOYUG+Q
-	 gnWyaptslvV72+GHxliGbM0dIVhzUYh500AMWZ/kBOPhSArVNvnKWxr//rLlW3TI+NolN
-	 hXAPMnLSYBhkEXZW+VO0q6iVTgZR5dnKSdDciqVCzcWGdA52U5QkdJeWhsPNhuydjBYSI
-	 1axs5J6WlYIdpMLt3ZH3qMG6vafMIx65MmVDpEJ0tiV0L20GaTe0Meys/YUxmAt9sjw==
+	c=relaxed/simple; t=1780576491;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=MxRhG7ndRAPdiBIE8f6KBnROFiHZalUU84CxLiDcSvo=;
+	b=UvNZl3am38+QMxDnanqNRQP0u161oyBjVaNSVgRz+oj9KxpYFRr+ETFI/tsp71ColOMz
+	 H359suOiEB3qr8P/DUsTzeX2DhDP6xXIpZck3Da12XNhF5Y0pz2uEq16qFk1tiRZp7vEq
+	 FSJIizx3/X6HhwK7L7daOjJHgRAO9Gu6FIHpZPMZAZyCwnbv5TgZaGJYuK3Sx1zNMZXXY
+	 e1cW5SnBBK1t59jlTygkhwmgCMomFe36AbEHhmVWHG4vtk3Jj+9YVr2MdRMW60DClqVMY
+	 cRNbeY1fBCmZzfpfID0v6qepOpAUOqrdnrgdBrzq6oH/zLLon2G4Dhqry/vr//h1LtA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=qHUad8U6;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=1FB+kS2z;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=qHUad8U6;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=1FB+kS2z;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CC08FF8047D
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2026 10:12:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC08FF8047D
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=qHUad8U6;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=1FB+kS2z;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=qHUad8U6;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=1FB+kS2z
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0D21B67E9C;
-	Thu,  4 Jun 2026 08:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1780560733;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+nmTmKPIzFq6psKEkJFv3lb1LitlmKjOtaiWWEMmNLI=;
-	b=qHUad8U6Xabiyy5cgkE8zAkl495i9//Nh6FjNmn4s+Ea3NV2GP4fG0Kcwap8exHZCM/zjd
-	jmwWSKlk+Ln+EZ3XUqmfLBkZRk1kveJkI0keCpSkAbVgrkI4NdMA2VLE9bXR7uodW3SslU
-	9RltNLGv6Ocr6UgFHtKI6HnkHNHVf7g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1780560733;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+nmTmKPIzFq6psKEkJFv3lb1LitlmKjOtaiWWEMmNLI=;
-	b=1FB+kS2z3b4Rj3UQmZbc8pGxPh8H8ZnGS529wgxg8sn0li4TCmzrJcnuP2hO9hcDtudeCb
-	KroFHNiFAmUkfCDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1780560733;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+nmTmKPIzFq6psKEkJFv3lb1LitlmKjOtaiWWEMmNLI=;
-	b=qHUad8U6Xabiyy5cgkE8zAkl495i9//Nh6FjNmn4s+Ea3NV2GP4fG0Kcwap8exHZCM/zjd
-	jmwWSKlk+Ln+EZ3XUqmfLBkZRk1kveJkI0keCpSkAbVgrkI4NdMA2VLE9bXR7uodW3SslU
-	9RltNLGv6Ocr6UgFHtKI6HnkHNHVf7g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1780560733;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+nmTmKPIzFq6psKEkJFv3lb1LitlmKjOtaiWWEMmNLI=;
-	b=1FB+kS2z3b4Rj3UQmZbc8pGxPh8H8ZnGS529wgxg8sn0li4TCmzrJcnuP2hO9hcDtudeCb
-	KroFHNiFAmUkfCDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6F47779A8;
-	Thu,  4 Jun 2026 08:12:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2tY2M1wzIWp9fAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 04 Jun 2026 08:12:12 +0000
-Date: Thu, 04 Jun 2026 10:12:12 +0200
-Message-ID: <87fr32wwpv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-2022-JP?B?GyRCPH4bKEJPY2Vhbg==?= <zhouoceanhy@gmail.com>
-Cc: perex@perex.cz,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Ocean Zhou <51983215+ocean-sudo@users.noreply.github.com>
-Subject: Re: [PATCH v2] ALSA: hda/conexant: fix FEVM FA880 PRO internal mic
- mux
-In-Reply-To: 
- <CACYx1SobX420vGovUv-1WROW-Kh-sPvaFBj0vNfgQnVnDyOeZg@mail.gmail.com>
-References: 
- <20260529041147.70001-1-51983215+ocean-sudo@users.noreply.github.com>
-	<87y0h2r3g6.wl-tiwai@suse.de>
-	<CACYx1SrnTfg6GKK2S1Vb13f9OWOq1x=VUDA=AFWs1CALsC_B2g@mail.gmail.com>
-	<8733z7pv5e.wl-tiwai@suse.de>
-	<CACYx1SobX420vGovUv-1WROW-Kh-sPvaFBj0vNfgQnVnDyOeZg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-2022-JP
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	TAGGED_RCPT(0.00)[ocean-sudo];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: LKYIIF6THXPJ3H4AYLYTU5NSWYRZNEPR
-X-Message-ID-Hash: LKYIIF6THXPJ3H4AYLYTU5NSWYRZNEPR
-X-MailFrom: tiwai@suse.de
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 650BCF800B0
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2026 14:34:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 650BCF800B0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18b5e0e232dda300-webhooks-bot@alsa-project.org>
+In-Reply-To: <18b5e0e232b41800-webhooks-bot@alsa-project.org>
+References: <18b5e0e232b41800-webhooks-bot@alsa-project.org>
+Subject: No output or input exists after upgrading alsa-ucm-conf to 1.2.16
+Date: Thu,  4 Jun 2026 14:34:52 +0200 (CEST)
+Message-ID-Hash: YNDUWUQSEAX5EFG3AGPU5ZD6EZQ76MDR
+X-Message-ID-Hash: YNDUWUQSEAX5EFG3AGPU5ZD6EZQ76MDR
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -188,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LKYIIF6THXPJ3H4AYLYTU5NSWYRZNEPR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YNDUWUQSEAX5EFG3AGPU5ZD6EZQ76MDR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -197,25 +84,126 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 03 Jun 2026 17:08:04 +0200,
-周Ocean wrote:
-> 
-> Hi Takashi,
-> 
-> Due to size limits on the mailing list, I've compressed the alsa-info
-> outputs. Please find them attached.
-> 
-> 1. alsa-info-with-patch.txt.gz:
-> Generated on LTS kernel (6.18.33) with the patch applied via DKMS.
-> Under this state, the internal microphone works.
-> 
-> 2. alsa-info-without-patch.txt.gz:
-> Generated on the same kernel with the DKMS patch uninstalled (stock
-> driver). The internal microphone does not work in this state.
+alsa-project/alsa-ucm-conf issue #774 was opened from EricLin0509:
 
-Thanks.  But I couldn't see the difference about NID 0x14: both with
-and without patch show it's connecting to NID 0x1e (index #3).
-What am I missing?
+## Summary
 
+After upgrading the `alsa-ucm-conf` to `1.2.16`, the builtin speaker and microphone in MSI Prestige 16 Flip AI+ C3MTG has gone, and these devices previously worked fine. To make them work again I have to downgrade `alsa-ucm-conf` to `1.2.15.3` (keep `alsa-lib 1.2.16` is fine).
 
-Takashi
+Similar issue #773
+
+## Environment
+
+- OS: Arch Linux
+- Device: MSI Prestige 16 Flip AI+ C3MTG
+- `alsa-ucm-conf` broken: 1.2.16-1
+- `alsa-ucm-conf` working: 1.2.15.3-2
+- Kernel: 7.0.11-1-cachyos
+- Audio server: PipeWire 1.6.6 / WirePlumber 0.5.14
+
+## Root cause
+
+The configuration can't be loaded in version `1.2.16` on a board matching `rt713-sdca`
+
+Here are the outputs of `alsaucm -c hw:0 dump text` in these two versions.
+
+- 1.2.15.3
+
+```
+Verb.HiFi {
+	Comment "Play HiFi quality Music"
+	Device.Headphones {
+		Comment Headphones
+		Values {
+			CaptureCTL "_ucm0001.hw:sofsoundwire"
+			JackControl "Headphone Jack"
+			PlaybackCTL "_ucm0001.hw:sofsoundwire"
+			PlaybackPCM "_ucm0001.hw:sofsoundwire"
+			PlaybackPriority 200
+			TQ HiFi
+		}
+	}
+	Device.Headset {
+		Comment "Headset Microphone"
+		Values {
+			CaptureCTL "_ucm0001.hw:sofsoundwire"
+			CaptureMixerElem "rt713 FU0F"
+			CapturePCM "_ucm0001.hw:sofsoundwire,1"
+			CapturePriority 200
+			CaptureSwitch "rt713 FU0F Capture Switch"
+			CaptureVolume "rt713 FU0F Capture Volume"
+			JackControl "Headset Mic Jack"
+			PlaybackCTL "_ucm0001.hw:sofsoundwire"
+			TQ HiFi
+		}
+	}
+	Device.Mic {
+		Comment "SoundWire Microphones"
+		Values {
+			CaptureCTL "_ucm0001.hw:sofsoundwire"
+			CaptureMixerElem "rt713 FU1E"
+			CapturePCM "_ucm0001.hw:sofsoundwire,4"
+			CapturePriority 100
+			CaptureSwitch "rt713 FU1E Capture Switch"
+			CaptureVolume "rt713 FU1E Capture Volume"
+			PlaybackCTL "_ucm0001.hw:sofsoundwire"
+			TQ HiFi
+		}
+	}
+	Device.Speaker {
+		Comment Speaker
+		Values {
+			CaptureCTL "_ucm0001.hw:sofsoundwire"
+			PlaybackCTL "_ucm0001.hw:sofsoundwire"
+			PlaybackPCM "_ucm0001.hw:sofsoundwire,2"
+			PlaybackPriority 100
+			TQ HiFi
+		}
+	}
+	Device.HDMI1 {
+		Comment "HDMI / DisplayPort 1 Output"
+		Values {
+			CaptureCTL "_ucm0001.hw:sofsoundwire"
+			JackControl "HDMI/DP,pcm=5 Jack"
+			PlaybackCTL "_ucm0001.hw:sofsoundwire"
+			PlaybackPCM "_ucm0001.hw:sofsoundwire,5"
+			PlaybackPriority 500
+			TQ HiFi
+		}
+	}
+	Device.HDMI2 {
+		Comment "HDMI / DisplayPort 2 Output"
+		Values {
+			CaptureCTL "_ucm0001.hw:sofsoundwire"
+			JackControl "HDMI/DP,pcm=6 Jack"
+			PlaybackCTL "_ucm0001.hw:sofsoundwire"
+			PlaybackPCM "_ucm0001.hw:sofsoundwire,6"
+			PlaybackPriority 600
+			TQ HiFi
+		}
+	}
+	Device.HDMI3 {
+		Comment "HDMI / DisplayPort 3 Output"
+		Values {
+			CaptureCTL "_ucm0001.hw:sofsoundwire"
+			JackControl "HDMI/DP,pcm=7 Jack"
+			PlaybackCTL "_ucm0001.hw:sofsoundwire"
+			PlaybackPCM "_ucm0001.hw:sofsoundwire,7"
+			PlaybackPriority 700
+			TQ HiFi
+		}
+	}
+}
+```
+
+- 1.2.16
+
+```
+ALSA lib utils.c:372:(uc_mgr_config_load_into) [error.ucm] could not open configuration file /usr/share/alsa/ucm2/codecs/rt713-sdca/init.conf
+ALSA lib parser.c:79:(uc_mgr_config_load_file) [error.ucm] failed to open file /usr/share/alsa/ucm2/codecs/rt713-sdca/init.conf: -2
+ALSA lib main.c:1805:(snd_use_case_mgr_open) [error.ucm] failed to import hw:0 use case configuration -2
+alsaucm: error failed to open sound card hw:0: No such file or directory
+```
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/774
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
