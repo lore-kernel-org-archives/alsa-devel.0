@@ -4,68 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9514CD6E60
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jun 2026 23:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51BB2CD6E4A
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2026 06:56:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6E8B60236;
-	Thu,  4 Jun 2026 01:44:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6E8B60236
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FE1E6023D;
+	Thu,  4 Jun 2026 08:55:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FE1E6023D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1780530251;
-	bh=v4zicWz38fSd4Xy3O3q+PciITfgJBUzU51FehdfZ50I=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=L8gsCtVc/i4yZ0MYzv1XDIF2YTck1wulsYTzKjIsKkL4Q037sMGyKOs3qIyWEhaVz
-	 z+DWWiic7aP1Vsdd9HwAWWiHfEaIUuCp0oQnpgdb7pzdpksSYAJz3w06U2YTcNLU4a
-	 LlxpTGBoc+M3OP6zpvCmWSSbEOAvyxZ1f3Hmmuy8=
+	s=default; t=1780556165;
+	bh=dLH2GCpqoDbl5eB5Bz6gRA357t/ts1yZOrb9xgXWsm0=;
+	h=From:To:Subject:Date:References:List-Id:List-Archive:List-Help:
+	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=KdYsB79AWy6Er6FpnLJl7zgvDY+bCMznuLjX+CpCG/Q3hw/OFHzvtSrtOgFEw85A9
+	 N2nUWzhiIR9dzHvjtynUJhvfv4VdBKxcWp24BIyHnZtXpktfaRZFICt+8xLLQjFcXM
+	 Xp2cMiirfV7cY7PNJGbR23uFMb+ghwNVPpsuIpUE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86FA0F805F7; Thu,  4 Jun 2026 01:43:38 +0200 (CEST)
+	id 352F4F805FF; Thu,  4 Jun 2026 08:55:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18A58F805FB;
-	Thu,  4 Jun 2026 01:43:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE850F805FF;
+	Thu,  4 Jun 2026 08:55:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8487DF804CC; Thu,  4 Jun 2026 01:43:32 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780530211;
-	b=Xo/Y6/1f5QFfBCE1wfMZgSAm2EeGTm++8OFYvjUaY8lYlHvOHBbxpW2OiV6SvEAqg52l
-	 2RE2CQSH8wPNplcpfSxHXHVaeyEmngaKquDxeaXTjvwyIwk7PYefrVu6Klxvo+PcWrjt1
-	 pm9/hXGLT1NGXdZb+Hl4CcwXJbqZjo1QuqR0ZixsSS6bUze/WeV4VDtx0CLiNsfuk9o8A
-	 82cL6zbpYqwHbRdYRUFuiikCOxla761lZ2SXyrmHrcCvTLrY6pSJ7U1FQpMge18FbJBSx
-	 veUl5FD1zzI2PSlQmL1xJMysPmFFbtxKQWsz4FX8L52FvrIY34aACyRGN8YnD/ksnlQ==
+	id 41D91F804CC; Thu,  4 Jun 2026 08:55:22 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=203.254.224.24
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780556120;
+	b=qfo5aMzRYihrWZxU5RiiuK5Mip/WK601wPT2m2j4NRs0Cmiht9HZBdMSNKBVDbmZAKAX
+	 oKt08QVWzwKgb/RfFTv9VfdCmuVki0OMk/e3X3CM4aU3JWKjLgmuXT71+XOUEbH91Yfjz
+	 GyAmjJiZIBMtnSox3HaNyz3CODDldO8JmpHpFzHMKapiSivYU1N1jXZgqM4Wg9mV/Dukr
+	 YlPQs6ib3EFD1NO59QXqSdCUQ1/JoJzLbmLefsXF5fU/wj2G5gW0jzBjujGGNCE4jjQoy
+	 2icyUEYiNWx5Qk5uOA993Ce1tMqaxmUR4jM5/QymjGcJvX7NP4Q0TaY/z6GnPRGCTlQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1780530211;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=v4zicWz38fSd4Xy3O3q+PciITfgJBUzU51FehdfZ50I=;
-	b=Z4bq/Qo8UzyU/xVQGh7XypVlOTxgR3cZWK+ZuthzrSqtso1XeaoMSn+zbd0mfBsJ+Ibe
-	 os2KpKd6+Ijdrq+vHpa25HrCH/jI0zEzKyzpDYPKmMbE1DlCuY61MhaiR++NJsDJu0Q3P
-	 ChldUiZyBYDHDUMAHKn86LT3aFFodt7Mos+FPu5yJ82wp+a68yvY9lZQEUx4rtHAyBV2t
-	 /v1JluBxGQ12sRBqvrj3h/X5IiFuQQAXAW+hHvTWLfwGyViXZzITVBG6vygTBMUYyYREd
-	 WrQIBSEV3rzPsejgENHmue2KMK7VT1awUNY/yHjJRAdEwEOdZ9AfupGr3Y3Ky9PWRuA==
+	c=relaxed/simple; t=1780556120;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=dLH2GCpqoDbl5eB5Bz6gRA357t/ts1yZOrb9xgXWsm0=;
+	b=qdWc6CYUapDsnO+kBcekbTz8dn5PKm97QWlN1kOs2XyWmYPvLN3cz8n+Z6vY9fK0+fyc
+	 efL1d4tddyDECiq5dtIUUWsEv3zo1GVKNS7k85AnIAC+b3SE1UnIAWOSD2FgwZGac+A/E
+	 AUbOaktew/BHGw7IROqjb9gKoRUTc+/MqNE643ekMybTyKvbqMu0z46YsnoLTjxd4Z3o8
+	 c0tHzCvJfP8cG+s/1RVPlxf6L0BBqTpdD8JM2iNCcWoe7Q98FG/g/azqJWl6UAVskrjQr
+	 hZlQmklWIFyweXmn9mSDczMrFZG6nKdmUmNDQWCrpwqvzwaTeaf5s2h4O0ZC5uWw17g==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAC72F8047D
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2026 01:43:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC72F8047D
-Content-Type: text/plain; charset="utf-8"
+ dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
+ header.s=mail20170921 header.b=FIk8CNPY;
+	arc=none smtp.remote-ip=203.254.224.24
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F390F800B0
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2026 08:55:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F390F800B0
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
+ header.s=mail20170921 header.b=FIk8CNPY
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id
+ 20260604065512epoutp0104eec6e3fee6268270fc66f898e1ecbc~1zlnL9fpR2943929439epoutp01W
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2026 06:55:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com
+ 20260604065512epoutp0104eec6e3fee6268270fc66f898e1ecbc~1zlnL9fpR2943929439epoutp01W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1780556112;
+	bh=4lYu4kSezMPeSMdtEsoaldMKTLJmBEXyCosNWhKJwZA=;
+	h=From:To:Subject:Date:References:From;
+	b=FIk8CNPYp5/e+6zY8Z3wZniRsUC7esp9gw8LVxryATELaRkbCVYvbAu19/wSh6Qd2
+	 Na+VwMn1j6Tvlsc7oBZMudQM3KO8SI2MSHokT3IayUZYvCKBWHgtnC/1TLCdAgj2F6
+	 Y3aqC3M0fiM8+CELooBj/caaKldNmAKfRrL2PNYU=
+Received: from epsnrtp02.localdomain (unknown [182.195.42.154]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTPS id
+	20260604065511epcas2p4cd540c479fc1e379fbc6e6de5228dd42~1zll9amfi1044910449epcas2p40;
+	Thu,  4 Jun 2026 06:55:11 +0000 (GMT)
+Received: from epcas2p3.samsung.com (unknown [182.195.38.206]) by
+	epsnrtp02.localdomain (Postfix) with ESMTP id 4gWFgf6drkz2SSKh; Thu,  4 Jun
+	2026 06:55:10 +0000 (GMT)
+Received: from epsmtip1.samsung.com (unknown [182.195.34.30]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+	20260604065510epcas2p4867ac51f94ba7385d72849b573b44976~1zlk9F2Dy1020910209epcas2p40;
+	Thu,  4 Jun 2026 06:55:10 +0000 (GMT)
+Received: from KORDO035882 (unknown [12.80.201.209]) by epsmtip1.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20260604065510epsmtip1b4cf28614b213e915db9a471d3df005a~1zlk7HL9w1871918719epsmtip1o;
+	Thu,  4 Jun 2026 06:55:10 +0000 (GMT)
+From: "Shinhyung Kang" <s47.kang@samsung.com>
+To: "'Takashi Iwai'" <tiwai@suse.de>, <alsa-devel@alsa-project.org>,
+	<broonie@kernel.org>
+Subject: [PATCH] ASoC: soc-compress: fix use-after-free in
+ soc_compr_trigger_fe() during BE list traversal
+Date: Thu, 4 Jun 2026 15:55:10 +0900
+Message-ID: <000e01dcf3ef$15d69530$4183bf90$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18b5b6cab33c8800-webhooks-bot@alsa-project.org>
-In-Reply-To: <18b5b6cab30e9300-webhooks-bot@alsa-project.org>
-References: <18b5b6cab30e9300-webhooks-bot@alsa-project.org>
-Subject: # Regression in 1.2.16: ALC4080 S/PDIF device dropped on MSI X870
- Tomahawk (`0db0:cd0e`)
-Date: Thu,  4 Jun 2026 01:43:32 +0200 (CEST)
-Message-ID-Hash: OAXXAGRKP7AA5CMUCLXX7OQD7AHJ3BSX
-X-Message-ID-Hash: OAXXAGRKP7AA5CMUCLXX7OQD7AHJ3BSX
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: Adzz7w3+41Q2KG3cTGy00o7x8ulhug==
+Content-Language: ko
+X-CMS-MailID: 20260604065510epcas2p4867ac51f94ba7385d72849b573b44976
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+cpgsPolicy: CPGSC10-234,Y
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20260604065510epcas2p4867ac51f94ba7385d72849b573b44976
+References: 
+ <CGME20260604065510epcas2p4867ac51f94ba7385d72849b573b44976@epcas2p4.samsung.com>
+Message-ID-Hash: CFWY2XJNSRU5UIDZCTG42XYGWVFG6W3W
+X-Message-ID-Hash: CFWY2XJNSRU5UIDZCTG42XYGWVFG6W3W
+X-MailFrom: s47.kang@samsung.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -76,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OAXXAGRKP7AA5CMUCLXX7OQD7AHJ3BSX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CFWY2XJNSRU5UIDZCTG42XYGWVFG6W3W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,92 +130,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYgaXNzdWUgIzc3MyB3YXMgb3BlbmVkIGZyb20gQ2Vh
-c2VGdW5jdGlvbjoKCiMjIFN1bW1hcnkKCkFmdGVyIHVwZ3JhZGluZyBgYWxzYS11Y20tY29uZmAg
-ZnJvbSBgMS4yLjE1LjNgIHRvIGAxLjIuMTZgLCB0aGUgUy9QRElGIG91dHB1dCBkZXZpY2Ugb24g
-bXkgTVNJIFg4NzAgVG9tYWhhd2sgZGlzYXBwZWFyZWQuIFRoZSBib2FyZCBtYXRjaGVzIHRoZSBg
-UmVhbHRlay9BTEM0MDgwYCBwcm9maWxlLCBhbmQgUy9QRElGIHByZXZpb3VzbHkgd29ya2VkIGZp
-bmUuIFJldmVydGluZyAqKm9ubHkqKiBgYWxzYS11Y20tY29uZmAgdG8gYDEuMi4xNS4zYCAobGVh
-dmluZyBgYWxzYS1saWIgMS4yLjE2YCBpbiBwbGFjZSkgaW1tZWRpYXRlbHkgcmVzdG9yZWQgaXQs
-IHdoaWNoIGlzb2xhdGVzIHRoZSByZWdyZXNzaW9uIHRvIHRoZSBwcm9maWxlIGRhdGEg4oCUIHNw
-ZWNpZmljYWxseSBhIG5ldyBjb25kaXRpb25hbCBpbiBgVVNCLUF1ZGlvL1JlYWx0ZWsvQUxDNDA4
-MC1IaUZpLmNvbmZgIHRoYXQgZHJvcHMgdGhlIFMvUERJRiBkZXZpY2Ugb24gYm9hcmRzIHdob3Nl
-IFBDTSBzdWJkZXZpY2UgbmFtaW5nIHRoZSBuZXcgcHJvYmUgZmFpbHMgdG8gbWF0Y2guCgojIyBF
-bnZpcm9ubWVudAoKLSAqKkRpc3RyaWJ1dGlvbjoqKiBDYWNoeU9TIChBcmNoLWJhc2VkKSwgcm9s
-bGluZwotICoqYGFsc2EtdWNtLWNvbmZgIGJyb2tlbjoqKiAxLjIuMTYtMQotICoqYGFsc2EtdWNt
-LWNvbmZgIHdvcmtpbmc6KiogMS4yLjE1LjMtMgotICoqYGFsc2EtbGliYDoqKiAxLjIuMTYgKE5P
-VCByZXZlcnRlZCDigJQgc2VlIGJlbG93KQotICoqQm9hcmQgLyBkZXZpY2U6KiogTVNJIFg4NzAg
-VG9tYWhhd2ssIFVTQi1hdHRhY2hlZCBhdWRpbywgSUQgYDBkYjA6Y2QwZWAKLSAqKk1hdGNoZWQg
-cHJvZmlsZToqKiBgUmVhbHRlay9BTEM0MDgwYCAodmlhIGBVU0ItQXVkaW8vVVNCLUF1ZGlvLmNv
-bmZgKQotICoqS2VybmVsOioqIDcuMC4xMC0yLWNhY2h5b3MKLSAqKkF1ZGlvIHNlcnZlcjoqKiBQ
-aXBlV2lyZSAxLjYuNiAvIFdpcmVQbHVtYmVyIDAuNS4xNAoKIyMgU3ltcHRvbQoKVGhlIFMvUERJ
-RiBvdXRwdXQgaXMgbm8gbG9uZ2VyIGVudW1lcmF0ZWQuIEFuYWxvZyBvdXRwdXRzIG9uIHRoZSBz
-YW1lIGNhcmQgYXJlIHVuYWZmZWN0ZWQsIGFuZCBhIHNlcGFyYXRlIFVTQiBEQUMgaXMgdW5hZmZl
-Y3RlZC4gVGhlIFMvUERJRiBkZXZpY2UgcmV0dXJucyB3aGVuIGBhbHNhLXVjbS1jb25mYCBhbG9u
-ZSBpcyBkb3duZ3JhZGVkIHRvIDEuMi4xNS4zLgoKIyMgUm9vdCBjYXVzZQoKRGV2aWNlIG1hdGNo
-aW5nIGlzIHVuY2hhbmdlZCBiZXR3ZWVuIHZlcnNpb25zIOKAlCBgMGRiMDpjZDBlYCBtYXRjaGVz
-IHRoZSBBTEM0MDgwIGJsb2NrIGluIGBVU0ItQXVkaW8vVVNCLUF1ZGlvLmNvbmZgIGluIGJvdGgg
-MS4yLjE1LjMgYW5kIDEuMi4xNiwgY29uZmlybWVkIGJ5OgoKYGBgCmdyZXAgLXJsICIwZGIwOmNk
-MGUiIC91c3Ivc2hhcmUvYWxzYS91Y20yLyAgICAgICAgICAgIyAxLjIuMTUuMyAtPiBVU0ItQXVk
-aW8uY29uZgpncmVwIC1ybCAiMGRiMDpjZDBlIiAuLi4vMS4yLjE2Ly4uLi91Y20yLyAgICAgICAg
-ICAgICMgMS4yLjE2ICAgLT4gVVNCLUF1ZGlvLmNvbmYKYGBgCgpUaGUgcmVncmVzc2lvbiBpcyBp
-bnNpZGUgYFVTQi1BdWRpby9SZWFsdGVrL0FMQzQwODAtSGlGaS5jb25mYC4gMS4yLjE2IHJlZmFj
-dG9yZWQgdGhlIGBEZWZpbmVgIGJsb2NrIHNvIFBDTSB2YWx1ZXMgaG9sZCBvbmx5IHRoZSBzdWJk
-ZXZpY2UgaW5kZXggKGUuZy4gYFNwZGlmUENNICIzImApIGFuZCBlYWNoIGBTZWN0aW9uRGV2aWNl
-YCByZWJ1aWxkcyB0aGUgZnVsbCBwYXRoIGFzIGBodzoke0NhcmRJZH0sJHt2YXI6U3BkaWZQQ019
-YC4gQXMgcGFydCBvZiB0aGF0IHJlZmFjdG9yLCB0aGUgUy9QRElGIHNlY3Rpb24gZ2FpbmVkIGEg
-ZGV2aWNlLXByb2JlIGdhdGU6CgpgYGAKSWYuc3BkaWZfZGV2MiB7CiAgICBDb25kaXRpb24geyBU
-eXBlIFJlZ2V4TWF0Y2g7IFN0cmluZyAiJHtDYXJkQ29tcG9uZW50c30iOyBSZWdleCAiVVNCKDBi
-MDU6KDE5OTZ8MWE1WzIzY10pfDBkYjA6MWZlYikiIH0KICAgIFRydWUuRGVmaW5lIHsgU3BkaWZO
-YW1lICJTL1BESUYgT3V0cHV0IjsgU3BkaWZQQ00gIjIiIH0KICAgIEZhbHNlLklmLnNwZGlmX25v
-ZGV2IHsKICAgICAgICBDb25kaXRpb24gewogICAgICAgICAgICBUeXBlIFN0cmluZwogICAgICAg
-ICAgICBFbXB0eSAiJCR7ZmluZC1kZXZpY2U6dHlwZT1wY20sc3RyZWFtPXBsYXliYWNrLGZpZWxk
-PXN1Ym5hbWUscmVnZXg9J0F1ZGlvICMzJ30iCiAgICAgICAgfQogICAgICAgIFRydWUuRGVmaW5l
-LlNwZGlmTmFtZSAiIiAgICAgICAgIyA8LS0gZHJvcHMgUy9QRElGIGRldmljZSBlbnRpcmVseQog
-ICAgfQp9CmBgYAoKSW4gMS4yLjE1LjMgdGhlcmUgd2FzIG5vIHN1Y2ggcHJvYmUgZm9yIHRoaXMg
-cGF0aDsgUy9QRElGIHdhcyB1bmNvbmRpdGlvbmFsbHkgZGVmaW5lZCBhdCBzdWJkZXZpY2UgMy4g
-T24gdGhlIFg4NzAgVG9tYWhhd2ssIHRoZSBgZmluZC1kZXZpY2UgLi4uIHN1Ym5hbWUgcmVnZXg9
-J0F1ZGlvICMzJ2AgbG9va3VwIGV2aWRlbnRseSBkb2VzIG5vdCBtYXRjaCB0aGUgYm9hcmQncyBh
-Y3R1YWwgc3ViZGV2aWNlIHN1Ym5hbWUsIHNvIGBTcGRpZk5hbWVgIGlzIHNldCB0byBgIiJgIGFu
-ZCB0aGUgZGV2aWNlIGlzIHJlbW92ZWQuCgojIyBIYXJkd2FyZSBjb25maXJtYXRpb24g4oCUIHRo
-ZSBwcm9iZSBxdWVyaWVzIHRoZSB3cm9uZyBmaWVsZAoKYGNhdCAvcHJvYy9hc291bmQvY2FyZDUv
-cGNtKnAvaW5mb2Agc2hvd3MgdGhlIFMvUERJRiBQQ00gZXhpc3RzIGluIGhhcmR3YXJlIChkZXZp
-Y2UgMykgYW5kIHJldmVhbHMgZXhhY3RseSB3aHkgdGhlIHByb2JlIGZhaWxzOgoKYGBgCmRldmlj
-ZTogMApuYW1lOiBVU0IgQXVkaW8Kc3VibmFtZTogc3ViZGV2aWNlICMwCi4uLgpkZXZpY2U6IDMK
-bmFtZTogVVNCIEF1ZGlvICMzCnN1Ym5hbWU6IHN1YmRldmljZSAjMApzdWJkZXZpY2VzX2NvdW50
-OiAxCnN1YmRldmljZXNfYXZhaWw6IDAKYGBgCgpUaGUgUy9QRElGIGRldmljZSAoZGV2aWNlIDMp
-IGlzIHByZXNlbnQgYW5kIHdvcmtzIHVuZGVyIDEuMi4xNS4zLiBUaGUgc3RyaW5nIGBBdWRpbyAj
-M2AgYXBwZWFycyBpbiB0aGUgKipgbmFtZWAqKiBmaWVsZCAoYFVTQiBBdWRpbyAjM2ApLiBCdXQg
-dGhlIDEuMi4xNiBwcm9iZSBzZWFyY2hlcyAqKmBmaWVsZD1zdWJuYW1lYCoqOgoKYGBgCkVtcHR5
-ICIkJHtmaW5kLWRldmljZTp0eXBlPXBjbSxzdHJlYW09cGxheWJhY2ssZmllbGQ9c3VibmFtZSxy
-ZWdleD0nQXVkaW8gIzMnfSIKYGBgCgpFdmVyeSBzdWJkZXZpY2UncyBgc3VibmFtZWAgb24gdGhp
-cyBib2FyZCBpcyBqdXN0IGBzdWJkZXZpY2UgIzBgIOKAlCBgQXVkaW8gIzNgIG5ldmVyIGFwcGVh
-cnMgaW4gYW55IGBzdWJuYW1lYC4gU28gYGZpbmQtZGV2aWNlYCBhbHdheXMgcmV0dXJucyBlbXB0
-eSwgYHNwZGlmX25vZGV2YCBhbHdheXMgZmlyZXMsIGFuZCBTL1BESUYgaXMgZHJvcHBlZCwgZXZl
-biB0aG91Z2ggZGV2aWNlIDMgcGxhaW5seSBleGlzdHMuIFRoZSBwcm9iZSBpcyBtYXRjaGluZyBh
-Z2FpbnN0IHRoZSB3cm9uZyBmaWVsZC4KCiMjIFN0ZXBzIHRvIHJlcHJvZHVjZQoKMS4gT24gYSBi
-b2FyZCBtYXRjaGluZyBgUmVhbHRlay9BTEM0MDgwYCAoZS5nLiBgMGRiMDpjZDBlYCkgd2l0aCB3
-b3JraW5nIFMvUERJRiB1bmRlciBgYWxzYS11Y20tY29uZiAxLjIuMTUuM2AuCjIuIFVwZ3JhZGUg
-YGFsc2EtdWNtLWNvbmZgIHRvIDEuMi4xNi4KMy4gUmVzdGFydCB0aGUgYXVkaW8gc3RhY2s6IGBz
-eXN0ZW1jdGwgLS11c2VyIHJlc3RhcnQgcGlwZXdpcmUgcGlwZXdpcmUtcHVsc2Ugd2lyZXBsdW1i
-ZXJgLgo0LiBTL1BESUYgb3V0cHV0IGlzIGdvbmUuCgojIyBFeHBlY3RlZCB2cyBhY3R1YWwKCi0g
-KipFeHBlY3RlZDoqKiBTL1BESUYgb3V0cHV0IHJlbWFpbnMgZW51bWVyYXRlZCwgYXMgaW4gMS4y
-LjE1LjMuCi0gKipBY3R1YWw6KiogUy9QRElGIGRldmljZSBpcyByZW1vdmVkIGJlY2F1c2UgdGhl
-IG5ldyBgc3BkaWZfbm9kZXZgIHByb2JlIGV2YWx1YXRlcyB0byBlbXB0eSBvbiB0aGlzIGJvYXJk
-LgoKIyMgU3VnZ2VzdGVkIGZpeCBkaXJlY3Rpb24KClRoZSBgc3BkaWZfbm9kZXZgIHByb2JlIHF1
-ZXJpZXMgYGZpZWxkPXN1Ym5hbWVgIGJ1dCB0aGUgZGlzY3JpbWluYXRpbmcgc3RyaW5nIChgQXVk
-aW8gIzNgKSBsaXZlcyBpbiB0aGUgZGV2aWNlJ3MgYG5hbWVgIGZpZWxkLCBub3QgYHN1Ym5hbWVg
-LiBPbiB0aGlzIGJvYXJkIGV2ZXJ5IGBzdWJuYW1lYCBpcyBgc3ViZGV2aWNlICMwYCwgc28gdGhl
-IHByb2JlIGNhbiBuZXZlciBtYXRjaCBhbmQgUy9QRElGIGlzIGFsd2F5cyBzdXBwcmVzc2VkLiBU
-aGUgcHJvYmUgc2hvdWxkIHF1ZXJ5IGBmaWVsZD1uYW1lYCBpbnN0ZWFkOgoKYGBgCkVtcHR5ICIk
-JHtmaW5kLWRldmljZTp0eXBlPXBjbSxzdHJlYW09cGxheWJhY2ssZmllbGQ9bmFtZSxyZWdleD0n
-QXVkaW8gIzMnfSIKYGBgCgpUaGlzIGxpa2VseSBhZmZlY3RzIGFsbCBBTEM0MDgwIGJvYXJkcyB0
-aGF0IGhpdCB0aGUgYHNwZGlmX25vZGV2YCBmYWxsYmFjayByYXRoZXIgdGhhbiB0aGUgd2hpdGVs
-aXN0ZWQgYHNwZGlmX2RldjJgIElEcyAoYDBiMDU6MTk5NmAsIGAwYjA1OjFhNVsyM2NdYCwgYDBk
-YjA6MWZlYmApLiBXb3J0aCBjb25maXJtaW5nIHRoZSBmaWVsZCBuYW1lIGFnYWluc3Qgd2hpY2hl
-dmVyIGJvYXJkIG9yaWdpbmFsbHkgbW90aXZhdGVkIHRoZSBwcm9iZSwgc28gdGhlIGZpeCBkb2Vz
-bid0IG1lcmVseSBtb3ZlIHRoZSBicmVha2FnZS4KCiMjIFdvcmthcm91bmQKCkRvd25ncmFkZSBg
-YWxzYS11Y20tY29uZmAgdG8gMS4yLjE1LjMgKG5vIG5lZWQgdG8gZG93bmdyYWRlIGBhbHNhLWxp
-YmApLgoKSXNzdWUgVVJMICAgICA6IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxz
-YS11Y20tY29uZi9pc3N1ZXMvNzczClJlcG9zaXRvcnkgVVJMOiBodHRwczovL2dpdGh1Yi5jb20v
-YWxzYS1wcm9qZWN0L2Fsc2EtdWNtLWNvbmYK
+The DPCM compress trigger path traverses the FE's BE client list in
+dpcm_be_dai_trigger() without holding card->pcm_mutex, while
+dpcm_be_disconnect() can concurrently remove and free entries from
+that same list under pcm_mutex protection.
+
+This causes a use-after-free when for_each_dpcm_be() advances to the
+next list node after releasing a BE's stream lock between iterations,
+and the snd_soc_dpcm entry has already been kfree()'d by a concurrent
+dpcm_be_disconnect() call.
+
+Crash signature observed:
+ Unable to handle kernel paging request at virtual address dead0000000000e8
+ Call trace:
+  dpcm_be_dai_trigger+0x90/0x3f0
+  soc_compr_trigger_fe+0xa8/0x144
+  snd_compr_ioctl+0xc98/0x2010
+  __arm64_sys_ioctl+0x164/0x784
+
+Race condition timeline:
+ Thread A (soc_compr_trigger_fe):
+   snd_soc_card_mutex_lock()        <- holds card->mutex only
+   dpcm_be_dai_trigger()
+    for_each_dpcm_be(fe, stream, dpcm) {
+	  snd_pcm_stream_lock_irqsave_nested(be_substream);
+	  ...
+	  snd_pcm_stream_unlock_irqrestore(be_substream);
+	  /* WINDOW: next iteration reads dpcm->list_be.next */
+	}
+
+ Thread B (snd_soc_dpcm_runtime_update via DAPM):
+   snd_soc_dpcm_mutex_lock()        <- holds card->pcm_mutex
+   dpcm_be_disconnect()
+	snd_pcm_stream_lock_irq(fe_substream);
+	list_del(&dpcm->list_be);      <- removes from list
+	snd_pcm_stream_unlock_irq();
+	kfree(dpcm);                   <- frees the struct
+
+The PCM trigger path (dpcm_fe_dai_trigger) is protected against this
+race by checking runtime_update and deferring to trigger_pending when
+a concurrent update is in progress. The compress trigger path
+(soc_compr_trigger_fe) lacks this deferred-trigger mechanism, so the
+only correct fix is to hold pcm_mutex for the duration of the BE list
+traversal, as is done in all other compress FE operations such as
+soc_compr_open_fe() and soc_compr_set_params().
+
+Signed-off-by: Shinhyung Kang <s47.kang@samsung.com>
+---
+ sound/soc/soc-compress.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index b8402802ae78..615ce7a0e8d9 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -285,6 +285,7 @@ static int soc_compr_trigger_fe(struct snd_compr_stream
+*cstream, int cmd)
+ 		return snd_soc_component_compr_trigger(cstream, cmd);
+ 
+ 	snd_soc_card_mutex_lock(fe->card);
++	snd_soc_dpcm_mutex_lock(fe);
+ 
+ 	ret = snd_soc_dai_compr_trigger(cpu_dai, cstream, cmd);
+ 	if (ret < 0)
+@@ -315,6 +316,7 @@ static int soc_compr_trigger_fe(struct snd_compr_stream
+*cstream, int cmd)
+ 
+ out:
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	snd_soc_dpcm_mutex_unlock(fe);
+ 	snd_soc_card_mutex_unlock(fe->card);
+ 	return ret;
+ }
+-- 
+2.21.0
+
