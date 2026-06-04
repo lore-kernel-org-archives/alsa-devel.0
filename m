@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6CADCD6E6B
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2026 12:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B76CBCD6E6B
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jun 2026 12:49:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9364660247;
-	Thu,  4 Jun 2026 14:45:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9364660247
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA92960255;
+	Thu,  4 Jun 2026 14:49:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA92960255
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1780577152;
-	bh=qZj+3cyqMYWoQtJSWqlNh9hiU1DD038UlWf+LsWAgH0=;
+	s=default; t=1780577361;
+	bh=5po+uZtJxEoM2DEQEmbtpI+0+cXE1Wt6gXpXO4zn2h4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=E/XoHEFMZQln8txyIg626uDINkQlWTU6E/SdFlLYf2w/SZJFNihgRhjFk5tZZLIGR
-	 Bjjxc7N54L8UVceX6aCxMx5ycJzeEWrciKJd0rp66PORay6GwWpSRMahL72ZJk65za
-	 8NzoqTqgTnCq35vDdscn5hb+rHFk8wj2TcnlXDro=
+	b=Zb2X7Ho544riJW+7/5IFeZndjGq82UcCAqEiyRc3FRKI4+quLqnwwW8HImA4OUzOW
+	 wR1xchLhdGzJK01nsNFn6hwiVaMrIuI8b9xAA+FANfquUtNlzZHP9EaR+W6TJCcU8g
+	 8LFEuGPGGAFtWlVWuHxgNpFZWWrRROzMFFXfvoNo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6748EF805EC; Thu,  4 Jun 2026 14:45:15 +0200 (CEST)
+	id B6B52F805F2; Thu,  4 Jun 2026 14:48:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1117BF805EC;
-	Thu,  4 Jun 2026 14:45:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 518BCF805F6;
+	Thu,  4 Jun 2026 14:48:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C31CFF804CC; Thu,  4 Jun 2026 14:45:09 +0200 (CEST)
+	id 3D5F6F804CC; Thu,  4 Jun 2026 14:48:37 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780577108;
-	b=RU+f56+lgTC4rTOTC9O2eWpboX/4B4xx+SQzzKCrZKE6O4SJ3WwGttZhxgEn/rBiE2fO
-	 RGMAGw1KcnZQ8yX+s7CXTCIj4uLnHp/go2gXxdWFoIIe/AKkTyKET6VjcgH1Wwiz35QyO
-	 BQEKMt9H0ATwXYJ6dUvQhoWEtCgtF+eYiuuCZWOZZw/swBHQNcosuz5WvzZeOu2vK/9zC
-	 uPaT78kmS6WWenM4M4UF07kySHpCnUgxSOwFRQexTPVjVRulgfOn4N8NO6FKmnQZs848E
-	 jg7M9TEfuKhpLHbmcWLiIpousIxzppouuVFv4xZsDfSFtiRZQSmTgvd6suEMWTc4Kew==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780577316;
+	b=CkIYuQHlQCLvAxBwr7nNlstK0RtfoJ+rNKLQeiEkc00HpNUMUt6uH1boR4BjKOl2iRSX
+	 Rqu9HfrHmVNgiJkYHX5DQtgRHt0qzETXcnFA5P1hlTXImwfGOJVG0NrXdXraMx/gLirri
+	 hf042QCptHIcVVQN1iP4RgLCrOVnwgGePT0ChlYtuHgERFJ1XV6OhszOdt4P4LxHyot+J
+	 wj8e1ztF18Iz10ZsbK9HVTTSBAQk/IdzvbeZN4cCNs2sg5ACYgYy/ANBxU4f9lFCMdFqP
+	 wD21WuvkIbB/tcC3HWrnlMgsVTYIBAhMzW5IPgR/aFV01zW+nhDVzXnxfLylUg1WVvg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1780577108;
+	c=relaxed/simple; t=1780577316;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=qZj+3cyqMYWoQtJSWqlNh9hiU1DD038UlWf+LsWAgH0=;
-	b=CK2U9fsa+ac09VIwtr7nf+eURc1oH4FLEle2jNCPdIofpnS7ilqyQ0BgaTycroTmz+rm
-	 Gnmqcr5sWCV3E61Mx0sVw5eGafSJQUvm9VGGnR3v9AdtFvRcVGXEFomwwLDuId5HHQLSp
-	 UJ7cZvCw7GNVTfHSMSihKpnCrcAVgWBuOSQgqPhGqhRMIGuUfHIavyS6xF52glL+ifBPj
-	 GbbYZHrZdLO16bu+sw9fkQprZP/f/sln/qtkcWFGZGiDvbrnth3s1AejaZ7djG7p2G/kT
-	 qLWOVL86h8JWsp42mydWDd+uMNJCebNc/aHYN22/nc2ND+SAspji61WwC+Wv0p/tFaA==
+	bh=5po+uZtJxEoM2DEQEmbtpI+0+cXE1Wt6gXpXO4zn2h4=;
+	b=QaRtNqU7/0VDcgILyeeiZEYRSQhDPQmssJqmzu0MxRbvFQusqsxcqMu63ZJ5WX/KCjuZ
+	 4QiJLU598UqYfiixW5ZPwnR0rnu+mka+RwVRapeATN8XbOu4c5l3AO0Csadjoal915e2d
+	 MFb6yzsxjSwy0tRga10Wd7aINubEO+E1TmRhahqBYiEl5efA9aGX8IvMUYMcC1CKBRHrW
+	 km1idGFzNPJsHBs3A/L4gxnulu3QT5CjTgTRuXdKHaz4SgdxwYTyv2xZZZYEeCWA1A0Pr
+	 rN/dduueNAnSNgdnRCBCUS+4r2zEWaSgJn22wmhs6bSiHB/pMw8p9+wkAYGHTiHvJvA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id C70B8F800B0
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2026 14:45:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C70B8F800B0
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F395F800B0
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jun 2026 14:48:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F395F800B0
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18b5e171f819f400-webhooks-bot@alsa-project.org>
-In-Reply-To: <18b5e171f815fb00-webhooks-bot@alsa-project.org>
-References: <18b5e171f815fb00-webhooks-bot@alsa-project.org>
+Message-Id: <18b5e1a1fe94b100-webhooks-bot@alsa-project.org>
+In-Reply-To: <18b5e1a1fe8ea700-webhooks-bot@alsa-project.org>
+References: <18b5e1a1fe8ea700-webhooks-bot@alsa-project.org>
 Subject: No output or input exists after upgrading alsa-ucm-conf to 1.2.16
-Date: Thu,  4 Jun 2026 14:45:09 +0200 (CEST)
-Message-ID-Hash: ZEOQI4D3DQHOL4HZLD4JXXK4SCIIJFW4
-X-Message-ID-Hash: ZEOQI4D3DQHOL4HZLD4JXXK4SCIIJFW4
+Date: Thu,  4 Jun 2026 14:48:37 +0200 (CEST)
+Message-ID-Hash: 6KYCIGUACR2FTZ5V3XFTC6TY4AQVTXVY
+X-Message-ID-Hash: 6KYCIGUACR2FTZ5V3XFTC6TY4AQVTXVY
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZEOQI4D3DQHOL4HZLD4JXXK4SCIIJFW4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6KYCIGUACR2FTZ5V3XFTC6TY4AQVTXVY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,7 +90,7 @@ alsa-project/alsa-ucm-conf issue #774 was edited from EricLin0509:
 
 After upgrading the `alsa-ucm-conf` to `1.2.16`, the builtin speaker and microphone in MSI Prestige 16 Flip AI+ C3MTG has gone, and these devices previously worked fine. To make them work again I have to downgrade `alsa-ucm-conf` to `1.2.15.3` (keep `alsa-lib 1.2.16` is fine).
 
-~~Similar issue #773~~ (no - different driver)
+Similar issue #773
 
 ## Environment
 
@@ -205,7 +205,7 @@ ALSA lib main.c:1805:(snd_use_case_mgr_open) [error.ucm] failed to import hw:0 u
 alsaucm: error failed to open sound card hw:0: No such file or directory
 ```
 
-- dmesg
+dmesg output (same in 1.2.15.3 and 1.2.16)
 
 ```
 [    8.529154] sof-audio-pci-intel-ptl 0000:00:1f.3: SoundWire enabled on CannonLake+ platform, using SOF driver
@@ -250,6 +250,11 @@ alsaucm: error failed to open sound card hw:0: No such file or directory
 [    8.882827] input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input35
 [    8.882881] input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input36
 ```
+
+`alsa-info.sh` output
+
+- 1.2.15.3 [alsa-info_1.2.15.3.txt](https://github.com/user-attachments/files/28595883/alsa-info_1.2.15.3.txt)
+- 1.2.16 [alsa-info_1.2.16.txt](https://github.com/user-attachments/files/28595900/alsa-info_1.2.16.txt)
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/774
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
