@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CA93CD6E74
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2026 09:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DCBDCD6E74
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jun 2026 09:49:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0927A60263;
-	Fri,  5 Jun 2026 11:49:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0927A60263
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4978960273;
+	Fri,  5 Jun 2026 11:49:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4978960273
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1780652967;
-	bh=+hXCekjk1RvII+6TW8PVnd1pkt0ROZcePF/FpYads60=;
+	s=default; t=1780652981;
+	bh=RY7gURA/gDGK+NHLWGKZQpvt8Z0OWj64skWGBUhLXxc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=vAmpfC5cu1Vbze07irAgIUVJkYwWL7vw2mw5+98X2RfNT98WDBFRX/yEe0mPaUwqZ
-	 rZ53eoUeztAsicmloUAZBnL+ikOFCHWqGks5F24YokmgwXMhqiDIioQpCmXtzD2Xtx
-	 go1aK4pPz4qSlYm/IVYjnHwFOKmo6y8ISMOcRbzk=
+	b=ISivP14XHbfk72IsX7OX11isKOJ0GcTi1h35s4m/RxdTjHYIysQCLSCXRROpUQfCQ
+	 S8vUDDeblLo2JWbpaeU6vyeDgXAT8ucIcg22kpl16PTVnA76sC/yODFPFXZlM5OcGR
+	 HfABlngUx7SD5UUUKwQv0/SAIUF1y3ximex/TFp8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4CF0FF80588; Fri,  5 Jun 2026 11:48:53 +0200 (CEST)
+	id 2C897F80614; Fri,  5 Jun 2026 11:49:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CDD2F80588;
-	Fri,  5 Jun 2026 11:48:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B5E1F80609;
+	Fri,  5 Jun 2026 11:49:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5815F8047D; Fri,  5 Jun 2026 11:48:48 +0200 (CEST)
+	id 474F6F80602; Fri,  5 Jun 2026 11:49:02 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780652927;
-	b=X0Es6heCbOhKiUY5GilHw4EH7QAk6xeOPcHLHiB7MTwbg46N5Dhs2QtM1j5HTlrVRRZ3
-	 pvlcBBiomox2FW+Rc4hEz8e1Bgna98+SKKi24Nsk79BUVXYmkJQmGfxwa8eloN+d4BRVT
-	 6bW4FuLgtclXd6X4bafAKYbWBOmarJ/CeoGY/dzPK7KDpodPysXFISVPpiRI+p4XklJJW
-	 Qc5OTslKu7LovssnxeDT8qUFELDfVJRXQgsubJvo1o3N1+YbV/wIipsMIhXeKu+yAzYXF
-	 Ty9IOdgPR7BqgFHwcPZeyaC8B/c1RjFucvPg4Z0dTCenMiv6kG8kL6k6gc3fGho91eQ==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780652941;
+	b=MkooAOKUdT4bGUdswJ/dGehr1xJW7lM8zv8u4Lan9FniSPyKtkYttDnVYoW9zOhxScWF
+	 mf5eV+MZRFlkbcMwk+KLyb6+QHrKy9I+T84J9ofijNJ4JhoT6HtMwPDNXRETfIy2wbG24
+	 exwiMMbEhbOnWLP7Hto1KSrM2VVHlNdnHiksYMXpqeja5Y9yyYj/xPgsDwejXfCD7uhDm
+	 YDNm451bTYrmuRfFvtRDrW+iMgn0sL8ZEMjamdG6KpdOOa6E1EPW5jExTPGtePYrSIy40
+	 Gxy8YTrOOuGSCVK3CGnEt4C3Rvz3NgqAPKRBQfdtjn+QNpoJPuaMLf52XcDcOQZQ+Lw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1780652927;
+	c=relaxed/simple; t=1780652941;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=+hXCekjk1RvII+6TW8PVnd1pkt0ROZcePF/FpYads60=;
-	b=NJpptliCagmv3GmzBmomjVQtypmrLHtEDXXB4BxOox3PhnH7XvltWsYyGbbHl7yTO/pJ
-	 eIcR9x0k37QuMYc8jDoYbYtXPHmQSucomrRxEWM9efe7So6AN+c0Pm7b9Fuy16xY/TK9W
-	 kVGQLxvKz3QdEGn3EGpcYzw++NEzCp+xAq1W0eT88FMY6n3LY6DwPYAg9LhpDgmHd49Om
-	 6IEUrISMGST0RVt0H7agobCxPk6sx46khE4+yIq5AC/qJCPhUopHPf7XRxfnvxuI/CLWl
-	 684O79sHnNGrOewFrA3c5lTttiXfD3Y8V9re75N19RbS5lpYyjOrZD+WTv9EtAkX5Aw==
+	bh=RY7gURA/gDGK+NHLWGKZQpvt8Z0OWj64skWGBUhLXxc=;
+	b=ryt3l0QXCoanqManBOTtGpAnDDawou7rxlaO2BYSgQL1B3brzW+5uBJbBqfKM1x3MbYo
+	 j88d/WIS+5R8wgraXABONbfjgE4FDCF/B/9xYw+9uen9rSFRYVjtU91WWb2Mh54ZChBKS
+	 7jwxFz83LhR51kizRoVH49T+z33SL48WpC6YUpcdLWyHqAX9oaDdu/wCugRR93foVzWcE
+	 ZE5Rb7VbbBv0tegYu7T+zh5JtuBC2Wqrp8gp4hqp1x9j9tk7z9vGZynSOXh/wJ14iHszu
+	 35zg+PonB5JzTM3jiS6ajqnQqbHKy6hwEZ0uDQDpvmppjfTZC8MggNWgrymah3PEdBw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD7F2F800D0
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2026 11:48:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD7F2F800D0
+	by alsa1.perex.cz (Postfix) with ESMTP id B24E3F805F3
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jun 2026 11:49:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B24E3F805F3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18b62666f4d07c00-webhooks-bot@alsa-project.org>
+Message-Id: <18b6266a4950f000-webhooks-bot@alsa-project.org>
 In-Reply-To: <alsa-project/alsa-ucm-conf/pr/775@alsa-project.org>
 References: <alsa-project/alsa-ucm-conf/pr/775@alsa-project.org>
 Subject: sof-soundwire: cleanups for codecs with multiple functions
-Date: Fri,  5 Jun 2026 11:48:48 +0200 (CEST)
-Message-ID-Hash: URNVKAWQZVNVX4U26H4P4RMPZ54MXD7X
-X-Message-ID-Hash: URNVKAWQZVNVX4U26H4P4RMPZ54MXD7X
+Date: Fri,  5 Jun 2026 11:49:02 +0200 (CEST)
+Message-ID-Hash: H6A77STJHY52FV5R4PO3ME5Q73EUPWPT
+X-Message-ID-Hash: H6A77STJHY52FV5R4PO3ME5Q73EUPWPT
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/URNVKAWQZVNVX4U26H4P4RMPZ54MXD7X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H6A77STJHY52FV5R4PO3ME5Q73EUPWPT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,13 +86,21 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 alsa-project/alsa-ucm-conf pull request #775 was edited from perexg:
 
-RT712 - move rt712-dmic to rt712 config (included in If.multi_init and from HiFi.conf)
+The load mechanism assumed only one multi-codec in the system, but
+    we saw in #774 multiple instances of those codecs (rt1320 and rt713).
+    
+    Make the load mechanism straight:
+    
+    - introduce file variables
+    - remove shadow variables
+    - probe multi-codecs separately and modify the file variables
+    - test for duplicate file inclusion (in both sof-soundwire / HiFi configs)
+    - merge dmic configs for rt712,rt713 to one file
+    
+    This change also removes filters for speaker/headset/mic init includes.
+    The file variables + multi-codec probe replaces this functionality and
+    if the driver reports an "unknown" codec, UCM config should be updated anyway.
 
-RT713 - move rt713-dmic to rt713 config (included in If.multi_init and from HiFi.conf)
-
-RT713,RT712,RT722 - do not include files for individual devices when multi codec is detected.
-
-Declare 'MultiHeadsetShadow' variable to be consistent with other shadow variables (Speaker, Mic). Use it for RT712 and RT713 (Headphones/Headset devices).
 
 Link: https://github.com/alsa-project/alsa-ucm-conf/issues/774
 
