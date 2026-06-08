@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90B4BCD8C9D
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2026 11:31:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBFD8CD8C9D
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jun 2026 11:32:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E680560253;
-	Mon,  8 Jun 2026 13:31:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E680560253
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19C766020A;
+	Mon,  8 Jun 2026 13:31:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19C766020A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1780918309;
-	bh=Gvf2FB/62al6MAXAH/yyj8tJrfqQJwKPUfaveLcQGb4=;
+	s=default; t=1780918326;
+	bh=W6Gy9zePv+DPxmrsDzBshc5EdBqIbiCaTZjrepBuz7Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nc6Y377xRzN2Gj+cjnuR7rE5vuh7JEAZfdzyDLy32OvWgY3C6DaS29q6eDnTKXrRb
-	 o3T8KvhKWz36iSgU1j6/tN7fjvOH+X4DkbKmpIH6GVaU9NFX7rj3sb8mIjwqRn7s/m
-	 rO3GVKZMBwUNFD7dtg6nZTb2qoSZq/SBmDRYAjUo=
+	b=V9ZbTD3XcGCVjPkVLmZPqNswPJZLNbQfrlTTam1PQHUvgz1Fc0Vws0wrPJVZw4E2P
+	 7ap5IIPwWXw1/st0Ii6cOBDQb9FhP5EwDAEOfKZ8sOAaDZuXkrhh2LMSBHZ29zSLD3
+	 UigV08PvZMOtXF61gua8MttFN+HFcxKsT8hj0JGw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83D7CF806A5; Mon,  8 Jun 2026 13:30:27 +0200 (CEST)
+	id 9BF74F806C0; Mon,  8 Jun 2026 13:30:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 376ADF806A3;
-	Mon,  8 Jun 2026 13:30:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AE9DF806C1;
+	Mon,  8 Jun 2026 13:30:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67DCBF80571; Mon,  8 Jun 2026 10:35:55 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=61.135.153.177
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780907754;
-	b=idY9FTfbJ7f6iKaBUFS33bo7+lEirX9Z+iLcBEngL63B4j19aNCeLlcr7SW2UojCUFt/
-	 QMtAHjFuUgAUH/NaonCFtv/coNxQURElg3lyUrt/eCTNkjPErPVA4Bp+YTAVHurT8evxW
-	 te3lZDp+KnMN1T0pJd0+R3vvLU8sFjHVD1msP/K1EcCDzDeSxA2pPru0VSC0TUYsR+Icz
-	 pgBpEbj/QaRs6O9tPYRZQlehBkEQh6+uw9CIRDwVt1p3II14v8jLWJR88SOjvsMTZnslH
-	 2DP7OzxyVhNYdfoBwVoOWnpzkkkQQgj8WyRIZRrNSXY4wleQ7g4OaeMF5OdDX45SOMA==
+	id 07727F804F3; Mon,  8 Jun 2026 10:35:56 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=61.135.153.176
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1780907755;
+	b=INXPOqQyy2bBn2Hm3l/w3ooiu7dUouTbIJoCljNzE2VpdysaYloGHisdjr3f20mDPwb6
+	 4v0eXyJLkK68NQ47W5OIn2BXq3C+qxHolsxDjXxKOw5G+BODl/wPQjATBJV5ShLBVVllZ
+	 +Q11sra7LWEXkTmxYyuY2R0DmmFbXEdkJZ6Fsyr24LqrK0QSoWv4GS65xc37u6v2ZjMiX
+	 ErERE3ywVj79CBOmb/4NieZIPfYQ8kay1LuDz4Y7n2XHBKNQOIYYq68avsu78dJwmhhbX
+	 EUhyHXD9La+1JiEPCv1rQxgF01Clcjmmyf5ZwPC7LdaJESjCkADUwu2pClPxGcxT88A==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1780907754;
+	c=relaxed/simple; t=1780907755;
 	h=From:To:Subject:Date:Message-Id;
-	bh=Gvf2FB/62al6MAXAH/yyj8tJrfqQJwKPUfaveLcQGb4=;
-	b=Wjql8POJWOFiKVnKI8g+XD7QdlDHi54Sb9muSBnBlMmCNIzuvFyf/nIIkoUbd0uyZlh/
-	 HuYBcHL2LeCmVer0oo20xz+LtgkQYRWBAND+YxFVIf5u6qa8lGgERhguZLAFLfdMqYZg6
-	 3IRzVNhXlzKHglhw9f4NXPrT4i50yDs1I3DCJ7ruq3wR4a8qNE3A+GjfF/WU39RT6rohm
-	 CiAROBUl3Z7vvuH1yNjDdaqJ5fqmZh7uY1/7NM1chNRBQtzkuYZcDnxt5m59y+UD7ji+/
-	 gH2TXlUm7+T+zgzpp/1GkfDV7mRIVZzMdtkGB4+VossVqhTzfFLsG5IP5fgSxgtNksQ==
+	bh=W6Gy9zePv+DPxmrsDzBshc5EdBqIbiCaTZjrepBuz7Y=;
+	b=rlMRpsieO6dG9SbWV5uaXoV5DVYUsXMibN0IDMy7oeN0X40lNtB4PTO6eC5HLolae+xf
+	 cU7Y+WR8uHJvsbwqOYeiB4LGH/cafCjKu0hBlxZtbLW+34yY3eY4YGJpdhWi/QSIRfijW
+	 nF1toLMI1/OwqOuJYZkkaj2JZF0rZORibStuup+tRHCCrLSKlEWDzhs2IMV7jL8buVfxV
+	 QQW0soji6ggJM9H0WhMW49bvRehYP2tlMir2r6klEjT/7qtLZ2jkoBLqwSBQbYF659AL0
+	 ZU/S1g6bzYiTIFKADXBLTH/VdVj8zUNTZP5MkvjOYjjhoI09PoplNDbBDFV664BRFPQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=61.135.153.177
-Received: from smtp153-177.sina.com.cn (smtp153-177.sina.com.cn
- [61.135.153.177])
+ arc=none smtp.remote-ip=61.135.153.176
+Received: from smtp153-176.sina.com.cn (smtp153-176.sina.com.cn
+ [61.135.153.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 01BCDF80301
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8F17F8055B
 	for <alsa-devel@alsa-project.org>; Mon,  8 Jun 2026 10:35:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01BCDF80301
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8F17F8055B
 Received: from unknown (HELO zy-virtual-machine.localdomain)([58.38.107.94])
 	by sina.net (10.54.253.38) with ESMTP
-	id 6A267EDF00000BB8; Mon, 8 Jun 2026 16:35:49 +0800 (CST)
+	id 6A267EDF00000BB8; Mon, 8 Jun 2026 16:35:50 +0800 (CST)
 X-Sender: zhangyi@everest-semi.com
 X-Auth-ID: zhangyi@everest-semi.com
 Authentication-Results: sina.net;
 	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 107109EA907043CA9C1FDC3B15178E21
-X-SMAIL-UIID: 107109EA907043CA9C1FDC3B15178E21-20260608-163549
+X-SMAIL-MID: D5A3667696AC461CAFF89E5CC4B8069E
+X-SMAIL-UIID: D5A3667696AC461CAFF89E5CC4B8069E-20260608-163550
 From: Michael Zhang <zhangyi@everest-semi.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org,
@@ -74,10 +74,9 @@ Cc: tiwai@suse.com,
 	krzk+dt@kernel.org,
 	conor+dt@kernel.org,
 	Zhang Yi <zhangyi@everest-semi.com>
-Subject: [PATCH v0 5/7] ASoC: codecs: ES8389: Add private members related to
- HPF
-Date: Mon,  8 Jun 2026 16:35:38 +0800
-Message-Id: <20260608083540.12581-6-zhangyi@everest-semi.com>
+Subject: [PATCH v0 6/7] ASoC: codecs: ES8389: Add INPUTL MUX and INPUTR MUX
+Date: Mon,  8 Jun 2026 16:35:39 +0800
+Message-Id: <20260608083540.12581-7-zhangyi@everest-semi.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20260608083540.12581-1-zhangyi@everest-semi.com>
 References: <20260608083540.12581-1-zhangyi@everest-semi.com>
@@ -86,15 +85,15 @@ X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: F6KDN3IRZIEWIWUKPWGNEZZ2VNT2EFOH
-X-Message-ID-Hash: F6KDN3IRZIEWIWUKPWGNEZZ2VNT2EFOH
+Message-ID-Hash: 7TW72XUIUII742XQZ4ZHH2OINVWGH3YQ
+X-Message-ID-Hash: 7TW72XUIUII742XQZ4ZHH2OINVWGH3YQ
 X-Mailman-Approved-At: Mon, 08 Jun 2026 11:30:12 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F6KDN3IRZIEWIWUKPWGNEZZ2VNT2EFOH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TW72XUIUII742XQZ4ZHH2OINVWGH3YQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,70 +104,82 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Zhang Yi <zhangyi@everest-semi.com>
 
-Add private members related to HPF.
-And defines ES8389_HPF_DEFAULT
+Add INPUTL MUX and INPUTR MUX in route
 
 Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
 ---
- sound/soc/codecs/es8389.c | 18 ++++++++++++++++--
- sound/soc/codecs/es8389.h |  1 +
- 2 files changed, 17 insertions(+), 2 deletions(-)
+ sound/soc/codecs/es8389.c | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/es8389.c b/sound/soc/codecs/es8389.c
-index ad016c255c77..743cfca2a6ab 100644
+index 743cfca2a6ab..8922fc990096 100644
 --- a/sound/soc/codecs/es8389.c
 +++ b/sound/soc/codecs/es8389.c
-@@ -36,6 +36,8 @@ struct	es8389_private {
- 	unsigned int sysclk;
- 	int mastermode;
+@@ -164,6 +164,16 @@ static const struct soc_enum alc_ramprate =
+ static const struct soc_enum alc_winsize =
+ 	SOC_ENUM_SINGLE(ES8389_ALC_CTL, 0, 16, winsize);
  
-+	u8 hpfl;
-+	u8 hpfr;
- 	u8 mclk_src;
- 	u8 vddd;
- 	int version;
-@@ -742,8 +744,8 @@ static int es8389_mute(struct snd_soc_dai *dai, int mute, int direction)
- 			regmap_update_bits(es8389->regmap, ES8389_DAC_FORMAT_MUTE,
- 						0x03, 0x00);
- 		} else {
--			regmap_update_bits(es8389->regmap, ES8389_ADC_HPF1, 0x0f, 0x0a);
--			regmap_update_bits(es8389->regmap, ES8389_ADC_HPF2, 0x0f, 0x0a);
-+			regmap_update_bits(es8389->regmap, ES8389_ADC_HPF1, 0x0f, es8389->hpfl);
-+			regmap_update_bits(es8389->regmap, ES8389_ADC_HPF2, 0x0f, es8389->hpfr);
- 			regmap_update_bits(es8389->regmap, ES8389_ADC_FORMAT_MUTE,
- 						0x03, 0x00);
- 		}
-@@ -905,6 +907,18 @@ static int es8389_probe(struct snd_soc_component *component)
- 		es8389->mclk_src = ES8389_MCLK_SOURCE;
- 	}
- 
-+	ret = device_property_read_u8(component->dev, "everest,hpfl", &es8389->hpfl);
-+	if (ret != 0) {
-+		dev_dbg(component->dev, "hpfl return %d", ret);
-+		es8389->hpfl = ES8389_HPF_DEFAULT;
-+	}
++static const char *const es8389_adcl_mux_txt[] = {
++	"Normal",
++	"ADC2 channel to ADC1 channel",
++};
 +
-+	ret = device_property_read_u8(component->dev, "everest,hpfr", &es8389->hpfr);
-+	if (ret != 0) {
-+		dev_dbg(component->dev, "hpfr return %d", ret);
-+		es8389->hpfr = ES8389_HPF_DEFAULT;
-+	}
++static const char *const es8389_adcr_mux_txt[] = {
++	"Normal",
++	"ADC1 channel to ADC2 channel",
++};
 +
- 	for (i = 0; i < ARRAY_SIZE(es8389_core_supplies); i++)
- 		es8389->core_supply[i].supply = es8389_core_supplies[i];
- 	ret = devm_regulator_bulk_get(component->dev, ARRAY_SIZE(es8389_core_supplies), es8389->core_supply);
-diff --git a/sound/soc/codecs/es8389.h b/sound/soc/codecs/es8389.h
-index 13ce241774dc..197e6f7b27e9 100644
---- a/sound/soc/codecs/es8389.h
-+++ b/sound/soc/codecs/es8389.h
-@@ -105,6 +105,7 @@
+ static const char *const es8389_outl_mux_txt[] = {
+ 	"Normal",
+ 	"DAC2 channel to DAC1 channel",
+@@ -191,6 +201,20 @@ static const unsigned int es8389_pga_values[] = {
+ 	1, 5, 6
+ };
  
- #define ES8389_MIC_SEL_MASK           (7 << 4)
- #define ES8389_MIC_DEFAULT            (1 << 4)
-+#define ES8389_HPF_DEFAULT            (0x0A << 0)
++static const struct soc_enum es8389_adcl_mux_enum =
++	SOC_ENUM_SINGLE(ES8389_ADC_MODE, 5,
++			ARRAY_SIZE(es8389_adcl_mux_txt), es8389_adcl_mux_txt);
++
++static const struct snd_kcontrol_new es8389_adcl_mux_controls =
++	SOC_DAPM_ENUM("INPUTL MUX", es8389_adcl_mux_enum);
++
++static const struct soc_enum es8389_adcr_mux_enum =
++	SOC_ENUM_SINGLE(ES8389_ADC_MODE, 4,
++			ARRAY_SIZE(es8389_adcr_mux_txt), es8389_adcr_mux_txt);
++
++static const struct snd_kcontrol_new es8389_adcr_mux_controls =
++	SOC_DAPM_ENUM("INPUTR MUX", es8389_adcr_mux_enum);
++
+ static const struct soc_enum es8389_outl_mux_enum =
+ 	SOC_ENUM_SINGLE(ES8389_DAC_MIX, 5,
+ 			ARRAY_SIZE(es8389_outl_mux_txt), es8389_outl_mux_txt);
+@@ -319,6 +343,8 @@ static const struct snd_soc_dapm_widget es8389_dapm_widgets[] = {
+ 			   &es8389_adc_mixer_controls[0],
+ 			   ARRAY_SIZE(es8389_adc_mixer_controls)),
+ 	SND_SOC_DAPM_MUX("ADC MUX", SND_SOC_NOPM, 0, 0, &es8389_dmic_mux_controls),
++	SND_SOC_DAPM_MUX("INPUTL MUX", SND_SOC_NOPM, 0, 0, &es8389_adcl_mux_controls),
++	SND_SOC_DAPM_MUX("INPUTR MUX", SND_SOC_NOPM, 0, 0, &es8389_adcr_mux_controls),
  
- #define ES8389_MASTER_MODE_EN         (1 << 0)
+ 	SND_SOC_DAPM_MUX("OUTL MUX", SND_SOC_NOPM, 0, 0, &es8389_outl_mux_controls),
+ 	SND_SOC_DAPM_MUX("OUTR MUX", SND_SOC_NOPM, 0, 0, &es8389_outr_mux_controls),
+@@ -332,10 +358,15 @@ static const struct snd_soc_dapm_route es8389_dapm_routes[] = {
+ 	{"ADCL", NULL, "PGAL"},
+ 	{"ADCR", NULL, "PGAR"},
  
++	{"INPUTL MUX", "Normal", "ADCL"},
++	{"INPUTL MUX", "ADC2 channel to ADC1 channel", "ADCR"},
++	{"INPUTR MUX", "Normal", "ADCR"},
++	{"INPUTR MUX", "ADC1 channel to ADC2 channel", "ADCL"},
++
+ 	{"ADC Mixer", "DACL ADCL Mixer", "DACL"},
+ 	{"ADC Mixer", "DACR ADCR Mixer", "DACR"},
+-	{"ADC Mixer", NULL, "ADCL"},
+-	{"ADC Mixer", NULL, "ADCR"},
++	{"ADC Mixer", NULL, "INPUTL MUX"},
++	{"ADC Mixer", NULL, "INPUTR MUX"},
+ 
+ 	{"ADC MUX", "AMIC", "ADC Mixer"},
+ 	{"ADC MUX", "DMIC", "DMIC"},
 -- 
 2.54.0.windows.1
 
