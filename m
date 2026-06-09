@@ -4,104 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A11CD8CAD
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2026 20:18:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E89D0CD8CAD
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jun 2026 23:06:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9D30601DC;
-	Tue,  9 Jun 2026 22:18:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D30601DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EE79601CA;
+	Wed, 10 Jun 2026 01:06:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EE79601CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1781036301;
-	bh=0Hg4tPCMfrugvni1af4f972jkXP4g2mgFqjoxlPaLRM=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=VEg7c2S1rYbDnKWScNYntb6SJJdwBmAt7LcPS/190NaGQPPIwfrN+mC2VS/o3E+RE
-	 VjlkkMXaiPyCQYKNjmO+MmOXNLkgSarAKcy6e9NPGo6CwIVGCF/C8pULWajleaancA
-	 olfAi/z7xT3H/mN4prqO04T/jwRiR7Fm0SbJ03fc=
+	s=default; t=1781046389;
+	bh=o6n1uuPCEB/Ka068lEYyZMmLYee+quQGII4plLS5wIc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=UAkZsd6ORuuLGwNHLyV/oLRVTVh8A602CH/70s/CPZovS57S+KrOq34unrVg2OHX3
+	 nPoFnraOyyOIuSKz5uwko5d3LeXVe0ByBLG6ohBsJVZJW/ZgwBII1Skv+mYwH57BP5
+	 tGlEKsXlLOamBKPRjIVVRxTcJsqoBS45/mFo4gyM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48ECCF805FB; Tue,  9 Jun 2026 22:17:48 +0200 (CEST)
+	id 8798AF805EE; Wed, 10 Jun 2026 01:05:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7FDCF805F5;
-	Tue,  9 Jun 2026 22:17:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27269F805FF;
+	Wed, 10 Jun 2026 01:05:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7112FF80496; Tue,  9 Jun 2026 22:17:41 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=194.164.54.141
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781036257;
-	b=D1krGGFKrqp8GN6JdMBn6PRJzT7Q0Q7o3KmD7JnS0m1Ib9oeIUoE0OudhLYRLF7ZZkwD
-	 WgACngSIZlncoQj28u3tBOj0L+mk8iNOZxwNiMbVdx71QKnHpnVO/RI55t0GNZ/b/9DJe
-	 Jvrj4J+3O8bVEIuS6UygNpVKl/UprR9lnpueEQSMAiB13m8AkOJsB+Z821++h6C7cl5Cv
-	 EZPdFGiVeKapyb+9bbCmEol+T/0HJGMcYTMoEswHi9QbIat0ud7pH1w4HdTOPwlSH2eyn
-	 uRTYGUKOuY9/eOo5ev3ag/CU/zbR04DyLTj6dEaJHQEAX008o3bZV4qaFvIQfvhOFcw==
+	id 11676F8058C; Wed, 10 Jun 2026 01:05:51 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781046350;
+	b=NO5X2aAFPs9AIjnHK1P6k5NKwqGPe9pP/E6MsB03D1d/YcZyfoXGKardENJqdaMcUMQv
+	 cYhByS81OenFNIEPK6tFlmWQdRkMUB9HflDOO6+3JLpFGvY/X9htDEfDcLzbSoESKrxb9
+	 EzpnQdAs0GZ1QNg9OBoMOr2B0Q2fIH/ecJhO8iPHRLC4z5DYNc0if1scVT/sC4RZx/Jld
+	 qHCtlYAN1HBVxzKcnQNkiiAGjp+VYwc/6CCVUFSrflWXsB94i0/IaWQeJVR1OSJv1bPJy
+	 jpFPZ3eGbRhZBzY+6qeyvhtJ+t5Jqt0cm782geCuSRS/PyW9K+lbeOJF0Q0nBUhyYGg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1781036257;
-	h=From:DKIM-Signature:DKIM-Signature:To:Subject:Date:Message-ID:
-	 MIME-Version;
-	bh=0Hg4tPCMfrugvni1af4f972jkXP4g2mgFqjoxlPaLRM=;
-	b=D33X5FG14tllpv5Ar/wL01B5E8pWQje7kzWya2TlcjRmBC4M9qjQV1a32Gs6jBsZzn1t
-	 N8ilEyOJcnQOtlhAR6loIOSY3F0nr472wN5vNdmc0ue6HZRXxWsRmT1d4Ot2zt1nOdU8H
-	 g8c0DTrogD9NX/p2mn+svIkNp5Bx6fs/cwl7P+exY9Qm8cg5W+OkpujvaF7oZHq6Sov4l
-	 j+zPI73nPAFWh5VkIj4frRa6n1SU14OFh9KyGA26Jel6QSauZOXdRl3JsbWuJdJaLLrwr
-	 nDLp6FEopVarGCKpDac/XhHhMo1pInKETlJUqt9NSosAW675nDlZoaSm0Zg5Qu4kHiw==
+	c=relaxed/simple; t=1781046350;
+	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
+	bh=o6n1uuPCEB/Ka068lEYyZMmLYee+quQGII4plLS5wIc=;
+	b=Z955L0YDENuZlQqNwtlJvugJjF5bH4uBLxnLta0zwExvNe4l5TDAL5p27LaION9OsebJ
+	 A5EWBM42xvgB8/aYJonSKM7vkd+7n//RFwfHQf70TFaLdyrcc1LmfYG0nxEn1uO3e8rCI
+	 xd8djBH5OCzbcoCqxEhuCBpXaixh4bMrEAyYAdAFV1Y8rOmGf+8vGZBASx2e8ndDnJTyp
+	 Y23KlRnWw9KDhjwsmS+UvLqSzEyM8Ss5QP1r1Oj8iDhoGlKOz8Ase5R57VTuEGEAEmKlx
+	 aMV5rUEVDf5iGM1i+u+pFZoRNoYbkNrEUPkZAVNi7V5/ErnQlZ6VDUz8lBZMgcH//uw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=furst.blue header.i=@furst.blue header.a=ed25519-sha256
- header.s=dkim-ed25519 header.b=2QLO3d1Y;
-	dkim=pass header.d=furst.blue header.i=@furst.blue header.a=rsa-sha256
- header.s=dkim-rsa header.b=iroyzRgJ;
-	arc=none smtp.remote-ip=194.164.54.141
-Received: from mail.furst.blue (mail.furst.blue [194.164.54.141])
+ dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=MAVbbo8U;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0D9B6F8001F
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jun 2026 22:17:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D9B6F8001F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A13CF801F5
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 01:05:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A13CF801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass header.d=furst.blue header.i=@furst.blue header.a=ed25519-sha256
- header.s=dkim-ed25519 header.b=2QLO3d1Y;
 	dkim=pass (2048-bit key,
- unprotected) header.d=furst.blue header.i=@furst.blue header.a=rsa-sha256
- header.s=dkim-rsa header.b=iroyzRgJ
-Received: from k8s-mail.magi.furst.blue (unknown [192.168.208.120])
-	by mail.furst.blue (Postfix) with ESMTPS id AA43340100;
-	Tue,  9 Jun 2026 20:17:34 +0000 (UTC)
-From: furstblumier <seal@furst.blue>
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=furst.blue;
-	s=dkim-ed25519; t=1781036254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sMIcxGQxFH2zTRQLBBx52uh5KCOcwTjhjoGXdk5q/1s=;
-	b=2QLO3d1YMI9XA2zd+7VMhAOpyUcG4TdCnuuo0fxGFwO+HUVRix7G5F7AjOHQV9xDn06vu5
-	kFicZSMi4lKd/3Dw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=furst.blue;
- s=dkim-rsa;
-	t=1781036254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sMIcxGQxFH2zTRQLBBx52uh5KCOcwTjhjoGXdk5q/1s=;
-	b=iroyzRgJPLeD+wtmrqL8WPon1/vc4dbcT/ArOw+LD8xPyVeI65lQ9bhhu5GhSUuwgPyY0V
-	mKFVBibYMatoobHAiYiyGBCyDkDglcHOld+EeIqJX9aC8XSOw0CEKK2nw/ucc+ZwLs4Pt3
-	fSncDH560LJw1/jqJHbgqizsN7AuxZLI+yZycoYUCp4HVFLMDZokLEK/fSMPNDGCLO0p0I
-	LC5IWP90e3POtxSlLnzDjLlhPRCb9KwTyey/F+j3dizUWqP43TJiKDIlr/YzTx/hL0hyna
-	kMTcReT+wf9jvmEfMAuHQJfb2j3XbrMzFnHL06BjlD6M3MGOfnBVdkbo8kuCYA==
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de,
-	linux-sound@vger.kernel.org,
-	perex@perex.cz,
-	furstblumier <seal@furst.blue>
-Subject: [PATCH RESEND] ALSA: hda/realtek: Add quirk for HP 255 15.6 inch G9
- Notebook PC
-Date: Tue,  9 Jun 2026 22:17:06 +0200
-Message-ID: <20260609201706.502075-1-seal@furst.blue>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=MAVbbo8U
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 44F67602C4;
+	Tue,  9 Jun 2026 23:05:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A761F00893;
+	Tue,  9 Jun 2026 23:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781046347;
+	bh=o9zlsQ8CpFOx7IotxwW6wamDr1emdTYdo/aeMCB1F6M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date;
+	b=MAVbbo8UiKc/+V5LwknxNszBu/EiR4Bp5hNolCNbatNfRtP4/J90BmPbiVQ8B6wkT
+	 KNtLVuvJ8+r6egapbfC5CZakBr7otrDfna0ozc34/vArQDFjjcvcepYdFXHdkaQC5U
+	 FBNtiU01sY8cYs2A+/0wB+FQsVj7CGwW3452HgdEIDrvKTW7voXqFqPoBwsb6MehJZ
+	 SjOmFvGJC+vE7Lf8vRuvW/+IICNX7MX75Goelqbo8DBYYc1W8PRtSnI3Fx39v/0xhN
+	 YnXwcoXkloz/z7tJyAqpBcWNox4Courmn8Gjs0ZzcVJnt/YG/MoYnf6ndGd6nQLwlw
+	 vXBqeUCHC11Aw==
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+ tiwai@suse.com, Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
+ mario.limonciello@amd.com, Basavaraj.Hiregoudar@amd.com,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20260609143230.3310356-1-Vijendar.Mukunda@amd.com>
+References: <20260609143230.3310356-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: amd: ps: honor machine_check in SoundWire
+ machine select
+Message-Id: <178102694997.34323.5492926624097882645.b4-ty@b4>
+Date: Tue, 09 Jun 2026 18:42:29 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: T4J2YJOY325YEB5CIAVBW234VL37T36I
-X-Message-ID-Hash: T4J2YJOY325YEB5CIAVBW234VL37T36I
-X-MailFrom: seal@furst.blue
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.16-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1146; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=o6n1uuPCEB/Ka068lEYyZMmLYee+quQGII4plLS5wIc=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqKJxHMSDMkDDe7Pk1tgKc8ZVPwZitxx/8UPEXK
+ vrxh9+wrZSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCaiicRwAKCRAk1otyXVSH
+ 0HYYB/4p7lDTg+LiovSu/s2PbfxWFwLsW3/qVzy8aDeXbygc1vRhIapfrVgtCYEW/4zwETXxmsZ
+ NmimOm6xc9611r1lA9PQIIqk6zrTq9f3uUpzv3hHh3a9TMlHUhNGvJxvy4wueLgO+nqViK7pqfi
+ 6iMeYsUpxMT2Ea5tPqFs96nVzq8IO+pyEn/nsgUCX4yaCtnFaM/hgewNGNl2FFxN5NSnZf98dpw
+ d2Ww57Cfd+ZtyXiy6qWqnXyw8TK0gzWYd1q2gUDTKTbXXBaqwU7j+0ovhBhg/Ly9vY8SW9HRQqZ
+ KZVnptP+i6OLkLGICe3GZmqb5/lWy/AMDiu5wEUBmPpAGLsN
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: NM7G2FBEWZ23DFTIDK4N244ZNK5BZHNP
+X-Message-ID-Hash: NM7G2FBEWZ23DFTIDK4N244ZNK5BZHNP
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -112,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T4J2YJOY325YEB5CIAVBW234VL37T36I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NM7G2FBEWZ23DFTIDK4N244ZNK5BZHNP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,31 +125,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The HP 255 15.6 inch G9 Notebook PC (PCI SSID 103c:8a1b) uses the
-ALC236 codec but lacks an entry in the quirk table, causing the kernel
-to fall back to a null SSID match (103c:0000) and skip the necessary
-fixup. Add a quirk entry using ALC236_FIXUP_HP_MUTE_LED_COEFBIT2,
-matching the HP 255 G8 which uses the same codec and fixup. This fixes
-the mute-button LED and fixes an issue with unplugging and replugging a
-headset jack not being recognized as an audio sink.
+On Tue, 09 Jun 2026 20:02:12 +0530, Vijendar Mukunda wrote:
+> ASoC: amd: ps: honor machine_check in SoundWire machine select
 
-Signed-off-by: Furst Blumier <seal@furst.blue>
----
- sound/hda/codecs/realtek/alc269.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied to
 
-diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
-index 11d0ea8ed..08c8b17b7 100644
---- a/sound/hda/codecs/realtek/alc269.c
-+++ b/sound/hda/codecs/realtek/alc269.c
-@@ -7063,6 +7063,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x89da, "HP Spectre x360 14t-ea100", ALC245_FIXUP_HP_SPECTRE_X360_EU0XXX),
- 	SND_PCI_QUIRK(0x103c, 0x89e7, "HP Elite x2 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a0f, "HP Pavilion 14-ec1xxx", ALC287_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8a1b, "HP 255 15.6 inch G9 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
- 	SND_PCI_QUIRK(0x103c, 0x8a1f, "HP Laptop 14s-dr5xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
- 	SND_PCI_QUIRK(0x103c, 0x8a20, "HP Laptop 15s-fq5xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
- 	SND_PCI_QUIRK(0x103c, 0x8a25, "HP Victus 16-d1xxx (MB 8A25)", ALC245_FIXUP_HP_MUTE_LED_COEFBIT),
--- 
-2.54.0
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.2
+
+Thanks!
+
+[1/1] ASoC: amd: ps: honor machine_check in SoundWire machine select
+      https://git.kernel.org/broonie/sound/c/a980535929de
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
