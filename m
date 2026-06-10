@@ -4,195 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E124CD8C9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2026 19:32:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68CA1CD98C7
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2026 19:32:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BC5460212;
-	Thu, 11 Jun 2026 21:32:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BC5460212
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A19060229;
+	Thu, 11 Jun 2026 21:32:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A19060229
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1781206337;
-	bh=wvlrq004J8XGxRTgYoOIMmtlpqVWK4U8EGi7tNg8gJU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1781206349;
+	bh=GDueoNOR0Gv19HvxBu/9Lx2vEf5PdMPDk+r3vyyw1/I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UGjO8A0jlPHcATR61NgVBciF++3vo8A035HBFGsREHXyCfo4IgVBIuCgN26VJ5Lwj
-	 vNrqm45KPJeoEg9W55uiNlQ4IbScLkhs2ARF+reeGxmhazudCkl3JFvjwqojDH9RAb
-	 i84CA1NWSL0t8C2cBxWNshdf8/IJG32jEPvDwKmA=
+	b=g1w62o4v68t21ecd3M+VUoiRNQoITgfOCa5aqw3zzAnkaYAczUjQi1BPcg+VBr9Od
+	 vG03GtRqOzWlIA+x/MAPemfkhv5mJTIHjo21BxyLgxuot3OrOzg8Ep6FElYjRPUOKJ
+	 eYdCbzkL7WmEvMisLO6q4qCQ6ZOCsQFc93fV2XQA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E82C4F805EA; Thu, 11 Jun 2026 21:31:24 +0200 (CEST)
+	id 33F21F8067F; Thu, 11 Jun 2026 21:31:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2E38F8064C;
-	Thu, 11 Jun 2026 21:31:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3BE6F8067F;
+	Thu, 11 Jun 2026 21:31:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B5C7F8058C; Wed, 10 Jun 2026 12:32:51 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=205.220.180.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781087570;
-	b=V0uOUIQvQS47W2YwP0zPQ0hWcI+GYN0KSRrxWSxven0BXozFnJypACBpDmmZzH1T99Vh
-	 1M+7Os7ShNfAbbLahK6ADzE3SDXIOv2EqwZYqFbYyHcnvP3UuE7Gsi/BcK/guN0mV3kPy
-	 oIKRWJFJQ8o5cahYNd0HhbPvmVC2RneFrtPE+2RhAs04Xx2+4/C0NjGlZt+1xb64U0V8w
-	 sxvNWJnS/+9o3ePYX1ZzXYWjVgyANONw7NQoqfNAIvJvfikJyJDkrCbtATYIbCjoY7onf
-	 FrJthDaQOe3uJyl9JkPnMVbxq0hy83MCCEe6MDeYZqSSUxwQbjJufRJ2OK0WCqf4ekA==
+	id 9EB28F8058C; Wed, 10 Jun 2026 15:31:55 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=117.135.210.4
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781098315;
+	b=o/qWbcxkLRYz1Qxq5GZ+0yp3+h+t7B+/PlU0ZcgD/6K/lD1VherjD3vWTqWjOAVVJWXv
+	 3FoCp3gIpFBFYlXK6DwmGK2jj6N5R9uvDoZ4hnUqsG5o5Z41r8RGHV1gI/DYAZT48JALs
+	 +Cn4ogfXabTbQUSZTv+1j9Sf/fBXysLCRIfFMmM7tEPRzbHfLsyNFgdLgG9D+CsmHA8QF
+	 YATJTOKHppxXPi6izX8iUBj8YFQNvAVoAB3hMU3Fz4wPZ+my/n+phhSeeArxQLhAHkVoH
+	 OcICCjVWcosdUX7VjwjgV+CQMfNkcTuRX8E0iDtYVZJQjkNp+66D9Hd5qT6KujNcGNQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1781087570;
-	h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:Subject:
-	 To:From;
-	bh=wvlrq004J8XGxRTgYoOIMmtlpqVWK4U8EGi7tNg8gJU=;
-	b=cuUoYAV585e7hnFfNCUenwtI1CNqJbYC3kadIRwn7/bE01XuWX9bmlqeE5pJHVZ6PiXK
-	 yfFIeH/3iKN/owmAm9b37RDzEuSXlijpjONWhWdi1IpxaHpvuL8dyFbUmkBZia5kL8WDK
-	 V2Omr/G+07OfHz46sn4Z2i6jChBLaixKaUzL7U7qLbMUvCibP4dvtUreyGDC3v4gOsoz7
-	 vK78MA2JWCKy7eazxhUIgUULPE8unWPVLGSlkao2PJCN2Yl9i9uP6Xbs5RtXnrHoUSMgz
-	 pWAWJ7ULHTmCpAZnt8BSCFJozTdToOVuQAXma0nZ5+L3QXGI93andbUz/5tLzGLj/CA==
+	c=relaxed/simple; t=1781098315;
+	h=DKIM-Signature:Date:From:To:Subject:MIME-Version:Message-ID;
+	bh=GDueoNOR0Gv19HvxBu/9Lx2vEf5PdMPDk+r3vyyw1/I=;
+	b=XYImP2MAMvQVBYbuOW15AEWKoI0uai6P87fSt+Us0fZMVzyAF308ZEI1/5+4Y3Io9jKN
+	 DrQegwCGmWhftmjSXie45MxM2BPedZ1aiV/VcvgG56e5LiDfpGlfy3CsbQn1zA3GMi1wy
+	 JWS/LOJ0VxmfCxxpCks8cD6RcnHglTETVuftt3neJKdy9cC3IE9RdnOTIIez5GhPazwVH
+	 Phyhsr/zO3ER1NPYPqKENEtR6ZWprxNEzECHWTfJ0pq1YIHhqTvxOUkzCmZglYjag7Shf
+	 9o69O1mSaWDS1kU8e9ph6HjcJenU1SSY9FTs3ucpgnc0fQe+GhCAzA+w4bCvNhgaaCg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b="pR/iW+jS";
-	dkim=pass header.d=oss.qualcomm.com header.i=@oss.qualcomm.com
- header.a=rsa-sha256 header.s=google header.b=DGQFI5IE;
-	arc=none smtp.remote-ip=205.220.180.131
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+ dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256
+ header.s=s110527 header.b=UBD94fUv;
+	arc=none smtp.remote-ip=117.135.210.4
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7F379F8011B
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 12:32:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F379F8011B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3A7E2F801F5
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 15:31:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A7E2F801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=pR/iW+jS;
-	dkim=pass (2048-bit key,
- unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com
- header.a=rsa-sha256 header.s=google header.b=DGQFI5IE
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 65A7iUg2867590
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 10:32:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	P1nO9gqkxcj5rweYoRc+yQuw1eVsJM6rSLrpMjihH/s=; b=pR/iW+jSYxIxDITG
-	HIm+oeecOo3E1tCNzj2y9WMNcXOSzhzDpdpJd1ma4MM8xSCm0tSa+ApG6hGlZwP9
-	7SRmpR5q0CscMkeZaK4IesngH+0m6hgnuwj/d1qiB7BAJMr9LKRi6ASj3LcTN1Gt
-	7L9ltIFFTimg71VOq73Oxa0b1536UptgdJ9p+aygBHqoz1nlJShIqlpLNa4FogNk
-	z926OGg0zpGWsmEObHnD7bEW3ElyAZvD6mlv+35DVXKpEj1JjILdcCFEqBm6e/l3
-	4GRc8G7xxLHUAZzDhDpm8PjizufIDwrJRN/3+KWQ1Zcl2aLuGbVkhUP/5Ut6/+rd
-	OaZThA==
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4eq0kd9d3d-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 10:32:46 +0000 (GMT)
-Received: by mail-qk1-f200.google.com with SMTP id
- af79cd13be357-9160006de85so4950385a.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 10 Jun 2026 03:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1781087566; x=1781692366;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P1nO9gqkxcj5rweYoRc+yQuw1eVsJM6rSLrpMjihH/s=;
-        b=DGQFI5IEDTn7LmCBiX4zoW0bBnyZmD5pfGrluYYeBa1byU6xCbfSMuuo0wktuXPwn6
-         sa9TamknqlRs981ftEnXM4TKPiZ/S9cU9STiT1SgBviALyb/mC7N9/HMQmNIQhhk0y2c
-         L+9gXSUNEnXTFOVTMe+C6fUN3H7EIwGU5eb6dECLYlOQEeeApHqE5EOzr1D3K9UuWex7
-         dnSD7zz424xEL4yUnX9zIqUCM+3TyS2u3Rea+n/LhLhOa8xOF7iPtdbrMtozxk/fCqE/
-         iFudEzNYszA1WDzmcKTR/5/rOfR7xu/P4ZZhPmGIbXAUKWOY5FzstfW+ziA/ZDLU6A8M
-         OcgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781087566; x=1781692366;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P1nO9gqkxcj5rweYoRc+yQuw1eVsJM6rSLrpMjihH/s=;
-        b=gitRNHJnlT0ZI7fXheKjSfhhn3tey+Ixd0Q5IWO4S0KFIGl/oWTqV7Jarz54FxU5h9
-         GUwfeH3Wr3vVUGCR2bdncnkWx9w0EX2OQl+y/klkIsE0icdHhSYRV0wxYSHlUk5+i3Vz
-         PNXJmXSvjOKkWDTW/ZjEdmr9VvAZtaw4NAG+B0PcR9eaX5uiOvcU8wxtEXdbRPfVRUkW
-         5atISztkTgKjtkoJU2HmiArK2lPTFAbp0DAsaAiGV+XDsqkY66cIlSUx9C7SeGYGDRaZ
-         jsyk27q7l8nf1a+c1ksT2TYABb9+lYUPCgdK1C03DsWOwwJCB82wH+9RfJ0eo1uqOOSJ
-         FrsQ==
-X-Gm-Message-State: AOJu0YyiptNgX2qPIqIeXlkSMHBi9G6zPLPL7/2E3tjqQoanhRabQk3C
-	T4lEz4sU+tLobsyjwIV2b4Xzqxu3MG20MvEptyhxeWLfEVS7CljCiPRgqJjrJKZf1gbWkihsqqZ
-	rqBCtZhqXojus08TiBZur4SVfIgMhoE88/wNWLs0Iv2pGQblSSTs8AbLkNBDrm0TGnQ==
-X-Gm-Gg: Acq92OEOB/R4otIFd9l/N+K0qAvjqsWYxinRSdbiCyUeUFlGkxuj4hWMfaOUy6WV1Hi
-	VevMtlqTv5cqA6FCEdZz3Chp3LK7CeQqybZ/9t5f8voNxbqK+j3Bzez0rwfCys39eKPqgiEwFyw
-	Q5R9yMhAbrU9l39cW/7TYT8HxwXa+h7l4dzvupi3KhejpZu7zhX0y9qcXHftgXqAFqqO/se8HDW
-	AEsap5UXspiKWy0Grvhg74Sr3FtalSQBQy9ewMDFXepf7L0GHj4w0BtNMMIx2wwlPVrcWZ3NM+k
-	qF5muS9OmK3DcADXj5zltj9KaXFHluazxRIRKh5zZjZ35weyQsmgIHKClsqsSLKM03UFIvAjwAc
-	w9YGUGWM3zNC5LVxpa67YYIDOrozGBpf/imoch1J5oQa7QFMO4vx60Jg3
-X-Received: by 2002:a05:620a:6288:b0:915:4ca0:11f9 with SMTP id
- af79cd13be357-915a9df818amr2285212885a.7.1781087566367;
-        Wed, 10 Jun 2026 03:32:46 -0700 (PDT)
-X-Received: by 2002:a05:620a:6288:b0:915:4ca0:11f9 with SMTP id
- af79cd13be357-915a9df818amr2285210485a.7.1781087565913;
-        Wed, 10 Jun 2026 03:32:45 -0700 (PDT)
-Received: from [192.168.120.170] ([178.235.128.140])
-        by smtp.gmail.com with ESMTPSA id
- 4fb4d7f45d1cf-6912365bd3fsm6191618a12.5.2026.06.10.03.32.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2026 03:32:45 -0700 (PDT)
-Message-ID: <0a578098-7003-4048-9c29-affb632c44c9@oss.qualcomm.com>
-Date: Wed, 10 Jun 2026 12:32:43 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [alsa-devel] [BUG] Lenovo ThinkBook 16 G7 QOY (Snapdragon X) - No
- soundcards detected
-To: "thomas.kuang" <ks002278@163.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
+ header.s=s110527 header.b=UBD94fUv
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=GDueoNOR0Gv19HvxBu/9Lx2vEf5PdMPDk+r3vyyw1/I=; b=U
+	BD94fUv/adJBOb6PBaXiJyVdXuylVMTKdXvQ3GDpn2Vkoj2ucyBTFGm8qdEv2Cpx
+	IJgCvpwDJZxBAuqfi5wFG31DQnbP7teXthKASWo4ujBh7eb6tU9cvPe2QlTyYgH/
+	1SOAaZov3p9OHZF6wOfhTPX0hJsYNTRPHIyNZZ6swQ=
+Received: from ks002278$163.com ( [101.241.83.252] ) by
+ ajax-webmail-wmsvr-40-100 (Coremail) ; Wed, 10 Jun 2026 21:31:47 +0800
+ (CST)
+X-Originating-IP: [101.241.83.252]
+Date: Wed, 10 Jun 2026 21:31:47 +0800 (CST)
+From: "thomas.kuang" <ks002278@163.com>
+To: "Konrad Dybcio" <konrad.dybcio@oss.qualcomm.com>
 Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+	linux-kernel@vger.kernel.org
+Subject: Re:Re: [alsa-devel] [BUG] Lenovo ThinkBook 16 G7 QOY (Snapdragon X)
+ - No soundcards detected
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT build
+ 20260403(27802f6d) Copyright (c) 2002-2026 www.mailtech.cn 163com
+In-Reply-To: <0a578098-7003-4048-9c29-affb632c44c9@oss.qualcomm.com>
 References: <5fc3ab80.a3e2.19ea717f09f.Coremail.ks002278@163.com>
  <3c28dd62-223c-4447-8cec-c7c527aa49e3@oss.qualcomm.com>
  <5c57153a.79.19eae7e2814.Coremail.ks002278@163.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
-In-Reply-To: <5c57153a.79.19eae7e2814.Coremail.ks002278@163.com>
+ <0a578098-7003-4048-9c29-affb632c44c9@oss.qualcomm.com>
+X-NTES-SC: 
+ AL_Qu2TA/ySt0sr4SaaZukcnEgSg+g2WMS1vvkv24BUc+sEqBvX3hwKeG9dNlnW9u+2Kj6xsD6YWj5Fz/9oRplS5bvBRoOdYSWhdbFTo5L5fA==
+Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authority-Analysis: v=2.4 cv=TeamcxQh c=1 sm=1 tr=0 ts=6a293d4e cx=c_pps
- a=hnmNkyzTK/kJ09Xio7VxxA==:117 a=PRfkaYvzSr8QmIIGAkY2Sg==:17
- a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22
- a=onwFKEomLvbxLXU0c08A:9 a=QEXdDO2ut3YA:10 a=ZXulRonScM0A:10
- a=zZCYzV9kfG8A:10 a=PEH46H7Ffwr30OY-TuGO:22
-X-Proofpoint-GUID: jo_6sgExLnLPOt8MHDY7SW9zFhjLjuZn
-X-Proofpoint-ORIG-GUID: jo_6sgExLnLPOt8MHDY7SW9zFhjLjuZn
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjEwMDA5OSBTYWx0ZWRfX4lnaWzZPBMdd
- wRm0c8DJ9XLY7bKXDyiiE1ws5fw9LjiGdNkwDDwWgDb1GA30I0701Z/rcUk9Z2dn320m/wxwh7u
- lOQTiTkoimtYAoRu6YDoXnuXT9i8vappinb5Tn52aQKxM0CcvN+eUytiXE6lGehbLOwSGKcdPre
- ccs88gP4j3tHDK6DYmdba5gSj1lHiNxKNglt4GC9IhTHw7iC/EN7si/F29q3kp1l1mYpQoOJHmX
- jDiObCAg9Id6cDRQiiCi84Wn/pyOUnJNLzI52xgEkSS8SM+zedpSJzGvKLNkxIdcMTwx95gTs2+
- kxAQk5UcglyPOlfeUbyJV0WRkMjpxa6UgfuczrWS0qFUW2vvINcQYeNMGC6lW9UbrIT91H5IddA
- UBQQaG78YadSlo/w1u4cItJq8iOEca5WRokJjD8xPjnB9uBJDN8wreZIiwGzig355CDt7ecbgwx
- FlilQ6nybl7uFUd5xrw==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
- definitions=2026-06-10_02,2026-06-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 suspectscore=0 malwarescore=0 phishscore=0 spamscore=0
- impostorscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606100099
-X-MailFrom: konrad.dybcio@oss.qualcomm.com
+MIME-Version: 1.0
+Message-ID: <6aac2e60.9b61.19eb1bb6031.Coremail.ks002278@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: ZCgvCgD3nxpDZylq28IGAA--.5737W
+X-CM-SenderInfo: dnvqijqsxyqiywtou0bp/xtbC-wPOb2opZ0PFswAA3M
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-MailFrom: ks002278@163.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: FQGHEA46ZNHOZQIS2T2VEHRPLDKR5RLL
-X-Message-ID-Hash: FQGHEA46ZNHOZQIS2T2VEHRPLDKR5RLL
+Message-ID-Hash: SDXJQ2Q745UQPOLEEQ76H7YFW6NNR342
+X-Message-ID-Hash: SDXJQ2Q745UQPOLEEQ76H7YFW6NNR342
 X-Mailman-Approved-At: Thu, 11 Jun 2026 19:31:20 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FQGHEA46ZNHOZQIS2T2VEHRPLDKR5RLL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SDXJQ2Q745UQPOLEEQ76H7YFW6NNR342/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -201,22 +118,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 6/10/26 12:26 AM, thomas.kuang wrote:
-> 
-> 
-> grep ^ /sys/class/remoteproc/*/state
-> /sys/class/remoteproc/remoteproc0/state:offline
-> /sys/class/remoteproc/remoteproc1/state:offline
-> 
-> 
-> grep ^ /sys/class/remoteproc/*/name
-> /sys/class/remoteproc/remoteproc0/name:adsp
-> /sys/class/remoteproc/remoteproc1/name:cdsp
-
-Try writing start into > /state
-
-This will attempt to power on the DSPs, most importantly the A(udio)DSP
-which is necessary for audio to work. If that fails, check dmesg as you
-may be missing some firmware files.
-
-Konrad
+Cgp3aGVuIHJ1bsKgCnN1ZG8gc2ggLWMgJ2VjaG8gInN0YXJ0IiA+IC9zeXMvY2xhc3MvcmVtb3Rl
+cHJvYy9yZW1vdGVwcm9jMC9zdGF0ZScKc3VkbyBzaCAtYyAnZWNobyAic3RhcnQiID4gL3N5cy9j
+bGFzcy9yZW1vdGVwcm9jL3JlbW90ZXByb2MxL3N0YXRlJwoKCmRtZXNnIGlzIGZvbGxvd2luZzoK
+wqAgNjI1LjkyOTI2NV0gcmVtb3RlcHJvYyByZW1vdGVwcm9jMDogcG93ZXJpbmcgdXAgYWRzcApb
+wqAgNjI1LjkyOTI5Nl0gcmVtb3RlcHJvYyByZW1vdGVwcm9jMDogRGlyZWN0IGZpcm13YXJlIGxv
+YWQgZm9yIHFjb20veDFwNDIxMDAvTEVOT1ZPLzIxTkgvcWNhZHNwODM4MC5tYm4gZmFpbGVkIHdp
+dGggZXJyb3IgLTIKW8KgIDYyNS45MjkyOTldIHJlbW90ZXByb2MgcmVtb3RlcHJvYzA6IHJlcXVl
+c3RfZmlybXdhcmUgZmFpbGVkOiAtMgpbwqAgNjI1LjkyOTMwMl0gcmVtb3RlcHJvYyByZW1vdGVw
+cm9jMDogQm9vdCBmYWlsZWQ6IC0yClvCoCA2MjUuOTM2NTI5XSByZW1vdGVwcm9jIHJlbW90ZXBy
+b2MxOiBwb3dlcmluZyB1cCBjZHNwClvCoCA2MjUuOTM2NTUyXSByZW1vdGVwcm9jIHJlbW90ZXBy
+b2MxOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgcWNvbS94MXA0MjEwMC9MRU5PVk8vMjFOSC9x
+Y2Nkc3A4MzgwLm1ibiBmYWlsZWQgd2l0aCBlcnJvciAtMgpbwqAgNjI1LjkzNjU1NV0gcmVtb3Rl
+cHJvYyByZW1vdGVwcm9jMTogcmVxdWVzdF9maXJtd2FyZSBmYWlsZWQ6IC0yClvCoCA2MjUuOTM2
+NTU3XSByZW1vdGVwcm9jIHJlbW90ZXByb2MxOiBCb290IGZhaWxlZDogLTIKCgoKCgoKCgoKCgoK
+CkF0IDIwMjYtMDYtMTAgMTg6MzI6NDMsICJLb25yYWQgRHliY2lvIiA8a29ucmFkLmR5YmNpb0Bv
+c3MucXVhbGNvbW0uY29tPiB3cm90ZToKPk9uIDYvMTAvMjYgMTI6MjYgQU0sIHRob21hcy5rdWFu
+ZyB3cm90ZToKPj4gCj4+IAo+PiBncmVwIF4gL3N5cy9jbGFzcy9yZW1vdGVwcm9jLyovc3RhdGUK
+Pj4gL3N5cy9jbGFzcy9yZW1vdGVwcm9jL3JlbW90ZXByb2MwL3N0YXRlOm9mZmxpbmUKPj4gL3N5
+cy9jbGFzcy9yZW1vdGVwcm9jL3JlbW90ZXByb2MxL3N0YXRlOm9mZmxpbmUKPj4gCj4+IAo+PiBn
+cmVwIF4gL3N5cy9jbGFzcy9yZW1vdGVwcm9jLyovbmFtZQo+PiAvc3lzL2NsYXNzL3JlbW90ZXBy
+b2MvcmVtb3RlcHJvYzAvbmFtZTphZHNwCj4+IC9zeXMvY2xhc3MvcmVtb3RlcHJvYy9yZW1vdGVw
+cm9jMS9uYW1lOmNkc3AKPgo+VHJ5IHdyaXRpbmcgc3RhcnQgaW50byA+IC9zdGF0ZQo+Cj5UaGlz
+IHdpbGwgYXR0ZW1wdCB0byBwb3dlciBvbiB0aGUgRFNQcywgbW9zdCBpbXBvcnRhbnRseSB0aGUg
+QSh1ZGlvKURTUAo+d2hpY2ggaXMgbmVjZXNzYXJ5IGZvciBhdWRpbyB0byB3b3JrLiBJZiB0aGF0
+IGZhaWxzLCBjaGVjayBkbWVzZyBhcyB5b3UKPm1heSBiZSBtaXNzaW5nIHNvbWUgZmlybXdhcmUg
+ZmlsZXMuCj4KPktvbnJhZAo=
