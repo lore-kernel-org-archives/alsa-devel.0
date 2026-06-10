@@ -4,100 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47C6CCD8C9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2026 19:31:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D175CCD98C7
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jun 2026 19:31:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A3C260210;
-	Thu, 11 Jun 2026 21:31:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A3C260210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 178A560202;
+	Thu, 11 Jun 2026 21:31:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 178A560202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1781206290;
-	bh=yKAUuOURd9y9p14tOY8p0TL4uJkXphHba6728gxQneY=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Cci9yR5bjUIgfEqCHe+nmyZVbHtPAGFsLG3KR3VAXB9WGNCjQx/40I5gYOGUA1Rwx
-	 wFX5dbDmbLdqYJouHleUjbmg/sfDGhcV22Dfh07jbqENlMqFpkdNra2FBFUjFUNzlO
-	 xhuiFnjG2QR4A6l3ez5hqGXQISOWBgDpKZBgZhCo=
+	s=default; t=1781206304;
+	bh=oZRsTOopmsHuuLRo/SvOPe2iEO5p9MRq3KT651K81Ns=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=GStVn/2r2Rwh4fUHzP5CD2eJSVwag/gCOY0b5M61mNLrD+mQd55RwnELiKZF1Om0I
+	 PQQHPUXE8YXTDQPLF0vmb5yrxUIt12FP0Xte9WAHOUANApriOWRCu2QX/9kHOYmUNO
+	 qQd3MHcHT/KUGIqDBnjpiaI7bGj4pjN2WFYkPFhY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA7FBF805FC; Thu, 11 Jun 2026 21:31:07 +0200 (CEST)
+	id 1EA43F8060E; Thu, 11 Jun 2026 21:31:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A46E1F805F5;
-	Thu, 11 Jun 2026 21:31:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1323F80616;
+	Thu, 11 Jun 2026 21:31:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85F33F8058C; Wed, 10 Jun 2026 11:12:50 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=202.108.3.212
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781082769;
-	b=qsgIX+7Ih7lyj30CvzTQgQSvFWB3Xoptfj1as+9ylTM/kl7V8Kh4Va5RZu8XcqIp5I1o
-	 Pb9yGnzX026a2y9S0pXHrjmMrEh3F4XbV4aQBerCZGtTjcwKyomqcL7am/99dWk6n93O5
-	 SLATjOVOjD5wV2vwnuhbN2RNan9uO5YbICRM7CL8oZW92GrVBc6T+J4odImtsRIg66wAP
-	 9S4NabpfG16L94hVvWvUOtofeu/K3b9Qe541nZaZoiC6GWu2gOfiQ9jstH2AcYpj96JtX
-	 DTcGD14H6sUp3U1S3AxxlJrL2WGKOxM6OG9TK5oxHp3O/zlGYZAW0GG5Fa0xWthaJ8w==
+	id CAF70F8058C; Wed, 10 Jun 2026 11:58:34 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=61.135.153.176
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781085511;
+	b=VI7gqBbLuNMXlxYGdqcQZvCGEugQCjB+qoL1F6iAl0stUgv5Lu7uodnVInIJWfnLrxK0
+	 02x7++AKKJbY0nJiNA34FA3GXaG6oXpayQgwpXGwXlBF+VYdcNhp2Iu7+ZS2I9gkV0oiB
+	 eKnIQu1BDFoTdxo4H2V5CPkLBo5XrnQgrQtZtTeDZD3io9h1EYOzIT11R6lqYlYnARsiZ
+	 VZlSzcUUKe3nE+LeOzC1hKa0V2DEwZgZHIeu6UqXfLVNuBLe/eipdrTI2kuNupYbMoEeL
+	 bnz/eOizrEf0YXdf3Nhr4sO/bAvqA+clnKG3NENowd4i1xCiPd2v5THLLzNdpwRzIpA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1781082769;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=yKAUuOURd9y9p14tOY8p0TL4uJkXphHba6728gxQneY=;
-	b=rbyXhLpwfa5UFODC99RsCen5nkqIxCiutZMcSszZgE5mnK+IfDHioLho758cQJCqYE1m
-	 A2l67h7ij0EioKTJBZnnQChA2myyX6hnYVAzeqIWHzeSzzRtLOvBcVlFdKwUVoCHg4XBj
-	 t04AFXulH/WmZ4aHuCkXz9l970CJwj5W3LS0mnDk8Od85dh+cCt0m0Oyss/z3RIakRew6
-	 nq53l/UQd/y6NmYv5RWcXaR/l8X+Uo2vRrZSTJh6/ljv7+3h91LTUVh6IJGZ7V/E8/Cug
-	 qYxFbaVhENg9mwUrepDZ6eDf5tCt+pFncCLSQijyCMzjuMcCwdKLe6iekTeZ+wRGYgQ==
+	c=relaxed/simple; t=1781085511;
+	h=From:To:Subject:Date:Message-Id;
+	bh=oZRsTOopmsHuuLRo/SvOPe2iEO5p9MRq3KT651K81Ns=;
+	b=dm1dZq2hiAPEtRLD0MUbFkSeD6bMC8jZTjX/4YDK82jZs336R6WIJp1vZyNaditoZ4v4
+	 4/DqVevjEnMx0qaRNzk6JcBrQfAykO2GqEO4eSukO//uXR3iW9FAIjL6vUdo8DTMwudM6
+	 ZUF7mtrebKoaxW7yP/MJJDILqXgjxmBzoJuw9z/B8rpCICSyLmcy5jfLnj+xI25PeWaFk
+	 oSdyY5w/IeWFNl6lIMjGesjxWNxibhzTJp7xL/v5T9mriBYG0EAy+9BhzmR3NN42315xY
+	 VRVPwFMH3AcIL9ACHqfX6L5rgY5qg7mpaGu/MIych+hxHUFPmbPP7kJdZ7op19LpFWQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=202.108.3.212
-Received: from r3-212.sinamail.sina.com.cn (r3-212.sinamail.sina.com.cn
- [202.108.3.212])
+ arc=none smtp.remote-ip=61.135.153.176
+Received: from smtp153-176.sina.com.cn (smtp153-176.sina.com.cn
+ [61.135.153.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B23FEF8011B
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 11:12:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B23FEF8011B
-Received: from unknown (HELO DESKTOPQJC4P40)([58.38.107.94])
+	by alsa1.perex.cz (Postfix) with ESMTPS id 07BC2F8057E
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 11:58:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07BC2F8057E
+Received: from unknown (HELO zy-virtual-machine.localdomain)([58.38.107.94])
 	by sina.net (10.54.253.38) with ESMTP
-	id 6A292A8800002E14; Wed, 10 Jun 2026 17:12:41 +0800 (CST)
+	id 6A29353E00000515; Wed, 10 Jun 2026 17:58:23 +0800 (CST)
 X-Sender: zhangyi@everest-semi.com
 X-Auth-ID: zhangyi@everest-semi.com
 Authentication-Results: sina.net;
 	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 5C8B85373A4342B08C8F646CE9D15207
-X-SMAIL-UIID: 5C8B85373A4342B08C8F646CE9D15207-20260610-171241
-From: <zhangyi@everest-semi.com>
-To: <krzk@kernel.org>
-Cc: <alsa-devel@alsa-project.org>,
-	<broonie@kernel.org>,
-	<conor+dt@kernel.org>,
-	<devicetree@vger.kernel.org>,
-	<krzk+dt@kernel.org>,
-	<robh@kernel.org>,
-	<tiwai@suse.com>
-Subject: Re: [PATCH 7/7] ASoC: dt-bindings: ES8389: Add members about HPF and
+X-SMAIL-MID: 6D30F50FCC8345E9ABD23D34604E4AC3
+X-SMAIL-UIID: 6D30F50FCC8345E9ABD23D34604E4AC3-20260610-175823
+From: Zhang Yi <zhangyi@everest-semi.com>
+To: krzk@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	broonie@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	krzk+dt@kernel.org,
+	robh@kernel.org,
+	tiwai@suse.com,
+	zhangyi@everest-semi.com
+Subject: RE: [PATCH 7/7] ASoC: dt-bindings: ES8389: Add members about HPF and
  clock
-Date: Wed, 10 Jun 2026 17:12:40 +0800
-Message-ID: <070401dcf8b9$4aaa3860$dffea920$@everest-semi.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: zh-cn
-Thread-Index: Adz4t2H8cwE7+5GoRNWBhStZ5ikWXg==
+Date: Wed, 10 Jun 2026 17:58:20 +0800
+Message-Id: <20260610095820.25386-1-zhangyi@everest-semi.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20260609-vociferous-thick-lyrebird-d53eda@quoll>
+References: <20260609-vociferous-thick-lyrebird-d53eda@quoll>
 X-MailFrom: zhangyi@everest-semi.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: QM4G46MEMWS5K2I57H2PLRNJ2ARXN6SJ
-X-Message-ID-Hash: QM4G46MEMWS5K2I57H2PLRNJ2ARXN6SJ
-X-Mailman-Approved-At: Thu, 11 Jun 2026 19:31:03 +0000
+Message-ID-Hash: OPLA42UT6XIWUTMZZLP5VP3KPAQZ6BXI
+X-Message-ID-Hash: OPLA42UT6XIWUTMZZLP5VP3KPAQZ6BXI
+X-Mailman-Approved-At: Thu, 11 Jun 2026 19:31:04 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QM4G46MEMWS5K2I57H2PLRNJ2ARXN6SJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OPLA42UT6XIWUTMZZLP5VP3KPAQZ6BXI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,20 +104,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> You already sent v1 and received feedback.
+> Please organize the patch documenting the ABI (DT bindings)
+> before the patch using that ABI.
+> See also: https://elixir.bootlin.com/linux/v6.14-rc6/source/Documentation/devicetree/bindings/submitting-patches.rst#L46
+
+Thanks for the reminder
+
+> > +  everest,mclk-from-sclk:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description:
+> > +      Indicates that SCLK is used as the internal clock.
 > 
-> You just completely ignored it
+> And what happens with mclk in such case? Is it still wired?
 
-When I submitted the v0 patch, I received feedback and suggestions from
-Sashiko.
-I wasn't sure how to handle Sashiko's feedback, and I mistakenly assumed
-that if my patch didn't pass Sashiko's tests, you wouldn't receive it. 
-So, after modifying the code based on Sashiko's reasonable suggestions, I
-submitted a patch with the same version ID.
-As a result, you received two consecutive patches from me. I didn't mean to
-ignore your valuable feedback, and I apologize for this.
+Yes, setting mclk-from-sclk does not affect the MCLK connection.
 
-So, when I receive feedback from Sashiko, do I need to wait for the
-maintainers to provide their feedback before incorporating the changes into
-the next version's patch?
+> > +
+> > +  everest,hpfl:
+> > +    $ref: /schemas/types.yaml#/definitions/uint8
+> > +    description:
+> > +      the HPF value of ADCL.
+> 
+> Is HPF value in dB? If so, use proper unit suffix and proper units.
 
+No, the values here correspond to the values in the registers.
+The value is not in dB
+
+> >          vddd-supply = <&vdd3v3>;
+> >          vdda-supply = <&vdd3v3>;
+> > +        everest,hpfl = [0a];
+> 
+> <0xa>? What did you want to say here?
+
+I just wanted to give an example to show how to set the values of everest,hpfl to 0x0a.
