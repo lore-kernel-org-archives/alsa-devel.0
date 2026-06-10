@@ -4,129 +4,187 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66422CD8CB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2026 17:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1092CCD8C90
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jun 2026 17:53:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20A8D601DE;
-	Wed, 10 Jun 2026 19:06:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A8D601DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4750601EF;
+	Wed, 10 Jun 2026 19:53:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4750601EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1781111179;
-	bh=ZL/retJxHghMbMm3wBG9GjaIXvHzD/b88uWKFxklHjY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1781114031;
+	bh=t+2KI1oayOj61N7hYH6J+8e6FZFeoz8f1YXTc/aF6Ps=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RoWfAGU7c7PNFCgzPtINh0UBVgGsvniD9+g12plGNSU6xV4H3UI/FVrgR3rqRTTai
-	 znHMOeypXM4QjlTpnoDjcL4BucFjUfrLMLZKCIFjufENyfxxEugz5n7duGTPocJ1PF
-	 RTeeyDRp/XvZdVRZKpzwSPpxuNkOCeNmZ7LFjQnI=
+	b=I9CXFAR5fMDOyFubmCcZYBOWX22JNldEoNXZlD0T9Zg/SB2cZmSEHg0HTzLET4Or8
+	 Czck+qu2YBCr8xhheoC2YsUn9CgBkC0ptNqLNA922xACS3uvAQD7zv5T1IG6vzJ9PK
+	 basYF8nQpDuQAiK2+CLsVIO7EQ0FBlmjd7SoGnCU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC7D6F805F1; Wed, 10 Jun 2026 19:05:44 +0200 (CEST)
+	id 54B12F805EA; Wed, 10 Jun 2026 19:53:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF479F805B1;
-	Wed, 10 Jun 2026 19:05:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15B48F805F7;
+	Wed, 10 Jun 2026 19:53:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 610E2F8058C; Wed, 10 Jun 2026 19:05:39 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=74.125.224.47
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781111138;
-	b=JtJF+xMe0ME4eGjwkB+aQUpmfP9F7JXOqof1vK8WywueTfpWa/riUBrhvnqEu2pa/WyO
-	 B0VHbnzue7gYOB23DrwR2Euktd7ywEAvLaJr9xIJfMXI93dTFnGgVYGvZahhWs9yKB5uW
-	 7HlyJqxRtn8c2zViu/I6IayRwqY7tlovqFLHWtDj1fVm6DXTsl72xr5I1zuOftNnqLUO8
-	 UFnz+5XMHWVRkyeNkafzqz26cDwx/qKyPHFn+JIZ49lDuLxSNzTR2KkMazvGcjQx3YskA
-	 31dVG1E7LqszUvVJmJPnUcWnGdm8SJXeJOHEB3Q2SSzjZEUEY1U1t6K1VCsb8h0WnGw==
+	id CDD8BF8058C; Wed, 10 Jun 2026 19:53:10 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=195.135.223.131
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781113990;
+	b=r1M5w9lvBqySTUmgmdd+n5fh24KK0eGlAQQAZy3ki1bXLze2y7sL0vUEpZyHeK423p7B
+	 HxRxnkxtHsRSRyDRrm6ygiQWw+96GIj3OcCuvHmAwCfT94MjyH6l+nx3LlMgX61AFDBP1
+	 dIRxQ9qhNd0YU/ck46F5A5463agUZjNPAFbaVYrlZJg8JebSEZ24FHlvI8IZPwPgFcnO9
+	 S7GLXYHSWtnINcAZBvvIeMbr+ULoy3OP6pBYL4TKn6pFfeFTpFQ6aszUKMPdIkCLzAGML
+	 RaGsvYtYW4eccWI4w2kgbBmdrE1rTPFIOj2dLCuQfO/kHpB7/BneNOfoos87um71obg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1781111138;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=ZL/retJxHghMbMm3wBG9GjaIXvHzD/b88uWKFxklHjY=;
-	b=Rqoon66rfTja/MdFvsPzvvSFMvLGQHTftjv9awt2NZ6eJRL1A0rNNFVdlpK274/rejls
-	 rqwMp7G3aRFh/JKCVZIuQB9SM6xX3O9MPJG58eRobg1WFAZjpxq9ymjnSZ+KqurOqwipz
-	 xHVxx4eQJtK+hiI35ZRKkFFkPr5ORHUyqpntfcZAUMlGTPld4Un1l+RlAKX4unL+wiJ5y
-	 2HNe3lDCXhhi5q2JciTFdEIrXvTyHHMFv7BYHjaSbe0GAPksFz+32gP27Wxe4qoKB6+G6
-	 80TPdkOOjNDYulNZXTQ8IYl0sEAbR9j/L+ZvqfdSXo74ZnkFl9X8DePQDc4mc/1ytqQ==
+	c=relaxed/simple; t=1781113990;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
+	 Message-ID:From:To:Subject:MIME-Version;
+	bh=t+2KI1oayOj61N7hYH6J+8e6FZFeoz8f1YXTc/aF6Ps=;
+	b=XtLaHEBhjFWVkQER510Oa6Ui9bzhYrWBZRFtQMgddBl5BTqvPWfo+UyWJMk1L+s05XuD
+	 uzQebjc4BGNyn5vekiQyL7QGIBvODvzNGFohPD6jVgt9xZbLGvgJx/Gy5GnoskWUDeL6c
+	 MrOXQyHHoHlhwC5FD7Mq914JcALtiMQQOwN7zIFZRJb1mbgDBvaNv/LPWR+2aguxK0tKw
+	 ZPUIxYEo9ZQL0UlzkSbKENy+0Jhhw3/JjsuVoHsZx8B016ATHNfcKtmWvvLY3tWoUv5gs
+	 s45khx8ap1RCCVr1YL74lskWY/8/N9ATAFtYG9XD9WATfEuHuH6AHb6k5ppc+dCC7QQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=HVlZ5gQW;
-	arc=none smtp.remote-ip=74.125.224.47
-Received: from mail-yx1-f47.google.com (mail-yx1-f47.google.com
- [74.125.224.47])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=QNQoMdbu;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=KiGMaGN8;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=QNQoMdbu;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=KiGMaGN8;
+	arc=none smtp.remote-ip=195.135.223.131
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C5231F8011B
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 19:05:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5231F8011B
+	by alsa1.perex.cz (Postfix) with ESMTPS id F39DFF801F5
+	for <alsa-devel@alsa-project.org>; Wed, 10 Jun 2026 19:53:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F39DFF801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=HVlZ5gQW
-Received: by mail-yx1-f47.google.com with SMTP id
- 956f58d0204a3-6606678420bso7282172d50.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 10 Jun 2026 10:05:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781111136; x=1781715936;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BPeGpob12XOt4wzuRg8cl6DokPVvqxwlbtTZOi7h9QE=;
-        b=HVlZ5gQWDmq93UZ/PqVO/QbIt1rJZIArQkTQTsR9vrGgx+7sobSq6K+RyLtRYSLNBL
-         CO0P4mbUT2Mz59ijudlpOMhihXk+/nh5Jz/v5Bdi783Az3cGMHTNmz/PFR9TCS6C45ou
-         39+enHw6Bs2UfM/wm9H5Nppbv/WAc7+oYQdgG/VYPvSI6MlcuFGei7L/LkNmkhyaBb0K
-         TvNguJIHjnCO0IOxvTTOo7UJXyXjj6qDWLmhRtf3tErIrQ0lDxwwP7XbGDtdeAgRTh2s
-         I023elSJxAP56l0d0luRh/u7JagUeRBkmIeJNgbagXnlKc1MIgVj9pRMzCOaH7akWHT7
-         6+sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781111136; x=1781715936;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BPeGpob12XOt4wzuRg8cl6DokPVvqxwlbtTZOi7h9QE=;
-        b=hhRqYDfgRzplid1AEcARPymxjTdlNMDtqRsx1QdE8067RafgpQaH73fdDZ/4Ga94Zo
-         LRzKNiNnQlx0QBrscjJ5t+5Bmuiu2rZPsebxNuaO/yeSrsu/N/7zFbVKiP+BZXf9w4eh
-         U1oAbPOmqGUWnYF6dH3Nf79p7ieEoYj7/rfYpFq8HvFo4lpXet5Mirse+W1U5B2hqG1a
-         RgmzMYHBrdFdZxWVf7chyowFm3rMb7zyNo6NV2D+AXxW8Yb+muqzCeXYLnUi+6Hk9AUm
-         B8qpGupKJ/0fN9iYGTW5hzOILawCrop6vP4pP0O6MR4NT3NIhL6OYq66vPkyGDvvkmXq
-         8vcw==
-X-Forwarded-Encrypted: i=1;
- AFNElJ+MUxQPDBH9vVU3AUVFKgDKnE5Vi5h4wM8uifTJHzwn4VSSl0diFPzNj7lYEN577QXuH7qlx1Hu/+Qk@alsa-project.org
-X-Gm-Message-State: AOJu0YyJksITZdppv639b8ZzS2+432afb9oqFSE5UR//w1+4dOQ7M66T
-	HAdsRKKCLnMA/c46CSCQzPDAoOkLGmpNeanXDoJvB+39M2lHuuI+pD9b
-X-Gm-Gg: Acq92OGKlH1qkPCbc6DlauHlAEqdnjMolxKAHhhF+YuV7eab8Dflvlagw6d2pPwTW64
-	9NG3zBnOnBMwlg2OTnr06fZ4/2enEoeUTIg2u3oXk1FgcCSPYo3S+e5goN3o1am7bgWlqf22xJM
-	gSPDrk+HbiiaR4Yal1s841tpOKa8N+IJUj7htEj0B7vGbPrmuvkLIMGuiroZ+GKGcWXk/msJj4q
-	Ka+GT1Ofh3MXTkLcTgg469qMXrdDsCH4BvdhUnhjj5h+9VRLZyBeNVuNPPif/Kp+Gv99d4YaSR0
-	J7OvNLtjdBQDvmTS9v8Q8q5HS3ihMY3W5TC1U933zVuHrWjYtikUcb8oO0QKNN75KU9pl4+7A2E
-	AlOknwgS+smEFLGjOyJ3oPooMpYH6GW7O21IgDO7QSvoJPp/xN0K7WWU/Whg2oAPw2Oc4TnGBm0
-	NJUMF3cmjhSqEhsOu0eCLo0Afr6dnt5IWXUYlswLvrIMStCRQdI/J+N5Z6CCZGd3wTIX3o4m/sq
-	WkrTk+5Ou3PDLzYJP1G79srYrDF604NjnSdM04=
-X-Received: by 2002:a05:690e:1508:b0:651:bc51:e6b6 with SMTP id
- 956f58d0204a3-66106f158f2mr21856830d50.38.1781111135599;
-        Wed, 10 Jun 2026 10:05:35 -0700 (PDT)
-Received: from alsa-dev.int.suenodeluz.com.do ([74.244.193.113])
-        by smtp.gmail.com with ESMTPSA id
- 956f58d0204a3-660d5f883e2sm12477189d50.6.2026.06.10.10.05.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2026 10:05:35 -0700 (PDT)
-Date: Wed, 10 Jun 2026 13:05:32 -0400
-From: Frank van de Pol <fvdpol@gmail.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@perex.cz, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] ALSA: usb: Add support for Reloop Jockey 3 DJ
- controllers
-Message-ID: <lgws3n4rvfphdusgrnubgcbca6vmqrtbrsattyngvovkodtd7c@qh3xupfie5nu>
-References: <20260609221643.3439698-1-fvdpol@gmail.com>
- <87o6hi6djp.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o6hi6djp.wl-tiwai@suse.de>
-Message-ID-Hash: TP2KARR6YSQJU63MGONK426HS5JLW7VH
-X-Message-ID-Hash: TP2KARR6YSQJU63MGONK426HS5JLW7VH
-X-MailFrom: fvdpol@gmail.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=QNQoMdbu;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=KiGMaGN8;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=QNQoMdbu;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=KiGMaGN8
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 30412759F8;
+	Wed, 10 Jun 2026 17:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1781113988;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kUciNjrtJsRjnxy3CnD+ewXR7F8FfJG5PQ4eTGUyd3A=;
+	b=QNQoMdbu4A/kCh8fpE/Uy1bghklZFq9A9ADMnNdUjhaKaB0nnLglpnsL45QxyB7M0R/AfB
+	Drsd55QUzlAyQmiupPCKP3nuchXgNb8sdRp0xga/E6hL+RnWq4YNmcXa2Bqs/RWsePE53+
+	Og2arpd9mkNaQ4bOFQYxipX2IDpWqJs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1781113988;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kUciNjrtJsRjnxy3CnD+ewXR7F8FfJG5PQ4eTGUyd3A=;
+	b=KiGMaGN8g90NbAr9M7GG7PkP8K48adBUlEuF6gToOUse09mFFbi3A7SJe0ScfDVGsBSYv6
+	M1GBb2jAL9FxuVCw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1781113988;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kUciNjrtJsRjnxy3CnD+ewXR7F8FfJG5PQ4eTGUyd3A=;
+	b=QNQoMdbu4A/kCh8fpE/Uy1bghklZFq9A9ADMnNdUjhaKaB0nnLglpnsL45QxyB7M0R/AfB
+	Drsd55QUzlAyQmiupPCKP3nuchXgNb8sdRp0xga/E6hL+RnWq4YNmcXa2Bqs/RWsePE53+
+	Og2arpd9mkNaQ4bOFQYxipX2IDpWqJs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1781113988;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kUciNjrtJsRjnxy3CnD+ewXR7F8FfJG5PQ4eTGUyd3A=;
+	b=KiGMaGN8g90NbAr9M7GG7PkP8K48adBUlEuF6gToOUse09mFFbi3A7SJe0ScfDVGsBSYv6
+	M1GBb2jAL9FxuVCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 05AEF779A7;
+	Wed, 10 Jun 2026 17:53:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0zqWO4OkKWqTLAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 10 Jun 2026 17:53:07 +0000
+Date: Wed, 10 Jun 2026 19:53:07 +0200
+Message-ID: <87y0gmjn98.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?ISO-2022-JP?B?GyRCPH4bKEJPY2Vhbg==?= <zhouoceanhy@gmail.com>
+Cc: perex@perex.cz,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Ocean Zhou <51983215+ocean-sudo@users.noreply.github.com>
+Subject: Re: [PATCH v2] ALSA: hda/conexant: fix FEVM FA880 PRO internal mic
+ mux
+In-Reply-To: 
+ <CACYx1Soy=oqaZfX9A2NuvOdoghxPPyviFekk5giMMCJ5N+2NUQ@mail.gmail.com>
+References: 
+ <20260529041147.70001-1-51983215+ocean-sudo@users.noreply.github.com>
+	<87y0h2r3g6.wl-tiwai@suse.de>
+	<CACYx1SrnTfg6GKK2S1Vb13f9OWOq1x=VUDA=AFWs1CALsC_B2g@mail.gmail.com>
+	<8733z7pv5e.wl-tiwai@suse.de>
+	<CACYx1SobX420vGovUv-1WROW-Kh-sPvaFBj0vNfgQnVnDyOeZg@mail.gmail.com>
+	<87fr32wwpv.wl-tiwai@suse.de>
+	<CACYx1SqT5sL7MpsjnB16dPwhjyvhzjL3M0E6-ka0Rn-cSgqiqA@mail.gmail.com>
+	<875x3usg00.wl-tiwai@suse.de>
+	<CACYx1SqBnPiGkoRYQoBTPiR1nhVS3ha2i+ADGKfMSpSfaiC04A@mail.gmail.com>
+	<CACYx1Sq87CJfYa6w-dFuDZigzDA73OEX9am2FhKS2P6OOxw97g@mail.gmail.com>
+	<87se6xqyn1.wl-tiwai@suse.de>
+	<CACYx1Soy=oqaZfX9A2NuvOdoghxPPyviFekk5giMMCJ5N+2NUQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-2022-JP
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TAGGED_RCPT(0.00)[ocean-sudo];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid]
+Message-ID-Hash: TBD5GNDLZ3METQBZD462N2TX3S4QPPYN
+X-Message-ID-Hash: TBD5GNDLZ3METQBZD462N2TX3S4QPPYN
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -137,7 +195,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TP2KARR6YSQJU63MGONK426HS5JLW7VH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TBD5GNDLZ3METQBZD462N2TX3S4QPPYN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -146,39 +204,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Jun 10, 2026 at 09:48:58AM +0200, Takashi Iwai wrote:
-> Hi Frank, nice to hear you again!
+On Wed, 10 Jun 2026 17:19:01 +0200,
+周Ocean wrote:
 > 
-> Through a quick glance, the driver design looks good and most of the
-> code are fine, but there can be small details that matter.  Could you
-> take a look at Sashiko review?
->   https://sashiko.dev/#/patchset/20260609221643.3439698-2-fvdpol%40gmail.com
+> Hi Takashi,
 > 
-> Not all items pointed there are useful, but the playback/capture
-> stream spinlock should be taken, and the use of the devres-memory for
-> URB buffer needs the re-consideration, too.
-
-Hi Takashi,
-
-Thank you for your review.  
-
-Great to hear that the architectural decision to make an isolated driver
-over shoehorning this into the standard driver is accepted.  
-
-I will have a look at the Sashiko review and pay extra attention to the
-points you've highlighted.  
-
-Hopefully I'll be able to submit version 2 of the patch by next week (after
-completing the multi-platform validation).
-
-> Last but not least, for the resubmission, please send to
-> linux-sound@vger.kernel.org (and Cc to linux-kernel@vger.kernel.org).
-> Recently we use alsa-devel ML only for user-space stuff, and the
-> kernel patches go to vger.
+> Thank you for the suggestions. I have tested the stock driver as requested.
 > 
+> Here are the results:
+> 
+> 1. Does the jack detection work for the rear jack? Yes, the jack
+> detection works properly for the rear jack.
+> 
+> 2. Does the output from the rear work as-is? Yes, the output works
+> normally. I primarily use this jack for an external TRS speaker.
+> 
+> 3. Changing the pin control of 0x1c: I plugged a TRRS headset (with a
+> microphone) into the rear jack. Both the audio output and the headset
+> microphone worked properly without any modifications. When I ran sudo
+> hda-verb /dev/snd/hwC1D0 0x1c SET_PIN_WIDGET_CONTROL 0x00, the
+> headphone output stopped as expected, and the microphone continued to
+> work normally.
+> 
+> Based on these tests, the rear jack is a fully functional TRRS combo
+> jack, and there is no hardware interference between the output (0x1c)
+> and input (0x1b) pins.
+> 
+> The loud buzzing noise I reported earlier occurs only when a 3-pole
+> TRS plug (like my external speaker or a standard headphone without a
+> mic) is connected to the rear jack. It appears the hardware lacks
+> proper impedance sensing to distinguish between TRS and TRRS plugs,
+> and blindly leaves the mic input pin (0x1b) active. Since the TRS plug
+> shorts the mic ring to ground, the active 0x1b pin captures ground
+> loop noise.
+> 
+> This behavior is consistent with what I observe on Windows on the same
+> machine: when a TRS speaker is plugged in, Windows shows a microphone
+> device that captures no sound, likely because the pin is shorted to
+> ground.
+> 
+> Given that this machine is a Mini-PC and the rear jack is mostly used
+> for TRS external speakers, would applying a pin quirk to disable 0x1b
+> (setting it to 0x40000000) be the most appropriate upstream fix?
 
-Thank you for pointing this out; I clearly missed that subtle yet important
-detail.  Will keep learning :-)
+Have you tried ctx_fixup_headset_mic, BTW?  I'm not sure whether this
+is applicable to your model, but worth for a try.
 
-Thanks,
-Frank.
+If this doesn't work, then disabling the mic would be the simplest
+solution.
+
+
+thanks,
+
+Takashi
