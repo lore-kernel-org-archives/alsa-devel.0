@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE3F3CD98C5
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Jun 2026 07:34:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AF00CD8CA8
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Jun 2026 07:38:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D413E601FD;
-	Sat, 13 Jun 2026 09:34:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D413E601FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2F0D601EF;
+	Sat, 13 Jun 2026 09:38:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2F0D601EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1781336080;
-	bh=PxX9K5ZDgh0h3OcsbaIRWuSqmui98K76LJSn1C9+4nA=;
+	s=default; t=1781336322;
+	bh=qLJW6iZI+DbYBLSHpRvh1fHoPbFOfRR9v4LVQsoegAw=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rBqTuUzVEPiRNTlq+nFQgRDR5roYDDffwG4D0bO5ml+wGkLHApDPW52HCMNBeaIJL
-	 2BPV60ckCFrMXMw9Ih36h6/XYx+GzIoHJHVsjXeKWshXf7ealkQPry+JrV/ZSMXcmz
-	 K1Ir0hXyUXo+8PDGmT7zfY0kMLQQXSKI1T6OcPjI=
+	b=BhS++lINigUMcFOZ1vFlF2QOISiWSbtD8gJXJSGqVx1nKs3n7K1WEaKvntPEaLhoj
+	 b6v26JVHaJa/kFbEIT5CVyCB8Ftw5okzWveqW2pXhwgqXgAaxmud4k/L6trfiPuFkl
+	 gI8WMbEhTK60ZjzpyTGk4kL9ez36t+ULVH+QB3Pc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65F14F805F3; Sat, 13 Jun 2026 09:34:07 +0200 (CEST)
+	id B9F2DF805FF; Sat, 13 Jun 2026 09:38:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0D6EF80601;
-	Sat, 13 Jun 2026 09:34:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48AFFF8026D;
+	Sat, 13 Jun 2026 09:38:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A2FDF804F2; Sat, 13 Jun 2026 09:34:00 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781336039;
-	b=YEdhCg4Gn+/IS3lApI8V2TpozkYlFTe/xYySEnE1JJStsNXQnwS/KGkMxgKgEnwJMLS1
-	 /HFJqYGQYZZxN3cMZHB0/7SsfgKKF058HLxUT5drmKvbYUZY1OVds2+ZyaqNodo8g8m/d
-	 Xdnud+zyEdbFXfD3sZ8MsP7jYsIvLDfy8UgT7rmjFCZ3/qkceVaCTdlMysOzBw6oph+Eu
-	 iUZas+Ow6A8WcTeeR9zQ/f1h0qdbpc84Q5gOoiUq+HR5mj2pVhJGbXl52ImzwtcroZWQs
-	 DE1CfuNWyeKK+lO9l3cC/EvLNmlSIV5A1Wno6dQYAd5FXXqYIkixr8CEScqzS46cg3Q==
+	id 56202F804F2; Sat, 13 Jun 2026 09:38:03 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781336279;
+	b=kg7/w04RTucz5fr6YZUfV+nlW2w7QDCnLmMlVpYV964EIUbB2UTjH64wDAau86nocNYb
+	 O0FhP5UqYJjwgbdLlB0QiGdhSztXJ2cVn+k4WEzN6brqqIyHxXbS2z37FFwOVXREECrvx
+	 LzB1YD98jzioB+K8wKG2p3433ZzP1PWKAPdFV16TVmu7bjRJchggmfrmGUO5r5WNZR7/S
+	 qCZ1L+o5gVJXXYJvOQKy+4HLf90aZ4vMsXSRPlM2q6u+18DaMOG1CYJvY0dcxMF6617md
+	 f2PueGJFYyn8YOwfNoF9cmWhwVzBtTYELVoaRl12OxJ/58HaNpaf5FfeuBMuk9WMiUA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1781336039;
+	c=relaxed/simple; t=1781336279;
 	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
-	bh=PxX9K5ZDgh0h3OcsbaIRWuSqmui98K76LJSn1C9+4nA=;
-	b=mz9l5urVgixpIYdGfkRD+9vvM4aUsVqjR6pAq4SuV22ZcAD97RKh5M61Dkix/8+NxWJU
-	 M+nVO7DpUnRX3s9Cmm5WsuuChYq81jcw7DA5EcJHj4WF9RB+CiqiCQxkv0IYOsVp4goVG
-	 uz0Ad+prMEC7jsJkVyXbr8snOHO5Q10kZYNhp9Pa847HLY76SwCqJ4bP5T2SGTYEjjuMa
-	 FUiSwbU45p1zVlVQ4GnPhqbZQogUwzN9jscVKx/bhaSjHBekZS5pKGrhO+nr+M/Q68/VN
-	 KaUJER8giOpoWZ+Y/VkJyblkB1ZPYZDV3U7WYeYWgZLFXDZ5YaO8Q+0fybQvGgdl2Kg==
+	bh=qLJW6iZI+DbYBLSHpRvh1fHoPbFOfRR9v4LVQsoegAw=;
+	b=S7Er3L9LTiEx7uJOS2F608EaCOWfraHhOnkCKnswmFQit/0f7nQo6sep3F7Ae2Dzkwaa
+	 D0qDWXYVqkNPKeg7USwq2VZIfhCDCIL5JW9GQc8+L1f9GG7xeC8iUlX9KlezAY5UzrtBu
+	 vZSNZh5R/idrWEpElAq83/3TB40i7p6eBVDuEPUkzQt9pUjuPZ1Uw28aOolCetQxGGW6H
+	 25FvqaomR3UToEzhWVB9qZjwf8KPUrdmJ18t4ju2mo4CNd8J1XPSUd3GcRoN5TB9NugaH
+	 xKno6E3c5r9oSlyzDjQJB7r5yfh1laIz2p7/xdzKThMrftofwa6rZDf26szYKRhrblQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b="as/ZULja";
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+ header.s=k20260515 header.b=laJLiSKE;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EB880F8026D
-	for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2026 09:33:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB880F8026D
+	by alsa1.perex.cz (Postfix) with ESMTPS id CAB0CF8015B
+	for <alsa-devel@alsa-project.org>; Sat, 13 Jun 2026 09:37:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAB0CF8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=as/ZULja
+ header.s=k20260515 header.b=laJLiSKE
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6E201600AF;
-	Sat, 13 Jun 2026 07:33:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D4AD1F000E9;
-	Sat, 13 Jun 2026 07:33:53 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3D58343934;
+	Sat, 13 Jun 2026 07:37:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B3A81F000E9;
+	Sat, 13 Jun 2026 07:37:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781336035;
-	bh=ewzja9ztBOPyrsczWsX9X0mxKc4EcOTeQhgKRFEwSmo=;
+	s=k20260515; t=1781336274;
+	bh=tQSHJmp7JNCNmTswMfi2HcByw7yaz6k/MRHxiY6lZ/A=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=as/ZULjaN3KQJ1AWFBOyUUGfrxS3kL3K8RK/IZNd1Xg8aEre0XHqGgrl7rA0Ra8kY
-	 R2ukAPQqDtzz4e3JmRD93b/WTUgwgr9NwRe2OXxGvhHEZcJ6t5u8LBxGEj9R2Y/Ns7
-	 b8BNrgI/sCMZiSnRWs+PKthdzPhkRPn2jMT7VV1ZSi39GQayjIFTnOo6Y+ka7S030u
-	 uNAAbjw4yKGvS9Ov/BTvjo5gWJQ39XIWtSYbZtA8DEOG52FRLC47/o/GCHkpBbILP3
-	 ztashKoyRk7RF7+Xv+EBXro2JW5wc83FKCiqWnv6uHztQc80iV6W8rs0AAFyT5RWkz
-	 vBwrQffbSx7pA==
-Message-ID: <fbaf1829-723b-4a87-882b-b164bb544912@kernel.org>
-Date: Sat, 13 Jun 2026 09:33:51 +0200
+	b=laJLiSKEjRcTGpq9l4JAC/T0gQMV1SJ3WPcE4IRUYz/377NwZcop85p4yPBpYxDav
+	 DU+TwaWLv0I7bcXMUubQ7Bli+4KZJdqfOkxsYdE6xOyUTyVmoBlXY2Ql0M36oRKwT0
+	 l1UYFO/VhCpjxiaMwXlsUsujkR0F3onuH6s4nLPFXCs0nbjh6MXIsEE8APPXGVN2Mh
+	 R5SZlGu/rhV0JwXHvvpfoNeVM+16olk6Rai5+bez1lPBl/T5DK4z4rndk8rNmUrFwG
+	 QUCrxR01y1aupwI5fqOVXb7brHoN3ey5lS65TuCAHjyBgDXR9Mk0iFXUzeAEAAznDh
+	 kTkt+1PPuCXbA==
+Message-ID: <fa710884-e66e-4ef8-bbbd-034eeef8ee62@kernel.org>
+Date: Sat, 13 Jun 2026 09:37:50 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] ASoC: codecs: ES8389: Fix the issue about mclk_src
+Subject: Re: [PATCH 7/7] ASoC: dt-bindings: ES8389: Add members about HPF and
+ clock
 To: Zhang Yi <zhangyi@everest-semi.com>
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, conor+dt@kernel.org,
  devicetree@vger.kernel.org, krzk+dt@kernel.org, robh@kernel.org,
  tiwai@suse.com
-References: <20260609-visionary-truthful-viper-ceff75@quoll>
- <20260610100637.25568-1-zhangyi@everest-semi.com>
+References: <20260609-vociferous-thick-lyrebird-d53eda@quoll>
+ <20260610095820.25386-1-zhangyi@everest-semi.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -132,11 +133,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  K9bCVaboTA2T77QYkRcRJYSsO1alGX0ome/hMLD1daXlkrNUp1HWa3K4iytLRXjCSIorWiGs
  n+q3krnpXu3TFkA8qtOFZMdnIiFuiq1yLT8hptsV5xh1TA2nsVvSYiaCr3q4s4BKjS/KrLDb
  qoxzw8ISjdUp4pA85vb6YLCmb39NgidD+7PmAr65lBNveIFynTgsja1rRQ4=
-In-Reply-To: <20260610100637.25568-1-zhangyi@everest-semi.com>
+In-Reply-To: <20260610095820.25386-1-zhangyi@everest-semi.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YKLI5W3XQWBKVEQJOP4HI5XL7PTAX3BU
-X-Message-ID-Hash: YKLI5W3XQWBKVEQJOP4HI5XL7PTAX3BU
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 6KCKVY7WDDCQF5RRRMYRF3HNMNLFO7YK
+X-Message-ID-Hash: 6KCKVY7WDDCQF5RRRMYRF3HNMNLFO7YK
 X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -148,7 +149,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YKLI5W3XQWBKVEQJOP4HI5XL7PTAX3BU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6KCKVY7WDDCQF5RRRMYRF3HNMNLFO7YK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -157,31 +158,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 10/06/2026 12:06, Zhang Yi wrote:
->>> Fix the issue with incorrect modifications to mclk_src
+On 10/06/2026 11:58, Zhang Yi wrote:
+>> Please organize the patch documenting the ABI (DT bindings)
+>> before the patch using that ABI.
+>> See also: https://elixir.bootlin.com/linux/v6.14-rc6/source/Documentation/devicetree/bindings/submitting-patches.rst#L46
+> 
+> Thanks for the reminder
+> 
+>>> +  everest,mclk-from-sclk:
+>>> +    $ref: /schemas/types.yaml#/definitions/flag
+>>> +    description:
+>>> +      Indicates that SCLK is used as the internal clock.
 >>
->> What issue? Your commit msgs are really poor - explain nothing. You just
->> duplicated subject... and anything can be a fix.
+>> And what happens with mclk in such case? Is it still wired?
 > 
-> I'm sorry I didn't explain that clearly.
-> When the system needs to be configured to use the MCLK from the SCLK pin,
-> the old code still sets the relevant registers to use the MCLK from the MCLK pin.
-> I will include a more detailed description in future versions.
-> 
->>>  	struct es8389_private *es8389 = snd_soc_component_get_drvdata(component);
->>>  
->>> -	ret = device_property_read_u8(component->dev, "everest,mclk-src", &es8389->mclk_src);
->>
->> Why are you changing implemented ABI?
-> 
-> In the old ABI, `mclk_src` was defined as `u8`, which meant that users could set `mclk_src` to any value in the DTS—such as `0x02`,
-> but the code wouldn't recognize what that value represented.
-> The actual purpose of `mclk_src` is to indicate whether `sclk` should be used as `mclk`.
-> So I've changed it to bool.
+> Yes, setting mclk-from-sclk does not affect the MCLK connection.
 
-You break ABI implemented by this driver, so you must clearly document
-it with reasons, why breaking is necessary. Honestly, without proper
-reason I would just answer that you must keep it backwards compatible.
+I am asking about wiring of the device. If MCLK is used from SCLK, but
+SCLK is used as the internal clock, then how can you still have MCLK
+connected?
+
+> 
+>>> +
+>>> +  everest,hpfl:
+>>> +    $ref: /schemas/types.yaml#/definitions/uint8
+>>> +    description:
+>>> +      the HPF value of ADCL.
+>>
+>> Is HPF value in dB? If so, use proper unit suffix and proper units.
+> 
+> No, the values here correspond to the values in the registers.
+> The value is not in dB
+
+What are the meanings of the register values?
+
+> 
+>>>          vddd-supply = <&vdd3v3>;
+>>>          vdda-supply = <&vdd3v3>;
+>>> +        everest,hpfl = [0a];
+>>
+>> <0xa>? What did you want to say here?
+> 
+> I just wanted to give an example to show how to set the values of everest,hpfl to 0x0a.
+
+So use syntax I asked.
 
 Best regards,
 Krzysztof
