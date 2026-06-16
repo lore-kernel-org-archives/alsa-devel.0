@@ -4,127 +4,171 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 868F6CD98CF
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2026 08:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF91BCD98E1
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jun 2026 11:28:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5E41601FC;
-	Tue, 16 Jun 2026 10:15:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5E41601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4FC160201;
+	Tue, 16 Jun 2026 13:28:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4FC160201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1781597728;
-	bh=YyHmtSyL2lsgT0es0Eetl/XKw4nAr3/w77RlgtbYc7I=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:List-Id:
+	s=default; t=1781609315;
+	bh=LCQEXv7A9cWSgBOEaPelwGYgYQvcBHVh5+qZYFtz5gg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BbrRQ0sU3pg9+DUyN6f51reRFZ0lPiJD+sPhxpsggk4NYS657vJs7AaG9w6u6RCN2
-	 y//YLE0SOlLmvv7njYmsiH5qjFgf54U+JdaBnNqfbdfR/sTF59LWhLVlhfdeaJpYNI
-	 O1phYZsTdNap0j0MQWEbPnesxeRHjNEP98tGGNa8=
+	b=O55tcw9WPbkAjzmH4zMYNVIuGNPtWfO+V0Ew+NIFoEfCYoRB6e4CPHDWYj+bK7eBT
+	 p7CMA3kwvc/rmgnlA61k9EMmHwGidna4T2OdtUf3DCORmXZBmuoalRJiSMuIqbzRlF
+	 1m25ued8ELCIm2O9UUkAqPNhsh+OE+0PFTGLh2HQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16559F805FF; Tue, 16 Jun 2026 10:14:52 +0200 (CEST)
+	id 9ECCCF805FB; Tue, 16 Jun 2026 13:28:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DE3BF805F7;
-	Tue, 16 Jun 2026 10:14:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46CC8F805F6;
+	Tue, 16 Jun 2026 13:28:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9811F80495; Tue, 16 Jun 2026 10:14:45 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=188.68.63.102
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781597685;
-	b=BSBm6BZyD/E5ZeQJh42kPF/ZtZldmCiWiDwAKekWtdkA8VMrexQPPcStxdf8nAA6FLM+
-	 dlCF/zjWxov21cSdUzzhxV1auhN7uV2Bj7mHTjGIzik2hyLTgXMGsM1bwIT64yyC7f9N1
-	 i6MzuSzBqtEUw//vCxLDv45n8vJizN+evfMZicZVNs0zm+vjN0Am6oyzg0LyQhYyDQlQJ
-	 ZJPPAA3ohLwY/9VgFEBhF2PZj6Fj6p98Qbw+DMfgJ+bcxyPhEm6hsL7JztYxSIYYu6+t2
-	 ANmjL5/Cjr95uabv7lA/MevNZeUb9cMvZs7OIsPJ5NNYvmRlqP8BZHlqOiYwylshsVQ==
+	id 241E1F80495; Tue, 16 Jun 2026 13:27:54 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=195.135.223.131
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781609273;
+	b=GvvemmtXGz+z+9zcuJ4FBcuSMfZ0dA98zcsJ++z1kND4ecwr8gsQukmHhxaWBLjvp35V
+	 aqh0JH8/WGP07QiqqKMQmCmIho99vBNr9JJTra0FooeFmQ0grD63hbS/RJNXaYm3x9A/6
+	 iHcnmvotIq+nPHKC/j/zbMq4w1x/BdM1XESLkqfCHqA8KP9cJOyK5sw8tWOwDerSeBp1f
+	 Q06Cd68VIWxTUnSkYXgvldWyCCdDdX8fGjX3MEY5/KjcZf7LAQ7ZW5ZFxXruW6jU7nupa
+	 wPn/fbD7aMIP6nhrkqtCK2NUEXVo61dKSD+Z0AMs5wWLxCwRpSoxZHBUCqYthRakg4Q==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1781597685;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:From:Subject:To;
-	bh=YyHmtSyL2lsgT0es0Eetl/XKw4nAr3/w77RlgtbYc7I=;
-	b=nTEBfW/c4hBMSv9x/K45v/fZDVX1TQpNwIHGidei/q6R0kvRKIQ0XZt6FXYH+meOJs9v
-	 E/v+3LNm3OGfKLlQXr+5GOgtSWyqUUlhKzkTxpoD9kxuTTDLVIOVDHhYagdFBr1ohZUY+
-	 v5Lyl1Nw60dn4OI370lSacZ2Wa6BrINz4Ar5AmPDlAziVEJoYwxMIXPfNsMOHjHu+PdOj
-	 WbHVke6AZSBpXN1nZhvlyr5Z4QtLcoDehosQMn5bPx0h/VjCtHJzSF1Cw5lXnnT2eIsnt
-	 nrBkSYxjtAWwFj2v1mupbAISWi3hOB/0DUqGZcv6awOVxHk1k46oSzZ9HGSPMSLR9CA==
+	c=relaxed/simple; t=1781609273;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
+	 Message-ID:From:To:Subject:MIME-Version;
+	bh=LCQEXv7A9cWSgBOEaPelwGYgYQvcBHVh5+qZYFtz5gg=;
+	b=rumEGy/NgNgaumF7lhxjmudrlpXHXejWSOUG/U3xAwbm7a8Z7IGW3WMEOfREdj6v5jTF
+	 z46ss11HZBODGwan41zWz23Qjzjt8IhjlOcKm6/ckDkJytz81BBYj8wByPHt8lQ1iXTTs
+	 08bL09bPxxDqrR4z+egBRhR9OMlGGkVUmFNfkVLUKQN0Zp8oPvW+L9FqbzNwgY/XQUWpf
+	 eKVaCyrXUaSMLGF8KBJGQHW/shUdee/yQeWPNwIF3KNhtBg7I151WhetQmQDugk4lwGho
+	 I8wLiT9btRXyVhIt7c3lGVQK0WTzMqHnxbizb6q1r0NCvywS15q64lUYhtAepsUEGNg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=leemhuis.info header.i=@leemhuis.info header.a=rsa-sha256
- header.s=key2 header.b=EUH3Fxd1;
-	arc=none smtp.remote-ip=188.68.63.102
-Received: from relay.yourmailgateway.de (relay.yourmailgateway.de
- [188.68.63.102])
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=RZyyOEo+;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=QEji+esw;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=RZyyOEo+;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=QEji+esw;
+	arc=none smtp.remote-ip=195.135.223.131
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D7641F80038
-	for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2026 10:14:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7641F80038
+	by alsa1.perex.cz (Postfix) with ESMTPS id 39FB2F80038
+	for <alsa-devel@alsa-project.org>; Tue, 16 Jun 2026 13:27:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39FB2F80038
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=leemhuis.info header.i=@leemhuis.info
- header.a=rsa-sha256 header.s=key2 header.b=EUH3Fxd1
-Received: from mors-relay-2502.netcup.net (localhost [127.0.0.1])
-	by mors-relay-2502.netcup.net (Postfix) with ESMTPS id 4gffsQ3Pk6z6717;
-	Tue, 16 Jun 2026 10:14:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=leemhuis.info;
-	s=key2; t=1781597658;
-	bh=YyHmtSyL2lsgT0es0Eetl/XKw4nAr3/w77RlgtbYc7I=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=EUH3Fxd1QMdV3l7mSGAn/da6tuaV6CvxCyQZk0624HBfcV109U/HwFVjwwY8rnFfZ
-	 /7OLb3qxuUUxu0oIPL2fVqxtIQkPgwK3IL5QS4AVcARwomvMpWXp8MjrFdfq+4vZ5G
-	 of4bYahh/SsNewi+VvzbXCyjSbdgEujezRnBmQxgX3YcCFN6IzSAQfePrQR21dFgkQ
-	 5hAxKj4toZGwGmIPVAIXMAKwoAT4ohierbqxJA7gTxCk/cKmi0Qcuc+tkS+ZC2tn5k
-	 tAf7Msu4PtX2Iq83fVdk6thOhoojwGjWgxxXB6m59Fb1EgArLe5b0ugfLFGJAufmiG
-	 pLJdlwEjT0s0w==
-Received: from policy02-mors.netcup.net (unknown [46.38.225.35])
-	by mors-relay-2502.netcup.net (Postfix) with ESMTPS id 4gffqr5HFzz4yXG;
-	Tue, 16 Jun 2026 10:12:56 +0200 (CEST)
-Received: from mxe9fb.netcup.net (unknown [10.243.12.53])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=RZyyOEo+;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=QEji+esw;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=RZyyOEo+;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=QEji+esw
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by policy02-mors.netcup.net (Postfix) with ESMTPS id 4gffqq6nVvz8sZP;
-	Tue, 16 Jun 2026 10:12:55 +0200 (CEST)
-Received: from [IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f] (unknown
- [IPv6:2a02:8108:8984:1d00:a0cf:1912:4be:477f])
-	by mxe9fb.netcup.net (Postfix) with ESMTPSA id 084036034E;
-	Tue, 16 Jun 2026 10:12:54 +0200 (CEST)
-Authentication-Results: mxe9fb;
-        spf=pass (sender IP is 2a02:8108:8984:1d00:a0cf:1912:4be:477f)
- smtp.mailfrom=regressions@leemhuis.info
- smtp.helo=[IPV6:2a02:8108:8984:1d00:a0cf:1912:4be:477f]
-Received-SPF: pass (mxe9fb: connection is authenticated)
-Message-ID: <ba4a8fa6-1786-4fca-a6e1-c203d6b6bc0c@leemhuis.info>
-Date: Tue, 16 Jun 2026 10:12:53 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: [REGRESSION][BISECTED] HDA controller MMIO unreadable on Intel
- 5-series PCH (Ibex Peak) since v6.16
-To: Lukas Wunner <lukas@wunner.de>, "superm1@kernel.org" <superm1@kernel.org>
-Cc: Filippe Duke <fduke@greennet.ua>,
- "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
- "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "bhelgaas@google.com" <bhelgaas@google.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tiwai@suse.com" <tiwai@suse.com>
-References: <5e54aea4a97f1cbbe866d9d8f3f25f9f2958e1c9.camel@greennet.ua>
- <cf379972-6b2d-42e5-9660-32d031516862@kernel.org>
- <e05ab19cf41224661325a8acb5f10d31a1d8fbf0.camel@greennet.ua>
- <ahyerEqlBdIbQN9u@wunner.de>
- <60c710e22fc987a3b444e5b687a9a64bb454f0f8.camel@greennet.ua>
- <ah016_TukXkcqnyQ@wunner.de>
-Content-Language: de-DE, en-US
-In-Reply-To: <ah016_TukXkcqnyQ@wunner.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-PPP-Message-ID: <178159757535.1706911.6070558377354035513@mxe9fb.netcup.net>
-X-Rspamd-Server: rspamd-worker-8404
-X-Rspamd-Queue-Id: 084036034E
-X-NC-CID: ZlEHvU8dYJiledOsQPvvksck1cHFs/89lKalpQIxxw90SeOQ2Dw=
-Message-ID-Hash: LSBZSIXOYCEP5SW4UNQLGDWYJ7AQKIY6
-X-Message-ID-Hash: LSBZSIXOYCEP5SW4UNQLGDWYJ7AQKIY6
-X-MailFrom: regressions@leemhuis.info
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5954C759FB;
+	Tue, 16 Jun 2026 11:27:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1781609271;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cXAv5Z3H5IvJs16491ztLulGK8hXw7vZEWfsrtHojVc=;
+	b=RZyyOEo+JlxfMe+RksmnIJsssjIDX+17KOB1TPIRiSCbgQut/OSElxEbJ72/2yBj9u+t/F
+	fC5LaWbaf6rOH8oSAcjiyhyg7jc2e/grlvONXEuhHw3Am34oQCCCv8hnzzJc5BOwqU20ML
+	VrPOMfmHrpSzlQ+aMgw4y1kwia1V1P8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1781609271;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cXAv5Z3H5IvJs16491ztLulGK8hXw7vZEWfsrtHojVc=;
+	b=QEji+eswfnzN/O63tFbdmAOXURNwEx6t9FbClfceZKgJ8/Qw2Bc6dONWCELzFGRwJEu1FQ
+	36JHqiaWTv2K/nBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1781609271;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cXAv5Z3H5IvJs16491ztLulGK8hXw7vZEWfsrtHojVc=;
+	b=RZyyOEo+JlxfMe+RksmnIJsssjIDX+17KOB1TPIRiSCbgQut/OSElxEbJ72/2yBj9u+t/F
+	fC5LaWbaf6rOH8oSAcjiyhyg7jc2e/grlvONXEuhHw3Am34oQCCCv8hnzzJc5BOwqU20ML
+	VrPOMfmHrpSzlQ+aMgw4y1kwia1V1P8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1781609271;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cXAv5Z3H5IvJs16491ztLulGK8hXw7vZEWfsrtHojVc=;
+	b=QEji+eswfnzN/O63tFbdmAOXURNwEx6t9FbClfceZKgJ8/Qw2Bc6dONWCELzFGRwJEu1FQ
+	36JHqiaWTv2K/nBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 44265779A8;
+	Tue, 16 Jun 2026 11:27:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id P3z4DzczMWoaMgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 16 Jun 2026 11:27:51 +0000
+Date: Tue, 16 Jun 2026 13:27:51 +0200
+Message-ID: <87se6mrah4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Galen <rwekyes@gmail.com>
+Cc: tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/conexant: Add pin config quirk for Lenovo
+ IdeaPad Slim 5 16AKP10
+In-Reply-To: <20260615233353.19913-1-rwekyes@gmail.com>
+References: <20260615233353.19913-1-rwekyes@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
+Message-ID-Hash: ELK3VPJO32HB33O3BT73RM57QSN7FZXG
+X-Message-ID-Hash: ELK3VPJO32HB33O3BT73RM57QSN7FZXG
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -135,7 +179,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSBZSIXOYCEP5SW4UNQLGDWYJ7AQKIY6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ELK3VPJO32HB33O3BT73RM57QSN7FZXG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,48 +188,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 6/1/26 09:34, Lukas Wunner wrote:
-> On Sun, May 31, 2026 at 09:22:52PM +0000, Filippe Duke wrote:
->> A working LTS kernel version tells completely different story.
+On Tue, 16 Jun 2026 01:33:53 +0200,
+Galen wrote:
 > 
-> Right:
+> The Lenovo IdeaPad Slim 5 16AKP10 (PCI SSID 17aa:38b6) uses the
+> Conexant SN6140 codec. The internal microphone is on pin 0x1a but
+> the BIOS configures it with pin default 0x95a60120, which includes
+> a jack detection bit that causes the kernel to treat it as an
+> unplugged external mic rather than a fixed internal mic.
 > 
->  00:1b.0 Audio device: Intel Corporation 5 Series/3400 Series Chipset
-> [...]
-> -       Interrupts: pin B disabled, MSI(X) routed to IRQ 34
-> +       Interrupts: pin B disabled, MSI(X) routed to IRQ 28
-> [...]
-> -               Address: 0000000000000000  Data: 0000
-> +               Address: 00000000fee00000  Data: 0022
+> Add a pin config quirk that overrides pin 0x1a to 0x95a60130,
+> setting the connectivity bits to indicate a fixed/always-connected
+> device. This allows the internal microphone to be correctly
+> identified and used.
 > 
-> That's the only difference.  Seems plausible that it causes
-> communication failure with the HDA controller.
+> Signed-off-by: Galen Hassen <rwekyes@gmail.com>
+> ---
+>  sound/hda/codecs/conexant.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> The offending commit
+> diff --git a/sound/hda/codecs/conexant.c b/sound/hda/codecs/conexant.c
+> index e3b6aaabe..40d4591f9 100644
+> --- a/sound/hda/codecs/conexant.c
+> +++ b/sound/hda/codecs/conexant.c
+> @@ -291,6 +291,7 @@ enum {
+>  	CXT_FIXUP_HEADSET_MIC,
+>  	CXT_FIXUP_HP_MIC_NO_PRESENCE,
+>  	CXT_PINCFG_SWS_JS201D,
+> +	CXT_PINCFG_LENOVO_IDEAPAD_SLIM5_16AKP10,
+>  	CXT_PINCFG_TOP_SPEAKER,
+>  	CXT_FIXUP_HP_A_U,
+>  	CXT_FIXUP_ACER_SWIFT_HP,
+> @@ -826,6 +827,12 @@ static const struct hda_pintbl cxt_pincfg_lemote[] = {
+>  	{}
+>  };
+>  
+> +/* Lenovo IdeaPad Slim 5 16AKP10 with SN6140 */
+> +static const struct hda_pintbl cxt_pincfg_lenovo_ideapad_slim5_16akp10[] = {
+> +	{ 0x1a, 0x95a60130 }, /* Internal mic, fixed/always-connected */
+> +	{}
+> +};
+> +
+>  /* SuoWoSi/South-holding JS201D with sn6140 */
+>  static const struct hda_pintbl cxt_pincfg_sws_js201d[] = {
+>  	{ 0x16, 0x03211040 }, /* hp out */
+> @@ -1006,6 +1013,10 @@ static const struct hda_fixup cxt_fixups[] = {
+>  		.type = HDA_FIXUP_PINS,
+>  		.v.pins = cxt_pincfg_sws_js201d,
+>  	},
+> +	[CXT_PINCFG_LENOVO_IDEAPAD_SLIM5_16AKP10] = {
+> +		.type = HDA_FIXUP_PINS,
+> +		.v.pins = cxt_pincfg_lenovo_ideapad_slim5_16akp10,
+> +	},
+>  	[CXT_PINCFG_TOP_SPEAKER] = {
+>  		.type = HDA_FIXUP_PINS,
+>  		.v.pins = (const struct hda_pintbl[]) {
+> @@ -1116,6 +1127,7 @@ static const struct hda_quirk cxt5066_fixups[] = {
+>  	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo IdeaPad Z560", CXT_FIXUP_MUTE_LED_EAPD),
+>  	SND_PCI_QUIRK(0x17aa, 0x3905, "Lenovo G50-30", CXT_FIXUP_STEREO_DMIC),
+>  	SND_PCI_QUIRK(0x17aa, 0x390b, "Lenovo G50-80", CXT_FIXUP_STEREO_DMIC),
+> +	SND_PCI_QUIRK(0x17aa, 0x38b6, "Lenovo IdeaPad Slim 5 16AKP10", CXT_PINCFG_LENOVO_IDEAPAD_SLIM5_16AKP10),
+>  	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
+>  	/* NOTE: we'd need to extend the quirk for 17aa:3977 as the same
+>  	 * PCI SSID is used on multiple Lenovo models
 
-Reminder, that was 4d4c10f763d780 ("PCI: Explicitly put devices into D0
-when initializing") [v6.16-rc1] from Mario.
-
-This thread stalled and Isee no patch submissions referring to that
-change, which makes me wonder:
-
-Is anybody still looking into this, or did this fell through the cracks?
-
-Side note, for completeness: Josh Perry recently reported problems with
-a  RTL8168h/8111h NICs due to the same change:
-https://lore.kernel.org/netdev/d4aaa5e8-7366-461c-94b1-ccf3631c8bf9@6bit.com/
-
-Ciao, Thorsten
-
-> causes current_state to be PCI_D0 instead of
-> PCI_UNKNOWN at boot time enumeration and this results in different
-> code paths being taken.
-> 
-> I note that current_state is queried in three places in
-> drivers/pci/msi/msi.c, so I'd start by instrumenting them with
-> printk()'s to see why the behavior is different.
-> 
-> E.g. __pci_write_msi_msg() bails out if current_state is not PCI_D0.
-> Perhaps it used to do that on a working kernel and now it doesn't.
+The table is sorted in PCI SSID order.  Please try to put the entry at
+the right position.
 
 
+thanks,
+
+Takashi
