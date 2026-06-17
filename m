@@ -4,190 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5108ACDB475
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2026 07:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD3A2CDB471
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2026 07:43:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A23E360210;
-	Mon, 22 Jun 2026 09:43:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A23E360210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82EFC601FD;
+	Mon, 22 Jun 2026 09:43:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82EFC601FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1782114193;
-	bh=FGKrOmJs6BaOA2OH73fEwk1tky2M5u406DCN9NyAhTM=;
-	h=From:To:Subject:Date:References:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=p+Sd5O5M5XQfBJ+AxZ48D9zwyS2F4nczRj+BgsG2UiKdDsqiBxVXgql+XuUhOjyxL
-	 GUQTk1mp7NUyDQ28giGbZdBkK29ZHgECTIydRrJvcAU5zA1mO6y/XnadhA0cRIPGQB
-	 v+mCqcs+0QxgPF5btNqJdl1X+MfM/RJz/MbpwZ+E=
+	s=default; t=1782114204;
+	bh=4deOcoLnw5/UDdVob8GOzejMXazeqQ8os2VNG68EORE=;
+	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=CoA7E+225WcOAtJzL/YzC1b0Sfmuv6Y/snEvLW4oSwLjTNsj+8/uoTcuV2kfKoyqo
+	 /AjAADlrf12RLTJN3WCkhMUAoZcoWn3QiXg7lnSp9Z+fOD3Uinx5cOzPelV02wvr4/
+	 HdckiO5dIOEvks5yySo++lgbFGF+1z7/H3aJu7PM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B1F1F805FE; Mon, 22 Jun 2026 09:42:37 +0200 (CEST)
+	id 13CAFF80609; Mon, 22 Jun 2026 09:42:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7860DF805EC;
-	Mon, 22 Jun 2026 09:42:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1132F8060D;
+	Mon, 22 Jun 2026 09:42:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01750F80301; Thu, 18 Jun 2026 01:11:45 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=52.103.38.37
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1781737905;
-	b=HspLzQMTwTpjpNXPPPRgL+wcJULC24UhrRedLcCFzXNnMTMS9LaoEhu1DBvnjoqgFYTN
-	 pFUCtNqRSgS9iRxXyIlD9q35RSu5/S7xZTjvyqDBvbyZutkeC8iuyCdFYzQonfkHdC1Vw
-	 K9cgD4FOqOthVg7711V/kiO7ZCQmfsOC7tOOqSpJo9+BPqApU58P+w4N1ZMttgxQ6Jue6
-	 WDJXDmKxZ0DWu9159OHA6CJcarsumPd5/r90e8itWtlLa0v690xH34CMhSrrgkPFZuq3t
-	 2PJjNbU/n/e6Q9bpO9Yu3ffdmkrkv5a7sXpC8uvrFfSJzzUUvAIduoiLg5iNHgtx//Q==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1781737905;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=FJ6diXs0+e1pG1fX3cecKQjhUJBZvscaM7/6wXqwe0Y=;
-	b=TMAD3SoUci5Omlmwq6sKpWaSPHaDjdXbR0IALTnLsifyYvbJT2n1Oru+jcdWWj2npvjZ
-	 mnkaxwODz3kzdEqLVpXjhVsGN72rvV702kdFmaH0e1pC7zWJ2ZT8FhObeSQpzVnSx7Jhh
-	 Iml9Bd39OQvlzgQPl8gtDlRtyPCRq/HDq0UU7N9N1TWkKG9I5zBdXOQZtD4SwkCktfsg5
-	 WOJ1Ezxbq2cjF3CTHF+H6gvMkDM0IVYDOg8NHLtLmKBSFemkpPEF/pmBTyCkO+bHmwf6R
-	 hbk5e+I9ry72B0PDeHLpUKYsngnAEImL5uwSanQmnL2a5xDTq7sjYNnP2obbOUcjUwg==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=hotmail.com header.i=@hotmail.com header.a=rsa-sha256
- header.s=selector1 header.b=jZy++kkt;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.103.38.37
-Received: from CWXP265CU009.outbound.protection.outlook.com
- (mail-ukwestazolkn19011037.outbound.protection.outlook.com [52.103.38.37])
+	id 1849CF80301; Thu, 18 Jun 2026 00:52:21 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=79.148.128.221
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1781736736;
+	b=mW3aFD4nVDbDnPqqPzPhdm3q2z/HDmCP00l9ttMKCThza6PVLHQWVyyNs8riCDbN70YZ
+	 cAn76lCLnXt7Za/i9Z8h5Ex6q1sj66/+hh0cf2NZsRcAN2qbqAqyIr8IBaRbVH7Nm1j/w
+	 9oa4FQUrYUm82msTdxs3BUsOmgqbLgu6URfsMrIZ4EWs9+igrd/KkIUZdb0DeU8J4VZuF
+	 qv6xWXEfH0FIks9HJlSPt+BB/ZcUSoaVP7TE7W33F1+uoS2Eq/YMRQwjl6XagHNX9cyNd
+	 itr1H+hyw/NOK/dmklPYHUiEeSwveNJM9awcf2jZCdqoPjBZ5PNcmT5x22de1ZF3SMg==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1781736736;
+	h=DKIM-Signature:Message-ID:Subject:From:To:Date:MIME-Version;
+	bh=4deOcoLnw5/UDdVob8GOzejMXazeqQ8os2VNG68EORE=;
+	b=gp65xFFQHcfrUAP5/iph51bi0MWEAG2WEvdzF3ht+L7hO5/N6HDP7HPkJ6tloevv5aFP
+	 6bhC+ZAcOnj0aTwL37rwrxUtNIealwdv9d/54Yx8NRQDzg76tkDXHNjJqrFQBLCSmPF7B
+	 FPp/C8DfqnKUgyMY46Jt5a8x9iudWBXaQwHd/cvEKe49mOFIGk3i7av7GApemrQBwGjnm
+	 TIe0wkupSxxvzhtHIi7SdVxivhAYln5WqLLATtzFUSDuCIu65y21Yt5uNQRrKYYbJa81i
+	 vQ0JLLzOVcmXiEgF8WPb+p5b2bO4EnMMKMv5QdkBIr34JkEf+4ox3nbAG/WVozlZqng==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+ dkim=fail reason="unknown key version" header.d=nylarea.com
+ header.i=@nylarea.com header.a=rsa-sha256 header.s=dkim header.b=c8f9IWug;
+	arc=none smtp.remote-ip=79.148.128.221
+Received: from mail.nylarea.com (221.red-79-148-128.dynamicip.rima-tde.net
+ [79.148.128.221])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E8D31F800BD
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2026 01:11:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D31F800BD
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91466F800BD
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2026 00:52:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91466F800BD
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=hotmail.com header.i=@hotmail.com header.a=rsa-sha256
- header.s=selector1 header.b=jZy++kkt
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gaPQo0SndH+Xk6Zx1qo2fx4OkJaoUOWQJCcuTf0rhGGgcLcoNp2vzfAMoN7y/3/BWLj4TJN81uUsIp7IeLJ8j8v4JumxRIccaR7G3XH/QYt49um3g0ih9KVTT/JYPkQdUP9UjCXxhrG+nwJyu+8tFkrwgTfpXI5lqYBMM1S5t2vzcSnf4jwRZdu8NFXM1ZZ+aSQE14dz3EO5RwnIwf2ZMqN9xZjtx5ZKkYtIH7f+ohaSf0S7sRF2BD0gS2wFKqcVGHA6KExgeeLsj0utIOVCARSgLb9TA23npjLEmmhSrVEHoXcPN6o3kLSr24Xip+iigZYNgUe19DZKUwnKzgx47w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FJ6diXs0+e1pG1fX3cecKQjhUJBZvscaM7/6wXqwe0Y=;
- b=sMO0T02++f7VL3s0YwKa7B8hkt97YLWQHmquWba/3cwIEW2+C0I7Nd+0juf5MAKS2K9zfGMYm+znzMsvzHRIWBb8R+3fJNb5nYMOD2cny7aG6GAvI/aZb2YfGZvUukgA4G9Dgz9P4excDqR/H+bQlPa8i/jZQFriR9He9pWVREqWd9XDzuwAwg9wt2nwRJAzYHQgMe8y8U2lLkfiG3gvWwX/fbl4qMDClaTpFbBJTZOqzuPLBKlZsst6bOdu8gMjbnaoM3HhXYP8vsEYsubHUUplSft2kSEfHnt6loTlxP2tX/t/I2mPQZWTFbQ46ynmNqQvNEMfJqCtM3VKKYlRgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FJ6diXs0+e1pG1fX3cecKQjhUJBZvscaM7/6wXqwe0Y=;
- b=jZy++kktlcifiwFnIPl/AZ8jl8fMkKxxaCBO1NvHVIaTd4zTR+SkXJm3cG7eppqkUhYPQD7I6FiIA9aFJPsfunWsdtpe1CWR4O37qeCvZsJYVZCcYDIHYV/U9SRQrjku+cWosxcHvRb1ldLrh5M9ldU05kk64cHzVlnVaP+TmNKXi+MH5u1vNyex+KRBZ5lm16zVDcEapLDVHp1J4kpYkhjR3zA5JzrB+7was9x5O5vKjCDhKbg3qpRxiJl3e+5bwbbQtFnZnwQW5GXNnmeVJKnjLoNCkrlPcRnzN3vNPbTwBNBGb45qbeiXLFtR7kbEqdpxXKqmQOgcyde/WMBNhQ==
-Received: from LO0P302MB0098.GBRP302.PROD.OUTLOOK.COM (2603:10a6:600:369::8)
- by LO9P302MB0455.GBRP302.PROD.OUTLOOK.COM (2603:10a6:600:3c2::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.139.13; Wed, 17 Jun
- 2026 23:11:41 +0000
-Received: from LO0P302MB0098.GBRP302.PROD.OUTLOOK.COM
- ([fe80::982f:4a82:7ea2:c44b]) by LO0P302MB0098.GBRP302.PROD.OUTLOOK.COM
- ([fe80::982f:4a82:7ea2:c44b%6]) with mapi id 15.21.0139.011; Wed, 17 Jun 2026
- 23:11:41 +0000
-From: NA NA <realgamehacker@hotmail.com>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject: Creative Sound Blaster AE9 Linux Support 
-Thread-Topic: Creative Sound Blaster AE9 Linux Support 
-Thread-Index: AQHc/lavvarYmQt5IUeFGq2u7D+0u7ZDYE68
-Date: Wed, 17 Jun 2026 23:11:41 +0000
-Message-ID: 
- <LO0P302MB009821B945A1E78DB2BE6281CDE42@LO0P302MB0098.GBRP302.PROD.OUTLOOK.COM>
-References: 
- <LO2P302MB0105F8CF5B3A084E484021F7CDE42@LO2P302MB0105.GBRP302.PROD.OUTLOOK.COM>
-In-Reply-To: 
- <LO2P302MB0105F8CF5B3A084E484021F7CDE42@LO2P302MB0105.GBRP302.PROD.OUTLOOK.COM>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LO0P302MB0098:EE_|LO9P302MB0455:EE_
-x-ms-office365-filtering-correlation-id: bca23f04-f405-4980-ae63-08deccc5ca8f
-x-microsoft-antispam: 
- BCL:0;ARA:14566002|24021099003|37011999003|15080799012|15030799006|19110799012|8062599012|8060799015|31061999003|102099032|440099028|3412199025|52005399003|40105399003;
-x-microsoft-antispam-message-info: 
- =?iso-8859-1?Q?zcHiyF4SjbNbw+YBvbOwfl0+LC3PVL7GSfNFilg4SvHRm9QzDsKZ1kAZrJ?=
- =?iso-8859-1?Q?CyL4gM0rOuZLPoXgZjLspC8KbF0PWB7edVon7bI80CHX32MykjNfHRFyhs?=
- =?iso-8859-1?Q?GF/FLdssQoscoGMSWsJPW/e9ALXvOAWpRw8IYPGHy/hA3aoa7u5fsFLhvN?=
- =?iso-8859-1?Q?s0zfEvokiybTXVZJCzTB/paNJK+IkGfiesdQW7ziiBDEYoLTLVTRSXCbTj?=
- =?iso-8859-1?Q?trR1PlQa2zRHZlPkIWL4ZDxVDyzn7pNwLg0bVmd1fkp2tvSRNNQob2I8X8?=
- =?iso-8859-1?Q?emLniYlaBTlZxDKQxrjkcW8ZZKm04HkLaHoSg8iRsbq4FHWXV7P8MYJvRh?=
- =?iso-8859-1?Q?Ywh2i2HD1wSgtz7rtT4ebzgyPdvNcioGNgbctqZz+7UI40KuLWKqKfpdPI?=
- =?iso-8859-1?Q?eaxGU4QLEf3hWHOJQ/lY08W5dfO0G5YbQ4LbAKHjAI7cavLQvGmV6cf8k0?=
- =?iso-8859-1?Q?sONzJe8bWLQahTAhzMtAObv3hENIujq3Jj/FoN6AudkB87YRycSR0qSlQW?=
- =?iso-8859-1?Q?2+a2acSNudnVlOKz9wMzFhY1IDjrUNxyYoQo72NRzvinHLjikV7Zvng4+F?=
- =?iso-8859-1?Q?NIImApZTtfwlu/FArgpkejNLTrhZsEhFH9Olb9/q1u2m6axG5jfId890o5?=
- =?iso-8859-1?Q?r81sFgVqQEgNg5jK7X+sm7l08ROWDAgsFlft+CMQ7lED/5q3X4EJlmxAnU?=
- =?iso-8859-1?Q?PVKeEQZsigH6rSlcVyLmx/bm5iS1oTf3LEtEfS7kjvO0AgsNHp39wqyUnc?=
- =?iso-8859-1?Q?CH2/TyGZbpWuTmzilv2rK61wh430Ja2hwMmRBgtTBbVhtVI86qkXO/9elD?=
- =?iso-8859-1?Q?peI7XIs2vMg9fB17NaaD1DNWyaAgY55tB++Ig9W0xQPAFeOCdoVKq/KLd9?=
- =?iso-8859-1?Q?yiCGJwxPEhSRui0SNgqic4MDs02aQLjBuIryNoJNTYOs2skCySpWK2RUJ6?=
- =?iso-8859-1?Q?iKRnHnFtEJbdHZo4h3KxCD3RGjQDYK13NImZwI11hxcYGk5cFE4rk7WJW4?=
- =?iso-8859-1?Q?3oCPk9C7kD46RwDyMS+zO4ESVFBu4Lg+UIsZlq?=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?iso-8859-1?Q?cePjcHoGvv3X2IlULa77FAkVni0j5N81zThRMmdOxRxwlcdb5dG6yPHlPm?=
- =?iso-8859-1?Q?+TaiJRD01dPs9MPYzssKxPIgy5mLdfIbjnVE49bfnn8cEVcYek89oPAWon?=
- =?iso-8859-1?Q?uYun/73IIt1NNihU1wcV9y8OxhyN1Flb4DHL8PWlyRT7VhiPwT+3CqESPL?=
- =?iso-8859-1?Q?Cz0lRK+xQlKr8LpOI2ivdMj6GD76dYI7xT7PR4miGifTE0Luet1m6mGxCm?=
- =?iso-8859-1?Q?9RM3PJV70y+jgvQ0pRAeZBaQsMQgNm6eXuoJhEUpk3Y+HmNhmGKtO2CJSl?=
- =?iso-8859-1?Q?prnNvn4Jl2otyLQDeUUApntwPUponFH/xfK9L/oFMtat9Q2h3XNRzBrY5U?=
- =?iso-8859-1?Q?BlWnFAcfq4Kd3o0AMy2gwrYU9xU9KG86xJGfMlvhdhq9pqrfWAPioGAgA3?=
- =?iso-8859-1?Q?412LLymuegFUNTqbTikBMUykPxzAmGcxfpcHGyHFBK3e8rMFVwLaS91WEg?=
- =?iso-8859-1?Q?02Xw5wqI67HXsevP9pAZdGGiR9b2IXXluQX/QzuBAF/8JwyJ56hqb6403q?=
- =?iso-8859-1?Q?6b3anfyJu+w0PQr2QoEB4ifGcu8aZCcIZaQH1hQrGmrKb1e0FVisrBy9Hs?=
- =?iso-8859-1?Q?ll/nEMslnYxZQk3dk2YufhjrZtOQQ0Yxfc9jtB/iBiUpUpTe0AAKX/omUA?=
- =?iso-8859-1?Q?8Pe3jhu2GagS5su/gkDFU0v1ISCyDwv+Wr+tJWqAXWy6N/IFRgEItl51Hw?=
- =?iso-8859-1?Q?gLgS2KYLk1lkLwqPnwbudJhwuw1kdlYra4+UDR81yaVFhXzAuq2KxHUD63?=
- =?iso-8859-1?Q?UFpmdPQU3PfFADwvsz/bR3+8mCZIHHIO5WO2ceFFVjSt1nPYOe7eeoIVjv?=
- =?iso-8859-1?Q?kniEpq5LUiY/CooMoeO56JKo1kHHMeI2YXOIa/GnD7cT7p5tga7grEWFWX?=
- =?iso-8859-1?Q?COsS2hGW8VGxV4nEPCYj9Os0sqlBiNQd9h2p1kBgDLiK5XGF7hi1PXQ5jh?=
- =?iso-8859-1?Q?ysSi8XM0HdwupSQq6OpedYgSFqHM0OXKITOk3avu3iYPhVNthBtxTChj6s?=
- =?iso-8859-1?Q?4mL4HPzJJfw3Qqm8688v68PIU2hrFLaezY+osMpFP2BT3z7fNgRT5Z9UTY?=
- =?iso-8859-1?Q?fL0B7sy15MJ4brqFUrkBCOfrBpbSS327iqqK26XV/nGfzLsJcteLnD7BAZ?=
- =?iso-8859-1?Q?+rr1fCRIK8KSk1vKWK/TVCE++OzJUiLEDqpJ2qfYEcdfZOCn9mR3ZRkEMu?=
- =?iso-8859-1?Q?CPQxM8lWnfYcdCzWHAopjVe0gIJZunjYFFjOA0vpmB4ca2beTQwdhQOfjW?=
- =?iso-8859-1?Q?D5ps3pjYSsDgCJrEx3SpjfxBI/EdYVgqzqNK5SJNxVFK9/VLW3kFlFHd23?=
- =?iso-8859-1?Q?tFgxX5Jnjfnk4FIpLF13hy2gM5aZ54D4YIlYlypJUvVx0kyilX1oyfsc5H?=
- =?iso-8859-1?Q?s7ll7kGc2VfjAKHEjlqggnpb/QgqLHFLhx0yA5X896+hlEn3Y1g3LmaF5u?=
- =?iso-8859-1?Q?uJURlkAANfcFDiy4?=
+	dkim=fail reason="unknown key version" header.d=nylarea.com
+ header.i=@nylarea.com header.a=rsa-sha256 header.s=dkim header.b=c8f9IWug
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
+ with ESMTPSA id 34EE3390859C
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jun 2026 00:52:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nylarea.com; s=dkim;
+	t=1781736734; h=from:subject:date:message-id:to:mime-version:content-type:
+	 content-transfer-encoding; bh=o38Ck5jCSwU7IPgJ528KBx7peFjKho8RH2/YZI3YwOg=;
+	b=c8f9IWugtzXFhH1KP0er8H0V84n5KWmMU3uu8MRPVzO39AFBtGJTtzVa82R3Cgk4lSrUqv
+	ZNIQDhGY9GgmB640t5tBRWtd18qClNznmpg3mgLRaxZCSlPvuROw/jB8UvemCOyVV1bWzm
+	09PdtmdxbKu7rHryhZ0nRjIbcA99cFm0iQcSVhehw/srquDXKS/WHsb/0yIJ5cXG5hYBw3
+	J+GcFwZsUGs4LFHCtYd+nfJ70Uqj2klQxIWpYc9SPa/7qBh79i338RTvT01CWbxqoPGhCJ
+	HN1/c55EMSLsye2Bbzy+lpRE5rgk6pABYAdYE2ykX8fQwVwspmn9L8vHSJmpXA==
+Message-ID: <558a2f650f0a6a40bc587db5a0889f53ed277e3a.camel@nylarea.com>
+Subject: EDIROL UA-1000 driver module
+From: NiLace <nilace@nylarea.com>
+To: alsa-devel@alsa-project.org
+Date: Thu, 18 Jun 2026 00:52:13 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 (by Flathub.org) 
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-9412-4-msonline-outlook-644ca.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LO0P302MB0098.GBRP302.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 
- 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- bca23f04-f405-4980-ae63-08deccc5ca8f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2026 23:11:41.1993
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 
- 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO9P302MB0455
-X-MailFrom: realgamehacker@hotmail.com
+X-Last-TLS-Session-Version: TLSv1.3
+X-MailFrom: nilace@nylarea.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: NNBBPC37Z34XATPMHGP35ENL77BNOPJK
-X-Message-ID-Hash: NNBBPC37Z34XATPMHGP35ENL77BNOPJK
-X-Mailman-Approved-At: Mon, 22 Jun 2026 07:42:31 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
+Message-ID-Hash: FUSMJ6BYGN5AQNIQONSIW5GCDXNENKWP
+X-Message-ID-Hash: FUSMJ6BYGN5AQNIQONSIW5GCDXNENKWP
+X-Mailman-Approved-At: Mon, 22 Jun 2026 07:42:38 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JETTATPFYNU6JUEU6CIGWD5JR65ACUBH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FUSMJ6BYGN5AQNIQONSIW5GCDXNENKWP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -196,12 +102,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Please contact the Linux Kernal\Audio team to get support for the Creative =
-Sound Blaster AE9 added to the Linux Kernal so I can finely move to Linux, =
-As it is right now, No Linux distro can even boot, everyone of them boot lo=
-ops with the sound card in the system.
-If a dev reads this who can add support and needs some kernel panic crash l=
-ogs message me back how to get them without removing the sound card from th=
-e system or getting to the desktop,
-I'm more than happy to help with that
+Hello,
 
+   First message and although I've searching for this I don't believe
+this topic has been proposed. I'm writing to ask for a (I believe)
+small modification on snd-ua101.
+
+The driver handles audio on the EDIROL UA-1000 perfectly (which is
+amazing, thank you), but MIDI control of the device doesn't work at
+all, and I think I've found why: the UA-1000 wants its control messages
+on USB-MIDI cable 1, while the driver hardcodes cable 0.
+
+Here's what I found:
+
+The UA-1000 (USB 0582:0044) is a 10x10 USB 2.0 interface from 2003.
+Besides audio it has a built-in digital mixer, a patch bay/router and
+direct monitoring, all driven by Roland SysEx (DT1) messages over its
+USB-MIDI interface =E2=80=94 on Windows that's what the "UA-1000 Control Pa=
+nel"
+talks to. None of it is reachable from Linux today.
+
+The device has 4 USB interfaces:
+ - Interface 0: Control/mixer descriptors (no endpoints)
+ - Interface 1: Audio capture (isochronous, EP 1 IN)
+ - Interface 2: Audio playback (isochronous, EP 2 OUT)
+ - Interface 3: MIDI control (bulk, EP 4 OUT + EP 3 IN)
+
+
+The driver defines a fixed MIDI endpoint configuration:
+
+   static const struct snd_usb_midi_endpoint_info midi_ep =3D {
+       .out_cables =3D 0x0001,
+       .in_cables  =3D 0x0001
+   };
+
+This configures MIDI on cable 0 (bit 0 set). However, the UA-1000
+requires cable 1. I discovered this by capturing USB traffic from the
+Windows XP driver using Wireshark/USBPcap while operating the official
+EDIROL UA-1000 Control Panel software in a VirtualBox VM with USB
+passthrough.
+
+All SysEx messages captured from the Windows driver use USB-MIDI cable
+1.
+The cable number is encoded in the high nibble of each 4-byte USB-MIDI
+packet's first byte (Code Index Number byte).
+
+Here's an example, a captured Monitor Output Link On command:
+
+   Raw USB-MIDI data (hex):
+   14 f0 41 10  14 00 69 12  14 00 03 00  14 01 01 7b  15 f7 00 00
+
+   Decoded packet-by-packet:
+
+   Byte  Meaning
+   ----  -------
+   14    Cable 1 (high nibble =3D 0x1) | CIN 0x4 (SysEx start/continue)
+   f0    SysEx start
+   41    Roland manufacturer ID
+   10    Device ID (default 0x10)
+
+   14    Cable 1 | CIN 0x4
+   00    Model ID byte 1
+   69    Model ID byte 2 (0x00 0x69 =3D UA-1000)
+   12    Command: DT1 (Data Set 1 =3D write)
+
+   14    Cable 1 | CIN 0x4
+   00    Address byte 1
+   03    Address byte 2 (Monitor Output section)
+   00    Address byte 3 (Left channel)
+
+   14    Cable 1 | CIN 0x4
+   01    Address byte 4 (Link parameter)
+   01    Data (0x01 =3D on)
+   7b    Roland checksum
+
+   15    Cable 1 (high nibble =3D 0x1) | CIN 0x5 (SysEx ends with 1 byte)
+   f7    SysEx end
+   00    Padding
+   00    Padding
+  =20
+If the device used cable 0, the high nibble of each packet would be
+0x0_. All 18 capture files I have collected (input channel gain, pan,
+solo, link, on/off, monitor output gain, monitor link, direct monitor
+toggle, software control, and output volume mode) consistently show
+cable 1.
+
+I verified the fix by binary-patching the compiled snd-ua101.ko module.
+At the offset where the midi_ep struct is stored, I changed:
+
+   out_cables: 0x0001 -> 0x0002  (cable 0 -> cable 1)
+   in_cables:  0x0001 -> 0x0002  (cable 0 -> cable 1)
+
+   Before: 00 00 00 00 01 00 01 00
+   After:  00 00 00 00 02 00 02 00
+
+After loading the patched module, all SysEx commands are accepted by
+the device. I have built a command-line control tool (ua1000ctl) that
+successfully controls the UA-1000's mixer parameters via ALSA rawmidi,
+including:
+
+ - Monitor output volume (left, right, linked) =E2=80=94 confirmed working
+ - Monitor link on/off =E2=80=94 confirmed working
+ - Direct monitor on/off =E2=80=94 confirmed working
+ - Input channel on/off, solo, link, pan, and gain =E2=80=94 addresses
+identified
+
+Audio capture and playback continue to work correctly with the patched
+module and the MIDI port remains functional at hw:X,0,0 (subdevice 0).
+
+I have 18 USB capture files covering all major SysEx command categories
+and would be happy to share them if valuable.
+
+To be transparent, I have relied heavily on Claude Code to help me in
+several tasks I don't have the proper knowledge to do (and probably
+would have not been able to implement). I have personally verified each
+finding against the device but would like to be honest about it. I used
+it for instance to analyze the USB captures, to inspect the device and
+to modify a copy of the kernel module.=20
+
+If it is still a possibility to ask for an update (or patch) of the
+module, it would be amazing though.
+
+Thank you.
