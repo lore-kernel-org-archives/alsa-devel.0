@@ -4,187 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 412C6CDB46F
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jun 2026 09:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF4AACD98F2
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jun 2026 11:32:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D370460200;
-	Mon, 22 Jun 2026 11:02:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D370460200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53C32601FF;
+	Tue, 23 Jun 2026 13:32:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53C32601FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1782118941;
-	bh=yB6LRuCR0oVI22K6v4YlCyRv8q69Yk6HR1eXdUfkWMk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=oF9wHV8MbfpeML8Y2RZmD7lf6icLNeCbZhRBAjn9VsWc3fa0yE4st/jIB2HsyNcSs
-	 wUVR0zwOjSDZ1Jild8Y5tbF1C7FGvTI49ly0DyaelZhNu8Fv1SiCLGoVubvWj+YgyQ
-	 W5DYdymPxE0ubeY7kt/7iCOT7f5euYc9mP9gWp8Q=
+	s=default; t=1782214370;
+	bh=Z8vpsO4qHXIKWC9tFeUjph/orPHMe2JTCIPTVqYVp7M=;
+	h=From:To:Subject:Date:References:List-Id:List-Archive:List-Help:
+	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=TPePoymaRrTokpMM3rdxyeDRRuu1RsU6nxVZC9WBJt/uRVRKqbABWguWc6t26O2wp
+	 4ko2GIZJC141DcHHIXpaAWyv7ZsdnsTFS7iUIoqfKBC6Nxao6rFO6h9jzjEJH92I5l
+	 KXCcHUyREyN4DEWMznIFt0qIHQLa63SzB2tqe59o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA38CF805F4; Mon, 22 Jun 2026 11:01:43 +0200 (CEST)
+	id 20982F805F9; Tue, 23 Jun 2026 13:32:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49B76F805F4;
-	Mon, 22 Jun 2026 11:01:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0C31F805FC;
+	Tue, 23 Jun 2026 13:32:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2618BF805D3; Mon, 22 Jun 2026 11:01:37 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.57.9
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1782118896;
-	b=HlNc6s+xddlXzZaASZBhw06MauaDSfauPATjzOOhNIPLsuO0cOx8GDZcx/ErYNPF6tTz
-	 t0pkcRK9k68Jor+SayVJ6rwxBundADFDBIqhLhKsFufYrJp03kQUGjow+12YTD1cZQcuj
-	 MrjjW88N2Pu1InpGYQ2vOr0NeSJlkRm+Ib7SH8wwtv2vBX637KysBTSJXmGBU4KtbjyAc
-	 KGNQjg+k42/adKrLdo6a17dDXsffoJVRFsHS+VkxAA3EIAGdbnGrmSD8ZERF4TppjodDk
-	 DXRtFekAXokwlJRh3SYzGqidNMGXYwrrSbXxOqYOD/WZ++DqPqSRwrIwxvl1xkhc8QA==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1782118896;
-	h=DKIM-Signature:Message-ID:Date:Subject:To:From:MIME-Version;
-	bh=yB6LRuCR0oVI22K6v4YlCyRv8q69Yk6HR1eXdUfkWMk=;
-	b=QsRrCu9ytCqLEdSuhdcTT+CHJhnHeedpls1L1y4k0fHaotj2fBgeAJvh7bBV8GS632yx
-	 2H6n1W0oG2nUhNtUZJ6sMT5s31LwbsSzIeuCUk9r/b31poQuND1Z2AdINwYBCMJrhmr1J
-	 1qSaD4DEy5OJXort3Cj4PFo7pHqRTdzPrAbLcxr9ZiSWuKw3yn6JSPGDmCTUhuTtmXys3
-	 oMun2yZXnq3A3GeOtIKZoapRQodA5He072BPaAI46hDUYfwat1xBlLee2Y5kZl41LTmGm
-	 Jvx4jEPqrKP+xIwnmzkJDVnkgM4T3ieRplkHf5PBXeY2fTB0xvz61KJGHKo2OoYqo3A==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b="2Yj/Q148";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.57.9
-Received: from BN8PR05CU002.outbound.protection.outlook.com
- (mail-eastus2azon11011009.outbound.protection.outlook.com [52.101.57.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 0AEB0F80579; Tue, 23 Jun 2026 13:32:09 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=203.254.224.33
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1782214327;
+	b=aoSGdXZpE2cxvaFzZ2upuYymkDVTg3tq/ZOJ5qt0Rx7j4RqZuoUJWHWqV3zMRW9Xvkf+
+	 WReVoDwQxubwOXxbSJlGJ3xZwzOthJGFM7LKgQWmi2jT0GIBCVCPttyk5xqxobwYLp9CF
+	 WCZqyRwTIKA3TJaV8Mxhi4muqFN7senCMpxs3nKKgAE/7mQJKbRTnGhVl6tN4Q12FptEL
+	 WPpXQX5d8p10oZr8FHqjlOM2DLKG5ztDSSEye6TH0JmhdWk8Sk3fndA0qpdps+CQiDS7o
+	 KJeGQjOSOkQE2F8Ql84oYXFjGuWhMuHHZk1jFUGXqx55fAjIhiTfkvQyHMFLYC6Fx2w==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1782214327;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=Z8vpsO4qHXIKWC9tFeUjph/orPHMe2JTCIPTVqYVp7M=;
+	b=p5wNDE02LLVUUPFJdmVhuzX+cdhWd5fJqN7EutLOdWTt+VsDFWSsO/TezVM6V86gB6Rj
+	 JCekbU8dSB6aGfZE5DJ200uhuNvgqbkCTGl8mpoASnR/gYxX9JK+1Fj/mmn/Pe043K+IL
+	 LPqio8NazTZh3mMWIlAw6Cem0oksXc/lPl/Z+hvvS14x8yfm1Ol1avvuF2TboCoCf64/t
+	 mbKp9/xHilj9lXqPrz3SNsThPMDeob4NaYPQv338ny0bdsl5Gad/cDQkWANqU4debbF62
+	 bQde1X47nY8RQnbf8ZKQrbqsCdy6/Tr+M/0byOWVc22zRBOE/vKN3CaIwD7geJelpLA==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+ dkim=pass header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
+ header.s=mail20170921 header.b="K99V/FLM";
+	arc=none smtp.remote-ip=203.254.224.33
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 04CEAF800F3
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jun 2026 11:01:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04CEAF800F3
+	by alsa1.perex.cz (Postfix) with ESMTPS id E88D3F8045D
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2026 13:32:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E88D3F8045D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=2Yj/Q148
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ky9LkkqQZPNSjiQHUMpFMVn2KdwwjIT6yEh0d5K6wbpWE73/F/qrxTtNnurkx9mofK7qzGv28eI79CP2w65/AZ96tDw8kKP739fMG7UKXmk2Bazulex9nneqNWMNzgGL+yurLYkcmUqUOGhi6pzruKp5IYmP+qffzMm2pSlsZlBkHvBuYhmNU68xgHZ4MnNj3nZxrnJYy7d6IIXQKGgCIe/SGKhNZtJlG4uwAYYArWCpAiMbFLMc11SBvCl5kRNdJFoc7j7cZXpQP+AFXZ2RSPkDFzOMVtLn2Ciew6DE4PWiK1pmZVnKRrSVJXHwsgN+nVndglFNL0/aEtIzyZ7TuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WHEZuQwxI6z4pvGaUM2UTrQA5QqJYzqQe3okYA94rWI=;
- b=fWnVkw65eu2VfYt0NZDjXJ0+iK4RZr4xGCvezlcBupqMDw4Wc8Oq9UwR+wvwXCLdPbZ/6zkPKgKV2ZkGUirBwiYUhjzJqCNOrx1RtQvO+gr7NVaGeetuX23kXe6sKLGp3kNB+DZeVCdtQ2Y+A142g4jpukeh/mGAUYi2FnhGvbc/0PAxkQEmy1GYE+ZjcQRD2uUFcct5W5bXiiPH6WKChCdSFcbjk0X82sQu98rudINFSBwEekV8d0u47zyOMZg8G/guGYbcO0+Aosu6KBOKO7f/RmIU65iNIjQBOVftmqMNXsVAwH8a/uJA38IfKDltG8ImnW/h08dauzGQjYo3pQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WHEZuQwxI6z4pvGaUM2UTrQA5QqJYzqQe3okYA94rWI=;
- b=2Yj/Q148xT2DYrNWsLEv5Rq3wXO5GIsLStSUgJJGQdfLhMUjgU9rNHs3FKYs2ymuaBs8vgg45vL4NiQ/1llhSrrlDwRMA6uZhTa6h9fSCevytCjiEr5+GLFJKkOxfjWuC4lpCSXvj7Sf7Z2hOt+0MGY5CudGxOOYox5W0pJ9U/s=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5356.namprd12.prod.outlook.com (2603:10b6:408:105::23)
- by DS5PPFB8FBD73EA.namprd12.prod.outlook.com (2603:10b6:f:fc00::65e) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.139.11; Mon, 22 Jun
- 2026 09:01:27 +0000
-Received: from BN9PR12MB5356.namprd12.prod.outlook.com
- ([fe80::8e9c:2f3d:9679:942e]) by BN9PR12MB5356.namprd12.prod.outlook.com
- ([fe80::8e9c:2f3d:9679:942e%5]) with mapi id 15.21.0139.009; Mon, 22 Jun 2026
- 09:01:27 +0000
-Message-ID: <4b711cf3-00ec-4500-a48a-25ab3b50d7ec@amd.com>
-Date: Mon, 22 Jun 2026 14:31:19 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: amd: acp: Fix linker error with SDCA quirks
-To: Julian Braha <julianbraha@gmail.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org
-Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Sunil-kumar Dommati <Sunil-kumar.Dommati@amd.com>,
- Arnd Bergmann <arnd@arndb.de>, Mario Limonciello
- <mario.limonciello@amd.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Randy Dunlap <rdunlap@infradead.org>,
- Simon Trimmer <simont@opensource.cirrus.com>,
- "Mario Limonciello (AMD)" <superm1@kernel.org>,
- Hasun Park <hasunpark@gmail.com>,
- "open list:AMD ASoC DRIVERS" <linux-sound@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20260619124343.1683484-1-syed.sabakareem@amd.com>
- <f092d0a0-3188-4fd0-8228-2b715c642a08@gmail.com>
-Content-Language: en-US
-From: Syed Saba Kareem <syed.sabakareem@amd.com>
-In-Reply-To: <f092d0a0-3188-4fd0-8228-2b715c642a08@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN5PR01CA0034.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:260::8) To BN9PR12MB5356.namprd12.prod.outlook.com
- (2603:10b6:408:105::23)
+ unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
+ header.s=mail20170921 header.b=K99V/FLM
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id
+ 20260623113159epoutp039b988bacb19bd80d2dc097589565f9b5~7snsRadub0896108961epoutp03g
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jun 2026 11:31:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
+ 20260623113159epoutp039b988bacb19bd80d2dc097589565f9b5~7snsRadub0896108961epoutp03g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1782214319;
+	bh=JEYi2D1GLvPf4odr9/dzVmsd6aC0R8e0ueT/xRCCMu4=;
+	h=From:To:Subject:Date:References:From;
+	b=K99V/FLMBhF+9COXooGqWIIs5x7v3g7wIE/AbNq7lrIj7puFGQzPg86dIVPUP/k2u
+	 XqoHVA1vkVXV+2YQO0w1khLwwlsM7/P5aMLrkHjZcXmBIVctN3wAh7hxUCukKHIhGU
+	 sfJAlEUBpo5kPnYjqjMPXCb7tWddatYNt3xYGpmQ=
+Received: from epsnrtp04.localdomain (unknown [182.195.42.156]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTPS id
+	20260623113158epcas2p4060b5a446fd19cf7edf6125e3cae2bfd~7snr5P08F1615516155epcas2p4P;
+	Tue, 23 Jun 2026 11:31:58 +0000 (GMT)
+Received: from epcas2p4.samsung.com (unknown [182.195.38.207]) by
+	epsnrtp04.localdomain (Postfix) with ESMTP id 4gl2wG2Tcbz6B9m8; Tue, 23 Jun
+	2026 11:31:58 +0000 (GMT)
+Received: from epsmtip1.samsung.com (unknown [182.195.34.30]) by
+	epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+	20260623113157epcas2p24944f3b44efb5b5c771d502148ad8e23~7snq8GUtB1314613146epcas2p2Y;
+	Tue, 23 Jun 2026 11:31:57 +0000 (GMT)
+Received: from KORDO035882 (unknown [12.80.201.209]) by epsmtip1.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20260623113157epsmtip16d0a1dc575e84a11958b14c8a856512b~7snq6UON53180131801epsmtip1H;
+	Tue, 23 Jun 2026 11:31:57 +0000 (GMT)
+From: "Shinhyung Kang" <s47.kang@samsung.com>
+To: <alsa-devel@alsa-project.org>, <broonie@kernel.org>, <tiwai@suse.de>
+Subject: [PATCH v2] ASoC: soc-compress: fix UAF in soc_compr_trigger_fe()
+Date: Tue, 23 Jun 2026 20:31:57 +0900
+Message-ID: <086101dd0303$e6702f80$b3508e80$@samsung.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5356:EE_|DS5PPFB8FBD73EA:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8406ce04-c049-42c2-27be-08ded03cd7b0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|366016|1800799024|23010399003|376014|7416014|22082099003|18002099003|3023799007|11063799006|56012099006|4143699003;
-X-Microsoft-Antispam-Message-Info: 
-	CXOPmmyxncpEuadJZ6knf1ZWIS0iWVbMqg2py4pRiIxqXKx2kzQWZVx25k3k9H90h9bA2h2PScdPBg2IF+uDR/zqALukt5qpzvslPP1t44YO+mveHV6QgTUIqR3K8UtrNQf2JdlcoDpwhBwVGJf0SLvAZXvyMvbBLTMJJXrOBMZ8XOffxhcnZIBEYk7/CcEKZdu4cU0dGUwaEtVcFHCJ8HGBhQrc0Lkti6807+aiJ9XkisPN5Uoof8kpLQvzpyNXMouVOa55ZZ7bNXax9R6JA9zjqWDomRamvDVEF8tSVv+3l0p4HpKSssLT0qirvLGe5ocNwbxyPknjtQ8PulSV13Eb6i3kE0oE+jYCvuJONToKdJGplX+sDBabHolAgKmvjuM/wb2JbbLOpCvOS5/lel7SSakX+NHu1INoWYdbCjY0H0S4NRNoiVWGuhrHfUmL4H0Ul09qkBDhfZSf/2FwYaNZ0NUmzm2Zy396aFPVSSGMBMQekl5JmvyaN38Wy3wjoQkXSVfBYLAgf5oy8OIT+39gOKnQLpCk1lbMheWuuSWXKZx6AS1ipAPzVP5/kw60hFtF4/izewLTuTmTvOZtFLAD/FYMvRd3a37PJJDKZmJzMqrUMDpuR3A48B5DusynWCD3em3u8kbLCsbdBQWg1MfhgTEgR5dBpaXaBEUPxLE=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5356.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(23010399003)(376014)(7416014)(22082099003)(18002099003)(3023799007)(11063799006)(56012099006)(4143699003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?cmRwNC9aOVVWS0dOS2d3M3JpRTBZSHpMWnB3MXVkV2tDRHhzMmQyNEpkVHB2?=
- =?utf-8?B?SkNYZWh4dHBiZ2lLRjhId0YycHgwUFk1YzByL1J4ZnBFWGdCekVnK1pybVhM?=
- =?utf-8?B?bzZtQjVWVDY4MmZkQnUwU2lkc0piUTkyTXNZQktObElGRS9oM3laSG1lWDRL?=
- =?utf-8?B?b0NZQ3ZSQmtEWFdkeTY3N1hSRmdKK3NkbEdpQXhOK21VeVp2NG5rZFhHRjIw?=
- =?utf-8?B?cDNkNmttdC9Lc1dKSVU4aFNqaXdSQk02YW41VXI0ZUZkd1dYRjgrSXBEVVBI?=
- =?utf-8?B?c0QxcFBaSkdxK3c0N2VzU2tIaGM2U3o3WTlsMmd2SlRWTnpEUHdzdktwYWor?=
- =?utf-8?B?dFdZaytPUFFpWU42eFRjZGV6dHFIMU53WjI4ZkJVbnBwaUpSSWt4b1RPM29j?=
- =?utf-8?B?VWw4RVAwdkptSVZsdmEwdDlTMldJWDg2VWZDQ1Q2R0w1cnhydHltVVBlaW5a?=
- =?utf-8?B?aHhyWE5SUDg3SndMdlVTVXFkQldzQ3BsQVM4dldHejdMRy90TGgvRER1OEdn?=
- =?utf-8?B?dW9GQlZMM2JqSXhNQVd4Rll1Ym5rNDkxUTlKZFdhVEFrcHlSUDFBQ00zWFl6?=
- =?utf-8?B?MzVSOEZnZ0UzUmNHMVZJQ1dkdXZuWmVrZEZ5b3M4THdoTXh0VzJ6dXZRUWRP?=
- =?utf-8?B?Nmo2eklmQUZEZFZELzZMS3p2dTBLY3NUd1VlV1dFYjNZTW1sTGdLTWNOVFR3?=
- =?utf-8?B?N3FTS2oxdVkxeC9UaTl3UDBUaVQvcXBxY0draUtIOE4xRUZ2b1NFdlp4ditS?=
- =?utf-8?B?NDc0RnJuTjNEN2l0dTJjK3V1d0IrM2lhZ25CR2dKSmNqTC9lUDdjSzBWTmRO?=
- =?utf-8?B?Nk4yT1ZjQjBxQlZONlY3b1R1NUJ3NVRhdE9JdXhJbHhxcDhGalVkZFNzNmor?=
- =?utf-8?B?QVdKaTZkMkJXZ2VnT1hZbDl6c25qM2s4Z3RoV3ozbDFUOGdxalVLamlxQzNT?=
- =?utf-8?B?ZDhCNWdkZE0wTFZNSnlqSUVDdXZRcDlaUmVTSDZxdm9ldEMra2lPdDlmTHBI?=
- =?utf-8?B?c3VWSHJrOUtGcy9kRXhNU21LdDRxNjFvcjVqQlVoYUFZcjU2ZEdLTjk4ZHZY?=
- =?utf-8?B?QVg3b0JsWDgrTVJHNHFtditoSHhIaVhvM2NYR01TZnRFRVBOSFFwRFk5L1BS?=
- =?utf-8?B?enFDeGdhcFRGSXJmR2loSnlIeGtrVUloSGFRa3ptR3FFdmM5OGlZRWtPNEZD?=
- =?utf-8?B?MHZmTHVCY2lELzJwWkZwQU5TbXYvU1c5QW5TV0lrS1V3YTZOcmNTRnRNMzlt?=
- =?utf-8?B?YTV2NGdjNUJ3RTR5SXFRRjdqN1NRSTEyMFkyc3BuSytXV3k0U3Y3SmpWbFZh?=
- =?utf-8?B?b2o4VHVlZnRmcThWRmF4RFppLytZYy9EL3dMaVF5ait4MUJDODFmQmk5c3N2?=
- =?utf-8?B?ckdpSVM3T1N6bU9PSFFwU1BmV1U3UHdxVzBacWFIZ1dOWU03cFI1U000bENx?=
- =?utf-8?B?OCtGVjlaMFUrNGdlMk94MThxb2s2bFZiZld1WDAvdTh3YXBmS01WK0k4QmFj?=
- =?utf-8?B?cHFYYkp2SzhBdzNPQlJDRUFZRmxVbTFld1RWaUtSUnBxb2E3VWlucFpLZWV6?=
- =?utf-8?B?bFU3QnVhNFBEUXN4NS83NVUzSzN5RWpUaGdCVk12aE9xUm5DL0xIK0JnS1Fs?=
- =?utf-8?B?R1UxYlFrTXpid1JFanV3TnlyV1lxRkkzZXU3TUtVYmJIZ1d5SUJVZzdHd3F5?=
- =?utf-8?B?L2ZsRm42bTF4eDB2cTYrWmJrMVBkZEY5aGVyckVMOWJ1RjA2K3JOeDlkSGRh?=
- =?utf-8?B?UVhnU0dYQVNvd3kyNUN2dEFkcEtKVktscURNYVhtZVlyUmZuTjJFR1B1TXdL?=
- =?utf-8?B?alg5ZnRLZTFVUU5pTjQ3U3IrTGx4OC9TYXllR0I3ZUZxU2pkcTJabm5kTmd1?=
- =?utf-8?B?Z2FpWmVsVFJjQnl3WFFrcEtTYXRZU3ZPa2VwNmcxSGhNbmk1dDRmL0RkL3Yr?=
- =?utf-8?B?UGFnMEM4VTMvak10R0dnUitmZm5qRkJ4akVSNmMyZTd5Z1htTTJLNjl4UDE0?=
- =?utf-8?B?T2x6d1BjTFZrazdSeUtzQ2ZKOUFORThGd0RyYWZGUVMvMGgxYUdLYVBGNUUy?=
- =?utf-8?B?RFBiNWV4Rmk2RTA5UEh2QzM0WDYxbTQ4UnFQNzhlc0sxMVVqSVJtM09pN0dz?=
- =?utf-8?B?bE9VVmQxcVNPaDZqNlc4b0RXc25qUTU4S05qbXY0NzBqNUtudHFxOU5DbWs4?=
- =?utf-8?B?M1FsTzBVYjlZYjMvTEd6ZzdlNGR3d2lKeEZTRzJkbFVaWDl1WmtvVnpEbnM3?=
- =?utf-8?B?a2FUZ21vVmRKMmJRVVkxM1JJSmVKU0RLODNSSHpZbE5RT01Fek1jQkc5eGNq?=
- =?utf-8?B?RmpxSzl0ZWNhSGhTdG4xS0pibmpkbGVjSzZRWStwNlNmR3oySHMvUT09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 8406ce04-c049-42c2-27be-08ded03cd7b0
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5356.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2026 09:01:26.9974
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- MUmDGi3uq243+ZsRFcysFe4rGKM/6oQC8wRvg9ORnxlXbHUr4qfmiQMRyoqy3oAZzy2SSuHdLBVOMDSDLW6a/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS5PPFB8FBD73EA
-Message-ID-Hash: JM465SMFJ5NLIIACBAO6PVBEMOTWZF3J
-X-Message-ID-Hash: JM465SMFJ5NLIIACBAO6PVBEMOTWZF3J
-X-MailFrom: Syed.SabaKareem@amd.com
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: Ad0DA3LfEeu35P4eTXGqOpuiwDSk6A==
+Content-Language: ko
+X-CMS-MailID: 20260623113157epcas2p24944f3b44efb5b5c771d502148ad8e23
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+cpgsPolicy: CPGSC10-234,Y
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20260623113157epcas2p24944f3b44efb5b5c771d502148ad8e23
+References: 
+ <CGME20260623113157epcas2p24944f3b44efb5b5c771d502148ad8e23@epcas2p2.samsung.com>
+Message-ID-Hash: 26QNS2RLSAD4T5JRKC422H73HKAM3UXI
+X-Message-ID-Hash: 26QNS2RLSAD4T5JRKC422H73HKAM3UXI
+X-MailFrom: s47.kang@samsung.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -195,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JM465SMFJ5NLIIACBAO6PVBEMOTWZF3J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/26QNS2RLSAD4T5JRKC422H73HKAM3UXI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -204,27 +128,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The DPCM compress trigger path traverses the FE's BE client list in
+dpcm_be_dai_trigger() without holding card->pcm_mutex, while
+dpcm_be_disconnect() can concurrently remove and free entries from
+that same list under pcm_mutex protection.
 
-On 6/19/26 18:38, Julian Braha wrote:
-> [You don't often get email from julianbraha@gmail.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->
-> Hi Syed,
->
-> On 6/19/26 13:43, Syed Saba Kareem wrote:
->
->>   config SND_SOC_ACPI_AMD_SDCA_QUIRKS
->> -     tristate
->> -     depends on ACPI
->> +     bool "AMD ACPI SDCA quirks"
->> +     depends on SND_SOC_ACPI_AMD_MATCH
->>        depends on SND_SOC_SDCA
->> +        depends on SND_SOC_ACPI_AMD_MATCH = m || SND_SOC_SDCA = y
->> +     default y
->> +     help
->> +       Enable SDCA quirk support for AMD ACPI match tables.
->> +       This is compiled into the snd-soc-acpi-amd-match module.
-> This Kconfig file uses tabs instead of spaces. Most of your Kconfig
-> additions are formatted correctly, but one line uses spaces.
->
-> - Julian Braha
-Will share a updated V2 version patch.
+This causes a use-after-free when for_each_dpcm_be() advances to the
+next list node after releasing a BE's stream lock between iterations,
+and the snd_soc_dpcm entry has already been kfree()'d by a concurrent
+dpcm_be_disconnect() call.
+
+Crash signature observed:
+ Unable to handle kernel paging request at virtual address dead0000000000e8
+ Call trace:
+  dpcm_be_dai_trigger+0x90/0x3f0
+  soc_compr_trigger_fe+0xa8/0x144
+  snd_compr_ioctl+0xc98/0x2010
+
+Race condition timeline:
+Thread A(soc_compr_trigger_fe):
+ snd_soc_card_mutex_lock()        <- holds card->mutex only
+   dpcm_be_dai_trigger()
+    for_each_dpcm_be(fe, stream, dpcm) {
+	  snd_pcm_stream_lock_irqsave_nested(be_substream);
+	  ...
+	  snd_pcm_stream_unlock_irqrestore(be_substream);
+	  /* WINDOW: next iteration reads dpcm->list_be.next */
+	}
+
+Thread B(snd_soc_dpcm_runtime_update via DAPM):
+ snd_soc_dpcm_mutex_lock()        <- holds card->pcm_mutex
+  dpcm_be_disconnect()
+	snd_pcm_stream_lock_irq(fe_substream);
+	list_del(&dpcm->list_be);      <- removes from list
+	snd_pcm_stream_unlock_irq();
+	kfree(dpcm);                   <- frees the struct
+
+The PCM trigger path (dpcm_fe_dai_trigger) is protected against this
+race by checking runtime_update and deferring to trigger_pending when
+a concurrent update is in progress. The compress trigger path
+(soc_compr_trigger_fe) lacks this deferred-trigger mechanism, so the
+only correct fix is to hold pcm_mutex for the duration of the BE list
+traversal, as is done in all other compress FE operations such as
+soc_compr_open_fe() and soc_compr_set_params().
+
+Signed-off-by: Shinhyung Kang <s47.kang@samsung.com>
+
+---
+Changes in v2:
+   - Reworded commit message for clarity.
+   - Resend due to mail client corruption in v1.
+   - No functional changes.
+
+  Link to v1:
+https://lore.kernel.org/alsa-devel/000e01dcf3ef$15d69530$4183bf90$@samsung.c
+om
+---
+ sound/soc/soc-compress.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index b8402802ae78..615ce7a0e8d9 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -285,6 +285,7 @@ static int soc_compr_trigger_fe(struct snd_compr_stream
+*cstream, int cmd)
+ 		return snd_soc_component_compr_trigger(cstream, cmd);
+ 
+ 	snd_soc_card_mutex_lock(fe->card);
++	snd_soc_dpcm_mutex_lock(fe);
+ 
+ 	ret = snd_soc_dai_compr_trigger(cpu_dai, cstream, cmd);
+ 	if (ret < 0)
+@@ -315,6 +316,7 @@ static int soc_compr_trigger_fe(struct snd_compr_stream
+*cstream, int cmd)
+ 
+ out:
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
++	snd_soc_dpcm_mutex_unlock(fe);
+ 	snd_soc_card_mutex_unlock(fe->card);
+ 	return ret;
+ }
+-- 
+2.21.0
+
