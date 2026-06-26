@@ -4,119 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BDE0C43458
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2026 11:55:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2500FC43458
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jun 2026 11:55:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 742C360202;
-	Tue, 30 Jun 2026 13:55:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 742C360202
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24E3060238;
+	Tue, 30 Jun 2026 13:55:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24E3060238
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1782820512;
-	bh=y/3aiDG0I2yWv2dHo1vQoTcKiO7WhyoDK9Hsn4/5Mk4=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=o8GA5vzKBcttKYZvl+PpxhsPpB5TLlYWS5P3IG5ZLOIBlXkt1bqTDwjK6tpGygcT+
-	 KQLfZbG1Ngu4ugiSQecVRW9AEg5gQ+cgMg3pNmF52hWioZ4ALrDY623x5lCZiLaCWK
-	 uq27rmArWzCYnvFlDbqtKFPgrzVfSj/j0+oVAueE=
+	s=default; t=1782820528;
+	bh=EmKi2C493iDbBWdx+ptjz1WR/dnYiIh7do+rNIXRds4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=olJieVk5HLSDvBdj2V5sdhtXkbUXyGzpNPdadF2dic6F/v7wmg2/gAEZuoyuzFtFM
+	 xR9MdVkKsHv9s45TEcEW2CksMfufhAhFoSf1+TA56VQgM0jTYRinb1UQCrOWKtXbDi
+	 lotYw1RwWjSNVmzXST4hqQskxZvcAEdp+voU6FpU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82DD8F805EF; Tue, 30 Jun 2026 13:54:07 +0200 (CEST)
+	id 99255F80613; Tue, 30 Jun 2026 13:54:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AECFBF805BE;
-	Tue, 30 Jun 2026 13:54:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 942D3F806A0;
+	Tue, 30 Jun 2026 13:54:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 849ECF80527; Fri, 26 Jun 2026 15:48:03 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.221.49
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1782481682;
-	b=eplmIbTBb+Jp8jiGWIOiZaWO2SeKS1/8sT6eu6Xs08unMSQtXAZtIcHrppyvKV60t+xL
-	 F+/Of8M0pKikFoePI24IuljArlkE35osjzlU5zmTZvxuyb5Mvdyu0fglN4ZwfcvahDC28
-	 03E8MOng3Ng7zCixIebt9XAnIUSHPLqV9iatYIOUMtq6AHnHBvcomoZxgPK18Wr4ZoBoH
-	 KfIni9gXpBs00XdmpryR+homcILwVGsMK6gqzPXIQiH6z0EgyrDILgWHIlGeOj8SFk8xD
-	 1qIYKf40r+qLW3BN0NuCzVhnVowY2EzApwJr/tSilV9gpfci2BMgIEDMrJOE0HW59qQ==
+	id 2C9B1F80527; Fri, 26 Jun 2026 15:48:05 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.221.54
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1782481684;
+	b=ADbZJOW6d7mEo956wd/TwnnZ9hG7w9D1D6vZRicePb+Q7oLDrqOSYkghPoB51QBbcjp6
+	 x2rr9w1O7VKIXVZm3JWFj+tqocAoisxCBnrlqAXgazoWQh/g3zgs5eT/LQf68Pv13CB+m
+	 4zP705Iqh++OFfm+unp9W4O2kcpGIgyygzdHuedgeIB0i/xBDpEJVUis+Ma4jk6GfLDCN
+	 NQIucll41us5Eh2+Z/wehqVcFiJGWAH3ddyTa/Sfdi1QaQZ5cUeS7eR7nhJDWD1ahR7Oj
+	 QcL56+8Qxlix/kvQxy5rE7jxEwBEX8CmhtqMg6SwQYHNb9u1Jen7e9sOA0DOtAuCkig==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1782481682;
+	c=relaxed/simple; t=1782481684;
 	h=DKIM-Signature:From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=y/3aiDG0I2yWv2dHo1vQoTcKiO7WhyoDK9Hsn4/5Mk4=;
-	b=rqgQDx3KJFj9+J3mQqQawlLdnj8dHbczJKKA687OFTGGk3TLppgMU3iO5RYjeE8KGSot
-	 UsAY0/4QR6gizzn1MgNu8oluMGuCjm9aPiyDPmEJ0mt7LqrJRzgRNl6BflLgUNozHtE1Z
-	 sWCieG4PWlsOidswKHGNidP0fQn5u3xSxRgBsj+y3dT8GPDvNW9gYq0gLi5FU5LfQL4eh
-	 UvzzoxbKUreMeugvk8ia7qTJDd0z/oM6GRQjZEzjxZvUu9nRhJkkvh1XT/ec+WDzqYaiJ
-	 xIocjgJ8ngeKnL27rd6nGzuUBsWdq4VzNa6HZ5LLGVpltn56XV/vulTubk8xKSKFRFA==
+	bh=EmKi2C493iDbBWdx+ptjz1WR/dnYiIh7do+rNIXRds4=;
+	b=h+eCxR37hm0h/tmyKbwWqulLDUMbnXml2aasO3HPI3ze07LKO6UR2hhTuWilQMuVOeDU
+	 1cdFS3QrQmdtF2NASIyo8mtQFPZu5xJA7Npt2feKk0T/A3vPhY9b142k4VtH0LBt0XoSx
+	 YhDWaDmpOIicsYV7Qw8Spss3t7Prckjl4Gwu8To+ZNH+ZO9nDGgWf+rgcPUQ1kZIR41ql
+	 lCtn6is53BRt3tGuO5ZtcKQqQhIEZnahXbHJmybq0yohux0kBUS8Ugo6WMDk6mOlihTWc
+	 lOoQoaSBf9YUotjwhfJBF3yz7TygtD5tSPDys1+RFaJLj36k0oX9G8P03B5bUyXm03w==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=SzMUESms;
-	arc=none smtp.remote-ip=209.85.221.49
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com
- [209.85.221.49])
+ header.s=20251104 header.b=LoKwwk0d;
+	arc=none smtp.remote-ip=209.85.221.54
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com
+ [209.85.221.54])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1C5EF8025A
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2026 15:48:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1C5EF8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 78500F8025A
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jun 2026 15:48:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78500F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=SzMUESms
-Received: by mail-wr1-f49.google.com with SMTP id
- ffacd0b85a97d-463f1165e16so981299f8f.0
+ header.s=20251104 header.b=LoKwwk0d
+Received: by mail-wr1-f54.google.com with SMTP id
+ ffacd0b85a97d-462342ac290so1039300f8f.2
         for <alsa-devel@alsa-project.org>;
- Fri, 26 Jun 2026 06:48:00 -0700 (PDT)
+ Fri, 26 Jun 2026 06:48:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782481680; x=1783086480;
+        d=gmail.com; s=20251104; t=1782481682; x=1783086482;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VN8ldnrGTGRk9CKEssTXW/x67yzARtvbN51eu/71mMc=;
-        b=SzMUESms91k0zddWdMFTD62KJ2E/lK1huA/IX23KOJPByHhaD8mJqc+EOufT6LARIj
-         +g95nskW/IK2+6Ikia1fpIn71wTQx9jetdGiZHpvmg327D4zi6oxx/L0wH3bvbMFtj00
-         ZLLpFtNICoq+fzdcmk3jO6F4lOEY8cQh2S5dQ8AYPx5rGKLJBBjxRJmNztiVSRmm8LEs
-         CtzxJv9/7NceVmdZl+sLC9SDNYPh6ZfUaDoTp66CHzhqdQBE/uuqgYfM7svPdORa72sm
-         TvOT+hrbsLzoE5mlNCPew3fPqX12X2Nih0ZAWTSBz42xLateSNEd/jZmzehPVJiQbbTu
-         Oteg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782481680; x=1783086480;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VN8ldnrGTGRk9CKEssTXW/x67yzARtvbN51eu/71mMc=;
-        b=qP7LvCVYSD8gmsNCE/unGbW+ilRWbhoVOFn2iNPm41ak6G6cZr5EeW+NrpUC0j4wfZ
-         6028Dtwx/WkRmT22rmdt8kg3pSOvMmr9V1cDqKn0NQ1oJ+ekYMUFWtSCjNiUDNDzWag7
-         E5z4EzeyI04MkPu2i12vTgd5WEo2IwFxv0Rz9KW80zV5wFvHxPwI7fqEqtACaDGmMIzy
-         fJIH0ObK2dzvx75P7j4rdfN0KhhQeNwGojuxuAjiwF73Ad/WSI9PQ85nf6P6nAURw2wQ
-         Bw9PqTidLi6WT/Jn+i1uIo63Ywd/sSMCDZ53YC1a1fMbMVESau6S0w/eEkMjSHRLTZ5t
-         Bpfg==
-X-Gm-Message-State: AOJu0YwOQbGnEZUQiH4QHCVm9spIX7KeVydPZ9uq2SEQ5YKVcPk/kLDK
-	WmkAQg4DAAxEZOkrXNH3X851hDiN70wgJMfeAKhv6UIcBbMdaLcX2Y5W
-X-Gm-Gg: AfdE7cnM4pZbgpPCSCoWk7qYffIBGusIlPZ19uje2JcQRoCjNJRYlWsL308atLWtNWH
-	nxgej1Vm+Kdh2Il54jQ7+0vEz1H5lgd0GU9xi3xz/KZwV6ViVgpay1Ye77Q8kQVWZyDW5HBVgZr
-	0MG00NClZSJaq3JZXBvhyqMeOJcWXrRbFmv1i94m9Bbz1aSxzv0QJO9lVQpLc6g+Op/ByBNMVQJ
-	ZrjjVs8gtcHgAbhkNORyX6RENjwGCQSPY6idVo4wWN8t4UTitMoQ4k7uq+EU16mqX0ofP06eXBY
-	1a2FsIvXxw3Dw8tYHRNbBHxJZorMZLJIX2/Wu7PdU0OF9wt2rhL+4jhrLLZz3xcE/S8zlMcKt8/
-	z4VAnMIGID+SEEMu8C0sxCdaCxDCCpA7Bgtkl/TU3/3uEj+xd7ium4CZ7ZanyDX98qKefWbvn84
-	AAGAOhFH68Oq7mT8YvX/3KrnoGFK3O7JZ7FVhrJLKlCDoSRXRZO88Toe7nhThX6jRa
-X-Received: by 2002:a05:600c:b96:b0:492:6447:7a7f with SMTP id
- 5b1f17b1804b1-4926686b3f3mr101143375e9.6.1782481679497;
-        Fri, 26 Jun 2026 06:47:59 -0700 (PDT)
+        bh=93eF1nP8FA0jQ23r3uigA9hOS1jY1X3Q7tz40Q/msFw=;
+        b=LoKwwk0dvyLyHhvdkBG06W03TB+3GFjfuW7ZBKwT6veQBR9ihk/yLY4FlFpQ+Y5Cho
+         gmOTeEKbAKWqwRc7IHNS05J/8XRrJ1uv3bU5lO8ipMrVcvr7P6sZlih9dF8AY3V1h787
+         IBVZVuhSv7541bek550HAAIq3Y3IjWiYApt8JdviaymoKGLzg4JbWjdvTwp1IDGKVOGJ
+         1Uswn1ZXBYbwNFffx5awq0Mjqtb5xmX8YnolVNJwDz4C9xvRgCC1gZlME4IrlrKG9g2U
+         ZLC2EIzNVrVE/1MIp0fYdcsI3/znr/tkdwRH958a9iPAF6ba+sy7QcoTm1yu+P41m4ie
+         HJng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782481682; x=1783086482;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=93eF1nP8FA0jQ23r3uigA9hOS1jY1X3Q7tz40Q/msFw=;
+        b=DMmqXq40IIp/9jD7MlPVXJRIaVlhX61rS8cP124IAtwME794kzl/LDtoTpmeLeEzTp
+         LQvik41tHFn81nxfTb2NGT/RiNnmU/ORGQGytmu5l3JKf+0Qwdd2+Bvo0mMSRfKZPbHX
+         dVWMZrHSwbv9SYomPmg3ar/oT5aGiMMsmJhElyX42JMhT0VVGY4+TW5Eb0Hg4/L2la3u
+         PhLUKe+L80Al+awr9KX7zVrl+lgLcmXqueFtOlxgcALz9c2ba57OfAzuo+4imOyfdYoK
+         bA1/JF7ps6H2glVCvXC8HsLLSb25vlLEgvqDJlQqYtEhuLpBgUA+HrKQzVBrjZRvp5EI
+         9AGg==
+X-Gm-Message-State: AOJu0YyTS7PG5441oDpQu/htczIjKM84nfxgj/YLYO8V4V9l7qhnFxl/
+	i8q2g2+NBguXP66f+gRaAY4LdXNlQTenKJz2+MY6Dwr6l9MQiTv8/UnR
+X-Gm-Gg: AfdE7cmPHZovqKudsBs9kK1/hfLblr3KftlTT2kzXgnEfTKevCLTm7UPQ4DNy2k8Icc
+	7w4r1stHF8qdUQPx5F/7Uv1aLoYMKFt+t5fQO7zH76mUY198IbIPbLvPmwAmJqN7VucsuvH1DJ/
+	HJLvb+V+ZOzVSyIOmC/KqBX5vBpsM60NhNbe9nFyfDaTBbG6UvwuCP1/KsNzjfU2SGaU80gX7EU
+	tdMc2r+XX9/+4NMcSkYZLB/ZttnXw/XZNs0lH3/d0n4XKK/EWq6MUAIQJAA41gqQrvPuiwKIel9
+	EvZ8EQK/p6CKN4Lr8FN2+hFx5vtCSSxsVyKrPaXjqlBgJkXn2nIBWqxa3ldSpsj135HDI2qOhdn
+	XpJfocmG1dK3QJ8mp/Nq1ZEj5oZG3roxgjyKaBj9m5jH1dgyvF7i0+qEW+9EAfMVnIBdP/96vuw
+	HqqBNa8asfOQgwumwwEb0YB7rfuaWs7KlR6faA2kkUcMgWmP1bWMlJHA==
+X-Received: by 2002:a05:6000:2f82:b0:439:c18f:5aaf with SMTP id
+ ffacd0b85a97d-46dc2359072mr12358019f8f.34.1782481682461;
+        Fri, 26 Jun 2026 06:48:02 -0700 (PDT)
 Received: from localhost.localdomain (IGLD-80-230-60-93.inter.net.il.
  [80.230.60.93])
         by smtp.gmail.com with ESMTPSA id
- ffacd0b85a97d-46efd7ee1c7sm7987878f8f.14.2026.06.26.06.47.58
+ ffacd0b85a97d-46efd7ee1c7sm7987878f8f.14.2026.06.26.06.48.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2026 06:47:58 -0700 (PDT)
+        Fri, 26 Jun 2026 06:48:01 -0700 (PDT)
 From: Omer Cohen <nevergfx1@gmail.com>
 To: tiwai@suse.de,
 	broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
 	security@kernel.org,
-	Omer Cohen <nevergfx1@gmail.com>
-Subject: [PATCH 0/6] ALSA: sound/core: fix multiple data races and bugs
-Date: Fri, 26 Jun 2026 16:47:03 +0300
-Message-Id: <20260626134709.27883-1-nevergfx1@gmail.com>
+	Omer Cohen <nevergfx1@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH 2/6] ALSA: compress: fix buffer leak on set_params driver
+ failure
+Date: Fri, 26 Jun 2026 16:47:05 +0300
+Message-Id: <20260626134709.27883-3-nevergfx1@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260626134709.27883-1-nevergfx1@gmail.com>
+References: <20260626134709.27883-1-nevergfx1@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: nevergfx1@gmail.com
@@ -124,15 +130,15 @@ X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: ZVCVDZYFBMVWNHUY34XUKBY6PFCI2AJ2
-X-Message-ID-Hash: ZVCVDZYFBMVWNHUY34XUKBY6PFCI2AJ2
+Message-ID-Hash: TKEETJL7LSU5XGALO2VFD7UM3SDKIJ4U
+X-Message-ID-Hash: TKEETJL7LSU5XGALO2VFD7UM3SDKIJ4U
 X-Mailman-Approved-At: Tue, 30 Jun 2026 11:54:02 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZVCVDZYFBMVWNHUY34XUKBY6PFCI2AJ2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TKEETJL7LSU5XGALO2VFD7UM3SDKIJ4U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,92 +147,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Cc: security@kernel.org
+snd_compr_set_params() calls snd_compr_allocate_buffer() which stores
+the new buffer pointer in runtime->buffer, then calls
+ops->set_params().  If the driver callback fails, the function returns
+the error but runtime->buffer already points to the new allocation.
+On a subsequent set_params retry, snd_compr_allocate_buffer() overwrites
+runtime->buffer with a fresh allocation without freeing the previous
+one, leaking kernel memory.
 
-Hi Takashi, Mark,
+An unprivileged user with access to a compress offload device can
+trigger this repeatedly to exhaust kernel memory.
 
-This is my first patch series to the Linux kernel.  I am CCing the
-security team as recommended by the docs for initial reports.
+Fix by saving the old buffer state before allocation and restoring it
+if the driver callback fails.
 
-This series fixes 6 bugs found via code review and KCSAN dynamic
-analysis in the ALSA sound/core subsystem.  All patches are against
-current HEAD (4edcdefd4083).
+Fixes: b21c60a4edd2 ("ALSA: core: add support for compress_offload")
+Cc: stable@vger.kernel.org
+Reported-by: Omer Cohen <nevergfx1@gmail.com>
+Signed-off-by: Omer Cohen <nevergfx1@gmail.com>
+---
+ sound/core/compress_offload.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Patch 1 is confirmed with KCSAN.  The remaining patches address bugs
-found during analysis of the same code paths.
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index fd63d219bf86..XXXXXXXXXXXX 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -665,14 +665,28 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
+ 		if (retval)
+ 			return retval;
 
-This work was AI-assisted.  Per the kernel documentation on reporting
-security bugs, it is sent to the public mailing list.  All
-reproducers have been tested on arm64 QEMU.
++		void *old_buffer = stream->runtime->buffer;
++		size_t old_size = stream->runtime->buffer_size;
++		unsigned int old_frag_size = stream->runtime->fragment_size;
++		unsigned int old_fragments = stream->runtime->fragments;
++
+ 		retval = snd_compr_allocate_buffer(stream, params);
+ 		if (retval)
+ 			return -ENOMEM;
 
-Summary:
+ 		retval = stream->ops->set_params(stream, params);
+-		if (retval)
++		if (retval) {
++			/* Restore old buffer to avoid leak on retry.
++			 * Free the newly allocated one if it differs.
++			 */
++			if (stream->runtime->buffer != old_buffer &&
++			    !stream->runtime->dma_buffer_p)
++				kfree(stream->runtime->buffer);
++			stream->runtime->buffer = old_buffer;
++			stream->runtime->buffer_size = old_size;
++			stream->runtime->fragment_size = old_frag_size;
++			stream->runtime->fragments = old_fragments;
+ 			return retval;
++		}
 
-  [1/6] ALSA: compress: remove illegal state mutation in poll()
-    snd_compr_poll() writes runtime->state = SETUP when it sees
-    DRAINING.  This races with snd_compress_wait_for_drain() which
-    reads runtime->state concurrently.  KCSAN confirms:
-
-      BUG: KCSAN: data-race in snd_compr_poll / snd_compress_wait_for_drain
-
-      write to 0xffff0000c75c8200 of 4 bytes by task 282 on cpu 3:
-       snd_compr_poll+0x29c/0x2c8
-       do_sys_poll+0x2b0/0x628
-
-      read to 0xffff0000c75c8200 of 4 bytes by task 279 on cpu 1:
-       snd_compress_wait_for_drain+0xa4/0x270
-       snd_compr_ioctl+0x1ba0/0x1bc8
-
-      value changed: 0x00000005 -> 0x00000001
-
-    poll() is a query operation and must not mutate state.  The
-    DRAINING->SETUP transition is already handled by drivers via
-    snd_compr_drain_notify().
-
-  [2/6] ALSA: compress: fix buffer leak on set_params driver failure
-    If ops->set_params() fails after buffer allocation, the buffer
-    leaks on retry because runtime->buffer was already overwritten.
-
-  [3/6] ALSA: timer: fix lockless tu->tread read in read()
-    snd_timer_user_read() reads tu->tread without ioctl_lock to
-    determine entry size, then re-reads it under lock for the copy
-    format.  A concurrent TREAD ioctl can change the format between
-    reads, causing a size/format mismatch.
-
-  [4/6] ALSA: timer: copy queue entries under lock before copy_to_user
-    After dequeuing under qlock, read() drops the lock and calls
-    copy_to_user() directly from the queue slot.  Timer callbacks
-    can overwrite that slot via queue wraparound during the copy.
-    Same bug class as CVE-2017-1000380.
-
-  [5/6] ALSA: pcm: use locked state read in snd_pcm_drop()
-    snd_pcm_drop() reads runtime->state without the stream lock.
-    Commit 7bc02ab446d3 fixed this pattern in read/write paths
-    but missed drop().
-
-  [6/6] ALSA: rawmidi: propagate resize_runtime_buffer() error
-    snd_rawmidi_input_params() ignores the return value from
-    resize_runtime_buffer() and unconditionally returns 0.
-
-KCSAN reproducer for patch 1:
-
-  The race is triggered by concurrent poll() and DRAIN ioctl on a
-  compress offload stream.  A minimal reproducer uses four threads:
-
-    Thread 1: DRAIN ioctl loop
-    Thread 2: PARTIAL_DRAIN ioctl loop
-    Thread 3: STOP ioctl loop (random delay)
-    Thread 4: poll() loop
-
-  The main thread repeatedly sets up and starts the stream.  With
-  CONFIG_KCSAN=y and CONFIG_KCSAN_STRICT=y, the race is flagged
-  within ~2000 iterations.
-
-  Any compress offload driver (hardware or virtual) exposes the
-  race since the bug is in the framework, not driver code.
-
-  Tested on arm64 QEMU, kernel 7.1.0-rc7+ (4edcdefd4083).
-
-Thanks,
-Omer
+ 		if (stream->next_track)
+ 			return retval;
+--
+2.43.0
