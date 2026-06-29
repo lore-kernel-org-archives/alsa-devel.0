@@ -4,108 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C900DC43458
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2026 12:15:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 894C1C43458
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jun 2026 20:22:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C4F66016C;
-	Mon, 29 Jun 2026 14:14:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C4F66016C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E9A1601F2;
+	Mon, 29 Jun 2026 22:22:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E9A1601F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1782735304;
-	bh=j4tTC8L08dx67eEqwQjX2ZrqrjILr0i7/qz5JeYey7c=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=OrjYPsr7fUCsgxQA2FbztbBT40/okcMH8DGX02pOHQ9iGS93z5U3M7Z5cb//VuM8D
-	 suX62vDmR9v+UEjmPTI7v+u6987910FbUy7u+yfq5kFVEhsmHew/fnRmml5lIfRWdU
-	 Y+HViB7C3xUoq80es0TqoGKB+0+IL67uzq/cF+x0=
+	s=default; t=1782764538;
+	bh=c7dcMz+0p8Y9MbBHev/DNumh991S4S6rkhjr9/qa4ts=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Rj2n2PYlMx3HrJBFDAizgjoWwgbpDiAh8NomsuxcVSG6fXbERTVqT1OYvdKUg37MH
+	 YCA7p19ffic+abCWgUu3MeN9nh5WPwMKx+45T2fjMk07QI+WE5IdbPiR/b5XPWvw/V
+	 r7nZmahZKgbw8GOHRNgMbk/WsIKv3KUqOtDNUYvw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6BF9CF80601; Mon, 29 Jun 2026 14:14:31 +0200 (CEST)
+	id 54290F80602; Mon, 29 Jun 2026 22:21:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01214F80602;
-	Mon, 29 Jun 2026 14:14:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAB30F80601;
+	Mon, 29 Jun 2026 22:21:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47371F80495; Mon, 29 Jun 2026 14:14:24 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1782735263;
-	b=BUorrSEVQqGRZY/ixh03WKhACE+vrvEsm0uy2EtAYkUpNbqhNkEepvKorYm7HpU81X10
-	 TCVWUg78tp8WglPMOohsVwt8x5mGeY9feRCUz9UeBWdl59EV+mwRH56jRBF+zXpS64kke
-	 6+pZDi8fUj3/Xl0Kup0HPgHjjmMvifxUJzS+rwB3pBzKE7gubFpNyGqc0QSYC1QOpn00W
-	 teh6brkBzPZHCwDMKt93LyVan+CgrPm8iJuac8J49ZM/Y7Uz6Ta42+anpBh0F8HOhGiB+
-	 KWdshN4tP1vzGyYSJRrk/nuQEs60LmB5zZMukpoiWgvGLWcQJ5G2ok4cW5Ez8XxCN9A==
+	id 5B5EEF80495; Mon, 29 Jun 2026 22:21:32 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1782764491;
+	b=rsilYcW66UjeOslEc6cFGSoSwi/tI8JEEutjIPLoOCZo58NNY8mbg8/FfinqifYDaZen
+	 zUrkvsiW35U/uPM6F8vqchKbz89rqtryuLYLJQYlrZgw+J6gNuMEQ0SW3EGZB3B33pmkx
+	 K4CjL3kV5biTkYz0oJrTGLCIH5m/lKwlfgJQrfdk/ufLwKTn0mp7xj7weeTLLzMVQzO2l
+	 D1CFI+9pI0D8m0lqIQqsp7zTFX/nd8H/gSLPKPlhraCSjcEzgWizKLpbxQIRcrAllR3yP
+	 XVorylaWg3eZW/hv+hhD2EFbfqbmWsDAmma+5klj1KK0cfEue/r4z/9iT6naQZ3tMXg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1782735263;
-	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
-	bh=j4tTC8L08dx67eEqwQjX2ZrqrjILr0i7/qz5JeYey7c=;
-	b=aIVU+cXzIujvjf1ADA5zV0bsBq54TZ2iAbNtZA8zeLEpndHRaOMwkThXKdotW4iAxy8f
-	 E8XTAEl4w0JTlviovVLJdl0c/o2EzIPEiKWVjg2/VUOCcgXnXBYNllhKoAZ4XnvC8BWT2
-	 frMn8oV5rT5T1ejsOvkRAcaiVajPa6ZtJMxDOqg0bdyaUzUMzdeiiVg0lkQ0MirotNBLF
-	 xCCrp61dzS6HIAh2xSsRUW7F1naZYLx/12+ZF0owJ+t8/46Kra1LNE1qoNI/aR70Q03Fr
-	 hSwhO4QWpZ/UhCKN5fsYWGYeYX/u6mq6ADarxri9caMicwqdRlzxO7P3Bh1k3l3YZoA==
+	c=relaxed/simple; t=1782764491;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=c7dcMz+0p8Y9MbBHev/DNumh991S4S6rkhjr9/qa4ts=;
+	b=YzMZw8KG+yyMboPFc0KpyGbDPl8I/w8vNHC5UTxBjk0iEzFfN1QcdI6SBkDBcZ5bZ2k3
+	 CIr7hKeELNn0StBxzYd2d4qexC3av8RxK8/iCZM46vy55utNUgws5YLz8tFj+6VBvaLnP
+	 5JG9AYoJnP6Hw89TATaDWJOVaYRlQPaCqKl/1AO6pBWp89LwLJd2PeUbqion5nina0cG2
+	 AdhPJfSUJ5by40+0KicUy3bqlDl2It9SG1gOC7CDNM25+fvojjv6EmRWF2sW7ZXBRSUGW
+	 O0xHyofNyeBE3UVr3bLKlhq0KhRL9BaXqnz4FJslZVIFJKj4FpxYGNrDgeZoi1NATRA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b="g4AAO4w/";
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 811A0F80423
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2026 14:14:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 811A0F80423
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=g4AAO4w/
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2EDCB6001D;
-	Mon, 29 Jun 2026 12:14:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB8AA1F000E9;
-	Mon, 29 Jun 2026 12:14:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782735259;
-	bh=XeJBYikpzrcLaEXcXwsdkWiCmc3M7uiee5cBFjsu3tI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=g4AAO4w/+Eqb4KcTEar0BztPYyjNoJ196nIwKLHOlqopg+D3NMDjm8Vn46o64TLAc
-	 6Lm7BosMl76Y8FmTm/4M1fnWW2osnSraK2elDO5rQXYzwwonZ7hVixUo0Iw/lgQyHH
-	 ZJT9zS6fTeMgaGYOssIFv41b2W97hITp4Rh0jnEKlaq1yvGefbiF7Gbu1433w5WWYW
-	 BIPedwK/aMGjOri25eB22FY7OItzDfNbU6crsenkuYbktMTSbiuy9U03+yYLO6FU8I
-	 +CrV6OcS/CfrCIVPWFSUCQTR2COEdoCfR0+gtgOR1eM9S0qhkMZ60xvy//KD9qRtVm
-	 vT02ZPfFqTIqg==
-From: Mark Brown <broonie@kernel.org>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: tiwai@suse.de, andriy.shevchenko@linux.intel.com, 13916275206@139.com,
- alsa-devel@alsa-project.org, shenghao-ding@ti.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, k-yi@ti.com,
- henry.lo@ti.com, robinchen@ti.com, niranjan.hy@ti.com
-In-Reply-To: <20260625102815.20043-1-baojun.xu@ti.com>
-References: <20260625102815.20043-1-baojun.xu@ti.com>
-Subject: Re: [PATCH v1] ASoC: tas2781: Update default register address to
- TAS2563
-Message-Id: <178239364221.51343.11187259135012325485.b4-ty@b4>
-Date: Thu, 25 Jun 2026 14:20:42 +0100
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id DE9D0F80423
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jun 2026 22:21:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE9D0F80423
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.16-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1129; i=broonie@kernel.org;
- h=from:subject:message-id; bh=j4tTC8L08dx67eEqwQjX2ZrqrjILr0i7/qz5JeYey7c=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqQmGYqab8ptxvjnPu+xehDYkB8UiXBh1H1XAld
- FfY6OjzD8qJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCakJhmAAKCRAk1otyXVSH
- 0JWAB/9l8M4VR0E9CAcTdXizgF8VR1T6B0jSizFsFUcuiGZuC5VdEcJiURZ0vaMm8inqMzZIINh
- Cx64xpDXLVPmNX0ELLZhRKyuDY3r/EG2OVVmnpfn8SpdchP07gsHZILUbB93/PeqHLdYMhORG+k
- Jh5uIuN5XW8aliuvYbZTFxFllA9uQ1nUmUmtt0TGNRxwn27gyS/6Choaz41YfBP3+tHGFI1EhEH
- xrBw+kaJU6nx37YKjlwAQp3BcX4BInye3p7YsuqmdzcYS/KpKFh9AsL5plg1T4fkfGt3+brg39p
- 3ipQ+OOEq+ogvKy5AG/nRd1L5/DT/f0vswHC326qY6HgJChl
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: JY75D4C7NFB2GZQ6LNC7HLE7IJJB45MN
-X-Message-ID-Hash: JY75D4C7NFB2GZQ6LNC7HLE7IJJB45MN
-X-MailFrom: broonie@kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18bda6db755cb600-webhooks-bot@alsa-project.org>
+In-Reply-To: <18bda6db75062300-webhooks-bot@alsa-project.org>
+References: <18bda6db75062300-webhooks-bot@alsa-project.org>
+Subject: Regression introduced on DellInc.-Latitude9420-05379Y
+Date: Mon, 29 Jun 2026 22:21:32 +0200 (CEST)
+Message-ID-Hash: AGRABVCTWVMLVZLCJCTLSEO3SIP6RCFQ
+X-Message-ID-Hash: AGRABVCTWVMLVZLCJCTLSEO3SIP6RCFQ
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -116,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JY75D4C7NFB2GZQ6LNC7HLE7IJJB45MN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AGRABVCTWVMLVZLCJCTLSEO3SIP6RCFQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,34 +84,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 25 Jun 2026 18:28:15 +0800, Baojun Xu wrote:
-> ASoC: tas2781: Update default register address to TAS2563
+alsa-project/alsa-ucm-conf issue #800 was opened from ondrejkolin:
 
-Applied to
+Hello, 
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.2
+My speakers are not detected anymore (in wireplumber) after the PR was merged: https://github.com/alsa-project/alsa-ucm-conf/pull/775
+````
+ 0 [pcsp           ]: PC-Speaker - pcsp
+                      Internal PC-Speaker at port 0x61
+ 1 [sofsoundwire   ]: sof-soundwire - sof-soundwire
+                      DellInc.-Latitude9420-05379Y
+````
+Relevant (hopefully) parts from the kernel journal. 
 
-Thanks!
+```
+kernel: software IO TLB: area num 8.
+kernel: PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+kernel: software IO TLB: mapped [mem 0x000000004feb0000-0x0000000053eb0000] (64MB)
+kernel: integrity: Loaded X.509 cert 'Microsoft Windows Production PCA 2011: a92902398e16c49778cd90f99e4f9ae17c55af53'
+kernel: integrity: Loaded X.509 cert 'Microsoft Corporation UEFI CA 2011: 13adbf4309bd82709c8cd54f316ed522988a1bd4'
+kernel: integrity: Loaded X.509 cert 'Microsoft UEFI CA 2023: 81aa6b3244c935bce0d6628af39827421e32497d'
+kernel: integrity: Loaded X.509 cert 'Microsoft Option ROM UEFI CA 2023: 514fbf937fa46fb57bf07af8bed84b3b864b1711'
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: enabling device (0000 -> 0002)
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040100
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: bound 0000:00:02.0 (ops i915_fence_ops [i915])
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: use msi interrupt mode
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: hda codecs found, mask 4
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: NHLT device BT(0) detected, ssp_mask 0x4
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: BT link detected in NHLT tables: 0x4
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: DMICs detected in NHLT tables: 0
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware paths/files for ipc type 0:
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3:  Firmware file:     intel/sof/sof-tgl.ri
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3:  Topology file:     intel/sof-tplg/sof-tgl-rt711-rt1316-rt714.tplg
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:1
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:1
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: loading topology: intel/sof-tplg/sof-tgl-rt711-rt1316-rt714.tplg
+kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:1
+kernel: sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
+kernel: sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+kernel: input: sof-soundwire Headset Jack as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card1/input25
+kernel: input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card1/input26
+kernel: input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card1/input27
+kernel: input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card1/input28
 
-[1/1] ASoC: tas2781: Update default register address to TAS2563
-      https://git.kernel.org/broonie/sound/c/64184f07e751
+```
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Happy to help with more logs and testing!
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/800
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
