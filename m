@@ -4,103 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6E5EC43458
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2026 17:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEC7EC43458
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jul 2026 17:23:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3483F601EE;
-	Fri,  3 Jul 2026 19:10:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3483F601EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D609601EB;
+	Fri,  3 Jul 2026 19:23:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D609601EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783098630;
-	bh=g4Z9AW55xBLuMsEyuGV+NPzY+gyjS9YnsvIV1ygMJzY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1783099427;
+	bh=0up3X3VC2fr+gRB8uZHELvWzcZQGMYSNttjEbLvtUGc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BGyBh4Omqz2Xp1f2cARuJc5HXtuQOReKFHZ60kxTF5rVlgvNJCNO9jSFcw3sYESfv
-	 iInb7OXHjzRRsqndhkmdiJ4lYEHlZ47if/Vmvfm9K+awmvyiK+swyMb/sdLZa5S4Tj
-	 Y0THjp721bTEgePZ6XUnhGADxY7KtYEQaMM3FwSI=
+	b=pgCEF+NtK9gOGdmpMt7IGzsF/cb/dj097cMsDS0as3UbzwFVzUyWZ5AZWAEGBfcq0
+	 ISFYaQ6jqdaCHn2PX1q20Dt7ccioaNPUExAzuAbAc05voSNpigrdaS+pVuWaxb2lzp
+	 4+TfrJw2DWS+1AEVf7sdUWbqdD0lR8YZnc8MohuA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60741F805F1; Fri,  3 Jul 2026 19:09:55 +0200 (CEST)
+	id C906CF8011B; Fri,  3 Jul 2026 19:23:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1100BF805FB;
-	Fri,  3 Jul 2026 19:09:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75D35F805FF;
+	Fri,  3 Jul 2026 19:23:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08F16F80579; Fri,  3 Jul 2026 19:09:50 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783098589;
-	b=Goc2A44DzhoWjj1OLO/TXX30900rjY7EhG5jKxNas0S+75NLzXVvhJJAAWrZCc/dwjVV
-	 3YRK82z+1cV2BbORu+QdC/RlLY9SVQrPZzIzrLGHELoUWW8AViVWHzL74YPkANB5eHUgL
-	 ou48x0cLtCYZfSZrmBvMo3nElc+wYMiip36/mC+L9zgtYqoSYRfLtkXxfNYT+NA0jd7d0
-	 VqiMPqUCyZKOIcCd14oUBH3B/Ft+rCFSp13inbu2A52SXrAe5PNWoGVCOzGDD3QHpR2iq
-	 DzwQL1y6nhrLWEp76Oh1mw6ZYP31Dl372WXSnDINUnkqwWAHjX8i7eD4TXkwy/TECGQ==
+	id BE525F80579; Fri,  3 Jul 2026 19:23:19 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.218.48
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783099398;
+	b=eVzgQRCxAGHYmjeRIBogaZ4gsqS1gRBWh21k9eAZbf3Za41eBZGOFG7empbzTBY6RCe6
+	 UtZAYXEVPkKFgNDKJTLbXNEjVggejOJs80TiGgiiR6k6rKvH/8j/COcHNfgPulwk28vB1
+	 yRs1/MEnmVRlqoiOLN+DJeVLlSx13ObwKJ3lhlqokmFj+9DNDlL0LDPr0GwNYhMXt48wi
+	 hlOLZxz6tHSvQhsdONgQxnFapjqbD5hD96YLSLexn3VoW7omnLTo9fpb9e+TIOOouYYk3
+	 zo2RBILU8Bt2+BJVDImvf9eXXwPwcvSI90Uw0SvGwUmVHkzqffULDLcGce7B8E6h5ng==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783098589;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=g4Z9AW55xBLuMsEyuGV+NPzY+gyjS9YnsvIV1ygMJzY=;
-	b=VInLm5wwe370WGbYIiNeRMk2cYOI6BqouquspWMI3ue0zvoUaMeMgCSqk+F8xaTZS4Qc
-	 OkHGipm/VzhN25W5FA4eJ0hve1Dwx6huNI1SQ2zene7GwZQSYvbLnCNIZUTmI+n5c/xKw
-	 xUC5QiGTCTwz9A/t9ULQNu4UO0Y7+SmT2vUaxJqeErVtQAf6Ifszrumb9k/pt7RwD02wJ
-	 4nsePvnU/SClICKDN6t9gb5iZZ3fgevHxMM48Xdd7jrePH9vpBwRvaxCEaMu+hdiyuovn
-	 QqAL03+ct3GA4JH+z9Zw9Z/I9Dzd9gsst2wi5wo7pOVxeFawzXTnk60PI27PCL/lxRA==
+	c=relaxed/simple; t=1783099398;
+	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
+	bh=0up3X3VC2fr+gRB8uZHELvWzcZQGMYSNttjEbLvtUGc=;
+	b=F7xgKl24Skd/YFS4Q6fj/dV/P4LoQ7I4pRiJrEwBsBXxMav8oDhVBrWm+hDg5y2YgdXA
+	 euYWGXUSCqI+fi86ii0/Tm86TDO59ZNol7pw1R9/knPdwoeQRF0zMpJtWhFZ0GH+IxMLJ
+	 f61KSCo7C1sok8fUTBcTZZxZXh5A/RskE9iVsZ+cwZVY+Sp+0U2N9bVqSSpVf5r61YSSH
+	 ORhxo5ort1pguYq/qLF/h86/80M1eWfwjpmhzWbIoUlfW5f7gNcNvNac5+C79GZrCno5d
+	 Q6jja7P7V1J8l2noGD1A3ovIxXSmAdJaVp8HhuCL13T24sYXoQMnvkiwCb9dSXHn+QA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=UIQnp8GU;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=N8lL0K+1;
+	arc=none smtp.remote-ip=209.85.218.48
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com
+ [209.85.218.48])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5B06BF8011B;
-	Fri,  3 Jul 2026 19:09:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B06BF8011B
+	by alsa1.perex.cz (Postfix) with ESMTPS id CD50CF8056F
+	for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2026 19:23:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD50CF8056F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=UIQnp8GU
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0B4F160051;
-	Fri,  3 Jul 2026 17:09:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0624A1F000E9;
-	Fri,  3 Jul 2026 17:09:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783098584;
-	bh=DBWihNUWgBjLa2D1ABgjObGnnXBcwoJR2Z7C+FfpPkI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=UIQnp8GUpIiYzbi7J219Gdr7+5yLHtjEjhRA9fJnSYdGkSs52FKWh2lvQRn7wqXP1
-	 6HkykOtaGBBW675NugNHY5LI1jILRM8r/kGlQrN9641TKuyuliw0+4MvzKvQdjuzH4
-	 Qf798J55OOHyERK1GeC3/zKWnE1hxo0+zhVq03PS8jXQCatp3CKM4Hqr67oP3iMQnn
-	 iNrVwf0JFrvyP467YWE7Ri9GrgbLngXf+r38BhauAVKgJZ76vRXo78Q96dQ2X5WvsM
-	 mq41dS5B08iUMd1DUsOqdBbY1EMoFmnRohiaRmVp2lkOgEWRZCX2D8OxGj8lOb85ws
-	 yVccAJkSM2opQ==
-Date: Fri, 3 Jul 2026 18:09:39 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-	yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.dev,
-	perex@perex.cz, tiwai@suse.com, Basavaraj.Hiregoudar@amd.com,
-	Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
-	mario.limonciello@amd.com, linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH 16/16] ASoC: SOF: amd: add system and runtime PM ops for
- ACP7x
-Message-ID: <632c9729-3f64-41fd-b85d-18f4437a68df@sirena.org.uk>
-References: <20260701095759.1012929-1-Vijendar.Mukunda@amd.com>
- <20260701095759.1012929-17-Vijendar.Mukunda@amd.com>
- <58e4579d-f87c-48db-9682-fec99c4706af@sirena.org.uk>
- <68d6745f-8bfd-4b1e-b4f1-33190038566d@amd.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=N8lL0K+1
+Received: by mail-ej1-f48.google.com with SMTP id
+ a640c23a62f3a-c125fbfbae0so74807066b.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 03 Jul 2026 10:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783099397; x=1783704197;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=mBESswN6Y8XsXKSuHEiEMpM0MOv1RPEae5qTrECTOF8=;
+        b=N8lL0K+1UMDISGRFkKzzGXuXQSk2mEAZhQT8WSypSqnDb+km6BtjIuyLI894IqUuvb
+         nEZNBGBNjd2ADswdIcUz9IgwevQwrLGzUq4vPP6PSLolnVpojBU1gF4OGKpDU1SyQYhG
+         q86ARw1lbJ+FT2PY4wIqgBrfEwec34gBTmKTAou9UGdioDbPSa12mJg+tv7gfqz2SHcd
+         WZ9fVVx+7JsAEdJe4abqwFBrY3fVpax0OYnXW8IgBbAoYePU1AKbyKDzQ90Iz7uTIyVO
+         2UoiX1XaM9Djfv+3jE13UCPv8AK6XV0fOWJiV00FTG7T2Is9xgJA41vmfN6l6UdVmqzQ
+         iCiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783099397; x=1783704197;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mBESswN6Y8XsXKSuHEiEMpM0MOv1RPEae5qTrECTOF8=;
+        b=nOoixdGAPx25yJD0xmy/HHfviov9w7hiKhJfBG6dlykyPPZodIdHba5zPAtW8KgqX2
+         /CaSWyzE17xoLOCisZXs1y6lhe8QXdYAecDygkTdUP+RMF2aOnhfs3PaTZT/fx9bAbsb
+         0zJLxXFBWmnQj/mxsfC2MoxZG+AQAwk99SLXk9MSDJvwgM/0Xj8yCVZ59Gxg1jjJJs7L
+         kFedqqrQ3qji+nhEt/+ABSo+eFoJ12IzifK62EF7YrAzNuoJwux6s3zT19mhdQ5j4Aiq
+         RxJZwHUApbId3b1swKsp5KP3C9oiITEQ5y+a6dnI5TNhOoDbRefhj3drFAJm+cSmQ6ej
+         aQ5A==
+X-Gm-Message-State: AOJu0YzNMdAtolg8xYN+nJ4+bYFAuC9+9PiWEhFeoOjzqDUsT2XKXYmi
+	iRzokh0BuZlLaQMaQqS87pEedyHRpu/b3AtWpBQ4Dk+8dr8VRjSpOAiB
+X-Gm-Gg: AfdE7cm0h4DfPDZWoNoL/py5sKADzKr1Crcigb4q3jqH1Xm7JLsLLV0a/ABubUr4bGH
+	Hf7xeaRKZFyb0J6t2eM1joeh+9VlLW5bnLXbf6ku3ngguO1Q7kTXW00cBSVKD2XHXEBGfUF9aWl
+	/a0+HAU3CgbDqNpxx1dhoJL6OmcCaVBEsbyKDOnTnw7/GlEop+l4sQ1ChN+f11KbPG0PHBqvybh
+	1xeHjqcAjoO4tdLTiUknM1oqmz2TPytcpZoNI534AowiBLN1nclZ/msHbPEoqYkK9IwoAr64xmq
+	PRFHXan4s14trntLRB44dPbchVwBoVRGU3++FPptWiJfb7d06E4MAK2DWvSmR/sbCTaVPukA8Q+
+	lAyUJxNKTdajz0gAfq3JOI1j3+ApTFxORPffDkAvevOGvrvaNt/365SH+VXEja9tKNXMn7F2GfU
+	aIoySs6sivlJI375C9ZuAFeiwMjR5CV1N3fY+rFb4ClFIouroNs4J/O0wWWd2nTFxIRi2MELnhc
+	2TWR+4cviF03ESROCw=
+X-Received: by 2002:a17:906:c8d6:b0:c12:78fd:250 with SMTP id
+ a640c23a62f3a-c12e43e1ed5mr18000066b.59.1783099396668;
+        Fri, 03 Jul 2026 10:23:16 -0700 (PDT)
+Received: from [10.128.11.240] (195-23-151-163.net.novis.pt. [195.23.151.163])
+        by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-c12b628d632sm308123766b.31.2026.07.03.10.23.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Jul 2026 10:23:15 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+Message-ID: <cb450caa-58d6-465b-a694-bbca3949e3be@gmail.com>
+Date: Fri, 3 Jul 2026 18:23:14 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="B9Lvx88CybaklRd/"
-Content-Disposition: inline
-In-Reply-To: <68d6745f-8bfd-4b1e-b4f1-33190038566d@amd.com>
-X-Cookie: Another megabytes the dust.
-Message-ID-Hash: 5OL7U4TLAPCSCX5VNUW7YSSK7BYN7J5S
-X-Message-ID-Hash: 5OL7U4TLAPCSCX5VNUW7YSSK7BYN7J5S
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/16] ASoC: SOF: amd: add base platform support for
+ ACP7.B/7.F
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.dev,
+ perex@perex.cz, tiwai@suse.com, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
+ mario.limonciello@amd.com, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20260701095759.1012929-1-Vijendar.Mukunda@amd.com>
+ <20260701095759.1012929-3-Vijendar.Mukunda@amd.com>
+Content-Language: en-US
+From: Julian Braha <julianbraha@gmail.com>
+In-Reply-To: <20260701095759.1012929-3-Vijendar.Mukunda@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: OHMBCJOQD4BVMDL57BJOIFVJO3V6LZ76
+X-Message-ID-Hash: OHMBCJOQD4BVMDL57BJOIFVJO3V6LZ76
+X-MailFrom: julianbraha@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -111,7 +144,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5OL7U4TLAPCSCX5VNUW7YSSK7BYN7J5S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OHMBCJOQD4BVMDL57BJOIFVJO3V6LZ76/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,49 +153,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi Vijendar,
 
---B9Lvx88CybaklRd/
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/1/26 10:55, Vijendar Mukunda wrote:
+> +++ b/sound/soc/sof/amd/Kconfig
+> @@ -103,5 +103,15 @@ config SND_SOC_SOF_AMD_ACP70
+>  	  Select this option for SOF support on
+>  	  AMD ACP7.0/ACP7.1 version based platforms.
+>  	  Say Y if you want to enable SOF on ACP7.0/ACP7.1 based platforms.
+> +config SND_SOC_SOF_AMD_ACP7X
+> +	tristate "SOF support for ACP7.B/7.F platforms"
 
-On Fri, Jul 03, 2026 at 10:21:25PM +0530, Mukunda,Vijendar wrote:
-> On 7/3/26 21:58, Mark Brown wrote:
-> > On Wed, Jul 01, 2026 at 03:25:17PM +0530, Vijendar Mukunda wrote:
+All of the other config options in this kconfig have a line of
+whitespace between them, could you modify SND_SOC_SOF_AMD_ACP7X to
+match this style?
 
-> > The interrupt is requested with IRQF_SHARED so probably worth double
-> > checking if the interrupt handler is safe to run while the suspend and
-> > resume callbacks are running, I see we reset the device during suspend
-> > so there might be some risk of corrupted register reads?
-
-> There won't be any corrupted register reads when acp reset sequence
-> is executed,=A0 all the acp registers are set to default values. i.e Inte=
-rrupt
-> control registers are disabled. This sequence ensures that till interrupt
-
-Including whatever the threaded handler is doing?  I didn't actually
-check properly, just saw the indirection through the SOF I/O functions
-and the threaded handler.
-
-> masks are enabled during resume sequence, no interrupt will be asserted
-> for ACP IP.
-
-Right, but IRQF_SHARED means it might be an interrupt for something
-else.
-
---B9Lvx88CybaklRd/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpH7NIACgkQJNaLcl1U
-h9DpJAf+PRQxFBpzYYnL5SWVj8/kH3j6IPakFuC4uf9GK9QxFvIGxdF80Np5xhve
-fyV8KbFiYy3QRlF8ajBJGaZDvZmP0rOSHY5WRTmEK8epIEUcfJqFhuK3w7sonJXe
-GzzbFU+Mokq9LsOFgtFZjuheuMOSRJLUtPlRzv+m7tD0HpdBJTuzQGfyV8gy8/oW
-hk6mJk/ky4NGLvUPqxiyzt1KUE/yHmaDYcv8TCI49zJXYmgv08p4LEQGQkRpgGf/
-tbIr/QLeZ0uKXyuLiJbOnwYwpipKiyjggqcx8gsNcvEeL4vWwti4MeYVeazLdwil
-PBUvOeZagcXwcDGZ4YvRf9DivTZmew==
-=rtYV
------END PGP SIGNATURE-----
-
---B9Lvx88CybaklRd/--
+- Julian Braha
