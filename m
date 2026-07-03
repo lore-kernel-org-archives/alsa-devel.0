@@ -4,138 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E1F0C43458
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2026 06:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E384C43458
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2026 10:00:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC51E601CE;
-	Sun,  5 Jul 2026 08:25:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC51E601CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 392F0601F2;
+	Sun,  5 Jul 2026 12:00:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 392F0601F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783232763;
-	bh=YuCAjO7qoGxoZqOoQEUxk3TvhLczYOLJ+qt/EYDKt90=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Wfclpl4+chOjEmfcfq7iaC6044msMYfjeTPwKnf2gdjs3zxiV0SoqSgugoAF55DOr
-	 P/OA7sxczAe6p8FmuCrN456f4iFkrQNw+G1wCFwCBabL83bjWdQTjaniFlLyJItoYd
-	 uqL4UC3IXcadTLwodQClTtgcBIpz2hxz4SMo1ftM=
+	s=default; t=1783245628;
+	bh=W1AVsX43qvUOKE59T/ObWlrtbrXrPJZCWiEaPeSDmIE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=t03/Sh378FxSJuS3afpxGfBSmkF4nVpMYaYPT61W4k1RtIeX7NN9rTnIGI74lpFPI
+	 k/gUXstK5x6dQhvfWaLsLCtVs3snDG95MB4OJIAdxGBwVxstqGVzGSt7KMAyl02VyY
+	 KfVLexhw7wjoNW8sIzwquL3NHw/BHgyXSYeuaFoA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4BE5CF80588; Sun,  5 Jul 2026 08:25:30 +0200 (CEST)
+	id 14AC8F80602; Sun,  5 Jul 2026 11:59:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EF5FF805F9;
-	Sun,  5 Jul 2026 08:25:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE116F805FB;
+	Sun,  5 Jul 2026 11:59:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66B52F80526; Sun,  5 Jul 2026 08:25:22 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.217.203.20
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783232721;
-	b=fzJofEfWwEOPKeem+CWcWedpMEcgUF3fYaTY+9bRMOymHp+7SF66AbNZz2E957Ro6KkC
-	 FzmKCvD3qenzwfJC3ugD46pgoTOYPy316u/i7xsGgHckeNMZJeFehk+wJH0wdCOjU7zPg
-	 jQw8izEXKIk3Q2R+0GRcm10hGgKKRjC5I7nCJVW29JsOxOYpiseI+udfuNKP4/yNXbdg2
-	 DFHeW2OjmNzPg+Ye+QAUmd4hxVMmHvPt9sVSqnTf6xq2IWZ5kM0FJDyveGfTzTBkJ6JB2
-	 ti1WEtieRV+x4+gPuLzIzR5BsREYT2xoyxV/dm2MLVIXjduq8K1YjZgtxzxUTWqplYw==
+	id 22BCEF80579; Fri,  3 Jul 2026 05:22:01 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.214.181
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783048920;
+	b=Ewbx2N4hjWkm6sXF7H9IwCmEhwGR0Yl6GJUN53vcIjhgoPTQVS1BTJk02pLpS4bSyfTp
+	 3j/Om+GxcCccGMtIzjUOsJSF2HoPQmV3HAMyV7xekguS3HvFd/H1Wg/f2bwvHJMoQ+Uc2
+	 i9zrfRuxpgNahXoWTOVCM1OZDX3Ryb1eqaZ7dL+rGD0hF35IpJu+3LtDNn42869siTB+t
+	 QiDcx6aFUdcvG93d4CW8JwqeWv6kE4hAVVZRVn0lLFjSg2SKAJom7PabCnz1UN2wpbfIj
+	 O/EifWnVTxxJwoRPtNSdtYXcNP5vZgm/lBFrAxebI6JRmeQJ66B3o4aluoCnDGcDiWg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783232721;
-	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
-	bh=/TIHg2fJXDJMSoygFdRfoQJwc1DM2u4XWJRDQvuEikk=;
-	b=URJ/iNv8EvYgp2VUhQ/ad/W1ZbKowKFfozPP2mjbQamUKkfTIx4epW494Kq7ltxdzoJb
-	 svnEK7wjGpiP53kshxmzIfc/WntWt3K7DrQax+6GlsxG4q4jtPuwNd7bpcMxlXrInUtA2
-	 M/tokgn8XGpOgXQoGbGhEVVZHf1Rcgmy7CZxlLyzsio3t4EKzHxlxZAksltC8OPnjgWGu
-	 Or0iwHQTFjeSGFpI7eqBie0smtLHdTbOLv2tSIiOBSHXL3K4ZBYNPCKHnqkhECDMf/rZx
-	 DIz1koo6aVMXcCXETGuRt7eK9MOFRiWrlzoU1f33f9oIsyAF9TXjVKW3F0McqHsiXqg==
+	c=relaxed/simple; t=1783048920;
+	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
+	bh=W1AVsX43qvUOKE59T/ObWlrtbrXrPJZCWiEaPeSDmIE=;
+	b=NVtZtDBIzBoRfcN6mABBElbvZNFW6ICynvrYS0bhUe3gqdw2A2QBOurR97Ez8wZCQoBz
+	 efwwpz8aptAutjzPy8gAD/bqxc8A6CoJKssGW4tieJyBSZZkNNuqezlYmNug7WUl8Z086
+	 HFVdPNttwjjFRajshBi6bb1WhfMoD52AIbnwd6OvCfhDqHlp7TUMK7YXPuGfQ0eclDqhu
+	 cttzR9JI7j4i8ggMUgPhTj29dS9wwadiQc7ZgQBHZXkjogtl1XNMPkcpbC1lBdN7tjA7l
+	 WjE5D+SUDtFRKCEdgQTobLyQF7vQ7JYtETRROjPRoQ0+cHSdTASNa03vi9KcuyJVJ2g==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=waqaraziz.com header.i=@waqaraziz.com header.a=rsa-sha256
- header.s=default header.b=oIu1skc6;
-	arc=none smtp.remote-ip=95.217.203.20
-Received: from cp1.mywebsitebox.com (cp1.mywebsitebox.com [95.217.203.20])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=H0aefUlE;
+	arc=none smtp.remote-ip=209.85.214.181
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com
+ [209.85.214.181])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0C60F8051E
-	for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2026 08:25:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0C60F8051E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5DDE1F8011B
+	for <alsa-devel@alsa-project.org>; Fri,  3 Jul 2026 05:21:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DDE1F8011B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=waqaraziz.com header.i=@waqaraziz.com
- header.a=rsa-sha256 header.s=default header.b=oIu1skc6
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=waqaraziz.com; s=default; h=Content-Type:To:Subject:Message-ID:Date:From:
-	MIME-Version:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=yec0R06VdLac18Bjx5hE8Tl7MlsgixFDvHgZHlcVVtk=; b=oIu1skc6HATwVeU3jtnrI6h/MI
-	QzYJe6U4uchoz+dCjmxtr7dAnf4Z4/sr9xA3pHoMsAEZ9L2FVgURapGiz0dqG8GIKYjz7rKX7or7c
-	/Nc6J2KrkeDDHTml8S8UbsKu+0bboov0DrnPGb1ry0Xbv4jMzZ77Y4w/PnivDyq5tv6K5gUK4X2r5
-	XZqhnuHCWkR1Fen2uuxdN64FLXgImmlhuygkhPnaeK+CGAbCk64CswkJdDn9NqoGfhL73SZZA0pKV
-	W5jXFnKv/Kn/9Rlc4qTVJRMPBrPcUL0kwFkYeFp4rRpLWdmccOh2gNEfLpWOZpE9BDkFjvofMNjBB
-	S03zyX0Q==;
-Received: from mail-qk1-f178.google.com ([209.85.222.178]:55540)
-	by cp1.mywebsitebox.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-	(Exim 4.99.4)
-	(envelope-from <hello@waqaraziz.com>)
-	id 1wgGHZ-0000000692i-09aY
-	for alsa-devel@alsa-project.org;
-	Sun, 05 Jul 2026 11:24:49 +0500
-Received: by mail-qk1-f178.google.com with SMTP id
- af79cd13be357-9204711e831so159156385a.2
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=H0aefUlE
+Received: by mail-pl1-f181.google.com with SMTP id
+ d9443c01a7336-2cad225673bso725985ad.3
         for <alsa-devel@alsa-project.org>;
- Sat, 04 Jul 2026 23:25:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxQ5T0cZPpqjPIqUW9tTxzwN5cbvddIH/Vtzxuz0aqsMVKAzgyb
-	od1KbUcGCVyRX6Pka9oUcgMf/eMndiolbV2a9PV3PO1sYiWiCRoW6kAFRZn/HIAxkfvEGemk0bM
-	AfC9ub4FAVpavAUQBUTX4bTBAMO8zEw==
-X-Received: by 2002:a05:6214:2604:b0:8ea:47d7:5e3d with SMTP id
- 6a1803df08f44-8f74c8a3ce7mr92361916d6.45.1783232714893; Sat, 04 Jul 2026
- 23:25:14 -0700 (PDT)
+ Thu, 02 Jul 2026 20:21:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783048917; x=1783653717;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UQK9xIpBvupQsHfdWBTAzhnaT8sAOZBQ0zZR3EU2+EQ=;
+        b=H0aefUlERTBWeG5TUhTKYta0UTk+EqjVjoZARN4VDDDrznxC7cACI8WLNQf8CPKUiL
+         CcV3sgkJRPyFs6wUZPB6yKoUN8eyyNbxkQjt3B8v4of6BbmZUxsZfvE2N4r0pzNvytRj
+         eAV+3FwGzdzevbaL9c4GMs0hdLmxHhmXRaP1+UOSMUiN6TkIczDE/iOIuPI/FOWKmNvu
+         g1UtjOL+eYsNfWyP9ejrDgCJEUK/v5mkxBIXdNpDimmBzyGmExUU/KyS8YPlf2R/HulD
+         8X1XAyjVGo15FT8OCjDNetrUJVyOPcxTOgvvocTAwO32MubXeZ+du5t2dBUXoYdT5yQD
+         T9LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783048917; x=1783653717;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UQK9xIpBvupQsHfdWBTAzhnaT8sAOZBQ0zZR3EU2+EQ=;
+        b=c8X3CSsv/QSBShlFeYzhRkhs+n+AI251V5OHQhtn/FdPiUu0ny3RAcndMvb3YpPZjF
+         CMcPGlP7IGTQePVtaxHZEqN74vc/WPqlcdtyoZ3c6OqfEjPRCMoS2DbN2pKzvrGCOxGt
+         W68GhM06MUeDSSNMvP/0VgEn/qvF21DZvkeQiuKGxuU0J7tcr4jJHwhTn8nJDOxXXRTz
+         xT4inKFK7zCwS4286/mu+bmjHPm8Y4wex6GOCKCOs/y8Nu2WMUSg85jkS450+tKsu8Ef
+         5V86TDk2Mp5AupSuFOoeqZGnodIFvupeg7TjZWyXiD3OiG54hwAu8aZxs3JheXZsL2oG
+         gRiQ==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RqV05eE3BNxcVrM1xeIQdBAQkwVbnReBsu8b2PbHnt4oTxz3cMX5GfwkHFeKVASBN/73bkRoKGIGrPl@alsa-project.org
+X-Gm-Message-State: AOJu0Ywj4YJ9eYUvZNcAByTQHDQAz+eofqSsMINsLexVnWSdiN+mil7F
+	12MJn/Rda3WGFRaS/CgkopBOO9ayBkT950TUT5Hk3OfYfmfGNPYjhZ4k
+X-Gm-Gg: AfdE7cmnHq4/yawU3CqN5nLPB0BTRQn77gFnqrx7JxIRy02RVHWniCoz7qTlFw3Dayp
+	QOxYmgHDSSJEUNsEzHapfhgQhhVUcFJ8+IqpVlX6kS/I2bQrRwM192H5BXHqOqTnnf9lmAM9taT
+	VvdxUu4KOE8dVgQz7sEGlgqO8J00luo65Eb1L3dLiNL9iXR3gTgsdmZSoMSxeL1hPpp0QUTaYuZ
+	DP1/IykKN/bX3+iXTMLNcQcOtFKffEZ2ifwCmF12/YqkLJDuZIuaiXvm5Sj+hlbEbvrUGXdD6A0
+	f7tKWVqmutY4NYtqcjciaUSAk370+rEZSOiozERBcv5faBpZr1mQjqkVu/nBg4yq+X7qO957gjU
+	FY2f9ILI+gPVlJm7Jt5Uy9WhZtNNUj74KO/TGpxvcIr2EyGO0sDvuRrD8Zcl10iqjNy3qfw8VDL
+	vBcp9uwqId6iX7ZOV4o44Rd3irRmB/M27WoLvuPqHmAzz2BMkL0g==
+X-Received: by 2002:a17:903:4587:b0:2ca:d91d:d3a7 with SMTP id
+ d9443c01a7336-2cad91dd58amr5101685ad.10.1783048916866;
+        Thu, 02 Jul 2026 20:21:56 -0700 (PDT)
+Received: from [172.20.10.3] (114-137-82-69.emome-ip.hinet.net.
+ [114.137.82.69])
+        by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-2cad7129996sm2255035ad.21.2026.07.02.20.21.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2026 20:21:56 -0700 (PDT)
+Message-ID: <36760b24-8620-897b-e52b-5be52aef3fd8@gmail.com>
+Date: Fri, 3 Jul 2026 11:19:40 +0800
 MIME-Version: 1.0
-From: Waqar Aziz <hello@waqaraziz.com>
-Date: Sun, 5 Jul 2026 11:25:03 +0500
-X-Gmail-Original-Message-ID: 
- <CAC74gjdgvjnLLX30nGoTqCXhapk+ukPp_fPG0w1ykLbgEu_RfQ@mail.gmail.com>
-X-Gm-Features: AVVi8CdYQMoWalowEG-sZR_zk-yuzOZiR2s2g1WI5pR6CT_kUs8mI_dGjBjXOko
-Message-ID: 
- <CAC74gjdgvjnLLX30nGoTqCXhapk+ukPp_fPG0w1ykLbgEu_RfQ@mail.gmail.com>
-Subject: [usb-audio] Medeli 0a67:d156 mic: usb_set_interface failed (-19),
- unstable enumeration on xHCI
-To: alsa-devel@alsa-project.org
-X-Hostbreak-MailScanner-Information: Please contact the ISP for more
- information
-X-Hostbreak-MailScanner-ID: 1wgGHZ-0000000692i-09aY
-X-Hostbreak-MailScanner: Found to be clean
-X-Hostbreak-MailScanner-SpamCheck: 
-X-Hostbreak-MailScanner-From: hello@waqaraziz.com
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cp1.mywebsitebox.com
-X-AntiAbuse: Original Domain - alsa-project.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - waqaraziz.com
-X-Get-Message-Sender-Via: cp1.mywebsitebox.com: authenticated_id:
- hello@waqaraziz.com
-X-Authenticated-Sender: cp1.mywebsitebox.com: hello@waqaraziz.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
-Message-ID-Hash: ZVWQA4FCZZORALY4VIJDVWUMUB3W3D6Q
-X-Message-ID-Hash: ZVWQA4FCZZORALY4VIJDVWUMUB3W3D6Q
-X-MailFrom: hello@waqaraziz.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v5 1/2] ASoC: dt-bindings: nuvoton,nau8360: Add NAU83G60
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzk@kernel.org>, Neo Chang <YLCHANG2@nuvoton.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
+ krzk+dt@kernel.org, linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, kchsu0@nuvoton.com, sjlin0@nuvoton.com
+References: <20260630021510.821919-1-YLCHANG2@nuvoton.com>
+ <20260630021510.821919-2-YLCHANG2@nuvoton.com>
+ <20260630-amusing-striped-urchin-d49c93@quoll>
+From: YLCHANG2 <neo.chang70@gmail.com>
+In-Reply-To: <20260630-amusing-striped-urchin-d49c93@quoll>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: neo.chang70@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: HIWDFFIG4YRVYDR6DK6N4OJWFZP5VMPG
+X-Message-ID-Hash: HIWDFFIG4YRVYDR6DK6N4OJWFZP5VMPG
+X-Mailman-Approved-At: Sun, 05 Jul 2026 09:59:47 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZVWQA4FCZZORALY4VIJDVWUMUB3W3D6Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HIWDFFIG4YRVYDR6DK6N4OJWFZP5VMPG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,58 +152,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGVsbG8sDQoNCkkgaGF2ZSBhIFVTQiBtaWNyb3Bob25lIChzb2xkIGFzICJKbWFyeSBNQy1QVzEw
-IjsgdGhlIGNoaXAgcmVwb3J0cyBhcw0KTWVkZWxpLCBVU0IgSUQgMGE2NzpkMTU2KSB0aGF0IHdv
-cmtzIGNvcnJlY3RseSBvbiBXaW5kb3dzIGFuZCBBbmRyb2lkDQpidXQgZmFpbHMgb24gTGludXgu
-IEknbSBob3BpbmcgdGhlcmUgaXMgYSBzbmRfdXNiX2F1ZGlvIHF1aXJrX2ZsYWdzIG9yDQp1c2Jj
-b3JlLnF1aXJrcyB2YWx1ZSB0aGF0IHdvdWxkIG1ha2UgaXQgd29yaywgb3IgdGhhdCB0aGlzIGRl
-dmljZSBtYXkgYmUNCmEgY2FuZGlkYXRlIGZvciBhIHF1aXJrIGVudHJ5Lg0KDQpTeXN0ZW06DQot
-IExpbnV4IE1pbnQgMjIuMywga2VybmVsIDYuMTcuMC0zNS1nZW5lcmljDQotIEludGVsIHhIQ0kg
-aG9zdCBjb250cm9sbGVyICgwMDAwOjAwOjE0LjApDQotIFBpcGVXaXJlDQotIENvbm5lY3RlZCB2
-aWEgVVNCLUEgKHRoZSBtaWMgc2hpcHMgd2l0aCBhIFVTQi1DLXRvLVVTQi1BIGFkYXB0ZXI7IHRo
-ZQ0KICBsYXB0b3AncyBVU0ItQyBwb3J0IGlzIGRlYWQsIHNvIGEgZGlyZWN0IFVTQi1DIHRlc3Qg
-aXMgbm90IHBvc3NpYmxlKS4NCiAgVGhlIHNhbWUgY2FibGUvYWRhcHRlciBpbnRvIGEgVVNCLUEg
-cG9ydCB3b3JrcyBmbGF3bGVzc2x5IG9uIGEgV2luZG93cw0KICBQQywgc28gdGhlIHBoeXNpY2Fs
-IGNvbm5lY3Rpb24gaXMgbm90IHRoZSB2YXJpYWJsZS4NCg0KRGV2aWNlOg0KLSBpZFZlbmRvcj0w
-YTY3IGlkUHJvZHVjdD1kMTU2LCAiTUMtUFcxMCIgLyAiSmluLUF1ZGlvIiwgYmNkRGV2aWNlIDAu
-MDINCi0gVVNCIDIuMCBmdWxsLXNwZWVkLCBidXMtcG93ZXJlZCwgTWF4UG93ZXIgMTAwIG1BDQot
-IFVBQzEsIDQ4MDAwIEh6LCAxNi1iaXQgYW5kIDI0LWJpdCBQQ00sIGlzb2Nocm9ub3VzIGVuZHBv
-aW50cw0KLSBIYXMgYSBoYXJkd2FyZSBidXR0b24gdGhhdCBjeWNsZXMgb25ib2FyZCBtb2RlcyAo
-cG9wL3N0dWRpby9ldGMpLg0KDQpUd28gZmFpbHVyZSBzaWduYXR1cmVzOg0KDQooMSkgRW51bWVy
-YXRlcywgdGhlbiBkaXNjb25uZWN0cyBhdCByZXN0LCBvZnRlbiB3aXRoaW4gfjEgc2Vjb25kLg0K
-U29tZXRpbWVzIGNsZWFuIChubyBlcnJvciksIHNvbWV0aW1lcyB3aXRoIGVycm9yIC03MSAvIC0z
-MjoNCg0KICB1c2IgMS0yLjEuMzogbmV3IGZ1bGwtc3BlZWQgVVNCIGRldmljZSBudW1iZXIgMTEg
-dXNpbmcgeGhjaV9oY2QNCiAgdXNiIDEtMi4xLjM6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZl
-bmRvcj0wYTY3LCBpZFByb2R1Y3Q9ZDE1NiwNCmJjZERldmljZT0gMC4wMg0KICB1c2IgMS0yLjEu
-MzogUHJvZHVjdDogTUMtUFcxMA0KICB1c2IgMS0yLjEuMzogTWFudWZhY3R1cmVyOiBKaW4tQXVk
-aW8NCiAgdXNiIDEtMi4xLjM6IFdhcm5pbmchIFVubGlrZWx5IGJpZyB2b2x1bWUgcmFuZ2UgKD0y
-NDU3NiksIGN2YWwtPnJlcyBpcw0KcHJvYmFibHkgd3JvbmcuDQogIHVzYiAxLTIuMS4zOiBVU0Ig
-ZGlzY29ubmVjdCwgZGV2aWNlIG51bWJlciAxMQ0KDQogIChvdGhlciBjeWNsZXM6KQ0KICB1c2I6
-IGRldmljZSBkZXNjcmlwdG9yIHJlYWQvYWxsLCBlcnJvciAtMzINCiAgdXNiOiBjYW4ndCBzZXQg
-Y29uZmlnICMxLCBlcnJvciAtNzENCiAgdXNiOiBkZXZpY2Ugbm90IGFjY2VwdGluZyBhZGRyZXNz
-LCBlcnJvciAtNzENCiAgdXNiaGlkIDEtMToxLjM6IGNhbid0IGFkZCBoaWQgZGV2aWNlOiAtNzEN
-CiAgdXNiaGlkIDEtMToxLjM6IHByb2JlIHdpdGggZHJpdmVyIHVzYmhpZCBmYWlsZWQgd2l0aCBl
-cnJvciAtNzENCg0KKDIpIFByZXNzaW5nIHRoZSBoYXJkd2FyZSBtb2RlIGJ1dHRvbiAod2hpY2gg
-cmVjb25maWd1cmVzIHRoZSBzdHJlYW1pbmcNCmludGVyZmFjZSkgcmVsaWFibHkgZGlzY29ubmVj
-dHMgaXQgd2l0aDoNCg0KICB1c2I6IDI6MTogdXNiX3NldF9pbnRlcmZhY2UgZmFpbGVkICgtMTkp
-DQoNCldoZW4gaXQgZG9lcyBzdGF5IGNvbm5lY3RlZCBpdCB3b3JrcyBmdWxseTogaXQgYXBwZWFy
-cyBhcyBhIGNhcmQgaW4NCmFyZWNvcmQgLWwgYW5kIGFzIGEgMjQtYml0LzQ4a0h6IHNvdXJjZSBp
-biBQaXBlV2lyZSwgYW5kIHJlY29yZHMNCmNvcnJlY3RseS4gU28gdGhlIGF1ZGlvIHBhdGggaXMg
-ZmluZTsgdGhlIHByb2JsZW0gaXMgKDEpIHN0YXlpbmcNCmVudW1lcmF0ZWQgYW5kICgyKSBzdXJ2
-aXZpbmcgdGhlIGludGVyZmFjZSBjaGFuZ2Ugb24gbW9kZS1zd2l0Y2guDQoNCkFscmVhZHkgdHJp
-ZWQgKG5vIHN1Y2Nlc3MpOg0KLSB1c2Jjb3JlLnF1aXJrcz0wYTY3OmQxNTY6Z2kgIC0+IHN0aWxs
-IGRldGVjdHMgYnV0IGRyb3BzDQotIHVzYmNvcmUucXVpcmtzPTBhNjc6ZDE1NjpnaWsgLT4gc3Rv
-cHMgZGV0ZWN0aW5nIGVudGlyZWx5DQotIHNuZF91c2JfYXVkaW8gcXVpcmtfZmxhZ3M9MHgwMiBh
-bmQgMHgyMDAgLT4gaW5jb25jbHVzaXZlOyB0aGUgZGV2aWNlDQogIGlzIG9mdGVuIHRvbyB1bnN0
-YWJsZSB0byBob2xkIGEgY29ubmVjdGlvbiBsb25nIGVub3VnaCB0byBqdWRnZSB0aGUNCiAgbW9k
-ZS1zd2l0Y2ggYmVoYXZpb3INCi0gdXNiY29yZSBhdXRvc3VzcGVuZCBkaXNhYmxlZCBnbG9iYWxs
-eSAtPiBubyBjaGFuZ2UNCi0gcG93ZXJlZCBodWIgLyBleHRlcm5hbCA1ViAtPiBubyBjaGFuZ2Ug
-KGRldmljZSByZXF1ZXN0cyBvbmx5IDEwMCBtQSkNCg0KUXVlc3Rpb25zOg0KMS4gSXMgdGhlcmUg
-YSBzbmRfdXNiX2F1ZGlvIHF1aXJrX2ZsYWdzIHZhbHVlIHlvdSB3b3VsZCByZWNvbW1lbmQgZm9y
-IGENCiAgIGRldmljZSB0aGF0IGZhaWxzIHNldF9pbnRlcmZhY2UgKC0xOSkgb24gYW4gYWx0c2V0
-dGluZyBjaGFuZ2U/DQoyLiBXb3VsZCBhIHF1aXJrIGVudHJ5IGZvciAwYTY3OmQxNTYgYmUgYXBw
-cm9wcmlhdGUsIGFuZCB3aGF0DQogICBpbmZvcm1hdGlvbiB3b3VsZCB5b3UgbmVlZCB0byBhZGQg
-b25lPw0KMy4gQW55IHN1Z2dlc3Rpb24gZm9yIHRoZSBpbnRlcm1pdHRlbnQgLTcxIGVudW1lcmF0
-aW9uIGZhaWx1cmVzIG9uIHhIQ0kNCiAgIChzaG9ydCBvZiBmb3JjaW5nIFVTQiAyLjApPw0KDQpJ
-IGNhbiBwcm92aWRlIGZ1bGwgbHN1c2IgLXYgb3V0cHV0IGFuZCBhbiBhbHNhLWluZm8uc2ggdXBs
-b2FkIG9uIHJlcXVlc3QuDQoNClRoYW5rcyBmb3IgeW91ciB0aW1lLg0KDQpXYXFhcg0K
+
+On 6/30/26 14:40, Krzysztof Kozlowski wrote:
+> On Tue, Jun 30, 2026 at 10:15:09AM +0800, Neo Chang wrote:
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  clock-names:
+>> +    const: mclk
+>> +
+>> +  firmware-name:
+>> +    items:
+>> +      - description: |
+> Drop |
+Got it. Will fix in v6.
+>
+>> +          Left DSP core firmware.
+>> +          In PBTL mode, the Left firmware is ignored and only the Right is applied.
+>> +      - description: Right DSP core firmware.
+>> +
+>> +  nuvoton,pbtl-enable:
+>> +    type: boolean
+>> +    description: NAU83G60 supports PBTL mode for mono output.
+>> +
+>> +  nuvoton,dac-cur-enable:
+>> +    type: boolean
+>> +    description: |
+> Drop |
+>
+> There is no formartting to preserve and I did not ask to introduce it
+> here. I commented in completely different place.
+>
+> With these two fixed:
+Got it. Will fix in v6.
+>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+>
+> Best regards,
+> Krzysztof
+>
