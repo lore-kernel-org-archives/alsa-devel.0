@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8287C44501
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2026 10:16:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CC6BC43458
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2026 10:19:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 192256021C;
-	Sun,  5 Jul 2026 12:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 192256021C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63DA560226;
+	Sun,  5 Jul 2026 12:18:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63DA560226
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783246579;
-	bh=bp1Hm1BeRuztOxUAZgY2thFsv6juaCxQ3yzkyA8zJDw=;
+	s=default; t=1783246748;
+	bh=fbQBwoI6uEy55w34MMC39fVQyAnOEVE8dhVsi7pyjE4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=WhPK6tTMF95OZcycQBxZtFffGgezyfVW9cJLs2AgvP01o2FyBc9uKZI8dDhK+AjLu
-	 nkPLLBzQjENpfYvPkZ+j1LW/NN3vqY2Ku/E+ibXn0DEnS12eqItBxl6iESJm9LcEEz
-	 jEh4XDhiqYS1tCQ56XBkrXQ9ITQv95AOoDuOYVQs=
+	b=BNgjev+APQ+Yq8NeDo1repFMtijPSiJBjYPgsXY1BB2VdRhY9s0330u9KUjH9TdLC
+	 9//gzNQ7Ct361HuS2NnelewzZsAiD50ur0gIYppybAkCdsofxLs6n9SSPKujr7BC6F
+	 waw+VfofWvU5EBoL7SjbQ9zRQ/yPVM3ZivV8SVZ0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 618D7F80602; Sun,  5 Jul 2026 12:15:45 +0200 (CEST)
+	id A687FF80601; Sun,  5 Jul 2026 12:18:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0630F80601;
-	Sun,  5 Jul 2026 12:15:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 584F7F80601;
+	Sun,  5 Jul 2026 12:18:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9B8CF80526; Sun,  5 Jul 2026 12:15:39 +0200 (CEST)
+	id D7DFDF80526; Sun,  5 Jul 2026 12:18:25 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783246539;
-	b=ddfL06Ge0tU3Ydo3FGSTF6xsBtfB6h2SND0rMRtOGzlU19KtHISvKm9xVDZsKPTImHQ4
-	 wQtk18FUy0xeuEweLFXZ51/aMsr3O/py9/QUM0/2VknrOTKziE5gtA3U4kP/+0GHsnZVq
-	 +r+yzOkxEvxY/FKcUbucILW6Ff1hvwh+0t8Q+3KqCE8mtUY8dTCLAWPBEpS1g7CYI8SgD
-	 adNkZJNggv+QkDt009qRn9kNqs3hgOGY4osy1KmpLWdRiUhe9GFouOCA8Owua/eZJNNZ1
-	 ojNbkzRYbe2m+U7jZMUkhZRqzgEZAL1nuW2oh9l1Z8kzfB5GhQ8Pc5GcbBu3vc8eTDw==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783246704;
+	b=sJ+gB/ijknAldEcTbyZrfO/2lkMYSIC+SFA05bNtMqTlNrccMT5bfJj6Ty6bxZ/sYZyh
+	 mu5OExPomZiJAaRwbpUVMy8PywQ3QTsn/juMunvybgw0JoV7VZ7uXVRIHPIOBFgRjLS/U
+	 9Hw0oNO07Dh5x5psKG4nRTmU2mGzmO20HOfHPNpvg1bZJvZu1Y61sdpkuQRE6d9uFDkyB
+	 tUBcRwl5bNB7GmVIJafvogQZ4DVJ1sopUp/reHxZj27jJZ0TjM9TgMX9IyDJvF3j5YZkh
+	 PTfHney1yv9vilO3tgmwEZ4nzZtZrkqYHSKIJWUDnrSo4Kfq0wRnNxfz99kcC1jJ35A==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783246539;
+	c=relaxed/simple; t=1783246704;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=bp1Hm1BeRuztOxUAZgY2thFsv6juaCxQ3yzkyA8zJDw=;
-	b=InldeVioOGHlJMiL1KXqJU7tNBZ+1I72+EN0T3o3+2v1sLv+NGCXU5LsCNF88SM9qbWa
-	 eCryp5JrdjWsbNrquvhmJN/URJPLAccmxA1gXUoyTopbrjJDP8w5wdXxLKLqFze1qhC1y
-	 ltJLnrV6c1DuqiFX113Wf4B5D3cHyslLrS9KKuhcDTCAXTZ2CP01fDVme4scNEAYbheCb
-	 dW9Khy4UXYc+C1yCOvrdrj7gh4DNuCm/TM17+yCQvTm2Iyr+G7HGkKLOPGGSq5EKSvFLX
-	 iT/v6XRwEiRqGQFc1QsFVNZlH6hx+KB4x9DNBo/Hm+I9tIOIJbZMY89OnZ5/zOZgAUg==
+	bh=fbQBwoI6uEy55w34MMC39fVQyAnOEVE8dhVsi7pyjE4=;
+	b=FnPN2QilPs5+SXNdyaJbaBKp6uy5kC2KuO3PPWqDbP91vxFnN3e1eS54Jzfildvd0cea
+	 wZ0OqMXOaL4UWpCHSscMBZ7OBKeTixyVp6rCVHID6znFxXdp/HOQ7p3Svf5ewfdN+DVn2
+	 IwbE/n9P/zkm9UgekxICx9oxz3OqBq3dNxDKPC36Q3JmkOeYHSZ8FKkvgAGIRvMZ19GbT
+	 OooBwBFiP4HZPjxXEquPhhwcYOytOW3YxNhrgsg0WtEa01mKkS1Gfw/UXx99zC073D1YU
+	 BZcyRzoIwewy0YfOHdIJUlwOTIRrseFy9n2NeEja3n5/YdW+QXIeMjqVKgBELyZE/VQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B3F3F80524
-	for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2026 12:15:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B3F3F80524
+	by alsa1.perex.cz (Postfix) with ESMTP id 834D1F80524
+	for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2026 12:18:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 834D1F80524
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18bf5d4731cec500-webhooks-bot@alsa-project.org>
-In-Reply-To: <18bf5d4731a8a700-webhooks-bot@alsa-project.org>
-References: <18bf5d4731a8a700-webhooks-bot@alsa-project.org>
+Message-Id: <18bf5d6dac411300-webhooks-bot@alsa-project.org>
+In-Reply-To: <18bf5d6dac381b00-webhooks-bot@alsa-project.org>
+References: <18bf5d6dac381b00-webhooks-bot@alsa-project.org>
 Subject: sof-soundwire: cs42l43 headphone output is muted due to missing
  Headphone Switch in UCM
-Date: Sun,  5 Jul 2026 12:15:39 +0200 (CEST)
-Message-ID-Hash: MRK6DB7BFEGIJE3IYD47DV3OKF5HVEZP
-X-Message-ID-Hash: MRK6DB7BFEGIJE3IYD47DV3OKF5HVEZP
+Date: Sun,  5 Jul 2026 12:18:25 +0200 (CEST)
+Message-ID-Hash: ZO32ZJYT66LPXNAG4MGVYSA37OKED7ZK
+X-Message-ID-Hash: ZO32ZJYT66LPXNAG4MGVYSA37OKED7ZK
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -76,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MRK6DB7BFEGIJE3IYD47DV3OKF5HVEZP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZO32ZJYT66LPXNAG4MGVYSA37OKED7ZK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,15 +85,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #804 was opened from Natializd:
+alsa-project/alsa-ucm-conf issue #804 was edited from Natializd:
 
 Hi,
     
-    I'm using a Dell Pro Max 16 Plus (Intel 800 Series ACE / cs42l43 codec via SoundWire) running Ubuntu 26.04 with kernel 7.0.0-27-generic.
+    I'm using a Dell Pro Max 16 Plus (Intel 800 Series ACE / cs42l43
+    codec via SoundWire) running Ubuntu 26.04 with kernel 7.0.0-27-generic.
     
-    When booting up or logging in with headphones plugged in, I get no sound output. The desktop environment shows that headphones are selected and unmuted, but there is complete silence.
+    When booting up or logging in with headphones plugged in, I get no
+    sound output. The desktop environment shows that headphones are
+    selected and unmuted, but there is complete silence.
     
-    Checking the mixer status using amixer shows that the "Headphone Switch" control on card 1 remains off:
+    Checking the mixer status using amixer shows that the "Headphone Switch"
+    control on card 1 remains off:
     $ amixer -c 1 cget name='Headphone Switch'
     numid=90,iface=MIXER,name='Headphone Switch'
       ; type=BOOLEAN,access=rw------,values=1
@@ -102,9 +106,12 @@ Hi,
     If I manually toggle it on, sound starts working immediately:
     $ amixer -c 1 cset name='Headphone Switch' on
     
-    The root cause is that `/usr/share/alsa/ucm2/sof-soundwire/cs42l43.conf` is missing mappings for the Headphone Switch in both the sequences and values. 
+    The root cause is that `/usr/share/alsa/ucm2/sof-soundwire/cs42l43.conf`
+    is missing mappings for the Headphone Switch in both the sequences
+    and values.
     
-    I manually edited `/usr/share/alsa/ucm2/sof-soundwire/cs42l43.conf` under SectionDevice."Headphones" from this:
+    I manually edited the configuration file under SectionDevice."Headphones"
+    from this:
     
     
     EnableSequence [
@@ -149,7 +156,9 @@ Hi,
     }
 
 
-    After restarting PipeWire/WirePlumber, the operating system now correctly manages the hardware switch automatically and the audio works on boot/login.
+    After restarting PipeWire/WirePlumber, the operating system now
+    correctly manages the hardware switch automatically and the audio
+    works on boot/login.
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/804
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
