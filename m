@@ -4,96 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 247BBC43458
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2026 12:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E272DC43458
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2026 12:33:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D29F960219;
-	Sun,  5 Jul 2026 14:17:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D29F960219
+	by alsa0.perex.cz (Postfix) with ESMTPS id DED5F60208;
+	Sun,  5 Jul 2026 14:32:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DED5F60208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783253853;
-	bh=8vZcz6qAZD4uRcsZpPiAXNiCjuQZ+E/uDUWR8V0b/vM=;
+	s=default; t=1783254782;
+	bh=kCnFH0V5bkUOIV0fiHl29DKKYu4m94o1jAMzJXsZ7vM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q7RkEB8HTsRcQuWmtILdHHYAdRf/p243zD5ih/AKFwH6N/KWY8klEHSmgz0A8x3P5
-	 TAu7XJLN2Zn89YuAQNJ0vi7jcYWIIn5sQflee3KMq3e5EiRNDbZhZIf8ZL9Hk3eob7
-	 UWRgDGP3G78hY4rxoT5yVHT5Mikgjthu2ur9L+lQ=
+	b=Md2VANJmTvKeyhmFWwer1YH5/TFKokk/0qD43OhLV3jmqSvDpgAhIcPo5jTaE1TBt
+	 AAsiUMXmsRFArVPhm5eGpTbFxbfdMKfya1xz4LKMdHboqQxyemHBf4fb51la/Qytvi
+	 fvho0dtsdjzQY5RAH/2HrSQwKqkKtHnpcvUu/eJY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C244DF805B3; Sun,  5 Jul 2026 14:16:54 +0200 (CEST)
+	id 2AA88F805FD; Sun,  5 Jul 2026 14:32:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6031CF80601;
-	Sun,  5 Jul 2026 14:16:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAAECF80524;
+	Sun,  5 Jul 2026 14:32:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3FCA9F80526; Sun,  5 Jul 2026 14:16:49 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783253807;
-	b=B5+M3vtYEu+fqfHMuNi/IaBTz3NN0hsY9BdEhy+LT3Z8fl/OdvjE473LOBMQ2/nmf2kI
-	 8BEqVkWAd+03sWbgnpBTKRvqCZo3uzX/zmqmaDDLGmqJj758gPyqg6NbpHXmcIJQ8dTl4
-	 x31m165e1muk3O7L+wuwXYpKHkFr1kC9u1i1d1QJLl48YcjeoXLciTUbCXcpE5kMR0Rhu
-	 U+IwniTTU+O0Bkwwhb8YTM65QMxeDREV6bIcmHwUiBX78/QwgFWyv+yzM8bvjrq3TCp+5
-	 pspTEPV+lWLEO7xyvEa2m0fs7xBc9ijD8WacAVXdoKL4P4M+ry1ZKlZ81/vEku8pekg==
+	id D4E03F80526; Sun,  5 Jul 2026 14:32:19 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783254738;
+	b=sC/PP3OgppgJs/rVfAD/aRMyg+aponqOtQhkPMvyhSX/JZ7TeMlrICQwyQXVixDIfFhN
+	 BwyRVtIfvVLvT6INuNmOT0VypUqguNMVvZiHFI7YMr38fogK8cI0t4i4WrNTNUizT2aLJ
+	 YL07Vwk/u+lmfeEXe4n+2TUfyFsuXY1g/z/4q375SxuzdV3TnVZAj2Ej44bUaXuXlZ03c
+	 Ndv1HjI/xr4+wruNnz0GbipEWNmnz4GeTR2TDVd9ViOVbLB8DlQTNyOYMdUl7ZJB07F9l
+	 N9m6EOErbjJNPCYEJZ+Yo5Bdt1I/8u4AVDKVFGVnnyQ94BWkHTgBJgsPIj53wWHNiLA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783253807;
+	c=relaxed/simple; t=1783254738;
 	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=8vZcz6qAZD4uRcsZpPiAXNiCjuQZ+E/uDUWR8V0b/vM=;
-	b=E9N5F13Q4HyrvxVGGHIWu9L/yEqCQt5o5ok7qGxjJ6EMJAtlNNcajIXEBIUKtyeaL1KY
-	 ER0EqlN4EgT+huAAsFRGBblDEyi4Dd2zG287I7wi71+K7pAiYA+OM1B1ZG8GGuYevPc3l
-	 phY+/of3D4EjUHFfF7svZ4MuzTZA5f0TYW5ZQB8laM4pIjWTA0Lq2pj6XLb+OouFj1LLe
-	 S22tbi/COkCQWB81p1YLjp0Fshm83udPXpmFPFmImRJP1LGvUjSDcM3G48W6XY+YwRyb+
-	 FSE8cCLqMJtewabnUyunMYKu2tpNMwA+dlP289OxUh6zg9NilG9kFEgZ/y1HlZ2H9Vw==
+	bh=kCnFH0V5bkUOIV0fiHl29DKKYu4m94o1jAMzJXsZ7vM=;
+	b=l4tbQaf7VYsQrbcTlXDZSbzgmbBl/79x/Fzuo73/OeHL/iU8AeRmt2NxMA8qxELeBcJ4
+	 a1pMLjo3GzA9VYBtNZGW9+1CTlG7vzTAkN1dIhoaap35QkQmFvNnporiyDMsOGpjcJWb1
+	 ++/taF15jey3FHVMppYGLQDAjHptc/HWasa7uR5MMRRv3AbWqalC77ws0FHBcRtgY6VG4
+	 77+NZISlRb9ILzbTAhbq7j6WAVmq+traLQ1TcTtCpIqJAfz5Cilkf4mUsaR/TNiZqhRMy
+	 SG8dJ/uKljhpgLkpQBPsh2s9trBdyW83fG07JtjtQurAefNK2ItL6/ObxJHMQ/r9z8w==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=DNIsErs4;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+ header.s=k20260515 header.b=LnUhwDHo;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7E34FF8026D
-	for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2026 14:16:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E34FF8026D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9C339F80524
+	for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2026 14:32:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C339F80524
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=DNIsErs4
+ header.s=k20260515 header.b=LnUhwDHo
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 067986001A;
-	Sun,  5 Jul 2026 12:16:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A8171F000E9;
-	Sun,  5 Jul 2026 12:16:43 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 88F2A40428;
+	Sun,  5 Jul 2026 12:32:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478B71F000E9;
+	Sun,  5 Jul 2026 12:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783253803;
-	bh=wCXuoEM+zXYvIbDqg+uC7kK8f8ZsiBmBh0QdsgSA2J0=;
+	s=k20260515; t=1783254734;
+	bh=CUmcoIH8UZfQOi92h9YHbdWwrZUGogZhLPJcSsnuaE8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=DNIsErs4F0LN6jZPLj6sZNSWOdc333z7m5CeFrORtHp55ooIFCD0YHAhSd4B8MSlb
-	 BnayAuHJaoxcaazU10maaDj0o/gDLiE0hSwdjnDeUUY4oWnVuFZ5WtLIyMfPkc5fxk
-	 +Wgwfc28cWC6op2Exr2AYyEKqvZrE/p9zr144QU/3xP8J/eG7gyFd22t6dy1og5zQm
-	 Kmw2vgG5C4AqgfQ2OA1Z/dadEymbg/QLizKhHyIPAMsh1s7gKrSHyo9xvholzYTtNi
-	 AlDjMONZFslEyqF9huf4G/B2my4WDSyXrB+qwgA47Z78fMEb2vWn0ca5+Nriu1Qx+T
-	 BGVzKyyzVH9OA==
+	b=LnUhwDHoT1C2NwsP2qpQUJPINDRwCgLMsyP1P9fmVkRgM/PaVZk2xVU+LWoaa6DO2
+	 hcc2s3uYQYvhPOzdIp0hohZ70JPlsjRfVandee4VUaTE4AjVmcAoMUKr6hOiJVJIIF
+	 YfPk27/06kyXvTeLhEa572sGVgW8XW7fdJGszb3+aAwR3Vi7+nMU+cM08V4kkykZDl
+	 h6ZvRz5NUzxi4qR58Pp3YLrNUqsiSLp4gGYVX5G0TAPiVPXnoGHYmQu00kw5zQr0Bv
+	 Ji83tV8I2/Y0XuiIySRHLImrNwEfxagbCGDQuhUA7sr6FqKU2GIYWWNDaqCxL6CeRU
+	 rTJOKVZYTgR+A==
 Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
-	id 0D9901AC5AC6; Sun, 05 Jul 2026 13:16:41 +0100 (BST)
-Date: Sun, 5 Jul 2026 13:16:41 +0100
+	id EF3E51AC5AC6; Sun, 05 Jul 2026 13:32:11 +0100 (BST)
+Date: Sun, 5 Jul 2026 13:32:11 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v7.2-rc1
-Message-ID: <akpLKbPAdPnoGaww@sirena.co.uk>
-References: <20260705115220.1C9801AC5AC6@finisterre.sirena.org.uk>
+To: YLCHANG2 <neo.chang70@gmail.com>
+Cc: Neo Chang <YLCHANG2@nuvoton.com>, lgirdwood@gmail.com, perex@perex.cz,
+	robh@kernel.org, krzk+dt@kernel.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+	kchsu0@nuvoton.com, sjlin0@nuvoton.com
+Subject: Re: [PATCH v5 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
+ amplifier
+Message-ID: <akpOy2HJsDCu7wVx@sirena.co.uk>
+References: <20260630021510.821919-1-YLCHANG2@nuvoton.com>
+ <20260630021510.821919-3-YLCHANG2@nuvoton.com>
+ <66ce56eb-95b9-4915-8658-a1e4d1eacd7f@sirena.org.uk>
+ <3b32493b-b827-e4ed-3ad1-281dc19faf40@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="W+ubnJuzOtu+Kl9I"
+	protocol="application/pgp-signature"; boundary="9OleKUcYTZwvIODp"
 Content-Disposition: inline
-In-Reply-To: <20260705115220.1C9801AC5AC6@finisterre.sirena.org.uk>
-X-Cookie: Whatever became of eternal truth?
-Message-ID-Hash: 2HMYAPQGROVI45VWOZ5FNSLHNZC7GYSW
-X-Message-ID-Hash: 2HMYAPQGROVI45VWOZ5FNSLHNZC7GYSW
+In-Reply-To: <3b32493b-b827-e4ed-3ad1-281dc19faf40@gmail.com>
+X-Cookie: Absence makes the heart grow frantic.
+Message-ID-Hash: M2BL5UZO4DEVGQNTOSAKI6AZ36WFEH47
+X-Message-ID-Hash: M2BL5UZO4DEVGQNTOSAKI6AZ36WFEH47
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2HMYAPQGROVI45VWOZ5FNSLHNZC7GYSW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M2BL5UZO4DEVGQNTOSAKI6AZ36WFEH47/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,38 +120,48 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---W+ubnJuzOtu+Kl9I
+--9OleKUcYTZwvIODp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 05, 2026 at 12:52:19PM +0100, Mark Brown wrote:
-> The following changes since commit dc59e4fea9d83f03bad6bddf3fa2e524917774=
-82:
->=20
->   Linux 7.2-rc1 (2026-06-28 12:01:31 -0700)
->=20
-> are available in the Git repository at:
->=20
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/=
-asoc-fix-v7.2-rc1
+On Fri, Jul 03, 2026 at 11:26:12AM +0800, YLCHANG2 wrote:
+> On 7/2/26 23:15, Mark Brown wrote:
 
-Sorry, this is a duplicate due to me using a different machine to sned
-my SPI PR before the sound fixes landed with Linus.
+> > I would expect TDM to be configured by set_tdm_slot() from the machine
+> > driver, not from userspace.  I see the driver does actually have a
+> > set_tdm_slot() operation...
 
---W+ubnJuzOtu+Kl9I
+> Our DSP functions require specific Slot mapping (e.g., Slot 0 for AECL, Slot
+> 1 for AECR).
+> The standard set_tdm_slot() only defines active slots but doesn't handle the
+> functional mapping.
+> We originally intended to allow dynamic mapping via UCM/userspacea and then
+> apply these settings using set_tdm_slot().
+> How should we implement this mapping according to ASoC standards?
+
+This would usually be doing using DAPM routing if it's expected to be
+runtime variable, define AIF widgets for the bus slots then route to
+them.
+
+> Should we define the default mapping during the codec probe stage,
+> or is there a preferred way to handle this via the machine driver?
+
+Device properties, this is better if it's supposed to be fixed for the
+system.
+
+--9OleKUcYTZwvIODp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpKSygACgkQJNaLcl1U
-h9BMEQf4+7UFd8njlt/KUjSv5esd/KP3cYr1IvAJvXEIDU+2kglkv4ykI/nR656Y
-1NImQWWQywZGh+dWCb3P1/g/v6ff/CHwsWjyIUJxHnSFZ7MnHUMhazGWCkgf7qhW
-x+uaGt82AU5fJmV1pQL7i6wKEooPve2zydRTNXTQR0Xc147eO6ax0mIoM+DNSoFD
-6Bp1zZyBpZt+DhL6166zncXve1UL1UxiFHZGUD6epIv1P02+dGcPFMfQRQlAeTIx
-4KQvHJ9qKhFjh7ReCNU3otIE4gyztkaxAdZ242s8yHvWfgSwfbPq0qVcIpwsV9Pf
-ppasO8Sd9wrO7W7aeysTiZVacF/v
-=RHX/
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpKTssACgkQJNaLcl1U
+h9A/mQf/c053HM+naqdF17/uVmgb6e04rPNnqH7Us+kvxpfWyPS0bp+3vo1P6Ur0
+POHx0sPld8RauUxTig2rXk+Kt87Asn3/wm4kTQrOvOBv8airOLBViFeIQHoIrajo
+JdH678NtqoVhc3zy5W8pt+/6zeTbQK4obbfOzjtWEe6EbsrXiy3B9BUnxbe2bt5k
+E3coE4U4a587PPepJe5ue7eJfyc3xFHTHlsLxtWXsO+P0oSZXwrt2CB74Cvjvzwc
+Yt1JExI6vhfLnLt/2YR1PtTiMH9srG/xVBQo7USnxq1SxDnV2y8nelMpyE9LjkAH
+KZ9YYwMy9ji8OzML5MUqNYGiVXihiA==
+=bhKF
 -----END PGP SIGNATURE-----
 
---W+ubnJuzOtu+Kl9I--
+--9OleKUcYTZwvIODp--
