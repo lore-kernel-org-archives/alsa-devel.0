@@ -4,102 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E272DC43458
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jul 2026 12:33:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 922B6C43458
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jul 2026 04:28:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DED5F60208;
-	Sun,  5 Jul 2026 14:32:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DED5F60208
+	by alsa0.perex.cz (Postfix) with ESMTPS id 021BA6021A;
+	Mon,  6 Jul 2026 06:28:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 021BA6021A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783254782;
-	bh=kCnFH0V5bkUOIV0fiHl29DKKYu4m94o1jAMzJXsZ7vM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Md2VANJmTvKeyhmFWwer1YH5/TFKokk/0qD43OhLV3jmqSvDpgAhIcPo5jTaE1TBt
-	 AAsiUMXmsRFArVPhm5eGpTbFxbfdMKfya1xz4LKMdHboqQxyemHBf4fb51la/Qytvi
-	 fvho0dtsdjzQY5RAH/2HrSQwKqkKtHnpcvUu/eJY=
+	s=default; t=1783312098;
+	bh=EIh9Lr7UiXFgEBDOpyx1m8W/6+SZv++furD/8DV7pdo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=offO4tmxc8N4t3l4nVU7/9YxSrbwdRLkhH7cLjoPwXZPz9ehIccV5s9F5G+f+88Mi
+	 CCJm+hlC2USLY1/1h2u82UeGhwOik2uwmD9qcTLK7QYQ6JUorsgNeaqM493GIc72o7
+	 g32z8m0bkIrPT+sbxRGju+WOe14QEn9v8saKawyY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2AA88F805FD; Sun,  5 Jul 2026 14:32:26 +0200 (CEST)
+	id B050AF805F9; Mon,  6 Jul 2026 06:27:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAAECF80524;
-	Sun,  5 Jul 2026 14:32:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 048FFF805EF;
+	Mon,  6 Jul 2026 06:27:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4E03F80526; Sun,  5 Jul 2026 14:32:19 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783254738;
-	b=sC/PP3OgppgJs/rVfAD/aRMyg+aponqOtQhkPMvyhSX/JZ7TeMlrICQwyQXVixDIfFhN
-	 BwyRVtIfvVLvT6INuNmOT0VypUqguNMVvZiHFI7YMr38fogK8cI0t4i4WrNTNUizT2aLJ
-	 YL07Vwk/u+lmfeEXe4n+2TUfyFsuXY1g/z/4q375SxuzdV3TnVZAj2Ej44bUaXuXlZ03c
-	 Ndv1HjI/xr4+wruNnz0GbipEWNmnz4GeTR2TDVd9ViOVbLB8DlQTNyOYMdUl7ZJB07F9l
-	 N9m6EOErbjJNPCYEJZ+Yo5Bdt1I/8u4AVDKVFGVnnyQ94BWkHTgBJgsPIj53wWHNiLA==
+	id 1F5D4F80524; Mon,  6 Jul 2026 06:27:37 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783312056;
+	b=cYSmCQFZMMpFQ0O4UjxX8ef881pazsWFRX6DnhLY7anoN3ORNs13e8JSuGBRFPjC3vJm
+	 uuHZWxDTvvc5pwQ88LCVwwEwpa/xj3E3N2r+j6x9jtRgegc5qHP+iSBGfE5hVzZ1tl4wI
+	 YxdnC0CrIP+ztXz9gwc/LYGNZ6XlaTkebOtcyZNQGSdlt+pDXiD2yDyA1LY1/xFHuj8Vb
+	 UFi95rMRotCdyHdv3Abn/oX1985G6PCton/Q4QCZ0ya7tzq4vO8Ps+i1DnC6fKE6eyCG2
+	 I2XyHImxhnegYdYcDOItRYSD3knKn7u1lvNT/eLdTRhmGcKyrAJOmDho93htCJCdJSA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783254738;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=kCnFH0V5bkUOIV0fiHl29DKKYu4m94o1jAMzJXsZ7vM=;
-	b=l4tbQaf7VYsQrbcTlXDZSbzgmbBl/79x/Fzuo73/OeHL/iU8AeRmt2NxMA8qxELeBcJ4
-	 a1pMLjo3GzA9VYBtNZGW9+1CTlG7vzTAkN1dIhoaap35QkQmFvNnporiyDMsOGpjcJWb1
-	 ++/taF15jey3FHVMppYGLQDAjHptc/HWasa7uR5MMRRv3AbWqalC77ws0FHBcRtgY6VG4
-	 77+NZISlRb9ILzbTAhbq7j6WAVmq+traLQ1TcTtCpIqJAfz5Cilkf4mUsaR/TNiZqhRMy
-	 SG8dJ/uKljhpgLkpQBPsh2s9trBdyW83fG07JtjtQurAefNK2ItL6/ObxJHMQ/r9z8w==
+	c=relaxed/simple; t=1783312056;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=EIh9Lr7UiXFgEBDOpyx1m8W/6+SZv++furD/8DV7pdo=;
+	b=mRezTbuPcKstc5hicUH0SK+gSESJVJfdhnq/9+g99Qfo9R/0Xgmajy3/fzZ1D4rf+utf
+	 4PvNQ6U6EGpKLR5IZttxTaD0JDcBfFfTW2q5S1Uiym0zMX/aM8j/ON0GUbDOdNycPhTdO
+	 VhN+RLK81vra+dP7a4dVjDChkepzEg4JCj/aac7JtydkBfwk/qF0isI/O6H46FqhDwhz+
+	 d/vxjMAN4mh0x4Fmv3r28Uliepb6oC8i1H6iRIAOaKjCPTHyUe/VT8cRLBgUbVqb7F7IR
+	 ogwIUyZze0K5T0ITmIvx9qyY/y3fLVzZi6i7NkdMfNZ+EZ/rQqrqG1OkFnujtKLUbfA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=LnUhwDHo;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C339F80524
-	for <alsa-devel@alsa-project.org>; Sun,  5 Jul 2026 14:32:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C339F80524
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=LnUhwDHo
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 88F2A40428;
-	Sun,  5 Jul 2026 12:32:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478B71F000E9;
-	Sun,  5 Jul 2026 12:32:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783254734;
-	bh=CUmcoIH8UZfQOi92h9YHbdWwrZUGogZhLPJcSsnuaE8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=LnUhwDHoT1C2NwsP2qpQUJPINDRwCgLMsyP1P9fmVkRgM/PaVZk2xVU+LWoaa6DO2
-	 hcc2s3uYQYvhPOzdIp0hohZ70JPlsjRfVandee4VUaTE4AjVmcAoMUKr6hOiJVJIIF
-	 YfPk27/06kyXvTeLhEa572sGVgW8XW7fdJGszb3+aAwR3Vi7+nMU+cM08V4kkykZDl
-	 h6ZvRz5NUzxi4qR58Pp3YLrNUqsiSLp4gGYVX5G0TAPiVPXnoGHYmQu00kw5zQr0Bv
-	 Ji83tV8I2/Y0XuiIySRHLImrNwEfxagbCGDQuhUA7sr6FqKU2GIYWWNDaqCxL6CeRU
-	 rTJOKVZYTgR+A==
-Received: by finisterre.sirena.org.uk (Postfix, from userid 1000)
-	id EF3E51AC5AC6; Sun, 05 Jul 2026 13:32:11 +0100 (BST)
-Date: Sun, 5 Jul 2026 13:32:11 +0100
-From: Mark Brown <broonie@kernel.org>
-To: YLCHANG2 <neo.chang70@gmail.com>
-Cc: Neo Chang <YLCHANG2@nuvoton.com>, lgirdwood@gmail.com, perex@perex.cz,
-	robh@kernel.org, krzk+dt@kernel.org, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-	kchsu0@nuvoton.com, sjlin0@nuvoton.com
-Subject: Re: [PATCH v5 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
- amplifier
-Message-ID: <akpOy2HJsDCu7wVx@sirena.co.uk>
-References: <20260630021510.821919-1-YLCHANG2@nuvoton.com>
- <20260630021510.821919-3-YLCHANG2@nuvoton.com>
- <66ce56eb-95b9-4915-8658-a1e4d1eacd7f@sirena.org.uk>
- <3b32493b-b827-e4ed-3ad1-281dc19faf40@gmail.com>
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E910F8047D
+	for <alsa-devel@alsa-project.org>; Mon,  6 Jul 2026 06:27:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E910F8047D
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9OleKUcYTZwvIODp"
-Content-Disposition: inline
-In-Reply-To: <3b32493b-b827-e4ed-3ad1-281dc19faf40@gmail.com>
-X-Cookie: Absence makes the heart grow frantic.
-Message-ID-Hash: M2BL5UZO4DEVGQNTOSAKI6AZ36WFEH47
-X-Message-ID-Hash: M2BL5UZO4DEVGQNTOSAKI6AZ36WFEH47
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18bf98dd914be300-webhooks-bot@alsa-project.org>
+In-Reply-To: <18bf98dd9126d000-webhooks-bot@alsa-project.org>
+References: <18bf98dd9126d000-webhooks-bot@alsa-project.org>
+Subject: [Feature Request] Support for ESI Maya44 eX PCIe Audio Card
+Date: Mon,  6 Jul 2026 06:27:37 +0200 (CEST)
+Message-ID-Hash: U6KNAKJWLJJFBO5J6XNU37RS6N6VXP7Z
+X-Message-ID-Hash: U6KNAKJWLJJFBO5J6XNU37RS6N6VXP7Z
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -110,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M2BL5UZO4DEVGQNTOSAKI6AZ36WFEH47/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U6KNAKJWLJJFBO5J6XNU37RS6N6VXP7Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,49 +84,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+alsa-project/alsa-lib issue #515 was opened from pobanville:
 
---9OleKUcYTZwvIODp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hello,
 
-On Fri, Jul 03, 2026 at 11:26:12AM +0800, YLCHANG2 wrote:
-> On 7/2/26 23:15, Mark Brown wrote:
+I am requesting kernel driver support for the ESI MAYA44 eX PCIe audio card. The hardware is visible on the PCI bus under **device ID 0e51:0003**
+but no kernel module claims it.
 
-> > I would expect TDM to be configured by set_tdm_slot() from the machine
-> > driver, not from userspace.  I see the driver does actually have a
-> > set_tdm_slot() operation...
+I have rune the alsa-info.sh diagnostic utility and uploaded the system configuration here : 
+https://alsa-project.org/db/?f=86cdf5dce0efc9f35f5dd16c81b21764b899ed3d
 
-> Our DSP functions require specific Slot mapping (e.g., Slot 0 for AECL, Slot
-> 1 for AECR).
-> The standard set_tdm_slot() only defines active slots but doesn't handle the
-> functional mapping.
-> We originally intended to allow dynamic mapping via UCM/userspacea and then
-> apply these settings using set_tdm_slot().
-> How should we implement this mapping according to ASoC standards?
+I daily drive linux on this machine and mostly a beginner but somewhat comfortable with terminal to test things out. I do hope this card get supported in the future.
 
-This would usually be doing using DAPM routing if it's expected to be
-runtime variable, define AIF widgets for the bus slots then route to
-them.
+Pierre
 
-> Should we define the default mapping during the codec probe stage,
-> or is there a preferred way to handle this via the machine driver?
-
-Device properties, this is better if it's supposed to be fixed for the
-system.
-
---9OleKUcYTZwvIODp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpKTssACgkQJNaLcl1U
-h9A/mQf/c053HM+naqdF17/uVmgb6e04rPNnqH7Us+kvxpfWyPS0bp+3vo1P6Ur0
-POHx0sPld8RauUxTig2rXk+Kt87Asn3/wm4kTQrOvOBv8airOLBViFeIQHoIrajo
-JdH678NtqoVhc3zy5W8pt+/6zeTbQK4obbfOzjtWEe6EbsrXiy3B9BUnxbe2bt5k
-E3coE4U4a587PPepJe5ue7eJfyc3xFHTHlsLxtWXsO+P0oSZXwrt2CB74Cvjvzwc
-Yt1JExI6vhfLnLt/2YR1PtTiMH9srG/xVBQo7USnxq1SxDnV2y8nelMpyE9LjkAH
-KZ9YYwMy9ji8OzML5MUqNYGiVXihiA==
-=bhKF
------END PGP SIGNATURE-----
-
---9OleKUcYTZwvIODp--
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/515
+Repository URL: https://github.com/alsa-project/alsa-lib
