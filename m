@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03F27C43602
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2026 06:03:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07101C43458
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2026 06:10:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 109E960238;
-	Tue,  7 Jul 2026 08:03:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 109E960238
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D04B60227;
+	Tue,  7 Jul 2026 08:10:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D04B60227
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783404228;
-	bh=W6JDhkwq9EuYs2VIGD3OuieMTvpD/mbAByoD+jcGLzs=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XnAjXl962ZH/a/5BDtj9eF9TZLGfdIC0Sgm0dM3/fCEpNMadOZ+/D/nfzB+n0kB8u
-	 PLdb1CYlIYVc5b1jKuNu+a0IiPtZxLqc/yg1BQPGrusZ+GtSSNva7moDpRUbFcnbLA
-	 sE3YVlFDE4fIYe/QDILwi0PXvTHWXXHMpylpJdng=
+	s=default; t=1783404648;
+	bh=r/O/eyo+CRpqQYdaglRNbRp3P5oQXL+CsZLzdM4dWog=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Ubwzn86ODYyMKfM4glnt7Egc65Kgv0sL+V9+4sDvK94F6gKAC2eP9n3s91ZB4gbi1
+	 1IvtcTyTZ8G4GEH9XcRFoxLqRSEN55wUb6KRqcCGW8U7D820u9iCCEIT5KORE8ENiZ
+	 C2q8oxBIUToCnQqlaCAidfkJTmXPbelSTtq2lM/o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EE023F80678; Tue,  7 Jul 2026 08:02:41 +0200 (CEST)
+	id 71E9EF805FC; Tue,  7 Jul 2026 08:10:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63746F80689;
-	Tue,  7 Jul 2026 08:02:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B5E8F80601;
+	Tue,  7 Jul 2026 08:10:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43249F80622; Tue,  7 Jul 2026 08:02:34 +0200 (CEST)
+	id 7F584F8055A; Tue,  7 Jul 2026 08:10:07 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.71
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1783404151;
-	b=O3yKR4WLNxvon8LNBH+Ly9U27LMID/HOjm6A1QVi0zV3uGwnuXEvA9V4UySiB6aNvUoA
-	 UImHOSI/q/AmD+Uv92cvc3snrd6iTRTgqfD3Z9Nh1EpwmaQhNqs7lWt+IweBD9bwKr5ic
-	 3CUl6TVF6S+ZchjVNSH56XspuZ4v14i7gQ0pBV867/h1zzuQdwOS+n69rvhts8d4CR0y6
-	 4sZPaybKktQH4Evxg9zy0sFjRLwBdpYN/4BvCi/t8N4VKNjvs5r/yFydAuPf+5iLA+aXV
-	 rxvHvvIBeReAQeC5/6ZfvaIyjpZhy4HuwxKlA8E5NceKyiZkG4yttjENlbJyP4BD+TA==
+ arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.201.0
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1783404606;
+	b=Z4x7DfZB83oD06y5GIXkvzI3C4n0fpqVQVDj0G6wjgkaRmNl5X4K+xHx19AIgX9MU5mD
+	 ZLhQUgTd1LS7KeqCrn0wc3JpI1y3wRA7Ctzp4h+Aev1/6/AWbKeRTdTCL0YsS4gwgcxC0
+	 RglcOlffr8+lSw2F6J4LxES6XkoiEqx7yaaBGhmnCl6efvJncTtY1q9T/1VFM83RD0cOJ
+	 2zanxj35ywoLXU7IWX7uIwpHHPwppGusYbdLpsI/xUR39PUEp4KGqezOLD4yFQ1PFlzWJ
+	 E/TlYX8pGoe3TX1S5xcGfDPJKjxpzTW1n6m9P6+UGH2RYqRADHJehsLkTQjqhmM+VRg==
 ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783404151;
+	c=relaxed/simple; t=1783404606;
 	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=W6JDhkwq9EuYs2VIGD3OuieMTvpD/mbAByoD+jcGLzs=;
-	b=d+HFgBNCrdNEyRHZOjC0qPQCgA43q0RL8VsIeXU44v2tov5ZpGh4OuCPMs1jwr0+Qasw
-	 yDQZ166XxqhODgHzb4igTfdXjC1513R1yc4TBmpqlAz0YuLSc13t9ibzVPVk0h6B7JWok
-	 zHrUvhfrQvmzzREP8IGm514Taplyv73Yfj22YYgc8ZH0zN1ikwG4OpHEQI9ue54kGNZHj
-	 G2iE1TVu9WjBDsK+36mRAV72RoV13U+SVpVTF2yY0QFHOV94jqZHmzszeih07yLLCt4HO
-	 YSczBGjN3y9XeyYyyTUkxejG2P7UKhnTJkeMl3ez9Ec1ai5RwO5m+lLGQOB08mfD64g==
+	bh=r/O/eyo+CRpqQYdaglRNbRp3P5oQXL+CsZLzdM4dWog=;
+	b=SY6eSAwagY8/o1BIQgOHkGJ22uix+Cv+HHEXht/yFVZ4JFPUfBkLUgAmdxhOJYsuPGV7
+	 Iiko+9JeOyJr++A9p7kSpqckVu8OBGAVFb57zwRyrG510AbY0p+Y0LESTM1QMn1TBrZUs
+	 1WaTC2J5sH0YtfOsLMSOEcdnmujiekjNGw70FvA/giYPWQ+/4qCvuoOgYaD8CuBLd6/pA
+	 E5uNemHj2HnGwkoSKHcnQ2SKbykOYsQv5IW4qfFCcHhsomCnEnhFtUM2uNzH3bABeiBo9
+	 hNWphXkv7KjZh/01qAXhn3aksvIfIk+V+0JDNE+OQyDyEGeoZh3zgapaPqZLYVUCIPQ==
 ARC-Authentication-Results: i=2; alsa1.perex.cz;
  dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=VL7ywG72;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.71
-Received: from PH7PR06CU001.outbound.protection.outlook.com
- (mail-westus3azon11010071.outbound.protection.outlook.com [52.101.201.71])
+ header.s=selector1 header.b="Vd/vCqED";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.201.0
+Received: from CY3PR05CU001.outbound.protection.outlook.com
+ (mail-westcentralusazon11013000.outbound.protection.outlook.com
+ [40.93.201.0])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A4B89F8061D
-	for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2026 08:02:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4B89F8061D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5A844F80224;
+	Tue,  7 Jul 2026 08:10:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A844F80224
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=VL7ywG72
+ header.s=selector1 header.b=Vd/vCqED
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qof0epHpUNiauHvxDtE1lel6tCnPuOp2RejHpqIWa9XwBkw89vtHiJg+iLo7oW+p8xFi92jsZ+J2c0TrYLEcg780hyG5W2IFYW2NoPitQnvmjG83TDS2CwgxyeSfDgSSMIGotZk3LTudr54dOcF+kB4RTop/6g50C2UWusOsPYgkzjsUtZKb19VcsLqegt83PH35SJ/SHqQzShv6SKCGHzmOgP1INn817Ej5doscrumVGXHuli/qzI/BLzVh0ny47XFMlraTqc+1WmymlkY3IZqikSTrdbSoW5zbCtnKyoVRUgL6ZO7fmW7gxM3DxYeX7CquisA5sATzT2PvYBINLA==
+ b=X6bxplnz/3IhZyJwPbheZMdxvE6pgTSh2fn3qJ33ydeEMjHAXc4R8FLy7OxaDMYVEylbxVh5ga/V7Z5tjrvV+i/ErSVgZzXYWctOeDDmmTtbqpum0TJNGuJ8ZTRA9arCexH0DuvFxQYa/tX6WbRfw+wPUeOmwaFsvSsLxemwy0esluVrBfToay23Sra6XAT7QAMmx1PA0NeNm6Ix6HJL7mfP8gIYMEMhx2a4H3RCFzz65ZICHHDqQCzAhvrq9o31pEe+eCnJNLUmW3L4KD4qy1QsmgR0mDHeGJe1xpPk+Mu3MlIvOF+td68KO2JiQy3dPKlNpTjM7m9xHerV2jP8cw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a3oUsfBUYdEN5StXZ0uh/YXaBVtnXTBYipyDAYVMgGI=;
- b=pNzEld11hWZF4cW/oeQO4SsuBUc91P2IxyD1066mjEoN1wI3oO1fdhVbzgpB5aLTcxF98u1qBjDFNf5GI61Fh8+HmMai0Cf6W1zK1TVrzXFaajGuisjT/GITH851UPBLSMZvTt4pxEbbI5kiFxKNwp7y7/NjHxg7Rwk1zLjjoo+A6Pg46LaZNrBNDf7n/NDe+MYNBHl+T3EcgvoG2i2bq3Fu4e1GCTP1FDd3uuT61kLTwRLYe+Aep4YRw2WAjKTSDvYh8kY326ZnWIUfxxZZIuBJKE9COWjn8vJzOJytwhVS2brXkTgbohO2LQBv2WnHaZ8SMoeYv8T0p+7IPqWKxQ==
+ bh=m61ZwO5kJBiphg+Xbi+xCRgaU85NSl20O90d1jlteEo=;
+ b=p2tUN+VzDdq0B1KRt/v84ZofzoqcSJiQSq4hW0JRhH2N4Ejm3NJ8tRLzK770V2Lhh1KpGRhSy/C9jjEPpUnXFTrVGJp47bl1h5hkQeO9Cc4FFvqXB0ejX+1A7lynRuVCoMTcJ46U4mnJpHUGBVertSPw+nyU3X1HXaXCZfisqGu0ASGEpltjcjC10d7ddQztw4eBMdm1mTuAMgldu/wkiW4a0E/Q1DEcrKFrVXi8da5VVsItfiAyNVmqoEDTHSR63GjGrcWZyMRVlQxS/190aMzbHPjV7QfGLwQKfmUi6XMhk3nZdRcTIoTjsMCgkrdUgulLxl+zp8NM4gI/lMx0Iw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a3oUsfBUYdEN5StXZ0uh/YXaBVtnXTBYipyDAYVMgGI=;
- b=VL7ywG723peHeeRF+nWyYPWmiW1et5IzeX1NwQ6l2N/eIbXQ/JLeJuTzFcD6icAXQBYBEbvBbYdqDL0hmp74E9lp0cceej5D3R+nn+rwRg4vBQr1SNxVzOOn+kdHho1XuQzkN8JTRPUJKEiWEY+Q5W2THrZXRUVZezSENcS4JsI=
-Received: from BL1PR13CA0167.namprd13.prod.outlook.com (2603:10b6:208:2bd::22)
- by SA3PR12MB9160.namprd12.prod.outlook.com (2603:10b6:806:399::9) with
+ bh=m61ZwO5kJBiphg+Xbi+xCRgaU85NSl20O90d1jlteEo=;
+ b=Vd/vCqED8I/w+OyoBzQ0jJCKpg0AuwunHrC4K9uVFIXFvfBWccGlj9C6A0XnVJNxEN5gS3OW8vr5NCzOGoGMXvsdkLNTaA8EqHsmjA1umRS+P3Uv6Ox8XqfjM0Utc1V1tJqvjGtrFt2s/48ytzoPW+68VY2/HY/wmCAsj43XmjU=
+Received: from BL1P221CA0024.NAMP221.PROD.OUTLOOK.COM (2603:10b6:208:2c5::31)
+ by LV2PR12MB5824.namprd12.prod.outlook.com (2603:10b6:408:176::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.9; Tue, 7 Jul 2026
- 06:02:21 +0000
-Received: from BL6PEPF0001AB58.namprd02.prod.outlook.com
- (2603:10b6:208:2bd:cafe::36) by BL1PR13CA0167.outlook.office365.com
- (2603:10b6:208:2bd::22) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.202.9 via Frontend Transport; Tue, 7
- Jul 2026 06:02:21 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.10; Tue, 7 Jul
+ 2026 06:09:58 +0000
+Received: from BN3PEPF0000B076.namprd04.prod.outlook.com
+ (2603:10b6:208:2c5:cafe::59) by BL1P221CA0024.outlook.office365.com
+ (2603:10b6:208:2c5::31) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.181.8 via Frontend Transport; Tue, 7
+ Jul 2026 06:09:58 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -95,63 +95,64 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
 Received: from satlexmb07.amd.com (165.204.84.17) by
- BL6PEPF0001AB58.mail.protection.outlook.com (10.167.241.10) with Microsoft
+ BN3PEPF0000B076.mail.protection.outlook.com (10.167.243.121) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.181.6 via Frontend Transport; Tue, 7 Jul 2026 06:02:21 +0000
+ 15.21.181.6 via Frontend Transport; Tue, 7 Jul 2026 06:09:58 +0000
 Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb07.amd.com
  (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Tue, 7 Jul
- 2026 01:02:18 -0500
+ 2026 01:09:57 -0500
 Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
  satlexmb08.amd.com (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.41
- via Frontend Transport; Tue, 7 Jul 2026 01:02:15 -0500
+ via Frontend Transport; Tue, 7 Jul 2026 01:09:54 -0500
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
-	<tiwai@suse.com>, <Sunil-kumar.Dommati@amd.com>,
-	<venkataprasad.potturu@amd.com>, <mario.limonciello@amd.com>,
-	<syed.sabakareem@amd.com>, <linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 3/3] ASoC: amd: ps: replace bitwise OR with logical OR in IRQ
- return check
-Date: Tue, 7 Jul 2026 11:29:38 +0530
-Message-ID: <20260707060130.2514138-4-Vijendar.Mukunda@amd.com>
+CC: <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>,
+	<yung-chuan.liao@linux.intel.com>, <pierre-louis.bossart@linux.dev>,
+	<perex@perex.cz>, <tiwai@suse.com>, <Sunil-kumar.Dommati@amd.com>,
+	<venkataprasad.potturu@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
+	<mario.limonciello@amd.com>, <linux-sound@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <julianbraha@gmail.com>,
+	<sound-open-firmware@alsa-project.org>, Vijendar Mukunda
+	<Vijendar.Mukunda@amd.com>
+Subject: [PATCH] ASoC: SOF: amd: add missing blank line between Kconfig
+ entries
+Date: Tue, 7 Jul 2026 11:39:00 +0530
+Message-ID: <20260707060918.2535962-1-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20260707060130.2514138-1-Vijendar.Mukunda@amd.com>
-References: <20260707060130.2514138-1-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB58:EE_|SA3PR12MB9160:EE_
-X-MS-Office365-Filtering-Correlation-Id: 78b297c5-8cf6-45a6-6776-08dedbed4f4a
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B076:EE_|LV2PR12MB5824:EE_
+X-MS-Office365-Filtering-Correlation-Id: ccf45bc6-53e8-4113-5e37-08dedbee5f79
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|376014|82310400026|36860700016|1800799024|23010399003|11063799006|22082099003|56012099006|18002099003;
+	BCL:0;ARA:13230040|376014|7416014|23010399003|82310400026|1800799024|36860700016|56012099006|11063799006|18002099003;
 X-Microsoft-Antispam-Message-Info: 
-	Oj7fAesZtuZYVSZGM9tA7I7ueRnvm2CTn+OUckQuSTptk/0HYeKzhXsQQbbLRbsQt/PWER9KHivAMozrQxTT5NOA1OW1PqQzZewHuQyR/4oip1zcMdLrVGQQQ77WPv/1eQ183I1XBF9XkOYZahVZ3IpjlCKPeAcckTK6ezxkj6cZ+lqcrBz77ATg15twM3bQczi+0bW5dFS/JIaHfzZa7rDLa/Dad9CMukWUTNIbM1wFfAK+knLtMYzb77rFLLMJ27WM6EheIPCBlzOuAotvUoSOBzi4Fjj3henOcl6fdJB5Ysc+wks4hb9uvxrqvydJHPiSDDLKt8s7439yYIRiJWD0p8PHV3GhN8y2N6RiRb/Uce466pemXeaFvxBeFWUnGSBCdgHL6PD7mamsbsOiXnOYI0sDBh0Z4ZGxpPqoSNfJPqCbab2Q5ue19qXV68I1qvHN/kO2uwTqd3/2QqgdLBzmWjc8xSSgnJDrbKrDIweE7Zv0IE2NOiwpxhqF0cKpRK5TjiB9d91o0dSRtjPGkK22eQCdYJnJe4cuG6F6u8aOpALW2yANRTSUY9G0PLC/Ohuf00AVQpNziG4dQYuejgrSwNkwua/q14pchiP1BH5x4w/910aaiXXOVETA4HqpoBAoVvux1rmMdv4E+yCL5gp+3IVQiZ/DpV4kVMPRX4a1Ux6wvTB3hM989NaL12VIbZGndfoyEwVg+D9G80uCMg==
+	my16j1NSpwOg5bLeA1/bHvBu/r+QP8yVX9I1E0Qf12+q0Iu6RwosGB0HwtwRBAigW8J9AdHHBCYDp6vxUNGvX+735XR3sKFVn8bo56rs8R5pPl+VbewfBU+EynzVWs9VwfS6/vtUfEn1Cr8/hVn66gIH0OqIJ3d9+0AgdVvufYM9hzmHyZJZtlghPcDbXxac2B0mF8mosVPHVGrSasCosMmJndBc7De8hjzsOV4QZrblThx+YJIK+bxynDMWjRFN1CmS9Vaw/nZKEnMKAA9Ywd0daQA88/YWD7fKn6zw4YGmoN08EnY7kdecYhdw4HhAqqRiYufsDJXrp1LudqNEDVY4Cwb5/U1FkC3LUgxQs6wP+jcYK4u29aoAwJAondF5PxOXDK4jCKzGI21wS2s9PrJ1CFWB1ptyFrdRdkgbTA/xAg2diKCVnX4czBjjltBDPbrhJHB7miH/Dmct7aJhoixTxbx9/8cr+b3Dl1cATFqsUgogvN8mEpmZhkd/oEcFN2LwgzJPao1WCuifGLYMBZtx3sZG6kxDCBM+F/rRw50XdJMD+uvrl8ysvLiJ7AQn5AM9iIglanEGScqn/XVYf5oyirZYWgYFjV+WWpyr1kyjW8ufnz73fafHTR1VVzfpovb83f6JGVGyv1iOt5q2GANQaokBZc7BAwXfhohS2vxso+Eie4IXW15ezAE01Ng3B5btv8z9j2r3EtzIcaVoBw==
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700016)(1800799024)(23010399003)(11063799006)(22082099003)(56012099006)(18002099003);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(23010399003)(82310400026)(1800799024)(36860700016)(56012099006)(11063799006)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	ZybAqZVPMjme8sWG9wB+lqyUOOZKfbTK56hbzu06mobjz6q/9KnMMUJIOz0pnb288XPy0/NVBkQk0uhMkt4kjK9ijwJkTvV16EDJohb+RyCoCxOAWRj+U4fLbZrLP8ITSkwmGpfXjKb9QyqHWSQakwqw6Ww0r8gYOvIoCG2PJl40OTcHv4lefI0pwtLyDIEmJ3hQOOZpoT+TDte6mxyJuYpEwfTAqQXhq8iX7r4EhsT5Rwmf+kFaXFNg8kZ6Z8tuVU1b0YDUiBD7KrUgeIauiQX5AB2hU3au2Lsxvybl1OKkklZPYafzQpbY5mIFOwD+kkxb4Uv3yMvsLDpkg2tIPHh5+KhAOnBguNW9oE1VXr6RIgLLbbLshNPaAHuUA7bkBPRShsW9KLlnnHuDkEaAPe8cXUt0EI+bS+H8IdQlY+G2jUmS64hikm0u9czgxylA
+	jSLnvlLLodCbxPYoCjJh4NGaZjn6SLJPtdJJl8mVOvfg/Yb9qP9m2W+Mj51S1o8Gd2Tv4kC9NYl9EJlEDLlIxlnCBMiAsGpCbyqHnhuJaUWo62ANwQOtQUZJ6TalmUlns/Ve3+yLYX9vUR7S8cIrLQ1KadZFCr+EenqdX5aOmUT8XdTcAD8NpHREoxlfQJUitkmz5U4RJ19YjG6+RVDVh7Rwz7ToHGoPFxC8laJ/wb9LUh+jcbS5+erhY2fQivjOo1N2BI9dDt2niiz2yCVBg5UwmN6VHD4uMixXYGE/z6jjegGGmg0ueuY1bNe4DD5zzfmX57JWZOkf6v83Wf5UOAgAIyNzbjXe1ZQW0TvL00VgIiOs4WSG/cckfms0rB8+vwZtN1LbgigFQoMrXEHbhwZ3MGBA2kMOZvMOVCNhp2GQmXQVh6rRdOX4jvjsgpyj
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2026 06:02:21.6750
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2026 06:09:58.3264
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 78b297c5-8cf6-45a6-6776-08dedbed4f4a
+ ccf45bc6-53e8-4113-5e37-08dedbee5f79
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	BL6PEPF0001AB58.namprd02.prod.outlook.com
+	BN3PEPF0000B076.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9160
-Message-ID-Hash: O62O3NHYPHJWUBDU5R6Z7TQBQTT67P5A
-X-Message-ID-Hash: O62O3NHYPHJWUBDU5R6Z7TQBQTT67P5A
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5824
+Message-ID-Hash: QJDPTRFWUPDMZMDNEM6UMNDDQ2YLUU6Y
+X-Message-ID-Hash: QJDPTRFWUPDMZMDNEM6UMNDDQ2YLUU6Y
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -163,7 +164,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O62O3NHYPHJWUBDU5R6Z7TQBQTT67P5A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QJDPTRFWUPDMZMDNEM6UMNDDQ2YLUU6Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -172,28 +173,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The condition 'irq_flag | wake_irq_flag' uses bitwise OR to combine two
-integer flags that are used as booleans. Replace with logical OR '||' to
-correctly express the intended boolean check.
+Add a missing blank line between SND_SOC_SOF_AMD_ACP70 and
+SND_SOC_SOF_AMD_ACP7X config entries to conform to Kconfig formatting
+convention.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/ps/pci-ps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/amd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-index 1162d13d8505..729f9aaba69e 100644
---- a/sound/soc/amd/ps/pci-ps.c
-+++ b/sound/soc/amd/ps/pci-ps.c
-@@ -248,7 +248,7 @@ static irqreturn_t acp63_irq_handler(int irq, void *dev_id)
- 	if (sdw_dma_irq_flag)
- 		return IRQ_WAKE_THREAD;
- 
--	if (irq_flag | wake_irq_flag)
-+	if (irq_flag || wake_irq_flag)
- 		return IRQ_HANDLED;
- 	else
- 		return IRQ_NONE;
+diff --git a/sound/soc/sof/amd/Kconfig b/sound/soc/sof/amd/Kconfig
+index 7413bfdb0943..903e7ec3b3ba 100644
+--- a/sound/soc/sof/amd/Kconfig
++++ b/sound/soc/sof/amd/Kconfig
+@@ -103,6 +103,7 @@ config SND_SOC_SOF_AMD_ACP70
+ 	  Select this option for SOF support on
+ 	  AMD ACP7.0/ACP7.1 version based platforms.
+ 	  Say Y if you want to enable SOF on ACP7.0/ACP7.1 based platforms.
++
+ config SND_SOC_SOF_AMD_ACP7X
+ 	tristate "SOF support for ACP7.B/7.F platforms"
+ 	depends on SND_SOC_SOF_PCI
 -- 
 2.48.1
 
