@@ -4,68 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD89BC43458
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2026 01:40:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48348C43458
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jul 2026 06:03:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77AEF601E6;
-	Tue,  7 Jul 2026 03:39:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77AEF601E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC700601FD;
+	Tue,  7 Jul 2026 08:02:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC700601FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783388406;
-	bh=Wa0KD1DglddRFKHPlS2tZTMx2biCtaJEvp5V8Vcy4Is=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=SzehYuEUM9Kma0WKiVrvvuvPUzu8auwgyJS3KX5PhdhTJR8GYZ03Jt+JvCnS9hYlT
-	 WUm3YS2q9I8AwbpPvH3pAGW4FmgskLe3uHbr3cavFeSBgDpfAUf1RHcVKzdX/3csWq
-	 v9b6oKTH4r54jFTWufU3rjLNeNyxR73iQcbT7o58=
+	s=default; t=1783404178;
+	bh=rjWzh5stBcSRk5hPlKCaTVv7fUWCtq8ap0DXrvLAyAE=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=GVhnVIMCAfIZyUgokB1TSAT5HGc1q5HiohsudvgNIrn9Ln8jPvtZXfdXiQvPmgjYu
+	 1y3/tLlC0TblZ2j9isQvxGUa9p00kiG3G7JkoTbTcy0X2CJWX08i5m1mEuKpTjGWV9
+	 PgjC8N60zyVdvgGGN0IxGvzKlb8E1mdZuiQP3Lyw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D035DF805F4; Tue,  7 Jul 2026 03:39:32 +0200 (CEST)
+	id 8B337F805FA; Tue,  7 Jul 2026 08:02:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 714AAF805EC;
-	Tue,  7 Jul 2026 03:39:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14803F805F3;
+	Tue,  7 Jul 2026 08:02:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEE06F8055A; Tue,  7 Jul 2026 03:39:25 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783388365;
-	b=MFSuk3CvbBeE6JgEOgiaE1dbohk49U76lpUU/lI0VlRzjYjIDK6Is2zc2BX5TPlgkFU+
-	 5Jw+EhDqR2Cz+QsL4zvrNS+YVWXYaESTo8yO3+cmJYciQo8kh+iWuWpDsueBrwqIA+qfH
-	 6Ghw90pYlsATSZ0ooep+49vDP7z/f7UvazWMIFNEYb4JQkeCOLho6fGQhOWiqCcSUb9uZ
-	 Pu9uPs4fRiRGCWaGmVhw7jDHaE+Y03T7m/bBpKoaFcf04nxt1VryO3J2snFFcmGjr5XID
-	 +D4LEi3QpGN0PJATdfc16VJuRkk1VkqDu5GEbDC5mnwuPDIin7I2tWDOA8dNUVbhsUQ==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783388365;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=Wa0KD1DglddRFKHPlS2tZTMx2biCtaJEvp5V8Vcy4Is=;
-	b=Y+3YGfKA43K1fWsM2DjQsPYvyou0cFZZjYcZVIMbJQbRVufbKug5E81a1R4aQ3N5x5ee
-	 eyojc4RyFxh/HfyfLOa7hV4fCB9S54L/cZSo1HRIePdT8SLmi1rVKhbSxNdJa4TrY1wu6
-	 8/PySB+7fyvs9KOzQH0rQ7G7LwHGtzInPUocRKrZtcWjOefFUtG904GCu0Djf9b8z7SNv
-	 AhacGFxmxN+Kx2T1GmzJnXgUd5PzDP3J8sGcvD+sSxVrwQenhDfVm8lgnRrZwhW6pHLBh
-	 wixfAJr2wbstqTY0vkiBUAecjL4B5gLMVV+6PkWyAc2fX4rnmfGYXcF7fAFUNfsrPQQ==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BC8EF8010B
-	for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2026 03:39:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BC8EF8010B
+	id 108B2F8055A; Tue,  7 Jul 2026 08:02:18 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.201.0
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1783404136;
+	b=bdiDzncrppDCd1NaSMpyNZAqmYNXayjyBhci8wuj90I8tXtEeVc9UHBODOAWG9Hsx7av
+	 wRJLk960zjt4PivTCrZl1lQ8Nh9yNBgukpfkgsqK2L/932hB5St+ervQ+Sx6kmKqOTjEf
+	 Q/H/lHahtGYHmXN2dD/1IbKr7l2gopcy5JiYA9B9T908+pB5m/eAkVOHc8It8ebH5IXlw
+	 xkKIBDfCXN/SCMYNZA0R2i24lFlJsJCwOPgq69YmeymeWea0C26Ndu129BK1ID/ZNBAdz
+	 EKg5l+R8+0tbwBBP1aWwOlConqS3bWjvRiFR5/pxDiedSkXWCR+fjcSt/wWWKuENLRg==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1783404136;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=rjWzh5stBcSRk5hPlKCaTVv7fUWCtq8ap0DXrvLAyAE=;
+	b=jTI3zJtqN13Vrr5YAOXQY8Q/XO1RaIb9Xf2H8yReEUrjcmYqDGZdqFNOjXIQHWc2oW7F
+	 1fApY9h1ADN/oImpDnv9E+9hMxszVBEve1F6/hKOf4zpxlmjjv7CAeP3Mikg5CTqVzYO3
+	 TM847Lraz35jQAGP+K5qgMHzGmmRWG5nfhAaiV62ccignX0+5F0kj4PJglmSqSycYbVXA
+	 CRCT00G6ZEqMqNJLt0eILoA9GI5PbYCpCvKQuqxC+WjRL+A4mysg7LqcHLAFALFAZnr4H
+	 kSRt76p8Y6bpKJnE04Fa9URXkIDLJeEKd0pt/8Bgv2wM5iUmz2WrHmVbiN4nd+NTprg==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=Ip2mvr4H;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.201.0
+Received: from CY3PR05CU001.outbound.protection.outlook.com
+ (mail-westcentralusazon11013000.outbound.protection.outlook.com
+ [40.93.201.0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 47CBCF80224
+	for <alsa-devel@alsa-project.org>; Tue,  7 Jul 2026 08:02:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47CBCF80224
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=Ip2mvr4H
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=iDEcC8hG6FvIb2lRMJu7in+TNgqEb+pqPMK6VbW5Voh1ofghTH1LAlQCD80g9eQbvilMKawc4G7Lr2MAFIf4InwaqGNsCdLGb52rzZ7mZY5x18CbokDemDexfrZlzZ/43l0Crcp8EDRf+n1wEQrmaiEDUOXuuFNYUy7G82qKWt0hAz9wV5yS6MiLe1szZISoBtX4WPZ5ASRDILL/67/eH3gMQt2Jr9k8Z/HXPnUQKSUx5YPGz0tGIc2ViQyOioeW5uFniJ0J4QPYJdPyy9yxg04kouOzFfTKi5/ZOw6aPS7fbkeZgnMnObihKEMboKgdRyiUvPB6UNWFbV/6sPD4LQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=smj0Vp+Ey3FgmcxwmWakbg1xoZfIBgcbh3zX3rgcQyU=;
+ b=OOYgJmBRXJ26R9Hol2sEKF9zBhkmK3MMT4jkZeRKsnhwOH5eZbi2kmsY6Wp0LXEksMZ8aZ+DdyZ8nRVqB1A+T2rYMf5QE0UAhkYqGlUn+dftjuog/hYXA9zMUEFTApDwbZy7NAqIBiudmWySr6HOHyYch5aMOYTeOmSNdvKpL7yHCsNrmTJcXVI7YyZBUSioBsmpXK/V35gO4bvjLHaUbEntmLbSxf3eefSi7CfCArrJbykaM5CI8eVSQHAi1+LnQOpUJdaqOGqJtk163uSJcM1+bjUoBOjXG+jDSKbeOIU0ySP6eXmR9A/5dKtzhJ3+/dvRZVp8WxKxb9kc25sZqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=smj0Vp+Ey3FgmcxwmWakbg1xoZfIBgcbh3zX3rgcQyU=;
+ b=Ip2mvr4H07hoJ5PYk0oqMSB4rOxzhnhdo1lURo8KlEVLmI1+BY/bT8J/AxGXQTYXJOxUwf/INLosLKdgUZQD9WHBg8IL1G8ctFBuhLDmywvKi4sBpJINC9x+i4h15bta9qmRz9794Vm14yBLGsFco/cpl/I0FRyJ793+jJJCjHQ=
+Received: from CH0PR03CA0253.namprd03.prod.outlook.com (2603:10b6:610:e5::18)
+ by SJ0PR12MB5612.namprd12.prod.outlook.com (2603:10b6:a03:427::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.10; Tue, 7 Jul
+ 2026 06:02:09 +0000
+Received: from CH1PEPF0000AD80.namprd04.prod.outlook.com
+ (2603:10b6:610:e5:cafe::91) by CH0PR03CA0253.outlook.office365.com
+ (2603:10b6:610:e5::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.13 via Frontend
+ Transport; Tue, 7 Jul 2026 06:02:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ CH1PEPF0000AD80.mail.protection.outlook.com (10.167.244.90) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.181.6 via Frontend Transport; Tue, 7 Jul 2026 06:02:09 +0000
+Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Tue, 7 Jul
+ 2026 01:02:08 -0500
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb09.amd.com
+ (10.181.42.218) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Mon, 6 Jul
+ 2026 23:02:08 -0700
+Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
+ satlexmb08.amd.com (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.41
+ via Frontend Transport; Tue, 7 Jul 2026 01:02:05 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
+	<tiwai@suse.com>, <Sunil-kumar.Dommati@amd.com>,
+	<venkataprasad.potturu@amd.com>, <mario.limonciello@amd.com>,
+	<syed.sabakareem@amd.com>, <linux-sound@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH 0/3] ASoC: amd: ps: bug fixes for ACP PCI driver
+Date: Tue, 7 Jul 2026 11:29:35 +0530
+Message-ID: <20260707060130.2514138-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18bfde44a2be3d00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18bfde44a2993900-webhooks-bot@alsa-project.org>
-References: <18bfde44a2993900-webhooks-bot@alsa-project.org>
-Subject: Realtek ALC245: Built-in speakers cannot be selected while headset is
- plugged in
-Date: Tue,  7 Jul 2026 03:39:25 +0200 (CEST)
-Message-ID-Hash: ZIY25UJQVU7CHL64EJSHO2E7QOVW56F3
-X-Message-ID-Hash: ZIY25UJQVU7CHL64EJSHO2E7QOVW56F3
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD80:EE_|SJ0PR12MB5612:EE_
+X-MS-Office365-Filtering-Correlation-Id: abec2117-ba1d-49bf-1acf-08dedbed47c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|82310400026|36860700016|376014|1800799024|23010399003|56012099006|18002099003|11063799006;
+X-Microsoft-Antispam-Message-Info: 
+	+LQ3mj84baC0ApHiopwNqCb/od9hkeSu5s4VheXc/7B4D9qNl8CglpuvNcudMZZ62Bbr+ovyP4ssG8H2Kjz6meW3LvvSLGjUc484iUXZ/O4QGrmlDAJ2PZMxhOa3goxBSplpOCFT+ipgiAwFrc84UdLi9FqR4lzcoOtawBzETEEJdsaNkq6VbQzu76eGy6YJLl2jV0rT9LtmOqrmdN3TNdIs4Dp4uP5jzl73J9IDUI22jf8CB8wprA7/VQkGz58x9lCo92z/KV6nvlCuWuprNgF5MvYYJ8mzORGyqEYEMc6ULDR30ydtmx/CCwQe2aCj+4QF7k+0XvwaxC7hZ/HfE79+Jd+cb4AlBKOJewZZOi1a0emECACVDYsP8GxI3wJ9dJDEPskLRqgvexB6VVBcWXIQ0w8D3AQ1ZxGMtk/f4wvmjBms5nWarhOBg2QbgHX1xpHZQ3w24dtuwCwFvHCIOIeo5yM04ewPOK88+ZgIs9YHOdwQBoNABKMMSwLaWAvJtXlHkpJ1poCl05HQQAHQIxk2ocSscJi/UQaxhrFwRNWN0HZHlGscG246iFxYDObTbxZrVBNSk9drbI5L+OizmvLcYF4vi7RiDVz9OAG115oxb6h3x44iGrSKDBy32lPgfyKcm5ioOSNPCE9XKedf3P7eqlUSxcg2gL3u6I69AlT2gvO/fDSnCKqKetmXbNmElQ4QzRDITzxQPeHRbiSFoA==
+X-Forefront-Antispam-Report: 
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(36860700016)(376014)(1800799024)(23010399003)(56012099006)(18002099003)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	2BnOQ1vI0Vgd9gXu4w+iTbAq38/LI96xUR77ct4YwSGvSYsBA+/Oz+jTV7k1tXKKrvhLT8a/zQGsuI7UZkXiE5umUhohk6l2H+fG6Vc1vhP9btNKkjtW3FPD8nMUV3hyfoa55CeGOtQP9hddZMFR9eUqlA8m6iZY6oHdYwu1tCq0/HJIiMkTGPdCvGT3m/8A8pyD/8suLvUUMuR9iQVEei6cM+J09s7nt2dflmj4XQQlKlRPjUaYrwexntwBFdd2FOFLHcGHqvhg9qXmskwJD+ctKYivx3YglVaflbp3b1GNuI+qhgNG8DJBr8H1XFpr/lZb8TmBZEBAzJTg9LEIF/GTnw2gUZHNeF5JztMxujH9drPwkPuXAYwIW+WJBQrXj8wAP06ilHzjTCv2GXJR3dM3JK3oXrLx2roN79rfAF3Hyhs5QIkdApOib6l0zgeL
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2026 06:02:09.0367
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ abec2117-ba1d-49bf-1acf-08dedbed47c0
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	CH1PEPF0000AD80.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5612
+Message-ID-Hash: AMJFWA3R6ABOXHGP7E6JGYZ73O4FJDZ7
+X-Message-ID-Hash: AMJFWA3R6ABOXHGP7E6JGYZ73O4FJDZ7
+X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -76,7 +164,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZIY25UJQVU7CHL64EJSHO2E7QOVW56F3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AMJFWA3R6ABOXHGP7E6JGYZ73O4FJDZ7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,38 +173,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #807 was edited from SSolarite:
+This series contains three bug fixes for the AMD common ACP PCI driver
+(pci-ps.c) covering ACP6.3, ACP7.0, ACP7.1 and ACP7.2 platforms.
 
-## Hardware & System
-* Machine: VICTUS BY HP 16.1 INCH GAMING LAPTOP PC 16-E0000 (2V8Z8AV)
-* Audio Chip: Realtek ALC245
-* Distro: Arch Linux
-* Sound Server: PipeWire/WirePlumber
+Vijendar Mukunda (3):
+  ASoC: amd: ps: disable MSI on resume in ACP PCI driver
+  ASoC: amd: ps: fix wrong ACP version string in pci_request_regions()
+  ASoC: amd: ps: replace bitwise OR with logical OR in IRQ return check
 
-### Description
-The UCM2 configuration does not expose an option to change to the built-in laptop speakers while a headset is plugged in, specifically, it splits both Speakers and Headphones into two profiles:
-<img width="404" height="148" alt="Image" src="https://github.com/user-attachments/assets/e23fafc1-dccb-4c2c-af02-d3ea3c2923df" />
+ sound/soc/amd/ps/pci-ps.c | 33 +++++++++++++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
 
-It only shows up once the headset is unplugged:
+-- 
+2.48.1
 
-Headset in:
-<img width="454" height="444" alt="Image" src="https://github.com/user-attachments/assets/fe636fe5-6e35-4bb1-bca0-97dc58f9714e" />
-
-No headset:
-<img width="460" height="450" alt="Image" src="https://github.com/user-attachments/assets/da2b7b6f-c145-465a-a1d1-699e02359d2f" />
-
-I have also tried the Pro Audio profile. It shows these two, but none of them work. Record test only shows a little bit of static.
-<img width="453" height="444" alt="Image" src="https://github.com/user-attachments/assets/5061600b-39a2-4149-8815-101bc21cd141" />
-
- `sound-test` plays through both the headset and speakers. The speakers can be toggled using `amixer -c2 sset Speaker [on/off]`
-
-### Expected Behavior
-Both the built-in speakers and headset should be selectable options without flip-flopping.
-
-### alsa-info.txt
-[alsa-info.txt](https://github.com/user-attachments/files/29711854/alsa-info.txt)
-
-If this happens to be a configuration issue on my end, please give me steps to fix it.
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/807
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
