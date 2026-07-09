@@ -4,167 +4,176 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B321C44501
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2026 09:18:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15B72C43458
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jul 2026 09:27:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC44C6023A;
-	Thu,  9 Jul 2026 11:18:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC44C6023A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E228F60240;
+	Thu,  9 Jul 2026 11:27:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E228F60240
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783588729;
-	bh=HltVVfvEBmpNzh1SQC7hT8BzRF/gi41e90koasFLYFM=;
+	s=default; t=1783589278;
+	bh=FvbemxWRmP7EYMfSReLFC9/iZDFK83/AxX0fB0UQRYI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OgWc/Rsuo0GnTsay+htJzfyD5BJK/VqOaG1OIP/o+FwbqLK0bQIUFi+18NUYMl/mU
-	 NL0NveAa2pvHRHyUHCGmq0zNoeKjYRApHxO6U3f1YgIKQlaaupHz1+bXHL4gUXGIpy
-	 OTgORe+DnLTgwU8zYJwqABJR4V7E9eEIAExWDhBU=
+	b=Z/E587uxqSeAeGxzX/aCgZ20eAybf7HcfT8V3wkDOoPl4gsj5TBW0Ld5O+LevHibm
+	 cwHZPPyreX1uZWA8NY1yzdvwM0hKbjOzkK9/6jsmYS/cvdalTRBCoFwpV+CABC00MW
+	 I7XWrwsp67weTAMGb+5/CZGR+/HM0w3z/V8eEikg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4169BF805F5; Thu,  9 Jul 2026 11:18:16 +0200 (CEST)
+	id BCF70F805EE; Thu,  9 Jul 2026 11:27:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2DC5F805FF;
-	Thu,  9 Jul 2026 11:18:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37E08F805F9;
+	Thu,  9 Jul 2026 11:27:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 731EAF80495; Thu,  9 Jul 2026 11:18:10 +0200 (CEST)
+	id 4B0C6F80495; Thu,  9 Jul 2026 11:27:20 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783588686;
-	b=QSPzl+vzlWHEToCTOcPJt9vuh+PFkXVnLT1Hx6ErRNEcBNpgRWIuJl6ZBi4PaEienHmj
-	 tkrdV53997AHdahtrIO1b2eagJGTUsTsldY7XoPT36mC2g1YVAy6YsKdTKXvclebeQLtC
-	 LjRiYIqmQAuxDOE9F3Euxlmn5bTKWMQ17jiYjb9OI8DPTWHd1Mkod4DiO7fSKlGbzDiNl
-	 tl28YUuJ3/kEqRUEcRGYnCCl46sivnpjtfp/4x4wFQ38RZEptGzLm3cWIdIXJw/igwnpJ
-	 IqpkV6xG1WbPrqMJzsv0JhhfxmJsoFazxq6P87zbQAGDuVIfBc3OQiqt6TZTokcx2jQ==
+ arc=none smtp.remote-ip=195.135.223.130
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783589236;
+	b=D4Lz2aeI2z9cWyo745gr75dDfj80DuL6GHRTxg4e/NyFa/RQrg8zLYApROpX9Yd7sRFI
+	 atKAlj70APRpkAUETHAXGqPUDMMxntrJoG4B0sfJz37PG1HzAvOdYMqvPa/PoawRG/44J
+	 wqRgo2th06UaMvFAeFaOUOwIknaPhyv4zzKowvQOU7y5qhxepIRdhLOCpRR5fdvzjv1FR
+	 L2HlHJTroixSBwdks0b4Fa00r4f15eMkp1Yv/JQ9Z8FFINR1w2RvBpmef4AKUdng6bQMS
+	 8fpxDfavla7zMTKZJmZezN5PaI0KcN2Jf/2jH05pDVFL0d49HLL0i3Vm0VKXi+0CraQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783588686;
+	c=relaxed/simple; t=1783589236;
 	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
 	 Message-ID:From:To:Subject:MIME-Version;
-	bh=HltVVfvEBmpNzh1SQC7hT8BzRF/gi41e90koasFLYFM=;
-	b=msMr3a9YLh41O4wvetCePqwQd8SwziaDGgxenWGZIl6+jj/VCs9WtAYiFNCgduT4WUZZ
-	 +uqUcTbu+KMu+Nv+Kg0YDGiMrbmZK7ttKk8BdMLb2auKz/brt76EJbMfPL9g3l58IqplG
-	 kUjRQBI0QDtFpL0nQNW7xCudwW7CMBpxpZTMjCIFBsIlC2yYZlXzAorGpQtlQfb5HoPDV
-	 CvH64oRQArVqB8IiO/YFPi1ahzq+cLObSDyb3U+kZwT33JV3KKEI8w6eVOzCAL8o83IpY
-	 wBSF9b6TT58D5+ZqOZtCF/BK7pbJcQGQrr9ukrgg4azAN0+A4qOe+gLVzN6fyYlsLdQ==
+	bh=FvbemxWRmP7EYMfSReLFC9/iZDFK83/AxX0fB0UQRYI=;
+	b=ir9cyQaWZFQRJ91ICi+7D2Fy2o7HSj9z/5vYS+9k7pf2Zx3vJiOJE/ngdG1bMfgpMS8n
+	 ElyvE6087zqpIAntMoWN0Lr1sEA4YgpcqFxqErepA5H6BF7RMYAmzxDOScBvHPaYevC5U
+	 Rokqg65ZXqST22oQ/M82cGskLuc8YDGXHhMFzYc1rA5kyWvAE0NF9+XQ9xgIw1Ri6dZWp
+	 MEWM4o7C6mxoY/yT8gM6Mfe6x+98DJNbJbPmRI/d/8NSQYm2OZFiHadcsy4uXmlZiF6eV
+	 Wl/mSoB902m3ac1d8zCstWu9lD8kEAyr++JNt54enurwx7dc4XQ9dSZYsRY1WIl3ZOg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ILCXRtgL;
+ header.s=susede2_rsa header.b="sWYJi7b/";
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=5PDaZniA;
+ header.s=susede2_ed25519 header.b="t+/t7N+k";
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=wP+bidRN;
+ header.s=susede2_rsa header.b=bDbJ2tJB;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=bBaPS1sW;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ header.s=susede2_ed25519 header.b="/WjDWds0";
+	arc=none smtp.remote-ip=195.135.223.130
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32B6FF800C1
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2026 11:18:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32B6FF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 15760F80124
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2026 11:27:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15760F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ILCXRtgL;
+ header.s=susede2_rsa header.b=sWYJi7b/;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=5PDaZniA;
+ header.s=susede2_ed25519 header.b=t+/t7N+k;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=wP+bidRN;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=bDbJ2tJB;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=bBaPS1sW
+ header.s=susede2_ed25519 header.b=/WjDWds0
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5279575812;
-	Thu,  9 Jul 2026 09:18:03 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 235B8760BC;
+	Thu,  9 Jul 2026 09:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1783588684;
+	t=1783589233;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uJYAvz27tahr5pgSq3w0/88+I1fLzs3UXnKVo7Sexpo=;
-	b=ILCXRtgLlIZF18jmaQbUP0qCGU6LL3XcymOGfjhdSLjFWrmcU28ROturdzihuZpWiL7csB
-	16Ysl7ti8BowOYwVL2At48O30oBmqHOUphuCqkrB0NX3BpPWQ//uXpy4r9dc5zelyiPrCW
-	JucDXsk+Xfp09LIFzh4iwIy1EaKG9o8=
+	bh=SNc6oLVE01PDd5eJpVLwEiUEjSItoPk31pzgMZF5Omo=;
+	b=sWYJi7b/7GLGt7Xwb3yf2wU2b8xIp82CfIkbudx2YDLzXCe9Qd8xmt5Rj45cb+14to115c
+	R2T1PRwa7nqSOTuZ7h00Tm/8wJD4c7HwZzeYKrCBECbxVdPNrrVdYsV1cqUus/A5EczBzx
+	o7LyC9EKQZQfDYIfM0eeuXLevs91E4o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1783588684;
+	s=susede2_ed25519; t=1783589233;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uJYAvz27tahr5pgSq3w0/88+I1fLzs3UXnKVo7Sexpo=;
-	b=5PDaZniA1rjvP73m/9rMfSdimBGGPqXmUdKWwh9nsMmHmPiLWRODAAjO63mT2Z7KF1Ijw0
-	xU+MlSNKpMUpkSCw==
-Authentication-Results: smtp-out2.suse.de;
+	bh=SNc6oLVE01PDd5eJpVLwEiUEjSItoPk31pzgMZF5Omo=;
+	b=t+/t7N+klm/rfVhvr7HrZUX/FF2aQ3PsO/WAFxSbddzoMyMNbNRZozGq/y/hVbEZ644FnC
+	FDmoFMww9bVMM7Cg==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1783588683;
+	t=1783589232;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uJYAvz27tahr5pgSq3w0/88+I1fLzs3UXnKVo7Sexpo=;
-	b=wP+bidRNXw50pUJHX2qBiyI/9fhZdNk4D+24EaxkEU0EzYM9Bpiuk5w8V0GWt7lDDz0dpx
-	zo8uHQI57ES6tk3+JEn8PDbKGDX/MKBKu7los6XveUZ70W0bAznfw3fiou6I+ZGKVhi/By
-	2v2caeJtOr/iDeu5kC2HAkQRi2h9sZ0=
+	bh=SNc6oLVE01PDd5eJpVLwEiUEjSItoPk31pzgMZF5Omo=;
+	b=bDbJ2tJBHa7U0GFsIfoMOIS6aMOBVtXBg1zVappDw2fqOjXxgvCVq6j9aOLxr2BR1/lPzu
+	kC6YYPhjxO3SQlZgL4G5dNxLRA+CC/rdE7aTb6KZz1mSa81UHHnNqpnYbleQrSjGo+gul9
+	3ByM0RplHCFV8lMXiz7JF6eLzqvMJPg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1783588683;
+	s=susede2_ed25519; t=1783589232;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uJYAvz27tahr5pgSq3w0/88+I1fLzs3UXnKVo7Sexpo=;
-	b=bBaPS1sWKe13e9oPSwM5XY6J7Se2SabIfJPOrJ+U5XAsytjDdSpDaBzrod/4nLT6wf2OZy
-	vEPGQbZATP3xJbBw==
+	bh=SNc6oLVE01PDd5eJpVLwEiUEjSItoPk31pzgMZF5Omo=;
+	b=/WjDWds0VKNKcA3BzAh1qQa3rCTtrmaJ+BQ3KezNyROJ+U36lt7uF/WSQg1qs+N0vNosDR
+	+2Pg/iO0rT/FapDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 32100779AA;
-	Thu,  9 Jul 2026 09:18:03 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED3CD779AA;
+	Thu,  9 Jul 2026 09:27:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZxTUCktnT2psNQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 09 Jul 2026 09:18:03 +0000
-Date: Thu, 09 Jul 2026 11:18:02 +0200
-Message-ID: <874ii84j3p.wl-tiwai@suse.de>
+	id TgWLOG9pT2ovPgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 09 Jul 2026 09:27:11 +0000
+Date: Thu, 09 Jul 2026 11:27:11 +0200
+Message-ID: <871pdc4iog.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Michael Diesen <michael.diesen@posteo.de>
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for HP Elite Dragonfly Folio
- G3 speakers
-In-Reply-To: <6b2b71bb318263aeb4f3ff67754d9978@posteo.de>
-References: <6b2b71bb318263aeb4f3ff67754d9978@posteo.de>
+To: Miguel =?ISO-8859-1?Q?M=E1rio_N=E1poli?= <miguelmnapoli@yahoo.com.br>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"tiwai@suse.com" <tiwai@suse.com>
+Subject: Re: [BUG] snd-usb-audio: incorrect PCM volume scaling on Edifier R19U
+ USB speaker (0001:0201)
+In-Reply-To: <916698070.3732567.1783292866624@mail.yahoo.com>
+References: <916698070.3732567.1783292866624.ref@mail.yahoo.com>
+	<916698070.3732567.1783292866624@mail.yahoo.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-2022-JP
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-3.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[yahoo.com.br];
+	FREEMAIL_ENVRCPT(0.00)[yahoo.com.br];
 	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
-Message-ID-Hash: RXEDMA5A5NJ5IMXKE7MBOLU6IRIOO74P
-X-Message-ID-Hash: RXEDMA5A5NJ5IMXKE7MBOLU6IRIOO74P
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mvsilicon.inc:url,suse.de:mid,imap1.dmz-prg2.suse.org:helo]
+Message-ID-Hash: 2RMUIR5Y54H6GFOC56PUNAHL4MO6ZU22
+X-Message-ID-Hash: 2RMUIR5Y54H6GFOC56PUNAHL4MO6ZU22
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -176,7 +185,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RXEDMA5A5NJ5IMXKE7MBOLU6IRIOO74P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2RMUIR5Y54H6GFOC56PUNAHL4MO6ZU22/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -185,57 +194,80 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 08 Jul 2026 22:04:31 +0200,
-Michael Diesen wrote:
+On Mon, 06 Jul 2026 01:07:46 +0200,
+Miguel Mário Nápoli wrote:
 > 
-> The HP Elite Dragonfly Folio G3 (PCI SSID 103c:8a05) has 4 CS35L41
-> amplifiers on SPI, identical to the non-Folio Dragonfly G3 (103c:8981).
-> Without this quirk the amps are never registered and speakers stay
-> silent.
 > 
-> I've been carrying this as a local out-of-tree patch and would like
-> to get it merged. Note there is a related, recently merged quirk for
-> a neighboring SSID on what appears to be a sibling board variant:
+> Hello,
 > 
->   0a10faad5ca5 ("ALSA: hda/realtek: add quirk for HP Dragonfly Folio
->   G3 2-in-1", 103c:8a06), which uses the SPI4 + GPIO LED fixup
->   variant rather than plain SPI4.
+> I'd like to report an issue with USB audio volume scaling on a cheap
+> USB-powered speaker set, in case it's useful for a mixer quirk fix.
 > 
-> My hardware (103c:8a05, "HP Elite Dragonfly Folio G3", non-2-in-1
-> SKU) works correctly with the plain ALC245_FIXUP_CS35L41_SPI_4
-> fixup and does not need the GPIO LED handling. Happy to re-test
-> against SPI_4_HP_GPIO_LED if you think that's actually the more
-> correct fixup for this board too $B!=(B let me know.
+> Device: Edifier R19U USB speakers (MVSILICON.INC. controller chip)
+> lsusb: Bus 001 Device 010: ID 0001:0201 Fry's Electronics EDIFIER R19U
+>   (Note: idVendor 0001 is an unofficial/reused ID ("Fry's Electronics"
+>   placeholder), so it may be shared by unrelated devices from other
+>   vendors -- please take that into account if considering a quirk
+>   based on VID/PID matching alone.)
 > 
-> Signed-off-by: Michael Diesen <michael.diesen@posteo.de>
-> ---
->  sound/hda/codecs/realtek/alc269.c | 1 +
->  1 file changed, 1 insertion(+)
+> System: Zorin OS 18 (Ubuntu-based), fresh install (< 1 week old)
+> Kernel: 6.17.0-35-generic
+> PipeWire: 1.0.5
 > 
-> --- a/sound/hda/codecs/realtek/alc269.c
-> +++ b/sound/hda/codecs/realtek/alc269.c
-> @@ -6817,6 +6817,7 @@
->       SND_PCI_QUIRK(0x103c, 0x89d3, "HP EliteBook 645 G9 (MB 89D2)",
-> ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
->       SND_PCI_QUIRK(0x103c, 0x89da, "HP Spectre x360 14t-ea100",
-> ALC245_FIXUP_HP_SPECTRE_X360_EU0XXX),
->       SND_PCI_QUIRK(0x103c, 0x89e7, "HP Elite x2 G9",
-> ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-> +     SND_PCI_QUIRK(0x103c, 0x8a05, "HP Elite Dragonfly Folio G3",
-> ALC245_FIXUP_CS35L41_SPI_4),
->       SND_PCI_QUIRK(0x103c, 0x8a0f, "HP Pavilion 14-ec1xxx",
-> ALC287_FIXUP_HP_GPIO_LED),
->       SND_PCI_QUIRK(0x103c, 0x8a1f, "HP Laptop 14s-dr5xxx",
-> ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
->       SND_PCI_QUIRK(0x103c, 0x8a20, "HP Laptop 15s-fq5xxx",
-> ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
+> Problem description:
+> On connection, the kernel logs a warning about an unusually large
+> volume range for this device's PCM control:
+> 
+>   usb 1-2: New USB device found, idVendor=0001, idProduct=0201, bcdDevice=0.10
+>   usb 1-2: Product: EDIFIER R19U
+>   usb 1-2: Manufacturer: MVSILICON.INC.
+>   usb 1-2: Warning! Unlikely big volume range (=999), cval->res is probably
+> wrong.
+>   usb 1-2: [9] FU [PCM Playback Volume] ch = 2, val = 0/999/1
+> 
+> As a result, userspace volume controls (tested via PipeWire/WirePlumber
+> and GNOME Sound Settings) display a normal-looking volume percentage
+> (e.g. 69%), while the actual underlying ALSA mixer value stays at 0,
+> producing no audible output at all -- with no mute indicator anywhere
+> in the UI.
+> 
+> Confirmed via amixer while PipeWire reported ~69%:
+> 
+>   Simple mixer control 'PCM',0
+>     Capabilities: pvolume pswitch pswitch-joined
+>     Playback channels: Front Left - Front Right
+>     Limits: Playback 0 - 999
+>     Front Left: Playback 0 [0%] [0.00dB] [on]
+>     Front Right: Playback 0 [0%] [0.00dB] [on]
+> 
+> Manually forcing the raw ALSA control resolves it immediately:
+> 
+>   amixer -c <card> sset PCM 999
+> 
+> After this, audio plays correctly and the volume responds normally to
+> further adjustments, confirming the hardware/DAC path itself is fine --
+> this looks like a resolution/step (cval->res) miscalculation for this
+> device's 0-999 range, similar to past quirk fixes for other USB audio
+> chips with non-standard volume ranges (e.g. the Logitech c270 webcam
+> fix in sound/usb/mixer.c, volume_control_quirks()).
+> 
+> This was not an issue on a previous Ubuntu installation with an older
+> kernel/PipeWire stack on the same hardware, suggesting this may be a
+> regression in how a newer kernel or PipeWire handles this specific
+> range, or simply a device that was never covered by an existing quirk.
+> 
+> Current workaround in use (userspace, not a real fix):
+> A udev rule triggers `amixer -c <card> sset PCM 999` whenever the
+> device is connected (matched by idVendor=0001/idProduct=0201), forcing
+> the ALSA control to maximum so PipeWire's own volume slider can then
+> attenuate correctly from there.
+> 
+> Happy to test a patch or provide more logs/output if needed.
 
-The patch can't be applied cleanly via git-am, unfortunately, likely
-because your mailer broke the space and lines.
-
-Please fix your mailer setup and resubmit.
-At best, try to send to yourself and test whether you can apply it via
-git-am before the resubmission.
+Have you tried to apply the existing quirk?  Judging from the number
+999, it might be a linear volume, and you can apply the linear volume
+quirk.  See Documentation/sound/alsa-configuration.rst, the section
+for snd-usb-audio quirk_flags.
 
 
 thanks,
