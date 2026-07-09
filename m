@@ -4,142 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86F68C4451B
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2026 09:38:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45410C4451B
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2026 09:39:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E1376022B;
-	Sat, 18 Jul 2026 11:38:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E1376022B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AF4F60239;
+	Sat, 18 Jul 2026 11:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AF4F60239
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784367525;
-	bh=6SMCHuy00s9l0hfP90+AD8AyjGEzNImrpyQbKe/qJTE=;
+	s=default; t=1784367539;
+	bh=Ma9hZYGKmWu+c4bk/cBfQ6DPevX5CRoMpK8Z9/3dTjQ=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JaYOE48Sx4NknmatkiyZ6PDh5L06e9XRbBZcSoMc5/EUcP2XaVVO8IRbJ+Dstozmd
-	 /k/7zeWZ6x5SYwelRhLDwLnfZ4D6VLl/yPJLWX/OdtVDads/hZtsrFLbPuTm/uoc9N
-	 ZB3vSUFAYpb7FTJjw2Ys4A21bC1S1vE4tLjgbbNc=
+	b=WytsO4mSzOKVn+VJqyOHqH/lnAo0G8V/s7wgGtRVvTyFon96dN8xiTpb9BpG/ItIA
+	 7N0Cwp18+a3iyU9hsMTCdcVjirIJAOj3mxLEDid78QcDdHhek6tKTuxhgvLTxCwuIZ
+	 TurXavtuoOaOuqKbMlCD1ATtARmjBAzJBiPxb88I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF260F806B2; Sat, 18 Jul 2026 11:36:45 +0200 (CEST)
+	id 9CA50F806E7; Sat, 18 Jul 2026 11:36:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 690C6F806D2;
-	Sat, 18 Jul 2026 11:36:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A405F806F1;
+	Sat, 18 Jul 2026 11:36:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF500F80495; Thu,  9 Jul 2026 09:10:37 +0200 (CEST)
+	id A3DB3F80495; Thu,  9 Jul 2026 09:54:58 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.161.42
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1783581036;
-	b=T+wqEbTCa/trtbzDahsDkaMeqarOuSIIBVS/Xej4rAo/FhnMcY2CnkwEJyLSdYaT559X
-	 gBTyDi0L3gFDTec/CBbtRki398vbtBQJID8fs8TnW2m/aFhfzmwe0L7BHGfX761qgVx+F
-	 26nChELHJryDglUG5SxipkoYpTB64LJDTVsht0CNUWdWdlQVg9VjoneGlAKvWsRDtU/gB
-	 WC6L6c9D8MvdFee/HI3f7gyaFQ3NcKG8o6phYHrIBauyTh7l9Y47MPLnlktB2bwLTQ726
-	 TrF0gg1kMN9Wbhv6O3HLh3NS84cPXUCS0ANvVTNugBAKr10TCou8uVovXXV1Ecd4KlA==
+ arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.210.45
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1783583697;
+	b=J9lLyAv/w8F2pBK1Tq4lsIFvHm53jT0dApiCCMfj0eKboFSCxEtXo6JYNru6Tjz16twA
+	 yHKcvhp9YI5pBpTR59cLa7Fg8RA17VEov4qDxal+Pb3+FKfXFJRWOhpEoMSuhbpbLVfWe
+	 FDgz0ZlnmwEvt48E+5Gfvd6pYDBDrNLkRlC+N2ChcP2vVgSt/mPiFN4rC7QoIXHN7Nc0T
+	 t15GGSBNzHSEiMe5O0PIDY42Qswqq9i22pukz7/psrftsISjMgVtu5BgXaNOpkPuiqJNE
+	 1RkpemJLlU+l1AhmJjT9T4G2Zni60X2QCG0UMjmaI0K0BwfFNh8rc2jQevvTyNJoUBA==
 ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783581036;
+	c=relaxed/simple; t=1783583697;
 	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
-	bh=6SMCHuy00s9l0hfP90+AD8AyjGEzNImrpyQbKe/qJTE=;
-	b=f+8jWfSX0hlz6ZxgPPuuV0x3b/SXkbPw00zYWoYXbKngCEIKCr4pbMQ4cziPHd6TE1Mf
-	 +L2EhOqthMJ7yn6UuK+6YnJdPCcUdfBwd2XukZ9nn19kZCV5LE9+NKl0nMvK141UOmqxY
-	 d4jsrc4alUh917YUEz+2Mhy2CpQa6btSodOL+0P08tz6ns+MfZb3mPH2do/IHg5WAHQhj
-	 vQQ0BzA8114B7jG3tmu4Njh2u5LNtd2Ept5dxYRdjJ+zJ1PfvIOQmcQn9HXf2cRgOluxK
-	 WmJ34exUrm7/JBWYbK3GkzWQ4LWLPZ6W1AAA/ZsSuVBhSxQ7UobSFEhhSo82RSbN0CA==
+	bh=Ma9hZYGKmWu+c4bk/cBfQ6DPevX5CRoMpK8Z9/3dTjQ=;
+	b=oqEXajliDVTEFIpzKjoOjqUXr+6AAl9BISo1J0r3mkw9dp6EfOUrTtNCw9UBatrg+//7
+	 Ej3RZcCrCrjNpOcMUxBUhqUh+JYwyfzcOeMo3h32sVEKOfDhQn7NuNLJ19vj6GCLVQXos
+	 LUA6AdDg/BppNu5vxSAYoiarISkt+bGIUF6KIydsbkKB5m+k8h8PByTPT0z5jEK9r5hz4
+	 71nZEr24bNtoh2fpdg8UXj19AKvzoOcmtTTXq2nwiAS/pMEdtZkvO7N4BK18K5dRBLqQE
+	 sbQwswD8UX+eMO9jPaNYzLf4eSMhA6LvX/Z2JIVoqoQerEOPCHtFuPHe24IbXlkpdwg==
 ARC-Authentication-Results: i=2; alsa1.perex.cz;
  dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=rV33zNZw;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.161.42
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com
- [209.85.161.42])
+ header.s=20251104 header.b=CWW4Jihn;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.210.45
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com
+ [209.85.210.45])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 262E2F800C1
-	for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2026 09:10:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 262E2F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id CA637F80124
+	for <alsa-devel@alsa-project.org>; Thu,  9 Jul 2026 09:54:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA637F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=rV33zNZw
-Received: by mail-oo1-f42.google.com with SMTP id
- 006d021491bc7-6a0e525db1eso969853eaf.1
+ header.s=20251104 header.b=CWW4Jihn
+Received: by mail-ot1-f45.google.com with SMTP id
+ 46e09a7af769-7eb1dc6bd53so422882a34.2
         for <alsa-devel@alsa-project.org>;
- Thu, 09 Jul 2026 00:10:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783581033; cv=none;
+ Thu, 09 Jul 2026 00:54:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1783583694; cv=none;
         d=google.com; s=arc-20260327;
-        b=GFCxu71CkIQXJozmDMlAoot4mowyYq6hQeH8qxnCaYEgG523bxsRnzjGMtKa3GomLA
-         q33xA6DQ/34e1U4PEwd+4Sv94p4YJOF5mYm8UXvx5bgP1XYCQWgI07nWdEjB8b2Xcnor
-         rOotZPB87id4Lzh+orVcqYGk8kEgWNfESBUnCBdPluaUbLZou2mfWH8byFAcvmWG5TYY
-         /Uqp6O1pk/sncBIlQItFHgVAnzf/xDHm7XeQSP9NtowqHcDkar0cuQAkcw1+dw0f/RwB
-         Biw04zQNJ8/sA2zWfZ6wLYQsxvRjwDI9vVjNxYDcooNiBebZH19oAIEcCWNIwirOVBIl
-         zMJQ==
+        b=CdxPDZG23tPi+FKtbLvxgyhc+18Us9XEtuWUaiRQB86H8bIeI0OAxh9E+F67KxGkuO
+         kMAzgcq+whlOqwymK36/DYrKAtMacAK1pvC3aCJR2j9CA/XieOl/CY+k9Ev1b49lIrhm
+         4aIuH+VAKycs2SrJfwPytQGZHnNVZMxVETHdUzwRp7bcya6DKP7aiBtfdz2lYNe0Vm3I
+         KS53jCjFaetUp+hQg5sR3S9oxRj+fXhjWxqEv2eAVBsukoMUpuso2ySSkrslBO83rE8m
+         NRlC7peXVrNr3OUZzu0QBPPSLxuvbc9n/Uet7Fx7yn8QecmfJ+3eTJPlgOFC87Gc6O/M
+         4qDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
  s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=GRXeQ5qE6qZskG9oXPGJsVaA14ddyhrHMKes6w0dbtw=;
-        fh=tc+qik/f3zYLHu3enVKrJt1x1rWUdtV1x6F66wot+c0=;
-        b=ckhkqmyePctr4AGpuYJZdfiyAMyfGEgPsqqWuvODkj1+AtAYdmYDTZvr7VUA7/Tx7q
-         RAsPZFiw5E3BgCwjCflEprFzx0GGpxbHmPLEVvgJkAg8+MxNLdnVVHKD6TbpNrKLUU+g
-         CehZBf+wXRmtjMbKNuW6gpISZZS/yvHswiSVdX3KUJY3aa9AWpXGax4xoRc2lOD2tZ8w
-         eGMl67qxhkNKCj7qhMD4h5OLxFreOeWl7OGqGAQCJqXp1tv5pxcp+GAXyJAYyTfGOHE6
-         Y8Y0oGMW3irgBxQKOPT+J9DhzT1/r9BSM3OF0Mrn3xGSjWwQ/NhZwbkLncXSvyJEg6Iz
-         DwxA==;
+        bh=FX00PmUaBGhdxGjtEcp4ojX6h8tPyR/nQ8Y5AXR41uM=;
+        fh=8MVHGZY4jBXBpbaBVkD0xn7Kh3bOMgLdRpvHKoFetcA=;
+        b=nDyqoaDSGchHPf1OsxcNZmECenVjdw9jLxnMkCASqzutZyz/SrvORLr9thNotggNVV
+         ucGRCgDvq8bNxFc0N+e2jsVFfFocLXquEROySTtaUUWeAp8n0ubnZnpno4XilUo9Cjim
+         ZQnQaCW4+P7FGxIWv/rBEFXLatBWL8lM1+kjntjCw+xPK49GbM6oha8ivzIdshw3RQy6
+         HUjiOQ0zQeJgzLv/8l/kmPdcQ2UkKGjr5mJIq5KSzVbtsQR94Ahq3Ta1wkxbLTy5U4K6
+         xi2LrzkGB76tkoT60vVs37B3PdrS8fD5tLRvYYeI9xawSndOCXoLvCtWxUEBTsZS8e7f
+         58sw==;
         darn=alsa-project.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783581033; x=1784185833;
+        d=gmail.com; s=20251104; t=1783583694; x=1784188494;
  darn=alsa-project.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=GRXeQ5qE6qZskG9oXPGJsVaA14ddyhrHMKes6w0dbtw=;
-        b=rV33zNZw0vtmL47ERpOmLU1G1hE6fmigUx5oWsfDGR31cHK5J2ZZgLARcTuubJRZG1
-         SAOUWv1hUv2h9vhGS1V3ypA09Dmk8PWJln+TQCxKtI6PtXyuZyjn26aRdfecjjzcHN9u
-         vzx9heQ+WtOv9JGh8iFzUUaXXI0LYmB1oBXWY6XNM1f9ru0k5D5B5mcrRDpAFRYt8W7V
-         h0AxawcvkKh+ry8xv0U7j4JpHpzGNoT4M4swMwhzNvd3faTRSblKQqshOwbQO1fSb7WH
-         Qd/6IMHnrKzXzC4Lnhr63qabbPXTPiFoKP9Ff0r9/slVtdQQLOY9BN13vFAm5/5rOm4J
-         HR9w==
+        bh=FX00PmUaBGhdxGjtEcp4ojX6h8tPyR/nQ8Y5AXR41uM=;
+        b=CWW4Jihng1SvFfZat/F9oyMgsEsiHl8A33FG9fKwegDHEDj86YUKWnubklVACHV2Lp
+         py2RzHurF1J7AYy+DZWpCQQ3uFHnpDYPklmV4uehjyWMH8P4puJTSZPPLoLSsWe40Qrz
+         FtDj51L3UgNorXmbMgebmNfbsgOAJw3+5/5EZZeEKA0Cm4b9Hut1LPDjQqUS/SFOclF8
+         6u6Y4qhcFOI8MUwllGO5es7lvKXisNniYu/dn7hK5XEvmsOWixGfpqeBPlnlT8+lN5bv
+         WNe0IYuI0lhloVcSriCTguzNeWIXPCQo03VV6vWwLptcOTP1WyyOoszw41+W1mIfGxod
+         RH3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783581033; x=1784185833;
+        d=1e100.net; s=20251104; t=1783583694; x=1784188494;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=GRXeQ5qE6qZskG9oXPGJsVaA14ddyhrHMKes6w0dbtw=;
-        b=pjoiWVlJHSD+GF5A3xHlDF3w2rRN0flpwFrbnpPdHPgrVGPaLPOm7HASO/62i/n6ck
-         PVLdUr/gq420oBeSVQJtdB3PzFOTNRO30FqBIFDSREPV9aLWrSZFsrZ/z3x5HVrcHbs/
-         ZUyVSZi/Cbz1skl9tbb7a65yXCBeiEhzylDJhihi8KHZsBRa1XvB3YEAAicYONXiwylw
-         x/isMpzTdQOEtpEJrByGyMrRkdnkghoNWLIjyTWdUQXJ5eyzHU/wHkyAoGk0EaKgAIhk
-         lFZrq/L1KEVj1lDzqsPs+n/2GAuIbJ8vMq9UWRKmYtudGjXrINrq2jgRFv5K3Bs1KBrt
-         96iQ==
-X-Gm-Message-State: AOJu0YyP4mhimFz8Ba8bEliUG3UkR1JtqR8OcXeZkB5SJ+wpBGaANz/a
-	73BgzeeN04Bmz4C7sCxVB5WMhRIZZQ1YCRLR6xhuiQGFfFfWLLdgyQ7IFDdYFtVOQ7VWaIavZ9K
-	dcLzfpCa+ZE4sW444HS/KAXI5pVDH6Vk=
-X-Gm-Gg: AfdE7cki2KpFkPTk8D+xG0GDxVVHJkMWRESB6cmCFy+2q4bZ8qnZw3NmDuTkMMHzBaW
-	FbO2mmknL5mPeYj9SqaEUzaiqmBuSZQj6w3+yXyoWqLzaorbtDin4pLPzUPkbdhLgJsPUncxYaU
-	sb3uhzw0pDvWqKaZtvdBjF7Ydr/5N+bNDPRWXK6r2VqwEZD/hYnhxIJFH2DH8TOeanp9ZFLlKrI
-	IXM795yIax4lXrpLTsQOpA7HiFxPfEK6bBCJ5u8PXXOHlKQVj+jxFj2OD4o08DNSwiTccJ4Qsw=
-X-Received: by 2002:a05:6820:2087:b0:6a3:1e40:6329 with SMTP id
- 006d021491bc7-6a36d85fea1mr4429171eaf.13.1783581032902; Thu, 09 Jul 2026
- 00:10:32 -0700 (PDT)
+        bh=FX00PmUaBGhdxGjtEcp4ojX6h8tPyR/nQ8Y5AXR41uM=;
+        b=K3u1RQAkbtC2/4SIYXFjKGNTfWvljI6YQxC/Ea2YtwVqca4sKbxgO7gqow4LexmNOD
+         GzkhQIlgqi18q5sbyTOczE7UPbeZK9oVDYPZalnmyBBiizFnMiyYjTa/cUyP5VTmiNiX
+         NwO8xjrkON8jNTh9to00Sryg+YphG3GFLWk37SJ6QYQN4OGQq2WyV2qrH90XcyhnhgLH
+         sKO10TvKKsyZhkAOtlVnWWH/P4+lIKfnjXPvXtIuK4ZOIQon3d2sBG5zXVAI/cZauqji
+         auleUyHyfOJhfxdR0flAksrFix7fFsckuYi9/DLejalyF2kfhZLaDCOS6typrCjXm7UF
+         vbpQ==
+X-Forwarded-Encrypted: i=1;
+ AFNElJ8xP6e2kUmXuGOJ6el/6Mp7bWAoXnrew6gRMxBZ0A3l74a320rdTwsQMoMnz04d7v6jHlIg3ziHilF3@alsa-project.org
+X-Gm-Message-State: AOJu0YwY0oidXA68qBeNr5YSbKPzvS2N6CEGFiyItwTDgVqMaSLqecbU
+	sfvCBaJVF+6y6/v19iSKJlM9M3He9lEQOXnK+zlWimKjgA7r6J4n9YeBDUGHWzmo1a6WZ5xeZb3
+	lrdVSJp2x+gpSMozNRKOOUJmasmd7A9k=
+X-Gm-Gg: AfdE7clBQHO3B+cBMTuJWauF3nAyzB/D+77lcTxOuuv726Efs1tqU+GkMtBVS+Uchjt
+	gHlWa9lYjwJZmztYxqTnsYOU0N0po5StPlwdZWtEm0Ah9ABgvfjJfOFeRCPAIGE8Z/na3umuR38
+	KxhrF1B3dnsiuy47sJGK9BC+f2Wsz2cMehgHZzgiCtlRWTmv5YVBUfPseWU4HaTEyDAvo8IJEfy
+	sGbu9SOwMDP6kLGgUjBylziipz6CYcaES3uXefIokgP/U5/aUUGm5nSQQmtr2HHxKAw8GB/IBM=
+X-Received: by 2002:a05:6830:82a8:b0:7e9:c8e3:4473 with SMTP id
+ 46e09a7af769-7ebd02a39famr4920086a34.16.1783583694520; Thu, 09 Jul 2026
+ 00:54:54 -0700 (PDT)
 MIME-Version: 1.0
 References: 
  <CAOdyq+qFaqCh=tK_wNnA64hv5pQuA1Y09ANxQ=xK8yR-t4mf9Q@mail.gmail.com>
  <4A4C8B42-D8BB-44D1-BE0B-CB5B4617F29E@sonarnerd.net>
-In-Reply-To: <4A4C8B42-D8BB-44D1-BE0B-CB5B4617F29E@sonarnerd.net>
+ <87bjcg4nyh.wl-tiwai@suse.de>
+In-Reply-To: <87bjcg4nyh.wl-tiwai@suse.de>
 From: Salvador Blaya <tiniebla6@gmail.com>
-Date: Thu, 9 Jul 2026 09:10:21 +0200
-X-Gm-Features: AVVi8CdUsfr78jpgn-JwLl42qCQn9v_JWlL3kgayPW3yVSKfETZqdr_RJMRxS98
+Date: Thu, 9 Jul 2026 09:54:43 +0200
+X-Gm-Features: AVVi8CdD75YylWj7sWl9WVm_PTcKz4gGLBge_a1BeaeSo4zknRXfOV8Ydp_BhoI
 Message-ID: 
- <CAOdyq+oMPFYnF4F=vkX26TiKydOX7DnZiTrRj8D2R7jK5VOPnw@mail.gmail.com>
+ <CAOdyq+ook_mDq_5wc_Na182bLvxZ1YJUJEchJ6MochU17QecQA@mail.gmail.com>
 Subject: Re: [REGRESSION] snd-usb-audio: commit da3a7efff64e ("ALSA:
  usb-audio: Update for native DSD support quirks") breaks DSD playback on
  Musical Fidelity M6s DAC (2772:0502), plays ~8.8% fast
-To: Jussi Laako <jussi@sonarnerd.net>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, regressions@lists.linux.dev
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jussi Laako <jussi@sonarnerd.net>, alsa-devel@alsa-project.org,
+	regressions@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-MailFrom: tiniebla6@gmail.com
@@ -147,15 +151,15 @@ X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: GPNXLFV4FMG6PBFWBRMTLJCMF2FHZYFN
-X-Message-ID-Hash: GPNXLFV4FMG6PBFWBRMTLJCMF2FHZYFN
+Message-ID-Hash: DBHOAW6KFCI2ZPAAFKVOLWQFDNTFFWXM
+X-Message-ID-Hash: DBHOAW6KFCI2ZPAAFKVOLWQFDNTFFWXM
 X-Mailman-Approved-At: Sat, 18 Jul 2026 09:36:41 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GPNXLFV4FMG6PBFWBRMTLJCMF2FHZYFN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBHOAW6KFCI2ZPAAFKVOLWQFDNTFFWXM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -164,138 +168,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Jussi,
+Hi Takashi,
 
-Thanks for the explanation - that's fair enough, understood. Since the
-defect is in the device firmware and affects every OS, I agree the
-right place to pursue a real fix is the manufacturer, which I'm doing
-separately.
+Thank you - that approach would fit this case well, and the risks you
+mention are fortunately minimal here:
 
-For the record, and for any other M6s DAC owner finding this thread:
-the device plays DSD correctly only via DSD-to-PCM conversion. With
-MPD this can be enforced regardless of kernel version by omitting dsd
-entries from allowed_formats, e.g.:
+- The M6s DAC has been discontinued for years and the defect was first
+  reported to the vendor (via their Windows ASIO driver users) back in
+  2018, with no firmware fix ever published. I have an inquiry open
+  with Musical Fidelity about firmware and will report back if
+  anything changes.
 
-audio_output {
-    type            "alsa"
-    device          "hw:CARD=3DM6sDAC,DEV=3D0"
-    mixer_type      "none"
-    dop             "no"
-    allowed_formats "352800:32:2 176400:32:2 96000:32:2 88200:32:2
-48000:32:2 44100:32:2"
-}
+- The only other model possibly sharing this ID, the M6sR successor,
+  exhibits the same defect per the Roon thread in my original report,
+  so an empty entry for 2772:0502 cannot break a working device. The
+  current MF models known to work with native DSD (M3x, M6x) already
+  worked before the vendor flag was added, so they use different IDs.
 
-This restores the pre-7.0.7 behaviour (dsd2pcm at 352.8 kHz), which
-plays correctly.
+I'm happy to test the patch on my unit - both that native DSD is no
+longer offered (MPD falling back to dsd2pcm as on 6.12.y) and that
+normal PCM playback is unaffected. Just let me know.
 
-Consider this report resolved as "device firmware defect, workaround
-documented". Thanks again for your time.
-
-#regzbot resolve: device firmware defect, not a kernel bug
-
-Best regards
+Best regards,
 
 Salvador
 
-El jue, 9 jul 2026 a las 0:28, Jussi Laako (<jussi@sonarnerd.net>) escribi=
-=C3=B3:
+El jue, 9 jul 2026 a las 9:33, Takashi Iwai (<tiwai@suse.de>) escribi=C3=B3=
+:
 >
-> Hi,
->
-> I don=E2=80=99t think we currently have exclusion method for devices with=
- buggy firmware, which claim to support native DSD, but do it incorrectly. =
-And reverting with device specific white-listing is not a good approach for=
- future maintenance. Having to device-specific white-list each new device a=
-ppearing on the market from the manufacturer just because some old device i=
-s broken is not really a sustainable model.
->
-> So I would just suggest using PCM with the device if it=E2=80=99s DSD imp=
-lementation is buggy/broken, while it claims to have such. Or alternatively=
- update the firmware with a fixed one.
->
-> Newer MuFi devices work fine though, like for example the M3x DAC I have =
-for testing this, and the M6x you mention.
->
-> Additional challenge is that many manufacturers use the same USB interfac=
-e implementation with same VID:PID on multiple different products. So it is=
- not even necessarily possible to distinguish a particular problematic prod=
-uct.
->
->
-> Best regards,
->
->         - Jussi
->
->
-> > On 8. Jul 2026, at 19.33, Salvador Blaya <tiniebla6@gmail.com> wrote:
-> >
-> > To: alsa-devel@alsa-project.org
-> > Cc: tiwai@suse.de, jussi@sonarnerd.net, regressions@lists.linux.dev
-> > Subject: [REGRESSION] snd-usb-audio: commit da3a7ef ("ALSA: usb-audio:
-> > Update for native DSD support quirks") breaks DSD playback on Musical
-> > Fidelity M6s DAC (2772:0502), plays ~8.8% fast
+> On Thu, 09 Jul 2026 00:28:00 +0200,
+> Jussi Laako wrote:
 > >
 > > Hi,
 > >
-> > Commit da3a7efff64e ("ALSA: usb-audio: Update for native DSD support
-> > quirks") added VENDOR_FLG(0x2772) with QUIRK_FLAG_DSD_RAW for Musical
-> > Fidelity devices. This vendor-wide match also catches the (older,
-> > discontinued) Musical Fidelity M6s DAC, USB ID 2772:0502, which exposes
-> > a UAC2 altsetting with bmFormats 0x80000000 (RAW_DATA, 32-bit) but
-> > whose firmware cannot actually clock DSD playback correctly in any
-> > mode. As a result, since this commit, applications like MPD prefer the
-> > newly offered native DSD over DSD-to-PCM conversion and playback is
-> > audibly broken (runs ~8.8% fast, raised pitch), where kernels without
-> > the commit (e.g. 6.12.x) play correctly.
-> >
-> > Could 2772:0502 be excluded from the vendor flag (or the vendor flag
-> > be narrowed to the specific products that support native DSD, such as
-> > the newer M6x DAC)?
-> >
-> > Evidence gathered on Debian trixie, MPD, direct hw: access, no
-> > resampling:
-> >
-> > 1) Native DSD (observed on 7.0.7 through 7.0.12): host side is correct
-> >   - hw_params shows format DSD_U32_BE, rate 88200 (correct for DSD64)
-> >   - but playback runs ~8.8% fast with raised pitch. A 4:41 track
-> >   finishes in ~4:15, matching a 48 kHz-family clock (3.072 MHz)
-> >   applied to a 2.8224 MHz DSD64 stream (ratio 1.0884).
-> >
-> > 2) DoP (6.12.9, MPD dop=3Dyes): host side again correct - hw_params
-> >   shows S32_LE, rate 176400 - same ~8.8% fast playback. So the DAC's
-> >   internal DSD decoding path is misclocked regardless of transport.
-> >
-> > 3) Control test: the same DSD64 track converted to PCM FLAC at
-> >   176400 Hz plays at correct speed/pitch through the exact same path
-> >   (S32_LE @ 176400). The 44.1 kHz rate family is fine for PCM; only
-> >   DSD decoding inside the DAC is broken. This rules out any host-side
-> >   rate issue.
-> >
-> > 4) The same fault has long been reported for this DAC on Windows 10
-> >   with the official ASIO driver ("DSD via DoP plays noticeably
-> >   faster"):
-> >   https://community.roonlabs.com/t/musical-fidelity-m6-sdac-dsd-issues/=
-39450
-> >   including a follow-up for the successor model (M6sR). This is an
-> >   OS-independent firmware defect that the manufacturer never fixed,
-> >   which is presumably why this model was specified as DoP-only.
-> >
-> > Working configuration for reference (correct playback): MPD with
-> > dop "no", MPD's dsd2pcm conversion to 352800 Hz - i.e. the behaviour
-> > kernels without the commit provide by default for this device.
-> >
-> > Since these quirk updates tend to be backported to stable/LTS trees,
-> > please consider the fix for stable as well, so that currently working
-> > LTS kernels (e.g. 6.12.y) don't regress.
-> >
-> > Full lsusb -v output attached. Happy to test patches.
-> >
-> > #regzbot introduced: da3a7efff64ec0d63af4499eea3a46a2e13b5797
-> >
-> > Please CC me on replies, I'm not subscribed to the list.
-> >
-> > Best regards,
-> >
-> > S. Blaya
-> > <m6sdac-lsusb.txt>
+> > I don=E2=80=99t think we currently have exclusion method for devices wi=
+th buggy firmware, which claim to support native DSD, but do it incorrectly=
+. And reverting with device specific white-listing is not a good approach f=
+or future maintenance. Having to device-specific white-list each new device=
+ appearing on the market from the manufacturer just because some old device=
+ is broken is not really a sustainable model.
 >
+> While I fully agree that white-listing all needed devices won't scale,
+> blacklisting the broken device might work.  We can an empty quirk
+> entry for 2772:0502 for skipping the vendor match, something like
+> below, as an ad hoc fix.
+>
+> Though, this blindly assumes that there aren't so many broken devices,
+> and there will be no firmware fix or another model that works with the
+> same ID.  If a model is relatively new and/or the vendor often updates
+> the firmware, such an entry can be risky, too.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> -- 8< --
+> --- a/sound/usb/quirks.c
+> +++ b/sound/usb/quirks.c
+> @@ -2463,6 +2463,8 @@ static const struct usb_audio_quirk_flags_table qui=
+rk_flags_table[] =3D {
+>                    QUIRK_FLAG_DSD_RAW),
+>         DEVICE_FLG(0x2708, 0x0002, /* Audient iD14 */
+>                    QUIRK_FLAG_IGNORE_CTL_ERROR),
+> +       DEVICE_FLG(0x2772, 0x0502, /* Musical Fidelity M6s DAC */
+> +                  0), /* for avoiding QUIRK_FLAG_DSD_RAW with vendor mat=
+ch */
+>         DEVICE_FLG(0x2912, 0x30c8, /* Audioengine D1 */
+>                    QUIRK_FLAG_GET_SAMPLE_RATE),
+>         DEVICE_FLG(0x2a70, 0x1881, /* OnePlus Technology (Shenzhen) Co., =
+Ltd. BE02T */
