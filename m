@@ -4,67 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4E30C43458
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jul 2026 01:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BBE1C43458
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jul 2026 12:49:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78016601D3;
-	Sun, 12 Jul 2026 03:32:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78016601D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61DC1601EB;
+	Sun, 12 Jul 2026 14:49:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61DC1601EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1783819970;
-	bh=zFftdC0gCmji9UyLgQvL+zaSnqvma7Yi7SV0ku0Xc0k=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=ksYhgH/DwQhWST1YxmSb/mHXvGPogg0q0brrt2lU7Yu58Ic0J3o9KnO6oiEUfpkNB
-	 KLAVPWY2hqAnFAyRGb5koe3jDqat0/fv6Dcsi7FuDskyUN3tF8acNLCUcEXuKSuxBn
-	 rujs/mxY7sPnhG1zuDsU2Gf9Bc5IYyQ/vkWgMkNg=
+	s=default; t=1783860582;
+	bh=oAfv25o4zzszQDeEdGbiOctSFuoN913/ON/GMJp7mTg=;
+	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=WAjC9lvdjNYVqEkAZoMCzilK1a8C3EbSebuy/qe0+7a3/KBV5tuSRRkHbBiMlfE03
+	 2TG0qkan+XsuMBBev684rXL8UyXje9PksUJUxrSjq8Qhv/bRV4g9aOpcUHumo2pYw/
+	 xo79dXDEMTCM7Wup2bPKgkpnooZN0ZV71v0MGD+k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0625F805F4; Sun, 12 Jul 2026 03:32:19 +0200 (CEST)
+	id 01F6EF805FD; Sun, 12 Jul 2026 14:49:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61CA3F805F9;
-	Sun, 12 Jul 2026 03:32:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3CDDF805F2;
+	Sun, 12 Jul 2026 14:49:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58C2AF804B2; Sun, 12 Jul 2026 03:32:14 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783819933;
-	b=YMWt6hTR9Bk1uUfJ2ODvYzQVQ00vkGvj5GKFOlcTcMO9SuTKoP8/UURqYxFopg++P4Rq
-	 KUkM7a7jlLyUsOCzlljNzDL2lkIn0Es+vjwv34hVoktNFFx0Y1mZNPFS1Ji6vMX8JVbCc
-	 HKWhITUjHN7qTYImpGbIL3rrIxbQEKDdw87MrdV3QvBFWLKTTKh6gSfP9hXw+U1oulH3D
-	 k0b+jGG6FAO+Ex8MjhfkK36ctzqVGPBLO2/1w5z4QOPuJdjW09o2KpX+pisatn4E9a/TY
-	 EowWoSsnUR8GepBdOmXDmfzGH/vm2+zf3A7EH38UbMq5FHuscxQifLiBsCqTnICo6FA==
+	id 8FC42F804B2; Sun, 12 Jul 2026 14:49:00 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=217.70.183.200
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1783860540;
+	b=cgyl630SQyvDa/bljdXd3b9QgpJ3Hpyr5zVM03g0aMmrYUA/pFarLyWtDn3T8JssMgYa
+	 P1pRN0udHvVvvj0HZ/SvKqAC/wMsMeqrexzE/lHhHdZngbQ6/gsaQCkv+7vXo9wfCjksY
+	 TA+RKtg5GaZRQQzt66aYd1OxtrTcC5FrH1au7tl8lMiOFC73cd2uGZGj1sWLs5hEoLcsD
+	 sMdh1yEc/RQoSwmTvYOUNCy4OeOzCMQzHWQQjduyqQgfPhGB01jBGWY5nQc0TgDY1KnsY
+	 Bki3KCll57bPRxRTp6cpLEKa7QWHW9BN2d5J5QgvsYIroNCLgn3zgqYWzSEHoa7kppQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1783819933;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=zFftdC0gCmji9UyLgQvL+zaSnqvma7Yi7SV0ku0Xc0k=;
-	b=GNyr7vqxyNQ9wdqRQbKU9ZTwQcQjLni1trJ+HcxDPN/zpur2nM56EQ5HOmfPJYryeVsx
-	 /JHSa1zIojUNqWZTy4i4L+deZyRUw7KTvxn58HRLvnECDrbx1W2itj9KbC+n3/DapBrO9
-	 Pe5lABDdhWHokdfMSbpRiHSbAcmFXhyYVGTcpITYMmaJ+1tlPepBpt+JYokz2k5qYpRb5
-	 lYxXrUY/YQ39Ph3MGheaq7su1uOHQJtIV7Lqgksd2STU5RCg6Wb5/yQdn9EbQfgFYS81/
-	 w+6C4Y7FLWh3FyQ/E3rtQlm/iqvUWh6DWM59fOFI7zC5ICHYhKN5USujnmWgl5y0+Uw==
+	c=relaxed/simple; t=1783860540;
+	h=DKIM-Signature:Message-ID:Subject:From:To:Date:MIME-Version;
+	bh=oAfv25o4zzszQDeEdGbiOctSFuoN913/ON/GMJp7mTg=;
+	b=LxcqqLObM/UwSWGZwU/bDcBNyys3OxBXAcx30ka9auDHjHsoJnTGhk3SpuSPEZeELQY4
+	 1dTsJK4JCiDyNlDSLgMGxVfugXl9Qh/GQqkkCnCQkN3OCoC8SYLiAENSqD2fAROpkCakN
+	 it5xqXP0HerzuoDpnl3q4zUDwih1xNZO85nX5PJaKfOW7+GA2/aR1bJzGYwXD8/LEEACH
+	 JtcoXNn+BM6VvWGp2qrYp/xBp6gzu6MUoBJTRaLy7ATYrxB+SkrhSCEEXtJQTgbWSe5kU
+	 dERgAa9VLOWq2l5p7pP61eEgvtJ2VOEhKCuFX0ipDTYoNi9HlMn7q7rtLiW/aUX3LAg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27145F802BE
-	for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2026 03:32:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27145F802BE
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+ dkim=pass header.d=patrick.pouget.name header.i=@patrick.pouget.name
+ header.a=rsa-sha256 header.s=gm1 header.b=ezR5kljh;
+	arc=none smtp.remote-ip=217.70.183.200
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
+ [217.70.183.200])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0303CF80152
+	for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2026 14:48:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0303CF80152
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=patrick.pouget.name header.i=@patrick.pouget.name
+ header.a=rsa-sha256 header.s=gm1 header.b=ezR5kljh
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0BEBC3EC5B
+	for <alsa-devel@alsa-project.org>; Sun, 12 Jul 2026 12:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=patrick.pouget.name;
+	s=gm1; t=1783860538;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oAfv25o4zzszQDeEdGbiOctSFuoN913/ON/GMJp7mTg=;
+	b=ezR5kljhUQSkZUUOolqTxay16u3bi3+4G39/T7Ogjb0zKgZ69zqoTq9HzFjxhcojqQcMio
+	d/lNWy3bdxwzXwkcCoK+VzuqeQg4Iq3kzVDXEc7B4O81KT0USDR5H3flhEYbTLBGOkgxbD
+	CG/l/wi9+09H72tYM0i1AWfMZagCrKYDXkr6L8Y0tu/v9a3zA4+56dKiRa0Via5tW1Rf9F
+	5GFLnn02Kr9E/Aym69OqQoYT/Oxy9SaC9d6JGJVlG9V8mVJ8KNBgwb4tM6XrTEjzNaCmDR
+	dEBVviwmsZQowe/vG59GlSLV+nZCOFT+QYgd9+3dAYiA6T4KPZcyRZddxKOx7Q==
+Message-ID: 
+ <d8ea49b2705c3a3cf7ee8ab752665c619e4d9735.camel@patrick.pouget.name>
+Subject: Direct TOSlink access
+From: Patrick <forums.info@patrick.pouget.name>
 To: alsa-devel@alsa-project.org
-Message-Id: <18c166c6c220f600-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/809@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/809@alsa-project.org>
-Subject: ucm2: USB-Audio: Add RODECaster Duo
-Date: Sun, 12 Jul 2026 03:32:14 +0200 (CEST)
-Message-ID-Hash: F4KW3NGTQNCIL67HCXM2Z62ENM7P2O5P
-X-Message-ID-Hash: F4KW3NGTQNCIL67HCXM2Z62ENM7P2O5P
-X-MailFrom: github@alsa-project.org
+Date: Sun, 12 Jul 2026 14:48:57 +0200
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1+deb11u3 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: intendance@patrick.pouget.name
+X-GND-Cause: 
+ dmFkZTFLmGMm/fspEGf9b9luOaIuh9kbHjru5dgbx9WtzisII+kYjsQAqQsv6u0hCB4nZ/75n+uBN/Z9og28i27hy+MLaE7V6O+lKV6ZktFzxfJn/7iA7Vp8QOj1whTHDCzYPANMx17EjVhJq9i4M8bmp9UxTfAx4fZ+9k618vhYelR8JBOYUsW1NS+coixu6ylIkpqni6PasbP28v53L4U5HLJQvyvgZ55JNSb1nMhtJPhPvmbcMpePBEyFCLHxfTTLB4EDn5s69vVbfdLHsx5zwKtNOc8RcOyt+ib1r1hc3N7SDZf1joTkF8uHLphw+BaigsoB1kmAN/lBA1aNQR/VrZGJcxgDUo6Q6Cd9iwqjuTbQ0nMhRYsWD/1bEz9VatmFLM5ZZwlhCypNuRRm9RK+2iWwUr5XVf01Gxcu6vwXjRo3FBPeltgW5jzpqIW8VP6W3hc1tpq7WTj+6tRWFsC+J/d+YWm02L+ZveduH4tCiU56Ua3qBOkv0kavrtKZayaS8hO+tXqX36yVOigSS79pMFE+crjKtCNwgdTINieabZ4py2Mpp27iWEuOcXPjheQSJ7z0Cgqf/TSBmEpetYjnhRnspyqJdG9uX+E+tpjrHWjVffX00f8ObZ2jRb0G/HKEe0adXXiIyF9WMxGGnS0q8uJHYpPUarJL9Qf1kAQAjzUWPw
+X-GND-State: clean
+X-GND-Score: 0
+Message-ID-Hash: Y4TFBQAKIZCZF7XQ366EPHV3STTXEJDL
+X-Message-ID-Hash: Y4TFBQAKIZCZF7XQ366EPHV3STTXEJDL
+X-MailFrom: forums.info@patrick.pouget.name
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -75,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F4KW3NGTQNCIL67HCXM2Z62ENM7P2O5P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y4TFBQAKIZCZF7XQ366EPHV3STTXEJDL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,14 +111,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #809 was opened from parzival-space:
+Hi All
 
-This PR adds support for the RODECaster Duo Split PCM configuration.
+Is it possible to send data directly to the TOS-link connection?
 
-The RODECaster Duo is technically very similar to the RODECaster Pro II, they even share the same firmware, although channel mappings are sightly different.
+I mean without passing through the mixer.
 
-This profile has been successfully tested by @csanthiago in [parzival-space/rodecaster-pro-2-virtual-devices-pipewire #7](https://github.com/parzival-space/rodecaster-pro-2-virtual-devices-pipewire/issues/7).
+The goal is to design some electronic board and to receive data from
+the computer via an inexpensive link without too many cables
+restrictions.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/809
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/809.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Does the alsa tools easy to modify to handle that?
+
+
