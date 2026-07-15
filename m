@@ -4,184 +4,205 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AB4CC44501
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2026 14:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7435C44508
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jul 2026 15:50:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7AD6C601F6;
-	Wed, 15 Jul 2026 16:52:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AD6C601F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64281601F6;
+	Wed, 15 Jul 2026 17:50:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64281601F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784127165;
-	bh=lMZewwveleRMMmeDifVBH2enKOpJQHeyT+4HoGX2/Yo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1784130654;
+	bh=FaDcQ8Ap56VUkMe6Pyn/5TUbMvH56Tz0GrYId0nJ7qQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=USg9XXQyNuEeG8CjIQ37JVVSWgkVHNbNlSGJA6f7CwcJPbAP8vrkst+26OqXln2Cx
-	 RcipwUUzETQR0cbNU7JqDBYjv5WTn9sqE0FOlc+LvaRwe62vnzMJsUYf++htoeRwan
-	 06ssAQvtu66d7GdsYCoSu60ZnD4ABX1BlJCoCnBk=
+	b=QI+sAX4tgUK8IEeOEw+qF3y6g3H/SE60LMpukpd8Z8eQBM2BQfEBs7VNtX7WxIXjd
+	 fHfEcqyBPOeLQbQUPipACbnUZr/STPBDMrtltBRHzoLDd8SajnuqivzGEeYRqgZWki
+	 DtFMr6b6+nLYuVAd9DHH6xe/MOhzbIUY0zo6F0p0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1870F805FF; Wed, 15 Jul 2026 16:52:09 +0200 (CEST)
+	id 71AD4F805FA; Wed, 15 Jul 2026 17:50:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E974F805F0;
-	Wed, 15 Jul 2026 16:52:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEC17F80600;
+	Wed, 15 Jul 2026 17:50:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B45F7F8057F; Wed, 15 Jul 2026 16:52:03 +0200 (CEST)
+	id 26B8CF8057F; Wed, 15 Jul 2026 17:50:15 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784127121;
-	b=JCB93OQqwy08e0N63F1AUDDwOETX4kkTgBrqOWUtJ9I040/qNiacpQm4w54usLQuJIza
-	 WGGFDcaCwZDTdklWR8lQSJsvGFA5gWQ8alwjFWsc5N8TTLmJffuCqFTkcCPUAH6kRR9di
-	 IFoXCOZaLzoeWu6v3S6RHJfibpEgPpeMdmTJv/rYQJfyKTYswyrgBWFMeOItCI12i4LpE
-	 CmsnfzYKDypYeSbwgLn32n6CcMcsctGPw4Pc2S8sgq/v+O+kVQmps0F/I+Sweao/ETpiY
-	 9cZEu09vW1vQX3CWpcQu2Jaic1TQ027Lb9F8q7RZ7IP6lJmQs8DLeREfLMJNqiIA3Bw==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1784127121;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=lMZewwveleRMMmeDifVBH2enKOpJQHeyT+4HoGX2/Yo=;
-	b=LbyUu1Kj6nLI3qWOy9bjkxh6XhluXKvbIOs5Y57SEwq98YW6GB5XFmeypKTTk/8+/TSe
-	 FbEsdwChND+XR8ha9YFCyV9EHcSLj0BiQWPw48u2+HkLSs/wltcKzGj8FTPuMgJnUHm2j
-	 ULLxqTrl8WB9W0gkinZSPqTanHzWXtHutv3vkAlOHkndjzUnHwhVeKA2rxqlTHPRwP1Sm
-	 tPXtn5W4IR4OJzu3jPs/wZobJTO8P8tfxKUedm/ND2OGAOMsW3obHITUm6N/MlChT0w+A
-	 zKkzIZcnrMVq+m14UZMtbmDR4xpzQVoy5IfW9X44Df0eb++qQWOxd1CDvMZxY27/D3w==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xWTDFANO;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=jfI6OlqM;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xWTDFANO;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=jfI6OlqM;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ arc=pass header.oldest-pass=0 smtp.remote-ip=67.231.149.25
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1784130614;
+	b=MRi2Hgq6AKjgUiR09b0Q/wEMEOTDeuXzGatoDXYGfTsEQcmY6PMREgfF97HGyvO+AkTD
+	 NKrDAMiFSioWYVZtGRmWQs6ymYUMYhO8P2Hhk83siSLKGFRm1w7Hjp5yLOw7m2RvdJass
+	 J+nKajc2HXPvjsyJip2TWyS/51gRJss911uACauyj9Czn5mCElZSHv1YRWyIYXR1uhu3c
+	 xkAXMiM9VqmaMvdQttOhdR2vh2nc8asIlZZz/UiUiCm7in9bZz7QcPbFqWm8Z302zt6xP
+	 opj7CMCrMCKIUECQ4rjhETjIOw81mx9kwoyFu0feLNLZ9XLH+B7WFYgckmOoZdbyVzQ==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1784130614;
+	h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:Subject:
+	 To:From;
+	bh=FaDcQ8Ap56VUkMe6Pyn/5TUbMvH56Tz0GrYId0nJ7qQ=;
+	b=UQfi8Jnqi9DNrloBzQ1A3p8huhHwqTON3k39+bOQqVvPGJPZhAbveCN6uFVTycRu107r
+	 lh4/mfp3e1waU1Msdn1wxZ/K/g7IlvUpmqChWJI4RwTBLewYyn8owzt0C2gIZ70CN2r07
+	 JDMSD8RIsKHWyXL4X6oV/Cj78WTN5V1y83qkKkxtNqRdgSyMCn1K3WBmCS2nDaeRm4dDu
+	 Y26HU1WhwEBHNreR59neKKJd7Ybw5FEQGFzec5aoooDnIxtAZXatwCdIUkpeNMwyU+T5R
+	 F7C6Fk61AtyZ1L3cvPp8zBQ2zh1bEwRejY+5sgUBXila++/qCh587SDsr8y9Mq7aRLg==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=Pew4kwFh;
+	dkim=pass header.d=cirrus4.onmicrosoft.com header.i=@cirrus4.onmicrosoft.com
+ header.a=rsa-sha256 header.s=selector2-cirrus4-onmicrosoft-com
+ header.b=fqNefArN;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=67.231.149.25
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48E80F800B5
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2026 16:51:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48E80F800B5
+	by alsa1.perex.cz (Postfix) with ESMTPS id BB42EF8051E
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2026 17:50:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB42EF8051E
 Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=Pew4kwFh;
 	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xWTDFANO;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=jfI6OlqM;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=xWTDFANO;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=jfI6OlqM
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2CC883E2A;
-	Wed, 15 Jul 2026 14:51:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1784127119;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PPUo0iJlK2XehVHswpj14nUnaGvvy9s1U1L+9nCAvgY=;
-	b=xWTDFANOcIlNgzpdwe9gM5HQs1iP6hVact5QHZmqDVNqJjHzvahcJaY2j4Fcjh9lzSbqTr
-	dCT+vQQU791ZccJK0CjveNCW0fnw4KxgIM56emkXNDf9o5WJTgXeTecDhuTfc3Puyi8sH5
-	Pw/rtx2hrqO7IsIr+q6SFtDYGO+4M74=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784127119;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PPUo0iJlK2XehVHswpj14nUnaGvvy9s1U1L+9nCAvgY=;
-	b=jfI6OlqMOMQEykSqvQyZO08fl4MucOB3UxlPO/Vn5eFxn/Fu/BbG7iiLlDkR8bnPBX7xuB
-	MHWsWm0MEQryjVAw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=xWTDFANO;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=jfI6OlqM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1784127119;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PPUo0iJlK2XehVHswpj14nUnaGvvy9s1U1L+9nCAvgY=;
-	b=xWTDFANOcIlNgzpdwe9gM5HQs1iP6hVact5QHZmqDVNqJjHzvahcJaY2j4Fcjh9lzSbqTr
-	dCT+vQQU791ZccJK0CjveNCW0fnw4KxgIM56emkXNDf9o5WJTgXeTecDhuTfc3Puyi8sH5
-	Pw/rtx2hrqO7IsIr+q6SFtDYGO+4M74=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784127119;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PPUo0iJlK2XehVHswpj14nUnaGvvy9s1U1L+9nCAvgY=;
-	b=jfI6OlqMOMQEykSqvQyZO08fl4MucOB3UxlPO/Vn5eFxn/Fu/BbG7iiLlDkR8bnPBX7xuB
-	MHWsWm0MEQryjVAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EDCB0779AD;
-	Wed, 15 Jul 2026 14:51:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rxHQOI6eV2r+ZwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 15 Jul 2026 14:51:58 +0000
-Date: Wed, 15 Jul 2026 16:51:58 +0200
-Message-ID: <87mrvswbjl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Maciej Strozek <mstrozek@opensource.cirrus.com>
-Cc: Takashi Iwai <tiwai@suse.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com
-Subject: Re: [PATCH v5 2/2] ALSA: control: add ioctl to retrieve full card
- components
-In-Reply-To: <20260706141457.51736-2-mstrozek@opensource.cirrus.com>
-References: <20260706141457.51736-1-mstrozek@opensource.cirrus.com>
-	<20260706141457.51736-2-mstrozek@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:mid,suse.de:dkim,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2CC883E2A
-Message-ID-Hash: RMXL24LDWRVRMUFHKB4CTLV2MZW5KCJX
-X-Message-ID-Hash: RMXL24LDWRVRMUFHKB4CTLV2MZW5KCJX
-X-MailFrom: tiwai@suse.de
+ unprotected) header.d=cirrus4.onmicrosoft.com header.i=@cirrus4.onmicrosoft.com
+ header.a=rsa-sha256 header.s=selector2-cirrus4-onmicrosoft-com
+ header.b=fqNefArN
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
+ 66F1tMil031725;
+	Wed, 15 Jul 2026 10:50:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	PODMain02222019; bh=9FGbpEC0Q5AMoQ+bc3vKW37qZEAPjNM4P0aQAtUz0pM=; b=
+	Pew4kwFhd5poga752WuUoD05XnGpb6gP+8Ijt+nLPeSX+hVoHgTPebyfxIpvaVrm
+	yicMxDBTNtWT28YMRVPje44JyJXLjWtvcyUfYZkIleNzBFfXOhEz2P1AFYAtgvKQ
+	po6UXoIsWd1Isvc82rmrz8POGN4cwnQg58zGX9TlUyr7YRCNus2I4+GfC7IOA7EY
+	uBEuAseD+jNz75onWmL2Sd7wvIRwDhCPTH7uUJ7QCYw2R/lgqQl3iz/r6tI63K1M
+	llD7hruOkebSuWsOWLjc7x8fGblp89PV5KA8L1/PwCRDVzoBNKchEVg5koNavlGU
+	kuMNcjvCWATVpNTiPNz5JQ==
+Received: from mw6pr02cu001.outbound.protection.outlook.com
+ (mail-westus2azon11022090.outbound.protection.outlook.com [52.101.48.90])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 4fbk7vws86-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Wed, 15 Jul 2026 10:50:09 -0500 (CDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fPS19+GoPzAIkPEdmhk4PVBhe685PhfHu9HP4eQe+bVnt8F+5+otTyWH57qi8uGi9J3RAvWt/xJHzaJdowgEIQZIFDCuegg+jh/W8LWozA8doQhICbVKhm2iMphdMVqMbXHyxKD0hVC79UeqXuMkloWVvKyd6eKZd5cTk5alzjUB8XylRlxJQIuI0hPtN8FzJR0VVuyWYLHQZZAAVuDxMU6zs7Hs2ElgasGVYjPfZXmnpxXLH4BY/atlRoLk7ugC+K79UV3TlTacNZg+tk7EdgW6/JvrtHbz1vttEBaazgIxSqynjJRADpjDNf3O34HctVtAQwixIa26OjgMnMdilA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9FGbpEC0Q5AMoQ+bc3vKW37qZEAPjNM4P0aQAtUz0pM=;
+ b=gbShKuUMX4fYynd7IEXI/JlsuR5laGvoTYLmzeJyESFaWNt60S307ji2z9jsxU0qESRJUIbG4Q5222s9ayECsPViBP/YLhmYZSr6mRue4gRHhPWPZ/w9yGGekwn/LfJPACkYt4uB/0Y+KqdggLxqGbrb+16Fi3s1Q3viFlvMS7+doQIeGT7Kfvpl+haeBecBa6DBoFYpDs9+ZzZhSXbdEX8kZvsoc6/odgMHUlS/HHWDusoJWSERDbyj0+mmdrTeDX/W/T9ijnnnbXYYadc3IGs9DwoLoFlbd/Pjhoxb2iuC0MbL9qFhY8Elyh07D2MR1d2jHe5NQSl0cVQri/cB/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 84.19.233.75) smtp.rcpttodomain=alsa-project.org
+ smtp.mailfrom=opensource.cirrus.com; dmarc=fail (p=reject sp=reject pct=100)
+ action=oreject header.from=opensource.cirrus.com; dkim=none (message not
+ signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cirrus4.onmicrosoft.com; s=selector2-cirrus4-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9FGbpEC0Q5AMoQ+bc3vKW37qZEAPjNM4P0aQAtUz0pM=;
+ b=fqNefArN1CwOJr08UMGTjxjm+0x/NDqKFx5RbxA8cgrR8XKLFVfjVyOwCSl572boOM3kPFDuUoyfMz9BgwUA4jSQcJO6362gtpJI4kiuOV9W0wI5l9Ykh1Dw39fziCv52M5WvPAU3qz53rfrqdo34TEV54LIZkUCWbyxMhFdwp4=
+Received: from BN0PR10CA0015.namprd10.prod.outlook.com (2603:10b6:408:143::33)
+ by LV0PR19MB9285.namprd19.prod.outlook.com (2603:10b6:408:324::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.223.12; Wed, 15 Jul
+ 2026 15:50:06 +0000
+Received: from BN1PEPF00006002.namprd05.prod.outlook.com
+ (2603:10b6:408:143:cafe::48) by BN0PR10CA0015.outlook.office365.com
+ (2603:10b6:408:143::33) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.223.12 via Frontend Transport; Wed,
+ 15 Jul 2026 15:50:06 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is 84.19.233.75)
+ smtp.mailfrom=opensource.cirrus.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=oreject header.from=opensource.cirrus.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ opensource.cirrus.com discourages use of 84.19.233.75 as permitted sender)
+Received: from edirelay1.ad.cirrus.com (84.19.233.75) by
+ BN1PEPF00006002.mail.protection.outlook.com (10.167.243.234) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.223.9
+ via Frontend Transport; Wed, 15 Jul 2026 15:50:04 +0000
+Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com
+ [198.61.86.93])
+	by edirelay1.ad.cirrus.com (Postfix) with ESMTPS id 0C032406542;
+	Wed, 15 Jul 2026 15:50:04 +0000 (UTC)
+Received: from [198.90.208.11] (ediswws06.ad.cirrus.com [198.90.208.11])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPSA id E6FEB820244;
+	Wed, 15 Jul 2026 15:50:03 +0000 (UTC)
+Message-ID: <75034460-875b-441d-9ed1-adbaa8d9ee2d@opensource.cirrus.com>
+Date: Wed, 15 Jul 2026 16:50:03 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_=5BREGRESSION_7=2E2-rc3=5D_ASoC=3A_cs35l56=3A_compo?=
+ =?UTF-8?Q?nent_probe_waits_for_an_init=5Fcompletion_that_cannot_be_signalle?=
+ =?UTF-8?Q?d_until_the_wait_ends_=E2=80=94_whole_sof=5Fsdw_card_fails?=
+To: "Salman S. Tahir" <salman.abusaad@gmail.com>,
+        patches@opensource.cirrus.com
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+References: <35264720-a5b8-4b08-8bd4-442c0bd5a8a7@gmail.com>
+Content-Language: en-GB
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <35264720-a5b8-4b08-8bd4-442c0bd5a8a7@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF00006002:EE_|LV0PR19MB9285:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6e4ff77e-94fd-40a2-5617-08dee288bd2e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: 
+	BCL:0;ARA:13230040|82310400026|30052699003|36860700016|61400799027|23010399003|376014|3023799007|10067099003|16102099003|11063799006|5023799004|56012099006|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info: 
+	jXzBZgjWAj0Ee21UmWFd10h13nP3AyCjOmTb/9P8b06tpbUyuLgTyPsl9vZU/JdZwXkupEMZASI5kO1npmfWtSHVmldFqKxga2TEnDnvglPexvlQbMtY0woUjIR3k8ZjLoSNAUwTIq9811SUNdJybzkvsnpT+bHGnqzczk7dT4NZ8M1OeOrq2H93G8mKD0D/dDbMQGXncywxfQfZ/tFyvLm1q64MxGqymCIogbPFTWpmzAtd7WpS9THO2PlDnEhyh5GczFYdQ91Xs9vEzSiOUWQDpTESPSgKughBqaXO5A2LhSbOJ8qNR4oTf0k4Vn9JthvZUYr4M5OeGZDBJlmVqL2A5GyQRO4B/DhnbcbIOATtyScrQq5y+Mk3KkaDwF7KF5qhRMBJF6PFopS4AZg2FkLmh2wRu9hjIEr6QqW1IIkcwK+wjRbW7f/YMY+a/QmckndMEoxd2oGaE1lFCRAGbFn6lxnEkmeJsJg9+JG95XXWCQRvRNGhNbPtGyxfCaVr57r3clYp4AygiGKmvRZjtcJ9WZASebKBzePVB2raISPHIs4+uc1FqoJLLSZEp3gSJThih0e0Nk294DOw0pjxbi3zE2wLmj+bS6hhmhuvYsZQv8hWvhoTRyz9gxmnW6FDCeqSVl3QZ1tmGDFOMdSCilMbvaAZcB9JAT5kcQ2VANFRP1UGXHfmfd1xWsn1zX1VbSCRA+9EI54C/AnoCpeT+Q==
+X-Forefront-Antispam-Report: 
+	CIP:84.19.233.75;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:edirelay1.ad.cirrus.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(30052699003)(36860700016)(61400799027)(23010399003)(376014)(3023799007)(10067099003)(16102099003)(11063799006)(5023799004)(56012099006)(18002099003)(22082099003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	5PoKpmq0sCiUzZwk1ZtFd2FHYZluQZ5KgApt8ou+84DrY3KcYf6jLvNaa2CA2N4v3YSVxVeI/n2ophiDEb1jQTFWNOJhUoEkFKYa15X6oYzSpkYQV572HATBFShQZTGhhpfPEKWhIoJUEini3P4fQBHzaifHPM/5BwDegFcLt53m/kIeJncFHb1pEjAuJu6+j/wGvg0q48qmbrkNXNPbrq1bur5A8hKmycIlWgbu5pr4e4MjJH5UqLCgYYqwfLfKG5uZTdxLjYgyeZ4ow/rrv8tH9yCHELxNF6KQypsGz62E7/FAKocuPA6RBAqV05YMgOQW7M2ndhnCyk50UrGU/2KZo6DUApSoEP+qE/UpJ72hiTVQJ6qSDGdRPtrpy5odiz5JuOdtDF3CCxKUT6A5Dc55V8ADj045t5Vny1N249EK6WvBx229ZqbW8QDaxsQP
+X-Exchange-RoutingPolicyChecked: 
+	WrW9+Ryim+SFZyDVH/HrtpxlKdYY+XsWfD3pn7qwPchFVT5216tsY4qrdTgoEA5IWVcJ0rU3iTNoPIPEnZROc4+ZEiZ2E7CeX9isfyzGT0QhDsEnJjfP3HcBOU4ifqYHvm50ZpgF6pH3UQtROiQgo4io7Cufzc1SG2wgUXvMEX4VALz2e17Wb2SkaUHckr/luhbYxBYBwiWL0h+qvqbUw86iikYceNV6HJqpHIdbXIPl3QGzHZBzfAhj3ycCWbZNf0nnf9KCvEUKX8miJaFT+xVytkoyAEKtoFYfLAsRDIlEqpiZrJv+IY53s5F76FXb9ZAQJOOVz+xP/vK+WhTPbQ==
+X-OriginatorOrg: opensource.cirrus.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2026 15:50:04.8423
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 6e4ff77e-94fd-40a2-5617-08dee288bd2e
+X-MS-Exchange-CrossTenant-Id: bec09025-e5bc-40d1-a355-8e955c307de8
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=bec09025-e5bc-40d1-a355-8e955c307de8;Ip=[84.19.233.75];Helo=[edirelay1.ad.cirrus.com]
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: 
+ TreatMessagesAsInternal-BN1PEPF00006002.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV0PR19MB9285
+X-Authority-Analysis: v=2.4 cv=V71NF+ni c=1 sm=1 tr=0 ts=6a57ac31 cx=c_pps
+ a=Gbvvz3TddPyANoHKDDnYFg==:117 a=h1hSm8JtM9GN1ddwPAif2w==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=p8B4ZfjjwVxbjijj:21 a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=5KLPUuaC_9wA:10
+ a=s63m1ICgrNkA:10 a=RWc_ulEos4gA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=iX4cTi3TZMoOKdANLEfx:22 a=Dj2-6B8FqX4mGL0U3gbX:22 a=L8sH2ZDYEKfnGPlJEvoA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: I_1M7P3J7jgTI0ZMuDWLjUc5NixFsI4o
+X-Proofpoint-Spam-Info: AW1haW4tMjYwNzE1MDE1NyBTYWx0ZWRfX07ayFlIvZe6D
+ 1C5CC+qIwc4BNZJrhtlMIRJAf+A0d68kNU6Yt97Fpv/rtJQcnJLbjYukT5nI317iMkq4fQYv/MW
+ Ay0u/s5MnqVvRSAUU8kZeY0Z2NprBJw=
+X-Proofpoint-GUID: I_1M7P3J7jgTI0ZMuDWLjUc5NixFsI4o
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzE1MDE1NyBTYWx0ZWRfXyVxrpFg99sLS
+ /Q3yTdww1Wqko2W7wIWeRVrU8wIZD0D2x95df7NlfY7ju+awNZIhqMqUZepDssyLgrt32+tkthL
+ v8cr/4js644YpbTKGsN3RFpdVGY57DkHRlQxOewO3t3JQd5b1JoBZnnV7rsujhVBEw6d2r592Qv
+ r8SH73qavf5tSqOA9xQF0D2ot34toK5P882c9kUY3Go5ehvQlHsqCQUepII06de/HJN9gehzXg6
+ kp2PO01uw9GYujhiFPznaj5jFc0TsPohRcH8BpVX+QS6ySS0dYdbMlSlBMILy239rdFmX696Yr2
+ T/Jy8fun5S2odDnIyvCdWeoHZqiz00QybTm6w10xCepipg0OVJVpYidkPLuYhqXWCNJEIMoppAr
+ Hppbe1uNNdQgEba6URNAunGgxGgTzLa1g7C3RYNN3XaTnbj8Ra6NHvJ4qtnBJx0iggroNUMWmHT
+ 4fn/b0fyYDPnzsCLClw==
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: HW6TW6L5YS2QLMLHPXNESWMB3ZJJ5GNW
+X-Message-ID-Hash: HW6TW6L5YS2QLMLHPXNESWMB3ZJJ5GNW
+X-MailFrom: prvs=865608d2f4=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -192,7 +213,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RMXL24LDWRVRMUFHKB4CTLV2MZW5KCJX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HW6TW6L5YS2QLMLHPXNESWMB3ZJJ5GNW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -201,297 +222,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 06 Jul 2026 16:14:57 +0200,
-Maciej Strozek wrote:
+On 15/07/2026 4:08 pm, Salman S. Tahir wrote:
+> Hi,
 > 
-> The fixed-size components field in SNDRV_CTL_IOCTL_CARD_INFO can be too
-> small on systems with many audio devices.
+> On a Lenovo Yoga 9 2-in-1 14ILL10 (83LC, Core Ultra 7 258V / Lunar Lake; 
+> CS42L43
+> plus two SPI-attached CS35L56 amps behind it) the machine has no sound 
+> card at all
+> on 7.2-rc3. /proc/asound/cards is empty and PipeWire falls back to a 
+> null sink.
 > 
-> Keep the existing struct snd_ctl_card_info ABI intact and add a new
-> ioctl SNDRV_CTL_IOCTL_CARD_BYTES that carries a variable-length payload
-> selected by a type discriminator. The first defined type
-> SND_CTL_CARD_BTYPE_COMPONENTS returns the full components string. The
-> ioctl is designed to be reused for other variable-length card payloads
-> in the future.
+> The right-hand amp's ASoC component probe times out waiting for 
+> init_completion,
+> returns -ENODEV, and ASoC then tears down the entire card -- so 
+> speakers, internal
+> mics, headset and all three HDMI outputs die because of one failed 
+> component:
 > 
-> The user-space caller may set data_allocated == 0 (or data == NULL) to
-> query the required length; otherwise the kernel copies the payload into
-> the user buffer and writes back the actual length in data_len.
-> 
-> When the legacy components field in struct snd_ctl_card_info is
-> truncated, '>' is written just before the NUL terminator to signal to
-> user-space that the full string is available via the new ioctl.
-> 
-> card->components is now dynamically allocated and grown in 32 byte
-> increments via krealloc(), capped at 512 bytes.
-> 
-> Link: https://github.com/alsa-project/alsa-lib/pull/494
-> Suggested-by: Jaroslav Kysela <perex@perex.cz>
-> Suggested-by: Takashi Iwai <tiwai@suse.com>
-> Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-> ---
-> Changes for v5:
->  - use __u64 and u64_to_user_ptr() instead of 32bit compat layer
->  - handle a NULL card->components
-> Changes for v4:
->  - replaced snd_ctl_card_components with snd_ctl_card_bytes for possible
->    future extensions
->  - support query mode (data_allocated == 0 or data == NULL)
->  - added compat 32-bit
->  - renamed card->components_ptr / components_ptr_alloc_size to
->    card->components / components_alloc_size
-> Changes for v3:
->  - change components field to a dynamic array resizable in 32 byte
->    increments
->  - removed SNDRV_CTL_COMPONENTS_LEN define
->  - sanity check if 'components' requests more than 512 bytes
->  - added a commit to clean up trailing whitespaces
->  - alsa-utils link no longer needed
-> Changes for v2:
->  - do not modify existing card->components field
->  - add a new ioctl and struct to keep the full components string
->  - handle the split/trim in snd_ctl_card_info()
-> ---
->  include/sound/core.h        |  4 +--
->  include/uapi/sound/asound.h | 22 ++++++++++++-
->  sound/core/control.c        | 62 ++++++++++++++++++++++++++++++++++++-
->  sound/core/control_compat.c |  1 +
->  sound/core/init.c           | 34 +++++++++++++++++---
->  5 files changed, 114 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/sound/core.h b/include/sound/core.h
-> index 404785b7d885..2ca24ac7e37f 100644
-> --- a/include/sound/core.h
-> +++ b/include/sound/core.h
-> @@ -108,8 +108,8 @@ struct snd_card {
->  	char longname[80];		/* name of this soundcard */
->  	char irq_descr[32];		/* Interrupt description */
->  	char mixername[80];		/* mixer name */
-> -	char components[128];		/* card components delimited with
-> -								space */
-> +	char *components;		/* card components, space-delimited */
-> +	unsigned int components_alloc_size;	/* current allocation size of components */
->  	struct module *module;		/* top-level module */
->  
->  	void *private_data;		/* private data for soundcard */
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index d3ce75ba938a..500599213f93 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -1058,7 +1058,7 @@ struct snd_timer_tread {
->   *                                                                          *
->   ****************************************************************************/
->  
-> -#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 9)
-> +#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 10)
->  
->  struct snd_ctl_card_info {
->  	int card;			/* card number */
-> @@ -1072,6 +1072,25 @@ struct snd_ctl_card_info {
->  	unsigned char components[128];	/* card components / fine identification, delimited with one space (AC97 etc..) */
->  };
->  
-> +/*
-> + * Card components can exceed the fixed 128 bytes in snd_ctl_card_info.
-> + * Use SNDRV_CTL_IOCTL_CARD_BYTES with type SND_CTL_CARD_BTYPE_COMPONENTS
-> + * to retrieve the full string.
-> + */
-> +
-> +/* Type values for struct snd_ctl_card_bytes::type */
-> +enum {
-> +	SND_CTL_CARD_BTYPE_COMPONENTS	= 1,	/* full card components string */
-> +};
-> +
-> +struct snd_ctl_card_bytes {
-> +	__u32 type;				/* SND_CTL_CARD_BTYPE_* */
-> +	__u32 data_allocated;	/* size of @data buffer in bytes */
-> +	__u32 data_len;			/* in/out: actual data length in bytes */
-> +	__u32 reserved;			/* explicit pad */
-> +	__u64 data;				/* user buffer (pointer stored as __u64) */
-> +};
-> +
->  typedef int __bitwise snd_ctl_elem_type_t;
->  #define	SNDRV_CTL_ELEM_TYPE_NONE	((__force snd_ctl_elem_type_t) 0) /* invalid */
->  #define	SNDRV_CTL_ELEM_TYPE_BOOLEAN	((__force snd_ctl_elem_type_t) 1) /* boolean type */
-> @@ -1198,6 +1217,7 @@ struct snd_ctl_tlv {
->  
->  #define SNDRV_CTL_IOCTL_PVERSION	_IOR('U', 0x00, int)
->  #define SNDRV_CTL_IOCTL_CARD_INFO	_IOR('U', 0x01, struct snd_ctl_card_info)
-> +#define SNDRV_CTL_IOCTL_CARD_BYTES	_IOWR('U', 0x02, struct snd_ctl_card_bytes)
->  #define SNDRV_CTL_IOCTL_ELEM_LIST	_IOWR('U', 0x10, struct snd_ctl_elem_list)
->  #define SNDRV_CTL_IOCTL_ELEM_INFO	_IOWR('U', 0x11, struct snd_ctl_elem_info)
->  #define SNDRV_CTL_IOCTL_ELEM_READ	_IOWR('U', 0x12, struct snd_ctl_elem_value)
-> diff --git a/sound/core/control.c b/sound/core/control.c
-> index 7a8dc506221e..5e9f68c96f4b 100644
-> --- a/sound/core/control.c
-> +++ b/sound/core/control.c
-> @@ -876,23 +876,81 @@ static int snd_ctl_card_info(struct snd_card *card, struct snd_ctl_file * ctl,
->  {
->  	struct snd_ctl_card_info *info __free(kfree) =
->  		kzalloc(sizeof(*info), GFP_KERNEL);
-> +	ssize_t n;
->  
->  	if (! info)
->  		return -ENOMEM;
-> +
-> +	static_assert(sizeof(info->components) >= 2);
-> +
->  	scoped_guard(rwsem_read, &snd_ioctl_rwsem) {
-> +		const char *components = card->components;
-> +
-> +		if (!components)
-> +			components = "";
-> +
->  		info->card = card->number;
->  		strscpy(info->id, card->id, sizeof(info->id));
->  		strscpy(info->driver, card->driver, sizeof(info->driver));
->  		strscpy(info->name, card->shortname, sizeof(info->name));
->  		strscpy(info->longname, card->longname, sizeof(info->longname));
->  		strscpy(info->mixername, card->mixername, sizeof(info->mixername));
-> -		strscpy(info->components, card->components, sizeof(info->components));
-> +		n = strscpy(info->components, components, sizeof(info->components));
-> +		if (n < 0) // mark the truncation with '>' before NULL terminator
-> +			info->components[sizeof(info->components) - 2] = '>';
->  	}
->  	if (copy_to_user(arg, info, sizeof(struct snd_ctl_card_info)))
->  		return -EFAULT;
->  	return 0;
->  }
->  
-> +static int snd_ctl_card_bytes(struct snd_card *card,
-> +			      struct snd_ctl_card_bytes *info,
-> +			      unsigned int __user *data_len_out)
-> +{
-> +	unsigned int data_len;
-> +
-> +	switch (info->type) {
-> +	case SND_CTL_CARD_BTYPE_COMPONENTS:
-> +		scoped_guard(rwsem_read, &snd_ioctl_rwsem) {
-> +			const char *components = card->components;
-> +
-> +			if (!components)
-> +				components = "";
-> +
-> +			data_len = strlen(components) + 1;
-> +
-> +			if (!info->data || info->data_allocated == 0)
-> +				break;
-> +
-> +			if (info->data_allocated < data_len)
-> +				return -ENOMEM;
-> +
-> +			if (copy_to_user(u64_to_user_ptr(info->data), components, data_len))
-> +				return -EFAULT;
-> +		}
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (put_user(data_len, data_len_out))
-> +		return -EFAULT;
-> +
-> +	return 0;
-> +}
-> +
-> +static int snd_ctl_card_bytes_user(struct snd_card *card,
-> +				   struct snd_ctl_card_bytes __user *_info)
-> +{
-> +	struct snd_ctl_card_bytes info;
-> +
-> +	if (copy_from_user(&info, _info, sizeof(info)))
-> +		return -EFAULT;
-> +
-> +	return snd_ctl_card_bytes(card, &info, &_info->data_len);
-> +}
-> +
->  static int snd_ctl_elem_list(struct snd_card *card,
->  			     struct snd_ctl_elem_list *list)
->  {
-> @@ -1990,6 +2048,8 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
->  		return put_user(SNDRV_CTL_VERSION, ip) ? -EFAULT : 0;
->  	case SNDRV_CTL_IOCTL_CARD_INFO:
->  		return snd_ctl_card_info(card, ctl, cmd, argp);
-> +	case SNDRV_CTL_IOCTL_CARD_BYTES:
-> +		return snd_ctl_card_bytes_user(card, argp);
->  	case SNDRV_CTL_IOCTL_ELEM_LIST:
->  		return snd_ctl_elem_list_user(card, argp);
->  	case SNDRV_CTL_IOCTL_ELEM_INFO:
-> diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-> index 4ad571087ff5..f14d9f5e94be 100644
-> --- a/sound/core/control_compat.c
-> +++ b/sound/core/control_compat.c
-> @@ -446,6 +446,7 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
->  	switch (cmd) {
->  	case SNDRV_CTL_IOCTL_PVERSION:
->  	case SNDRV_CTL_IOCTL_CARD_INFO:
-> +	case SNDRV_CTL_IOCTL_CARD_BYTES:
->  	case SNDRV_CTL_IOCTL_SUBSCRIBE_EVENTS:
->  	case SNDRV_CTL_IOCTL_POWER:
->  	case SNDRV_CTL_IOCTL_POWER_STATE:
-> diff --git a/sound/core/init.c b/sound/core/init.c
-> index 1ff340ee6884..15a8209469c7 100644
-> --- a/sound/core/init.c
-> +++ b/sound/core/init.c
-> @@ -590,6 +590,9 @@ static int snd_card_do_free(struct snd_card *card)
->  		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
->  #endif
->  	snd_device_free_all(card);
-> +	kfree(card->components);
-> +	card->components = NULL;
-> +	card->components_alloc_size = 0;
->  	if (card->private_free)
->  		card->private_free(card);
->  #ifdef CONFIG_SND_CTL_DEBUG
-> @@ -1036,16 +1039,37 @@ int snd_component_add(struct snd_card *card, const char *component)
->  {
->  	char *ptr;
->  	int len = strlen(component);
-> +	unsigned int cur_len, need_len;
->  
-> -	ptr = strstr(card->components, component);
-> -	if (ptr != NULL) {
-> -		if (ptr[len] == '\0' || ptr[len] == ' ')	/* already there */
-> -			return 1;
-> +	if (card->components) {
-> +		ptr = strstr(card->components, component);
-> +		if (ptr) {
-> +			if (ptr[len] == '\0' || ptr[len] == ' ')	/* already there */
-> +				return 1;
-> +		}
-> +		cur_len = strlen(card->components) + 1;
-> +	} else {
-> +		cur_len = 0;
->  	}
-> -	if (strlen(card->components) + 1 + len + 1 > sizeof(card->components)) {
-> +
-> +	need_len = cur_len + len + 1;
-> +	if (need_len > 512) {
->  		snd_BUG();
->  		return -ENOMEM;
->  	}
-> +
-> +	if (need_len > card->components_alloc_size) {
-> +		unsigned int new_alloc = roundup(need_len, 32);
-> +
-> +		ptr = krealloc(card->components, new_alloc, GFP_KERNEL);
-> +		if (!ptr)
-> +			return -ENOMEM;
-> +		if (!card->components)
-> +			ptr[0] = '\0';
-> +		card->components = ptr;
-> +		card->components_alloc_size = new_alloc;
-> +	}
-> +
->  	if (card->components[0] != '\0')
->  		strcat(card->components, " ");
->  	strcat(card->components, component);
+> [ 10.301...] cs35l56 spi-cs35l56-right: _cs35l56_component_probe: 
+> init_completion timed out
+> [ 10.301...] cs35l56 spi-cs35l56-right: ASoC error (-19): at 
+> snd_soc_component_probe() on spi-cs35l56-right
+> [ 10.302...] sof_sdw sof_sdw: ASoC: failed to instantiate card -19
 
-I believe we need to protect snd_component_add() against the racy
-ioctl?  Otherwise the existing guard in your patch makes no sense.
+<SNIP>
+
+> The hardware is fine -- the card is just built ~100 ms too early
+
+This (and the later debug and hypothesis) doesn't actually make any
+sense. The code that signals init_completion is done synchronously
+during the driver probe() of the cs35l56 driver, before it returns
+from probe().
+
+However there is a bug if component_probe() can be called multiple
+times.
+
+Please try this change:
+
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index f365f76ce56c1..f46fd8e7bc039 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -2109,7 +2109,7 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
+                 return dev_err_probe(cs35l56->base.dev, ret, "Failed to 
+write ASP1_CONTROL3\n");
+
+         cs35l56->base.init_done = true;
+-       complete(&cs35l56->init_completion);
++       complete_all(&cs35l56->init_completion);
+
+         return 0;
+  }
 
 
-thanks,
+<SNIP>
+> Regardless of what changed the ordering, blocking in a component probe 
+> on a completion
+> that a different probe must signal looks fragile by construction. Returning
+> -EPROBE_DEFER instead -- letting the driver core retry the card once the 
+> amp is bound
 
-Takashi
+Returning -EPROBE_DEFER from component_probe() would make no difference
+to that, because the code that signals the completion has already run
+during probe(). Returning -EPROBE_DEFER from component_probe() won't
+make probe() run again.
 
+Also it's wrong to use -EPROBE_DEFER as a general "try again later". It
+doesn't work like that. It specifically means that a dependency is not
+ready yet and the driver core will try again only when something other
+driver has successfully probed.
+
+Be careful of what AI tells you.
