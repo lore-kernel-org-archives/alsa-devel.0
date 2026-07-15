@@ -4,139 +4,190 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8431C4451B
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2026 09:39:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B078C4451B
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2026 09:40:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6248E6020D;
-	Sat, 18 Jul 2026 11:39:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6248E6020D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 967B760236;
+	Sat, 18 Jul 2026 11:40:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 967B760236
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784367575;
-	bh=mAuGNpdeshVQcCVxMFCCmwIQu0nxqqcw5NpHlcSzjl8=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1784367625;
+	bh=eKlGkqhmpFf2wi23f6LPaCp/Iog7NyhC8v93y/zOVhI=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=bS6q698XDCFwLfGaLecuqmAHFtuDCFAjzOrOGcqgFFIbWlqsRF6DXjUPbpdcnV0D9
-	 nfZ74QdUPCMiVZt7cOxppvz5e22eCCr9BPivlvmlSxcO/S6DReWweBeHxJVDEEAjCC
-	 hK1Hibl+oHHUDvW6ORnWzmW27cTopAiQqofJAkiQ=
+	b=nusndUpIfvU2zVumQPnY2X4Pu0R1WsbVKsRNa5+d3QJ63vryCxGTYHcLxDs3aeI9/
+	 uwG9zI/4LxEOBF10ChQZRdQ2zcAcX3TfUOwRl3SSJ3rsRPIJNk3iT4dw/I2B6lByuV
+	 lxVnT+3Ofy4L++y6ZlqMNMPLHMlNMSlGSJuwXQLE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30C76F805FE; Sat, 18 Jul 2026 11:37:11 +0200 (CEST)
+	id B75ECF805FD; Sat, 18 Jul 2026 11:39:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8CA4F80605;
-	Sat, 18 Jul 2026 11:37:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13B3AF805ED;
+	Sat, 18 Jul 2026 11:39:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D398F8057F; Wed, 15 Jul 2026 17:08:17 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.128.53
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784128096;
-	b=XaP2gONMIO9HlUkZiTodagR3/yCZY5+LyWeEtuuUPQpLBXBwDB0v142zaFBenak4vAHd
-	 WYDO/7JRmzqx4I//nQuDAlvYGUCW+lPhRty/1VcWlbBfGf6+g75VIZ5UMYokEp6MOK4wM
-	 89nKoeWKTLXmPKXHveRg7xaoJkIatN/haJdBbDL8oH3JX1ChJV0YsfrV7mhVErHAxvY7J
-	 5P7/FmcO1NHm4aMvgl7I5gFzayT2NZr9Wzct45qgGuwav7xgK0PC1lViqJr+Bw2CoonoB
-	 ei4+IAKME355aV5EiAZ1xAg4d0MoiC91rNJi11RCjcdKJYtb0W5SUOK2H7Jl5+m1whw==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1784128096;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:From:Subject:To;
-	bh=mAuGNpdeshVQcCVxMFCCmwIQu0nxqqcw5NpHlcSzjl8=;
-	b=nYZ/+DZVKNxPobaN6JCLz92ASJaqLbzhbcV9x5KIx0ehDiudz8bLzC3OnBvYp450Dejj
-	 7FxvYYX3A2yBkk+0KmCL6jriFzEz6eKbIShw2abEDpT6253Fz2atTortpnk8MBFYpxcHR
-	 LxAbo3aYS2vveFRdLXZA9Y+EHaQKJnu6HyjB0k+Yjko8gbcyg0BCL+iX7lrASjh9g3lYp
-	 2mLw0Rl5d5PViPtws4W0H9wN9xJbm4H9/4VPy3TH1svR+rPpxF4/oU7EuNyExmSZI7Fw3
-	 QCgMRQqhI1Q60Yooch7dK3ja4xcHGaPBuV5w1JOec6uHZmqXoNVC2+jX68nYFicqRYA==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=eqZYbYRV;
-	arc=none smtp.remote-ip=209.85.128.53
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com
- [209.85.128.53])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2EBB1F8057F; Wed, 15 Jul 2026 10:53:29 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.194.14
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1784105608;
+	b=YzZOmfErmqgUhSOqD0tFQn3qeB7/2hyjtDiAW5VW6jdvQQylPIC9J3OTQeh73vVV9R9e
+	 DzGB3Hz6rFctCumUh3MIN9rPPBytM2ygs94fT+e715q/+BZHHSePN+xK1bDs0Z42jZyBA
+	 ZY26Ni/3rQ4BCg2MrQEA5sP9YpfUo3sSRkMNJq7ZQY5tWg6W7tDS4VOlH/uVzK+pn0V28
+	 otOLlwTD0S9wpoXya3L9vR/iFJW4tpPczJ2WW1+aCH8hEFKPCjAdtwgv/B/lQ6CbIEM3G
+	 ikAVfaqUSOz3LNCkglZIQsuEGg0xSREdpIwq7pRMbOKHR0OTiSy5KMRqI8/36+00C5w==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1784105608;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=UPzpa5I5VBsfnMuMt+cxo+BV5z24GR46nSGbcwYteOY=;
+	b=BU4TnPHDpJaM8hlj+ECvpi1f7FzDy3jqacFryL3V3V1RzYjI+0HchfZjxNY2hBvRlNga
+	 Fyr4m59Lfcg8/aFh/WHEnO8AthX0EfknOTWyAuQbWqKhPs13O2hZExy9thIaHfUjwjKTO
+	 BizGoEv5aJctAl6ONKGXL9iCNHqmM0Nhr6+OyTCVIsDW88pJecOX0N+TQpEoXp+Xqoa6j
+	 LrlzfsmkINRMW468pxXDGTkhjVrf6QafIm+v1/qZNp4FapTBwmv0izhgNu3rZEhn8/rLz
+	 /hfqUKT5IFCv3CbPHpUzWH1bImd+pxQRZG1lZghLYrhCA7GXMrERGZkFW6Asc+FSt2g==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
+ header.s=selector2 header.b=keViz1y+;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.194.14
+Received: from SN4PR0501CU005.outbound.protection.outlook.com
+ (mail-southcentralusazon11011014.outbound.protection.outlook.com
+ [40.93.194.14])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7777BF800B5
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2026 17:08:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7777BF800B5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 29D6FF800EE
+	for <alsa-devel@alsa-project.org>; Wed, 15 Jul 2026 10:53:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29D6FF800EE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=eqZYbYRV
-Received: by mail-wm1-f53.google.com with SMTP id
- 5b1f17b1804b1-493c733f15aso50168315e9.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 15 Jul 2026 08:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784128093; x=1784732893;
- darn=alsa-project.org;
-        h=content-transfer-encoding:content-type:content-language:cc:to
-         :subject:from:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=ge3+kmve43T55UiM7iPMLluXDi5ajDGPwJQiwHJ/lbU=;
-        b=eqZYbYRV5pWClD45ITcaf2gmRIxzMql+4pErmHq/rGkQMkpO40AV/yX0hy0jSkS64t
-         vuEVNH9094YYYpJ8gvIWD0LEwmuHfd9IAWBTbJwTPU5bmqHowWUU1/YINbhZYkqFRC1N
-         8T3EzxeUoQ70jbSNUUFXGvA2OLs7S+v4dTmYtJH4z5WHlvYQYX87839MW2wio9r/zqW6
-         boJ2Ko0uSA5QdUKNmC0fmJxoASq98L5E9ji2dW9canbzpxWNf9pa8qVicMovtnMj5q8e
-         CTAYh3d+1qBaWj8s/3Bjp/q17kcqlwdyrUAvalzFfMaiiTrTDwlIaUxdFD9c7vGykaYe
-         PaiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784128093; x=1784732893;
-        h=content-transfer-encoding:content-type:content-language:cc:to
-         :subject:from:user-agent:mime-version:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=ge3+kmve43T55UiM7iPMLluXDi5ajDGPwJQiwHJ/lbU=;
-        b=WEGC51s4ZQcU0yN3Jc63U+cdMKdVoUCOxuX1aVae81fzNvf8M+l7vmOelkOf+0X4wC
-         Uyje7ma9ePvGcyUOKhIpM71h6Nn1a2Vv2CekYK8zweLkaAo53K8CfiowMKmtODT5nfAU
-         3D4OoLQcVQXJlS/0BSrVZzkBpl7d3hG3Sk5xQgxfLptckeqmvqQQRcpT2JJksqJ79hbi
-         +0gzLVya5cGXTFuNpDnHo85tReXm8VYateXmGgIQk0ts8/HM0kuI9j6kFO2z7KNWWwZG
-         r8AxHoxhjpDclyn9gYMYtn0j+DrJfdfRRmGk+XxbzvB1HAaNpKX6QbPDW4E3NMnfPm8P
-         Z0aw==
-X-Forwarded-Encrypted: i=1;
- AHgh+RqEx3+PtyixGlUZZH287xQSdLjmgpsUy8dhdqXtBon+Ultw6ffWvSOeDIZE9ntmTqCl85ufPPXvtq01@alsa-project.org
-X-Gm-Message-State: AOJu0YyHDL6LBmlsuBF0ulSOKq/4oRADYNHC+kkvJ76lTF1ymPc09auc
-	mpYsz+2nixN+k8/BU5CWIHegVLKYsfzk38Fyt4cVwxMLFlC+7ctGF7Lq
-X-Gm-Gg: AfdE7cmZ5+TOBKSpZoRuQ72ijYsqP7/ZsDaETNa0Dzh+wnANcLKC6zuHDgRPs7QXJFE
-	n/QuW3Irlf1GeBbR7pbluPvV6HonGE3R0X+J3b7YSUuMQoS7Ec+fUsaM4r/i0irv6ls8pCjCBKM
-	8nphsnbbiHpgwOLHp+fWen9DlBXj/oreuYNKcFjXwQ4ygt/FSfFkwZdk0HXe2emTMDzuHn180/S
-	G4z+jU4qBjiyhXkosdX6PIRRmJsOUfxzwXMChDdz4ZEhM8YdNMUcIreLSfBIfOeVUJO+LD7Dh1g
-	OIbgUwP5bVSbPBHu9o5UcKURx0WX79ItsSOHnviDO3wnfdGlv+sKwr1FVGYdoZbFu6YV+zTrp58
-	oFT/nx2hjapbswlj9344f8pYSqo9OAuwNXEM5I3sQwT1uEdopXeN0sOBCOBw8NxUiayOulmf44j
-	PNRJkrAm9st+XCSeb2PU2YD2Sl
-X-Received: by 2002:a05:600c:b90:b0:493:c182:6b08 with SMTP id
- 5b1f17b1804b1-49538a1e2famr77680395e9.36.1784128092666;
-        Wed, 15 Jul 2026 08:08:12 -0700 (PDT)
-Received: from [192.168.18.146] ([176.202.18.59])
-        by smtp.gmail.com with ESMTPSA id
- 5b1f17b1804b1-4950a322dc6sm163843135e9.10.2026.07.15.08.08.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2026 08:08:11 -0700 (PDT)
-Message-ID: <35264720-a5b8-4b08-8bd4-442c0bd5a8a7@gmail.com>
-Date: Wed, 15 Jul 2026 18:08:09 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: "Salman S. Tahir" <salman.abusaad@gmail.com>
-Subject: =?UTF-8?Q?=5BREGRESSION_7=2E2-rc3=5D_ASoC=3A_cs35l56=3A_component_p?=
- =?UTF-8?Q?robe_waits_for_an_init=5Fcompletion_that_cannot_be_signalled_unti?=
- =?UTF-8?Q?l_the_wait_ends_=E2=80=94_whole_sof=5Fsdw_card_fails?=
-To: patches@opensource.cirrus.com, rf@opensource.cirrus.com
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
+ unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
+ header.s=selector2 header.b=keViz1y+
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=wLH43NUEhT9H3hHlpxRjTShEWbafJBTcAz/ejLm3TLA2TCEsm028QrjUQFcGsQJOPAceEZZ7TunDbDmwhBtZPha5lqJKkRIdI9+ZIRHF3GBp+7I6njYh4NDyYOiUCgW5DaEpf2laqzNt4R86TRbFNNSg5htKo4MyrVlZb26r8qOdqts++BjuRRYbIyWYfDj+r1PGvouagoS3clCn/SWeeAgjPFdzNrLAmyTtbkQSWNVBIfj0eCDiYmvFDgrY2/j0rRPQr1S2dn+pq6/b8/W8ysfDdXBnbzz/oAvFgxJf4ao6iBVcprtk3dV1RcJpwwEzIAg2o5Cp77q3mtNfCgqDdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UPzpa5I5VBsfnMuMt+cxo+BV5z24GR46nSGbcwYteOY=;
+ b=LhnllDm58WOzwxtZlAvd/bMcoIR6Zeok1K2K50OQXmB/t4+PtML9IwgsnD99ul7JP2JiAM/kfTiUsIeuO8BjAcOeqmVjqtF+nC++TGKEiinoqdTFpxcbld0jmQdS2cLRb14dxFyMgUbdyor1YM7d5FLLNK9aX3xcV/1/MpGBQPjWINOnOdLLZ0zUSQYGSH320NQLdFOoahUipaMQqxyBvt1DvbT6CTTl/9p7KMEFAm4JU15p6f8MkIob8dHGJgUJo1JIPJ43QSZ6S4eAFkd+mEibtwMMP7DfRt2oWHrK43nfSlZUlnzx7+kXXpG3fZNJr98+7c5N0lvzt1rOsBke0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UPzpa5I5VBsfnMuMt+cxo+BV5z24GR46nSGbcwYteOY=;
+ b=keViz1y+AYraHYzvm6/j3g3H6/PY9VyLNmvqud6gCD/sSTNehe64Z1IK1D0bLO3642DADriqwEqw8c2kK+8Ae7H4ME5OG0P4ddo5MeF+iER4S3v/YQWU1n54cxdzafMJfeGjEAGDgSFVfMjI21CphYENxC5SvuDA6rbXuJfm8gnZ/AAqboNQB2UnNNVPELLDDIwLu+o49dH2uv/Pai+ybez9c//sDcM3QOz+gkX2wxJQQrUjNnqOMV8r9WsFQ8ATkifMuOGBxnUaaoBrDcMkGQ6kbYbAiaig19phLD4vsRlEowYC7hzS3hV3PdDXG+qYw4mJhRpI4u2/5WYWLKDX9A==
+Received: from DSSPR12MB999212.namprd12.prod.outlook.com (2603:10b6:8:376::11)
+ by IA1PR12MB6284.namprd12.prod.outlook.com (2603:10b6:208:3e4::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.202.19; Wed, 15 Jul
+ 2026 08:53:14 +0000
+Received: from DSSPR12MB999212.namprd12.prod.outlook.com
+ ([fe80::5e39:8f96:935a:87ba]) by DSSPR12MB999212.namprd12.prod.outlook.com
+ ([fe80::5e39:8f96:935a:87ba%5]) with mapi id 15.21.0202.014; Wed, 15 Jul 2026
+ 08:53:14 +0000
+From: "Sheetal ." <sheetal@nvidia.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC: Mohan kumar <mkumard@nvidia.com>, Sameer Pujar <spujar@nvidia.com>, Jon
+ Hunter <jonathanh@nvidia.com>
+Subject: [alsa-devel] alsactl restore fails for INTEGER64 control
+Thread-Topic: [alsa-devel] alsactl restore fails for INTEGER64 control
+Thread-Index: AQHdFCWGWqLZ5Xxck0ODvhZKigbtew==
+Date: Wed, 15 Jul 2026 08:53:14 +0000
+Message-ID: 
+ <DSSPR12MB999212CD0AF414E51769382046CAF82@DSSPR12MB999212.namprd12.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: salman.abusaad@gmail.com
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DSSPR12MB999212:EE_|IA1PR12MB6284:EE_
+x-ms-office365-filtering-correlation-id: 665b56d3-4960-4f8a-3ff5-08dee24e81bd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: 
+ BCL:0;ARA:13230040|23010399003|366016|1800799024|376014|11063799006|56012099006|8096899003|13003099007|38070700021|18002099003;
+x-microsoft-antispam-message-info: 
+ Foo2dzxeHRqLag3AOXIEbAWEFZjeGMRkDUwnHI6QGem8SI3pmETMO14OcyADF3Dnr/vkClpO55PlpSeat7VNgqRFnOCEMOyAw+s/WAe/M7fIKW8zvuPKqo1ge0Tk2hxnHu9iUHmYht3TVSm3k51sjMiZn9ibSNMDQJk1+zoHidmdnvAvQyHGW/8MJdPhMBCzYasuiiXk122gGHLDJmW0BFlhYpb6oBd8zrTHqujdzkBpzJemNPB3C2M+m/+VE5cEMubWdk/rY6Wi1ro1s2zFBGZfoHriEb/eoTuWwzQ+vOmAW7Z6BW++GOKBkqIWxZfX5cnNCD+CVPhkWSQIiCvrLUFxH2kxLbeit9SYcV65aBWN6L5bxBxIVffPTecgAKnuZq+2/feroFJ3d/YkLR308GZP09op7FpOz+7EFgW/vm82CwFIaIuSAHIlaCAbmF0TsuMHCwABT6uezqsSpczM6i3P2YzZTVIiwFBJmUdA7LUGwaJFxRWaIBH6vjgkb+txHZVyAsa62WU3by2ICHx3cxmwN7/ir2WN2eQwAjXSbM123ryPsSgXVzHi+qsPIE2p8l2RZOCpq6RjK1E24C3DJG1Vg7ZhGgzH11akSFnaKtSY53/by2fkRp9sAULNz5GisLa+j6HSCi4jQxlnS040/ZLkMDSc+rscHa0lgl4zVKe+i5MM0cHFQYGQ15hOPNYy
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DSSPR12MB999212.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(366016)(1800799024)(376014)(11063799006)(56012099006)(8096899003)(13003099007)(38070700021)(18002099003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?cnBnOXpmMkVPTnJJZDJZOUZpTVNsYm1mZk02Wi85ckxiWVoxbU5EaEJDTFBD?=
+ =?utf-8?B?QzdRbTZlZmlZOW1mYkc3cHNsTlJJdkxIbG5lK3c4Q3VWbXFRUEg2c1Z0Z3pF?=
+ =?utf-8?B?T1FHWndMeFA2SEVDRUZ0dWZLM0tRZjF0eDVRekJQR1I5bG04T3JBNmt6cE15?=
+ =?utf-8?B?K2dSQmRRQUhhYXMzUm5hb3N5TFhVbUlYdXA5eFR2LzZVWjVXcmdpMzZOTXRT?=
+ =?utf-8?B?d0ZTYks4eVV6K0JndW5DRUlxa2ttZ2g3N2JyNlpxbytZcHppOWVjUEJnczRM?=
+ =?utf-8?B?MjhLLzNMNUtXZXJyRC9yM1lpVXZPeTZNbzc0U0dyVTJMK1Q3UC9iT05LLzNk?=
+ =?utf-8?B?ZDIzM3ZVM3ArRTNSczFwb1krR0lhZEZMMG1SQmwrSFREczR4NkdBRklNcjRl?=
+ =?utf-8?B?TjhTVUlpRzFGb1I0MlllRUNPWnJzODdObXp6bkpGQ2hwanVUZnd1ZHdGSURv?=
+ =?utf-8?B?QVNLdjhLMDJwSmVURGlxZmVJalB5V3UrM1V4VFpvVHRLSkpySGNYNTlDbzRk?=
+ =?utf-8?B?YjRyYkNXU2RBYkhzaDBqSmg0Mm1wbFBMd0YydWl4a1NYNklZcDRpZUdjcXpo?=
+ =?utf-8?B?eERxeXZiQ2tiSFZQbkp2U3N6cjZWUU5VVW9ROWd2ZzBGT1RSRm9adWlNbkFr?=
+ =?utf-8?B?SW9yMU5aVE5SaGJWTDdxT1lSRndOQUQxakpqUWlXUW5FRTYvQ0RuRFE2aENC?=
+ =?utf-8?B?QUI1UTZUNXdKeEx5TEtmYllzOXVoa2RuRHd4QVBDU0JWMTF6WWxpTmFUNTdl?=
+ =?utf-8?B?a2lwaHVZeFQ5MHA1ZE84V0FZcmpuV1kwSFU4WDhkb21DZjJPSlhpZnE4a3c0?=
+ =?utf-8?B?a2ovbHhXUUxtZDdDSlA1UG9HU082NVhOUVkzdElGWkd4U2toRU9SRU10Vjd2?=
+ =?utf-8?B?ODhVU09UUnAzYW56UTR2QTh3dEl1Q2VlNkx6bEl6YkFrdkdLeVA4dkgwT2Zq?=
+ =?utf-8?B?d25xdTEwYUxSTnRsQ0Y0dCtxV1Z6NktteEhNT3NmU29iRGpPc0wxb2Y5bzI5?=
+ =?utf-8?B?UFA1NmZHYlBzZTZzdVd1THJVT0dqV1JDTjFBYnN2MUpRczBpbEU0cFNQZ2ZN?=
+ =?utf-8?B?MnRTRzNTeksvWEpjVmN6L1BwZnRrd2NvUk1wNzRzb3RTd3YrWG43UkVXbG14?=
+ =?utf-8?B?ZTA2UmkyZDdHZC9OQzJTZHdIcUJCUG96MDB0L0ZkQWthdmtSZVd0ZkVMbWNm?=
+ =?utf-8?B?SmRlQWJuNW9STUdsZVUyZkdkVFQzZFZjUjZ1K05ldGVjSVVnUVVrWXJqYy96?=
+ =?utf-8?B?UzdDeUFzL1NpblJkU08wbmRxTFdqVjlVcHhZck5RTUZJVzd0ZXVXV0p5RGh4?=
+ =?utf-8?B?VGZSaVNhUHd5K1Y1Z085ZXFXT1FXTTBBYW50OGhQT25iY0JzMFVhdHNqSC9i?=
+ =?utf-8?B?UHpXQzNKaXFhbGVGSTlDMHZZQ0NhUm5aOWQzU0U5YURNL25JR3dOQXovNXZ2?=
+ =?utf-8?B?UGpjN2ZsM09MOHJrSHE2MFNXdkVpRXd3TERsZUJucGdlbFF3OGRhem03VVlM?=
+ =?utf-8?B?RndtNmtUMktidXgzWnU5d3ljemJHVjJRdjVNa0xJZWZxbytKUFU4d0VFQlBp?=
+ =?utf-8?B?NG0rTVZMeVYyNGtncERzNVZxanZCZE8reVdMMTdicGJQMFNiVUdvcDNaT2ZN?=
+ =?utf-8?B?OGVMbVM5RjU5Wkg5bjhJTDFhUVllSGlzdkhlaWM5TUdHNFpvWlJzTVpMcGl2?=
+ =?utf-8?B?LzVURE90UkpVbUVHbVRXOFFscTdjQTkvRndrTGpFL1dOYzNrdS9sZllaNG1Y?=
+ =?utf-8?B?eS9FMUZmNnQyeURUaEFzMllZME4zbEU2VjBMVlU0a2k2U05zTXh1UzdDK1Mz?=
+ =?utf-8?B?OWdKRS9wdEdYcUY3WC95TlUyTHlVU21aTVhuRGxtdzkwQ3VVeVNSWVlsQUkv?=
+ =?utf-8?B?dm5CUUlyZHN1QWJleXpmTU1ZNitwQmZBOVZoMklyRlpiQ2dVaDRUSUtTNDBo?=
+ =?utf-8?B?MHB4QkxOL3l2dWFDWUhCSFFtWjJxV3VOYmp5cUViWnpwbC9TY2NQQ3FSWWR6?=
+ =?utf-8?B?Q0t4MFVGYTFNZXV2QlhCZ29kRmtyNVRGQ1NtelM2MWF5NTYveUM1amdBc2E3?=
+ =?utf-8?B?dkk5ZkoyRzhzbk56SVozL3dRZTVnRHUrK0dKRHlaRnkwc1ZYNUdrcnBhdDl6?=
+ =?utf-8?B?SUV5YS9jWXI5K3VBaTUxVWFyRCt6aklYeEZIdFJqSVgvRzB1ZHB2Z3lQZTdH?=
+ =?utf-8?B?NlNJcm8rRis5dEU4NWd0N1VnL1hnUVhGaUNadlVTUG9VYUNleldhSEZLZU43?=
+ =?utf-8?B?VHJwWCtna3Z2RWhwaks1TWhqUGVLeC9DajkwZ2RBMGxNSkV2ZkdiTkNTZzdu?=
+ =?utf-8?Q?UlynyVbUi1/Ua4irw2?=
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: 
+ DSSPR12MB999212.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 665b56d3-4960-4f8a-3ff5-08dee24e81bd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2026 08:53:14.4885
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ i1RVXbJK1UsmLopaHcidQ2BN5yTfKarqPNwOfRq2kQ9K/8pbERLW+bNsC/ti2Oaj8fbwchRyxEcROImcDDAGxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6284
+X-MailFrom: sheetal@nvidia.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: IMOFOOZ6FL654LUWVFW3FCIN6PCSNW3B
-X-Message-ID-Hash: IMOFOOZ6FL654LUWVFW3FCIN6PCSNW3B
-X-Mailman-Approved-At: Sat, 18 Jul 2026 09:37:08 +0000
+Message-ID-Hash: FQ4DI3EGAS3AK2453VES2H74OF6P3GAM
+X-Message-ID-Hash: FQ4DI3EGAS3AK2453VES2H74OF6P3GAM
+X-Mailman-Approved-At: Sat, 18 Jul 2026 09:39:41 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IMOFOOZ6FL654LUWVFW3FCIN6PCSNW3B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JVMMP5EC2DNMKYZNWFGNYVK5YSIKWGNE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -145,203 +196,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-On a Lenovo Yoga 9 2-in-1 14ILL10 (83LC, Core Ultra 7 258V / Lunar Lake; 
-CS42L43
-plus two SPI-attached CS35L56 amps behind it) the machine has no sound 
-card at all
-on 7.2-rc3. /proc/asound/cards is empty and PipeWire falls back to a 
-null sink.
-
-The right-hand amp's ASoC component probe times out waiting for 
-init_completion,
-returns -ENODEV, and ASoC then tears down the entire card -- so 
-speakers, internal
-mics, headset and all three HDMI outputs die because of one failed 
-component:
-
-[ 10.301...] cs35l56 spi-cs35l56-right: _cs35l56_component_probe: 
-init_completion timed out
-[ 10.301...] cs35l56 spi-cs35l56-right: ASoC error (-19): at 
-snd_soc_component_probe() on spi-cs35l56-right
-[ 10.302...] sof_sdw sof_sdw: ASoC: failed to instantiate card -19
-
-This is 100% reproducible. Scanning my whole journal (151 boots, back to
-2026-03-07): 11 failures in 11 boots on 7.2.0-rc3, against 0 failures in 
-138 boots
-on every kernel I ran before it -- 6.17.0-14 (1 boot), 6.19.4 (83), 
-7.0.0-15 (20),
-7.0.0-22 (20), 7.0.0-27 (14). It breaks at the first 7.2-rc3 boot and 
-has failed
-every one since. (A 12th 7.2-rc3 boot is clean, but only because of the 
-workaround
-described below.) Those failures were all captured on an otherwise stock 
-machine --
-clean kernel cmdline, distro modprobe.d only, no out-of-tree modules 
-(other than the
-timeout experiment below), no DSDT override, distro Cirrus firmware. I 
-now run a
-local workaround (a snd_soc_sof_sdw blacklist plus a service that loads 
-it late --
-described below); I can drop it and reproduce the failure on demand.
-
-
-This is not a slow-firmware race
---------------------------------
-
-The obvious reading of that log is "the amp is a bit too slow and misses 
-the 5s
-deadline". It isn't, and I want to save you from chasing that. I rebuilt
-snd-soc-cs35l56 for 7.2-rc3 with a single change -- the component-probe 
-wait at
-sound/soc/codecs/cs35l56.c:1371, msecs_to_jiffies(5000) -> 
-msecs_to_jiffies(30000)
--- and booted it. It fails identically, just later:
-
-component-probe timeout | wait expires at | right amp's cs35l56_init() 
-actually starts
-------------------------+-----------------+-------------------------------------------
-5000 ms (stock) | 10.301 s | 10.355 s -- 54 ms after the wait gave up
-30000 ms (patched) | 35.901 s | 36.005 s -- 104 ms after the wait gave up
-
-During the entire 30-second wait the right amp emits nothing. It does 
-not even reach
-the cs35l56_hw_init() identification print that the left amp produced at 
-5.29 s:
-
-[ 5.294911] cs35l56 spi-cs35l56-left: Cirrus Logic CS35L56 Rev B0 OTP3 
-fw:3.4.4 (patched=0)
-[ 5.603038] cs35l56 spi-cs35l56-left: DSP1: 
-cirrus/cs35l56-b0-dsp1-misc-17aa3832-spkid0.wmfw: format 3 ...
-[ 7.681077] cs35l56 spi-cs35l56-left: DSP1: Firmware: 1a00d6 vendor: 0x2 
-v3.11.26, 41 algorithms
-[ 9.498049] cs35l56 spi-cs35l56-left: Calibration applied
-<-- 26 seconds of silence from the right amp -->
-[ 35.901035] cs35l56 spi-cs35l56-right: _cs35l56_component_probe: 
-init_completion timed out
-[ 35.902534] sof_sdw sof_sdw: ASoC: failed to instantiate card -19
-[ 36.005138] cs35l56 spi-cs35l56-right: Cirrus Logic CS35L56 Rev B0 OTP3 
-fw:3.4.4 (patched=0)
-
-So the right amp's init is not losing a race against the deadline -- it 
-is blocked by
-the wait itself, and only proceeds once the waiter gives up. Increasing 
-the timeout
-just increases the wait; a 300-second timeout would fail at 305 seconds. 
-The amp is
-not slow: once released it completes cs35l56_init() normally. (It gets 
-no firmware
-download at that point -- the timeout path returns -ENODEV well before the
-queue_work(&cs35l56->dsp_work) at the end of _cs35l56_component_probe(), 
-so nothing
-ever queues one for it.)
-
-
-The hardware is fine -- the card is just built ~100 ms too early
-----------------------------------------------------------------
-
-After the failed instantiation, spi-cs35l56-right is bound to the 
-driver, i.e. its
-probe returned 0 and complete(&cs35l56->init_completion) did run. 
-Nothing about the
-hardware, the firmware download or the SPI-over-SoundWire path is 
-broken; the card is
-simply instantiated before the right amp is ready, and nothing ever 
-retries it.
-
-I confirmed that by keeping the deadlock from forming at all, rather 
-than repairing it
-afterwards: blacklist snd_soc_sof_sdw, wait until both amps have 
-signalled init, then
-load it. With no card probe in flight there is nothing to starve the 
-right amp: both
-amps reach their identification print within ~260 ms of each other 
-(4.744 s and
-5.008 s), the component probe's wait returns immediately, no timeout 
-fires, and the
-card registers first time. Both amps are still patched=0 at that point, 
-so both take
-the full firmware-download path, and both calibrate:
-
-[ 19.770067] cs35l56 spi-cs35l56-left: Calibration applied
-[ 19.777038] cs35l56 spi-cs35l56-right: Calibration applied
-
-That boot has since suspended and resumed with the card intact, and 
-contains no error
-or warning from cs35l56, cs42l43 or SOF at all.
-
-
-Hypothesis (unverified -- offered only as a starting point)
------------------------------------------------------------
-
-Something in 7.2 appears to have changed the ordering such that the 
-right amp's probe
-and the sof_sdw card probe end up on the same execution context (the 
-deferred-probe
-worker would fit the ~100 ms lag), so the blocking wait in 
-_cs35l56_component_probe()
-starves the very work it is waiting for. I have not confirmed that, and 
-I have not
-bisected -- I am reporting the reproducible behaviour rather than 
-guessing at the
-culprit commit, and I would rather not send you down a path I only inferred.
-
-
-Suggested direction
--------------------
-
-Regardless of what changed the ordering, blocking in a component probe 
-on a completion
-that a different probe must signal looks fragile by construction. Returning
--EPROBE_DEFER instead -- letting the driver core retry the card once the 
-amp is bound
--- would use the mechanism the kernel already has for this, and 
-snd_soc_bind_card()
-already special-cases -EPROBE_DEFER from soc_probe_link_components(). 
-Something along
-the lines of:
-
-if (!wait_for_completion_timeout(&cs35l56->init_completion,
-msecs_to_jiffies(5000)))
-return 
-dev_err_probe(cs35l56->https://www.google.com/url?q=http://base.dev&source=gmail&ust=1784212475584000&sa=E, 
--EPROBE_DEFER,
-"init_completion not signalled, deferring\n");
-
-I have not tested that; I did not want to submit a patch built on a 
-mechanism I have
-only hypothesised.
-
-I have the hardware, I can reproduce this on every boot, and I am happy 
-to test
-patches, run instrumented builds, or bisect if that would help. Just 
-tell me what
-would be most useful.
-
-
-Environment
------------
-
-- Lenovo Yoga 9 2-in-1 14ILL10 (83LC), Core Ultra 7 258V (Lunar Lake)
-- CS42L43 (SoundWire) + 2x CS35L56 Rev B0, SPI-attached via the CS42L43
-- Firmware: cirrus/cs35l56-b0-dsp1-misc-17aa3832-spkid0.wmfw v3.11.26 
-(distro linux-firmware)
-- Bad: 7.2-rc3 (7.2.0-070200rc3-generic, mainline build) -- 11 failures 
-/ 11 boots
-- Good: 7.0.0-27 (14 boots), 7.0.0-22 (20), 7.0.0-15 (20), 6.19.4 (83), 
-6.17.0-14 (1)
--- 138 boots, 0 failures
-- Only the 30 s-timeout boot above ran a rebuilt (out-of-tree, 
-kernel-tainting)
-snd-soc-cs35l56; every stock-timeout failure was on the untainted distro 
-module
-- Not bisected
-- Workaround currently in place: blacklist snd_soc_sof_sdw + a systemd 
-unit that
-modprobes it once both amps have signalled init. Removable on request -- 
-I can
-reproduce the failure on any boot.
-
-Thanks,
-Salman S. Tahir
+SGkgQWxzYSB0ZWFtLA0KDQpXZSBoYXZlIGEgbWl4ZXIgY29udHJvbCB3aXRoIGEgcmFuZ2Ugb2Yg
+MCAuLiAweGZmZmZmZmZmIGFuZCBhcmUgY29uc2lkZXJpbmcgZXhwb3NpbmcgaXQgYXMgU05EX0NU
+TF9FTEVNX1RZUEVfSU5URUdFUjY0Lg0KSG93ZXZlciwgYWxzYWN0bCByZXN0b3JlIGFwcGVhcnMg
+dG8gZmFpbCB3aGVuIHRoZSBzYXZlZCB2YWx1ZSBpcyBzbWFsbCBlbm91Z2ggdG8gYmUgcGFyc2Vk
+IGFzIGEgY29uZmlnIElOVEVHRVIgcmF0aGVyIHRoYW4gSU5URUdFUjY0Lg0KRXhhbXBsZSBzdGF0
+ZSBzbmlwcGV0Og0KDQpjb250cm9sLk4gew0K4oCC4oCC4oCC4oCCaWZhY2UgTUlYRVINCuKAguKA
+guKAguKAgm5hbWUgJ0FCQyBjb250cm9sJw0K4oCC4oCC4oCC4oCCdmFsdWUgWw0K4oCC4oCC4oCC
+4oCC4oCC4oCC4oCC4oCCMQ0K4oCC4oCC4oCC4oCC4oCC4oCC4oCC4oCCMA0K4oCC4oCC4oCC4oCC
+XQ0KfQ0KDQpUaGUgcmVzdG9yZSB0aGVuIGZhaWxzIHdpdGg6DQphbHNhY3RsOiBzZXRfY29udHJv
+bDo8bGluZT46IENhbm5vdCB3cml0ZSBjb250cm9sICc8Y2FyZD46MDowOkFCQyBjb250cm9sIDE6
+MCcgOiBJbnZhbGlkIGFyZ3VtZW50DQoNCkZyb20gYWxzYWN0bC9zdGF0ZS5jLCBJTlRFR0VSNjQg
+cmVzdG9yZSBnb2VzIHRocm91Z2ggY29uZmlnX2ludGVnZXI2NCgpLCB3aGljaCBjYWxscyBzbmRf
+Y29uZmlnX2dldF9pbnRlZ2VyNjQoKToNCmh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3Qv
+YWxzYS11dGlscy9ibG9iL21hc3Rlci9hbHNhY3RsL3N0YXRlLmMNCkl0IGRvZXMgbm90IGFwcGVh
+ciB0aGF0IHNuZF9jb25maWdfZ2V0X2ludGVnZXI2NCgpIGFjY2VwdHMgYSBwbGFpbiBJTlRFR0VS
+IG5vZGUgZm9yIGFuIElOVEVHRVI2NCBjb250cm9sOg0KaHR0cHM6Ly9naXRodWIuY29tL2Fsc2Et
+cHJvamVjdC9hbHNhLWxpYi9ibG9iL21hc3Rlci9zcmMvY29uZi5jI0wzMjAzDQoNCklmIHRoaXMg
+aXMgYSBrbm93biBpc3N1ZSwgd2hhdCBpcyB0aGUgcmVjb21tZW5kZWQgd2F5IHRvIGhhbmRsZSBp
+dD8NCkkgd291bGQgYXBwcmVjaWF0ZSBhbnkgZ3VpZGFuY2Ugb3IgcmVjb21tZW5kYXRpb25zIGFu
+ZCBsb29rIGZvcndhcmQgdG8geW91ciByZXNwb25zZS4NCg0KUmVnYXJkcywNClNoZWV0YWwNCg==
