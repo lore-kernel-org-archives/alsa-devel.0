@@ -4,125 +4,148 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 809FCC4451B
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2026 09:41:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61DDBC4451B
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jul 2026 09:41:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 796686023D;
-	Sat, 18 Jul 2026 11:40:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 796686023D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAC616020A;
+	Sat, 18 Jul 2026 11:41:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAC616020A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784367662;
-	bh=RJ6f+XfXAfbzW3Alo2HwVjlVjDJu2gJvJHFb9DEy8P0=;
-	h=Date:Subject:From:To:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1784367692;
+	bh=iDJsjNtS8kreu28kbSYJ1ouTrFQtyvx0DmxkpocRS1s=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HpqK5ceuFdrvuhqmGO0K0L61PBaRQst7mPN4gp0Pm0KdHwtJQLG+X7s/4PUaIJQZb
-	 p+1DlOG+iIVabBxK1sO6oTGe/F39uhqLmLFF+d21Lg/+3IM4BTY9f0UuwGUH910BSo
-	 fa0UVq6TWjj27YT3pZubP+IN5CVZxncAlaWv+aEk=
+	b=fQjOk+CvmcVVlSbOyae1M3plLiND6/pql3TRZyLuIPb1eB3LpkmRyGKXX+ah0nceq
+	 gg1fx3srubX9k8Hfqqz4VuLDiENL6QERXGskjK8+hIPp4ZfVCAQgfBGNY+AG0X8ZoE
+	 gJiJYzK99lex/j8XMUbwFTBpvcURStKmI4kvEIiI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C92EDF80630; Sat, 18 Jul 2026 11:40:07 +0200 (CEST)
+	id AB5F2F80604; Sat, 18 Jul 2026 11:40:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A081F8063D;
-	Sat, 18 Jul 2026 11:40:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A16A7F8057B;
+	Sat, 18 Jul 2026 11:40:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83D63F80527; Thu, 16 Jul 2026 12:53:31 +0200 (CEST)
+	id 34DF5F80526; Fri, 17 Jul 2026 00:20:13 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=217.182.158.229
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784199208;
-	b=VDs16RZoo/xGFzeyy4YvwoOySGkwSa4MTYqOYkPEDL3qOq/dBAtymVXktnYlLfwNmvv4
-	 p8xJc1Mf4Nz7Eux5dWJSzUQxUuHrsSBmsTX9/x/Ytimw3GUepEL8ZWFI4GS9UaqJH7bDC
-	 fN410U+KvxL5w7s80a200ZL8WABs2tCRQzB4Z5vo66RG9cYdVk7CvXtIcwwlQLCzA6o2u
-	 B41TzAm0N2vx3+Rtys0dyPxEX+PwC7j2Armcsr7Er4DNeKefN7DpR0rdUBXINoSsVaN/i
-	 8FEhjikwop+bHkEy+zlM0LvKFk5cl/oW7WJ6pT8Rf7qXQBYH8QmEd22nsg/vxg/k9aw==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1784199208;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:DKIM-Signature;
-	bh=RJ6f+XfXAfbzW3Alo2HwVjlVjDJu2gJvJHFb9DEy8P0=;
-	b=ieq646iXkstDo9Y4deyVVfJUirOmvxATUZpfqq5xhs2t/got7TUoyr9eapmZhEo5dzRF
-	 F25D/LQ7pEqQEPHrUJGEhqwEmWwIVj5oLnLhb+6n4uPos5dW8mVv+y+vXeiUrFw+4LuLa
-	 k2tYfZ/zbevm5mm0oQVup1eTP2t3g+j/4RG0pE+onH+pF+nL3taniNsMcXEpkuePzuLst
-	 Nr+0ei5R1lrhVtzAXvsu9KJLalvqGzhHU96qHeq5e0SbSzv6aWal0njF2M0uVq7NE26NP
-	 e+amQUsWsluIiLmVQJ9ei07mcHRXP6E5G2nHDjtttHAQMxPAduT5l6AADqvnL8YaA5Q==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=peccini.fr header.i=@peccini.fr header.a=rsa-sha256
- header.s=ovhmo227787-selector1 header.b=LcvGWQqq;
-	arc=none smtp.remote-ip=217.182.158.229
-Received: from 4.mo17.mail-out.ovh.net (4.mo17.mail-out.ovh.net
- [217.182.158.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.167.51
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1784240412;
+	b=VEVbYlj51WgHWC7rcj4LwlSoeUj8LmSq+z/OcxWw6/+NWGc98BRm0bovBU0R7/viGPm8
+	 FpZi+9mJ7UMkghkS7bJzzh6aypCdiHwtwExY1bxZj+P019w7m9cu4GNnRQhZNHzZ7QKI/
+	 7p+d4Ot2OkWfUDcM8xH7PNh794ufUy863MUBNlRrjakyRhlY+/Nmzw2VavhsLr8MM4xcb
+	 z1Z987EdpE/8PDGELlgcwmpgKDuKHw7zwLTlRLP9qm2q36xLnhKBKDfKPVN6/dMlcRQ7C
+	 iD/g7vzvz8wt1j31zV6bGhn+lP/9iQ9f81vtRY48JavmH9ho4gQCYOk0kf2J/e9FVrw==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1784240412;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=iDJsjNtS8kreu28kbSYJ1ouTrFQtyvx0DmxkpocRS1s=;
+	b=pEjNh+ACwlt2kFWDph52ksxNCKNv1BUjWbJoh3L66bnr53Q95gziuDY7JjTR8UAKHnJt
+	 T+fDhwBQnT8Qe7cBA5iin5cYFFBJrHw2Dx/ACJcDOYqZ7ZXnQfYEKg3mvOOf0iY38bOnc
+	 9gjML7coNwSHqN2+qIRlnc69WgJ9/WEaD0YwBnXkFQhhLOdRB3wU4TxU0oNTKuINv+1Aq
+	 ZI124qcyjAnZE3g0R8+cBcIADdBOhN7bTCt1bLXYNmR1tnRGCe3D05LP6aRI+lTtghvnX
+	 yLEqNScajqdKuySvwXdYHXi7a7GLY1LDqF09XxcYplW+7yRbgsg+ZiqzCgo1AbU9DSQ==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b="lBSv/6k8";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.167.51
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com
+ [209.85.167.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9BEBF8051E
-	for <alsa-devel@alsa-project.org>; Thu, 16 Jul 2026 12:53:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9BEBF8051E
+	by alsa1.perex.cz (Postfix) with ESMTPS id E7523F801F7
+	for <alsa-devel@alsa-project.org>; Fri, 17 Jul 2026 00:20:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7523F801F7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=peccini.fr header.i=@peccini.fr header.a=rsa-sha256
- header.s=ovhmo227787-selector1 header.b=LcvGWQqq
-Received: from director6.derp.mail-out.ovh.net
- (director6.derp.mail-out.ovh.net [51.255.22.22])
-	by mo17.mail-out.ovh.net (Postfix) with ESMTPS id 4h18z94DCGz8MbL;
-	Thu, 16 Jul 2026 10:53:25 +0000 (UTC)
-Received: from director6.derp.mail-out.ovh.net
- (director6.derp.mail-out.ovh.net. [127.0.0.1])
-        by director6.derp.mail-out.ovh.net (inspect_sender_mail_agent) with
- SMTP
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=lBSv/6k8
+Received: by mail-lf1-f51.google.com with SMTP id
+ 2adb3069b0e04-5aeb98460c6so4370806e87.2
         for <alsa-devel@alsa-project.org>;
- Thu, 16 Jul 2026 10:53:25 +0000 (UTC)
-Received: from mta10.priv.ovhmail-u2.ea.mail.ovh.net (unknown [10.110.168.57])
-	by director6.derp.mail-out.ovh.net (Postfix) with ESMTPS id 4h18z923vHz7tL6;
-	Thu, 16 Jul 2026 10:53:25 +0000 (UTC)
-Received: from peccini.fr (unknown [10.1.6.5])
-	(Authenticated sender: stephan-pro@peccini.fr)
-	by mta10.priv.ovhmail-u2.ea.mail.ovh.net (Postfix) with ESMTPSA id
- 313BA1923D99;
-	Thu, 16 Jul 2026 10:53:23 +0000 (UTC)
-Authentication-Results: garm.ovh;
- auth=pass (GARM-105G0064e5083bb-1f5b-43b2-a484-5820391537a7,
-                    86351207988B327BB336620BB84F4B6E7B49C8FE)
- smtp.auth=stephan-pro@peccini.fr
-X-OVh-ClientIp: 193.32.126.157
-Message-ID: <fbc3a714-d083-4110-b788-d839c9f10751@peccini.fr>
-Date: Thu, 16 Jul 2026 12:53:20 +0200
+ Thu, 16 Jul 2026 15:20:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1784240409; cv=none;
+        d=google.com; s=arc-20260327;
+        b=kLDMvuoHXJaPuVsEux/KbaqOItPhyywK8DSsgvlA8AxCmHQyS+Clcww5gVcLe0Aayv
+         mAd+dVFwULp0fSy8HgnA7fgN9TkaHt1GxU6SOmCSG1H2NqE3lZoiTR04dx6G7DXeyeSx
+         q08aqcC3h6NKyX14SuPEnTVr478EBNvVWxyXlNU32ToGml4GqT9j8V3BR7KYx102GP4g
+         8Gk2kOJjyh0pD47dy7Q52SmDNXSXijEwNgOIZTYXdHfBlO7m7/BDZolhdgekUAZGLCui
+         mD7J+zsEwgAlMv6f/om7yrc/dHyogL+Bp6FCWTWhHeMB9eK9YpAVsZCZFOd/KF9RqKOj
+         eYVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=35+R1s9qTf5horVtcrNim4EB7QFCaumPuQ07ReLrFdo=;
+        fh=gS0NTHKzQKeqQmFok5pwF8BTWIAec9YQDVfDAgU5APQ=;
+        b=HPW86zePD6Iqg8Oeb4OkEAUHFuSK9Nuvf7bMizJt5KPhBhCTl9UfBbRDD0d2w0nHb6
+         x6jyCmJPAKbSfrHNWI0Q0q/yvAQfKAcAjTDLzEYevJmOSurja4gtR7eJ7ay53qeDVdZY
+         Tf916h6IDdk7FrXaJpkPTG2FztcDXb5LAdFRjeXP5dHz+o7lApZMNS1fbypvNpt7iNIS
+         SPtFeHiKsPoiHd68Mf4r2QVD95G0XHFEPwhcZ4dVsJ9mEyrtaz2f1TRQGIm11XwKG7aE
+         +TCv+QDgAneIXo5rxVBwZ6xZIWuoCxOcS57yBomZ9PEOiPLWnNnUCPDqV9hslpmUYNqm
+         qFGg==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1784240409; x=1784845209;
+ darn=alsa-project.org;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=35+R1s9qTf5horVtcrNim4EB7QFCaumPuQ07ReLrFdo=;
+        b=lBSv/6k8tHwMmwOTum4V+1jcBk50FhdvEfDv7mdQN/H4XEDRPCId6p4dH6Nl3XCA9r
+         8KoM/QExvU9BYcBhxpfTs4NQOQhEw5hLbdhMFO2UyThxC5OWdvZTKS/Za5okqgDB11o7
+         VeJHskhur2GVt7IqhZWoH4JLwA91/L6g+mLVlI7WWVF75eIB+gxnTsx4saKRjpWA2zYj
+         /519KIRuMfFHLJQ6hrrj2rYP1qU8oIOP5J+3f54jULPwXcg2ofOCBtkGTAfsXwsAPNq+
+         HECi0SKPSR/osH5ZfzrvmJoOkemRMVPu67vH1bDQWxsifWukbTMtEbyfaCYNnX9mvl1j
+         zK4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784240409; x=1784845209;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=35+R1s9qTf5horVtcrNim4EB7QFCaumPuQ07ReLrFdo=;
+        b=ZoNRjsovCRCBsw9/fMI2iK80ZdKu+JjYFtwcVN0mD2UjmhT9qJ1K7d7YKyKcfDtJvs
+         BT+3ty1QRbHx461ihb97kHBDqQbyEw7sBObLbLAI2x9MJnDzvNjaEvhouR/rrFj3M6ro
+         ntzv7wzmdO+hwz2EVYJWC7AXcfjlXzqp8RwqXr2Biotwvu0KO41q0Ph5eTYIVm6mL7dL
+         563EOma6vuJmzP6fEq/mvm9quhokZ3kX/1pyguFrRru8eheTJa5WGhT3ihB5Ohj2h6+z
+         x41w+0NorLkzMGEKoDLAF4s+ANmsgdgkswIFxLI43nXKDwc2nW9j8aoUe0htHf1uygFQ
+         df5g==
+X-Gm-Message-State: AOJu0Yz/b6cFZrWBIvWNVjbBEaHvlaSZ3jKQQU3CcDlfE/V+X9Jy07nS
+	MT/NUf4OzeSzOxrHXSrOM9lMv1OEqorSl8LS6PYIM5+vtGg7ZseBl9DBaT5rGimpkj3SQA+UlEG
+	tFAj/rfQa4P2CmhM9lmx4TdIij814Y5fa4DmO
+X-Gm-Gg: AfdE7ck8DU7a5mV8FsFoG0Rvw2k11X8Jls7zzYTwhlasM+qm0XG+AWyh2MO90SUfBlR
+	t79gC0wdguZy9Vfy2+Exdm/jf+qtVekFy6OaFVkdkd62HOhyZCvc+nQ/C0Iv2T5fm+rgzjhPH6D
+	LKL05SsAxKTV3OMB+cHlJY7z40qLPC4xdYccHXtesRYeecb3K+CLOqDvp+is9KTBpYmskSbVgZT
+	GbS4CStAFSDLctiZ2wSwRm0a1PpqpAB4jCpMQEvkGLvQ22ttG/pGSpFB+8DT/jY/7qhEBXXG3Qh
+	jGfeFGzzMKi+B8PUSguYFmsDM0RasE0mgb/kI2cBdXxIiGk=
+X-Received: by 2002:a05:6512:3e14:b0:5b0:1ecc:119d with SMTP id
+ 2adb3069b0e04-5b28fabb958mr5721e87.50.1784240409147; Thu, 16 Jul 2026
+ 15:20:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Betterbird (Linux)
-Subject: SN6186: Missing Mic Boost control and incorrect ADC gain on GMKtec
- EVO-X2 (Subsystem 0x2014801d)
-From: =?UTF-8?Q?St=C3=A9phan_Peccini_-_Pro?= <stephan-pro@peccini.fr>
-Content-Language: en-US, fr-FR
-To: bo.liu@senarytech.com, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-x-ovh-tracer-id: 13269011881115605908
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: 
- dmFkZTEup06/JE1BJAJ8H62L3hQs6oBMXP98V9ynCiCkiK+36NHCYWtGzudqL9kH9GYG/d3HXYLSNQGBgBoksil9COYDpCtoQ0C1FcEKMPczIwdZFa/gCNDFU24TZWRDUog7pLUHgIdccjP+DKt8XPtDALnoW064qdUa3/0ZeRwwmAwRvzPGr4Kx7S2gvtq8oHVgtr5FwZGwDvuDRPSa0xbhDtqXwsqycQecXssM2Ld2njxHFkWC8VZkhIrWvhGbSaSqUDeWI5qsWYZ+jTeJn4Xpb6jxPZIDM7j7PiyrfBJ4xPRKMH+y3GijdgmgrD7xL4brmXdDzi9lJN9u8pELUFDPZVWwJWi2828uehZkVssBdK4+ldlJxHc4H2BvGW0jNq/mjbVTh0T0+bnuitMLovoHUf9noFt/c2LoL0sq6L61uMH4qKKSsb2KOKgsjl/esqzx+P5sUc7pY5uNhu08xVNbVB/AKaBfKYh9QHdX+sJr60CedJpi6QPdy2WhvftRoTWc12gYokMabHvC2Ryu1Z+bViaJz8g5wDm2qvMlF4AtkuLCMN/A6+swi/3IRE53/UB8rNMx8G/YowW9SViaI+KVa8Ebl+gPgKloV3BF+/k2qTlOroL6OZpZV61jfOL/Ff+4JWTgkFqqMMIn5FMYJo6rFZbjnrtDQns+MNzG+nDt67r6CQ
-DKIM-Signature: a=rsa-sha256; bh=ZfczRfdwTGJBnR8XdbYH+Rj9skXg/3QL1AsVDaBHLrg=;
- c=relaxed/relaxed; d=peccini.fr; h=From; s=ovhmo227787-selector1;
- t=1784199206; v=1;
- b=LcvGWQqqPf7C+4XVl7gT7FpDFQHyzSQdo9Y/LJ5hac0UdQiuzgPTLBkyBiBQs1BS4Er5qJir
- xeOPFVioOKd+CxWRw8VE2dxSTNf/gxjpBfmo8u8A3HogCipaP+se1D9UJ8t1kqHEMhyZ3/DTQjM
- mnHhuAbxVZCNet2GzKjBI3HXON79jaNge0UNMBQKkMp4OWB/aI5Py1Ad/0kTynHkAydnx1j9Lt0
- AkjNX4i8RywpF50PSzepN1yhds8mZXlWO2vSl4B1EDepuiPUZzml1aaeNZIgK5+ETNKSsFr3Vk0
- cwaBFCkUub6nQG3SPhO7S9P0B6SF1bhMGpaRlQ59bEgeQ==
-X-MailFrom: stephan-pro@peccini.fr
+From: Adam Powell <apowell41@gmail.com>
+Date: Thu, 16 Jul 2026 18:20:00 -0400
+X-Gm-Features: AUfX_myrMTpS21UFO9935fDbjdTB0CR4AcY2aktuNgdX1KezHB76T9itKSztr_w
+Message-ID: 
+ <CAO7fKs0Siwg1EmWjCUvaDDsR1V6E=rhT5WiCSMf8q8r0B-LBAQ@mail.gmail.com>
+Subject: [PATCH] ALSA: hda/cs35l41: Support ASUS Zenbook 14 UM3405GA
+To: alsa-devel@alsa-project.org
+Cc: sbinding@opensource.cirrus.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: apowell41@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: EY5FOUFPNHII72KCFJRPRIZRS6Z4JQFN
-X-Message-ID-Hash: EY5FOUFPNHII72KCFJRPRIZRS6Z4JQFN
-X-Mailman-Approved-At: Sat, 18 Jul 2026 09:40:02 +0000
+Message-ID-Hash: DZHHSPXD5RU4Z4JR6P4YTOFTG57ZANA7
+X-Message-ID-Hash: DZHHSPXD5RU4Z4JR6P4YTOFTG57ZANA7
+X-Mailman-Approved-At: Sat, 18 Jul 2026 09:40:24 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EY5FOUFPNHII72KCFJRPRIZRS6Z4JQFN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DZHHSPXD5RU4Z4JR6P4YTOFTG57ZANA7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,319 +154,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+ALSA: hda/cs35l41: Support ASUS Zenbook 14 UM3405GA
 
-I'm reporting a microphone input issue with the Senarytech SN6186 codec 
-on a GMKtec EVO-X2 mini PC (AMD Ryzen AI Max+ 395, Strix Halo), running 
-Fedora 44 with kernel 7.x and PipeWire 1.6.8.
+Add SSID 104319F4 to the config table for the ASUS Zenbook 14
+UM3405GA (AMD Ryzen AI variant). This board uses two CS35L41
+amplifiers over I2C with external boost, matching the same
+reference design as the UM3402YA/UM3402YAR (10431E12/10431683).
 
-Subsystem Id: 0x2014801d
-Driver: snd_hda_codec_senarytech
-Board: GMKtec EVO-X2 (Sixunited AXB35-02)
+Verified: with this entry, both amplifiers bind correctly, read
+ACPI DSD properties, and respond over I2C (Revision: B2 on both).
+Model-specific DSP tuning/calibration firmware for this SSID is
+not yet available in linux-firmware; playback has not yet been
+verified end-to-end pending that firmware.
 
-SYMPTOM
+Signed-off-by: Adam Powell <apowell41@gmail.com>
+---
+ sound/hda/codecs/side-codecs/cs35l41_hda_property.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Microphone input via the front 3.5mm jack (pin 0x1a, Front Mic) is 
-barely audible — the signal is present but far too low for any practical 
-use (calls, recording, voice input). Headphone output works correctly.
-
-ROOT CAUSE
-
-Two issues found by inspecting the codec topology:
-
-1. The ADC node 0x14 amp-in at index 1 (connected to pin 0x1a) 
-initializes at value 0x3c instead of the offset value 0x4a. The amp-in 
-caps specify ofs=0x4a as the 0 dB reference, so 0x3c corresponds to -14 
-dB of attenuation on the capture path. This is the primary cause of the 
-low volume.
-
-2. The pin complex 0x1a has an input amplifier (Amp-In caps: 
-nsteps=0x07, stepsize=0x17 = 24 dB per step, 42 dB total range) but the 
-driver does not expose it as a Mic Boost mixer control. The only exposed 
-capture control is the ADC 0x14 amp, mapped as "Mic" with +16 dB max. 
-Users have no way to enable the hardware pre-amplifier.
-
-Additionally, PipeWire resets the ADC gain to 0x0 (mute/zero) when it 
-reopens the device, making any hda-verb workaround non-persistent.
-
-DIAGNOSTIC DATA
-
-dmesg at boot:
-snd_hda_codec_senarytech hdaudioC1D0: SN6186: BIOS auto-probing.
-snd_hda_codec_senarytech hdaudioC1D0: autoconfig for SN6186: line_outs=1 
-(0x1d) type:line
-snd_hda_codec_senarytech hdaudioC1D0: speaker_outs=1 (0x17)
-snd_hda_codec_senarytech hdaudioC1D0: hp_outs=1 (0x16)
-snd_hda_codec_senarytech hdaudioC1D0: inputs: Rear Mic=0x19, Front Mic=0x1a
-
-amixer -c scontents shows only one control:
-Simple mixer control 'Mic',0
-Capabilities: cvolume cvolume-joined cswitch cswitch-joined
-Capture channels: Mono
-Limits: Capture 0 - 3896
-Mono: Capture 3896 [100%] [16.00dB] [on]
-
-Codec pin 0x1a amp-in values: [0x00 0x00] (gain step 0 = 0 dB boost)
-ADC 0x14 amp-in values at index 1: [0x3c 0x3c] (= -14 dB vs 0 dB reference)
-ADC 0x14 AMP_IN_CAP: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
-Pin 0x1a AMP_IN_CAP: ofs=0x00, nsteps=0x07, stepsize=0x17, mute=1
-
-SUGGESTED FIX
-
-A fixup entry for subsystem 0x2014801d in patch_senarytech.c that:
-- Sets ADC 0x14 amp-in index 1 initial value to 0x4a (0 dB)
-- Exposes pin 0x1a amp-in as a "Mic Boost" mixer control (0-42 dB range)
-
-I can provide the full codec dump (cat /proc/asound/card1/codec#0) if 
-needed.
-
-cat /proc/asound/card1/codec#0
-Codec: Senarytech SN6186
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x1fa86186
-Subsystem Id: 0x2014801d
-Revision Id: 0x100100
-No Modem Function Group found
-Default PCM:
-     rates [0x0]:
-     bits [0x0]:
-     formats [0x0]:
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-   Power states:  D0 D1 D2 D3 D3cold S3D3cold CLKSTOP EPSS
-   Power: setting=D0, actual=D0
-GPIO: io=7, o=0, i=0, unsolicited=1, wake=1
-   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[5]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[6]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-   Control: name="Headphone Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Control: name="Headphone Playback Switch", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Amp-Out caps: ofs=0x50, nsteps=0x50, stepsize=0x03, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Converter: stream=0, channel=0
-   PCM:
-     rates [0x540]: 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x11 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-   Control: name="Line Out Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Control: name="Line Out Playback Switch", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Device: name="SN6186 Analog", type="Audio", device=0
-   Amp-Out caps: ofs=0x50, nsteps=0x50, stepsize=0x03, mute=1
-   Amp-Out vals:  [0x50 0x50]
-   Converter: stream=0, channel=0
-   PCM:
-     rates [0x540]: 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x12 [Beep Generator Widget] wcaps 0x700000: Mono
-Node 0x13 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-   Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
-   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x50 0x50] [0x80 0x80] [0x80 0x80]
-   Converter: stream=0, channel=0
-   SDI-Select: 0
-   PCM:
-     rates [0x540]: 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x18 0x24 0x19* 0x25 0x1f
-Node 0x14 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-   Control: name="Capture Volume", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=1, ofs=0
-   Control: name="Capture Switch", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=1, ofs=0
-   Device: name="SN6186 Analog", type="Audio", device=0
-   Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
-   Amp-In vals:  [0x80 0x80] [0x50 0x50] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-   Converter: stream=0, channel=0
-   SDI-Select: 0
-   PCM:
-     rates [0x540]: 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x18 0x1a* 0x24 0x25 0x1f
-Node 0x15 [Vendor Defined Widget] wcaps 0xf0050b: Stereo Amp-In
-   Amp-In caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
-   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80]
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 3
-      0x10* 0x11 0x23
-Node 0x16 [Pin Complex] wcaps 0x400581: Stereo
-   Pincap 0x0001001c: OUT HP EAPD Detect
-   EAPD 0x2: EAPD
-   Pin Default 0x01214030: [Jack] HP Out at Ext Rear
-     Conn = 1/8, Color = Green
-     DefAssociation = 0x3, Sequence = 0x0
-   Pin-ctls: 0xc0: OUT HP
-   Unsolicited: tag=01, enabled=1
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x10
-Node 0x17 [Pin Complex] wcaps 0x400500: Mono
-   Pincap 0x00010010: OUT EAPD
-   EAPD 0x2: EAPD
-   Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-     Conn = Analog, Color = Unknown
-     DefAssociation = 0x1, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x40: OUT
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x23
-Node 0x18 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x07, stepsize=0x17, mute=1
-   Amp-In vals:  [0x07 0x07]
-   Pincap 0x00003324: IN Detect
-     Vref caps: HIZ 50 80 100
-   Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-     Conn = Unknown, Color = Unknown
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x25: IN VREF_100
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x19 [Pin Complex] wcaps 0x40048b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x07, stepsize=0x17, mute=1
-   Amp-In vals:  [0x80 0x80]
-   Pincap 0x00003324: IN Detect
-     Vref caps: HIZ 50 80 100
-   Pin Default 0x01a11040: [Jack] Mic at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0x4, Sequence = 0x0
-   Pin-ctls: 0x25: IN VREF_100
-   Unsolicited: tag=04, enabled=1
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x1a [Pin Complex] wcaps 0x40058b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x07, stepsize=0x17, mute=1
-   Amp-In vals:  [0x00 0x00]
-   Pincap 0x00013334: IN OUT EAPD Detect
-     Vref caps: HIZ 50 80 100
-   EAPD 0x2: EAPD
-   Pin Default 0x02a13050: [Jack] Mic at Ext Front
-     Conn = 1/8, Color = Blue
-     DefAssociation = 0x5, Sequence = 0x0
-   Pin-ctls: 0x24: IN VREF_80
-   Unsolicited: tag=03, enabled=1
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 3
-      0x10* 0x11 0x23
-Node 0x1b [UNKNOWN Widget] wcaps 0x0: Mono
-Node 0x1c [UNKNOWN Widget] wcaps 0x0: Mono
-Node 0x1d [Pin Complex] wcaps 0x400581: Stereo
-   Pincap 0x0001001c: OUT HP EAPD Detect
-   EAPD 0x2: EAPD
-   Pin Default 0x02014020: [Jack] Line Out at Ext Front
-     Conn = 1/8, Color = Green
-     DefAssociation = 0x2, Sequence = 0x0
-   Pin-ctls: 0x40: OUT
-   Unsolicited: tag=02, enabled=1
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x11
-Node 0x1e [UNKNOWN Widget] wcaps 0x0: Mono
-Node 0x1f [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x07, stepsize=0x17, mute=0
-   Amp-In vals:  [0x07 0x07]
-   Pincap 0x00000020: IN
-   Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-     Conn = Unknown, Color = Unknown
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x20 [UNKNOWN Widget] wcaps 0x0: Mono
-Node 0x21 [UNKNOWN Widget] wcaps 0x0: Mono
-Node 0x22 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-   Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
-   Amp-In vals:  [0x4a 0x4a] [0x4a 0x4a] [0x4a 0x4a]
-   Converter: stream=0, channel=0
-   SDI-Select: 0
-   PCM:
-     rates [0x540]: 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 3
-      0x15* 0x25 0x1f
-Node 0x23 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-   Control: name="Speaker Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Control: name="Speaker Playback Switch", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Amp-Out caps: ofs=0x50, nsteps=0x50, stepsize=0x03, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Converter: stream=0, channel=0
-   PCM:
-     rates [0x540]: 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x24 [Pin Complex] wcaps 0x40058b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x07, stepsize=0x17, mute=1
-   Amp-In vals:  [0x07 0x07]
-   Pincap 0x00013334: IN OUT EAPD Detect
-     Vref caps: HIZ 50 80 100
-   EAPD 0x0:
-   Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-     Conn = Unknown, Color = Unknown
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x25: IN VREF_100
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 3
-      0x10* 0x11 0x23
-Node 0x25 [Pin Complex] wcaps 0x40040b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x07, stepsize=0x17, mute=0
-   Amp-In vals:  [0x07 0x07]
-   Pincap 0x00000020: IN
-   Pin Default 0x40f001f0: [N/A] Other at Ext N/A
-     Conn = Unknown, Color = Unknown
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-
-Best regards,
-
+diff --git a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
+b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
+index 416d7bf3e..ec288c4eb 100644
+--- a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
++++ b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
+@@ -98,6 +98,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+  { "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1,
+2, 0, 1000, 4500, 24 },
+  { "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1,
+-1, 0, 1000, 4500, 24 },
+  { "10431683", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0,
+1, -1, 0, 0, 0 },
++ { "104319F4", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0,
+1, -1, 0, 0, 0 },
+  { "104316A3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1,
+2, 0, 0, 0, 0 },
+  { "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1,
+2, 0, 0, 0, 0 },
+  { "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1,
+2, 0, 0, 0, 0 },
+@@ -530,6 +531,7 @@ static const struct cs35l41_prop_model
+cs35l41_prop_model_table[] = {
+  { "CSC3551", "104317F3", generic_dsd_config },
+  { "CSC3551", "10431863", generic_dsd_config },
+  { "CSC3551", "104318D3", generic_dsd_config },
++ { "CSC3551", "104319F4", generic_dsd_config },
+  { "CSC3551", "10431A63", missing_speaker_id_gpio2 },
+  { "CSC3551", "10431A83", generic_dsd_config },
+  { "CSC3551", "10431B93", generic_dsd_config },
 -- 
-Stéphan Peccini - (+33) (0)6 70 06 93 98
-Site : https://conseil.peccini.fr
-Profil : https://www.linkedin.com/in/stéphan-peccini/
-Consultant Numérique Responsable
-Expert Stratégie Conception Responsable
-Prendre rendez-vous : https://cal.com/stephanpeccini
-
+2.55.0
