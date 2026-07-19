@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D18F3C44521
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2026 12:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2EA5C44512
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2026 12:22:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F11D1601A6;
-	Sun, 19 Jul 2026 14:15:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F11D1601A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11F55601FC;
+	Sun, 19 Jul 2026 14:21:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11F55601FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784463365;
-	bh=/XfCiobGO+UGk8frW4DGFMlLx7R8wSmuWMR0UJCR9Ec=;
+	s=default; t=1784463725;
+	bh=7xt5uqDwv1Qs2T+SsF6eEtAl14KQDvj00oh0x9SIS8I=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=hhhyK+1DIdGj7urb0VZc6L4fcIZxwEWTmB/vMlUkADt7suBFjbZdT6ctAI4zjxGY2
-	 2XDdFD2NVTMd5sflKIN1+ztV6igYQc81ssrlcUKqABDnTvuQidbJwuzX3le7mmbOds
-	 gmwzHV6LIKgkoxUJIUKWl2EQ6mh7ZMNKWcryqWCo=
+	b=PrF6ZRrYZFoz9PIcU4Fc9MjkSx1WE8OzzCZdEohG9fG6RdqdM3ZV/E129eRT35pZG
+	 J76caIFbmkulbt96kkcyz6KyLsjmeyHVUEqlRmwO0/qj+fuJa6pVbZni+zKfoFwZ6K
+	 DgECIetzQ5sguG31tSjCOD/PbpF2kWnqtdW0+hAU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 994B6F805FA; Sun, 19 Jul 2026 14:15:28 +0200 (CEST)
+	id D4AA9F80601; Sun, 19 Jul 2026 14:21:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37C13F805F8;
-	Sun, 19 Jul 2026 14:15:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92A02F8010B;
+	Sun, 19 Jul 2026 14:21:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3647EF80551; Sun, 19 Jul 2026 14:15:23 +0200 (CEST)
+	id A7150F80551; Sun, 19 Jul 2026 14:21:24 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784463322;
-	b=RhpiDTynHceBzcOxYlabNhlXgqbsdJiSQHSL7nX7y+SoZskz19XwEqSimGEfuX81rXIX
-	 plQJi9z5JaUBU3JbwICxDtYzuGLKAanHdOwtwjY8m8ji+5G5gMxSVGPkCaI02mVXSFYbz
-	 Ng1+ZdKbGJ6RqIJzvj3UQ1iSOovn7AH+og4faGUNdpCaNuCQYjd6wsK5qaayTXUJkZ7WW
-	 LHgi24yoELkKkWamcX2iyKxUf6fTp07wSvDC8hGXdyJuWT5SIh1LUGqM/+2zBIegesSp3
-	 2K4rWKS6oCf3nUBtBf7cMoONaib5QKN3KhG4Uoo9cMt7gSuOTcXtoqQBP37z91pDccg==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784463683;
+	b=h2FO714zETjadTX8tDtfSCLm4CB9pbgjI64aB+Vvdt8hgZmd8OsIX0wRftwd4b4EjvY1
+	 NLy16ARvCv/kwu+MEz9bLjKYm7+fqGAjYC5nGtezJTRWHFwRRVVy6A1TLu29LQ18EW+tc
+	 vdlMzWxjWQw0+lSJVYLTqcNUQw/VmvH6Gfb+s/Nsc75t3FpTunf8f2iV1YeJ8tgXDZKZs
+	 MLmnBMbTQHQEICEx8njPmrPiPJUBmoZ3M84OrfFqjSYCMQtqCnaDmzPMi3GX7Rr3kQVmr
+	 Ndj8SSS+1Bl9CZtg1Srg8zwE9vx2qH7DW2aIYfGagUc3B0s1JfO8ilzMjGDqQE35zIw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1784463322;
+	c=relaxed/simple; t=1784463683;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=/XfCiobGO+UGk8frW4DGFMlLx7R8wSmuWMR0UJCR9Ec=;
-	b=BPRo6Hr8X3maBASjiEZoOS4LndshP6wI1xNGDKV2ZLOTxBP065IY4FrYqMqsSxKRpOeI
-	 e/mORZyzzoOzXNkpNl0+YdWDLIKSLxI2z/rIg2GpLCUydncH5ezj4q3QlPg83gWiC95Lw
-	 9YaEDsSB0EcWA1MdANKM/ZFotVdndvI1AC9s5eOaB/m/Ut0zb7WJNd8wniqWnjYBqSveN
-	 Ps+kPRkNbY/4HQtF/6MgpV0/C8/uhd7x+HTKSt7Rm/iia1MWMA38QUHsfkoA7hBJz+x4h
-	 AhlK9tat362HdyZPQyCfybs9458UtOsUo2QYvGxnnLvTKqZNx91Dxga2XqGWmU+9jLQ==
+	bh=7xt5uqDwv1Qs2T+SsF6eEtAl14KQDvj00oh0x9SIS8I=;
+	b=YMC0+bvAWCwV02krykzCltX3faf5L0QGgZBH8H/Twi90ZG7ECLrGibwbCRzvkhQwSFTG
+	 ijYyYavJC8pDin8+Usvh8aidqmY2G7gNbhMaxANrHiXmsqYd8T3W1FqhhrzXrP0La4Sta
+	 CaZnlhQYs1LvK15oJPCTQ76PHjqLBzgrvdWyldBt8pWYcA9zBioLrCORe9rwjxw1ilFIB
+	 yZ16J1piVMpO2k5ddGsjV90r/S52ems0FTsv38SnNw7MuDrosyCDIXZfdPNrw95ywyZq/
+	 MI+VJcl6r2/zmiWitkRaV4DztpDeL1CR/imq2qyScV+vhWK4VY4OZYOpG6NAiM+qhtg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CE12F8010B
-	for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2026 14:15:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CE12F8010B
+	by alsa1.perex.cz (Postfix) with ESMTP id B6056F8010B
+	for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2026 14:21:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6056F8010B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18c3afef96bded00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18c3afef96965400-webhooks-bot@alsa-project.org>
-References: <18c3afef96965400-webhooks-bot@alsa-project.org>
+Message-Id: <18c3b043b1fd3100-webhooks-bot@alsa-project.org>
+In-Reply-To: <18c3b043b1f4cb00-webhooks-bot@alsa-project.org>
+References: <18c3b043b1f4cb00-webhooks-bot@alsa-project.org>
 Subject: Surround Use Cases for Esi GIGAPORT eX
-Date: Sun, 19 Jul 2026 14:15:23 +0200 (CEST)
-Message-ID-Hash: 2OJYGOZS3KR3WQRB2LQCBZ6R65N2VQD6
-X-Message-ID-Hash: 2OJYGOZS3KR3WQRB2LQCBZ6R65N2VQD6
+Date: Sun, 19 Jul 2026 14:21:24 +0200 (CEST)
+Message-ID-Hash: ZZRH5CBVO5UFCVBFX5JVMTQSQ6L4UDOH
+X-Message-ID-Hash: ZZRH5CBVO5UFCVBFX5JVMTQSQ6L4UDOH
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2OJYGOZS3KR3WQRB2LQCBZ6R65N2VQD6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZZRH5CBVO5UFCVBFX5JVMTQSQ6L4UDOH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,7 +84,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #815 was opened from EngineOfDarkness:
+alsa-project/alsa-ucm-conf issue #815 was edited from EngineOfDarkness:
 
 Currently, it seems some default Configurations are generated by ACP. Since I don't know where the correct place for this is, I made a Ticket in the pipewire bugtracker some time ago https://gitlab.freedesktop.org/pipewire/pipewire/-/work_items/5364 (contains some more logs like spa-acp-tool, pw-dump and aplay logs if useful)
 
@@ -95,7 +95,7 @@ with any channel count up to 8 channels` in the Readme).
 
 I tried setting up UCM (for more than 16 hours, the readme and other use cases weren't too helpful for me) but I didn't really get anything working, maybe partially especially because I am "stuck" on `alsaucm: version 1.2.8` for the time being.
 
-The "easy" version with Variants did not work because (at least I didn't get it to work) - it always complained about not being able to set the desired Playback Channels. Working with the SplitPCM Macros didn't work at all, but from the Commit Changelog it seems this was slightly buggy for Surround anyways in my version.
+The "easy" version with Variants did not work because (at least I didn't get it to work) - it always complained about not being able to set the desired Playback Channels. Working with the SplitPCM Macros didn't work at all, but from the Commit Changelog it seems this was slightly buggy for Surround anyways in my version of alsaucm.
 
 So I assume this is because the Card only explicitly supports either 2 or 8 Channels in Hardware? Not sure if this is "normal" for Surround USB Soundcards or if they should announce all supported configurations.
 
