@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2EA5C44512
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2026 12:22:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33811C44512
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jul 2026 12:22:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11F55601FC;
-	Sun, 19 Jul 2026 14:21:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11F55601FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1690260200;
+	Sun, 19 Jul 2026 14:22:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1690260200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784463725;
-	bh=7xt5uqDwv1Qs2T+SsF6eEtAl14KQDvj00oh0x9SIS8I=;
+	s=default; t=1784463777;
+	bh=gmhSMQjhLBmvHru/3NrTNctwS1uTfFyQ1Zf9DTPZvlE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=PrF6ZRrYZFoz9PIcU4Fc9MjkSx1WE8OzzCZdEohG9fG6RdqdM3ZV/E129eRT35pZG
-	 J76caIFbmkulbt96kkcyz6KyLsjmeyHVUEqlRmwO0/qj+fuJa6pVbZni+zKfoFwZ6K
-	 DgECIetzQ5sguG31tSjCOD/PbpF2kWnqtdW0+hAU=
+	b=kxYWWRSDaWFT/h2JkJCaxZuSXdrmUTy0qqv+qbAFzCzG7v2MtJMfKpmzi4N9RwGpp
+	 a6Unp5GHlt6Nhq90DHSEOXxdYOdTFozyQVrDvhZ/K3HKuC+rzXDprVEwMz6J1e4cN9
+	 +RkpJg3jYf7qAno0T7TTVNhNaKCImsHKiHmbUVS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4AA9F80601; Sun, 19 Jul 2026 14:21:29 +0200 (CEST)
+	id 545EBF805F6; Sun, 19 Jul 2026 14:22:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92A02F8010B;
-	Sun, 19 Jul 2026 14:21:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81F4BF805FC;
+	Sun, 19 Jul 2026 14:22:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7150F80551; Sun, 19 Jul 2026 14:21:24 +0200 (CEST)
+	id DA38AF80551; Sun, 19 Jul 2026 14:22:15 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784463683;
-	b=h2FO714zETjadTX8tDtfSCLm4CB9pbgjI64aB+Vvdt8hgZmd8OsIX0wRftwd4b4EjvY1
-	 NLy16ARvCv/kwu+MEz9bLjKYm7+fqGAjYC5nGtezJTRWHFwRRVVy6A1TLu29LQ18EW+tc
-	 vdlMzWxjWQw0+lSJVYLTqcNUQw/VmvH6Gfb+s/Nsc75t3FpTunf8f2iV1YeJ8tgXDZKZs
-	 MLmnBMbTQHQEICEx8njPmrPiPJUBmoZ3M84OrfFqjSYCMQtqCnaDmzPMi3GX7Rr3kQVmr
-	 Ndj8SSS+1Bl9CZtg1Srg8zwE9vx2qH7DW2aIYfGagUc3B0s1JfO8ilzMjGDqQE35zIw==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784463734;
+	b=oT8QvQRO+rEMSlFdYC/vlgEjR/1TRlaYbqt23bp/j/RIdC8gFdLtPuXSTeeWOhyPe2da
+	 7RLUotd6TtETQbY5rNjhGuvdMshFJeFAPkQbbe00Tbk5c9E1uzISnc686mXVoaYxs5Rbw
+	 zXTiptQ13LCSvIUo94W+ocTKV0rs+IrlFPnXEcDjhc0HJw7AOyvC+JwPJIuyfsk3WV1Xn
+	 bPjfgI7W415BYI92yKnJP+7IFLJKI2Gp0JUGXD/86Mm2MbjeTXVnLXdjw6PM1LeK1j7Cg
+	 J2xdcUjAjFgxHMcLXlQNWkMDUJcJnyVwQ6JLrgjQDF/BtKcChb0Fn9HoiqLLHu0txMQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1784463683;
+	c=relaxed/simple; t=1784463734;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=7xt5uqDwv1Qs2T+SsF6eEtAl14KQDvj00oh0x9SIS8I=;
-	b=YMC0+bvAWCwV02krykzCltX3faf5L0QGgZBH8H/Twi90ZG7ECLrGibwbCRzvkhQwSFTG
-	 ijYyYavJC8pDin8+Usvh8aidqmY2G7gNbhMaxANrHiXmsqYd8T3W1FqhhrzXrP0La4Sta
-	 CaZnlhQYs1LvK15oJPCTQ76PHjqLBzgrvdWyldBt8pWYcA9zBioLrCORe9rwjxw1ilFIB
-	 yZ16J1piVMpO2k5ddGsjV90r/S52ems0FTsv38SnNw7MuDrosyCDIXZfdPNrw95ywyZq/
-	 MI+VJcl6r2/zmiWitkRaV4DztpDeL1CR/imq2qyScV+vhWK4VY4OZYOpG6NAiM+qhtg==
+	bh=gmhSMQjhLBmvHru/3NrTNctwS1uTfFyQ1Zf9DTPZvlE=;
+	b=iuHpQMHphvBoCb0EV/dPFnwPW5T54SpISE4llF9BopCcw9oji8z5xVQ8tL+Vc2+ENZ7a
+	 9ajWDA3pxiA54/oG9D500wsb59iKj3SByyUP9aXkFtK5V7WtsPN0IKsNm+cuuDu/a8W81
+	 nuxZsHMJYhDitXuZa5RA2fKM2LDdAX0yJsEkahCxhVDNmp9pAbQ1+QztuJrAXsH3CbfVl
+	 XX5SEcncX9vXbVkM4ydCT8QccWS34qMS6BfGeAfsENWuq97wNyR/mCyH9sCaDZkRYM5BM
+	 SPLpa1LdUY96dfL/rYfeTM5iUXt/RwfayUKSedPDrY7WAlKNQ1muW5RrhfIHTR0WxcA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6056F8010B
-	for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2026 14:21:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6056F8010B
+	by alsa1.perex.cz (Postfix) with ESMTP id B2B35F800F3
+	for <alsa-devel@alsa-project.org>; Sun, 19 Jul 2026 14:22:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2B35F800F3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18c3b043b1fd3100-webhooks-bot@alsa-project.org>
-In-Reply-To: <18c3b043b1f4cb00-webhooks-bot@alsa-project.org>
-References: <18c3b043b1f4cb00-webhooks-bot@alsa-project.org>
+Message-Id: <18c3b04fadc82300-webhooks-bot@alsa-project.org>
+In-Reply-To: <18c3b04fadbf5000-webhooks-bot@alsa-project.org>
+References: <18c3b04fadbf5000-webhooks-bot@alsa-project.org>
 Subject: Surround Use Cases for Esi GIGAPORT eX
-Date: Sun, 19 Jul 2026 14:21:24 +0200 (CEST)
-Message-ID-Hash: ZZRH5CBVO5UFCVBFX5JVMTQSQ6L4UDOH
-X-Message-ID-Hash: ZZRH5CBVO5UFCVBFX5JVMTQSQ6L4UDOH
+Date: Sun, 19 Jul 2026 14:22:15 +0200 (CEST)
+Message-ID-Hash: BSIOONRMKJQRKCG357SVZLNNS3RHJK3Z
+X-Message-ID-Hash: BSIOONRMKJQRKCG357SVZLNNS3RHJK3Z
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZZRH5CBVO5UFCVBFX5JVMTQSQ6L4UDOH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BSIOONRMKJQRKCG357SVZLNNS3RHJK3Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,7 +93,7 @@ with any channel count up to 8 channels` in the Readme).
 
 **I can appreciate time is sparse, but even a quick _"won't work, needs Manufacturer or USB Driver changes"_ would suffice if this can be gleaned from the logs (I can still send the card back and get my money returned (probably))**
 
-I tried setting up UCM (for more than 16 hours, the readme and other use cases weren't too helpful for me) but I didn't really get anything working, maybe partially especially because I am "stuck" on `alsaucm: version 1.2.8` for the time being.
+I tried setting up UCM (for more than 16 hours, the readme and other use cases weren't too helpful for me) but I didn't really get anything working, maybe because I am "stuck" on `alsaucm: version 1.2.8` for the time being.
 
 The "easy" version with Variants did not work because (at least I didn't get it to work) - it always complained about not being able to set the desired Playback Channels. Working with the SplitPCM Macros didn't work at all, but from the Commit Changelog it seems this was slightly buggy for Surround anyways in my version of alsaucm.
 
