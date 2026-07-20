@@ -4,118 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B564C44520
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2026 11:26:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5726C44515
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jul 2026 15:22:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 234CB601FD;
-	Mon, 20 Jul 2026 13:25:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 234CB601FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F1D3601FA;
+	Mon, 20 Jul 2026 17:21:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F1D3601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784546763;
-	bh=CJX8fznzPc9Nj5imz58fb6QIOpYCrCWvGYvGxBv5MH0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=RP1ozeLbXGE8DFrZ+hLm1hr+9/SiNMzgBYK3yYLgeuVviOy6/eghYsaSqgE/gCcNS
-	 kjPJ87lQefI4CvuaPheiOak3Mvf6akzC0qjhbW9ZL69Ahgc8zLlRquavPaCJ+InLJu
-	 j8jrxBsHxVVXZH/AE7mf00hFihtqjLjfQegFOFuE=
+	s=default; t=1784560927;
+	bh=75GHVG19DKwh6og1+EDC3NkbTNE35dA8ivt3u8l8Oy8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=BF8gsRZ9ANhPHP+TXXILp2/tMVc3KBiO5Utqjn/lMnHOH7v7aMhZjiW5sY+Pk96D+
+	 HvXOgAwom4dkfJfr6Cjww7QI079SfZDg2951VRAKSDZS+Mlbi5JZp9pD6IlJltSz6E
+	 e4DW1Nrdn5dm/TOjl7Ed0nwewV6QyaqRmF44fT2o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92465F805F9; Mon, 20 Jul 2026 13:25:28 +0200 (CEST)
+	id BD89BF8010B; Mon, 20 Jul 2026 17:21:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA236F80600;
-	Mon, 20 Jul 2026 13:25:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50287F80600;
+	Mon, 20 Jul 2026 17:21:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A6ECF80496; Mon, 20 Jul 2026 13:25:23 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=192.198.163.12
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784546721;
-	b=iecLB3Uc9McWd0BNizCDd2iOF0+3WOfDSHRkrqugUNl5OhSUTrwQodF9t61VU5leVqY9
-	 AoDUPiAsm4UFIgifjyvkok0gwxr/vSKPKgDbYf/yZWxlTPINUICp0Qx7loF8dRjsCAjek
-	 zWV/f85FXcFV9bRiiul5v1nl7zaFEznO9zi2RbGdmg7TC1RohnJ+ccOsb1CVhW/vs75b0
-	 NYhe28lOXNOpq75mk1wmvbGMNtHBQCPYUmT18IlMMz5gJ0ABB38BL/R9H8nrekf33kEci
-	 NpIIzFHDnGSvSDEWELfF/X7LLUFRUYJwmYWE5x5FYGDG4bF/7uaKrTp1qehEXtg64Qg==
+	id 69122F80496; Mon, 20 Jul 2026 17:21:29 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784560888;
+	b=eaO22hYhpD3gUBEEUKpHil0tjzQJ9Ny+WpOLO2l2rLxHPy+bAFnpadpEC/39o70aENwc
+	 9tKKlLyMWpb16xpUhTRJRlzeoclIjjvBivPa6IuxWFdd+DVsQXFzd2+aghi6ky+wzxMlp
+	 cOK1A1tttNlOeZCw29aV8OBQFhd799VNCAdgCPiahIIAqErmilywNHSh0Qb371NsbgvlZ
+	 J+OemNpz6IgqwIpqY1qMNHEx9GNx1c3EtPrkN02VpUyAbi3Zmp4YarxW/2mDiUjNn/Jye
+	 sHhMgyp2qkvtaXo/X03ILxBOgA0wVq/x2j83YcFVIPosoFWJjitRLqJtpBHRMFWG8Pw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1784546721;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=CJX8fznzPc9Nj5imz58fb6QIOpYCrCWvGYvGxBv5MH0=;
-	b=UNV6WtFZ+tVigjZ5hgEb6Mep4J+KhMqy5/qYXb3ySNES9D2yofXT+7eys2lSIG9oDOBL
-	 a7Y/3QrvWHvLWvYE5bwygp8kNP9LjzD4rDgdfDFTEzje3qACebSoIAgu8o1VDuuYFBkcy
-	 awVPwDY9VVfFexKWWgw+42fwwCFJXTfQVbi9CIqerXV/ASIFN/HTmdxzxgWC0sOcudaGD
-	 oNXc69C9PDxRosXcu9if9tnry7USNoNmeYeOxrZ1FUtnqKvUtMD8Mw/Iinm8Z921pdmq1
-	 YYRZgl5OYgDuKgBDCvTCpFC6oevkOrFMx5oUWMAv/h/oo+qI0RogW/kzMzncnrd6KSg==
+	c=relaxed/simple; t=1784560888;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=75GHVG19DKwh6og1+EDC3NkbTNE35dA8ivt3u8l8Oy8=;
+	b=DK0kqyACaos+yy6OFa8E4h9HUERtJ2fA7omIAo+1+A/uQ+FJJ22Ll+dQXLm1WDxVaU3M
+	 CR82iPuSbScdKrJTAkjZcEpnwkGBM77mUwoU6UfE/awGEaAVtFwgVcaf9k9TzJbgg7WU4
+	 b/zAZnfvS758QtddyChxVFfvAew8ATkDXgB4HerNxqnph8e9xyQPqKsJms3KBO6I663v6
+	 7vqFLRbCy8254RRF6JQPwqkvUw9X4/zAvDnAs9aUNyt+tNpwoiXIpHaag9PQqrzswNtSp
+	 ykIeCgQwCt+0anl58wh5uBpiyyn463+YjPHY/yYS+KmqHX+MPZiemDlqFJ6HqHMD4oA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bFmx7EUL;
-	arc=none smtp.remote-ip=192.198.163.12
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1A1FEF8010B
-	for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2026 13:25:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A1FEF8010B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bFmx7EUL
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1784546721; x=1816082721;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CJX8fznzPc9Nj5imz58fb6QIOpYCrCWvGYvGxBv5MH0=;
-  b=bFmx7EULaL8aXwmqlljY4shpibQ+Ctj0mpfJk5oS/lbB2WjumqXP4155
-   VhqE/vbohqSD+g39nllAtO/2XAnbJ3m6KVvsL+/gMe4kybpq7Xb1HNue/
-   xZGfB+ZKIR35radJZs4ig3e/esy6bsFC7QrbPtpjnnwDsxb61WdbSQ83h
-   sqtj5stdmw4jXjWgqnmngRTjMYo6tRM22nTev3vSZmGVrM/kNt74DDfNn
-   JIIyWeQWLD2Elxw/vluOkxpQmcD4xJqF6EkWprt5bBRuKDCr9CmM2hdPh
-   9Zo9iAZ+D39twNtbi+P4pTVFTV1foDvATnyONo66jmEb7sKT/uiWPQYm4
-   g==;
-X-CSE-ConnectionGUID: 4JEkAOlKTACWkzH6ivMuag==
-X-CSE-MsgGUID: hPJ5nWeXRVGX4bthJGB6Pw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11851"; a="88947213"
-X-IronPort-AV: E=Sophos;i="6.25,174,1779174000";
-   d="scan'208";a="88947213"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jul 2026 04:25:16 -0700
-X-CSE-ConnectionGUID: p4Al4b5hTry/r7sRPCQT6Q==
-X-CSE-MsgGUID: 2taNrxjPQwWJ2eB9d9FEtw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,174,1779174000";
-   d="scan'208";a="256256367"
-Received: from conormcd-mobl2.ger.corp.intel.com (HELO localhost)
- ([10.245.244.175])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jul 2026 04:25:13 -0700
-Date: Mon, 20 Jul 2026 14:25:10 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Ajay Kumar Nandam <ajay.nandam@oss.qualcomm.com>
-Cc: linux-kernel@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, spatakok@qti.qualcomm.com,
-	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-	ravi.hothi@oss.qualcomm.com, dakr@kernel.org
-Subject: Re: [DISCUSSION] fw_devlink: incorrect ancestor fallback for
- intermediate bus topologies breaks audio dependency resolution
-Message-ID: <al4Flj5ntmqCKbH4@ashevche-desk.local>
-References: <20260701131733.870079-1-ajay.nandam@oss.qualcomm.com>
- <d224b1e5-99a0-4794-b043-d6335f98753c@oss.qualcomm.com>
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 57386F8010B
+	for <alsa-devel@alsa-project.org>; Mon, 20 Jul 2026 17:21:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57386F8010B
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d224b1e5-99a0-4794-b043-d6335f98753c@oss.qualcomm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
-Message-ID-Hash: HZAPIVUPE3UFGLHLWEKFWRA4VKLZR5QC
-X-Message-ID-Hash: HZAPIVUPE3UFGLHLWEKFWRA4VKLZR5QC
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18c408abe413fc00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18c408abe3e97100-webhooks-bot@alsa-project.org>
+References: <18c408abe3e97100-webhooks-bot@alsa-project.org>
+Subject: Audient Evo8 split into mono inputs and stereo outputs
+Date: Mon, 20 Jul 2026 17:21:29 +0200 (CEST)
+Message-ID-Hash: 4NXDRLJUWCV77ZML7RZPIWYKHDLCFAM2
+X-Message-ID-Hash: 4NXDRLJUWCV77ZML7RZPIWYKHDLCFAM2
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -126,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HZAPIVUPE3UFGLHLWEKFWRA4VKLZR5QC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4NXDRLJUWCV77ZML7RZPIWYKHDLCFAM2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,24 +84,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 20, 2026 at 04:42:21PM +0530, Ajay Kumar Nandam wrote:
-> Hi All,
-> 
-> Gentle Ping on this discussion.
+alsa-project/alsa-ucm-conf issue #816 was opened from JMWalkman:
 
-> CC'ing Danilo Krummrich and Andy Shevchenko
+Hi!
 
-I'm not sure how I can be helpful here, but it would be nice to see a small
-summary (a few sentences) to understand what this is all about.
+So based on the work that @motolav and @perexg did on the evo 4, I managed to create a similar config file for the audient evo8 to expose separate mono inputs and stereo output pairs
 
+It's just that I'm not sure how to submit it to this repo, but i'd like this to be a part of the default experience for more people who have the interface like me. I've been using it for a couple of weeks and it's been awesome, so here's the contents of the file
 
-> On 7/1/2026 6:47 PM, Ajay Kumar Nandam wrote:
-> > Hi Saravana Kannan,
+```
+context.modules = [
+    # ------------------ INPUTS (Mics 1-4 + Loopback) ------------------
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Mic_1"
+        node.description = "EVO 8 Mic/Inst 1"
+        capture.props = { target.object = "alsa_input.usb-Audient_EVO8-00.pro-input-0" audio.position = [ AUX0 ] stream.dont-remix = true node.passive = true }
+        playback.props = { media.class = "Audio/Source" audio.position = [ MONO ] }
+      }
+    }
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Mic_2"
+        node.description = "EVO 8 Mic 2"
+        capture.props = { target.object = "alsa_input.usb-Audient_EVO8-00.pro-input-0" audio.position = [ AUX1 ] stream.dont-remix = true node.passive = true }
+        playback.props = { media.class = "Audio/Source" audio.position = [ MONO ] }
+      }
+    }
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Mic_3"
+        node.description = "EVO 8 Mic 3"
+        capture.props = { target.object = "alsa_input.usb-Audient_EVO8-00.pro-input-0" audio.position = [ AUX2 ] stream.dont-remix = true node.passive = true }
+        playback.props = { media.class = "Audio/Source" audio.position = [ MONO ] }
+      }
+    }
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Mic_4"
+        node.description = "EVO 8 Mic 4"
+        capture.props = { target.object = "alsa_input.usb-Audient_EVO8-00.pro-input-0" audio.position = [ AUX3 ] stream.dont-remix = true node.passive = true }
+        playback.props = { media.class = "Audio/Source" audio.position = [ MONO ] }
+      }
+    }
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Loopback_In"
+        node.description = "EVO 8 Loopback Input"
+        capture.props = { target.object = "alsa_input.usb-Audient_EVO8-00.pro-input-0" audio.position = [ AUX4 AUX5 ] stream.dont-remix = true node.passive = true }
+        playback.props = { media.class = "Audio/Source" audio.position = [ FL FR ] }
+      }
+    }
 
-And yes, Saravana, is the main expert in FW devlinks AFAIK.
+    # ------------------ OUTPUTS (Outputs 1-4 + Loopback) ------------------
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Out_1-2"
+        node.description = "EVO 8 Output 1-2"
+        capture.props = { media.class = "Audio/Sink" audio.position = [ FL FR ] }
+        playback.props = { target.object = "alsa_output.usb-Audient_EVO8-00.pro-output-0" audio.position = [ AUX0 AUX1 ] stream.dont-remix = true node.passive = true }
+      }
+    }
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Out_3-4"
+        node.description = "EVO 8 Output 3-4"
+        capture.props = { media.class = "Audio/Sink" audio.position = [ FL FR ] }
+        playback.props = { target.object = "alsa_output.usb-Audient_EVO8-00.pro-output-0" audio.position = [ AUX2 AUX3 ] stream.dont-remix = true node.passive = true }
+      }
+    }
+    { name = libpipewire-module-loopback
+      args = {
+        node.name = "EVO8_Loopback_Out"
+        node.description = "EVO 8 Stereo Loopback Output"
+        capture.props = { media.class = "Audio/Sink" audio.position = [ FL FR ] }
+        playback.props = { target.object = "alsa_output.usb-Audient_EVO8-00.pro-output-0" audio.position = [ AUX4 AUX5 ] stream.dont-remix = true node.passive = true }
+      }
+    }
+]
+```
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/816
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
