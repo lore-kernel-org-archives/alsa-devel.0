@@ -4,188 +4,186 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E2AFC531C7
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2026 10:38:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B218DC531CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jul 2026 17:37:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F0B8601F8;
-	Thu, 23 Jul 2026 12:38:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F0B8601F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5433E601FD;
+	Thu, 23 Jul 2026 19:37:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5433E601FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1784803130;
-	bh=zOctzmxC590ZWmAN/zDSmglDSYRgcegcBfHjAsjnokA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qIq9LYwzPZB7AIdlaBtVcUyzghHg3NLyUuBj4PgWlNqOtsPDwX30klcbea3UNExQO
-	 qG0DH8Q6rwAkcxWRev9M+J5sgasgaH/nqKHxaTSKo1HwOi0RX0qFFgG9BtPhXBAgCL
-	 GjSCSw241jQ2eP2Z/D70oaGYu4Zyx9C8I/42/9/s=
+	s=default; t=1784828259;
+	bh=2bMFY1R+ucLsyVC1aUSh1vKHrt7iul4EFaoVgPfDhMc=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=mWy0rmGhDcNw7GBCEZNgrr7X59CEuaUfYGbN+5yatY07rTeOka2T4vwqD3Wo96l8e
+	 jVx9EXc4V5VAhdK4Wb+K0IgWpB+p8/UZPIiLNegfQdCu//U9cEAlidKIoGTrfcKstz
+	 oVhgtw8QzBE4C5VrQlIGmhZ6tQgw0L5rhswEo5o8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A28CF8056F; Thu, 23 Jul 2026 12:38:18 +0200 (CEST)
+	id 27629F805FC; Thu, 23 Jul 2026 19:37:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DC27F805FF;
-	Thu, 23 Jul 2026 12:38:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C36AF805BA;
+	Thu, 23 Jul 2026 19:37:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 134E6F8056F; Thu, 23 Jul 2026 12:38:09 +0200 (CEST)
+	id B07F1F804B2; Wed, 22 Jul 2026 03:09:27 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.130
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1784803084;
-	b=kvrkT6r1lp57UyM9dRxhGbqyMPkv0PJGWsnnNyIuH98urSdswyCe2k6jRM+OyGDG/V8u
-	 in2+2iibizFq6YC7E51DADHq05G2jK1e84lr54MZulE+mde+YkRl15gqmh/T3reh3UO2O
-	 Kail45jd1HQS503xeiQr81VXR/x+Qg2culahortitgvz3t28AiGEMFUIhhCtYGN7FxxnI
-	 QP9mv8QF38kdUGQyZFECFr4T1iiQpioPFsNSJi351WKUJ7oraaYBtBBPosPU1negDp+Kr
-	 /91dQfnndWZ8n0JMGMMa2Vfn1BcQm7Z7VjMmIWivhmHlQBhiD/6jXCFrheTmoTldv1g==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1784803084;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=zOctzmxC590ZWmAN/zDSmglDSYRgcegcBfHjAsjnokA=;
-	b=a/kDjmivpfm4vajNRKmgAFenZO5HVnJDpjLhwWI9Z0jvxx1Uq2hXlBPCe7Q2oSPlVnAe
-	 euDdk9aWwvcgmFz0hp4XDDW/FtxAlb+JMhU1PFn4SoFgvc4FRYXKRpgoUlm1Nb59yx2dR
-	 d4eJe9stvdUiYWP3OaYWZezVX3I8VjObSlfrIOYK4imF9XI1BPY6G8m9E2qAClhrjtzJe
-	 f0UguFOn0SPdl9uiAkFOKDV8Su+/godcTU6GBPWa33fYVM3QrkQ1uuWgQV25LJOzzBKDF
-	 sRjpNetEFfo5s4EmMwibz9d0f6YufrBY7Gt5X+ntwFBblgyxP9F+8n35dhgOWpdKedQ==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xvvUXchN;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=YUE6S55c;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xvvUXchN;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=YUE6S55c;
-	arc=none smtp.remote-ip=195.135.223.130
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ arc=pass header.oldest-pass=0 smtp.remote-ip=52.103.32.21
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1784682566;
+	b=kFwo22YQfaW+x5d+94UxWeRUVomK6FYT11JJwZd5+71MeImPDYI7kzsZI2yfJxXIydAA
+	 pNaPCVF5SFVK5HEsOd6Vp8SnzWjD9oUgaBRxlztMnPUOVEPf7h66wZ/fYqAaaxSnRKhVr
+	 5rCskBCZDfMnQlomQcV1vlaqM4dk2u7a5xyFcoyabcBLCDzCt94RU/9n5GKwvwFOm6Gzt
+	 0IlSv/WpG3T2MMaSfqxvhQALaEIbhSRBCoSCRRcg9EcLsyB9tXdyFk8UTIAh8UllyxwxD
+	 kXTDFvHXI4CqN2Yzxvh7XkxyCKe8o198KhYZ7wLB1o3v5zjQdnB+Ouwtfvb6o5KguRw==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1784682566;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=2bMFY1R+ucLsyVC1aUSh1vKHrt7iul4EFaoVgPfDhMc=;
+	b=T7LaegfBGNdZ6VuohzrL54HkRgXyKkUx9xXFCBw0L2uyCwwzVi6RMver6GC8urZaePaT
+	 Y03xS/imy2t/anpBPZCsb2iSXTl1mTBnwAPgC08NdMx9QCaEfCfSuF5+oH+6oqqdGdSA5
+	 /rJlu/sEgkI/Qt17DRgzwvDEURASFnZM9o6GKOcEeYBV/L4BeJVdB9FiN2QbSyM5bEAsY
+	 JrN7LZPgWumcb8JHdDxD0qHpobqjesUexVolZCD2dOHmOKFME0+CX27tcRYrwNEiAQuSP
+	 ljNqJ8nkC+QxrgLW/vh29XKnxLQCAe/eGfAMOD5ZVHkB34TRdMKWQTASxt/at3sISKg==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=OUTLOOK.AT header.i=@OUTLOOK.AT header.a=rsa-sha256
+ header.s=selector1 header.b="LPO/jJUM";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.103.32.21
+Received: from DB3PR0202CU003.outbound.protection.outlook.com
+ (mail-northeuropeazolkn19010021.outbound.protection.outlook.com
+ [52.103.32.21])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 50975F8045D
-	for <alsa-devel@alsa-project.org>; Thu, 23 Jul 2026 12:38:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50975F8045D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 28BB5F8032D
+	for <alsa-devel@alsa-project.org>; Wed, 22 Jul 2026 03:09:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28BB5F8032D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xvvUXchN;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=YUE6S55c;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=xvvUXchN;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=YUE6S55c
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4E61F7B011;
-	Thu, 23 Jul 2026 10:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1784803082;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzzHFjZLDt8okWaJULgSZvYd0cjktA8zMlgIQ/uhUXQ=;
-	b=xvvUXchN1Ph4IvmZNeAd1JFmR2Sq19Q35BRUl684HI60GhaSPXzLXbDWRiLl/hY0sb944E
-	S2CoAKNtMfbajkxfw7Eztj9f9donXaIBiYXaDBtfIwfnL0GL+oAwna0UUd+GhkxMX2rOQ5
-	sPg2NRhWqlpvXhAxn4covRXSL/xuZ3Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784803082;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzzHFjZLDt8okWaJULgSZvYd0cjktA8zMlgIQ/uhUXQ=;
-	b=YUE6S55ccLxZGCnXl+jYCk/eDEX8J7+vqgK496EknJR2kcaTm4K80UVaGievWSjliAgRgK
-	OdnJKm8m/7dj6ZDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=xvvUXchN;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=YUE6S55c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1784803082;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzzHFjZLDt8okWaJULgSZvYd0cjktA8zMlgIQ/uhUXQ=;
-	b=xvvUXchN1Ph4IvmZNeAd1JFmR2Sq19Q35BRUl684HI60GhaSPXzLXbDWRiLl/hY0sb944E
-	S2CoAKNtMfbajkxfw7Eztj9f9donXaIBiYXaDBtfIwfnL0GL+oAwna0UUd+GhkxMX2rOQ5
-	sPg2NRhWqlpvXhAxn4covRXSL/xuZ3Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1784803082;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mzzHFjZLDt8okWaJULgSZvYd0cjktA8zMlgIQ/uhUXQ=;
-	b=YUE6S55ccLxZGCnXl+jYCk/eDEX8J7+vqgK496EknJR2kcaTm4K80UVaGievWSjliAgRgK
-	OdnJKm8m/7dj6ZDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C649779B5;
-	Thu, 23 Jul 2026 10:38:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4H1BBQjvYWqOBQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 23 Jul 2026 10:38:00 +0000
-Date: Thu, 23 Jul 2026 12:37:57 +0200
-Message-ID: <87wlumdm9m.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject: Re: Add quirk to another Razer Blade 16
-In-Reply-To: <0cd8c77a82a4481ca9409ac68f1041e8@realtek.com>
-References: <0cd8c77a82a4481ca9409ac68f1041e8@realtek.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 4E61F7B011
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:mid,suse.de:dkim];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-Message-ID-Hash: PRXI5LBHAMVT2LIATELIOTANRVNSLGUD
-X-Message-ID-Hash: PRXI5LBHAMVT2LIATELIOTANRVNSLGUD
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=OUTLOOK.AT header.i=@OUTLOOK.AT header.a=rsa-sha256
+ header.s=selector1 header.b=LPO/jJUM
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WVkERDjIVpBCOtmalBnxHZrutroamDOOybAqJuzTvYHUxH9X6DjO/B5vQAlfVN6uCnhVK3gzie8fEWgqKFLnTJfBQW0rNcigY8n/Br20LNpTlaeqjAzIjnPZdVgkuQG3bk5hB3acTjw56wtcEVAt6/5t4yFoZCF+rBSuD2Bn9ua+xLcof+boyLVHc5EcmY2Si0/sXrM9Zc+ToFCFCGJ/TmvB7cg9I+VE/UQSJYBJDDvQ1CC2zSMHYlwHFQwlEGsXi1WlttvKNDPslE7ySAIgWEhjSbzUo2si6f3fl/jdiJcQkzIrjM5VtqzEp0YvSv0AIzdTlAljeLk6qVXKKI43eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MTdyK8eaYPuojdgzLGcBftt58l3LansftyPxjECeSZ8=;
+ b=Ajz14dlmdDywQcI7H4UK1mdZtEuiZACRgjrzZlKS4D9Z3cxnazEer4kAaTgQ5I9YMCfEhcy4JD2lbhkujjdnUG77ACNQUuV1qI2oI7Wo63rwJ8gohFlDRb6jVqctALyR1+JwapOuLQzxix4veK539IXkxVjuWMv0OqkjbNzmLDSN1h5T9N6/24DuH7dgMuJTuvguQdpQa1+IGeOnAz+F4Baqu/fbvYwhCqhfBunm2RSDOr4oU4rL2doOQ56jTwYaSKo9A2GxSZcxykUE2fGeKm9Bbvd+B+AK/2Gm+zRxLdF1cHA5xeRGIhCFzkxnuydLhqcJfAClMOIfCe7hQWzV/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=OUTLOOK.AT;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MTdyK8eaYPuojdgzLGcBftt58l3LansftyPxjECeSZ8=;
+ b=LPO/jJUMGSs7KWUfcsGGxR1gAH8Qksl2Eugzesn1jibONLmPnvYCsl/mDtudgjKhyKNqsebHBhbCepeiLy1UMh3svazj3Px7DrLTWreGNb9vF15U2dY4ZgTD31DleabpSbtjKsq7CALve4D5kn7h4iX0aJf0Zt38U70Ig9YcJEXaooNJLNv6DJs8aYYwwrN0Tq+PGu4ap9PJEwpsmqgLYVmDm3rZLtumO7bZq0lnND9ynaimMF7DbZRaKzUpd7jHws3CRELOJVR4PFaZZRkYi5bmpHpPfL8iaXjNWr3DtkekBPZqv5A/wVBPbTrKgcmmjy+4AqRBWUnaYsq1nZu2GQ==
+Received: from AS8P195MB2142.EURP195.PROD.OUTLOOK.COM (2603:10a6:20b:56a::22)
+ by PAXP195MB1437.EURP195.PROD.OUTLOOK.COM (2603:10a6:102:28a::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.223.18; Wed, 22 Jul
+ 2026 01:09:22 +0000
+Received: from AS8P195MB2142.EURP195.PROD.OUTLOOK.COM
+ ([fe80::b522:4daa:b339:ceb3]) by AS8P195MB2142.EURP195.PROD.OUTLOOK.COM
+ ([fe80::b522:4daa:b339:ceb3%6]) with mapi id 15.21.0245.009; Wed, 22 Jul 2026
+ 01:09:22 +0000
+From: Markus Lindner <lindner.markus@outlook.at>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Markus Lindner <lindner.markus@outlook.at>
+Subject: [PATCH] ALSA: usb-audio: Add dB map quirk for Razer Barracuda X 2.4
+Date: Wed, 22 Jul 2026 03:09:18 +0200
+Message-ID: 
+ <AS8P195MB2142F4EFF83980BD02BA6566E1C12@AS8P195MB2142.EURP195.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.47.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR06CA0151.eurprd06.prod.outlook.com
+ (2603:10a6:803:a0::44) To AS8P195MB2142.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:56a::22)
+X-Microsoft-Original-Message-ID: 
+ <20260722010918.78012-1-lindner.markus@outlook.at>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8P195MB2142:EE_|PAXP195MB1437:EE_
+X-MS-Office365-Filtering-Correlation-Id: dadad9c3-83b4-4f24-7bf9-08dee78ddd59
+X-Microsoft-Antispam: 
+	BCL:0;ARA:14566002|25031999004|39105399006|23021999003|4140399003|15080799012|25010399006|24021099003|5072599009|22141099003|5062599005|19110799012|8060799015|3412199025|440099028|40105399003|1710799026;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?bvT2q5HfHq/h0RtFCPgn7Vn5Im/dNuz13Ljr1IUxOd1QlM2DJ5SpgeT0VURX?=
+ =?us-ascii?Q?vtbKFW09iWlqpA362OX26adNGCEIl7fq14dFDC/x8b1mvNXeOP8qwQU0hx83?=
+ =?us-ascii?Q?WBclXJW6009IaoAkROOSlbnGYysZ94QmW0HQ8kqUESelpbpbAbUTKHnd1EeY?=
+ =?us-ascii?Q?slcLzgnS6I9KCFHoKqcR5qKmlSms5hPFTOgvCl/PkRcBdkPS4/yU6EBNWdEe?=
+ =?us-ascii?Q?jF6eZxL99KcrZlXomLMeJLfy1kUWwCn6TbDA1mSj3dkdxnfYGNmxCm0kVKb5?=
+ =?us-ascii?Q?+1Ap+DMCqwfEJGiiqfgRIiOIIaRwMaWCWWUSg+zL709xzv/RPNOMQwT8ZKa2?=
+ =?us-ascii?Q?iJ3onwFW9zMd7BsN1m8VQGp4rnw6rnEGNLXNYh2eR6c1e8D1SSDDbutjkegq?=
+ =?us-ascii?Q?V8zo4E7nitLMqUUZjoYJxfi8IL5kifMRQuptfnUZ05N/7U8USQKaD5VN10mD?=
+ =?us-ascii?Q?XwYR2JmQgSjoaCA2DQXYSANzeakf7gv2eCiTNLzQwftv5w1FeYpvfPdwvvlB?=
+ =?us-ascii?Q?pN8OqhPngWbydvj1E5rQPCKio+8yXJvxW/PLvt2z4kmNmWCmYngFWrF87Ndi?=
+ =?us-ascii?Q?Ofrn8hgn6qF7iRpc3yQ4kaKm+1cZNQEISMiHXrYvMvP2I9yoP6btwShVQXAs?=
+ =?us-ascii?Q?E5Ecf6DbY6UA0i4q5GaMtZKA4M06+D+49i4z6wKCYE97K3WFYybLRnV489fn?=
+ =?us-ascii?Q?2+mJIseYwdxJQA1DfeucqMAStuQN2OADLQ8LPCDr211K0f1XKZCRgy3J0Jy6?=
+ =?us-ascii?Q?4ca59aTjkr07iIeTfPgv5zuZ3YX3Ek9/Kv/j04kkvx4+8kXOGZCzxL0L4v8i?=
+ =?us-ascii?Q?wv/wmyTX9RbQWLnN1qLTuXM/LNCgxSG69IVUfalQeHsnHpWbSfIpsoNzFEIY?=
+ =?us-ascii?Q?GjVdrNHaeaoMsaNXm00rpLvY27wz3EpVmRnjNee+4NunH+wvyiU37nqoW1DR?=
+ =?us-ascii?Q?Fl4LoxE8vXGQHH+8A0aP7Gl4iCa9sV9p+Y42oHRheMqBACn24q76O1rynfuy?=
+ =?us-ascii?Q?sC7RkZjzROX8HJayWvM1UXlL31JN/3+oxpKUXbK/bfzBwYhOIFoJ+o6tqkX9?=
+ =?us-ascii?Q?xt2kr/Yb?=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?6eC13fHr/Yp5f3DQPx7+/C5A/ftahooTbUwA2Vf1KEDAmGzLYKVPSkgvQQIZ?=
+ =?us-ascii?Q?v9DMJRz4y+KLIcaKtY8h1hk8XEBBtmipA/AeO8d2K9nI/PgN/TeWTZZGR0AW?=
+ =?us-ascii?Q?D87RfICNpZwi+/yRnbnG7VuzHZEbQB0wiZnHKtquRBcO/Hh4yRXJ/wKZ3E3r?=
+ =?us-ascii?Q?dAx2OfXw/XYS9+LOT8fVUWtiO8tio/7WBln3zq68ZNAKvJ3Ifr5wWry4fNhc?=
+ =?us-ascii?Q?MAuBLeRcN67Ak9lKMuwlIjaoAoJeo2FTyJyRNHDQPhTV2MOWlVXEyvbpVQJR?=
+ =?us-ascii?Q?jUrbpK/WYFSBxkbaONgf21bSyLHy7SpFMsXWcjvVyE/WBJqox1NG+MYQtdk9?=
+ =?us-ascii?Q?kWu3hixhtfVFiUuBNRmvKV4NarLWvb9dnYsweDel/dxyi3DMv9C5xMR9bkUM?=
+ =?us-ascii?Q?Uqu2YXk9CkKbflX3VyfYpRe46kM3o/4YyCEkYkMKsdqTWN7hPVWQtka0V5Nq?=
+ =?us-ascii?Q?w0dYValp0lxKJxzZe0KnmI7Dt4DS+jQvuCGpX12V8EXsrCDRWifNyokBUd9c?=
+ =?us-ascii?Q?RxvQ6VnIDf9cFFIhxP2M4OpqepBKebFNtlCMgR55AyZZ+GSnI4H2fUfcRpu2?=
+ =?us-ascii?Q?EjrvOFFI4kdSEFdK4R2ko2l2Js7anee3kd9W/0BiggZ5SXtdlAyI8MmUjq/6?=
+ =?us-ascii?Q?CBfp9L8+r6A91mAhLLfyWsR4pbQSLsCIbQ2jm2AlwzGY7J0utthYJAIHp5az?=
+ =?us-ascii?Q?kFQV1OyQY2dlJ370annbfbBAbDJPzbfopxt6y0ErrdIJaHvsSDZWuXJO66Mk?=
+ =?us-ascii?Q?Eqf9WdcAjgUeX3RYugevD/UGAQC+2650M5fqFi11FpSWSCj2h1Ox2LSWouz8?=
+ =?us-ascii?Q?LdugcOJINUYWilc7usHR75J+7Cs5sokGADfE4NnE5eBXfVilkBfn7KeXcN39?=
+ =?us-ascii?Q?7jhg22TntcxXWOi7eqlBlpusoI61jian/Q/IOZQguZ6Hd8JT4Q4BqJ1zQXPW?=
+ =?us-ascii?Q?Il59wSLQT1u4iS3GGxmTZvixUgeodOUtWjnq7N6D0nLAXmGU+1Nk5NlM098N?=
+ =?us-ascii?Q?WaTdbV6qFIQrxksYx9SH3Sh4tNSPIzq1NWthRWUEf0/KbBS3rhLS1aXisbbf?=
+ =?us-ascii?Q?T5MkXC1ANOUxMQyLI3SeCSiWgnXY6qfKq7pSrUqBYtPEFbTQiiE87C/iHy0i?=
+ =?us-ascii?Q?sH1bLxJ13Zh6itxSGwHZSL8VlLB2zc15bY0ofqliQbY7+k4bkCmajfza0lg2?=
+ =?us-ascii?Q?d3+/BKxPCn9xmgfimsQ0vi7ZsH8InzSgFmUtOY28XcCUVLT0AOZwH+ArNuYQ?=
+ =?us-ascii?Q?REx5AESY3H6ZthLtYYOVbyTixPVz5KgPLBn/Wlyd9MVnt2c32l5tgiyq5ON/?=
+ =?us-ascii?Q?P7+7s0l+Xhey2utyVf6bGlrOnqC7lcCQjoPsA5I5uv6lTBpEXyEhPTfil6sR?=
+ =?us-ascii?Q?tbJMK77mCovADINNtoGI6LIbqIo3IO2iNCBe8CVPBrll91qBKkN6lOuh/Bmf?=
+ =?us-ascii?Q?UPLQHUyR1v4=3D?=
+X-OriginatorOrg: sct-15-20-9412-6-msonline-outlook-c31bb.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ dadad9c3-83b4-4f24-7bf9-08dee78ddd59
+X-MS-Exchange-CrossTenant-AuthSource: AS8P195MB2142.EURP195.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2026 01:09:22.5546
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP195MB1437
+X-MailFrom: lindner.markus@outlook.at
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: YFLBWFZGJPGYEOSAFC7MC6YSVS5TR3BP
+X-Message-ID-Hash: YFLBWFZGJPGYEOSAFC7MC6YSVS5TR3BP
+X-Mailman-Approved-At: Thu, 23 Jul 2026 17:36:59 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PRXI5LBHAMVT2LIATELIOTANRVNSLGUD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CBQP4QXZNJQK2V6VSPXYFL7L67UK63PR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -194,15 +192,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 23 Jul 2026 09:15:44 +0200,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> Razer Blade 16 had another SSID.
-> The patch will add quirk to another machine.
+The Razer Barracuda X 2.4 GHz USB headset dongle (0x1532:0x0552)
+reports a minimum volume register value of cval->min = -16800.
 
-Applied to for-next branch now.  Thanks.
+In UAC 1/256 dB units, -16800 corresponds to -65.625 dB. However,
+stock ALSA misinterprets this raw integer as 1/100 dB units
+(-168.00 dB), causing user-space audio servers (PipeWire /
+PulseAudio) to map their volume curves against an incorrectly wide
+range.
 
+Add an explicit usbmix_dB_map entry overriding Unit 2 to -6562
+(-65.62 dB) to accurately report the physical hardware
+attenuation bounds.
 
-Takashi
+Signed-off-by: Markus Lindner <lindner.markus@outlook.at>
+---
+ sound/usb/mixer_maps.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index faac7df1fb..4d8dca04f8 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -344,6 +344,16 @@ static const struct usbmix_name_map bose_soundlink_map[] = {
+ 	{ 0 }	/* terminator */
+ };
+ 
++/*
++ * Razer Barracuda X 2.4: Firmware reports cval->min = -16800 in 1/256 dB units
++ * (-65.62 dB), which stock ALSA misinterprets as a -168 dB floor
++ */
++static const struct usbmix_dB_map razer_barracuda_x_2_4_dB = {-6562, 0};
++static const struct usbmix_name_map razer_barracuda_x_2_4_map[] = {
++	{ 2, NULL, .dB = &razer_barracuda_x_2_4_dB },
++	{ 0 }   /* terminator */
++};
++
+ /* Sennheiser Communications Headset [PC 8], the dB value is reported as -6 negative maximum  */
+ static const struct usbmix_dB_map sennheiser_pc8_dB = {-9500, 0};
+ static const struct usbmix_name_map sennheiser_pc8_map[] = {
+@@ -689,6 +699,11 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
+ 		.id = USB_ID(0x17aa, 0x1046),
+ 		.map = lenovo_p620_rear_map,
+ 	},
++	{
++		/* Razer Barracuda X 2.4 */
++		.id = USB_ID(0x1532, 0x0552),
++		.map = razer_barracuda_x_2_4_map,
++	},
+ 	{
+ 		/* Sennheiser Communications Headset [PC 8] */
+ 		.id = USB_ID(0x1395, 0x0025),
+-- 
+2.47.3
+
