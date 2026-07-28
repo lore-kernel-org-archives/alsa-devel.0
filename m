@@ -4,106 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 929F8C54F51
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2026 08:58:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C3BC54F51
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jul 2026 08:58:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB5676018C;
-	Wed, 29 Jul 2026 10:58:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB5676018C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B25D60227;
+	Wed, 29 Jul 2026 10:58:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B25D60227
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1785315493;
-	bh=29SLJtFWgu7ALvVIFmqVM7ytQf5DvPxBKfa1ZnVerIU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=YTEktmCVtr6ngGUvFxU4GvhoclzGKTII2dRwAChINBjCv8Ne3OazDOdzHcAvP2bk/
-	 9PnyvYJDqmQFMuHhBAnugPoIM7Q+qymlI26h+blWrZaYwkW7VApASUVlCfQfK8nuwL
-	 PQele8eKsXu8d7ANV1Qb1A36a0E7SAeip6qgEQpQ=
+	s=default; t=1785315515;
+	bh=bEqcDQPLue0VwvPPT2I9GhpkWaKVfU99ZVyc6BU0PRc=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=f+hfhSeHyNf5SRYQyIMIa6qI7/o0Pk7kdDz5agVDDa7O1erHvP6sblzxV1bfwA1v3
+	 21dzjUbvehRkM+2zCZJMVAs0qjCM4BDdNBoJR6VvDeP3bF5RuaGi+YWxthNyT6Wk6X
+	 jDpa8GTi+z5+X/22btr8c9wpWdSShyartmXeAtvI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8BD59F8061B; Wed, 29 Jul 2026 10:57:29 +0200 (CEST)
+	id 84329F80651; Wed, 29 Jul 2026 10:57:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29AE8F8061D;
-	Wed, 29 Jul 2026 10:57:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDC67F8063E;
+	Wed, 29 Jul 2026 10:57:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B524F80526; Mon, 27 Jul 2026 11:19:25 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=185.67.36.65
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785143964;
-	b=n0jGvb0AVCXQua4tlu7XdNaVtKgee6zT9sDbngoTh2jweTrHu4r7iwZmkUUKVuyaLgGr
-	 4Gi4uZifiatZLjuhrVmTU650uv8e3yzLp6D3e5HSI24QvuP7QNw/q1PInksJrrYSY8NEH
-	 1Towhec+OAlEYqxa3oTZ31h5e+FZGAqqGZSFpXcVA9iIUjEKoYz9vhk1YK1OQra3IhUwj
-	 pTDeY43D6VkuucyYY0R4VKRkpD+ssP4RTSI4i/XLTMFHJs4SdzzQwM2OLT7uNrcoISMZl
-	 5aYTy+wVIeffT4vFOSkkI1drjM12BC2oFb7OUXLZ1yyWzba2sBABT/pwgkeqiDuVPLA==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785143964;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=29SLJtFWgu7ALvVIFmqVM7ytQf5DvPxBKfa1ZnVerIU=;
-	b=ChGCmai9I7Pa8gmg/Rs86N/i2hx8ArSt5K3O2gBT4iOVJfmmuiOpIKwHGL9O6p3fc+et
-	 /O7hDYinzrtcYSLldO1suxFgEQfbTmJjUUMBX3Ns4mVB8Y33FIcuc3QtL1J7tKdoyvRjx
-	 wZQcIv1snc2oM1f0+UC6I1ycBw0XgynooAlZ3qtH37ZwiRTE42CIF3VtevY3plPSDyyuI
-	 vdKMTK4npbv87Vjld1tu65dxpXVsQ01CGI++9qnzchVeU8KDJcOEN295TOwwUz5c0BJzt
-	 dAll6yhAKftGfNlrQ8St6C3UdqorwuMV2OxKKW4nKp1d8p8bm6FfNu/uYyEFxONzFEA==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=posteo.de header.i=@posteo.de header.a=rsa-sha256
- header.s=1984.8680eb header.b=RV07lMUp;
-	arc=none smtp.remote-ip=185.67.36.65
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id D9069F80526; Tue, 28 Jul 2026 14:58:12 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.167.173
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1785243488;
+	b=Hr6/BLPvCHGAQwpY/kZAOIUamBjZvF4KPX2mSHERT0HRHQORbMaV4iEFWZrTh33qIrFA
+	 TuCKkPo6go1WreEfJoHYoau+qWcp4Y/J2ZO53RtHhLOtW6DSU96d49exqA/sGSV7XPa8q
+	 9s2fOT85IuTHhnu/zBSGonUEUjTrA4/3w2U3S5tCppyafJdLzX+Z3SKU20eHjrjLcMv/T
+	 e3mQ/9B+IXAQiY/JUMoUOX5TiQ+2ALaGQaFz+wpHdsIMZzKHg+wxmr+qFTJT1nz2epj+L
+	 g+MeugdM12Rr8V0DkNkpWed11VMV9wYM8M0k7oXXigFMU4nMfwi2s/075MvZ8ZXwG+g==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1785243488;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=mAwfeFMeqwhro9aob6Mxz7Y2dOnnuK76GkzMGyhyMGw=;
+	b=ngKieTr+w82nvePxwSqcKS5ME7V0L0+mMvweFDI+ixhxe5nxUTFmRXv1Qoe/4sBSMJLu
+	 IX/AVsRuV/De/oP5DUWEbJSIf6gT9EbiVyvCDHlRO8CmbqyUE9YR4GMJH8U2LRycISyJb
+	 KW0r3vRt2aAty5KtNzpbby0wbo2v0D9dJ9hAeWvwTs+41CfVNOlcW6ugXSXnW0tGgxU24
+	 G5Br2MQS/mbQBwKHeSr0SL0cT6jB8G5JAZSPesFQAuNhwxr2sUiTxxYGm1Vh7Tn+sY50j
+	 iLyuphceCinDr3KkcP7NtO9Fwy32mHstflNPV6PL2IEstCvvVvaQ6jpaJ84PnnG4d3Q==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=HyMuE3dU;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.167.173
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com
+ [209.85.167.173])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F2090F800BA
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2026 11:19:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2090F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 583C4F8025A
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2026 14:58:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 583C4F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=posteo.de header.i=@posteo.de header.a=rsa-sha256
- header.s=1984.8680eb header.b=RV07lMUp
-Received: from submission (posteo.de [185.67.36.169])
-	by mout01.posteo.de (Postfix) with ESMTPS id BF77C240028
-	for <alsa-devel@alsa-project.org>; Mon, 27 Jul 2026 11:19:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.de;
-	s=1984.8680eb; t=1785143961;
-	bh=e02G+UAzxZHsnCyPekSkBZLHCHZCED+tLQmm8H77/Hc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:From;
-	b=RV07lMUpQe6n4ueYIA1pfiIKhehTmpJ0FF1ttNHdH1toAfUYV0mUq2OE14Y4z5xKo
-	 0KORuaxbVO62x/NFuHoVZ6UGs2cCmAN/e0IlYexKHWLiaImAn7eUK/I87ub+qRKCi7
-	 uP5cbbO5W7pTa9B1couA4CUrw0kcA0U1Ihcqbdow5A2WYHOf94mr5ktAJZN8BSx2hJ
-	 RUtSUJUN4W9ubpx0iNv//ufCG4uDcxVz6fi6aMOAOucWezTxWALgU11K434uAEj4U1
-	 QLDxZXKcaxFOInWQgC8GC1P3llXJ3PcF4LGKhjd+iPrW5lFM6pTa85HrYaxEuBioPt
-	 8BFWvaQ2prkOw==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4h7tMY1ztQz9rxF;
-	Mon, 27 Jul 2026 11:19:21 +0200 (CEST)
-From: Michael Diesen <michael.diesen@posteo.de>
-To: tiwai@suse.de
-Cc: linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: [PATCH v2] ALSA: hda/realtek: Add quirk for HP Dragonfly Folio G3
- 2-in-1 (103c:8a05)
-Date: Mon, 27 Jul 2026 09:19:21 +0000
-Message-ID: <20260727091920.4634-1-michael.diesen@posteo.de>
-In-Reply-To: <874ii84j3p.wl-tiwai@suse.de>
-References: <874ii84j3p.wl-tiwai@suse.de>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=HyMuE3dU
+Received: by mail-oi1-f173.google.com with SMTP id
+ 5614622812f47-4a40bcc8d69so2388488b6e.3
+        for <alsa-devel@alsa-project.org>;
+ Tue, 28 Jul 2026 05:58:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1785243485; cv=none;
+        d=google.com; s=arc-20260327;
+        b=P9uw2XVAmwthFuGkQ5i7HqjMCG1AuKtzUjmCjPZIx5yU5fGCXwJPOIUVv3Zh4rdNcz
+         9MK9gR2stli56/d1/Jlzl23lCHZ/VhuwCUgl18kQfC2N6e4TXqW4g4pFcWQITbFlLRQx
+         CrlwrYKM5xcuOzMJQ/+tHo4xk9zo5QsBYBCEOEWfHvnIUozj0tyV+sT8Yowk4Aq/5iBT
+         2dwkCstjChGVed5NiZPov3HakQgzx7bOLaMdh3dlfv0HWsiqDmNE6m8jmHSUau7EWnRm
+         5+J1vx2pIXS8GXLm0WrqrTFAlED8uCV8fK22y+GQsO+93H1bfnmtU44URDECKBfNvbxx
+         cRkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=VOrrI/CzTY/BEPpefUKt6eqqEy/q4DYzQJ6tu0MePDg=;
+        fh=UuIrXmmJ/DAfqp6xENjJ/+0cbdFrWYnUdyvKDQVU10o=;
+        b=i2aE9V7ybPs7bAH53wsCU2F8oynNAM+0XsQa8zaPtmC0J5spmcgqZ7X/+qDpNqM7yX
+         kennY0YhgLxZuIgJKT2xvbm/CMY94AxZkPYlR3gVJnMwbnfJ3WtqcWiawZGBF9hog5qJ
+         wMSEzgBLf904SRHY81znYX/ZZekrP21gTNVkmjdcjdo6+GEwGBy5POqI7FTd4vgmYyeG
+         N7OEm9H29PFMjJy5h/geDTlNAkwoorRsBHFVYbNVSUxFykxDy+scwQZ9ZPy0Uhvcj1dy
+         jSNl6PEp5HdVeiEJsT435w11gUP5UNcN0maWnLeckFl6KwF7E9/g8cfm6ItS9ARsqSU6
+         sMDg==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1785243485; x=1785848285;
+ darn=alsa-project.org;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=VOrrI/CzTY/BEPpefUKt6eqqEy/q4DYzQJ6tu0MePDg=;
+        b=HyMuE3dUJxIKh8iDFPgxJD5esjuDUskHcehPM+HbNtqAE0MxyiJZHAIHksZvQTv/F8
+         vuJPb8y9CX3FN4lv1zldMHSiGsUF+EntOky7bjo/RZZn/NylgeTZX/AD4bBc52yNu3mV
+         9FHQEOkPVsem40AkAzmYZYppMmu9lkmflac9ab02RJDnxMoYJO5+3xUFcALiAzoXCqa+
+         /8MjRWf6QSj3YOqIn87hfGQY0MJt2qP6P2z5XvbNs8na9tpEUZ7uBtHjmMvLhQ1Vt5An
+         gFn+Jtzr6j3k83XIr0xBzYcDd/pLvg2ryHeHqpEACgg2aUqlV1BJnUPP1BOp3O7RtmGl
+         MpRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785243485; x=1785848285;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=VOrrI/CzTY/BEPpefUKt6eqqEy/q4DYzQJ6tu0MePDg=;
+        b=NcsztptKbGUenD3dHeMKl0WbDY/KfS2nS0uO+Ua/YpNvnI0NG6PFJHymKkI2xkEo54
+         M4WOat/CEbs9Ahf02p+pW8iv/eA6dIqYE6TGT2NCXF1KowbMEmA8sNrbCckXAx92EbZN
+         E+I9dD4PEi6MOjFwNV8zOue0ipKR7sYD5th9ycb6ekXd0J8g9E+B8hhk08febtEsBWrK
+         ajjVIP9TSospI2S0g1HIi2akbx/0bMQZA/vGE/51YDqD10D84U/iJqr0NCffHW96Vp2d
+         aw0E6HyQ9xO40dGz1wecBCFUwCulARNEtx9QJzkl4pEZhG+hf/pvBljjkaEFY9kQE2KS
+         C8mg==
+X-Gm-Message-State: AOJu0YyAFVS2Ty5K+1IvU8l1gSmvYVL9JC7Y8qPyGVROd/dzfarFS5Wy
+	XXSBIt1pErBLvzSlnzzn5+87/CnGgpuwuLbscYmfmGNP45scuik0pNFFQhx3FqBkezBkYFPITdk
+	Bj5Bg2VZQvi0X7/LAg9K2lAjipPZosuHRkBpQ1kHhsg==
+X-Gm-Gg: AR+sD13yjF3z9+Ysb3AzbaluKRBZ0I6PHH+6YiRDxTsm7jRiedPWRxfF83mTQ+RoytR
+	haY/kWPm6yScD760d+/4WKIxxMJryt84pzUdMaKuppGD//iIOU7K3uXqSGcy7+kty3s5ZJ+luQ4
+	HXwyeh6jsN69T8kvLYs7r8j1hlFKA0EhnpltyXAuJrje4YQC+06ZyobzrOVYsM/sw6NPISMgIc5
+	9wJcjtj3VL9h7Ad7n5TV419UHCjTIzcFR9Bg5Op5iStecxljoxFZiiwXhi4o7yjqkodlFhlymOm
+	OXPFn3uV6eTOD5u7MBRmf2jmI/3nBYk=
+X-Received: by 2002:a05:6808:3010:b0:49b:c387:36b6 with SMTP id
+ 5614622812f47-4ad5b9d8938mr1135622b6e.13.1785243485083; Tue, 28 Jul 2026
+ 05:58:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: michael.diesen@posteo.de
+From: Aditya Sharma <aditya122sharma@gmail.com>
+Date: Tue, 28 Jul 2026 18:27:28 +0530
+X-Gm-Features: AUfX_mweEZZ324SyGOa9V5k4Jikz9c4eZEIo7y7MIZYdeNJzC9xBTd37T8rTu4M
+Message-ID: 
+ <CAEF4ZLNsnnATjgGAFYim3t-0qn=LHx=LeEid-jQULEDvN4aQYg@mail.gmail.com>
+Subject: [BUG] ALC285 + CS35L56 (ASUS ROG Zephyrus G14 2025, GA403WR, SSID
+ 1043:1024), no speaker output despite correct routing, gain, and DSP state
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, rf@opensource.cirrus.com
+X-MailFrom: aditya122sharma@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: CMW6H36E5CCEWT3ARJ6NZWJB7IGOZ3D6
-X-Message-ID-Hash: CMW6H36E5CCEWT3ARJ6NZWJB7IGOZ3D6
-X-Mailman-Approved-At: Wed, 29 Jul 2026 08:57:21 +0000
+Message-ID-Hash: 4AFF7BGG4J4CMUZPCUUUS3RNVVOFQBR3
+X-Message-ID-Hash: 4AFF7BGG4J4CMUZPCUUUS3RNVVOFQBR3
+X-Mailman-Approved-At: Wed, 29 Jul 2026 08:57:31 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CMW6H36E5CCEWT3ARJ6NZWJB7IGOZ3D6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4AFF7BGG4J4CMUZPCUUUS3RNVVOFQBR3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,61 +157,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The HP Dragonfly Folio G3 2-in-1 also ships with PCI SSID 103c:8a05.
-On this unit the ALC245 codec reports subsystem id 103c:8a06 - the SSID
-that is already covered by commit 0a10faad5ca5 ("ALSA: hda/realtek: add
-quirk for HP Dragonfly Folio G3 2-in-1") - while the PCI SSID that
-SND_PCI_QUIRK matches against is 103c:8a05:
-
-  snd_hda_codec_alc269 ehdaudio0D0: ALC245: picked fixup for PCI SSID 103c:8a05
-  cs35l41-hda spi1-CSC3551:00-cs35l41-hda.0: CS35L41 Bound - SSID: 103C8A06
-
-The existing entry therefore never applies here, the four CS35L41
-amplifiers on SPI are not registered and the internal speakers stay
-silent.
-
-Add the same fixup that the 8a06 entry uses: the four amplifiers bind
-and the speaker mute LED (codec GPIO 0x04) works.
-
-Signed-off-by: Michael Diesen <michael.diesen@posteo.de>
----
-v2:
- - Resend using git send-email. v1 was mangled by my mail client (tabs
-   converted to spaces, long context lines soft-wrapped) so it could not
-   be applied with git am. Sorry for the noise, and thanks for the
-   pointer - I tested this one by mailing it to myself and applying it
-   with git am before sending.
- - Use ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED instead of plain
-   ALC245_FIXUP_CS35L41_SPI_4. In v1 I claimed this was a non-2-in-1 SKU
-   that does not need the LED handling. That was wrong: DMI reports the
-   machine as "HP Dragonfly Folio G3 2-in-1", i.e. the same model as the
-   8a06 entry, and the speaker mute LED stayed dark with plain SPI_4.
- - Name the entry identically to the 8a06 one, as it is the same machine
-   with a different PCI SSID.
-
-On the mic-mute LED: alc285_fixup_hp_gpio_led() also drives GPIO 0x01 as
-mic-mute LED. That LED does not respond on this unit. Poking the codec
-GPIOs directly with hda-verb shows 0x04 toggling the speaker mute LED,
-while neither 0x01 nor 0x02 has any effect, so the mic-mute LED does not
-appear to be wired to the codec here. It does not work without the quirk
-either, so this is no regression, and it matches what the 8a06 entry
-already does - hence I kept the shared fixup instead of adding a new one.
-
- sound/hda/codecs/realtek/alc269.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
-index b22564f..ec6724e 100644
---- a/sound/hda/codecs/realtek/alc269.c
-+++ b/sound/hda/codecs/realtek/alc269.c
-@@ -7160,6 +7160,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x89d3, "HP EliteBook 645 G9 (MB 89D2)", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x89da, "HP Spectre x360 14t-ea100", ALC245_FIXUP_HP_SPECTRE_X360_EU0XXX),
- 	SND_PCI_QUIRK(0x103c, 0x89e7, "HP Elite x2 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8a05, "HP Dragonfly Folio G3 2-in-1", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a06, "HP Dragonfly Folio G3 2-in-1", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a0f, "HP Pavilion 14-ec1xxx", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8a1b, "HP 255 15.6 inch G9 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
--- 
-2.54.0
-
+SGksDQoNCkknbSBzZWVpbmcgY29tcGxldGUgc2lsZW5jZSBmcm9tIHRoZSBidWlsdC1pbiBzcGVh
+a2VycyBvbiBhbiBBU1VTIFJPRw0KWmVwaHlydXMgRzE0IDIwMjUgKEdBNDAzV1IpLCBkZXNwaXRl
+IGV2ZXJ5IGxheWVyIG9mIHRoZSBhdWRpbyBzaWduYWwgY2hhaW4NCmNoZWNraW5nIG91dCBjb3Jy
+ZWN0IG9uIGluc3BlY3Rpb24uIEhlYWRwaG9uZXMgd29yayBwZXJmZWN0bHkuIFRoZSBzYW1lDQpw
+aHlzaWNhbCBoYXJkd2FyZSBwcm9kdWNlcyBub3JtYWwgc3BlYWtlciBvdXRwdXQgdW5kZXIgV2lu
+ZG93cyAoZHVhbC1ib290KSwNCndoaWNoIHJ1bGVzIG91dCBhIGhhcmR3YXJlIGZhdWx0Lg0KDQoq
+SGFyZHdhcmU6Kg0KDQogICAtIEFTVVMgUk9HIFplcGh5cnVzIEcxNCAyMDI1LCBHQTQwM1dSX0dB
+NDAzV1IsIEJJT1MgR0E0MDNXUi4zMDkNCiAgIC0gUmVhbHRlayBBTEMyODUgY29kZWMsIFBDSSBT
+U0lEIDEwNDM6MTAyNA0KICAgLSAyeCBDaXJydXMgTG9naWMgQ1MzNUw1NiBhbXBsaWZpZXJzIChp
+MmMtQ1NDMzU1NjowMC1jczM1bDU2LWhkYS4wLy4xKQ0KDQoqS2VybmVsOiogNy4xLjUtMS1jYWNo
+eW9zIChDYWNoeU9TLCBiYXNlZCBvbiBzdGFibGUgdjcuMS41KQ0KDQoqV2hhdCBJJ3ZlIHZlcmlm
+aWVkLCBpbiBvcmRlciwgYWxsIGNvbmZpcm1lZCBjb3JyZWN0OioNCg0KICAgMS4gKktlcm5lbCBx
+dWlyayBhcHBsaWVzIGNvcnJlY3RseS4qIEFMQzI4NV9GSVhVUF9BU1VTX0dBNDAzVV9IRUFEU0VU
+X01JQw0KICAgaXMgcHJlc2VudCBpbiB0aGUgZml4dXAgdGFibGUgZm9yIFNTSUQgMTA0MzoxMDI0
+IGFuZCBpdHMgY2hhaW5lZA0KICAgYWxjMjg1X2ZpeHVwX3NwZWFrZXIyX3RvX2RhYzEgZXhlY3V0
+ZXMg4oCUIGNvbmZpcm1lZCB2aWENCiAgIC9wcm9jL2Fzb3VuZC9jYXJkMi9jb2RlYyMwLCBOb2Rl
+IDB4MTcgY29ubmVjdGlvbiBsaXN0IHNob3dzIDB4MDIqDQogICBzZWxlY3RlZCAodGhlIGV4cGVj
+dGVkIERBQzEgb3ZlcnJpZGUpLCBtYXRjaGluZyB3aGF0IHRoZSBmaXh1cCBmdW5jdGlvbg0KICAg
+c2V0cy4gKE5vdGU6IHRoZSAicGlja2VkIGZpeHVwIFtibGFua10gZm9yIFBDSSBTU0lEIiBkbWVz
+ZyBsaW5lIGlzDQogICBtaXNsZWFkaW5nIOKAlCB0aGUgZml4dXAgbmFtZSBpcyBvbmx5IHBvcHVs
+YXRlZCB3aXRoDQogICBDT05GSUdfU05EX0RFQlVHX1ZFUkJPU0UsIHdoaWNoIGlzIG9mZiBieSBk
+ZWZhdWx0OyB0aGUgZml4dXAgSUQgaXRzZWxmDQogICBpcyBzdGlsbCBhcHBsaWVkIHJlZ2FyZGxl
+c3MuKQ0KICAgMi4gKkVBUEQgY29ycmVjdGx5IGFzc2VydGVkKiBvbiBib3RoIHNwZWFrZXIgcGlu
+cyAoMHgxNCwgMHgxYikg4oCUDQogICBjb25maXJtZWQgdmlhIGhkYS12ZXJiIC4uLiBHRVRfRUFQ
+RF9CVExFTkFCTEUgcmV0dXJuaW5nIDB4Mi4NCiAgIDMuICpObyBhbXAgZmF1bHRzIGxvZ2dlZCog
+4oCUIGRtZXNnIHwgZ3JlcCBjczM1bDU2IHNob3dzIGNsZWFuIGZpcm13YXJlDQogICBsb2FkLCBu
+byBmYXVsdC9lcnJvci9wcm90ZWN0L3RoZXJtYWwgbWVzc2FnZXMuDQogICA0LiAqQ1MzNUw1NiBE
+U1AgZmlybXdhcmUgZnVsbHkgb3BlcmF0aW9uYWwgb24gYm90aCBhbXBzKiDigJQgdmlhIGRlYnVn
+ZnMgKA0KICAgL3N5cy9rZXJuZWwvZGVidWcvc291bmQvaTJjLUNTQzM1NTY6MDAtY3MzNWw1Ni1o
+ZGEuezAsMX0vRFNQMS8pOiBib290ZWQ9WSwNCiAgIHJ1bm5pbmc9WSwgaGliZXJuYXRpbmc9Tiwg
+ZndfaWQ9MHgwMDFhMDBkNiwgZndfdmVyc2lvbj0weDAwMDMwYjEwLg0KICAgNS4gKkhhcmR3YXJl
+LXN0cmFwcGVkIHNwZWFrZXIgSUQgY29ycmVjdGx5IGRldGVjdGVkKiBhcyBzcGtpZDAgKHJlYWQN
+CiAgIGZyb20gb25jaGlwIEdQSU8gc3RyYXBzIHBlciBjczM1bDU2X3JlYWRfb25jaGlwX3Nwa2lk
+KCkpLCBhbmQgdGhlDQogICBtYXRjaGluZyB0dW5pbmcgZmlsZXMgKGNzMzVsNTYtYjAtZHNwMS1t
+aXNjLTEwNDMxMDI0LXNwa2lkMCopIGxvYWQNCiAgIHdpdGhvdXQgZXJyb3IuDQogICA2LiAqUENN
+IHN0cmVhbSBhY3RpdmVseSBydW5uaW5nKiDigJQgL3Byb2MvYXNvdW5kL2NhcmQyL3BjbTBwL3N1
+YjAvc3RhdHVzDQogICBzaG93cyBzdGF0ZTogUlVOTklORyB3aXRoIG1vdmluZyBod19wdHIvYXBw
+bF9wdHIgZHVyaW5nIHNwZWFrZXItdGVzdC4NCiAgIDcuICpEQUMtbGV2ZWwgZ2FpbiByZWdpc3Rl
+ciBjb25maXJtZWQgYXQgZnVsbCBzY2FsZSog4oCUIE5vZGUgMHgwMg0KICAgKFNwZWFrZXIgUGxh
+eWJhY2sgVm9sdW1lKTogQW1wLU91dCB2YWxzOiBbMHg1NyAweDU3XSAobWF4LCAwZEIpLCBhZnRl
+cg0KICAgc2V0dGluZyB2aWEgYW1peGVyLiBBTFNBLWxldmVsIFNwZWFrZXIsIE1hc3RlciwgQmFz
+cyBTcGVha2VyIG1peGVyDQogICBjb250cm9scyBhbGwgdW5tdXRlZCBhdCAxMDAlLiBBTVAxL0FN
+UDIgU3BlYWtlciBEU1Atc2lkZSBnYWluIGNvbnRyb2xzDQogICBhbHNvIGNvbmZpcm1lZCBhdCA4
+NSUgKC00Ljc1ZEIpLCBub24temVyby4NCg0KRGVzcGl0ZSBhbGwgb2YgdGhlIGFib3ZlLCBubyBh
+dWRpYmxlIG91dHB1dCB3aGF0c29ldmVyIGZyb20gdGhlIGludGVybmFsDQpzcGVha2Vycy4gSGVh
+ZHBob25lcyAoTm9kZSAweDIxKSB3b3JrIG5vcm1hbGx5IGF0IGFsbCB2b2x1bWUgbGV2ZWxzLg0K
+DQpGdWxsIGFsc2EtaW5mby5zaCBkdW1wIChjb2RlYyBwcm9jIGR1bXAsIGFtaXhlciBzdGF0ZSwg
+ZG1lc2csIGFsc2FjdGwNCnN0YXRlKSBpcyBoZXJlOg0KaHR0cHM6Ly9hbHNhLXByb2plY3Qub3Jn
+L2RiLz9mPWNjNmMwODExNmQ5YTljNDY2MDM5Njc5ZDIxNDJkMGRmMWMxMmZhNzcNCg0KR2l2ZW4g
+dGhhdCByb3V0aW5nLCBFQVBELCBEU1Agc3RhdGUsIGhhcmR3YXJlIElELCBhbmQgZ2FpbiBhbGwg
+Y2hlY2sgb3V0DQpjb3JyZWN0IGF0IGV2ZXJ5IGxheWVyIEkgY2FuIGluc3BlY3QgZnJvbSB1c2Vy
+c3BhY2UsIGJ1dCBXaW5kb3dzIHByb2R1Y2VzDQpjb3JyZWN0IG91dHB1dCBvbiB0aGUgc2FtZSBo
+YXJkd2FyZSwgSSBzdXNwZWN0IHRoZXJlJ3MgYW4gaW5pdGlhbGl6YXRpb24NCnN0ZXAgb3IgcmVn
+aXN0ZXIgc2VxdWVuY2UgdGhlIExpbnV4IGRyaXZlciBpc24ndCByZXBsaWNhdGluZyB0aGF0IFdp
+bmRvd3MnDQpDaXJydXMgZHJpdmVyIHBlcmZvcm1zIOKAlCBwb3NzaWJseSBzb21ldGhpbmcgbm90
+IGV4cG9zZWQgdmlhIHRoZSBzdGFuZGFyZA0KQUxTQSBjb250cm9scyAoYW4gYWRkaXRpb25hbCBj
+YWxpYnJhdGlvbi9pbml0IHN0ZXAsIGEgbWlzc2VkIEkyQyB3cml0ZQ0Kc2VxdWVuY2UsIG9yIHNv
+bWV0aGluZyBzcGVjaWZpYyB0byB0aGlzIGJvYXJkJ3MgaW1wbGVtZW50YXRpb24gb2YgdGhlDQp0
+d28tYW1wIERBQzEtc2hhcmVkIGNvbmZpZ3VyYXRpb24pLg0KDQpIYXBweSB0byB0ZXN0IHBhdGNo
+ZXMsIHB1bGwgYWRkaXRpb25hbCBkZWJ1Z2ZzL3JlZ21hcCBkdW1wcywgb3IgY29tcGFyZQ0KYWdh
+aW5zdCBhIFdpbmRvd3Mtc2lkZSBkcml2ZXIgdHJhY2UgaWYgdGhhdCB3b3VsZCBoZWxwIG5hcnJv
+dyB0aGlzIGRvd24uDQoNClRoYW5rcywNCkFkaXR5YSA6XQ0K
