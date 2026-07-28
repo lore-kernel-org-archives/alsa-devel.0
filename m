@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B25F6C54F4C
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2026 06:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA8E9C53219
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jul 2026 09:56:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 083C560195;
-	Tue, 28 Jul 2026 08:33:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 083C560195
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CBEB601FA;
+	Tue, 28 Jul 2026 11:56:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CBEB601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1785220413;
-	bh=s4I8hA07bYfkv10EyOtOZ+9RWacnaPLhPhy5283Gynk=;
+	s=default; t=1785232590;
+	bh=ZNVevsptdPNBI4t/aoEtOHUDexVbKPjzW/npHSmRgYs=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=AEOdocf2lM0Arqr2aWmaiImJ3cDoLz7fZpcCQLAOudgDtgq/v66GDhRwkmGUuVscX
-	 iivys4mHEP+Wfn8p3VFKYXWNAYLYiSMnLo61rWjmVHY8cAmRfDlaeWOfkv2XmlQagi
-	 yTIIpOol+Vq+caf+OEzn/JMI3CgHdVbb8x/6HXaA=
+	b=fc6U7urApHK28foW3t554ppodu6p5xNMa0VlbPDfM/1vu6EDR+zzqLxepiaeZ1QOj
+	 uZWP/InFu4hOaMaNtl1zaCNR1a8O8kjC3d0h1KtGPOUCDogRv8eQuacV4YQdptyOZk
+	 klzzhejD8Nmfw2Dtxn7zb7ywTv+VLy/NUFE352HM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 123D9F805F2; Tue, 28 Jul 2026 08:32:59 +0200 (CEST)
+	id BB225F805FF; Tue, 28 Jul 2026 11:55:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5398AF805ED;
-	Tue, 28 Jul 2026 08:32:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4604DF80600;
+	Tue, 28 Jul 2026 11:55:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09618F80526; Tue, 28 Jul 2026 08:32:51 +0200 (CEST)
+	id 6E7DFF80526; Tue, 28 Jul 2026 11:55:44 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785220369;
-	b=dRNEUFs7D5KO5LWq4zM+fbBT62s6VuFIQU4bLMvgomsAn/0ULZrWf3EZvTw4Uc53jTVY
-	 ltcB3bVolOcTTUvp02tF+/sDvDaPEvyXnbaNhfraD3oiqBkTk0PVmr7yPUEsWNDEcy/bC
-	 3Sc3AI+TB6yWomSt7kN8pxxas/nXbAP/8nlgDQRGQCBXBKNML2NKDTHr2JOH/eS4akvrp
-	 k97sq18jDeSyYEjkHtSEY6VV65uZ/Xv1LhbFjrHNb91VcaOBNDs82c6HsgOhS7HWoVPdp
-	 feK/iU6NO0JEPM75VnXTgHFzSFAmqyr5XQ74OIzZz4pvInnGXVowQ/Y2s3BJtl4Y8Pw==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785232543;
+	b=OI7F1Ox6m3x/09AZJES1Zk0b1lUyJ73Y7wthStNBooXa2BFsRYP4Bgek8zKRK/rJdAKS
+	 7Yhbvz3bejR9AS2+U7SV9KnjxNMKcBZGZY9PrZO4xbGBB+Z6ye8mNDNrWDr/sWS3ovYKA
+	 NKPvP42XUJgZQu+1Y9LPbP5HZmb42myXVsncl+IHINyLNP2hasGFrF1cClghPOJQOZjdV
+	 tnh3Sy379De0VfpeDh1nsiU5Qj70fr/2LFyRsJVCFnsZDxSdqOuM2bVPG7TaM4vAty8ZY
+	 jYmSrTvRxdW4oPDy0wIf71rghAD6SPOwPbFEi5oAhNIQNFllOlnpdJHXUbwn3bYQPgg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785220369;
+	c=relaxed/simple; t=1785232543;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=s4I8hA07bYfkv10EyOtOZ+9RWacnaPLhPhy5283Gynk=;
-	b=aEgibiCDjH1DEx2Yy137zcIctCsh8sBIolUxUPrtBEyX6Ptc90niuN5XEQZWez8hyFb9
-	 ROgiNkjtQCEb6yHgq7D0/ua7Zq+od/1I4UO0l/i+jlzlrt2hBgiMaqWBuE2gwDL9BW1TW
-	 dCYc7LXCTntHZgGKcTyW3AzI8X2BbwrBPTJx5jh/OoIYC43ghJvkRmYA9WGQQSI4wG3VP
-	 uDyFVQoZ3Rd1SX+BQYkufGS+3c+a2G0KvRd6Zp05cNfSxBJG4R6wbs0FnDHSX/YfUxDIs
-	 LtK4CqOoLKbIJQXOcMX6cjQfIAVuUmGuvdMI1I9pVnlqgV2AL6Q2LHrUzSFX1w3mxbg==
+	bh=ZNVevsptdPNBI4t/aoEtOHUDexVbKPjzW/npHSmRgYs=;
+	b=HXOgg3bbfymu2jiiwPzhQyFz8uOut1B3PZBsxLKLZrr2efaVBKBvQ3cLAOprbawpR1rB
+	 qQmfE09K/IS/Gj7Ef8uc0KOH/o9Krhgn9DLa10rXN7qeqQhnsA7LruDnuUxRusjdVLJ9T
+	 F1e47fLm8l/PHa2Z4AO1QjfMRISAYPBUejzJ5+0ql3RXRAcUpntwxYLTaUTiaXauuzruG
+	 9uqNYoh6+PEshZYPkzJgzhF4tV2XvuRFLK4HkTg6+zWXObT9ZPBD9OAE77TJdkNV9Ictb
+	 WzllK5T693EMQ3nHUcXbW0ObcGJSQFSwdeMsOIw4SFlJT5H3v78+hinU8+ciPQ5L31Q==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2893F801F7
-	for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2026 08:32:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2893F801F7
+	by alsa1.perex.cz (Postfix) with ESMTP id 88A5EF801F7
+	for <alsa-devel@alsa-project.org>; Tue, 28 Jul 2026 11:55:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88A5EF801F7
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18c6607700bddf00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18c660770098b800-webhooks-bot@alsa-project.org>
-References: <18c660770098b800-webhooks-bot@alsa-project.org>
-Subject: New Device: TASCAM DR Series (DR-05XP)
-Date: Tue, 28 Jul 2026 08:32:51 +0200 (CEST)
-Message-ID-Hash: PJKP3YMZ7A64S4FXT27J3UENVWVJBXGT
-X-Message-ID-Hash: PJKP3YMZ7A64S4FXT27J3UENVWVJBXGT
+Message-Id: <18c66b89d5ca6300-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/791@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/791@alsa-project.org>
+Subject: Qualcomm: qcs615/sa8775p/qcs8300: Add uboot TALOS EVK / Lemans EVK &
+ Monaco HiFi config
+Date: Tue, 28 Jul 2026 11:55:44 +0200 (CEST)
+Message-ID-Hash: WLWE7MPZWB2SWX6YTUIRN3MXCGGR6D7T
+X-Message-ID-Hash: WLWE7MPZWB2SWX6YTUIRN3MXCGGR6D7T
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PJKP3YMZ7A64S4FXT27J3UENVWVJBXGT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WLWE7MPZWB2SWX6YTUIRN3MXCGGR6D7T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,46 +85,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #819 was opened from robobenklein:
+alsa-project/alsa-ucm-conf pull request #791 was edited from kumarsingh-art:
 
-I'm not quite familiar enough here to add these devices since they all have different capabilities (channels/streams/etc). I only have the DR-05XP but was able to get it working in pipewire with just a rudimentary HiFi config.
+Add UCM2 configs for uboot variant of the Qualcomm variant Talos/ Lemans & QCS6490.
 
-The DR-05XP is 2-channel stereo input, however there are some other DR series devices that have more inputs and the USB identifier is not enough on it's own to know which device it is.
-
-alsa-info: https://alsa-project.org/db/?f=92aab8003f13685db869a948e85b8b9809d1f9d8
-
-udev USB info: (some unrelated lines omitted)
-
-```
-E: SUBSYSTEM=sound
-E: SOUND_INITIALIZED=1
-E: ID_VENDOR_FROM_DATABASE=TEAC Corp.
-E: ID_BUS=usb
-E: ID_MODEL=TASCAM_DR_Series
-E: ID_MODEL_ENC=TASCAM\x20DR\x20Series
-E: ID_MODEL_ID=8065
-E: ID_SERIAL=TEAC_Corporation_TASCAM_DR_Series
-E: ID_VENDOR=TEAC_Corporation
-E: ID_VENDOR_ENC=TEAC\x20Corporation
-E: ID_VENDOR_ID=0644
-E: ID_REVISION=0121
-E: ID_TYPE=audio
-E: ID_USB_MODEL=TASCAM_DR_Series
-E: ID_USB_MODEL_ENC=TASCAM\x20DR\x20Series
-E: ID_USB_MODEL_ID=8065
-E: ID_USB_SERIAL=TEAC_Corporation_TASCAM_DR_Series
-E: ID_USB_VENDOR=TEAC_Corporation
-E: ID_USB_VENDOR_ENC=TEAC\x20Corporation
-E: ID_USB_VENDOR_ID=0644
-E: ID_USB_REVISION=0121
-E: ID_USB_TYPE=audio
-E: ID_USB_INTERFACES=:010100:010200:030000:
-E: ID_USB_INTERFACE_NUM=00
-E: ID_USB_DRIVER=snd-usb-audio
-E: ID_ID=usb-TEAC_Corporation_TASCAM_DR_Series-00
-```
-
-I can't even assume that the devices are all stereo channels either, like the DR-10L Pro is probably mono (lav mic). Any assistance/advice on getting this added would be appreciated.
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/819
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/791
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/791.patch
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
