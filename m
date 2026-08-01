@@ -4,135 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37F7BC5518E
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2026 09:37:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA78AC55175
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Aug 2026 09:38:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E44F860209;
-	Mon,  3 Aug 2026 11:37:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E44F860209
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B10A601EF;
+	Mon,  3 Aug 2026 11:37:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B10A601EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1785749859;
-	bh=Bltht+q0Owqwr/jPSfkjocl1D5/JflDZGLG+4NP3eJ4=;
-	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1785749876;
+	bh=OIaiFi+mW+j+QuXtVDlnERytpRMhtImnUig2nDAuWos=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qWuAnHFlYuJX6BORmd2t2BpILUihRuHtQZ9tPH12UQHN1GniuMFuuGUMPoRw9PzVo
-	 EUy24vDX1vMUJI1BhCXlZ0vZfY3KcOWVwT+zaq3tNnsVl6gHHpPK0Zeibp/WBYa+ND
-	 npyJ3jb80R6eA45RP2wF+DKtNlmfGzQfZiGwOFMw=
+	b=KfJxhWPOycOs1BywVCWg08AzGLxpkFwajldvDT8lhI+XV/sZSd1LylzD6MVM6Ce7r
+	 ZdiigZeINnjmdokBuCKCcolvHqrfcTyAfTILVZiJ0souvenfve+d+LHmuEfgSF87nr
+	 t6WssQheRYrXl8OV7k9M4UkMVu5uOSAQQwX4p9KU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B0F3F80614; Mon,  3 Aug 2026 11:36:53 +0200 (CEST)
+	id 44690F8063A; Mon,  3 Aug 2026 11:37:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA8F9F8061D;
-	Mon,  3 Aug 2026 11:36:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06535F8063A;
+	Mon,  3 Aug 2026 11:37:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3CF6F804CC; Sat,  1 Aug 2026 21:29:56 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.128.177
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785612594;
-	b=OooLGWr2Ofe5uIjXUFMTVq5h5qAAD2oDfCEW/b2K/pep9AuHTx3gSzwbcrKM1giRxxZY
-	 I5Swf5oRDc7qbcLhl3A7EjfAdeLB7xin06aUXJZppcqrlwb/rUE2s3HYDwRAIIkS04MxA
-	 8Bh5UbyUPC6Oy2Dgw5qW8WSulCWB4251RQUSTfxJNTh7H1AKkQAIquWaQ68bYzcsSw1G7
-	 Q3Rrf11WFt/EnGoe27Au4N7ZrcsIheX1D6VI1xwh6nGhHF5ht1rxXcFDAB7LhQQR61b1E
-	 /GmnM9gq/gvUczVOojQ4T5NoBQs98V5oKj00NB2vdSas+vzOwicC5PQn3506lFbXGdA==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785612594;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=Bltht+q0Owqwr/jPSfkjocl1D5/JflDZGLG+4NP3eJ4=;
-	b=IabZHVCpTqXzyjl4Sxncj1FhJ6k5PeKvQ6dQNmnkm4+OGtea6x1E680MbEdkB3hbkxjE
-	 0liGHc2B0eVyB9og9g67r8Ta9g4HP+SU3VRretQXr8OPeWVrXDKNRqpSreTXIqYK7gldF
-	 SzRM2DBC+BXIsoA70UIXzD4Wn8xeNbWC3DEMqJVnblmgUxHAB45tdqrd0KhWFs5OWjEBo
-	 9p4inMeEREvsDxr93vNIngkc9cQnNX1t+CYsJv2GVZ1BgF+s0IvUqxXbLXek/grPH1QAK
-	 9oKWKGZcprUdmYdR1sKpThSbzNVuUKW8lUDPLmXUvOOEcbb03mqcyibmjNj4KRWjjXg==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
+	id D6338F804F3; Sun,  2 Aug 2026 01:00:50 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.51
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1785625249;
+	b=oFVhfq3yYNy2F5hkcqsfxHaaRslkJmR9HF1yr+UHSwLyYFVS/JWago4do+kE2j9tqull
+	 fBEscqUZkIiD+1KakbPUcPY1kMrUQL5PpoCCj4WGA8oxwWsNK5TTiXx/sUqUqPBbeCcY3
+	 88qNZkzhKdF7hKYWq20M2nCGSOnaGt+m/lrHdnUI87u7dUQKQpistWcAwRtnDdWAPZtsM
+	 vpr2EfWyeM5wH/KQPuRJzyUrLTJKRpDdanId/aVFQbbUt/rB9j/yGTJsqNPpQfQUi3jZ5
+	 vcp3A2eECLTwAdFpxaTqM9I5qfCpG2YJmwhBKeUUjSCMeZG/wvmYPtoVCcPjlLI9iaw==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1785625249;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=JEaUVZBQHljtc0jwQz+Cv3ZFJ4OMCSlUD7uqwTG9Dmg=;
+	b=X0dEnm8w/R1/jIr0DRH8gI1I7X2/2HyrOrHCe1vF/wEF8lMV79MQ3v/OwuVoRlsJaMku
+	 hWJfYRFsNw1udzpdsxJXSuNJk3AFEH5OiD4CuAkrsHKBnd4BteGG8walCIEVCnqO2Z95w
+	 e3VFIKelmci8xqwUyYApjb45DxSvMKv7tWHPvE0pKF/3BcNPxpbEst4ZOO8Npur1sAFiY
+	 KCUJ5fg8HWIyBgSK8cFG6Lw2iWKsRsqSw3L4+0U15N0/rk0HniNI0iBz6kRLT03jNsznB
+	 Dl+0Cr1Zxp26JAQMRlLx3Ie0Umq9000d2NwP/MElJ7KFO4U3XahXca08m2Ch+UACy0Q==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
  dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=p61DtKTP;
-	arc=none smtp.remote-ip=209.85.128.177
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com
- [209.85.128.177])
+ header.s=20251104 header.b=XghPkqB+;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.51
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com
+ [74.125.224.51])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87AABF8032D
-	for <alsa-devel@alsa-project.org>; Sat,  1 Aug 2026 21:29:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87AABF8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6EF90F8024C
+	for <alsa-devel@alsa-project.org>; Sun,  2 Aug 2026 01:00:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EF90F8024C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=p61DtKTP
-Received: by mail-yw1-f177.google.com with SMTP id
- 00721157ae682-81f3b227a4aso32552997b3.1
+ header.s=20251104 header.b=XghPkqB+
+Received: by mail-yx1-f51.google.com with SMTP id
+ 956f58d0204a3-667b0ced2d3so3268843d50.2
         for <alsa-devel@alsa-project.org>;
- Sat, 01 Aug 2026 12:29:52 -0700 (PDT)
+ Sat, 01 Aug 2026 16:00:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1785625246; cv=none;
+        d=google.com; s=arc-20260327;
+        b=RKdTCIRLM0pOpitKnCdd32hE1yRsgRC8dVhtjhCoHEFapbsX6VKStidXuH8AtEQRdd
+         TWKvESEsu2Jdjcgg8zC6MoG21fHWCpXrxAKYNtvgNm4Zmgn/Brz07WULRfyfzp6Sq0f0
+         0WOrOgE7O2j+uAod7s/EnSVM+p5J71lR2nvLTc/Ti8cQb500LYZW8w4lyr5i1zJGPCvr
+         h9bjYI4UIfGhTCYRhDVN9w4emynnDLtLbwtYT1UutPxD7ACYvqG6MZCHP55WTHxiYBKz
+         oEHA69kKx9f22zdzUBP47Wods9Vp2olUm17JPmlH1ODzheemv5yGzbFvkIvu2z2aWei4
+         vZKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=LLSLHtNcKi8dp8WILp2YTfJ47xo3xTSo53c97Tb/Vws=;
+        fh=D3jyEVY5qnZUNuYR0TrfGXQ1WJefQkO4YF9NMUrcKqg=;
+        b=PBBEawe/2vlfSPG9VCkgqS5R80Lilcui/WluvvNCH8ztCV1rE3AkY2eWtq7MiRZgwd
+         FuNK+dkGs6BDotk4cnr6CNxn9ICarOx1eDH2Ma7HOlDXLqLVTE2PW1JJQl1ZrZaOubrL
+         7cJ0bNPcRj7zsr5/xXsVbjfT5nw/+0h4qcAchRUwnBmFcAQGXJqxcz6LAvDZS/4dBSpm
+         9fL3GQYpWmCEJY4beaK5vwXF0bO6ARglqkRXMyWYngRX6WVM6yiOaYMdrKDGJ34B//Wg
+         2NQUlBrELA5fAlxG3F/ScZQMQq16DfvtviNFC+FuEd95eElu7pMwQmmcZuh3ol60YW6T
+         N3NQ==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785612591; x=1786217391;
+        d=gmail.com; s=20251104; t=1785625246; x=1786230046;
  darn=alsa-project.org;
-        h=user-agent:content-disposition:content-type:mime-version:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=f8EwEgCLAzSnLLvTB0ORM/t+tuYV4Jrt2Go9jEaMnDU=;
-        b=p61DtKTPP/jOrpzayWu46Rdaid+wkHdyNMCA79fNHcVqzBjj3ZpfGloeXiGp8FsyR/
-         kOMbb++kpkZydGZkhgMAW67v2zaawH/rFbr+81nOLGSVM6zurIa0/MJ7UKwwJC7uWVoZ
-         rI8nyBBCXNZ2HEM0t8WDAzo4giNCj8NHgogWYP46yjHLJKo3HxIchGV/NhZwQ6cR5jTu
-         SZyGEcb+KRdEHqzGuR89pXdG0Q031w4xIDe08KY7U0xf9aqaVSp8qv1SY8YlOto59Mm5
-         jKUYd6ZtP74WsIEPohEiOeDI1wcYI3lH0P9xW20JjM8f7ETHAeJ99FWNy4w7TqHjzuzf
-         X8yw==
+        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=LLSLHtNcKi8dp8WILp2YTfJ47xo3xTSo53c97Tb/Vws=;
+        b=XghPkqB+04AJdCunrcfodV4IzrVZP66+ujF0u5FWffr1J8rQMzQNZSCyCUboDIcciE
+         6K3RSlmJSVwVC9CZwuAUfUOC2RakDPoyUn9YgdBs2+karrx1nnp7Qz46uTh0TcxLQtR8
+         F+9kQyCNuIPqp+eDNTCzPpdgwZgLuIGKHamxfBYtqJeVdRpILbVmO6aPowKuVeEvGOr6
+         XBgXkmU2fNOR0Wkyj95wZR7B6lkE76jw8zvpGhTzJDI9nNimv3Wi/z+lDM0p9IGSjmFU
+         5oApw/XNEwxtZVY2Y1458HuKtgQ0feFZNbTPfKNTRHwCxipXYHjZJ/+eZhlRb9rmyi4x
+         +Avw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785612591; x=1786217391;
-        h=user-agent:content-disposition:content-type:mime-version:message-id
-         :subject:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=f8EwEgCLAzSnLLvTB0ORM/t+tuYV4Jrt2Go9jEaMnDU=;
-        b=gob8hv6w8Pd1vtEtgF1T3kYMghFOdmxC16GU9RUdxpkfins6W/Veff5JQWUYcZnhCq
-         WoIGgu84pvWORvNQqyKd0NESDJC6EJY1d2hMYasdnWpbxOAc3dYrOlunenHEiuVnwJIM
-         TzIvU1muCHcTFCW3Tnue39lIEC0Ho2QkNsS1J8giAPMMvqZb2wSVY8wSZzZrQmhbe3r/
-         KnK0vbh1/boVGGKMQKWkKynUQvbOTQ3dvtb0jCstDkjGm7wCezZRyeFiE5d5NFtaLKw/
-         JI1WtSCDQtVznHRR3vaJaQYtcPR9yQrx3GfUGDMNxzO3h7Mh5Ta6RFXxErZQWBY9qTTS
-         x9sQ==
-X-Gm-Message-State: AOJu0YzPZ/wa1+7/LLIPVlZYxhRH5cRXXvN1pF+K34PotMr8tz0F4jeM
-	xkJi93scxDc9JkxcM1NYqsxpmnqHldPIC/4VQu8aC33T70txEfNd5zJdb1D3nm0P
-X-Gm-Gg: AR+sD11bsGcAnW8lZTSaYaiFYtgxvjHlVQ52ITx29qhDZwmjrNFbNz4+4VBKe8bbL8I
-	H2ldeJ1MQFzPnivHdyjUN55C6CsXBXWZEW1ehm5AiYZcjJxCW+QTe/lvn9m1Dom3O2BWX4F2xZN
-	ceR4SpMFqcQBam9yWbPjKkGFYrWAvBB9WAMofsVjAki9tfu+bnHXRONSx3RJqqZmxwKsxhgo7rI
-	LbT1bPIRO6dSC9wyFjbcZLWFjYKLyLm1zphYtwKeBT1Gp6sYMl4hpDcjOkTZ66nsQj0mATVqXT+
-	mrhDe60A2CRrXAxmRVhUaBePYsZ3autJQbzhp2ZJTAvMaj3f2PDU2wRsVeITGfa15wV0Mel9Lhc
-	OizdKYenbyCeEGcy4Fu9ntX8hXjDcdG5AtQ4e3okzo3UvmYuCDbMP6Apd7z+ZoOXTbSbO0s8Dxr
-	pdCwK60lEFguGKJ9XryC5PQb/jvd2bfLS/EGHh6M/Ta1Ace+N/Cp7E4D1ZKA2DnD6di7btBjoJR
-	MrgVXQBFpal38ymky++36y8Ef1Rz0c=
-X-Received: by 2002:a05:690c:4442:b0:81e:c972:e8c3 with SMTP id
- 00721157ae682-81fd4ba85d1mr71180857b3.29.1785612591370;
-        Sat, 01 Aug 2026 12:29:51 -0700 (PDT)
-Received: from eggsbenedict (ip-74-215-254-164.dynamic.fuse.net.
- [74.215.254.164])
-        by smtp.gmail.com with ESMTPSA id
- 00721157ae682-81fccf97f33sm28863607b3.21.2026.08.01.12.29.50
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Aug 2026 12:29:50 -0700 (PDT)
-Date: Sat, 1 Aug 2026 15:29:49 -0400
-From: Adam Stylinski <kungfujesus06@gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: CA0132 surround issues
-Message-ID: <am5JLWbU55jEVW70@eggsbenedict>
+        d=1e100.net; s=20251104; t=1785625246; x=1786230046;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=LLSLHtNcKi8dp8WILp2YTfJ47xo3xTSo53c97Tb/Vws=;
+        b=H8wHEKXCDcJuxWuk7S08ODVWyImuAbqt23bzSXJB2aG1AnJukVQs13NXE7kvDwEXGY
+         bfcz1t0G+Al4zbAuY/acfyFIGA55/dQmXgkvbmfH/QErQh3u5q4j9LypcjFbOGZsiHbk
+         uw7YJDK9MbyJUIx1aTtNCPfXto3hYxH0SVMOx9mw9TitELpCxmHV6XJX257HQ+Z3qMd8
+         n26tg09wB29MQXqZQkOyZKfEDXhdOXSadf7tP3rw/FBxEgyGf8Ruj0Zpf9gk1oyPgZll
+         qR6sZYzrwy9ju6rXubTSlRPF21k8dFi7T+RA6ou6OK5Mlggd0JYAu7QqWOSkfd0PK6DD
+         DdBA==
+X-Gm-Message-State: AOJu0Yx/K4x2iinE+okzhDsrfoN/Dk9671NePNEUAyhH8Dw8Cd3boKp9
+	HH4sdaXQtqsLGsKNVDg5SetNcXw7zoCUia1fwMkE00kVbzGlszuBljh5O52TLRMWj5blNWJTNsK
+	oiHeSEG2rjuIPA+V8n+lwRGGt3XujZ9kv2PIZ7xNfjw==
+X-Gm-Gg: AR+sD13v59UofZ6BU5RrqHNlA7cJIKSehDXN00wpvqIXyRxyR2NSeC52LZmdnjtLlZj
+	kxP/uFUUvz4deFu6kAOqcDaw8hOHDHJZbK4hdzMMyOIO+pIxI3b1GcG3cJ4E5o4WK777wpxj3aW
+	LLEY5MzxWiTXfOpxDJf4nFVc93OHc9UH2qw74YKvxLfJ/TUWvPt9quy3Z89o/bihM849plXvOCx
+	Z5wyOkAOA+UyRck40DDqvrXo4/K8J48lakIif9nQmtPo0Q/TwbcYwhnActpMP5FQbqm/U+fydzK
+	RqrWtITclRoE8y1llWaIbvkZQ+PLCB6dXuZwnDPhPCl7NH990krQWtSTbtjQXoPZeD9rPEy2jhD
+	R1UypnRLt180JgGZE5rqmGDXGJ1R7rPbwHA==
+X-Received: by 2002:a53:a789:0:b0:668:2553:a194 with SMTP id
+ 956f58d0204a3-6694f277ba3mr5424614d50.45.1785625246009; Sat, 01 Aug 2026
+ 16:00:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/2.3.3 (2026-06-12)
-X-MailFrom: kungfujesus06@gmail.com
+From: Gemayel Lira <gemayellira@gmail.com>
+Date: Sat, 1 Aug 2026 20:00:22 -0300
+X-Gm-Features: AUfX_mxOb40xnoRfK9PDpNB-A-51rxTJShmEZYVvTTrqcWOspGYyZFRH9IaYZdA
+Message-ID: 
+ <CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
+Subject: [PATCH] ALSA: hda/cs35l41: Add DSD property override for ASUS
+ UX3405CA
+To: alsa-devel@alsa-project.org
+Cc: sbinding@opensource.cirrus.com, tiwai@suse.de
+Content-Type: multipart/mixed; boundary="0000000000007dd328065804467a"
+X-MailFrom: gemayellira@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: ABYJ7YOAO2TF2PKAAPZJ254LL7IKJRMT
-X-Message-ID-Hash: ABYJ7YOAO2TF2PKAAPZJ254LL7IKJRMT
-X-Mailman-Approved-At: Mon, 03 Aug 2026 09:36:48 +0000
+Message-ID-Hash: GH5C5RG4756IKJ2WTGKNIAMDYRIO5QMF
+X-Message-ID-Hash: GH5C5RG4756IKJ2WTGKNIAMDYRIO5QMF
+X-Mailman-Approved-At: Mon, 03 Aug 2026 09:36:56 +0000
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ABYJ7YOAO2TF2PKAAPZJ254LL7IKJRMT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GH5C5RG4756IKJ2WTGKNIAMDYRIO5QMF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,6 +157,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello,
+--0000000000007dd328065804467a
+Content-Type: text/plain; charset="UTF-8"
 
-I have an EVGA X299 Dark motherboard that has a Core3d based chip.  I use an analog 5.1 configuration and have noticed that often the surround, center, and LFE channels end up not initializing correctly when testing through speaker-test.  I went down the rabbit hole of patching the kernel module with hardcoding msleeps before ca0132_alt_select_out is called and returning early from some of the callbacks if the DSP firmware downloaded state wasn't set as DOWNLOAD_COMPLETE.  I don't suspect these things had any influence, though.  I then manually set amixer controls for these things to "off" and then back "on" again and magically they came back to life, suggesting something is happening setting up the chip's pin configuration that amixer somehow fixes.  My mixer controls were on and the volumes were set at audible levels.  I'm hoping someone here as a suggestion other than a hacky fix of just retoggling these things every time.  
+The ASUS Zenbook 14 UX3405CA (SSID 1043:1A63) has internal CS35L41
+amplifiers, but was using the missing_speaker_id_gpio2 fallback entry.
+This caused the right speaker channel to bind with VSPK voltage switch
+disabled
+(VSPK: 0), leading to a volume drop ~1 second after starting playback due to
+power imbalance protection.
+
+Add an explicit entry for 10431A63 in cs35l41_config_table with internal
+boost
+type, 4500mA peak current, and switch its model mapping to
+generic_dsd_config.
+This resolves the volume drop issue and enables proper internal boost for
+both channels.
+
+Pull Request on SOF Project:
+https://github.com/thesofproject/linux/pull/5866
+
+Signed-off-by: Gemayel Lira <gemayellira@gmail.com>
+
+--0000000000007dd328065804467a
+Content-Type: text/x-patch; charset="US-ASCII";
+	name="0001-ALSA-hda-cs35l41-Add-DSD-property-override-for-ASUS-UX3405CA.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-cs35l41-Add-DSD-property-override-for-ASUS-UX3405CA.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_msaz1mv40>
+X-Attachment-Id: f_msaz1mv40
+
+RnJvbSAxMDQzMUE2MzAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBHZW1heWVsIExpcmEgPGdlbWF5ZWxsaXJhQGdtYWlsLmNvbT4K
+RGF0ZTogU2F0LCAxIEF1ZyAyMDI2IDE5OjE1OjAwIC0wMzAwClN1YmplY3Q6IFtQQVRDSF0gQUxT
+QTogaGRhL2NzMzVsNDE6IEFkZCBEU0QgcHJvcGVydHkgb3ZlcnJpZGUgZm9yIEFTVVMgVVgzNDA1
+Q0EKClRoZSBBU1VTIFplbmJvb2sgMTQgVVgzNDA1Q0EgKFNTSUQgMTA0MzoxQTYzKSBoYXMgaW50
+ZXJuYWwgQ1MzNUw0MQphbXBsaWZpZXJzLCBidXQgd2FzIHVzaW5nIHRoZSBgbWlzc2luZ19zcGVh
+a2VyX2lkX2dwaW8yYCBmYWxsYmFjayBlbnRyeS4KVGhpcyBjYXVzZWQgdGhlIHJpZ2h0IHNwZWFr
+ZXIgY2hhbm5lbCB0byBiaW5kIHdpdGggVlNQSyB2b2x0YWdlIHN3aXRjaCBkaXNhYmxlZAooVlNQ
+SzogMCksIGxlYWRpbmcgdG8gYSB2b2x1bWUgZHJvcCB+MSBzZWNvbmQgYWZ0ZXIgc3RhcnRpbmcg
+cGxheWJhY2sgZHVlIHRvCnBvd2VyIGltYmFsYW5jZSBwcm90ZWN0aW9uLgoKQWRkIGFuIGV4cGxp
+Y2l0IGVudHJ5IGZvciAxMDQzMUE2MyBpbiBjczM1bDQxX2NvbmZpZ190YWJsZSB3aXRoIGludGVy
+bmFsIGJvb3N0CnR5cGUsIDQ1MDBtQSBwZWFrIGN1cnJlbnQsIGFuZCBzd2l0Y2ggaXRzIG1vZGVs
+IG1hcHBpbmcgdG8gYGdlbmVyaWNfZHNkX2NvbmZpZ2AuClRoaXMgcmVzb2x2ZXMgdGhlIHZvbHVt
+ZSBkcm9wIGlzc3VlIGFuZCBlbmFibGVzIHByb3BlciBpbnRlcm5hbCBib29zdCBmb3IgYm90aCBj
+aGFubmVscy4KClNpZ25lZC1vZmYtYnk6IEdlbWF5ZWwgTGlyYSA8Z2VtYXllbGxpcmFAZ21haWwu
+Y29tPgotLS0KIHNvdW5kL2hkYS9jb2RlY3Mvc2lkZS1jb2RlY3MvY3MzNWw0MV9oZGFfcHJvcGVy
+dHkuYyB8IDMgKystCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9u
+KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvaGRhL2NvZGVjcy9zaWRlLWNvZGVjcy9jczM1bDQxX2hk
+YV9wcm9wZXJ0eS5jIGIvc291bmQvaGRhL2NvZGVjcy9zaWRlLWNvZGVjcy9jczM1bDQxX2hkYV9w
+cm9wZXJ0eS5jCmluZGV4IDQxNmQ3YmYuLjFjZjEyZjggMTAwNjQ0Ci0tLSBhL3NvdW5kL2hkYS9j
+b2RlY3Mvc2lkZS1jb2RlY3MvY3MzNWw0MV9oZGFfcHJvcGVydHkuYworKysgYi9zb3VuZC9oZGEv
+Y29kZWNzL3NpZGUtY29kZWNzL2NzMzVsNDFfaGRhX3Byb3BlcnR5LmMKQEAgLTEwNCw2ICsxMDQs
+NyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGNzMzVsNDFfY29uZmlnIGNzMzVsNDFfY29uZmlnX3Rh
+YmxlW10gPSB7CiAJeyAiMTA0MzE3RjMiLCAyLCBJTlRFUk5BTCwgeyBDUzM1TDQxX0xFRlQsIENT
+MzVMNDFfUklHSFQsIDAsIDAgfSwgMCwgMSwgLTEsIDEwMDAsIDQ1MDAsIDI0IH0sCiAJeyAiMTA0
+MzE4NjMiLCAyLCBJTlRFUk5BTCwgeyBDUzM1TDQxX0xFRlQsIENTMzVMNDFfUklHSFQsIDAsIDAg
+fSwgMSwgMiwgMCwgMTAwMCwgNDUwMCwgMjQgfSwKIAl7ICIxMDQzMThEMyIsIDIsIEVYVEVSTkFM
+LCB7IENTMzVMNDFfTEVGVCwgQ1MzNUw0MV9SSUdIVCwgMCwgMCB9LCAwLCAxLCAtMSwgMCwgMCwg
+MCB9LAorCXsgIjEwNDMxQTYzIiwgMiwgSU5URVJOQUwsIHsgQ1MzNUw0MV9MRUZULCBDUzM1TDQx
+X1JJR0hULCAwLCAwIH0sIC0xLCAyLCAtMSwgMTAwMCwgNDUwMCwgMjQgfSwKIAl7ICIxMDQzMUE4
+MyIsIDIsIElOVEVSTkFMLCB7IENTMzVMNDFfTEVGVCwgQ1MzNUw0MV9SSUdIVCwgMCwgMCB9LCAw
+LCAxLCAtMSwgMTAwMCwgNDUwMCwgMjQgfSwKIAl7ICIxMDQzMUI5MyIsIDIsIElOVEVSTkFMLCB7
+IENTMzVMNDFfTEVGVCwgQ1MzNUw0MV9SSUdIVCwgMCwgMCB9LCAxLCAyLCAwLCAxMDAwLCA0NTAw
+LCAyNCB9LAogCXsgIjEwNDMxQzlGIiwgMiwgSU5URVJOQUwsIHsgQ1MzNUw0MV9MRUZULCBDUzM1
+TDQxX1JJR0hULCAwLCAwIH0sIDEsIDIsIDAsIDEwMDAsIDQ1MDAsIDI0IH0sCkBAIC01MzAsNyAr
+NTMxLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBjczM1bDQxX3Byb3BfbW9kZWwgY3MzNWw0MV9w
+cm9wX21vZGVsX3RhYmxlW10gPSB7CiAJeyAiQ1NDMzU1MSIsICIxMDQzMTdGMyIsIGdlbmVyaWNf
+ZHNkX2NvbmZpZyB9LAogCXsgIkNTQzM1NTEiLCAiMTA0MzE4NjMiLCBnZW5lcmljX2RzZF9jb25m
+aWcgfSwKIAl7ICJDU0MzNTUxIiwgIjEwNDMxOEQzIiwgZ2VuZXJpY19kc2RfY29uZmlnIH0sCi0J
+eyAiQ1NDMzU1MSIsICIxMDQzMUE2MyIsIG1pc3Npbmdfc3BlYWtlcl9pZF9ncGlvMiB9LAorCXsg
+IkNTQzM1NTEiLCAiMTA0MzFBNjMiLCBnZW5lcmljX2RzZF9jb25maWcgfSwKIAl7ICJDU0MzNTUx
+IiwgIjEwNDMxQTgzIiwgZ2VuZXJpY19kc2RfY29uZmlnIH0sCiAJeyAiQ1NDMzU1MSIsICIxMDQz
+MUI5MyIsIGdlbmVyaWNfZHNkX2NvbmZpZyB9LAogCXsgIkNTQzM1NTEiLCAiMTA0MzFDOUYiLCBn
+ZW5lcmljX2RzZF9jb25maWcgfSwKLS0gCjIuNDMuMAo=
+--0000000000007dd328065804467a--
