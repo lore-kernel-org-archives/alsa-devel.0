@@ -4,184 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5029C55822
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2026 10:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBCEBC55174
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2026 10:29:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5928960207;
-	Wed,  5 Aug 2026 12:26:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5928960207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C4A260206;
+	Wed,  5 Aug 2026 12:29:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C4A260206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1785925616;
-	bh=DTIY4a3IIlFkxHcem+4DxqCkM++BTUvp38hZAfsQo4Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1785925753;
+	bh=DzSWKolsbZfV/bmaX6Qw6RBF5KKptoaNWsLV4MdY+v8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KdUONswvBxMSMaa4aRXgjqIEE0F2qYW/VJRJQ65GJwJ18p8rFYQyjitdid1Esvhsq
-	 iLPChRBfQdIUFFRHTrfBHkvJTDyy7Xg+HjfMpl1f2YJ7VzU5lJQGMhBhj3osQDEBAA
-	 IhBsq5KUR8diMhSwg3E1+cEsm3mL3sjtnW+mfySY=
+	b=IgpNUI+Ofc6eV2PY1+ci7Qxgaa4yBhdz0fWdnv0Yi5eeL2C8x1/qk9HqGCpSrlKua
+	 Udmz7cTj8Zbc1siBjhGtxAkIZQCwGUOYsu+IVbb9CXosk9lfh6TZ3QT4BwobXQ5VVx
+	 SpjtLL1rAqso6euCVwiRpSfG/pjCntxOGzI7UmvE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2704CF805C2; Wed,  5 Aug 2026 12:26:14 +0200 (CEST)
+	id D3704F805FF; Wed,  5 Aug 2026 12:28:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4655EF805FC;
-	Wed,  5 Aug 2026 12:26:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECD70F805F8;
+	Wed,  5 Aug 2026 12:28:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7BCBF8027B; Wed,  5 Aug 2026 12:26:07 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.130
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785925563;
-	b=FuxPa4Oa4rFaIFhw0GJSscCuZChMavCTuTDlTe5GCy8/xgT3xk4nRk0FrE/2kpFubCPf
-	 Mmw5e20QN2g45pgOFJjYRU6nhKP2Ftjv2aMNiAbOfJVh8Jag4fditoC57Jf5btOCl2OYI
-	 GmeVd3tDF+j+iUtst/VJoqklhdF8wckfKHs0a+dfH569lP2pir8+tK/qPL4r6TUizwaT+
-	 SuRjBzaKuxwG20ZHBLUjP66mqG/0cChT0+DFhJPMNL8O5noI3IuFRRsrPFcePrt86DNIc
-	 YhtisNylzfb1dSh72JIStHIrk1By/WD8HshWGtLZy4ZH+Zd/mz7cKhn+hmWGsILS9KQ==
+	id 40DEAF805BF; Mon,  3 Aug 2026 12:36:05 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=95.215.58.187
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785753364;
+	b=Ys9dIXskWF6l+lCnHtoOl3TvhVvdx+kgsPPjJx14Zih2oUOiM7WH2mgS2v6dlVj0tSS2
+	 VH2k9ZuUZdDR+QE1NXvLnge6et703IsdZ4eG/3wyIYW9E4cPGHVNn7D1IbiRTk2hlhe8J
+	 G+crKQKJBAE8uIeKxr/Kg6UmjFTXmrr5zkCTVeYGbnPNqdvGiYqCOVdsGCD3rHF6J0mAF
+	 b7KBJyPNFmiXOn6i02ib8JPXW7XuTqfkjQawE0SxhFRi2f0gvpJNzP4cvFJtDA//5CzQh
+	 ma7NptZOMiHHtBhFyxIVM2I51IQqbWLSxSJTj/bugzT37hwT2J8IyToGdOCgcvOefQQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785925563;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=DTIY4a3IIlFkxHcem+4DxqCkM++BTUvp38hZAfsQo4Y=;
-	b=reE/NJxfbLBMJOKz7s0jwBDmGhNxUpDLE0JnAxahruoWkellwBiVZL9lFndY0oJ7bcXf
-	 GjY3vaF4f4zTtAQQbTnQ6lOURCoQBoUqJeaRuUnLVAAOWkmtGZ6JFtth8ewbhkQe0mFyJ
-	 bUjfzhaJIYaOALvEt+cxWo76RncAuLeraQThqEikSPEwaBWRML+75KejxhwyO/qTd7WOT
-	 dlzBDOi3/wrimaR/yUzokjEGlVABI8uvhKX1o8NCb7eIGPBXinoa1OIDXJ2g9XEvQ+pYy
-	 J/0SxLZYgHSyWMc4v9yg4zXJZpwDaGCW3h0+KJn+5B+DM0IuagOl9LzfuyThNa5kx9g==
+	c=relaxed/simple; t=1785753364;
+	h=Message-ID:DKIM-Signature:Date:MIME-Version:Subject:To:From;
+	bh=DzSWKolsbZfV/bmaX6Qw6RBF5KKptoaNWsLV4MdY+v8=;
+	b=d/u9qiVMeJFeq+Z+9G9Y098RGRCHncAuMQ3+PbIKot+ON5yLP2kxTtfchsI2ejNxTXM5
+	 39lPm011jIrCNKwszxWopdM05LdekQmQhiOmNJ2eVeiA0cx0uTpOvlvKqWqgRPfkq5CFe
+	 GCcOUL8xfTWxg64TCMItR4d31kwyjR591jkxg8gWyBJER1hOyLz00Rvhc1t1hgk+q7XIX
+	 PYP1jUu8+mRaMYw49+K/MhBi/HgX6RRYxlHJ3jeyC/zYalASrOg3xtAvG/GGkfL90iZzf
+	 8JGePXFhHgDB/h+by6bPG/YZzPWvHRn50mFGzqoxTs76Ee86K5f32VIY8lsihNSjqww==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b="wTVL/Xwk";
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=yqCalbb5;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=yNZ7gyA4;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=VzgTL51O;
-	arc=none smtp.remote-ip=195.135.223.130
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+ dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256
+ header.s=key1 header.b=BrTfedeE;
+	arc=none smtp.remote-ip=95.215.58.187
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com
+ [95.215.58.187])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3BC62F800C1
-	for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2026 12:26:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BC62F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0CE87F800D2
+	for <alsa-devel@alsa-project.org>; Mon,  3 Aug 2026 12:36:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CE87F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=wTVL/Xwk;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=yqCalbb5;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=yNZ7gyA4;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=VzgTL51O
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3DFD37FD3A;
-	Wed,  5 Aug 2026 10:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1785925557;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+ unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256
+ header.s=key1 header.b=BrTfedeE
+Message-ID: <b0bba73d-0ce4-4472-affe-e5dd6f4bbdc2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1785753361;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jr2lYpizDEuYuzh+HKhbStp4QDbO2DK7JskvfnGxk5Q=;
-	b=wTVL/XwkKWZu2PSlCgI95uJkT+HNBFdWPRzuTHa7Gg7OFce4kynGdTMNmm6QpRyagQuu6n
-	Rq80BE5CTbaguY++eoOytzFsb857F/0R4WIp7R1d6ZwGX3u7r+DMx/igRDWmcLfaNMLnso
-	gMIf55OZ6DDtn5DprbbS9Nu27FIzMRc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1785925557;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jr2lYpizDEuYuzh+HKhbStp4QDbO2DK7JskvfnGxk5Q=;
-	b=yqCalbb5ks6A2rYIfFI9bBspJX9MGyM/qxVATlQaUeoPMC8lfw/M3A4QA08P88VIAUuOC6
-	tOAGjz+1rBCniFCQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1785925553;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jr2lYpizDEuYuzh+HKhbStp4QDbO2DK7JskvfnGxk5Q=;
-	b=yNZ7gyA4HJqF0Csa702hSCmDtUJ3i8SfZ80y9vx00e3Z31Co0oIbbkQwvadJ9zbGoLJmSB
-	0COr+jaTpiMdKRMePLpx4ve2RXRt1VYMBn6JH++9yo1ldfSjayVGLGgz8p847ZmAd5pnCt
-	MPHsZ3UOFkuDWOnHw6SBEYSgbxKTuuM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1785925553;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jr2lYpizDEuYuzh+HKhbStp4QDbO2DK7JskvfnGxk5Q=;
-	b=VzgTL51OuX/7/wt9spMdUoRspwRCUJUMjjksZDIqJ0aR5FGlmqmaP2vfhlaT+/VFZjKyQX
-	p//2Z+kXtg4W0dDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E8CE779B6;
-	Wed,  5 Aug 2026 10:25:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8AApBrEPc2ppbgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 05 Aug 2026 10:25:53 +0000
-Date: Wed, 05 Aug 2026 12:25:52 +0200
-Message-ID: <87y0ekg8y7.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Attila Hudecz <ahudecz@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	bo.liu@senarytech.com
-Subject: Re: [BUG] hda/conexant: SN6140 (0x14f11f87) loses widget state
- across suspend =?ISO-2022-JP?B?GyRCIT0bKEI=?= silent capture + dead
- speaker, no resume callback
-In-Reply-To: 
- <CAKuZFt+_TMWoBmG5uKhTfGQYkDwuubHmritEntvcAYkE1OJQmw@mail.gmail.com>
+	bh=U7FxktgWcNxGwdqetE4tTPpoSBKbPAwvsXbY+ZSGtU8=;
+	b=BrTfedeEeD9e0I2bYDbJAlIeMBKHwOgafGwDV+wv2AdAqRv/HLhVHvCrTdhqZhV6CB25h+
+	V/c90KcpILbDybfRoEr3hNIkXtuLwSC4lGiaLXZqyGAtoAnyqilP/MkkC8/ZM2sYOR7tCO
+	H28SUHt2W9TqcSwXwPsp51eSNQi3Uuk=
+Date: Mon, 3 Aug 2026 12:35:05 +0200
+MIME-Version: 1.0
+Subject: Re: [BUG] ASoC: Intel PTL missing SoundWire machine match for RT712 +
+ 4x TAS2783 speakers
+To: Michael <michael.aug@proton.me>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+ "cezary.rojewski@intel.com" <cezary.rojewski@intel.com>,
+ "peter.ujfalusi@linux.intel.com" <peter.ujfalusi@linux.intel.com>,
+ "kai.vehmanen@linux.intel.com" <kai.vehmanen@linux.intel.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "Ding, Shenghao" <shenghao-ding@ti.com>
 References: 
- <CAKuZFtLvRRNZnJ23xNBWwDcEsY8Wnz0eR2N6x12qtgiBWDp7iQ@mail.gmail.com>
-	<CAKuZFt+_TMWoBmG5uKhTfGQYkDwuubHmritEntvcAYkE1OJQmw@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-2022-JP
-X-Spamd-Result: default: False [-3.24 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.14)[-0.711];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo]
-Message-ID-Hash: OQQSCCKXE7QJO47QKUN7TK6OOZLE7UO3
-X-Message-ID-Hash: OQQSCCKXE7QJO47QKUN7TK6OOZLE7UO3
-X-MailFrom: tiwai@suse.de
+ <0yjEfELdq8KgSJpwXwJvW10Htk7nW2uES5-hrdsx3iQUTRo3m_gxNgy9pTHxQinv0XiP2d8GWccuIbm3LuZthqwX7FQc_LAg5rncuoCx-70=@proton.me>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>
+In-Reply-To: 
+ <0yjEfELdq8KgSJpwXwJvW10Htk7nW2uES5-hrdsx3iQUTRo3m_gxNgy9pTHxQinv0XiP2d8GWccuIbm3LuZthqwX7FQc_LAg5rncuoCx-70=@proton.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-MailFrom: pierre-louis.bossart@linux.dev
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: 2BTY64SFIMBV3JCOIB3W57OSOLXCR4PP
+X-Message-ID-Hash: 2BTY64SFIMBV3JCOIB3W57OSOLXCR4PP
+X-Mailman-Approved-At: Wed, 05 Aug 2026 10:28:30 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OQQSCCKXE7QJO47QKUN7TK6OOZLE7UO3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2BTY64SFIMBV3JCOIB3W57OSOLXCR4PP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -190,99 +118,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 05 Aug 2026 11:29:35 +0200,
-Attila Hudecz wrote:
-> 
-> 
-> Follow-up with three weeks of monitoring data (a watchdog samples the ALSA
-> PCM state every 5s and snapshots context on each failure), plus a specific
-> question for Bo Liu about the codec's internal power behaviour.
-> 
-> == New findings since the original report ==
-> 
-> 1. The failures are NOT limited to suspend/resume. Of ~30 logged events,
-> roughly half occurred with no suspend at all $B!=(B typically on the first
-> capture after 1-3 h of capture-idle, and occasionally mid-stream (hw_ptr
-> advancing, then frozen). A resume-only fix therefore would not cover all
-> cases.
-> 
-> 2. In the failed state the widgets read "Power: setting=D3, actual=D3" $B!=(B
-> i.e. the codec's power-state register itself holds D3 as the *set* value $B!=(B
-> while on the software side nobody requested it:
-> - snd_hda_intel power_save=0 power_save_controller=N (verified live),
-> - kernel log completely silent at the moment of failure,
-> - PCI device and codec stay in D0 / runtime-active,
-> - userspace (PipeWire/WirePlumber) ruled out.
-> Codec re-init via /sys/.../reconfig always restores the silent variant;
-> the spurious-response/single_cmd variant needs a controller reset (reboot).
-> 
-> 3. Event frequency wanders (0-6/day) and has worsened over the three weeks,
-> independent of kernel (6.17.0-122035 $B"*(B 6.17.0-124040), PipeWire and other
-> userspace changes $B!=(B so a platform/firmware factor may be involved. An
-> EC/BIOS update recommended by the vendor (TUXEDO) is pending on our side;
-> I will report its effect on the thread.
-> 
-> == Question for Bo Liu ==
-> 
-> Does the SN61xx family implement an internal / autonomous power-down (or
-> power-state controller) that is meant to be configured or disabled through
-> vendor init verbs? The observed behaviour $B!=(B widgets ending up with
-> setting=D3 with no driver activity, recoverable only by re-running codec
-> init $B!=(B looks like un-configured codec-internal power logic rather than
-> driver-initiated PM.
-> 
-> Your SN6186 work adds senary_init_verb() and an init-verb/fixup framework.
-> Does the SN6140 need an equivalent vendor init-verb table, and could you
-> share the appropriate verbs/coefficients? (conexant.c already writes one
-> vendor coefficient for this family $B!=(B the 0x320/0x010 micbias comparator
-> setting on nid 0x1c $B!=(B so I assume more such coefs exist.)
-> 
-> == Candidate patch, and offer to test ==
-> 
-> I drafted a minimal resume callback for conexant.c mirroring the pending
-> senarytech one (below). It builds and loads fine on 6.17, but per finding
-> (1) it cannot address the no-suspend cases, so I have reverted it pending
-> your guidance on the init-verb question. I have a ready build/test pipeline
-> for this machine and can turn any test patch around within a day.
-> 
-> --- a/sound/hda/codecs/conexant.c
-> +++ b/sound/hda/codecs/conexant.c
-> @@ -1269,6 +1269,21 @@
-> return err;
-> }
-> 
-> +/*
-> + * The generic HDA resume path restores the register cache but does not
-> re-run
-> + * the codec's init sequence, so vendor-specific hardware state (widget
-> power,
-> + * converter/pin setup) can be lost after S3 resume, leaving capture and the
-> + * internal speaker silent with the codec stuck in D3. Mirror the senarytech
-> + * fix: on resume, re-sync the register cache, re-run init, and resync jacks.
-> + */
-> +static int cx_resume(struct hda_codec *codec)
-> +{
-> + regcache_sync(codec->core.regmap);
-> + cx_init(codec);
-> + snd_hda_jack_report_sync(codec);
-> + return 0;
-> +}
-> +
-> static const struct hda_codec_ops cx_codec_ops = {
-> .probe = cx_probe,
-> .remove = cx_remove,
-> @@ -1277,6 +1292,7 @@
-> .init = cx_init,
-> .unsol_event = snd_hda_jack_unsol_event,
-> .suspend = cx_suspend,
-> + .resume = cx_resume,
-> .check_power_status = snd_hda_gen_check_power_status,
-> .stream_pm = snd_hda_gen_stream_pm,
-> };
 
-This patch shouldn't improve things, I suppose.  Basically it's as
-same as the behavior without NULL resume callback; see
-hda_codec_runtime_resume() in sound/hda/common/codec.c.
+> The expected configuration appears to be:
+> 
+> |link 2:   4 x TAS2783 (mfg_id 0x0102, part_id 0x0000) link 3:   RT712
+> SDCA (mfg_id 0x025d, part_id 0x0712) |
 
 
-Takashi
+There's a similar configuration with another bug report, see
+
+https://bugzilla.kernel.org/show_bug.cgi?id=221782
+
+the symptoms are different but clearly this configuration isn't well
+handled just yet.
+
+> Could you confirm whether this configuration is expected to be
+> supported, and if so whether a PTL machine-table entry/topology is still
+> missing?
+
+It's my understanding that the function topologies are expected now,
+machine table entries are no longer required.
+
+In the dmesg log, what's suspicious to me is those lines:
+
+[  225.115571] acpi device:1d: function type only supported as DisCo
+constant
+[  225.115930] acpi device:1f: function type only supported as DisCo
+constant
+[  225.116271] acpi device:21: function type only supported as DisCo
+constant
+[  225.116612] acpi device:23: function type only supported as DisCo
+constant
+[  225.117313] acpi device:25: SDCA function UAJ (type 6) at 0x1
+[  225.117317] acpi device:26: SDCA function SmartMic (type 3) at 0x2
+[  225.117320] acpi device:27: SDCA function HID (type 10) at 0x3
+
+not sure why the 4 amps report information that's not well parsed, if
+the amps were recognized as such you'd see a clearer log. For now only
+the rt712 is handled correctly.
