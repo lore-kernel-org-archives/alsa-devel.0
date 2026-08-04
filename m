@@ -4,115 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD7C9C55184
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2026 06:47:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13133C55184
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Aug 2026 15:59:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99A83601F3;
-	Tue,  4 Aug 2026 08:47:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99A83601F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49C98601FA;
+	Tue,  4 Aug 2026 17:59:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49C98601FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1785826071;
-	bh=ibQFH33HuZxup+LsPpPiJaBBwerq3csbTkIzsNdUSpc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1785859173;
+	bh=Uj+hqmUGSDBh3V5sSr8hvpvP2lfDmrKY/nrjhfGjB5I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZEhHAgOz89R2xS1d2IMcou3RnfTEAJ7oPfu2XgZIwRcVN5KnLPkQO/i7gtj1sRsZv
-	 B54bJPCZtFMZZOXf9unc2tx6eV+/nEOk/h00YNdAAb1GadhQvGYBnOcja6O3SUWBOK
-	 itE3KnyHLBN+6OCzjInBptMSjHAEoSZcyGyCRF4I=
+	b=U5TN74IR/wW6vSPm/XsLWouPfY/z90KAvvYt3+ayidrsucFqLDBTc2R6GnvIUeUJ8
+	 yCzA9gKaq56eav98rdncH8v3fKf/KqayD6vFo6zUaMpXmLWr4BC046kxGK9Cd7rbU1
+	 iGSJvyq2cZwHZnFwRhxoTVr3m1mjMsPyTT2Gb7Fw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F5D2F802BE; Tue,  4 Aug 2026 08:47:19 +0200 (CEST)
+	id 109EDF805FD; Tue,  4 Aug 2026 17:58:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDD65F805F0;
-	Tue,  4 Aug 2026 08:47:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A486EF80601;
+	Tue,  4 Aug 2026 17:58:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4390F805A8; Tue,  4 Aug 2026 08:47:11 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=198.175.65.10
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785826030;
-	b=Ud2Fu10AckBbMHB6gEJ0fItcooThetw+BL0A9UVHP64riqFVRbfGAcvW5IitEN0XOnky
-	 JVriXRTI1VG/apfrEDsSZMrgIvCUvVInHI/SocKEFK6FRseKoL6AxV0Ul2tB5ooCA1ZEb
-	 49c0yxdaCsRPo3NYRkfdu0i1nRL7GqInFnZ9cRQshP9c5h0LbS92Lw04gMZHnz51gCrwO
-	 u2Tx1zWlB/M8vICAqNGQrSD0V56F8DbFaNwX2ChY1LeSNywWNq4djykeVJJO2vxYTOGwL
-	 rH4GFIa/txuF5B1TTjlNYHEn5cD6Ja2zLnmrnXq2kYuzGlHcGvzyssjCRXqjcgsO65w==
+	id 9EC97F805A8; Tue,  4 Aug 2026 17:58:50 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785859128;
+	b=PbAVpCB6sJQTPZQp6H44X1DrA5HVtVN6bAGqOGrS+Z48CtAeA7u4lvaGE9eYHQ2nv+uY
+	 XJ/ixKe80yL6zsa4bfjJKWZzpI9QuJnPK/3donQ2nRwNN3H19HhqI+Bg6L4I4ApTVrjFr
+	 2O6fL05rGr0D9Lnq3SE1S/wPaRUJ2vE22NbbaGkQMOAi2tIbAVJAtu3Lz3JUnuYAlNco1
+	 pVHrVTbmlclJ2YSiVB7rqj00RVOTeW2Wr/FuemomSoBg9/5m7JHDX32DswgfrRtuOoNY7
+	 yqobn1AynztXRUW5UJxBUmDOFtISZB7P8Owh8/kTepDMpeCnKPvwZsq/M+QULva1XcA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785826030;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
-	bh=ibQFH33HuZxup+LsPpPiJaBBwerq3csbTkIzsNdUSpc=;
-	b=ng/BDrm5Ljcz5YQd24kdu7Bupe7lCtNRDZJARsHj7oRDFIWrgm9d0fJmDPLpWZzapw4r
-	 Y4xA1gG7li625iruNKxfVEiC89CI3GjTGf5tFdwxGEuPM+mJgErfLKKcBFjQtE+4brcw2
-	 Yvhv04qOeTkRBqqgPHFMK0O8OpvERSTJLyGLswuwGHB6xeX+yPSueb+ZqTNXWYWQSenYr
-	 H7ow7tDf59BSg0ezfR2y8RCQldrkjPIQAnb0lU41TtYTlZGAXMVwT05WHyNzPobP5wM/c
-	 pmkqwOevqVNltogvUXdHE8lsadduF3ZZSGII42kFiEg5T8PD6oGpHo6czzop+afnimg==
+	c=relaxed/simple; t=1785859128;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=Uj+hqmUGSDBh3V5sSr8hvpvP2lfDmrKY/nrjhfGjB5I=;
+	b=BvQDMujfe3cY/jCUgeD59k1Ju/D6FTDeYTGrlh6dEU3LSUF/vc0/xSGAw123FmIP7i9j
+	 Ucl65Qo6zcUAePwDlxdwBNKIItdkxa2XREMejo4KbP8jhzK5v43kKnG0iPMfg/7otj1GA
+	 tZU4Lkp0uvF0lmoCFX+1rOVAC8YgoniW0WDfAQdsBW19/rfW/lR3hV4pfYUTBNn0S41nw
+	 Sl2HNFfVIk8Etf7L54Dz42LClAJio9zupR3gUPOpMdMAHoE+0RPmRWPuDz6crg9J+z3Rf
+	 3Uo8I4L0QndeREtDLPboqKVQS0uCxyF022kkX4eM/gTeYU+mBf9ZHu9IIhLhEpK9pSg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b="FQY/n3aV";
-	arc=none smtp.remote-ip=198.175.65.10
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=RSk39xSB;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD283F802BE
-	for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2026 08:47:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD283F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3E7FEF8011B
+	for <alsa-devel@alsa-project.org>; Tue,  4 Aug 2026 17:58:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E7FEF8011B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=FQY/n3aV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1785826030; x=1817362030;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ibQFH33HuZxup+LsPpPiJaBBwerq3csbTkIzsNdUSpc=;
-  b=FQY/n3aVJJ5bF1yZQlkUs6+Y5LeDGFWwm09Nwy9bCVgvKnmV+JRs1bhS
-   Ejt4N4cdkoc2fnUspQtRUtVPlZ7+eGnVzYG3G6KB47+O/SxjvlzEEPG2P
-   tEvOSSGI1h4zYLjxNNxUoaiJRHu//51EpeP5qFUgMNBHg9rnzpLhfmJuW
-   lY19gzgnttg/HK4GL8BYGtrVr/5RRkdVRWC2kjVGJtfkZMMVSWKGLfbjX
-   H8aLOSGLeGc5+rXl0t6WBlH5Ej0Lw6vk+1P9KXxDA3YbzRAZCeJ4K1Uzl
-   i/1FMku1McvBJCg8G4iWy0XbhPcPvamDp2vaynlbPeyvpkCfrL8h86TZ4
-   A==;
-X-CSE-ConnectionGUID: xZQ/DBkbS3ebDl4cYCy6xA==
-X-CSE-MsgGUID: ZiFRGMUAT1ORSqSeCoOsGA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11864"; a="103772861"
-X-IronPort-AV: E=Sophos;i="6.25,204,1779174000";
-   d="scan'208";a="103772861"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Aug 2026 23:47:04 -0700
-X-CSE-ConnectionGUID: m1pKRamiQVaiJyP5UqyhBQ==
-X-CSE-MsgGUID: kGnIZA9pR0CTZzNkKzjo7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,204,1779174000";
-   d="scan'208";a="286076238"
-Received: from unknown (HELO [10.227.10.59]) ([10.227.10.59])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Aug 2026 23:47:01 -0700
-Message-ID: <aae83f3e-c2c8-4c5e-abba-ebaba6a30a39@linux.intel.com>
-Date: Tue, 4 Aug 2026 14:46:51 +0800
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20260515 header.b=RSk39xSB
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 0FF6841AC9;
+	Tue,  4 Aug 2026 15:58:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5F2E1F00A3A;
+	Tue,  4 Aug 2026 15:58:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785859123;
+	bh=BPuTDH8BEneJyLhanFOACvP5cUhQGXzhtwpAlvQiPRw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=RSk39xSBIJnLq/lTw7yoicTJ2+iY2XJ1bhHUB3W1sUbJoqo4MBQ9DdmwyQRop2khs
+	 zsHqz5Fy9UKGzIEBIilBXglOlsBC8F7b9E236shPE9OE3r12tlXlapDb57bGG246fp
+	 axNj7ixqaOIJo3tL0fE98C320FM1scosF5T8/f0LrG7f3P+gyRLiJfv/WHhblnwcRo
+	 wLzZlDvX0Uv5h4WcOfpmLwS49Hm3gYkRBFSyP2fTfL9YEubK0sRMl9ZnSnUVFfs7+6
+	 R+qcbfMe95pNT/bjO+jUK1L7RPggOxeGLm7fg/Fny1uPyCVql4PQs1yvLtqXrb1g5z
+	 WAlrDcFPQEjPA==
+Date: Tue, 4 Aug 2026 16:58:38 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Neo Chang <YLCHANG2@nuvoton.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
+	krzk+dt@kernel.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+	neo.chang70@gmail.com, kchsu0@nuvoton.com, sjlin0@nuvoton.com
+Subject: Re: [PATCH v7 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
+ amplifier
+Message-ID: <479efa04-2c02-4b5d-8fdd-e3d4c6e49c4f@sirena.org.uk>
+References: <20260804032951.1069901-1-YLCHANG2@nuvoton.com>
+ <20260804032951.1069901-3-YLCHANG2@nuvoton.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] ASoC: Intel PTL missing SoundWire machine match for RT712 +
- 4x TAS2783 speakers
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.dev>,
- Michael <michael.aug@proton.me>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "cezary.rojewski@intel.com" <cezary.rojewski@intel.com>,
- "peter.ujfalusi@linux.intel.com" <peter.ujfalusi@linux.intel.com>,
- "kai.vehmanen@linux.intel.com" <kai.vehmanen@linux.intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "Ding, Shenghao" <shenghao-ding@ti.com>, "Liao, Bard" <bard.liao@intel.com>
-References: 
- <0yjEfELdq8KgSJpwXwJvW10Htk7nW2uES5-hrdsx3iQUTRo3m_gxNgy9pTHxQinv0XiP2d8GWccuIbm3LuZthqwX7FQc_LAg5rncuoCx-70=@proton.me>
- <b0bba73d-0ce4-4472-affe-e5dd6f4bbdc2@linux.dev>
-Content-Language: en-US
-From: "Liao, Bard" <yung-chuan.liao@linux.intel.com>
-In-Reply-To: <b0bba73d-0ce4-4472-affe-e5dd6f4bbdc2@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: S4U3AP2LVLKESX4RTZTJHQIIDHXCYZE5
-X-Message-ID-Hash: S4U3AP2LVLKESX4RTZTJHQIIDHXCYZE5
-X-MailFrom: yung-chuan.liao@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XTeMuZ7doSQ6INCv"
+Content-Disposition: inline
+In-Reply-To: <20260804032951.1069901-3-YLCHANG2@nuvoton.com>
+X-Cookie: Biz is better.
+Message-ID-Hash: B24ZG6I4ZLCJXHIJFH45YIE6TIKJXVUN
+X-Message-ID-Hash: B24ZG6I4ZLCJXHIJFH45YIE6TIKJXVUN
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -123,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S4U3AP2LVLKESX4RTZTJHQIIDHXCYZE5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B24ZG6I4ZLCJXHIJFH45YIE6TIKJXVUN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,56 +117,117 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+--XTeMuZ7doSQ6INCv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 8/3/2026 6:35 PM, Pierre-Louis Bossart wrote:
-> 
->> The expected configuration appears to be:
->>
->> |link 2:   4 x TAS2783 (mfg_id 0x0102, part_id 0x0000) link 3:   RT712
->> SDCA (mfg_id 0x025d, part_id 0x0712) |
-> 
-> 
-> There's a similar configuration with another bug report, see
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=221782
-> 
-> the symptoms are different but clearly this configuration isn't well
-> handled just yet.
+On Tue, Aug 04, 2026 at 11:29:51AM +0800, Neo Chang wrote:
+> Add support for the Nuvoton NAU83G60 audio codec. The NAU83G60 is a
+> stereo 30W+30W smart amplifier with an integrated low-latency
+> Advanced Audio DSP.
 
-There is a similar issues reported in
-https://github.com/thesofproject/linux/issues/5816
+> +
+> +#include <linux/delay.h>
+> +#include <linux/firmware.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/regmap.h>
+> +#include <sound/soc.h>
+> +
+> +#include "nau8360-dsp.h"
+> +#include "nau8360.h"
 
-> 
->> Could you confirm whether this configuration is expected to be
->> supported, and if so whether a PTL machine-table entry/topology is still
->> missing?
-> 
-> It's my understanding that the function topologies are expected now,
-> machine table entries are no longer required.
-> 
-> In the dmesg log, what's suspicious to me is those lines:
-> 
-> [  225.115571] acpi device:1d: function type only supported as DisCo
-> constant
-> [  225.115930] acpi device:1f: function type only supported as DisCo
-> constant
-> [  225.116271] acpi device:21: function type only supported as DisCo
-> constant
-> [  225.116612] acpi device:23: function type only supported as DisCo
-> constant
-> [  225.117313] acpi device:25: SDCA function UAJ (type 6) at 0x1
-> [  225.117317] acpi device:26: SDCA function SmartMic (type 3) at 0x2
-> [  225.117320] acpi device:27: SDCA function HID (type 10) at 0x3
-> 
-> not sure why the 4 amps report information that's not well parsed, if
-> the amps were recognized as such you'd see a clearer log. For now only
-> the rt712 is handled correctly.
+You use bitfield.h so a direct include would be safer.
 
-I believe that you will see blow log if options
-snd_sof_intel_hda_generic dyndbg=+pmf is enabled.
-snd_sof_intel_hda_generic:is_endpoint_present: soundwire
-sdw:0:1:0102:0000:01:a: Endpoint DAI type 1 not found
+> +static int nau8360_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
 
-Which means the driver can't find the amp's SDCA function property.
-It needs a BIOS update and AFAIK HP and TI is working on it.
+> +		break;
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		ctrl_val = NAU8360_FRAME_START_H2L | NAU8360_RX_OFFSET_LEFT;
+> +		ctrl1_val = NAU8360_TX_OFFSET_LEFT;
+> +		break;
+> +	case SND_SOC_DAIFMT_RIGHT_J:
+> +		ctrl_val = NAU8360_FRAME_START_H2L | NAU8360_RX_OFFSET_RIGHT;
+> +		ctrl1_val = NAU8360_TX_OFFSET_RIGHT;
+> +		break;
 
+NAU8360_RX_OFFSET_LEFT and NAU8360_RX_OFFSET_RIGHT are defined
+identically, presumably at least one of them is wrong and certainly one
+of the above cases is.
+
+> +static int nau8360_set_sysclk(struct snd_soc_component *cp,
+> +	int clk_id, int source, unsigned int freq, int dir)
+> +{
+> +	struct nau8360 *nau8360 = snd_soc_component_get_drvdata(cp);
+> +	struct device *dev = nau8360->dev;
+> +	static const char * const idtab[] = { "DIG", "ANA", "Internal" };
+> +	static const char * const srctab[] = { "MCLK", "PLL", "HIRC48M", "BCLK" };
+> +	int ret;
+> +
+> +	if (dir == SND_SOC_CLOCK_OUT) {
+> +		dev_dbg(dev, "sysclk: freq %d (out)", freq);
+> +		return nau8360_set_sysclk_output(nau8360, freq);
+> +	}
+> +
+> +	switch (clk_id) {
+> +	case NAU8360_CLK_ID_INT:
+
+Usually we don't have a lot of fine grained control of the internal
+clock dividers of the device, things are a lot easier when the device
+just figures out what it needs based on it's input clocks.
+
+> +static int __maybe_unused nau8360_resume(struct snd_soc_component *component)
+> +{
+> +	struct nau8360 *nau8360 = snd_soc_component_get_drvdata(component);
+> +	struct regmap *regmap = nau8360->regmap;
+> +	int ret;
+> +
+> +	/* disable Sense at standby */
+> +	snd_soc_dapm_disable_pin(nau8360->dapm, "Sense");
+> +	snd_soc_dapm_sync(nau8360->dapm);
+> +
+> +	ret = nau8360_dsp_setup(component);
+> +
+> +	regcache_cache_only(regmap, false);
+
+We start the DSP with the device in cache only mode - that seems odd?
+
+> +static struct snd_soc_dai_driver nau8360_dai = {
+> +	.name = NAU8360_CODEC_DAI,
+> +	.playback = {
+> +		.stream_name = "Playback",
+> +		.channels_min = 1,
+> +		.channels_max = 4,
+> +		.rates = NAU8360_RATES,
+> +		.formats = NAU8360_FORMATS,
+> +	},
+> +	.capture = {
+> +		.stream_name = "Capture",
+> +		.channels_min = 1,
+> +		.channels_max = 8,
+> +		.rates = NAU8360_RATES,
+> +		.formats = NAU8360_FORMATS,
+> +	},
+> +	.ops = &nau8360_dai_ops,
+> +};
+
+Do you need symmetric_rates, the hw_params looks to program the same
+registers for both direction?
+
+--XTeMuZ7doSQ6INCv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpyDC4ACgkQJNaLcl1U
+h9AahQf9F5kK6n9yrZew7//ocl7ez/1yPjOehgMQ2zHFn1Bqjb3f7ACqmhu5fxXL
+z1EtIsw8T6KHAsRgh0z3JWFPqqFsHyKE5ahsEaNH3l4rssxIblKASLjmLud5PC2R
+6B95uhA5uZOO7tzwQ5uHynnte1R8i5YoeW8PXToTYcZSYkg09WTtGlCxWvUsoVMZ
+gjEj1IjtbEDTg8iNa0npAf/lDMssfePe69UOpB1A3Ls63W1CIvf0F5On97tJGk95
+v/QAOh3u9nM0FbQ2G7HfXnuKQWMNUL30g+1+hRix3HG1QnO+ICZd9uOzwmExvYF7
+gzjoNvlZIe2get3PoOZGi93KrNQGEA==
+=kmsg
+-----END PGP SIGNATURE-----
+
+--XTeMuZ7doSQ6INCv--
