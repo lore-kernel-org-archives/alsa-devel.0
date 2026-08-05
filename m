@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 852A6C55174
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2026 10:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D757CC55174
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2026 12:34:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82AC660225;
-	Wed,  5 Aug 2026 12:31:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82AC660225
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6BCB60219;
+	Wed,  5 Aug 2026 14:34:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6BCB60219
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1785925908;
-	bh=kSGCtVbR8cRvgnRNNhaP5p4VqSrwSfcjG6gaozNQzZs=;
+	s=default; t=1785933263;
+	bh=IOXF4iwM91kjyEy6yz5RlBIB1d3t0dHZ88LOzXTrmi8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CDuIKrHDY3X2HQhidiW6Vma2Hh4EY1ihWLA7hYg3DiX7MvJmWjLrjVFa+iKBTQBN/
-	 j/e36jSUWxycUytWxckNPi2DeNBmAtvXy85n946Rhf3Rsm2dHrdwHC4jyHlLGlMuMh
-	 QQ3y0vusLkgPLInVneVLfApkK+4MNx/Pm4cP7ADE=
+	b=NS+DXi+8pAcg050LALmByHMHrsz/JAmJ21jDsgjaN7G5lDCcBIQYL+wvwhzimcVVt
+	 Tg9/sWxrs6WXj21F28tZENKRuY/d5oM3Hv6dI6+BBNM8kZ+dhUpwMC++gbj3P/4tgS
+	 gcQfr4wSKx+NLHSq1FT5FTAC5v+lEBmGtl8XBd70=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9CD8DF805F4; Wed,  5 Aug 2026 12:31:13 +0200 (CEST)
+	id C080EF80601; Wed,  5 Aug 2026 14:33:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B80F3F80600;
-	Wed,  5 Aug 2026 12:31:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0BB0F805F9;
+	Wed,  5 Aug 2026 14:33:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8069F8027B; Wed,  5 Aug 2026 12:31:04 +0200 (CEST)
+	id 8D9E5F8027B; Wed,  5 Aug 2026 14:33:43 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785925864;
-	b=X8zod98xfCBHL1cdrZpSg1992jjSBaUUyaHVMXYb4UgRUbMgwB2jCXNrbTFM8U3yV6eL
-	 pd4JtDy6ThExTMYwCdCl3l5O+lV/nSg0v05tcVt0ZHBQQaetZqfkdhQLfggUh5nPafyHi
-	 +dlZIjv6dwVhpV3oBKNkGkFmLqI2CAkV7AZBajGTNXiwZRYW2rUYv33Qduu6nM30H3YcZ
-	 YAU5dusIBgq05izliUnFOMBp9A0oO9nzns8nRwL8uGFMbL3caeCg/4xGnKV4KH/pNEUEN
-	 w27+g6L2JiA/akWBIQpw6wmdUxnqPdxH2xpO+i6d2XuljYXx1RGVY9LSWsiDBo+Vr8g==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785933222;
+	b=P75c9YVg15NIjBar/5477WMIFpCFq++eBb8PcG0JUFjLvJh2YIBd04DcEgi+lHCVKDiu
+	 L9oA4JHxtZh4bazLVhXHQQTkIHr36nJkMqJ6/hCqXNRRA0+QSdMqWHajmbi8QOIeaUjFW
+	 t4HFCoI8EWZv0xLDZ3vitfuw6/PnnWuH1kN4P8hu2EC5qRNRuzTe/hnq4xl3WdxxYcBaO
+	 D3qBwY+xHIc8nWz4ZgHfXT37DOnuWHc09GWyPv+pQxuCnGh/ApyEyJFd8R2pnjgX3slCU
+	 /ZPr8hdZCv53E9bScwNloDJb6kyo7tN0qCW232NQY+8XJZ/bK2J9UZDoGmT1BKeEeTA==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785925864;
+	c=relaxed/simple; t=1785933222;
 	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=kSGCtVbR8cRvgnRNNhaP5p4VqSrwSfcjG6gaozNQzZs=;
-	b=PrFi9DaTlv2YrfE/DpiFqauvt3O9YUnd4BQFFt91lmJnXkTt2jSdzzsuEx/XB53FTvyQ
-	 LkRzXKmMR73a0L/Mmm2nj+tXDep4mC7F9PssuttVDd6kjHEZH5ZbZn4mECJAURmACCBwl
-	 YQsTwGEsG5ABTfxeWF0FEcynOZ849TE2OlIbTjoFDSoCmqLyksZKBfFuZBI2m4UQXa5Va
-	 9bEdeQ7SdFZTUj2n6SlbtO0CU6oFF4ZOXp7ysAjdoKUces2m7z0j+CIvlvZ1ewIKHKzXp
-	 LK/D4Y1ewBS1wEWk3E6D2Cq1PwxBwynwEoeeuhcCUmG7RClzjuMx9GHoYehXtX7h9xQ==
+	bh=IOXF4iwM91kjyEy6yz5RlBIB1d3t0dHZ88LOzXTrmi8=;
+	b=T376KP4kmzsGavfbjviFaou0YbEeOMJoO8WMy4GJHi9Jgs22MSL7Hf5Re34qJSWX1dDv
+	 i4eLl0YkR9dEFefWLMN6PLBe5GVA5n0PknVH16kM++VYNVl9RM7Wgqsu6p2KnVfnuTQxM
+	 CBj0zm2vheK0/VRHW0lLyytb81Foi7RRbI/x+LG3GOSn2bHuyCY9ukvpBZBd/T19/rWlT
+	 +sYOkqAXJq55YPC1crdXSWGd79Q1YcDRAVfA8sED3IobggLKDHkCNHc0yFh5NwA9xyqS9
+	 DMq+bWakTLPWX1lw2tIlkyftamI+HiQOmHeT+Teqgo0cEeVEPyZFOrISOGiNhF0IS4Q==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=bRQmVAs1;
+ header.s=k20260515 header.b=lQ9lZ2mg;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33000F800AE
-	for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2026 12:31:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33000F800AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5B6ABF800C1
+	for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2026 14:33:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6ABF800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=bRQmVAs1
+ header.s=k20260515 header.b=lQ9lZ2mg
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6198340C1E;
-	Wed,  5 Aug 2026 10:30:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98A661F000E9;
-	Wed,  5 Aug 2026 10:30:55 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id B42C241296;
+	Wed,  5 Aug 2026 12:33:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B611F000E9;
+	Wed,  5 Aug 2026 12:33:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785925857;
-	bh=9QY8sLvXEjely0lgxRQ0MGVx5/6YTx8OdpKaPvj/ilg=;
+	s=k20260515; t=1785933217;
+	bh=Qw41i8oMVAtT9zZZhqei2R3Y11YzA5K4okzr4XSsA0Q=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=bRQmVAs1ydr0/qlnTbFTfCz7MR1kmj/sPgEslnKKih+m3Ebc9+rxpXI9yXsdaHLBL
-	 G56670VSWm2rmwWmG6kQYpBiOtBhEQ3tsTj5ahP1qbqDI+FLEQWYQOmYDP3M0l97lU
-	 ipghHzCsoWYd90bRulbrPipRQX4GiQLmMI+i+kz5HMoXDLExg6Y3fUYXL+QErW/1Qc
-	 qr2EpdueetbmMfTC/VLOl3ViO5IugZgbQDbCMHDzYILitcFXog5MVHWl/EloWdN62Q
-	 X6D0ssZPWyoG9FfGgoAtQr/0OEERJ+CBurRB8hS7fzxTqGWo+Q7pTmblKWZBa5oNyY
-	 uBWvpvFBiIQwA==
-Date: Wed, 5 Aug 2026 11:30:52 +0100
+	b=lQ9lZ2mg72obnYpA//eFBR7gYDrdbF5KJkuJ3g64sBnoldXxErvEZ4sUKkgVxGLZe
+	 4YbhVfhN1x5S91q92JFbYdrMIwWptZV31nc/oNoLg1eGP8gA6d6qhXL+ZTbuXJUFYJ
+	 kSPboQYZED+bcDea+uPD0tlviFwbcrGuUV/vIroX01HV/VF+p1BFcSWjQlEz0r8zs0
+	 mTta2WU+d99cPITCYdCwSTwwl6KFMLfqwSCgTiyR2IAnyHkl1lAsVzoIogA4/jldtw
+	 4guCT0EdcKZ2hT+NWcEMhlmI6laCYE5JLWg3rEJaysigUyH7npDCldylSlv8sV31R8
+	 3Iyrc2TcsVLzw==
+Date: Wed, 5 Aug 2026 13:33:32 +0100
 From: Mark Brown <broonie@kernel.org>
 To: YLCHANG2 <neo.chang70@gmail.com>
 Cc: Neo Chang <YLCHANG2@nuvoton.com>, lgirdwood@gmail.com, perex@perex.cz,
@@ -85,19 +85,21 @@ Cc: Neo Chang <YLCHANG2@nuvoton.com>, lgirdwood@gmail.com, perex@perex.cz,
 	kchsu0@nuvoton.com, sjlin0@nuvoton.com
 Subject: Re: [PATCH v7 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
  amplifier
-Message-ID: <fe60dbe2-0626-4d52-8be3-62445a35ddaf@sirena.org.uk>
+Message-ID: <b59b4f33-d939-47da-abbd-04950a9909f6@sirena.org.uk>
 References: <20260804032951.1069901-1-YLCHANG2@nuvoton.com>
  <20260804032951.1069901-3-YLCHANG2@nuvoton.com>
  <479efa04-2c02-4b5d-8fdd-e3d4c6e49c4f@sirena.org.uk>
  <7691eac8-5798-c1b5-5ffd-19c780b69a3f@gmail.com>
+ <fe60dbe2-0626-4d52-8be3-62445a35ddaf@sirena.org.uk>
+ <79bc356b-e727-7e40-9faa-e622c9a24ee9@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wSX65rLJnZG4q4ts"
+	protocol="application/pgp-signature"; boundary="83eftdZLdGcHI6SR"
 Content-Disposition: inline
-In-Reply-To: <7691eac8-5798-c1b5-5ffd-19c780b69a3f@gmail.com>
+In-Reply-To: <79bc356b-e727-7e40-9faa-e622c9a24ee9@gmail.com>
 X-Cookie: Stop ahead.
-Message-ID-Hash: SJIMG26Y2M34EO5VCKXTSMJM7VJLSRDO
-X-Message-ID-Hash: SJIMG26Y2M34EO5VCKXTSMJM7VJLSRDO
+Message-ID-Hash: AGD3OTLXXXZWPYRZKRBBY2OOFQE3FV2X
+X-Message-ID-Hash: AGD3OTLXXXZWPYRZKRBBY2OOFQE3FV2X
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SJIMG26Y2M34EO5VCKXTSMJM7VJLSRDO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AGD3OTLXXXZWPYRZKRBBY2OOFQE3FV2X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,50 +121,42 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---wSX65rLJnZG4q4ts
+--83eftdZLdGcHI6SR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 05, 2026 at 05:03:01PM +0800, YLCHANG2 wrote:
-> On 8/4/26 23:58, Mark Brown wrote:
-> > On Tue, Aug 04, 2026 at 11:29:51AM +0800, Neo Chang wrote:
+On Wed, Aug 05, 2026 at 07:34:28PM +0800, YLCHANG2 wrote:
+> On 8/5/26 18:30, Mark Brown wrote:
+> > On Wed, Aug 05, 2026 at 05:03:01PM +0800, YLCHANG2 wrote:
 
-> > > +	switch (clk_id) {
-> > > +	case NAU8360_CLK_ID_INT:
+> > > Does this mean we should avoid configuring them via the machine driver
+> > > entirely? If so, what is the preferred way to handle clock fallback when
+> > > playback stops or MCLK is absent
+> > > (e.g., via PCM shutdown hooks or DAPM events)?
 
-> > Usually we don't have a lot of fine grained control of the internal
-> > clock dividers of the device, things are a lot easier when the device
-> > just figures out what it needs based on it's input clocks.
+> > What do you mean by clock fallbacks here?  Presumably there's some clock
+> > still running, if that's the only one running it's reasonable for the
+> > device to switch over to it.
 
-> To make sure I understand: Should we remove the internal clock IDs from
-> set_sysclk and handle clock configurations automatically inside the codec
-> driver?
+> By 'clock fallback', I mean switching the clock source back to the internal
+> clock when the MCLK stops, in order to keep the DSP alive.
 
-That's ideal.
+The driver should be able to just figure out to do that based on the
+current input clocks it's got I'd have thought.
 
-> Does this mean we should avoid configuring them via the machine driver
-> entirely? If so, what is the preferred way to handle clock fallback when
-> playback stops or MCLK is absent
-
-> (e.g., via PCM shutdown hooks or DAPM events)?
-
-What do you mean by clock fallbacks here?  Presumably there's some clock
-still running, if that's the only one running it's reasonable for the
-device to switch over to it.
-
---wSX65rLJnZG4q4ts
+--83eftdZLdGcHI6SR
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpzENwACgkQJNaLcl1U
-h9BDkQf+IsVEz+3iVy06KiM4odUUtyikOkdVqwgriauT33Rl8oBSYF7XFDPDdXv5
-L8OPFenTor5m9go+wFhfL8hdsm91usoOCjoGSndpgLGJGzjEZNtSJFHhRBuIZShf
-E/sm0KenjEeabySrOoTFX1MIxffDzUhgFyBAjW++00dxVatMcGsVmrb3RLZDrhQA
-Go4lH31Xo2nazrtieZfJqPb1Ie/98ptaOa/6bK/qUBEP7IDrMgHU9kFZWGAHJqef
-zySGvM4zVN6LRDmVzpbnbOozzwskq5/meHsdQL3ky/scuH6Lw9Sm3mtvwF/vnHdB
-qFJFEiRiO8QD6w0EFXVXJ1mHoU2cIQ==
-=pQ/m
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmpzLZwACgkQJNaLcl1U
+h9A8TQf/ZxGJNDh8TMhO+OoEeP94hIURXmaTWJx3Fm3Ruxd43yvpp4234XhYjd4B
+eiY8Nchl3+x8NhfmJvB5xAfjCUVimDmYMHeFqUhDygNTMe3S7WbAtZ3QNi1E7aUh
+Dt8m5uaEEYZM0cJjWKpRJLfnRopLKfbTcjSR1KYvqRMlJOEeygCMvY9H2k5b0KoF
+NSEFP7RCmPlvUB69FChVnv7B5YoaTmCJPcnEWdaGqwFKyav5jdb+J6i2+pfF0Nvj
+k93JBgaX1qbDjOjXUsV9Gq25K0M2RxWCeAT/tYtnRF+NfzDH/pOg8KDRK2ka2a/O
+11V9Hj10/lsdtxUlEKo3w3PPAXLCSQ==
+=OiHI
 -----END PGP SIGNATURE-----
 
---wSX65rLJnZG4q4ts--
+--83eftdZLdGcHI6SR--
