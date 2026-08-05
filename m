@@ -4,149 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B04BAC55ABF
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2026 14:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36E39C55ABF
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2026 14:40:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ABB96024D;
-	Thu,  6 Aug 2026 16:39:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ABB96024D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3091660240;
+	Thu,  6 Aug 2026 16:40:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3091660240
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786027200;
-	bh=p6sAENL0eJesYSTpamV7qYonSRxF1JG/VmfwRuyCHds=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=eVSTGQ6Oz7zcwdAIrb2j8JsW9rY5IpLmgM4iS3UZKrSQ7mQoaOI/7RGQoBMAMTctE
-	 6CkaUgIQCz+AInz0lL/QmlcJB8cPfebH1o834wZuw1mZyf0rrJs8mIgukWcLBnsHbT
-	 R92k6Gvl9Kr4efzRlevhokDplz0ao5a1AkX0sPFc=
+	s=default; t=1786027215;
+	bh=HvOaSyaubcWGnvu8G7COzydNX4gVIagbZo6JUJnP/jE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Zs3MVzsCTq+Q9WKVSffyLXvejJNagU2FyM75/l3MfyJH3O2wpDpKjOzuqROyZlbg9
+	 sxFs32l/qpCQeUe4e21CNBj7K6dr+3Yzz+5aQqFrN4wMOvwZx/I27wbQnhz+VZz36N
+	 9ZGjptpuWmGbmVJg8oMiI1llwwASlEYrb1gQ4GnI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BCDFDF805FA; Thu,  6 Aug 2026 16:39:24 +0200 (CEST)
+	id E334BF8061A; Thu,  6 Aug 2026 16:39:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA440F805F2;
-	Thu,  6 Aug 2026 16:39:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56542F80620;
+	Thu,  6 Aug 2026 16:39:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DF15F8055A; Thu,  6 Aug 2026 01:57:43 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.216.41
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1785974262;
-	b=mt59iO/L0EF7O+wxpdHou2fB34FMBVl1ECHcFL5IJBw/30IsXvD5m5D6+aDt32J4WuQ/
-	 nUHJc+DjLD3rLKNSsWvQ+bSeFvplodIiYXveDhtwwBQ71rjTlcpGeRtamPWFf0RCuItyd
-	 NF4uQU/ZY07NK76nNLCNVxx+VGX7wBMQh6gyBnX5zmA/YqC8BX0tl7pVDqohEBuIAbQzT
-	 UQlT8VWx1R8FUu4XWIkrwEh9znb1QF0xZH+4Ho2EEZxQzddKThNymfCyhGK9Z9XjRHrRT
-	 UVCHmieFDQd/27Od37vigXfm+cXaMm7HnW6BfKT19bUg+5uVJaLE0I/1mbGSVrWpBXg==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785974262;
-	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
-	bh=zXruWE4i8dGRztTu9qUakX4XRtYn8zOZucyx9FyMgus=;
-	b=LyYGGIwJV9xMFnHDO91FTQmSJLZhRI84uDWIAgoM1+I1IeLZc6xN6Zot4p0FUtxoKhHx
-	 C7v2hFJAJlO+OMqrh2EBluypgKzzwgj2PyAzhSSJ7y6FqVR3WkIVsCYRNAz6N7tPLwADT
-	 9OHd+C4Jv4gCAuMXxeMTLFE+D2zTQ0CKQK2hFpXMq2Y65vWrFkx0+4Wh0UHz5KpE/Gz1F
-	 4J4tCmWfBtFSudzNc9PpUgCMvWto8ahT0y9w2gTb+5oY0S7qz7hBMRbmRiE4FFhgScw1l
-	 L2u++SEYVL3OSZGcWl4VZTdNDC8z90j9dC5qV3I2u9VPAhHVe1I1sZHyzRWnR+eUCgg==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
+	id 0E603F8027B; Wed,  5 Aug 2026 13:36:51 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.216.52
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785929809;
+	b=YP6zpaylcgEEZJvi3VG/oqCn7WwIBRxMEsQcXfQ0+weDTNTTJE+tUzWXydsyNAtVCnqy
+	 nLbytuYNNFn+bHlGDEPuUmAMmAiFbkH/g2AiyrdZVp2pFEwf3JRew4SUB/U3nhwzIMA7y
+	 qEJ2ONNLweQmEVttPvJFZRG7UxEMnV38LSV4IwfFcN2dulPqXM4QyK4rie2VsohpQN1e3
+	 8SUhrATjPpbu6f1fqRBGDahEylFrBD5h6qJbC4K/Q4IozHw6vb/ncRkPj+8j/TTrkTMrN
+	 PvWkqjJYWKy7ftJw3LaqUC/J1H3XU+C5QlIiTpgH3qJGAuepXhqhaKLW+ULCkFDdkxQ==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1785929809;
+	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
+	bh=HvOaSyaubcWGnvu8G7COzydNX4gVIagbZo6JUJnP/jE=;
+	b=P3WP75yuxxVHe5vpOPAFM91mrvmLgur9BGkyKR8RIfbJpoSB2Q/VwuBXeDZHlqSN011U
+	 lz7mGtYxXVspEDpfSmT7Lo6KxdH3OrEWTMQphT5zwms3QViyIcucj2VwYmYfduRmI9ewn
+	 Ch35KyWCiDBKqBPbEZ21k7XAbNKT6UD0ueAc6gCX4OG1YF0V6Wg4YfrlWOwJYzL4DJpon
+	 rBoGhy8QQzMd9ExgrGO11wRD0jeO8IFOaP6FzwyeWRWHZ0MFmT1UhF+PZugIOgpv+ZImo
+	 rMDIKZMX0AhuSUtqN8waQ8Xqcy9/CzY9qXOAc667oQdhi4+rf6UgZg4sBWYAHW6Zpsw==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=BAXb0A9g;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.216.41
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com
- [209.85.216.41])
+ header.s=20251104 header.b=E8oqaoaQ;
+	arc=none smtp.remote-ip=209.85.216.52
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com
+ [209.85.216.52])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 98B06F800BA
-	for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2026 01:57:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98B06F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5C3F1F80124
+	for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2026 13:36:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C3F1F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=BAXb0A9g
-Received: by mail-pj1-f41.google.com with SMTP id
- 98e67ed59e1d1-38125cebfdaso1933624a91.1
+ header.s=20251104 header.b=E8oqaoaQ
+Received: by mail-pj1-f52.google.com with SMTP id
+ 98e67ed59e1d1-38e347638adso920739a91.0
         for <alsa-devel@alsa-project.org>;
- Wed, 05 Aug 2026 16:57:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1785974259; cv=none;
-        d=google.com; s=arc-20260327;
-        b=VmQa/a18YEXfLG8vOOp6BLokTFnfR+3S4EeV5UlB3itaRJVIYJ93LrTEpYQl83RLnh
-         YmYG8LzzNSQ/hnzmkUSuhqPyMTaIwok5WMitnHiymP6bihF7zISTZaLzxPz1XhBXQfZ4
-         aSjm5fdKf0H8A1eB64+XSoKhnpIW8mpPSkHl9KY7+s/sUFM/5fM7MBfsJ/9HVJqKiPr+
-         WRr0R6pDQJWkhnzO4nkRFayPRioutyGdNR79gwFGffR7k7SAILEQXaNFS2uoMhAe97y1
-         OjiPNQnb++92NsuCGSBIyqakMYI/LvY0pTzD9ir/uJjHrNfm+SPYvNz80u2BH4/hGMaP
-         MAKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=xaQE/ooKydAChya7A9FJAqBtCQUQ/PGJxOGqaOcnHqc=;
-        fh=dBSINSrh+dZtWEP0pR2323P8G/MRu1im4fhQaZzZhOY=;
-        b=hqRqcsCRY2grlKXReEieRpikBzoZgmJEPQyFhavF1hbbzmup0zHx1itMwxdIIz7XD1
-         ulF8pXPeLwReCRsTff8i8SV13+fgq3JVn3lVbzDtbXfGbgzgrtOCfKr+evjwP7fZppYt
-         GuvAgLpJG0WmNJXPnp18dqKGmTCpNnjqnr2nUeUP4DJEd/7PJ0uUo6usCKjpn2XcKo1u
-         nr6JpT06A9W3fijytdtLBAW4g1vXpnAqsHoYhVMg5tmJdgczqoNahHFMkhJLThUXtpV4
-         PpCoX09c/JfvSv6kW9VlMq/FNA/DpL2eh/Jtko7XfYwJseHDP6o+f1Lkb3FVDb79lNTb
-         oe5Q==;
-        darn=alsa-project.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ Wed, 05 Aug 2026 04:36:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1785974259; x=1786579059;
+        d=gmail.com; s=20251104; t=1785929806; x=1786534606;
  darn=alsa-project.org;
-        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=xaQE/ooKydAChya7A9FJAqBtCQUQ/PGJxOGqaOcnHqc=;
-        b=BAXb0A9gk7CgEI26ztLDQ6F2xKLR7EMkKuFtyp+Txv3GK330D88XwR/hTzJ8V3Ao0m
-         QC/mJLanVgTJ/kUv/ardToe94tDae1QTKQoKVz5eNV//i33mRUScIQLPscDBNiKjlJQy
-         AyJbxGg7RwTFAyYyX5PvVjxZ89ztCexsF6xav/DDLZSvpOA34y0RFzxD2bYVQUGa2ErK
-         f7jvUMinGAgXllV1TxqI8wTfanv0uf5zafVmqOYMKsyJ3QE3J0MPrArnPMVe5fAr0Pea
-         uw9hCZTM+DR60wrRoznSE0ZykazC9XllF1QMNSTfRXYiakYUNvdPjplumGVjEfdzaDS5
-         Q+bw==
+        h=content-transfer-encoding:content-type:in-reply-to:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=5l7FenGvrQnRcqxVxpQbcS8hPgr2hqhc1H3dtV5WU08=;
+        b=E8oqaoaQd6KyYs9UZeEZ786kkeFTSrRqM/LEhxKYYg5LNCGibDtvHGGd3GgThtyie5
+         dQ9oiSvgEVPuivjUMe8REIeHD4YE9grX+dO5diIckZKfc0D1al9qqEpA5MEhlqWrcduD
+         aQMpO6lpDtYTWKzd/1AA1CpSdAG2LZZ1HRbs665NuoZ0KkkDE1mOUy2eaBSqZlvHagMP
+         jdT2US27JbVKvcPypPhgR87Z9fVYTiyMP58OPUYve66cyJwwheU8+YXNPffosI7nlbwX
+         QF9loFCVH9gGHqyFixiSajJjBB88TD4FQctznvPyN4oISL56ONDAKj230TNn9IucQGGw
+         BS2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785974259; x=1786579059;
-        h=content-type:cc:to:subject:message-id:date:from:mime-version
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=xaQE/ooKydAChya7A9FJAqBtCQUQ/PGJxOGqaOcnHqc=;
-        b=fFFMWTdYC86MwOCyaAvwOzH1bnYfOMYFKCXcHQfuRAfKXpgt8ASu4HyjQJWqYpHc3A
-         RqJAb+eDTxHwKXhs0oX5CUhmqMK78wLsDEv6jCsoopLdFWTpGXYyMPFY/KH8nZrCwuSy
-         6ZYfKkFuujfsjJd+Qg9HFvCl+jk+v6QdHSpc7VgfpWKM20Ti5BUMpd5WfXvzBjnw3H6u
-         hd8DOzASiI1QmYXdCKG1yxCV3JMzMGIIVm6MYiBrQMuDVvhZt7KdItzLJk8/XN3rfUBf
-         cw4DQVRx4KSufucFtQrJkpiykkrKucdCx2fP4qjuqkMW2YxNYOPeGWXcEWVJFpOlRszO
-         SFoA==
-X-Gm-Message-State: AOJu0Ywqy/snxiJ++nJOHq9IEG6fdEZxG4Es6fAD4Oh9LUMMfX5Hrczg
-	UeGak1r1VSfYHDDKgjxYfN0YeYqiM4x/joWqP7rdo8+KBk/2xdCJ08kglF3rGhtRT2y6/vm4KCx
-	FxUM+v1UI8RuotMVUqn8GB3RYRQ3kuEf5mw6fdQhMrg==
-X-Gm-Gg: AR+sD10PZbF65cM+m1qRLIuU02OWdLFFwpTL15aFuD6mX6sq6o8qdSyZcCxctx8/vHp
-	vasS1NWZ1dHoXQmTzCOsrQUlb3fTlWRlRbFUJgCw31CKzVa1NWteK1ZpozuXLc5YIMr/sPTTszi
-	IhvkERXq4ry/andKrf0kylPFmIo2x4a/Cu1ZKa2pKcJESIq19wE8JxPKCIl/A0INqiVDqe9ZeM2
-	4FiR28CLaEcqj41uhP4MRoMymq707DYvbjkl8PLbiMLxpy51Yl7+RSdbwA7Vr+J49ToyeJ6k/yr
-	4iPeD2bmBf1VK/RstNxAiOHM7VNfKO6wkuEERpd8/LCGpA==
-X-Received: by 2002:a17:90b:4b87:b0:37f:c2a8:ce45 with SMTP id
- 98e67ed59e1d1-3903c537d5fmr9656623a91.4.1785974259134; Wed, 05 Aug 2026
- 16:57:39 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1785929806; x=1786534606;
+        h=content-transfer-encoding:content-type:in-reply-to:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=5l7FenGvrQnRcqxVxpQbcS8hPgr2hqhc1H3dtV5WU08=;
+        b=mQk3noEJjsBCr+/BqeHJ3ZDWkfpNlcuBwP3eHc9H6S7UjvxQ6enIlojwo1fzFKRklU
+         IwoexLIuC1XOh8E4xtiYeXM5lHuly3KpjMHBsJ+Wdk0GIClhvAh/O7tuOGT84Il6sjSx
+         Oh+Rw9b8SRpe8GHfTNx5SIL7p6czRrUFy3evzxywoPAJ108RrLPiNYeK7dmEcUDZvrjX
+         PQIVSQsaGjFTE5S20qu8JJ2ee3Wo0WBxUmdhq4a5hIK0t6/RIbFBRKVDohnmod7o+UrY
+         93XpPsSF5PGS/RI/6Azblnc0/2H9mL6v4ESlTr5g7MrnoaWS1Cv1LjZWKcv+C//92NFs
+         /ILQ==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RqVqmNhSrTVmmSA6n2pAyt3Csal4Tl/SxJLmkcYyJEebUhNKQV0S2ko68z0nG6s4gIXnk22j0rx26oq@alsa-project.org
+X-Gm-Message-State: AOJu0Yzdnnt7BKXCIhr04qgwfGdWbuTVYHG0Hs/T96lc3Jf1H7vu6vxV
+	ZWrw5iCsfEkCwyqSh7f2BopTZyU5KoIA8Qoona3/ueJK5gk7j5EATzoj
+X-Gm-Gg: AR+sD129Q2C8JnI0kwHmKjfWlLf1rRUC8gLBQ78JWAnt+ziTr8u78XZPsdZCbLzvwzA
+	TiJF4VqZ6QP5Y5KdBhFhmqaGYuVFzvm5dMKVG+nAj0KeDdjbc/B1K52BvzvNfoDJvS3EzhEuOrQ
+	8EfQ2pX4uiUmrUTFO8dyMNZlfHLwY9D0rlDu2RGy8rKMuIxNv0X9SmkWIz1/s+b5oo1h5Jto8vR
+	veBzduPKsHvhJyAXZYQezwWQ6O/IOCLy+7n8SlzqvYOXnmbkIvmyoWkfDLLhOdjtQBSN76XOxC/
+	8hnKHOHLu6514DOx2nGWvwFat/+BOLvQbcT679RrJgFntV2LrzAlR9ILPAmGR5Vj/Ro0pXn+xsc
+	3fjjU0LtYrdxVRQG64JKowt+2h39+upaGH/Q2KbOlqWX95s1ZcyrF4uNxtSAhGX+kiCyUDO/Kvc
+	fQEYpt4tLQPa3LPGS8TrD3pWhv6Xt61XMzgVndC5jRmIekYa3QHtJ1iwYsm0XylAm/H7jxsjT98
+	l3v9tvsdHO4//YjOtxKQtHAqWoouxwDXbuxpJUr2iY=
+X-Received: by 2002:a17:90b:6cf:b0:380:7688:fbe9 with SMTP id
+ 98e67ed59e1d1-3903c559075mr6498561a91.8.1785929805614;
+        Wed, 05 Aug 2026 04:36:45 -0700 (PDT)
+Received: from [192.168.1.110] (111-243-10-58.dynamic-ip.hinet.net.
+ [111.243.10.58])
+        by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-3903927db6esm2893962a91.10.2026.08.05.04.36.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Aug 2026 04:36:45 -0700 (PDT)
+Message-ID: <79bc356b-e727-7e40-9faa-e622c9a24ee9@gmail.com>
+Date: Wed, 5 Aug 2026 19:34:28 +0800
 MIME-Version: 1.0
-From: Carl Quist <equalizerjr@gmail.com>
-Date: Wed, 5 Aug 2026 23:57:27 +0000
-X-Gm-Features: AUfX_mwlGBP76L9jqNycQB36F-CivshS0y3UaYmi-r9Al1acAiwHmDXI50Lya1I
-Message-ID: 
- <CAOtcGaxXndKxTK5MVSEcmF-LUy+V51K7fhE=qvLA+VvW5ZyCNA@mail.gmail.com>
-Subject: [PATCH] ALSA: hda/realtek: Enable mute LED on HP Laptop 15-dy0xxx
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
-Content-Type: multipart/mixed; boundary="0000000000004bd3c10658558972"
-X-MailFrom: equalizerjr@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v7 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
+ amplifier
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Neo Chang <YLCHANG2@nuvoton.com>, lgirdwood@gmail.com, perex@perex.cz,
+ robh@kernel.org, krzk+dt@kernel.org, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kchsu0@nuvoton.com,
+ sjlin0@nuvoton.com
+References: <20260804032951.1069901-1-YLCHANG2@nuvoton.com>
+ <20260804032951.1069901-3-YLCHANG2@nuvoton.com>
+ <479efa04-2c02-4b5d-8fdd-e3d4c6e49c4f@sirena.org.uk>
+ <7691eac8-5798-c1b5-5ffd-19c780b69a3f@gmail.com>
+ <fe60dbe2-0626-4d52-8be3-62445a35ddaf@sirena.org.uk>
+From: YLCHANG2 <neo.chang70@gmail.com>
+In-Reply-To: <fe60dbe2-0626-4d52-8be3-62445a35ddaf@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: neo.chang70@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: R5TYAZD4MBTJ6SWIAKVOQLM4UTUUXLJ3
-X-Message-ID-Hash: R5TYAZD4MBTJ6SWIAKVOQLM4UTUUXLJ3
-X-Mailman-Approved-At: Thu, 06 Aug 2026 14:39:19 +0000
-X-Content-Filtered-By: Mailman/MimeDel 3.3.10
+Message-ID-Hash: O3EOSI7KU54VBOFOPJMS4FBSX2HIT52X
+X-Message-ID-Hash: O3EOSI7KU54VBOFOPJMS4FBSX2HIT52X
+X-Mailman-Approved-At: Thu, 06 Aug 2026 14:39:23 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R5TYAZD4MBTJ6SWIAKVOQLM4UTUUXLJ3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O3EOSI7KU54VBOFOPJMS4FBSX2HIT52X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -155,95 +157,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---0000000000004bd3c10658558972
-Content-Type: text/plain; charset="UTF-8"
 
-The mute LED on the HP Laptop 15-dy0xxx (PCI SSID 103c:864f, Realtek
-ALC236) does not work, because the machine has no entry in the quirk
-table. No fixup is applied, so no mute LED classdev is registered and
-nothing ever drives the LED.
-
-The LED is controlled by COEF index 0x07, bit 0. This was verified on
-the hardware with hda-verb: setting the bit lights the mute LED and
-clearing it turns the LED off.
-
-  hda-verb /dev/snd/hwC0D0 0x20 SET_COEF_INDEX 0x07
-  hda-verb /dev/snd/hwC0D0 0x20 SET_PROC_COEF 0x1     # LED on
-  hda-verb /dev/snd/hwC0D0 0x20 SET_PROC_COEF 0x200   # LED off
-
-That is exactly what ALC236_FIXUP_HP_MUTE_LED_COEFBIT2 configures, and
-the closely related HP Laptop 15-dw0xxx (103c:85f0) already uses it.
-Bit 9 (0x200) is set by default on this board and is preserved by the
-fixup's read-modify-write.
-
-Tested on an HP Laptop 15-dy0xxx (SKU 7FU54UA#ABA, board 864F,
-BIOS F.40).
-
-Signed-off-by: Carl Quist <equalizerjr@gmail.com>
----
- sound/hda/codecs/realtek/alc269.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/hda/codecs/realtek/alc269.c
-b/sound/hda/codecs/realtek/alc269.c
---- a/sound/hda/codecs/realtek/alc269.c
-+++ b/sound/hda/codecs/realtek/alc269.c
-@@ -7149,6 +7149,7 @@
-  SND_PCI_QUIRK(0x103c, 0x860c, "HP ZBook 17 G6",
-ALC285_FIXUP_HP_GPIO_AMP_INIT),
-  SND_PCI_QUIRK(0x103c, 0x860f, "HP ZBook 15 G6",
-ALC285_FIXUP_HP_GPIO_AMP_INIT),
-  SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1",
-ALC285_FIXUP_HP_GPIO_AMP_INIT),
-+ SND_PCI_QUIRK(0x103c, 0x864f, "HP Laptop 15-dy0xxx",
-ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
-  SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
-  SND_PCI_QUIRK(0x103c, 0x86c1, "HP Laptop 15-da3001TU",
-ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
-  SND_PCI_QUIRK(0x103c, 0x86c7, "HP Envy AiO 32",
-ALC274_FIXUP_HP_ENVY_GPIO),
-
---0000000000004bd3c10658558972
-Content-Type: text/x-patch; charset="US-ASCII";
-	name="0001-alsa-hda-realtek-mute-led-15-dy0xxx.patch"
-Content-Disposition: attachment;
-	filename="0001-alsa-hda-realtek-mute-led-15-dy0xxx.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_msgqwgsu0>
-X-Attachment-Id: f_msgqwgsu0
-
-RnJvbTogQ2FybCBRdWlzdCA8ZXF1YWxpemVyanJAZ21haWwuY29tPgpTdWJqZWN0OiBbUEFUQ0hd
-IEFMU0E6IGhkYS9yZWFsdGVrOiBFbmFibGUgbXV0ZSBMRUQgb24gSFAgTGFwdG9wIDE1LWR5MHh4
-eAoKVGhlIG11dGUgTEVEIG9uIHRoZSBIUCBMYXB0b3AgMTUtZHkweHh4IChQQ0kgU1NJRCAxMDNj
-Ojg2NGYsIFJlYWx0ZWsKQUxDMjM2KSBkb2VzIG5vdCB3b3JrLCBiZWNhdXNlIHRoZSBtYWNoaW5l
-IGhhcyBubyBlbnRyeSBpbiB0aGUgcXVpcmsKdGFibGUuIE5vIGZpeHVwIGlzIGFwcGxpZWQsIHNv
-IG5vIG11dGUgTEVEIGNsYXNzZGV2IGlzIHJlZ2lzdGVyZWQgYW5kCm5vdGhpbmcgZXZlciBkcml2
-ZXMgdGhlIExFRC4KClRoZSBMRUQgaXMgY29udHJvbGxlZCBieSBDT0VGIGluZGV4IDB4MDcsIGJp
-dCAwLiBUaGlzIHdhcyB2ZXJpZmllZCBvbgp0aGUgaGFyZHdhcmUgd2l0aCBoZGEtdmVyYjogc2V0
-dGluZyB0aGUgYml0IGxpZ2h0cyB0aGUgbXV0ZSBMRUQgYW5kCmNsZWFyaW5nIGl0IHR1cm5zIHRo
-ZSBMRUQgb2ZmLgoKICBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgyMCBTRVRfQ09FRl9JTkRF
-WCAweDA3CiAgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MjAgU0VUX1BST0NfQ09FRiAweDEg
-ICAgICMgTEVEIG9uCiAgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MjAgU0VUX1BST0NfQ09F
-RiAweDIwMCAgICMgTEVEIG9mZgoKVGhhdCBpcyBleGFjdGx5IHdoYXQgQUxDMjM2X0ZJWFVQX0hQ
-X01VVEVfTEVEX0NPRUZCSVQyIGNvbmZpZ3VyZXMsIGFuZAp0aGUgY2xvc2VseSByZWxhdGVkIEhQ
-IExhcHRvcCAxNS1kdzB4eHggKDEwM2M6ODVmMCkgYWxyZWFkeSB1c2VzIGl0LgpCaXQgOSAoMHgy
-MDApIGlzIHNldCBieSBkZWZhdWx0IG9uIHRoaXMgYm9hcmQgYW5kIGlzIHByZXNlcnZlZCBieSB0
-aGUKZml4dXAncyByZWFkLW1vZGlmeS13cml0ZS4KClRlc3RlZCBvbiBhbiBIUCBMYXB0b3AgMTUt
-ZHkweHh4IChTS1UgN0ZVNTRVQSNBQkEsIGJvYXJkIDg2NEYsCkJJT1MgRi40MCkuCgpTaWduZWQt
-b2ZmLWJ5OiBDYXJsIFF1aXN0IDxlcXVhbGl6ZXJqckBnbWFpbC5jb20+Ci0tLQogc291bmQvaGRh
-L2NvZGVjcy9yZWFsdGVrL2FsYzI2OS5jIHwgMSArCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
-b24oKykKCmRpZmYgLS1naXQgYS9zb3VuZC9oZGEvY29kZWNzL3JlYWx0ZWsvYWxjMjY5LmMgYi9z
-b3VuZC9oZGEvY29kZWNzL3JlYWx0ZWsvYWxjMjY5LmMKLS0tIGEvc291bmQvaGRhL2NvZGVjcy9y
-ZWFsdGVrL2FsYzI2OS5jCisrKyBiL3NvdW5kL2hkYS9jb2RlY3MvcmVhbHRlay9hbGMyNjkuYwpA
-QCAtNzE0OSw2ICs3MTQ5LDcgQEAKIAlTTkRfUENJX1FVSVJLKDB4MTAzYywgMHg4NjBjLCAiSFAg
-WkJvb2sgMTcgRzYiLCBBTEMyODVfRklYVVBfSFBfR1BJT19BTVBfSU5JVCksCiAJU05EX1BDSV9R
-VUlSSygweDEwM2MsIDB4ODYwZiwgIkhQIFpCb29rIDE1IEc2IiwgQUxDMjg1X0ZJWFVQX0hQX0dQ
-SU9fQU1QX0lOSVQpLAogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDg2MWYsICJIUCBFbGl0ZSBE
-cmFnb25mbHkgRzEiLCBBTEMyODVfRklYVVBfSFBfR1BJT19BTVBfSU5JVCksCisJU05EX1BDSV9R
-VUlSSygweDEwM2MsIDB4ODY0ZiwgIkhQIExhcHRvcCAxNS1keTB4eHgiLCBBTEMyMzZfRklYVVBf
-SFBfTVVURV9MRURfQ09FRkJJVDIpLAogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDg2OWQsICJI
-UCIsIEFMQzIzNl9GSVhVUF9IUF9NVVRFX0xFRCksCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4
-ODZjMSwgIkhQIExhcHRvcCAxNS1kYTMwMDFUVSIsIEFMQzIzNl9GSVhVUF9IUF9NVVRFX0xFRF9D
-T0VGQklUMiksCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4ODZjNywgIkhQIEVudnkgQWlPIDMy
-IiwgQUxDMjc0X0ZJWFVQX0hQX0VOVllfR1BJTyksCg==
---0000000000004bd3c10658558972--
+On 8/5/26 18:30, Mark Brown wrote:
+> On Wed, Aug 05, 2026 at 05:03:01PM +0800, YLCHANG2 wrote:
+>> On 8/4/26 23:58, Mark Brown wrote:
+>>> On Tue, Aug 04, 2026 at 11:29:51AM +0800, Neo Chang wrote:
+>>>> +	switch (clk_id) {
+>>>> +	case NAU8360_CLK_ID_INT:
+>>> Usually we don't have a lot of fine grained control of the internal
+>>> clock dividers of the device, things are a lot easier when the device
+>>> just figures out what it needs based on it's input clocks.
+>> To make sure I understand: Should we remove the internal clock IDs from
+>> set_sysclk and handle clock configurations automatically inside the codec
+>> driver?
+> That's ideal.
+>
+>> Does this mean we should avoid configuring them via the machine driver
+>> entirely? If so, what is the preferred way to handle clock fallback when
+>> playback stops or MCLK is absent
+>> (e.g., via PCM shutdown hooks or DAPM events)?
+> What do you mean by clock fallbacks here?  Presumably there's some clock
+> still running, if that's the only one running it's reasonable for the
+> device to switch over to it.
+By 'clock fallback', I mean switching the clock source back to the 
+internal clock when the MCLK stops, in order to keep the DSP alive.
