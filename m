@@ -4,68 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA2B0C55ABA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2026 18:06:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAA6CC55174
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Aug 2026 22:45:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C9A860217;
-	Wed,  5 Aug 2026 20:06:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C9A860217
+	by alsa0.perex.cz (Postfix) with ESMTPS id E979E6021E;
+	Thu,  6 Aug 2026 00:45:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E979E6021E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1785953200;
-	bh=mKSHRhhntqcvLMCR0a5XV+Lo5eD+IOt3VYzlucbb69o=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=tihwgZuQrIp6on9XbR2srzfyOb4bGNaTE6JzkVWKXiLLgybmjtLeA3NpEgRcCLQ/Z
-	 kQXliJohh4AnaL2VOsD389MBCtBCvpGtFlp3Cr4fsjJ2QRSuWecLEnypFVo+I7L7bm
-	 Oc7b9q5fHzpFI1BD4m7sfXpOOdIZTfRdtTYpVXFU=
+	s=default; t=1785969939;
+	bh=OYmHsyMIoZ8e1Utz+0y7ood/VOLz41ZkgVg9yefQFUc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=avJxTKWKvr9cGRTLbly3ZbAwwZwxxuoTMedD3hNTRdh3OXS+634TnCP7a+7h6+76j
+	 B5HhKyR3Ak+6pC1W4E3YjgbTsYIj+hWT/JvEXnoSu8d+611UKi40DeBy5U7dBTjZlE
+	 R6JVDHh5bNfnoxdrba4YS+CKE4gLB4p/+zlL+o2o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5744F805EF; Wed,  5 Aug 2026 20:06:06 +0200 (CEST)
+	id A121DF805FF; Thu,  6 Aug 2026 00:45:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86992F80600;
-	Wed,  5 Aug 2026 20:06:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42F89F80600;
+	Thu,  6 Aug 2026 00:45:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3EDAEF8027B; Wed,  5 Aug 2026 20:06:00 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785953158;
-	b=go5jXG8wD9T9vy4QLUfkJjqR+Kmoe6BiJqwCkbHLhLkkU23jP8k5EO5zaiTm8TONXv6Z
-	 4+nLUsw+Z9Ip/eMPuThtnyJy4WwjiiWJ9cZMPiU+h4SATGGyOOf64uGdfJLKfHTSzipjH
-	 5/x1+2HwZ9oUoVllzZlFQL9PUgJgxW2gLNHb954wfChDodmP72zswU1U2LgPjJsqBbKev
-	 ZrPZXZTX/WH4F86ZA/ExZIGnXJILHIQlfMeifxDwzcWKZGPcx0rirMnmAX1UNgcjvPIrx
-	 X61T5Lm3xZme9+thPhrK6Z9+iOOefarxS0LAIVTH0vT9dEcU7VlM8D0+sseRRZS4Fyw==
+	id 460A0F8055A; Thu,  6 Aug 2026 00:44:57 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=198.175.65.14
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1785969892;
+	b=AO9Wx8xkmS4hVXVKXzVzOPW9jwg3qrKB9BjBDlvpk8ssZSobhcm/uOkQZ0/jq1YK8Ec8
+	 ZiX75FSIYY5vD7q2vkKWjfvX5rhDMtFicn44tDX6nLG3s4oWTWOdrbkDI5Xns6XHchLd6
+	 sfzg9PKs7wQea/UlSW1SgSkXY/qH/NF5v7SqgJGJq6SFpDY+91pCTYzm5lAApp2Y1vwo2
+	 Ftb877AitU6BJNkWqPK7cqEwKiLG2cWpCmlGzT6uxg+R+8EBfaAJ1zeu3vG0SW9rNE+K3
+	 C7DJlKTWGRlaH5kEl8JSEKzYncFN8kdMhA1ElGVTJ51zwwiEs17Twccn0CQCrj0XZTg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1785953158;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=mKSHRhhntqcvLMCR0a5XV+Lo5eD+IOt3VYzlucbb69o=;
-	b=NzJIy2N+Z3Z48p5iKE/KO0+/7e/Z5GOL97S4qb/1a7pHQ+MP5X2Mx68yjJHFlMTOs7kb
-	 2lAOx+FvkggLqVzEhd37Je0mWw9wVUEpZ6ixk10kJmOAQkd493QIpjV77XotGZtvDQajH
-	 tKFHCrCC8g8UUlW18hELT0NMtlisY81nXFe+rORMF274dMpB86hkMIHmG3ZUeJ988TS+k
-	 ujWEHpeUjx5IvefrcZCElOekqFnv0sjMNVUNP8/3XweHYCxrcfQAhduakn65Li1i3BRj1
-	 CaAXHwFPBvSvQcGvP/xuQwKycvI+l0scF0JGaESGTOpQnEYkrwHbRw6Zou+PmwDehSQ==
+	c=relaxed/simple; t=1785969892;
+	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
+	bh=OYmHsyMIoZ8e1Utz+0y7ood/VOLz41ZkgVg9yefQFUc=;
+	b=O9bpTNiSpYAuV/TpmiIdj4q5Rd+PGqjAEZPrZyp+t6YhIVGMsUqp7BXfiloLqrLlQGXk
+	 xb3xRKFwc9nHMmpJBNKTIOKC12sTKHX4RfidCHJUCl8cBicexoQ6WHxWR26yFErNi4oO0
+	 Dy2VzHurD2tr4hwEDxnuY5vK484juMNhnYMRkWGyx6TssYYqC9puQK4PIbX0ZklcQXFxx
+	 767cFfQ4AJiEmK3wSJcOVGl/2CYtg9qCUCKMcA+0i1NQejItOhR8/70x9CAtcTJyHcac2
+	 sVpzSLpIMzL+cEM2qh217UL5kCmmWOuIK2ovJ9/ZBpwsKEiY4p5dUZxH1US6OBKo+aA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64034F80124
-	for <alsa-devel@alsa-project.org>; Wed,  5 Aug 2026 20:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64034F80124
+ dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=RNygB0nb;
+	arc=none smtp.remote-ip=198.175.65.14
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0ECC7F800BA
+	for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2026 00:44:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ECC7F800BA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=RNygB0nb
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1785969892; x=1817505892;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OYmHsyMIoZ8e1Utz+0y7ood/VOLz41ZkgVg9yefQFUc=;
+  b=RNygB0nbBfZ6C3Q8RSpJjkR2SsXs3gT7+W4eIe3WEtKmydWKvkJcyxPV
+   YdZ3yetaX4e7UUv0XDBs5Ddawet7XWOzVPGDRbylii0+GNJkUCQNYy0VW
+   /iBHQCRukA+nGYRgXniVnbrn/IBSeCeAs+Xnl7qoWvvotDJnY5XcrVVGK
+   IdFq6PVmNjU+trpeprHDDTHhIDrwYIC8F0f0kgMuR7jvBhzykXxbNQLxp
+   ljbIh3CMY2X6KgRy1mBJzb08AYtM+z2GQ4Iwk/pSQVj7Y7Wiov7+MLQsi
+   ZUm9nyTPGjUZ1poN5sUHbFUvwEgMW5Ny1x6zeZTbwvFR0/CvfT/1Gl1PR
+   Q==;
+X-CSE-ConnectionGUID: z2tDrRIlQPyx25M77QJu4w==
+X-CSE-MsgGUID: 61jCORJcSqacXhsaDC8k+Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11866"; a="90440220"
+X-IronPort-AV: E=Sophos;i="6.25,207,1779174000";
+   d="scan'208";a="90440220"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Aug 2026 15:44:46 -0700
+X-CSE-ConnectionGUID: +5wbzIy0T0WCAvP8AkWrHQ==
+X-CSE-MsgGUID: 6Kgzx6X8SUOhBmHwjfn2PQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,207,1779174000";
+   d="scan'208";a="260154829"
+Received: from lkp-server01.sh.intel.com (HELO 6eda058d650d) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 05 Aug 2026 15:44:44 -0700
+Received: from kbuild by 6eda058d650d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wrkLo-00000000Dbh-48K7;
+	Wed, 05 Aug 2026 22:44:40 +0000
+Date: Thu, 6 Aug 2026 06:44:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	andriy.shevchenko@linux.intel.com, tiwai@suse.de,
+	13916275206@139.com, krzk@kernel.org, alsa-devel@alsa-project.org,
+	baojun.xu@ti.com, riyo@ti.com, Shenghao Ding <shenghao-ding@ti.com>
+Subject: Re: [PATCH v1] ASoC: tas2781: Add calibration kcontrols for TAS2573
+Message-ID: <202608060659.Lp45DCOl-lkp@intel.com>
+References: <20260717073927.181-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18c8faef01270f00-webhooks-bot@alsa-project.org>
-In-Reply-To: <18c8faef00f90100-webhooks-bot@alsa-project.org>
-References: <18c8faef00f90100-webhooks-bot@alsa-project.org>
-Subject: sof-soundwire: the `Headphone Switch` cset in rt721.conf breaks the
- whole HiFi verb on amd-soundwire cards
-Date: Wed,  5 Aug 2026 20:06:00 +0200 (CEST)
-Message-ID-Hash: 65ZHDAR53IB3TN7DKW3SZY5SGOP2AI47
-X-Message-ID-Hash: 65ZHDAR53IB3TN7DKW3SZY5SGOP2AI47
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260717073927.181-1-shenghao-ding@ti.com>
+Message-ID-Hash: CKNW6JV2VN47NJ4G7QJ2OI2WXVEJ3QQV
+X-Message-ID-Hash: CKNW6JV2VN47NJ4G7QJ2OI2WXVEJ3QQV
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -76,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/65ZHDAR53IB3TN7DKW3SZY5SGOP2AI47/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CKNW6JV2VN47NJ4G7QJ2OI2WXVEJ3QQV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,240 +127,233 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #825 was opened from Robin-Everaars:
+Hi Shenghao,
 
-### Summary
+kernel test robot noticed the following build errors:
 
-On AMD SoundWire cards, `snd_use_case_set(uc_mgr, "_verb", "HiFi")` fails with
--ENOENT because `ucm2/sof-soundwire/rt721.conf` csets a control named
-`Headphone Switch` that the card does not expose. `ucm2/sof-soundwire/HiFi.conf`
-uses `disdevall ""` as its verb EnableSequence, so every device DisableSequence
-runs during verb activation. The Headphones DisableSequence therefore takes the
-verb down before any device is selected, and the card ends up with no usable
-verb at all.
+[auto build test ERROR on v7.2-rc4]
+[also build test ERROR on linus/master next-20260805]
+[cannot apply to broonie-sound/for-next tiwai-sound/for-next tiwai-sound/for-linus v7.2-rc6 v7.2-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-`conf.d/amd-soundwire/amd-soundwire.conf` is a symlink to
-`../../sof-soundwire/sof-soundwire.conf`, so an AMD card inherits the Intel SOF
-device definitions verbatim, including that cset.
+url:    https://github.com/intel-lab-lkp/linux/commits/Shenghao-Ding/ASoC-tas2781-Add-calibration-kcontrols-for-TAS2573/20260805-132520
+base:   v7.2-rc4
+patch link:    https://lore.kernel.org/r/20260717073927.181-1-shenghao-ding%40ti.com
+patch subject: [PATCH v1] ASoC: tas2781: Add calibration kcontrols for TAS2573
+config: s390-randconfig-002-20260806 (https://download.01.org/0day-ci/archive/20260806/202608060659.Lp45DCOl-lkp@intel.com/config)
+compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project bacfe2950f8218268fcc0a8765644ea0c15f0360)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260806/202608060659.Lp45DCOl-lkp@intel.com/reproduce)
 
-Downstream, PipeWire's ACP layer calls the same function, gets the same -ENOENT
-and silently falls back to its built-in profile set. That fallback binds the
-sink to PCM 0 (the RT721 headset path) instead of the speakers, so audio comes
-out of the headphone jack and the speaker amps are never addressed.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202608060659.Lp45DCOl-lkp@intel.com/
 
-### Hardware
+All errors (new ones prefixed by >>):
 
-* ASUS ProArt PX13 HN7306EAC (AMD Strix Halo)
-* Card 1 `amdsoundwire`, driver `amd-soundwire`, longname
-  `ASUSTeKCOMPUTERINC.-ProArtPX13HN7306EAC-1.0-HN7306EAC`
-* Components string: `cfg-amp:2 mic:acp-dmic cfg-mics:1 hs:rt721 spk:tas2783`
-* Realtek RT721 SDCA on SoundWire, two TI TAS2783 SmartAmps on SDW1, AMD ACP PDM
-  DMIC array
-* Kernel 7.1.5, alsa-lib and alsa-ucm-conf 1.2.16.1, alsa-utils 1.2.16,
-  PipeWire 1.6.8, WirePlumber 0.5.15, NixOS
-* `ALSA_CONFIG_UCM2` points at a copy of stock alsa-ucm-conf 1.2.16.1 plus one
-  added file, `sof-soundwire/tas2783.conf`. Without it the mandatory
-  `Include.a.File "/sof-soundwire/${var:SpeakerCodecFile}.conf"` in
-  `sof-soundwire.conf` aborts `snd_use_case_mgr_open` with -2. That part is what
-  PR #812 addresses.
+>> sound/soc/codecs/tas2781-i2c.c:1774:3: error: cannot jump from this goto statement to its label
+    1774 |                 goto exit;
+         |                 ^
+   sound/soc/codecs/tas2781-i2c.c:1779:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
+    1779 |         guard(mutex)(&priv->codec_lock);
+         |         ^
+   include/linux/cleanup.h:423:2: note: expanded from macro 'guard'
+     423 |         CLASS(_name, __UNIQUE_ID(guard))
+         |         ^
+   include/linux/cleanup.h:303:3: note: expanded from macro 'CLASS'
+     303 |                 class_##_name##_constructor
+         |                 ^
+   <scratch space>:102:1: note: expanded from here
+     102 | class_mutex_constructor
+         | ^
+   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/compiler_types.h:16:23: note: expanded from macro '__PASTE'
+      16 | #define __PASTE(a, b) ___PASTE(a, b)
+         |                       ^
+   include/linux/compiler_types.h:15:24: note: expanded from macro '___PASTE'
+      15 | #define ___PASTE(a, b) a##b
+         |                        ^
+   <scratch space>:108:1: note: expanded from here
+     108 | __UNIQUE_ID_unlock_565
+         | ^
+   sound/soc/codecs/tas2781-i2c.c:1779:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
+   include/linux/cleanup.h:423:15: note: expanded from macro 'guard'
+     423 |         CLASS(_name, __UNIQUE_ID(guard))
+         |                      ^
+   include/linux/compiler.h:165:2: note: expanded from macro '__UNIQUE_ID'
+     165 |         __PASTE(__UNIQUE_ID_,                                   \
+         |         ^
+   include/linux/compiler_types.h:16:23: note: expanded from macro '__PASTE'
+      16 | #define __PASTE(a, b) ___PASTE(a, b)
+         |                       ^
+   include/linux/compiler_types.h:15:24: note: expanded from macro '___PASTE'
+      15 | #define ___PASTE(a, b) a##b
+         |                        ^
+   <scratch space>:96:1: note: expanded from here
+      96 | __UNIQUE_ID_guard_564
+         | ^
+   sound/soc/codecs/tas2781-i2c.c:1763:3: error: cannot jump from this goto statement to its label
+    1763 |                 goto exit;
+         |                 ^
+   sound/soc/codecs/tas2781-i2c.c:1779:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
+    1779 |         guard(mutex)(&priv->codec_lock);
+         |         ^
+   include/linux/cleanup.h:423:2: note: expanded from macro 'guard'
+     423 |         CLASS(_name, __UNIQUE_ID(guard))
+         |         ^
+   include/linux/cleanup.h:303:3: note: expanded from macro 'CLASS'
+     303 |                 class_##_name##_constructor
+         |                 ^
+   <scratch space>:102:1: note: expanded from here
+     102 | class_mutex_constructor
+         | ^
+   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/compiler_types.h:16:23: note: expanded from macro '__PASTE'
+      16 | #define __PASTE(a, b) ___PASTE(a, b)
+         |                       ^
+   include/linux/compiler_types.h:15:24: note: expanded from macro '___PASTE'
+      15 | #define ___PASTE(a, b) a##b
+         |                        ^
+   <scratch space>:108:1: note: expanded from here
+     108 | __UNIQUE_ID_unlock_565
+         | ^
+   sound/soc/codecs/tas2781-i2c.c:1779:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
+   include/linux/cleanup.h:423:15: note: expanded from macro 'guard'
+     423 |         CLASS(_name, __UNIQUE_ID(guard))
+         |                      ^
+   include/linux/compiler.h:165:2: note: expanded from macro '__UNIQUE_ID'
+     165 |         __PASTE(__UNIQUE_ID_,                                   \
+         |         ^
+   include/linux/compiler_types.h:16:23: note: expanded from macro '__PASTE'
+      16 | #define __PASTE(a, b) ___PASTE(a, b)
+         |                       ^
+   include/linux/compiler_types.h:15:24: note: expanded from macro '___PASTE'
+      15 | #define ___PASTE(a, b) a##b
+         |                        ^
+   <scratch space>:96:1: note: expanded from here
+      96 | __UNIQUE_ID_guard_564
+         | ^
+   sound/soc/codecs/tas2781-i2c.c:1757:3: error: cannot jump from this goto statement to its label
+    1757 |                 goto exit;
+         |                 ^
+   sound/soc/codecs/tas2781-i2c.c:1779:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
+    1779 |         guard(mutex)(&priv->codec_lock);
+         |         ^
+   include/linux/cleanup.h:423:2: note: expanded from macro 'guard'
+     423 |         CLASS(_name, __UNIQUE_ID(guard))
+         |         ^
+   include/linux/cleanup.h:303:3: note: expanded from macro 'CLASS'
+     303 |                 class_##_name##_constructor
+         |                 ^
+   <scratch space>:102:1: note: expanded from here
+     102 | class_mutex_constructor
+         | ^
+   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/compiler_types.h:16:23: note: expanded from macro '__PASTE'
+      16 | #define __PASTE(a, b) ___PASTE(a, b)
+         |                       ^
 
-### Reproducer
 
-```
-$ alsaucm -c hw:1 list _verbs
-  0: HiFi
-    Play HiFi quality Music
+vim +1774 sound/soc/codecs/tas2781-i2c.c
 
-$ alsaucm -c hw:1 set _verb HiFi
-ALSA lib main.c:843:(execute_sequence) [error.ucm] unable to execute cset 'name='Headphone Switch' off'
-ALSA lib main.c:2866:(set_verb_user) [error.ucm] failed to initialize new use case: HiFi
-alsaucm: error failed to set _verb=HiFi: No such file or directory
-```
+d75d38dc460452c Shenghao Ding  2025-05-07  1715  
+d75d38dc460452c Shenghao Ding  2025-05-07  1716  static ssize_t acoustic_ctl_write(struct file *file,
+d75d38dc460452c Shenghao Ding  2025-05-07  1717  	const char __user *from, size_t count, loff_t *ppos)
+d75d38dc460452c Shenghao Ding  2025-05-07  1718  {
+d75d38dc460452c Shenghao Ding  2025-05-07  1719  	struct snd_soc_component *comp = file->private_data;
+d75d38dc460452c Shenghao Ding  2025-05-07  1720  	struct tasdevice_priv *priv = snd_soc_component_get_drvdata(comp);
+d75d38dc460452c Shenghao Ding  2025-05-07  1721  	struct acoustic_data *p = &priv->acou_data;
+d75d38dc460452c Shenghao Ding  2025-05-07  1722  	unsigned int max_pkg_len = sizeof(*p);
+d75d38dc460452c Shenghao Ding  2025-05-07  1723  	unsigned char *src;
+d75d38dc460452c Shenghao Ding  2025-05-07  1724  	int j, len, reg, val;
+d75d38dc460452c Shenghao Ding  2025-05-07  1725  	unsigned short chn;
+d75d38dc460452c Shenghao Ding  2025-05-07  1726  	int ret = -1;
+d75d38dc460452c Shenghao Ding  2025-05-07  1727  
+d75d38dc460452c Shenghao Ding  2025-05-07  1728  	if (count > sizeof(*p)) {
+d75d38dc460452c Shenghao Ding  2025-05-07  1729  		dev_err(priv->dev, "count(%u) is larger than max(%u).\n",
+d75d38dc460452c Shenghao Ding  2025-05-07  1730  			(unsigned int)count, max_pkg_len);
+d75d38dc460452c Shenghao Ding  2025-05-07  1731  		return ret;
+d75d38dc460452c Shenghao Ding  2025-05-07  1732  	}
+d75d38dc460452c Shenghao Ding  2025-05-07  1733  
+d75d38dc460452c Shenghao Ding  2025-05-07  1734  	src = memdup_user(from, count);
+d75d38dc460452c Shenghao Ding  2025-05-07  1735  	if (IS_ERR(src))
+d75d38dc460452c Shenghao Ding  2025-05-07  1736  		return PTR_ERR(src);
+d75d38dc460452c Shenghao Ding  2025-05-07  1737  
+d75d38dc460452c Shenghao Ding  2025-05-07  1738  	if (src[0] > max_pkg_len && src[0] != count) {
+b11f2a9745401d9 Colin Ian King 2025-08-08  1739  		dev_err(priv->dev, "pkg(%u), max(%u), count(%u) mismatch.\n",
+d75d38dc460452c Shenghao Ding  2025-05-07  1740  			src[0], max_pkg_len, (unsigned int)count);
+d75d38dc460452c Shenghao Ding  2025-05-07  1741  		ret = 0;
+d75d38dc460452c Shenghao Ding  2025-05-07  1742  		goto exit;
+d75d38dc460452c Shenghao Ding  2025-05-07  1743  	}
+d75d38dc460452c Shenghao Ding  2025-05-07  1744  
+d75d38dc460452c Shenghao Ding  2025-05-07  1745  	switch (src[1]) {
+d75d38dc460452c Shenghao Ding  2025-05-07  1746  	case 'r':
+d75d38dc460452c Shenghao Ding  2025-05-07  1747  		/* length of data to read */
+d75d38dc460452c Shenghao Ding  2025-05-07  1748  		len = src[6];
+d75d38dc460452c Shenghao Ding  2025-05-07  1749  		break;
+d75d38dc460452c Shenghao Ding  2025-05-07  1750  	case 'w':
+d75d38dc460452c Shenghao Ding  2025-05-07  1751  		/* Skip 6 bytes for package type and register address */
+d75d38dc460452c Shenghao Ding  2025-05-07  1752  		len = src[0] - 6;
+d75d38dc460452c Shenghao Ding  2025-05-07  1753  		break;
+d75d38dc460452c Shenghao Ding  2025-05-07  1754  	default:
+d75d38dc460452c Shenghao Ding  2025-05-07  1755  		dev_err(priv->dev, "%s Wrong code %02x.\n", __func__, src[1]);
+d75d38dc460452c Shenghao Ding  2025-05-07  1756  		ret = 0;
+d75d38dc460452c Shenghao Ding  2025-05-07  1757  		goto exit;
+d75d38dc460452c Shenghao Ding  2025-05-07  1758  	}
+d75d38dc460452c Shenghao Ding  2025-05-07  1759  
+d75d38dc460452c Shenghao Ding  2025-05-07  1760  	if (len < 1) {
+d75d38dc460452c Shenghao Ding  2025-05-07  1761  		dev_err(priv->dev, "pkg fmt invalid %02x.\n", len);
+d75d38dc460452c Shenghao Ding  2025-05-07  1762  		ret = 0;
+d75d38dc460452c Shenghao Ding  2025-05-07  1763  		goto exit;
+d75d38dc460452c Shenghao Ding  2025-05-07  1764  	}
+d75d38dc460452c Shenghao Ding  2025-05-07  1765  
+d75d38dc460452c Shenghao Ding  2025-05-07  1766  	for (j = 0; j < priv->ndev; j++)
+d75d38dc460452c Shenghao Ding  2025-05-07  1767  		if (src[2] == priv->tasdevice[j].dev_addr) {
+d75d38dc460452c Shenghao Ding  2025-05-07  1768  			chn = j;
+d75d38dc460452c Shenghao Ding  2025-05-07  1769  			break;
+d75d38dc460452c Shenghao Ding  2025-05-07  1770  		}
+d75d38dc460452c Shenghao Ding  2025-05-07  1771  	if (j >= priv->ndev) {
+d75d38dc460452c Shenghao Ding  2025-05-07  1772  		dev_err(priv->dev, "no such device 0x%02x.\n", src[2]);
+d75d38dc460452c Shenghao Ding  2025-05-07  1773  		ret = 0;
+d75d38dc460452c Shenghao Ding  2025-05-07 @1774  		goto exit;
+d75d38dc460452c Shenghao Ding  2025-05-07  1775  	}
+d75d38dc460452c Shenghao Ding  2025-05-07  1776  
+d75d38dc460452c Shenghao Ding  2025-05-07  1777  	reg = TASDEVICE_REG(src[3], src[4], src[5]);
+d75d38dc460452c Shenghao Ding  2025-05-07  1778  
+d75d38dc460452c Shenghao Ding  2025-05-07  1779  	guard(mutex)(&priv->codec_lock);
+d75d38dc460452c Shenghao Ding  2025-05-07  1780  
+d75d38dc460452c Shenghao Ding  2025-05-07  1781  	if (src[1] == 'w') {
+d75d38dc460452c Shenghao Ding  2025-05-07  1782  		if (len > 1)
+d75d38dc460452c Shenghao Ding  2025-05-07  1783  			ret = tasdevice_dev_bulk_write(priv, chn, reg,
+d75d38dc460452c Shenghao Ding  2025-05-07  1784  				 &src[6], len);
+d75d38dc460452c Shenghao Ding  2025-05-07  1785  		else
+d75d38dc460452c Shenghao Ding  2025-05-07  1786  			ret = tasdevice_dev_write(priv, chn, reg, src[6]);
+d75d38dc460452c Shenghao Ding  2025-05-07  1787  	} else {
+d75d38dc460452c Shenghao Ding  2025-05-07  1788  		struct acoustic_data *p = &priv->acou_data;
+d75d38dc460452c Shenghao Ding  2025-05-07  1789  
+d75d38dc460452c Shenghao Ding  2025-05-07  1790  		memcpy(p, src, 6);
+d75d38dc460452c Shenghao Ding  2025-05-07  1791  		if (len > 1) {
+d75d38dc460452c Shenghao Ding  2025-05-07  1792  			ret = tasdevice_dev_bulk_read(priv, chn, reg,
+d75d38dc460452c Shenghao Ding  2025-05-07  1793  				p->data, len);
+d75d38dc460452c Shenghao Ding  2025-05-07  1794  		} else {
+d75d38dc460452c Shenghao Ding  2025-05-07  1795  			ret = tasdevice_dev_read(priv, chn, reg, &val);
+d75d38dc460452c Shenghao Ding  2025-05-07  1796  			p->data[0] = val;
+d75d38dc460452c Shenghao Ding  2025-05-07  1797  		}
+d75d38dc460452c Shenghao Ding  2025-05-07  1798  		p->len = len + 6;
+d75d38dc460452c Shenghao Ding  2025-05-07  1799  	}
+d75d38dc460452c Shenghao Ding  2025-05-07  1800  
+d75d38dc460452c Shenghao Ding  2025-05-07  1801  	if (ret)
+d75d38dc460452c Shenghao Ding  2025-05-07  1802  		dev_err(priv->dev, "i2c communication error.\n");
+d75d38dc460452c Shenghao Ding  2025-05-07  1803  	else
+d75d38dc460452c Shenghao Ding  2025-05-07  1804  		ret = count;
+d75d38dc460452c Shenghao Ding  2025-05-07  1805  exit:
+d75d38dc460452c Shenghao Ding  2025-05-07  1806  	kfree(src);
+d75d38dc460452c Shenghao Ding  2025-05-07  1807  	return ret;
+d75d38dc460452c Shenghao Ding  2025-05-07  1808  }
+d75d38dc460452c Shenghao Ding  2025-05-07  1809  
 
-Enumeration works, activation does not. The card has 19 controls and none of
-them is `Headphone Switch`:
-
-```
-$ amixer -c 1 controls
-numid=19,iface=MIXER,name='rt721 ADC 07 L Mux'
-numid=18,iface=MIXER,name='rt721 ADC 07 R Mux'
-numid=15,iface=MIXER,name='rt721 ADC 08 L Mux'
-numid=14,iface=MIXER,name='rt721 ADC 08 R Mux'
-numid=13,iface=MIXER,name='rt721 ADC 09 Mux'
-numid=17,iface=MIXER,name='rt721 ADC 10 L Mux'
-numid=16,iface=MIXER,name='rt721 ADC 10 R Mux'
-numid=1,iface=MIXER,name='rt721 FU05 Playback Volume'
-numid=5,iface=MIXER,name='rt721 FU06 Playback Volume'
-numid=2,iface=MIXER,name='rt721 FU0F Capture Switch'
-numid=3,iface=MIXER,name='rt721 FU0F Capture Volume'
-numid=8,iface=MIXER,name='rt721 FU15 Boost Volume'
-numid=6,iface=MIXER,name='rt721 FU1E Capture Switch'
-numid=7,iface=MIXER,name='rt721 FU1E Capture Volume'
-numid=4,iface=MIXER,name='rt721 FU33 Boost Volume'
-numid=9,iface=MIXER,name='tas2783-1 Amp Volume'
-numid=10,iface=MIXER,name='tas2783-1 Speaker Volume'
-numid=11,iface=MIXER,name='tas2783-2 Amp Volume'
-numid=12,iface=MIXER,name='tas2783-2 Speaker Volume'
-```
-
-The offending lines are `ucm2/sof-soundwire/rt721.conf` 58 to 70 (v1.2.16.1),
-the two csets being lines 62 and 66:
-
-```
-SectionDevice."Headphones" {
-	Comment	"Headphones"
-
-	EnableSequence [
-		cset "name='Headphone Switch' on"
-	]
-
-	DisableSequence [
-		cset "name='Headphone Switch' off"
-	]
-
-	Value {
-	      PlaybackPriority 200
-	      PlaybackPCM "hw:${CardId}"
-	      JackControl "Headphone Jack"
-	}
-}
-```
-
-and the verb sequence that pulls the DisableSequence in,
-`ucm2/sof-soundwire/HiFi.conf` 3 to 6:
-
-```
-SectionVerb {
-	EnableSequence [
-		disdevall ""
-	]
-```
-
-### Proof that this single cset is the whole problem
-
-Copy the tree, guard those two sequences with a `ControlExists` condition and
-change nothing else:
-
-```diff
---- a/ucm2/sof-soundwire/rt721.conf
-+++ b/ucm2/sof-soundwire/rt721.conf
-@@ -58,12 +58,18 @@
- SectionDevice."Headphones" {
- 	Comment	"Headphones"
- 
--	EnableSequence [
--		cset "name='Headphone Switch' on"
--	]
--
--	DisableSequence [
--		cset "name='Headphone Switch' off"
--	]
-+	If.headphone_switch {
-+		Condition {
-+			Type ControlExists
-+			Control "name='Headphone Switch'"
-+		}
-+		True.EnableSequence [
-+			cset "name='Headphone Switch' on"
-+		]
-+		True.DisableSequence [
-+			cset "name='Headphone Switch' off"
-+		]
-+	}
- 
- 	Value {
- 	      PlaybackPriority 200
-```
-
-```
-$ ALSA_CONFIG_UCM2=/tmp/ucm2-test alsaucm -c hw:1 set _verb HiFi
-$ echo $?
-0
-```
-
-Deleting the two cset lines outright works too, and returns 0 the same way.
-Prefixing the control name with `-` does not work: `cset "-name='Headphone
-Switch' off"` still fails, now with -EINVAL, so the ignore-error prefix
-documented for `exec` does not apply to `cset`.
-
-### Downstream effect on PipeWire
-
-PipeWire's ACP layer calls the same function, so it inherits the failure and
-drops to its built-in profile set. With stock rt721.conf:
-
-```
-$ spa-acp-tool -vvv -c 1 list-profiles
-I       alsa-ucm.c:1019      UCM available for card hw:1
-I       alsa-ucm.c:1128      Set UCM verb to HiFi
-I           main.c:843       unable to execute cset 'name='Headphone Switch' off'
-I           main.c:2866      failed to initialize new use case: HiFi
-E       alsa-ucm.c:1044  Failed to get the verb HiFi
-E       alsa-ucm.c:1052  No UCM verb is valid for hw:1
-I     alsa-mixer.c:4932      Loading profile set: .../profile-sets/default.conf
-    profile 0: name:"off" prio:0 (available: yes)
-    profile 1: name:"output:stereo-fallback" prio:5100 (available: unknown)
-  * profile 2: name:"pro-audio" prio:1 (available: yes)
-```
-
-With the guard in place:
-
-```
-$ ALSA_CONFIG_UCM2=/tmp/ucm2-test spa-acp-tool -vvv -c 1 list-profiles
-I       alsa-ucm.c:1019      UCM available for card hw:1
-D       alsa-ucm.c:467         Got PlaybackPCM for device Speaker: _ucm0001.hw:amdsoundwire,2
-D       alsa-ucm.c:467         Got PlaybackPCM for device Headphones: _ucm0001.hw:amdsoundwire
-I            acp.c:2010      Found UCM profiles
-    profile 0: name:"off" prio:0 (available: yes)
-    profile 1: name:"HiFi" prio:8600 (available: unknown)
-  * profile 2: name:"pro-audio" prio:1 (available: yes)
-```
-
-`output:stereo-fallback` binds to PCM 0, the RT721 headset path, which is why
-audio came out of the headphone jack and the speakers were never addressed.
-
-### Suggested fix
-
-Any of these would work and I am happy to send a PR for whichever you prefer:
-
-1. Guard the Headphones sequences with `Condition { Type ControlExists Control
-   "name='Headphone Switch'" }`, the pattern `sof-soundwire.conf` already uses
-   for its PGA BootSequences at lines 198 to 226. This is the variant in the
-   diff above, and it is the one I tested on hardware.
-2. Use an RT721 SDCA function-unit control the card actually exposes, for
-   example a mute on the same FU as `rt721 FU05 Playback Volume`, instead of the
-   DAPM pin switch.
-3. Give amd-soundwire its own `conf.d` entry and headset conf that omits the pin
-   switch, rather than symlinking straight at `sof-soundwire.conf`.
-
-### A second, related gap
-
-Once the verb activates, the HiFi profile is correct: Speaker on
-`hw:amdsoundwire,2`, Headphones on `hw:amdsoundwire`, Mic on
-`hw:amdsoundwire,4` and Headset on `hw:amdsoundwire,1`. Jack detection still
-does not work, because this card registers no jack kcontrol either:
-
-```
-I       alsa-ucm.c:2556      UCM jack Headphone has_control=0
-I       alsa-ucm.c:2556      UCM jack Headset Mic has_control=0
-D            acp.c:1909        Pruned singleton availability group Headphone from port [Out] Headphones
-D            acp.c:969         Found 0 jacks.
-```
-
-So `JackControl "Headphone Jack"` and `JackControl "Headset Mic Jack"` name
-controls that do not exist on amd-soundwire either. Treat that as background for
-this bug rather than a second request. If the right answer is that the AMD
-machine driver ought to register the `Headphone Switch` and `Headphone Jack`
-controls the way the Intel `sof_sdw` boards do, please say so and I will take the
-whole thing to the ASoC list instead. I have not read the AMD machine driver, so I
-cannot say which side is wrong.
-
-### Related
-
-* #805 same laptop, RT721 capture switches default to OFF, still open
-* #806 the PR for #805
-* #812 adds the tas2783 profile this card needs, does not touch rt721.conf
-* #227 the same "Failed to get the verb" symptom on ALC4080
-* #356 the policy discussion about failing early on a missing control
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/825
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
