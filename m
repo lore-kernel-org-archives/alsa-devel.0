@@ -4,182 +4,174 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26A1CC56208
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2026 09:47:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C964AC56208
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Aug 2026 09:49:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A15A660235;
-	Thu,  6 Aug 2026 11:46:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A15A660235
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3EE96023A;
+	Thu,  6 Aug 2026 11:49:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3EE96023A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786009623;
-	bh=FFb9xnb2bXsfSp6d3BW7TfV8tEqDZ940SlN8CAICdnE=;
+	s=default; t=1786009758;
+	bh=1pGX56+sYlNPgx3Pkk5ShNWOac8rMgntgYGbnC0FIEY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qC15E4K7YECSJrYYV6BO9NbSHgu9y7izs1WTnE5H2WmJRrkwpR9FK5mX4uu3oqiUk
-	 DZRsxRp9eBBzKaBgTZkusw/eQ1U8vwLl6gacHTiMaROhLJAcD+JZZtXw0ZVYGbzy85
-	 aNSQ8uhkh6xfIJB2c1e9ihKVVFE5CjeR47rjdYmw=
+	b=EGC/GxMCDXSkRFYbQC9a4fNXdkOPzkZ+wcCURvdoguWm05tOExZUcKaLQ+8DplvVm
+	 lP4U9SVDXqbPttnK2TogeIQ++efzFelbls5aXHQA2bk0srdi1k2GKcUrA/rO0iL23W
+	 OUO3n0RWcOlmZYjgziHpp4h+UnLbQWNK9/N5AFV8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C4FCF805F9; Thu,  6 Aug 2026 11:46:26 +0200 (CEST)
+	id 9DB8DF80600; Thu,  6 Aug 2026 11:48:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98BDAF805FE;
-	Thu,  6 Aug 2026 11:46:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24885F805F3;
+	Thu,  6 Aug 2026 11:48:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 895CAF8055A; Thu,  6 Aug 2026 11:46:19 +0200 (CEST)
+	id 2EA02F8055A; Thu,  6 Aug 2026 11:48:38 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
  arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786009578;
-	b=XbUWi5nxXVckrVbb5afhL4knILUwdUirEUtW0gl9/UdbX+pUEm6mIVAXsy87IVi/1ruM
-	 GbxZDnmV+aMh2AO4QHTLVRsJyeXWCc8A8DEpu3/dg+60jBAViO4Im6gthmh7REdKqHhQq
-	 7XjsJQ8n+tgIITzdfPMBbQyoJatNsp0TKbj0hej8rMEJ2MQ9zP+vSrjLUKS9H0iRNB8Dm
-	 4UqGUVZi1B7fXhiMnugoOiSW5JhSl/Tk3LulIdP/v9jVga8UbpBFSPlHlbyt0ljSwU+wL
-	 KV3SCJUWgeSyWtTlyIP46CTXuczkH+BB9s4x3+fB4oSdkpbF2XfVBbQZ9h79WUtlt5A==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786009714;
+	b=SFfVwRJDIdD0vHSzromq5fFMiGNEOCfuGWrqmSir15agTxnjc/xVWyZK3EaI2IRnTduQ
+	 4eAV1SHrLK5UQDAeMUkxZpLgil4uNMNxRpEMLzB3ZTEh6y3yHKLertT8GlkMY3M0Fi4W8
+	 xVUL3Mk63StDRAmRFIsKi1v1yJ9Ipqv27NqkiUzSnM3vBIfSzNoqSqDhocv/S7C1zQmp4
+	 xwXMuwGIJGM3Invh5e1QzNSD+enuqE2yfnn01+ecSreXWPnSkodLIBuL1Fdd4+a5rUYSc
+	 sWUqtoB7ceLW2U/rGN6zCvthTymYUZmWbh5v9L4TPvr1PV/0wFmbZxi9QrkABSvPAGw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786009578;
+	c=relaxed/simple; t=1786009714;
 	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
 	 Message-ID:From:To:Subject:MIME-Version;
-	bh=FFb9xnb2bXsfSp6d3BW7TfV8tEqDZ940SlN8CAICdnE=;
-	b=nMy0lt21fTHmF0bwlx4VAvo796rtnNLSkdf506NszF+mHbZjI1OLb0LbrKmSXrYUGwdI
-	 qEgUC6tUOcz9w6l9JsD0002hPh4zJiJugNNIU51PYZXUU4GJM8i+94oam0f55zQQZCyIx
-	 DBzJ8uB0NMrVKmdnQILyhr5eBVsk24wfn6R+/UQyXuJF+FjNDomtQaFGouw7NK84CUh9q
-	 ODyXVGRGRnsXLAarAZ6mRSJdjLs0Pi3p/+Kp75nyk2CLzwquK7MTAW0A8eKVFhFULAcJu
-	 nfgSK+bmjUTdg9YXUvw/inwBh2YRvkDmIomQKg3MpHclYTN11ppbOBWaUr5zbUpHTcg==
+	bh=1pGX56+sYlNPgx3Pkk5ShNWOac8rMgntgYGbnC0FIEY=;
+	b=C0wX5sIwS+TLel8eCM8vbDb6oG9ILX7+KkHn6X8bDco3C0EuX9rapq/mjBN9uKvVL26u
+	 VAYqOnzFl0PVUU+/APRkybShMkSLH+Oyeck+qVrOOauPuF/Gq7wGnytadxI+ra1W/nYxb
+	 S4ZgW1wuDz6OFOKe5BO6bdIsWDM6hMaemFIbWN5nB0RCGnIRhK7yD+wwRaPC0iRsFNdp1
+	 0FyT6v7FjWuzein3s+h8GNLA/Q+tIWpXTxC2D3TEBypB0Iy4k4rPC0ynoQgW1JN6wyy7t
+	 B6irC/wN22WXOGEEqQ8UGeD1qBLN0on1vR7TAmcgMo9En/hznhMJJPywnOH5Lu4KGqQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=hd8xcnDz;
+ header.s=susede2_rsa header.b="pDAXu1/a";
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=x4DPizqy;
+ header.s=susede2_ed25519 header.b=lhKrasLg;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=GtW1sNiD;
+ header.s=susede2_rsa header.b=m580Vlsa;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=nttQBUdh;
+ header.s=susede2_ed25519 header.b=AZqaB5OP;
 	arc=none smtp.remote-ip=195.135.223.131
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81E8DF800B5
-	for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2026 11:46:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81E8DF800B5
+	by alsa1.perex.cz (Postfix) with ESMTPS id EEF2EF800B5
+	for <alsa-devel@alsa-project.org>; Thu,  6 Aug 2026 11:48:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEF2EF800B5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=hd8xcnDz;
+ header.s=susede2_rsa header.b=pDAXu1/a;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=x4DPizqy;
+ header.s=susede2_ed25519 header.b=lhKrasLg;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=GtW1sNiD;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=m580Vlsa;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=nttQBUdh
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
+ header.s=susede2_ed25519 header.b=AZqaB5OP
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9001B3E18;
-	Thu,  6 Aug 2026 09:46:08 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 188393E0A;
+	Thu,  6 Aug 2026 09:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1786009572;
+	t=1786009708;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uMedZm8ilhfGUjnt7tN7TRYRH4QzoXQnT3odAU/ZR3c=;
-	b=hd8xcnDzzckvL1nUL3lIakT0nva625Gj/IvUX2FCZSOyI1RnODEP+I9BYblk7KZM+gOsKc
-	B/j+dN0IGF3G8cdmRHRUS0NWoiEcivcbkkHRCBXPccWa6ckiJN2bbmV25RkJstIJHeliS2
-	OcAIO08ZzQxLKVg/4l+KUX1r1rJczpw=
+	bh=HU5XJnaayDumPDVpK3Ie3UPd5NJNSKlqkG/TLuMVt7A=;
+	b=pDAXu1/aeu/6f/NrqZNu/TD7rM4feYFH4Af2NBC5d+tqXKbcBwPtAE1NoHDG9uTHnMTwiX
+	gAdwP4e0KGh12/oLO5uw+BgyFK0fDXjmI1ZyPULvE3Ei8YGXoG91ZnNP0YfeQMGmcz4gUp
+	7bbbtyAehMmNRj+iQq/kAoQGoiEh3TM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786009572;
+	s=susede2_ed25519; t=1786009708;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uMedZm8ilhfGUjnt7tN7TRYRH4QzoXQnT3odAU/ZR3c=;
-	b=x4DPizqycP92r7K8r2880q6mMsQUhoB16j6O8m/fZvxC5tCAnl0624C1fqicnecD01a+6r
-	Cf7I36kPU1b9qGCQ==
+	bh=HU5XJnaayDumPDVpK3Ie3UPd5NJNSKlqkG/TLuMVt7A=;
+	b=lhKrasLgD3zAHefI7HsUDNlYbLefaXfg/jqhN7MUGI77gJ1yRD4oh4Xvcc5cY6XfFLACEo
+	OSXILY2tEnIJBDAw==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=GtW1sNiD;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=nttQBUdh
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1786009568;
+	t=1786009704;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uMedZm8ilhfGUjnt7tN7TRYRH4QzoXQnT3odAU/ZR3c=;
-	b=GtW1sNiDyMZ0/IfHkf+C7zvcs9HCKWBbqxko5wFxN/zBB78zEbUWatrBCuy7LY1hXTmC8p
-	EHS166q4SqLJ7zQ67OelivVnXSVa9+mTgjJOJet5PO9CXk5fJkNgdvJNcnhL/lmEzwkbfP
-	xrZBKA/fAYSCVMbWSnp+MmcSK4xbKUg=
+	bh=HU5XJnaayDumPDVpK3Ie3UPd5NJNSKlqkG/TLuMVt7A=;
+	b=m580VlsaHyZeVVbvFiQX+iWJ6nz+fmTbuCDepAWl0bqKJAKnQKGdaEchp0TZsBvTFD/1hT
+	skGeZIolhTiDQGDGZeKmr0KTw2aqJBYPPpqnbUVwrjT6QVE+LFKATQzXOmsSG9DjdzXoYB
+	tZxGYOZuTq+UpA4rIXJv7jr47jgXzzY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786009568;
+	s=susede2_ed25519; t=1786009704;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uMedZm8ilhfGUjnt7tN7TRYRH4QzoXQnT3odAU/ZR3c=;
-	b=nttQBUdhHQ7YZwAMc8nmuTQy9tH8wLaEmyXQ6bb8VXueEqZ7/wJxTMlA1AVniUl7pnv1F/
-	AiaDIZqbpG6SYLBg==
+	bh=HU5XJnaayDumPDVpK3Ie3UPd5NJNSKlqkG/TLuMVt7A=;
+	b=AZqaB5OPxexCNyMMfH+FndfRC87XPQNwG6QDvP/+eBhh7eIRyO1vnBvRlO/eit81QQaCot
+	lcrEPsbJ2JwWrUCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5EFBD779B6;
-	Thu,  6 Aug 2026 09:46:08 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EED2B779C0;
+	Thu,  6 Aug 2026 09:48:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hlfMFeBXdGrOPAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 06 Aug 2026 09:46:08 +0000
-Date: Thu, 06 Aug 2026 11:46:07 +0200
-Message-ID: <87pkzveg4g.wl-tiwai@suse.de>
+	id 1lnDOGdYdGp5PgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 06 Aug 2026 09:48:23 +0000
+Date: Thu, 06 Aug 2026 11:48:23 +0200
+Message-ID: <87mruzeg0o.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: sbinding@opensource.cirrus.com
-Cc: Gemayel Lira <gemayellira@gmail.com>,
-    alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: hda/cs35l41: Add DSD property override for ASUS
- UX3405CA
+To: Carl Quist <equalizerjr@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable mute LED on HP Laptop 15-dy0xxx
 In-Reply-To: 
- <CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
+ <CAOtcGaxXndKxTK5MVSEcmF-LUy+V51K7fhE=qvLA+VvW5ZyCNA@mail.gmail.com>
 References: 
- <CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
+ <CAOtcGaxXndKxTK5MVSEcmF-LUy+V51K7fhE=qvLA+VvW5ZyCNA@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 9001B3E18
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.29 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
 	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.19)[-0.944];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	URIBL_BLOCKED(0.00)[suse.de:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	ARC_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,alsa-project.org];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCPT_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-Message-ID-Hash: P7J35MQDYAK3JMXCU3XIQMYU3X3LZQBD
-X-Message-ID-Hash: P7J35MQDYAK3JMXCU3XIQMYU3X3LZQBD
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
+Message-ID-Hash: SVICFHCP3W5ZCOIIOILOHJGAWRHYCVHA
+X-Message-ID-Hash: SVICFHCP3W5ZCOIIOILOHJGAWRHYCVHA
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -191,7 +183,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P7J35MQDYAK3JMXCU3XIQMYU3X3LZQBD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SVICFHCP3W5ZCOIIOILOHJGAWRHYCVHA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -200,81 +192,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 02 Aug 2026 01:00:22 +0200,
-Gemayel Lira wrote:
+On Thu, 06 Aug 2026 01:57:27 +0200,
+Carl Quist wrote:
 > 
 > 
-> The ASUS Zenbook 14 UX3405CA (SSID 1043:1A63) has internal CS35L41
-> amplifiers, but was using the missing_speaker_id_gpio2 fallback entry.
-> This caused the right speaker channel to bind with VSPK voltage switch
-> disabled
-> (VSPK: 0), leading to a volume drop ~1 second after starting playback due to
-> power imbalance protection.
+> The mute LED on the HP Laptop 15-dy0xxx (PCI SSID 103c:864f, Realtek
+> ALC236) does not work, because the machine has no entry in the quirk
+> table. No fixup is applied, so no mute LED classdev is registered and
+> nothing ever drives the LED.
 > 
-> Add an explicit entry for 10431A63 in cs35l41_config_table with internal boost
-> type, 4500mA peak current, and switch its model mapping to generic_dsd_config.
-> This resolves the volume drop issue and enables proper internal boost for both
-> channels.
+> The LED is controlled by COEF index 0x07, bit 0. This was verified on
+> the hardware with hda-verb: setting the bit lights the mute LED and
+> clearing it turns the LED off.
 > 
-> Pull Request on SOF Project: https://github.com/thesofproject/linux/pull/5866
+>   hda-verb /dev/snd/hwC0D0 0x20 SET_COEF_INDEX 0x07
+>   hda-verb /dev/snd/hwC0D0 0x20 SET_PROC_COEF 0x1     # LED on
+>   hda-verb /dev/snd/hwC0D0 0x20 SET_PROC_COEF 0x200   # LED off
 > 
-> Signed-off-by: Gemayel Lira <gemayellira@gmail.com>
+> That is exactly what ALC236_FIXUP_HP_MUTE_LED_COEFBIT2 configures, and
+> the closely related HP Laptop 15-dw0xxx (103c:85f0) already uses it.
+> Bit 9 (0x200) is set by default on this board and is preserved by the
+> fixup's read-modify-write.
 > 
-> From 10431A6300000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-> From: Gemayel Lira <gemayellira@gmail.com>
-> Date: Sat, 1 Aug 2026 19:15:00 -0300
-> Subject: [PATCH] ALSA: hda/cs35l41: Add DSD property override for ASUS UX3405CA
+> Tested on an HP Laptop 15-dy0xxx (SKU 7FU54UA#ABA, board 864F,
+> BIOS F.40).
 > 
-> The ASUS Zenbook 14 UX3405CA (SSID 1043:1A63) has internal CS35L41
-> amplifiers, but was using the `missing_speaker_id_gpio2` fallback entry.
-> This caused the right speaker channel to bind with VSPK voltage switch disabled
-> (VSPK: 0), leading to a volume drop ~1 second after starting playback due to
-> power imbalance protection.
-> 
-> Add an explicit entry for 10431A63 in cs35l41_config_table with internal boost
-> type, 4500mA peak current, and switch its model mapping to `generic_dsd_config`.
-> This resolves the volume drop issue and enables proper internal boost for both channels.
-> 
-> Signed-off-by: Gemayel Lira <gemayellira@gmail.com>
+> Signed-off-by: Carl Quist <equalizerjr@gmail.com>
 
-Stefan, is this also covered in your side?
-Or shall we just take this?
-
-
-BTW, Gemayel, at the next time, please submit to
-linux-sound@vger.kernel.org.  It's the place for kernel patches, while
-alsa-devel ML is mostly for only user-space stuff.
+Applied now.  But at the next time, please submit to
+linux-sound@vger.kernel.org, instead.  It's the place for kernel
+patches.
 
 
 thanks,
 
 Takashi
-
-
-> ---
->  sound/hda/codecs/side-codecs/cs35l41_hda_property.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
-> index 416d7bf..1cf12f8 100644
-> --- a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
-> +++ b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
-> @@ -104,6 +104,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
->  	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
->  	{ "10431863", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
->  	{ "104318D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-> +	{ "10431A63", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, -1, 2, -1, 1000, 4500, 24 },
->  	{ "10431A83", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
->  	{ "10431B93", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
->  	{ "10431C9F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-> @@ -530,7 +531,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
->  	{ "CSC3551", "104317F3", generic_dsd_config },
->  	{ "CSC3551", "10431863", generic_dsd_config },
->  	{ "CSC3551", "104318D3", generic_dsd_config },
-> -	{ "CSC3551", "10431A63", missing_speaker_id_gpio2 },
-> +	{ "CSC3551", "10431A63", generic_dsd_config },
->  	{ "CSC3551", "10431A83", generic_dsd_config },
->  	{ "CSC3551", "10431B93", generic_dsd_config },
->  	{ "CSC3551", "10431C9F", generic_dsd_config },
-> -- 
-> 2.43.0
