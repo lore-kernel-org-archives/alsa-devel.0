@@ -4,67 +4,179 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03DAAC5AC7A
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Aug 2026 09:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB4DC55174
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Aug 2026 15:15:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF9FE60237;
-	Fri,  7 Aug 2026 11:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF9FE60237
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71FDB60203;
+	Sat,  8 Aug 2026 17:15:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71FDB60203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786093287;
-	bh=Ty1KIW+XeXWCN2LqSxstmX5nwXEz4x9MXVg6/Rrnwvk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=HWJN9TSvRURTHucnsrxjchmLo7OPq68TN9+mHUcXuoHN/NDAECawNaMi0PIBuFzwa
-	 An3wc7cYKeqTmJClKd0vKeu0uu1jTRWM9gUC/6Yq+9HmzR+wGDnen77ljnC1Er3rRk
-	 1MAw32OgTFB1gYQ/Xw5Gx6pjtIxYt+T24J2PA3XU=
+	s=default; t=1786202119;
+	bh=giXO5jsxI/68HDtSzHty4UK+ud7/lA3c9Ff4c3eo/Qo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=QjRlDYyftnOHU8a/NHa37HUrRpSfKO6EyXlgGy68N1UHG99d2V9AlsRVrBTB20usI
+	 TUttDR4UI+KfiwnFQ0EUGbcTzruqC1ebiSEuMpS9BSIf+X81yeFN0g6OikA6IrUgNd
+	 FLC6TJlC2WWHlg5RE1DQIDw1P9OzJjWOUIe+x3Xc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B659BF805F6; Fri,  7 Aug 2026 11:00:52 +0200 (CEST)
+	id 43A64F805F8; Sat,  8 Aug 2026 17:14:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5954DF80600;
-	Fri,  7 Aug 2026 11:00:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE03BF805F0;
+	Sat,  8 Aug 2026 17:14:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85546F8047D; Fri,  7 Aug 2026 11:00:46 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786093245;
-	b=ellJS59wj+2gBTnx/SFLMZnlrgkIftjwsoqKBHM1kztl++HHm3UHwJn9CWyUNzm3be4j
-	 78dombThijP+LWoT/xcl/DyMIZUWKDitjAC4HdgFs7mZzde41iU0qZmQ0+NCAw7EbDWv7
-	 KqYnlgrJU8qRZjITUlvm1r/gO3QM6hhallThm6UM6XJQ0mPG033lX8DwVHoXSI6TyxEI5
-	 q3yeP7qeKuukigSPbpiJWS0q+zgVvfi/eAvj5ywqFWa+Eh2/V1Kn/FVX+FuatUfvjekVI
-	 Kx3EF0YPQxqTJVmC97UlHIc2TTB6tHksPr+AwitIzaRgud5Kezl99+5Cw3wTIrl9Abw==
+	id 0B0A1F80571; Sat,  8 Aug 2026 17:14:35 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=195.135.223.130
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786202073;
+	b=CAU3ZBtEFobQVW+xyRGxxB4cYMk6Z8j1WPiaPLF27NIXzTYDMwkmfwmMmN6K0LTyFLwS
+	 xRpa9/D4MNKoHO9c4Cst+B924vVtne5JF9qaMyTpFbHSBlVaBPFKS+UK1FH0uTDM6uanJ
+	 Or9axnKJFIaklDqzol63brWUUYRb+tFFSBw76vyMLxfcsfugUD2ToWdNHwQYaZldnXETr
+	 pnzhUcVPMBLg6iJ0KtwD3gmuNI2xsfzm6Ecf5tdXQEAO/ZbFAoJ7qfX5aIylZPt4oFfzX
+	 wMO+IfOX6LOi64sQ41IHBG08jyntejQcN/A9Z7NYTxmjdF1uPtDixF+BEC7kpkVm06g==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786093245;
-	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=Ty1KIW+XeXWCN2LqSxstmX5nwXEz4x9MXVg6/Rrnwvk=;
-	b=eIMRzkanZCWZTw6r4qmdsD7UUeWOq0j4g4fWRr1eUNLKUCImcpFHUJz6FeqaC0AKSF4+
-	 siUwOJuPBI8fc3yMRMG2KUnq9FAFQcXFk18ftqE72MGsqnlSO1qdX9mt3XAb230G41Opv
-	 B2Si9Wvli1ObsAw1dL8mJCjYrJteOqzDcb9M2o4b9X2g1LUNfDoCvC+Tikxbncx/8Okjn
-	 HeDyw0XvUzXAE+Id/bZOTGdzRQMtvCjVPgHQQBcZU5Il+flJ+OpdWMGGxlsWX3DV0YNyf
-	 1Q3uxWiMqxdv1OmYMCGd2nwjP49pMlMlHdfoLyQngvPOqHHespR9hCYJdqsbyWyeSIw==
+	c=relaxed/simple; t=1786202073;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
+	 Message-ID:From:To:Subject:MIME-Version;
+	bh=giXO5jsxI/68HDtSzHty4UK+ud7/lA3c9Ff4c3eo/Qo=;
+	b=Wjq03aBMYSrTrz6WhNOyirf2MmtD4GiX2FSdilppaVHe1cKLdENPMdGeXNTuGng3/dMv
+	 SCKUVeHdKgTqG7I0+hPGL4Mfx7ENqsB5bS7k2jZEawzAX7mYr9XAaZJMmb2RpUmg0w9vR
+	 sjYcPiHTmQDdXl3TihtVgnpsMLCIyT+5p3BIkLI7cMwSjuOwh95jCH5FPx6GKO/cz0aS5
+	 DjDjqYA1gFj+5A6or1BxMyxRcQfHQN+mbjKBoKrYTIntIc6+ZwzeavCOMQlpQ9Yp1k6ST
+	 gfvdQiTxy5pQPP2Xfi4bbyQ5Q9+xhWwXaSDsryXDXVrw5dUuZNXkqgULUC/MIh9bgXA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=45.14.194.44
-Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
- [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A006F801F7
-	for <alsa-devel@alsa-project.org>; Fri,  7 Aug 2026 11:00:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A006F801F7
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-Message-Id: <18c97a57a2e4fa00-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
-Subject: ucm2: USB-Audio: add Topping M62 configuration
-Date: Fri,  7 Aug 2026 11:00:46 +0200 (CEST)
-Message-ID-Hash: 6K2QKBJHF6WXBWG7QSD452K5OXE4NX5O
-X-Message-ID-Hash: 6K2QKBJHF6WXBWG7QSD452K5OXE4NX5O
-X-MailFrom: github@alsa-project.org
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=CzSVnrKC;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=0W29tZ9+;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=svjPz7Eo;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=nBsFcWN4;
+	arc=none smtp.remote-ip=195.135.223.130
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id C0A28F8012B
+	for <alsa-devel@alsa-project.org>; Sat,  8 Aug 2026 17:14:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0A28F8012B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=CzSVnrKC;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=0W29tZ9+;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=svjPz7Eo;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=nBsFcWN4
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E76FC80F0C;
+	Sat,  8 Aug 2026 15:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1786202067;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDW+i6uxXoRg6x8cDyqCdnmLyX7qZ2ZG6lSUlZ4W5YM=;
+	b=CzSVnrKCvHOHh4fqWfWZcRDwl67hS7B546QKHJmVDZzAsK0Tml85eK8GKDmgiUcFVyZwGC
+	mmDA6wiSwKntg70bwhssBf4cmgnTZcZKZ6MaiC6C7Zyh0jRErzIqZQRmEjbmIrTwSqx+Dp
+	o+Xffg8Dbjr8uwsjEoDWx/LcWfdSdaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1786202067;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDW+i6uxXoRg6x8cDyqCdnmLyX7qZ2ZG6lSUlZ4W5YM=;
+	b=0W29tZ9+2uLScHFGNH2RUOkmodnkIZkFJ05ymzGk3XADSC7tObe4sv9SBYq87HSCFoojw3
+	3reC7lZYByPPGNAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=svjPz7Eo;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=nBsFcWN4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1786202062;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDW+i6uxXoRg6x8cDyqCdnmLyX7qZ2ZG6lSUlZ4W5YM=;
+	b=svjPz7Eo6e5ygSOV0zMu2iESp0hakqakxcGjp2LX4Cu9tSpvTPzyHq8NZYLUYsdDo3q1QO
+	kLcL1Idv1SAZZvN31QTzr4Loh7J+HR5rcGEssyIAgNCoZKptZc95KH01XzSZlpZEHh6iwn
+	xhHKfqzJ1YgEauLask+6a8kERPl3CBw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1786202062;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDW+i6uxXoRg6x8cDyqCdnmLyX7qZ2ZG6lSUlZ4W5YM=;
+	b=nBsFcWN49+sr27VnIS3M5KwoN4NqgIx/Ie3gpnMsm3SS0ZkX0vSuWdQIzkGY5nhx/5kzZK
+	1XgXeadLPoapziAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5ECB779B2;
+	Sat,  8 Aug 2026 15:14:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0bbCKs5Hd2odaAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 08 Aug 2026 15:14:22 +0000
+Date: Sat, 08 Aug 2026 17:14:22 +0200
+Message-ID: <87se4oabld.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: JJ Macalinao <jj@macalinao.org>
+Cc: Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: add QUIRK_FLAG_ALWAYS_SET_RATE for
+ Mackie DLZ Creator XS
+In-Reply-To: <20260808070902.835360-1-jj@macalinao.org>
+References: <20260808070902.835360-1-jj@macalinao.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Queue-Id: E76FC80F0C
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+Message-ID-Hash: 4D3CU2NPS7U4KNKXOZPMXE5RVVNAMGJT
+X-Message-ID-Hash: 4D3CU2NPS7U4KNKXOZPMXE5RVVNAMGJT
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -75,7 +187,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6K2QKBJHF6WXBWG7QSD452K5OXE4NX5O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4D3CU2NPS7U4KNKXOZPMXE5RVVNAMGJT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,37 +196,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #826 was edited from NTMan:
+On Sat, 08 Aug 2026 09:09:02 +0200,
+JJ Macalinao wrote:
+> 
+> set_sample_rate_v2v3() returns early when the clock already reports the
+> requested rate:
+> 
+> 	prev_rate = get_sample_rate_v2v3(chip, fmt->iface,
+> 					 fmt->altsetting, clock);
+> 	if (prev_rate == rate)
+> 		goto validation;
+> 
+> A device advertising exactly one sample rate always takes this branch, so
+> it never receives a SET_CUR for CS_SAM_FREQ_CONTROL at all.
+> 
+> The Mackie DLZ Creator XS (0a73:003a, 14 in / 4 out, 48 kHz only) requires
+> that write.  Without it the device drops off the USB bus roughly 0.2-1.8 s
+> into any stream, clearing its port CONNECTION bit; captured audio is
+> byte-correct until the instant it vanishes.
+> 
+> USBPcap traces of a cold-booted device on Windows show SET_CUR 48000 issued
+> unconditionally on every stream start, followed by clean streaming.  The
+> device is otherwise driven with plain class-compliant UAC2 - it also works
+> on iOS, which cannot load a vendor driver - so no vendor-specific
+> initialisation is involved.
+> 
+> The device is self-powered, so the resulting state survives a USB replug:
+> initialising it on any host that issues the write leaves it working on
+> Linux until it is power-cycled, which made the failure look intermittent.
+> 
+> Add a quirk flag rather than dropping the early exit, since the opposite
+> requirement also exists in-tree: QUIRK_FLAG_FIXED_RATE suppresses rate
+> setting for single-rate devices (JBL Quantum610/810).  The two behaviours
+> are device-dependent and cannot both be the default.
+> 
+> A/B on identically cold-booted hardware, same kernel, same port, repeated
+> twice:
+> 
+>   without the flag  device dropped after 5-6 s, then again after 3-4 s
+>   with the flag     20 s playback followed by 20 s of 14-channel capture,
+>                     960000 frames, zero re-enumerations
+> 
+> This change was developed with an AI coding assistant.  The assistant did
+> the trace analysis that located the bug and wrote the patch and this
+> changelog; the hardware testing, the cold-boot cycles and the decision to
+> submit were the author's.  Several earlier hypotheses it proposed - URB
+> queue depth, isochronous packet under-allocation, endpoint start ordering -
+> were disproven by measurement before this one.
+> 
+> The bug was located with usbmon on Linux and USBPcap on Windows, by
+> diffing an enumeration capture of a cold-booted device on each host.
+> Verified on physical hardware by the A/B above.
+> 
+> Assisted-by: Claude-Code:claude-opus-5
+> Signed-off-by: JJ Macalinao <jj@macalinao.org>
+> ---
+>  sound/usb/clock.c    | 3 ++-
+>  sound/usb/quirks.c   | 3 +++
+>  sound/usb/usbaudio.h | 6 ++++++
+>  3 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+> index 2e0c18e352..647bf55b1b 100644
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -626,7 +626,8 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip,
+>  	}
+>  
+>  	prev_rate = get_sample_rate_v2v3(chip, fmt->iface, fmt->altsetting, clock);
+> -	if (prev_rate == rate)
+> +	if (prev_rate == rate &&
+> +	    !(chip->quirk_flags & QUIRK_FLAG_ALWAYS_SET_RATE))
+>  		goto validation;
 
-ucm2: USB-Audio: add Topping M62 configuration
+With QUIRK_FLAG_ALWAYS_SET_RATE, calling get_sample_rate_v2v3() is
+rather useless, and we can skip it?  e.g.
 
-The M62 exposes a single ten channel playback PCM and a single sixteen channel capture PCM. The ten playback channels are not a surround layout: they are five independent stereo buses that the card's own mixer sums into its outputs, named Playback 1/2 to Playback 9/10 in the manual. The USB descriptor nevertheless declares the first ten standard surround positions, so without a profile the desktop either hands out AUX0..AUX9 or believes in a centre, an LFE and a rear that the hardware does not have. Both readings break more than cosmetics: the balance control and the speaker test have nothing to work with, and any per device equalisation carries ten channel keys where two are meant.
+	if (!(chip->quirk_flags & QUIRK_FLAG_ALWAYS_SET_RATE)) {
+		prev_rate = get_sample_rate_v2v3(chip, fmt->iface, fmt->altsetting, clock);
+		if (prev_rate == rate)
+			goto validation;
+	}
 
-Each bus is therefore published as its own stereo device, split out of the one PCM. The five are not marked conflicting: they may play at once, which is the point of having five.
 
-The capture PCM has no channel map at all. Every column was found by feeding a jack and recording all sixteen: column 0 is mic channel 1, column 1 is mic channel 2, columns 2 and 3 are the AUX stereo input. Those four are the only ones that carry anything. The card also has Bluetooth and OTG inputs and four programmable loopback returns, and its manual says the loopback section sends signals back to the computer, but no setting reachable from the vendor control panel made columns 4 to 15 carry a sample: with the four loopbacks pointed at different sources, playback running, and the Bluetooth and OTG inputs audible in the headphones, every one of those columns stayed at digital zero, on Linux and on macOS alike. They are left undeclared for now.
+thanks,
 
-The mic devices are named after the card's mic channels and not after jacks. Mic channel 1 is switched on the card between its own 6.3 mm jack, the 3.5 mm jack and the headset jack; that switch lives in the card's own panel and is not visible to the driver, so a jack name would be a claim the configuration cannot back.
-
-The card keeps all ten playback channels in one mixer element and all sixteen capture columns in another, so the per bus and per input volumes come from a control remap by channel index, in the same shape the Behringer UMC204HD profile uses.
-
-The card has three operating modes, switched from its own panel, and all three keep the same USB id. Mobile Mode is a plain stereo device with an honest FL FR channel map on both directions and needs no profile; applying this one to it would ask a two channel PCM for ten. The mode is encoded in the high byte of bcdDevice, 01xx Mobile, 02xx Live Streaming, 03xx Pro Audio, so the profile is selected only for the latter two. Live Streaming and Pro Audio have identical channel layouts and differ only in the rates they offer, 44.1 and 48 kHz against those plus 88.2 and 96 kHz.
-
-Tested on Fedora with alsa-lib 1.2.16 and PipeWire in all three modes: in Live Streaming and Pro Audio the five sinks and three sources appear as expected, playback lands on the intended pair, each remapped element
-moves only its own channels, and a sixteen column recording confirms the input columns; in Mobile Mode the card is left to the generic configuration.
-
-Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-
-Attached alsa-info from all three modes. The `bcdDevice` value is what the profile keys on:
-
-| Mode | bcdDevice | Playback | Capture | Rates (kHz) | Profile |
-| --- | --- | --- | --- | --- | --- |
-| [alsa-info-MobileMode.txt](https://github.com/user-attachments/files/30801211/alsa-info-MobileMode.txt) | 0145 | 2ch, FL FR | 2ch, FL FR | 44.1, 48 | not applied |
-| [alsa-info-LiveStreamingMode.txt](https://github.com/user-attachments/files/30801208/alsa-info-LiveStreamingMode.txt)| 0248 | 10ch | 16ch | 44.1, 48 | applied |
-| [alsa-info-ProAudioMode.txt](https://github.com/user-attachments/files/30801204/alsa-info-ProAudioMode.txt) | 0327 | 10ch | 16ch | 44.1, 48, 88.2, 96 | applied |
-
-In the two ten channel modes the descriptor declares the channel map `FL FR FC LFE RL RR FLC FRC RC SL`, which the hardware does not have: those are five stereo buses. Mobile Mode declares `FL FR` on both directions and is left to the generic configuration.
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/826
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/826.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Takashi
