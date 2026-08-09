@@ -4,179 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D6CCC5AC80
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Aug 2026 10:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C238BC5AD7B
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Aug 2026 17:41:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B7CE60210;
-	Sun,  9 Aug 2026 12:33:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B7CE60210
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2F5160202;
+	Sun,  9 Aug 2026 19:41:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2F5160202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786271601;
-	bh=6xrASBm3Y7AkSRoVnHd9D6RfojGgmUE1OBOOAz0zxys=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=G6dzskWaheSOhGCvdoTT4KxZTgvKCDqd9EaSbgE6++NEB8jnQQfvwExkYn+XTMFQq
-	 vjBhEUpAALhmdkgwZA17QR45juiqc0X5mRVOuD85tlzsa1rgokxn3HNa7/q9Zv0zyf
-	 /4JW3RYYMrs1u0GtF1gyydFUvPoE7ppSpN7CVJEk=
+	s=default; t=1786297298;
+	bh=mNdmamWIMlvVu5FQ37Mbm2L9tT08A8nqDUSUPtOVlrI=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=kyF//Vhgy+/PcsoC+ypGe06zvSY46qI0ZNZs+v7DoSIrhBU9B7KTAon9md7uDGgP9
+	 hMbY1EdJOLxH6+XXr2Iin8+oK7LGiD+KqeRNdXxwVD0YSbb7QQe2gjooIr4XpAU5Kr
+	 o79xn6wI7/ps1FuAOhg4DXHnoIgjWmw5IVv/CPII=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 691C8F80600; Sun,  9 Aug 2026 12:32:45 +0200 (CEST)
+	id BE3BDF805F2; Sun,  9 Aug 2026 19:41:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A03B0F805F5;
-	Sun,  9 Aug 2026 12:32:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 412E5F80600;
+	Sun,  9 Aug 2026 19:41:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D3A9F8026A; Sun,  9 Aug 2026 12:32:37 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786271553;
-	b=VrlvLwrkYT8FpgQ4/RDZZNU4thVtFUuJKKJaA2VuGPNJ89Puhc2Sm5xAitO+Do8HsF3R
-	 MJt6Fs/xxC7fUP/QXapJsmsUSFMXKAHA4D6Z7aQQ0GVFsv8DlsibwHKfi+DY9dMkaQUZe
-	 N/Vg/MEo/pGpqa0PxBL0gRupeJtmoKyhrOCvxnd8CTHkCoRyUfQbsLPNFAPI8Kd42ZIMe
-	 HDDnrOrZlcqv/Ixemk3dB1s8M7c8CNsz1D/gmCDNBT6pj8PWNGQ4oj97rm2FINxL+Zaze
-	 IpJ62t7mj3oOhioE8nFAZxSdWW2T/UI00xDca/ZB4zBObetA+mbuKPDrcYpcwJefzmQ==
+	id 8EB98F8026A; Sun,  9 Aug 2026 19:40:59 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786297258;
+	b=KkkFsfEOmP5c6BQfznkPJhh02FKmgw4AEyqqjb6ks4lnli1L6d+UNMgIg4aBXlFPyfDZ
+	 fghGDtCBjq7L9zEF1VkZBe3v9cc/e6w94EHBeg4T/fZ0db8sONHsgGAitKIWiMmP7Qg5t
+	 PmnuFWIVvZnf/gJmjHCp+62F7M9RpOgDQtmnTNudHgy6YzaXrcDeL96rgnBQ1EtlWLv23
+	 BpYRRlUJNYZy400rbnuQI+zdfJPul61pi0rZHAzEDm5sshFgCn94vYrossqFDl/L8JgtY
+	 u/PFfU6otb/qIMtfl11abdqsOb9JMXssSg7bqz8CgboY93JrFg1itTQ5ndBW1wn7olw==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786271553;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=6xrASBm3Y7AkSRoVnHd9D6RfojGgmUE1OBOOAz0zxys=;
-	b=cpkxPmgXy1J+egL30pYEUGJ9gRWo7SVm2rxH/PDTjQizYKICxjebbhQQdLC9oCMjJ4Xr
-	 TR++zF8jihMct1DaE0kyaDxZXqrQsXERnoKygkz1tQKlMlP0oppEMTn7d08KYPdyeYn/F
-	 3ljQHsyYiOBeTlkhFT4Lx9wqndkUEUCCyh1DTTqAeJCa6snbt76QLI7KUGg43ifdSm1Ur
-	 WIhqrzMEuLiFtAYOWhaKVpIwed3mJGH/mt21V7DqU4vLvhBQfpiFGnpX7Nonxhtmlch50
-	 jXSMDbfWfks3uA+Y9PEDl+9dyfrqQI0pHCsyCc7J4HFLUr+D2LMIJzdqz/9jzavgFxA==
+	c=relaxed/simple; t=1786297258;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=mNdmamWIMlvVu5FQ37Mbm2L9tT08A8nqDUSUPtOVlrI=;
+	b=hRwv1KH2vCkViteR2gCA32jj/iAxj4+bkn+nYQlivKGS6pCdNZb9Cp9TJ6BXqwS2cf4+
+	 Imzumq/CXQ1G6GqTiL+yQUPQLmaR6Sg9wbIYoFKImmFy1ltkgjBTwUfxYLFQVX05ZucMP
+	 Tc3WGV7ph9TNv+tV6+jA2SrGXvV6u/I4LX0kBvzqDsu1ANe7XaYyWr1ID56QgyXpYTalt
+	 5VmnWp4fictwwaDIawpLp2Oa+L6UIVFBCkYil15Vb4fFT6UuBiMgWsoOG6a6WzcowtGSD
+	 uFh1R5veFlmPHPSXlbT58pUwjmMdy5QxBdo298ojYv8+PAvI7gbZZ3PYswpfrc7L7tA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=CtcJiqy+;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=6UlpKQXq;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Ux1hMmn4;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=wykG51KZ;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F1ABBF80153
-	for <alsa-devel@alsa-project.org>; Sun,  9 Aug 2026 12:32:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1ABBF80153
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=CtcJiqy+;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=6UlpKQXq;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Ux1hMmn4;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=wykG51KZ
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ED9F642E3;
-	Sun,  9 Aug 2026 10:32:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1786271547;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pA3N3adI2xecsM0ROd9IQKLhipSOphxYDmdbwVn6vVo=;
-	b=CtcJiqy+mwvfdDgW+aTZTlpHRP7Vf3wWx1e+rwB2s7MlGOjRrhIpK3T3jg5SP/wgYXNo+y
-	fWs8BodkVoCxpPsG0nthHFH2eBSSZ7htD80ZFn0CD4KGkbVbxhg1IUhCg2an0GlSlqZd0S
-	IHPDsC/tofKb6JP1JXlFJjk+7ZDZgBg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786271547;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pA3N3adI2xecsM0ROd9IQKLhipSOphxYDmdbwVn6vVo=;
-	b=6UlpKQXqGwSA6qgqY3AUrSlSJk8X9byvI3bCgqva7opkKv035St0mXzRs0Qs/2vsIgalSF
-	+n6n4QIH3zmIK0DQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Ux1hMmn4;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wykG51KZ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1786271542;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pA3N3adI2xecsM0ROd9IQKLhipSOphxYDmdbwVn6vVo=;
-	b=Ux1hMmn4vpKdZ/yZTVRb1msVtWTQWb9yzG59CPXhlx02ERQhelPoGdcltAdztII4FKg7ef
-	UJ7v19SNNLrJKDW/c34Lb0xdXTOddiSrQUyN+8Km25wq7S83VJJ0r8RhTVCsOwMwpAY5Ox
-	a/8tZENPxKVZkum3HPM//WXFoRXS05w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1786271542;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pA3N3adI2xecsM0ROd9IQKLhipSOphxYDmdbwVn6vVo=;
-	b=wykG51KZBHH5EIGbLD7cPB9igGEM/GHflYKnJwpC6FoCieH8d8QqsSzTo/4nVbCNvaLcQz
-	NgPKMas+F0B8sDAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD732779B2;
-	Sun,  9 Aug 2026 10:32:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kxfJMDZXeGr/XwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 09 Aug 2026 10:32:22 +0000
-Date: Sun, 09 Aug 2026 12:32:22 +0200
-Message-ID: <87cxvra8jt.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Bramwel Barack <bramwelbarack89@gmail.com>
-Cc: perex@perex.cz,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: hda/realtek: Add mute LED quirk for HP 250 G8
- (0x85f3)
-In-Reply-To: <20260808182018.5148-1-bramwelbarack89@gmail.com>
-References: <20260808182018.5148-1-bramwelbarack89@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: ED9F642E3
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-Message-ID-Hash: ASBM47KOQDCXOKHC4Q766DNTN4CKQRSQ
-X-Message-ID-Hash: ASBM47KOQDCXOKHC4Q766DNTN4CKQRSQ
-X-MailFrom: tiwai@suse.de
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id D074AF80240
+	for <alsa-devel@alsa-project.org>; Sun,  9 Aug 2026 19:40:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D074AF80240
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18ca33e42dde4400-webhooks-bot@alsa-project.org>
+In-Reply-To: <18ca33e42db6ad00-webhooks-bot@alsa-project.org>
+References: <18ca33e42db6ad00-webhooks-bot@alsa-project.org>
+Subject: Dualsense Haptic Feedback broken with UCM profiles
+Date: Sun,  9 Aug 2026 19:40:59 +0200 (CEST)
+Message-ID-Hash: ZK5XJWFAEAGYQ22PEKQTZZBNWSFFEFKR
+X-Message-ID-Hash: ZK5XJWFAEAGYQ22PEKQTZZBNWSFFEFKR
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -187,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ASBM47KOQDCXOKHC4Q766DNTN4CKQRSQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZK5XJWFAEAGYQ22PEKQTZZBNWSFFEFKR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -196,19 +84,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 08 Aug 2026 20:20:18 +0200,
-Bramwel Barack wrote:
-> 
-> Signed-off-by: Bramwel Barack <bramwelbarack89@gmail.com>
+alsa-project/alsa-ucm-conf issue #828 was opened from Flippy1801:
 
-Could you give more explanations why your patch is required what it
-does?  Please resubmit with the proper patch description.
+The current UCM profiles for the Sony DualSense controller (DualSense-PS5.conf and DualSense-PS5-HiFi.conf) use SplitPCM to expose the Headphone and Speaker profiles. It completely breaks vibration in PC games running through Proton/Wine that support it.
 
-And, at the next time, please submit to linux-sound@vger.kernel.org
-instead of alsa-devel ML.  alsa-devel ML is mostly for user-space
-stuff while the former is for the kernel patches.
+The official Sony SDK and Windows API (WASAPI) translated through Wine require raw, exclusive access to the 4-channel audio interface (Analog Surround 4.0) to send low-level haptic data to the controller's actuators.
 
+Because the current UCM config splits this device, PulseAudio/PipeWire no longer exposes the raw 4-channel interface to Wine. The games cannot find the haptic audio output, and advanced vibration features are completely lost.
 
-thanks,
+Steps to Reproduce:
+1. Connect a Dualsense controller via USB.
+2. Open pavucontrol. Set the controller profile to Direct DualSense Wireless Controller.
+3. Launch a game with native Dualsense support via Steam/Heroic/Lutris.
+4. Result: No haptic feedback is sent to the controller.
 
-Takashi
+Workaround:
+If users manually delete or rename /usr/share/alsa/ucm2/USB-Audio/Sony/DualSense-PS5.conf and DualSense-PS5-HiFi.conf, PipeWire falls back to exposing the controller as an Analog Surround 4.0 Output.
+Once the UCM profiles are disabled, Wine successfully routes the 4-channel haptic signal to the gamepad, and Haptics work perfectly.
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/828
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
