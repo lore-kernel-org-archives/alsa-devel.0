@@ -4,99 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C9BFC5AD55
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Aug 2026 23:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EBF4C5AC67
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2026 08:59:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56BC160203;
-	Tue, 11 Aug 2026 01:58:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56BC160203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BFB860202;
+	Tue, 11 Aug 2026 10:59:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BFB860202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786406324;
-	bh=8m8zR/hrcP9bRXfE/BVR+A21+Z69W9PqeXZzWIwQJ9M=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ZtxkZwYg+J9P0qNp2KBHGNWAnDuGnpTumHvIsh/pDhv6OMm3tSaJB6zBNqeyxgd1I
-	 BIxYkSDAKVPgsaaCrAxe9B8u1bjQ0O4+ixVEFtKtDK9Rz+ABBH3PQ3ojbEeVJ/s4YX
-	 b5z1+WVkTdQujwvNlnvTUVTlEyKwq6GXx5bQ1ncs=
+	s=default; t=1786438753;
+	bh=VzxeI3GoFOSVpVnNpPeO9ClCrkfMkQPqjlMHsH3DoiU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=DTtfDXg2u30+i5aPH9acMKm8y//61F7E74hJHEmDbcZ0sFD5MKGsuPMaOXfTQfNZx
+	 OgDekTivvwlrMbtS/HcIj/c8Rx4IqMPuMQazJso3NKix5t3d3DVm6rmSU2DDQeqXEw
+	 vLrnkaheDyL5zk+GoyLl0fDGMO2oyllXTm0AEKLI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9FBDAF805F9; Tue, 11 Aug 2026 01:58:04 +0200 (CEST)
+	id 9C3C7F805FB; Tue, 11 Aug 2026 10:58:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5441AF80600;
-	Tue, 11 Aug 2026 01:58:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FEAFF805F4;
+	Tue, 11 Aug 2026 10:58:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA892F804E5; Tue, 11 Aug 2026 01:57:57 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786406277;
-	b=IDmcCWvdOfXsNWJGSQ5Tydw5UqRgeUIp/5fprfvJWvqxQ+jiyTyeLmweHS9e3dy5lGZa
-	 nfsYiWl4o3cN3HN76xANcmLjVLFVaXSWKgwPnNHYFJPb30GC/aLQa2sSKbciAJ63di5Fm
-	 yuJ2LIQVQ6OEyzRrP/gJjPfFa+/QZg0Sdcd5fZLb+GFzV0W3zG3O1a9rFubnp68yaaHFB
-	 nlwB3NxcJeiAd04He1mDweGaIe1owVm/IvCaUbtjlfGlZUmPIZfudRHIJCvsrYRc7ihZx
-	 CRHk8sXY3WERX62QlP6jQPYnxMM2fYv64DyNxrMxUuvqrcQ6aeS0ZGg1EmpRCgR8ZkA==
+	id 4A66EF804E5; Tue, 11 Aug 2026 10:58:30 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786438709;
+	b=mrG/bTFoPtsI6hS/aVyr2FzkRiPoHo8qUgVi0JcGpldvO2PgzEo3PJAHXY3m0y9cShqG
+	 FgH8S1WYnDR+AmFyMEyfYj3HTRKTEP/bEv0mxGXs3gs663Ldac+InGJUGcUvZk5d8tfz3
+	 zM5T4xg36/hHcdVaiRER8qKCdOOtQ1/JivPBobEIKPKqTljZ/53bjEUP7kr5JphyvlwB0
+	 DtUhA4PBmGClPu/uFe9DJ1GQZ2+tNWNypSbw+QD1zLJVqp6YjeJHF9PBRrbx9sjrrH8GK
+	 X/5x4tdWEjMbIVqfBAPcx8If0WWMk/MiJK7cLuGLlxTtmBkrQJIiHXcvtZH3OQkSE+w==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786406277;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=8m8zR/hrcP9bRXfE/BVR+A21+Z69W9PqeXZzWIwQJ9M=;
-	b=E4NFHqTqCRYI6HoKf2eE93MOBS2YZWk6t1dVTfweSufoPtbDVxjBCg28B8yrEPEgSedp
-	 CJj8mnckeKBEjDagk2p81wcFgi37P8GNp12tNZ1FH6mwTv5xYlAy98265L0KM+sn11yut
-	 78TRMdyf2GNd2333sfRfxJtZPzgALCd0TtRd7R+rzjogaH2cZ8nFQaIVCO24m1WXH1cM8
-	 7pY5fyDL7nUIeesjfXiuUJ+vT1DBL0VfXvKAmIVMcxULyVSbZIDWWNP5M1awngZnhKdz1
-	 oaH89uB2h9665PKAHHHmzB9dUNhDt3yZj2Spv8ezNoezEtZE/jCpbVcZKvYeiDJWwRA==
+	c=relaxed/simple; t=1786438709;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=VzxeI3GoFOSVpVnNpPeO9ClCrkfMkQPqjlMHsH3DoiU=;
+	b=VX/qmzfukUIEuBBn6Xji8hDrFTrhrqpaQkTpZ74nLsYhpqMVBI1VXustWM4Mt7e3t662
+	 nCj1ENxap14p70ZuTsJzU+KgE3/SbgRjEiO1ziLItHb3JQBRKk3kQB4Pn/zc0USEJJq9z
+	 XKJP2dG8fz/h5JQ3/Ueki0nGIaMGPwzDIKs/kd38y5DFd849yCGADPsqMooLcU7UhQ7i8
+	 4+eLPe0iH/fvXLeRK7a3NVmwAO6fRJvo9kC1m1CiHH+GQbL153jgKO00Ef1hdcRvVi6jY
+	 5pirjo5qRnmpCVNObvQ7AQW5x/sKmoRrvpBV/UX9+Zeh7JPm7JgriuftRjQcGvClQmA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b="ZmMrn/Pt";
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18569F8010B
-	for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2026 01:57:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18569F8010B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=ZmMrn/Pt
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 93A166001D;
-	Mon, 10 Aug 2026 23:57:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB791F00A3A;
-	Mon, 10 Aug 2026 23:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786406272;
-	bh=TuHnFnKe0k74CCFUMasplilnjb2cxxwgWt2EqAwnNaI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ZmMrn/PtPvxDBS6rihRadMgn8VCsVAx+pdtQ/bUPFhoUJbJRNzVIz9FjpL02CPU6X
-	 gY135ux75dR6qNHkqsgC2fNUEnC4cYldk6Oj51OUS3584uSHuItAuB+L23L6cebJ0w
-	 6KsGPAp3rUav1WbCXvp4c5ACAejROAhMvc1Xx6zr41H5a895a73oJdOYAUBOSkSWeQ
-	 wKBROeFrBtFcj3tr/I+8qyG8RMQs5X7o7PwxJ2sQU2/2Pk7FKZ2dfV8QD1uRuZEVMB
-	 I0fUc1HGSTMEOqOyVq2JnTAo/C83mMwz6EMDfUri+whAhu9oll0WpYbx0MTfAALXUI
-	 uksLIrNcO5FWg==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org
-Cc: Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	gregkh@linuxfoundation.org,
-	pzqqt88198@gmail.com,
-	Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 5.10.y v1] ALSA: usb-audio: Evaluate packsize caps at the
- right place
-Date: Mon, 10 Aug 2026 19:57:41 -0400
-Message-ID: <20260810234738.0002-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260809074320.1407-1-pzqqt88198@gmail.com>
-References: <20260809074320.1407-1-pzqqt88198@gmail.com>
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id C21C2F8032D
+	for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2026 10:58:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C21C2F8032D
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XM546PLS65YAVXVDXAR5TUEP5C7BUM5D
-X-Message-ID-Hash: XM546PLS65YAVXVDXAR5TUEP5C7BUM5D
-X-MailFrom: sashal@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18cab48a3df64600-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/tinycompress/pr/39@alsa-project.org>
+References: <alsa-project/tinycompress/pr/39@alsa-project.org>
+Subject: src: utils: Add ccaps to query compress device capabilities
+Date: Tue, 11 Aug 2026 10:58:30 +0200 (CEST)
+Message-ID-Hash: HC3GG25R5I6HWC6YKEL6CJDUVQDXNRZL
+X-Message-ID-Hash: HC3GG25R5I6HWC6YKEL6CJDUVQDXNRZL
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -107,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XM546PLS65YAVXVDXAR5TUEP5C7BUM5D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HC3GG25R5I6HWC6YKEL6CJDUVQDXNRZL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,23 +84,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> @@ -953,6 +953,13 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
-> +	subs->data_endpoint->packsize[0] = min(
-> +		subs->data_endpoint->packsize[0],
-> +		subs->data_endpoint->maxframesize);
+alsa-project/tinycompress pull request #39 was opened from ujfalusi:
 
-Moving the cap into snd_usb_pcm_prepare() is the right call for 5.10 - that
-tree never computes ep->maxframesize inside snd_usb_endpoint_set_params(), so
-there is nowhere in that function to move it to - but nothing in the changelog
-says that. Please send a v2 that spells the relocation out in the commit
-message, since the diff no longer matches upstream.
+Add a small utility to dump the capabilities of a compress device. It uses the same device selection style as cplay (-c card, -d device) and prints the protocol version, direction, fragment size/count limits and the list of supported codecs.
 
-Two other things before I can take it:
+For each codec the SNDRV_COMPRESS_GET_CODEC_CAPS descriptors are printed as well. Drivers not implementing the codec caps ioctl are reported instead of treated as an error.
 
-- The Signed-off-by needs your real name; a handle does not satisfy the DCO.
-- An ack from Takashi on the 5.10 placement, he's already on Cc.
+The direction is derived from the open flags by the core, so by default the device is opened for playback first and for capture as fallback. It can be forced with -D p|c.
 
--- 
-Thanks,
-Sasha
+Example output:
+
+  $ ccaps -c0 -d50
+  Compress device hw:0,50
+    protocol version:  0.4.1
+    direction:         playback
+    fragment size:     38400 - 131072 bytes
+    fragments:         3 - 64
+    codecs:            4
+    [0] AAC (0x6)
+    [1] MP3 (0x2)
+    [2] VORBIS (0x9)
+    [3] PCM (0x1)
+
+Request URL   : https://github.com/alsa-project/tinycompress/pull/39
+Patch URL     : https://github.com/alsa-project/tinycompress/pull/39.patch
+Repository URL: https://github.com/alsa-project/tinycompress
