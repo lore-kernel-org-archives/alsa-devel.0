@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D5FC5AC67
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2026 12:30:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCA3BC5B572
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Aug 2026 15:49:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCAD96016D;
-	Tue, 11 Aug 2026 14:30:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCAD96016D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD684601FC;
+	Tue, 11 Aug 2026 17:49:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD684601FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786451438;
-	bh=aV7pD4rMhHGmaSDgg5ZWwOQfut6R4fnyrIbenA/5mDE=;
+	s=default; t=1786463352;
+	bh=AS89bc+l6NTs4qsHCUpT+TuaNd1p0tQl75dlTYJ59XU=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=DcJs2eYx3q2fdgAUEQ4bMXlXn8R5vFE7jrL1gtXgYMC6Sn39ltNpx9fG1b/GEja4o
-	 X8gZCKaHePN00h/GneA6ZjrSsd2qoDLqNExFn1tD60atNqrgW0aABHlrK186R8qpTA
-	 RejbKIekXNDgWoTq3fAKX2thyKjaGdOXfOBFYnTw=
+	b=EYfFIf4Z1ZqjiA4e7ulhgMzIs4bXmXjil2BYO/AWWG+kl9O4h4T3y25G1Fgd4LiXs
+	 nev/3ZrHmbOO/ncnnqx1391rkluUt+Xwttr0U46nmlNQRPm72oQt8Xt6gzEkvyECbi
+	 SePPZPrYW51fx0nokF5OlbjSL2WdJAtbZ6s75BG0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D69FEF805F9; Tue, 11 Aug 2026 14:30:05 +0200 (CEST)
+	id 12B8FF805FF; Tue, 11 Aug 2026 17:48:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3CF8F805F3;
-	Tue, 11 Aug 2026 14:30:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC2D3F805F6;
+	Tue, 11 Aug 2026 17:48:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27ED4F804E5; Tue, 11 Aug 2026 14:29:58 +0200 (CEST)
+	id 83A3BF804E5; Tue, 11 Aug 2026 17:48:33 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786451396;
-	b=SJ/+KyHAD9c3wQtrbzZE7UAEpqhDWZLo9g89v+C3CT+jSZ6jGNeABY11n3q6X5QSVarr
-	 0vCN4YGJ3QHjii0gpQKY9/RDwnMo+H0LzvBe9k3fPb/7Uekh3pYiuWw7bFYkJy9FWK0hD
-	 9ukdoFNzHROvveww1GQ5YLzkEm1oaxiGCKcs0kMd3VP+FMKogr7ilFDAGwU2uhse0USbe
-	 4AjBpez3Qn3xVj6UuSmnoDLfXGFfD6xSRV/L0Q2X0rX3tePSrEsII3G7bB5UswUCJEehN
-	 MUt7At2LC846Axn1YQ7sxwj8u8cd2FXmDEAbJZfcDu0uQ+rPQwgmrn3Z7bi2hMVFwog==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786463312;
+	b=U0AgcR7++xk44qqj0Vk9BnzzN2ljr6v2fMGPMT1cb4FtgnKH9s1JVM6KxWWflBHwSZy6
+	 3cH0BJvnWaNU5hrcqK9TpSoJOs5PVVcODwM/e2w5MtzPzPQWop2zBDLXSeScfS5uSmIGu
+	 5FQM96dHjkQj1YMmtjWht5RPwjn5ui1fKJO5LSyeWWQYWtsdimvw3u8p8Stm9j8teV3YM
+	 6t4mafhCmrREobWNAfJhJtIUedFwgbYcg7rphopkTgLFq2GHikwEzwL2Y3RaDwmKyPDPf
+	 lVWQcYzWnxbNtkb6IMtbtRAIWBOmOmX/ztGkhgRCG4j2PVBxKYU1v8BPXVwHHlEEg3Q==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786451396;
+	c=relaxed/simple; t=1786463312;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=aV7pD4rMhHGmaSDgg5ZWwOQfut6R4fnyrIbenA/5mDE=;
-	b=OwWg+9oz9zqxrovQef7mgUC9Uqiratzu7X8/dZ40KZ+i+wBSF2/BL0yxx6BxQmwF/CfC
-	 UbKYRnbLUcmdUChQDkM6zIkJEBIhnItPhY5oR6EqjhOCqWTFSIoGs+VXthIeRie3optMl
-	 /h4HGwmbKc3NSqmlpcoeYmwp7OYRSnMo4oDVV86WU2wy9td/HwUMEX7qRiiOxgAGhc8IG
-	 oNMMc92ReFoLCeCQFj5jcRIkSlCXGHCgqSkF1fzSaZs8FXj0hzXWnbF2k+7cWYY7bbPf+
-	 a6HRXrs/Sjk0LnEDyioDEjYF6Fz4+eVq/3jUD7kF4HEuh9TKzBUPEmoCIPYMvz6nOKg==
+	bh=AS89bc+l6NTs4qsHCUpT+TuaNd1p0tQl75dlTYJ59XU=;
+	b=cKYiB6vdjBHahUbcSi4rBe6j/j5BPxaqZAR2CUlpBpAaC9SzzIExRthhNi1LBZVvfFYi
+	 Hoc+Vk9e1Irux3umurmNN5qeMDfx4jhkh1nFAPJ73OdS9kbQRGoY19s7hiRmTPlAl4C5w
+	 raOAyaMDbdHU01qHl53tR3Nu4tr2TFY824WnQlCoZ63aGWhyOXTbhjQKPt9eD+B943Aq/
+	 LXSj8cOnD28c6hLb2HUlx3QDbxMYB6f4HKVqXB35WVKN/11pjnrmC/dZMP0pa1gxSh4E0
+	 O5ZAi3jl11sW/YDLpcNq4jcSBtLOxgyQ0pfoLxG3QIBSfTq1iPnnUZBGdJ90taGg8fg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5A6EF8032D
-	for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2026 14:29:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5A6EF8032D
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C633F80075
+	for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2026 17:48:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C633F80075
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18cac01437004100-webhooks-bot@alsa-project.org>
+Message-Id: <18cacaea88082a00-webhooks-bot@alsa-project.org>
 In-Reply-To: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
 References: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
 Subject: ucm2: USB-Audio: add Topping M62 configuration
-Date: Tue, 11 Aug 2026 14:29:58 +0200 (CEST)
-Message-ID-Hash: QVVWA537ZRD5VNEQNFLVIT3WCHZXO6HN
-X-Message-ID-Hash: QVVWA537ZRD5VNEQNFLVIT3WCHZXO6HN
+Date: Tue, 11 Aug 2026 17:48:33 +0200 (CEST)
+Message-ID-Hash: AKALR336AGP4UVAPU6PWPMRDJ2CWYYTW
+X-Message-ID-Hash: AKALR336AGP4UVAPU6PWPMRDJ2CWYYTW
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QVVWA537ZRD5VNEQNFLVIT3WCHZXO6HN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AKALR336AGP4UVAPU6PWPMRDJ2CWYYTW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,19 +138,19 @@ makes the desktop pick one half of it. It conflicts with the halves
 rather than coexisting with them, since the same two columns cannot be
 two devices at the same time.
 
-Bluetooth and Mobile are declared although they carry digital silence
-on the unit tested here. With Bluetooth and OTG audible in the
-headphones, the card's own control panel metering both, and the
-loopbacks pointed at those sources, a sixteen column recording found
-signal on columns 2 and 3 only, identically under PipeWire and under
-Core Audio. The vendor reports the same channels recording normally on
-Windows with the same firmware and the same operating mode, so the
-behaviour is not universal and the enquiry is open; a unit that fills
-them should present them by name rather than as an unlabelled column.
+Bluetooth and Mobile carry audio, and all four inputs record at once: a
+sixteen channel recording with a phone on Bluetooth and another on OTG
+shows signal on the analogue, AUX, Bluetooth and Mobile columns
+simultaneously.
 
-The eight loopback returns are left undeclared until one of them is
-seen to carry a sample. Eight always silent entries in a sound panel
-would be eight inputs that record nothing.
+The eight loopback returns do not, and are left undeclared until one of
+them is seen to carry a sample. They stay silent with Loopback 5/6
+assigned to Bluetooth and Loopback 7/8 to OTG IN in the vendor control
+panel, and with those loopback meters active in the panel itself -- the
+loop is built and audible inside the card and does not reach the USB
+capture stream. Eight always silent entries in a sound panel would be
+eight inputs that record nothing, so they wait for an answer from the
+vendor.
 
 The card keeps all ten playback channels in one mixer element and all
 sixteen capture columns in another, so the per bus and per input
