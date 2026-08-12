@@ -4,143 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3417C5AD5A
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2026 09:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2887C5B56A
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Aug 2026 09:27:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E427460250;
-	Wed, 12 Aug 2026 11:27:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E427460250
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83EE860257;
+	Wed, 12 Aug 2026 11:27:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83EE860257
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786526831;
-	bh=vW0VoaKpYR6UuvZ2TYveGRQwkldVdkjVpuSMwCTKTgs=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1786526843;
+	bh=FFUwGYmC3wBtLNtXGxPSqGoDBNSHUV86S/2Ea6M2ms0=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=pwpJjZqGyKm+ia0icucGWhJyWPE4meAW4MWfjZjZe6diMU9VDbRyFR8uCrBqb9yNi
-	 qRR8APsHl7cPrDdt+c+RVqEsbNxpL+BmgrtQk9HvL6OQKUBKtdM+paLRb/ivWbHIzs
-	 R+MINMg5gU8XIJdv344qON9hvI0yppT0ueufxkvM=
+	b=IFP4+aNxQ6CKywiLeb/19gdUuCfqjYSfpvBYmzLtNk1aizYR4t3LMiCTDCS7KmEs7
+	 EJuT3dVleXxdNFNrYdIJW9cLU4w73IMw/znYAfH6hVieZc/rcREwR19tOY5ATH/5Yh
+	 6RkMKksTd6gcfLVzHT+kIoViZ7NHlB2mAMiAEpZ8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4168BF80634; Wed, 12 Aug 2026 11:26:09 +0200 (CEST)
+	id 1EBC1F8065C; Wed, 12 Aug 2026 11:26:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3999F80637;
-	Wed, 12 Aug 2026 11:26:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B810EF8065E;
+	Wed, 12 Aug 2026 11:26:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27A7FF804E5; Tue, 11 Aug 2026 16:59:22 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.210.171
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786460361;
-	b=bWjPN0K09O+9ind1a8sbSJnhZTGBnDUvgo26Sa6JrOiK7ybtm2t2d1f1H1LGsukjeEMI
-	 xcB7x6snZhGpqGvz0+HJE0jzxhLbHyfenZ9fOztp5aJOBVGZOZb80q0atBuDFjYS+hCwd
-	 6UtSsf2pXe4/rJwsA64q5RezZloVzyBduKrEUZoLCBlrKt7DX/h4bRYXrCbbELTay9rFA
-	 /Izda41jFGrw2L4bSvtsQSPGzVaUi8YDeAzRSKOygIeJRi1O5QSDbz4zLjtd5LOag9evw
-	 rHOuKr8O/5f2Rk7FfwJhhnctXDwBJZgqSyV29C8VTPbYFUJMX1tNEkJTbfVJ2W2NMtg==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786460361;
-	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=vW0VoaKpYR6UuvZ2TYveGRQwkldVdkjVpuSMwCTKTgs=;
-	b=IfUm/v8lEXJUZ5w+AHTatgDtSWhgIyXs7mras+WGgbV2iuWqHG8f/mTUUyJb5oFxoufM
-	 CTXNgmNb51qAMoknw/Gs8UwkSIRRutJznnONbvjiZMJB3TGzgZLdaNp8RPxbFVwnybKEr
-	 CaYG8BlkPWc3SDDZtaNQ/yaH9WmVze7tWsd0E/jnT4XVcDp/N9dZZGOGQPzWSPKsawcLb
-	 RyBp0klncALHF8tnff4SUAwP09ZmcQpRY1k15z0p35tl6sV6JMi9WHOJhOZZYyLtKoiLM
-	 GpvniGouEVCRnSr1xZeB5ez9Nm37MQqnWlz1g0CXcZ/OktAU6xQ6jPRH2A8GaTZzcew==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
+	id 53AE0F804CF; Wed, 12 Aug 2026 05:17:31 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.51
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1786504650;
+	b=HZEwzYinc8zp76NAjtmNm8A61CMPnFHWuSVvoy7xv55nQcXGFWFypOpH2TgOftP/oWQZ
+	 0nsQxWxDZbOQY+nDdvwbPZhLg7pTNzLrVRY2HO47tK6772qwgKp3sERTCKmTcqAGHGgPJ
+	 +IqvN0YmhxV5iAieLGT5UZwCSkiO0kYFxHKgD33G7AZgQhkaY5oyuZi7ErBYm9M9FMKz9
+	 EtmTMJ1fnz99A4wjhLtQdJEnSrzDCC+AHR6rQTfKrx2ZwEwAkx2S/1xTEtSgMDWWemow+
+	 /lSJBQR+qQf/K0NA2lIIScjxuZ+UCeg1qaWufICYenqfUZOASA6fStB1leAKnjjkmVw==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1786504650;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=Ca3OrkP5TtrWrejJouHokC1Bq/Z1BH2fjyMnDQZHEDY=;
+	b=heQ3r0LJd+nJEIUHsgnyVzjbS8tEKIGJVW92hwbC3yP6MD1lv74xnXNad+N+oWBJ9gHF
+	 Lb7pRI7aBONhahSU18HLgrOGSkkbP4zTC34Cf6TAx1vF7l26eGjk+wedz0+HQ3YRASxuG
+	 1Vusd/R2Sa7GhU2e7PFKLhzmR7VH8vR2x+t5apconw2yNF3fUi7U33ouncUR/pHr+h2at
+	 8oNgqF2vEPWJ7NJ3Jrcpt9IHoWBuUBt64ruf0rc5nB27AguXrtysWarPL5XFMdstQJCiD
+	 z48XBpnDTXSJk2EjNiKcTyopQGLu672DFkWr/m0fjOF5Zx+7RxIAPzimxs97DUO6W9Q==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
  dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=mzHC94MQ;
-	arc=none smtp.remote-ip=209.85.210.171
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com
- [209.85.210.171])
+ header.s=20251104 header.b=ZWBBWmDv;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.128.51
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com
+ [209.85.128.51])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 67D86F80075
-	for <alsa-devel@alsa-project.org>; Tue, 11 Aug 2026 16:59:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67D86F80075
+	by alsa1.perex.cz (Postfix) with ESMTPS id 793EDF8014C
+	for <alsa-devel@alsa-project.org>; Wed, 12 Aug 2026 05:17:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 793EDF8014C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=mzHC94MQ
-Received: by mail-pf1-f171.google.com with SMTP id
- d2e1a72fcca58-84e84a6c4bfso1223145b3a.1
+ header.s=20251104 header.b=ZWBBWmDv
+Received: by mail-wm1-f51.google.com with SMTP id
+ 5b1f17b1804b1-4956242332dso3723125e9.2
         for <alsa-devel@alsa-project.org>;
- Tue, 11 Aug 2026 07:59:20 -0700 (PDT)
+ Tue, 11 Aug 2026 20:17:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786504648; cv=none;
+        d=google.com; s=arc-20260327;
+        b=GeSnRik9eDbF6J7QDof7j/aDLRoObj6LHORr0WOrCV97yqbLvFUYK1tZKlekY5/Ifd
+         /7QwFji10Ap+YT6iclDv6vKqdiwJovW2cHuZjF5i8C4V+6pGLMhh3dF//AaJKHti15hR
+         a6pkIGYsO1IQSShEKSipe4yPARrUxhzWVyKaXTxywpgaT1rkrlfU6crOFQKuCNVSDTJ/
+         Qe4klcUafXXo913j/w5xWhDOAuqcDlI0LIkejDamASKWhhexhP9x9sQAVHa1TCKRwZrI
+         fhTrFgPGTIyqPQx8NqbMBTRpMvMG5chtTMFRCH6kXMdJo/eenRqxcUqfiJ5A0PQr7mf6
+         J/iQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=m9bn9ADndJ5XMHAgPwtvBEjvxsd0Ha9XaHjFB/LxzKc=;
+        fh=s1h8N4U4ASgl2diPi2yKjEmsLSTuwbZjYBDYrAXLUvw=;
+        b=itkisJUy4zMD28AprjAFrrIo0IwbCH0fBTK8ccF/a5M58xQGMpoAILV0PjEw+0een6
+         EMeVseZdvZAqcWeZ3yQXznSlMsg/HH8sxo2QybFrO1cvHgXXAyO/SEEK6xLD/bbzlfgF
+         pGM28vK6LerRC1zRvHtU9oG1vIMaFYdOfLAsjNMkUC5OrE2MAuDLVyC6PjQdsTbOJEja
+         UK9lVlGBRfyN1NT5IN4fmEhAl2sLVT09qTf/MO20PfgwUgkdLfA1EeGskT512DV6S9Gu
+         fx6Of7e56xdnd5Kg18vND10bJGE85jA8k1X+4/IMVKD8o2FIm1sAKgDhCfR1MRS9i4+X
+         kedQ==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786460358; x=1787065158;
+        d=gmail.com; s=20251104; t=1786504648; x=1787109448;
  darn=alsa-project.org;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=XFGUKXgNypg9pKlEsqRB8qQHzSOuDwN6U9MUHY9yTYI=;
-        b=mzHC94MQnVs/lOty4dQmw2kTQ6J85aTqOxpaGLvG9zy5+D5pZdLSlTEaphrb8U5b5D
-         4EQyyg7jInnBw2GXy4htQTMCmUfnwOUf6SaYhtFr20LoBLFaqi/b9T0WEowHSwPbD7f0
-         GhH9+RFiSMgfLlPxY6ELRIK9f2oejF+IlnbtqXMN7gdJnGSHvha+rF5l4ysai6pfwNM+
-         NJRw/29Bjm1JmTEgl5ffeWYFWtsT1MY/DF90K7bfcOiV3xHsuVF3WL5zk7uaoJENAO9c
-         6J2zi1/nzMXbWV27kgkrCwqdVbY4qIV9N+u1cL+xJ3hreEafPZZwge7XCimuTszaTeFR
-         94Cw==
+        h=content-type:to:subject:message-id:date:from:mime-version:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=m9bn9ADndJ5XMHAgPwtvBEjvxsd0Ha9XaHjFB/LxzKc=;
+        b=ZWBBWmDvSOLcImTpz8hoQ3WUVXjHPXWMeAh3setLWZUrqXd4FmN6iINcbx7xq6hSpJ
+         tR7xhMp/ecDEg2biZJWJUhPOZXUaKxD15oSZtkx/g2AB1LuudafhtOQDiW7uLXGdRb08
+         5a8U1YMfB+08Zr0M0r7H9fMoRGGH2pAuIBKhGaTvhGmeWAUBgn+q5HvJApz5u8vdbl4X
+         gH8NhGrRra/qsRSAaMZ9r57eE5+VTl6KJGXrmE1fuIQXMJvOXBK7M6Yzy5bkk2LkLP+D
+         LxWcE2Ms9LnCiYQD/Ky30fc5KQGjtIGTgfuETyUmvkufv1W+SAPLz8JnbzxvUWINOfjW
+         8yLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786460358; x=1787065158;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=XFGUKXgNypg9pKlEsqRB8qQHzSOuDwN6U9MUHY9yTYI=;
-        b=lxJ1ePwjQ+pNBuWzTzedTunba7KaxVxsolxQiZvmoZN9hDfbisEc9UA4fD85wX7OqT
-         /aAEjHYA8+HqDc4jAm4jtKNDo8SlsF+ZmkfLSvOdFC0SZT820Uvi9gIdIKqot1uS/dxJ
-         kect+LGGqSd2ROU99YDEMZW8HGlehcuclevxlhN3kmWAFlzX4WS+ljE0NWRfP6j5ckGI
-         qKNjYprze1bxK9GfvNkytACIqdspvyqVwxRXj+k3AUoXFyBn6GRi4i6VAl04s9d5Ef9d
-         L8KF6LajjmyTAMnUouldH9S33z7XBFbsFhMDClNYhMpWTnzDJpoFMCTadR8BGSX0b81M
-         zbMg==
-X-Forwarded-Encrypted: i=1;
- AHgh+RoTDO3nXT5wC/wChRZJacu2pzF8lpYhKclEMTp4HV+G9UjIFfL7ls/fhwzVPWSNMon0K9+/HrzVAmAY@alsa-project.org
-X-Gm-Message-State: AOJu0Yy1qY79iDGhDvl0gTVnHEm323XJN42dO2/BMWNEwk5y8HELyEK2
-	/PNs6BSjk6wDeywq8tQt+GtgXLGFFNQI6GwwGrFvoVi4u+ngER0LRuYM
-X-Gm-Gg: AR+sD13VtPGQnTHLsb7UQK5nx6ccWy6y1VfYxkdmraCRyKM/K/VwYhuAJQ9ScpR06Q5
-	w6KdZi7xqf1nfGc1jMCxKvnDTNSS2AnU4Gxf3lCYbNalrgN/5vjaAHG9llG8BUHvSvNlh4Zby2+
-	FSB5DYHKRqgroMrjGjPuwf7emmullgeS94gwqkCzkKbcKLhYddVoYeQ6R82/I29EilLwXa3jXvC
-	hVVhwvI1R+zySu43STayI+HKHmztS2qDr9G/RJH7BVv8Z9pG14eCfKdLWe9hcloWNQZh3Ydyod1
-	J7S1PU8fSpYtGNmoqCXhaIQtzB+BzTdjPV3W6lGIZfoK3w201GYDaVIk1KuIAJ1UiJ1udAV83+k
-	EjQLiGBXzZC5BJmrbn89wi5xYl+uT85uqrEIm0ZQN8PcKRwafFMMYEXRFQMoUBA27EBqL1KvvOC
-	7Bm6VoH2qjZtDmBpBjVoUPygoI8ecC+ht8ty0d5pxb8yW+aiydNWhANPXGxANRTUx0hMK6dEgGc
-	vFVMsvJMg==
-X-Received: by 2002:a05:6a00:4095:b0:84e:46d:23a6 with SMTP id
- d2e1a72fcca58-84faff3da20mr616615b3a.18.1786460357810;
-        Tue, 11 Aug 2026 07:59:17 -0700 (PDT)
-Received: from LAPTOP-7K7V6NC8.localdomain ([120.212.170.8])
-        by smtp.gmail.com with ESMTPSA id
- d2e1a72fcca58-84fa91b63b7sm947484b3a.22.2026.08.11.07.59.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2026 07:59:17 -0700 (PDT)
-From: pzqqt88198@gmail.com
-To: stable@vger.kernel.org
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	gregkh@linuxfoundation.org,
-	sashal@kernel.org,
-	pzqqt88198@gmail.com,
-	Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10.y v2] ALSA: usb-audio: Evaluate packsize caps at the
- right place
-Date: Tue, 11 Aug 2026 22:57:40 +0800
-Message-ID: <20260811145740.306-1-pzqqt88198@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20251104; t=1786504648; x=1787109448;
+        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=m9bn9ADndJ5XMHAgPwtvBEjvxsd0Ha9XaHjFB/LxzKc=;
+        b=QvBRHhy1AWYp0B/ExjE4XejKZ1JJyHs474qm9Uoyr6kRK0/7HWGfQIHx5WCEgSLH5b
+         68oHnA6+DQKOgpxhuenfWtgkKpk90y1OdDG7hJwi58TJGM5cz8I9WMP765lsqmZYubk4
+         2+DoK4xk5Lm45rmGzg0q+w+ZgyJevhQi0BgfcKtiapN//Mt9VSs0QVQOw/YDc4ljOSL2
+         LBj53zLSSff3iK7viLyCnVa9EzyIUaQFDPTMg/nlcg7HtLyel8vvfeo/ToV7HJ53GMLB
+         NRZbnaIerTlibVt9C87fPynAjvxA7rAfbli/uVaLKhpMSCChNb53O4M9yggSI3Gyp8Ex
+         VoYw==
+X-Gm-Message-State: AOJu0YyHMwAfGz/fu7ZiIda6WVmDQP+fajE/BcanB0BsFWgBCtvCULAR
+	ZCtlGYvm/xEys8/mwOFAHYU6Dr1bGM5Sg/4PiwIU1MVrPDDDN4TYt+DtYx9Fbhelo67tdS+vME9
+	97doZiOGkMUEr3iUA9pH5axj9TiQp9jJ2zMwE0LbLmw==
+X-Gm-Gg: AR+sD129gGIVHfcVsqpWqY+nogZwwrVstY1H5k9/SI/lFPNDm9QnLLcoiKG+0+8wP2Q
+	zlT8GUaxi9oW88tztEkMO81JbQAUeqSaLvyNKCiLiFZ11/G3ot6a4MIgHeXqQNw0OAN7o+35MeJ
+	A2nRlLuQxzVudWvxEQaF+okpDz+WN8ItuJNEoMNt76GR0b39P23NIsOmWlOUZVXZU3cvfbpqugl
+	huJkgxoq9CydIcnBaIMAtEKSh/+qKrJppPravBWtTePm4VLbzVbBPRpp4HWSzVqVM1Gs0nua+/2
+	6nJThet31joeZyhjoTqjH/u7sEjl1juuPH6uDJfXYRFoKdpe9SMUO/wZ
+X-Received: by 2002:a05:6000:46ce:b0:481:511c:8d45 with SMTP id
+ ffacd0b85a97d-48152caa71cmr1193753f8f.20.1786504647767; Tue, 11 Aug 2026
+ 20:17:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MailFrom: pzqqt88198@gmail.com
+From: Samuel Nick <shimulkhan213@gmail.com>
+Date: Wed, 12 Aug 2026 09:17:16 +0600
+X-Gm-Features: AUfX_mwriPf0NGnki6huwTgpuKd4Utd_gVRfRYtM6DYeitRSkeMXIzOIdEwAX4k
+Message-ID: 
+ <CAMNbJUFNnHjh7frs7vfk2+WK6CP_5=cfG9L4Y3UtQjArGOP_xQ@mail.gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Add Native DSD support for CVJ Lila
+ (262a:1ab2)
+To: alsa-devel@alsa-project.org
+X-MailFrom: shimulkhan213@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: HUHDUJD73EEHYOY4YVKVNYZZXSUBH7M6
-X-Message-ID-Hash: HUHDUJD73EEHYOY4YVKVNYZZXSUBH7M6
-X-Mailman-Approved-At: Wed, 12 Aug 2026 09:26:01 +0000
+Message-ID-Hash: ETSXXJI65KU7FTFDO4MQGUFZ4A6KAC74
+X-Message-ID-Hash: ETSXXJI65KU7FTFDO4MQGUFZ4A6KAC74
+X-Mailman-Approved-At: Wed, 12 Aug 2026 09:26:05 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HUHDUJD73EEHYOY4YVKVNYZZXSUBH7M6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ETSXXJI65KU7FTFDO4MQGUFZ4A6KAC74/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,65 +156,6 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
-
-[ Upstream commit 52521e8398839105ef8eb22b3f0993f9b0d11a57 ]
-
-We introduced the upper bound checks of the packet sizes by the
-ep->maxframesize for avoiding the URB submission errors.  However, the
-check was applied at an incorrect place in the function
-snd_usb_endpoint_set_params() where ep->maxframesize isn't defined
-yet; the value is defined at a bit later position.  So this ended up
-with a failure at the first run while the second run works.
-
-For fixing it, move the check at the correct place, right after the
-calculation of ep->maxframesize in the same function.
-
-Fixes: 7fe8dec3f628 ("ALSA: usb-audio: Cap the packet size pre-calculations")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=221292
-Cc: <stable@vger.kernel.org>
-Link: https://patch.msgid.link/20260410143220.1676344-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-[王YP: Move the check to `snd_usb_pcm_prepare()`. For linux-5.10.y,
-       ep->maxframesize is calculated in `snd_usb_pcm_prepare()`.]
-Signed-off-by: 王YP <pzqqt88198@gmail.com>
----
- sound/usb/endpoint.c | 3 ---
- sound/usb/pcm.c      | 7 +++++++
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 8e2b90cb5b95..21bcdc811a81 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1099,9 +1099,6 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 		return -EINVAL;
- 	}
- 
--	ep->packsize[0] = min(ep->packsize[0], ep->maxframesize);
--	ep->packsize[1] = min(ep->packsize[1], ep->maxframesize);
--
- 	/* calculate the frequency in 16.16 format */
- 	ep->freqm = ep->freqn;
- 	ep->freqshift = INT_MIN;
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index f4494d054917..802ed1dbd23b 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -953,6 +953,13 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
- 	subs->data_endpoint->curframesize =
- 		bytes_to_frames(runtime, subs->data_endpoint->curpacksize);
- 
-+	subs->data_endpoint->packsize[0] = min(
-+		subs->data_endpoint->packsize[0],
-+		subs->data_endpoint->maxframesize);
-+	subs->data_endpoint->packsize[1] = min(
-+		subs->data_endpoint->packsize[1],
-+		subs->data_endpoint->maxframesize);
-+
- 	/* reset the pointer */
- 	subs->hwptr_done = 0;
- 	subs->transfer_done = 0;
--- 
-2.43.0
-
+UGxlYXNlIGFkZCBOYXRpdmUgRFNEIHN1cHBvcnQgZm9yIHRoZSBDVkogTGlsYSBVU0IgREFDIChT
+YXZpdGVjaCBVU0INCmNvbnRyb2xsZXIpLg0KDQogICAtDQoNCiAgICpWSUQ6UElEOiogMjYyYTox
+YWIyDQogICAtDQoNCiAgICpJbnRlcmZhY2U6KiBBbHRzZXQgNCAoRFNEIHJhdzogRE9QPTApDQo=
