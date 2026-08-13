@@ -4,225 +4,174 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A183C5DF70
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2026 16:58:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B0EDC5B572
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2026 16:58:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9248A60259;
-	Mon, 17 Aug 2026 18:57:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9248A60259
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC7F160262;
+	Mon, 17 Aug 2026 18:58:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC7F160262
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786985884;
-	bh=lXnTVptwBbnMfg4lW2Z9MagHiJNByx6m7jpNp1JlSgA=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=XJ98KxLwDdvFKiJSeE3TH5xj0eNlGDknu7+RuXKKddWz9xn4XQAvlW33oiVbwanur
-	 cGhLzu2TkSW3bXL0C+iNwaRwQ/iwkMTKSP9Iu4pkI2zGTo1Zz2XgY3Sm39Nmt06b04
-	 4ewTCmSzTIB4byS9PqcTCmMEKxlVJATa0+RDJ2bI=
+	s=default; t=1786985904;
+	bh=IE7MnV4aLeS0CKgs29+cJIyfn3Ia22BlOLdtgNhTM1M=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=L407gnpahbTL5kslGU93zW0EGOGuc2Z69AJdXym/aCiD7+mERd5oQLWFfX31p52gW
+	 1ZF6RJmc77iRsjKjhohYI8yhzDiSjXRvXox/H6uhrA4Z2Dx5gvPeLY2SoqFrtpN56q
+	 yz+LO2EiEdpaOeCPYnuyDpiQdgQQPopBQztsuUEo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E198F805F6; Mon, 17 Aug 2026 18:57:28 +0200 (CEST)
+	id 9C04DF80621; Mon, 17 Aug 2026 18:57:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AA37F805FD;
-	Mon, 17 Aug 2026 18:57:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C368F80623;
+	Mon, 17 Aug 2026 18:57:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DDB6F80553; Thu, 13 Aug 2026 04:15:14 +0200 (CEST)
+	id 46B9BF805C7; Thu, 13 Aug 2026 08:43:51 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.154.28
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1786587313;
-	b=bQfyGk8FYySkfOEYslq4UDHTs4BEDiunjFmaHFia67U7dmRygmZLCOulfOVeaMlxmndJ
-	 hmw9QV/ACUBSJ0yMGtG3UxpO4hkBBWwULDDQGqikt8mKiLsht686/mGxDvUeyHU0holZU
-	 bcZm8eSnOqARlD7GbovF25TMhP1M6NSpIH+38SpFb4mkODhR2WoYzS6zlFEyIkprp8g/B
-	 OVylZ1FxgrmpJr15KsrurpRtHkH6dgxrfg7QvMYVD7PfinjA0LOO8Uabooqem0At5ecTj
-	 yv7kZ1rF9c3X9qwJH6rT7fgT09nUv4VJKElWiXl4ZdDgk20cqMpxkHitbO4OeQZW7Tw==
+ arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.127.62
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1786603426;
+	b=ItWP8T7OL8e7pSvH5BnYKWI3PuJcfstrw8Za7KSgT/3gI5YBsR+4BbZXSxjm/4iprV0R
+	 TwdfaUk5K5aplDccUYhc/r13YJj8TQzXlWIiB20yZh0cBeH6zzjiGV+p22+IJTZl0Qn0s
+	 fheOzJSq700zCUEAYSiAwt6x9CtmMiRG8DgDiYIahvhOG4P5/CgPmNRDJEENaOT0UvQ0y
+	 PdV7rMNmQCus231P7+ANNXMafzoWQUlG8HQ2M0EdPtrIAxDa2N2lkNZMyq66CgMl6wOfq
+	 jMRCnIH/hC6eiChWzf7+WQovveB26dx2pNkEKuqQyVODJr674XYFDpHg9NhaWu5lvnQ==
 ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786587313;
-	h=DKIM-Signature:DKIM-Signature:From:To:Subject:Date:Message-ID:
-	 MIME-Version;
-	bh=lXnTVptwBbnMfg4lW2Z9MagHiJNByx6m7jpNp1JlSgA=;
-	b=kub7FkXVQIMpDILvae7aF8ScqCY3gwsxrYiCdkZvWbVlvY1I/sZEkwg39bgJ1m1DSldr
-	 0WcuLrQYm2YtSozz/Qgy3dNKdKlGOvPIIWEAQQhEhwyuim6UYFkznm/novHoE84P/2T7v
-	 mOkJbuoyDiCMdLrUnir+dA5/mixsOATBba39tT3e0sSSqLEDuxzgpUJIa1T3Ob+nAxisQ
-	 jlp9MEZRQ9qSkfinf0HQJasHSVWvH20OzS0mdkwZZb/bSOLh0PS+Ded2PsMM4e2AaBnFF
-	 j3w2+Zdl62K0aFeEia/8fZN832oJiwkFOtQfNVEGzHDfc3E1bYG5foLAUXoUuNYSbdQ==
+	c=relaxed/simple; t=1786603426;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=IE7MnV4aLeS0CKgs29+cJIyfn3Ia22BlOLdtgNhTM1M=;
+	b=fACy4XloPqEPYIGwtCnnymkWKWqJsJWxt8ORu3CduIIIodcIKQln71TUSCxcicbLqB0F
+	 YJveKmM6NtwqMS/Ua4EC6fnJQGpL86Rr92UYlMm7RnNmBzQ+1Dz+TpUMn5CBWIOlJzOHB
+	 QKxYzkDDAj/QARs8ynaSgZ4I9uBI8StVhc3BGLRrjmBDuE3cQcMUkVklhXg2zMbLqGdnU
+	 gPj2KS2j337w3JksfRn9XYlZKh/Ihs6iaua+eYESI7p44dHVtl+25jg/6kOgotOLsJND4
+	 YerD5xvTKiuire4iJB1ovIBS9OiwQdKBxNHiaDHT6OyHp2p/ypD6u02yCG8LeGKLabg==
 ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=okP4+Q7r;
-	dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b="B0RAi/cn";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.154.28
-Received: from mx0b-0002e601.pphosted.com (mx0b-0002e601.pphosted.com
- [148.163.154.28])
+ dkim=pass header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
+ header.s=selector1 header.b=P7fYJP7G;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.127.62
+Received: from TYDPR03CU002.outbound.protection.outlook.com
+ (mail-japaneastazon11013062.outbound.protection.outlook.com [52.101.127.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8BAC3F80027
-	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2026 04:15:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BAC3F80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56177F800D2
+	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2026 08:43:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56177F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=okP4+Q7r;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=B0RAi/cn
-Received: from pps.filterd (m0374955.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id
- 67CNJwe31588222;
-	Wed, 12 Aug 2026 21:15:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=proofpoint-05-2026; bh=LuqE0Bmmdd8V4
-	P2tVhFXjwPcSFC3M8/Dp6zVgwCFyYg=; b=okP4+Q7rY4AfPdX498A0BDTAMcp5a
-	r+HugO7zyW+cqbwB9C2LX7mqmdz0dbxBMn/v2xlG3yzxZk3oRZpZJhHeJL7Tsj5Z
-	HLAD/ZqlJ11CZ2Y7WVbisctFW+lPPT5LEAVBAlLkrISOmwrJUztWBFG9K190fzub
-	Pg4rI56723oQ9wI8VpynR49JkYk9huJkZg4/EWJv7kHOLo0Er5kLjwjGH81QvFzK
-	z3LLIVJYeZrlCktH+9Zl53zhARJFAeRf5qY9IQk2LhIXOcko7DxV3vK7T6BrhBw6
-	+dZWjf0q6PC2EQRyToEOE2B0QYDSpcamqIxIxYERu8imOL1ONSc8QV0vg==
-Received: from co1pr03cu002.outbound.protection.outlook.com
- (mail-westus2azon11010060.outbound.protection.outlook.com [52.101.46.60])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4g0mun62h1-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 12 Aug 2026 21:15:05 -0500 (CDT)
+ unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
+ header.s=selector1 header.b=P7fYJP7G
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=a27bSwVw04IKjsnWiDzEpsHr02uptAgwg32+yYSSoljS/NbHclycaV+TCWIGgdFkgxhCe5VtlX1upX//8qKlXhROdRnw9B3/qNY2Q+tOjWfCc3oUwBPSpBa9GEU5OuTN5RyuYI/c3YETlFkDwqU68OTOzUHtLjAbI49h0mTCSOJGDRTGNDdow5U+nQjGwdhz+2TxJI5DDXLC3LIly6CY8Q1HwY4y9b3HH7ly5DY9kPNNahPUr7j3Mg73zcWxthX17lg8qSSTMJ+F01X3LYp/p4HjC5PkmTezpygDlIdM1H8NfszGMk7iWJW7vKXhndseEN4EkcHu6+LZLdP0kR2nZg==
+ b=Uj3MPv9GdvtQaZbdzKwz2sXmC8taJ51uTMBdiEv/a02YQyjl/24UiPDtvbf5SpVOYAVKq1usfwQx2fsLSLy3x5C9nj/0OdxGZIFhAQH8RPPCptevflb3YiLFp5exQa0eL+JYHDe4HXV6HdxOMlxjIEUqzKXNN9SnAYrI4Nx2RxdOUkNsZgYzhpodUJykCN6ElFs8CA7L1Gij2pSw/J3T7t5IOR0VNpN64bF2uUrlCSpSWjZrn1qTJ6JgeKO/hyOPq0c0D6OwUPMOA4pnzBuaegFnIIdRHyJAow5R/4l4Meu1v2cuEF5zcsfuHp2rR6Jz9NdAx7xu6r8MSLou6E+XFA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LuqE0Bmmdd8V4P2tVhFXjwPcSFC3M8/Dp6zVgwCFyYg=;
- b=IO2/XRBa2dRD2hdqn9kg8suB7HgM/Kkc+BoEzraCXi56wT+X7IfA9Hvoju8RlqI2MHlXuVmNLe1mG2/fEnqzu1Bnn68xwfsJ5zH7IDbFEzS+v9ByjOZ9cyS2qYpL894a/tYbZDbhMNF0Ykb2kr0jsihBaaZJKfJKhFqvUmSmeGT9kjk/gK42is4/IvCRUWZgv6o3SchjWxpegF1CA7XTOU83uRYjlhqPskpJRoQYQdkpvmKHjqAxjSTrrzFgQ6P5SL0zQADn6IyEK6q6BwiZqNhdNJXJRY8qwUsDUwKL0AMKtuhNm1VPrNqAR0nENIy2vfbLvRRy0tuACbn78hZ+KA==
+ bh=xOm6bP2Edizp/VOBGb0XogiJHjHd4kEwZxmAfX40Sa0=;
+ b=ljBQtAWaOUPUCwWpaiv+fMw3vQXz/FLohSVpNqrC1qweto0IHxporn9OAuXY5y6w0ulrlASm2SvlTLvUJAbMYWoCwlvi6n3kk7iLiPG9yrDDhK4laWETzTETxbmDp3VjVy+Z25DcP6uZz9FwbOaO03NRasnuFwYcTqtKAleQSs0PZGA1GVgxV8Rj8hJY1WR2VZMiKapesBC4CzqqD8UO1LMtsWwPo+5QDz7BVsntFF1QlFhjZdrBQozncJSzSuO0J1wwSLtwpM+GgH6JuSFoNoeG+BIyCW4euGwB9ZxvJ4o4A9ATyU2T2H8grkQ8j3HZt4h9PmaHL2lNKXEO0E7B4A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.23.195) smtp.rcpttodomain=amd.com smtp.mailfrom=ti.com; dmarc=pass
- (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
- (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LuqE0Bmmdd8V4P2tVhFXjwPcSFC3M8/Dp6zVgwCFyYg=;
- b=B0RAi/cnBM7Uekm3+91ABdqHARwqjb64YZNZElI+oXhzdkEApogERW3u1KLBR6dfZkZEf1ykd9BdnU11ZsIaT6DUSG06Ch6qrpyePiUUoNnsvLuGxDNf3FkMTCC88WcEl+DoCcm91O/pdV2tpqFLSUWqfWteiavfrIuzUUOAeiU=
-Received: from CH2PR17CA0009.namprd17.prod.outlook.com (2603:10b6:610:53::19)
- by SA1PR10MB6366.namprd10.prod.outlook.com (2603:10b6:806:256::12) with
+ bh=xOm6bP2Edizp/VOBGb0XogiJHjHd4kEwZxmAfX40Sa0=;
+ b=P7fYJP7GTjSiBqi/DxeSAblndCKyENEDKI6VfIhGuuG98002w0wayDQgJONarXKOgbaBisaXM4DtKPRXEXF/Sy3HZwW/BaVBQai3iloKHWpjLMtjDlMLqLTbjtWvROM+IyBw+nUMyR103vIUU9UlBZ/ADw9wXwLEoTHug4MAAkNMMHImcbUASOXum64Qo7fwrit9jbDHAJ7hh5kc/eyxSPmncw1koTiedCLGQP9l2lKcsqR9ZOH5SbbydGWSCeMKRkzJVkrDcS4Ifebwdo72tznamFPT6AeyBFyrfOtcpW2ozcSYSIUFYzf9qc4iP9wZ7aiqi2w9+ShcD87W50TbLQ==
+Received: from PUVP216CA0005.KORP216.PROD.OUTLOOK.COM (2603:1096:301:16f::16)
+ by KUXPR03MB10050.apcprd03.prod.outlook.com (2603:1096:d10:a0::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.315.11; Thu, 13 Aug
- 2026 02:15:01 +0000
-Received: from DS3PEPF0000C37C.namprd04.prod.outlook.com
- (2603:10b6:610:53:cafe::84) by CH2PR17CA0009.outlook.office365.com
- (2603:10b6:610:53::19) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.25; Thu, 13 Aug
+ 2026 06:43:33 +0000
+Received: from TY2PEPF0000AB84.apcprd03.prod.outlook.com
+ (2603:1096:301:16f:cafe::41) by PUVP216CA0005.outlook.office365.com
+ (2603:1096:301:16f::16) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.14 via Frontend Transport; Thu,
- 13 Aug 2026 02:15:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.23.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.23.195; helo=lewvzet201.ext.ti.com; pr=C
-Received: from lewvzet201.ext.ti.com (198.47.23.195) by
- DS3PEPF0000C37C.mail.protection.outlook.com (10.167.23.6) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.339.3 via Frontend Transport; Thu, 13 Aug 2026 02:15:01 +0000
-Received: from DLEE204.ent.ti.com (157.170.170.84) by lewvzet201.ext.ti.com
- (10.4.14.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Wed, 12 Aug
- 2026 21:15:00 -0500
-Received: from DLEE211.ent.ti.com (157.170.170.113) by DLEE204.ent.ti.com
- (157.170.170.84) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Wed, 12 Aug
- 2026 21:15:00 -0500
-Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DLEE211.ent.ti.com
- (157.170.170.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
- Transport; Wed, 12 Aug 2026 21:15:00 -0500
-Received: from LAPTOP-70RJ5B8Q ([10.250.165.249])
-	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 67D2Erbj3155494;
-	Wed, 12 Aug 2026 21:14:54 -0500
-From: Baojun Xu <baojun.xu@ti.com>
+ 13 Aug 2026 06:43:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ TY2PEPF0000AB84.mail.protection.outlook.com (10.167.253.9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.339.3 via Frontend Transport; Thu, 13 Aug 2026 06:43:33 +0000
+Received: from NTHCML01A.nuvoton.com (10.1.8.177) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Thu, 13 Aug
+ 2026 14:43:32 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01A.nuvoton.com
+ (10.1.8.177) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.61; Thu, 13 Aug
+ 2026 14:43:32 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2507.61 via Frontend
+ Transport; Thu, 13 Aug 2026 14:43:32 +0800
+From: Neo Chang <YLCHANG2@nuvoton.com>
 To: <broonie@kernel.org>
-CC: <tiwai@suse.de>, <andriy.shevchenko@linux.intel.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <shenghao-ding@ti.com>, <baojun.xu@ti.com>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <k-yi@ti.com>, <henry.lo@ti.com>, <robinchen@ti.com>,
-        <niranjan.hy@ti.com>, <pin-hao.huang@hp.com>,
-        <Syed.SabaKareem@amd.com>
-Subject: [PATCH v2] ASoC: tas2783-sdw: add firmware download status check
-Date: Thu, 13 Aug 2026 10:14:50 +0800
-Message-ID: <20260813021450.1897-1-baojun.xu@ti.com>
-X-Mailer: git-send-email 2.55.0.windows.3
+CC: <lgirdwood@gmail.com>, <perex@perex.cz>, <robh@kernel.org>,
+	<krzk+dt@kernel.org>, <linux-sound@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+	<neo.chang70@gmail.com>, <kchsu0@nuvoton.com>, <sjlin0@nuvoton.com>, "Neo
+ Chang" <YLCHANG2@nuvoton.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@oss.qualcomm.com>
+Subject: [PATCH v8 1/2] ASoC: dt-bindings: nuvoton,nau8360: Add NAU83G60
+Date: Thu, 13 Aug 2026 14:43:26 +0800
+Message-ID: <20260813064327.1127236-2-YLCHANG2@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260813064327.1127236-1-YLCHANG2@nuvoton.com>
+References: <20260813064327.1127236-1-YLCHANG2@nuvoton.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF0000C37C:EE_|SA1PR10MB6366:EE_
-X-MS-Office365-Filtering-Correlation-Id: 73b9aa62-f0a5-456b-bf42-08def8e0ae39
+X-MS-TrafficTypeDiagnostic: TY2PEPF0000AB84:EE_|KUXPR03MB10050:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44f2ab27-28a2-49e8-c397-08def90631f3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|1800799024|23010399003|376014|36860700016|82310400026|56012099006|10067099003|6133799003|18002099003;
+	BCL:0;ARA:13230040|376014|23010399003|7416014|1800799024|36860700016|82310400026|13003099007|6133799003|10067099003|11063799006|56012099006|22082099003|18002099003|3023799007;
 X-Microsoft-Antispam-Message-Info: 
-	leaO2NX7h9GKdvbZBd6pIWLgt96PJoCG1qfbhxQBcJvEgFAaJJnQaqmMsUGcwe2K92oYsDSZrmGa9kqmuEbRoiG5b/2CuyJYZSXDsUd7l0AYa4yJ3GIifTNDZ/n9Cz+1VS9f4WQUF1X6rN5RtEhVnnKt/X/zVfrywup53gNATelhwz+XknLdOR6UMmPQcUu3GAh5jxf+wzxB5Aif82cBlKDt/nraRocjWvN3AmEpQluzzyjL+h6Fsll3m+Qe43JV5saFnRyHpH28b2kBh7wVvIlMdrKNZd1qByU/Bam9PpsMTka0KNN8unbhOmmTY5dCjRpIpc7UT9ly6K6pjqiUsgJv7R64CL7Bjrnz+P2YnonfBF068igtkxc4l4iPA4P5lP8Fj4PD5gQx4DT87wAIzcmC8gIkyuwkBoVzZmiPhX/2aJ8cOFLpJ13Ir3cOJwCvkbJ8t1PsdvmyYKbsE5K5gzHmyoHqP/cl6+wrdC0uAdhxuVbcV5ushbt0nNGJUHsipjUJKnotMOg5enyzIqSYc40chBkhQAnLdvbDw8Rr2b2z0oT72XXdU25WRA2DK8LCUND28YQ53uWHeY35MPFJN/0BWHeMR1WvtYWJVF5LaUkIKZLlbSjv2ceN4c24vTn974ooCSh/yIgU0dbNZJb3lw+Y1yfIirIRIYpGOs26o2t7QY63mzinliPRpZ8JSwSJWxjPMzgwYVswAUU45sNb1A==
+	t3Gw73BNNRHy+6dPm6zxa0kKt0gR4saE8JR+HL/eLcXCxz/E6HG4DmPBYAvL5n85LrdP3h8YEFMrp9CD/uaqpnmVvCpmLbJ9n1z2KL11UfHi5Q1tYcYABgtrOoSVpd/RBgNctatvVjtTosLTB9T3IePi8pV3t75Yvk4NuCWt3EPJm3FO1JfWvEkqqa9owK1oyAAeqfkyG5N/kNy7c4pSpdnCIi07y2065K33JHjlalAnbyKV7eCUDL0dZ9WvRqgb3wt7lY8/uzOPAfLaij8lMl17DPIV1Fxa/31lYg6lKXdE76ydlpOjcqdQ675MvvGdTjKv1YHPHCqiFmvUfrBVZxGUfzymjeqr+z4MeIvih2XKtqPYfU4IK7mrMDA5n7bO2PCGzxDqwwICrxE2dUDwnLu1Qes9JLzvUFS2NL3nyU9qlVGj21gw8VuJlcxrGvEntwc0Rg9kj/hPXUTZAqGDOBqrz99OQjn9xqgbYlPntmjojJFIJHP40UtX494+ddKXG7F+6yaCtKp4sFVadfDj749KGewD1qFQm6vD2TUS6tD6tqyOFi2+vmM0cQzj45LWdqmGYlkFdObfUmm0Lq/664/pBN6jJ3RFnW/tc1PRiRymIzxLz6J6GJTVesVVXs/P2q1pg5FkZrY2+7sx3h3+Vw==
 X-Forefront-Antispam-Report: 
-	CIP:198.47.23.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet201.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(23010399003)(376014)(36860700016)(82310400026)(56012099006)(10067099003)(6133799003)(18002099003);DIR:OUT;SFP:1101;
+	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230040)(376014)(23010399003)(7416014)(1800799024)(36860700016)(82310400026)(13003099007)(6133799003)(10067099003)(11063799006)(56012099006)(22082099003)(18002099003)(3023799007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	kYgqq+paqiwp3xMdCRJgfMGA9cA+1BNSOuQnUzNu2fSZfzh8arpY2/g4GoGx8cPy7c9aMhuZILbjy7UIf5HEKp1ASCeHWHwS1F1CsXsd6H8G+V//00bMBTSjH8qgu9RNJp6YCenSwXG9s2oMnPYrElJdCqhc6Gi5RI4Xavfc/jl3NMHMQzvRJKCvnsqANtMJwurtdmQ/Jv0hxNA+bka1otDQpySwhDJqT0yxEGko3ge/DzfH9m//sDay2yH5YuC6SfIIRynH1eY/Zzo/QpVC7IQbjOjHVtJjRWTigbWC+7uLZpXSQT+lglJ5Jr8fIv96rEFq+UqtPAkFHYgUHMIvmv7RB69wCxzlKssqV1TgSiFe3HltFq+3Nqqtl2Cc+QFoCNrKOb5crYLYVCNOnhzAJE6en/8TNMCRZ+R1pm+fxgk0sDOfXpxX28SMWXi9Nrt5
-X-Exchange-RoutingPolicyChecked: 
-	HSISaARxKAVPie+D6QzNxqE8VCAWtqeSGraABAw4jyQuhpvfvlvYQ1b2Sd9Sf9gF1nOpL6ITprFaPCS67nKl19sT7mleTEE/8oxt1x866ACadfMVX9m0UBiJCE6L0XVCbWhNARPWaTkga++OeJlkP/Ju41BRwyR346aogFee+T8wFzQwcogrGGtLLSVvtPjDcc1DtroE3VBYd6vf4m3G33/mKwTErJq2nTNJcPmerb90hvsdTr3PIoFuWX0t0m6AIkA7EDalBoCGKncaG78epD1te8KHu2q1hdmT12/BnIGiIXJqMa0fezq4V1dtepmrusTrpZt1dZCeSpZ6xzuWCg==
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2026 02:15:01.1551
+	Snz2fODlmGgoEj12pIlqW5z37wB8QzOyiGHwIX6KxIpO/vDOsPI4tHX6wBhTuaQN+9VG7Ipu5ExWxJjSf/oatRHT/WeoT1tIi4tLsCfyRXtyCTEsMzsQuVKxrCUaOtUh1S42lf/AV+8a2AIyg20+yYiOphlWp+euVWx/GNpfgvefOP5kuml9aAvDPJAUUMu47972kQn0UfW+ihkoKWEErAGAij16PDZTPlY1zQPMdeOPFyzpg5ryIJBa9ZN8dHVkImTwEIoKy++oQwfJcNkhLp9EFEw3NN30+6m5gFM3YICUcoZb5rOv0T5cCpNMdwsX8mRKWeV7HbbxNEr3l3kfjiEwWqw4Aqwu1n85NB+etrZiPRmIbu+lkLVqa4myaoN5R/hkOkUMeURLhP3p2vJ6yRUfBaB9ekVBt/257r10HxNvpQ2i0mnchQV07IIPjKxZ
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2026 06:43:33.5492
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 73b9aa62-f0a5-456b-bf42-08def8e0ae39
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+ 44f2ab27-28a2-49e8-c397-08def90631f3
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.195];Helo=[lewvzet201.ext.ti.com]
+ TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	DS3PEPF0000C37C.namprd04.prod.outlook.com
+	TY2PEPF0000AB84.apcprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6366
-X-Authority-Analysis: v=2.4 cv=JPQLdcKb c=1 sm=1 tr=0 ts=6a7d28a9 cx=c_pps
- a=fY0JyvE1RNjZr0fjhzOn9Q==:117 a=f+v6EHfkeJbVwR46tk4DMg==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=Sv0fKeRqtYgA:10
- a=s63m1ICgrNkA:10 a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Z8NIEmU8O1QQgoT56wFK:22 a=fPAWb5peG099m5CrUpKH:22 a=sozttTNsAAAA:8
- a=JsoGBFPoK0t6TsxPe1EA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODEzMDAxNCBTYWx0ZWRfX33br18Rz1iJn
- x/Jo7k/Q2Yq/p+rHX0XU7Fd0Iw5QiuXe4FBXPfBkWF4XKwSi54Tt2jlY5HUcIAh+nvd4aiQujqU
- j4D23cR/xhjDEMue2pwDRuyDz9fjLZI=
-X-Proofpoint-GUID: 0pg5DrtS4XOZoOK3P_0-uv7q9qk42YTw
-X-Proofpoint-ORIG-GUID: 0pg5DrtS4XOZoOK3P_0-uv7q9qk42YTw
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODEzMDAxNCBTYWx0ZWRfX59mlgdAbC8SH
- rJZd8Evr1J0JWOF3+BPTphsiTAhstyBhidlccQvVKnWYTl0gXnN+ltDGN6A1vZYSh64u2o+WDOh
- O7a/WgvQdWgF+H3FQHj47p/FrBQ1Q6Y22m62EvCsvOcfadAJFaR5Lb7tuuSl9GeXi8/rjj7kDvK
- ZLG6pOluSUya4H6VbdRvTBJebQjxDgz2aWp/U4ze13AVnTmNoF6SqMkblHb57w4EhzyhiOw5f95
- l44ig7NzvFVyeyQhqtUrpuSH38Uic0pVUqg2WsObEi0mW3gomILL4mZuEaG/ESQDzKkTVW5JKh8
- y2ADDhHKlDbA3R9QQAGhdu2v5iOnHFHV/gaBmib+7eDDSc0wxecs4F2LZhUR2X/1SLF8uynCAsJ
- 8w4LvEN4hDC69ltMVmTd2KIeBSc4MMU5s7ZAQcTPDuGZVnrKKwjFm+j1uXcKwDD6ImHar6gtZ5r
- +ank6sl/wtcw0T031Fg==
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-12_07,2026-08-12_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 lowpriorityscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- adultscore=0 priorityscore=1501 suspectscore=0 malwarescore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608130014
-X-MailFrom: baojun.xu@ti.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KUXPR03MB10050
+X-MailFrom: YLCHANG2@nuvoton.com
+X-Mailman-Rule-Hits: implicit-dest
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: K7H57QHEE6XK7PTJ6R6NWMSSLN53MYV7
-X-Message-ID-Hash: K7H57QHEE6XK7PTJ6R6NWMSSLN53MYV7
-X-Mailman-Approved-At: Mon, 17 Aug 2026 16:57:23 +0000
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
+ nonmember-moderation; administrivia; max-recipients; max-size;
+ news-moderation; no-subject; digests; suspicious-header
+Message-ID-Hash: OVRLCRFHQSWIFAHTLM7PUAEAANDIQIRP
+X-Message-ID-Hash: OVRLCRFHQSWIFAHTLM7PUAEAANDIQIRP
+X-Mailman-Approved-At: Mon, 17 Aug 2026 16:57:33 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K7H57QHEE6XK7PTJ6R6NWMSSLN53MYV7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OVRLCRFHQSWIFAHTLM7PUAEAANDIQIRP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -231,148 +180,171 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently, the firmware download is unnecessarily triggered on every
-system resume from suspend, causing significant wake-up latency. However,
-this step is redundant if the AMP remains powered on. Furthermore, certain
-memory pages (addresses > 0xc60000) are skipped even after an AMP reset.
+Add device tree bindings documentation for the Nuvoton NAU83G60
+audio amplifier.
 
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+Signed-off-by: Neo Chang <YLCHANG2@nuvoton.com>
 ---
-v2:
- - Update register address from 0x07 to 7 and keep the line within the
-   80-character limit.‌
- - ‌Remove stray/unnecessary changes.‌
- - ‌Change variable type to unsigned int to comply with API requirements.‌
- - ‌Replace usleep_range() with fsleep().‌
- - ‌Set idle_bias_on to 0 to enable low-power mode.
- - Reactivate the AMP after resume.
----
- sound/soc/codecs/tas2783-sdw.c | 55 ++++++++++++++++++++--------------
- 1 file changed, 33 insertions(+), 22 deletions(-)
+Changes in v8:
+- No changes, added Krzysztof's Reviewed-by tag.
 
-diff --git a/sound/soc/codecs/tas2783-sdw.c b/sound/soc/codecs/tas2783-sdw.c
-index c217da5fccdf..8fc679d460d9 100644
---- a/sound/soc/codecs/tas2783-sdw.c
-+++ b/sound/soc/codecs/tas2783-sdw.c
-@@ -97,6 +97,7 @@ struct tas2783_prv {
- 	u8 rca_binaryname[64];
- 	u8 dev_name[32];
- 	bool hw_init;
-+	bool first_hw_init;
- 	/* wq for firmware download */
- 	wait_queue_head_t fw_wait;
- 	bool fw_dl_task_done;
-@@ -783,14 +784,16 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
- 			file->version, file->length,
- 			file->dest_addr, file->fw_data);
- 
--		ret = sdw_nwrite_no_pm(tas_dev->sdw_peripheral,
--				       file->dest_addr,
--				       file->length,
--				       file->fw_data);
--		if (ret < 0) {
--			dev_err(tas_dev->dev,
--				"FW download failed: %d", ret);
--			break;
-+		if (!tas_dev->first_hw_init || file->dest_addr < 0xc60000) {
-+			ret = sdw_nwrite_no_pm(tas_dev->sdw_peripheral,
-+					       file->dest_addr,
-+					       file->length,
-+					       file->fw_data);
-+			if (ret < 0) {
-+				dev_err(tas_dev->dev,
-+					"FW download failed: %d", ret);
-+				break;
-+			}
- 		}
- 		cur_file++;
- 	}
-@@ -801,6 +804,8 @@ static void tas2783_fw_ready(const struct firmware *fmw, void *context)
- 		ret = -EINVAL;
- 	} else {
- 		tas2783_update_calibdata(tas_dev);
-+		regmap_write(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 7), 0x22);
-+		tas_dev->first_hw_init = true;
- 	}
- 
- out:
-@@ -940,7 +945,7 @@ static s32 tas_sdw_hw_params(struct snd_pcm_substream *substream,
- 							TAS2783_SDCA_POW_STATE_ON);
- 			if (!ret)
- 				break;
--			usleep_range(2000, 2200);
-+			fsleep(2200);
- 		} while (retry--);
- 	}
- 
-@@ -1038,7 +1043,7 @@ static const struct snd_soc_component_driver soc_codec_driver_tasdevice = {
- 	.num_dapm_widgets = ARRAY_SIZE(tas_dapm_widgets),
- 	.dapm_routes = tas_audio_map,
- 	.num_dapm_routes = ARRAY_SIZE(tas_audio_map),
--	.idle_bias_on = 1,
-+	.idle_bias_on = 0,
- 	.endianness = 1,
- };
- 
-@@ -1171,25 +1176,29 @@ static s32 tas_fw_load(struct tas2783_prv *tas_dev, struct sdw_slave *slave)
- static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
- {
- 	struct tas2783_prv *tas_dev = dev_get_drvdata(dev);
-+	unsigned int val;
- 	s32 ret;
- 
- 	if (tas_dev->hw_init)
- 		return 0;
- 
--	tas_dev->fw_dl_success = false;
-+	regmap_read(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 7), &val);
-+	/* Check if the AMP is in reset status. */
-+	if (val == 0x20) {
-+		tas_dev->fw_dl_success = false;
- 
--	ret = regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
--	if (ret) {
--		dev_err(dev, "sw reset failed, err=%d", ret);
--		return ret;
--	}
--	usleep_range(2000, 2200);
-+		ret = regmap_write(tas_dev->regmap, TAS2783_SW_RESET, 0x1);
-+		if (ret) {
-+			dev_err(dev, "sw reset failed, err=%d", ret);
-+			return ret;
-+		}
-+		fsleep(2200);
- 
--	tas_dev->fw_use_fallback = false;
--	ret = tas_fw_load(tas_dev, slave);
--	if (!ret && tas_dev->fw_use_fallback)
-+		tas_dev->fw_use_fallback = false;
- 		ret = tas_fw_load(tas_dev, slave);
--
-+		if (!ret && tas_dev->fw_use_fallback)
-+			ret = tas_fw_load(tas_dev, slave);
-+	}
- 	if (!ret) {
- 		if (tas_dev->sa_func_data)
- 			ret = sdca_regmap_write_init(dev, tas_dev->regmap,
-@@ -1197,7 +1206,8 @@ static s32 tas_io_init(struct device *dev, struct sdw_slave *slave)
- 		else
- 			ret = regmap_multi_reg_write(tas_dev->regmap, tas2783_init_seq,
- 						     ARRAY_SIZE(tas2783_init_seq));
--
-+		/* Re-active AMP after resume. */
-+		regmap_write(tas_dev->regmap, TASDEV_REG_SDW(0, 0, 2), 0);
- 		if (ret)
- 			dev_err(tas_dev->dev,
- 				"init writes failed, err=%d", ret);
-@@ -1357,6 +1367,7 @@ static s32 tas_sdw_probe(struct sdw_slave *peripheral,
- 	tas_dev->dev = dev;
- 	tas_dev->sdw_peripheral = peripheral;
- 	tas_dev->hw_init = false;
-+	tas_dev->first_hw_init = false;
- 	mutex_init(&tas_dev->calib_lock);
- 	mutex_init(&tas_dev->pde_lock);
- 
+Changes in v7:
+- No changes, added Krzysztof's Reviewed-by tag.
+
+Changes in v6:
+- Remove '|' from descriptions.
+- Add firmware-name in required.
+- Add "nuvoton,dsp-tx-slot-mapping" and "nuvoton,dsp-rx-slot-mapping" properties.
+
+Changes in v5:
+- Remove the detailed datasheet information, keep only the valid I2C address enum
+- Simplify the firmware firmware-name items definition by removing the redundant
+minItems/maxItems and moving the channel descriptions directly into individual
+item entries.
+
+Changes in v4:
+- Refine the `firmware-name` description to clarify the loading order
+ (Left then Right) and the PBTL mode behavior.
+- Remove the "dsp bypass" option description.
+- Update the example node to follow devicetree coding styles.
+
+Changes in v3:
+- Remove colon to resolve YAML build warnings.
+- Fix 'firmware-name' property definition to comply with binding schemas
+
+Changes in v2:
+- Dropped the word "driver" from the description.
+- Removed runtime/software configuration properties:
+  nuvoton,low-latency, nuvoton,anc-enable, nuvoton,aec-enable,
+  nuvoton,vbat-microvolt, and nuvoton,tdm-channel-length.
+- Added missing "nuvoton,dac-cur-enable" property for static speaker impedance matching.
+- Removed unnecessary '|' formatting from single-line descriptions.
+- Fixed typo in firmware-name property.
+---
+ .../bindings/sound/nuvoton,nau8360.yaml       | 113 ++++++++++++++++++
+ 1 file changed, 113 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8360.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8360.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8360.yaml
+new file mode 100644
+index 000000000000..3aa3df0bcb93
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8360.yaml
+@@ -0,0 +1,113 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nuvoton,nau8360.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Nuvoton NAU83G60 Stereo Class-D Amplifier with DSP
++
++description:
++  Stereo Class-D Amplifier with DSP and I/V-sense.
++  This device supports I2C.
++
++maintainers:
++  - Neo Chang <YLCHANG2@nuvoton.com>
++
++properties:
++  compatible:
++    enum:
++      - nuvoton,nau8360
++
++  reg:
++    description: The I2C address is determined by the hardware pins.
++    enum: [0x1a, 0x1b, 0x4a, 0x4b]
++
++  "#sound-dai-cells":
++    const: 0
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: mclk
++
++  firmware-name:
++    items:
++      - description:
++          Left DSP core firmware.
++          In PBTL mode, the Left firmware is ignored and only the Right is applied.
++      - description: Right DSP core firmware.
++
++  nuvoton,pbtl-enable:
++    type: boolean
++    description: NAU83G60 supports PBTL mode for mono output.
++
++  nuvoton,dac-cur-enable:
++    type: boolean
++    description:
++      Adjust DAC output current to match speaker impedance and prevent
++      hardware damage. +3.2dB when present, 0dB by default.
++
++  nuvoton,dsp-rx-slot-mapping:
++    description:
++      Configures the TDM slot routing for DSP RX functions.
++      Each integer assigns a specific DSP internal function to a TDM slot.
++      The indices of the array correspond to the following hardware functions
++        (0) DACL
++        (1) DACR
++        (2) ANCL
++        (3) ANCR
++      Assigned slots must be unique, except 255 which disables the function.
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 4
++    maxItems: 4
++    items:
++      enum: [ 0, 1, 2, 3, 4, 5, 6, 7, 255 ]
++
++  nuvoton,dsp-tx-slot-mapping:
++    description:
++      Configures the TDM slot routing for DSP TX functions.
++      Each integer assigns a specific DSP internal function to a TDM slot.
++      The indices of the array correspond to the following hardware functions
++        (0) AECL (Acoustic echo cancellation left)
++        (1) AECR (Acoustic echo cancellation right)
++        (2) ISNSL (Current sense left)
++        (3) ISNSR (Current sense right)
++        (4) VSNSL (Voltage sense left)
++        (5) VSNSR (Voltage sense right)
++        (6) TJ (Junction temperature)
++        (7) VBAT (Battery voltage)
++      Assigned slots must be unique, except 255 which disables the function.
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 8
++    maxItems: 8
++    items:
++      enum: [ 0, 1, 2, 3, 4, 5, 6, 7, 255 ]
++
++required:
++  - compatible
++  - reg
++  - firmware-name
++
++allOf:
++  - $ref: dai-common.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        codec@1a {
++            compatible = "nuvoton,nau8360";
++            reg = <0x1a>;
++            #sound-dai-cells = <0>;
++            firmware-name = "NAU83G60.kcs.bin.l", "NAU83G60.kcs.bin.r";
++            nuvoton,dac-cur-enable;
++            nuvoton,pbtl-enable;
++            nuvoton,dsp-rx-slot-mapping = <0 1 2 3>;
++            nuvoton,dsp-tx-slot-mapping = <0 1 2 3 4 5 6 7>;
++        };
++    };
 -- 
 2.25.1
 
