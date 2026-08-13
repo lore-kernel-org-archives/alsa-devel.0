@@ -4,87 +4,169 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F9DBC5CFCF
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Aug 2026 12:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D330BC5CFEB
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Aug 2026 14:36:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E43D60207;
-	Thu, 13 Aug 2026 14:17:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E43D60207
+	by alsa0.perex.cz (Postfix) with ESMTPS id A299460202;
+	Thu, 13 Aug 2026 16:36:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A299460202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786623454;
-	bh=k5zvfZsC+Cij2kUSiqT9eUQe/23ZE1Xn25VyZSDp3+I=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=PVW+wFwh/PT3Fr/o9C/aUliIXFAk7OkoQq69DRJImqo4A8WcwRcXfVSs0LMZnQF69
-	 OZRJ41iQ5+F5yo65563EnGhKJI5k4xGYkpfhuDV5VaPIzW0FDG3g2Ki9BpglJsQcH6
-	 JispzQt8aTFnpDnAEDEwiQir9Pv7OaDnOHkHCB9U=
+	s=default; t=1786631770;
+	bh=Ypo2/dLzzXsHjDcz9+fXpGjuNXOywvAxBq4MKB4liv0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=MyxEcl+Sb9suTE73/xpOsj4TfvBWUELz9YPOT6uYhptZXJdEipr3OniTw5cMTKPsJ
+	 rH2cvLSoGvtFswG6R6NTxbVkVycXRrCmshLxKoWAWbhG7Q76EJun/lIAb6czAbMZ0G
+	 VLecpJ0f9JacWC6FSEOls/OzhB0QwwzaFPcxDDQw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2985EF805FE; Thu, 13 Aug 2026 14:16:58 +0200 (CEST)
+	id 80E48F805FB; Thu, 13 Aug 2026 16:35:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE3E7F805FF;
-	Thu, 13 Aug 2026 14:16:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28154F80600;
+	Thu, 13 Aug 2026 16:35:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D72EFF80553; Thu, 13 Aug 2026 14:16:52 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786623412;
-	b=LseuZ0o7WNnZzAdWrQh7KI5+B96ozSxOdIdV20LbDwlKDQzFCOee3fcfmhd8oD6cAmnv
-	 qgSF6H9nL8WpxMfWnwwdSi1lXpExgEZN4t9x6gW5vIopFLrnN8iGCNVKb4MIr2sB2VblO
-	 VweLoIMKbnkrrjLvr/fiXWzETzYxA8wMCM6G8f3X/Uh2r54zC/nvQOp4xfrRmMB0p9Gs4
-	 291ZyAxVR2oceq/bsJXl9Zr342jZGRvDRrjC7M2L/Uedx09gNz0Fyj6j3kOUjFDzJJBR0
-	 89KIhPMM/5+98MNrnLBS/qebrt4GZrBO/4haC9O2FJMWZddhY2DyQFUTY/eSqtcC2Dw==
+	id 65935F80553; Thu, 13 Aug 2026 16:35:29 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=none smtp.remote-ip=195.135.223.131
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786631728;
+	b=MsXKJS67UO/VIphVIEiZhRIFtrWtovri+mVZIOzrhKP3fWNMuPdB6RxvlLJQsu/xvFaG
+	 WHFDZfnv0hNwbZIVoPqY2hTmmk5Y1TBgVjDvc6Gwrb8AGa63Ip6SBEOjQwo0lrsL5FIzU
+	 fmlIrxwoX3bm9kExo6vjRjzR1zr+Z4Fdbq09t1rlCbt0kg11LBhtssjva/d70M6xjIAOO
+	 ri+87g6s+NEHiqzbZzvSIQ1Lomj3MvTjdBZpK27SU1BxVkGKT1Pj14558OycnZ3y4i6D5
+	 +A72Lxa6F0spImP76b+ZE4aSkx4grzlYyU4KRR3s3Z3eBH5yL35g9U2lTAkSG++eBhg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786623412;
-	h=DKIM-Signature:Message-ID:From:To:Subject:Date;
-	bh=k5zvfZsC+Cij2kUSiqT9eUQe/23ZE1Xn25VyZSDp3+I=;
-	b=gcyyiZyWt54wrRvymanE+Sff0rOpM0Yw+wvG93RlxTdug1T2DiKgfHnvWs5R51Z1dJJD
-	 BYZGYa3HOqXkAcFqgdUNgYmbqHrHUbsxgi3amW+3dIVS4SiZN8j4DBjl40oBL2/snex9U
-	 pfyJxo/y0lX52LOCwCsCcL/h06AdsaDelFEXEXy9JfuhuL4+K34YmXlTgkC7MZI7FrKjN
-	 eoUw0CHOoWIg/UmOiXpIutOa8SfmhFNhLt62sJuZaunGd3lWvLxqiRRDH/+fPQtGDFiHu
-	 BX7/xJokuEWTs4nvl0gm2Msgl5ujZrqurkwOqlZIceYFDfcem7vmNUAusgu3aor3BsQ==
+	c=relaxed/simple; t=1786631728;
+	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
+	 Message-ID:From:To:Subject:MIME-Version;
+	bh=Ypo2/dLzzXsHjDcz9+fXpGjuNXOywvAxBq4MKB4liv0=;
+	b=gcO/wCa8KixRvi+X/wY3N06dIdn0IkAZbeJr03n+V9/MhqyhA6VqwCmY2Dvl9PKExFpM
+	 rjzWZ7KqJwPGpyH1ZIGyLzmNUhXMcZId3SfvLVOsI3ZZhsFdJyuu+xVNvIPEE3aMZgxof
+	 iIjcjlWEWK+QF1VfEqBpayIxUXY3zE4GxgwK8GAbVHedIKQ75zNN1KwlwQMXyE+Afl5ck
+	 6G/90iQL5v73SWvTWL487delR9WeCVFbpNmSSOUUMCG7RXMOAVAEZ/VrFuyjVfShEdFEj
+	 BBBKiJASi1eb9YSxiF1BNXi5Uvs79hj7UQ60JxxfV4YVIK+IL0mTTP94Y+x4uzFhRfw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=ZPSG0YuH;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=fFjc9FNP;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=zEtMhMks;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=shIFDITu;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=MTXq7YX2;
+	arc=none smtp.remote-ip=195.135.223.131
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id E8437F80027
-	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2026 14:16:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8437F80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id C93AAF80027
+	for <alsa-devel@alsa-project.org>; Thu, 13 Aug 2026 16:35:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C93AAF80027
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=ZPSG0YuH
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with UTF8SMTP id 7EC61408C3;
-	Thu, 13 Aug 2026 12:16:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id DD2111F000E9;
-	Thu, 13 Aug 2026 12:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786623407;
-	bh=45kXvKtQQ5XTETNTNQNm84pGKH83GWFBXmxLHufnGKY=;
-	h=From:To:Cc:Subject:Date;
-	b=ZPSG0YuHCFUsfGp2KvKgoEPIAIRuced3Xf9x0+eq7qzZZDKaiMKEnlVgHhS0JB2lF
-	 SQy9DBkqeNF/qzwEQHNJO2n6j1VPKBITq2HoZ+uE72+7xqzAFxirFyvDu0myTgp5yR
-	 IvjYlB1jxjfR+4Be+IDl/gwxecV07vJF/o1y//PKJjCFWC9O02n1VjJH5TuMLnEcZm
-	 98zmS+w1GD6DpRdQfq4v2F9zPfMP0pBRwmI66AqQyXrrEEQGpAyFTbXquPL4jrmDQ2
-	 6zMcTG+/IW5dnw6eVae3Y70ejI2piIHLE0A2WVpcr3muYrpXiIK+rrWc2bfHpYA+by
-	 reBH87fdD55/A==
-Message-ID: <317e8543ff401f09ccc2e93c8cd70e71@kernel.org>
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-sound@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v7.2-rc7
-Date: Thu, 13 Aug 2026 13:16:39 +0100
-Message-ID-Hash: RH43CDVXC36ZUWDFOD5OSYSSBBKQFUJM
-X-Message-ID-Hash: RH43CDVXC36ZUWDFOD5OSYSSBBKQFUJM
-X-MailFrom: broonie@kernel.org
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=fFjc9FNP;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=zEtMhMks;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=shIFDITu;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=MTXq7YX2
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 99E553E9E;
+	Thu, 13 Aug 2026 14:35:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1786631722;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NWu/dWef1OuXSDDyi7cWIti5FAb3GEsFodPyL0XiCeI=;
+	b=fFjc9FNP57aC2Z5vZ6O9P71nl1TCC3ZhTwx/l/Py0Uzq1ZX8FlvNI4WsBJe6lZIKP9fzFy
+	3/13I5LyYZKQGBGw4vathurbgSZfoRGkxOfzEvfwJy40HL602iRMUVu113LzyrrRTqyxZg
+	AoKLEAejpFG3t/QDJ8LtcFlUcslfwlg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1786631722;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NWu/dWef1OuXSDDyi7cWIti5FAb3GEsFodPyL0XiCeI=;
+	b=zEtMhMksx3+87mcygZ6tWrnSfSra++Oz8fyKMx94IEN4kT5MI+yPqsrM9xMxlWo7YCO2YH
+	DcTL8lg7KnicG5BA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1786631718;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NWu/dWef1OuXSDDyi7cWIti5FAb3GEsFodPyL0XiCeI=;
+	b=shIFDITuXHQ2hVgnjX/Kof2w7NVEXCsA1Pgmv2dkdnbVRdHrpjHFc+/Pd1ZpSGiFFBjpqw
+	F10Y2XaFBkvHa/IhpRmo/bJYBZP7POjNebUiyIsz9mqD51nH8JtdrtAs9MsBj8UCFEjbtH
+	rC7dHWFosFr9xFsQ7qwNzHzQkomwGVQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1786631718;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NWu/dWef1OuXSDDyi7cWIti5FAb3GEsFodPyL0XiCeI=;
+	b=MTXq7YX2VCtCg3W7J87WKwk5QQhq37tHajxG+ZOlaX3i00W7Z8qVcoY8s366VfYHg7QIGh
+	lrXJzG31usxTaeDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CF2B77E7C;
+	Thu, 13 Aug 2026 14:35:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uQJVGSbWfWqgSQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 13 Aug 2026 14:35:18 +0000
+Date: Thu, 13 Aug 2026 16:35:18 +0200
+Message-ID: <87cxvmxf4p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC fixes for v7.2-rc7
+In-Reply-To: <317e8543ff401f09ccc2e93c8cd70e71@kernel.org>
+References: <317e8543ff401f09ccc2e93c8cd70e71@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,alsa-project.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
+Message-ID-Hash: QW6T6T2QCQ5HHGCIGHQO2W4YFI2UYI23
+X-Message-ID-Hash: QW6T6T2QCQ5HHGCIGHQO2W4YFI2UYI23
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -95,7 +177,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RH43CDVXC36ZUWDFOD5OSYSSBBKQFUJM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QW6T6T2QCQ5HHGCIGHQO2W4YFI2UYI23/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,61 +186,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit db2ddb87143519e20a95aa36c60b36107b736a58:
+On Thu, 13 Aug 2026 14:16:39 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit db2ddb87143519e20a95aa36c60b36107b736a58:
+> 
+>   Linux 7.2-rc7 (2026-08-09 14:54:50 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.2-rc7
+> 
+> for you to fetch changes up to 079e27f52b929b554b90514b081ea40b3d632a25:
+> 
+>   ASoC: Intel: NVL: Add entry for HDMI-In capture support to non-I2S codec boards. (2026-08-11 17:14:15 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v7.2
+> 
+> This set of fixes is bulked out quite a bit by the inclusion of a lot of
+> quirks for various x86 platforms, though there are a few driver specific
+> fixes in here too.  Nothing here is terribly critical, we should be fine
+> waiting for the merge window if it's too much.
 
-  Linux 7.2-rc7 (2026-08-09 14:54:50 -0700)
+Pulled now.  Thanks.
 
-are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v7.2-rc7
-
-for you to fetch changes up to 079e27f52b929b554b90514b081ea40b3d632a25:
-
-  ASoC: Intel: NVL: Add entry for HDMI-In capture support to non-I2S codec boards. (2026-08-11 17:14:15 +0100)
-
-----------------------------------------------------------------
-ASoC: Fixes for v7.2
-
-This set of fixes is bulked out quite a bit by the inclusion of a lot of
-quirks for various x86 platforms, though there are a few driver specific
-fixes in here too.  Nothing here is terribly critical, we should be fine
-waiting for the merge window if it's too much.
-
-----------------------------------------------------------------
-Balamurugan C (3):
-      ASoC: Intel: soc-acpi: Add entry for HDMI_In capture support in NVL match table
-      ASoC: Intel: sof_rt5682: Add HDMI-In capture with rt5682 support for NVL.
-      ASoC: Intel: NVL: Add entry for HDMI-In capture support to non-I2S codec boards.
-
-Lin Xianglin (1):
-      ASoC: amd: yc: Add DMI quirk for HyperX OMEN Gaming Laptop 16-ap1xxx
-
-Mark Brown (1):
-      ASoC: Intel: Add HDMI-In capture match table for NVL
-
-Niranjan H Y (1):
-      ASoC: tac5xx2-sdw: select REGMAP_SOUNDWIRE_MBQ
-
-Rosen Penev (1):
-      ASoC: xilinx: formatter_pcm: pass aud_drv_data to irq handlers
-
-Rudi Heitbaum (1):
-      ASoC: rt5645: Perform the initial jack detect at probe
-
-Sergey Lebedev (1):
-      ASoC: rt1320: run the initialisation preset on the first hardware init
-
-Shenghao Ding (1):
-      ASoC: tas2781: fix clang build error for goto bypassing cleanup variable
-
- sound/soc/amd/yc/acp6x-mach.c                     |  7 +++++++
- sound/soc/codecs/Kconfig                          |  1 +
- sound/soc/codecs/rt1320-sdw.c                     |  2 +-
- sound/soc/codecs/rt5645.c                         |  4 ++++
- sound/soc/codecs/tas2781-i2c.c                    | 18 ++++++++--------
- sound/soc/intel/boards/sof_es8336.c               | 10 +++++++++
- sound/soc/intel/boards/sof_rt5682.c               |  7 +++++++
- sound/soc/intel/boards/sof_ssp_amp.c              |  6 ++++++
- sound/soc/intel/common/soc-acpi-intel-nvl-match.c | 25 +++++++++++++++++++++++
- sound/soc/xilinx/xlnx_formatter_pcm.c             | 10 ++++-----
- 10 files changed, 74 insertions(+), 16 deletions(-)
+Takashi
