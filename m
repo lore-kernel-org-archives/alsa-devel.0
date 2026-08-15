@@ -4,166 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CF63C5DF70
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2026 16:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E74A0C5DF70
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2026 17:00:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83D0E6024F;
-	Mon, 17 Aug 2026 18:59:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83D0E6024F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E31F60270;
+	Mon, 17 Aug 2026 18:59:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E31F60270
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786985956;
-	bh=iY48B6yIGmMWq2phMMQLEwrXIhbxvRbfTHOigLv51HA=;
-	h=From:In-Reply-To:References:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=P7RdkCrr0E/OoST65SDuDDKQEwirKx0bXqhrUGe+bMqMHx6+vFWa9GLAE2x9t+zTq
-	 Mp8M2KL4vvDWR3b73nbyFBYK4EI1TuBsI3ph1AI1gudwHGBEdQbDzUFlte3ekbSOk+
-	 ip2wZwDyyTLBKLoD1DGCjZvos+2h9yTVAcWLEk74=
+	s=default; t=1786986002;
+	bh=Deg1ghCZlLPGzu0Iu95rYV41SSlMzh7dmYtuVO4ri0k=;
+	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=q/JFQjTzjJrGPn/HqaMfQwtGlO59AHjD465h62TeYo8fzOI8qLGvuxSgZmnzJjyDg
+	 Hk6tnY390mbgcv+V3r0JFmQtpBEenK6dm1dGW2F84eLMjiksBHgipCkLX07YC4hqJH
+	 NNYl5L8/lsbUehhCtCDH0U/WValERzwdFcsbzbs4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F02FAF80693; Mon, 17 Aug 2026 18:58:07 +0200 (CEST)
+	id 3F961F805F4; Mon, 17 Aug 2026 18:59:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 552BFF80694;
-	Mon, 17 Aug 2026 18:58:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC7C5F80601;
+	Mon, 17 Aug 2026 18:59:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5BA9FF802BE; Sat, 15 Aug 2026 23:49:50 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.51
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1786830588;
-	b=jlRyckF5bEve6QiRqcAe9NL2ON1za3Xz7YBHgNKVNWv8wIKi67Zwzk7oNwK33UWbOBKW
-	 blnJmR3qqFkzeV4b2nAPckQlfw9y/Pp6wCkAQKDFxgukDWxB4BqhxI3Sh4KYqfhLytaxx
-	 AcxLkjIGv/6GO00v+ZX1zSH+6HpvdmkQOvqE4bfj6QhRZZMtJP6i9DGKWAbBhPOxSneqt
-	 lJXhIw8aTbrNfvvaKdAQ+o6Ehf2uOw5aqzdh73WO72AS5rTtlCTQ/zcmXKjMCYh2t8p97
-	 wYc09cmw8uduDcuFoUcjqCYKrOHymCuVrvjqRYJXm0RLQbGIwrua9KdMzwTK/lhXMhw==
-ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786830588;
-	h=DKIM-Signature:From:MIME-Version:Date:Message-ID:Subject:To;
-	bh=N+WRXIhPUlKUu+SHdjrtwe6h6JGKi0HIRB3pUT49APY=;
-	b=r9YXeYIyhfiAZiEeIKjz/R3ilUHbig8eGaKhYk3HaDxGrBEDKrwwnz9yBfd2okO47o96
-	 sLZ8t0tNUX7rIXVk7VMlSD37JdNNRbwAx/jORMlHqCrYLhN11zVprLkRsmYhmHltUCq7f
-	 guX0oPd9Xiuo8WY1HfIR2IR0J4nrZxAQlMTfGll1VTm19lwtyFtWKJxFhrrxHSrjkF/wm
-	 d1Hi0Cx868dlBzdSUxmIhlspRHQaQhnAe0G7D/u0qoU5QmSdzQfe/CMMU0vBAjlbHI9SP
-	 OAqcinI6qfTSYRKJ9LGUKpHnN7iFmBn7thcU8Gsr65xHPyUW/LQR1/XR7sgkz7Ma6NQ==
-ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=VZOOTBgo;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.51
-Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com
- [74.125.224.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 56055F802BE; Sat, 15 Aug 2026 19:47:15 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=109.224.244.24
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786816032;
+	b=aab57R4aaRyyXb6bfMtew7EwSobmeCOmrA4EEBxI30g1iRbb9R9h2Tio1tOZfwlG7Omf
+	 1KIvZmy56zz+ZSghnmTaAsdlh93YYPvfXNAxMJkbAVAq6GkNKQwMs4hwD9tEQW9HBZFvW
+	 2QuZJoH7MYTR8IamhWDuJJO5oNCWc8vyhk5STs3O/XiyxLfL9q3HhtCxjtnW3daguZ6fR
+	 SRUPTgie/HXj4wH2T3a50vIx+A/ndJdggZo45Q3d10LkmfGEXuQ6+VC3TBIksexy1blDE
+	 xlZBvHwdU1s68VpLpJwfb8VvNQNIrnP1Cw/1R46n9fptmyO1lTWWNGink6grsUJakhw==
+ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1786816032;
+	h=DKIM-Signature:Date:To:From:Subject:Message-ID:MIME-Version;
+	bh=Lv9l4whlDQkW/vvpS7HTdoqKMBpuM5JUJHN3YvUYBXI=;
+	b=YYkvOja7BRPF4C+wb8+p3a4ss3aXTs4qEq0V12qfXUqS8AOMI51W7qum+am3W7b034/J
+	 +8Ztshyte43tTmbyUC0g8mqBtMbxDbH/yGehcEyxQg1WEL/hOJp+1B1oYraqqqbzaU9ie
+	 XiZlMMWypkqwwBXwiwJ0uJ/NF2kmQf1cNKSRnScOMZf6SlfKVRHMM41/lxx+cdDVmXbI8
+	 5t/5FusXK+35PYEsbss7XOTnn9Prdmx+R2Uf+Cxxabo5hO0w15Y5gulVwjNPYFEF55knq
+	 9nXV3ltMKOfqxM57SG+CWM0sqRGkUBrdpVmyiK+v712Z6MGWV1AllSGCPnq/ywsd/bw==
+ARC-Authentication-Results: i=1; alsa1.perex.cz;
+ dkim=pass header.d=proton.me header.i=@proton.me header.a=rsa-sha256
+ header.s=62y5d477wbfulaiit7utn24q4y.protonmail header.b=VqSKFaWh;
+	arc=none smtp.remote-ip=109.224.244.24
+Received: from mail-24424.protonmail.ch (mail-24424.protonmail.ch
+ [109.224.244.24])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5291CF800C1
-	for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2026 23:49:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5291CF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id B3EA0F800C1
+	for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2026 19:47:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3EA0F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20251104 header.b=VZOOTBgo
-Received: by mail-yx1-f51.google.com with SMTP id
- 956f58d0204a3-66c70f05859so3393094d50.1
-        for <alsa-devel@alsa-project.org>;
- Sat, 15 Aug 2026 14:49:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1786830585; cv=none;
-        d=google.com; s=arc-20260327;
-        b=gFLdpo3EvwZsjZeUV3eunqEM6jndOA/zD5nLgDPfs16vWtAwk4zlRbx7/lZmM2vp9j
-         +xltpUzFVwdWkDy688/61UoSm6MAxp/3r4cJ155AU+7paFy2kCYAG/uYUAWILAGNO797
-         H+yyE0QD355H9HwP3thz/MfoTjNpFqJudTV2uA9abUft8dhBMZgwFhhNI+4ydZ/JO0SH
-         tOiZKmRrezy7G0d9VgCSpLrwpFTuWAn4ORlKkdHlN+nU6u6RvAiL+GlXd7hfsxlXQPKw
-         d5taeHQmXMDdgn+woSjeNFw/bb0z2PRb9RI9XFJV9ThZhBHmBW39F4EMCVfax1O9kxnY
-         u0xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20260327;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:dkim-signature;
-        bh=0BiwD8sPUqgXhAkIy+YMgazrRCdFHB5CWVQZDyDO1H8=;
-        fh=1pSQP2iqoMBKp2TqnTlMe/WRCBxhNKATpMBFYotYgrs=;
-        b=jAMlHWxtNPhjZyf1wDNj8Z4DVqLwWg5Mz6qwJ5Qeu2NDcIY7br2uoSbLUidp3bWAuf
-         YOsRwDnWnOPWj34RyXmxldEJCCCodQO4/fA1ljpnxITTUk2bl70tOfKq5zreupt0uLrx
-         PD5qqGu1dwmH6aqIyUA+ENjGLeNjkm/cy/D7J9+ghx47N6EACSTmGSwE3B2HMTi1NLzR
-         //FWet6jBV+kEsZF5ZI0e4o9aqIDqlowqFK9rW0zs6OoVsxMUInxzJUL0AkfMeHJvAyi
-         Vxr8dlPy56tfanh0Zuc1CoprQnRO40d8JMKF8HqgIxMSty5CTe1crfNiEhXASXaUUnad
-         2ysQ==;
-        darn=alsa-project.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786830585; x=1787435385;
- darn=alsa-project.org;
-        h=content-type:cc:to:subject:message-id:date:mime-version:references
-         :in-reply-to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=0BiwD8sPUqgXhAkIy+YMgazrRCdFHB5CWVQZDyDO1H8=;
-        b=VZOOTBgoFNcNc69Vwvco1wMu3BMpb4y6IjhDEmyIK+ZpSUxPYE03zklgxzYwtDMEfD
-         WsA5tiv0lCC1/C6Ag3T4iNamFh8wjyOykw/mvsDoGymDniusK3MBCu0x0lrUxCwWr1tG
-         KSikvK0u8XPtvDYE4GLgblZOkE7IxNtMAUIZpntsMP/86bQwcAN0mwYe7LvVGV17OcHS
-         r16VZ3kq3aTPBQfIqjZLEmOTCtyS9mLkyQm7bJWFmBHB7ORtwyHSC3z+NRiBzw2WsocP
-         kemCpmH0mBLpIYJdyTD82YlWV7/frgLY6p97JVtNrG56gtqDdSZDEzmlOSh6y25Ymcdb
-         n6XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786830585; x=1787435385;
-        h=content-type:cc:to:subject:message-id:date:mime-version:references
-         :in-reply-to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=0BiwD8sPUqgXhAkIy+YMgazrRCdFHB5CWVQZDyDO1H8=;
-        b=Y8JKCraJTDB3BNx0t+ltmM77Aq4SaszPfW4Tp8JKDP5ctB2W/sx/CqemfH+pOV+Jwj
-         DwW2YsLmxx3SOE7MIyW9yshplJz8hyET9RPPnBZG4zC/1At2ceX0QE6YYTrInS5ZzeuK
-         fc6AFlokKnjI7e66ucIXFWxG4Rz0Q5vDAmr/s6P1Hl4lx9QRIbXgsiKbNnej1opDx90M
-         2dDo6unIRbnCavEf/32LyYkdr4/SxfEXpSOZLLgSeMGmRfelMUbJwNWYu55xMiWrqqhG
-         ngQ5wLb4dDg85iVmAshrIQmUjddiYWVtNyH19a3LSoP7cFfYLtUqW1fCYfDn8eTanaLF
-         wHAQ==
-X-Forwarded-Encrypted: i=1;
- AHgh+RoLgnLBe98WRx+N3LCwjziu/K1egglNHUdwkMIp3PmmhtuhQFlcXWJnQfjiBqLN5jw4HCmFqkurkB0H@alsa-project.org
-X-Gm-Message-State: AOJu0YyiVyMJguF0xcD48gcqdGoWdBV5tTpjc5s8OhP0BSkIjmVCDlbG
-	orHYCuH6e9Ms1cfoDG4tYIGK95tc/We8n7/V6GrVeA4SnOvvL6RQrXgHiJ5J/YkXlm3g9+afdGc
-	mPM0H9AGX+ZulLTIutHtGlb+W32J1MEw=
-X-Gm-Gg: AR+sD11FTgPBvfeve6isXwhKgnsAfxpqIIQVQm88ETbfIefv3vzQyACPmV3l52wCGQH
-	58xHHql22FPG8TT+PecxnDL4EPtLWQ5QPDvQ7WHSOqyQgkquU/a3LOt0Bln8oCy0vHnbLoytSsf
-	OJZ+CRnJV0/PJaNaXJN85RVJSG84xyNoqAjxJsm5kIkRT/CukIFNM/29795REp2JOX701C5dZsm
-	kSSHECTa3I3j7X3BVQCsZyhBFiwA9DB18kvxihb+VtmFYLQhX8/7qAUX876nXVzcHrYq/k6L660
-	QI1+T/MHisgPbggMn955G2UQkaArITJ1zII+LG5vXgWj2YzYwNgbd+tMZ4pBtJ3f1/C9bd2Nu6O
-	dgQqqAZWy8Y8IhLoFmmVyWZ9rQF0LhZIrEQ==
-X-Received: by 2002:a05:690e:1919:b0:667:b503:4d2c with SMTP id
- 956f58d0204a3-66c72c7b4c7mr6047858d50.34.1786830585153; Sat, 15 Aug 2026
- 14:49:45 -0700 (PDT)
-Received: from 595171893313 named unknown by gmailapi.google.com with
- HTTPREST; Sat, 15 Aug 2026 16:49:44 -0500
-Received: from 595171893313 named unknown by gmailapi.google.com with
- HTTPREST; Sat, 15 Aug 2026 16:49:44 -0500
-From: Gemayel Lira <gemayellira@gmail.com>
-In-Reply-To: 
- <CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
-References: 
- <CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
-MIME-Version: 1.0
-Date: Sat, 15 Aug 2026 16:49:44 -0500
-X-Gm-Features: AcwNN1Vh1UXUffNE20WOQlk8rrHfVo8m9exbmMInY5AKJlHtitvNy9tQg65hqjE
+ unprotected) header.d=proton.me header.i=@proton.me header.a=rsa-sha256
+ header.s=62y5d477wbfulaiit7utn24q4y.protonmail header.b=VqSKFaWh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=62y5d477wbfulaiit7utn24q4y.protonmail; t=1786816030; x=1787075230;
+	bh=Lv9l4whlDQkW/vvpS7HTdoqKMBpuM5JUJHN3YvUYBXI=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=VqSKFaWhXZmt8yDhJDROhyqg1MVSju4WZG5IA7O3byXKm9k2l4NQ6IHoqhxadtfND
+	 AcuCZGJxmJ4/fbXzy+KADUv0qbIVBcZhTjuhP2nQFQzdwToC1ywH6wH9qaajq6OtIY
+	 QPuKkPqS+BvrhIJ7VWEzWv4o5IJfmx2BGDa2rKWp5+hvLcmXdeOeRvDFf6Wvr5UZKu
+	 gQfGTt/XAto+JjU14FidFSqMYh6WXLQYPm2HrYpwHC9LbdCrz7eXz+HxCjs1SewKxz
+	 lJK7IYtoH6lRGueve+sgEzkfhGrsCRElKF4GJxOsoZ6w2QXObl0r2PFFv3SXHopysh
+	 Zp8YWSeZeQipA==
+Date: Sat, 15 Aug 2026 17:47:06 +0000
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Walther White <Lightning1111111@proton.me>
+Subject: LINUX AUDIO FIX FOR HUAWEI AMD LAPTOPS
 Message-ID: 
- <CAD96ZTJzEwiNwJm4ujLS4+X_KChi4+_sD0j-m+aE+_9i+eUGcA@mail.gmail.com>
-Subject: [PATCH v2] ALSA: hda: cs35l41: Enable VSPK on UX3405CA when ACPI
- leaves GPIO1 unused
-To: linux-sound@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
- alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
-X-MailFrom: gemayellira@gmail.com
+ <3pZ5MOlm5zlq8xTJrCBs8rDuBniv3lHY1MgF9oAmFstfU7-lFF_j8fo-ZvLhxBaSkFEBp_FyrLZ8LLozvL4tsUZEBrgDrs_EZbQxMBImzIo=@proton.me>
+Feedback-ID: 115794472:user:proton
+X-Pm-Message-ID: 7080da4df292f3261adc2b4b342ef7c160f25427
+MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg=pgp-sha512;
+ boundary="------8334e09ddeabe8615d7c5758341d610dfab660e677a31bae335887a636db54e3";
+ charset=utf-8
+X-MailFrom: Lightning1111111@proton.me
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: 4VRHBSGOSTJMAUIR4TJXEWJO3R7IZDJE
-X-Message-ID-Hash: 4VRHBSGOSTJMAUIR4TJXEWJO3R7IZDJE
-X-Mailman-Approved-At: Mon, 17 Aug 2026 16:58:01 +0000
+Message-ID-Hash: PN5CAT4MD2UT7CPQ4WPUS4RHS67PMLBQ
+X-Message-ID-Hash: PN5CAT4MD2UT7CPQ4WPUS4RHS67PMLBQ
+X-Mailman-Approved-At: Mon, 17 Aug 2026 16:59:24 +0000
+X-Content-Filtered-By: Mailman/MimeDel 3.3.10
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VRHBSGOSTJMAUIR4TJXEWJO3R7IZDJE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PN5CAT4MD2UT7CPQ4WPUS4RHS67PMLBQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -172,98 +108,502 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-v1 mapped 10431A63 to generic_dsd_config and INTERNAL boost. Stefan Binding
-rejected that: this laptop is external boost, and overriding the ACPI _DSD
-as internal can damage the amplifiers. Takashi agreed not to take v1.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------8334e09ddeabe8615d7c5758341d610dfab660e677a31bae335887a636db54e3
+Content-Type: multipart/mixed;boundary=---------------------a2cab561395e0ebf8d604d4cc3983542
 
-v1 also loaded fallback firmware (SPKID: -19). After some S3 resumes the
-right amp failed with PM resume -110, then SPI -16 (EBUSY) until reboot.
+-----------------------a2cab561395e0ebf8d604d4cc3983542
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
 
-This v2 keeps Binding's missing_speaker_id_gpio2 parse of the existing
-_DSD (external boost, shared reset, gpio2 = IRQ, speaker-id at CRS index
-2). ACPI sets cirrus,gpio1-func to VSPK (1) on the left amp and unused (0)
-on the right, so the right channel binds with VSPK: 0 and volume drops
-about one second after playback. After parse_acpi, enable VSPK on GPIO1
-only when ACPI left it unused. Boost type is unchanged.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3DLINUX AUDIO FIX FOR HUAWEI AMD LAPTOPS
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
 
-Tested: ASUS Zenbook 14 UX3405CA, Ubuntu kernel 7.0.0-27-generic.
-Both amps: VSPK: 1, SPKID: 1, firmware
-spk-prot-10431a63-spkid1-{l,r}0.bin. One S3 (deep): both amps reloaded
-firmware, no -110/-16.
+Author: Linux Community / Michael Lorentz
+Date: July 2026
+Hardware: Huawei MateBook with AMD Ryzen processor (CX11970 audio codec)
+System: Linux Mint / Ubuntu / Other distributions with PipeWire
 
-ACPI _DSD (SSDT SPKRAMPS), excerpt:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP-BY-STEP SOLUTION
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
 
-  cirrus,gpio1-func:  1, 0
-  cirrus,gpio2-func:  2, 2
-  cirrus,boost-type:  1, 1
-  reset-gpios:        shared CRS index 1
-  spk-id-gpios:       missing (CRS index 2)
+PROBLEM DESCRIPTION:
+Audio on built-in laptop speakers does NOT work.
+Audio on headphones connected to the mini-jack DOES work.
 
-dmesg after this quirk:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 1: CHECK AUDIO DEVICE STATUS
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
 
-  CS35L41 Bound - SSID: 10431A63, BST: 1, VSPK: 1, CH: L, FW EN: 1, SPKID: 1
-  CS35L41 Bound - SSID: 10431A63, BST: 1, VSPK: 1, CH: R, FW EN: 1, SPKID: 1
+Open a terminal and run:
 
-v1: https://lore.kernel.org/linux-sound/CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com/
+$ pactl list short sinks
 
->From c325bb06bb37fd658f0250dc8571b5bb6b2c7dbf Mon Sep 17 00:00:00 2001
-From: Gemayel Lira <gemayellira@gmail.com>
-Date: Sat, 15 Aug 2026 17:16:18 -0300
-Subject: [PATCH v2] ALSA: hda: cs35l41: Enable VSPK on UX3405CA when ACPI leaves
- GPIO1 unused
+If you see "SUSPENDED" status for the speaker device, this confirms the pr=
+oblem.
 
-The ASUS Zenbook 14 UX3405CA (SSID 1043:1A63) already has a valid _DSD
-and uses missing_speaker_id_gpio2. ACPI sets cirrus,gpio1-func to VSPK
-on the left amplifier and unused on the right, so the right channel
-binds with VSPK: 0 and volume drops shortly after playback starts.
+Check if the sound card is detected:
 
-After parsing ACPI, enable VSPK on GPIO1 when it was left unused.
+$ aplay -l
 
-Signed-off-by: Gemayel Lira <gemayellira@gmail.com>
+You should see a card with the CX11970 codec (or similar).
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 2: IMMEDIATE AUDIO RESTORATION (QUICKEST METHOD)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+Perform a full system restart:
+
+$ sudo reboot
+
+After restart, speaker audio should be restored.
+
+NOTE: If this doesn't work, proceed to Step 3.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 3: MANUAL FIX (IF RESTART DID NOT HELP)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+Run the following commands in the given order:
+
+$ sudo alsactl init
+$ sudo alsactl store
+$ systemctl --user restart pipewire pipewire-pulse
+$ pactl set-default-sink alsa_output.pci-0000_02_00.6.analog-stereo
+$ pactl set-sink-volume alsa_output.pci-0000_02_00.6.analog-stereo 80%
+
+Test if audio works:
+
+$ speaker-test -t wav -c 2
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 4: CHECK IF SPEAKERS ARE MUTED IN ALSA MIXER
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+$ alsamixer
+
+Press F6 and select your sound card (Generic_1 or CX11970).
+
+Check these channels:
+- Master
+- PCM
+- Speaker
+- Headphone
+
+If any shows "MM" (muted), press M on the keyboard to unmute.
+Use the arrow keys to set volume to approximately 80%.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 5: AUTOMATIC STARTUP SCRIPT
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+To automate the fix at every system startup, create a script:
+
+$ mkdir -p ~/bin
+$ nano ~/bin/fix-audio.sh
+
+Paste the following content:
+--------------------------------------------------------------------------=
 ---
-Changes in v2:
-- Do not map 10431A63 to generic_dsd_config / INTERNAL boost. Stefan
-  Binding rejected v1: this laptop is external boost, and that override
-  can damage the amplifiers.
-- Keep missing_speaker_id_gpio2 and enable VSPK only when ACPI left
-  GPIO1 unused. Boost type is unchanged.
-- v1 loaded fallback firmware (SPKID: -19) and, after some S3 resumes,
-  hit PM -110 then SPI -16 (EBUSY) on the right amp. This v2 binds
-  SPKID: 1 and official spk-prot-10431a63 firmware.
+#!/bin/bash
+# Audio fix script for Huawei AMD
 
-v1: Message-ID:
-<CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
+sleep 30
 
- .../hda/codecs/side-codecs/cs35l41_hda_property.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+# Reset ALSA
+sudo alsactl init 2>/dev/null
 
-diff --git a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
-b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
-index 416d7bf..0c09094 100644
---- a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
-+++ b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
-@@ -450,7 +450,20 @@ static int missing_speaker_id_gpio2(struct
-cs35l41_hda *cs35l41, struct device *
- 		return ret;
- 	}
+# Restart PipeWire
+systemctl --user restart pipewire pipewire-pulse 2>/dev/null
 
--	return cs35l41_hda_parse_acpi(cs35l41, physdev, id);
-+	ret = cs35l41_hda_parse_acpi(cs35l41, physdev, id);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * ACPI on 10431A63 sets gpio1 to VSPK on the left amp and unused
-+	 * on the right, so the right channel binds with VSPK: 0.
-+	 */
-+	if (cs35l41->hw_cfg.gpio1.func == CS35L41_NOT_USED) {
-+		cs35l41->hw_cfg.gpio1.func = CS35l41_VSPK_SWITCH;
-+		cs35l41->hw_cfg.gpio1.valid = true;
-+	}
-+
-+	return 0;
- }
+# Force speaker output
+pactl set-card-profile alsa_card.pci-0000_02_00.6 output:analog-stereo+inp=
+ut:analog-stereo 2>/dev/null
+pactl set-default-sink alsa_output.pci-0000_02_00.6.analog-stereo 2>/dev/n=
+ull
+pactl set-sink-volume alsa_output.pci-0000_02_00.6.analog-stereo 80% 2>/de=
+v/null
+pactl set-sink-mute alsa_output.pci-0000_02_00.6.analog-stereo 0 2>/dev/nu=
+ll
 
- struct cs35l41_prop_model {
--- 
-2.53.0
+echo "$(date) - Audio fixed" >> /tmp/fix-audio.log
+--------------------------------------------------------------------------=
+---
+
+$ chmod +x ~/bin/fix-audio.sh
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 6: ADD SCRIPT TO AUTOSTART
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+$ nano ~/.config/autostart/fix-audio.desktop
+
+Paste (replace [USER] with your username):
+--------------------------------------------------------------------------=
+---
+[Desktop Entry]
+Type=3DApplication
+Name=3DFix Audio
+Exec=3D/home/[USER]/bin/fix-audio.sh
+Icon=3Daudio-card
+X-GNOME-Autostart-enabled=3Dtrue
+--------------------------------------------------------------------------=
+---
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 7: ALLOW SUDO WITHOUT PASSWORD (OPTIONAL)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+To allow the script to run without asking for a password:
+
+$ sudo visudo -f /etc/sudoers.d/fix-audio
+
+Add (replace [USER] with your username):
+--------------------------------------------------------------------------=
+---
+[USER] ALL=3D(ALL) NOPASSWD: /home/[USER]/bin/fix-audio.sh
+--------------------------------------------------------------------------=
+---
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 8: DESKTOP SHORTCUT FOR QUICK FIX
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+Create a desktop shortcut to fix audio with one click:
+
+$ nano ~/Desktop/Fix-Audio.desktop
+
+Paste:
+--------------------------------------------------------------------------=
+---
+[Desktop Entry]
+Type=3DApplication
+Name=3DFix Audio
+Exec=3Dgnome-terminal -- bash -c "sudo alsactl init; systemctl --user rest=
+art pipewire pipewire-pulse; pactl set-default-sink alsa_output.pci-0000_0=
+2_00.6.analog-stereo; pactl set-sink-volume alsa_output.pci-0000_02_00.6.a=
+nalog-stereo 80%; echo 'Audio fixed!'; read -p 'Press Enter'"
+Icon=3Daudio-card
+Terminal=3Dtrue
+--------------------------------------------------------------------------=
+---
+
+$ chmod +x ~/Desktop/Fix-Audio.desktop
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 9: RESET PIPEWIRE CONFIGURATION (IF OTHER METHODS FAIL)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+If none of the above methods work, perform a full PipeWire reset:
+
+$ systemctl --user stop pipewire pipewire-pulse
+$ rm -rf ~/.config/pipewire
+$ rm -rf ~/.config/pulse
+$ rm -rf ~/.local/state/wireplumber
+$ rm -rf ~/.cache/pipewire
+$ systemctl --user start pipewire pipewire-pulse
+
+Then repeat Step 3.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+STEP 10: INSTALL PAVUCONTROL (GRAPHICAL AUDIO MANAGEMENT TOOL)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+$ sudo apt install pavucontrol
+
+Run:
+$ pavucontrol
+
+Go to the "Output Devices" tab:
+- Find the CX11970 device (or similar)
+- Click the green checkmark (Set as default)
+- In the "Port" dropdown, select "Speaker" instead of "Headphones"
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+DIAGNOSTICS - HOW TO CHECK WHAT'S WRONG
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+Check if the sound card is detected:
+$ aplay -l
+
+Check device status:
+$ pactl list short sinks
+
+Check available ports:
+$ pactl list cards | grep -A 20 "CX11970"
+
+Check kernel logs:
+$ dmesg | grep -i "snd\|audio\|hda"
+
+Check loaded modules:
+$ lsmod | grep snd
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+COMPARING "GOOD" AND "BAD" STATES
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+Save "good" state (when audio works):
+$ sudo cp -r /etc/modprobe.d /tmp/modprobe.d.good
+$ sudo cp -r /etc/modules-load.d /tmp/modules-load.d.good
+$ sudo cp -r /etc/pulse /tmp/pulse-system.good
+$ sudo cp -r /usr/share/pipewire /tmp/pipewire-share.good
+$ lsmod | grep snd > /tmp/snd-modules.good
+
+Save "bad" state (when audio does NOT work):
+$ sudo cp -r /etc/modprobe.d /tmp/modprobe.d.bad
+$ sudo cp -r /etc/modules-load.d /tmp/modules-load.d.bad
+$ sudo cp -r /etc/pulse /tmp/pulse-system.bad
+$ sudo cp -r /usr/share/pipewire /tmp/pipewire-share.bad
+$ lsmod | grep snd > /tmp/snd-modules.bad
+
+Compare states:
+$ diff -r /tmp/modprobe.d.good /tmp/modprobe.d.bad
+$ diff -r /tmp/modules-load.d.good /tmp/modules-load.d.bad
+$ diff -r /tmp/pulse-system.good /tmp/pulse-system.bad
+$ diff -r /tmp/pipewire-share.good /tmp/pipewire-share.bad
+$ diff /tmp/snd-modules.good /tmp/snd-modules.bad
+
+If diff shows no differences - the problem is in hardware registers.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+WHAT DOES NOT WORK - WHAT NOT TO TRY
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+The following solutions have been tested and failed:
+
+| Method | Why It Failed |
+|--------|---------------|
+| Cron @reboot with delay | Runs too early |
+| Systemd service after sound.target | Runs before BIOS state is fully app=
+lied |
+| Disabling suspend in WirePlumber | Does not address hardware register st=
+ate |
+| Blacklisting ACP modules | Does not reset hardware state |
+| Kernel parameters | Cannot override hardware register state |
+| Watchdog scripts | BIOS does not create configuration files |
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+ADDITIONAL INFORMATION - ROOT CAUSE OF THE PROBLEM
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+The problem occurs because BIOS/UEFI during initialization writes the audi=
+o
+controller state to hardware registers. Linux reads this state and applies=
+ it,
+which causes speakers to be marked as "unavailable."
+
+The state is stored in HARDWARE REGISTERS which:
+- Are not accessible via software tools
+- Are only reset during a full POST (Power-On Self-Test)
+- Are not dependent on configuration files
+
+This is why software solutions (scripts, file modifications) cannot fix th=
+e
+problem if the cause is in the hardware registers.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+SUMMARY - MOST EFFECTIVE SOLUTIONS
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+1. SYSTEM RESTART - always restores audio
+=C2=A0 =C2=A0$ sudo reboot
+
+2. MANUAL FIX - when restart doesn't help
+=C2=A0 =C2=A0$ sudo alsactl init
+=C2=A0 =C2=A0$ systemctl --user restart pipewire pipewire-pulse
+=C2=A0 =C2=A0$ pactl set-default-sink alsa_output.pci-0000_02_00.6.analog-=
+stereo
+
+3. STARTUP SCRIPT - automate the fix
+=C2=A0 =C2=A0Create ~/bin/fix-audio.sh and add to autostart
+
+4. DESKTOP SHORTCUT - one-click quick fix
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+IMPORTANT NOTE - THE F12 / F2 BIOS ISSUE
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+During extensive testing, a critical discovery was made regarding how the
+problem is triggered:
+
+| BIOS Entry Method | Effect on Audio |
+|-------------------|-----------------|
+| F12 (boot device selection menu) | =E2=9D=8C Speaker audio STOPS WORKING=
+ |
+| F2 (BIOS configuration / boot order) | =E2=9C=85 Audio remains INTACT |
+
+THIS MEANS:
+- Entering BIOS itself is NOT the problem
+- The problem is the SPECIFIC hardware initialization mechanism used by F1=
+2
+- If you need to change boot settings - use F2, not F12
+
+HOW THIS WORKS:
+1. BIOS/UEFI via F12 initializes the audio controller in a specific mode
+2. This state is written to hardware registers
+3. Linux reads and applies this state
+4. The state causes speakers to be marked as "unavailable"
+5. The system defaults to headphones as output
+
+RECOMMENDATION:
+- Avoid using F12 (boot menu) unless absolutely necessary
+- Use F2 (BIOS configuration) to change boot order
+- If you must use F12, perform a full restart without entering BIOS afterw=
+ard
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+END OF REPORT
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+-----------------------a2cab561395e0ebf8d604d4cc3983542
+Content-Type: application/pgp-keys; filename="publickey - Lightning1111111@proton.me - 0x75214908.asc"; name="publickey - Lightning1111111@proton.me - 0x75214908.asc"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="publickey - Lightning1111111@proton.me - 0x75214908.asc"; name="publickey - Lightning1111111@proton.me - 0x75214908.asc"
+
+LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgp4ak1FWnFYdHFCWUpLd1lCQkFI
+YVJ3OEJBUWRBek9UMFIxNW1Pa3VWYlJUanR1SjhjYjhxZFRwWnR0MDAKU2xpT3N5SmpVMEhOTjB4
+cFoyaDBibWx1WnpFeE1URXhNVEZBY0hKdmRHOXVMbTFsSUR4TWFXZG9kRzVwCmJtY3hNVEV4TVRF
+eFFIQnliM1J2Ymk1dFpUN0NqQVFRRmdvQVBnV0NacVh0cUFRTENRY0lDWkNBSXpqaApjLzM4TEFN
+VkNBb0VGZ0FDQVFJWkFRS2JBd0llQVJZaEJIVWhTUWl0SGRqdnR3WEJsWUFqT09Gei9md3MKQUFB
+SVVRRUFyWWd0Qk1FMVZIa2RXYzNoWXFLUFN0cktEUDViOEFzenNab2JncndTcGVBQS9SVlZZcVh6
+CjE3M1QyRU9aLzBiR09uQWtMQXRhcG9RNUkyT2UwTmVJU3NVT3pqZ0VacVh0cUJJS0t3WUJCQUdY
+VlFFRgpBUUVIUUxKejNCTjF4QkRIbGh2YW00Tk1WVmMwYUsrM3ZzVWtsODhFM0dFUit3NFZBd0VJ
+QjhKNEJCZ1cKQ2dBcUJZSm1wZTJvQ1pDQUl6amhjLzM4TEFLYkRCWWhCSFVoU1FpdEhkanZ0d1hC
+bFlBak9PRnovZndzCkFBQ2VFQUVBMHM5aWFmR2Vqd3hRVllaV0s5RDFDNnB1UGQxTnA3a2w3MkVS
+WVFpZ0dBUUEvME1oMmVGQgpyZ25vM281NklsaDFtbXdDOVFKYTN5WVErbjFRK3pLNC9Zb0MKPUNO
+RUMKLS0tLS1FTkQgUEdQIFBVQkxJQyBLRVkgQkxPQ0stLS0tLQo=
+-----------------------a2cab561395e0ebf8d604d4cc3983542--
+
+--------8334e09ddeabe8615d7c5758341d610dfab660e677a31bae335887a636db54e3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wrsEARYKAG0FgmqApgAJEIAjOOFz/fwsRRQAAAAAABwAIHNhbHRAbm90YXRp
+b25zLm9wZW5wZ3Bqcy5vcmfY86jekqcLRdSJw4w+dN67rXPf6C9a5pTVuEo4
+Z4RBMBYhBHUhSQitHdjvtwXBlYAjOOFz/fwsAAASxQEA2lcCP908WVpzYUe4
+V2b3UMfrTQXdzmxq1ie6A2brmWsBANCRB+FqvvCJtYaKe/DcqjfpzVjhu6ot
+cy1AGx5YBJII
+=kat0
+-----END PGP SIGNATURE-----
+
+
+--------8334e09ddeabe8615d7c5758341d610dfab660e677a31bae335887a636db54e3--
+
