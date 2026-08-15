@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88FDEC5DF6A
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2026 13:25:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F55EC5AD5A
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Aug 2026 13:25:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1D57601EF;
-	Sat, 15 Aug 2026 15:24:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D57601EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFF786023D;
+	Sat, 15 Aug 2026 15:25:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFF786023D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786800302;
+	s=default; t=1786800316;
 	bh=rZciTHOfF5lX28xZf4prEBcGyBVa0HpZ8CdGfPok5PU=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=tcynCzsmNGzKuioxYw89O1dtkVG3ZCmejqqE3Qgn90ZX1ieAwGRLtI/NobH+MmSrS
-	 w0gGMqBjtswMGYxR3uBVet5kJ45AJBD/4y4VINSlHtSN7aHe2xvAEJK/F5W7770OvJ
-	 Kb5kBeCeBSNg+onGnqsZzOV8KuwdxeeZ5VuhH7Eg=
+	b=EW+c9GpRSL4m0rQknh8RBxJGskl43J1AsA5CCqzrGmd/7XXFtoPpCyvsyLUmlwMl+
+	 1W481ykXphpSCSSGlRkKjsWawLrhISqnis/r8+p7mIPprt+4spkb6PVersaqhi0mh3
+	 Dy6JV8cpt/6ArG1LnSTPZkYSSQumlGFcclq9ESfU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E40AF80623; Sat, 15 Aug 2026 15:24:18 +0200 (CEST)
+	id 467B6F805FF; Sat, 15 Aug 2026 15:24:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B011F8061E;
-	Sat, 15 Aug 2026 15:24:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4337F80606;
+	Sat, 15 Aug 2026 15:24:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40EC9F8060D; Sat, 15 Aug 2026 15:24:11 +0200 (CEST)
+	id 0B1BFF805C2; Sat, 15 Aug 2026 15:24:43 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786800247;
-	b=sMWE73SSQrkmffmGXm3UGzePcto0OvR0kLzdBpUyQKYbErjVwn8wZ2cu9i3X2GBB+hyS
-	 OwfRTItHr7wPTxj6MiAeeVoLPETa4BX1qoPh1b/FHQmcv/S7U8CY323agMVoaogNQjygN
-	 MRwY8E5ZYzdaVEylvzPBavKaYQ7ug0rxFBcfrkkCnGm424dO0XXWEWSBWjxN3vHIIttk7
-	 Yw1+i+MVZP0EetqbpeVayMHt/i/bJQbwtivHbfphribY2Ux+3/gyEmfqXYWxsoKuzWF/c
-	 9gMllgK5idfvqawj6AgRaQiZs3GA78nYX43Vk74cgnArkJcsZLVtQbIs+fgTsXVd6kQ==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1786800282;
+	b=bKrqJMRUxk13ycuuR6DIOIjMXHHE0aNUQl0oWtmqznWVnBl/Z+7kN/8/pp1o/iJxcJZu
+	 043UGHHqZEpjqmLjLApuZYHbUATUVnTo+yJc+nENGs9L4oPOiWyUx34F0IJX5GAy1SHV5
+	 hP1NRPKqBAhLEr6kF0FdsL6geu6PD09hARukDeBO6esTCtvcHgl2BS1orRBSezmKXqWrg
+	 tTH/YALoLUqZh+YhnnBEtNccKEd/7f2761MtrNhNHD/NzOJxI8wTmeHGqce1RvzQDaP52
+	 rjAI+XgXp2uYa77wPbPIpaWlH2o1SoyARLfahx2AmhXsmmextKg2KZFOFN+R4ngIFJQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786800247;
+	c=relaxed/simple; t=1786800282;
 	h=MIME-Version:From:To:Message-Id:Subject;
 	bh=rZciTHOfF5lX28xZf4prEBcGyBVa0HpZ8CdGfPok5PU=;
-	b=Bo9OmJmD3q9YcGXT/hqPMPL6CUi+RJG8LFIBIGTfTEBpAYRSIOTvvVW96wux+vn4KWC6
-	 ApdKXcZ8PwlPGoIAnpvHoY7Uodfp0FuR1K84f4QORonO11gimcw3XhySJWCCrhgCh+NoK
-	 +I4Nx+VbyvmV8UbBSxWStUDvOHXAObLEBG/EYVqwzBRhXXQ1a8e5FLQLUL9TWUBb49OsO
-	 VNAxPQefOHMgnuOU3MHnfn8CATY5sI+yrDnyB8n02UnmYaI1GDRSncx8CYNnuM0WLb5gZ
-	 +7NZXjwbo+T1myEAwzP4mLArq6VkrG/GZp4BrxlqujbiLmYe0ivf/OgpvW5pmwTBTjw==
+	b=XjqF8ffs0CRLEZkfK8Ier+onJJILa/hUHBZeG6gJFXZnPwkznR9jUDAs7L1nPwIBlenu
+	 JKuJEJl78L1FoEQmhW+H8oNTFUPY8/Or+X9wTJ6xdSDAVH3JVK0t2Voy0qP4X1SrRfEUh
+	 pbJfqDFe1Ylu2m93rcxE4ZQ46Gt+mtT/0pzaIwPsl4ykhLgaOooBUFGsIWxcVdbdaEARM
+	 MuKgqP6jlT6/e5D3gNmU9WNbvvazvcMBd46Pl4AMTWgXQQIjvdeh3cSjBVM6Vq5FGHw9P
+	 Gplb2+4qCBUZIjY54JKACytwt4OXvkw75gDvaqAKPRlxfssyEoRs5zpnQb8si0deMDA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0385F8060A
-	for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2026 15:24:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0385F8060A
+	by alsa1.perex.cz (Postfix) with ESMTP id 25B7EF80525
+	for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2026 15:24:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25B7EF80525
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18cbfd5b51ac3100-webhooks-bot@alsa-project.org>
-In-Reply-To: <18cbfd5b51a94700-webhooks-bot@alsa-project.org>
-References: <18cbfd5b51a94700-webhooks-bot@alsa-project.org>
-Subject: [Question] How to Handle Ump Virtual Input with Endpoint Supporting
- Legacy Midi Only
-Date: Sat, 15 Aug 2026 15:24:11 +0200 (CEST)
-Message-ID-Hash: RDWVPBZLK2XZABJDAQCIRZJPW5GIQTEU
-X-Message-ID-Hash: RDWVPBZLK2XZABJDAQCIRZJPW5GIQTEU
+Message-Id: <18cbfd6385672a00-webhooks-bot@alsa-project.org>
+In-Reply-To: <18cbfd63855df500-webhooks-bot@alsa-project.org>
+References: <18cbfd63855df500-webhooks-bot@alsa-project.org>
+Subject: [Question] How to Handle Ump Virtual Input with Midi Devices Only
+ Supporting Legacy Midi
+Date: Sat, 15 Aug 2026 15:24:43 +0200 (CEST)
+Message-ID-Hash: FPEXVG5DFO6TFP4YXVIE6KVQOE45CK5R
+X-Message-ID-Hash: FPEXVG5DFO6TFP4YXVIE6KVQOE45CK5R
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -76,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RDWVPBZLK2XZABJDAQCIRZJPW5GIQTEU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FPEXVG5DFO6TFP4YXVIE6KVQOE45CK5R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
