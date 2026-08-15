@@ -4,245 +4,166 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F3E0C5B572
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2026 16:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CF63C5DF70
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Aug 2026 16:59:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89C846027A;
-	Mon, 17 Aug 2026 18:58:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89C846027A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83D0E6024F;
+	Mon, 17 Aug 2026 18:59:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83D0E6024F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1786985941;
-	bh=N5F73YhAZ8/lblAL3LyoakiU8NpGu8pm0kU29KT/SDA=;
-	h=From:To:CC:Date:References:In-Reply-To:Subject:List-Id:
+	s=default; t=1786985956;
+	bh=iY48B6yIGmMWq2phMMQLEwrXIhbxvRbfTHOigLv51HA=;
+	h=From:In-Reply-To:References:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mg0oNCuj5Ri1VbzgwJOqDrsJMKLhgatXv0SfNYtT9l7D3CZ60yZ1gcptkCFk3NPab
-	 gnNgFf3OKdTqLrOmZao10ZjRiQ7ukq0lpBde2+3eTjtx4D3+5vxRVK6HGU+fBCOzqo
-	 qdyHhHLYBb79VOcxzsmKLypxuHep59eRdRchw3bs=
+	b=P7RdkCrr0E/OoST65SDuDDKQEwirKx0bXqhrUGe+bMqMHx6+vFWa9GLAE2x9t+zTq
+	 Mp8M2KL4vvDWR3b73nbyFBYK4EI1TuBsI3ph1AI1gudwHGBEdQbDzUFlte3ekbSOk+
+	 ip2wZwDyyTLBKLoD1DGCjZvos+2h9yTVAcWLEk74=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D268F80688; Mon, 17 Aug 2026 18:57:52 +0200 (CEST)
+	id F02FAF80693; Mon, 17 Aug 2026 18:58:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E22EF80688;
-	Mon, 17 Aug 2026 18:57:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 552BFF80694;
+	Mon, 17 Aug 2026 18:58:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF937F805A8; Fri, 14 Aug 2026 05:51:25 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=fail smtp.remote-ip=148.163.150.75
-ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=fail; t=1786679484;
-	b=UUukAanIQxfrtbRBauRCJJ61RkYVZV47uWDnHswKFWhtFj8twfTMYM9IXHdWOiXeGyaz
-	 90Ge/T16jey8OjCYzKcikgwOdI3GxFMDsnXB9tYGgTOGX/Ynmvzhd4m64yTFnf/0VvBr1
-	 HXVOOLJnFp2XEhrEzTXhSeSLuVx3/pedjSmOYks/wN+Hyg69hn6lgXuXkr8iuO6KnT4E8
-	 7cUUoZ6HR7TmJ6oOqnywY6AIvUX2VWQqp/mxboC6l7kVVNVdN1ILy2E2kA+gGuMFHuocF
-	 q605uMTqAszsLwMVaXkemFGSF9pbsj4ndk22lqg8v5suOd5RFzeBfvd9p/OfKc825fQ==
+	id 5BA9FF802BE; Sat, 15 Aug 2026 23:49:50 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.51
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1786830588;
+	b=jlRyckF5bEve6QiRqcAe9NL2ON1za3Xz7YBHgNKVNWv8wIKi67Zwzk7oNwK33UWbOBKW
+	 blnJmR3qqFkzeV4b2nAPckQlfw9y/Pp6wCkAQKDFxgukDWxB4BqhxI3Sh4KYqfhLytaxx
+	 AcxLkjIGv/6GO00v+ZX1zSH+6HpvdmkQOvqE4bfj6QhRZZMtJP6i9DGKWAbBhPOxSneqt
+	 lJXhIw8aTbrNfvvaKdAQ+o6Ehf2uOw5aqzdh73WO72AS5rTtlCTQ/zcmXKjMCYh2t8p97
+	 wYc09cmw8uduDcuFoUcjqCYKrOHymCuVrvjqRYJXm0RLQbGIwrua9KdMzwTK/lhXMhw==
 ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1786679484;
-	h=DKIM-Signature:DKIM-Signature:From:To:Date:Message-ID:MIME-Version:
-	 Subject;
-	bh=N5F73YhAZ8/lblAL3LyoakiU8NpGu8pm0kU29KT/SDA=;
-	b=L6nXraTqaYln7sVAexZYzx4vzul8v+xuYMMaaoLmJC6hx1eU8S185IznNDSyrMB8a20d
-	 9MsJlYMsghxZCoaKdpK9w0890p78kD56O0ZdarmuVouaf3xOMXea9w+emNUN3qPG9/Dqp
-	 fntmwyZujowaeTAWB43NdkGRheaMU1qPpRPCKjNZmqgHgxNq5qeZZaBwBtBeKZK40Z1pW
-	 5W84xagVdgJudrYXSvPPhX63imsF7AgknBpWci5PoWMIxD3zLw4KyRSMsRkUjumEJ9qbC
-	 nVSrWoVDzU0kZTZP8RUe7aI8lhYCMju8khk55hce1Fg3y6sDr3UPwsP8bqla9TtRn/w==
+	c=relaxed/simple; t=1786830588;
+	h=DKIM-Signature:From:MIME-Version:Date:Message-ID:Subject:To;
+	bh=N+WRXIhPUlKUu+SHdjrtwe6h6JGKi0HIRB3pUT49APY=;
+	b=r9YXeYIyhfiAZiEeIKjz/R3ilUHbig8eGaKhYk3HaDxGrBEDKrwwnz9yBfd2okO47o96
+	 sLZ8t0tNUX7rIXVk7VMlSD37JdNNRbwAx/jORMlHqCrYLhN11zVprLkRsmYhmHltUCq7f
+	 guX0oPd9Xiuo8WY1HfIR2IR0J4nrZxAQlMTfGll1VTm19lwtyFtWKJxFhrrxHSrjkF/wm
+	 d1Hi0Cx868dlBzdSUxmIhlspRHQaQhnAe0G7D/u0qoU5QmSdzQfe/CMMU0vBAjlbHI9SP
+	 OAqcinI6qfTSYRKJ9LGUKpHnN7iFmBn7thcU8Gsr65xHPyUW/LQR1/XR7sgkz7Ma6NQ==
 ARC-Authentication-Results: i=2; alsa1.perex.cz;
- dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=E53kAy6T;
-	dkim=fail reason="signature verification failed" header.d=ti.com
- header.i=@ti.com header.a=rsa-sha256 header.s=selector1 header.b=DhhSNVNw;
-	arc=fail smtp.remote-ip=148.163.150.75
-Received: from mx0a-0002e601.pphosted.com (mx0a-0002e601.pphosted.com
- [148.163.150.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=VZOOTBgo;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.224.51
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com
+ [74.125.224.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF5A2F80525
-	for <alsa-devel@alsa-project.org>; Fri, 14 Aug 2026 05:51:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF5A2F80525
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5291CF800C1
+	for <alsa-devel@alsa-project.org>; Sat, 15 Aug 2026 23:49:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5291CF800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=proofpoint-05-2026 header.b=E53kAy6T;
-	dkim=fail reason="signature verification failed" (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=selector1 header.b=DhhSNVNw
-Received: from pps.filterd (m0384305.ppops.net [127.0.0.1])
-	by m0384305.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 67E32WSq641614;
-	Thu, 13 Aug 2026 22:51:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	proofpoint-05-2026; bh=VeHLcxEjbWmQoiqu7nGVlTScX33HGiobfr1/5jjmw
-	Qc=; b=E53kAy6T8Ac8QX2mex0mogF4svAbentyAzmBU6VZv03T7RlN4aSbsMxkb
-	+R0yug/8PLevwKghFDNHMswN3uykisUmXE40IJ5HH0DF20HpqFtNsEg8CxX0zO1O
-	8y0wNakC8tvPd5yHctHTdK8ozZ+Cv1L1/nnDVoVXlWXSzZpQlL1sr13NN5XouBLi
-	nSF23tpBMIjSdajI9Gmcp4HnpZzxo7gQSTlfRyCg58DdZ/bpcqFm8TI8PHffRq8Q
-	5zROlcd8UkYC7G1fcZ8SCnvRq8wTVJWEltEmWsxAUbIFnqCgGyTQ+dyVVQpsW0Jo
-	Rk9aN5eqzIFH4sjRRZwUy0ewxbdpw==
-Received: from cy7pr03cu001.outbound.protection.outlook.com
- (mail-westcentralusazon11010040.outbound.protection.outlook.com
- [40.93.198.40])
-	by m0384305.ppops.net (PPS) with ESMTPS id 4g1tryg6j1-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Thu, 13 Aug 2026 22:51:16 -0500 (CDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ExqX0o4TfFk+3lRxIUu8p1R6OU8bk3hreqI3WZmEtR/Sjonr8RXcmn6sdvnA9LRSq1dqf6Cy5EFmhIuT7KPIb844/WBczhaswMtnOTwVrViFo451r0MHK/SHIvnXnYMRsk+TWX19s/CT/Y/68Q/f1MQymiBwDlpInHVXa6eNewXwBCIRQK/vQ1/tWT0h7hZHT2UXmt+7eOpeD24yAOc5eNq7yIKR3tDKjzIRovM9U/X5bRlwnnkxoykxBiFOprMfUZPHDiGq8gYHbJ/gg5yYgSdxl0gtFE6SUc1x/D+LQiXerWDS/eukTWONqebykYEc+SQStFbT30NcyYxMmbrElw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VeHLcxEjbWmQoiqu7nGVlTScX33HGiobfr1/5jjmwQc=;
- b=ctOIPMND3o+Wef0U6lIOiIsgDJyZdVUkLDSib0qomKVZW7mNXEkXt5mssnBCc2mhZpbxuOMvN2V/esbMv0tJK0fOa0ZifEnzXKPlfthdWzTjbiJbo88U5kEJ93dOqv46ikuvTN+OhRuIdBO94H4q0UsLqZi7UCtMkYRxs2+gZ/K7YOUenvlmVWXfDqFba7wO6S9rzauVOw32RpplSsH9FexYm+ZKm7/Lv0UTLcLxmjc7eRx0uM585Ax9kbDbwTXbk5yRYgI5k9rTbNix+G+N1OX1hZdaADX8hXStNBQv/Mu14aHY1tMCgI+q/G8JZxVus7msXrPqxWE8x6ZVFxFmHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.23.195) smtp.rcpttodomain=suse.de smtp.mailfrom=ti.com; dmarc=pass
- (p=quarantine sp=none pct=100) action=none header.from=ti.com; dkim=none
- (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VeHLcxEjbWmQoiqu7nGVlTScX33HGiobfr1/5jjmwQc=;
- b=DhhSNVNw/S64bwPP3vy5HizNgx3nnB7xp3odZGxOBmNXgbVIbG3rGBJJM5LUcKiS8382+gmJ2ZIwwkxr8E7x3l5nGvKDfgX/dUG2M7T/cWXCSUT+wKulpEGev7ui7YAgZhmv3zmJgD4W7F/BlZBLQGCMUPTrN6dEbXqmn9tA06w=
-Received: from CH2PR16CA0023.namprd16.prod.outlook.com (2603:10b6:610:50::33)
- by LV0PR10MB997564.namprd10.prod.outlook.com (2603:10b6:408:344::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.315.14; Fri, 14 Aug
- 2026 03:51:14 +0000
-Received: from DS2PEPF00003441.namprd04.prod.outlook.com
- (2603:10b6:610:50:cafe::3a) by CH2PR16CA0023.outlook.office365.com
- (2603:10b6:610:50::33) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.16 via Frontend Transport; Fri,
- 14 Aug 2026 03:51:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.23.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.23.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.23.195; helo=lewvzet201.ext.ti.com; pr=C
-Received: from lewvzet201.ext.ti.com (198.47.23.195) by
- DS2PEPF00003441.mail.protection.outlook.com (10.167.17.68) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.339.3 via Frontend Transport; Fri, 14 Aug 2026 03:51:14 +0000
-Received: from DLEE210.ent.ti.com (157.170.170.112) by lewvzet201.ext.ti.com
- (10.4.14.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 13 Aug
- 2026 22:51:12 -0500
-Received: from DLEE209.ent.ti.com (157.170.170.98) by DLEE210.ent.ti.com
- (157.170.170.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 13 Aug
- 2026 22:51:12 -0500
-Received: from DLEE209.ent.ti.com ([fe80::9756:3b42:e53b:3cbe]) by
- DLEE209.ent.ti.com ([fe80::9756:3b42:e53b:3cbe%7]) with mapi id
- 15.02.2562.045; Thu, 13 Aug 2026 22:51:12 -0500
-From: "Xu, Baojun" <baojun.xu@ti.com>
-To: Mark Brown <broonie@kernel.org>
-CC: "tiwai@suse.de" <tiwai@suse.de>,
-        "andriy.shevchenko@linux.intel.com"
-	<andriy.shevchenko@linux.intel.com>,
-        "13916275206@139.com"
-	<13916275206@139.com>,
-        "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>,
-        "Ding, Shenghao" <shenghao-ding@ti.com>,
-        "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Yi, Ken"
-	<k-yi@ti.com>, "Lo, Henry" <henry.lo@ti.com>,
-        "Chen, Robin"
-	<robinchen@ti.com>,
-        "Holalu Yogendra, Niranjan" <niranjan.hy@ti.com>,
-        "pin-hao.huang@hp.com" <pin-hao.huang@hp.com>,
-        "Syed.SabaKareem@amd.com"
-	<Syed.SabaKareem@amd.com>
-Thread-Topic: [EXTERNAL] Re: [PATCH v2] ASoC: tas2783-sdw: add firmware
- download status check
-Thread-Index: AQHdKsmLsuzSbtZIxEKurYWoeRJwmrac4fGAgAAIf7E=
-Date: Fri, 14 Aug 2026 03:51:12 +0000
-Message-ID: <fddf1c891e364b92a95eb0f8b86921da@ti.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=VZOOTBgo
+Received: by mail-yx1-f51.google.com with SMTP id
+ 956f58d0204a3-66c70f05859so3393094d50.1
+        for <alsa-devel@alsa-project.org>;
+ Sat, 15 Aug 2026 14:49:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786830585; cv=none;
+        d=google.com; s=arc-20260327;
+        b=gFLdpo3EvwZsjZeUV3eunqEM6jndOA/zD5nLgDPfs16vWtAwk4zlRbx7/lZmM2vp9j
+         +xltpUzFVwdWkDy688/61UoSm6MAxp/3r4cJ155AU+7paFy2kCYAG/uYUAWILAGNO797
+         H+yyE0QD355H9HwP3thz/MfoTjNpFqJudTV2uA9abUft8dhBMZgwFhhNI+4ydZ/JO0SH
+         tOiZKmRrezy7G0d9VgCSpLrwpFTuWAn4ORlKkdHlN+nU6u6RvAiL+GlXd7hfsxlXQPKw
+         d5taeHQmXMDdgn+woSjeNFw/bb0z2PRb9RI9XFJV9ThZhBHmBW39F4EMCVfax1O9kxnY
+         u0xQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:dkim-signature;
+        bh=0BiwD8sPUqgXhAkIy+YMgazrRCdFHB5CWVQZDyDO1H8=;
+        fh=1pSQP2iqoMBKp2TqnTlMe/WRCBxhNKATpMBFYotYgrs=;
+        b=jAMlHWxtNPhjZyf1wDNj8Z4DVqLwWg5Mz6qwJ5Qeu2NDcIY7br2uoSbLUidp3bWAuf
+         YOsRwDnWnOPWj34RyXmxldEJCCCodQO4/fA1ljpnxITTUk2bl70tOfKq5zreupt0uLrx
+         PD5qqGu1dwmH6aqIyUA+ENjGLeNjkm/cy/D7J9+ghx47N6EACSTmGSwE3B2HMTi1NLzR
+         //FWet6jBV+kEsZF5ZI0e4o9aqIDqlowqFK9rW0zs6OoVsxMUInxzJUL0AkfMeHJvAyi
+         Vxr8dlPy56tfanh0Zuc1CoprQnRO40d8JMKF8HqgIxMSty5CTe1crfNiEhXASXaUUnad
+         2ysQ==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786830585; x=1787435385;
+ darn=alsa-project.org;
+        h=content-type:cc:to:subject:message-id:date:mime-version:references
+         :in-reply-to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=0BiwD8sPUqgXhAkIy+YMgazrRCdFHB5CWVQZDyDO1H8=;
+        b=VZOOTBgoFNcNc69Vwvco1wMu3BMpb4y6IjhDEmyIK+ZpSUxPYE03zklgxzYwtDMEfD
+         WsA5tiv0lCC1/C6Ag3T4iNamFh8wjyOykw/mvsDoGymDniusK3MBCu0x0lrUxCwWr1tG
+         KSikvK0u8XPtvDYE4GLgblZOkE7IxNtMAUIZpntsMP/86bQwcAN0mwYe7LvVGV17OcHS
+         r16VZ3kq3aTPBQfIqjZLEmOTCtyS9mLkyQm7bJWFmBHB7ORtwyHSC3z+NRiBzw2WsocP
+         kemCpmH0mBLpIYJdyTD82YlWV7/frgLY6p97JVtNrG56gtqDdSZDEzmlOSh6y25Ymcdb
+         n6XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786830585; x=1787435385;
+        h=content-type:cc:to:subject:message-id:date:mime-version:references
+         :in-reply-to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=0BiwD8sPUqgXhAkIy+YMgazrRCdFHB5CWVQZDyDO1H8=;
+        b=Y8JKCraJTDB3BNx0t+ltmM77Aq4SaszPfW4Tp8JKDP5ctB2W/sx/CqemfH+pOV+Jwj
+         DwW2YsLmxx3SOE7MIyW9yshplJz8hyET9RPPnBZG4zC/1At2ceX0QE6YYTrInS5ZzeuK
+         fc6AFlokKnjI7e66ucIXFWxG4Rz0Q5vDAmr/s6P1Hl4lx9QRIbXgsiKbNnej1opDx90M
+         2dDo6unIRbnCavEf/32LyYkdr4/SxfEXpSOZLLgSeMGmRfelMUbJwNWYu55xMiWrqqhG
+         ngQ5wLb4dDg85iVmAshrIQmUjddiYWVtNyH19a3LSoP7cFfYLtUqW1fCYfDn8eTanaLF
+         wHAQ==
+X-Forwarded-Encrypted: i=1;
+ AHgh+RoLgnLBe98WRx+N3LCwjziu/K1egglNHUdwkMIp3PmmhtuhQFlcXWJnQfjiBqLN5jw4HCmFqkurkB0H@alsa-project.org
+X-Gm-Message-State: AOJu0YyiVyMJguF0xcD48gcqdGoWdBV5tTpjc5s8OhP0BSkIjmVCDlbG
+	orHYCuH6e9Ms1cfoDG4tYIGK95tc/We8n7/V6GrVeA4SnOvvL6RQrXgHiJ5J/YkXlm3g9+afdGc
+	mPM0H9AGX+ZulLTIutHtGlb+W32J1MEw=
+X-Gm-Gg: AR+sD11FTgPBvfeve6isXwhKgnsAfxpqIIQVQm88ETbfIefv3vzQyACPmV3l52wCGQH
+	58xHHql22FPG8TT+PecxnDL4EPtLWQ5QPDvQ7WHSOqyQgkquU/a3LOt0Bln8oCy0vHnbLoytSsf
+	OJZ+CRnJV0/PJaNaXJN85RVJSG84xyNoqAjxJsm5kIkRT/CukIFNM/29795REp2JOX701C5dZsm
+	kSSHECTa3I3j7X3BVQCsZyhBFiwA9DB18kvxihb+VtmFYLQhX8/7qAUX876nXVzcHrYq/k6L660
+	QI1+T/MHisgPbggMn955G2UQkaArITJ1zII+LG5vXgWj2YzYwNgbd+tMZ4pBtJ3f1/C9bd2Nu6O
+	dgQqqAZWy8Y8IhLoFmmVyWZ9rQF0LhZIrEQ==
+X-Received: by 2002:a05:690e:1919:b0:667:b503:4d2c with SMTP id
+ 956f58d0204a3-66c72c7b4c7mr6047858d50.34.1786830585153; Sat, 15 Aug 2026
+ 14:49:45 -0700 (PDT)
+Received: from 595171893313 named unknown by gmailapi.google.com with
+ HTTPREST; Sat, 15 Aug 2026 16:49:44 -0500
+Received: from 595171893313 named unknown by gmailapi.google.com with
+ HTTPREST; Sat, 15 Aug 2026 16:49:44 -0500
+From: Gemayel Lira <gemayellira@gmail.com>
+In-Reply-To: 
+ <CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
 References: 
- <20260813021450.1897-1-baojun.xu@ti.com>,<0799cd9d-a0ef-41da-80ea-3fb9b1ef0f7f@sirena.org.uk>
-In-Reply-To: <0799cd9d-a0ef-41da-80ea-3fb9b1ef0f7f@sirena.org.uk>
-Accept-Language: en-GB, zh-CN, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.250.165.249]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ <CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003441:EE_|LV0PR10MB997564:EE_
-X-MS-Office365-Filtering-Correlation-Id: 642f84c6-09d1-4c9e-a59d-08def9b749cb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230040|376014|36860700016|23010399003|82310400026|1800799024|18002099003|22082099003|56012099006|5023799004|6133799003|10067099003;
-X-Microsoft-Antispam-Message-Info: 
-	lYN5xwBgdYOnhRDB2YRO/1Y/DwYDDMMyLReRmcRbSde1r87ms4UpMmlpKx/XhJ+EYhLvly4GVuDUZoTXXVuNMhVMCcO+AXXh7jb4kVic0Ql2HQFRwFbEAxOVJNPuETQvomYa49L6dMOCJwREcWNugEc0usaHeW/GGDb1vdbTR8ZTGaFtuUCtBhr3cHFqAde29ZVVeequ8pYLnJu+3KLXO8N5Eg13Fl+nonkfXLabvstM67TCY7P9ItRGtaAG/WuF2TVwV+ZzmXmlquHaU04K9oJUCskKwZ3+lEZ+HXsE+QPhBl0S0xDWP3ucwI5v+ytkIO52lwFjutsTZntyX7DJuCUebJzWC3kaxy47piCbK8p1kUn8JaPxjKzyeg7z3VujPXC+mHy338c7k1HXEdA05DlvKOTmWUUhSJTrBVOzft1Coorq1Uo8fQ1YPh/xSALc/xPFpUmXhyaCgMxfSqkqmIqF6p0BZp4hTfHUp4n/dVdbdjN6wIkaWv1c1C+roAjaGv0we2IiakgSaF3/BkoO+L3Om8jAKManWlB3H5X3TtS6sdR9BeXePd1rxUsPY9UqT9bv+2r52TkdoJzV6uqQOYO2AKCCiYnJ0F4jqAdp+wR2KUimU+xE9svlZqrn/apxP82rWeOrIgTiSsDg+N7ypV62fvFR2BjhF9QlSnJCOV9bq4ax/EUgpSNxkEiFBEQhdz2s7WPuZF8aEBglP6+nVw==
-X-Forefront-Antispam-Report: 
-	CIP:198.47.23.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:lewvzet201.ext.ti.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(36860700016)(23010399003)(82310400026)(1800799024)(18002099003)(22082099003)(56012099006)(5023799004)(6133799003)(10067099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	kn7c9JKr0J9c1r51ZythtyE1h8sSY8ZoWqyCz5Ka0rTosAmNeUY9J+D+vEn7ekKOYFmPlyGv3TeMcb7LQIe2K7QpuV1EFokaDCqoW8zhjbgrvtAV18YRnPSQDo9jlcfTnM3UcOblA7WWE7qcEmXwGj/E3rYDOIV4UO35U/ruZ969DwkiBtTikvvCizZXQnw8GYomXyZZrz+jRzeROLggM0rVqR7aV4qwVFw5tRUhheKWUYCiJfuV1a+JFdGIgqpkctonOqdCDCph2hnjGuCKfbh6WXA35buhN+mo6GGF7GTK9DG/P/6m0Kkc/93xLPr42sJWGrs4UPBfkLAtWc2aToW4yT/7jkdsCmhdnPSGyWZTQi03QpGFHCGCL6+eVfUphwjpjEBSf9nrfXnWHI/ACl6+2oHzILmv8B7vvG9Aqca6Ggip+tEm0BZgkYSMOBSM
-X-Exchange-RoutingPolicyChecked: 
-	k2EiZwyh5VzXIeWEW+nIc0nPvmNpvhEGD99Quhtx+ufHFjeCATryucZmnb0EMh4/VyQfPQ9GHn4S2bLR46bnlnGuph0Y1nkup/Cmp+Rnz7/Q5/n8b5KKFPFD1n+iPmaAMu6vD0/N+2Py/CRNsHfAuwW3uvBsp1gNYL28gky5ewWJfhDl60wVHATv0CKnZwsfgBOIaEbllcyt3jatPNkFbUF1763VRqmVprmjiTDxVJJFXhJdNIrYx1vybPxwTPgK8c2UAmS2pojRJ8O/vrdlGmjKjunX3mQrXp7xOjmAZXm9Cab04FJMUJcrL/Y7ErU5Me830Gu3wuj2T+Kccg7QGQ==
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2026 03:51:14.4659
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 642f84c6-09d1-4c9e-a59d-08def9b749cb
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.23.195];Helo=[lewvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	DS2PEPF00003441.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV0PR10MB997564
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODE0MDAyOCBTYWx0ZWRfX3RY5mzzflG/w
- bJCEISFD80g8FlDzm5mImk7wTEPXNqg5sV/cy5q87aN9lFYVoA3fCzdkJNElgu1lmRnl3DznvNB
- 9Cf4Smpcg4xnkbr7E2+998nzZ56MKeCBVGK+YUzZGJMNKh0BrIDbKQ+gspJJLeXVTv1I5u2HxwE
- ogOYnJtDNNGfCaLpbt6ynA8rHoc2eueOq+4mfJV7DgahZJvNSxfvuf/Jy7gzB/2X0pGUdMJpFxF
- E8FaXdtsRtAT1vPZ/LapkLkhVA/zos2jtvQdqvfPgnAvbptVkX3zl34WGKKebIohjPT8I8JFJMi
- wEuXtwJVuu7LaqXZeG/+cXrd6iI9bz2GEP9ZBInxHjSr13GRFbcpQJijFkql8g8eciFvCeBPrLc
- ZNS20kkdCaEUMH+5EJkVgz5zfz23DQfmkT9SjpLGOeGmIFapTEo2e8uOcY42zzzKMHHUKIqW3m3
- e3NAmV13ReqNdkaJQoA==
-X-Proofpoint-Spam-Info: AW1haW4tMjYwODE0MDAyOCBTYWx0ZWRfX6IGFB3NYDEtP
- Xc0+JMsgTEVjrvS8f1TmkwavE8QOndFvRwmZ0N8vLYfKvWRNsEngYDocqbJO/m7k6WB2VwTxxws
- CqstbNf6KqR/1yW2mWzPfsT9v/eQsoo=
-X-Proofpoint-GUID: sWGLrieG-7z7n608XoRMEWiIRf_kIotJ
-X-Authority-Analysis: v=2.4 cv=H87rBeYi c=1 sm=1 tr=0 ts=6a7e90b4 cx=c_pps
- a=F7bn8UBrlesmBZzvaxvKyw==:117 a=f+v6EHfkeJbVwR46tk4DMg==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=xqWC_Br6kY4A:10 a=HSjQpOrDgPAA:10
- a=8nJEP1OIZ-IA:10 a=Sv0fKeRqtYgA:10 a=s63m1ICgrNkA:10 a=V5UXEbMT0ywA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22 a=taLDd7a_hP9WKsMzeGRc:22
- a=bx814J3U1Kdcb7-RJgoA:9 a=wPNLvfGTeEIA:10
-X-Proofpoint-ORIG-GUID: sWGLrieG-7z7n608XoRMEWiIRf_kIotJ
-Subject: Re:  Re: [PATCH v2] ASoC: tas2783-sdw: add firmware download status
- check
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-08-14_01,2026-08-12_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 suspectscore=0 malwarescore=0 phishscore=0 adultscore=0
- bulkscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2608140028
-X-MailFrom: baojun.xu@ti.com
+Date: Sat, 15 Aug 2026 16:49:44 -0500
+X-Gm-Features: AcwNN1Vh1UXUffNE20WOQlk8rrHfVo8m9exbmMInY5AKJlHtitvNy9tQg65hqjE
+Message-ID: 
+ <CAD96ZTJzEwiNwJm4ujLS4+X_KChi4+_sD0j-m+aE+_9i+eUGcA@mail.gmail.com>
+Subject: [PATCH v2] ALSA: hda: cs35l41: Enable VSPK on UX3405CA when ACPI
+ leaves GPIO1 unused
+To: linux-sound@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
+ alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: gemayellira@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
-Message-ID-Hash: UUTTL5PKBUFFVXZTD7LT3XYGST22XG2V
-X-Message-ID-Hash: UUTTL5PKBUFFVXZTD7LT3XYGST22XG2V
-X-Mailman-Approved-At: Mon, 17 Aug 2026 16:57:46 +0000
+Message-ID-Hash: 4VRHBSGOSTJMAUIR4TJXEWJO3R7IZDJE
+X-Message-ID-Hash: 4VRHBSGOSTJMAUIR4TJXEWJO3R7IZDJE
+X-Mailman-Approved-At: Mon, 17 Aug 2026 16:58:01 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UUTTL5PKBUFFVXZTD7LT3XYGST22XG2V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VRHBSGOSTJMAUIR4TJXEWJO3R7IZDJE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -251,33 +172,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> On Thu, Aug 13, 2026 at 10:14:50AM +0800, Baojun Xu wrote:
-> > Currently, the firmware download is unnecessarily triggered on every
-> > system resume from suspend, causing significant wake-up latency. Howeve=
-r,
-> > this step is redundant if the AMP remains powered on. Furthermore, cert=
-ain
-> > memory pages (addresses > 0xc60000) are skipped even after an AMP reset=
-.
->=20
-> > +             if (!tas_dev->first_hw_init || file->dest_addr < 0xc60000=
-) {
-> > +                     ret =3D sdw_nwrite_no_pm(tas_dev->sdw_peripheral,
-> > +                                            file->dest_addr,
-> > +                                            file->length,
-> +                                            file->fw_data);
->=20
-> What happens if the amplifier uses power (eg, over a system suspend)?
-> Though since nothing clears first_hw_init I guess there might be issues
-> there anyway...
-Hi Mark,
-Yes, that is the purpose of this patch. It prevents the re-downloading of
-pages above 0xC60000 after resuming from suspend, as the data in this regio=
-n
-persists across an AMP reset. Therefore, these pages should only be downloa=
-ded
-during the initial power-up (when first_hw_init is false).
+v1 mapped 10431A63 to generic_dsd_config and INTERNAL boost. Stefan Binding
+rejected that: this laptop is external boost, and overriding the ACPI _DSD
+as internal can damage the amplifiers. Takashi agreed not to take v1.
 
-Best Regards
-Jim
+v1 also loaded fallback firmware (SPKID: -19). After some S3 resumes the
+right amp failed with PM resume -110, then SPI -16 (EBUSY) until reboot.
 
+This v2 keeps Binding's missing_speaker_id_gpio2 parse of the existing
+_DSD (external boost, shared reset, gpio2 = IRQ, speaker-id at CRS index
+2). ACPI sets cirrus,gpio1-func to VSPK (1) on the left amp and unused (0)
+on the right, so the right channel binds with VSPK: 0 and volume drops
+about one second after playback. After parse_acpi, enable VSPK on GPIO1
+only when ACPI left it unused. Boost type is unchanged.
+
+Tested: ASUS Zenbook 14 UX3405CA, Ubuntu kernel 7.0.0-27-generic.
+Both amps: VSPK: 1, SPKID: 1, firmware
+spk-prot-10431a63-spkid1-{l,r}0.bin. One S3 (deep): both amps reloaded
+firmware, no -110/-16.
+
+ACPI _DSD (SSDT SPKRAMPS), excerpt:
+
+  cirrus,gpio1-func:  1, 0
+  cirrus,gpio2-func:  2, 2
+  cirrus,boost-type:  1, 1
+  reset-gpios:        shared CRS index 1
+  spk-id-gpios:       missing (CRS index 2)
+
+dmesg after this quirk:
+
+  CS35L41 Bound - SSID: 10431A63, BST: 1, VSPK: 1, CH: L, FW EN: 1, SPKID: 1
+  CS35L41 Bound - SSID: 10431A63, BST: 1, VSPK: 1, CH: R, FW EN: 1, SPKID: 1
+
+v1: https://lore.kernel.org/linux-sound/CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com/
+
+>From c325bb06bb37fd658f0250dc8571b5bb6b2c7dbf Mon Sep 17 00:00:00 2001
+From: Gemayel Lira <gemayellira@gmail.com>
+Date: Sat, 15 Aug 2026 17:16:18 -0300
+Subject: [PATCH v2] ALSA: hda: cs35l41: Enable VSPK on UX3405CA when ACPI leaves
+ GPIO1 unused
+
+The ASUS Zenbook 14 UX3405CA (SSID 1043:1A63) already has a valid _DSD
+and uses missing_speaker_id_gpio2. ACPI sets cirrus,gpio1-func to VSPK
+on the left amplifier and unused on the right, so the right channel
+binds with VSPK: 0 and volume drops shortly after playback starts.
+
+After parsing ACPI, enable VSPK on GPIO1 when it was left unused.
+
+Signed-off-by: Gemayel Lira <gemayellira@gmail.com>
+---
+Changes in v2:
+- Do not map 10431A63 to generic_dsd_config / INTERNAL boost. Stefan
+  Binding rejected v1: this laptop is external boost, and that override
+  can damage the amplifiers.
+- Keep missing_speaker_id_gpio2 and enable VSPK only when ACPI left
+  GPIO1 unused. Boost type is unchanged.
+- v1 loaded fallback firmware (SPKID: -19) and, after some S3 resumes,
+  hit PM -110 then SPI -16 (EBUSY) on the right amp. This v2 binds
+  SPKID: 1 and official spk-prot-10431a63 firmware.
+
+v1: Message-ID:
+<CAD96ZT+SnRnGr4Xd+NJkkVNpj8XrzL3Ete=pRgz05mqxAzbU2w@mail.gmail.com>
+
+ .../hda/codecs/side-codecs/cs35l41_hda_property.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
+b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
+index 416d7bf..0c09094 100644
+--- a/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
++++ b/sound/hda/codecs/side-codecs/cs35l41_hda_property.c
+@@ -450,7 +450,20 @@ static int missing_speaker_id_gpio2(struct
+cs35l41_hda *cs35l41, struct device *
+ 		return ret;
+ 	}
+
+-	return cs35l41_hda_parse_acpi(cs35l41, physdev, id);
++	ret = cs35l41_hda_parse_acpi(cs35l41, physdev, id);
++	if (ret)
++		return ret;
++
++	/*
++	 * ACPI on 10431A63 sets gpio1 to VSPK on the left amp and unused
++	 * on the right, so the right channel binds with VSPK: 0.
++	 */
++	if (cs35l41->hw_cfg.gpio1.func == CS35L41_NOT_USED) {
++		cs35l41->hw_cfg.gpio1.func = CS35l41_VSPK_SWITCH;
++		cs35l41->hw_cfg.gpio1.valid = true;
++	}
++
++	return 0;
+ }
+
+ struct cs35l41_prop_model {
+-- 
+2.53.0
