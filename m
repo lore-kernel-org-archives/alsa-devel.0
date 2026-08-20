@@ -4,169 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B26B2C5DF85
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2026 13:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA503C5DF85
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2026 14:03:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE5636026B;
-	Thu, 20 Aug 2026 15:35:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5636026B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88C6860269;
+	Thu, 20 Aug 2026 16:03:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88C6860269
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1787232948;
-	bh=uW02AMtwc3SLb4gtwcGjHVonRpndro+M5G0OMZp2DTY=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=AITlaxe6LdMQO+jcrVbF4C7CZH9h8qzIQkAQC1VEP+7UN4TizCULvJ+oFXER+aO10
-	 AXZBdSO9Ihht9m/pT4RFRB4iDg8o9HiHEfJJmDrCQGL2IVQGkYrfBqODGKNVhGTQNl
-	 XnXcMud7kfhykZQk2u+6bBssZ/jwEo3i/Hy420xw=
+	s=default; t=1787234618;
+	bh=OeMBqOHmFhsQmnOcbc0AC2VvSDEpo2y0WG2NA5nrHhY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=lX647raZtPoQe3PMqZSxlJeyij1qViNqSr7mf49nGmdsNC7BGpYkQ2ussVV2oDP4A
+	 4Mzkc2xOurtCy8pjuFA+UOvrBQn4iEbJcUF9iuxiCyRP5JE8zFo9vgg+Nst9QPzGLH
+	 SGjIc65KUfx84J8Sws1oYvBWXPb8ih5cfzKu9dS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81BBDF805F0; Thu, 20 Aug 2026 15:35:14 +0200 (CEST)
+	id 14ACCF805F4; Thu, 20 Aug 2026 16:03:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4470FF805FF;
-	Thu, 20 Aug 2026 15:35:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 705C7F805F4;
+	Thu, 20 Aug 2026 16:03:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BAEFAF8053D; Thu, 20 Aug 2026 15:35:06 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz;
- arc=none smtp.remote-ip=195.135.223.131
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787232905;
-	b=mF5v6Yvr4PqkS1veXwWOShgl5YLCdh9sxSyJEP69LP6V5bxPJa5veKfXhYycXfbLnvYc
-	 iDgtkXeXmq6P98tumhuzy5zv0+poHLR9ao+NsHdtVZofO1RBdftV0dgX0SOKwb7tShuaB
-	 T/QWrIPLs9xk4sqlKpAdtZM6iJ+fLxrofJ5hZmaWfsfBuiz7MD0Rt/xmc/7GoK1k9sZM/
-	 urX1c4aIIT7LizdCX3KsbqigD3kNekNh0vGYTYgOjBkcpuvpC5fd8ikRLNjRHjMzx2HGt
-	 Z4U7XEZstpgz9CNlETCJX2mLQrTAzSY5JKoK3W4yhs8lYcgO6IcXOFkFC8zTWn29cwg==
+	id 52BDAF8053D; Thu, 20 Aug 2026 16:02:54 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=77.48.224.245
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787234572;
+	b=UcdzMTzP9vXZIU9lTA31ww370YpjLR+/+WFHhv2HBVSZk2/O3DsiYN7ZveCOMsc+ZYZj
+	 tSJydvvR3wiJAi+RQZz58dCzClFGEYpc2150OxueumZ+Qbir0FFpCt2r5WtWmcncXswwn
+	 cOdB7rKW/mo+qxR6QGCmQCMo3AIJoY3n56JV6hrGH1w3fYPBqYxiOavmpw0AKZ6p/28SY
+	 m4RgMuwilk3SADjpkJXf8vQzTX+ALUBRGra+XPpmzwVlOIfMuBpy2dJzjX986WIdSVOM2
+	 FUpUjxts/hNtxpyLLrkgd7Ncmk0+mdsyxZCbsu80OnKqSXg5Cu5IZzrjYNABeiOFYcg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1787232905;
-	h=DKIM-Signature:DKIM-Signature:DKIM-Signature:DKIM-Signature:Date:
-	 Message-ID:From:To:Subject:MIME-Version;
-	bh=uW02AMtwc3SLb4gtwcGjHVonRpndro+M5G0OMZp2DTY=;
-	b=j2cRrj6/1gu84lNzsPMms7NflSu/xx6yxV8TmG2tR/SbBiQTI38WpyPXbye9Xb8O0D2K
-	 PZD5KLPTBCmwl8NCKW9MRohmug5aHLLQPbzChx5uel3/wEspfN/YkkoDFnW1asJNZqduY
-	 qcWp8vJuSx5pcL/FybSbB0wLaTzBzIgDtQVCTcdTXSgBVlEw6AoJzRn8auQGqIyXkMoKN
-	 9huPzQYbvp4SElJ18w6VWUsb0hAxBGK5x2l1DNhpqiXAADsuLX6jZTzZtX85v2BwhOZSW
-	 iVyn6BG28RIGX4DkjJCmi8D9zJKtzfYnrtFD1CN6yPkW4QwW3olxz4fp+OYfsl0LEXg==
+	c=relaxed/simple; t=1787234572;
+	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
+	bh=OeMBqOHmFhsQmnOcbc0AC2VvSDEpo2y0WG2NA5nrHhY=;
+	b=Ij6jIicU4GaODzSVaoGI0anPSu1ieop0aCZpSU1m7x/XQQFUy47ffm6/0FPeRLqZJZ50
+	 gUMIuqhOIoHfZmGPzvnQnemlvLblnrbMKAHixJJPyDc5zuWP1XgrrCNTxVNMD/N2EYRR3
+	 gaQ9dOtRNDbcBJQylCitxOJJVwxchc0B5gV0XWyE/+PKvbBc7b5U9KIpGSVZZw/a188Y4
+	 8fJRDDjK096SlF1oyiXyeeUXM/0+WrNlPcxYWxdjyB06c3qZKps+Qy2EcyRKVJhBJrR/D
+	 fo5nA4uPisrmHyjvngJz2eWPoNG1cK2paVKc1sO140A0pkBI1yySuBj828UB8GIXsGQ==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=lf1GHGRo;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vs5eZ787;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=D5V4xhrm;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=BzCuGK79;
-	arc=none smtp.remote-ip=195.135.223.131
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+ arc=none smtp.remote-ip=77.48.224.245
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D894F80153
-	for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2026 15:35:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D894F80153
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=lf1GHGRo;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vs5eZ787;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=D5V4xhrm;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=BzCuGK79
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 881ABF80153
+	for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2026 16:02:51 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 94F3740FF3;
+	Thu, 20 Aug 2026 16:02:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 94F3740FF3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1787234569; bh=oLUiNac6ve+25Sq0XRIXRcTic0vBOShQSiI7Vo7oRg0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=0660OY5304c5Dyt+NpfxrWjMd7IMqARcsh2gOyRwDrq1tHTSZyWSt+9EZPW9OxW6k
+	 KvIH2EseWH/qiedUgPr7vDKUEpOOp2LTi74CFe20OS6JsuPQfmPDtwC7DJKI5W1Wh6
+	 a6HAVSLo/ivaBgNZPeX5hlkNRPFpZChZs7hWX3e8=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8E4053EFA;
-	Thu, 20 Aug 2026 13:34:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1787232899;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=btRg2++bWGReS9+ODbff9nmgGTZ9x9SGBBhhwvN/hKE=;
-	b=lf1GHGRo2wljvK90vG4i7Me0dlh4RmdF4gZIol8g0AJt8jXG1Istkk+x5l4bxR/snPbU5k
-	0p0n8XEZcpLcNceXHXIG6BpKtLlQTeiDHoogYRAnltuPYbz6gNDdYPeTgMTr7wnLIp0FV/
-	C3u55ffT7CebBBkudzqGnnC54AwrhCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1787232899;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=btRg2++bWGReS9+ODbff9nmgGTZ9x9SGBBhhwvN/hKE=;
-	b=vs5eZ7873bys3X0YBcUhfhPraJj3Pq+aS7E1YkMDZAEoZ0H6B1zdqcCmTZse/2Q1N4aTSM
-	ULWcyKbhyq9ESMAA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=D5V4xhrm;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=BzCuGK79
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1787232895;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=btRg2++bWGReS9+ODbff9nmgGTZ9x9SGBBhhwvN/hKE=;
-	b=D5V4xhrm7Am1IDDjM/muf0RI+B31VyKcTDroD1YzTUB/Gwkew5WzvpoEdcNXPiMDrWH+KT
-	ucwRDF5/uqMnFeG6dmhB8mN4Up3YEWsOBBkXe+9z+C9xt4cyKaftY9ncdcbNnCrS9stMZE
-	/b1DkABjoBPgaXuP7iVHWa/4G5G2bdk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1787232895;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=btRg2++bWGReS9+ODbff9nmgGTZ9x9SGBBhhwvN/hKE=;
-	b=BzCuGK79A6AYpgWhmXQGJF6mRmybz1YsQr2un4Jkfj4n1ijVmvzJaTV0JVN1j3f45J+0OL
-	+ywGzv5/QdGZfuDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A5F627A8;
-	Thu, 20 Aug 2026 13:34:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4quaGH8Ch2oIOAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 20 Aug 2026 13:34:55 +0000
-Date: Thu, 20 Aug 2026 15:34:55 +0200
-Message-ID: <871pbsnce8.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: linux-sound@vger.kernel.org
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Thu, 20 Aug 2026 16:02:46 +0200 (CEST)
+Message-ID: <5f459099-4364-46f9-a3b4-1c629aa91209@perex.cz>
+Date: Thu, 20 Aug 2026 16:02:45 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Linux-audio BoF at Linux Plumbers Conference?
+To: Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org
-Subject: Linux-audio BoF at Linux Plumbers Conference?
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/30.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	SUBJECT_ENDS_QUESTION(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.995];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Queue-Id: 8E4053EFA
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-Message-ID-Hash: RBHAFTX2HBJ5VO57EQQLJECE3RNFFPHN
-X-Message-ID-Hash: RBHAFTX2HBJ5VO57EQQLJECE3RNFFPHN
-X-MailFrom: tiwai@suse.de
+References: <871pbsnce8.wl-tiwai@suse.de>
+Content-Language: en-US
+From: Jaroslav Kysela <perex@perex.cz>
+Autocrypt: addr=perex@perex.cz; keydata=
+ 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
+In-Reply-To: <871pbsnce8.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: NVQH5C5AXB2A5BHNW5QCXNV6VJH7DR2G
+X-Message-ID-Hash: NVQH5C5AXB2A5BHNW5QCXNV6VJH7DR2G
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -177,7 +141,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RBHAFTX2HBJ5VO57EQQLJECE3RNFFPHN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NVQH5C5AXB2A5BHNW5QCXNV6VJH7DR2G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -186,18 +150,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 8/20/26 15:34, Takashi Iwai wrote:
+> Hi,
+> 
+> a few people including Mark and me have talked about holding a small
+> meeting for the Linux audio stuff (finally again!) during the next
+> Linux Plumbers Conference (on Oct 5-7 at Prague).
+> 
+> Has anyone already planned to attend there and is interested to join?
+> If we have enough people, we can try an official BoF session.
+> Otherwise, we can just have an unofficial session at lunch time or
+> such, too.  Just let us know.
+
 Hi,
 
-a few people including Mark and me have talked about holding a small
-meeting for the Linux audio stuff (finally again!) during the next
-Linux Plumbers Conference (on Oct 5-7 at Prague).
+I will be attending Linux Plumbers and would be pleased to participate in
+a BoF session or another type of meeting.
 
-Has anyone already planned to attend there and is interested to join?
-If we have enough people, we can try an official BoF session.
-Otherwise, we can just have an unofficial session at lunch time or
-such, too.  Just let us know.
+Thanks,
+	Jaroslav
 
-
-Thanks!
-
-Takashi
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat
