@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C7FAC5DF8C
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2026 22:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35BD9C5DF87
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2026 22:33:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B565460292;
-	Fri, 21 Aug 2026 00:02:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B565460292
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7BA60299;
+	Fri, 21 Aug 2026 00:32:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7BA60299
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1787263360;
-	bh=vnK7EwFQKv1fN+0bR/RLzd+9ptD1HACgATWdkWyQVU8=;
+	s=default; t=1787265187;
+	bh=2rO2zbWnkexR215FCMUbWeSqX24qOTpXBurR2q80XA4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=S3yYwMBtcpl3NWH7mQSRj1Kj0Y+4uq0XznwAhY4sDSVDsmCnq4i14Os7JEWS9H5/W
-	 FjVuD6GGO2gKjqhfGuAmbWgGSa0GtS/PPC709ce/KcHWtN5zI4KSizz4wLOiQJSlOs
-	 rzKxKsFIBu8XRAB9uZQdZ5e/zpTiuJ9QETScwnm8=
+	b=jJJ+I4uxddRPFKRHRpJZ/qUYM4+R//3dfShn10eC5ZAJfVHEfiOc/QavUJ0z9magE
+	 wvO7lmGuAKq4UGjcFyUfuDKIBzTmXjfJuKM8WXToxor/oDNzeEa3zQL5JQcsiK8WVU
+	 PaFRZWUj5t4uY71YZ5g6ALNKBUzC7AU4Ol2bGEOs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9F4FF8051D; Fri, 21 Aug 2026 00:02:04 +0200 (CEST)
+	id 85076F805F8; Fri, 21 Aug 2026 00:32:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 695D3F805F9;
-	Fri, 21 Aug 2026 00:02:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9EDEF805F0;
+	Fri, 21 Aug 2026 00:32:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ACFBF8051D; Fri, 21 Aug 2026 00:01:59 +0200 (CEST)
+	id 4608BF8051D; Fri, 21 Aug 2026 00:32:26 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787263318;
-	b=ew7jjpuTr55n6ZU863NDxo2iQb2SSnQr7CFzCqPG8YJdrWOyeB5lm+PIjVLymPTml6o6
-	 On8iWCg2vzEXc6wSVo3PmA8dox4DKXKldH1vBYVUcUeISlWnANoiepeiOF65s1QnoQs4W
-	 OF3WidyJQ3YGxKhjt96H73ryf83soFAUw3ol3ecMuhgXUU+d8v8ZEBGyNOVDTwYeM+yLp
-	 CDVJCodNDBzC8i/l4I5cQ3oW/b6a2EL1dJaI13Gm79SYT1olSp6cr5Y1ilYmnk4c+SX6E
-	 t0CKHV2TiEy2kCHKhepbZwQr0PWMsMmXlrNoW7sK2tUUYAoeVy3WPhHtlh8U1+bEcJQ==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787265137;
+	b=V+rjYxX9Ak/e4Xq+ImcTUo0xCFcNikYFsDu8QebI3PcuCbgZUzhKSDDFKntbyW3kNKN5
+	 r1yxNc4L0/1OaD6jqEapnha8o8ntFm3HgyjovOaSKz1T0bkq73hh+L1O5d7juVekkNT54
+	 s1ll5R9iCPL+my2/cqLUpzX8dvcZedmmUyRylWaBAvQqCOsZzuhmqIYTy1AcPYUkHEJFJ
+	 TNGYVoMKYTsuia8DqfQoSeZxBbbEEfLP8fRxazcfTRFmyyn05ZRvaGyqIcCPzeI8AK8OQ
+	 1K0aGtzT7kpEGNJTZQakY31/l4JNIvgTJZvd8oaxc64DT8ikVY4OX2iFLxuKFjN8QtQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1787263318;
+	c=relaxed/simple; t=1787265137;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=vnK7EwFQKv1fN+0bR/RLzd+9ptD1HACgATWdkWyQVU8=;
-	b=Dqr/e5IqbFjZjScsmZhdJpgO7QM2e9BgLl6fDQoR1uS6vMOfs+zHi54mRN6HVML/jhjc
-	 ys/5c0DMPBMyKrfqFNLNEtwB9VDnqTHTNjw0BqhN2dp3US/m762aQMkt4HEyeSG0HRbi4
-	 8nvnabtyW7wUc+zapwC5b7p1KkbK7sTYHuIbCBAK8wyJmzN7L7DhZ1HmnFP6tmfHiitG9
-	 bKjR0a9XCbLCPrZAZq6OfWUKWnYQ+Wh/R2ZD/a2tY9maXfCxJPLcnkZ0xjqcyjp6mHUf+
-	 K15mRyGk9HBNRMasLtr82RLD7SiJ/TyydILC0m2jwLue2irERJUkgop6l0hsY+exfrA==
+	bh=2rO2zbWnkexR215FCMUbWeSqX24qOTpXBurR2q80XA4=;
+	b=ZM/dTM6SneZqIcn8TLUo+PxXe0G44eOYPbdCfnTDTb1OTi+WKCX7khGrJ0I2iBIW2wwI
+	 fHxmDv+TeQrp6zafcV9sQAe5zMHM6Bhd7wqecvk7rKNqAWxbohHlxRJF0EEA6Q2S09/Nv
+	 QaVnOY5UhM4XZ13So81fC2OtkSGOWGJFdSOwAoVRWBGgOrkQVET1fbzeOmCh/l8BS1nDN
+	 txiLebB41peOYjta73hXNLVusyNEs2p+l8X4Y/yMZgkdxyTrmj4Rqjk0Zn4+CFiBk9d7Y
+	 7dm0MdFa1JoYjopclcs5QCGleFrwBdQ4Nwlkh+GE+kVP65hr5UZA+0z4qJSBFsruBGA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B3FDF800BA
-	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2026 00:01:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B3FDF800BA
+	by alsa1.perex.cz (Postfix) with ESMTP id D1FA4F800BA
+	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2026 00:32:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1FA4F800BA
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18cda28454f14100-webhooks-bot@alsa-project.org>
+Message-Id: <18cda42c07f1e900-webhooks-bot@alsa-project.org>
 In-Reply-To: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
 References: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
 Subject: ucm2: USB-Audio: add Topping M62 configuration
-Date: Fri, 21 Aug 2026 00:01:59 +0200 (CEST)
-Message-ID-Hash: KCJMNA6HKRH6HUJPLAYLQFRXKWDDGWBP
-X-Message-ID-Hash: KCJMNA6HKRH6HUJPLAYLQFRXKWDDGWBP
+Date: Fri, 21 Aug 2026 00:32:26 +0200 (CEST)
+Message-ID-Hash: GVSDEK2AJKRW4JXOCFKJXLFWMMVDGGAB
+X-Message-ID-Hash: GVSDEK2AJKRW4JXOCFKJXLFWMMVDGGAB
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KCJMNA6HKRH6HUJPLAYLQFRXKWDDGWBP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GVSDEK2AJKRW4JXOCFKJXLFWMMVDGGAB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,7 +152,9 @@ while the same card delivers those returns to a host whose software
 turns the switch on. The verb turns all sixteen on, and the four
 returns are then declared as stereo devices, below the physical inputs
 in priority because a return is what the card is already playing rather
-than something arriving from outside.
+than something arriving from outside. The Direct verb unmutes them too:
+it is where someone asks for all sixteen columns at once, so it is the
+verb where silence on half of them misleads most.
 
 The card keeps all ten playback channels in one mixer element and all
 sixteen capture columns in another, so the per bus and per input
@@ -178,6 +180,16 @@ verb has unmuted them; in Mobile Mode the card is left to the generic
 configuration.
 
 Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+
+Attached alsa-info from all three modes. The `bcdDevice` value is what the profile keys on:
+
+| Mode | bcdDevice | Playback | Capture | Rates (kHz) | Profile |
+| --- | --- | --- | --- | --- | --- |
+| [alsa-info-MobileMode.txt](https://github.com/user-attachments/files/30801211/alsa-info-MobileMode.txt) | 0145 | 2ch, FL FR | 2ch, FL FR | 44.1, 48 | not applied |
+| [alsa-info-LiveStreamingMode.txt](https://github.com/user-attachments/files/30801208/alsa-info-LiveStreamingMode.txt)| 0248 | 10ch | 16ch | 44.1, 48 | applied |
+| [alsa-info-ProAudioMode.txt](https://github.com/user-attachments/files/30801204/alsa-info-ProAudioMode.txt) | 0327 | 10ch | 16ch | 44.1, 48, 88.2, 96 | applied |
+
+In the two ten channel modes the descriptor declares the channel map `FL FR FC LFE RL RR FLC FRC RC SL`, which the hardware does not have: those are five stereo buses. Mobile Mode declares `FL FR` on both directions and is left to the generic configuration.
 
 Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/826
 Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/826.patch
