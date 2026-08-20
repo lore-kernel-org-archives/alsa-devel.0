@@ -4,107 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41F38C5DF81
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2026 18:54:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C7FAC5DF8C
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2026 22:02:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB08560284;
-	Thu, 20 Aug 2026 20:54:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB08560284
+	by alsa0.perex.cz (Postfix) with ESMTPS id B565460292;
+	Fri, 21 Aug 2026 00:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B565460292
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1787252075;
-	bh=30NQCGgF8zzfY6EI5R58110uo+r9hHzsS1dR77lWVPE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=J33KTwa0WPnmAW6DyPbCUQJRJ7bSnJOc4S4mE3ONtO4ucQ8hPqf6bxKUVohJL1gPB
-	 JaU26U+/kUCxpJEPysI7u1DaHKBaKz4qkjxk8GEZ86cYJS6dAvS7wD8bEKdEJTU+Fu
-	 eSrXdyYmBlzT+BY2WqM4n83YX57y9KNXZDm0OmRM=
+	s=default; t=1787263360;
+	bh=vnK7EwFQKv1fN+0bR/RLzd+9ptD1HACgATWdkWyQVU8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=S3yYwMBtcpl3NWH7mQSRj1Kj0Y+4uq0XznwAhY4sDSVDsmCnq4i14Os7JEWS9H5/W
+	 FjVuD6GGO2gKjqhfGuAmbWgGSa0GtS/PPC709ce/KcHWtN5zI4KSizz4wLOiQJSlOs
+	 rzKxKsFIBu8XRAB9uZQdZ5e/zpTiuJ9QETScwnm8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B435F80246; Thu, 20 Aug 2026 20:54:02 +0200 (CEST)
+	id B9F4FF8051D; Fri, 21 Aug 2026 00:02:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD107F805FF;
-	Thu, 20 Aug 2026 20:54:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 695D3F805F9;
+	Fri, 21 Aug 2026 00:02:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B31EF8053D; Thu, 20 Aug 2026 20:53:55 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.105.4.254
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787252034;
-	b=pQHTI4kilbg/x/P81v3k0oHHFLl4QyNGK11LK9A1ff5Vjq+hN+8+PL+sM/NzODCj/N2H
-	 ecIZTbZ3+zs2jjyS5HATwhmw3YRP6fP6B8gOt+86bUUWBgrJWa3KkaB2eojmx4LgMPEPj
-	 joST5n42m5Tka1kxWLRByYnPMTVvB5XBOEEI7Y0d+8qE+U8EJX9u3+8wz48I6JKrtC7v1
-	 1PlMcvDVg8aqMHCcqRRIIKiJMfvDl8hJ5T67y3DBwDY2BX6BhmNFduND0QUf+cTPO1hZF
-	 PxsJgm/gIDpaPbaWk/Gr85Az+0UGvf2yWmoGfL57xsq7BIgeDnUvdus/wyfRneO7I0g==
+	id 2ACFBF8051D; Fri, 21 Aug 2026 00:01:59 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787263318;
+	b=ew7jjpuTr55n6ZU863NDxo2iQb2SSnQr7CFzCqPG8YJdrWOyeB5lm+PIjVLymPTml6o6
+	 On8iWCg2vzEXc6wSVo3PmA8dox4DKXKldH1vBYVUcUeISlWnANoiepeiOF65s1QnoQs4W
+	 OF3WidyJQ3YGxKhjt96H73ryf83soFAUw3ol3ecMuhgXUU+d8v8ZEBGyNOVDTwYeM+yLp
+	 CDVJCodNDBzC8i/l4I5cQ3oW/b6a2EL1dJaI13Gm79SYT1olSp6cr5Y1ilYmnk4c+SX6E
+	 t0CKHV2TiEy2kCHKhepbZwQr0PWMsMmXlrNoW7sK2tUUYAoeVy3WPhHtlh8U1+bEcJQ==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1787252034;
-	h=DKIM-Signature:From:To:Subject:Message-Id:Date:MIME-Version;
-	bh=30NQCGgF8zzfY6EI5R58110uo+r9hHzsS1dR77lWVPE=;
-	b=HhXm8IN1Unp+ZKcsenHAUy/j6pxieBgFzTcrPBrTsX0Jpp2IkdezO09F625LVS4zgWgy
-	 OfknoC3TAQOAKZay8c4SLi9/sxdP3KzbPJu6qHePZoQZvtA51obZcHXUrl4ZyYChQTbUV
-	 ++C1lmm2V20nCXBAFvodNtLFdvJLJc9cQfH8Py159igbvHonkRwDFariCsHQwVEb3Jrfq
-	 q39y5F5RoRmkcfOHh8/JwQpPMd65KK55uNXL3vqPb7QzIAK+Yi29+/NxZtaoVJIwRMFme
-	 4RHobVomuaF/Ue3/TiJe2Vx0IbXw7Y2NKrQqOn3zpg3wUAW46icfLsB/nz/TKRyULeA==
+	c=relaxed/simple; t=1787263318;
+	h=MIME-Version:From:To:Message-Id:Subject;
+	bh=vnK7EwFQKv1fN+0bR/RLzd+9ptD1HACgATWdkWyQVU8=;
+	b=Dqr/e5IqbFjZjScsmZhdJpgO7QM2e9BgLl6fDQoR1uS6vMOfs+zHi54mRN6HVML/jhjc
+	 ys/5c0DMPBMyKrfqFNLNEtwB9VDnqTHTNjw0BqhN2dp3US/m762aQMkt4HEyeSG0HRbi4
+	 8nvnabtyW7wUc+zapwC5b7p1KkbK7sTYHuIbCBAK8wyJmzN7L7DhZ1HmnFP6tmfHiitG9
+	 bKjR0a9XCbLCPrZAZq6OfWUKWnYQ+Wh/R2ZD/a2tY9maXfCxJPLcnkZ0xjqcyjp6mHUf+
+	 K15mRyGk9HBNRMasLtr82RLD7SiJ/TyydILC0m2jwLue2irERJUkgop6l0hsY+exfrA==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=Os+0H8f2;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 71300F800BD
-	for <alsa-devel@alsa-project.org>; Thu, 20 Aug 2026 20:53:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71300F800BD
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=Os+0H8f2
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id D78D760A71;
-	Thu, 20 Aug 2026 18:53:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEA1E1F00A3A;
-	Thu, 20 Aug 2026 18:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787252030;
-	bh=PIjzTOLctrigvITPLq9x/HIQEGz+Yc+obEP6pgu6Kz8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=Os+0H8f2xDl7eZjSneLQsNTYPYaNpOXLhHO4qYsZBhmQ3SlylFPaX14rd0/kIgYE4
-	 ypA2wIYPDd6rRh7O/3/iDMGsNgkSRTC8U3aoHLxvv3NMffki9z+sXGFOX5O8ssbaK+
-	 tU6A58YWMI3g5nXYCLeJyDfMj17qbSXs4nWCHq48Fvbtza7Gvm/eXRchDiR521Yg5s
-	 GRGbmG4x00QofES+LZFreUc1/dBgp03tHHlfprkB63Dz5oGsW4uhfNA2TkEnXa9296
-	 iCMBIcXIeuiDxcbxuQH598uguiGUbwz67Mw+klF0fLeR4iu3d9UVekWFwEidfbHPdO
-	 SARovO9LsiVQw==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, jack.yu@realtek.com
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
- oder_chiou@realtek.com, shumingf@realtek.com, derek.fang@realtek.com,
- Trevor.Wu@mediatek.com
-In-Reply-To: <20260820092415.2979641-1-jack.yu@realtek.com>
-References: <20260820092415.2979641-1-jack.yu@realtek.com>
-Subject: Re: [PATCH] ASoC: rt712-sdca: Pull high JD2 to prevent from
- entering TV mode
-Message-Id: <178723395826.89147.1797965398058922835.b4-ty@b4>
-Date: Thu, 20 Aug 2026 14:52:38 +0100
+ arc=none smtp.remote-ip=45.14.194.44
+Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
+ [45.14.194.44])
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B3FDF800BA
+	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2026 00:01:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B3FDF800BA
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1153; i=broonie@kernel.org;
- h=from:subject:message-id; bh=30NQCGgF8zzfY6EI5R58110uo+r9hHzsS1dR77lWVPE=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBqh0065CKkFg/aywBYeYzkP4DVXqqqdYqk3j5iF
- VwMqUnZXwSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCaodNOgAKCRAk1otyXVSH
- 0J02B/9ylciFftv3NrQgPitlcWFGXIT4Bh0DHKUE9JNhFgYChnGGHMIsDOroR+IZQyViOlrI94z
- mVsW72ZDZQFvD5cwQwXtfXIW50IsWNjLu0qGdcIY78ju4JnHIBH15xveLZsYK45+XSymOD6SY2G
- dru8JZ/DA2T+KKqvYaPc7IyX+yDJr/cxgkETDLqwpuVnZfYGRhjKGNShfeMKFxBaJM2xVO5bvSf
- B+hReq9lnXB8y3/KjlmEeeM19YBdD6iiaHVRF0z0/+qZpTZUSTvylaUOa4g/MP2tbx5PDEil63t
- hr1on3SxOJFNR/E2zKYQW13OEdooiT3TVu5a6xLAO1wIWKgj
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: 2LWK7NDKCLRN464PHFHDM7AEWUKJ7CM5
-X-Message-ID-Hash: 2LWK7NDKCLRN464PHFHDM7AEWUKJ7CM5
-X-MailFrom: broonie@kernel.org
+From: GitHub pull_request - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Message-Id: <18cda28454f14100-webhooks-bot@alsa-project.org>
+In-Reply-To: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
+References: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
+Subject: ucm2: USB-Audio: add Topping M62 configuration
+Date: Fri, 21 Aug 2026 00:01:59 +0200 (CEST)
+Message-ID-Hash: KCJMNA6HKRH6HUJPLAYLQFRXKWDDGWBP
+X-Message-ID-Hash: KCJMNA6HKRH6HUJPLAYLQFRXKWDDGWBP
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -115,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2LWK7NDKCLRN464PHFHDM7AEWUKJ7CM5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KCJMNA6HKRH6HUJPLAYLQFRXKWDDGWBP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,34 +84,101 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 20 Aug 2026 17:24:15 +0800, jack.yu@realtek.com wrote:
-> ASoC: rt712-sdca: Pull high JD2 to prevent from entering TV mode
+alsa-project/alsa-ucm-conf pull request #826 was edited from NTMan:
 
-Applied to
+ucm2: USB-Audio: add Topping M62 configuration
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-7.3
+The M62 exposes a single ten channel playback PCM and a single sixteen
+channel capture PCM. The ten playback channels are not a surround
+layout: they are five independent stereo buses that the card's own
+mixer sums into its outputs, named Playback 1/2 to Playback 9/10 in the
+manual.
 
-Thanks!
+The descriptor declares no channel positions at all -- bmChannelConfig
+is 0x00000000 on both the ten channel and the sixteen channel terminal
+-- and the card exposes no ALSA channel map either, neither a kcontrol
+nor a /proc entry. Without a profile the host therefore invents one:
+PipeWire fills ten unnamed channels with its default surround layout,
+so the desktop believes in a centre, an LFE and a rear that the
+hardware does not have, or else hands out AUX0..AUX9. Both readings
+break more than cosmetics: the balance control and the speaker test
+have nothing to work with, and any per device equalisation carries ten
+channel keys where two are meant.
 
-[1/1] ASoC: rt712-sdca: Pull high JD2 to prevent from entering TV mode
-      https://git.kernel.org/broonie/sound/c/dfb8bc1d286f
+Each bus is therefore published as its own stereo device, split out of
+the one PCM. The five are not marked conflicting: they may play at
+once, which is the point of having five.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+What the card does declare is channel NAMES. iChannelNames points at
+"Playback 1" on the playback terminal and at "Analogue 1" on the
+capture terminal, each the first of a consecutive run of string
+descriptors, and the run reads Analogue 1, Analogue 2, AUX 1, AUX 2,
+BT 1, BT 2, Mobile 1, Mobile 2 and Loopback 1 to 8. macOS displays
+exactly those because Core Audio follows that field. Every name in
+this profile comes from there. Linux surfaces none
+of it: ALSA carries channel positions through chmap and has no notion
+of a channel name, so the host sees an anonymous sixteen and this
+profile is where the names can live. The order was confirmed by
+measurement as well, one column at a time -- feeding the microphone
+input lights column 0, and a headphone to AUX loop lights columns 2
+and 3.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+The inputs are therefore published under the names the card's own
+panel and control application use: IN 1, IN 2, AUX, BT and OTG IN. The
+two microphone channels are named after the card's mic channels and not
+after jacks, because IN 1 is switched on the card between its own
+6.3 mm jack, the 3.5 mm jack and the headset jack; that switch lives in
+the card's own panel and is not visible to the driver, so a jack name
+would be a claim the configuration cannot back.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+IN 1 and IN 2 are also offered together as IN 1 + 2. A balanced stereo
+source -- a synthesiser, a mixer's main output -- arrives on both
+microphone channels at once, and offering it only as two mono devices
+makes the desktop pick one half of it. It conflicts with the halves
+rather than coexisting with them, since the same two columns cannot be
+two devices at the same time.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Bluetooth and Mobile carry audio, and all four inputs record at once: a
+sixteen channel recording with a phone on Bluetooth and another on OTG
+shows signal on the analogue, AUX, Bluetooth and Mobile columns
+simultaneously.
 
-Thanks,
-Mark
+The eight loopback returns arrive MUTED. Mic Capture Switch carries one
+value per capture column and reads on for the first eight and off for
+the rest, so columns 8 to 15 deliver digital silence until something
+turns them on. That is why they look as though the loop never reaches
+the USB stream, while the vendor's control panel meters it happily and
+while the same card delivers those returns to a host whose software
+turns the switch on. The verb turns all sixteen on, and the four
+returns are then declared as stereo devices, below the physical inputs
+in priority because a return is what the card is already playing rather
+than something arriving from outside.
 
+The card keeps all ten playback channels in one mixer element and all
+sixteen capture columns in another, so the per bus and per input
+volumes come from a control remap by channel index, in the same shape
+the Behringer UMC204HD profile uses.
+
+The card has three operating modes, switched from its own panel, and
+all three keep the same USB id. Mobile Mode is a plain stereo device
+with an honest FL FR channel map on both directions and needs no
+profile; applying this one to it would ask a two channel PCM for ten.
+The mode is encoded in the high byte of bcdDevice, 01xx Mobile, 02xx
+Live Streaming, 03xx Pro Audio, so the profile is selected only for the
+latter two. Live Streaming and Pro Audio have identical channel layouts
+and differ only in the rates they offer, 44.1 and 48 kHz against those
+plus 88.2 and 96 kHz.
+
+Tested on Fedora with alsa-lib 1.2.16 and PipeWire in all three modes:
+in Live Streaming and Pro Audio the five sinks and the named sources
+appear as expected, playback lands on the intended pair, each remapped
+element moves only its own channels, and a sixteen column recording
+confirms the input columns, the loopback returns among them once the
+verb has unmuted them; in Mobile Mode the card is left to the generic
+configuration.
+
+Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/826
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/826.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
