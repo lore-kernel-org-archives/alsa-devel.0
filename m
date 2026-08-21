@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35BD9C5DF87
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Aug 2026 22:33:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFCDAC5DF7D
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2026 09:23:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7BA60299;
-	Fri, 21 Aug 2026 00:32:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7BA60299
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19BE260297;
+	Fri, 21 Aug 2026 11:22:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19BE260297
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1787265187;
-	bh=2rO2zbWnkexR215FCMUbWeSqX24qOTpXBurR2q80XA4=;
+	s=default; t=1787304189;
+	bh=XLWwXO09die+Dfnt0iosV41usjvUe7pNRoxUIT+I8ec=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=jJJ+I4uxddRPFKRHRpJZ/qUYM4+R//3dfShn10eC5ZAJfVHEfiOc/QavUJ0z9magE
-	 wvO7lmGuAKq4UGjcFyUfuDKIBzTmXjfJuKM8WXToxor/oDNzeEa3zQL5JQcsiK8WVU
-	 PaFRZWUj5t4uY71YZ5g6ALNKBUzC7AU4Ol2bGEOs=
+	b=hRQYwSpoYd1HlDl3ESnHIT1CCyOMQKMBbFLF+tFatJ5jtV8Ztqala1WvIfSp0ZqsL
+	 OD7nqL9JwFbWGt0edaZvFIN4TdRjaG8kLnwROnhqLR9gIJoo7Vo837Y+GYL6Fs+6Xz
+	 jT9uo8l7MwsHLTf4sU4b6NiazCR/6+U/bRx8eqqY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85076F805F8; Fri, 21 Aug 2026 00:32:34 +0200 (CEST)
+	id E35DBF804CC; Fri, 21 Aug 2026 11:22:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9EDEF805F0;
-	Fri, 21 Aug 2026 00:32:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DB50F805FF;
+	Fri, 21 Aug 2026 11:22:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4608BF8051D; Fri, 21 Aug 2026 00:32:26 +0200 (CEST)
+	id 491C0F8051D; Fri, 21 Aug 2026 11:22:24 +0200 (CEST)
 Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=45.14.194.44
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787265137;
-	b=V+rjYxX9Ak/e4Xq+ImcTUo0xCFcNikYFsDu8QebI3PcuCbgZUzhKSDDFKntbyW3kNKN5
-	 r1yxNc4L0/1OaD6jqEapnha8o8ntFm3HgyjovOaSKz1T0bkq73hh+L1O5d7juVekkNT54
-	 s1ll5R9iCPL+my2/cqLUpzX8dvcZedmmUyRylWaBAvQqCOsZzuhmqIYTy1AcPYUkHEJFJ
-	 TNGYVoMKYTsuia8DqfQoSeZxBbbEEfLP8fRxazcfTRFmyyn05ZRvaGyqIcCPzeI8AK8OQ
-	 1K0aGtzT7kpEGNJTZQakY31/l4JNIvgTJZvd8oaxc64DT8ikVY4OX2iFLxuKFjN8QtQ==
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787304143;
+	b=jzEM5ED0oqIyrT3rRJdSCu+91d+NChXNFjN3A6FlgnuCgrBVwYEPmDOP0AmaBilmVEyK
+	 TCji0EQyjeExW/5Qvk7m1S06/m3LzUTSD+LUjRk+6/DucEpIKiJ/AQqB47/T3LAeD2Vyb
+	 WZ2a2gpMnEpbeOleGQLxgS0XCYsKFcl8hUyjf53KI1gC3S3nU5WcNWK3GeJ3RLx0UzhPw
+	 a0KstcKWOyjQFhnhPV5+DTo0VfW3GbU6zy9BrSaEfZng/3ibMrVOtNfOQYYzsUEENRDfR
+	 etXErIC3uS3GKSUFpOLQhd1eMu0/MOhSgXp7/NjRbXDUlqIdsKpdXy1Xak8MxMaWL1A==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1787265137;
+	c=relaxed/simple; t=1787304143;
 	h=MIME-Version:From:To:Message-Id:Subject;
-	bh=2rO2zbWnkexR215FCMUbWeSqX24qOTpXBurR2q80XA4=;
-	b=ZM/dTM6SneZqIcn8TLUo+PxXe0G44eOYPbdCfnTDTb1OTi+WKCX7khGrJ0I2iBIW2wwI
-	 fHxmDv+TeQrp6zafcV9sQAe5zMHM6Bhd7wqecvk7rKNqAWxbohHlxRJF0EEA6Q2S09/Nv
-	 QaVnOY5UhM4XZ13So81fC2OtkSGOWGJFdSOwAoVRWBGgOrkQVET1fbzeOmCh/l8BS1nDN
-	 txiLebB41peOYjta73hXNLVusyNEs2p+l8X4Y/yMZgkdxyTrmj4Rqjk0Zn4+CFiBk9d7Y
-	 7dm0MdFa1JoYjopclcs5QCGleFrwBdQ4Nwlkh+GE+kVP65hr5UZA+0z4qJSBFsruBGA==
+	bh=XLWwXO09die+Dfnt0iosV41usjvUe7pNRoxUIT+I8ec=;
+	b=pbPw3d/ci9VTRHlkRvnA+PX0+8ChxvMwtX/fYqlKJiHxU+hddtxaD66PmXqB3xKp87jT
+	 8DrFxqK03AXnQBpHDLhJ+oR8DclR/U83pduZNeOGYiEejJR2O/NnuPZh5MPC7Oi4zu9Qb
+	 i5lOYHVBfBKqrpVxJRQg2jtM4h7vc6fp1uxphgNYC5DarP6xQt0HF1bLeHkFzfq6PH7Ax
+	 5UYwC7B7KKemi5a67PbvZIOPuyfin9etxYauAvDILZ1EIr09LDtvtE7btYY9fiJcZYuFw
+	 +rN+6xXAphAMFIkSHkhd7oJwrVou1rKIsgErcQ43GaYOPcb0F9cxxMCpat7E1qUT8Jw==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
  arc=none smtp.remote-ip=45.14.194.44
 Received: from webhooks-bot.alsa-project.org (vmi2259423.contaboserver.net
  [45.14.194.44])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1FA4F800BA
-	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2026 00:32:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1FA4F800BA
+	by alsa1.perex.cz (Postfix) with ESMTP id 856C9F804CC
+	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2026 11:22:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 856C9F804CC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Message-Id: <18cda42c07f1e900-webhooks-bot@alsa-project.org>
-In-Reply-To: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
-References: <alsa-project/alsa-ucm-conf/pr/826@alsa-project.org>
-Subject: ucm2: USB-Audio: add Topping M62 configuration
-Date: Fri, 21 Aug 2026 00:32:26 +0200 (CEST)
-Message-ID-Hash: GVSDEK2AJKRW4JXOCFKJXLFWMMVDGGAB
-X-Message-ID-Hash: GVSDEK2AJKRW4JXOCFKJXLFWMMVDGGAB
+Message-Id: <18cdc7a5c0df7100-webhooks-bot@alsa-project.org>
+In-Reply-To: <18cdc7a5c0c04100-webhooks-bot@alsa-project.org>
+References: <18cdc7a5c0c04100-webhooks-bot@alsa-project.org>
+Subject: ALSA AAF PCM: speaker-test reports "Write error: -32,
+ Broken pipe" with -p option but works with -P option
+Date: Fri, 21 Aug 2026 11:22:24 +0200 (CEST)
+Message-ID-Hash: Q72ZXUQI3DOGTPZMA72RWRRUOBRZPECH
+X-Message-ID-Hash: Q72ZXUQI3DOGTPZMA72RWRRUOBRZPECH
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GVSDEK2AJKRW4JXOCFKJXLFWMMVDGGAB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q72ZXUQI3DOGTPZMA72RWRRUOBRZPECH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,113 +85,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #826 was edited from NTMan:
+alsa-project/alsa-utils issue #333 was opened from liuyq0509-ux:
 
-ucm2: USB-Audio: add Topping M62 configuration
+Hi everyone,
 
-The M62 exposes a single ten channel playback PCM and a single sixteen
-channel capture PCM. The ten playback channels are not a surround
-layout: they are five independent stereo buses that the card's own
-mixer sums into its outputs, named Playback 1/2 to Playback 9/10 in the
-manual.
+I am testing an ALSA AAF PCM plugin for AVTP audio streaming on an ARM development board. The PCM configuration is as follows:
 
-The descriptor declares no channel positions at all -- bmChannelConfig
-is 0x00000000 on both the ten channel and the sixteen channel terminal
--- and the card exposes no ALSA channel map either, neither a kcontrol
-nor a /proc entry. Without a profile the host therefore invents one:
-PipeWire fills ten unnamed channels with its default surround layout,
-so the desktop believes in a centre, an LFE and a rear that the
-hardware does not have, or else hands out AUX0..AUX9. Both readings
-break more than cosmetics: the balance control and the speaker test
-have nothing to work with, and any per device equalisation carries ten
-channel keys where two are meant.
+```
+pcm.aaf0 {
+type aaf
+ifname eth0.5
+addr 01:AA:AA:AA:AA:AA
+prio 2
+streamid AA:BB:CC:DD:EE:FF:000B
+mtt 50000
+time_uncertainty 1000
+frames_per_pdu 12
+ptime_tolerance 100
+}
+```
 
-Each bus is therefore published as its own stereo device, split out of
-the one PCM. The five are not marked conflicting: they may play at
-once, which is the point of having five.
+When I run `speaker-test` with the following command:
 
-What the card does declare is channel NAMES. iChannelNames points at
-"Playback 1" on the playback terminal and at "Analogue 1" on the
-capture terminal, each the first of a consecutive run of string
-descriptors, and the run reads Analogue 1, Analogue 2, AUX 1, AUX 2,
-BT 1, BT 2, Mobile 1, Mobile 2 and Loopback 1 to 8. macOS displays
-exactly those because Core Audio follows that field. Every name in
-this profile comes from there. Linux surfaces none
-of it: ALSA carries channel positions through chmap and has no notion
-of a channel name, so the host sees an anonymous sixteen and this
-profile is where the names can live. The order was confirmed by
-measurement as well, one column at a time -- feeding the microphone
-input lights column 0, and a headphone to AUX loop lights columns 2
-and 3.
+`speaker-test -p 25000 -F S16_BE -c 2 -r 48000 -D aaf0`
 
-The inputs are therefore published under the names the card's own
-panel and control application use: IN 1, IN 2, AUX, BT and OTG IN. The
-two microphone channels are named after the card's mic channels and not
-after jacks, because IN 1 is switched on the card between its own
-6.3 mm jack, the 3.5 mm jack and the headset jack; that switch lives in
-the card's own panel and is not visible to the driver, so a jack name
-would be a claim the configuration cannot back.
 
-IN 1 and IN 2 are also offered together as IN 1 + 2. A balanced stereo
-source -- a synthesiser, a mixer's main output -- arrives on both
-microphone channels at once, and offering it only as two mono devices
-makes the desktop pick one half of it. It conflicts with the halves
-rather than coexisting with them, since the same two columns cannot be
-two devices at the same time.
+The device is opened successfully and the hardware parameters are set:
+Playback device is aaf0
+Stream parameters are 48000Hz, S16_BE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 1 to 206158430
+Period size range from 0 to 206158431
+Requested period time 25000 us
+Periods = 4
+was set period_size = 1200
+was set buffer_size = 4800
+0 - Front Left
+Write error: -32, Broken pipe
+Write error: -32, Broken pipe
+Write error: -32, Broken pipe
+...
 
-Bluetooth and Mobile carry audio, and all four inputs record at once: a
-sixteen channel recording with a phone on Bluetooth and another on OTG
-shows signal on the analogue, AUX, Bluetooth and Mobile columns
-simultaneously.
+However, if I change the command to use `-P`:
 
-The eight loopback returns arrive MUTED. Mic Capture Switch carries one
-value per capture column and reads on for the first eight and off for
-the rest, so columns 8 to 15 deliver digital silence until something
-turns them on. That is why they look as though the loop never reaches
-the USB stream, while the vendor's control panel meters it happily and
-while the same card delivers those returns to a host whose software
-turns the switch on. The verb turns all sixteen on, and the four
-returns are then declared as stereo devices, below the physical inputs
-in priority because a return is what the card is already playing rather
-than something arriving from outside. The Direct verb unmutes them too:
-it is where someone asks for all sixteen columns at once, so it is the
-verb where silence on half of them misleads most.
+`speaker-test -P 480 -F S16_BE -c 2 -r 48000 -D aaf0`
 
-The card keeps all ten playback channels in one mixer element and all
-sixteen capture columns in another, so the per bus and per input
-volumes come from a control remap by channel index, in the same shape
-the Behringer UMC204HD profile uses.
+The test runs normally without any `Broken pipe` errors:
 
-The card has three operating modes, switched from its own panel, and
-all three keep the same USB id. Mobile Mode is a plain stereo device
-with an honest FL FR channel map on both directions and needs no
-profile; applying this one to it would ask a two channel PCM for ten.
-The mode is encoded in the high byte of bcdDevice, 01xx Mobile, 02xx
-Live Streaming, 03xx Pro Audio, so the profile is selected only for the
-latter two. Live Streaming and Pro Audio have identical channel layouts
-and differ only in the rates they offer, 44.1 and 48 kHz against those
-plus 88.2 and 96 kHz.
 
-Tested on Fedora with alsa-lib 1.2.16 and PipeWire in all three modes:
-in Live Streaming and Pro Audio the five sinks and the named sources
-appear as expected, playback lands on the intended pair, each remapped
-element moves only its own channels, and a sixteen column recording
-confirms the input columns, the loopback returns among them once the
-verb has unmuted them; in Mobile Mode the card is left to the generic
-configuration.
+layback device is aaf0
+Stream parameters are 48000Hz, S16_BE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 1 to 206158430
+Period size range from 0 to 206158431
+Periods = 480
+was set period_size = 12000
+was set buffer_size = 5760000
+0 - Front Left
+1 - Front Right
+Time per period = 0.283478
+0 - Front Left
+1 - Front Right
+Time per period = 0.242246
 
-Signed-off-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Does anyone know why `-p 25000` causes `Broken pipe` while `-P 480` works?
 
-Attached alsa-info from all three modes. The `bcdDevice` value is what the profile keys on:
+Could this be related to:
+- ALSA buffer/period configuration?
+- AAF plugin internal scheduling?
+- AVTP packet timing requirements?
+- PTP synchronization?
+- CBS/QoS configuration?
 
-| Mode | bcdDevice | Playback | Capture | Rates (kHz) | Profile |
-| --- | --- | --- | --- | --- | --- |
-| [alsa-info-MobileMode.txt](https://github.com/user-attachments/files/30801211/alsa-info-MobileMode.txt) | 0145 | 2ch, FL FR | 2ch, FL FR | 44.1, 48 | not applied |
-| [alsa-info-LiveStreamingMode.txt](https://github.com/user-attachments/files/30801208/alsa-info-LiveStreamingMode.txt)| 0248 | 10ch | 16ch | 44.1, 48 | applied |
-| [alsa-info-ProAudioMode.txt](https://github.com/user-attachments/files/30801204/alsa-info-ProAudioMode.txt) | 0327 | 10ch | 16ch | 44.1, 48, 88.2, 96 | applied |
+Any suggestions would be appreciated. Thanks!
 
-In the two ten channel modes the descriptor declares the channel map `FL FR FC LFE RL RR FLC FRC RC SL`, which the hardware does not have: those are five stereo buses. Mobile Mode declares `FL FR` on both directions and is left to the generic configuration.
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/826
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/826.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/333
+Repository URL: https://github.com/alsa-project/alsa-utils
