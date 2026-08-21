@@ -4,146 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E42B6C5DF81
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2026 11:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A410C5DF94
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Aug 2026 11:46:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B28A60276;
-	Mon, 24 Aug 2026 13:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B28A60276
+	by alsa0.perex.cz (Postfix) with ESMTPS id A08E360279;
+	Mon, 24 Aug 2026 13:45:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A08E360279
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1787571500;
-	bh=Nm2O2PQjOO3YZNdsxk7UTJH7sbGliAUfsjR3x4+l2fs=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=VfW1uAXXEkRqJxCe6ROh24At3WefqRpoOVHfn84RZRtN8f0MUEtGAhzXM1nTDgmH1
-	 bg1gjlPsqkU7dbOLxYTMDAMmlsILaXMEP4jL1uspO2BqJ3Tp5QbLa1xBXLObKNCOtd
-	 uq/+6dNRoAUMrtkrepEfDrHGoDmIuUfs5ceIhDRg=
+	s=default; t=1787571961;
+	bh=j2tRYJFNt8KENcj9zWM8AfvTA6H5fHi3uhQAXY2/ZWo=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BqYgRrdFtbj/h2ZdP/qs00v9PKaG82rzEdIQnv+P9+2R/KZMl5OTN98tVSMDFWOEE
+	 CxEAqlFjJSsk0vSqi9MEh046A7OLWOI+WdxFQ+4+v1gscoTnoaZW+OnVPfVGrK+xEO
+	 CUimm9EfMFZDB+In1pNSoLe16A5myvWWEbPmTqXk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D16E4F805FD; Mon, 24 Aug 2026 13:37:42 +0200 (CEST)
+	id 9EBA1F80601; Mon, 24 Aug 2026 13:45:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DE10F805F7;
-	Mon, 24 Aug 2026 13:37:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A20FF80600;
+	Mon, 24 Aug 2026 13:45:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A936F805A8; Mon, 24 Aug 2026 13:37:35 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=77.48.224.245
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787571454;
-	b=J96YpEHmfyL1H8C1gVsoe4G1OrMKkwX5zkwUWr59g7zoefqwzNzqZ4BHYFAMoqNZtAYb
-	 lxBEPHHplSjXd8Yd9ad+7PnkGOUJ0Tz8BF9KlMgfPRz4OJ6VkALpr2X+4g8T27/CTjIPO
-	 9f5EjQqASN5CXWDqe2gx2JnEZ1DYAqv/Aea0GMK8iO358IKOI8m7JqzYn+ADMu5MuQ+Rr
-	 Us0xM2temzUWlM0/4acuWts+cRSbLxHXyAJ6P+esqZdukOdnyK9G4lJER0J03/1nhNLuN
-	 X1TTzd2oGo/KS7OeN2AOjO9oQC0b8FNEDeITYgCONf1PVbyN+FoUO1HTdvCrYWULdZA==
+	id 50A46F8051D; Fri, 21 Aug 2026 22:57:33 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=209.85.218.53
+ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787345851;
+	b=kzTmaLX0u2nfc2seMZTtpRe5n5AJH2wcYEp8T4noVKGAgROsJmgGb/r7/87Bu1A0t0JW
+	 Xg18PCUCzaSolKUHQdTAVuQ/GSAh+Wd3BpbyyiRaBFwQepYg8k99tPwufHD6We6cbQTFI
+	 P9/Jza3zM7vx+wgetMducVZ4F3W0UbJtw0tnMXTC8jBlCdnMCzlZwDsPF8ydubgzYunmx
+	 Qt0CBBc8mw+0XGqiVBKATikmwwyvml5Gz2GKuyv0xrG3Hvqt+SFI5GuoeaNv/LG78jx9A
+	 fdrqbR2w5/LVLzAnzDyf8ldge4g0iTNmeoPs68tjkOEuFwScze5dodplQpkl4j4/Kmg==
 ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1787571454;
-	h=DKIM-Signature:Message-ID:Date:MIME-Version:Subject:To:From;
-	bh=Nm2O2PQjOO3YZNdsxk7UTJH7sbGliAUfsjR3x4+l2fs=;
-	b=H0mALEeo1I7MTm4bBwfC8OGw0Di3akXEQFnOFEQQ/SBQKGM4aGR4WvYp5SvDXMCDb4Ks
-	 t17d7Q39+BXEKby1xRZ3jWAQvea2KNwIoQuBgd2STSHmVIm7jE3rK3q0LXPB+fFo8ql79
-	 SDfl/Odb7Hrtj8ZhEjZ3vh1g10DX9iPL5mvqBAuL1IZ6ObfCtGFf5rRjHeCudBbS2V/P3
-	 bj2qFfXmR0Sb18E2jVm70wY3rAN+pPKh/y8N6IWF65NmU9LjRV9ZHnZPp/sTVjgfd9bkS
-	 x+MufFaFGcwEG7fyi3pSnXT4F0sCM6Fz7xcxJBB/Kr1pxH6SdSGsATnCbqfT7Ezc26g==
+	c=relaxed/simple; t=1787345851;
+	h=DKIM-Signature:From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=j2tRYJFNt8KENcj9zWM8AfvTA6H5fHi3uhQAXY2/ZWo=;
+	b=VRktrpewx+jiSA1O9X9dZJLo5wBjG1VAnfeAspQq8PTu6Q8EJ10aQPNFkozJLaFmbuyS
+	 5TEux/JykQ3aQusgXCwjFh+NHRtWqIzUc77KP6jbUGlYP7ey9JrbIipspXlWjkF5Nk3vT
+	 rYYwyWKwB4+XWDP+tAIYVbsHiWP7Vr/QwjhZDWHRF4J7YbRZMDrCyAdncN0Y1G+qyaNrl
+	 2HeMHaaUwAOXDV3QeIzVSnf8QiKdm9CSRKzDVMHTUtU9nNOZQrfks5k050ULhpxEekzQZ
+	 W+VQ81Jpr4w7zU6KiFN44SA8KJM6PyCYSPwPQBxSNeCjc/bApBUPXMwkuiHXPldghpg==
 ARC-Authentication-Results: i=1; alsa1.perex.cz;
- arc=none smtp.remote-ip=77.48.224.245
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9DF19F8007E
-	for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2026 13:37:33 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4DCC340FFC;
-	Mon, 24 Aug 2026 13:37:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 4DCC340FFC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1787571452; bh=CrhxrPDaVWoRqfq9AnuAZ2jHRkoOEilsL4pqKih5q8Q=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=PqUP0PHcVTF7JSm+C5ipPpGpvdtQ2seb4v0jIUHGKeJ2d/NDtWSW3xPBCF8SwTCoQ
-	 SMo+NsJM8pt0uukB22JM3CFLts94uI1MS25tZeZY6nTNZJJ1+XE8W6p7vGiAkZdlxm
-	 ibPFQDu7PnZQswfQMOW6y3zQSKdWVpjfetsoHjss=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=jZXt1s8B;
+	arc=none smtp.remote-ip=209.85.218.53
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com
+ [209.85.218.53])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Mon, 24 Aug 2026 13:37:30 +0200 (CEST)
-Message-ID: <dc49d18f-4bc4-4d3a-9405-a43cad044e6c@perex.cz>
-Date: Mon, 24 Aug 2026 13:37:28 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id A82D7F800BA
+	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2026 22:57:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A82D7F800BA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=jZXt1s8B
+Received: by mail-ej1-f53.google.com with SMTP id
+ a640c23a62f3a-c207cb16cf5so238497166b.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 21 Aug 2026 13:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787345849; x=1787950649;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=O0r0GmHxCfTRKvUuN/ynVPBuwVgWoS2Jnuin21tATSk=;
+        b=jZXt1s8BMIDZx6AUYdBxd00P091K/ilvD0zWeVWGL0g8uxZuO8us2QSrWwI2tsmbd8
+         6VtpCMraFE1iS2+7ehFVITt/IfP1M7AtHSi62i7BuRCT0uws93tsVYMhC2B4/yzYKdai
+         oy9rbpJ/57NL/6aJVceZwR3kgBgJq1hXvbmlgRLAAyazYOi3zQ3sxmML+VxeL918e9Wy
+         l4g7tdhs5S90CoPHwrkgD27bCg8tZmOQg91pXUo48RY36hUXxtjGoSfQCliUL90i0KF/
+         Ey4Ccr2iSXYWuI6Die6U+JpudWsDvZ0py38MPd7ejbX6dobcP6GmQwyzlKMIX0vDa+xp
+         lgRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787345849; x=1787950649;
+        h=content-transfer-encoding:content-type:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=O0r0GmHxCfTRKvUuN/ynVPBuwVgWoS2Jnuin21tATSk=;
+        b=H98TX1CXtImE20AF3P89waCmaxk/3Qpj31Yf4YO0AOzqhAIxhw6mW2sES1Je0Lm0my
+         PcPogpUEKRv1pwBaoTU0BbJjZAQNu24l61dMCpyECzBrgadYwO4eUT/8H6Uxqagco69v
+         rdIdRyQVT1JUV6dJxmQbbqJZauyIdfnZlqMgdJZemAWm8SZWU9g7RocuuAkAgOjvVNYH
+         nwlJCw/vqowjRJUyghAMZQ90jKKF2hCLH2RiTxw1h8yFXdzdo/b4clieKKAfhR/qUBP2
+         AZuJtLiZ9KNDkIfioZ8AldrSAtgNeuEDwLusNMKs7ljSOVWJcP1zhy8zKD/M4D0uqcq8
+         5KMQ==
+X-Gm-Message-State: AFuF++kFyFskzJSprbDM7FdL3DGqQjXAqPkGxLFZzuyE6gTjxv9QwHES
+	Im27NgkhxRd7GJ9PvLC9J7S7JCa+e+zxx63F6oIyyjc+MvVvNY7TyKw=
+X-Gm-Gg: AR+sD11MGdTHSTe3p565qMWXdWME7ke8fwQgR4BjHHlp1+FEDXDSTHQ0RWCLV0ni0gC
+	XOehMHJLv9uu0PgOG7jW38qNcwWNzw8NGnJuktnVEDjmFyCjDyZL1885NqHdZ3QLYvjJXeAFsnf
+	9tO3FnZuQ8ACA15Ppe3/m8zc+7anbNSSyjUR2I9rd3s7ug0+/4wNd8A+SzHvR93gYBq7C3HGLAZ
+	KK3diCt9hHxqA5p6R6XdIWk++jzP/gYWk2xK0ejGsEE4piqba8vO5pYyLd09U9/vuEeZpiJ6gpm
+	kEX8LCP5aJk2dqV9Wa/HalkJVkVLoPjRO/TaJOwh8Xb+RboBtdZ3HlXdfdc2WxyLSY9KfAwk5QH
+	K2SyF+vbNUvIvi9F1dqa+CKWTKVO0V3w22lGQYPBNpQFhCM/mFu0DslfjJZjOv2ODGQBrFMrrgm
+	o8uJQN6rsQcM6t2RvtB/aPZsmUli3HzUx0ClErWMTdvEys8djgGFjKx7qH+AL9F9MaW8TDYxoE5
+	WH1GIZHew==
+X-Received: by 2002:a17:907:3e9a:b0:c15:e118:9b99 with SMTP id
+ a640c23a62f3a-c246a6a3e6cmr934111166b.23.1787345849337;
+        Fri, 21 Aug 2026 13:57:29 -0700 (PDT)
+Received: from localhost.localdomain ([31.223.84.205])
+        by smtp.gmail.com with ESMTPSA id
+ a640c23a62f3a-c2495ee5295sm2393366b.0.2026.08.21.13.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Aug 2026 13:57:28 -0700 (PDT)
+From: "=?UTF-8?q?Habil=20Eren=20T=C3=BCrker?=" <habilerenturker@gmail.com>
+X-Google-Original-From: =?UTF-8?q?Habil=20Eren=20T=C3=BCrker?=
+ <habilerenturker@hotmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	=?UTF-8?q?Habil=20Eren=20T=C3=BCrker?= <habilerenturker@hotmail.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for HP Laptop 15-fd0039nt
+ speaker mute LED
+Date: Fri, 21 Aug 2026 23:57:06 +0300
+Message-ID: <20260821205717.3219-1-habilerenturker@hotmail.com>
+X-Mailer: git-send-email 2.47.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: UCM: two devices that exclude a third but not each other
-To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
- alsa-devel@alsa-project.org
-References: 
- <CABXGCsPVLke4_j-FfGqTMN4tG88G5ckf13_xxKRe=j_w+sWTvQ@mail.gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Content-Language: en-US
-Autocrypt: addr=perex@perex.cz; keydata=
- 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
-In-Reply-To: 
- <CABXGCsPVLke4_j-FfGqTMN4tG88G5ckf13_xxKRe=j_w+sWTvQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: ERGPBC3XMTFOD4LFYC6224OPGA3APQUG
-X-Message-ID-Hash: ERGPBC3XMTFOD4LFYC6224OPGA3APQUG
-X-MailFrom: perex@perex.cz
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MailFrom: habilerenturker@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
- nonmember-moderation; administrivia; implicit-dest; max-recipients; max-size;
- news-moderation; no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation
+Message-ID-Hash: 65KHM77X6UZQSCB64EVV4VAKGFHQLGLP
+X-Message-ID-Hash: 65KHM77X6UZQSCB64EVV4VAKGFHQLGLP
+X-Mailman-Approved-At: Mon, 24 Aug 2026 11:45:21 +0000
 X-Mailman-Version: 3.3.10
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ERGPBC3XMTFOD4LFYC6224OPGA3APQUG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/65KHM77X6UZQSCB64EVV4VAKGFHQLGLP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,34 +146,123 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 8/23/26 22:11, Mikhail Gavrilov wrote:
+HP Laptop 15-fd0039nt (SSID 103c:8bb6) has a speaker mute LED that is
+controlled via VREF100 on NID 0x1a. Unlike standard implementations, this
+device requires PIN_VREF100 (0x24) to turn the LED on and PIN_IN (0x20)
+to turn it off, with active-high polarity.
 
-> Both list types are group relations, then, and a partial relation
-> cannot be written. A profile has to choose: two mono inputs or one
-> stereo pair. I have chosen the two mono inputs and said so in the file,
-> but I would rather describe the card than choose for its owner.
-> 
-> Is there a way to express this that I have missed? If there is not,
-> would a pairwise form be worth considering -- a list taken as written,
-> without the closure -- alongside the grouping one, so that existing
-> profiles keep their meaning? 
-You can define multiple verbs one with stereo input and second with two mono 
-inputs (mics) - the most easy way is to use Variant blocks to not duplicate 
-configurations.
+The existing ALC236_FIXUP_HP_MICMUTE_LED_ONLY quirk only handles the
+microphone mute LED, so this patch adds a new fixup
+ALC236_FIXUP_HP_15_FD0XXX that covers both:
+- Mic mute LED via GPIO0 (active-low)
+- Speaker mute LED via NID 0x1a VREF100
 
-But it may make sense to describe this partial dependency directly with new 
-list in the device configuration block (proposal). I am not sure if it will 
-work for the current pipewire code - could you check to comment 
-verb_dev_list_check() function in alsa-lib and test ?
+The patch also adds a custom power_filter to ensure the pin remains
+powered during suspend, and a shutdown hook to restore the pin state.
 
-Also note that your device naming does not follow UCM spec - see usecase.h 
-header file [1]. E.g. generic inputs should be named as line. Labels on the 
-card should be in comments (for GUI).
+Tested-by: Habil Eren Türker <habilerenturker@hotmail.com>
+Signed-off-by: Habil Eren Türker <habilerenturker@hotmail.com>
+---
+ sound/hda/codecs/realtek/alc269.c | 59 ++++++++++++++++++++++++++-----
+ 1 file changed, 50 insertions(+), 9 deletions(-)
 
-				Jaroslav
-
-[1] https://www.alsa-project.org/alsa-doc/alsa-lib/use-case_8h_source.html
-
+diff --git a/sound/hda/codecs/realtek/alc269.c b/sound/hda/codecs/realtek/alc269.c
+index 01b87267f..d19935be3 100644
+--- a/sound/hda/codecs/realtek/alc269.c
++++ b/sound/hda/codecs/realtek/alc269.c
+@@ -1364,16 +1364,57 @@ static void alc269_fixup_hp_gpio_led(struct hda_codec *codec,
+ 	alc_fixup_hp_gpio_led(codec, action, 0x08, 0x10);
+ }
+ 
+-static void alc236_fixup_hp_micmute_led_only(struct hda_codec *codec,
+-				const struct hda_fixup *fix, int action)
++/* Patch for HP 15-fd0xxx (8BB6) Speaker Mute LED & Mic-Mute LED */
++
++static void hp_8bb6_shutup(struct hda_codec *codec)
++{
++	snd_hda_shutup_pins(codec);
++	snd_hda_set_pin_ctl(codec, 0x1a,
++			   snd_hda_codec_get_pin_target(codec, 0x1a));
++}
++
++static unsigned int hp_8bb6_power_filter(struct hda_codec *codec,
++					  hda_nid_t nid,
++					  unsigned int power_state)
++{
++	if (nid == 0x1a)
++		return AC_PWRST_D0;
++	return snd_hda_gen_path_power_filter(codec, nid, power_state);
++}
++
++static int hp_8bb6_speaker_mute_led_set(struct led_classdev *led_cdev,
++					 enum led_brightness brightness)
++{
++	struct hda_codec *codec = dev_to_hda_codec(led_cdev->dev->parent);
++	unsigned int val = (brightness == LED_OFF) ? PIN_IN : PIN_VREF100;
++
++	snd_hda_set_pin_ctl_cache(codec, 0x1a, val);
++	return 0;
++}
++
++static void alc236_fixup_hp_15_fd0xxx(struct hda_codec *codec,
++				      const struct hda_fixup *fix,
++				      int action)
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 
+-	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
+ 		spec->micmute_led_polarity = 1;
+-	alc_fixup_hp_gpio_led(codec, action, 0x00, 0x01);
+-}
++		alc_fixup_hp_gpio_led(codec, action, 0x00, 0x01);
++		spec->mute_led_polarity = 0;
++		snd_hda_gen_add_mute_led_cdev(codec, hp_8bb6_speaker_mute_led_set);
++		codec->power_filter = hp_8bb6_power_filter;
++		codec->power_save_node = 0;
++		spec->shutup = hp_8bb6_shutup;
++		break;
+ 
++	case HDA_FIXUP_ACT_INIT:
++		if (spec->gen.vmaster_mute.hook)
++			snd_hda_sync_vmaster_hook(&spec->gen.vmaster_mute);
++		break;
++	}
++}
+ static void alc285_fixup_hp_gpio_led(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -4096,7 +4137,7 @@ enum {
+ 	ALC236_FIXUP_HP_GPIO_LED,
+ 	ALC236_FIXUP_HP_MUTE_LED,
+ 	ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF,
+-	ALC236_FIXUP_HP_MICMUTE_LED_ONLY,
++	ALC236_FIXUP_HP_15_FD0XXX,
+ 	ALC236_FIXUP_LENOVO_INV_DMIC,
+ 	ALC298_FIXUP_SAMSUNG_AMP,
+ 	ALC298_FIXUP_SAMSUNG_AMP_V2_2_AMPS,
+@@ -5839,9 +5880,9 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc236_fixup_hp_mute_led_micmute_gpio,
+ 	},
+-	[ALC236_FIXUP_HP_MICMUTE_LED_ONLY] = {
++	[ALC236_FIXUP_HP_15_FD0XXX] = {
+ 		.type = HDA_FIXUP_FUNC,
+-		.v.func = alc236_fixup_hp_micmute_led_only,
++		.v.func = alc236_fixup_hp_15_fd0xxx,
+ 	},
+ 	[ALC236_FIXUP_LENOVO_INV_DMIC] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -7345,7 +7386,7 @@ static const struct hda_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8b97, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8bb3, "HP Slim OMEN", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x8bb4, "HP Slim OMEN", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x103c, 0x8bb6, "HP Laptop 15-fd0039nt", ALC236_FIXUP_HP_MICMUTE_LED_ONLY),
++	SND_PCI_QUIRK(0x103c, 0x8bb6, "HP Laptop 15-fd0039nt", ALC236_FIXUP_HP_15_FD0XXX),
+ 	SND_PCI_QUIRK(0x103c, 0x8bbe, "HP Victus 16-r0xxx (MB 8BBE)", ALC245_FIXUP_HP_MUTE_LED_COEFBIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8bc8, "HP Victus 15-fa1xxx", ALC245_FIXUP_HP_MUTE_LED_COEFBIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8bcd, "HP Omen 16-xd0xxx", ALC245_FIXUP_HP_MUTE_LED_V1_COEFBIT),
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat
+2.47.3
+
