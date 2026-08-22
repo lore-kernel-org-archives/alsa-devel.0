@@ -4,99 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69AE6C5DF7D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Aug 2026 15:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56E52C5DF94
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Aug 2026 01:02:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [45.14.194.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B011A60290;
-	Fri, 21 Aug 2026 17:25:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B011A60290
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B136602A9;
+	Sat, 22 Aug 2026 03:02:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B136602A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1787325927;
-	bh=SBGml8hrQ2aFRGNL2p+ZCGxmIsUl/78d5Et7UrK0FMI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tWmPnBKWFS2cEClNI0CqMLP+TvnqiNnZJdtGLwEJSPV3MGAQFVQQ0zCLKDDllPjUw
-	 05OIdtDdGRl2VL1bBKLLDecVdcn0gyd2Q2Eg9eoJVltbfZz3bqzvIcpS6/X63WSgCV
-	 TtyBrMoTLRCkowgb7zks9sJPIow9w313Sr9ShlkA=
+	s=default; t=1787360531;
+	bh=5tiZscwbiNc4IPp1Y0lM+j045t5GbtoQu9Eri2oFBAc=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=c1g5Ut/G/azSzQQW9yy93K7paPmCncctk5SHPOiXFbeUeAd6tkecKEO6CcxaJNuBV
+	 OB3SedMB4aJtrjlTx0VuSb1arlX8H2eKgOOI1asWnUDHEHcb+G7A9uZb6nmYYTNpKB
+	 ZhsBa2vHS6Vrn1QIe9Ybkdalu+M83S2HAMcoxd9g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57BD8F805FE; Fri, 21 Aug 2026 17:24:53 +0200 (CEST)
+	id 3C302F805F6; Sat, 22 Aug 2026 03:01:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B196F805F4;
-	Fri, 21 Aug 2026 17:24:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1946F80602;
+	Sat, 22 Aug 2026 03:01:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CBD62F8051D; Fri, 21 Aug 2026 17:24:46 +0200 (CEST)
-Authentication-Results: alsa1.perex.cz; arc=none smtp.remote-ip=172.234.252.31
-ARC-Seal: i=1; d=alsa-project.org; s=arc; a=rsa-sha256; cv=none; t=1787325885;
-	b=R88hqNy8ReN2wBdt2PPc0ZoqRg3QE9KgJczYRZZEPmwtqxnQPL1V9FDO9XcPTVRXGbjE
-	 LDXgrLLu6KPcdxJYtw2EO7GFFPBsrDt2G7PNd5YUGx9GyFDZfebiGdURC5w6vb4bOgMPA
-	 ADCDwMfnNZ/Hn9sM+SoTzBaoQ4tF/OJIa+Q+2RgB1Bclz+6j1S4qUsGCHxgjdZarXDYdX
-	 wp9/Ip9pH6eiDX+UiG5HxTdmWI4KkFyKd5FTb/K3GD1x86mwrLhBW7hsvFSE0As38hoCv
-	 MV5CBHEwfF79OLbmTEwvTswq38Vklkjf5VfJzbuPv/k3Vf2jBdLYIqFK/444iVtNLzA==
-ARC-Message-Signature: i=1; d=alsa-project.org; s=arc; a=rsa-sha256;
-	c=relaxed/simple; t=1787325885;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version;
-	bh=SBGml8hrQ2aFRGNL2p+ZCGxmIsUl/78d5Et7UrK0FMI=;
-	b=MP7uwZCj1qUWMC51pT73L+W9kgwV38nt3c7xQfvjtLRR7Mzsja+xICFORTxZp1iRs1jX
-	 LwF8jt7i7bMN64nbwmyVjZnv6SHcEucl06YRCFRdjBsDL5fMuoomqb0S+bypqvSGyDjYF
-	 /tDOaBC3wyIUmDCFUbRsEMyipthSnElkAkpEicLT1pk1kFfqAfvHhbB3S2Cah/lmt5yLd
-	 lGKQbOwwxbvdMxmtZDPEPjJEs1imDXgUOF7JB3clQBbmrcmmYKoNuM/VFbLYqI/Aq3L+X
-	 Hxd+xDW0B23JSE7NYdTmPe/GIkbEAHI7bK4YR0GSxAXMRVALv68brCLSmMc0eHZNDjQ==
-ARC-Authentication-Results: i=1; alsa1.perex.cz;
- dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=VWsTPTjF;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 490D9F804F3; Sat, 22 Aug 2026 03:01:29 +0200 (CEST)
+Authentication-Results: alsa1.perex.cz;
+ arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.210.48
+ARC-Seal: i=2; d=alsa-project.org; s=arc; a=rsa-sha256; cv=pass; t=1787360488;
+	b=UoM2P7yTE8Y192TmmyKIu8yJokoG4yXNj3zuG1FONIghPnpWUep6n8uwKvre2ofw8EGK
+	 Q0X4Mm/2cBe3Y17ujFd588eaN91yNi+owzUy+7JtWg3C5ZbDEl+3mqGLzb9QQcR/5fPZi
+	 ZebInwUOi5i0/LSrSmFTN7ggHStVXcb9SFxGezJxmfsL3/vF9oqgivQJjcMcmokbA3qTa
+	 tD09ZxVyP21fV7/UB9CZwl+pDrHmIAVB3ppX9E8WnrXThhdTwJyZrM8hJYOYuSa76Gqd1
+	 hjNXnsc60QXSjIRBivMwrvoLxioE50+fXsKV6j8x2Lzc5lZs85vR080DmyUG+lOt5PA==
+ARC-Message-Signature: i=2; d=alsa-project.org; s=arc; a=rsa-sha256;
+	c=relaxed/simple; t=1787360488;
+	h=DKIM-Signature:MIME-Version:From:Date:Message-ID:Subject:To;
+	bh=5tiZscwbiNc4IPp1Y0lM+j045t5GbtoQu9Eri2oFBAc=;
+	b=ceLRzNukFBhKp2vRN4cjWXv4UU2GdLgVgKgSR7DnMmX/F963IJYjnxOOBCoCj62ej0om
+	 gfLkBOBC0ljeQxPLJsaWKyKo/3oGdk0hktC8A+/xB85abC+QFqtlkZmrYDt6S5biAbiBA
+	 fXfbl0nH/516I0mJjCUX7KL4u57ECYx5w5Q9Kwptuzc1BdsxYZ2bQI3+jxR8qhexVfB2e
+	 0Dc4oIc2dtaFikzJjJPMOYipjNUfr0RSiRzJ4jjFrgBacotk3ia0/4TMvlf/ECjoec2bB
+	 kxGALHY/QgLQzCrY642VmKKwjS98FM3DizqQmV/6HjT18+NG6Yh4mgLRFK3+ZyzCXAg==
+ARC-Authentication-Results: i=2; alsa1.perex.cz;
+ dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=sfCoCcoQ;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.210.48
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
+ [209.85.210.48])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5A90EF80246
-	for <alsa-devel@alsa-project.org>; Fri, 21 Aug 2026 17:24:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A90EF80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8026FF80075
+	for <alsa-devel@alsa-project.org>; Sat, 22 Aug 2026 03:01:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8026FF80075
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20260515 header.b=VWsTPTjF
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 03E6D42AAE;
-	Fri, 21 Aug 2026 15:24:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBCB01F000E9;
-	Fri, 21 Aug 2026 15:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787325880;
-	bh=dnL5vbj5IlrgthDUXFHTUoJ8e1RoFREik7AkKfQotBU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=VWsTPTjFck2IV5MzjnjvlEZBKFtNtr6UK41cxwdBCwKDSEtRJNhn68AGM9VYnrIEB
-	 MKH+8eHrVZiztyqudfUZP1eDnusyNgkJ4CeS3oWD3kgVC9dmA0cuqFIh3yO4giZHeE
-	 eklKneFSNty/eOOT8CLXBi8Ha9ECzg1WOpSCO81Nb08enxxhCY+DteS07YbezzXyx5
-	 QdMySiIZuwghX3UrEBTyMSYJSmSfsxTGObMbGd1vXkKec+elDUGNQSDMcdww0QjBnO
-	 neb1rL/qmTbkhV9p/yGnbNHCbY2Gdm3abxaFXmY7QKsRwQZAdEybzW96LCy1ZfEDZG
-	 y801IxSjrscbA==
-Date: Fri, 21 Aug 2026 16:24:35 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Neo Chang <YLCHANG2@nuvoton.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, robh@kernel.org,
-	krzk+dt@kernel.org, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-	neo.chang70@gmail.com, kchsu0@nuvoton.com, sjlin0@nuvoton.com
-Subject: Re: [PATCH v9 2/2] ASoC: codecs: nau8360: Add support for NAU83G60
- amplifier
-Message-ID: <7e7b8329-23d3-495d-ad48-9ea70189c46c@sirena.org.uk>
-References: <20260820022925.1174132-1-YLCHANG2@nuvoton.com>
- <20260820022925.1174132-3-YLCHANG2@nuvoton.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20251104 header.b=sfCoCcoQ
+Received: by mail-ot1-f48.google.com with SMTP id
+ 46e09a7af769-7e9ecb1e13cso2534810a34.3
+        for <alsa-devel@alsa-project.org>;
+ Fri, 21 Aug 2026 18:01:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1787360485; cv=none;
+        d=google.com; s=arc-20260327;
+        b=P9x3JYp0Skz4IlPLm93faCCyRnYYKJ7ZRfiB/wzpTiwKlPNhKYIBNsTyyFkObyp5HP
+         Wg39XraEXsvKg2h9FtnzzO7RGLXzrkfQsGi4nAjGkLWXcDtmp2p7qcckw+Gxd5FEfkdu
+         BfEslS1MF2TVmGXdImPFrbarCX9xX6XU9+1ma4FRgTkeJhs2Trs5ptNZhTlsyYmUb1rr
+         20RP/VUqQM1lop6m5TqvqCfqfpCWZRmpZEP+7ZXFItgnhW5ez9fNwrh1qx4H/pd9VFUn
+         fDNJbvmyep7Nv4YUH2iDxV6NRvaTP8OTgIvZOK4bN1L+LfGxfjSLjs6NS/8HtGJwcwdy
+         3brQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
+ s=arc-20260327;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=2MUZ8Q7JL6sWk6EdE9h4GD/hcKRyaeIQz4GQD5oEMHk=;
+        fh=msFQX9NJ3oPmqWLZvu+hmzfKks7q+f2dFW2fk/Lo7cY=;
+        b=dv0nPURUAF4/d8kmxKL+oyt7EbSz7RZ5IxQYj3yTdljeJGWIMADqUzKhTRmNxXdgNx
+         +mNg9R1l0IWM4uUv90ipdPmnH6NyLtyxToB/yo8H7zf0Nz/cQ7GWotcsYL7/yU1595kT
+         3MbYI0DclqKrMMXhkDMxWVe5kUdBD9fxA2XB9lkmKmuOvsyIZqGkDPWEnTXsYIF5HKR7
+         5LR9IwMAyMkX05jV3x5pv03EfQy99CG4uYi+YmDcCt9UgmsFln7ICA1RmYT96XZsQBqv
+         gAI3KyvDouMtNInoMY6n3L9KIbYxuLZTHnesLRpkLnkzfVFwidva9XQOjXhsvSCDYbhj
+         aE3g==;
+        darn=alsa-project.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787360485; x=1787965285;
+ darn=alsa-project.org;
+        h=content-type:to:subject:message-id:date:from:mime-version:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=2MUZ8Q7JL6sWk6EdE9h4GD/hcKRyaeIQz4GQD5oEMHk=;
+        b=sfCoCcoQOxVRztDrSmhpycJGpSYAIkvICNevRdgFKhoklmeDjrUuvE1UdfdkLbewy6
+         IYcYUgfSlsBMawWHlFb0KFgKgVkMmY5XW3eg1enZfHSoxfU/Bhgrfl2fAK8LnVEUHkXR
+         vMruSfpZ340gSd82075mJWEM46EY+0QKqAeqP9zB4d37wjalfhy+DTlUslFtegBGd86L
+         +xBHVNUERe1iZI3hAol7duWirEicFIcLBO+IZv7NLxW4raW7nFHfCBq7XbIq/CjeDem2
+         drfwjPmuOqWWaUpm+fzTOZ9PlLKM7WFcUlSLTT0k44q9qJqI2d9YUm6ZYnLWuhGClee4
+         TkYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787360485; x=1787965285;
+        h=content-type:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=2MUZ8Q7JL6sWk6EdE9h4GD/hcKRyaeIQz4GQD5oEMHk=;
+        b=FofbJ+0UFyvXFHfDNs9TsMb57t96FXB44dk/ggxM/eHPqNRe4i+8Dypc3Uk3mJtcKI
+         Qvqf/6LQBJ8iWomkfQoVMYpZ0yaw9hxwP1Z0U9tk8HskUrT8o1WWYouzBcGThs5UdyYC
+         WQRZ+weyYCiDbrtY3gV0cI6EbNbGNfaONHOaPLvp4TrD1qSB4RzUQUKlY80jYwbvE334
+         zN94YetbCsWajHpn0Bxmiyv7e/Yx17bIkODEvJQkZOEubiJh0yKYYFS1Ctm9ei9Af6ji
+         54ehkgaahxD2m5ZEocQtMYW4tZWz2T7rx4/FtCdIYQLutwbLAOo+tDQ5vqZ7zn0/hBKA
+         yiqA==
+X-Gm-Message-State: AFuF++k0Jp5hoLjwu+i/GR57MPk/rSD30q1rrwzgj9uf3gJNAbEWqwit
+	HPVdt6Zz+wMXh59SSG6lex8weJiQrzfHIFYgz03Y5RZCM9am2/oXom7yYR8m8etNUyvO4GBOUcB
+	eJW9IAIjXL6ZsqMKOW3l+IZztBiVxta55XvBH6j4HnA==
+X-Gm-Gg: AR+sD10bGcLBx1GIE84vJXcHGqQyxHubdV/9YVtFuU6WKMrizsewT1zFruUXgepEEFS
+	EicwjER1fg1ajjp2tEUrBw+TlVijaJK/SRNfIXRBAn3jNzzDhTdbDoL3ry4NCWVODkl3FaJSDfD
+	ct4H59H4GkFbyKFj/aNmaDnJekmeKvr9nG9QoyQqBNAevZYVmkwIiCri9y6IOFISp/6kelT+D9g
+	ATgUvtnoHq/mf1cxeL6BJBBAV/zd52XoEPyojYRd1TB4OJ2rkf6liAK++bdylsUOqJogbcb7zS9
+	P7C/eaXqVJlIe3sAAC2y/dzjYMgGyX7LuI70UYIBGkpUnL+JAFoGtLwnfrl08v2CetLK1GUoZWM
+	yETAhAqxhBDfU6sn1ufterKpuT7qNL6CAqg==
+X-Received: by 2002:a05:6830:448f:b0:7dc:c7aa:22bd with SMTP id
+ 46e09a7af769-7f4763b684emr3802341a34.6.1787360484915; Fri, 21 Aug 2026
+ 18:01:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FbvYG0boBekWO757"
-Content-Disposition: inline
-In-Reply-To: <20260820022925.1174132-3-YLCHANG2@nuvoton.com>
-X-Cookie: Package sold by weight, not volume.
-Message-ID-Hash: 4ZMY34GNWLRDDHYZJSTO4EPZNYGWVYCU
-X-Message-ID-Hash: 4ZMY34GNWLRDDHYZJSTO4EPZNYGWVYCU
-X-MailFrom: broonie@kernel.org
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date: Sat, 22 Aug 2026 06:01:13 +0500
+X-Gm-Features: AcwNN1WaTNH4rJZO3R7SSUSWWiMCddNN9RXbBBuayProfTptOm8mWYRxTXtqSvg
+Message-ID: 
+ <CABXGCsMuopDFyQ88+00wECHTON7tQLAkoGOQvquqpAg+92vDcA@mail.gmail.com>
+Subject: UCM: is there a way to act when a device becomes the active one?
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
+Content-Type: text/plain; charset="UTF-8"
+Message-ID-Hash: QRKR6DH2XIUESKFU2GXTEAODO35B6XOQ
+X-Message-ID-Hash: QRKR6DH2XIUESKFU2GXTEAODO35B6XOQ
+X-MailFrom: mikhail.v.gavrilov@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; loop;
  banned-address; header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; emergency; member-moderation;
@@ -107,7 +145,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4ZMY34GNWLRDDHYZJSTO4EPZNYGWVYCU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QRKR6DH2XIUESKFU2GXTEAODO35B6XOQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,84 +154,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi,
 
---FbvYG0boBekWO757
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Two problems from one card, and I suspect one missing piece behind
+both.
 
-On Thu, Aug 20, 2026 at 10:29:25AM +0800, Neo Chang wrote:
-> Add support for the Nuvoton NAU83G60 audio codec. The NAU83G60 is a
-> stereo 30W+30W smart amplifier with an integrated low-latency
-> Advanced Audio DSP.
+The card is a USB interface with ten playback channels and two
+physical outputs, headphones and a phone jack. A UCM profile splits
+the ten channels into five stereo outputs, and the desktop shows five,
+which is right: they are five independent pairs and different
+applications can go to different ones.
 
-A couple of issues here, mostly this looks fine.
+The first problem is that they all sound the same. Each physical
+output listens to ONE source chosen inside the card -- an internal mix
+or a single playback bus -- and that choice is made in the vendor's
+control application, which exists for Windows and macOS only. So you
+pick "Playback 3/4" in the sound settings, the audio goes into bus
+3/4, and you hear whatever the output was last pointed at. Nothing on
+the system says why.
 
-> +static int nau8360_peq_coeff_put(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *cp = snd_kcontrol_chip(kcontrol);
-> +	struct snd_soc_dapm_context *dapm = snd_soc_component_to_dapm(cp);
-> +	struct nau8360 *nau8360 = snd_soc_component_get_drvdata(cp);
-> +	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
-> +	int i, reg, ret = 0;
-> +	__be16 *data = NULL;
-> +	bool changed = false;
-> +
-> +	/* Use the DAPM lock to prevent race conditions during DAPM power-up
-> +	 * state transitions, and check component active status to prohibit
-> +	 * PEQ access during active audio streams (playback and capture).
-> +	 */
-> +	snd_soc_dapm_mutex_lock(dapm);
-> +	if (snd_soc_component_active(cp)) {
-> +		dev_dbg(nau8360->dev,
-> +			"PEQ coefficient access is ignored during audio is active");
-> +		goto unlock_dapm;
+A kernel driver for the card's vendor protocol publishes that selector
+as an ordinary enumerated control, so the host can set it now. My plan
+was to have each of the five outputs point the headphone stage at its
+own bus from that device's EnableSequence, so that choosing an output
+would mean hearing it.
 
-This should probably be -EBUSY or something, though that will upset
-mixer-test.  As things stand since the values change when a stream
-starts and stops there should be an event when that happens, and since
-we report success some value ought to be filled in for the read.
+It does not work, and I think the reason is structural. WirePlumber
+enables every device of the verb at once, so all five sequences run at
+startup and the last one wins. Choosing an output afterwards is a
+change of default sink, which no UCM sequence observes.
 
-> +static void nau8360_dsp_fw_load(struct nau8360 *nau8360)
-> +{
-> +	nau8360->load_fw_done = false;
-> +	schedule_work(&nau8360->load_fw_work);
-> +}
+The second problem is worse, and it is what makes me write. The card's
+analogue volume belongs to the physical output, not to the bus, so all
+five devices name the same mixer element. Each sink then remembers its
+own volume while the hardware has one: set Playback 1/2 to full, move
+to Playback 3/4, and the slider shows something else while the control
+still reads 99. The desktop is showing a number that is not true. I
+can avoid it by naming the digital per-bus trim instead, but that
+attenuates before the converter and throws away resolution, which is
+exactly what the analogue stage exists to avoid.
 
-> +static int __maybe_unused nau8360_resume(struct snd_soc_component *component)
-> +{
-> +	struct nau8360 *nau8360 = snd_soc_component_get_drvdata(component);
-> +	struct regmap *regmap = nau8360->regmap;
+Both come from the same gap, as far as I can see. UCM can say "this
+device exists" with EnableSequence, and cannot say "this device is now
+the one being used". With that, the profile would point the output at
+the right bus and name the analogue element honestly, because only one
+device would be active at a time.
 
-> +	nau8360_dsp_fw_load(nau8360);
+So: is there an existing way to express this that I have missed? A
+modifier, a property, something on the PipeWire or PulseAudio side
+rather than in UCM? I know ports are the usual answer to "choosing an
+output switches hardware", but ports come from devices sharing a
+mapping, and in alsa-ucm.c the mapping name is built per device, so
+five split PCMs are five sinks by construction.
 
-This only kicks off the firmware load, it doesn't wait for it to
-complete.  That means that if a stream restarts quickly after resume we
-will run into issues - I see that the normal playback path just errors
-if we try to start without the firmware.  We should wait, either here or
-in the startup path.
+If there is no way, would a per-device sequence that runs on
+activation be a reasonable thing to propose? The shape is not specific
+to this card: any interface whose outputs are fed from an internal
+matrix has it.
 
-> +	if (NAU8360_IS_DSP_REG(reg))
-> +		*value = nau8360->i2c_read_buf[0] |
-> +			(nau8360->i2c_read_buf[1] << 8) |
-> +			(nau8360->i2c_read_buf[2] << 16) |
-> +			(nau8360->i2c_read_buf[3] << 24);
+Happy to write the patch if the direction is agreeable, and happy to
+be told I have the model wrong.
 
-get_unaligned_le32()?
-
---FbvYG0boBekWO757
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmqIbbMACgkQJNaLcl1U
-h9ARoQf/Vm6uj3Mw8pW8Ni5unT/J30hjetyZ2zxoIepaS5lXsLB5W34wxwhZhTQq
-D3wbdzK1JJnvXXivIoyoJjY8EZZlXCp7si6f89XtOokkQ8Mvw21EgUetKaDBrNfw
-j91Nw8GBQnY5B+jM4qSvgmHi0nE3lujSpcKm6WQyUrGO2iMJpanztxuv8Py6DCDI
-ojPbtfNA8mCWtiA3gLJC4R3O1DbJZRuKJLpgCyp35NMnttJDaajjdAhIgPAfK/jV
-thzBU72FrQpI4JsDNgT7j9aXXFQBT1k62EKBOEfAB+CFvAz2sgdkd5l/70FCEnRV
-65SCV405IUFuSECXuVpFIzRAJ57p6w==
-=NzXF
------END PGP SIGNATURE-----
-
---FbvYG0boBekWO757--
+-- 
+Thanks,
+Mikhail Gavrilov.
